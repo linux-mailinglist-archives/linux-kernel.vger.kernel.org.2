@@ -2,207 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B361630841C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:07:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3807A308422
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231831AbhA2DHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 22:07:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231783AbhA2DGl (ORCPT
+        id S231858AbhA2DIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 22:08:51 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2804 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231607AbhA2DIn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 22:06:41 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 921C8C0617A7
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:05:24 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id 31so4472544plb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:05:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wpJLS1/K6quxDCtF6ZEY+ZhZmpb559yflYmJJ80BQbw=;
-        b=cZnqhzUWTkKR+GwYZalkxCsk9v9+2TUHpqGdSzHbuzov/fz1EkYstH68r/3oEpBW4B
-         j9HutROkJfo28jDndi/gV5EZvIxT/IvLYHbyAhy042zJll0UXIyFaTtdkdfm1pWRZToD
-         qJNtH2kDgXuipk6oJauJVzId5wPVjtS8ROisYKCY1doPKQ9nTPjmC/4IvcnlCRc1KC1n
-         DRsJbcQ++faIJpPy/nlSw9IvR5qTxi4nXUkmJxV83pOPbfv1Elfk36n3a5eGRn6K7uKN
-         hS8uxtEET+0pZuiSShr41z6L8+dxqy/ZVQzp55rFqyS8L8K8IXZDJV1eEsX2o3LQGuP7
-         ENuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wpJLS1/K6quxDCtF6ZEY+ZhZmpb559yflYmJJ80BQbw=;
-        b=UW/q7DFk/q3Y+8ubbylLpc44gRjj0ffPCANdSx8XirZEZ3mGc8wScX8xho+8Wug+hm
-         9kbp2+cGy+hSD83PibQCWHjc5VcdAWdc9W+BdeQjoiryDPMYGkZHVEJu0wMsHJ62pYC3
-         NKqqmMndL7dzZl1PRGZPb3dXdtUzXIYGo01Lw17Wz9DTRed8fxUbERFpR6sp6XOnWPrf
-         EMxDh1j8+LGOHEuy/thqwoD+HtCtIQKT9ejTA9rZP8SRg1DPkeuMtUaQxfCQgixDhbo/
-         DgpQL64B/rg9SNzGPx1/QRpEXUNRb61ONlrdwfQ7oWFFXxLddrGd3DAEQXPoPPFI/eI+
-         j9AQ==
-X-Gm-Message-State: AOAM533H/u9saDIDUHmusUNRnMUrvrNrQ9EJQ9Aq6O2bSSRG/uYEaB4O
-        OIbOLo5GV0YNjS6epKc9IPkzDT8X6UKrTQ==
-X-Google-Smtp-Source: ABdhPJy2aymxhZ7yZWwAmLLNyftYCwd61PtfrChhA2K/S/ZWzs+EOTzqXZihvePJ3BjBNSZPTK19KA==
-X-Received: by 2002:a17:90a:8e82:: with SMTP id f2mr2405873pjo.234.1611889523668;
-        Thu, 28 Jan 2021 19:05:23 -0800 (PST)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id y75sm6854496pfg.119.2021.01.28.19.05.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Jan 2021 19:05:22 -0800 (PST)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Brian Starkey <brian.starkey@arm.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH 5/5] kselftests: dmabuf-heaps: Add extra checking that allocated buffers are zeroed
-Date:   Fri, 29 Jan 2021 03:05:14 +0000
-Message-Id: <20210129030514.1231773-5-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210129030514.1231773-1-john.stultz@linaro.org>
-References: <20210129030514.1231773-1-john.stultz@linaro.org>
+        Thu, 28 Jan 2021 22:08:43 -0500
+Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4DRj0845LQz13mVC;
+        Fri, 29 Jan 2021 11:06:00 +0800 (CST)
+Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
+ DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Fri, 29 Jan 2021 11:08:00 +0800
+Received: from [10.169.42.93] (10.169.42.93) by dggema772-chm.china.huawei.com
+ (10.1.198.214) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2106.2; Fri, 29
+ Jan 2021 11:07:59 +0800
+Subject: Re: [PATCH v2] nvme-multipath: Early exit if no path is available
+To:     Sagi Grimberg <sagi@grimberg.me>, Daniel Wagner <dwagner@suse.de>
+CC:     <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        "Jens Axboe" <axboe@fb.com>, Hannes Reinecke <hare@suse.de>,
+        Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>
+References: <20210127103033.15318-1-dwagner@suse.de>
+ <db9baae0-547c-7ff4-8b2c-0b95f14be67c@huawei.com>
+ <20210128075837.u5u56t23fq5gu6ou@beryllium.lan>
+ <69575290-200e-b4a1-4269-c71e4c2cc37b@huawei.com>
+ <20210128094004.erwnszjqcxlsi2kd@beryllium.lan>
+ <ebb1d098-3ded-e592-4419-e905aabe824f@huawei.com>
+ <675d3cf7-1ae8-adc5-b6d0-359fe10f6b23@grimberg.me>
+From:   Chao Leng <lengchao@huawei.com>
+Message-ID: <59cd053e-46cb-0235-141f-4ce919c93f48@huawei.com>
+Date:   Fri, 29 Jan 2021 11:07:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <675d3cf7-1ae8-adc5-b6d0-359fe10f6b23@grimberg.me>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.169.42.93]
+X-ClientProxiedBy: dggeme703-chm.china.huawei.com (10.1.199.99) To
+ dggema772-chm.china.huawei.com (10.1.198.214)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a check to validate that buffers allocated from the heaps
-are properly zeroed before being given to userland.
 
-It is done by allocating a number of buffers, and filling them
-with a nonzero pattern, then closing and reallocating more
-buffers and checking that they are all properly zeroed.
 
-This is helpful to validate any cached buffers are zeroed
-before being given back out.
-
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Brian Starkey <brian.starkey@arm.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Laura Abbott <labbott@kernel.org>
-Cc: Hridya Valsaraju <hridya@google.com>
-Cc: Suren Baghdasaryan <surenb@google.com>
-Cc: Sandeep Patil <sspatil@google.com>
-Cc: Daniel Mentz <danielmentz@google.com>
-Cc: linux-media@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux-kselftest@vger.kernel.org
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
- .../selftests/dmabuf-heaps/dmabuf-heap.c      | 86 +++++++++++++++++++
- 1 file changed, 86 insertions(+)
-
-diff --git a/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c b/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
-index d179d81e2355..29af27acd40e 100644
---- a/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
-+++ b/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
-@@ -218,6 +218,84 @@ static int test_alloc_and_import(char *heap_name)
- 	return ret;
- }
- 
-+static int test_alloc_zeroed(char *heap_name, size_t size)
-+{
-+	int heap_fd = -1, dmabuf_fd[32];
-+	int i, j, ret;
-+	void *p = NULL;
-+	char *c;
-+
-+	printf("  Testing alloced %ldk buffers are zeroed:  ", size / 1024);
-+	heap_fd = dmabuf_heap_open(heap_name);
-+	if (heap_fd < 0)
-+		return -1;
-+
-+	/* Allocate and fill a bunch of buffers */
-+	for (i = 0; i < 32; i++) {
-+		ret = dmabuf_heap_alloc(heap_fd, size, 0, &dmabuf_fd[i]);
-+		if (ret < 0) {
-+			printf("FAIL (Allocation (%i) failed)\n", i);
-+			goto out;
-+		}
-+		/* mmap and fill with simple pattern */
-+		p = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, dmabuf_fd[i], 0);
-+		if (p == MAP_FAILED) {
-+			printf("FAIL (mmap() failed!)\n");
-+			ret = -1;
-+			goto out;
-+		}
-+		dmabuf_sync(dmabuf_fd[i], DMA_BUF_SYNC_START);
-+		memset(p, 0xff, size);
-+		dmabuf_sync(dmabuf_fd[i], DMA_BUF_SYNC_END);
-+		munmap(p, size);
-+	}
-+	/* close them all */
-+	for (i = 0; i < 32; i++)
-+		close(dmabuf_fd[i]);
-+
-+	/* Allocate and validate all buffers are zeroed */
-+	for (i = 0; i < 32; i++) {
-+		ret = dmabuf_heap_alloc(heap_fd, size, 0, &dmabuf_fd[i]);
-+		if (ret < 0) {
-+			printf("FAIL (Allocation (%i) failed)\n", i);
-+			goto out;
-+		}
-+
-+		/* mmap and validate everything is zero */
-+		p = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, dmabuf_fd[i], 0);
-+		if (p == MAP_FAILED) {
-+			printf("FAIL (mmap() failed!)\n");
-+			ret = -1;
-+			goto out;
-+		}
-+		dmabuf_sync(dmabuf_fd[i], DMA_BUF_SYNC_START);
-+		c = (char *)p;
-+		for (j = 0; j < size; j++) {
-+			if (c[j] != 0) {
-+				printf("FAIL (Allocated buffer not zeroed @ %i)\n", j);
-+				break;
-+			}
-+		}
-+		dmabuf_sync(dmabuf_fd[i], DMA_BUF_SYNC_END);
-+		munmap(p, size);
-+	}
-+	/* close them all */
-+	for (i = 0; i < 32; i++)
-+		close(dmabuf_fd[i]);
-+
-+	close(heap_fd);
-+	printf("OK\n");
-+	return 0;
-+
-+out:
-+	while (i > 0) {
-+		close(dmabuf_fd[i]);
-+		i--;
-+	}
-+	close(heap_fd);
-+	return ret;
-+}
-+
- /* Test the ioctl version compatibility w/ a smaller structure then expected */
- static int dmabuf_heap_alloc_older(int fd, size_t len, unsigned int flags,
- 				   int *dmabuf_fd)
-@@ -386,6 +464,14 @@ int main(void)
- 		if (ret)
- 			break;
- 
-+		ret = test_alloc_zeroed(dir->d_name, 4 * 1024);
-+		if (ret)
-+			break;
-+
-+		ret = test_alloc_zeroed(dir->d_name, ONE_MEG);
-+		if (ret)
-+			break;
-+
- 		ret = test_alloc_compat(dir->d_name);
- 		if (ret)
- 			break;
--- 
-2.25.1
-
+On 2021/1/29 9:42, Sagi Grimberg wrote:
+> 
+>>> You can't see exactly where it dies but I followed the assembly to
+>>> nvme_round_robin_path(). Maybe it's not the initial nvme_next_ns(head,
+>>> old) which returns NULL but nvme_next_ns() is returning NULL eventually
+>>> (list_next_or_null_rcu()).
+>> So there is other bug cause nvme_next_ns abormal.
+>> I review the code about head->list and head->current_path, I find 2 bugs
+>> may cause the bug:
+>> First, I already send the patch. see:
+>> https://lore.kernel.org/linux-nvme/20210128033351.22116-1-lengchao@huawei.com/
+>> Second, in nvme_ns_remove, list_del_rcu is before
+>> nvme_mpath_clear_current_path. This may cause "old" is deleted from the
+>> "head", but still use "old". I'm not sure there's any other
+>> consideration here, I will check it and try to fix it.
+> 
+> The reason why we first remove from head->list and only then clear
+> current_path is because the other way around there is no way
+> to guarantee that that the ns won't be assigned as current_path
+> again (because it is in head->list).
+ok, I see.
+> 
+> nvme_ns_remove fences continue of deletion of the ns by synchronizing
+> the srcu such that for sure the current_path clearance is visible.
+The list will be like this:
+head->next = ns1;
+ns1->next = head;
+old->next = ns1;
+This may cause infinite loop in nvme_round_robin_path.
+for (ns = nvme_next_ns(head, old);
+	ns != old;
+	ns = nvme_next_ns(head, ns))
+The ns will always be ns1, and then infinite loop.
+> .
