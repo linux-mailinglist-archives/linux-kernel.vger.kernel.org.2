@@ -2,197 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67EAE308F34
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:23:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 569CD308F36
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:23:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233102AbhA2VVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 16:21:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232781AbhA2VVD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 16:21:03 -0500
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FA43C061573;
-        Fri, 29 Jan 2021 13:20:23 -0800 (PST)
-Received: by mail-il1-x12d.google.com with SMTP id p8so9817341ilg.3;
-        Fri, 29 Jan 2021 13:20:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=/Jt06ny6ITPJGXSastjfT3IhLkcolmmMoDppTdivYms=;
-        b=CyT2dKXCi2ClKsYEYgWZ1tKSBtaIL/mF8HT0XPizh5NFK6NUe4RMx98uxAs14tYtz3
-         A0TOvZGOXHtZtQTfMxHvjXpMm011z882st9qXQGTKGGQuJpUgyq+V8plsWHoEyFBC2+Y
-         4rGjbwBjBdM3JRNgM1sK+1W5FMt2JjY/l4eD+BGIRQaxAYjZtcXn40RqkHDTFLqBihxm
-         g0anpGBO769UPrKNdQOVpL7mn+3FUfmSisVxjYWV30hWrPIzAuzsTNfkz/x0vZjifKIG
-         QSq7iXGw5RGRUayFilfzKGwWQUuTJFRJRXyTvdiFBO8RuDBqqCNEZGS6N5Bn3Z8UZ8DM
-         huhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=/Jt06ny6ITPJGXSastjfT3IhLkcolmmMoDppTdivYms=;
-        b=oDavQa6SiRDbpAtK/M61QXozsQQafHlfDy57aIQfW8KjfSYRdXXXpePgqUDL6WE7if
-         eHYbgP5lg+Tuv6zlGz/f/REZqUSAsAq9LVICmHr2xwTxwCwlEBhNTzHID8RQNspVJi0y
-         PtNUgTs5+zclseuljXaYejlvN08622pwJ+hk4SIQONwA0un8Xk7BHDlHh3ff0d80oSaB
-         jDdGDIb8hEPAkyQ64XlXvPeWsIrKJ3g0RGkU0aLkXY5t2i9uAI2SAn5tmaJ7W7sWmrbB
-         SBCp9JLckA2f9fEUPX2L676LT2ddtQNS8E/iYqctR0nVm2ELGksSn3BmBHrYlN5Y+EYq
-         8oHQ==
-X-Gm-Message-State: AOAM533q5s5V2v9q44UHNLAa9qR7M9ke0jLkKa1v4BD4idvKTdk5Q+c+
-        dZ1reID/s3h7qYjOHVLmHElY+uMCmmBsBogg/Q0=
-X-Google-Smtp-Source: ABdhPJyNHnb+Pm3K/AnVpy6FQQkFCkfLxnclM7VPSkDuMoq78n9GBja/qto73XkaUvcgU0S5wedJsDHuWBgZOED7vSA=
-X-Received: by 2002:a92:c80b:: with SMTP id v11mr4445392iln.215.1611955222408;
- Fri, 29 Jan 2021 13:20:22 -0800 (PST)
-MIME-Version: 1.0
-References: <20210129194318.2125748-1-ndesaulniers@google.com>
- <20210129194318.2125748-3-ndesaulniers@google.com> <CA+icZUX4q-JhCo+UZ9T3FhbC_gso-oaB0OR9KdH5iEpoGZyqVw@mail.gmail.com>
- <CAKwvOdnj1Np62+eOiTOCRXSW6GLSv4hmvtWaz=0aTZEEot_dhw@mail.gmail.com>
- <CA+icZUWsyjDY58ZZ0MAVfWqBJ8FUSpM6=_5aqPcRTfX2W8Y-+Q@mail.gmail.com>
- <CAKwvOd=mHvEtto37rzFMfsFYe2e-Cp2MAiyRYxHWPdc-HbT8EA@mail.gmail.com> <CA+icZUWxK9fdV8PNGqbQrOFmSZ2Ts4nNqfVMMNUh5u79Ld7hjA@mail.gmail.com>
-In-Reply-To: <CA+icZUWxK9fdV8PNGqbQrOFmSZ2Ts4nNqfVMMNUh5u79Ld7hjA@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 29 Jan 2021 22:20:10 +0100
-Message-ID: <CA+icZUUo6URpxHh6_Tppv9_Z1dyhGDB2OqSCY3yRw72aA0EbMQ@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] Kbuild: implement support for DWARF v5
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        id S233279AbhA2VVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 16:21:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52400 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232781AbhA2VVP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 16:21:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E64D564E06;
+        Fri, 29 Jan 2021 21:20:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611955234;
+        bh=DM5sQEzyeZQYMcv/NaSI/egJ43G1u2n09nG0uwuL3WY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=FIDLV8XNeZ1l66lLMPHxljPeKYJ+ZTJbAuPp+NuXCBWm3PSdSnENF+nfQ0jFSkUdH
+         rY4flYpfbKBikYZPqLhkf3404J5nD2SXAhD96nZIlm5iDiOvNv8/SlQyoFvmHzLR1l
+         VPBDgQr7ML2hLmUydmGT1Jx3f+MK1T3M/5nDhM7WJ8WKeUihNQpsBeO4OP4pXSq5mV
+         rY6d4WPHktV6s9e7rTZMmTTvsGm4b6udTJ5bvAYwWMacud25mDnrWM2FbZY/A00mSK
+         Jt7HnJDWzMqr9wKnDKGe1rfJ8m6lBgerRgJkd8oC68yvvw+svAsp3MFAyRTumRUtdI
+         fKnwI1mz0l4QQ==
+Date:   Fri, 29 Jan 2021 15:20:32 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Marc MERLIN <marc_nouveau@merlins.org>
+Cc:     nouveau@lists.freedesktop.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+        Linux PCI <linux-pci@vger.kernel.org>
+Subject: Re: 5.9.11 still hanging 2mn at each boot and looping on nvidia-gpu
+ 0000:01:00.3: PME# enabled (Quadro RTX 4000 Mobile)
+Message-ID: <20210129212032.GA99457@bjorn-Precision-5520>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210129005626.GP29348@merlins.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 10:13 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+On Thu, Jan 28, 2021 at 04:56:26PM -0800, Marc MERLIN wrote:
+> On Wed, Jan 27, 2021 at 03:33:00PM -0600, Bjorn Helgaas wrote:
+> > Hi Marc, I appreciate your persistence on this.  I am frankly
+> > surprised that you've put up with this so long.
+>  
+> Well, been using linux for 27 years, but also it's not like I have much
+> of a choice outside of switching to windows, as tempting as it's getting
+> sometimes ;)
+> 
+> > > after boot, when it gets the right trigger (not sure which ones), it
+> > > loops on this evern 2 seconds, mostly forever.
+> > > 
+> > > I'm not sure if it's nouveau's fault or the kernel's PCI PME's fault, or something else.
+> > 
+> > IIUC there are basically two problems:
+> > 
+> >   1) A 2 minute delay during boot
+> > Another random thought: is there any chance the boot delay could be
+> > related to crypto waiting for entropy?
+> 
+> So, the 2mn hang went away after I added the nouveau firwmare in initrd.
+> The only problem is that the nouveau driver does not give a very good
+> clue as to what's going on and what to do.
 >
-> On Fri, Jan 29, 2021 at 10:09 PM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > On Fri, Jan 29, 2021 at 12:55 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > >
-> > > On Fri, Jan 29, 2021 at 9:48 PM Nick Desaulniers
-> > > <ndesaulniers@google.com> wrote:
-> > > >
-> > > > On Fri, Jan 29, 2021 at 12:41 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > > > >
-> > > > > On Fri, Jan 29, 2021 at 8:43 PM Nick Desaulniers
-> > > > > <ndesaulniers@google.com> wrote:
-> > > > > >
-> > > > > > diff --git a/Makefile b/Makefile
-> > > > > > index 20141cd9319e..bed8b3b180b8 100644
-> > > > > > --- a/Makefile
-> > > > > > +++ b/Makefile
-> > > > > > @@ -832,8 +832,20 @@ endif
-> > > > > >
-> > > > > >  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
-> > > > > >  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
-> > > > > > +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) := 5
-> > > > > >  DEBUG_CFLAGS   += -gdwarf-$(dwarf-version-y)
-> > > > > >
-> > > > > > +# If using clang without the integrated assembler, we need to explicitly tell
-> > > > > > +# GAS that we will be feeding it DWARF v5 assembler directives. Kconfig should
-> > > > > > +# detect whether the version of GAS supports DWARF v5.
-> > > > > > +ifdef CONFIG_CC_IS_CLANG
-> > > > > > +ifneq ($(LLVM_IAS),1)
-> > > > > > +ifeq ($(dwarf-version-y),5)
-> > > > > > +DEBUG_CFLAGS   += -Wa,-gdwarf-5
-> > > > >
-> > > > > I noticed double "-g -gdwarf-5 -g -gdwarf-5" (a different issue) and
-> > > > > that's why I looked again into the top-level Makefile.
-> > > >
-> > > > That's...unexpected.  I don't see where that could be coming from.
-> > > > Can you tell me please what is the precise command line invocation of
-> > > > make and which source file you observed this on so that I can
-> > > > reproduce?
-> > > >
-> > >
-> > > That's everywhere...
-> > >
-> > > $ zstdgrep --color '\-g -gdwarf-5 -g -gdwarf-5'
-> > > build-log_5.11.0-rc5-8-amd64-clang12-lto.txt.zst
-> > > | wc -l
-> > > 29529
-> >
-> > I'm not able to reproduce.
-> >
-> > $ make LLVM=1 -j72 V=1 2>&1 | grep dwarf
-> > ...
-> > clang ... -g -gdwarf-5 -Wa,-gdwarf-5 ...
-> > ...
-> >
-> > $ make LLVM=1 LLVM_IAS=1 -j72 V=1 2>&1 | grep dwarf
-> > ...
-> > clang ... -g -gdwarf-5 ...
-> > ...
-> >
->
-> Hmm...
->
-> I do not see in my current build "-Wa,-gdwarf-5" is passed with v6.
->
-> $ grep '\-Wa,-gdwarf-5' build-log_5.11.0-rc5-10-amd64-clang12-lto-pgo.txt
-> [ empty ]
->
+> For comparison the intel iwlwifi driver is very clear about firmware
+> it's trying to load, if it can't and what exact firmware you need to
+> find on the internet (filename)
 
-That's the diff v5 -> v6...
+I guess you're referring to this in iwl_request_firmware()?
 
-[ Makefile ]
+  IWL_ERR(drv, "check git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git\n"); 
 
-@@ -826,16 +829,23 @@ else
- DEBUG_CFLAGS += -g
- endif
+How can we fix this in nouveau so we don't have the debug this again?
+I don't really know how firmware loading works, but "git grep -A5
+request_firmware drivers/gpu/drm/nouveau/" shows that we generally
+print something when request_firmware() fails.
 
-+ifneq ($(LLVM_IAS),1)
-+KBUILD_AFLAGS += -Wa,-gdwarf-2
-+endif
-+
- dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
- dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
- dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) := 5
- DEBUG_CFLAGS += -gdwarf-$(dwarf-version-y)
--# Binutils 2.35+ required for -gdwarf-4+ support.
--dwarf-aflag := $(call as-option,-Wa$(comma)-gdwarf-$(dwarf-version-y))
--KBUILD_AFLAGS += $(dwarf-aflag)
-+
-+# If using clang without the integrated assembler, we need to explicitly tell
-+# GAS that we will be feeding it DWARF v5 assembler directives. Kconfig should
-+# detect whether the version of GAS supports DWARF v5.
- ifdef CONFIG_CC_IS_CLANG
- ifneq ($(LLVM_IAS),1)
--DEBUG_CFLAGS += $(dwarf-aflag)
-+ifeq ($(dwarf-version-y),5)
-+DEBUG_CFLAGS += -Wa,-gdwarf-5
-+endif
- endif
- endif
+But I didn't notice those messages in your logs, so I'm probably
+barking up the wrong tree.
 
-There is no more a dwarf-aflag / KBUILD_AFLAGS += $(dwarf-aflag) used.
+> >   2) Some sort of event every 2 seconds that kills your battery life
+> > Your machine doesn't sound unusual, and I haven't seen a flood of
+> > similar reports, so maybe there's something unusual about your config.
+> > But I really don't have any guesses for either one.
+> 
+> Honestly, there are not too many thinpad P73 running linux out there. I
+> wouldn't be surprised if it's only a handful or two.
+> 
+> > It sounds like v5.5 worked fine and you first noticed the slow boot
+> > problem in v5.8.  We *could* try to bisect it, but I know that's a lot
+> > of work on your part.
+> 
+> I've done that in the past, to be honest now that it works after I added
+> the firmware that nouveau started needing, and didn't need before, the
+> hang at boot is gone for sure.
+> The PCI PM wakeup issues on batteries happen sometimes still, but they
+> are much more rare now.
 
-- Sedat -
+So maybe the wakeups are related to having vs not having the nouveau
+firmware?  I'm still curious about that, and it smells like a bug to
+me, but probably something to do with nouveau where I have no hope of
+debugging it.
 
->
-> - Sedat
->
->
->
->
-> > Can you tell me please what is the precise command line invocation of
-> > make and which source file you observed this on so that I can
-> > reproduce?
-> > --
-> > Thanks,
-> > ~Nick Desaulniers
+> > Grasping for any ideas for the boot delay; could you boot with
+> > "initcall_debug" and collect your "lsmod" output?  I notice async_tx
+> > in some of your logs, but I have no idea what it is.  It's from
+> > crypto, so possibly somewhat unusual?
+> 
+> Is this still neeeded? I think of nouveau does a better job of helping
+> the user correct the issue if firmware is missing (I think intel even
+> gives a URL in printk), that would probably be what's needed for the
+> most part.
+
+Nope, don't bother with this, thanks.
+
+Bjorn
