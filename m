@@ -2,248 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B7F3083F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 03:53:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F67E3083F9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 03:56:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231640AbhA2Cxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 21:53:34 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:2972 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhA2Cxc (ORCPT
+        id S231651AbhA2C4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 21:56:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231165AbhA2C4A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 21:53:32 -0500
-Received: from dggeme756-chm.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DRhgV28dtz5LvN;
-        Fri, 29 Jan 2021 10:51:34 +0800 (CST)
-Received: from [10.174.187.161] (10.174.187.161) by
- dggeme756-chm.china.huawei.com (10.3.19.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Fri, 29 Jan 2021 10:52:47 +0800
-Subject: Re: [PATCH v3 00/17] KVM: x86/pmu: Add support to enable Guest PEBS
- via DS
-To:     "Xu, Like" <like.xu@intel.com>
-References: <EEC2A80E7137D84ABF791B01D40FA9A601EC200E@DGGEMM506-MBX.china.huawei.com>
- <584b4e9a-37e7-1f2a-0a67-42034329a9dc@linux.intel.com>
- <600ED9F7.1060503@huawei.com>
- <f4dcb068-2ddf-428f-50ad-39f65cad3710@intel.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Xiexiangyou <xiexiangyou@huawei.com>,
-        Wei Wang <wei.w.wang@intel.com>, kvm <kvm@vger.kernel.org>,
-        Like Xu <like.xu@linux.intel.com>,
-        "Fangyi (Eric)" <eric.fangyi@huawei.com>,
-        <liuxiangdong5@huawei.com>
-From:   "Liuxiangdong (Aven, Cloud Infrastructure Service Product Dept.)" 
-        <liuxiangdong5@huawei.com>
-Message-ID: <6013787F.2080405@huawei.com>
-Date:   Fri, 29 Jan 2021 10:52:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        Thu, 28 Jan 2021 21:56:00 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E59C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 18:55:19 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id by1so10896267ejc.0
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 18:55:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pXd/wm5yWyq5Hv+IXb8TfahEBJ0cUWHbapZVJ0UuBM8=;
+        b=nzQ67MlbYGY572SKNtYdp++ifdMfQlv3IqdPNynm6z9X9S4CdRrAKg4n3VCy1mVmxG
+         37GHRIVjFGjyXfFbbKVHOiBgHG8eVSwzypAN67Tc99jUxlmvy80WnV5TkJFQBwxBqajG
+         SXwOqRgBdJdPkD36tDCRnyFbpsy+i4AWODAZIgSSNuGCDfMA7oxyadc3hh31goOF9CyJ
+         v3rFInz9VwMmN5OuSuBD0WPQPOxdZId8vBIb8+6exQxZL4FUtsFIxmVpLApnujNTPKN8
+         KLnjdmGdqHXXTbg1A8JgXhfKmwcz5zAEnQEPK+qENxTAtlHrQIGJR2cDuj6kkXczCWjd
+         AvqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pXd/wm5yWyq5Hv+IXb8TfahEBJ0cUWHbapZVJ0UuBM8=;
+        b=nocXsnxdQbdIBVcbthKDXrHwN5ec81Itc9E3Y6DtF4l+BHela/0XNiM+Wb7v6JZGZP
+         zUmYGVTE/Fh2RvXb3klZWSBfaVuH3Lt3291IKVqCJFpH5RSx0cZ8+vdhljgnmqcgRbq/
+         ymw9iFfSQeP9MxwQAadKa9pgSv1oZrdTz41xH+QDDjSQVnHigzUKqOSdydRTnvuBm9bp
+         VFsHzqBpof/mTrme1Nhjl40EaPkyr9AOQ3dqT1gJh+EAMkWNWD4lhOrDCPkK9VjU5SEa
+         7P4FF0ZkE1h17Ry5s+oqezcZT43gE5uo6smlmFNeFZ5HXCZQ4I37+dSOW7JjapoX9WO9
+         HJGA==
+X-Gm-Message-State: AOAM530ncG0IiKTPK8yKOCmS8cJ4hebJ1oFv0ZVMMKOVSam4E1va1x/o
+        A0WPM/UQ8QaIegx6RedMVAJPJFXJkA4pkYeJ46G6Eg==
+X-Google-Smtp-Source: ABdhPJxtuFjQK9DT8krPFYJdlLPW/i7QZiPYciE+1uWdlWxqvHIRdkhevF8/x/AbggsSR7tA+cH9Cr7LvsyC+kmJbdM=
+X-Received: by 2002:a17:906:dbf2:: with SMTP id yd18mr2490504ejb.45.1611888918179;
+ Thu, 28 Jan 2021 18:55:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <f4dcb068-2ddf-428f-50ad-39f65cad3710@intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.187.161]
-X-ClientProxiedBy: dggeme715-chm.china.huawei.com (10.1.199.111) To
- dggeme756-chm.china.huawei.com (10.3.19.102)
-X-CFilter-Loop: Reflected
+References: <CA+CK2bBJKntMP36SzLGvGFp4=sww6Z2LBhqEZm60kGWRWjQMVw@mail.gmail.com>
+ <8c2b75fe-a3e5-8eff-7f37-5d23c7ad9742@redhat.com> <CA+CK2bDW7Pzj=0WQnPpO+AhvZP9Y9JivJs+6G4wrbuwZfrgyKQ@mail.gmail.com>
+In-Reply-To: <CA+CK2bDW7Pzj=0WQnPpO+AhvZP9Y9JivJs+6G4wrbuwZfrgyKQ@mail.gmail.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Thu, 28 Jan 2021 18:55:15 -0800
+Message-ID: <CAPcyv4gxJa2YJuSjtBDYccfgsxhor8qFzpNck9kmabDo3nidpQ@mail.gmail.com>
+Subject: Re: dax alignment problem on arm64 (and other achitectures)
+To:     Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Marc Zyngier <maz@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Will Deacon <will.deacon@arm.com>,
+        James Morse <james.morse@arm.com>,
+        James Morris <jmorris@namei.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jan 27, 2021 at 1:50 PM Pavel Tatashin
+<pasha.tatashin@soleen.com> wrote:
+>
+> On Wed, Jan 27, 2021 at 4:09 PM David Hildenbrand <david@redhat.com> wrote:
+> >
+> > On 27.01.21 21:43, Pavel Tatashin wrote:
+> > > This is something that Dan Williams and I discussed off the mailing
+> > > list sometime ago, but I want to have a broader discussion about this
+> > > problem so I could send out a fix that would be acceptable.
+> > >
+> > > We have a 2G pmem device that is carved out of regular memory that we
+> > > use to pass data across reboots. After the machine is rebooted we
+> >
+> > Ordinary reboots or kexec-style reboots? I assume the latter, because
+> > otherwise there is no guarantee about persistence, right?
+>
+> Both, our firmware supports cold and warm reboot. When we do warm
+> reboot, memory content is not initialized. However, for performance
+> reasons, we mostly do kexec reboots.
+>
+> >
+> > I remember for kexec-style reboots there is a different approach (using
+> > tmpfs) on the list.
+>
+> Right, we are using a similar approach to that tmpfs, but that tmpfs
+> approach was never upstreamed.
+>
+> >
+> > > hotplug that memory back, so we do not lose 2G of system memory
+> > > (machine is small, only 8G of RAM total).
+> > >
+> > > In order to hotplug pmem memory it first must be converted to devdax.
+> > > Devdax has a label 2M in size that is placed at the beginning of the
+> > > pmem device memory which brings the problem.
+> > >
+> > > The section size is a hotplugging unit on Linux. Whatever gets
+> > > hot-plugged or hot-removed must be section size aligned. On x86
+> > > section size is 128M on arm64 it is 1G (because arm64 supports 64K
+> > > pages, and 128M does not work with 64K pages). Because the first 2M
+> >
+> > Note that it's soon 128M with 4k and 16k base pages and 512MB with 64k.
+> > The arm64 patch for that is already queued.
+>
+> This is great. Do you have a pointer to that series? It means we can
+> get rid of our special section size workaround patch, and use the 128M
+> section size for 4K pages. However, we still can't move to 64K because
+> losing 510M is too much.
+>
+> >
+> > > are subtracted from the pmem device to create devdax, that actual
+> > > hot-pluggable memory is not 1G/128M aligned, and instead we lose 126M
+> > > on x86 or 1022M on arm64 of memory that is getting hot-plugged, the
+> > > whole first section is skipped when memory gets hot plugged because of
+> > > 2M label.
+> > >
+> > > As a  workaround, so we do not lose 1022M out of 8G of memory on arm64
+> > > we have section size reduced to 128M. We are using this patch [1].
+> > > This way we are losing 126M (which I still hate!)
+> > >
+> > > I would like to get rid of this workaround. First, because I would
+> > > like us to switch to 64K pages to gain performance, and second so we
+> > > do not depend on an unofficial patch which already has given us some
+> > > headache with kdump support.
+> >
+> > I'd want to see 128M sections on arm64 with 64k base pages. "How?" you
+> > might ask. One idea would be to switch from 512M THP to 2MB THP (using
+> > cont pages), and instead implement 512MB gigantic pages. Then we can
+> > reduce pageblock_order / MAX_ORDER - 1 and no longer have the section
+> > limitations. Stuff for the future, though (if even ever).
+>
+> Interesting, but this is not something that would address the
+> immediate issue. Because, even losing 126M is something I would like
+> to fix. However, what other benefits reducing section size on arm64
+> would bring? Do we have requirement where reducing section size is
+> actually needed?
+>
+> >
+> > >
+> > > Here are some solutions that I think we can do:
+> > >
+> > > 1. Instead of carving the memory at 1G aligned address, do it at 1G -
+> > > 2M address, this way when devdax is created it is perfectly 1G
+> > > aligned. On ARM64 it causes a panic because there is a 2M hole in
+> > > memory. Even if panic is fixed, I do not think this is a proper fix.
+> > > This is simply a workaround to the underlying problem.
+> >
+> > I remember arm64 already has to deal with all different kinds of memory
+> > holes (including huge ones). I don't think this should be a fundamental
+> > issue.
+>
+> Perhaps not. I can root cause, and report here what actually happens.
+>
+> >
+> > I think it might be a reasonable thing to do for such a special use
+> > case. Does it work on x86-64?
+>
+> It does.
+>
+> > > 2.  Dan Williams introduced subsections [2]. They, however do not work
+> > > with devdax, and hot-plugging in general. Those patches take care of
+> > > __add_pages() side of things, and not add_memory(). Also, it is
+> > > unclear what kind of user interface changes need to be made in order
+> > > to enable subsection features to online/offline pages.
+> >
+> > I am absolutely no fan of teaching add_memory() and friends in general
+> > about sub-sections.
+> >
+> > >
+> > > 3. Allow to hot plug daxdev together with the label, but teach the
+> > > kernel not to touch label (i.e. allocate its memory). IMO, kind of
+> > > ugly solution, because when devdax is hot-plugged it is not even aware
+> > > of label size. But, perhaps that can be changed.
+> >
+> > I mean, we could teach add_memory() to "skip the first X pages" when
+> > onlining/offlining, not exposing them to the buddy. Something similar we
+> > already do with Oscars vmemmap-on-memory series.
+> >
+> > But I guess the issue is that the memmap for the label etc. is already
+> > allocated? Is the label memremapped ZONE_DEVICE memory or what is it? Is
+> > the label exposed in the resource tree?
+>
+> It is exposed:
+>
+> # ndctl create-namespace --mode raw -e namespace0.0 -f
+
+Since we last talked about this the enabling for EFI "Special Purpose"
+/ Soft Reserved Memory has gone upstream and instantiates device-dax
+instances for address ranges marked with EFI_MEMORY_SP attribute.
+Critically this way of declaring device-dax removes the consideration
+of it as persistent memory and as such no metadata reservation. So, if
+you are willing to maintain the metadata external to the device (which
+seems reasonable for your environment) and have your platform firmware
+/ kernel command line mark it as EFI_CONVENTIONAL_MEMORY +
+EFI_MEMORY_SP, then these reserve-free dax-devices will surface.
+
+See efi_fake_mem for how to apply that range to existing
+EFI_CONVENTIONAL_MEMORY ranges, it requires CONFIG_EFI_SOFT_RESERVE=y.
+
+The daxctl utility has grown mechanisms to subdivide such ranges.
+
+   daxctl create-device
+
+...starting with v71.
 
 
-On 2021/1/26 15:08, Xu, Like wrote:
-> On 2021/1/25 22:47, Liuxiangdong (Aven, Cloud Infrastructure Service
-> Product Dept.) wrote:
->> Thanks for replying,
->>
->> On 2021/1/25 10:41, Like Xu wrote:
->>> + kvm@vger.kernel.org
->>>
->>> Hi Liuxiangdong,
->>>
->>> On 2021/1/22 18:02, Liuxiangdong (Aven, Cloud Infrastructure Service
->>> Product Dept.) wrote:
->>>> Hi Like,
->>>>
->>>> Some questions about
->>>> https://lore.kernel.org/kvm/20210104131542.495413-1-like.xu@linux.intel.com/
->>>> <https://lore.kernel.org/kvm/20210104131542.495413-1-like.xu@linux.intel.com/>
->>>>
->>> Thanks for trying the PEBS feature in the guest,
->>> and I assume you have correctly applied the QEMU patches for guest PEBS.
->>>
->> Is there any other patch that needs to be apply? I use qemu 5.2.0.
->> (download from github on January 14th)
-> Two qemu patches are attached against qemu tree
-> (commit 31ee895047bdcf7387e3570cbd2a473c6f744b08)
-> and then run the guest with "-cpu,pebs=true".
->
-> Note, this two patch are just for test and not finalized for qemu upstream.
-Yes, we can use pebs in IceLake when qemu patches applied.
-Thanks very much!
->>>> 1)Test in IceLake
->>> In the [PATCH v3 10/17] KVM: x86/pmu: Expose CPUIDs feature bits PDCM,
->>> DS, DTES64, we only support Ice Lake with the following x86_model(s):
->>>
->>> #define INTEL_FAM6_ICELAKE_X        0x6A
->>> #define INTEL_FAM6_ICELAKE_D        0x6C
->>>
->>> you can check the eax output of "cpuid -l 1 -1 -r",
->>> for example "0x000606a4" meets this requirement.
->> It's INTEL_FAM6_ICELAKE_X
-> Yes, it's the target hardware.
->
->> cpuid -l 1 -1 -r
->>
->> CPU:
->>     0x00000001 0x00: eax=0x000606a6 ebx=0xb4800800 ecx=0x7ffefbf7
->> edx=0xbfebfbff
->>
->>>> HOST:
->>>>
->>>> CPU family:                      6
->>>>
->>>> Model:                           106
->>>>
->>>> Model name:                      Intel(R) Xeon(R) Platinum 8378A CPU $@ $@
->>>>
->>>> microcode: sig=0x606a6, pf=0x1, revision=0xd000122
->>> As long as you get the latest BIOS from the provider,
->>> you may check 'cat /proc/cpuinfo | grep code | uniq' with the latest one.
->> OK. I'll do it later.
->>>> Guest:  linux kernel 5.11.0-rc2
->>> I assume it's the "upstream tag v5.11-rc2" which is fine.
->> Yes.
->>>> We can find pebs/intel_pt flag in guest cpuinfo, but there still exists
->>>> error when we use perf
->>> Just a note, intel_pt and pebs are two features and we can write
->>> pebs records to intel_pt buffer with extra hardware support.
->>> (by default, pebs records are written to the pebs buffer)
->>>
->>> You may check the output of "dmesg | grep PEBS" in the guest
->>> to see if the guest PEBS cpuinfo is exposed and use "perf record
->>> –e cycles:pp" to see if PEBS feature actually  works in the guest.
->> I apply only pebs patch set to linux kernel 5.11.0-rc2, test perf in
->> guest and dump stack when return -EOPNOTSUPP
-> Yes, you may apply the qemu patches and try it again.
->
->> (1)
->> # perf record -e instructions:pp
->> Error:
->> instructions:pp: PMU Hardware doesn't support
->> sampling/overflow-interrupts. Try 'perf stat'
->>
->> [  117.793266] Call Trace:
->> [  117.793270]  dump_stack+0x57/0x6a
->> [  117.793275]  intel_pmu_setup_lbr_filter+0x137/0x190
->> [  117.793280]  intel_pmu_hw_config+0x18b/0x320
->> [  117.793288]  hsw_hw_config+0xe/0xa0
->> [  117.793290]  x86_pmu_event_init+0x8e/0x210
->> [  117.793293]  perf_try_init_event+0x40/0x130
->> [  117.793297]  perf_event_alloc.part.22+0x611/0xde0
->> [  117.793299]  ? alloc_fd+0xba/0x180
->> [  117.793302]  __do_sys_perf_event_open+0x1bd/0xd90
->> [  117.793305]  do_syscall_64+0x33/0x40
->> [  117.793308]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>
->> Do we need lbr when we use pebs?
-> No, lbr ane pebs are two features and we enable it separately.
->
->> I tried to apply lbr patch
->> set(https://lore.kernel.org/kvm/911adb63-ba05-ea93-c038-1c09cff15eda@intel.com/)
->> to kernel and qemu, but there is still other problem.
->> Error:
->> The sys_perf_event_open() syscall returned with 22 (Invalid argument) for
->> event
->> ...
-> We don't need that patch for PEBS feature.
->
->> (2)
->> # perf record -e instructions:ppp
->> Error:
->> instructions:ppp: PMU Hardware doesn't support
->> sampling/overflow-interrupts. Try 'perf stat'
->>
->> [  115.188498] Call Trace:
->> [  115.188503]  dump_stack+0x57/0x6a
->> [  115.188509]  x86_pmu_hw_config+0x1eb/0x220
->> [  115.188515]  intel_pmu_hw_config+0x13/0x320
->> [  115.188519]  hsw_hw_config+0xe/0xa0
->> [  115.188521]  x86_pmu_event_init+0x8e/0x210
->> [  115.188524]  perf_try_init_event+0x40/0x130
->> [  115.188528]  perf_event_alloc.part.22+0x611/0xde0
->> [  115.188530]  ? alloc_fd+0xba/0x180
->> [  115.188534]  __do_sys_perf_event_open+0x1bd/0xd90
->> [  115.188538]  do_syscall_64+0x33/0x40
->> [  115.188541]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>
->> This is beacuse x86_pmu.intel_cap.pebs_format is always 0 in
->> x86_pmu_max_precise().
->>
->> We rdmsr MSR_IA32_PERF_CAPABILITIES(0x00000345)  from HOST, it's f4c5.
->>  From guest, it's 2000
->>
->>>> # perf record –e cycles:pp
->>>>
->>>> Error:
->>>>
->>>> cycles:pp: PMU Hardware doesn’t support sampling/overflow-interrupts.
->>>> Try ‘perf stat’
->>>>
->>>> Could you give some advice?
->>> If you have more specific comments or any concerns, just let me know.
->>>
->>>> 2)Test in Skylake
->>>>
->>>> HOST:
->>>>
->>>> CPU family:                      6
->>>>
->>>> Model:                           85
->>>>
->>>> Model name:                      Intel(R) Xeon(R) Gold 6146 CPU @
->>>>
->>>>                                     3.20GHz
->>>>
->>>> microcode        : 0x2000064
->>>>
->>>> Guest: linux 4.18
->>>>
->>>> we cannot find intel_pt flag in guest cpuinfo because
->>>> cpu_has_vmx_intel_pt() return false.
->>> You may check vmx_pebs_supported().
->> It's true.
->>>> SECONDARY_EXEC_PT_USE_GPA/VM_EXIT_CLEAR_IA32_RTIT_CTL/VM_ENTRY_LOAD_IA32_RTIT_CTL
->>>> are both disable.
->>>>
->>>> Is it because microcode is not supported?
->>>>
->>>> And, isthere a new macrocode which can support these bits? How can we
->>>> get this?
->>> Currently, this patch set doesn't support guest PEBS on the Skylake
->>> platforms, and if we choose to support it, we will let you know.
->>>
->> And now, we want to use pebs in skylake. If we develop based on pebs
->> patch set, do you have any suggestions?
-> - At least you need to pin guest memory such as "-overcommit mem-lock=true"
-> for qemu
-> - You may rewrite the patches 13 - 17 for Skylake specific because the
-> records format is different with Ice Lake.
-OK. So, is there anything else we need to pay attention to except record 
-format when used for Skylake?
->> I think microcode requirements need to be satisfied.  Can we use
->> https://github.com/intel/Intel-Linux-Processor-Microcode-Data-Files ?
-> You may try it at your risk and again,
-> this patch set doesn't support guest PEBS on the Skylake platforms currently.
->
->>> ---
->>> thx,likexu
->>>
->>>> Thanks,
->>>>
->>>> Liuxiangdong
->>>>
->> Thanks. Liuxiangdong
->>
 
+> {
+>   "dev":"namespace0.0",
+>   "mode":"raw",
+>   "size":"2.00 GiB (2.15 GB)",
+>   "sector_size":512,
+>   "blockdev":"pmem0"
+> }
+>
+> The raw device is exactly 2G
+>
+> # cat /proc/iomem | grep 'dax\|namespace'
+> 980000000-9ffffffff : namespace0.0
+>
+> namespace0.0 is 2G, and there is dax0.0.
+>
+> Create devdax device:
+> # ndctl create-namespace --mode devdax --map mem -e namespace0.0 -f
+> {
+>   "dev":"namespace0.0",
+>   "mode":"devdax",
+>   "map":"mem",
+>   "size":"2046.00 MiB (2145.39 MB)",
+>   "uuid":"ed4d6a34-6a11-4ced-8a4f-b2487bddf5d7",
+>   "daxregion":{
+>     "id":0,
+>     "size":"2046.00 MiB (2145.39 MB)",
+>     "align":2097152,
+>     "devices":[
+>       {
+>         "chardev":"dax0.0",
+>         "size":"2046.00 MiB (2145.39 MB)",
+>         "mode":"devdax"
+>       }
+>     ]
+>   },
+>   "align":2097152
+> }
+>
+> Now, the device is 2046M in size instead of 2G.
+>
+> root@dplat-cp22:/# cat /proc/iomem | grep 'namespace\|dax'
+> 980000000-9801fffff : namespace0.0
+> 980200000-9ffffffff : dax0.0
+>
+> We can see the namespace0.0 is 2M, which is label, and dax0.0 is 2046M.
+>
+>
+> >
+> > In case "it's just untouched/unexposed memory", it's fairly simple. In
+> > case the label is exposed as ZONE_DEVICE already, it's more of an issue
+> > and might require further tweaks.
+> >
+> > >
+> > > 4. Other ideas? (move dax label to the end? a special case without a
+> > > label? label outside of data?)
+> >
+> > What does the label include in your example? Sorry, I have no idea about
+> > devdax labels.
+> >
+> > I read "ndctl-create-namespace" - "--no-autolabel: Manage labels for
+> > legacy NVDIMMs that do not support labels". So I assume there is at
+> > least some theoretical way to not have a label on the memory?
+>
+> Right, but I do not think it is possible to do for dax devices (as of
+> right now). I assume, it contains information about what kind of
+> device it is: devdax, fsdax, sector, uuid etc.
+> See [1] namespaces tabel. It contains summary of pmem devices types,
+> and which of them have label (all except for raw).
+>
+> [1] https://nvdimm.wiki.kernel.org/
+> >
+> > >
+> > > Thank you,
+> > > Pasha
+> > >
+> > > [1] https://lore.kernel.org/lkml/20190423203843.2898-1-pasha.tatashin@soleen.com
+> > > [2] https://lore.kernel.org/lkml/156092349300.979959.17603710711957735135.stgit@dwillia2-desk3.amr.corp.intel.com
+> > >
+> >
+> >
+> > --
+> > Thanks,
+> >
+> > David / dhildenb
+> >
