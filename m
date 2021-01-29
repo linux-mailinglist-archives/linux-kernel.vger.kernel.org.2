@@ -2,88 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5DE5308A35
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 17:31:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F1F308A36
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 17:31:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbhA2Q2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 11:28:35 -0500
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:37652 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbhA2Q1F (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 11:27:05 -0500
-Received: by mail-oi1-f175.google.com with SMTP id a77so10449560oii.4;
-        Fri, 29 Jan 2021 08:26:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=Sw7St9UL1LkCIt1JZNpQeAAR+iljICDwa25aSYhSN3I=;
-        b=NSI5hk7qzrOlYYa75Z0ZHY1bmDFqBnP2mJhqD9KmMNx5BJck7dsB3DlbGi1dh5YoVH
-         rXDHFRCJ1xLv4f5Qtmd3ZZs3UBBNkJ/zrau8dv0hQy6MxhdcU4ii2+vqmC3JerwFFo1b
-         DwvvrZJGdhZdIs4Q5MMApStTxMRTV5UePdM32N4fzYVGMaU2mjI+rJCRTHMLh39dS+kl
-         OiCNqCCMaR7Xe03X49HFRf8Mdq47fi+NViSGaLRfXC3l5BbYpfWTjp8PDIamBRB2xyCg
-         q/DKSuqs/2v1nLBFDBObxga2Q4zfScrJmt/ReyraHZ8cdOjUdvwTd7lRuXYntICNTgJw
-         Mjpg==
-X-Gm-Message-State: AOAM532wNyV6GZFNEGbQzcB3CJQTadQTgRu5nUTikPA9rNq0PhAknylX
-        f30w05vmc1vSsD32zuJ9oFntD9LTgRhnIUIZ9KpN3pQEbqM=
-X-Google-Smtp-Source: ABdhPJz1rTcBvpsjwSKMD3OcbA5+wsLMX9EE2+NVPpGcdxNsXLoT7awBV2M0pvrjHAeRc2RczeYUdka8El1I1NKHFk0=
-X-Received: by 2002:aca:fc84:: with SMTP id a126mr3129718oii.71.1611937575270;
- Fri, 29 Jan 2021 08:26:15 -0800 (PST)
+        id S229870AbhA2Q2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 11:28:36 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:43030 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229636AbhA2Q23 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 11:28:29 -0500
+Received: from zn.tnic (p200300ec2f0c9a00bc6c1bcbdaab9684.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:9a00:bc6c:1bcb:daab:9684])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8B0FB1EC04D3;
+        Fri, 29 Jan 2021 17:27:45 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1611937665;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=4e86qgr+0O2uLt7u9r31adGnaMdt4pUNUGxNQQ8uQ0I=;
+        b=jiVCeiUa/IxTWSmrhS7F68BFTnbxTZd4G1ifeH4/x2/CX9zHdzikiKKvJriE9p5Sbqjsk6
+        P2HFCCGPcoeS39iUFc6Ns/h6NKfWQLtAcoynkh7Btzl3mQ1iiySS1rbTp7dL2Gfzzsnu27
+        08T8Dr4tgPnjDtmOeNDd0cgnUQZFmzA=
+Date:   Fri, 29 Jan 2021 17:27:41 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>, x86@kernel.org,
+        tdevries@suse.de, linux-kernel@vger.kernel.org,
+        andrew.cooper3@citrix.com,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v2] x86/debug: Fix DR6 handling
+Message-ID: <20210129162741.GC27841@zn.tnic>
+References: <YBMAbQGACujjfz+i@hirez.programming.kicks-ass.net>
+ <20210128211627.GB4348@worktop.programming.kicks-ass.net>
+ <20210129154109.GA1391@redhat.com>
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 29 Jan 2021 17:26:04 +0100
-Message-ID: <CAJZ5v0ip25AwMxWuwQMTbqQ3BSKoqLazh-Eso5SqNrHyjP3bHw@mail.gmail.com>
-Subject: [GIT PULL] Power management fixes for v5.11-rc6
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210129154109.GA1391@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, Jan 29, 2021 at 04:41:09PM +0100, Oleg Nesterov wrote:
+> This seems to fix the problem reported by Jan, see his test-case below.
 
-Please pull from the tag
+Should it be part of
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- pm-5.11-rc6
+tools/testing/selftests/breakpoints/
 
-with top-most commit fef9c8d28e28a808274a18fbd8cc2685817fd62a
+?
 
- PM: hibernate: flush swap writer after marking
+tglx has one destined for there already, wouldn't hurt to have a second
+one:
 
-on top of commit 6ee1d745b7c9fd573fba142a2efdad76a9f1cb04
+https://lkml.kernel.org/r/87eei4d4k6.fsf@nanos.tec.linutronix.de
 
- Linux 5.11-rc5
+after applying kernel coding style to that one.
 
-to receive power management fixes for 5.11-rc6.
+-- 
+Regards/Gruss,
+    Boris.
 
-These fix a deadlock in the "kexec jump" code and address a possible
-hibernation image creation issue.
-
-Specifics:
-
- - Fix a deadlock caused by attempting to acquire the same mutex
-   twice in a row in the "kexec jump" code (Baoquan He).
-
- - Modify the hibernation image saving code to flush the unwritten
-   data to the swap storage later so as to avoid failing to write the
-   image signature which is possible in some cases (Laurent Badel).
-
-Thanks!
-
-
----------------
-
-Baoquan He (1):
-      kernel: kexec: remove the lock operation of system_transition_mutex
-
-Laurent Badel (1):
-      PM: hibernate: flush swap writer after marking
-
----------------
-
- kernel/kexec_core.c | 2 --
- kernel/power/swap.c | 2 +-
- 2 files changed, 1 insertion(+), 3 deletions(-)
+https://people.kernel.org/tglx/notes-about-netiquette
