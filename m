@@ -2,125 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C8B308E50
+	by mail.lfdr.de (Postfix) with ESMTP id E4EB4308E52
 	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:22:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232947AbhA2UUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 15:20:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59760 "EHLO
+        id S233257AbhA2UV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 15:21:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232839AbhA2UUi (ORCPT
+        with ESMTP id S232776AbhA2UVE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 15:20:38 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECD42C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:19:57 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id u67so6939852pfb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:19:57 -0800 (PST)
+        Fri, 29 Jan 2021 15:21:04 -0500
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C37C8C061756
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:20:23 -0800 (PST)
+Received: by mail-io1-xd31.google.com with SMTP id y19so10663452iov.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:20:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x8T48UJksYBBzMUWKPVavtIXowDuSQOy7SfNWHvVKVo=;
-        b=rNZQoLZgqE0y69Li1l9Ns6pAG71/9Vpr2jQBKDj+iVJrGNZ66h2BkLJSEKvrHUcucT
-         FYVnSnxHWQfGdMlFn4O5eNNc3pIW+YDU27bs1bD0JUmy1yh+ekBWPtAdyRIuiK9aYtUs
-         r3SDaxrzKlFYOaaa/vwTAHvAtZznSxRSAFPXyzE5SyfOzDEdCsMTIwmlTfGYO9nx1LwQ
-         3gFOCsTL3yLPWD+Eb0Ik7w7f/RtHe6vuODnrOuwpaWVZjQkJ6CoDoogdQ1Rn2kz8oqXI
-         8e5IDV378RXcG8fMb0dGjkOhH5q0y3oo2FnihqLxOXivb4qTVOL7EPLOTBjCsiVMiTgd
-         nipQ==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nhvF9PGHPykZ//tfBqMwf6Wd6smJWeypfZ3nnpPqJhQ=;
+        b=fY48G4XUV5nA1Y+/YfKCAmxGTbIzY1eBq12gOKgmMX/TRRTlJOCPTEJP7mxrHXjMcC
+         1g7mLeHtbLVN+YfBn2toqKqmuaU6gJ2jHMBhA+x98K7IZEQ24rdSywuQHXJMklO8jksr
+         SCWzTKUOZXBSe2NRNakaEnaCoT8GHraA09/WsU1LZiiN3c2ThRGBWNxEdb2pWDDlkVHS
+         o+Yeq8nY3KfR0/uNGHuWjPqrS2cZt+0LWTPPMKXDzlKS8AEI0LdI5TAes/dzccS+Jfgu
+         /EppfHBb16FgcebKuQslOEZkzaJ4acp5sYygRhvkq9/MR5gxrDjbPfDYbre8aXH/1xYo
+         HS3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x8T48UJksYBBzMUWKPVavtIXowDuSQOy7SfNWHvVKVo=;
-        b=NOZ23cqtyt8HwR2WJPtY+fe5iJoXWAZ08TyHt3f+Xl9ZD1YTqCqTIHpdPM0J7X+kwO
-         e+zQRSX0DzT58zTfv7lusx8129jLSwXMnPGg+fedF1hgWVUn9rt+wRb1zv5HDQilvsPb
-         /AR+IKaWhUZ84Gtbqo4yiuUjH8EU3x1RtbEoLYC5CcR9MRjDX+alU0/fXbFTVmZjB3Y6
-         orBQf3luyDDwYIP0WTlQf16GEjDHi5Mu/wYgSESkew5q8Y6O5cBGeyM006qPvsD6agn9
-         0P499cWnn46SVV/aRkxhj0zUte/NUzq3x7XSrmYIKpvesGjMJbx7uI2OKJ9nf5O+x8Kr
-         Qdcg==
-X-Gm-Message-State: AOAM532AWxiRCIIvMB6qxrwXJ/EqeZfOW6ti2F+8fLoxyTULiaXWw7H1
-        boBWnXyIFFUuMcG+j81710h60z+XRBRNBjm3rqJ5Kg==
-X-Google-Smtp-Source: ABdhPJzk9uAolkT0GWDwaqqf6YweF1/GefIY4S7uJ8EEG8DUTy0XUtDIpr3G5bEf8kPY4/kBIS/YwV18CM/2+ruvBpk=
-X-Received: by 2002:a63:9044:: with SMTP id a65mr111512pge.381.1611951596804;
- Fri, 29 Jan 2021 12:19:56 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nhvF9PGHPykZ//tfBqMwf6Wd6smJWeypfZ3nnpPqJhQ=;
+        b=gefOm3ONenzGDPWHlPIShdzeft9pldr2CM1YHOdQ7/AMsMt5ZjQaqzUDn84si4m5/Y
+         NqsjncNJd8WpetiIilILSt7nlH1FRLtkTqw1F5+zefiOkcu2AgiQdpf2wRJNXchsPtbV
+         uRHTi71rpYsMklRW4IU2N3E+w9ULEMe/nSYC2xCL5v0OvlG1Z8QZaGRbaAZJE7YiRJYn
+         lthpMEqyj6GpWP2eIhByTj9SzJNB4lFSbkG8yTR7J8p/FQXkJbAt550rsCSVvayYrsX6
+         wmZ6Zsyb0Wz/wRG8G+1UXTAJDLrSJT/fdGObm9v4WgWjD2qctKahz1SaL1zIV0uHoG0m
+         l6JA==
+X-Gm-Message-State: AOAM530OFJv/WzkoS4nsYOwAmBhN+vXtobSwxaJJri3mBN6aGYmzueKA
+        Hvjv0708zQf+sQsz/VZ6ukw/IQ==
+X-Google-Smtp-Source: ABdhPJzR5J6clkSLXEEUxoyqtq+nvIyEMtlFthb1yRWt35BJi+/1J56LUugLYWAVBRAg6ZniitoWsw==
+X-Received: by 2002:a02:3844:: with SMTP id v4mr5042759jae.1.1611951623187;
+        Fri, 29 Jan 2021 12:20:23 -0800 (PST)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id h23sm4645738ila.15.2021.01.29.12.20.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Jan 2021 12:20:22 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/9] net: ipa: don't disable NAPI in suspend
+Date:   Fri, 29 Jan 2021 14:20:10 -0600
+Message-Id: <20210129202019.2099259-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20210129194318.2125748-1-ndesaulniers@google.com>
- <20210129194318.2125748-2-ndesaulniers@google.com> <20210129201712.GQ4020736@tucnak>
-In-Reply-To: <20210129201712.GQ4020736@tucnak>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 29 Jan 2021 12:19:46 -0800
-Message-ID: <CAKwvOdkqcWOn6G7U6v37kc6gxZ=xbiZ1JtCd4XyCggMe=0v8iQ@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] Kbuild: make DWARF version a choice
-To:     Jakub Jelinek <jakub@redhat.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Nathan Chancellor <nathan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 12:17 PM Jakub Jelinek <jakub@redhat.com> wrote:
->
-> On Fri, Jan 29, 2021 at 11:43:17AM -0800, Nick Desaulniers wrote:
-> > Modifies CONFIG_DEBUG_INFO_DWARF4 to be a member of a choice. Adds an
-> > explicit CONFIG_DEBUG_INFO_DWARF2, which is the default. Does so in a
-> > way that's forward compatible with existing configs, and makes adding
-> > future versions more straightforward.
-> >
-> > Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-> > Suggested-by: Fangrui Song <maskray@google.com>
-> > Suggested-by: Nathan Chancellor <nathan@kernel.org>
-> > Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > ---
-> >  Makefile          |  6 +++---
-> >  lib/Kconfig.debug | 21 ++++++++++++++++-----
-> >  2 files changed, 19 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/Makefile b/Makefile
-> > index 95ab9856f357..20141cd9319e 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -830,9 +830,9 @@ ifneq ($(LLVM_IAS),1)
-> >  KBUILD_AFLAGS        += -Wa,-gdwarf-2
-> >  endif
-> >
-> > -ifdef CONFIG_DEBUG_INFO_DWARF4
-> > -DEBUG_CFLAGS += -gdwarf-4
-> > -endif
-> > +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
-> > +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
-> > +DEBUG_CFLAGS += -gdwarf-$(dwarf-version-y)
->
-> Why do you make DWARF2 the default?  That seems a big step back from what
-> the Makefile used to do before, where it defaulted to whatever DWARF version
-> the compiler defaulted to?
-> E.g. GCC 4.8 up to 10 defaults to -gdwarf-4 and GCC 11 will default to
-> -gdwarf-5.
-> DWARF2 is more than 27 years old standard, DWARF3 15 years old,
-> DWARF4 over 10 years old and DWARF5 almost 4 years old...
-> It is true that some tools aren't DWARF5 ready at this point, but with GCC
-> defaulting to that it will change quickly, but at least DWARF4 support has
-> been around for years.
+A few weeks ago I suggested a change that added a flag to determine
+whether NAPI should be re-enabled on a channel when we're done
+polling.  That change was questioned, and upon further investigation
+I realized the IPA suspend path was "doing it wrong."
 
-I agree with you; I also do not want to change the existing defaults
-in this series. That is a separate issue to address.
+Currently (for newer hardware) the IPA driver suspends channels by
+issuing a STOP command.  Part of the stop processing includes a
+"freeze" operation, which quiesces activity, disables the I/O
+completion interrupt, and disables NAPI.  But disabling NAPI is
+only meant to be done when shutting down the channel; there is
+no need to disable it when a channel is being stopped for suspend.
+
+This series reworks the way channels are stopped, with the end
+result being that neither NAPI nor the I/O completion interrupt is
+disabled when a channel is suspended.
+
+The first patch fixes an error handling bug in the channel starting
+path.  The second patch creates a helper function to encpasulate
+retrying channel stop commands.  The third also creates helper
+functions, but in doing so it makes channel stop and start handling
+be consistent for both "regular" stop and suspend.
+
+The fourth patch open-codes the freeze and thaw functions as a first
+step toward reworking what they do (reordering and eliminating steps).
+
+The fifth patch makes the I/O completion interrupt get disabled
+*after* a channel is stopped.  This eliminates a small race in which
+the interrupt condition could occur between disabling the interrupt
+and stopping the channel.  Once stopped, the channel will generate
+no more I/O completion interrupts.
+
+The sixth and seventh patches arrange for the completion interrupt
+to be disabled only stopping a channel "for good", not when
+suspending.  (The sixth patch just makes a small step to facilitate
+review; these two could be squashed together.)
+
+The 8th patch ensures a TX request--if initiated just before
+stopping the TX queue--is included when determining whether a
+a channel is quiesced for stop or suspend.
+
+And finally the last patch implements the ultimate objective,
+disabling NAPI *only* when "really" stopping a channel (not for
+suspend).  Instead of disabling NAPI, a call to napi_synchronize()
+ensures everything's done before we suspend.
+
+					-Alex
+
+Alex Elder (9):
+  net: ipa: don't thaw channel if error starting
+  net: ipa: introduce gsi_channel_stop_retry()
+  net: ipa: introduce __gsi_channel_start()
+  net: ipa: kill gsi_channel_freeze() and gsi_channel_thaw()
+  net: ipa: disable IEOB interrupt after channel stop
+  net: ipa: move completion interrupt enable/disable
+  net: ipa: don't disable IEOB interrupt during suspend
+  net: ipa: expand last transaction check
+  net: ipa: don't disable NAPI in suspend
+
+ drivers/net/ipa/gsi.c | 137 ++++++++++++++++++++++++++----------------
+ 1 file changed, 85 insertions(+), 52 deletions(-)
 
 -- 
-Thanks,
-~Nick Desaulniers
+2.27.0
+
