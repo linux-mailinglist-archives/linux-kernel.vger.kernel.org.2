@@ -2,187 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8CA430865D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:24:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9810308663
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:28:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232040AbhA2HWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 02:22:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40624 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229656AbhA2HW2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 02:22:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFF4764DFF;
-        Fri, 29 Jan 2021 07:21:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611904906;
-        bh=NGPVE0T2yDfzE3jsleZ51uyBOURj43/DKZo4DEUYgL4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=a64cCYp6LVDN9rc75p+01u8IW5fw/bN2EdsNx+IABYTwj1i4JOBtzJvRknWyJc/J7
-         T52AuZy7pyjPKZ7QZu+wKtBfqCmigfwc/Dvz3QN7mz43ePh5UhCDDbWOD1E5YGhGzV
-         wPbtwiDgaLzyUeLcdUi+JOYIp31MvzVMMRWuhINnli/F66n9915eRLn0EOIFyB4ZO8
-         wlmLxu9iLOV8KiftxFouX4rgVx232aCXqGGzNxLKwDd9wpXTDoFGFkXI0knbjgu+Ij
-         uSrdbgHPpUkaQkJEWC9FddlNhYIa66q3F5imgc1LAIfa+9f41PojeHOXz2yia5DWYQ
-         0OIfdJEzC+XGA==
-Date:   Fri, 29 Jan 2021 09:21:28 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v16 07/11] secretmem: use PMD-size pages to amortize
- direct map fragmentation
-Message-ID: <20210129072128.GD242749@kernel.org>
-References: <20210121122723.3446-1-rppt@kernel.org>
- <20210121122723.3446-8-rppt@kernel.org>
- <20210126114657.GL827@dhcp22.suse.cz>
- <303f348d-e494-e386-d1f5-14505b5da254@redhat.com>
- <20210126120823.GM827@dhcp22.suse.cz>
- <20210128092259.GB242749@kernel.org>
- <YBK1kqL7JA7NePBQ@dhcp22.suse.cz>
+        id S232187AbhA2HYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 02:24:35 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:12348 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232134AbhA2HY3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 02:24:29 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DRph05WCwz7cjq;
+        Fri, 29 Jan 2021 15:22:24 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.220) by DGGEMS413-HUB.china.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Fri, 29 Jan 2021
+ 15:23:28 +0800
+Subject: Re: [PATCH v5 4/4] ARM: Add support for Hisilicon Kunpeng L3 cache
+ controller
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     Russell King <rmk+kernel@arm.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        "Haojian Zhuang" <haojian.zhuang@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210116032740.873-1-thunder.leizhen@huawei.com>
+ <20210116032740.873-5-thunder.leizhen@huawei.com>
+ <CAK8P3a1OqUn5A4F4hT4K=bzQwJuifVFZkvFoK6NMg+m9FjoKzw@mail.gmail.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <20dac713-25b7-cddf-cc42-69a834487c71@huawei.com>
+Date:   Fri, 29 Jan 2021 15:23:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBK1kqL7JA7NePBQ@dhcp22.suse.cz>
+In-Reply-To: <CAK8P3a1OqUn5A4F4hT4K=bzQwJuifVFZkvFoK6NMg+m9FjoKzw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.220]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 02:01:06PM +0100, Michal Hocko wrote:
-> On Thu 28-01-21 11:22:59, Mike Rapoport wrote:
+
+
+On 2021/1/28 22:24, Arnd Bergmann wrote:
+> On Sat, Jan 16, 2021 at 4:27 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+>> diff --git a/arch/arm/mm/Makefile b/arch/arm/mm/Makefile
+>> +
+>> +static void l3cache_maint_common(u32 range, u32 op_type)
+>> +{
+>> +       u32 reg;
+>> +
+>> +       reg = readl(l3_ctrl_base + L3_MAINT_CTRL);
+>> +       reg &= ~(L3_MAINT_RANGE_MASK | L3_MAINT_TYPE_MASK);
+>> +       reg |= range | op_type;
+>> +       reg |= L3_MAINT_STATUS_START;
+>> +       writel(reg, l3_ctrl_base + L3_MAINT_CTRL);
 > 
-> > And hugetlb pools may be also depleted by anybody by calling
-> > mmap(MAP_HUGETLB) and there is no any limiting knob for this, while
-> > secretmem has RLIMIT_MEMLOCK.
+> Are there contents of L3_MAINT_CTRL that need to be preserved
+> across calls and can not be inferred? A 'readl()' is often expensive,
+> so it might be more efficient if you can avoid that.
+
+Right, this readl() can be replaced with readl_relaxed(). Thanks.
+
+I'll check and correct the readl() and writel() in other places.
+
 > 
-> Yes it can fail. But it would fail at the mmap time when the reservation
-> fails. Not during the #PF time which can be at any time.
-
-It may fail at $PF time as well:
-
-hugetlb_fault()
-        hugeltb_no_page()
-                ...
-                alloc_huge_page()
-                        alloc_gigantic_page()
-                                cma_alloc()
-                                        -ENOMEM; 
-
- 
-> > That said, simply replacing VM_FAULT_OOM with VM_FAULT_SIGBUS makes
-> > secretmem at least as controllable and robust than hugeltbfs even without
-> > complex reservation at mmap() time.
+>> +static inline void l3cache_flush_all_nolock(void)
+>> +{
+>> +       l3cache_maint_common(L3_MAINT_RANGE_ALL, L3_MAINT_TYPE_FLUSH);
+>> +}
+>> +
+>> +static void l3cache_flush_all(void)
+>> +{
+>> +       unsigned long flags;
+>> +
+>> +       spin_lock_irqsave(&l3cache_lock, flags);
+>> +       l3cache_flush_all_nolock();
+>> +       spin_unlock_irqrestore(&l3cache_lock, flags);
+>> +}
 > 
-> Still sucks huge!
- 
-Any #PF can get -ENOMEM for whatever reason. Sucks huge indeed.
+> I see that cache-l2x0 uses raw_spin_lock_irqsave() instead of
+> spin_lock_irqsave(), to avoid preemption in the middle of a cache
+> operation. This is probably a good idea here as well.
 
-> > > > > So unless I am really misreading the code
-> > > > > Nacked-by: Michal Hocko <mhocko@suse.com>
-> > > > > 
-> > > > > That doesn't mean I reject the whole idea. There are some details to
-> > > > > sort out as mentioned elsewhere but you cannot really depend on
-> > > > > pre-allocated pool which can fail at a fault time like that.
-> > > > 
-> > > > So, to do it similar to hugetlbfs (e.g., with CMA), there would have to be a
-> > > > mechanism to actually try pre-reserving (e.g., from the CMA area), at which
-> > > > point in time the pages would get moved to the secretmem pool, and a
-> > > > mechanism for mmap() etc. to "reserve" from these secretmem pool, such that
-> > > > there are guarantees at fault time?
-> > > 
-> > > yes, reserve at mmap time and use during the fault. But this all sounds
-> > > like a self inflicted problem to me. Sure you can have a pre-allocated
-> > > or more dynamic pool to reduce the direct mapping fragmentation but you
-> > > can always fall back to regular allocatios. In other ways have the pool
-> > > as an optimization rather than a hard requirement. With a careful access
-> > > control this sounds like a manageable solution to me.
-> > 
-> > I'd really wish we had this discussion for earlier spins of this series,
-> > but since this didn't happen let's refresh the history a bit.
+I don't think there's any essential difference between the two! I don't know
+if the compiler or tool will do anything extra. I checked the git log of the
+l2x0 driver and it used raw_spin_lock_irqsave() at the beginning. Maybe
+there's a description in 2.6. Since you mentioned this potential risk, I'll
+change it to raw_spin_lock_irqsave.
+
+include/linux/spinlock.h：
+static __always_inline raw_spinlock_t *spinlock_check(spinlock_t *lock)
+{
+        return &lock->rlock;
+}
+
+#define spin_lock_irqsave(lock, flags)                          \
+do {                                                            \
+        raw_spin_lock_irqsave(spinlock_check(lock), flags);     \
+} while (0)
+
 > 
-> I am sorry but I am really fighting to find time to watch for all the
-> moving targets...
+> I also see that l2x0 uses readl_relaxed(), to avoid a deadlock
+> in l2x0_cache_sync(). This may also be beneficial for performance
+> reasons, so it might be helpful to compare performance
+> overhead. On the other hand, readl()/writel() are usually the
+> safe choice, as those avoid the need to argue over whether
+> the relaxed versions are safe in all corner cases.
 > 
-> > One of the major pushbacks on the first RFC [1] of the concept was about
-> > the direct map fragmentation. I tried really hard to find data that shows
-> > what is the performance difference with different page sizes in the direct
-> > map and I didn't find anything.
-> > 
-> > So presuming that large pages do provide advantage the first implementation
-> > of secretmem used PMD_ORDER allocations to amortise the effect of the
-> > direct map fragmentation and then handed out 4k pages at each fault. In
-> > addition there was an option to reserve a finite pool at boot time and
-> > limit secretmem allocations only to that pool.
-> > 
-> > At some point David suggested to use CMA to improve overall flexibility
-> > [3], so I switched secretmem to use CMA.
-> > 
-> > Now, with the data we have at hand (my benchmarks and Intel's report David
-> > mentioned) I'm even not sure this whole pooling even required.
+>> +static int __init l3cache_init(void)
+>> +{
+>> +       u32 reg;
+>> +       struct device_node *node;
+>> +
+>> +       node = of_find_matching_node(NULL, l3cache_ids);
+>> +       if (!node)
+>> +               return -ENODEV;
 > 
-> I would still like to understand whether that data is actually
-> representative. With some underlying reasoning rather than I have run
-> these XYZ benchmarks and numbers do not look terrible.
+> I think the initcall should return '0' to indicate success when running
+> a kernel with this driver built-in on a platform that does not have
+> this device.
 
-I would also very much like to see, for example, reasoning to enabling 1GB
-pages in the direct map beyond "because we can" (commits 00d1c5e05736
-("x86: add gbpages switches") and ef9257668e31 ("x86: do kernel direct
-mapping at boot using GB pages")).
+I have added "depends on ARCH_KUNPENG50X" for this driver. But it's OK to
+return 0.
 
-The original Kconfig text for CONFIG_DIRECT_GBPAGES said
-
-          Enable gigabyte pages support (if the CPU supports it). This can
-          improve the kernel's performance a tiny bit by reducing TLB
-          pressure.
-
-So it is very interesting how tiny that bit was.
- 
-> > I like the idea to have a pool as an optimization rather than a hard
-> > requirement but I don't see why would it need a careful access control. As
-> > the direct map fragmentation is not necessarily degrades the performance
-> > (and even sometimes it actually improves it) and even then the degradation
-> > is small, trying a PMD_ORDER allocation for a pool and then falling back to
-> > 4K page may be just fine.
 > 
-> Well, as soon as this is a scarce resource then an access control seems
-> like a first thing to think of. Maybe it is not really necessary but
-> then this should be really justified.
+>> diff --git a/arch/arm/mm/cache-kunpeng-l3.h b/arch/arm/mm/cache-kunpeng-l3.h
+>> new file mode 100644
+>> index 000000000000000..9ef6a53e7d4db49
+>> --- /dev/null
+>> +++ b/arch/arm/mm/cache-kunpeng-l3.h
+>> @@ -0,0 +1,30 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +#ifndef __CACHE_KUNPENG_L3_H
+>> +#define __CACHE_KUNPENG_L3_H
+>> +
+>> +#define L3_CACHE_LINE_SHITF            6
+> 
+> I would suggest moving the contents of the header file into the .c file,
+> since there is only a single user of these macros.
 
-And what being a scarce resource here? If we consider lack of the direct
-map fragmentation as this resource, there enough measures secretmem
-implements to limit user ability to fragment the direct map, as was already
-discussed several times. Global limit, memcg and rlimit provide enough
-access control already.
+Okay, I'll move it.
 
--- 
-Sincerely yours,
-Mike.
+> 
+>           Arnd
+> 
+> .
+> 
+
