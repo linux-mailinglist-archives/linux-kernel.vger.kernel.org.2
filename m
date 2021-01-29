@@ -2,145 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C700308FF0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:23:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4AEE308FF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:23:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233530AbhA2WRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 17:17:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56586 "EHLO
+        id S233565AbhA2WRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 17:17:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233401AbhA2WR1 (ORCPT
+        with ESMTP id S233544AbhA2WRo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 17:17:27 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D58AC061573
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 14:16:47 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id h15so6093336pli.8
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 14:16:47 -0800 (PST)
+        Fri, 29 Jan 2021 17:17:44 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 285DEC061574;
+        Fri, 29 Jan 2021 14:17:04 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id g10so10317786wrx.1;
+        Fri, 29 Jan 2021 14:17:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KRdVj8aDHVVWjYR6nci89gkQtpmD5ypYkI2gm5mcuf4=;
-        b=Pw7iqrICxBPTIMPeUWRHhbCw5REf5ZKOgix+DO/BQJK7JhhzhxFa5JfSMWTjcQfpGd
-         QwW8D2wrNIir8wvWk80dTmyR6T/JtvzhL7EmZvg8+4WR4hUwk1HQEkigD1GyzUKvJvvJ
-         KW6gZFbYAIx0JbKeR8yk7E+NcUOGmo0d3+U5sR9oZG3yoygvvN6sogM6vfSN5VJZ6HxD
-         o5+dd/GVAlobFtKFqf5n5YDpqDwCdyHXteN1WmksawHnXjctR8YcLX4ws2jhS0M87TrV
-         uZNQr9oCuNv6uToQElt5rmm339VizL0H7h/OD9vqTzKd/yuQwaqgMT8UALxmEeVRSv+8
-         VAPw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OjbXD/Cdr+QHwG9B3QZlpTa2KkeVmfJ9I1pyRoZjjEE=;
+        b=G6xEChS9glp+w7ZjmNJFRVqi0IbvGoqbO9uwGNW2N+Z6mfQI0rjyLjUM1jr+wKlEEI
+         JViX23Kpy2uYvEd/rFPRBq16G08SWFVWwRH7NCtCqzvMxYCxRIBrr+t6WjgNPmHh62Qo
+         toVgVPZcSIpz6OdmygldwyXtSt1DWRxzO3VEm60b2dxoptuf3uQQPMiKNNBRZS3SX2wi
+         hOFBjZGs5HVSRBHn8ZEiKmKCU4+7QEdQqzBSEIpwrkpvDczulSfqSGBxy8Mzgt/TYTZ7
+         loXOMpna3qJT79tlXSrYEmj7/SnkKjG1doBThbAbClf88l9E9GycNiHVW2IJL/OXkeai
+         YW5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KRdVj8aDHVVWjYR6nci89gkQtpmD5ypYkI2gm5mcuf4=;
-        b=E8ZlRk3RcUTskzRWEGKM305/1jy3IDO86R0f8d2QdZzFauU1evTSFeLkJsXMU8DKB6
-         BzcK+RpOHKM9oY4jxeW8w9AidOZHkbK0iSPHkWO7GPJJrmwqePzvX3OrOOwUD48rBind
-         udck8sGR0dzt3jCiKthFi3O3kELHArkGPIxBsgSWVevRoyRMrg4lI5rNxDgPTAowf5cX
-         hyPL5j4NyEsZMrS0KhNVsc/BV3p7YmgM7pNm2bLtQQPWy0TdozFjGhTATpbdcZHIKJQ0
-         Cl3PcxFyDyAUOxAg3hTkhhEfGPFBzNRGAVMBJRDaZNlh/eY/K+/huVJC9XwfaJBu80bZ
-         X35Q==
-X-Gm-Message-State: AOAM532v4/+jAAMN0x6LK0XssnO5ettOFKBzrCN0kXWiC/TgcQsAOBj1
-        /39kxPGCsmE+OSG9GWjmFGs=
-X-Google-Smtp-Source: ABdhPJz91JOpUKxsFKCybaYKoGDzZ4Q6GylJHaJD3+kia44hVpbDtI3Ew7wt8R9csq+W1O1fe3CO5g==
-X-Received: by 2002:a17:903:228a:b029:da:d645:ab58 with SMTP id b10-20020a170903228ab02900dad645ab58mr6516799plh.25.1611958606857;
-        Fri, 29 Jan 2021 14:16:46 -0800 (PST)
-Received: from localhost (g54.222-224-210.ppp.wakwak.ne.jp. [222.224.210.54])
-        by smtp.gmail.com with ESMTPSA id 101sm8596927pjo.38.2021.01.29.14.16.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Jan 2021 14:16:46 -0800 (PST)
-Date:   Sat, 30 Jan 2021 07:16:43 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
-Cc:     jonas@southpole.se, stefan.kristiansson@saunalahti.fi,
-        openrisc@lists.librecores.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] openrisc: use device tree to determine present cpus
-Message-ID: <20210129221643.GZ2002709@lianli.shorne-pla.net>
-References: <0b26eda7-229d-3dc9-f2ae-19b9212fb0ea@rwth-aachen.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OjbXD/Cdr+QHwG9B3QZlpTa2KkeVmfJ9I1pyRoZjjEE=;
+        b=l9gzu0/Ts0u/ni26jANdiudYBe6mn93DWNawVzoOPCZrnP34BG+bdH5Co6xZUh9DoR
+         VsB8+vUH+6Tw4o822hFKDdf3oGcCDuWWUG/bwMYa4cn+UeKksRQmdWLbtUiu3dlOoAn1
+         EWE7iC5eWTzEhpdpJA3MJoKLDIW0FEFNs163ZzGCfsn799oDO3bFP11+Q2LGQClfUw4q
+         d+QzUpjG90t+gqjXy30zzdTgxmvczqLMmb1D3CK8MR+UPdeKGIvdpshhM/wdvwek8TuM
+         SLJHh9QDa/7ougH0tAkVECcqFVE+So+Q0gwJKCOjKS+GPeQ5RZdbi4J4re2GVnukXy3y
+         BlhQ==
+X-Gm-Message-State: AOAM533K6U2RPXyGuGggE5xu6xJWgzihx/glpWvHjrEon1eEbcH0vkIp
+        81XOBmw++y6r9yi3BZSfaFndmilM2opn/9popr3Kva9AWMsJMw==
+X-Google-Smtp-Source: ABdhPJy/ExFIu4LtSXprv+LcxqV9hJewLNuPkKO0igU+eyCBQ2E3uZa3XkXDKC71UgtGeeXPikNr1ipmbCbWBJ//kwo=
+X-Received: by 2002:a5d:60c6:: with SMTP id x6mr6653657wrt.85.1611958622829;
+ Fri, 29 Jan 2021 14:17:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0b26eda7-229d-3dc9-f2ae-19b9212fb0ea@rwth-aachen.de>
+References: <20201216125320.5277-1-clemens.gruber@pqgruber.com>
+ <20201216125320.5277-2-clemens.gruber@pqgruber.com> <CAGngYiWkKZGkQ4TTTy8bQYvnGBK45V0A0JCe_+M5V+vuVU+zkQ@mail.gmail.com>
+ <X9uYqGboZg5DuEtf@workstation.tuxnet> <20210111203532.m3yvq6e5bcpjs7mc@pengutronix.de>
+ <CAGngYiW=KhCOZX3tPMFykXzpWLpj3qusN2OXVPSfHLRcyts+wA@mail.gmail.com>
+ <YBQ4c2cYYPDMjkeH@workstation.tuxnet> <CAGngYiWd0u=+DPhvK+8v9FT8Y1Evn1brWRheMNDXWFVVL-wNFw@mail.gmail.com>
+ <YBRyG0vv3gRzygSB@workstation.tuxnet> <CAGngYiXxfz7rtsw4zSj5QX7Lj7hvnoESqyUE_2__=oDaRmGGJQ@mail.gmail.com>
+In-Reply-To: <CAGngYiXxfz7rtsw4zSj5QX7Lj7hvnoESqyUE_2__=oDaRmGGJQ@mail.gmail.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Fri, 29 Jan 2021 17:16:51 -0500
+Message-ID: <CAGngYiV5GGJvHTwG7k6mv76uR1RLnHOJoO8+d2ofiZAQi3K0BA@mail.gmail.com>
+Subject: Re: [PATCH v5 2/7] pwm: pca9685: Support hardware readout
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pwm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 07:29:31PM +0100, Jan Henrik Weinstock wrote:
-> This patch proposes to use the device tree to determine the present cpus
-> instead of assuming all CONFIG_NRCPUS are actually present in the system.
-> 
-> Signed-off-by: Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
-> ---
->  arch/openrisc/kernel/smp.c | 18 +++++++++++++++---
->  1 file changed, 15 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/openrisc/kernel/smp.c b/arch/openrisc/kernel/smp.c
-> index 29c82ef2e..75be7e34f 100644
-> --- a/arch/openrisc/kernel/smp.c
-> +++ b/arch/openrisc/kernel/smp.c
-> @@ -16,6 +16,7 @@
->  #include <linux/sched.h>
->  #include <linux/sched/mm.h>
->  #include <linux/irq.h>
-> +#include <linux/of.h>
->  #include <asm/cpuinfo.h>
->  #include <asm/mmu_context.h>
->  #include <asm/tlbflush.h>
-> @@ -68,14 +69,25 @@ void __init smp_init_cpus(void)
-> 
->  void __init smp_prepare_cpus(unsigned int max_cpus)
->  {
-> -	int i;
-> +	u32 cpu_id;
-> +	struct device_node *cpu, *cpus;
-> 
->  	/*
->  	 * Initialise the present map, which describes the set of CPUs
->  	 * actually populated at the present time.
->  	 */
-> -	for (i = 0; i < max_cpus; i++)
-> -		set_cpu_present(i, true);
-> +	cpus = of_find_node_by_path("/cpus");
-> +	for_each_child_of_node(cpus, cpu) {
-> +		if (of_property_read_u32(cpu, "reg", &cpu_id)) {
-> +			pr_warn("%s missing reg property", cpu->full_name);
-> +			continue;
-> +		}
-> +
-> +		if (cpu_id >= max_cpus)
-> +			continue;
-> +
-> +		set_cpu_present(cpu_id, true);
-> +	}
+Hi Clemens,
 
-Hello, I looked into what other architectures do.  Risc-V does something similar
-but it does the setup in 2 parts:
+On Fri, Jan 29, 2021 at 4:24 PM Sven Van Asbroeck <thesven73@gmail.com> wrote:
+>
+> LEN_ON = 409, LED_OFF = 1228 and
+> LED_ON = 419, LED_OFF = 1238
+> produce the same result. you can't see the difference between the two
+> when scoping the channel. there are probably more ways to do this,
+> some might surprise us. It's a tricky chip.
 
- - it uses the device tree to set possible CPU's in setup_smp. Using
-   for_each_of_cpu_node and set_cpu_possible.
+Please ignore this example, it's bogus. In my defence, it's a Friday
+afternoon here :)
 
- - Then in smp_prepare_cpus, it loops over possible cpus with
-   for_each_possible_cpu.
+But consider the following: imagine the bootloader has enabled a few
+pwm channels, and the driver's .probe() has left them on/unchanged.
+Then the user enables another pwm channel, and tries to change the
+period/prescaler. How would pca9685_may_change_prescaler() know
+if changing the prescaler is allowed?
 
-Note, it seems risc-v does't actually check max_cpus when setting
-set_cpu_present which may be a bug.
+And the following: imagine the bootloader has enabled a few
+pwm channels, and the driver's .probe() has left them on/unchanged.
+After .probe(), the runtime_pm will immediately put the chip to sleep,
+because it's unaware that some channels are alive.
 
-I think the two part approach is what we want to do:
+I'm sure I'm overlooking a few complications here. probe not changing
+the existing configuration, will add a lot of complexity to the driver.
+I'm not saying this is necessarily bad, just a tradeoff. Or, a management
+decision.
 
- - we should do set_cpu_possible in smp_init_cpus based on device tree.
-   Basically the same as your loop above but using for_each_of_cpu_node
-   and NR_CPUS.
- - we can then do set_cpu_present using for_each_possible_cpu in
-   smp_prepare_cpus.
-
-What do you think?
-
--Stafford
-
->  }
-> 
->  void __init smp_cpus_done(unsigned int max_cpus)
-> -- 
-> 2.17.1
-> 
-
-
+Sven
