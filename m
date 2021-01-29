@@ -2,133 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2DD5308572
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:08:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D955308575
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:08:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232033AbhA2GB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 01:01:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45212 "EHLO
+        id S231934AbhA2GEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 01:04:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229927AbhA2GBw (ORCPT
+        with ESMTP id S229656AbhA2GEG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 01:01:52 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11977C061756;
-        Thu, 28 Jan 2021 22:01:12 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id u17so8181818iow.1;
-        Thu, 28 Jan 2021 22:01:12 -0800 (PST)
+        Fri, 29 Jan 2021 01:04:06 -0500
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7912C061573;
+        Thu, 28 Jan 2021 22:03:25 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id d15so5931119qtw.12;
+        Thu, 28 Jan 2021 22:03:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=I7Jf4w2xQmonkgOSIoCWrc0+He7UNn5JipXpaAB81cg=;
-        b=r70zrkvIb3T0rBH5Z2812Vuxjmhp2HQrxUhsJAvYWEv8Nc6dww2sKXdShoNWfpDe0l
-         FosQjsrtPB7nsNNeaa9uk+SdRiNKSj/2QcCgESa3wE8qY6rkjUpwa+KG5oXFAAwxHQVF
-         E1MwCx6X52VGXNtbzXHGvZETNhjX4l3FJKC/rbPNmlOWMUu2UzNR4lzC2z9zL8pujS5y
-         2Kof7uqiBRc+RvqvfLhbGnYH7QihgpkD+SSCAxm1uKOxsQCv/p9+CX/O6TWPZLArNQHK
-         ssLCzcTh1j6TxbFLjZtOOF7/OHfdXoUJszw7y+WEzTkm6MGrDRl1NRqMIqUtH1kQ0FBK
-         IMJg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DIdLn4LpSYK2hrD9Gw5z2fpkmte7sT90Jw8a/2a6yn4=;
+        b=qkjyKi6ps0zkbxxxuMxD1N1iSJw5nHSolpBHyAR8XQ06DZ6Uim7EFuLRUNNdV+fCKW
+         z+sWfnF7Mgr7dhGYAvJTtHBjy6dsrDOR7BA2//Lz2KCes549qmkZHQ36lc30ATshM2AO
+         O/hDB1QkykNanr06mxGkzCokbkA1pN+1wRn6ovY8QT8/wc2LT+sZWVj7Wk7xPTWlRAop
+         8bICmiVx+xffOEd9ce5JqYghBOShW5RbC5MFnkT/giTj0SMbBbpZU5kYt65xGvwKwFfI
+         JJkDQsE7wYK+9M1MtfvPT+UQ0Nwjb1VObTa0YIbVIu9Wwm4tR4MP7cyyLUGFK/E7jrsX
+         D7xQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=I7Jf4w2xQmonkgOSIoCWrc0+He7UNn5JipXpaAB81cg=;
-        b=AyDYsLSlFLx0n2SGsNF/z89a2tZUlmqTXz7Spk1ivuPFBJ7Yvuij2zu2bMM9sfecW+
-         Fyr5g3DCgXMuAj6Zyfwza3XCM1xtdAC3/j3VMQvcJ+wADrbUQDqF+9NXJX+84DmXIV6t
-         7nbivzNR26gqccIXN9ihU4/GMhlTxgsePDTHOn4Rw2WnylZwopEVXCVzKGrri+V5vqgX
-         EJ2wMLGeuJe38EyVUImL5iQYaC6x5kGT+LjIVVn4brdwmlpyKUhZu8105gq3oQS4jYhs
-         bvWAJXB/nIHUyyB/Vsf5aMMt3/iZx/KrUKN36f3M2SSOGriHx4yyv1Cj6E2PMkWsPA0c
-         RBKA==
-X-Gm-Message-State: AOAM532XZ1niOjSnJoFH4kEzPsXjZy4aq8pKmGiIkbbf0Xtq+8l+KVNp
-        LNNWrlmtH+oV6lEEUZdG1ZvZLQyhDl3OWKdRZjHlRy/M3uQiZg==
-X-Google-Smtp-Source: ABdhPJxFpR3aT0BQY0meTLiJwXYnAk7p0kzsniXup3IColeXcgDuwcom/2i2lyMLAgcPN5I0dB7OCiSur35i35eXS20=
-X-Received: by 2002:a05:6602:144:: with SMTP id v4mr2671045iot.168.1611900070495;
- Thu, 28 Jan 2021 22:01:10 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DIdLn4LpSYK2hrD9Gw5z2fpkmte7sT90Jw8a/2a6yn4=;
+        b=PFCkT3FgDp6HCjUdH/Jeycsbh+DeRt6HlU6/kYukDNCFALCuwC7icLVqPRUNosKS72
+         ZSEQ9Ui6MXpXzEPIwUEKpzNIE6L0L7OAydnW1G5mbjt2viIpOmT/pOjtOY6lxscVgUPR
+         3YYq/TDl7YPG4duTdGHI+qu1nMii1HMROn6J3HW0leZnoFjJdIoCBDwd8ufT2Qc7NWqD
+         zvllATbhQduBn/xtD2vwI2jFJJJ1w173qcIYkGQASzk7PFWBusmt6cOZ/pIwmXzQGFYI
+         EYasC93JaQjictErWqzJmkjd2KF2NHp1e4+r+XnffwegRrzlmpkw/WsEyYEOLLgHG3IC
+         BfHg==
+X-Gm-Message-State: AOAM533Y/p2GLrc6wipU/+JZziBsB97Au4saPhwhTByPKuPcu1msAykK
+        hQy7Hx9dztE1mXvkkzO1xUI=
+X-Google-Smtp-Source: ABdhPJzb9dBR3oFY+cUI1Dcx8jFyCRRwpacL22QgCiQwalHgYdNpDx+osw/ta/qIZo5cMEAkrTPNlA==
+X-Received: by 2002:ac8:4d93:: with SMTP id a19mr2924481qtw.28.1611900205090;
+        Thu, 28 Jan 2021 22:03:25 -0800 (PST)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id q4sm5289491qkj.5.2021.01.28.22.03.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 22:03:24 -0800 (PST)
+Subject: Re: [PATCH V6 2/6] scripts: dtc: Build fdtoverlay tool
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, anmar.oueja@linaro.org,
+        Bill Mills <bill.mills@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        devicetree@vger.kernel.org, Michal Marek <michal.lkml@markovi.net>
+References: <cover.1611312122.git.viresh.kumar@linaro.org>
+ <2dfec4acb1bfbab08b431908ace0a77cc3279434.1611312122.git.viresh.kumar@linaro.org>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <1f6408aa-9900-fe4a-d885-028ff8329707@gmail.com>
+Date:   Fri, 29 Jan 2021 00:03:23 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1611800401-9790-1-git-send-email-bingjingc@synology.com>
- <CAJfpegtDbDzSCgv-D66-5dAA=pDxMGN_aMTVcNPzWNibt2smLw@mail.gmail.com> <939d2196-8468-4d93-b976-70f3d8ac83de@Mail>
-In-Reply-To: <939d2196-8468-4d93-b976-70f3d8ac83de@Mail>
-From:   bingjing chang <bxxxjxxg@gmail.com>
-Date:   Fri, 29 Jan 2021 14:00:59 +0800
-Message-ID: <CAMmgxWFMBxg47J_Zjdfm5i36m3TMf2VEzoeREGKD6VFJXcbN3A@mail.gmail.com>
-Subject: Re: [PATCH 3/3] parser: add unsigned int parser
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.com>,
-        Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cccheng@synology.com, robbieko@synology.com,
-        bingjingc <bingjingc@synology.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <2dfec4acb1bfbab08b431908ace0a77cc3279434.1611312122.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miklos,
+On 1/22/21 4:50 AM, Viresh Kumar wrote:
+> We will start building overlays for platforms soon in the kernel and
+> would need fdtoverlay going forward. Lets start building it.
+> 
+> The fdtoverlay program applies (or merges) one or more overlay dtb
+> blobs to a base dtb blob. The kernel build system would later use
+> fdtoverlay to generate the overlaid blobs based on platform specific
+> configurations.
+> 
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  scripts/dtc/Makefile | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/scripts/dtc/Makefile b/scripts/dtc/Makefile
+> index 4852bf44e913..5f19386a49eb 100644
+> --- a/scripts/dtc/Makefile
+> +++ b/scripts/dtc/Makefile
+> @@ -1,13 +1,17 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  # scripts/dtc makefile
+>  
+> -hostprogs-always-$(CONFIG_DTC)		+= dtc
+> +hostprogs-always-$(CONFIG_DTC)		+= dtc fdtoverlay
+>  hostprogs-always-$(CHECK_DT_BINDING)	+= dtc
+>  
+>  dtc-objs	:= dtc.o flattree.o fstree.o data.o livetree.o treesource.o \
+>  		   srcpos.o checks.o util.o
+>  dtc-objs	+= dtc-lexer.lex.o dtc-parser.tab.o
+> 
 
-Thank you for your mail. Please see my message below.
+Please add this comment:
 
-bingjingc <bingjingc@synology.com> =E6=96=BC 2021=E5=B9=B41=E6=9C=8829=E6=
-=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=881:50=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> [loop bxxxjxxg@gmail.com] in order to reply in plain-text
-> Miklos Szeredi <miklos@szeredi.hu> =E6=96=BC 2021-01-28 16:37 =E5=AF=AB=
-=E9=81=93=EF=BC=9A
->
-> On Thu, Jan 28, 2021 at 3:21 AM bingjingc <bingjingc@synology.com> wrote:
-> >
-> > From: BingJing Chang <bingjingc@synology.com>
-> >
-> > Will be used by fs parsing options
-> >
-> > Reviewed-by: Robbie Ko<robbieko@synology.com>
-> > Reviewed-by: Chung-Chiang Cheng <cccheng@synology.com>
-> > Signed-off-by: BingJing Chang <bingjingc@synology.com>
-> > ---
-> >  fs/isofs/inode.c       | 16 ++--------------
-> >  fs/udf/super.c         | 16 ++--------------
-> >  include/linux/parser.h |  1 +
-> >  lib/parser.c           | 22 ++++++++++++++++++++++
-> >  4 files changed, 27 insertions(+), 28 deletions(-)
-> >
-> > diff --git a/fs/isofs/inode.c b/fs/isofs/inode.c
-> > index 342ac19..21edc42 100644
-> > --- a/fs/isofs/inode.c
-> > +++ b/fs/isofs/inode.c
-> > @@ -335,18 +335,6 @@ static const match_table_t tokens =3D {
-> >         {Opt_err, NULL}
-> >  };
-> >
-> > -static int isofs_match_uint(substring_t *s, unsigned int *res)
-> > -{
-> > -       int err =3D -ENOMEM;
-> > -       char *buf =3D match_strdup(s);
-> > -
-> > -       if (buf) {
-> > -               err =3D kstrtouint(buf, 10, res);
-> > -               kfree(buf);
-> > -       }
-> > -       return err;
-> > -}
->
-> I don't see how adding this function and removing it in the same
-> series makes any sense.
+# The upstream project builds libfdt as a separate library.  We are choosing to
+# instead directly link the libfdt object files into fdtoverly
 
-That's true. Simple and clear is better.
-I used to think that the acceptance of patch can be 3/3 or 2/3.
-And I was not sure are there needs for making match_uint
-as shared lib. So I made the first patch.
+> +libfdt-objs	:= fdt.o fdt_ro.o fdt_wip.o fdt_sw.o fdt_rw.o fdt_strerror.o fdt_empty_tree.o fdt_addresses.o fdt_overlay.o
+> +libfdt		= $(addprefix libfdt/,$(libfdt-objs))
+> +fdtoverlay-objs	:= $(libfdt) fdtoverlay.o util.o
+> +
+>  # Source files need to get at the userspace version of libfdt_env.h to compile
+>  HOST_EXTRACFLAGS += -I $(srctree)/$(src)/libfdt
+>  
+> 
 
-I simplify them. Please see the third patch, thanks!
-
->
-> Why not make this the first patch in the series, simplifying everything?
->
-> And while at it the referenced fuse implementation can also be
-> converted (as a separate patch).
->
-> Thanks,
-> Miklos
-
-Thanks,
-BingJing
