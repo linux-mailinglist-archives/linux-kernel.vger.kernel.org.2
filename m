@@ -2,79 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B9A6308A3D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 17:36:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6381F308A4A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 17:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231326AbhA2Qbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 11:31:40 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:43504 "EHLO mail.skyhub.de"
+        id S231674AbhA2QeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 11:34:16 -0500
+Received: from mail.pqgruber.com ([52.59.78.55]:55744 "EHLO mail.pqgruber.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230009AbhA2Qb2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 11:31:28 -0500
-Received: from zn.tnic (p200300ec2f0c9a00bc6c1bcbdaab9684.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:9a00:bc6c:1bcb:daab:9684])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5929D1EC01B7;
-        Fri, 29 Jan 2021 17:30:47 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1611937847;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=37ypfY0hcyBwq6ff9BIdbEdz5BSxq7t0VPLakd3OmOU=;
-        b=J+YLSW9EWKGY6If2T9zKyjHGgY6x4bYBPaNCW9sNx/PtVhqqhiGAfvxNOSNuRcFYqdcK10
-        HuXbSkVfhEn6EvOkb5GfGAkJ5uuQD34uOlfsZSEYuMtE0wqUcZpzrDldn223q7LVeN34Sx
-        RUOmrLP+mvIAAb/hqyJqZf8kdNsctoI=
-Date:   Fri, 29 Jan 2021 17:30:48 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     x86@kernel.org, Masami Hiramatsu <masami.hiramatsu@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Nikolay Borisov <nborisov@suse.com>
-Subject: Re: [PATCH] x86: Disable CET instrumentation in the kernel
-Message-ID: <20210129163048.GD27841@zn.tnic>
-References: <20210128002452.a79714c236b69ab9acfa986c@kernel.org>
- <a35a6f15-9ab1-917c-d443-23d3e78f2d73@suse.com>
- <20210128103415.d90be51ec607bb6123b2843c@kernel.org>
- <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
- <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
- <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
- <20210128165014.xc77qtun6fl2qfun@treble>
- <20210128215219.6kct3h2eiustncws@treble>
- <20210129102105.GA27841@zn.tnic>
- <20210129151034.iba4eaa2fuxsipqa@treble>
+        id S231452AbhA2Qcb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 11:32:31 -0500
+Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
+        by mail.pqgruber.com (Postfix) with ESMTPSA id B31B0C6B26F;
+        Fri, 29 Jan 2021 17:31:48 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
+        s=mail; t=1611937908;
+        bh=DyVjiqkvwtlqI4o3EcQtV2h3pSbBneM1WDytITBk7RI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QvmqkrRHoO8OTWpUz6Mk8rhaDh2GYebv8JjCP4MzmIpHbNvim7sdHMXdvdxdk1WV6
+         wh8DkbdtjnGeJljhSaUYGVmhqJNmnOmqZQycOFhkEvCq+/twNMF7ojFC9pl5EukbN9
+         gOerXCtBQV58ahmyweGooFaqHbEaj7t/MRYb2SFw=
+Date:   Fri, 29 Jan 2021 17:31:47 +0100
+From:   Clemens Gruber <clemens.gruber@pqgruber.com>
+To:     Sven Van Asbroeck <thesven73@gmail.com>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v5 2/7] pwm: pca9685: Support hardware readout
+Message-ID: <YBQ4c2cYYPDMjkeH@workstation.tuxnet>
+References: <20201216125320.5277-1-clemens.gruber@pqgruber.com>
+ <20201216125320.5277-2-clemens.gruber@pqgruber.com>
+ <CAGngYiWkKZGkQ4TTTy8bQYvnGBK45V0A0JCe_+M5V+vuVU+zkQ@mail.gmail.com>
+ <X9uYqGboZg5DuEtf@workstation.tuxnet>
+ <20210111203532.m3yvq6e5bcpjs7mc@pengutronix.de>
+ <CAGngYiW=KhCOZX3tPMFykXzpWLpj3qusN2OXVPSfHLRcyts+wA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210129151034.iba4eaa2fuxsipqa@treble>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGngYiW=KhCOZX3tPMFykXzpWLpj3qusN2OXVPSfHLRcyts+wA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 09:10:34AM -0600, Josh Poimboeuf wrote:
-> Maybe eventually.  But the enablement (actually enabling CET/CFI/etc)
-> happens in the arch code anyway, right?  So it could be a per-arch
-> decision.
+Hi Sven,
 
-Right.
+On Fri, Jan 29, 2021 at 08:42:13AM -0500, Sven Van Asbroeck wrote:
+> On Mon, Jan 11, 2021 at 3:35 PM Uwe Kleine-König
+> <u.kleine-koenig@pengutronix.de> wrote:
+> >
+> > My position here is: A consumer should disable a PWM before calling
+> > pwm_put. The driver should however not enforce this and so should not
+> > modify the hardware state in .free().
+> >
+> > Also .probe should not change the PWM configuration.
+> 
+> I agree that this is the most user-friendly behaviour.
+> 
+> The problem however with the pca9685 is that it has many degrees of
+> freedom: there are many possible register values which produce the same
+> physical chip outputs.
+> 
+> This could lead to a situation where, if .probe() does not reset the register
+> values, subsequent writes may lead to different outputs than expected.
+> 
+> One possible solution is to write .get_state() so that it always reads the
+> correct state, even if "unconventional" register settings are present, i.e.
+> those written by an outside entity, e.g. a bootloader. Then write that
+> state back using driver conventions.
+> 
+> This may be trickier than it sounds - after all we've learnt that the pca9685
+> looks simple on the surface, but is actually quite challenging to get right.
+> 
+> Clemens, Uwe, what do you think?
 
-Ok, for this one, what about
+Ok, so you suggest we extend our get_state logic to deal with cases
+like the following:
+If neither full OFF nor full ON is set && ON == OFF, we should probably
+set the full OFF bit to disable the PWM and log a warning message?
+(e.g. "invalid register setting detected: pwm disabled" ?)
+If the ON registers are set and the nxp,staggered-outputs property is
+not, I'd calculate (off - on) & 4095, set the OFF register to that value
+and clear the ON register.
 
-Cc: <stable@vger.kernel.org>
+And then call our get_state in .probe, followed by a write of the
+resulting / fixed-up state?
 
-?
+This would definitely solve the problem of invalid/unconventional values
+set by the bootloader and avoid inconsistencies.
+Sounds good to me!
 
-What are "some configurations of GCC"? If it can be reproduced with
-what's released out there, maybe that should go in now, even for 5.11?
+If Thierry and Uwe have no objections, I can send out a new round of
+patches in the upcoming weeks.
 
-Hmm?
+My current goal is to get the changes into 5.13.
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+Clemens
