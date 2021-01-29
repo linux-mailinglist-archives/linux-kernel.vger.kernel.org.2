@@ -2,120 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC953308648
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB12630864C
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:18:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232133AbhA2HMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 02:12:48 -0500
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:14306 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229656AbhA2HMk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 02:12:40 -0500
-X-UUID: 031b914e14c4445e9add05fc0c4e33f5-20210129
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Dotr11xV0I8A+Mm2Qxg7vmqoGowQzsRFthVfYwd5JAo=;
-        b=QW4I0yGsvDJ5T4//G06x+FXkmJBtcv+2artZbMLgAgZMszHGGlpXdU9NBuaKEXPjVuogALecHitM897LGjevq5PbtiRIU3aDHskAdjdMWn1X+sDRnA0huSWgsj/4skGJIbQjy70R6iP054PDx8PJeY8Z5RY3ESOdQqSfzn/DigM=;
-X-UUID: 031b914e14c4445e9add05fc0c4e33f5-20210129
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <mingchuang.qiao@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1567695377; Fri, 29 Jan 2021 15:11:52 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 29 Jan
- 2021 15:11:46 +0800
-Received: from mcddlt001.mediatek.inc (10.19.240.15) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 29 Jan 2021 15:11:45 +0800
-From:   <mingchuang.qiao@mediatek.com>
-To:     <bhelgaas@google.com>, <matthias.bgg@gmail.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <mingchuang.qiao@mediatek.com>, <haijun.liu@mediatek.com>,
-        <lambert.wang@mediatek.com>, <kerun.zhu@mediatek.com>,
-        <mika.westerberg@linux.intel.com>, <alex.williamson@redhat.com>,
-        <rjw@rjwysocki.net>, <utkarsh.h.patel@intel.com>
-Subject: [v3] PCI: Avoid unsync of LTR mechanism configuration
-Date:   Fri, 29 Jan 2021 15:11:37 +0800
-Message-ID: <20210129071137.8743-1-mingchuang.qiao@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        id S232222AbhA2HOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 02:14:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229656AbhA2HO3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 02:14:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A86A764DFD;
+        Fri, 29 Jan 2021 07:13:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611904429;
+        bh=wgZJ8Ko69dFLx/OeFIUuGPITGgyaxy6YKnlIOtJqSbw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cyGqwueDDOG9MZriXuiwomeb7hWrplg6L2Y6Hz2mUGa805smrZLCnlP/ytqk2jDgf
+         LdwXahN7k2b+dVa7NRbG5odMf/eITLl0IE5ImUcVlz0Kyo3FUe6GLf484x+p6kuTpg
+         Qw6O7dvk7XPoKF8B4jOI4EW9kRDRsJUHMOntDhRskw7Nl7aCrVTutzKgbXHa/+KphD
+         nTJFGVeEEX7KeAc/H8ii32B7k9zrurCjbYMrdJWZ9Css/099puZ7FXhVvowCtvpxei
+         ui8ql9MfbgniEHS3znpIyrZQgNVC+hCaSaT/Hti7FBC7aVG9Q4VGUqqoaP/GBVkjPS
+         Y9s3vxTMiAvsA==
+Date:   Fri, 29 Jan 2021 15:13:42 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Alistair Francis <alistair@alistair23.me>
+Cc:     arnd@arndb.de, olof@lixom.net, robh+dt@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alistair23@gmail.com
+Subject: Re: [PATCH v2 3/3] arch/arm/configs: Enable VMSPLIT_2G in
+ imx_v6_v7_defconfig
+Message-ID: <20210129071341.GH4356@dragon>
+References: <20210117180301.1956-1-alistair@alistair23.me>
+ <20210117180301.1956-3-alistair@alistair23.me>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: D09C1C281E76E7598B4674A7DB4AB076AF2D879ACA6C536492D37C5A40A3E4C32000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210117180301.1956-3-alistair@alistair23.me>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTWluZ2NodWFuZyBRaWFvIDxtaW5nY2h1YW5nLnFpYW9AbWVkaWF0ZWsuY29tPg0KDQpJ
-biBidXMgc2NhbiBmbG93LCB0aGUgIkxUUiBNZWNoYW5pc20gRW5hYmxlIiBiaXQgb2YgREVWQ1RM
-MiByZWdpc3RlciBpcw0KY29uZmlndXJlZCBpbiBwY2lfY29uZmlndXJlX2x0cigpLiBJZiBkZXZp
-Y2UgYW5kIGJyaWRnZSBib3RoIHN1cHBvcnQgTFRSDQptZWNoYW5pc20sIHRoZSAiTFRSIE1lY2hh
-bmlzbSBFbmFibGUiIGJpdCBvZiBkZXZpY2UgYW5kIGJyaWRnZSB3aWxsIGJlDQplbmFibGVkIGlu
-IERFVkNUTDIgcmVnaXN0ZXIuIEFuZCBwY2lfZGV2LT5sdHJfcGF0aCB3aWxsIGJlIHNldCBhcyAx
-Lg0KDQpJZiBQQ0llIGxpbmsgZ29lcyBkb3duIHdoZW4gZGV2aWNlIHJlc2V0cywgdGhlICJMVFIg
-TWVjaGFuaXNtIEVuYWJsZSIgYml0DQpvZiBicmlkZ2Ugd2lsbCBjaGFuZ2UgdG8gMCBhY2NvcmRp
-bmcgdG8gUENJZSByNS4wLCBzZWMgNy41LjMuMTYuIEhvd2V2ZXIsDQp0aGUgcGNpX2Rldi0+bHRy
-X3BhdGggdmFsdWUgb2YgYnJpZGdlIGlzIHN0aWxsIDEuDQoNCkZvciBmb2xsb3dpbmcgY29uZGl0
-aW9ucywgY2hlY2sgYW5kIHJlLWNvbmZpZ3VyZSAiTFRSIE1lY2hhbmlzbSBFbmFibGUiIGJpdA0K
-b2YgYnJpZGdlIHRvIG1ha2UgIkxUUiBNZWNoYW5pc20gRW5hYmxlIiBiaXQgbXRhY2ggbHRyX3Bh
-dGggdmFsdWUuDQogICAtYmVmb3JlIGNvbmZpZ3VyaW5nIGRldmljZSdzIExUUiBmb3IgaG90LXJl
-bW92ZS9ob3QtYWRkDQogICAtYmVmb3JlIHJlc3RvcmluZyBkZXZpY2UncyBERVZDVEwyIHJlZ2lz
-dGVyIHdoZW4gcmVzdG9yZSBkZXZpY2Ugc3RhdGUNCg0KU2lnbmVkLW9mZi1ieTogTWluZ2NodWFu
-ZyBRaWFvIDxtaW5nY2h1YW5nLnFpYW9AbWVkaWF0ZWsuY29tPg0KLS0tDQpjaGFuZ2VzIG9mIHYy
-DQogLW1vZGlmeSBwYXRjaCBkZXNjcmlwdGlvbg0KIC1yZWNvbmZpZ3VyZSBicmlkZ2UncyBMVFIg
-YmVmb3JlIHJlc3RvcmluZyBkZXZpY2UgREVWQ1RMMiByZWdpc3Rlcg0KY2hhbmdlcyBvZiB2Mw0K
-IC1jYWxsIHBjaV9yZWNvbmZpZ3VyZV9icmlkZ2VfbHRyKCkgaW4gcHJvYmUuYw0KLS0tDQogZHJp
-dmVycy9wY2kvcGNpLmMgICB8IDI1ICsrKysrKysrKysrKysrKysrKysrKysrKysNCiBkcml2ZXJz
-L3BjaS9wY2kuaCAgIHwgIDEgKw0KIGRyaXZlcnMvcGNpL3Byb2JlLmMgfCAxMyArKysrKysrKysr
-LS0tDQogMyBmaWxlcyBjaGFuZ2VkLCAzNiBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQ0K
-DQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9wY2kvcGNpLmMgYi9kcml2ZXJzL3BjaS9wY2kuYw0KaW5k
-ZXggYjlmZWNjMjVkMjEzLi4xMmI1NTdjOGYwNjIgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3BjaS9w
-Y2kuYw0KKysrIGIvZHJpdmVycy9wY2kvcGNpLmMNCkBAIC0xNDM3LDYgKzE0MzcsMjQgQEAgc3Rh
-dGljIGludCBwY2lfc2F2ZV9wY2llX3N0YXRlKHN0cnVjdCBwY2lfZGV2ICpkZXYpDQogCXJldHVy
-biAwOw0KIH0NCiANCit2b2lkIHBjaV9yZWNvbmZpZ3VyZV9icmlkZ2VfbHRyKHN0cnVjdCBwY2lf
-ZGV2ICpkZXYpDQorew0KKyNpZmRlZiBDT05GSUdfUENJRUFTUE0NCisJc3RydWN0IHBjaV9kZXYg
-KmJyaWRnZTsNCisJdTMyIGN0bDsNCisNCisJYnJpZGdlID0gcGNpX3Vwc3RyZWFtX2JyaWRnZShk
-ZXYpOw0KKwlpZiAoYnJpZGdlICYmIGJyaWRnZS0+bHRyX3BhdGgpIHsNCisJCXBjaWVfY2FwYWJp
-bGl0eV9yZWFkX2R3b3JkKGJyaWRnZSwgUENJX0VYUF9ERVZDVEwyLCAmY3RsKTsNCisJCWlmICgh
-KGN0bCAmIFBDSV9FWFBfREVWQ1RMMl9MVFJfRU4pKSB7DQorCQkJcGNpX2RiZyhicmlkZ2UsICJy
-ZS1lbmFibGluZyBMVFJcbiIpOw0KKwkJCXBjaWVfY2FwYWJpbGl0eV9zZXRfd29yZChicmlkZ2Us
-IFBDSV9FWFBfREVWQ1RMMiwNCisJCQkJCQkgUENJX0VYUF9ERVZDVEwyX0xUUl9FTik7DQorCQl9
-DQorCX0NCisjZW5kaWYNCit9DQorDQogc3RhdGljIHZvaWQgcGNpX3Jlc3RvcmVfcGNpZV9zdGF0
-ZShzdHJ1Y3QgcGNpX2RldiAqZGV2KQ0KIHsNCiAJaW50IGkgPSAwOw0KQEAgLTE0NDcsNiArMTQ2
-NSwxMyBAQCBzdGF0aWMgdm9pZCBwY2lfcmVzdG9yZV9wY2llX3N0YXRlKHN0cnVjdCBwY2lfZGV2
-ICpkZXYpDQogCWlmICghc2F2ZV9zdGF0ZSkNCiAJCXJldHVybjsNCiANCisJLyoNCisJICogRG93
-bnN0cmVhbSBwb3J0cyByZXNldCB0aGUgTFRSIGVuYWJsZSBiaXQgd2hlbiBsaW5rIGdvZXMgZG93
-bi4NCisJICogQ2hlY2sgYW5kIHJlLWNvbmZpZ3VyZSB0aGUgYml0IGhlcmUgYmVmb3JlIHJlc3Rv
-cmluZyBkZXZpY2UuDQorCSAqIFBDSWUgcjUuMCwgc2VjIDcuNS4zLjE2Lg0KKwkgKi8NCisJcGNp
-X3JlY29uZmlndXJlX2JyaWRnZV9sdHIoZGV2KTsNCisNCiAJY2FwID0gKHUxNiAqKSZzYXZlX3N0
-YXRlLT5jYXAuZGF0YVswXTsNCiAJcGNpZV9jYXBhYmlsaXR5X3dyaXRlX3dvcmQoZGV2LCBQQ0lf
-RVhQX0RFVkNUTCwgY2FwW2krK10pOw0KIAlwY2llX2NhcGFiaWxpdHlfd3JpdGVfd29yZChkZXYs
-IFBDSV9FWFBfTE5LQ1RMLCBjYXBbaSsrXSk7DQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9wY2kvcGNp
-LmggYi9kcml2ZXJzL3BjaS9wY2kuaA0KaW5kZXggNWM1OTM2NTA5MmZhLi5hNjYwYTAxMzU4YzUg
-MTAwNjQ0DQotLS0gYS9kcml2ZXJzL3BjaS9wY2kuaA0KKysrIGIvZHJpdmVycy9wY2kvcGNpLmgN
-CkBAIC0xMTEsNiArMTExLDcgQEAgdm9pZCBwY2lfZnJlZV9jYXBfc2F2ZV9idWZmZXJzKHN0cnVj
-dCBwY2lfZGV2ICpkZXYpOw0KIGJvb2wgcGNpX2JyaWRnZV9kM19wb3NzaWJsZShzdHJ1Y3QgcGNp
-X2RldiAqZGV2KTsNCiB2b2lkIHBjaV9icmlkZ2VfZDNfdXBkYXRlKHN0cnVjdCBwY2lfZGV2ICpk
-ZXYpOw0KIHZvaWQgcGNpX2JyaWRnZV93YWl0X2Zvcl9zZWNvbmRhcnlfYnVzKHN0cnVjdCBwY2lf
-ZGV2ICpkZXYpOw0KK3ZvaWQgcGNpX3JlY29uZmlndXJlX2JyaWRnZV9sdHIoc3RydWN0IHBjaV9k
-ZXYgKmRldik7DQogDQogc3RhdGljIGlubGluZSB2b2lkIHBjaV93YWtldXBfZXZlbnQoc3RydWN0
-IHBjaV9kZXYgKmRldikNCiB7DQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9wY2kvcHJvYmUuYyBiL2Ry
-aXZlcnMvcGNpL3Byb2JlLmMNCmluZGV4IDk1M2YxNWFiYzg1MC4uZmE2MDc1MDkzZjNiIDEwMDY0
-NA0KLS0tIGEvZHJpdmVycy9wY2kvcHJvYmUuYw0KKysrIGIvZHJpdmVycy9wY2kvcHJvYmUuYw0K
-QEAgLTIxMzIsOSArMjEzMiwxNiBAQCBzdGF0aWMgdm9pZCBwY2lfY29uZmlndXJlX2x0cihzdHJ1
-Y3QgcGNpX2RldiAqZGV2KQ0KIAkgKiBDb21wbGV4IGFuZCBhbGwgaW50ZXJtZWRpYXRlIFN3aXRj
-aGVzIGluZGljYXRlIHN1cHBvcnQgZm9yIExUUi4NCiAJICogUENJZSByNC4wLCBzZWMgNi4xOC4N
-CiAJICovDQotCWlmIChwY2lfcGNpZV90eXBlKGRldikgPT0gUENJX0VYUF9UWVBFX1JPT1RfUE9S
-VCB8fA0KLQkgICAgKChicmlkZ2UgPSBwY2lfdXBzdHJlYW1fYnJpZGdlKGRldikpICYmDQotCSAg
-ICAgIGJyaWRnZS0+bHRyX3BhdGgpKSB7DQorCWlmIChwY2lfcGNpZV90eXBlKGRldikgPT0gUENJ
-X0VYUF9UWVBFX1JPT1RfUE9SVCkgew0KKwkJcGNpZV9jYXBhYmlsaXR5X3NldF93b3JkKGRldiwg
-UENJX0VYUF9ERVZDVEwyLA0KKwkJCQkJIFBDSV9FWFBfREVWQ1RMMl9MVFJfRU4pOw0KKwkJZGV2
-LT5sdHJfcGF0aCA9IDE7DQorCQlyZXR1cm47DQorCX0NCisNCisJYnJpZGdlID0gcGNpX3Vwc3Ry
-ZWFtX2JyaWRnZShkZXYpOw0KKwlpZiAoYnJpZGdlICYmIGJyaWRnZS0+bHRyX3BhdGgpIHsNCisJ
-CXBjaV9yZWNvbmZpZ3VyZV9icmlkZ2VfbHRyKGRldik7DQogCQlwY2llX2NhcGFiaWxpdHlfc2V0
-X3dvcmQoZGV2LCBQQ0lfRVhQX0RFVkNUTDIsDQogCQkJCQkgUENJX0VYUF9ERVZDVEwyX0xUUl9F
-Tik7DQogCQlkZXYtPmx0cl9wYXRoID0gMTsNCi0tIA0KMi4xOC4wDQo=
+On Sun, Jan 17, 2021 at 10:03:01AM -0800, Alistair Francis wrote:
+> The reMarkable2 requires VMSPLIT_2G, so lets set this in the
+> imx_v6_v7_defconfig.
 
+Hmm, why is VMSPLIT_2G required by reMarkable2?
+
+Shawn
+
+> 
+> Signed-off-by: Alistair Francis <alistair@alistair23.me>
+> ---
+>  arch/arm/configs/imx_v6_v7_defconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/arm/configs/imx_v6_v7_defconfig b/arch/arm/configs/imx_v6_v7_defconfig
+> index 55674cb1ffce..fa9229616106 100644
+> --- a/arch/arm/configs/imx_v6_v7_defconfig
+> +++ b/arch/arm/configs/imx_v6_v7_defconfig
+> @@ -29,6 +29,7 @@ CONFIG_SOC_IMX7D=y
+>  CONFIG_SOC_IMX7ULP=y
+>  CONFIG_SOC_VF610=y
+>  CONFIG_SMP=y
+> +CONFIG_VMSPLIT_2G=y
+>  CONFIG_ARM_PSCI=y
+>  CONFIG_HIGHMEM=y
+>  CONFIG_FORCE_MAX_ZONEORDER=14
+> -- 
+> 2.29.2
+> 
