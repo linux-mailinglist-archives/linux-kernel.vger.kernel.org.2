@@ -2,65 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43327308450
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:46:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4786630844E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:45:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231841AbhA2DqI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Jan 2021 22:46:08 -0500
-Received: from wnbcorp.com ([175.126.38.143]:51502 "EHLO blank.cafe24.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229757AbhA2DqD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 22:46:03 -0500
-Received: from [10.175.141.9] (31-161-145-32.mobile.kpn.net [31.161.145.32])
-        (authenticated bits=0)
-        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10T3YmIV019338;
-        Fri, 29 Jan 2021 12:41:14 +0900
-Message-Id: <202101290341.10T3YmIV019338@blank.cafe24.com>
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Fri, 29 Jan 2021 04:40:53 +0100
-Reply-To: johnsonwilson389@gmail.com
+        id S231743AbhA2Dos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 22:44:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229757AbhA2Dor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 22:44:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id C444C64DFB;
+        Fri, 29 Jan 2021 03:44:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611891846;
+        bh=YQ+5BI5ZqSn8x1TLpS27Zd0uYGuJdby2+XMjFAOA4uI=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=YBqCKrXUoY9H7PMfgzh1FUwmDEu8atSSBW9nl1sExHf3IQBuO+x3fDOKH2e92Di8z
+         mEFeerNyJRBX2+f9NxgJ0vsMcn1zDO99uAeGLIm3Lo6AfZ6Y+3DRKCloKUicKYi7i0
+         +xiWxVu/WD84s3jddLSgFARGMcAh2obVAte1zQGkGA1Iif+Rb2KI18OPIMV7aN9/n1
+         lZgpTHdiSPpR7WbqEHp/XKJH8yPwIhGr1aqtDtHTbpGLLmn6AreqkvGGYO74FtsGo4
+         nWNdRb1dy/hnHpvC0DGyVuzu8e3F1hFh7R3H5+2J0FsTqMALo0IyU9NkHyt3I+YqxU
+         ieTNrolb1Eviw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B82F6613AE;
+        Fri, 29 Jan 2021 03:44:06 +0000 (UTC)
+Subject: Re: [GIT PULL] eCryptfs fix for 5.11-rc6
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210129012431.GA633037@sequoia>
+References: <20210129012431.GA633037@sequoia>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210129012431.GA633037@sequoia>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/tyhicks/ecryptfs.git tags/ecryptfs-5.11-rc6-setxattr-fix
+X-PR-Tracked-Commit-Id: 0b964446c63f9d7d7cd1809ee39277b4f73916b5
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: bec4c2968fce2f44ce62d05288a633cd99a722eb
+Message-Id: <161189184666.9193.4035556583382796136.pr-tracker-bot@kernel.org>
+Date:   Fri, 29 Jan 2021 03:44:06 +0000
+To:     Tyler Hicks <code@tyhicks.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, ecryptfs@vger.kernel.org,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+The pull request you sent on Thu, 28 Jan 2021 19:24:31 -0600:
 
-Sir/Madam,
+> https://git.kernel.org/pub/scm/linux/kernel/git/tyhicks/ecryptfs.git tags/ecryptfs-5.11-rc6-setxattr-fix
 
-CONGRATULATIONS!!!
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/bec4c2968fce2f44ce62d05288a633cd99a722eb
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 26th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+Thank you!
 
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
-
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
