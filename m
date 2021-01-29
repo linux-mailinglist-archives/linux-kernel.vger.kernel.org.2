@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47758308B81
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:33:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D0F308B88
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:33:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232546AbhA2R0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 12:26:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50362 "EHLO
+        id S232414AbhA2R3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 12:29:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232414AbhA2RZ0 (ORCPT
+        with ESMTP id S232506AbhA2R0C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 12:25:26 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97982C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 09:24:46 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id e19so6635645pfh.6
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 09:24:46 -0800 (PST)
+        Fri, 29 Jan 2021 12:26:02 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C825BC061786
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 09:24:51 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id j11so2977545plt.11
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 09:24:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=broadcom.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=N4Nq4JHVr4dTykOyybcUbX4VNwBX1xR5L0105lEXaCU=;
-        b=SaUZ/Z4r2EAqN2a3Ikgwd7U1IeytuQdtWd1RQq6et975d1wCkhm6GFEjrEsZ1ndhqG
-         weGpYNK1GB6wuvT40S3ONECqnORTGmt4csZ6n/iI/6fzJuFQuts70L0gyA4vqUFGs29b
-         s8dr8S7WD4U1i751kPXVPSR3qLaavUGSaUjtk=
+        bh=2u+biFI/0gCA6TaFmwR+5i+KFsjfyNN5mVV4l/yQJyk=;
+        b=SDXR4nJs2xATSaIH/CkkLVso30N5iZvXUB+E341dWCn9I2yYYSDi3JSNaXbmFusjuc
+         zTvOJIhM0jwUp5horiVm1irk3T1L7P9eZL+LvGCtf+GJjnotO11QFP8QwSBbHWu4fzbV
+         ZXslA9LjWx/w817uJbUBeF1GBMQ6bpPN0Zgbc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=N4Nq4JHVr4dTykOyybcUbX4VNwBX1xR5L0105lEXaCU=;
-        b=I4TK12f6mrcmA8GBz/Rs1MFBpmj/y+eTxCC2y8CRZCeYFeF6AJ8lMvClbqzcuAodmU
-         xPPvG8MX6hlan1VjjVbI/HOUdQ/tTwsmtJ8lhFBq7ijqw+qdMIQn1hRcC4+Py/Riznzt
-         SmWRNAdqe4h8VGSLbx1bjWOsRtTqFMCy1SMa+1UuVpx/hvfzwxkh5gwS141z9AEZ7XpS
-         eGlQpnCWAxtVHEYiGVaWc4rShwmyAfgTmYx7j261RpmKhviUHiVjHaqHNUeODAkfRGuA
-         cCYiGgEXs97AWl9dCtQdQumZBkwE4+fyIAF37FsWSMfiRrOZ/A8jtX/Fnh5zIMd2WIPA
-         h3Ow==
-X-Gm-Message-State: AOAM531aWy8u4y+joMaEiXvn+dzL3nncu8FDZYfnI/OfeFWK4fG22DpL
-        vRQUqJ1lffRgyS9M9MGTx1FwZg==
-X-Google-Smtp-Source: ABdhPJxfZvPlz/Mdm7FfhBLGQEahiV24WzFbjIj5+M/5E81eMQ9nMbhphAPOj3ycEDHvICydJwcoJA==
-X-Received: by 2002:a63:724a:: with SMTP id c10mr5951280pgn.124.1611941085889;
-        Fri, 29 Jan 2021 09:24:45 -0800 (PST)
+        bh=2u+biFI/0gCA6TaFmwR+5i+KFsjfyNN5mVV4l/yQJyk=;
+        b=rF6WhpyPkX09E/miiSSuRXPhNkh+spmXrMsbB8iVF/x1Qs2C97ppfgxr9FE0fxsWw3
+         ecD/Lou8Gk2k6KsuBk5tPeHUixADOOKdZYGJPFIKTAMgNHOfh2zP2VNI6k6Df4Pgz9fV
+         EI83IqNu60bHaxLqRsxNXddxQPXBIfrBz2L0eSR84Nyo8c1hpDTiaGYS6H5AUKOgebPE
+         LvsXtIbsB28osrq9rjoO+JAdex6rLRtoxynO3u8NJ2oSiMKmtM9zwUaL0pnfplZDn0Z5
+         jf5tWVCU1FkQPD3KMf+JcbqMo76Q9vT37nSVkgfeRu5Cw8omP2mI4efmniH9F2XJxMwe
+         vydg==
+X-Gm-Message-State: AOAM532877FmhUWkvh1P7R1Utu8/EZ3YCbbsHulfMD3W5Y9yytYZZ+Yw
+        PCvXyY5UtgNwthMTduRPJPnNqQ==
+X-Google-Smtp-Source: ABdhPJw6NDJK8xRAfGxWmP5w7msd3QKMC9ZPlpS3UWjmJg+UxOkcQtIOKx6B76K4zzzDgSpi+yI9Rw==
+X-Received: by 2002:a17:90a:f2c6:: with SMTP id gt6mr5414892pjb.35.1611941091086;
+        Fri, 29 Jan 2021 09:24:51 -0800 (PST)
 Received: from rahul_yocto_ubuntu18.ibn.broadcom.net ([192.19.234.250])
-        by smtp.gmail.com with ESMTPSA id w11sm9739016pge.28.2021.01.29.09.24.41
+        by smtp.gmail.com with ESMTPSA id w11sm9739016pge.28.2021.01.29.09.24.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Jan 2021 09:24:45 -0800 (PST)
+        Fri, 29 Jan 2021 09:24:50 -0800 (PST)
 From:   Vikas Gupta <vikas.gupta@broadcom.com>
 To:     eric.auger@redhat.com, alex.williamson@redhat.com,
         cohuck@redhat.com, kvm@vger.kernel.org,
@@ -51,49 +51,131 @@ To:     eric.auger@redhat.com, alex.williamson@redhat.com,
 Cc:     vikram.prakash@broadcom.com, srinath.mannam@broadcom.com,
         ashwin.kamath@broadcom.com, zachary.schroff@broadcom.com,
         manish.kurup@broadcom.com, Vikas Gupta <vikas.gupta@broadcom.com>
-Subject: [RFC v4 2/3] vfio/platform: change cleanup order
-Date:   Fri, 29 Jan 2021 22:54:20 +0530
-Message-Id: <20210129172421.43299-3-vikas.gupta@broadcom.com>
+Subject: [RFC v4 3/3] vfio: platform: reset: add msi support
+Date:   Fri, 29 Jan 2021 22:54:21 +0530
+Message-Id: <20210129172421.43299-4-vikas.gupta@broadcom.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210129172421.43299-1-vikas.gupta@broadcom.com>
 References: <20201214174514.22006-1-vikas.gupta@broadcom.com>
  <20210129172421.43299-1-vikas.gupta@broadcom.com>
 Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-        boundary="000000000000dacb2005ba0d4785"
+        boundary="0000000000002a23b205ba0d48ac"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000dacb2005ba0d4785
+--0000000000002a23b205ba0d48ac
 
-In the case of msi, vendor specific msi module may require
-region access to handle msi cleanup so we need to cleanup region
-after irq cleanup only.
+Add msi support for Broadcom FlexRm device.
 
 Signed-off-by: Vikas Gupta <vikas.gupta@broadcom.com>
 ---
- drivers/vfio/platform/vfio_platform_common.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../platform/reset/vfio_platform_bcmflexrm.c  | 72 ++++++++++++++++++-
+ 1 file changed, 70 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/vfio/platform/vfio_platform_common.c b/drivers/vfio/platform/vfio_platform_common.c
-index f2b1f0c3bfcc..1cc040e3ed1f 100644
---- a/drivers/vfio/platform/vfio_platform_common.c
-+++ b/drivers/vfio/platform/vfio_platform_common.c
-@@ -243,8 +243,8 @@ static void vfio_platform_release(void *device_data)
- 			WARN_ON(1);
- 		}
- 		pm_runtime_put(vdev->device);
--		vfio_platform_regions_cleanup(vdev);
- 		vfio_platform_irq_cleanup(vdev);
-+		vfio_platform_regions_cleanup(vdev);
- 	}
+diff --git a/drivers/vfio/platform/reset/vfio_platform_bcmflexrm.c b/drivers/vfio/platform/reset/vfio_platform_bcmflexrm.c
+index 96064ef8f629..6ca4ca12575b 100644
+--- a/drivers/vfio/platform/reset/vfio_platform_bcmflexrm.c
++++ b/drivers/vfio/platform/reset/vfio_platform_bcmflexrm.c
+@@ -21,7 +21,9 @@
+ #include <linux/init.h>
+ #include <linux/io.h>
+ #include <linux/kernel.h>
++#include <linux/msi.h>
+ #include <linux/module.h>
++#include <linux/vfio.h>
  
- 	mutex_unlock(&driver_lock);
+ #include "../vfio_platform_private.h"
+ 
+@@ -33,6 +35,9 @@
+ #define RING_VER					0x000
+ #define RING_CONTROL					0x034
+ #define RING_FLUSH_DONE					0x038
++#define RING_MSI_ADDR_LS				0x03c
++#define RING_MSI_ADDR_MS				0x040
++#define RING_MSI_DATA_VALUE				0x064
+ 
+ /* Register RING_CONTROL fields */
+ #define CONTROL_FLUSH_SHIFT				5
+@@ -105,8 +110,71 @@ static int vfio_platform_bcmflexrm_reset(struct vfio_platform_device *vdev)
+ 	return ret;
+ }
+ 
+-module_vfio_reset_handler("brcm,iproc-flexrm-mbox",
+-			  vfio_platform_bcmflexrm_reset);
++static u32 bcm_num_msi(struct vfio_platform_device *vdev)
++{
++	struct vfio_platform_region *reg = &vdev->regions[0];
++
++	return (reg->size / RING_REGS_SIZE);
++}
++
++static void bcm_write_msi(struct vfio_platform_device *vdev,
++		struct msi_desc *desc,
++		struct msi_msg *msg)
++{
++	int i;
++	int hwirq = -1;
++	int msi_src;
++	void __iomem *ring;
++	struct vfio_platform_region *reg = &vdev->regions[0];
++
++	if (!reg)
++		return;
++
++	for (i = 0; i < vdev->num_irqs; i++)
++		if (vdev->irqs[i].type == VFIO_IRQ_TYPE_MSI)
++			hwirq = vdev->irqs[i].ctx[0].hwirq;
++
++	if (hwirq < 0)
++		return;
++
++	msi_src = desc->irq - hwirq;
++
++	if (!reg->ioaddr) {
++		reg->ioaddr = ioremap(reg->addr, reg->size);
++		if (!reg->ioaddr)
++			return;
++	}
++
++	ring = reg->ioaddr + msi_src * RING_REGS_SIZE;
++
++	writel_relaxed(msg->address_lo, ring + RING_MSI_ADDR_LS);
++	writel_relaxed(msg->address_hi, ring + RING_MSI_ADDR_MS);
++	writel_relaxed(msg->data, ring + RING_MSI_DATA_VALUE);
++}
++
++static struct vfio_platform_reset_node vfio_platform_bcmflexrm_reset_node = {
++	.owner = THIS_MODULE,
++	.compat = "brcm,iproc-flexrm-mbox",
++	.of_reset = vfio_platform_bcmflexrm_reset,
++	.of_get_msi = bcm_num_msi,
++	.of_msi_write = bcm_write_msi
++};
++
++static int __init vfio_platform_bcmflexrm_reset_module_init(void)
++{
++	__vfio_platform_register_reset(&vfio_platform_bcmflexrm_reset_node);
++
++	return 0;
++}
++
++static void __exit vfio_platform_bcmflexrm_reset_module_exit(void)
++{
++	vfio_platform_unregister_reset("brcm,iproc-flexrm-mbox",
++				       vfio_platform_bcmflexrm_reset);
++}
++
++module_init(vfio_platform_bcmflexrm_reset_module_init);
++module_exit(vfio_platform_bcmflexrm_reset_module_exit);
+ 
+ MODULE_LICENSE("GPL v2");
+ MODULE_AUTHOR("Anup Patel <anup.patel@broadcom.com>");
 -- 
 2.17.1
 
 
---000000000000dacb2005ba0d4785
+--0000000000002a23b205ba0d48ac
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -163,14 +245,14 @@ JH2nMg39SpVAwmRqfs6mYtenpMwKtQd9goGkIFXqdSvOPATkbS1YIGtU2byLK+/1rIWPoKNmRddj
 WOu/loxldI1sJa1tOHgtb93YpIe0HEmgxLGS0KEnbM+rn9vXNKCe+9n0PhxJIfqcf6rAtK0prRwr
 Y2MxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNh
 MTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDDTZ
-lyNZkGMqSi5xbzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgnLtJkodpkx5u+k+s
-8WcQq78HVgbook+4qyi0DmviyjswGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
-CQUxDxcNMjEwMTI5MTcyNDQ2WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgB
+lyNZkGMqSi5xbzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgrHdnIpcb7RdwHRp2
+AZIE8Maf0g0SUFW2qHGvKxQdZ9kwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
+CQUxDxcNMjEwMTI5MTcyNDUxWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgB
 ZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcw
-CwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBADn2ZGdj6g1/wJVG8XKaF+BuJdVOxyHAVwK4
-8x+Pw/Kzdx+bo6CPlyo78k+bzcW/e6qOlGspExLxX/XdqtDiXMmW8DDwSZHjGZQtJc6RJcP1Bvau
-Jwom0XjV3K4UB8v2+iLQB1L9B6ii391qW9lXuDdJdDcu0lptwUqNgyBYtodvag7w6QWzNOB6NBSH
-oIkJf+Lnlkbu8+X9x7vcW2ENCF+/wnXLADNrtVkBMIIEY+PWYsBVIx9K7p/6i14hHIDI4f/6869U
-iuYpUEg9ARL/iJTjsQchsI5UdruAdzW7JTduDpIx83hZYK58c2NKEN4eueb9wT1xuMvGBWzySOmr
-rj0=
---000000000000dacb2005ba0d4785--
+CwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAKiiO7enlReijWdRE+b4uf8lGnI6zgsu6dYq
+NVJ5DdyHA/LbNf3xYnXTBPb/NPZqo+rGNMyE4Fg/MB8XdLiifdDfvgItltqtmjTvflNEBSRTlYvn
+ABnrkZgy/jPRHnuXxeXaI+54P4MRN0/JlpFNOEq8wd7VHvqY7mn+msV3JNG9s6RQ0NVYf7so4YSJ
+bxlRRAfC5u9fVky2isLT34Ek6fwclDcyzyQWHh4AYK9K/9Z9WEWjkJb+IoQ5OM8phcF5Cahf7/JM
+c7vZe4ONZ1h0mG4P7qmhAmLygEzpCi+HTkPiEI7JemdCgbBV2YHxbWThnixQ18Hkqk7V+03ozmy+
+EzE=
+--0000000000002a23b205ba0d48ac--
