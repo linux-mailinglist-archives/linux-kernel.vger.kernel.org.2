@@ -2,119 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FED13083E7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 03:50:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6473083EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 03:51:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231237AbhA2CuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 21:50:12 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:41500 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229757AbhA2CuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 21:50:11 -0500
-Received: from [10.130.0.135] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxCL6UdxNgWBgPAA--.22932S3;
-        Fri, 29 Jan 2021 10:48:54 +0800 (CST)
-Subject: Re: [PATCH 1/3] MIPS: kernel: Support extracting off-line stack
- traces from user-space with perf
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <1609246561-5474-1-git-send-email-yangtiezhu@loongson.cn>
- <1609246561-5474-2-git-send-email-yangtiezhu@loongson.cn>
- <20210104105904.GK3021@hirez.programming.kicks-ass.net>
- <0712b131-715a-a83a-bc9e-61405824ff0e@flygoat.com>
- <20210105101806.GG3040@hirez.programming.kicks-ass.net>
- <20210127211506.GA21163@alpha.franken.de>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        David Daney <david.daney@cavium.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Archer Yan <ayan@wavecomp.com>, x86@kernel.org
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <d2035b91-bcb9-bde4-8009-d81d177b2317@loongson.cn>
-Date:   Fri, 29 Jan 2021 10:48:52 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S231530AbhA2CvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 21:51:18 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14624 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229757AbhA2Cu4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 21:50:56 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10T2VjZ3120063;
+        Thu, 28 Jan 2021 21:49:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=69jgmI456LMad55ViwPn+Ce+GYZyX9L+dnAT6tgjjYs=;
+ b=pGdpp/rv+jvqN/brFha1WXDOArJpYS2ro0WxMx9fsQJnQH9TRbGfiI9T4zZg64cPU4b+
+ 1ia6RaHpF/moIDyZ4++JBI+tzXmUWwCpO4ezWsQCFCV/7Si2I8655+jUSDkY5kA/3GxZ
+ EmB8uU0Lyvl+OoZ6bcs9a8UZ8fH2lBl1SddnYXif9ewk9PDr7eRw2tX9OX6VSTQpDd1c
+ W7LpEg0+KWqFL2pFnyvnqLLKzpIEBpStLyR/nymuJR9zSpcA0Lo/ZfmK5985DTr2Csbn
+ bT5VywmHKl6nvxGpWRElb6nOLePXuQ4bRVQmH92Gvz8F7O8vjbjrXkEhAsN6Wp2bDMLR Ng== 
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36c6kbcaf5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 28 Jan 2021 21:49:43 -0500
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10T2gtcZ010132;
+        Fri, 29 Jan 2021 02:49:42 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma05wdc.us.ibm.com with ESMTP id 36a3qc95gg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 29 Jan 2021 02:49:42 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10T2nglA22413626
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 29 Jan 2021 02:49:42 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0C156AC060;
+        Fri, 29 Jan 2021 02:49:42 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EBD20AC05F;
+        Fri, 29 Jan 2021 02:49:41 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri, 29 Jan 2021 02:49:41 +0000 (GMT)
+Subject: Re: [PATCH v7 4/7] crypto: add ecc curve and expose them
+To:     Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Meng Yu <yumeng18@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Zaibo Xu <xuzaibo@huawei.com>, wangzhou1@hisilicon.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        "Khurana, Prabhjot" <prabhjot.khurana@intel.com>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        Patrick Uiterwijk <patrick@puiterwijk.org>
+References: <1611299395-675-1-git-send-email-yumeng18@huawei.com>
+ <1611299395-675-5-git-send-email-yumeng18@huawei.com>
+ <20210128050354.GA30874@gondor.apana.org.au>
+ <CAMj1kXHvY9JveFyhtETALCH=AFGMGVbGGFMNDGc6ZVngEKbyDQ@mail.gmail.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <ff63fffd-2d65-337f-d802-adcf4352fdc3@linux.ibm.com>
+Date:   Thu, 28 Jan 2021 21:49:41 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210127211506.GA21163@alpha.franken.de>
+In-Reply-To: <CAMj1kXHvY9JveFyhtETALCH=AFGMGVbGGFMNDGc6ZVngEKbyDQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9DxCL6UdxNgWBgPAA--.22932S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7tFy5Ar17JF45GrykGF1kAFb_yoW8CFW3pa
-        yvva1jkF4qqryj9F1Ivwn5Zasayr48Kw4FgFn8tFWIq3yq9F1ftF48t3Wj9as3Zr1fG3W2
-        vr4UXr9rZFn3ZFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBY14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxV
-        W0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
-        7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r
-        1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-        n2kIc2xKxwCYjI0SjxkI62AI1cAE67vIY487MxkIecxEwVAFwVW8JwCF04k20xvY0x0EwI
-        xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
-        Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7
-        IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
-        6cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbU3ktUUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-28_12:2021-01-28,2021-01-28 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 bulkscore=0 lowpriorityscore=0 mlxscore=0
+ mlxlogscore=999 adultscore=0 malwarescore=0 spamscore=0 clxscore=1011
+ impostorscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2101290008
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/28/2021 05:15 AM, Thomas Bogendoerfer wrote:
-> On Tue, Jan 05, 2021 at 11:18:06AM +0100, Peter Zijlstra wrote:
->> On Tue, Jan 05, 2021 at 11:45:37AM +0800, Jiaxun Yang wrote:
->>> 在 2021/1/4 下午6:59, Peter Zijlstra 写道:
->>>> On Tue, Dec 29, 2020 at 08:55:59PM +0800, Tiezhu Yang wrote:
->>>>> +u64 perf_reg_abi(struct task_struct *tsk)
->>>>> +{
->>>>> +	if (test_tsk_thread_flag(tsk, TIF_32BIT_REGS))
->>>>> +		return PERF_SAMPLE_REGS_ABI_32;
->>>>> +	else
->>>>> +		return PERF_SAMPLE_REGS_ABI_64;
->>>>> +}
->>>> So we recently changed this on x86 to not rely on TIF flags. IIRC the
->>>> problem is that on x86 you can change the mode of a task without the
->>>> kernel being aware of it. Is something like that possible on MIPS as
->>>> well?
->>> Hi all,
->>>
->>> In MIPS world it's impossible to raise a thread to 64bit without kernel
->>> aware.
->>> Without STATUS.UX set it will trigger reserved instruction exception when
->>> trying
->>> to run 64bit instructions.
->> The other way around is the case on x86, a 64bit program can create and
->> execute 32bit code sections without the kernel being aware. But if
->> clearing STATUS.UX has the same issue as setting it, that should not be
->> a problem for you.
+On 1/28/21 5:30 AM, Ard Biesheuvel wrote:
+> On Thu, 28 Jan 2021 at 06:04, Herbert Xu <herbert@gondor.apana.org.au> wrote:
+>> On Fri, Jan 22, 2021 at 03:09:52PM +0800, Meng Yu wrote:
+>>> 1. Add ecc curves(P224, P384, P521) for ECDH;
+>> OK I think this is getting unwieldy.
 >>
->>> However it may be possible to run with 32bit ABI without
->>> TIF_32BIT_REGS if user program didn't get ELF ABI right. I think
->>> that's out of our current consideration.
->> Fair enough.
+>> In light of the fact that we already have hardware that supports
+>> a specific subset of curves, I think perhaps it would be better
+>> to move the curve ID from the key into the algorithm name instead.
 >>
->>>> The thing x86 does today is look at it's pt_regs state to determine the
->>>> actual state.
->>> It is possible to look at pt_regs Status.UX bit on MIPS. But it seems
->>> unnecessary
->>> as user can't change it.
->> Ok, good. Then no objection, proceed! :-)
-> this patch aims more to mips-next, while patch 2 and 3 are targeting
-> tools/perf. Should I take them into mips-next, too ?
-
-If it is possible, I prefer to merge this three patches together
-through mips-next tree.
-
-Thanks,
-Tiezhu
-
+>> IOW, instead of allocating ecdh, you would allocate ecdh-nist-pXXX.
+>>
+>> Any comments?
+>>
+> Agreed. Bluetooth appears to be the only in-kernel user at the moment,
+> and it is hard coded to use p256, so it can be easily updated.
 >
-> Thomas.
->
+> But this also begs the question which ecdh-nist-pXXX implementations
+> we actually need? Why are we exposing these curves in the first place?
+
+In the patch series that I just submitted I would like to expose at 
+least NIST p256 to users. Fedora 34 is working to add signatures for 
+files to rpms for the Integrity Measurment Architecture (IMA) to be able 
+to enforce signatures on executables, libraries etc. The signatures are 
+written out into security.ima extended attribute upon rpm installation. 
+IMA accesses keys on a keyring to verify these file signatures. RSA 
+signatures are much larger, so elliptic curve signatures are much better 
+in terms of storage size needed for storing them in rpms. They add like 
+1% of size. Fedora is using a NIST P256 key.
+
+Besides that Fedora and RHEL support only these curves here in openssl 
+(Ubuntu supports a lot more):
+
+$ openssl ecparam -list_curves
+   secp224r1 : NIST/SECG curve over a 224 bit prime field
+   secp256k1 : SECG curve over a 256 bit prime field
+   secp384r1 : NIST/SECG curve over a 384 bit prime field
+   secp521r1 : NIST/SECG curve over a 521 bit prime field
+   prime256v1: X9.62/SECG curve over a 256 bit prime field
+
+So from that perspective it makes a lot of sense to support some of 
+these and allow users to load them into the kernel.
+
+
+In my patch series I initially had registered the akciphers under the 
+names ecc-nist-p192 and ecc-nist-p256 but now, in V4, joined them 
+together as 'ecdsa'. This may be too generic for a name. Maybe it should 
+be called ecsda-nist for the NIST family.
+
+    Stefan
 
