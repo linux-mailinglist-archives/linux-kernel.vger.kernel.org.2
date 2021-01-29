@@ -2,109 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1282D308581
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:16:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 687B1308586
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:16:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbhA2GIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 01:08:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbhA2GIi (ORCPT
+        id S232056AbhA2GLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 01:11:50 -0500
+Received: from lpdvacalvio01.broadcom.com ([192.19.229.182]:50694 "EHLO
+        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230121AbhA2GLr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 01:08:38 -0500
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5C4C061573;
-        Thu, 28 Jan 2021 22:07:57 -0800 (PST)
-Received: by mail-il1-x12b.google.com with SMTP id z18so7338115ile.9;
-        Thu, 28 Jan 2021 22:07:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RSMECV3esitGF7SoTH5ZSvyrofHyqxLrUOwc0nwKDZg=;
-        b=lfoedfgpPKqTdp+Bi4CfR3TLngUx+rgjXEmO1XUI0kUKFrd5kpE1684PiF+b7tijIv
-         hZ//L6xU3FsLdGjlGgpHut3/JiYrTxbe63DYLiV5c8cWqtIP42xHa4cbjsCnAsKo+JdA
-         o7ncZa+kxYApdu4pfRJGNc7PLIA7ebhckn+mdOAj1DArPymqQq1XUmPyjuM+Xg13j5B+
-         trv5mWakvDNX/GDUun74mZF1yv8F2mqS9X7qRttRIXjX50YQgh+QCE/PSm6Nq6y6z/Nv
-         cuqya5/yyx22E1OwemJJq20iW1TL60iFpsBNSVwziRKcjKtELGqFyml0YvoT1sXgVljg
-         3i+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RSMECV3esitGF7SoTH5ZSvyrofHyqxLrUOwc0nwKDZg=;
-        b=Eg+y/Fd5G+WAmGLGZmiUqRMV59XHSeWiXkRk0nfyztfjVSYMcEM0iKfUjxN/+YBSQ8
-         vq0fURQq9QA/m+m0OodKnlL70jnqHkBReEYZQZdl9yHTpm9/NKWUQR5MleRfl5OQXnFT
-         r48lM0fa3TuVIiqCr6zi4eEoOmdT8CdjHgJIlZOXw53JvppWz3g53D+kjQ/BIluil03n
-         axjx7dhr6cKdA2LUVxbXXgRP9ReOjxp6TMXo55Xo9o2Xky+1CJj/PLDmx3aW5VGCJyZk
-         3Uvm2rATKJwgg5IrNvnS/8QjYHLY3J8i3dqTo8afmuUlyCpvAhHEDBm2aPqEtm8lrY6X
-         bEzA==
-X-Gm-Message-State: AOAM532nyar5qWdHAbTdYQgxaoOeUdiEz2ho8ETpgJ/0r6bL/zjutCT0
-        q4EeUlxBNp8LDnMLFoJKAnMpt+9VBSVoXFEKLIGxm9nWalwQew==
-X-Google-Smtp-Source: ABdhPJzlVxghmhTq5y989GBcCRqNLVnFNeht1dy96750qJfRfAX21Yeiywv5LKrS/GnAgp+ZDxMbrz2I/MS970gNIuE=
-X-Received: by 2002:a92:6511:: with SMTP id z17mr167202ilb.232.1611900476921;
- Thu, 28 Jan 2021 22:07:56 -0800 (PST)
+        Fri, 29 Jan 2021 01:11:47 -0500
+Received: from [10.136.13.65] (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTPS id 4BA9F7DC2;
+        Thu, 28 Jan 2021 22:10:52 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 4BA9F7DC2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1611900652;
+        bh=NJ567OnihQV8gKSW5+1K4SDUw3MSCcj0EBXmTBzn5Bc=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=owuKG8+hh52dmt73ST1XufzvgpQg8OGEVA9h6/YEh++xdinlj9yMjLClpRR3tzLRU
+         YVbpd4c037Mw8wj8qQTL7XvyQSrL8f41Rj176LNVcCLZoPfLdAKapzML5+bL7eXlqF
+         pogrwwtu4gU39rpCFPV8/asLNusq+xGgnsm56Fac=
+Subject: Re: [PATCH v10 00/13] Add Broadcom VK driver
+To:     Olof Johansson <olof@lixom.net>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Broadcom Kernel Feedback List 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Desmond Yan <desmond.yan@broadcom.com>
+References: <20210129003029.10672-1-scott.branden@broadcom.com>
+ <CAOesGMgzKKjOBHYM=eodZPm0rE=_oF9o_jjBudQ-Ef8gYFFMfg@mail.gmail.com>
+From:   Scott Branden <scott.branden@broadcom.com>
+Message-ID: <6f34a285-76cf-b1fc-dc5c-c889e97d0d4c@broadcom.com>
+Date:   Thu, 28 Jan 2021 22:10:51 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1611817983-2892-1-git-send-email-bingjingc@synology.com>
- <9e867a74-89c0-e0da-b166-e9824372e181@infradead.org> <6862f3e8-5eb6-4364-a05e-d4ad23d1d37d@Mail>
-In-Reply-To: <6862f3e8-5eb6-4364-a05e-d4ad23d1d37d@Mail>
-From:   bingjing chang <bxxxjxxg@gmail.com>
-Date:   Fri, 29 Jan 2021 14:07:46 +0800
-Message-ID: <CAMmgxWEm-yLzxjFrnvjjtDMtim2FDrqxJQucgs40nBSW6Hj_1Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] parser: add unsigned int parser
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.com>,
-        Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cccheng@synology.com, robbieko@synology.com,
-        Matthew Wilcox <willy@infradead.org>,
-        bingjingc <bingjingc@synology.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAOesGMgzKKjOBHYM=eodZPm0rE=_oF9o_jjBudQ-Ef8gYFFMfg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-CA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
 
-Thank you for talking to me the correct kernel-doc format. :)
 
-I also split the cleanup of kernel doc comments into an independent
-patch due to Jan's comments and submitted it. Thank you.
+On 2021-01-28 8:02 p.m., Olof Johansson wrote:
+> Scott,
+>
+> On Thu, Jan 28, 2021 at 4:30 PM Scott Branden
+> <scott.branden@broadcom.com> wrote:
+>> This patch series drops previous patches in [1]
+>> that were incorporated by Kees Cook into patch series
+>> "Introduce partial kernel_read_file() support" [2].
+>>
+>> Remaining patches are contained in this series to add Broadcom VK driver.
+>> (which depends on request_firmware_into_buf API addition which has
+>> now been accepted into the upstream kernel as of v5.10-rc1).
+>>
+>> [1] https://lore.kernel.org/lkml/20200706232309.12010-1-scott.branden@broadcom.com/
+>> [2] https://lore.kernel.org/lkml/20201002173828.2099543-1-keescook@chromium.org/
+>>
+>> Changes from v9:
+>>  - fix compile if CONFIG_TTY not set
+>>  - use if-else statement instead of conditional expression in set_q_num
+>>  - generate bcm_vk_msg_remove call in proper patch
+>>    (was generated in tty patch when should be in msg patch)
+> Did I miss something? Greg already applied v9, so any fixes on top
+> needs to be new patches.
+Sorry, was unfamiliar with the process of having changes in linux-next needing correcting.
+I sent out new patches to correct these issues against linux-next now.
+>
+>
+> -Olof
+Thanks for providing correct process.
 
-bingjingc <bingjingc@synology.com> =E6=96=BC 2021=E5=B9=B41=E6=9C=8829=E6=
-=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=881:51=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> [loop bxxxjxxg@gmail.com] in order to reply in plain-text
-> Randy Dunlap <rdunlap@infradead.org> =E6=96=BC 2021-01-29 05:26 =E5=AF=AB=
-=E9=81=93=EF=BC=9A
->
-> On 1/27/21 11:13 PM, bingjingc wrote:
-> > From: BingJing Chang <bingjingc@synology.com>
-> >
-> > Will be used by fs parsing options & fix kernel-doc typos
-> >
-> > Reviewed-by: Robbie Ko<robbieko@synology.com>
-> > Reviewed-by: Chung-Chiang Cheng <cccheng@synology.com>
-> > Reviewed-by: Matthew Wilcox <willy@infradead.org>
-> > Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
->
-> You should drop my Reviewed-by: also, until I explicitly
-> reply with that.
->
-> > Signed-off-by: BingJing Chang <bingjingc@synology.com>
-> > ---
-> >  include/linux/parser.h |  1 +
-> >  lib/parser.c           | 44 +++++++++++++++++++++++++++++++++---------=
---
-> >  2 files changed, 34 insertions(+), 11 deletions(-)
->
-> The kernel-doc changes do look good. :)
->
-> thanks.
-> --
-> ~Randy
->
-
-Thanks,
-BingJing
+Scott
