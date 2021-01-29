@@ -2,102 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B3B30824A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 01:17:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC94B30824E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 01:19:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231300AbhA2APq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 19:15:46 -0500
-Received: from mga03.intel.com ([134.134.136.65]:39369 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229866AbhA2APf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 19:15:35 -0500
-IronPort-SDR: ++vgn3wMrvtcf5RDhxRmVE36GKCbxfDTrS0I73Pk2whwGE9ZELTVYuAe83PNFe8VLFw5ewDIU2
- zjPWNgPUNbQw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9878"; a="180415504"
-X-IronPort-AV: E=Sophos;i="5.79,384,1602572400"; 
-   d="scan'208";a="180415504"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 16:15:02 -0800
-IronPort-SDR: Fz142BK1BE2AIwrgc5l/F23HbilLEOABGwS6srxjHJWtE6knO29kFVQznmN0ri/rLTrhKAXXdJ
- uf3aidVq/yvw==
-X-IronPort-AV: E=Sophos;i="5.79,384,1602572400"; 
-   d="scan'208";a="354376609"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Jan 2021 16:15:01 -0800
-From:   ira.weiny@intel.com
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Ira Weiny <ira.weiny@intel.com>, linux-kernel@vger.kernel.org,
-        linux-sgx@vger.kernel.org
-Subject: [PATCH] x86: Remove unnecessary kmap() from sgx_ioc_enclave_init()
-Date:   Thu, 28 Jan 2021 16:14:59 -0800
-Message-Id: <20210129001459.1538805-1-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
+        id S231302AbhA2AS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 19:18:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56622 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229692AbhA2ASX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 19:18:23 -0500
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F23C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 16:17:42 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id n7so7251701qkc.4
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 16:17:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=s/LVnHuHfggklx757SIGO6yZNw1KlsoN1rDXMGqgBwE=;
+        b=YE4DaCx2D46Zsfc8bHQqOpLTFxLxPB7C5ut77WOZvZYhjTK2P4eCGY3EC5IHOlp8gM
+         Ki92zQIqg6f5pVhe0mkjSlwEWmheG9/o6brrvN6KZ4ax5iz9ZgWTMH5q3kQWw0+egePM
+         2ttHZbG0lKRr6JjMWTuxyounw9IgkjZ4TOC5aV/dg+Y0qgb1+a9XDdIkzt19sN5TgrjS
+         tnP5kLpuF+adepTif6obpo/fXhaFpUhEpE0qHuKI9psDQUCh39sgwY8jlfFkeqp2BWV4
+         GJy2KGxFGrolQ4T9bH82I9qmTjzXAQQinjfQ4BUc5G+ARRJwiTvAQ4khq3ptHtzIDymy
+         PLlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=s/LVnHuHfggklx757SIGO6yZNw1KlsoN1rDXMGqgBwE=;
+        b=Twv4enPlQe0DkSzRHFbJXHhKa/D1dNfVaPYjMILzXPYmuWzle7/erTGw0EDn3E69aN
+         8ja9EIU6yfl11axuOZUQaXp/dDbSkewEXzM3MrwhRm5bhMn1YQ91+GAtMOc3cCCT0ZKl
+         9RnmK2772bJaQK+NunI86EEpz8z5f1TRRn+BfioQYRdlL8p7x+zNeXSq3Cc7ps/DSDhE
+         ATBZ++c6sMShxObm/ZN1f3kBZMF/JGfSANFjTRV7WNrVI7RVZEHN7zzErEIEgUd5h4wN
+         ZH+pEVtRsLVS5dzIN9IppNZJiP9mWhvKUsc1PW03B7SpFThHmqFRWBkAvCrgLpI2FBiT
+         3qOg==
+X-Gm-Message-State: AOAM532O8bbgtiDGeeDCjR3kttQqlo/vevZJxm/+ACNqdTeJpe+mSuOI
+        V5354Z9MMB0LStBYlpSIXqR60wW/6ou/DSls
+X-Google-Smtp-Source: ABdhPJxhhCY4l8kdhxKUj+HgBQb3VaZPHr3ZGeGhWcOGvTWqf/TIXgB8j1zd67/vYrCPlKsrOe9LXg==
+X-Received: by 2002:a05:620a:ce8:: with SMTP id c8mr2002684qkj.282.1611879461968;
+        Thu, 28 Jan 2021 16:17:41 -0800 (PST)
+Received: from [192.168.1.10] (c-73-69-118-222.hsd1.nh.comcast.net. [73.69.118.222])
+        by smtp.gmail.com with ESMTPSA id q4sm4817170qkj.5.2021.01.28.16.17.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 16:17:41 -0800 (PST)
+Subject: Re: Re: [PATCH 0/1] arm64/sparsemem: reduce SECTION_SIZE_BITS
+To:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-kernel@vger.kernel.org,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Sudarshan Rajagopalan <sudaraja@codeaurora.org>,
+        David Hildenbrand <david@redhat.com>, linux-mm@kvack.org
+Cc:     kernel-team@android.com
+References: <cover.1611206601.git.sudaraja@codeaurora.org>
+ <161125239746.2653965.4342337503570976678.b4-ty@kernel.org>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Message-ID: <2489ef84-dd4d-b659-a61b-38582d168316@soleen.com>
+Date:   Thu, 28 Jan 2021 19:17:40 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <161125239746.2653965.4342337503570976678.b4-ty@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
 
-There is no reason to alloc a page and kmap it to store this temporary
-data from the user.  This is especially true when we are trying to
-remove kmap usages.  Also placing the token pointer 1/2 way into the
-page is fragile.
 
-Replace this allocation with two kzalloc()'s which also removes the need
-for the memset().
+On 1/21/21 1:26 PM, Will Deacon wrote:
+> On Wed, 20 Jan 2021 21:29:12 -0800, Sudarshan Rajagopalan wrote:
+>> This patch is the follow-up from the discussions in the thread [1].
+>> Reducing the section size has the merit of reducing wastage of reserved memory
+>> for vmmemmap mappings for sections with large memory holes. Also with smaller
+>> section size gives more grunularity and agility for memory hot(un)plugging.
+>>
+>> But there are also constraints in reducing SECTION_SIZE_BIT:
+>>
+>> [...]
+> 
+> Applied to arm64 (for-next/misc), thanks!
 
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
----
- arch/x86/kernel/cpu/sgx/ioctl.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+We have been using 128M for 4K pages for a while, using patch [1] without issues.
 
-diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-index 90a5caf76939..9c9019760585 100644
---- a/arch/x86/kernel/cpu/sgx/ioctl.c
-+++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-@@ -604,7 +604,6 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
- {
- 	struct sgx_sigstruct *sigstruct;
- 	struct sgx_enclave_init init_arg;
--	struct page *initp_page;
- 	void *token;
- 	int ret;
- 
-@@ -615,13 +614,15 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
- 	if (copy_from_user(&init_arg, arg, sizeof(init_arg)))
- 		return -EFAULT;
- 
--	initp_page = alloc_page(GFP_KERNEL);
--	if (!initp_page)
-+	sigstruct = kzalloc(sizeof(*sigstruct), GFP_KERNEL);
-+	if (!sigstruct)
- 		return -ENOMEM;
- 
--	sigstruct = kmap(initp_page);
--	token = (void *)((unsigned long)sigstruct + PAGE_SIZE / 2);
--	memset(token, 0, SGX_LAUNCH_TOKEN_SIZE);
-+	token = kzalloc(SGX_LAUNCH_TOKEN_SIZE, GFP_KERNEL);
-+	if (!token) {
-+		ret = -ENOMEM;
-+		goto free_sigstruct;
-+	}
- 
- 	if (copy_from_user(sigstruct, (void __user *)init_arg.sigstruct,
- 			   sizeof(*sigstruct))) {
-@@ -645,8 +646,9 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
- 	ret = sgx_encl_init(encl, sigstruct, token);
- 
- out:
--	kunmap(initp_page);
--	__free_page(initp_page);
-+	kfree(token);
-+free_sigstruct:
-+	kfree(sigstruct);
- 	return ret;
- }
- 
--- 
-2.28.0.rc0.12.gb6a658bd00c9
+One thing that needs to be also modified is makedumpfile [2]- line 76, must update it SECTIONS_SIZE_BITS based on the PAGESIZE.
 
+[1] https://lore.kernel.org/lkml/20190423203843.2898-1-pasha.tatashin@soleen.com/
+[2] https://sourceforge.net/p/makedumpfile/code/ci/master/tree/arch/arm64.c
+
+
+> 
+> [1/1] arm64/sparsemem: reduce SECTION_SIZE_BITS
+>       https://git.kernel.org/arm64/c/f0b13ee23241
+> 
+> Cheers,
+> 
