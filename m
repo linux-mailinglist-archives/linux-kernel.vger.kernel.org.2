@@ -2,182 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BB81308D2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:16:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 091BA308D30
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:16:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232963AbhA2TMg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Jan 2021 14:12:36 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:55410 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232829AbhA2TMY (ORCPT
+        id S232835AbhA2TP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 14:15:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45410 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232555AbhA2TNp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 14:12:24 -0500
-Received: from 1.general.jvosburgh.us.vpn ([10.172.68.206] helo=famine.localdomain)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <jay.vosburgh@canonical.com>)
-        id 1l5ZAp-00078K-GB; Fri, 29 Jan 2021 19:11:15 +0000
-Received: by famine.localdomain (Postfix, from userid 1000)
-        id AE07661DDA; Fri, 29 Jan 2021 11:11:13 -0800 (PST)
-Received: from famine (localhost [127.0.0.1])
-        by famine.localdomain (Postfix) with ESMTP id A59F0A0411;
-        Fri, 29 Jan 2021 11:11:13 -0800 (PST)
-From:   Jay Vosburgh <jay.vosburgh@canonical.com>
-To:     moyufeng <moyufeng@huawei.com>
-cc:     Jiri Pirko <jiri@resnulli.us>, "lipeng (Y)" <lipeng321@huawei.com>,
-        linux-kernel@vger.kernel.org, Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org,
-        linuxarm@openeuler.org, Salil Mehta <salil.mehta@huawei.com>
-Subject: Re: question about bonding mode 4
-In-reply-to: <52630cba-cc60-a024-8dd0-8319e5245044@huawei.com>
-References: <20201218193033.6138-1-jarod@redhat.com> <20201228101145.GC3565223@nanopsycho.orion> <20210107235813.GB29828@redhat.com> <20210108131256.GG3565223@nanopsycho.orion> <ef692814-fdea-ea59-6b52-93630b5b5570@huawei.com> <52630cba-cc60-a024-8dd0-8319e5245044@huawei.com>
-Comments: In-reply-to moyufeng <moyufeng@huawei.com>
-   message dated "Sat, 23 Jan 2021 14:10:21 +0800."
-X-Mailer: MH-E 8.6+git; nmh 1.6; GNU Emacs 27.0.50
+        Fri, 29 Jan 2021 14:13:45 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C43C06174A
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 11:13:02 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id bx12so11783682edb.8
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 11:13:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gaI6OPXn00T7x/fWjtNIEnlv4T36Y5i9DpYyfu2PrY8=;
+        b=A4IKuG8Gg5BkWo/2OBvRWlae087pil//44x54DbKXaoDSZcyD4mBzaUKJh6ERZwZs0
+         8p+A48Wff73q87hwKQKzT6wwLK9E+b16IBj1BBQxq5Nmh6SaVl3/6C0pWIOLrSEuw+qj
+         zXPqxlrcCV41q0Fm1JoTq+bn+4SwW9kE8m7zvZUEf6zsQHDoXvhfGs4wUy1XEMFteSYp
+         1ijwRDoY9ABR5pPvO6iqPx+KsbshRJ+oIdabk+XeoPxWE6ZMYCfEVJMCP1RAUOA+dF3R
+         /34AGN0ku1A4QsIZQKh4V+T7XpMYco4FQMsjXOuG7oUNi0ddbiCaPlWehxUU3fxxwT0z
+         uIYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gaI6OPXn00T7x/fWjtNIEnlv4T36Y5i9DpYyfu2PrY8=;
+        b=DrqIuDXP+fcK8mfox9ps+7wSjlJb1MHf14sAzEmLui4XsBmUNiowSeAs4tyMED73xP
+         kPtH90soW0kZACiihQ/9/AQkuVs6BoARvLIg7j5/OmTA7Q8fTqC+2nUtNWMpm3qIIe2Q
+         6Dq3RJJqUQXF7pxPRsOuez4LCEoS9zD78uXET8GObqx4t/QjtRucsz1mGLesJF0SsnkQ
+         U9/2Kmri4f5CHBlmNSKL5WRPLjukaZC/l7hF99hnaUFb15CQGMpakvF6Hi04yPZhWj+X
+         JYxEGNl2pB8MYc7q+p/mtfUMXH8EpR22S+5Mz1uFyyKiqRfC9mLsyaKOkm5YSx/xfurH
+         +uvg==
+X-Gm-Message-State: AOAM531ttxteYkKN2we9MHnqM/mg+MdnsqKyudt92yRuvyJKKtnfpYEi
+        7xrkLZg6KVdVTxRz90EaQwBX3VkaIcUjUWpaU7Ddhg==
+X-Google-Smtp-Source: ABdhPJxBMjG1h9nPLTmi7wuVdnc4cEw93n9ss27tjX5NzaWxCUaJoMadPhV+j5KCh8f2SyNC+cRuTxkLw/+pv0o8rEs=
+X-Received: by 2002:aa7:cd87:: with SMTP id x7mr7216981edv.210.1611947580910;
+ Fri, 29 Jan 2021 11:13:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <10373.1611947473.1@famine>
-Content-Transfer-Encoding: 8BIT
-Date:   Fri, 29 Jan 2021 11:11:13 -0800
-Message-ID: <10374.1611947473@famine>
+References: <CA+CK2bBJKntMP36SzLGvGFp4=sww6Z2LBhqEZm60kGWRWjQMVw@mail.gmail.com>
+ <8c2b75fe-a3e5-8eff-7f37-5d23c7ad9742@redhat.com> <CA+CK2bDW7Pzj=0WQnPpO+AhvZP9Y9JivJs+6G4wrbuwZfrgyKQ@mail.gmail.com>
+ <94797c92-cd90-8a65-b879-0bb5f12b9fc5@redhat.com> <CA+CK2bCjD7PujEwWMT32p4e6x6hZ-f5QOKXir10mT8RfijvnUA@mail.gmail.com>
+ <db692fcd-40e8-9c2b-d63b-9803f4bf9d5e@redhat.com> <CA+CK2bDVvdYuyuoHf==6KxYQqJBWcxQr0OC6BBk0UANuP4raGg@mail.gmail.com>
+ <92912784-f3a3-b5a5-2d45-4c86ae26315f@redhat.com> <CA+CK2bDJ3hrWoE91L2wpAk+Yu0_=GtYw=4gLDDD7mxs321b_aA@mail.gmail.com>
+ <CA+CK2bBw1yMH2bAindymk-+yZRgAWncqybWhG5x3TJiX9-tSnQ@mail.gmail.com>
+In-Reply-To: <CA+CK2bBw1yMH2bAindymk-+yZRgAWncqybWhG5x3TJiX9-tSnQ@mail.gmail.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Fri, 29 Jan 2021 14:12:25 -0500
+Message-ID: <CA+CK2bD7rXgs9UTX7QNNDAES0z32qV-gq+7TUwzx_zKHhrtUDw@mail.gmail.com>
+Subject: Re: dax alignment problem on arm64 (and other achitectures)
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Marc Zyngier <maz@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Will Deacon <will.deacon@arm.com>,
+        James Morse <james.morse@arm.com>,
+        James Morris <jmorris@namei.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-moyufeng <moyufeng@huawei.com> wrote:
-
->Ping...
->Any comments? Thanks!
+On Fri, Jan 29, 2021 at 2:06 PM Pavel Tatashin
+<pasha.tatashin@soleen.com> wrote:
 >
->On 2021/1/15 10:02, moyufeng wrote:
->> Hi Team,
->> 
->> I have a question about bonding. During testing bonding mode 4
->> scenarios, I find that there is a very low probability that
->> the pointer is null. The following information is displayed:
->> 
->> [99359.795934] bond0: (slave eth13.2001): Port 2 did not find a suitable aggregator
->> [99359.796960] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000020
->> [99359.798127] Mem abort info:
->> [99359.798526]   ESR = 0x96000004
->> [99359.798938]   EC = 0x25: DABT (current EL), IL = 32 bits
->> [99359.799673]   SET = 0, FnV = 0
->> [99359.800106]   EA = 0, S1PTW = 0
->> [99359.800554] Data abort info:
->> [99359.800952]   ISV = 0, ISS = 0x00000004
->> [99359.801522]   CM = 0, WnR = 0
->> [99359.801970] user pgtable: 4k pages, 48-bit VAs, pgdp=00000000c64e6000
->> [99359.802876] [0000000000000020] pgd=0000000000000000
->> [99359.803555] Internal error: Oops: 96000004 [#1] PREEMPT SMP
->> [99359.804369] Modules linked in: bonding hns3(-) hclgevf hnae3 [last unloaded: bonding]
->> [99359.805494] CPU: 1 PID: 951 Comm: kworker/u10:2 Not tainted 5.7.0-rc4+ #1
->> [99359.806455] Hardware name: linux,dummy-virt (DT)
->> [99359.807107] Workqueue: bond0 bond_3ad_state_machine_handler [bonding]
->> [99359.808056] pstate: 60c00005 (nZCv daif +PAN +UAO)
->> [99359.808722] pc : bond_3ad_state_machine_handler+0x7fc/0xdb8 [bonding]
->> [99359.809652] lr : bond_3ad_state_machine_handler+0x7f4/0xdb8 [bonding]
->> [99359.810535] sp : ffff80001882bd20
->> [99359.811012] x29: ffff80001882bd20 x28: ffff000085939a38
->> [99359.811791] x27: ffff00008649bb68 x26: 00000000aaaaaaab
->> [99359.812871] x25: ffff800009401000 x24: ffff800009408de4
->> [99359.814049] x23: ffff80001882bd98 x22: ffff00008649b880
->> [99359.815210] x21: 0000000000000000 x20: ffff000085939a00
->> [99359.816401] x19: ffff00008649b880 x18: ffff800012572988
->> [99359.817637] x17: 0000000000000000 x16: 0000000000000000
->> [99359.818870] x15: ffff80009882b987 x14: 726f746167657267
->> [99359.820090] x13: 676120656c626174 x12: 697573206120646e
->> [99359.821374] x11: 696620746f6e2064 x10: 696420322074726f
->> [99359.822659] x9 : 50203a2931303032 x8 : 0000000000081391
->> [99359.823891] x7 : ffff8000108e3ad0 x6 : ffff8000128858bb
->> [99359.825109] x5 : 0000000000000000 x4 : 0000000000000000
->> [99359.826262] x3 : 00000000ffffffff x2 : 906b329bb5362a00
->> [99359.827394] x1 : 906b329bb5362a00 x0 : 0000000000000000
->> [99359.828540] Call trace:
->> [99359.829071]  bond_3ad_state_machine_handler+0x7fc/0xdb8 [bonding]
->> [99359.830367]  process_one_work+0x15c/0x4a0
->> [99359.831216]  worker_thread+0x50/0x478
->> [99359.832022]  kthread+0x130/0x160
->> [99359.832716]  ret_from_fork+0x10/0x18
->> [99359.833487] Code: 910c0021 95f704bb f9403f80 b5ffe300 (f9401000)
->> [99359.834742] ---[ end trace c7a8e02914afc4e0 ]---
->> [99359.835817] Kernel panic - not syncing: Fatal exception in interrupt
->> [99359.837334] SMP: stopping secondary CPUs
->> [99359.838277] Kernel Offset: disabled
->> [99359.839086] CPU features: 0x080002,22208218
->> [99359.840053] Memory Limit: none
->> [99359.840783] ---[ end Kernel panic - not syncing: Fatal exception in interrupt ]---
->> 
->> The test procedure is as follows:
->> 1. Configure bonding and set it to mode 4.
->>     echo "4" > /sys/class/net/bond0/bonding/mode
->>     ifconfig bond0 up
->> 
->> 2. Configure two VLANs and add them to the bonding in step 1.
->>     vconfig add eth0 2001
->>     vconfig add eth1 2001
->>     ifenslave bond0 eth0.2001 eth1.2001
->> 
->> 3. Unload the network device driver and bonding driver.
->>     rmmod hns3
->>     rmmod hclge
->>     rmmod hnae3
->>     rmmod bonding.ko
+> > > Definitely, but we should try figuring out what's going on here. I
+> > > assume on x86-64 it behaves differently?
+> >
+> > Yes, we should root cause. I highly suspect that there is somewhere
+> > alignment miscalculations happen that cause this memory waste with the
+> > offset 16M. I am also not sure why the 2M label size was increased,
+> > and  why 16M is now an alignment requirement.
+>
+> This appears to be because even if we set vmemmap to be outside of the
+> dax device, the alignment calculates the maximum size of vmemmap for
+> this device, and subtracts it from the devdax size.
+> See [1], line 795 is where this offset is calculated.
+>
+> This also explains why with 64K pages, the 16M offset worked: because
+> fewer struct pages were able to fit within 16M - label size.
+>
+> [1] https://soleen.com/source/xref/linux/drivers/nvdimm/pfn_devs.c?r=b7b3c01b&mo=18459&fi=718#795
 
-	Are you running the above in a script, and can you share the
-entire thing?
+Actually, strike the previous e-mail. The extra space is when we
+reserve vmemmap from devdax. IFF we do it from mem, the extra space is
+not added. Now, this alignment makes total sense.
 
-	Does the issue occur with the current net-next?
-
->> 4. Repeat the preceding steps for a long time.
-
-	When you run this test, what are the network interfaces eth0 and
-eth1 connected to, and are those ports configured for VLAN 2001 and
-LACP?
-
->> By checking the logic in ad_port_selection_logic(), I find that
->> if enter the branch "Port %d did not find a suitable aggregator",
->> the value of port->aggregator will be NULL, causing the problem.
->> 
->> So I'd like to ask what circumstances will be involved in this
->> branch, and what should be done in this case?
-
-	Well, in principle, this shouldn't ever happen.  Every port
-structure contains an aggregator structure, so there should always be
-one available somewhere.  I'm going to speculate that there's a race
-condition somewhere in the teardown processing vs the LACP state machine
-that invalidates this presumption.
-
->> The detailed code analysis is as follows:
-
-[...]
-
->> 	/* if all aggregator's ports are READY_N == TRUE, set ready=TRUE
->> 	 * in all aggregator's ports, else set ready=FALSE in all
->> 	 * aggregator's ports
->> 	 */
->> 	__set_agg_ports_ready(port->aggregator,
->> 			      __agg_ports_are_ready(port->aggregator));
->> 
->> ----analysis: port->aggregator is still NULL, which causes problem.
->> 
->> 	aggregator = __get_first_agg(port);
->> 	ad_agg_selection_logic(aggregator, update_slave_arr);
->> 
->> 	if (!port->aggregator->is_active)
->> 		port->actor_oper_port_state &= ~LACP_STATE_SYNCHRONIZATION;
-
-	Correct, if the "did not find a suitable aggregator" path is
-taken, port->aggregator is NULL and bad things happen in the above
-block.
-
-	This is something that needs to be fixed, but I'm also concerned
-that there are other issues lurking, so I'd like to be able to reproduce
-this.
-
-	-J
-
----
-	-Jay Vosburgh, jay.vosburgh@canonical.com
+Pasha
