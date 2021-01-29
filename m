@@ -2,119 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F08730852C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 06:26:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D28DD30852E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 06:27:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbhA2FZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 00:25:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhA2FZ3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 00:25:29 -0500
-X-Greylist: delayed 60 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 28 Jan 2021 21:24:48 PST
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA195C061573;
-        Thu, 28 Jan 2021 21:24:48 -0800 (PST)
-Received: from ip4d149f6e.dynamic.kabel-deutschland.de ([77.20.159.110] helo=truhe.fritz.box); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        id 1l5MGx-0002RQ-9k; Fri, 29 Jan 2021 06:24:43 +0100
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-To:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        linux-nvme@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: [PATCH] nvme-pci: add quirk to make Kingston A2000 SSD avoid deepest sleep state
-Date:   Fri, 29 Jan 2021 06:24:42 +0100
-Message-Id: <20210129052442.310780-1-linux@leemhuis.info>
-X-Mailer: git-send-email 2.29.2
+        id S230430AbhA2F05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 00:26:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51820 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229459AbhA2F0w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 00:26:52 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611897964; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=1mtl5hlqCovATj6+TX89DVe/hfAobAWAH/SKWPhzPGs=;
+        b=SE+DMSthyceyHzFxz8yCw2K0n6cGagPkrFIc39nCgCMbFlCS6AFaLxYLKJMQ8FKvU+UX+1
+        J9EirNLl/Wl1A4nzyNjj/RVPMAGwmVcGPzpS+CVc5hQHZv0gbBQuU+Cte5UOfMn+aN77RG
+        EMwgzo14+XllZHwMZgdxaA1a7RxgMXg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id DA43CAE56;
+        Fri, 29 Jan 2021 05:26:03 +0000 (UTC)
+Subject: Re: Problems starting Xen domU after latest stable update
+To:     =?UTF-8?Q?Marek_Marczykowski-G=c3=b3recki?= 
+        <marmarek@invisiblethingslab.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Michael D Labriola <michael.d.labriola@gmail.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Sasha Levin <sashal@kernel.org>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Roger Pau Monne <roger.pau@citrix.com>,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
+References: <2nft2kipqg.fsf@aragorn.infrastructure.cah>
+ <983b87d6-edb8-21ea-7d6f-f653f5c0d048@oracle.com>
+ <20210129005129.GA2452@mail-itl>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <44068a70-8940-824b-9e39-b800635b92c7@suse.com>
+Date:   Fri, 29 Jan 2021 06:26:02 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1611897888;ecf5a23b;
-X-HE-SMSGID: 1l5MGx-0002RQ-9k
+In-Reply-To: <20210129005129.GA2452@mail-itl>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="EGwiQzZCoNLZmzRhDQxnU6miBrMwYBCNy"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some Kingston A2000 NVMe SSDs sooner or later get confused and stop
-working when they use the deepest APST sleep while running Linux. The
-system then crashes and one has to cold boot it to get the SSD working
-again.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--EGwiQzZCoNLZmzRhDQxnU6miBrMwYBCNy
+Content-Type: multipart/mixed; boundary="nZPkDkCt3NHURUzEQdZiwXelszA8Yan8e";
+ protected-headers="v1"
+From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+To: =?UTF-8?Q?Marek_Marczykowski-G=c3=b3recki?=
+ <marmarek@invisiblethingslab.com>,
+ Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: Michael D Labriola <michael.d.labriola@gmail.com>,
+ David Woodhouse <dwmw@amazon.co.uk>, Sasha Levin <sashal@kernel.org>,
+ Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+ Roger Pau Monne <roger.pau@citrix.com>, xen-devel@lists.xenproject.org,
+ linux-kernel@vger.kernel.org
+Message-ID: <44068a70-8940-824b-9e39-b800635b92c7@suse.com>
+Subject: Re: Problems starting Xen domU after latest stable update
+References: <2nft2kipqg.fsf@aragorn.infrastructure.cah>
+ <983b87d6-edb8-21ea-7d6f-f653f5c0d048@oracle.com>
+ <20210129005129.GA2452@mail-itl>
+In-Reply-To: <20210129005129.GA2452@mail-itl>
 
-Kingston seems to known about this since at least mid-September 2020:
-https://bbs.archlinux.org/viewtopic.php?pid=1926994#p1926994
+--nZPkDkCt3NHURUzEQdZiwXelszA8Yan8e
+Content-Type: multipart/mixed;
+ boundary="------------F995415C110CA22168F5B32B"
+Content-Language: en-US
 
-Someone working for a German company representing Kingston to the German
-press confirmed to me Kingston engineering is aware of the issue and
-investigating; the person stated that to their current knowledge only
-the deepest APST sleep state causes trouble. Therefore, make Linux avoid
-it for now by applying the NVME_QUIRK_NO_DEEPEST_PS to this SSD.
+This is a multi-part message in MIME format.
+--------------F995415C110CA22168F5B32B
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-I have two such SSDs, but it seems the problem doesn't occur with them.
-I hence couldn't verify if this patch really fixes the problem, but all
-the data in front of me suggests it should.
+On 29.01.21 01:51, Marek Marczykowski-G=C3=B3recki wrote:
+> On Thu, Jan 28, 2021 at 07:03:00PM -0500, Boris Ostrovsky wrote:
+>>
+>> On 1/28/21 6:52 PM, Michael D Labriola wrote:
+>>> Hey, everyone.  I've run into problems starting up my Xen domUs as of=
 
-This patch can easily be reverted or improved upon if a better solution
-surfaces.
+>>> the latest batch of stable updates.  Whenever I try to create one, I
+>>> get a bunch of block device errors like this:
+>>>
+>>> libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:u=
+nable to add device with path /local/domain/0/backend/vbd/4/51712
+>>> libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:u=
+nable to add device with path /local/domain/0/backend/vbd/4/51728
+>>> libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:u=
+nable to add device with path /local/domain/0/backend/vbd/4/51744
+>>> libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:u=
+nable to add device with path /local/domain/0/backend/vbd/4/51760
+>>> libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:u=
+nable to add device with path /local/domain/0/backend/vbd/4/51776
+>>> libxl: error: libxl_create.c:1452:domcreate_launch_dm: Domain 4:unabl=
+e to add disk devices
+>>> libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:u=
+nable to remove device with path /local/domain/0/backend/vbd/4/51712
+>>> libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:u=
+nable to remove device with path /local/domain/0/backend/vbd/4/51728
+>>> libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:u=
+nable to remove device with path /local/domain/0/backend/vbd/4/51744
+>>> libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:u=
+nable to remove device with path /local/domain/0/backend/vbd/4/51760
+>>> libxl: error: libxl_device.c:1105:device_backend_callback: Domain 4:u=
+nable to remove device with path /local/domain/0/backend/vbd/4/51776
+>>> libxl: error: libxl_domain.c:1290:devices_destroy_cb: Domain 4:libxl_=
+_devices_destroy failed
+>>> libxl: error: libxl_domain.c:1177:libxl__destroy_domid: Domain 4:Non-=
+existant domain
+>>> libxl: error: libxl_domain.c:1131:domain_destroy_callback: Domain 4:U=
+nable to destroy guest
+>>> libxl: error: libxl_domain.c:1058:domain_destroy_cb: Domain 4:Destruc=
+tion of domain failed
+>>>
+>>> I'm using Xen 4.13.1 on the box I've been testing with.
+>>>
+>>> I bisected down to this commit, and reverting it does indeed fix my
+>>> problem.  Well, this commit upstream and it's cherry-picked variants
+>>> on linux-5.4.y and linux-5.10.y.
+>>
+>>
+>> You most likely need 5f46400f7a6a4fad635d5a79e2aa5a04a30ffea1. It hit =
+Linus tree a few hours ago.
+>=20
+> I can confirm this fixes the same issue for me (too?), thanks!
+> Shouldn't this patch have Cc: stable?
 
-FWIW, there are many reports about the issue scattered around the web;
-most of the users disabled APST completely to make things work, some
-just made Linux avoid the deepest sleep state:
+No, I don't think so.
 
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c65
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c73
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c74
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c78
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c79
-https://bugzilla.kernel.org/show_bug.cgi?id=195039#c80
-https://askubuntu.com/questions/1222049/nvmekingston-a2000-sometimes-stops-giving-response-in-ubuntu-18-04dell-inspir
-https://community.acer.com/en/discussion/604326/m-2-nvme-ssd-aspire-517-51g-issue-compatibility-kingston-a2000-linux-ubuntu
+The issue being fixed by the patch has been introduced only in 5.11
+and the fixing patch references the buggy patch via a Fixes: tag.
 
-For the record, some data from 'nvme id-ctrl /dev/nvme0'
+If the buggy patch has been put into stable this Fixes: tag should
+result in the fix being put into the same stable branches as well.
 
-NVME Identify Controller:
-vid       : 0x2646
-ssvid     : 0x2646
-mn        : KINGSTON SA2000M81000G
-fr        : S5Z42105
-[...]
-ps    0 : mp:9.00W operational enlat:0 exlat:0 rrt:0 rrl:0
-          rwt:0 rwl:0 idle_power:- active_power:-
-ps    1 : mp:4.60W operational enlat:0 exlat:0 rrt:1 rrl:1
-          rwt:1 rwl:1 idle_power:- active_power:-
-ps    2 : mp:3.80W operational enlat:0 exlat:0 rrt:2 rrl:2
-          rwt:2 rwl:2 idle_power:- active_power:-
-ps    3 : mp:0.0450W non-operational enlat:2000 exlat:2000 rrt:3 rrl:3
-          rwt:3 rwl:3 idle_power:- active_power:-
-ps    4 : mp:0.0040W non-operational enlat:15000 exlat:15000 rrt:4 rrl:4
-          rwt:4 rwl:4 idle_power:- active_power:-
 
-Cc: stable@vger.kernel.org # 4.14+
-Signed-off-by: Thorsten Leemhuis <linux@leemhuis.info>
----
+Juergen
 
-Once this is out I will post a link to it in
-https://bugzilla.kernel.org/show_bug.cgi?id=195039, maybe someone there
-might be able to confirm that this fixes the issue.
 
----
- drivers/nvme/host/pci.c | 2 ++
- 1 file changed, 2 insertions(+)
+--------------F995415C110CA22168F5B32B
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xB0DE9DD628BF132F.asc"
 
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 856aa31931c1..421735e16870 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -3257,6 +3257,8 @@ static const struct pci_device_id nvme_id_table[] = {
- 		.driver_data = NVME_QUIRK_DISABLE_WRITE_ZEROES, },
- 	{ PCI_DEVICE(0x15b7, 0x2001),   /*  Sandisk Skyhawk */
- 		.driver_data = NVME_QUIRK_DISABLE_WRITE_ZEROES, },
-+	{ PCI_DEVICE(0x2646, 0x2263),   /* KINGSTON A2000 NVMe SSD  */
-+		.driver_data = NVME_QUIRK_NO_DEEPEST_PS, },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_APPLE, 0x2001),
- 		.driver_data = NVME_QUIRK_SINGLE_VECTOR },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_APPLE, 0x2003) },
--- 
-2.29.2
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
+xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
+cWx
+w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
+f8Z
+d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
+9bf
+IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
+G7/
+377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
+3Jv
+c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
+QIe
+AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
+hpw
+dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
+MbD
+1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
+oPH
+Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
+5QL
++qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
+2Vu
+IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
+QoL
+BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
+Wf0
+teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
+/nu
+AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
+ITT
+d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
+XBK
+7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
+80h
+SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
+AcD
+AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
+FOX
+gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
+jnD
+kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
+N51
+N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
+otu
+fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
+tqS
+EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
+hsD
+BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
+g3O
+ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
+dM7
+wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
+D+j
+LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
+V2x
+AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
+Eaw
+QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
+nHI
+s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
+wgn
+BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
+bVF
+LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
+pEd
+IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
+QAB
+wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
+Tbe
+8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
+vJz
+Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
+VGi
+wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
+svi
+uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
+zXs
+ZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------F995415C110CA22168F5B32B--
+
+--nZPkDkCt3NHURUzEQdZiwXelszA8Yan8e--
+
+--EGwiQzZCoNLZmzRhDQxnU6miBrMwYBCNy
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmATnGoFAwAAAAAACgkQsN6d1ii/Ey8e
+oAf+MddfaCnGDNsaGVPvbGniUHKmkw89GXzyPr3oGnm71XPEsk/x34EraLyFUhWY0REl24u4W4Y4
+G5inX3r1vEoYwCWd259Z5img/ZRDUFZ086lZPX/O2C8nlzROL5h+sUX16Mg/7utcPM080PU9jxPb
+hHXjT192f0lmJniBG+Mf2WrVzBstO3X5JWiIXwuuFcWG3MlFf1YCDGQb+46j7bEB6o3TDVrz/x1A
+vzdMkJU3LllO62ooRhH6YfWIVGj6fg5W9KM+aIxUOCvovghBdig+ju/TxA8WUMzwAmn6ezB3r/VF
+0FsTfgfg7Itq8equm/Mbqsx30oXuR/nKtTsnEwHXAA==
+=zlg9
+-----END PGP SIGNATURE-----
+
+--EGwiQzZCoNLZmzRhDQxnU6miBrMwYBCNy--
