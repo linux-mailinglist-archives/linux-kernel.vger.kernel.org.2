@@ -2,131 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088593085E8
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA273085E9
 	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:44:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232265AbhA2Gd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 01:33:28 -0500
-Received: from m42-8.mailgun.net ([69.72.42.8]:16877 "EHLO m42-8.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232236AbhA2GbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 01:31:02 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611901840; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=k99FP1SFldOePaUcEFCtxlpJY4Jhko9U7KZE8IRb3Ss=;
- b=a5p/UGZYQPm9Gv6VWBmUO/4WdaC4xCjaReDrCBoRyo1V+XyNchLpcyPtmr1uF9NrAF9IqXOg
- cX57J9WGgeL3P3sNaPI9OtU2p348lJj17xdmLLxQKRL87+MfoUv0hr9GyKlUIck+niUUlsVO
- 4EPMjzoW1Jf1+qxragCFxxTzE2E=
-X-Mailgun-Sending-Ip: 69.72.42.8
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 6013ab66589a8a2d5ad363f6 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 Jan 2021 06:29:58
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 55FAAC43467; Fri, 29 Jan 2021 06:29:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5FAF2C433CA;
-        Fri, 29 Jan 2021 06:29:57 +0000 (UTC)
+        id S232268AbhA2Gd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 01:33:59 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:40996 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232223AbhA2GbA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 01:31:00 -0500
+X-UUID: 4fba3d46cb0047298c2013140ca7584b-20210129
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:Reply-To:From:Subject:Message-ID; bh=9WDQsRRha7OCdnZihlDtCMb6fVsdsr4DG/FtSa6OafA=;
+        b=ls3sgJvk5L5ilbRjg+Ibx4B3dAFM2UiJFokz/RsHpJZE4hn8TcjCQ8ZAXNVRE01x9NhVtezOwZvmBlJnixWGpwIOGgjmGtufDxO+UnrF8Gb1eAo6wKcL5k1mE4kTwIHlc+BcmJqCfdsVkjzRJb8I/z1XgwYaEaSYGSQQIQ5iGNc=;
+X-UUID: 4fba3d46cb0047298c2013140ca7584b-20210129
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <yongqiang.niu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 189400352; Fri, 29 Jan 2021 14:30:11 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by mtkmbs05n1.mediatek.inc
+ (172.21.101.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 29 Jan
+ 2021 14:30:09 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 29 Jan 2021 14:30:08 +0800
+Message-ID: <1611901808.1947.16.camel@mhfsdcap03>
+Subject: Re: [PATCH v12 6/8] drm/mediatek: enable dither function
+From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
+Reply-To: Yongqiang Niu <yongqiang.niu@mediatek.com>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+CC:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Date:   Fri, 29 Jan 2021 14:30:08 +0800
+In-Reply-To: <CAJMQK-gKKjLJ5xOAKOx5BM5dL2MxgFq72FVCfGTfzK4ZXzRJfA@mail.gmail.com>
+References: <20210128112314.1304160-1-hsinyi@chromium.org>
+         <20210128112314.1304160-7-hsinyi@chromium.org>
+         <1611883982.5226.12.camel@mtksdaap41>
+         <CAJMQK-gKKjLJ5xOAKOx5BM5dL2MxgFq72FVCfGTfzK4ZXzRJfA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 29 Jan 2021 14:29:57 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     jaegeuk@kernel.org, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/3] scsi: ufs: Fix a race condition btw task
- management request send and compl
-In-Reply-To: <5f77542d66732003f0154a4e8a6ae13b@codeaurora.org>
-References: <1611807365-35513-1-git-send-email-cang@codeaurora.org>
- <1611807365-35513-3-git-send-email-cang@codeaurora.org>
- <73362ca9-93be-c38f-a881-4b7cf690fbc1@acm.org>
- <5f77542d66732003f0154a4e8a6ae13b@codeaurora.org>
-Message-ID: <56b26318de92eb88d663bbdc7096edcf@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-29 14:06, Can Guo wrote:
-> On 2021-01-29 11:20, Bart Van Assche wrote:
->> On 1/27/21 8:16 PM, Can Guo wrote:
->>> ufshcd_compl_tm() looks for all 0 bits in the 
->>> REG_UTP_TASK_REQ_DOOR_BELL
->>> and call complete() for each req who has the req->end_io_data set. 
->>> There
->>> can be a race condition btw tmc send/compl, because the 
->>> req->end_io_data is
->>> set, in __ufshcd_issue_tm_cmd(), without host lock protection, so it 
->>> is
->>> possible that when ufshcd_compl_tm() checks the req->end_io_data, it 
->>> is set
->>> but the corresponding tag has not been set in 
->>> REG_UTP_TASK_REQ_DOOR_BELL.
->>> Thus, ufshcd_tmc_handler() may wrongly complete TMRs which have not 
->>> been
->>> sent out. Fix it by protecting req->end_io_data with host lock, and 
->>> let
->>> ufshcd_compl_tm() only handle those tm cmds which have been completed
->>> instead of looking for 0 bits in the REG_UTP_TASK_REQ_DOOR_BELL.
->> 
->> I don't know any other block driver that needs locking to protect 
->> races
->> between submission and completion context. Can the block layer timeout
->> mechanism be used instead of the mechanism introduced by this patch,
->> e.g. by using blk_execute_rq_nowait() to submit requests? That would
->> allow to reuse the existing mechanism in the block layer core to 
->> handle
->> races between request completion and timeout handling.
-> 
-> This patch is not introducing any new mechanism, it is fixing the
-> usage of completion (req->end_io_data = c) introduced by commit
-> 69a6c269c097 ("scsi: ufs: Use blk_{get,put}_request() to allocate
-> and free TMFs"). If you have better idea to get it fixed once for
-> all, we are glad to take your change to get it fixed asap.
-> 
-> Regards,
-> 
-> Can Guo.
-> 
+T24gRnJpLCAyMDIxLTAxLTI5IGF0IDE0OjI0ICswODAwLCBIc2luLVlpIFdhbmcgd3JvdGU6DQo+
+IE9uIEZyaSwgSmFuIDI5LCAyMDIxIGF0IDk6MzMgQU0gQ0sgSHUgPGNrLmh1QG1lZGlhdGVrLmNv
+bT4gd3JvdGU6DQo+ID4NCj4gPiBIaSwgSHNpbi1ZaToNCj4gPg0KPiA+IE9uIFRodSwgMjAyMS0w
+MS0yOCBhdCAxOToyMyArMDgwMCwgSHNpbi1ZaSBXYW5nIHdyb3RlOg0KPiA+ID4gRnJvbTogWW9u
+Z3FpYW5nIE5pdSA8eW9uZ3FpYW5nLm5pdUBtZWRpYXRlay5jb20+DQo+ID4gPg0KPiA+ID4gZm9y
+IDUgb3IgNiBicGMgcGFuZWwsIHdlIG5lZWQgZW5hYmxlIGRpdGhlciBmdW5jdGlvbg0KPiA+ID4g
+dG8gaW1wcm92ZSB0aGUgZGlzcGxheSBxdWFsaXR5DQo+ID4gPg0KPiA+ID4gU2lnbmVkLW9mZi1i
+eTogWW9uZ3FpYW5nIE5pdSA8eW9uZ3FpYW5nLm5pdUBtZWRpYXRlay5jb20+DQo+ID4gPiBTaWdu
+ZWQtb2ZmLWJ5OiBIc2luLVlpIFdhbmcgPGhzaW55aUBjaHJvbWl1bS5vcmc+DQo+ID4gPiAtLS0N
+Cj4gPiA+ICBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kZHBfY29tcC5jIHwgMTUg
+KysrKysrKysrKysrKy0tDQo+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDEzIGluc2VydGlvbnMoKyks
+IDIgZGVsZXRpb25zKC0pDQo+ID4gPg0KPiA+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2Ry
+bS9tZWRpYXRlay9tdGtfZHJtX2RkcF9jb21wLmMgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsv
+bXRrX2RybV9kZHBfY29tcC5jDQo+ID4gPiBpbmRleCBhYzJjYjI1NjIwMzU3Li42YzhmMjQ2Mzgw
+YTc0IDEwMDY0NA0KPiA+ID4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1f
+ZGRwX2NvbXAuYw0KPiA+ID4gKysrIGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1f
+ZGRwX2NvbXAuYw0KPiA+ID4gQEAgLTUzLDYgKzUzLDcgQEANCj4gPiA+ICAjZGVmaW5lIERJVEhF
+Ul9FTiAgICAgICAgICAgICAgICAgICAgICAgICAgICBCSVQoMCkNCj4gPiA+ICAjZGVmaW5lIERJ
+U1BfRElUSEVSX0NGRyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDB4MDAyMA0KPiA+ID4g
+ICNkZWZpbmUgRElUSEVSX1JFTEFZX01PREUgICAgICAgICAgICAgICAgICAgIEJJVCgwKQ0KPiA+
+ID4gKyNkZWZpbmUgRElUSEVSX0VOR0lORV9FTiAgICAgICAgICAgICAgICAgICAgIEJJVCgxKQ0K
+PiA+ID4gICNkZWZpbmUgRElTUF9ESVRIRVJfU0laRSAgICAgICAgICAgICAgICAgICAgIDB4MDAz
+MA0KPiA+ID4NCj4gPiA+ICAjZGVmaW5lIExVVF8xMEJJVF9NQVNLICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIDB4MDNmZg0KPiA+ID4gQEAgLTMxNCw5ICszMTUsMTkgQEAgc3RhdGljIHZv
+aWQgbXRrX2RpdGhlcl9jb25maWcoc3RydWN0IGRldmljZSAqZGV2LCB1bnNpZ25lZCBpbnQgdywN
+Cj4gPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB1bnNpZ25lZCBpbnQgYnBjLCBzdHJ1
+Y3QgY21kcV9wa3QgKmNtZHFfcGt0KQ0KPiA+ID4gIHsNCj4gPiA+ICAgICAgIHN0cnVjdCBtdGtf
+ZGRwX2NvbXBfZGV2ICpwcml2ID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+ID4gPiArICAgICBi
+b29sIGVuYWJsZSA9IChicGMgPT0gNSB8fCBicGMgPT0gNik7DQo+ID4NCj4gPiBJIHN0cm9uZ2x5
+IGJlbGlldmUgdGhhdCBkaXRoZXIgZnVuY3Rpb24gaW4gZGl0aGVyIGlzIGlkZW50aWNhbCB0byB0
+aGUNCj4gPiBvbmUgaW4gZ2FtbWEgYW5kIG9kLCBhbmQgaW4gbXRrX2RpdGhlcl9zZXRfY29tbW9u
+KCksICdicGMgPj0NCj4gPiBNVEtfTUlOX0JQQycgaXMgdmFsaWQsIHNvIEkgYmVsaWV2ZSB3ZSBu
+ZWVkIG5vdCB0byBsaW1pdCBicGMgdG8gNSBvciA2Lg0KPiA+IEJ1dCB3ZSBzaG91bGQgY29uc2lk
+ZXIgdGhlIGNhc2UgdGhhdCBicGMgaXMgaW52YWxpZCBpbg0KPiA+IG10a19kaXRoZXJfc2V0X2Nv
+bW1vbigpLiBJbnZhbGlkIGNhc2UgaW4gZ2FtbWEgYW5kIG9kIHVzZSBkaWZmZXJlbnQgd2F5DQo+
+ID4gdG8gcHJvY2Vzcy4gRm9yIGdhbW1hLCBkaXRoZXIgaXMgZGVmYXVsdCByZWxheSBtb2RlLCBz
+byBpbnZhbGlkIGJwYw0KPiA+IHdvdWxkIGRvIG5vdGhpbmcgaW4gbXRrX2RpdGhlcl9zZXRfY29t
+bW9uKCkgYW5kIHJlc3VsdCBpbiByZWxheSBtb2RlLg0KPiA+IEZvciBvZCwgaXQgc2V0IHRvIHJl
+bGF5IG1vZGUgZmlyc3QsIHRoZW0gaW52YWxpZCBicGMgd291bGQgZG8gbm90aGluZyBpbg0KPiA+
+IG10a19kaXRoZXJfc2V0X2NvbW1vbigpIGFuZCByZXN1bHQgaW4gcmVsYXkgbW9kZS4gSSB3b3Vs
+ZCBsaWtlIGRpdGhlciwNCj4gPiBnYW1tYSBhbmQgb2QgdG8gcHJvY2VzcyBpbnZhbGlkIGJwYyBp
+biB0aGUgc2FtZSB3YXkuIE9uZSBzb2x1dGlvbiBpcyB0bw0KPiA+IHNldCByZWxheSBtb2RlIGlu
+IG10a19kaXRoZXJfc2V0X2NvbW1vbigpIGZvciBpbnZhbGlkIGJwYy4NCj4gPg0KPiA+IFJlZ2Fy
+ZHMsDQo+ID4gQ0sNCj4gPg0KPiANCj4gSSBtb2RpZnkgdGhlIG10a19kaXRoZXJfY29uZmlnKCkg
+dG8gZm9sbG93Og0KPiANCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0
+ZWsvbXRrX2RybV9kZHBfY29tcC5jDQo+IGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19k
+cm1fZGRwX2NvbXAuYw0KPiBpbmRleCBhYzJjYjI1NjIwMzU3Li41YjdmY2VkYjlmOWE4IDEwMDY0
+NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kZHBfY29tcC5jDQo+
+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2RkcF9jb21wLmMNCj4gQEAg
+LTUzLDYgKzUzLDcgQEANCj4gICNkZWZpbmUgRElUSEVSX0VOICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgQklUKDApDQo+ICAjZGVmaW5lIERJU1BfRElUSEVSX0NGRyAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgMHgwMDIwDQo+ICAjZGVmaW5lIERJVEhFUl9SRUxBWV9NT0RFICAg
+ICAgICAgICAgICAgICAgICAgIEJJVCgwKQ0KPiArI2RlZmluZSBESVRIRVJfRU5HSU5FX0VOICAg
+ICAgICAgICAgICAgICAgICAgICBCSVQoMSkNCj4gICNkZWZpbmUgRElTUF9ESVRIRVJfU0laRSAg
+ICAgICAgICAgICAgICAgICAgICAgMHgwMDMwDQo+IA0KPiAgI2RlZmluZSBMVVRfMTBCSVRfTUFT
+SyAgICAgICAgICAgICAgICAgICAgICAgICAweDAzZmYNCj4gQEAgLTE2Niw2ICsxNjcsOCBAQCB2
+b2lkIG10a19kaXRoZXJfc2V0X2NvbW1vbih2b2lkIF9faW9tZW0gKnJlZ3MsDQo+IHN0cnVjdCBj
+bWRxX2NsaWVudF9yZWcgKmNtZHFfcmVnLA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBESVRIRVJfQUREX0xTSElGVF9HKE1US19NQVhfQlBDIC0gYnBjKSwNCj4gICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgY21kcV9yZWcsIHJlZ3MsIERJU1BfRElUSEVSXzE2KTsNCj4gICAg
+ICAgICAgICAgICAgIG10a19kZHBfd3JpdGUoY21kcV9wa3QsIGRpdGhlcl9lbiwgY21kcV9yZWcs
+IHJlZ3MsIGNmZyk7DQo+ICsgICAgICAgfSBlbHNlIHsNCj4gKyAgICAgICAgICAgICAgIG10a19k
+ZHBfd3JpdGUoY21kcV9wa3QsIERJVEhFUl9SRUxBWV9NT0RFLCBjbWRxX3JlZywgcmVncywgY2Zn
+KTsNCj4gICAgICAgICB9DQo+ICB9DQo+IA0KPiBAQCAtMzE1LDggKzMxOCwxMiBAQCBzdGF0aWMg
+dm9pZCBtdGtfZGl0aGVyX2NvbmZpZyhzdHJ1Y3QgZGV2aWNlICpkZXYsDQo+IHVuc2lnbmVkIGlu
+dCB3LA0KPiAgew0KPiAgICAgICAgIHN0cnVjdCBtdGtfZGRwX2NvbXBfZGV2ICpwcml2ID0gZGV2
+X2dldF9kcnZkYXRhKGRldik7DQo+IA0KPiAtICAgICAgIG10a19kZHBfd3JpdGUoY21kcV9wa3Qs
+IGggPDwgMTYgfCB3LCAmcHJpdi0+Y21kcV9yZWcsDQo+IHByaXYtPnJlZ3MsIERJU1BfRElUSEVS
+X1NJWkUpOw0KPiAtICAgICAgIG10a19kZHBfd3JpdGUoY21kcV9wa3QsIERJVEhFUl9SRUxBWV9N
+T0RFLCAmcHJpdi0+Y21kcV9yZWcsDQo+IHByaXYtPnJlZ3MsIERJU1BfRElUSEVSX0NGRyk7DQo+
+ICsgICAgICAgbXRrX2RkcF93cml0ZShjbWRxX3BrdCwgaCA8PCAxNiB8IHcsICZwcml2LT5jbWRx
+X3JlZywgcHJpdi0+cmVncywNCj4gKyAgICAgICAgICAgICAgICAgICAgIERJU1BfRElUSEVSX1NJ
+WkUpOw0KPiArICAgICAgIG10a19kZHBfd3JpdGUoY21kcV9wa3QsIERJVEhFUl9SRUxBWV9NT0RF
+LCAmcHJpdi0+Y21kcV9yZWcsIHByaXYtPnJlZ3MsDQo+ICsgICAgICAgICAgICAgICAgICAgICBE
+SVNQX0RJVEhFUl9DRkcpOw0KPiArICAgICAgIG10a19kaXRoZXJfc2V0X2NvbW1vbihwcml2LT5y
+ZWdzLCAmcHJpdi0+Y21kcV9yZWcsIGJwYywgRElTUF9ESVRIRVJfQ0ZHLA0KPiArICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgRElUSEVSX0VOR0lORV9FTiwgY21kcV9wa3QpOw0KPiAgfQ0K
+PiANCj4gU28gbm93LCBub3Qgb25seSBicGM9PTUgb3IgNiwgYnV0IGFsbCB2YWxpZCBicGMsIGRp
+dGhlciBjb25maWcgd2lsbA0KPiBjYWxsIG10a19kaXRoZXJfc2V0X2NvbW1vbigpIHdpdGggdGhl
+IGZsYWcgRElUSEVSX0VOR0lORV9FTihCSVQoMSkpLg0KPiBvZCBjb25maWcgd2lsbCBjYWxsIG10
+a19kaXRoZXJfc2V0X2NvbW1vbigpIHdpdGggdGhlIGZsYWcNCj4gRElTUF9ESVRIRVJJTkcoQklU
+KDIpKS4NCj4gQWRkaXRpb25hbGx5IGZvciA4MTczLCBnYW1tYSBjb25maWcgd2lsbCBjYWxsIG10
+a19kaXRoZXJfc2V0X2NvbW1vbigpDQo+IHdpdGggdGhlIGZsYWcgRElTUF9ESVRIRVJJTkcgKEJJ
+VCgyKSkNCj4gDQo+IEZvciBpbnZhbGlkIG1vZGUgYWxsIG9mIHRoZW0gd2lsbCBiZSBESVRIRVJf
+UkVMQVlfTU9ERS4NCj4gDQo+IEp1c3QgdG8gbWFrZSBzdXJlIHRoYXQgdGhpcyBmb2xsb3dzIHRo
+ZSBzcGVjPyB0aGFua3MNCj4gDQoNCmZvciBtdDgxNzMgZ2FtbWEsIHRoZXJlIGlzIG5vIHJlbGF5
+IG1vZGUsIG9ubHkgZGl0aGVyIGVuYWJsZSBvciBub3QoYml0DQoyKS4NCmZvciBtdDgxODMgZGl0
+aGVyLCB0aGVyZSBpcyBkaXRoZXIgZW5hYmxlIGJpdCAxLCBhbmQgcmVsYXkgbW9kZSBiaXQgMA0K
+DQoNCj4gPiA+DQo+ID4gPiAtICAgICBtdGtfZGRwX3dyaXRlKGNtZHFfcGt0LCBoIDw8IDE2IHwg
+dywgJnByaXYtPmNtZHFfcmVnLCBwcml2LT5yZWdzLCBESVNQX0RJVEhFUl9TSVpFKTsNCj4gPiA+
+IC0gICAgIG10a19kZHBfd3JpdGUoY21kcV9wa3QsIERJVEhFUl9SRUxBWV9NT0RFLCAmcHJpdi0+
+Y21kcV9yZWcsIHByaXYtPnJlZ3MsIERJU1BfRElUSEVSX0NGRyk7DQo+ID4gPiArICAgICBpZiAo
+ZW5hYmxlKSB7DQo+ID4gPiArICAgICAgICAgICAgIG10a19kaXRoZXJfc2V0X2NvbW1vbihwcml2
+LT5yZWdzLCAmcHJpdi0+Y21kcV9yZWcsIGJwYywNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIERJU1BfRElUSEVSX0NGRywgRElUSEVSX0VOR0lORV9FTiwNCj4gPiA+
+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNtZHFfcGt0KTsNCj4gPiA+ICsg
+ICAgIH0gZWxzZSB7DQo+ID4gPiArICAgICAgICAgICAgIG10a19kZHBfd3JpdGUoY21kcV9wa3Qs
+IERJVEhFUl9SRUxBWV9NT0RFLCAmcHJpdi0+Y21kcV9yZWcsDQo+ID4gPiArICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgcHJpdi0+cmVncywgRElTUF9ESVRIRVJfQ0ZHKTsNCj4gPiA+ICsgICAg
+IH0NCj4gPiA+ICsNCj4gPiA+ICsgICAgIG10a19kZHBfd3JpdGUoY21kcV9wa3QsIGggPDwgMTYg
+fCB3LCAmcHJpdi0+Y21kcV9yZWcsIHByaXYtPnJlZ3MsDQo+ID4gPiArICAgICAgICAgICAgICAg
+ICAgIERJU1BfRElUSEVSX1NJWkUpOw0KPiA+ID4gIH0NCj4gPiA+DQo+ID4gPiAgc3RhdGljIHZv
+aWQgbXRrX2RpdGhlcl9zdGFydChzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ID4NCg0K
 
-On second thought, actually the 1st fix alone is enough to eliminate the
-race condition. Because blk_mq_tagset_busy_iter() only iterates over all
-requests which are not in IDLE state, if blk_mq_start_request() is 
-called
-within the protection of host spin lock, ufshcd_compl_tm() shall not run
-into the scenario where req->end_io_data is set but 
-REG_UTP_TASK_REQ_DOOR_BELL
-has not been set. What do you think?
-
-Thanks,
-
-Can Guo.
-
->> 
->> Thanks,
->> 
->> Bart.
