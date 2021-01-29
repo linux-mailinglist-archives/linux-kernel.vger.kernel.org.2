@@ -2,145 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E956308F73
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:31:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20793308F75
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:31:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233491AbhA2V3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 16:29:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46258 "EHLO
+        id S233497AbhA2Va1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 16:30:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233484AbhA2V3d (ORCPT
+        with ESMTP id S233455AbhA2VaN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 16:29:33 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9090EC061573;
-        Fri, 29 Jan 2021 13:28:31 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id d13so10846413ioy.4;
-        Fri, 29 Jan 2021 13:28:31 -0800 (PST)
+        Fri, 29 Jan 2021 16:30:13 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 843B1C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 13:29:32 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id e9so6033146plh.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 13:29:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=iKpEQgZS1QCYwcoVA/IcLJsT/QZzUi4/M7PsXGgpQfE=;
-        b=fMRZFK4ep5zSIRr70ydxpadj/9KtuXo9IlmMEwZ6aSBmmveC0Kz+0vmK1ixQQC/7Dj
-         qTJVh5F+GLeCkuf41AJz1lOvFQ2EKeYDkywPzv93VmDy76NGDbC4hM6Jz6JaAv04VqXj
-         5mX4Z3nEzvkJuXl4k0bGt1bMZhEByd2J0lAFiApkCUsNEORaDgcXtmoSEf/gJnGryNsm
-         M/iRbEHi03TsNCLtiy+nzqn3QJHBqCCkyszrVeY7L+A1akugY+wMl7wNM4ORmgnJxWIB
-         Dmhbg/tO6wMnLD80Bfd+NynUkV4ToUW2V5318Ycg8GVEZhEDerA5AWIemBVmvJ2iGmTR
-         VG1Q==
+        bh=tzQsONGruEyjt5Iym23vI9HLnucrCfyMF2lrfS7LSKo=;
+        b=dfFvPhN/zaDEnQjnsdzGUnt46hQnAerCAHB5gFqm0IBnwmpGrwbTmzVqeI0kzv2Mxz
+         1qh3wayCvSJiVuZRgBzDSiigh+I9pDuxZre2fAbeLPehMrb9TvMpL+/u4vl57JfVLG02
+         l7EVSXApCIktH25rMivtF8lrf9drTCAIgiIRh7HDa+mqat5fMR+CeaAsfz9qs6ekv2Zu
+         cxe9XdLxOEUysnYGvahF1Z/K3Nn8eIh/h4ys2yKIQ4r+SnSVnGayvrYMUc3ku0bJnPmv
+         q1sIDbRJCCmsi/j5O0mtio+Pl165XJIFtZQJuYFP38VRqVSh+ulyUt7KuxNyi5t23sJ+
+         hcSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=iKpEQgZS1QCYwcoVA/IcLJsT/QZzUi4/M7PsXGgpQfE=;
-        b=JNvs1xdOwz4bZTjU8d76FaJTDCuFqt8Ri/M89MObsWr5b7BunU2L4Qxyoff5mM048G
-         IqmXrKnmsJgQ5NgSYM3CDNRCv0h9O+oQQo+h0xWbUnyYXAYlhr40mf6PkQaPnVqboAOe
-         Ipx0lmEeI/jfJ+vssvJpyeRhnts8PMWGnwmIrmx+s63CSAMOa4OyzxkSShTK+X288fh9
-         Sl32rmqRdD7vyjp/Os+SeVCT9RtXMjobAaVDHBoQVOZEwhTZyZy1knyHpbN147Ut/M2M
-         1uw1pCNVuOW/PlVV+js9NR46OPM5pMQfo7MnbGVBzi4cYCXOjXazUAOtfCvZXDqwDLhT
-         hNHw==
-X-Gm-Message-State: AOAM531UCpqNA/eYvLum2TJLXZVWbPbqcx/EPVilcjYL8B9+By2pTHvu
-        G0XNaT2QbNMkCY2PDUe+Ehtd8OGBhFWBhSCrmDQ=
-X-Google-Smtp-Source: ABdhPJxQHThyPfYaf7dcZ8ePzMFtwOJvGemJiselxNzpqvhf5JHQn1G8eLTOO/AEnjalkFd2AazRdzRyVOSIgCGs158=
-X-Received: by 2002:a05:6638:1344:: with SMTP id u4mr5560181jad.86.1611955711081;
- Fri, 29 Jan 2021 13:28:31 -0800 (PST)
+        bh=tzQsONGruEyjt5Iym23vI9HLnucrCfyMF2lrfS7LSKo=;
+        b=HygO0VnkllCxOcRKcr08Bv5+n+pm5ybPK7RXa0G0rylPoztcATTpiwrSoj3TzvyIbw
+         Q/fK14fuMNM/IOj6/9PC30kB/gzj/dvO0puAT9adnST8umsea6cChuMdE7kde6W/WUEg
+         2WEjNG/E7VavFBNx6jlU3Xo2BXofxX4Apd8lXcZi5IPnhQT3GtpkZ0mfNWE2TqjnZyc/
+         dLLLMOcY/rFGSA24q9MRMyIwME5sA7H8uzcf7fZP6mdGErCtlkmRkCxoZHyVkjLtJDh8
+         DfN9Wou4ny+jGn+WfF6Hy7K6eJ4Dr4t/xXDLiFeCX68F6VpUvcUMKR4Ydg/nuEXXqpCf
+         YQ4Q==
+X-Gm-Message-State: AOAM531lNY3EjUClgdxzVV2T/ybALiNSOWlr+QDPs0V1CUiRkrIq/p8J
+        A92lg09t3FIPOhj6BYMxaxd9wE6QNJqRsgLtnSqxuQ==
+X-Google-Smtp-Source: ABdhPJzv8Hua+OLhiVvzmJb2o2ndUE23YH7tA5+ja75YoKggWl2k12NDBeDg1qQaSWCwGAaJZtgHovGqaN2RGoqrxfw=
+X-Received: by 2002:a17:902:760f:b029:df:e6bf:7e53 with SMTP id
+ k15-20020a170902760fb02900dfe6bf7e53mr5997159pll.80.1611955771785; Fri, 29
+ Jan 2021 13:29:31 -0800 (PST)
 MIME-Version: 1.0
-References: <20210129204528.2118168-1-yury.norov@gmail.com>
- <20210129204528.2118168-4-yury.norov@gmail.com> <CAHp75VcSc=myrcvyBOkaUDguR6aPjJAFFXi2iSvmU21+1664Hw@mail.gmail.com>
-In-Reply-To: <CAHp75VcSc=myrcvyBOkaUDguR6aPjJAFFXi2iSvmU21+1664Hw@mail.gmail.com>
-From:   Yury Norov <yury.norov@gmail.com>
-Date:   Fri, 29 Jan 2021 13:28:20 -0800
-Message-ID: <CAAH8bW_Gt+0bC=S2HtR_B3cH-KGJQQaUQ0z0xn=aZCtBzy43yQ@mail.gmail.com>
-Subject: Re: [PATCH 2/5] bits_per_long.h: introduce SMALL_CONST() macro
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+References: <20210125124533.101339-1-arnd@kernel.org> <202101271213.4F331332E@keescook>
+In-Reply-To: <202101271213.4F331332E@keescook>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Fri, 29 Jan 2021 13:29:20 -0800
+Message-ID: <CAFd5g45+JqKDqewqz2oZtnphA-_0w62FdSTkRs43K_NJUgnLBg@mail.gmail.com>
+Subject: Re: [RFC 0/3] kunit vs structleak
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-SH <linux-sh@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
-        Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        David Sterba <dsterba@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+        Arnd Bergmann <arnd@arndb.de>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Vitor Massaru Iha <vitor@massaru.org>,
+        linux-hardening@vger.kernel.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 1:11 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
+On Wed, Jan 27, 2021 at 12:15 PM Kees Cook <keescook@chromium.org> wrote:
 >
-> On Fri, Jan 29, 2021 at 10:49 PM Yury Norov <yury.norov@gmail.com> wrote:
+> On Mon, Jan 25, 2021 at 01:45:25PM +0100, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
 > >
-> > Many algorithms become simplier if they are passed with relatively small
->
-> simpler
->
-> > input values. One example is bitmap operations when the whole bitmap fits
-> > into one word. To implement such simplifications, linux/bitmap.h declares
-> > small_const_nbits() macro.
+> > I ran into a couple of problems with kunit tests taking too much stack
+> > space, sometimes dangerously so. These the the three instances that
+> > cause an increase over the warning limit of some architectures:
 > >
-> > Other subsystems may also benefit from optimizations of this sort, like
-> > find_bit API in the following patches. So it looks helpful to generalize
-> > the macro and extend it's visibility.
->
-> > It should probably go to linux/kernel.h, but doing that creates circular
-> > dependencies. So put it in asm-generic/bitsperlong.h.
->
-> No, no, please leave kernel.h alone. It's already quite a mess.
->
-> And this shouldn't be in the commit message either.
->
-> ...
->
-> > -       if (small_const_nbits(nbits))
-> > +       if (SMALL_CONST(nbits - 1))
->
-> Not sure if we need to rename it.
-
-Lower case for generic macro kind of breaking the rules.
-
-Behaviour has changed too. Before it was:
-0 < VAL <= 32
-Now it's
-0 <= VAL < 32
-Which is better for generic macro.
-
-So changing the name looks reasonable to me.
-
-> ...
->
-> > --- a/include/linux/bits.h
-> > +++ b/include/linux/bits.h
-> > @@ -37,7 +37,7 @@
-> >  #define GENMASK(h, l) \
-> >         (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+> > lib/bitfield_kunit.c:93:1: error: the frame size of 7440 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]
+> > drivers/base/test/property-entry-test.c:481:1: error: the frame size of 2640 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]
+> > drivers/thunderbolt/test.c:1529:1: error: the frame size of 1176 bytes is larger than 1024 bytes [-Werror=frame-larger-than=]
 > >
-> > -#define BITS_FIRST(nr)         GENMASK(nr), 0)
-> > +#define BITS_FIRST(nr)         GENMASK((nr), 0)
+> > Ideally there should be a way to rewrite the kunit infrastructure
+> > that avoids the explosion of stack data when the structleak plugin
+> > is used.
+> >
+> > A rather drastic measure would be to use Kconfig logic to make
+> > the two options mutually exclusive. This would clearly work, but
+> > is probably not needed.
+> >
+> > As a simpler workaround, this disables the plugin for the three
+> > files in which the excessive stack usage was observed.
+> >
+> >       Arnd
+> >
+> > Arnd Bergmann (3):
+> >   bitfield: build kunit tests without structleak plugin
+> >   drivers/base: build kunit tests without structleak plugin
+> >   thunderbolt: build kunit tests without structleak plugin
+> >
+> >  drivers/base/test/Makefile   | 1 +
+> >  drivers/thunderbolt/Makefile | 1 +
+> >  lib/Makefile                 | 1 +
+> >  3 files changed, 3 insertions(+)
 >
-> How come?!
+> I think I'd prefer centralizing the disabling, as done with the other
+> plugins, instead of sprinkling "open coded" command-line options around
+> the kernel's Makefiles. :)
+>
+> For example:
+>
+>
+> diff --git a/scripts/Makefile.gcc-plugins b/scripts/Makefile.gcc-plugins
+> index 952e46876329..2d5009e3b593 100644
+> --- a/scripts/Makefile.gcc-plugins
+> +++ b/scripts/Makefile.gcc-plugins
+> @@ -21,6 +21,10 @@ gcc-plugin-cflags-$(CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF_ALL)  \
+>                 += -fplugin-arg-structleak_plugin-byref-all
+>  gcc-plugin-cflags-$(CONFIG_GCC_PLUGIN_STRUCTLEAK)              \
+>                 += -DSTRUCTLEAK_PLUGIN
+> +ifdef CONFIG_GCC_PLUGIN_STRUCTLEAK
+> +    DISABLE_STRUCTLEAK_PLUGIN += -fplugin-arg-structleak_plugin-disable
+> +endif
+> +export DISABLE_STRUCTLEAK_PLUGIN
+>
+>  gcc-plugin-$(CONFIG_GCC_PLUGIN_RANDSTRUCT)     += randomize_layout_plugin.so
+>  gcc-plugin-cflags-$(CONFIG_GCC_PLUGIN_RANDSTRUCT)              \
+>
+>
+> And then use DISABLE_STRUCTLEAK_PLUGIN.
 
-git send-email wrong_dir/000*
-Will resubmit today later.
-
-> ...
->
-> > diff --git a/tools/include/asm-generic/bitsperlong.h b/tools/include/asm-generic/bitsperlong.h
-> > index 8f2283052333..432d272baf27 100644
-> > --- a/tools/include/asm-generic/bitsperlong.h
-> > +++ b/tools/include/asm-generic/bitsperlong.h
->
-> I think a tools update would be better to have in a separate patch.
->
-> --
-> With Best Regards,
-> Andy Shevchenko
+This looks fine to me. Does somebody want me to send this out as a
+patch? Don't want to steal anyone's thunder :-)
