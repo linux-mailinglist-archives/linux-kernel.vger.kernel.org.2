@@ -2,302 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C799B308661
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:28:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5673308665
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:28:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbhA2HY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 02:24:26 -0500
-Received: from mail-ej1-f51.google.com ([209.85.218.51]:40756 "EHLO
-        mail-ej1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231926AbhA2HYQ (ORCPT
+        id S232195AbhA2HZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 02:25:28 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41320 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232020AbhA2HZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 02:24:16 -0500
-Received: by mail-ej1-f51.google.com with SMTP id gx5so11506128ejb.7;
-        Thu, 28 Jan 2021 23:23:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xQJTX9tSzdtR6ydGyWHufCeqLWMiNPcRsNBvuTsrqnk=;
-        b=US8FH8KqvAbJnx8V8zHvYLERtJz6KNcBdttdq6gm8Ir3n/T/hUQByCF2QgznIJG4ZD
-         y+AIsG+7ycmcN3ya4SuIp5vDxDB/Z5/M1xvNL9bzndqQOsv7bqALGM8csF4wri1uwFSw
-         7GSsKTVBSQ8jtzyvghTHx3hHtAQqQhSxc/GReBIO4yxjU8G4xDK/SWjFImOmxg1ZJ/7b
-         xjYXSqU6KAxJuvq/Ob57Uyw8qv8QqgJJe0wUVCyHkDv8bbHt5TS3ZqQ+OXr5kDjTaw35
-         /2ce9m1qLoGWlb3WyuLY7m3th/ret1uqGWblU96SFtHrSwuM/5BF1XK9fWjdd94TYgAc
-         uYGw==
-X-Gm-Message-State: AOAM5311y+aC9OLd/9WKJBVihgruYgF4acblBerC7TwOPbgy+M2a3t6L
-        NcxNM966y9/QgQVH7r6zqZW+KP1zaR0=
-X-Google-Smtp-Source: ABdhPJyz0E9Ys5HJ/kBfd8w8xTvow9g/W1ARFIVeIWNupQJgJKp7RbNPI+Pw0qV1vYWlT4mW5s5S2A==
-X-Received: by 2002:a17:906:4451:: with SMTP id i17mr3088338ejp.436.1611905013413;
-        Thu, 28 Jan 2021 23:23:33 -0800 (PST)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id o13sm3472676ejb.10.2021.01.28.23.23.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 23:23:32 -0800 (PST)
-Subject: Re: [PATCH 1/3] serial: 8250: Handle UART without interrupt on TEMT
- using em485
-To:     Eric Tremblay <etremblay@distech-controls.com>,
-        gregkh@linuxfoundation.org
-Cc:     andriy.shevchenko@linux.intel.com, matwey.kornilov@gmail.com,
-        giulio.benetti@micronovasrl.com, lukas@wunner.de,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        christoph.muellner@theobroma-systems.com, heiko@sntech.de,
-        heiko.stuebner@theobroma-systems.com
-References: <20210128233629.4164-1-etremblay@distech-controls.com>
- <20210128233629.4164-2-etremblay@distech-controls.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <1c4f5095-e350-8cc6-daee-4a841b1373d2@kernel.org>
-Date:   Fri, 29 Jan 2021 08:23:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Fri, 29 Jan 2021 02:25:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611905034;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+EjsBKH8pk3a/SzzBGO3nLH8UwbPTs+BAABsbiHFzWo=;
+        b=SzQSwqqp45i1ZSxPuMSnnX+bnQm9kFn7NpoMdGZ7aHdhW38ZS/GR3lAzLtSwLrX4cTiVz0
+        NgkX3Q3qQZDHESDyQIsPR8MomdRNxw7oXKXBvSTMRJQWnXT7PgUW3CR0Rxv0/DpSreiQd4
+        y6TqvWqUTnHZHuHBFupVoS+nSSgu9Z8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-394-Xye7LETOPDGqPuHxTcvfpg-1; Fri, 29 Jan 2021 02:23:52 -0500
+X-MC-Unique: Xye7LETOPDGqPuHxTcvfpg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ECA2A10054FF;
+        Fri, 29 Jan 2021 07:23:49 +0000 (UTC)
+Received: from T590 (ovpn-12-246.pek2.redhat.com [10.72.12.246])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B1B6860C13;
+        Fri, 29 Jan 2021 07:23:39 +0000 (UTC)
+Date:   Fri, 29 Jan 2021 15:23:35 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     Changheun Lee <nanich.lee@samsung.com>
+Cc:     hch@infradead.org, Johannes.Thumshirn@wdc.com,
+        asml.silence@gmail.com, axboe@kernel.dk, damien.lemoal@wdc.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        osandov@fb.com, patchwork-bot@kernel.org, tj@kernel.org,
+        tom.leiming@gmail.com, jisoo2146.oh@samsung.com,
+        junho89.kim@samsung.com, mj0123.lee@samsung.com,
+        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
+        woosung2.lee@samsung.com, yt0928.kim@samsung.com
+Subject: Re: [PATCH v4 1/2] bio: limit bio max size
+Message-ID: <20210129072335.GA1745608@T590>
+References: <CGME20210129040447epcas1p4531f0bf1ddebf0b469af87e85199cc43@epcas1p4.samsung.com>
+ <20210129034909.18785-1-nanich.lee@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <20210128233629.4164-2-etremblay@distech-controls.com>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210129034909.18785-1-nanich.lee@samsung.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29. 01. 21, 0:36, Eric Tremblay wrote:
-> The patch introduce the UART_CAP_TEMT capability which is by default
-> assigned to all 8250 UART since the code assume that device has the
-> interrupt on TEMT
+On Fri, Jan 29, 2021 at 12:49:08PM +0900, Changheun Lee wrote:
+> bio size can grow up to 4GB when muli-page bvec is enabled.
+> but sometimes it would lead to inefficient behaviors.
+> in case of large chunk direct I/O, - 32MB chunk read in user space -
+> all pages for 32MB would be merged to a bio structure if the pages
+> physical addresses are contiguous. it makes some delay to submit
+> until merge complete. bio max size should be limited to a proper size.
 > 
-> In the case where the device does not support it, we calculate the
-> maximum of time it could take for the transmitter to empty the
-> shift register. When we get in the situation where we get the
-> THRE interrupt but the TEMT bit is not set we start the timer
-> and recall __stop_tx after the delay
+> When 32MB chunk read with direct I/O option is coming from userspace,
+> kernel behavior is below now. it's timeline.
 > 
-> Signed-off-by: Eric Tremblay <etremblay@distech-controls.com>
-> ---
->   drivers/tty/serial/8250/8250.h            |  1 +
->   drivers/tty/serial/8250/8250_bcm2835aux.c |  2 +-
->   drivers/tty/serial/8250/8250_omap.c       |  2 +-
->   drivers/tty/serial/8250/8250_port.c       | 89 ++++++++++++++++++++++-
->   include/linux/serial_8250.h               |  2 +
->   5 files changed, 93 insertions(+), 3 deletions(-)
+>  | bio merge for 32MB. total 8,192 pages are merged.
+>  | total elapsed time is over 2ms.
+>  |------------------ ... ----------------------->|
+>                                                  | 8,192 pages merged a bio.
+>                                                  | at this time, first bio submit is done.
+>                                                  | 1 bio is split to 32 read request and issue.
+>                                                  |--------------->
+>                                                   |--------------->
+>                                                    |--------------->
+>                                                               ......
+>                                                                    |--------------->
+>                                                                     |--------------->|
+>                           total 19ms elapsed to complete 32MB read done from device. |
 > 
-> diff --git a/drivers/tty/serial/8250/8250.h b/drivers/tty/serial/8250/8250.h
-> index 52bb21205bb6..5361b761eed7 100644
-> --- a/drivers/tty/serial/8250/8250.h
-> +++ b/drivers/tty/serial/8250/8250.h
-> @@ -82,6 +82,7 @@ struct serial8250_config {
->   #define UART_CAP_MINI	(1 << 17)	/* Mini UART on BCM283X family lacks:
->   					 * STOP PARITY EPAR SPAR WLEN5 WLEN6
->   					 */
-> +#define UART_CAP_TEMT	(1 << 18)	/* UART have interrupt on TEMT */
-
-What about the inversion _NOTEMT? You then set it only on uarts without 
-TEMT and don't need to update every single driver.
-
-> diff --git a/drivers/tty/serial/8250/8250_bcm2835aux.c b/drivers/tty/serial/8250/8250_bcm2835aux.c
-> index fd95860cd661..354faebce885 100644
-> --- a/drivers/tty/serial/8250/8250_bcm2835aux.c
-> +++ b/drivers/tty/serial/8250/8250_bcm2835aux.c
-> @@ -91,7 +91,7 @@ static int bcm2835aux_serial_probe(struct platform_device *pdev)
->   		return -ENOMEM;
->   
->   	/* initialize data */
-> -	up.capabilities = UART_CAP_FIFO | UART_CAP_MINI;
-> +	data->uart.capabilities = UART_CAP_FIFO | UART_CAP_MINI | UART_CAP_TEMT;
-
-This change looks weird and undocumented. Why do you set data->uart 
-suddenly?
-
-Actually, does this build?
-
->   	up.port.dev = &pdev->dev;
->   	up.port.regshift = 2;
->   	up.port.type = PORT_16550;
-> diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
-> index 23e0decde33e..1c21ac68ff37 100644
-> --- a/drivers/tty/serial/8250/8250_omap.c
-> +++ b/drivers/tty/serial/8250/8250_omap.c
-> @@ -1294,7 +1294,7 @@ static int omap8250_probe(struct platform_device *pdev)
->   	up.port.regshift = 2;
->   	up.port.fifosize = 64;
->   	up.tx_loadsz = 64;
-> -	up.capabilities = UART_CAP_FIFO;
-> +	up.capabilities = UART_CAP_FIFO | UART_CAP_TEMT;
->   #ifdef CONFIG_PM
->   	/*
->   	 * Runtime PM is mostly transparent. However to do it right we need to a
-> diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-> index b0af13074cd3..44a54406e4b4 100644
-> --- a/drivers/tty/serial/8250/8250_port.c
-> +++ b/drivers/tty/serial/8250/8250_port.c
-> @@ -558,8 +558,41 @@ static void serial8250_clear_fifos(struct uart_8250_port *p)
->   	}
->   }
->   
-> +static inline void serial8250_em485_update_temt_delay(struct uart_8250_port *p,
-> +			unsigned int cflag, unsigned int baud)
-> +{
-> +	unsigned int bits;
-> +
-> +	if (!p->em485)
-> +		return;
-> +
-> +	/* byte size and parity */
-> +	switch (cflag & CSIZE) {
-> +	case CS5:
-> +		bits = 7;
-> +		break;
-> +	case CS6:
-> +		bits = 8;
-> +		break;
-> +	case CS7:
-> +		bits = 9;
-> +		break;
-> +	default:
-> +		bits = 10;
-> +		break; /* CS8 */
-> +	}
-> +
-> +	if (cflag & CSTOPB)
-> +		bits++;
-> +	if (cflag & PARENB)
-> +		bits++;
-> +
-> +	p->em485->no_temt_delay = bits*1000000/baud;
-> +}
-> +
->   static enum hrtimer_restart serial8250_em485_handle_start_tx(struct hrtimer *t);
->   static enum hrtimer_restart serial8250_em485_handle_stop_tx(struct hrtimer *t);
-> +static enum hrtimer_restart serial8250_em485_handle_no_temt(struct hrtimer *t);
->   
->   void serial8250_clear_and_reinit_fifos(struct uart_8250_port *p)
->   {
-> @@ -618,6 +651,18 @@ static int serial8250_em485_init(struct uart_8250_port *p)
->   		     HRTIMER_MODE_REL);
->   	hrtimer_init(&p->em485->start_tx_timer, CLOCK_MONOTONIC,
->   		     HRTIMER_MODE_REL);
-> +
-> +	if (!(p->capabilities & UART_CAP_TEMT)) {
-> +		struct tty_struct *tty = p->port.state->port.tty;
-
-Is this safe? Don't you need a tty reference? Or maybe you need to pass 
-the tty from the TIOCSRS485 ioctl to here.
-
-> +		serial8250_em485_update_temt_delay(p, tty->termios.c_cflag,
-> +						   tty_get_baud_rate(tty));
-> +		hrtimer_init(&p->em485->no_temt_timer, CLOCK_MONOTONIC,
-> +			     HRTIMER_MODE_REL);
-> +		p->em485->no_temt_timer.function =
-> +			&serial8250_em485_handle_no_temt;
-> +	}
-> +
->   	p->em485->stop_tx_timer.function = &serial8250_em485_handle_stop_tx;
->   	p->em485->start_tx_timer.function = &serial8250_em485_handle_start_tx;
->   	p->em485->port = p;
-> @@ -649,6 +694,7 @@ void serial8250_em485_destroy(struct uart_8250_port *p)
->   
->   	hrtimer_cancel(&p->em485->start_tx_timer);
->   	hrtimer_cancel(&p->em485->stop_tx_timer);
-> +	hrtimer_cancel(&p->em485->no_temt_timer);
->   
->   	kfree(p->em485);
->   	p->em485 = NULL;
-> @@ -1494,6 +1540,15 @@ static void start_hrtimer_ms(struct hrtimer *hrt, unsigned long msec)
->   	hrtimer_start(hrt, t, HRTIMER_MODE_REL);
->   }
->   
-> +static void start_hrtimer_us(struct hrtimer *hrt, unsigned long usec)
-> +{
-> +	long sec = usec / 1000000;
-> +	long nsec = (usec % 1000000) * 1000;
-> +	ktime_t t = ktime_set(sec, nsec);
-
-Why not ns_to_ktime without all those divisions?
-
-> +
-> +	hrtimer_start(hrt, t, HRTIMER_MODE_REL);
-> +}
-> +
->   static void __stop_tx_rs485(struct uart_8250_port *p)
->   {
->   	struct uart_8250_em485 *em485 = p->em485;
-> @@ -1531,8 +1586,18 @@ static inline void __stop_tx(struct uart_8250_port *p)
->   		 * shift register are empty. It is for device driver to enable
->   		 * interrupt on TEMT.
->   		 */
-> -		if ((lsr & BOTH_EMPTY) != BOTH_EMPTY)
-> +		if ((lsr & BOTH_EMPTY) != BOTH_EMPTY) {
-> +			/*
-> +			 * On devices with no interrupt on TEMT available
-> +			 * start a timer for a byte time, the timer will recall
-> +			 * __stop_tx
-> +			 */
-> +			if (!(p->capabilities & UART_CAP_TEMT) && (lsr & UART_LSR_THRE)) {
-> +				em485->active_timer = &em485->no_temt_timer;
-
-How does this interfere with the current handling of active_timer? You 
-should explain the changed functionality in the commit log. And you 
-don't reset it to NULL in the timer.
-
-> +				start_hrtimer_us(&em485->no_temt_timer, em485->no_temt_delay);
-> +			}
->   			return;
-> +		}
->   
->   		__stop_tx_rs485(p);
->   	}
-> @@ -1631,6 +1696,25 @@ static inline void start_tx_rs485(struct uart_port *port)
->   	__start_tx(port);
->   }
->   
-> +static enum hrtimer_restart serial8250_em485_handle_no_temt(struct hrtimer *t)
-> +{
-> +	struct uart_8250_em485 *em485;
-> +	struct uart_8250_port *p;
-> +	unsigned long flags;
-> +
-> +	em485 = container_of(t, struct uart_8250_em485, no_temt_timer);
-> +	p = em485->port;
-> +
-> +	serial8250_rpm_get(p);
-> +	spin_lock_irqsave(&p->port.lock, flags);
-> +	if (em485->active_timer == &em485->no_temt_timer)
-> +		__stop_tx(p);
-> +
-> +	spin_unlock_irqrestore(&p->port.lock, flags);
-> +	serial8250_rpm_put(p);
-> +	return HRTIMER_NORESTART;
-> +}
-> +
->   static enum hrtimer_restart serial8250_em485_handle_start_tx(struct hrtimer *t)
->   {
->   	struct uart_8250_em485 *em485;
-> @@ -2792,6 +2876,9 @@ serial8250_do_set_termios(struct uart_port *port, struct ktermios *termios,
->   
->   	serial8250_set_divisor(port, baud, quot, frac);
->   
-> +	if (!(up->capabilities & UART_CAP_TEMT))
-> +		serial8250_em485_update_temt_delay(up, termios->c_cflag, baud);
-> +
->   	/*
->   	 * LCR DLAB must be set to enable 64-byte FIFO mode. If the FCR
->   	 * is written without DLAB set, this mode will be disabled.
-> diff --git a/include/linux/serial_8250.h b/include/linux/serial_8250.h
-> index 9e655055112d..d2c66faff0dd 100644
-> --- a/include/linux/serial_8250.h
-> +++ b/include/linux/serial_8250.h
-> @@ -79,7 +79,9 @@ struct uart_8250_ops {
->   struct uart_8250_em485 {
->   	struct hrtimer		start_tx_timer; /* "rs485 start tx" timer */
->   	struct hrtimer		stop_tx_timer;  /* "rs485 stop tx" timer */
-> +	struct hrtimer		no_temt_timer;  /* "rs485 no tempt interrupt" timer */
->   	struct hrtimer		*active_timer;  /* pointer to active timer */
-> +	unsigned int		no_temt_delay;  /* Value of delay for no TEMT UART */
->   	struct uart_8250_port	*port;          /* for hrtimer callbacks */
->   	unsigned int		tx_stopped:1;	/* tx is currently stopped */
->   };
+> If bio max size is limited with 1MB, behavior is changed below.
 > 
+>  | bio merge for 1MB. 256 pages are merged for each bio.
+>  | total 32 bio will be made.
+>  | total elapsed time is over 2ms. it's same.
+>  | but, first bio submit timing is fast. about 100us.
+>  |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
+>       | 256 pages merged a bio.
+>       | at this time, first bio submit is done.
+>       | and 1 read request is issued for 1 bio.
+>       |--------------->
+>            |--------------->
+>                 |--------------->
+>                                       ......
+>                                                  |--------------->
+>                                                   |--------------->|
+>         total 17ms elapsed to complete 32MB read done from device. |
+
+Can you share us if enabling THP in your application can avoid this issue? BTW, you
+need to make the 32MB buffer aligned with huge page size. IMO, THP perfectly fits
+your case.
 
 
--- 
-js
-suse labs
+Thanks,
+Ming
+
