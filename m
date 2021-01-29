@@ -2,65 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 351263083F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 03:53:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FED13083E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 03:50:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231575AbhA2CxL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Jan 2021 21:53:11 -0500
-Received: from wnbcorp.com ([175.126.38.143]:41371 "EHLO blank.cafe24.com"
+        id S231237AbhA2CuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 21:50:12 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:41500 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229885AbhA2CxJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 21:53:09 -0500
-Received: from [10.175.141.9] (31-161-145-32.mobile.kpn.net [31.161.145.32])
-        (authenticated bits=0)
-        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10T2ePkC012452;
-        Fri, 29 Jan 2021 11:43:28 +0900
-Message-Id: <202101290243.10T2ePkC012452@blank.cafe24.com>
-Content-Type: text/plain; charset="utf-8"
+        id S229757AbhA2CuL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 21:50:11 -0500
+Received: from [10.130.0.135] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxCL6UdxNgWBgPAA--.22932S3;
+        Fri, 29 Jan 2021 10:48:54 +0800 (CST)
+Subject: Re: [PATCH 1/3] MIPS: kernel: Support extracting off-line stack
+ traces from user-space with perf
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <1609246561-5474-1-git-send-email-yangtiezhu@loongson.cn>
+ <1609246561-5474-2-git-send-email-yangtiezhu@loongson.cn>
+ <20210104105904.GK3021@hirez.programming.kicks-ass.net>
+ <0712b131-715a-a83a-bc9e-61405824ff0e@flygoat.com>
+ <20210105101806.GG3040@hirez.programming.kicks-ass.net>
+ <20210127211506.GA21163@alpha.franken.de>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        David Daney <david.daney@cavium.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Archer Yan <ayan@wavecomp.com>, x86@kernel.org
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <d2035b91-bcb9-bde4-8009-d81d177b2317@loongson.cn>
+Date:   Fri, 29 Jan 2021 10:48:52 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: YOU HAVE WON
-To:     Recipients <lottonlxxx@europe.com>
-From:   lottonlxxx@europe.com
-Date:   Fri, 29 Jan 2021 03:43:09 +0100
-Reply-To: johnsonwilson389@gmail.com
+In-Reply-To: <20210127211506.GA21163@alpha.franken.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9DxCL6UdxNgWBgPAA--.22932S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7tFy5Ar17JF45GrykGF1kAFb_yoW8CFW3pa
+        yvva1jkF4qqryj9F1Ivwn5Zasayr48Kw4FgFn8tFWIq3yq9F1ftF48t3Wj9as3Zr1fG3W2
+        vr4UXr9rZFn3ZFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBY14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxV
+        W0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCYjI0SjxkI62AI1cAE67vIY487MxkIecxEwVAFwVW8JwCF04k20xvY0x0EwI
+        xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
+        Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7
+        IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
+        6cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbU3ktUUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LOTTO.NL,
-2391  Beds 152 Koningin Julianaplein 21,
-Den Haag-Netherlands.
-(Lotto affiliate with Subscriber Agents).
-From: Susan Console
-(Lottery Coordinator)
-Website: www.lotto.nl
+On 01/28/2021 05:15 AM, Thomas Bogendoerfer wrote:
+> On Tue, Jan 05, 2021 at 11:18:06AM +0100, Peter Zijlstra wrote:
+>> On Tue, Jan 05, 2021 at 11:45:37AM +0800, Jiaxun Yang wrote:
+>>> 在 2021/1/4 下午6:59, Peter Zijlstra 写道:
+>>>> On Tue, Dec 29, 2020 at 08:55:59PM +0800, Tiezhu Yang wrote:
+>>>>> +u64 perf_reg_abi(struct task_struct *tsk)
+>>>>> +{
+>>>>> +	if (test_tsk_thread_flag(tsk, TIF_32BIT_REGS))
+>>>>> +		return PERF_SAMPLE_REGS_ABI_32;
+>>>>> +	else
+>>>>> +		return PERF_SAMPLE_REGS_ABI_64;
+>>>>> +}
+>>>> So we recently changed this on x86 to not rely on TIF flags. IIRC the
+>>>> problem is that on x86 you can change the mode of a task without the
+>>>> kernel being aware of it. Is something like that possible on MIPS as
+>>>> well?
+>>> Hi all,
+>>>
+>>> In MIPS world it's impossible to raise a thread to 64bit without kernel
+>>> aware.
+>>> Without STATUS.UX set it will trigger reserved instruction exception when
+>>> trying
+>>> to run 64bit instructions.
+>> The other way around is the case on x86, a 64bit program can create and
+>> execute 32bit code sections without the kernel being aware. But if
+>> clearing STATUS.UX has the same issue as setting it, that should not be
+>> a problem for you.
+>>
+>>> However it may be possible to run with 32bit ABI without
+>>> TIF_32BIT_REGS if user program didn't get ELF ABI right. I think
+>>> that's out of our current consideration.
+>> Fair enough.
+>>
+>>>> The thing x86 does today is look at it's pt_regs state to determine the
+>>>> actual state.
+>>> It is possible to look at pt_regs Status.UX bit on MIPS. But it seems
+>>> unnecessary
+>>> as user can't change it.
+>> Ok, good. Then no objection, proceed! :-)
+> this patch aims more to mips-next, while patch 2 and 3 are targeting
+> tools/perf. Should I take them into mips-next, too ?
 
-Sir/Madam,
+If it is possible, I prefer to merge this three patches together
+through mips-next tree.
 
-CONGRATULATIONS!!!
+Thanks,
+Tiezhu
 
-We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 26th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
-pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
-
-This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
-
-It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
-
-We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
-
-Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
-
-To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
-
-MR. WILSON WARREN JOHNSON
-
-Tel: +31-620-561-787
-
-Fax: +31-84-438-5342
-
-Email: johnsonwilson389@gmail.com
-
-
+>
+> Thomas.
+>
 
