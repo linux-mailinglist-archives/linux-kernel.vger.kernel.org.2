@@ -2,86 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51C76308E06
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:08:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C089308E09
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:08:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233120AbhA2UDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 15:03:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55926 "EHLO
+        id S233165AbhA2UE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 15:04:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233102AbhA2UCl (ORCPT
+        with ESMTP id S233242AbhA2UD2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 15:02:41 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52458C06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:02:01 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id k193so9945906qke.6
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:02:01 -0800 (PST)
+        Fri, 29 Jan 2021 15:03:28 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D77C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:02:48 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id u25so14141468lfc.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:02:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=yaerobi-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=NnmLK0QuYK5q1OECi1UZh+ESlr4Q56eYy5OG4YOB2mc=;
-        b=ruPtmf70+Wnc1fDId6zF7H0AVczBl7ht4P6pxI6F2R65F+ax3UTM59zz06WrgiZJiG
-         guQO5GqCQqCluBwwLcGI2+7CSRR+wlpok4/W9/rOrPkJHKm1aGSwXVSseNHcleQr/s2n
-         qndH5Q2mZLRaG/718TD1vuCkPYWBerOtAfo5vI1EJzJRjv9DpTvJw6suQXzdaBX1CJFs
-         1s9J7+4AQmsFw4vVz5oN9M5Ml1Kqc2R3QunVSzHc4q5UfYy7LXwDHySU14tKTpmDedeH
-         vNp5af3Q4l5jkFrDsFcKwLQciEvqRJPLUs5CSUqN/MTKjEGvlCErx4CExykZVljuX0m/
-         VZNw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+goTaQisyetnx4LnQ4yidHXstEhOlRlTxU4C0VNvzXU=;
+        b=ZenRLXULL7xwhIjeUH63szkzuPa24V71ewjVQYM6tLk68g6RsNNXImSp0KLXMKbgC/
+         Ije2L8QAaFSZuhBI/fy5oPNjmpV6Kd5EofgUjItsLveFpWiK3/W5f6+tb/qTQ0Ttsjy7
+         EQqhg/7DdpSe5AEc0X8zUuhW8O8Mh+uXWwLRc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=NnmLK0QuYK5q1OECi1UZh+ESlr4Q56eYy5OG4YOB2mc=;
-        b=ABi5hD87Skw5+oOp+WtBiGrpigUzK+V4EnLoKkcVQXazY22J+i3XPJYeCFtcKs8P26
-         hPpi1MjpYhVjAYuFYIQ7MuGoJw2uR8h5n8BpEZlsN8iAJIUA44S4wqWPrW9bBEAijmnI
-         XbnttovvKJdUOnD5nOxzImNzsdEK9A3tZXV5rZfaQz1RFCwUJ7kPP2f1b3t1Bb2iJm5t
-         Byue5bt2gWf+Z8otMNb/bJfHxuMCfGAk+6oTkUroPAIVRtQ9sCx/zSYN/MFjidOkyBly
-         DGiMjGTb0lf78BpDdbWmg0+kMNPL2HxIWHK7ufH/aotSKWAefd0jvoTJjtLEclCXecz8
-         LgPA==
-X-Gm-Message-State: AOAM531lELWQYLnXePzVI81V0ce+v14xQqsQBqcgLEwpz37oQp9OOQfJ
-        Ca4XdjAvrnoMV4dIRTd2IYzf+YJC/KHXFg==
-X-Google-Smtp-Source: ABdhPJxXwVBULwXtR+LUfGxqk26ZRE2SqzkeI4itlU4ZtUJvtmiPPbeicq+RbGwkrVH5kIjB4uAgrw==
-X-Received: by 2002:a37:688e:: with SMTP id d136mr5362234qkc.213.1611950520577;
-        Fri, 29 Jan 2021 12:02:00 -0800 (PST)
-Received: from debian (host15.190-136-155.telecom.net.ar. [190.136.155.15])
-        by smtp.gmail.com with ESMTPSA id p22sm6710082qkk.128.2021.01.29.12.01.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Jan 2021 12:02:00 -0800 (PST)
-Date:   Fri, 29 Jan 2021 17:01:54 -0300
-From:   Emmanuel Arias <eamanu@yaerobi.com>
-To:     m.tretter@pengutronix.de, kernel@pengutronix.de, mchehab@kernel.org
-Cc:     gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] media: allegro-dvt: Use __packed sentence
-Message-ID: <YBRpstkOi685uHef@debian>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+goTaQisyetnx4LnQ4yidHXstEhOlRlTxU4C0VNvzXU=;
+        b=GZEwitgzNfSPbV4UArS83mYZ3wCPSREK6nQkEUmq0zUeHOctveqjcweBBfzkdhlXW/
+         9tYGhku8iA1dvXBhPzjvyB2WJN6xiJ3eTuuMo78zh7bBIFe4AlmKHjV6yzSWienNo8Rj
+         qBl1CzZb0cwwxkndkLeZ5HInsvc4TueKQ8OmPDDNGTYRI5r6rHkxPwsoP1GtmF2U24Dr
+         YotzDYXx+lyJmOdU6dCwYCZUj1H5+JxkYof329RwOBn1ml+l1fv+CjOivYJjPdGmU7eU
+         ERb2hf1hXL0SAcCx9xGk2nWC4Na3CZP6dNI2rQeDnYZ2vIrQEGUCfoxCj17cSTnOsNOJ
+         dzsQ==
+X-Gm-Message-State: AOAM531zHAOLCnwfhtErwVmdk/IBEK1wYzAZy3QYAp8qbz07P4NJBRoD
+        kfJMe6pm9lr4zgBrFP9Vq7vlv1dqnkChoA==
+X-Google-Smtp-Source: ABdhPJxWwOVIPBLK/bnWy26E7o8kyGKA8kXfZMVtG16hRA2uNTmIkUj7LVKtxhEhiUWeLFK6mY4dsA==
+X-Received: by 2002:ac2:44a3:: with SMTP id c3mr2791505lfm.210.1611950566541;
+        Fri, 29 Jan 2021 12:02:46 -0800 (PST)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id o14sm2125947lfi.92.2021.01.29.12.02.45
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Jan 2021 12:02:45 -0800 (PST)
+Received: by mail-lf1-f45.google.com with SMTP id e2so10522657lfj.13
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:02:45 -0800 (PST)
+X-Received: by 2002:ac2:4436:: with SMTP id w22mr2772203lfl.41.1611950565136;
+ Fri, 29 Jan 2021 12:02:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <ce392dc6-d77f-b74c-8569-9a04ef8ad2d6@redhat.com>
+ <CAHk-=wg6AG=1YjDC2gSspPYjEPWqDXkXaiaoPZS6X=Rg_XRUsw@mail.gmail.com>
+ <98e2806d-81af-baf7-00f4-5a43870ff514@redhat.com> <8723f53e-9954-e0d2-16ce-933f53c776c3@redhat.com>
+ <CAHk-=wifZZe44kGbeupwEo33J6DNiG=zGXpH9QW3AobiyjBf6A@mail.gmail.com>
+In-Reply-To: <CAHk-=wifZZe44kGbeupwEo33J6DNiG=zGXpH9QW3AobiyjBf6A@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 29 Jan 2021 12:02:29 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whUWjLqe1=4O5B=PwfhwxUDqg7C7b0Yq50+bG-Jtvov6Q@mail.gmail.com>
+Message-ID: <CAHk-=whUWjLqe1=4O5B=PwfhwxUDqg7C7b0Yq50+bG-Jtvov6Q@mail.gmail.com>
+Subject: Re: [5.11 regression] "tty: implement write_iter" breaks TIOCCONS
+To:     Hans de Goede <hdegoede@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jiufei Xue <jiufei.xue@linux.alibaba.com>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix coding style using __packed sentece instead of
-__attribute__((__packed__)).
+On Fri, Jan 29, 2021 at 11:17 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Fri, Jan 29, 2021 at 10:31 AM Hans de Goede <hdegoede@redhat.com> wrote:
+> >
+> > You are using Fedora now a days, right ?  In that case you should be
+> > able to reproduce this yourself (depending on how custom your kernel
+> > setup is) if you are using the standard Fedora initrd generated by
+> > dracut and have "rhgb" on your kernel cmdline, then you can check
+> > for this problem by doing:
+>
+> Thanks, I can see it, that should make it much easier to figure out.
 
-Signed-off-by: Emmanuel Arias <eamanu@yaerobi.com>
----
- drivers/staging/media/allegro-dvt/allegro-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Ahh, interesting.
 
-diff --git a/drivers/staging/media/allegro-dvt/allegro-core.c b/drivers/staging/media/allegro-dvt/allegro-core.c
-index 9f718f43282b..cee624dac61a 100644
---- a/drivers/staging/media/allegro-dvt/allegro-core.c
-+++ b/drivers/staging/media/allegro-dvt/allegro-core.c
-@@ -670,7 +670,7 @@ static ssize_t allegro_mbox_read(struct allegro_mbox *mbox,
- 	struct {
- 		u16 length;
- 		u16 type;
--	} __attribute__ ((__packed__)) *header;
-+	} __packed *header;
- 	struct regmap *sram = mbox->dev->sram;
- 	unsigned int head;
- 	ssize_t size;
--- 
-2.29.2
+It turns out that the problem isn't actually really in the tty layer,
+it's that vfs_iocb_iter_write() is very very subtly buggy.
 
+So the tty layer "trivial" conversion from using "vfs_write()" - for
+the old redirected tty_write() call - to using "vfs_iocb_iter_write()"
+caused problems.
+
+Why? Because both vfs_write() and vfs_iocb_iter_write() take the
+target "struct file *file" as an argument, but vfs_iocb_iter_write()
+doesn't actually *use* that target file!
+
+Well, to be specific, it does actually use the target file pointer for
+two things:
+
+ - the security checks
+
+ - to pick the actual ->write_iter function.
+
+But once you actually call ->write_iter() to do the IO, the 'file'
+pointer isn't actually passed down at all, and the write_iter()
+function depends not on 'file', but on 'iocb->ki_filp".
+
+In other words, vfs_iocb_iter_write() is completely broken, because it
+will do the preliminary work using one 'struct file *', but then do
+the actual IO using _another_ 'struct file *' entirely.
+
+In the case of the console redirect code, that meant that the
+"redirect" never actually redirected anything, it really just called
+tty_write() with the original iocb, which used the original target
+file pointer.
+
+Let's just say that I stared at those tty changes for a while, saying
+"there is no *POSSIBLE* way that introduces a bug". And yeah, the tty
+changes themselves were actually not the real culprit.
+
+Of course, there is only one other user of vfs_iocb_iter_write() -
+ovlfs - and that one fills in the iocb with the same file pointer that
+it uses as the first argument, so nobody has ever noticed this oddity
+before.
+
+The function has been buggy like this since the very first
+implementation, and vfs_iocb_iter_read() has the exact same issue.
+
+It's fairly easy to work around in this in the tty layer by just
+avoiding that function entirely, so I'll cook up a patch to do that.
+But I'm adding the appropriate people to the participants here because
+this really is very subtle if you ever hit it.
+
+It might be best to just remove the "struct file *file" argument from
+vfs_iocb_iter_{read,write}(), because it really is very wrong to use
+anything but iocb.ki_file, and it's really subtle.
+
+                     Linus
