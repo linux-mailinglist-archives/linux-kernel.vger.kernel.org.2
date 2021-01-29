@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58CE6308DEA
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:59:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B85308DCE
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:59:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233179AbhA2T6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 14:58:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58672 "EHLO mail.kernel.org"
+        id S233010AbhA2Twr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 14:52:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233113AbhA2Tx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 14:53:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EBD564E15;
+        id S232752AbhA2Twp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 14:52:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43F7764E10;
         Fri, 29 Jan 2021 19:52:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1611949925;
-        bh=feBXUgjOCqV4KmfRmBNmIA+y1g/8EvSYsIHoefjUsvI=;
+        bh=JjIVgD2n/2qhJvQ6jOkaqibRKf9I32u+HalSwJuZenc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FiuQvuHwr15TI6v+1UaLclqtccNvElKWHl9kVCpKWCe2mebevxZq2I1+MGWauBSKF
-         iTfCa+qdcAkfsHiuHs3+eDNqfkkTmEijNipZEwsczyrxbN8gTGDM1okLeRfDeuiKa1
-         m6FFBFuPqJTNc9OM0CZPAcSbl+JgWLoilAZ360Gh+pXq3AnHSxCm6UTDUQQJknd5+I
-         R/gAKMtf5Vv1DCA6T6PyZmy5C7vkOewI5gnMwCgeTYpVfEHKeNvjtdAE38svKjH4F0
-         i7oRFLKkX0oF8Czm2zIVrApNXHd5KdHbpvP6d//PAb7lxsZje3Zwupz70QtI4z6TjS
-         O8kXJyVh0rcpw==
+        b=nNXwJIk4FDUpXTlnDx1mSiIIkUJnN9IMP1VQKOOrL7Zptpj336C8rL4scnpAZqv2a
+         AZ01lGha268vHcql12bUZEN528kKR6urA+zNRxT90ed0MokN/SV8Z1L+u6UtkEiPP1
+         JFIda/ixBDAtKzyeD31YWPvmmFZ9mFFZjDj4yWWYGYc34N1zrTVY5pPHxgFnzkEkFZ
+         bBengVMlnJsGSTEcwOHADRNsUHMKoik3gtdzkCzuhycrCG049iQIdPv36WtOpEn7MB
+         7OsaG8VBggQSxxDL95u+9SHSPLXHwCSlkvD3GjAShqWT0bDU6nCkJ9CjebVW7EzvXR
+         CNQ1JOOa4z3pw==
 Received: by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1l5ZoJ-007Wjk-2t; Fri, 29 Jan 2021 20:52:03 +0100
+        id 1l5ZoJ-007Wjm-3f; Fri, 29 Jan 2021 20:52:03 +0100
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Mark Brown <broonie@kernel.org>,
@@ -33,9 +33,9 @@ To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Mayulong <mayulong1@huawei.com>, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v8 05/14] staging: hikey9xx: hi6421-spmi-pmic: cleanup header file
-Date:   Fri, 29 Jan 2021 20:51:51 +0100
-Message-Id: <138c3a11e4de0ebabdf27932957852136c2f7510.1611949675.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v8 06/14] staging: hikey9xx: hi6421-spmi-pmic: fix IRQ handler code
+Date:   Fri, 29 Jan 2021 20:51:52 +0100
+Message-Id: <2eae710c333a8ee6f9e0a086c84115bc90a782ca.1611949675.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1611949675.git.mchehab+huawei@kernel.org>
 References: <cover.1611949675.git.mchehab+huawei@kernel.org>
@@ -46,83 +46,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the IRQ list from the header, as this is used only
-inside the driver itself. Also, get rid of two unused
-defines.
+The conversion to regmap introduced a regression at the code
+which reads from the IRQ register. Address that.
 
-The net result is that only struct hi6421_spmi_pmic remains
-on it, as this is used by the regulator driver.
-
+Fixes: 8148fe6afb24 ("staging: hikey9xx: spmi driver: convert to regmap")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/staging/hikey9xx/hi6421-spmi-pmic.c | 17 +++++++++++++++++
- include/linux/mfd/hi6421-spmi-pmic.h        | 20 --------------------
- 2 files changed, 17 insertions(+), 20 deletions(-)
+ drivers/staging/hikey9xx/hi6421-spmi-pmic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-index c8e55b7b08e2..909f7b106af4 100644
+index 909f7b106af4..48e4f92f7d1e 100644
 --- a/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
 +++ b/drivers/staging/hikey9xx/hi6421-spmi-pmic.c
-@@ -17,6 +17,23 @@
- #include <linux/slab.h>
- #include <linux/spmi.h>
+@@ -66,7 +66,7 @@ static irqreturn_t hi6421_spmi_irq_handler(int irq, void *priv)
+ 	int i, offset;
  
-+enum hi6421_spmi_pmic_irq_list {
-+	OTMP = 0,
-+	VBUS_CONNECT,
-+	VBUS_DISCONNECT,
-+	ALARMON_R,
-+	HOLD_6S,
-+	HOLD_1S,
-+	POWERKEY_UP,
-+	POWERKEY_DOWN,
-+	OCP_SCP_R,
-+	COUL_R,
-+	SIM0_HPD_R,
-+	SIM0_HPD_F,
-+	SIM1_HPD_R,
-+	SIM1_HPD_F,
-+	PMIC_IRQ_LIST_MAX,
-+};
- /* 8-bit register offset in PMIC */
- #define HISI_MASK_STATE			0xff
- 
-diff --git a/include/linux/mfd/hi6421-spmi-pmic.h b/include/linux/mfd/hi6421-spmi-pmic.h
-index aa8d5382f559..4d61cb266a18 100644
---- a/include/linux/mfd/hi6421-spmi-pmic.h
-+++ b/include/linux/mfd/hi6421-spmi-pmic.h
-@@ -14,9 +14,6 @@
- #include <linux/irqdomain.h>
- #include <linux/regmap.h>
- 
--#define HISI_ECO_MODE_ENABLE		(1)
--#define HISI_ECO_MODE_DISABLE		(0)
--
- struct hi6421_spmi_pmic {
- 	struct resource				*res;
- 	struct device				*dev;
-@@ -29,21 +26,4 @@ struct hi6421_spmi_pmic {
- 	struct regmap				*regmap;
- };
- 
--enum hi6421_spmi_pmic_irq_list {
--	OTMP = 0,
--	VBUS_CONNECT,
--	VBUS_DISCONNECT,
--	ALARMON_R,
--	HOLD_6S,
--	HOLD_1S,
--	POWERKEY_UP,
--	POWERKEY_DOWN,
--	OCP_SCP_R,
--	COUL_R,
--	SIM0_HPD_R,
--	SIM0_HPD_F,
--	SIM1_HPD_R,
--	SIM1_HPD_F,
--	PMIC_IRQ_LIST_MAX,
--};
- #endif		/* __HISI_PMIC_H */
+ 	for (i = 0; i < HISI_IRQ_ARRAY; i++) {
+-		regmap_read(ddata->regmap, offset, &data);
++		regmap_read(ddata->regmap, SOC_PMIC_IRQ0_ADDR + i, &data);
+ 		data &= HISI_MASK_FIELD;
+ 		if (data != 0)
+ 			pr_debug("data[%d]=0x%d\n\r", i, data);
 -- 
 2.29.2
 
