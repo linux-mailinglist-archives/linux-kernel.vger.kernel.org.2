@@ -2,141 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C089308E09
+	by mail.lfdr.de (Postfix) with ESMTP id 9D00F308E0A
 	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:08:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233165AbhA2UE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 15:04:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233242AbhA2UD2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 15:03:28 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D77C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:02:48 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id u25so14141468lfc.2
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:02:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+goTaQisyetnx4LnQ4yidHXstEhOlRlTxU4C0VNvzXU=;
-        b=ZenRLXULL7xwhIjeUH63szkzuPa24V71ewjVQYM6tLk68g6RsNNXImSp0KLXMKbgC/
-         Ije2L8QAaFSZuhBI/fy5oPNjmpV6Kd5EofgUjItsLveFpWiK3/W5f6+tb/qTQ0Ttsjy7
-         EQqhg/7DdpSe5AEc0X8zUuhW8O8Mh+uXWwLRc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+goTaQisyetnx4LnQ4yidHXstEhOlRlTxU4C0VNvzXU=;
-        b=GZEwitgzNfSPbV4UArS83mYZ3wCPSREK6nQkEUmq0zUeHOctveqjcweBBfzkdhlXW/
-         9tYGhku8iA1dvXBhPzjvyB2WJN6xiJ3eTuuMo78zh7bBIFe4AlmKHjV6yzSWienNo8Rj
-         qBl1CzZb0cwwxkndkLeZ5HInsvc4TueKQ8OmPDDNGTYRI5r6rHkxPwsoP1GtmF2U24Dr
-         YotzDYXx+lyJmOdU6dCwYCZUj1H5+JxkYof329RwOBn1ml+l1fv+CjOivYJjPdGmU7eU
-         ERb2hf1hXL0SAcCx9xGk2nWC4Na3CZP6dNI2rQeDnYZ2vIrQEGUCfoxCj17cSTnOsNOJ
-         dzsQ==
-X-Gm-Message-State: AOAM531zHAOLCnwfhtErwVmdk/IBEK1wYzAZy3QYAp8qbz07P4NJBRoD
-        kfJMe6pm9lr4zgBrFP9Vq7vlv1dqnkChoA==
-X-Google-Smtp-Source: ABdhPJxWwOVIPBLK/bnWy26E7o8kyGKA8kXfZMVtG16hRA2uNTmIkUj7LVKtxhEhiUWeLFK6mY4dsA==
-X-Received: by 2002:ac2:44a3:: with SMTP id c3mr2791505lfm.210.1611950566541;
-        Fri, 29 Jan 2021 12:02:46 -0800 (PST)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id o14sm2125947lfi.92.2021.01.29.12.02.45
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Jan 2021 12:02:45 -0800 (PST)
-Received: by mail-lf1-f45.google.com with SMTP id e2so10522657lfj.13
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:02:45 -0800 (PST)
-X-Received: by 2002:ac2:4436:: with SMTP id w22mr2772203lfl.41.1611950565136;
- Fri, 29 Jan 2021 12:02:45 -0800 (PST)
+        id S232936AbhA2UEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 15:04:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33106 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233143AbhA2UDj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 15:03:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47E8464DFB;
+        Fri, 29 Jan 2021 20:02:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611950571;
+        bh=KwihAEFWKDSpf6SM8XAVBapoSBLr9FWQfLGmRKqnbiA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JSOVj0SsRgnedf1jkzBO01LO2S7xQKWkb/P8SFyWRIJGpXF0BgNA5UnCekNDys5oD
+         +JnTd1BPojGcCAG2ZjBR1uebqryDDrN45SUNMMhVsmTXOaDyCq4GXCNKqN7TcLMfg3
+         aumrBKY7WytJ+6yVKhqasO3XQVoWeJASnim4+grpZfmaSpj/q/BfwtM2z0m8C3obeL
+         XdsbSwp3gs/uKehBZ8pwyV0P2CChYujkqhrwORTI8NW6SMfsyRFyvc9h/yX6G5Ortg
+         9e4LtzPazqunQcdwtsi8mAVsDbZd15J9maPYFXZUnBQGzNjEPVrOlAOukUAlx+Ehiy
+         CzZAvARM0qljA==
+Date:   Fri, 29 Jan 2021 12:02:50 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Shoaib Rao <rao.shoaib@oracle.com>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        andy.rudoff@intel.com
+Subject: Re: [PATCH] af_unix: Allow Unix sockets to raise SIGURG
+Message-ID: <20210129120250.269c366d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <a21dc26a-87dc-18c8-b8bd-24f9797afbad@oracle.com>
+References: <20210122150638.210444-1-willy@infradead.org>
+        <20210125153650.18c84b1a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <23fc3de2-7541-04c9-a56f-4006a7dc773f@oracle.com>
+        <20210129110605.54df8409@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <a21dc26a-87dc-18c8-b8bd-24f9797afbad@oracle.com>
 MIME-Version: 1.0
-References: <ce392dc6-d77f-b74c-8569-9a04ef8ad2d6@redhat.com>
- <CAHk-=wg6AG=1YjDC2gSspPYjEPWqDXkXaiaoPZS6X=Rg_XRUsw@mail.gmail.com>
- <98e2806d-81af-baf7-00f4-5a43870ff514@redhat.com> <8723f53e-9954-e0d2-16ce-933f53c776c3@redhat.com>
- <CAHk-=wifZZe44kGbeupwEo33J6DNiG=zGXpH9QW3AobiyjBf6A@mail.gmail.com>
-In-Reply-To: <CAHk-=wifZZe44kGbeupwEo33J6DNiG=zGXpH9QW3AobiyjBf6A@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 29 Jan 2021 12:02:29 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whUWjLqe1=4O5B=PwfhwxUDqg7C7b0Yq50+bG-Jtvov6Q@mail.gmail.com>
-Message-ID: <CAHk-=whUWjLqe1=4O5B=PwfhwxUDqg7C7b0Yq50+bG-Jtvov6Q@mail.gmail.com>
-Subject: Re: [5.11 regression] "tty: implement write_iter" breaks TIOCCONS
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jiufei Xue <jiufei.xue@linux.alibaba.com>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 11:17 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Fri, Jan 29, 2021 at 10:31 AM Hans de Goede <hdegoede@redhat.com> wrote:
-> >
-> > You are using Fedora now a days, right ?  In that case you should be
-> > able to reproduce this yourself (depending on how custom your kernel
-> > setup is) if you are using the standard Fedora initrd generated by
-> > dracut and have "rhgb" on your kernel cmdline, then you can check
-> > for this problem by doing:
->
-> Thanks, I can see it, that should make it much easier to figure out.
+On Fri, 29 Jan 2021 11:48:15 -0800 Shoaib Rao wrote:
+> >> SO_OOBINLINE does not control the delivery of signal, It controls how
+> >> OOB Byte is delivered. It may not be obvious but this change does not
+> >> deliver any Byte, just a signal. So, as long as sendmsg flag contains
+> >> MSG_OOB, signal will be delivered just like it happens for TCP.  
+> > Not as far as I can read this code. If MSG_OOB is set the data from the
+> > message used to be discarded, and EOPNOTSUPP returned. Now the data gets
+> > queued to the socket, and will be read inline.  
+> 
+> Data was discarded because the flag was not supported, this patch 
+> changes that but does not support any urgent data.
 
-Ahh, interesting.
+When you say it does not support any urgent data do you mean the
+message len must be == 0 because something is checking it, or that 
+the code does not support its handling?
 
-It turns out that the problem isn't actually really in the tty layer,
-it's that vfs_iocb_iter_write() is very very subtly buggy.
+I'm perfectly fine with the former, just point me at the check, please.
 
-So the tty layer "trivial" conversion from using "vfs_write()" - for
-the old redirected tty_write() call - to using "vfs_iocb_iter_write()"
-caused problems.
-
-Why? Because both vfs_write() and vfs_iocb_iter_write() take the
-target "struct file *file" as an argument, but vfs_iocb_iter_write()
-doesn't actually *use* that target file!
-
-Well, to be specific, it does actually use the target file pointer for
-two things:
-
- - the security checks
-
- - to pick the actual ->write_iter function.
-
-But once you actually call ->write_iter() to do the IO, the 'file'
-pointer isn't actually passed down at all, and the write_iter()
-function depends not on 'file', but on 'iocb->ki_filp".
-
-In other words, vfs_iocb_iter_write() is completely broken, because it
-will do the preliminary work using one 'struct file *', but then do
-the actual IO using _another_ 'struct file *' entirely.
-
-In the case of the console redirect code, that meant that the
-"redirect" never actually redirected anything, it really just called
-tty_write() with the original iocb, which used the original target
-file pointer.
-
-Let's just say that I stared at those tty changes for a while, saying
-"there is no *POSSIBLE* way that introduces a bug". And yeah, the tty
-changes themselves were actually not the real culprit.
-
-Of course, there is only one other user of vfs_iocb_iter_write() -
-ovlfs - and that one fills in the iocb with the same file pointer that
-it uses as the first argument, so nobody has ever noticed this oddity
-before.
-
-The function has been buggy like this since the very first
-implementation, and vfs_iocb_iter_read() has the exact same issue.
-
-It's fairly easy to work around in this in the tty layer by just
-avoiding that function entirely, so I'll cook up a patch to do that.
-But I'm adding the appropriate people to the participants here because
-this really is very subtle if you ever hit it.
-
-It might be best to just remove the "struct file *file" argument from
-vfs_iocb_iter_{read,write}(), because it really is very wrong to use
-anything but iocb.ki_file, and it's really subtle.
-
-                     Linus
+> OOB data has some semantics that would have to be followed and if we 
+> support SO_OOBINLINE we would have to support NOT SO_OOBINLINE.
+> 
+> One can argue that we add a socket option to allow this OR just do what 
+> TCP does.
