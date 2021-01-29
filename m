@@ -2,85 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D6C308A47
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 17:36:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB320308A45
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 17:36:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231628AbhA2Qdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 11:33:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231244AbhA2Qbc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 11:31:32 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEBB1C0613D6;
-        Fri, 29 Jan 2021 08:25:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=yiqFfxPWjaBBtMQaM+MAoojFayOhd4kIg0RTmjiEmOo=; b=ojhbcyf9SCPvTLZTogs2KrgZ7S
-        ZLPgcka/xchmQCpmMifqdDSJvVJBIYZqv1tVP1hGLOgXDG3yyTHsHUyk7sHcy6UVHTHomiQkRkdHi
-        afcJH9vFuryu+jA+bv8n2Uge/Qf07cY/y052xTeFy4dVGac7ipDIiuE+N2R1j7455nvr0Ou/WC6jk
-        MHL/HtK7hiYIow7RkUyHFE1hdSEj6Txqg+9pmpWjNI434Iu+PD+2BETXTIrH5QHKurF9GW+sbtXm2
-        fcmNyfcnsOvPheKRb1o5nxILO5yksWW8IWKXwXUpJpl8b9jAvF+7gQ5KPSCIMF6OhGtj0NbvTdIrm
-        lOCspA4g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l5WZc-00A14C-Bi; Fri, 29 Jan 2021 16:24:42 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A7521981070; Fri, 29 Jan 2021 17:24:38 +0100 (CET)
-Date:   Fri, 29 Jan 2021 17:24:38 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter()
- with nmi_enter()")
-Message-ID: <20210129162438.GC8912@worktop.programming.kicks-ass.net>
-References: <a35a6f15-9ab1-917c-d443-23d3e78f2d73@suse.com>
- <20210128103415.d90be51ec607bb6123b2843c@kernel.org>
- <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
- <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
- <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
- <YBMBTsY1uuQb9wCP@hirez.programming.kicks-ass.net>
- <20210129013452.njuh3fomws62m4rc@ast-mbp.dhcp.thefacebook.com>
- <YBPNyRyrkzw2echi@hirez.programming.kicks-ass.net>
- <20210129224011.81bcdb3eba1227c414e69e1f@kernel.org>
- <20210129105952.74dc8464@gandalf.local.home>
+        id S229656AbhA2Qd3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Jan 2021 11:33:29 -0500
+Received: from wnbcorp.com ([175.126.38.143]:49848 "EHLO blank.cafe24.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231364AbhA2QcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 11:32:07 -0500
+Received: from [10.54.67.158] (89-200-42-247.mobile.kpn.net [89.200.42.247])
+        (authenticated bits=0)
+        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10TGKf3c024032;
+        Sat, 30 Jan 2021 01:25:11 +0900
+Message-Id: <202101291625.10TGKf3c024032@blank.cafe24.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210129105952.74dc8464@gandalf.local.home>
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Fri, 29 Jan 2021 17:25:06 +0100
+Reply-To: johnsonwilson389@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 10:59:52AM -0500, Steven Rostedt wrote:
-> On Fri, 29 Jan 2021 22:40:11 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > > So what, they can all happen with random locks held. Marking them as NMI
-> > > enables a whole bunch of sanity checks that are entirely appropriate.  
-> > 
-> > How about introducing an idea of Asynchronous NMI (ANMI) and Synchronous
-> > NMI (SNMI)? kprobes and ftrace is synchronously called and can be controlled
-> > (we can expect the context) but ANMI may be caused by asynchronous 
-> > hardware events on any context.
-> > 
-> > If we can distinguish those 2 NMIs on preempt count, bpf people can easily
-> > avoid the inevitable situation.
-> 
-> I don't like the name NMI IN SNMI, because they are not NMIs. They are
-> actually more like kernel exceptions. Even page faults in the kernel is
-> similar to a kprobe breakpoint or ftrace. It can happen anywhere, with any
-> lock held. Perhaps we need a kernel exception context? Which by definition
-> is synchronous.
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
 
-What problem are you trying to solve? AFAICT all these contexts have the
-same restrictions, why try and muck about with different names for the
-same thing?
+Sir/Madam,
+
+CONGRATULATIONS!!!
+
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 27th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
+
+
+
