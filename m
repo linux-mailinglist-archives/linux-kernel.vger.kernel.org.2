@@ -2,251 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2CCB308EEC
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:04:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0261308EF0
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:04:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233365AbhA2VAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 16:00:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233300AbhA2U77 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 15:59:59 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 596DDC061573
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:59:19 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id c2so12106031edr.11
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:59:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nVH1s5GcGoG1te9FUAOq8LIQwayu4tr9vgJLQMZUFNw=;
-        b=vhN3SKTCzL8NW2JQMe9nLy+1sPx5AbQAjOUYFkDWFQMHQt4dVczXcmkflCPQ3Fe/Uk
-         E1ODptOnLTYdUAb3zO5oi9zZ4Eepg3T51IvnK8a6IHT/diPceLPNmY6tRSw/bipFxQ51
-         AnAU9796oRyQss3ja5xnyRdLlLehm/RyH53OwCfAB+gaK6zLb+42oFehlGzfqOIht5FD
-         X6olexQEL9dmmrRckTn63qEOM0vtA3VmV6J4zPqskQUTcYJXcSCaBKWjlpTuYIelKGOt
-         KY6C/DgXOPFcfEOu9CvR5XHXrdAyxpRW+TfiBr7I6aBkTZMhMGUhSnzgePzkM9ml9BA4
-         hBmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nVH1s5GcGoG1te9FUAOq8LIQwayu4tr9vgJLQMZUFNw=;
-        b=tFJBEfP3VSY1x2gFhOeU7exuMhPyD7QAbjP4O8rRjmzHFSICc4zeVzwYneNuuef7F/
-         86fIcEHMOoW86Xo4GltidOjB9dEHiT2ONB1RbnFFpn7MUgCsgyWTXLYcqkoDhCTuIjXl
-         wyPMRxHAdzOrDA/QvK1eTwt7JXZygqium+ie36A0MMNEY7x83BLmcSekpB37cKZHEkWa
-         78T7ftcIIXL9ZXXjYPrLH8qGJaimDKsLxQxx/SA/xJCr9WQjjzGbPddvg3rpdQxYNg8Z
-         wGn4U8XIWAEvExijiGxsjz2F9i4/wQwea3zRY1p/N/e/BRX7ZVoV0DjDSzG0e5sMv02f
-         d5ZQ==
-X-Gm-Message-State: AOAM533xmTLyq1F54f/kv+zXeGpvnF3qREVzUIPRKMqeeRED2fiw4d5p
-        B1XT7qDCxWlAo1l/D9DZUqXSQBd8zgggleAqsU0=
-X-Google-Smtp-Source: ABdhPJyeGpRYWhq035RfJWm8foKTw1NlidoXIYQGGlquPqG59tIsr4ZikU0kIameCXnAq1HomxQ1bB+lMO/XyOB9bMg=
-X-Received: by 2002:a50:fc04:: with SMTP id i4mr7371767edr.137.1611953958176;
- Fri, 29 Jan 2021 12:59:18 -0800 (PST)
+        id S232839AbhA2VBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 16:01:14 -0500
+Received: from mga12.intel.com ([192.55.52.136]:64688 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232727AbhA2VBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 16:01:08 -0500
+IronPort-SDR: vXS/hO6kujbaw1whoVnolbDxtjOrFww35Q2b3+T1/XuJuuT2/Jr6WrWHMNapDlRGVT8li6KBUY
+ 76AqTkxV9phQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="159650397"
+X-IronPort-AV: E=Sophos;i="5.79,386,1602572400"; 
+   d="scan'208";a="159650397"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 13:00:22 -0800
+IronPort-SDR: 9tkKt6WDhBnDpkEW+q/LEAZYVNapMQx+x5H6RZhh3dY/pnMUHenVdE9QC8IBieUWp/6yPEoZMV
+ 6DtpUK94EkYQ==
+X-IronPort-AV: E=Sophos;i="5.79,386,1602572400"; 
+   d="scan'208";a="576586174"
+Received: from bkmossma-mobl.amr.corp.intel.com (HELO [10.209.175.74]) ([10.209.175.74])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 13:00:20 -0800
+Subject: Re: [NEEDS-REVIEW] [PATCH v18 05/25] x86/fpu/xstate: Introduce CET
+ MSR and XSAVES supervisor states
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+References: <20210127212524.10188-1-yu-cheng.yu@intel.com>
+ <20210127212524.10188-6-yu-cheng.yu@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <7793b36e-6386-3f2e-36ca-b7ca988a88c9@intel.com>
+Date:   Fri, 29 Jan 2021 13:00:19 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210126003411.2AC51464@viggo.jf.intel.com> <20210126003423.8D2B5637@viggo.jf.intel.com>
-In-Reply-To: <20210126003423.8D2B5637@viggo.jf.intel.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Fri, 29 Jan 2021 12:59:06 -0800
-Message-ID: <CAHbLzkpC-woEakmThVzM3_QaXJ0xFYiN+xjyfwBvpYh4LeX_Bw@mail.gmail.com>
-Subject: Re: [RFC][PATCH 06/13] mm/migrate: update migration order during on
- hotplug events
-To:     Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Rientjes <rientjes@google.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210127212524.10188-6-yu-cheng.yu@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 25, 2021 at 4:41 PM Dave Hansen <dave.hansen@linux.intel.com> wrote:
->
->
-> From: Dave Hansen <dave.hansen@linux.intel.com>
->
-> Reclaim-based migration is attempting to optimize data placement in
-> memory based on the system topology.  If the system changes, so must
-> the migration ordering.
->
-> The implementation here is pretty simple and entirely unoptimized.  On
-> any memory or CPU hotplug events, assume that a node was added or
-> removed and recalculate all migration targets.  This ensures that the
-> node_demotion[] array is always ready to be used in case the new
-> reclaim mode is enabled.
->
-> This recalculation is far from optimal, most glaringly that it does
-> not even attempt to figure out if nodes are actually coming or going.
-> But, given the expected paucity of hotplug events, this should be
-> fine.
->
-> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Yang Shi <yang.shi@linux.alibaba.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: Huang Ying <ying.huang@intel.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Cc: osalvador <osalvador@suse.de>
-> ---
->
->  b/mm/migrate.c |   97 +++++++++++++++++++++++++++++++++++++++++++++++++++++++--
->  1 file changed, 95 insertions(+), 2 deletions(-)
->
-> diff -puN mm/migrate.c~enable-numa-demotion mm/migrate.c
-> --- a/mm/migrate.c~enable-numa-demotion 2021-01-25 16:23:11.850866703 -0800
-> +++ b/mm/migrate.c      2021-01-25 16:23:11.855866703 -0800
-> @@ -49,6 +49,7 @@
->  #include <linux/sched/mm.h>
->  #include <linux/ptrace.h>
->  #include <linux/oom.h>
-> +#include <linux/memory.h>
->
->  #include <asm/tlbflush.h>
->
-> @@ -3135,6 +3136,7 @@ void migrate_vma_finalize(struct migrate
->  EXPORT_SYMBOL(migrate_vma_finalize);
->  #endif /* CONFIG_DEVICE_PRIVATE */
->
-> +#if defined(CONFIG_MEMORY_HOTPLUG)
->  /* Disable reclaim-based migration. */
->  static void disable_all_migrate_targets(void)
->  {
-> @@ -3191,7 +3193,7 @@ static int establish_migrate_target(int
->   * with itself.  Exclusion is provided by memory hotplug events
->   * being single-threaded.
->   */
-> -void __set_migration_target_nodes(void)
-> +static void __set_migration_target_nodes(void)
->  {
->         nodemask_t next_pass    = NODE_MASK_NONE;
->         nodemask_t this_pass    = NODE_MASK_NONE;
-> @@ -3253,9 +3255,100 @@ again:
->                 goto again;
->  }
->
-> -void set_migration_target_nodes(void)
+On 1/27/21 1:25 PM, Yu-cheng Yu wrote:
+> @@ -135,6 +135,8 @@ enum xfeature {
+>  #define XFEATURE_MASK_PT		(1 << XFEATURE_PT_UNIMPLEMENTED_SO_FAR)
+>  #define XFEATURE_MASK_PKRU		(1 << XFEATURE_PKRU)
+>  #define XFEATURE_MASK_PASID		(1 << XFEATURE_PASID)
+> +#define XFEATURE_MASK_CET_USER		(1 << XFEATURE_CET_USER)
+> +#define XFEATURE_MASK_CET_KERNEL	(1 << XFEATURE_CET_KERNEL)
+>  #define XFEATURE_MASK_LBR		(1 << XFEATURE_LBR)
+>  
+>  #define XFEATURE_MASK_FPSSE		(XFEATURE_MASK_FP | XFEATURE_MASK_SSE)
+> @@ -237,6 +239,23 @@ struct pkru_state {
+>  	u32				pad;
+>  } __packed;
+>  
 > +/*
-> + * For callers that do not hold get_online_mems() already.
+> + * State component 11 is Control-flow Enforcement user states
 > + */
-> +static void set_migration_target_nodes(void)
+> +struct cet_user_state {
+> +	u64 user_cet;			/* user control-flow settings */
+> +	u64 user_ssp;			/* user shadow stack pointer */
+> +};
 
-Aha, it is changed to static here. I think this hunk should be folded
-into the previous patch.
+Andy Cooper just mentioned on IRC about this nugget in the spec:
 
->  {
->         get_online_mems();
->         __set_migration_target_nodes();
->         put_online_mems();
->  }
-> +
-> +/*
-> + * React to hotplug events that might affect the migration targes
+	XRSTORS on CET state will do reserved bit and canonicality
+	checks on the state in similar manner as done by the WRMSR to
+	these state elements.
 
-s/targes/targets
-
-> + * like events that online or offline NUMA nodes.
-> + *
-> + * The ordering is also currently dependent on which nodes have
-> + * CPUs.  That means we need CPU on/offline notification too.
-> + */
-> +static int migration_online_cpu(unsigned int cpu)
-> +{
-> +       set_migration_target_nodes();
-> +       return 0;
-> +}
-> +
-> +static int migration_offline_cpu(unsigned int cpu)
-> +{
-> +       set_migration_target_nodes();
-> +       return 0;
-> +}
-> +
-> +/*
-> + * This leaves migrate-on-reclaim transiently disabled
-> + * between the MEM_GOING_OFFLINE and MEM_OFFLINE events.
-> + * This runs reclaim-based micgration is enabled or not.
-
-s/micgration/migration
-
-> + * This ensures that the user can turn reclaim-based
-> + * migration at any time without needing to recalcuate
-
-s/reclcuate/recalculate
-
-> + * migration targets.
-> + *
-> + * These callbacks already hold get_online_mems().  That
-> + * is why __set_migration_target_nodes() can be used as
-> + * opposed to set_migration_target_nodes().
-> + */
-> +static int __meminit migrate_on_reclaim_callback(struct notifier_block *self,
-> +                                                unsigned long action, void *arg)
-> +{
-> +       switch (action) {
-> +       case MEM_GOING_OFFLINE:
-> +               /*
-> +                * Make sure there are not transient states where
-> +                * an offline node is a migration target.  This
-> +                * will leave migration disabled until the offline
-> +                * completes and the MEM_OFFLINE case below runs.
-> +                */
-> +               disable_all_migrate_targets();
-
-Don't we need smp_wmb() here? In the previous patch the comment says
-write memory barrier is needed to guarantee readers see the consistent
-values. The the smp_wmb() is called by __set_migration_target_nodes().
-So, it seems it'd better to move smp_wmb() into
-disable_all_migrate_targets().
-
-> +               break;
-> +       case MEM_OFFLINE:
-> +       case MEM_ONLINE:
-> +               /*
-> +                * Recalculate the target nodes once the node
-> +                * reaches its final state (online or offline).
-> +                */
-> +               __set_migration_target_nodes();
-> +               break;
-> +       case MEM_CANCEL_OFFLINE:
-> +               /*
-> +                * MEM_GOING_OFFLINE disabled all the migration
-> +                * targets.  Reenable them.
-> +                */
-> +               __set_migration_target_nodes();
-> +               break;
-> +       case MEM_GOING_ONLINE:
-> +       case MEM_CANCEL_ONLINE:
-> +               break;
-> +       }
-> +
-> +       return notifier_from_errno(0);
-> +}
-> +
-> +static int __init migrate_on_reclaim_init(void)
-> +{
-> +       int ret;
-> +
-> +       ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "migrate on reclaim",
-> +                               migration_online_cpu,
-> +                               migration_offline_cpu);
-> +       /*
-> +        * In the unlikely case that this fails, the automatic
-> +        * migration targets may become suboptimal for nodes
-> +        * where N_CPU changes.  With such a small impact in a
-> +        * rare case, do not bother trying to do anything special.
-> +        */
-> +       WARN_ON(ret < 0);
-> +
-> +       hotplug_memory_notifier(migrate_on_reclaim_callback, 100);
-> +       return 0;
-> +}
-> +late_initcall(migrate_on_reclaim_init);
-> +#endif /* CONFIG_MEMORY_HOTPLUG */
-> _
->
+We're using copy_kernel_to_xregs_err(), so the #GP *should* be OK.
+Could we prove this out in practice, please?
