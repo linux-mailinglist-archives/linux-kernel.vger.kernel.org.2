@@ -2,109 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5673308665
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:28:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43B9C308668
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:28:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232195AbhA2HZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 02:25:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41320 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232020AbhA2HZW (ORCPT
+        id S232106AbhA2H2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 02:28:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232020AbhA2H2N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 02:25:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611905034;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+EjsBKH8pk3a/SzzBGO3nLH8UwbPTs+BAABsbiHFzWo=;
-        b=SzQSwqqp45i1ZSxPuMSnnX+bnQm9kFn7NpoMdGZ7aHdhW38ZS/GR3lAzLtSwLrX4cTiVz0
-        NgkX3Q3qQZDHESDyQIsPR8MomdRNxw7oXKXBvSTMRJQWnXT7PgUW3CR0Rxv0/DpSreiQd4
-        y6TqvWqUTnHZHuHBFupVoS+nSSgu9Z8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-394-Xye7LETOPDGqPuHxTcvfpg-1; Fri, 29 Jan 2021 02:23:52 -0500
-X-MC-Unique: Xye7LETOPDGqPuHxTcvfpg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ECA2A10054FF;
-        Fri, 29 Jan 2021 07:23:49 +0000 (UTC)
-Received: from T590 (ovpn-12-246.pek2.redhat.com [10.72.12.246])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B1B6860C13;
-        Fri, 29 Jan 2021 07:23:39 +0000 (UTC)
-Date:   Fri, 29 Jan 2021 15:23:35 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Changheun Lee <nanich.lee@samsung.com>
-Cc:     hch@infradead.org, Johannes.Thumshirn@wdc.com,
-        asml.silence@gmail.com, axboe@kernel.dk, damien.lemoal@wdc.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        osandov@fb.com, patchwork-bot@kernel.org, tj@kernel.org,
-        tom.leiming@gmail.com, jisoo2146.oh@samsung.com,
-        junho89.kim@samsung.com, mj0123.lee@samsung.com,
-        seunghwan.hyun@samsung.com, sookwan7.kim@samsung.com,
-        woosung2.lee@samsung.com, yt0928.kim@samsung.com
-Subject: Re: [PATCH v4 1/2] bio: limit bio max size
-Message-ID: <20210129072335.GA1745608@T590>
-References: <CGME20210129040447epcas1p4531f0bf1ddebf0b469af87e85199cc43@epcas1p4.samsung.com>
- <20210129034909.18785-1-nanich.lee@samsung.com>
+        Fri, 29 Jan 2021 02:28:13 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C0B5C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 23:27:33 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id y10so518263plk.7
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 23:27:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XoPaMVURm5bRi8Ttr7dF9SUUqibbHGdovvNFGhRlDUo=;
+        b=cpWA9C59QBUyKAMI1fRhLyF+pmGzsfi7Lqq+UcJ1wiW+DN78Ij91odl5ALsMoIEQBN
+         hfVInKG9FSoCSU7kEYoaz8clgP7TPkHzxxla5l4hH9EjdbS2IpqAgHiD1BiACIU7uOsu
+         EXnfYY76OsR405imsMbuKyi6wCszHklV73Eh59xzpHvq0HHOqU+ulLs4DUqSbj1VCI6u
+         J3AV6cyG2haHBCFjx8cDTwiD6wAoo1sPFQCmnm+TYlvHoo5h8NHwo1ezdIFnKhn5O50Y
+         JLSLhwD19LJ1zG50IWjRbDfjWFU6u2dgNG2gtOSG9FYGXodVOPAGdeB8lfOAgXdNJV4z
+         b2dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XoPaMVURm5bRi8Ttr7dF9SUUqibbHGdovvNFGhRlDUo=;
+        b=uY/lvHxCOVfRP0P7qs5juFRN9fpQ1g7wJYezuMiufeFIYCzvUUCUFdhukovIum9uef
+         izzDLNaM3yKFjD71fKlweHVL6hChCSZRU66XC8gzgoTt1xwfVE6WlL1vPjmGmojfP+vv
+         AxS4hrXXKclx46t50IcH3mTkeRzD8xGg5/wj71NW2A5ikbcverv+slQO+YjUnoJg7AxM
+         p501Qyl4bweKkUz9UV8p0ObA9leOJYuDFd+CXXaHqkJG127KvpWULR6NJdMkxXFzIhxh
+         s7aLi4NPdkRvsXwgwC+5k9O6yBHnLZN4vnD5mV56l+xPF6qixo+97X+4/oKcekvIxrR/
+         gvvQ==
+X-Gm-Message-State: AOAM533WsRjPvzCwzmNTX/b0hpYxReVeKtQk1HSl40/Alb9gnpri56EZ
+        NX18yDCqThDL6129pQk6dFkKRA==
+X-Google-Smtp-Source: ABdhPJxQVczYesYyyM7xmUDHF+3eyNOatnNn3eWNoo/ReP2UIPnQ2bgnUxdxZMFMuLQof/NZpGs8zg==
+X-Received: by 2002:a17:902:b40c:b029:df:e75a:711b with SMTP id x12-20020a170902b40cb02900dfe75a711bmr2944772plr.75.1611905252639;
+        Thu, 28 Jan 2021 23:27:32 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id v16sm7559737pfu.76.2021.01.28.23.27.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 28 Jan 2021 23:27:31 -0800 (PST)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, anmar.oueja@linaro.org,
+        Bill Mills <bill.mills@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        devicetree@vger.kernel.org, linux-kbuild@vger.kernel.org
+Subject: [PATCH V7 0/6] dt: build overlays
+Date:   Fri, 29 Jan 2021 12:54:04 +0530
+Message-Id: <cover.1611904394.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210129034909.18785-1-nanich.lee@samsung.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 12:49:08PM +0900, Changheun Lee wrote:
-> bio size can grow up to 4GB when muli-page bvec is enabled.
-> but sometimes it would lead to inefficient behaviors.
-> in case of large chunk direct I/O, - 32MB chunk read in user space -
-> all pages for 32MB would be merged to a bio structure if the pages
-> physical addresses are contiguous. it makes some delay to submit
-> until merge complete. bio max size should be limited to a proper size.
-> 
-> When 32MB chunk read with direct I/O option is coming from userspace,
-> kernel behavior is below now. it's timeline.
-> 
->  | bio merge for 32MB. total 8,192 pages are merged.
->  | total elapsed time is over 2ms.
->  |------------------ ... ----------------------->|
->                                                  | 8,192 pages merged a bio.
->                                                  | at this time, first bio submit is done.
->                                                  | 1 bio is split to 32 read request and issue.
->                                                  |--------------->
->                                                   |--------------->
->                                                    |--------------->
->                                                               ......
->                                                                    |--------------->
->                                                                     |--------------->|
->                           total 19ms elapsed to complete 32MB read done from device. |
-> 
-> If bio max size is limited with 1MB, behavior is changed below.
-> 
->  | bio merge for 1MB. 256 pages are merged for each bio.
->  | total 32 bio will be made.
->  | total elapsed time is over 2ms. it's same.
->  | but, first bio submit timing is fast. about 100us.
->  |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
->       | 256 pages merged a bio.
->       | at this time, first bio submit is done.
->       | and 1 read request is issued for 1 bio.
->       |--------------->
->            |--------------->
->                 |--------------->
->                                       ......
->                                                  |--------------->
->                                                   |--------------->|
->         total 17ms elapsed to complete 32MB read done from device. |
+Hi,
 
-Can you share us if enabling THP in your application can avoid this issue? BTW, you
-need to make the 32MB buffer aligned with huge page size. IMO, THP perfectly fits
-your case.
+This patchset makes necessary changes to the kernel to add support for
+building overlays (%.dtbo) and the required fdtoverlay tool. This also
+builds static_test.dtb using most of the existing overlay tests present
+in drivers/of/unittest-data/ for better test coverage.
+
+Note that in order for anyone to test this stuff, you need to manually
+run the ./update-dtc-source.sh script once to fetch the necessary
+changes from the external DTC project (i.e. fdtoverlay.c and this[1]
+patch).
+
+I have tested this patchset for static and runtime testing (on Hikey
+board) and no issues were reported.
+
+V7:
+- Add a comment in scripts/dtc/Makefile
+- Add Ack from Masahiro for patch 4/6.
+- Drop word "merge" from commit log of 2/6.
+- Split apply_static_overlay, static_test.dtb, and static_base.dts into
+  two parts to handle overlay_base.dts and testcases.dts separately.
+
+V6:
+- Create separate rules for dtbo-s and separate entries in .gitignore in
+  4/6 (Masahiro).
+- A new file layout for handling all overlays for existing and new tests
+  5/6 (Frank).
+- Include overlay.dts as well now in 6/6 (Frank).
+
+V5:
+
+- Don't reuse DTC_SOURCE for fdtoverlay.c in patch 1/5 (Frank).
+
+- Update .gitignore and scripts/Makefile.dtbinst, drop dtbo-y syntax and
+  DTC_FLAGS += -@ in patch 4/5 (Masahiro).
+
+- Remove the intermediate dtb, rename output to static_test.dtb, don't
+  use overlay.dtb and overlay_base.dtb for static builds, improved
+  layout/comments in Makefile for patch 5/5 (Frank).
+
+--
+Viresh
+
+[1] https://github.com/dgibson/dtc/commit/163f0469bf2ed8b2fe5aa15bc796b93c70243ddc
+[2] https://lore.kernel.org/lkml/74f8aa8f-ffab-3b0f-186f-31fb7395ebbb@gmail.com/
+
+Viresh Kumar (6):
+  scripts: dtc: Fetch fdtoverlay.c from external DTC project
+  scripts: dtc: Build fdtoverlay tool
+  scripts: dtc: Remove the unused fdtdump.c file
+  kbuild: Add support to build overlays (%.dtbo)
+  of: unittest: Create overlay_common.dtsi and testcases_common.dtsi
+  of: unittest: Statically apply overlays using fdtoverlay
+
+ .gitignore                                    |   1 +
+ Makefile                                      |   5 +-
+ drivers/of/unittest-data/Makefile             |  56 ++++++
+ drivers/of/unittest-data/overlay_base.dts     |  90 +---------
+ drivers/of/unittest-data/overlay_common.dtsi  |  91 ++++++++++
+ drivers/of/unittest-data/static_base_1.dts    |   4 +
+ drivers/of/unittest-data/static_base_2.dts    |   4 +
+ drivers/of/unittest-data/testcases.dts        |  18 +-
+ .../of/unittest-data/testcases_common.dtsi    |  19 ++
+ .../of/unittest-data/tests-interrupts.dtsi    |   7 -
+ scripts/Makefile.dtbinst                      |   3 +
+ scripts/Makefile.lib                          |   5 +
+ scripts/dtc/Makefile                          |   8 +-
+ scripts/dtc/fdtdump.c                         | 163 ------------------
+ scripts/dtc/update-dtc-source.sh              |   3 +-
+ 15 files changed, 204 insertions(+), 273 deletions(-)
+ create mode 100644 drivers/of/unittest-data/overlay_common.dtsi
+ create mode 100644 drivers/of/unittest-data/static_base_1.dts
+ create mode 100644 drivers/of/unittest-data/static_base_2.dts
+ create mode 100644 drivers/of/unittest-data/testcases_common.dtsi
+ delete mode 100644 scripts/dtc/fdtdump.c
 
 
-Thanks,
-Ming
+base-commit: 6ee1d745b7c9fd573fba142a2efdad76a9f1cb04
+-- 
+2.25.0.rc1.19.g042ed3e048af
 
