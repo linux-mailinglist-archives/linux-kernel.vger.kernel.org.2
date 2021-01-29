@@ -2,144 +2,374 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0261308EF0
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:04:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D49E308EF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 22:08:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232839AbhA2VBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 16:01:14 -0500
-Received: from mga12.intel.com ([192.55.52.136]:64688 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232727AbhA2VBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 16:01:08 -0500
-IronPort-SDR: vXS/hO6kujbaw1whoVnolbDxtjOrFww35Q2b3+T1/XuJuuT2/Jr6WrWHMNapDlRGVT8li6KBUY
- 76AqTkxV9phQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="159650397"
-X-IronPort-AV: E=Sophos;i="5.79,386,1602572400"; 
-   d="scan'208";a="159650397"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 13:00:22 -0800
-IronPort-SDR: 9tkKt6WDhBnDpkEW+q/LEAZYVNapMQx+x5H6RZhh3dY/pnMUHenVdE9QC8IBieUWp/6yPEoZMV
- 6DtpUK94EkYQ==
-X-IronPort-AV: E=Sophos;i="5.79,386,1602572400"; 
-   d="scan'208";a="576586174"
-Received: from bkmossma-mobl.amr.corp.intel.com (HELO [10.209.175.74]) ([10.209.175.74])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 13:00:20 -0800
-Subject: Re: [NEEDS-REVIEW] [PATCH v18 05/25] x86/fpu/xstate: Introduce CET
- MSR and XSAVES supervisor states
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-References: <20210127212524.10188-1-yu-cheng.yu@intel.com>
- <20210127212524.10188-6-yu-cheng.yu@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <7793b36e-6386-3f2e-36ca-b7ca988a88c9@intel.com>
-Date:   Fri, 29 Jan 2021 13:00:19 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233247AbhA2VFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 16:05:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232918AbhA2VFM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 16:05:12 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9262EC061573
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 13:04:31 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id dj23so12112551edb.13
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 13:04:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lh5my+gT8bP2YkLQKgXj2GpUJK/R0RWpyBBjF9Hhr00=;
+        b=YAciALlW0hKufzhc1KYVd7zsJNFMpsviGWt77W9m5VFWsVPAdolQlTN38+xc37h+AT
+         Si+dDlBG3+1Yz3Z6mFjHqMPGat67fPQNCc5R+GgWJ+nLvB/yo0a5wRW2nHI+HxKEBcSg
+         HCgYpHYtmzsrBf1M4fYLmNFtyAJbLze7rZF95HfLqve1oaMk9CdMW62slslYsojFe1tL
+         oBQxStUxaCXZjPyM7dFxN5a6n5w3XP0ibWobDATWvi6nzL9oohb3Y8Jw4luk3V0pxkhz
+         4XGK9asrGbuOS/sEqQDvnOvcR34qIo4lcRO73fQcRugebXjG/r2szOVGsmtsJ7v9dw1n
+         iR+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lh5my+gT8bP2YkLQKgXj2GpUJK/R0RWpyBBjF9Hhr00=;
+        b=Y1Ss6IxlncVmibMddRc+U38iF7ObbTSQ/jQFbwfBiJOMo4csn5sgQQSnf/SF3Cuk8x
+         vjfaCK+Wsh5RfqpedgxHr8bJDZH0xTAW2nzyqZb1pz3cGXnTfE003paJvst01Ufs1sKW
+         oGRcPZ7CzAid1g85aZewDCafVvj80NFz+gkSnzVL73kLzM6h3+2PmR15QOcOriMwSWSV
+         FkArIFKsV9QrHRw3gFyMu93yZoNcE80/lzO417Jz+r6VtNDOK36xmn/EVWWXuEuL8hsv
+         HuXlqad8Xy2brWazFAn2o3rtv39wax5xoppkp4POy4I9fYaeWijSiHMGbdX/l+2Ql0b+
+         WoYA==
+X-Gm-Message-State: AOAM531scfy9vhR7HWo2xPvpulD33uzgDrdg7vhAodzD652hjkC4IZAL
+        8zRQY4KotnL4gyMEeHgmeoH3gd9HcAvCeVS24Mc=
+X-Google-Smtp-Source: ABdhPJzu7FA7nFYFn1wG8GtAXTb2JI4OxoAW85RC0SMcnAsHoRGkxP31Gh8lG8ufMTS8vCc0h+m6kgYDr4POQ/A8hpU=
+X-Received: by 2002:a50:8757:: with SMTP id 23mr7359971edv.294.1611954270266;
+ Fri, 29 Jan 2021 13:04:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210127212524.10188-6-yu-cheng.yu@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210126003411.2AC51464@viggo.jf.intel.com> <20210126003425.038B4812@viggo.jf.intel.com>
+In-Reply-To: <20210126003425.038B4812@viggo.jf.intel.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 29 Jan 2021 13:04:18 -0800
+Message-ID: <CAHbLzkryZt1Y5C2srwFSG6DzCqPuxT483wHW_3K1wnaHgGb-Ag@mail.gmail.com>
+Subject: Re: [RFC][PATCH 07/13] mm/migrate: make migrate_pages() return nr_succeeded
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Rientjes <rientjes@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/27/21 1:25 PM, Yu-cheng Yu wrote:
-> @@ -135,6 +135,8 @@ enum xfeature {
->  #define XFEATURE_MASK_PT		(1 << XFEATURE_PT_UNIMPLEMENTED_SO_FAR)
->  #define XFEATURE_MASK_PKRU		(1 << XFEATURE_PKRU)
->  #define XFEATURE_MASK_PASID		(1 << XFEATURE_PASID)
-> +#define XFEATURE_MASK_CET_USER		(1 << XFEATURE_CET_USER)
-> +#define XFEATURE_MASK_CET_KERNEL	(1 << XFEATURE_CET_KERNEL)
->  #define XFEATURE_MASK_LBR		(1 << XFEATURE_LBR)
->  
->  #define XFEATURE_MASK_FPSSE		(XFEATURE_MASK_FP | XFEATURE_MASK_SSE)
-> @@ -237,6 +239,23 @@ struct pkru_state {
->  	u32				pad;
->  } __packed;
->  
-> +/*
-> + * State component 11 is Control-flow Enforcement user states
-> + */
-> +struct cet_user_state {
-> +	u64 user_cet;			/* user control-flow settings */
-> +	u64 user_ssp;			/* user shadow stack pointer */
-> +};
+On Mon, Jan 25, 2021 at 4:41 PM Dave Hansen <dave.hansen@linux.intel.com> wrote:
+>
+>
+> From: Yang Shi <yang.shi@linux.alibaba.com>
+>
+> The migrate_pages() returns the number of pages that were not migrated,
+> or an error code.  When returning an error code, there is no way to know
+> how many pages were migrated or not migrated.
+>
+> In the following patch, migrate_pages() is used to demote pages to PMEM
+> node, we need account how many pages are reclaimed (demoted) since page
+> reclaim behavior depends on this.  Add *nr_succeeded parameter to make
+> migrate_pages() return how many pages are demoted successfully for all
+> cases.
+>
+> Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
+> Signed-off-by: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: David Rientjes <rientjes@google.com>
+> Cc: Huang Ying <ying.huang@intel.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: osalvador <osalvador@suse.de>
+> ---
+>
+>  b/include/linux/migrate.h |    5 +++--
+>  b/mm/compaction.c         |    3 ++-
+>  b/mm/gup.c                |    4 +++-
+>  b/mm/memory-failure.c     |    4 +++-
+>  b/mm/memory_hotplug.c     |    4 +++-
+>  b/mm/mempolicy.c          |    8 ++++++--
+>  b/mm/migrate.c            |   17 ++++++++++-------
+>  b/mm/page_alloc.c         |    9 ++++++---
+>  8 files changed, 36 insertions(+), 18 deletions(-)
+>
+> diff -puN include/linux/migrate.h~migrate_pages-add-success-return include/linux/migrate.h
+> --- a/include/linux/migrate.h~migrate_pages-add-success-return  2021-01-25 16:23:12.931866701 -0800
+> +++ b/include/linux/migrate.h   2021-01-25 16:23:12.954866701 -0800
+> @@ -40,7 +40,8 @@ extern int migrate_page(struct address_s
+>                         struct page *newpage, struct page *page,
+>                         enum migrate_mode mode);
+>  extern int migrate_pages(struct list_head *l, new_page_t new, free_page_t free,
+> -               unsigned long private, enum migrate_mode mode, int reason);
+> +               unsigned long private, enum migrate_mode mode, int reason,
+> +               unsigned int *nr_succeeded);
+>  extern struct page *alloc_migration_target(struct page *page, unsigned long private);
+>  extern int isolate_movable_page(struct page *page, isolate_mode_t mode);
+>  extern void putback_movable_page(struct page *page);
+> @@ -58,7 +59,7 @@ extern int migrate_page_move_mapping(str
+>  static inline void putback_movable_pages(struct list_head *l) {}
+>  static inline int migrate_pages(struct list_head *l, new_page_t new,
+>                 free_page_t free, unsigned long private, enum migrate_mode mode,
+> -               int reason)
+> +               int reason, unsigned int *nr_succeeded)
+>         { return -ENOSYS; }
+>  static inline struct page *alloc_migration_target(struct page *page,
+>                 unsigned long private)
+> diff -puN mm/compaction.c~migrate_pages-add-success-return mm/compaction.c
+> --- a/mm/compaction.c~migrate_pages-add-success-return  2021-01-25 16:23:12.933866701 -0800
+> +++ b/mm/compaction.c   2021-01-25 16:23:12.956866701 -0800
+> @@ -2199,6 +2199,7 @@ compact_zone(struct compact_control *cc,
+>         unsigned long last_migrated_pfn;
+>         const bool sync = cc->mode != MIGRATE_ASYNC;
+>         bool update_cached;
+> +       unsigned int nr_succeeded = 0;
+>
+>         /*
+>          * These counters track activities during zone compaction.  Initialize
+> @@ -2317,7 +2318,7 @@ compact_zone(struct compact_control *cc,
+>
+>                 err = migrate_pages(&cc->migratepages, compaction_alloc,
+>                                 compaction_free, (unsigned long)cc, cc->mode,
+> -                               MR_COMPACTION);
+> +                               MR_COMPACTION, &nr_succeeded);
+>
+>                 trace_mm_compaction_migratepages(cc->nr_migratepages, err,
+>                                                         &cc->migratepages);
+> diff -puN mm/gup.c~migrate_pages-add-success-return mm/gup.c
+> --- a/mm/gup.c~migrate_pages-add-success-return 2021-01-25 16:23:12.935866701 -0800
+> +++ b/mm/gup.c  2021-01-25 16:23:12.957866701 -0800
+> @@ -1599,6 +1599,7 @@ static long check_and_migrate_cma_pages(
+>         unsigned long step;
+>         bool drain_allow = true;
+>         bool migrate_allow = true;
+> +       unsigned int nr_succeeded = 0;
+>         LIST_HEAD(cma_page_list);
+>         long ret = nr_pages;
+>         struct migration_target_control mtc = {
+> @@ -1654,7 +1655,8 @@ check_again:
+>                                 put_page(pages[i]);
+>
+>                 if (migrate_pages(&cma_page_list, alloc_migration_target, NULL,
+> -                       (unsigned long)&mtc, MIGRATE_SYNC, MR_CONTIG_RANGE)) {
+> +                       (unsigned long)&mtc, MIGRATE_SYNC, MR_CONTIG_RANGE,
+> +                                 &nr_succeeded)) {
+>                         /*
+>                          * some of the pages failed migration. Do get_user_pages
+>                          * without migration.
+> diff -puN mm/memory-failure.c~migrate_pages-add-success-return mm/memory-failure.c
+> --- a/mm/memory-failure.c~migrate_pages-add-success-return      2021-01-25 16:23:12.939866701 -0800
+> +++ b/mm/memory-failure.c       2021-01-25 16:23:12.959866701 -0800
+> @@ -1783,6 +1783,7 @@ static int __soft_offline_page(struct pa
+>         unsigned long pfn = page_to_pfn(page);
+>         struct page *hpage = compound_head(page);
+>         char const *msg_page[] = {"page", "hugepage"};
+> +       unsigned int nr_succeeded = 0;
+>         bool huge = PageHuge(page);
+>         LIST_HEAD(pagelist);
+>         struct migration_target_control mtc = {
+> @@ -1826,7 +1827,8 @@ static int __soft_offline_page(struct pa
+>
+>         if (isolate_page(hpage, &pagelist)) {
+>                 ret = migrate_pages(&pagelist, alloc_migration_target, NULL,
+> -                       (unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_FAILURE);
+> +                       (unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_FAILURE,
+> +                       &nr_succeeded);
+>                 if (!ret) {
+>                         bool release = !huge;
+>
+> diff -puN mm/memory_hotplug.c~migrate_pages-add-success-return mm/memory_hotplug.c
+> --- a/mm/memory_hotplug.c~migrate_pages-add-success-return      2021-01-25 16:23:12.941866701 -0800
+> +++ b/mm/memory_hotplug.c       2021-01-25 16:23:12.959866701 -0800
+> @@ -1278,6 +1278,7 @@ do_migrate_range(unsigned long start_pfn
+>         unsigned long pfn;
+>         struct page *page, *head;
+>         int ret = 0;
+> +       unsigned int nr_succeeded = 0;
+>         LIST_HEAD(source);
+>
+>         for (pfn = start_pfn; pfn < end_pfn; pfn++) {
+> @@ -1352,7 +1353,8 @@ do_migrate_range(unsigned long start_pfn
+>                 if (nodes_empty(nmask))
+>                         node_set(mtc.nid, nmask);
+>                 ret = migrate_pages(&source, alloc_migration_target, NULL,
+> -                       (unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_HOTPLUG);
+> +                       (unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_HOTPLUG,
+> +                       &nr_succeeded);
+>                 if (ret) {
+>                         list_for_each_entry(page, &source, lru) {
+>                                 pr_warn("migrating pfn %lx failed ret:%d ",
+> diff -puN mm/mempolicy.c~migrate_pages-add-success-return mm/mempolicy.c
+> --- a/mm/mempolicy.c~migrate_pages-add-success-return   2021-01-25 16:23:12.944866701 -0800
+> +++ b/mm/mempolicy.c    2021-01-25 16:23:12.960866701 -0800
+> @@ -1071,6 +1071,7 @@ static int migrate_page_add(struct page
+>  static int migrate_to_node(struct mm_struct *mm, int source, int dest,
+>                            int flags)
+>  {
+> +       unsigned int nr_succeeded = 0;
+>         nodemask_t nmask;
+>         LIST_HEAD(pagelist);
+>         int err = 0;
+> @@ -1093,7 +1094,8 @@ static int migrate_to_node(struct mm_str
+>
+>         if (!list_empty(&pagelist)) {
+>                 err = migrate_pages(&pagelist, alloc_migration_target, NULL,
+> -                               (unsigned long)&mtc, MIGRATE_SYNC, MR_SYSCALL);
+> +                               (unsigned long)&mtc, MIGRATE_SYNC, MR_SYSCALL,
+> +                               &nr_succeeded);
+>                 if (err)
+>                         putback_movable_pages(&pagelist);
+>         }
+> @@ -1270,6 +1272,7 @@ static long do_mbind(unsigned long start
+>                      nodemask_t *nmask, unsigned long flags)
+>  {
+>         struct mm_struct *mm = current->mm;
+> +       unsigned int nr_succeeded = 0;
+>         struct mempolicy *new;
+>         unsigned long end;
+>         int err;
+> @@ -1349,7 +1352,8 @@ static long do_mbind(unsigned long start
+>                 if (!list_empty(&pagelist)) {
+>                         WARN_ON_ONCE(flags & MPOL_MF_LAZY);
+>                         nr_failed = migrate_pages(&pagelist, new_page, NULL,
+> -                               start, MIGRATE_SYNC, MR_MEMPOLICY_MBIND);
+> +                               start, MIGRATE_SYNC, MR_MEMPOLICY_MBIND,
+> +                               &nr_succeeded);
+>                         if (nr_failed)
+>                                 putback_movable_pages(&pagelist);
+>                 }
+> diff -puN mm/migrate.c~migrate_pages-add-success-return mm/migrate.c
+> --- a/mm/migrate.c~migrate_pages-add-success-return     2021-01-25 16:23:12.947866701 -0800
+> +++ b/mm/migrate.c      2021-01-25 16:23:12.964866701 -0800
+> @@ -1432,6 +1432,7 @@ out:
+>   * @mode:              The migration mode that specifies the constraints for
+>   *                     page migration, if any.
+>   * @reason:            The reason for page migration.
+> + * @nr_succeeded:      The number of pages migrated successfully.
+>   *
+>   * The function returns after 10 attempts or if no pages are movable any more
+>   * because the list has become empty or no retryable pages exist any more.
+> @@ -1442,12 +1443,11 @@ out:
+>   */
+>  int migrate_pages(struct list_head *from, new_page_t get_new_page,
+>                 free_page_t put_new_page, unsigned long private,
+> -               enum migrate_mode mode, int reason)
+> +               enum migrate_mode mode, int reason, unsigned int *nr_succeeded)
+>  {
+>         int retry = 1;
+>         int thp_retry = 1;
+>         int nr_failed = 0;
+> -       int nr_succeeded = 0;
+>         int nr_thp_succeeded = 0;
+>         int nr_thp_failed = 0;
+>         int nr_thp_split = 0;
+> @@ -1527,7 +1527,7 @@ retry:
+>                                         nr_succeeded += nr_subpages;
 
-Andy Cooper just mentioned on IRC about this nugget in the spec:
+It seems the above line is missed. The THP accounting change was
+merged in v5.9 before I submitted this patch.
 
-	XRSTORS on CET state will do reserved bit and canonicality
-	checks on the state in similar manner as done by the WRMSR to
-	these state elements.
-
-We're using copy_kernel_to_xregs_err(), so the #GP *should* be OK.
-Could we prove this out in practice, please?
+>                                         break;
+>                                 }
+> -                               nr_succeeded++;
+> +                               (*nr_succeeded)++;
+>                                 break;
+>                         default:
+>                                 /*
+> @@ -1550,12 +1550,12 @@ retry:
+>         nr_thp_failed += thp_retry;
+>         rc = nr_failed;
+>  out:
+> -       count_vm_events(PGMIGRATE_SUCCESS, nr_succeeded);
+> +       count_vm_events(PGMIGRATE_SUCCESS, *nr_succeeded);
+>         count_vm_events(PGMIGRATE_FAIL, nr_failed);
+>         count_vm_events(THP_MIGRATION_SUCCESS, nr_thp_succeeded);
+>         count_vm_events(THP_MIGRATION_FAIL, nr_thp_failed);
+>         count_vm_events(THP_MIGRATION_SPLIT, nr_thp_split);
+> -       trace_mm_migrate_pages(nr_succeeded, nr_failed, nr_thp_succeeded,
+> +       trace_mm_migrate_pages(*nr_succeeded, nr_failed, nr_thp_succeeded,
+>                                nr_thp_failed, nr_thp_split, mode, reason);
+>
+>         if (!swapwrite)
+> @@ -1623,6 +1623,7 @@ static int store_status(int __user *stat
+>  static int do_move_pages_to_node(struct mm_struct *mm,
+>                 struct list_head *pagelist, int node)
+>  {
+> +       unsigned int nr_succeeded = 0;
+>         int err;
+>         struct migration_target_control mtc = {
+>                 .nid = node,
+> @@ -1630,7 +1631,8 @@ static int do_move_pages_to_node(struct
+>         };
+>
+>         err = migrate_pages(pagelist, alloc_migration_target, NULL,
+> -                       (unsigned long)&mtc, MIGRATE_SYNC, MR_SYSCALL);
+> +                       (unsigned long)&mtc, MIGRATE_SYNC, MR_SYSCALL,
+> +                       &nr_succeeded);
+>         if (err)
+>                 putback_movable_pages(pagelist);
+>         return err;
+> @@ -2103,6 +2105,7 @@ int migrate_misplaced_page(struct page *
+>         pg_data_t *pgdat = NODE_DATA(node);
+>         int isolated;
+>         int nr_remaining;
+> +       unsigned int nr_succeeded = 0;
+>         LIST_HEAD(migratepages);
+>
+>         /*
+> @@ -2127,7 +2130,7 @@ int migrate_misplaced_page(struct page *
+>         list_add(&page->lru, &migratepages);
+>         nr_remaining = migrate_pages(&migratepages, alloc_misplaced_dst_page,
+>                                      NULL, node, MIGRATE_ASYNC,
+> -                                    MR_NUMA_MISPLACED);
+> +                                    MR_NUMA_MISPLACED, &nr_succeeded);
+>         if (nr_remaining) {
+>                 if (!list_empty(&migratepages)) {
+>                         list_del(&page->lru);
+> diff -puN mm/page_alloc.c~migrate_pages-add-success-return mm/page_alloc.c
+> --- a/mm/page_alloc.c~migrate_pages-add-success-return  2021-01-25 16:23:12.950866701 -0800
+> +++ b/mm/page_alloc.c   2021-01-25 16:23:12.968866701 -0800
+> @@ -8401,7 +8401,8 @@ static unsigned long pfn_max_align_up(un
+>
+>  /* [start, end) must belong to a single zone. */
+>  static int __alloc_contig_migrate_range(struct compact_control *cc,
+> -                                       unsigned long start, unsigned long end)
+> +                                       unsigned long start, unsigned long end,
+> +                                       unsigned int *nr_succeeded)
+>  {
+>         /* This function is based on compact_zone() from compaction.c. */
+>         unsigned int nr_reclaimed;
+> @@ -8439,7 +8440,8 @@ static int __alloc_contig_migrate_range(
+>                 cc->nr_migratepages -= nr_reclaimed;
+>
+>                 ret = migrate_pages(&cc->migratepages, alloc_migration_target,
+> -                               NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
+> +                               NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE,
+> +                               nr_succeeded);
+>         }
+>         if (ret < 0) {
+>                 putback_movable_pages(&cc->migratepages);
+> @@ -8475,6 +8477,7 @@ int alloc_contig_range(unsigned long sta
+>         unsigned long outer_start, outer_end;
+>         unsigned int order;
+>         int ret = 0;
+> +       unsigned int nr_succeeded = 0;
+>
+>         struct compact_control cc = {
+>                 .nr_migratepages = 0,
+> @@ -8527,7 +8530,7 @@ int alloc_contig_range(unsigned long sta
+>          * allocated.  So, if we fall through be sure to clear ret so that
+>          * -EBUSY is not accidentally used or returned to caller.
+>          */
+> -       ret = __alloc_contig_migrate_range(&cc, start, end);
+> +       ret = __alloc_contig_migrate_range(&cc, start, end, &nr_succeeded);
+>         if (ret && ret != -EBUSY)
+>                 goto done;
+>         ret =0;
+> _
+>
