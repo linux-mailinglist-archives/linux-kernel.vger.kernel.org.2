@@ -2,116 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B01C3308D0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:06:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC41308CF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:05:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232924AbhA2TFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 14:05:46 -0500
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:50666 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232851AbhA2TEa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 14:04:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1611947070; x=1643483070;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=mHKpdCHAaIc6wWDciCP+VXwGBcRZytaYsIXTPrszhlk=;
-  b=lgOpaRI1VBnMEFZfqrgWgzv3ew+MKg6KmXkk4W3wNk42TZl9k4LqSM6R
-   e3ntXoSOOm7JR7jFEPtIgfVlY27Y6Iq/EUHUCOklrcndtX0NyuyO8J5C1
-   PNkaC3pBS3h1f/ta1rXcUy7SqnMoN5QUXYtIVv9kdGYmOc8PcnP9RNTwu
-   dm3P9vvXcnN795eGFasGYkerlySebVJXgKJLBAMSLJBoNDUAFtyfaCGds
-   0eQbCWvoY3W9CTfB+JSTm7OMrOrBJ70NvwIX4YRYNCjoeBBiMtXHoOxYJ
-   oEq6HUQJUozfBnt/QMmMpmgjecQ+ShWUG8gFpGLaO/ODPKzrWyGZFdWpO
-   Q==;
-IronPort-SDR: bfsTrz+f7qPgP/VgCgGGO8ZQnXakVg6RO3K44JDrAGzwhsdwlKv8hS+6Hi1cSFRgp5X7LqycqS
- 5z4IJExmgVQmrYJlkdymn1ZdNO6Pp2tEKFYoA8WCykwk92Y089/wEvGkp1QCqyyRJANyUxbIkp
- cJPvbw5U3bOq0OkRBTlzB/PucP+CoIDf7hSL4v1Jv0/r2D5KQbawiPCqvnH81epkjmwNw4EyII
- ejSdPJiMmYgQi+x1nxVZcfHZ15GKyw6c3MuCMu6jXa8Cg+UOLndzw+iT+w17nHsKBXCngQ7jX6
- 9h0=
-X-IronPort-AV: E=Sophos;i="5.79,386,1602518400"; 
-   d="scan'208";a="163107515"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 30 Jan 2021 03:00:55 +0800
-IronPort-SDR: n9s6vAWqVZeiLvttQERdl9ftIj4HTadwOMgr0awJcOoa/mI382yt5GJQZnYzNiQGtNaevHcR+n
- 2yExA9lBSfcXjoBbhXgLPzo4DL00bfp7cz9Fo8WjyB85O9ph8+aTgrFGl+loqp+ZTRHjuO4omS
- 2Tg1B/LHX8p5W+A/t5XWu5Lbuof5kvO4S7wl4G/NQUkZUnTQ3D09/z5Eyhq9yYbg2e7jyrq2Nu
- ddd4gSVYdMlWwW6Twio2DwWRdUMTBLtRL7OVrCrlZArlEJ5o6PKB0wNW4lRvpqhe5zAI/lo5gc
- IGPTtv0s0H3dmA2BCSG0C9vn
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 10:43:08 -0800
-IronPort-SDR: qWiMg5teuON++9ffe8hyV4AViVWlg0EpHL3QmskW2g2LA8On0O7RC+XJFaR1v53Ntb/+cNVqHe
- tBA9ufRGq/9busQADKuFl4pdq7rvKyt7AQ7tPybQIZkkRhTBIiFROSk4J6eQQyL+k1nSPkwl2o
- 8Uf+2KvEsbTOSntjA6I7ZhDDUy4QF7qtQO6f7bjm/A/d/HA/y+gULjZxkB/OoxzQd79rOj9QS8
- TOzGKqLNbNGbPhbnhw7IJOYv6dT6cupTygSUa6+cBf3/QpOTUWIdVdAV5UtQcHi+IIRf6RbvuV
- Qbk=
-WDCIronportException: Internal
-Received: from usa003967.ad.shared (HELO jedi-01.hgst.com) ([10.86.63.124])
-  by uls-op-cesaip01.wdc.com with ESMTP; 29 Jan 2021 11:00:55 -0800
-From:   Atish Patra <atish.patra@wdc.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <anup.patel@wdc.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        linux-riscv@lists.infradead.org,
-        Nick Desaulniers <ndesaulniers@gooogle.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Sebastien Van Cauwenberghe <svancau@gmail.com>,
-        Zong Li <zong.li@sifive.com>
-Subject: [PATCH 3/3] RISC-V: Define MAXPHYSMEM_1GB only for RV32
-Date:   Fri, 29 Jan 2021 11:00:38 -0800
-Message-Id: <20210129190038.1001626-3-atish.patra@wdc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210129190038.1001626-1-atish.patra@wdc.com>
-References: <20210129190038.1001626-1-atish.patra@wdc.com>
+        id S232895AbhA2TD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 14:03:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50278 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232896AbhA2TCg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 14:02:36 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 49AED64DE3;
+        Fri, 29 Jan 2021 19:01:05 +0000 (UTC)
+Date:   Fri, 29 Jan 2021 14:01:03 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Nikolay Borisov <nborisov@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter()
+ with nmi_enter()")
+Message-ID: <20210129140103.3ce971b7@gandalf.local.home>
+In-Reply-To: <20210129175943.GH8912@worktop.programming.kicks-ass.net>
+References: <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
+        <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
+        <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
+        <YBMBTsY1uuQb9wCP@hirez.programming.kicks-ass.net>
+        <20210129013452.njuh3fomws62m4rc@ast-mbp.dhcp.thefacebook.com>
+        <YBPNyRyrkzw2echi@hirez.programming.kicks-ass.net>
+        <20210129224011.81bcdb3eba1227c414e69e1f@kernel.org>
+        <20210129105952.74dc8464@gandalf.local.home>
+        <20210129162438.GC8912@worktop.programming.kicks-ass.net>
+        <CAADnVQLMqHpSsZ1OdZRFmKqNWKiRq3dxRxw+y=kvMdmkN7htUw@mail.gmail.com>
+        <20210129175943.GH8912@worktop.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MAXPHYSMEM_1GB option was added for RV32 because RV32 only supports 1GB
-of maximum physical memory. This lead to few compilation errors reported
-by kernel test robot which created the following configuration combination
-which are not useful but can be configured.
+On Fri, 29 Jan 2021 18:59:43 +0100
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-1. MAXPHYSMEM_1GB & RV64
-2, MAXPHYSMEM_2GB & RV32
+> On Fri, Jan 29, 2021 at 09:45:48AM -0800, Alexei Starovoitov wrote:
+> > Same things apply to bpf side. We can statically prove safety for
+> > ftrace and kprobe attaching whereas to deal with NMI situation we
+> > have to use run-time checks for recursion prevention, etc.  
+> 
+> I have no idea what you're saying. You can attach to functions that are
+> called with random locks held, you can create kprobes in some very
+> sensitive places.
+> 
+> What can you staticlly prove about that?
 
-Fixes: e557793799c5 ("RISC-V: Fix maximum allowed phsyical memory for RV32")
+I think the main difference is, if you attach a kprobe or ftrace function,
+you can theoretically analyze the location before you do the attachment.
 
-Fix this by restricting MAXPHYSMEM_1GB for RV32 and MAXPHYSMEM_2GB only for
-RV64.
+Does, the NMI context mean "in_nmi()" returns true? Because there's cases
+in ftrace callbacks where that is checked (like the stack tracer). And
+having ftrace return true for "in_nmi()" will break a lot of existing
+utilities.
 
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Atish Patra <atish.patra@wdc.com>
----
- arch/riscv/Kconfig | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index e9e2c1f0a690..e0a34eb5ed3b 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -252,8 +252,10 @@ choice
- 	default MAXPHYSMEM_128GB if 64BIT && CMODEL_MEDANY
- 
- 	config MAXPHYSMEM_1GB
-+		depends on 32BIT
- 		bool "1GiB"
- 	config MAXPHYSMEM_2GB
-+		depends on 64BIT && CMODEL_MEDLOW
- 		bool "2GiB"
- 	config MAXPHYSMEM_128GB
- 		depends on 64BIT && CMODEL_MEDANY
--- 
-2.25.1
-
+-- Steve
