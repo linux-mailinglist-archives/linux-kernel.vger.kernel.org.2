@@ -2,473 +2,446 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 216333082F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 02:11:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A580308302
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 02:11:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231735AbhA2BHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 20:07:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbhA2BGg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 20:06:36 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94888C061573;
-        Thu, 28 Jan 2021 17:05:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=mFMWgp0V09MPFVIUP4yjyQwOmaTrILHfk062Av3J3sc=; b=cyTOri95eIXu7Gs71oMZHrDh04
-        Nq0q/yolR1xKfWxIWs9AHGIrBoKnCwaVdh2ZyIvYdlEc+QEnG8drNxJlAclbn5HxLLkLhYdQiYEwu
-        rGj3Ad4ZEKet9KroNiI+rxEUEUqFTkPdTPRVao8X56//eNcQEj6rcsrnW8plkssmkTaGallY0yKu5
-        qnnxlI5n9qXETr0UF667tWPpZO/9Utqiw/JtPAratNMF6+YZXEo+QXEPT783FyEoUuk0Pkfbv4lPl
-        +YOSsMb44DHxD438sX8s5aq8LLjX54B/ZQaBwSghU8WMjlzjXktlifpE1mMfAE+hwwxDFp1rBA3iW
-        8yAI7/jA==;
-Received: from [2601:1c0:6280:3f0::7650]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l5IEQ-0007Jh-4t; Fri, 29 Jan 2021 01:05:50 +0000
-Subject: Re: [PATCH v9 01/17] Documentation: PCI: Add specification for the
- *PCI NTB* function device
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>, Jon Mason <jdmason@kudzu.us>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        Tom Joseph <tjoseph@cadence.com>, Rob Herring <robh@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pci@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-ntb@googlegroups.com
-References: <20210104152909.22038-1-kishon@ti.com>
- <20210104152909.22038-2-kishon@ti.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <2adb27fe-1b2e-3488-eedf-46b01ee25ace@infradead.org>
-Date:   Thu, 28 Jan 2021 17:05:41 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S231793AbhA2BJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 20:09:27 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:37442 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231743AbhA2BIw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 20:08:52 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1l5IGV-00373x-Fv; Fri, 29 Jan 2021 02:07:59 +0100
+Date:   Fri, 29 Jan 2021 02:07:59 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+Cc:     olteanv@gmail.com, netdev@vger.kernel.org, robh+dt@kernel.org,
+        kuba@kernel.org, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, UNGLinuxDriver@microchip.com,
+        Woojung.Huh@microchip.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH net-next 3/8] net: dsa: microchip: add DSA support for
+ microchip lan937x
+Message-ID: <YBNf715MJ9OfaXfV@lunn.ch>
+References: <20210128064112.372883-1-prasanna.vengateshan@microchip.com>
+ <20210128064112.372883-4-prasanna.vengateshan@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <20210104152909.22038-2-kishon@ti.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128064112.372883-4-prasanna.vengateshan@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/4/21 7:28 AM, Kishon Vijay Abraham I wrote:
-> Add specification for the *PCI NTB* function device. The endpoint function
-> driver and the host PCI driver should be created based on this
-> specification.
-> 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
->  Documentation/PCI/endpoint/index.rst          |   1 +
->  .../PCI/endpoint/pci-ntb-function.rst         | 351 ++++++++++++++++++
->  2 files changed, 352 insertions(+)
->  create mode 100644 Documentation/PCI/endpoint/pci-ntb-function.rst
+> +bool lan937x_is_internal_phy_port(struct ksz_device *dev, int port)
+> +{
+> +	/* Check if the port is RGMII */
+> +	if (port == LAN937X_RGMII_1_PORT || port == LAN937X_RGMII_2_PORT)
+> +		return false;
+> +
+> +	/* Check if the port is SGMII */
+> +	if (port == LAN937X_SGMII_PORT &&
+> +	    GET_CHIP_ID_LSB(dev->chip_id) == CHIP_ID_73)
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+> +static u32 lan937x_get_port_addr(int port, int offset)
+> +{
+> +	return PORT_CTRL_ADDR(port, offset);
+> +}
+> +
+> +bool lan937x_is_internal_tx_phy_port(struct ksz_device *dev, int port)
+> +{
+> +	/* Check if the port is internal tx phy port */
 
+What is an internal TX phy port? Is it actually a conventional t2 Fast
+Ethernet port, as opposed to a t1 port?
 
-> diff --git a/Documentation/PCI/endpoint/pci-ntb-function.rst b/Documentation/PCI/endpoint/pci-ntb-function.rst
-> new file mode 100644
-> index 000000000000..a57908be4047
-> --- /dev/null
-> +++ b/Documentation/PCI/endpoint/pci-ntb-function.rst
-> @@ -0,0 +1,351 @@
-> +.. SPDX-License-Identifier: GPL-2.0
+> +	if (lan937x_is_internal_phy_port(dev, port) && port == LAN937X_TXPHY_PORT)
+> +		if ((GET_CHIP_ID_LSB(dev->chip_id) == CHIP_ID_71) ||
+> +		    (GET_CHIP_ID_LSB(dev->chip_id) == CHIP_ID_72))
+> +			return true;
 > +
-> +=================
-> +PCI NTB Function
-> +=================
+> +	return false;
+> +}
 > +
-> +:Author: Kishon Vijay Abraham I <kishon@ti.com>
+> +bool lan937x_is_internal_t1_phy_port(struct ksz_device *dev, int port)
+> +{
+> +	/* Check if the port is internal t1 phy port */
+> +	if (lan937x_is_internal_phy_port(dev, port) &&
+> +	    !lan937x_is_internal_tx_phy_port(dev, port))
+> +		return true;
 > +
-> +PCI Non Transparent Bridges (NTB) allow two host systems to communicate
+> +	return false;
+> +}
+> +
+> +int lan937x_t1_tx_phy_write(struct ksz_device *dev, int addr,
+> +			    int reg, u16 val)
+> +{
+> +	u16 temp, addr_base;
+> +	unsigned int value;
+> +	int ret;
+> +
+> +	/* Check for internal phy port */
+> +	if (!lan937x_is_internal_phy_port(dev, addr))
+> +		return 0;
 
-preferably
-       Non-Transparent
+All this t1 and tx is confusing. I think lan937x_internal_phy_write()
+would be better.
 
-> +with each other by exposing each host as a device to the other host.
-> +NTBs typically support the ability to generate interrupts on the remote
-> +machine, expose memory ranges as BARs and perform DMA.  They also support
-> +scratchpads which are areas of memory within the NTB that are accessible
-> +from both machines.
-> +
-> +PCI NTB Function allows two different systems (or hosts) to communicate
-> +with each other by configurig the endpoint instances in such a way that
-> +transactions from one system is routed to the other system.
-> +
-> +In the below diagram, PCI NTB function configures the SoC with multiple
-> +PCIe Endpoint (EP) instances in such a way that transaction from one EP
-> +controller is routed to the other EP controller. Once PCI NTB function
-> +configures the SoC with multiple EP instances, HOST1 and HOST2 can
-> +communicate with each other using SoC as a bridge.
-> +
-> +.. code-block:: text
-> +
-> +    +-------------+                                   +-------------+
-> +    |             |                                   |             |
-> +    |    HOST1    |                                   |    HOST2    |
-> +    |             |                                   |             |
-> +    +------^------+                                   +------^------+
-> +           |                                                 |
-> +           |                                                 |
-> + +---------|-------------------------------------------------|---------+
-> + |  +------v------+                                   +------v------+  |
-> + |  |             |                                   |             |  |
-> + |  |     EP      |                                   |     EP      |  |
-> + |  | CONTROLLER1 |                                   | CONTROLLER2 |  |
-> + |  |             <----------------------------------->             |  |
-> + |  |             |                                   |             |  |
-> + |  |             |                                   |             |  |
-> + |  |             |  SoC With Multiple EP Instances   |             |  |
-> + |  |             |  (Configured using NTB Function)  |             |  |
-> + |  +-------------+                                   +-------------+  |
-> + +---------------------------------------------------------------------+
-> +
-> +Constructs used for Implementing NTB
-> +====================================
-> +
-> +	1) Config Region
-> +	2) Self Scratchpad Registers
-> +	3) Peer Scratchpad Registers
-> +	4) Doorbell Registers
-> +	5) Memory Window
-> +
-> +
-> +Config Region:
-> +--------------
-> +
-> +Config Region is a construct that is specific to NTB implemented using NTB
-> +Endpoint Function Driver. The host and endpoint side NTB function driver will
-> +exchange information with each other using this region. Config Region has
-> +Control/Status Registers for configuring the Endpoint Controller. Host can
-> +write into this region for configuring the outbound ATU and to indicate the
-
-what is ATU?
-
-> +link status. Endpoint can indicate the status of commands issued be host in
-
-                                                                    by  ??
-
-> +this region. Endpoint can also indicate the scratchpad offset, number of
-> +memory windows to the host using this region.
-> +
-> +The format of Config Region is given below. Each of the fields here are 32
-
-                                               Each                    is
-
-> +bits.
-> +
-> +.. code-block:: text
-> +
-> +	+------------------------+
-> +	|         COMMAND        |
-> +	+------------------------+
-> +	|         ARGUMENT       |
-> +	+------------------------+
-> +	|         STATUS         |
-> +	+------------------------+
-> +	|         TOPOLOGY       |
-> +	+------------------------+
-> +	|    ADDRESS (LOWER 32)  |
-> +	+------------------------+
-> +	|    ADDRESS (UPPER 32)  |
-> +	+------------------------+
-> +	|           SIZE         |
-> +	+------------------------+
-> +	|   NO OF MEMORY WINDOW  |
-> +	+------------------------+
-> +	|  MEMORY WINDOW1 OFFSET |
-> +	+------------------------+
-> +	|       SPAD OFFSET      |
-> +	+------------------------+
-> +	|        SPAD COUNT      |
-> +	+------------------------+
-> +	|      DB ENTRY SIZE     |
-> +	+------------------------+
-> +	|         DB DATA        |
-> +	+------------------------+
-> +	|            :           |
-> +	+------------------------+
-> +	|            :           |
-> +	+------------------------+
-> +	|         DB DATA        |
-> +	+------------------------+
-> +
-> +
-> +  COMMAND:
-> +
-> +	NTB function supports three commands:
-> +
-> +	  CMD_CONFIGURE_DOORBELL (0x1): Command to configure doorbell. Before
-> +	invoking this command, the host should allocate and initialize
-> +	MSI/MSI-X vectors (i.e initialize the MSI/MSI-X capability in the
-
-	                   i.e.
-
-> +	Endpoint). The endpoint on receiving this command will configure
-> +	the outbound ATU such that transaction to DB BAR will be routed
-> +	to the MSI/MSI-X address programmed by the host. The ARGUMENT
-> +	register should be populated with number of DBs to configure (in the
-> +	lower 16 bits) and if MSI or MSI-X should be configured (BIT 16).
-> +	(TODO: Add support for MSI-X).
-> +
-> +	  CMD_CONFIGURE_MW (0x2): Command to configure memory window. The
-> +	host invokes this command after allocating a buffer that can be
-> +	accessed by remote host. The allocated address should be programmed
-> +	in the ADDRESS register (64 bit), the size should be programmed in
-> +	the SIZE register and the memory window index should be programmed
-> +	in the ARGUMENT register. The endpoint on receiving this command
-> +	will configure the outbound ATU such that trasaction to MW BAR
-
-	                                          transaction
-
-> +	will be routed to the address provided by the host.
-> +
-> +	  CMD_LINK_UP (0x3): Command to indicate an NTB application is
-> +	bound to the EP device on the host side. Once the endpoint
-> +	receives this command from both the hosts, the endpoint will
-> +	raise an LINK_UP event to both the hosts to indicate the hosts
-> +	can start communicating with each other.
-> +
-> +  ARGUMENT:
-> +
-> +	The value of this register is based on the commands issued in
-> +	command register. See COMMAND section for more information.
-> +
-> +  TOPOLOGY:
-> +
-> +	Set to NTB_TOPO_B2B_USD for Primary interface
-> +	Set to NTB_TOPO_B2B_DSD for Secondary interface
-> +
-> +  ADDRESS/SIZE:
-> +
-> +	Address and Size to be used while configuring the memory window.
-> +	See "CMD_CONFIGURE_MW" for more info.
-> +
-> +  MEMORY WINDOW1 OFFSET:
-> +
-> +	Memory Window 1 and Doorbell registers are packed together in the
-> +	same BAR. The initial portion of the region will have doorbell
-> +	registers and the latter portion of the region is for memory window 1.
-> +	This register will specify the offset of the memory window 1.
-> +
-> +  NO OF MEMORY WINDOW:
-> +
-> +	Specifies the number of memory windows supported by the NTB device.
-> +
-> +  SPAD OFFSET:
-> +
-> +	Self scratchpad region and config region are packed together in the
-> +	same BAR. The initial portion of the region will have config region
-> +	and the latter portion of the region is for self scratchpad. This
-> +	register will specify the offset of the self scratchpad registers.
-> +
-> +  SPAD COUNT:
-> +
-> +	Specifies the number of scratchpad registers supported by the NTB
-> +	device.
-> +
-> +  DB ENTRY SIZE:
-> +
-> +	Used to determine the offset within the DB BAR that should be written
-> +	in order to raise doorbell. EPF NTB can use either MSI/MSI-X to
-> +	ring doorbell (MSI-X support will be added later). MSI uses same
-> +	address for all the interrupts and MSI-X can provide different
-> +	addresses for different interrupts. The MSI/MSI-X address is provided
-> +	by the host and the address it gives is based on the MSI/MSI-X
-> +	implementation supported by the host. For instance, ARM platform
-> +	using GIC ITS will have same MSI-X address for all the interrupts.
-> +	In order to support all the combinations and use the same mechanism
-> +	for both MSI and MSI-X, EPF NTB allocates separate region in the
-> +	Outbound Address Space for each of the interrupts. This region will
-> +	be mapped to the MSI/MSI-X address provided by the host. If a host
-> +	provides the same address for all the interrupts, all the regions
-> +	will be translated to the same address. If a host provides different
-> +	address, the regions will be translated to different address. This
-> +	will ensure there is no difference while raising the doorbell.
-> +
-> +  DB DATA:
-> +
-> +	EPF NTB supports 32 interrupts. So there are 32 DB DATA registers.
-> +	This holds the MSI/MSI-X data that has to be written to MSI address
-> +	for raising doorbell interrupt. This will be populated by EPF NTB
-> +	while invoking CMD_CONFIGURE_DOORBELL.
-> +
-> +Scratchpad Registers:
-> +---------------------
-> +
-> +  Each host has it's own register space allocated in the memory of NTB EPC.
-
-                   its
-[it's means "it is"]
-
-> +  They are both readable and writable from both sides of the bridge. They
-> +  are used by applications built over NTB and can be used to pass control
-> +  and status information between both sides of a device.
-> +
-> +  Scratchpad registers has 2 parts
-> +	1) Self Scratchpad: Host's own register space
-> +	2) Peer Scratchpad: Remote host's register space.
-> +
-> +Doorbell Registers:
-> +-------------------
-> +
-> +  Registers using which one host can interrupt the other host.
-
-eh?  ENOPARSE.
+I also wonder if -EOPNOTSUPP would be better, or -EINVAL?
 
 > +
-> +Memory Window:
-> +--------------
+> +	if (lan937x_is_internal_tx_phy_port(dev, addr))
+> +		addr_base = REG_PORT_TX_PHY_CTRL_BASE;
+> +	else
+> +		addr_base = REG_PORT_T1_PHY_CTRL_BASE;
 > +
-> +  Actual transfer of data between the two hosts will happen using the
-> +  memory window.
+> +	temp = PORT_CTRL_ADDR(addr, (addr_base + (reg << 2)));
 > +
-> +Modeling Constructs:
-> +====================
+> +	ksz_write16(dev, REG_VPHY_IND_ADDR__2, temp);
 > +
-> +There are 5 or more distinct regions (config, self scratchpad, peer
-> +scratchpad, doorbell, one or more memory windows) to be modeled to achieve
-> +NTB functionality. Atleast one memory window is required while more than
+> +	/* Write the data to be written to the VPHY reg */
+> +	ksz_write16(dev, REG_VPHY_IND_DATA__2, val);
+> +
+> +	/* Write the Write En and Busy bit */
+> +	ksz_write16(dev, REG_VPHY_IND_CTRL__2, (VPHY_IND_WRITE
+> +				| VPHY_IND_BUSY));
+> +
+> +	ret = regmap_read_poll_timeout(dev->regmap[1],
+> +				       REG_VPHY_IND_CTRL__2,
+> +				value, !(value & VPHY_IND_BUSY), 10, 1000);
+> +
+> +	/* failed to write phy register. get out of loop */
+> +	if (ret) {
+> +		dev_err(dev->dev, "Failed to write phy register\n");
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +int lan937x_t1_tx_phy_read(struct ksz_device *dev, int addr,
+> +			   int reg, u16 *val)
+> +{
+> +	u16 temp, addr_base;
+> +	unsigned int value;
+> +	int ret;
+> +
+> +	if (lan937x_is_internal_phy_port(dev, addr)) {
+> +		if (lan937x_is_internal_tx_phy_port(dev, addr))
+> +			addr_base = REG_PORT_TX_PHY_CTRL_BASE;
+> +		else
+> +			addr_base = REG_PORT_T1_PHY_CTRL_BASE;
 
-                      At least
+You could reduce the indentation by doing what you did above:
 
-> +one is permitted. All these regions should be mapped to BAR for hosts to
-> +access these regions.
-> +
-> +If one 32-bit BAR is allocated for each of these regions, the scheme would
-> +look like
-> +
-> +======  ===============
-> +BAR NO  CONSTRUCTS USED
-> +======  ===============
-> +BAR0    Config Region
-> +BAR1    Self Scratchpad
-> +BAR2    Peer Scratchpad
-> +BAR3    Doorbell
-> +BAR4    Memory Window 1
-> +BAR5    Memory Window 2
-> +======  ===============
-> +
-> +However if we allocate a separate BAR for each of the region, there would not
+> +	/* Check for internal phy port */
+> +	if (!lan937x_is_internal_phy_port(dev, addr))
+> +		return 0;
 
-                                                         regions,
-
-> +be enough BARs for all the regions in a platform that supports only 64-bit
-> +BAR.
-> +
-> +In order to be supported by most of the platforms, the regions should be
-> +packed and mapped to BARs in a way that provides NTB functionality and
-> +also making sure the hosts doesn't access any region that it is not supposed
-> +to.
-> +
-> +The following scheme is used in EPF NTB Function
-> +
-> +======  ===============================
-> +BAR NO  CONSTRUCTS USED
-> +======  ===============================
-> +BAR0    Config Region + Self Scratchpad
-> +BAR1    Peer Scratchpad
-> +BAR2    Doorbell + Memory Window 1
-> +BAR3    Memory Window 2
-> +BAR4    Memory Window 3
-> +BAR5    Memory Window 4
-> +======  ===============================
-> +
-> +With this scheme, for the basic NTB functionality 3 BARs should be sufficient.
-> +
-> +Modeling Config/Scratchpad Region:
-> +----------------------------------
-> +
-> +.. code-block:: text
-> +
-> + +-----------------+------->+------------------+        +-----------------+
-> + |       BAR0      |        |  CONFIG REGION   |        |       BAR0      |
-> + +-----------------+----+   +------------------+<-------+-----------------+
-> + |       BAR1      |    |   |SCRATCHPAD REGION |        |       BAR1      |
-> + +-----------------+    +-->+------------------+<-------+-----------------+
-> + |       BAR2      |            Local Memory            |       BAR2      |
-> + +-----------------+                                    +-----------------+
-> + |       BAR3      |                                    |       BAR3      |
-> + +-----------------+                                    +-----------------+
-> + |       BAR4      |                                    |       BAR4      |
-> + +-----------------+                                    +-----------------+
-> + |       BAR5      |                                    |       BAR5      |
-> + +-----------------+                                    +-----------------+
-> +   EP CONTROLLER 1                                        EP CONTROLLER 2
-> +
-> +Above diagram shows Config region + Scratchpad region for HOST1 (connected to
-> +EP controller 1) allocated in local memory. The HOST1 can access the config
-> +region and scratchpad region (self scratchpad) using BAR0 of EP controller 1.
-> +The peer host (HOST2 connected to EP controller 2) can also access this
-> +scratchpad region (peer scratchpad) using BAR1 of EP controller 2. This
-> +diagram shows the case where Config region and Scratchpad region is allocated
-> +for HOST1, however the same is applicable for HOST2.
-> +
-> +Modeling Doorbell/Memory Window 1:
-> +----------------------------------
-> +
-> +.. code-block:: text
-> +
-> + +-----------------+    +----->+----------------+-----------+-----------------+
-> + |       BAR0      |    |      |   Doorbell 1   +-----------> MSI-X ADDRESS 1 |
-> + +-----------------+    |      +----------------+           +-----------------+
-> + |       BAR1      |    |      |   Doorbell 2   +---------+ |                 |
-> + +-----------------+----+      +----------------+         | |                 |
-> + |       BAR2      |           |   Doorbell 3   +-------+ | +-----------------+
-> + +-----------------+----+      +----------------+       | +-> MSI-X ADDRESS 2 |
-> + |       BAR3      |    |      |   Doorbell 4   +-----+ |   +-----------------+
-> + +-----------------+    |      |----------------+     | |   |                 |
-> + |       BAR4      |    |      |                |     | |   +-----------------+
-> + +-----------------+    |      |      MW1       +---+ | +-->+ MSI-X ADDRESS 3||
-> + |       BAR5      |    |      |                |   | |     +-----------------+
-> + +-----------------+    +----->-----------------+   | |     |                 |
-> +   EP CONTROLLER 1             |                |   | |     +-----------------+
-> +                               |                |   | +---->+ MSI-X ADDRESS 4 |
-> +                               +----------------+   |       +-----------------+
-> +                                EP CONTROLLER 2     |       |                 |
-> +                                  (OB SPACE)        |       |                 |
-> +                                                    +------->      MW1        |
-> +                                                            |                 |
-> +                                                            |                 |
-> +                                                            +-----------------+
-> +                                                            |                 |
-> +                                                            |                 |
-> +                                                            |                 |
-> +                                                            |                 |
-> +                                                            |                 |
-> +                                                            +-----------------+
-> +                                                             PCI Address Space
-> +                                                             (Managed by HOST2)
-> +
-> +Above diagram shows how the doorbell and memory window 1 is mapped so that
-> +HOST1 can raise doorbell interrupt on HOST2 and also how HOST1 can access
-> +buffers exposed by HOST2 using memory window1 (MW1). Here doorbell and
-> +memory window 1 regions are allocated in EP controller 2 outbound (OB) address
-> +space. Allocating and configuring BARs for doorbell and memory window1
-> +is done during the initialization phase of NTB endpoint function driver.
-> +Mapping from EP controller 2 OB space to PCI address space is done when HOST2
-> +sends CMD_CONFIGURE_MW/CMD_CONFIGURE_DOORBELL. The commands are explained
-> +below.
-
-below??
-
-> +
-> +Modeling Optional Memory Windows:
-> +---------------------------------
-> +
-> +This is modeled the same was as MW1 but each of the additional memory windows
-> +is mapped to separate BARs.
-> 
-
-Is all of this register/memory space mapping defined in some PCI NTB spec
-or is this specific to some hardware/SoC implementation?
+You might want to return 0xffff here, which is what a read on a
+non-existent device on an MDIO bus should return.
 
 
-HTH.
--- 
-~Randy
+> +
+> +		/* get register address based on the logical port */
+> +		temp = PORT_CTRL_ADDR(addr, (addr_base + (reg << 2)));
+> +
+> +		ksz_write16(dev, REG_VPHY_IND_ADDR__2, temp);
+> +		/* Write Read and Busy bit to start the transaction*/
+> +		ksz_write16(dev, REG_VPHY_IND_CTRL__2, VPHY_IND_BUSY);
+> +
+> +		ret = regmap_read_poll_timeout(dev->regmap[1],
+> +					       REG_VPHY_IND_CTRL__2,
+> +					value, !(value & VPHY_IND_BUSY), 10, 1000);
+> +
+> +		/*  failed to read phy register. get out of loop */
+> +		if (ret) {
+> +			dev_err(dev->dev, "Failed to read phy register\n");
+> +			return ret;
+> +		}
+> +		/* Read the VPHY register which has the PHY data*/
+> +		ksz_read16(dev, REG_VPHY_IND_DATA__2, val);
+> +	}
+> +
+> +	return 0;
+> +}
 
+> +static void tx_phy_setup(struct ksz_device *dev, int port)
+> +{
+> +	u16 data_lo;
+> +
+> +	lan937x_t1_tx_phy_read(dev, port, REG_PORT_TX_SPECIAL_MODES, &data_lo);
+> +	/* Need to change configuration from 6 to other value. */
+> +	data_lo &= TX_PHYADDR_M;
+> +
+> +	lan937x_t1_tx_phy_write(dev, port, REG_PORT_TX_SPECIAL_MODES, data_lo);
+> +
+> +	/* Need to toggle test_mode bit to enable DSP access. */
+> +	lan937x_t1_tx_phy_write(dev, port, REG_PORT_TX_IND_CTRL, TX_TEST_MODE);
+> +	lan937x_t1_tx_phy_write(dev, port, REG_PORT_TX_IND_CTRL, 0);
+> +
+> +	/* Note TX_TEST_MODE is then always enabled so this is not required. */
+> +	lan937x_t1_tx_phy_write(dev, port, REG_PORT_TX_IND_CTRL, TX_TEST_MODE);
+> +	lan937x_t1_tx_phy_write(dev, port, REG_PORT_TX_IND_CTRL, 0);
+
+This is only accessing PHY registers, not switch registers. So this
+code belongs in the PHY driver, not the switch driver.
+
+What PHY driver is actually used? The "Microchip LAN87xx T1" driver?
+
+> +static void tx_phy_port_init(struct ksz_device *dev, int port)
+> +{
+> +	u32 data;
+> +
+> +	/* Software reset. */
+> +	lan937x_t1_tx_phy_mod_bits(dev, port, MII_BMCR, BMCR_RESET, true);
+> +
+> +	/* tx phy setup */
+> +	tx_phy_setup(dev, port);
+
+And which PHY driver is used here? "Microchip LAN88xx"? All this code
+should be in the PHY driver.
+
+> +void lan937x_port_setup(struct ksz_device *dev, int port, bool cpu_port)
+> +{
+> +	struct ksz_port *p = &dev->ports[port];
+> +	u8 data8, member;
+
+> +	} else {
+> +		/* force flow control off*/
+> +		lan937x_port_cfg(dev, port, REG_PORT_XMII_CTRL_0,
+> +				 PORT_FORCE_TX_FLOW_CTRL | PORT_FORCE_RX_FLOW_CTRL,
+> +			     false);
+> +
+> +		lan937x_pread8(dev, port, REG_PORT_XMII_CTRL_1, &data8);
+> +
+> +		/* clear MII selection & set it based on interface later */
+> +		data8 &= ~PORT_MII_SEL_M;
+> +
+> +		/* configure MAC based on p->interface */
+> +		switch (p->interface) {
+> +		case PHY_INTERFACE_MODE_MII:
+> +			lan937x_set_gbit(dev, false, &data8);
+> +			data8 |= PORT_MII_SEL;
+> +			break;
+> +		case PHY_INTERFACE_MODE_RMII:
+> +			lan937x_set_gbit(dev, false, &data8);
+> +			data8 |= PORT_RMII_SEL;
+> +			break;
+> +		default:
+> +			lan937x_set_gbit(dev, true, &data8);
+> +			data8 |= PORT_RGMII_SEL;
+> +
+> +			data8 &= ~PORT_RGMII_ID_IG_ENABLE;
+> +			data8 &= ~PORT_RGMII_ID_EG_ENABLE;
+> +
+> +			if (p->interface == PHY_INTERFACE_MODE_RGMII_ID ||
+> +			    p->interface == PHY_INTERFACE_MODE_RGMII_RXID)
+> +				data8 |= PORT_RGMII_ID_IG_ENABLE;
+> +
+> +			if (p->interface == PHY_INTERFACE_MODE_RGMII_ID ||
+> +			    p->interface == PHY_INTERFACE_MODE_RGMII_TXID)
+> +				data8 |= PORT_RGMII_ID_EG_ENABLE;
+
+Normally, the PHY inserts the delay, not the MAC. If the MAC is doing
+the delay, you need to ensure the PHY knows this, when you call
+phy_connect() you need to pass PHY_INTERFACE_MODE_RGMII, so it does
+not add delays.
+
+> +			break;
+> +		}
+> +		lan937x_pwrite8(dev, port, REG_PORT_XMII_CTRL_1, data8);
+> +	}
+> +
+> +	if (cpu_port)
+> +		member = dev->port_mask;
+> +	else
+> +		member = dev->host_mask | p->vid_member;
+> +
+> +	lan937x_cfg_port_member(dev, port, member);
+> +}
+> +
+> +static int lan937x_switch_init(struct ksz_device *dev)
+> +{
+> +	int i;
+> +
+> +	dev->ds->ops = &lan937x_switch_ops;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(lan937x_switch_chips); i++) {
+> +		const struct lan937x_chip_data *chip = &lan937x_switch_chips[i];
+> +
+> +		if (dev->chip_id == chip->chip_id) {
+> +			dev->name = chip->dev_name;
+> +			dev->num_vlans = chip->num_vlans;
+> +			dev->num_alus = chip->num_alus;
+> +			dev->num_statics = chip->num_statics;
+> +			dev->port_cnt = chip->port_cnt;
+> +			dev->cpu_ports = chip->cpu_ports;
+> +			break;
+> +		}
+> +	}
+
+Please verify that the switch found actually matches the DT compatible
+string. With 4 compatible strings, if you don't verify it, you will
+find that 3/4 of the boards have it wrong, but it still works. You
+then get into trouble when you actually need to use the compatible
+string for something.
+
+Or just use a single compatible string.
+
+> +static int lan937x_get_link_status(struct ksz_device *dev, int port)
+> +{
+> +	u16 val1, val2;
+> +
+> +	lan937x_t1_tx_phy_read(dev, port, REG_PORT_T1_PHY_M_STATUS,
+> +			       &val1);
+> +
+> +	lan937x_t1_tx_phy_read(dev, port, REG_PORT_T1_MODE_STAT, &val2);
+> +
+> +	if (val1 & (PORT_T1_LOCAL_RX_OK | PORT_T1_REMOTE_RX_OK) &&
+> +	    val2 & (T1_PORT_DSCR_LOCK_STATUS_MSK | T1_PORT_LINK_UP_MSK))
+> +		return PHY_LINK_UP;
+> +
+> +	return PHY_LINK_DOWN;
+> +}
+
+The PHY driver should tell you if the link is up. You should not being
+accessing the PHY directly.
+
+It actually looks like you have your PHY drivers here, embedded inside
+this driver. That is wrong, they should move into drivers/net/phy. The
+switch driver should just give access to the registers, so that the
+PHY driver, and phylib and drive the PHY.
+
+> +static void lan937x_port_stp_state_set(struct dsa_switch *ds, int port,
+> +				       u8 state)
+> +{
+> +	struct ksz_device *dev = ds->priv;
+> +	struct ksz_port *p = &dev->ports[port];
+> +	int forward = dev->member;
+> +	int member = -1;
+> +	u8 data;
+> +
+> +	lan937x_pread8(dev, port, P_STP_CTRL, &data);
+> +	data &= ~(PORT_TX_ENABLE | PORT_RX_ENABLE | PORT_LEARN_DISABLE);
+> +
+> +	switch (state) {
+> +	case BR_STATE_DISABLED:
+> +		data |= PORT_LEARN_DISABLE;
+> +		if (port != dev->cpu_port)
+> +			member = 0;
+
+You can remove all the tests for cpu_port. It should never happen.  If
+it does, something is broken in the DSA core.
+
+> +		break;
+> +	case BR_STATE_LISTENING:
+> +		data |= (PORT_RX_ENABLE | PORT_LEARN_DISABLE);
+> +		if (port != dev->cpu_port &&
+> +		    p->stp_state == BR_STATE_DISABLED)
+> +			member = dev->host_mask | p->vid_member;
+> +		break;
+> +	case BR_STATE_LEARNING:
+> +		data |= PORT_RX_ENABLE;
+> +		break;
+> +	case BR_STATE_FORWARDING:
+> +		data |= (PORT_TX_ENABLE | PORT_RX_ENABLE);
+> +
+> +		/* This function is also used internally. */
+> +		if (port == dev->cpu_port)
+> +			break;
+
+You probably want to refactor this. Move the code which is needed for
+the CPU port into a helper, and call it directly.
+
+> +
+> +		member = dev->host_mask | p->vid_member;
+> +		mutex_lock(&dev->dev_mutex);
+> +
+> +		/* Port is a member of a bridge. */
+> +		if (dev->br_member & (1 << port)) {
+> +			dev->member |= (1 << port);
+> +			member = dev->member;
+> +		}
+> +		mutex_unlock(&dev->dev_mutex);
+> +		break;
+> +	case BR_STATE_BLOCKING:
+> +		data |= PORT_LEARN_DISABLE;
+> +		if (port != dev->cpu_port &&
+> +		    p->stp_state == BR_STATE_DISABLED)
+> +			member = dev->host_mask | p->vid_member;
+> +		break;
+> +	default:
+> +		dev_err(ds->dev, "invalid STP state: %d\n", state);
+> +		return;
+> +	}
+> +
+> +	lan937x_pwrite8(dev, port, P_STP_CTRL, data);
+> +
+> +	p->stp_state = state;
+> +	mutex_lock(&dev->dev_mutex);
+> +
+> +	/* Port membership may share register with STP state. */
+> +	if (member >= 0 && member != p->member)
+> +		lan937x_cfg_port_member(dev, port, (u8)member);
+> +
+> +	/* Check if forwarding needs to be updated. */
+> +	if (state != BR_STATE_FORWARDING) {
+> +		if (dev->br_member & (1 << port))
+> +			dev->member &= ~(1 << port);
+> +	}
+> +
+> +	/* When topology has changed the function ksz_update_port_member
+> +	 * should be called to modify port forwarding behavior.
+> +	 */
+> +	if (forward != dev->member)
+> +		ksz_update_port_member(dev, port);
+
+Please could you explain more what is going on with membership?
+Generally, STP state is specific to the port, and nothing else
+changes. So it is not clear what this membership is all about.
+
+
+> +	mutex_unlock(&dev->dev_mutex);
+> +}
+> +
+> +static void lan937x_config_cpu_port(struct dsa_switch *ds)
+> +{
+> +	struct ksz_device *dev = ds->priv;
+> +	struct ksz_port *p;
+> +	int i;
+> +
+> +	ds->num_ports = dev->port_cnt;
+> +
+> +	for (i = 0; i < dev->port_cnt; i++) {
+> +		if (dsa_is_cpu_port(ds, i) && (dev->cpu_ports & (1 << i))) {
+> +			phy_interface_t interface;
+> +			const char *prev_msg;
+> +			const char *prev_mode;
+> +
+> +			dev->cpu_port = i;
+> +			dev->host_mask = (1 << dev->cpu_port);
+> +			dev->port_mask |= dev->host_mask;
+> +			p = &dev->ports[i];
+> +
+> +			/* Read from XMII register to determine host port
+> +			 * interface.  If set specifically in device tree
+> +			 * note the difference to help debugging.
+> +			 */
+> +			interface = lan937x_get_interface(dev, i);
+> +			if (!p->interface) {
+> +				if (dev->compat_interface) {
+> +					dev_warn(dev->dev,
+> +						 "Using legacy switch \"phy-mode\" property, because it is missing on port %d node. Please update your device tree.\n",
+> +						 i);
+
+Since this is a new driver, there cannot be any legacy DT blobs which
+needs workarounds.
+
+      Andrew
