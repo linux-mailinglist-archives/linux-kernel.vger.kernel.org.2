@@ -2,164 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA273085E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:44:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 749DE3085EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:44:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232268AbhA2Gd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 01:33:59 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:40996 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232223AbhA2GbA (ORCPT
+        id S232111AbhA2GfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 01:35:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52088 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232272AbhA2GeH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 01:31:00 -0500
-X-UUID: 4fba3d46cb0047298c2013140ca7584b-20210129
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:Reply-To:From:Subject:Message-ID; bh=9WDQsRRha7OCdnZihlDtCMb6fVsdsr4DG/FtSa6OafA=;
-        b=ls3sgJvk5L5ilbRjg+Ibx4B3dAFM2UiJFokz/RsHpJZE4hn8TcjCQ8ZAXNVRE01x9NhVtezOwZvmBlJnixWGpwIOGgjmGtufDxO+UnrF8Gb1eAo6wKcL5k1mE4kTwIHlc+BcmJqCfdsVkjzRJb8I/z1XgwYaEaSYGSQQIQ5iGNc=;
-X-UUID: 4fba3d46cb0047298c2013140ca7584b-20210129
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <yongqiang.niu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 189400352; Fri, 29 Jan 2021 14:30:11 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by mtkmbs05n1.mediatek.inc
- (172.21.101.15) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 29 Jan
- 2021 14:30:09 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 29 Jan 2021 14:30:08 +0800
-Message-ID: <1611901808.1947.16.camel@mhfsdcap03>
-Subject: Re: [PATCH v12 6/8] drm/mediatek: enable dither function
-From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
-Reply-To: Yongqiang Niu <yongqiang.niu@mediatek.com>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-CC:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Date:   Fri, 29 Jan 2021 14:30:08 +0800
-In-Reply-To: <CAJMQK-gKKjLJ5xOAKOx5BM5dL2MxgFq72FVCfGTfzK4ZXzRJfA@mail.gmail.com>
-References: <20210128112314.1304160-1-hsinyi@chromium.org>
-         <20210128112314.1304160-7-hsinyi@chromium.org>
-         <1611883982.5226.12.camel@mtksdaap41>
-         <CAJMQK-gKKjLJ5xOAKOx5BM5dL2MxgFq72FVCfGTfzK4ZXzRJfA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Fri, 29 Jan 2021 01:34:07 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B38C06174A
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 22:33:26 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id m22so10991581lfg.5
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 22:33:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MtLkYMuRmxB6MJaILElvuKaD5giM9yGaN3cva3cz1IY=;
+        b=qBWjM7pwDDtCVOvC3PcV+zb2Kova9HNV/xBm7ugYebcvc1UmvGXCAQUYv6rn24fiBX
+         9rqLN/By7Vc92s/959tocE7xe/ExTRx5hk0kVP4s+Lj+5DTf6nOs2855oA18p/r3Bdtc
+         tpcTeAjS0sXRPYPpgywVrWc1brO7Y0QLSrcDP97//83/kMqGpB8x9gIRTZ2A3+tpwbMa
+         AJ344rZqOlbtzhgvV/mqlyJAgZlHVEzllNY+UFlchqZukMMb3TFnZ1IAzvZXk4vBeS7Y
+         JiVqLybCGC3NebmxGd9GyilCJbeVWyzyUsp/17UCV5I1defyOO+cBIcEn2Df5PiJ8W33
+         AlBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MtLkYMuRmxB6MJaILElvuKaD5giM9yGaN3cva3cz1IY=;
+        b=NY7yOuT9/sCeVf9FUgVg2kOuNU4ViP8+N9gmCFwm8BmahyXF6agpzVgU2Sgzh886GK
+         n87tE2P3yj/GTxBubkqyvRLEHT2KeEviRrZOL/Qhs36XXmT3X7PpOGrt+HMWx0ObhJ98
+         Jn4SZiF75v0DbPYXKcpBaHHst7C24cMXZTmKOdYtci8n304xo3vH2Nm3zWc99uSFD2Ou
+         y12TPdr4qONYAHIsFc6oGP5ljhUaoGsI33Rc2kmzHXIAk0T1JzXS28MH5bZJv8qHCE2e
+         qRmum0eLN7IPRUO8xa696bjjpPxo7iJSwFNclRVCwHMP6PILDP+qU84N9zrwybBGDjUJ
+         tODg==
+X-Gm-Message-State: AOAM531SBlFJSg7wuxuX8GjWRhH/hDXZz/E996kw0WPjquhHCZow1k02
+        SXymOo4KZpJ6cOMpWiZI0jeUTmS0B0xG00vg2c43JA==
+X-Google-Smtp-Source: ABdhPJx6PY9lXl2+/4eClbTud9+pmveaoe+s0oX505s39i3QMK7rAuNjK8MB5EOZ42a3aPDguskGqbBs0V4/+kW8q0c=
+X-Received: by 2002:a19:c20b:: with SMTP id l11mr1321295lfc.47.1611902005080;
+ Thu, 28 Jan 2021 22:33:25 -0800 (PST)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20210123001743.1379894-1-dlatypov@google.com>
+In-Reply-To: <20210123001743.1379894-1-dlatypov@google.com>
+From:   David Gow <davidgow@google.com>
+Date:   Fri, 29 Jan 2021 14:33:12 +0800
+Message-ID: <CABVgOSkksFz62F4fGeCd8hO_hHPDaQ5AB=VRo9tSWVdrE=nPow@mail.gmail.com>
+Subject: Re: [PATCH] kunit: make kunit_tool accept optional path to
+ .kunitconfig fragment
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIxLTAxLTI5IGF0IDE0OjI0ICswODAwLCBIc2luLVlpIFdhbmcgd3JvdGU6DQo+
-IE9uIEZyaSwgSmFuIDI5LCAyMDIxIGF0IDk6MzMgQU0gQ0sgSHUgPGNrLmh1QG1lZGlhdGVrLmNv
-bT4gd3JvdGU6DQo+ID4NCj4gPiBIaSwgSHNpbi1ZaToNCj4gPg0KPiA+IE9uIFRodSwgMjAyMS0w
-MS0yOCBhdCAxOToyMyArMDgwMCwgSHNpbi1ZaSBXYW5nIHdyb3RlOg0KPiA+ID4gRnJvbTogWW9u
-Z3FpYW5nIE5pdSA8eW9uZ3FpYW5nLm5pdUBtZWRpYXRlay5jb20+DQo+ID4gPg0KPiA+ID4gZm9y
-IDUgb3IgNiBicGMgcGFuZWwsIHdlIG5lZWQgZW5hYmxlIGRpdGhlciBmdW5jdGlvbg0KPiA+ID4g
-dG8gaW1wcm92ZSB0aGUgZGlzcGxheSBxdWFsaXR5DQo+ID4gPg0KPiA+ID4gU2lnbmVkLW9mZi1i
-eTogWW9uZ3FpYW5nIE5pdSA8eW9uZ3FpYW5nLm5pdUBtZWRpYXRlay5jb20+DQo+ID4gPiBTaWdu
-ZWQtb2ZmLWJ5OiBIc2luLVlpIFdhbmcgPGhzaW55aUBjaHJvbWl1bS5vcmc+DQo+ID4gPiAtLS0N
-Cj4gPiA+ICBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kZHBfY29tcC5jIHwgMTUg
-KysrKysrKysrKysrKy0tDQo+ID4gPiAgMSBmaWxlIGNoYW5nZWQsIDEzIGluc2VydGlvbnMoKyks
-IDIgZGVsZXRpb25zKC0pDQo+ID4gPg0KPiA+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2Ry
-bS9tZWRpYXRlay9tdGtfZHJtX2RkcF9jb21wLmMgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsv
-bXRrX2RybV9kZHBfY29tcC5jDQo+ID4gPiBpbmRleCBhYzJjYjI1NjIwMzU3Li42YzhmMjQ2Mzgw
-YTc0IDEwMDY0NA0KPiA+ID4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1f
-ZGRwX2NvbXAuYw0KPiA+ID4gKysrIGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1f
-ZGRwX2NvbXAuYw0KPiA+ID4gQEAgLTUzLDYgKzUzLDcgQEANCj4gPiA+ICAjZGVmaW5lIERJVEhF
-Ul9FTiAgICAgICAgICAgICAgICAgICAgICAgICAgICBCSVQoMCkNCj4gPiA+ICAjZGVmaW5lIERJ
-U1BfRElUSEVSX0NGRyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDB4MDAyMA0KPiA+ID4g
-ICNkZWZpbmUgRElUSEVSX1JFTEFZX01PREUgICAgICAgICAgICAgICAgICAgIEJJVCgwKQ0KPiA+
-ID4gKyNkZWZpbmUgRElUSEVSX0VOR0lORV9FTiAgICAgICAgICAgICAgICAgICAgIEJJVCgxKQ0K
-PiA+ID4gICNkZWZpbmUgRElTUF9ESVRIRVJfU0laRSAgICAgICAgICAgICAgICAgICAgIDB4MDAz
-MA0KPiA+ID4NCj4gPiA+ICAjZGVmaW5lIExVVF8xMEJJVF9NQVNLICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIDB4MDNmZg0KPiA+ID4gQEAgLTMxNCw5ICszMTUsMTkgQEAgc3RhdGljIHZv
-aWQgbXRrX2RpdGhlcl9jb25maWcoc3RydWN0IGRldmljZSAqZGV2LCB1bnNpZ25lZCBpbnQgdywN
-Cj4gPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB1bnNpZ25lZCBpbnQgYnBjLCBzdHJ1
-Y3QgY21kcV9wa3QgKmNtZHFfcGt0KQ0KPiA+ID4gIHsNCj4gPiA+ICAgICAgIHN0cnVjdCBtdGtf
-ZGRwX2NvbXBfZGV2ICpwcml2ID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+ID4gPiArICAgICBi
-b29sIGVuYWJsZSA9IChicGMgPT0gNSB8fCBicGMgPT0gNik7DQo+ID4NCj4gPiBJIHN0cm9uZ2x5
-IGJlbGlldmUgdGhhdCBkaXRoZXIgZnVuY3Rpb24gaW4gZGl0aGVyIGlzIGlkZW50aWNhbCB0byB0
-aGUNCj4gPiBvbmUgaW4gZ2FtbWEgYW5kIG9kLCBhbmQgaW4gbXRrX2RpdGhlcl9zZXRfY29tbW9u
-KCksICdicGMgPj0NCj4gPiBNVEtfTUlOX0JQQycgaXMgdmFsaWQsIHNvIEkgYmVsaWV2ZSB3ZSBu
-ZWVkIG5vdCB0byBsaW1pdCBicGMgdG8gNSBvciA2Lg0KPiA+IEJ1dCB3ZSBzaG91bGQgY29uc2lk
-ZXIgdGhlIGNhc2UgdGhhdCBicGMgaXMgaW52YWxpZCBpbg0KPiA+IG10a19kaXRoZXJfc2V0X2Nv
-bW1vbigpLiBJbnZhbGlkIGNhc2UgaW4gZ2FtbWEgYW5kIG9kIHVzZSBkaWZmZXJlbnQgd2F5DQo+
-ID4gdG8gcHJvY2Vzcy4gRm9yIGdhbW1hLCBkaXRoZXIgaXMgZGVmYXVsdCByZWxheSBtb2RlLCBz
-byBpbnZhbGlkIGJwYw0KPiA+IHdvdWxkIGRvIG5vdGhpbmcgaW4gbXRrX2RpdGhlcl9zZXRfY29t
-bW9uKCkgYW5kIHJlc3VsdCBpbiByZWxheSBtb2RlLg0KPiA+IEZvciBvZCwgaXQgc2V0IHRvIHJl
-bGF5IG1vZGUgZmlyc3QsIHRoZW0gaW52YWxpZCBicGMgd291bGQgZG8gbm90aGluZyBpbg0KPiA+
-IG10a19kaXRoZXJfc2V0X2NvbW1vbigpIGFuZCByZXN1bHQgaW4gcmVsYXkgbW9kZS4gSSB3b3Vs
-ZCBsaWtlIGRpdGhlciwNCj4gPiBnYW1tYSBhbmQgb2QgdG8gcHJvY2VzcyBpbnZhbGlkIGJwYyBp
-biB0aGUgc2FtZSB3YXkuIE9uZSBzb2x1dGlvbiBpcyB0bw0KPiA+IHNldCByZWxheSBtb2RlIGlu
-IG10a19kaXRoZXJfc2V0X2NvbW1vbigpIGZvciBpbnZhbGlkIGJwYy4NCj4gPg0KPiA+IFJlZ2Fy
-ZHMsDQo+ID4gQ0sNCj4gPg0KPiANCj4gSSBtb2RpZnkgdGhlIG10a19kaXRoZXJfY29uZmlnKCkg
-dG8gZm9sbG93Og0KPiANCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0
-ZWsvbXRrX2RybV9kZHBfY29tcC5jDQo+IGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19k
-cm1fZGRwX2NvbXAuYw0KPiBpbmRleCBhYzJjYjI1NjIwMzU3Li41YjdmY2VkYjlmOWE4IDEwMDY0
-NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kZHBfY29tcC5jDQo+
-ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2RkcF9jb21wLmMNCj4gQEAg
-LTUzLDYgKzUzLDcgQEANCj4gICNkZWZpbmUgRElUSEVSX0VOICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgQklUKDApDQo+ICAjZGVmaW5lIERJU1BfRElUSEVSX0NGRyAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgMHgwMDIwDQo+ICAjZGVmaW5lIERJVEhFUl9SRUxBWV9NT0RFICAg
-ICAgICAgICAgICAgICAgICAgIEJJVCgwKQ0KPiArI2RlZmluZSBESVRIRVJfRU5HSU5FX0VOICAg
-ICAgICAgICAgICAgICAgICAgICBCSVQoMSkNCj4gICNkZWZpbmUgRElTUF9ESVRIRVJfU0laRSAg
-ICAgICAgICAgICAgICAgICAgICAgMHgwMDMwDQo+IA0KPiAgI2RlZmluZSBMVVRfMTBCSVRfTUFT
-SyAgICAgICAgICAgICAgICAgICAgICAgICAweDAzZmYNCj4gQEAgLTE2Niw2ICsxNjcsOCBAQCB2
-b2lkIG10a19kaXRoZXJfc2V0X2NvbW1vbih2b2lkIF9faW9tZW0gKnJlZ3MsDQo+IHN0cnVjdCBj
-bWRxX2NsaWVudF9yZWcgKmNtZHFfcmVnLA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICBESVRIRVJfQUREX0xTSElGVF9HKE1US19NQVhfQlBDIC0gYnBjKSwNCj4gICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgY21kcV9yZWcsIHJlZ3MsIERJU1BfRElUSEVSXzE2KTsNCj4gICAg
-ICAgICAgICAgICAgIG10a19kZHBfd3JpdGUoY21kcV9wa3QsIGRpdGhlcl9lbiwgY21kcV9yZWcs
-IHJlZ3MsIGNmZyk7DQo+ICsgICAgICAgfSBlbHNlIHsNCj4gKyAgICAgICAgICAgICAgIG10a19k
-ZHBfd3JpdGUoY21kcV9wa3QsIERJVEhFUl9SRUxBWV9NT0RFLCBjbWRxX3JlZywgcmVncywgY2Zn
-KTsNCj4gICAgICAgICB9DQo+ICB9DQo+IA0KPiBAQCAtMzE1LDggKzMxOCwxMiBAQCBzdGF0aWMg
-dm9pZCBtdGtfZGl0aGVyX2NvbmZpZyhzdHJ1Y3QgZGV2aWNlICpkZXYsDQo+IHVuc2lnbmVkIGlu
-dCB3LA0KPiAgew0KPiAgICAgICAgIHN0cnVjdCBtdGtfZGRwX2NvbXBfZGV2ICpwcml2ID0gZGV2
-X2dldF9kcnZkYXRhKGRldik7DQo+IA0KPiAtICAgICAgIG10a19kZHBfd3JpdGUoY21kcV9wa3Qs
-IGggPDwgMTYgfCB3LCAmcHJpdi0+Y21kcV9yZWcsDQo+IHByaXYtPnJlZ3MsIERJU1BfRElUSEVS
-X1NJWkUpOw0KPiAtICAgICAgIG10a19kZHBfd3JpdGUoY21kcV9wa3QsIERJVEhFUl9SRUxBWV9N
-T0RFLCAmcHJpdi0+Y21kcV9yZWcsDQo+IHByaXYtPnJlZ3MsIERJU1BfRElUSEVSX0NGRyk7DQo+
-ICsgICAgICAgbXRrX2RkcF93cml0ZShjbWRxX3BrdCwgaCA8PCAxNiB8IHcsICZwcml2LT5jbWRx
-X3JlZywgcHJpdi0+cmVncywNCj4gKyAgICAgICAgICAgICAgICAgICAgIERJU1BfRElUSEVSX1NJ
-WkUpOw0KPiArICAgICAgIG10a19kZHBfd3JpdGUoY21kcV9wa3QsIERJVEhFUl9SRUxBWV9NT0RF
-LCAmcHJpdi0+Y21kcV9yZWcsIHByaXYtPnJlZ3MsDQo+ICsgICAgICAgICAgICAgICAgICAgICBE
-SVNQX0RJVEhFUl9DRkcpOw0KPiArICAgICAgIG10a19kaXRoZXJfc2V0X2NvbW1vbihwcml2LT5y
-ZWdzLCAmcHJpdi0+Y21kcV9yZWcsIGJwYywgRElTUF9ESVRIRVJfQ0ZHLA0KPiArICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgRElUSEVSX0VOR0lORV9FTiwgY21kcV9wa3QpOw0KPiAgfQ0K
-PiANCj4gU28gbm93LCBub3Qgb25seSBicGM9PTUgb3IgNiwgYnV0IGFsbCB2YWxpZCBicGMsIGRp
-dGhlciBjb25maWcgd2lsbA0KPiBjYWxsIG10a19kaXRoZXJfc2V0X2NvbW1vbigpIHdpdGggdGhl
-IGZsYWcgRElUSEVSX0VOR0lORV9FTihCSVQoMSkpLg0KPiBvZCBjb25maWcgd2lsbCBjYWxsIG10
-a19kaXRoZXJfc2V0X2NvbW1vbigpIHdpdGggdGhlIGZsYWcNCj4gRElTUF9ESVRIRVJJTkcoQklU
-KDIpKS4NCj4gQWRkaXRpb25hbGx5IGZvciA4MTczLCBnYW1tYSBjb25maWcgd2lsbCBjYWxsIG10
-a19kaXRoZXJfc2V0X2NvbW1vbigpDQo+IHdpdGggdGhlIGZsYWcgRElTUF9ESVRIRVJJTkcgKEJJ
-VCgyKSkNCj4gDQo+IEZvciBpbnZhbGlkIG1vZGUgYWxsIG9mIHRoZW0gd2lsbCBiZSBESVRIRVJf
-UkVMQVlfTU9ERS4NCj4gDQo+IEp1c3QgdG8gbWFrZSBzdXJlIHRoYXQgdGhpcyBmb2xsb3dzIHRo
-ZSBzcGVjPyB0aGFua3MNCj4gDQoNCmZvciBtdDgxNzMgZ2FtbWEsIHRoZXJlIGlzIG5vIHJlbGF5
-IG1vZGUsIG9ubHkgZGl0aGVyIGVuYWJsZSBvciBub3QoYml0DQoyKS4NCmZvciBtdDgxODMgZGl0
-aGVyLCB0aGVyZSBpcyBkaXRoZXIgZW5hYmxlIGJpdCAxLCBhbmQgcmVsYXkgbW9kZSBiaXQgMA0K
-DQoNCj4gPiA+DQo+ID4gPiAtICAgICBtdGtfZGRwX3dyaXRlKGNtZHFfcGt0LCBoIDw8IDE2IHwg
-dywgJnByaXYtPmNtZHFfcmVnLCBwcml2LT5yZWdzLCBESVNQX0RJVEhFUl9TSVpFKTsNCj4gPiA+
-IC0gICAgIG10a19kZHBfd3JpdGUoY21kcV9wa3QsIERJVEhFUl9SRUxBWV9NT0RFLCAmcHJpdi0+
-Y21kcV9yZWcsIHByaXYtPnJlZ3MsIERJU1BfRElUSEVSX0NGRyk7DQo+ID4gPiArICAgICBpZiAo
-ZW5hYmxlKSB7DQo+ID4gPiArICAgICAgICAgICAgIG10a19kaXRoZXJfc2V0X2NvbW1vbihwcml2
-LT5yZWdzLCAmcHJpdi0+Y21kcV9yZWcsIGJwYywNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIERJU1BfRElUSEVSX0NGRywgRElUSEVSX0VOR0lORV9FTiwNCj4gPiA+
-ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNtZHFfcGt0KTsNCj4gPiA+ICsg
-ICAgIH0gZWxzZSB7DQo+ID4gPiArICAgICAgICAgICAgIG10a19kZHBfd3JpdGUoY21kcV9wa3Qs
-IERJVEhFUl9SRUxBWV9NT0RFLCAmcHJpdi0+Y21kcV9yZWcsDQo+ID4gPiArICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgcHJpdi0+cmVncywgRElTUF9ESVRIRVJfQ0ZHKTsNCj4gPiA+ICsgICAg
-IH0NCj4gPiA+ICsNCj4gPiA+ICsgICAgIG10a19kZHBfd3JpdGUoY21kcV9wa3QsIGggPDwgMTYg
-fCB3LCAmcHJpdi0+Y21kcV9yZWcsIHByaXYtPnJlZ3MsDQo+ID4gPiArICAgICAgICAgICAgICAg
-ICAgIERJU1BfRElUSEVSX1NJWkUpOw0KPiA+ID4gIH0NCj4gPiA+DQo+ID4gPiAgc3RhdGljIHZv
-aWQgbXRrX2RpdGhlcl9zdGFydChzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ID4NCg0K
+On Sat, Jan 23, 2021 at 8:17 AM Daniel Latypov <dlatypov@google.com> wrote:
+>
+> Currently running tests via KUnit tool means tweaking a .kunitconfig
+> file, which you'd keep around locally and never commit.
+> This changes makes it so users can pass in a path to a kunitconfig.
+>
+> One of the imagined use cases is having kunitconfig fragments in-tree
+> to formalize interesting sets of tests for features/subsystems, e.g.
+>   $ ./tools/testing/kunit/kunit.py run fs/ext4/kunitconfig
+>
+> For now, this hypothetical fs/ext4/kunitconfig would contain
+>   CONFIG_KUNIT=y
+>   CONFIG_EXT4_FS=y
+>   CONFIG_EXT4_KUNIT_TESTS=y
+>
+> At the moment, it's not hard to manually whip up this file, but as more
+> and more tests get added, this will get tedious.
+>
+> It also opens the door to documenting how to run all the tests relevant
+> to a specific subsystem or feature as a simple one-liner.
+>
+> This can be seen as an analogue to tools/testing/selftests/*/config
+> But in the case of KUnit, the tests live in the same directory as the
+> code-under-test, so it feels more natural to allow the kunitconfig
+> fragments to live anywhere. (Though, people could create a separate
+> directory if wanted; this patch imposes no restrictions on the path).
+>
+> Signed-off-by: Daniel Latypov <dlatypov@google.com>
+> ---
 
+Really glad this is finally happening. I tried it out, and it seemed
+to work pretty well.
+
+I was wondering whether a positional argument like this was best, or
+whether it'd be better to have an explicitly named argument
+(--kunitconfig=path). Thinking about it though, I'm quite happy with
+having this as-is: the only real other contender for a coveted
+positional argument spot would've been the name of a test or test
+suite (e.g., kunit.py run ext4_inode_test), and that's not really
+possible with the kunit_tool architecture as-is.
+
+One other comment below (should this work for kunit.py config?),
+otherwise it looks good.
+
+-- David
+
+>  tools/testing/kunit/kunit.py           |  9 ++++++---
+>  tools/testing/kunit/kunit_kernel.py    | 12 ++++++++----
+>  tools/testing/kunit/kunit_tool_test.py | 25 +++++++++++++++++++++++++
+>  3 files changed, 39 insertions(+), 7 deletions(-)
+>
+> diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
+> index e808a47c839b..3204a23bd16e 100755
+> --- a/tools/testing/kunit/kunit.py
+> +++ b/tools/testing/kunit/kunit.py
+> @@ -188,6 +188,9 @@ def add_build_opts(parser) -> None:
+>                             help='As in the make command, "Specifies  the number of '
+>                             'jobs (commands) to run simultaneously."',
+>                             type=int, default=8, metavar='jobs')
+> +       parser.add_argument('kunitconfig',
+> +                            help='Path to Kconfig fragment that enables KUnit tests',
+> +                            type=str, nargs='?', metavar='kunitconfig')
+>
+
+Should this maybe be in add_common_opts()? I'd assume that we want
+kunit.py config to accept this custom kunitconfig path as well.
+
+>  def add_exec_opts(parser) -> None:
+>         parser.add_argument('--timeout',
+> @@ -256,7 +259,7 @@ def main(argv, linux=None):
+>                         os.mkdir(cli_args.build_dir)
+>
+>                 if not linux:
+> -                       linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir)
+> +                       linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir, kunitconfig_path=cli_args.kunitconfig)
+>
+>                 request = KunitRequest(cli_args.raw_output,
+>                                        cli_args.timeout,
+> @@ -274,7 +277,7 @@ def main(argv, linux=None):
+>                         os.mkdir(cli_args.build_dir)
+>
+>                 if not linux:
+> -                       linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir)
+> +                       linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir, kunitconfig_path=cli_args.kunitconfig)
+>
+>                 request = KunitConfigRequest(cli_args.build_dir,
+>                                              cli_args.make_options)
+> @@ -286,7 +289,7 @@ def main(argv, linux=None):
+>                         sys.exit(1)
+>         elif cli_args.subcommand == 'build':
+>                 if not linux:
+> -                       linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir)
+> +                       linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir, kunitconfig_path=cli_args.kunitconfig)
+>
+>                 request = KunitBuildRequest(cli_args.jobs,
+>                                             cli_args.build_dir,
+> diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+> index 2076a5a2d060..0b461663e7d9 100644
+> --- a/tools/testing/kunit/kunit_kernel.py
+> +++ b/tools/testing/kunit/kunit_kernel.py
+> @@ -123,7 +123,7 @@ def get_outfile_path(build_dir) -> str:
+>  class LinuxSourceTree(object):
+>         """Represents a Linux kernel source tree with KUnit tests."""
+>
+> -       def __init__(self, build_dir: str, load_config=True, defconfig=DEFAULT_KUNITCONFIG_PATH) -> None:
+> +       def __init__(self, build_dir: str, load_config=True, kunitconfig_path='') -> None:
+>                 signal.signal(signal.SIGINT, self.signal_handler)
+>
+>                 self._ops = LinuxSourceTreeOperations()
+> @@ -131,9 +131,13 @@ class LinuxSourceTree(object):
+>                 if not load_config:
+>                         return
+>
+> -               kunitconfig_path = get_kunitconfig_path(build_dir)
+> -               if not os.path.exists(kunitconfig_path):
+> -                       shutil.copyfile(defconfig, kunitconfig_path)
+> +               if kunitconfig_path:
+> +                       if not os.path.exists(kunitconfig_path):
+> +                               raise ConfigError(f'Specified kunitconfig ({kunitconfig_path}) does not exist')
+> +               else:
+> +                       kunitconfig_path = get_kunitconfig_path(build_dir)
+> +                       if not os.path.exists(kunitconfig_path):
+> +                               shutil.copyfile(DEFAULT_KUNITCONFIG_PATH, kunitconfig_path)
+>
+>                 self._kconfig = kunit_config.Kconfig()
+>                 self._kconfig.read_from_file(kunitconfig_path)
+> diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
+> index b593f4448e83..533fe41b5123 100755
+> --- a/tools/testing/kunit/kunit_tool_test.py
+> +++ b/tools/testing/kunit/kunit_tool_test.py
+> @@ -12,6 +12,7 @@ from unittest import mock
+>  import tempfile, shutil # Handling test_tmpdir
+>
+>  import json
+> +import signal
+>  import os
+>
+>  import kunit_config
+> @@ -250,6 +251,23 @@ class KUnitParserTest(unittest.TestCase):
+>                                 result.status)
+>                         self.assertEqual('kunit-resource-test', result.suites[0].name)
+>
+> +class LinuxSourceTreeTest(unittest.TestCase):
+> +
+> +       def setUp(self):
+> +               mock.patch.object(signal, 'signal').start()
+> +               self.addCleanup(mock.patch.stopall)
+> +
+> +       def test_invalid_kunitconfig(self):
+> +               with self.assertRaisesRegex(kunit_kernel.ConfigError, 'nonexistent.* does not exist'):
+> +                       kunit_kernel.LinuxSourceTree('', kunitconfig_path='/nonexistent_file')
+> +
+> +       def test_valid_kunitconfig(self):
+> +               with tempfile.NamedTemporaryFile('wt') as kunitconfig:
+> +                       tree = kunit_kernel.LinuxSourceTree('', kunitconfig_path=kunitconfig.name)
+> +
+> +       # TODO: add more test cases.
+> +
+> +
+>  class KUnitJsonTest(unittest.TestCase):
+>
+>         def _json_for(self, log_file):
+> @@ -399,5 +417,12 @@ class KUnitMainTest(unittest.TestCase):
+>                 self.linux_source_mock.run_kernel.assert_called_once_with(build_dir=build_dir, timeout=300)
+>                 self.print_mock.assert_any_call(StrContains('Testing complete.'))
+>
+> +       @mock.patch.object(kunit_kernel, 'LinuxSourceTree')
+> +       def test_run_kunitconfig(self, mock_linux_init):
+> +               mock_linux_init.return_value = self.linux_source_mock
+> +               kunit.main(['run', 'mykunitconfig'])
+> +               # Just verify that we parsed and initialized it correctly here.
+> +               mock_linux_init.assert_called_once_with('.kunit', kunitconfig_path='mykunitconfig')
+> +
+>  if __name__ == '__main__':
+>         unittest.main()
+>
+> base-commit: 2b8fdbbf1c616300312f71fe5b21fe8f03129950
+> --
+> 2.30.0.280.ga3ce27912f-goog
+>
