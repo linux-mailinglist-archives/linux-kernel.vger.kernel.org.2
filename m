@@ -2,92 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8DF8308C33
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 19:15:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57969308C36
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 19:15:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232597AbhA2SLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 13:11:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232584AbhA2SLU (ORCPT
+        id S232533AbhA2SMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 13:12:15 -0500
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:37252 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231335AbhA2SMJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 13:11:20 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03F89C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 10:10:39 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id w18so6711271pfu.9
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 10:10:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ih9nZpFKdQtp/jnR4XaYa4e6X54Ve9TzjAXS7ra/gr8=;
-        b=uw1AfPuPPKXgR1eJC2TrHBWOVTCNnPrz+/EkhkLBdYD3a7XHR7jhM2snmKZNsrUbR/
-         59CXDaU9izcK96kCwZZTlNaDV1giYx7/ozKMdEmjRBHM5Bp/ySHhKAaSkC2Eo4NIv6aS
-         oQr+51HF2SJ74gGDhcH9yhxU4KS+/CX8+kDXpXBfKCC6gdAeaUrd6c5QWpO00UusasqB
-         U2TPrA9cCzXlinags6+bCD+G6E9nOgpAmLxaaxYeshuhGPdq+1WZzMJtoHopyFnOz1KT
-         eZBBltB1PIBIyAt/yI86Q25BapH1Kh2WsOm33eqyHiqxiHizBvXFKAnsVjJZIvg9mZDJ
-         82bA==
+        Fri, 29 Jan 2021 13:12:09 -0500
+Received: by mail-ot1-f46.google.com with SMTP id h14so9483052otr.4;
+        Fri, 29 Jan 2021 10:11:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ih9nZpFKdQtp/jnR4XaYa4e6X54Ve9TzjAXS7ra/gr8=;
-        b=ciQ/hGw27Vaso1lrVNTlz0ZC9tIfHWWpJdQvQPrmkIKbuRgfMLKnWopBmv04zxT0u3
-         +ZYe3rf3vfjcLgDiQEUH7HQQ6HQHrTEpkJQoHH4WkqND14jax7ZMVYyqU/DK0YgN/e48
-         PP6s3UY0BK1xHN9jCeKFYNFzeuHiB1gIYOaRZQiCnJ0AlNta+wXqgpnOBj4BjsxwGiO6
-         cdPiNjCndCkeopFflLVDTUbciq7yGh4d6adBqFp9RiuQBSCc8udGd37gMhyBi5nwo8lD
-         AD1NDSuZyjlmTZaMqCcqhoalWAFJPGtVhKfzPqQKEtt6TduyoNcPxGe7ODh9JWvic38z
-         /zlg==
-X-Gm-Message-State: AOAM531LfAXZhJ6OUEI4k4VbiX0VHzNFnsUu8+fuZCa6MlbkxPkkfPfQ
-        n5EncVux/RhJzFvLR3g23y9s19TvpwbukXp5HH8mqA==
-X-Google-Smtp-Source: ABdhPJzeiS65cwDy11w6iYkCd0nJQhPN/VoN9rsg9/3vHHHUXIRhQ4HU42gaErR/FeUJAi0L4A6Qr95/MsD866SowJo=
-X-Received: by 2002:a62:115:0:b029:1b4:c593:acd4 with SMTP id
- 21-20020a6201150000b02901b4c593acd4mr5465555pfb.2.1611943838410; Fri, 29 Jan
- 2021 10:10:38 -0800 (PST)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=Q4oVQSes+s6zJZHgbO5XBLVNfA/GuxCMLqREk38t5eY=;
+        b=ks8y6omQQgpIhUdOTOy7iEN9cqnBaWv42XlcOTcpZvmsfFZ2i1jLe4zt01hOrll6Np
+         8/f37rT3LSPgw1x3IAHGdWQP1O9fzXKTlaRE/fG8LhzIz7wMTC40nJ3uNi4ihbrBhnC6
+         HXyhS+2YIoJyXhqQgtPA3wFqx6XWUxvP6F+eF2ubLL82vKGbJ0MCA5lKY2JfcAGOX2X6
+         C3j9C3LqbavtLRWm/ZliRNG+VBc3SgD1rMI7nOLNF8FFSrE4dFowPWEY7gTJeyjBONjx
+         sBJMdTdquBWIu2HuNwrIeuV75rZ5dSWrUKwGKepD9DZUwi2cugjDCSd2nk6gL5kBUOTu
+         wTEQ==
+X-Gm-Message-State: AOAM531IFgnWlrkXA3SJEI/WbBFts/0aju2kkBqhN6SiqsCe5WJb26uB
+        AJ0A8QMXnbExuHKpuqUjdV9Rzw1X0HlofpR7WeMLWaxObyo=
+X-Google-Smtp-Source: ABdhPJwWVTb27M10LImI8Ql5aBqCCDUdwfufJ8qd1DtyyXgYufMEHKn8AWOxGEY7QhOFvF99va4Q0cU7gOHVnXt5qiI=
+X-Received: by 2002:a9d:7a4a:: with SMTP id z10mr3775525otm.206.1611943888425;
+ Fri, 29 Jan 2021 10:11:28 -0800 (PST)
 MIME-Version: 1.0
-References: <20210126134603.49759-1-vincenzo.frascino@arm.com>
- <20210126134603.49759-4-vincenzo.frascino@arm.com> <CAAeHK+xAbsX9Zz4aKXToNTrbgrrYck23ohGJHXvgeSTyZy=Odg@mail.gmail.com>
- <77de8e48-6f68-bf27-0bed-02e49b69a12d@arm.com> <CAAeHK+xMWXpfLs6HuKN73e0p61nm+QrZO1-oXphJpjZprKQVKg@mail.gmail.com>
- <7da762df-6df3-e526-bec1-dc770709c00c@arm.com>
-In-Reply-To: <7da762df-6df3-e526-bec1-dc770709c00c@arm.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Fri, 29 Jan 2021 19:10:26 +0100
-Message-ID: <CAAeHK+zrkLpOe2aJjWVMPHbvSFMXAEP2+fJVZ-3O4E--4-2KfQ@mail.gmail.com>
-Subject: Re: [PATCH v9 3/4] kasan: Add report for async mode
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 29 Jan 2021 19:11:17 +0100
+Message-ID: <CAJZ5v0is8qQ91Nx_hhMgc3Ga8NgFbE-JAu03=M-L9sCpf8pVmQ@mail.gmail.com>
+Subject: [GIT PULL][Resend] ACPI fixes for v5.11-rc6
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 6:57 PM Vincenzo Frascino
-<vincenzo.frascino@arm.com> wrote:
-> >>>> +#ifdef CONFIG_KASAN_HW_TAGS
-> >>>> +void kasan_report_async(void)
-> >>>> +{
-> >>>> +       unsigned long flags;
-> >>>> +
-> >>>> +       start_report(&flags);
-> >>>> +       pr_err("BUG: KASAN: invalid-access\n");
-> >>>> +       pr_err("Asynchronous mode enabled: no access details available\n");
-> >
-> > Could you also add an empty line here before the stack trace while at it?
-> >
->
-> Sure no problem.
+[Resending, because it hasn't made it to the mailing lists, not sure why.]
 
-Just to be clear: I mean adding an empty line into the report itself
-via pr_err("\n") :)
+Hi Linus,
+
+Please pull from the tag
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ acpi-5.11-rc6
+
+with top-most commit b584b7e9630acc65a4d01ff5f9090d1a0fb3bbb6
+
+ Merge branch 'acpi-sysfs'
+
+on top of commit 6ee1d745b7c9fd573fba142a2efdad76a9f1cb04
+
+ Linux 5.11-rc5
+
+to receive ACPI fixes for 5.11-rc6.
+
+These fix the handling of notifications in the ACPI thermal driver
+and address a device enumeration issue leading to the presence of
+multiple MODALIAS entries in one uevent file in sysfs in some cases.
+
+Specifics:
+
+ - Modify the ACPI thermal driver to avoid evaluating _TMP directly
+   in its Notify () handler callback and running too many thermal
+   checks for one thermal zone at the same time so as to address a
+   work item accumulation issue observed on some systems that fail
+   to shut down as a result of it (Rafael Wysocki).
+
+ - Modify the ACPI uevent file creation code to avoid putting
+   multiple MODALIAS entries in one uevent file in sysfs which
+   breaks systemd-udevd (Kai-Heng Feng).
+
+Thanks!
+
+
+---------------
+
+Kai-Heng Feng (1):
+      ACPI: sysfs: Prefer "compatible" modalias
+
+Rafael J. Wysocki (1):
+      ACPI: thermal: Do not call acpi_thermal_check() directly
+
+---------------
+
+ drivers/acpi/device_sysfs.c | 20 ++++++--------------
+ drivers/acpi/thermal.c      | 46 ++++++++++++++++++++++++++++++++-------------
+ 2 files changed, 39 insertions(+), 27 deletions(-)
