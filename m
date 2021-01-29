@@ -2,138 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F9A308C32
+	by mail.lfdr.de (Postfix) with ESMTP id D8DF8308C33
 	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 19:15:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbhA2SLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 13:11:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60172 "EHLO
+        id S232597AbhA2SLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 13:11:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232402AbhA2SKx (ORCPT
+        with ESMTP id S232584AbhA2SLU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 13:10:53 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E7BC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 10:10:12 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id jx18so6786165pjb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 10:10:12 -0800 (PST)
+        Fri, 29 Jan 2021 13:11:20 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03F89C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 10:10:39 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id w18so6711271pfu.9
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 10:10:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=X8bQLC4KTV3CkyE7ZwNAPVrk7LCX4mmpuoPxOJQrWiE=;
-        b=KvqRCWR7yYnMWqMPB85CIlQ9uuauY32Z1DzrJGBzcW0aqXSXWSL+GTldnhHkS6AKzM
-         Z+dKRERAy31Z5zbVPZRInzz7qitp8nuSvP4G6GBay3e5DDFmiNyfUZFJ7xH1bD6wSsEX
-         u7qSwj9pH6oMtqk64thV9cxPBWytlOGsF8nIsIynlNxnxsL3KJFG0t+6vpo8+vGyL6/N
-         u9GvbFypr9EN6ePRjWq0JE4N/ZnHMTnOGk4YRA2/T2ZVGF5ne2y00SPxYmNQiDSUHNbW
-         N7D4SxHDqYDmjHcyJq20+7BNR075rraIU/iNjmNN1SoTBzKFhI3DXt7QVsjxqczfDV6e
-         cTwA==
+        bh=ih9nZpFKdQtp/jnR4XaYa4e6X54Ve9TzjAXS7ra/gr8=;
+        b=uw1AfPuPPKXgR1eJC2TrHBWOVTCNnPrz+/EkhkLBdYD3a7XHR7jhM2snmKZNsrUbR/
+         59CXDaU9izcK96kCwZZTlNaDV1giYx7/ozKMdEmjRBHM5Bp/ySHhKAaSkC2Eo4NIv6aS
+         oQr+51HF2SJ74gGDhcH9yhxU4KS+/CX8+kDXpXBfKCC6gdAeaUrd6c5QWpO00UusasqB
+         U2TPrA9cCzXlinags6+bCD+G6E9nOgpAmLxaaxYeshuhGPdq+1WZzMJtoHopyFnOz1KT
+         eZBBltB1PIBIyAt/yI86Q25BapH1Kh2WsOm33eqyHiqxiHizBvXFKAnsVjJZIvg9mZDJ
+         82bA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=X8bQLC4KTV3CkyE7ZwNAPVrk7LCX4mmpuoPxOJQrWiE=;
-        b=OwDjH7oCFBclEij9XNOIuwNImb95D7kK4J5aOyCohgmZh9zLt8Of5x3O5JLNE5SD8y
-         9202HAHnyu4utO/GY8nxaxzMxpnIx1GiHMgV5+VCc3PlMW3Jf2RerP01M4wcJxNQ06Nr
-         vZHVX5hIBFOPEa/8DIlXZQ77jrNyArsrsJL0NX3ejwX8v+1bWuswdX5XNyOoC8XVFakB
-         EboZ2Xptu9l3/hLwStFPoBHjPEkArhamyVTudRzCaq+cQTIJ4heJzsqR5LoVAYAwNl7T
-         MKk7EnS55WV3fOy+D3ZUzO4K+ETSIFDpaDHWIUzS1MzNrWIQKeYbnBuSyd+G5Q79kSJE
-         /MfA==
-X-Gm-Message-State: AOAM530/F0Dkl6QFKGXJxRDZrUNr2sJiVLVPDgj25Ta0I+t7VqIsGKVX
-        lsZOPn8oc5y3DnZ8MhxVklaPkZZW9HTcJkKuMLz+aQ==
-X-Google-Smtp-Source: ABdhPJzNOCqxQWJ9Oc6G5S88I6N7IbWrIQufk+V18JCZ1n4SuRaCwOpg3TVxWVz17PfOIZCgcQ1Gfy3YkqFIXZFD3bI=
-X-Received: by 2002:a17:902:26a:b029:da:af47:77c7 with SMTP id
- 97-20020a170902026ab02900daaf4777c7mr5473562plc.10.1611943812360; Fri, 29 Jan
- 2021 10:10:12 -0800 (PST)
+        bh=ih9nZpFKdQtp/jnR4XaYa4e6X54Ve9TzjAXS7ra/gr8=;
+        b=ciQ/hGw27Vaso1lrVNTlz0ZC9tIfHWWpJdQvQPrmkIKbuRgfMLKnWopBmv04zxT0u3
+         +ZYe3rf3vfjcLgDiQEUH7HQQ6HQHrTEpkJQoHH4WkqND14jax7ZMVYyqU/DK0YgN/e48
+         PP6s3UY0BK1xHN9jCeKFYNFzeuHiB1gIYOaRZQiCnJ0AlNta+wXqgpnOBj4BjsxwGiO6
+         cdPiNjCndCkeopFflLVDTUbciq7yGh4d6adBqFp9RiuQBSCc8udGd37gMhyBi5nwo8lD
+         AD1NDSuZyjlmTZaMqCcqhoalWAFJPGtVhKfzPqQKEtt6TduyoNcPxGe7ODh9JWvic38z
+         /zlg==
+X-Gm-Message-State: AOAM531LfAXZhJ6OUEI4k4VbiX0VHzNFnsUu8+fuZCa6MlbkxPkkfPfQ
+        n5EncVux/RhJzFvLR3g23y9s19TvpwbukXp5HH8mqA==
+X-Google-Smtp-Source: ABdhPJzeiS65cwDy11w6iYkCd0nJQhPN/VoN9rsg9/3vHHHUXIRhQ4HU42gaErR/FeUJAi0L4A6Qr95/MsD866SowJo=
+X-Received: by 2002:a62:115:0:b029:1b4:c593:acd4 with SMTP id
+ 21-20020a6201150000b02901b4c593acd4mr5465555pfb.2.1611943838410; Fri, 29 Jan
+ 2021 10:10:38 -0800 (PST)
 MIME-Version: 1.0
-References: <20210120173800.1660730-13-jthierry@redhat.com>
- <20210127221557.1119744-1-ndesaulniers@google.com> <20210127232651.rj3mo7c2oqh4ytsr@treble>
-In-Reply-To: <20210127232651.rj3mo7c2oqh4ytsr@treble>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 29 Jan 2021 10:10:01 -0800
-Message-ID: <CAKwvOdkOeENcM5X7X926sv2Xmtko=_nOPeKZ2+51s13CW1QAjw@mail.gmail.com>
-Subject: Re: [RFC PATCH 12/17] gcc-plugins: objtool: Add plugin to detect
- switch table on arm64
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Julien Thierry <jthierry@redhat.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
+References: <20210126134603.49759-1-vincenzo.frascino@arm.com>
+ <20210126134603.49759-4-vincenzo.frascino@arm.com> <CAAeHK+xAbsX9Zz4aKXToNTrbgrrYck23ohGJHXvgeSTyZy=Odg@mail.gmail.com>
+ <77de8e48-6f68-bf27-0bed-02e49b69a12d@arm.com> <CAAeHK+xMWXpfLs6HuKN73e0p61nm+QrZO1-oXphJpjZprKQVKg@mail.gmail.com>
+ <7da762df-6df3-e526-bec1-dc770709c00c@arm.com>
+In-Reply-To: <7da762df-6df3-e526-bec1-dc770709c00c@arm.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Fri, 29 Jan 2021 19:10:26 +0100
+Message-ID: <CAAeHK+zrkLpOe2aJjWVMPHbvSFMXAEP2+fJVZ-3O4E--4-2KfQ@mail.gmail.com>
+Subject: Re: [PATCH v9 3/4] kasan: Add report for async mode
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Peter Zijlstra <peterz@infradead.org>, raphael.gault@arm.com,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 3:27 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> On Wed, Jan 27, 2021 at 02:15:57PM -0800, Nick Desaulniers wrote:
-> > > From: Raphael Gault <raphael.gault@arm.com>
-> > >
-> > > This plugins comes into play before the final 2 RTL passes of GCC and
-> > > detects switch-tables that are to be outputed in the ELF and writes
-> > > information in an ".discard.switch_table_info" section which will be
-> > > used by objtool.
-> > >
-> > > Signed-off-by: Raphael Gault <raphael.gault@arm.com>
-> > > [J.T.: Change section name to store switch table information,
-> > >        Make plugin Kconfig be selected rather than opt-in by user,
-> > >        Add a relocation in the switch_table_info that points to
-> > >        the jump operation itself]
-> > > Signed-off-by: Julien Thierry <jthierry@redhat.com>
+On Fri, Jan 29, 2021 at 6:57 PM Vincenzo Frascino
+<vincenzo.frascino@arm.com> wrote:
+> >>>> +#ifdef CONFIG_KASAN_HW_TAGS
+> >>>> +void kasan_report_async(void)
+> >>>> +{
+> >>>> +       unsigned long flags;
+> >>>> +
+> >>>> +       start_report(&flags);
+> >>>> +       pr_err("BUG: KASAN: invalid-access\n");
+> >>>> +       pr_err("Asynchronous mode enabled: no access details available\n");
 > >
-> > Rather than tightly couple this feature to a particular toolchain via
-> > plugin, it might be nice to consider what features could be spec'ed out
-> > for toolchains to implement (perhaps via a -f flag).
+> > Could you also add an empty line here before the stack trace while at it?
+> >
 >
-> The problem is being able to detect switch statement jump table vectors.
->
-> For a given indirect branch (due to a switch statement), what are all
-> the corresponding jump targets?
->
-> We would need the compiler to annotate that information somehow.
+> Sure no problem.
 
-Makes sense, the compiler should have this information.  How is this
-problem solved on x86?
-
->
-> > Distributions (like Android, CrOS) wont be able to use such a feature as
-> > is.
->
-> Would a Clang plugin be out of the question?
-
-Generally, we frown on out of tree kernel modules for a couple reasons.
-
-Maintaining ABI compatibility when the core kernel changes is
-generally not instantaneous; someone has to notice the ABI has changed
-which will be more delayed than if the module was in tree.  Worse is
-when semantics subtly change.  While we must not break userspace, we
-provide no such guarantees within the kernel proper.
-
-Also, it's less likely that out of tree kernel modules have been
-reviewed by kernel developers.  They may not have the same quality,
-use the recommended interfaces, follow coding conventions, etc..
-
-Oh, did I say "out of tree kernel modules?"  I meant "compiler
-plugins."  But it's two different sides of the same coin to me.
-
-FWIW, I think the approach taken by -mstack-protector-guard-reg= is a
-useful case study.  It was prototyped as a GCC extension, then added
-to GCC proper, then added to LLVM (currently only x86, but most of the
-machinery is in place in the compiler to get it running on arm64).  My
-recommendation is to skip the plugin part and work on a standard
-interface for compilers to implement, with input from compiler
-developers.
--- 
-Thanks,
-~Nick Desaulniers
+Just to be clear: I mean adding an empty line into the report itself
+via pr_err("\n") :)
