@@ -2,89 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EBB1308AA9
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 17:54:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 479F8308AAB
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 17:54:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231124AbhA2Qw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 11:52:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22711 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231582AbhA2QvQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 11:51:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611938981;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0LJVECpOlUE7iCohzUD34pw4c+hMPt6DfdyYZYLmTpM=;
-        b=EUWEf1MA2g3Kmlm24txXD+FxDwjHAe2+FFlH4xDj30EKiGC+Mgsa+siGcTrAJ03CkEAtUG
-        2ajo42zQCLM7nnPlHmQEoFGfqWLuMUKX2u9FpFNzr9q7LHYVVK7+rOI/wXju20T7h6yo97
-        aSuevpEWpuXejIRWFtyTB7BVmFuAJJU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-419-6-5jlf43MqeSlS5NRiJL6g-1; Fri, 29 Jan 2021 11:49:37 -0500
-X-MC-Unique: 6-5jlf43MqeSlS5NRiJL6g-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9606BBBEEC;
-        Fri, 29 Jan 2021 16:49:35 +0000 (UTC)
-Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 82A9419C66;
-        Fri, 29 Jan 2021 16:49:34 +0000 (UTC)
-Date:   Fri, 29 Jan 2021 10:49:32 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, Masami Hiramatsu <masami.hiramatsu@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Nikolay Borisov <nborisov@suse.com>
-Subject: Re: [PATCH] x86: Disable CET instrumentation in the kernel
-Message-ID: <20210129164932.qt7hhmb7x4ehomfr@treble>
-References: <a35a6f15-9ab1-917c-d443-23d3e78f2d73@suse.com>
- <20210128103415.d90be51ec607bb6123b2843c@kernel.org>
- <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
- <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
- <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
- <20210128165014.xc77qtun6fl2qfun@treble>
- <20210128215219.6kct3h2eiustncws@treble>
- <20210129102105.GA27841@zn.tnic>
- <20210129151034.iba4eaa2fuxsipqa@treble>
- <20210129163048.GD27841@zn.tnic>
+        id S231738AbhA2Qxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 11:53:42 -0500
+Received: from mleia.com ([178.79.152.223]:51854 "EHLO mail.mleia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231582AbhA2Qwy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 11:52:54 -0500
+Received: from mail.mleia.com (localhost [127.0.0.1])
+        by mail.mleia.com (Postfix) with ESMTP id 40D8742F998;
+        Fri, 29 Jan 2021 16:51:56 +0000 (UTC)
+Subject: Re: [PATCH] pwm: fix semicolon.cocci warnings
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-pwm@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <202101282111.dfwxyPwI-lkp@intel.com>
+ <20210128134537.GA54687@068c7b848bbb>
+ <20210128205716.j2afd32lcxh2l323@pengutronix.de>
+From:   Vladimir Zapolskiy <vz@mleia.com>
+Message-ID: <c2152a64-d4ae-f18d-9af7-b80b12474b00@mleia.com>
+Date:   Fri, 29 Jan 2021 18:51:54 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210129163048.GD27841@zn.tnic>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20210128205716.j2afd32lcxh2l323@pengutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-49551924 
+X-CRM114-CacheID: sfid-20210129_165156_288101_1C25B468 
+X-CRM114-Status: GOOD (  12.07  )
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 05:30:48PM +0100, Borislav Petkov wrote:
-> On Fri, Jan 29, 2021 at 09:10:34AM -0600, Josh Poimboeuf wrote:
-> > Maybe eventually.  But the enablement (actually enabling CET/CFI/etc)
-> > happens in the arch code anyway, right?  So it could be a per-arch
-> > decision.
+On 1/28/21 10:57 PM, Uwe Kleine-König wrote:
+> Hello,
 > 
-> Right.
+> On Thu, Jan 28, 2021 at 09:45:37PM +0800, kernel test robot wrote:
+>> From: kernel test robot <lkp@intel.com>
+>>
+>> drivers/pwm/pwm-lpc18xx-sct.c:292:2-3: Unneeded semicolon
+>>
+>>
+>>   Remove unneeded semicolon.
+>>
+>> Generated by: scripts/coccinelle/misc/semicolon.cocci
+>>
+>> Fixes: e96c0ff4b1e0 ("pwm: Enable compile testing for some of drivers")
 > 
-> Ok, for this one, what about
+> This looks wrong. e96c0ff4b1e0 only touches drivers/pwm/Kconfig.
 > 
-> Cc: <stable@vger.kernel.org>
-> 
-> ?
-> 
-> What are "some configurations of GCC"? If it can be reproduced with
-> what's released out there, maybe that should go in now, even for 5.11?
-> 
-> Hmm?
+> The ; was introduced by commit 841e6f90bb78 ("pwm: NXP LPC18xx PWM/SCT
+> driver")
 
-Agreed, stable is a good idea.   I think Nikolay saw it with GCC 9.
+Right, thank you for the correction, Uwe.
 
--- 
-Josh
+Since the patch has been composed by the robot, it has to be fixed
+in the first place.
 
+And regarding this particular change and in general fixes to this type
+of issues detected by the robot, I don't think that it earns a Fixes tag.
+
+>> CC: Krzysztof Kozlowski <krzk@kernel.org>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Signed-off-by: kernel test robot <lkp@intel.com>
+
+--
+Best wishes,
+Vladimir
