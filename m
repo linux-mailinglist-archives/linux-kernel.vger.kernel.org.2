@@ -2,132 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E25B930903D
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:47:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6843030903A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232716AbhA2Wni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 17:43:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56755 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231429AbhA2Wnf (ORCPT
+        id S232673AbhA2WnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 17:43:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33878 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231429AbhA2WnF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 17:43:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611960128;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LbYHO0OIN0PJesUWkEp0jXsyMeQWDXLUzh2xnIMXL3Q=;
-        b=XjmS/J+FUeOxO0d/jm6ce5ElyVsqYmKbBu0ezXmqKI4PEiHZhD9ljTz02cTat9lJfBCaPs
-        ozPiitBooODd6w+HDw57Eqd8pQOyse1E5SDfMnjHeOkau/UZ47bj8RgcCxR170YQyOb+ng
-        uaVEcm7Mze2RNryo+2bq5ek5a/yO3+I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-548-dlrWlvNYNPOuC68wSry76g-1; Fri, 29 Jan 2021 17:42:06 -0500
-X-MC-Unique: dlrWlvNYNPOuC68wSry76g-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F3DF81842140;
-        Fri, 29 Jan 2021 22:42:04 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E99425C257;
-        Fri, 29 Jan 2021 22:42:00 +0000 (UTC)
-Date:   Fri, 29 Jan 2021 15:42:00 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Shenming Lu <lushenming@huawei.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
-Subject: Re: [RFC PATCH v1 3/4] vfio: Try to enable IOPF for VFIO devices
-Message-ID: <20210129154200.5cc727a0@omen.home.shazbot.org>
-In-Reply-To: <20210125090402.1429-4-lushenming@huawei.com>
-References: <20210125090402.1429-1-lushenming@huawei.com>
-        <20210125090402.1429-4-lushenming@huawei.com>
+        Fri, 29 Jan 2021 17:43:05 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76411C061573;
+        Fri, 29 Jan 2021 14:42:25 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id q5so9966250ilc.10;
+        Fri, 29 Jan 2021 14:42:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=dfELtoaA8bJe8gY3p6rcM2hsQagvy8a4lKjq9ZDDe0Y=;
+        b=ZWdBUn0L8q974/jQtHoTjF2FOnB9H2ea+Of79l4Cwc+L48t3CFKo+yBwNQjlQdOAp4
+         7kwTpZojbfSFKHDQYnk/Eh/dNz8V1QlDQZs7AY7fqSx0VyRgjCPsMfk5U0MdzvitMaRP
+         Iec1fx9A0RtJv++nfsnRZRo/ctFD5BQlW+6FTlmD9o1GZcKrNalod3dT6m1e5MMmeO3+
+         6tiP0oQQZyGQyDfL9hh4NUwF/uJEFMkd1EwJF6qqhk0dETqoS8t8fEt6pNWeydmhii7d
+         p0dd4RFqHUWLfwXUQYrROs3vPlC0v4rC8UBW/pQXCzbgIPvag2jGQLy+kyzDuEQXBHsT
+         5HWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=dfELtoaA8bJe8gY3p6rcM2hsQagvy8a4lKjq9ZDDe0Y=;
+        b=IeWtBA856CWsK6t/2uaforQvFPAc0FynUJ8ouWXSvqHP6+CBsgtGAR6er9Yg32N4yy
+         LzBHGCwRuzIEyx2aFsAwSD/1rkeAOVikKJcCAWEWbabDfI90F/1/9Ltpr2GHykVYxCLk
+         vHoXroI7ErHyY85GbLWBBc0+pDlemUsD5GsnE45Pdd4g3+1NB4WvWA2won9Jd+wpVYj8
+         9dZJfOoQ8eL26wMwbWo08ha5wXSG3EHF6EDhHTlnME46PAgqFpCZSARczpAjnx7lXW5r
+         ketJQnoiPxMKlaqsq6anFC3ejWrjpcc4UBtFdzWuyrhzJJdUbMD/6pOqj1aZSgZ5oIBw
+         eVvA==
+X-Gm-Message-State: AOAM531dAhKNH35b0z9yAtMlyuhS/AJGVmZqxekWeM7ZUPmVNx0ukr4M
+        /yytK79qlApLaOeX2udEihnAm9uFl9D2dLoJ10w=
+X-Google-Smtp-Source: ABdhPJw8ZFwX9lpZyuCNKTyghsn0YtjIV+68LNJUYEJSSClDTHmrgKCqpYI4iUkFxEQ8W0YsUm1Fg+hV37WolQ5pM+E=
+X-Received: by 2002:a92:c80b:: with SMTP id v11mr4673883iln.215.1611960144907;
+ Fri, 29 Jan 2021 14:42:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210129194318.2125748-1-ndesaulniers@google.com>
+ <20210129194318.2125748-3-ndesaulniers@google.com> <CA+icZUX4q-JhCo+UZ9T3FhbC_gso-oaB0OR9KdH5iEpoGZyqVw@mail.gmail.com>
+ <CAKwvOdnj1Np62+eOiTOCRXSW6GLSv4hmvtWaz=0aTZEEot_dhw@mail.gmail.com>
+ <CA+icZUWsyjDY58ZZ0MAVfWqBJ8FUSpM6=_5aqPcRTfX2W8Y-+Q@mail.gmail.com>
+ <CAKwvOd=mHvEtto37rzFMfsFYe2e-Cp2MAiyRYxHWPdc-HbT8EA@mail.gmail.com>
+ <CA+icZUWxK9fdV8PNGqbQrOFmSZ2Ts4nNqfVMMNUh5u79Ld7hjA@mail.gmail.com>
+ <CA+icZUUo6URpxHh6_Tppv9_Z1dyhGDB2OqSCY3yRw72aA0EbMQ@mail.gmail.com>
+ <CAKwvOdmWx0reabY-S3nXfTZuhs-_SP7pbb0uHyGeaNSQnm8eRQ@mail.gmail.com>
+ <CA+icZUWsncyKvxPZ5g=a3ssWy=cYahsU6hprM3n=jFUmnjPC6w@mail.gmail.com>
+ <CAKwvOdk4kG-_c3inNj9ry_xUU9SQE-2AqQp40YL_V=6SHU6E=Q@mail.gmail.com>
+ <CA+icZUX576Rt7HJ4hvrwRTCC2pTmoH-Yu-haU+MDb8B6yADAYA@mail.gmail.com> <CAKwvOdmq=L_ob-WpNBE-fSc3oYXT10ZvttfiXiZw3+SxaWWy-A@mail.gmail.com>
+In-Reply-To: <CAKwvOdmq=L_ob-WpNBE-fSc3oYXT10ZvttfiXiZw3+SxaWWy-A@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Fri, 29 Jan 2021 23:42:13 +0100
+Message-ID: <CA+icZUXMxM4CuNa0P+JFJO7LSj6QvJneArYXpqLRJrzqJMYj6g@mail.gmail.com>
+Subject: Re: [PATCH v6 2/2] Kbuild: implement support for DWARF v5
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 17:04:01 +0800
-Shenming Lu <lushenming@huawei.com> wrote:
+On Fri, Jan 29, 2021 at 11:31 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> On Fri, Jan 29, 2021 at 2:23 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> >
+> > On Fri, Jan 29, 2021 at 11:21 PM Nick Desaulniers
+> > <ndesaulniers@google.com> wrote:
+> > >
+> > > On Fri, Jan 29, 2021 at 2:11 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > > >
+> > > > On Fri, Jan 29, 2021 at 11:09 PM Nick Desaulniers
+> > > > <ndesaulniers@google.com> wrote:
+> > > > >
+> > > > > On Fri, Jan 29, 2021 at 1:20 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > > > > >
+> > > > > > On Fri, Jan 29, 2021 at 10:13 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+> > > > > > >
+> > > > > > > On Fri, Jan 29, 2021 at 10:09 PM Nick Desaulniers
+> > > > > > > <ndesaulniers@google.com> wrote:
+> > > > > > > >
+> > > > > > > > Can you tell me please what is the precise command line invocation of
+> > > > > > > > make and which source file you observed this on so that I can
+> > > > > > > > reproduce?
+> > > > >
+> > > > > If you don't send me your invocation of `make`, I cannot help you.
+> > > > >
+> > > >
+> > > > /usr/bin/perf_5.10 stat make V=1 -j4 LLVM=1 LLVM_IAS=1
+> > > > PAHOLE=/opt/pahole/bin/pahole LOCALVERSION=-10-amd64-clang12
+> > > > -lto-pgo KBUILD_VERBOSE=1 KBUILD_BUILD_HOST=iniza
+> > > > KBUILD_BUILD_USER=sedat.dilek@gmail.com
+> > > > KBUILD_BUILD_TIMESTAMP=2021-01-29 bindeb-pkg
+> > > > KDEB_PKGVERSION=5.11.0~rc5-10~bullseye+dileks1
+> > >
+> > > $ make LLVM=1 LLVM_IAS=1 -j72 defconfig
+> > > $ make LLVM=1 LLVM_IAS=1 -j72 menuconfig
+> > > <enable CONFIG_DEBUG_INFO and CONFIG_DEBUG_INFO_DWARF5>
+> > > $ make LLVM=1 LLVM_IAS=1 -j72 V=1 &> log.txt
+> > > $ grep '\-g -gdwarf-5 -g -gdwarf-5' log.txt | wc -l
+> > > 0
+> > > $ grep '\-g -gdwarf-5' log.txt | wc -l
+> > > 2517
+> > >
+> > > Do have the patch applied twice, perhaps?
+> > >
+> >
+> > Switched to my v6 local Git branch and invoked above make line I gave you.
+> > I still see that double.
+> > Looks like I need some "undrunken" switch.
+>
+> Can you follow my steps precisely to see whether it's your .config?
+> Perhaps there is a config that duplicates DEBUG_CFLAGS that is not set
+> in the defconfig?  If so, it's still harmless to specify the same
+> commands twice, and likely isn't introduced by this patch set if so;
+> so I'm not sure how much more effort is worth pursuing.
+>
 
-> If IOMMU_DEV_FEAT_IOPF is set for the VFIO device, which means that
-> the delivering of page faults of this device from the IOMMU is enabled,
-> we register the VFIO page fault handler to complete the whole faulting
-> path (HW+SW). And add a iopf_enabled field in struct vfio_device to
-> record it.
-> 
-> Signed-off-by: Shenming Lu <lushenming@huawei.com>
-> ---
->  drivers/vfio/vfio.c | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
-> 
-> diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
-> index ff7797260d0f..fd885d99ee0f 100644
-> --- a/drivers/vfio/vfio.c
-> +++ b/drivers/vfio/vfio.c
-> @@ -97,6 +97,7 @@ struct vfio_device {
->  	struct vfio_group		*group;
->  	struct list_head		group_next;
->  	void				*device_data;
-> +	bool				iopf_enabled;
->  };
->  
->  #ifdef CONFIG_VFIO_NOIOMMU
-> @@ -532,6 +533,21 @@ static struct vfio_group *vfio_group_get_from_dev(struct device *dev)
->  /**
->   * Device objects - create, release, get, put, search
->   */
-> +
-> +static void vfio_device_enable_iopf(struct vfio_device *device)
-> +{
-> +	struct device *dev = device->dev;
-> +
-> +	if (!iommu_dev_has_feature(dev, IOMMU_DEV_FEAT_IOPF))
-> +		return;
-> +
-> +	if (WARN_ON(iommu_register_device_fault_handler(dev,
-> +					vfio_iommu_dev_fault_handler, dev)))
+If I follow your steps of make I do not see it "double" (in my local
+v6 Git branch).
 
-The layering here is wrong, vfio-core doesn't manage the IOMMU, we have
-backend IOMMU drivers for that.  We can't even assume we have IOMMU API
-support here, that's what the type1 backend handles.  Thanks,
+Looks like this is coming from my build-script.
 
-Alex
+I checked if I have some double dwarf(-5) patches double - Nope.
 
-> +		return;
-> +
-> +	device->iopf_enabled = true;
-> +}
-> +
->  static
->  struct vfio_device *vfio_group_create_device(struct vfio_group *group,
->  					     struct device *dev,
-> @@ -549,6 +565,8 @@ struct vfio_device *vfio_group_create_device(struct vfio_group *group,
->  	device->group = group;
->  	device->ops = ops;
->  	device->device_data = device_data;
-> +	/* By default try to enable IOPF */
-> +	vfio_device_enable_iopf(device);
->  	dev_set_drvdata(dev, device);
->  
->  	/* No need to get group_lock, caller has group reference */
-> @@ -573,6 +591,8 @@ static void vfio_device_release(struct kref *kref)
->  	mutex_unlock(&group->device_lock);
->  
->  	dev_set_drvdata(device->dev, NULL);
-> +	if (device->iopf_enabled)
-> +		WARN_ON(iommu_unregister_device_fault_handler(device->dev));
->  
->  	kfree(device);
->  
-
+- Sedat -
