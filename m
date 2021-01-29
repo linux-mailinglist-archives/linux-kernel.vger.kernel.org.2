@@ -2,166 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F7E30856B
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:01:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2DD5308572
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:08:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231933AbhA2GAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 01:00:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44922 "EHLO
+        id S232033AbhA2GB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 01:01:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbhA2GAf (ORCPT
+        with ESMTP id S229927AbhA2GBw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 01:00:35 -0500
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C56C061573;
-        Thu, 28 Jan 2021 21:59:54 -0800 (PST)
-Received: by mail-qv1-xf36.google.com with SMTP id u16so4008270qvo.9;
-        Thu, 28 Jan 2021 21:59:54 -0800 (PST)
+        Fri, 29 Jan 2021 01:01:52 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11977C061756;
+        Thu, 28 Jan 2021 22:01:12 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id u17so8181818iow.1;
+        Thu, 28 Jan 2021 22:01:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=QUeH3EobdhlwWiIHKkInYCjoa2uGooqIYSSFgluMm3c=;
-        b=GIitH5mpBu0U2vHntzB1uENdz9z7eYAcAOGOY276XwzQJK8/lFACDDjO1qqubA5jf/
-         kGVqOnbununpJ3l/IwCEQMF2QQbsH1NsrJnNmGPYekyUr1SCgpm85WeJpJxcq1faVV5x
-         zNrFPUgQas6IzC7LYUw/R0Gc0wTr6/elCAqsBQUeDIt+3xlSMEbWfuRrqKnU0F3SWR1w
-         6MpbozQxZjQNLESpTcWnu1bmqyA19HZxBE+idUAcs4PI+zFE+rHq9khwNbT6WIatPxxJ
-         UxAAkELh0jd7/ynk8e28V5g/kDMnL8Id17l92o1hbggyXp3kJQNZiR/lvaJQd1kkwJ2b
-         V41A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=I7Jf4w2xQmonkgOSIoCWrc0+He7UNn5JipXpaAB81cg=;
+        b=r70zrkvIb3T0rBH5Z2812Vuxjmhp2HQrxUhsJAvYWEv8Nc6dww2sKXdShoNWfpDe0l
+         FosQjsrtPB7nsNNeaa9uk+SdRiNKSj/2QcCgESa3wE8qY6rkjUpwa+KG5oXFAAwxHQVF
+         E1MwCx6X52VGXNtbzXHGvZETNhjX4l3FJKC/rbPNmlOWMUu2UzNR4lzC2z9zL8pujS5y
+         2Kof7uqiBRc+RvqvfLhbGnYH7QihgpkD+SSCAxm1uKOxsQCv/p9+CX/O6TWPZLArNQHK
+         ssLCzcTh1j6TxbFLjZtOOF7/OHfdXoUJszw7y+WEzTkm6MGrDRl1NRqMIqUtH1kQ0FBK
+         IMJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QUeH3EobdhlwWiIHKkInYCjoa2uGooqIYSSFgluMm3c=;
-        b=HIVpiPaugU3AN40qVpT5ZwPhFb3DUxbdP2rlWkwLYBCR01cVZADDwxwHS9mf8/9qAm
-         UpZ4iiTTsEslyqJOOY76WCK7aTU3RRrLn/ZL3+ncIiTPNyDyNDcCiJ8knQbo4v2/FgnM
-         Kp34+TUJP4hsEjiEfd6P9KdTSGO4wQ0YdchGGbtEHPMLmINBRPSuZmKcieujsHP/8ygN
-         lsQ933dsLB8etvhzQjjtlPhXu/wteRfyxu8G8PxTixMyXMQqKDVWiwfNRqCnnGdBdi9w
-         10RQBZ3E12Rs5eS6Lsqyk+M/mWEUGqk1vrISD2qfTR2pBFDnM2Lemn6cbCI2KrA71gLv
-         8bvA==
-X-Gm-Message-State: AOAM530VvLoPvqHbMowk2vatqIl5ek1QlOfwhaTmIA/8kALvuFniH7RA
-        sDvQ3DbRuI7tT0ELmsw7oAmpmK9a6iM0yA==
-X-Google-Smtp-Source: ABdhPJwSN517cb/JmY48RE9OlGouu0YrTJ4xJJohOV5W+VRBNe+54U1bJTr8tzGabTzzXeT6OurzTA==
-X-Received: by 2002:ad4:4431:: with SMTP id e17mr2702498qvt.45.1611899994068;
-        Thu, 28 Jan 2021 21:59:54 -0800 (PST)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id q25sm5229305qkq.32.2021.01.28.21.59.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Jan 2021 21:59:53 -0800 (PST)
-Subject: Re: [PATCH V6 5/6] of: unittest: Create overlay_common.dtsi and
- testcases_common.dtsi
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, anmar.oueja@linaro.org,
-        Bill Mills <bill.mills@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        devicetree@vger.kernel.org, Michal Marek <michal.lkml@markovi.net>
-References: <cover.1611312122.git.viresh.kumar@linaro.org>
- <94180731aa4a17e4834458a979de7de782dc73d4.1611312122.git.viresh.kumar@linaro.org>
- <20210127055652.vmkx5sczef2mjwey@vireshk-i7>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <543de786-4f08-d1f6-8034-252662a39786@gmail.com>
-Date:   Thu, 28 Jan 2021 23:59:52 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=I7Jf4w2xQmonkgOSIoCWrc0+He7UNn5JipXpaAB81cg=;
+        b=AyDYsLSlFLx0n2SGsNF/z89a2tZUlmqTXz7Spk1ivuPFBJ7Yvuij2zu2bMM9sfecW+
+         Fyr5g3DCgXMuAj6Zyfwza3XCM1xtdAC3/j3VMQvcJ+wADrbUQDqF+9NXJX+84DmXIV6t
+         7nbivzNR26gqccIXN9ihU4/GMhlTxgsePDTHOn4Rw2WnylZwopEVXCVzKGrri+V5vqgX
+         EJ2wMLGeuJe38EyVUImL5iQYaC6x5kGT+LjIVVn4brdwmlpyKUhZu8105gq3oQS4jYhs
+         bvWAJXB/nIHUyyB/Vsf5aMMt3/iZx/KrUKN36f3M2SSOGriHx4yyv1Cj6E2PMkWsPA0c
+         RBKA==
+X-Gm-Message-State: AOAM532XZ1niOjSnJoFH4kEzPsXjZy4aq8pKmGiIkbbf0Xtq+8l+KVNp
+        LNNWrlmtH+oV6lEEUZdG1ZvZLQyhDl3OWKdRZjHlRy/M3uQiZg==
+X-Google-Smtp-Source: ABdhPJxFpR3aT0BQY0meTLiJwXYnAk7p0kzsniXup3IColeXcgDuwcom/2i2lyMLAgcPN5I0dB7OCiSur35i35eXS20=
+X-Received: by 2002:a05:6602:144:: with SMTP id v4mr2671045iot.168.1611900070495;
+ Thu, 28 Jan 2021 22:01:10 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210127055652.vmkx5sczef2mjwey@vireshk-i7>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1611800401-9790-1-git-send-email-bingjingc@synology.com>
+ <CAJfpegtDbDzSCgv-D66-5dAA=pDxMGN_aMTVcNPzWNibt2smLw@mail.gmail.com> <939d2196-8468-4d93-b976-70f3d8ac83de@Mail>
+In-Reply-To: <939d2196-8468-4d93-b976-70f3d8ac83de@Mail>
+From:   bingjing chang <bxxxjxxg@gmail.com>
+Date:   Fri, 29 Jan 2021 14:00:59 +0800
+Message-ID: <CAMmgxWFMBxg47J_Zjdfm5i36m3TMf2VEzoeREGKD6VFJXcbN3A@mail.gmail.com>
+Subject: Re: [PATCH 3/3] parser: add unsigned int parser
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.com>,
+        Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cccheng@synology.com, robbieko@synology.com,
+        bingjingc <bingjingc@synology.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Viresh,
+Hi Miklos,
 
-On 1/26/21 11:56 PM, Viresh Kumar wrote:
-> On 22-01-21, 16:20, Viresh Kumar wrote:
->> In order to build-test the same unit-test files using fdtoverlay tool,
->> move the device nodes from the existing overlay_base.dts and
->> testcases_common.dts files to .dtsi files. The .dts files now include
->> the new .dtsi files, resulting in exactly the same behavior as earlier.
->>
->> The .dtsi files can now be reused for compile time tests using
->> fdtoverlay (will be done in a later patch).
->>
->> This is required because the base files passed to fdtoverlay tool
->> shouldn't be overlays themselves (i.e. shouldn't have the /plugin/;
->> tag).
->>
->> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
->> ---
->>  drivers/of/unittest-data/overlay_base.dts     | 90 +-----------------
->>  drivers/of/unittest-data/overlay_common.dtsi  | 91 +++++++++++++++++++
->>  drivers/of/unittest-data/testcases.dts        | 17 +---
->>  .../of/unittest-data/testcases_common.dtsi    | 18 ++++
->>  4 files changed, 111 insertions(+), 105 deletions(-)
->>  create mode 100644 drivers/of/unittest-data/overlay_common.dtsi
->>  create mode 100644 drivers/of/unittest-data/testcases_common.dtsi
-> 
-> Frank,
-> 
-> As I mentioned in the cover-letter, I get a build warning right now:
-> 
-> drivers/of/unittest-data/tests-interrupts.dtsi:20.5-28: Warning (interrupts_property): /testcase-data/testcase-device2:#interrupt-cells: size is (4), expected multiple of 8
+Thank you for your mail. Please see my message below.
 
-Thanks for catching that.
+bingjingc <bingjingc@synology.com> =E6=96=BC 2021=E5=B9=B41=E6=9C=8829=E6=
+=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=881:50=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> [loop bxxxjxxg@gmail.com] in order to reply in plain-text
+> Miklos Szeredi <miklos@szeredi.hu> =E6=96=BC 2021-01-28 16:37 =E5=AF=AB=
+=E9=81=93=EF=BC=9A
+>
+> On Thu, Jan 28, 2021 at 3:21 AM bingjingc <bingjingc@synology.com> wrote:
+> >
+> > From: BingJing Chang <bingjingc@synology.com>
+> >
+> > Will be used by fs parsing options
+> >
+> > Reviewed-by: Robbie Ko<robbieko@synology.com>
+> > Reviewed-by: Chung-Chiang Cheng <cccheng@synology.com>
+> > Signed-off-by: BingJing Chang <bingjingc@synology.com>
+> > ---
+> >  fs/isofs/inode.c       | 16 ++--------------
+> >  fs/udf/super.c         | 16 ++--------------
+> >  include/linux/parser.h |  1 +
+> >  lib/parser.c           | 22 ++++++++++++++++++++++
+> >  4 files changed, 27 insertions(+), 28 deletions(-)
+> >
+> > diff --git a/fs/isofs/inode.c b/fs/isofs/inode.c
+> > index 342ac19..21edc42 100644
+> > --- a/fs/isofs/inode.c
+> > +++ b/fs/isofs/inode.c
+> > @@ -335,18 +335,6 @@ static const match_table_t tokens =3D {
+> >         {Opt_err, NULL}
+> >  };
+> >
+> > -static int isofs_match_uint(substring_t *s, unsigned int *res)
+> > -{
+> > -       int err =3D -ENOMEM;
+> > -       char *buf =3D match_strdup(s);
+> > -
+> > -       if (buf) {
+> > -               err =3D kstrtouint(buf, 10, res);
+> > -               kfree(buf);
+> > -       }
+> > -       return err;
+> > -}
+>
+> I don't see how adding this function and removing it in the same
+> series makes any sense.
 
-> 
-> I think I need to add below diff to this patch to fix this warning, will that
-> be okay ?
+That's true. Simple and clear is better.
+I used to think that the acceptance of patch can be 3/3 or 2/3.
+And I was not sure are there needs for making match_uint
+as shared lib. So I made the first patch.
 
-Nope, the change below won't work because it removes the node testcase-device2 from the tests
-that unittest.c does (if I am thinking correctly).  I will double check my thinking, but I
-know you are spinning the patch, so I didn't want to delay this reply.
+I simplify them. Please see the third patch, thanks!
 
-Note that this node has a deliberate error in it "/* invalid specifier - too short */".
+>
+> Why not make this the first patch in the series, simplifying everything?
+>
+> And while at it the referenced fuse implementation can also be
+> converted (as a separate patch).
+>
+> Thanks,
+> Miklos
 
-I'm not sure why the dtc warning triggers on line 20 instead of line 68.  I'll have to go
-look at the dtc source to better understand the warning.
-
--Frank
-
-> 
-> diff --git a/drivers/of/unittest-data/testcases.dts b/drivers/of/unittest-data/testcases.dts
-> index 185125085784..04b9e7bb30d9 100644
-> --- a/drivers/of/unittest-data/testcases.dts
-> +++ b/drivers/of/unittest-data/testcases.dts
-> @@ -3,3 +3,14 @@
->  /plugin/;
->  
->  #include "testcases_common.dtsi"
-> +
-> +/ {
-> +       testcase-data {
-> +               testcase-device2 {
-> +                       compatible = "testcase-device";
-> +                       interrupt-parent = <&test_intc2>;
-> +                       interrupts = <1>; /* invalid specifier - too short */
-> +               };
-> +       };
-> +
-> +};
-> diff --git a/drivers/of/unittest-data/tests-interrupts.dtsi b/drivers/of/unittest-data/tests-interrupts.dtsi
-> index ec175e800725..0e5914611107 100644
-> --- a/drivers/of/unittest-data/tests-interrupts.dtsi
-> +++ b/drivers/of/unittest-data/tests-interrupts.dtsi
-> @@ -61,12 +61,5 @@ testcase-device1 {
->                         interrupt-parent = <&test_intc0>;
->                         interrupts = <1>;
->                 };
-> -
-> -               testcase-device2 {
-> -                       compatible = "testcase-device";
-> -                       interrupt-parent = <&test_intc2>;
-> -                       interrupts = <1>; /* invalid specifier - too short */
-> -               };
->         };
-> -
->  };
-> 
-
+Thanks,
+BingJing
