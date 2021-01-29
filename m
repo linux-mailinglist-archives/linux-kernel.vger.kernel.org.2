@@ -2,106 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50AA4308B65
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:32:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A05308B6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:32:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231871AbhA2RTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 12:19:08 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59866 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231916AbhA2RQF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 12:16:05 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DBA96ABDA;
-        Fri, 29 Jan 2021 17:15:22 +0000 (UTC)
-Date:   Fri, 29 Jan 2021 17:15:21 +0000
-From:   Michal Rostecki <mrostecki@suse.de>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michal Rostecki <mrostecki@suse.com>
-Subject: Re: [PATCH v2] btrfs: Avoid calling btrfs_get_chunk_map() twice
-Message-ID: <20210129171521.GB22949@wotan.suse.de>
-References: <20210127135728.30276-1-mrostecki@suse.de>
- <18dab74b-aea9-0e34-1be5-39d62f44cfd2@toxicpanda.com>
+        id S232029AbhA2RVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 12:21:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231307AbhA2RVD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 12:21:03 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB05C061573;
+        Fri, 29 Jan 2021 09:20:23 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id b21so11404211edy.6;
+        Fri, 29 Jan 2021 09:20:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GmK3IzpJWn5KGZ5UlnNgN27t0epkFS6p45KMYMsykiU=;
+        b=cEhmA8h01GMLKZFbPOWD8j861LbXVvV2stJwNJ+jstgYa5oRXJnLLAqeJVknD75dxK
+         ttRjSHHfPvMHyhSnZTxXuasvcpB4aOoLhHc+q2EhJVSJD6xbWADt8mPX7o/exIlz0ip4
+         dHahBOGom9YUSR6iG06mb1mKUdlW+3E/0rGKobLITfFeHEJu43BkUxuFd5DyR9GGbqVh
+         4WowTuh+Y1PCZyuD4/CrMeXf+rk063ruuTq2GBNZtmmkaSvgiw0X88QIifyzkD+IKm/4
+         GF1KN/nxfZ3baXkrZjDgpC5g3DOdK/PcPK/RyXkoaSfSJOJwGJetNDAAt61woEFH7dw2
+         s3eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GmK3IzpJWn5KGZ5UlnNgN27t0epkFS6p45KMYMsykiU=;
+        b=AyiaXbbdL+1EM8OpRXzG4N77fpa8udP3qPdkC8c4HGHKgWgzpFsbgnQpqEHot1q2d0
+         UQlvYUcxY1b5dBBsbd5EE1oNDJUlUr9+yUvborTTMAnf4NtyM1Jrf99ZLtauB310vUtF
+         NLcq8eJZMB9naNJFjlMN2jbbX5vKoMemexzg1mWxCs9QROP0JKZIiT7sEdfqXqf+XKO3
+         JPtZFqRwuglEEwLDZR4ZQerYSTyLKsBa6w3Vt6vt3YmI42l6P0vWTr1pyJ1DhgX5bSEv
+         mb9SjTBLig7EIuqeQ+J6H5wbi6Ap9dhj7zxN2MhcaHWCtZR17x9egqZeW9OPPOKN9hq/
+         yYew==
+X-Gm-Message-State: AOAM5335JvxM+Uzzq+bppyLkYyUtniy1SrSpdVI0vpD+y2cc3Wl8valb
+        XHxmpo0KC8/VTfOKPtXfDrn4QIM8nFWc8aTPEvc=
+X-Google-Smtp-Source: ABdhPJwI0SHZKLLzSY2MpKzQDtb0rzu7IhLBL/C8lwU/t4ppFNWnlokejqzJnyYjPdlD1+OaFaEwvqhffgv6JvFQEkg=
+X-Received: by 2002:a05:6402:312e:: with SMTP id dd14mr6382931edb.366.1611940821747;
+ Fri, 29 Jan 2021 09:20:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <18dab74b-aea9-0e34-1be5-39d62f44cfd2@toxicpanda.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210127233345.339910-1-shy828301@gmail.com> <20210127233345.339910-8-shy828301@gmail.com>
+ <6b0638ba-2513-67f5-8ef1-9e60a7d9ded6@suse.cz>
+In-Reply-To: <6b0638ba-2513-67f5-8ef1-9e60a7d9ded6@suse.cz>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 29 Jan 2021 09:20:09 -0800
+Message-ID: <CAHbLzkpiDBMRRerr7iXtj40p=RVLTmWoWoOQbdkvG7Tsi4iirw@mail.gmail.com>
+Subject: Re: [v5 PATCH 07/11] mm: vmscan: add per memcg shrinker nr_deferred
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 11:22:48AM -0500, Josef Bacik wrote:
-> On 1/27/21 8:57 AM, Michal Rostecki wrote:
-> > From: Michal Rostecki <mrostecki@suse.com>
-> > 
-> > Before this change, the btrfs_get_io_geometry() function was calling
-> > btrfs_get_chunk_map() to get the extent mapping, necessary for
-> > calculating the I/O geometry. It was using that extent mapping only
-> > internally and freeing the pointer after its execution.
-> > 
-> > That resulted in calling btrfs_get_chunk_map() de facto twice by the
-> > __btrfs_map_block() function. It was calling btrfs_get_io_geometry()
-> > first and then calling btrfs_get_chunk_map() directly to get the extent
-> > mapping, used by the rest of the function.
-> > 
-> > This change fixes that by passing the extent mapping to the
-> > btrfs_get_io_geometry() function as an argument.
-> > 
-> > v2:
-> > When btrfs_get_chunk_map() returns an error in btrfs_submit_direct():
-> > - Use errno_to_blk_status(PTR_ERR(em)) as the status
-> > - Set em to NULL
-> > 
-> > Signed-off-by: Michal Rostecki <mrostecki@suse.com>
-> 
-> This panic'ed all of my test vms in their overnight xfstests runs, the panic is this
-> 
-> [ 2449.936502] BTRFS critical (device dm-7): mapping failed logical
-> 1113825280 bio len 40960 len 24576
-> [ 2449.937073] ------------[ cut here ]------------
-> [ 2449.937329] kernel BUG at fs/btrfs/volumes.c:6450!
-> [ 2449.937604] invalid opcode: 0000 [#1] SMP NOPTI
-> [ 2449.937855] CPU: 0 PID: 259045 Comm: kworker/u5:0 Not tainted 5.11.0-rc5+ #122
-> [ 2449.938252] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
-> 1.13.0-2.fc32 04/01/2014
-> [ 2449.938713] Workqueue: btrfs-worker-high btrfs_work_helper
-> [ 2449.939016] RIP: 0010:btrfs_map_bio.cold+0x5a/0x5c
-> [ 2449.939392] Code: 37 87 ff ff e8 ed d4 8a ff 48 83 c4 18 e9 b5 52 8b ff
-> 49 89 c8 4c 89 fa 4c 89 f1 48 c7 c6 b0 c0 61 8b 48 89 ef e8 11 87 ff ff <0f>
-> 0b 4c 89 e7 e8 42 09 86 ff e9 fd 59 8b ff 49 8b 7a 50 44 89 f2
-> [ 2449.940402] RSP: 0000:ffff9f24c1637d90 EFLAGS: 00010282
-> [ 2449.940689] RAX: 0000000000000057 RBX: ffff90c78ff716b8 RCX: 0000000000000000
-> [ 2449.941080] RDX: ffff90c7fbc27ae0 RSI: ffff90c7fbc19110 RDI: ffff90c7fbc19110
-> [ 2449.941467] RBP: ffff90c7911d4000 R08: 0000000000000000 R09: 0000000000000000
-> [ 2449.941853] R10: ffff9f24c1637b48 R11: ffffffff8b9723e8 R12: 0000000000000000
-> [ 2449.942243] R13: 0000000000000000 R14: 000000000000a000 R15: 000000004263a000
-> [ 2449.942632] FS:  0000000000000000(0000) GS:ffff90c7fbc00000(0000)
-> knlGS:0000000000000000
-> [ 2449.943072] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 2449.943386] CR2: 00005575163c3080 CR3: 000000010ad6c004 CR4: 0000000000370ef0
-> [ 2449.943772] Call Trace:
-> [ 2449.943915]  ? lock_release+0x1c3/0x290
-> [ 2449.944135]  run_one_async_done+0x3a/0x60
-> [ 2449.944360]  btrfs_work_helper+0x136/0x520
-> [ 2449.944588]  process_one_work+0x26e/0x570
-> [ 2449.944812]  worker_thread+0x55/0x3c0
-> [ 2449.945016]  ? process_one_work+0x570/0x570
-> [ 2449.945250]  kthread+0x137/0x150
-> [ 2449.945430]  ? __kthread_bind_mask+0x60/0x60
-> [ 2449.945666]  ret_from_fork+0x1f/0x30
-> 
-> it happens when you run btrfs/060.  Please make sure to run xfstests against
-> patches before you submit them upstream.  Thanks,
-> 
-> Josef
+On Fri, Jan 29, 2021 at 5:00 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> On 1/28/21 12:33 AM, Yang Shi wrote:
+> > Currently the number of deferred objects are per shrinker, but some slabs, for example,
+> > vfs inode/dentry cache are per memcg, this would result in poor isolation among memcgs.
+> >
+> > The deferred objects typically are generated by __GFP_NOFS allocations, one memcg with
+> > excessive __GFP_NOFS allocations may blow up deferred objects, then other innocent memcgs
+> > may suffer from over shrink, excessive reclaim latency, etc.
+> >
+> > For example, two workloads run in memcgA and memcgB respectively, workload in B is vfs
+> > heavy workload.  Workload in A generates excessive deferred objects, then B's vfs cache
+> > might be hit heavily (drop half of caches) by B's limit reclaim or global reclaim.
+> >
+> > We observed this hit in our production environment which was running vfs heavy workload
+> > shown as the below tracing log:
+> >
+> > <...>-409454 [016] .... 28286961.747146: mm_shrink_slab_start: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
+> > nid: 1 objects to shrink 3641681686040 gfp_flags GFP_HIGHUSER_MOVABLE|__GFP_ZERO pgs_scanned 1 lru_pgs 15721
+> > cache items 246404277 delta 31345 total_scan 123202138
+> > <...>-409454 [022] .... 28287105.928018: mm_shrink_slab_end: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
+> > nid: 1 unused scan count 3641681686040 new scan count 3641798379189 total_scan 602
+> > last shrinker return val 123186855
+> >
+> > The vfs cache and page cache ration was 10:1 on this machine, and half of caches were dropped.
+> > This also resulted in significant amount of page caches were dropped due to inodes eviction.
+> >
+> > Make nr_deferred per memcg for memcg aware shrinkers would solve the unfairness and bring
+> > better isolation.
+> >
+> > When memcg is not enabled (!CONFIG_MEMCG or memcg disabled), the shrinker's nr_deferred
+> > would be used.  And non memcg aware shrinkers use shrinker's nr_deferred all the time.
+> >
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+> > ---
+> >  include/linux/memcontrol.h |  7 +++---
+> >  mm/vmscan.c                | 48 +++++++++++++++++++++++++-------------
+> >  2 files changed, 36 insertions(+), 19 deletions(-)
+> >
+> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > index 62b888b88a5f..e0384367e07d 100644
+> > --- a/include/linux/memcontrol.h
+> > +++ b/include/linux/memcontrol.h
+> > @@ -93,12 +93,13 @@ struct lruvec_stat {
+> >  };
+> >
+> >  /*
+> > - * Bitmap of shrinker::id corresponding to memcg-aware shrinkers,
+> > - * which have elements charged to this memcg.
+> > + * Bitmap and deferred work of shrinker::id corresponding to memcg-aware
+> > + * shrinkers, which have elements charged to this memcg.
+> >   */
+> >  struct shrinker_info {
+> >       struct rcu_head rcu;
+> > -     unsigned long map[];
+> > +     unsigned long *map;
+> > +     atomic_long_t *nr_deferred;
+> >  };
+> >
+> >  /*
+> > diff --git a/mm/vmscan.c b/mm/vmscan.c
+> > index 256896d157d4..20be0db291fe 100644
+> > --- a/mm/vmscan.c
+> > +++ b/mm/vmscan.c
+> > @@ -187,16 +187,21 @@ static DECLARE_RWSEM(shrinker_rwsem);
+> >  #ifdef CONFIG_MEMCG
+> >  static int shrinker_nr_max;
+> >
+> > +#define NR_MAX_TO_SHR_MAP_SIZE(nr_max)       \
+> > +     ((nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long))
+>
+> Could have been part of patch 4 already. And yeah, using DIV_ROUND_UP(), as
+> being hidden in a macro makes the "shorter statement" benefit disappear :)
+>
+> > +
+> >  static void free_shrinker_info_rcu(struct rcu_head *head)
+> >  {
+> >       kvfree(container_of(head, struct shrinker_info, rcu));
+> >  }
+> >
+> >  static int expand_one_shrinker_info(struct mem_cgroup *memcg,
+> > -                                int size, int old_size)
+> > +                                 int m_size, int d_size,
+> > +                                 int old_m_size, int old_d_size)
+> >  {
+> >       struct shrinker_info *new, *old;
+> >       int nid;
+> > +     int size = m_size + d_size;
+> >
+> >       for_each_node(nid) {
+> >               old = rcu_dereference_protected(
+> > @@ -209,9 +214,15 @@ static int expand_one_shrinker_info(struct mem_cgroup *memcg,
+> >               if (!new)
+> >                       return -ENOMEM;
+> >
+> > -             /* Set all old bits, clear all new bits */
+> > -             memset(new->map, (int)0xff, old_size);
+> > -             memset((void *)new->map + old_size, 0, size - old_size);
+> > +             new->map = (unsigned long *)(new + 1);
+> > +             new->nr_deferred = (void *)new->map + m_size;
+>
+> This better be aligned to sizeof(atomic_long_t). Can we be sure about that?
 
-Umm... I ran the xftests against v1 patch and didn't get that panic.
-I'll try to reproduce and fix that now. Thanks for the heads up and
-sorry!
+Good point. No, if unsigned long is 32 bit on some 64 bit machines.
 
-Thanks,
-Michal
+> Also it's all quite ugly and complex. Is it worth it? What about just leaving
+> map as it is and allocating a nr_deferred array separately, i.e.:
+>
+>   struct shrinker_info {
+>         struct rcu_head rcu;
+>         atomic_long_t *nr_deferred; // allocated separately
+>         unsigned long map[];
+>   };
+
+So, you mean we allocate shrinker info with map array in the first
+step, then allocate nr_deferred? It is ok, but I'm afraid the error
+handling may make the code not that clean as what you expect since we
+have to call kvmalloc() twice. And we still need to do all the
+initialization and copy work. So, eventually we just replace the
+pointer assignment to error handling. I'm not quite sure if it is
+worth it. The nested error handling might be more error prone.
+
+>
+> > +             /* map: set all old bits, clear all new bits */
+> > +             memset(new->map, (int)0xff, old_m_size);
+> > +             memset((void *)new->map + old_m_size, 0, m_size - old_m_size);
+> > +             /* nr_deferred: copy old values, clear all new values */
+> > +             memcpy(new->nr_deferred, old->nr_deferred, old_d_size);
+> > +             memset((void *)new->nr_deferred + old_d_size, 0, d_size - old_d_size);
+> >
+> >               rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, new);
+> >               call_rcu(&old->rcu, free_shrinker_info_rcu);
+> > @@ -226,9 +237,6 @@ void free_shrinker_info(struct mem_cgroup *memcg)
+> >       struct shrinker_info *info;
+> >       int nid;
+> >
+> > -     if (mem_cgroup_is_root(memcg))
+> > -             return;
+> > -
+> >       for_each_node(nid) {
+> >               pn = mem_cgroup_nodeinfo(memcg, nid);
+> >               info = rcu_dereference_protected(pn->shrinker_info, true);
+> > @@ -242,12 +250,13 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
+> >  {
+> >       struct shrinker_info *info;
+> >       int nid, size, ret = 0;
+> > -
+> > -     if (mem_cgroup_is_root(memcg))
+> > -             return 0;
+> > +     int m_size, d_size = 0;
+> >
+> >       down_write(&shrinker_rwsem);
+> > -     size = (shrinker_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
+> > +     m_size = NR_MAX_TO_SHR_MAP_SIZE(shrinker_nr_max);
+> > +     d_size = shrinker_nr_max * sizeof(atomic_long_t);
+> > +     size = m_size + d_size;
+> > +
+> >       for_each_node(nid) {
+> >               info = kvzalloc_node(sizeof(*info) + size, GFP_KERNEL, nid);
+> >               if (!info) {
+> > @@ -255,6 +264,8 @@ int alloc_shrinker_info(struct mem_cgroup *memcg)
+> >                       ret = -ENOMEM;
+> >                       break;
+> >               }
+> > +             info->map = (unsigned long *)(info + 1);
+> > +             info->nr_deferred = (void *)info->map + m_size;
+> >               rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, info);
+> >       }
+> >       up_write(&shrinker_rwsem);
+> > @@ -266,10 +277,16 @@ static int expand_shrinker_info(int new_id)
+> >  {
+> >       int size, old_size, ret = 0;
+> >       int new_nr_max = new_id + 1;
+> > +     int m_size, d_size = 0;
+> > +     int old_m_size, old_d_size = 0;
+> >       struct mem_cgroup *memcg;
+> >
+> > -     size = (new_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
+> > -     old_size = (shrinker_nr_max / BITS_PER_LONG + 1) * sizeof(unsigned long);
+> > +     m_size = NR_MAX_TO_SHR_MAP_SIZE(new_nr_max);
+> > +     d_size = new_nr_max * sizeof(atomic_long_t);
+> > +     size = m_size + d_size;
+> > +     old_m_size = NR_MAX_TO_SHR_MAP_SIZE(shrinker_nr_max);
+> > +     old_d_size = shrinker_nr_max * sizeof(atomic_long_t);
+> > +     old_size = old_m_size + old_d_size;
+> >       if (size <= old_size)
+> >               goto out;
+> >
+> > @@ -278,9 +295,8 @@ static int expand_shrinker_info(int new_id)
+> >
+> >       memcg = mem_cgroup_iter(NULL, NULL, NULL);
+> >       do {
+> > -             if (mem_cgroup_is_root(memcg))
+> > -                     continue;
+> > -             ret = expand_one_shrinker_info(memcg, size, old_size);
+> > +             ret = expand_one_shrinker_info(memcg, m_size, d_size,
+> > +                                            old_m_size, old_d_size);
+> >               if (ret) {
+> >                       mem_cgroup_iter_break(NULL, memcg);
+> >                       goto out;
+> >
+>
