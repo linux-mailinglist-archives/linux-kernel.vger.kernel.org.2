@@ -2,277 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9FAC3085D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:33:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 088593085E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:44:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232058AbhA2GaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 01:30:01 -0500
-Received: from mx12.kaspersky-labs.com ([91.103.66.155]:56223 "EHLO
-        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232194AbhA2G3k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 01:29:40 -0500
-Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay12.kaspersky-labs.com (Postfix) with ESMTP id D4CED7612E;
-        Fri, 29 Jan 2021 09:28:51 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail; t=1611901731;
-        bh=QZjqDhhfWcW+0uZiIBXiBKnmWJ8H4HqGbYSfjDcKFJ0=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
-        b=IpQH8aXXskkY/RhabPw5AGDoJiQfmpRsXX50HlZJZw60xhAnWTgd7U+jzFoX8OFC3
-         XehXBQi3LsWs+K0uxvnuvjhpX2ldWY3XZ2eQnKDUhf5fGxeIpjvgXYMVsSSLGs0WeB
-         eqswiQYXFG4GNuY+64P0wvsQEljhnaUe57JwjHjY=
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id E043C76168;
-        Fri, 29 Jan 2021 09:28:50 +0300 (MSK)
-Received: from [10.16.171.77] (10.64.68.128) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Fri, 29
- Jan 2021 09:28:50 +0300
-Subject: Re: [RFC PATCH v3 03/13] af_vsock: implement SEQPACKET rx loop
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jeff Vander Stoep <jeffv@google.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stsp2@yandex.ru" <stsp2@yandex.ru>,
-        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
-References: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
- <20210125111239.598377-1-arseny.krasnov@kaspersky.com>
- <20210128165518.ho3csm5u7v5pnwnd@steredhat>
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Message-ID: <5e000f18-1457-068d-10c5-0a349c938497@kaspersky.com>
-Date:   Fri, 29 Jan 2021 09:28:49 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232265AbhA2Gd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 01:33:28 -0500
+Received: from m42-8.mailgun.net ([69.72.42.8]:16877 "EHLO m42-8.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232236AbhA2GbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 01:31:02 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1611901840; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=k99FP1SFldOePaUcEFCtxlpJY4Jhko9U7KZE8IRb3Ss=;
+ b=a5p/UGZYQPm9Gv6VWBmUO/4WdaC4xCjaReDrCBoRyo1V+XyNchLpcyPtmr1uF9NrAF9IqXOg
+ cX57J9WGgeL3P3sNaPI9OtU2p348lJj17xdmLLxQKRL87+MfoUv0hr9GyKlUIck+niUUlsVO
+ 4EPMjzoW1Jf1+qxragCFxxTzE2E=
+X-Mailgun-Sending-Ip: 69.72.42.8
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 6013ab66589a8a2d5ad363f6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 Jan 2021 06:29:58
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 55FAAC43467; Fri, 29 Jan 2021 06:29:58 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5FAF2C433CA;
+        Fri, 29 Jan 2021 06:29:57 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210128165518.ho3csm5u7v5pnwnd@steredhat>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.64.68.128]
-X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.16, Database issued on: 01/29/2021 06:13:35
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 161515 [Jan 29 2021]
-X-KSE-AntiSpam-Info: LuaCore: 421 421 33a18ad4049b4a5e5420c907b38d332fafd06b09
-X-KSE-AntiSpam-Info: Version: 5.9.16.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: {Tracking_content_type, plain}
-X-KSE-AntiSpam-Info: {Tracking_date, moscow}
-X-KSE-AntiSpam-Info: {Tracking_c_tr_enc, eight_bit}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: kaspersky.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 01/29/2021 06:16:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 1/29/2021 4:21:00 AM
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/01/29 05:17:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/01/29 02:21:00 #16053718
-X-KLMS-AntiVirus-Status: Clean, skipped
+Date:   Fri, 29 Jan 2021 14:29:57 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     jaegeuk@kernel.org, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/3] scsi: ufs: Fix a race condition btw task
+ management request send and compl
+In-Reply-To: <5f77542d66732003f0154a4e8a6ae13b@codeaurora.org>
+References: <1611807365-35513-1-git-send-email-cang@codeaurora.org>
+ <1611807365-35513-3-git-send-email-cang@codeaurora.org>
+ <73362ca9-93be-c38f-a881-4b7cf690fbc1@acm.org>
+ <5f77542d66732003f0154a4e8a6ae13b@codeaurora.org>
+Message-ID: <56b26318de92eb88d663bbdc7096edcf@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-01-29 14:06, Can Guo wrote:
+> On 2021-01-29 11:20, Bart Van Assche wrote:
+>> On 1/27/21 8:16 PM, Can Guo wrote:
+>>> ufshcd_compl_tm() looks for all 0 bits in the 
+>>> REG_UTP_TASK_REQ_DOOR_BELL
+>>> and call complete() for each req who has the req->end_io_data set. 
+>>> There
+>>> can be a race condition btw tmc send/compl, because the 
+>>> req->end_io_data is
+>>> set, in __ufshcd_issue_tm_cmd(), without host lock protection, so it 
+>>> is
+>>> possible that when ufshcd_compl_tm() checks the req->end_io_data, it 
+>>> is set
+>>> but the corresponding tag has not been set in 
+>>> REG_UTP_TASK_REQ_DOOR_BELL.
+>>> Thus, ufshcd_tmc_handler() may wrongly complete TMRs which have not 
+>>> been
+>>> sent out. Fix it by protecting req->end_io_data with host lock, and 
+>>> let
+>>> ufshcd_compl_tm() only handle those tm cmds which have been completed
+>>> instead of looking for 0 bits in the REG_UTP_TASK_REQ_DOOR_BELL.
+>> 
+>> I don't know any other block driver that needs locking to protect 
+>> races
+>> between submission and completion context. Can the block layer timeout
+>> mechanism be used instead of the mechanism introduced by this patch,
+>> e.g. by using blk_execute_rq_nowait() to submit requests? That would
+>> allow to reuse the existing mechanism in the block layer core to 
+>> handle
+>> races between request completion and timeout handling.
+> 
+> This patch is not introducing any new mechanism, it is fixing the
+> usage of completion (req->end_io_data = c) introduced by commit
+> 69a6c269c097 ("scsi: ufs: Use blk_{get,put}_request() to allocate
+> and free TMFs"). If you have better idea to get it fixed once for
+> all, we are glad to take your change to get it fixed asap.
+> 
+> Regards,
+> 
+> Can Guo.
+> 
 
-On 28.01.2021 19:55, Stefano Garzarella wrote:
-> On Mon, Jan 25, 2021 at 02:12:36PM +0300, Arseny Krasnov wrote:
->> This adds receive loop for SEQPACKET. It looks like receive loop for
->> SEQPACKET, but there is a little bit difference:
->> 1) It doesn't call notify callbacks.
->> 2) It doesn't care about 'SO_SNDLOWAT' and 'SO_RCVLOWAT' values, because
->>   there is no sense for these values in SEQPACKET case.
->> 3) It waits until whole record is received or error is found during
->>   receiving.
->> 4) It processes and sets 'MSG_TRUNC' flag.
->>
->> So to avoid extra conditions for two types of socket inside one loop, two
->> independent functions were created.
->>
->> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
->> ---
->> include/net/af_vsock.h   |   5 ++
->> net/vmw_vsock/af_vsock.c | 102 ++++++++++++++++++++++++++++++++++++++-
->> 2 files changed, 106 insertions(+), 1 deletion(-)
->>
->> diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
->> index b1c717286993..46073842d489 100644
->> --- a/include/net/af_vsock.h
->> +++ b/include/net/af_vsock.h
->> @@ -135,6 +135,11 @@ struct vsock_transport {
->> 	bool (*stream_is_active)(struct vsock_sock *);
->> 	bool (*stream_allow)(u32 cid, u32 port);
->>
->> +	/* SEQ_PACKET. */
->> +	size_t (*seqpacket_seq_get_len)(struct vsock_sock *);
->> +	ssize_t (*seqpacket_dequeue)(struct vsock_sock *, struct msghdr *,
->> +				     size_t len, int flags);
->> +
->> 	/* Notification. */
->> 	int (*notify_poll_in)(struct vsock_sock *, size_t, bool *);
->> 	int (*notify_poll_out)(struct vsock_sock *, size_t, bool *);
->> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
->> index 524df8fc84cd..3b266880b7c8 100644
->> --- a/net/vmw_vsock/af_vsock.c
->> +++ b/net/vmw_vsock/af_vsock.c
->> @@ -2006,7 +2006,107 @@ static int __vsock_stream_recvmsg(struct sock *sk, struct msghdr *msg,
->> static int __vsock_seqpacket_recvmsg(struct sock *sk, struct msghdr *msg,
->> 				     size_t len, int flags)
->> {
->> -	return -1;
->> +	const struct vsock_transport *transport;
->> +	const struct iovec *orig_iov;
->> +	unsigned long orig_nr_segs;
->> +	ssize_t dequeued_total = 0;
->> +	struct vsock_sock *vsk;
->> +	size_t record_len;
->> +	long timeout;
->> +	int err = 0;
->> +	DEFINE_WAIT(wait);
->> +
->> +	vsk = vsock_sk(sk);
->> +	transport = vsk->transport;
->> +
->> +	timeout = sock_rcvtimeo(sk, flags & MSG_DONTWAIT);
->> +	msg->msg_flags &= ~MSG_EOR;
-> Maybe add a comment about why we need to clear MSG_EOR.
->
->> +	orig_nr_segs = msg->msg_iter.nr_segs;
->> +	orig_iov = msg->msg_iter.iov;
->> +
->> +	while (1) {
->> +		ssize_t dequeued;
->> +		s64 ready;
->> +
->> +		prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
->> +		ready = vsock_stream_has_data(vsk);
->> +
->> +		if (ready == 0) {
->> +			if (vsock_wait_data(sk, &wait, timeout, NULL, 0)) {
->> +				/* In case of any loop break(timeout, signal
->> +				 * interrupt or shutdown), we report user that
->> +				 * nothing was copied.
->> +				 */
->> +				dequeued_total = 0;
->> +				break;
->> +			}
->> +			continue;
->> +		}
->> +
->> +		finish_wait(sk_sleep(sk), &wait);
->> +
->> +		if (ready < 0) {
->> +			err = -ENOMEM;
->> +			goto out;
->> +		}
->> +
->> +		if (dequeued_total == 0) {
->> +			record_len =
->> +				transport->seqpacket_seq_get_len(vsk);
->> +
->> +			if (record_len == 0)
->> +				continue;
->> +		}
->> +
->> +		/* 'msg_iter.count' is number of unused bytes in iov.
->> +		 * On every copy to iov iterator it is decremented at
->> +		 * size of data.
->> +		 */
->> +		dequeued = transport->seqpacket_dequeue(vsk, msg,
->> +					msg->msg_iter.count, flags);
->                                          ^
->                                          Is this needed or 'msg' can be 
->                                          used in the transport?
-Yes, right
->> +
->> +		if (dequeued < 0) {
->> +			dequeued_total = 0;
->> +
->> +			if (dequeued == -EAGAIN) {
->> +				iov_iter_init(&msg->msg_iter, READ,
->> +					      orig_iov, orig_nr_segs,
->> +					      len);
->> +				msg->msg_flags &= ~MSG_EOR;
->> +				continue;
-> Why we need to reset MSG_EOR here?
+On second thought, actually the 1st fix alone is enough to eliminate the
+race condition. Because blk_mq_tagset_busy_iter() only iterates over all
+requests which are not in IDLE state, if blk_mq_start_request() is 
+called
+within the protection of host spin lock, ufshcd_compl_tm() shall not run
+into the scenario where req->end_io_data is set but 
+REG_UTP_TASK_REQ_DOOR_BELL
+has not been set. What do you think?
 
-Because if previous attempt to receive record was failed, but
+Thanks,
 
-MSG_EOR was set, so we clear it for next attempt to get record
+Can Guo.
 
->
->> +			}
->> +
->> +			err = -ENOMEM;
->> +			break;
->> +		}
->> +
->> +		dequeued_total += dequeued;
->> +
->> +		if (dequeued_total >= record_len)
->> +			break;
->> +	}
-> Maybe a new line here.
->
->> +	if (sk->sk_err)
->> +		err = -sk->sk_err;
->> +	else if (sk->sk_shutdown & RCV_SHUTDOWN)
->> +		err = 0;
->> +
->> +	if (dequeued_total > 0) {
->> +		/* User sets MSG_TRUNC, so return real length of
->> +		 * packet.
->> +		 */
->> +		if (flags & MSG_TRUNC)
->> +			err = record_len;
->> +		else
->> +			err = len - msg->msg_iter.count;
->> +
->> +		/* Always set MSG_TRUNC if real length of packet is
->> +		 * bigger that user buffer.
-> s/that/than
->
->> +		 */
->> +		if (record_len > len)
->> +			msg->msg_flags |= MSG_TRUNC;
->> +	}
->> +out:
->> +	return err;
->> }
->>
->> static int
->> -- 
->> 2.25.1
->>
->
+>> 
+>> Thanks,
+>> 
+>> Bart.
