@@ -2,116 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F17308588
+	by mail.lfdr.de (Postfix) with ESMTP id C7171308589
 	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:16:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232066AbhA2GMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 01:12:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47500 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230121AbhA2GMi (ORCPT
+        id S232080AbhA2GNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 01:13:46 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:11907 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232076AbhA2GNn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 01:12:38 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481C5C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 22:11:58 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id t29so5564552pfg.11
-        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 22:11:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=MPN0BMsB39RPUu08cmjTxw4xAhgm3Lx59PJQqiAOE/s=;
-        b=YL81QMgl8PDwNUbMmxmzvHD3/zDUbZKJMgHYDVDZ0NHnMYB04g71KRqSNVPq8mbbUX
-         VHmfM2Jw7HgU5ImzEvSzjkUzxvOvXLNo5jv3Zf2sU5Q+Zetl0TNtvq+Qk8alZHLhg9op
-         se6rYIv3poPwKalEWI7Vm+0Ly3eUurnHyXC6C5t9EW2CMK7j0KESadPEaboCBjXp96Xv
-         /9TQNRP3kiwEzSRgFBzbUyVB0Z2OM/MpV7xpGQrYkvXetH65KBSgg0KrlFb4o5/7Ob4+
-         7MiL9Lf1szFFmZiyl919eGlmHVexj+tJr5RZKxLSESvMG2Q6sRHiQCZqlmN/Fr6io7Vh
-         5ezA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MPN0BMsB39RPUu08cmjTxw4xAhgm3Lx59PJQqiAOE/s=;
-        b=PNZsikAH4SCpj/KIDWQGJcgljB9YF8UXXx8sifM6D3e1bhQWYol8pQs0WICX61issE
-         rQmsWSvM72H0cUvWroodmeUEy6tbinOPX6WkWABFL4vqVY6DPDwRN+EWshCsT/7aX1Tg
-         jXzFh0mIpBfkybUdAXrNczrX+9I04mf78z1D0p1zVX+lRZqTQEOg6RC5kB0VzWGHp698
-         Q4FQlF1OvIIVs5UW064S+Q4gmI7R2/lwd/EdmagV/B6ACDsUF5dgB4m7VxGFzCikiZBP
-         0A3n/3Q95iE+kQYhRir4u9e1vK8qIywgD1pcNS2tVimiCMFVS0ueD1wevbviSJLnTusT
-         MAww==
-X-Gm-Message-State: AOAM530dPH1i8DlpOcgABmwdoFd1pVA1QcFge4rhejSBZJ1AA+w6sT+j
-        kzVe5L4YHbINvgjb2eG4MLMViw==
-X-Google-Smtp-Source: ABdhPJx+2sbR1KRS2HPfOiR+ckB3CwTCvzfubhc4jw/RU/l3MxCHAqtZBG8fIebeH99F9BGtE2kpXg==
-X-Received: by 2002:a63:4859:: with SMTP id x25mr3158130pgk.289.1611900717799;
-        Thu, 28 Jan 2021 22:11:57 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id mj21sm6342074pjb.12.2021.01.28.22.11.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 28 Jan 2021 22:11:57 -0800 (PST)
-Date:   Fri, 29 Jan 2021 11:41:54 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, anmar.oueja@linaro.org,
-        Bill Mills <bill.mills@linaro.org>,
-        David Gibson <david@gibson.dropbear.id.au>,
-        devicetree@vger.kernel.org, Michal Marek <michal.lkml@markovi.net>
-Subject: Re: [PATCH V6 2/6] scripts: dtc: Build fdtoverlay tool
-Message-ID: <20210129061154.z5gnipkqhanppjqb@vireshk-i7>
-References: <cover.1611312122.git.viresh.kumar@linaro.org>
- <2dfec4acb1bfbab08b431908ace0a77cc3279434.1611312122.git.viresh.kumar@linaro.org>
- <1f6408aa-9900-fe4a-d885-028ff8329707@gmail.com>
+        Fri, 29 Jan 2021 01:13:43 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DRn6g44f9zjDnm;
+        Fri, 29 Jan 2021 14:11:55 +0800 (CST)
+Received: from [10.174.184.42] (10.174.184.42) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 29 Jan 2021 14:12:47 +0800
+Subject: Re: [PATCH 1/1] iommu/arm-smmu-v3: add support for BBML
+To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>
+References: <20201126034230.777-1-thunder.leizhen@huawei.com>
+ <20210122125132.GB24102@willie-the-truck>
+ <aac11411-f6cd-f990-fe53-db0d8c07f3a0@huawei.com>
+ <1bfd1ca0-953e-e943-f87e-144d5537bd0c@arm.com>
+ <20210126101230.GA29204@willie-the-truck>
+ <8a9685ec-67aa-824f-5429-f408bf79c5ab@huawei.com>
+ <32f4752f-6954-183a-a0c1-b5d719c85b67@huawei.com>
+ <319e3532-4555-7431-9d6f-3c3b7c11a5d9@arm.com>
+ <d3aaa7e7-edb0-f867-0519-9a4e0bee35d2@huawei.com>
+ <301590f1-817b-d8eb-1585-31208cba18af@arm.com>
+CC:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <29fd5c20-faeb-1fd3-6535-4fca60463d01@huawei.com>
+Date:   Fri, 29 Jan 2021 14:12:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1f6408aa-9900-fe4a-d885-028ff8329707@gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <301590f1-817b-d8eb-1585-31208cba18af@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29-01-21, 00:03, Frank Rowand wrote:
-> On 1/22/21 4:50 AM, Viresh Kumar wrote:
-> > We will start building overlays for platforms soon in the kernel and
-> > would need fdtoverlay going forward. Lets start building it.
-> > 
-> > The fdtoverlay program applies (or merges) one or more overlay dtb
-> > blobs to a base dtb blob. The kernel build system would later use
-> > fdtoverlay to generate the overlaid blobs based on platform specific
-> > configurations.
-> > 
-> > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> > ---
-> >  scripts/dtc/Makefile | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/scripts/dtc/Makefile b/scripts/dtc/Makefile
-> > index 4852bf44e913..5f19386a49eb 100644
-> > --- a/scripts/dtc/Makefile
-> > +++ b/scripts/dtc/Makefile
-> > @@ -1,13 +1,17 @@
-> >  # SPDX-License-Identifier: GPL-2.0
-> >  # scripts/dtc makefile
-> >  
-> > -hostprogs-always-$(CONFIG_DTC)		+= dtc
-> > +hostprogs-always-$(CONFIG_DTC)		+= dtc fdtoverlay
-> >  hostprogs-always-$(CHECK_DT_BINDING)	+= dtc
-> >  
-> >  dtc-objs	:= dtc.o flattree.o fstree.o data.o livetree.o treesource.o \
-> >  		   srcpos.o checks.o util.o
-> >  dtc-objs	+= dtc-lexer.lex.o dtc-parser.tab.o
-> > 
-> 
-> Please add this comment:
-> 
-> # The upstream project builds libfdt as a separate library.  We are choosing to
-> # instead directly link the libfdt object files into fdtoverly
 
-My bad, I checked this again and you gave the exact same comment
-during V4 as well. Sorry about missing this earlier.
 
--- 
-viresh
+On 2021/1/29 0:17, Robin Murphy wrote:
+> On 2021-01-28 15:18, Keqian Zhu wrote:
+>>
+>>
+>> On 2021/1/27 17:39, Robin Murphy wrote:
+>>> On 2021-01-27 07:36, Keqian Zhu wrote:
+>>>>
+>>>>
+>>>> On 2021/1/27 10:01, Leizhen (ThunderTown) wrote:
+>>>>>
+>>>>>
+>>>>> On 2021/1/26 18:12, Will Deacon wrote:
+>>>>>> On Mon, Jan 25, 2021 at 08:23:40PM +0000, Robin Murphy wrote:
+>>>>>>> Now we probably will need some degreee of BBML feature awareness for the
+>>>>>>> sake of SVA if and when we start using it for CPU pagetables, but I still
+>>>>>>> cannot see any need to consider it in io-pgtable.
+>>>>>>
+>>>>>> Agreed; I don't think this is something that io-pgtable should have to care
+>>>>>> about.
+>>>> Hi,
+>>>>
+>>>> I have a question here :-).
+>>>> If the old table is not live, then the break procedure seems unnecessary. Do I miss something?
+>>>
+>>> The MMU is allowed to prefetch translations at any time, so not following the proper update procedure could still potentially lead to a TLB conflict, even if there's no device traffic to worry about disrupting.
+>>>
+>>> Robin.
+>>
+>> Thanks. Does the MMU you mention here includes MMU and SMMU? I know that at SMMU side, ATS can prefetch translation.
+> 
+> Yes, both - VMSAv8 allows speculative translation table walks, so SMMUv3 inherits from there (per 3.21.1 "Translation tables and TLB invalidation completion behavior").
+OK, I Get it. Thanks.
+
+Keqian.
+
+> 
+> Robin.
+> 
+>>
+>> Keqian
+>>>
+>>>> Thanks,
+>>>> Keqian
+>>>>
+>>>>>
+>>>>> Yes, the SVA works in stall mode, and the failed device access requests are not
+>>>>> discarded.
+>>>>>
+>>>>> Let me look for examples. The BBML usage scenario was told by a former colleague.
+>>>>>
+>>>>>>
+>>>>>> Will
+>>>>>>
+>>>>>> .
+>>>>>>
+>>>>>
+>>>>>
+>>>>> _______________________________________________
+>>>>> linux-arm-kernel mailing list
+>>>>> linux-arm-kernel@lists.infradead.org
+>>>>> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>>>>> .
+>>>>>
+>>>> _______________________________________________
+>>>> iommu mailing list
+>>>> iommu@lists.linux-foundation.org
+>>>> https://lists.linuxfoundation.org/mailman/listinfo/iommu
+>>>>
+>>> .
+>>>
+> .
+> 
