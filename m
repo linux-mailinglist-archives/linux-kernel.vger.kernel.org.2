@@ -2,446 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A580308302
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 02:11:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC10B30830F
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 02:14:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231793AbhA2BJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 20:09:27 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:37442 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231743AbhA2BIw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 20:08:52 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1l5IGV-00373x-Fv; Fri, 29 Jan 2021 02:07:59 +0100
-Date:   Fri, 29 Jan 2021 02:07:59 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
-Cc:     olteanv@gmail.com, netdev@vger.kernel.org, robh+dt@kernel.org,
-        kuba@kernel.org, vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        davem@davemloft.net, UNGLinuxDriver@microchip.com,
-        Woojung.Huh@microchip.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next 3/8] net: dsa: microchip: add DSA support for
- microchip lan937x
-Message-ID: <YBNf715MJ9OfaXfV@lunn.ch>
-References: <20210128064112.372883-1-prasanna.vengateshan@microchip.com>
- <20210128064112.372883-4-prasanna.vengateshan@microchip.com>
+        id S231822AbhA2BNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 20:13:11 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:52129 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231688AbhA2BM6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 20:12:58 -0500
+X-UUID: 31e978336b934c32993cd79d89b40cbf-20210129
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=jRgri1olxfB7XGX5U4de0POAbLQIhc8HLcK6Dh0pynE=;
+        b=UGB4xBlbP0zTNuGfxBjJulnwTZ/0tBqVr0ZMwsso+dbW5xs/MWSxMeFqcR1nM8QHQbszGhdPl+SpDcPs106Pl4xrgh2b2cBbJbQbMPmbhh/rQcXsLFkFVac/fy4U+rQweEfJaWoJwbdqKixXLBT9cCWMqkOyXSKJBIh2pQsfwxE=;
+X-UUID: 31e978336b934c32993cd79d89b40cbf-20210129
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <ck.hu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 609630813; Fri, 29 Jan 2021 09:12:01 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 29 Jan 2021 09:11:56 +0800
+Received: from [172.21.77.4] (172.21.77.4) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 29 Jan 2021 09:11:56 +0800
+Message-ID: <1611882716.5226.0.camel@mtksdaap41>
+Subject: Re: [PATCH v12 7/8] soc: mediatek: add mtk mutex support for MT8183
+From:   CK Hu <ck.hu@mediatek.com>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+CC:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>
+Date:   Fri, 29 Jan 2021 09:11:56 +0800
+In-Reply-To: <20210128112314.1304160-8-hsinyi@chromium.org>
+References: <20210128112314.1304160-1-hsinyi@chromium.org>
+         <20210128112314.1304160-8-hsinyi@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210128064112.372883-4-prasanna.vengateshan@microchip.com>
+X-TM-SNTS-SMTP: 8C09D00ED0E8B0A7F8D62831686DC8DB03401B6946659AA0087AF73F8551023F2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +bool lan937x_is_internal_phy_port(struct ksz_device *dev, int port)
-> +{
-> +	/* Check if the port is RGMII */
-> +	if (port == LAN937X_RGMII_1_PORT || port == LAN937X_RGMII_2_PORT)
-> +		return false;
-> +
-> +	/* Check if the port is SGMII */
-> +	if (port == LAN937X_SGMII_PORT &&
-> +	    GET_CHIP_ID_LSB(dev->chip_id) == CHIP_ID_73)
-> +		return false;
-> +
-> +	return true;
-> +}
-> +
-> +static u32 lan937x_get_port_addr(int port, int offset)
-> +{
-> +	return PORT_CTRL_ADDR(port, offset);
-> +}
-> +
-> +bool lan937x_is_internal_tx_phy_port(struct ksz_device *dev, int port)
-> +{
-> +	/* Check if the port is internal tx phy port */
+SGksIEhzaW4tWWk6DQoNCk9uIFRodSwgMjAyMS0wMS0yOCBhdCAxOToyMyArMDgwMCwgSHNpbi1Z
+aSBXYW5nIHdyb3RlOg0KPiBGcm9tOiBZb25ncWlhbmcgTml1IDx5b25ncWlhbmcubml1QG1lZGlh
+dGVrLmNvbT4NCj4gDQo+IEFkZCBtdGsgbXV0ZXggc3VwcG9ydCBmb3IgTVQ4MTgzIFNvQy4NCg0K
+UmV2aWV3ZWQtYnk6IENLIEh1IDxjay5odUBtZWRpYXRlay5jb20+DQoNCj4gDQo+IFNpZ25lZC1v
+ZmYtYnk6IFlvbmdxaWFuZyBOaXUgPHlvbmdxaWFuZy5uaXVAbWVkaWF0ZWsuY29tPg0KPiBTaWdu
+ZWQtb2ZmLWJ5OiBIc2luLVlpIFdhbmcgPGhzaW55aUBjaHJvbWl1bS5vcmc+DQo+IC0tLQ0KPiAg
+ZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLW11dGV4LmMgfCA1MCArKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKw0KPiAgMSBmaWxlIGNoYW5nZWQsIDUwIGluc2VydGlvbnMoKykNCj4gDQo+
+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstbXV0ZXguYyBiL2RyaXZlcnMv
+c29jL21lZGlhdGVrL210ay1tdXRleC5jDQo+IGluZGV4IGY1MzFiMTE5ZGE3YTkuLjcxOGE0MWJl
+YjZhZmIgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvc29jL21lZGlhdGVrL210ay1tdXRleC5jDQo+
+ICsrKyBiL2RyaXZlcnMvc29jL21lZGlhdGVrL210ay1tdXRleC5jDQo+IEBAIC0xNCw2ICsxNCw4
+IEBADQo+ICANCj4gICNkZWZpbmUgTVQyNzAxX01VVEVYMF9NT0QwCQkJMHgyYw0KPiAgI2RlZmlu
+ZSBNVDI3MDFfTVVURVgwX1NPRjAJCQkweDMwDQo+ICsjZGVmaW5lIE1UODE4M19NVVRFWDBfTU9E
+MAkJCTB4MzANCj4gKyNkZWZpbmUgTVQ4MTgzX01VVEVYMF9TT0YwCQkJMHgyYw0KPiAgDQo+ICAj
+ZGVmaW5lIERJU1BfUkVHX01VVEVYX0VOKG4pCQkJKDB4MjAgKyAweDIwICogKG4pKQ0KPiAgI2Rl
+ZmluZSBESVNQX1JFR19NVVRFWChuKQkJCSgweDI0ICsgMHgyMCAqIChuKSkNCj4gQEAgLTM3LDYg
+KzM5LDE4IEBADQo+ICAjZGVmaW5lIE1UODE2N19NVVRFWF9NT0RfRElTUF9ESVRIRVIJCTE1DQo+
+ICAjZGVmaW5lIE1UODE2N19NVVRFWF9NT0RfRElTUF9VRk9FCQkxNg0KPiAgDQo+ICsjZGVmaW5l
+IE1UODE4M19NVVRFWF9NT0RfRElTUF9SRE1BMAkJMA0KPiArI2RlZmluZSBNVDgxODNfTVVURVhf
+TU9EX0RJU1BfUkRNQTEJCTENCj4gKyNkZWZpbmUgTVQ4MTgzX01VVEVYX01PRF9ESVNQX09WTDAJ
+CTkNCj4gKyNkZWZpbmUgTVQ4MTgzX01VVEVYX01PRF9ESVNQX09WTDBfMkwJCTEwDQo+ICsjZGVm
+aW5lIE1UODE4M19NVVRFWF9NT0RfRElTUF9PVkwxXzJMCQkxMQ0KPiArI2RlZmluZSBNVDgxODNf
+TVVURVhfTU9EX0RJU1BfV0RNQTAJCTEyDQo+ICsjZGVmaW5lIE1UODE4M19NVVRFWF9NT0RfRElT
+UF9DT0xPUjAJCTEzDQo+ICsjZGVmaW5lIE1UODE4M19NVVRFWF9NT0RfRElTUF9DQ09SUjAJCTE0
+DQo+ICsjZGVmaW5lIE1UODE4M19NVVRFWF9NT0RfRElTUF9BQUwwCQkxNQ0KPiArI2RlZmluZSBN
+VDgxODNfTVVURVhfTU9EX0RJU1BfR0FNTUEwCQkxNg0KPiArI2RlZmluZSBNVDgxODNfTVVURVhf
+TU9EX0RJU1BfRElUSEVSMAkJMTcNCj4gKw0KPiAgI2RlZmluZSBNVDgxNzNfTVVURVhfTU9EX0RJ
+U1BfT1ZMMAkJMTENCj4gICNkZWZpbmUgTVQ4MTczX01VVEVYX01PRF9ESVNQX09WTDEJCTEyDQo+
+ICAjZGVmaW5lIE1UODE3M19NVVRFWF9NT0RfRElTUF9SRE1BMAkJMTMNCj4gQEAgLTg3LDYgKzEw
+MSwxMSBAQA0KPiAgI2RlZmluZSBNVDI3MTJfTVVURVhfU09GX0RTSTMJCQk2DQo+ICAjZGVmaW5l
+IE1UODE2N19NVVRFWF9TT0ZfRFBJMAkJCTINCj4gICNkZWZpbmUgTVQ4MTY3X01VVEVYX1NPRl9E
+UEkxCQkJMw0KPiArI2RlZmluZSBNVDgxODNfTVVURVhfU09GX0RTSTAJCQkxDQo+ICsjZGVmaW5l
+IE1UODE4M19NVVRFWF9TT0ZfRFBJMAkJCTINCj4gKw0KPiArI2RlZmluZSBNVDgxODNfTVVURVhf
+RU9GX0RTSTAJCQkoTVQ4MTgzX01VVEVYX1NPRl9EU0kwIDw8IDYpDQo+ICsjZGVmaW5lIE1UODE4
+M19NVVRFWF9FT0ZfRFBJMAkJCShNVDgxODNfTVVURVhfU09GX0RQSTAgPDwgNikNCj4gIA0KPiAg
+c3RydWN0IG10a19tdXRleCB7DQo+ICAJaW50IGlkOw0KPiBAQCAtMTgxLDYgKzIwMCwyMCBAQCBz
+dGF0aWMgY29uc3QgdW5zaWduZWQgaW50IG10ODE3M19tdXRleF9tb2RbRERQX0NPTVBPTkVOVF9J
+RF9NQVhdID0gew0KPiAgCVtERFBfQ09NUE9ORU5UX1dETUExXSA9IE1UODE3M19NVVRFWF9NT0Rf
+RElTUF9XRE1BMSwNCj4gIH07DQo+ICANCj4gK3N0YXRpYyBjb25zdCB1bnNpZ25lZCBpbnQgbXQ4
+MTgzX211dGV4X21vZFtERFBfQ09NUE9ORU5UX0lEX01BWF0gPSB7DQo+ICsJW0REUF9DT01QT05F
+TlRfQUFMMF0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfQUFMMCwNCj4gKwlbRERQX0NPTVBPTkVO
+VF9DQ09SUl0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfQ0NPUlIwLA0KPiArCVtERFBfQ09NUE9O
+RU5UX0NPTE9SMF0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfQ09MT1IwLA0KPiArCVtERFBfQ09N
+UE9ORU5UX0RJVEhFUl0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfRElUSEVSMCwNCj4gKwlbRERQ
+X0NPTVBPTkVOVF9HQU1NQV0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfR0FNTUEwLA0KPiArCVtE
+RFBfQ09NUE9ORU5UX09WTDBdID0gTVQ4MTgzX01VVEVYX01PRF9ESVNQX09WTDAsDQo+ICsJW0RE
+UF9DT01QT05FTlRfT1ZMXzJMMF0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfT1ZMMF8yTCwNCj4g
+KwlbRERQX0NPTVBPTkVOVF9PVkxfMkwxXSA9IE1UODE4M19NVVRFWF9NT0RfRElTUF9PVkwxXzJM
+LA0KPiArCVtERFBfQ09NUE9ORU5UX1JETUEwXSA9IE1UODE4M19NVVRFWF9NT0RfRElTUF9SRE1B
+MCwNCj4gKwlbRERQX0NPTVBPTkVOVF9SRE1BMV0gPSBNVDgxODNfTVVURVhfTU9EX0RJU1BfUkRN
+QTEsDQo+ICsJW0REUF9DT01QT05FTlRfV0RNQTBdID0gTVQ4MTgzX01VVEVYX01PRF9ESVNQX1dE
+TUEwLA0KPiArfTsNCj4gKw0KPiAgc3RhdGljIGNvbnN0IHVuc2lnbmVkIGludCBtdDI3MTJfbXV0
+ZXhfc29mW01VVEVYX1NPRl9EU0kzICsgMV0gPSB7DQo+ICAJW01VVEVYX1NPRl9TSU5HTEVfTU9E
+RV0gPSBNVVRFWF9TT0ZfU0lOR0xFX01PREUsDQo+ICAJW01VVEVYX1NPRl9EU0kwXSA9IE1VVEVY
+X1NPRl9EU0kwLA0KPiBAQCAtMTk4LDYgKzIzMSwxMyBAQCBzdGF0aWMgY29uc3QgdW5zaWduZWQg
+aW50IG10ODE2N19tdXRleF9zb2ZbTVVURVhfU09GX0RTSTMgKyAxXSA9IHsNCj4gIAlbTVVURVhf
+U09GX0RQSTFdID0gTVQ4MTY3X01VVEVYX1NPRl9EUEkxLA0KPiAgfTsNCj4gIA0KPiArLyogQWRk
+IEVPRiBzZXR0aW5nIHNvIG92ZXJsYXkgaGFyZHdhcmUgY2FuIHJlY2VpdmUgZnJhbWUgZG9uZSBp
+cnEgKi8NCj4gK3N0YXRpYyBjb25zdCB1bnNpZ25lZCBpbnQgbXQ4MTgzX211dGV4X3NvZltNVVRF
+WF9TT0ZfRFNJMyArIDFdID0gew0KPiArCVtNVVRFWF9TT0ZfU0lOR0xFX01PREVdID0gTVVURVhf
+U09GX1NJTkdMRV9NT0RFLA0KPiArCVtNVVRFWF9TT0ZfRFNJMF0gPSBNVVRFWF9TT0ZfRFNJMCB8
+IE1UODE4M19NVVRFWF9FT0ZfRFNJMCwNCj4gKwlbTVVURVhfU09GX0RQSTBdID0gTVQ4MTgzX01V
+VEVYX1NPRl9EUEkwIHwgTVQ4MTgzX01VVEVYX0VPRl9EUEkwLA0KPiArfTsNCj4gKw0KPiAgc3Rh
+dGljIGNvbnN0IHN0cnVjdCBtdGtfbXV0ZXhfZGF0YSBtdDI3MDFfbXV0ZXhfZHJpdmVyX2RhdGEg
+PSB7DQo+ICAJLm11dGV4X21vZCA9IG10MjcwMV9tdXRleF9tb2QsDQo+ICAJLm11dGV4X3NvZiA9
+IG10MjcxMl9tdXRleF9zb2YsDQo+IEBAIC0yMjcsNiArMjY3LDE0IEBAIHN0YXRpYyBjb25zdCBz
+dHJ1Y3QgbXRrX211dGV4X2RhdGEgbXQ4MTczX211dGV4X2RyaXZlcl9kYXRhID0gew0KPiAgCS5t
+dXRleF9zb2ZfcmVnID0gTVQyNzAxX01VVEVYMF9TT0YwLA0KPiAgfTsNCj4gIA0KPiArc3RhdGlj
+IGNvbnN0IHN0cnVjdCBtdGtfbXV0ZXhfZGF0YSBtdDgxODNfbXV0ZXhfZHJpdmVyX2RhdGEgPSB7
+DQo+ICsJLm11dGV4X21vZCA9IG10ODE4M19tdXRleF9tb2QsDQo+ICsJLm11dGV4X3NvZiA9IG10
+ODE4M19tdXRleF9zb2YsDQo+ICsJLm11dGV4X21vZF9yZWcgPSBNVDgxODNfTVVURVgwX01PRDAs
+DQo+ICsJLm11dGV4X3NvZl9yZWcgPSBNVDgxODNfTVVURVgwX1NPRjAsDQo+ICsJLm5vX2NsayA9
+IHRydWUsDQo+ICt9Ow0KPiArDQo+ICBzdHJ1Y3QgbXRrX211dGV4ICptdGtfbXV0ZXhfZ2V0KHN0
+cnVjdCBkZXZpY2UgKmRldikNCj4gIHsNCj4gIAlzdHJ1Y3QgbXRrX211dGV4X2N0eCAqbXR4ID0g
+ZGV2X2dldF9kcnZkYXRhKGRldik7DQo+IEBAIC00NTcsNiArNTA1LDggQEAgc3RhdGljIGNvbnN0
+IHN0cnVjdCBvZl9kZXZpY2VfaWQgbXV0ZXhfZHJpdmVyX2R0X21hdGNoW10gPSB7DQo+ICAJICAu
+ZGF0YSA9ICZtdDgxNjdfbXV0ZXhfZHJpdmVyX2RhdGF9LA0KPiAgCXsgLmNvbXBhdGlibGUgPSAi
+bWVkaWF0ZWssbXQ4MTczLWRpc3AtbXV0ZXgiLA0KPiAgCSAgLmRhdGEgPSAmbXQ4MTczX211dGV4
+X2RyaXZlcl9kYXRhfSwNCj4gKwl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE4My1kaXNw
+LW11dGV4IiwNCj4gKwkgIC5kYXRhID0gJm10ODE4M19tdXRleF9kcml2ZXJfZGF0YX0sDQo+ICAJ
+e30sDQo+ICB9Ow0KPiAgTU9EVUxFX0RFVklDRV9UQUJMRShvZiwgbXV0ZXhfZHJpdmVyX2R0X21h
+dGNoKTsNCg0K
 
-What is an internal TX phy port? Is it actually a conventional t2 Fast
-Ethernet port, as opposed to a t1 port?
-
-> +	if (lan937x_is_internal_phy_port(dev, port) && port == LAN937X_TXPHY_PORT)
-> +		if ((GET_CHIP_ID_LSB(dev->chip_id) == CHIP_ID_71) ||
-> +		    (GET_CHIP_ID_LSB(dev->chip_id) == CHIP_ID_72))
-> +			return true;
-> +
-> +	return false;
-> +}
-> +
-> +bool lan937x_is_internal_t1_phy_port(struct ksz_device *dev, int port)
-> +{
-> +	/* Check if the port is internal t1 phy port */
-> +	if (lan937x_is_internal_phy_port(dev, port) &&
-> +	    !lan937x_is_internal_tx_phy_port(dev, port))
-> +		return true;
-> +
-> +	return false;
-> +}
-> +
-> +int lan937x_t1_tx_phy_write(struct ksz_device *dev, int addr,
-> +			    int reg, u16 val)
-> +{
-> +	u16 temp, addr_base;
-> +	unsigned int value;
-> +	int ret;
-> +
-> +	/* Check for internal phy port */
-> +	if (!lan937x_is_internal_phy_port(dev, addr))
-> +		return 0;
-
-All this t1 and tx is confusing. I think lan937x_internal_phy_write()
-would be better.
-
-I also wonder if -EOPNOTSUPP would be better, or -EINVAL?
-
-> +
-> +	if (lan937x_is_internal_tx_phy_port(dev, addr))
-> +		addr_base = REG_PORT_TX_PHY_CTRL_BASE;
-> +	else
-> +		addr_base = REG_PORT_T1_PHY_CTRL_BASE;
-> +
-> +	temp = PORT_CTRL_ADDR(addr, (addr_base + (reg << 2)));
-> +
-> +	ksz_write16(dev, REG_VPHY_IND_ADDR__2, temp);
-> +
-> +	/* Write the data to be written to the VPHY reg */
-> +	ksz_write16(dev, REG_VPHY_IND_DATA__2, val);
-> +
-> +	/* Write the Write En and Busy bit */
-> +	ksz_write16(dev, REG_VPHY_IND_CTRL__2, (VPHY_IND_WRITE
-> +				| VPHY_IND_BUSY));
-> +
-> +	ret = regmap_read_poll_timeout(dev->regmap[1],
-> +				       REG_VPHY_IND_CTRL__2,
-> +				value, !(value & VPHY_IND_BUSY), 10, 1000);
-> +
-> +	/* failed to write phy register. get out of loop */
-> +	if (ret) {
-> +		dev_err(dev->dev, "Failed to write phy register\n");
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +int lan937x_t1_tx_phy_read(struct ksz_device *dev, int addr,
-> +			   int reg, u16 *val)
-> +{
-> +	u16 temp, addr_base;
-> +	unsigned int value;
-> +	int ret;
-> +
-> +	if (lan937x_is_internal_phy_port(dev, addr)) {
-> +		if (lan937x_is_internal_tx_phy_port(dev, addr))
-> +			addr_base = REG_PORT_TX_PHY_CTRL_BASE;
-> +		else
-> +			addr_base = REG_PORT_T1_PHY_CTRL_BASE;
-
-You could reduce the indentation by doing what you did above:
-
-> +	/* Check for internal phy port */
-> +	if (!lan937x_is_internal_phy_port(dev, addr))
-> +		return 0;
-
-You might want to return 0xffff here, which is what a read on a
-non-existent device on an MDIO bus should return.
-
-
-> +
-> +		/* get register address based on the logical port */
-> +		temp = PORT_CTRL_ADDR(addr, (addr_base + (reg << 2)));
-> +
-> +		ksz_write16(dev, REG_VPHY_IND_ADDR__2, temp);
-> +		/* Write Read and Busy bit to start the transaction*/
-> +		ksz_write16(dev, REG_VPHY_IND_CTRL__2, VPHY_IND_BUSY);
-> +
-> +		ret = regmap_read_poll_timeout(dev->regmap[1],
-> +					       REG_VPHY_IND_CTRL__2,
-> +					value, !(value & VPHY_IND_BUSY), 10, 1000);
-> +
-> +		/*  failed to read phy register. get out of loop */
-> +		if (ret) {
-> +			dev_err(dev->dev, "Failed to read phy register\n");
-> +			return ret;
-> +		}
-> +		/* Read the VPHY register which has the PHY data*/
-> +		ksz_read16(dev, REG_VPHY_IND_DATA__2, val);
-> +	}
-> +
-> +	return 0;
-> +}
-
-> +static void tx_phy_setup(struct ksz_device *dev, int port)
-> +{
-> +	u16 data_lo;
-> +
-> +	lan937x_t1_tx_phy_read(dev, port, REG_PORT_TX_SPECIAL_MODES, &data_lo);
-> +	/* Need to change configuration from 6 to other value. */
-> +	data_lo &= TX_PHYADDR_M;
-> +
-> +	lan937x_t1_tx_phy_write(dev, port, REG_PORT_TX_SPECIAL_MODES, data_lo);
-> +
-> +	/* Need to toggle test_mode bit to enable DSP access. */
-> +	lan937x_t1_tx_phy_write(dev, port, REG_PORT_TX_IND_CTRL, TX_TEST_MODE);
-> +	lan937x_t1_tx_phy_write(dev, port, REG_PORT_TX_IND_CTRL, 0);
-> +
-> +	/* Note TX_TEST_MODE is then always enabled so this is not required. */
-> +	lan937x_t1_tx_phy_write(dev, port, REG_PORT_TX_IND_CTRL, TX_TEST_MODE);
-> +	lan937x_t1_tx_phy_write(dev, port, REG_PORT_TX_IND_CTRL, 0);
-
-This is only accessing PHY registers, not switch registers. So this
-code belongs in the PHY driver, not the switch driver.
-
-What PHY driver is actually used? The "Microchip LAN87xx T1" driver?
-
-> +static void tx_phy_port_init(struct ksz_device *dev, int port)
-> +{
-> +	u32 data;
-> +
-> +	/* Software reset. */
-> +	lan937x_t1_tx_phy_mod_bits(dev, port, MII_BMCR, BMCR_RESET, true);
-> +
-> +	/* tx phy setup */
-> +	tx_phy_setup(dev, port);
-
-And which PHY driver is used here? "Microchip LAN88xx"? All this code
-should be in the PHY driver.
-
-> +void lan937x_port_setup(struct ksz_device *dev, int port, bool cpu_port)
-> +{
-> +	struct ksz_port *p = &dev->ports[port];
-> +	u8 data8, member;
-
-> +	} else {
-> +		/* force flow control off*/
-> +		lan937x_port_cfg(dev, port, REG_PORT_XMII_CTRL_0,
-> +				 PORT_FORCE_TX_FLOW_CTRL | PORT_FORCE_RX_FLOW_CTRL,
-> +			     false);
-> +
-> +		lan937x_pread8(dev, port, REG_PORT_XMII_CTRL_1, &data8);
-> +
-> +		/* clear MII selection & set it based on interface later */
-> +		data8 &= ~PORT_MII_SEL_M;
-> +
-> +		/* configure MAC based on p->interface */
-> +		switch (p->interface) {
-> +		case PHY_INTERFACE_MODE_MII:
-> +			lan937x_set_gbit(dev, false, &data8);
-> +			data8 |= PORT_MII_SEL;
-> +			break;
-> +		case PHY_INTERFACE_MODE_RMII:
-> +			lan937x_set_gbit(dev, false, &data8);
-> +			data8 |= PORT_RMII_SEL;
-> +			break;
-> +		default:
-> +			lan937x_set_gbit(dev, true, &data8);
-> +			data8 |= PORT_RGMII_SEL;
-> +
-> +			data8 &= ~PORT_RGMII_ID_IG_ENABLE;
-> +			data8 &= ~PORT_RGMII_ID_EG_ENABLE;
-> +
-> +			if (p->interface == PHY_INTERFACE_MODE_RGMII_ID ||
-> +			    p->interface == PHY_INTERFACE_MODE_RGMII_RXID)
-> +				data8 |= PORT_RGMII_ID_IG_ENABLE;
-> +
-> +			if (p->interface == PHY_INTERFACE_MODE_RGMII_ID ||
-> +			    p->interface == PHY_INTERFACE_MODE_RGMII_TXID)
-> +				data8 |= PORT_RGMII_ID_EG_ENABLE;
-
-Normally, the PHY inserts the delay, not the MAC. If the MAC is doing
-the delay, you need to ensure the PHY knows this, when you call
-phy_connect() you need to pass PHY_INTERFACE_MODE_RGMII, so it does
-not add delays.
-
-> +			break;
-> +		}
-> +		lan937x_pwrite8(dev, port, REG_PORT_XMII_CTRL_1, data8);
-> +	}
-> +
-> +	if (cpu_port)
-> +		member = dev->port_mask;
-> +	else
-> +		member = dev->host_mask | p->vid_member;
-> +
-> +	lan937x_cfg_port_member(dev, port, member);
-> +}
-> +
-> +static int lan937x_switch_init(struct ksz_device *dev)
-> +{
-> +	int i;
-> +
-> +	dev->ds->ops = &lan937x_switch_ops;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(lan937x_switch_chips); i++) {
-> +		const struct lan937x_chip_data *chip = &lan937x_switch_chips[i];
-> +
-> +		if (dev->chip_id == chip->chip_id) {
-> +			dev->name = chip->dev_name;
-> +			dev->num_vlans = chip->num_vlans;
-> +			dev->num_alus = chip->num_alus;
-> +			dev->num_statics = chip->num_statics;
-> +			dev->port_cnt = chip->port_cnt;
-> +			dev->cpu_ports = chip->cpu_ports;
-> +			break;
-> +		}
-> +	}
-
-Please verify that the switch found actually matches the DT compatible
-string. With 4 compatible strings, if you don't verify it, you will
-find that 3/4 of the boards have it wrong, but it still works. You
-then get into trouble when you actually need to use the compatible
-string for something.
-
-Or just use a single compatible string.
-
-> +static int lan937x_get_link_status(struct ksz_device *dev, int port)
-> +{
-> +	u16 val1, val2;
-> +
-> +	lan937x_t1_tx_phy_read(dev, port, REG_PORT_T1_PHY_M_STATUS,
-> +			       &val1);
-> +
-> +	lan937x_t1_tx_phy_read(dev, port, REG_PORT_T1_MODE_STAT, &val2);
-> +
-> +	if (val1 & (PORT_T1_LOCAL_RX_OK | PORT_T1_REMOTE_RX_OK) &&
-> +	    val2 & (T1_PORT_DSCR_LOCK_STATUS_MSK | T1_PORT_LINK_UP_MSK))
-> +		return PHY_LINK_UP;
-> +
-> +	return PHY_LINK_DOWN;
-> +}
-
-The PHY driver should tell you if the link is up. You should not being
-accessing the PHY directly.
-
-It actually looks like you have your PHY drivers here, embedded inside
-this driver. That is wrong, they should move into drivers/net/phy. The
-switch driver should just give access to the registers, so that the
-PHY driver, and phylib and drive the PHY.
-
-> +static void lan937x_port_stp_state_set(struct dsa_switch *ds, int port,
-> +				       u8 state)
-> +{
-> +	struct ksz_device *dev = ds->priv;
-> +	struct ksz_port *p = &dev->ports[port];
-> +	int forward = dev->member;
-> +	int member = -1;
-> +	u8 data;
-> +
-> +	lan937x_pread8(dev, port, P_STP_CTRL, &data);
-> +	data &= ~(PORT_TX_ENABLE | PORT_RX_ENABLE | PORT_LEARN_DISABLE);
-> +
-> +	switch (state) {
-> +	case BR_STATE_DISABLED:
-> +		data |= PORT_LEARN_DISABLE;
-> +		if (port != dev->cpu_port)
-> +			member = 0;
-
-You can remove all the tests for cpu_port. It should never happen.  If
-it does, something is broken in the DSA core.
-
-> +		break;
-> +	case BR_STATE_LISTENING:
-> +		data |= (PORT_RX_ENABLE | PORT_LEARN_DISABLE);
-> +		if (port != dev->cpu_port &&
-> +		    p->stp_state == BR_STATE_DISABLED)
-> +			member = dev->host_mask | p->vid_member;
-> +		break;
-> +	case BR_STATE_LEARNING:
-> +		data |= PORT_RX_ENABLE;
-> +		break;
-> +	case BR_STATE_FORWARDING:
-> +		data |= (PORT_TX_ENABLE | PORT_RX_ENABLE);
-> +
-> +		/* This function is also used internally. */
-> +		if (port == dev->cpu_port)
-> +			break;
-
-You probably want to refactor this. Move the code which is needed for
-the CPU port into a helper, and call it directly.
-
-> +
-> +		member = dev->host_mask | p->vid_member;
-> +		mutex_lock(&dev->dev_mutex);
-> +
-> +		/* Port is a member of a bridge. */
-> +		if (dev->br_member & (1 << port)) {
-> +			dev->member |= (1 << port);
-> +			member = dev->member;
-> +		}
-> +		mutex_unlock(&dev->dev_mutex);
-> +		break;
-> +	case BR_STATE_BLOCKING:
-> +		data |= PORT_LEARN_DISABLE;
-> +		if (port != dev->cpu_port &&
-> +		    p->stp_state == BR_STATE_DISABLED)
-> +			member = dev->host_mask | p->vid_member;
-> +		break;
-> +	default:
-> +		dev_err(ds->dev, "invalid STP state: %d\n", state);
-> +		return;
-> +	}
-> +
-> +	lan937x_pwrite8(dev, port, P_STP_CTRL, data);
-> +
-> +	p->stp_state = state;
-> +	mutex_lock(&dev->dev_mutex);
-> +
-> +	/* Port membership may share register with STP state. */
-> +	if (member >= 0 && member != p->member)
-> +		lan937x_cfg_port_member(dev, port, (u8)member);
-> +
-> +	/* Check if forwarding needs to be updated. */
-> +	if (state != BR_STATE_FORWARDING) {
-> +		if (dev->br_member & (1 << port))
-> +			dev->member &= ~(1 << port);
-> +	}
-> +
-> +	/* When topology has changed the function ksz_update_port_member
-> +	 * should be called to modify port forwarding behavior.
-> +	 */
-> +	if (forward != dev->member)
-> +		ksz_update_port_member(dev, port);
-
-Please could you explain more what is going on with membership?
-Generally, STP state is specific to the port, and nothing else
-changes. So it is not clear what this membership is all about.
-
-
-> +	mutex_unlock(&dev->dev_mutex);
-> +}
-> +
-> +static void lan937x_config_cpu_port(struct dsa_switch *ds)
-> +{
-> +	struct ksz_device *dev = ds->priv;
-> +	struct ksz_port *p;
-> +	int i;
-> +
-> +	ds->num_ports = dev->port_cnt;
-> +
-> +	for (i = 0; i < dev->port_cnt; i++) {
-> +		if (dsa_is_cpu_port(ds, i) && (dev->cpu_ports & (1 << i))) {
-> +			phy_interface_t interface;
-> +			const char *prev_msg;
-> +			const char *prev_mode;
-> +
-> +			dev->cpu_port = i;
-> +			dev->host_mask = (1 << dev->cpu_port);
-> +			dev->port_mask |= dev->host_mask;
-> +			p = &dev->ports[i];
-> +
-> +			/* Read from XMII register to determine host port
-> +			 * interface.  If set specifically in device tree
-> +			 * note the difference to help debugging.
-> +			 */
-> +			interface = lan937x_get_interface(dev, i);
-> +			if (!p->interface) {
-> +				if (dev->compat_interface) {
-> +					dev_warn(dev->dev,
-> +						 "Using legacy switch \"phy-mode\" property, because it is missing on port %d node. Please update your device tree.\n",
-> +						 i);
-
-Since this is a new driver, there cannot be any legacy DT blobs which
-needs workarounds.
-
-      Andrew
