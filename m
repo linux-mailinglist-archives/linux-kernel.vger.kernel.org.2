@@ -2,103 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC1B308448
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:38:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43F9430844A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:39:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231808AbhA2Die (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 22:38:34 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:11906 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231593AbhA2Di3 (ORCPT
+        id S231827AbhA2DjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 28 Jan 2021 22:39:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231817AbhA2DjV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 22:38:29 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DRjgf3NsYzjDdN;
-        Fri, 29 Jan 2021 11:36:46 +0800 (CST)
-Received: from [10.174.178.52] (10.174.178.52) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 29 Jan 2021 11:37:40 +0800
-Subject: Re: [PATCH] kretprobe: avoid re-registration of the same kretprobe
- earlier
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-CC:     Steven Rostedt <rostedt@goodmis.org>, <naveen.n.rao@linux.ibm.com>,
-        <anil.s.keshavamurthy@intel.com>, <davem@davemloft.net>,
-        <linux-kernel@vger.kernel.org>, <huawei.libin@huawei.com>,
-        <cj.chengjian@huawei.com>
-References: <20201124115719.11799-1-bobo.shaobowang@huawei.com>
- <20201130161850.34bcfc8a@gandalf.local.home>
- <20201202083253.9dbc76704149261e131345bf@kernel.org>
- <9dff21f8-4ab9-f9b2-64fd-cc8c5f731932@huawei.com>
- <20201215123119.35258dd5006942be247600db@kernel.org>
- <c584f7e2-1d95-4f6a-7e36-4ff2d610bc78@huawei.com>
- <20201222200356.6910b42c165b8756878cc9b0@kernel.org>
-From:   "Wangshaobo (bobo)" <bobo.shaobowang@huawei.com>
-Message-ID: <f8679bd1-8f1f-8835-a6c9-52e43f5aca89@huawei.com>
-Date:   Fri, 29 Jan 2021 11:37:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
+        Thu, 28 Jan 2021 22:39:21 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 898B5C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:38:41 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id m22so1521179ljj.4
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:38:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PuwJteoXwJBHsZo/AeV/9OQpx+tnLiPJLnbPShZBUBc=;
+        b=NG1kV18DBBmRpbuQdSU1iwTNhIM+0aoPpvwgB24STtrCB9udnCanFVWj42c2rrto06
+         gTg2jdx72Ip8d4XpMkqdw/eiXvAnxeFLydyB7IELtDRRjl6nI92tDzn+x33PpZ+QG8ek
+         78HO7td9x1VnR+7mugl5BtiGYCHSrS9OocjsE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PuwJteoXwJBHsZo/AeV/9OQpx+tnLiPJLnbPShZBUBc=;
+        b=SGSBVtMOI9SeUcsz/+d/FviXozfe3c5mbYLh1+44DxtxgSPs6gBKwqW4psmNWR9mpE
+         DbMaTK5QjviFt/l4BYtlyknFpMEleKapEDRrwY7DCECbNIX/Q4Pqkpy3gQy6Sa1mCpuD
+         yny6rNdmt5EHIttWO1ec7JVDMeBNSz4Lhwh5Dpu889Tj1VMEoM7jd/z957+/nAz5v2NE
+         PG+0uTWSHV0fbhh2CG5mJV650ilzzeZgGGDJIxhcsbQEk1JRzlv4wY3zjM+gAKdpHiXf
+         0h50dvZ5OF32b8VkIOtHHVo8mD7VRxLqgqXXUujm4K4zjOyB1/SGLYe3DgF4Bw5TCsS8
+         eUKQ==
+X-Gm-Message-State: AOAM530KguxOKbejh55jRMzXVud8JMOQkAzWKagk6oqqVLIZuDobtDCm
+        Hi1O1C1P9kwkSYWhDN3CsnJBcAXi5rNXSg==
+X-Google-Smtp-Source: ABdhPJxnDufbDoSdmbLDZ3jCf0zMkhj/kk/HAjvhLNDUDf+mO2I+aiw4wG4XiaZtPnGvT+3/a9K93g==
+X-Received: by 2002:a2e:7a18:: with SMTP id v24mr1285956ljc.55.1611891519231;
+        Thu, 28 Jan 2021 19:38:39 -0800 (PST)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id o11sm1855141lfu.157.2021.01.28.19.38.37
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 19:38:38 -0800 (PST)
+Received: by mail-lf1-f43.google.com with SMTP id m22so10557434lfg.5
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 19:38:37 -0800 (PST)
+X-Received: by 2002:a05:6512:516:: with SMTP id o22mr689075lfb.487.1611891517411;
+ Thu, 28 Jan 2021 19:38:37 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201222200356.6910b42c165b8756878cc9b0@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.52]
-X-CFilter-Loop: Reflected
+References: <YBNcv8jLEDE8C/IW@kernel.org>
+In-Reply-To: <YBNcv8jLEDE8C/IW@kernel.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 28 Jan 2021 19:38:21 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjk7zEOFEjGWZmGF8_dcitBQ_dPUMSkr-g7B7cYcXGvSQ@mail.gmail.com>
+Message-ID: <CAHk-=wjk7zEOFEjGWZmGF8_dcitBQ_dPUMSkr-g7B7cYcXGvSQ@mail.gmail.com>
+Subject: Re: [GIT PULL] tpmdd updates for v5.12-rc1
+To:     Jarkko Sakkinen <jarkko@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        James Morris James Morris <jmorris@namei.org>,
+        David Howells <dhowells@redhat.com>,
+        Peter Huewe <peterhuewe@gmx.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Masami and Steve,
-
-I have sent v2 but still have confusions:
-
-> OK, I think it is simpler to check the rp->kp.addr && rp->kp.symbol_name
-> because it is not allowed (it can lead inconsistent setting).
+On Thu, Jan 28, 2021 at 4:54 PM Jarkko Sakkinen <jarkko@kernel.org> wrote:
 >
-> How about this code? Is this work for you?
->
-> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-> index 41fdbb7953c6..73500be564be 100644
-> --- a/kernel/kprobes.c
-> +++ b/kernel/kprobes.c
-> @@ -2103,6 +2103,14 @@ int register_kretprobe(struct kretprobe *rp)
->          int i;
->          void *addr;
->   
-> +       /* It is not allowed to specify addr and symbol_name at the same time */
-> +       if (rp->kp.addr && rp->kp.symbol_name)
-> +               return -EINVAL;
-> +
+> This contains bug fixes for tpm_tis driver, which had a racy wait for
+> hardware state change to be ready to send a command to the TPM chip. The
+> bug has existed already since 2006, but has only made itself known in
+> recent past.
 
-above sentence can be removed because of kprobe_on_func_entry() do it:
+Hmm. Is this for the next merge window? The subject line implies that,
+as does the addition of the cr50 driver.
 
-kprobe_on_func_entry()
+But the commentary about fixes implies that at least part of it should
+be in 5.11?
 
-      -=>_kprobe_addr() {if (rp->kp.addr && rp->kp.symbol_name) ...}
-
-> +       /* If only rp->kp.addr is specified, check reregistering kprobes */
-> +       if (rp->kp.addr && check_kprobe_rereg(&rp->kp))
-> +               return -EINVAL;
-
-for arch arm64，x86_64, above sentence can be moved behind following 
-sentence.
-
-kprobe_on_func_entry()
-
-     -=>arch_kprobe_on_func_entry() {kp->offset can not be 0 ; ...}
-
-So if offset of kprobe if not 0, do not waste time to excute above sentence.
-
-
-But for Arch ppc64,  I still not figure out better one solution.
-
-
-Thank you
-
--- Wang ShaoBo
-
->          if (!kprobe_on_func_entry(rp->kp.addr, rp->kp.symbol_name, rp->kp.offset))
->                  return -EINVAL;
->   
->
-> Thank you,
->
+            Linus
