@@ -2,121 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 071E630854E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 06:47:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB2B30855A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 06:53:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbhA2Frj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 00:47:39 -0500
-Received: from a1.mail.mailgun.net ([198.61.254.60]:43356 "EHLO
-        a1.mail.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229656AbhA2Frh (ORCPT
+        id S232005AbhA2Fu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 00:50:28 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:55811 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231939AbhA2FuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 00:47:37 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1611899233; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=n2o6XDlbL/t7pa9ksIQ0MJIKQ1F8tE9oChxG/T+mGDY=;
- b=kR9SSMWizS5AcBdLCEDabEDHVh+V8FmngcITZ4zgDc/ZmClGx91K5TFHUN6UpXQe6RKqqRVK
- uwkp7KVGXUB2SqsYU2f31iqTvNxYzfS0LDo8BjJKaOzI3kaPhqYV8DJoy3uucx5qOZuC758V
- bem+km8EYN3T0nnrBjgd5m7v8QY=
-X-Mailgun-Sending-Ip: 198.61.254.60
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 6013a141d08556f4550f9127 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 29 Jan 2021 05:46:41
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B760EC43463; Fri, 29 Jan 2021 05:46:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DF43BC433CA;
-        Fri, 29 Jan 2021 05:46:39 +0000 (UTC)
+        Fri, 29 Jan 2021 00:50:23 -0500
+Received: from fsav301.sakura.ne.jp (fsav301.sakura.ne.jp [153.120.85.132])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 10T5mhR4047405;
+        Fri, 29 Jan 2021 14:48:43 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav301.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp);
+ Fri, 29 Jan 2021 14:48:43 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 10T5maKc047394
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 29 Jan 2021 14:48:43 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: general protection fault in tomoyo_socket_sendmsg_permission
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        syzkaller-bugs@googlegroups.com
+References: <000000000000647eff05b3f7e0d4@google.com>
+ <20201113120055.11748-1-hdanton@sina.com>
+ <5f71e0c1-d387-6d72-d8e4-edb11cf57f72@linuxfoundation.org>
+ <ea4028b7-53f2-aeaf-76e7-69874efcdec5@I-love.SAKURA.ne.jp>
+ <2b70d360-a293-4acb-ea6c-2badda5e8b8b@linuxfoundation.org>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <9bdd3f10-bddb-bd87-d7ad-b4b706477006@i-love.sakura.ne.jp>
+Date:   Fri, 29 Jan 2021 14:48:36 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <2b70d360-a293-4acb-ea6c-2badda5e8b8b@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 29 Jan 2021 13:46:39 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     jaegeuk@kernel.org, asutoshd@codeaurora.org,
-        nguyenb@codeaurora.org, hongwus@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 1/3] scsi: ufs: Fix task management request completion
- timeout
-In-Reply-To: <b73ad496-1658-d587-146a-138ac8f522a9@acm.org>
-References: <1611807365-35513-1-git-send-email-cang@codeaurora.org>
- <1611807365-35513-2-git-send-email-cang@codeaurora.org>
- <b73ad496-1658-d587-146a-138ac8f522a9@acm.org>
-Message-ID: <1bcdd48c6afb079aadc8464847295363@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-29 11:22, Bart Van Assche wrote:
-> On 1/27/21 8:16 PM, Can Guo wrote:
->> ufshcd_tmc_handler() calls blk_mq_tagset_busy_iter(fn = 
->> ufshcd_compl_tm()),
->> but since blk_mq_tagset_busy_iter() only iterates over all reserved 
->> tags
->> and requests which are not in IDLE state, ufshcd_compl_tm() never gets 
->> a
->> chance to run. Thus, TMR always ends up with completion timeout. Fix 
->> it by
->> calling blk_mq_start_request() in  __ufshcd_issue_tm_cmd().
->> 
->> Fixes: 69a6c269c097 ("scsi: ufs: Use blk_{get,put}_request() to 
->> allocate and free TMFs")
->> 
->> Signed-off-by: Can Guo <cang@codeaurora.org>
->> ---
->>  drivers/scsi/ufs/ufshcd.c | 1 +
->>  1 file changed, 1 insertion(+)
->> 
->> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> index 8da75e6..c0c5925 100644
->> --- a/drivers/scsi/ufs/ufshcd.c
->> +++ b/drivers/scsi/ufs/ufshcd.c
->> @@ -6395,6 +6395,7 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba 
->> *hba,
->> 
->>  	spin_lock_irqsave(host->host_lock, flags);
->>  	task_tag = hba->nutrs + free_slot;
->> +	blk_mq_start_request(req);
->> 
->>  	treq->req_header.dword_0 |= cpu_to_be32(task_tag);
-> 
-> blk_mq_start_request() not only marks a request as in-flight but also
-> starts a timer. However, no timeout handler has been defined in
-> ufshcd_tmf_ops. Should a timeout handler be defined in that data 
-> structure?
-> 
+On 2021/01/29 4:05, Shuah Khan wrote:
+> The reason I don't like adding printk's is this is a race condition
+> and as a result time sensitive. Adding printks in the path will not
+> help debug this issue. It will make it harder to reproduce the problem.
 
-Block mq driver gives 30s as default timeout,
-TMR timeout is 100ms in UFS driver. So we don't
-need a timeout handler as of now.
+Not always. Adding printk() might make it easier to reproduce the problem.
 
-Thanks,
-Can Guo.
-
-> Thanks,
 > 
-> Bart.
+> I am unable to reproduce the problem using the reproducer and running multiple instances of the reproducer.
+
+Since syzkaller cannot find a reproducer for "general protection fault in
+tomoyo_socket_sendmsg_permission", and you cannot reproduce other problem
+using reproducer, trying to obtain some clue via printing messages by asking
+syzkaller to try debug patch can be very helpful.
+
+Since "general protection fault in tomoyo_socket_sendmsg_permission" is caused by
+unexpectedly resetting ud->tcp_socket to NULL without waiting for tx thread to
+terminate, tracing the ordering of events is worth knowing. Even adding
+schedule_timeout_uninterruptible() to before kernel_sendmsg() might help.
+
