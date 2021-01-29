@@ -2,262 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD533087F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 11:57:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 584033087F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 11:53:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232366AbhA2K4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 05:56:15 -0500
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:3986 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232210AbhA2K00 (ORCPT
+        id S232516AbhA2Kpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 05:45:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44300 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232076AbhA2K0e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 05:26:26 -0500
-X-UUID: a4cf66f47cf04a779527c736a58e30b0-20210129
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=wbsIqaqLORRAneFMrX43daMDsWDcMTrdExOwxNXswFo=;
-        b=SG9gYK3zD77sOhAjK3q9hdLEqHBoqQii6EB6lTN3oAyobTiqlmgSCiYI1V8Ak58LrwFN0UdtNzaj2IJzwnyoyTqgAKjLD0Dd1AG22cAdMlzHrwrVep6VU8YnZI26mD4/CohpmjiEshIOsVU8hnOvkcPBR+SnyORJzst2cj9TGy4=;
-X-UUID: a4cf66f47cf04a779527c736a58e30b0-20210129
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <ck.hu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 828387423; Fri, 29 Jan 2021 16:18:23 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 29 Jan 2021 16:18:16 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 29 Jan 2021 16:18:16 +0800
-Message-ID: <1611908296.31184.5.camel@mtksdaap41>
-Subject: Re: [PATCH v4 2/8] drm/mediatek: add component POSTMASK
-From:   CK Hu <ck.hu@mediatek.com>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-CC:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>
-Date:   Fri, 29 Jan 2021 16:18:16 +0800
-In-Reply-To: <20210129073436.2429834-3-hsinyi@chromium.org>
-References: <20210129073436.2429834-1-hsinyi@chromium.org>
-         <20210129073436.2429834-3-hsinyi@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Fri, 29 Jan 2021 05:26:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611915901;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nP4l2G4dODpjaU7YDjg1QGuqXy7wbW7wVhXMNoRQIL8=;
+        b=DYyk7u5E7+i1MNTBud2kNTm02n+JZLGcJvS9NRR3AjkqxUjvAORYNF28hHG9WfDbKAFgc5
+        Lp1AvEfCeQGpV8li9bdrqmCAIP5Zfjx57m4smyUpPSyNVggB6QAeHp56Uvu+Y5bmmyyC30
+        rGGQFxYgJBiNWMoeGQMrdj2rlhYhlic=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-603-vHDqTS22NhirYDY-bcBg5A-1; Fri, 29 Jan 2021 04:26:09 -0500
+X-MC-Unique: vHDqTS22NhirYDY-bcBg5A-1
+Received: by mail-ed1-f70.google.com with SMTP id a26so4676094edx.8
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 01:26:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nP4l2G4dODpjaU7YDjg1QGuqXy7wbW7wVhXMNoRQIL8=;
+        b=CZIrm2yzXemxXo+k4lIuZpfPVjrF3ssG58LnT2QW9ZYSEwOPCqPQs8ZUJGstlDYYTw
+         u4161UTdDIHQEHJokL1PSQiyWDrO095zQSAXN+2ys0TwlmPE6ZMCqfAZ7nL31bV8uFP8
+         5DHzqyfxXaw52j58O52uyT79n5nH9DT7pq22TIqx385SQ06ctLt8ANz6a+Av3Jk4Xh2l
+         S5/D0VyYIQXtAcbBk3xLpcuWpCpYU8gMQUyOGPUj9j0eNbaFBPCAb/74+TmnyEkoOZIz
+         c9YQ9GbLMfZMD5yWWX4+4BmcscDm0kwCPb7x9Z1Rb8HvHFXeN/SkHvI8MeTwAn9dKDqH
+         RvpQ==
+X-Gm-Message-State: AOAM532OVvZi8CHLi521jPrSuvAafKl9btnOWVH2X8mxER7NP6wYfTX/
+        Va2BI8hD8T7NnAXnKMe9+aKvpNm/R6Wv4a9g8B2XkaCxovtOLZgO/emN4ibuKv236Pc/iXke7D4
+        9PTD1V0qQCGrP/IyGv4Zz7HdX
+X-Received: by 2002:a05:6402:4242:: with SMTP id g2mr4091925edb.103.1611912368194;
+        Fri, 29 Jan 2021 01:26:08 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy2D+e1xoz9VblcO2a9mHDykKQQov6UxFQbNQz9AXlqGu90jfarHaQYZn2TFTNC1vtihyqKwg==
+X-Received: by 2002:a05:6402:4242:: with SMTP id g2mr4091910edb.103.1611912367935;
+        Fri, 29 Jan 2021 01:26:07 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id r23sm3509763ejd.56.2021.01.29.01.26.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Jan 2021 01:26:07 -0800 (PST)
+Date:   Fri, 29 Jan 2021 10:26:04 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Jeff Vander Stoep <jeffv@google.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stsp2@yandex.ru" <stsp2@yandex.ru>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+Subject: Re: [RFC PATCH v3 00/13] virtio/vsock: introduce SOCK_SEQPACKET
+ support
+Message-ID: <20210129092604.mgaw3ipiyv6xra3b@steredhat>
+References: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
+ <20210128171923.esyna5ccv5s27jyu@steredhat>
+ <63459bb3-da22-b2a4-71ee-e67660fd2e12@kaspersky.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 39576118854E3746D924C15C2FEAA4698ED171198A674148113FAFA6E67E1CB32000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <63459bb3-da22-b2a4-71ee-e67660fd2e12@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEhzaW4tWWk6DQoNCk9uIEZyaSwgMjAyMS0wMS0yOSBhdCAxNTozNCArMDgwMCwgSHNpbi1Z
-aSBXYW5nIHdyb3RlOg0KPiBGcm9tOiBZb25ncWlhbmcgTml1IDx5b25ncWlhbmcubml1QG1lZGlh
-dGVrLmNvbT4NCj4gDQo+IFRoaXMgcGF0Y2ggYWRkIGNvbXBvbmVudCBQT1NUTUFTSywNCj4gDQo+
-IFNpZ25lZC1vZmYtYnk6IFlvbmdxaWFuZyBOaXUgPHlvbmdxaWFuZy5uaXVAbWVkaWF0ZWsuY29t
-Pg0KPiBTaWduZWQtb2ZmLWJ5OiBIc2luLVlpIFdhbmcgPGhzaW55aUBjaHJvbWl1bS5vcmc+DQo+
-IC0tLQ0KPiAgZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL01ha2VmaWxlICAgICAgICAgICAgfCAg
-IDEgKw0KPiAgZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX2Rydi5oICAgICAgfCAg
-IDggKw0KPiAgZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX3Bvc3RtYXNrLmMgfCAx
-NjEgKysrKysrKysrKysrKysrKysrKw0KPiAgZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19k
-cm1fZGRwX2NvbXAuYyAgfCAgMTEgKysNCj4gIGRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtf
-ZHJtX2RkcF9jb21wLmggIHwgICAxICsNCj4gIGRyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtf
-ZHJtX2Rydi5jICAgICAgIHwgICA0ICstDQo+ICBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRr
-X2RybV9kcnYuaCAgICAgICB8ICAgMSArDQo+ICA3IGZpbGVzIGNoYW5nZWQsIDE4NiBpbnNlcnRp
-b25zKCspLCAxIGRlbGV0aW9uKC0pDQo+ICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJpdmVycy9ncHUv
-ZHJtL21lZGlhdGVrL210a19kaXNwX3Bvc3RtYXNrLmMNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2
-ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvTWFrZWZpbGUgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsv
-TWFrZWZpbGUNCj4gaW5kZXggYjY0Njc0Yjk0NDg2MC4uMTNhMGVhZmFiZjljMCAxMDA2NDQNCj4g
-LS0tIGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL01ha2VmaWxlDQo+ICsrKyBiL2RyaXZlcnMv
-Z3B1L2RybS9tZWRpYXRlay9NYWtlZmlsZQ0KPiBAQCAtMyw2ICszLDcgQEANCj4gIG1lZGlhdGVr
-LWRybS15IDo9IG10a19kaXNwX2NvbG9yLm8gXA0KPiAgCQkgIG10a19kaXNwX2dhbW1hLm8gXA0K
-PiAgCQkgIG10a19kaXNwX292bC5vIFwNCj4gKwkJICBtdGtfZGlzcF9wb3N0bWFzay5vIFwNCj4g
-IAkJICBtdGtfZGlzcF9yZG1hLm8gXA0KPiAgCQkgIG10a19kcm1fY3J0Yy5vIFwNCj4gIAkJICBt
-dGtfZHJtX2RkcF9jb21wLm8gXA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL21lZGlh
-dGVrL210a19kaXNwX2Rydi5oIGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX2Ry
-di5oDQo+IGluZGV4IDAyMTkxMDEwNjk5ZjguLmQ3NGU4NWRiM2ZjZGYgMTAwNjQ0DQo+IC0tLSBh
-L2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9kcnYuaA0KPiArKysgYi9kcml2ZXJz
-L2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3BfZHJ2LmgNCj4gQEAgLTM3LDYgKzM3LDE0IEBAIHZv
-aWQgbXRrX2dhbW1hX3NldF9jb21tb24odm9pZCBfX2lvbWVtICpyZWdzLCBzdHJ1Y3QgZHJtX2Ny
-dGNfc3RhdGUgKnN0YXRlKTsNCj4gIHZvaWQgbXRrX2dhbW1hX3N0YXJ0KHN0cnVjdCBkZXZpY2Ug
-KmRldik7DQo+ICB2b2lkIG10a19nYW1tYV9zdG9wKHN0cnVjdCBkZXZpY2UgKmRldik7DQo+ICAN
-Cj4gK2ludCBtdGtfcG9zdG1hc2tfY2xrX2VuYWJsZShzdHJ1Y3QgZGV2aWNlICpkZXYpOw0KPiAr
-dm9pZCBtdGtfcG9zdG1hc2tfY2xrX2Rpc2FibGUoc3RydWN0IGRldmljZSAqZGV2KTsNCj4gK3Zv
-aWQgbXRrX3Bvc3RtYXNrX2NvbmZpZyhzdHJ1Y3QgZGV2aWNlICpkZXYsIHVuc2lnbmVkIGludCB3
-LA0KPiArICAgICAgICAgICAgICAgICAgICAgIHVuc2lnbmVkIGludCBoLCB1bnNpZ25lZCBpbnQg
-dnJlZnJlc2gsDQo+ICsgICAgICAgICAgICAgICAgICAgICAgdW5zaWduZWQgaW50IGJwYywgc3Ry
-dWN0IGNtZHFfcGt0ICpjbWRxX3BrdCk7DQo+ICt2b2lkIG10a19wb3N0bWFza19zdGFydChzdHJ1
-Y3QgZGV2aWNlICpkZXYpOw0KPiArdm9pZCBtdGtfcG9zdG1hc2tfc3RvcChzdHJ1Y3QgZGV2aWNl
-ICpkZXYpOw0KPiArDQo+ICB2b2lkIG10a19vdmxfYmdjbHJfaW5fb24oc3RydWN0IGRldmljZSAq
-ZGV2KTsNCj4gIHZvaWQgbXRrX292bF9iZ2Nscl9pbl9vZmYoc3RydWN0IGRldmljZSAqZGV2KTsN
-Cj4gIHZvaWQgbXRrX292bF9ieXBhc3Nfc2hhZG93KHN0cnVjdCBkZXZpY2UgKmRldik7DQo+IGRp
-ZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3BfcG9zdG1hc2suYyBi
-L2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9wb3N0bWFzay5jDQo+IG5ldyBmaWxl
-IG1vZGUgMTAwNjQ0DQo+IGluZGV4IDAwMDAwMDAwMDAwMDAuLmQ2NDBjZWY5YzE1YTQNCj4gLS0t
-IC9kZXYvbnVsbA0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3BfcG9z
-dG1hc2suYw0KPiBAQCAtMCwwICsxLDE2MSBAQA0KPiArLyoNCj4gKyAqIFNQRFgtTGljZW5zZS1J
-ZGVudGlmaWVyOg0KPiArICoNCj4gKyAqIENvcHlyaWdodCAoYykgMjAyMCBNZWRpYVRlayBJbmMu
-DQoNCjIwMjENCg0KPiArICovDQo+ICsNCj4gKyNpbmNsdWRlIDxsaW51eC9jbGsuaD4NCj4gKyNp
-bmNsdWRlIDxsaW51eC9jb21wb25lbnQuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9tb2R1bGUuaD4N
-Cj4gKyNpbmNsdWRlIDxsaW51eC9vZl9kZXZpY2UuaD4NCj4gKyNpbmNsdWRlIDxsaW51eC9wbV9y
-dW50aW1lLmg+DQo+ICsjaW5jbHVkZSA8bGludXgvb2ZfaXJxLmg+DQo+ICsjaW5jbHVkZSA8bGlu
-dXgvcGxhdGZvcm1fZGV2aWNlLmg+DQo+ICsjaW5jbHVkZSA8bGludXgvc29jL21lZGlhdGVrL210
-ay1jbWRxLmg+DQo+ICsNCj4gKyNpbmNsdWRlICJtdGtfZGlzcF9kcnYuaCINCj4gKyNpbmNsdWRl
-ICJtdGtfZHJtX2NydGMuaCINCj4gKyNpbmNsdWRlICJtdGtfZHJtX2RkcF9jb21wLmgiDQo+ICsN
-Cj4gKyNkZWZpbmUgRElTUF9QT1NUTUFTS19FTgkJCTB4MDAwMA0KPiArI2RlZmluZSBQT1NUTUFT
-S19FTgkJCQlCSVQoMCkNCj4gKyNkZWZpbmUgRElTUF9QT1NUTUFTS19DRkcJCQkweDAwMjANCj4g
-KyNkZWZpbmUgUE9TVE1BU0tfUkVMQVlfTU9ERQkJCUJJVCgwKQ0KPiArI2RlZmluZSBESVNQX1BP
-U1RNQVNLX1NJWkUJCQkweDAwMzANCj4gKw0KPiArc3RydWN0IG10a19kaXNwX3Bvc3RtYXNrX2Rh
-dGEgew0KPiArCXUzMiByZXNlcnZlZDsNCj4gK307DQoNClVzZWxlc3MsIHNvIHJlbW92ZS4NCg0K
-PiArDQo+ICsvKioNCj4gKyAqIHN0cnVjdCBtdGtfZGlzcF9wb3N0bWFzayAtIERJU1BfcG9zdG1h
-c2sgZHJpdmVyIHN0cnVjdHVyZQ0KPiArICogQGRkcF9jb21wIC0gc3RydWN0dXJlIGNvbnRhaW5p
-bmcgdHlwZSBlbnVtIGFuZCBoYXJkd2FyZSByZXNvdXJjZXMNCj4gKyAqIEBjcnRjIC0gYXNzb2Np
-YXRlZCBjcnRjIHRvIHJlcG9ydCBpcnEgZXZlbnRzIHRvDQo+ICsgKi8NCj4gK3N0cnVjdCBtdGtf
-ZGlzcF9wb3N0bWFzayB7DQo+ICsJc3RydWN0IGNsayAqY2xrOw0KPiArCXZvaWQgX19pb21lbSAq
-cmVnczsNCj4gKwlzdHJ1Y3QgY21kcV9jbGllbnRfcmVnIGNtZHFfcmVnOw0KPiArCWNvbnN0IHN0
-cnVjdCBtdGtfZGlzcF9wb3N0bWFza19kYXRhICpkYXRhOw0KPiArfTsNCj4gKw0KPiAraW50IG10
-a19wb3N0bWFza19jbGtfZW5hYmxlKHN0cnVjdCBkZXZpY2UgKmRldikNCj4gK3sNCj4gKwlzdHJ1
-Y3QgbXRrX2Rpc3BfcG9zdG1hc2sgKnBvc3RtYXNrID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+
-ICsNCj4gKwlyZXR1cm4gY2xrX3ByZXBhcmVfZW5hYmxlKHBvc3RtYXNrLT5jbGspOw0KPiArfQ0K
-PiArDQo+ICt2b2lkIG10a19wb3N0bWFza19jbGtfZGlzYWJsZShzdHJ1Y3QgZGV2aWNlICpkZXYp
-DQo+ICt7DQo+ICsJc3RydWN0IG10a19kaXNwX3Bvc3RtYXNrICpwb3N0bWFzayA9IGRldl9nZXRf
-ZHJ2ZGF0YShkZXYpOw0KPiArDQo+ICsJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKHBvc3RtYXNrLT5j
-bGspOw0KPiArfQ0KPiArDQo+ICt2b2lkIG10a19wb3N0bWFza19jb25maWcoc3RydWN0IGRldmlj
-ZSAqZGV2LCB1bnNpZ25lZCBpbnQgdywNCj4gKwkJCSB1bnNpZ25lZCBpbnQgaCwgdW5zaWduZWQg
-aW50IHZyZWZyZXNoLA0KPiArCQkJIHVuc2lnbmVkIGludCBicGMsIHN0cnVjdCBjbWRxX3BrdCAq
-Y21kcV9wa3QpDQo+ICt7DQo+ICsJc3RydWN0IG10a19kaXNwX3Bvc3RtYXNrICpwb3N0bWFzayA9
-IGRldl9nZXRfZHJ2ZGF0YShkZXYpOw0KPiArDQo+ICsJbXRrX2RkcF93cml0ZShjbWRxX3BrdCwg
-dyA8PCAxNiB8IGgsICZwb3N0bWFzay0+Y21kcV9yZWcsIHBvc3RtYXNrLT5yZWdzLA0KPiArCQkg
-ICAgICBESVNQX1BPU1RNQVNLX1NJWkUpOw0KPiArCW10a19kZHBfd3JpdGUoY21kcV9wa3QsIFBP
-U1RNQVNLX1JFTEFZX01PREUsICZwb3N0bWFzay0+Y21kcV9yZWcsDQo+ICsJCSAgICAgIHBvc3Rt
-YXNrLT5yZWdzLCBESVNQX1BPU1RNQVNLX0NGRyk7DQo+ICt9DQo+ICsNCj4gK3ZvaWQgbXRrX3Bv
-c3RtYXNrX3N0YXJ0KHN0cnVjdCBkZXZpY2UgKmRldikNCj4gK3sNCj4gKwlzdHJ1Y3QgbXRrX2Rp
-c3BfcG9zdG1hc2sgKnBvc3RtYXNrID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+ICsNCj4gKwl3
-cml0ZWwoUE9TVE1BU0tfRU4sIHBvc3RtYXNrLT5yZWdzICsgRElTUF9QT1NUTUFTS19FTik7DQo+
-ICt9DQo+ICsNCj4gK3ZvaWQgbXRrX3Bvc3RtYXNrX3N0b3Aoc3RydWN0IGRldmljZSAqZGV2KQ0K
-PiArew0KPiArCXN0cnVjdCBtdGtfZGlzcF9wb3N0bWFzayAqcG9zdG1hc2sgPSBkZXZfZ2V0X2Ry
-dmRhdGEoZGV2KTsNCj4gKw0KPiArCXdyaXRlbF9yZWxheGVkKDB4MCwgcG9zdG1hc2stPnJlZ3Mg
-KyBESVNQX1BPU1RNQVNLX0VOKTsNCj4gK30NCj4gKw0KPiArc3RhdGljIGludCBtdGtfZGlzcF9w
-b3N0bWFza19iaW5kKHN0cnVjdCBkZXZpY2UgKmRldiwgc3RydWN0IGRldmljZSAqbWFzdGVyLCB2
-b2lkICpkYXRhKQ0KPiArew0KPiArCXJldHVybiAwOw0KPiArfQ0KPiArDQo+ICtzdGF0aWMgdm9p
-ZCBtdGtfZGlzcF9wb3N0bWFza191bmJpbmQoc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QgZGV2
-aWNlICptYXN0ZXIsDQo+ICsJCQkJICB2b2lkICpkYXRhKQ0KPiArew0KPiArfQ0KPiArDQo+ICtz
-dGF0aWMgY29uc3Qgc3RydWN0IGNvbXBvbmVudF9vcHMgbXRrX2Rpc3BfcG9zdG1hc2tfY29tcG9u
-ZW50X29wcyA9IHsNCj4gKwkuYmluZAk9IG10a19kaXNwX3Bvc3RtYXNrX2JpbmQsDQo+ICsJLnVu
-YmluZCA9IG10a19kaXNwX3Bvc3RtYXNrX3VuYmluZCwNCj4gK307DQo+ICsNCj4gK3N0YXRpYyBp
-bnQgbXRrX2Rpc3BfcG9zdG1hc2tfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikN
-Cj4gK3sNCj4gKwlzdHJ1Y3QgZGV2aWNlICpkZXYgPSAmcGRldi0+ZGV2Ow0KPiArCXN0cnVjdCBt
-dGtfZGlzcF9wb3N0bWFzayAqcHJpdjsNCj4gKwlzdHJ1Y3QgcmVzb3VyY2UgKnJlczsNCj4gKwlp
-bnQgcmV0Ow0KPiArDQo+ICsJcHJpdiA9IGRldm1fa3phbGxvYyhkZXYsIHNpemVvZigqcHJpdiks
-IEdGUF9LRVJORUwpOw0KPiArCWlmICghcHJpdikNCj4gKwkJcmV0dXJuIC1FTk9NRU07DQo+ICsN
-Cj4gKwlwcml2LT5jbGsgPSBkZXZtX2Nsa19nZXQoZGV2LCBOVUxMKTsNCj4gKwlpZiAoSVNfRVJS
-KHByaXYtPmNsaykpIHsNCj4gKwkJZGV2X2VycihkZXYsICJmYWlsZWQgdG8gZ2V0IHBvc3RtYXNr
-IGNsa1xuIik7DQo+ICsJCXJldHVybiBQVFJfRVJSKHByaXYtPmNsayk7DQo+ICsJfQ0KPiArDQo+
-ICsJcmVzID0gcGxhdGZvcm1fZ2V0X3Jlc291cmNlKHBkZXYsIElPUkVTT1VSQ0VfTUVNLCAwKTsN
-Cj4gKwlwcml2LT5yZWdzID0gZGV2bV9pb3JlbWFwX3Jlc291cmNlKGRldiwgcmVzKTsNCj4gKwlp
-ZiAoSVNfRVJSKHByaXYtPnJlZ3MpKSB7DQo+ICsJCWRldl9lcnIoZGV2LCAiZmFpbGVkIHRvIGlv
-cmVtYXAgcG9zdG1hc2tcbiIpOw0KPiArCQlyZXR1cm4gUFRSX0VSUihwcml2LT5yZWdzKTsNCj4g
-Kwl9DQo+ICsNCj4gKyNpZiBJU19SRUFDSEFCTEUoQ09ORklHX01US19DTURRKQ0KPiArCXJldCA9
-IGNtZHFfZGV2X2dldF9jbGllbnRfcmVnKGRldiwgJnByaXYtPmNtZHFfcmVnLCAwKTsNCj4gKwlp
-ZiAocmV0KQ0KPiArCQlkZXZfZGJnKGRldiwgImdldCBtZWRpYXRlayxnY2UtY2xpZW50LXJlZyBm
-YWlsIVxuIik7DQo+ICsjZW5kaWYNCj4gKw0KPiArCXByaXYtPmRhdGEgPSBvZl9kZXZpY2VfZ2V0
-X21hdGNoX2RhdGEoZGV2KTsNCj4gKwlwbGF0Zm9ybV9zZXRfZHJ2ZGF0YShwZGV2LCBwcml2KTsN
-Cj4gKw0KPiArCXBtX3J1bnRpbWVfZW5hYmxlKGRldik7DQoNCldoeSB0aGlzPw0KDQo+ICsNCj4g
-KwlyZXQgPSBjb21wb25lbnRfYWRkKGRldiwgJm10a19kaXNwX3Bvc3RtYXNrX2NvbXBvbmVudF9v
-cHMpOw0KPiArCWlmIChyZXQpDQo+ICsJCWRldl9lcnIoZGV2LCAiRmFpbGVkIHRvIGFkZCBjb21w
-b25lbnQ6ICVkXG4iLCByZXQpOw0KPiArDQo+ICsJcmV0dXJuIHJldDsNCj4gK30NCj4gKw0KPiAr
-c3RhdGljIGludCBtdGtfZGlzcF9wb3N0bWFza19yZW1vdmUoc3RydWN0IHBsYXRmb3JtX2Rldmlj
-ZSAqcGRldikNCj4gK3sNCj4gKwljb21wb25lbnRfZGVsKCZwZGV2LT5kZXYsICZtdGtfZGlzcF9w
-b3N0bWFza19jb21wb25lbnRfb3BzKTsNCj4gKw0KPiArCXBtX3J1bnRpbWVfZGlzYWJsZSgmcGRl
-di0+ZGV2KTsNCj4gKw0KPiArCXJldHVybiAwOw0KPiArfQ0KPiArDQo+ICtzdGF0aWMgY29uc3Qg
-c3RydWN0IG9mX2RldmljZV9pZCBtdGtfZGlzcF9wb3N0bWFza19kcml2ZXJfZHRfbWF0Y2hbXSA9
-IHsNCj4gKwl7fSwNCj4gK307DQo+ICtNT0RVTEVfREVWSUNFX1RBQkxFKG9mLCBtdGtfZGlzcF9w
-b3N0bWFza19kcml2ZXJfZHRfbWF0Y2gpOw0KPiArDQo+ICtzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVy
-IG10a19kaXNwX3Bvc3RtYXNrX2RyaXZlciA9IHsNCj4gKwkucHJvYmUJCT0gbXRrX2Rpc3BfcG9z
-dG1hc2tfcHJvYmUsDQo+ICsJLnJlbW92ZQkJPSBtdGtfZGlzcF9wb3N0bWFza19yZW1vdmUsDQo+
-ICsJLmRyaXZlcgkJPSB7DQo+ICsJCS5uYW1lCT0gIm1lZGlhdGVrLWRpc3AtcG9zdG1hc2siLA0K
-PiArCQkub3duZXIJPSBUSElTX01PRFVMRSwNCj4gKwkJLm9mX21hdGNoX3RhYmxlID0gbXRrX2Rp
-c3BfcG9zdG1hc2tfZHJpdmVyX2R0X21hdGNoLA0KPiArCX0sDQo+ICt9Ow0KPiBkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fZGRwX2NvbXAuYyBiL2RyaXZlcnMv
-Z3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2RkcF9jb21wLmMNCj4gaW5kZXggY2NmYWFkYTk5OGNm
-NS4uNmM1Mzk3ODMxMThkZCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVr
-L210a19kcm1fZGRwX2NvbXAuYw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRr
-X2RybV9kZHBfY29tcC5jDQo+IEBAIC00MTUsNiArNDE1LDE0IEBAIHN0YXRpYyBjb25zdCBzdHJ1
-Y3QgbXRrX2RkcF9jb21wX2Z1bmNzIGRkcF9vdmwgPSB7DQo+ICAJLmJnY2xyX2luX29mZiA9IG10
-a19vdmxfYmdjbHJfaW5fb2ZmLA0KPiAgfTsNCj4gIA0KPiArc3RhdGljIGNvbnN0IHN0cnVjdCBt
-dGtfZGRwX2NvbXBfZnVuY3MgZGRwX3Bvc3RtYXNrID0gew0KPiArCS5jbGtfZW5hYmxlID0gbXRr
-X3Bvc3RtYXNrX2Nsa19lbmFibGUsDQo+ICsgICAgICAgIC5jbGtfZGlzYWJsZSA9IG10a19wb3N0
-bWFza19jbGtfZGlzYWJsZSwNCg0KdGFiLg0KDQo+ICsJLmNvbmZpZyA9IG10a19wb3N0bWFza19j
-b25maWcsDQo+ICsJLnN0YXJ0ID0gbXRrX3Bvc3RtYXNrX3N0YXJ0LA0KPiArCS5zdG9wID0gbXRr
-X3Bvc3RtYXNrX3N0b3AsDQo+ICt9Ow0KPiArDQo+ICBzdGF0aWMgY29uc3Qgc3RydWN0IG10a19k
-ZHBfY29tcF9mdW5jcyBkZHBfcmRtYSA9IHsNCj4gIAkuY2xrX2VuYWJsZSA9IG10a19yZG1hX2Ns
-a19lbmFibGUsDQo+ICAJLmNsa19kaXNhYmxlID0gbXRrX3JkbWFfY2xrX2Rpc2FibGUsDQo+IEBA
-IC00NTAsNiArNDU4LDcgQEAgc3RhdGljIGNvbnN0IGNoYXIgKiBjb25zdCBtdGtfZGRwX2NvbXBf
-c3RlbVtNVEtfRERQX0NPTVBfVFlQRV9NQVhdID0gew0KPiAgCVtNVEtfRElTUF9NVVRFWF0gPSAi
-bXV0ZXgiLA0KPiAgCVtNVEtfRElTUF9PRF0gPSAib2QiLA0KPiAgCVtNVEtfRElTUF9CTFNdID0g
-ImJscyIsDQo+ICsJW01US19ESVNQX1BPU1RNQVNLXSA9ICJwb3N0bWFzayIsDQo+ICB9Ow0KPiAg
-DQo+ICBzdHJ1Y3QgbXRrX2RkcF9jb21wX21hdGNoIHsNCj4gQEAgLTQ4MCw2ICs0ODksNyBAQCBz
-dGF0aWMgY29uc3Qgc3RydWN0IG10a19kZHBfY29tcF9tYXRjaCBtdGtfZGRwX21hdGNoZXNbRERQ
-X0NPTVBPTkVOVF9JRF9NQVhdID0gew0KPiAgCVtERFBfQ09NUE9ORU5UX09WTF8yTDBdCT0geyBN
-VEtfRElTUF9PVkxfMkwsCTAsICZkZHBfb3ZsIH0sDQo+ICAJW0REUF9DT01QT05FTlRfT1ZMXzJM
-MV0JPSB7IE1US19ESVNQX09WTF8yTCwJMSwgJmRkcF9vdmwgfSwNCj4gIAlbRERQX0NPTVBPTkVO
-VF9PVkxfMkwyXSA9IHsgTVRLX0RJU1BfT1ZMXzJMLCAgICAyLCAmZGRwX292bCB9LA0KPiArCVtE
-RFBfQ09NUE9ORU5UX1BPU1RNQVNLMF0JPSB7IE1US19ESVNQX1BPU1RNQVNLLAkwLCAmZGRwX3Bv
-c3RtYXNrIH0sDQoNCk1ha2Ugb3RoZXIgcm93IHRoZSBzYW1lIGluZGVudC4NCg0KPiAgCVtERFBf
-Q09NUE9ORU5UX1BXTTBdCT0geyBNVEtfRElTUF9QV00sCTAsIE5VTEwgfSwNCj4gIAlbRERQX0NP
-TVBPTkVOVF9QV00xXQk9IHsgTVRLX0RJU1BfUFdNLAkxLCBOVUxMIH0sDQo+ICAJW0REUF9DT01Q
-T05FTlRfUFdNMl0JPSB7IE1US19ESVNQX1BXTSwJMiwgTlVMTCB9LA0KPiBAQCAtNjAzLDYgKzYx
-Myw3IEBAIGludCBtdGtfZGRwX2NvbXBfaW5pdChzdHJ1Y3QgZGV2aWNlX25vZGUgKm5vZGUsIHN0
-cnVjdCBtdGtfZGRwX2NvbXAgKmNvbXAsDQo+ICAJaWYgKHR5cGUgPT0gTVRLX0RJU1BfQkxTIHx8
-DQo+ICAJICAgIHR5cGUgPT0gTVRLX0RJU1BfQ09MT1IgfHwNCj4gIAkgICAgdHlwZSA9PSBNVEtf
-RElTUF9HQU1NQSB8fA0KPiArCSAgICB0eXBlID09IE1US19ESVNQX1BPU1RNQVNLIHx8DQo+ICAJ
-ICAgIHR5cGUgPT0gTVRLX0RQSSB8fA0KPiAgCSAgICB0eXBlID09IE1US19EU0kgfHwNCj4gIAkg
-ICAgdHlwZSA9PSBNVEtfRElTUF9PVkwgfHwNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2Ry
-bS9tZWRpYXRlay9tdGtfZHJtX2RkcF9jb21wLmggYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsv
-bXRrX2RybV9kZHBfY29tcC5oDQo+IGluZGV4IGJiOTE0ZDk3NmNmNWQuLmNkMWRlYzZiNGNkZjIg
-MTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2RkcF9jb21w
-LmgNCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fZGRwX2NvbXAuaA0K
-PiBAQCAtMzAsNiArMzAsNyBAQCBlbnVtIG10a19kZHBfY29tcF90eXBlIHsNCj4gIAlNVEtfRElT
-UF9VRk9FLA0KPiAgCU1US19EU0ksDQo+ICAJTVRLX0RQSSwNCj4gKwlNVEtfRElTUF9QT1NUTUFT
-SywNCj4gIAlNVEtfRElTUF9QV00sDQo+ICAJTVRLX0RJU1BfTVVURVgsDQo+ICAJTVRLX0RJU1Bf
-T0QsDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kcnYu
-YyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2Rydi5jDQo+IGluZGV4IDQ4NmU3
-M2U2NzVhZDUuLmQ5OWFmYzg1Mjg2ODQgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9t
-ZWRpYXRlay9tdGtfZHJtX2Rydi5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9t
-dGtfZHJtX2Rydi5jDQo+IEBAIC01MzEsNyArNTMxLDcgQEAgc3RhdGljIGludCBtdGtfZHJtX3By
-b2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ICAJCXByaXZhdGUtPmNvbXBfbm9k
-ZVtjb21wX2lkXSA9IG9mX25vZGVfZ2V0KG5vZGUpOw0KPiAgDQo+ICAJCS8qDQo+IC0JCSAqIEN1
-cnJlbnRseSBvbmx5IHRoZSBDT0xPUiwgR0FNTUEsIE9WTCwgUkRNQSwgRFNJLCBhbmQgRFBJIGJs
-b2NrcyBoYXZlDQo+ICsJCSAqIEN1cnJlbnRseSBvbmx5IHRoZSBDT0xPUiwgR0FNTUEsIE9WTCwg
-UE9TVE1BU0ssIFJETUEsIERTSSwgYW5kIERQSSBibG9ja3MgaGF2ZQ0KPiAgCQkgKiBzZXBhcmF0
-ZSBjb21wb25lbnQgcGxhdGZvcm0gZHJpdmVycyBhbmQgaW5pdGlhbGl6ZSB0aGVpciBvd24NCj4g
-IAkJICogRERQIGNvbXBvbmVudCBzdHJ1Y3R1cmUuIFRoZSBvdGhlcnMgYXJlIGluaXRpYWxpemVk
-IGhlcmUuDQo+ICAJCSAqLw0KPiBAQCAtNTM5LDYgKzUzOSw3IEBAIHN0YXRpYyBpbnQgbXRrX2Ry
-bV9wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQ0KPiAgCQkgICAgY29tcF90eXBl
-ID09IE1US19ESVNQX0dBTU1BIHx8DQo+ICAJCSAgICBjb21wX3R5cGUgPT0gTVRLX0RJU1BfT1ZM
-IHx8DQo+ICAJCSAgICBjb21wX3R5cGUgPT0gTVRLX0RJU1BfT1ZMXzJMIHx8DQo+ICsJCSAgICBj
-b21wX3R5cGUgPT0gTVRLX0RJU1BfUE9TVE1BU0sgfHwNCj4gIAkJICAgIGNvbXBfdHlwZSA9PSBN
-VEtfRElTUF9SRE1BIHx8DQo+ICAJCSAgICBjb21wX3R5cGUgPT0gTVRLX0RTSSB8fA0KPiAgCQkg
-ICAgY29tcF90eXBlID09IE1US19EUEkpIHsNCj4gQEAgLTYzNyw2ICs2MzgsNyBAQCBzdGF0aWMg
-c3RydWN0IHBsYXRmb3JtX2RyaXZlciAqIGNvbnN0IG10a19kcm1fZHJpdmVyc1tdID0gew0KPiAg
-CSZtdGtfZGlzcF9jb2xvcl9kcml2ZXIsDQo+ICAJJm10a19kaXNwX2dhbW1hX2RyaXZlciwNCj4g
-IAkmbXRrX2Rpc3Bfb3ZsX2RyaXZlciwNCj4gKwkmbXRrX2Rpc3BfcG9zdG1hc2tfZHJpdmVyLA0K
-PiAgCSZtdGtfZGlzcF9yZG1hX2RyaXZlciwNCj4gIAkmbXRrX2RwaV9kcml2ZXIsDQo+ICAJJm10
-a19kcm1fcGxhdGZvcm1fZHJpdmVyLA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL21l
-ZGlhdGVrL210a19kcm1fZHJ2LmggYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9k
-cnYuaA0KPiBpbmRleCAwZTU0ZTNkNTEwMTRhLi43ZTdiMjhlMzJhYTJmIDEwMDY0NA0KPiAtLS0g
-YS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kcnYuaA0KPiArKysgYi9kcml2ZXJz
-L2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kcnYuaA0KPiBAQCAtNDksNiArNDksNyBAQCBzdHJ1
-Y3QgbXRrX2RybV9wcml2YXRlIHsNCj4gIGV4dGVybiBzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVyIG10
-a19kaXNwX2NvbG9yX2RyaXZlcjsNCj4gIGV4dGVybiBzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVyIG10
-a19kaXNwX2dhbW1hX2RyaXZlcjsNCj4gIGV4dGVybiBzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVyIG10
-a19kaXNwX292bF9kcml2ZXI7DQo+ICtleHRlcm4gc3RydWN0IHBsYXRmb3JtX2RyaXZlciBtdGtf
-ZGlzcF9wb3N0bWFza19kcml2ZXI7DQo+ICBleHRlcm4gc3RydWN0IHBsYXRmb3JtX2RyaXZlciBt
-dGtfZGlzcF9yZG1hX2RyaXZlcjsNCj4gIGV4dGVybiBzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVyIG10
-a19kcGlfZHJpdmVyOw0KPiAgZXh0ZXJuIHN0cnVjdCBwbGF0Zm9ybV9kcml2ZXIgbXRrX2RzaV9k
-cml2ZXI7DQoNCg==
+On Fri, Jan 29, 2021 at 09:41:50AM +0300, Arseny Krasnov wrote:
+>
+>On 28.01.2021 20:19, Stefano Garzarella wrote:
+>> Hi Arseny,
+>> I reviewed a part, tomorrow I hope to finish the other patches.
+>>
+>> Just a couple of comments in the TODOs below.
+>>
+>> On Mon, Jan 25, 2021 at 02:09:00PM +0300, Arseny Krasnov wrote:
+>>> 	This patchset impelements support of SOCK_SEQPACKET for virtio
+>>> transport.
+>>> 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
+>>> do it, new packet operation was added: it marks start of record (with
+>>> record length in header), such packet doesn't carry any data.  To send
+>>> record, packet with start marker is sent first, then all data is sent
+>>> as usual 'RW' packets. On receiver's side, length of record is known
+>> >from packet with start record marker. Now as  packets of one socket
+>>> are not reordered neither on vsock nor on vhost transport layers, such
+>>> marker allows to restore original record on receiver's side. If user's
+>>> buffer is smaller that record length, when all out of size data is
+>>> dropped.
+>>> 	Maximum length of datagram is not limited as in stream socket,
+>>> because same credit logic is used. Difference with stream socket is
+>>> that user is not woken up until whole record is received or error
+>>> occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
+>>> 	Tests also implemented.
+>>>
+>>> Arseny Krasnov (13):
+>>>  af_vsock: prepare for SOCK_SEQPACKET support
+>>>  af_vsock: prepare 'vsock_connectible_recvmsg()'
+>>>  af_vsock: implement SEQPACKET rx loop
+>>>  af_vsock: implement send logic for SOCK_SEQPACKET
+>>>  af_vsock: rest of SEQPACKET support
+>>>  af_vsock: update comments for stream sockets
+>>>  virtio/vsock: dequeue callback for SOCK_SEQPACKET
+>>>  virtio/vsock: fetch length for SEQPACKET record
+>>>  virtio/vsock: add SEQPACKET receive logic
+>>>  virtio/vsock: rest of SOCK_SEQPACKET support
+>>>  virtio/vsock: setup SEQPACKET ops for transport
+>>>  vhost/vsock: setup SEQPACKET ops for transport
+>>>  vsock_test: add SOCK_SEQPACKET tests
+>>>
+>>> drivers/vhost/vsock.c                   |   7 +-
+>>> include/linux/virtio_vsock.h            |  12 +
+>>> include/net/af_vsock.h                  |   6 +
+>>> include/uapi/linux/virtio_vsock.h       |   9 +
+>>> net/vmw_vsock/af_vsock.c                | 543 ++++++++++++++++------
+>>> net/vmw_vsock/virtio_transport.c        |   4 +
+>>> net/vmw_vsock/virtio_transport_common.c | 295 ++++++++++--
+>>> tools/testing/vsock/util.c              |  32 +-
+>>> tools/testing/vsock/util.h              |   3 +
+>>> tools/testing/vsock/vsock_test.c        | 126 +++++
+>>> 10 files changed, 862 insertions(+), 175 deletions(-)
+>>>
+>>> TODO:
+>>> - Support for record integrity control. As transport could drop some
+>>>   packets, something like "record-id" and record end marker need to
+>>>   be implemented. Idea is that SEQ_BEGIN packet carries both record
+>>>   length and record id, end marker(let it be SEQ_END) carries only
+>>>   record id. To be sure that no one packet was lost, receiver checks
+>>>   length of data between SEQ_BEGIN and SEQ_END(it must be same with
+>>>   value in SEQ_BEGIN) and record ids of SEQ_BEGIN and SEQ_END(this
+>>>   means that both markers were not dropped. I think that easiest way
+>>>   to implement record id for SEQ_BEGIN is to reuse another field of
+>>>   packet header(SEQ_BEGIN already uses 'flags' as record length).For
+>>>   SEQ_END record id could be stored in 'flags'.
+>> I don't really like the idea of reusing the 'flags' field for this
+>> purpose.
+>>
+>>>     Another way to implement it, is to move metadata of both SEQ_END
+>>>   and SEQ_BEGIN to payload. But this approach has problem, because
+>>>   if we move something to payload, such payload is accounted by
+>>>   credit logic, which fragments payload, while payload with record
+>>>   length and id couldn't be fragmented. One way to overcome it is to
+>>>   ignore credit update for SEQ_BEGIN/SEQ_END packet.Another solution
+>>>   is to update 'stream_has_space()' function: current implementation
+>>>   return non-zero when at least 1 byte is allowed to use,but updated
+>>>   version will have extra argument, which is needed length. For 'RW'
+>>>   packet this argument is 1, for SEQ_BEGIN it is sizeof(record len +
+>>>   record id) and for SEQ_END it is sizeof(record id).
+>> Is the payload accounted by credit logic also if hdr.op is not
+>> VIRTIO_VSOCK_OP_RW?
+>
+>Yes, on send any packet with payload could be fragmented if
+>
+>there is not enough space at receiver. On receive 'fwd_cnt' and
+>
+>'buf_alloc' are updated with header of every packet. Of course,
+>
+>to every such case i've described i can add check for 'RW'
+>
+>packet, to exclude payload from credit accounting, but this is
+>
+>bunch of dumb checks.
+>
+>>
+>> I think that we can define a specific header to put after the
+>> virtio_vsock_hdr when hdr.op is SEQ_BEGIN or SEQ_END, and in this header
+>> we can store the id and the length of the message.
+>
+>I think it is better than use payload and touch credit logic
+>
+
+Cool, so let's try this option, hoping there aren't a lot of issues.
+
+Another item for TODO could be to add the SOCK_SEQPACKET support also 
+for vsock_loopback. Should be simple since it also uses 
+virtio_transport_common APIs and it can be useful for testing and 
+debugging.
+
+Thanks,
+Stefano
 
