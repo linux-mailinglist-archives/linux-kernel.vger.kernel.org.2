@@ -2,109 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED64308D18
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:16:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1096308D1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 20:16:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233014AbhA2THz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 14:07:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51012 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232973AbhA2TGr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 14:06:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1726664DFB;
-        Fri, 29 Jan 2021 19:06:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611947166;
-        bh=jTqi+jdOU05OqAmzEdlj9q9kyuMeRaWQDDxAGUJIAYA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jFysm8KKZ3948cZWZJ2i269CZyeMyaH4hfh3gaYawmwKT4CxjTTtoXwtyiBU7fKe3
-         +oxDjfs5+kTQUjG06w7Y1Fp7LUmgZVVma8wIoyOk7pZHqcVfVv2Dyr6CchmmHVheIT
-         O45ZWNWJw5/8J/aPRmB8mpCNyRhzWRKEssaAWrJCawj4QcfC9YX7z+8/McvpepULnf
-         oJcGC1RHKTkaQ2VDMQgwdOOkCGcjQ+bST+L3Crd2p5RIrjUYbiDGZ+egmSMHlezaEk
-         bmsVWx4gGiuiqIRB3m2kARJx4c1Nuibhr1UZHBpY5QhFZ9QMyJmw4KcsEybKHMlvki
-         7gpBBn5JwuocA==
-Date:   Fri, 29 Jan 2021 11:06:05 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Shoaib Rao <rao.shoaib@oracle.com>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-        andy.rudoff@intel.com
-Subject: Re: [PATCH] af_unix: Allow Unix sockets to raise SIGURG
-Message-ID: <20210129110605.54df8409@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <23fc3de2-7541-04c9-a56f-4006a7dc773f@oracle.com>
-References: <20210122150638.210444-1-willy@infradead.org>
-        <20210125153650.18c84b1a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <23fc3de2-7541-04c9-a56f-4006a7dc773f@oracle.com>
+        id S233002AbhA2TJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 14:09:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232752AbhA2THk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 14:07:40 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706DBC061573
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 11:07:00 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id d2so11807884edz.3
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 11:07:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vMk9WGzVPpcoDliWw6CE1qXVyF1iQxXPLajClJEgv98=;
+        b=Z6Bk9oGBsdd9aKFm0lhB2VUOgbChso56sK1q34eUOnaYX0wqNSsvQ5K/bvfJdm2owu
+         CsXHCKomyiChcgdeQrKTfW+4drbC2690CBgYZZZZx0mpwrm8Cx1TGmLXkSENJEf1+iOT
+         dXYTRdxmmSomCTejkqVFKN9bz4257beF/X/78A+5gDkQEWTvp8LQSMVhrrPjH3PHVPqY
+         JmFCFc9Q6CvfN1Ch2PGboI5r3XVS1sNow83cRzA9y+kgdr03IVNWwj+aQXYokNnbKbh/
+         7h1Sb9xkjG9Q/fa4GB07AcVwQ7tCXh16lM30KTZZ060hTaQOdQNoCEb31ero8qhOWohJ
+         LI8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vMk9WGzVPpcoDliWw6CE1qXVyF1iQxXPLajClJEgv98=;
+        b=HukHN0labrvrzmaHB/BhQNQA2gAxTYWuTyuFwMeZC2EZ65MOQqldqj0esOFbwb2VlD
+         w4EWkTuCX08mTeakbD/EXUziMHbdiesx0+FQyjTI8kpx/CT9lXgP8oad+txGM1iPocTM
+         cBl5cBxfsFHA93xHBqImqT8sdtPqt8locaGXSPYMmLC7fsk/QdiIdb9GWJShseb5CWra
+         8qFi0ZcoNXY2rEFJDXpf2omyF5Rshzo/0OTnvRq/sKxNsnWMiy7Jaszlqn93iu/L3Vr7
+         YulrGWU/95lWYCPliQNKG+Ek3Qiw6Gpp40mfBp1PCLBlx8vH4rFgP7iqCjqtehA31d2c
+         rd1g==
+X-Gm-Message-State: AOAM531IJ8ee8nGxzvPPQg4I9l9262R04CICLJ/dlbUUfSJBsxkO2Ove
+        8ZigQgn1E6KU5zJrHqTWJOgThfNZMcBgiYkY9OJJFA==
+X-Google-Smtp-Source: ABdhPJyHRc0vMqmyshCdniPC5IhqwLn4tl4ATEGWnxcs/ZV63yqgy2GfXX9fY2jc64XpsYQckPwlj3ZqVnZQfSJ9M9c=
+X-Received: by 2002:a05:6402:402:: with SMTP id q2mr6948030edv.116.1611947219186;
+ Fri, 29 Jan 2021 11:06:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CA+CK2bBJKntMP36SzLGvGFp4=sww6Z2LBhqEZm60kGWRWjQMVw@mail.gmail.com>
+ <8c2b75fe-a3e5-8eff-7f37-5d23c7ad9742@redhat.com> <CA+CK2bDW7Pzj=0WQnPpO+AhvZP9Y9JivJs+6G4wrbuwZfrgyKQ@mail.gmail.com>
+ <94797c92-cd90-8a65-b879-0bb5f12b9fc5@redhat.com> <CA+CK2bCjD7PujEwWMT32p4e6x6hZ-f5QOKXir10mT8RfijvnUA@mail.gmail.com>
+ <db692fcd-40e8-9c2b-d63b-9803f4bf9d5e@redhat.com> <CA+CK2bDVvdYuyuoHf==6KxYQqJBWcxQr0OC6BBk0UANuP4raGg@mail.gmail.com>
+ <92912784-f3a3-b5a5-2d45-4c86ae26315f@redhat.com> <CA+CK2bDJ3hrWoE91L2wpAk+Yu0_=GtYw=4gLDDD7mxs321b_aA@mail.gmail.com>
+In-Reply-To: <CA+CK2bDJ3hrWoE91L2wpAk+Yu0_=GtYw=4gLDDD7mxs321b_aA@mail.gmail.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Fri, 29 Jan 2021 14:06:23 -0500
+Message-ID: <CA+CK2bBw1yMH2bAindymk-+yZRgAWncqybWhG5x3TJiX9-tSnQ@mail.gmail.com>
+Subject: Re: dax alignment problem on arm64 (and other achitectures)
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Marc Zyngier <maz@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Will Deacon <will.deacon@arm.com>,
+        James Morse <james.morse@arm.com>,
+        James Morris <jmorris@namei.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Jan 2021 09:56:48 -0800 Shoaib Rao wrote:
-> On 1/25/21 3:36 PM, Jakub Kicinski wrote:
-> > On Fri, 22 Jan 2021 15:06:37 +0000 Matthew Wilcox (Oracle) wrote:  
-> >> From: Rao Shoaib <rao.shoaib@oracle.com>
-> >>
-> >> TCP sockets allow SIGURG to be sent to the process holding the other
-> >> end of the socket.  Extend Unix sockets to have the same ability.
-> >>
-> >> The API is the same in that the sender uses sendmsg() with MSG_OOB to
-> >> raise SIGURG.  Unix sockets behave in the same way as TCP sockets with
-> >> SO_OOBINLINE set.  
-> > Noob question, if we only want to support the inline mode, why don't we
-> > require SO_OOBINLINE to have been called on @other? Wouldn't that
-> > provide more consistent behavior across address families?
-> >
-> > With the current implementation the receiver will also not see MSG_OOB
-> > set in msg->msg_flags, right?  
-> 
-> SO_OOBINLINE does not control the delivery of signal, It controls how
-> OOB Byte is delivered. It may not be obvious but this change does not
-> deliver any Byte, just a signal. So, as long as sendmsg flag contains
-> MSG_OOB, signal will be delivered just like it happens for TCP.
+> > Definitely, but we should try figuring out what's going on here. I
+> > assume on x86-64 it behaves differently?
+>
+> Yes, we should root cause. I highly suspect that there is somewhere
+> alignment miscalculations happen that cause this memory waste with the
+> offset 16M. I am also not sure why the 2M label size was increased,
+> and  why 16M is now an alignment requirement.
 
-Not as far as I can read this code. If MSG_OOB is set the data from the
-message used to be discarded, and EOPNOTSUPP returned. Now the data gets
-queued to the socket, and will be read inline.
+This appears to be because even if we set vmemmap to be outside of the
+dax device, the alignment calculates the maximum size of vmemmap for
+this device, and subtracts it from the devdax size.
+See [1], line 795 is where this offset is calculated.
 
-Sure, you also add firing of the signal, which is fine. The removal of
-the error check is the code I'm pointing at, so to speak.
+This also explains why with 64K pages, the 16M offset worked: because
+fewer struct pages were able to fit within 16M - label size.
 
-> >> SIGURG is ignored by default, so applications which do not know about this
-> >> feature will be unaffected.  In addition to installing a SIGURG handler,
-> >> the receiving application must call F_SETOWN or F_SETOWN_EX to indicate
-> >> which process or thread should receive the signal.
-> >>
-> >> Signed-off-by: Rao Shoaib <rao.shoaib@oracle.com>
-> >> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> >> ---
-> >>   net/unix/af_unix.c | 5 +++--
-> >>   1 file changed, 3 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
-> >> index 41c3303c3357..849dff688c2c 100644
-> >> --- a/net/unix/af_unix.c
-> >> +++ b/net/unix/af_unix.c
-> >> @@ -1837,8 +1837,6 @@ static int unix_stream_sendmsg(struct socket *sock, struct msghdr *msg,
-> >>   		return err;
-> >>   
-> >>   	err = -EOPNOTSUPP;
-> >> -	if (msg->msg_flags&MSG_OOB)
-> >> -		goto out_err;
-> >>   
-> >>   	if (msg->msg_namelen) {
-> >>   		err = sk->sk_state == TCP_ESTABLISHED ? -EISCONN : -EOPNOTSUPP;
-> >> @@ -1903,6 +1901,9 @@ static int unix_stream_sendmsg(struct socket *sock, struct msghdr *msg,
-> >>   		sent += size;
-> >>   	}
-> >>   
-> >> +	if (msg->msg_flags & MSG_OOB)
-> >> +		sk_send_sigurg(other);
-> >> +
-> >>   	scm_destroy(&scm);
-> >>   
-> >>   	return sent;  
-
+[1] https://soleen.com/source/xref/linux/drivers/nvdimm/pfn_devs.c?r=b7b3c01b&mo=18459&fi=718#795
