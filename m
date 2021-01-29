@@ -2,109 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4123D308637
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:07:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CB0130863B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 08:13:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232191AbhA2HGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 02:06:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhA2HFw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 02:05:52 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E19C061573;
-        Thu, 28 Jan 2021 23:05:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=GlH3x83KNd6bGiBeIIa+b8g26rMegA1+emYY6KXmkjA=; b=Gs0pRHF6QxNBf+BvuOtwoweAWI
-        eZkW1ipxH4x/BMhgTys2SIwbX0oF7ilkRUSUgAKqb98hYH41VylhFgSWWKebVJjlkxuBw4Ja7eWkW
-        ORM4i8jVXVKdK3S0Vl9cCdJmC0vISTRKk7qQ86gHaUVzASQaCnoVdk3fTg33QsYXmR8fIMDz/lnIU
-        i0tb1YS2QL7QBZK5k/BPaCMjnleyWsKxCohFtXoKPv8dqO+9N/XoLRhMWQ/LNie7mwLZdYwR/n7tI
-        Jwvt1JbeVc9pWegPbTPrWcSR1y5QyBwk4h7x6ODnvS41S0ovplEcbyB51m9fDK57QhFLgCrlA8xoj
-        3QvcWHlg==;
-Received: from [2601:1c0:6280:3f0::7650]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l5Nq6-0007vp-C5; Fri, 29 Jan 2021 07:05:06 +0000
-Subject: Re: [PATCH] crypto: octeontx2 - Add dependency on NET_VENDOR_MARVELL
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Arnaud Ebalard <arno@natisbad.org>,
-        Srujana Challa <schalla@marvell.com>,
-        kernel test robot <lkp@intel.com>
-References: <b1397a30-0018-ac78-2a89-4fc0db1d1ec8@infradead.org>
- <20210129054856.GA20020@gondor.apana.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <eadfb919-ee53-2e4c-3134-62d6c53e1695@infradead.org>
-Date:   Thu, 28 Jan 2021 23:04:59 -0800
+        id S232088AbhA2HHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 02:07:46 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35406 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231977AbhA2HHl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 02:07:41 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 25AADAD3E;
+        Fri, 29 Jan 2021 07:06:59 +0000 (UTC)
+Subject: Re: [PATCH v2] nvme-multipath: Early exit if no path is available
+To:     Chao Leng <lengchao@huawei.com>, Sagi Grimberg <sagi@grimberg.me>,
+        Daniel Wagner <dwagner@suse.de>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@fb.com>, Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+References: <20210127103033.15318-1-dwagner@suse.de>
+ <db9baae0-547c-7ff4-8b2c-0b95f14be67c@huawei.com>
+ <20210128075837.u5u56t23fq5gu6ou@beryllium.lan>
+ <69575290-200e-b4a1-4269-c71e4c2cc37b@huawei.com>
+ <20210128094004.erwnszjqcxlsi2kd@beryllium.lan>
+ <ebb1d098-3ded-e592-4419-e905aabe824f@huawei.com>
+ <675d3cf7-1ae8-adc5-b6d0-359fe10f6b23@grimberg.me>
+ <59cd053e-46cb-0235-141f-4ce919c93f48@huawei.com>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <65392653-6b03-9195-f686-5fe4b3290bd2@suse.de>
+Date:   Fri, 29 Jan 2021 08:06:57 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210129054856.GA20020@gondor.apana.org.au>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <59cd053e-46cb-0235-141f-4ce919c93f48@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/28/21 9:48 PM, Herbert Xu wrote:
-> On Mon, Jan 25, 2021 at 09:41:12AM -0800, Randy Dunlap wrote:
->> on x86_64:
+On 1/29/21 4:07 AM, Chao Leng wrote:
+> 
+> 
+> On 2021/1/29 9:42, Sagi Grimberg wrote:
 >>
->> ld: drivers/crypto/marvell/octeontx2/otx2_cptpf_main.o: in function `cptpf_flr_wq_handler':
->> otx2_cptpf_main.c:(.text+0x2b): undefined reference to `otx2_mbox_alloc_msg_rsp'
-> 
-> Thanks for the report.  The issue is that the crypto driver depends
-> on code that sits under net so if that option is off then you'll end
-> up with these errors.
-> 
-> ---8<---
-> The crypto octeontx2 driver depends on the mbox code in the network
-> tree.  It tries to select the MBOX Kconfig option but that option
-> itself depends on many other options which are not selected, e.g.,
-> CONFIG_NET_VENDOR_MARVELL.  It would be inappropriate to select them
-> all as randomly prompting the user for network options which would
-> oterhwise be disabled just because a crypto driver has been enabled
-> makes no sense.
-> 
-> This patch fixes this by adding a dependency on NET_VENDOR_MARVELL.
-> This makes the crypto driver invisible if the network option is off.
-> 
-> If the crypto driver must be visible even without the network stack
-> then the shared mbox code should be moved out of drivers/net.
-> 
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Fixes: 5e8ce8334734 ("crypto: marvell - add Marvell OcteonTX2 CPT...")
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+>>>> You can't see exactly where it dies but I followed the assembly to
+>>>> nvme_round_robin_path(). Maybe it's not the initial nvme_next_ns(head,
+>>>> old) which returns NULL but nvme_next_ns() is returning NULL eventually
+>>>> (list_next_or_null_rcu()).
+>>> So there is other bug cause nvme_next_ns abormal.
+>>> I review the code about head->list and head->current_path, I find 2 bugs
+>>> may cause the bug:
+>>> First, I already send the patch. see:
+>>> https://lore.kernel.org/linux-nvme/20210128033351.22116-1-lengchao@huawei.com/ 
+>>>
+>>> Second, in nvme_ns_remove, list_del_rcu is before
+>>> nvme_mpath_clear_current_path. This may cause "old" is deleted from the
+>>> "head", but still use "old". I'm not sure there's any other
+>>> consideration here, I will check it and try to fix it.
+>>
+>> The reason why we first remove from head->list and only then clear
+>> current_path is because the other way around there is no way
+>> to guarantee that that the ns won't be assigned as current_path
+>> again (because it is in head->list).
+> ok, I see.
+>>
+>> nvme_ns_remove fences continue of deletion of the ns by synchronizing
+>> the srcu such that for sure the current_path clearance is visible.
+> The list will be like this:
+> head->next = ns1;
+> ns1->next = head;
+> old->next = ns1;
 
-Thanks, Herbert.
+Where does 'old' pointing to?
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+> This may cause infinite loop in nvme_round_robin_path.
+> for (ns = nvme_next_ns(head, old);
+>      ns != old;
+>      ns = nvme_next_ns(head, ns))
+> The ns will always be ns1, and then infinite loop.
 
+No. nvme_next_ns() will return NULL.
 
-> diff --git a/drivers/crypto/marvell/Kconfig b/drivers/crypto/marvell/Kconfig
-> index 2efbd79180ce..a188ad1fadd3 100644
-> --- a/drivers/crypto/marvell/Kconfig
-> +++ b/drivers/crypto/marvell/Kconfig
-> @@ -41,6 +41,7 @@ config CRYPTO_DEV_OCTEONTX2_CPT
->  	depends on ARM64 || COMPILE_TEST
->  	depends on PCI_MSI && 64BIT
->  	depends on CRYPTO_LIB_AES
-> +	depends on NET_VENDOR_MARVELL
->  	select OCTEONTX2_MBOX
->  	select CRYPTO_DEV_MARVELL
->  	select CRYPTO_SKCIPHER
-> 
+Cheers,
 
-
+Hannes
 -- 
-~Randy
-
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
