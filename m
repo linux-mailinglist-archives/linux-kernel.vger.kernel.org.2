@@ -2,61 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC1A308E6E
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:31:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5BEB308E67
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:31:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233331AbhA2UXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 15:23:31 -0500
-Received: from mga07.intel.com ([134.134.136.100]:36204 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233092AbhA2UVk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 15:21:40 -0500
-IronPort-SDR: 3LCFsF04xiZMDxWqBS5Ek70GqftMiNrmoh5Fdz8j/+Xazaxm1d5hohWItgHZQkCWQPOqBgGwTi
- J4Vika4ROg/A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="244564170"
-X-IronPort-AV: E=Sophos;i="5.79,386,1602572400"; 
-   d="scan'208";a="244564170"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 12:17:10 -0800
-IronPort-SDR: 4iUoTLsK6X6g3lCJu8TKhFGnkmMJ+ssQqrjiJ2apzIBjEOVNvNLlzfm/RfwI8AJ6DkiWcFMtIA
- rR9Z1034pxSw==
-X-IronPort-AV: E=Sophos;i="5.79,386,1602572400"; 
-   d="scan'208";a="431150014"
-Received: from kagerrar-mobl.amr.corp.intel.com (HELO [10.212.16.186]) ([10.212.16.186])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 12:17:09 -0800
-Subject: Re: [PATCH 6/6] soundwire: qcom: add support to new interrupts
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        vkoul@kernel.org
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        sanyog.r.kale@intel.com, yung-chuan.liao@linux.intel.com
-References: <20210129173248.5941-1-srinivas.kandagatla@linaro.org>
- <20210129173248.5941-7-srinivas.kandagatla@linaro.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <95d3b143-6ba7-e6eb-4f44-9a8bb05b7fb7@linux.intel.com>
-Date:   Fri, 29 Jan 2021 13:38:48 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233277AbhA2UWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 15:22:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233192AbhA2UVZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 15:21:25 -0500
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5113C061786
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:20:24 -0800 (PST)
+Received: by mail-io1-xd33.google.com with SMTP id y19so10663495iov.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:20:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=KTuHAn9OfqeY3lac31rjWWvnuONhCRgNtLqnNnrmMyE=;
+        b=b09q/t9cXwHgn7gEz1ttOt0SKrpalrnMta/O+XS2r+PGF8M+qlHiFlxmrR5nMKCaBl
+         yDIpYLL+7ArJQAOTQ2o8o3YB766fkqL6XyZcWu6/63/ALThIKdAj0zUJa3ErrgFY692t
+         lO5kDXekRAlBZcLQtsgtIZH4ejgngrn2Hp0BtKJBbca7Zq6/wB82hp3IdA5iDl/jc4dP
+         fP8kUtcSTVr2coltsP6uqyfwtayE6GxlIhd36tiN1neHslxACPjtBKVZ9xQLAl3ORdA/
+         GL6/cjiP4rmANwegY/UhElaZNdhxaVJUY0kC7peRjXwhDuTuXhQwE1C0zq9mFlM3QP0I
+         ZcHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=KTuHAn9OfqeY3lac31rjWWvnuONhCRgNtLqnNnrmMyE=;
+        b=CUJYKKRNNVF8X6wAFeK3bx4pNbqsXUvgNsKrjL05iS1yp1yEzsZ6rJX3F0FYG2cqzC
+         rA0djJmzMjDWLNLKYL3gr9LQe8lIS5mFH9tXDC3DpstawiwuE4eSjxaw0j+dT1JqTip9
+         3+TxWRoIFhaIK9oYBH/lKL66DxfCIy51QXc7tR67bJOt6rzGYToDZYpVVWJqpA6qn7bQ
+         7+wjl7LZjWozBThBdXe1K8mtfAynMqUUXRFU+UWLGsNafImWXbscpIN0iMDPHLSb3dy4
+         XNGIanQENBOr0k2uZCZWLL/thzGCG4xONoUGTdQmpGfYiWsE5E+jzI/q2xetjeo1Axzm
+         Ojng==
+X-Gm-Message-State: AOAM532fBaXujs3cK7QGpUpGgxlsOPjLeOF26jAObP6WAvg7EP7Pr8Qa
+        5HLhuVBeRFnlxiV5UqmgbtPXC8gm29NDeA==
+X-Google-Smtp-Source: ABdhPJxuYTt+68CM8jrwaPa9As7C2xTjI+zXvh5wnNslMxaN+pkJLxIw8sv8Ee/so737te0MdIFjCA==
+X-Received: by 2002:a02:cead:: with SMTP id z13mr5219880jaq.62.1611951624296;
+        Fri, 29 Jan 2021 12:20:24 -0800 (PST)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id h23sm4645738ila.15.2021.01.29.12.20.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Jan 2021 12:20:23 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 1/9] net: ipa: don't thaw channel if error starting
+Date:   Fri, 29 Jan 2021 14:20:11 -0600
+Message-Id: <20210129202019.2099259-2-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210129202019.2099259-1-elder@linaro.org>
+References: <20210129202019.2099259-1-elder@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20210129173248.5941-7-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If an error occurs starting a channel, don't "thaw" it.
+We should assume the channel remains in a non-started state.
 
+Update the comment in gsi_channel_stop(); calls to this function are
+no longer retried.
 
-On 1/29/21 11:32 AM, Srinivas Kandagatla wrote:
-> Add support to new interrupts and update irq routine in a way
-> to deal with multiple pending interrupts with in a single interrupt!
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ drivers/net/ipa/gsi.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-I can't parse the wording after 'update irq routine'.
-
-
-> +	swrm->reg_write(swrm, SWRM_INTERRUPT_CLEAR, intr_sts);
-> +	swrm->reg_write(swrm, SWRM_INTERRUPT_CLEAR, 0x0);
-
-what does this second write 0x0 do? Usually interrupts are W1C, and you 
-didn't have this before.
+diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
+index f79cf3c327c1c..4a3e125e898f6 100644
+--- a/drivers/net/ipa/gsi.c
++++ b/drivers/net/ipa/gsi.c
+@@ -885,7 +885,9 @@ int gsi_channel_start(struct gsi *gsi, u32 channel_id)
+ 
+ 	mutex_unlock(&gsi->mutex);
+ 
+-	gsi_channel_thaw(channel);
++	/* Thaw the channel if successful */
++	if (!ret)
++		gsi_channel_thaw(channel);
+ 
+ 	return ret;
+ }
+@@ -910,7 +912,7 @@ int gsi_channel_stop(struct gsi *gsi, u32 channel_id)
+ 
+ 	mutex_unlock(&gsi->mutex);
+ 
+-	/* Thaw the channel if we need to retry (or on error) */
++	/* Re-thaw the channel if an error occurred while stopping */
+ 	if (ret)
+ 		gsi_channel_thaw(channel);
+ 
+-- 
+2.27.0
 
