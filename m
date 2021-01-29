@@ -2,106 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12793308B06
+	by mail.lfdr.de (Postfix) with ESMTP id 82CA2308B07
 	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:18:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231646AbhA2RJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 12:09:25 -0500
-Received: from mail.skyhub.de ([5.9.137.197]:48834 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231859AbhA2RIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232174AbhA2RJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 12:09:28 -0500
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:65302 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231871AbhA2RIz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 29 Jan 2021 12:08:55 -0500
-Received: from zn.tnic (p200300ec2f0c9a00bc6c1bcbdaab9684.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:9a00:bc6c:1bcb:daab:9684])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2D3A61EC01B7;
-        Fri, 29 Jan 2021 18:08:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1611940080;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=A6gynE/m5UUuwCga8k8q/Sc2TTu8o5jZHxq3BwRqCno=;
-        b=HZ8EumBK4ro+eSLj320DKDuuco3JB/sEYzhmyZZWDxX1t7DY77Ri+rYoeCJPzXZcqoSfmf
-        aiid5eTqF/V890+/hcrn282otPxqGkqCBvOI7b0VOsbDiPaC+PL+ILIeAsr+Y5+15y7w3q
-        LXIloyRUvMLSf7JKXiwq9M1esiIcJ3k=
-Date:   Fri, 29 Jan 2021 18:07:55 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>, x86@kernel.org,
-        Masami Hiramatsu <masami.hiramatsu@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Seth Forshee <seth.forshee@canonical.com>
-Subject: Re: [PATCH] x86: Disable CET instrumentation in the kernel
-Message-ID: <20210129170755.GF27841@zn.tnic>
-References: <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
- <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
- <20210128165014.xc77qtun6fl2qfun@treble>
- <20210128215219.6kct3h2eiustncws@treble>
- <20210129102105.GA27841@zn.tnic>
- <20210129151034.iba4eaa2fuxsipqa@treble>
- <20210129163048.GD27841@zn.tnic>
- <20210129164932.qt7hhmb7x4ehomfr@treble>
- <fd874f37-5842-93ab-6b6b-872f028f2583@suse.com>
- <20210129170331.akmpnaqlwtfy4y6o@treble>
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10TH6Vvd007638;
+        Fri, 29 Jan 2021 11:08:04 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=PODMain02222019;
+ bh=InbfmcNQ3u+eutYnwP8FnOSnY1mQqECHGcLKmEZ24/s=;
+ b=Owh4aZEcpAxX8wm82rBfYBZHF6g7aI8uUnO8ADYgIlcTIvTrKMkIJGfj1IgZSC95/tbA
+ gZsqcYnKSpf7q1kyiHGLkVPB94vNru9NNwuat5oPhL9MxuvmCdYgOwYYSZUQJj3VTll7
+ KQTXdSeQII6Yu3u5zGktAHKakl6ymaUe2zzPn8ENZG/z1RCNicPN/GZNZn7JINySSpc/
+ qJkZUybb4Py/ZyRVRz3AzGNeklbSnCH+5ZOpEZukLkTgSRvSJMfNT/+u5++Ehd24EACY
+ Tv4f1dCtFHwWwR3fQ+pfFICNeHXDImakoISiixyuysLad7/2hEhwKkDdRMFeJAAi6wgQ Kw== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 368h3u7nxh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 29 Jan 2021 11:08:04 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 29 Jan
+ 2021 17:08:02 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Fri, 29 Jan 2021 17:08:02 +0000
+Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.64.253])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 240B345;
+        Fri, 29 Jan 2021 17:08:02 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <vkoul@kernel.org>, <michal.simek@xilinx.com>
+CC:     <dmaengine@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH] dmaengine: xilinx_dma: Alloc tx descriptors GFP_NOWAIT
+Date:   Fri, 29 Jan 2021 17:08:00 +0000
+Message-ID: <20210129170800.31857-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210129170331.akmpnaqlwtfy4y6o@treble>
+Content-Type: text/plain
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 priorityscore=1501
+ adultscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0 phishscore=0
+ clxscore=1011 mlxlogscore=725 mlxscore=0 malwarescore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101290084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 11:03:31AM -0600, Josh Poimboeuf wrote:
-> On Fri, Jan 29, 2021 at 06:54:08PM +0200, Nikolay Borisov wrote:
-> > 
-> > 
-> > On 29.01.21 г. 18:49 ч., Josh Poimboeuf wrote:
-> > > Agreed, stable is a good idea.   I think Nikolay saw it with GCC 9.
-> > 
-> > 
-> > Yes I did, with the default Ubuntu compiler as well as the default gcc-10 compiler: 
-> > 
-> > # gcc -v -Q -O2 --help=target | grep protection
-> > 
-> > gcc version 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04) 
-> > COLLECT_GCC_OPTIONS='-v' '-Q' '-O2' '--help=target' '-mtune=generic' '-march=x86-64'
-> >  /usr/lib/gcc/x86_64-linux-gnu/9/cc1 -v -imultiarch x86_64-linux-gnu help-dummy -dumpbase help-dummy -mtune=generic -march=x86-64 -auxbase help-dummy -O2 -version --help=target -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccSecttk.s
-> > GNU C17 (Ubuntu 9.3.0-17ubuntu1~20.04) version 9.3.0 (x86_64-linux-gnu)
-> > 	compiled by GNU C version 9.3.0, GMP version 6.2.0, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.22.1-GMP
-> > 
-> > 
-> > It has -fcf-protection turned on by default it seems. 
-> 
-> Yup, explains why I didn't see it:
-> 
-> gcc version 10.2.1 20201125 (Red Hat 10.2.1-9) (GCC)
-> COLLECT_GCC_OPTIONS='-v' '-Q' '-O2' '--help=target' '-mtune=generic' '-march=x86-64'
->  /usr/libexec/gcc/x86_64-redhat-linux/10/cc1 -v help-dummy -dumpbase help-dummy -mtune=generic -march=x86-64 -auxbase help-dummy -O2 -version --help=target -o /tmp/cclBz55H.s
+Use GFP_NOWAIT allocation in xilinx_dma_alloc_tx_descriptor().
 
-The fact that you triggered it with an Ubuntu gcc explains why the
-original patch adding that switch:
+This is necessary for compatibility with ALSA, which calls
+dmaengine_prep_dma_cyclic() from an atomic context.
 
-29be86d7f9cb ("kbuild: add -fcf-protection=none when using retpoline flags")
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ drivers/dma/xilinx/xilinx_dma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-came from a Canonical.
-
-Adding the author to Cc for FYI.
-
-Seth, you can find this thread starting here:
-
-https://lkml.kernel.org/r/20210128215219.6kct3h2eiustncws@treble
-
-Thx.
-
+diff --git a/drivers/dma/xilinx/xilinx_dma.c b/drivers/dma/xilinx/xilinx_dma.c
+index 22faea653ea8..fb046af9ac53 100644
+--- a/drivers/dma/xilinx/xilinx_dma.c
++++ b/drivers/dma/xilinx/xilinx_dma.c
+@@ -800,7 +800,7 @@ xilinx_dma_alloc_tx_descriptor(struct xilinx_dma_chan *chan)
+ {
+ 	struct xilinx_dma_tx_descriptor *desc;
+ 
+-	desc = kzalloc(sizeof(*desc), GFP_KERNEL);
++	desc = kzalloc(sizeof(*desc), GFP_NOWAIT);
+ 	if (!desc)
+ 		return NULL;
+ 
 -- 
-Regards/Gruss,
-    Boris.
+2.20.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
