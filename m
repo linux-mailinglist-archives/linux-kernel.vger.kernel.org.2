@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16884308ADF
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:08:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39663308AEC
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:09:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231454AbhA2RCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 12:02:51 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47082 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231915AbhA2RAg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 12:00:36 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7A127ACB7;
-        Fri, 29 Jan 2021 16:59:55 +0000 (UTC)
-Subject: Re: [PATCH v2] x86/debug: Fix DR6 handling
-To:     Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        andrew.cooper3@citrix.com, Frederic Weisbecker <fweisbec@gmail.com>
-References: <YBMAbQGACujjfz+i@hirez.programming.kicks-ass.net>
- <20210128211627.GB4348@worktop.programming.kicks-ass.net>
- <20210129144816.GB27841@zn.tnic>
-From:   Tom de Vries <tdevries@suse.de>
-Message-ID: <50670b90-6d53-8c65-b3c8-e76fc9e2a1d3@suse.de>
-Date:   Fri, 29 Jan 2021 17:59:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S232038AbhA2RFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 12:05:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25956 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231924AbhA2RFG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 12:05:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1611939820;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SiOzMG034p5QbWP2fTdwm65PlfCrN2m47go7Lg3jSjc=;
+        b=SvtZ9U8hKH/JFJq7/8ma9wI9nRmTq+z+0+dQs/KPZMjscRFO9HtkNDydU628fspWS5wZVI
+        Axzc5L2nt467G/hdo10J8c7ZxrowYLXxKOLqpiOlF/UbtSb5p6TWZNfNzRiqR8hXe6d3nj
+        yiJQwU8O/I5r6jfTQrZPcROatSwHXCc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-268-N8wsyx1vNXWv0dfKR8MHXw-1; Fri, 29 Jan 2021 12:03:36 -0500
+X-MC-Unique: N8wsyx1vNXWv0dfKR8MHXw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6178D192CC42;
+        Fri, 29 Jan 2021 17:03:34 +0000 (UTC)
+Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1FB3860CD0;
+        Fri, 29 Jan 2021 17:03:33 +0000 (UTC)
+Date:   Fri, 29 Jan 2021 11:03:31 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        Masami Hiramatsu <masami.hiramatsu@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH] x86: Disable CET instrumentation in the kernel
+Message-ID: <20210129170331.akmpnaqlwtfy4y6o@treble>
+References: <20210128123842.c9e33949e62f504b84bfadf5@gmail.com>
+ <e8bae974-190b-f247-0d89-6cea4fd4cc39@suse.com>
+ <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
+ <20210128165014.xc77qtun6fl2qfun@treble>
+ <20210128215219.6kct3h2eiustncws@treble>
+ <20210129102105.GA27841@zn.tnic>
+ <20210129151034.iba4eaa2fuxsipqa@treble>
+ <20210129163048.GD27841@zn.tnic>
+ <20210129164932.qt7hhmb7x4ehomfr@treble>
+ <fd874f37-5842-93ab-6b6b-872f028f2583@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20210129144816.GB27841@zn.tnic>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fd874f37-5842-93ab-6b6b-872f028f2583@suse.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/29/21 3:48 PM, Borislav Petkov wrote:
-> On Thu, Jan 28, 2021 at 10:16:27PM +0100, Peter Zijlstra wrote:
->>
->> Tom reported that one of the GDB test-cases failed, and Boris bisected
->> it to commit:
->>
->>   d53d9bc0cf78 ("x86/debug: Change thread.debugreg6 to thread.virtual_dr6")
->>
->> The debugging session led us to commit:
->>
->>   6c0aca288e72 ("x86: Ignore trap bits on single step exceptions")
->>
->> It turns out that TF and data breakpoints are both traps and will be
->> merged, while instruction breakpoints are faults and will not be
->> merged. This means 6c0aca288e72 is wrong, we only need to exclude TF
->> and instruction breakpoints while we can merge TF and data
->> breakpoints.
->>
->> Fixes: d53d9bc0cf78 ("x86/debug: Change thread.debugreg6 to thread.virtual_dr6")
->> Fixes: 6c0aca288e72 ("x86: Ignore trap bits on single step exceptions")
->> Reported-by: Tom de Vries <tdevries@suse.de>
->> Bisected-by: Borislav Petkov <bp@alien8.de>
->> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+On Fri, Jan 29, 2021 at 06:54:08PM +0200, Nikolay Borisov wrote:
 > 
-> I guess
 > 
-> Cc: <stable@vger.kernel.org>
+> On 29.01.21 г. 18:49 ч., Josh Poimboeuf wrote:
+> > Agreed, stable is a good idea.   I think Nikolay saw it with GCC 9.
 > 
-> Also,
 > 
-> Reviewed-by: Borislav Petkov <bp@suse.de>
+> Yes I did, with the default Ubuntu compiler as well as the default gcc-10 compiler: 
 > 
-> And gdb testsuite is a bit happier:
+> # gcc -v -Q -O2 --help=target | grep protection
 > 
-> --- before
-> +++ after
->                  === gdb Summary ===
->  
-> -# of expected passes            70822
-> -# of unexpected failures        899
-> +# of expected passes            70852
-> +# of unexpected failures        869
->  # of expected failures          74
->  # of known failures             99
->  # of untested testcases         114
+> gcc version 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04) 
+> COLLECT_GCC_OPTIONS='-v' '-Q' '-O2' '--help=target' '-mtune=generic' '-march=x86-64'
+>  /usr/lib/gcc/x86_64-linux-gnu/9/cc1 -v -imultiarch x86_64-linux-gnu help-dummy -dumpbase help-dummy -mtune=generic -march=x86-64 -auxbase help-dummy -O2 -version --help=target -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -fcf-protection -o /tmp/ccSecttk.s
+> GNU C17 (Ubuntu 9.3.0-17ubuntu1~20.04) version 9.3.0 (x86_64-linux-gnu)
+> 	compiled by GNU C version 9.3.0, GMP version 6.2.0, MPFR version 4.0.2, MPC version 1.1.0, isl version isl-0.22.1-GMP
 > 
-> You just fixed 30(!) testcases.
 > 
-> :-)
-> 
+> It has -fcf-protection turned on by default it seems. 
 
-Hi Boris,
+Yup, explains why I didn't see it:
 
-thanks for testing this, and just to confirm: the total number of
-regressions I see in the gdb testsuite related to watchpoints is indeed 30.
+gcc version 10.2.1 20201125 (Red Hat 10.2.1-9) (GCC)
+COLLECT_GCC_OPTIONS='-v' '-Q' '-O2' '--help=target' '-mtune=generic' '-march=x86-64'
+ /usr/libexec/gcc/x86_64-redhat-linux/10/cc1 -v help-dummy -dumpbase help-dummy -mtune=generic -march=x86-64 -auxbase help-dummy -O2 -version --help=target -o /tmp/cclBz55H.s
 
-Thanks,
-- Tom
+
+-- 
+Josh
+
