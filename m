@@ -2,196 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584033087F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 11:53:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D7A3087E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 11:40:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232516AbhA2Kpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 05:45:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44300 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232076AbhA2K0e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 05:26:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611915901;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        id S232283AbhA2Kdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 05:33:31 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52594 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232282AbhA2K0S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 05:26:18 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1611914657; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=nP4l2G4dODpjaU7YDjg1QGuqXy7wbW7wVhXMNoRQIL8=;
-        b=DYyk7u5E7+i1MNTBud2kNTm02n+JZLGcJvS9NRR3AjkqxUjvAORYNF28hHG9WfDbKAFgc5
-        Lp1AvEfCeQGpV8li9bdrqmCAIP5Zfjx57m4smyUpPSyNVggB6QAeHp56Uvu+Y5bmmyyC30
-        rGGQFxYgJBiNWMoeGQMrdj2rlhYhlic=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-603-vHDqTS22NhirYDY-bcBg5A-1; Fri, 29 Jan 2021 04:26:09 -0500
-X-MC-Unique: vHDqTS22NhirYDY-bcBg5A-1
-Received: by mail-ed1-f70.google.com with SMTP id a26so4676094edx.8
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 01:26:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nP4l2G4dODpjaU7YDjg1QGuqXy7wbW7wVhXMNoRQIL8=;
-        b=CZIrm2yzXemxXo+k4lIuZpfPVjrF3ssG58LnT2QW9ZYSEwOPCqPQs8ZUJGstlDYYTw
-         u4161UTdDIHQEHJokL1PSQiyWDrO095zQSAXN+2ys0TwlmPE6ZMCqfAZ7nL31bV8uFP8
-         5DHzqyfxXaw52j58O52uyT79n5nH9DT7pq22TIqx385SQ06ctLt8ANz6a+Av3Jk4Xh2l
-         S5/D0VyYIQXtAcbBk3xLpcuWpCpYU8gMQUyOGPUj9j0eNbaFBPCAb/74+TmnyEkoOZIz
-         c9YQ9GbLMfZMD5yWWX4+4BmcscDm0kwCPb7x9Z1Rb8HvHFXeN/SkHvI8MeTwAn9dKDqH
-         RvpQ==
-X-Gm-Message-State: AOAM532OVvZi8CHLi521jPrSuvAafKl9btnOWVH2X8mxER7NP6wYfTX/
-        Va2BI8hD8T7NnAXnKMe9+aKvpNm/R6Wv4a9g8B2XkaCxovtOLZgO/emN4ibuKv236Pc/iXke7D4
-        9PTD1V0qQCGrP/IyGv4Zz7HdX
-X-Received: by 2002:a05:6402:4242:: with SMTP id g2mr4091925edb.103.1611912368194;
-        Fri, 29 Jan 2021 01:26:08 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy2D+e1xoz9VblcO2a9mHDykKQQov6UxFQbNQz9AXlqGu90jfarHaQYZn2TFTNC1vtihyqKwg==
-X-Received: by 2002:a05:6402:4242:: with SMTP id g2mr4091910edb.103.1611912367935;
-        Fri, 29 Jan 2021 01:26:07 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id r23sm3509763ejd.56.2021.01.29.01.26.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Jan 2021 01:26:07 -0800 (PST)
-Date:   Fri, 29 Jan 2021 10:26:04 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Jeff Vander Stoep <jeffv@google.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stsp2@yandex.ru" <stsp2@yandex.ru>,
-        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
-Subject: Re: [RFC PATCH v3 00/13] virtio/vsock: introduce SOCK_SEQPACKET
- support
-Message-ID: <20210129092604.mgaw3ipiyv6xra3b@steredhat>
-References: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
- <20210128171923.esyna5ccv5s27jyu@steredhat>
- <63459bb3-da22-b2a4-71ee-e67660fd2e12@kaspersky.com>
+        bh=qNxzpumQOIuAdqIOWix8LagkCKY10qlSAVohdhIWCVg=;
+        b=s0Jljl1gns8wLO9nXDS+CpmTLJ+z+ETchZ3Bs350di4FEOEEZeHSpbMlCueoIW9JJMb9W4
+        VmFPnZC8KoLJyVf3sHmKgIToROzuPgGFbf2mjw1SJTTThlW9qvL1gLd/m13ngQbc+7RGqo
+        iyQbIW7CxAsNNLuIEHKxQtodn/uN7xQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AD9ACAF7A;
+        Fri, 29 Jan 2021 10:04:17 +0000 (UTC)
+Date:   Fri, 29 Jan 2021 11:04:17 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Jessica Yu <jeyu@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        dri-devel@lists.freedesktop.org, live-patching@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: Re: [PATCH 04/13] module: use RCU to synchronize find_module
+Message-ID: <YBPdocTviQc2aaC5@alley>
+References: <20210128181421.2279-1-hch@lst.de>
+ <20210128181421.2279-5-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <63459bb3-da22-b2a4-71ee-e67660fd2e12@kaspersky.com>
+In-Reply-To: <20210128181421.2279-5-hch@lst.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 09:41:50AM +0300, Arseny Krasnov wrote:
->
->On 28.01.2021 20:19, Stefano Garzarella wrote:
->> Hi Arseny,
->> I reviewed a part, tomorrow I hope to finish the other patches.
->>
->> Just a couple of comments in the TODOs below.
->>
->> On Mon, Jan 25, 2021 at 02:09:00PM +0300, Arseny Krasnov wrote:
->>> 	This patchset impelements support of SOCK_SEQPACKET for virtio
->>> transport.
->>> 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
->>> do it, new packet operation was added: it marks start of record (with
->>> record length in header), such packet doesn't carry any data.  To send
->>> record, packet with start marker is sent first, then all data is sent
->>> as usual 'RW' packets. On receiver's side, length of record is known
->> >from packet with start record marker. Now as  packets of one socket
->>> are not reordered neither on vsock nor on vhost transport layers, such
->>> marker allows to restore original record on receiver's side. If user's
->>> buffer is smaller that record length, when all out of size data is
->>> dropped.
->>> 	Maximum length of datagram is not limited as in stream socket,
->>> because same credit logic is used. Difference with stream socket is
->>> that user is not woken up until whole record is received or error
->>> occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
->>> 	Tests also implemented.
->>>
->>> Arseny Krasnov (13):
->>>  af_vsock: prepare for SOCK_SEQPACKET support
->>>  af_vsock: prepare 'vsock_connectible_recvmsg()'
->>>  af_vsock: implement SEQPACKET rx loop
->>>  af_vsock: implement send logic for SOCK_SEQPACKET
->>>  af_vsock: rest of SEQPACKET support
->>>  af_vsock: update comments for stream sockets
->>>  virtio/vsock: dequeue callback for SOCK_SEQPACKET
->>>  virtio/vsock: fetch length for SEQPACKET record
->>>  virtio/vsock: add SEQPACKET receive logic
->>>  virtio/vsock: rest of SOCK_SEQPACKET support
->>>  virtio/vsock: setup SEQPACKET ops for transport
->>>  vhost/vsock: setup SEQPACKET ops for transport
->>>  vsock_test: add SOCK_SEQPACKET tests
->>>
->>> drivers/vhost/vsock.c                   |   7 +-
->>> include/linux/virtio_vsock.h            |  12 +
->>> include/net/af_vsock.h                  |   6 +
->>> include/uapi/linux/virtio_vsock.h       |   9 +
->>> net/vmw_vsock/af_vsock.c                | 543 ++++++++++++++++------
->>> net/vmw_vsock/virtio_transport.c        |   4 +
->>> net/vmw_vsock/virtio_transport_common.c | 295 ++++++++++--
->>> tools/testing/vsock/util.c              |  32 +-
->>> tools/testing/vsock/util.h              |   3 +
->>> tools/testing/vsock/vsock_test.c        | 126 +++++
->>> 10 files changed, 862 insertions(+), 175 deletions(-)
->>>
->>> TODO:
->>> - Support for record integrity control. As transport could drop some
->>>   packets, something like "record-id" and record end marker need to
->>>   be implemented. Idea is that SEQ_BEGIN packet carries both record
->>>   length and record id, end marker(let it be SEQ_END) carries only
->>>   record id. To be sure that no one packet was lost, receiver checks
->>>   length of data between SEQ_BEGIN and SEQ_END(it must be same with
->>>   value in SEQ_BEGIN) and record ids of SEQ_BEGIN and SEQ_END(this
->>>   means that both markers were not dropped. I think that easiest way
->>>   to implement record id for SEQ_BEGIN is to reuse another field of
->>>   packet header(SEQ_BEGIN already uses 'flags' as record length).For
->>>   SEQ_END record id could be stored in 'flags'.
->> I don't really like the idea of reusing the 'flags' field for this
->> purpose.
->>
->>>     Another way to implement it, is to move metadata of both SEQ_END
->>>   and SEQ_BEGIN to payload. But this approach has problem, because
->>>   if we move something to payload, such payload is accounted by
->>>   credit logic, which fragments payload, while payload with record
->>>   length and id couldn't be fragmented. One way to overcome it is to
->>>   ignore credit update for SEQ_BEGIN/SEQ_END packet.Another solution
->>>   is to update 'stream_has_space()' function: current implementation
->>>   return non-zero when at least 1 byte is allowed to use,but updated
->>>   version will have extra argument, which is needed length. For 'RW'
->>>   packet this argument is 1, for SEQ_BEGIN it is sizeof(record len +
->>>   record id) and for SEQ_END it is sizeof(record id).
->> Is the payload accounted by credit logic also if hdr.op is not
->> VIRTIO_VSOCK_OP_RW?
->
->Yes, on send any packet with payload could be fragmented if
->
->there is not enough space at receiver. On receive 'fwd_cnt' and
->
->'buf_alloc' are updated with header of every packet. Of course,
->
->to every such case i've described i can add check for 'RW'
->
->packet, to exclude payload from credit accounting, but this is
->
->bunch of dumb checks.
->
->>
->> I think that we can define a specific header to put after the
->> virtio_vsock_hdr when hdr.op is SEQ_BEGIN or SEQ_END, and in this header
->> we can store the id and the length of the message.
->
->I think it is better than use payload and touch credit logic
->
+On Thu 2021-01-28 19:14:12, Christoph Hellwig wrote:
+> Allow for a RCU-sched critical section around find_module, following
+> the lower level find_module_all helper, and switch the two callers
+> outside of module.c to use such a RCU-sched critical section instead
+> of module_mutex.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Cool, so let's try this option, hoping there aren't a lot of issues.
+It looks good and safe.
 
-Another item for TODO could be to add the SOCK_SEQPACKET support also 
-for vsock_loopback. Should be simple since it also uses 
-virtio_transport_common APIs and it can be useful for testing and 
-debugging.
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-Thanks,
-Stefano
-
+Best Regards,
+Petr
