@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22113308E7C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:32:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A05308E6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 21:31:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233156AbhA2U16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 15:27:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59930 "EHLO
+        id S233308AbhA2UWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 15:22:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233228AbhA2UVZ (ORCPT
+        with ESMTP id S233231AbhA2UVZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 29 Jan 2021 15:21:25 -0500
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1F25C06178A
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:20:25 -0800 (PST)
-Received: by mail-io1-xd2b.google.com with SMTP id p72so10611753iod.12
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:20:25 -0800 (PST)
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E178FC06178B
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:20:26 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id e7so9665610ile.7
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 12:20:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=LCw8t3dNLb85N9LUx0CmQJolraUZfpfFkvo2+8sOa0o=;
-        b=g2i4IwJ+Kj8enui+8IT7o5h9xAiJjUactPE+pJmvcAY7VNWDwx/jQ2ubO5SGGU2Rmd
-         l/fDq7rjrUXlJyU35nRapnL0exdNhPeD6v2WiVNScBZUf9o+F5VCCW5VmPvZxHxcIDB4
-         IQf65oz5qpCDZKu2dUBvfr0T6Iacjk8Qp2jsqgVvyhQmKPg0zbYXkX6x4eYq6KufgK4o
-         Z8/67LJISEBEiSL5Nlsc0g5Vk88Mk68BVTxcz3CEz22Zr+b2OWuWJqmxL72b8UQxRuWf
-         O4qcac3ZSCyWk9PtrVnpx3kgSev0bZe+Gn+e0G+MlAfhzJ8gle1AHSB3LBTB5NtD8jly
-         aCbg==
+        bh=OBqftNk7KK/hgwXMe4abpMIUsX1N08dKF58CvJahdXQ=;
+        b=k9O4EaUTX7WtWmva4k0QkyOiAhETxyKXeh5mb9sltSN1n6LTdpYOhl5FwQCOJhz0sp
+         srYl2moLMR0caSuxHIeXlCWYb+fxfYf3CaBsVtf0McuVYbf7QvcM7GGat+0oTJiDR2EM
+         k1Av/2OUYhbGpkhk28dgHa6/T+gxPVNfJP7PwzEb8jXQswb8PeGGUomkIzds9+AhoWFY
+         vEH6P33o2ENptCtw+dLRUjZtiv7Ihlq1azo2rH3m7LlonGqPI1QeUISgTzU2GzVBcbab
+         5Z5MlyL9/jsWjMLzWISzjrjSB7P1GzgQDYeM7fJnllvFXuKwSfVP3vglnxPeuo8y/OMS
+         l4+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=LCw8t3dNLb85N9LUx0CmQJolraUZfpfFkvo2+8sOa0o=;
-        b=uCc67mhGLUmAXxZmuL+yIZItdkSC4k0d5qhe9mfMCoK6Q9cybefjOpvm1D1KreuVfo
-         qSkPtzqUO3iit8rcqC83RJmso/49ie2zb9x50TpWcWNS9toMZd7nfroWFSvQ7eBLJsvZ
-         m1lJ0E1xwMd8cf7TCScpvAL2M0j7kNVaR3JRU9rxoPqtVYosVwpw0t5nBp7je2RoFcSj
-         MfHWd8kPER3a2VGZMHIwNJ0tjH5Ma7GeFrjGUL4P3axhPjwrNy1FCZtDEYJnlyTHKAIx
-         h6FKxKttHyE3sxOAPaRGxAha9UHYn9gD0FtPLxZVmM8UiAX+aIycCO6vAXXGxCExJnE0
-         Lbfw==
-X-Gm-Message-State: AOAM5301SqfOW9RWs6faaItMhS3XRbGvnTLrkT502RpTxmnuYCXS6of4
-        mU7d6MGhwkaMbkz0tC0eAjbriA==
-X-Google-Smtp-Source: ABdhPJwEPu3+q3wOtNmhi0OavTcDqf0tLsgVDEnMvJryLK9+j9CtD/JnDfWM6yR+o11zak3wx4cYNQ==
-X-Received: by 2002:a05:6602:4b:: with SMTP id z11mr4864766ioz.47.1611951625315;
-        Fri, 29 Jan 2021 12:20:25 -0800 (PST)
+        bh=OBqftNk7KK/hgwXMe4abpMIUsX1N08dKF58CvJahdXQ=;
+        b=FSzE/Tv+jzt6gW7dQMN0jQ1XlXuJRGDrUbdu+I+6kP4ANnzMyUi6/7GepCEu311PWX
+         wbia/FIFLfJAyotPiibcY2Wgi0oC+y+3NYOpaPVJ+DQzCMShL0ihhd1xTgbSNexITvOk
+         WBgwxzU5nh0guX0hmp6U52Pr6Cz7rWG2zn345GAuzTLFqPWXrCJ7ovL5iehLo1F+U3XD
+         XcuR44ihnoqQ7elUDxdoD3xu55B2rArtwl50kQ0P3p/59fkkpXQpJnggzEcrOtEgvHDf
+         uKNxCr1e0Kdzy9ijORAobI+QMU6togIlT+2D4oIIix17nlXf9mIVz23/+cYH0p4+URkf
+         wlQw==
+X-Gm-Message-State: AOAM531YdcbTqxX8u8S+OBOE/Iy3agPblbjW6uU/o3EtcVnq0CS1Okyy
+        rUNSGu9bGFulymUDd2hGAGZWqg==
+X-Google-Smtp-Source: ABdhPJxnz00s2VWLyp/FojKbyPiNbgmVU8sLuzZCZ25EUKG/UMrg2scuVzBC7mqApCq8duMfX4vp+Q==
+X-Received: by 2002:a05:6e02:1bcb:: with SMTP id x11mr4452038ilv.226.1611951626374;
+        Fri, 29 Jan 2021 12:20:26 -0800 (PST)
 Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id h23sm4645738ila.15.2021.01.29.12.20.24
+        by smtp.gmail.com with ESMTPSA id h23sm4645738ila.15.2021.01.29.12.20.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Jan 2021 12:20:24 -0800 (PST)
+        Fri, 29 Jan 2021 12:20:25 -0800 (PST)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 2/9] net: ipa: introduce gsi_channel_stop_retry()
-Date:   Fri, 29 Jan 2021 14:20:12 -0600
-Message-Id: <20210129202019.2099259-3-elder@linaro.org>
+Subject: [PATCH net-next 3/9] net: ipa: introduce __gsi_channel_start()
+Date:   Fri, 29 Jan 2021 14:20:13 -0600
+Message-Id: <20210129202019.2099259-4-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20210129202019.2099259-1-elder@linaro.org>
 References: <20210129202019.2099259-1-elder@linaro.org>
@@ -65,57 +65,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create a new helper function that encapsulates issuing a set of
-channel stop commands, retrying if appropriate, with a short delay
-between attempts.
+Create a new function that does most of the work of starting a
+channel.  What's different is that it takes a flag indicating
+whether the channel should really be stopped or not.  When doing a
+"normal" channel start, the flag is true.  Create another new
+function __gsi_channel_stop() that behaves similarly.
+
+IPA v3.5.1 implements suspend using a special SUSPEND endpoint
+setting.  If the endpoint is suspended when an I/O completes on the
+underlying GSI channel, a SUSPEND interrupt is generated.
+
+Newer versions of IPA do not implement the SUSPEND endpoint mode.
+Instead, endpoint suspend is implemented by simply stopping the
+underlying GSI channel.  In this case, an I/O completion on a
+*stopped* channel causes the SUSPEND interrupt condition.
+
+These new functions put all activity related to starting or stopping
+a channel (including "thawing/freezing" the channel) in one place,
+whether or not the channel is actually started or stopped.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/net/ipa/gsi.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ drivers/net/ipa/gsi.c | 71 ++++++++++++++++++++++---------------------
+ 1 file changed, 37 insertions(+), 34 deletions(-)
 
 diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
-index 4a3e125e898f6..bd1bf388d9892 100644
+index bd1bf388d9892..bba64887fe969 100644
 --- a/drivers/net/ipa/gsi.c
 +++ b/drivers/net/ipa/gsi.c
-@@ -892,15 +892,12 @@ int gsi_channel_start(struct gsi *gsi, u32 channel_id)
- 	return ret;
+@@ -873,23 +873,30 @@ static void gsi_channel_deprogram(struct gsi_channel *channel)
+ 	/* Nothing to do */
  }
  
--/* Stop a started channel */
--int gsi_channel_stop(struct gsi *gsi, u32 channel_id)
-+static int gsi_channel_stop_retry(struct gsi_channel *channel)
- {
--	struct gsi_channel *channel = &gsi->channel[channel_id];
- 	u32 retries = GSI_CHANNEL_STOP_RETRIES;
++static int __gsi_channel_start(struct gsi_channel *channel, bool start)
++{
 +	struct gsi *gsi = channel->gsi;
- 	int ret;
- 
--	gsi_channel_freeze(channel);
--
- 	mutex_lock(&gsi->mutex);
- 
- 	do {
-@@ -912,6 +909,19 @@ int gsi_channel_stop(struct gsi *gsi, u32 channel_id)
- 
- 	mutex_unlock(&gsi->mutex);
- 
++	int ret;
++
++	mutex_lock(&gsi->mutex);
++
++	ret = start ? gsi_channel_start_command(channel) : 0;
++
++	mutex_unlock(&gsi->mutex);
++
++	/* Thaw the channel if successful */
++	if (!ret)
++		gsi_channel_thaw(channel);
++
 +	return ret;
 +}
 +
-+/* Stop a started channel */
-+int gsi_channel_stop(struct gsi *gsi, u32 channel_id)
+ /* Start an allocated GSI channel */
+ int gsi_channel_start(struct gsi *gsi, u32 channel_id)
+ {
+ 	struct gsi_channel *channel = &gsi->channel[channel_id];
+-	int ret;
+ 
+-	mutex_lock(&gsi->mutex);
+-
+-	ret = gsi_channel_start_command(channel);
+-
+-	mutex_unlock(&gsi->mutex);
+-
+-	/* Thaw the channel if successful */
+-	if (!ret)
+-		gsi_channel_thaw(channel);
+-
+-	return ret;
++	return __gsi_channel_start(channel, true);
+ }
+ 
+ static int gsi_channel_stop_retry(struct gsi_channel *channel)
+@@ -912,21 +919,27 @@ static int gsi_channel_stop_retry(struct gsi_channel *channel)
+ 	return ret;
+ }
+ 
++static int __gsi_channel_stop(struct gsi_channel *channel, bool stop)
 +{
-+	struct gsi_channel *channel = &gsi->channel[channel_id];
 +	int ret;
 +
 +	gsi_channel_freeze(channel);
 +
-+	ret = gsi_channel_stop_retry(channel);
++	ret = stop ? gsi_channel_stop_retry(channel) : 0;
 +
- 	/* Re-thaw the channel if an error occurred while stopping */
- 	if (ret)
- 		gsi_channel_thaw(channel);
++	/* Re-thaw the channel if an error occurred while stopping */
++	if (ret)
++		gsi_channel_thaw(channel);
++
++	return ret;
++}
++
+ /* Stop a started channel */
+ int gsi_channel_stop(struct gsi *gsi, u32 channel_id)
+ {
+ 	struct gsi_channel *channel = &gsi->channel[channel_id];
+-	int ret;
+ 
+-	gsi_channel_freeze(channel);
+-
+-	ret = gsi_channel_stop_retry(channel);
+-
+-	/* Re-thaw the channel if an error occurred while stopping */
+-	if (ret)
+-		gsi_channel_thaw(channel);
+-
+-	return ret;
++	return __gsi_channel_stop(channel, true);
+ }
+ 
+ /* Reset and reconfigure a channel, (possibly) enabling the doorbell engine */
+@@ -952,12 +965,7 @@ int gsi_channel_suspend(struct gsi *gsi, u32 channel_id, bool stop)
+ {
+ 	struct gsi_channel *channel = &gsi->channel[channel_id];
+ 
+-	if (stop)
+-		return gsi_channel_stop(gsi, channel_id);
+-
+-	gsi_channel_freeze(channel);
+-
+-	return 0;
++	return __gsi_channel_stop(channel, stop);
+ }
+ 
+ /* Resume a suspended channel (starting will be requested if STOPPED) */
+@@ -965,12 +973,7 @@ int gsi_channel_resume(struct gsi *gsi, u32 channel_id, bool start)
+ {
+ 	struct gsi_channel *channel = &gsi->channel[channel_id];
+ 
+-	if (start)
+-		return gsi_channel_start(gsi, channel_id);
+-
+-	gsi_channel_thaw(channel);
+-
+-	return 0;
++	return __gsi_channel_start(channel, start);
+ }
+ 
+ /**
 -- 
 2.27.0
 
