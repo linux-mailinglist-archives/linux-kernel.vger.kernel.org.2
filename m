@@ -2,85 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C67308B0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:18:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B355B308B20
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:18:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232230AbhA2RK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 12:10:57 -0500
-Received: from www262.sakura.ne.jp ([202.181.97.72]:61161 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231871AbhA2RKw (ORCPT
+        id S231256AbhA2RMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 12:12:03 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:41795 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231871AbhA2RLi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 12:10:52 -0500
-Received: from fsav304.sakura.ne.jp (fsav304.sakura.ne.jp [153.120.85.135])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 10TH8gL7041384;
-        Sat, 30 Jan 2021 02:08:42 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav304.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp);
- Sat, 30 Jan 2021 02:08:42 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav304.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 10TH8gCx041381
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sat, 30 Jan 2021 02:08:42 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: general protection fault in tomoyo_socket_sendmsg_permission
-To:     Shuah Khan <skhan@linuxfoundation.org>,
-        Hillf Danton <hdanton@sina.com>,
-        syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        syzkaller-bugs@googlegroups.com
-References: <000000000000647eff05b3f7e0d4@google.com>
- <20201113120055.11748-1-hdanton@sina.com>
- <5f71e0c1-d387-6d72-d8e4-edb11cf57f72@linuxfoundation.org>
- <ea4028b7-53f2-aeaf-76e7-69874efcdec5@I-love.SAKURA.ne.jp>
- <2b70d360-a293-4acb-ea6c-2badda5e8b8b@linuxfoundation.org>
- <9bdd3f10-bddb-bd87-d7ad-b4b706477006@i-love.sakura.ne.jp>
- <6b8da36f-a994-7604-77f4-52e29434605f@linuxfoundation.org>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <5f9ec159-77d8-ffba-21d1-2810e059f998@i-love.sakura.ne.jp>
-Date:   Sat, 30 Jan 2021 02:08:41 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <6b8da36f-a994-7604-77f4-52e29434605f@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Fri, 29 Jan 2021 12:11:38 -0500
+Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
+  by alexa-out.qualcomm.com with ESMTP; 29 Jan 2021 09:10:17 -0800
+X-QCInternal: smtphost
+Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
+  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 29 Jan 2021 09:10:14 -0800
+X-QCInternal: smtphost
+Received: from gokulsri-linux.qualcomm.com ([10.201.2.207])
+  by ironmsg02-blr.qualcomm.com with ESMTP; 29 Jan 2021 22:39:38 +0530
+Received: by gokulsri-linux.qualcomm.com (Postfix, from userid 432570)
+        id B90BC219F7; Fri, 29 Jan 2021 22:39:38 +0530 (IST)
+From:   Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
+To:     sboyd@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
+        david.brown@linaro.org, devicetree@vger.kernel.org,
+        jassisinghbrar@gmail.com, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, mark.rutland@arm.com,
+        mturquette@baylibre.com, ohad@wizery.com, robh+dt@kernel.org,
+        sricharan@codeaurora.org, nprakash@codeaurora.org,
+        gokulsri@codeaurora.org
+Subject: [PATCH 0/3] remoteproc: qcom: q6v5-wcss: Add driver data for IPQ6018
+Date:   Fri, 29 Jan 2021 22:39:35 +0530
+Message-Id: <1611940178-24546-1-git-send-email-gokulsri@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/01/30 1:05, Shuah Khan wrote:
->> Since "general protection fault in tomoyo_socket_sendmsg_permission" is caused by
->> unexpectedly resetting ud->tcp_socket to NULL without waiting for tx thread to
->> terminate, tracing the ordering of events is worth knowing. Even adding
->> schedule_timeout_uninterruptible() to before kernel_sendmsg() might help.
->>
-> 
-> What about the duplicate bug information that was in my email?
-> Did you take a look at that?
+Q6 based WiFi fw loading is supported across
+different targets, ex: IPQ8074/QCS404. In order to
+support different fw name for IPQ6018, populate
+hardcoded param using compatible and driver data. 
 
-I was not aware of the duplicate bugs. It is interesting that
-"KASAN: null-ptr-deref Write in event_handler" says that vdev->ud.tcp_tx became NULL at
+Gokul Sriram Palanisamy (3):
+  dt-bindings: remoteproc: qcom: Add Q6V5 Modem PIL binding for IPQ6018
+  remoteproc: qcom: wcss: populate driver data for IPQ6018
+  arm64: dts: ipq6018: Update WCSS PIL driver compatible
 
-	if (vdev->ud.tcp_tx) {
+ .../devicetree/bindings/remoteproc/qcom,q6v5.txt      |  4 ++++
+ arch/arm64/boot/dts/qcom/ipq6018.dtsi                 |  2 +-
+ drivers/remoteproc/qcom_q6v5_wcss.c                   | 19 +++++++++++++++++--
+ 3 files changed, 22 insertions(+), 3 deletions(-)
 
-		/* this location */
+-- 
+2.7.4
 
-		kthread_stop_put(vdev->ud.tcp_tx);
-		vdev->ud.tcp_tx = NULL;
-	}
-
-which means that somebody else is unexpectedly resetting vdev->ud.tcp_tx to NULL.
-
-If memset() from vhci_device_init() from vhci_start() were unexpectedly called,
-all of tcp_socket, tcp_rx, tcp_tx etc. becomes NULL which can explain these bugs ?
-I'm inclined to report not only tcp_socket but also other fields when kernel_sendmsg()
-detected that tcp_socket is NULL...
