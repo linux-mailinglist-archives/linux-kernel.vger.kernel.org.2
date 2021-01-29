@@ -2,89 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3807A308422
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:09:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33FEA308439
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 04:26:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbhA2DIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 28 Jan 2021 22:08:51 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2804 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231607AbhA2DIn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 28 Jan 2021 22:08:43 -0500
-Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4DRj0845LQz13mVC;
-        Fri, 29 Jan 2021 11:06:00 +0800 (CST)
-Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
- DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Fri, 29 Jan 2021 11:08:00 +0800
-Received: from [10.169.42.93] (10.169.42.93) by dggema772-chm.china.huawei.com
- (10.1.198.214) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2106.2; Fri, 29
- Jan 2021 11:07:59 +0800
-Subject: Re: [PATCH v2] nvme-multipath: Early exit if no path is available
-To:     Sagi Grimberg <sagi@grimberg.me>, Daniel Wagner <dwagner@suse.de>
-CC:     <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        "Jens Axboe" <axboe@fb.com>, Hannes Reinecke <hare@suse.de>,
-        Keith Busch <kbusch@kernel.org>, Christoph Hellwig <hch@lst.de>
-References: <20210127103033.15318-1-dwagner@suse.de>
- <db9baae0-547c-7ff4-8b2c-0b95f14be67c@huawei.com>
- <20210128075837.u5u56t23fq5gu6ou@beryllium.lan>
- <69575290-200e-b4a1-4269-c71e4c2cc37b@huawei.com>
- <20210128094004.erwnszjqcxlsi2kd@beryllium.lan>
- <ebb1d098-3ded-e592-4419-e905aabe824f@huawei.com>
- <675d3cf7-1ae8-adc5-b6d0-359fe10f6b23@grimberg.me>
-From:   Chao Leng <lengchao@huawei.com>
-Message-ID: <59cd053e-46cb-0235-141f-4ce919c93f48@huawei.com>
-Date:   Fri, 29 Jan 2021 11:07:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S231844AbhA2DZf convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 28 Jan 2021 22:25:35 -0500
+Received: from wnbcorp.com ([175.126.38.143]:53095 "EHLO blank.cafe24.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231267AbhA2DZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 28 Jan 2021 22:25:34 -0500
+Received: from [10.175.141.9] (31-161-145-32.mobile.kpn.net [31.161.145.32])
+        (authenticated bits=0)
+        by blank.cafe24.com (8.14.4/8.14.4) with ESMTP id 10T35mQY015728;
+        Fri, 29 Jan 2021 12:12:12 +0900
+Message-Id: <202101290312.10T35mQY015728@blank.cafe24.com>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <675d3cf7-1ae8-adc5-b6d0-359fe10f6b23@grimberg.me>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.169.42.93]
-X-ClientProxiedBy: dggeme703-chm.china.huawei.com (10.1.199.99) To
- dggema772-chm.china.huawei.com (10.1.198.214)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: YOU HAVE WON
+To:     Recipients <lottonlxxx@europe.com>
+From:   lottonlxxx@europe.com
+Date:   Fri, 29 Jan 2021 04:11:58 +0100
+Reply-To: johnsonwilson389@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+LOTTO.NL,
+2391  Beds 152 Koningin Julianaplein 21,
+Den Haag-Netherlands.
+(Lotto affiliate with Subscriber Agents).
+From: Susan Console
+(Lottery Coordinator)
+Website: www.lotto.nl
+
+Sir/Madam,
+
+CONGRATULATIONS!!!
+
+We are pleased to inform you of the result of the Lotto NL Winners International programs held on the 26th of January 2021.  Your e-mail address attached to ticket #: 00903228100 with prize # 778009/UK drew €1,000,000.00 which was first in the 2nd class of the draws. you are to receive €1,000,000.00 (One Million Euros). Because of mix up in cash
+pay-outs, we ask that you keep your winning information confidential until your money (€1,000,000.00) has been fully remitted to you by our accredited pay-point bank. 
+
+This measure must be adhere to  avoid loss of your cash prize-winners of our cash prizes are advised to adhere to these instructions to forestall the abuse of this program by other participants.  
+
+It's important to note that this draws were conducted formally, and winners are selected through an internet ballot system from 60,000 individual and companies e-mail addresses - the draws are conducted around the world through our internet based ballot system. The promotion is sponsored and promoted Lotto NL. 
+
+We congratulate you once again. We hope you will use part of it in our next draws; the jackpot winning is €85million.  Remember, all winning must be claimed not later than 20 days. After this date all unclaimed cash prize will be forfeited and included in the next sweepstake.  Please, in order to avoid unnecessary delays and complications remember to quote personal and winning numbers in all correspondence with us.
+
+Congratulations once again from all members of Lotto NL. Thank you for being part of our promotional program.
+
+To file for the release of your winnings you are advice to contact our Foreign Transfer Manager:
+
+MR. WILSON WARREN JOHNSON
+
+Tel: +31-620-561-787
+
+Fax: +31-84-438-5342
+
+Email: johnsonwilson389@gmail.com
 
 
-On 2021/1/29 9:42, Sagi Grimberg wrote:
-> 
->>> You can't see exactly where it dies but I followed the assembly to
->>> nvme_round_robin_path(). Maybe it's not the initial nvme_next_ns(head,
->>> old) which returns NULL but nvme_next_ns() is returning NULL eventually
->>> (list_next_or_null_rcu()).
->> So there is other bug cause nvme_next_ns abormal.
->> I review the code about head->list and head->current_path, I find 2 bugs
->> may cause the bug:
->> First, I already send the patch. see:
->> https://lore.kernel.org/linux-nvme/20210128033351.22116-1-lengchao@huawei.com/
->> Second, in nvme_ns_remove, list_del_rcu is before
->> nvme_mpath_clear_current_path. This may cause "old" is deleted from the
->> "head", but still use "old". I'm not sure there's any other
->> consideration here, I will check it and try to fix it.
-> 
-> The reason why we first remove from head->list and only then clear
-> current_path is because the other way around there is no way
-> to guarantee that that the ns won't be assigned as current_path
-> again (because it is in head->list).
-ok, I see.
-> 
-> nvme_ns_remove fences continue of deletion of the ns by synchronizing
-> the srcu such that for sure the current_path clearance is visible.
-The list will be like this:
-head->next = ns1;
-ns1->next = head;
-old->next = ns1;
-This may cause infinite loop in nvme_round_robin_path.
-for (ns = nvme_next_ns(head, old);
-	ns != old;
-	ns = nvme_next_ns(head, ns))
-The ns will always be ns1, and then infinite loop.
-> .
+
