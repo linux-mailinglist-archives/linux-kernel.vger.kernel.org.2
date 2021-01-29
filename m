@@ -2,142 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E26B53085DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9FAC3085D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:33:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231865AbhA2Gbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 01:31:53 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:32276 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232218AbhA2GaL (ORCPT
+        id S232058AbhA2GaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 01:30:01 -0500
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:56223 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232194AbhA2G3k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 01:30:11 -0500
-X-IronPort-AV: E=Sophos;i="5.79,384,1602518400"; 
-   d="scan'208";a="103973638"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 29 Jan 2021 14:28:18 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id 14C804CE6791;
-        Fri, 29 Jan 2021 14:28:15 +0800 (CST)
-Received: from G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.200) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Fri, 29 Jan 2021 14:28:15 +0800
-Received: from irides.mr.mr.mr (10.167.225.141) by
- G08CNEXCHPEKD04.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.2 via Frontend Transport; Fri, 29 Jan 2021 14:28:15 +0800
-From:   Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-        <linux-nvdimm@lists.01.org>, <linux-mm@kvack.org>,
-        <linux-fsdevel@vger.kernel.org>, <dm-devel@redhat.com>
-CC:     <darrick.wong@oracle.com>, <dan.j.williams@intel.com>,
-        <david@fromorbit.com>, <hch@lst.de>, <agk@redhat.com>,
-        <snitzer@redhat.com>, <rgoldwyn@suse.de>, <qi.fuli@fujitsu.com>,
-        <y-goto@fujitsu.com>
-Subject: [PATCH RESEND v2 10/10] fs/dax: Remove useless functions
-Date:   Fri, 29 Jan 2021 14:27:57 +0800
-Message-ID: <20210129062757.1594130-11-ruansy.fnst@cn.fujitsu.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210129062757.1594130-1-ruansy.fnst@cn.fujitsu.com>
-References: <20210129062757.1594130-1-ruansy.fnst@cn.fujitsu.com>
+        Fri, 29 Jan 2021 01:29:40 -0500
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id D4CED7612E;
+        Fri, 29 Jan 2021 09:28:51 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail; t=1611901731;
+        bh=QZjqDhhfWcW+0uZiIBXiBKnmWJ8H4HqGbYSfjDcKFJ0=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=IpQH8aXXskkY/RhabPw5AGDoJiQfmpRsXX50HlZJZw60xhAnWTgd7U+jzFoX8OFC3
+         XehXBQi3LsWs+K0uxvnuvjhpX2ldWY3XZ2eQnKDUhf5fGxeIpjvgXYMVsSSLGs0WeB
+         eqswiQYXFG4GNuY+64P0wvsQEljhnaUe57JwjHjY=
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id E043C76168;
+        Fri, 29 Jan 2021 09:28:50 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.68.128) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Fri, 29
+ Jan 2021 09:28:50 +0300
+Subject: Re: [RFC PATCH v3 03/13] af_vsock: implement SEQPACKET rx loop
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jeff Vander Stoep <jeffv@google.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stsp2@yandex.ru" <stsp2@yandex.ru>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+References: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
+ <20210125111239.598377-1-arseny.krasnov@kaspersky.com>
+ <20210128165518.ho3csm5u7v5pnwnd@steredhat>
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Message-ID: <5e000f18-1457-068d-10c5-0a349c938497@kaspersky.com>
+Date:   Fri, 29 Jan 2021 09:28:49 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: 14C804CE6791.AECA7
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: ruansy.fnst@cn.fujitsu.com
-X-Spam-Status: No
+In-Reply-To: <20210128165518.ho3csm5u7v5pnwnd@steredhat>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.64.68.128]
+X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.16, Database issued on: 01/29/2021 06:13:35
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 161515 [Jan 29 2021]
+X-KSE-AntiSpam-Info: LuaCore: 421 421 33a18ad4049b4a5e5420c907b38d332fafd06b09
+X-KSE-AntiSpam-Info: Version: 5.9.16.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: {Tracking_content_type, plain}
+X-KSE-AntiSpam-Info: {Tracking_date, moscow}
+X-KSE-AntiSpam-Info: {Tracking_c_tr_enc, eight_bit}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: kaspersky.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 01/29/2021 06:16:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 1/29/2021 4:21:00 AM
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/01/29 05:17:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/01/29 02:21:00 #16053718
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since owner tarcking is triggerred by pmem device, these functions are
-useless.  So remove it.
 
-Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
----
- fs/dax.c | 46 ----------------------------------------------
- 1 file changed, 46 deletions(-)
+On 28.01.2021 19:55, Stefano Garzarella wrote:
+> On Mon, Jan 25, 2021 at 02:12:36PM +0300, Arseny Krasnov wrote:
+>> This adds receive loop for SEQPACKET. It looks like receive loop for
+>> SEQPACKET, but there is a little bit difference:
+>> 1) It doesn't call notify callbacks.
+>> 2) It doesn't care about 'SO_SNDLOWAT' and 'SO_RCVLOWAT' values, because
+>>   there is no sense for these values in SEQPACKET case.
+>> 3) It waits until whole record is received or error is found during
+>>   receiving.
+>> 4) It processes and sets 'MSG_TRUNC' flag.
+>>
+>> So to avoid extra conditions for two types of socket inside one loop, two
+>> independent functions were created.
+>>
+>> Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+>> ---
+>> include/net/af_vsock.h   |   5 ++
+>> net/vmw_vsock/af_vsock.c | 102 ++++++++++++++++++++++++++++++++++++++-
+>> 2 files changed, 106 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
+>> index b1c717286993..46073842d489 100644
+>> --- a/include/net/af_vsock.h
+>> +++ b/include/net/af_vsock.h
+>> @@ -135,6 +135,11 @@ struct vsock_transport {
+>> 	bool (*stream_is_active)(struct vsock_sock *);
+>> 	bool (*stream_allow)(u32 cid, u32 port);
+>>
+>> +	/* SEQ_PACKET. */
+>> +	size_t (*seqpacket_seq_get_len)(struct vsock_sock *);
+>> +	ssize_t (*seqpacket_dequeue)(struct vsock_sock *, struct msghdr *,
+>> +				     size_t len, int flags);
+>> +
+>> 	/* Notification. */
+>> 	int (*notify_poll_in)(struct vsock_sock *, size_t, bool *);
+>> 	int (*notify_poll_out)(struct vsock_sock *, size_t, bool *);
+>> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>> index 524df8fc84cd..3b266880b7c8 100644
+>> --- a/net/vmw_vsock/af_vsock.c
+>> +++ b/net/vmw_vsock/af_vsock.c
+>> @@ -2006,7 +2006,107 @@ static int __vsock_stream_recvmsg(struct sock *sk, struct msghdr *msg,
+>> static int __vsock_seqpacket_recvmsg(struct sock *sk, struct msghdr *msg,
+>> 				     size_t len, int flags)
+>> {
+>> -	return -1;
+>> +	const struct vsock_transport *transport;
+>> +	const struct iovec *orig_iov;
+>> +	unsigned long orig_nr_segs;
+>> +	ssize_t dequeued_total = 0;
+>> +	struct vsock_sock *vsk;
+>> +	size_t record_len;
+>> +	long timeout;
+>> +	int err = 0;
+>> +	DEFINE_WAIT(wait);
+>> +
+>> +	vsk = vsock_sk(sk);
+>> +	transport = vsk->transport;
+>> +
+>> +	timeout = sock_rcvtimeo(sk, flags & MSG_DONTWAIT);
+>> +	msg->msg_flags &= ~MSG_EOR;
+> Maybe add a comment about why we need to clear MSG_EOR.
+>
+>> +	orig_nr_segs = msg->msg_iter.nr_segs;
+>> +	orig_iov = msg->msg_iter.iov;
+>> +
+>> +	while (1) {
+>> +		ssize_t dequeued;
+>> +		s64 ready;
+>> +
+>> +		prepare_to_wait(sk_sleep(sk), &wait, TASK_INTERRUPTIBLE);
+>> +		ready = vsock_stream_has_data(vsk);
+>> +
+>> +		if (ready == 0) {
+>> +			if (vsock_wait_data(sk, &wait, timeout, NULL, 0)) {
+>> +				/* In case of any loop break(timeout, signal
+>> +				 * interrupt or shutdown), we report user that
+>> +				 * nothing was copied.
+>> +				 */
+>> +				dequeued_total = 0;
+>> +				break;
+>> +			}
+>> +			continue;
+>> +		}
+>> +
+>> +		finish_wait(sk_sleep(sk), &wait);
+>> +
+>> +		if (ready < 0) {
+>> +			err = -ENOMEM;
+>> +			goto out;
+>> +		}
+>> +
+>> +		if (dequeued_total == 0) {
+>> +			record_len =
+>> +				transport->seqpacket_seq_get_len(vsk);
+>> +
+>> +			if (record_len == 0)
+>> +				continue;
+>> +		}
+>> +
+>> +		/* 'msg_iter.count' is number of unused bytes in iov.
+>> +		 * On every copy to iov iterator it is decremented at
+>> +		 * size of data.
+>> +		 */
+>> +		dequeued = transport->seqpacket_dequeue(vsk, msg,
+>> +					msg->msg_iter.count, flags);
+>                                          ^
+>                                          Is this needed or 'msg' can be 
+>                                          used in the transport?
+Yes, right
+>> +
+>> +		if (dequeued < 0) {
+>> +			dequeued_total = 0;
+>> +
+>> +			if (dequeued == -EAGAIN) {
+>> +				iov_iter_init(&msg->msg_iter, READ,
+>> +					      orig_iov, orig_nr_segs,
+>> +					      len);
+>> +				msg->msg_flags &= ~MSG_EOR;
+>> +				continue;
+> Why we need to reset MSG_EOR here?
 
-diff --git a/fs/dax.c b/fs/dax.c
-index c64c3a0e76a6..e20a5df03eec 100644
---- a/fs/dax.c
-+++ b/fs/dax.c
-@@ -323,48 +323,6 @@ static unsigned long dax_end_pfn(void *entry)
- 	for (pfn = dax_to_pfn(entry); \
- 			pfn < dax_end_pfn(entry); pfn++)
- 
--/*
-- * TODO: for reflink+dax we need a way to associate a single page with
-- * multiple address_space instances at different linear_page_index()
-- * offsets.
-- */
--static void dax_associate_entry(void *entry, struct address_space *mapping,
--		struct vm_area_struct *vma, unsigned long address)
--{
--	unsigned long size = dax_entry_size(entry), pfn, index;
--	int i = 0;
--
--	if (IS_ENABLED(CONFIG_FS_DAX_LIMITED))
--		return;
--
--	index = linear_page_index(vma, address & ~(size - 1));
--	for_each_mapped_pfn(entry, pfn) {
--		struct page *page = pfn_to_page(pfn);
--
--		WARN_ON_ONCE(page->mapping);
--		page->mapping = mapping;
--		page->index = index + i++;
--	}
--}
--
--static void dax_disassociate_entry(void *entry, struct address_space *mapping,
--		bool trunc)
--{
--	unsigned long pfn;
--
--	if (IS_ENABLED(CONFIG_FS_DAX_LIMITED))
--		return;
--
--	for_each_mapped_pfn(entry, pfn) {
--		struct page *page = pfn_to_page(pfn);
--
--		WARN_ON_ONCE(trunc && page_ref_count(page) > 1);
--		WARN_ON_ONCE(page->mapping && page->mapping != mapping);
--		page->mapping = NULL;
--		page->index = 0;
--	}
--}
--
- static struct page *dax_busy_page(void *entry)
- {
- 	unsigned long pfn;
-@@ -543,7 +501,6 @@ static void *grab_mapping_entry(struct xa_state *xas,
- 			xas_lock_irq(xas);
- 		}
- 
--		dax_disassociate_entry(entry, mapping, false);
- 		xas_store(xas, NULL);	/* undo the PMD join */
- 		dax_wake_entry(xas, entry, true);
- 		mapping->nrexceptional--;
-@@ -680,7 +637,6 @@ static int __dax_invalidate_entry(struct address_space *mapping,
- 	    (xas_get_mark(&xas, PAGECACHE_TAG_DIRTY) ||
- 	     xas_get_mark(&xas, PAGECACHE_TAG_TOWRITE)))
- 		goto out;
--	dax_disassociate_entry(entry, mapping, trunc);
- 	xas_store(&xas, NULL);
- 	mapping->nrexceptional--;
- 	ret = 1;
-@@ -774,8 +730,6 @@ static void *dax_insert_entry(struct xa_state *xas,
- 	if (dax_is_zero_entry(entry) || dax_is_empty_entry(entry)) {
- 		void *old;
- 
--		dax_disassociate_entry(entry, mapping, false);
--		dax_associate_entry(new_entry, mapping, vmf->vma, vmf->address);
- 		/*
- 		 * Only swap our new entry into the page cache if the current
- 		 * entry is a zero page or an empty entry.  If a normal PTE or
--- 
-2.30.0
+Because if previous attempt to receive record was failed, but
 
+MSG_EOR was set, so we clear it for next attempt to get record
 
-
+>
+>> +			}
+>> +
+>> +			err = -ENOMEM;
+>> +			break;
+>> +		}
+>> +
+>> +		dequeued_total += dequeued;
+>> +
+>> +		if (dequeued_total >= record_len)
+>> +			break;
+>> +	}
+> Maybe a new line here.
+>
+>> +	if (sk->sk_err)
+>> +		err = -sk->sk_err;
+>> +	else if (sk->sk_shutdown & RCV_SHUTDOWN)
+>> +		err = 0;
+>> +
+>> +	if (dequeued_total > 0) {
+>> +		/* User sets MSG_TRUNC, so return real length of
+>> +		 * packet.
+>> +		 */
+>> +		if (flags & MSG_TRUNC)
+>> +			err = record_len;
+>> +		else
+>> +			err = len - msg->msg_iter.count;
+>> +
+>> +		/* Always set MSG_TRUNC if real length of packet is
+>> +		 * bigger that user buffer.
+> s/that/than
+>
+>> +		 */
+>> +		if (record_len > len)
+>> +			msg->msg_flags |= MSG_TRUNC;
+>> +	}
+>> +out:
+>> +	return err;
+>> }
+>>
+>> static int
+>> -- 
+>> 2.25.1
+>>
+>
