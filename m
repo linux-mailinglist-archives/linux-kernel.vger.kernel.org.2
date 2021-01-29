@@ -2,99 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABFD9308B84
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:33:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD02E308B7E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 18:33:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230388AbhA2R1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 12:27:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54556 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231658AbhA2RZy (ORCPT
+        id S232471AbhA2RZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 12:25:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231511AbhA2RZQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 12:25:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611941065;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1tJEDpVaTU2o7pEzEYi/Itw24bwaC7NiGn/22B7qnc4=;
-        b=bv1dP1r6yRx8HvpRiBl5i+lknLWT7YZ1pHsDaSX7hU6Sew/ngFeRVFgKyd1lkPvJP1L9Pm
-        DZ4vNSGWWozd1bGBGAvyEiPoGJo8CMSNwBkttKFJTBU58yzJgEZQ6b+owyryzUIK673q+U
-        cHIQGrL1kG/oyAz4Pt2X63HjFwofiO0=
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
- [209.85.166.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-237-FoqXsFDcPmGG2qidoeVqRQ-1; Fri, 29 Jan 2021 12:24:24 -0500
-X-MC-Unique: FoqXsFDcPmGG2qidoeVqRQ-1
-Received: by mail-il1-f200.google.com with SMTP id x11so8239703ill.17
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 09:24:24 -0800 (PST)
+        Fri, 29 Jan 2021 12:25:16 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 498ADC061573
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 09:24:36 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id t25so7167434pga.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 09:24:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=nHXaNbRLwPMnRoilUX39qVHuYZJUav7wQl/+zp5552A=;
+        b=KNirywQK5hh+VpGQT58yHfLxFk8z0/Wjqn4jh8x9y365dq9VtCqMQMkI6Xl2Gg1Niy
+         k9KlZQ9FePwVISN9PdScvP+EHB7xkTlYmpYleg0mHFR5pUL8jm1HvGawYrw51clIvtME
+         JQYIrkJ7kNyPzRBeWCI5As10oE7Ibf3yR8pso=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:message-id:in-reply-to
-         :references:mime-version;
-        bh=1tJEDpVaTU2o7pEzEYi/Itw24bwaC7NiGn/22B7qnc4=;
-        b=Cqw0ce/XjFpo+Dv7/ENdWW6gzgWy3qu2dNmakCQsj4dPrPeDJZPZ14+Xw/u9JEgY0p
-         B3+cneMrVjfHem05micseZmqKoQ907X6JRC4E7WXqxqTfCDu0Re2ZqW8QSZVf8kHbqn8
-         tiAjL8dmW5dCXQcHU6SfEIC1U1UeuzSmuxpH6pmHwAsD4P0MX5G1pYIyzNM2nDg9ueh1
-         /ZU2bL3xyTCvaGBCfLXHmWbXhD2Vk8VhRlcARCNZE/rcuD1XwyD8ZO0FKVSZ9s9MoBs8
-         195CngD21ysys1GE+nd2I/rL1qJzLiC477cPVVOJ1s7gMA7bDRVxp6eDiJ6epHr01ob/
-         +BNQ==
-X-Gm-Message-State: AOAM532nbUBTK2yL7mMkZSvee18hNDex2qXqJHBu6zGF54a4vdT7P9EN
-        GvqyLFAOZtzUQ5i1GJxaOrH3Jau/6bhPRojvira4NgbyU0WnLX608BRjuH4f42Ee03c9EZUGA5/
-        jG2BXUtsk1NpVp92Ad5HrBuk0
-X-Received: by 2002:a05:6638:229b:: with SMTP id y27mr4571999jas.136.1611941063553;
-        Fri, 29 Jan 2021 09:24:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxBQCa/aQwAwI0WBJb/kQp4EcDUYeQ7uixWQ+zr7FFHIFR0qu+Poa5+gr/i329TB8Xg1vOo1g==
-X-Received: by 2002:a05:6638:229b:: with SMTP id y27mr4571989jas.136.1611941063408;
-        Fri, 29 Jan 2021 09:24:23 -0800 (PST)
-Received: from chargestone-cave ([2607:9000:0:57::8e])
-        by smtp.gmail.com with ESMTPSA id b16sm4761308ile.32.2021.01.29.09.24.22
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=nHXaNbRLwPMnRoilUX39qVHuYZJUav7wQl/+zp5552A=;
+        b=WDDsfGes8slBU1YBIpeY9kqGm9rB/8y90mtbGw6x9kSUxsxks2sC4gN0MN0keh9uUv
+         7t+0ijEdDLNeVrA7f2UAVpOTAIL23efm2tk0816H/wsEp8RtjxTBzUUyZnLtmYGkcKLf
+         g0tsCm4+qT46+sJqqowxlhX2nlpW3AgjCmcRe4V36AmdlA36ab0G3iH5sG5Bud56bEjv
+         wbQE6Ffdk/fTGFT8KQL2ncpbFcT2mOBe6RJViOT4WLWjQZ7co+MfcYDRUhuQswrF2w0q
+         I++tot3fMPBPMDvCb8ivPwXwPozeJyIG3N3tE7KEmNp8EDOkiVPEiueX002s8wPtOc3t
+         UxQA==
+X-Gm-Message-State: AOAM532MVV9RbBysx/0hzKxY9wHK0B898A1z7DQxYNF5vUFFJZRxcCNa
+        7hklh+DK0Eysp5LZ2Y70irgY+CsXHcWuAfffQVY=
+X-Google-Smtp-Source: ABdhPJxGcUHp0g3vRP7FsgsDMBLioX2pUt+Y0LlJQcxVnMyRdxObo/5BohnQhuQV7zWhWySokqpCWg==
+X-Received: by 2002:a63:4c10:: with SMTP id z16mr5968276pga.274.1611941075585;
+        Fri, 29 Jan 2021 09:24:35 -0800 (PST)
+Received: from rahul_yocto_ubuntu18.ibn.broadcom.net ([192.19.234.250])
+        by smtp.gmail.com with ESMTPSA id w11sm9739016pge.28.2021.01.29.09.24.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Jan 2021 09:24:22 -0800 (PST)
-Date:   Fri, 29 Jan 2021 11:24:16 -0600
-From:   Michael Catanzaro <mcatanzaro@redhat.com>
-Subject: Re: [REGRESSION] "ALSA: HDA: Early Forbid of runtime PM" broke
- =?UTF-8?Q?my=0D=0A?= laptop's internal audio
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     "N, Harshapriya" <harshapriya.n@intel.com>,
-        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
-        kai.vehmanen@intel.com, stable@vger.kernel.org
-Message-Id: <GOHPNQ.RTPVHYRR9NQ62@redhat.com>
-In-Reply-To: <s5hft2jlnt4.wl-tiwai@suse.de>
-References: <EM1ONQ.OL5CFJTBEBBW@redhat.com>
-        <BY5PR11MB430713319F12454CF71A1E73FDB99@BY5PR11MB4307.namprd11.prod.outlook.com>
-        <U3BPNQ.P8Q6LYEGXHB5@redhat.com> <s5hsg6jlr4q.wl-tiwai@suse.de>
-        <9ACPNQ.AF32G3OJNPHA3@redhat.com> <IECPNQ.0TZXZXWOZX8L2@redhat.com>
-        <8CEPNQ.GAG87LR8RI871@redhat.com> <s5hft2jlnt4.wl-tiwai@suse.de>
-X-Mailer: geary/3.38.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+        Fri, 29 Jan 2021 09:24:33 -0800 (PST)
+From:   Vikas Gupta <vikas.gupta@broadcom.com>
+To:     eric.auger@redhat.com, alex.williamson@redhat.com,
+        cohuck@redhat.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     vikram.prakash@broadcom.com, srinath.mannam@broadcom.com,
+        ashwin.kamath@broadcom.com, zachary.schroff@broadcom.com,
+        manish.kurup@broadcom.com, Vikas Gupta <vikas.gupta@broadcom.com>
+Subject: [RFC v4 0/3] msi support for platform devices
+Date:   Fri, 29 Jan 2021 22:54:18 +0530
+Message-Id: <20210129172421.43299-1-vikas.gupta@broadcom.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201214174514.22006-1-vikas.gupta@broadcom.com>
+References: <20201214174514.22006-1-vikas.gupta@broadcom.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000003c538e05ba0d4789"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 5:17 pm, Takashi Iwai <tiwai@suse.de> wrote:
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -2217,8 +2217,6 @@ static const struct snd_pci_quirk 
-> power_save_denylist[] = {
->  	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
->  	SND_PCI_QUIRK(0x1043, 0x8733, "Asus Prime X370-Pro", 0),
->  	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
-> -	SND_PCI_QUIRK(0x1558, 0x6504, "Clevo W65_67SB", 0),
-> -	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
->  	SND_PCI_QUIRK(0x1028, 0x0497, "Dell Precision T3600", 0),
->  	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
->  	/* Note the P55A-UD3 and Z87-D3HP share the subsys id for the HDA 
-> dev */
+--0000000000003c538e05ba0d4789
 
-Hi,
+This RFC adds support for MSI for platform devices.
+MSI block is added as an ext irq along with the existing
+wired interrupt implementation. The patchset exports two
+caps for MSI and related data to configure MSI source device.
 
-This patch works fine on my laptop. I have no clue whether that means 
-it's really safe to remove the quirk. I've never noticed any clicking 
-noise myself, but I understand it has been a problem for other System76 
-laptops.
+Changes from:
+-------------
+ v3 to v4:
+	1) Removed the 'cap' for exporting MSI info to userspace and
+	   restored into vedor specific module.
+	2) Enable GENERIC_MSI_IRQ_DOMAIN in Kconfig.
+	3) Removed the vendor specific, Broadcom, 'msi' module and 
+	   integrated the MSI relates ops into the 'reset' module for
+	   MSI support.  
 
-Michael
+ v2 to v3:
+	1) Restored the vendor specific module to get max number
+	   of MSIs supported and .count value initialized.
+	2) Comments from Eric addressed.
+
+ v1 to v2:
+	1) IRQ allocation has been implemented as below:
+	       ----------------------------
+	       |IRQ-0|IRQ-1|....|IRQ-n|MSI|
+       	       ----------------------------
+		MSI block has msi contexts and its implemneted
+		as ext irq.
+
+	2) Removed vendor specific module for msi handling so
+	   previously patch2 and patch3 are not required.
+
+	3) MSI related data is exported to userspace using 'caps'.
+	 Please note VFIO_IRQ_INFO_CAP_TYPE in include/uapi/linux/vfio.h implementation
+	is taken from the Eric`s patch
+        https://patchwork.kernel.org/project/kvm/patch/20201116110030.32335-8-eric.auger@redhat.com/
 
 
+ v0 to v1:
+   i)  Removed MSI device flag VFIO_DEVICE_FLAGS_MSI.
+   ii) Add MSI(s) at the end of the irq list of platform IRQs.
+       MSI(s) with first entry of MSI block has count and flag
+       information.
+       IRQ list: Allocation for IRQs + MSIs are allocated as below
+       Example: if there are 'n' IRQs and 'k' MSIs
+       -------------------------------------------------------
+       |IRQ-0|IRQ-1|....|IRQ-n|MSI-0|MSI-1|MSI-2|......|MSI-k|
+       -------------------------------------------------------
+       MSI-0 will have count=k set and flags set accordingly.
+
+
+Vikas Gupta (3):
+  vfio/platform: add support for msi
+  vfio/platform: change cleanup order
+  vfio: platform: reset: add msi support
+
+ drivers/vfio/platform/Kconfig                 |   1 +
+ .../platform/reset/vfio_platform_bcmflexrm.c  |  72 ++++-
+ drivers/vfio/platform/vfio_platform_common.c  |  97 +++++--
+ drivers/vfio/platform/vfio_platform_irq.c     | 253 ++++++++++++++++--
+ drivers/vfio/platform/vfio_platform_private.h |  29 ++
+ include/uapi/linux/vfio.h                     |  24 ++
+ 6 files changed, 444 insertions(+), 32 deletions(-)
+
+-- 
+2.17.1
+
+
+--0000000000003c538e05ba0d4789
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+2lQ6rFUP408r38ha7ieLj9GoHHitwSmKYwUIGObe2Y57xYNj855BF4wx44Z80uM2ugKCZwIDAQAB
+o4IBzzCCAcswDgYDVR0PAQH/BAQDAgWgMIGeBggrBgEFBQcBAQSBkTCBjjBNBggrBgEFBQcwAoZB
+aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NwZXJzb25hbHNpZ24yc2hhMmcz
+b2NzcC5jcnQwPQYIKwYBBQUHMAGGMWh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNvbS9nc3BlcnNv
+bmFsc2lnbjJzaGEyZzMwTQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwRAYDVR0fBD0w
+OzA5oDegNYYzaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9nc3BlcnNvbmFsc2lnbjJzaGEyZzMu
+Y3JsMCMGA1UdEQQcMBqBGHZpa2FzLmd1cHRhQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEF
+BQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUnmgVV8btvFtO
+FD3kFjPWxD/aB8MwDQYJKoZIhvcNAQELBQADggEBAGCcuBN7G3mbQ7xMF8g8Lpz6WE+UFmkSSqU3
+FZLC2I92SA5lRIthcdz4AEgte6ywnef3+2mG7HWMoQ1wriSG5qLppAD02Uku6yRD52Sn67DB2Ozk
+yhBJayurzUxN1+R5E/YZtj2fkNajS5+i85e83PZPvVJ8/WnseIADGvDoouWqK7mxU/p8hELdb3PW
+JH2nMg39SpVAwmRqfs6mYtenpMwKtQd9goGkIFXqdSvOPATkbS1YIGtU2byLK+/1rIWPoKNmRddj
+WOu/loxldI1sJa1tOHgtb93YpIe0HEmgxLGS0KEnbM+rn9vXNKCe+9n0PhxJIfqcf6rAtK0prRwr
+Y2MxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNh
+MTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDDTZ
+lyNZkGMqSi5xbzANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgUFEqrWAY9C/ej0CU
+POWi/TSWBV3pcSBRi0PS1SeTwlMwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
+CQUxDxcNMjEwMTI5MTcyNDM2WjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgB
+ZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcw
+CwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAFqWq5SL9TvexlF2NWp+ML03h/jnsH3Tp4QN
+cdd8vHLQj2hkPjGiNyr/7D7AGXuVmxsj0maErJ0K8Q3oo/AFQoRyXN0HpjLY2kqsyYqo4a4XsVr+
+XFVsn1dK8GHh5n5f4EqybOmnHTdXfi2IkrJUncfAg2lAtubnb+wJgbUqtPl44GSvNL6TSBIZzprQ
+kkq9WobJZKuWDwoPP3YGJArkzTgoPmXWW6R1UmRXhLYg4SQvjUiK6isjjCDI88RSy4xAqEQOv0eR
+zuDt9PpBDuxjDF4vH8jSNJ0t2Xz/Gs66loCmYiZPvynj1MI/QzIV/NpWtYWq4W4O8OFQ4cLxIr/S
+9Rs=
+--0000000000003c538e05ba0d4789--
