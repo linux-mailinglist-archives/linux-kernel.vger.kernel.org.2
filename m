@@ -2,125 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7171308589
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:16:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B481730858B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:16:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232080AbhA2GNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 01:13:46 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:11907 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232076AbhA2GNn (ORCPT
+        id S231868AbhA2GPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 01:15:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232019AbhA2GO5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 01:13:43 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DRn6g44f9zjDnm;
-        Fri, 29 Jan 2021 14:11:55 +0800 (CST)
-Received: from [10.174.184.42] (10.174.184.42) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 29 Jan 2021 14:12:47 +0800
-Subject: Re: [PATCH 1/1] iommu/arm-smmu-v3: add support for BBML
-To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>
-References: <20201126034230.777-1-thunder.leizhen@huawei.com>
- <20210122125132.GB24102@willie-the-truck>
- <aac11411-f6cd-f990-fe53-db0d8c07f3a0@huawei.com>
- <1bfd1ca0-953e-e943-f87e-144d5537bd0c@arm.com>
- <20210126101230.GA29204@willie-the-truck>
- <8a9685ec-67aa-824f-5429-f408bf79c5ab@huawei.com>
- <32f4752f-6954-183a-a0c1-b5d719c85b67@huawei.com>
- <319e3532-4555-7431-9d6f-3c3b7c11a5d9@arm.com>
- <d3aaa7e7-edb0-f867-0519-9a4e0bee35d2@huawei.com>
- <301590f1-817b-d8eb-1585-31208cba18af@arm.com>
-CC:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <29fd5c20-faeb-1fd3-6535-4fca60463d01@huawei.com>
-Date:   Fri, 29 Jan 2021 14:12:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Fri, 29 Jan 2021 01:14:57 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E919BC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 22:14:16 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id p15so5238390pjv.3
+        for <linux-kernel@vger.kernel.org>; Thu, 28 Jan 2021 22:14:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u5XPU2O92MWNnCS3LVkCZpTO8otBVCUVbbrYWvGV4XU=;
+        b=B1d8OMzUWxIcJs3Nh5oCqsfJaWFt4KFNUhkf0zXV53Jm52BfVmRXvqbq8TcRIUM8i8
+         gDPRtWeMChqoYd4SxJwOCATj+9P0/p1lPBJ7rMI3BoxR3OLohzmulkPcRp2a1OeH1Lrj
+         QWu2wxCq9ssjTX7j/KSJYf2AIVvxmTBR/tdS0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=u5XPU2O92MWNnCS3LVkCZpTO8otBVCUVbbrYWvGV4XU=;
+        b=DMXviJtPqqwJF10VK7mJiNingPD6jSN2wXF7vvWt5bgJfXJD+Y4wrW0nYc6bPgHyj8
+         qBK+yuS7YtzpYrykcS/xrVeb7NdBYQG60RxTyrGZSBvIJaDaJKLzDayzsIxCOE2+4XJj
+         6xs19dfOC+rF4ZwBijUzV5JGcSy/xV2o0SZqy3yX8iJFVEVvgA2/PhP0lgs3YaUUZPxE
+         UPSOLOBRbxf7vLdQclzw4yNmW+pm36ERdG78r2GpW1zKWX6xUiVPICNuj62BZsUyeM8j
+         qj9b0g3V45wsNpo05rPx7XF51QsM4ZNiJ/lTVbq96p8OUfCsSzmsVlzoTRr16KEi8Tzp
+         jbHg==
+X-Gm-Message-State: AOAM531hoB9m7/8mnDINSDEGR9aeiiI0n7ZvPOHJEdiCbXgqgT+6gOBk
+        izsK8Ou1DojLr9ehJ6pNL80RDQ==
+X-Google-Smtp-Source: ABdhPJyxB6vx5pQsRDOZMdlIx2/tW7HucM03QMW9SkTmUrh/OcTHy8sq9gjZULItqURsORdeeT/Plw==
+X-Received: by 2002:a17:90b:3c8:: with SMTP id go8mr3103108pjb.105.1611900856579;
+        Thu, 28 Jan 2021 22:14:16 -0800 (PST)
+Received: from bleung.mtv.corp.google.com ([2620:15c:202:201:f693:9fff:fef4:fc72])
+        by smtp.gmail.com with ESMTPSA id 17sm7551013pfv.13.2021.01.28.22.14.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Jan 2021 22:14:16 -0800 (PST)
+From:   Benson Leung <bleung@chromium.org>
+To:     heikki.krogerus@linux.intel.com, enric.balletbo@collabora.com,
+        pmalani@chromium.org, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     groeck@chromium.org, bleung@google.com, bleung@chromium.org
+Subject: [PATCH 0/6] usb: typec: and platform/chrome: Add PD revision numbers
+Date:   Thu, 28 Jan 2021 22:14:00 -0800
+Message-Id: <20210129061406.2680146-1-bleung@chromium.org>
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
 MIME-Version: 1.0
-In-Reply-To: <301590f1-817b-d8eb-1585-31208cba18af@arm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+USB Power Delivery has a 3 entity handshake (port, cable, partner), and as
+of USB PD R3.0, each entity may independently support either Revision 2 or
+Revision 3 signaling and protocol. In order for userspace and the kernel
+to properly process the data objects received from a particular SOP*, we
+must know to which revision of the spec each conforms.
 
+This series adds individual version numbers for the partner and the cable,
+and exposes them in the appropriate sysfs in /sys/class/typec.
 
-On 2021/1/29 0:17, Robin Murphy wrote:
-> On 2021-01-28 15:18, Keqian Zhu wrote:
->>
->>
->> On 2021/1/27 17:39, Robin Murphy wrote:
->>> On 2021-01-27 07:36, Keqian Zhu wrote:
->>>>
->>>>
->>>> On 2021/1/27 10:01, Leizhen (ThunderTown) wrote:
->>>>>
->>>>>
->>>>> On 2021/1/26 18:12, Will Deacon wrote:
->>>>>> On Mon, Jan 25, 2021 at 08:23:40PM +0000, Robin Murphy wrote:
->>>>>>> Now we probably will need some degreee of BBML feature awareness for the
->>>>>>> sake of SVA if and when we start using it for CPU pagetables, but I still
->>>>>>> cannot see any need to consider it in io-pgtable.
->>>>>>
->>>>>> Agreed; I don't think this is something that io-pgtable should have to care
->>>>>> about.
->>>> Hi,
->>>>
->>>> I have a question here :-).
->>>> If the old table is not live, then the break procedure seems unnecessary. Do I miss something?
->>>
->>> The MMU is allowed to prefetch translations at any time, so not following the proper update procedure could still potentially lead to a TLB conflict, even if there's no device traffic to worry about disrupting.
->>>
->>> Robin.
->>
->> Thanks. Does the MMU you mention here includes MMU and SMMU? I know that at SMMU side, ATS can prefetch translation.
-> 
-> Yes, both - VMSAv8 allows speculative translation table walks, so SMMUv3 inherits from there (per 3.21.1 "Translation tables and TLB invalidation completion behavior").
-OK, I Get it. Thanks.
+I provide as a first implementation of this, platform/chrome's cros_ec_typec
+driver, whose underlying status messages convey the SOP and SOP' revisions
+already.
 
-Keqian.
+Thanks,
+Benson
 
-> 
-> Robin.
-> 
->>
->> Keqian
->>>
->>>> Thanks,
->>>> Keqian
->>>>
->>>>>
->>>>> Yes, the SVA works in stall mode, and the failed device access requests are not
->>>>> discarded.
->>>>>
->>>>> Let me look for examples. The BBML usage scenario was told by a former colleague.
->>>>>
->>>>>>
->>>>>> Will
->>>>>>
->>>>>> .
->>>>>>
->>>>>
->>>>>
->>>>> _______________________________________________
->>>>> linux-arm-kernel mailing list
->>>>> linux-arm-kernel@lists.infradead.org
->>>>> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
->>>>> .
->>>>>
->>>> _______________________________________________
->>>> iommu mailing list
->>>> iommu@lists.linux-foundation.org
->>>> https://lists.linuxfoundation.org/mailman/listinfo/iommu
->>>>
->>> .
->>>
-> .
-> 
+Benson Leung (6):
+  usb: typec: Standardize PD Revision format with Type-C Revision
+  usb: typec: Provide PD Specification Revision for cable and partner
+  usb: typec: Add typec_partner_set_pd_revision
+  platform/chrome: cros_ec_typec: Report SOP' PD revision from status
+  platform/chrome: cros_ec_typec: Set Partner PD revision from status
+  platform/chrome: cros_ec_typec: Set opmode to PD on SOP connected
+
+ Documentation/ABI/testing/sysfs-class-typec | 20 ++++++-
+ drivers/platform/chrome/cros_ec_typec.c     | 26 +++++++--
+ drivers/usb/typec/class.c                   | 59 +++++++++++++++++++--
+ include/linux/usb/typec.h                   | 11 ++++
+ 4 files changed, 108 insertions(+), 8 deletions(-)
+
+-- 
+2.30.0.365.g02bc693789-goog
+
