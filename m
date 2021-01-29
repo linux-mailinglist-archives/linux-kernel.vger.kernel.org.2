@@ -2,170 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B5E1308569
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:01:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67F7E30856B
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 07:01:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231953AbhA2GAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 01:00:10 -0500
-Received: from mail-dm6nam11on2064.outbound.protection.outlook.com ([40.107.223.64]:2753
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229459AbhA2GAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 01:00:05 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZqWx2KZiOnl1l3IpCyx0pABm5pIMXc+qeIIfNBA2Nn8DTaRgRYNrLiy+vzpu4T3oY3cElsA7J8IdIfXdDvPuAwk3+iZgAxn8wjg+ufM9R3ZHRFSsruel5YyaBT2V5Z5kvO4KoALLrmNjL2glPcV00kI9X+TJeW9mx5PbX4E6q0Wmo0DJ0Pj5wgl9ipaUbv25s7nzJXDwUOhEb36C5kLMZvzA8LcIx9KHPgOAQmzi+eboViM6gugtsBoDPSC5nLHzWZHEXY8yiyq7hjY18FwoKyEeZ3ZX0mpBynTWvobx6xZoeO9UQwzjucZhstzHT3ZXvFH3xNIUzddOwcYb+zoe4A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PgAwdFPlQcgy+hFUXRHYAY2i6Ns7EUHizDk/+otmgZE=;
- b=hvc1iApIt7iUaqOKT2vhBuJcVvaTrz9DAY5vDCmTeUukwyYKvLObNKK5aNXLD29pIIxDxw45gohd4gDNWuhU8ffPSt+yCzZ6+hC+wxqoUB2YcUDeYK2U9JdthJUYxHnbsm3AicFM7xTucgFT9OBW0ce4298Sk9lJjz9WWsOdNrCR9b7CVSrYokOyBJn1G4+kcxyJW+pdQVQT1m7M69G7TIaPoP6WT8B0FacV+m9y1UAIiV9Lw+WMWDXi4tVS7NGiy6TzBuR4H0lje69LOgmYak3bHh+WkW6opl4vHurrM4yfbArwPNYZ/1qauKQUYuO9EcurOd5TpK6esimxle5jBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S231933AbhA2GAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 01:00:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229459AbhA2GAf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 01:00:35 -0500
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C56C061573;
+        Thu, 28 Jan 2021 21:59:54 -0800 (PST)
+Received: by mail-qv1-xf36.google.com with SMTP id u16so4008270qvo.9;
+        Thu, 28 Jan 2021 21:59:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PgAwdFPlQcgy+hFUXRHYAY2i6Ns7EUHizDk/+otmgZE=;
- b=RkJySc2XEo/JgML9c74fN/x/aIuNDTH1qHDWUWBiRlQrY59VGVvHo5HhvMRJB9rBP5vMhd9mLk85CV6jldCsTkXWC/BWylwtjgiUfm9yMkBbkJctNlh5BIuYrHe5LvRyGsQiQVekHS+M2OXPgIrZ8vsepuLQY5v7VVWs4FfJtDo=
-Authentication-Results: ti.com; dkim=none (message not signed)
- header.d=none;ti.com; dmarc=none action=none header.from=windriver.com;
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
- by CY4PR11MB1768.namprd11.prod.outlook.com (2603:10b6:903:11b::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16; Fri, 29 Jan
- 2021 05:59:17 +0000
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::5003:3066:e469:80a0]) by CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::5003:3066:e469:80a0%7]) with mapi id 15.20.3784.019; Fri, 29 Jan 2021
- 05:59:17 +0000
-From:   quanyang.wang@windriver.com
-To:     Jyri Sarha <jsarha@ti.com>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        quanyang.wang@windriver.com
-Subject: [PATCH] drm/tilcdc: send vblank event when disabling crtc
-Date:   Fri, 29 Jan 2021 13:58:31 +0800
-Message-Id: <20210129055831.1702862-1-quanyang.wang@windriver.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HK2PR04CA0081.apcprd04.prod.outlook.com
- (2603:1096:202:15::25) To CY4PR11MB0071.namprd11.prod.outlook.com
- (2603:10b6:910:7a::30)
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=QUeH3EobdhlwWiIHKkInYCjoa2uGooqIYSSFgluMm3c=;
+        b=GIitH5mpBu0U2vHntzB1uENdz9z7eYAcAOGOY276XwzQJK8/lFACDDjO1qqubA5jf/
+         kGVqOnbununpJ3l/IwCEQMF2QQbsH1NsrJnNmGPYekyUr1SCgpm85WeJpJxcq1faVV5x
+         zNrFPUgQas6IzC7LYUw/R0Gc0wTr6/elCAqsBQUeDIt+3xlSMEbWfuRrqKnU0F3SWR1w
+         6MpbozQxZjQNLESpTcWnu1bmqyA19HZxBE+idUAcs4PI+zFE+rHq9khwNbT6WIatPxxJ
+         UxAAkELh0jd7/ynk8e28V5g/kDMnL8Id17l92o1hbggyXp3kJQNZiR/lvaJQd1kkwJ2b
+         V41A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QUeH3EobdhlwWiIHKkInYCjoa2uGooqIYSSFgluMm3c=;
+        b=HIVpiPaugU3AN40qVpT5ZwPhFb3DUxbdP2rlWkwLYBCR01cVZADDwxwHS9mf8/9qAm
+         UpZ4iiTTsEslyqJOOY76WCK7aTU3RRrLn/ZL3+ncIiTPNyDyNDcCiJ8knQbo4v2/FgnM
+         Kp34+TUJP4hsEjiEfd6P9KdTSGO4wQ0YdchGGbtEHPMLmINBRPSuZmKcieujsHP/8ygN
+         lsQ933dsLB8etvhzQjjtlPhXu/wteRfyxu8G8PxTixMyXMQqKDVWiwfNRqCnnGdBdi9w
+         10RQBZ3E12Rs5eS6Lsqyk+M/mWEUGqk1vrISD2qfTR2pBFDnM2Lemn6cbCI2KrA71gLv
+         8bvA==
+X-Gm-Message-State: AOAM530VvLoPvqHbMowk2vatqIl5ek1QlOfwhaTmIA/8kALvuFniH7RA
+        sDvQ3DbRuI7tT0ELmsw7oAmpmK9a6iM0yA==
+X-Google-Smtp-Source: ABdhPJwSN517cb/JmY48RE9OlGouu0YrTJ4xJJohOV5W+VRBNe+54U1bJTr8tzGabTzzXeT6OurzTA==
+X-Received: by 2002:ad4:4431:: with SMTP id e17mr2702498qvt.45.1611899994068;
+        Thu, 28 Jan 2021 21:59:54 -0800 (PST)
+Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
+        by smtp.gmail.com with ESMTPSA id q25sm5229305qkq.32.2021.01.28.21.59.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 28 Jan 2021 21:59:53 -0800 (PST)
+Subject: Re: [PATCH V6 5/6] of: unittest: Create overlay_common.dtsi and
+ testcases_common.dtsi
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, anmar.oueja@linaro.org,
+        Bill Mills <bill.mills@linaro.org>,
+        David Gibson <david@gibson.dropbear.id.au>,
+        devicetree@vger.kernel.org, Michal Marek <michal.lkml@markovi.net>
+References: <cover.1611312122.git.viresh.kumar@linaro.org>
+ <94180731aa4a17e4834458a979de7de782dc73d4.1611312122.git.viresh.kumar@linaro.org>
+ <20210127055652.vmkx5sczef2mjwey@vireshk-i7>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <543de786-4f08-d1f6-8034-252662a39786@gmail.com>
+Date:   Thu, 28 Jan 2021 23:59:52 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pek-qwang2-d1.wrs.com (60.247.85.82) by HK2PR04CA0081.apcprd04.prod.outlook.com (2603:1096:202:15::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Fri, 29 Jan 2021 05:59:14 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 96e6c747-9e9f-46fa-67bc-08d8c41b02eb
-X-MS-TrafficTypeDiagnostic: CY4PR11MB1768:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <CY4PR11MB17689345E27B8313303CEA9EF0B99@CY4PR11MB1768.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:411;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /OWcYSgJM9Av30YmqQlpCVL2fRuLcxBZIgr9z+tUkzLrIH9KVgC/yAqPNHl0p/Iw6D56r9N9ArCb2noWlxjRHftZgu8NarHATcksWB/ejxttJ/CZNN+auLRS61NgUAihsNlqHg9rWdKD0mQmNO3rdGtC3o6FstZrcIz2PoPCdT1jPNL+GbsSvScAwfC9stxlflv+03cLuFzIvTRh7inoTBSASs8DM/mJD6dFNMn8IQwahqM+2bartoiCJHz8HjIzDSpZbmNqWGcIW0Re6Ql+UY6vNxuVYJb3r3KQpY06JB2zlnJMrUBeeN1D+UsPqtP3PPpfGq0y+6hbG94Bz6U5ofG6EKjsCLbNfEjUNoAOrI3ZeC2evOtHHjn7pUTGDjRec7cO040iTciluwTdO1IdYiKI2iC0xWQIFQ2HH9KhFhTcE23VMcAWUzvYtU8L3/jRmbWRqcYTq8ZNM1W5czcbUJH5F1u6wwrhreLpDs858bLRmwxMUpbrB5tx6qKorinjvYR3JB7Fp9c3Fq1hE9n4bw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(39850400004)(346002)(396003)(366004)(83380400001)(26005)(6636002)(86362001)(316002)(107886003)(8676002)(52116002)(9686003)(6512007)(6486002)(8936002)(110136005)(36756003)(478600001)(5660300002)(66476007)(1076003)(66556008)(4326008)(66946007)(2616005)(6666004)(2906002)(16526019)(956004)(6506007)(186003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?PowIyUwtD4A6JRwAOLYHcCLufJgv6MvUYhsT7gVT8NduXE7G9iCFT6xW0DhU?=
- =?us-ascii?Q?n6MUliU13x/2NcXr6ef5xizTJf05rnVuZZ9Z9IVYan/XIbH8viyHHNC0DmPX?=
- =?us-ascii?Q?i+tAieh9NBQ4lUOs2n72Zml1E2Fx4pxf5mUGzDOPq8lAE8TJ8daYAI5PdnpC?=
- =?us-ascii?Q?QtZwMXzBH6sFUEz/0L4gcbGqZpCPdpRBjKQLe8ckn5VM8YUEGKii88P7CLv3?=
- =?us-ascii?Q?OEo9JjB1NzEQ0xWZG1GSgRDuvdts9Fbqv8ArHgyxjABFGwxwAHKxPT/oWFBP?=
- =?us-ascii?Q?zAa5ch1jdv0wCd/DDPOhrC1IxYnTz/G9oON3MsQtkH7fmP5jnOdg9I/3r60Q?=
- =?us-ascii?Q?hmfxS2ayaLZ9vV+gosvMdPzOh0pcWs4epWU1ubrGI3HnVVqYiH61UB+h+PQ5?=
- =?us-ascii?Q?+vUKzuHVBCjdA9NvjEB2lsmuKXWl/5lkntxTw+spWPfQNViFne8xz4Xgdq/n?=
- =?us-ascii?Q?pT9wYGW4DKab7FgyM/IImaSYinPe3WEi9Q35odmTFr7WgXwUT80Q1YUdFwM2?=
- =?us-ascii?Q?HnCELNpe+uSTG5qHo9JEF885Oy8IX8K5ec72ulA7LqyK3eqQKSqc1z5026QH?=
- =?us-ascii?Q?Ef8ojusa52CoZEYvq3VXUXzd12HgoXHAXckiF0JPH1oGZ3xQvt1QaHUdYANX?=
- =?us-ascii?Q?LAcu6X5202wtimpaahkc2EK5Hk2mDAd2jazjYYfsxKDMTwfHDVbxqxKigxdu?=
- =?us-ascii?Q?qFqqMB0n1jl20syjGL3eEgDQiYbHhCPLGwg6OAKoWJxqzODixUBsJBJIYDXb?=
- =?us-ascii?Q?D0CFWtCd8xVXj/CAKhSZ78aSpWFC8ARurVKXf4xMV2x3/BG2hvWgmyKm9yGb?=
- =?us-ascii?Q?XjS0KMd50G/uHjOF4hQgUbJ+dAugnwy4USLA4OBodsx41dZ1vF2VF+w3RgEx?=
- =?us-ascii?Q?0gru/AimthDmuAdkSR0RHYBzXso9Mi4DNtTqq1PueySoZL0HWgzmfTkoXrk3?=
- =?us-ascii?Q?eEdKg5ewBxwp2RrIEjl5CwGGmCe97wRkGATa0xXA8aojSFL5M9yuqrUrej+D?=
- =?us-ascii?Q?Z0dK43owogZzS75LpSUmGqLYZvyszriAx8mvYGxMu5FNVzfInDKL2ary0Lmy?=
- =?us-ascii?Q?3MrvByje?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 96e6c747-9e9f-46fa-67bc-08d8c41b02eb
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Jan 2021 05:59:16.9775
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mV81YCFEEsvN/P67gU8rOmShQD3rAnoWQvYAAXockGXq43oTywXAQFOLJYPIVoA0oOoeoaGVm7Lbj8k9394QHQ69aVeQ3+yUAC6NKJDQnsI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR11MB1768
+In-Reply-To: <20210127055652.vmkx5sczef2mjwey@vireshk-i7>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quanyang Wang <quanyang.wang@windriver.com>
+Hi Viresh,
 
-When run xrandr to change resolution on Beaglebone Black board, it will
-print the error information:
+On 1/26/21 11:56 PM, Viresh Kumar wrote:
+> On 22-01-21, 16:20, Viresh Kumar wrote:
+>> In order to build-test the same unit-test files using fdtoverlay tool,
+>> move the device nodes from the existing overlay_base.dts and
+>> testcases_common.dts files to .dtsi files. The .dts files now include
+>> the new .dtsi files, resulting in exactly the same behavior as earlier.
+>>
+>> The .dtsi files can now be reused for compile time tests using
+>> fdtoverlay (will be done in a later patch).
+>>
+>> This is required because the base files passed to fdtoverlay tool
+>> shouldn't be overlays themselves (i.e. shouldn't have the /plugin/;
+>> tag).
+>>
+>> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+>> ---
+>>  drivers/of/unittest-data/overlay_base.dts     | 90 +-----------------
+>>  drivers/of/unittest-data/overlay_common.dtsi  | 91 +++++++++++++++++++
+>>  drivers/of/unittest-data/testcases.dts        | 17 +---
+>>  .../of/unittest-data/testcases_common.dtsi    | 18 ++++
+>>  4 files changed, 111 insertions(+), 105 deletions(-)
+>>  create mode 100644 drivers/of/unittest-data/overlay_common.dtsi
+>>  create mode 100644 drivers/of/unittest-data/testcases_common.dtsi
+> 
+> Frank,
+> 
+> As I mentioned in the cover-letter, I get a build warning right now:
+> 
+> drivers/of/unittest-data/tests-interrupts.dtsi:20.5-28: Warning (interrupts_property): /testcase-data/testcase-device2:#interrupt-cells: size is (4), expected multiple of 8
 
-root@beaglebone:~# xrandr -display :0 --output HDMI-1 --mode 720x400
-[drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
-[drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CRTC:32:tilcdc crtc] commit wait timed out
-[drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
-[drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [CONNECTOR:34:HDMI-A-1] commit wait timed out
-[drm:drm_crtc_commit_wait] *ERROR* flip_done timed out
-[drm:drm_atomic_helper_wait_for_dependencies] *ERROR* [PLANE:31:plane-0] commit wait timed out
-tilcdc 4830e000.lcdc: already pending page flip!
+Thanks for catching that.
 
-This is because there is operation sequence as below:
+> 
+> I think I need to add below diff to this patch to fix this warning, will that
+> be okay ?
 
-drm_atomic_connector_commit_dpms(mode is DRM_MODE_DPMS_OFF):
-    ...
-    drm_atomic_helper_setup_commit <- init_completion(commit_A->flip_done)
-    drm_atomic_helper_commit_tail
-        tilcdc_crtc_atomic_disable
-        tilcdc_plane_atomic_update <- drm_crtc_send_vblank_event in tilcdc_crtc_irq
-                                      is skipped since tilcdc_crtc->enabled is 0
-        tilcdc_crtc_atomic_flush   <- drm_crtc_send_vblank_event is skipped since
-                                      crtc->state->event is set to be NULL in
-                                      tilcdc_plane_atomic_update
-drm_mode_setcrtc:
-    ...
-    drm_atomic_helper_setup_commit <- init_completion(commit_B->flip_done)
-    drm_atomic_helper_wait_for_dependencies
-        drm_crtc_commit_wait   <- wait for commit_A->flip_done completing
+Nope, the change below won't work because it removes the node testcase-device2 from the tests
+that unittest.c does (if I am thinking correctly).  I will double check my thinking, but I
+know you are spinning the patch, so I didn't want to delay this reply.
 
-Just as shown above, the steps which could complete commit_A->flip_done
-are all skipped and commit_A->flip_done will never be completed. This will
-result a time-out ERROR when drm_crtc_commit_wait check the commit_A->flip_done.
-So add drm_crtc_send_vblank_event in tilcdc_crtc_atomic_disable to
-complete commit_A->flip_done.
+Note that this node has a deliberate error in it "/* invalid specifier - too short */".
 
-Fixes: cb345decb4d2 ("drm/tilcdc: Use standard drm_atomic_helper_commit")
-Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
----
- drivers/gpu/drm/tilcdc/tilcdc_crtc.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+I'm not sure why the dtc warning triggers on line 20 instead of line 68.  I'll have to go
+look at the dtc source to better understand the warning.
 
-diff --git a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-index 30213708fc99..d99afd19ca08 100644
---- a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-+++ b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
-@@ -515,6 +515,15 @@ static void tilcdc_crtc_off(struct drm_crtc *crtc, bool shutdown)
- 
- 	drm_crtc_vblank_off(crtc);
- 
-+	spin_lock_irq(&crtc->dev->event_lock);
-+
-+	if (crtc->state->event) {
-+		drm_crtc_send_vblank_event(crtc, crtc->state->event);
-+		crtc->state->event = NULL;
-+	}
-+
-+	spin_unlock_irq(&crtc->dev->event_lock);
-+
- 	tilcdc_crtc_disable_irqs(dev);
- 
- 	pm_runtime_put_sync(dev->dev);
--- 
-2.25.1
+-Frank
+
+> 
+> diff --git a/drivers/of/unittest-data/testcases.dts b/drivers/of/unittest-data/testcases.dts
+> index 185125085784..04b9e7bb30d9 100644
+> --- a/drivers/of/unittest-data/testcases.dts
+> +++ b/drivers/of/unittest-data/testcases.dts
+> @@ -3,3 +3,14 @@
+>  /plugin/;
+>  
+>  #include "testcases_common.dtsi"
+> +
+> +/ {
+> +       testcase-data {
+> +               testcase-device2 {
+> +                       compatible = "testcase-device";
+> +                       interrupt-parent = <&test_intc2>;
+> +                       interrupts = <1>; /* invalid specifier - too short */
+> +               };
+> +       };
+> +
+> +};
+> diff --git a/drivers/of/unittest-data/tests-interrupts.dtsi b/drivers/of/unittest-data/tests-interrupts.dtsi
+> index ec175e800725..0e5914611107 100644
+> --- a/drivers/of/unittest-data/tests-interrupts.dtsi
+> +++ b/drivers/of/unittest-data/tests-interrupts.dtsi
+> @@ -61,12 +61,5 @@ testcase-device1 {
+>                         interrupt-parent = <&test_intc0>;
+>                         interrupts = <1>;
+>                 };
+> -
+> -               testcase-device2 {
+> -                       compatible = "testcase-device";
+> -                       interrupt-parent = <&test_intc2>;
+> -                       interrupts = <1>; /* invalid specifier - too short */
+> -               };
+>         };
+> -
+>  };
+> 
 
