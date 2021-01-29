@@ -2,135 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA9D03090BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 00:47:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7193090BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 00:50:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231296AbhA2Xqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 18:46:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229676AbhA2Xqd (ORCPT
+        id S231156AbhA2Xs6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 29 Jan 2021 18:48:58 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:55388 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231195AbhA2Xsx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 18:46:33 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9ADCC061573
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 15:45:52 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id g10so10463114wrx.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 15:45:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5tw1Hp7aX/S0VjTJJRisCjf0Avfnwz4zJamKEdO13Ig=;
-        b=ezvP0/016Ph5ZYnfV3u4UGjyoaDOxwpS+sXs/4ixvS88CT/B7PjjFHHij3nwLfOwVK
-         3qxpGR8l/UDiab0txk+CbJgw26ZUC5nx5lQlxGdc8FhoQuciqgO7abXBo3CrBkGAbmPR
-         xMleYfmOt6LJaBdAeWo9aZiUdj7x3L8UNmHwnpx6aoN4MfQ38PqkLVvwqn1glaTbwihc
-         NfNwuHDwz1B0Q+LB1guWnkcDxE6G6OeAh+HZdPZyt/rSlz2MDVBkhDCPDFAZHaZztLTq
-         2dD95NDRZtjjIiniw56Ryrpts0VtXjXnowPLVANUs3zm223hXzaWTsxkwjK2DqavU+mi
-         +J5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5tw1Hp7aX/S0VjTJJRisCjf0Avfnwz4zJamKEdO13Ig=;
-        b=QkgpQSbAG46ve++pqEk1JYDFMm+8EWW6V82OhFRj2ROV9V/GlZA5+nq+qVrsotyRF0
-         1yUhhNC3FmbeEIHTcM5vZtIrbbbyNJ/AGzSYaXw8LQM9noi4nVE9l2ABUZccOX/xgVbx
-         hRXYOfaVXr3h+RTJhPD3W7xTMRvloa8eU7egKfDec9Yg/V23W32ZiYtGF8sqb8oV3ruc
-         l78CJFuGNiD57dNge6te5rj8rcZ8t2HHgWODJBzdi5yPF5M94jLFFnw1YX5qjMC8w5Mo
-         3REijo8piyOsLruBPqnWkkaQhMSuVC5pkcYv8rt6e/tOTJ38MRduZzF5K33KXu2VyzAR
-         /HNw==
-X-Gm-Message-State: AOAM531r0WQcsDYwM71M9kQkHZnUB5W1UJZyGXx98HYfsuMO+W0C1eNX
-        LcezhQrJ8ETBP2DzZs2BgB+3cw==
-X-Google-Smtp-Source: ABdhPJwSrmsBUw0JVsO4Dn8CSCcWHNv+NHGbSr63pqQM0s1AODOPZTrqR81CgfE40eZthHDWMmFqeA==
-X-Received: by 2002:adf:cd83:: with SMTP id q3mr6963326wrj.225.1611963951497;
-        Fri, 29 Jan 2021 15:45:51 -0800 (PST)
-Received: from localhost.localdomain ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id x1sm12376230wmi.14.2021.01.29.15.45.50
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 29 Jan 2021 15:45:50 -0800 (PST)
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-To:     akpm@linux-foundation.org, linux-mm@kvack.org
-Cc:     vbabka@suse.cz, corbet@lwn.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Georgi Djakov <georgi.djakov@linaro.org>
-Subject: [PATCH] mm/page_owner: Record the timestamp of all pages during free
-Date:   Sat, 30 Jan 2021 01:45:48 +0200
-Message-Id: <20210129234548.10054-1-georgi.djakov@linaro.org>
-X-Mailer: git-send-email 2.29.0
+        Fri, 29 Jan 2021 18:48:53 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-174-N513bYxuPoqZK1qa1Axm_A-1; Fri, 29 Jan 2021 23:47:13 +0000
+X-MC-Unique: N513bYxuPoqZK1qa1Axm_A-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 29 Jan 2021 23:47:14 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 29 Jan 2021 23:47:14 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Matthew Wilcox' <willy@infradead.org>,
+        Jakub Kicinski <kuba@kernel.org>
+CC:     Shoaib Rao <rao.shoaib@oracle.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "andy.rudoff@intel.com" <andy.rudoff@intel.com>
+Subject: RE: [PATCH] af_unix: Allow Unix sockets to raise SIGURG
+Thread-Topic: [PATCH] af_unix: Allow Unix sockets to raise SIGURG
+Thread-Index: AQHW9oaDqv48RJCczk2sHQ3JiT7IG6o/Q1OQ
+Date:   Fri, 29 Jan 2021 23:47:14 +0000
+Message-ID: <ee13e83b22b7411c97a2a961015343d1@AcuMS.aculab.com>
+References: <20210122150638.210444-1-willy@infradead.org>
+ <20210125153650.18c84b1a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <23fc3de2-7541-04c9-a56f-4006a7dc773f@oracle.com>
+ <20210129110605.54df8409@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <a21dc26a-87dc-18c8-b8bd-24f9797afbad@oracle.com>
+ <20210129120250.269c366d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <cef52fb0-43cb-9038-7e48-906b58b356b6@oracle.com>
+ <20210129121837.467280fb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <e1047be3-2d53-49d3-67b4-a2a99e0c0f0f@oracle.com>
+ <20210129131820.4b97fdeb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20210129213217.GD308988@casper.infradead.org>
+In-Reply-To: <20210129213217.GD308988@casper.infradead.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Collect the time when each allocation is freed, to help with memory
-analysis with kdump/ramdump.
+> I'd encourage anyone thinking about "using OOB" to read
+> https://tools.ietf.org/html/rfc6093 first.  Basically, TCP does not
+> actually provide an OOB mechanism, and frankly Unix sockets shouldn't
+> try either.
 
-Having another timestamp when we free the page helps for debugging
-page migration issues. For example both alloc and free timestamps
-being the same can gave hints that there is an issue with migrating
-memory, as opposed to a page just being dropped during migration.
+OOB data maps much better onto ISO transport 'expedited data'
+than anything in a bytestream protocol like TCP.
+There you can send a message (it is message oriented) that isn't
+subject to normal data flow control.
+The length is limited (IIRC 32 bytes) and expedited data has
+its own credit of one, but can overtake (and is expected to
+overtake) flow control blocked normal data.
 
-Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
----
- Documentation/vm/page_owner.rst | 2 +-
- mm/page_owner.c                 | 5 +++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
+All TCP provides is a byte sequence number for OOB data.
+This is just a marker in the bytestream.
+It really doesn't map onto the socket OOB data data all.
 
-diff --git a/Documentation/vm/page_owner.rst b/Documentation/vm/page_owner.rst
-index 4e67c2e9bbed..5d7a62c2be28 100644
---- a/Documentation/vm/page_owner.rst
-+++ b/Documentation/vm/page_owner.rst
-@@ -47,7 +47,7 @@ size change due to this facility.
- 
-    text    data     bss     dec     hex filename
-    48800   2445     644   51889    cab1 mm/page_alloc.o
--   6574     108      29    6711    1a37 mm/page_owner.o
-+   6644     108      29    6777    1a79 mm/page_owner.o
-    1025       8       8    1041     411 mm/page_ext.o
- 
- Although, roughly, 8 KB code is added in total, page_alloc.o increase by
-diff --git a/mm/page_owner.c b/mm/page_owner.c
-index d15c7c4994f5..fbdf064e7494 100644
---- a/mm/page_owner.c
-+++ b/mm/page_owner.c
-@@ -27,6 +27,7 @@ struct page_owner {
- 	depot_stack_handle_t handle;
- 	depot_stack_handle_t free_handle;
- 	u64 ts_nsec;
-+	u64 free_ts_nsec;
- 	pid_t pid;
- };
- 
-@@ -148,6 +149,7 @@ void __reset_page_owner(struct page *page, unsigned int order)
- 	struct page_ext *page_ext;
- 	depot_stack_handle_t handle = 0;
- 	struct page_owner *page_owner;
-+	u64 free_ts_nsec = local_clock();
- 
- 	handle = save_stack(GFP_NOWAIT | __GFP_NOWARN);
- 
-@@ -158,6 +160,7 @@ void __reset_page_owner(struct page *page, unsigned int order)
- 		__clear_bit(PAGE_EXT_OWNER_ALLOCATED, &page_ext->flags);
- 		page_owner = get_page_owner(page_ext);
- 		page_owner->free_handle = handle;
-+		page_owner->free_ts_nsec = free_ts_nsec;
- 		page_ext = page_ext_next(page_ext);
- 	}
- }
-@@ -177,6 +180,7 @@ static inline void __set_page_owner_handle(struct page *page,
- 		page_owner->last_migrate_reason = -1;
- 		page_owner->pid = current->pid;
- 		page_owner->ts_nsec = local_clock();
-+		page_owner->free_ts_nsec = 0;
- 		__set_bit(PAGE_EXT_OWNER, &page_ext->flags);
- 		__set_bit(PAGE_EXT_OWNER_ALLOCATED, &page_ext->flags);
- 
-@@ -243,6 +247,7 @@ void __copy_page_owner(struct page *oldpage, struct page *newpage)
- 	new_page_owner->handle = old_page_owner->handle;
- 	new_page_owner->pid = old_page_owner->pid;
- 	new_page_owner->ts_nsec = old_page_owner->ts_nsec;
-+	new_page_owner->free_ts_nsec = old_page_owner->ts_nsec;
- 
- 	/*
- 	 * We don't clear the bit on the oldpage as it's going to be freed
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
