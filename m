@@ -2,149 +2,523 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6843030903A
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:47:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60C6230903E
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:47:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232673AbhA2WnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 17:43:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231429AbhA2WnF (ORCPT
+        id S232766AbhA2Wn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 17:43:56 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:49964 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231138AbhA2Wnx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 17:43:05 -0500
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76411C061573;
-        Fri, 29 Jan 2021 14:42:25 -0800 (PST)
-Received: by mail-il1-x133.google.com with SMTP id q5so9966250ilc.10;
-        Fri, 29 Jan 2021 14:42:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=dfELtoaA8bJe8gY3p6rcM2hsQagvy8a4lKjq9ZDDe0Y=;
-        b=ZWdBUn0L8q974/jQtHoTjF2FOnB9H2ea+Of79l4Cwc+L48t3CFKo+yBwNQjlQdOAp4
-         7kwTpZojbfSFKHDQYnk/Eh/dNz8V1QlDQZs7AY7fqSx0VyRgjCPsMfk5U0MdzvitMaRP
-         Iec1fx9A0RtJv++nfsnRZRo/ctFD5BQlW+6FTlmD9o1GZcKrNalod3dT6m1e5MMmeO3+
-         6tiP0oQQZyGQyDfL9hh4NUwF/uJEFMkd1EwJF6qqhk0dETqoS8t8fEt6pNWeydmhii7d
-         p0dd4RFqHUWLfwXUQYrROs3vPlC0v4rC8UBW/pQXCzbgIPvag2jGQLy+kyzDuEQXBHsT
-         5HWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=dfELtoaA8bJe8gY3p6rcM2hsQagvy8a4lKjq9ZDDe0Y=;
-        b=IeWtBA856CWsK6t/2uaforQvFPAc0FynUJ8ouWXSvqHP6+CBsgtGAR6er9Yg32N4yy
-         LzBHGCwRuzIEyx2aFsAwSD/1rkeAOVikKJcCAWEWbabDfI90F/1/9Ltpr2GHykVYxCLk
-         vHoXroI7ErHyY85GbLWBBc0+pDlemUsD5GsnE45Pdd4g3+1NB4WvWA2won9Jd+wpVYj8
-         9dZJfOoQ8eL26wMwbWo08ha5wXSG3EHF6EDhHTlnME46PAgqFpCZSARczpAjnx7lXW5r
-         ketJQnoiPxMKlaqsq6anFC3ejWrjpcc4UBtFdzWuyrhzJJdUbMD/6pOqj1aZSgZ5oIBw
-         eVvA==
-X-Gm-Message-State: AOAM531dAhKNH35b0z9yAtMlyuhS/AJGVmZqxekWeM7ZUPmVNx0ukr4M
-        /yytK79qlApLaOeX2udEihnAm9uFl9D2dLoJ10w=
-X-Google-Smtp-Source: ABdhPJw8ZFwX9lpZyuCNKTyghsn0YtjIV+68LNJUYEJSSClDTHmrgKCqpYI4iUkFxEQ8W0YsUm1Fg+hV37WolQ5pM+E=
-X-Received: by 2002:a92:c80b:: with SMTP id v11mr4673883iln.215.1611960144907;
- Fri, 29 Jan 2021 14:42:24 -0800 (PST)
+        Fri, 29 Jan 2021 17:43:53 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 3EE4B1C0B92; Fri, 29 Jan 2021 23:42:55 +0100 (CET)
+Date:   Fri, 29 Jan 2021 23:42:54 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     johan@kernel.org, kernel list <linux-kernel@vger.kernel.org>,
+        phone-devel@vger.kernel.org, tony@atomide.com
+Subject: [PATCHv2] gnss: motmdm: Add support for Motorola Mapphone MDM6600
+ modem
+Message-ID: <20210129224254.GA28853@duo.ucw.cz>
+References: <20210107224530.GA23250@duo.ucw.cz>
 MIME-Version: 1.0
-References: <20210129194318.2125748-1-ndesaulniers@google.com>
- <20210129194318.2125748-3-ndesaulniers@google.com> <CA+icZUX4q-JhCo+UZ9T3FhbC_gso-oaB0OR9KdH5iEpoGZyqVw@mail.gmail.com>
- <CAKwvOdnj1Np62+eOiTOCRXSW6GLSv4hmvtWaz=0aTZEEot_dhw@mail.gmail.com>
- <CA+icZUWsyjDY58ZZ0MAVfWqBJ8FUSpM6=_5aqPcRTfX2W8Y-+Q@mail.gmail.com>
- <CAKwvOd=mHvEtto37rzFMfsFYe2e-Cp2MAiyRYxHWPdc-HbT8EA@mail.gmail.com>
- <CA+icZUWxK9fdV8PNGqbQrOFmSZ2Ts4nNqfVMMNUh5u79Ld7hjA@mail.gmail.com>
- <CA+icZUUo6URpxHh6_Tppv9_Z1dyhGDB2OqSCY3yRw72aA0EbMQ@mail.gmail.com>
- <CAKwvOdmWx0reabY-S3nXfTZuhs-_SP7pbb0uHyGeaNSQnm8eRQ@mail.gmail.com>
- <CA+icZUWsncyKvxPZ5g=a3ssWy=cYahsU6hprM3n=jFUmnjPC6w@mail.gmail.com>
- <CAKwvOdk4kG-_c3inNj9ry_xUU9SQE-2AqQp40YL_V=6SHU6E=Q@mail.gmail.com>
- <CA+icZUX576Rt7HJ4hvrwRTCC2pTmoH-Yu-haU+MDb8B6yADAYA@mail.gmail.com> <CAKwvOdmq=L_ob-WpNBE-fSc3oYXT10ZvttfiXiZw3+SxaWWy-A@mail.gmail.com>
-In-Reply-To: <CAKwvOdmq=L_ob-WpNBE-fSc3oYXT10ZvttfiXiZw3+SxaWWy-A@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Fri, 29 Jan 2021 23:42:13 +0100
-Message-ID: <CA+icZUXMxM4CuNa0P+JFJO7LSj6QvJneArYXpqLRJrzqJMYj6g@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] Kbuild: implement support for DWARF v5
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="vkogqOf2sHV7VnPd"
+Content-Disposition: inline
+In-Reply-To: <20210107224530.GA23250@duo.ucw.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 11:31 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> On Fri, Jan 29, 2021 at 2:23 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> >
-> > On Fri, Jan 29, 2021 at 11:21 PM Nick Desaulniers
-> > <ndesaulniers@google.com> wrote:
-> > >
-> > > On Fri, Jan 29, 2021 at 2:11 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > > >
-> > > > On Fri, Jan 29, 2021 at 11:09 PM Nick Desaulniers
-> > > > <ndesaulniers@google.com> wrote:
-> > > > >
-> > > > > On Fri, Jan 29, 2021 at 1:20 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > > > > >
-> > > > > > On Fri, Jan 29, 2021 at 10:13 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > > > > > >
-> > > > > > > On Fri, Jan 29, 2021 at 10:09 PM Nick Desaulniers
-> > > > > > > <ndesaulniers@google.com> wrote:
-> > > > > > > >
-> > > > > > > > Can you tell me please what is the precise command line invocation of
-> > > > > > > > make and which source file you observed this on so that I can
-> > > > > > > > reproduce?
-> > > > >
-> > > > > If you don't send me your invocation of `make`, I cannot help you.
-> > > > >
-> > > >
-> > > > /usr/bin/perf_5.10 stat make V=1 -j4 LLVM=1 LLVM_IAS=1
-> > > > PAHOLE=/opt/pahole/bin/pahole LOCALVERSION=-10-amd64-clang12
-> > > > -lto-pgo KBUILD_VERBOSE=1 KBUILD_BUILD_HOST=iniza
-> > > > KBUILD_BUILD_USER=sedat.dilek@gmail.com
-> > > > KBUILD_BUILD_TIMESTAMP=2021-01-29 bindeb-pkg
-> > > > KDEB_PKGVERSION=5.11.0~rc5-10~bullseye+dileks1
-> > >
-> > > $ make LLVM=1 LLVM_IAS=1 -j72 defconfig
-> > > $ make LLVM=1 LLVM_IAS=1 -j72 menuconfig
-> > > <enable CONFIG_DEBUG_INFO and CONFIG_DEBUG_INFO_DWARF5>
-> > > $ make LLVM=1 LLVM_IAS=1 -j72 V=1 &> log.txt
-> > > $ grep '\-g -gdwarf-5 -g -gdwarf-5' log.txt | wc -l
-> > > 0
-> > > $ grep '\-g -gdwarf-5' log.txt | wc -l
-> > > 2517
-> > >
-> > > Do have the patch applied twice, perhaps?
-> > >
-> >
-> > Switched to my v6 local Git branch and invoked above make line I gave you.
-> > I still see that double.
-> > Looks like I need some "undrunken" switch.
->
-> Can you follow my steps precisely to see whether it's your .config?
-> Perhaps there is a config that duplicates DEBUG_CFLAGS that is not set
-> in the defconfig?  If so, it's still harmless to specify the same
-> commands twice, and likely isn't introduced by this patch set if so;
-> so I'm not sure how much more effort is worth pursuing.
->
 
-If I follow your steps of make I do not see it "double" (in my local
-v6 Git branch).
+--vkogqOf2sHV7VnPd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Looks like this is coming from my build-script.
 
-I checked if I have some double dwarf(-5) patches double - Nope.
+Motorola is using a custom TS 27.010 based multiplexer protocol
+for various devices on the modem. These devices can be accessed on
+dedicated channels using Linux kernel serdev-ngsm driver.
 
-- Sedat -
+For the GNSS on these devices, we need to kick the GNSS device at a
+desired rate. Otherwise the GNSS device stops sending data after a
+few minutes. The rate we poll data defaults to 1000 ms, and can be
+specified with a module option rate_ms between 1 to 16 seconds.
+
+[Tony Lindgren did most of the work here, I just converted it to be
+normal serdev.]
+
+Signed-off-by: Pavel Machek <pavel@ucw.cz>
+
+diff --git a/drivers/gnss/Kconfig b/drivers/gnss/Kconfig
+index bd12e3d57baa..9fac72eba726 100644
+--- a/drivers/gnss/Kconfig
++++ b/drivers/gnss/Kconfig
+@@ -13,6 +13,14 @@ menuconfig GNSS
+=20
+ if GNSS
+=20
++config GNSS_MOTMDM
++	tristate "Motorola Modem TS 27.010 serdev GNSS receiver support"
++	depends on SERIAL_DEV_BUS
++	help
++	  Say Y here if you have a Motorola modem using TS 27.010
++	  multiplexer protocol for GNSS such as a Motorola Mapphone
++	  series device like Droid 4.
++
+ config GNSS_SERIAL
+ 	tristate
+=20
+diff --git a/drivers/gnss/Makefile b/drivers/gnss/Makefile
+index 451f11401ecc..f5afc2c22a3b 100644
+--- a/drivers/gnss/Makefile
++++ b/drivers/gnss/Makefile
+@@ -6,6 +6,9 @@
+ obj-$(CONFIG_GNSS)			+=3D gnss.o
+ gnss-y :=3D core.o
+=20
++obj-$(CONFIG_GNSS_MOTMDM)		+=3D gnss-motmdm.o
++gnss-motmdm-y :=3D motmdm.o
++
+ obj-$(CONFIG_GNSS_SERIAL)		+=3D gnss-serial.o
+ gnss-serial-y :=3D serial.o
+=20
+diff --git a/drivers/gnss/motmdm.c b/drivers/gnss/motmdm.c
+new file mode 100644
+index 000000000000..00cddddab10b
+--- /dev/null
++++ b/drivers/gnss/motmdm.c
+@@ -0,0 +1,406 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Motorola Modem TS 27.010 serdev GNSS driver
++ *
++ * Copyright (C) 2018 - 2020 Tony Lindgren <tony@atomide.com>
++ * Copyright (C) 2020 - 2021 Pavel Machek <pavel@ucw.cz>
++ *
++ * Based on drivers/gnss/sirf.c driver example:
++ * Copyright (C) 2018 Johan Hovold <johan@kernel.org>
++ */
++
++#include <linux/errno.h>
++#include <linux/gnss.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <linux/serdev.h>
++
++#define MOTMDM_GNSS_TIMEOUT	1000
++#define MOTMDM_GNSS_RATE	1000
++
++/*
++ * Motorola MDM GNSS device communicates over a dedicated TS 27.010 channel
++ * using custom data packets. The packets look like AT commands embedded i=
+nto
++ * a Motorola invented packet using format like "U1234AT+MPDSTART=3D0,1,10=
+0,0".
++ * But it's not an AT compatible serial interface, it's a packet interface
++ * using AT like commands.
++ */
++#define MOTMDM_GNSS_HEADER_LEN	5				/* U1234 */
++#define MOTMDM_GNSS_RESP_LEN	(MOTMDM_GNSS_HEADER_LEN + 4)	/* U1234+MPD */
++#define MOTMDM_GNSS_DATA_LEN	(MOTMDM_GNSS_RESP_LEN + 1)	/* U1234~+MPD */
++#define MOTMDM_GNSS_STATUS_LEN	(MOTMDM_GNSS_DATA_LEN + 7) /* U1234~+MPDSTA=
+TUS=3D */
++#define MOTMDM_GNSS_NMEA_LEN	(MOTMDM_GNSS_DATA_LEN + 8) /* U1234~+MPDNMEA=
+=3DNN, */
++
++enum motmdm_gnss_status {
++	MOTMDM_GNSS_UNKNOWN,
++	MOTMDM_GNSS_INITIALIZED,
++	MOTMDM_GNSS_DATA_OR_TIMEOUT,
++	MOTMDM_GNSS_STARTED,
++	MOTMDM_GNSS_STOPPED,
++};
++
++struct motmdm_gnss_data {
++	struct gnss_device *gdev;
++	struct device *modem;
++	struct serdev_device *serdev;
++	struct delayed_work restart_work;
++	struct mutex mutex;	/* For modem commands */
++	ktime_t last_update;
++	int status;
++	unsigned char *buf;
++	size_t len;
++	wait_queue_head_t read_queue;
++	unsigned int parsed:1;
++};
++
++static unsigned int rate_ms =3D MOTMDM_GNSS_RATE;
++module_param(rate_ms, uint, 0644);
++MODULE_PARM_DESC(rate_ms, "GNSS refresh rate between 1000 and 16000 ms (de=
+fault 1000 ms)");
++
++/*
++ * Note that multiple commands can be sent in series with responses coming
++ * out-of-order. For GNSS, we don't need to care about the out-of-order
++ * responses, and can assume we have at most one command active at a time.
++ * For the commands, can use just a jiffies base packet ID and let the mod=
+em
++ * sort out the ID conflicts with the modem's unsolicited message ID
++ * numbering.
++ */
++int motmdm_gnss_send_command(struct motmdm_gnss_data *ddata,
++			     const u8 *buf, int len)
++{
++	struct gnss_device *gdev =3D ddata->gdev;
++	const int timeout_ms =3D 1000;
++	unsigned char cmd[128];
++	int ret, cmdlen;
++
++	cmdlen =3D len + MOTMDM_GNSS_HEADER_LEN + 1;
++	if (cmdlen > 128)
++		return -EINVAL;
++
++	mutex_lock(&ddata->mutex);
++	memset(ddata->buf, 0, ddata->len);
++	ddata->parsed =3D false;
++	snprintf(cmd, cmdlen, "U%04li%s", jiffies % 10000, buf);
++
++	ret =3D serdev_device_write(ddata->serdev, cmd, cmdlen, MAX_SCHEDULE_TIME=
+OUT);
++	if (ret < 0)
++		goto out_unlock;
++
++	serdev_device_wait_until_sent(ddata->serdev, 0);
++
++	ret =3D wait_event_timeout(ddata->read_queue, ddata->parsed,
++				 msecs_to_jiffies(timeout_ms));
++	if (ret =3D=3D 0) {
++		ret =3D -ETIMEDOUT;
++		goto out_unlock;
++	} else if (ret < 0) {
++		goto out_unlock;
++	}
++
++	if (!strstr(ddata->buf, ":OK")) {
++		dev_err(&gdev->dev, "command %s error %s\n",
++			cmd, ddata->buf);
++		ret =3D -EPIPE;
++	}
++
++	ret =3D len;
++
++out_unlock:
++	mutex_unlock(&ddata->mutex);
++
++	return ret;
++}
++
++/*
++ * Android uses AT+MPDSTART=3D0,1,100,0 which starts GNSS for a while,
++ * and then GNSS needs to be kicked with an AT command based on a
++ * status message.
++ */
++static void motmdm_gnss_restart(struct work_struct *work)
++{
++	struct motmdm_gnss_data *ddata =3D
++		container_of(work, struct motmdm_gnss_data,
++			     restart_work.work);
++	struct gnss_device *gdev =3D ddata->gdev;
++	const unsigned char *cmd =3D "AT+MPDSTART=3D0,1,100,0";
++	int error;
++
++	ddata->last_update =3D ktime_get();
++
++	error =3D motmdm_gnss_send_command(ddata, cmd, strlen(cmd));
++	if (error < 0) {
++		/* Timeouts can happen, don't warn and try again */
++		if (error !=3D -ETIMEDOUT)
++			dev_warn(&gdev->dev, "%s: could not start: %i\n",
++				 __func__, error);
++
++		schedule_delayed_work(&ddata->restart_work,
++				      msecs_to_jiffies(MOTMDM_GNSS_RATE));
++	}
++}
++
++static void motmdm_gnss_start(struct gnss_device *gdev, int delay_ms)
++{
++	struct motmdm_gnss_data *ddata =3D gnss_get_drvdata(gdev);
++	ktime_t now, next, delta;
++	int next_ms;
++
++	now =3D ktime_get();
++	next =3D ktime_add_ms(ddata->last_update, delay_ms);
++	delta =3D ktime_sub(next, now);
++	next_ms =3D ktime_to_ms(delta);
++
++	if (next_ms < 0)
++		next_ms =3D 0;
++	if (next_ms > delay_ms)
++		next_ms =3D delay_ms;
++
++	schedule_delayed_work(&ddata->restart_work, msecs_to_jiffies(next_ms));
++}
++
++static int motmdm_gnss_stop(struct gnss_device *gdev)
++{
++	struct motmdm_gnss_data *ddata =3D gnss_get_drvdata(gdev);
++	const unsigned char *cmd =3D "AT+MPDSTOP";
++
++	cancel_delayed_work_sync(&ddata->restart_work);
++
++	return motmdm_gnss_send_command(ddata, cmd, strlen(cmd));
++}
++
++static int motmdm_gnss_init(struct gnss_device *gdev)
++{
++	struct motmdm_gnss_data *ddata =3D gnss_get_drvdata(gdev);
++	const unsigned char *cmd =3D "AT+MPDINIT=3D1";
++	int error;
++
++	error =3D motmdm_gnss_send_command(ddata, cmd, strlen(cmd));
++	if (error < 0)
++		return error;
++
++	motmdm_gnss_start(gdev, 0);
++
++	return 0;
++}
++
++static int motmdm_gnss_finish(struct gnss_device *gdev)
++{
++	struct motmdm_gnss_data *ddata =3D gnss_get_drvdata(gdev);
++	const unsigned char *cmd =3D "AT+MPDINIT=3D0";
++	int error;
++
++	error =3D motmdm_gnss_stop(gdev);
++	if (error < 0)
++		return error;
++
++	return motmdm_gnss_send_command(ddata, cmd, strlen(cmd));
++}
++
++static int motmdm_gnss_receive_data(struct serdev_device *serdev,
++					const unsigned char *buf, size_t len)
++{
++	struct motmdm_gnss_data *ddata =3D serdev_device_get_drvdata(serdev);
++	struct gnss_device *gdev =3D ddata->gdev;
++	const unsigned char *msg;
++	size_t msglen;
++	int ret =3D 0;
++
++	if (len <=3D MOTMDM_GNSS_RESP_LEN)
++		return 0;
++
++	/* Handle U1234+MPD style command response */
++	if (buf[MOTMDM_GNSS_HEADER_LEN] !=3D '~') {
++		msg =3D buf + MOTMDM_GNSS_RESP_LEN;
++		strncpy(ddata->buf, msg, len - MOTMDM_GNSS_RESP_LEN);
++		ddata->parsed =3D true;
++		wake_up(&ddata->read_queue);
++
++		return len;
++	}
++
++	if (len <=3D MOTMDM_GNSS_DATA_LEN)
++		return 0;
++
++	/* Handle U1234~+MPD style unsolicted message */
++	switch (buf[MOTMDM_GNSS_DATA_LEN]) {
++	case 'N':	/* UNNNN~+MPDNMEA=3DNN, */
++		msg =3D buf + MOTMDM_GNSS_NMEA_LEN;
++		msglen =3D len - MOTMDM_GNSS_NMEA_LEN;
++
++		/*
++		 * Firmware bug: Strip out extra duplicate line break always
++		 * in the data
++		 */
++		msglen--;
++
++		/*
++		 * Firmware bug: Strip out extra data based on an
++		 * earlier line break in the data
++		 */
++		if (msg[msglen - 5 - 1] =3D=3D 0x0a)
++			msglen -=3D 5;
++
++		ret =3D gnss_insert_raw(gdev, msg, msglen);
++		WARN_ON(ret !=3D msglen);
++		break;
++	case 'S':	/* UNNNN~+MPDSTATUS=3DN,NN */
++		msg =3D buf + MOTMDM_GNSS_STATUS_LEN;
++		msglen =3D len - MOTMDM_GNSS_STATUS_LEN;
++
++		switch (msg[0]) {
++		case '1':
++			ddata->status =3D MOTMDM_GNSS_INITIALIZED;
++			break;
++		case '2':
++			ddata->status =3D MOTMDM_GNSS_DATA_OR_TIMEOUT;
++			if (rate_ms < MOTMDM_GNSS_RATE)
++				rate_ms =3D MOTMDM_GNSS_RATE;
++			if (rate_ms > 16 * MOTMDM_GNSS_RATE)
++				rate_ms =3D 16 * MOTMDM_GNSS_RATE;
++			motmdm_gnss_start(gdev, rate_ms);
++			break;
++		case '3':
++			ddata->status =3D MOTMDM_GNSS_STARTED;
++			break;
++		case '4':
++			ddata->status =3D MOTMDM_GNSS_STOPPED;
++			break;
++		default:
++			ddata->status =3D MOTMDM_GNSS_UNKNOWN;
++			break;
++		}
++		break;
++	case 'X':	/* UNNNN~+MPDXREQ=3DN for updated xtra2.bin needed */
++	default:
++		break;
++	}
++
++	return len;
++}
++
++static const struct serdev_device_ops gnss_serdev_ops =3D {
++	.receive_buf    =3D motmdm_gnss_receive_data,
++	.write_wakeup   =3D serdev_device_write_wakeup,
++};
++
++static int motmdm_gnss_open(struct gnss_device *gdev)
++{
++	struct motmdm_gnss_data *ddata =3D gnss_get_drvdata(gdev);
++	int error;
++
++	serdev_device_set_client_ops(ddata->serdev, &gnss_serdev_ops);
++
++	error =3D serdev_device_open(ddata->serdev);
++	if (error)
++		return error;
++
++	error =3D motmdm_gnss_init(gdev);
++	if (error) {
++		serdev_device_close(ddata->serdev);
++		return error;
++	}
++
++	return 0;
++}
++
++static void motmdm_gnss_close(struct gnss_device *gdev)
++{
++	struct motmdm_gnss_data *ddata =3D gnss_get_drvdata(gdev);
++	int error;
++
++	error =3D motmdm_gnss_finish(gdev);
++	if (error < 0)
++		dev_warn(&gdev->dev, "%s: close failed: %i\n",
++			 __func__, error);
++
++	serdev_device_close(ddata->serdev);
++}
++
++static int motmdm_gnss_write_raw(struct gnss_device *gdev,
++				 const unsigned char *buf,
++				 size_t count)
++{
++	struct motmdm_gnss_data *ddata =3D gnss_get_drvdata(gdev);
++
++	return serdev_device_write(ddata->serdev, buf, count, MAX_SCHEDULE_TIMEOU=
+T);
++}
++
++static const struct gnss_operations motmdm_gnss_ops =3D {
++	.open		=3D motmdm_gnss_open,
++	.close		=3D motmdm_gnss_close,
++	.write_raw	=3D motmdm_gnss_write_raw,
++};
++
++static int motmdm_gnss_probe(struct serdev_device *serdev)
++{
++	struct device *dev =3D &serdev->dev;
++	struct motmdm_gnss_data *ddata;
++	struct gnss_device *gdev;
++	int ret;
++
++	ddata =3D devm_kzalloc(dev, sizeof(*ddata), GFP_KERNEL);
++	if (!ddata)
++		return -ENOMEM;
++
++	ddata->serdev =3D serdev;
++	ddata->modem =3D dev->parent;
++	ddata->len =3D PAGE_SIZE;
++	mutex_init(&ddata->mutex);
++	INIT_DELAYED_WORK(&ddata->restart_work, motmdm_gnss_restart);
++	init_waitqueue_head(&ddata->read_queue);
++
++	ddata->buf =3D devm_kzalloc(dev, ddata->len, GFP_KERNEL);
++	if (!ddata->buf)
++		return -ENOMEM;
++
++	serdev_device_set_drvdata(serdev, ddata);
++
++	gdev =3D gnss_allocate_device(dev);
++	if (!gdev)
++		return -ENOMEM;
++
++	gdev->type =3D GNSS_TYPE_NMEA;
++	gdev->ops =3D &motmdm_gnss_ops;
++	gnss_set_drvdata(gdev, ddata);
++	ddata->gdev =3D gdev;
++
++	ret =3D gnss_register_device(gdev);
++	if (ret)
++		gnss_put_device(ddata->gdev);
++
++	return ret;
++}
++
++static void motmdm_gnss_remove(struct serdev_device *serdev)
++{
++	struct motmdm_gnss_data *data =3D serdev_device_get_drvdata(serdev);
++
++	gnss_deregister_device(data->gdev);
++	gnss_put_device(data->gdev);
++};
++
++#ifdef CONFIG_OF
++static const struct of_device_id motmdm_gnss_of_match[] =3D {
++	{ .compatible =3D "motorola,mapphone-mdm6600-gnss" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, motmdm_gnss_of_match);
++#endif
++
++static struct serdev_device_driver motmdm_gnss_driver =3D {
++	.driver	=3D {
++		.name		=3D "gnss-mot-mdm6600",
++		.of_match_table	=3D of_match_ptr(motmdm_gnss_of_match),
++	},
++	.probe	=3D motmdm_gnss_probe,
++	.remove	=3D motmdm_gnss_remove,
++};
++module_serdev_device_driver(motmdm_gnss_driver);
++
++MODULE_AUTHOR("Tony Lindgren <tony@atomide.com>");
++MODULE_DESCRIPTION("Motorola Mapphone MDM6600 GNSS receiver driver");
++MODULE_LICENSE("GPL v2");
+
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--vkogqOf2sHV7VnPd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYBSPbgAKCRAw5/Bqldv6
+8ta8AKCj5ArELuNQdiX9ROLVSfSyEyJ6hACfSiwAsotnsF4hqDruEUzFs4FRxqY=
+=ybvl
+-----END PGP SIGNATURE-----
+
+--vkogqOf2sHV7VnPd--
