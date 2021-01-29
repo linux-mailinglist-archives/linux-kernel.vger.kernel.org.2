@@ -2,195 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC92C309001
-	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:23:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B174309002
+	for <lists+linux-kernel@lfdr.de>; Fri, 29 Jan 2021 23:23:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233284AbhA2WVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 17:21:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232776AbhA2WVn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 17:21:43 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EDDAC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 14:21:03 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id s23so214167pjz.4
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 14:21:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Waa2kugmLjDllXM/NpJiCr0cF57NhaJCQRM2OUEVOlc=;
-        b=g6nU+Qb5P3f50N11vuxB+ZwYXdPvN6xlKaoTFHKCslL8CmcP2Qz71CuEpD2ZD3olRp
-         AfcieM03kWk2D4DllGDsNX/54E3M7aM3HdYOLIw38Fcw3/HXsakid5CEKLK60YLQ9yiy
-         znhoFLo3rp35FlJtqlC3FcpO1pseW+tCKTnPRF+Uvp9jp+V+1N7KWqAZhumVOH386Cug
-         uIyrzKWnGAB4GuEqho+PcRBE49n1q0eUyPGzev019gmwKQWLz0Jxw+mOvheNLeYHgV/U
-         pZC9kX+l5X0DUNxrjp3qiEHw3XXfZzwAFPDECHQLJa0YC153G31x2AINKT6gDeEcj9yv
-         IFbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Waa2kugmLjDllXM/NpJiCr0cF57NhaJCQRM2OUEVOlc=;
-        b=iI5IAwR/Z5fmobNpZ8OBYwcw3xXAnbM8IHBefVOiAxY7hO8OLQoqYJXHbnzfQ+iaHe
-         1GP4E327Zn6fPC5Ix4v2dyJxTGrutWbLplHEuL80+8sVXc6kQfIWlyndoA4Q/eBGMxE6
-         bDIWRrUyOrQJUxIpGUFZUNY30pQGNTJkRbxSxDpIoZ3BymJ740SaS9Qnf3OV9AD7pxN5
-         W7IvHZC3oWX9brHOaFajbC7sqTe5T5dxC/3y+VSsLc2+P/dMiZq9D7pnDYM3OGjqXI8G
-         YasgTE38p4UtJ/Hue8/oD3331CRDsWlZQ1Epdzt7RiANIM5s0PZiIJYCVk4iNwkSrfL5
-         rkhQ==
-X-Gm-Message-State: AOAM533hiwdVpIthU9fQSaI3XIUkP/jf7vkRj5PbrBR7E7Azwml8sN9N
-        Vm/e4hEuGmMnuMte1/YFQxQ4AgS/Hut63LqC/aSUdA==
-X-Google-Smtp-Source: ABdhPJw+BCsSOkR5G2eDjdV3LZUAtAJPNmMz7W9fVgUjrCLSfs7zMAkNu52xoeG49kO/2jRdwH3vSHUCFD4ovD2PtUs=
-X-Received: by 2002:a17:90a:8b82:: with SMTP id z2mr6434050pjn.25.1611958862659;
- Fri, 29 Jan 2021 14:21:02 -0800 (PST)
+        id S232752AbhA2WXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 17:23:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58718 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229683AbhA2WXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 17:23:03 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF33664DDF;
+        Fri, 29 Jan 2021 22:22:21 +0000 (UTC)
+Date:   Fri, 29 Jan 2021 17:22:20 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Song Chen <chensong_2000@189.cn>,
+        Joel Fernandes <joel@joelfernandes.org>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org,
+        linux-rt-users@vger.kernel.org
+Subject: Re: [PATCH] kernel: trace: preemptirq_delay_test: add cpu affinity
+Message-ID: <20210129172220.5e9c87f4@gandalf.local.home>
+In-Reply-To: <1611797713-20965-1-git-send-email-chensong_2000@189.cn>
+References: <1611797713-20965-1-git-send-email-chensong_2000@189.cn>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210129194318.2125748-1-ndesaulniers@google.com>
- <20210129194318.2125748-3-ndesaulniers@google.com> <CA+icZUX4q-JhCo+UZ9T3FhbC_gso-oaB0OR9KdH5iEpoGZyqVw@mail.gmail.com>
- <CAKwvOdnj1Np62+eOiTOCRXSW6GLSv4hmvtWaz=0aTZEEot_dhw@mail.gmail.com>
- <CA+icZUWsyjDY58ZZ0MAVfWqBJ8FUSpM6=_5aqPcRTfX2W8Y-+Q@mail.gmail.com>
- <CAKwvOd=mHvEtto37rzFMfsFYe2e-Cp2MAiyRYxHWPdc-HbT8EA@mail.gmail.com>
- <CA+icZUWxK9fdV8PNGqbQrOFmSZ2Ts4nNqfVMMNUh5u79Ld7hjA@mail.gmail.com>
- <CA+icZUUo6URpxHh6_Tppv9_Z1dyhGDB2OqSCY3yRw72aA0EbMQ@mail.gmail.com>
- <CAKwvOdmWx0reabY-S3nXfTZuhs-_SP7pbb0uHyGeaNSQnm8eRQ@mail.gmail.com> <CA+icZUWsncyKvxPZ5g=a3ssWy=cYahsU6hprM3n=jFUmnjPC6w@mail.gmail.com>
-In-Reply-To: <CA+icZUWsncyKvxPZ5g=a3ssWy=cYahsU6hprM3n=jFUmnjPC6w@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 29 Jan 2021 14:20:51 -0800
-Message-ID: <CAKwvOdk4kG-_c3inNj9ry_xUU9SQE-2AqQp40YL_V=6SHU6E=Q@mail.gmail.com>
-Subject: Re: [PATCH v6 2/2] Kbuild: implement support for DWARF v5
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 2:11 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Fri, Jan 29, 2021 at 11:09 PM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > On Fri, Jan 29, 2021 at 1:20 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > >
-> > > On Fri, Jan 29, 2021 at 10:13 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > > >
-> > > > On Fri, Jan 29, 2021 at 10:09 PM Nick Desaulniers
-> > > > <ndesaulniers@google.com> wrote:
-> > > > >
-> > > > > On Fri, Jan 29, 2021 at 12:55 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > > > > >
-> > > > > > On Fri, Jan 29, 2021 at 9:48 PM Nick Desaulniers
-> > > > > > <ndesaulniers@google.com> wrote:
-> > > > > > >
-> > > > > > > On Fri, Jan 29, 2021 at 12:41 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
-> > > > > > > >
-> > > > > > > > On Fri, Jan 29, 2021 at 8:43 PM Nick Desaulniers
-> > > > > > > > <ndesaulniers@google.com> wrote:
-> > > > > > > > >
-> > > > > > > > > diff --git a/Makefile b/Makefile
-> > > > > > > > > index 20141cd9319e..bed8b3b180b8 100644
-> > > > > > > > > --- a/Makefile
-> > > > > > > > > +++ b/Makefile
-> > > > > > > > > @@ -832,8 +832,20 @@ endif
-> > > > > > > > >
-> > > > > > > > >  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF2) := 2
-> > > > > > > > >  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
-> > > > > > > > > +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) := 5
-> > > > > > > > >  DEBUG_CFLAGS   += -gdwarf-$(dwarf-version-y)
-> > > > > > > > >
-> > > > > > > > > +# If using clang without the integrated assembler, we need to explicitly tell
-> > > > > > > > > +# GAS that we will be feeding it DWARF v5 assembler directives. Kconfig should
-> > > > > > > > > +# detect whether the version of GAS supports DWARF v5.
-> > > > > > > > > +ifdef CONFIG_CC_IS_CLANG
-> > > > > > > > > +ifneq ($(LLVM_IAS),1)
-> > > > > > > > > +ifeq ($(dwarf-version-y),5)
-> > > > > > > > > +DEBUG_CFLAGS   += -Wa,-gdwarf-5
-> > > > > > > >
-> > > > > > > > I noticed double "-g -gdwarf-5 -g -gdwarf-5" (a different issue) and
-> > > > > > > > that's why I looked again into the top-level Makefile.
-> > > > > > >
-> > > > > > > That's...unexpected.  I don't see where that could be coming from.
-> > > > > > > Can you tell me please what is the precise command line invocation of
-> > > > > > > make and which source file you observed this on so that I can
-> > > > > > > reproduce?
-> > > > > > >
-> > > > > >
-> > > > > > That's everywhere...
-> > > > > >
-> > > > > > $ zstdgrep --color '\-g -gdwarf-5 -g -gdwarf-5'
-> > > > > > build-log_5.11.0-rc5-8-amd64-clang12-lto.txt.zst
-> > > > > > | wc -l
-> > > > > > 29529
-> > > > >
-> > > > > I'm not able to reproduce.
-> > > > >
-> > > > > $ make LLVM=1 -j72 V=1 2>&1 | grep dwarf
-> > > > > ...
-> > > > > clang ... -g -gdwarf-5 -Wa,-gdwarf-5 ...
-> > > > > ...
-> > > > >
-> > > > > $ make LLVM=1 LLVM_IAS=1 -j72 V=1 2>&1 | grep dwarf
-> > > > > ...
-> > > > > clang ... -g -gdwarf-5 ...
-> > > > > ...
-> > > > >
-> > > >
-> > > > Hmm...
-> > > >
-> > > > I do not see in my current build "-Wa,-gdwarf-5" is passed with v6.
-> > > >
-> > > > $ grep '\-Wa,-gdwarf-5' build-log_5.11.0-rc5-10-amd64-clang12-lto-pgo.txt
-> > > > [ empty ]
-> > > >
-> > >
-> > > That's the diff v5 -> v6...
-> > >
-> > > There is no more a dwarf-aflag / KBUILD_AFLAGS += $(dwarf-aflag) used.
-> >
-> > Yep; not sure that's relevant though to duplicate flags?
-> >
-> > > > > Can you tell me please what is the precise command line invocation of
-> > > > > make and which source file you observed this on so that I can
-> > > > > reproduce?
-> >
-> > If you don't send me your invocation of `make`, I cannot help you.
-> >
->
-> /usr/bin/perf_5.10 stat make V=1 -j4 LLVM=1 LLVM_IAS=1
-> PAHOLE=/opt/pahole/bin/pahole LOCALVERSION=-10-amd64-clang12
-> -lto-pgo KBUILD_VERBOSE=1 KBUILD_BUILD_HOST=iniza
-> KBUILD_BUILD_USER=sedat.dilek@gmail.com
-> KBUILD_BUILD_TIMESTAMP=2021-01-29 bindeb-pkg
-> KDEB_PKGVERSION=5.11.0~rc5-10~bullseye+dileks1
+Joel,
 
-$ make LLVM=1 LLVM_IAS=1 -j72 defconfig
-$ make LLVM=1 LLVM_IAS=1 -j72 menuconfig
-<enable CONFIG_DEBUG_INFO and CONFIG_DEBUG_INFO_DWARF5>
-$ make LLVM=1 LLVM_IAS=1 -j72 V=1 &> log.txt
-$ grep '\-g -gdwarf-5 -g -gdwarf-5' log.txt | wc -l
-0
-$ grep '\-g -gdwarf-5' log.txt | wc -l
-2517
+Can you ack this patch?
 
-Do have the patch applied twice, perhaps?
+-- Steve
 
-Is your compiler haunted, or is mine? (haha! they both are; false
-dichotomy; they are one in the same).  Is zstdgrep haunted, or is GNU
-grep haunted? :P
--- 
-Thanks,
-~Nick Desaulniers
+
+On Thu, 28 Jan 2021 09:35:13 +0800
+Song Chen <chensong_2000@189.cn> wrote:
+
+> The kernel thread executing test can run on any cpu, which might be
+> different cpu latency tracer is running on, as a result, the
+> big latency caused by preemptirq delay test can't be detected.
+> 
+> Therefore, the argument cpu_affinity is added to be passed to test,
+> ensure it's running on the same cpu with latency tracer.
+> 
+> e.g.
+> cyclictest -p 90 -m -c 0 -i 1000 -a 3
+> modprobe preemptirq_delay_test test_mode=preempt delay=500 \
+> burst_size=3 cpu_affinity=3
+> 
+> Signed-off-by: Song Chen <chensong_2000@189.cn>
+> ---
+>  kernel/trace/Kconfig                 |  4 ++++
+>  kernel/trace/preemptirq_delay_test.c | 14 ++++++++++++++
+>  2 files changed, 18 insertions(+)
+> 
+> diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+> index c1a62ae..44dd5c0 100644
+> --- a/kernel/trace/Kconfig
+> +++ b/kernel/trace/Kconfig
+> @@ -886,6 +886,10 @@ config PREEMPTIRQ_DELAY_TEST
+>  	  irq-disabled critical sections for 500us:
+>  	  modprobe preemptirq_delay_test test_mode=irq delay=500 burst_size=3
+>  
+> +	  What's more, if you want to attach the test on the cpu which the latency
+> +	  tracer is running on, specify cpu_affinity=cpu_num at the end of the
+> +	  command.
+> +
+>  	  If unsure, say N
+>  
+>  config SYNTH_EVENT_GEN_TEST
+> diff --git a/kernel/trace/preemptirq_delay_test.c b/kernel/trace/preemptirq_delay_test.c
+> index 312d1a0..8c4ffd0 100644
+> --- a/kernel/trace/preemptirq_delay_test.c
+> +++ b/kernel/trace/preemptirq_delay_test.c
+> @@ -21,13 +21,16 @@
+>  static ulong delay = 100;
+>  static char test_mode[12] = "irq";
+>  static uint burst_size = 1;
+> +static int  cpu_affinity = -1;
+>  
+>  module_param_named(delay, delay, ulong, 0444);
+>  module_param_string(test_mode, test_mode, 12, 0444);
+>  module_param_named(burst_size, burst_size, uint, 0444);
+> +module_param_named(cpu_affinity, cpu_affinity, int, 0444);
+>  MODULE_PARM_DESC(delay, "Period in microseconds (100 us default)");
+>  MODULE_PARM_DESC(test_mode, "Mode of the test such as preempt, irq, or alternate (default irq)");
+>  MODULE_PARM_DESC(burst_size, "The size of a burst (default 1)");
+> +MODULE_PARM_DESC(cpu_affinity, "Cpu num test is running on");
+>  
+>  static struct completion done;
+>  
+> @@ -36,7 +39,9 @@ static struct completion done;
+>  static void busy_wait(ulong time)
+>  {
+>  	u64 start, end;
+> +
+>  	start = trace_clock_local();
+> +
+>  	do {
+>  		end = trace_clock_local();
+>  		if (kthread_should_stop())
+> @@ -47,6 +52,7 @@ static void busy_wait(ulong time)
+>  static __always_inline void irqoff_test(void)
+>  {
+>  	unsigned long flags;
+> +
+>  	local_irq_save(flags);
+>  	busy_wait(delay);
+>  	local_irq_restore(flags);
+> @@ -113,6 +119,14 @@ static int preemptirq_delay_run(void *data)
+>  {
+>  	int i;
+>  	int s = MIN(burst_size, NR_TEST_FUNCS);
+> +	struct cpumask cpu_mask;
+> +
+> +	if (cpu_affinity > -1) {
+> +		cpumask_clear(&cpu_mask);
+> +		cpumask_set_cpu(cpu_affinity, &cpu_mask);
+> +		if (set_cpus_allowed_ptr(current, &cpu_mask))
+> +			pr_err("cpu_affinity:%d, failed\n", cpu_affinity);
+> +	}
+>  
+>  	for (i = 0; i < s; i++)
+>  		(testfuncs[i])(i);
+
