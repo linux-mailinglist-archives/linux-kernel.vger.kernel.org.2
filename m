@@ -2,81 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE4F30933C
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A7E3092EE
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229816AbhA3JWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 04:22:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231361AbhA3JVh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 04:21:37 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB25C061351;
-        Sat, 30 Jan 2021 00:29:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=aUJjQWq04yfyD9i9zO9j9MoGWuJhNQkIG0RfzLvmCjA=; b=AT4G5Roe61L1QOg1iL8NT3diId
-        42noT2VCN+nZqZwZifNNJEuAKpdH9LFV6XvuCR3Uh2zfpajNaXsXiOg5n76Xq+NBj44mhCd45f4WK
-        eGp6KoJxSAMs2NlxP8XP2d1NYecOYacNLHC9fOVgnRWkpQvgE01aUKSDy2ZaLDGi6ZA4y7e+tmeAx
-        gY80zaBz5B4mvLEBLsYBKTfgPNSZ/XxlzcSK1tVUmDePgWrWCQ2Ujda9G13fGP5YnasTTzKrgMZY0
-        obzMbUh9zhtbhTd2lBIKIv0sQlZnb6eGD+cWnEUCkJAL78Ao5rRa1GFTof64b0Abo37Rk3UDBgmus
-        iKoOBy7Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l5lcQ-00AslN-Dx; Sat, 30 Jan 2021 08:28:37 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 05FD83011E6;
-        Sat, 30 Jan 2021 09:28:32 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E15272DACC7DB; Sat, 30 Jan 2021 09:28:32 +0100 (CET)
-Date:   Sat, 30 Jan 2021 09:28:32 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Nikolay Borisov <nborisov@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter()
- with nmi_enter()")
-Message-ID: <YBUYsFlxjsQxuvfB@hirez.programming.kicks-ass.net>
-References: <YBMBTsY1uuQb9wCP@hirez.programming.kicks-ass.net>
- <20210129013452.njuh3fomws62m4rc@ast-mbp.dhcp.thefacebook.com>
- <YBPNyRyrkzw2echi@hirez.programming.kicks-ass.net>
- <20210129224011.81bcdb3eba1227c414e69e1f@kernel.org>
- <20210129105952.74dc8464@gandalf.local.home>
- <20210129162438.GC8912@worktop.programming.kicks-ass.net>
- <CAADnVQLMqHpSsZ1OdZRFmKqNWKiRq3dxRxw+y=kvMdmkN7htUw@mail.gmail.com>
- <20210129175943.GH8912@worktop.programming.kicks-ass.net>
- <20210129140103.3ce971b7@gandalf.local.home>
- <20210129162454.293523c6@gandalf.local.home>
+        id S233585AbhA3JK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 04:10:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38730 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233877AbhA3JIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 04:08:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3EEB64E12;
+        Sat, 30 Jan 2021 08:36:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1611995775;
+        bh=7gLJ+o3JkB0eusHgIumir48OcUHn9KEhZX0kSm0JRsA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M+EwpS8FIewCm/f+P8zSYKaJlN4cHIKfhIN0y5sETN+vuRe6xhT8GnbQvWh2HO4Yn
+         we2HiB7jTvyzjAufQi+U06Zm+KONRdOeEL7oJEXN6xewPeeBLqMePwq6EtJpdOARYA
+         f6EPghB5MAI5/5MC/haF5mktiAiXZTejTReCGMaE=
+Date:   Sat, 30 Jan 2021 09:36:12 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Aviraj CJ <acj@cisco.com>
+Cc:     davem@davemloft.net, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        xe-linux-external@cisco.com, Hangbin Liu <liuhangbin@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [Internal review][PATCH stable v5.4 1/2] ICMPv6: Add ICMPv6
+ Parameter Problem, code 3 definition
+Message-ID: <YBUafB76nbydgXv+@kroah.com>
+References: <20210129192741.117693-1-acj@cisco.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210129162454.293523c6@gandalf.local.home>
+In-Reply-To: <20210129192741.117693-1-acj@cisco.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 04:24:54PM -0500, Steven Rostedt wrote:
-> Specifically, kprobe and ftrace callbacks may have this:
+On Sat, Jan 30, 2021 at 12:57:40AM +0530, Aviraj CJ wrote:
+> From: Hangbin Liu <liuhangbin@gmail.com>
 > 
-> 	if (in_nmi())
-> 		return;
+> commit b59e286be280fa3c2e94a0716ddcee6ba02bc8ba upstream.
 > 
-> 	raw_spin_lock_irqsave(&lock, flags);
-> 	[..]
-> 	raw_spin_unlock_irqrestore(&lock, flags);
+> Based on RFC7112, Section 6:
 > 
-> Which is totally fine to have,
+>    IANA has added the following "Type 4 - Parameter Problem" message to
+>    the "Internet Control Message Protocol version 6 (ICMPv6) Parameters"
+>    registry:
+> 
+>       CODE     NAME/DESCRIPTION
+>        3       IPv6 First Fragment has incomplete IPv6 Header Chain
+> 
+> Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> Signed-off-by: Aviraj CJ <acj@cisco.com>
+> ---
+>  include/uapi/linux/icmpv6.h | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/include/uapi/linux/icmpv6.h b/include/uapi/linux/icmpv6.h
+> index 2622b5a3e616..9a31ea2ad1cf 100644
+> --- a/include/uapi/linux/icmpv6.h
+> +++ b/include/uapi/linux/icmpv6.h
+> @@ -137,6 +137,7 @@ struct icmp6hdr {
+>  #define ICMPV6_HDR_FIELD		0
+>  #define ICMPV6_UNK_NEXTHDR		1
+>  #define ICMPV6_UNK_OPTION		2
+> +#define ICMPV6_HDR_INCOMP		3
+>  
+>  /*
+>   *	constants for (set|get)sockopt
+> -- 
+> 2.26.2.Cisco
+> 
 
-Why? There's a distinct lack of explaining here.
+What do you mean by "internal review" and what am I supposed to do with
+this patch?  Same for the 2/2 patch in this series...
 
-Note that we ripped out all such dodgy locking from kretprobes.
+thanks,
+
+greg k-h
