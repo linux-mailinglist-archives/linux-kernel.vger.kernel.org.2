@@ -2,142 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 844BF309892
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 23:12:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35303309897
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 23:12:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232120AbhA3WKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 17:10:32 -0500
-Received: from mga17.intel.com ([192.55.52.151]:63303 "EHLO mga17.intel.com"
+        id S232260AbhA3WLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 17:11:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57704 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230168AbhA3WKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 17:10:32 -0500
-IronPort-SDR: SJCTL/zsMjJvB0pBN1lW3OhCTvnSNQi/BaG+r3GHOkrW0X644HJEQiV+F4AVQLaFUDEjt8lUiP
- DbLaf/c2VK2A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9880"; a="160324738"
-X-IronPort-AV: E=Sophos;i="5.79,389,1602572400"; 
-   d="scan'208";a="160324738"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2021 14:09:51 -0800
-IronPort-SDR: x9npy6tW89Nbhbtp4lJwOL/sjk94kiwuNXIg96ayqExhxVU9GRjYE9g2RWCzhNlglvJRuJarGM
- fwvD14vLRBtw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,389,1602572400"; 
-   d="scan'208";a="476920972"
-Received: from lkp-server02.sh.intel.com (HELO 625d3a354f04) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 30 Jan 2021 14:09:50 -0800
-Received: from kbuild by 625d3a354f04 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1l5yRB-00054I-NN; Sat, 30 Jan 2021 22:09:49 +0000
-Date:   Sun, 31 Jan 2021 06:08:51 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- a7e0bdf1b07ea6169930ec42b0bdb17e1c1e3bb0
-Message-ID: <6015d8f3.xnblDS1XqLIcyefv%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230168AbhA3WL0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 17:11:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C154561492;
+        Sat, 30 Jan 2021 22:10:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612044645;
+        bh=77YcxH+eCPwOFkQU6sZz0QWeMg6cwRdjlKD7GsMTqwU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=iDaX/syaAW2XrojjStjvRMKYtZEIRJgVm71qjEFEjf+FqsqaAT0btQKSTi2eaB9mM
+         nu+J+UhagiBUICloKRUDvnj0MtJ5G8uFg8g2o0e+n8k7qEXiDKfDMIeMWlc1fSzIpw
+         a4AvQ2POs2C+tgLjyp+Wg2BtlCoxpumaKIUMYv6o0MUgf29HJkinzONA0rOa34KpS3
+         0xo7x+9fgH6iAjBGcEb3rRkm02hlChI5rkh1rdGDIG60DeIssdPB+n1HHg2Pd2AbVv
+         DfadvqxXZ09Qt+Q7cm3NQdvOCbFaOVH0ifYTglX4FhQDuenq3F7mQc43oP25nho5z/
+         h4RLvojt2uqfw==
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        David Hildenbrand <david@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?q?=C5=81ukasz=20Majczak?= <lma@semihalf.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
+Subject: [PATCH v4 0/2] mm: fix initialization of struct page for holes in  memory layout
+Date:   Sun, 31 Jan 2021 00:10:33 +0200
+Message-Id: <20210130221035.4169-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: a7e0bdf1b07ea6169930ec42b0bdb17e1c1e3bb0  Merge branch 'irq/urgent'
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-elapsed time: 720m
+Hi,
 
-configs tested: 82
-configs skipped: 2
+Commit 73a6e474cb37 ("mm: memmap_init: iterate over
+memblock regions rather that check each PFN") exposed several issues with
+the memory map initialization and these patches fix those issues.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Initially there were crashes during compaction that Qian Cai reported back
+in April [1]. It seemed back then that the problem was fixed, but a few
+weeks ago Andrea Arcangeli hit the same bug [2] and there was an additional
+discussion at [3].
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                 mpc836x_rdk_defconfig
-mips                           ip28_defconfig
-powerpc                    ge_imp3a_defconfig
-powerpc                    amigaone_defconfig
-mips                          rb532_defconfig
-arm                              alldefconfig
-arm                             pxa_defconfig
-arm                       omap2plus_defconfig
-powerpc                 xes_mpc85xx_defconfig
-arm                         lubbock_defconfig
-microblaze                          defconfig
-xtensa                  cadence_csp_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-powerpc                     tqm8548_defconfig
-sh                           sh2007_defconfig
-xtensa                         virt_defconfig
-mips                      pic32mzda_defconfig
-powerpc                     asp8347_defconfig
-sh                   sh7770_generic_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210130
-i386                 randconfig-a003-20210130
-i386                 randconfig-a002-20210130
-i386                 randconfig-a001-20210130
-i386                 randconfig-a004-20210130
-i386                 randconfig-a006-20210130
-x86_64               randconfig-a004-20210130
-x86_64               randconfig-a002-20210130
-x86_64               randconfig-a001-20210130
-x86_64               randconfig-a005-20210130
-x86_64               randconfig-a006-20210130
-x86_64               randconfig-a003-20210130
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+I didn't appreciate variety of ways BIOSes can report memory in the first
+megabyte, so v3 of this set caused boot failures on several x86 systems. 
+Hopefully this time I covered all the bases.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+The first patch here complements commit bde9cfa3afe4 ("x86/setup: don't
+remove E820_TYPE_RAM for pfn 0") for the cases when BIOS reports the first
+page as absent or reserved.
+
+The second patch is a more robust version of d3921cb8be29 ("mm: fix
+initialization of struct page for holes in memory layout") that can now
+handle the above cases as well.
+
+v4:
+* make sure pages in the range 0 - start_pfn_of_lowest_zone are initialized
+  even if an architecture hides them from the generic mm
+* finally make pfn 0 on x86 to be a part of memory visible to the generic
+  mm as reserved memory.
+
+v3: https://lore.kernel.org/lkml/20210111194017.22696-1-rppt@kernel.org
+* use architectural zone constraints to set zone links for struct pages
+  corresponding to the holes
+* drop implicit update of memblock.memory
+* add a patch that sets pfn 0 to E820_TYPE_RAM on x86
+
+v2: https://lore.kernel.org/lkml/20201209214304.6812-1-rppt@kernel.org/):
+* added patch that adds all regions in memblock.reserved that do not
+overlap with memblock.memory to memblock.memory in the beginning of
+free_area_init()
+
+[1] https://lore.kernel.org/lkml/8C537EB7-85EE-4DCF-943E-3CC0ED0DF56D@lca.pw
+[2] https://lore.kernel.org/lkml/20201121194506.13464-1-aarcange@redhat.com
+[3] https://lore.kernel.org/mm-commits/20201206005401.qKuAVgOXr%akpm@linux-foundation.org
+
+Mike Rapoport (2):
+  x86/setup: always add the beginning of RAM as memblock.memory
+  mm: fix initialization of struct page for holes in memory layout
+
+ arch/x86/kernel/setup.c |  8 ++++
+ mm/page_alloc.c         | 85 ++++++++++++++++++++++++-----------------
+ 2 files changed, 59 insertions(+), 34 deletions(-)
+
+-- 
+2.28.0
+
