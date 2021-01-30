@@ -2,97 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9E530933A
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:24:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C0630932F
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:21:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229473AbhA3JWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 04:22:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
+        id S230178AbhA3JU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 04:20:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231325AbhA3JVj (ORCPT
+        with ESMTP id S231748AbhA3JUP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 04:21:39 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56497C0617A9
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 00:09:22 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id y19so11931920iov.2
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 00:09:22 -0800 (PST)
+        Sat, 30 Jan 2021 04:20:15 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93829C0617AB
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 00:21:33 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id m2so8495031wmm.1
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 00:21:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9pF2wojN9gGVpEFLc3F0it5xrHpu2kN/KdpA0MJ6RRs=;
-        b=fnhBSwX5/funsUDXajW4rsV1DPuOtzdpPVFrrcZ7ZMfWXoAeoHwqG62GCWubZMAoO/
-         WVsQkz/fgBe0lB+kjGwAn7NC3ZTrpr/1JqvAhuckNwCOVDVaOxgVteTivcXu/VfyV+HB
-         xV2sdAnYnK6XNxLyHR+flGg3Rxu9hokL4Out5EHGPEVJIFxVmEe/J+BTEHO1UkcFHWpH
-         5WmzqOWwKTych2E0F1xSAv3Gcg6r46sR1xGhprCCB5DUpXn9A5++f0m94sbx48b+Qn4i
-         0tpIonQC0LaZFGZslUb9q59oqeRK6WHOoLDpSkLxGBXs97FqtbU1X5MbERrR4jq3WxS4
-         obrw==
+        d=amarulasolutions.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Wlfadfbrmnq3giiUziIBDERuBfZMf0+CD1+IscHGj28=;
+        b=itg+VnYcYZ38pClixocKf/g7MZFUQSeALN12A7EDaxvHyhTLZcv0TEmlnSfcZ+sjeg
+         xRxmmEapWIorkKFiOGcoHFft0Fxus39O6UoGTXrkC1tibWEVQ0CrsQ45uO1JXC8uW4ln
+         Ndu/6YezcaWA2AoIkJX7Y/AJK5cyxGZD9VKsk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9pF2wojN9gGVpEFLc3F0it5xrHpu2kN/KdpA0MJ6RRs=;
-        b=Nh+VFXVElrfONV/ZBExTSjEYZXmbRJm2EC1O1lqzUtOZM+SZFple7UDRlErdk+K8fk
-         0MeDeGvdYwBQvE5LNMpwc9sfO4m94wVgTHkcKQBqBDZypAcpoeQ1m2VeFzOMilFFuEyA
-         lQb8r3CItktd1Z+MJ5z4AfWqudU4MOvtAu9sDMIIoeMZB22idhvoqz9qCQmLXLS2LkNK
-         V9CHMTJPeGa/ZS6SNC8HXLUftI9BMB2pKR+ilEicXtF1/VGFtF/dpBQ5Jo6KysWZYn7e
-         vo4KMrJcKl1saLBUNC64rzjBH+4IwPBDCS6idqLML0q3N9THaS/iHBBrC/MUYhMJ2n4k
-         bgDA==
-X-Gm-Message-State: AOAM531fcITnxHKsR3+JqVa8nEpwkX+51qB/RImKlzNmTgyeQ4Ewag9q
-        RDwNaflKRBE3h4l9Kie3uodC2FGXMaXGz+y5Lwu1QVFjOnw=
-X-Google-Smtp-Source: ABdhPJzcXsnhwrs8IODBKuA1fG8zEHE9zE9u9Tep93UhkLINan8bZibM1PZuW7Lqh3yLrlxyHgcrmC28NFD25q1CXUY=
-X-Received: by 2002:a05:6602:2053:: with SMTP id z19mr178334iod.86.1611994161568;
- Sat, 30 Jan 2021 00:09:21 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Wlfadfbrmnq3giiUziIBDERuBfZMf0+CD1+IscHGj28=;
+        b=XFeGFuvWm+mYCbU7fTWH1fFL/3FY5mOcbx9N/QPs5Q1FgsjVNLJ7C3DGK9rrdyspWE
+         ofrfJ0RN9btJyaKeDm9IfQ55jdneEnItq9AGeAHW3V8c0JPFTYuhSU2SzsRfs/ZJKBzK
+         fu+Gnru5Aiaz1moG/D1D2mWvfieDDywcn0QXt1caNQ/ErvfW/Yb6purie9HoBVN2Uwkk
+         HnVObw98M14NUtRyQI92krREXdUctE/Hya4LIk2mdpNoInfr9NmTleKOcvAT5IxwuEC9
+         8zqrCX01je3nm1GKDH+qURrs3quXszSmLMaW59B0Y93OYviPQKJO3qaD85/o3XzHUH2/
+         FP5w==
+X-Gm-Message-State: AOAM531wMESePwFbMpCcPWO8MIxU7Y2CmAvolMbtl53KX12JM4M4yFC9
+        LcWL+5sZCkxbwfX5gOq5s3CwN/BN3cmiCQ==
+X-Google-Smtp-Source: ABdhPJzYHbXsKSCcB7Vq3G4KWJWrzhFnlKKTTzTYTJpmoJJqCq+hSHWaU/GXgSa+7Cq9B5Ct1gr5kg==
+X-Received: by 2002:a7b:c854:: with SMTP id c20mr6797012wml.127.1611994892074;
+        Sat, 30 Jan 2021 00:21:32 -0800 (PST)
+Received: from localhost.localdomain ([37.163.154.109])
+        by smtp.gmail.com with ESMTPSA id j4sm16380560wru.20.2021.01.30.00.21.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Jan 2021 00:21:31 -0800 (PST)
+From:   Michael Trimarchi <michael@amarulasolutions.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Fabio Estevam <festevam@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Michael Trimarchi <michael@amarulasolutions.com>,
+        Angelo Compagnucci <angelo@amarulasolutions.com>
+Subject: [PATCH] pinctrl: Support pin that does not support configuration option
+Date:   Sat, 30 Jan 2021 09:21:28 +0100
+Message-Id: <20210130082128.3778939-1-michael@amarulasolutions.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210115170907.24498-1-peterx@redhat.com> <20210115170907.24498-22-peterx@redhat.com>
- <CAJHvVcg4tjgRis=WF77phGC6Xm=DBo1W5pDa_d0ZP-Df1VXRxw@mail.gmail.com> <20210129223129.GB260413@xz-x1>
-In-Reply-To: <20210129223129.GB260413@xz-x1>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Sat, 30 Jan 2021 00:08:44 -0800
-Message-ID: <CAJHvVcjaLW23z9yJeSQR=R3PuRFEzWEHmOBkMiLEaYFnQ0OuuQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 21/30] hugetlb: Pass vma into huge_pte_alloc()
-To:     Peter Xu <peterx@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        "Kirill A . Shutemov" <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Nadav Amit <nadav.amit@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 2:31 PM Peter Xu <peterx@redhat.com> wrote:
->
-> On Thu, Jan 28, 2021 at 02:59:13PM -0800, Axel Rasmussen wrote:
-> > > +pte_t *huge_pte_alloc(struct mm_struct *mm, structt vm_area_struct *vma,
-> >
-> > This was pointed out to me just after I sent v3 of my series today
-> > (which includes this patch):
-> >
-> > Typo, s/structt/struct/.
->
-> Thanks Axel - fixed here too.  It's strange why it didn't complain.
->
-> Re the minor fault series, I thought it would be good to have some comment from
-> Andrea/Mike or others, but in all cases I'll read your v3 next week.
->
-> (A small heads-up: you'd better use v3.1 next time for that single patch, so
->  that just in case there will be a complete v4 series then that patch won't
->  collapse with it)
+Some of the iMX25 pins have not an associated configuration register so
+when they are configured the standard way through the device tree the
+kernel complains with:
 
-Thanks!
+imx25-pinctrl 43fac000.iomuxc: Pin(MX25_PAD_EXT_ARMCLK) does not support
+config function
 
-And, I'll keep that in mind for next time. I had seen it done that way
-before, but it slipped my mind.
+Signed-off-by: Michael Trimarchi <michael@amarulasolutions.com>
+Tested-by: Angelo Compagnucci <angelo@amarulasolutions.com>
+---
+ drivers/pinctrl/core.c                  | 2 +-
+ drivers/pinctrl/freescale/pinctrl-imx.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
->
-> --
-> Peter Xu
->
+diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
+index 9fc4433fece4..7115b0b5689c 100644
+--- a/drivers/pinctrl/core.c
++++ b/drivers/pinctrl/core.c
+@@ -1273,7 +1273,7 @@ static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state *state)
+ 			break;
+ 		}
+ 
+-		if (ret < 0) {
++		if (ret < 0 && ret != -ENOTSUPP) {
+ 			goto unapply_new_state;
+ 		}
+ 
+diff --git a/drivers/pinctrl/freescale/pinctrl-imx.c b/drivers/pinctrl/freescale/pinctrl-imx.c
+index daf28bc5661d..2c7c1de9cca7 100644
+--- a/drivers/pinctrl/freescale/pinctrl-imx.c
++++ b/drivers/pinctrl/freescale/pinctrl-imx.c
+@@ -356,7 +356,7 @@ static int imx_pinconf_get_mmio(struct pinctrl_dev *pctldev, unsigned pin_id,
+ 	if (pin_reg->conf_reg == -1) {
+ 		dev_err(ipctl->dev, "Pin(%s) does not support config function\n",
+ 			info->pins[pin_id].name);
+-		return -EINVAL;
++		return -ENOTSUPP;
+ 	}
+ 
+ 	*config = readl(ipctl->base + pin_reg->conf_reg);
+@@ -391,7 +391,7 @@ static int imx_pinconf_set_mmio(struct pinctrl_dev *pctldev,
+ 	if (pin_reg->conf_reg == -1) {
+ 		dev_err(ipctl->dev, "Pin(%s) does not support config function\n",
+ 			info->pins[pin_id].name);
+-		return -EINVAL;
++		return -ENOTSUPP;
+ 	}
+ 
+ 	dev_dbg(ipctl->dev, "pinconf set pin %s\n",
+-- 
+2.25.1
+
