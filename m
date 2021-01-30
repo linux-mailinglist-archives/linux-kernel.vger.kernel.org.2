@@ -2,258 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E32F730967A
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 17:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 086BE30968C
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 17:16:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232363AbhA3QBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 11:01:37 -0500
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:35373 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232216AbhA3P40 (ORCPT
+        id S232377AbhA3QPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 11:15:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232223AbhA3QA4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 10:56:26 -0500
-Date:   Sat, 30 Jan 2021 15:55:24 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1612022132; bh=FggdhBVUsajUZNHPJ2/uHLJEmlhJc0ygmB55Y9M41h8=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=T/jIdyqw1mxnzW9/WPYrZoyzqI3xjjWHl5O7XcSBWxjVGIU0iJIlQrTEGFLrOB/7b
-         3Ph7asMS7UnxIgQISBnvZmz0ZY+TY5HpOyxKpjaG9jarpweqryWjsxh8gOT8RBGrEB
-         Nc0/CzSJ/xwliTf0TwJpZNRn+Wv8CPrAomQCO2W5mqVVSvcRPiSDS9LW2GfNhG8Yn9
-         HAvjm4ZH5y88+7ELuWG8ltsMlat/d12gsolrOPH6J847+n9Dx6sieZTaeJtz7O4LUV
-         zgZoZiJEuaVvIvXqFLP0a0EPNjKTnvNdtvkENgaaatD1mhZB1siM29nwwp4yT4hE+7
-         uZe2SK5ZGsqqA==
-To:     Dongseok Yi <dseok.yi@samsung.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        namkyu78.kim@samsung.com, Jakub Kicinski <kuba@kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [RESEND PATCH net v4] udp: ipv4: manipulate network header of NATed UDP GRO fraglist
-Message-ID: <20210130155458.8523-1-alobakin@pm.me>
-In-Reply-To: <1611962007-80092-1-git-send-email-dseok.yi@samsung.com>
-References: <CGME20210129232630epcas2p1071e141ef8059c4d5c0e4b28c181a171@epcas2p1.samsung.com> <1611962007-80092-1-git-send-email-dseok.yi@samsung.com>
+        Sat, 30 Jan 2021 11:00:56 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F338C061573;
+        Sat, 30 Jan 2021 08:00:11 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id 36so11768949otp.2;
+        Sat, 30 Jan 2021 08:00:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=i1Y1GTOXeVZe95V2JMXKUZfz/w0hpueKYPv2Yf7uGAs=;
+        b=TJk49GIMvxm8PC4RfvcwIkVnLjUb9fdi4O9N3k202Cr26Y2EP1cNSNlEqRAj5lUaA6
+         PU0MBMk2AmnH0cKXOkoyCAPqu0ktzoAhnszUP4cYM/J/sxUVreV5JpuT45qcwMDlZiWG
+         NViamyuqqvUFGmaYOhkSuSrYDSRHRhmzpv3CKRFOWsD/ammnqPCKaEFTtLd5umNR5q+Z
+         QUSS618OeKeAGmNWemzTgu/kq7QBx5FG6jNAukVJQzT5iSUApP3C1dQK0sTy0JupYAyr
+         8o2qfw8eNprVU9DAA/bGv/NfiYNGlejbq2id2hz0s7x+hMd1DTQCd9EOGNNeqYAS5laP
+         tqBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=i1Y1GTOXeVZe95V2JMXKUZfz/w0hpueKYPv2Yf7uGAs=;
+        b=evSacaWKYtJOp8GSObiuBvzrVgJcS96M6E6BJHa0iLoEMWpzePKROdqW5DZJ+kE6CJ
+         kmn7yBd276EEyyY4hfJVOV66n1wOPtjwBR0GSYgXysDrGjZJ81XOAhakTx3PC/fpNvhx
+         FCbsKedhdYRP5ViOGjc9rfKw7Qu0d+aeJHlHdDOOd4zIVkxT5E7MCf33QXh9aEp9wCS2
+         EqOOsg4rt+L61Eykl3BAyL9tGUzbvFtbfJ0/4PK5pv5rv41UVr3I7lnoX8JawWBvjyxV
+         or95dOihx2tVmzD9F1a4kGK3ygjEB2uy1tdAiypJG4k99pMZu9DVOvlZCBtq9Uqxgm+B
+         0Zww==
+X-Gm-Message-State: AOAM531cJjzujEO2lJnC193BcI1TzpcR2fD5zGiwhto3fo5tNkMNf7JO
+        mPHl8f/PhjsTU0XIdTdW71pluHhHIvQ=
+X-Google-Smtp-Source: ABdhPJyVqJ2/gwKsiVCbI4qg6JOkNVpDlDvQjENT/WO304Me/CpY++JqOAF4eEMta4EpLQzHiGfaHw==
+X-Received: by 2002:a9d:21ca:: with SMTP id s68mr2090823otb.164.1612022410137;
+        Sat, 30 Jan 2021 08:00:10 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w66sm3171077oif.21.2021.01.30.08.00.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 30 Jan 2021 08:00:09 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] hwmon: lm75: Use zero lm75_type for lm75
+To:     "Matwey V. Kornilov" <matwey.kornilov@gmail.com>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Javier Martinez Canillas <javier@osg.samsung.com>,
+        "open list:HARDWARE MONITORING" <linux-hwmon@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210130101038.26331-1-matwey@sai.msu.ru>
+ <a771f5b8-aa24-b736-4e8f-b3b46a15dcb6@roeck-us.net>
+ <CAJs94EY=hDwNun_kzNQdMHmC27KEZV6urxcKm9xbHriJ_1m3UQ@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <dae2c13a-877e-fd54-bb6a-ed7c2c3d1e66@roeck-us.net>
+Date:   Sat, 30 Jan 2021 08:00:07 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <CAJs94EY=hDwNun_kzNQdMHmC27KEZV6urxcKm9xbHriJ_1m3UQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dongseok Yi <dseok.yi@samsung.com>
-Date: Sat, 30 Jan 2021 08:13:27 +0900
+On 1/30/21 7:43 AM, Matwey V. Kornilov wrote:
+> 
+> 
+> сб, 30 янв. 2021 г. в 18:31, Guenter Roeck <linux@roeck-us.net <mailto:linux@roeck-us.net>>:
+>>
+>> On 1/30/21 2:10 AM, Matwey V. Kornilov wrote:
+>> > There is a logical flaw in lm75_probe() function introduced in
+>> >
+>> >     e97a45f1b460 ("hwmon: (lm75) Add OF device ID table")
+>> >
+>> > Note, that of_device_get_match_data() returns NULL when no match
+>> > found. This is the case when OF node exists but has unknown
+>> > compatible line, while the module is still loaded via i2c
+>> > detection.
+>> >
+>> > arch/powerpc/boot/dts/fsl/p2041rdb.dts:
+>> >
+>> >     lm75b@48 {
+>> >       compatible = "nxp,lm75a";
+>> >       reg = <0x48>;
+>> >     };
+>> >
+>> > In this case, the sensor is mistakenly considered as ADT75 variant.
+>> > The simplest way to handle this issue is to make the LM75 code
+>> > zero.
+>> >
+>>
+>> This doesn't really solve the problem since it would match _all_
+>> non-existing entries with lm75 (instead of whatever is intended).
+> 
+> Just exactly how it happened before e97a45f1b460
+> 
+>> That doesn't matter for lm75a, but it would matter if someone
+>> would enter, say, "bla,adt75".
+>>
+>> On a side note, "nxp,lm75a" (nor "nxp,lm75", for that matter) is not a
+>> documented compatible string for this driver. If anything, we would
+>> need a means to explicitly reject such undefined compatible strings.
+>> One option might be to define the first entry in enum lm75_type
+>> explicitly as invalid, check for it and reject it if returned.
+> 
+> It is fine for me. I am afraid that this will break some dts files in the tree.
+> The following compatible strings missed in the driver are currently in use:
+> 
+> ti,lm75
+> nxp,lm75
+> nxp,lm75a
+> 
+> I suppose these boards currently rely on the i2c detection path.
+> 
 
-> UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
-> forwarding. Only the header of head_skb from ip_finish_output_gso ->
-> skb_gso_segment is updated but following frag_skbs are not updated.
->=20
-> A call path skb_mac_gso_segment -> inet_gso_segment ->
-> udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
-> does not try to update UDP/IP header of the segment list but copy
-> only the MAC header.
->=20
-> Update port, addr and check of each skb of the segment list in
-> __udp_gso_segment_list. It covers both SNAT and DNAT.
->=20
-> Fixes: 9fd1ff5d2ac7 (udp: Support UDP fraglist GRO/GSO.)
-> Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
-> Acked-by: Steffen Klassert <steffen.klassert@secunet.com>
-> ---
-> v1:
-> Steffen Klassert said, there could be 2 options.
-> https://lore.kernel.org/patchwork/patch/1362257/
-> I was trying to write a quick fix, but it was not easy to forward
-> segmented list. Currently, assuming DNAT only.
->=20
-> v2:
-> Per Steffen Klassert request, moved the procedure from
-> udp4_ufo_fragment to __udp_gso_segment_list and support SNAT.
->=20
-> v3:
-> Per Steffen Klassert request, applied fast return by comparing seg
-> and seg->next at the beginning of __udpv4_gso_segment_list_csum.
->=20
-> Fixed uh->dest =3D *newport and iph->daddr =3D *newip to
-> *oldport =3D *newport and *oldip =3D *newip.
->=20
-> v4:
-> Clear "Changes Requested" mark in
-> https://patchwork.kernel.org/project/netdevbpf
->=20
-> Simplified the return statement in __udp_gso_segment_list.
->=20
->  include/net/udp.h      |  2 +-
->  net/ipv4/udp_offload.c | 69 ++++++++++++++++++++++++++++++++++++++++++++=
-++----
->  net/ipv6/udp_offload.c |  2 +-
->  3 files changed, 66 insertions(+), 7 deletions(-)
->=20
-> diff --git a/include/net/udp.h b/include/net/udp.h
-> index 877832b..01351ba 100644
-> --- a/include/net/udp.h
-> +++ b/include/net/udp.h
-> @@ -178,7 +178,7 @@ struct sk_buff *udp_gro_receive(struct list_head *hea=
-d, struct sk_buff *skb,
->  int udp_gro_complete(struct sk_buff *skb, int nhoff, udp_lookup_t lookup=
-);
->=20
->  struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
-> -=09=09=09=09  netdev_features_t features);
-> +=09=09=09=09  netdev_features_t features, bool is_ipv6);
->=20
->  static inline struct udphdr *udp_gro_udphdr(struct sk_buff *skb)
->  {
-> diff --git a/net/ipv4/udp_offload.c b/net/ipv4/udp_offload.c
-> index ff39e94..cfc8726 100644
-> --- a/net/ipv4/udp_offload.c
-> +++ b/net/ipv4/udp_offload.c
-> @@ -187,8 +187,67 @@ struct sk_buff *skb_udp_tunnel_segment(struct sk_buf=
-f *skb,
->  }
->  EXPORT_SYMBOL(skb_udp_tunnel_segment);
->=20
-> +static void __udpv4_gso_segment_csum(struct sk_buff *seg,
-> +=09=09=09=09     __be32 *oldip, __be32 *newip,
-> +=09=09=09=09     __be16 *oldport, __be16 *newport)
-> +{
-> +=09struct udphdr *uh;
-> +=09struct iphdr *iph;
-> +
-> +=09if (*oldip =3D=3D *newip && *oldport =3D=3D *newport)
-> +=09=09return;
-> +
-> +=09uh =3D udp_hdr(seg);
-> +=09iph =3D ip_hdr(seg);
-> +
-> +=09if (uh->check) {
-> +=09=09inet_proto_csum_replace4(&uh->check, seg, *oldip, *newip,
-> +=09=09=09=09=09 true);
-> +=09=09inet_proto_csum_replace2(&uh->check, seg, *oldport, *newport,
-> +=09=09=09=09=09 false);
-> +=09=09if (!uh->check)
-> +=09=09=09uh->check =3D CSUM_MANGLED_0;
-> +=09}
-> +=09*oldport =3D *newport;
-> +
-> +=09csum_replace4(&iph->check, *oldip, *newip);
-> +=09*oldip =3D *newip;
-> +}
-> +
-> +static struct sk_buff *__udpv4_gso_segment_list_csum(struct sk_buff *seg=
-s)
-> +{
-> +=09struct sk_buff *seg;
-> +=09struct udphdr *uh, *uh2;
-> +=09struct iphdr *iph, *iph2;
-> +
-> +=09seg =3D segs;
-> +=09uh =3D udp_hdr(seg);
-> +=09iph =3D ip_hdr(seg);
-> +
-> +=09if ((udp_hdr(seg)->dest =3D=3D udp_hdr(seg->next)->dest) &&
-> +=09    (udp_hdr(seg)->source =3D=3D udp_hdr(seg->next)->source) &&
-> +=09    (ip_hdr(seg)->daddr =3D=3D ip_hdr(seg->next)->daddr) &&
-> +=09    (ip_hdr(seg)->saddr =3D=3D ip_hdr(seg->next)->saddr))
-> +=09=09return segs;
-> +
-> +=09while ((seg =3D seg->next)) {
-> +=09=09uh2 =3D udp_hdr(seg);
-> +=09=09iph2 =3D ip_hdr(seg);
-> +
-> +=09=09__udpv4_gso_segment_csum(seg,
-> +=09=09=09=09=09 &iph2->saddr, &iph->saddr,
-> +=09=09=09=09=09 &uh2->source, &uh->source);
-> +=09=09__udpv4_gso_segment_csum(seg,
-> +=09=09=09=09=09 &iph2->daddr, &iph->daddr,
-> +=09=09=09=09=09 &uh2->dest, &uh->dest);
-> +=09}
-> +
-> +=09return segs;
-> +}
-> +
->  static struct sk_buff *__udp_gso_segment_list(struct sk_buff *skb,
-> -=09=09=09=09=09      netdev_features_t features)
-> +=09=09=09=09=09      netdev_features_t features,
-> +=09=09=09=09=09      bool is_ipv6)
->  {
->  =09unsigned int mss =3D skb_shinfo(skb)->gso_size;
->=20
-> @@ -198,11 +257,11 @@ static struct sk_buff *__udp_gso_segment_list(struc=
-t sk_buff *skb,
->=20
->  =09udp_hdr(skb)->len =3D htons(sizeof(struct udphdr) + mss);
->=20
-> -=09return skb;
-> +=09return is_ipv6 ? skb : __udpv4_gso_segment_list_csum(skb);
+Correct. But relying on a bug doesn't improve the situation.
+The above compatible strings need to be documented (and properly
+implemented), or removed. And we really need a better means to handle
+NULL returns from of_device_get_match_data(). Maybe we should use
+of_match_device() instead and check for a NULL return.
 
-I don't think it's okay to fix checksums only for IPv4.
-IPv6 checksum mangling doesn't depend on any code from net/ipv6. Just
-use inet_proto_csum_replace16() for v6 addresses (see nf_nat_proto.c
-for reference). You can guard the path for IPv6 with
-IS_ENABLED(CONFIG_IPV6) to optimize IPv4-only systems a bit.
-
->  }
->=20
->  struct sk_buff *__udp_gso_segment(struct sk_buff *gso_skb,
-> -=09=09=09=09  netdev_features_t features)
-> +=09=09=09=09  netdev_features_t features, bool is_ipv6)
->  {
->  =09struct sock *sk =3D gso_skb->sk;
->  =09unsigned int sum_truesize =3D 0;
-> @@ -214,7 +273,7 @@ struct sk_buff *__udp_gso_segment(struct sk_buff *gso=
-_skb,
->  =09__be16 newlen;
->=20
->  =09if (skb_shinfo(gso_skb)->gso_type & SKB_GSO_FRAGLIST)
-> -=09=09return __udp_gso_segment_list(gso_skb, features);
-> +=09=09return __udp_gso_segment_list(gso_skb, features, is_ipv6);
->=20
->  =09mss =3D skb_shinfo(gso_skb)->gso_size;
->  =09if (gso_skb->len <=3D sizeof(*uh) + mss)
-> @@ -328,7 +387,7 @@ static struct sk_buff *udp4_ufo_fragment(struct sk_bu=
-ff *skb,
->  =09=09goto out;
->=20
->  =09if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
-> -=09=09return __udp_gso_segment(skb, features);
-> +=09=09return __udp_gso_segment(skb, features, false);
->=20
->  =09mss =3D skb_shinfo(skb)->gso_size;
->  =09if (unlikely(skb->len <=3D mss))
-> diff --git a/net/ipv6/udp_offload.c b/net/ipv6/udp_offload.c
-> index c7bd7b1..faa823c 100644
-> --- a/net/ipv6/udp_offload.c
-> +++ b/net/ipv6/udp_offload.c
-> @@ -42,7 +42,7 @@ static struct sk_buff *udp6_ufo_fragment(struct sk_buff=
- *skb,
->  =09=09=09goto out;
->=20
->  =09=09if (skb_shinfo(skb)->gso_type & SKB_GSO_UDP_L4)
-> -=09=09=09return __udp_gso_segment(skb, features);
-> +=09=09=09return __udp_gso_segment(skb, features, true);
->=20
->  =09=09mss =3D skb_shinfo(skb)->gso_size;
->  =09=09if (unlikely(skb->len <=3D mss))
-> --
-> 2.7.4
-
-Thanks,
-Al
-
+Guenter
