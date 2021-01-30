@@ -2,115 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9619830950F
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 13:11:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B670A309513
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 13:17:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230198AbhA3MLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 07:11:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60136 "EHLO mail.kernel.org"
+        id S230114AbhA3MRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 07:17:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229854AbhA3MLJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 07:11:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7952664DDC;
-        Sat, 30 Jan 2021 12:10:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612008628;
-        bh=p3IJGlMdtX9I1kgadKwx0x2GqQLSItjvV7ppyHSL2/E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eWZuYfUnlm3B3qwR+nwqP+w0gYbO9+bUsDyh+xYlwkQ97lly0HU2gEsq2+ALvgDyu
-         bk7uKVZoUzv7USeAxTzux0oY2trIxfTQhUzhuJLL1+sZMsxKs+n+JYfgK4TXfl/fb1
-         V8uwJuxxyhGcWJRySXg1HY1ZfgJpPsFqWMdiDqaHQNajll48gWKIjVh51LAjb/5r2P
-         9SV5iBOLXzUgR6EIN7KIFD0iNrJCXYNFnWDCmdANjRtP8XGd44JGGZdDKPlsnOr1qg
-         P5tMF7Px9hk0uhvZy7tOkDOdYqZ+uqgQY6KG5NkonkLrWDtXRC6ZsdHkulGNhSi95S
-         JdAhhaBRFPJpQ==
-Date:   Sat, 30 Jan 2021 21:10:22 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Nikolay Borisov <nborisov@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: kprobes broken since 0d00449c7a28
- ("x86: Replace ist_enter() with nmi_enter()")
-Message-Id: <20210130211022.d64c4caaf6667ec70a871420@kernel.org>
-In-Reply-To: <20210130030840.hodq2ixpkdoue5jd@ast-mbp.dhcp.thefacebook.com>
-References: <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
-        <YBMBTsY1uuQb9wCP@hirez.programming.kicks-ass.net>
-        <20210129013452.njuh3fomws62m4rc@ast-mbp.dhcp.thefacebook.com>
-        <YBPNyRyrkzw2echi@hirez.programming.kicks-ass.net>
-        <20210129224011.81bcdb3eba1227c414e69e1f@kernel.org>
-        <20210129105952.74dc8464@gandalf.local.home>
-        <20210129162438.GC8912@worktop.programming.kicks-ass.net>
-        <CAADnVQLMqHpSsZ1OdZRFmKqNWKiRq3dxRxw+y=kvMdmkN7htUw@mail.gmail.com>
-        <20210129175943.GH8912@worktop.programming.kicks-ass.net>
-        <20210130110249.61fdad8f0cfe51a121c72302@kernel.org>
-        <20210130030840.hodq2ixpkdoue5jd@ast-mbp.dhcp.thefacebook.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S229620AbhA3MRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 07:17:23 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE8A564E06;
+        Sat, 30 Jan 2021 12:16:42 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l5pBA-00Ayge-MI; Sat, 30 Jan 2021 12:16:40 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Sat, 30 Jan 2021 12:16:40 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     David Brazdil <dbrazdil@google.com>, kvmarm@lists.cs.columbia.edu,
+        Mark Rutland <mark.rutland@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>
+Subject: Re: [PATCH v2 4/8] KVM: arm64: Generate hyp relocation data
+In-Reply-To: <20210129214325.GA195322@roeck-us.net>
+References: <20210105180541.65031-1-dbrazdil@google.com>
+ <20210105180541.65031-5-dbrazdil@google.com>
+ <20210129214325.GA195322@roeck-us.net>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <a2c65d97fb924bd78aae3cf5659c9adc@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: linux@roeck-us.net, dbrazdil@google.com, kvmarm@lists.cs.columbia.edu, mark.rutland@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, linux-kernel@vger.kernel.org, james.morse@arm.com, linux-arm-kernel@lists.infradead.org, will@kernel.org, ardb@kernel.org, julien.thierry.kdev@gmail.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Jan 2021 19:08:40 -0800
-Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+Hi Guenter,
 
-> On Sat, Jan 30, 2021 at 11:02:49AM +0900, Masami Hiramatsu wrote:
-> > On Fri, 29 Jan 2021 18:59:43 +0100
-> > Peter Zijlstra <peterz@infradead.org> wrote:
-> > 
-> > > On Fri, Jan 29, 2021 at 09:45:48AM -0800, Alexei Starovoitov wrote:
-> > > > Same things apply to bpf side. We can statically prove safety for
-> > > > ftrace and kprobe attaching whereas to deal with NMI situation we
-> > > > have to use run-time checks for recursion prevention, etc.
-> > > 
-> > > I have no idea what you're saying. You can attach to functions that are
-> > > called with random locks held, you can create kprobes in some very
-> > > sensitive places.
-> > > 
-> > > What can you staticlly prove about that?
-> > 
-> > For the bpf and the kprobe tracer, if a probe hits in the NMI context,
-> > it can call the handler with another handler processing events.
-> > 
-> > kprobes is carefully avoiding the deadlock by checking recursion
-> > with per-cpu variable. But if the handler is shared with the other events
-> > like tracepoints, it needs to its own recursion cheker too.
-> > 
-> > So, Alexei, maybe you need something like this instead of in_nmi() check.
-> > 
-> > DEFINE_PER_CPU(bool, under_running_bpf);
-> > 
-> > common_handler()
-> > {
-> > 	if (__this_cpu_read(under_running_bpf))
-> > 		return;
-> > 	__this_cpu_write(under_running_bpf, true);
-> > 	/* execute bpf prog */
-> > 	__this_cpu_write(under_running_bpf, false);	
-> > }
-> > 
-> > Does this work for you?
+Thanks a lot for the heads up.
+
+On 2021-01-29 21:43, Guenter Roeck wrote:
+> Hi,
 > 
-> This exactly check is already in trace_call_bpf.
-> Right after if (in_nmi()).
-> See bpf_prog_active. It serves different purpose though.
-> Simply removing if (in_nmi()) from trace_call_bpf is a bit scary.
-> I need to analyze all code paths first.
+> On Tue, Jan 05, 2021 at 06:05:37PM +0000, David Brazdil wrote:
+>> Add a post-processing step to compilation of KVM nVHE hyp code which
+>> calls a custom host tool (gen-hyprel) on the partially linked object
+>> file (hyp sections' names prefixed).
+>> 
+>> The tool lists all R_AARCH64_ABS64 data relocations targeting hyp
+>> sections and generates an assembly file that will form a new section
+>> .hyp.reloc in the kernel binary. The new section contains an array of
+>> 32-bit offsets to the positions targeted by these relocations.
+>> 
+>> Since these addresses of those positions will not be determined until
+>> linking of `vmlinux`, each 32-bit entry carries a R_AARCH64_PREL32
+>> relocation with addend <section_base_sym> + <r_offset>. The linker of
+>> `vmlinux` will therefore fill the slot accordingly.
+>> 
+>> This relocation data will be used at runtime to convert the kernel VAs
+>> at those positions to hyp VAs.
+>> 
+>> Signed-off-by: David Brazdil <dbrazdil@google.com>
+> 
+> This patch results in the following error for me.
+> 
+> error: arch/arm64/kvm/hyp/nvhe/kvm_nvhe.tmp.o: assertion
+> elf.ehdr->e_ident[5] == 1 failed (lhs=2, rhs=1, line=250)
+> 
+> The problem is seen when trying to build aarch64 images in big endian
+> mode.
 
-OK, if bpf already avoids its recursion, other considerable case is
-that some resources are shared among bpf_prog and other parts. Since
-asynchronous NMI can occur anywhere, such resource usage can conflict
-with bpf_prog.
+Ah, big-endian. of course, the ELF header is in native endianness,
+and the sanity checks explode (still much better than generating crap).
 
-Kprobes had similar issue, so I set a dummy kprobes to current_kprobes
-for protecting such critical sections.
-See kprobe_busy_begin()/end() and where those are used.
+I'll have a look shortly. It shouldn't too hard to fix, just a
+bit invasive...
 
-Thank you,
+Thanks again,
 
+         M.
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Jazz is not dead. It just smells funny...
