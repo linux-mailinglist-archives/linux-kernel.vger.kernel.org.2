@@ -2,76 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA49530955F
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 14:32:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90BD930957C
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 14:46:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231246AbhA3NcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 08:32:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37286 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229498AbhA3Nbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 08:31:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5915764E0C;
-        Sat, 30 Jan 2021 13:31:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612013471;
-        bh=BFAHtHR5IFSLTOfNrxRmKhi6iRXq1wz2DrzkLLluFxs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HgwQyuW7yTnQCp4+WQ87tIBxNotWkHLmm2DqdvgDrMEn9d5fRoGcgHPElh+ycik64
-         vCpwab319PeBFwQVAjBK1zxJPW9brnMMOtZFOXJei763bBsHKqEC0q4O7CAtHBfxho
-         DRtiPA98ZNP/AbdkS4jwogGDdMzIvDwVVVl8VYRkzQluPk9kMMbreqgylZ3I/bFfdY
-         6kiGlK9eHWW7adDaoMWIkbIF2OvVagWbQKFCIzMl3qEuGFmZeT19jj9SWUxm2wYPZy
-         ujbMW1x5fs0JWqMNgU61pVzHZgScl44xG6Zams91PFj0h8hstHpwpFzO9CVaTr5zdZ
-         WFYghVAWZ0ASw==
-Date:   Sat, 30 Jan 2021 21:31:06 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Zyta Szpak <zr@semihalf.com>
-Cc:     leoyang.li@nxp.com, robh+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: freescale: fix dcfg address range
-Message-ID: <20210130133106.GI907@dragon>
-References: <20210121155237.15517-1-zr@semihalf.com>
+        id S231423AbhA3Nof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 08:44:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229885AbhA3Noa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 08:44:30 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A7BC061573;
+        Sat, 30 Jan 2021 05:43:50 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id j2so6881180pgl.0;
+        Sat, 30 Jan 2021 05:43:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pXf19g1065wNWBhJVun5K/h2HFDi9av6GCTtkJcQ4oQ=;
+        b=EPP7VyKD6pGX2BXlfpgYQt/Sxl7Cpo8UUvOPjWSJt9KxinW86pRGQ6EoHoG7fJDFAR
+         W68G0/v+ENMjmLux1nD41PzcsDvRkcWNoFv5YyPotn928MUJuNHm0UDoseDFGxJ7vFXj
+         QRpV0UuQWi3MmA/jqs+/pHsId20erXNjIArr886ahpQta2VxYb8VleMo+quURkN04KEX
+         WC1EKGimnKiJkDt6GveKT4NyLMQVsUqzRm+yDoF5wmnuWr7bMVWfEu8zEtXQ2UuvO6du
+         Mzc4boKUV/VT34HwaIhKC568/IuG7fu2l203fQiq8O2tMGmcvZYqPhy43Xz8v0j92Zmp
+         lfTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pXf19g1065wNWBhJVun5K/h2HFDi9av6GCTtkJcQ4oQ=;
+        b=RHNJ5ISoHflw+qH98s8Lry+IaprNaE9wdyzrlYsugqmXYVnZv3A7UcTbyOydFIWfym
+         hxOqRFQ4hDWrrYULmYJK53MZeILlIAlV+pP62AMM/2z9pad/KjOsQ7PKfZM+VnDdDkkd
+         s4lX3tx20YyUopfeFSw3WxpUXOi5CmA0SdAu0xf9+EiHMrWh25N7JaKnq32UwZdAfAZI
+         793oJLneq0EgvFH0ITDrXXOCVhN/L6IYJzQU66B2v9Yox65OHKWYi9nXNMygqwyAr2OB
+         Kogkn5aIqrJWMvwBrgm5luFJiIJJP91SVqM/uHEkUG5adj6Wcec9eLiLOWqQwjHr0IA1
+         PNOQ==
+X-Gm-Message-State: AOAM533BJk3WQ8KBoxvZDaU2NDgY83M1+v+Fzfo4vFroznNxyo+x9YCd
+        zfKAotKlffifdRYkoZKbIl0=
+X-Google-Smtp-Source: ABdhPJyjOqOrKJn3U6OZnWdz9JlOCbFbj3wVfa56C6FQj73gwwRIj/uAKgPn9ZYZetiSC5N1yj3B0Q==
+X-Received: by 2002:a63:50a:: with SMTP id 10mr8731220pgf.273.1612014229346;
+        Sat, 30 Jan 2021 05:43:49 -0800 (PST)
+Received: from container-ubuntu.lan ([61.188.25.180])
+        by smtp.gmail.com with ESMTPSA id c3sm12171253pfj.105.2021.01.30.05.43.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Jan 2021 05:43:48 -0800 (PST)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Tobias Waldekranz <tobias@waldekranz.com>
+Subject: [PATCH net] net: dsa: mv88e6xxx: override existent unicast portvec in port_fdb_add
+Date:   Sat, 30 Jan 2021 21:43:34 +0800
+Message-Id: <20210130134334.10243-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210121155237.15517-1-zr@semihalf.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 21, 2021 at 04:52:37PM +0100, Zyta Szpak wrote:
-> Dcfg was overlapping with clockgen address space which resulted
-> in failure in memory allocation for dcfg. According regs description
-> dcfg size should not be bigger than 4KB.
-> 
-> Signed-off-by: Zyta Szpak <zr@semihalf.com>
+Having multiple destination ports for a unicast address does not make
+sense.
+Make port_db_load_purge override existent unicast portvec instead of
+adding a new port bit.
 
-I changed subject prefix to 'arm64: dts: ls1046a: ...', and applied the
-patch with Fixes tag below.
+Fixes: 884729399260 ("net: dsa: mv88e6xxx: handle multiple ports in ATU")
+Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+---
+ drivers/net/dsa/mv88e6xxx/chip.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Fixes: 8126d88162a5 ("arm64: dts: add QorIQ LS1046A SoC support")
-
-Shawn
-
-> ---
->  arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
-> index 025e1f587662..565934cbfa28 100644
-> --- a/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1046a.dtsi
-> @@ -385,7 +385,7 @@
->  
->  		dcfg: dcfg@1ee0000 {
->  			compatible = "fsl,ls1046a-dcfg", "syscon";
-> -			reg = <0x0 0x1ee0000 0x0 0x10000>;
-> +			reg = <0x0 0x1ee0000 0x0 0x1000>;
->  			big-endian;
->  		};
->  
-> -- 
-> 2.17.1
-> 
+diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
+index b99f27b8c084..ae0b490f00cd 100644
+--- a/drivers/net/dsa/mv88e6xxx/chip.c
++++ b/drivers/net/dsa/mv88e6xxx/chip.c
+@@ -1686,7 +1686,11 @@ static int mv88e6xxx_port_db_load_purge(struct mv88e6xxx_chip *chip, int port,
+ 		if (!entry.portvec)
+ 			entry.state = 0;
+ 	} else {
+-		entry.portvec |= BIT(port);
++		if (state == MV88E6XXX_G1_ATU_DATA_STATE_UC_STATIC)
++			entry.portvec = BIT(port);
++		else
++			entry.portvec |= BIT(port);
++
+ 		entry.state = state;
+ 	}
+ 
+-- 
+2.25.1
