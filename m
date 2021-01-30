@@ -2,227 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3AB30989D
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 23:16:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8262A30989E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 23:16:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232341AbhA3WMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 17:12:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57834 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232294AbhA3WLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 17:11:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9812C64E17;
-        Sat, 30 Jan 2021 22:10:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612044657;
-        bh=uweP3IA5Ah8RvBraXjpUfVIm90iQThv0IPNmBKquaHw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VZwFnTgaxJfbs/DWQjLVIU3MGnMRMdFZbWe0HBLkiTTVYWTdn9nCv5lN+EEjLDlRB
-         SvvRqajh6hv0ah/xoxCzZqAgh0F9ykpx+TsKKqqCtC/4UYQah/xlY4K6JcWEkCwRjv
-         98KXyimOgTtP1pBrPfZd93cBaLW6kl7uJrpmA6sfft7J1nFkBwb+of+0unOw4vNHGh
-         8/Hy2Wx/puTbHitPXDSjk5xIffRteWEofVgMg55Gle+OSH0vlu5SdLFv52Qg1moATZ
-         9UmusQnQARryQEUIbOItsdDz2TcmzlJVIPPq8UO6rBTmXzCTlrMQnw24nkt0KhFbnm
-         MgMaPgKjooDIQ==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        David Hildenbrand <david@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?UTF-8?q?=C5=81ukasz=20Majczak?= <lma@semihalf.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
-Subject: [PATCH v4 2/2] mm: fix initialization of struct page for holes in memory layout
-Date:   Sun, 31 Jan 2021 00:10:35 +0200
-Message-Id: <20210130221035.4169-3-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210130221035.4169-1-rppt@kernel.org>
-References: <20210130221035.4169-1-rppt@kernel.org>
+        id S232401AbhA3WMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 17:12:19 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:6350 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232294AbhA3WMQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 17:12:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1612044735; x=1643580735;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=ty3iyb7ysdUdXREqGt3lEO8MZE9V17oRppxSu6bkFZw=;
+  b=fyJnco6PU51/eX2JMRpZjqHNLZ5KzlYf4xYxvDWRky/LrlLSXYQGixho
+   qE9AA3LsO7Thnp6djzKjWB3+mlzSBhJvVkjG4iRhlsAcmPuq3v3cZWBg5
+   mF8wg78uEyhYx2EBF6RbcmdoNHOnqNN3wDdexORergkbeuOfj1pH8X0o3
+   sykd1bQeCDC4GwzBKAZIG/LQEYh59CZpjcxt5dbDHbn7HwgmDaNEYWdWT
+   +LWU2KL7sMfpfUCoXewgQzRrujAxSoE5GwLeCqIMIJR0q0osrhq3AmXqv
+   nxonD8xe36Z0js0emRJto84Tz2iF4dssO4v9hwY83tJMv8ZV7V0SAV7dR
+   A==;
+IronPort-SDR: 441x/FiSBig6a+y+qgZLaR6rlRcbX80t/kYG5u+yG0fXKC5uPghxpRlj8ETQOIE2PLDPqLe8Sv
+ +BAq/LDliNcu552EgbTe1B1ITo3EJYD3JdVJkymMPaagQm11aaCjbg9/aE45GCHuuVFtPu/cxl
+ eneJyGax1LIClrTt5BzWVDcFjxBPjjrcCG4PrmOL4yNy1ftPkiE/Zbr+LrHl2yRkCFUsDwfm25
+ t53+L5pT8aLtbgTOoautHRa18/vGR3B8/z01LA6j2hHc5BGZyVoaR9f9INREBfCF/+skwKui5f
+ Qck=
+X-IronPort-AV: E=Sophos;i="5.79,389,1602572400"; 
+   d="scan'208";a="113150232"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 30 Jan 2021 15:10:58 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Sat, 30 Jan 2021 15:10:58 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (10.10.215.89) by
+ email.microchip.com (10.10.87.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3
+ via Frontend Transport; Sat, 30 Jan 2021 15:10:57 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ffVGAQ+v99F3WMkhCMqQk0EMipyJm2KBWFVwEoEjdolaldp71IixbdBwO1pIYRBRmQJMg3UI3w4k/wZpOd7NJ2nVQaYkfbAcU+UBtTvkAJoCabSnvhhIKJAIRqL1Tohy4M3Phl4+Xuc1WVbmIZoxyITbmaxc1ttZeotZgkf7bLEk3Ra1fXOE3z/qV9ELZPmDDPT3ERmyuY5xAPOUYTpHvXt77IX/sRa7hM75I6aKV9/RxCMdzUF8/f6pi+aG39bpY1+7cndPuSCOl6B3dpHLgycLonJG7c5epS91vBt43dJzj9FC9Pp0mXgdVL3eLvN/0d2/vQQsQrjGn6GN74EWRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ty3iyb7ysdUdXREqGt3lEO8MZE9V17oRppxSu6bkFZw=;
+ b=X9ImSQ2uoHF17dZituzu15pm2m8yMm67Sr9v07NrZBSlzIUN71zHybXJD99m3Ds3oXVdHV7b32DrHn86607SEhOhGRwB/23ivv+8RMJFcbNosWr55YLq+lq674TX+zSI2s2AZL6k/Nn2MAMOrDLrAv6TebTiMrcigumtRrXVAmnouQmgvTSzZlZ41eBMe3tmMHuI58YWKYfq0qgthC2IhBmKc12IWL+OUoU7+v4FY9AlQauZOD3F+tt/7xRq4k8VFacA3/QgGmJrsap531ym2yfLdBSQHP4ig91sgEsfiO+AlPwstadrNv8eL6L9dVR/W78nu11eUHA6oe34LCLOHQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microchip.com; dmarc=pass action=none
+ header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=microchiptechnology.onmicrosoft.com;
+ s=selector2-microchiptechnology-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ty3iyb7ysdUdXREqGt3lEO8MZE9V17oRppxSu6bkFZw=;
+ b=qKI8fZhrX35AT/NDcPyUlMt7aUP6L+k8WebdLD6JmOE49rQ6EZfr4fQkbiH6gwYjeZAgeysSdRt53hdIMyYZ+L8vryXBok9f2hTrauwvo/cFKBMJQJ9Mj5XDCKWcRZiPN2/LFHjTO2E6lAWU0w7nVM2noNt86RhNPAIohJpvYlw=
+Received: from MN2PR11MB3662.namprd11.prod.outlook.com (2603:10b6:208:ee::11)
+ by MN2PR11MB3872.namprd11.prod.outlook.com (2603:10b6:208:13f::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16; Sat, 30 Jan
+ 2021 22:10:53 +0000
+Received: from MN2PR11MB3662.namprd11.prod.outlook.com
+ ([fe80::20a8:8a27:a512:d584]) by MN2PR11MB3662.namprd11.prod.outlook.com
+ ([fe80::20a8:8a27:a512:d584%2]) with mapi id 15.20.3805.021; Sat, 30 Jan 2021
+ 22:10:52 +0000
+From:   <Bryan.Whitehead@microchip.com>
+To:     <thesven73@gmail.com>, <UNGLinuxDriver@microchip.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <andrew@lunn.ch>, <rtgbnm@gmail.com>, <sbauer@blackbox.su>,
+        <tharvey@gateworks.com>, <anders@ronningen.priv.no>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH net-next v1 1/6] lan743x: boost performance on cpu archs
+ w/o dma cache snooping
+Thread-Topic: [PATCH net-next v1 1/6] lan743x: boost performance on cpu archs
+ w/o dma cache snooping
+Thread-Index: AQHW9nhZ9Oyfuu5RykWLFArUFkjuH6pAvJmw
+Date:   Sat, 30 Jan 2021 22:10:52 +0000
+Message-ID: <MN2PR11MB3662C6C13B2D549E339D7DD1FAB89@MN2PR11MB3662.namprd11.prod.outlook.com>
+References: <20210129195240.31871-1-TheSven73@gmail.com>
+ <20210129195240.31871-2-TheSven73@gmail.com>
+In-Reply-To: <20210129195240.31871-2-TheSven73@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=microchip.com;
+x-originating-ip: [47.19.18.123]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4c69df01-720d-479f-5a41-08d8c56be8ca
+x-ms-traffictypediagnostic: MN2PR11MB3872:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR11MB38721F5033C936B812C5FDE3FAB89@MN2PR11MB3872.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dQf9CAlxKoHyVgxWCkaivPKdGm9aVNfAyH6LQParKtWC1XPCgMK+1S60iGcao5NKjUzaaev5IksTJESGhBghucaGP8NaWT0WwBY4Am0uc0mBxR5zlPzVAi+47yxrVRwSgM6F/94pn85D+zASpe+Xt2sJ3FyLgLloF6NaKAtIUyLSnx9qQnxT/w97OZFnZvgR8gPNuTQ3UXPQFBlpEd+UcgAhegVQJRfHXE0l7Kf0IqFMhogXpVyHS6z6D8w2hUmkS6MQK0xRtKmwsHfli2Y2Kj+Xay9iY7+UuSiLwb1YobKL0y3ppw5qDOJXcLc13DjGICtXHy9NBKDWFRTdCklpFRIJxxV6xRkDB4wEVJd+VtyqBGGKBBz/gSCnUaaoXA2psS61cGTjNtUij+qNjBBl+SjBq4H+oM+JRjCescFEvhIsEuMcFcbngD/teCq/gf+iG8JLHbbzr4MRZG9BWswL0cH9yhB3r2PNiqQ/BRzjeUujhNwBm8wBz9fsRUtk3+TBq/x7Lln9od9UShmyfj3uUg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR11MB3662.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(136003)(39850400004)(366004)(396003)(376002)(6506007)(26005)(8676002)(186003)(83380400001)(86362001)(4326008)(2906002)(7696005)(7416002)(33656002)(478600001)(110136005)(76116006)(55016002)(8936002)(66556008)(64756008)(66446008)(52536014)(66946007)(5660300002)(9686003)(66476007)(71200400001)(54906003)(316002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?Ny8yVzRZQ3AydU1GNURyOHNLdEk5dHkrRTMwcFV2bjR3TUsrUFREcEpOL09X?=
+ =?utf-8?B?RU9nYlo3UTlUR2dxWmRPVEtOTm9PY0ZpdGhKL1FmeDJaRU5IZVN6VVNERnJW?=
+ =?utf-8?B?cnBGbWxWNXoydS8wR05yclJTVndrb2VkUkoreXVxV1FTUTZETWNEckV4MDh2?=
+ =?utf-8?B?RFo0ZS9Xak5pL0o5dVRac04vMmJ0N3FWNE5hdVNncDZjQVh3NmtTbnJuMkhG?=
+ =?utf-8?B?L25xU1JHbW16TDA1c2NoSVdSTTVXMnVXWnM2WTljcnpOTlhhc3IrRWlDb0lj?=
+ =?utf-8?B?VjQ0WWFKMFl4MUlsdkVpR21Qc1hYZG1vem5vNE5vVnluZ0gxUjlyMGJOUXNM?=
+ =?utf-8?B?S2FibngvTWUzNmsxdkhXdVN3N1hRekQwU05Ec29ESXZDOTZXNC94blZjRGtX?=
+ =?utf-8?B?MHdKMnllRU1KdTgydGFMYjNKdVdSTnhDUklTM1Y2MVc3cWlGNU1nMFZuMUFN?=
+ =?utf-8?B?dytqM2RuZTl1S1UzTDBaQlplMnB3cVJ3dXhuamlnOVBOT2psdWJBdG9BMjFE?=
+ =?utf-8?B?ZWdyOUVNZ1ZRa1RyUnhzN1Z5VEJGalNTTms2eE0vSTlQY1ZSbG90RTgyQjRB?=
+ =?utf-8?B?WVZwOUVRWHZvY1E3eTYvZlRCOS9IQkg4QmlZSlRucUNsNlRrK2toTloxM2dP?=
+ =?utf-8?B?eWIvQUZMNGVjU1VGTUJTYVlxdG9JWjN6MW9JL2N1bDNCcDZsYVNFVnA4N1Bx?=
+ =?utf-8?B?OUhxZ3JYWUJoQzV3c0J2OTUvdFNLYTVJMEI3UlRSNERLbnZsMStWRDdaM0tT?=
+ =?utf-8?B?KysyQkVwTjJUdDd3Mkd4b1ZMQmRjMWg2dlorcCtXNU1DY1ArWml4aUVqTzFM?=
+ =?utf-8?B?aTZnQitvT3I0NzdTTXZyYnF0b2l2TXpaY1cxaWFvOVlhRElpNTZlTFB5a2FZ?=
+ =?utf-8?B?ZkpQUkxsY1FNMndZUXJtUUd5ZnQ2ZFFFWU5pcWRPTVFEZ3QzSWk1QWN6b2tZ?=
+ =?utf-8?B?cnZrcy9XMCtKZWlYWHY1RElyY1k2UklJT1FvWW9weVFZNVhMcmlabUhDK3Ay?=
+ =?utf-8?B?NU5YVVBKS0NiVVZUM0k0RFZUVWpZQlB0aUpVLzBMMVpSUDM1VStsYzl0bWVm?=
+ =?utf-8?B?OTltZ3JPZngyTkczWlhhd2llTG55Ym0zTldhQytBWEFvNllHTjBabWVWWUhP?=
+ =?utf-8?B?d0o2WWp4YTNqY0lJQTZUVjU0OUlhRlBOZzZic044dzVCaXNESXJxVkFkdGRj?=
+ =?utf-8?B?akJpTDBnV1NSaGxBMDJRZnc0YXZCYzdmOGhtTWl0YVRmNWF3c0wrVjVqOHk0?=
+ =?utf-8?B?bldOQm8zZ3NMZG5TVGczTW1ra2x0KzAxckM0b3BNR2tNci81ODg4WnMyNkJ5?=
+ =?utf-8?B?amlGMHJBMnUyQ2dvY3JpQlFwMWh0KzJQbmp3TGxldHQ0dXgvUUFtUGhOZXRN?=
+ =?utf-8?B?cHRzTHZYSks3OTAvQlpScnIvNmhpYUQ2aDNXdlAwRHpwTG5uTkhOQjhJRGRC?=
+ =?utf-8?Q?ZDGnYdSq?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR11MB3662.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4c69df01-720d-479f-5a41-08d8c56be8ca
+X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jan 2021 22:10:52.8034
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: TAaIZwR0QpS1xBup8iXpM03/Wz29E47H3vYMr+4/wzf0EI6lwLpRmbjOrzewzB6c+M4s7LtwPjZxAwicFCPc8fmR4dTzmsFsYPGng+PgdEU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR11MB3872
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
-
-There could be struct pages that are not backed by actual physical
-memory.  This can happen when the actual memory bank is not a multiple
-of SECTION_SIZE or when an architecture does not register memory holes
-reserved by the firmware as memblock.memory.
-
-Such pages are currently initialized using init_unavailable_mem()
-function that iterates through PFNs in holes in memblock.memory and if
-there is a struct page corresponding to a PFN, the fields if this page
-are set to default values and the page is marked as Reserved.
-
-init_unavailable_mem() does not take into account zone and node the page
-belongs to and sets both zone and node links in struct page to zero.
-
-On a system that has firmware reserved holes in a zone above ZONE_DMA,
-for instance in a configuration below:
-
-	# grep -A1 E820 /proc/iomem
-	7a17b000-7a216fff : Unknown E820 type
-	7a217000-7bffffff : System RAM
-
-unset zone link in struct page will trigger
-
-	VM_BUG_ON_PAGE(!zone_spans_pfn(page_zone(page), pfn), page);
-
-because there are pages in both ZONE_DMA32 and ZONE_DMA (unset zone link
-in struct page) in the same pageblock.
-
-Update init_unavailable_mem() to use zone constraints defined by an
-architecture to properly setup the zone link and use node ID of the
-adjacent range in memblock.memory to set the node link.
-
-Fixes: 73a6e474cb37 ("mm: memmap_init: iterate over memblock regions rather that check each PFN")
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-Reported-by: Andrea Arcangeli <aarcange@redhat.com>
-Cc: <stable@vger.kernel.org>
----
- mm/page_alloc.c | 85 +++++++++++++++++++++++++++++--------------------
- 1 file changed, 51 insertions(+), 34 deletions(-)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 519a60d5b6f7..444642393bb6 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -7080,23 +7080,27 @@ void __init free_area_init_memoryless_node(int nid)
-  * Initialize all valid struct pages in the range [spfn, epfn) and mark them
-  * PageReserved(). Return the number of struct pages that were initialized.
-  */
--static u64 __init init_unavailable_range(unsigned long spfn, unsigned long epfn)
-+static u64 __init init_unavailable_range(unsigned long spfn, unsigned long epfn,
-+					 int zone, int nid)
- {
--	unsigned long pfn;
-+	unsigned long pfn, zone_epfn, zone_spfn = 0;
- 	u64 pgcnt = 0;
- 
-+	if (zone)
-+		zone_spfn = arch_zone_highest_possible_pfn[zone - 1];
-+	zone_epfn = arch_zone_highest_possible_pfn[zone];
-+
-+	spfn = clamp(spfn, zone_spfn, zone_epfn);
-+	epfn = clamp(epfn, zone_spfn, zone_epfn);
-+
- 	for (pfn = spfn; pfn < epfn; pfn++) {
- 		if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
- 			pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
- 				+ pageblock_nr_pages - 1;
- 			continue;
- 		}
--		/*
--		 * Use a fake node/zone (0) for now. Some of these pages
--		 * (in memblock.reserved but not in memblock.memory) will
--		 * get re-initialized via reserve_bootmem_region() later.
--		 */
--		__init_single_page(pfn_to_page(pfn), pfn, 0, 0);
-+
-+		__init_single_page(pfn_to_page(pfn), pfn, zone, nid);
- 		__SetPageReserved(pfn_to_page(pfn));
- 		pgcnt++;
- 	}
-@@ -7105,51 +7109,64 @@ static u64 __init init_unavailable_range(unsigned long spfn, unsigned long epfn)
- }
- 
- /*
-- * Only struct pages that are backed by physical memory are zeroed and
-- * initialized by going through __init_single_page(). But, there are some
-- * struct pages which are reserved in memblock allocator and their fields
-- * may be accessed (for example page_to_pfn() on some configuration accesses
-- * flags). We must explicitly initialize those struct pages.
-+ * Only struct pages that correspond to ranges defined by memblock.memory
-+ * are zeroed and initialized by going through __init_single_page() during
-+ * memmap_init().
-  *
-- * This function also addresses a similar issue where struct pages are left
-- * uninitialized because the physical address range is not covered by
-- * memblock.memory or memblock.reserved. That could happen when memblock
-- * layout is manually configured via memmap=, or when the highest physical
-- * address (max_pfn) does not end on a section boundary.
-+ * But, there could be struct pages that correspond to holes in
-+ * memblock.memory. This can happen because of the following reasons:
-+ * - phyiscal memory bank size is not necessarily the exact multiple of the
-+ *   arbitrary section size
-+ * - early reserved memory may not be listed in memblock.memory
-+ * - memory layouts defined with memmap= kernel parameter may not align
-+ *   nicely with memmap sections
-+ *
-+ * Explicitly initialize those struct pages so that:
-+ * - PG_Reserved is set
-+ * - zone link is set accorging to the architecture constrains
-+ * - node is set to node id of the next populated region except for the
-+ *   trailing hole where last node id is used
-  */
--static void __init init_unavailable_mem(void)
-+static void __init init_zone_unavailable_mem(int zone)
- {
--	phys_addr_t start, end;
--	u64 i, pgcnt;
--	phys_addr_t next = 0;
-+	unsigned long start, end;
-+	int i, nid;
-+	u64 pgcnt;
-+	unsigned long next = 0;
- 
- 	/*
--	 * Loop through unavailable ranges not covered by memblock.memory.
-+	 * Loop through holes in memblock.memory and initialize struct
-+	 * pages corresponding to these holes
- 	 */
- 	pgcnt = 0;
--	for_each_mem_range(i, &start, &end) {
-+	for_each_mem_pfn_range(i, MAX_NUMNODES, &start, &end, &nid) {
- 		if (next < start)
--			pgcnt += init_unavailable_range(PFN_DOWN(next),
--							PFN_UP(start));
-+			pgcnt += init_unavailable_range(next, start, zone, nid);
- 		next = end;
- 	}
- 
- 	/*
--	 * Early sections always have a fully populated memmap for the whole
--	 * section - see pfn_valid(). If the last section has holes at the
--	 * end and that section is marked "online", the memmap will be
--	 * considered initialized. Make sure that memmap has a well defined
--	 * state.
-+	 * Last section may surpass the actual end of memory (e.g. we can
-+	 * have 1Gb section and 512Mb of RAM pouplated).
-+	 * Make sure that memmap has a well defined state in this case.
- 	 */
--	pgcnt += init_unavailable_range(PFN_DOWN(next),
--					round_up(max_pfn, PAGES_PER_SECTION));
-+	end = round_up(max_pfn, PAGES_PER_SECTION);
-+	pgcnt += init_unavailable_range(next, end, zone, nid);
- 
- 	/*
- 	 * Struct pages that do not have backing memory. This could be because
- 	 * firmware is using some of this memory, or for some other reasons.
- 	 */
- 	if (pgcnt)
--		pr_info("Zeroed struct page in unavailable ranges: %lld pages", pgcnt);
-+		pr_info("Zone %s: zeroed struct page in unavailable ranges: %lld pages", zone_names[zone], pgcnt);
-+}
-+
-+static void __init init_unavailable_mem(void)
-+{
-+	int zone;
-+
-+	for (zone = 0; zone < ZONE_MOVABLE; zone++)
-+		init_zone_unavailable_mem(zone);
- }
- #else
- static inline void __init init_unavailable_mem(void)
--- 
-2.28.0
-
+U3Zlbiwgc2VlIGJlbG93IGNvbW1lbnRzDQoNCj4gQEAgLTIxNDgsMTEgKzIxNDksMTggQEAgc3Rh
+dGljIGludCBsYW43NDN4X3J4X3Byb2Nlc3NfcGFja2V0KHN0cnVjdA0KPiBsYW43NDN4X3J4ICpy
+eCkNCj4gICAgICAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRvciA9ICZyeC0+cmluZ19jcHVf
+cHRyW2ZpcnN0X2luZGV4XTsNCj4gDQo+ICAgICAgICAgICAgICAgICAgICAgICAgIC8qIHVubWFw
+IGZyb20gZG1hICovDQo+ICsgICAgICAgICAgICAgICAgICAgICAgIHBhY2tldF9sZW5ndGggPSBS
+WF9ERVNDX0RBVEEwX0ZSQU1FX0xFTkdUSF9HRVRfDQo+ICsgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAoZGVzY3JpcHRvci0+ZGF0YTApOw0KSXQgYXBwZWFycyB5b3UgbW92
+ZWQgdGhpcyBwYWNrZXRfbGVuZ3RoIGFzc2lnbm1lbnQgZnJvbSBqdXN0IGJlbG93IHRoZSBmb2xs
+b3dpbmcgaWYgYmxvY2ssIGhvd2V2ZXIgIHlvdSBsZWZ0IG91dCB0aGUgbGUzMl90b19jcHUuU2Vl
+IG5leHQgY29tbWVudA0KDQo+ICAgICAgICAgICAgICAgICAgICAgICAgIGlmIChidWZmZXJfaW5m
+by0+ZG1hX3B0cikgew0KPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRtYV91bm1h
+cF9zaW5nbGUoJnJ4LT5hZGFwdGVyLT5wZGV2LT5kZXYsDQo+IC0gICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBidWZmZXJfaW5mby0+ZG1hX3B0ciwNCj4gLSAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJ1ZmZlcl9pbmZv
+LT5idWZmZXJfbGVuZ3RoLA0KPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgRE1BX0ZST01fREVWSUNFKTsNCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBkbWFfc3luY19zaW5nbGVfZm9yX2NwdSgmcngtPmFkYXB0ZXItPnBkZXYtPmRldiwN
+Cj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBidWZmZXJfaW5mby0+ZG1hX3B0ciwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICBwYWNrZXRfbGVuZ3RoLA0KPiArICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIERNQV9GUk9NX0RFVklD
+RSk7DQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZG1hX3VubWFwX3NpbmdsZV9h
+dHRycygmcngtPmFkYXB0ZXItPnBkZXYtPmRldiwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJ1ZmZlcl9pbmZvLT5kbWFfcHRyLA0KPiAr
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnVm
+ZmVyX2luZm8tPmJ1ZmZlcl9sZW5ndGgsDQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICBETUFfRlJPTV9ERVZJQ0UsDQo+ICsNCj4gKyBETUFf
+QVRUUl9TS0lQX0NQVV9TWU5DKTsNCj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBi
+dWZmZXJfaW5mby0+ZG1hX3B0ciA9IDA7DQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgYnVmZmVyX2luZm8tPmJ1ZmZlcl9sZW5ndGggPSAwOw0KPiAgICAgICAgICAgICAgICAgICAg
+ICAgICB9DQpKdXN0IGJlbG93IGhlcmUgaXMgdGhlIGZvbGxvd2luZyBsaW5lDQoJCXBhY2tldF9s
+ZW5ndGggPSBSWF9ERVNDX0RBVEEwX0ZSQU1FX0xFTkdUSF9HRVRfDQoJCQkJKGxlMzJfdG9fY3B1
+KGRlc2NyaXB0b3ItPmRhdGEwKSk7DQpUaGlzIGxpbmUgd2FzIG1vdmVkIGFib3ZlIHRoZSBwcmV2
+aW91cyBpZiBibG9jaywgYnV0IHRoZSBsZTMyX3RvX2NwdSB3YXMgcmVtb3ZlZC4gSXMgdGhhdCBp
+bnRlbnRpb25hbD8NCkFsc28gSSBkb24ndCBzZWUgYW55IG1lbnRpb24gb2YgdGhpcyBwYWNrZXRf
+bGVuZ3RoIGFzc2lnbm1lbnQgKGFmdGVyIHRoZSBpZiBibG9jaykgYmVpbmcgcmVtb3ZlZC4NClNp
+bmNlIHBhY2tldF9sZW5ndGggYWxyZWFkeSBjb250YWlucyB0aGlzIHZhbHVlLCBpdCBzZWVtcyB1
+bm5lY2Vzc2FyeSB0byBrZWVwIHRoaXMgYXNzaWdubWVudC4NCg0KPiBAQCAtMjE2Nyw4ICsyMTc1
+LDggQEAgc3RhdGljIGludCBsYW43NDN4X3J4X3Byb2Nlc3NfcGFja2V0KHN0cnVjdA0KPiBsYW43
+NDN4X3J4ICpyeCkNCj4gICAgICAgICAgICAgICAgICAgICAgICAgaW50IGluZGV4ID0gZmlyc3Rf
+aW5kZXg7DQo+IA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAvKiBtdWx0aSBidWZmZXIgcGFj
+a2V0IG5vdCBzdXBwb3J0ZWQgKi8NCj4gLSAgICAgICAgICAgICAgICAgICAgICAgLyogdGhpcyBz
+aG91bGQgbm90IGhhcHBlbiBzaW5jZQ0KPiAtICAgICAgICAgICAgICAgICAgICAgICAgKiBidWZm
+ZXJzIGFyZSBhbGxvY2F0ZWQgdG8gYmUgYXQgbGVhc3QganVtYm8gc2l6ZQ0KPiArICAgICAgICAg
+ICAgICAgICAgICAgICAvKiB0aGlzIHNob3VsZCBub3QgaGFwcGVuIHNpbmNlIGJ1ZmZlcnMgYXJl
+IGFsbG9jYXRlZA0KPiArICAgICAgICAgICAgICAgICAgICAgICAgKiB0byBiZSBhdCBsZWFzdCB0
+aGUgbXR1IHNpemUgY29uZmlndXJlZCBpbiB0aGUgbWFjLg0KPiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgKi8NCj4gDQo+ICAgICAgICAgICAgICAgICAgICAgICAgIC8qIGNsZWFuIHVwIGJ1ZmZl
+cnMgKi8gQEAgLTI2MjgsNiArMjYzNiw5IEBAIHN0YXRpYyBpbnQNCj4gbGFuNzQzeF9uZXRkZXZf
+Y2hhbmdlX210dShzdHJ1Y3QgbmV0X2RldmljZSAqbmV0ZGV2LCBpbnQgbmV3X210dSkNCj4gICAg
+ICAgICBzdHJ1Y3QgbGFuNzQzeF9hZGFwdGVyICphZGFwdGVyID0gbmV0ZGV2X3ByaXYobmV0ZGV2
+KTsNCj4gICAgICAgICBpbnQgcmV0ID0gMDsNCj4gDQo+ICsgICAgICAgaWYgKG5ldGlmX3J1bm5p
+bmcobmV0ZGV2KSkNCj4gKyAgICAgICAgICAgICAgIHJldHVybiAtRUJVU1k7DQo+ICsNCj4gICAg
+ICAgICByZXQgPSBsYW43NDN4X21hY19zZXRfbXR1KGFkYXB0ZXIsIG5ld19tdHUpOw0KPiAgICAg
+ICAgIGlmICghcmV0KQ0KPiAgICAgICAgICAgICAgICAgbmV0ZGV2LT5tdHUgPSBuZXdfbXR1Ow0K
+PiAtLQ0KPiAyLjE3LjENCg0K
