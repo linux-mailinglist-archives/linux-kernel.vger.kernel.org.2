@@ -2,101 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B6E2309857
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 21:48:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A51830985A
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 21:49:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231641AbhA3Urs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 15:47:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33674 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231690AbhA3Urp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 15:47:45 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F22C061756
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 12:47:05 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id s18so14691546ljg.7
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 12:47:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=waldekranz-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:in-reply-to:references:date:message-id:mime-version;
-        bh=HKVoS2rrydn4evqBfByv/fLsc4rWiOOxhn5xpMDPXuA=;
-        b=YYeRX8uAMTy24PjmszEhE+U3nh9+PUkvfH5lFjYKPjLlKQi4Y7wPwMdSXr73v5nGhT
-         w7Qpwvnys9VY3g2E87RIaOt3Myz2aBYmjUuHJV/h5UggQBIDXwxEK8ub8z07JR3+3om5
-         FIf5Hpbw8zk+W5wiThS0kmC2WVUf95/yUFs0KWjmuPQg+LIryz9JbW0WltoaNcUk0+0Y
-         O4rBaf6qEQSqYKagcRiBRdpHrV2bQLpst6Xl/+V0nlvjlQrdHsxEc/odK+wZIre0akpP
-         9QAidkVDhgIVua6uj4N6r91NWRbdszuihXIqboOhJPffqMl+ymIGgmZLC48yhd5bBwB5
-         h1PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=HKVoS2rrydn4evqBfByv/fLsc4rWiOOxhn5xpMDPXuA=;
-        b=uZBATnWyfbSL9LUcPeJ707iZ9fTlJV1PLldjdy8nFwIHGgsXiEPdyco3Kpb4EyYsQ+
-         SDVAMSftPLWfObeuOVlsHaK2O+Q2q6XrN8RTDO3r+d+qWYfTvi4V2iPxsNI7NARoO4Og
-         VjDtAxEAuCsFsqu2jbP9wAehKLD5KXp1Fibx95tjFKw1vEwhxb80KcjQuJFcuzQm90XI
-         aVRlTYNdDAapwrtzLAFBDl07mj8WJgkE/HU0PGXMT3HU3eLPTfXoeWP4rwtQonAO9Pym
-         V2HVdAuQQPRliZK54U0nvxTlI+J9D9Au0CUvVX20qBfUVGRSR1Lf65zauVpLTHwFGPTw
-         t/yg==
-X-Gm-Message-State: AOAM530UHv8GiUDcUKFEAUg2aA3e2rNNSlxVJADXlEiaRh7gH6gZlG/y
-        U3iGIs0m1iEOW9kckKf7ltn4kmhM5VcSNrFJ
-X-Google-Smtp-Source: ABdhPJyBffwdVBDn7wJB1j+Q9tDxTRJch4YacsEqxY56NHI4ZHWYhR9QsgZwnQUW854ywKZiTYtzyA==
-X-Received: by 2002:a2e:7812:: with SMTP id t18mr2128221ljc.168.1612039623579;
-        Sat, 30 Jan 2021 12:47:03 -0800 (PST)
-Received: from wkz-x280 (h-236-82.A259.priv.bahnhof.se. [98.128.236.82])
-        by smtp.gmail.com with ESMTPSA id t7sm3088951ljc.87.2021.01.30.12.47.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Jan 2021 12:47:02 -0800 (PST)
-From:   Tobias Waldekranz <tobias@waldekranz.com>
-To:     DENG Qingfang <dqfext@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: dsa: mv88e6xxx: override existent unicast portvec in port_fdb_add
-In-Reply-To: <20210130134334.10243-1-dqfext@gmail.com>
-References: <20210130134334.10243-1-dqfext@gmail.com>
-Date:   Sat, 30 Jan 2021 21:47:02 +0100
-Message-ID: <87eei25f09.fsf@waldekranz.com>
+        id S232214AbhA3Usa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 15:48:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52628 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230517AbhA3Us2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 15:48:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE19464E0E;
+        Sat, 30 Jan 2021 20:47:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612039668;
+        bh=bLI+ZNwZ/Px1wCi6hAgk4/4culKMpmswS9uXcxraxYg=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=CLiYs4yeKmz/ahstkrgtQsBiQkWseA6roT+zDTfPndAuKeoJRdfdF7/edA1Xtb2Qx
+         Rn5U5twSSATBFNMN4vtcJKtYewLbabTYWv30YnQlMDZuZ8bZHtyIhM7rqPFeiRJaPG
+         YKSHpNAHMhcZ2JeoRfNV4EkHZxLv500f4QSBbheqvShnmOc8TReBm2MvjPJoGusQxx
+         GhwI2jAx5mhBR+tJw5oqzxh5mhJdZo6ZJiDvAHhZ4eWM9sNglWHERrgLZOCxdrjzVp
+         xRn+DhNwduxNUp2e2uJU+EI01mvU1PrD7byhVpsPuC0pG7R7WZJugxdSyzYloLP13u
+         mulDXXspf9PNg==
+Message-ID: <ad016e07e5d8c8584981dfbc920eda9c80e3459a.camel@kernel.org>
+Subject: Re: [PATCH v2] tpm_tis: Add missing tpm_request/relinquish_locality
+ calls
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Lukasz Majczak <lma@semihalf.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Tj <ml.linux@elloe.vision>, Dirk Gouders <dirk@gouders.net>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Radoslaw Biernacki <rad@semihalf.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Alex Levin <levinale@google.com>
+Date:   Sat, 30 Jan 2021 22:47:43 +0200
+In-Reply-To: <464454f440df67d3470e67ff0386bbc306d07dac.camel@kernel.org>
+References: <20210123014247.989368-1-lma@semihalf.com>
+         <20210128130753.1283534-1-lma@semihalf.com>
+         <464454f440df67d3470e67ff0386bbc306d07dac.camel@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.38.3 
 MIME-Version: 1.0
-Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 21:43, DENG Qingfang <dqfext@gmail.com> wrote:
-> Having multiple destination ports for a unicast address does not make
-> sense.
-> Make port_db_load_purge override existent unicast portvec instead of
-> adding a new port bit.
+On Sat, 2021-01-30 at 22:40 +0200, Jarkko Sakkinen wrote:
+> On Thu, 2021-01-28 at 14:07 +0100, Lukasz Majczak wrote:
+> > There is a missing call to tpm_request_locality before the call to
+> > the tpm_get_timeouts() and tpm_tis_probe_irq_single(). As the current
+> > approach might work for tpm2, it fails for tpm1.x - in that case
+> > call to tpm_get_timeouts() or tpm_tis_probe_irq_single()
+> > without locality fails and in turn causes tpm_tis_core_init() to fail.
+> > Tested on Samsung Chromebook Pro (Caroline).
+> >=20
+> > Signed-off-by: Lukasz Majczak <lma@semihalf.com>
+>=20
+> Is it possible that you test against linux-next and see if any
+> problems still arise? I've applied the locality fixes from James.
 
-Is this the layer we want to solve this problem at? What are the
-contents of the software FDB at this stage?
+Also one nit: if any problems still persist, please add a snippet
+from klog to your commit message.
 
-Here is a quick example I tried on one of my systems:
-
-root@envoy:~# bridge fdb add 02:00:de:ad:00:01 dev eth1 static vlan 1
-root@envoy:~# bridge fdb add 02:00:de:ad:00:01 dev eth2 static vlan 1
-root@envoy:~# bridge fdb | grep de:ad
-02:00:de:ad:00:01 dev eth2 vlan 1 self static
-02:00:de:ad:00:01 dev eth1 vlan 1 self static
-
-Why does the second add operation succeed? Am I missing some magic flag?
-Presumably the bridge will only ever forward packets to which ever entry
-ends up being first in the relevant hash list. Is that not the real
-problem here?
-
-As it stands today, those commands will result in the following ATU
-config (eth1/2 being mapped to port 10/9):
-
-root@envoy:~# mvls atu
-ADDRESS             FID  STATE      Q  F  0  1  2  3  4  5  6  7  8  9  a
-ff:ff:ff:ff:ff:ff     0  static     -  -  0  1  2  3  4  5  6  7  8  9  a
-02:00:de:ad:00:01     1  static     -  -  .  .  .  .  .  .  .  .  .  9  a
-ff:ff:ff:ff:ff:ff     1  static     -  -  0  1  2  3  4  5  6  7  8  9  a
-
-One might argue that this is no more wrong than what would have been set
-up with this patch applied. The problem is that the bridge allows this
-configuration in the first place.
+/Jarkko
