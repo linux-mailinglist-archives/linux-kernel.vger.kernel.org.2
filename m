@@ -2,79 +2,246 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C274309410
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 11:11:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32068309405
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 11:09:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232034AbhA3KJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 05:09:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49792 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231543AbhA3CJw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 21:09:52 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EE31C0613ED;
-        Fri, 29 Jan 2021 18:09:06 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id by1so15701525ejc.0;
-        Fri, 29 Jan 2021 18:09:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MU9ukK+giuaa3vu2E7Y8gSnqk8uNjtWUT/IiFfJuCvg=;
-        b=XO1gGsWSECIsiMXBzGrrArDzAsM9KTkefej8iUINdq93tWd4bgtKe+Y3vsozz9KdcM
-         HgxJ1A+g9vJC/53WkdpRusTcShYlGcWhVNI24VkfL8LHb7HHSEGMh5fd/EJlDOSLQm9T
-         5l5Nsejwm+VEXj9fhiLjkaOCvzpjUCUKLVF4/iF9HrHxWdXhaoyjHH7bYJVfMIv5kdj0
-         NmqdcEPB/wcWKf4+kimiKdfoimfmVQ7uSuHjEiP9cHI5jS2diIKlSuGGjc4YSSLU5kmY
-         eDghgrPVfLuzK19lCwYfZVtRMhqxHF0i6/LeF6HHms8FgdKUvE69dnbGIdmqfTjWXrWm
-         VDgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=MU9ukK+giuaa3vu2E7Y8gSnqk8uNjtWUT/IiFfJuCvg=;
-        b=dkTuQ/7jvnoNpvGiaNGicZHIRH6EUqmhIJeQiSHjvjLHPO4ZGnDj0q7ntBJJjEJaQF
-         OXdrDFYAhjT485yBPECfX/LEjaukQ3Tc+Jd8ACa/tbhrFsovtf/TxzYbvXZjnzXb2PAZ
-         H7d/cJqUiQGo4zmvv7kYgBckEkOyrQJ36Ds9hayHiZh7qcwl2ed7JUjaEYEaM09qq+lN
-         YKw2z9enlxLj1BoS1HizSWUJieQ/2ABN9dVH1QLPxDtxgPFBN4kiD+v1g6Du94lZ7iBR
-         J5IH7ARG55UKr1nJ3WX5IhEup7QNdohOPRih0rLlfetrZ3AKulH2tyTM9RDjJkp6BkRB
-         gS7Q==
-X-Gm-Message-State: AOAM531wAScaEoVSdglyInOjqg7mxfgc9GBrlXFe5TsVhh41GKt0F0Q2
-        ImB1ZHT9hzIWsoORZx2rXc4=
-X-Google-Smtp-Source: ABdhPJx88NB5VkNqaWKmj2OwT4yNsC9zvpVCwXN2ythxR0UW/m28CF9b06H1Ngz/y9pDA48x6AzGLg==
-X-Received: by 2002:a17:906:578e:: with SMTP id k14mr7108279ejq.243.1611972544062;
-        Fri, 29 Jan 2021 18:09:04 -0800 (PST)
-Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id bk2sm4670563ejb.98.2021.01.29.18.09.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Jan 2021 18:09:03 -0800 (PST)
-Date:   Sat, 30 Jan 2021 04:09:02 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>,
-        andrew@lunn.ch, netdev@vger.kernel.org, robh+dt@kernel.org,
-        kuba@kernel.org, vivien.didelot@gmail.com, davem@davemloft.net,
-        UNGLinuxDriver@microchip.com, Woojung.Huh@microchip.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH net-next 0/8] net: dsa: microchip: DSA driver support for
- LAN937x switch
-Message-ID: <20210130020902.546lmczy75pgdadi@skbuf>
-References: <20210128064112.372883-1-prasanna.vengateshan@microchip.com>
- <bb729a8b-0ea1-e05d-f410-ed049e793d04@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bb729a8b-0ea1-e05d-f410-ed049e793d04@gmail.com>
+        id S232180AbhA3KHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 05:07:47 -0500
+Received: from mga04.intel.com ([192.55.52.120]:31692 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233193AbhA3Crl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 21:47:41 -0500
+IronPort-SDR: JQPiFFWHmk9xPdJ+hrGoVzavoST3E6uHrbwMs4VZWhs/ktyRn7pqZkjyOEtberJl3yN2HNUEAj
+ 0x8snVXUfvew==
+X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="177945174"
+X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
+   d="scan'208";a="177945174"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:28 -0800
+IronPort-SDR: sXZRqwEGigXjd3NGsjrXSAZi5rxo0eGZNn/m7udmby3+OjONqKnHn/+WzHsFR/ET3tIMSeH1d4
+ cDprELOxDTUQ==
+X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
+   d="scan'208";a="357991538"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:28 -0800
+Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
+        by smtp.ostc.intel.com (Postfix) with ESMTP id 5E4D1636B;
+        Fri, 29 Jan 2021 18:21:28 -0800 (PST)
+Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
+        id 52316363331; Fri, 29 Jan 2021 18:21:28 -0800 (PST)
+From:   mgross@linux.intel.com
+To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
+        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        gregkh@linuxfoundation.org, corbet@lwn.net,
+        palmerdabbelt@google.com, paul.walmsley@sifive.com,
+        peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
+        jassisinghbrar@gmail.com
+Cc:     linux-kernel@vger.kernel.org,
+        Srikanth Thokala <srikanth.thokala@intel.com>
+Subject: [PATCH v3 16/34] misc: xlink-pcie: Add asynchronous event notification support for XLink
+Date:   Fri, 29 Jan 2021 18:20:31 -0800
+Message-Id: <20210130022124.65083-17-mgross@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210130022124.65083-1-mgross@linux.intel.com>
+References: <20210130022124.65083-1-mgross@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 09:55:58AM -0800, Florian Fainelli wrote:
-> Could you also feed back to your hardware organization to settle on a
-> tag format that is not a snowflake? Almost *every* switch you have has a
-> different tagging format, this is absurd. All other vendors in tree have
-> been able to settle on at most 2 or 3 different tagging formats over
-> their switching product life span (for some vendors this dates back 20
-> years ago).
+From: Srikanth Thokala <srikanth.thokala@intel.com>
 
-You can't stop them from innovating, Florian :(
+Add support to notify XLink layer upon PCIe link UP/DOWN events
+
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Mark Gross <mgross@linux.intel.com>
+Signed-off-by: Srikanth Thokala <srikanth.thokala@intel.com>
+---
+ drivers/misc/xlink-pcie/common/core.h      |  3 ++
+ drivers/misc/xlink-pcie/common/interface.c | 17 ++++++++++
+ drivers/misc/xlink-pcie/local_host/core.c  | 11 +++++++
+ drivers/misc/xlink-pcie/remote_host/main.c |  3 ++
+ drivers/misc/xlink-pcie/remote_host/pci.c  | 36 ++++++++++++++++++++++
+ drivers/misc/xlink-pcie/remote_host/pci.h  |  3 ++
+ include/linux/xlink_drv_inf.h              | 12 ++++++++
+ 7 files changed, 85 insertions(+)
+
+diff --git a/drivers/misc/xlink-pcie/common/core.h b/drivers/misc/xlink-pcie/common/core.h
+index f43c175b7a48..87b302f87cfd 100644
+--- a/drivers/misc/xlink-pcie/common/core.h
++++ b/drivers/misc/xlink-pcie/common/core.h
+@@ -239,4 +239,7 @@ int intel_xpcie_pci_connect_device(u32 id);
+ int intel_xpcie_pci_read(u32 id, void *data, size_t *size, u32 timeout);
+ int intel_xpcie_pci_write(u32 id, void *data, size_t *size, u32 timeout);
+ int intel_xpcie_pci_reset_device(u32 id);
++int intel_xpcie_pci_register_device_event(u32 sw_device_id,
++					  xlink_device_event event_notif_fn);
++int intel_xpcie_pci_unregister_device_event(u32 sw_device_id);
+ #endif /* XPCIE_CORE_HEADER_ */
+diff --git a/drivers/misc/xlink-pcie/common/interface.c b/drivers/misc/xlink-pcie/common/interface.c
+index fcc69a940a4c..5d30c27dd18d 100644
+--- a/drivers/misc/xlink-pcie/common/interface.c
++++ b/drivers/misc/xlink-pcie/common/interface.c
+@@ -105,3 +105,20 @@ int xlink_pcie_reset_device(u32 sw_device_id)
+ 	return intel_xpcie_pci_reset_device(sw_device_id);
+ }
+ EXPORT_SYMBOL_GPL(xlink_pcie_reset_device);
++
++int xlink_pcie_register_device_event(u32 sw_device_id,
++				     xlink_device_event event_notif_fn)
++{
++	if (!event_notif_fn)
++		return -EINVAL;
++
++	return intel_xpcie_pci_register_device_event(sw_device_id,
++						     event_notif_fn);
++}
++EXPORT_SYMBOL_GPL(xlink_pcie_register_device_event);
++
++int xlink_pcie_unregister_device_event(u32 sw_device_id)
++{
++	return intel_xpcie_pci_unregister_device_event(sw_device_id);
++}
++EXPORT_SYMBOL_GPL(xlink_pcie_unregister_device_event);
+diff --git a/drivers/misc/xlink-pcie/local_host/core.c b/drivers/misc/xlink-pcie/local_host/core.c
+index 2c4e29bce7f7..bfb14c18c24c 100644
+--- a/drivers/misc/xlink-pcie/local_host/core.c
++++ b/drivers/misc/xlink-pcie/local_host/core.c
+@@ -804,3 +804,14 @@ int intel_xpcie_pci_reset_device(u32 id)
+ {
+ 	return 0;
+ }
++
++int intel_xpcie_pci_register_device_event(u32 sw_device_id,
++					  xlink_device_event event_notif_fn)
++{
++	return 0;
++}
++
++int intel_xpcie_pci_unregister_device_event(u32 sw_device_id)
++{
++	return 0;
++}
+diff --git a/drivers/misc/xlink-pcie/remote_host/main.c b/drivers/misc/xlink-pcie/remote_host/main.c
+index ed1a431ed5d4..efc9143a2fac 100644
+--- a/drivers/misc/xlink-pcie/remote_host/main.c
++++ b/drivers/misc/xlink-pcie/remote_host/main.c
+@@ -53,6 +53,8 @@ static int intel_xpcie_probe(struct pci_dev *pdev,
+ 	if (new_device)
+ 		intel_xpcie_list_add_device(xdev);
+ 
++	intel_xpcie_pci_notify_event(xdev, NOTIFY_DEVICE_CONNECTED);
++
+ 	return ret;
+ }
+ 
+@@ -62,6 +64,7 @@ static void intel_xpcie_remove(struct pci_dev *pdev)
+ 
+ 	if (xdev) {
+ 		intel_xpcie_pci_cleanup(xdev);
++		intel_xpcie_pci_notify_event(xdev, NOTIFY_DEVICE_DISCONNECTED);
+ 		intel_xpcie_remove_device(xdev);
+ 	}
+ }
+diff --git a/drivers/misc/xlink-pcie/remote_host/pci.c b/drivers/misc/xlink-pcie/remote_host/pci.c
+index 71cbe779d1bc..6a79782b983e 100644
+--- a/drivers/misc/xlink-pcie/remote_host/pci.c
++++ b/drivers/misc/xlink-pcie/remote_host/pci.c
+@@ -6,6 +6,7 @@
+  */
+ 
+ #include <linux/mutex.h>
++#include <linux/pci.h>
+ #include <linux/sched.h>
+ #include <linux/wait.h>
+ #include <linux/workqueue.h>
+@@ -485,3 +486,38 @@ int intel_xpcie_pci_reset_device(u32 id)
+ 
+ 	return intel_xpcie_pci_prepare_dev_reset(xdev, true);
+ }
++
++int intel_xpcie_pci_register_device_event(u32 sw_device_id,
++					  xlink_device_event event_notif_fn)
++{
++	struct xpcie_dev *xdev = intel_xpcie_get_device_by_id(sw_device_id);
++
++	if (!xdev)
++		return -ENOMEM;
++
++	xdev->event_fn = event_notif_fn;
++
++	return 0;
++}
++
++int intel_xpcie_pci_unregister_device_event(u32 sw_device_id)
++{
++	struct xpcie_dev *xdev = intel_xpcie_get_device_by_id(sw_device_id);
++
++	if (!xdev)
++		return -ENOMEM;
++
++	xdev->event_fn = NULL;
++
++	return 0;
++}
++
++void intel_xpcie_pci_notify_event(struct xpcie_dev *xdev,
++				  enum xlink_device_event_type event_type)
++{
++	if (event_type >= NUM_EVENT_TYPE)
++		return;
++
++	if (xdev->event_fn)
++		xdev->event_fn(xdev->devid, event_type);
++}
+diff --git a/drivers/misc/xlink-pcie/remote_host/pci.h b/drivers/misc/xlink-pcie/remote_host/pci.h
+index bd6b01cc58b8..b082bfb73e4f 100644
+--- a/drivers/misc/xlink-pcie/remote_host/pci.h
++++ b/drivers/misc/xlink-pcie/remote_host/pci.h
+@@ -36,6 +36,7 @@ struct xpcie_dev {
+ 	irq_handler_t core_irq_callback;
+ 
+ 	struct xpcie xpcie;
++	xlink_device_event event_fn;
+ };
+ 
+ static inline struct device *xpcie_to_dev(struct xpcie *xpcie)
+@@ -58,5 +59,7 @@ struct xpcie_dev *intel_xpcie_create_device(u32 sw_device_id,
+ void intel_xpcie_remove_device(struct xpcie_dev *xdev);
+ void intel_xpcie_list_add_device(struct xpcie_dev *xdev);
+ void intel_xpcie_list_del_device(struct xpcie_dev *xdev);
++void intel_xpcie_pci_notify_event(struct xpcie_dev *xdev,
++				  enum xlink_device_event_type event_type);
+ 
+ #endif /* XPCIE_PCI_HEADER_ */
+diff --git a/include/linux/xlink_drv_inf.h b/include/linux/xlink_drv_inf.h
+index 8ffbaafecc88..f20f69bd879a 100644
+--- a/include/linux/xlink_drv_inf.h
++++ b/include/linux/xlink_drv_inf.h
+@@ -42,6 +42,15 @@ enum _xlink_device_status {
+ 	_XLINK_DEV_READY
+ };
+ 
++enum xlink_device_event_type {
++	NOTIFY_DEVICE_DISCONNECTED,
++	NOTIFY_DEVICE_CONNECTED,
++	NUM_EVENT_TYPE
++};
++
++typedef int (*xlink_device_event)(u32 sw_device_id,
++				  enum xlink_device_event_type event_type);
++
+ int xlink_pcie_get_device_list(u32 *sw_device_id_list,
+ 			       u32 *num_devices);
+ int xlink_pcie_get_device_name(u32 sw_device_id, char *device_name,
+@@ -55,4 +64,7 @@ int xlink_pcie_read(u32 sw_device_id, void *data, size_t *const size,
+ int xlink_pcie_write(u32 sw_device_id, void *data, size_t *const size,
+ 		     u32 timeout);
+ int xlink_pcie_reset_device(u32 sw_device_id);
++int xlink_pcie_register_device_event(u32 sw_device_id,
++				     xlink_device_event event_notif_fn);
++int xlink_pcie_unregister_device_event(u32 sw_device_id);
+ #endif
+-- 
+2.17.1
+
