@@ -2,193 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F483093C7
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:55:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFD7309386
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:39:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231764AbhA3Jz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 04:55:27 -0500
-Received: from mga06.intel.com ([134.134.136.31]:41430 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233148AbhA3DAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 22:00:46 -0500
-IronPort-SDR: /QOu6WX5O5hTXpYV1vYPrRN1W5bFyRkFCLgiocGrrbTDm/2gpd+GlVZSU5KaQ/7JMWF67Guu8O
- ZNh07loPhsMA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="242028070"
-X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="242028070"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:31 -0800
-IronPort-SDR: fliegbaFHBKbnNCLVqnXTZa80DvkqvpG3P4S9q2vmltREH1rEDei/Z0q0eIUPyjgRuigGjQxQs
- x3zr9Baz5Mpg==
-X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="365585733"
-Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:31 -0800
-Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id DAAAB6371;
-        Fri, 29 Jan 2021 18:21:30 -0800 (PST)
-Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
-        id CE48C3636AB; Fri, 29 Jan 2021 18:21:30 -0800 (PST)
-From:   mgross@linux.intel.com
-To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
-        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
-        gregkh@linuxfoundation.org, corbet@lwn.net,
-        palmerdabbelt@google.com, paul.walmsley@sifive.com,
-        peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
-        jassisinghbrar@gmail.com
+        id S231867AbhA3JiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 04:38:17 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:56219 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233437AbhA3DKA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 22:10:00 -0500
+Received: from fsav301.sakura.ne.jp (fsav301.sakura.ne.jp [153.120.85.132])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 10U2PK6q001042;
+        Sat, 30 Jan 2021 11:25:20 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav301.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp);
+ Sat, 30 Jan 2021 11:25:20 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav301.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 10U2PJX8001039
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sat, 30 Jan 2021 11:25:20 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: general protection fault in tomoyo_socket_sendmsg_permission
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+95ce4b142579611ef0a9@syzkaller.appspotmail.com>
 Cc:     linux-kernel@vger.kernel.org,
-        "C, Udhayakumar" <udhayakumar.c@intel.com>,
-        devicetree@vger.kernel.org
-Subject: [PATCH v4 32/34] dt-bindings: misc: hddl_dev: Add hddl device management documentation
-Date:   Fri, 29 Jan 2021 18:21:22 -0800
-Message-Id: <20210130022124.65083-68-mgross@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210130022124.65083-1-mgross@linux.intel.com>
-References: <20210130022124.65083-1-mgross@linux.intel.com>
+        linux-security-module@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        syzkaller-bugs@googlegroups.com
+References: <000000000000647eff05b3f7e0d4@google.com>
+ <20201113120055.11748-1-hdanton@sina.com>
+ <5f71e0c1-d387-6d72-d8e4-edb11cf57f72@linuxfoundation.org>
+ <ea4028b7-53f2-aeaf-76e7-69874efcdec5@I-love.SAKURA.ne.jp>
+ <2b70d360-a293-4acb-ea6c-2badda5e8b8b@linuxfoundation.org>
+ <9bdd3f10-bddb-bd87-d7ad-b4b706477006@i-love.sakura.ne.jp>
+ <6b8da36f-a994-7604-77f4-52e29434605f@linuxfoundation.org>
+ <5f9ec159-77d8-ffba-21d1-2810e059f998@i-love.sakura.ne.jp>
+ <a06093f1-22b3-7d72-bc6c-f99f4e0d0de9@linuxfoundation.org>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <40617d66-1334-13a0-de9b-bd7cc1155ce5@i-love.sakura.ne.jp>
+Date:   Sat, 30 Jan 2021 11:25:20 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <a06093f1-22b3-7d72-bc6c-f99f4e0d0de9@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "C, Udhayakumar" <udhayakumar.c@intel.com>
+On 2021/01/30 6:18, Shuah Khan wrote:
+> In this console log:
 
-Add hddl device management documentation
+It seems "this console log" refers to https://syzkaller.appspot.com/x/log.txt?x=10453034500000 .
 
-The HDDL client driver acts as an software RTC to sync with network time.
-It abstracts xlink protocol to communicate with remote IA host.
-This driver exports the details about sensors available in the platform
-to remote IA host as xlink packets.
-This driver also handles device connect/disconnect events and identifies
-board id and soc id using gpio's based on platform configuration.
+> 
+> 06:57:50 executing program 1:
+> socketpair$tipc(0x1e, 0x2, 0x0, &(0x7f00000000c0)={<r0=>0xffffffffffffffff})
+> sendmsg$BATADV_CMD_GET_TRANSTABLE_LOCAL(r0, &(0x7f00000002c0)={&(0x7f00000001c0), 0xc, &(0x7f0000000280)={0x0, 0xd001010000000000}}, 0x0)
+> 
+> [ 1151.090883][T23361] vhci_hcd vhci_hcd.0: pdev(4) rhport(0) sockfd(4)
+> [ 1151.097445][T23361] vhci_hcd vhci_hcd.0: devid(0) speed(1) speed_str(low-speed)
+> 06:57:50 executing program 0:
+> r0 = syz_open_dev$binderN(&(0x7f0000000680)='/dev/binder#\x00', 0x0, 0x0)
+> ioctl$BINDER_WRITE_READ(r0, 0xc0306201, &(0x7f0000000cc0)={0x88, 0x0, &(0x7f0000000b80)=[@transaction={0x40406300, {0x2, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}}, @transaction={0x40406300, {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}}], 0x0, 0x0, 0x0})
+> 
+> [ 1151.164402][T23363] vhci_hcd: connection closed
+> [ 1151.167346][  T240] vhci_hcd: stop threads
+> 
+> 
+> [ 1151.178329][T26761] usb 17-1: new low-speed USB device number 2 using vhci_hcd
+> 
+> 
+> SK: Looking at the console log, it looks like while connection is being
+>     torn down,
 
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: devicetree@vger.kernel.org
-Signed-off-by: C Udhayakumar <udhayakumar.c@intel.com>
-Signed-off-by: Mark Gross <mgross@linux.intel.com>
----
- .../bindings/misc/intel,hddl-client.yaml      | 114 ++++++++++++++++++
- 1 file changed, 114 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/misc/intel,hddl-client.yaml
+Excuse me, but it looks like (what comes here) while connection is being torn down ?
+I'm not familiar with driver code.
 
-diff --git a/Documentation/devicetree/bindings/misc/intel,hddl-client.yaml b/Documentation/devicetree/bindings/misc/intel,hddl-client.yaml
-new file mode 100644
-index 000000000000..c1d121c35fc5
---- /dev/null
-+++ b/Documentation/devicetree/bindings/misc/intel,hddl-client.yaml
-@@ -0,0 +1,114 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/misc/intel,hddl-client.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: Intel hddl client device to handle platform management in Bay series
-+
-+maintainers:
-+  - Udhayakumar C <udhayakumar.c@intel.com>
-+
-+description: |
-+  The HDDL client driver acts as an software RTC to sync with network time.
-+  It abstracts xlink protocol to communicate with remote host. This driver
-+  exports the details about sensors available in the platform to remote
-+  host as xlink packets.
-+  This driver also handles device connect/disconnect events and identifies
-+  board id and soc id using gpio's based on platform configuration.
-+
-+select: false
-+
-+properties:
-+  compatible:
-+    items:
-+      - const: intel,hddl-client
-+
-+  reg:
-+    minItems: 4
-+    maxItems: 4
-+
-+  xlink_chan:
-+    minItems: 1
-+    maxItems: 1
-+    description: xlink channel number used for communication
-+                 with remote host for time sync and sharing sensor
-+                 details available in platform.
-+
-+  i2c_xlink_chan:
-+    minItems: 1
-+    maxItems: 1
-+    description: xlink channel number used for communication
-+                 with remote host for xlink i2c smbus.
-+
-+  sensor_name:
-+    type: object
-+    description:
-+      Details about sensors and its configuration on local host and remote
-+      host.
-+
-+    properties:
-+      compatible:
-+        items:
-+          - const: intel_tsens
-+
-+      reg:
-+        description: i2c slave address for sensor.
-+
-+      local-host:
-+        minItems: 1
-+        maxItems: 1
-+        description: enable bit 0 to register sensor as i2c slave
-+                     in local host (normal i2c client)
-+                     enable bit 1 to mimic sensor as i2c slave
-+                     in local host (onchip sensors as i2c slave)
-+                     enable bit 2 to register i2c slave as xlink smbus slave
-+                     in local host.
-+      remote-host:
-+        minItems: 1
-+        maxItems: 1
-+        description: enable bit 0 to register sensor as i2c slave
-+                     in remote host (normal i2c client)
-+                     enable bit 1 to mimic sensor as i2c slave
-+                     in remote host (onchip sensors as i2c slave)
-+                     enable bit 2 to register i2c slave as xlink smbus slave
-+                     in remote host.
-+
-+      bus:
-+        minItems: 1
-+        maxItems: 1
-+        description: i2c bus number for the i2c client device.
-+
-+    required:
-+      - compatible
-+      - reg
-+      - local-host
-+      - remote-host
-+      - bus
-+
-+required:
-+  - compatible
-+  - reg
-+  - xlink_chan
-+  - i2c_xlink_chan
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    hddl_dev: hddl@20320000 {
-+       compatible = "intel,hddl-client";
-+       #address-cells = <2>;
-+       #size-cells = <2>;
-+       status = "disabled";
-+       reg = <0x0 0x20320000 0x0 0x800>;
-+       xlink_chan = <1080>;
-+       i2c_xlink_chan = <1081>;
-+       kmb_xlink_tj {
-+         status = "okay";
-+         compatible = "intel_tsens";
-+         local-host = <0x3>;
-+         remote-host = <0x3>;
-+         bus = <0x1>;
-+      };
-+    };
--- 
-2.17.1
+> 
+> 
+> [ 1151.181245][  T240] vhci_hcd: release socket
+> 
+> 
+> Can you share your your test code for this program:
+> "executing program 1"
 
+I don't think program 1 is relevant. I think program 4
+
+  06:57:50 executing program 4:
+  r0 = socket$tipc(0x1e, 0x2, 0x0)
+  syz_usbip_server_init(0x1)
+  close_range(r0, 0xffffffffffffffff, 0x0)
+
+which calls syz_usbip_server_init() as with other duplicates is relevant.
+
+> 
+> Also your setup? Do you run usbip_host and vhci_hcd both?
+
+Who are you referring to with "you/your" ? I'm not running syzkaller in my setup
+and I don't have test code.
+
+I'm just proposing printing more messages in order to confirm the ordering of
+events and member values in structures.
