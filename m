@@ -2,139 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0593097A5
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 19:49:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1745D3097A8
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 19:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231899AbhA3Ssk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 13:48:40 -0500
-Received: from smtprelay0250.hostedemail.com ([216.40.44.250]:46402 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230045AbhA3Ssf (ORCPT
+        id S231833AbhA3Suj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 13:50:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229990AbhA3Suh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 13:48:35 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id AB223181D303C;
-        Sat, 30 Jan 2021 18:47:52 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:966:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1461:1515:1516:1518:1534:1543:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3865:3867:3868:4321:4385:4605:5007:6119:7652:7903:10004:10400:10848:11026:11232:11473:11657:11658:11914:12043:12048:12296:12297:12438:12555:12740:12895:12986:13439:13894:13972:14181:14659:14721:21080:21433:21451:21627:21740:30029:30054:30056:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: paint73_001571e275b3
-X-Filterd-Recvd-Size: 4233
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 30 Jan 2021 18:47:51 +0000 (UTC)
-Message-ID: <719e0f14852d132a6649dbd5791fca17f251cb8e.camel@perches.com>
-Subject: Re: [PATCH 10/29] drm/i915: Avoid comma separated statements
-From:   Joe Perches <joe@perches.com>
-To:     Jiri Kosina <trivial@kernel.org>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Date:   Sat, 30 Jan 2021 10:47:50 -0800
-In-Reply-To: <d687691df8f9978c7b2362c18d77a16b49be76b0.1598331148.git.joe@perches.com>
-References: <cover.1598331148.git.joe@perches.com>
-         <d687691df8f9978c7b2362c18d77a16b49be76b0.1598331148.git.joe@perches.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sat, 30 Jan 2021 13:50:37 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 666D1C061573;
+        Sat, 30 Jan 2021 10:49:57 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id q12so17170069lfo.12;
+        Sat, 30 Jan 2021 10:49:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=H5k8qtZJbHuudjGN1CUO70UUJQhJm9pI4Dj/GaUoYRA=;
+        b=T7OTs5Aw/tiN9Ls+frYF7Q6d4GBObjNyKTT4VSA5pDbjK0PqTEM+X55c0hzJ/FCnBi
+         nARzm8dfSaWbvfVFQmFyXtPMjrCv9oykiN3LNYAuFS45n4RRmqJLG4bZMA3jsDZYbOse
+         GSWNF8mwiB5XaDUDm60uzjkFc3SgQsdh3cYhn4LBdcAqd063rpQZrQaA9H7aQK5k+I1k
+         sVG0ab2nAlDvt4rdb+s76uC/bwTWiHo7xY1cNsjV9dhqeODM/3tlbmgd4I4WuwwfvB4n
+         4tfBf2xuAvr05rhonV80jPI3bmlcNog6bF+9/KAxTJvU2QLlUMwgQGgm3mvvyOk2kvpf
+         pgUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=H5k8qtZJbHuudjGN1CUO70UUJQhJm9pI4Dj/GaUoYRA=;
+        b=HIRtBHdKi6UUBVRgMwCiLOngpoRxgt/hmxeFqc3GK07cF7EZQtgUXwCsCJxQerFzdN
+         WJzdiHr8XAFCe+hPJQx01nYQ6lwuwczubbZVsvTmqye5kY00hrzfleibpDaB18/z0mrg
+         x5mGlc5gBJPBG8k0sennRt/ePdIoxPFOMvWz6diImZbyktuK+gxKIJBV1zdfTLG1XJ9M
+         jXgy2J3627S4/eFRJn/KBxjI3S1hzu7/rtneE89NPLkEBEimlPROySnr85Jzvlt2QiCP
+         ylm5qNfRZ4LvtIaAfWIfduCfWdcsqjRnC8o/y1B6W8V8LveONYTO4pIMerPJF2qPd8gI
+         mxDg==
+X-Gm-Message-State: AOAM532zBgBGKkEoFNGIU12mhO8xHl7mES7eNk/gO18f4Bz7VuOWs0HW
+        b7zOOMX23cDQEg2to6JZXHgy5z7X+CYyCnMTt3Zbdxg40LcMEg==
+X-Google-Smtp-Source: ABdhPJwSeD3Jr9r+7NiOvMXje6vln1tjUXKUG8sg76Mc9HcgWfICc/HUyuErVla59BHxTKLBiO0cGbOSYxBwwVG3PUs=
+X-Received: by 2002:a05:6512:1284:: with SMTP id u4mr5179179lfs.175.1612032595793;
+ Sat, 30 Jan 2021 10:49:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Steve French <smfrench@gmail.com>
+Date:   Sat, 30 Jan 2021 12:49:45 -0600
+Message-ID: <CAH2r5mu==FO2Vfk-ppY5Z=e_a5ZU345DhJoLOBBZ02ZsjQ-Zzw@mail.gmail.com>
+Subject: [GIT] cifs fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-08-24 at 21:56 -0700, Joe Perches wrote:
-> Use semicolons and braces.
+Please pull the following changes since commit
+6ee1d745b7c9fd573fba142a2efdad76a9f1cb04:
 
-Ping?
+  Linux 5.11-rc5 (2021-01-24 16:47:14 -0800)
 
-> Signed-off-by: Joe Perches <joe@perches.com>
-> ---
->  drivers/gpu/drm/i915/gt/gen8_ppgtt.c           | 8 +++++---
->  drivers/gpu/drm/i915/gt/intel_gt_requests.c    | 6 ++++--
->  drivers/gpu/drm/i915/gt/selftest_workarounds.c | 6 ++++--
->  drivers/gpu/drm/i915/intel_runtime_pm.c        | 6 ++++--
->  4 files changed, 17 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/gt/gen8_ppgtt.c b/drivers/gpu/drm/i915/gt/gen8_ppgtt.c
-> index 699125928272..114c13285ff1 100644
-> --- a/drivers/gpu/drm/i915/gt/gen8_ppgtt.c
-> +++ b/drivers/gpu/drm/i915/gt/gen8_ppgtt.c
-> @@ -323,10 +323,12 @@ static int __gen8_ppgtt_alloc(struct i915_address_space * const vm,
->  			}
->  
-> 
->  			spin_lock(&pd->lock);
-> -			if (likely(!pd->entry[idx]))
-> +			if (likely(!pd->entry[idx])) {
->  				set_pd_entry(pd, idx, pt);
-> -			else
-> -				alloc = pt, pt = pd->entry[idx];
-> +			} else {
-> +				alloc = pt;
-> +				pt = pd->entry[idx];
-> +			}
->  		}
->  
-> 
->  		if (lvl) {
-> diff --git a/drivers/gpu/drm/i915/gt/intel_gt_requests.c b/drivers/gpu/drm/i915/gt/intel_gt_requests.c
-> index 66fcbf9d0fdd..54408d0b5e6e 100644
-> --- a/drivers/gpu/drm/i915/gt/intel_gt_requests.c
-> +++ b/drivers/gpu/drm/i915/gt/intel_gt_requests.c
-> @@ -139,8 +139,10 @@ long intel_gt_retire_requests_timeout(struct intel_gt *gt, long timeout)
->  	LIST_HEAD(free);
->  
-> 
->  	interruptible = true;
-> -	if (unlikely(timeout < 0))
-> -		timeout = -timeout, interruptible = false;
-> +	if (unlikely(timeout < 0)) {
-> +		timeout = -timeout;
-> +		interruptible = false;
-> +	}
->  
-> 
->  	flush_submission(gt, timeout); /* kick the ksoftirqd tasklets */
->  	spin_lock(&timelines->lock);
-> diff --git a/drivers/gpu/drm/i915/gt/selftest_workarounds.c b/drivers/gpu/drm/i915/gt/selftest_workarounds.c
-> index febc9e6692ba..3e4cbeed20bd 100644
-> --- a/drivers/gpu/drm/i915/gt/selftest_workarounds.c
-> +++ b/drivers/gpu/drm/i915/gt/selftest_workarounds.c
-> @@ -521,8 +521,10 @@ static int check_dirty_whitelist(struct intel_context *ce)
->  
-> 
->  		srm = MI_STORE_REGISTER_MEM;
->  		lrm = MI_LOAD_REGISTER_MEM;
-> -		if (INTEL_GEN(engine->i915) >= 8)
-> -			lrm++, srm++;
-> +		if (INTEL_GEN(engine->i915) >= 8) {
-> +			lrm++;
-> +			srm++;
-> +		}
->  
-> 
->  		pr_debug("%s: Writing garbage to %x\n",
->  			 engine->name, reg);
-> diff --git a/drivers/gpu/drm/i915/intel_runtime_pm.c b/drivers/gpu/drm/i915/intel_runtime_pm.c
-> index 153ca9e65382..f498f1c80755 100644
-> --- a/drivers/gpu/drm/i915/intel_runtime_pm.c
-> +++ b/drivers/gpu/drm/i915/intel_runtime_pm.c
-> @@ -201,8 +201,10 @@ __print_intel_runtime_pm_wakeref(struct drm_printer *p,
->  		unsigned long rep;
->  
-> 
->  		rep = 1;
-> -		while (i + 1 < dbg->count && dbg->owners[i + 1] == stack)
-> -			rep++, i++;
-> +		while (i + 1 < dbg->count && dbg->owners[i + 1] == stack) {
-> +			rep++;
-> +			i++;
-> +		}
->  		__print_depot_stack(stack, buf, PAGE_SIZE, 2);
->  		drm_printf(p, "Wakeref x%lu taken at:\n%s", rep, buf);
->  	}
+are available in the Git repository at:
 
+  git://git.samba.org/sfrench/cifs-2.6.git tags/5.11-rc5-smb3
 
+for you to fetch changes up to 0d4873f9aa4ff8fc1d63a5755395b794d32ce046:
+
+  cifs: fix dfs domain referrals (2021-01-28 21:40:43 -0600)
+
+----------------------------------------------------------------
+Four cifs patches found in additional testing of the conversion to the
+new mount API. 3 small parm processing ones, and one fixing domain
+based DFS referrals
+
+A fix for nested mounts, an additional DFS fix and a security fix are
+still being tested (I expect to send those next week).
+
+Test results: http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/486
+----------------------------------------------------------------
+Adam Harvey (1):
+      cifs: ignore auto and noauto options if given
+
+Ronnie Sahlberg (1):
+      cifs: fix dfs domain referrals
+
+Steve French (2):
+      cifs: fix mounts to subdirectories of target
+      cifs: returning mount parm processing errors correctly
+
+ fs/cifs/cifs_dfs_ref.c | 12 ++++++++----
+ fs/cifs/cifsfs.c       |  2 +-
+ fs/cifs/cifsproto.h    |  6 ++++--
+ fs/cifs/connect.c      | 32 ++++++++++++++++++++++++++------
+ fs/cifs/dfs_cache.c    |  8 +++++---
+ fs/cifs/fs_context.c   | 41 +++++++++++++++++++++++++++++++++++++----
+ 6 files changed, 81 insertions(+), 20 deletions(-)
+
+-- 
+Thanks,
+
+Steve
