@@ -2,138 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2CC3095A7
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 14:59:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CCA73095B7
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 15:08:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbhA3N6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 08:58:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229620AbhA3N6n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 08:58:43 -0500
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7191DC061573
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 05:58:02 -0800 (PST)
-Received: by mail-wm1-x333.google.com with SMTP id u14so9343873wmq.4
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 05:58:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zBKUG7e5aqeOZGFoYP7ajq6QVA6ioUHiy3uBhfAtdJI=;
-        b=qX3AdBndzdu1u93uXZHXtrPIfIN38cJ+h8iH3Ect4Br9Oav1roudJMSFJxpEin65gr
-         2Pnpl+IkFFWxL+Z0FLYe9cYB73qoe7OkQ0YTvoJKlCpSt34J0cy4kxO+fWXoGLzf5Izp
-         uxkNv8tlpqGAN+PIBDgt6GwGnnQyHgit9SksDxvLq0FJ2R6cop2SpO9JSyEKXcNa6NPf
-         9IceVOjaoSMp6kBGTgQFsnuppn2YBuoyLClQVtA8uCLOosrcFXIJvguPBU6Kz+LMxGM+
-         NDRVq+lEgO1MWWfpkeQ1WO6Ibt7flfDzHEoVJ1AXFm5+eDZ0p3tqytxXqG/ppt284hmt
-         wp8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zBKUG7e5aqeOZGFoYP7ajq6QVA6ioUHiy3uBhfAtdJI=;
-        b=jMT3nDYikTfvuq9zJ9SkX3f/VWy4xS1ZY/97uBy8FZa2CfDJoacguTXFHmAJz/g8V3
-         CxuRdoCpqLAToAyj2ip7YEBaYyUumEKRJFa/Q3XDWRV2mG3fKalIb+THCeOrxjmwdE+K
-         wsORNtsEdRohwuMLXxj8K54GE8+TprM/QDqSDyYz5ZQ0gjd12b1m8tigKzXL7dOxxjbl
-         O9Tu+cYCeZsl6IXQVazCUwqYGR8/O1p3O/enxqXalSrYk74b3oERvKmdaWUfJ3O3T1Cc
-         qsXpBwf229feYqMXVGRoP/xRWcC+Ia5//asBMFoYdn3N9Kl3KrKE+bzLW7WGdtgx0mRy
-         LyWQ==
-X-Gm-Message-State: AOAM531MHHqsq5JU/L2VoVlLNfbvdYy0NafqJV3DrcFnSRp2FjxdOR+F
-        oW4mbYk1EMccLhwQV9LANZmjCHHOIIe3cP88I7A=
-X-Google-Smtp-Source: ABdhPJyML1M/wSU4weQkHbgAQC9ptneKF82KsSJzpVsQQWhfvqo2M3tiSMcT7VAudVuKVQbcufB5LABLkNqdYYtNCRg=
-X-Received: by 2002:a1c:f001:: with SMTP id a1mr7961185wmb.21.1612015081209;
- Sat, 30 Jan 2021 05:58:01 -0800 (PST)
+        id S230288AbhA3OHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 09:07:47 -0500
+Received: from mail.v3.sk ([167.172.186.51]:42944 "EHLO shell.v3.sk"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229468AbhA3OHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 09:07:43 -0500
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zimbra.v3.sk (Postfix) with ESMTP id CFE99E0A80;
+        Sat, 30 Jan 2021 14:02:52 +0000 (UTC)
+Received: from shell.v3.sk ([127.0.0.1])
+        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id w0XuzY4HszbM; Sat, 30 Jan 2021 14:02:52 +0000 (UTC)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zimbra.v3.sk (Postfix) with ESMTP id 1365AE0B3B;
+        Sat, 30 Jan 2021 14:02:52 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at zimbra.v3.sk
+Received: from shell.v3.sk ([127.0.0.1])
+        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id NSS8llP6gogb; Sat, 30 Jan 2021 14:02:51 +0000 (UTC)
+Received: from localhost (unknown [109.183.109.54])
+        by zimbra.v3.sk (Postfix) with ESMTPSA id 43FBFE0A80;
+        Sat, 30 Jan 2021 14:02:51 +0000 (UTC)
+Date:   Sat, 30 Jan 2021 15:06:52 +0100
+From:   Lubomir Rintel <lkundrak@v3.sk>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Maen Suleiman <maen@marvell.com>, Lior Amsalem <alior@marvell.com>,
+        Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+        Andrew Lunn <andrew@lunn.ch>, Nicolas Pitre <nico@fluxnic.net>,
+        Eric Miao <eric.y.miao@gmail.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] docs: arm: marvell: turn the automatic links into
+ labels
+Message-ID: <20210130140652.GA190173@demiurge.local>
+References: <20210129183950.75405-1-lkundrak@v3.sk>
+ <20210129183950.75405-2-lkundrak@v3.sk>
+ <87tuqzwa0j.fsf@meer.lwn.net>
 MIME-Version: 1.0
-References: <20210127194047.21462-1-christianshewitt@gmail.com>
-In-Reply-To: <20210127194047.21462-1-christianshewitt@gmail.com>
-From:   Qiang Yu <yuq825@gmail.com>
-Date:   Sat, 30 Jan 2021 21:57:50 +0800
-Message-ID: <CAKGbVbtaDHmukvfF=sfSmWHVdAYoF6-i4RTzsPQ6zfsjHcGNCw@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/lima: add governor data with pre-defined thresholds
-To:     Christian Hewitt <christianshewitt@gmail.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        lima@lists.freedesktop.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Steven Price <steven.price@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87tuqzwa0j.fsf@meer.lwn.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch gets minor improvement on glmark2 (160->162).
+On Fri, Jan 29, 2021 at 05:20:28PM -0700, Jonathan Corbet wrote:
+> Lubomir Rintel <lkundrak@v3.sk> writes:
+> 
+> > Lines ending with obscenely long URLs at the end don't look good.
+> >
+> > Even if these links are not that long at this point, they will be when
+> > replaced with an archive link in a subsequent patch -- let's prepare for
+> > that.
+> >
+> > Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+> > ---
+> >  Documentation/arm/marvel.rst | 209 ++++++++++++++++++++++++-----------
+> >  1 file changed, 143 insertions(+), 66 deletions(-)
+> >
+> > diff --git a/Documentation/arm/marvel.rst b/Documentation/arm/marvel.rst
+> > index 16ab2eb085b86..716551f9b60a1 100644
+> > --- a/Documentation/arm/marvel.rst
+> > +++ b/Documentation/arm/marvel.rst
+> > @@ -18,12 +18,12 @@ Orion family
+> >          - 88F5181L
+> >          - 88F5182
+> >  
+> > -               - Datasheet: http://www.embeddedarm.com/documentation/third-party/MV88F5182-datasheet.pdf
+> > -               - Programmer's User Guide: http://www.embeddedarm.com/documentation/third-party/MV88F5182-opensource-manual.pdf
+> > -               - User Manual: http://www.embeddedarm.com/documentation/third-party/MV88F5182-usermanual.pdf
+> > +               - Datasheet: `MV88F5182-datasheet.pdf`_
+> > +               - Programmer's User Guide: `MV88F5182-opensource-manual.pdf`_
+> > +               - User Manual: `MV88F5182-usermanual.pdf`_
+> >          - 88F5281
+> >  
+> > -               - Datasheet: http://www.ocmodshop.com/images/reviews/networking/qnap_ts409u/marvel_88f5281_data_sheet.pdf
+> > +               - Datasheet: `marvel_88f5281_data_sheet.pdf`_
+> >          - 88F6183
+> >    Core:
+> >  	Feroceon 88fr331 (88f51xx) or 88fr531-vd (88f52xx) ARMv5 compatible
+> > @@ -32,37 +32,42 @@ Orion family
+> >    Linux kernel plat directory:
+> >  	arch/arm/plat-orion
+> >  
+> > +.. _MV88F5182-datasheet.pdf: http://www.embeddedarm.com/documentation/third-party/MV88F5182-datasheet.pdf
+> > +.. _MV88F5182-opensource-manual.pdf: http://www.embeddedarm.com/documentation/third-party/MV88F5182-opensource-manual.pdf
+> > +.. _MV88F5182-usermanual.pdf: http://www.embeddedarm.com/documentation/third-party/MV88F5182-usermanual.pdf
+> > +.. _marvel_88f5281_data_sheet.pdf: http://www.ocmodshop.com/images/reviews/networking/qnap_ts409u/marvel_88f5281_data_sheet.pdf
+> 
+> So I see what you're trying to do, but this has the effect of prettying
+> up the processed docs at the expense of making the plain-text version
+> harder to read.  Somebody who wants to find one of these datasheets from
+> the plain-text version has to skip further down in the file, hoping that
+> they pick out the right one among a set of long, similar URLs.
+> Honestly, I think we may be better off leaving them as they are.
+> Failing that, the right thing to do is to keep the lines defining the
+> URL labels right next to where they are referenced.
+> 
+> See what I'm getting at?
 
-Seems there's no way for user to change this value, do we?
-Or there's work pending to expose it to sysfs?
+Yes. I've been considering the same, but concluded it's a still a better
+idea to move the full URLs below because
 
-Regards,
-Qiang
+1.) at this point the links are broken anyway and the basename is the
+    only valuable part of the URL when looking for an actual document;
+    and the basename stays in place
+2.) the archive.org links that replace them in another patch are waaaay too
+    long even for very large displays
 
-On Thu, Jan 28, 2021 at 3:40 AM Christian Hewitt
-<christianshewitt@gmail.com> wrote:
->
-> This patch adapts the panfrost pre-defined thresholds change [0] to the
-> lima driver to improve real-world performance. The upthreshold value has
-> been set to ramp GPU frequency to max freq faster (compared to panfrost)
-> to compensate for the lower overall performance of utgard devices.
->
-> [0] https://patchwork.kernel.org/project/dri-devel/patch/20210121170445.19761-1-lukasz.luba@arm.com/
->
-> Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
-> ---
-> Change since v1: increased upthreshold from 20 to 30, with a soft
-> dependency on Lukasz delayed timer patch [0]
->
-> [0] https://lore.kernel.org/lkml/20210127105121.20345-1-lukasz.luba@arm.com/
->
->  drivers/gpu/drm/lima/lima_devfreq.c | 10 +++++++++-
->  drivers/gpu/drm/lima/lima_devfreq.h |  2 ++
->  2 files changed, 11 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/lima/lima_devfreq.c b/drivers/gpu/drm/lima/lima_devfreq.c
-> index 5686ad4aaf7c..c9854315a0b5 100644
-> --- a/drivers/gpu/drm/lima/lima_devfreq.c
-> +++ b/drivers/gpu/drm/lima/lima_devfreq.c
-> @@ -163,8 +163,16 @@ int lima_devfreq_init(struct lima_device *ldev)
->         lima_devfreq_profile.initial_freq = cur_freq;
->         dev_pm_opp_put(opp);
->
-> +       /*
-> +        * Setup default thresholds for the simple_ondemand governor.
-> +        * The values are chosen based on experiments.
-> +        */
-> +       ldevfreq->gov_data.upthreshold = 30;
-> +       ldevfreq->gov_data.downdifferential = 5;
-> +
->         devfreq = devm_devfreq_add_device(dev, &lima_devfreq_profile,
-> -                                         DEVFREQ_GOV_SIMPLE_ONDEMAND, NULL);
-> +                                         DEVFREQ_GOV_SIMPLE_ONDEMAND,
-> +                                         &ldevfreq->gov_data);
->         if (IS_ERR(devfreq)) {
->                 dev_err(dev, "Couldn't initialize GPU devfreq\n");
->                 ret = PTR_ERR(devfreq);
-> diff --git a/drivers/gpu/drm/lima/lima_devfreq.h b/drivers/gpu/drm/lima/lima_devfreq.h
-> index 2d9b3008ce77..b0c7c736e81a 100644
-> --- a/drivers/gpu/drm/lima/lima_devfreq.h
-> +++ b/drivers/gpu/drm/lima/lima_devfreq.h
-> @@ -4,6 +4,7 @@
->  #ifndef __LIMA_DEVFREQ_H__
->  #define __LIMA_DEVFREQ_H__
->
-> +#include <linux/devfreq.h>
->  #include <linux/spinlock.h>
->  #include <linux/ktime.h>
->
-> @@ -18,6 +19,7 @@ struct lima_devfreq {
->         struct opp_table *clkname_opp_table;
->         struct opp_table *regulators_opp_table;
->         struct thermal_cooling_device *cooling;
-> +       struct devfreq_simple_ondemand_data gov_data;
->
->         ktime_t busy_time;
->         ktime_t idle_time;
-> --
-> 2.17.1
->
+However, even though I think this is perhaps marginally better, either
+way works for me. Thus, unless you change your mind about it, I'll follow
+up with a v2 that drops this patch and replaces the links in place.
+
+Thank you
+Lubo
+
+> 
+> Thanks,
+> 
+> jon
