@@ -2,144 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B01EA309888
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 22:45:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B13309891
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 23:12:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231855AbhA3VpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 16:45:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46441 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230360AbhA3VpO (ORCPT
+        id S231970AbhA3WIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 17:08:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230168AbhA3WIN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 16:45:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612043027;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KY38Yv3dX+Efk7Jch8wqw9QHlMFgj63ZWy69oyr9HzE=;
-        b=JkF2iYzmiCzpqY+uwOkMKF2YJpGGkGIafksWn+rLC28feeueObnWix4paTdIn2fvOAEigs
-        kBX6cjvd1rruTjimPJPo63aOH77y1Ar3PlHEBm7LIDxtXMh9E1ExKZlAh2ebSuu2lagU/o
-        s87bUeoTkuebMYq+csYWh/iO9h7ZIpE=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-284-aMIfstknPoujNJaYNIRQdw-1; Sat, 30 Jan 2021 16:43:45 -0500
-X-MC-Unique: aMIfstknPoujNJaYNIRQdw-1
-Received: by mail-ej1-f72.google.com with SMTP id le12so5926390ejb.13
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 13:43:45 -0800 (PST)
+        Sat, 30 Jan 2021 17:08:13 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E75C061573
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 14:07:33 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id s15so7824230plr.9
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 14:07:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=/P/b4VQw8CInKf0Exrq1ninzQwAk3br3MdPWZqjCM5w=;
+        b=RnuxL8ThemW1uGFiJS+C2acS9C2US8HUzkp5RgN0kj9o1dwU0VOBcuKG6XOtZssWLQ
+         I3RQ7n3hildS5pk9uJaw188Ax4uVQNBeA8cN7tDqnZUpSmxvM7CwSBF4gHnCXdSvKOFc
+         t+KTIlRo1kTmTIWzbXPph6cQVhQTNtyVtbLmvVi9QVIzzDG+RfDVpGRLjnxerJIByljY
+         GUSp20jDiFJNRUVhpibuvr1hc8VY97QRsVChOp0WFifjy4m1Y5gfDsGkVGM3g/ezfmM3
+         dSgBjkLJdPbem0ZO+HR1WpA8thVwubtjK0L0ppbyzgLhkYbF5WYkycJ4pj+4oWIJO4F5
+         et3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KY38Yv3dX+Efk7Jch8wqw9QHlMFgj63ZWy69oyr9HzE=;
-        b=EVF2G9tp5YJl91D9ePtfNRp7Y85OlzA9aLlJhxLvAwQTBJhBneYrjLwPszB4FsLidf
-         EUI2I5beqSC8cwI7ddy0wLh0TfD8W75Bx3wCtXlam2+iECc9hVDaZB3NnLxnmyRyeF5/
-         UA6V2Am8B0Ct2VKvtVIeDnVDUXAt0X46WzBAj0cgUqCCPlYTXdsfKPyO6mqbqFtcO4wZ
-         4Cyb5/7TaWLD0KG0ewiE0rd9Xw2hhOHabwWsBb8gJ+33KlvUBPXlQuB6a7xIJbzGKYgb
-         IoAgIrBn+VEsC97Ad0BIxTWr2FpONR8OesQYqL6D7JFDo2+V9EYK9av1Zxy6pE68Hhh7
-         SHrQ==
-X-Gm-Message-State: AOAM532buMyPS5n2JCZ91TlEcYLZ4OPlruYZH2oYAcomLtN+lbKhEpZm
-        IblIwJBivvN+SqwK8ktn4hdMtrJpKFU1lPk8xjglbDBUvDmnqUajg1w5rxn4aisX06leSzek6gm
-        +nLgNBAJ29RmIzRCdtPUmJYjG
-X-Received: by 2002:a17:907:1b27:: with SMTP id mp39mr10545765ejc.519.1612043024223;
-        Sat, 30 Jan 2021 13:43:44 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyg+51j/F9EnIRu2VdUBTmnDBB1pmKAFdYpf71MvO6TWqpL5hIeu9lRUlVRlh/pPZAHQgoCNw==
-X-Received: by 2002:a17:907:1b27:: with SMTP id mp39mr10545757ejc.519.1612043024068;
-        Sat, 30 Jan 2021 13:43:44 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
-        by smtp.gmail.com with ESMTPSA id n27sm5805415eje.29.2021.01.30.13.43.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Jan 2021 13:43:43 -0800 (PST)
-Subject: Re: [PATCH] platform/x86: dell-wmi-sysman: fix a NULL pointer
- dereference
-To:     Mario Limonciello <mario.limonciello@dell.com>,
-        Mark Gross <mgross@linux.intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        platform-driver-x86@vger.kernel.org
-References: <20210129172654.2326751-1-mario.limonciello@dell.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <0da9ca30-53b1-8d34-4fc7-62edb6423b26@redhat.com>
-Date:   Sat, 30 Jan 2021 22:43:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=/P/b4VQw8CInKf0Exrq1ninzQwAk3br3MdPWZqjCM5w=;
+        b=eR3dIIaZcCT09O2adYLCnwb44AQ1p7ocM+iVTXPfF3PzuFruUv8QXkGrhth8/G17Xn
+         lzJxBdxZ//LjznYuxGcCJv+SlJvP9VNIh8JujHDmNYxTFpfQV4X0f/hoVMtcjkgnLXe+
+         Pqj1D0z06qfXOdPcYCPRrt9pBVgtF86k1BigVkbuvO8HGCdL6Bc2vtNErmUHMbKr8wMk
+         aEUxwY9AVZTu/yClP+CJN+wQP0BBEqXDfJcJOJL5mGjNpUFDVzQTOP0SP8NFv9B2HWmT
+         B/pWqln5y4wRlll41MB4XdwcwK8fhBmH04q4XXdN3pgnxy31Uff10nvOVBbf96N87x7i
+         p+lA==
+X-Gm-Message-State: AOAM532irNGzTtgwPUT5PTY13fL3AAWHZQu2ysaIs9PoW1YmX+7K5+Ds
+        STrqGyHdLyRdE9uxRhFMGN5iUtcm2JsASg==
+X-Google-Smtp-Source: ABdhPJzF4+1uWzCoKE7IesB3JWQ/9H0IiQv7PngPRUVmqwH3eeUfxC9UjmOq+5lDB4sP8lod17N5aA==
+X-Received: by 2002:a17:90a:9905:: with SMTP id b5mr10339808pjp.195.1612044452393;
+        Sat, 30 Jan 2021 14:07:32 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id b14sm12004292pju.14.2021.01.30.14.07.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Jan 2021 14:07:31 -0800 (PST)
+Date:   Sat, 30 Jan 2021 14:07:30 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+cc:     akpm@linux-foundation.org, mike.kravetz@oracle.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] hugetlbfs: show pagesize in unit of GB if possible
+In-Reply-To: <20210130090339.4378-1-linmiaohe@huawei.com>
+Message-ID: <f5ac7d57-6653-aae-f119-b87d72acf192@google.com>
+References: <20210130090339.4378-1-linmiaohe@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210129172654.2326751-1-mario.limonciello@dell.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sat, 30 Jan 2021, Miaohe Lin wrote:
 
-On 1/29/21 6:26 PM, Mario Limonciello wrote:
-> An upcoming Dell platform is causing a NULL pointer dereference
-> in dell-wmi-sysman initialization.  Validate that the input from
-> BIOS matches correct ACPI types and abort module initialization
-> if it fails.
+> Hugepage size in unit of GB is supported. We could show pagesize in unit of
+> GB to make it more friendly to read. Also rework the calculation code of
+> page size unit to make it more readable.
 > 
-> This leads to a memory leak that needs to be cleaned up properly.
-> 
-> Signed-off-by: Mario Limonciello <mario.limonciello@dell.com>
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 > ---
->  drivers/platform/x86/dell-wmi-sysman/sysman.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
+>  fs/hugetlbfs/inode.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/platform/x86/dell-wmi-sysman/sysman.c b/drivers/platform/x86/dell-wmi-sysman/sysman.c
-> index dc6dd531c996..38b497991071 100644
-> --- a/drivers/platform/x86/dell-wmi-sysman/sysman.c
-> +++ b/drivers/platform/x86/dell-wmi-sysman/sysman.c
-> @@ -419,13 +419,19 @@ static int init_bios_attributes(int attr_type, const char *guid)
->  		return retval;
->  	/* need to use specific instance_id and guid combination to get right data */
->  	obj = get_wmiobj_pointer(instance_id, guid);
-> -	if (!obj)
-> +	if (!obj || obj->type != ACPI_TYPE_PACKAGE) {
-> +		release_attributes_data();
-
-All calls of  init_bios_attributes() have the following error handling:
-
-        ret = init_bios_attributes(INT, DELL_WMI_BIOS_INTEGER_ATTRIBUTE_GUID);
-        if (ret) {
-                pr_debug("failed to populate integer type attributes\n");
-                goto fail_create_group;
-        }
-
-	...
-
-fail_create_group:
-        release_attributes_data();
-
-So that added release_attributes_data() call is not necessary. If you can respin
-this patch Monday with the release_attributes_data(); addition dropped, then
-I will try to get this to Linus in time for 5.11 .
-
-Or I can fix this up locally if you agree with dropping the unnecessary
-release_attributes_data() call.
-
-Regards,
-
-Hans
-
-
-
-
->  		return -ENODEV;
-> +	}
->  	elements = obj->package.elements;
+> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+> index 3a08fbae3b53..40a9795f250a 100644
+> --- a/fs/hugetlbfs/inode.c
+> +++ b/fs/hugetlbfs/inode.c
+> @@ -1014,11 +1014,15 @@ static int hugetlbfs_show_options(struct seq_file *m, struct dentry *root)
+>  	if (sbinfo->max_inodes != -1)
+>  		seq_printf(m, ",nr_inodes=%lu", sbinfo->max_inodes);
 >  
->  	mutex_lock(&wmi_priv.mutex);
->  	while (elements) {
->  		/* sanity checking */
-> +		if (elements[ATTR_NAME].type != ACPI_TYPE_STRING) {
-> +			pr_debug("incorrect element type\n");
-> +			goto nextobj;
-> +		}
->  		if (strlen(elements[ATTR_NAME].string.pointer) == 0) {
->  			pr_debug("empty attribute found\n");
->  			goto nextobj;
-> 
+> -	hpage_size /= 1024;
+> -	mod = 'K';
+> -	if (hpage_size >= 1024) {
+> -		hpage_size /= 1024;
+> +	if (hpage_size >= SZ_1G) {
+> +		hpage_size /= SZ_1G;
+> +		mod = 'G';
+> +	} else if (hpage_size >= SZ_1M) {
+> +		hpage_size /= SZ_1M;
+>  		mod = 'M';
+> +	} else {
+> +		hpage_size /= SZ_1K;
+> +		mod = 'K';
+>  	}
+>  	seq_printf(m, ",pagesize=%lu%c", hpage_size, mod);
+>  	if (spool) {
 
+NACK, this can break existing userspace parsing.
