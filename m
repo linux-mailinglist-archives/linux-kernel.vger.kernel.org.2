@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62EF73093E5
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 11:01:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7F03093F4
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 11:06:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231704AbhA3KBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 05:01:32 -0500
-Received: from mga14.intel.com ([192.55.52.115]:44020 "EHLO mga14.intel.com"
+        id S232098AbhA3KFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 05:05:00 -0500
+Received: from mga06.intel.com ([134.134.136.31]:41434 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233199AbhA3Crm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 21:47:42 -0500
-IronPort-SDR: Vevev0fi7ZEPM0yRY9JFccASA8/7i1YOd2HjkCXfoQ5dne9HTXd+2M5tEdKaNMY6GCvqttgtDL
- +1ZV4c+ItEJA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="179729138"
+        id S233228AbhA3Crl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 21:47:41 -0500
+IronPort-SDR: TBl9DU/dPLY6pKA7U670KyLSN6hjr47x0vZEO7lhZsTQyZ6ggpRrdswOUKCtR7VtPLfkZLdQFE
+ QJLkkmLcp9+w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="242028051"
 X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="179729138"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:30 -0800
-IronPort-SDR: rBRZ00SiIBRVs5hCP1SfckRWOc/9DHE7pD91SpC/g/l4DYMkQtryGgFR4MxjkrjmasXcIIyGKJ
- qpwrzf2mzreA==
+   d="scan'208";a="242028051"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:30 -0800
+IronPort-SDR: 9I4CbpaOfDBF2Z3lbsA/E3ju+8ahAn5nNAEKQcaz2wZsRFe57p/kHM1CLvjoegUSBoyNAtCLjQ
+ /xXFLn1uC4tg==
 X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="389569480"
+   d="scan'208";a="354867503"
 Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:30 -0800
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:29 -0800
 Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id 7CCB4636B;
+        by smtp.ostc.intel.com (Postfix) with ESMTP id 917E0636B;
         Fri, 29 Jan 2021 18:21:30 -0800 (PST)
 Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
-        id 6CF04363696; Fri, 29 Jan 2021 18:21:30 -0800 (PST)
+        id 8140E36369F; Fri, 29 Jan 2021 18:21:30 -0800 (PST)
 From:   mgross@linux.intel.com
 To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
@@ -37,10 +37,11 @@ To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
         jassisinghbrar@gmail.com
 Cc:     linux-kernel@vger.kernel.org,
-        "Li, Tingqian" <tingqian.li@intel.com>, devicetree@vger.kernel.org
-Subject: [PATCH v4 24/34] dt-bindings: misc: Add Keem Bay vpumgr
-Date:   Fri, 29 Jan 2021 18:21:14 -0800
-Message-Id: <20210130022124.65083-60-mgross@linux.intel.com>
+        "C, Udhayakumar" <udhayakumar.c@intel.com>,
+        devicetree@vger.kernel.org
+Subject: [PATCH v4 26/34] dt-bindings: misc: intel_tsens: Add tsens thermal bindings documentation
+Date:   Fri, 29 Jan 2021 18:21:16 -0800
+Message-Id: <20210130022124.65083-62-mgross@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210130022124.65083-1-mgross@linux.intel.com>
 References: <20210130022124.65083-1-mgross@linux.intel.com>
@@ -48,73 +49,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Li, Tingqian" <tingqian.li@intel.com>
+From: "C, Udhayakumar" <udhayakumar.c@intel.com>
 
-  Add DT binding schema for VPU on Keem Bay ASoC platform
+Add device tree bindings for local host thermal sensors
+Intel Edge.AI Computer Vision platforms.
+
+The tsens module enables reading of on chip sensors present
+in the Intel Bay series SoC. In the tsens module various junction
+temperature and SoC temperature are reported using thermal subsystem
+and i2c subsystem.
+
+Temperature data reported using thermal subsystem will be used for
+various cooling agents such as DVFS, fan control and shutdown the
+system in case of critical temperature.
+
+Temperature data reported using i2c subsytem will be used by
+platform manageability software running in remote host.
 
 Cc: Rob Herring <robh+dt@kernel.org>
 Cc: devicetree@vger.kernel.org
-Signed-off-by: Li Tingqian <tingqian.li@intel.com>
+Acked-by: mark gross <mgross@linux.intel.com>
+Signed-off-by: C Udhayakumar <udhayakumar.c@intel.com>
 Signed-off-by: Mark Gross <mgross@linux.intel.com>
 ---
- .../bindings/misc/intel,keembay-vpu-mgr.yaml  | 48 +++++++++++++++++++
- 1 file changed, 48 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/misc/intel,keembay-vpu-mgr.yaml
+ .../bindings/misc/intel,intel-tsens.yaml      | 118 ++++++++++++++++++
+ 1 file changed, 118 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/misc/intel,intel-tsens.yaml
 
-diff --git a/Documentation/devicetree/bindings/misc/intel,keembay-vpu-mgr.yaml b/Documentation/devicetree/bindings/misc/intel,keembay-vpu-mgr.yaml
+diff --git a/Documentation/devicetree/bindings/misc/intel,intel-tsens.yaml b/Documentation/devicetree/bindings/misc/intel,intel-tsens.yaml
 new file mode 100644
-index 000000000000..a44f492277ab
+index 000000000000..2418355d9c47
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/misc/intel,keembay-vpu-mgr.yaml
-@@ -0,0 +1,48 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+# Copyright (C) 2020 Intel
++++ b/Documentation/devicetree/bindings/misc/intel,intel-tsens.yaml
+@@ -0,0 +1,118 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/misc/intel,keembay-vpu-mgr.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++$id: "http://devicetree.org/schemas/misc/intel,intel-tsens.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 +
-+title: Intel VPU manager bindings
++title: Intel Temperature sensors in Bay series
 +
 +maintainers:
-+  - Li, Tingqian <tingqian.li@intel.com>
-+  - Zhou, Luwei <luwei.zhou@intel.com>
++  - Udhayakumar C <udhayakumar.c@intel.com>
 +
 +description: |
-+  The Intel VPU manager provides shared memory and process
-+  depedent context management for Intel VPU hardware IP.
++  The tsens driver enables reading of onchip sensors present
++  in the Intel Bay SoC.
++  Each subnode of the tsens represents sensors available
++  on the soc.
++
++select: false
 +
 +properties:
 +  compatible:
 +    items:
-+      - enum:
-+          - intel,keembay-vpu-mgr
-+          - intel,keembay-vpusmm
++      - const: intel,intel-tsens
 +
-+  memory-region:
-+    description:
-+      phandle to a node describing reserved memory (System RAM memory)
-+      used by VPU (see bindings/reserved-memory/reserved-memory.txt)
-+    maxItems: 1
++  plat_name:
++    contains:
++      enum:
++        - intel,keembay_thermal
 +
-+  intel,keembay-vpu-ipc-id:
-+    $ref: /schemas/types.yaml#/definitions/uint32
++  reg:
++    minItems: 1
++    maxItems: 2
++
++  clocks:
++    items:
++      - description: thermal sensor clock
++
++  clk-rate:
++    additionalItems: false
++    items:
++      - description: thermal sensor clock freq
++
++  sensor_name:
++    type: object
 +    description:
-+      the index of the VPU slice to be managed. Default is 0.
++      Details to configure sensor trip points and its types.
++
++    properties:
++      passive_delay:
++        minItems: 1
++        maxItems: 1
++        description: number of milliseconds to wait between polls when
++                     performing passive cooling
++
++      polling_delay:
++        minItems: 1
++        maxItems: 1
++        description: number of milliseconds to wait between polls when checking
++                     whether trip points have been crossed (0 for interrupt
++                     driven systems)
++
++      trip_temp:
++        minItems: 1
++        description: temperature for trip points
++
++      trip_type:
++        minItems: 1
++        description: trip type list for trip points
++
++    required:
++      - passive_delay
++      - polling_delay
++      - trip_temp
++      - trip_type
 +
 +required:
 +  - compatible
-+  - memory-region
 +
 +additionalProperties: false
 +
 +examples:
 +  - |
-+    vpumgr0 {
-+        compatible = "intel,keembay-vpu-mgr";
-+        memory-region = <&vpu_reserved>;
-+        intel,keembay-vpu-ipc-id = <0x0>;
-+    };
++    tsens: tsens@20260000 {
++        compatible = "intel,intel-tsens";
++        status = "disabled";
++        plat_name = "intel,keembay_thermal";
++        reg = <0x0 0x20260000 0x0 0x100>;
++        clocks = <&scmi_clk>;
++        clk-rate = <1250000>;
++
++        mss {
++                passive_delay = <1000>;
++                polling_delay = <2000>;
++                trip_temp = <40000 80000 1000000>;
++                trip_type = "passive", "passive", "critical";
++        };
++
++        css {
++                passive_delay = <1000>;
++                polling_delay = <2000>;
++                trip_temp = <40000 80000 1000000>;
++                trip_type = "passive", "passive", "critical";
++        };
++
++        nce {
++                passive_delay = <1000>;
++                polling_delay = <2000>;
++                trip_temp = <40000 80000 1000000>;
++                trip_type = "passive", "passive", "critical";
++        };
++
++        soc {
++                passive_delay = <1000>;
++                polling_delay = <2000>;
++                trip_temp = <40000 80000 1000000>;
++                trip_type = "passive", "passive", "critical";
++        };
++     };
 -- 
 2.17.1
 
