@@ -2,64 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C0F130982C
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 21:09:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80D8F30982E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 21:09:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231882AbhA3UIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 15:08:21 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:40468 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231386AbhA3UIU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 15:08:20 -0500
-Received: from ironmsg08-lv.qualcomm.com ([10.47.202.152])
-  by alexa-out.qualcomm.com with ESMTP; 30 Jan 2021 12:07:39 -0800
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg08-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 30 Jan 2021 12:07:38 -0800
-X-QCInternal: smtphost
-Received: from mdalam-linux.qualcomm.com ([10.201.2.71])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 31 Jan 2021 01:37:19 +0530
-Received: by mdalam-linux.qualcomm.com (Postfix, from userid 466583)
-        id 1C76821C96; Sun, 31 Jan 2021 01:37:19 +0530 (IST)
-From:   Md Sadre Alam <mdalam@codeaurora.org>
-To:     miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        boris.brezillon@collabora.com, manivannan.sadhasivam@linaro.org,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     mdalam@codeaurora.org, sricharan@codeaurora.org
-Subject: [PATCH] mtd: rawnand: qcom: Update register macro name for 0x2c offset
-Date:   Sun, 31 Jan 2021 01:37:16 +0530
-Message-Id: <1612037236-7954-1-git-send-email-mdalam@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S232016AbhA3UIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 15:08:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49454 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231969AbhA3UIf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 15:08:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 011D664E0A;
+        Sat, 30 Jan 2021 20:07:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612037273;
+        bh=x8Crvp4hO+MM9PupNownbjZAszD9knrYm8r8VHGpIyg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bO70FB5lVgx3qlTuLEPcVZgMlgcS6RPoLGDL4So53PwufFvm0JIYhxds04lQcg532
+         +Lw9bpsuOtw51MkSml+oVgkYw3kmrKmspB4x8bwjcXoBu18E6/ZfBiqMB2zQDrE0zX
+         ozOiPMKmVugPc5jjJNA5tyNJflctqdtRK5YHnbPhQz/LyZXazwJVstnLItyZnRK3dG
+         HsNn/rfTZSwSH1T7X3YKnn9AKII6mIgugXNprZ68U6UAUFr6J7pFl6to88UvfbUVyy
+         CoB9H0Yq8jA/GcR8ddROnJ5hA89MySyEnZ7jIRoAAw6nvxe93Ip/QWv8p2wHJI7hPp
+         EuybGWY1ZRPrQ==
+Date:   Sat, 30 Jan 2021 13:07:51 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Helen Koike <helen.koike@collabora.com>, kbuild-all@lists.01.org,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, Tomasz Figa <tfiga@chromium.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from
+ `drivers/media/platform/rockchip/rkisp1/rkisp1-capture.o' being placed in
+ section `.eh_frame'
+Message-ID: <20210130200751.GA2853543@localhost>
+References: <202101310313.LdtIZjU6-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202101310313.LdtIZjU6-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change will remove unused register name macro NAND_DEV1_ECC_CFG.
-Since this register was only available in QPIC version 1.4.20 ipq40xx
-and it was not used. In QPIC version 1.5 on wards this register got
-removed.In QPIC version 2.0 0x2c offset is updated with register
-NAND_AUTO_STATUS_EN So adding this register macro NAND_AUTO_STATUS_EN
-with offset 0x2c.
+On Sun, Jan 31, 2021 at 03:52:15AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   0e9bcda5d286f4a26a5407bb38f55c55b453ecfb
+> commit: e6938cc1cb7763a363f62b78147f1f2fb972f49c media: rockchip: rkisp1: destage Rockchip ISP1 driver
+> date:   3 months ago
+> config: arm64-randconfig-r013-20210130 (attached as .config)
+> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 275c6af7d7f1ed63a03d05b4484413e447133269)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install arm64 cross compiling tool for clang build
+>         # apt-get install binutils-aarch64-linux-gnu
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=e6938cc1cb7763a363f62b78147f1f2fb972f49c
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout e6938cc1cb7763a363f62b78147f1f2fb972f49c
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/input/input.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/input/input-compat.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/input/input-mt.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/input/input-poller.o' being placed in section `.eh_frame'
 
-Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
----
- drivers/mtd/nand/raw/qcom_nandc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+https://lore.kernel.org/lkml/20210130004650.2682422-1-nathan@kernel.org/
 
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index 9484be8..c238a35 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -27,7 +27,7 @@
- #define	NAND_DEV0_CFG0			0x20
- #define	NAND_DEV0_CFG1			0x24
- #define	NAND_DEV0_ECC_CFG		0x28
--#define	NAND_DEV1_ECC_CFG		0x2c
-+#define	NAND_AUTO_STATUS_EN		0x2c
- #define	NAND_DEV1_CFG0			0x30
- #define	NAND_DEV1_CFG1			0x34
- #define	NAND_READ_ID			0x40
--- 
-2.7.4
-
+Cheers,
+Nathan
