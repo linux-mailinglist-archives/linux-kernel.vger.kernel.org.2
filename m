@@ -2,150 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF4F6309319
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:17:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FCA8309352
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:25:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbhA3JQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 04:16:03 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11990 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231923AbhA3JNC (ORCPT
+        id S231682AbhA3JZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 04:25:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231547AbhA3JWL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 04:13:02 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DSQFX2GC1zjGPY;
-        Sat, 30 Jan 2021 15:05:04 +0800 (CST)
-Received: from localhost.localdomain.localdomain (10.175.113.25) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 30 Jan 2021 15:06:12 +0800
-From:   Chen Zhou <chenzhou10@huawei.com>
-To:     <mingo@redhat.com>, <tglx@linutronix.de>, <rppt@kernel.org>,
-        <dyoung@redhat.com>, <bhe@redhat.com>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <nsaenzjulienne@suse.de>, <corbet@lwn.net>,
-        <John.P.donnelly@oracle.com>, <bhsharma@redhat.com>,
-        <prabhakar.pkin@gmail.com>
-CC:     <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
-        <james.morse@arm.com>, <xiexiuqi@huawei.com>,
-        <guohanjun@huawei.com>, <huawei.libin@huawei.com>,
-        <wangkefeng.wang@huawei.com>, <chenzhou10@huawei.com>,
-        <linux-doc@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
-        John Donnelly <John.p.donnelly@oracle.com>
-Subject: [PATCH v14 11/11] kdump: update Documentation about crashkernel
-Date:   Sat, 30 Jan 2021 15:10:25 +0800
-Message-ID: <20210130071025.65258-12-chenzhou10@huawei.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210130071025.65258-1-chenzhou10@huawei.com>
-References: <20210130071025.65258-1-chenzhou10@huawei.com>
+        Sat, 30 Jan 2021 04:22:11 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55B1CC061793
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 23:13:29 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id c2so13105197edr.11
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 23:13:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=1pLTWXoNtezrbyauA2L/M3lflfYp3KQIjDaYKHQ2k4Y=;
+        b=y8bJwe5T9FuD1M7gf09Kj7XxK1wrd/813kU57UJnzD7j8NUV4e5/mGZTyD58MWAKhG
+         hAuMDpiBAmbJouZK7U38GsRzQqqheOY89QtZ5aN5EtDztz6fhc0sSOBNp0EncZXUt0jf
+         5MoGMj+rjEJVloDfBEzDFU0C2u3/2R+AEX/pdNheVY/jBBlK+zmdsjVkuogL+Kw7Z+U6
+         T8wFquQKXjcVnVEbuq6UC+9PW3dkfFJxE3uGgynj1g42Y9SF6mLnH0Alac4pj18dNc5f
+         MrKTcVNVzCFNjm1jzrzT3u7qWg75PWezfkOOnWxBSICpm54ouy9rNsEJRCio8u1irRZ/
+         88zA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1pLTWXoNtezrbyauA2L/M3lflfYp3KQIjDaYKHQ2k4Y=;
+        b=frG3Qd4mFAzqFKlCojH33BXNQuoNGaDg9fCTCeWm6cI58r0NOLPTZSCWUja0uLNnME
+         Qzy7CP5ugH1muZ6rWnHoxMihHz3oZNDMI/WYUiBnqAOPCmo3tgInks59DMRa9S5xtTWd
+         zDOCDp3IduY3MmcC1kZOJbIRU2hNGpqxjGbS3B651zmhODj8fXS/0tupmLM4zJg29G7r
+         zcRLSpVPNvcvZnRDBYnCABNzmYYo72j7ZV3xF4SLSWbKC4OVzmff2Ta8pfRnj1ZWCLJG
+         XNPGteDkDUF7pXnKvIPP3bJV31BbzUORB6HWjLFnm70haGNo9iIYf+bzRWH2i3dL6vYX
+         GJYA==
+X-Gm-Message-State: AOAM530O6YreFo9yRAznrpFOhScErvTGSXJXXnQbEDv2ziQoxka6DpnP
+        d2C6HaCj7cz/0mGLyIhSCt3pTq4+PbjISfYegRvatw==
+X-Google-Smtp-Source: ABdhPJxNLs7StWw586XQu0YpUsIYwDIq2EX8qB5QaannXsyOx7gClFtRhlQdxAg+eBWbrevkieK5GnI1nDX7nIx9tuk=
+X-Received: by 2002:aa7:c384:: with SMTP id k4mr8845680edq.23.1611990807777;
+ Fri, 29 Jan 2021 23:13:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.113.25]
-X-CFilter-Loop: Reflected
+References: <20210129105909.630107942@linuxfoundation.org>
+In-Reply-To: <20210129105909.630107942@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 30 Jan 2021 12:43:16 +0530
+Message-ID: <CA+G9fYtT+ZpRtyXAe1DJHhFobDJDuNo8zg27xeHUN5RR8QuM9A@mail.gmail.com>
+Subject: Re: [PATCH 4.4 00/24] 4.4.254-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For arm64, the behavior of crashkernel=X has been changed, which
-tries low allocation in DMA zone and fall back to high allocation
-if it fails.
+On Fri, 29 Jan 2021 at 16:40, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.4.254 release.
+> There are 24 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 31 Jan 2021 10:59:01 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.4.254-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-We can also use "crashkernel=X,high" to select a high region above
-DMA zone, which also tries to allocate at least 256M low memory in
-DMA zone automatically and "crashkernel=Y,low" can be used to allocate
-specified size low memory.
 
-So update the Documentation.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-Tested-by: John Donnelly <John.p.donnelly@oracle.com>
----
- Documentation/admin-guide/kdump/kdump.rst     | 22 ++++++++++++++++---
- .../admin-guide/kernel-parameters.txt         | 11 ++++++++--
- 2 files changed, 28 insertions(+), 5 deletions(-)
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
-index 75a9dd98e76e..0877c76f8015 100644
---- a/Documentation/admin-guide/kdump/kdump.rst
-+++ b/Documentation/admin-guide/kdump/kdump.rst
-@@ -299,7 +299,16 @@ Boot into System Kernel
-    "crashkernel=64M@16M" tells the system kernel to reserve 64 MB of memory
-    starting at physical address 0x01000000 (16MB) for the dump-capture kernel.
- 
--   On x86 and x86_64, use "crashkernel=64M@16M".
-+   On x86 use "crashkernel=64M@16M".
-+
-+   On x86_64, use "crashkernel=X" to select a region under 4G first, and
-+   fall back to reserve region above 4G. And go for high allocation
-+   directly if the required size is too large.
-+   We can also use "crashkernel=X,high" to select a region above 4G, which
-+   also tries to allocate at least 256M below 4G automatically and
-+   "crashkernel=Y,low" can be used to allocate specified size low memory.
-+   Use "crashkernel=Y@X" if you really have to reserve memory from specified
-+   start address X.
- 
-    On ppc64, use "crashkernel=128M@32M".
- 
-@@ -316,8 +325,15 @@ Boot into System Kernel
-    kernel will automatically locate the crash kernel image within the
-    first 512MB of RAM if X is not given.
- 
--   On arm64, use "crashkernel=Y[@X]".  Note that the start address of
--   the kernel, X if explicitly specified, must be aligned to 2MiB (0x200000).
-+   On arm64, use "crashkernel=X" to try low allocation in DMA zone and
-+   fall back to high allocation if it fails.
-+   We can also use "crashkernel=X,high" to select a high region above
-+   DMA zone, which also tries to allocate at least 256M low memory in
-+   DMA zone automatically.
-+   "crashkernel=Y,low" can be used to allocate specified size low memory.
-+   Use "crashkernel=Y@X" if you really have to reserve memory from
-+   specified start address X. Note that the start address of the kernel,
-+   X if explicitly specified, must be aligned to 2MiB (0x200000).
- 
- Load the Dump-capture Kernel
- ============================
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index a10b545c2070..908e5c8b61ba 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -738,6 +738,9 @@
- 			[KNL, X86-64] Select a region under 4G first, and
- 			fall back to reserve region above 4G when '@offset'
- 			hasn't been specified.
-+			[KNL, arm64] Try low allocation in DMA zone and fall back
-+			to high allocation if it fails when '@offset' hasn't been
-+			specified.
- 			See Documentation/admin-guide/kdump/kdump.rst for further details.
- 
- 	crashkernel=range1:size1[,range2:size2,...][@offset]
-@@ -754,6 +757,8 @@
- 			Otherwise memory region will be allocated below 4G, if
- 			available.
- 			It will be ignored if crashkernel=X is specified.
-+			[KNL, arm64] range in high memory.
-+			Allow kernel to allocate physical memory region from top.
- 	crashkernel=size[KMG],low
- 			[KNL, X86-64] range under 4G. When crashkernel=X,high
- 			is passed, kernel could allocate physical memory region
-@@ -762,13 +767,15 @@
- 			requires at least 64M+32K low memory, also enough extra
- 			low memory is needed to make sure DMA buffers for 32-bit
- 			devices won't run out. Kernel would try to allocate at
--			at least 256M below 4G automatically.
-+			least 256M below 4G automatically.
- 			This one let user to specify own low range under 4G
- 			for second kernel instead.
- 			0: to disable low allocation.
- 			It will be ignored when crashkernel=X,high is not used
- 			or memory reserved is below 4G.
--
-+			[KNL, arm64] range in low memory.
-+			This one let user to specify a low range in DMA zone for
-+			crash dump kernel.
- 	cryptomgr.notests
- 			[KNL] Disable crypto self-tests
- 
--- 
-2.20.1
+Summary
+------------------------------------------------------------------------
 
+kernel: 4.4.254-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.4.y
+git commit: a1b3543d6297bec490fac84f5c93f620ba4234aa
+git describe: v4.4.253-25-ga1b3543d6297
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.4.=
+y/build/v4.4.253-25-ga1b3543d6297
+
+
+No regressions (compared to build v4.4.253-21-g39d0697414c5)
+
+No fixes (compared to build v4.4.253-21-g39d0697414c5)
+
+Ran 18438 total tests in the following environments and test suites.
+
+Environments
+--------------
+- i386
+- juno-r2 - arm64
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- x15 - arm
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* network-basic-tests
+* v4l2-compliance
+* kvm-unit-tests
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-mm-tests
+* ltp-open-posix-tests
+* ltp-tracing-tests
+* ltp-syscalls-tests
+* ltp-controllers-tests
+* install-android-platform-tools-r2600
+* perf
+* fwts
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.4.254-rc1
+git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
+git tag: 4.4.254-rc1-hikey-20210129-909
+git commit: 1ed9a45adbcf3362d6299d7d9eb26d2fecc1f76f
+git describe: 4.4.254-rc1-hikey-20210129-909
+Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
+-oe/build/4.4.254-rc1-hikey-20210129-909
+
+No regressions (compared to build 4.4.254-rc1-hikey-20210125-907)
+
+No fixes (compared to build 4.4.254-rc1-hikey-20210125-907)
+
+Ran 1721 total tests in the following environments and test suites.
+
+Environments
+--------------
+- hi6220-hikey - arm64
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* spectre-meltdown-checker-test
+* v4l2-compliance
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
