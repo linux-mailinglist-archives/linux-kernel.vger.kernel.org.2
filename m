@@ -2,89 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ABAA3093EE
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 11:04:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5263093DE
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 11:01:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231929AbhA3KEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 05:04:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47714 "EHLO mail.kernel.org"
+        id S232051AbhA3J7y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 04:59:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232101AbhA3KDy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 05:03:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5FB1B64E17;
-        Sat, 30 Jan 2021 02:30:08 +0000 (UTC)
+        id S232053AbhA3J7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 04:59:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DE0464E1A;
+        Sat, 30 Jan 2021 02:31:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611973808;
-        bh=Xbb7K2Whr/O6pjP/NOiETYUVAbM8QLWnNs8zvXZX7cM=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=HFXZ7N8BfZawNHRKgv6ihthx5Y7acTONT53xjw5uF3onxHOvaaCB4NADZog4I+NtP
-         93pn3DOykFkuS167YSMGL0ZPXJsHqXnCbRqTK3I4k4XVQSCSJid1/ZJ9JG4KKUiovm
-         V8pQlKTwuIY/gvKELk4SwHZQr+xPiE5uoI8b/2a5rnWFMlAvVIyE2fJuUFe0wlH+ga
-         leFHtiDitO5Jnemxosxrq7oSKAabQgCVrTzBfn2GxUOdHMYp5R8oUNW6V8fituNVtD
-         /KK1ZHcXQ/71Fu5xbNQQHrHjA+fiFJhgM5lp93K7857nnjsIss4VQLWHaAF9AQ81g8
-         WZKpVUC8Ld50A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 547AF6095B;
-        Sat, 30 Jan 2021 02:30:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1611973892;
+        bh=cGf3iJ+ecwtb9Ubl0TlE4VdI62kqOG/SRgvcxfXZejg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Wyotr9H9B00UJUKheIXtljvx8UCaT02HI/9TZ//h3FJLuKKoSlXIoUT4dm6LRRuVv
+         AUVjtQBdvXqMf4nJUiAd8k1d8TkppgzKPcKYBIq527jRWD3XHIy0fiJkEkxNZthJvx
+         3YD6JzlBY2rtZOnwnxCqjZYRG3Tp9Iz5+9HEbe3615xDxhTdjSuGf9yxlvpeK5zzmO
+         D4fPKYi/j0h0Urv7ObZS28fLIdKiQL90fnnAcGF9W2dFqKpeV5tNQ+h8miISEY0PSP
+         NEFeNtttgTEBEGpKv4rAQDR1NI7PhXdj4rbOefks8jgfQ61g1GQ/k+Y4dxmeqiybEk
+         Yu2M65T9m2x7w==
+Date:   Fri, 29 Jan 2021 18:30:51 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        "David S. Miller" <davem@davemloft.net>,
+        David Rientjes <rientjes@google.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v2 net-next 1/4] mm: constify page_is_pfmemalloc()
+ argument
+Message-ID: <20210129183051.62874a6d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210127201031.98544-2-alobakin@pm.me>
+References: <20210127201031.98544-1-alobakin@pm.me>
+        <20210127201031.98544-2-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v4 0/2] Add nci suit and virtual nci device driver
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161197380834.28728.3903121798375057144.git-patchwork-notify@kernel.org>
-Date:   Sat, 30 Jan 2021 02:30:08 +0000
-References: <20210127130829.4026-1-bongsu.jeon@samsung.com>
-In-Reply-To: <20210127130829.4026-1-bongsu.jeon@samsung.com>
-To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
-Cc:     kuba@kernel.org, shuah@kernel.org, krzk@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-nfc@lists.01.org, linux-kselftest@vger.kernel.org,
-        bongsu.jeon@samsung.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
-
-This series was applied to netdev/net-next.git (refs/heads/master):
-
-On Wed, 27 Jan 2021 22:08:27 +0900 you wrote:
-> From: Bongsu Jeon <bongsu.jeon@samsung.com>
+On Wed, 27 Jan 2021 20:11:01 +0000 Alexander Lobakin wrote:
+> The function only tests for page->index, so its argument should be
+> const.
 > 
-> 1/2 is the Virtual NCI device driver.
-> 2/2 is the NCI selftest suite
+> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> ---
+>  include/linux/mm.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> v4:
->  1/2
->  - flip the condition for the ioctl.
->  - refactor some code.
->  - remove the unused function after refactoring.
-> v3:
->  1/2
->  - change the Kconfig help comment.
->  - remove the mutex init code.
->  - remove the unnecessary mutex(nci_send_mutex).
->  - remove the full_txbuff.
->  - add the code to release skb at error case.
->  - refactor some code.
-> v2:
->  1/2
->  - change the permission of the Virtual NCI device.
->  - add the ioctl to find the nci device index.
->  2/2
->  - add the NCI selftest suite.
-> 
-> [...]
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index ecdf8a8cd6ae..078633d43af9 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1584,7 +1584,7 @@ struct address_space *page_mapping_file(struct page *page);
+>   * ALLOC_NO_WATERMARKS and the low watermark was not
+>   * met implying that the system is under some pressure.
+>   */
+> -static inline bool page_is_pfmemalloc(struct page *page)
+> +static inline bool page_is_pfmemalloc(const struct page *page)
+>  {
+>  	/*
+>  	 * Page index cannot be this large so this must be
 
-Here is the summary with links:
-  - [net-next,v4,1/2] nfc: Add a virtual nci device driver
-    https://git.kernel.org/netdev/net-next/c/e624e6c3e777
-  - [net-next,v4,2/2] selftests: Add nci suite
-    https://git.kernel.org/netdev/net-next/c/f595cf1242f3
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+No objections for this going via net-next?
