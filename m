@@ -2,150 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5AD3093BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:53:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B17ED3093B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231796AbhA3JvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 04:51:03 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:11915 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233262AbhA3DCI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 22:02:08 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DSJnq6wzSzjDkH;
-        Sat, 30 Jan 2021 10:59:11 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.220) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Sat, 30 Jan 2021
- 11:00:03 +0800
-Subject: Re: [PATCH v5 4/4] ARM: Add support for Hisilicon Kunpeng L3 cache
- controller
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-CC:     devicetree <devicetree@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "Haojian Zhuang" <haojian.zhuang@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Russell King <rmk+kernel@arm.linux.org.uk>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-References: <20210116032740.873-1-thunder.leizhen@huawei.com>
- <20210116032740.873-5-thunder.leizhen@huawei.com>
- <CAK8P3a1OqUn5A4F4hT4K=bzQwJuifVFZkvFoK6NMg+m9FjoKzw@mail.gmail.com>
- <20dac713-25b7-cddf-cc42-69a834487c71@huawei.com>
- <CAK8P3a3Hj0Hyc8mVdGYhB7AEuHCYbhGxHnhNk1xWonEmxZOxRw@mail.gmail.com>
- <CAK8P3a1j+mr3bCp2uCuuYzW0ygjTmGv9vELuNy7v-iQ=WoDMOw@mail.gmail.com>
- <6c4d3650-0040-06d4-4342-79392738877b@huawei.com>
-Message-ID: <cfec45df-b14e-3768-e22e-3585c8c8bab0@huawei.com>
-Date:   Sat, 30 Jan 2021 11:00:02 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S232064AbhA3Jth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 04:49:37 -0500
+Received: from mga01.intel.com ([192.55.52.88]:47571 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233324AbhA3DDH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 22:03:07 -0500
+IronPort-SDR: gyvrUS7eTgmBlCoKH6CvmDtaFFLTYQvoinMmf6di4TTOpgqzzffqD/UiIymslTik9juygwP9gy
+ DqzHW6Z42t4Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="199360067"
+X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
+   d="scan'208";a="199360067"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 19:00:58 -0800
+IronPort-SDR: dv3SZExTmS40Bf0f/fm7IPUYwItnOjxkQaqzsKTDHCoT11S3zc2XL+iPhUjIaITTSI2IyOIT/C
+ iLvBjuWlMXcQ==
+X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
+   d="scan'208";a="431275930"
+Received: from zhiyuanh-mobl.ccr.corp.intel.com (HELO localhost) ([10.249.169.213])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 19:00:54 -0800
+Date:   Sat, 30 Jan 2021 11:00:52 +0800
+From:   Yu Zhang <yu.c.zhang@linux.intel.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yu Zhang <yu.c.zhang@intel.com>
+Subject: Re: [PATCH] KVM: x86/mmu: Remove the defunct update_pte() paging hook
+Message-ID: <20210130030052.dfktlebfrurkxqov@linux.intel.com>
+References: <20210115004051.4099250-1-seanjc@google.com>
 MIME-Version: 1.0
-In-Reply-To: <6c4d3650-0040-06d4-4342-79392738877b@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210115004051.4099250-1-seanjc@google.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks a lot for the patch, Sean.
 
+I know this has been queued for quite a while. But I just realized I have
+another question of kvm_mmu_pte_write():
 
-On 2021/1/29 21:54, Leizhen (ThunderTown) wrote:
+> Remove the update_pte() shadow paging logic, which was obsoleted by
+> commit 4731d4c7a077 ("KVM: MMU: out of sync shadow core"), but never
+> removed.  As pointed out by Yu, KVM never write protects leaf page
+> tables for the purposes of shadow paging, and instead marks their
+> associated shadow page as unsync so that the guest can write PTEs at
+> will.
 > 
+> The update_pte() path, which predates the unsync logic, optimizes COW
+> scenarios by refreshing leaf SPTEs when they are written, as opposed to
+> zapping the SPTE, restarting the guest, and installing the new SPTE on
+> the subsequent fault.  Since KVM no longer write-protects leaf page
+> tables, update_pte() is unreachable and can be dropped.
 > 
-> On 2021/1/29 18:26, Arnd Bergmann wrote:
->> On Fri, Jan 29, 2021 at 9:16 AM Arnd Bergmann <arnd@kernel.org> wrote:
->>> On Fri, Jan 29, 2021 at 8:23 AM Leizhen (ThunderTown)
->>> <thunder.leizhen@huawei.com> wrote:
->>>> On 2021/1/28 22:24, Arnd Bergmann wrote:
->>>>> On Sat, Jan 16, 2021 at 4:27 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
->>>>>> diff --git a/arch/arm/mm/Makefile b/arch/arm/mm/Makefile
->>>>>> +
->>>>>> +static void l3cache_maint_common(u32 range, u32 op_type)
->>>>>> +{
->>>>>> +       u32 reg;
->>>>>> +
->>>>>> +       reg = readl(l3_ctrl_base + L3_MAINT_CTRL);
->>>>>> +       reg &= ~(L3_MAINT_RANGE_MASK | L3_MAINT_TYPE_MASK);
->>>>>> +       reg |= range | op_type;
->>>>>> +       reg |= L3_MAINT_STATUS_START;
->>>>>> +       writel(reg, l3_ctrl_base + L3_MAINT_CTRL);
->>>>>
->>>>> Are there contents of L3_MAINT_CTRL that need to be preserved
->>>>> across calls and can not be inferred? A 'readl()' is often expensive,
->>>>> so it might be more efficient if you can avoid that.
->>>>
->>>> Right, this readl() can be replaced with readl_relaxed(). Thanks.
->>>>
->>>> I'll check and correct the readl() and writel() in other places.
->>>
->>> What I meant is that if you want to replace them, you should provide
->>> performance numbers that show how much difference this makes
->>> and add comments in the source code explaining how you proved that
->>> the _relaxed() version is actually correct.
->>
->> Another clarification, as there are actually two independent
->> points here:
->>
->> * if you can completely remove the readl() above and just write a
->>   hardcoded value into the register, or perhaps read the original
->>   value once at boot time, that is probably a win because it
->>   avoids one of the barriers in the beginning. The datasheet should
->>   tell you if there are any bits in the register that have to be
->>   preserved
+> Reported-by: Yu Zhang <yu.c.zhang@intel.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h |  3 --
+>  arch/x86/kvm/mmu/mmu.c          | 49 ++-------------------------------
+>  arch/x86/kvm/x86.c              |  1 -
+>  3 files changed, 2 insertions(+), 51 deletions(-)
 > 
-> Code coupling will become very strong.
-> 
->>
->> * Regarding the _relaxed() accessors, it's a lot harder to know
->>   whether that is safe, as you first have to show, in particular in case
->>   any of the accesses stop being guarded by the spinlock in that
->>   case, and whether there may be a case where you have to
->>   serialize the memory access against accesses that are still in the
->>   store queue or prefetched.
->>
->> Whether this matters at all depends mostly on the type of devices
->> you are driving on your SoC. If you have any high-speed network
->> interfaces that are unable to do cache coherent DMA, any extra
->> instruction here may impact the number of packets you can transfer,
->> but if all your high-speed devices are connected to a coherent
->> interconnect, I would just go with the obvious approach and use
->> the safe MMIO accessors everywhere.
-> 
-> In fact, this driver has been running on an earlier version for several years
-> and has not received any feedback about the performance issue. So I didn't
-> try to optimize it when I first sent these patches. I had to reconsider it
-> until you noticed it.
-> 
-> How about keeping it unchanged for the moment? It'll take a lot of time and
-> energy to retest.
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 3d6616f6f6ef..ed575c5655dd 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -358,8 +358,6 @@ struct kvm_mmu {
+>  	int (*sync_page)(struct kvm_vcpu *vcpu,
+>  			 struct kvm_mmu_page *sp);
+>  	void (*invlpg)(struct kvm_vcpu *vcpu, gva_t gva, hpa_t root_hpa);
+> -	void (*update_pte)(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp,
+> -			   u64 *spte, const void *pte);
+>  	hpa_t root_hpa;
+>  	gpa_t root_pgd;
+>  	union kvm_mmu_role mmu_role;
+> @@ -1031,7 +1029,6 @@ struct kvm_arch {
+>  struct kvm_vm_stat {
+>  	ulong mmu_shadow_zapped;
+>  	ulong mmu_pte_write;
+> -	ulong mmu_pte_updated;
+>  	ulong mmu_pde_zapped;
+>  	ulong mmu_flooded;
+>  	ulong mmu_recycled;
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 6d16481aa29d..3a2c25852b1f 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -1723,13 +1723,6 @@ static int nonpaging_sync_page(struct kvm_vcpu *vcpu,
+>  	return 0;
+>  }
+>  
+> -static void nonpaging_update_pte(struct kvm_vcpu *vcpu,
+> -				 struct kvm_mmu_page *sp, u64 *spte,
+> -				 const void *pte)
+> -{
+> -	WARN_ON(1);
+> -}
+> -
+>  #define KVM_PAGE_ARRAY_NR 16
+>  
+>  struct kvm_mmu_pages {
+> @@ -3813,7 +3806,6 @@ static void nonpaging_init_context(struct kvm_vcpu *vcpu,
+>  	context->gva_to_gpa = nonpaging_gva_to_gpa;
+>  	context->sync_page = nonpaging_sync_page;
+>  	context->invlpg = NULL;
+> -	context->update_pte = nonpaging_update_pte;
+>  	context->root_level = 0;
+>  	context->shadow_root_level = PT32E_ROOT_LEVEL;
+>  	context->direct_map = true;
+> @@ -4395,7 +4387,6 @@ static void paging64_init_context_common(struct kvm_vcpu *vcpu,
+>  	context->gva_to_gpa = paging64_gva_to_gpa;
+>  	context->sync_page = paging64_sync_page;
+>  	context->invlpg = paging64_invlpg;
+> -	context->update_pte = paging64_update_pte;
+>  	context->shadow_root_level = level;
+>  	context->direct_map = false;
+>  }
+> @@ -4424,7 +4415,6 @@ static void paging32_init_context(struct kvm_vcpu *vcpu,
+>  	context->gva_to_gpa = paging32_gva_to_gpa;
+>  	context->sync_page = paging32_sync_page;
+>  	context->invlpg = paging32_invlpg;
+> -	context->update_pte = paging32_update_pte;
+>  	context->shadow_root_level = PT32E_ROOT_LEVEL;
+>  	context->direct_map = false;
+>  }
+> @@ -4506,7 +4496,6 @@ static void init_kvm_tdp_mmu(struct kvm_vcpu *vcpu)
+>  	context->page_fault = kvm_tdp_page_fault;
+>  	context->sync_page = nonpaging_sync_page;
+>  	context->invlpg = NULL;
+> -	context->update_pte = nonpaging_update_pte;
+>  	context->shadow_root_level = kvm_mmu_get_tdp_level(vcpu);
+>  	context->direct_map = true;
+>  	context->get_guest_pgd = get_cr3;
+> @@ -4678,7 +4667,6 @@ void kvm_init_shadow_ept_mmu(struct kvm_vcpu *vcpu, bool execonly,
+>  	context->gva_to_gpa = ept_gva_to_gpa;
+>  	context->sync_page = ept_sync_page;
+>  	context->invlpg = ept_invlpg;
+> -	context->update_pte = ept_update_pte;
+>  	context->root_level = level;
+>  	context->direct_map = false;
+>  	context->mmu_role.as_u64 = new_role.as_u64;
+> @@ -4826,19 +4814,6 @@ void kvm_mmu_unload(struct kvm_vcpu *vcpu)
+>  }
+>  EXPORT_SYMBOL_GPL(kvm_mmu_unload);
+>  
+> -static void mmu_pte_write_new_pte(struct kvm_vcpu *vcpu,
+> -				  struct kvm_mmu_page *sp, u64 *spte,
+> -				  const void *new)
+> -{
+> -	if (sp->role.level != PG_LEVEL_4K) {
+> -		++vcpu->kvm->stat.mmu_pde_zapped;
+> -		return;
+> -        }
+> -
+> -	++vcpu->kvm->stat.mmu_pte_updated;
+> -	vcpu->arch.mmu->update_pte(vcpu, sp, spte, new);
+> -}
+> -
+>  static bool need_remote_flush(u64 old, u64 new)
+>  {
+>  	if (!is_shadow_present_pte(old))
+> @@ -4954,22 +4929,6 @@ static u64 *get_written_sptes(struct kvm_mmu_page *sp, gpa_t gpa, int *nspte)
+>  	return spte;
+>  }
+>  
+> -/*
+> - * Ignore various flags when determining if a SPTE can be immediately
+> - * overwritten for the current MMU.
+> - *  - level: explicitly checked in mmu_pte_write_new_pte(), and will never
+> - *    match the current MMU role, as MMU's level tracks the root level.
+> - *  - access: updated based on the new guest PTE
+> - *  - quadrant: handled by get_written_sptes()
+> - *  - invalid: always false (loop only walks valid shadow pages)
+> - */
+> -static const union kvm_mmu_page_role role_ign = {
+> -	.level = 0xf,
+> -	.access = 0x7,
+> -	.quadrant = 0x3,
+> -	.invalid = 0x1,
+> -};
+> -
+>  static void kvm_mmu_pte_write(struct kvm_vcpu *vcpu, gpa_t gpa,
+>  			      const u8 *new, int bytes,
+>  			      struct kvm_page_track_notifier_node *node)
+> @@ -5020,14 +4979,10 @@ static void kvm_mmu_pte_write(struct kvm_vcpu *vcpu, gpa_t gpa,
+>  
+>  		local_flush = true;
+>  		while (npte--) {
+> -			u32 base_role = vcpu->arch.mmu->mmu_role.base.word;
+> -
+>  			entry = *spte;
+>  			mmu_page_zap_pte(vcpu->kvm, sp, spte, NULL);
+> -			if (gentry &&
+> -			    !((sp->role.word ^ base_role) & ~role_ign.word) &&
+> -			    rmap_can_add(vcpu))
+> -				mmu_pte_write_new_pte(vcpu, sp, spte, &gentry);
+> +			if (gentry && sp->role.level != PG_LEVEL_4K)
 
-In the spirit of code excellence, it's still necessary to optimize it.
-Yesterday, my family urged me to go back, I wrote it in a hurry.
+I am wondering, if there's any chance the sp->role.level would be PG_LEVEL_4K
+in kvm_mmu_pte_write()? My previous understanding was that, since the gfn of
+guest leaf page tables are never page tracked, the sp here shall only be with
+level greater than PG_LEVEL_4K. Did I miss anything here? Thanks! :)
 
-> 
->>
->>        Arnd
->>
->> _______________________________________________
->> linux-arm-kernel mailing list
->> linux-arm-kernel@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
->>
->>
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
-> .
-> 
+B.R.
+Yu
 
+> +				++vcpu->kvm->stat.mmu_pde_zapped;
+>  			if (need_remote_flush(entry, *spte))
+>  				remote_flush = true;
+>  			++spte;
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index a480804ae27a..d9f5d9acccc1 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -233,7 +233,6 @@ struct kvm_stats_debugfs_item debugfs_entries[] = {
+>  	VCPU_STAT("halt_poll_fail_ns", halt_poll_fail_ns),
+>  	VM_STAT("mmu_shadow_zapped", mmu_shadow_zapped),
+>  	VM_STAT("mmu_pte_write", mmu_pte_write),
+> -	VM_STAT("mmu_pte_updated", mmu_pte_updated),
+>  	VM_STAT("mmu_pde_zapped", mmu_pde_zapped),
+>  	VM_STAT("mmu_flooded", mmu_flooded),
+>  	VM_STAT("mmu_recycled", mmu_recycled),
+> -- 
+> 2.30.0.284.gd98b1dd5eaa7-goog
+> 
