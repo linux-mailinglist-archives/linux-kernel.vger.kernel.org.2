@@ -2,392 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEDE33094CA
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 12:29:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6358E309503
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 12:55:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231213AbhA3L2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 06:28:53 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.164]:27078 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230170AbhA3L2r (ORCPT
+        id S231444AbhA3LyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 06:54:09 -0500
+Received: from smtp12.smtpout.orange.fr ([80.12.242.134]:46021 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229498AbhA3LyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 06:28:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1612005950;
-        s=strato-dkim-0002; d=gerhold.net;
-        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-        From:Subject:Sender;
-        bh=4gdInHCqX7vX65f1KM3rkTzRiaL+BG2XcHddUeo+x5o=;
-        b=NTHYXN1aeTZdargrpx40wPD23CupY3SmzMpE7APwrLUM4DB3UWuhWmNJd/Hb3YwTMN
-        xkx1CxBp7U+QcfbcjadxPnWn0W76HSeJfxHKX0CtrNT+AgopKFQ8UL9wqOfDkXGju5Rh
-        Gd/096a8ildiR/V/add5GnYYsIpqQJ1K6vvAlKaxaAaDPunNuLY8I0Ec16ozfyAe45I1
-        tZWn74Vr+vi8O7SxVq+Ma67WDOU5j+xtO1CCpZCWHQSnhGLzolWWx+gQaUZt6TkLiWyL
-        XVbR3Bcfpq2nvQoNkgFq6jbMsLxYvUgFTck3QRSbrfqu18e8sYBia+jzRjob8CQC9Spf
-        2fhw==
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j7IczGbYo="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-        by smtp.strato.de (RZmta 47.16.0 DYNA|AUTH)
-        with ESMTPSA id j0a9bax0UBPQ80v
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Sat, 30 Jan 2021 12:25:26 +0100 (CET)
-Date:   Sat, 30 Jan 2021 12:25:18 +0100
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Vincent Knecht <vincent.knecht@mailoo.org>
-Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
-        Daniel Palmer <daniel@0x0f.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        allen <allen.chen@ite.com.tw>,
-        Max Merchel <Max.Merchel@tq-group.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] arm64: dts: qcom: Add device tree for Alcatel
- Idol 3 (4.7")
-Message-ID: <YBVCHvGy5VwTThZ4@gerhold.net>
-References: <20210130105717.2628781-1-vincent.knecht@mailoo.org>
- <20210130105717.2628781-3-vincent.knecht@mailoo.org>
+        Sat, 30 Jan 2021 06:54:08 -0500
+Received: from localhost.localdomain ([92.131.99.25])
+        by mwinf5d35 with ME
+        id NuY32400A0Ys01Y03uY3bc; Sat, 30 Jan 2021 07:32:04 +0100
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 30 Jan 2021 07:32:04 +0100
+X-ME-IP: 92.131.99.25
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        romain.perier@gmail.com, allen.lkml@gmail.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH resend] media: ngene: switch from 'pci_' to 'dma_' API
+Date:   Sat, 30 Jan 2021 07:32:00 +0100
+Message-Id: <20210130063200.752615-1-christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210130105717.2628781-3-vincent.knecht@mailoo.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 11:57:11AM +0100, Vincent Knecht wrote:
-> The Alcatel Idol 3 (4.7") is a smartphone based on MSM8916.
-> Add a device tree with support for USB, eMMC, SD-Card, WiFi,
-> BT, power/volume buttons, vibrator and the following sensors:
-> magnetometer, accelerometer, gyroscope, ambient light+proximity
-> 
-> Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
+The wrappers in include/linux/pci-dma-compat.h should go away.
 
-Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
+The patch has been generated with the coccinelle script below and has been
+hand modified to replace GFP_ with a correct flag.
+It has been compile tested.
 
-> ---
->  arch/arm64/boot/dts/qcom/Makefile             |   1 +
->  .../boot/dts/qcom/msm8916-alcatel-idol347.dts | 291 ++++++++++++++++++
->  2 files changed, 292 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-> index 59455db7b493..0feeedb712cc 100644
-> --- a/arch/arm64/boot/dts/qcom/Makefile
-> +++ b/arch/arm64/boot/dts/qcom/Makefile
-> @@ -5,6 +5,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= apq8096-db820c.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= apq8096-ifc6640.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= ipq6018-cp01-c1.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk01.dtb
-> +dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-alcatel-idol347.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-asus-z00l.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-longcheer-l8150.dtb
->  dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-mtp.dtb
-> diff --git a/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts b/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts
-> new file mode 100644
-> index 000000000000..540b1fa4b260
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts
-> @@ -0,0 +1,291 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +
-> +/dts-v1/;
-> +
-> +#include "msm8916-pm8916.dtsi"
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/input/input.h>
-> +
-> +/ {
-> +	model = "Alcatel OneTouch Idol 3 (4.7)";
-> +	compatible = "alcatel,idol347", "qcom,msm8916";
-> +
-> +	aliases {
-> +		serial0 = &blsp1_uart2;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial0";
-> +	};
-> +
-> +	gpio-keys {
-> +		compatible = "gpio-keys";
-> +
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&gpio_keys_default>;
-> +
-> +		label = "GPIO Buttons";
-> +
-> +		volume-up {
-> +			label = "Volume Up";
-> +			gpios = <&msmgpio 107 GPIO_ACTIVE_LOW>;
-> +			linux,code = <KEY_VOLUMEUP>;
-> +		};
-> +	};
-> +
-> +	usb_id: usb-id {
-> +		compatible = "linux,extcon-usb-gpio";
-> +		id-gpio = <&msmgpio 69 GPIO_ACTIVE_HIGH>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&usb_id_default>;
-> +	};
-> +};
-> +
-> +&blsp1_uart2 {
-> +	status = "okay";
-> +};
-> +
-> +&blsp_i2c5 {
-> +	status = "okay";
-> +
-> +	magnetometer@c {
-> +		compatible = "asahi-kasei,ak09911";
-> +		reg = <0x0c>;
-> +		vdd-supply = <&pm8916_l17>;
-> +		vid-supply = <&pm8916_l6>;
-> +		reset-gpios = <&msmgpio 8 GPIO_ACTIVE_LOW>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&mag_reset_default>;
-> +		mount-matrix = "0", "1", "0",
-> +			       "-1", "0", "0",
-> +			       "0", "0", "1";
-> +	};
-> +
-> +	accelerometer@f {
-> +		compatible = "kionix,kxtj21009";
-> +		reg = <0x0f>;
-> +		vdd-supply = <&pm8916_l17>;
-> +		vddio-supply = <&pm8916_l6>;
-> +		interrupt-parent = <&msmgpio>;
-> +		interrupts = <31 IRQ_TYPE_EDGE_RISING>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&accel_int_default>;
-> +		mount-matrix = "-1", "0", "0",
-> +			       "0", "1", "0",
-> +			       "0", "0", "-1";
-> +	};
-> +
-> +	proximity@48 {
-> +		compatible = "sensortek,stk3310";
-> +		reg = <0x48>;
-> +		interrupt-parent = <&msmgpio>;
-> +		interrupts = <12 IRQ_TYPE_EDGE_FALLING>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&proximity_int_default>;
-> +	};
-> +
-> +	gyroscope@68 {
-> +		compatible = "bosch,bmg160";
-> +		reg = <0x68>;
-> +		vdd-supply = <&pm8916_l17>;
-> +		vddio-supply = <&pm8916_l6>;
-> +		interrupt-parent = <&msmgpio>;
-> +		interrupts = <97 IRQ_TYPE_EDGE_RISING>,
-> +			     <98 IRQ_TYPE_EDGE_RISING>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&gyro_int_default>;
-> +	};
-> +};
-> +
-> +&pm8916_resin {
-> +	status = "okay";
-> +	linux,code = <KEY_VOLUMEDOWN>;
-> +};
-> +
-> +&pm8916_vib {
-> +	status = "okay";
-> +};
-> +
-> +&pronto {
-> +	status = "okay";
-> +};
-> +
-> +&sdhc_1 {
-> +	status = "okay";
-> +
-> +	pinctrl-names = "default", "sleep";
-> +	pinctrl-0 = <&sdc1_clk_on &sdc1_cmd_on &sdc1_data_on>;
-> +	pinctrl-1 = <&sdc1_clk_off &sdc1_cmd_off &sdc1_data_off>;
-> +};
-> +
-> +&sdhc_2 {
-> +	status = "okay";
-> +
-> +	pinctrl-names = "default", "sleep";
-> +	pinctrl-0 = <&sdc2_clk_on &sdc2_cmd_on &sdc2_data_on &sdc2_cd_on>;
-> +	pinctrl-1 = <&sdc2_clk_off &sdc2_cmd_off &sdc2_data_off &sdc2_cd_off>;
-> +
-> +	cd-gpios = <&msmgpio 38 GPIO_ACTIVE_LOW>;
-> +};
-> +
-> +&usb {
-> +	status = "okay";
-> +	extcon = <&usb_id>, <&usb_id>;
-> +};
-> +
-> +&usb_hs_phy {
-> +	extcon = <&usb_id>;
-> +};
-> +
-> +&smd_rpm_regulators {
-> +	vdd_l1_l2_l3-supply = <&pm8916_s3>;
-> +	vdd_l4_l5_l6-supply = <&pm8916_s4>;
-> +	vdd_l7-supply = <&pm8916_s4>;
-> +
-> +	s3 {
-> +		regulator-min-microvolt = <1200000>;
-> +		regulator-max-microvolt = <1300000>;
-> +	};
-> +
-> +	s4 {
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <2100000>;
-> +	};
-> +
-> +	l1 {
-> +		regulator-min-microvolt = <1225000>;
-> +		regulator-max-microvolt = <1225000>;
-> +	};
-> +
-> +	l2 {
-> +		regulator-min-microvolt = <1200000>;
-> +		regulator-max-microvolt = <1200000>;
-> +	};
-> +
-> +	l4 {
-> +		regulator-min-microvolt = <2050000>;
-> +		regulator-max-microvolt = <2050000>;
-> +	};
-> +
-> +	l5 {
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <1800000>;
-> +	};
-> +
-> +	l6 {
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <1800000>;
-> +	};
-> +
-> +	l7 {
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <1800000>;
-> +	};
-> +
-> +	l8 {
-> +		regulator-min-microvolt = <2850000>;
-> +		regulator-max-microvolt = <2900000>;
-> +	};
-> +
-> +	l9 {
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +	};
-> +
-> +	l10 {
-> +		regulator-min-microvolt = <2700000>;
-> +		regulator-max-microvolt = <2800000>;
-> +	};
-> +
-> +	l11 {
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <2950000>;
-> +		regulator-allow-set-load;
-> +		regulator-system-load = <200000>;
-> +	};
-> +
-> +	l12 {
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <2950000>;
-> +	};
-> +
-> +	l13 {
-> +		regulator-min-microvolt = <3075000>;
-> +		regulator-max-microvolt = <3075000>;
-> +	};
-> +
-> +	l14 {
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <3300000>;
-> +	};
-> +
-> +	l15 {
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <3300000>;
-> +	};
-> +
-> +	l16 {
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <3300000>;
-> +	};
-> +
-> +	l17 {
-> +		regulator-min-microvolt = <2850000>;
-> +		regulator-max-microvolt = <2850000>;
-> +	};
-> +
-> +	l18 {
-> +		regulator-min-microvolt = <2700000>;
-> +		regulator-max-microvolt = <2700000>;
-> +	};
-> +};
-> +
-> +&msmgpio {
-> +	accel_int_default: accel-int-default {
-> +		pins = "gpio31";
-> +		function = "gpio";
-> +
-> +		drive-strength = <2>;
-> +		bias-disable;
-> +	};
-> +
-> +	gpio_keys_default: gpio-keys-default {
-> +		pins = "gpio107";
-> +		function = "gpio";
-> +
-> +		drive-strength = <2>;
-> +		bias-pull-up;
-> +	};
-> +
-> +	gyro_int_default: gyro-int-default {
-> +		pins = "gpio97", "gpio98";
-> +		function = "gpio";
-> +
-> +		drive-strength = <2>;
-> +		bias-disable;
-> +	};
-> +
-> +	mag_reset_default: mag-reset-default {
-> +		pins = "gpio8";
-> +		function = "gpio";
-> +
-> +		drive-strength = <2>;
-> +		bias-disable;
-> +	};
-> +
-> +	proximity_int_default: proximity-int-default {
-> +		pins = "gpio12";
-> +		function = "gpio";
-> +
-> +		drive-strength = <6>;
-> +		bias-pull-up;
-> +	};
-> +
-> +	usb_id_default: usb-id-default {
-> +		pins = "gpio69";
-> +		function = "gpio";
-> +
-> +		drive-strength = <8>;
-> +		bias-pull-up;
-> +	};
-> +};
-> -- 
-> 2.29.2
-> 
-> 
-> 
+When memory is allocated, GFP_KERNEL can be used because in all cases,
+it is called from a probe function and no lock is taken in the between.
+
+The call chain is:
+  ngene_probe                       (probe function, used in ngene-cards.c)
+    --> ngene_get_buffers
+      --> AllocCommonBuffers                  (call dma_alloc_coherent)
+        --> create_ring_buffer                (call dma_alloc_coherent)
+        --> AllocateRingBuffers               (call dma_alloc_coherent)
+
+
+@@
+@@
+-    PCI_DMA_BIDIRECTIONAL
++    DMA_BIDIRECTIONAL
+
+@@
+@@
+-    PCI_DMA_TODEVICE
++    DMA_TO_DEVICE
+
+@@
+@@
+-    PCI_DMA_FROMDEVICE
++    DMA_FROM_DEVICE
+
+@@
+@@
+-    PCI_DMA_NONE
++    DMA_NONE
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_alloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3;
+@@
+-    pci_zalloc_consistent(e1, e2, e3)
++    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_free_consistent(e1, e2, e3, e4)
++    dma_free_coherent(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_single(e1, e2, e3, e4)
++    dma_map_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_single(e1, e2, e3, e4)
++    dma_unmap_single(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4, e5;
+@@
+-    pci_map_page(e1, e2, e3, e4, e5)
++    dma_map_page(&e1->dev, e2, e3, e4, e5)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_page(e1, e2, e3, e4)
++    dma_unmap_page(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_map_sg(e1, e2, e3, e4)
++    dma_map_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_unmap_sg(e1, e2, e3, e4)
++    dma_unmap_sg(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
++    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_single_for_device(e1, e2, e3, e4)
++    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
++    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2, e3, e4;
+@@
+-    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
++    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
+
+@@
+expression e1, e2;
+@@
+-    pci_dma_mapping_error(e1, e2)
++    dma_mapping_error(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_dma_mask(e1, e2)
++    dma_set_mask(&e1->dev, e2)
+
+@@
+expression e1, e2;
+@@
+-    pci_set_consistent_dma_mask(e1, e2)
++    dma_set_coherent_mask(&e1->dev, e2)
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+If needed, see post from Christoph Hellwig on the kernel-janitors ML:
+   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
+---
+ drivers/media/pci/ngene/ngene-core.c | 56 ++++++++++++++--------------
+ 1 file changed, 28 insertions(+), 28 deletions(-)
+
+diff --git a/drivers/media/pci/ngene/ngene-core.c b/drivers/media/pci/ngene/ngene-core.c
+index f9f94f47d76b..07f342db6701 100644
+--- a/drivers/media/pci/ngene/ngene-core.c
++++ b/drivers/media/pci/ngene/ngene-core.c
+@@ -763,23 +763,22 @@ static void free_ringbuffer(struct ngene *dev, struct SRingBufferDescriptor *rb)
+ 
+ 	for (j = 0; j < rb->NumBuffers; j++, Cur = Cur->Next) {
+ 		if (Cur->Buffer1)
+-			pci_free_consistent(dev->pci_dev,
+-					    rb->Buffer1Length,
+-					    Cur->Buffer1,
+-					    Cur->scList1->Address);
++			dma_free_coherent(&dev->pci_dev->dev,
++					  rb->Buffer1Length, Cur->Buffer1,
++					  Cur->scList1->Address);
+ 
+ 		if (Cur->Buffer2)
+-			pci_free_consistent(dev->pci_dev,
+-					    rb->Buffer2Length,
+-					    Cur->Buffer2,
+-					    Cur->scList2->Address);
++			dma_free_coherent(&dev->pci_dev->dev,
++					  rb->Buffer2Length, Cur->Buffer2,
++					  Cur->scList2->Address);
+ 	}
+ 
+ 	if (rb->SCListMem)
+-		pci_free_consistent(dev->pci_dev, rb->SCListMemSize,
+-				    rb->SCListMem, rb->PASCListMem);
++		dma_free_coherent(&dev->pci_dev->dev, rb->SCListMemSize,
++				  rb->SCListMem, rb->PASCListMem);
+ 
+-	pci_free_consistent(dev->pci_dev, rb->MemSize, rb->Head, rb->PAHead);
++	dma_free_coherent(&dev->pci_dev->dev, rb->MemSize, rb->Head,
++			  rb->PAHead);
+ }
+ 
+ static void free_idlebuffer(struct ngene *dev,
+@@ -813,15 +812,13 @@ static void free_common_buffers(struct ngene *dev)
+ 	}
+ 
+ 	if (dev->OverflowBuffer)
+-		pci_free_consistent(dev->pci_dev,
+-				    OVERFLOW_BUFFER_SIZE,
+-				    dev->OverflowBuffer, dev->PAOverflowBuffer);
++		dma_free_coherent(&dev->pci_dev->dev, OVERFLOW_BUFFER_SIZE,
++				  dev->OverflowBuffer, dev->PAOverflowBuffer);
+ 
+ 	if (dev->FWInterfaceBuffer)
+-		pci_free_consistent(dev->pci_dev,
+-				    4096,
+-				    dev->FWInterfaceBuffer,
+-				    dev->PAFWInterfaceBuffer);
++		dma_free_coherent(&dev->pci_dev->dev, 4096,
++				  dev->FWInterfaceBuffer,
++				  dev->PAFWInterfaceBuffer);
+ }
+ 
+ /****************************************************************************/
+@@ -848,7 +845,7 @@ static int create_ring_buffer(struct pci_dev *pci_dev,
+ 	if (MemSize < 4096)
+ 		MemSize = 4096;
+ 
+-	Head = pci_alloc_consistent(pci_dev, MemSize, &tmp);
++	Head = dma_alloc_coherent(&pci_dev->dev, MemSize, &tmp, GFP_KERNEL);
+ 	PARingBufferHead = tmp;
+ 
+ 	if (!Head)
+@@ -899,7 +896,8 @@ static int AllocateRingBuffers(struct pci_dev *pci_dev,
+ 	if (SCListMemSize < 4096)
+ 		SCListMemSize = 4096;
+ 
+-	SCListMem = pci_alloc_consistent(pci_dev, SCListMemSize, &tmp);
++	SCListMem = dma_alloc_coherent(&pci_dev->dev, SCListMemSize, &tmp,
++				       GFP_KERNEL);
+ 
+ 	PASCListMem = tmp;
+ 	if (SCListMem == NULL)
+@@ -918,8 +916,8 @@ static int AllocateRingBuffers(struct pci_dev *pci_dev,
+ 	for (i = 0; i < pRingBuffer->NumBuffers; i += 1, Cur = Cur->Next) {
+ 		u64 PABuffer;
+ 
+-		void *Buffer = pci_alloc_consistent(pci_dev, Buffer1Length,
+-						    &tmp);
++		void *Buffer = dma_alloc_coherent(&pci_dev->dev,
++						  Buffer1Length, &tmp, GFP_KERNEL);
+ 		PABuffer = tmp;
+ 
+ 		if (Buffer == NULL)
+@@ -951,7 +949,8 @@ static int AllocateRingBuffers(struct pci_dev *pci_dev,
+ 		if (!Buffer2Length)
+ 			continue;
+ 
+-		Buffer = pci_alloc_consistent(pci_dev, Buffer2Length, &tmp);
++		Buffer = dma_alloc_coherent(&pci_dev->dev, Buffer2Length,
++					    &tmp, GFP_KERNEL);
+ 		PABuffer = tmp;
+ 
+ 		if (Buffer == NULL)
+@@ -1040,17 +1039,18 @@ static int AllocCommonBuffers(struct ngene *dev)
+ {
+ 	int status = 0, i;
+ 
+-	dev->FWInterfaceBuffer = pci_alloc_consistent(dev->pci_dev, 4096,
+-						     &dev->PAFWInterfaceBuffer);
++	dev->FWInterfaceBuffer = dma_alloc_coherent(&dev->pci_dev->dev, 4096,
++						    &dev->PAFWInterfaceBuffer,
++						    GFP_KERNEL);
+ 	if (!dev->FWInterfaceBuffer)
+ 		return -ENOMEM;
+ 	dev->hosttongene = dev->FWInterfaceBuffer;
+ 	dev->ngenetohost = dev->FWInterfaceBuffer + 256;
+ 	dev->EventBuffer = dev->FWInterfaceBuffer + 512;
+ 
+-	dev->OverflowBuffer = pci_zalloc_consistent(dev->pci_dev,
+-						    OVERFLOW_BUFFER_SIZE,
+-						    &dev->PAOverflowBuffer);
++	dev->OverflowBuffer = dma_alloc_coherent(&dev->pci_dev->dev,
++						 OVERFLOW_BUFFER_SIZE,
++						 &dev->PAOverflowBuffer, GFP_KERNEL);
+ 	if (!dev->OverflowBuffer)
+ 		return -ENOMEM;
+ 
+-- 
+2.25.1
+
