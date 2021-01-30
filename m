@@ -2,86 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C376C30979A
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 19:45:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68E5330979E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 19:47:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230358AbhA3Sp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 13:45:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35894 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhA3Sp0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 13:45:26 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5EE9C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 10:44:45 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id v24so17158117lfr.7
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 10:44:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=89SdszQOEMr4HUN0UTxJxsMmAIYG9ucrs0ELQI8XVrk=;
-        b=MptePmMJoBrEaKxom97tw/OO+Bnzv8iV/Ds3P010RVLy81iRtVxmpKXvsO4bKDFrqu
-         Xk6uHhbukwFxQrxCat6b8MZ01rWyCyGT4/bBEI3Knjwa0TLln9ZUrZogAhDqxlQlgawR
-         ciSDL7wDPtvGzSCWvl/LvwSvl7BPZyVr+M7DA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=89SdszQOEMr4HUN0UTxJxsMmAIYG9ucrs0ELQI8XVrk=;
-        b=a59+kwVRYVsZpD4YvsZ2wsKPvuRUCmjz9pZE6Q5frWyOdfJAYjXFj8ixSfAaKi5b8O
-         u0OQmeqHWLQ75GTMjtjDn/nH3C0EH+W7YMn1GbWk/fR+T3u9MG9l3g63NBBUlyAcMtmv
-         Me0ozPcCg3TZ5IvV4zGJno6e83xpN3fpi2vU1BGX9biFTnC0IkcFDUQoVkTKUua8tKv/
-         Fg5oK9i/ratqC/BKZWdCQ8V9yhqGdbNX8bEFCS56M4LyE3urPxNLuSzQtUXlntRhOssz
-         QnUOmw/UCUblLWqepq5LH/tYpNcrxhn/k1U/EQaWNeqOeNuYVBJ80j+PNQwgtBoc8JQA
-         AINA==
-X-Gm-Message-State: AOAM532rHyqzXYo/CdpVxxxQuemdTkoquH4JRIG6qIg0tBGzA2c0+ara
-        mdnNHvZoxI+p1cjKuKGrRa+jctiH8uJtiA==
-X-Google-Smtp-Source: ABdhPJxlZ1uH1+ySDxTq7oorPFnRuG2tS+w1XWJP7J/GKkKTf2CYgIPa0SznbA+ALQ7Tq2ixOxtOHA==
-X-Received: by 2002:a19:40d4:: with SMTP id n203mr5078843lfa.350.1612032282533;
-        Sat, 30 Jan 2021 10:44:42 -0800 (PST)
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
-        by smtp.gmail.com with ESMTPSA id z11sm259721lfd.98.2021.01.30.10.44.41
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Jan 2021 10:44:41 -0800 (PST)
-Received: by mail-lf1-f50.google.com with SMTP id v24so17158038lfr.7
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 10:44:41 -0800 (PST)
-X-Received: by 2002:a05:6512:2287:: with SMTP id f7mr4728000lfu.40.1612032280785;
- Sat, 30 Jan 2021 10:44:40 -0800 (PST)
-MIME-Version: 1.0
-References: <YBNcv8jLEDE8C/IW@kernel.org> <CAHk-=wjk7zEOFEjGWZmGF8_dcitBQ_dPUMSkr-g7B7cYcXGvSQ@mail.gmail.com>
- <YBWUHkbNt6OLoeUq@kernel.org>
-In-Reply-To: <YBWUHkbNt6OLoeUq@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 30 Jan 2021 10:44:24 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whCPotCrco-Q4hUfgoG3+6uNn_CprxbuV1mQtxJHm0gfg@mail.gmail.com>
-Message-ID: <CAHk-=whCPotCrco-Q4hUfgoG3+6uNn_CprxbuV1mQtxJHm0gfg@mail.gmail.com>
-Subject: Re: [GIT PULL] tpmdd updates for v5.12-rc1
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        James Morris James Morris <jmorris@namei.org>,
-        David Howells <dhowells@redhat.com>,
-        Peter Huewe <peterhuewe@gmx.de>
-Content-Type: text/plain; charset="UTF-8"
+        id S231886AbhA3SqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 13:46:10 -0500
+Received: from mga05.intel.com ([192.55.52.43]:15035 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229468AbhA3SqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 13:46:09 -0500
+IronPort-SDR: +zjwaK1SEO/42tpYSU8we4GQkGpP301jHpNYF332SAfhRBETPfl6r9k3iNzsr+aPqcZuKEMOMc
+ mAj2daVE/RZw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9880"; a="265377340"
+X-IronPort-AV: E=Sophos;i="5.79,388,1602572400"; 
+   d="scan'208";a="265377340"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2021 10:45:28 -0800
+IronPort-SDR: a/KzP5c3+pFY7gYOvTYU9k+UK28q2gz+H5skfYj/VSJIyhlbOjbjbvg3vL3YsI6fcsRb1dDbDA
+ ZFdF37tEHvSQ==
+X-IronPort-AV: E=Sophos;i="5.79,388,1602572400"; 
+   d="scan'208";a="580053458"
+Received: from km-skylake-client-platform.sc.intel.com ([172.25.103.115])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2021 10:45:28 -0800
+From:   Kyung Min Park <kyung.min.park@intel.com>
+To:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
+Cc:     baolu.lu@linux.intel.com, dwmw2@infradead.org, joro@8bytes.org,
+        will@kernel.org, ricardo.neri@intel.com, ravi.v.shankar@intel.com,
+        kevin.tian@intel.com, ashok.raj@intel.com, sohil.mehta@intel.com,
+        kyung.min.park@intel.com
+Subject: [PATCH v5 0/2] Audit Capability and Extended Capability among IOMMUs
+Date:   Sat, 30 Jan 2021 10:44:50 -0800
+Message-Id: <20210130184452.31711-1-kyung.min.park@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 9:15 AM Jarkko Sakkinen <jarkko@kernel.org> wrote:
->
-> This was meant for 5.12 but the timing was *way* too early. I'll take this
-> one back. Just to unambiguity reasons I'll use tpmdd-next-v5.12-rc1-v2 tag
-> for my final v5.12 PR, once I send it.
->
-> I considered a bit, and I really think that it would make a lot of sense
-> to do a late 5.11 just containing the two commits from James
+Modern platforms have more than one IOMMU. Each IOMMU has its own
+feature set. Some of these features must be consistent among IOMMUs.
+Otherwise, these differences can lead to improper behavior in the system.
+On the other hand, for some features, each IOMMU can have different
+capacity values. So, different actions are required to deal with the
+inconsistencies depending on the IOMMU features.
 
-Ok. I'll ignore this pull request, and will expect the "real" ones later.
+Currently, some inconsistencies are ignored by the IOMMU driver.
+This patchset checks IOMMU capabilities and extended capabilities
+centralizedly during boot and take different actions according to
+the impacts caused by the mismatches.
 
-Thanks,
+For example:
+ 1. Use common capacity values (normally the lowest capacity value) for
+    all IOMMUs.
+ 2. Report feature mismatches.
 
-             Linus
+Detailed information on the IOMMU Capability / Extended Capability can
+be found in Intel VT-d Specification.
+
+Link: https://software.intel.com/sites/default/files/managed/c5/15/vt-directed-io-spec.pdf
+
+ChangeLog:
+- Change from v4 to v5:
+  1. Drop the SVM coherency policy from this patchset.
+- Change from v3 to v4:
+  1. fix the build error for when only enabled irq remapping.
+- Change from v2 to v3:
+  1. fix the wrong macro names and rebase to v5.10.
+- Change from v1 to v2:
+  1. Add missing cap/ecaps for audit.
+  2. Refactor function/macros overal suggested by Lu, Baolu.
+  2. Skip audit for gfx dedicated IOMMU.
+  3. Change commit message.
+
+Kyung Min Park (2):
+  iommu/vt-d: Audit IOMMU Capabilities and add helper functions
+  iommu/vt-d: Move capability check code to cap_audit files
+
+ drivers/iommu/intel/Makefile        |   4 +-
+ drivers/iommu/intel/cap_audit.c     | 205 ++++++++++++++++++++++++++++
+ drivers/iommu/intel/cap_audit.h     | 130 ++++++++++++++++++
+ drivers/iommu/intel/iommu.c         |  85 ++----------
+ drivers/iommu/intel/irq_remapping.c |   8 ++
+ include/linux/intel-iommu.h         |  39 +++---
+ 6 files changed, 377 insertions(+), 94 deletions(-)
+ create mode 100644 drivers/iommu/intel/cap_audit.c
+ create mode 100644 drivers/iommu/intel/cap_audit.h
+
+-- 
+2.17.1
+
