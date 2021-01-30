@@ -2,132 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A713092D2
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10AAF309367
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:30:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbhA3JBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 04:01:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230178AbhA3FFK (ORCPT
+        id S231310AbhA3Jal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 04:30:41 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:11917 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233600AbhA3DnD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 00:05:10 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3089C06178C;
-        Fri, 29 Jan 2021 18:37:24 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id z21so7886404pgj.4;
-        Fri, 29 Jan 2021 18:37:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nPXNniK0cP00K5qLPpxAIbnbN3Q+mjeyNaHpzJ+KH3k=;
-        b=RbYhZsnL4VMKvm6QpPE/9G5QwNofOtuZ2iZea/SqI/1PIK7tpakwr8tZ8Krt/CKNW8
-         zagDeMeo37feTz6xRE9KY5zredG/1FS6UoSX7wsdVvmqKwj1+sLZgad5QBS7euop4LfV
-         xkYuDNbA1JiZ/6nhNqHYFfTLexpOa8b5JiFMS0lKENeuZyNU/wwcwAuolQ5aCBsN9va+
-         AKeNQ1+R+nuYmhEz1ay2JpVasxT5ZD6qIvHrr3xz0wID+/kq1ObJN2CjDyJHMFcuqWSd
-         cA9CWzNVcf3x6I9BQ7Wa7Fmyr6f/fZBWzCg7RdqxtuKnfDKisqy0U2WovmhO4Ob+giA2
-         xMew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nPXNniK0cP00K5qLPpxAIbnbN3Q+mjeyNaHpzJ+KH3k=;
-        b=ANIAj7rNygOoe5GZps+LMUw8xm87a3+WWnj0NKfGaUONNzhRXlEXQTmCbqEvjVQ2eu
-         dbLy0FydpuP+B+oJKNFuoyAIqel9K+RHaoxwuDISORDxuKe8+nZQsqKifSDC5y5wONCs
-         PmMiWis33gU0Q6yqNspca0cF6UVGKfyPXwHEvT0+I2rC3DotmsXf0TZcbTjYgV6UYf1A
-         Znb1zhw5wxWej7fIsN9CyMtK8snE/77gQ++o9TdrcC0VfWHB+DdNsZuKeMHf9cP5w6xr
-         077cU0A9vLig5+3wyN8Zx83n+HJOggAIQxv+ApVX1I4Brx5kt5FVzKHhdtXHT0aa5h8k
-         jsSA==
-X-Gm-Message-State: AOAM531kqJ3dCd3ToqcQwM6BMH5/bM/UrQzSEnzK9a3qGfiGTFBmolMN
-        KrhNfckqb6uHMAtz5vbK7A0=
-X-Google-Smtp-Source: ABdhPJxmNYQ2xRyefxv6olIx9Kxeslfjhpr7Ldrxjn6aGFQNCSavhb6L7VIkYSQ9scZQiLiUA1IHrQ==
-X-Received: by 2002:a63:844:: with SMTP id 65mr7198863pgi.371.1611974244452;
-        Fri, 29 Jan 2021 18:37:24 -0800 (PST)
-Received: from localhost.localdomain (113x33x126x33.ap113.ftth.ucom.ne.jp. [113.33.126.33])
-        by smtp.gmail.com with ESMTPSA id s21sm8872169pjz.13.2021.01.29.18.37.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Jan 2021 18:37:23 -0800 (PST)
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     jic23@kernel.org, fabrice.gasnier@foss.st.com
-Cc:     fabrice.gasnier@st.com, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, benjamin.gaignard@st.com,
-        William Breathitt Gray <vilhelm.gray@gmail.com>
-Subject: [PATCH v2 2/2] iio: Remove the IIO counter ABI documentation
-Date:   Sat, 30 Jan 2021 11:37:04 +0900
-Message-Id: <bc8b5b759592b013c197a98428c3f0141bedd54d.1611973018.git.vilhelm.gray@gmail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <cover.1611973018.git.vilhelm.gray@gmail.com>
-References: <cover.1611973018.git.vilhelm.gray@gmail.com>
+        Fri, 29 Jan 2021 22:43:03 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DSJbc0hn6zjFBn;
+        Sat, 30 Jan 2021 10:50:20 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.220) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Sat, 30 Jan 2021
+ 10:51:14 +0800
+Subject: Re: [PATCH v5 4/4] ARM: Add support for Hisilicon Kunpeng L3 cache
+ controller
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@kernel.org>
+CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        "Arnd Bergmann" <arnd@arndb.de>, Rob Herring <robh+dt@kernel.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210116032740.873-1-thunder.leizhen@huawei.com>
+ <20210116032740.873-5-thunder.leizhen@huawei.com>
+ <CAK8P3a1OqUn5A4F4hT4K=bzQwJuifVFZkvFoK6NMg+m9FjoKzw@mail.gmail.com>
+ <20dac713-25b7-cddf-cc42-69a834487c71@huawei.com>
+ <CAK8P3a3Hj0Hyc8mVdGYhB7AEuHCYbhGxHnhNk1xWonEmxZOxRw@mail.gmail.com>
+ <CAK8P3a1j+mr3bCp2uCuuYzW0ygjTmGv9vELuNy7v-iQ=WoDMOw@mail.gmail.com>
+ <20210129103340.GW1551@shell.armlinux.org.uk>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <b236bcbc-8610-dfc4-50f2-a4b71162735d@huawei.com>
+Date:   Sat, 30 Jan 2021 10:51:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210129103340.GW1551@shell.armlinux.org.uk>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.220]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The IIO counter driver has been superseded by the Counter subsystem as
-discussed in [1]. This patch removes the IIO counter ABI documentation.
 
-[1] https://lore.kernel.org/lkml/20210119104105.000010df@Huawei.com/
 
-Cc: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-Cc: Benjamin Gaignard <benjamin.gaignard@st.com>
-Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
----
- Documentation/ABI/testing/sysfs-bus-iio | 40 -------------------------
- 1 file changed, 40 deletions(-)
+On 2021/1/29 18:33, Russell King - ARM Linux admin wrote:
+> On Fri, Jan 29, 2021 at 11:26:38AM +0100, Arnd Bergmann wrote:
+>> Another clarification, as there are actually two independent
+>> points here:
+>>
+>> * if you can completely remove the readl() above and just write a
+>>   hardcoded value into the register, or perhaps read the original
+>>   value once at boot time, that is probably a win because it
+>>   avoids one of the barriers in the beginning. The datasheet should
+>>   tell you if there are any bits in the register that have to be
+>>   preserved
+>>
+>> * Regarding the _relaxed() accessors, it's a lot harder to know
+>>   whether that is safe, as you first have to show, in particular in case
+>>   any of the accesses stop being guarded by the spinlock in that
+>>   case, and whether there may be a case where you have to
+>>   serialize the memory access against accesses that are still in the
+>>   store queue or prefetched.
+>>
+>> Whether this matters at all depends mostly on the type of devices
+>> you are driving on your SoC. If you have any high-speed network
+>> interfaces that are unable to do cache coherent DMA, any extra
+>> instruction here may impact the number of packets you can transfer,
+>> but if all your high-speed devices are connected to a coherent
+>> interconnect, I would just go with the obvious approach and use
+>> the safe MMIO accessors everywhere.
+> 
+> For L2 cache code, I would say the opposite, actually, because it is
+> all too easy to get into a deadlock otherwise.
+> 
+> If you implement the sync callback, that will be called from every
+> non-relaxed accessor, which means if you need to take some kind of
+> lock in the sync callback and elsewhere in the L2 cache code, you will
+> definitely deadlock.
+> 
+> It is safer to put explicit barriers where it is necessary.
+> 
+> Also remember that the barrier in readl() etc is _after_ the read, not
+> before, and the barrier in writel() is _before_ the write, not after.
+> The point is to ensure that DMA memory accesses are properly ordered
+> with the IO-accessing instructions.
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
-index d957f5da5c04..c207484a86d0 100644
---- a/Documentation/ABI/testing/sysfs-bus-iio
-+++ b/Documentation/ABI/testing/sysfs-bus-iio
-@@ -1704,46 +1704,6 @@ Description:
- 		Raw (unscaled no offset etc.) electric conductivity reading that
- 		can be processed to siemens per meter.
- 
--What:		/sys/bus/iio/devices/iio:deviceX/in_countY_raw
--KernelVersion:	4.10
--Contact:	linux-iio@vger.kernel.org
--Description:
--		This interface is deprecated; please use the Counter subsystem.
--
--		Raw counter device counts from channel Y. For quadrature
--		counters, multiplication by an available [Y]_scale results in
--		the counts of a single quadrature signal phase from channel Y.
--
--What:		/sys/bus/iio/devices/iio:deviceX/in_indexY_raw
--KernelVersion:	4.10
--Contact:	linux-iio@vger.kernel.org
--Description:
--		This interface is deprecated; please use the Counter subsystem.
--
--		Raw counter device index value from channel Y. This attribute
--		provides an absolute positional reference (e.g. a pulse once per
--		revolution) which may be used to home positional systems as
--		required.
--
--What:		/sys/bus/iio/devices/iio:deviceX/in_count_count_direction_available
--KernelVersion:	4.12
--Contact:	linux-iio@vger.kernel.org
--Description:
--		This interface is deprecated; please use the Counter subsystem.
--
--		A list of possible counting directions which are:
--
--		- "up"	: counter device is increasing.
--		- "down": counter device is decreasing.
--
--What:		/sys/bus/iio/devices/iio:deviceX/in_countY_count_direction
--KernelVersion:	4.12
--Contact:	linux-iio@vger.kernel.org
--Description:
--		This interface is deprecated; please use the Counter subsystem.
--
--		Raw counter device counters direction for channel Y.
--
- What:		/sys/bus/iio/devices/iio:deviceX/in_voltageY_label
- What:		/sys/bus/iio/devices/iio:deviceX/out_voltageY_label
- KernelVersion:	5.8
--- 
-2.30.0
+Yes, I known it. writel() must be used for the write operations that control
+"start/stop" or "enable/disable" function, to ensure that the data of previous
+write operations reaches the target. I've met this kind of problem before.
+
+> 
+> So, using readl_relaxed() with a read-modify-write is entirely sensible
+> provided you do not access DMA memory inbetween.
+
+Actually, I don't think this register is that complicated. I copied the code
+back below. All the bits of L3_MAINT_CTRL are not affected by DMA access operations.
+The software change the "range | op_type" to specify the operation type and scope,
+the set the bit "L3_MAINT_STATUS_START" to start the operation. Then wait for that
+bit to change from 1 to 0 by hardware.
+
++	reg = readl(l3_ctrl_base + L3_MAINT_CTRL);
++	reg &= ~(L3_MAINT_RANGE_MASK | L3_MAINT_TYPE_MASK);
++	reg |= range | op_type;
++	reg |= L3_MAINT_STATUS_START;
++	writel(reg, l3_ctrl_base + L3_MAINT_CTRL);
++
++	/* Wait until the hardware maintenance operation is complete. */
++	do {
++		cpu_relax();
++		reg = readl(l3_ctrl_base + L3_MAINT_CTRL);
++	} while ((reg & L3_MAINT_STATUS_MASK) != L3_MAINT_STATUS_END);
+
+> 
 
