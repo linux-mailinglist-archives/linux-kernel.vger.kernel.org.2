@@ -2,1606 +2,1171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 028E73091F2
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 06:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A69F43091FE
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 06:24:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbhA3FGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 00:06:23 -0500
-Received: from mga02.intel.com ([134.134.136.20]:2130 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233676AbhA3ELO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 23:11:14 -0500
-IronPort-SDR: LZq5Zlq09fDFqvKE2xWEx/qJogfuwCrq9yIb4U5b/fpd3ZI/nApWZubUFQX7jMa11OOp2MbsJV
- 2o+LL7BtPj5Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="167606744"
-X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="167606744"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:30 -0800
-IronPort-SDR: 0cSGcYdL7GJktya9Y3xiPs+4eD/4bh8HHetzEiRQ468Vp5DxjJAVJVrqsSf9Oov1m9RBrHpak7
- eTN2UWylXreg==
-X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="370626931"
-Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:29 -0800
-Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id 905DF636D;
-        Fri, 29 Jan 2021 18:21:29 -0800 (PST)
-Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
-        id 844C936366F; Fri, 29 Jan 2021 18:21:29 -0800 (PST)
-From:   mgross@linux.intel.com
-To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
-        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
-        gregkh@linuxfoundation.org, corbet@lwn.net,
-        palmerdabbelt@google.com, paul.walmsley@sifive.com,
-        peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
-        jassisinghbrar@gmail.com
-Cc:     linux-kernel@vger.kernel.org,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-Subject: [PATCH v4 05/34] keembay-ipc: Add Keem Bay IPC module
-Date:   Fri, 29 Jan 2021 18:20:55 -0800
-Message-Id: <20210130022124.65083-41-mgross@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210130022124.65083-1-mgross@linux.intel.com>
-References: <20210130022124.65083-1-mgross@linux.intel.com>
+        id S233793AbhA3FRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 00:17:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230168AbhA3FFK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 00:05:10 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCBE9C06178B;
+        Fri, 29 Jan 2021 18:37:20 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id b21so7868579pgk.7;
+        Fri, 29 Jan 2021 18:37:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=8bfdaiNUBe7vdvdQZwOnyFuG+AetfjsOnJmwyHZsyYI=;
+        b=Vk5SiyWtzRaq6OgqyjX/mSSzDJguY7nj0s6oDTepUI86FBZfTGNBYshEUPJqGFt90N
+         PlxGjE9OBg2nU19nmIr8zkSaBGnVfVbPfhVmufmXQB4zKrmffqL3vys4eLaP/f9xqPRI
+         8fb34AagBEX9jvOW9nb1QSxSrGSdusw0rtupV/Q08ny4jdTJ/SJd3Pu3wlxA5eW4MmYb
+         HdNHPl6LZzrepizVcKzc5soCID3jVtvzIC62U8s/Chxz+uh9CFV9GXaFe2VuyZtkLqF3
+         aE82S1kK+XEwNykJENgk16vyOcXbYmhT6gtot1rLo2ypNqE1uTZtFeBqMd0lUPzQqz69
+         cqlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8bfdaiNUBe7vdvdQZwOnyFuG+AetfjsOnJmwyHZsyYI=;
+        b=X2LoHyDh6aPBzKa1cdt+zUJyOQ/y5N/C5FsCMmZxbxo8XfoFguSE6jIDjpAi3tkrtL
+         q8iYo0AFoiwpA+DHCV7j3qsLLkLIacx3nqNmOh1qSBqbiLMbV4qsOHPTF3qzBY4gnyla
+         64Wtsq/P6lug/iSFJnGfvdUxiiE3m/NsYC+lCk5AO9TADLUMTkTs6TtFCfZ2qcwqwU29
+         s8csjg2OBRu0FORcGY1l0UEcQuDtr70/7dXBh7X4XTOMKmWGHdsg5qx5LBV20fSAzWhL
+         gGBVtUleE0wwcFsSkiGK/dB5hLA8UXHwQtdTB5wQhS5JZ4sCRBqw8gGUvp+t7f/Ll9Ip
+         ezhQ==
+X-Gm-Message-State: AOAM533M3NbjWRmL8UTETpoUoptnhG3Ew9ls4zCtCUIfA/lT/wiqafuH
+        /gkT/cB1y9yMpM/rNH9gzcs=
+X-Google-Smtp-Source: ABdhPJzMd1bDLeulVbvk57l4fBNZHuVKGgHRagmpMvQTLyJ40UmPp/1H3cFGpiFgEIFqxZKkh6fpOg==
+X-Received: by 2002:a63:1d25:: with SMTP id d37mr7151675pgd.205.1611974240089;
+        Fri, 29 Jan 2021 18:37:20 -0800 (PST)
+Received: from localhost.localdomain (113x33x126x33.ap113.ftth.ucom.ne.jp. [113.33.126.33])
+        by smtp.gmail.com with ESMTPSA id s21sm8872169pjz.13.2021.01.29.18.37.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Jan 2021 18:37:19 -0800 (PST)
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     jic23@kernel.org, fabrice.gasnier@foss.st.com
+Cc:     fabrice.gasnier@st.com, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, benjamin.gaignard@st.com,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Syed Nayyar Waris <syednwaris@gmail.com>
+Subject: [PATCH v2 1/2] counter: 104-quad-8: Remove IIO counter ABI
+Date:   Sat, 30 Jan 2021 11:37:03 +0900
+Message-Id: <98a39983d5df761c058a469d1346fd8ffdef8516.1611973018.git.vilhelm.gray@gmail.com>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <cover.1611973018.git.vilhelm.gray@gmail.com>
+References: <cover.1611973018.git.vilhelm.gray@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+The IIO counter driver has been superseded by the Counter subsystem as
+discussed in [1]. This patch removes the IIO counter ABI from the
+104-QUAD-8 driver.
 
-On the Intel Movidius SoC code named Keem Bay, communication between the
-Application Processor(AP) and the VPU is enabled by the Keem Bay
-Inter-Processor
-Communication (IPC) mechanism.
+[1] https://lore.kernel.org/lkml/20210119104105.000010df@Huawei.com/
 
-Add the driver for using Keem Bay IPC from within the Linux Kernel.
-
-The IPC uses the following terminology:
-
-- Node:    A processing entity that can use the IPC to communicate
-           (currently, we just have two nodes, the AP and the VPU).
-
-- Link:    Two nodes that can communicate over IPC form an IPC link
-           (currently, we just have one link, the one formed by the AP
-           and the VPU).
-
-- Channel: An IPC link can provide multiple IPC channels. IPC channels
-           allow communication multiplexing, i.e., the same IPC link can
-           be used by different applications for different
-           communications. Each channel is identified by a channel ID,
-           which must be unique within a single IPC link. Channels are
-           divided in two categories, High-Speed (HS) channels and
-           General-Purpose (GP) channels. HS channels have higher
-           priority over GP channels.
-
-The Keem Bay IPC mechanism is built on top of the VPU IPC mailbox, which
-allows the AP and the VPU to exchange 32-bit messages. Specifically, the
-IPC uses shared memory (shared between the AP and the VPU) to allocate
-IPC packets and then exchanges them using the VPU IPC mailbox (the
-32-bit physical address of the packet is passed as a message to the VPU
-IPC mailbox).
-
-IPC packets have a fixed structure containing the (VPU) physical address
-of the payload (which must be located in shared memory too) as well as
-other information (payload size, IPC channel ID, etc.).
-
-Each IPC node (i.e., both the AP and the VPU) has its own reserved
-memory region (in shared memory) from which it instantiates its own pool
-of IPC packets.  When instantiated, IPC packets are marked as free. When
-the node needs to send an IPC message, it gets the first free packet it
-finds (from its own pool), marks it as allocated (used), and transfer
-its physical address to the destination node using the VPU IPC mailbox.
-The destination node uses the received physical address to access the
-IPC packet, process the packet, and, once done with it, marks it as free
-(so that the sender can reuse it).
-
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-Cc: Borislav Petkov <bp@suse.de>
-Cc: Damien Le Moal <damien.lemoal@wdc.com>
-Cc: Peng Fan <peng.fan@nxp.com>
-Cc: Shawn Guo <shawnguo@kernel.org>
-Reviewed-by: Mark Gross <mgross@linux.intel.com>
-Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-Signed-off-by: Mark Gross <mgross@linux.intel.com>
+Cc: Syed Nayyar Waris <syednwaris@gmail.com>
+Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
 ---
- MAINTAINERS                           |    8 +
- drivers/soc/Kconfig                   |    1 +
- drivers/soc/Makefile                  |    1 +
- drivers/soc/intel/Kconfig             |   18 +
- drivers/soc/intel/Makefile            |    4 +
- drivers/soc/intel/keembay-ipc.c       | 1364 +++++++++++++++++++++++++
- include/linux/soc/intel/keembay-ipc.h |   30 +
- 7 files changed, 1426 insertions(+)
- create mode 100644 drivers/soc/intel/Kconfig
- create mode 100644 drivers/soc/intel/Makefile
- create mode 100644 drivers/soc/intel/keembay-ipc.c
- create mode 100644 include/linux/soc/intel/keembay-ipc.h
+ .../testing/sysfs-bus-iio-counter-104-quad-8  | 133 ----
+ MAINTAINERS                                   |   1 -
+ drivers/counter/104-quad-8.c                  | 653 ++----------------
+ drivers/counter/Kconfig                       |   2 +-
+ 4 files changed, 65 insertions(+), 724 deletions(-)
+ delete mode 100644 Documentation/ABI/testing/sysfs-bus-iio-counter-104-quad-8
 
+diff --git a/Documentation/ABI/testing/sysfs-bus-iio-counter-104-quad-8 b/Documentation/ABI/testing/sysfs-bus-iio-counter-104-quad-8
+deleted file mode 100644
+index bac3d0d48b7b..000000000000
+--- a/Documentation/ABI/testing/sysfs-bus-iio-counter-104-quad-8
++++ /dev/null
+@@ -1,133 +0,0 @@
+-What:		/sys/bus/iio/devices/iio:deviceX/in_count_count_mode_available
+-What:		/sys/bus/iio/devices/iio:deviceX/in_count_noise_error_available
+-What:		/sys/bus/iio/devices/iio:deviceX/in_count_quadrature_mode_available
+-What:		/sys/bus/iio/devices/iio:deviceX/in_index_index_polarity_available
+-What:		/sys/bus/iio/devices/iio:deviceX/in_index_synchronous_mode_available
+-KernelVersion:	4.10
+-Contact:	linux-iio@vger.kernel.org
+-Description:
+-		This interface is deprecated; please use the Counter subsystem.
+-
+-		Discrete set of available values for the respective counter
+-		configuration are listed in this file.
+-
+-What:		/sys/bus/iio/devices/iio:deviceX/in_countY_count_mode
+-KernelVersion:	4.10
+-Contact:	linux-iio@vger.kernel.org
+-Description:
+-		This interface is deprecated; please use the Counter subsystem.
+-
+-		Count mode for channel Y. Four count modes are available:
+-		normal, range limit, non-recycle, and modulo-n. The preset value
+-		for channel Y is used by the count mode where required.
+-
+-		Normal:
+-			Counting is continuous in either direction.
+-
+-		Range Limit:
+-			An upper or lower limit is set, mimicking limit switches
+-			in the mechanical counterpart. The upper limit is set to
+-			the preset value, while the lower limit is set to 0. The
+-			counter freezes at count = preset when counting up, and
+-			at count = 0 when counting down. At either of these
+-			limits, the counting is resumed only when the count
+-			direction is reversed.
+-
+-		Non-recycle:
+-			Counter is disabled whenever a 24-bit count overflow or
+-			underflow takes place. The counter is re-enabled when a
+-			new count value is loaded to the counter via a preset
+-			operation or write to raw.
+-
+-		Modulo-N:
+-			A count boundary is set between 0 and the preset value.
+-			The counter is reset to 0 at count = preset when
+-			counting up, while the counter is set to the preset
+-			value at count = 0 when counting down; the counter does
+-			not freeze at the bundary points, but counts
+-			continuously throughout.
+-
+-What:		/sys/bus/iio/devices/iio:deviceX/in_countY_noise_error
+-KernelVersion:	4.10
+-Contact:	linux-iio@vger.kernel.org
+-Description:
+-		This interface is deprecated; please use the Counter subsystem.
+-
+-		Read-only attribute that indicates whether excessive noise is
+-		present at the channel Y count inputs in quadrature clock mode;
+-		irrelevant in non-quadrature clock mode.
+-
+-What:		/sys/bus/iio/devices/iio:deviceX/in_countY_preset
+-KernelVersion:	4.10
+-Contact:	linux-iio@vger.kernel.org
+-Description:
+-		This interface is deprecated; please use the Counter subsystem.
+-
+-		If the counter device supports preset registers, the preset
+-		count for channel Y is provided by this attribute.
+-
+-What:		/sys/bus/iio/devices/iio:deviceX/in_countY_quadrature_mode
+-KernelVersion:	4.10
+-Contact:	linux-iio@vger.kernel.org
+-Description:
+-		This interface is deprecated; please use the Counter subsystem.
+-
+-		Configure channel Y counter for non-quadrature or quadrature
+-		clock mode. Selecting non-quadrature clock mode will disable
+-		synchronous load mode. In quadrature clock mode, the channel Y
+-		scale attribute selects the encoder phase division (scale of 1
+-		selects full-cycle, scale of 0.5 selects half-cycle, scale of
+-		0.25 selects quarter-cycle) processed by the channel Y counter.
+-
+-		Non-quadrature:
+-			The filter and decoder circuit are bypassed. Encoder A
+-			input serves as the count input and B as the UP/DOWN
+-			direction control input, with B = 1 selecting UP Count
+-			mode and B = 0 selecting Down Count mode.
+-
+-		Quadrature:
+-			Encoder A and B inputs are digitally filtered and
+-			decoded for UP/DN clock.
+-
+-What:		/sys/bus/iio/devices/iio:deviceX/in_countY_set_to_preset_on_index
+-KernelVersion:	4.10
+-Contact:	linux-iio@vger.kernel.org
+-Description:
+-		This interface is deprecated; please use the Counter subsystem.
+-
+-		Whether to set channel Y counter with channel Y preset value
+-		when channel Y index input is active, or continuously count.
+-		Valid attribute values are boolean.
+-
+-What:		/sys/bus/iio/devices/iio:deviceX/in_indexY_index_polarity
+-KernelVersion:	4.10
+-Contact:	linux-iio@vger.kernel.org
+-Description:
+-		This interface is deprecated; please use the Counter subsystem.
+-
+-		Active level of channel Y index input; irrelevant in
+-		non-synchronous load mode.
+-
+-What:		/sys/bus/iio/devices/iio:deviceX/in_indexY_synchronous_mode
+-KernelVersion:	4.10
+-Contact:	linux-iio@vger.kernel.org
+-Description:
+-		This interface is deprecated; please use the Counter subsystem.
+-
+-		Configure channel Y counter for non-synchronous or synchronous
+-		load mode. Synchronous load mode cannot be selected in
+-		non-quadrature clock mode.
+-
+-		Non-synchronous:
+-			A logic low level is the active level at this index
+-			input. The index function (as enabled via
+-			set_to_preset_on_index) is performed directly on the
+-			active level of the index input.
+-
+-		Synchronous:
+-			Intended for interfacing with encoder Index output in
+-			quadrature clock mode. The active level is configured
+-			via index_polarity. The index function (as enabled via
+-			set_to_preset_on_index) is performed synchronously with
+-			the quadrature clock on the active level of the index
+-			input.
 diff --git a/MAINTAINERS b/MAINTAINERS
-index de23f6e5cfce..684e64e958a4 100644
+index 546aa66428c9..f2d94e1f4032 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -9060,6 +9060,14 @@ F:	drivers/crypto/keembay/keembay-ocs-aes-core.c
- F:	drivers/crypto/keembay/ocs-aes.c
- F:	drivers/crypto/keembay/ocs-aes.h
+@@ -298,7 +298,6 @@ M:	Syed Nayyar Waris <syednwaris@gmail.com>
+ L:	linux-iio@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/ABI/testing/sysfs-bus-counter-104-quad-8
+-F:	Documentation/ABI/testing/sysfs-bus-iio-counter-104-quad-8
+ F:	drivers/counter/104-quad-8.c
  
-+INTEL KEEM BAY IPC DRIVER
-+M:	Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-+M:	Mark Gross <mgross@linux.intel.com>
-+S:	Supported
-+F:	Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
-+F:	drivers/soc/intel/keembay-ipc.c
-+F:	include/linux/soc/intel/keembay-ipc.h
-+
- INTEL MANAGEMENT ENGINE (mei)
- M:	Tomas Winkler <tomas.winkler@intel.com>
- L:	linux-kernel@vger.kernel.org
-diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
-index d097d070f579..b9d69a1eedc7 100644
---- a/drivers/soc/Kconfig
-+++ b/drivers/soc/Kconfig
-@@ -8,6 +8,7 @@ source "drivers/soc/atmel/Kconfig"
- source "drivers/soc/bcm/Kconfig"
- source "drivers/soc/fsl/Kconfig"
- source "drivers/soc/imx/Kconfig"
-+source "drivers/soc/intel/Kconfig"
- source "drivers/soc/ixp4xx/Kconfig"
- source "drivers/soc/litex/Kconfig"
- source "drivers/soc/mediatek/Kconfig"
-diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
-index 699b758d28e4..1a6c00d2e32e 100644
---- a/drivers/soc/Makefile
-+++ b/drivers/soc/Makefile
-@@ -12,6 +12,7 @@ obj-$(CONFIG_MACH_DOVE)		+= dove/
- obj-y				+= fsl/
- obj-$(CONFIG_ARCH_GEMINI)	+= gemini/
- obj-y				+= imx/
-+obj-y				+= intel/
- obj-$(CONFIG_ARCH_IXP4XX)	+= ixp4xx/
- obj-$(CONFIG_SOC_XWAY)		+= lantiq/
- obj-$(CONFIG_LITEX_SOC_CONTROLLER) += litex/
-diff --git a/drivers/soc/intel/Kconfig b/drivers/soc/intel/Kconfig
-new file mode 100644
-index 000000000000..a575e31e47b4
---- /dev/null
-+++ b/drivers/soc/intel/Kconfig
-@@ -0,0 +1,18 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# Keem Bay SoC drivers
-+#
-+
-+menu "Intel SoC drivers"
-+
-+config KEEMBAY_IPC
-+	tristate "Support for Intel Keem Bay IPC"
-+	depends on INTEL_VPU_IPC_MBOX
-+	depends on ARCH_KEEMBAY || (ARM64 && COMPILE_TEST)
-+	help
-+	  Keem Bay IPC enables communication between the Keem Bay CPU
-+	  Sub-System (CSS) and the Keem Bay Media Sub-System (MSS).
-+
-+	  Select this if you are compiling the Kernel for an Intel SoC that
-+	  includes the Intel Vision Processing Unit (VPU) such as Keem Bay.
-+endmenu
-diff --git a/drivers/soc/intel/Makefile b/drivers/soc/intel/Makefile
-new file mode 100644
-index 000000000000..ecf0246e7822
---- /dev/null
-+++ b/drivers/soc/intel/Makefile
-@@ -0,0 +1,4 @@
-+#
-+# Makefile for Keem Bay IPC Linux driver
-+#
-+obj-$(CONFIG_KEEMBAY_IPC) += keembay-ipc.o
-diff --git a/drivers/soc/intel/keembay-ipc.c b/drivers/soc/intel/keembay-ipc.c
-new file mode 100644
-index 000000000000..f097e92b1a99
---- /dev/null
-+++ b/drivers/soc/intel/keembay-ipc.c
-@@ -0,0 +1,1364 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Keem Bay IPC Driver.
-+ *
-+ * Copyright (C) 2018-2020 Intel Corporation
-+ *
-+ * This driver implements the VPU Inter-Processor Communication (IPC) mechanism
-+ * which enables communication between the Application Processor (AP), running
-+ * Linux, and the VPU, running a proprietary VPU firmware.
-+ *
-+ * The IPC uses the following terminology:
-+ *
-+ * - Node:    A processing entity that can use the IPC to communicate
-+ *	      (currently, we just have two nodes, the AP and the VPU).
-+ *
-+ * - Link:    Two nodes that can communicate over IPC form an IPC link
-+ *	      (currently, we just have one link, the one formed by the AP and
-+ *	      the VPU).
-+ *
-+ * - Channel: An IPC link can provide multiple IPC channels. IPC channels allow
-+ *            communication multiplexing, i.e., the same IPC link can be used
-+ *            by different applications for different communications. Each
-+ *            channel is identified by a channel ID, which must be unique
-+ *            within a single IPC link. Channels are divided in two categories,
-+ *            High-Speed (HS) channels and General-Purpose (GP) channels.
-+ *            HS channels have higher priority over GP channels.
-+ *
-+ * The VPU IPC mechanism is built on top of the VPU IPC mailbox, which allows
-+ * the AP and the VPU to exchange 32-bit messages. Specifically, the VPU IPC
-+ * mechanism uses shared memory (shared between the AP and the VPU) to allocate
-+ * IPC packets and then exchanges them using the VPU IPC mailbox (the 32-bit
-+ * physical address of the packet is passed as a message to the VPU IPC
-+ * mailbox).
-+ *
-+ * IPC packets have a fixed structure containing the (VPU) physical address of
-+ * the payload (which must be located in shared memory too) as well as other
-+ * information (payload size, IPC channel ID, etc.).
-+ *
-+ * Each IPC node (i.e., both the AP and the VPU) has its own reserved memory
-+ * region (in shared memory) from which it instantiates its own pool of IPC
-+ * packets.  When instantiated, IPC packets are marked as free. When the node
-+ * needs to send an IPC message, it gets the first free packet it finds (from
-+ * its own pool), marks it as allocated (used), and transfer its physical
-+ * address to the destination node using the VPU IPC mailbox. The destination
-+ * node uses the received physical address to access the IPC packet, process
-+ * the packet, and, once done with it, marks it as free (so that the sender can
-+ * reuse it).
-+ *
-+ * Note: Keem Bay IPC is not based on RPMsg, since VPU HW/FW does not support
-+ * Virtio and Virtqueues.
-+ */
-+
-+#include <linux/circ_buf.h>
-+#include <linux/completion.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/interrupt.h>
-+#include <linux/io.h>
-+#include <linux/jiffies.h>
-+#include <linux/kernel.h>
-+#include <linux/kthread.h>
-+#include <linux/mailbox_client.h>
-+#include <linux/mailbox_controller.h> /* Needed for MBOX_TX_QUEUE_LEN. */
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/of_device.h>
-+#include <linux/of_irq.h>
-+#include <linux/of_reserved_mem.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <linux/wait.h>
-+
-+#include <linux/soc/intel/keembay-ipc.h>
-+
-+#define DRV_NAME		"keembay-ipc"
-+
-+/* The alignment to be used for IPC Packets and IPC Data. */
-+#define KMB_IPC_ALIGNMENT	64
-+
-+/* Maximum number of channels per link. */
-+#define KMB_IPC_MAX_CHANNELS	1024
-+
-+/* The number of high-speed channels per link. */
-+#define KMB_IPC_NUM_HS_CHANNELS	10
-+
-+/*
-+ * This is used as index for retrieving reserved memory from the device
-+ * tree.
-+ */
-+#define RSVD_MEM_IDX_CPU_PKTS	0
-+#define RSVD_MEM_IDX_VPU_PKTS	1
-+
-+/* The possible states of an IPC packet. */
-+enum {
-+	/*
-+	 * KMB_IPC_PKT_FREE must be set to 0 to ensure that packets can be
-+	 * initialized with memset(&buf, 0, sizeof(buf)).
-+	 */
-+	KMB_IPC_PKT_FREE = 0,
-+	KMB_IPC_PKT_ALLOCATED,
+ ACCES PCI-IDIO-16 GPIO DRIVER
+diff --git a/drivers/counter/104-quad-8.c b/drivers/counter/104-quad-8.c
+index 78766b6ec271..9691f8612be8 100644
+--- a/drivers/counter/104-quad-8.c
++++ b/drivers/counter/104-quad-8.c
+@@ -9,8 +9,6 @@
+ #include <linux/counter.h>
+ #include <linux/device.h>
+ #include <linux/errno.h>
+-#include <linux/iio/iio.h>
+-#include <linux/iio/types.h>
+ #include <linux/io.h>
+ #include <linux/ioport.h>
+ #include <linux/isa.h>
+@@ -29,7 +27,7 @@ MODULE_PARM_DESC(base, "ACCES 104-QUAD-8 base addresses");
+ #define QUAD8_NUM_COUNTERS 8
+ 
+ /**
+- * struct quad8_iio - IIO device private data structure
++ * struct quad8 - device private data structure
+  * @counter:		instance of the counter_device
+  * @fck_prescaler:	array of filter clock prescaler configurations
+  * @preset:		array of preset values
+@@ -41,9 +39,9 @@ MODULE_PARM_DESC(base, "ACCES 104-QUAD-8 base addresses");
+  * @synchronous_mode:	array of index function synchronous mode configurations
+  * @index_polarity:	array of index function polarity configurations
+  * @cable_fault_enable:	differential encoder cable status enable configurations
+- * @base:		base port address of the IIO device
++ * @base:		base port address of the device
+  */
+-struct quad8_iio {
++struct quad8 {
+ 	struct mutex lock;
+ 	struct counter_device counter;
+ 	unsigned int fck_prescaler[QUAD8_NUM_COUNTERS];
+@@ -98,532 +96,10 @@ struct quad8_iio {
+ #define QUAD8_CMR_QUADRATURE_X2 0x10
+ #define QUAD8_CMR_QUADRATURE_X4 0x18
+ 
+-
+-static int quad8_read_raw(struct iio_dev *indio_dev,
+-	struct iio_chan_spec const *chan, int *val, int *val2, long mask)
+-{
+-	struct quad8_iio *const priv = iio_priv(indio_dev);
+-	const int base_offset = priv->base + 2 * chan->channel;
+-	unsigned int flags;
+-	unsigned int borrow;
+-	unsigned int carry;
+-	int i;
+-
+-	switch (mask) {
+-	case IIO_CHAN_INFO_RAW:
+-		if (chan->type == IIO_INDEX) {
+-			*val = !!(inb(priv->base + QUAD8_REG_INDEX_INPUT_LEVELS)
+-				& BIT(chan->channel));
+-			return IIO_VAL_INT;
+-		}
+-
+-		flags = inb(base_offset + 1);
+-		borrow = flags & QUAD8_FLAG_BT;
+-		carry = !!(flags & QUAD8_FLAG_CT);
+-
+-		/* Borrow XOR Carry effectively doubles count range */
+-		*val = (borrow ^ carry) << 24;
+-
+-		mutex_lock(&priv->lock);
+-
+-		/* Reset Byte Pointer; transfer Counter to Output Latch */
+-		outb(QUAD8_CTR_RLD | QUAD8_RLD_RESET_BP | QUAD8_RLD_CNTR_OUT,
+-		     base_offset + 1);
+-
+-		for (i = 0; i < 3; i++)
+-			*val |= (unsigned int)inb(base_offset) << (8 * i);
+-
+-		mutex_unlock(&priv->lock);
+-
+-		return IIO_VAL_INT;
+-	case IIO_CHAN_INFO_ENABLE:
+-		*val = priv->ab_enable[chan->channel];
+-		return IIO_VAL_INT;
+-	case IIO_CHAN_INFO_SCALE:
+-		*val = 1;
+-		*val2 = priv->quadrature_scale[chan->channel];
+-		return IIO_VAL_FRACTIONAL_LOG2;
+-	}
+-
+-	return -EINVAL;
+-}
+-
+-static int quad8_write_raw(struct iio_dev *indio_dev,
+-	struct iio_chan_spec const *chan, int val, int val2, long mask)
+-{
+-	struct quad8_iio *const priv = iio_priv(indio_dev);
+-	const int base_offset = priv->base + 2 * chan->channel;
+-	int i;
+-	unsigned int ior_cfg;
+-
+-	switch (mask) {
+-	case IIO_CHAN_INFO_RAW:
+-		if (chan->type == IIO_INDEX)
+-			return -EINVAL;
+-
+-		/* Only 24-bit values are supported */
+-		if ((unsigned int)val > 0xFFFFFF)
+-			return -EINVAL;
+-
+-		mutex_lock(&priv->lock);
+-
+-		/* Reset Byte Pointer */
+-		outb(QUAD8_CTR_RLD | QUAD8_RLD_RESET_BP, base_offset + 1);
+-
+-		/* Counter can only be set via Preset Register */
+-		for (i = 0; i < 3; i++)
+-			outb(val >> (8 * i), base_offset);
+-
+-		/* Transfer Preset Register to Counter */
+-		outb(QUAD8_CTR_RLD | QUAD8_RLD_PRESET_CNTR, base_offset + 1);
+-
+-		/* Reset Byte Pointer */
+-		outb(QUAD8_CTR_RLD | QUAD8_RLD_RESET_BP, base_offset + 1);
+-
+-		/* Set Preset Register back to original value */
+-		val = priv->preset[chan->channel];
+-		for (i = 0; i < 3; i++)
+-			outb(val >> (8 * i), base_offset);
+-
+-		/* Reset Borrow, Carry, Compare, and Sign flags */
+-		outb(QUAD8_CTR_RLD | QUAD8_RLD_RESET_FLAGS, base_offset + 1);
+-		/* Reset Error flag */
+-		outb(QUAD8_CTR_RLD | QUAD8_RLD_RESET_E, base_offset + 1);
+-
+-		mutex_unlock(&priv->lock);
+-
+-		return 0;
+-	case IIO_CHAN_INFO_ENABLE:
+-		/* only boolean values accepted */
+-		if (val < 0 || val > 1)
+-			return -EINVAL;
+-
+-		mutex_lock(&priv->lock);
+-
+-		priv->ab_enable[chan->channel] = val;
+-
+-		ior_cfg = val | priv->preset_enable[chan->channel] << 1;
+-
+-		/* Load I/O control configuration */
+-		outb(QUAD8_CTR_IOR | ior_cfg, base_offset + 1);
+-
+-		mutex_unlock(&priv->lock);
+-
+-		return 0;
+-	case IIO_CHAN_INFO_SCALE:
+-		mutex_lock(&priv->lock);
+-
+-		/* Quadrature scaling only available in quadrature mode */
+-		if (!priv->quadrature_mode[chan->channel] &&
+-				(val2 || val != 1)) {
+-			mutex_unlock(&priv->lock);
+-			return -EINVAL;
+-		}
+-
+-		/* Only three gain states (1, 0.5, 0.25) */
+-		if (val == 1 && !val2)
+-			priv->quadrature_scale[chan->channel] = 0;
+-		else if (!val)
+-			switch (val2) {
+-			case 500000:
+-				priv->quadrature_scale[chan->channel] = 1;
+-				break;
+-			case 250000:
+-				priv->quadrature_scale[chan->channel] = 2;
+-				break;
+-			default:
+-				mutex_unlock(&priv->lock);
+-				return -EINVAL;
+-			}
+-		else {
+-			mutex_unlock(&priv->lock);
+-			return -EINVAL;
+-		}
+-
+-		mutex_unlock(&priv->lock);
+-		return 0;
+-	}
+-
+-	return -EINVAL;
+-}
+-
+-static const struct iio_info quad8_info = {
+-	.read_raw = quad8_read_raw,
+-	.write_raw = quad8_write_raw
+-};
+-
+-static ssize_t quad8_read_preset(struct iio_dev *indio_dev, uintptr_t private,
+-	const struct iio_chan_spec *chan, char *buf)
+-{
+-	const struct quad8_iio *const priv = iio_priv(indio_dev);
+-
+-	return snprintf(buf, PAGE_SIZE, "%u\n", priv->preset[chan->channel]);
+-}
+-
+-static ssize_t quad8_write_preset(struct iio_dev *indio_dev, uintptr_t private,
+-	const struct iio_chan_spec *chan, const char *buf, size_t len)
+-{
+-	struct quad8_iio *const priv = iio_priv(indio_dev);
+-	const int base_offset = priv->base + 2 * chan->channel;
+-	unsigned int preset;
+-	int ret;
+-	int i;
+-
+-	ret = kstrtouint(buf, 0, &preset);
+-	if (ret)
+-		return ret;
+-
+-	/* Only 24-bit values are supported */
+-	if (preset > 0xFFFFFF)
+-		return -EINVAL;
+-
+-	mutex_lock(&priv->lock);
+-
+-	priv->preset[chan->channel] = preset;
+-
+-	/* Reset Byte Pointer */
+-	outb(QUAD8_CTR_RLD | QUAD8_RLD_RESET_BP, base_offset + 1);
+-
+-	/* Set Preset Register */
+-	for (i = 0; i < 3; i++)
+-		outb(preset >> (8 * i), base_offset);
+-
+-	mutex_unlock(&priv->lock);
+-
+-	return len;
+-}
+-
+-static ssize_t quad8_read_set_to_preset_on_index(struct iio_dev *indio_dev,
+-	uintptr_t private, const struct iio_chan_spec *chan, char *buf)
+-{
+-	const struct quad8_iio *const priv = iio_priv(indio_dev);
+-
+-	return snprintf(buf, PAGE_SIZE, "%u\n",
+-		!priv->preset_enable[chan->channel]);
+-}
+-
+-static ssize_t quad8_write_set_to_preset_on_index(struct iio_dev *indio_dev,
+-	uintptr_t private, const struct iio_chan_spec *chan, const char *buf,
+-	size_t len)
+-{
+-	struct quad8_iio *const priv = iio_priv(indio_dev);
+-	const int base_offset = priv->base + 2 * chan->channel + 1;
+-	bool preset_enable;
+-	int ret;
+-	unsigned int ior_cfg;
+-
+-	ret = kstrtobool(buf, &preset_enable);
+-	if (ret)
+-		return ret;
+-
+-	/* Preset enable is active low in Input/Output Control register */
+-	preset_enable = !preset_enable;
+-
+-	mutex_lock(&priv->lock);
+-
+-	priv->preset_enable[chan->channel] = preset_enable;
+-
+-	ior_cfg = priv->ab_enable[chan->channel] |
+-		(unsigned int)preset_enable << 1;
+-
+-	/* Load I/O control configuration to Input / Output Control Register */
+-	outb(QUAD8_CTR_IOR | ior_cfg, base_offset);
+-
+-	mutex_unlock(&priv->lock);
+-
+-	return len;
+-}
+-
+-static const char *const quad8_noise_error_states[] = {
+-	"No excessive noise is present at the count inputs",
+-	"Excessive noise is present at the count inputs"
+-};
+-
+-static int quad8_get_noise_error(struct iio_dev *indio_dev,
+-	const struct iio_chan_spec *chan)
+-{
+-	struct quad8_iio *const priv = iio_priv(indio_dev);
+-	const int base_offset = priv->base + 2 * chan->channel + 1;
+-
+-	return !!(inb(base_offset) & QUAD8_FLAG_E);
+-}
+-
+-static const struct iio_enum quad8_noise_error_enum = {
+-	.items = quad8_noise_error_states,
+-	.num_items = ARRAY_SIZE(quad8_noise_error_states),
+-	.get = quad8_get_noise_error
+-};
+-
+-static const char *const quad8_count_direction_states[] = {
+-	"down",
+-	"up"
+-};
+-
+-static int quad8_get_count_direction(struct iio_dev *indio_dev,
+-	const struct iio_chan_spec *chan)
+-{
+-	struct quad8_iio *const priv = iio_priv(indio_dev);
+-	const int base_offset = priv->base + 2 * chan->channel + 1;
+-
+-	return !!(inb(base_offset) & QUAD8_FLAG_UD);
+-}
+-
+-static const struct iio_enum quad8_count_direction_enum = {
+-	.items = quad8_count_direction_states,
+-	.num_items = ARRAY_SIZE(quad8_count_direction_states),
+-	.get = quad8_get_count_direction
+-};
+-
+-static const char *const quad8_count_modes[] = {
+-	"normal",
+-	"range limit",
+-	"non-recycle",
+-	"modulo-n"
+-};
+-
+-static int quad8_set_count_mode(struct iio_dev *indio_dev,
+-	const struct iio_chan_spec *chan, unsigned int cnt_mode)
+-{
+-	struct quad8_iio *const priv = iio_priv(indio_dev);
+-	unsigned int mode_cfg = cnt_mode << 1;
+-	const int base_offset = priv->base + 2 * chan->channel + 1;
+-
+-	mutex_lock(&priv->lock);
+-
+-	priv->count_mode[chan->channel] = cnt_mode;
+-
+-	/* Add quadrature mode configuration */
+-	if (priv->quadrature_mode[chan->channel])
+-		mode_cfg |= (priv->quadrature_scale[chan->channel] + 1) << 3;
+-
+-	/* Load mode configuration to Counter Mode Register */
+-	outb(QUAD8_CTR_CMR | mode_cfg, base_offset);
+-
+-	mutex_unlock(&priv->lock);
+-
+-	return 0;
+-}
+-
+-static int quad8_get_count_mode(struct iio_dev *indio_dev,
+-	const struct iio_chan_spec *chan)
+-{
+-	const struct quad8_iio *const priv = iio_priv(indio_dev);
+-
+-	return priv->count_mode[chan->channel];
+-}
+-
+-static const struct iio_enum quad8_count_mode_enum = {
+-	.items = quad8_count_modes,
+-	.num_items = ARRAY_SIZE(quad8_count_modes),
+-	.set = quad8_set_count_mode,
+-	.get = quad8_get_count_mode
+-};
+-
+-static const char *const quad8_synchronous_modes[] = {
+-	"non-synchronous",
+-	"synchronous"
+-};
+-
+-static int quad8_set_synchronous_mode(struct iio_dev *indio_dev,
+-	const struct iio_chan_spec *chan, unsigned int synchronous_mode)
+-{
+-	struct quad8_iio *const priv = iio_priv(indio_dev);
+-	const int base_offset = priv->base + 2 * chan->channel + 1;
+-	unsigned int idr_cfg = synchronous_mode;
+-
+-	mutex_lock(&priv->lock);
+-
+-	idr_cfg |= priv->index_polarity[chan->channel] << 1;
+-
+-	/* Index function must be non-synchronous in non-quadrature mode */
+-	if (synchronous_mode && !priv->quadrature_mode[chan->channel]) {
+-		mutex_unlock(&priv->lock);
+-		return -EINVAL;
+-	}
+-
+-	priv->synchronous_mode[chan->channel] = synchronous_mode;
+-
+-	/* Load Index Control configuration to Index Control Register */
+-	outb(QUAD8_CTR_IDR | idr_cfg, base_offset);
+-
+-	mutex_unlock(&priv->lock);
+-
+-	return 0;
+-}
+-
+-static int quad8_get_synchronous_mode(struct iio_dev *indio_dev,
+-	const struct iio_chan_spec *chan)
+-{
+-	const struct quad8_iio *const priv = iio_priv(indio_dev);
+-
+-	return priv->synchronous_mode[chan->channel];
+-}
+-
+-static const struct iio_enum quad8_synchronous_mode_enum = {
+-	.items = quad8_synchronous_modes,
+-	.num_items = ARRAY_SIZE(quad8_synchronous_modes),
+-	.set = quad8_set_synchronous_mode,
+-	.get = quad8_get_synchronous_mode
+-};
+-
+-static const char *const quad8_quadrature_modes[] = {
+-	"non-quadrature",
+-	"quadrature"
+-};
+-
+-static int quad8_set_quadrature_mode(struct iio_dev *indio_dev,
+-	const struct iio_chan_spec *chan, unsigned int quadrature_mode)
+-{
+-	struct quad8_iio *const priv = iio_priv(indio_dev);
+-	const int base_offset = priv->base + 2 * chan->channel + 1;
+-	unsigned int mode_cfg;
+-
+-	mutex_lock(&priv->lock);
+-
+-	mode_cfg = priv->count_mode[chan->channel] << 1;
+-
+-	if (quadrature_mode)
+-		mode_cfg |= (priv->quadrature_scale[chan->channel] + 1) << 3;
+-	else {
+-		/* Quadrature scaling only available in quadrature mode */
+-		priv->quadrature_scale[chan->channel] = 0;
+-
+-		/* Synchronous function not supported in non-quadrature mode */
+-		if (priv->synchronous_mode[chan->channel])
+-			quad8_set_synchronous_mode(indio_dev, chan, 0);
+-	}
+-
+-	priv->quadrature_mode[chan->channel] = quadrature_mode;
+-
+-	/* Load mode configuration to Counter Mode Register */
+-	outb(QUAD8_CTR_CMR | mode_cfg, base_offset);
+-
+-	mutex_unlock(&priv->lock);
+-
+-	return 0;
+-}
+-
+-static int quad8_get_quadrature_mode(struct iio_dev *indio_dev,
+-	const struct iio_chan_spec *chan)
+-{
+-	const struct quad8_iio *const priv = iio_priv(indio_dev);
+-
+-	return priv->quadrature_mode[chan->channel];
+-}
+-
+-static const struct iio_enum quad8_quadrature_mode_enum = {
+-	.items = quad8_quadrature_modes,
+-	.num_items = ARRAY_SIZE(quad8_quadrature_modes),
+-	.set = quad8_set_quadrature_mode,
+-	.get = quad8_get_quadrature_mode
+-};
+-
+-static const char *const quad8_index_polarity_modes[] = {
+-	"negative",
+-	"positive"
+-};
+-
+-static int quad8_set_index_polarity(struct iio_dev *indio_dev,
+-	const struct iio_chan_spec *chan, unsigned int index_polarity)
+-{
+-	struct quad8_iio *const priv = iio_priv(indio_dev);
+-	const int base_offset = priv->base + 2 * chan->channel + 1;
+-	unsigned int idr_cfg = index_polarity << 1;
+-
+-	mutex_lock(&priv->lock);
+-
+-	idr_cfg |= priv->synchronous_mode[chan->channel];
+-
+-	priv->index_polarity[chan->channel] = index_polarity;
+-
+-	/* Load Index Control configuration to Index Control Register */
+-	outb(QUAD8_CTR_IDR | idr_cfg, base_offset);
+-
+-	mutex_unlock(&priv->lock);
+-
+-	return 0;
+-}
+-
+-static int quad8_get_index_polarity(struct iio_dev *indio_dev,
+-	const struct iio_chan_spec *chan)
+-{
+-	const struct quad8_iio *const priv = iio_priv(indio_dev);
+-
+-	return priv->index_polarity[chan->channel];
+-}
+-
+-static const struct iio_enum quad8_index_polarity_enum = {
+-	.items = quad8_index_polarity_modes,
+-	.num_items = ARRAY_SIZE(quad8_index_polarity_modes),
+-	.set = quad8_set_index_polarity,
+-	.get = quad8_get_index_polarity
+-};
+-
+-static const struct iio_chan_spec_ext_info quad8_count_ext_info[] = {
+-	{
+-		.name = "preset",
+-		.shared = IIO_SEPARATE,
+-		.read = quad8_read_preset,
+-		.write = quad8_write_preset
+-	},
+-	{
+-		.name = "set_to_preset_on_index",
+-		.shared = IIO_SEPARATE,
+-		.read = quad8_read_set_to_preset_on_index,
+-		.write = quad8_write_set_to_preset_on_index
+-	},
+-	IIO_ENUM("noise_error", IIO_SEPARATE, &quad8_noise_error_enum),
+-	IIO_ENUM_AVAILABLE("noise_error", &quad8_noise_error_enum),
+-	IIO_ENUM("count_direction", IIO_SEPARATE, &quad8_count_direction_enum),
+-	IIO_ENUM_AVAILABLE("count_direction", &quad8_count_direction_enum),
+-	IIO_ENUM("count_mode", IIO_SEPARATE, &quad8_count_mode_enum),
+-	IIO_ENUM_AVAILABLE("count_mode", &quad8_count_mode_enum),
+-	IIO_ENUM("quadrature_mode", IIO_SEPARATE, &quad8_quadrature_mode_enum),
+-	IIO_ENUM_AVAILABLE("quadrature_mode", &quad8_quadrature_mode_enum),
+-	{}
+-};
+-
+-static const struct iio_chan_spec_ext_info quad8_index_ext_info[] = {
+-	IIO_ENUM("synchronous_mode", IIO_SEPARATE,
+-		&quad8_synchronous_mode_enum),
+-	IIO_ENUM_AVAILABLE("synchronous_mode", &quad8_synchronous_mode_enum),
+-	IIO_ENUM("index_polarity", IIO_SEPARATE, &quad8_index_polarity_enum),
+-	IIO_ENUM_AVAILABLE("index_polarity", &quad8_index_polarity_enum),
+-	{}
+-};
+-
+-#define QUAD8_COUNT_CHAN(_chan) {					\
+-	.type = IIO_COUNT,						\
+-	.channel = (_chan),						\
+-	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |			\
+-		BIT(IIO_CHAN_INFO_ENABLE) | BIT(IIO_CHAN_INFO_SCALE),	\
+-	.ext_info = quad8_count_ext_info,				\
+-	.indexed = 1							\
+-}
+-
+-#define QUAD8_INDEX_CHAN(_chan) {			\
+-	.type = IIO_INDEX,				\
+-	.channel = (_chan),				\
+-	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),	\
+-	.ext_info = quad8_index_ext_info,		\
+-	.indexed = 1					\
+-}
+-
+-static const struct iio_chan_spec quad8_channels[] = {
+-	QUAD8_COUNT_CHAN(0), QUAD8_INDEX_CHAN(0),
+-	QUAD8_COUNT_CHAN(1), QUAD8_INDEX_CHAN(1),
+-	QUAD8_COUNT_CHAN(2), QUAD8_INDEX_CHAN(2),
+-	QUAD8_COUNT_CHAN(3), QUAD8_INDEX_CHAN(3),
+-	QUAD8_COUNT_CHAN(4), QUAD8_INDEX_CHAN(4),
+-	QUAD8_COUNT_CHAN(5), QUAD8_INDEX_CHAN(5),
+-	QUAD8_COUNT_CHAN(6), QUAD8_INDEX_CHAN(6),
+-	QUAD8_COUNT_CHAN(7), QUAD8_INDEX_CHAN(7)
+-};
+-
+ static int quad8_signal_read(struct counter_device *counter,
+ 	struct counter_signal *signal, enum counter_signal_value *val)
+ {
+-	const struct quad8_iio *const priv = counter->priv;
++	const struct quad8 *const priv = counter->priv;
+ 	unsigned int state;
+ 
+ 	/* Only Index signal levels can be read */
+@@ -641,7 +117,7 @@ static int quad8_signal_read(struct counter_device *counter,
+ static int quad8_count_read(struct counter_device *counter,
+ 	struct counter_count *count, unsigned long *val)
+ {
+-	struct quad8_iio *const priv = counter->priv;
++	struct quad8 *const priv = counter->priv;
+ 	const int base_offset = priv->base + 2 * count->id;
+ 	unsigned int flags;
+ 	unsigned int borrow;
+@@ -672,7 +148,7 @@ static int quad8_count_read(struct counter_device *counter,
+ static int quad8_count_write(struct counter_device *counter,
+ 	struct counter_count *count, unsigned long val)
+ {
+-	struct quad8_iio *const priv = counter->priv;
++	struct quad8 *const priv = counter->priv;
+ 	const int base_offset = priv->base + 2 * count->id;
+ 	int i;
+ 
+@@ -727,7 +203,7 @@ static enum counter_count_function quad8_count_functions_list[] = {
+ static int quad8_function_get(struct counter_device *counter,
+ 	struct counter_count *count, size_t *function)
+ {
+-	struct quad8_iio *const priv = counter->priv;
++	struct quad8 *const priv = counter->priv;
+ 	const int id = count->id;
+ 
+ 	mutex_lock(&priv->lock);
+@@ -755,7 +231,7 @@ static int quad8_function_get(struct counter_device *counter,
+ static int quad8_function_set(struct counter_device *counter,
+ 	struct counter_count *count, size_t function)
+ {
+-	struct quad8_iio *const priv = counter->priv;
++	struct quad8 *const priv = counter->priv;
+ 	const int id = count->id;
+ 	unsigned int *const quadrature_mode = priv->quadrature_mode + id;
+ 	unsigned int *const scale = priv->quadrature_scale + id;
+@@ -811,7 +287,7 @@ static int quad8_function_set(struct counter_device *counter,
+ static void quad8_direction_get(struct counter_device *counter,
+ 	struct counter_count *count, enum counter_count_direction *direction)
+ {
+-	const struct quad8_iio *const priv = counter->priv;
++	const struct quad8 *const priv = counter->priv;
+ 	unsigned int ud_flag;
+ 	const unsigned int flag_addr = priv->base + 2 * count->id + 1;
+ 
+@@ -845,7 +321,7 @@ static int quad8_action_get(struct counter_device *counter,
+ 	struct counter_count *count, struct counter_synapse *synapse,
+ 	size_t *action)
+ {
+-	struct quad8_iio *const priv = counter->priv;
++	struct quad8 *const priv = counter->priv;
+ 	int err;
+ 	size_t function = 0;
+ 	const size_t signal_a_id = count->synapses[0].signal->id;
+@@ -905,10 +381,15 @@ static const struct counter_ops quad8_ops = {
+ 	.action_get = quad8_action_get
+ };
+ 
++static const char *const quad8_index_polarity_modes[] = {
++	"negative",
++	"positive"
 +};
 +
-+/**
-+ * struct kmb_ipc_pkt - The IPC packet structure.
-+ * @data_addr:	The address where the IPC payload is located; NOTE: this is a
-+ *		VPU address (not a CPU one).
-+ * @data_size:	The size of the payload.
-+ * @channel:	The channel used.
-+ * @src_node:	The Node ID of the sender.
-+ * @dst_node:	The Node ID of the intended receiver.
-+ * @status:	Either free or allocated.
-+ */
-+struct kmb_ipc_pkt {
-+	u32	data_addr;
-+	u32	data_size;
-+	u16	channel;
-+	u8	src_node;
-+	u8	dst_node;
-+	u8	status;
-+} __packed __aligned(KMB_IPC_ALIGNMENT);
-+
-+/**
-+ * struct ipc_pkt_mem - IPC Packet Memory Region.
-+ * @dev:	Child device managing the memory region.
-+ * @vaddr:	The virtual address of the memory region.
-+ * @dma_handle:	The VPU address of the memory region.
-+ * @size:	The size of the memory region.
-+ */
-+struct ipc_pkt_mem {
-+	struct device	*dev;
-+	void		*vaddr;
-+	dma_addr_t	dma_handle;
-+	size_t		size;
+ static int quad8_index_polarity_get(struct counter_device *counter,
+ 	struct counter_signal *signal, size_t *index_polarity)
+ {
+-	const struct quad8_iio *const priv = counter->priv;
++	const struct quad8 *const priv = counter->priv;
+ 	const size_t channel_id = signal->id - 16;
+ 
+ 	*index_polarity = priv->index_polarity[channel_id];
+@@ -919,7 +400,7 @@ static int quad8_index_polarity_get(struct counter_device *counter,
+ static int quad8_index_polarity_set(struct counter_device *counter,
+ 	struct counter_signal *signal, size_t index_polarity)
+ {
+-	struct quad8_iio *const priv = counter->priv;
++	struct quad8 *const priv = counter->priv;
+ 	const size_t channel_id = signal->id - 16;
+ 	const int base_offset = priv->base + 2 * channel_id + 1;
+ 	unsigned int idr_cfg = index_polarity << 1;
+@@ -945,10 +426,15 @@ static struct counter_signal_enum_ext quad8_index_pol_enum = {
+ 	.set = quad8_index_polarity_set
+ };
+ 
++static const char *const quad8_synchronous_modes[] = {
++	"non-synchronous",
++	"synchronous"
 +};
 +
-+/**
-+ * struct ipc_pkt_pool - IPC packet pool.
-+ * @packets:	Pointer to the array of packets.
-+ * @buf_cnt:	Pool size (i.e., number of packets).
-+ * @idx:	Current index.
-+ */
-+struct ipc_pkt_pool {
-+	struct kmb_ipc_pkt	*packets;
-+	size_t			buf_cnt;
-+	size_t			idx;
+ static int quad8_synchronous_mode_get(struct counter_device *counter,
+ 	struct counter_signal *signal, size_t *synchronous_mode)
+ {
+-	const struct quad8_iio *const priv = counter->priv;
++	const struct quad8 *const priv = counter->priv;
+ 	const size_t channel_id = signal->id - 16;
+ 
+ 	*synchronous_mode = priv->synchronous_mode[channel_id];
+@@ -959,7 +445,7 @@ static int quad8_synchronous_mode_get(struct counter_device *counter,
+ static int quad8_synchronous_mode_set(struct counter_device *counter,
+ 	struct counter_signal *signal, size_t synchronous_mode)
+ {
+-	struct quad8_iio *const priv = counter->priv;
++	struct quad8 *const priv = counter->priv;
+ 	const size_t channel_id = signal->id - 16;
+ 	const int base_offset = priv->base + 2 * channel_id + 1;
+ 	unsigned int idr_cfg = synchronous_mode;
+@@ -1001,7 +487,7 @@ static ssize_t quad8_count_floor_read(struct counter_device *counter,
+ static int quad8_count_mode_get(struct counter_device *counter,
+ 	struct counter_count *count, size_t *cnt_mode)
+ {
+-	const struct quad8_iio *const priv = counter->priv;
++	const struct quad8 *const priv = counter->priv;
+ 
+ 	/* Map 104-QUAD-8 count mode to Generic Counter count mode */
+ 	switch (priv->count_mode[count->id]) {
+@@ -1025,7 +511,7 @@ static int quad8_count_mode_get(struct counter_device *counter,
+ static int quad8_count_mode_set(struct counter_device *counter,
+ 	struct counter_count *count, size_t cnt_mode)
+ {
+-	struct quad8_iio *const priv = counter->priv;
++	struct quad8 *const priv = counter->priv;
+ 	unsigned int mode_cfg;
+ 	const int base_offset = priv->base + 2 * count->id + 1;
+ 
+@@ -1084,7 +570,7 @@ static ssize_t quad8_count_direction_read(struct counter_device *counter,
+ static ssize_t quad8_count_enable_read(struct counter_device *counter,
+ 	struct counter_count *count, void *private, char *buf)
+ {
+-	const struct quad8_iio *const priv = counter->priv;
++	const struct quad8 *const priv = counter->priv;
+ 
+ 	return sprintf(buf, "%u\n", priv->ab_enable[count->id]);
+ }
+@@ -1092,7 +578,7 @@ static ssize_t quad8_count_enable_read(struct counter_device *counter,
+ static ssize_t quad8_count_enable_write(struct counter_device *counter,
+ 	struct counter_count *count, void *private, const char *buf, size_t len)
+ {
+-	struct quad8_iio *const priv = counter->priv;
++	struct quad8 *const priv = counter->priv;
+ 	const int base_offset = priv->base + 2 * count->id;
+ 	int err;
+ 	bool ab_enable;
+@@ -1116,10 +602,15 @@ static ssize_t quad8_count_enable_write(struct counter_device *counter,
+ 	return len;
+ }
+ 
++static const char *const quad8_noise_error_states[] = {
++	"No excessive noise is present at the count inputs",
++	"Excessive noise is present at the count inputs"
 +};
 +
-+/**
-+ * struct ipc_chan - IPC channel.
-+ * @rx_data_list:	The list of incoming messages.
-+ * @rx_lock:		The lock for modifying the rx_data_list.
-+ * @rx_wait_queue:	The wait queue for RX Data (recv() waits on it).
-+ * @closing:		Closing flag, set when the channel is being closed.
-+ */
-+struct ipc_chan {
-+	struct list_head	rx_data_list;
-+	spinlock_t		rx_lock; /* Protects 'rx_data_list'. */
-+	wait_queue_head_t	rx_wait_queue;
-+	bool			closing;
-+};
-+
-+/**
-+ * struct tx_data - Element of a TX queue.
-+ * @list:	The list head used to concatenate TX data elements.
-+ * @vpu_addr:	The VPU address of the data to be transferred.
-+ * @size:	The size of the data to be transferred.
-+ * @chan_id:	The channel to be used for the transfer.
-+ * @dst_node:	The destination node.
-+ * @retv:	The result of the transfer.
-+ * @tx_done:	The completion struct used by the sender to wait for the
-+ *		transfer to complete.
-+ * @entry:	The IPC packet VPU address to be sent to the VPU (this field is
-+ *		set by tx_data_send() and used by ipc_mbox_tx_done() to get a
-+ *		reference to the associated tx_data struct).
-+ */
-+struct tx_data {
-+	struct	list_head list;
-+	u32	vpu_addr;
-+	u32	size;
-+	u16	chan_id;
-+	u8	dst_node;
-+	int	retv;
-+	struct	completion tx_done;
-+	u32	entry;
-+};
-+
-+/**
-+ * struct tx_queue - The TX queue structure.
-+ * @tx_data_list: The list of pending TX data on this queue.
-+ * @lock:	  The lock protecting the TX data list.
-+ */
-+struct tx_queue {
-+	struct list_head	tx_data_list;
-+	spinlock_t		lock;	/* Protects tx_data_list. */
-+};
-+
-+/**
-+ * struct ipc_link - An IPC link.
-+ * @mbox_cl:	   The mailbox client associated with this link.
-+ * @mbox_chan:	   The mailbox channel associated with this link.
-+ * @mbox_tx_queue: The completion used to avoid overflowing the mailbox
-+ *		   framework queue (MBOX_TX_QUEUE_LEN), which will result in
-+ *		   IPC packets being dropped.
-+ * @channels:	   The channels associated with this link (the pointers to the
-+ *		   channels are RCU-protected).
-+ * @chan_lock:	   The lock for modifying the channels array.
-+ * @srcu_sp:	   The Sleepable RCU structs associated with the link's
-+ *		   channels.
-+ * @tx_queues:	   The TX queues for this link (1 queue for each high-speed
-+ *		   channels + 1 shared among all the general-purpose channels).
-+ * @tx_qidx:	   The index of the next tx_queue to be check for outgoing data.
-+ * @tx_queued:	   The TX completion used to signal when new TX data is pending.
-+ * @tx_thread:	   The TX thread.
-+ * @tx_stopping:   Flag signaling that the IPC Link is being closed.
-+ */
-+struct ipc_link {
-+	struct mbox_client	mbox_cl;
-+	struct mbox_chan	*mbox_chan;
-+	struct completion       mbox_tx_queue;
-+	struct ipc_chan __rcu	*channels[KMB_IPC_MAX_CHANNELS];
-+	spinlock_t		chan_lock; /* Protects 'channels'. */
-+	struct srcu_struct	srcu_sp[KMB_IPC_MAX_CHANNELS];
-+	struct tx_queue		tx_queues[KMB_IPC_NUM_HS_CHANNELS + 1];
-+	int			tx_qidx;
-+	struct completion	tx_queued;
-+	struct task_struct	*tx_thread;
-+	bool			tx_stopping;
-+};
-+
-+/**
-+ * struct keembay_ipc_dev - IPC private data.
-+ *
-+ * @plat_dev: Platform device for this driver.
-+ * @cpu_ipc_mem:	    Local IPC Packet memory region.
-+ * @vpu_ipc_mem:	    Remove IPC Packet memory region.
-+ * @ipc_pkt_pool:	    The pool of IPC packets.
-+ * @vpu_link:		    The CPU-VPU link.
-+ */
-+struct keembay_ipc_dev {
-+	struct platform_device	*plat_dev;
-+	struct ipc_pkt_mem	cpu_ipc_mem;
-+	struct ipc_pkt_mem	vpu_ipc_mem;
-+	struct ipc_pkt_pool	ipc_pkt_pool;
-+	struct ipc_link		vpu_link;
-+};
-+
-+/**
-+ * struct rx_data - RX Data Descriptor.
-+ * @list:		List head for creating a list of rx_data elements.
-+ * @data_vpu_addr:	The VPU address of the received data.
-+ * @data_size:		The size of the received data.
-+ *
-+ * Instances of this struct are meant to be inserted in the RX Data queue
-+ * (list) associated with each channel.
-+ */
-+struct rx_data {
-+	struct list_head	list;
-+	u32			data_vpu_addr;
-+	u32			data_size;
-+};
-+
-+/* Forward declaration of TX thread function. */
-+static int tx_thread_fn(void *ptr);
-+
-+/* Forward declaration of mailbox client callbacks. */
-+static void ipc_mbox_rx_callback(struct mbox_client *cl, void *msg);
-+static void ipc_mbox_tx_done(struct mbox_client *cl, void *mssg, int r);
-+
-+/*
-+ * Functions related to reserved-memory sub-devices.
-+ */
-+
-+/*
-+ * init_ipc_rsvd_mem() - Init the specified IPC reserved memory.
-+ * @dev:	The IPC device for which the memory will be initialized.
-+ * @mem:	Where to stored information about the initialized memory.
-+ * @mem_name:	The name of this IPC memory.
-+ * @mem_idx:	The index of the memory to initialize.
-+ *
-+ * Create a child device for 'dev' and use it to initialize the reserved
-+ * memory region specified in the device tree at index 'mem_idx'.
-+ * Also allocate DMA memory from the initialized memory region.
-+ *
-+ * Return:	0 on success, negative error code otherwise.
-+ */
-+static int init_ipc_rsvd_mem(struct device *dev, struct ipc_pkt_mem *mem,
-+			     const char *mem_name, unsigned int mem_idx)
-+{
-+	struct device *mem_dev;
-+	struct device_node *np;
-+	struct resource mem_res;
-+	dma_addr_t dma_handle;
-+	size_t mem_size;
-+	void *vaddr;
-+	int rc;
-+
-+	/* Create a child device (of dev) to own the reserved memory. */
-+	mem_dev = devm_kzalloc(dev, sizeof(struct device), GFP_KERNEL);
-+	if (!mem_dev)
-+		return -ENOMEM;
-+
-+	device_initialize(mem_dev);
-+	dev_set_name(mem_dev, "%s:%s", dev_name(dev), mem_name);
-+	mem_dev->parent = dev;
-+	mem_dev->dma_mask = dev->dma_mask;
-+	mem_dev->coherent_dma_mask = dev->coherent_dma_mask;
-+	mem_dev->release = of_reserved_mem_device_release;
-+
-+	/* Set up DMA configuration using information from parent's DT node. */
-+	rc = of_dma_configure(mem_dev, dev->of_node, true);
-+	if (rc)
-+		goto err_add;
-+
-+	rc = device_add(mem_dev);
-+	if (rc)
-+		goto err_add;
-+
-+	/* Initialized the device reserved memory region. */
-+	rc = of_reserved_mem_device_init_by_idx(mem_dev, dev->of_node, mem_idx);
-+	if (rc) {
-+		dev_err(dev, "Couldn't get reserved memory with idx = %d, %d\n",
-+			mem_idx, rc);
-+		goto err_post_add;
-+	}
-+
-+	/* Find out the size of the memory region. */
-+	np = of_parse_phandle(dev->of_node, "memory-region", mem_idx);
-+	if (!np) {
-+		dev_err(dev, "Couldn't find memory-region %d\n", mem_idx);
-+		rc = -EINVAL;
-+		goto err_post_add;
-+	}
-+	rc = of_address_to_resource(np, 0, &mem_res);
-+	if (rc) {
-+		dev_err(dev, "Couldn't map address to resource %d\n", mem_idx);
-+		goto err_post_add;
-+	}
-+	mem_size = resource_size(&mem_res);
-+
-+	/* Allocate memory from the reserved memory regions */
-+	vaddr = dmam_alloc_coherent(mem_dev, mem_size, &dma_handle, GFP_KERNEL);
-+	if (!vaddr) {
-+		dev_err(mem_dev, "Failed to allocate from reserved memory.\n");
-+		rc = -ENOMEM;
-+		goto err_post_add;
-+	}
-+
-+	mem->dev = mem_dev;
-+	mem->vaddr = vaddr;
-+	mem->dma_handle = dma_handle;
-+	mem->size = mem_size;
-+
-+	return 0;
-+
-+err_post_add:
-+	device_del(mem_dev);
-+err_add:
-+	put_device(mem_dev);
-+	return rc;
-+}
-+
-+/*
-+ * IPC internal functions.
-+ */
-+
-+/**
-+ * channel_close() - Close a channel and return whether it was open or not.
-+ * @link:	The link the channel belongs to.
-+ * @chan_id:	The channel ID of the channel to close.
-+ *
-+ * Return:	0 if the channel was already closed, 1 otherwise.
-+ */
-+static int channel_close(struct ipc_link *link, u16 chan_id)
-+{
-+	struct ipc_chan *chan;
-+	struct rx_data *pos, *nxt;
-+
-+	/* Get channel from channel array. */
-+	spin_lock(&link->chan_lock);
-+	chan = rcu_dereference_protected(link->channels[chan_id],
-+					 lockdep_is_held(&link->chan_lock));
-+
-+	/* If channel is already NULL, we are done. */
-+	if (!chan) {
-+		spin_unlock(&link->chan_lock);
-+		return 0;
-+	}
-+
-+	/* Otherwise remove it from the 'channels' array. */
-+	RCU_INIT_POINTER(link->channels[chan_id], NULL);
-+	spin_unlock(&link->chan_lock);
-+
-+	/* Set closing flag and wake up user threads waiting on recv(). */
-+	chan->closing = true;
-+	wake_up_all(&chan->rx_wait_queue);
-+
-+	/* Wait for channel users to drop the reference to the old channel. */
-+	synchronize_srcu(&link->srcu_sp[chan_id]);
-+
-+	/* Free channel memory (rx_data queue and channel struct). */
-+	/*
-+	 * No need to get chan->rx_lock as we know that nobody is using the
-+	 * channel at this point.
-+	 */
-+	list_for_each_entry_safe(pos, nxt, &chan->rx_data_list, list) {
-+		list_del(&pos->list);
-+		kfree(pos);
-+	}
-+	kfree(chan);
-+
-+	return 1;
-+}
-+
-+/**
-+ * ipc_pkt_tx_alloc() - Allocate an IPC packet to be used for TX.
-+ * @pool:  The IPC packet pool from which the IPC packet will be allocated.
-+ *
-+ * Return: The pointer to the allocated packet, or NULL if allocation fails.
-+ */
-+static struct kmb_ipc_pkt *ipc_pkt_tx_alloc(struct ipc_pkt_pool *pool)
-+{
-+	struct kmb_ipc_pkt *buf;
-+	int i;
-+
-+	/*
-+	 * Look for a free packet starting from the last index (pointing to the
-+	 * next packet after the last allocated one) and potentially going
-+	 * through all the packets in the pool.
-+	 */
-+	for (i = 0; i < pool->buf_cnt; i++) {
-+		/*
-+		 * Get reference to current packet and increment index (for
-+		 * next iteration or function call).
-+		 */
-+		buf = &pool->packets[pool->idx++];
-+		if (pool->idx == pool->buf_cnt)
-+			pool->idx = 0;
-+
-+		/* Use current packet if free. */
-+		if (buf->status == KMB_IPC_PKT_FREE) {
-+			buf->status = KMB_IPC_PKT_ALLOCATED;
-+			return buf;
-+		}
-+	}
-+
-+	/* We went through all the packets and found none free. */
-+	return NULL;
-+}
-+
-+/**
-+ * init_ipc_pkt_pool() - Init the CPU IPC Packet Pool.
-+ * @ipc_dev:	The IPC device the pool belongs to.
-+ *
-+ * Set up the IPC Packet Pool to be used for allocating TX packets.
-+ *
-+ * The pool uses the CPU IPC Packet memory previously allocated.
-+ *
-+ * Return:	0 on success, negative error code otherwise.
-+ */
-+static int init_ipc_pkt_pool(struct keembay_ipc_dev *ipc_dev)
-+{
-+	struct ipc_pkt_mem *mem = &ipc_dev->cpu_ipc_mem;
-+
-+	ipc_dev->ipc_pkt_pool.buf_cnt = mem->size / sizeof(struct kmb_ipc_pkt);
-+
-+	/* Fail if we end up having a pool of 0 packets. */
-+	if (ipc_dev->ipc_pkt_pool.buf_cnt == 0)
-+		return -ENOMEM;
-+	/*
-+	 * Set reserved memory to 0 to initialize the IPC Packet array
-+	 * (ipc_pkt_pool.packets); this works because the value of
-+	 * KMB_IPC_PKT_FREE is 0.
-+	 */
-+	memset(mem->vaddr, 0, mem->size);
-+	ipc_dev->ipc_pkt_pool.packets = mem->vaddr;
-+	ipc_dev->ipc_pkt_pool.idx = 0;
-+
-+	return 0;
-+}
-+
-+/*
-+ * ipc_link_init() - Initialize CPU/VPU IPC link.
-+ * @ipc_dev: The IPC device the link belongs to.
-+ *
-+ * This function is expected to be called during probing.
-+ *
-+ * Return: 0 on success, negative error code otherwise.
-+ */
-+static int ipc_link_init(struct keembay_ipc_dev *ipc_dev)
-+{
-+	struct ipc_link *link = &ipc_dev->vpu_link;
-+	struct tx_queue *queue;
-+	int i;
-+
-+	/* Init mailbox client. */
-+	link->mbox_cl.dev = &ipc_dev->plat_dev->dev;
-+	link->mbox_cl.tx_block = false;
-+	link->mbox_cl.tx_tout = 0;
-+	link->mbox_cl.knows_txdone = false;
-+	link->mbox_cl.rx_callback = ipc_mbox_rx_callback;
-+	link->mbox_cl.tx_prepare = NULL;
-+	link->mbox_cl.tx_done = ipc_mbox_tx_done;
-+
-+	/* Init completion keeping track of free slots in mbox tx queue. */
-+	init_completion(&link->mbox_tx_queue);
-+	for (i = 0; i < MBOX_TX_QUEUE_LEN; i++)
-+		complete(&link->mbox_tx_queue);
-+
-+	/* Request mailbox channel */
-+	link->mbox_chan = mbox_request_channel(&link->mbox_cl, 0);
-+	if (IS_ERR(link->mbox_chan))
-+		return PTR_ERR(link->mbox_chan);
-+
-+	spin_lock_init(&link->chan_lock);
-+	for (i = 0; i < ARRAY_SIZE(link->srcu_sp); i++)
-+		init_srcu_struct(&link->srcu_sp[i]);
-+	memset(link->channels, 0, sizeof(link->channels));
-+
-+	/* Init TX queues. */
-+	for (i = 0; i < ARRAY_SIZE(link->tx_queues); i++) {
-+		queue = &link->tx_queues[i];
-+		INIT_LIST_HEAD(&queue->tx_data_list);
-+		spin_lock_init(&queue->lock);
-+	}
-+	link->tx_qidx = 0;
-+	link->tx_stopping = false;
-+	init_completion(&link->tx_queued);
-+
-+	/* Start TX thread. */
-+	link->tx_thread = kthread_run(tx_thread_fn, ipc_dev,
-+				      "kmb_ipc_tx_thread");
-+	if (IS_ERR(link->tx_thread)) {
-+		mbox_free_channel(link->mbox_chan);
-+		return PTR_ERR(link->tx_thread);
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * ipc_link_deinit() - De-initialize CPU/VPU IPC link.
-+ * @ipc_dev:	The IPC device the link belongs to.
-+ */
-+static void ipc_link_deinit(struct keembay_ipc_dev *ipc_dev)
-+{
-+	struct ipc_link *link = &ipc_dev->vpu_link;
-+	struct tx_queue *queue;
-+	struct tx_data *pos, *nxt;
-+	int i;
-+
-+	/* Close all channels. */
-+	for (i = 0; i < ARRAY_SIZE(link->channels); i++)
-+		channel_close(link, i);
-+
-+	/* Stop TX Thread. */
-+	link->tx_stopping = true;
-+	complete(&link->tx_queued);
-+	kthread_stop(link->tx_thread);
-+
-+	/* Flush all TX queue. */
-+	for (i = 0; i < ARRAY_SIZE(link->tx_queues); i++) {
-+		queue = &link->tx_queues[i];
-+		list_for_each_entry_safe(pos, nxt, &queue->tx_data_list, list) {
-+			list_del(&pos->list);
-+			pos->retv = -EPIPE;
-+			complete(&pos->tx_done);
-+		}
-+	}
-+
-+	mbox_free_channel(link->mbox_chan);
-+}
-+
-+/* Driver probing. */
-+static int kmb_ipc_probe(struct platform_device *pdev)
-+{
-+	int rc;
-+	struct keembay_ipc_dev *ipc_dev;
-+	struct device *dev = &pdev->dev;
-+
-+	ipc_dev = devm_kzalloc(dev, sizeof(*ipc_dev), GFP_KERNEL);
-+	if (!ipc_dev)
-+		return -ENOMEM;
-+
-+	ipc_dev->plat_dev = pdev;
-+
-+	/* Init the memory used for CPU packets. */
-+	rc = init_ipc_rsvd_mem(dev, &ipc_dev->cpu_ipc_mem,
-+			       "ipc_cpu_rsvd_mem", RSVD_MEM_IDX_CPU_PKTS);
-+	if (rc) {
-+		dev_err(dev, "Failed to set up CPU reserved memory.\n");
-+		return rc;
-+	}
-+
-+	/* Init the memory used for VPU packets. */
-+	rc = init_ipc_rsvd_mem(dev, &ipc_dev->vpu_ipc_mem,
-+			       "ipc_vpu_rsvd_mem", RSVD_MEM_IDX_VPU_PKTS);
-+	if (rc) {
-+		dev_err(dev, "Failed to set up VPU reserved memory.\n");
-+		device_unregister(ipc_dev->cpu_ipc_mem.dev);
-+		return rc;
-+	}
-+
-+	/* Init the pool of IPC packets to be used to TX. */
-+	rc = init_ipc_pkt_pool(ipc_dev);
-+	if (rc)
-+		goto err_post_rsvd_mem;
-+
-+	/* Init the only link we have (CPU -> VPU). */
-+	rc = ipc_link_init(ipc_dev);
-+	if (rc)
-+		goto err_post_rsvd_mem;
-+
-+	platform_set_drvdata(pdev, ipc_dev);
-+
-+	return 0;
-+
-+err_post_rsvd_mem:
-+	device_unregister(ipc_dev->cpu_ipc_mem.dev);
-+	device_unregister(ipc_dev->vpu_ipc_mem.dev);
-+
-+	return rc;
-+}
-+
-+/* Driver removal. */
-+static int kmb_ipc_remove(struct platform_device *pdev)
-+{
-+	struct keembay_ipc_dev *ipc_dev = platform_get_drvdata(pdev);
-+
-+	ipc_link_deinit(ipc_dev);
-+
-+	/*
-+	 * No need to de-alloc IPC memory (cpu_ipc_mem and vpu_ipc_mem)
-+	 * since it was allocated with dmam_alloc_coherent().
-+	 */
-+
-+	device_unregister(ipc_dev->cpu_ipc_mem.dev);
-+	device_unregister(ipc_dev->vpu_ipc_mem.dev);
-+
-+	return 0;
-+}
-+
-+/*
-+ * ipc_vpu_to_virt() - Convert a VPU address to a CPU virtual address.
-+ *
-+ * @ipc_mem:  The IPC memory region where the VPU address is expected to be
-+ *	      mapped to.
-+ * @vpu_addr: The VPU address to be converted to a virtual one.
-+ *
-+ * The VPU can map the DDR differently than the CPU. This functions converts
-+ * VPU addresses to CPU virtual addresses.
-+ *
-+ * Return: The corresponding CPU virtual address, or NULL if the VPU address
-+ *	   is not in the expected memory range.
-+ */
-+static void *ipc_vpu_to_virt(const struct ipc_pkt_mem *ipc_mem,
-+			     u32 vpu_addr)
-+{
-+	if (unlikely(vpu_addr < ipc_mem->dma_handle ||
-+		     vpu_addr >= (ipc_mem->dma_handle + ipc_mem->size)))
-+		return NULL;
-+
-+	/* Cast to (u8 *) needed since void pointer arithmetic is undefined. */
-+	return (u8 *)ipc_mem->vaddr + (vpu_addr - ipc_mem->dma_handle);
-+}
-+
-+/*
-+ * ipc_virt_to_vpu() - Convert an CPU virtual address to a VPU address.
-+ * @ipc_mem:  [in]  The IPC memory region where the VPU address is expected to
-+ *		    be mapped to.
-+ * @vaddr:    [in]  The CPU virtual address to be converted to a VPU one.
-+ * @vpu_addr: [out] Where to store the computed VPU address.
-+ *
-+ * The VPU can map the DDR differently than the CPU. This functions converts
-+ * CPU virtual addresses to VPU virtual addresses.
-+ *
-+ * Return: 0 on success, negative error code otherwise.
-+ */
-+static int ipc_virt_to_vpu(struct ipc_pkt_mem *ipc_mem, void *vaddr,
-+			   u32 *vpu_addr)
-+{
-+	if (unlikely((ipc_mem->dma_handle + ipc_mem->size) > 0xFFFFFFFF))
-+		return -EINVAL;
-+
-+	/* Cast to (u8 *) needed since void pointer arithmetic is undefined. */
-+	if (unlikely(vaddr < ipc_mem->vaddr ||
-+		     (u8 *)vaddr >= ((u8 *)ipc_mem->vaddr + ipc_mem->size)))
-+		return -EINVAL;
-+
-+	*vpu_addr = ipc_mem->dma_handle + (vaddr - ipc_mem->vaddr);
-+
-+	return 0;
-+}
-+
-+/**
-+ * ipc_mbox_rx_callback() - Process a FIFO entry coming from IPC mailbox.
-+ * @cl:		The mailbox client.
-+ * @msg:	The FIFO entry to process.
-+ *
-+ * This function performs the following tasks:
-+ * - Check the source node id.
-+ * - Process the IPC packet (locate it, validate it, read data info, release
-+ *   packet).
-+ * - Add an RX Data descriptor (data ptr and data size) to the channel RX queue.
-+ */
-+static void ipc_mbox_rx_callback(struct mbox_client *cl, void *msg)
-+{
-+	struct device *dev = cl->dev;
-+	struct ipc_link *link = container_of(cl, struct ipc_link, mbox_cl);
-+	struct keembay_ipc_dev *ipc_dev = container_of(link,
-+						       struct keembay_ipc_dev,
-+						       vpu_link);
-+	struct kmb_ipc_pkt *ipc_pkt;
-+	struct rx_data *rx_data;
-+	struct ipc_chan *chan;
-+	u32 entry;
-+	int idx;
-+
-+	entry = *((u32 *)msg);
-+
-+	/* Get IPC packet. */
-+	ipc_pkt = ipc_vpu_to_virt(&ipc_dev->vpu_ipc_mem, entry);
-+	if (unlikely(!ipc_pkt)) {
-+		dev_warn(dev, "RX: Message out of expected memory range: %x\n",
-+			 entry);
-+
-+		/* Return immediately (cannot mark the IPC packet as free). */
-+		return;
-+	}
-+	if (unlikely(ipc_pkt->src_node != KMB_IPC_NODE_LEON_MSS)) {
-+		dev_warn(dev, "RX: Message from unexpected source: %d\n",
-+			 ipc_pkt->src_node);
-+		goto exit;
-+	}
-+
-+	/* Check destination node. */
-+	if (unlikely(ipc_pkt->dst_node != KMB_IPC_NODE_CPU)) {
-+		dev_warn(dev, "RX: Message is not for this node\n");
-+		goto exit;
-+	}
-+
-+	/* Preliminary channel check. */
-+	if (unlikely(ipc_pkt->channel >= KMB_IPC_MAX_CHANNELS)) {
-+		dev_warn(dev, "RX: Message for invalid channel\n");
-+		goto exit;
-+	}
-+
-+	/* Access internal channel struct (this is protected by an SRCU). */
-+	idx = srcu_read_lock(&link->srcu_sp[ipc_pkt->channel]);
-+	chan = srcu_dereference(link->channels[ipc_pkt->channel],
-+				&link->srcu_sp[ipc_pkt->channel]);
-+	if (unlikely(!chan)) {
-+		srcu_read_unlock(&link->srcu_sp[ipc_pkt->channel], idx);
-+		dev_warn(dev, "RX: Message for closed channel.\n");
-+		goto exit;
-+	}
-+	rx_data = kmalloc(sizeof(*rx_data), GFP_ATOMIC);
-+	if (unlikely(!rx_data)) {
-+		/* If kmalloc fails, we are forced to discard the message. */
-+		srcu_read_unlock(&link->srcu_sp[ipc_pkt->channel], idx);
-+		dev_err(dev, "RX: Message dropped: Cannot allocate RX Data.\n");
-+		goto exit;
-+	}
-+	/* Read data info. */
-+	rx_data->data_vpu_addr = ipc_pkt->data_addr;
-+	rx_data->data_size = ipc_pkt->data_size;
-+	/*
-+	 * Put data info in rx channel queue.
-+	 *
-+	 * Note: rx_lock is shared with user context only (and this function is
-+	 * run in tasklet context), so spin_lock() is enough.
-+	 */
-+	spin_lock(&chan->rx_lock);
-+	list_add_tail(&rx_data->list, &chan->rx_data_list);
-+	spin_unlock(&chan->rx_lock);
-+
-+	/* Wake up thread waiting on recv(). */
-+	wake_up_interruptible(&chan->rx_wait_queue);
-+
-+	/* Exit SRCU region protecting chan struct. */
-+	srcu_read_unlock(&link->srcu_sp[ipc_pkt->channel], idx);
-+
-+exit:
-+	barrier(); /* Ensure IPC packet is fully processed before release. */
-+	ipc_pkt->status = KMB_IPC_PKT_FREE;
-+}
-+
-+static void ipc_mbox_tx_done(struct mbox_client *cl, void *mssg, int r)
-+{
-+	struct tx_data *tx_data = container_of(mssg, struct tx_data, entry);
-+	struct ipc_link *link = container_of(cl, struct ipc_link, mbox_cl);
-+
-+	/* Signal that there is one more free slot in mbox tx queue. */
-+	complete(&link->mbox_tx_queue);
-+
-+	/* Save TX result and notify that IPC TX is completed. */
-+	tx_data->retv = r;
-+	complete(&tx_data->tx_done);
-+}
-+
-+/**
-+ * tx_data_send() - Send a TX data element.
-+ * @ipc_dev:	The IPC device to use.
-+ * @tx_data:	The TX data element to send.
-+ */
-+static void tx_data_send(struct keembay_ipc_dev *ipc_dev,
-+			 struct tx_data *tx_data)
-+{
-+	struct device *dev = &ipc_dev->plat_dev->dev;
-+	struct ipc_link *link = &ipc_dev->vpu_link;
-+	struct kmb_ipc_pkt *ipc_pkt;
-+	int rc;
-+
-+	/* Allocate and set IPC packet. */
-+	ipc_pkt = ipc_pkt_tx_alloc(&ipc_dev->ipc_pkt_pool);
-+	if (unlikely(!ipc_pkt)) {
-+		rc = -ENOMEM;
-+		goto error;
-+	}
-+
-+	/* Prepare IPC packet. */
-+	ipc_pkt->channel = tx_data->chan_id;
-+	ipc_pkt->src_node = KMB_IPC_NODE_CPU;
-+	ipc_pkt->dst_node = tx_data->dst_node;
-+	ipc_pkt->data_addr = tx_data->vpu_addr;
-+	ipc_pkt->data_size = tx_data->size;
-+
-+	/* Ensure changes to IPC Packet are performed before entry is sent. */
-+	wmb();
-+
-+	/* Initialize entry to ipc_pkt VPU address. */
-+	rc = ipc_virt_to_vpu(&ipc_dev->cpu_ipc_mem, ipc_pkt, &tx_data->entry);
-+
-+	/*
-+	 * Check validity of IPC packet VPU address (this error should never
-+	 * occur if IPC packet region is defined properly in Device Tree).
-+	 */
-+	if (unlikely(rc)) {
-+		dev_err(dev, "Cannot convert IPC buf vaddr to vpu_addr: %p\n",
-+			ipc_pkt);
-+		rc = -ENXIO;
-+		goto error;
-+	}
-+	if (unlikely(!IS_ALIGNED(tx_data->entry, KMB_IPC_ALIGNMENT))) {
-+		dev_err(dev, "Allocated IPC buf is not 64-byte aligned: %p\n",
-+			ipc_pkt);
-+		rc = -EFAULT;
-+		goto error;
-+	}
-+
-+	/*
-+	 * Ensure that the mbox TX queue is not full before passing the packet
-+	 * to mbox controller with mbox_send_message(). This will ensure that
-+	 * the packet won't be dropped by the mbox framework with the error
-+	 * "Try increasing MBOX_TX_QUEUE_LEN".
-+	 */
-+	rc = wait_for_completion_interruptible(&link->mbox_tx_queue);
-+	if (unlikely(rc))
-+		goto error;
-+
-+	mbox_send_message(link->mbox_chan, &tx_data->entry);
-+
-+	return;
-+
-+error:
-+	/* If an error occurred and a packet was allocated, free it. */
-+	if (ipc_pkt)
-+		ipc_pkt->status = KMB_IPC_PKT_FREE;
-+
-+	tx_data->retv = rc;
-+	complete(&tx_data->tx_done);
-+}
-+
-+/**
-+ * tx_data_dequeue() - Dequeue the next TX data waiting for transfer.
-+ * @link:  The link from which we dequeue the TX Data.
-+ *
-+ * The de-queue policy is round robin between each high speed channel queue and
-+ * the one queue for all low speed channels.
-+ *
-+ * Return: The next TX data waiting to be transferred, or NULL if no TX is
-+ *	   pending.
-+ */
-+static struct tx_data *tx_data_dequeue(struct ipc_link *link)
-+{
-+	struct tx_data *tx_data;
-+	struct tx_queue *queue;
-+	int i;
-+
-+	/*
-+	 * TX queues are logically organized in a circular array.
-+	 * We go through such an array until we find a non-empty queue.
-+	 * We start from where we left since last function invocation.
-+	 * If all queues are empty we return NULL.
-+	 */
-+	for (i = 0; i < ARRAY_SIZE(link->tx_queues); i++) {
-+		queue = &link->tx_queues[link->tx_qidx];
-+		link->tx_qidx++;
-+		if (link->tx_qidx == ARRAY_SIZE(link->tx_queues))
-+			link->tx_qidx = 0;
-+
-+		spin_lock(&queue->lock);
-+		tx_data = list_first_entry_or_null(&queue->tx_data_list,
-+						   struct tx_data, list);
-+		/* If no data in the queue, process the next queue. */
-+		if (!tx_data) {
-+			spin_unlock(&queue->lock);
-+			continue;
-+		}
-+		/* Otherwise remove rx_data from queue and return. */
-+		list_del(&tx_data->list);
-+		spin_unlock(&queue->lock);
-+
-+		return tx_data;
-+	}
-+
-+	return NULL;
-+}
-+
-+/**
-+ * tx_data_enqueue() - Enqueue TX data for transfer into the specified link.
-+ * @link:	The link the data is enqueued to.
-+ * @tx_data:	The TX data to enqueue.
-+ */
-+static void tx_data_enqueue(struct ipc_link *link, struct tx_data *tx_data)
-+{
-+	struct tx_queue *queue;
-+	int qid;
-+
-+	/*
-+	 * Find the right queue where to put TX data:
-+	 * - Each high-speed channel has a dedicated queue, whose index is the
-+	 *   same as the channel id (e.g., Channel 1 uses tx_queues[1]).
-+	 * - All the general-purpose channels use the same TX queue, which is
-+	 *   the last element in the tx_queues array.
-+	 *
-+	 * Note: tx_queues[] has KMB_IPC_NUM_HS_CHANNELS+1 elements)
-+	 */
-+	qid = tx_data->chan_id < ARRAY_SIZE(link->tx_queues) ?
-+	      tx_data->chan_id : (ARRAY_SIZE(link->tx_queues) - 1);
-+
-+	queue = &link->tx_queues[qid];
-+
-+	/*
-+	 * Lock shared between user contexts (callers of ipc_send()) and tx
-+	 * thread; so spin_lock() is enough.
-+	 */
-+	spin_lock(&queue->lock);
-+	list_add_tail(&tx_data->list, &queue->tx_data_list);
-+	spin_unlock(&queue->lock);
-+}
-+
-+/**
-+ * tx_data_remove() - Remove TX data element from specified link.
-+ * @link:	The link the data is currently enqueued to.
-+ * @tx_data:	The TX data element to be removed.
-+ *
-+ * This function is called by the main send function, when the send is
-+ * interrupted or has timed out.
-+ */
-+static void tx_data_remove(struct ipc_link *link, struct tx_data *tx_data)
-+{
-+	struct tx_queue *queue;
-+	int qid;
-+
-+	/*
-+	 * Find the TX queue where TX data is currently located:
-+	 * - Each high-speed channel has a dedicated queue, whose index is the
-+	 *   same as the channel id (e.g., Channel 1 uses tx_queues[1]).
-+	 * - All the general-purpose channels use the same TX queue, which is
-+	 *   the last element in the tx_queues array.
-+	 *
-+	 * Note: tx_queues[] has KMB_IPC_NUM_HS_CHANNELS+1 elements)
-+	 */
-+	qid = tx_data->chan_id < ARRAY_SIZE(link->tx_queues) ?
-+	      tx_data->chan_id : (ARRAY_SIZE(link->tx_queues) - 1);
-+
-+	queue = &link->tx_queues[qid];
-+
-+	/*
-+	 * Lock shared between user contexts (callers of ipc_send()) and tx
-+	 * thread; so spin_lock() is enough.
-+	 */
-+	spin_lock(&queue->lock);
-+	list_del(&tx_data->list);
-+	spin_unlock(&queue->lock);
-+}
-+
-+/**
-+ * tx_thread_fn() - The function run by the TX thread.
-+ * @ptr: A pointer to the keembay_ipc_dev struct associated with the thread.
-+ *
-+ * This thread continuously dequeues and send TX data elements. The TX
-+ * semaphore is used to pause the loop when all the pending TX data elements
-+ * have been transmitted (the send function 'ups' the semaphore every time a
-+ * new TX data element is enqueued).
-+ */
-+static int tx_thread_fn(void *ptr)
-+{
-+	struct keembay_ipc_dev *ipc_dev = ptr;
-+	struct ipc_link *link = &ipc_dev->vpu_link;
-+	struct tx_data *tx_data;
-+	int rc;
-+
-+	while (1) {
-+		rc = wait_for_completion_interruptible(&link->tx_queued);
-+		if (rc || link->tx_stopping)
-+			break;
-+		tx_data = tx_data_dequeue(link);
-+		/*
-+		 * We can get a null tx_data if tx_data_remove() has been
-+		 * called. Just ignore it and continue.
-+		 */
-+		if (!tx_data)
-+			continue;
-+		tx_data_send(ipc_dev, tx_data);
-+	}
-+
-+	/* Wait until kthread_stop() is called. */
-+	set_current_state(TASK_INTERRUPTIBLE);
-+	while (!kthread_should_stop()) {
-+		schedule();
-+		set_current_state(TASK_INTERRUPTIBLE);
-+	}
-+	__set_current_state(TASK_RUNNING);
-+
-+	return rc;
-+}
-+
-+/* Internal send. */
-+static int __ipc_send(struct keembay_ipc_dev *ipc_dev, u8 dst_node,
-+		      u16 chan_id, u32 vpu_addr, size_t size)
-+{
-+	struct ipc_link *link = &ipc_dev->vpu_link;
-+	struct tx_data *tx_data;
-+	int rc;
-+
-+	/* Allocate and init TX data. */
-+	tx_data = kmalloc(sizeof(*tx_data), GFP_KERNEL);
-+	if (!tx_data)
-+		return -ENOMEM;
-+	tx_data->dst_node = dst_node;
-+	tx_data->chan_id = chan_id;
-+	tx_data->vpu_addr = vpu_addr;
-+	tx_data->size = size;
-+	tx_data->retv = 1;
-+	INIT_LIST_HEAD(&tx_data->list);
-+	init_completion(&tx_data->tx_done);
-+
-+	/* Add tx_data to tx queues. */
-+	tx_data_enqueue(link, tx_data);
-+
-+	/* Signal that we have a new pending TX. */
-+	complete(&link->tx_queued);
-+
-+	/* Wait until data is transmitted. */
-+	rc = wait_for_completion_interruptible(&tx_data->tx_done);
-+	if (unlikely(rc)) {
-+		tx_data_remove(link, tx_data);
-+		goto exit;
-+	}
-+	rc = tx_data->retv;
-+
-+exit:
-+	kfree(tx_data);
-+	return rc;
-+}
-+
-+/*
-+ * Driver allocation.
-+ */
-+
-+/* Device tree driver match. */
-+static const struct of_device_id kmb_ipc_of_match[] = {
-+	{
-+		.compatible = "intel,keembay-ipc",
-+	},
-+	{}
-+};
-+
-+/* The IPC driver is a platform device. */
-+static struct platform_driver kmb_ipc_driver = {
-+	.probe  = kmb_ipc_probe,
-+	.remove = kmb_ipc_remove,
-+	.driver = {
-+		.name = DRV_NAME,
-+		.of_match_table = kmb_ipc_of_match,
-+	},
-+};
-+
-+module_platform_driver(kmb_ipc_driver);
-+
-+/*
-+ * Perform basic validity check on common API arguments.
-+ *
-+ * Verify that the specified device is a Keem Bay IPC device and that node ID
-+ * and the channel ID are within the allowed ranges.
-+ */
-+static int validate_api_args(struct device *dev, u8 node_id, u16 chan_id)
-+{
-+	if (!dev || dev->driver != &kmb_ipc_driver.driver)
-+		return -EINVAL;
-+	if (node_id != KMB_IPC_NODE_LEON_MSS) {
-+		dev_warn(dev, "Invalid Link ID\n");
-+		return -EINVAL;
-+	}
-+	if (chan_id >= KMB_IPC_MAX_CHANNELS) {
-+		dev_warn(dev, "Invalid Channel ID\n");
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+
-+/*
-+ * IPC Kernel API.
-+ */
-+
-+/**
-+ * intel_keembay_ipc_open_channel() - Open an IPC channel.
-+ * @dev:	The IPC device to use.
-+ * @node_id:	The node ID of the remote node (used to identify the link the
-+ *		channel must be added to). KMB_IPC_NODE_LEON_MSS is the only
-+ *		allowed value for now.
-+ * @chan_id:	The ID of the channel to be opened.
-+ *
-+ * Return:	0 on success, negative error code otherwise.
-+ */
-+int intel_keembay_ipc_open_channel(struct device *dev, u8 node_id, u16 chan_id)
-+{
-+	struct ipc_chan *chan, *cur_chan;
-+	struct keembay_ipc_dev *ipc_dev;
-+	struct ipc_link *link;
-+	int rc;
-+
-+	rc = validate_api_args(dev, node_id, chan_id);
-+	if (rc)
-+		return rc;
-+
-+	ipc_dev = dev_get_drvdata(dev);
-+	link = &ipc_dev->vpu_link;
-+
-+	/* Create channel before getting lock. */
-+	chan = kzalloc(sizeof(*chan), GFP_KERNEL);
-+	if (!chan)
-+		return -ENOMEM;
-+
-+	INIT_LIST_HEAD(&chan->rx_data_list);
-+	spin_lock_init(&chan->rx_lock);
-+	init_waitqueue_head(&chan->rx_wait_queue);
-+
-+	/* Add channel to the channel array (if not already present). */
-+	spin_lock(&link->chan_lock);
-+	cur_chan = rcu_dereference_protected(link->channels[chan_id],
-+					     lockdep_is_held(&link->chan_lock));
-+	if (cur_chan) {
-+		spin_unlock(&link->chan_lock);
-+		kfree(chan);
-+		return -EEXIST;
-+	}
-+	rcu_assign_pointer(link->channels[chan_id], chan);
-+	spin_unlock(&link->chan_lock);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(intel_keembay_ipc_open_channel);
-+
-+/**
-+ * intel_keembay_ipc_close_channel() - Close an IPC channel.
-+ * @dev:	The IPC device to use.
-+ * @node_id:	The node ID of the remote node (used to identify the link the
-+ *		channel must be added to). KMB_IPC_NODE_LEON_MSS is the only
-+ *		allowed value for now.
-+ * @chan_id:	The ID of the channel to be closed.
-+ *
-+ * Return:	0 on success, negative error code otherwise.
-+ */
-+int intel_keembay_ipc_close_channel(struct device *dev, u8 node_id, u16 chan_id)
-+{
-+	struct keembay_ipc_dev *ipc_dev;
-+	struct ipc_link *link;
-+	int rc;
-+
-+	rc = validate_api_args(dev, node_id, chan_id);
-+	if (rc)
-+		return rc;
-+
-+	ipc_dev = dev_get_drvdata(dev);
-+	link = &ipc_dev->vpu_link;
-+
-+	rc = channel_close(link, chan_id);
-+	if (!rc)
-+		dev_info(dev, "Channel was already closed\n");
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(intel_keembay_ipc_close_channel);
-+
-+/**
-+ * intel_keembay_ipc_send() - Send data via IPC.
-+ * @dev:	The IPC device to use.
-+ * @node_id:	The node ID of the remote node (used to identify the link the
-+ *		channel must be added to). KMB_IPC_NODE_LEON_MSS is the only
-+ *		allowed value for now.
-+ * @chan_id:	The IPC channel to be used to send the message.
-+ * @vpu_addr:	The VPU address of the data to be transferred.
-+ * @size:	The size of the data to be transferred.
-+ *
-+ * Return:	0 on success, negative error code otherwise.
-+ */
-+int intel_keembay_ipc_send(struct device *dev, u8 node_id, u16 chan_id,
-+			   u32 vpu_addr, size_t size)
-+{
-+	struct keembay_ipc_dev *ipc_dev;
-+	struct ipc_link *link;
-+	struct ipc_chan *chan;
-+	int idx, rc;
-+
-+	rc = validate_api_args(dev, node_id, chan_id);
-+	if (rc)
-+		return rc;
-+
-+	ipc_dev = dev_get_drvdata(dev);
-+	link = &ipc_dev->vpu_link;
-+	/*
-+	 * Start Sleepable RCU critical section (this prevents close() from
-+	 * destroying the channels struct while we are sending data)
-+	 */
-+	idx = srcu_read_lock(&link->srcu_sp[chan_id]);
-+
-+	/* Get channel. */
-+	chan = srcu_dereference(link->channels[chan_id],
-+				&link->srcu_sp[chan_id]);
-+	if (unlikely(!chan)) {
-+		/* The channel is closed. */
-+		rc = -ENOENT;
-+		goto exit;
-+	}
-+
-+	rc = __ipc_send(ipc_dev, node_id, chan_id, vpu_addr, size);
-+
-+exit:
-+	/* End sleepable RCU critical section. */
-+	srcu_read_unlock(&link->srcu_sp[chan_id], idx);
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(intel_keembay_ipc_send);
-+
-+/**
-+ * intel_keembay_ipc_recv() - Read data via IPC
-+ * @dev:	The IPC device to use.
-+ * @node_id:	The node ID of the remote node (used to identify the link the
-+ *		channel must be added to). KMB_IPC_NODE_LEON_MSS is the only
-+ *		allowed value for now.
-+ * @chan_id:	The IPC channel to read from.
-+ * @vpu_addr:	[out] The VPU address of the received data.
-+ * @size:	[out] Where to store the size of the received data.
-+ * @timeout:	How long (in ms) the function will block waiting for an IPC
-+ *		message; if UINT32_MAX it will block indefinitely; if 0 it
-+ *		will not block.
-+ *
-+ * Return:	0 on success, negative error code otherwise
-+ */
-+int intel_keembay_ipc_recv(struct device *dev, u8 node_id, u16 chan_id,
-+			   u32 *vpu_addr, size_t *size, u32 timeout)
-+{
-+	struct keembay_ipc_dev *ipc_dev;
-+	struct rx_data *rx_entry;
-+	struct ipc_link *link;
-+	struct ipc_chan *chan;
-+	int idx, rc;
-+
-+	rc = validate_api_args(dev, node_id, chan_id);
-+	if (rc)
-+		return rc;
-+
-+	if (!vpu_addr || !size)
-+		return -EINVAL;
-+
-+	ipc_dev = dev_get_drvdata(dev);
-+	link = &ipc_dev->vpu_link;
-+
-+	/*
-+	 * Start Sleepable RCU critical section (this prevents close() from
-+	 * destroying the channels struct while we are using it)
-+	 */
-+	idx = srcu_read_lock(&link->srcu_sp[chan_id]);
-+
-+	/* Get channel. */
-+	chan = srcu_dereference(link->channels[chan_id],
-+				&link->srcu_sp[chan_id]);
-+	if (unlikely(!chan)) {
-+		rc = -ENOENT;
-+		goto err;
-+	}
-+	/*
-+	 * Get the lock protecting rx_data_list; the lock will be released by
-+	 * wait_event_*_lock_irq() before going to sleep and automatically
-+	 * reacquired after wake up.
-+	 *
-+	 * NOTE: lock_irq() is needed because rx_lock is also used by the RX
-+	 * tasklet; also lock_bh() is not used because there is no
-+	 * wait_event_interruptible_lock_bh().
-+	 */
-+	spin_lock_irq(&chan->rx_lock);
-+	/*
-+	 * Wait for RX data.
-+	 *
-+	 * Note: wait_event_interruptible_lock_irq_timeout() has different
-+	 * return values than wait_event_interruptible_lock_irq().
-+	 *
-+	 * The following if/then branch ensures that return values are
-+	 * consistent for the both cases, that is:
-+	 * - rc == 0 only if the wait was successfully (i.e., we were notified
-+	 *   of a message or of a channel closure)
-+	 * - rc < 0 if an error occurred (we got interrupted or the timeout
-+	 *   expired).
-+	 */
-+	if (timeout == U32_MAX) {
-+		rc = wait_event_interruptible_lock_irq(chan->rx_wait_queue,
-+						       !list_empty(&chan->rx_data_list) ||
-+						       chan->closing,
-+						       chan->rx_lock);
-+	} else {
-+		rc = wait_event_interruptible_lock_irq_timeout(chan->rx_wait_queue,
-+							       !list_empty(&chan->rx_data_list) ||
-+							       chan->closing,
-+							       chan->rx_lock,
-+							       msecs_to_jiffies(timeout));
-+		if (!rc)
-+			rc = -ETIME;
-+		if (rc > 0)
-+			rc = 0;
-+	}
-+
-+	/* Check if the channel was closed while waiting. */
-+	if (chan->closing)
-+		rc = -EPIPE;
-+	if (rc) {
-+		spin_unlock_irq(&chan->rx_lock);
-+		goto err;
-+	}
-+
-+	/* Extract RX entry. */
-+	rx_entry = list_first_entry(&chan->rx_data_list, struct rx_data, list);
-+	list_del(&rx_entry->list);
-+	spin_unlock_irq(&chan->rx_lock);
-+
-+	/* Set output parameters. */
-+	*vpu_addr =  rx_entry->data_vpu_addr;
-+	*size = rx_entry->data_size;
-+
-+	/* Free RX entry. */
-+	kfree(rx_entry);
-+
-+err:
-+	/* End sleepable RCU critical section. */
-+	srcu_read_unlock(&link->srcu_sp[chan_id], idx);
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(intel_keembay_ipc_recv);
-+
-+MODULE_DESCRIPTION("Keem Bay IPC Driver");
-+MODULE_AUTHOR("Daniele Alessandrelli <daniele.alessandrelli@intel.com>");
-+MODULE_AUTHOR("Paul Murphy <paul.j.murphy@intel.com>");
-+MODULE_LICENSE("GPL");
-diff --git a/include/linux/soc/intel/keembay-ipc.h b/include/linux/soc/intel/keembay-ipc.h
-new file mode 100644
-index 000000000000..ac7748d1595f
---- /dev/null
-+++ b/include/linux/soc/intel/keembay-ipc.h
-@@ -0,0 +1,30 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Keem Bay IPC Linux Kernel API
-+ *
-+ * Copyright (C) 2018-2020 Intel Corporation
-+ */
-+
-+#ifndef __KEEMBAY_IPC_H
-+#define __KEEMBAY_IPC_H
-+
-+#include <linux/types.h>
-+
-+/* The possible node IDs. */
-+enum {
-+	KMB_IPC_NODE_CPU = 0,
-+	KMB_IPC_NODE_LEON_MSS,
-+};
-+
-+int intel_keembay_ipc_open_channel(struct device *dev, u8 node_id, u16 chan_id);
-+
-+int intel_keembay_ipc_close_channel(struct device *dev, u8 node_id,
-+				    u16 chan_id);
-+
-+int intel_keembay_ipc_send(struct device *dev, u8 node_id, u16 chan_id,
-+			   u32 vpu_addr, size_t size);
-+
-+int intel_keembay_ipc_recv(struct device *dev, u8 node_id, u16 chan_id,
-+			   u32 *vpu_addr, size_t *size, u32 timeout);
-+
-+#endif /* __KEEMBAY_IPC_H */
+ static int quad8_error_noise_get(struct counter_device *counter,
+ 	struct counter_count *count, size_t *noise_error)
+ {
+-	const struct quad8_iio *const priv = counter->priv;
++	const struct quad8 *const priv = counter->priv;
+ 	const int base_offset = priv->base + 2 * count->id + 1;
+ 
+ 	*noise_error = !!(inb(base_offset) & QUAD8_FLAG_E);
+@@ -1136,18 +627,18 @@ static struct counter_count_enum_ext quad8_error_noise_enum = {
+ static ssize_t quad8_count_preset_read(struct counter_device *counter,
+ 	struct counter_count *count, void *private, char *buf)
+ {
+-	const struct quad8_iio *const priv = counter->priv;
++	const struct quad8 *const priv = counter->priv;
+ 
+ 	return sprintf(buf, "%u\n", priv->preset[count->id]);
+ }
+ 
+-static void quad8_preset_register_set(struct quad8_iio *quad8iio, int id,
+-		unsigned int preset)
++static void quad8_preset_register_set(struct quad8 *priv, int id,
++				      unsigned int preset)
+ {
+-	const unsigned int base_offset = quad8iio->base + 2 * id;
++	const unsigned int base_offset = priv->base + 2 * id;
+ 	int i;
+ 
+-	quad8iio->preset[id] = preset;
++	priv->preset[id] = preset;
+ 
+ 	/* Reset Byte Pointer */
+ 	outb(QUAD8_CTR_RLD | QUAD8_RLD_RESET_BP, base_offset + 1);
+@@ -1160,7 +651,7 @@ static void quad8_preset_register_set(struct quad8_iio *quad8iio, int id,
+ static ssize_t quad8_count_preset_write(struct counter_device *counter,
+ 	struct counter_count *count, void *private, const char *buf, size_t len)
+ {
+-	struct quad8_iio *const priv = counter->priv;
++	struct quad8 *const priv = counter->priv;
+ 	unsigned int preset;
+ 	int ret;
+ 
+@@ -1184,7 +675,7 @@ static ssize_t quad8_count_preset_write(struct counter_device *counter,
+ static ssize_t quad8_count_ceiling_read(struct counter_device *counter,
+ 	struct counter_count *count, void *private, char *buf)
+ {
+-	struct quad8_iio *const priv = counter->priv;
++	struct quad8 *const priv = counter->priv;
+ 
+ 	mutex_lock(&priv->lock);
+ 
+@@ -1205,7 +696,7 @@ static ssize_t quad8_count_ceiling_read(struct counter_device *counter,
+ static ssize_t quad8_count_ceiling_write(struct counter_device *counter,
+ 	struct counter_count *count, void *private, const char *buf, size_t len)
+ {
+-	struct quad8_iio *const priv = counter->priv;
++	struct quad8 *const priv = counter->priv;
+ 	unsigned int ceiling;
+ 	int ret;
+ 
+@@ -1235,7 +726,7 @@ static ssize_t quad8_count_ceiling_write(struct counter_device *counter,
+ static ssize_t quad8_count_preset_enable_read(struct counter_device *counter,
+ 	struct counter_count *count, void *private, char *buf)
+ {
+-	const struct quad8_iio *const priv = counter->priv;
++	const struct quad8 *const priv = counter->priv;
+ 
+ 	return sprintf(buf, "%u\n", !priv->preset_enable[count->id]);
+ }
+@@ -1243,7 +734,7 @@ static ssize_t quad8_count_preset_enable_read(struct counter_device *counter,
+ static ssize_t quad8_count_preset_enable_write(struct counter_device *counter,
+ 	struct counter_count *count, void *private, const char *buf, size_t len)
+ {
+-	struct quad8_iio *const priv = counter->priv;
++	struct quad8 *const priv = counter->priv;
+ 	const int base_offset = priv->base + 2 * count->id + 1;
+ 	bool preset_enable;
+ 	int ret;
+@@ -1274,7 +765,7 @@ static ssize_t quad8_signal_cable_fault_read(struct counter_device *counter,
+ 					     struct counter_signal *signal,
+ 					     void *private, char *buf)
+ {
+-	struct quad8_iio *const priv = counter->priv;
++	struct quad8 *const priv = counter->priv;
+ 	const size_t channel_id = signal->id / 2;
+ 	bool disabled;
+ 	unsigned int status;
+@@ -1304,7 +795,7 @@ static ssize_t quad8_signal_cable_fault_enable_read(
+ 	struct counter_device *counter, struct counter_signal *signal,
+ 	void *private, char *buf)
+ {
+-	const struct quad8_iio *const priv = counter->priv;
++	const struct quad8 *const priv = counter->priv;
+ 	const size_t channel_id = signal->id / 2;
+ 	const unsigned int enb = !!(priv->cable_fault_enable & BIT(channel_id));
+ 
+@@ -1315,7 +806,7 @@ static ssize_t quad8_signal_cable_fault_enable_write(
+ 	struct counter_device *counter, struct counter_signal *signal,
+ 	void *private, const char *buf, size_t len)
+ {
+-	struct quad8_iio *const priv = counter->priv;
++	struct quad8 *const priv = counter->priv;
+ 	const size_t channel_id = signal->id / 2;
+ 	bool enable;
+ 	int ret;
+@@ -1345,7 +836,7 @@ static ssize_t quad8_signal_cable_fault_enable_write(
+ static ssize_t quad8_signal_fck_prescaler_read(struct counter_device *counter,
+ 	struct counter_signal *signal, void *private, char *buf)
+ {
+-	const struct quad8_iio *const priv = counter->priv;
++	const struct quad8 *const priv = counter->priv;
+ 	const size_t channel_id = signal->id / 2;
+ 
+ 	return sprintf(buf, "%u\n", priv->fck_prescaler[channel_id]);
+@@ -1355,7 +846,7 @@ static ssize_t quad8_signal_fck_prescaler_write(struct counter_device *counter,
+ 	struct counter_signal *signal, void *private, const char *buf,
+ 	size_t len)
+ {
+-	struct quad8_iio *const priv = counter->priv;
++	struct quad8 *const priv = counter->priv;
+ 	const size_t channel_id = signal->id / 2;
+ 	const int base_offset = priv->base + 2 * channel_id;
+ 	u8 prescaler;
+@@ -1531,11 +1022,9 @@ static struct counter_count quad8_counts[] = {
+ 
+ static int quad8_probe(struct device *dev, unsigned int id)
+ {
+-	struct iio_dev *indio_dev;
+-	struct quad8_iio *quad8iio;
++	struct quad8 *priv;
+ 	int i, j;
+ 	unsigned int base_offset;
+-	int err;
+ 
+ 	if (!devm_request_region(dev, base[id], QUAD8_EXTENT, dev_name(dev))) {
+ 		dev_err(dev, "Unable to lock port addresses (0x%X-0x%X)\n",
+@@ -1543,32 +1032,23 @@ static int quad8_probe(struct device *dev, unsigned int id)
+ 		return -EBUSY;
+ 	}
+ 
+-	/* Allocate IIO device; this also allocates driver data structure */
+-	indio_dev = devm_iio_device_alloc(dev, sizeof(*quad8iio));
+-	if (!indio_dev)
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
+ 		return -ENOMEM;
+ 
+-	/* Initialize IIO device */
+-	indio_dev->info = &quad8_info;
+-	indio_dev->modes = INDIO_DIRECT_MODE;
+-	indio_dev->num_channels = ARRAY_SIZE(quad8_channels);
+-	indio_dev->channels = quad8_channels;
+-	indio_dev->name = dev_name(dev);
+-
+ 	/* Initialize Counter device and driver data */
+-	quad8iio = iio_priv(indio_dev);
+-	quad8iio->counter.name = dev_name(dev);
+-	quad8iio->counter.parent = dev;
+-	quad8iio->counter.ops = &quad8_ops;
+-	quad8iio->counter.counts = quad8_counts;
+-	quad8iio->counter.num_counts = ARRAY_SIZE(quad8_counts);
+-	quad8iio->counter.signals = quad8_signals;
+-	quad8iio->counter.num_signals = ARRAY_SIZE(quad8_signals);
+-	quad8iio->counter.priv = quad8iio;
+-	quad8iio->base = base[id];
++	priv->counter.name = dev_name(dev);
++	priv->counter.parent = dev;
++	priv->counter.ops = &quad8_ops;
++	priv->counter.counts = quad8_counts;
++	priv->counter.num_counts = ARRAY_SIZE(quad8_counts);
++	priv->counter.signals = quad8_signals;
++	priv->counter.num_signals = ARRAY_SIZE(quad8_signals);
++	priv->counter.priv = priv;
++	priv->base = base[id];
+ 
+ 	/* Initialize mutex */
+-	mutex_init(&quad8iio->lock);
++	mutex_init(&priv->lock);
+ 
+ 	/* Reset all counters and disable interrupt function */
+ 	outb(QUAD8_CHAN_OP_RESET_COUNTERS, base[id] + QUAD8_REG_CHAN_OP);
+@@ -1602,13 +1082,8 @@ static int quad8_probe(struct device *dev, unsigned int id)
+ 	/* Enable all counters */
+ 	outb(QUAD8_CHAN_OP_ENABLE_COUNTERS, base[id] + QUAD8_REG_CHAN_OP);
+ 
+-	/* Register IIO device */
+-	err = devm_iio_device_register(dev, indio_dev);
+-	if (err)
+-		return err;
+-
+ 	/* Register Counter device */
+-	return devm_counter_register(dev, &quad8iio->counter);
++	return devm_counter_register(dev, &priv->counter);
+ }
+ 
+ static struct isa_driver quad8_driver = {
+@@ -1621,5 +1096,5 @@ static struct isa_driver quad8_driver = {
+ module_isa_driver(quad8_driver, num_quad8);
+ 
+ MODULE_AUTHOR("William Breathitt Gray <vilhelm.gray@gmail.com>");
+-MODULE_DESCRIPTION("ACCES 104-QUAD-8 IIO driver");
++MODULE_DESCRIPTION("ACCES 104-QUAD-8 driver");
+ MODULE_LICENSE("GPL v2");
+diff --git a/drivers/counter/Kconfig b/drivers/counter/Kconfig
+index 2de53ab0dd25..63ffbebcf455 100644
+--- a/drivers/counter/Kconfig
++++ b/drivers/counter/Kconfig
+@@ -14,7 +14,7 @@ if COUNTER
+ 
+ config 104_QUAD_8
+ 	tristate "ACCES 104-QUAD-8 driver"
+-	depends on PC104 && X86 && IIO
++	depends on PC104 && X86
+ 	select ISA_BUS_API
+ 	help
+ 	  Say yes here to build support for the ACCES 104-QUAD-8 quadrature
 -- 
-2.17.1
+2.30.0
 
