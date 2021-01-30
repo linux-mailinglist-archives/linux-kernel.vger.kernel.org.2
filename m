@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF8F3091AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 04:31:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E53FB3091B4
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 04:41:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233539AbhA3Daf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 22:30:35 -0500
-Received: from mga06.intel.com ([134.134.136.31]:41430 "EHLO mga06.intel.com"
+        id S233514AbhA3DiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 22:38:04 -0500
+Received: from mga04.intel.com ([192.55.52.120]:31754 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233401AbhA3DIy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 22:08:54 -0500
-IronPort-SDR: IhHA18hs1bF3P/3UQbnZ4ZBQsS7qlw3hjRjkZBvIBj2f8aUi0Oll+HDNcfgcMlzgkPODEZA8ON
- E9fVhUxs+VxA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="242028029"
+        id S233521AbhA3D3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 22:29:04 -0500
+IronPort-SDR: Gw6HRGXGKwH42RPcxRGjAI4/jbD5Z+lwfgIm5e93TWHl3vX9uOEzciF9xKFrJkxTne6gU4jQ+Y
+ BiJ7Kxj8KYOA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="177945206"
 X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="242028029"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:29 -0800
-IronPort-SDR: pQ00iHv+yThjToshj49cy1IAqVFEE2oIwXvjR7ZHCz09yD9LE3MsSPSjj3Nw+N6+SNHxSN2+5B
- 0BnCvv2PUw1A==
+   d="scan'208";a="177945206"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:30 -0800
+IronPort-SDR: 2vZfPXGoEbnrRBE5wezuYT6CaRdrTWcd36c58c364okhsL2bIvoBBHwMGOHufgPPzzfcGLdNgc
+ +4Hs/r/CaewQ==
 X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="365585708"
+   d="scan'208";a="475674097"
 Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:29 -0800
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:30 -0800
 Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id 75FA4636B;
+        by smtp.ostc.intel.com (Postfix) with ESMTP id F0E9D636B;
         Fri, 29 Jan 2021 18:21:29 -0800 (PST)
 Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
-        id 6A988363658; Fri, 29 Jan 2021 18:21:29 -0800 (PST)
+        id E55EA363685; Fri, 29 Jan 2021 18:21:29 -0800 (PST)
 From:   mgross@linux.intel.com
 To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
@@ -37,10 +37,10 @@ To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
         jassisinghbrar@gmail.com
 Cc:     linux-kernel@vger.kernel.org,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-Subject: [PATCH v4 03/34] mailbox: vpu-ipc-mailbox: Add support for Intel VPU IPC mailbox
-Date:   Fri, 29 Jan 2021 18:20:53 -0800
-Message-Id: <20210130022124.65083-39-mgross@linux.intel.com>
+        Srikanth Thokala <srikanth.thokala@intel.com>
+Subject: [PATCH v4 13/34] misc: xlink-pcie: rh: Add PCIe EP driver for Remote Host
+Date:   Fri, 29 Jan 2021 18:21:03 -0800
+Message-Id: <20210130022124.65083-49-mgross@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210130022124.65083-1-mgross@linux.intel.com>
 References: <20210130022124.65083-1-mgross@linux.intel.com>
@@ -48,405 +48,710 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+From: Srikanth Thokala <srikanth.thokala@intel.com>
 
-Add mailbox controller enabling inter-processor communication (IPC)
-between the CPU (aka, the Application Processor - AP) and the VPU on
-Intel Movidius SoCs like Keem Bay.
+Add PCIe Endpoint driver that configures PCIe BARs and MSIs on the
+Remote Host
 
-The controller uses HW FIFOs to enable such communication. Specifically,
-there are two FIFOs, one for the CPU and one for VPU. Each FIFO can hold
-128 entries (messages) of 32-bit each (but only 26 bits are actually
-usable, since the 6 least-significant bits are reserved).
-
-When the Linux kernel on the AP needs to send messages to the VPU
-firmware, it writes them to the VPU FIFO; similarly, when the VPU
-firmware needs to send messages to the AP, it writes them to the CPU
-FIFO.
-
-The AP is notified of pending messages in the CPU FIFO by means of the
-'FIFO-not-empty' interrupt, which is generated by the CPU FIFO while not
-empty. This interrupt is cleared automatically once all messages have
-been read from the FIFO (i.e., the FIFO has been emptied).
-
-The hardware doesn't provide an TX done IRQ (i.e., an IRQ that allows
-the VPU firmware to notify the AP that the message put into the VPU FIFO
-has been received); however the AP can ensure that the message has been
-successfully put into the VPU FIFO (and therefore transmitted) by
-checking the VPU FIFO status register to ensure that writing the message
-didn't cause the FIFO to overflow.
-
-Therefore, the mailbox controller is configured as capable of tx_done
-IRQs and a tasklet is used to simulate the tx_done IRQ. The tasklet is
-activated by send_data() right after the message has been put into the
-VPU FIFO and the VPU FIFO status registers has been checked. If an
-overflow is reported by the status register, the tasklet passes -EBUSY
-to mbox_chan_txdone(), to notify the mailbox client of the failed TX.
-
-The client should therefore register a tx_done() callback to properly
-handle failed transmissions.
-
-Note: the 'txdone_poll' mechanism cannot be used because it doesn't
-provide a way to report a failed transmission.
-
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Reviewed-by: Mark Gross <mgross@linux.intel.com>
-Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
 Signed-off-by: Mark Gross <mgross@linux.intel.com>
+Signed-off-by: Srikanth Thokala <srikanth.thokala@intel.com>
 ---
- MAINTAINERS                       |   1 +
- drivers/mailbox/Kconfig           |  11 ++
- drivers/mailbox/Makefile          |   2 +
- drivers/mailbox/vpu-ipc-mailbox.c | 297 ++++++++++++++++++++++++++++++
- 4 files changed, 311 insertions(+)
- create mode 100644 drivers/mailbox/vpu-ipc-mailbox.c
+ MAINTAINERS                                  |   2 +-
+ drivers/misc/xlink-pcie/Kconfig              |  11 +
+ drivers/misc/xlink-pcie/Makefile             |   1 +
+ drivers/misc/xlink-pcie/common/xpcie.h       |   1 +
+ drivers/misc/xlink-pcie/remote_host/Makefile |   3 +
+ drivers/misc/xlink-pcie/remote_host/main.c   |  90 ++++
+ drivers/misc/xlink-pcie/remote_host/pci.c    | 449 +++++++++++++++++++
+ drivers/misc/xlink-pcie/remote_host/pci.h    |  62 +++
+ 8 files changed, 618 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/misc/xlink-pcie/remote_host/Makefile
+ create mode 100644 drivers/misc/xlink-pcie/remote_host/main.c
+ create mode 100644 drivers/misc/xlink-pcie/remote_host/pci.c
+ create mode 100644 drivers/misc/xlink-pcie/remote_host/pci.h
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 2b82526a00dc..de23f6e5cfce 100644
+index 3ca6c8c6341b..e05fa34d72ce 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -9186,6 +9186,7 @@ M:	Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+@@ -1961,7 +1961,7 @@ F:	Documentation/devicetree/bindings/arm/intel,keembay.yaml
+ F:	arch/arm64/boot/dts/intel/keembay-evm.dts
+ F:	arch/arm64/boot/dts/intel/keembay-soc.dtsi
+ 
+-ARM KEEM BAY XLINK PCIE SUPPORT
++ARM/INTEL KEEM BAY XLINK PCIE SUPPORT
+ M:	Srikanth Thokala <srikanth.thokala@intel.com>
  M:	Mark Gross <mgross@linux.intel.com>
  S:	Supported
- F:	Documentation/devicetree/bindings/mailbox/intel,vpu-ipc-mailbox.yaml
-+F:	drivers/mailbox/vpu-ipc-mailbox.c
- 
- INTEL WIRELESS 3945ABG/BG, 4965AGN (iwlegacy)
- M:	Stanislaw Gruszka <stf_xl@wp.pl>
-diff --git a/drivers/mailbox/Kconfig b/drivers/mailbox/Kconfig
-index f4abe3529acd..cb50b541a5c6 100644
---- a/drivers/mailbox/Kconfig
-+++ b/drivers/mailbox/Kconfig
-@@ -29,6 +29,17 @@ config IMX_MBOX
- 	help
- 	  Mailbox implementation for i.MX Messaging Unit (MU).
- 
-+config INTEL_VPU_IPC_MBOX
-+	tristate "Intel VPU IPC Mailbox"
-+	depends on HAS_IOMEM
-+	depends on OF || COMPILE_TEST
+diff --git a/drivers/misc/xlink-pcie/Kconfig b/drivers/misc/xlink-pcie/Kconfig
+index 46aa401d79b7..448b9bfbdfa2 100644
+--- a/drivers/misc/xlink-pcie/Kconfig
++++ b/drivers/misc/xlink-pcie/Kconfig
+@@ -1,3 +1,14 @@
++config XLINK_PCIE_RH_DRIVER
++	tristate "XLink PCIe Remote Host driver"
++	depends on PCI && X86_64
 +	help
-+	  Mailbox implementation for enabling inter-processor communication
-+	  between application processors and Intel VPUs.
++	  This option enables XLink PCIe Remote Host driver.
 +
-+	  Say Y or M here if you are building for an SoC equipped with an Intel
-+	  VPU. If M is selected, the module will be called vpu-ipc-mailbox.
++	  Choose M here to compile this driver as a module, name is mxlk.
++	  This driver is used for XLink communication over PCIe,
++	  and is to be loaded on the IA host which is connected to
++	  the Intel Keem Bay.
 +
- config PLATFORM_MHU
- 	tristate "Platform MHU Mailbox"
- 	depends on OF
-diff --git a/drivers/mailbox/Makefile b/drivers/mailbox/Makefile
-index 7194fa92c787..68768bb2ee43 100644
---- a/drivers/mailbox/Makefile
-+++ b/drivers/mailbox/Makefile
-@@ -56,3 +56,5 @@ obj-$(CONFIG_SUN6I_MSGBOX)	+= sun6i-msgbox.o
- obj-$(CONFIG_SPRD_MBOX)		+= sprd-mailbox.o
+ config XLINK_PCIE_LH_DRIVER
+ 	tristate "XLink PCIe Local Host driver"
+ 	depends on PCI_ENDPOINT && ARCH_KEEMBAY
+diff --git a/drivers/misc/xlink-pcie/Makefile b/drivers/misc/xlink-pcie/Makefile
+index d693d382e9c6..1dd984d8d88c 100644
+--- a/drivers/misc/xlink-pcie/Makefile
++++ b/drivers/misc/xlink-pcie/Makefile
+@@ -1 +1,2 @@
++obj-$(CONFIG_XLINK_PCIE_RH_DRIVER) += remote_host/
+ obj-$(CONFIG_XLINK_PCIE_LH_DRIVER) += local_host/
+diff --git a/drivers/misc/xlink-pcie/common/xpcie.h b/drivers/misc/xlink-pcie/common/xpcie.h
+index 48529eb49be0..b5cf9242a59a 100644
+--- a/drivers/misc/xlink-pcie/common/xpcie.h
++++ b/drivers/misc/xlink-pcie/common/xpcie.h
+@@ -69,6 +69,7 @@ struct xpcie_mmio {
+ struct xpcie {
+ 	u32 status;
+ 	bool legacy_a0;
++	void *bar0;
+ 	void *mmio;
+ 	void *bar4;
  
- obj-$(CONFIG_QCOM_IPCC)		+= qcom-ipcc.o
-+
-+obj-$(CONFIG_INTEL_VPU_IPC_MBOX)	+= vpu-ipc-mailbox.o
-diff --git a/drivers/mailbox/vpu-ipc-mailbox.c b/drivers/mailbox/vpu-ipc-mailbox.c
+diff --git a/drivers/misc/xlink-pcie/remote_host/Makefile b/drivers/misc/xlink-pcie/remote_host/Makefile
 new file mode 100644
-index 000000000000..ad161a7bbabb
+index 000000000000..96374a43023e
 --- /dev/null
-+++ b/drivers/mailbox/vpu-ipc-mailbox.c
-@@ -0,0 +1,297 @@
++++ b/drivers/misc/xlink-pcie/remote_host/Makefile
+@@ -0,0 +1,3 @@
++obj-$(CONFIG_XLINK_PCIE_RH_DRIVER) += mxlk.o
++mxlk-objs := main.o
++mxlk-objs += pci.o
+diff --git a/drivers/misc/xlink-pcie/remote_host/main.c b/drivers/misc/xlink-pcie/remote_host/main.c
+new file mode 100644
+index 000000000000..ed1a431ed5d4
+--- /dev/null
++++ b/drivers/misc/xlink-pcie/remote_host/main.c
+@@ -0,0 +1,90 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
-+ * Intel VPU IPC mailbox driver.
++ * Intel Keem Bay XLink PCIe Driver
 + *
-+ * Copyright (c) 2020-2021 Intel Corporation.
++ * Copyright (C) 2021 Intel Corporation
 + */
 +
-+#include <linux/kernel.h>
-+#include <linux/interrupt.h>
-+#include <linux/mailbox_controller.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/platform_device.h>
++#include "pci.h"
++#include "../common/core.h"
 +
-+/*
-+ * The IPC FIFO registers (offsets to the base address defined in device tree).
-+ */
++#define HW_ID_LO_MASK	GENMASK(7, 0)
++#define HW_ID_HI_MASK	GENMASK(15, 8)
 +
-+/*
-+ * TIM_IPC_FIFO - Write a 32-bit entry to FIFO.
-+ *
-+ * The entry to be put in the FIFO must be written to this register.
-+ *
-+ * NOTE: the 6 least-significant bits are reserved for the writing processor
-+ * to include its processor ID, 0 <= x <= 62, so it can determine if the entry
-+ * was written correctly by checking the appropriate bit of register
-+ * TIM_IPC_FIFO_OF_FLAG[n].
-+ *
-+ * Internally, the hardware increments FIFO write pointer and fill level.
-+ *
-+ */
-+#define IPC_FIFO		0x00
-+
-+/* The last 6 bits of an IPC entry are reserved. */
-+#define IPC_FIFO_ENTRY_RSVD_MASK	0x3f
-+
-+/*
-+ * IPC_FIFO_ATM - Read from FIFO using ATM mode.
-+ *
-+ * If FIFO is empty, reading from this registers returns 0xFFFFFFFF, otherwise
-+ * returns the value from the FIFO with the 6 least-significant bits set to 0.
-+ *
-+ * Internally, the hardware increments FIFO read pointer and decrements fill
-+ * level.
-+ */
-+#define IPC_FIFO_ATM		0x04
-+#define IPC_FIFO_EMPTY		0xFFFFFFFF
-+
-+/*
-+ * TIM_IPC_FIFO_OF_FLAG[n] - IPC FIFO overflow status for processor IDs 0-62.
-+ *
-+ * Read:
-+ *
-+ * A processor can check that its writes to the IPC FIFO were successful by
-+ * reading the value of TIM_IPC_FIFO_OF_FLAG0 or TIM_IPC_FIFO_OF_FLAG1
-+ * (depending on its processor ID).
-+ *
-+ * Bit x, 0 <= x <= 31, of TIM_IPC_FIFO_OF_FLAG0 is set high if a write
-+ * to TIM_IPC_FIFO by processor ID x failed because the FIFO was full.
-+ *
-+ * Bit x, 0 <= x <= 30, of TIM_IPC_FIFO_OF_FLAG1 is set high if a write
-+ * to TIM_IPC_FIFO by processor ID x+32 failed because the FIFO was
-+ * full.
-+ *
-+ * Processors are identified by the 6 least-significant bits of words
-+ * written to TIM_IPC_FIFO, i.e. x = TIM_IPC_FIFO[5:0].
-+ * Processor ID = 0x3F is reserved to indicate a read of an empty FIFO
-+ * has occurred.
-+ *
-+ * Write:
-+ *
-+ * Writing 1 to bit position x of TIM_IPC_FIFO_OF_FLAG0 clears the
-+ * overflow flag corresponding to processor ID x.  Writing 1 to bit
-+ * position x of TIM_IPC_FIFO_OF_FLAG1 clears the overflow flag
-+ * corresponding to processor ID x+32.
-+ *
-+ * Writing 0 to any bit position has not effect.
-+ */
-+#define IPC_FIFO_OF_FLAG0	0x10
-+#define IPC_FIFO_OF_FLAG1	0x14
-+
-+/* The processor ID of the CPU. */
-+#define IPC_FIFO_ID_CPU		0
-+
-+/**
-+ * struct vpu_ipc_mbox - Intel VPU IPC mailbox controller.
-+ * @mbox:		Mailbox controller.
-+ * @mbox_chan:		The only channel supported by this controller.
-+ * @dev:		The device associated with this controller.
-+ * @cpu_fifo_base:	Base address of CPU FIFO registers.
-+ * @vpu_fifo_base:	Base address of VPU FIFO registers.
-+ * @txdone_tasklet:	Tasklet calling mbox_chan_txdone(). It's activated by
-+ *			the send_data() function, after the VPU FIFO has been
-+ *			written; a tasklet is used because send_data() cannot
-+ *			call mbox_chan_txdone() directly.
-+ * @txdone_result:	The result of the last TX. It's set by the send_data()
-+ *			function before activating the txdone_tasklet.
-+ */
-+struct vpu_ipc_mbox {
-+	struct mbox_controller	mbox;
-+	struct mbox_chan	mbox_chan;
-+	void __iomem		*cpu_fifo_base;
-+	void __iomem		*vpu_fifo_base;
-+	struct tasklet_struct	txdone_tasklet;
-+	int			txdone_result;
++static const struct pci_device_id xpcie_pci_table[] = {
++	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_KEEMBAY), 0 },
++	{ 0 }
 +};
 +
-+/* The IRQ handler servicing 'FIFO-not-empty' IRQs coming from the CPU FIFO. */
-+static irqreturn_t vpu_ipc_mailbox_irq_handler(int irq, void *data)
++static int intel_xpcie_probe(struct pci_dev *pdev,
++			     const struct pci_device_id *ent)
 +{
-+	struct vpu_ipc_mbox *vpu_ipc_mbox = data;
-+	u32 entry;
++	bool new_device = false;
++	struct xpcie_dev *xdev;
++	u32 sw_devid;
++	u16 hw_id;
++	int ret;
 +
-+	/* Extract and process one entry from CPU FIFO. */
-+	entry = ioread32(vpu_ipc_mbox->cpu_fifo_base + IPC_FIFO_ATM);
-+	if (unlikely(entry == IPC_FIFO_EMPTY))
-+		return IRQ_NONE;
++	hw_id = FIELD_PREP(HW_ID_HI_MASK, pdev->bus->number) |
++		FIELD_PREP(HW_ID_LO_MASK, PCI_SLOT(pdev->devfn));
 +
-+	/* Notify mailbox client of new data. */
-+	mbox_chan_received_data(&vpu_ipc_mbox->mbox_chan, (void *)&entry);
++	sw_devid = FIELD_PREP(XLINK_DEV_INF_TYPE_MASK,
++			      XLINK_DEV_INF_PCIE) |
++		   FIELD_PREP(XLINK_DEV_PHYS_ID_MASK, hw_id) |
++		   FIELD_PREP(XLINK_DEV_TYPE_MASK, XLINK_DEV_TYPE_KMB) |
++		   FIELD_PREP(XLINK_DEV_PCIE_ID_MASK, XLINK_DEV_PCIE_0) |
++		   FIELD_PREP(XLINK_DEV_FUNC_MASK, XLINK_DEV_FUNC_VPU);
 +
-+	return IRQ_HANDLED;
-+}
++	xdev = intel_xpcie_get_device_by_id(sw_devid);
++	if (!xdev) {
++		xdev = intel_xpcie_create_device(sw_devid, pdev);
++		if (!xdev)
++			return -ENOMEM;
 +
-+/*
-+ * The function implementing the txdone_tasklet.
-+ *
-+ * It calls mbox_chan_txdone() passing as arguments the only channel we have
-+ * and the result of the last TX (as stored in the vpu_ipc_mbox struct).
-+ */
-+static void txdone_tasklet_func(unsigned long vpu_ipc_mbox_ptr)
-+{
-+	struct vpu_ipc_mbox *vpu_ipc_mbox = (void *)vpu_ipc_mbox_ptr;
-+
-+	/* Notify client that tx is completed and pass proper result code. */
-+	mbox_chan_txdone(&vpu_ipc_mbox->mbox_chan, vpu_ipc_mbox->txdone_result);
-+}
-+
-+/*
-+ * Mailbox controller 'send_data()' function.
-+ *
-+ * This functions tries to put 'data' into the VPU FIFO. This is done by
-+ * writing to the IPC_FIFO VPU register and then checking if we overflew the
-+ * FIFO (by reading the IPC_FIFO_OF_FLAG0 VPU register).
-+ *
-+ * If we overflew the FIFO, the TX has failed and we notify the mailbox client
-+ * by passing -EBUSY to mbox_chan_txdone()); otherwise the TX succeeded (we
-+ * pass 0 to mbox_chan_txdone()). Note: mbox_chan_txdone() cannot be called
-+ * directly (since that would case a deadlock), therefore a tasklet is used to
-+ * defer the call.
-+ *
-+ * 'data' is meant to be a 32-bit unsigned integer with the least 6 significant
-+ * bits set to 0.
-+ */
-+static int vpu_ipc_mailbox_send_data(struct mbox_chan *chan, void *data)
-+{
-+	struct vpu_ipc_mbox *vpu_ipc_mbox = chan->con_priv;
-+	u32 entry, overflow;
-+
-+	entry = *((u32 *)data);
-+
-+	/* Ensure last 6-bits of entry are not used. */
-+	if (unlikely(entry & IPC_FIFO_ENTRY_RSVD_MASK)) {
-+		vpu_ipc_mbox->txdone_result = -EINVAL;
-+		goto exit;
++		new_device = true;
 +	}
 +
-+	/* Add processor ID to entry. */
-+	entry |= IPC_FIFO_ID_CPU & IPC_FIFO_ENTRY_RSVD_MASK;
-+
-+	/* Write entry to VPU FIFO. */
-+	iowrite32(entry, vpu_ipc_mbox->vpu_fifo_base + IPC_FIFO);
-+
-+	/* Check if we overflew the VPU FIFO. */
-+	overflow = ioread32(vpu_ipc_mbox->vpu_fifo_base + IPC_FIFO_OF_FLAG0) &
-+		   BIT(IPC_FIFO_ID_CPU);
-+	if (unlikely(overflow)) {
-+		/* Reset overflow register. */
-+		iowrite32(BIT(IPC_FIFO_ID_CPU),
-+			  vpu_ipc_mbox->vpu_fifo_base + IPC_FIFO_OF_FLAG0);
-+		vpu_ipc_mbox->txdone_result = -EBUSY;
-+		goto exit;
++	ret = intel_xpcie_pci_init(xdev, pdev);
++	if (ret) {
++		intel_xpcie_remove_device(xdev);
++		return ret;
 +	}
-+	vpu_ipc_mbox->txdone_result = 0;
 +
-+exit:
-+	/* Schedule tasklet to call mbox_chan_txdone(). */
-+	tasklet_schedule(&vpu_ipc_mbox->txdone_tasklet);
++	if (new_device)
++		intel_xpcie_list_add_device(xdev);
++
++	return ret;
++}
++
++static void intel_xpcie_remove(struct pci_dev *pdev)
++{
++	struct xpcie_dev *xdev = pci_get_drvdata(pdev);
++
++	if (xdev) {
++		intel_xpcie_pci_cleanup(xdev);
++		intel_xpcie_remove_device(xdev);
++	}
++}
++
++static struct pci_driver xpcie_driver = {
++	.name = XPCIE_DRIVER_NAME,
++	.id_table = xpcie_pci_table,
++	.probe = intel_xpcie_probe,
++	.remove = intel_xpcie_remove
++};
++
++static int __init intel_xpcie_init_module(void)
++{
++	return pci_register_driver(&xpcie_driver);
++}
++
++static void __exit intel_xpcie_exit_module(void)
++{
++	pci_unregister_driver(&xpcie_driver);
++}
++
++module_init(intel_xpcie_init_module);
++module_exit(intel_xpcie_exit_module);
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Intel Corporation");
++MODULE_DESCRIPTION(XPCIE_DRIVER_DESC);
+diff --git a/drivers/misc/xlink-pcie/remote_host/pci.c b/drivers/misc/xlink-pcie/remote_host/pci.c
+new file mode 100644
+index 000000000000..7b94575ef997
+--- /dev/null
++++ b/drivers/misc/xlink-pcie/remote_host/pci.c
+@@ -0,0 +1,449 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Intel Keem Bay XLink PCIe Driver
++ *
++ * Copyright (C) 2021 Intel Corporation
++ */
++
++#include <linux/mutex.h>
++#include <linux/sched.h>
++#include <linux/wait.h>
++#include <linux/workqueue.h>
++
++#include "pci.h"
++
++#include "../common/core.h"
++#include "../common/util.h"
++
++static int aspm_enable;
++module_param(aspm_enable, int, 0664);
++MODULE_PARM_DESC(aspm_enable, "enable ASPM");
++
++static LIST_HEAD(dev_list);
++static DEFINE_MUTEX(dev_list_mutex);
++
++struct xpcie_dev *intel_xpcie_get_device_by_id(u32 id)
++{
++	struct xpcie_dev *xdev;
++
++	mutex_lock(&dev_list_mutex);
++
++	if (list_empty(&dev_list)) {
++		mutex_unlock(&dev_list_mutex);
++		return NULL;
++	}
++
++	list_for_each_entry(xdev, &dev_list, list) {
++		if (xdev->devid == id) {
++			mutex_unlock(&dev_list_mutex);
++			return xdev;
++		}
++	}
++
++	mutex_unlock(&dev_list_mutex);
++
++	return NULL;
++}
++
++struct xpcie_dev *intel_xpcie_create_device(u32 sw_device_id,
++					    struct pci_dev *pdev)
++{
++	struct xpcie_dev *xdev = kzalloc(sizeof(*xdev), GFP_KERNEL);
++
++	if (!xdev)
++		return NULL;
++
++	xdev->devid = sw_device_id;
++	snprintf(xdev->name, XPCIE_MAX_NAME_LEN, "%02x:%02x.%x",
++		 pdev->bus->number,
++		 PCI_SLOT(pdev->devfn),
++		 PCI_FUNC(pdev->devfn));
++
++	mutex_init(&xdev->lock);
++
++	return xdev;
++}
++
++void intel_xpcie_remove_device(struct xpcie_dev *xdev)
++{
++	mutex_destroy(&xdev->lock);
++	kfree(xdev);
++}
++
++void intel_xpcie_list_add_device(struct xpcie_dev *xdev)
++{
++	mutex_lock(&dev_list_mutex);
++
++	list_add_tail(&xdev->list, &dev_list);
++
++	mutex_unlock(&dev_list_mutex);
++}
++
++void intel_xpcie_list_del_device(struct xpcie_dev *xdev)
++{
++	mutex_lock(&dev_list_mutex);
++
++	list_del(&xdev->list);
++
++	mutex_unlock(&dev_list_mutex);
++}
++
++static void intel_xpcie_pci_set_aspm(struct xpcie_dev *xdev, int aspm)
++{
++	u16 link_control;
++	u8 cap_exp;
++
++	cap_exp = pci_find_capability(xdev->pci, PCI_CAP_ID_EXP);
++	if (!cap_exp) {
++		dev_err(&xdev->pci->dev, "failed to find pcie capability\n");
++		return;
++	}
++
++	pci_read_config_word(xdev->pci, cap_exp + PCI_EXP_LNKCTL,
++			     &link_control);
++	link_control &= ~(PCI_EXP_LNKCTL_ASPMC);
++	link_control |= (aspm & PCI_EXP_LNKCTL_ASPMC);
++	pci_write_config_word(xdev->pci, cap_exp + PCI_EXP_LNKCTL,
++			      link_control);
++}
++
++static void intel_xpcie_pci_unmap_bar(struct xpcie_dev *xdev)
++{
++	if (xdev->xpcie.bar0) {
++		iounmap((void __iomem *)xdev->xpcie.bar0);
++		xdev->xpcie.bar0 = NULL;
++	}
++
++	if (xdev->xpcie.mmio) {
++		iounmap((void __iomem *)(xdev->xpcie.mmio - XPCIE_MMIO_OFFSET));
++		xdev->xpcie.mmio = NULL;
++	}
++
++	if (xdev->xpcie.bar4) {
++		iounmap((void __iomem *)xdev->xpcie.bar4);
++		xdev->xpcie.bar4 = NULL;
++	}
++}
++
++static int intel_xpcie_pci_map_bar(struct xpcie_dev *xdev)
++{
++	if (pci_resource_len(xdev->pci, 2) < XPCIE_IO_COMM_SIZE) {
++		dev_err(&xdev->pci->dev, "device BAR region is too small\n");
++		return -EIO;
++	}
++
++	xdev->xpcie.bar0 = (void __force *)pci_ioremap_bar(xdev->pci, 0);
++	if (!xdev->xpcie.bar0) {
++		dev_err(&xdev->pci->dev, "failed to ioremap BAR0\n");
++		goto bar_error;
++	}
++
++	xdev->xpcie.mmio = (void __force *)
++			   (pci_ioremap_bar(xdev->pci, 2) + XPCIE_MMIO_OFFSET);
++	if (!xdev->xpcie.mmio) {
++		dev_err(&xdev->pci->dev, "failed to ioremap BAR2\n");
++		goto bar_error;
++	}
++
++	xdev->xpcie.bar4 = (void __force *)pci_ioremap_wc_bar(xdev->pci, 4);
++	if (!xdev->xpcie.bar4) {
++		dev_err(&xdev->pci->dev, "failed to ioremap BAR4\n");
++		goto bar_error;
++	}
++
++	return 0;
++
++bar_error:
++	intel_xpcie_pci_unmap_bar(xdev);
++	return -EIO;
++}
++
++static void intel_xpcie_pci_irq_cleanup(struct xpcie_dev *xdev)
++{
++	int irq = pci_irq_vector(xdev->pci, 0);
++
++	if (irq < 0)
++		return;
++
++	synchronize_irq(irq);
++	free_irq(irq, xdev);
++	pci_free_irq_vectors(xdev->pci);
++}
++
++static int intel_xpcie_pci_irq_init(struct xpcie_dev *xdev,
++				    irq_handler_t irq_handler)
++{
++	int rc, irq;
++
++	rc = pci_alloc_irq_vectors(xdev->pci, 1, 1, PCI_IRQ_MSI);
++	if (rc < 0) {
++		dev_err(&xdev->pci->dev,
++			"failed to allocate %d MSI vectors\n", 1);
++		return rc;
++	}
++
++	irq = pci_irq_vector(xdev->pci, 0);
++	if (irq < 0) {
++		dev_err(&xdev->pci->dev, "failed to get irq\n");
++		rc = irq;
++		goto error_irq;
++	}
++	rc = request_irq(irq, irq_handler, 0,
++			 XPCIE_DRIVER_NAME, xdev);
++	if (rc) {
++		dev_err(&xdev->pci->dev, "failed to request irq\n");
++		goto error_irq;
++	}
++
++	return 0;
++
++error_irq:
++	pci_free_irq_vectors(xdev->pci);
++	return rc;
++}
++
++static void xpcie_device_poll(struct work_struct *work)
++{
++	struct xpcie_dev *xdev = container_of(work, struct xpcie_dev,
++					      wait_event.work);
++	u32 dev_status = intel_xpcie_ioread32(xdev->xpcie.mmio +
++					      XPCIE_MMIO_DEV_STATUS);
++
++	if (dev_status < XPCIE_STATUS_RUN)
++		schedule_delayed_work(&xdev->wait_event,
++				      msecs_to_jiffies(100));
++	else
++		xdev->xpcie.status = XPCIE_STATUS_READY;
++}
++
++static int intel_xpcie_pci_prepare_dev_reset(struct xpcie_dev *xdev,
++					     bool notify)
++{
++	if (mutex_lock_interruptible(&xdev->lock))
++		return -EINTR;
++
++	if (xdev->core_irq_callback)
++		xdev->core_irq_callback = NULL;
++
++	xdev->xpcie.status = XPCIE_STATUS_OFF;
++	if (notify)
++		intel_xpcie_pci_raise_irq(xdev, DEV_EVENT, REQUEST_RESET);
++
++	mutex_unlock(&xdev->lock);
 +
 +	return 0;
 +}
 +
-+/* The mailbox channel ops for this controller. */
-+static const struct mbox_chan_ops vpu_ipc_mbox_chan_ops = {
-+	.send_data = vpu_ipc_mailbox_send_data,
-+};
-+
-+static int vpu_ipc_mailbox_probe(struct platform_device *pdev)
++static void xpcie_device_shutdown(struct work_struct *work)
 +{
-+	struct vpu_ipc_mbox *vpu_ipc_mbox;
-+	struct device *dev = &pdev->dev;
-+	void __iomem *base;
-+	int irq;
++	struct xpcie_dev *xdev = container_of(work, struct xpcie_dev,
++					      shutdown_event.work);
++
++	intel_xpcie_pci_prepare_dev_reset(xdev, false);
++}
++
++static int xpcie_device_init(struct xpcie_dev *xdev)
++{
++	INIT_DELAYED_WORK(&xdev->wait_event, xpcie_device_poll);
++	INIT_DELAYED_WORK(&xdev->shutdown_event, xpcie_device_shutdown);
++
++	pci_set_master(xdev->pci);
++
++	xdev->xpcie.status = XPCIE_STATUS_UNINIT;
++
++	init_waitqueue_head(&xdev->waitqueue);
++	schedule_delayed_work(&xdev->wait_event, 0);
++
++	return 0;
++}
++
++int intel_xpcie_pci_init(struct xpcie_dev *xdev, struct pci_dev *pdev)
++{
 +	int rc;
 +
-+	vpu_ipc_mbox = devm_kzalloc(dev, sizeof(*vpu_ipc_mbox), GFP_KERNEL);
-+	if (!vpu_ipc_mbox)
-+		return -ENOMEM;
++	if (mutex_lock_interruptible(&xdev->lock))
++		return -EINTR;
 +
-+	/* Map CPU FIFO registers. */
-+	base = devm_platform_ioremap_resource_byname(pdev, "cpu_fifo");
-+	if (IS_ERR(base)) {
-+		dev_err(dev, "Failed to ioremap CPU FIFO registers\n");
-+		return PTR_ERR(base);
-+	}
-+	vpu_ipc_mbox->cpu_fifo_base = base;
++	xdev->pci = pdev;
++	pci_set_drvdata(pdev, xdev);
 +
-+	/* MAP VPU FIFO registers. */
-+	base = devm_platform_ioremap_resource_byname(pdev, "vpu_fifo");
-+	if (IS_ERR(base)) {
-+		dev_err(dev, "Failed to ioremap VPU FIFO registers\n");
-+		return PTR_ERR(base);
-+	}
-+	vpu_ipc_mbox->vpu_fifo_base = base;
-+
-+	/* Initialize mailbox channels. */
-+	vpu_ipc_mbox->mbox_chan.con_priv = vpu_ipc_mbox;
-+
-+	/* Initialize mailbox controller. */
-+	vpu_ipc_mbox->mbox.dev = dev;
-+	vpu_ipc_mbox->mbox.ops = &vpu_ipc_mbox_chan_ops;
-+	vpu_ipc_mbox->mbox.chans = &vpu_ipc_mbox->mbox_chan;
-+	vpu_ipc_mbox->mbox.num_chans = 1;
-+	/*
-+	 * Set txdone_irq; we don't have a HW IRQ, but we use a txdone tasklet
-+	 * to simulate it.
-+	 */
-+	vpu_ipc_mbox->mbox.txdone_irq = true;
-+
-+	/* Init TX done tasklet. */
-+	tasklet_init(&vpu_ipc_mbox->txdone_tasklet, txdone_tasklet_func,
-+		     (uintptr_t)vpu_ipc_mbox);
-+
-+	rc = devm_mbox_controller_register(dev, &vpu_ipc_mbox->mbox);
++	rc = pci_enable_device_mem(xdev->pci);
 +	if (rc) {
-+		dev_err(&pdev->dev, "Failed to register VPU IPC controller\n");
-+		return rc;
++		dev_err(&pdev->dev, "failed to enable pci device\n");
++		goto error_exit;
 +	}
 +
-+	/* Register interrupt handler for CPU FIFO. */
-+	irq = platform_get_irq(pdev, 0);
-+	if (irq < 0)
-+		return irq;
-+	rc = devm_request_irq(dev, irq, vpu_ipc_mailbox_irq_handler, 0,
-+			      dev_name(dev), vpu_ipc_mbox);
++	rc = pci_request_regions(xdev->pci, XPCIE_DRIVER_NAME);
++	if (rc) {
++		dev_err(&pdev->dev, "failed to request mmio regions\n");
++		goto error_req_mem;
++	}
++
++	rc = intel_xpcie_pci_map_bar(xdev);
 +	if (rc)
-+		return rc;
++		goto error_map;
 +
-+	platform_set_drvdata(pdev, vpu_ipc_mbox);
++	rc = dma_set_mask_and_coherent(&xdev->pci->dev, DMA_BIT_MASK(64));
++	if (rc) {
++		dev_err(&pdev->dev, "failed to set dma mask\n");
++		goto error_dma_mask;
++	}
 +
-+	return 0;
++	intel_xpcie_pci_set_aspm(xdev, aspm_enable);
++
++	rc = xpcie_device_init(xdev);
++	if (!rc)
++		goto init_exit;
++
++error_dma_mask:
++	intel_xpcie_pci_unmap_bar(xdev);
++
++error_map:
++	pci_release_regions(xdev->pci);
++
++error_req_mem:
++	pci_disable_device(xdev->pci);
++
++error_exit:
++	xdev->xpcie.status = XPCIE_STATUS_ERROR;
++
++init_exit:
++	mutex_unlock(&xdev->lock);
++	if (rc)
++		mutex_destroy(&xdev->lock);
++	return rc;
 +}
 +
-+static int vpu_ipc_mailbox_remove(struct platform_device *pdev)
++int intel_xpcie_pci_cleanup(struct xpcie_dev *xdev)
 +{
-+	struct vpu_ipc_mbox *vpu_ipc_mbox = platform_get_drvdata(pdev);
++	if (mutex_lock_interruptible(&xdev->lock))
++		return -EINTR;
 +
-+	/*
-+	 * Just kill the tasklet as iomem and irq have been requested with
-+	 * devm_* functions and, therefore, are freed automatically.
-+	 */
-+	tasklet_kill(&vpu_ipc_mbox->txdone_tasklet);
++	cancel_delayed_work(&xdev->wait_event);
++	cancel_delayed_work(&xdev->shutdown_event);
++	xdev->core_irq_callback = NULL;
++	intel_xpcie_pci_irq_cleanup(xdev);
++
++	intel_xpcie_pci_unmap_bar(xdev);
++	pci_release_regions(xdev->pci);
++	pci_disable_device(xdev->pci);
++	pci_set_drvdata(xdev->pci, NULL);
++	xdev->xpcie.status = XPCIE_STATUS_OFF;
++	xdev->irq_enabled = false;
++
++	mutex_unlock(&xdev->lock);
 +
 +	return 0;
 +}
 +
-+static const struct of_device_id vpu_ipc_mailbox_of_match[] = {
-+	{
-+		.compatible = "intel,vpu-ipc-mailbox",
-+	},
-+	{}
++int intel_xpcie_pci_register_irq(struct xpcie_dev *xdev,
++				 irq_handler_t irq_handler)
++{
++	int rc;
++
++	if (xdev->xpcie.status != XPCIE_STATUS_READY)
++		return -EINVAL;
++
++	rc = intel_xpcie_pci_irq_init(xdev, irq_handler);
++	if (rc)
++		dev_warn(&xdev->pci->dev, "failed to initialize pci irq\n");
++
++	return rc;
++}
++
++int intel_xpcie_pci_raise_irq(struct xpcie_dev *xdev,
++			      enum xpcie_doorbell_type type,
++			      u8 value)
++{
++	u16 pci_status;
++
++	pci_read_config_word(xdev->pci, PCI_STATUS, &pci_status);
++
++	return 0;
++}
++
++u32 intel_xpcie_get_device_num(u32 *id_list)
++{
++	struct xpcie_dev *p;
++	u32 num = 0;
++
++	mutex_lock(&dev_list_mutex);
++
++	if (list_empty(&dev_list)) {
++		mutex_unlock(&dev_list_mutex);
++		return 0;
++	}
++
++	list_for_each_entry(p, &dev_list, list) {
++		*id_list++ = p->devid;
++		num++;
++	}
++	mutex_unlock(&dev_list_mutex);
++
++	return num;
++}
++
++int intel_xpcie_get_device_name_by_id(u32 id,
++				      char *device_name, size_t name_size)
++{
++	struct xpcie_dev *xdev;
++	size_t size;
++
++	xdev = intel_xpcie_get_device_by_id(id);
++	if (!xdev)
++		return -ENODEV;
++
++	mutex_lock(&xdev->lock);
++
++	size = (name_size > XPCIE_MAX_NAME_LEN) ?
++		XPCIE_MAX_NAME_LEN : name_size;
++	memcpy(device_name, xdev->name, size);
++
++	mutex_unlock(&xdev->lock);
++
++	return 0;
++}
++
++int intel_xpcie_get_device_status_by_id(u32 id, u32 *status)
++{
++	struct xpcie_dev *xdev = intel_xpcie_get_device_by_id(id);
++
++	if (!xdev)
++		return -ENODEV;
++
++	mutex_lock(&xdev->lock);
++	*status = xdev->xpcie.status;
++	mutex_unlock(&xdev->lock);
++
++	return 0;
++}
++
++int intel_xpcie_pci_connect_device(u32 id)
++{
++	struct xpcie_dev *xdev;
++	int rc = 0;
++
++	xdev = intel_xpcie_get_device_by_id(id);
++	if (!xdev)
++		return -ENODEV;
++
++	if (mutex_lock_interruptible(&xdev->lock))
++		return -EINTR;
++
++	if (xdev->xpcie.status == XPCIE_STATUS_RUN)
++		goto connect_cleanup;
++
++	if (xdev->xpcie.status == XPCIE_STATUS_OFF) {
++		rc = -ENODEV;
++		goto connect_cleanup;
++	}
++
++	if (xdev->xpcie.status != XPCIE_STATUS_READY) {
++		rc = -EBUSY;
++		goto connect_cleanup;
++	}
++
++connect_cleanup:
++	mutex_unlock(&xdev->lock);
++	return rc;
++}
+diff --git a/drivers/misc/xlink-pcie/remote_host/pci.h b/drivers/misc/xlink-pcie/remote_host/pci.h
+new file mode 100644
+index 000000000000..bd6b01cc58b8
+--- /dev/null
++++ b/drivers/misc/xlink-pcie/remote_host/pci.h
+@@ -0,0 +1,62 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Intel Keem Bay XLink PCIe Driver
++ *
++ * Copyright (C) 2021 Intel Corporation
++ */
++
++#ifndef XPCIE_PCI_HEADER_
++#define XPCIE_PCI_HEADER_
++
++#include <linux/interrupt.h>
++#include <linux/list.h>
++#include <linux/pci.h>
++#include <linux/xlink_drv_inf.h>
++#include "../common/xpcie.h"
++#include "../common/util.h"
++
++#define XPCIE_DRIVER_NAME "mxlk"
++#define XPCIE_DRIVER_DESC "Intel(R) Keem Bay XLink PCIe driver"
++
++#define XPCIE_MAX_NAME_LEN	(32)
++
++struct xpcie_dev {
++	struct list_head list;
++	struct mutex lock; /* Device Lock */
++
++	struct pci_dev *pci;
++	char name[XPCIE_MAX_NAME_LEN];
++	u32 devid;
++	char fw_name[XPCIE_MAX_NAME_LEN];
++
++	struct delayed_work wait_event;
++	struct delayed_work shutdown_event;
++	wait_queue_head_t waitqueue;
++	bool irq_enabled;
++	irq_handler_t core_irq_callback;
++
++	struct xpcie xpcie;
 +};
 +
-+static struct platform_driver vpu_ipc_mailbox_driver = {
-+	.driver = {
-+			.name = "vpu-ipc-mailbox",
-+			.of_match_table = vpu_ipc_mailbox_of_match,
-+		},
-+	.probe = vpu_ipc_mailbox_probe,
-+	.remove = vpu_ipc_mailbox_remove,
-+};
-+module_platform_driver(vpu_ipc_mailbox_driver);
++static inline struct device *xpcie_to_dev(struct xpcie *xpcie)
++{
++	struct xpcie_dev *xdev = container_of(xpcie, struct xpcie_dev, xpcie);
 +
-+MODULE_DESCRIPTION("Intel VPU IPC mailbox driver");
-+MODULE_AUTHOR("Daniele Alessandrelli <daniele.alessandrelli@intel.com>");
-+MODULE_LICENSE("GPL");
++	return &xdev->pci->dev;
++}
++
++int intel_xpcie_pci_init(struct xpcie_dev *xdev, struct pci_dev *pdev);
++int intel_xpcie_pci_cleanup(struct xpcie_dev *xdev);
++int intel_xpcie_pci_register_irq(struct xpcie_dev *xdev,
++				 irq_handler_t irq_handler);
++int intel_xpcie_pci_raise_irq(struct xpcie_dev *xdev,
++			      enum xpcie_doorbell_type type,
++			      u8 value);
++
++struct xpcie_dev *intel_xpcie_create_device(u32 sw_device_id,
++					    struct pci_dev *pdev);
++void intel_xpcie_remove_device(struct xpcie_dev *xdev);
++void intel_xpcie_list_add_device(struct xpcie_dev *xdev);
++void intel_xpcie_list_del_device(struct xpcie_dev *xdev);
++
++#endif /* XPCIE_PCI_HEADER_ */
 -- 
 2.17.1
 
