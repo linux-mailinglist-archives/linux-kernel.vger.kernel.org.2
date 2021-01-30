@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A25D3093CE
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:57:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0FBA309381
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:38:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231748AbhA3J52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 04:57:28 -0500
-Received: from mga06.intel.com ([134.134.136.31]:41302 "EHLO mga06.intel.com"
+        id S230008AbhA3JhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 04:37:10 -0500
+Received: from mga04.intel.com ([192.55.52.120]:31753 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233024AbhA3DAc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 22:00:32 -0500
-IronPort-SDR: wPHKz+oRlH5DVh1YekGtl0GpqOKfFeG6yb9pFXEiOrUtW8UHOjFnAkAcmjYm4ozUdflxKiEhZX
- kZqIoFgIrZVA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="242028060"
+        id S233507AbhA3DTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 22:19:33 -0500
+IronPort-SDR: AlNH/tRPeWT0qI4LKL0XopGBJ8saf9flm/wT+P9CW2WL6nR7io4VdAzlyRivfmorEdKvs0xqP0
+ Y3rqaX5It6eQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="177945215"
 X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="242028060"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:31 -0800
-IronPort-SDR: NDL1x08tKiJvMiLPlepdn7p3aClfKZVVffRX5M0DtZDxMCwJLzsrXlDBEMJ40+dvUKCrivK9Tz
- ElwTgOP+sc8Q==
+   d="scan'208";a="177945215"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:30 -0800
+IronPort-SDR: xydAxMXOkmUQZR92W0EhOnjreYpTM8R+pOh9nZghuIEUCB917ai5S1fMabL+8vujGuCZwTl3fN
+ rshQ0iIz0fcA==
 X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="365585721"
+   d="scan'208";a="357991548"
 Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:30 -0800
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:30 -0800
 Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id 68E0E6369;
+        by smtp.ostc.intel.com (Postfix) with ESMTP id 87720636B;
         Fri, 29 Jan 2021 18:21:30 -0800 (PST)
 Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
-        id 58616363691; Fri, 29 Jan 2021 18:21:30 -0800 (PST)
+        id 76FAF363698; Fri, 29 Jan 2021 18:21:30 -0800 (PST)
 From:   mgross@linux.intel.com
 To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
@@ -36,10 +36,13 @@ To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         palmerdabbelt@google.com, paul.walmsley@sifive.com,
         peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
         jassisinghbrar@gmail.com
-Cc:     linux-kernel@vger.kernel.org, Seamus Kelly <seamus.kelly@intel.com>
-Subject: [PATCH v4 22/34] xlink-core: Enable VPU IP management and runtime control
-Date:   Fri, 29 Jan 2021 18:21:12 -0800
-Message-Id: <20210130022124.65083-58-mgross@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "Li, Tingqian" <tingqian.li@intel.com>,
+        Zhou Luwei <luwei.zhou@intel.com>,
+        Wang jue <wang.jue@intel.com>
+Subject: [PATCH v4 25/34] misc: Add Keem Bay VPU manager
+Date:   Fri, 29 Jan 2021 18:21:15 -0800
+Message-Id: <20210130022124.65083-61-mgross@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210130022124.65083-1-mgross@linux.intel.com>
 References: <20210130022124.65083-1-mgross@linux.intel.com>
@@ -47,891 +50,1866 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Seamus Kelly <seamus.kelly@intel.com>
+From: "Li, Tingqian" <tingqian.li@intel.com>
 
-Enable VPU management including, enumeration, boot and runtime control.
+VPU IP on Keem Bay SOC is a vision acceleration IP complex
+under the control of a RTOS-based firmware (running on RISC
+MCU inside the VPU IP) serving user-space application
+running on CPU side for HW accelerated computer vision tasks.
 
-Add APIs:
-	write control data:
-		used to transmit small, local data
-	start vpu:
-			calls boot_device API ( soon to be deprecated )
-	stop vpu
-			calls reset_device API ( soon to be deprecated )
-	reset vpu
-			calls reset_device API ( soon to be deprecated )
-	get device name:
-		Returns the device name for the input device id
-		This could be a char device path, for example "/dev/ttyUSB0"
-		for a serial device; or it could be a device string
-		description, for example, for PCIE "00:00.0 Host bridge: Intel
-		Corporation 440BX/ZX/DX - 82443BX/ZX/DX Host bridge (rev 01)"
-	get device list:
-		Returns the list of software device IDs for all connected
-		physical devices
-	get device status:
-		returns the current state of the input device
-			OFF - The device is off (D3cold/Slot power removed).
-			BUSY - device is busy and not available (device is booting)
-			READY - device is available for use
-			ERROR - device HW failure is detected
-			RECOVERY - device is in recovery mode, waiting for recovery operations
-	boot device:
-		When used on the remote host - starts the SOC device by calling
-		corresponding function from VPU Driver.
-		Takes firmware's 'binary_name' as input.
-		For Linux, the firmware image is expected to be located in
-		'/lib/firmware' folder or its subfolders.
-		For Linux, 'binary_name' is not a path but an image name that
-		will be searched in the default Linux search paths ('/lib/firmware').
-		When used on the local host - triggers the booting of VPUIP device.
-	reset device:
-		When used on the remote host - resets the device by calling
-		corresponding VPU Driver function.
-		When used on the local host - resets the VPUIP device
-	get device mode:
-		query and returns the current device power mode
-	set device mode:
-		used for device throttling or entering various power modes
+This module is kernel counterpart of the VPUAL(VPU abstraction
+layer) which bridges firmware on VPU side and applications on
+CPU user-space, it assists firmware on VPU side serving multiple
+user space application processes on CPU side concurrently while
+also performing necessary data buffer management on behave of
+VPU IP.
 
+objmgr provides basic infrastructure for create/destroy VPU side
+software object concurrently on demand of user-space application
+and also automatically release leaked objects during handling of
+application termination. Note this module only cares about the
+life-cycle of such objects, it's up to the application and firmware
+to define the behavior/operations of each object.
 
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Mark Gross <mgross@linux.intel.com>
+objmgr does it's job by communicating with firmware through a fixed
+reserved xlink channel, using a very simple message protocol.
+
+smm provides DMABuf allocation/import facilities to allow user-space
+app pass data to/from VPU in zero-copy fashion. it also provided a
+convenient ioctl function for converting virtual pointer of a mem-mapped
+and imported DMABuf into it's corresponding dma address, to allow
+user-space app to specify the sub-regions of a bigger DMABuf to be
+processed by VPU.
+
+Signed-off-by: Li Tingqian <tingqian.li@intel.com>
+Signed-off-by: Zhou Luwei <luwei.zhou@intel.com>
+Signed-off-by: Wang jue <wang.jue@intel.com>
 Signed-off-by: Mark Gross <mgross@linux.intel.com>
-Signed-off-by: Seamus Kelly <seamus.kelly@intel.com>
 ---
- drivers/misc/xlink-core/xlink-core.c        | 235 ++++++++++++++++++++
- drivers/misc/xlink-core/xlink-defs.h        |   2 +
- drivers/misc/xlink-core/xlink-ioctl.c       | 214 ++++++++++++++++++
- drivers/misc/xlink-core/xlink-ioctl.h       |   9 +
- drivers/misc/xlink-core/xlink-multiplexer.c |  56 +++++
- drivers/misc/xlink-core/xlink-platform.c    |  86 +++++++
- include/linux/xlink.h                       |  27 +++
- 7 files changed, 629 insertions(+)
+ drivers/misc/Kconfig             |   1 +
+ drivers/misc/Makefile            |   1 +
+ drivers/misc/vpumgr/Kconfig      |   9 +
+ drivers/misc/vpumgr/Makefile     |   3 +
+ drivers/misc/vpumgr/vpu_common.h |  31 ++
+ drivers/misc/vpumgr/vpu_mgr.c    | 370 ++++++++++++++++++++
+ drivers/misc/vpumgr/vpu_smm.c    | 554 +++++++++++++++++++++++++++++
+ drivers/misc/vpumgr/vpu_smm.h    |  30 ++
+ drivers/misc/vpumgr/vpu_vcm.c    | 584 +++++++++++++++++++++++++++++++
+ drivers/misc/vpumgr/vpu_vcm.h    |  84 +++++
+ include/uapi/misc/vpumgr.h       |  64 ++++
+ 11 files changed, 1731 insertions(+)
+ create mode 100644 drivers/misc/vpumgr/Kconfig
+ create mode 100644 drivers/misc/vpumgr/Makefile
+ create mode 100644 drivers/misc/vpumgr/vpu_common.h
+ create mode 100644 drivers/misc/vpumgr/vpu_mgr.c
+ create mode 100644 drivers/misc/vpumgr/vpu_smm.c
+ create mode 100644 drivers/misc/vpumgr/vpu_smm.h
+ create mode 100644 drivers/misc/vpumgr/vpu_vcm.c
+ create mode 100644 drivers/misc/vpumgr/vpu_vcm.h
+ create mode 100644 include/uapi/misc/vpumgr.h
 
-diff --git a/drivers/misc/xlink-core/xlink-core.c b/drivers/misc/xlink-core/xlink-core.c
-index bdbf8c6a99ca..d0a3f98d16af 100644
---- a/drivers/misc/xlink-core/xlink-core.c
-+++ b/drivers/misc/xlink-core/xlink-core.c
-@@ -73,6 +73,8 @@ struct keembay_xlink_dev {
- 	struct mutex lock;  // protect access to xlink_dev
- };
- 
-+static u8 volbuf[XLINK_MAX_BUF_SIZE]; // buffer for volatile transactions
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index 09ae65e98681..2d1f7b165cc8 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -484,4 +484,5 @@ source "drivers/misc/uacce/Kconfig"
+ source "drivers/misc/xlink-pcie/Kconfig"
+ source "drivers/misc/xlink-ipc/Kconfig"
+ source "drivers/misc/xlink-core/Kconfig"
++source "drivers/misc/vpumgr/Kconfig"
+ endmenu
+diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+index f3a6eb03bae9..2936930f3edc 100644
+--- a/drivers/misc/Makefile
++++ b/drivers/misc/Makefile
+@@ -60,3 +60,4 @@ obj-$(CONFIG_HISI_HIKEY_USB)	+= hisi_hikey_usb.o
+ obj-y                           += xlink-pcie/
+ obj-$(CONFIG_XLINK_IPC)		+= xlink-ipc/
+ obj-$(CONFIG_XLINK_CORE)	+= xlink-core/
++obj-$(CONFIG_VPUMGR)		+= vpumgr/
+diff --git a/drivers/misc/vpumgr/Kconfig b/drivers/misc/vpumgr/Kconfig
+new file mode 100644
+index 000000000000..bb82ff83afd3
+--- /dev/null
++++ b/drivers/misc/vpumgr/Kconfig
+@@ -0,0 +1,9 @@
++config VPUMGR
++	tristate "VPU Manager"
++	depends on ARM64 && XLINK_CORE
++	help
++	  VPUMGR manages life-cycle of VPU related resources which were
++	  dynamically allocated on demands of user-space application
 +
- /*
-  * global variable pointing to our xlink device.
-  *
-@@ -264,6 +266,9 @@ static long xlink_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	case XL_READ_DATA:
- 		rc = ioctl_read_data(arg);
- 		break;
-+	case XL_READ_TO_BUFFER:
-+		rc = ioctl_read_to_buffer(arg);
-+		break;
- 	case XL_WRITE_DATA:
- 		rc = ioctl_write_data(arg);
- 		break;
-@@ -276,9 +281,39 @@ static long xlink_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- 	case XL_CLOSE_CHANNEL:
- 		rc = ioctl_close_channel(arg);
- 		break;
-+	case XL_START_VPU:
-+		rc = ioctl_start_vpu(arg);
-+		break;
-+	case XL_STOP_VPU:
-+		rc = xlink_stop_vpu();
-+		break;
-+	case XL_RESET_VPU:
-+		rc = xlink_stop_vpu();
-+		break;
- 	case XL_DISCONNECT:
- 		rc = ioctl_disconnect(arg);
- 		break;
-+	case XL_GET_DEVICE_NAME:
-+		rc = ioctl_get_device_name(arg);
-+		break;
-+	case XL_GET_DEVICE_LIST:
-+		rc = ioctl_get_device_list(arg);
-+		break;
-+	case XL_GET_DEVICE_STATUS:
-+		rc = ioctl_get_device_status(arg);
-+		break;
-+	case XL_BOOT_DEVICE:
-+		rc = ioctl_boot_device(arg);
-+		break;
-+	case XL_RESET_DEVICE:
-+		rc = ioctl_reset_device(arg);
-+		break;
-+	case XL_GET_DEVICE_MODE:
-+		rc = ioctl_get_device_mode(arg);
-+		break;
-+	case XL_SET_DEVICE_MODE:
-+		rc = ioctl_set_device_mode(arg);
-+		break;
- 	}
- 	if (rc)
- 		return -EIO;
-@@ -289,6 +324,30 @@ static long xlink_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- /*
-  * xlink Kernel API.
-  */
-+enum xlink_error xlink_stop_vpu(void)
-+{
-+#ifdef CONFIG_XLINK_LOCAL_HOST
-+	int rc;
++	  Select y or m if you have a processor including the Intel
++	  Vision Processor (VPU) on it.
+diff --git a/drivers/misc/vpumgr/Makefile b/drivers/misc/vpumgr/Makefile
+new file mode 100644
+index 000000000000..51441dc8a930
+--- /dev/null
++++ b/drivers/misc/vpumgr/Makefile
+@@ -0,0 +1,3 @@
++# SPDX-License-Identifier: GPL-2.0-only
++obj-$(CONFIG_VPUMGR) += vpumgr.o
++vpumgr-objs :=	vpu_mgr.o vpu_smm.o vpu_vcm.o
+diff --git a/drivers/misc/vpumgr/vpu_common.h b/drivers/misc/vpumgr/vpu_common.h
+new file mode 100644
+index 000000000000..cd474ffc05f3
+--- /dev/null
++++ b/drivers/misc/vpumgr/vpu_common.h
+@@ -0,0 +1,31 @@
++/* SPDX-License-Identifier: GPL-2.0-only
++ * VPUMGR Kernel module - common definition
++ * Copyright (C) 2020-2021 Intel Corporation
++ */
++#ifndef _VPU_COMMON_H
++#define _VPU_COMMON_H
++#include <linux/cdev.h>
++#include <linux/platform_device.h>
 +
-+	rc = xlink_ipc_reset_device(0x0); // stop vpu slice 0
-+	if (rc)
-+		return X_LINK_ERROR;
++#include <uapi/misc/vpumgr.h>
++
++#include "vpu_vcm.h"
++
++/* there will be one such device for each HW instance */
++struct vpumgr_device {
++	struct device *sdev;
++	struct device *dev;
++	dev_t devnum;
++	struct cdev cdev;
++	struct platform_device *pdev;
++
++	struct vcm_dev vcm;
++	struct dentry *debugfs_root;
++
++	struct mutex client_mutex; /* protect client_list */
++	struct list_head client_list;
++};
++
++#define XLINK_INVALID_SW_DEVID  0xDEADBEEF
++
 +#endif
-+	return X_LINK_SUCCESS;
-+}
-+EXPORT_SYMBOL_GPL(xlink_stop_vpu);
-+enum xlink_error xlink_start_vpu(char *filename)
-+{
-+#ifdef CONFIG_XLINK_LOCAL_HOST
-+	int rc;
+diff --git a/drivers/misc/vpumgr/vpu_mgr.c b/drivers/misc/vpumgr/vpu_mgr.c
+new file mode 100644
+index 000000000000..75be64ebc3b0
+--- /dev/null
++++ b/drivers/misc/vpumgr/vpu_mgr.c
+@@ -0,0 +1,370 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * VPU Manager Kernel module.
++ *
++ * Copyright (C) 2020-2021 Intel Corporation
++ *
++ */
++#include <linux/debugfs.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/of_device.h>
++#include <linux/slab.h>
++#include <linux/uaccess.h>
 +
-+	rc = xlink_ipc_boot_device(0x0, filename); // start vpu slice 0
-+	if (rc)
-+		return X_LINK_ERROR;
-+#endif
-+	return X_LINK_SUCCESS;
-+}
-+EXPORT_SYMBOL_GPL(xlink_start_vpu);
- 
- enum xlink_error xlink_initialize(void)
- {
-@@ -527,6 +586,34 @@ enum xlink_error xlink_write_data_user(struct xlink_handle *handle,
- 	return rc;
- }
- 
-+enum xlink_error xlink_write_control_data(struct xlink_handle *handle,
-+					  u16 chan, u8 const *pmessage,
-+					  u32 size)
++#include "vpu_common.h"
++#include "vpu_smm.h"
++#include "vpu_vcm.h"
++
++#define DRIVER_NAME             "vpumgr"
++#define MAX_DEV_CNT             32
++
++/* Define the max xlink device number */
++#define MAX_SW_DEV_CNT          20
++
++/* Define the SW_DEVICE_ID bit mask and offset */
++#define IPC_INTERFACE           0x00
++#define PCIE_INTERFACE          0x01
++#define MASK_INTERFACE          0x7000000
++#define BIT_OFFSET_INTERFACE    24
++#define MASK_VPU_IPC_ID         0x000E
++#define BIT_OFFSET_VPU_ID       1
++
++#define SWDEVID_INTERFACE(sw_dev_id) (((sw_dev_id) & MASK_INTERFACE) >> BIT_OFFSET_INTERFACE)
++#define SWDEVID_VPU_IPC_ID(sw_dev_id) (((sw_dev_id) & MASK_VPU_IPC_ID) >> BIT_OFFSET_VPU_ID)
++
++static dev_t vpumgr_devnum;
++static struct class *vpumgr_class;
++
++/**
++ * struct vpumgr_fpriv - per-process context stored in FD private data.
++ * @vdev: vpumgr device corresponding to the file
++ * @smm: memory manager
++ * @ctx: vpu context manager
++ * @list: for global list of all opened file
++ * @pid: process which opens the device file
++ */
++struct vpumgr_fpriv {
++	struct vpumgr_device *vdev;
++	struct vpumgr_smm smm;
++	struct vpumgr_ctx ctx;
++	struct list_head list;
++	pid_t  pid;
++};
++
++static u32 get_sw_device_id(int vpu_ipc_id)
 +{
-+	struct xlink_event *event;
-+	struct xlink_link *link;
-+	int event_queued = 0;
++	u32 sw_id_list[MAX_SW_DEV_CNT];
 +	enum xlink_error rc;
-+
-+	if (!xlink || !handle)
-+		return X_LINK_ERROR;
-+	if (size > XLINK_MAX_CONTROL_DATA_SIZE)
-+		return X_LINK_ERROR; // TODO: XLink Parameter Error
-+	link = get_link_by_sw_device_id(handle->sw_device_id);
-+	if (!link)
-+		return X_LINK_ERROR;
-+	event = xlink_create_event(link->id, XLINK_WRITE_CONTROL_REQ,
-+				   &link->handle, chan, size, 0);
-+	if (!event)
-+		return X_LINK_ERROR;
-+	memcpy(event->header.control_data, pmessage, size);
-+	rc = xlink_multiplexer_tx(event, &event_queued);
-+	if (!event_queued)
-+		xlink_destroy_event(event);
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(xlink_write_control_data);
-+
- enum xlink_error xlink_write_volatile(struct xlink_handle *handle,
- 				      u16 chan, u8 const *message, u32 size)
- {
-@@ -711,6 +798,154 @@ enum xlink_error xlink_disconnect(struct xlink_handle *handle)
- }
- EXPORT_SYMBOL_GPL(xlink_disconnect);
- 
-+enum xlink_error xlink_get_device_list(u32 *sw_device_id_list,
-+				       u32 *num_devices)
-+{
-+	u32 interface_nmb_devices = 0;
-+	enum xlink_error rc;
++	u32 num = 0;
++	u32 swid;
 +	int i;
 +
-+	if (!xlink)
-+		return X_LINK_ERROR;
-+	if (!sw_device_id_list || !num_devices)
-+		return X_LINK_ERROR;
-+	/* loop through each interface and combine the lists */
-+	for (i = 0; i < NMB_OF_INTERFACES; i++) {
-+		rc = xlink_platform_get_device_list(i, sw_device_id_list,
-+						    &interface_nmb_devices);
-+		if (!rc) {
-+			*num_devices += interface_nmb_devices;
-+			sw_device_id_list += interface_nmb_devices;
-+		}
-+		interface_nmb_devices = 0;
-+	}
-+	return X_LINK_SUCCESS;
-+}
-+EXPORT_SYMBOL_GPL(xlink_get_device_list);
-+enum xlink_error xlink_get_device_name(struct xlink_handle *handle, char *name,
-+				       size_t name_size)
-+{
-+	enum xlink_error rc;
-+	int interface;
-+
-+	if (!xlink || !handle)
-+		return X_LINK_ERROR;
-+	if (!name || !name_size)
-+		return X_LINK_ERROR;
-+	interface = get_interface_from_sw_device_id(handle->sw_device_id);
-+	if (interface == NULL_INTERFACE)
-+		return X_LINK_ERROR;
-+	rc = xlink_platform_get_device_name(interface, handle->sw_device_id,
-+					    name, name_size);
-+	if (rc)
-+		rc = X_LINK_ERROR;
-+	else
-+		rc = X_LINK_SUCCESS;
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(xlink_get_device_name);
-+enum xlink_error xlink_get_device_status(struct xlink_handle *handle,
-+					 u32 *device_status)
-+{
-+	enum xlink_error rc;
-+	u32 interface;
-+
-+	if (!xlink)
-+		return X_LINK_ERROR;
-+	if (!device_status)
-+		return X_LINK_ERROR;
-+	interface = get_interface_from_sw_device_id(handle->sw_device_id);
-+	if (interface == NULL_INTERFACE)
-+		return X_LINK_ERROR;
-+	rc = xlink_platform_get_device_status(interface, handle->sw_device_id,
-+					      device_status);
-+	if (rc)
-+		rc = X_LINK_ERROR;
-+	else
-+		rc = X_LINK_SUCCESS;
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(xlink_get_device_status);
-+enum xlink_error xlink_boot_device(struct xlink_handle *handle,
-+				   const char *binary_name)
-+{
-+	enum xlink_error rc;
-+	u32 interface;
-+
-+	if (!xlink || !handle)
-+		return X_LINK_ERROR;
-+	if (!binary_name)
-+		return X_LINK_ERROR;
-+	interface = get_interface_from_sw_device_id(handle->sw_device_id);
-+	if (interface == NULL_INTERFACE)
-+		return X_LINK_ERROR;
-+	rc = xlink_platform_boot_device(interface, handle->sw_device_id,
-+					binary_name);
-+	if (rc)
-+		rc = X_LINK_ERROR;
-+	else
-+		rc = X_LINK_SUCCESS;
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(xlink_boot_device);
-+enum xlink_error xlink_reset_device(struct xlink_handle *handle)
-+{
-+	enum xlink_error rc;
-+	u32 interface;
-+
-+	if (!xlink || !handle)
-+		return X_LINK_ERROR;
-+	interface = get_interface_from_sw_device_id(handle->sw_device_id);
-+	if (interface == NULL_INTERFACE)
-+		return X_LINK_ERROR;
-+	rc = xlink_platform_reset_device(interface, handle->sw_device_id);
-+	if (rc)
-+		rc = X_LINK_ERROR;
-+	else
-+		rc = X_LINK_SUCCESS;
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(xlink_reset_device);
-+enum xlink_error xlink_set_device_mode(struct xlink_handle *handle,
-+				       enum xlink_device_power_mode power_mode)
-+{
-+	enum xlink_error rc;
-+	u32 interface;
-+
-+	if (!xlink || !handle)
-+		return X_LINK_ERROR;
-+	interface = get_interface_from_sw_device_id(handle->sw_device_id);
-+	if (interface == NULL_INTERFACE)
-+		return X_LINK_ERROR;
-+	rc = xlink_platform_set_device_mode(interface, handle->sw_device_id,
-+					    power_mode);
-+	if (rc)
-+		rc = X_LINK_ERROR;
-+	else
-+		rc = X_LINK_SUCCESS;
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(xlink_set_device_mode);
-+enum xlink_error xlink_get_device_mode(struct xlink_handle *handle,
-+				       enum xlink_device_power_mode *power_mode)
-+{
-+	enum xlink_error rc;
-+	u32 interface;
-+
-+	if (!xlink || !handle)
-+		return X_LINK_ERROR;
-+	interface = get_interface_from_sw_device_id(handle->sw_device_id);
-+	if (interface == NULL_INTERFACE)
-+		return X_LINK_ERROR;
-+	rc = xlink_platform_get_device_mode(interface, handle->sw_device_id,
-+					    power_mode);
-+	if (rc)
-+		rc = X_LINK_ERROR;
-+	else
-+		rc = X_LINK_SUCCESS;
-+	return rc;
-+}
-+EXPORT_SYMBOL_GPL(xlink_get_device_mode);
- /* Device tree driver match. */
- static const struct of_device_id kmb_xlink_of_match[] = {
- 	{
-diff --git a/drivers/misc/xlink-core/xlink-defs.h b/drivers/misc/xlink-core/xlink-defs.h
-index 09aee36d5542..8985f6631175 100644
---- a/drivers/misc/xlink-core/xlink-defs.h
-+++ b/drivers/misc/xlink-core/xlink-defs.h
-@@ -101,6 +101,7 @@ enum xlink_event_type {
- 	XLINK_OPEN_CHANNEL_REQ,
- 	XLINK_CLOSE_CHANNEL_REQ,
- 	XLINK_PING_REQ,
-+	XLINK_WRITE_CONTROL_REQ,
- 	XLINK_REQ_LAST,
- 	// response events
- 	XLINK_WRITE_RESP = 0x10,
-@@ -111,6 +112,7 @@ enum xlink_event_type {
- 	XLINK_OPEN_CHANNEL_RESP,
- 	XLINK_CLOSE_CHANNEL_RESP,
- 	XLINK_PING_RESP,
-+	XLINK_WRITE_CONTROL_RESP,
- 	XLINK_RESP_LAST,
- };
- 
-diff --git a/drivers/misc/xlink-core/xlink-ioctl.c b/drivers/misc/xlink-core/xlink-ioctl.c
-index 1f75ad38137b..90947bbccfed 100644
---- a/drivers/misc/xlink-core/xlink-ioctl.c
-+++ b/drivers/misc/xlink-core/xlink-ioctl.c
-@@ -111,6 +111,34 @@ int ioctl_read_data(unsigned long arg)
- 	return copy_result_to_user(rd.return_code, rc);
- }
- 
-+int ioctl_read_to_buffer(unsigned long arg)
-+{
-+	struct xlink_handle		devh	= {};
-+	struct xlinkreadtobuffer	rdtobuf = {};
-+	int rc = 0;
-+	u32 size;
-+	u8 volbuf[XLINK_MAX_BUF_SIZE]; // buffer for volatile transactions
-+
-+	if (copy_from_user(&rdtobuf, (void __user *)arg,
-+			   sizeof(struct xlinkreadtobuffer)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)rdtobuf.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	rc = xlink_read_data_to_buffer(&devh, rdtobuf.chan,
-+				       (u8 *)volbuf, &size);
-+	if (!rc) {
-+		if (copy_to_user((void __user *)rdtobuf.pmessage, (void *)volbuf,
-+				 size))
-+			return -EFAULT;
-+		if (copy_to_user((void __user *)rdtobuf.size, (void *)&size,
-+				 sizeof(size)))
-+			return -EFAULT;
++	rc = xlink_get_device_list(sw_id_list, &num);
++	if (rc) {
++		pr_err("XLINK get device list error %d in %s\n", rc, __func__);
++		return XLINK_INVALID_SW_DEVID;
 +	}
 +
-+	return copy_result_to_user(rdtobuf.return_code, rc);
++	for (i = 0; i < num; i++) {
++		swid = sw_id_list[i];
++		if (SWDEVID_INTERFACE(swid) == IPC_INTERFACE &&
++		    SWDEVID_VPU_IPC_ID(swid) ==  vpu_ipc_id)
++			return swid;
++	}
++	return XLINK_INVALID_SW_DEVID;
 +}
 +
- int ioctl_write_data(unsigned long arg)
- {
- 	struct xlink_handle	devh	= {};
-@@ -194,6 +222,26 @@ int ioctl_close_channel(unsigned long arg)
- 	return copy_result_to_user(op.return_code, rc);
- }
- 
-+int ioctl_start_vpu(unsigned long arg)
++static int vpumgr_open(struct inode *inode, struct file *filp)
 +{
-+	struct xlinkstartvpu	startvpu = {};
-+	char filename[64];
++	struct vpumgr_fpriv *vpriv;
++	struct vpumgr_device *vdev;
++	int rc;
++
++	vpriv = kzalloc(sizeof(*vpriv), GFP_KERNEL);
++	if (!vpriv)
++		return -ENOMEM;
++
++	vdev = container_of(inode->i_cdev, struct vpumgr_device, cdev);
++	rc = smm_open(&vpriv->smm, vdev);
++	if (rc)
++		goto free_priv;
++
++	rc = vcm_open(&vpriv->ctx, vdev);
++	if (rc)
++		goto close_smm;
++
++	vpriv->vdev = vdev;
++	vpriv->pid = task_pid_nr(current);
++	INIT_LIST_HEAD(&vpriv->list);
++
++	mutex_lock(&vdev->client_mutex);
++	list_add_tail(&vpriv->list, &vdev->client_list);
++	mutex_unlock(&vdev->client_mutex);
++
++	filp->private_data = vpriv;
++	return 0;
++
++close_smm:
++	smm_close(&vpriv->smm);
++free_priv:
++	kfree(vpriv);
++	return rc;
++}
++
++static int vpumgr_release(struct inode *inode, struct file *filp)
++{
++	struct vpumgr_fpriv *vpriv = filp->private_data;
++	struct vpumgr_device *vdev = container_of(inode->i_cdev, struct vpumgr_device, cdev);
++
++	vcm_close(&vpriv->ctx);
++	smm_close(&vpriv->smm);
++
++	mutex_lock(&vdev->client_mutex);
++	list_del(&vpriv->list);
++	mutex_unlock(&vdev->client_mutex);
++
++	kfree(vpriv);
++	filp->private_data = NULL;
++	return 0;
++}
++
++static long vpumgr_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
++{
++	struct vpumgr_fpriv *vpriv = filp->private_data;
++	const unsigned int io_dir = _IOC_DIR(cmd);
++	const unsigned int io_size = _IOC_SIZE(cmd);
++	struct vpumgr_vcm_submit *vs;
++	struct vpumgr_vcm_wait *vw;
++	char tmp[128];
 +	int rc = 0;
 +
-+	if (copy_from_user(&startvpu, (void __user *)arg,
-+			   sizeof(struct xlinkstartvpu)))
-+		return -EFAULT;
-+	if (startvpu.namesize > sizeof(filename))
++	if (_IOC_TYPE(cmd) != VPUMGR_MAGIC || _IOC_NR(cmd) >= _IOC_NR(VPUMGR_IOCTL_END))
 +		return -EINVAL;
-+	memset(filename, 0, sizeof(filename));
-+	if (copy_from_user(filename, (void __user *)startvpu.filename,
-+			   startvpu.namesize))
++
++	if (io_size > sizeof(tmp))
 +		return -EFAULT;
-+	rc = xlink_start_vpu(filename);
 +
-+	return copy_result_to_user(startvpu.return_code, rc);
-+}
++	if (io_dir & _IOC_READ) {
++		if (copy_from_user(tmp, (void __user *)arg, io_size) != 0)
++			return  -EFAULT;
++	}
 +
- int ioctl_disconnect(unsigned long arg)
- {
- 	struct xlink_handle	devh	= {};
-@@ -210,3 +258,169 @@ int ioctl_disconnect(unsigned long arg)
- 
- 	return copy_result_to_user(con.return_code, rc);
- }
++	switch (cmd) {
++	case VPUMGR_IOCTL_DMABUF_ALLOC:
++		rc = smm_alloc(&vpriv->smm, (void *)tmp);
++		break;
++	case VPUMGR_IOCTL_DMABUF_IMPORT:
++		rc = smm_import(&vpriv->smm, (void *)tmp);
++		break;
++	case VPUMGR_IOCTL_DMABUF_UNIMPORT:
++		rc = smm_unimport(&vpriv->smm, (void *)tmp);
++		break;
++	case VPUMGR_IOCTL_DMABUF_PTR2VPU:
++		rc = smm_ptr2vpu(&vpriv->smm, (void *)tmp);
++		break;
++	case VPUMGR_IOCTL_VCM_SUBMIT:
++		vs = (struct vpumgr_vcm_submit *)tmp;
++		if (vs->cmd <= VCTX_KMD_RESERVED_CMD_LAST) {
++			/*
++			 * user-space can talk to vpu context lives in firmware
++			 * with any commands other than those reserved for kernel
++			 * mode.
++			 */
++			rc = -EACCES;
++			break;
++		}
++		rc = vcm_submit(&vpriv->ctx, vs->cmd,
++				(const void *)vs->in, vs->in_len, &vs->submit_id);
++		break;
++	case VPUMGR_IOCTL_VCM_WAIT:
++		vw = (struct vpumgr_vcm_wait *)tmp;
++		rc = vcm_wait(&vpriv->ctx, vw->submit_id, &vw->vpu_rc,
++			      (void *)vw->out, &vw->out_len, vw->timeout_ms);
++		break;
++	}
 +
-+int ioctl_get_device_name(unsigned long arg)
-+{
-+	struct xlink_handle		devh	= {};
-+	struct xlinkgetdevicename	devn	= {};
-+	char name[XLINK_MAX_DEVICE_NAME_SIZE];
-+	int rc = 0;
-+
-+	if (copy_from_user(&devn, (void __user *)arg,
-+			   sizeof(struct xlinkgetdevicename)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)devn.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	if (devn.name_size <= XLINK_MAX_DEVICE_NAME_SIZE) {
-+		rc = xlink_get_device_name(&devh, name, devn.name_size);
-+		if (!rc) {
-+			if (copy_to_user((void __user *)devn.name, (void *)name,
-+					 devn.name_size))
++	if (!rc) {
++		if (io_dir & _IOC_WRITE) {
++			if (copy_to_user((void __user *)arg, tmp, io_size) != 0)
 +				return -EFAULT;
 +		}
-+	} else {
-+		rc = X_LINK_ERROR;
 +	}
-+
-+	return copy_result_to_user(devn.return_code, rc);
++	return rc;
 +}
 +
-+int ioctl_get_device_list(unsigned long arg)
++static const struct file_operations vpumgr_devfile_fops = {
++	.owner = THIS_MODULE,
++	.open = vpumgr_open,
++	.release = vpumgr_release,
++	.unlocked_ioctl = vpumgr_ioctl,
++};
++
++static int vpumgr_debugfs_stats_show(struct seq_file *file, void *offset)
 +{
-+	struct xlinkgetdevicelist	devl	= {};
-+	u32 sw_device_id_list[XLINK_MAX_DEVICE_LIST_SIZE];
-+	u32 num_devices = 0;
-+	int rc = 0;
++	struct vpumgr_device *vdev = dev_get_drvdata(file->private);
++	struct vpumgr_fpriv *fpriv;
++	int i = 0;
 +
-+	if (copy_from_user(&devl, (void __user *)arg,
-+			   sizeof(struct xlinkgetdevicelist)))
-+		return -EFAULT;
-+	rc = xlink_get_device_list(sw_device_id_list, &num_devices);
-+	if (!rc && num_devices <= XLINK_MAX_DEVICE_LIST_SIZE) {
-+		/* TODO: this next copy is dangerous! we have no idea
-+		 * how large the devl.sw_device_id_list buffer is
-+		 * provided by the user. if num_devices is too large,
-+		 * the copy will overflow the buffer.
-+		 */
-+		if (copy_to_user((void __user *)devl.sw_device_id_list,
-+				 (void *)sw_device_id_list,
-+				 (sizeof(*sw_device_id_list)
-+				 * num_devices)))
-+			return -EFAULT;
-+		if (copy_to_user((void __user *)devl.num_devices, (void *)&num_devices,
-+				 (sizeof(num_devices))))
-+			return -EFAULT;
++	mutex_lock(&vdev->client_mutex);
++	list_for_each_entry(fpriv, &vdev->client_list, list) {
++		seq_printf(file, "client #%d pid:%d\n", i++, fpriv->pid);
++		vcm_debugfs_stats_show(file, &fpriv->ctx);
++		smm_debugfs_stats_show(file, &fpriv->smm);
 +	}
-+
-+	return copy_result_to_user(devl.return_code, rc);
++	mutex_unlock(&vdev->client_mutex);
++	return 0;
 +}
 +
-+int ioctl_get_device_status(unsigned long arg)
++static const struct of_device_id keembay_vpumgr_of_match[] = {
++	{ .compatible = "intel,keembay-vpu-mgr"},
++	{ .compatible = "intel,keembay-vpusmm"},
++	{}
++};
++MODULE_DEVICE_TABLE(of, keembay_vpumgr_of_match);
++
++static int vpumgr_driver_probe(struct platform_device *pdev)
 +{
-+	struct xlink_handle		devh	= {};
-+	struct xlinkgetdevicestatus	devs	= {};
-+	u32 device_status = 0;
-+	int rc = 0;
++	struct device *dev = &pdev->dev;
++	struct vpumgr_device *vdev;
++	u32 ipc_sw_device_id;
++	u32 vpu_ipc_id = 0;
++	int rc;
 +
-+	if (copy_from_user(&devs, (void __user *)arg,
-+			   sizeof(struct xlinkgetdevicestatus)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)devs.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	rc = xlink_get_device_status(&devh, &device_status);
-+	if (!rc) {
-+		if (copy_to_user((void __user *)devs.device_status,
-+				 (void *)&device_status,
-+				 sizeof(device_status)))
-+			return -EFAULT;
-+	}
-+
-+	return copy_result_to_user(devs.return_code, rc);
-+}
-+
-+int ioctl_boot_device(unsigned long arg)
-+{
-+	struct xlink_handle		devh	= {};
-+	struct xlinkbootdevice		boot	= {};
-+	char filename[64];
-+	int rc = 0;
-+
-+	if (copy_from_user(&boot, (void __user *)arg,
-+			   sizeof(struct xlinkbootdevice)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)boot.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	if (boot.binary_name_size > sizeof(filename))
++	/* get device id */
++	rc = of_property_read_u32(dev->of_node, "intel,keembay-vpu-ipc-id",
++				  &vpu_ipc_id);
++	if (rc && rc != -EINVAL) {
++		dev_err(dev, "%s: vpu-ipc-id read failed with rc %d\n", __func__, rc);
 +		return -EINVAL;
-+	memset(filename, 0, sizeof(filename));
-+	if (copy_from_user(filename, (void __user *)boot.binary_name,
-+			   boot.binary_name_size))
-+		return -EFAULT;
-+	rc = xlink_boot_device(&devh, filename);
-+
-+	return copy_result_to_user(boot.return_code, rc);
-+}
-+
-+int ioctl_reset_device(unsigned long arg)
-+{
-+	struct xlink_handle		devh	= {};
-+	struct xlinkresetdevice		res	= {};
-+	int rc = 0;
-+
-+	if (copy_from_user(&res, (void __user *)arg,
-+			   sizeof(struct xlinkresetdevice)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)res.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	rc = xlink_reset_device(&devh);
-+
-+	return copy_result_to_user(res.return_code, rc);
-+}
-+
-+int ioctl_get_device_mode(unsigned long arg)
-+{
-+	struct xlink_handle	devh	= {};
-+	struct xlinkdevmode	devm	= {};
-+	u32 device_mode = 0;
-+	int rc = 0;
-+
-+	if (copy_from_user(&devm, (void __user *)arg,
-+			   sizeof(struct xlinkdevmode)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)devm.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	rc = xlink_get_device_mode(&devh, &device_mode);
-+	if (!rc) {
-+		if (copy_to_user((void __user *)devm.device_mode, (void *)&device_mode,
-+				 sizeof(device_mode)))
-+			return -EFAULT;
 +	}
 +
-+	return copy_result_to_user(devm.return_code, rc);
++	ipc_sw_device_id = get_sw_device_id(vpu_ipc_id);
++	if (ipc_sw_device_id == XLINK_INVALID_SW_DEVID)
++		dev_warn(dev, "%s: no xlink sw device for vpu_ipc_id %d\n",
++			 __func__, vpu_ipc_id);
++
++	vdev = devm_kzalloc(dev, sizeof(struct vpumgr_device), GFP_KERNEL);
++	if (!vdev)
++		return -ENOMEM;
++
++	vdev->devnum = MKDEV(MAJOR(vpumgr_devnum), vpu_ipc_id);
++	vdev->pdev = pdev;
++	vdev->dev = dev;
++
++	dev_dbg(dev, "dev->devnum %u, id %u, major %u\n",
++		vdev->devnum, vpu_ipc_id,  MAJOR(vdev->devnum));
++
++	vdev->sdev = device_create(vpumgr_class, dev, vdev->devnum,
++				   NULL, DRIVER_NAME "%d", vpu_ipc_id);
++	if (IS_ERR(vdev->sdev)) {
++		dev_err(dev, "%s: device_create failed\n", __func__);
++		return PTR_ERR(vdev->sdev);
++	}
++
++	cdev_init(&vdev->cdev, &vpumgr_devfile_fops);
++	vdev->cdev.owner = THIS_MODULE;
++	rc = cdev_add(&vdev->cdev, vdev->devnum, 1);
++	if (rc) {
++		dev_err(dev, "%s: cdev_add failed.\n", __func__);
++		goto detroy_device;
++	}
++
++	vdev->debugfs_root = debugfs_create_dir(dev_name(vdev->sdev), NULL);
++
++	debugfs_create_devm_seqfile(dev, "stats", vdev->debugfs_root,
++				    vpumgr_debugfs_stats_show);
++
++	rc = smm_init(vdev);
++	if (rc)
++		goto remove_debugfs;
++
++	rc = vcm_init(vdev, ipc_sw_device_id);
++	if (rc)
++		goto fini_smm;
++
++	INIT_LIST_HEAD(&vdev->client_list);
++	mutex_init(&vdev->client_mutex);
++
++	dev_set_drvdata(dev, vdev);
++	return 0;
++
++fini_smm:
++	smm_fini(vdev);
++remove_debugfs:
++	debugfs_remove_recursive(vdev->debugfs_root);
++	cdev_del(&vdev->cdev);
++detroy_device:
++	device_destroy(vpumgr_class, vdev->devnum);
++	return rc;
 +}
 +
-+int ioctl_set_device_mode(unsigned long arg)
++static int vpumgr_driver_remove(struct platform_device *pdev)
 +{
-+	struct xlink_handle	devh	= {};
-+	struct xlinkdevmode	devm	= {};
-+	u32 device_mode = 0;
++	struct vpumgr_device *vdev = dev_get_drvdata(&pdev->dev);
++
++	mutex_destroy(&vdev->client_mutex);
++	vcm_fini(vdev);
++	smm_fini(vdev);
++	debugfs_remove_recursive(vdev->debugfs_root);
++	cdev_del(&vdev->cdev);
++	device_destroy(vpumgr_class, vdev->devnum);
++	return 0;
++}
++
++static struct platform_driver vpumgr_driver = {
++	.probe  = vpumgr_driver_probe,
++	.remove = vpumgr_driver_remove,
++	.driver = {
++			.owner = THIS_MODULE,
++			.name = "keembay-vpu-mgr",
++			.of_match_table = keembay_vpumgr_of_match,
++	 },
++};
++
++static int __init vpumgr_init(void)
++{
++	int rc;
++
++	rc = alloc_chrdev_region(&vpumgr_devnum, 0, MAX_DEV_CNT, DRIVER_NAME);
++	if (rc < 0) {
++		pr_err("[%s] err: alloc_chrdev_region\n", __func__);
++		return rc;
++	}
++
++	vpumgr_class = class_create(THIS_MODULE, DRIVER_NAME "_class");
++	if (IS_ERR(vpumgr_class)) {
++		rc = PTR_ERR(vpumgr_class);
++		pr_err("[%s] err: class_create\n", __func__);
++		goto unreg_chrdev;
++	}
++
++	rc = platform_driver_register(&vpumgr_driver);
++	if (rc) {
++		pr_err("[%s] err platform_driver_register\n", __func__);
++		goto destroy_class;
++	}
++
++	return 0;
++
++destroy_class:
++	class_destroy(vpumgr_class);
++unreg_chrdev:
++	unregister_chrdev_region(vpumgr_devnum, MAX_DEV_CNT);
++	return rc;
++}
++
++static void vpumgr_exit(void)
++{
++	platform_driver_unregister(&vpumgr_driver);
++	class_destroy(vpumgr_class);
++	unregister_chrdev_region(vpumgr_devnum, MAX_DEV_CNT);
++}
++
++module_init(vpumgr_init)
++module_exit(vpumgr_exit)
++
++MODULE_DESCRIPTION("VPU resource manager driver");
++MODULE_AUTHOR("Tingqian Li <tingqian.li@intel.com>");
++MODULE_AUTHOR("Luwei Zhou <luwie.zhou@intel.com>");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/misc/vpumgr/vpu_smm.c b/drivers/misc/vpumgr/vpu_smm.c
+new file mode 100644
+index 000000000000..a89f62984a48
+--- /dev/null
++++ b/drivers/misc/vpumgr/vpu_smm.c
+@@ -0,0 +1,554 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2020 Intel Corporation
++ */
++#include <linux/cdev.h>
++#include <linux/debugfs.h>
++#include <linux/dma-mapping.h>
++#include <linux/dma-buf.h>
++#include <linux/dma-direct.h>
++#include <linux/err.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/mm.h>
++#include <linux/of_device.h>
++#include <linux/of_reserved_mem.h>
++#include <linux/of_address.h>
++#include <linux/platform_device.h>
++#include <linux/rbtree.h>
++#include <linux/slab.h>
++#include <linux/seq_file.h>
++#include <linux/uaccess.h>
++
++#include <linux/sched.h>
++#include <linux/sched/mm.h>
++#include <linux/sched/task.h>
++
++#include <uapi/misc/vpumgr.h>
++
++#include "vpu_common.h"
++#include "vpu_smm.h"
++
++/*
++ * DMABuf exported by VPU device is described by following data structure
++ * the life of the buffer may be longer than session(it may be shared with
++ * other driver),so it contains pointer to device rather than to session
++ */
++struct vpusmm_buffer {
++	struct device *dev;
++	void *cookie;
++	dma_addr_t dma_addr;
++	size_t size;
++	unsigned long dma_attrs;
++};
++
++/*
++ * DMABufs imported to VPU device are maintained in a rb tree with dmabuf's
++ * pointer as key. so user space can unimport it by specifying fd and ptr2vpu
++ * API can work by searching this rb tree.
++ */
++struct vpusmm_impbuf {
++	struct rb_node node;
++	struct dma_buf *dmabuf;
++	struct dma_buf_attachment *attach;
++	struct sg_table *sgt;
++	enum dma_data_direction direction;
++	dma_addr_t vpu_addr;
++	int refcount;
++};
++
++/*
++ * VPU imported dmabuf management
++ */
++static void vpusmm_insert_impbuf(struct vpumgr_smm *sess,
++				 struct vpusmm_impbuf *new_item)
++{
++	struct rb_root *root = &sess->imp_rb;
++	struct rb_node **iter = &root->rb_node, *parent = NULL;
++	struct dma_buf *value = new_item->dmabuf;
++	struct vpusmm_impbuf *item;
++
++	while (*iter) {
++		parent = *iter;
++		item = rb_entry(parent, struct vpusmm_impbuf, node);
++
++		if (item->dmabuf > value)
++			iter = &(*iter)->rb_left;
++		else
++			iter = &(*iter)->rb_right;
++	}
++
++	/* Put the new node there */
++	rb_link_node(&new_item->node, parent, iter);
++	rb_insert_color(&new_item->node, root);
++}
++
++static struct vpusmm_impbuf *vpusmm_find_impbuf(struct vpumgr_smm *sess,
++						struct dma_buf *dmabuf)
++{
++	struct rb_node *node = sess->imp_rb.rb_node;
++	struct vpusmm_impbuf *item;
++
++	while (node) {
++		item = rb_entry(node, struct vpusmm_impbuf, node);
++
++		if (item->dmabuf > dmabuf)
++			node = node->rb_left;
++		else if (item->dmabuf < dmabuf)
++			node = node->rb_right;
++		else
++			return item;
++	}
++	return NULL;
++}
++
++static struct vpusmm_impbuf *vpusmm_import_dmabuf(struct vpumgr_smm *sess,
++						  int dmabuf_fd,
++						  enum dma_data_direction direction, int vpu_id)
++{
++	struct vpusmm_impbuf *item;
++	struct dma_buf_attachment *attach;
++	struct device *dma_dev = sess->vdev->dev;
++	struct dma_buf *dmabuf;
++	struct sg_table *sgt;
++
++	dmabuf = dma_buf_get(dmabuf_fd);
++	if (IS_ERR(dmabuf))
++		return ERR_CAST(dmabuf);
++
++	mutex_lock(&sess->imp_rb_lock);
++	item = vpusmm_find_impbuf(sess, dmabuf);
++	if (item) {
++		item->refcount++;
++		goto found_impbuf;
++	}
++
++	attach = dma_buf_attach(dmabuf, dma_dev);
++	if (IS_ERR(attach)) {
++		item = ERR_CAST(attach);
++		goto fail_attach;
++	}
++
++	sgt = dma_buf_map_attachment(attach, direction);
++	if (IS_ERR(sgt)) {
++		item = ERR_CAST(sgt);
++		goto fail_map;
++	}
++
++	if (sgt->nents > 1) {
++		item = ERR_PTR(-EINVAL);
++		goto fail_import;
++	}
++
++	item = kzalloc(sizeof(*item), GFP_KERNEL);
++	if (!item) {
++		item = ERR_PTR(-ENOMEM);
++		goto fail_import;
++	}
++
++	item->dmabuf	= dmabuf;
++	item->attach	= attach;
++	item->sgt	= sgt;
++	item->direction = direction;
++	item->vpu_addr	= sg_dma_address(sgt->sgl);
++	item->refcount	= 1;
++
++	vpusmm_insert_impbuf(sess, item);
++
++	mutex_unlock(&sess->imp_rb_lock);
++	return item;
++
++fail_import:
++	dma_buf_unmap_attachment(attach, sgt, direction);
++fail_map:
++	dma_buf_detach(dmabuf, attach);
++fail_attach:
++found_impbuf:
++	mutex_unlock(&sess->imp_rb_lock);
++	dma_buf_put(dmabuf);
++	return item;
++}
++
++int smm_open(struct vpumgr_smm *sess, struct vpumgr_device *vdev)
++{
++	sess->vdev = vdev;
++	sess->imp_rb = RB_ROOT;
++	mutex_init(&sess->imp_rb_lock);
++	return 0;
++}
++
++int smm_close(struct vpumgr_smm *sess)
++{
++	struct device *dev = sess->vdev->sdev;
++	struct rb_node *cur, *next;
++	struct vpusmm_impbuf *item;
++
++	mutex_destroy(&sess->imp_rb_lock);
++
++	cur = rb_first(&sess->imp_rb);
++	while (cur) {
++		item = rb_entry(cur, struct vpusmm_impbuf, node);
++		next = rb_next(cur);
++		if (item) {
++			dev_dbg(dev, "[%s] PID:%d free leaked imported dmabuf %zu bytes, %d refs\n",
++				__func__, current->pid, item->dmabuf->size, item->refcount);
++			dma_buf_unmap_attachment(item->attach, item->sgt, item->direction);
++			dma_buf_detach(item->dmabuf, item->attach);
++			dma_buf_put(item->dmabuf);
++			rb_erase(&item->node, &sess->imp_rb);
++			kfree(item);
++		}
++		cur = next;
++	}
++	return 0;
++}
++
++/*
++ *  DMABuf
++ */
++static struct sg_table *map_dma_buf_vpusmm(struct dma_buf_attachment *attach,
++					   enum dma_data_direction dir)
++{
++	struct vpusmm_buffer *buff = attach->dmabuf->priv;
++	struct sg_table *sgt;
++	int rc;
++
++	if (WARN_ON(dir == DMA_NONE))
++		return ERR_PTR(-EINVAL);
++
++	sgt = kzalloc(sizeof(*sgt), GFP_KERNEL);
++	if (!sgt)
++		return NULL;
++
++	rc = dma_get_sgtable(buff->dev, sgt, buff->cookie, buff->dma_addr, buff->size);
++	if (rc < 0)
++		goto free_sgt;
++
++	rc = dma_map_sg_attrs(attach->dev, sgt->sgl, sgt->nents, dir, DMA_ATTR_SKIP_CPU_SYNC);
++	if (!rc)
++		goto free_sg_table;
++	return sgt;
++
++free_sg_table:
++	sg_free_table(sgt);
++free_sgt:
++	kfree(sgt);
++	return ERR_PTR(rc);
++}
++
++static void unmap_dma_buf_vpusmm(struct dma_buf_attachment *attach,
++				 struct sg_table *sgt, enum dma_data_direction dir)
++{
++	dma_unmap_sg_attrs(attach->dev, sgt->sgl, sgt->nents, dir, DMA_ATTR_SKIP_CPU_SYNC);
++	sg_free_table(sgt);
++	kfree(sgt);
++}
++
++static void release_vpusmm(struct dma_buf *dmabuf)
++{
++	struct vpusmm_buffer *buff = dmabuf->priv;
++
++	dma_free_attrs(buff->dev, buff->size, buff->cookie, buff->dma_addr, buff->dma_attrs);
++	kfree(buff);
++}
++
++static int mmap_vpusmm(struct dma_buf *dmabuf, struct vm_area_struct *vma)
++{
++	struct vpusmm_buffer *buff = dmabuf->priv;
++	unsigned long vm_size;
++
++	vm_size = vma->vm_end - vma->vm_start;
++	if (vm_size > PAGE_ALIGN(buff->size))
++		return -EINVAL;
++
++	vma->vm_flags |= VM_IO | VM_DONTEXPAND | VM_DONTDUMP;
++	vma->vm_pgoff = 0;
++
++	return dma_mmap_attrs(buff->dev, vma, buff->cookie, buff->dma_addr,
++			    buff->size, buff->dma_attrs);
++}
++
++static int vmap_vpusmm(struct dma_buf *dmabuf, struct dma_buf_map *map)
++{
++	struct vpusmm_buffer *buff = dmabuf->priv;
++
++	dma_buf_map_set_vaddr(map, buff->cookie);
++
++	return 0;
++}
++
++static const struct dma_buf_ops vpusmm_dmabuf_ops =  {
++	.cache_sgt_mapping = true,
++	.map_dma_buf	= map_dma_buf_vpusmm,
++	.unmap_dma_buf	= unmap_dma_buf_vpusmm,
++	.release		= release_vpusmm,
++	.mmap			= mmap_vpusmm,
++	.vmap			= vmap_vpusmm,
++};
++
++/*
++ * Allocate dma buffer suitable for VPU access.
++ * export as DMABuf fd
++ * sess will hold additional refcount to the dmabuf
++ * on request of passing it to VPU side for processing
++ */
++int smm_alloc(struct vpumgr_smm *sess, struct vpumgr_args_alloc *arg)
++{
++	struct vpumgr_device *vdev = sess->vdev;
++	const int flags = O_RDWR | O_CLOEXEC;
++	size_t buffer_size = arg->size;
++	struct dma_buf *dmabuf = NULL;
++	phys_addr_t phys_addr;
++	struct dma_buf_export_info exp_info = {
++		.exp_name = dev_name(vdev->sdev),
++		.owner = THIS_MODULE,
++		.ops = &vpusmm_dmabuf_ops,
++		.size = buffer_size,
++		.flags = flags
++	};
++	struct vpusmm_buffer *buff;
++	int retval;
++
++	buff = kzalloc(sizeof(*buff), GFP_KERNEL);
++	if (!buff) {
++		retval = -ENOMEM;
++		goto failed;
++	}
++
++	buff->dev = vdev->dev;
++	buff->size = buffer_size;
++	buff->dma_attrs = DMA_ATTR_FORCE_CONTIGUOUS | DMA_ATTR_WRITE_COMBINE;
++	buff->cookie = dma_alloc_attrs(vdev->dev, buff->size, &buff->dma_addr,
++				       GFP_KERNEL | GFP_DMA, buff->dma_attrs);
++	if (!buff->cookie) {
++		retval = -ENOMEM;
++		goto failed;
++	}
++
++	phys_addr = dma_to_phys(vdev->dev, buff->dma_addr);
++
++	exp_info.priv = buff;
++	dmabuf = dma_buf_export(&exp_info);
++	if (IS_ERR(dmabuf)) {
++		retval = PTR_ERR(dmabuf);
++		dmabuf = NULL;
++		goto failed;
++	}
++
++	retval = dma_buf_fd(dmabuf, flags);
++	if (retval < 0) {
++		goto failed;
++	} else {
++		arg->fd = retval;
++		retval = 0;
++	}
++
++	dev_dbg(vdev->dev, "%s: dma_addr=%llx, phys_addr=%llx allocated from %s\n",
++		__func__, buff->dma_addr, phys_addr, dev_name(vdev->dev));
++
++	return 0;
++failed:
++	dev_err(vdev->dev, "%s failed with %d\n", __func__, retval);
++
++	if (dmabuf) {
++		/* this will finally release underlying buff */
++		dma_buf_put(dmabuf);
++	} else if (buff) {
++		if (buff->cookie)
++			dma_free_attrs(vdev->dev, buff->size, buff->cookie,
++				       buff->dma_addr, buff->dma_attrs);
++		kfree(buff);
++	}
++	return retval;
++}
++
++int smm_import(struct vpumgr_smm *sess, struct vpumgr_args_import *arg)
++{
++	struct device *dev = sess->vdev->sdev;
++	enum dma_data_direction direction;
++	struct vpusmm_impbuf *item;
++
++	switch (arg->vpu_access) {
++	case VPU_ACCESS_READ:
++		direction = DMA_TO_DEVICE;
++		break;
++	case VPU_ACCESS_WRITE:
++		direction = DMA_FROM_DEVICE;
++		break;
++	case VPU_ACCESS_DEFAULT:
++	case VPU_ACCESS_RW:
++		direction = DMA_BIDIRECTIONAL;
++		break;
++	default:
++		dev_err(dev, "Unknown vpu_access:%d\n", arg->vpu_access);
++		return -EINVAL;
++	}
++
++	item = vpusmm_import_dmabuf(sess, arg->fd, direction, 0);
++	if (IS_ERR(item))
++		return PTR_ERR(item);
++
++	arg->vpu_addr = item->vpu_addr;
++	arg->size = item->dmabuf->size;
++	return 0;
++}
++
++int smm_unimport(struct vpumgr_smm *sess, int *p_dmabuf_fd)
++{
++	struct vpusmm_impbuf *item;
++	struct dma_buf *dmabuf;
 +	int rc = 0;
 +
-+	if (copy_from_user(&devm, (void __user *)arg,
-+			   sizeof(struct xlinkdevmode)))
-+		return -EFAULT;
-+	if (copy_from_user(&devh, (void __user *)devm.handle,
-+			   sizeof(struct xlink_handle)))
-+		return -EFAULT;
-+	if (copy_from_user(&device_mode, (void __user *)devm.device_mode,
-+			   sizeof(device_mode)))
-+		return -EFAULT;
-+	rc = xlink_set_device_mode(&devh, device_mode);
++	dmabuf = dma_buf_get(*p_dmabuf_fd);
++	if (IS_ERR(dmabuf))
++		return PTR_ERR(dmabuf);
 +
-+	return copy_result_to_user(devm.return_code, rc);
++	mutex_lock(&sess->imp_rb_lock);
++	item = vpusmm_find_impbuf(sess, dmabuf);
++	if (!item) {
++		rc = -EINVAL;
++		goto exit;
++	}
++
++	item->refcount--;
++	if (item->refcount <= 0) {
++		rb_erase(&item->node, &sess->imp_rb);
++		dma_buf_unmap_attachment(item->attach, item->sgt, item->direction);
++		dma_buf_detach(item->dmabuf, item->attach);
++		dma_buf_put(item->dmabuf);
++		kfree(item);
++	}
++exit:
++	mutex_unlock(&sess->imp_rb_lock);
++	dma_buf_put(dmabuf);
++	return rc;
 +}
-diff --git a/drivers/misc/xlink-core/xlink-ioctl.h b/drivers/misc/xlink-core/xlink-ioctl.h
-index 0f317c6c2b94..d016d8418f30 100644
---- a/drivers/misc/xlink-core/xlink-ioctl.h
-+++ b/drivers/misc/xlink-core/xlink-ioctl.h
-@@ -12,10 +12,19 @@
- int ioctl_connect(unsigned long arg);
- int ioctl_open_channel(unsigned long arg);
- int ioctl_read_data(unsigned long arg);
-+int ioctl_read_to_buffer(unsigned long arg);
- int ioctl_write_data(unsigned long arg);
- int ioctl_write_volatile_data(unsigned long arg);
- int ioctl_release_data(unsigned long arg);
- int ioctl_close_channel(unsigned long arg);
-+int ioctl_start_vpu(unsigned long arg);
- int ioctl_disconnect(unsigned long arg);
-+int ioctl_get_device_name(unsigned long arg);
-+int ioctl_get_device_list(unsigned long arg);
-+int ioctl_get_device_status(unsigned long arg);
-+int ioctl_boot_device(unsigned long arg);
-+int ioctl_reset_device(unsigned long arg);
-+int ioctl_get_device_mode(unsigned long arg);
-+int ioctl_set_device_mode(unsigned long arg);
- 
- #endif /* XLINK_IOCTL_H_ */
-diff --git a/drivers/misc/xlink-core/xlink-multiplexer.c b/drivers/misc/xlink-core/xlink-multiplexer.c
-index 339734826f3e..48451dc30712 100644
---- a/drivers/misc/xlink-core/xlink-multiplexer.c
-+++ b/drivers/misc/xlink-core/xlink-multiplexer.c
-@@ -491,6 +491,7 @@ enum xlink_error xlink_multiplexer_tx(struct xlink_event *event,
- 	switch (event->header.type) {
- 	case XLINK_WRITE_REQ:
- 	case XLINK_WRITE_VOLATILE_REQ:
-+	case XLINK_WRITE_CONTROL_REQ:
- 		opchan = get_channel(link_id, chan);
- 		if (!opchan || opchan->chan->status != CHAN_OPEN) {
- 			rc = X_LINK_COMMUNICATION_FAIL;
-@@ -657,6 +658,7 @@ enum xlink_error xlink_multiplexer_tx(struct xlink_event *event,
- 		break;
- 	case XLINK_WRITE_RESP:
- 	case XLINK_WRITE_VOLATILE_RESP:
-+	case XLINK_WRITE_CONTROL_RESP:
- 	case XLINK_READ_RESP:
- 	case XLINK_READ_TO_BUFFER_RESP:
- 	case XLINK_RELEASE_RESP:
-@@ -759,6 +761,46 @@ enum xlink_error xlink_multiplexer_rx(struct xlink_event *event)
- 		}
- 		release_channel(opchan);
- 		break;
-+	case XLINK_WRITE_CONTROL_REQ:
-+		opchan = get_channel(link_id, chan);
-+		if (!opchan) {
-+			rc = X_LINK_COMMUNICATION_FAIL;
-+		} else {
-+			event->header.timeout = opchan->chan->timeout;
-+			buffer = xlink_platform_allocate(xmux->dev, &paddr,
-+							 event->header.size,
-+							 XLINK_PACKET_ALIGNMENT,
-+							 XLINK_NORMAL_MEMORY);
-+			if (buffer) {
-+				size = event->header.size;
-+				memcpy(buffer, event->header.control_data, size);
-+				event->paddr = paddr;
-+				event->data = buffer;
-+				if (add_packet_to_channel(opchan,
-+							  &opchan->rx_queue,
-+							  event->data,
-+							  event->header.size,
-+							  paddr)) {
-+					xlink_platform_deallocate(xmux->dev,
-+								  buffer, paddr,
-+								  event->header.size,
-+								  XLINK_PACKET_ALIGNMENT,
-+								  XLINK_NORMAL_MEMORY);
-+					rc = X_LINK_ERROR;
-+					release_channel(opchan);
-+					break;
-+				}
-+				event->header.type = XLINK_WRITE_CONTROL_RESP;
-+				xlink_dispatcher_event_add(EVENT_RX, event);
-+				// channel blocking, notify waiting threads of available packet
-+				complete(&opchan->pkt_available);
++
++int smm_ptr2vpu(struct vpumgr_smm *sess, unsigned long *arg)
++{
++	struct device *dev = sess->vdev->sdev;
++	struct task_struct *task = current;
++	struct dma_buf *dmabuf = NULL;
++	unsigned long vaddr = *arg;
++	struct vm_area_struct *vma;
++	struct vpusmm_impbuf *item;
++	struct mm_struct *mm;
++
++	mm = get_task_mm(task);
++	if (!mm)
++		goto failed;
++
++	mmap_read_lock(mm);
++
++	vma = find_vma(mm, vaddr);
++	if (!vma) {
++		dev_dbg(dev, "cannot find vaddr: %lx\n", vaddr);
++		goto failed;
++	}
++
++	if (vaddr < vma->vm_start) {
++		dev_dbg(dev, "failed at line %d, vaddr=%lx, vma->vm_start=%lx\n",
++			__LINE__, vaddr, vma->vm_start);
++		goto failed;
++	}
++
++	/* make sure the vma is backed by a dmabuf */
++	if (!vma->vm_file) {
++		dev_dbg(dev, "failed at line %d\n", __LINE__);
++		goto failed;
++	}
++
++	dmabuf = vma->vm_file->private_data;
++	if (!dmabuf) {
++		dev_dbg(dev, "failed at line %d\n", __LINE__);
++		goto failed;
++	}
++
++	if (dmabuf->file != vma->vm_file) {
++		dev_dbg(dev, "failed at line %d\n", __LINE__);
++		goto failed;
++	}
++	mmap_read_unlock(mm);
++	mmput(mm);
++
++	mutex_lock(&sess->imp_rb_lock);
++	item = vpusmm_find_impbuf(sess, dmabuf);
++	mutex_unlock(&sess->imp_rb_lock);
++
++	if (!item) {
++		dev_dbg(dev, "failed to find dmabuf in imported list for vaddr=0x%lx (%d)\n",
++			vaddr, __LINE__);
++		return -EFAULT;
++	}
++
++	*arg = (dma_addr_t)(vaddr - vma->vm_start) + item->vpu_addr;
++	return 0;
++
++failed:
++	if (mm) {
++		mmap_read_unlock(mm);
++		mmput(mm);
++	}
++	return -EFAULT;
++}
++
++int smm_debugfs_stats_show(struct seq_file *file, struct vpumgr_smm *sess)
++{
++	struct rb_node *cur, *next;
++	struct vpusmm_impbuf *item;
++	int i;
++
++	seq_puts(file, "\tdmabuf\texpname\tsize(bytes)\tfilecount\trefs\n");
++
++	mutex_lock(&sess->imp_rb_lock);
++	cur = rb_first(&sess->imp_rb);
++	i = 0;
++	while (cur) {
++		item = rb_entry(cur, struct vpusmm_impbuf, node);
++		next = rb_next(cur);
++		if (item)
++			seq_printf(file, "\t%d:%s\t%s\t%zu\t%ld\t%d\n", i++,
++				   item->dmabuf->name ? : "",
++				   item->dmabuf->exp_name,
++				   item->dmabuf->size,
++				   file_count(item->dmabuf->file),
++				   item->refcount);
++		cur = next;
++	}
++	mutex_unlock(&sess->imp_rb_lock);
++	return 0;
++}
++
++int smm_init(struct vpumgr_device *vdev)
++{
++	int rc = 0;
++
++	if (!vdev->dev->of_node) {
++		/*
++		 * no of_node imply:
++		 * 1. no IOMMU, VPU device is only 32-bit DMA capable
++		 * 2. use default CMA because no device tree node specifying memory-region
++		 */
++		dma_set_mask(vdev->dev, DMA_BIT_MASK(32));
++		dma_set_coherent_mask(vdev->dev, DMA_BIT_MASK(32));
++	} else {
++		/* Initialize reserved memory resources */
++		rc = of_reserved_mem_device_init(vdev->dev);
++		if (rc) {
++			if (rc == -ENODEV) {
++				dev_warn(vdev->dev,
++					 "No reserved memory specified, use default cma\n");
++				rc = 0;
 +			} else {
-+				// failed to allocate buffer
-+				rc = X_LINK_ERROR;
++				dev_err(vdev->dev,
++					"Failed to init reserved memory, rc=%d\n", rc);
 +			}
 +		}
-+		release_channel(opchan);
-+		break;
- 	case XLINK_READ_REQ:
- 	case XLINK_READ_TO_BUFFER_REQ:
- 		opchan = get_channel(link_id, chan);
-@@ -848,6 +890,7 @@ enum xlink_error xlink_multiplexer_rx(struct xlink_event *event)
- 		break;
- 	case XLINK_WRITE_RESP:
- 	case XLINK_WRITE_VOLATILE_RESP:
-+	case XLINK_WRITE_CONTROL_RESP:
- 		opchan = get_channel(link_id, chan);
- 		if (!opchan)
- 			rc = X_LINK_COMMUNICATION_FAIL;
-@@ -929,6 +972,18 @@ enum xlink_error xlink_passthrough(struct xlink_event *event)
- 			rc = X_LINK_ERROR;
- 		}
- 		break;
-+	case XLINK_WRITE_CONTROL_REQ:
-+		if (xmux->channels[link_id][chan].ipc_status == CHAN_OPEN) {
-+			ipc.is_volatile = 1;
-+			rc = xlink_platform_write(IPC_INTERFACE,
-+						  event->handle->sw_device_id,
-+						  event->header.control_data,
-+						  &event->header.size, 0, &ipc);
-+		} else {
-+			/* channel not open */
-+			rc = X_LINK_ERROR;
++	}
++	return rc;
++}
++
++int smm_fini(struct vpumgr_device *vdev)
++{
++	return 0;
++}
+diff --git a/drivers/misc/vpumgr/vpu_smm.h b/drivers/misc/vpumgr/vpu_smm.h
+new file mode 100644
+index 000000000000..ff547649d95c
+--- /dev/null
++++ b/drivers/misc/vpumgr/vpu_smm.h
+@@ -0,0 +1,30 @@
++/* SPDX-License-Identifier: GPL-2.0-only
++ * Copyright (C) 2020 Intel Corporation
++ */
++#ifndef _VPU_SMM_H
++#define _VPU_SMM_H
++#include <linux/kernel.h>
++#include <linux/rbtree.h>
++
++#include "vpu_common.h"
++
++struct vpumgr_smm {
++	struct vpumgr_device *vdev;
++	struct rb_root	 imp_rb;
++	struct mutex	 imp_rb_lock; /* protects imp_rb */
++};
++
++int smm_init(struct vpumgr_device *vdev);
++int smm_fini(struct vpumgr_device *vdev);
++
++int smm_open(struct vpumgr_smm *sess, struct vpumgr_device *vdev);
++int smm_close(struct vpumgr_smm *sess);
++
++int smm_alloc(struct vpumgr_smm *sess, struct vpumgr_args_alloc *arg);
++int smm_import(struct vpumgr_smm *sess, struct vpumgr_args_import *arg);
++int smm_unimport(struct vpumgr_smm *sess, int *p_dmabuf_fd);
++int smm_ptr2vpu(struct vpumgr_smm *sess, unsigned long *arg);
++
++int smm_debugfs_stats_show(struct seq_file *file, struct vpumgr_smm *sess);
++
++#endif
+diff --git a/drivers/misc/vpumgr/vpu_vcm.c b/drivers/misc/vpumgr/vpu_vcm.c
+new file mode 100644
+index 000000000000..44b9408d478e
+--- /dev/null
++++ b/drivers/misc/vpumgr/vpu_vcm.c
+@@ -0,0 +1,584 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright (C) 2020-2021 Intel Corporation
++ */
++#include <linux/delay.h>
++#include <linux/dma-buf.h>
++#include <linux/idr.h>
++#include <linux/mutex.h>
++#include <linux/kthread.h>
++#include <linux/sched/task.h>
++#include <linux/seq_file.h>
++#include <linux/uaccess.h>
++#include <linux/workqueue.h>
++#include <linux/xlink.h>
++#include "vpu_common.h"
++#include "vpu_vcm.h"
++
++#define XLINK_IPC_TIMEOUT           1000u
++
++/* Static xlink configuration */
++#define VCM_XLINK_CHANNEL           1
++#define VCM_XLINK_CHAN_SIZE         128
++
++static const int msg_header_size = offsetof(struct vcm_msg, payload.data);
++
++struct vpu_cmd {
++	struct work_struct work;
++	struct kref refcount;
++	struct xlink_handle *handle;
++	struct vpumgr_ctx *vctx;         /* the submitting vpu context */
++	struct vcm_msg msg;              /* message buffer for send/recv */
++	struct completion complete;      /* completion for async submit/reply */
++	int submit_err;                  /* error code for submittion process */
++};
++
++static int vcm_vpu_link_init(struct vcm_dev *pvcm)
++{
++	struct vpumgr_device *vdev = container_of(pvcm, struct vpumgr_device, vcm);
++	enum xlink_error rc;
++
++	pvcm->ipc_xlink_handle.dev_type = VPUIP_DEVICE;
++	pvcm->ipc_xlink_handle.sw_device_id = pvcm->sw_dev_id;
++
++	rc = xlink_initialize();
++	if (rc != X_LINK_SUCCESS)
++		goto exit;
++
++	rc = xlink_connect(&pvcm->ipc_xlink_handle);
++	if (rc != X_LINK_SUCCESS)
++		goto exit;
++
++	rc = xlink_open_channel(&pvcm->ipc_xlink_handle, VCM_XLINK_CHANNEL,
++				RXB_TXB, VCM_XLINK_CHAN_SIZE, XLINK_IPC_TIMEOUT);
++	if (rc != X_LINK_SUCCESS && rc != X_LINK_ALREADY_OPEN) {
++		xlink_disconnect(&pvcm->ipc_xlink_handle);
++		goto exit;
++	}
++
++	rc = 0;
++exit:
++	dev_info(vdev->dev, "%s: rc = %d\n", __func__, rc);
++	return -(int)rc;
++}
++
++static int vcm_vpu_link_fini(struct vcm_dev *pvcm)
++{
++	xlink_close_channel(&pvcm->ipc_xlink_handle, VCM_XLINK_CHANNEL);
++	xlink_disconnect(&pvcm->ipc_xlink_handle);
++	return 0;
++}
++
++/*
++ * Send a vcm_msg by xlink.
++ * Given limited xlink payload size, packing is also performed.
++ */
++static int vcm_send(struct xlink_handle *xlnk_handle, struct vcm_msg *req)
++{
++	struct vpumgr_device *vdev;
++	enum xlink_error rc;
++	u8 *ptr = (u8 *)req;
++	u32 size = 0;
++	u32 len = req->size;
++
++	vdev = container_of(xlnk_handle, struct vpumgr_device, vcm.ipc_xlink_handle);
++	if (len > sizeof(*req))
++		return -EINVAL;
++	do {
++		size = len > VCM_XLINK_CHAN_SIZE ? VCM_XLINK_CHAN_SIZE : len;
++		rc = xlink_write_volatile(xlnk_handle, VCM_XLINK_CHANNEL, ptr, size);
++		if (rc != X_LINK_SUCCESS) {
++			dev_warn(vdev->dev, "%s xlink_write_volatile error %d\n", __func__, rc);
++			return -EINVAL;
 +		}
++		ptr += size;
++		len -= size;
++	} while (len > 0);
++
++	return 0;
++}
++
++/*
++ * Receives a vcm_msg by xlink.
++ * Given limited xlink payload size, unpacking is also performed.
++ */
++static int vcm_recv(struct xlink_handle *xlnk_handle, struct vcm_msg *rep)
++{
++	struct vpumgr_device *vdev;
++	enum xlink_error rc;
++	u64 size;
++	u32 total_size = 0;
++	u32 rx_size = 0;
++	u8 *ptr = (u8 *)rep;
++
++	vdev = container_of(xlnk_handle, struct vpumgr_device, vcm.ipc_xlink_handle);
++	do {
++		/* workaround for a bug in xlink_read_data_to_buffer()
++		 * although it's last argument is declared to be of type (u32 *), the
++		 * function actually writes 64-bit value into that address.
++		 */
++		rc = xlink_read_data_to_buffer(xlnk_handle, VCM_XLINK_CHANNEL, ptr, (u32 *)&size);
++		if (rc != X_LINK_SUCCESS) {
++			dev_warn(vdev->dev, "%s: xlink_read_data_to_buffer failed, rc:%d\n",
++				 __func__, rc);
++			return -EPIPE;
++		}
++
++		if (total_size == 0) {
++			if (size < msg_header_size) {
++				dev_warn(vdev->dev, "%s: first packet is too small (%llu)\n",
++					 __func__, size);
++				return -EINVAL;
++			}
++
++			total_size = rep->size;
++			if (total_size > sizeof(*rep)) {
++				dev_warn(vdev->dev, "%s: packet size (%u) is too big\n",
++					 __func__, total_size);
++				return -EINVAL;
++			}
++			if (total_size < size) {
++				dev_warn(vdev->dev,
++					 "%s: first packet is smaller than claimed (%llu)\n",
++					 __func__, size);
++				return -EINVAL;
++			}
++		}
++
++		ptr += size;
++		rx_size += size;
++	} while (rx_size < total_size);
++
++	if (rx_size != total_size) {
++		dev_warn(vdev->dev, "%s: actuall size %u exceeds claimed size %ud\n",
++			 __func__, rx_size, total_size);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static void vcmd_free(struct kref *kref)
++{
++	struct vpu_cmd *vcmd = container_of(kref, struct vpu_cmd, refcount);
++
++	kvfree(vcmd);
++}
++
++static struct vpu_cmd *vcmd_get(struct vcm_dev *pvcm, int msgid)
++{
++	struct vpu_cmd *vcmd;
++
++	mutex_lock(&pvcm->msg_idr_lock);
++	vcmd = idr_find(&pvcm->msg_idr, msgid);
++	if (vcmd)
++		kref_get(&vcmd->refcount);
++	mutex_unlock(&pvcm->msg_idr_lock);
++
++	return vcmd;
++}
++
++static void vcmd_put(struct vpu_cmd *vcmd)
++{
++	kref_put(&vcmd->refcount, vcmd_free);
++}
++
++static int vcmd_alloc_msgid(struct vcm_dev *pvcm, struct vpu_cmd *vcmd)
++{
++	int msgid;
++
++	mutex_lock(&pvcm->msg_idr_lock);
++	msgid = idr_alloc_cyclic(&pvcm->msg_idr, vcmd, 1, 0, GFP_KERNEL);
++	if (msgid >= 0)
++		kref_init(&vcmd->refcount);
++	mutex_unlock(&pvcm->msg_idr_lock);
++	return msgid;
++}
++
++static void vcmd_remove_msgid(struct vcm_dev *pvcm, int msgid)
++{
++	struct vpu_cmd *vcmd;
++
++	mutex_lock(&pvcm->msg_idr_lock);
++	vcmd = idr_remove(&pvcm->msg_idr, msgid);
++	if (vcmd)
++		kref_put(&vcmd->refcount, vcmd_free);
++	mutex_unlock(&pvcm->msg_idr_lock);
++}
++
++static void vcmd_clean_ctx(struct vcm_dev *pvcm, struct vpumgr_ctx *v)
++{
++	struct vpu_cmd *vcmd;
++	int i;
++
++	mutex_lock(&pvcm->msg_idr_lock);
++	idr_for_each_entry(&pvcm->msg_idr, vcmd, i)
++		if (vcmd->vctx == v) {
++			idr_remove(&pvcm->msg_idr, i);
++			kref_put(&vcmd->refcount, vcmd_free);
++		}
++	mutex_unlock(&pvcm->msg_idr_lock);
++}
++
++static int vcmd_count_ctx(struct vcm_dev *pvcm, struct vpumgr_ctx *v)
++{
++	struct vpu_cmd *vcmd;
++	int i;
++	int count = 0;
++
++	mutex_lock(&pvcm->msg_idr_lock);
++	idr_for_each_entry(&pvcm->msg_idr, vcmd, i)
++		if (vcmd->vctx == v)
++			count++;
++	mutex_unlock(&pvcm->msg_idr_lock);
++
++	return count;
++}
++
++static void vpu_cmd_submit(struct work_struct *work)
++{
++	struct vpu_cmd *p = container_of(work, struct vpu_cmd, work);
++
++	p->submit_err = vcm_send(p->handle, &p->msg);
++}
++
++/*
++ * vcm_submit() - Submit a command to VPU
++ * @v:         Pointer to local vpu context data structure.
++ * @cmd:       Command code
++ * @data_in:   Data arguments
++ * @in_len:    Length of the data arguments
++ * @submit_id: On return, this will containe a newly allocated
++ *             vpu-device-wise unique ID for the submitted command
++ *
++ * Submit a command to corresponding vpu context running on firmware to execute
++ */
++int vcm_submit(struct vpumgr_ctx *v,
++	       u32 cmd, const void *data_in, u32 in_len, s32 *submit_id)
++{
++	struct vcm_dev *pvcm = &v->vdev->vcm;
++	int ctx = v->vpu_ctx_id;
++	int rc = 0;
++	struct vpu_cmd *vcmd;
++
++	if (!v->vdev->vcm.enabled)
++		return -ENOENT;
++
++	if (in_len > VCM_PAYLOAD_SIZE)
++		return -EINVAL;
++
++	vcmd = kvmalloc(sizeof(*vcmd), GFP_KERNEL);
++	if (!vcmd)
++		return -ENOMEM;
++
++	vcmd->vctx = v;
++
++	rc = vcmd_alloc_msgid(pvcm, vcmd);
++	if (rc < 0) {
++		rc = -EEXIST;
++		kvfree(vcmd);
++		return rc;
++	}
++
++	/* from now on, vcmd can is refcount managed */
++	vcmd->msg.id = rc;
++	*submit_id = vcmd->msg.id;
++
++	if (data_in && in_len > 0) {
++		if (access_ok((void __user *)data_in, in_len)) {
++			rc = copy_from_user(vcmd->msg.payload.data,
++					    (const void __user *)data_in, in_len);
++			if (rc)
++				goto remove_msgid;
++		} else {
++			memcpy(vcmd->msg.payload.data, data_in, in_len);
++		}
++	}
++
++	init_completion(&vcmd->complete);
++	vcmd->handle = &pvcm->ipc_xlink_handle;
++	vcmd->msg.size = msg_header_size + in_len;
++	vcmd->msg.ctx = ctx;
++	vcmd->msg.cmd = cmd;
++	vcmd->msg.rc = 0;
++	INIT_WORK(&vcmd->work, vpu_cmd_submit);
++
++	if (!queue_work(pvcm->wq, &vcmd->work)) {
++		rc = -EEXIST;
++		goto remove_msgid;
++	}
++
++	return 0;
++
++remove_msgid:
++	vcmd_remove_msgid(pvcm, vcmd->msg.id);
++	return rc;
++}
++
++/*
++ * vcm_wait() - Wait a submitted command to finish
++ * @v:          Pointer to local vpu context data structure.
++ * @submit_id:  Unique ID of the submitted command to wait for
++ * @vpu_rc:     Return code of the submitted commands
++ * @data_out:   Return data payload of the submitted command
++ * @p_out_len:  Length of the returned paylaod
++ * @timeout_ms: Time in milliseconds before the wait expires
++ *
++ * Wait for a submitted command to finish and retrieves the
++ * return code and outputs on success with timeout.
++ */
++int vcm_wait(struct vpumgr_ctx *v, s32 submit_id,
++	     s32 *vpu_rc, void *data_out, u32 *p_out_len, u32 timeout_ms)
++{
++	struct vcm_dev *pvcm = &v->vdev->vcm;
++	struct device *dev = v->vdev->sdev;
++	unsigned long timeout = msecs_to_jiffies(timeout_ms);
++	struct vpu_cmd *vcmd;
++	int rc, len;
++
++	if (!v->vdev->vcm.enabled)
++		return -ENOENT;
++
++	vcmd = vcmd_get(pvcm, submit_id);
++	if (!vcmd) {
++		dev_err(dev, "%s:cannot find submit_id %d\n", __func__, submit_id);
++		return -EINVAL;
++	}
++
++	if (v != vcmd->vctx) {
++		dev_err(dev, "%s:trying to wait on submit %d doesn't belong to vpu context %d\n",
++			__func__, submit_id, v->vpu_ctx_id);
++		return -EINVAL;
++	}
++
++	/* wait for submission work to be done */
++	flush_work(&vcmd->work);
++	rc = vcmd->submit_err;
++	if (rc)
++		goto exit;
++
++	/* wait for reply */
++	rc = wait_for_completion_interruptible_timeout(&vcmd->complete, timeout);
++	if (rc < 0) {
++		goto exit;
++	} else if (rc == 0) {
++		rc = -ETIMEDOUT;
++		goto exit;
++	} else {
++		/* wait_for_completion_interruptible_timeout return positive
++		 * rc on success, but we return zero as success.
++		 */
++		rc = 0;
++	}
++
++	if (vpu_rc)
++		*vpu_rc = vcmd->msg.rc;
++
++	if (data_out && p_out_len) {
++		/* truncate payload to fit output buffer size provided */
++		len = vcmd->msg.size - msg_header_size;
++		if (len > (*p_out_len)) {
++			dev_err(dev, "%s: output is truncated from %d to %d to fit buffer size.\n",
++				__func__, len, (*p_out_len));
++			len = (*p_out_len);
++		}
++
++		if (len > 0) {
++			if (access_ok((void __user *)data_out, len)) {
++				rc = copy_to_user((void __user *)data_out,
++						  vcmd->msg.payload.data, len);
++				if (rc)
++					goto exit;
++			} else {
++				memcpy(data_out, vcmd->msg.payload.data, len);
++			}
++		}
++
++		/* tell the caller the exact length received, even if
++		 * we have truncated due to output buffer size limitation
++		 */
++		*p_out_len = len;
++	}
++exit:
++	v->total_vcmds++;
++	vcmd_put(vcmd);
++	vcmd_remove_msgid(pvcm, submit_id);
++	return rc;
++}
++
++static int vcm_call(struct vpumgr_ctx *v,
++		    s32 cmd, const void *data_in, u32 in_len,
++		    s32 *res_rc, void *data_out, u32 *p_out_len)
++{
++	int submit_id, rc;
++
++	if (!v->vdev->vcm.enabled)
++		return -ENOENT;
++
++	rc = vcm_submit(v, cmd, data_in, in_len, &submit_id);
++	if (rc)
++		return rc;
++
++	return vcm_wait(v, submit_id, res_rc, data_out, p_out_len, 1000);
++}
++
++int vcm_open(struct vpumgr_ctx *v, struct vpumgr_device *vdev)
++{
++	struct device *dev = vdev->sdev;
++	int rep_rc, rc;
++
++	v->vdev = vdev;
++
++	if (!vdev->vcm.enabled)
++		return 0;
++
++	rc = vcm_call(v, VCTX_MSG_CREATE, NULL, 0, &rep_rc, NULL, NULL);
++
++	if (rc != 0 || rep_rc < 0)
++		dev_err(dev, "%s: Vpu context create with rc:%d and vpu reply rc:%d\n",
++			__func__, rc, rep_rc);
++	if (rc)
++		return rc;
++	if (rep_rc < 0)
++		return -ENXIO;
++
++	v->vpu_ctx_id = rep_rc;
++	v->total_vcmds = 0;
++	return 0;
++}
++
++int vcm_close(struct vpumgr_ctx *v)
++{
++	struct device *dev = v->vdev->sdev;
++	int rep_rc, rc;
++
++	if (!v->vdev->vcm.enabled)
++		return 0;
++
++	rc = vcm_call(v, VCTX_MSG_DESTROY, NULL, 0, &rep_rc, NULL, NULL);
++	dev_dbg(dev, "vpu context %d is destroyed with rc:%d and vpu reply rc:%d\n",
++		v->vpu_ctx_id, rc, rep_rc);
++
++	/* remove submit belongs to this context */
++	vcmd_clean_ctx(&v->vdev->vcm, v);
++	return 0;
++}
++
++int vcm_debugfs_stats_show(struct seq_file *file, struct vpumgr_ctx *v)
++{
++	if (!v->vdev->vcm.enabled)
++		return 0;
++	seq_printf(file, "\tvpu context: #%d\n", v->vpu_ctx_id);
++	seq_printf(file, "\t\tNum of completed cmds: %llu\n", v->total_vcmds);
++	seq_printf(file, "\t\tNum of on-going cmds: %d\n", vcmd_count_ctx(&v->vdev->vcm, v));
++	return 0;
++}
++
++static int vcm_rxthread(void *param)
++{
++	struct vpumgr_device *vdev = param;
++	struct device *dev = vdev->sdev;
++	struct vcm_dev *pvcm = &vdev->vcm;
++	struct vcm_msg *msg = &pvcm->rxmsg;
++	struct vpu_cmd *vcmd;
++	int rc;
++
++	while (!kthread_should_stop()) {
++		rc = vcm_recv(&pvcm->ipc_xlink_handle, msg);
++		if (rc == -EPIPE)
++			break;
++		if (rc)
++			continue;
++
++		switch (msg->cmd) {
++		case VCTX_MSG_REPLY:
++			/* find local data associated with that msg id */
++			vcmd = vcmd_get(pvcm, (unsigned long)msg->id);
++			if (!vcmd)
++				break;
++
++			if (msg->ctx != vcmd->msg.ctx)
++				dev_warn(dev, "reply msg #%u's ctx (%u) mismatches vcmd ctx (%u)\n",
++					 msg->id, msg->ctx, vcmd->msg.ctx);
++
++			vcmd->submit_err = 0;
++
++			/* submit corresponding to msg->id is done, do post process */
++			memcpy(&vcmd->msg, msg, msg->size);
++			complete(&vcmd->complete);
++
++			vcmd_put(vcmd);
 +		break;
- 	case XLINK_READ_REQ:
- 		if (xmux->channels[link_id][chan].ipc_status == CHAN_OPEN) {
- 			/* if channel has receive blocking set,
-@@ -1013,6 +1068,7 @@ enum xlink_error xlink_passthrough(struct xlink_event *event)
- 	case XLINK_PING_REQ:
- 	case XLINK_WRITE_RESP:
- 	case XLINK_WRITE_VOLATILE_RESP:
-+	case XLINK_WRITE_CONTROL_RESP:
- 	case XLINK_READ_RESP:
- 	case XLINK_READ_TO_BUFFER_RESP:
- 	case XLINK_RELEASE_RESP:
-diff --git a/drivers/misc/xlink-core/xlink-platform.c b/drivers/misc/xlink-core/xlink-platform.c
-index c34b69ee206b..56eb8da28a5f 100644
---- a/drivers/misc/xlink-core/xlink-platform.c
-+++ b/drivers/misc/xlink-core/xlink-platform.c
-@@ -34,6 +34,20 @@ static inline int xlink_ipc_read(u32 sw_device_id, void *data,
- 				 size_t * const size, u32 timeout, void *context)
- { return -1; }
- 
-+static inline int xlink_ipc_get_device_list(u32 *sw_device_id_list,
-+					    u32 *num_devices)
-+{ return -1; }
-+static inline int xlink_ipc_get_device_name(u32 sw_device_id,
-+					    char *device_name, size_t name_size)
-+{ return -1; }
-+static inline int xlink_ipc_get_device_status(u32 sw_device_id,
-+					      u32 *device_status)
-+{ return -1; }
-+static inline int xlink_ipc_boot_device(u32 sw_device_id,
-+					const char *binary_path)
-+{ return -1; }
-+static inline int xlink_ipc_reset_device(u32 sw_device_id)
-+{ return -1; }
- static inline int xlink_ipc_open_channel(u32 sw_device_id,
- 					 u32 channel)
- { return -1; }
-@@ -59,6 +73,23 @@ static int (*write_fcts[NMB_OF_INTERFACES])(u32, void *, size_t * const, u32) =
- static int (*read_fcts[NMB_OF_INTERFACES])(u32, void *, size_t * const, u32) = {
- 		NULL, xlink_pcie_read, NULL, NULL};
- 
-+static int (*reset_fcts[NMB_OF_INTERFACES])(u32) = {
-+		xlink_ipc_reset_device, xlink_pcie_reset_device, NULL, NULL};
-+static int (*boot_fcts[NMB_OF_INTERFACES])(u32, const char *) = {
-+		xlink_ipc_boot_device, xlink_pcie_boot_device, NULL, NULL};
-+static int (*dev_name_fcts[NMB_OF_INTERFACES])(u32, char *, size_t) = {
-+		xlink_ipc_get_device_name, xlink_pcie_get_device_name,
-+		NULL, NULL};
-+static int (*dev_list_fcts[NMB_OF_INTERFACES])(u32 *, u32 *) = {
-+		xlink_ipc_get_device_list, xlink_pcie_get_device_list,
-+		NULL, NULL};
-+static int (*dev_status_fcts[NMB_OF_INTERFACES])(u32, u32 *) = {
-+		xlink_ipc_get_device_status, xlink_pcie_get_device_status,
-+		NULL, NULL};
-+static int (*dev_set_mode_fcts[NMB_OF_INTERFACES])(u32, u32) = {
-+		NULL, NULL, NULL, NULL};
-+static int (*dev_get_mode_fcts[NMB_OF_INTERFACES])(u32, u32 *) = {
-+		NULL, NULL, NULL, NULL};
- static int (*open_chan_fcts[NMB_OF_INTERFACES])(u32, u32) = {
- 		xlink_ipc_open_channel, NULL, NULL, NULL};
- 
-@@ -103,6 +134,61 @@ int xlink_platform_read(u32 interface, u32 sw_device_id, void *data,
- 	return read_fcts[interface](sw_device_id, data, size, timeout);
- }
- 
-+int xlink_platform_reset_device(u32 interface, u32 sw_device_id)
-+{
-+	if (interface >= NMB_OF_INTERFACES || !reset_fcts[interface])
-+		return -1;
-+	return reset_fcts[interface](sw_device_id);
++		default:
++		break;
++		}
++	}
++	return rc;
 +}
 +
-+int xlink_platform_boot_device(u32 interface, u32 sw_device_id,
-+			       const char *binary_name)
++int vcm_init(struct vpumgr_device *vdev, u32 sw_dev_id)
 +{
-+	if (interface >= NMB_OF_INTERFACES || !boot_fcts[interface])
-+		return -1;
-+	return boot_fcts[interface](sw_device_id, binary_name);
++	struct vcm_dev *pvcm = &vdev->vcm;
++	struct task_struct *rxthread;
++	int rc = 0;
++
++	if (sw_dev_id == XLINK_INVALID_SW_DEVID) {
++		dev_warn(vdev->dev, "%s: vcm is not enabled!\n",
++			 __func__);
++		rc = 0;
++		goto exit;
++	}
++
++	pvcm->sw_dev_id = sw_dev_id;
++	rc = vcm_vpu_link_init(pvcm);
++	if (rc)
++		goto exit;
++
++	pvcm->wq = alloc_ordered_workqueue("vcm workqueue", WQ_MEM_RECLAIM | WQ_HIGHPRI);
++	if (!pvcm->wq) {
++		rc = -ENOMEM;
++		goto vpu_link_fini;
++	}
++
++	mutex_init(&pvcm->msg_idr_lock);
++	idr_init(&pvcm->msg_idr);
++
++	rxthread = kthread_run(vcm_rxthread,
++			       (void *)vdev, "vcmrx");
++	if (IS_ERR(rxthread)) {
++		rc = PTR_ERR(rxthread);
++		goto destroy_idr;
++	}
++
++	pvcm->rxthread = get_task_struct(rxthread);
++
++	pvcm->enabled = true;
++	return 0;
++
++destroy_idr:
++	idr_destroy(&pvcm->msg_idr);
++	destroy_workqueue(pvcm->wq);
++vpu_link_fini:
++	vcm_vpu_link_fini(pvcm);
++exit:
++	pvcm->enabled = false;
++	return rc;
 +}
 +
-+int xlink_platform_get_device_name(u32 interface, u32 sw_device_id,
-+				   char *device_name, size_t name_size)
++int vcm_fini(struct vpumgr_device *vdev)
 +{
-+	if (interface >= NMB_OF_INTERFACES || !dev_name_fcts[interface])
-+		return -1;
-+	return dev_name_fcts[interface](sw_device_id, device_name, name_size);
++	struct vcm_dev *pvcm = &vdev->vcm;
++
++	if (!pvcm->enabled)
++		return 0;
++
++	vcm_vpu_link_fini(pvcm);
++
++	kthread_stop(pvcm->rxthread);
++	put_task_struct(pvcm->rxthread);
++
++	idr_destroy(&pvcm->msg_idr);
++	destroy_workqueue(pvcm->wq);
++	mutex_destroy(&pvcm->msg_idr_lock);
++	return 0;
 +}
+diff --git a/drivers/misc/vpumgr/vpu_vcm.h b/drivers/misc/vpumgr/vpu_vcm.h
+new file mode 100644
+index 000000000000..9e89c281092b
+--- /dev/null
++++ b/drivers/misc/vpumgr/vpu_vcm.h
+@@ -0,0 +1,84 @@
++/* SPDX-License-Identifier: GPL-2.0-only
++ * RESMGR driver  -  VPU Context Manager
++ * Copyright (C) 2020-2021 Intel Corporation
++ */
++#ifndef __VPU_VCM_H
++#define __VPU_VCM_H
 +
-+int xlink_platform_get_device_list(u32 interface,
-+				   u32 *sw_device_id_list, u32 *num_devices)
-+{
-+	if (interface >= NMB_OF_INTERFACES || !dev_list_fcts[interface])
-+		return -1;
-+	return dev_list_fcts[interface](sw_device_id_list, num_devices);
-+}
++#include <linux/xlink.h>
 +
-+int xlink_platform_get_device_status(u32 interface, u32 sw_device_id,
-+				     u32 *device_status)
-+{
-+	if (interface >= NMB_OF_INTERFACES || !dev_status_fcts[interface])
-+		return -1;
-+	return dev_status_fcts[interface](sw_device_id, device_status);
-+}
++struct vpumgr_device;
 +
-+int xlink_platform_set_device_mode(u32 interface, u32 sw_device_id,
-+				   u32 power_mode)
-+{
-+	if (interface >= NMB_OF_INTERFACES || !dev_set_mode_fcts[interface])
-+		return -1;
-+	return dev_set_mode_fcts[interface](sw_device_id, power_mode);
-+}
++/* Command code for message to/from VPU context manager on firmware */
++#define VCTX_MSG_CREATE             1
++#define VCTX_MSG_DESTROY            2
++#define VCTX_MSG_REPLY              3
 +
-+int xlink_platform_get_device_mode(u32 interface, u32 sw_device_id,
-+				   u32 *power_mode)
-+{
-+	if (interface >= NMB_OF_INTERFACES || !dev_get_mode_fcts[interface])
-+		return -1;
-+	return dev_get_mode_fcts[interface](sw_device_id, power_mode);
-+}
++/* Maximal payload size supported for request or reply */
++#define VCM_PAYLOAD_SIZE            (8192 - 5 * sizeof(u32))
 +
- int xlink_platform_open_channel(u32 interface, u32 sw_device_id,
- 				u32 channel)
- {
-diff --git a/include/linux/xlink.h b/include/linux/xlink.h
-index c22439d5aade..b00dbc719530 100644
---- a/include/linux/xlink.h
-+++ b/include/linux/xlink.h
-@@ -78,6 +78,10 @@ enum xlink_error xlink_write_data(struct xlink_handle *handle,
- enum xlink_error xlink_write_volatile(struct xlink_handle *handle,
- 				      u16 chan, u8 const *message, u32 size);
- 
-+enum xlink_error xlink_write_control_data(struct xlink_handle *handle,
-+					  u16 chan, u8 const *message,
-+					  u32 size);
++/**
++ * struct vcm_msg: VPU context manager message
++ * @size: size tag must be at the begin
++ * @ctx: to/from which context the msg is
++ * @cmd: the type of this message
++ * @id: index to identify this message in context ctx
++ * @rc: return code or misc args
++ * @payload: the payload of message
++ */
++struct vcm_msg {
++	u32 size;
++	u32 ctx;
++	u32 cmd;
++	u32 id;
++	s32 rc;
++	union {
++		char data[VCM_PAYLOAD_SIZE];
++	} payload;
++} __packed;
 +
- enum xlink_error xlink_read_data(struct xlink_handle *handle,
- 				 u16 chan, u8 **message, u32 *size);
- 
-@@ -90,6 +94,29 @@ enum xlink_error xlink_release_data(struct xlink_handle *handle,
- 
- enum xlink_error xlink_disconnect(struct xlink_handle *handle);
- 
-+enum xlink_error xlink_get_device_list(u32 *sw_device_id_list, u32 *num_devices);
++struct vcm_dev {
++	bool enabled;
++	/*
++	 * XLINK IPC related.
++	 */
++	struct xlink_handle ipc_xlink_handle;
++	s32 sw_dev_id;
 +
-+enum xlink_error xlink_get_device_name(struct xlink_handle *handle, char *name,
-+				       size_t name_size);
++	/*
++	 * dispatch work queue.
++	 * Xlink transcations would handled in the work queue;
++	 * Decouple the xlink API invoking with user space systemcall
++	 * because SIGINT would cause xlink_read* erro.
++	 */
++	struct workqueue_struct *wq;
 +
-+enum xlink_error xlink_get_device_status(struct xlink_handle *handle,
-+					 u32 *device_status);
++	/* kthread for rx */
++	struct task_struct *rxthread;
 +
-+enum xlink_error xlink_boot_device(struct xlink_handle *handle,
-+				   const char *binary_name);
++	/* message buffer for receiving thread */
++	struct vcm_msg rxmsg;
 +
-+enum xlink_error xlink_reset_device(struct xlink_handle *handle);
++	struct mutex msg_idr_lock; /* protects msg_idr */
++	struct idr msg_idr;
++};
 +
-+enum xlink_error xlink_set_device_mode(struct xlink_handle *handle,
-+				       enum xlink_device_power_mode power_mode);
++struct vpumgr_ctx {
++	struct vpumgr_device *vdev;
++	u32 vpu_ctx_id;
++	u64 total_vcmds;
++};
 +
-+enum xlink_error xlink_get_device_mode(struct xlink_handle *handle,
-+				       enum xlink_device_power_mode *power_mode);
++int vcm_init(struct vpumgr_device *vdev, u32 sw_dev_id);
++int vcm_fini(struct vpumgr_device *vdev);
 +
-+enum xlink_error xlink_start_vpu(char *filename); /* depreciated */
++int vcm_open(struct vpumgr_ctx *v, struct vpumgr_device *vdev);
++int vcm_close(struct vpumgr_ctx *v);
++int vcm_debugfs_stats_show(struct seq_file *file, struct vpumgr_ctx *v);
 +
-+enum xlink_error xlink_stop_vpu(void); /* depreciated */
++int vcm_submit(struct vpumgr_ctx *v,
++	       u32 cmd, const void *data_in, u32 in_len, s32 *submit_id);
++int vcm_wait(struct vpumgr_ctx *v, s32 submit_id,
++	     s32 *vpu_rc, void *data_out, u32 *p_out_len, u32 timeout_ms);
 +
- /* API functions to be implemented
-  *
-  * enum xlink_error xlink_write_crc_data(struct xlink_handle *handle,
++#endif /* __VPU_VCM_H */
+diff --git a/include/uapi/misc/vpumgr.h b/include/uapi/misc/vpumgr.h
+new file mode 100644
+index 000000000000..910b26e60097
+--- /dev/null
++++ b/include/uapi/misc/vpumgr.h
+@@ -0,0 +1,64 @@
++/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note
++ * VPU manager Linux Kernel API
++ * Copyright (C) 2020-2021 Intel Corporation
++ *
++ */
++#ifndef __VPUMGR_UAPI_H
++#define __VPUMGR_UAPI_H
++
++#include <linux/types.h>
++
++/* ioctl numbers */
++#define VPUMGR_MAGIC 'V'
++/* VPU manager IOCTLs */
++#define VPUMGR_IOCTL_DMABUF_ALLOC	_IOWR(VPUMGR_MAGIC, 2, struct vpumgr_args_alloc)
++#define VPUMGR_IOCTL_DMABUF_IMPORT	_IOWR(VPUMGR_MAGIC, 3, struct vpumgr_args_import)
++#define VPUMGR_IOCTL_DMABUF_UNIMPORT	_IOWR(VPUMGR_MAGIC, 4, __s32)
++#define VPUMGR_IOCTL_DMABUF_PTR2VPU	_IOWR(VPUMGR_MAGIC, 5, __u64)
++#define VPUMGR_IOCTL_VCM_SUBMIT		_IOWR(VPUMGR_MAGIC, 6, struct vpumgr_vcm_submit)
++#define VPUMGR_IOCTL_VCM_WAIT		_IOWR(VPUMGR_MAGIC, 7, struct vpumgr_vcm_wait)
++#define VPUMGR_IOCTL_END		_IO(VPUMGR_MAGIC, 8)
++
++struct vpumgr_args_alloc {
++	__s32 fd;           /* out: DMABuf fd */
++	__s32 reserved[2];  /*  in: reserved */
++	__u64 size;	    /*  in: required buffer size */
++};
++
++/* vpu_access flags */
++enum vpu_access_type {
++	VPU_ACCESS_DEFAULT = 0,
++	VPU_ACCESS_READ    = 1,
++	VPU_ACCESS_WRITE   = 2,
++	VPU_ACCESS_RW      = 3
++};
++
++struct vpumgr_args_import {
++	__s32 fd;           /*  in: input DMABuf fd */
++	__s32 vpu_access;   /*  in: how vpu is going to access the buffer */
++	__u64 vpu_addr;	    /* out: vpu dma address of the DMABuf */
++	__u64 size;         /* out: the size of the DMABuf */
++};
++
++/* Command code reserved for kernel mode driver,
++ * user-space should not use commmand code smaller
++ * than or equal to this micro
++ */
++#define VCTX_KMD_RESERVED_CMD_LAST           31
++
++struct vpumgr_vcm_submit {
++	__u32 cmd;          /*  in: command code */
++	__u64 in;           /*  in: input paramer buffer address */
++	__u32 in_len;       /*  in: input paramer buffer length */
++	__s32 submit_id;    /* out: submit id */
++};
++
++struct vpumgr_vcm_wait {
++	__s32 submit_id;    /*  in: submit id */
++	__s32 vpu_rc;       /* out: vpu return code */
++	__u64 out;          /*  in: address of the buffer for receiving result */
++	__u32 out_len;      /*  in: length of the result buffer */
++	__u32 timeout_ms;   /*  in: timeout in milliseconds */
++};
++
++#endif /* __VPUMGR_UAPI_H */
 -- 
 2.17.1
 
