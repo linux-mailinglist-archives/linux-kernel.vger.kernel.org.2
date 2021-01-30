@@ -2,103 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3F6309734
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 18:24:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FAFC309739
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 18:29:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231964AbhA3RYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 12:24:40 -0500
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:34218 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231701AbhA3RYa (ORCPT
+        id S231614AbhA3R2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 12:28:47 -0500
+Received: from sonic311-49.consmr.mail.bf2.yahoo.com ([74.6.131.223]:42431
+        "EHLO sonic311-49.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229832AbhA3R2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 12:24:30 -0500
-Received: by mail-ot1-f44.google.com with SMTP id a109so11968043otc.1;
-        Sat, 30 Jan 2021 09:24:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=9UU0fPRjeLPZnus41uS3atTuyIZgZVJ3nKD7dA4ziy8=;
-        b=OastlA+1DEOnePnRuPZb14q19Ym+QMqcLlv7hBPBSeb0+K4zGIQyrf0cH6XRZtw7hv
-         V3nnL8+q28+dga+UqDa42adRxJkhVvdz28ZovM4wce01jpuHsy5+ga7RIzPy901qZfVV
-         84f6/+5wweQ0HPT2odTTBKmM0k7v0V8nDOhQJpef4/yADH0WXnIUoKZWXiIvF+gmD78F
-         Nfg+Rw3ENXEoRCWpSKyumo13bTGR0d/9cmCSdjAqk9rDyE1alMy0pycVYBZseKj11nIj
-         AqW63jgHHZ07P5pckI+Ky3xqp4Ri7zm3KwMl23Aphnj2Cd7csqfd21rg5MbpUpVmZt1V
-         rNHQ==
-X-Gm-Message-State: AOAM530mzneI0D3HC81WokjqKCtadoUgOiTN0djZw2p+XY5YPMiKFRNa
-        ypQGpAAbgeoe7sWa6/S8gA==
-X-Google-Smtp-Source: ABdhPJz9x2jS85HnLhL4DpdmLb2GJWo4CXvMaGkSiz0AtOqPIs9vaKayPjx3qX3R0yiVO24Y+b/j9w==
-X-Received: by 2002:a9d:5909:: with SMTP id t9mr6041294oth.263.1612027429775;
-        Sat, 30 Jan 2021 09:23:49 -0800 (PST)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id j1sm3167340oiw.50.2021.01.30.09.23.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Jan 2021 09:23:48 -0800 (PST)
-Received: (nullmailer pid 1419428 invoked by uid 1000);
-        Sat, 30 Jan 2021 17:23:40 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-Cc:     Eddie Huang <eddie.huang@mediatek.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        devicetree@vger.kernel.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-kernel@vger.kernel.org,
-        Yuchen Huang <yuchen.huang@mediatek.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        srv_heupstream@mediatek.com, Sean Wang <sean.wang@mediatek.com>,
-        linux-rtc@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Fei Shao <fshao@chromium.org>,
-        linux-mediatek@lists.infradead.org, Ran Bi <ran.bi@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-In-Reply-To: <1611913781-23460-5-git-send-email-hsin-hsiung.wang@mediatek.com>
-References: <1611913781-23460-1-git-send-email-hsin-hsiung.wang@mediatek.com> <1611913781-23460-5-git-send-email-hsin-hsiung.wang@mediatek.com>
-Subject: Re: [PATCH RESEND v5 4/8] dt-bindings: regulator: Add document for MT6359 regulator
-Date:   Sat, 30 Jan 2021 11:23:40 -0600
-Message-Id: <1612027420.840636.1419427.nullmailer@robh.at.kernel.org>
+        Sat, 30 Jan 2021 12:28:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1612027676; bh=swjFzKWryy3sOX8AFtSHoDzy7h2wolCnmw3X8FGxf9o=; h=Date:From:Reply-To:Subject:References:From:Subject:Reply-To; b=SN6R6vToDBl7Yfd8Og72Gn4Tgs0aYMABGVLzmvDoMNkOXhDuva073rtxYj+wDpe7F3HZU9O/mzt4QmAaE0E0zWKVTnKvFyVcsACVqXqpi2/cchosI5yM1lY5nC6eRBU0htGEvevSZbCjOfpGCxN185MCXvNVS2YVEKFc0H4QhGO0KGfhqvH3L8orFifvrxiQaXg++ZK70vtIBvRmkBPHgUU3piESphIv1oKSWnsUj6L03UAM7KBv8kh1au04T6grQzOMMQ5naL/3R+yEA6+m194YHOSAiauLXZRu/zhAFGbD+tyP9CV+5/XA+H9LFFGzZ/vNyMd2hkhjYxQLOkq2Nw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1612027676; bh=DcWVkQoLavCCwH8ygCeMLKLPl96zPEv6TcBAdz1G7fQ=; h=Date:From:Subject:From:Subject:Reply-To; b=sOUiThYtCQibD6sbKnBQhpog0/j93gBq32gt+hB/M6h5bdDuvjYxRtEkm82XR5ufueUwk5V2kTFd4Sgm0WV634G9ihSV9eDpN65924C+0sUdhEkkMzGLzR3ab+KvSU2lJgtRsF9YwnlH8Vb9rt8bzckpK1P5x8XCGWtHBUlogB2BIppbDdlsK5BjrpooPEo5VoEzerya1h30Z7v2AMDEEC2/PMZ3U28i/9OvnCk/+w/JTKJj4SygCeplMUn11bdvyIvJ2W9W4bfrYzXTXn7bL6E80G74NpEGLWqkuazceE9JRwOjouWz92wAtta5S9g/V8NcjKOLUUSYpBafO9O7ug==
+X-YMail-OSG: hiwT2m4VM1mP.rhuAY6.TqzhBkYJASeNJzx83eTFg1zOFOUuPJiIlPbBRaVIP2U
+ YST1Qo_6KNyDpCYZr2VWVNLmgm0Dn.Nkz6Hu_Zeb2g_H9d.fSiZp3E3VWNdZr9VzfIpmTUfEYCYL
+ 5qL4_7.Tkg1H6Te1.vijfjantnRdLqBcLlApCIdXCryhQZfMAR48PjKrFWN85PJxkAwgGOpLZ5O7
+ uE8k00Qw8twEUY2IwQGzPAq9YbmXo9m7MZyi_Agdr.wdB7x82uGKZaDxUTyNBQCDITJ9C2SJnEuN
+ mi38cwpFJ1GVepanOO9lI_qHzSh2ZsPyxNDSCeYnRrSsRwMWBo2qOABOOKmc64PXvaoIpf6ysvx6
+ .ZoNH4LiQJr21A6FUPxgfAZFUS6_9oZFNkhsVJUIBpwOyd9hKYqFYGnCA_03E6a4.Std6WS1egsJ
+ hheEIAR.hJxkhaaUdf0xLQE8XuX6Ia3n1XyUR5xPj_h.0HrZGrS4QWuSVAgmJUZy.yM3W5eGVvEG
+ b54KdJ7UVRIO2ihKdFINQWXcHqFkvObpExsnVhKVDhjzstImi9VcKDFZ4DKdIALbplX9OZMowYca
+ lohVTT6VGStw9fWvl.i09aoTgZg0ri.Bw.WNced8zCNG0tsBpPrl0Rp.Cj3BJBdXeNzXqCUZ2xRk
+ hi.RjNaCF9uBWNF.g5qqsR0ltAbeoPm3vbkeSdNeZqsLR0smgJJafCQD1hw.44BR6.uZS7TQgcGX
+ ijhBeqjGidP4i6LmLEtqheVWd6A4TFIy8tewxM6Fl75KHKDx2BnUJcKxPABiI9YGJwIAk5cQIPdP
+ C1mqWJu9DUQiGxe_i9pDKJYCSIgKe_u6fLfj.0tPH85auFqEz3LD7DW09FXakvYA8DJJQJ55Nq88
+ IhhjSi6IQZnytbFyESYu9dNQV4ozS39i83c50Kqlm61wJlIENZxlLKKbId98Ix4u21unskI2.irk
+ rZKfyX8LbEHqkH5LVFAcwLYNiNYwBvmoKm_ZtGJKu0_D3vOCOy1dwIAp.ydSLoy_7Mvh9Jb.OYK3
+ O5pgbrNXMwLuQwBhc59VtAyxw_cV.VODgMD8Kxo8zWxZXSk05OSTE_8MlsQ1CcXyyd7HZFdmLdYP
+ WWUkpNlxbRqwBj3_tCruJbJLoKsD.k.sUYbnxWOSoBmers_Izhckm3sGmyO6dc8PCtJ_J9hqGHuN
+ IEVuKYrCMTSC7541wSjIoFuGQr8AW9Eq2U3A79AdG8qQf_pYodJ3Yf0KqAsrUBSOIcEJywgfXBbP
+ nCushOQCzMl3h678ZVQhdi.Kc.VWh.ehFM1dcKqMneRUyfLz1Cd7bGyn1JI4oGyk3C_7.7SZhvI0
+ 97OYR724WZVTUdhzhmHQfQgLfVva67sj86T8vmjYO0nlFwQoqVbBzWWBnzF9yEtP6GYt4DxBeJ7n
+ NDIm_fsUc3YCkxOP9ZeRZNSrl4uFkVgW507ZtSKk.wMu8.e0riTtmmK6IBZv26T3giizBtPfvxsJ
+ 9kpCCXJv3vsuGN4xxkzksEwBdkb0Ftg5tcOYDM8kkIJye97EaKC6igMc7A6DCBYcB4OrzvYeq0vC
+ su2.RDmmgwMc6rvo9NpnkCbFrX3z41mxIR9cdTBLKq8DvHWDia_iqw3tEkeIHhZtlENXoA9oeIQC
+ 20VBrQdLdaLLkJ84JtMIegdniNwGyD1rG4NlqVCyS5mONcSu6q65z14zGomCkDA3lZwb7mGYJ5Ul
+ XaFcIte5fwCmWO9G6n8_ezpuiYHD6v9JSm.a5CkIL2hxEu_XBnF.FvPiIfNHEZg9JVhqHF6c5KAf
+ tIaHP9sED9cz9DVFDv9yJx2joybO2bkMUHRQ9UeKdpt2RrOQJfC7qYycgrxOMJhGWy.zhNgj2vpM
+ IK9.7kBxTkrfQoElVyfbsC.WBtbJF.bnggPNhxBl0DdNdwWHW0xsqo99oLd702VdduIRGwkV7Bvc
+ A308IxcPfvSzb7MZiHNNNWMil3TxXuj7mneXDiaoXutWPPTGAEzWbim4MuYatekCuXYi0X2Oopt0
+ 01v0X9IdVZRPxiOJMXed4qgOz0T0NvX0uHJYjmF0uWZg.wtOBxXKRaOM6q1ENYz2lgbYkJnysVv2
+ xjAFWGz1ZiH_g0CzchzueLYKCMN.KaAWVZUpzG5Y0ANHRnEqlrlxDff3c7X738BDexm4B3kAgniE
+ zuN5mPBWE.twOuPJBk1QDN.mdYFWE7YoIE3tgj4Ty.O3_9q05_OZ8UBrSotvvGFJFAXqNZoC_XAo
+ NajSJvkPklhOMGsrubRZ237GDKR1mnuw05Ri98udZDBvDMELiCuPM.rjbMBh0td9wbfG42dYLcMK
+ ANzLq.fFaHL6JDYYre78uNEyg3BSR55odgHC5cZHjYjBmrMieqATuEX1w63tqKcA.e386eayKcRZ
+ lXEt4HafATOZdMQogxWZ6TNmUBVImGX57JocV9p8oxgV2eK6hOE79_6yCI0U4FF9dgbGEPQIWSRO
+ CHg2JNmJCd8nNwOFvRmdruh0phHCjF71F2ZHnCy.VNoNpV8XWRjeIWaulcR3m4PxDr9WQMn9.IfV
+ jlSJKFWYMORuvdfFOe7d6DrWmvQKRMgQjPhtkIFAcOy.xzfDJL196A4SBlR8Z4IADG9I3lVRjQ6t
+ b9.klInc4SdMjCv7kFJyecVZNEUuwiu7h63CHqDlx2x6aIyGjvNeOlzKF622_rUrYwR0EVIhDtAH
+ hwD9LqRkxicHKJEbsJ7v7__GeWNNIUqh016HvdBzbm85K2SgHRh8.pcbdinMPp3NU8X358gss22U
+ llGQsfSGwEx6XdrkS9BMmnDacdDeWl4.M49wT9SxKotsL623jMgBwk8tHygZcBVtY91lyQDaEW0h
+ wUn4re1OUL7ovuFdrG7yivjElik.acTwgxU.LADnKUAu.dGESOKK7tBFWNt0aVo5jms4a9rtLJb.
+ 3rVrUBvvgtbqaS.I7oKehMHolLo.wPmdfhIJTmSrpm_Fb4H1HUyGVioiyo9csy_opRdLgoa8dYPd
+ _of8xJmqw73PACelgTMLgjIEGR.i_sVeHV1UxB8qoR17oZQeZikSiZXHDDNm1q3xAXJYEiYaSPX7
+ GnYrrCilZqu2tedO8S7XFuo5ySbIXNrV9bJvlYeKbL8qWM.paF4YxGS1kYrVoqCGxvXnFyaaXcFi
+ .K.r2vX7Tkonll58z9mFdZIwattYyReiGbVFWDinTVRtIkBpjEq1I_CXiEaLi8HX6YlbVEPIswYq
+ 4TjSIUFB_sYNowGZRmK1ZAP2e3gDJw5cRZb.hHnp1Z8PsvouCB4g3DHXwFihmu1tFGC7CW_6h55b
+ o7x2O52F4r5NRPIZGUfZecfLs.2xbPCdmM8CL6e4w3ktkv.mUgsdlD8ZYAQu_iC9a5Ua7zH2Gymn
+ DQW65lhqwkqGLodJPebjJI7oNfFdru7ibOl3KfrqbFxv3V2kK8dIpS66mw6POmFvs50Di71A40VC
+ 0uULsr117fwynZOwhXLP92yJnTXJqjLZHU3EaQVIG_GHc.iRJeEe13Jl4QDEI6spAZ7BErBZmGjs
+ emmmA.BcDw5pVMrkxWj5sG.YCANN4SOA3Ew4sy1HhM41R4DiyVcaTf6ldgIvbGs9JJ5hcwKGqv6d
+ d6L0nyoly2MVCM4kXflc7ZDiXaYGo3eQ0xAmuLxXxUFHfrQ2y4R0srErIOSFAIzW9hEl.xt33Zcb
+ kY2b1GldoSYscaaxd4kLz4K_aHHJ_y2lSPI30d4E2jpNXYxZdGSe5ZGF0_JJrpRqnlWBs.ikO8FZ
+ rBoaoeXU442Ryk0qrHocJ8q.2_3kizioEWfXD3JaJBmBq4B4dGlyVMSMee3UDY6dnRjsj3itz0QR
+ QpJK8VuFDXnsB.H0LHLA2pBsdop.Q_29aKS0E
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic311.consmr.mail.bf2.yahoo.com with HTTP; Sat, 30 Jan 2021 17:27:56 +0000
+Date:   Sat, 30 Jan 2021 17:25:55 +0000 (UTC)
+From:   "Mrs. Maureen Hinckley" <mau32@cgjzo.in>
+Reply-To: maurhinck4@gmail.com
+Message-ID: <1885069889.397995.1612027555601@mail.yahoo.com>
+Subject: RE
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <1885069889.397995.1612027555601.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.17648 YMailNodin Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Jan 2021 17:49:37 +0800, Hsin-Hsiung Wang wrote:
-> add dt-binding document for MediaTek MT6359 PMIC
-> 
-> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
-> ---
-> changes since v4: fix yamllint errors in dt-binding document.
-> ---
->  .../bindings/regulator/mt6359-regulator.yaml  | 169 ++++++++++++++++++
->  1 file changed, 169 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
-> 
 
-My bot found errors running 'make dt_binding_check' on your patch:
 
-yamllint warnings/errors:
+I am Maureen Hinckley and my foundation is donating (Five hundred and fifty=
+ thousand USD) to you. Contact us via my email at (maurhinck4@gmail.com) fo=
+r further details.
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/ti,palmas-gpadc.example.dt.yaml: pmic: 'adc', 'compatible' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/motorola,cpcap-adc.example.dt.yaml: pmic: '#address-cells', '#size-cells', 'adc' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/sprd,sc2720-adc.example.dt.yaml: pmic: '#address-cells', '#size-cells', 'adc@480' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/qcom,pm8018-adc.example.dt.yaml: pmic: '#address-cells', '#size-cells', 'adc@197' do not match any of the regexes: 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
-
-See https://patchwork.ozlabs.org/patch/1433233
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+Best Regards,
+Mrs. Maureen Hinckley,
+Copyright =C2=A92021 The Maureen Hinckley Foundation All Rights Reserved.
