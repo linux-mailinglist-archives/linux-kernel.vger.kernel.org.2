@@ -2,278 +2,392 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37BE23094B8
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 12:26:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BEDE33094CA
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 12:29:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbhA3LY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 06:24:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230111AbhA3LYx (ORCPT
+        id S231213AbhA3L2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 06:28:53 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.164]:27078 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230170AbhA3L2r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 06:24:53 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E551C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 03:24:13 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id y10so2713936plk.7
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 03:24:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=fl6RQ7WSY02b+Iix5UTUs3UQEEz4GozFuGFCITkdTGg=;
-        b=YBOYHEizDP1M6mvMVE/VcdQMGzyl+BcF1ct4jewLHU27UYKg0n0tHmGS04XTTketX+
-         EoVxRB0SDKBYpOz5qGmb4yV5J/eLs3lV2BIxLJU4Ti3TlhZ4Plf0zAMBXZgXQKxlQ1fT
-         Nx9vQ3J3PYKBJCLEvzKzRgp+PssG4DTTOzoqhjFrMN9k/FCVRhMegfc1zwBmJV7FsU77
-         OH6noseTsZBA+z4OWnofgKaaR7oBwEddlusaE9l/Q/Y0Bj7th6543+QdPwBpM7OhA74e
-         zSYoHusELdtajxiaFzt3mfBjrvmmo+Y7hKBUTk68UbT818bufxTU/TzOgs9lvH1kawsK
-         iQWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=fl6RQ7WSY02b+Iix5UTUs3UQEEz4GozFuGFCITkdTGg=;
-        b=iyB5SwP79aiNBGri6M8fkhsugmdnaN9jUfeGtQjXkvfxJE12JwjLHh+Bf7DmPDSmKV
-         F3/KlTc8aPhljxB1jjQJjEIvGnnjbZp3QSdjurVBlMyKCi3kZAJ0ktZS9IPmo9mtTr+X
-         hsydiHZfpmMgAjNvinlR5CY8k2h9m4y95eK8A62JoafroFpz9ZHMhXVaXXsG/BXOQ/G5
-         6InPFs85vc7skPw5s9Zm7a/17zZSlC4FWQ1K5Nu/H8T1iwEe/eo6troZHe8ffSlzj9sv
-         OWWA60kXJdPYdTowlrPBI9oUpaBODUn6hNzj0h9WF41iztH0Xaz1M95PKTjbp+mz1/XD
-         Re6Q==
-X-Gm-Message-State: AOAM5317NZ0dtd5Oq3yKnpROO+xcYbHAeLU1LMlFOIS/DxW8h/1ogzNq
-        TH3siT0igHdzraQRgzsD/khNAtG94sA=
-X-Google-Smtp-Source: ABdhPJyrHBNQf1zG5XY6QM8xUGdHu0RAlQtJRgsrBDfh9aHMy+iPg+JRRGXR/xrjPI9M4ILhYQvjhQ==
-X-Received: by 2002:a17:90b:4c85:: with SMTP id my5mr8967401pjb.225.1612005852655;
-        Sat, 30 Jan 2021 03:24:12 -0800 (PST)
-Received: from localhost.localdomain ([125.227.22.95])
-        by smtp.gmail.com with ESMTPSA id gk2sm10487163pjb.6.2021.01.30.03.24.09
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 30 Jan 2021 03:24:12 -0800 (PST)
-From:   Stephen Zhang <stephenzhangzsd@gmail.com>
-To:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
-        dianders@chromium.org, gustavoars@kernel.org
-Cc:     kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        Stephen Zhang <stephenzhangzsd@gmail.com>
-Subject: [PATCH v3] kdb: kdb_support: Fix debugging information problem
-Date:   Sat, 30 Jan 2021 19:24:00 +0800
-Message-Id: <1612005840-4342-1-git-send-email-stephenzhangzsd@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+        Sat, 30 Jan 2021 06:28:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1612005950;
+        s=strato-dkim-0002; d=gerhold.net;
+        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+        From:Subject:Sender;
+        bh=4gdInHCqX7vX65f1KM3rkTzRiaL+BG2XcHddUeo+x5o=;
+        b=NTHYXN1aeTZdargrpx40wPD23CupY3SmzMpE7APwrLUM4DB3UWuhWmNJd/Hb3YwTMN
+        xkx1CxBp7U+QcfbcjadxPnWn0W76HSeJfxHKX0CtrNT+AgopKFQ8UL9wqOfDkXGju5Rh
+        Gd/096a8ildiR/V/add5GnYYsIpqQJ1K6vvAlKaxaAaDPunNuLY8I0Ec16ozfyAe45I1
+        tZWn74Vr+vi8O7SxVq+Ma67WDOU5j+xtO1CCpZCWHQSnhGLzolWWx+gQaUZt6TkLiWyL
+        XVbR3Bcfpq2nvQoNkgFq6jbMsLxYvUgFTck3QRSbrfqu18e8sYBia+jzRjob8CQC9Spf
+        2fhw==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j7IczGbYo="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+        by smtp.strato.de (RZmta 47.16.0 DYNA|AUTH)
+        with ESMTPSA id j0a9bax0UBPQ80v
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Sat, 30 Jan 2021 12:25:26 +0100 (CET)
+Date:   Sat, 30 Jan 2021 12:25:18 +0100
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Vincent Knecht <vincent.knecht@mailoo.org>
+Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        allen <allen.chen@ite.com.tw>,
+        Max Merchel <Max.Merchel@tq-group.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] arm64: dts: qcom: Add device tree for Alcatel
+ Idol 3 (4.7")
+Message-ID: <YBVCHvGy5VwTThZ4@gerhold.net>
+References: <20210130105717.2628781-1-vincent.knecht@mailoo.org>
+ <20210130105717.2628781-3-vincent.knecht@mailoo.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210130105717.2628781-3-vincent.knecht@mailoo.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are several common patterns.
+On Sat, Jan 30, 2021 at 11:57:11AM +0100, Vincent Knecht wrote:
+> The Alcatel Idol 3 (4.7") is a smartphone based on MSM8916.
+> Add a device tree with support for USB, eMMC, SD-Card, WiFi,
+> BT, power/volume buttons, vibrator and the following sensors:
+> magnetometer, accelerometer, gyroscope, ambient light+proximity
+> 
+> Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
 
-0:
-        kdb_printf("...",...);
+Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
 
-which is the normal one.
-
-1:
-        kdb_printf("%s: "...,__func__,...)
-
-We could improve '1' to this :
-
-        #define kdb_func_printf(format, args...) \
-                   kdb_printf("%s: " format, __func__, ## args)
-
-2:
-        if(KDB_DEBUG(AR))
-                kdb_printf("%s "...,__func__,...);
-
-We could improve '2' to this :
-        #define kdb_dbg_printf(mask, format, args...) \
-                           do { \
-                                        if (KDB_DEBUG(mask)) \
-                                                kdb_func_printf(format, ## args); \
-                           } while (0)
-
-In additon, we changed the format code of size_t to %zu.
-
-Signed-off-by: Stephen Zhang <stephenzhangzsd@gmail.com>
----
-v1->v2 Changelog:
-- Add 'mask' parameter in kdb_dbg_printf()
-
-Thanks to Daniel and Doug's suggestions and review.
-
-v2->v3 Changelog:
-- Adjust alignment for some lines.
-
-Suggested by Douglas Anderson.
-
- kernel/debug/kdb/kdb_private.h | 10 ++++++++
- kernel/debug/kdb/kdb_support.c | 53 ++++++++++++++++++------------------------
- 2 files changed, 32 insertions(+), 31 deletions(-)
-
-diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
-index a4281fb..0a56d35 100644
---- a/kernel/debug/kdb/kdb_private.h
-+++ b/kernel/debug/kdb/kdb_private.h
-@@ -254,4 +254,14 @@ extern unsigned long kdb_task_state(const struct task_struct *p,
- #define	KDB_WORD_SIZE	((int)sizeof(unsigned long))
- 
- #endif /* CONFIG_KGDB_KDB */
-+
-+#define kdb_func_printf(format, args...) \
-+	kdb_printf("%s: " format, __func__, ## args)
-+
-+#define kdb_dbg_printf(mask, format, args...) \
-+	do { \
-+		if (KDB_DEBUG(mask)) \
-+			kdb_func_printf(format, ## args); \
-+	} while (0)
-+
- #endif	/* !_KDBPRIVATE_H */
-diff --git a/kernel/debug/kdb/kdb_support.c b/kernel/debug/kdb/kdb_support.c
-index 6226502..99a6232 100644
---- a/kernel/debug/kdb/kdb_support.c
-+++ b/kernel/debug/kdb/kdb_support.c
-@@ -39,20 +39,15 @@
-  */
- int kdbgetsymval(const char *symname, kdb_symtab_t *symtab)
- {
--	if (KDB_DEBUG(AR))
--		kdb_printf("kdbgetsymval: symname=%s, symtab=%px\n", symname,
--			   symtab);
-+	kdb_dbg_printf(AR, "symname=%s, symtab=%px\n", symname, symtab);
- 	memset(symtab, 0, sizeof(*symtab));
- 	symtab->sym_start = kallsyms_lookup_name(symname);
- 	if (symtab->sym_start) {
--		if (KDB_DEBUG(AR))
--			kdb_printf("kdbgetsymval: returns 1, "
--				   "symtab->sym_start=0x%lx\n",
--				   symtab->sym_start);
-+		kdb_dbg_printf(AR, "returns 1,symtab->sym_start=0x%lx\n",
-+			      symtab->sym_start);
- 		return 1;
- 	}
--	if (KDB_DEBUG(AR))
--		kdb_printf("kdbgetsymval: returns 0\n");
-+	kdb_dbg_printf(AR, "returns 0\n");
- 	return 0;
- }
- EXPORT_SYMBOL(kdbgetsymval);
-@@ -87,15 +82,14 @@ int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
- #define knt1_size 128		/* must be >= kallsyms table size */
- 	char *knt1 = NULL;
- 
--	if (KDB_DEBUG(AR))
--		kdb_printf("kdbnearsym: addr=0x%lx, symtab=%px\n", addr, symtab);
-+	kdb_dbg_printf(AR, "addr=0x%lx, symtab=%px\n", addr, symtab);
- 	memset(symtab, 0, sizeof(*symtab));
- 
- 	if (addr < 4096)
- 		goto out;
- 	knt1 = debug_kmalloc(knt1_size, GFP_ATOMIC);
- 	if (!knt1) {
--		kdb_printf("kdbnearsym: addr=0x%lx cannot kmalloc knt1\n",
-+		kdb_func_printf("addr=0x%lx cannot kmalloc knt1\n",
- 			   addr);
- 		goto out;
- 	}
-@@ -147,11 +141,10 @@ int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
- 
- 	if (symtab->mod_name == NULL)
- 		symtab->mod_name = "kernel";
--	if (KDB_DEBUG(AR))
--		kdb_printf("kdbnearsym: returns %d symtab->sym_start=0x%lx, "
--		   "symtab->mod_name=%px, symtab->sym_name=%px (%s)\n", ret,
--		   symtab->sym_start, symtab->mod_name, symtab->sym_name,
--		   symtab->sym_name);
-+	kdb_dbg_printf(AR, "returns %d symtab->sym_start=0x%lx, "
-+		"symtab->mod_name=%px, symtab->sym_name=%px (%s)\n", ret,
-+		symtab->sym_start, symtab->mod_name, symtab->sym_name,
-+		symtab->sym_name);
- 
- out:
- 	debug_kfree(knt1);
-@@ -328,7 +321,7 @@ int kdb_getarea_size(void *res, unsigned long addr, size_t size)
- 	int ret = copy_from_kernel_nofault((char *)res, (char *)addr, size);
- 	if (ret) {
- 		if (!KDB_STATE(SUPPRESS)) {
--			kdb_printf("kdb_getarea: Bad address 0x%lx\n", addr);
-+			kdb_func_printf("Bad address 0x%lx\n", addr);
- 			KDB_STATE_SET(SUPPRESS);
- 		}
- 		ret = KDB_BADADDR;
-@@ -353,7 +346,7 @@ int kdb_putarea_size(unsigned long addr, void *res, size_t size)
- 	int ret = copy_from_kernel_nofault((char *)addr, (char *)res, size);
- 	if (ret) {
- 		if (!KDB_STATE(SUPPRESS)) {
--			kdb_printf("kdb_putarea: Bad address 0x%lx\n", addr);
-+			kdb_func_printf("Bad address 0x%lx\n", addr);
- 			KDB_STATE_SET(SUPPRESS);
- 		}
- 		ret = KDB_BADADDR;
-@@ -435,7 +428,7 @@ int kdb_getphysword(unsigned long *word, unsigned long addr, size_t size)
- 		fallthrough;
- 	default:
- 		diag = KDB_BADWIDTH;
--		kdb_printf("kdb_getphysword: bad width %ld\n", (long) size);
-+		kdb_func_printf("bad width %zu\n", size);
- 	}
- 	return diag;
- }
-@@ -484,7 +477,7 @@ int kdb_getword(unsigned long *word, unsigned long addr, size_t size)
- 		fallthrough;
- 	default:
- 		diag = KDB_BADWIDTH;
--		kdb_printf("kdb_getword: bad width %ld\n", (long) size);
-+		kdb_func_printf("bad width %zu\n", size);
- 	}
- 	return diag;
- }
-@@ -528,7 +521,7 @@ int kdb_putword(unsigned long addr, unsigned long word, size_t size)
- 		fallthrough;
- 	default:
- 		diag = KDB_BADWIDTH;
--		kdb_printf("kdb_putword: bad width %ld\n", (long) size);
-+		kdb_func_printf("bad width %zu\n", size);
- 	}
- 	return diag;
- }
-@@ -602,8 +595,7 @@ unsigned long kdb_task_state_string(const char *s)
- 			res = ~0UL;
- 			break;
- 		default:
--			  kdb_printf("%s: unknown flag '%c' ignored\n",
--				     __func__, *s);
-+			  kdb_func_printf("unknown flag '%c' ignored\n", *s);
- 			  break;
- 		}
- 		++s;
-@@ -884,18 +876,17 @@ void debug_kusage(void)
- 	if (!debug_kusage_one_time)
- 		goto out;
- 	debug_kusage_one_time = 0;
--	kdb_printf("%s: debug_kmalloc memory leak dah_first %d\n",
--		   __func__, dah_first);
-+	kdb_func_printf("debug_kmalloc memory leak dah_first %d\n", dah_first);
- 	if (dah_first) {
- 		h_used = (struct debug_alloc_header *)debug_alloc_pool;
--		kdb_printf("%s: h_used %px size %d\n", __func__, h_used,
-+		kdb_func_printf("h_used %px size %d\n", h_used,
- 			   h_used->size);
- 	}
- 	do {
- 		h_used = (struct debug_alloc_header *)
- 			  ((char *)h_free + dah_overhead + h_free->size);
--		kdb_printf("%s: h_used %px size %d caller %px\n",
--			   __func__, h_used, h_used->size, h_used->caller);
-+		kdb_func_printf("h_used %px size %d caller %px\n",
-+			  h_used, h_used->size, h_used->caller);
- 		h_free = (struct debug_alloc_header *)
- 			  (debug_alloc_pool + h_free->next);
- 	} while (h_free->next);
-@@ -903,8 +894,8 @@ void debug_kusage(void)
- 		  ((char *)h_free + dah_overhead + h_free->size);
- 	if ((char *)h_used - debug_alloc_pool !=
- 	    sizeof(debug_alloc_pool_aligned))
--		kdb_printf("%s: h_used %px size %d caller %px\n",
--			   __func__, h_used, h_used->size, h_used->caller);
-+		kdb_func_printf("h_used %px size %d caller %px\n",
-+			   h_used, h_used->size, h_used->caller);
- out:
- 	spin_unlock(&dap_lock);
- }
--- 
-1.8.3.1
-
+> ---
+>  arch/arm64/boot/dts/qcom/Makefile             |   1 +
+>  .../boot/dts/qcom/msm8916-alcatel-idol347.dts | 291 ++++++++++++++++++
+>  2 files changed, 292 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+> index 59455db7b493..0feeedb712cc 100644
+> --- a/arch/arm64/boot/dts/qcom/Makefile
+> +++ b/arch/arm64/boot/dts/qcom/Makefile
+> @@ -5,6 +5,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= apq8096-db820c.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= apq8096-ifc6640.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= ipq6018-cp01-c1.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= ipq8074-hk01.dtb
+> +dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-alcatel-idol347.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-asus-z00l.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-longcheer-l8150.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8916-mtp.dtb
+> diff --git a/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts b/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts
+> new file mode 100644
+> index 000000000000..540b1fa4b260
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts
+> @@ -0,0 +1,291 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +
+> +/dts-v1/;
+> +
+> +#include "msm8916-pm8916.dtsi"
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/input/input.h>
+> +
+> +/ {
+> +	model = "Alcatel OneTouch Idol 3 (4.7)";
+> +	compatible = "alcatel,idol347", "qcom,msm8916";
+> +
+> +	aliases {
+> +		serial0 = &blsp1_uart2;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path = "serial0";
+> +	};
+> +
+> +	gpio-keys {
+> +		compatible = "gpio-keys";
+> +
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&gpio_keys_default>;
+> +
+> +		label = "GPIO Buttons";
+> +
+> +		volume-up {
+> +			label = "Volume Up";
+> +			gpios = <&msmgpio 107 GPIO_ACTIVE_LOW>;
+> +			linux,code = <KEY_VOLUMEUP>;
+> +		};
+> +	};
+> +
+> +	usb_id: usb-id {
+> +		compatible = "linux,extcon-usb-gpio";
+> +		id-gpio = <&msmgpio 69 GPIO_ACTIVE_HIGH>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&usb_id_default>;
+> +	};
+> +};
+> +
+> +&blsp1_uart2 {
+> +	status = "okay";
+> +};
+> +
+> +&blsp_i2c5 {
+> +	status = "okay";
+> +
+> +	magnetometer@c {
+> +		compatible = "asahi-kasei,ak09911";
+> +		reg = <0x0c>;
+> +		vdd-supply = <&pm8916_l17>;
+> +		vid-supply = <&pm8916_l6>;
+> +		reset-gpios = <&msmgpio 8 GPIO_ACTIVE_LOW>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&mag_reset_default>;
+> +		mount-matrix = "0", "1", "0",
+> +			       "-1", "0", "0",
+> +			       "0", "0", "1";
+> +	};
+> +
+> +	accelerometer@f {
+> +		compatible = "kionix,kxtj21009";
+> +		reg = <0x0f>;
+> +		vdd-supply = <&pm8916_l17>;
+> +		vddio-supply = <&pm8916_l6>;
+> +		interrupt-parent = <&msmgpio>;
+> +		interrupts = <31 IRQ_TYPE_EDGE_RISING>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&accel_int_default>;
+> +		mount-matrix = "-1", "0", "0",
+> +			       "0", "1", "0",
+> +			       "0", "0", "-1";
+> +	};
+> +
+> +	proximity@48 {
+> +		compatible = "sensortek,stk3310";
+> +		reg = <0x48>;
+> +		interrupt-parent = <&msmgpio>;
+> +		interrupts = <12 IRQ_TYPE_EDGE_FALLING>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&proximity_int_default>;
+> +	};
+> +
+> +	gyroscope@68 {
+> +		compatible = "bosch,bmg160";
+> +		reg = <0x68>;
+> +		vdd-supply = <&pm8916_l17>;
+> +		vddio-supply = <&pm8916_l6>;
+> +		interrupt-parent = <&msmgpio>;
+> +		interrupts = <97 IRQ_TYPE_EDGE_RISING>,
+> +			     <98 IRQ_TYPE_EDGE_RISING>;
+> +		pinctrl-names = "default";
+> +		pinctrl-0 = <&gyro_int_default>;
+> +	};
+> +};
+> +
+> +&pm8916_resin {
+> +	status = "okay";
+> +	linux,code = <KEY_VOLUMEDOWN>;
+> +};
+> +
+> +&pm8916_vib {
+> +	status = "okay";
+> +};
+> +
+> +&pronto {
+> +	status = "okay";
+> +};
+> +
+> +&sdhc_1 {
+> +	status = "okay";
+> +
+> +	pinctrl-names = "default", "sleep";
+> +	pinctrl-0 = <&sdc1_clk_on &sdc1_cmd_on &sdc1_data_on>;
+> +	pinctrl-1 = <&sdc1_clk_off &sdc1_cmd_off &sdc1_data_off>;
+> +};
+> +
+> +&sdhc_2 {
+> +	status = "okay";
+> +
+> +	pinctrl-names = "default", "sleep";
+> +	pinctrl-0 = <&sdc2_clk_on &sdc2_cmd_on &sdc2_data_on &sdc2_cd_on>;
+> +	pinctrl-1 = <&sdc2_clk_off &sdc2_cmd_off &sdc2_data_off &sdc2_cd_off>;
+> +
+> +	cd-gpios = <&msmgpio 38 GPIO_ACTIVE_LOW>;
+> +};
+> +
+> +&usb {
+> +	status = "okay";
+> +	extcon = <&usb_id>, <&usb_id>;
+> +};
+> +
+> +&usb_hs_phy {
+> +	extcon = <&usb_id>;
+> +};
+> +
+> +&smd_rpm_regulators {
+> +	vdd_l1_l2_l3-supply = <&pm8916_s3>;
+> +	vdd_l4_l5_l6-supply = <&pm8916_s4>;
+> +	vdd_l7-supply = <&pm8916_s4>;
+> +
+> +	s3 {
+> +		regulator-min-microvolt = <1200000>;
+> +		regulator-max-microvolt = <1300000>;
+> +	};
+> +
+> +	s4 {
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <2100000>;
+> +	};
+> +
+> +	l1 {
+> +		regulator-min-microvolt = <1225000>;
+> +		regulator-max-microvolt = <1225000>;
+> +	};
+> +
+> +	l2 {
+> +		regulator-min-microvolt = <1200000>;
+> +		regulator-max-microvolt = <1200000>;
+> +	};
+> +
+> +	l4 {
+> +		regulator-min-microvolt = <2050000>;
+> +		regulator-max-microvolt = <2050000>;
+> +	};
+> +
+> +	l5 {
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <1800000>;
+> +	};
+> +
+> +	l6 {
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <1800000>;
+> +	};
+> +
+> +	l7 {
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <1800000>;
+> +	};
+> +
+> +	l8 {
+> +		regulator-min-microvolt = <2850000>;
+> +		regulator-max-microvolt = <2900000>;
+> +	};
+> +
+> +	l9 {
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +	};
+> +
+> +	l10 {
+> +		regulator-min-microvolt = <2700000>;
+> +		regulator-max-microvolt = <2800000>;
+> +	};
+> +
+> +	l11 {
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <2950000>;
+> +		regulator-allow-set-load;
+> +		regulator-system-load = <200000>;
+> +	};
+> +
+> +	l12 {
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <2950000>;
+> +	};
+> +
+> +	l13 {
+> +		regulator-min-microvolt = <3075000>;
+> +		regulator-max-microvolt = <3075000>;
+> +	};
+> +
+> +	l14 {
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <3300000>;
+> +	};
+> +
+> +	l15 {
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <3300000>;
+> +	};
+> +
+> +	l16 {
+> +		regulator-min-microvolt = <1800000>;
+> +		regulator-max-microvolt = <3300000>;
+> +	};
+> +
+> +	l17 {
+> +		regulator-min-microvolt = <2850000>;
+> +		regulator-max-microvolt = <2850000>;
+> +	};
+> +
+> +	l18 {
+> +		regulator-min-microvolt = <2700000>;
+> +		regulator-max-microvolt = <2700000>;
+> +	};
+> +};
+> +
+> +&msmgpio {
+> +	accel_int_default: accel-int-default {
+> +		pins = "gpio31";
+> +		function = "gpio";
+> +
+> +		drive-strength = <2>;
+> +		bias-disable;
+> +	};
+> +
+> +	gpio_keys_default: gpio-keys-default {
+> +		pins = "gpio107";
+> +		function = "gpio";
+> +
+> +		drive-strength = <2>;
+> +		bias-pull-up;
+> +	};
+> +
+> +	gyro_int_default: gyro-int-default {
+> +		pins = "gpio97", "gpio98";
+> +		function = "gpio";
+> +
+> +		drive-strength = <2>;
+> +		bias-disable;
+> +	};
+> +
+> +	mag_reset_default: mag-reset-default {
+> +		pins = "gpio8";
+> +		function = "gpio";
+> +
+> +		drive-strength = <2>;
+> +		bias-disable;
+> +	};
+> +
+> +	proximity_int_default: proximity-int-default {
+> +		pins = "gpio12";
+> +		function = "gpio";
+> +
+> +		drive-strength = <6>;
+> +		bias-pull-up;
+> +	};
+> +
+> +	usb_id_default: usb-id-default {
+> +		pins = "gpio69";
+> +		function = "gpio";
+> +
+> +		drive-strength = <8>;
+> +		bias-pull-up;
+> +	};
+> +};
+> -- 
+> 2.29.2
+> 
+> 
+> 
