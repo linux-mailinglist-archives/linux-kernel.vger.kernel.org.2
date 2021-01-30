@@ -2,123 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4106E309356
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:27:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1023092E6
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:10:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231160AbhA3J05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 04:26:57 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11643 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231783AbhA3JXF (ORCPT
+        id S230449AbhA3JJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 04:09:13 -0500
+Received: from isilmar-4.linta.de ([136.243.71.142]:56112 "EHLO
+        isilmar-4.linta.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233864AbhA3JIH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 04:23:05 -0500
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DSQSc3p1Qz161cY;
-        Sat, 30 Jan 2021 15:14:40 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.176.220) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 30 Jan 2021 15:15:47 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-Subject: [PATCH v4 2/2] iommu/arm-smmu-v3: Reserving the entire SMMU register space
-Date:   Sat, 30 Jan 2021 15:14:14 +0800
-Message-ID: <20210130071414.1575-3-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210130071414.1575-1-thunder.leizhen@huawei.com>
-References: <20210130071414.1575-1-thunder.leizhen@huawei.com>
+        Sat, 30 Jan 2021 04:08:07 -0500
+X-Greylist: delayed 530 seconds by postgrey-1.27 at vger.kernel.org; Sat, 30 Jan 2021 04:07:49 EST
+Received: by isilmar-4.linta.de (Postfix, from userid 1000)
+        id 4BCA3200EB0; Sat, 30 Jan 2021 07:18:25 +0000 (UTC)
+Date:   Sat, 30 Jan 2021 08:18:25 +0100
+From:   Dominik Brodowski <linux@dominikbrodowski.net>
+To:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>
+Cc:     corbet@lwn.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] docs: Make syscalls' helpers naming consistent
+Message-ID: <20210130071825.GA26647@isilmar-4.linta.de>
+References: <20210130014547.123006-1-andrealmeid@collabora.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210130014547.123006-1-andrealmeid@collabora.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 52f3fab0067d ("iommu/arm-smmu-v3: Don't reserve implementation
-defined register space") only reserves the basic SMMU register space. So
-the ECMDQ register space is not covered, it should be mapped again. Due
-to the size of this ECMDQ resource is not fixed, depending on
-SMMU_IDR6.CMDQ_CONTROL_PAGE_LOG2NUMQ. Processing its resource reservation
-to avoid resource conflict with PMCG is a bit more complicated.
+On Fri, Jan 29, 2021 at 10:45:46PM -0300, André Almeida wrote:
+> The documentation explains the need to create internal syscalls' helpers,
+> and that they should be called `kern_xyzzy()`. However, the comment at
+> include/linux/syscall.h says that they should be named as
+> `ksys_xyzzy()`, and so are all the helpers declared bellow it. Change the
+> documentation to reflect this.
+> 
+> Cc: Dominik Brodowski <linux@dominikbrodowski.net>
+> Fixes: 819671ff849b ("syscalls: define and explain goal to not call syscalls in the kernel")
+> Signed-off-by: André Almeida <andrealmeid@collabora.com>
 
-Therefore, the resources of the PMCG are not reserved, and the entire SMMU
-resources are reserved.
+Reviewed-by: Dominik Brodowski <linux@dominikbrodowski.net>
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 24 ++++--------------------
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  2 --
- 2 files changed, 4 insertions(+), 22 deletions(-)
-
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index f04c55a7503c790..fde24403b06a9e3 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -3476,14 +3476,6 @@ static int arm_smmu_set_bus_ops(struct iommu_ops *ops)
- 	return err;
- }
- 
--static void __iomem *arm_smmu_ioremap(struct device *dev, resource_size_t start,
--				      resource_size_t size)
--{
--	struct resource res = DEFINE_RES_MEM(start, size);
--
--	return devm_ioremap_resource(dev, &res);
--}
--
- static int arm_smmu_device_probe(struct platform_device *pdev)
- {
- 	int irq, ret;
-@@ -3519,22 +3511,14 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
- 	}
- 	ioaddr = res->start;
- 
--	/*
--	 * Don't map the IMPLEMENTATION DEFINED regions, since they may contain
--	 * the PMCG registers which are reserved by the PMU driver.
--	 */
--	smmu->base = arm_smmu_ioremap(dev, ioaddr, ARM_SMMU_REG_SZ);
-+	smmu->base = devm_ioremap_resource(dev, res);
- 	if (IS_ERR(smmu->base))
- 		return PTR_ERR(smmu->base);
- 
--	if (arm_smmu_resource_size(smmu) > SZ_64K) {
--		smmu->page1 = arm_smmu_ioremap(dev, ioaddr + SZ_64K,
--					       ARM_SMMU_REG_SZ);
--		if (IS_ERR(smmu->page1))
--			return PTR_ERR(smmu->page1);
--	} else {
-+	if (arm_smmu_resource_size(smmu) > SZ_64K)
-+		smmu->page1 = smmu->base + SZ_64K;
-+	else
- 		smmu->page1 = smmu->base;
--	}
- 
- 	/* Interrupt lines */
- 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-index da525f46dab4fc1..63f2b476987d6ae 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-@@ -152,8 +152,6 @@
- #define ARM_SMMU_PRIQ_IRQ_CFG1		0xd8
- #define ARM_SMMU_PRIQ_IRQ_CFG2		0xdc
- 
--#define ARM_SMMU_REG_SZ			0xe00
--
- /* Common MSI config fields */
- #define MSI_CFG0_ADDR_MASK		GENMASK_ULL(51, 2)
- #define MSI_CFG2_SH			GENMASK(5, 4)
--- 
-1.8.3
-
-
+Thanks,
+	Dominik
