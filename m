@@ -2,111 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E2D23092E9
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:10:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE00030935A
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:28:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233684AbhA3JJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 04:09:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39216 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233245AbhA3JI5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 04:08:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBC0864E25;
-        Sat, 30 Jan 2021 08:55:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1611996907;
-        bh=1sftpBGk31jURifaeXhZUvxk92slR/moCxUUzqdzzyc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I7DAXt6tkiUsTGcNbP5vEdBC8UrrXkxA5P4oS18NT7yfg7EePL+kXrycrIIDLxwav
-         lqnh0WAP8W2C12xbM4mkVXcwXC9cHtWJFsK7voKd+8lImfHPsugc+NLAp4ppVUt3Tn
-         S2IeeYEKw305cgQA4swZwSK6KObjGk0qB7uugI7Y=
-Date:   Sat, 30 Jan 2021 09:55:03 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Scott Branden <scott.branden@broadcom.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        Olof Johansson <olof@lixom.net>,
-        Desmond Yan <desmond.yan@broadcom.com>
-Subject: Re: [PATCH v2] misc: bcm-vk: only support ttyVK if CONFIG_TTY is set
-Message-ID: <YBUe58hiyI81oUOp@kroah.com>
-References: <20210129220627.22641-1-scott.branden@broadcom.com>
+        id S231659AbhA3J2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 04:28:06 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:12368 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231490AbhA3JYO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 04:24:14 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DSSsf6G7Rz7d9g;
+        Sat, 30 Jan 2021 17:03:02 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Sat, 30 Jan 2021
+ 17:03:48 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] hugetlbfs: show pagesize in unit of GB if possible
+Date:   Sat, 30 Jan 2021 04:03:39 -0500
+Message-ID: <20210130090339.4378-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210129220627.22641-1-scott.branden@broadcom.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 02:06:27PM -0800, Scott Branden wrote:
-> Correct compile issue if CONFIG_TTY is not set by
-> only adding ttyVK devices if CONFIG_TTY is set.
-> 
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
-> 
-> ---
-> Changes since v1:
-> Add function stubs rather than compiling out code
-> ---
->  drivers/misc/bcm-vk/Makefile     |  4 ++--
->  drivers/misc/bcm-vk/bcm_vk.h     | 35 +++++++++++++++++++++++++++++---
->  drivers/misc/bcm-vk/bcm_vk_dev.c |  3 +--
->  drivers/misc/bcm-vk/bcm_vk_tty.c |  6 ++++++
->  4 files changed, 41 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/misc/bcm-vk/Makefile b/drivers/misc/bcm-vk/Makefile
-> index e4a1486f7209..8d81a734fcad 100644
-> --- a/drivers/misc/bcm-vk/Makefile
-> +++ b/drivers/misc/bcm-vk/Makefile
-> @@ -7,6 +7,6 @@ obj-$(CONFIG_BCM_VK) += bcm_vk.o
->  bcm_vk-objs := \
->  	bcm_vk_dev.o \
->  	bcm_vk_msg.o \
-> -	bcm_vk_sg.o \
-> -	bcm_vk_tty.o
-> +	bcm_vk_sg.o
->  
-> +bcm_vk-$(CONFIG_TTY) += bcm_vk_tty.o
-> diff --git a/drivers/misc/bcm-vk/bcm_vk.h b/drivers/misc/bcm-vk/bcm_vk.h
-> index 3f37c640a814..4a1d515374c7 100644
-> --- a/drivers/misc/bcm-vk/bcm_vk.h
-> +++ b/drivers/misc/bcm-vk/bcm_vk.h
-> @@ -258,7 +258,11 @@ enum pci_barno {
->  	BAR_2
->  };
->  
-> +#ifdef CONFIG_TTY
->  #define BCM_VK_NUM_TTY 2
-> +#else
-> +#define BCM_VK_NUM_TTY 0
-> +#endif
->  
->  struct bcm_vk_tty {
->  	struct tty_port port;
-> @@ -366,11 +370,15 @@ struct bcm_vk {
->  	struct miscdevice miscdev;
->  	int devid; /* dev id allocated */
->  
-> +#ifdef CONFIG_TTY
->  	struct tty_driver *tty_drv;
->  	struct timer_list serial_timer;
->  	struct bcm_vk_tty tty[BCM_VK_NUM_TTY];
->  	struct workqueue_struct *tty_wq_thread;
->  	struct work_struct tty_wq_work;
-> +#else
-> +	struct bcm_vk_tty *tty;
+Hugepage size in unit of GB is supported. We could show pagesize in unit of
+GB to make it more friendly to read. Also rework the calculation code of
+page size unit to make it more readable.
 
-Why do you still need this pointer?
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+---
+ fs/hugetlbfs/inode.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-And should you just have a separate config option for your tty driver
-instead that depends on CONFIG_TTY?  Would you ever want to run this
-driver without the tty portion?
+diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+index 3a08fbae3b53..40a9795f250a 100644
+--- a/fs/hugetlbfs/inode.c
++++ b/fs/hugetlbfs/inode.c
+@@ -1014,11 +1014,15 @@ static int hugetlbfs_show_options(struct seq_file *m, struct dentry *root)
+ 	if (sbinfo->max_inodes != -1)
+ 		seq_printf(m, ",nr_inodes=%lu", sbinfo->max_inodes);
+ 
+-	hpage_size /= 1024;
+-	mod = 'K';
+-	if (hpage_size >= 1024) {
+-		hpage_size /= 1024;
++	if (hpage_size >= SZ_1G) {
++		hpage_size /= SZ_1G;
++		mod = 'G';
++	} else if (hpage_size >= SZ_1M) {
++		hpage_size /= SZ_1M;
+ 		mod = 'M';
++	} else {
++		hpage_size /= SZ_1K;
++		mod = 'K';
+ 	}
+ 	seq_printf(m, ",pagesize=%lu%c", hpage_size, mod);
+ 	if (spool) {
+-- 
+2.19.1
 
-Oh, and much better than the previous version, thanks for cleaning it
-up.
-
-thanks,
-
-greg k-h
