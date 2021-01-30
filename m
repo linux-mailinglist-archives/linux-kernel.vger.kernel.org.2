@@ -2,96 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FBB33098B3
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 23:57:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 516573098BC
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 00:05:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232216AbhA3W4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 17:56:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32978 "EHLO
+        id S232067AbhA3XDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 18:03:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230168AbhA3W4i (ORCPT
+        with ESMTP id S231617AbhA3XDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 17:56:38 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A16C06174A;
-        Sat, 30 Jan 2021 14:55:58 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id z9so179077pjl.5;
-        Sat, 30 Jan 2021 14:55:58 -0800 (PST)
+        Sat, 30 Jan 2021 18:03:54 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAD1EC061573
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 15:03:13 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id md11so8150470pjb.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 15:03:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=stXEhWN78gX0wZAuci159YKXelu5PMT12Nbz0FBmmqg=;
-        b=sCbA5uJ3YPl1RDbG9qmR3CeRIV1aD5Gs71QcMHfswJExgQGWKuL6zxznHD+TyDactT
-         9HJihYTpwtRcb0YCLKAPWo+zuY2b/w8m8amXRBMA+zxKYquzij7Eab7aQHGUDJaGXEgf
-         9ocWtTFEZJ8IUgOpk5ZCnaGhrma2wFxp4x0drAWy+Rmi2umWZuSl7++A+M4o3HLXmsu1
-         gBFKolze/cZbXJ7GMIC+6dtFiQVU4Vs4s5bYyfkbwiQhQelwT7QrsRlhGJ5MXLmLWyUz
-         hmXGFeE1fjQWEPeJo/r/WTk2PUYGDH9pY2IdXXQ0zXmlvOLQrLuKdw0BZs54uaTnY95B
-         ndCA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+zVe5wqUAoeHSpi/8FrWkSqWDUIAFS7adbUJ7KyJwOs=;
+        b=U4Kw3ocFKFFv8Q9KIfoH9uocdxLx107zMK7QOauzgcRhMneSkbCa/a9+wpHjB4Tun9
+         JkQmbb5RgH205vjLc79hmK6EGKTLnA6hf9vtE7hn/MV3f/1fv5QBs2ZDf5FhJmPj/Ea5
+         y89gcdaSTuP/Qu3urZYWBwnFWWS84/QAC7Ch2/x3AICljUUT0S9h4TzCVLQ3nbZbRKwp
+         OoOVpjWEsBQxr0hMIjyY2Eq7dcv351Us1ddQ1+wHKE5G5bBYqkaadwlj76R8WyVqkGp8
+         Q2wWmKOQem1H40nleZ5lVhpBFDJuBr5i4QDjS8C1itd/Fk2Rym0pNBpyFnGo3aPVw8v0
+         1AxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=stXEhWN78gX0wZAuci159YKXelu5PMT12Nbz0FBmmqg=;
-        b=WzfnElwmtA1Gy2Ie15eBPsqOU06qMh+z5OiXaTLQcPLrOWku8zhdnIrnGqiOa4p91h
-         +57AEk0uIeSYsl+IKael0ernaCBIP5Dt8yRJ7j0w46J2vgF3dGT1z+20j5GbtidC9Fbz
-         ZcvRmwetnrMgcunEW48MA+//DD8Fm/iUvT2j6uORvUU3HVbmKlWT2VqTZHWA/DlOswjl
-         dgmFA5O8Ganym514eDtBNDRK7TCj0+ID46WD/lD/Q1jl141R+LqcvP9e/WgffHAl6r+r
-         3tOcsuI4YjAMPnQ70olF3AfUlW+nl2VzXh0CuyfOk6Q2bTt8kDCiq1vdrz3m7b0FPDat
-         Ps1Q==
-X-Gm-Message-State: AOAM530GxaiZ6SRTFFIxmwbkYToXXRxL/0eXn3vEiIEx2oPZzagS++5y
-        nR2qCagOkxIMxCFTjr2fJGjFAKGphMc=
-X-Google-Smtp-Source: ABdhPJzNlHrRcMfVuScNiyw939Ox1QwPsAE+geydGYM/euYpMITxt0FE6sprk/qDdFlmdo1Z0e1J9g==
-X-Received: by 2002:a17:90a:bd0f:: with SMTP id y15mr10651561pjr.141.1612047357880;
-        Sat, 30 Jan 2021 14:55:57 -0800 (PST)
-Received: from 1G5JKC2.Broadcom.net ([192.19.228.250])
-        by smtp.gmail.com with ESMTPSA id 14sm12989104pfy.55.2021.01.30.14.55.56
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+zVe5wqUAoeHSpi/8FrWkSqWDUIAFS7adbUJ7KyJwOs=;
+        b=KDYpjRogrtQwu1M4Qd13ZrRcAbcQhnzFRkreC9rQN7ZLccYhPaaDx+pEe7GbC11BbZ
+         HGEIL+3X5O9zkcNURpkjXbGMZLaufaG+KNeN1YnURP8q9y7hLssXCDpHjnNxAWunuRze
+         XuSmAmir2rWLtOlhCIeQnXl8MFbxub7WCxSqVoP5q3CFn6BKj6xm4YywVuxtZKyaPh0S
+         sBLXGs5WukWAWCUApE2bonMr4ksShpZ4paouqamHC44m/UQi7KLcNCRQH2xD8KXEjdG5
+         yhXfiPOcdZ8ackGeLz6YMu1OGni7MrKccOlYgGimEZLIrRhMKZ4/38enLGJ63sVVRFjx
+         1x4g==
+X-Gm-Message-State: AOAM532U4d6BeZ0xUZtc/lPVKzjuMutPNVe5nCGfFBToVmODIo8PDaG/
+        BJQ0yDhs2QxaMCnJ2o3dEVI=
+X-Google-Smtp-Source: ABdhPJymKHYEMfkIJnur+rUhtefwj6MfpiCTIeIe73hTaSr4WwImKbL9BALaTAvEycTwDV0EVvc7og==
+X-Received: by 2002:a17:902:854b:b029:db:c725:edcd with SMTP id d11-20020a170902854bb02900dbc725edcdmr11362398plo.64.1612047793286;
+        Sat, 30 Jan 2021 15:03:13 -0800 (PST)
+Received: from localhost (g54.222-224-210.ppp.wakwak.ne.jp. [222.224.210.54])
+        by smtp.gmail.com with ESMTPSA id 197sm12862257pgg.43.2021.01.30.15.03.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Jan 2021 14:55:57 -0800 (PST)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-kernel@vger.kernel.org, arndb@kernel.org
-Cc:     kbuild-all@lists.01.org, Florian Fainelli <f.fainelli@gmail.com>,
-        kernel test robot <lkp@intel.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-crypto@vger.kernel.org (open list:CRYPTO API)
-Subject: [PATCH 2/2] crypto: crypto4xx - Avoid linking failure with HW_RANDOM=m
-Date:   Sat, 30 Jan 2021 14:55:38 -0800
-Message-Id: <20210130225540.1639-2-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210130225540.1639-1-f.fainelli@gmail.com>
-References: <20210130225540.1639-1-f.fainelli@gmail.com>
+        Sat, 30 Jan 2021 15:03:12 -0800 (PST)
+Date:   Sun, 31 Jan 2021 08:03:10 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>,
+        g@lianli.shorne-pla.net
+Cc:     geert@linux-m68k.org, jonas@southpole.se,
+        stefan.kristiansson@saunalahti.fi, openrisc@lists.librecores.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] openrisc: use device tree to determine present cpus
+Message-ID: <20210130230310.GC2002709@lianli.shorne-pla.net>
+References: <0b26eda7-229d-3dc9-f2ae-19b9212fb0ea@rwth-aachen.de>
+ <20210129221643.GZ2002709@lianli.shorne-pla.net>
+ <2a018afc-d797-3a91-ffab-e55ae3b0a795@rwth-aachen.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2a018afc-d797-3a91-ffab-e55ae3b0a795@rwth-aachen.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is currently possible to build CONFIG_HW_RANDOM_PPC4XX=y with
-CONFIG_HW_RANDOM=m which would lead to the inability of linking with
-devm_hwrng_{register,unregister}. We cannot have the framework modular
-and the consumer of that framework built-in, so make that dependency
-explicit.
+On Sat, Jan 30, 2021 at 12:00:10PM +0100, Jan Henrik Weinstock wrote:
+> Hi Stafford, Geert,
+> 
+> thanks for your feedback. I have made the following changes to the patch:
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/crypto/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi, Thanks for the updates.
 
-diff --git a/drivers/crypto/Kconfig b/drivers/crypto/Kconfig
-index e535f28a8028..c833ac08ea81 100644
---- a/drivers/crypto/Kconfig
-+++ b/drivers/crypto/Kconfig
-@@ -348,7 +348,7 @@ config CRYPTO_DEV_PPC4XX
- 
- config HW_RANDOM_PPC4XX
- 	bool "PowerPC 4xx generic true random number generator support"
--	depends on CRYPTO_DEV_PPC4XX && HW_RANDOM
-+	depends on CRYPTO_DEV_PPC4XX && HW_RANDOM=y
- 	default y
- 	help
- 	 This option provides the kernel-side support for the TRNG hardware
--- 
-2.25.1
+> 1. use for_each_of_cpu_node
+> 2. possible_cpus is now what is in the devicetree, up to NR_CPUS
+> 3. present_cpus is now all possible cpus, up to max_cpus
 
+This looks good, one small comment below.  Can you send the next patch as a v2?
+
+Using 'git format-patch -v2 ...'
+
+> Signed-off-by: Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
+> ---
+You can include the 'Changes since v1' in the space here after '---'.
+
+>  arch/openrisc/kernel/smp.c | 23 +++++++++++++++++------
+>  1 file changed, 17 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/openrisc/kernel/smp.c b/arch/openrisc/kernel/smp.c
+> index 29c82ef2e..83cbf43d4 100644
+> --- a/arch/openrisc/kernel/smp.c
+> +++ b/arch/openrisc/kernel/smp.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/sched.h>
+>  #include <linux/sched/mm.h>
+>  #include <linux/irq.h>
+> +#include <linux/of.h>
+>  #include <asm/cpuinfo.h>
+>  #include <asm/mmu_context.h>
+>  #include <asm/tlbflush.h>
+> @@ -60,22 +61,32 @@ void __init smp_prepare_boot_cpu(void)
+> 
+>  void __init smp_init_cpus(void)
+>  {
+> -	int i;
+> +	struct device_node* cpu;
+> +	u32 cpu_id;
+> 
+> -	for (i = 0; i < NR_CPUS; i++)
+> -		set_cpu_possible(i, true);
+> +	for_each_of_cpu_node(cpu) {
+> +		if (of_property_read_u32(cpu, "reg", &cpu_id)) {
+> +			pr_warn("%s missing reg property", cpu->full_name);
+> +			continue;
+> +		}
+> +
+> +		if (cpu_id < NR_CPUS)
+
+Should we warn on the else case?
+
+> +			set_cpu_possible(cpu_id, true);
+> +	}
+>  }
+
+-Stafford
