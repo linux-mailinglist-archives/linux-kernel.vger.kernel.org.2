@@ -2,126 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10AAF309367
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:30:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39E2A3092FA
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:14:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231310AbhA3Jal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 04:30:41 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:11917 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233600AbhA3DnD (ORCPT
+        id S233706AbhA3EUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 23:20:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233633AbhA3Dsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 22:43:03 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DSJbc0hn6zjFBn;
-        Sat, 30 Jan 2021 10:50:20 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.220) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.498.0; Sat, 30 Jan 2021
- 10:51:14 +0800
-Subject: Re: [PATCH v5 4/4] ARM: Add support for Hisilicon Kunpeng L3 cache
- controller
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        "Arnd Bergmann" <arnd@arndb.de>, Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210116032740.873-1-thunder.leizhen@huawei.com>
- <20210116032740.873-5-thunder.leizhen@huawei.com>
- <CAK8P3a1OqUn5A4F4hT4K=bzQwJuifVFZkvFoK6NMg+m9FjoKzw@mail.gmail.com>
- <20dac713-25b7-cddf-cc42-69a834487c71@huawei.com>
- <CAK8P3a3Hj0Hyc8mVdGYhB7AEuHCYbhGxHnhNk1xWonEmxZOxRw@mail.gmail.com>
- <CAK8P3a1j+mr3bCp2uCuuYzW0ygjTmGv9vELuNy7v-iQ=WoDMOw@mail.gmail.com>
- <20210129103340.GW1551@shell.armlinux.org.uk>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <b236bcbc-8610-dfc4-50f2-a4b71162735d@huawei.com>
-Date:   Sat, 30 Jan 2021 10:51:12 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Fri, 29 Jan 2021 22:48:30 -0500
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58287C061352
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 19:47:41 -0800 (PST)
+Received: by mail-oo1-xc2a.google.com with SMTP id x11so1058361ooo.13
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 19:47:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nP75y4ZlajL2hHjYKNjPgV2d6UjbR2QsqHFCSmA9Tug=;
+        b=EbQKlDL9Q0AC1ekv2k9jaEdwiQfys+GTv+HpiGBoUBXFl6HnnvlQBPa9kJi2i5Yw4Y
+         SJlzsDH05ojH0EgVxnYvv1s6aUYWhTa91DWPSBXyc5zEegD3GLmvGl1oLjMqcG1WCDM/
+         7bRYPVzupz0DROkGMhxCgQuOWTEKZdtYFpvrgmiwH+QLDdz81O9dH+wil0N1N6VbIh4K
+         3WVvNwZUlsWro7rdwnwORgqP/UzYdF1a0RXwTAcfAqgqQ9ZCRq+S5hboT8qeViUFZrJt
+         CdOK3i6PYFcXFlZrIk3l0OHxzgmRnc03E9vxToFQQU5pIolnSB71Mc/XxHBqsnUCZ6O/
+         R9SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nP75y4ZlajL2hHjYKNjPgV2d6UjbR2QsqHFCSmA9Tug=;
+        b=FnDcWeGwyNeb+5O0IVJOgC2MpZEQfF8WLO7/ZzOX+rB2bIuoHl8fRxLtOrNzT5qWvP
+         qzctmcT/AnLpb5Eirh3f+h97LydwV3lPMc6VFjt+lrB7xW1tjQ1KbGLfIFfoBMX3lKZQ
+         3+O9RXh598nA7h9Ipu8EEGu0TdYC27GGEawn8/+xaot+5iFCr7teM2cRiAUxjSOQPO2X
+         z2b9MXxWk0J7d4+AWlrI0U3EwIN5XEkAwnpYXVBmL44u4MrGbxRUUkU0NUqDYMjLZDYu
+         lBswClCysbUcsZEgIMEqUuwge/iEWQm0ZPq+NEIinlCpsSrVX7ogUkFCsblSQf+0GcYL
+         bEpg==
+X-Gm-Message-State: AOAM531K77ji8aKO6Dvs6zfu/JSy38Vo18YUVshTOVyMoLLbtneQl/tf
+        6XBNCRWeiZZVsJSkAXHOzJD7vw==
+X-Google-Smtp-Source: ABdhPJw+PYNPlKnGi2851SXcXGelsjzqO7Dy2YZ7mqAmciNAXHFBsBqoMoKN3XL5tGQg53QSAP/jew==
+X-Received: by 2002:a4a:a5cc:: with SMTP id k12mr5164268oom.33.1611978460467;
+        Fri, 29 Jan 2021 19:47:40 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id t62sm2526969oif.2.2021.01.29.19.47.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Jan 2021 19:47:39 -0800 (PST)
+Date:   Fri, 29 Jan 2021 21:47:37 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-arm-msm@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH v2 2/5] arm64: qcom: dts: qrb5165-rb5: add qca6391 power
+ device
+Message-ID: <YBTW2et0IVCUGmdg@builder.lan>
+References: <20210128175225.3102958-1-dmitry.baryshkov@linaro.org>
+ <20210128175225.3102958-3-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <20210129103340.GW1551@shell.armlinux.org.uk>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128175225.3102958-3-dmitry.baryshkov@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu 28 Jan 11:52 CST 2021, Dmitry Baryshkov wrote:
 
-
-On 2021/1/29 18:33, Russell King - ARM Linux admin wrote:
-> On Fri, Jan 29, 2021 at 11:26:38AM +0100, Arnd Bergmann wrote:
->> Another clarification, as there are actually two independent
->> points here:
->>
->> * if you can completely remove the readl() above and just write a
->>   hardcoded value into the register, or perhaps read the original
->>   value once at boot time, that is probably a win because it
->>   avoids one of the barriers in the beginning. The datasheet should
->>   tell you if there are any bits in the register that have to be
->>   preserved
->>
->> * Regarding the _relaxed() accessors, it's a lot harder to know
->>   whether that is safe, as you first have to show, in particular in case
->>   any of the accesses stop being guarded by the spinlock in that
->>   case, and whether there may be a case where you have to
->>   serialize the memory access against accesses that are still in the
->>   store queue or prefetched.
->>
->> Whether this matters at all depends mostly on the type of devices
->> you are driving on your SoC. If you have any high-speed network
->> interfaces that are unable to do cache coherent DMA, any extra
->> instruction here may impact the number of packets you can transfer,
->> but if all your high-speed devices are connected to a coherent
->> interconnect, I would just go with the obvious approach and use
->> the safe MMIO accessors everywhere.
+> Add qca6391 to device tree as a way to provide power domain to WiFi and
+> BT parts of the chip.
 > 
-> For L2 cache code, I would say the opposite, actually, because it is
-> all too easy to get into a deadlock otherwise.
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
+>  arch/arm64/boot/dts/qcom/qrb5165-rb5.dts | 61 ++++++++++++++++++++++++
+>  1 file changed, 61 insertions(+)
 > 
-> If you implement the sync callback, that will be called from every
-> non-relaxed accessor, which means if you need to take some kind of
-> lock in the sync callback and elsewhere in the L2 cache code, you will
-> definitely deadlock.
+> diff --git a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> index 8aebc3660b11..2b0c1cc9333b 100644
+> --- a/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> +++ b/arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
+> @@ -151,6 +151,23 @@ vreg_s4a_1p8: vreg-s4a-1p8 {
+>  		regulator-max-microvolt = <1800000>;
+>  		regulator-always-on;
+>  	};
+> +
+> +	qca6391: qca6391 {
+> +		compatible = "qcom,qca6390";
+> +		#power-domain-cells = <0>;
+> +
+> +		vddaon-supply = <&vreg_s6a_0p95>;
+> +		vddpmu-supply = <&vreg_s2f_0p95>;
+> +		vddrfa1-supply = <&vreg_s2f_0p95>;
+> +		vddrfa2-supply = <&vreg_s8c_1p3>;
+> +		vddrfa3-supply = <&vreg_s5a_1p9>;
+> +		vddpcie1-supply = <&vreg_s8c_1p3>;
+> +		vddpcie2-supply = <&vreg_s5a_1p9>;
+> +		vddio-supply = <&vreg_s4a_1p8>;
+> +		pinctrl-names = "default", "active";
+> +		pinctrl-0 = <&wlan_default_state &bt_default_state>;
+> +		pinctrl-1 = <&wlan_active_state &bt_active_state>;
+
+I dislike the use of pinctrl states for toggling the level of the gpio
+and would prefer that you use the gpio binding and api for this instead.
+
+> +	};
+>  };
+>  
+>  &adsp {
+> @@ -1013,6 +1030,28 @@ &tlmm {
+>  		"HST_WLAN_UART_TX",
+>  		"HST_WLAN_UART_RX";
+>  
+> +	bt_default_state: bt-default-state {
+
+Are you sure you need to drive the BT_EN pin in order to have WiFi
+working? On QCA6174 I believe the "WL_EN" was actually RESET_N and BT_EN
+was actually "blueooth enable" - so we wired that in the bluetooth node
+instead.
+
+> +		bt-en {
+> +			pins = "gpio21";
+> +			function = "gpio";
+> +
+> +			drive-strength = <16>;
+> +			output-low;
+> +			bias-pull-up;
+> +		};
+> +	};
+> +
+> +	bt_active_state: bt-active-state {
+> +		bt-en {
+> +			pins = "gpio21";
+> +			function = "gpio";
+> +
+> +			drive-strength = <16>;
+> +			output-high;
+> +			bias-pull-up;
+> +		};
+> +	};
+> +
+>  	lt9611_irq_pin: lt9611-irq {
+>  		pins = "gpio63";
+>  		function = "gpio";
+> @@ -1119,6 +1158,28 @@ sdc2_card_det_n: sd-card-det-n {
+>  		function = "gpio";
+>  		bias-pull-up;
+>  	};
+> +
+> +	wlan_default_state: wlan-default-state {
+
+JFYI. You don't need this "dummy" subnode, you can put the properties
+directly in the state node.
+
+Regards,
+Bjorn
+
+> +		wlan-en {
+> +			pins = "gpio20";
+> +			function = "gpio";
+> +
+> +			drive-strength = <16>;
+> +			output-low;
+> +			bias-pull-up;
+> +		};
+> +	};
+> +
+> +	wlan_active_state: wlan-active-state {
+> +		wlan-en {
+> +			pins = "gpio20";
+> +			function = "gpio";
+> +
+> +			drive-strength = <16>;
+> +			output-high;
+> +			bias-pull-up;
+> +		};
+> +	};
+>  };
+>  
+>  &uart12 {
+> -- 
+> 2.29.2
 > 
-> It is safer to put explicit barriers where it is necessary.
-> 
-> Also remember that the barrier in readl() etc is _after_ the read, not
-> before, and the barrier in writel() is _before_ the write, not after.
-> The point is to ensure that DMA memory accesses are properly ordered
-> with the IO-accessing instructions.
-
-Yes, I known it. writel() must be used for the write operations that control
-"start/stop" or "enable/disable" function, to ensure that the data of previous
-write operations reaches the target. I've met this kind of problem before.
-
-> 
-> So, using readl_relaxed() with a read-modify-write is entirely sensible
-> provided you do not access DMA memory inbetween.
-
-Actually, I don't think this register is that complicated. I copied the code
-back below. All the bits of L3_MAINT_CTRL are not affected by DMA access operations.
-The software change the "range | op_type" to specify the operation type and scope,
-the set the bit "L3_MAINT_STATUS_START" to start the operation. Then wait for that
-bit to change from 1 to 0 by hardware.
-
-+	reg = readl(l3_ctrl_base + L3_MAINT_CTRL);
-+	reg &= ~(L3_MAINT_RANGE_MASK | L3_MAINT_TYPE_MASK);
-+	reg |= range | op_type;
-+	reg |= L3_MAINT_STATUS_START;
-+	writel(reg, l3_ctrl_base + L3_MAINT_CTRL);
-+
-+	/* Wait until the hardware maintenance operation is complete. */
-+	do {
-+		cpu_relax();
-+		reg = readl(l3_ctrl_base + L3_MAINT_CTRL);
-+	} while ((reg & L3_MAINT_STATUS_MASK) != L3_MAINT_STATUS_END);
-
-> 
-
