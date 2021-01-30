@@ -2,113 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 541F230919F
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 04:11:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D510E3091BD
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 04:50:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233386AbhA3DIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 22:08:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233272AbhA3DBg (ORCPT
+        id S233626AbhA3Drt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 22:47:49 -0500
+Received: from magic.merlins.org ([209.81.13.136]:41460 "EHLO
+        mail1.merlins.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233560AbhA3Dfh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 22:01:36 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F6FC0617A7
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 18:53:21 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id p72so11442940iod.12
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 18:53:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y/5VbabLQqVUsALiL3z7L4ylR60t/J7u9FpiG3x5sEs=;
-        b=DccSi3gVI1PsJyBx3xhXAmmZISZ02rnEexw6zeIvzeXbGqGSEeJX7A+sacvsvkdE3z
-         kwpDFrv177cL8wIJtKe33PsJWCYz+fRysOX8dqNOdVf8Rzd8rPdkk1qhC7RPWMl72rrj
-         N8RYqkVidiSx5tJpeuxIGr0s41WBC92dn9DWNJO3KSLbVuTzebMJT5/OauxPgZPLSISU
-         AhyZDL8txaSOGVRhuV8kAEHgkpcLnxI9sdgxbHvcfb6LkUR8huJ2KOBymOJvTpff9jiY
-         04VItQ54g9/VefVasJ3UYwmDLlK7JksTPXgtZaJxU5lN25LfX/ibTqr3o1FJuN1oTC8w
-         lOgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y/5VbabLQqVUsALiL3z7L4ylR60t/J7u9FpiG3x5sEs=;
-        b=Mvl+xPsD/O5MpfHgQhIHm1An8ZZhj42S+VcQC2d9KuQLrcVKwLKDuc2xWG4eqvXTFE
-         XT1WAG7tAnoXsmRSKLxra+54RYppNCHLBuXWMoDR/5YXFXl4SJ+vrVxa75oOEiqRPdgn
-         NmD/ZHrcbFTIfNX1SCY/QvnGB/7KklcO0cxXQGEEBYfR+DxTV8QaDJVYt8F1G9lBT8lh
-         u8XoxHlWnlQ4Uz11x3Vpqc5/kPbygprEEKO3YfuzdnkO8RswqI2o5w8ihz5UKPZXqu33
-         WBAY1O7Fc56W8PoKW1E94D/ODa812RYbuin7zqthGGKi1NKjlTvPy8GrMzImPng80QMm
-         /Xfw==
-X-Gm-Message-State: AOAM531jH03ENHD+hGhEl24kdIqF1qDconD57Fb0SIsldYhjIi4SuUvB
-        5gJIozB+qp3necaYXAXp3AV4OWRnbLk0UvCQefw0E7QK
-X-Google-Smtp-Source: ABdhPJy1HC9/B3BC0TVsz8lRs+1bzE77k9ciEvNqoCEcwShfeGh0IBGDUBsEe8O+eL6nPc19xVtunJBfHSUvZL4cTyQ=
-X-Received: by 2002:a05:6602:4b:: with SMTP id z11mr6001872ioz.47.1611975201394;
- Fri, 29 Jan 2021 18:53:21 -0800 (PST)
+        Fri, 29 Jan 2021 22:35:37 -0500
+Received: from [172.58.39.25] (port=59580 helo=sauron.svh.merlins.org)
+        by mail1.merlins.org with esmtpsa 
+        (Cipher TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256) (Exim 4.92 #3)
+        id 1l5fcS-0005BV-1m by authid <merlins.org> with srv_auth_plain; Fri, 29 Jan 2021 18:04:12 -0800
+Received: from merlin by sauron.svh.merlins.org with local (Exim 4.92)
+        (envelope-from <marc_nouveau@merlins.org>)
+        id 1l5fcR-00008T-Dt; Fri, 29 Jan 2021 18:04:11 -0800
+Date:   Fri, 29 Jan 2021 18:04:11 -0800
+From:   Marc MERLIN <marc_nouveau@merlins.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     nouveau@lists.freedesktop.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>
+Subject: Re: 5.9.11 still hanging 2mn at each boot and looping on nvidia-gpu
+ 0000:01:00.3: PME# enabled (Quadro RTX 4000 Mobile)
+Message-ID: <20210130020411.GZ29348@merlins.org>
+References: <20210129005626.GP29348@merlins.org>
+ <20210129212032.GA99457@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20210127163231.12709-1-jiangshanlai@gmail.com>
- <CAJhGHyA1U9M2Lv_=Wa2NPzBNevZKOrLaG1FDwbmySMOR_x_GRQ@mail.gmail.com> <20210129164320.GE27841@zn.tnic>
-In-Reply-To: <20210129164320.GE27841@zn.tnic>
-From:   Lai Jiangshan <jiangshanlai@gmail.com>
-Date:   Sat, 30 Jan 2021 10:53:10 +0800
-Message-ID: <CAJhGHyDKc-5-0MCX0zYdASTweWcN8pP8OU0DuVBM42-nvUEgSg@mail.gmail.com>
-Subject: Re: [PATCH V3 0/6] x86: don't abuse tss.sp1
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Kees Cook <keescook@chromium.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Brian Gerst <brgerst@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Mike Rapoport <rppt@kernel.org>, Mike Hommey <mh@glandium.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        Jay Lang <jaytlang@mit.edu>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210129212032.GA99457@bjorn-Precision-5520>
+X-Sysadmin: BOFH
+X-URL:  http://marc.merlins.org/
+X-Broken-Reverse-DNS: no host name for IP address 172.58.39.25
+X-SA-Exim-Connect-IP: 172.58.39.25
+X-SA-Exim-Mail-From: marc_nouveau@merlins.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 12:43 AM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Fri, Jan 29, 2021 at 11:35:46PM +0800, Lai Jiangshan wrote:
-> > Any feedback?
->
-> Yes: be patient please.
->
-> Thx.
->
-> --
-> Regards/Gruss,
->     Boris.
->
-> https://people.kernel.org/tglx/notes-about-netiquette
+On Fri, Jan 29, 2021 at 03:20:32PM -0600, Bjorn Helgaas wrote:
+> > For comparison the intel iwlwifi driver is very clear about firmware
+> > it's trying to load, if it can't and what exact firmware you need to
+> > find on the internet (filename)
+> 
+> I guess you're referring to this in iwl_request_firmware()?
+> 
+>   IWL_ERR(drv, "check git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git\n"); 
+ 
+Yes :)
 
-Thank you for your reply and this gentle hint.
+> How can we fix this in nouveau so we don't have the debug this again?
+> I don't really know how firmware loading works, but "git grep -A5
+> request_firmware drivers/gpu/drm/nouveau/" shows that we generally
+> print something when request_firmware() fails.
 
-I did "reply to all", but I have no clue why the mail failed
-to be delivered to LKML, and maybe it also failed to be delivered
-to other guys in the cc-list.
+Well, have a look at https://pastebin.com/dX19aCpj
+do you see any warning whatsoever?
 
-Hopefully this won't happen again to this reply.
+> But I didn't notice those messages in your logs, so I'm probably
+> barking up the wrong tree.
 
-Thanks
-Lai
+you're not It seems that newer kernels are a bit better:
+[  189.304662] nouveau 0000:01:00.0: pmu: firmware unavailable
+[  189.312455] nouveau 0000:01:00.0: disp: destroy running...
+[  189.316552] nouveau 0000:01:00.0: disp: destroy completed in 1us
+[  189.320326] nouveau 0000:01:00.0: disp ctor failed, -12
+[  189.324214] nouveau: probe of 0000:01:00.0 failed with error -12
+
+So, it probably got better, but that message got displayed after the 2mn
+hang that having the firmware, stops from happening.
+
+whichever developer with the right hardware can probably easily
+reproduce this by removing the firmware and looking at the boot
+messages.
+
+At the very least, it should print something more clear "driver will not
+function properly", and a URL to where one can get the driver, would be
+awesome.
+
+> So maybe the wakeups are related to having vs not having the nouveau
+> firmware?  I'm still curious about that, and it smells like a bug to
+> me, but probably something to do with nouveau where I have no hope of
+> debugging it.
+ 
+Right. Honestly, given the time I've lost with this, and now that it
+seems gone with the firmware, I'm happy to leave well enough alone :)
+
+I'm not sure how you are involved with the driver, but are you able to
+help improve the dmesg output?
+
+Thanks,
+Marc
+-- 
+"A mouse is a device used to point at the xterm you want to type in" - A.S.R.
+ 
+Home page: http://marc.merlins.org/                       | PGP 7F55D5F27AAF9D08
