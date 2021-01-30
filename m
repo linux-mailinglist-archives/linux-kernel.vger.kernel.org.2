@@ -2,133 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35333309370
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:34:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F719309373
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:36:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229769AbhA3Je1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 04:34:27 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:11959 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230135AbhA3Jcj (ORCPT
+        id S230436AbhA3Jev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 04:34:51 -0500
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:47385 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231194AbhA3Je3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 04:32:39 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DSTTh07dTzjFGt;
-        Sat, 30 Jan 2021 17:30:48 +0800 (CST)
-Received: from [10.174.184.214] (10.174.184.214) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 30 Jan 2021 17:31:41 +0800
-Subject: Re: [RFC PATCH v1 3/4] vfio: Try to enable IOPF for VFIO devices
-To:     Alex Williamson <alex.williamson@redhat.com>
-CC:     Cornelia Huck <cohuck@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
-References: <20210125090402.1429-1-lushenming@huawei.com>
- <20210125090402.1429-4-lushenming@huawei.com>
- <20210129154200.5cc727a0@omen.home.shazbot.org>
-From:   Shenming Lu <lushenming@huawei.com>
-Message-ID: <30dcb015-af66-3ae3-f65f-52e3d9f0aaaf@huawei.com>
-Date:   Sat, 30 Jan 2021 17:31:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Sat, 30 Jan 2021 04:34:29 -0500
+X-Originating-IP: 92.91.220.130
+Received: from [192.168.0.12] (130.220.91.92.rev.sfr.net [92.91.220.130])
+        (Authenticated sender: alex@ghiti.fr)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 0EDEE40008;
+        Sat, 30 Jan 2021 09:33:20 +0000 (UTC)
+Subject: Re: [RFC PATCH 00/12] Introduce sv48 support without relocable kernel
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Zong Li <zong.li@sifive.com>, Anup Patel <anup@brainfault.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-efi@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20210104195840.1593-1-alex@ghiti.fr>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <f38979dc-9f8c-6fce-6b1b-70e5f110e14c@ghiti.fr>
+Date:   Sat, 30 Jan 2021 04:33:20 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20210129154200.5cc727a0@omen.home.shazbot.org>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210104195840.1593-1-alex@ghiti.fr>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.214]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/30 6:42, Alex Williamson wrote:
-> On Mon, 25 Jan 2021 17:04:01 +0800
-> Shenming Lu <lushenming@huawei.com> wrote:
-> 
->> If IOMMU_DEV_FEAT_IOPF is set for the VFIO device, which means that
->> the delivering of page faults of this device from the IOMMU is enabled,
->> we register the VFIO page fault handler to complete the whole faulting
->> path (HW+SW). And add a iopf_enabled field in struct vfio_device to
->> record it.
->>
->> Signed-off-by: Shenming Lu <lushenming@huawei.com>
->> ---
->>  drivers/vfio/vfio.c | 20 ++++++++++++++++++++
->>  1 file changed, 20 insertions(+)
->>
->> diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
->> index ff7797260d0f..fd885d99ee0f 100644
->> --- a/drivers/vfio/vfio.c
->> +++ b/drivers/vfio/vfio.c
->> @@ -97,6 +97,7 @@ struct vfio_device {
->>  	struct vfio_group		*group;
->>  	struct list_head		group_next;
->>  	void				*device_data;
->> +	bool				iopf_enabled;
->>  };
->>  
->>  #ifdef CONFIG_VFIO_NOIOMMU
->> @@ -532,6 +533,21 @@ static struct vfio_group *vfio_group_get_from_dev(struct device *dev)
->>  /**
->>   * Device objects - create, release, get, put, search
->>   */
->> +
->> +static void vfio_device_enable_iopf(struct vfio_device *device)
->> +{
->> +	struct device *dev = device->dev;
->> +
->> +	if (!iommu_dev_has_feature(dev, IOMMU_DEV_FEAT_IOPF))
->> +		return;
->> +
->> +	if (WARN_ON(iommu_register_device_fault_handler(dev,
->> +					vfio_iommu_dev_fault_handler, dev)))
-> 
-> The layering here is wrong, vfio-core doesn't manage the IOMMU, we have
-> backend IOMMU drivers for that.  We can't even assume we have IOMMU API
-> support here, that's what the type1 backend handles.  Thanks,
+Hi Palmer,
 
-Thanks for pointing it out, I will correct it: maybe do the enabling via
-the VFIO_IOMMU_ENABLE_IOPF ioctl mentioned in the cover and suggest the
-user to call it before VFIO_IOMMU_MAP_DMA, also move the iopf_enabled field
-from struct vfio_device to struct vfio_iommu...
+On 1/4/21 2:58 PM, Alexandre Ghiti wrote:
+> This patchset, contrary to the previous versions, allows to have a single
+> kernel for sv39 and sv48 without being relocatable.
+>                                                                                   
+> The idea comes from Arnd Bergmann who suggested to do the same as x86,
+> that is mapping the kernel to the end of the address space, which allows
+> the kernel to be linked at the same address for both sv39 and sv48 and
+> then does not require to be relocated at runtime.
+>                                                                                   
+> This is an RFC because I need to at least rebase a few commits and add
+> documentation. The most interesting patches where I expect feedbacks are
+> 1/12, 2/12 and 8/12. Note that moving the kernel out of the linear
+> mapping and sv48 support can be separate patchsets, I share them together
+> today to show that it works (this patchset is rebased on top of v5.10).
+> 
+> If we agree about the overall idea, I'll rebase my relocatable patchset
+> on top of that and then KASLR implementation from Zong will be greatly
+> simplified since moving the kernel out of the linear mapping will avoid
+> to copy the kernel physically.
+>                                                                                   
+> This implements sv48 support at runtime. The kernel will try to
+> boot with 4-level page table and will fallback to 3-level if the HW does not
+> support it. Folding the 4th level into a 3-level page table has almost no
+> cost at runtime.
+>                                                                                   
+> Finally, the user can now ask for sv39 explicitly by using the device-tree
+> which will reduce memory footprint and reduce the number of memory accesses
+> in case of TLB miss.
+> 
+> Alexandre Ghiti (12):
+>    riscv: Move kernel mapping outside of linear mapping
+>    riscv: Protect the kernel linear mapping
+>    riscv: Get rid of compile time logic with MAX_EARLY_MAPPING_SIZE
+>    riscv: Allow to dynamically define VA_BITS
+>    riscv: Simplify MAXPHYSMEM config
+>    riscv: Prepare ptdump for vm layout dynamic addresses
+>    asm-generic: Prepare for riscv use of pud_alloc_one and pud_free
+>    riscv: Implement sv48 support
+>    riscv: Allow user to downgrade to sv39 when hw supports sv48
+>    riscv: Use pgtable_l4_enabled to output mmu type in cpuinfo
+>    riscv: Explicit comment about user virtual address space size
+>    riscv: Improve virtual kernel memory layout dump
+> 
+>   arch/riscv/Kconfig                      |  34 +--
+>   arch/riscv/boot/loader.lds.S            |   3 +-
+>   arch/riscv/include/asm/csr.h            |   3 +-
+>   arch/riscv/include/asm/fixmap.h         |   3 +
+>   arch/riscv/include/asm/page.h           |  33 ++-
+>   arch/riscv/include/asm/pgalloc.h        |  40 +++
+>   arch/riscv/include/asm/pgtable-64.h     | 104 ++++++-
+>   arch/riscv/include/asm/pgtable.h        |  68 +++--
+>   arch/riscv/include/asm/sparsemem.h      |   6 +-
+>   arch/riscv/kernel/cpu.c                 |  23 +-
+>   arch/riscv/kernel/head.S                |   6 +-
+>   arch/riscv/kernel/module.c              |   4 +-
+>   arch/riscv/kernel/vmlinux.lds.S         |   3 +-
+>   arch/riscv/mm/context.c                 |   2 +-
+>   arch/riscv/mm/init.c                    | 376 ++++++++++++++++++++----
+>   arch/riscv/mm/physaddr.c                |   2 +-
+>   arch/riscv/mm/ptdump.c                  |  56 +++-
+>   drivers/firmware/efi/libstub/efi-stub.c |   2 +-
+>   include/asm-generic/pgalloc.h           |  24 +-
+>   include/linux/sizes.h                   |   3 +-
+>   20 files changed, 648 insertions(+), 147 deletions(-)
+> 
+
+Any thought about the idea ? Is it going in the right direction ? I have 
+fixed quite a few things since I posted this so don't bother giving this 
+patchset a full review.
 
 Thanks,
-Shenming
 
-> 
-> Alex
-> 
->> +		return;
->> +
->> +	device->iopf_enabled = true;
->> +}
->> +
->>  static
->>  struct vfio_device *vfio_group_create_device(struct vfio_group *group,
->>  					     struct device *dev,
->> @@ -549,6 +565,8 @@ struct vfio_device *vfio_group_create_device(struct vfio_group *group,
->>  	device->group = group;
->>  	device->ops = ops;
->>  	device->device_data = device_data;
->> +	/* By default try to enable IOPF */
->> +	vfio_device_enable_iopf(device);
->>  	dev_set_drvdata(dev, device);
->>  
->>  	/* No need to get group_lock, caller has group reference */
->> @@ -573,6 +591,8 @@ static void vfio_device_release(struct kref *kref)
->>  	mutex_unlock(&group->device_lock);
->>  
->>  	dev_set_drvdata(device->dev, NULL);
->> +	if (device->iopf_enabled)
->> +		WARN_ON(iommu_unregister_device_fault_handler(device->dev));
->>  
->>  	kfree(device);
->>  
-> 
-> .
-> 
+Alex
