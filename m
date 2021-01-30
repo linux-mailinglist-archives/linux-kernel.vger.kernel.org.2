@@ -2,91 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34AEF3095F7
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 15:40:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5194E3095FA
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 15:41:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231938AbhA3Oba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 09:31:30 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:59723 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231666AbhA3ONo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 09:13:44 -0500
-X-UUID: fac2dfdd45ae48ccab3eadd4c5120212-20210130
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=DyzlMt+ZRsFBAamZ/P7DPnw9Tzbiso9sA1OiSGy7Xek=;
-        b=aQMk6qXDKIs6a9p3jtmaMOjMed+bTH1nJqB5brc5CQHQOuZct5GNvMlBay5qtgLmiOJgMhT24DurCbFGMGRo3RiBccstrePAp2IZEcw7u9NEsUNFuS7Y9iFaQKW/Ko/iUevzEJ8Nhrjr9ou0SdtXe5NzyXqk9QSXXrrMATKNNVg=;
-X-UUID: fac2dfdd45ae48ccab3eadd4c5120212-20210130
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <jitao.shi@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 501370062; Sat, 30 Jan 2021 22:12:35 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS33N1.mediatek.inc
- (172.27.4.75) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 30 Jan
- 2021 22:12:33 +0800
-Received: from mszsdaap41.gcn.mediatek.inc (10.16.6.141) by
- MTKCAS32.mediatek.inc (172.27.4.170) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Sat, 30 Jan 2021 22:12:32 +0800
-From:   Jitao Shi <jitao.shi@mediatek.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <linux-pwm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <srv_heupstream@mediatek.com>,
-        <yingjoe.chen@mediatek.com>, <eddie.huang@mediatek.com>,
-        <cawa.cheng@mediatek.com>, <bibby.hsieh@mediatek.com>,
-        <ck.hu@mediatek.com>, <stonea168@163.com>,
-        <huijuan.xie@mediatek.com>, Jitao Shi <jitao.shi@mediatek.com>
-Subject: [PATCH v2 3/3] pwm: mtk_disp: implement .get_state()
-Date:   Sat, 30 Jan 2021 22:12:26 +0800
-Message-ID: <20210130141226.25357-4-jitao.shi@mediatek.com>
-X-Mailer: git-send-email 2.12.5
-In-Reply-To: <20210130141226.25357-1-jitao.shi@mediatek.com>
-References: <20210130141226.25357-1-jitao.shi@mediatek.com>
+        id S229636AbhA3Oi6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 09:38:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231861AbhA3OOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 09:14:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C952A64E0F;
+        Sat, 30 Jan 2021 14:13:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612016032;
+        bh=gcL64xQ/H7WgYF3vPVXQ8XFfZ+TTeXHbLUs+HD0ScDQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h7ocjYC/PsUM6QJcyTY4NcPUn76ZqFcFEnz/Pc/kSwVoc0sW9X95Znom5MRjh5yOV
+         2tQVnNg7SIJBHmrHLqn7k6mnWDysd6LJy7yGUtvD3NPLqzJm5LXLsPW+tuqv10cuwQ
+         gITDMV5OHlBY6yfsec0cuncVC64lSI2iUCx9xcDhGHfjxsYUOKz6K6GTDgwvcYePrI
+         nC0BdTORwbG5uvYZZPYomgUVf74pU6Prznp8dx6cM5KfzmFgv28orK4m7fSuMnBqWO
+         IjD2tRZtHqZeArqbKOOZxi1he/VqHvCAk35vNlsg9ZjNDVKySeDxF9phs1amh6ZJHz
+         sVC5Ky6Q1m26A==
+Date:   Sat, 30 Jan 2021 22:13:46 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 20/21] clk: imx: Move 'imx6sl_set_wait_clk()'s prototype
+ out to accessible header
+Message-ID: <20210130141345.GN907@dragon>
+References: <20210126124540.3320214-1-lee.jones@linaro.org>
+ <20210126124540.3320214-21-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 05FF14DABF24935074C7B5A197E4A8FAE17711D2C7A914C6F6F525F957A904C82000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210126124540.3320214-21-lee.jones@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-U2lnbmVkLW9mZi1ieTogSml0YW8gU2hpIDxqaXRhby5zaGlAbWVkaWF0ZWsuY29tPg0KLS0tDQog
-ZHJpdmVycy9wd20vcHdtLW10ay1kaXNwLmMgfCA0NiArKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysrKysrKysrDQogMSBmaWxlIGNoYW5nZWQsIDQ2IGluc2VydGlvbnMoKykN
-Cg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvcHdtL3B3bS1tdGstZGlzcC5jIGIvZHJpdmVycy9wd20v
-cHdtLW10ay1kaXNwLmMNCmluZGV4IDUwMjIyOGFkZjcxOC4uMTY2ZTBhOGNhNzAzIDEwMDY0NA0K
-LS0tIGEvZHJpdmVycy9wd20vcHdtLW10ay1kaXNwLmMNCisrKyBiL2RyaXZlcnMvcHdtL3B3bS1t
-dGstZGlzcC5jDQpAQCAtMTc5LDggKzE3OSw1NCBAQCBzdGF0aWMgaW50IG10a19kaXNwX3B3bV9h
-cHBseShzdHJ1Y3QgcHdtX2NoaXAgKmNoaXAsIHN0cnVjdCBwd21fZGV2aWNlICpwd20sDQogCXJl
-dHVybiBtdGtfZGlzcF9wd21fZW5hYmxlKGNoaXAsIHN0YXRlKTsNCiB9DQogDQorc3RhdGljIHZv
-aWQgbXRrX2Rpc3BfcHdtX2dldF9zdGF0ZShzdHJ1Y3QgcHdtX2NoaXAgKmNoaXAsDQorCQkJCSAg
-IHN0cnVjdCBwd21fZGV2aWNlICpwd20sDQorCQkJCSAgIHN0cnVjdCBwd21fc3RhdGUgKnN0YXRl
-KQ0KK3sNCisJc3RydWN0IG10a19kaXNwX3B3bSAqbWRwID0gdG9fbXRrX2Rpc3BfcHdtKGNoaXAp
-Ow0KKwl1MzIgY2xrX2RpdiwgcGVyaW9kLCBoaWdoX3dpZHRoLCBjb24wLCBjb24xOw0KKwl1NjQg
-cmF0ZTsNCisJaW50IGVycjsNCisNCisJZXJyID0gY2xrX3ByZXBhcmVfZW5hYmxlKG1kcC0+Y2xr
-X21haW4pOw0KKwlpZiAoZXJyIDwgMCkgew0KKwkJZGV2X2VycihjaGlwLT5kZXYsICJDYW4ndCBl
-bmFibGUgbWRwLT5jbGtfbWFpbjogJWRcbiIsIGVycik7DQorCQlyZXR1cm47DQorCX0NCisJZXJy
-ID0gY2xrX3ByZXBhcmVfZW5hYmxlKG1kcC0+Y2xrX21tKTsNCisJaWYgKGVyciA8IDApIHsNCisJ
-CWRldl9lcnIoY2hpcC0+ZGV2LCAiQ2FuJ3QgZW5hYmxlIG1kcC0+Y2xrX21tOiAlZFxuIiwgZXJy
-KTsNCisJCWNsa19kaXNhYmxlX3VucHJlcGFyZShtZHAtPmNsa19tYWluKTsNCisJCXJldHVybjsN
-CisJfQ0KKw0KKwlyYXRlID0gY2xrX2dldF9yYXRlKG1kcC0+Y2xrX21haW4pOw0KKw0KKwljb24w
-ID0gcmVhZGwobWRwLT5iYXNlICsgbWRwLT5kYXRhLT5jb24wKTsNCisJY29uMSA9IHJlYWRsKG1k
-cC0+YmFzZSArIG1kcC0+ZGF0YS0+Y29uMSk7DQorDQorCXN0YXRlLT5wb2xhcml0eSA9IGNvbjAg
-JiBQV01fUE9MQVJJVFkgPw0KKwkJCSAgUFdNX1BPTEFSSVRZX0lOVkVSU0VEIDogUFdNX1BPTEFS
-SVRZX05PUk1BTDsNCisJc3RhdGUtPmVuYWJsZWQgPSAhIShjb24wICYgQklUKDApKTsNCisNCisJ
-Y2xrX2RpdiA9IChjb24wICYgUFdNX0NMS0RJVl9NQVNLKSA+PiBQV01fQ0xLRElWX1NISUZUOw0K
-KwlwZXJpb2QgPSBjb24xICYgUFdNX1BFUklPRF9NQVNLOw0KKwlzdGF0ZS0+cGVyaW9kID0gZGl2
-X3U2NChwZXJpb2QgKiAoY2xrX2RpdiArIDEpICogTlNFQ19QRVJfU0VDLCByYXRlKTsNCisJaGln
-aF93aWR0aCA9IChjb24xICYgUFdNX0hJR0hfV0lEVEhfTUFTSykgPj4gUFdNX0hJR0hfV0lEVEhf
-U0hJRlQ7DQorCXN0YXRlLT5kdXR5X2N5Y2xlID0gZGl2X3U2NChoaWdoX3dpZHRoICogKGNsa19k
-aXYgKyAxKSAqIE5TRUNfUEVSX1NFQywNCisJCQkJICAgIHJhdGUpOw0KKw0KKwlpZiAoIXN0YXRl
-LT5lbmFibGVkKSB7DQorCQljbGtfZGlzYWJsZV91bnByZXBhcmUobWRwLT5jbGtfbW0pOw0KKwkJ
-Y2xrX2Rpc2FibGVfdW5wcmVwYXJlKG1kcC0+Y2xrX21haW4pOw0KKwl9DQorDQorCW1kcC0+ZW5h
-YmxlZCA9IHN0YXRlLT5lbmFibGVkOw0KK30NCisNCiBzdGF0aWMgY29uc3Qgc3RydWN0IHB3bV9v
-cHMgbXRrX2Rpc3BfcHdtX29wcyA9IHsNCiAJLmFwcGx5ID0gbXRrX2Rpc3BfcHdtX2FwcGx5LA0K
-KwkuZ2V0X3N0YXRlID0gbXRrX2Rpc3BfcHdtX2dldF9zdGF0ZSwNCiAJLm93bmVyID0gVEhJU19N
-T0RVTEUsDQogfTsNCiANCi0tIA0KMi4xMi41DQo=
+On Tue, Jan 26, 2021 at 12:45:39PM +0000, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/clk/imx/clk-imx6sl.c:156:6: warning: no previous prototype for ‘imx6sl_set_wait_clk’ [-Wmissing-prototypes]
+> 
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Shawn Guo <shawnguo@kernel.org>
+> Cc: Sascha Hauer <s.hauer@pengutronix.de>
+> Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+> Cc: Fabio Estevam <festevam@gmail.com>
+> Cc: NXP Linux Team <linux-imx@nxp.com>
+> Cc: Ahmad Fatoum <a.fatoum@pengutronix.de>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
+Applied, thanks.
