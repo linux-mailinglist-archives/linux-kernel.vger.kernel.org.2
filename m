@@ -2,137 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E1AD309802
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 20:22:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28DFC309804
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 20:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232447AbhA3TV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 14:21:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38204 "EHLO mail.kernel.org"
+        id S232320AbhA3TXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 14:23:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232260AbhA3TVZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 14:21:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5604264E11;
-        Sat, 30 Jan 2021 19:20:43 +0000 (UTC)
+        id S232164AbhA3TXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 14:23:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B41C64E11;
+        Sat, 30 Jan 2021 19:22:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612034443;
-        bh=Khh0VPiLPgid7W8oQUKVvgLkQvNgFEAVk+7jPu0KPAs=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=cvgESfj7iMt6iLU0YpOpPMenYYT4PhZF+Ik3HiIX2xDNg4Jlu/q+wE9LfZlyDGdpS
-         qgakvREVhl/YpRSsYEiVeUzYiOJpLgZcW7e+PRAGoRT+xgjf6+YIgip1gfbMqOiGS8
-         KL8IwslquLNeZkpPgY/i50l5wakXppS5aMLB9YCbi9adCQpB760RtP15yJTK4lWEN5
-         7yloPUeUbnPFoqMuFGtL2fykOS7FfCVwTVoAXlvogZytIiNaRxAER6oUwbB0CnfNHL
-         vNm9fc6xn55AeXeeNDq073jcj8Nk9G89jxQav+je9IF+Ug3SNkzz2fq6vicxWg0T/S
-         SaZm2c3ozU7/w==
-Message-ID: <fa43948ba860d6ac99adabad3d8b6ff11f5d2239.camel@kernel.org>
-Subject: Re: [PATCH v5] x86/sgx: Fix use-after-free in
- sgx_mmu_notifier_release()
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Dave Hansen <dave.hansen@intel.com>, linux-sgx@vger.kernel.org
-Cc:     stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Haitao Huang <haitao.huang@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        linux-kernel@vger.kernel.org
-Date:   Sat, 30 Jan 2021 21:20:39 +0200
-In-Reply-To: <9dd2a962-2328-8784-9aed-b913502e1102@intel.com>
-References: <20210128125823.18660-1-jarkko@kernel.org>
-         <9dd2a962-2328-8784-9aed-b913502e1102@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.38.3 
+        s=k20201202; t=1612034573;
+        bh=TOszrn+PW/rGlqmIUF/GM39AiWhtl1ww2m/a3RSYNFk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=r4IPVJMXW1t9Q78NZ40jKC7Q9hlsCPa3Ag01jSS/EfG9aLg1GgGW/4TX1LfJBdvD5
+         ZtSlQKwHHN0b+nzqdiz4DXOBnJpZ0HZ6YAA/VYT/UnZNL0f+elkDyARQRQLqe4Mtqk
+         QiNBASkArMAtcgiBe+hi68kdeho6cMNi6BSjmXw8r3MJG6dbDQeozhV26V9sGbU4Yv
+         KGnIfpCT6uJjPKVSNgiFGsxpmmEKcMDn87lXyQe2bL+0QRhGO7XTV+icwDjxSVxSpm
+         y+82YFxOuemGtUVlg1D2JirhcdojoJ0jJ9KvIsrig9ChcbQ+xLVfKzAoA659Bi+ke/
+         n1eV0C/xpx4og==
+Date:   Sat, 30 Jan 2021 11:22:52 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc:     Alex Elder <elder@linaro.org>, David Miller <davem@davemloft.net>,
+        elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
+        cpratapa@codeaurora.org,
+        Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 9/9] net: ipa: don't disable NAPI in suspend
+Message-ID: <20210130112252.131ead6c@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAF=yD-L1SKzu+gsma7KN4VjGnma-_w+amXx=Y_0e78rQiUCu7Q@mail.gmail.com>
+References: <20210129202019.2099259-1-elder@linaro.org>
+        <20210129202019.2099259-10-elder@linaro.org>
+        <CAF=yD-L1SKzu+gsma7KN4VjGnma-_w+amXx=Y_0e78rQiUCu7Q@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-01-28 at 08:33 -0800, Dave Hansen wrote:
-> On 1/28/21 4:58 AM, Jarkko Sakkinen wrote:
-> > The most trivial example of a race condition can be demonstrated by thi=
-s
-> > sequence where mm_list contains just one entry:
-> >=20
-> > CPU A=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 CPU B
-> > -> sgx_release()
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -> sgx_mmu_notifier_release()
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -> list_del_rcu()
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 <- list_del_rcu()
-> > -> kref_put()
-> > -> sgx_encl_release()
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -> synchronize_srcu()
-> > -> cleanup_srcu_struct()
->=20
-> This is missing some key details including a clear, unambiguous, problem
-> statement.=C2=A0 To me, the patch should concentrate on the SRCU warning
-> since that's where we started.=C2=A0 Here's the detail that needs to be a=
-dded
-> about the issue and the locking in general in this path:
->=20
-> sgx_release() also does this:
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0mmu_notifier_unregister(&=
-encl_mm->mmu_notifier, encl_mm->mm);
->=20
-> which does another synchronize_srcu() on the mmu_notifier's srcu_struct.
-> =C2=A0*But*, it only does this if its own list_del_rcu() is successful.=
-=C2=A0 It
-> does all of this before the kref_put().
->=20
-> In other words, sgx_release() can *only* get to this buggy path if
-> sgx_mmu_notifier_release() races with sgx_release and does a
-> list_del_rcu() first.
->=20
-> The key to this patch is that the sgx_mmu_notifier_release() will now
-> take an 'encl' reference in that case, which prevents kref_put() from
-> calling sgx_release() which cleans up and frees 'encl'.
->=20
-> I was actually also hoping to see some better comments about the new
-> refcount, and the locking in general.=C2=A0 There are *TWO* struct_srcu's=
- in
-> play, a spinlock and a refcount.=C2=A0 I took me several days with Sean a=
-nd
-> your help to identify the actual path and get a proper fix (versions 1-4
-> did *not* fix the race).
+On Sat, 30 Jan 2021 10:25:16 -0500 Willem de Bruijn wrote:
+> > @@ -894,12 +894,16 @@ int gsi_channel_start(struct gsi *gsi, u32 channel_id)
+> >         struct gsi_channel *channel = &gsi->channel[channel_id];
+> >         int ret;
+> >
+> > -       /* Enable the completion interrupt */
+> > +       /* Enable NAPI and the completion interrupt */
+> > +       napi_enable(&channel->napi);
+> >         gsi_irq_ieob_enable_one(gsi, channel->evt_ring_id);
+> >
+> >         ret = __gsi_channel_start(channel, true);
+> > -       if (ret)
+> > -               gsi_irq_ieob_disable_one(gsi, channel->evt_ring_id);
+> > +       if (!ret)
+> > +               return 0;
+> > +
+> > +       gsi_irq_ieob_disable_one(gsi, channel->evt_ring_id);
+> > +       napi_disable(&channel->napi);
+> >
+> >         return ret;
+> >  }  
+> 
+> subjective, but easier to parse when the normal control flow is linear
+> and the error path takes a branch (or goto, if reused).
 
-This was really good input, thank you. It made realize something but
-now I need a sanity check.
-
-I think that this bug fix is *neither* a legit one :-)
-
-Example scenario would such that all removals "side-channel" through
-the notifier callback. Then mmu_notifier_unregister() gets called
-exactly zero times. No MMU notifier srcu sync would be then happening.
-
-NOTE: There's bunch of other examples, I'm just giving one.
-
-How I think this should be actually fixed is:
-
-1. Whenever MMU notifier is *registered* kref_get() should be called for
-   the enclave reference count.
-2. *BOTH* sgx_release() and sgx_mmu_notifier_release() should
-   decrease the refcount when they process an entry.
-  =20
-I.e. the fix that I sent does kref_get() in wrong location. Please
-sanity check my conclusion.=20
-=20
-> Also, the use-after-free is *fixed* in sgx_mmu_notifier_release() but
-> does not *occur* in sgx_mmu_notifier_release().=C2=A0 The subject here is=
- a
-> bit misleading in that regard.
-
-Right, this is a valid point. It's incorrect. So if I just change the
-short summary by substituting sgx_mmu_notifier_release() with
-sgx_release()?
-
-/Jarkko
+FWIW - fully agreed, I always thought this was part of the kernel
+coding style.
