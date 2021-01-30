@@ -2,157 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F3BF30951A
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 13:32:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F7030951E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 13:37:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231503AbhA3Mb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 07:31:59 -0500
-Received: from mga03.intel.com ([134.134.136.65]:13635 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230472AbhA3Mb6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 07:31:58 -0500
-IronPort-SDR: EkprbKvISGqR8OoLLtlC/poYXs9SWh4bdSZmnZsKwKF5ycD5Q8yehTHCO2Fl2t0C0piLN/6sEa
- LJHeoLqI0niQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="180602533"
-X-IronPort-AV: E=Sophos;i="5.79,388,1602572400"; 
-   d="scan'208";a="180602533"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2021 04:31:17 -0800
-IronPort-SDR: LmvTDQbINXHGNRRVUEAt5nkG3kAQNTyd8hPrzhMuJcRq8LIK4bljd6VngxmZadK1PVCQE6qMqg
- tmgmaaqCWUEg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,388,1602572400"; 
-   d="scan'208";a="389850914"
-Received: from lkp-server02.sh.intel.com (HELO 625d3a354f04) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 30 Jan 2021 04:31:16 -0800
-Received: from kbuild by 625d3a354f04 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1l5pPH-0004r7-Di; Sat, 30 Jan 2021 12:31:15 +0000
-Date:   Sat, 30 Jan 2021 20:30:54 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:irq/urgent] BUILD SUCCESS
- 4c457e8cb75eda91906a4f89fc39bde3f9a43922
-Message-ID: <6015517e.mRvKZ3ulOQHS44/z%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S230469AbhA3Mez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 07:34:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41678 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229498AbhA3Mey (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 07:34:54 -0500
+Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3DC6C061573
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 04:34:13 -0800 (PST)
+Received: by mail-il1-x130.google.com with SMTP id q5so11037456ilc.10
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 04:34:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=C7cDNKTuTgw0I2CTtx3BBJ3BTnHf7w/oYJgbFlp2Ulg=;
+        b=JkmqbLLymBqsef5mgjuVS6CDvWa2Mm/XH6Xnmt5dLFtMJleyERnRaKfghpQNn+AX10
+         riQKW8xGp/K0cyTqJE0qAZ4bvDsdJhKMatByqDYmSTGDqK4UNCUroPDDvA66VW78MWFv
+         dXewsHBwtdMozL+u4dSDr6AhcA1KGrGFFf4rptz+Ovitbkd6GHnJeLcMFOZUM49ZY6kC
+         fABj9WQf62QDk5XSqgWZquWfKMt0TsLmPIbFYIPorTEHTF2J1cgO7WSppOjSbdFWd1Ds
+         Yu8n3Xe/d89xWKCc/muWuYlH3RVAZUtN9/mZZ9juYTZM+7DrVw/9uVqbL9bh5CIGgmqy
+         bUWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=C7cDNKTuTgw0I2CTtx3BBJ3BTnHf7w/oYJgbFlp2Ulg=;
+        b=RAgp4VqvDVzsXeEdQJas7inXPUpulNDEeT8sR87X/RzqqIe8PPtEp7lr9rO8WGG6rl
+         0miAdNaiYUNAK9V5TNcyFf3pbPh9Gwvv9UptC6l7n325ZOz9Jk/nUYSskIia6TpQU/3s
+         Om0Raype0KCGWrQaSY2tfZ3yLcWtrQFpeBoXmgbKnffw/cRXCdX1Oqa+/yUTa04karvf
+         OCFc8l+akJ28F9qkLbFSApUjeZn383VnBuniPhY6oZHCVJM8GphkaKnHSXVKA8ABxy3e
+         o2JDBw7dSIJXxZg9p1vtGb8ruVgp2CI5R0npeOFS/fmrxOk69zuBpStZ6QG7pM9CewB6
+         1xpg==
+X-Gm-Message-State: AOAM532Vp1Fk4P1XI3cg9/f0poCV9s9QGNHHpLePzhsa1+lIZRIeD3Nz
+        bCrZTsy8s7mRXwp234o/Lkw=
+X-Google-Smtp-Source: ABdhPJwID2N6KgHnIJzTKMZEvKcXG9pTq70AIKv0+BheRu3F0l+nTV4cYYZad+1hF+fNd+c252xBag==
+X-Received: by 2002:a05:6e02:1a2d:: with SMTP id g13mr6528684ile.228.1612010053300;
+        Sat, 30 Jan 2021 04:34:13 -0800 (PST)
+Received: from llvm-development.us-central1-a.c.llvm-285123.internal (92.190.192.35.bc.googleusercontent.com. [35.192.190.92])
+        by smtp.gmail.com with ESMTPSA id 11sm5781105ilq.88.2021.01.30.04.34.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Jan 2021 04:34:12 -0800 (PST)
+Date:   Sat, 30 Jan 2021 12:34:11 +0000
+From:   Vinicius Tinti <viniciustinti@gmail.com>
+To:     Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] drm/i915: Remove unreachable code
+Message-ID: <20210130123411.GB1822@llvm-development.us-central1-a.c.llvm-285123.internal>
+References: <20210129181519.69963-1-viniciustinti@gmail.com>
+ <161195375417.17568.2762721732398065240@build.alporthouse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <161195375417.17568.2762721732398065240@build.alporthouse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/urgent
-branch HEAD: 4c457e8cb75eda91906a4f89fc39bde3f9a43922  genirq/msi: Activate Multi-MSI early when MSI_FLAG_ACTIVATE_EARLY is set
+On Fri, Jan 29, 2021 at 08:55:54PM +0000, Chris Wilson wrote:
+> Quoting Vinicius Tinti (2021-01-29 18:15:19)
+> > By enabling -Wunreachable-code-aggressive on Clang the following code
+> > paths are unreachable.
+> 
+> That code exists as commentary and, especially for sdvo, library
+> functions that we may need in future.
 
-elapsed time: 725m
+I would argue that this code could be removed since it is in git history.
+It can be restored when needed.
 
-configs tested: 95
-configs skipped: 2
+This will make the code cleaner.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> The ivb-gt1 case => as we now set the gt level for ivb, should we not
+> enable the optimisation for ivb unaffected by the w/a? Just no one has
+> taken the time to see if it causes a regression.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                       maple_defconfig
-sh                          sdk7786_defconfig
-mips                          malta_defconfig
-mips                           ip22_defconfig
-powerpc                      chrp32_defconfig
-sh                           se7206_defconfig
-sh                         ap325rxa_defconfig
-arm64                            alldefconfig
-openrisc                 simple_smp_defconfig
-sh                           se7721_defconfig
-arm                         shannon_defconfig
-mips                      pistachio_defconfig
-arm                        multi_v5_defconfig
-mips                          ath79_defconfig
-xtensa                         virt_defconfig
-powerpc                    amigaone_defconfig
-mips                      pic32mzda_defconfig
-powerpc                     asp8347_defconfig
-sh                   sh7770_generic_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a005-20210130
-i386                 randconfig-a003-20210130
-i386                 randconfig-a002-20210130
-i386                 randconfig-a001-20210130
-i386                 randconfig-a004-20210130
-i386                 randconfig-a006-20210130
-i386                 randconfig-a013-20210130
-i386                 randconfig-a011-20210130
-i386                 randconfig-a015-20210130
-i386                 randconfig-a012-20210130
-i386                 randconfig-a014-20210130
-i386                 randconfig-a016-20210130
-x86_64               randconfig-a004-20210130
-x86_64               randconfig-a002-20210130
-x86_64               randconfig-a001-20210130
-x86_64               randconfig-a005-20210130
-x86_64               randconfig-a006-20210130
-x86_64               randconfig-a003-20210130
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+I don't know. I just found out that the code is unreachable.
 
-clang tested configs:
-x86_64               randconfig-a015-20210130
-x86_64               randconfig-a011-20210130
-x86_64               randconfig-a014-20210130
-x86_64               randconfig-a016-20210130
-x86_64               randconfig-a012-20210130
-x86_64               randconfig-a013-20210130
+> For error state, the question remains whether we should revert to
+> uncompressed data if the compressed stream is larger than the original.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+I don't know too.
+
+In this last two cases the code could be commented and the decisions
+and problems explained in the comment section.
+
+> -Chris
