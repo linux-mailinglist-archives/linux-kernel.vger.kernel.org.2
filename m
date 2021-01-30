@@ -2,86 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAD353096C3
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 17:35:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC7823096DE
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 17:45:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232128AbhA3Qev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 11:34:51 -0500
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:40150 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232016AbhA3Q1s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 11:27:48 -0500
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10UFOuav015946;
-        Sat, 30 Jan 2021 09:30:35 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=SV9cWaItWuRlt+zqqFYUknlNBZMx1WFXf/zpxaytK0E=;
- b=Gyu2Xm2QAC/Y6pTMh9MqJk1rdYCLmjumkTPa8XG78MrBKhPW9wx955hllVVHXIURaifO
- HZeedcR5W76Y/63RrkxMLbWMtNV9kaL9D/EO7vR68FXgDKHYuuvF49M7CZKtTHiT/7eQ
- dSoVSjDLAVq5KtOlLoiVxI4W/qOYiR6Ay8lnTcXfN9y2mM+0Y9b7VqFZpFJCxphHyEFS
- CWBRC4KxduAUeP3vYHVVjGC+WkgbvUeSxGzZa6RdAwVAl+Gj01OUAJ0F2dQynI72xfc7
- ikGZ0JE9tWw3NhL2Q/XBoIxg0ENBQu5Rw2qdeNGyNYhCXZQgF21aJu+eZjtT7UpEma63 6w== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 36d5r6855b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sat, 30 Jan 2021 09:30:35 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Sat, 30 Jan
- 2021 15:30:33 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Sat, 30 Jan 2021 15:30:33 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 3DCB345;
-        Sat, 30 Jan 2021 15:30:33 +0000 (UTC)
-Date:   Sat, 30 Jan 2021 15:30:33 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-CC:     Lee Jones <lee.jones@linaro.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        <alsa-devel@alsa-project.org>
-Subject: Re: [PATCH v4 11/13] ASoC: arizona-jack: Cleanup logging
-Message-ID: <20210130153033.GV106851@ediswmail.ad.cirrus.com>
-References: <20210123121313.79530-1-hdegoede@redhat.com>
- <20210123121720.79863-1-hdegoede@redhat.com>
- <20210123121720.79863-2-hdegoede@redhat.com>
+        id S231705AbhA3QnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 11:43:01 -0500
+Received: from mout.gmx.net ([212.227.17.21]:49099 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231138AbhA3Qm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 11:42:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1612024879;
+        bh=bkD8tcc6TQ6B0xOy5hnrRvxDcXEQXOxiPgjHK8m2mBk=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=aTuZDq5/TLFVaIn3GEtF6VXjwBDef5ys6S8Oyynrdj6Il0N2K9xhyGqxo4rBiGK+n
+         nmL1ZNb5DPFz3WXSrfMX/IfWSTWm0mu/fsUFhtXLupDrooLWu2gDCqp2/wNX1mmMrv
+         l/nCTqvSvWpvC/xwXu028TJ6/iaLbN+5CWqJ/s38=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.215.208]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MUXpQ-1lWOFa1qls-00QOqV; Sat, 30
+ Jan 2021 17:30:14 +0100
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     linux-gpio@vger.kernel.org
+Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        openbmc@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] pinctrl: nuvoton: npcm7xx: Fix alignment of table header comment
+Date:   Sat, 30 Jan 2021 17:29:54 +0100
+Message-Id: <20210130162954.918803-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210123121720.79863-2-hdegoede@redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 priorityscore=1501
- phishscore=0 suspectscore=0 bulkscore=0 impostorscore=0 clxscore=1015
- mlxlogscore=830 malwarescore=0 adultscore=0 spamscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101300085
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:ar8P1SrjiMzeBjeLD2FlFDJqNHYVchuE9yDVDvh6Zy+QsFQjozw
+ H8WZrSyR2d4RhWcry1Hl/jPs07imTmkTfLjXops3a1WHxJq9o91OASaVEU31u55ne6/FIGU
+ dkLl6eYclyUr0f2OBZIpVBXZxMQ5hhtAm4Oor2X7V/K0dGiijU8XSzR7fXP5ApSBR0qUQBC
+ QgZnjvEE+V09rjdZh7AVw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:xUM3OQ6f0Xc=:nK1f2Rad6YK1Z+dBb0m/a2
+ JsmjfCLd/ujE23rGka7oNeWWzkBu94ercIzZmQsCZVhGAfLqauvYGzAsrUaq5mxwrn3ekTIha
+ cPpjBnnE85hE47tJvNvqqq4qGmaa4Kf1UiZmPNyu9OIvB5olPJ+FoNcjF0qli21SqwwP3W0e1
+ VKb9zt3QvEZJY7NQRmxtq/YYGHtiSHaVnKliPVKQGzThkDCVn5aWGsg8lsddFMFhmqqBt1LFP
+ pLZ5vs7HfZTkukpFGgAWCUdDZZIQPUvqaQonGOZ8jjPBmGtSaK1+TDGs7n7DvBbR0TW5kS9aF
+ MBvHU8eP9TcyawVUVjR7Vg0PMj71T4FnJMUkV9UT8gmdXc/2HhnXrAagoznQmjzo3+eASZgxX
+ HrhRupVJOGtCDFtDO3aspWnZcT9M8mg3+T0DHu7xcgW9/Fl9kJN7l/dHiWw4GcQCua96htU97
+ b+ttCidcf76Z8jIO4hf3WK0lEjjPQS7BQETzLMln+9csqQmfOHaXZsup5frfUUSuY9BCcXvdV
+ DgTxsOxlb6s9KkCl3iWwJQuzBhsjl21rPpKJMFoPezWKOfrLJzvyRh8sPNjf8I/0LZSRysW8v
+ A9NYWpGz70hh9G1Ef9OJaEHuhAKhuPs76+usqJcjRF1qNjJOed9J2feUx2+H4UyRIxDi+WRKJ
+ bdfUTSgV0iiVC8TrSr3rPOouQrd+ht076zopLLfdCPTIgs8LR36jJ4Oa4VS16yiZvQSKvBrzT
+ cmEVpP+PrDVoAAe06bfIgHwsNlc33Ver6683LWvF2TmuyKgtdxSL3K8njlsKRnTF4ANDg8wuf
+ 0TBMqMOsHvqqnkrMT56wUyGDXB8O0G8sPOHghPkzxoIZHxqbAcX9OaZkTJAKdsGaO24VURT3e
+ pFI9DGr6lx25NeTaoaXQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 23, 2021 at 01:17:18PM +0100, Hans de Goede wrote:
-> Cleanup the use of dev_foo functions used for logging:
-> 
-> 1. Many of these are unnecessarily split over multiple lines
-> 2. Use dev_err_probe() in cases where we might get a -EPROBE_DEFER
->    return value
-> 
-> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
+Make it so that each column label is in the column that it is supposed
+to refer to.
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Tested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
+ drivers/pinctrl/nuvoton/pinctrl-npcm7xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Charles
+diff --git a/drivers/pinctrl/nuvoton/pinctrl-npcm7xx.c b/drivers/pinctrl/n=
+uvoton/pinctrl-npcm7xx.c
+index 6de31b5ee358c..2535ca720668e 100644
+=2D-- a/drivers/pinctrl/nuvoton/pinctrl-npcm7xx.c
++++ b/drivers/pinctrl/nuvoton/pinctrl-npcm7xx.c
+@@ -923,7 +923,7 @@ struct npcm7xx_pincfg {
+ };
+
+ static const struct npcm7xx_pincfg pincfg[] =3D {
+-	/*	PIN	  FUNCTION 1		   FUNCTION 2		  FUNCTION 3	    FLAGS */
++	/*		PIN	  FUNCTION 1		   FUNCTION 2		  FUNCTION 3	    FLAGS */
+ 	NPCM7XX_PINCFG(0,	 iox1, MFSEL1, 30,	  none, NONE, 0,	none, NONE, 0,	   =
+  0),
+ 	NPCM7XX_PINCFG(1,	 iox1, MFSEL1, 30,	  none, NONE, 0,	none, NONE, 0,	   =
+  DS(8, 12)),
+ 	NPCM7XX_PINCFG(2,	 iox1, MFSEL1, 30,	  none, NONE, 0,	none, NONE, 0,	   =
+  DS(8, 12)),
+=2D-
+2.29.2
+
