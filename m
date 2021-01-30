@@ -2,105 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AD25309655
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 16:44:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 419B8309657
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 16:47:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232221AbhA3Pnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 10:43:47 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:25996 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230045AbhA3Pld (ORCPT
+        id S232103AbhA3Pqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 10:46:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232274AbhA3Pnx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 10:41:33 -0500
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10UFcP5g019246;
-        Sat, 30 Jan 2021 09:40:37 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=/lnEmValmQ7Y9KsRET+FL5rf0WEEAzclRUoqWcNcwAs=;
- b=ML+vAnMghRRPyPTuzLQn8Agh7DkJmjsaUfqbdNVt0u1LmQPS3Qss7cslGxEfUpwJAbuI
- AIbxrW8vOc3cTDSu8/RHtpDRTWXio9/eW27JVMEarVzF1d8ec09kAB6f3SAtNTejkwOh
- zX/EvpE0M70pqLAardP9ofehrINY/oWtztbupLGYUbtOyrNNXrO0JtvAYlnPriN2kk5W
- Vym5Occd993B/dYpZH3y3rHJw2L/ZS9LIHUB4QHRomtY2huBJ4oLAwLKLFbdEUjKNlGY
- J9+x5f2o3gFFf19m9topJifSC/2tamH3JfUM9zgRmN1GRcDIpKxrjQuHinNq7JFJGYNq FQ== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 36d4rtg6c4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sat, 30 Jan 2021 09:40:37 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Sat, 30 Jan
- 2021 15:40:35 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Sat, 30 Jan 2021 15:40:35 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 95EEC11CC;
-        Sat, 30 Jan 2021 15:40:35 +0000 (UTC)
-Date:   Sat, 30 Jan 2021 15:40:35 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-CC:     Lee Jones <lee.jones@linaro.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        <alsa-devel@alsa-project.org>
-Subject: Re: [PATCH v4 13/13] ASoC: Intel: bytcr_wm5102: Add jack detect
- support
-Message-ID: <20210130154035.GX106851@ediswmail.ad.cirrus.com>
-References: <20210123121313.79530-1-hdegoede@redhat.com>
- <20210123121720.79863-1-hdegoede@redhat.com>
- <20210123121720.79863-4-hdegoede@redhat.com>
+        Sat, 30 Jan 2021 10:43:53 -0500
+Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [IPv6:2001:4b7a:2000:18::169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B37C061788
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 07:42:41 -0800 (PST)
+Received: from [192.168.1.101] (abaf219.neoplus.adsl.tpnet.pl [83.6.169.219])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 542643EBA4;
+        Sat, 30 Jan 2021 16:42:38 +0100 (CET)
+Subject: Re: [PATCH v2 4/4] arm64: dts: qcom: msm8916-alcatel-idol347: Add
+ framebuffer support
+To:     Vincent Knecht <vincent.knecht@mailoo.org>,
+        phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Shawn Guo <shawnguo@kernel.org>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        allen <allen.chen@ite.com.tw>,
+        Max Merchel <Max.Merchel@tq-group.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20210130105717.2628781-1-vincent.knecht@mailoo.org>
+ <20210130105717.2628781-5-vincent.knecht@mailoo.org>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <8edef364-e60e-2bc1-ffef-1f30dd2fffaf@somainline.org>
+Date:   Sat, 30 Jan 2021 16:42:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210123121720.79863-4-hdegoede@redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
- mlxlogscore=999 impostorscore=0 malwarescore=0 spamscore=0
- lowpriorityscore=0 suspectscore=0 adultscore=0 phishscore=0 clxscore=1015
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101300086
+In-Reply-To: <20210130105717.2628781-5-vincent.knecht@mailoo.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 23, 2021 at 01:17:20PM +0100, Hans de Goede wrote:
-> Add jack detect support by creating a jack and calling
-> snd_soc_component_set_jack to register the created jack
-> with the codec.
-> 
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+
+On 30.01.2021 11:57, Vincent Knecht wrote:
+> Add simple-framebuffer support and related reserved-memory block.
+>
+> Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
 > ---
-> +static struct snd_soc_jack_pin byt_wm5102_pins[] = {
-> +	{
-> +		.pin	= "Headphone",
-> +		.mask	= SND_JACK_HEADPHONE,
-> +	},
-> +	{
-> +		.pin	= "Headset Mic",
-> +		.mask	= SND_JACK_MICROPHONE,
-> +	},
-> +};
+>  .../boot/dts/qcom/msm8916-alcatel-idol347.dts | 31 +++++++++++++++++++
+>  1 file changed, 31 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts b/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts
+> index 540b1fa4b260..e4d22cec8ff0 100644
+> --- a/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts
+> +++ b/arch/arm64/boot/dts/qcom/msm8916-alcatel-idol347.dts
+> @@ -3,6 +3,7 @@
+>  /dts-v1/;
+>  
+>  #include "msm8916-pm8916.dtsi"
+> +#include <dt-bindings/clock/qcom,gcc-msm8916.h>
+>  #include <dt-bindings/gpio/gpio.h>
+>  #include <dt-bindings/input/input.h>
+>  
+> @@ -16,6 +17,36 @@ aliases {
+>  
+>  	chosen {
+>  		stdout-path = "serial0";
 > +
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		ranges;
+> +
+> +		framebuffer0: framebuffer@83200000 {
+> +			status = "okay";
+> +			compatible = "simple-framebuffer";
+> +			reg = <0x0 0x83200000 0x0 (720 * 1280 * 3)>;
+> +			width = <720>;
+> +			height = <1280>;
+> +			stride = <(720 * 3)>;
+> +			format = "r8g8b8";
+> +			power-domains = <&gcc MDSS_GDSC>;
+> +			clocks = <&gcc GCC_MDSS_AHB_CLK>,
+> +				 <&gcc GCC_MDSS_VSYNC_CLK>,
+> +				 <&gcc GCC_MDSS_AXI_CLK>,
+> +				 <&gcc GCC_MDSS_MDP_CLK>,
+> +				 <&gcc GCC_MDSS_BYTE0_CLK>,
+> +				 <&gcc GCC_MDSS_PCLK0_CLK>,
 
-This patch looks fine to me, but I did have one small question.
-What is the thinking behind punting this to the machine driver?
+I'm not sure about BYTE/PCLK, it used to cause issues at least on my boards, but if it works for you, I guess it's only good.
 
-I guess you can not register it if there is no jack present
-on the board, or if you have multiple jacks name them
-meaningfully. Although I sort of feel like those applied to
-the old extcon approach that just internally registered all
-the interfaces.
 
-But to be clear not asking for any changes just more about trying
-to refine my understanding of things.
+> +				 <&gcc GCC_MDSS_ESC0_CLK>,
+> +				 <&xo_board>;
 
-Thanks,
-Charles
+Fake XO seems redundant here.
+
+
+> +		};
+> +	};
+> +
+> +	reserved-memory {
+> +		continuous_splash: framebuffer@83000000 {
+> +			reg = <0x0 0x83000000 0x0 0x1400000>;
+> +			no-map;
+> +		};
+>  	};
+>  
+>  	gpio-keys {
+>
+
+Konrad
+
