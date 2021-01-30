@@ -2,75 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8669C30937B
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFACF3093BF
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:53:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231887AbhA3JgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 04:36:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34392 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233510AbhA3DUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 22:20:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6A9464E0E;
-        Sat, 30 Jan 2021 02:39:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611974348;
-        bh=Xa3aXdkH6VcjkQv2mRzeHTVU3FePrWxYumhPtvDn8zo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CuA7saw/NDT+jltBVLbBOTtilmjJ0UnnOPSNhIp0vShR5tTLtelQ/Ci1Y9jrcJzjk
-         3FDxe+ykvXfRDbwSZtUYnXtiMKt7H4HVivJJqrTYJLfVxJhJmmk9QLMSNTtOVqUTDb
-         dZyybRVqcd4QDuNd46UIFCQs37Gnk5Wg+w4OCZp/BECSGKKr2Rsk1VOvwYaiqlQywb
-         VzKklQrRbxLRmDiDCPqKf/0JADwvBNgIVZ5Q1Jh2qc26DZyViIudB0FLkI9srNwS0N
-         JVXIyfhG944QWXOaymGasP3yjFfN1BYSqkbDq7WrhqUa8KGo01/23gOQAkgrkSry62
-         RWTV4TxpCVpcg==
-Date:   Fri, 29 Jan 2021 18:39:07 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        David Rientjes <rientjes@google.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2 net-next 3/4] net: introduce common
- dev_page_is_reserved()
-Message-ID: <20210129183907.2ae5ca3d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210127201031.98544-4-alobakin@pm.me>
-References: <20210127201031.98544-1-alobakin@pm.me>
-        <20210127201031.98544-4-alobakin@pm.me>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S231487AbhA3Jw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 04:52:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233293AbhA3DBg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 22:01:36 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83F90C061797
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 18:52:53 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id q131so7396660pfq.10
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 18:52:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:cc:from:to:message-id;
+        bh=z0ZSRAm22becpoRJb9gtSQVe8ycgGNmfWJKMTAVmy7w=;
+        b=GwLpMbfM6WAZVcr1QevQus5d4SobAJ9SIZ+mvNqxCPS66/pVg0HN0aNAdR8AcX6nSw
+         q+U2qhTq1d6Is3uT/3wqIOKAkEpSuP6v7yKV9w05AGZG+nzq5EMV1kErrpPP4cu3u5FW
+         UOlrZoFd1ZJIdH6mchJkoWCgCoFYgQzBl8sv8814DDmMASYUkwpgAICeYzRKtUqSEO6B
+         BnT4tqtV/J54KOPQAei/GckKR6pqQyQ0hjwgiTO1rC68ZbQGhSqkkyl1IHVMfQucV+a1
+         xmmJFGm7Xf6lDZM1Dq0t0K6Awx3gTJBHpw3Ot6xtLVit/Y4r/AegD3NL+nqYYq5094ed
+         Z6wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:cc:from:to:message-id;
+        bh=z0ZSRAm22becpoRJb9gtSQVe8ycgGNmfWJKMTAVmy7w=;
+        b=hmoQou61VXjT2lF3pjfsKwNqxzVe5+yfthiv6O0xTQdCR0jLyB0TwDTRpXZUHmEK1+
+         ltIgmkymlA0vU4S8KfSNLQxE3p/qXtw3PzsQxxGMTtj5iwxELnQvvt3vrox6COsu2Zt+
+         E3CPqP3GvFqOX5E57pLfSM5RqZdVPT1RVCdQ8pNbflYvRl1K+6V0iGSSzyt2SU4UQasw
+         M3COcmEtXMGQEYPzwyrai3ZoAPojh4MUPXKl29F01I/ugHUNvKx951DgVzGUHWkY+AmN
+         qExjvPIC0QM5lML2kZP1rg5xI+FwGiGQYOm3S/9wceomiDf2Wxq3FbbEIksee1sCDRlk
+         izsg==
+X-Gm-Message-State: AOAM5322TejilE0+19j/B55vNK6/scPQ5eVks13gwRDWfdxUfPGyAN9O
+        1SRxjfDUtmet0pmaejjfNp6i2A==
+X-Google-Smtp-Source: ABdhPJz6ksfwhE/qfo7BaGpKQo1YSgYeKx5gzN2g1HwK7oNMEiNEL+mIJm7O/+1TZKkZ8sRUWkzI9g==
+X-Received: by 2002:a63:c207:: with SMTP id b7mr7310629pgd.184.1611975172866;
+        Fri, 29 Jan 2021 18:52:52 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id p7sm9877162pfn.52.2021.01.29.18.52.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Jan 2021 18:52:51 -0800 (PST)
+Date:   Fri, 29 Jan 2021 18:52:51 -0800 (PST)
+X-Google-Original-Date: Fri, 29 Jan 2021 18:52:49 PST (-0800)
+Subject: [GIT PULL] A Single RISC-V Fix for 5.11-rc6
+CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Message-ID: <mhng-72236532-fb2c-406a-9a7e-509c579364c5@palmerdabbelt-glaptop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 27 Jan 2021 20:11:23 +0000 Alexander Lobakin wrote:
-> + * dev_page_is_reserved - check whether a page can be reused for network Rx
-> + * @page: the page to test
-> + *
-> + * A page shouldn't be considered for reusing/recycling if it was allocated
-> + * under memory pressure or at a distant memory node.
-> + *
-> + * Returns true if this page should be returned to page allocator, false
-> + * otherwise.
-> + */
-> +static inline bool dev_page_is_reserved(const struct page *page)
+The following changes since commit 19c329f6808995b142b3966301f217c831e7cf31:
 
-Am I the only one who feels like "reusable" is a better term than
-"reserved".
+  Linux 5.11-rc4 (2021-01-17 16:37:05 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.11-rc6
+
+for you to fetch changes up to 336e8eb2a3cfe2285c314cd85630076da365f6c6:
+
+  riscv: Fixup pfn_valid error with wrong max_mapnr (2021-01-22 20:18:03 -0800)
+
+----------------------------------------------------------------
+A Single RISC-V Fix for 5.11-rc6
+
+* A fix to avoid initializing max_mapnr to be too large, which may
+  manifest on NUMA systems.
+
+----------------------------------------------------------------
+Guo Ren (1):
+      riscv: Fixup pfn_valid error with wrong max_mapnr
+
+ arch/riscv/mm/init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
