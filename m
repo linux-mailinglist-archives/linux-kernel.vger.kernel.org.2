@@ -2,114 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D2FF309677
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 17:01:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C74593096A6
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 17:22:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232373AbhA3P55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 10:57:57 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59072 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232246AbhA3Pzh (ORCPT
+        id S232262AbhA3QVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 11:21:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53314 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232123AbhA3PmL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 10:55:37 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10UFVvPd086826;
-        Sat, 30 Jan 2021 10:32:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : mime-version : content-type; s=pp1;
- bh=iXLTdo0C74vOzG+j6or/m9JYFZbVE/5zreKtvpJwZmg=;
- b=QpzzlNDRQEU3q7Hh38fCUUeXNmXCT+UoDK75U34yhznvbORcAsCby1zdP68epCFbd2J+
- sffsVQPqZGLL5gNkt8bwugwt7PPddgVCjWLGcpPaMLX0Lbzm3PJrp56mJ8tTrHkBUu14
- cnahLeaV0qurYqeBIrNHBjt3zEIPjkQYefli0UTWa3MibDpzvOUZoGkUhKZmkFG4H3Cr
- we7Nk0oMBHe89Xh6RhOi+uo6YzTfrOlliKvn+Na9sO+4p/BVOSFetKKUd3tEwwPkUJUW
- CfWgMpVx0Jc2Osr7cRPXPTO8PZBhMz9HtLxLRfiBzXKtRsWqO7Rd27oGCS8n9PS0Ugmd 4Q== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36da3703x2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 30 Jan 2021 10:32:46 -0500
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10UFWQrX014999;
-        Sat, 30 Jan 2021 15:32:43 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma06ams.nl.ibm.com with ESMTP id 36cxqh8cxk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 30 Jan 2021 15:32:43 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10UFWeBT40698152
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 30 Jan 2021 15:32:40 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9D933AE053;
-        Sat, 30 Jan 2021 15:32:40 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4AF20AE04D;
-        Sat, 30 Jan 2021 15:32:40 +0000 (GMT)
-Received: from localhost (unknown [9.171.87.176])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Sat, 30 Jan 2021 15:32:40 +0000 (GMT)
-Date:   Sat, 30 Jan 2021 16:32:38 +0100
-From:   Vasily Gorbik <gor@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Heiko Carstens <hca@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: [GIT PULL] s390 updates for 5.11-rc6
-Message-ID: <your-ad-here.call-01612020758-ext-9054@work.hours>
+        Sat, 30 Jan 2021 10:42:11 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21FEC06178A;
+        Sat, 30 Jan 2021 07:41:06 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id d7so11734964otf.3;
+        Sat, 30 Jan 2021 07:41:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=81se6Lcpcw2fZva6F9Ubr8dtwoIiC2BFGJQh0BvXsY4=;
+        b=bupJBQRl42wKF2cMHXtczHR/q0fxte3EICmQJvKqeVgqwz70dYsuBB8kT7hrXmBjR8
+         UdHk87XoURWIl8bu+EHtQYV7cuIvDNh8D/eNeQNatzL4rs4JY87AVbQAtNm/8B9n/swU
+         yimj/4N2x2mEJq/se6pNWdy8aTJ/fkHiIw3SfcpCHL6JHVDTgIinjN6k9iSmL5MeMJ2W
+         nv+7WGutax0e6ppqPRimNPNb+7GisquIz37u3hYRFMZ42H1ooimUjmxRB0fcc5VC2UmX
+         M0NsoBBLMLxkZ7F6Ha1lvW7EVzTkE2E46EUgwSyTXlrUWoFOZ8Y7ahqnj6JJ+Kud+UoX
+         TxwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=81se6Lcpcw2fZva6F9Ubr8dtwoIiC2BFGJQh0BvXsY4=;
+        b=bQnPHTZ0CWNMysXIc2aeH/C9d9gj63Nc4lyYvefjvETg7JO+OiZi6dR2HbVSH2bKBq
+         nl6JVjKpVWwXO/JGzkY5Rf306ngoitZubPcO661+1Jcse5McYoL10HXCZF+XIljBim0z
+         Ygqwu2nnOZQk/1cGDhThQ2QLok35m+Izb/qUV4aGQjXhMe6DA6qXw6Xuy3VzFVFJnfUc
+         +He/M/5sxwGk87aGg/anh2xfwhqeQv9iPT1rcy03bGZ22Xa7z4lMPepn34BBg0B8xyyc
+         ekzwNDwFT6eI1qc17EwkOYmtOZwGAjP1vj/wBmdzrgaz8EjyfUvkS+YW/99phhxbs2Ny
+         g3gQ==
+X-Gm-Message-State: AOAM530xULw2RXbjlKxpP6M085wttU7XHAns/jMqeWCEg19cOt83sWi8
+        jbIpYELhjZU9L3NFOy+9C17adC5bKQo=
+X-Google-Smtp-Source: ABdhPJzgQOHXnmBn/BVnHjYb4SjRnboJ9zyGZBELtaokhj/it96fJDqfHIOD2+Tsld0j4RpuG0ptJQ==
+X-Received: by 2002:a9d:4c9a:: with SMTP id m26mr6007759otf.7.1612021265923;
+        Sat, 30 Jan 2021 07:41:05 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p132sm3094072oia.41.2021.01.30.07.41.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 30 Jan 2021 07:41:05 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 1/2] hwmon: lm75: Add NXP LM75A to of_match list
+To:     "Matwey V. Kornilov" <matwey@sai.msu.ru>,
+        Jean Delvare <jdelvare@suse.com>,
+        "open list:HARDWARE MONITORING" <linux-hwmon@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     matwey.kornilov@gmail.com
+References: <20210130103823.28914-1-matwey@sai.msu.ru>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <82abc622-a625-b1bc-39b4-f9e1849036ee@roeck-us.net>
+Date:   Sat, 30 Jan 2021 07:41:03 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210130103823.28914-1-matwey@sai.msu.ru>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-01-30_11:2021-01-29,2021-01-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 malwarescore=0 phishscore=0 mlxscore=0 bulkscore=0
- suspectscore=0 mlxlogscore=999 adultscore=0 lowpriorityscore=0
- clxscore=1015 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2101300084
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+On 1/30/21 2:38 AM, Matwey V. Kornilov wrote:
+> NXP LM75A is compatible with original LM75A while it has improved
+> 11-bit precision.
+> 
+> https://www.nxp.com/docs/en/data-sheet/LM75A.pdf
+> 
+> Signed-off-by: Matwey V. Kornilov <matwey@sai.msu.ru>
+> ---
+>  drivers/hwmon/lm75.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/hwmon/lm75.c b/drivers/hwmon/lm75.c
+> index 3aa7f9454f57..37dc903ebf54 100644
+> --- a/drivers/hwmon/lm75.c
+> +++ b/drivers/hwmon/lm75.c
+> @@ -699,6 +699,10 @@ static const struct of_device_id __maybe_unused lm75_of_match[] = {
+>  		.compatible = "national,lm75b",
+>  		.data = (void *)lm75b
+>  	},
+> +	{
+> +		.compatible = "nxp,lm75a",
+> +		.data = (void *)lm75b
 
-please pull s390 fixes for 5.11-rc6.
+This should get a different identifier (such as lm75a_nxp or whatever)
+because otherwise the results would be different on non-devicetree
+systems which would only match "lm75a".
 
-Thank you,
-Vasily
+> +	},
+>  	{
+>  		.compatible = "maxim,max6625",
+>  		.data = (void *)max6625
+> 
 
-The following changes since commit 6ee1d745b7c9fd573fba142a2efdad76a9f1cb04:
+Both "nxp,lm75a" and "nxp,lm75b" need to be added to
+Documentation/devicetree/bindings/hwmon/lm75.yaml (in a separate
+patch with copy to dt maintainers for review).
 
-  Linux 5.11-rc5 (2021-01-24 16:47:14 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.11-4
-
-for you to fetch changes up to e82080e1f456467cc185fe65ee69fe9f9bd0b576:
-
-  s390: uv: Fix sysfs max number of VCPUs reporting (2021-01-27 13:00:04 +0100)
-
-----------------------------------------------------------------
-- Fix max number of VCPUs reported via ultravisor information sysfs interface.
-
-- Fix memory leaks during vfio-ap resources clean up on KVM pointer
-  invalidation notification.
-
-- Fix potential specification exception by avoiding unnecessary interrupts
-  disable after queue reset in vfio-ap.
-
-----------------------------------------------------------------
-Janosch Frank (1):
-      s390: uv: Fix sysfs max number of VCPUs reporting
-
-Tony Krowiak (2):
-      s390/vfio-ap: clean up vfio_ap resources when KVM pointer invalidated
-      s390/vfio-ap: No need to disable IRQ after queue reset
-
- arch/s390/boot/uv.c                   |   2 +-
- arch/s390/include/asm/uv.h            |   4 +-
- arch/s390/kernel/uv.c                 |   2 +-
- drivers/s390/crypto/vfio_ap_drv.c     |   6 +-
- drivers/s390/crypto/vfio_ap_ops.c     | 149 ++++++++++++++++++++--------------
- drivers/s390/crypto/vfio_ap_private.h |  12 +--
- 6 files changed, 101 insertions(+), 74 deletions(-)
+Guenter
