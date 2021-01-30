@@ -2,125 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CCA73095B7
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 15:08:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 517BB3095BD
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 15:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230288AbhA3OHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 09:07:47 -0500
-Received: from mail.v3.sk ([167.172.186.51]:42944 "EHLO shell.v3.sk"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229468AbhA3OHn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 09:07:43 -0500
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id CFE99E0A80;
-        Sat, 30 Jan 2021 14:02:52 +0000 (UTC)
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id w0XuzY4HszbM; Sat, 30 Jan 2021 14:02:52 +0000 (UTC)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by zimbra.v3.sk (Postfix) with ESMTP id 1365AE0B3B;
-        Sat, 30 Jan 2021 14:02:52 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at zimbra.v3.sk
-Received: from shell.v3.sk ([127.0.0.1])
-        by localhost (zimbra.v3.sk [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id NSS8llP6gogb; Sat, 30 Jan 2021 14:02:51 +0000 (UTC)
-Received: from localhost (unknown [109.183.109.54])
-        by zimbra.v3.sk (Postfix) with ESMTPSA id 43FBFE0A80;
-        Sat, 30 Jan 2021 14:02:51 +0000 (UTC)
-Date:   Sat, 30 Jan 2021 15:06:52 +0100
-From:   Lubomir Rintel <lkundrak@v3.sk>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Maen Suleiman <maen@marvell.com>, Lior Amsalem <alior@marvell.com>,
-        Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
-        Andrew Lunn <andrew@lunn.ch>, Nicolas Pitre <nico@fluxnic.net>,
-        Eric Miao <eric.y.miao@gmail.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] docs: arm: marvell: turn the automatic links into
- labels
-Message-ID: <20210130140652.GA190173@demiurge.local>
-References: <20210129183950.75405-1-lkundrak@v3.sk>
- <20210129183950.75405-2-lkundrak@v3.sk>
- <87tuqzwa0j.fsf@meer.lwn.net>
+        id S231464AbhA3OLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 09:11:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40466 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229763AbhA3OKw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 09:10:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E006A61481;
+        Sat, 30 Jan 2021 14:10:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612015811;
+        bh=Vyo429r/5ZLCTm3U2V3TB5WpAYdshIEnAksuz3T896M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WtojH1uMTlh+t8WMnI5EekhIG2PJmUS0GwUah+XoRl/BThvJu4594dRKkD8DW9C51
+         58OfXL0ZwpzMKtnLloRK9A8yi34pFVH5CLKpVLdVHPxRBAzHJU7r5UDcNLN0ivCJMC
+         hFwTd/3tuoVrx5zXccq5nCkxLrveTbiCdCpzzXDc=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.4.254
+Date:   Sat, 30 Jan 2021 15:10:07 +0100
+Message-Id: <1612015807198144@kroah.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87tuqzwa0j.fsf@meer.lwn.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 05:20:28PM -0700, Jonathan Corbet wrote:
-> Lubomir Rintel <lkundrak@v3.sk> writes:
-> 
-> > Lines ending with obscenely long URLs at the end don't look good.
-> >
-> > Even if these links are not that long at this point, they will be when
-> > replaced with an archive link in a subsequent patch -- let's prepare for
-> > that.
-> >
-> > Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
-> > ---
-> >  Documentation/arm/marvel.rst | 209 ++++++++++++++++++++++++-----------
-> >  1 file changed, 143 insertions(+), 66 deletions(-)
-> >
-> > diff --git a/Documentation/arm/marvel.rst b/Documentation/arm/marvel.rst
-> > index 16ab2eb085b86..716551f9b60a1 100644
-> > --- a/Documentation/arm/marvel.rst
-> > +++ b/Documentation/arm/marvel.rst
-> > @@ -18,12 +18,12 @@ Orion family
-> >          - 88F5181L
-> >          - 88F5182
-> >  
-> > -               - Datasheet: http://www.embeddedarm.com/documentation/third-party/MV88F5182-datasheet.pdf
-> > -               - Programmer's User Guide: http://www.embeddedarm.com/documentation/third-party/MV88F5182-opensource-manual.pdf
-> > -               - User Manual: http://www.embeddedarm.com/documentation/third-party/MV88F5182-usermanual.pdf
-> > +               - Datasheet: `MV88F5182-datasheet.pdf`_
-> > +               - Programmer's User Guide: `MV88F5182-opensource-manual.pdf`_
-> > +               - User Manual: `MV88F5182-usermanual.pdf`_
-> >          - 88F5281
-> >  
-> > -               - Datasheet: http://www.ocmodshop.com/images/reviews/networking/qnap_ts409u/marvel_88f5281_data_sheet.pdf
-> > +               - Datasheet: `marvel_88f5281_data_sheet.pdf`_
-> >          - 88F6183
-> >    Core:
-> >  	Feroceon 88fr331 (88f51xx) or 88fr531-vd (88f52xx) ARMv5 compatible
-> > @@ -32,37 +32,42 @@ Orion family
-> >    Linux kernel plat directory:
-> >  	arch/arm/plat-orion
-> >  
-> > +.. _MV88F5182-datasheet.pdf: http://www.embeddedarm.com/documentation/third-party/MV88F5182-datasheet.pdf
-> > +.. _MV88F5182-opensource-manual.pdf: http://www.embeddedarm.com/documentation/third-party/MV88F5182-opensource-manual.pdf
-> > +.. _MV88F5182-usermanual.pdf: http://www.embeddedarm.com/documentation/third-party/MV88F5182-usermanual.pdf
-> > +.. _marvel_88f5281_data_sheet.pdf: http://www.ocmodshop.com/images/reviews/networking/qnap_ts409u/marvel_88f5281_data_sheet.pdf
-> 
-> So I see what you're trying to do, but this has the effect of prettying
-> up the processed docs at the expense of making the plain-text version
-> harder to read.  Somebody who wants to find one of these datasheets from
-> the plain-text version has to skip further down in the file, hoping that
-> they pick out the right one among a set of long, similar URLs.
-> Honestly, I think we may be better off leaving them as they are.
-> Failing that, the right thing to do is to keep the lines defining the
-> URL labels right next to where they are referenced.
-> 
-> See what I'm getting at?
+I'm announcing the release of the 4.4.254 kernel.
 
-Yes. I've been considering the same, but concluded it's a still a better
-idea to move the full URLs below because
+All users of the 4.4 kernel series must upgrade.
 
-1.) at this point the links are broken anyway and the basename is the
-    only valuable part of the URL when looking for an actual document;
-    and the basename stays in place
-2.) the archive.org links that replace them in another patch are waaaay too
-    long even for very large displays
+The updated 4.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-However, even though I think this is perhaps marginally better, either
-way works for me. Thus, unless you change your mind about it, I'll follow
-up with a v2 that drops this patch and replaces the links in place.
+thanks,
 
-Thank you
-Lubo
+greg k-h
 
-> 
-> Thanks,
-> 
-> jon
+------------
+
+ Makefile                                           |    2 +-
+ arch/sh/drivers/dma/Kconfig                        |    3 +--
+ arch/x86/boot/compressed/Makefile                  |    2 ++
+ drivers/acpi/scan.c                                |    2 ++
+ drivers/block/xen-blkback/xenbus.c                 |    1 +
+ drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadow.c  |    2 +-
+ drivers/gpu/drm/nouveau/nvkm/subdev/i2c/auxgm204.c |    8 ++++----
+ drivers/iio/dac/ad5504.c                           |    4 ++--
+ drivers/md/dm-table.c                              |   15 ++++++++++++---
+ drivers/net/can/dev.c                              |    4 ++--
+ drivers/net/ethernet/renesas/sh_eth.c              |    4 ++--
+ drivers/scsi/ufs/ufshcd.c                          |   11 ++++-------
+ drivers/usb/gadget/udc/bdc/Kconfig                 |    2 +-
+ drivers/usb/host/ehci-hcd.c                        |   12 ++++++++++++
+ drivers/usb/host/xhci-ring.c                       |    2 ++
+ include/linux/compiler-gcc.h                       |    6 ++++++
+ kernel/trace/ring_buffer.c                         |    4 ++++
+ mm/slub.c                                          |    4 +---
+ net/core/skbuff.c                                  |    6 +++++-
+ net/ipv4/netfilter/ipt_rpfilter.c                  |    2 +-
+ net/ipv6/addrconf.c                                |    1 +
+ net/sched/cls_tcindex.c                            |    8 ++++++--
+ sound/core/seq/oss/seq_oss_synth.c                 |    3 ++-
+ sound/pci/hda/patch_via.c                          |    1 +
+ sound/soc/intel/boards/haswell.c                   |    1 +
+ 25 files changed, 77 insertions(+), 33 deletions(-)
+
+Alexander Lobakin (1):
+      skbuff: back tiny skbs with kmalloc() in __netdev_alloc_skb() too
+
+Arvind Sankar (1):
+      x86/boot/compressed: Disable relocation relaxation
+
+Ben Skeggs (2):
+      drm/nouveau/bios: fix issue shadowing expansion ROMs
+      drm/nouveau/i2c/gm200: increase width of aux semaphore owner fields
+
+Can Guo (1):
+      scsi: ufs: Correct the LUN used in eh_device_reset_handler() callback
+
+Cezary Rojewski (1):
+      ASoC: Intel: haswell: Add missing pm_ops
+
+Eric Dumazet (1):
+      net_sched: avoid shift-out-of-bounds in tcindex_set_parms()
+
+Eugene Korenevsky (1):
+      ehci: fix EHCI host controller initialization sequence
+
+Gaurav Kohli (1):
+      tracing: Fix race in trace_open and buffer resize call
+
+Geert Uytterhoeven (1):
+      sh_eth: Fix power down vs. is_opened flag ordering
+
+Greg Kroah-Hartman (1):
+      Linux 4.4.254
+
+Guillaume Nault (1):
+      netfilter: rpfilter: mask ecn bits before fib lookup
+
+Hannes Reinecke (1):
+      dm: avoid filesystem lookup in dm_get_dev_t()
+
+Hans de Goede (1):
+      ACPI: scan: Make acpi_bus_get_device() clear return pointer on error
+
+Lars-Peter Clausen (1):
+      iio: ad5504: Fix setting power-down state
+
+Mathias Nyman (1):
+      xhci: make sure TRB is fully written before giving it to the controller
+
+Matteo Croce (1):
+      ipv6: create multicast route with RTPROT_KERNEL
+
+Necip Fazil Yildiran (1):
+      sh: dma: fix kconfig dependency for G2_DMA
+
+Patrik Jakobsson (1):
+      usb: bdc: Make bdc pci driver depend on BROKEN
+
+Pawel Wieczorkiewicz (1):
+      xen-blkback: set ring->xenblkd to NULL after kthread_stop()
+
+Takashi Iwai (2):
+      ALSA: seq: oss: Fix missing error check in snd_seq_oss_synth_make_info()
+      ALSA: hda/via: Add minimum mute flag
+
+Vincent Mailhol (1):
+      can: dev: can_restart: fix use after free bug
+
+Wang Hai (1):
+      Revert "mm/slub: fix a memory leak in sysfs_slab_add()"
+
+Will Deacon (1):
+      compiler.h: Raise minimum version of GCC to 5.1 for arm64
+
