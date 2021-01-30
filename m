@@ -2,156 +2,526 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9B73097AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 19:53:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3DF03097AB
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 19:53:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232018AbhA3Sv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 13:51:57 -0500
-Received: from mout.gmx.net ([212.227.17.22]:57345 "EHLO mout.gmx.net"
+        id S232053AbhA3Su7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 13:50:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231715AbhA3Svy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 13:51:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1612032591;
-        bh=pclPnpYLdC+dLvepA/sMNjeeUKX1+hC69GlNQVNIAog=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=aqdM5+/6kn5DSgRSlEajDDKJ1+Oejya3kyzwQpo9Qxu1nk/vMdxSTI5jKMgZDDklP
-         NtC0bOkepM7I4F1G8VVWyBgqBXgyeMBopgSi4Napylx8yE3mE5Dtto3G+fhOcplygw
-         N8SlSU7S345JT1nTUbOAHhab1pH1xGs1QUJNj6h8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.208]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MysW2-1lsoiD0nCc-00w1AD; Sat, 30
- Jan 2021 19:49:51 +0100
-Date:   Sat, 30 Jan 2021 19:49:49 +0100
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Flavio Suligoi <f.suligoi@asem.it>
-Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jonathan Neuschaefer <j.neuschaefer@gmx.net>,
-        linux-mtd@lists.infradead.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] mtd: spi-nor: core: fix/remove references to spi-nor.c
-Message-ID: <YBWqTRLCfXyKNptd@latitude>
-References: <20210126092516.1431913-1-f.suligoi@asem.it>
+        id S229990AbhA3Su5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 13:50:57 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B91D64E11;
+        Sat, 30 Jan 2021 18:50:14 +0000 (UTC)
+Date:   Sat, 30 Jan 2021 18:50:10 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Cc:     <vilhelm.gray@gmail.com>, <mchehab+huawei@kernel.org>,
+        <lukas.bulwahn@gmail.com>, <linux-doc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <alexandre.torgue@st.com>,
+        <fabrice.gasnier@st.com>, <olivier.moysan@st.com>,
+        <linux-iio@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+Subject: Re: [PATCH v2] counter: stm32-lptimer-cnt: remove iio counter abi
+Message-ID: <20210130185010.6be82858@archlinux>
+In-Reply-To: <1611926542-2490-1-git-send-email-fabrice.gasnier@foss.st.com>
+References: <1611926542-2490-1-git-send-email-fabrice.gasnier@foss.st.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wI9p3h9l5IyRJxxJ"
-Content-Disposition: inline
-In-Reply-To: <20210126092516.1431913-1-f.suligoi@asem.it>
-X-Provags-ID: V03:K1:V66xgt7nTLghDjmzC9TWw+/LZoNamcHZ1uDpCoUn3hoFn7nokFy
- 5OPeAczuXCgsu3egzEuDMZR+kHcU56XSE4FgXnHGYZZ7g9JkmIFoCeapodHN37owK3TpzLu
- H3ITIQCheOXOB5EXOB6rj7js/+k8zGTWCPZj1avnpxHZD8wQwcUJEELoUIa/A4CSGYGH6aa
- rJWmefanGHcCltzbY/Cow==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WiEUPf7FMRc=:DJVkcdsJp2PoVokcHLbwOl
- dXA4HEMPzky5gzVUd/bCkyTgpnbPGLKo10qSXqp9w9PxrgX6Qs8B2WvnoA3e7+AuXVZQO0Qoe
- RRsKIYlb1Kbdo/mk77ytzUfHG/Bp9Yi7NgiuTMnTAa9GSy4mHxm9CwgRRLjaqswVY0Ga99m4E
- YrS9jqSSgN/SMtttqvvZukN9tRbxtMAVufykN93oQufN8T6UOR24AEXY14FXuf6w+6hEYTzoT
- gjRay8hCUrqclvroxi3yvwFmQ1dSHeagTS2HEpZXxSgvYyG6utfgi16nroKcnH7HBWcvwBesU
- /y/h7ydiPdKbLoi3x3aAZlK+HcrV2HmYLm0/sZ5iCYA+LnLn4EQpKO4rh2jX1IrTsOuFgqNdR
- 7HZ8PhGScRPBXLeI1SpT0BdfX9wZg/HwpK7XVqpfxXNnl5D1n4lg/Z57NMMFvZmn7exJ8hccm
- lkzlITT1S1AvKeBT/x/jfpHl6bWNsUSvD6Isl9XFafnR+3o/iw31WHSyOy2DcQvI6QpO1KvKC
- l/7PE3pxxgkySYbdhi6qJD/iUeDB+ixgUGmyfzKNDTo9ULpo7dsgwtRJtiHXc/yKNkGIteHiD
- zsG/VDPrcTb4mSRkJYFOoJ+rUUWoKYUDvYvaZekgFiIzISLBe5yNa37Zd0cnglqSDrX4HKfcg
- jFTVCyIbersobWr0bgEVdqQbjhxZN0Kdl7i3TDYgSVky5CqoxkfzvpStvkepyqr8ofJplu1h/
- ZTKgFxmwFB9yyY8H/na22032BBxuFFLI4e8Deo5bPgZoQ0CcX4Qumjx/mxmz/3jnLOq4vXk5q
- 1c6NJpYLEedVSAq54Pu/+Nrt98wMIFEmwpbt4BzUalU4BQY6mELkf4mJuMp+FwkG61EHeFbXo
- DN1sv9Wl8ysB/8R3lOAg==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 29 Jan 2021 14:22:22 +0100
+Fabrice Gasnier <fabrice.gasnier@foss.st.com> wrote:
 
---wI9p3h9l5IyRJxxJ
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Currently, the STM32 LP Timer counter driver registers into both IIO and
+> counter subsystems, which is redundant.
+> 
+> Remove the IIO counter ABI and IIO registration from the STM32 LP Timer
+> counter driver since it's been superseded by the Counter subsystem
+> as discussed in [1].
+> 
+> Keep only the counter subsystem related part.
+> Move a part of the ABI documentation into a driver comment.
+> 
+> This also removes a duplicate ABI warning
+> $ scripts/get_abi.pl validate
+> ...
+> /sys/bus/iio/devices/iio:deviceX/in_count0_preset is defined 2 times:
+>   ./Documentation/ABI/testing/sysfs-bus-iio-timer-stm32:100
+>   ./Documentation/ABI/testing/sysfs-bus-iio-lptimer-stm32:0
+> 
+> [1] https://lkml.org/lkml/2021/1/19/347
+> 
+> Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+> Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
 
-On Tue, Jan 26, 2021 at 10:25:16AM +0100, Flavio Suligoi wrote:
-> The old file:
->=20
-> drivers/mtd/spi-nor/spi-nor.c
->=20
-> is not more present and now some of its code is
-> contained in:
->=20
-> drivers/mtd/spi-nor/core.c
->=20
-> This patch fix/remove the references to the old
-> spi-nor.c file.
->=20
-> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+The mod_devicetable.h include confused me for a bit, but then I realised
+that iio.h includes of.h (which it almost certainly shouldn't).
+I guess that's one to clean up at somepoint!
+
+Applied to the togreg branch of iio.git and pushed out as testing.
+
+Thanks,
+
+Jonathan
+
 > ---
-
-Reviewed-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-
-Thanks.
-
-
->  Documentation/driver-api/mtd/spi-nor.rst | 2 +-
->  drivers/mtd/spi-nor/core.c               | 4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
->=20
-> diff --git a/Documentation/driver-api/mtd/spi-nor.rst b/Documentation/dri=
-ver-api/mtd/spi-nor.rst
-> index 4a3adca417fd..bf2db371d3fb 100644
-> --- a/Documentation/driver-api/mtd/spi-nor.rst
-> +++ b/Documentation/driver-api/mtd/spi-nor.rst
-> @@ -61,7 +61,7 @@ Part III - How can drivers use the framework?
-> =20
->  The main API is spi_nor_scan(). Before you call the hook, a driver should
->  initialize the necessary fields for spi_nor{}. Please see
-> -drivers/mtd/spi-nor/spi-nor.c for detail. Please also refer to spi-fsl-q=
-spi.c
-> +drivers/mtd/spi-nor/core.c for detail. Please also refer to spi-fsl-qspi=
-=2Ec
->  when you want to write a new driver for a SPI NOR controller.
->  Another API is spi_nor_restore(), this is used to restore the status of =
-SPI
->  flash chip such as addressing mode. Call it whenever detach the driver f=
-rom
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index 20df44b753da..6ae7d4c2d2b6 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -3701,8 +3701,8 @@ static void spi_nor_shutdown(struct spi_mem *spimem)
->   * encourage new users to add support to the spi-nor library, and simply=
- bind
->   * against a generic string here (e.g., "jedec,spi-nor").
->   *
-> - * Many flash names are kept here in this list (as well as in spi-nor.c)=
- to
-> - * keep them available as module aliases for existing platforms.
-> + * Many flash names are kept here in this list to keep them available
-> + * as module aliases for existing platforms.
+> Changes in v2:
+> - remove dependency on IIO subsustem, as spotted by William
+> ---
+>  .../ABI/testing/sysfs-bus-iio-lptimer-stm32        |  62 -----
+>  drivers/counter/Kconfig                            |   2 +-
+>  drivers/counter/stm32-lptimer-cnt.c                | 297 +++------------------
+>  3 files changed, 37 insertions(+), 324 deletions(-)
+>  delete mode 100644 Documentation/ABI/testing/sysfs-bus-iio-lptimer-stm32
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-iio-lptimer-stm32 b/Documentation/ABI/testing/sysfs-bus-iio-lptimer-stm32
+> deleted file mode 100644
+> index 73498ff..00000000
+> --- a/Documentation/ABI/testing/sysfs-bus-iio-lptimer-stm32
+> +++ /dev/null
+> @@ -1,62 +0,0 @@
+> -What:		/sys/bus/iio/devices/iio:deviceX/in_count0_preset
+> -KernelVersion:	4.13
+> -Contact:	fabrice.gasnier@st.com
+> -Description:
+> -		Reading returns the current preset value. Writing sets the
+> -		preset value. Encoder counts continuously from 0 to preset
+> -		value, depending on direction (up/down).
+> -
+> -What:		/sys/bus/iio/devices/iio:deviceX/in_count_quadrature_mode_available
+> -KernelVersion:	4.13
+> -Contact:	fabrice.gasnier@st.com
+> -Description:
+> -		Reading returns the list possible quadrature modes.
+> -
+> -What:		/sys/bus/iio/devices/iio:deviceX/in_count0_quadrature_mode
+> -KernelVersion:	4.13
+> -Contact:	fabrice.gasnier@st.com
+> -Description:
+> -		Configure the device counter quadrature modes:
+> -
+> -		- non-quadrature:
+> -			Encoder IN1 input servers as the count input (up
+> -			direction).
+> -
+> -		- quadrature:
+> -			Encoder IN1 and IN2 inputs are mixed to get direction
+> -			and count.
+> -
+> -What:		/sys/bus/iio/devices/iio:deviceX/in_count_polarity_available
+> -KernelVersion:	4.13
+> -Contact:	fabrice.gasnier@st.com
+> -Description:
+> -		Reading returns the list possible active edges.
+> -
+> -What:		/sys/bus/iio/devices/iio:deviceX/in_count0_polarity
+> -KernelVersion:	4.13
+> -Contact:	fabrice.gasnier@st.com
+> -Description:
+> -		Configure the device encoder/counter active edge:
+> -
+> -		- rising-edge
+> -		- falling-edge
+> -		- both-edges
+> -
+> -		In non-quadrature mode, device counts up on active edge.
+> -
+> -		In quadrature mode, encoder counting scenarios are as follows:
+> -
+> -		+---------+----------+--------------------+--------------------+
+> -		| Active  | Level on |      IN1 signal    |     IN2 signal     |
+> -		| edge    | opposite +----------+---------+----------+---------+
+> -		|         | signal   |  Rising  | Falling |  Rising  | Falling |
+> -		+---------+----------+----------+---------+----------+---------+
+> -		| Rising  | High ->  |   Down   |    -    |   Up     |    -    |
+> -		| edge    | Low  ->  |   Up     |    -    |   Down   |    -    |
+> -		+---------+----------+----------+---------+----------+---------+
+> -		| Falling | High ->  |    -     |   Up    |    -     |   Down  |
+> -		| edge    | Low  ->  |    -     |   Down  |    -     |   Up    |
+> -		+---------+----------+----------+---------+----------+---------+
+> -		| Both    | High ->  |   Down   |   Up    |   Up     |   Down  |
+> -		| edges   | Low  ->  |   Up     |   Down  |   Down   |   Up    |
+> -		+---------+----------+----------+---------+----------+---------+
+> diff --git a/drivers/counter/Kconfig b/drivers/counter/Kconfig
+> index 2de53ab..cbdf842 100644
+> --- a/drivers/counter/Kconfig
+> +++ b/drivers/counter/Kconfig
+> @@ -41,7 +41,7 @@ config STM32_TIMER_CNT
+>  
+>  config STM32_LPTIMER_CNT
+>  	tristate "STM32 LP Timer encoder counter driver"
+> -	depends on (MFD_STM32_LPTIMER || COMPILE_TEST) && IIO
+> +	depends on MFD_STM32_LPTIMER || COMPILE_TEST
+>  	help
+>  	  Select this option to enable STM32 Low-Power Timer quadrature encoder
+>  	  and counter driver.
+> diff --git a/drivers/counter/stm32-lptimer-cnt.c b/drivers/counter/stm32-lptimer-cnt.c
+> index fd6828e..9374396 100644
+> --- a/drivers/counter/stm32-lptimer-cnt.c
+> +++ b/drivers/counter/stm32-lptimer-cnt.c
+> @@ -12,8 +12,8 @@
+>  
+>  #include <linux/bitfield.h>
+>  #include <linux/counter.h>
+> -#include <linux/iio/iio.h>
+>  #include <linux/mfd/stm32-lptimer.h>
+> +#include <linux/mod_devicetable.h>
+>  #include <linux/module.h>
+>  #include <linux/pinctrl/consumer.h>
+>  #include <linux/platform_device.h>
+> @@ -107,249 +107,27 @@ static int stm32_lptim_setup(struct stm32_lptim_cnt *priv, int enable)
+>  	return regmap_update_bits(priv->regmap, STM32_LPTIM_CFGR, mask, val);
+>  }
+>  
+> -static int stm32_lptim_write_raw(struct iio_dev *indio_dev,
+> -				 struct iio_chan_spec const *chan,
+> -				 int val, int val2, long mask)
+> -{
+> -	struct stm32_lptim_cnt *priv = iio_priv(indio_dev);
+> -	int ret;
+> -
+> -	switch (mask) {
+> -	case IIO_CHAN_INFO_ENABLE:
+> -		if (val < 0 || val > 1)
+> -			return -EINVAL;
+> -
+> -		/* Check nobody uses the timer, or already disabled/enabled */
+> -		ret = stm32_lptim_is_enabled(priv);
+> -		if ((ret < 0) || (!ret && !val))
+> -			return ret;
+> -		if (val && ret)
+> -			return -EBUSY;
+> -
+> -		ret = stm32_lptim_setup(priv, val);
+> -		if (ret)
+> -			return ret;
+> -		return stm32_lptim_set_enable_state(priv, val);
+> -
+> -	default:
+> -		return -EINVAL;
+> -	}
+> -}
+> -
+> -static int stm32_lptim_read_raw(struct iio_dev *indio_dev,
+> -				struct iio_chan_spec const *chan,
+> -				int *val, int *val2, long mask)
+> -{
+> -	struct stm32_lptim_cnt *priv = iio_priv(indio_dev);
+> -	u32 dat;
+> -	int ret;
+> -
+> -	switch (mask) {
+> -	case IIO_CHAN_INFO_RAW:
+> -		ret = regmap_read(priv->regmap, STM32_LPTIM_CNT, &dat);
+> -		if (ret)
+> -			return ret;
+> -		*val = dat;
+> -		return IIO_VAL_INT;
+> -
+> -	case IIO_CHAN_INFO_ENABLE:
+> -		ret = stm32_lptim_is_enabled(priv);
+> -		if (ret < 0)
+> -			return ret;
+> -		*val = ret;
+> -		return IIO_VAL_INT;
+> -
+> -	case IIO_CHAN_INFO_SCALE:
+> -		/* Non-quadrature mode: scale = 1 */
+> -		*val = 1;
+> -		*val2 = 0;
+> -		if (priv->quadrature_mode) {
+> -			/*
+> -			 * Quadrature encoder mode:
+> -			 * - both edges, quarter cycle, scale is 0.25
+> -			 * - either rising/falling edge scale is 0.5
+> -			 */
+> -			if (priv->polarity > 1)
+> -				*val2 = 2;
+> -			else
+> -				*val2 = 1;
+> -		}
+> -		return IIO_VAL_FRACTIONAL_LOG2;
+> -
+> -	default:
+> -		return -EINVAL;
+> -	}
+> -}
+> -
+> -static const struct iio_info stm32_lptim_cnt_iio_info = {
+> -	.read_raw = stm32_lptim_read_raw,
+> -	.write_raw = stm32_lptim_write_raw,
+> -};
+> -
+> -static const char *const stm32_lptim_quadrature_modes[] = {
+> -	"non-quadrature",
+> -	"quadrature",
+> -};
+> -
+> -static int stm32_lptim_get_quadrature_mode(struct iio_dev *indio_dev,
+> -					   const struct iio_chan_spec *chan)
+> -{
+> -	struct stm32_lptim_cnt *priv = iio_priv(indio_dev);
+> -
+> -	return priv->quadrature_mode;
+> -}
+> -
+> -static int stm32_lptim_set_quadrature_mode(struct iio_dev *indio_dev,
+> -					   const struct iio_chan_spec *chan,
+> -					   unsigned int type)
+> -{
+> -	struct stm32_lptim_cnt *priv = iio_priv(indio_dev);
+> -
+> -	if (stm32_lptim_is_enabled(priv))
+> -		return -EBUSY;
+> -
+> -	priv->quadrature_mode = type;
+> -
+> -	return 0;
+> -}
+> -
+> -static const struct iio_enum stm32_lptim_quadrature_mode_en = {
+> -	.items = stm32_lptim_quadrature_modes,
+> -	.num_items = ARRAY_SIZE(stm32_lptim_quadrature_modes),
+> -	.get = stm32_lptim_get_quadrature_mode,
+> -	.set = stm32_lptim_set_quadrature_mode,
+> -};
+> -
+> -static const char * const stm32_lptim_cnt_polarity[] = {
+> -	"rising-edge", "falling-edge", "both-edges",
+> -};
+> -
+> -static int stm32_lptim_cnt_get_polarity(struct iio_dev *indio_dev,
+> -					const struct iio_chan_spec *chan)
+> -{
+> -	struct stm32_lptim_cnt *priv = iio_priv(indio_dev);
+> -
+> -	return priv->polarity;
+> -}
+> -
+> -static int stm32_lptim_cnt_set_polarity(struct iio_dev *indio_dev,
+> -					const struct iio_chan_spec *chan,
+> -					unsigned int type)
+> -{
+> -	struct stm32_lptim_cnt *priv = iio_priv(indio_dev);
+> -
+> -	if (stm32_lptim_is_enabled(priv))
+> -		return -EBUSY;
+> -
+> -	priv->polarity = type;
+> -
+> -	return 0;
+> -}
+> -
+> -static const struct iio_enum stm32_lptim_cnt_polarity_en = {
+> -	.items = stm32_lptim_cnt_polarity,
+> -	.num_items = ARRAY_SIZE(stm32_lptim_cnt_polarity),
+> -	.get = stm32_lptim_cnt_get_polarity,
+> -	.set = stm32_lptim_cnt_set_polarity,
+> -};
+> -
+> -static ssize_t stm32_lptim_cnt_get_ceiling(struct stm32_lptim_cnt *priv,
+> -					   char *buf)
+> -{
+> -	return snprintf(buf, PAGE_SIZE, "%u\n", priv->ceiling);
+> -}
+> -
+> -static ssize_t stm32_lptim_cnt_set_ceiling(struct stm32_lptim_cnt *priv,
+> -					   const char *buf, size_t len)
+> -{
+> -	int ret;
+> -
+> -	if (stm32_lptim_is_enabled(priv))
+> -		return -EBUSY;
+> -
+> -	ret = kstrtouint(buf, 0, &priv->ceiling);
+> -	if (ret)
+> -		return ret;
+> -
+> -	if (priv->ceiling > STM32_LPTIM_MAX_ARR)
+> -		return -EINVAL;
+> -
+> -	return len;
+> -}
+> -
+> -static ssize_t stm32_lptim_cnt_get_preset_iio(struct iio_dev *indio_dev,
+> -					      uintptr_t private,
+> -					      const struct iio_chan_spec *chan,
+> -					      char *buf)
+> -{
+> -	struct stm32_lptim_cnt *priv = iio_priv(indio_dev);
+> -
+> -	return stm32_lptim_cnt_get_ceiling(priv, buf);
+> -}
+> -
+> -static ssize_t stm32_lptim_cnt_set_preset_iio(struct iio_dev *indio_dev,
+> -					      uintptr_t private,
+> -					      const struct iio_chan_spec *chan,
+> -					      const char *buf, size_t len)
+> -{
+> -	struct stm32_lptim_cnt *priv = iio_priv(indio_dev);
+> -
+> -	return stm32_lptim_cnt_set_ceiling(priv, buf, len);
+> -}
+> -
+> -/* LP timer with encoder */
+> -static const struct iio_chan_spec_ext_info stm32_lptim_enc_ext_info[] = {
+> -	{
+> -		.name = "preset",
+> -		.shared = IIO_SEPARATE,
+> -		.read = stm32_lptim_cnt_get_preset_iio,
+> -		.write = stm32_lptim_cnt_set_preset_iio,
+> -	},
+> -	IIO_ENUM("polarity", IIO_SEPARATE, &stm32_lptim_cnt_polarity_en),
+> -	IIO_ENUM_AVAILABLE("polarity", &stm32_lptim_cnt_polarity_en),
+> -	IIO_ENUM("quadrature_mode", IIO_SEPARATE,
+> -		 &stm32_lptim_quadrature_mode_en),
+> -	IIO_ENUM_AVAILABLE("quadrature_mode", &stm32_lptim_quadrature_mode_en),
+> -	{}
+> -};
+> -
+> -static const struct iio_chan_spec stm32_lptim_enc_channels = {
+> -	.type = IIO_COUNT,
+> -	.channel = 0,
+> -	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+> -			      BIT(IIO_CHAN_INFO_ENABLE) |
+> -			      BIT(IIO_CHAN_INFO_SCALE),
+> -	.ext_info = stm32_lptim_enc_ext_info,
+> -	.indexed = 1,
+> -};
+> -
+> -/* LP timer without encoder (counter only) */
+> -static const struct iio_chan_spec_ext_info stm32_lptim_cnt_ext_info[] = {
+> -	{
+> -		.name = "preset",
+> -		.shared = IIO_SEPARATE,
+> -		.read = stm32_lptim_cnt_get_preset_iio,
+> -		.write = stm32_lptim_cnt_set_preset_iio,
+> -	},
+> -	IIO_ENUM("polarity", IIO_SEPARATE, &stm32_lptim_cnt_polarity_en),
+> -	IIO_ENUM_AVAILABLE("polarity", &stm32_lptim_cnt_polarity_en),
+> -	{}
+> -};
+> -
+> -static const struct iio_chan_spec stm32_lptim_cnt_channels = {
+> -	.type = IIO_COUNT,
+> -	.channel = 0,
+> -	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW) |
+> -			      BIT(IIO_CHAN_INFO_ENABLE) |
+> -			      BIT(IIO_CHAN_INFO_SCALE),
+> -	.ext_info = stm32_lptim_cnt_ext_info,
+> -	.indexed = 1,
+> -};
+> -
+>  /**
+>   * enum stm32_lptim_cnt_function - enumerates LPTimer counter & encoder modes
+>   * @STM32_LPTIM_COUNTER_INCREASE: up count on IN1 rising, falling or both edges
+>   * @STM32_LPTIM_ENCODER_BOTH_EDGE: count on both edges (IN1 & IN2 quadrature)
+> + *
+> + * In non-quadrature mode, device counts up on active edge.
+> + * In quadrature mode, encoder counting scenarios are as follows:
+> + * +---------+----------+--------------------+--------------------+
+> + * | Active  | Level on |      IN1 signal    |     IN2 signal     |
+> + * | edge    | opposite +----------+---------+----------+---------+
+> + * |         | signal   |  Rising  | Falling |  Rising  | Falling |
+> + * +---------+----------+----------+---------+----------+---------+
+> + * | Rising  | High ->  |   Down   |    -    |   Up     |    -    |
+> + * | edge    | Low  ->  |   Up     |    -    |   Down   |    -    |
+> + * +---------+----------+----------+---------+----------+---------+
+> + * | Falling | High ->  |    -     |   Up    |    -     |   Down  |
+> + * | edge    | Low  ->  |    -     |   Down  |    -     |   Up    |
+> + * +---------+----------+----------+---------+----------+---------+
+> + * | Both    | High ->  |   Down   |   Up    |   Up     |   Down  |
+> + * | edges   | Low  ->  |   Up     |   Down  |   Down   |   Up    |
+> + * +---------+----------+----------+---------+----------+---------+
 >   */
->  static const struct spi_device_id spi_nor_dev_ids[] =3D {
->  	/*
-> --=20
-> 2.25.1
->=20
+>  enum stm32_lptim_cnt_function {
+>  	STM32_LPTIM_COUNTER_INCREASE,
+> @@ -484,7 +262,7 @@ static ssize_t stm32_lptim_cnt_ceiling_read(struct counter_device *counter,
+>  {
+>  	struct stm32_lptim_cnt *const priv = counter->priv;
+>  
+> -	return stm32_lptim_cnt_get_ceiling(priv, buf);
+> +	return snprintf(buf, PAGE_SIZE, "%u\n", priv->ceiling);
+>  }
+>  
+>  static ssize_t stm32_lptim_cnt_ceiling_write(struct counter_device *counter,
+> @@ -493,8 +271,22 @@ static ssize_t stm32_lptim_cnt_ceiling_write(struct counter_device *counter,
+>  					     const char *buf, size_t len)
+>  {
+>  	struct stm32_lptim_cnt *const priv = counter->priv;
+> +	unsigned int ceiling;
+> +	int ret;
+> +
+> +	if (stm32_lptim_is_enabled(priv))
+> +		return -EBUSY;
+> +
+> +	ret = kstrtouint(buf, 0, &ceiling);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (ceiling > STM32_LPTIM_MAX_ARR)
+> +		return -EINVAL;
+> +
+> +	priv->ceiling = ceiling;
+>  
+> -	return stm32_lptim_cnt_set_ceiling(priv, buf, len);
+> +	return len;
+>  }
+>  
+>  static const struct counter_count_ext stm32_lptim_cnt_ext[] = {
+> @@ -630,32 +422,19 @@ static int stm32_lptim_cnt_probe(struct platform_device *pdev)
+>  {
+>  	struct stm32_lptimer *ddata = dev_get_drvdata(pdev->dev.parent);
+>  	struct stm32_lptim_cnt *priv;
+> -	struct iio_dev *indio_dev;
+> -	int ret;
+>  
+>  	if (IS_ERR_OR_NULL(ddata))
+>  		return -EINVAL;
+>  
+> -	indio_dev = devm_iio_device_alloc(&pdev->dev, sizeof(*priv));
+> -	if (!indio_dev)
+> +	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+>  		return -ENOMEM;
+>  
+> -	priv = iio_priv(indio_dev);
+>  	priv->dev = &pdev->dev;
+>  	priv->regmap = ddata->regmap;
+>  	priv->clk = ddata->clk;
+>  	priv->ceiling = STM32_LPTIM_MAX_ARR;
+>  
+> -	/* Initialize IIO device */
+> -	indio_dev->name = dev_name(&pdev->dev);
+> -	indio_dev->dev.of_node = pdev->dev.of_node;
+> -	indio_dev->info = &stm32_lptim_cnt_iio_info;
+> -	if (ddata->has_encoder)
+> -		indio_dev->channels = &stm32_lptim_enc_channels;
+> -	else
+> -		indio_dev->channels = &stm32_lptim_cnt_channels;
+> -	indio_dev->num_channels = 1;
+> -
+>  	/* Initialize Counter device */
+>  	priv->counter.name = dev_name(&pdev->dev);
+>  	priv->counter.parent = &pdev->dev;
+> @@ -673,10 +452,6 @@ static int stm32_lptim_cnt_probe(struct platform_device *pdev)
+>  
+>  	platform_set_drvdata(pdev, priv);
+>  
+> -	ret = devm_iio_device_register(&pdev->dev, indio_dev);
+> -	if (ret)
+> -		return ret;
+> -
+>  	return devm_counter_register(&pdev->dev, &priv->counter);
+>  }
+>  
 
---wI9p3h9l5IyRJxxJ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmAVqj8ACgkQCDBEmo7z
-X9uYtQ/+Kyf6rbT8uYEzJDIpKYjRo1XokEoanbc2YkMTFeZiFLCH4XnNTl26QeBo
-TDTxGZ6SXWbH7e1hYnu5nEHPA/Ld56ah3kZvC1ncNWAiPxj5dlnYabs13u5NjpoI
-Dehw2xVq7Cj5XhOsItu7SgcVL/agydg72xgoEXOEXejrD2d4TFGp3a2KfGu33Fh2
-7oN25wb8P06wJPrM8aWZWC5jb+iDDOURsJD32bXDufGKISF09UrbLvpo3+H5LL8F
-SVGYOvaFidk8sEHb65Lp91lyG4EMicZM7ItHtmkLKAhBaCgE2wrBVqoeFsWO0TBe
-4ONikf9nZMGKaIHhG6i8+ou2xcKvx00ilpTvSxUCOPbSmwkUbTnFnDWfKm+2gpGP
-nRCSfhybqoVV55iMjVsnpkVS5laahk+nIY0M9U+GjEX0bSzDPcsDpmH7PrczIoHx
-3TxWNfe1auFbAuLT0zGdtgcw0jujdVPe8qWggeVbnxp2t+tecylx5lep6NgxS7Tj
-Yxqmuv+l+rtZhetcbIqLZ/tpKPaMD9hTpP7iM8gUTBL6xaaxbLuZgRpkjFZCO6Vb
-3CK6rwqE2uG73Ut5Ln32GyBwl8etpw+StMn4QA0urLK6f0QIApJXqEQM8t/wSRoz
-t/OJRElGzFBj3sL1YmMl3FyeBMfzO50/eFcgIJPit3y4UYIdPV4=
-=q3ZK
------END PGP SIGNATURE-----
-
---wI9p3h9l5IyRJxxJ--
