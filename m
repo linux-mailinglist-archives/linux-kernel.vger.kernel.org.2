@@ -2,124 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A78C0309150
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 02:43:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1327309154
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 02:49:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232207AbhA3BlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 20:41:20 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52830 "EHLO mail.kernel.org"
+        id S232500AbhA3Bsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 20:48:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232307AbhA3BgT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 20:36:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C366B64E02;
-        Sat, 30 Jan 2021 01:35:07 +0000 (UTC)
+        id S230525AbhA3Bl5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 20:41:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ABFBE64D7F;
+        Sat, 30 Jan 2021 01:41:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611970508;
-        bh=u2XIkil74u2aEx3WMNSlpljx3WRlu9c0WuuP3VNRoo0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sYVkzUOBUMMdSvmnuXaDPxuz04E6mlSLxXqsoLKupDhOaDnfNUvHWhl4S64mIRsUo
-         G0P4z729aCOJHoFwErlnJxoBrVtDkd/keoU8lHc2F0+V7SteYprTRp0y0afYaSijP3
-         hB6U6DKQMZhLElXCcyHFjYWiXlWBDoHyoBhF6yJzu9h2qe4FQTxIrkpbfCMFsrW9Je
-         Hqd+d//3Jpza76SlpNpUXltSB2D+QNoD9FBiDLDHILZJfY+YYkG49mAm+p//tqrmq1
-         /9taXnJWVTrHsch/9qPqz4MIZPcTusJODjDpV1H70SQmNYRjeI0Gw6GQGzplVgZv1U
-         z+yDDdPBwty5Q==
-Date:   Fri, 29 Jan 2021 18:35:05 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Vinicius Tinti <viniciustinti@gmail.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] ext4: Remove unreachable code
-Message-ID: <20210130013505.GB2709570@localhost>
-References: <20210129185856.158310-1-viniciustinti@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210129185856.158310-1-viniciustinti@gmail.com>
+        s=k20201202; t=1611970875;
+        bh=iyVil0L0LGMYVmrDFIMIsjI6dSD0wzIlbbHJtS/uxxo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=uSJUuoZzKFWdxoq6sGtFtOdfNj09rQJ3FuSCY34Ep7SFvvYJwG+DGeh+VK2OYqLdZ
+         J0xl6dXRj26RcTn+4sPj9deH8DYRGiK3jjI9bCJwK3d9DWzElvQhKQeAdWpbsxOjte
+         QFG9WNA0cMHui5aYd7qJpV7E7AZfd+nmRrKEkTxWuUB735IqUhbJ4CLHMokjwFZYM2
+         /uKoi3iCnb25igIkWVVO65SaMsnK3DbrHYeR6cqRLkBVgiK4TIaPKhDuw5RUTqn3+P
+         VdXj37GgWuNDT4CoV439cDC7RJdwBwD9r2Bc7qKPNyp6j3vR1DzW19eK2vBp+GChIG
+         8AFtS9MVot+7Q==
+Date:   Sat, 30 Jan 2021 10:41:10 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Nikolay Borisov <nborisov@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: kprobes broken since 0d00449c7a28
+ ("x86: Replace ist_enter() with nmi_enter()")
+Message-Id: <20210130104110.0a25f155c00a86513e959ef0@kernel.org>
+In-Reply-To: <20210129210533.7s6udd3vobkgb27u@ast-mbp.dhcp.thefacebook.com>
+References: <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
+        <YBMBTsY1uuQb9wCP@hirez.programming.kicks-ass.net>
+        <20210129013452.njuh3fomws62m4rc@ast-mbp.dhcp.thefacebook.com>
+        <YBPNyRyrkzw2echi@hirez.programming.kicks-ass.net>
+        <20210129224011.81bcdb3eba1227c414e69e1f@kernel.org>
+        <20210129105952.74dc8464@gandalf.local.home>
+        <20210129162438.GC8912@worktop.programming.kicks-ass.net>
+        <CAADnVQLMqHpSsZ1OdZRFmKqNWKiRq3dxRxw+y=kvMdmkN7htUw@mail.gmail.com>
+        <20210129175943.GH8912@worktop.programming.kicks-ass.net>
+        <20210129140103.3ce971b7@gandalf.local.home>
+        <20210129210533.7s6udd3vobkgb27u@ast-mbp.dhcp.thefacebook.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 06:58:56PM +0000, Vinicius Tinti wrote:
-> By enabling -Wunreachable-code-aggressive on Clang the following code
-> paths are unreachable.
+On Fri, 29 Jan 2021 13:05:33 -0800
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
+
+> On Fri, Jan 29, 2021 at 02:01:03PM -0500, Steven Rostedt wrote:
+> > On Fri, 29 Jan 2021 18:59:43 +0100
+> > Peter Zijlstra <peterz@infradead.org> wrote:
+> > 
+> > > On Fri, Jan 29, 2021 at 09:45:48AM -0800, Alexei Starovoitov wrote:
+> > > > Same things apply to bpf side. We can statically prove safety for
+> > > > ftrace and kprobe attaching whereas to deal with NMI situation we
+> > > > have to use run-time checks for recursion prevention, etc.  
+> > > 
+> > > I have no idea what you're saying. You can attach to functions that are
+> > > called with random locks held, you can create kprobes in some very
+> > > sensitive places.
+> > > 
+> > > What can you staticlly prove about that?
+> > 
+> > I think the main difference is, if you attach a kprobe or ftrace function,
+> > you can theoretically analyze the location before you do the attachment.
 > 
-> Commit dd73b5d5cb67 ("ext4: convert dx_probe() to use the ERR_PTR
-> convention")
-> Commit ac27a0ec112a ("[PATCH] ext4: initial copy of files from ext3")
+> Excatly.
+> When we're writing bpf helpers we need to carefully think about reentrance and NMI.
+> If the helper looks like:
+> int nokprobe notrace bpf_something(...)
+> {
+>   // access variables A and B
+> }
 > 
-> Clang warns:
+> The implementation can rely on the fact that even if the helper is reentrant
+> the state of A and B will be consistent. Either both got touched or none.
+> Only NMI condition we have to worry about, because A could be modified 
+> without touching B.
+> If we write it as
+> int nokprobe bpf_something(...) { ... }
+> that would be another case.
+> Here we need to consider the case that bpf prog can be attached to it via fentry nop.
+> But no need to worry about instructions split in the middle because of kprobe via int3.
+> Since we have big "if (in_nmi()) goto unsupported;" check in the beginning we
+> only need to worry about combinations of kprobe at the start of the func,
+> kprobe anywhere inside the func via int3, and ftrace at the start.
+> Not having to think of NMI helps a ton.
+> My earlier this_cpu vs __this_cpu comment is an example of that.
+> If in_nmi is filtered early it's one implementation. If nmi has to be handled
+> it's completely different algorithm.
+> Now you've broke all this logic by making int3 to be marked as 'in_nmi' and
+> bpf in kprobe in the middle of the func are now broken.
+> Do people use that? Yeah they do.
+> We have to fix it.
+> What were your reasons to make int3 in_nmi?
+> I've read the commit log, but I don't see in it the actual motivation
+> for int3 other than "it looks like NMI to me. Let's make it so".
+> The commit logs talk about cpu exceptions. I agree that #DB and #MC do behave like NMI.
+> But #BP is not really. My understanding it's used by kprobes and text_poke_bp only.
+> If the motivation was to close some issue with text_poke_bp then, sure,
+> let's make handling of text_poke_bp to be treated as nmi.
+> But kprobe is not that.
+> I'm thinking either of the following solutions would be generic:
+> - introduce another state to preempt flags like "kernel exception"
+
+I like this solution. Or, at least there should be a way to provide the
+probed context is NMI or not.
+(BTW, would the NMI has a specific stack area? If so, nmi_context(regs)
+ can be implemented.)
+
+> - remove kprobe's int3 from in_nmi
+> As bpf specific alternative we can do:
+> diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+> index 6c0018abe68a..37cc549ad52e 100644
+> --- a/kernel/trace/bpf_trace.c
+> +++ b/kernel/trace/bpf_trace.c
+> @@ -96,7 +96,7 @@ unsigned int trace_call_bpf(struct trace_event_call *call, void *ctx)
+>  {
+>         unsigned int ret;
 > 
-> fs/ext4/namei.c:831:17: warning: code will never be executed
-> [-Wunreachable-code]
->                         unsigned n = count - 1;
->                                      ^~~~~
-> fs/ext4/namei.c:830:7: note: silence by adding parentheses to mark code as
-> explicitly dead
->                 if (0) { // linear search cross check
->                     ^
->                     /* DISABLES CODE */ ( )
+> -       if (in_nmi()) /* not supported yet */
+> +       if (in_nmi() && !kprobe_running()) /* not supported yet */
 
-The commit message might be a little clearer if it were restructured a
-bit, maybe something like so?
+This doesn't make sense, because kprobe_running() always true in the kprobe handler.
 
-By enabling -Wunreachable-code-aggressive on Clang, the following code
-paths are unreachable:
+The problem is that the in_nmi() checks whether the current context is NMI context,
+but you want to know the context where the kprobe is invoked, is NMI context or not.
 
-fs/ext4/namei.c:831:17: warning: code will never be executed
-[-Wunreachable-code]
-                        unsigned n = count - 1;
-                                     ^~~~~
-fs/ext4/namei.c:830:7: note: silence by adding parentheses to mark code as
-explicitly dead
-                if (0) { // linear search cross check
-                    ^
-                    /* DISABLES CODE */ ( )
+Thank you,
 
-This has been present since commit ac27a0ec112a ("[PATCH] ext4: initial
-copy of files from ext3") and fs/ext3 had it present at the beginning of
-git history so it is safe to remove.
-
-> Signed-off-by: Vinicius Tinti <viniciustinti@gmail.com>
-
-Regardless of the commit message, I believe this is the right way to get
-rid of the warning:
-
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-
-> ---
->  fs/ext4/namei.c | 15 ---------------
->  1 file changed, 15 deletions(-)
-> 
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index cf652ba3e74d..1f64dbd7237b 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -827,21 +827,6 @@ dx_probe(struct ext4_filename *fname, struct inode *dir,
->  				p = m + 1;
->  		}
->  
-> -		if (0) { // linear search cross check
-> -			unsigned n = count - 1;
-> -			at = entries;
-> -			while (n--)
-> -			{
-> -				dxtrace(printk(KERN_CONT ","));
-> -				if (dx_get_hash(++at) > hash)
-> -				{
-> -					at--;
-> -					break;
-> -				}
-> -			}
-> -			ASSERT(at == p - 1);
-> -		}
-> -
->  		at = p - 1;
->  		dxtrace(printk(KERN_CONT " %x->%u\n",
->  			       at == entries ? 0 : dx_get_hash(at),
-> -- 
-> 2.25.1
-> 
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
