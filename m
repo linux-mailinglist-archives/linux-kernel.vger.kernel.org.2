@@ -2,95 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 881C3309900
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 00:53:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F027B309903
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 00:54:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232655AbhA3XxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 18:53:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44588 "EHLO
+        id S232774AbhA3Xx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 18:53:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232580AbhA3Xup (ORCPT
+        with ESMTP id S232630AbhA3XwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 18:50:45 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711B2C06174A;
-        Sat, 30 Jan 2021 15:50:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=U5UQwbMv+3uVjns01SLw/Dx/LPEia7UMhIebOpf7RQc=; b=QrtH0n+yPLbnjiOE//mqTzj+Be
-        IG1AMuHV84knwev+UQe60851Cpl+FPPJxJ8YET2Ah+Izq78JpVBh8Imv8WV/C2Ytz25FulF3/sFzK
-        sA2ZM5mYIpDAx4NbkRLA2/TJoKiBvMFgTp2KfMakSesf4xNXA+uyZpNSH9eCk/WsgX0rUxsszowrd
-        riqjp6IQdrhWsB0svOpi5deDvy9ujUWHzw7HKjg3XTGWDNH6stIlrP1EJ6AJbK0O0N/CL5dqInFd9
-        Em60zIlVc3d2jNRrYhvoYyftbnMWyZ0YlnY5PxL+G1zG6FlftAZ19aSH+dd6mgzUX49YWnidUARyT
-        TQTzJsBA==;
-Received: from [2601:1c0:6280:3f0:d7c4:8ab4:31d7:f0ba] (helo=merlin.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l6004-0007jA-So; Sat, 30 Jan 2021 23:49:57 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        intel-wired-lan@lists.osuosl.org,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Guo Ren <guoren@kernel.org>, linux-csky@vger.kernel.org
-Subject: [PATCH] csky: change a Kconfig symbol name to fix e1000 build error
-Date:   Sat, 30 Jan 2021 15:49:49 -0800
-Message-Id: <20210130234949.21090-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Sat, 30 Jan 2021 18:52:21 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B98EDC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 15:51:41 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id g15so8791280pjd.2
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 15:51:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=cxvqbAo1IAIrwLB5kk+h8Luaw/WcNq7od57uwR/z/0A=;
+        b=PjLjww8QTw6X6rVMAjtISyXtX7JMmqVaUJx3F60RM3ylFSLWRRcZCFrQlsjCSBGBqx
+         Oj3eIeIel+lx5s/2LzA2cqzsOlBvs+jrSV4AXQBePenX9TqRNh4fBF2xa1vy/ZURdeOn
+         +lhC0/eWjRwZcBS/1uE7a0/fxUpCmQEsIlkvVUw8XTrYgT7HEkD84ilH2PhECtGuizOl
+         3L/Qf/himoTN1JGUyeYCivImS0tAyPYb9OeJvkMbXST578xzSCdUkQFxivOMQrwZRtAE
+         nxCiaSxwoehw8rIP5fQZOuvdxKVzXZHozdLwXh4cjAQrPf6k9Zf1rWPHmWo72HtJywGU
+         U2Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=cxvqbAo1IAIrwLB5kk+h8Luaw/WcNq7od57uwR/z/0A=;
+        b=pZd4viC1CFN6lxIn42hgJ3sh52FlIpsp8CMrdzpuuprDd27rQJF4E7nySBr+AyCCkZ
+         dDLIGUMQk8zKiCAztxOnCEDb/rY4+MnmgdiXTEWTgBcXq0VQl6FE5S14XkdkFY1vMobc
+         599ycgBugCM7Hjohhyx2P4/UX6Y0VG9CCngrb2CiWieTfkkSBxMS0riprnpfNjvNh53u
+         v6hLotwAR4SvXS0x5q/jWSvikndlW+RpzHd/FVmHJBZ2DTrJRJPf2+nahWjdQh4bw4wj
+         iUSDNkQpscaZQP80PtVI12aXSb0Ay6w8q1SDHG8zXOEYdw0FhsC7xZhJnM+xxIPwxauP
+         wQxA==
+X-Gm-Message-State: AOAM532oHFojNo2TJuGtu8h2w2oID9uIC7YXNDyY6+0t//aMP+LXeqS/
+        m90FxXj5vIpsOfHwtNSC/DT8Bg==
+X-Google-Smtp-Source: ABdhPJyDODycXpp/h5ITu3myrcAhtELZTjRYPPBKofKsdhKWkycX4cAiMkSboMfRs6hOUzcld1n8Cw==
+X-Received: by 2002:a17:902:edcd:b029:df:d2b1:ecf0 with SMTP id q13-20020a170902edcdb02900dfd2b1ecf0mr11639635plk.15.1612050701068;
+        Sat, 30 Jan 2021 15:51:41 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id c5sm12745797pfi.5.2021.01.30.15.51.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Jan 2021 15:51:40 -0800 (PST)
+Date:   Sat, 30 Jan 2021 15:51:39 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+cc:     linux-cxl@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH 01/14] cxl/mem: Introduce a driver for CXL-2.0-Type-3
+ endpoints
+In-Reply-To: <20210130002438.1872527-2-ben.widawsky@intel.com>
+Message-ID: <54655f17-2e4a-cc1e-262c-b365e3de9b20@google.com>
+References: <20210130002438.1872527-1-ben.widawsky@intel.com> <20210130002438.1872527-2-ben.widawsky@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-e1000's #define of CONFIG_RAM_BASE conflicts with a Kconfig symbol in
-arch/csky/Kconfig.
-The symbol in e1000 has been around longer, so change arch/csky/
-to use DRAM_BASE instead of RAM_BASE to remove the conflict.
-(although e1000 is also a 2-line change)
+On Fri, 29 Jan 2021, Ben Widawsky wrote:
 
-Not tested: I don't have a build toolchain for CSKY.
+> diff --git a/drivers/cxl/Kconfig b/drivers/cxl/Kconfig
+> new file mode 100644
+> index 000000000000..3b66b46af8a0
+> --- /dev/null
+> +++ b/drivers/cxl/Kconfig
+> @@ -0,0 +1,35 @@
+> +# SPDX-License-Identifier: GPL-2.0-only
+> +menuconfig CXL_BUS
+> +	tristate "CXL (Compute Express Link) Devices Support"
+> +	depends on PCI
+> +	help
+> +	  CXL is a bus that is electrically compatible with PCI Express, but
+> +	  layers three protocols on that signalling (CXL.io, CXL.cache, and
+> +	  CXL.mem). The CXL.cache protocol allows devices to hold cachelines
+> +	  locally, the CXL.mem protocol allows devices to be fully coherent
+> +	  memory targets, the CXL.io protocol is equivalent to PCI Express.
+> +	  Say 'y' to enable support for the configuration and management of
+> +	  devices supporting these protocols.
+> +
+> +if CXL_BUS
+> +
+> +config CXL_MEM
+> +	tristate "CXL.mem: Endpoint Support"
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Cc: Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc: intel-wired-lan@lists.osuosl.org
-Cc: Guo Ren <guoren@linux.alibaba.com>
-Cc: Guo Ren <guoren@kernel.org>
-Cc: linux-csky@vger.kernel.org
----
-IMO "CONFIG_" namespace should belong to Kconfig files, not
-individual drivers, but e1000 isn't the only driver that uses
-CONFIG_ symbols.
+Nit: "CXL.mem: Memory Devices" or "CXL Memory Devices: CXL.mem" might look 
+better, but feel free to ignore.
 
- arch/csky/Kconfig            |    2 +-
- arch/csky/include/asm/page.h |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
---- linux-next-20210129.orig/arch/csky/include/asm/page.h
-+++ linux-next-20210129/arch/csky/include/asm/page.h
-@@ -28,7 +28,7 @@
- #define SSEG_SIZE	0x20000000
- #define LOWMEM_LIMIT	(SSEG_SIZE * 2)
- 
--#define PHYS_OFFSET_OFFSET (CONFIG_RAM_BASE & (SSEG_SIZE - 1))
-+#define PHYS_OFFSET_OFFSET (CONFIG_DRAM_BASE & (SSEG_SIZE - 1))
- 
- #ifndef __ASSEMBLY__
- 
---- linux-next-20210129.orig/arch/csky/Kconfig
-+++ linux-next-20210129/arch/csky/Kconfig
-@@ -314,7 +314,7 @@ config FORCE_MAX_ZONEORDER
- 	int "Maximum zone order"
- 	default "11"
- 
--config RAM_BASE
-+config DRAM_BASE
- 	hex "DRAM start addr (the same with memory-section in dts)"
- 	default 0x0
- 
+Acked-by: David Rientjes <rientjes@google.com>
