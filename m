@@ -2,64 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A13D309158
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 02:52:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F99309162
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 02:56:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231597AbhA3Bwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 20:52:31 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:35974 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231791AbhA3Brq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 20:47:46 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id 5A3D81F45F9C
-From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-To:     corbet@lwn.net
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@collabora.com>
-Subject: [PATCH 2/2] Documentation: admin-guide: Update kvm/xen config option
-Date:   Fri, 29 Jan 2021 22:45:47 -0300
-Message-Id: <20210130014547.123006-2-andrealmeid@collabora.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210130014547.123006-1-andrealmeid@collabora.com>
-References: <20210130014547.123006-1-andrealmeid@collabora.com>
+        id S231671AbhA3Bx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 20:53:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56856 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232307AbhA3Bur (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 20:50:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 72CAD64E02;
+        Sat, 30 Jan 2021 01:50:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611971406;
+        bh=ib3wygmXvFBym4GXiMuwBb9Jx+T6NTvh6bSdAwwR5Lw=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=DEAQO4W07QZB40Dz4HcTS99vFx/M0SKejSljXmxRqdx1a670CjvDJO5Asv+wEiK4T
+         KHR64cFa5toxpGCAoPcluhlzUYaPoj+EZTUkNncFHzhXghTc7EKNpVJgkLflGZxCC4
+         5vfk+Y1Ho2INqG1z5g+zb7LIpN5k2GdeOgLWHAYnqGvYoKoJ0ZrDEqbOlwkCioay2L
+         D/JtFjwNXo7ZUjbQAwprAXZHWl0Rm+WtL2VakIdxFom4FpIZBA+37q2WZvfKEBC5SQ
+         oDBhjSJID0YO/a5xEelByV4RwfcO4mHVGEdwsovRFF5vZPkM6YqaluEqZ0jI/pxCgT
+         Fc+8x5Im/FN1A==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7D82F6095C;
+        Sat, 30 Jan 2021 01:50:06 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] net: packet: make pkt_sk() inline
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161197140650.15399.13818703401509106390.git-patchwork-notify@kernel.org>
+Date:   Sat, 30 Jan 2021 01:50:06 +0000
+References: <20210127123302.29842-1-dong.menglong@zte.com.cn>
+In-Reply-To: <20210127123302.29842-1-dong.menglong@zte.com.cn>
+To:     Menglong Dong <menglong8.dong@gmail.com>
+Cc:     kuba@kernel.org, davem@davemloft.net, willemb@google.com,
+        dong.menglong@zte.com.cn, tannerlove@google.com,
+        john.ogness@linutronix.de, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 9bba03d4473d ("kconfig: remove 'kvmconfig' and 'xenconfig'
-shorthands") kvm/xen config shortcuts are not available anymore. Update
-the file to reflect how they should be used, with the full filename.
+Hello:
 
-Signed-off-by: André Almeida <andrealmeid@collabora.com>
----
- Documentation/admin-guide/README.rst | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-diff --git a/Documentation/admin-guide/README.rst b/Documentation/admin-guide/README.rst
-index 261b7b4cca1f..35314b63008c 100644
---- a/Documentation/admin-guide/README.rst
-+++ b/Documentation/admin-guide/README.rst
-@@ -226,10 +226,11 @@ Configuring the kernel
-                            all module options to built in (=y) options. You can
-                            also preserve modules by LMC_KEEP.
- 
--     "make kvmconfig"   Enable additional options for kvm guest kernel support.
-+     "make kvm_guest.config"   Enable additional options for kvm guest kernel
-+                               support.
- 
--     "make xenconfig"   Enable additional options for xen dom0 guest kernel
--                        support.
-+     "make xen.config"   Enable additional options for xen dom0 guest kernel
-+                         support.
- 
-      "make tinyconfig"  Configure the tiniest possible kernel.
- 
--- 
-2.30.0
+On Wed, 27 Jan 2021 04:33:02 -0800 you wrote:
+> From: Menglong Dong <dong.menglong@zte.com.cn>
+> 
+> It's better make 'pkt_sk()' inline here, as non-inline function
+> shouldn't occur in headers. Besides, this function is simple
+> enough to be inline.
+> 
+> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next] net: packet: make pkt_sk() inline
+    https://git.kernel.org/netdev/net-next/c/8c22475148a8
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
