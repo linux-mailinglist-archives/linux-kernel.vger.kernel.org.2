@@ -2,176 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7A030933E
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:24:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE7D309340
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:24:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231834AbhA3JXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 04:23:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56882 "EHLO
+        id S231879AbhA3JXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 04:23:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231452AbhA3JVJ (ORCPT
+        with ESMTP id S231887AbhA3JVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 04:21:09 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3042AC06174A
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 22:42:25 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id g15so8112183pgu.9
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 22:42:25 -0800 (PST)
+        Sat, 30 Jan 2021 04:21:08 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31152C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 22:44:19 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id rv9so16167932ejb.13
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 22:44:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=mMUVNvkj7t+7T/73tupMioAu1L+Zp4DgVQjXC9IwOhM=;
-        b=J4vDHS9PA6SLXiIlkoSmqggoWq3wD4t+NdU3YGV84mAsKuQubMSgAmp/MN5jbZAqbI
-         WBFOhRo+oxHRC9Ez4Q80mvZtun5ZJXGOnCGPZmdLYjF2RryRE7KETw/RvlZSs+WaWimV
-         YFgRrmkAeR6+3TUK5fDlVmsZYemJD0KZ5NB9bZmX5KqSI1d0cTYSmRMdvZ7ju6TEk54t
-         LVKmjNicSQCZS6yGWnQYuzV4Ev8Nw4pHDcmG8Od7KB7YrQfXIQLK0Z82pLTRD2bNJx7T
-         n+4h9tu5E+Lkz6fkdKz2pujLb92U+or41iuK5+S1KPs3TCmSx+j/V7WCKqyEI6L1PIy8
-         vUIA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=NwtwwDl8Ln1YLoP2vDO3Z4Vm2x/tAqnYx6rKhiaNtsQ=;
+        b=CrbAazJypYVO8QgW5ZXE0Xuv/HAg1OEKIjv7xNgdt/VQFQqMlXToXE/Wyu4ZRXQ0hr
+         hhj6R6r1ApByWXDyTg+FNW8MZjJT4ENlMZBmyL0fEiqE4/teuYBV/Qw6r/NiIhGeYT16
+         kjhs7PgROatxsQpR0A5TrxJ+VxvOtGq0PV+sjp98tm1tk2kN1rCOjfatTEHr0OgC44Vb
+         pe0bGK4NSPJ4/UDHChPfP6F3oQl16S4lZXNkeUF+zJU4+TdC/WsBqn6yHTeE8RKS8Zc6
+         bjBRB66d6wNYntwdWITt01LGpYdhscUn5wenhKBAtw2LAVOuV66j9YahgSCW7CRB9Pp1
+         031Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=mMUVNvkj7t+7T/73tupMioAu1L+Zp4DgVQjXC9IwOhM=;
-        b=bcF7wyIjj6RaToXq/zdZEvsKIvGhLpEQ/9FhBfLcPk3gVmBLt6yhKpA+f9dQDoGSxJ
-         sJF/baa5G6jcsYhrBILch/OOietSoU3mS9edGWyQ0W6dmdI2s7bZolsDU3AgSeV66c8v
-         FsvAvepWFJyZ5bgw5Wpx4UnB5IuTrauaEf7AXHKs9g9Mpmi54sWjU9iuD/XL66EXINC4
-         faWOKuwjEcHGM+iZ+ZiLz2iuVeBdS67DKtCkkWLFGfjtLiTayOhzXoUKfIFXc5R+0px2
-         +IlD8L88cM4HSYXhoQuQhyg4Ky+EhKDLEa3dP/G/cjJQ6thFrsyvlAxqb8UZLn6FVfVy
-         Jffg==
-X-Gm-Message-State: AOAM531BQEqRppW46dURQgFDnmT03FFgUH28i/f1Kl4/AWBkZJ3btcUH
-        KvE2Vv53BO/SPNiSsmL2eAz+Yg==
-X-Google-Smtp-Source: ABdhPJwUT8VBR+w7tk8/oYiDWz4lS2MIn967cZ0+GZQ3D4xGnJqyzoa8UmwU/lf9Edq0V+WfKl5fLQ==
-X-Received: by 2002:a63:605:: with SMTP id 5mr7898497pgg.144.1611988944536;
-        Fri, 29 Jan 2021 22:42:24 -0800 (PST)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id z2sm11078525pgl.49.2021.01.29.22.42.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 29 Jan 2021 22:42:23 -0800 (PST)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <AAB32610-D238-4137-96DE-33655AAAB545@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_7F4BCA94-4C48-4AE3-93D5-5577EE984D3A";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH] ext4: Remove unreachable code
-Date:   Fri, 29 Jan 2021 23:42:20 -0700
-In-Reply-To: <20210129185856.158310-1-viniciustinti@gmail.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-To:     Vinicius Tinti <viniciustinti@gmail.com>
-References: <20210129185856.158310-1-viniciustinti@gmail.com>
-X-Mailer: Apple Mail (2.3273)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NwtwwDl8Ln1YLoP2vDO3Z4Vm2x/tAqnYx6rKhiaNtsQ=;
+        b=JCUvd30W9I3LJ8lWjdXwDSQ5WVAxgm2vhsHTXdz3qHv0q83z0c/4QyJK9j1VD9b69m
+         P2uuOrJg22s8rZIZIs9VODbIMbNOh4FhDHyQKG770ImMTscDQsHOmc2I16v65hWNRfte
+         GVQjk1bmGp1CCSsliXbbjtWm9KaYfzIjQi/hNurg8eDduAOicWy9c/GchvVx+vSJpoWf
+         y0U/DL9+KRZpqkRmuITAmgjILKT0EcFBOiBpOF0aG+oEUtfAW+QNRPTXcgm24Y6DGIlQ
+         Gcirb7wldJr9jN66OCLyOKzS0jVtHdHmww42bp4HXLt2lrFVZz3X2z0eloVPF2bzFNMr
+         61/g==
+X-Gm-Message-State: AOAM531iFyv/2385mjNU20Po78v817mB2NDw65lbwzeujUmwNC9p0o2A
+        74OYtIHIZPNcJXnRDo7TR6QldTzdS5mh00vVhYnbiQ==
+X-Google-Smtp-Source: ABdhPJwa/UcIf2ScdiIrr3rUauZfX9NDgqhonlmagm/I78EV+mDZrfN1L+OhUjerN4lgm2OhqbWKi9PjvLwIRQFKVNk=
+X-Received: by 2002:a17:906:a153:: with SMTP id bu19mr8071858ejb.287.1611989058333;
+ Fri, 29 Jan 2021 22:44:18 -0800 (PST)
+MIME-Version: 1.0
+References: <20210129105913.476540890@linuxfoundation.org>
+In-Reply-To: <20210129105913.476540890@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 30 Jan 2021 12:14:06 +0530
+Message-ID: <CA+G9fYvDRVrYm5rEEEY+vc98CTf_KDnwWU31392xcw+AzTVrag@mail.gmail.com>
+Subject: Re: [PATCH 4.14 00/50] 4.14.218-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 29 Jan 2021 at 16:43, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.14.218 release.
+> There are 50 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 31 Jan 2021 10:59:01 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.14.218-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
---Apple-Mail=_7F4BCA94-4C48-4AE3-93D5-5577EE984D3A
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-On Jan 29, 2021, at 11:58 AM, Vinicius Tinti <viniciustinti@gmail.com> =
-wrote:
->=20
-> By enabling -Wunreachable-code-aggressive on Clang the following code
-> paths are unreachable.
->=20
-> Commit dd73b5d5cb67 ("ext4: convert dx_probe() to use the ERR_PTR
-> convention")
-> Commit ac27a0ec112a ("[PATCH] ext4: initial copy of files from ext3")
->=20
-> Clang warns:
->=20
-> fs/ext4/namei.c:831:17: warning: code will never be executed
-> [-Wunreachable-code]
->                        unsigned n =3D count - 1;
->                                     ^~~~~
-> fs/ext4/namei.c:830:7: note: silence by adding parentheses to mark =
-code as
-> explicitly dead
->                if (0) { // linear search cross check
->                    ^
->                    /* DISABLES CODE */ ( )
->=20
-> Signed-off-by: Vinicius Tinti <viniciustinti@gmail.com>
-> ---
-> fs/ext4/namei.c | 15 ---------------
-> 1 file changed, 15 deletions(-)
->=20
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index cf652ba3e74d..1f64dbd7237b 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -827,21 +827,6 @@ dx_probe(struct ext4_filename *fname, struct =
-inode *dir,
-> 				p =3D m + 1;
-> 		}
->=20
-> -		if (0) { // linear search cross check
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-I would rather put this block under "#ifdef DX_DEBUG" so that it is =
-available
-in the future for debugging problems with hashed directories.
+Summary
+------------------------------------------------------------------------
 
-> -			unsigned n =3D count - 1;
-> -			at =3D entries;
-> -			while (n--)
-> -			{
-> -				dxtrace(printk(KERN_CONT ","));
-> -				if (dx_get_hash(++at) > hash)
-> -				{
-> -					at--;
-> -					break;
-> -				}
-> -			}
-> -			ASSERT(at =3D=3D p - 1);
-> -		}
-> -
-> 		at =3D p - 1;
-> 		dxtrace(printk(KERN_CONT " %x->%u\n",
-> 			       at =3D=3D entries ? 0 : dx_get_hash(at),
-> --
-> 2.25.1
->=20
+kernel: 4.14.218-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.14.y
+git commit: 672a9e33037fec508dabec093d006a08ef8b749e
+git describe: v4.14.217-51-g672a9e33037f
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14=
+.y/build/v4.14.217-51-g672a9e33037f
 
+No regressions (compared to build v4.14.217-38-g57121d407faa)
 
-Cheers, Andreas
+No fixes (compared to build v4.14.217-38-g57121d407faa)
 
+Ran 39115 total tests in the following environments and test suites.
 
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
 
+Test Suites
+-----------
+* build
+* linux-log-parser
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kvm-unit-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-mm-tests
+* ltp-sched-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* fwts
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-fs-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* network-basic-tests
+* v4l2-compliance
+* ltp-containers-tests
+* ltp-open-posix-tests
+* rcutorture
 
-
-
---Apple-Mail=_7F4BCA94-4C48-4AE3-93D5-5577EE984D3A
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmAU/8wACgkQcqXauRfM
-H+BX7hAAtuP6GfFTB1/BBKJBQM7duFrsr4MGsKJyblsMboKopMPSu9tFRNIeaqgh
-+LjmN4iPt7zZbVWpJBoh2eFO3H0dj64Mj5xCy/qG3o+aWTD71jVdJ1y6hs21SwG8
-DEh28o2RfLmEkPseycpunio+awkwKWm9KHJNpzzu/pbm3ARdhNllW141vt/djymB
-2ME7xw9ACyurF/L7oOmMwPuF/0OQ1LMCmsOvbVzyWWUmSal33Q2Di073EjpI7ghs
-aaHXdp80Sh1JT0Y93fEF166WCsZaIjUOGUlXO1mLw1suBTCSxyvO/f/Jdf74amNk
-tizr9X4oixOQ6670cY784y/SF7tu+e0Gkj8cRAWhYF6xI9XobFkA1d78HT3uCP69
-f3xs+VDaLaYcy8nmqDpPMj/V9e0hj9FdiEaCRcusHgLcgCh4dIu6obRCQEvnzq/f
-AFBQB9skoP56V+kuQ0nHHnYdj/EYo9bxpbF5NvlJutX74bDIEa93PFacUF9TbjkO
-rQZRmv2JmCXfHx1b9oKoTLnuPEmstwvWVZn5MBy3f77JLl1FaDmxhY7IsMu7zM6F
-OnqoQtWhwEtzgT28dYMWmFFQyx3FGgY6yDWWqx+EMZ/C7nSH8AnUGMFMpVlEGbbO
-Fy07M7Wdy8ZBB2jPWyYlA750vD4huN+SuRUmk8nJh4T/wRgBMls=
-=rYW5
------END PGP SIGNATURE-----
-
---Apple-Mail=_7F4BCA94-4C48-4AE3-93D5-5577EE984D3A--
+--=20
+Linaro LKFT
+https://lkft.linaro.org
