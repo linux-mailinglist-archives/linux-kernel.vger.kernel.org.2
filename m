@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB3DE309312
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:17:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C35CE309355
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:27:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233635AbhA3JOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 04:14:25 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11991 "EHLO
+        id S231680AbhA3J0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 04:26:36 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11992 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231920AbhA3JND (ORCPT
+        with ESMTP id S231801AbhA3JXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 04:13:03 -0500
+        Sat, 30 Jan 2021 04:23:03 -0500
 Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DSQFX2nkwzjGPl;
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DSQFX3J9QzjGPt;
         Sat, 30 Jan 2021 15:05:04 +0800 (CST)
 Received: from localhost.localdomain.localdomain (10.175.113.25) by
  DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 30 Jan 2021 15:06:09 +0800
+ 14.3.498.0; Sat, 30 Jan 2021 15:06:10 +0800
 From:   Chen Zhou <chenzhou10@huawei.com>
 To:     <mingo@redhat.com>, <tglx@linutronix.de>, <rppt@kernel.org>,
         <dyoung@redhat.com>, <bhe@redhat.com>, <catalin.marinas@arm.com>,
@@ -30,11 +30,10 @@ CC:     <horms@verge.net.au>, <robh+dt@kernel.org>, <arnd@arndb.de>,
         <wangkefeng.wang@huawei.com>, <chenzhou10@huawei.com>,
         <linux-doc@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>,
-        John Donnelly <John.p.donnelly@oracle.com>
-Subject: [PATCH v14 08/11] arm64: kdump: reimplement crashkernel=X
-Date:   Sat, 30 Jan 2021 15:10:22 +0800
-Message-ID: <20210130071025.65258-9-chenzhou10@huawei.com>
+        <linux-kernel@vger.kernel.org>, <kexec@lists.infradead.org>
+Subject: [PATCH v14 09/11] x86, arm64: Add ARCH_WANT_RESERVE_CRASH_KERNEL config
+Date:   Sat, 30 Jan 2021 15:10:23 +0800
+Message-ID: <20210130071025.65258-10-chenzhou10@huawei.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210130071025.65258-1-chenzhou10@huawei.com>
 References: <20210130071025.65258-1-chenzhou10@huawei.com>
@@ -47,195 +46,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are following issues in arm64 kdump:
-1. We use crashkernel=X to reserve crashkernel below 4G, which
-will fail when there is no enough low memory.
-2. If reserving crashkernel above 4G, in this case, crash dump
-kernel will boot failure because there is no low memory available
-for allocation.
+We make the functions reserve_crashkernel[_low]() as generic for
+x86 and arm64. Since reserve_crashkernel[_low]() implementations
+are quite similar on other architectures as well, we can have more
+users of this later.
 
-To solve these issues, change the behavior of crashkernel=X and
-introduce crashkernel=X,[high,low]. crashkernel=X tries low allocation
-in DMA zone, and fall back to high allocation if it fails.
-We can also use "crashkernel=X,high" to select a region above DMA zone,
-which also tries to allocate at least 256M in DMA zone automatically.
-"crashkernel=Y,low" can be used to allocate specified size low memory.
+So have CONFIG_ARCH_WANT_RESERVE_CRASH_KERNEL in arch/Kconfig and
+select this by X86 and ARM64.
 
-Another minor change, there may be two regions reserved for crash
-dump kernel, in order to distinct from the high region and make no
-effect to the use of existing kexec-tools, rename the low region as
-"Crash kernel (low)".
-
+Suggested-by: Mike Rapoport <rppt@kernel.org>
+Suggested-by: Baoquan He <bhe@redhat.com>
 Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-Tested-by: John Donnelly <John.p.donnelly@oracle.com>
 ---
- arch/arm64/include/asm/kexec.h |  4 ++
- arch/arm64/kernel/setup.c      | 13 ++++++-
- arch/arm64/mm/init.c           | 68 ++++++----------------------------
- kernel/crash_core.c            |  6 +--
- 4 files changed, 30 insertions(+), 61 deletions(-)
+ arch/Kconfig        | 3 +++
+ arch/arm64/Kconfig  | 1 +
+ arch/x86/Kconfig    | 2 ++
+ kernel/crash_core.c | 7 ++-----
+ 4 files changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
-index 3f6ecae0bc68..f0caed0cb5e1 100644
---- a/arch/arm64/include/asm/kexec.h
-+++ b/arch/arm64/include/asm/kexec.h
-@@ -96,6 +96,10 @@ static inline void crash_prepare_suspend(void) {}
- static inline void crash_post_resume(void) {}
- #endif
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 24862d15f3a3..0ca1ff5bb157 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -24,6 +24,9 @@ config KEXEC_ELF
+ config HAVE_IMA_KEXEC
+ 	bool
  
-+#ifdef CONFIG_KEXEC_CORE
-+extern void __init reserve_crashkernel(void);
-+#endif
++config ARCH_WANT_RESERVE_CRASH_KERNEL
++	bool
 +
- #ifdef CONFIG_KEXEC_FILE
- #define ARCH_HAS_KIMAGE_ARCH
+ config SET_FS
+ 	bool
  
-diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-index c18aacde8bb0..69c592c546de 100644
---- a/arch/arm64/kernel/setup.c
-+++ b/arch/arm64/kernel/setup.c
-@@ -238,7 +238,18 @@ static void __init request_standard_resources(void)
- 		    kernel_data.end <= res->end)
- 			request_resource(res, &kernel_data);
- #ifdef CONFIG_KEXEC_CORE
--		/* Userspace will find "Crash kernel" region in /proc/iomem. */
-+		/*
-+		 * Userspace will find "Crash kernel" or "Crash kernel (low)"
-+		 * region in /proc/iomem.
-+		 * In order to distinct from the high region and make no effect
-+		 * to the use of existing kexec-tools, rename the low region as
-+		 * "Crash kernel (low)".
-+		 */
-+		if (crashk_low_res.end && crashk_low_res.start >= res->start &&
-+				crashk_low_res.end <= res->end) {
-+			crashk_low_res.name = "Crash kernel (low)";
-+			request_resource(res, &crashk_low_res);
-+		}
- 		if (crashk_res.end && crashk_res.start >= res->start &&
- 		    crashk_res.end <= res->end)
- 			request_resource(res, &crashk_res);
-diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index 912f64f505f7..d20f5c444ebf 100644
---- a/arch/arm64/mm/init.c
-+++ b/arch/arm64/mm/init.c
-@@ -35,6 +35,7 @@
- #include <asm/fixmap.h>
- #include <asm/kasan.h>
- #include <asm/kernel-pgtable.h>
-+#include <asm/kexec.h>
- #include <asm/memory.h>
- #include <asm/numa.h>
- #include <asm/sections.h>
-@@ -61,66 +62,11 @@ EXPORT_SYMBOL(memstart_addr);
-  */
- phys_addr_t arm64_dma_phys_limit __ro_after_init;
- 
--#ifdef CONFIG_KEXEC_CORE
--/*
-- * reserve_crashkernel() - reserves memory for crash kernel
-- *
-- * This function reserves memory area given in "crashkernel=" kernel command
-- * line parameter. The memory reserved is used by dump capture kernel when
-- * primary kernel is crashing.
-- */
-+#ifndef CONFIG_KEXEC_CORE
- static void __init reserve_crashkernel(void)
- {
--	unsigned long long crash_base, crash_size;
--	int ret;
--
--	ret = parse_crashkernel(boot_command_line, memblock_phys_mem_size(),
--				&crash_size, &crash_base);
--	/* no crashkernel= or invalid value specified */
--	if (ret || !crash_size)
--		return;
--
--	crash_size = PAGE_ALIGN(crash_size);
--
--	if (crash_base == 0) {
--		/* Current arm64 boot protocol requires 2MB alignment */
--		crash_base = memblock_find_in_range(CRASH_ALIGN, CRASH_ADDR_LOW_MAX,
--				crash_size, CRASH_ALIGN);
--		if (crash_base == 0) {
--			pr_warn("cannot allocate crashkernel (size:0x%llx)\n",
--				crash_size);
--			return;
--		}
--	} else {
--		/* User specifies base address explicitly. */
--		if (!memblock_is_region_memory(crash_base, crash_size)) {
--			pr_warn("cannot reserve crashkernel: region is not memory\n");
--			return;
--		}
--
--		if (memblock_is_region_reserved(crash_base, crash_size)) {
--			pr_warn("cannot reserve crashkernel: region overlaps reserved memory\n");
--			return;
--		}
--
--		if (!IS_ALIGNED(crash_base, CRASH_ALIGN)) {
--			pr_warn("cannot reserve crashkernel: base address is not 2MB aligned\n");
--			return;
--		}
--	}
--	memblock_reserve(crash_base, crash_size);
--
--	pr_info("crashkernel reserved: 0x%016llx - 0x%016llx (%lld MB)\n",
--		crash_base, crash_base + crash_size, crash_size >> 20);
--
--	crashk_res.start = crash_base;
--	crashk_res.end = crash_base + crash_size - 1;
- }
--#else
--static void __init reserve_crashkernel(void)
--{
--}
--#endif /* CONFIG_KEXEC_CORE */
-+#endif
- 
- #ifdef CONFIG_CRASH_DUMP
- static int __init early_init_dt_scan_elfcorehdr(unsigned long node,
-@@ -446,6 +392,14 @@ void __init bootmem_init(void)
- 	 * reserved, so do it here.
- 	 */
- 	reserve_crashkernel();
-+#ifdef CONFIG_KEXEC_CORE
-+	/*
-+	 * The low region is intended to be used for crash dump kernel devices,
-+	 * just mark the low region as "nomap" simply.
-+	 */
-+	if (crashk_low_res.end)
-+		memblock_mark_nomap(crashk_low_res.start, resource_size(&crashk_low_res));
-+#endif
- 
- 	memblock_dump_all();
- }
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index f39568b28ec1..09365c7ff469 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -82,6 +82,7 @@ config ARM64
+ 	select ARCH_WANT_FRAME_POINTERS
+ 	select ARCH_WANT_HUGE_PMD_SHARE if ARM64_4K_PAGES || (ARM64_16K_PAGES && !ARM64_VA_BITS_36)
+ 	select ARCH_WANT_LD_ORPHAN_WARN
++	select ARCH_WANT_RESERVE_CRASH_KERNEL if KEXEC_CORE
+ 	select ARCH_HAS_UBSAN_SANITIZE_ALL
+ 	select ARM_AMBA
+ 	select ARM_ARCH_TIMER
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 21f851179ff0..e6926fcb4a40 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -12,6 +12,7 @@ config X86_32
+ 	depends on !64BIT
+ 	# Options that are inherently 32-bit kernel only:
+ 	select ARCH_WANT_IPC_PARSE_VERSION
++	select ARCH_WANT_RESERVE_CRASH_KERNEL if KEXEC_CORE
+ 	select CLKSRC_I8253
+ 	select CLONE_BACKWARDS
+ 	select GENERIC_VDSO_32
+@@ -28,6 +29,7 @@ config X86_64
+ 	select ARCH_HAS_GIGANTIC_PAGE
+ 	select ARCH_SUPPORTS_INT128 if CC_HAS_INT128
+ 	select ARCH_USE_CMPXCHG_LOCKREF
++	select ARCH_WANT_RESERVE_CRASH_KERNEL if KEXEC_CORE
+ 	select HAVE_ARCH_SOFT_DIRTY
+ 	select MODULES_USE_ELF_RELA
+ 	select NEED_DMA_MAP_STATE
 diff --git a/kernel/crash_core.c b/kernel/crash_core.c
-index a0e790d6ea0f..8479be270c0b 100644
+index 8479be270c0b..2c5783985db5 100644
 --- a/kernel/crash_core.c
 +++ b/kernel/crash_core.c
-@@ -322,10 +322,10 @@ int __init parse_crashkernel_low(char *cmdline,
+@@ -320,9 +320,7 @@ int __init parse_crashkernel_low(char *cmdline,
+  * --------- Crashkernel reservation ------------------------------
+  */
  
- #ifdef CONFIG_KEXEC_CORE
- 
--#ifdef CONFIG_X86
-+#if defined(CONFIG_X86) || defined(CONFIG_ARM64)
+-#ifdef CONFIG_KEXEC_CORE
+-
+-#if defined(CONFIG_X86) || defined(CONFIG_ARM64)
++#ifdef CONFIG_ARCH_WANT_RESERVE_CRASH_KERNEL
  static int __init reserve_crashkernel_low(void)
  {
--#ifdef CONFIG_X86_64
-+#ifdef CONFIG_64BIT
- 	unsigned long long base, low_base = 0, low_size = 0;
- 	unsigned long low_mem_limit;
- 	int ret;
-@@ -450,7 +450,7 @@ void __init reserve_crashkernel(void)
+ #ifdef CONFIG_64BIT
+@@ -450,8 +448,7 @@ void __init reserve_crashkernel(void)
  	crashk_res.start = crash_base;
  	crashk_res.end   = crash_base + crash_size - 1;
  }
--#endif /* CONFIG_X86 */
-+#endif
- #endif /* CONFIG_KEXEC_CORE */
+-#endif
+-#endif /* CONFIG_KEXEC_CORE */
++#endif /* CONFIG_ARCH_WANT_RESERVE_CRASH_KERNEL */
  
  Elf_Word *append_elf_note(Elf_Word *buf, char *name, unsigned int type,
+ 			  void *data, size_t data_len)
 -- 
 2.20.1
 
