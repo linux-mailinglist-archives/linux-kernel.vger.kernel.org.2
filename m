@@ -2,123 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF923094A7
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 12:06:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB4C3094B7
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 12:26:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230104AbhA3LF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 06:05:59 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:49001 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbhA3LF5 (ORCPT
+        id S230009AbhA3LWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 06:22:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229659AbhA3LWh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 06:05:57 -0500
-Received: by mail-il1-f200.google.com with SMTP id n12so9637068ili.15
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 03:05:41 -0800 (PST)
+        Sat, 30 Jan 2021 06:22:37 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4F3C061573;
+        Sat, 30 Jan 2021 03:21:56 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id f19so13529638ljn.5;
+        Sat, 30 Jan 2021 03:21:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=jg0IO2721rJAPRyDMSXIv6xNyC+AJXZG5LyquGPskMs=;
+        b=gLrXY82j7HE9RbjUVEdPaUxV4sY6rEhZ5WRZeDyiYGVyzx2DLtVexh6dMu5nJc0H5b
+         GVHi441+A3byd7yAA38T6NhT78HyUWEcCaTrOG93DHvx1uqikzISJ7vlwT41MNRnJ6jG
+         n7MKn8VWB0EgTnugTS/PagR31MV4Gq+cStucQwrnxW44vLiM3mvmXNdvheQSbOHgTLYU
+         bdOf5pQr7eQVJg8AnerLNzD5uwTxbwQt/6dnrf2sZliORiUfkAu3uZbyWuSoiCvHGBTz
+         qWU6Mflt2o970TYdvCWqNLTRkJr2IMm7S9rcAq3YGB15Xg2qn+yidIiBftMhim+CosTF
+         owpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=jCBSnhYhEzX3fnG+CyRibw/WOx8ApQmO7+F32f63PTk=;
-        b=l9VjgaN76VgWfuRb/1j1CPKUhQ43AjTiaCu/T+j/RYsbqGjcBkGTqVf5zs98SOj2YT
-         va9+KvarCEwrQVd32pKkk+f7XIZRd45MS7XdkaPe2SzE16bHffths+6NWJz8NKwrVP/Y
-         F5LKJ+GMyqiuUnwO4KOMg88/rFQ9wTdwbjDlZQrPLDhwCs6E0siN950PFmWF7zacRn9x
-         nnp1rYkIF1zOVRuKpKpH9ef9cYtj9K1Yrvvx0XKdB9BajPZGTfj7/+biBa4DBYFkKwRJ
-         igA8b3914Pg65eIrQs12mRYfqEqM/6bmqNcwTlN2XVdTMr1LrPych5sp8AtlvncsmlE7
-         puqg==
-X-Gm-Message-State: AOAM532Arf1wej7h6L0g2v40fzt7YGzzFhHvoKAYik4U6jSXL8KEb2YO
-        +IFjkvK7ychNoCSnkeW778btsB+z9MjWYJV0RnoeZDJD6L8y
-X-Google-Smtp-Source: ABdhPJxqHQKx65sKV365XJS+R6hQXLKWru0dwR6RmmGnXjPCjtsNz2RsBBFz7eXX8MCZHUc/AjXaDUrBvEACyoxrTngsHIGqkPve
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=jg0IO2721rJAPRyDMSXIv6xNyC+AJXZG5LyquGPskMs=;
+        b=RfU5Ew70ZP7iMsH3wb4B4xK6xoQ8CIIpzakj67z9ObyMTuWxdU5FCMuvqVcDO4+qyg
+         dhxZV70M1FbpjXo7RhvVLfzGawivUx6COlCJt+C9IVLBcGFGeYGUpUpcq4YZAhvVP0D7
+         HeojMA29Rcj36FshHofbCSGbZByqXNKTyg4VMAJUKMwSvsGNZs/b+FuM+uXTNwDWdqJ0
+         ndrGkLHrysC5SOsCBvm1RJussR1p+ElAfOWmbGujPN97K60V1jOBgczMzXHHErcaiELz
+         Q+15cNpd5+UwNDev+mo1nC0cbe0MsehTXdKhQNiEwy5ldylIsP4+ykxE7bfxXbVL1Qwf
+         aKZg==
+X-Gm-Message-State: AOAM533Cp3wJE9hLvkTws3fQ+dgTJUeLNC3fa+2k7gK6VnwkLGvzprss
+        Pfav6gTpXJ7/gr9q6+/m+e4=
+X-Google-Smtp-Source: ABdhPJxvfD2G/QjPf3AbJh1DHeaFNULkTrE7VlnvvQfxWXHid+/Y4RaazE7KdJmZiIGlhRwfcAF8wQ==
+X-Received: by 2002:a2e:7803:: with SMTP id t3mr2958909ljc.202.1612005714982;
+        Sat, 30 Jan 2021 03:21:54 -0800 (PST)
+Received: from pc636 (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id 13sm2327929lft.5.2021.01.30.03.21.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Jan 2021 03:21:54 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Sat, 30 Jan 2021 12:21:52 +0100
+To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        "paulmck@kernel.org" <paulmck@kernel.org>,
+        "joel@joelfernandes.org" <joel@joelfernandes.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: =?utf-8?B?5Zue5aSNOiBbUEFUQw==?= =?utf-8?Q?H?= v2] kvfree_rcu:
+ Release page cache under memory pressure
+Message-ID: <20210130112152.GA1977@pc636>
+References: <20210129080442.16055-1-qiang.zhang@windriver.com>
+ <20210129141953.GA29827@pc638.lan>
+ <BYAPR11MB2632B16DBD0A3EBEA5EA2FAFFFB89@BYAPR11MB2632.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-X-Received: by 2002:a02:c76b:: with SMTP id k11mr7469699jao.57.1612004716035;
- Sat, 30 Jan 2021 03:05:16 -0800 (PST)
-Date:   Sat, 30 Jan 2021 03:05:16 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000079c56a05ba1c18c3@google.com>
-Subject: KASAN: use-after-free Read in ext4_xattr_set_entry (4)
-From:   syzbot <syzbot+4cb1e27475bf90a9b926@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BYAPR11MB2632B16DBD0A3EBEA5EA2FAFFFB89@BYAPR11MB2632.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Jan 30, 2021 at 06:47:31AM +0000, Zhang, Qiang wrote:
+> 
+> 
+> ________________________________________
+> 发件人: Uladzislau Rezki <urezki@gmail.com>
+> 发送时间: 2021年1月29日 22:19
+> 收件人: Zhang, Qiang
+> 抄送: urezki@gmail.com; paulmck@kernel.org; joel@joelfernandes.org; rcu@vger.kernel.org; linux-kernel@vger.kernel.org
+> 主题: Re: [PATCH v2] kvfree_rcu: Release page cache under memory pressure
+> 
+> [Please note: This e-mail is from an EXTERNAL e-mail address]
+> 
+> On Fri, Jan 29, 2021 at 04:04:42PM +0800, qiang.zhang@windriver.com wrote:
+> > From: Zqiang <qiang.zhang@windriver.com>
+> >
+> > Add free per-cpu existing krcp's page cache operation, when
+> > the system is under memory pressure.
+> >
+> > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+> > ---
+> >  kernel/rcu/tree.c | 25 +++++++++++++++++++++++++
+> >  1 file changed, 25 insertions(+)
+> >
+> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > index c1ae1e52f638..ec098910d80b 100644
+> > --- a/kernel/rcu/tree.c
+> > +++ b/kernel/rcu/tree.c
+> > @@ -3571,17 +3571,40 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+> >  }
+> >  EXPORT_SYMBOL_GPL(kvfree_call_rcu);
+> >
+> > +static int free_krc_page_cache(struct kfree_rcu_cpu *krcp)
+> > +{
+> > +     unsigned long flags;
+> > +     struct kvfree_rcu_bulk_data *bnode;
+> > +     int i;
+> > +
+> > +     for (i = 0; i < rcu_min_cached_objs; i++) {
+> > +             raw_spin_lock_irqsave(&krcp->lock, flags);
+> >I am not sure why we should disable IRQs. I think it can be >avoided.
+> 
+> Suppose in multi CPU system, the kfree_rcu_shrink_scan function is runing on CPU2,
+> and we just traverse to CPU2, and then call free_krc_page_cache function,
+> if not disable irq, a interrupt may be occurs on CPU2 after the CPU2 corresponds to krcp variable 's lock be acquired,  if the interrupt or softirq handler function to call kvfree_rcu function, in this function , acquire CPU2 corresponds to krcp variable 's lock , will happen deadlock.
+> Or in single CPU scenario.
+> 
+Right. Deadlock scenario. It went away from my head during writing that :)
 
-syzbot found the following issue on:
+Thanks!
 
-HEAD commit:    f8ad8187 fs/pipe: allow sendfile() to pipe again
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11b8ad10d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=96b123631a6700e9
-dashboard link: https://syzkaller.appspot.com/bug?extid=4cb1e27475bf90a9b926
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11131f94d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15c3761b500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4cb1e27475bf90a9b926@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: use-after-free in ext4_xattr_set_entry+0x3151/0x3780 fs/ext4/xattr.c:1586
-Read of size 4 at addr ffff888030c00004 by task syz-executor392/11280
-
-CPU: 0 PID: 11280 Comm: syz-executor392 Not tainted 5.11.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:230
- __kasan_report mm/kasan/report.c:396 [inline]
- kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
- ext4_xattr_set_entry+0x3151/0x3780 fs/ext4/xattr.c:1586
- ext4_xattr_ibody_set+0x78/0x2b0 fs/ext4/xattr.c:2224
- ext4_xattr_set_handle+0x8f4/0x13e0 fs/ext4/xattr.c:2380
- ext4_xattr_set+0x13a/0x340 fs/ext4/xattr.c:2493
- __vfs_setxattr+0x10e/0x170 fs/xattr.c:177
- __vfs_setxattr_noperm+0x11a/0x4c0 fs/xattr.c:208
- __vfs_setxattr_locked+0x1bf/0x250 fs/xattr.c:266
- vfs_setxattr+0x135/0x320 fs/xattr.c:291
- setxattr+0x1ff/0x290 fs/xattr.c:553
- path_setxattr+0x170/0x190 fs/xattr.c:572
- __do_sys_setxattr fs/xattr.c:587 [inline]
- __se_sys_setxattr fs/xattr.c:583 [inline]
- __x64_sys_setxattr+0xc0/0x160 fs/xattr.c:583
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x445589
-Code: e8 4c b3 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 0b cc fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fffdf5f9b28 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
-RAX: ffffffffffffffda RBX: 0000000000000016 RCX: 0000000000445589
-RDX: 0000000000000000 RSI: 0000000020000140 RDI: 0000000020000100
-RBP: 0000000001a18c30 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000000073d
-R13: 00007fffdf5f9ba0 R14: 0000000000000000 R15: 0000000000000000
-
-The buggy address belongs to the page:
-page:00000000f7ed6945 refcount:0 mapcount:-128 mapping:0000000000000000 index:0x1 pfn:0x30c00
-flags: 0xfff00000000000()
-raw: 00fff00000000000 ffffea0000c56508 ffffea0000c17d88 0000000000000000
-raw: 0000000000000001 0000000000000001 00000000ffffff7f 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888030bfff00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff888030bfff80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff888030c00000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                   ^
- ffff888030c00080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff888030c00100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+--
+Vlad Rezki
