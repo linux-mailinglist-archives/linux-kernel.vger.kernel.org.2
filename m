@@ -2,105 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A69863092DC
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:07:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F733092D1
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:02:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233753AbhA3JGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 04:06:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55734 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233785AbhA3Evg (ORCPT
+        id S233841AbhA3JBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 04:01:23 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:50368 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230198AbhA3FGo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 23:51:36 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6328EC0613D6;
-        Fri, 29 Jan 2021 20:49:43 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id md11so6839677pjb.0;
-        Fri, 29 Jan 2021 20:49:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=W4ElXu2pfKkjYu5Tw1aWk15MrTDF5YFDL7qh1XByBdU=;
-        b=ulPePdt06VqbRP2Ujk8YwZYWD5dPcMsw0esI2Kr6hHl3kPuXd0V04B5AbW06/iUh2y
-         3X14k0FOC0gg9t8YTtoKOSq2e6ThnCsNEJ70mbaVC4gCQiUVYwsN7L+r29r0PVtPylXX
-         o5JmE2gfJEG/K7qIyZesI2m/3vTR2RfJgCEkwyrCPgL2Yqi7W89kuV/BYkTWMQqESrRp
-         MwADubfTtYYyqt0V7GOQLATuKMkGmP2nWnCHnKfqFaMH3WHwj8GhPuoIx0V54p1tIZcj
-         5VGSqtyEqOd1GtazFyUH/Q9B7UVd7sWkoSfMrMHqxW8KG3XazWx/2vabz7LtN4o144mc
-         bhNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=W4ElXu2pfKkjYu5Tw1aWk15MrTDF5YFDL7qh1XByBdU=;
-        b=Eh+jvgKrGwpeLrGcHp6gU9kkTPw6wLshjjgoUqH70PkgLmU84MLj3ipRzS/pY7QRZ1
-         ROhAZvFE7KnPLQT5rtY8kcpf9PCq3XzpqYVmiOCtlylwmw3xNDyQlcJLELxHlP8XRVty
-         +WwKMCp7rqxoKQ/YmSzY8M9OMCsJWO/GsaYSL2CFQyRMARyavpIFl74ylt7i+1he5Ltu
-         2i1GU8aFgZgYynvQR0n6Ip0AjDcOtl8/4yXm5NhgB5N28plni9zC5xBdvNFkJzTr73zp
-         Hm9ntsdHn/JD3/q3AcI6FzIMjmp2nZLL9O29Ri79irLdjFtYyDeAypAYa9GK8a7Ir8Bi
-         SopA==
-X-Gm-Message-State: AOAM530k7bII9NQrtrMo842jK47BRQq9MV8Gv2VOvXNZN5+J6CGqoIZM
-        7uNjrIZ2z8rjZQe2rUckE+M=
-X-Google-Smtp-Source: ABdhPJz9rqRji737ivUghrqzFXycVYcDmyKV5BXhRQHvkmQmsOZi5IkJYmQS7gIvAzb9hG43ivNAbw==
-X-Received: by 2002:a17:902:854b:b029:e1:1d90:f299 with SMTP id d11-20020a170902854bb02900e11d90f299mr7130144plo.15.1611982182581;
-        Fri, 29 Jan 2021 20:49:42 -0800 (PST)
-Received: from localhost ([2402:3a80:11ea:a43c:a2a4:c5ff:fe20:7222])
-        by smtp.gmail.com with ESMTPSA id z201sm5385249pfc.157.2021.01.29.20.49.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Jan 2021 20:49:41 -0800 (PST)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Cc:     memxor@gmail.com, Manish Chopra <manishc@marvell.com>,
-        GR-Linux-NIC-Dev@marvell.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        netdev@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] staging: qlge/qlge_ethtool.c: Switch from strlcpy to strscpy
-Date:   Sat, 30 Jan 2021 10:18:28 +0530
-Message-Id: <20210130044828.121248-1-memxor@gmail.com>
+        Sat, 30 Jan 2021 00:06:44 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10U548sb113856;
+        Fri, 29 Jan 2021 23:04:08 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1611983048;
+        bh=7cFyoVmCdSbdeJkpym0xMSAIO2LdbRoL+6TOp1iLAlE=;
+        h=From:To:CC:Subject:Date;
+        b=Y6yTZAPHKJK1c7VmpnD4ODYY/QMg1GE2nVvafAJlaAYMPLoJmCCKyGEQchAKQyE6p
+         9v9eujJX8pSnkwKDjDYiHaH1dXIdYT/1LnUqYRLWhvvG/GHiisBtYgsiVzltHQ13I4
+         fFmtCAjB8Gq0P0Lka0oo+E2OSK/rSvYS2d914iRM=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10U548OE106076
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 29 Jan 2021 23:04:08 -0600
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 29
+ Jan 2021 23:04:07 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 29 Jan 2021 23:04:08 -0600
+Received: from fllv0103.dal.design.ti.com (fllv0103.dal.design.ti.com [10.247.120.73])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10U547Ot119521;
+        Fri, 29 Jan 2021 23:04:07 -0600
+Received: from localhost ([10.250.41.234])
+        by fllv0103.dal.design.ti.com (8.14.7/8.14.7) with ESMTP id 10U547lI004299;
+        Fri, 29 Jan 2021 23:04:07 -0600
+From:   Suman Anna <s-anna@ti.com>
+To:     Santosh Shilimkar <ssantosh@kernel.org>
+CC:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Suman Anna <s-anna@ti.com>
+Subject: [PATCH] soc: ti: k3-ringacc: Use of_device_get_match_data()
+Date:   Fri, 29 Jan 2021 23:04:00 -0600
+Message-ID: <20210130050400.28085-1-s-anna@ti.com>
 X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strlcpy is marked as deprecated in Documentation/process/deprecated.rst,
-and there is no functional difference when the caller expects truncation
-(when not checking the return value). strscpy is relatively better as it
-also avoids scanning the whole source string.
+Simplify the retrieval of getting the match data in the probe
+function by directly using of_device_get_match_data() instead
+of using of_match_node() and getting data.
 
-This silences the related checkpatch warnings from:
-5dbdb2d87c29 ("checkpatch: prefer strscpy to strlcpy")
-
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+Signed-off-by: Suman Anna <s-anna@ti.com>
 ---
- drivers/staging/qlge/qlge_ethtool.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/soc/ti/k3-ringacc.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/staging/qlge/qlge_ethtool.c b/drivers/staging/qlge/qlge_ethtool.c
-index a28f0254c..635d3338f 100644
---- a/drivers/staging/qlge/qlge_ethtool.c
-+++ b/drivers/staging/qlge/qlge_ethtool.c
-@@ -417,15 +417,15 @@ static void ql_get_drvinfo(struct net_device *ndev,
+diff --git a/drivers/soc/ti/k3-ringacc.c b/drivers/soc/ti/k3-ringacc.c
+index b495b0d5d0fa..312ba0f98ad7 100644
+--- a/drivers/soc/ti/k3-ringacc.c
++++ b/drivers/soc/ti/k3-ringacc.c
+@@ -9,6 +9,7 @@
+ #include <linux/io.h>
+ #include <linux/init.h>
+ #include <linux/of.h>
++#include <linux/of_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/sys_soc.h>
+ #include <linux/dma/ti-cppi5.h>
+@@ -1517,15 +1518,13 @@ EXPORT_SYMBOL_GPL(k3_ringacc_dmarings_init);
+ static int k3_ringacc_probe(struct platform_device *pdev)
  {
- 	struct ql_adapter *qdev = netdev_priv(ndev);
+ 	const struct ringacc_match_data *match_data;
+-	const struct of_device_id *match;
+ 	struct device *dev = &pdev->dev;
+ 	struct k3_ringacc *ringacc;
+ 	int ret;
  
--	strlcpy(drvinfo->driver, qlge_driver_name, sizeof(drvinfo->driver));
--	strlcpy(drvinfo->version, qlge_driver_version,
-+	strscpy(drvinfo->driver, qlge_driver_name, sizeof(drvinfo->driver));
-+	strscpy(drvinfo->version, qlge_driver_version,
- 		sizeof(drvinfo->version));
- 	snprintf(drvinfo->fw_version, sizeof(drvinfo->fw_version),
- 		 "v%d.%d.%d",
- 		 (qdev->fw_rev_id & 0x00ff0000) >> 16,
- 		 (qdev->fw_rev_id & 0x0000ff00) >> 8,
- 		 (qdev->fw_rev_id & 0x000000ff));
--	strlcpy(drvinfo->bus_info, pci_name(qdev->pdev),
-+	strscpy(drvinfo->bus_info, pci_name(qdev->pdev),
- 		sizeof(drvinfo->bus_info));
- }
+-	match = of_match_node(k3_ringacc_of_match, dev->of_node);
+-	if (!match)
++	match_data = of_device_get_match_data(&pdev->dev);
++	if (!match_data)
+ 		return -ENODEV;
+-	match_data = match->data;
  
+ 	ringacc = devm_kzalloc(dev, sizeof(*ringacc), GFP_KERNEL);
+ 	if (!ringacc)
 -- 
 2.29.2
 
