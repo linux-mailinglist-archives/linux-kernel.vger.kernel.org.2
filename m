@@ -2,54 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6F9309327
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:19:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 866F0309324
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:19:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231630AbhA3JS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 04:18:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47820 "EHLO
+        id S231443AbhA3JSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 04:18:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233581AbhA3ENi (ORCPT
+        with ESMTP id S233643AbhA3EOc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 23:13:38 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A358C061355
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 20:03:49 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id n22so7495746qtv.10
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 20:03:49 -0800 (PST)
+        Fri, 29 Jan 2021 23:14:32 -0500
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CF4EC061356
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 20:03:52 -0800 (PST)
+Received: by mail-qt1-x849.google.com with SMTP id 22so7485148qty.14
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 20:03:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=6yjiROmKXwI5iy3N25Dq+Vp2KGEiJYR7/eTGN7b8WqE=;
-        b=WkbIQAqdWGfFeU7O8qmZVRy0Q1Ra+14RGwmTbc29b04j77rcth7QCAxHA4+EFEVuh8
-         xcYInAaWJZPGS8kJwzeKjtMX8scRAqCSkH7ny0GuoqsHYke1nc27oOrXJtCElv/ZcvZO
-         gecl5ikLFYBlfLd/0bcEfPp2gdtFAwEmMkgH9Z3+TcHWP+uqfxTaxN8cYZ7QI2Z6a9Hh
-         EbFsJP/FrMNaBZht8XCs75kjAOiX/UlOx21Lq0x3mb8CJItu70WwihQkA1v73xy9w1og
-         3enOizDZI+BVlb7rO01zBkoHhxG4GY2GBjwnCbMrQ4PCbg1Rn+wU0/e8BjCEBE0OVn8W
-         FQoA==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=l1vXrQs2lv+kNAXuJD7PXrJj1pClRpRGVgsnuacvh0k=;
+        b=qrhairEvJPB4oBg83+oklny/gIomRLTUTylZQT1Gb6DxImdDeGrGfghK//TmZcppIe
+         XcEqVu2Sook9+PfNaiDig9nAuSguWTrMmYzT/cDxcQL13dkIXwL/3Hv58Rl5qViay/n4
+         n6611i3IvNwyOl0j4iPKIn7Gfwrw4vNpNVY/0ool0D3gX1kYarHJ4Xr18sqwJJKgtpMA
+         4b5pgc5aApw17fIRtU86SfgcpshZWwrE+lrR0e7JvdGa28LNlUWNk6BlGCvPoHA27hq9
+         uAW+R9aetnQQ61TzYTJuyWNWqvXa0UDcRX9vvj92hdCPiRTS7npB9tSgr6Sbqg193oc5
+         tJDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=6yjiROmKXwI5iy3N25Dq+Vp2KGEiJYR7/eTGN7b8WqE=;
-        b=K4CJCItQ+4O6t1gzQbiMubOpcZHfPyJ1frJ4fcWF003Jb4g5oytFgUF5i0aruup1RD
-         l7Mv8rum51Ww/+bixRzHKwk5ks9a2IfHU1CdNtYHc/x48NYaS2EI2kUmo5Dr+6nAiVEO
-         EdjO4UaKSo5FcEm466OK4gpwT7Obk2NHeJ5FqhUPUuBwYKqbGTHwtstWGlHyGfvsioE8
-         Wxr+6iyxkri+BOS+RWVIzXPIgEOdv2QcycBxqju9GUg7qtzcM9aKk2o/FhePL6wTayYd
-         kYJdIvSBYY9onEJc8WmW+bzqmtcntx6WXXJjxYW8kwt0OMdGk8t3GMd7M/wgGJawMPcb
-         qpRA==
-X-Gm-Message-State: AOAM530NIq68z9pDLyQACM6WkpcqxGyT4/9qyWbDWzUltvaJU7QEB0Nh
-        G7R5/vxf53q4R4z0rHgyu3qHTbOPMZB9RwA=
-X-Google-Smtp-Source: ABdhPJxEWOYD5y9oRx9km/I3IsjqchR2ILXWtrE4D/Upc4y0tZDFw25zF4Pd9+BGFHz8osCBNOhGHJW5Igps4TM=
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=l1vXrQs2lv+kNAXuJD7PXrJj1pClRpRGVgsnuacvh0k=;
+        b=JBC7jnaXZfnEVc4cgfnylu6zNTE/r0ZNUwr7Iga6rjEoC69/C5bJ5lGS2ez0/E3did
+         echcBkwnYetIpuVy9bGDWEgCcXeR2u4VEYM6qN7SD7V4L7x13c6OMIKk5eCTUu6N7WRj
+         Huyi4cRfV3a0eU8qfiIoUm6JwNwauu2jKr/v6GiZGJPfFi+Bo89FlWlJjqvqqF3Q+mVB
+         CsDIAMv5plAsZiNZcGnO3VEG5DmjcwSrj7cZEvheKzd/d6RIkQos//obhipz3PmH37qB
+         yvx3MFQTB8k+dQ5e31fuHHyZFf6QISy5gK9b+mC9adCWeNLyi1K8tQodF754qtyBeBUT
+         Z0OQ==
+X-Gm-Message-State: AOAM5307oejVU7+8gyPtSFB4CT4JrnJnFeKHvraGAUSHKYFKAOEzdsif
+        bt8vw6u5kpITaqU2TaLwdowJ2IcSZpn2KDA=
+X-Google-Smtp-Source: ABdhPJxFeKkgjWYpH4/dmm9xkCIllMb+GIs/fyxdlGKN7LW237jrOW/br7jaEA3u3m4sAmAbjDYX41fpv0ebyrE=
 Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
 X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7220:84ff:fe09:fedc])
- (user=saravanak job=sendgmr) by 2002:a0c:b65f:: with SMTP id
- q31mr6637023qvf.24.1611979428638; Fri, 29 Jan 2021 20:03:48 -0800 (PST)
-Date:   Fri, 29 Jan 2021 20:03:42 -0800
-Message-Id: <20210130040344.2807439-1-saravanak@google.com>
+ (user=saravanak job=sendgmr) by 2002:a0c:c687:: with SMTP id
+ d7mr6778697qvj.17.1611979431286; Fri, 29 Jan 2021 20:03:51 -0800 (PST)
+Date:   Fri, 29 Jan 2021 20:03:43 -0800
+In-Reply-To: <20210130040344.2807439-1-saravanak@google.com>
+Message-Id: <20210130040344.2807439-2-saravanak@google.com>
 Mime-Version: 1.0
+References: <20210130040344.2807439-1-saravanak@google.com>
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v1 0/2] Make fw_devlink=on more forgiving
+Subject: [PATCH v1 1/2] driver core: fw_devlink: Detect supplier devices that
+ will never be added
 From:   Saravana Kannan <saravanak@google.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
@@ -58,71 +62,88 @@ To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Marc Zyngier <maz@kernel.org>,
         Tudor Ambarus <Tudor.Ambarus@microchip.com>,
         Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series solves two general issues with fw_devlink=on
+During the initial parsing of firmware by fw_devlink, fw_devlink might
+infer that some supplier firmware nodes would get populated as devices.
+But the inference is not always correct. This patch tries to logically
+detect and fix such mistakes as boot progresses or more devices probe.
 
-Patch 1/2 addresses the issue of firmware nodes that look like they'll
-have struct devices created for them, but will never actually have
-struct devices added for them. For example, DT nodes with a compatible
-property that don't have devices added for them.
+fw_devlink makes a fundamental assumption that once a device binds to a
+driver, it will populate (i.e: add as struct devices) all the child
+firmware nodes that could be populated as devices.
 
-Patch 2/2 address (for static kernels) the issue of optional suppliers
-that'll never have a driver registered for them. So, if the device could
-have probed with fw_devlink=permissive with a static kernel, this patch
-should allow those devices to probe with a fw_devlink=on. This doesn't
-solve it for the case where modules are enabled because there's no way
-to tell if a driver will never be registered or it's just about to be
-registered. I have some other ideas for that, but it'll have to come
-later thinking about it a bit.
+So, whenever a device probes, we check all its child firmware nodes. If
+a child firmware node has a corresponding device populated, we don't
+modify the child node or its descendants. However, if a child firmware
+node has not been populated as a device, we go an delete all the fwnode
+links where the child node or its descendants are suppliers. This
+ensures that no other device is blocked on a firmware node that will
+never be populated as a device.
 
-These two patches might remove the need for several other patches that
-went in as fixes for commit e590474768f1 ("driver core: Set
-fw_devlink=on by default"), but I think all those fixes are good
-changes. So I think we should leave those in.
+Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+ drivers/base/core.c | 30 +++++++++++++++++++++++++++---
+ 1 file changed, 27 insertions(+), 3 deletions(-)
 
-Marek, Geert,
-
-Can you try this series on a static kernel with your OF_POPULATED
-changes reverted? I just want to make sure these patches can identify
-and fix those cases.
-
-Tudor,
-
-You should still make the clock driver fix (because it's a bug), but I
-think this series will fix your issue too (even without the clock driver
-fix). Can you please give this a shot?
-
-Marc,
-
-Can you try this series with the gpiolib fix reverted please? I'm pretty
-sure this will fix that case.
-
-Linus,
-
-This series very likely removes the need for the gpiolib patch (we can
-wait for Marc to confirm). I'm split on whether we should leave it in or
-not. Thoughts?
-
-Thanks,
-Saravana
-
-Saravana Kannan (2):
-  driver core: fw_devlink: Detect supplier devices that will never be
-    added
-  driver core: fw_devlink: Handle missing drivers for optional suppliers
-
- drivers/base/base.h |   2 +
- drivers/base/core.c | 134 +++++++++++++++++++++++++++++++++++++-------
- drivers/base/dd.c   |   5 ++
- 3 files changed, 121 insertions(+), 20 deletions(-)
-
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 484a942884ba..f380133df63b 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -148,6 +148,20 @@ void fwnode_links_purge(struct fwnode_handle *fwnode)
+ 	fwnode_links_purge_consumers(fwnode);
+ }
+ 
++static void fw_devlink_purge_absent_suppliers(struct fwnode_handle *fwnode)
++{
++	struct fwnode_handle *child;
++
++	/* Don't purge consumer links of an added child */
++	if (fwnode->dev)
++		return;
++
++	fwnode_links_purge_consumers(fwnode);
++
++	fwnode_for_each_available_child_node(fwnode, child)
++		fw_devlink_purge_absent_suppliers(child);
++}
++
+ #ifdef CONFIG_SRCU
+ static DEFINE_MUTEX(device_links_lock);
+ DEFINE_STATIC_SRCU(device_links_srcu);
+@@ -1154,12 +1168,22 @@ void device_links_driver_bound(struct device *dev)
+ 	LIST_HEAD(sync_list);
+ 
+ 	/*
+-	 * If a device probes successfully, it's expected to have created all
++	 * If a device binds successfully, it's expected to have created all
+ 	 * the device links it needs to or make new device links as it needs
+-	 * them. So, it no longer needs to wait on any suppliers.
++	 * them. So, fw_devlink no longer needs to create device links to any
++	 * of the device's suppliers.
++	 *
++	 * Also, if a child firmware node of this bound device is not added as
++	 * a device by now, assume it is never going to be added and make sure
++	 * other devices don't defer probe indefinitely by waiting for such a
++	 * child device.
+ 	 */
+-	if (dev->fwnode && dev->fwnode->dev == dev)
++	if (dev->fwnode && dev->fwnode->dev == dev) {
++		struct fwnode_handle *child;
+ 		fwnode_links_purge_suppliers(dev->fwnode);
++		fwnode_for_each_available_child_node(dev->fwnode, child)
++			fw_devlink_purge_absent_suppliers(child);
++	}
+ 	device_remove_file(dev, &dev_attr_waiting_for_supplier);
+ 
+ 	device_links_write_lock();
 -- 
 2.30.0.365.g02bc693789-goog
 
