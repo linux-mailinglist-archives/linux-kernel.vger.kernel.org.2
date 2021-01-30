@@ -2,108 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91C4F30947B
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 11:26:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C58F309475
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 11:25:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232272AbhA3KZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 05:25:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51148 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232199AbhA3KZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232220AbhA3KZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sat, 30 Jan 2021 05:25:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0488964E05;
-        Sat, 30 Jan 2021 10:24:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612002285;
-        bh=JnBJ9yEVn7P1tBZKCOw6J2eaiEK2+XU3s7XI7eKmziI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RVQ6JqkYHMUPHoFe/qjI3k5FhKYLINAdkkZru1LeotSaLIitfKzlBcCYlcbSe3u03
-         jUnGlWulA31u9bfPAwef9yCP8w6sEJg+vdpTfibNqYG6c4Y1t3uQsni/Dqt8XFcn4h
-         Dp5Q+4ub3EDyBo/ReZArE3N6q7ejXCdHxOT36anGLM/jAQ/gluLR88BbGqua8NxAgR
-         6iGdWCGljP3YaKFBlnQkg6c+VcoPGsJOH/OQo4tSBRajxAgbIc7DNX7d62crk2Qrq5
-         +ObWQZLLPtiZzJAa/6CaqUly0AehC+ti4B070xMhezW7pQV3nHMI1A6Iax/09AjFmO
-         Mfo6jR9t++dMA==
-Date:   Sat, 30 Jan 2021 12:24:40 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        dwmw2@infradead.org, herbert@gondor.apana.org.au,
-        davem@davemloft.net, jmorris@namei.org, serge@hallyn.com,
-        nayna@linux.ibm.com, erichte@linux.ibm.com, mpe@ellerman.id.au,
-        keyrings@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        James.Bottomley@hansenpartnership.com
-Subject: Re: [PATCH v4] certs: Add EFI_CERT_X509_GUID support for dbx entries
-Message-ID: <YBUz6Cbx/ckG8Zjj@kernel.org>
-References: <2442460.1610463459@warthog.procyon.org.uk>
- <X/9a8naM8p4tT5sO@linux.intel.com>
- <A05E3573-B1AF-474B-94A5-779E69E5880A@oracle.com>
- <YAFdNiYZSWpB9vOw@kernel.org>
- <CFBF6AEC-2832-44F7-9D7F-F20489498C33@oracle.com>
- <YAgTawk3EENF/P6j@kernel.org>
- <D9F5E0BD-E2FC-428F-91B3-35D2750493A0@oracle.com>
- <3063834.1611747971@warthog.procyon.org.uk>
- <61a0420790250807837b5a701bb52f3d63ff0c84.camel@linux.ibm.com>
- <86CE3924-E36F-44FD-A259-3CC7E69D3EAC@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <86CE3924-E36F-44FD-A259-3CC7E69D3EAC@oracle.com>
+Received: from mga07.intel.com ([134.134.136.100]:19457 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231886AbhA3KZN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 05:25:13 -0500
+IronPort-SDR: IbdchUpkXVIjw2jSzcHirdzlawuQtDHjTVJxU0pomHw/z+zIOW/z34oiLbSpXkZ/iYsYt5LNu7
+ sWUUqBebEAiA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="244611581"
+X-IronPort-AV: E=Sophos;i="5.79,388,1602572400"; 
+   d="scan'208";a="244611581"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2021 02:24:30 -0800
+IronPort-SDR: o1tgIpkYB/O50xQ1coZMJY5zsLOgYRvlA1ejoavRPDWa3seVBDCoXLzJX/4qSyME1Oyay7xbe/
+ xc3hZeEZhWuQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,388,1602572400"; 
+   d="scan'208";a="577066775"
+Received: from host.sh.intel.com ([10.239.154.115])
+  by fmsmga006.fm.intel.com with ESMTP; 30 Jan 2021 02:24:28 -0800
+From:   Ye Xiang <xiang.ye@intel.com>
+To:     jikos@kernel.org, jic23@kernel.org,
+        srinivas.pandruvada@linux.intel.com
+Cc:     linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Ye Xiang <xiang.ye@intel.com>
+Subject: [PATCH v2] iio: hid-sensor-prox: Fix scale not correct issue
+Date:   Sat, 30 Jan 2021 18:25:30 +0800
+Message-Id: <20210130102530.31064-1-xiang.ye@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 08:41:29AM -0700, Eric Snowberg wrote:
-> 
-> > On Jan 27, 2021, at 7:03 AM, Mimi Zohar <zohar@linux.ibm.com> wrote:
-> > 
-> > [Cc'ing linux-integrity]
-> > 
-> > On Wed, 2021-01-27 at 11:46 +0000, David Howells wrote:
-> >> Jarkko Sakkinen <jarkko@kernel.org> wrote:
-> >> 
-> >>>> I suppose a user space tool could be created. But wouldn’t what is
-> >>>> currently done in the kernel in this area need to be removed?
-> >>> 
-> >>> Right. I don't think this was a great idea in the first place to
-> >>> do to the kernel but since it exists, I guess the patch does make
-> >>> sense.
-> >> 
-> >> This information needs to be loaded from the UEFI tables before the system
-> >> starts loading any kernel modules or running any programs (if we do
-> >> verification of such, which I think IMA can do).
-> > 
-> > There needs to a clear distinction between the pre-boot and post-boot
-> > keys.  UEFI has its own trust model, which should be limited to UEFI. 
-> > The .platform keyring was upstreamed and limited to verifying the kexec
-> > kernel image.   Any other usage of the .platform keyring keys is
-> > abusing its intended purpose.
-> > 
-> > The cover letter says,   "Anytime the .platform keyring is used, the
-> > keys in the .blacklist keyring are referenced, if a matching key is
-> > found, the key will be rejected."   I don't have a problem with loading
-> > the UEFI X509 dbx entries as long as its usage is limited to verifying
-> > the kexec kernel image.
-> 
-> Correct, with my patch, when EFI_CERT_X509_GUID entries are found in the
-> dbx, they will only be used during kexec.  I believe the latest dbx file on 
-> uefi.org contains three of these entires.
-> 
-> Based on my understanding of why the platform keyring was introduced, 
-> I intentionally only used these for kexec.  I do question the current 
-> upstream mainline code though.  Currently, when EFI_CERT_X509_SHA256_GUID
-> or EFI_CERT_SHA256_GUID entries are found in the dbx, they are applied 
-> everywhere.  It seems like there should be a dbx revocation keyring 
-> equivalent to the current platform keyring that is only used for pre-boot. 
-> 
-> If that is a direction you would like to see this go in the future, let
-> me know, I’d be happy to work on it.
+Currently, the proxy sensor scale is zero because it just return the
+exponent directly. To fix this issue, this patch use
+hid_sensor_format_scale to process the scale first then return the
+output.
 
-I would tend to agree with this.
+Fixes: 39a3a0138f61 ("iio: hid-sensors: Added Proximity Sensor Driver")
+Signed-off-by: Ye Xiang <xiang.ye@intel.com>
+---
+v2:
+  - Add Fixes tag
 
-/Jarkko
+---
+ drivers/iio/light/hid-sensor-prox.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/iio/light/hid-sensor-prox.c b/drivers/iio/light/hid-sensor-prox.c
+index 4ab285a418d5..4abcfe48f1d4 100644
+--- a/drivers/iio/light/hid-sensor-prox.c
++++ b/drivers/iio/light/hid-sensor-prox.c
+@@ -23,6 +23,9 @@ struct prox_state {
+ 	struct hid_sensor_common common_attributes;
+ 	struct hid_sensor_hub_attribute_info prox_attr;
+ 	u32 human_presence;
++	int scale_pre_decml;
++	int scale_post_decml;
++	int scale_precision;
+ };
+ 
+ static const u32 prox_sensitivity_addresses[] = {
+@@ -98,8 +101,9 @@ static int prox_read_raw(struct iio_dev *indio_dev,
+ 		ret_type = IIO_VAL_INT;
+ 		break;
+ 	case IIO_CHAN_INFO_SCALE:
+-		*val = prox_state->prox_attr.units;
+-		ret_type = IIO_VAL_INT;
++		*val = prox_state->scale_pre_decml;
++		*val2 = prox_state->scale_post_decml;
++		ret_type = prox_state->scale_precision;
+ 		break;
+ 	case IIO_CHAN_INFO_OFFSET:
+ 		*val = hid_sensor_convert_exponent(
+@@ -221,6 +225,11 @@ static int prox_parse_report(struct platform_device *pdev,
+ 	dev_dbg(&pdev->dev, "prox %x:%x\n", st->prox_attr.index,
+ 			st->prox_attr.report_id);
+ 
++	st->scale_precision = hid_sensor_format_scale(
++				hsdev->usage,
++				&st->prox_attr,
++				&st->scale_pre_decml, &st->scale_post_decml);
++
+ 	return ret;
+ }
+ 
+-- 
+2.17.1
+
