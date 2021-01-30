@@ -2,108 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEAC3096A9
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 17:22:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 248D9309684
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 17:09:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231696AbhA3QWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 11:22:08 -0500
-Received: from mga05.intel.com ([192.55.52.43]:1989 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232153AbhA3Phz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 10:37:55 -0500
-IronPort-SDR: vn8JtLratsi8YPs3L7DwkQeeTQ2oJp73w2PVI4AEY8100pGun5U+mhWSo7iAAlNpnIY2wyMPPo
- E5Toebi5MWUw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9880"; a="265368927"
-X-IronPort-AV: E=Sophos;i="5.79,388,1602572400"; 
-   d="scan'208";a="265368927"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2021 07:27:32 -0800
-IronPort-SDR: 0Fdaod5SS/O4p5u2mRo7WEr3CE5ATOhPuMbQemLHOhjpL6GaqNiSsXJ216wJ2gemxMc6D0KRnY
- DUBGSW/l7tFg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,388,1602572400"; 
-   d="scan'208";a="404853077"
-Received: from allen-box.sh.intel.com ([10.239.159.128])
-  by fmsmga004.fm.intel.com with ESMTP; 30 Jan 2021 07:27:31 -0800
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH 1/1] iommu/vt-d: Fix compile error [-Werror=implicit-function-declaration]
-Date:   Sat, 30 Jan 2021 23:19:07 +0800
-Message-Id: <20210130151907.3929148-1-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S232413AbhA3QIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 11:08:44 -0500
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:36908 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231903AbhA3QDd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 11:03:33 -0500
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10UFHhtL024362;
+        Sat, 30 Jan 2021 09:25:30 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=wu2BmKAmJwuH5eUZiZFTsmcq0Qh2USc2IKxpS+55d3Q=;
+ b=EiiRDOX530k6BHXWcBXOjmX5bHYfFf1Sdx4m2EGmgCVSQ37rLSlGujVAEaR/MnFjk9np
+ i8EUVoQeTMsd/+pnwG0ZP1jYnaJT2V+QUwi8WglsaZaLxa3/A7dZh3NOwn87Rrvd2PE5
+ dDzzRNBfbADP0GrkvkOJcpZC99WH2mBglu9p17ZqimT2OQkRdY0yVjlIEWPuw0LTksfb
+ RCW7khwoZwFeDqEGR+zlNJqHAddQ560ne5dj8S39lAGB/VfI1hVP3YbynvH0QkKaE/Ii
+ JSobgJYIcugxWdGHCZE3AtXuBip8KB0W9PhnIxdXVv8Vz4HGMeFfEs4pWq/GiBOAYxXl vA== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 36d4rtg63q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sat, 30 Jan 2021 09:25:29 -0600
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Sat, 30 Jan
+ 2021 15:25:28 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
+ Transport; Sat, 30 Jan 2021 15:25:28 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5D15245;
+        Sat, 30 Jan 2021 15:25:28 +0000 (UTC)
+Date:   Sat, 30 Jan 2021 15:25:28 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+CC:     Lee Jones <lee.jones@linaro.org>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH v4 09/13] ASoC: arizona-jack: convert into a helper
+ library for codec drivers
+Message-ID: <20210130152528.GT106851@ediswmail.ad.cirrus.com>
+References: <20210123121313.79530-1-hdegoede@redhat.com>
+ <20210123121313.79530-10-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210123121313.79530-10-hdegoede@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
+ mlxlogscore=908 impostorscore=0 malwarescore=0 spamscore=0
+ lowpriorityscore=0 suspectscore=0 adultscore=0 phishscore=0 clxscore=1015
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101300085
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-trace_qi_submit() could be used when interrupt remapping is supported,
-but DMA remapping is not. In this case, the following compile error
-occurs.
+On Sat, Jan 23, 2021 at 01:13:09PM +0100, Hans de Goede wrote:
+> Convert the arizona extcon driver into a helper library for direct use
+> from the arizona codec-drivers, rather then being bound to a separate
+> MFD cell.
+> 
+> Note the probe (and remove) sequence is split into 2 parts:
+> 
+> 1. The arizona_jack_codec_dev_probe() function inits a bunch of
+> jack-detect specific variables in struct arizona_priv and tries to get
+> a number of resources where getting them may fail with -EPROBE_DEFER.
+> 
+> 2. Then once the machine driver has create a snd_sock_jack through
+> snd_soc_card_jack_new() it calls snd_soc_component_set_jack() on
+> the codec component, which will call the new arizona_jack_set_jack(),
+> which sets up jack-detection and requests the IRQs.
+> 
+> This split is necessary, because the IRQ handlers need access to the
+> arizona->dapm pointer and the snd_sock_jack which are not available
+> when the codec-driver's probe function runs.
+> 
+> Note this requires that machine-drivers for codecs which are converted
+> to use the new helper functions from arizona-jack.c are modified to
+> create a snd_soc_jack through snd_soc_card_jack_new() and register
+> this jack with the codec through snd_soc_component_set_jack().
+> 
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+> ---
 
-../drivers/iommu/intel/dmar.c: In function 'qi_submit_sync':
-../drivers/iommu/intel/dmar.c:1311:3: error: implicit declaration of function 'trace_qi_submit';
-  did you mean 'ftrace_nmi_exit'? [-Werror=implicit-function-declaration]
-   trace_qi_submit(iommu, desc[i].qw0, desc[i].qw1,
-   ^~~~~~~~~~~~~~~
-   ftrace_nmi_exit
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Tested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Fixes: f2dd871799ba5 ("iommu/vt-d: Add qi_submit trace event")
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/iommu/intel/Makefile       | 2 +-
- drivers/iommu/intel/iommu.c        | 1 -
- include/trace/events/intel_iommu.h | 2 --
- 3 files changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/drivers/iommu/intel/Makefile b/drivers/iommu/intel/Makefile
-index fb8e1e8c8029..ae570810a35e 100644
---- a/drivers/iommu/intel/Makefile
-+++ b/drivers/iommu/intel/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_DMAR_TABLE) += dmar.o
- obj-$(CONFIG_INTEL_IOMMU) += iommu.o pasid.o
--obj-$(CONFIG_INTEL_IOMMU) += trace.o
-+obj-$(CONFIG_DMAR_TABLE) += trace.o
- obj-$(CONFIG_INTEL_IOMMU_DEBUGFS) += debugfs.o
- obj-$(CONFIG_INTEL_IOMMU_SVM) += svm.o
- obj-$(CONFIG_IRQ_REMAP) += irq_remapping.o
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index d7fecc109947..37da4caa67c9 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -44,7 +44,6 @@
- #include <asm/irq_remapping.h>
- #include <asm/cacheflush.h>
- #include <asm/iommu.h>
--#include <trace/events/intel_iommu.h>
- 
- #include "../irq_remapping.h"
- #include "pasid.h"
-diff --git a/include/trace/events/intel_iommu.h b/include/trace/events/intel_iommu.h
-index aad2ff0c1e2e..e801f4910522 100644
---- a/include/trace/events/intel_iommu.h
-+++ b/include/trace/events/intel_iommu.h
-@@ -6,7 +6,6 @@
-  *
-  * Author: Lu Baolu <baolu.lu@linux.intel.com>
-  */
--#ifdef CONFIG_INTEL_IOMMU
- #undef TRACE_SYSTEM
- #define TRACE_SYSTEM intel_iommu
- 
-@@ -176,4 +175,3 @@ TRACE_EVENT(qi_submit,
- 
- /* This part must be outside protection */
- #include <trace/define_trace.h>
--#endif /* CONFIG_INTEL_IOMMU */
--- 
-2.25.1
-
+Thanks,
+Charles
