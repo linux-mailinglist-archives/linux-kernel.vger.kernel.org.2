@@ -2,143 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD7A3094F5
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 12:47:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E29483094FF
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 12:52:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhA3LqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 06:46:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59610 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbhA3LqV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 06:46:21 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 258FAC061573
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 03:45:41 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id d13so12207217ioy.4
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 03:45:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=//VX6ojmsc2r98X2mOVEeFZycqko9uWOR4VNHQdTCdM=;
-        b=J2HP5jewPJhCIaR3NFZnmNbLul9BUge/BSXoypL+QjCvJ5XltASuHDfTuwoDr/MJjG
-         cu6WfTY+p8qLAHNwo8kC1W/IMxy8bLIB8RYzbuGuICQkMGYwafHoyC5JhFk25yV0M++q
-         K1Q7uxwWJ4h8/qJq/YuRYV6g69c1Q9f3wOn8s=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=//VX6ojmsc2r98X2mOVEeFZycqko9uWOR4VNHQdTCdM=;
-        b=Q6hzn0vEoAD+myS4d02u73Ezl/JvRlovP/rM3p/znV9nL3D5AVU+bYWuHqLf2XkGeL
-         aMezUtU1a4kCRrbfZnIuyaos92OLVjAOwJG8iut7mqqSDbgfF6IzT/Nx5gdOUB9xbHOd
-         IdqwR5VDP/Nlix41qo8aqKPhJeYEmv+RUK5e/hDS6mJOVAyTM+5qCHsbaVcJuW9Qywm5
-         JWw8SQs2DyE0d6KcZ6vrbLEJPGnkqoMgQMqcYPAa6E0zS83ZiDWVo7RYWvr11EzWNEiR
-         IpGU3pRkEC+x9F5YJJKzfa07ZY+UiAjImJ7x3rbcGUQYJAMwZRDEcyUoOjPyrrW3ojzz
-         HK9Q==
-X-Gm-Message-State: AOAM530r5R7520iAPK+0pYHArHZV4s3fSoQ1+Wum3V3bAsIaqHVZGYRg
-        DLwIcJKZs80XDZoKRd5LZ2M5NyDlGfmGPODr8+Xf0Q==
-X-Google-Smtp-Source: ABdhPJzHXCKy4DccWXt1nJCYmgWBkM1Ew9DHMsOoSnHwXzuxSQhrQ4ZE6Q3RXz8t1YGMhlnOOx86yKiPN55aUI0m1D8=
-X-Received: by 2002:a5d:8ac8:: with SMTP id e8mr7461817iot.163.1612007140508;
- Sat, 30 Jan 2021 03:45:40 -0800 (PST)
+        id S230342AbhA3Lv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 06:51:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58840 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229498AbhA3Lv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 06:51:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 278D564DF5;
+        Sat, 30 Jan 2021 11:51:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612007477;
+        bh=1TiGTb8bXJFZSQogGr6Y36Vr+6eMgMN/eHqeJmvIpZw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sNDc9N19ZS7e1IGwfePNA6IQjA/jlOQRQt58Id/oXteKZ5oSCdJHeiWKP4FV0q9oh
+         JEcu1iLBKz8qjDLtSYKLr9ewpyT3xW2YxQV4B66JsIPoOeCpWH7NwG9YmW6J5SYOqD
+         QPpvMHT5ZJJ5zU5BwhIV1pCpgPGT58TA+JTgcfEc=
+Date:   Sat, 30 Jan 2021 12:51:14 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Aviraj Cj (acj)" <acj@cisco.com>
+Cc:     "davem@davemloft.net" <davem@davemloft.net>,
+        "kuznet@ms2.inr.ac.ru" <kuznet@ms2.inr.ac.ru>,
+        "yoshfuji@linux-ipv6.org" <yoshfuji@linux-ipv6.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "xe-linux-external(mailer list)" <xe-linux-external@cisco.com>,
+        Hangbin Liu <liuhangbin@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [Internal review][PATCH stable v5.4 1/2] ICMPv6: Add ICMPv6
+ Parameter Problem, code 3 definition
+Message-ID: <YBVIMvTN8ZFC+54U@kroah.com>
+References: <20210129192741.117693-1-acj@cisco.com>
+ <YBUafB76nbydgXv+@kroah.com>
+ <D6F3B42A-95E1-4B8D-8556-E29F195C69D3@cisco.com>
 MIME-Version: 1.0
-References: <20210126183559.1302406-1-revest@chromium.org> <20210126183559.1302406-2-revest@chromium.org>
- <CAEf4BzZ9MmdeR9P7bybXEM77MV6C-T=yZPugLOHSFC1ES2e4=g@mail.gmail.com>
- <4a8ceab1-6eef-9fda-0502-5a0550f53ddc@iogearbox.net> <37730136-2c33-589c-a749-4221b60b9751@iogearbox.net>
-In-Reply-To: <37730136-2c33-589c-a749-4221b60b9751@iogearbox.net>
-From:   Florent Revest <revest@chromium.org>
-Date:   Sat, 30 Jan 2021 12:45:29 +0100
-Message-ID: <CABRcYm+cNW5A_=5qsKRuX7feB--xyTu3vPSRfzZcuFahzwuxhw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v6 2/5] bpf: Expose bpf_get_socket_cookie to
- tracing programs
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        KP Singh <kpsingh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <D6F3B42A-95E1-4B8D-8556-E29F195C69D3@cisco.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 1:49 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 1/29/21 11:57 AM, Daniel Borkmann wrote:
-> > On 1/27/21 10:01 PM, Andrii Nakryiko wrote:
-> >> On Tue, Jan 26, 2021 at 10:36 AM Florent Revest <revest@chromium.org> wrote:
-> >>>
-> >>> This needs a new helper that:
-> >>> - can work in a sleepable context (using sock_gen_cookie)
-> >>> - takes a struct sock pointer and checks that it's not NULL
-> >>>
-> >>> Signed-off-by: Florent Revest <revest@chromium.org>
-> >>> Acked-by: KP Singh <kpsingh@kernel.org>
-> >>> ---
-> >>>   include/linux/bpf.h            |  1 +
-> >>>   include/uapi/linux/bpf.h       |  8 ++++++++
-> >>>   kernel/trace/bpf_trace.c       |  2 ++
-> >>>   net/core/filter.c              | 12 ++++++++++++
-> >>>   tools/include/uapi/linux/bpf.h |  8 ++++++++
-> >>>   5 files changed, 31 insertions(+)
-> >>>
-> >>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-> >>> index 1aac2af12fed..26219465e1f7 100644
-> >>> --- a/include/linux/bpf.h
-> >>> +++ b/include/linux/bpf.h
-> >>> @@ -1874,6 +1874,7 @@ extern const struct bpf_func_proto bpf_per_cpu_ptr_proto;
-> >>>   extern const struct bpf_func_proto bpf_this_cpu_ptr_proto;
-> >>>   extern const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto;
-> >>>   extern const struct bpf_func_proto bpf_sock_from_file_proto;
-> >>> +extern const struct bpf_func_proto bpf_get_socket_ptr_cookie_proto;
-> >>>
-> >>>   const struct bpf_func_proto *bpf_tracing_func_proto(
-> >>>          enum bpf_func_id func_id, const struct bpf_prog *prog);
-> >>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> >>> index 0b735c2729b2..5855c398d685 100644
-> >>> --- a/include/uapi/linux/bpf.h
-> >>> +++ b/include/uapi/linux/bpf.h
-> >>> @@ -1673,6 +1673,14 @@ union bpf_attr {
-> >>>    *     Return
-> >>>    *             A 8-byte long unique number.
-> >>>    *
-> >>> + * u64 bpf_get_socket_cookie(void *sk)
-> >>
-> >> should the type be `struct sock *` then?
-> >
-> > Checking libbpf's generated bpf_helper_defs.h it generates:
-> >
-> > /*
-> >   * bpf_get_socket_cookie
-> >   *
-> >   *      If the **struct sk_buff** pointed by *skb* has a known socket,
-> >   *      retrieve the cookie (generated by the kernel) of this socket.
-> >   *      If no cookie has been set yet, generate a new cookie. Once
-> >   *      generated, the socket cookie remains stable for the life of the
-> >   *      socket. This helper can be useful for monitoring per socket
-> >   *      networking traffic statistics as it provides a global socket
-> >   *      identifier that can be assumed unique.
-> >   *
-> >   * Returns
-> >   *      A 8-byte long non-decreasing number on success, or 0 if the
-> >   *      socket field is missing inside *skb*.
-> >   */
-> > static __u64 (*bpf_get_socket_cookie)(void *ctx) = (void *) 46;
-> >
-> > So in terms of helper comment it's picking up the description from the
-> > `u64 bpf_get_socket_cookie(struct sk_buff *skb)` signature. With that
-> > in mind it would likely make sense to add the actual `struct sock *` type
-> > to the comment to make it more clear in here.
->
-> One thought that still came to mind when looking over the series again, do
-> we need to blacklist certain functions from bpf_get_socket_cookie() under
-> tracing e.g. when attaching to, say fexit? For example, if sk_prot_free()
-> would be temporary uninlined/exported for testing and bpf_get_socket_cookie()
-> was invoked from a prog upon fexit where sock was already passed back to
-> allocator, I presume there's risk of mem corruption, no?
+On Sat, Jan 30, 2021 at 11:31:11AM +0000, Aviraj Cj (acj) wrote:
+> 
+> 
+> ﻿On 30/01/21, 2:06 PM, "Greg KH" <gregkh@linuxfoundation.org> wrote:
+> 
+> On Sat, Jan 30, 2021 at 12:57:40AM +0530, Aviraj CJ wrote:
+> > From: Hangbin Liu <liuhangbin@gmail.com>
+> > 
+> > commit b59e286be280fa3c2e94a0716ddcee6ba02bc8ba upstream.
+> > 
+> > Based on RFC7112, Section 6:
+> > 
+> >    IANA has added the following "Type 4 - Parameter Problem" message to
+> >    the "Internet Control Message Protocol version 6 (ICMPv6) Parameters"
+> >    registry:
+> > 
+> >       CODE     NAME/DESCRIPTION
+> >        3       IPv6 First Fragment has incomplete IPv6 Header Chain
+> > 
+> > Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+> > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> > Signed-off-by: Aviraj CJ <acj@cisco.com>
+> > ---
+> >  include/uapi/linux/icmpv6.h | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/include/uapi/linux/icmpv6.h b/include/uapi/linux/icmpv6.h
+> > index 2622b5a3e616..9a31ea2ad1cf 100644
+> > --- a/include/uapi/linux/icmpv6.h
+> > +++ b/include/uapi/linux/icmpv6.h
+> > @@ -137,6 +137,7 @@ struct icmp6hdr {
+> >  #define ICMPV6_HDR_FIELD		0
+> >  #define ICMPV6_UNK_NEXTHDR		1
+> >  #define ICMPV6_UNK_OPTION		2
+> > +#define ICMPV6_HDR_INCOMP		3
+> >  
+> >  /*
+> >   *	constants for (set|get)sockopt
+> > -- 
+> > 2.26.2.Cisco
+> > 
+> 
+> What do you mean by "internal review" and what am I supposed to do with
+> this patch?  Same for the 2/2 patch in this series...
+> <ACJ> Sorry " internal review" added by mistake, this is the correct patch for v5.4 branch, pls let me if u want me to send it by correcting...
 
-Mh, this is interesting. I can try to add a deny list in v7 but I'm
-not sure whether I'll be able to catch them all. I'm assuming that
-__sk_destruct, sk_destruct, __sk_free, sk_free would be other
-problematic functions but potentially there would be more.
+Please fix and resend.
+
+thanks,
+
+greg k-h
