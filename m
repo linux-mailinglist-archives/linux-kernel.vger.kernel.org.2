@@ -2,163 +2,633 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 782D63091F7
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 06:12:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B513091F1
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 06:05:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230419AbhA3FK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 00:10:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57052 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233786AbhA3E4t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 23:56:49 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC50C061573
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 18:00:07 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id o7so7859587pgl.1
-        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 18:00:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=squareup.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=83BGZrgiNBtf2HpHYA3huRBYyscfozlNKzPdwrXaPyM=;
-        b=Tb2s6Ek8oTj0J/p1phYDamGzIXjcF/3+Xnpz5Mkz78Z+7sSZ7QHKCVWxkc/UL5N8Yw
-         NK8jlUCQJojL9or/+XvI7qRKDIj6T7ArW2Q40/NKacIoQKYspHXBq2GBhXNTlotge0ma
-         fLLnX8xSuTuy0lywtth7yzH6tDJPJM4M89ix0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=83BGZrgiNBtf2HpHYA3huRBYyscfozlNKzPdwrXaPyM=;
-        b=rDMtoXr5SZiqzrieYzQt+GgZCcUUAwun59aeBPvWv2hn6hqOozMPehfPxF0Y9uY6op
-         VH1rpTpxJPnf9XUiopux3SDWeAPua1gEy2ei58hcgw8YweX2ZUV+AYanLAxpjTFGAikr
-         U77/uQcIaM1WolvLbYhKqgbpjKk8nSuK2dy5LsllcZJCMXJGR71JP2+iFG9zIMKVsjFh
-         o/twpUH7ZfItWXTGItfSBFTIL1jKVP/L2szmSXG6lUnh4KwBGEi1P5mAWpJzHP375TL5
-         eQcefip3XWfy1ZTGCrtIVFf+QcI5wYFuOM3gDUO0jaVGBvJBvCEgwTDWtX06eFygxksj
-         QDTg==
-X-Gm-Message-State: AOAM532kbGusH5cZ4TkyZEn0B1C7gRj5ihEEpsivbm1gAfHL62YQLJOI
-        Umr2ofFP6btn2/yJjoTCydoh9Q==
-X-Google-Smtp-Source: ABdhPJzzRHJTltKDkyuuKbIHmJ6PmrxJocGWpBLCqvqhabxzHF6lx6ptLhoy0flFHE7TzqAxPpylZg==
-X-Received: by 2002:a05:6a00:148a:b029:1ae:6d20:fbb3 with SMTP id v10-20020a056a00148ab02901ae6d20fbb3mr6722703pfu.55.1611972007047;
-        Fri, 29 Jan 2021 18:00:07 -0800 (PST)
-Received: from benl-m5lvdt.local ([2600:1700:87d0:94f:65bd:6864:3edc:1e8f])
-        by smtp.gmail.com with ESMTPSA id f13sm11033259pjj.1.2021.01.29.18.00.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 29 Jan 2021 18:00:06 -0800 (PST)
-Subject: Re: [PATCH] drm/msm/dsi: save PLL registers across first PHY reset
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        robdclark@gmail.com, sean@poorly.run
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Harigovindan P <harigovi@codeaurora.org>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        zhengbin <zhengbin13@huawei.com>, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Anibal Limon <anibal.limon@linaro.org>
-References: <010101750064e17e-3db0087e-fc37-494d-aac9-2c2b9b0a7c5b-000000@us-west-2.amazonses.com>
- <508ae9e2-5240-2f43-6c97-493bb7d9fbe8@linaro.org>
-From:   Benjamin Li <benl@squareup.com>
-Message-ID: <eda75757-5cf2-14a7-3de4-ca57eb099cfd@squareup.com>
-Date:   Fri, 29 Jan 2021 18:00:03 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <508ae9e2-5240-2f43-6c97-493bb7d9fbe8@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S229949AbhA3FCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 00:02:04 -0500
+Received: from mga06.intel.com ([134.134.136.31]:61934 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233664AbhA3ELN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 23:11:13 -0500
+IronPort-SDR: Unr96qG7Uk+0iiVGl/Uxk3iIbxC4UhcG4r4o7IVlENxB8/Je8IO8llnSb7WTs9UQ4fg8OG5jZa
+ aJHpLxHp7WpA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="242028013"
+X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
+   d="scan'208";a="242028013"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:29 -0800
+IronPort-SDR: EZalXu/U29p2msgo3DU6PNnxsZFbeX3EAIPSV4/ZEX+I7V0K+kZhEhUw1GyPFpULIcHyCmb5WU
+ UL57pFOaI0cA==
+X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
+   d="scan'208";a="365585701"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:29 -0800
+Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
+        by smtp.ostc.intel.com (Postfix) with ESMTP id EE21F6371;
+        Fri, 29 Jan 2021 18:21:28 -0800 (PST)
+Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
+        id E275E36363A; Fri, 29 Jan 2021 18:21:28 -0800 (PST)
+From:   mgross@linux.intel.com
+To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
+        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        gregkh@linuxfoundation.org, corbet@lwn.net,
+        palmerdabbelt@google.com, paul.walmsley@sifive.com,
+        peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
+        jassisinghbrar@gmail.com
+Cc:     linux-kernel@vger.kernel.org,
+        "C, Udhayakumar" <udhayakumar.c@intel.com>, C@linux.intel.com
+Subject: [PATCH v3 28/34] misc: Intel tsens IA host driver.
+Date:   Fri, 29 Jan 2021 18:20:43 -0800
+Message-Id: <20210130022124.65083-29-mgross@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210130022124.65083-1-mgross@linux.intel.com>
+References: <20210130022124.65083-1-mgross@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: "C, Udhayakumar" <udhayakumar.c@intel.com>
 
-On 10/30/20 6:55 AM, Dmitry Baryshkov wrote:
-> Hello,
-> 
-> On 07/10/2020 03:10, benl-kernelpatches@squareup.com wrote:
->> From: Benjamin Li <benl@squareup.com>
->>
->> Take advantage of previously-added support for persisting PLL
->> registers across DSI PHY disable/enable cycles (see 328e1a6
->> 'drm/msm/dsi: Save/Restore PLL status across PHY reset') to
->> support persisting across the very first DSI PHY enable at
->> boot.
-> 
-> Interesting enough, this breaks exactly on 8016. On DB410c with latest bootloader and w/o splash screen this patch causes boot freeze. Without this patch the board would successfully boot with display routed to HDMI.
+Add Intel tsens IA host driver for Intel Edge.AI Computer Vision
+platforms.
 
-Hi Dimtry,
+About Intel Edge.AI Computer Vision platforms:
+---------------------------------------------
+The Intel Edge.AI Computer Vision platforms are vision processing systems
+targeting machine vision applications for connected devices.
 
-Thanks for your fix for the DB410c breakage ("drm/msm/dsi: do not
-try reading 28nm vco rate if it's not enabled") that this patch
-causes.
+They are based on ARM A53 CPU running Linux and acts as a PCIe
+endpoint device.
 
-I re-tested my patch on top of qcom/linux for-next (3e6a8ce094759)
-which now has your fix, on a DB410c with HDMI display and no splash
-(which seems to be the default using the Linaro SD card image's LK),
-and indeed it is fixed.
+High-level architecture:
+------------------------
 
-I assume you already also did the same & are okay with this going in.
-Appreciate the testing!
+Remote Host IA CPU                      Local Host ARM CPU
+----------------                     --------------------------
+|  Platform    |                     |  Thermal Daemon        |
+| Management SW|                     |                        |
+----------------                     --------------------------
+|  Intel tsens |                     |  intel tsens i2c slave |
+|  i2c client  |                     |  and thermal driver    |
+----------------                     --------------------------
+|  XLINK I2C   |                     |  XLINK I2C Slave       |
+|  controller  |     <=========>     |   controller           |
+----------------     xlink smbus     --------------------------
 
-Ben
+intel tsens module:
+-------------------
+The tsens module enables reading of on chip sensors present
+in the Intel Edge.AI Computer Vision platforms.In the tsens module
+various junction and SoC temperatures are reported using thermal
+subsystem and i2c subsystem.
 
-> 
->> The bootloader may have left the PLL registers in a non-default
->> state. For example, for dsi_pll_28nm.c on 8x16/8x39, the byte
->> clock mux's power-on reset configuration is to bypass DIV1, but
->> depending on bandwidth requirements[1] the bootloader may have
->> set the DIV1 path.
->>
->> When the byte clock mux is registered with the generic clock
->> framework at probe time, the framework reads & caches the value
->> of the mux bit field (the initial clock parent). After PHY enable,
->> when clk_set_rate is called on the byte clock, the framework
->> assumes there is no need to reparent, and doesn't re-write the
->> mux bit field. But PHY enable resets PLL registers, so the mux
->> bit field actually silently reverted to the DIV1 bypass path.
->> This causes the byte clock to be off by a factor of e.g. 2 for
->> our tested WXGA panel.
->>
->> The above issue manifests as the display not working and a
->> constant stream of FIFO/LP0 contention errors.
->>
->> [1] The specific requirement for triggering the DIV1 path (and
->> thus this issue) on 28nm is a panel with pixel clock <116.7MHz
->> (one-third the minimum VCO setting). FHD/1080p (~145MHz) is fine,
->> WXGA/1280x800 (~75MHz) is not.
->>
->> Signed-off-by: Benjamin Li <benl@squareup.com>
->> ---
->>   drivers/gpu/drm/msm/dsi/phy/dsi_phy.c | 16 ++++++++++++++++
->>   1 file changed, 16 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
->> index 009f5b843dd1..139b4a5aaf86 100644
->> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
->> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy.c
->> @@ -621,6 +621,22 @@ static int dsi_phy_driver_probe(struct platform_device *pdev)
->>           phy->pll = NULL;
->>       }
->>   +    /*
->> +     * As explained in msm_dsi_phy_enable, resetting the DSI PHY (as done
->> +     * in dsi_mgr_phy_enable) silently changes its PLL registers to power-on
->> +     * defaults, but the generic clock framework manages and caches several
->> +     * of the PLL registers. It initializes these caches at registration
->> +     * time via register read.
->> +     *
->> +     * As a result, we need to save DSI PLL registers once at probe in order
->> +     * for the first call to msm_dsi_phy_enable to successfully bring PLL
->> +     * registers back in line with what the generic clock framework expects.
->> +     *
->> +     * Subsequent PLL restores during msm_dsi_phy_enable will always be
->> +     * paired with PLL saves in msm_dsi_phy_disable.
->> +     */
->> +    msm_dsi_pll_save_state(phy->pll);
->> +
->>       dsi_phy_disable_resource(phy);
->>         platform_set_drvdata(pdev, phy);
->>
-> 
-> 
+Temperature data reported using thermal subsystem will be used for
+various cooling agents such as DVFS, fan control and shutdown the
+system in case of critical temperature.
+
+Temperature data reported using i2c subsystem will be used by
+platform manageability software running in IA host.
+
+- Remote Host driver
+  * Intended for IA CPU
+  * It is a I2C client driver
+  * Driver path:
+  {tree}/drivers/misc/intel_tsens/intel_tsens_host.c
+
+Local host and Remote host drivers communicates using
+I2C SMBUS protocol.
+
+Acked-by: Mark Mross <mgross@linux.intel.com>
+Signed-off-by: C, Udhayakumar <udhayakumar.c@intel.com>
+---
+ Documentation/hwmon/index.rst               |   1 +
+ Documentation/hwmon/intel_tsens_host.rst    |  71 ++++
+ drivers/misc/intel_tsens/Kconfig            |  13 +
+ drivers/misc/intel_tsens/Makefile           |   1 +
+ drivers/misc/intel_tsens/intel_tsens_host.c | 351 ++++++++++++++++++++
+ include/linux/intel_tsens_host.h            |  34 ++
+ 6 files changed, 471 insertions(+)
+ create mode 100644 Documentation/hwmon/intel_tsens_host.rst
+ create mode 100644 drivers/misc/intel_tsens/intel_tsens_host.c
+ create mode 100644 include/linux/intel_tsens_host.h
+
+diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+index fc29100bef73..7a9eaddd1ab3 100644
+--- a/Documentation/hwmon/index.rst
++++ b/Documentation/hwmon/index.rst
+@@ -81,6 +81,7 @@ Hardware Monitoring Kernel Drivers
+    isl68137
+    it87
+    intel_tsens_sensor.rst
++   intel_tsens_host.rst
+    jc42
+    k10temp
+    k8temp
+diff --git a/Documentation/hwmon/intel_tsens_host.rst b/Documentation/hwmon/intel_tsens_host.rst
+new file mode 100644
+index 000000000000..012c593f969f
+--- /dev/null
++++ b/Documentation/hwmon/intel_tsens_host.rst
+@@ -0,0 +1,71 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++==========================
++Kernel driver: intel_tsens
++==========================
++
++Supported chips:
++  * Intel Edge.AI Computer Vision platforms: Keem Bay
++
++    Slave address: The address is assigned by the hddl device management
++                   driver.
++
++    Datasheet:
++      Documentation/hwmon/intel_tsens_sensor.rst#Remote Thermal Interface
++
++Authors:
++    - Thalaiappan, Rathina <rathina.thalaiappan@intel.com
++    - Udhayakumar C <udhayakumar.c@intel.com>
++
++Description
++===========
++The intel_tsens is a temperature sensor driver receiving the junction temperature
++from different heating points inside the SOC. The driver will receive the
++temperature on SMBUS connection. The reported temperature is in degrees Celsius.
++
++In Keem Bay, the four thermal junction temperature points are,
++Media Subsystem (mss), NN subsystem (nce), Compute subsystem (cse) and
++SOC(Maximum of mss, nce and cse).
++
++Example
++=======
++Temperature reported by a Keem Bay on the Linux Thermal sysfs interface.
++
++# cat /sys/class/thermal/thermal_zone*/type
++mss
++css
++nce
++soc
++
++# cat /sys/class/thermal/thermal_zone*/temp
++0
++29210
++28478
++29210
++
+++-----------+-------------+
++| offset    |   Sensor    |
+++-----------+-------------+
++|   0       |   mss       |
+++-----------+-------------+
++|   1       |   css       |
+++-----------+-------------+
++|   2       |   nce       |
+++-----------+-------------+
++|   3       |   soc       |
+++-----------+-------------+
++
++#sudo i2cdetect -l
++i2c-8   smbus           SMBus I801 adapter at efa0              SMBus adapte    r
++
++To read mss junction temperature:
++#i2cget -y 8 <slave addr> 0x0 w
++
++To read cse junction temperature:
++#i2cget -y 8 <slave addr> 0x1 w
++
++To read nce junction temperature:
++#i2cget -y 8 <slave addr> 0x2 w
++
++To read overall SoC temperature:
++#i2cget -y 8 <slave addr> 0x3 w
+diff --git a/drivers/misc/intel_tsens/Kconfig b/drivers/misc/intel_tsens/Kconfig
+index bfb8fe1997f4..8b263fdd80c3 100644
+--- a/drivers/misc/intel_tsens/Kconfig
++++ b/drivers/misc/intel_tsens/Kconfig
+@@ -13,3 +13,16 @@ config INTEL_TSENS_LOCAL_HOST
+ 	  management controller.
+ 	  Say Y if using a processor that includes the Intel VPU such as
+ 	  Keem Bay.  If unsure, say N.
++
++config INTEL_TSENS_IA_HOST
++	tristate "Temperature sensor driver for intel tsens remote host"
++	depends on I2C && THERMAL
++	depends on I2C_SMBUS
++	help
++	  This option enables tsens i2c and thermal local Host driver.
++
++	  This driver is used for reading thermal data via I2C SMBUS
++	  and registers itself to thermal framework, which can be
++	  used by thermal daemon in remote IA host
++	  Say Y if using a processor that includes the Intel VPU such as
++	  Keem Bay.  If unsure, say N.
+diff --git a/drivers/misc/intel_tsens/Makefile b/drivers/misc/intel_tsens/Makefile
+index 93dee8b9f481..250dc484fb49 100644
+--- a/drivers/misc/intel_tsens/Makefile
++++ b/drivers/misc/intel_tsens/Makefile
+@@ -5,3 +5,4 @@
+ #
+ 
+ obj-$(CONFIG_INTEL_TSENS_LOCAL_HOST)	+= intel_tsens_thermal.o
++obj-$(CONFIG_INTEL_TSENS_IA_HOST)	+= intel_tsens_host.o
+diff --git a/drivers/misc/intel_tsens/intel_tsens_host.c b/drivers/misc/intel_tsens/intel_tsens_host.c
+new file mode 100644
+index 000000000000..adb553f3f2e3
+--- /dev/null
++++ b/drivers/misc/intel_tsens/intel_tsens_host.c
+@@ -0,0 +1,351 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ *
++ * Intel tsens I2C thermal Driver
++ *
++ * Copyright (C) 2020 Intel Corporation
++ *
++ */
++
++#include <asm/page.h>
++#include <linux/cdev.h>
++#include <linux/delay.h>
++#include <linux/fs.h>
++#include <linux/hddl_device.h>
++#include <linux/i2c.h>
++#include <linux/ioctl.h>
++#include <linux/intel_tsens_host.h>
++#include <linux/kernel.h>
++#include <linux/kmod.h>
++#include <linux/kthread.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/printk.h>
++#include <linux/platform_device.h>
++#include <linux/sched.h>
++#include <linux/sched/mm.h>
++#include <linux/sched/task.h>
++#include <linux/slab.h>
++#include <linux/thermal.h>
++#include <linux/time.h>
++#include <linux/uaccess.h>
++#include <linux/wait.h>
++#include <linux/workqueue.h>
++
++#include <uapi/linux/stat.h>
++
++#define TSENS_BINDING_NAME	"intel_tsens"
++#define TSENS_BYTE_INDEX_SHIFT  0x6
++#define TSENS_READ_BYTE0	(0x0 << TSENS_BYTE_INDEX_SHIFT)
++#define TSENS_READ_BYTE1	(0x1 << TSENS_BYTE_INDEX_SHIFT)
++#define TSENS_READ_BYTE2	(0x2 << TSENS_BYTE_INDEX_SHIFT)
++#define TSENS_READ_BYTE3	(0x3 << TSENS_BYTE_INDEX_SHIFT)
++
++static int tsens_i2c_smbus_read_byte_data(struct i2c_client *i2c, u8 command,
++					  u8 *i2c_val)
++{
++	union i2c_smbus_data data;
++	int status;
++
++	status = i2c_smbus_xfer(i2c->adapter, i2c->addr, i2c->flags,
++				I2C_SMBUS_READ, command,
++				I2C_SMBUS_BYTE_DATA, &data);
++	*i2c_val = data.byte;
++	return status;
++}
++
++/**
++ * intel_tsens_get_temp - get updated temperatue
++ * @zone: Thermal zone device
++ * @temp: updated temperature value.
++ *
++ * Temperature value read from sensors ranging from -40000 (-40 degree Celsius)
++ * to 126000 (126 degree Celsius). if there is a failure while reading update
++ * temperature, -255 would be returned as temperature to indicate failure.
++ */
++static int intel_tsens_get_temp(struct thermal_zone_device *zone,
++				int *temp)
++{
++	struct intel_tsens_host *tsens =
++		(struct intel_tsens_host *)zone->devdata;
++	struct i2c_client *i2c_c;
++	int status, sensor_type;
++	u8 i2c_val;
++	s32 val;
++
++	if (strstr(zone->type, "smb"))
++		i2c_c = tsens->i2c_smbus;
++	else
++		i2c_c = tsens->i2c_xlk;
++
++	*temp = -255;
++	sensor_type = tsens->t_data->sensor_type | TSENS_READ_BYTE0;
++	status = tsens_i2c_smbus_read_byte_data(i2c_c,
++						sensor_type,
++						&i2c_val);
++	if (status < 0)
++		return status;
++	val = i2c_val;
++	sensor_type = tsens->t_data->sensor_type | TSENS_READ_BYTE1;
++	status = tsens_i2c_smbus_read_byte_data(i2c_c,
++						sensor_type,
++						&i2c_val);
++	if (status < 0)
++		return status;
++	val |= (i2c_val << 8);
++	sensor_type = tsens->t_data->sensor_type | TSENS_READ_BYTE2;
++	status = tsens_i2c_smbus_read_byte_data(i2c_c,
++						sensor_type,
++						&i2c_val);
++	if (status < 0)
++		return status;
++	val |= (i2c_val << 16);
++	sensor_type = tsens->t_data->sensor_type | TSENS_READ_BYTE3;
++	status = tsens_i2c_smbus_read_byte_data(i2c_c,
++						sensor_type,
++						&i2c_val);
++	if (status < 0)
++		return status;
++	val |= (i2c_val << 24);
++	*temp = val;
++	return 0;
++}
++
++static int intel_tsens_thermal_get_trip_type(struct thermal_zone_device *zone,
++					     int trip,
++					     enum thermal_trip_type *type)
++{
++	struct intel_tsens_host *tsens =
++		(struct intel_tsens_host *)zone->devdata;
++
++	*type = tsens->trip_info[trip]->trip_type;
++	return 0;
++}
++
++static int intel_tsens_thermal_get_trip_temp(struct thermal_zone_device *zone,
++					     int trip, int *temp)
++{
++	struct intel_tsens_host *tsens =
++		(struct intel_tsens_host *)zone->devdata;
++
++	*temp = tsens->trip_info[trip]->temp;
++	return 0;
++}
++
++static int intel_tsens_thermal_notify(struct thermal_zone_device *tz,
++				      int trip, enum thermal_trip_type type)
++{
++	int ret = 0;
++
++	switch (type) {
++	case THERMAL_TRIP_ACTIVE:
++		dev_warn(&tz->device,
++			 "zone %s reached to active temperature %d\n",
++			 tz->type, tz->temperature);
++		ret = 1;
++		break;
++	case THERMAL_TRIP_CRITICAL:
++		dev_warn(&tz->device,
++			 "zone %s reached to critical temperature %d\n",
++			 tz->type, tz->temperature);
++		ret = 1;
++		break;
++	default:
++		break;
++	}
++	return ret;
++}
++
++static int intel_tsens_bind(struct thermal_zone_device *tz,
++			    struct thermal_cooling_device *cdev)
++{
++	int ret;
++
++	/*
++	 * Check here thermal device zone name and cdev name to match,
++	 * then call the bind device
++	 */
++	if (strncmp(TSENS_BINDING_NAME, cdev->type,
++		    strlen(TSENS_BINDING_NAME)) == 0) {
++		ret = thermal_zone_bind_cooling_device
++				(tz,
++				THERMAL_TRIP_ACTIVE,
++				cdev,
++				THERMAL_NO_LIMIT,
++				THERMAL_NO_LIMIT,
++				THERMAL_WEIGHT_DEFAULT);
++		if (ret) {
++			dev_err(&tz->device,
++				"binding zone %s with cdev %s failed:%d\n",
++				tz->type, cdev->type, ret);
++			return ret;
++		}
++	}
++	return 0;
++}
++
++static int intel_tsens_unbind(struct thermal_zone_device *tz,
++			      struct thermal_cooling_device *cdev)
++{
++	int ret;
++
++	if (strncmp(TSENS_BINDING_NAME, cdev->type,
++		    strlen(TSENS_BINDING_NAME)) == 0) {
++		ret = thermal_zone_unbind_cooling_device(tz, 0, cdev);
++		if (ret) {
++			dev_err(&tz->device,
++				"unbinding zone %s with cdev %s failed:%d\n",
++				tz->type, cdev->type, ret);
++			return ret;
++		}
++	}
++	return 0;
++}
++
++static struct thermal_zone_device_ops tsens_thermal_ops = {
++	.bind = intel_tsens_bind,
++	.unbind = intel_tsens_unbind,
++	.get_temp = intel_tsens_get_temp,
++	.get_trip_type	= intel_tsens_thermal_get_trip_type,
++	.get_trip_temp	= intel_tsens_thermal_get_trip_temp,
++	.notify		= intel_tsens_thermal_notify,
++};
++
++static int intel_tsens_add_tz(struct intel_tsens_host *tsens,
++			      struct thermal_zone_device **tz,
++			      const char *name,
++			      struct device *dev,
++			      int i)
++{
++	int ret;
++
++	*tz =  thermal_zone_device_register(name,
++					    tsens->t_data->n_trips,
++					    0, tsens,
++					    &tsens_thermal_ops,
++					    NULL,
++					    tsens->t_data->passive_delay,
++					    tsens->t_data->polling_delay);
++	if (IS_ERR(*tz)) {
++		ret = PTR_ERR(*tz);
++		dev_err(dev,
++			"failed to register thermal zone device %s\n",
++			tsens->t_data->name);
++		return ret;
++	}
++	return 0;
++}
++
++static void intel_tsens_remove_tz(struct intel_hddl_clients *d)
++{
++	int i;
++
++	for (i = 0; i < d->nsens; i++) {
++		struct intel_tsens_host *tsens = d->tsens[i];
++
++		if (tsens->tz_smbus) {
++			thermal_zone_device_unregister(tsens->tz_smbus);
++			tsens->tz_smbus = NULL;
++		}
++		if (tsens->tz_xlk) {
++			thermal_zone_device_unregister(tsens->tz_xlk);
++			tsens->tz_xlk = NULL;
++		}
++	}
++}
++
++static int intel_tsens_tj_probe(struct i2c_client *client,
++				const struct i2c_device_id *id)
++{
++	struct intel_hddl_clients *d = client->dev.platform_data;
++	u32 device_id = tsens_get_device_id(d);
++	char *i2c_str;
++	int ret, i;
++
++	if (strstr(client->adapter->name, "SMBus I801")) {
++		i2c_str = "smb";
++		for (i = 0; i < d->nsens; i++) {
++			struct intel_tsens_host *tsens = d->tsens[i];
++
++			tsens->sensor_name_smbus =
++				kasprintf(GFP_KERNEL,
++					  "%s_%s-%x",
++					  tsens->t_data->name,
++					  i2c_str, device_id);
++			tsens->i2c_smbus = client;
++			ret = intel_tsens_add_tz(tsens,
++						 &tsens->tz_smbus,
++						 tsens->sensor_name_smbus,
++						 &client->dev,
++						 i);
++			if (ret) {
++				dev_err(&client->dev,
++					"thermal zone configuration failed\n");
++				intel_tsens_remove_tz(d);
++				return ret;
++			}
++		}
++	} else {
++		i2c_str = "xlk";
++		for (i = 0; i < d->nsens; i++) {
++			struct intel_tsens_host *tsens = d->tsens[i];
++
++			tsens->sensor_name_xlk =
++				kasprintf(GFP_KERNEL,
++					  "%s_%s-%x",
++					  tsens->t_data->name,
++					  i2c_str, device_id);
++			tsens->i2c_xlk = client;
++			ret = intel_tsens_add_tz(tsens,
++						 &tsens->tz_xlk,
++						 tsens->sensor_name_xlk,
++						 &client->dev,
++						 i);
++			if (ret) {
++				dev_err(&client->dev,
++					"thermal zone configuration failed\n");
++				intel_tsens_remove_tz(d);
++				return ret;
++			}
++		}
++	}
++
++	i2c_set_clientdata(client, d);
++
++	return 0;
++}
++
++static int intel_tsens_tj_exit(struct i2c_client *client)
++{
++	struct intel_hddl_clients *d = client->dev.platform_data;
++
++	if (!d) {
++		dev_err(&client->dev,
++			"Unable to get private data\n");
++		return -EINVAL;
++	}
++	intel_tsens_remove_tz(d);
++	return 0;
++}
++
++static const struct i2c_device_id i2c_intel_tsens_id[] = {
++	{ "intel_tsens", (kernel_ulong_t)NULL },
++	{}
++};
++MODULE_DEVICE_TABLE(i2c, i2c_intel_tsens_id);
++
++static struct i2c_driver i2c_intel_tsens_driver = {
++	.driver = {
++		.name = "intel_tsens",
++	},
++	.probe = intel_tsens_tj_probe,
++	.remove = intel_tsens_tj_exit,
++	.id_table = i2c_intel_tsens_id,
++};
++module_i2c_driver(i2c_intel_tsens_driver);
++
++MODULE_DESCRIPTION("Intel tsens host Device driver");
++MODULE_AUTHOR("Sandeep Singh <sandeep1.singh@intel.com>");
++MODULE_AUTHOR("Vaidya, Mahesh R <mahesh.r.vaidya@intel.com>");
++MODULE_AUTHOR("Udhayakumar C <udhayakumar.c@intel.com>");
++MODULE_LICENSE("GPL v2");
+diff --git a/include/linux/intel_tsens_host.h b/include/linux/intel_tsens_host.h
+new file mode 100644
+index 000000000000..4b9b2d6a5cfc
+--- /dev/null
++++ b/include/linux/intel_tsens_host.h
+@@ -0,0 +1,34 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ *
++ * Intel tsens host I2C thermal Driver
++ *
++ * Copyright (C) 2020 Intel Corporation
++ *
++ */
++
++#ifndef _LINUX_INTEL_TSENS_HOST_DEVICE_H
++#define _LINUX_INTEL_TSENS_HOST_DEVICE_H
++
++struct intel_tsens_host_trip_info {
++	enum thermal_trip_type trip_type;
++	int temp;
++} __packed __aligned(4);
++
++struct intel_tsens_host {
++	const char *sensor_name_smbus;
++	const char *sensor_name_xlk;
++	struct intel_tsens_data *t_data;
++	struct intel_tsens_host_trip_info **trip_info;
++	u32 device_id;
++	struct i2c_client *i2c_xlk;
++	struct i2c_client *i2c_smbus;
++	struct thermal_zone_device *tz_xlk;
++	struct thermal_zone_device *tz_smbus;
++};
++
++struct intel_tsens_host_plat_data {
++	int nsens;
++	struct intel_tsens_host **tsens;
++};
++#endif /*_LINUX_INTEL_TSENS_HOST_DEVICE_H*/
+-- 
+2.17.1
+
