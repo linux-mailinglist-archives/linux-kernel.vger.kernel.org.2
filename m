@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E63073091EB
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 05:56:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9A23091E2
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 05:39:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233481AbhA3Ew3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 23:52:29 -0500
-Received: from mga02.intel.com ([134.134.136.20]:2070 "EHLO mga02.intel.com"
+        id S233575AbhA3Ehg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 23:37:36 -0500
+Received: from mga09.intel.com ([134.134.136.24]:6814 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233687AbhA3EKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 23:10:32 -0500
-IronPort-SDR: VSWB/PDh/uMcBeTr85ojn+DkfRY5cDL0E2T4fIAGcMKS3SCg5LcJGj0OWQNvos3xchhr3edac3
- hiW81ZhktHPg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="167606749"
+        id S233401AbhA3DyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 22:54:13 -0500
+IronPort-SDR: pNHguxhCzz7C3WptwIsQRIYRpiMAlFU7vTXeOe0mK9Q3sUy8Z+1t089SpbX4FB+AchiJVEAU3w
+ rfSizy2HLPTw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="180645673"
 X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="167606749"
+   d="scan'208";a="180645673"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:30 -0800
-IronPort-SDR: hI3TEH1nsezri315ayBmOjs+AWapq2fPwz32xJUgu6U9jdRxpxYSGaTKikgGaluIjCNQj8XmOc
- 2Knja09nn2+g==
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:31 -0800
+IronPort-SDR: JBcb2B0NoQA5LjTb01EZxnPQhatjDZdjLUNFu7GYZ201YFo0XaurHb36sMmh2X9qVoQT/DNO0O
+ 6jN5uxjVjrBg==
 X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="370626937"
+   d="scan'208";a="370626945"
 Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:29 -0800
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:30 -0800
 Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id CA8C66371;
-        Fri, 29 Jan 2021 18:21:29 -0800 (PST)
+        by smtp.ostc.intel.com (Postfix) with ESMTP id 5DE0E6369;
+        Fri, 29 Jan 2021 18:21:30 -0800 (PST)
 Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
-        id BEE29363680; Fri, 29 Jan 2021 18:21:29 -0800 (PST)
+        id 4E048363690; Fri, 29 Jan 2021 18:21:30 -0800 (PST)
 From:   mgross@linux.intel.com
 To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
@@ -36,11 +36,10 @@ To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         palmerdabbelt@google.com, paul.walmsley@sifive.com,
         peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
         jassisinghbrar@gmail.com
-Cc:     linux-kernel@vger.kernel.org,
-        Srikanth Thokala <srikanth.thokala@intel.com>
-Subject: [PATCH v4 10/34] misc: xlink-pcie: lh: Add PCIe EP DMA functionality
-Date:   Fri, 29 Jan 2021 18:21:00 -0800
-Message-Id: <20210130022124.65083-46-mgross@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, Seamus Kelly <seamus.kelly@intel.com>
+Subject: [PATCH v4 21/34] xlink-core: Enable xlink protocol over pcie
+Date:   Fri, 29 Jan 2021 18:21:11 -0800
+Message-Id: <20210130022124.65083-57-mgross@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210130022124.65083-1-mgross@linux.intel.com>
 References: <20210130022124.65083-1-mgross@linux.intel.com>
@@ -48,715 +47,1174 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srikanth Thokala <srikanth.thokala@intel.com>
+From: Seamus Kelly <seamus.kelly@intel.com>
 
-Add Synopsys PCIe DWC core embedded-DMA functionality for local host
+Enable host system access to the VPU over the xlink protocol over PCIe by
+enabling channel multiplexing and dispatching.  This allows for remote host
+communication channels across pcie links.
+
+    add dispatcher
+    update multiplexer to utilise dispatcher
+
+        xlink-core: Patch set 2
+
+        Add xlink-dispatcher
+                creates tx and rx threads
+                enables queueing of messages for transmission and on reception
+
+        Update multiplexer to utilise dispatcher:
+                handle multiplexing channels over single interface link e.g. PCIe
+                process messages received by dispatcher
+                pass messages created by API calls to dispatcher for transmission
+
 
 Cc: Arnd Bergmann <arnd@arndb.de>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Reviewed-by: Mark Gross <mgross@linux.intel.com>
 Signed-off-by: Mark Gross <mgross@linux.intel.com>
-Signed-off-by: Srikanth Thokala <srikanth.thokala@intel.com>
+Signed-off-by: Seamus Kelly <seamus.kelly@intel.com>
 ---
- drivers/misc/xlink-pcie/local_host/Makefile |   1 +
- drivers/misc/xlink-pcie/local_host/dma.c    | 575 ++++++++++++++++++++
- drivers/misc/xlink-pcie/local_host/epf.c    |  15 +-
- drivers/misc/xlink-pcie/local_host/epf.h    |  41 ++
- 4 files changed, 629 insertions(+), 3 deletions(-)
- create mode 100644 drivers/misc/xlink-pcie/local_host/dma.c
+ drivers/misc/xlink-core/Makefile            |   2 +-
+ drivers/misc/xlink-core/xlink-core.c        |  35 +-
+ drivers/misc/xlink-core/xlink-dispatcher.c  | 441 +++++++++++++++++
+ drivers/misc/xlink-core/xlink-dispatcher.h  |  26 +
+ drivers/misc/xlink-core/xlink-multiplexer.c | 498 +++++++++++++++++++-
+ 5 files changed, 999 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/misc/xlink-core/xlink-dispatcher.c
+ create mode 100644 drivers/misc/xlink-core/xlink-dispatcher.h
 
-diff --git a/drivers/misc/xlink-pcie/local_host/Makefile b/drivers/misc/xlink-pcie/local_host/Makefile
-index 514d3f0c91bc..54fc118e2dd1 100644
---- a/drivers/misc/xlink-pcie/local_host/Makefile
-+++ b/drivers/misc/xlink-pcie/local_host/Makefile
-@@ -1,2 +1,3 @@
- obj-$(CONFIG_XLINK_PCIE_LH_DRIVER) += mxlk_ep.o
- mxlk_ep-objs := epf.o
-+mxlk_ep-objs += dma.o
-diff --git a/drivers/misc/xlink-pcie/local_host/dma.c b/drivers/misc/xlink-pcie/local_host/dma.c
-new file mode 100644
-index 000000000000..42978fb0db49
---- /dev/null
-+++ b/drivers/misc/xlink-pcie/local_host/dma.c
-@@ -0,0 +1,575 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Intel Keem Bay XLink PCIe Driver
-+ *
-+ * Copyright (C) 2021 Intel Corporation
-+ */
-+#include <linux/delay.h>
-+#include <linux/interrupt.h>
-+#include <linux/wait.h>
-+
-+#include "epf.h"
-+
-+#define DMA_DBI_OFFSET			(0x380000)
-+
-+/* PCIe DMA control 1 register definitions. */
-+#define DMA_CH_CONTROL1_CB_SHIFT	(0)
-+#define DMA_CH_CONTROL1_TCB_SHIFT	(1)
-+#define DMA_CH_CONTROL1_LLP_SHIFT	(2)
-+#define DMA_CH_CONTROL1_LIE_SHIFT	(3)
-+#define DMA_CH_CONTROL1_CS_SHIFT	(5)
-+#define DMA_CH_CONTROL1_CCS_SHIFT	(8)
-+#define DMA_CH_CONTROL1_LLE_SHIFT	(9)
-+#define DMA_CH_CONTROL1_CB_MASK		(BIT(DMA_CH_CONTROL1_CB_SHIFT))
-+#define DMA_CH_CONTROL1_TCB_MASK	(BIT(DMA_CH_CONTROL1_TCB_SHIFT))
-+#define DMA_CH_CONTROL1_LLP_MASK	(BIT(DMA_CH_CONTROL1_LLP_SHIFT))
-+#define DMA_CH_CONTROL1_LIE_MASK	(BIT(DMA_CH_CONTROL1_LIE_SHIFT))
-+#define DMA_CH_CONTROL1_CS_MASK		(0x3 << DMA_CH_CONTROL1_CS_SHIFT)
-+#define DMA_CH_CONTROL1_CCS_MASK	(BIT(DMA_CH_CONTROL1_CCS_SHIFT))
-+#define DMA_CH_CONTROL1_LLE_MASK	(BIT(DMA_CH_CONTROL1_LLE_SHIFT))
-+
-+/* DMA control 1 register Channel Status */
-+#define DMA_CH_CONTROL1_CS_RUNNING	(0x1 << DMA_CH_CONTROL1_CS_SHIFT)
-+#define DMA_CH_CONTROL1_CS_HALTED	(0x2 << DMA_CH_CONTROL1_CS_SHIFT)
-+#define DMA_CH_CONTROL1_CS_STOPPED	(0x3 << DMA_CH_CONTROL1_CS_SHIFT)
-+
-+/* PCIe DMA Engine enable register definitions. */
-+#define DMA_ENGINE_EN_SHIFT		(0)
-+#define DMA_ENGINE_EN_MASK		(BIT(DMA_ENGINE_EN_SHIFT))
-+
-+/* PCIe DMA interrupt registers definitions. */
-+#define DMA_ABORT_INTERRUPT_SHIFT	(16)
-+#define DMA_ABORT_INTERRUPT_MASK	(0xFF << DMA_ABORT_INTERRUPT_SHIFT)
-+#define DMA_ABORT_INTERRUPT_CH_MASK(_c) (BIT(_c) << DMA_ABORT_INTERRUPT_SHIFT)
-+#define DMA_DONE_INTERRUPT_MASK		(0xFF)
-+#define DMA_DONE_INTERRUPT_CH_MASK(_c)	(BIT(_c))
-+#define DMA_ALL_INTERRUPT_MASK \
-+	(DMA_ABORT_INTERRUPT_MASK | DMA_DONE_INTERRUPT_MASK)
-+
-+#define DMA_LL_ERROR_SHIFT		(16)
-+#define DMA_CPL_ABORT_SHIFT		(8)
-+#define DMA_CPL_TIMEOUT_SHIFT		(16)
-+#define DMA_DATA_POI_SHIFT		(24)
-+#define DMA_AR_ERROR_CH_MASK(_c)	(BIT(_c))
-+#define DMA_LL_ERROR_CH_MASK(_c)	(BIT(_c) << DMA_LL_ERROR_SHIFT)
-+#define DMA_UNREQ_ERROR_CH_MASK(_c)	(BIT(_c))
-+#define DMA_CPL_ABORT_ERROR_CH_MASK(_c)	(BIT(_c) << DMA_CPL_ABORT_SHIFT)
-+#define DMA_CPL_TIMEOUT_ERROR_CH_MASK(_c) (BIT(_c) << DMA_CPL_TIMEOUT_SHIFT)
-+#define DMA_DATA_POI_ERROR_CH_MASK(_c)	(BIT(_c) << DMA_DATA_POI_SHIFT)
-+
-+#define DMA_LLLAIE_SHIFT		(16)
-+#define DMA_LLLAIE_MASK			(0xF << DMA_LLLAIE_SHIFT)
-+
-+#define DMA_CHAN_WRITE_MAX_WEIGHT	(0x7)
-+#define DMA_CHAN_READ_MAX_WEIGHT	(0x3)
-+#define DMA_CHAN0_WEIGHT_OFFSET		(0)
-+#define DMA_CHAN1_WEIGHT_OFFSET		(5)
-+#define DMA_CHAN2_WEIGHT_OFFSET		(10)
-+#define DMA_CHAN3_WEIGHT_OFFSET		(15)
-+#define DMA_CHAN_WRITE_ALL_MAX_WEIGHT					\
-+	((DMA_CHAN_WRITE_MAX_WEIGHT << DMA_CHAN0_WEIGHT_OFFSET) |	\
-+	 (DMA_CHAN_WRITE_MAX_WEIGHT << DMA_CHAN1_WEIGHT_OFFSET) |	\
-+	 (DMA_CHAN_WRITE_MAX_WEIGHT << DMA_CHAN2_WEIGHT_OFFSET) |	\
-+	 (DMA_CHAN_WRITE_MAX_WEIGHT << DMA_CHAN3_WEIGHT_OFFSET))
-+#define DMA_CHAN_READ_ALL_MAX_WEIGHT					\
-+	((DMA_CHAN_READ_MAX_WEIGHT << DMA_CHAN0_WEIGHT_OFFSET) |	\
-+	 (DMA_CHAN_READ_MAX_WEIGHT << DMA_CHAN1_WEIGHT_OFFSET) |	\
-+	 (DMA_CHAN_READ_MAX_WEIGHT << DMA_CHAN2_WEIGHT_OFFSET) |	\
-+	 (DMA_CHAN_READ_MAX_WEIGHT << DMA_CHAN3_WEIGHT_OFFSET))
-+
-+#define PCIE_REGS_PCIE_APP_CNTRL	0x8
-+#define APP_XFER_PENDING		BIT(6)
-+#define PCIE_REGS_PCIE_SII_PM_STATE_1	0xb4
-+#define PM_LINKST_IN_L1			BIT(10)
-+
-+#define DMA_POLLING_TIMEOUT		1000000
-+#define DMA_ENABLE_TIMEOUT		1000
-+#define DMA_PCIE_PM_L1_TIMEOUT		20
-+
-+struct __packed pcie_dma_reg {
-+	u32 dma_ctrl_data_arb_prior;
-+	u32 reserved1;
-+	u32 dma_ctrl;
-+	u32 dma_write_engine_en;
-+	u32 dma_write_doorbell;
-+	u32 reserved2;
-+	u32 dma_write_channel_arb_weight_low;
-+	u32 dma_write_channel_arb_weight_high;
-+	u32 reserved3[3];
-+	u32 dma_read_engine_en;
-+	u32 dma_read_doorbell;
-+	u32 reserved4;
-+	u32 dma_read_channel_arb_weight_low;
-+	u32 dma_read_channel_arb_weight_high;
-+	u32 reserved5[3];
-+	u32 dma_write_int_status;
-+	u32 reserved6;
-+	u32 dma_write_int_mask;
-+	u32 dma_write_int_clear;
-+	u32 dma_write_err_status;
-+	u32 dma_write_done_imwr_low;
-+	u32 dma_write_done_imwr_high;
-+	u32 dma_write_abort_imwr_low;
-+	u32 dma_write_abort_imwr_high;
-+	u16 dma_write_ch_imwr_data[8];
-+	u32 reserved7[4];
-+	u32 dma_write_linked_list_err_en;
-+	u32 reserved8[3];
-+	u32 dma_read_int_status;
-+	u32 reserved9;
-+	u32 dma_read_int_mask;
-+	u32 dma_read_int_clear;
-+	u32 reserved10;
-+	u32 dma_read_err_status_low;
-+	u32 dma_rd_err_sts_h;
-+	u32 reserved11[2];
-+	u32 dma_read_linked_list_err_en;
-+	u32 reserved12;
-+	u32 dma_read_done_imwr_low;
-+	u32 dma_read_done_imwr_high;
-+	u32 dma_read_abort_imwr_low;
-+	u32 dma_read_abort_imwr_high;
-+	u16 dma_read_ch_imwr_data[8];
-+};
-+
-+struct __packed pcie_dma_chan {
-+	u32 dma_ch_control1;
-+	u32 reserved1;
-+	u32 dma_transfer_size;
-+	u32 dma_sar_low;
-+	u32 dma_sar_high;
-+	u32 dma_dar_low;
-+	u32 dma_dar_high;
-+	u32 dma_llp_low;
-+	u32 dma_llp_high;
-+};
-+
-+enum xpcie_ep_engine_type {
-+	WRITE_ENGINE,
-+	READ_ENGINE
-+};
-+
-+static u32 dma_chan_offset[2][DMA_CHAN_NUM] = {
-+	{ 0x200, 0x400, 0x600, 0x800 },
-+	{ 0x300, 0x500, 0x700, 0x900 }
-+};
-+
-+static void __iomem *intel_xpcie_ep_get_dma_base(struct pci_epf *epf)
-+{
-+	struct device *dev = &epf->dev;
-+	struct xpcie_epf *xpcie_epf = (struct xpcie_epf *)dev->driver_data;
-+
-+	return xpcie_epf->dbi_base + DMA_DBI_OFFSET;
-+}
-+
-+static int intel_xpcie_ep_dma_disable(void __iomem *dma_base,
-+				      enum xpcie_ep_engine_type rw)
-+{
-+	struct __iomem pcie_dma_reg * dma_reg =
-+				(struct __iomem pcie_dma_reg *)dma_base;
-+	void __iomem *int_mask, *int_clear;
-+	void __iomem *engine_en, *ll_err;
-+	int i;
-+
-+	if (rw == WRITE_ENGINE) {
-+		engine_en = (void __iomem *)&dma_reg->dma_write_engine_en;
-+		int_mask = (void __iomem *)&dma_reg->dma_write_int_mask;
-+		int_clear = (void __iomem *)&dma_reg->dma_write_int_clear;
-+		ll_err = (void __iomem *)&dma_reg->dma_write_linked_list_err_en;
-+	} else {
-+		engine_en = (void __iomem *)&dma_reg->dma_read_engine_en;
-+		int_mask = (void __iomem *)&dma_reg->dma_read_int_mask;
-+		int_clear = (void __iomem *)&dma_reg->dma_read_int_clear;
-+		ll_err = (void __iomem *)&dma_reg->dma_read_linked_list_err_en;
-+	}
-+
-+	iowrite32(0x0, engine_en);
-+
-+	/* Mask all interrupts. */
-+	iowrite32(DMA_ALL_INTERRUPT_MASK, int_mask);
-+
-+	/* Clear all interrupts. */
-+	iowrite32(DMA_ALL_INTERRUPT_MASK, int_clear);
-+
-+	/* Disable LL abort interrupt (LLLAIE). */
-+	iowrite32(0, ll_err);
-+
-+	/* Wait until the engine is disabled. */
-+	for (i = 0; i < DMA_ENABLE_TIMEOUT; i++) {
-+		if (!(ioread32(engine_en) & DMA_ENGINE_EN_MASK))
-+			return 0;
-+		msleep(20);
-+	}
-+
-+	return -EBUSY;
-+}
-+
-+static void intel_xpcie_ep_dma_enable(void __iomem *dma_base,
-+				      enum xpcie_ep_engine_type rw)
-+{
-+	struct __iomem pcie_dma_reg * dma_reg =
-+				(struct __iomem pcie_dma_reg *)(dma_base);
-+	void __iomem *engine_en, *ll_err, *arb_weight;
-+	struct __iomem pcie_dma_chan * dma_chan;
-+	void __iomem *int_mask, *int_clear;
-+	u32 offset, weight;
-+	int i;
-+
-+	if (rw == WRITE_ENGINE) {
-+		engine_en = (void __iomem *)&dma_reg->dma_write_engine_en;
-+		int_mask = (void __iomem *)&dma_reg->dma_write_int_mask;
-+		int_clear = (void __iomem *)&dma_reg->dma_write_int_clear;
-+		ll_err = (void __iomem *)&dma_reg->dma_write_linked_list_err_en;
-+		arb_weight = (void __iomem *)
-+			     &dma_reg->dma_write_channel_arb_weight_low;
-+		weight = DMA_CHAN_WRITE_ALL_MAX_WEIGHT;
-+	} else {
-+		engine_en = (void __iomem *)&dma_reg->dma_read_engine_en;
-+		int_mask = (void __iomem *)&dma_reg->dma_read_int_mask;
-+		int_clear = (void __iomem *)&dma_reg->dma_read_int_clear;
-+		ll_err = (void __iomem *)&dma_reg->dma_read_linked_list_err_en;
-+		arb_weight = (void __iomem *)
-+			     &dma_reg->dma_read_channel_arb_weight_low;
-+		weight = DMA_CHAN_READ_ALL_MAX_WEIGHT;
-+	}
-+
-+	iowrite32(DMA_ENGINE_EN_MASK, engine_en);
-+
-+	/* Unmask all interrupts, so that the interrupt line gets asserted. */
-+	iowrite32(~(u32)DMA_ALL_INTERRUPT_MASK, int_mask);
-+
-+	/* Clear all interrupts. */
-+	iowrite32(DMA_ALL_INTERRUPT_MASK, int_clear);
-+
-+	/* Set channel round robin weight. */
-+	iowrite32(weight, arb_weight);
-+
-+	/* Enable LL abort interrupt (LLLAIE). */
-+	iowrite32(DMA_LLLAIE_MASK, ll_err);
-+
-+	/* Enable linked list mode. */
-+	for (i = 0; i < DMA_CHAN_NUM; i++) {
-+		offset = dma_chan_offset[rw][i];
-+		dma_chan = (struct __iomem pcie_dma_chan *)(dma_base + offset);
-+		iowrite32(DMA_CH_CONTROL1_LLE_MASK,
-+			  (void __iomem *)&dma_chan->dma_ch_control1);
-+	}
-+}
-+
-+/*
-+ * Make sure EP is not in L1 state when DMA doorbell.
-+ * The DMA controller may start the wrong channel if doorbell occurs at the
-+ * same time as controller is transitioning to L1.
-+ */
-+static int intel_xpcie_ep_dma_doorbell(struct xpcie_epf *xpcie_epf, int chan,
-+				       void __iomem *doorbell)
-+{
-+	int i = DMA_PCIE_PM_L1_TIMEOUT, rc = 0;
-+	u32 val, pm_val;
-+
-+	val = ioread32(xpcie_epf->apb_base + PCIE_REGS_PCIE_APP_CNTRL);
-+	iowrite32(val | APP_XFER_PENDING,
-+		  xpcie_epf->apb_base + PCIE_REGS_PCIE_APP_CNTRL);
-+	pm_val = ioread32(xpcie_epf->apb_base + PCIE_REGS_PCIE_SII_PM_STATE_1);
-+	while (pm_val & PM_LINKST_IN_L1) {
-+		if (i-- < 0) {
-+			rc = -ETIME;
-+			break;
-+		}
-+		udelay(5);
-+		pm_val = ioread32(xpcie_epf->apb_base +
-+				  PCIE_REGS_PCIE_SII_PM_STATE_1);
-+	}
-+
-+	iowrite32((u32)chan, doorbell);
-+
-+	iowrite32(val & ~APP_XFER_PENDING,
-+		  xpcie_epf->apb_base + PCIE_REGS_PCIE_APP_CNTRL);
-+
-+	return rc;
-+}
-+
-+static int intel_xpcie_ep_dma_err_status(void __iomem *err_status, int chan)
-+{
-+	if (ioread32(err_status) &
-+	    (DMA_AR_ERROR_CH_MASK(chan) | DMA_LL_ERROR_CH_MASK(chan)))
-+		return -EIO;
-+
-+	return 0;
-+}
-+
-+static int intel_xpcie_ep_dma_rd_err_sts_h(void __iomem *err_status,
-+					   int chan)
-+{
-+	if (ioread32(err_status) &
-+	    (DMA_UNREQ_ERROR_CH_MASK(chan) |
-+	     DMA_CPL_ABORT_ERROR_CH_MASK(chan) |
-+	     DMA_CPL_TIMEOUT_ERROR_CH_MASK(chan) |
-+	     DMA_DATA_POI_ERROR_CH_MASK(chan)))
-+		return -EIO;
-+
-+	return 0;
-+}
-+
-+static void
-+intel_xpcie_ep_dma_setup_ll_descs(struct __iomem pcie_dma_chan * dma_chan,
-+				  struct xpcie_dma_ll_desc_buf *desc_buf,
-+				  int descs_num)
-+{
-+	struct xpcie_dma_ll_desc *descs = desc_buf->virt;
-+	int i;
-+
-+	/* Setup linked list descriptors */
-+	for (i = 0; i < descs_num - 1; i++)
-+		descs[i].dma_ch_control1 = DMA_CH_CONTROL1_CB_MASK;
-+	descs[descs_num - 1].dma_ch_control1 = DMA_CH_CONTROL1_LIE_MASK |
-+						DMA_CH_CONTROL1_CB_MASK;
-+	descs[descs_num].dma_ch_control1 = DMA_CH_CONTROL1_LLP_MASK |
-+					   DMA_CH_CONTROL1_TCB_MASK;
-+	descs[descs_num].src_addr = (phys_addr_t)desc_buf->phys;
-+
-+	/* Setup linked list settings */
-+	iowrite32(DMA_CH_CONTROL1_LLE_MASK | DMA_CH_CONTROL1_CCS_MASK,
-+		  (void __iomem *)&dma_chan->dma_ch_control1);
-+	iowrite32((u32)desc_buf->phys, (void __iomem *)&dma_chan->dma_llp_low);
-+	iowrite32((u64)desc_buf->phys >> 32,
-+		  (void __iomem *)&dma_chan->dma_llp_high);
-+}
-+
-+int intel_xpcie_ep_dma_write_ll(struct pci_epf *epf, int chan, int descs_num)
-+{
-+	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
-+	void __iomem *dma_base = xpcie_epf->dma_base;
-+	struct __iomem pcie_dma_chan * dma_chan;
-+	struct xpcie_dma_ll_desc_buf *desc_buf;
-+	struct __iomem pcie_dma_reg * dma_reg =
-+				(struct __iomem pcie_dma_reg *)(dma_base);
-+	int i, rc;
-+
-+	if (descs_num <= 0 || descs_num > XPCIE_NUM_TX_DESCS)
-+		return -EINVAL;
-+
-+	if (chan < 0 || chan >= DMA_CHAN_NUM)
-+		return -EINVAL;
-+
-+	dma_chan = (struct __iomem pcie_dma_chan *)
-+		(dma_base + dma_chan_offset[WRITE_ENGINE][chan]);
-+
-+	desc_buf = &xpcie_epf->tx_desc_buf[chan];
-+
-+	intel_xpcie_ep_dma_setup_ll_descs(dma_chan, desc_buf, descs_num);
-+
-+	/* Start DMA transfer. */
-+	rc = intel_xpcie_ep_dma_doorbell(xpcie_epf, chan,
-+					 (void __iomem *)
-+					 &dma_reg->dma_write_doorbell);
-+	if (rc)
-+		return rc;
-+
-+	/* Wait for DMA transfer to complete. */
-+	for (i = 0; i < DMA_POLLING_TIMEOUT; i++) {
-+		usleep_range(5, 10);
-+		if (ioread32((void __iomem *)&dma_reg->dma_write_int_status) &
-+		    (DMA_DONE_INTERRUPT_CH_MASK(chan) |
-+		     DMA_ABORT_INTERRUPT_CH_MASK(chan)))
-+			break;
-+	}
-+	if (i == DMA_POLLING_TIMEOUT) {
-+		dev_err(&xpcie_epf->epf->dev, "DMA Wr timeout\n");
-+		rc = -ETIME;
-+		goto cleanup;
-+	}
-+
-+	rc = intel_xpcie_ep_dma_err_status((void __iomem *)
-+					   &dma_reg->dma_write_err_status,
-+					   chan);
-+
-+cleanup:
-+	/* Clear the done/abort interrupt. */
-+	iowrite32((DMA_DONE_INTERRUPT_CH_MASK(chan) |
-+		   DMA_ABORT_INTERRUPT_CH_MASK(chan)),
-+		  (void __iomem *)&dma_reg->dma_write_int_clear);
-+
-+	if (rc) {
-+		if (intel_xpcie_ep_dma_disable(dma_base, WRITE_ENGINE)) {
-+			dev_err(&xpcie_epf->epf->dev,
-+				"failed to disable WR DMA\n");
-+			return rc;
-+		}
-+		intel_xpcie_ep_dma_enable(dma_base, WRITE_ENGINE);
-+	}
-+
-+	return rc;
-+}
-+
-+int intel_xpcie_ep_dma_read_ll(struct pci_epf *epf, int chan, int descs_num)
-+{
-+	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
-+	void __iomem *dma_base = xpcie_epf->dma_base;
-+	struct xpcie_dma_ll_desc_buf *desc_buf;
-+	struct __iomem pcie_dma_reg * dma_reg =
-+				(struct __iomem pcie_dma_reg *)(dma_base);
-+	struct __iomem pcie_dma_chan * dma_chan;
-+	int i, rc;
-+
-+	if (descs_num <= 0 || descs_num > XPCIE_NUM_RX_DESCS)
-+		return -EINVAL;
-+
-+	if (chan < 0 || chan >= DMA_CHAN_NUM)
-+		return -EINVAL;
-+
-+	dma_chan = (struct __iomem pcie_dma_chan *)
-+		(dma_base + dma_chan_offset[READ_ENGINE][chan]);
-+
-+	desc_buf = &xpcie_epf->rx_desc_buf[chan];
-+
-+	intel_xpcie_ep_dma_setup_ll_descs(dma_chan, desc_buf, descs_num);
-+
-+	/* Start DMA transfer. */
-+	rc = intel_xpcie_ep_dma_doorbell(xpcie_epf, chan,
-+					 (void __iomem *)
-+					 &dma_reg->dma_read_doorbell);
-+	if (rc)
-+		return rc;
-+
-+	/* Wait for DMA transfer to complete. */
-+	for (i = 0; i < DMA_POLLING_TIMEOUT; i++) {
-+		usleep_range(5, 10);
-+		if (ioread32((void __iomem *)&dma_reg->dma_read_int_status) &
-+		    (DMA_DONE_INTERRUPT_CH_MASK(chan) |
-+		     DMA_ABORT_INTERRUPT_CH_MASK(chan)))
-+			break;
-+	}
-+	if (i == DMA_POLLING_TIMEOUT) {
-+		dev_err(&xpcie_epf->epf->dev, "DMA Rd timeout\n");
-+		rc = -ETIME;
-+		goto cleanup;
-+	}
-+
-+	rc = intel_xpcie_ep_dma_err_status((void __iomem *)
-+					   &dma_reg->dma_read_err_status_low,
-+					   chan);
-+	if (!rc) {
-+		rc =
-+		intel_xpcie_ep_dma_rd_err_sts_h((void __iomem *)
-+						&dma_reg->dma_rd_err_sts_h,
-+						chan);
-+	}
-+cleanup:
-+	/* Clear the done/abort interrupt. */
-+	iowrite32((DMA_DONE_INTERRUPT_CH_MASK(chan) |
-+		   DMA_ABORT_INTERRUPT_CH_MASK(chan)),
-+		  (void __iomem *)&dma_reg->dma_read_int_clear);
-+
-+	if (rc) {
-+		if (intel_xpcie_ep_dma_disable(dma_base, READ_ENGINE)) {
-+			dev_err(&xpcie_epf->epf->dev,
-+				"failed to disable RD DMA\n");
-+			return rc;
-+		}
-+		intel_xpcie_ep_dma_enable(dma_base, READ_ENGINE);
-+	}
-+
-+	return rc;
-+}
-+
-+static void intel_xpcie_ep_dma_free_ll_descs_mem(struct xpcie_epf *xpcie_epf)
-+{
-+	struct device *dma_dev = xpcie_epf->epf->epc->dev.parent;
-+	int i;
-+
-+	for (i = 0; i < DMA_CHAN_NUM; i++) {
-+		if (xpcie_epf->tx_desc_buf[i].virt) {
-+			dma_free_coherent(dma_dev,
-+					  xpcie_epf->tx_desc_buf[i].size,
-+					  xpcie_epf->tx_desc_buf[i].virt,
-+					  xpcie_epf->tx_desc_buf[i].phys);
-+		}
-+		if (xpcie_epf->rx_desc_buf[i].virt) {
-+			dma_free_coherent(dma_dev,
-+					  xpcie_epf->rx_desc_buf[i].size,
-+					  xpcie_epf->rx_desc_buf[i].virt,
-+					  xpcie_epf->rx_desc_buf[i].phys);
-+		}
-+
-+		memset(&xpcie_epf->tx_desc_buf[i], 0,
-+		       sizeof(struct xpcie_dma_ll_desc_buf));
-+		memset(&xpcie_epf->rx_desc_buf[i], 0,
-+		       sizeof(struct xpcie_dma_ll_desc_buf));
-+	}
-+}
-+
-+static int intel_xpcie_ep_dma_alloc_ll_descs_mem(struct xpcie_epf *xpcie_epf)
-+{
-+	struct device *dma_dev = xpcie_epf->epf->epc->dev.parent;
-+	int tx_num = XPCIE_NUM_TX_DESCS + 1;
-+	int rx_num = XPCIE_NUM_RX_DESCS + 1;
-+	size_t tx_size, rx_size;
-+	int i;
-+
-+	tx_size = tx_num * sizeof(struct xpcie_dma_ll_desc);
-+	rx_size = rx_num * sizeof(struct xpcie_dma_ll_desc);
-+
-+	for (i = 0; i < DMA_CHAN_NUM; i++) {
-+		xpcie_epf->tx_desc_buf[i].virt =
-+			dma_alloc_coherent(dma_dev, tx_size,
-+					   &xpcie_epf->tx_desc_buf[i].phys,
-+					   GFP_KERNEL);
-+		xpcie_epf->rx_desc_buf[i].virt =
-+			dma_alloc_coherent(dma_dev, rx_size,
-+					   &xpcie_epf->rx_desc_buf[i].phys,
-+					   GFP_KERNEL);
-+
-+		if (!xpcie_epf->tx_desc_buf[i].virt ||
-+		    !xpcie_epf->rx_desc_buf[i].virt) {
-+			intel_xpcie_ep_dma_free_ll_descs_mem(xpcie_epf);
-+			return -ENOMEM;
-+		}
-+
-+		xpcie_epf->tx_desc_buf[i].size = tx_size;
-+		xpcie_epf->rx_desc_buf[i].size = rx_size;
-+	}
-+	return 0;
-+}
-+
-+int intel_xpcie_ep_dma_reset(struct pci_epf *epf)
-+{
-+	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
-+
-+	/* Disable the DMA read/write engine. */
-+	if (intel_xpcie_ep_dma_disable(xpcie_epf->dma_base, WRITE_ENGINE) ||
-+	    intel_xpcie_ep_dma_disable(xpcie_epf->dma_base, READ_ENGINE))
-+		return -EBUSY;
-+
-+	intel_xpcie_ep_dma_enable(xpcie_epf->dma_base, WRITE_ENGINE);
-+	intel_xpcie_ep_dma_enable(xpcie_epf->dma_base, READ_ENGINE);
-+
-+	return 0;
-+}
-+
-+int intel_xpcie_ep_dma_uninit(struct pci_epf *epf)
-+{
-+	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
-+
-+	if (intel_xpcie_ep_dma_disable(xpcie_epf->dma_base, WRITE_ENGINE) ||
-+	    intel_xpcie_ep_dma_disable(xpcie_epf->dma_base, READ_ENGINE))
-+		return -EBUSY;
-+
-+	intel_xpcie_ep_dma_free_ll_descs_mem(xpcie_epf);
-+
-+	return 0;
-+}
-+
-+int intel_xpcie_ep_dma_init(struct pci_epf *epf)
-+{
-+	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
-+	int rc;
-+
-+	xpcie_epf->dma_base = intel_xpcie_ep_get_dma_base(epf);
-+
-+	rc = intel_xpcie_ep_dma_alloc_ll_descs_mem(xpcie_epf);
-+	if (rc)
-+		return rc;
-+
-+	return intel_xpcie_ep_dma_reset(epf);
-+}
-diff --git a/drivers/misc/xlink-pcie/local_host/epf.c b/drivers/misc/xlink-pcie/local_host/epf.c
-index 0234756e89ae..7019aecd6a81 100644
---- a/drivers/misc/xlink-pcie/local_host/epf.c
-+++ b/drivers/misc/xlink-pcie/local_host/epf.c
-@@ -43,6 +43,8 @@ static irqreturn_t intel_xpcie_err_interrupt(int irq, void *args)
+diff --git a/drivers/misc/xlink-core/Makefile b/drivers/misc/xlink-core/Makefile
+index e82b7c72b6b9..ee81f9d05f2b 100644
+--- a/drivers/misc/xlink-core/Makefile
++++ b/drivers/misc/xlink-core/Makefile
+@@ -2,4 +2,4 @@
+ # Makefile for Keem Bay xlink Linux driver
+ #
+ obj-$(CONFIG_XLINK_CORE) += xlink.o
+-xlink-objs += xlink-core.o xlink-multiplexer.o xlink-platform.o xlink-ioctl.o
++xlink-objs += xlink-core.o xlink-multiplexer.o xlink-dispatcher.o xlink-platform.o xlink-ioctl.o
+diff --git a/drivers/misc/xlink-core/xlink-core.c b/drivers/misc/xlink-core/xlink-core.c
+index dd8db834c184..bdbf8c6a99ca 100644
+--- a/drivers/misc/xlink-core/xlink-core.c
++++ b/drivers/misc/xlink-core/xlink-core.c
+@@ -21,6 +21,7 @@
  
- 	xpcie_epf = container_of(xpcie, struct xpcie_epf, xpcie);
- 	val = ioread32(xpcie_epf->apb_base + PCIE_REGS_PCIE_ERR_INTR_FLAGS);
-+	if (val & LINK_REQ_RST_FLG)
-+		intel_xpcie_ep_dma_reset(xpcie_epf->epf);
- 
- 	iowrite32(val, xpcie_epf->apb_base + PCIE_REGS_PCIE_ERR_INTR_FLAGS);
- 
-@@ -285,8 +287,17 @@ static int intel_xpcie_epf_bind(struct pci_epf *epf)
- 		goto err_cleanup_bars;
+ #include "xlink-core.h"
+ #include "xlink-defs.h"
++#include "xlink-dispatcher.h"
+ #include "xlink-ioctl.h"
+ #include "xlink-multiplexer.h"
+ #include "xlink-platform.h"
+@@ -151,6 +152,12 @@ static int kmb_xlink_probe(struct platform_device *pdev)
+ 		goto r_multiplexer;
  	}
  
-+	ret = intel_xpcie_ep_dma_init(epf);
-+	if (ret) {
-+		dev_err(&epf->dev, "DMA initialization failed\n");
-+		goto err_free_err_irq;
++	// initialize dispatcher
++	rc = xlink_dispatcher_init(xlink_dev->pdev);
++	if (rc != X_LINK_SUCCESS) {
++		pr_err("Dispatcher initialization failed\n");
++		goto r_dispatcher;
 +	}
-+
- 	return 0;
+ 	// initialize xlink data structure
+ 	xlink_dev->nmb_connected_links = 0;
+ 	mutex_init(&xlink_dev->lock);
+@@ -168,7 +175,7 @@ static int kmb_xlink_probe(struct platform_device *pdev)
+ 	/*Allocating Major number*/
+ 	if ((alloc_chrdev_region(&xdev, 0, 1, "xlinkdev")) < 0) {
+ 		dev_info(&pdev->dev, "Cannot allocate major number\n");
+-		goto r_multiplexer;
++		goto r_dispatcher;
+ 	}
+ 	dev_info(&pdev->dev, "Major = %d Minor = %d\n", MAJOR(xdev),
+ 		 MINOR(xdev));
+@@ -205,6 +212,8 @@ static int kmb_xlink_probe(struct platform_device *pdev)
+ 	class_destroy(dev_class);
+ r_class:
+ 	unregister_chrdev_region(xdev, 1);
++r_dispatcher:
++	xlink_dispatcher_destroy();
+ r_multiplexer:
+ 	xlink_multiplexer_destroy();
+ 	return -1;
+@@ -220,6 +229,10 @@ static int kmb_xlink_remove(struct platform_device *pdev)
+ 	rc = xlink_multiplexer_destroy();
+ 	if (rc != X_LINK_SUCCESS)
+ 		pr_err("Multiplexer destroy failed\n");
++	// stop dispatchers and destroy
++	rc = xlink_dispatcher_destroy();
++	if (rc != X_LINK_SUCCESS)
++		pr_err("Dispatcher destroy failed\n");
  
-+err_free_err_irq:
-+	free_irq(xpcie_epf->irq_err, &xpcie_epf->xpcie);
-+
- err_cleanup_bars:
- 	intel_xpcie_cleanup_bars(epf);
- 
-@@ -295,11 +306,9 @@ static int intel_xpcie_epf_bind(struct pci_epf *epf)
- 
- static void intel_xpcie_epf_unbind(struct pci_epf *epf)
+ 	mutex_unlock(&xlink->lock);
+ 	mutex_destroy(&xlink->lock);
+@@ -314,6 +327,14 @@ enum xlink_error xlink_connect(struct xlink_handle *handle)
+ 		link->handle = *handle;
+ 		xlink->nmb_connected_links++;
+ 		kref_init(&link->refcount);
++		if (interface != IPC_INTERFACE) {
++			// start dispatcher
++			rc = xlink_dispatcher_start(link->id, &link->handle);
++			if (rc) {
++				pr_err("dispatcher start failed\n");
++				goto r_cleanup;
++			}
++		}
+ 		// initialize multiplexer connection
+ 		rc = xlink_multiplexer_connect(link->id);
+ 		if (rc) {
+@@ -649,6 +670,7 @@ EXPORT_SYMBOL_GPL(xlink_release_data);
+ enum xlink_error xlink_disconnect(struct xlink_handle *handle)
  {
--	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
- 	struct pci_epc *epc = epf->epc;
+ 	struct xlink_link *link;
++	int interface = NULL_INTERFACE;
+ 	enum xlink_error rc = X_LINK_ERROR;
  
--	free_irq(xpcie_epf->irq, &xpcie_epf->xpcie);
--	free_irq(xpcie_epf->irq_err, &xpcie_epf->xpcie);
-+	intel_xpcie_ep_dma_uninit(epf);
- 
- 	pci_epc_stop(epc);
- 
-diff --git a/drivers/misc/xlink-pcie/local_host/epf.h b/drivers/misc/xlink-pcie/local_host/epf.h
-index a60cd43fe555..82410404d54e 100644
---- a/drivers/misc/xlink-pcie/local_host/epf.h
-+++ b/drivers/misc/xlink-pcie/local_host/epf.h
-@@ -18,6 +18,38 @@
- 
- #define KEEMBAY_XPCIE_STEPPING_MAXLEN 8
- 
-+#define DMA_CHAN_NUM		(4)
+ 	if (!xlink || !handle)
+@@ -661,6 +683,17 @@ enum xlink_error xlink_disconnect(struct xlink_handle *handle)
+ 	// decrement refcount, if count is 0 lock mutex and disconnect
+ 	if (kref_put_mutex(&link->refcount, release_after_kref_put,
+ 			   &xlink->lock)) {
++		// stop dispatcher
++		interface = get_interface_from_sw_device_id(link->handle.sw_device_id);
++		if (interface != IPC_INTERFACE) {
++			// stop dispatcher
++			rc = xlink_dispatcher_stop(link->id);
++			if (rc != X_LINK_SUCCESS) {
++				pr_err("dispatcher stop failed\n");
++				mutex_unlock(&xlink->lock);
++				return X_LINK_ERROR;
++			}
++		}
+ 		// deinitialize multiplexer connection
+ 		rc = xlink_multiplexer_disconnect(link->id);
+ 		if (rc) {
+diff --git a/drivers/misc/xlink-core/xlink-dispatcher.c b/drivers/misc/xlink-core/xlink-dispatcher.c
+new file mode 100644
+index 000000000000..11ef8e4110ca
+--- /dev/null
++++ b/drivers/misc/xlink-core/xlink-dispatcher.c
+@@ -0,0 +1,441 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * xlink Dispatcher.
++ *
++ * Copyright (C) 2018-2019 Intel Corporation
++ *
++ */
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/device.h>
++#include <linux/kernel.h>
++#include <linux/slab.h>
++#include <linux/kthread.h>
++#include <linux/list.h>
++#include <linux/semaphore.h>
++#include <linux/mutex.h>
++#include <linux/completion.h>
++#include <linux/sched/signal.h>
++#include <linux/platform_device.h>
 +
-+#define XPCIE_NUM_TX_DESCS	(64)
-+#define XPCIE_NUM_RX_DESCS	(64)
++#include "xlink-dispatcher.h"
++#include "xlink-multiplexer.h"
++#include "xlink-platform.h"
 +
-+extern bool dma_ll_mode;
++#define DISPATCHER_RX_TIMEOUT_MSEC 0
 +
-+struct xpcie_dma_ll_desc {
-+	u32 dma_ch_control1;
-+	u32 dma_transfer_size;
-+	union {
-+		struct {
-+			u32 dma_sar_low;
-+			u32 dma_sar_high;
-+		};
-+		phys_addr_t src_addr;
-+	};
-+	union {
-+		struct {
-+			u32 dma_dar_low;
-+			u32 dma_dar_high;
-+		};
-+		phys_addr_t dst_addr;
-+	};
-+} __packed;
-+
-+struct xpcie_dma_ll_desc_buf {
-+	struct xpcie_dma_ll_desc *virt;
-+	dma_addr_t phys;
-+	size_t size;
++/* state of a dispatcher servicing a link to a device*/
++enum dispatcher_state {
++	XLINK_DISPATCHER_INIT,		/* initialized but not used */
++	XLINK_DISPATCHER_RUNNING,	/* currently servicing a link */
++	XLINK_DISPATCHER_STOPPED,	/* no longer servicing a link */
++	XLINK_DISPATCHER_ERROR,		/* fatal error */
 +};
 +
- struct xpcie_epf {
- 	struct pci_epf *epf;
- 	void *vaddr[BAR_5 + 1];
-@@ -32,6 +64,15 @@ struct xpcie_epf {
- 	void __iomem *dma_base;
- 	void __iomem *dbi_base;
- 	char stepping[KEEMBAY_XPCIE_STEPPING_MAXLEN];
++/* queue for dispatcher tx thread event handling */
++struct event_queue {
++	u32 count;		/* number of events in the queue */
++	u32 capacity;		/* capacity of events in the queue */
++	struct list_head head;	/* head of event linked list */
++	struct mutex lock;	/* locks queue while accessing */
++};
 +
-+	struct xpcie_dma_ll_desc_buf	tx_desc_buf[DMA_CHAN_NUM];
-+	struct xpcie_dma_ll_desc_buf	rx_desc_buf[DMA_CHAN_NUM];
- };
++/* dispatcher servicing a single link to a device */
++struct dispatcher {
++	u32 link_id;			/* id of link being serviced */
++	enum dispatcher_state state;	/* state of the dispatcher */
++	struct xlink_handle *handle;	/* xlink device handle */
++	int interface;			/* underlying interface of link */
++	struct task_struct *rxthread;	/* kthread servicing rx */
++	struct task_struct *txthread;	/* kthread servicing tx */
++	struct event_queue queue;	/* xlink event queue */
++	struct semaphore event_sem;	/* signals tx kthread of events */
++	struct completion rx_done;	/* sync start/stop of rx kthread */
++	struct completion tx_done;	/* sync start/stop of tx thread */
++};
++
++/* xlink dispatcher system component */
++struct xlink_dispatcher {
++	struct dispatcher dispatchers[XLINK_MAX_CONNECTIONS];	/* disp queue */
++	struct device *dev;					/* deallocate data */
++	struct mutex lock;					/* locks when start new disp */
++};
++
++/* global reference to the xlink dispatcher data structure */
++static struct xlink_dispatcher *xlinkd;
++
++/*
++ * Dispatcher Internal Functions
++ *
++ */
++
++static struct dispatcher *get_dispatcher_by_id(u32 id)
++{
++	if (!xlinkd)
++		return NULL;
++
++	if (id >= XLINK_MAX_CONNECTIONS)
++		return NULL;
++
++	return &xlinkd->dispatchers[id];
++}
++
++static u32 event_generate_id(void)
++{
++	static u32 id = 0xa; // TODO: temporary solution
++
++	return id++;
++}
++
++static struct xlink_event *event_dequeue(struct event_queue *queue)
++{
++	struct xlink_event *event = NULL;
++
++	mutex_lock(&queue->lock);
++	if (!list_empty(&queue->head)) {
++		event = list_first_entry(&queue->head, struct xlink_event,
++					 list);
++		list_del(&event->list);
++		queue->count--;
++	}
++	mutex_unlock(&queue->lock);
++	return event;
++}
++
++static int event_enqueue(struct event_queue *queue, struct xlink_event *event)
++{
++	int rc = -1;
++
++	mutex_lock(&queue->lock);
++	if (queue->count < ((queue->capacity / 10) * 7)) {
++		list_add_tail(&event->list, &queue->head);
++		queue->count++;
++		rc = 0;
++	}
++	mutex_unlock(&queue->lock);
++	return rc;
++}
++
++static struct xlink_event *dispatcher_event_get(struct dispatcher *disp)
++{
++	int rc = 0;
++	struct xlink_event *event = NULL;
++
++	// wait until an event is available
++	rc = down_interruptible(&disp->event_sem);
++	// dequeue and return next event to process
++	if (!rc)
++		event = event_dequeue(&disp->queue);
++	return event;
++}
++
++static int is_valid_event_header(struct xlink_event *event)
++{
++	if (event->header.magic != XLINK_EVENT_HEADER_MAGIC)
++		return 0;
++	else
++		return 1;
++}
++
++static int dispatcher_event_send(struct xlink_event *event)
++{
++	size_t event_header_size = sizeof(event->header);
++	int rc;
++
++	// write event header
++	// printk(KERN_DEBUG "Sending event: type = 0x%x, id = 0x%x\n",
++			// event->header.type, event->header.id);
++	rc = xlink_platform_write(event->interface,
++				  event->handle->sw_device_id, &event->header,
++				  &event_header_size, event->header.timeout, NULL);
++	if (rc || event_header_size != sizeof(event->header)) {
++		pr_err("Write header failed %d\n", rc);
++		return rc;
++	}
++	if (event->header.type == XLINK_WRITE_REQ ||
++	    event->header.type == XLINK_WRITE_VOLATILE_REQ) {
++		// write event data
++		rc = xlink_platform_write(event->interface,
++					  event->handle->sw_device_id, event->data,
++					  &event->header.size, event->header.timeout,
++					  NULL);
++		if (rc)
++			pr_err("Write data failed %d\n", rc);
++		if (event->user_data == 1) {
++			if (event->paddr != 0) {
++				xlink_platform_deallocate(xlinkd->dev,
++							  event->data, event->paddr,
++							  event->header.size,
++							  XLINK_PACKET_ALIGNMENT,
++							  XLINK_CMA_MEMORY);
++			} else {
++				xlink_platform_deallocate(xlinkd->dev,
++							  event->data, event->paddr,
++							  event->header.size,
++							  XLINK_PACKET_ALIGNMENT,
++							  XLINK_NORMAL_MEMORY);
++			}
++		}
++	}
++	return rc;
++}
++
++static int xlink_dispatcher_rxthread(void *context)
++{
++	struct dispatcher *disp = (struct dispatcher *)context;
++	struct xlink_event *event;
++	size_t size;
++	int rc;
++
++	// printk(KERN_DEBUG "dispatcher rxthread started\n");
++	event = xlink_create_event(disp->link_id, 0, disp->handle, 0, 0, 0);
++	if (!event)
++		return -1;
++
++	allow_signal(SIGTERM); // allow thread termination while waiting on sem
++	complete(&disp->rx_done);
++	while (!kthread_should_stop()) {
++		size = sizeof(event->header);
++		rc = xlink_platform_read(disp->interface,
++					 disp->handle->sw_device_id,
++					 &event->header, &size,
++					 DISPATCHER_RX_TIMEOUT_MSEC, NULL);
++		if (rc || size != (int)sizeof(event->header))
++			continue;
++		if (is_valid_event_header(event)) {
++			event->link_id = disp->link_id;
++			rc = xlink_multiplexer_rx(event);
++			if (!rc) {
++				event = xlink_create_event(disp->link_id, 0,
++							   disp->handle, 0, 0,
++							   0);
++				if (!event)
++					return -1;
++			}
++		}
++	}
++	// printk(KERN_INFO "dispatcher rxthread stopped\n");
++	complete(&disp->rx_done);
++	do_exit(0);
++	return 0;
++}
++
++static int xlink_dispatcher_txthread(void *context)
++{
++	struct dispatcher *disp = (struct dispatcher *)context;
++	struct xlink_event *event;
++
++	// printk(KERN_DEBUG "dispatcher txthread started\n");
++	allow_signal(SIGTERM); // allow thread termination while waiting on sem
++	complete(&disp->tx_done);
++	while (!kthread_should_stop()) {
++		event = dispatcher_event_get(disp);
++		if (!event)
++			continue;
++
++		dispatcher_event_send(event);
++		xlink_destroy_event(event); // free handled event
++	}
++	// printk(KERN_INFO "dispatcher txthread stopped\n");
++	complete(&disp->tx_done);
++	do_exit(0);
++	return 0;
++}
++
++/*
++ * Dispatcher External Functions
++ *
++ */
++
++enum xlink_error xlink_dispatcher_init(void *dev)
++{
++	struct platform_device *plat_dev = (struct platform_device *)dev;
++	int i;
++
++	xlinkd = kzalloc(sizeof(*xlinkd), GFP_KERNEL);
++	if (!xlinkd)
++		return X_LINK_ERROR;
++
++	xlinkd->dev = &plat_dev->dev;
++	for (i = 0; i < XLINK_MAX_CONNECTIONS; i++) {
++		xlinkd->dispatchers[i].link_id = i;
++		sema_init(&xlinkd->dispatchers[i].event_sem, 0);
++		init_completion(&xlinkd->dispatchers[i].rx_done);
++		init_completion(&xlinkd->dispatchers[i].tx_done);
++		INIT_LIST_HEAD(&xlinkd->dispatchers[i].queue.head);
++		mutex_init(&xlinkd->dispatchers[i].queue.lock);
++		xlinkd->dispatchers[i].queue.count = 0;
++		xlinkd->dispatchers[i].queue.capacity =
++				XLINK_EVENT_QUEUE_CAPACITY;
++		xlinkd->dispatchers[i].state = XLINK_DISPATCHER_INIT;
++	}
++	mutex_init(&xlinkd->lock);
++
++	return X_LINK_SUCCESS;
++}
++
++enum xlink_error xlink_dispatcher_start(int id, struct xlink_handle *handle)
++{
++	struct dispatcher *disp;
++
++	mutex_lock(&xlinkd->lock);
++	// get dispatcher by link id
++	disp = get_dispatcher_by_id(id);
++	if (!disp)
++		goto r_error;
++
++	// cannot start a running or failed dispatcher
++	if (disp->state == XLINK_DISPATCHER_RUNNING ||
++	    disp->state == XLINK_DISPATCHER_ERROR)
++		goto r_error;
++
++	// set the dispatcher context
++	disp->handle = handle;
++	disp->interface = get_interface_from_sw_device_id(handle->sw_device_id);
++
++	// run dispatcher thread to handle and write outgoing packets
++	disp->txthread = kthread_run(xlink_dispatcher_txthread,
++				     (void *)disp, "txthread");
++	if (!disp->txthread) {
++		pr_err("xlink txthread creation failed\n");
++		goto r_txthread;
++	}
++	wait_for_completion(&disp->tx_done);
++	disp->state = XLINK_DISPATCHER_RUNNING;
++	// run dispatcher thread to read and handle incoming packets
++	disp->rxthread = kthread_run(xlink_dispatcher_rxthread,
++				     (void *)disp, "rxthread");
++	if (!disp->rxthread) {
++		pr_err("xlink rxthread creation failed\n");
++		goto r_rxthread;
++	}
++	wait_for_completion(&disp->rx_done);
++	mutex_unlock(&xlinkd->lock);
++
++	return X_LINK_SUCCESS;
++
++r_rxthread:
++	kthread_stop(disp->txthread);
++r_txthread:
++	disp->state = XLINK_DISPATCHER_STOPPED;
++r_error:
++	mutex_unlock(&xlinkd->lock);
++	return X_LINK_ERROR;
++}
++
++enum xlink_error xlink_dispatcher_event_add(enum xlink_event_origin origin,
++					    struct xlink_event *event)
++{
++	struct dispatcher *disp;
++	int rc;
++
++	// get dispatcher by handle
++	disp = get_dispatcher_by_id(event->link_id);
++	if (!disp)
++		return X_LINK_ERROR;
++
++	// only add events if the dispatcher is running
++	if (disp->state != XLINK_DISPATCHER_RUNNING)
++		return X_LINK_ERROR;
++
++	// configure event and add to queue
++	if (origin == EVENT_TX)
++		event->header.id = event_generate_id();
++	event->origin = origin;
++	rc = event_enqueue(&disp->queue, event);
++	if (rc)
++		return X_LINK_CHAN_FULL;
++
++	// notify dispatcher tx thread of new event
++	up(&disp->event_sem);
++	return X_LINK_SUCCESS;
++}
++
++enum xlink_error xlink_dispatcher_stop(int id)
++{
++	struct dispatcher *disp;
++	int rc;
++
++	mutex_lock(&xlinkd->lock);
++	// get dispatcher by link id
++	disp = get_dispatcher_by_id(id);
++	if (!disp)
++		goto r_error;
++
++	// don't stop dispatcher if not started
++	if (disp->state != XLINK_DISPATCHER_RUNNING)
++		goto r_error;
++
++	if (disp->rxthread) {
++		// stop dispatcher rx thread
++		send_sig(SIGTERM, disp->rxthread, 0);
++		rc = kthread_stop(disp->rxthread);
++		if (rc)
++			goto r_thread;
++	}
++	wait_for_completion(&disp->rx_done);
++	if (disp->txthread) {
++		// stop dispatcher tx thread
++		send_sig(SIGTERM, disp->txthread, 0);
++		rc = kthread_stop(disp->txthread);
++		if (rc)
++			goto r_thread;
++	}
++	wait_for_completion(&disp->tx_done);
++	disp->state = XLINK_DISPATCHER_STOPPED;
++	mutex_unlock(&xlinkd->lock);
++	return X_LINK_SUCCESS;
++
++r_thread:
++	// dispatcher now in error state and cannot be used
++	disp->state = XLINK_DISPATCHER_ERROR;
++r_error:
++	mutex_unlock(&xlinkd->lock);
++	return X_LINK_ERROR;
++}
++
++enum xlink_error xlink_dispatcher_destroy(void)
++{
++	enum xlink_event_type type;
++	struct xlink_event *event;
++	struct dispatcher *disp;
++	int i;
++
++	for (i = 0; i < XLINK_MAX_CONNECTIONS; i++) {
++		// get dispatcher by link id
++		disp = get_dispatcher_by_id(i);
++		if (!disp)
++			continue;
++
++		// stop all running dispatchers
++		if (disp->state == XLINK_DISPATCHER_RUNNING)
++			xlink_dispatcher_stop(i);
++
++		// empty queues of all used dispatchers
++		if (disp->state == XLINK_DISPATCHER_INIT)
++			continue;
++
++		// deallocate remaining events in queue
++		while (!list_empty(&disp->queue.head)) {
++			event = event_dequeue(&disp->queue);
++			if (!event)
++				continue;
++			type = event->header.type;
++			if (type == XLINK_WRITE_REQ ||
++			    type == XLINK_WRITE_VOLATILE_REQ) {
++				// deallocate event data
++				xlink_platform_deallocate(xlinkd->dev,
++							  event->data,
++							  event->paddr,
++							  event->header.size,
++							  XLINK_PACKET_ALIGNMENT,
++							  XLINK_NORMAL_MEMORY);
++			}
++			xlink_destroy_event(event);
++		}
++		// destroy dispatcher
++		mutex_destroy(&disp->queue.lock);
++	}
++	mutex_destroy(&xlinkd->lock);
++	return X_LINK_SUCCESS;
++}
+diff --git a/drivers/misc/xlink-core/xlink-dispatcher.h b/drivers/misc/xlink-core/xlink-dispatcher.h
+new file mode 100644
+index 000000000000..d1458e7a4ab7
+--- /dev/null
++++ b/drivers/misc/xlink-core/xlink-dispatcher.h
+@@ -0,0 +1,26 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * xlink Dispatcher.
++ *
++ * Copyright (C) 2018-2019 Intel Corporation
++ *
++ */
++#ifndef __XLINK_DISPATCHER_H
++#define __XLINK_DISPATCHER_H
++
++#include "xlink-defs.h"
++
++enum xlink_error xlink_dispatcher_init(void *dev);
++
++enum xlink_error xlink_dispatcher_start(int id, struct xlink_handle *handle);
++
++enum xlink_error xlink_dispatcher_event_add(enum xlink_event_origin origin,
++					    struct xlink_event *event);
++
++enum xlink_error xlink_dispatcher_stop(int id);
++
++enum xlink_error xlink_dispatcher_destroy(void);
++
++enum xlink_error xlink_dispatcher_ipc_passthru_event_add(struct xlink_event *event);
++
++#endif /* __XLINK_DISPATCHER_H */
+diff --git a/drivers/misc/xlink-core/xlink-multiplexer.c b/drivers/misc/xlink-core/xlink-multiplexer.c
+index 9b1ed008bb56..339734826f3e 100644
+--- a/drivers/misc/xlink-core/xlink-multiplexer.c
++++ b/drivers/misc/xlink-core/xlink-multiplexer.c
+@@ -27,6 +27,7 @@
+ #include <linux/xlink-ipc.h>
+ #endif
  
-+int intel_xpcie_ep_dma_init(struct pci_epf *epf);
-+int intel_xpcie_ep_dma_uninit(struct pci_epf *epf);
-+int intel_xpcie_ep_dma_reset(struct pci_epf *epf);
-+int intel_xpcie_ep_dma_read_ll(struct pci_epf *epf, int chan, int descs_num);
-+int intel_xpcie_ep_dma_write_ll(struct pci_epf *epf, int chan, int descs_num);
++#include "xlink-dispatcher.h"
+ #include "xlink-multiplexer.h"
+ #include "xlink-platform.h"
+ 
+@@ -165,6 +166,32 @@ static int is_channel_for_device(u16 chan, u32 sw_device_id,
+ 	return 0;
+ }
+ 
++static int is_enough_space_in_channel(struct open_channel *opchan,
++				      u32 size)
++{
++	if (opchan->tx_packet_level >= ((XLINK_PACKET_QUEUE_CAPACITY / 100) * THR_UPR)) {
++		pr_info("Packet queue limit reached\n");
++		return 0;
++	}
++	if (opchan->tx_up_limit == 0) {
++		if ((opchan->tx_fill_level + size)
++				> ((opchan->chan->size / 100) * THR_UPR)) {
++			opchan->tx_up_limit = 1;
++			return 0;
++		}
++	}
++	if (opchan->tx_up_limit == 1) {
++		if ((opchan->tx_fill_level + size)
++				< ((opchan->chan->size / 100) * THR_LWR)) {
++			opchan->tx_up_limit = 0;
++			return 1;
++		} else {
++			return 0;
++		}
++	}
++	return 1;
++}
 +
- #endif /* XPCIE_EPF_HEADER_ */
+ static int is_control_channel(u16 chan)
+ {
+ 	if (chan == IP_CONTROL_CHANNEL || chan == VPU_CONTROL_CHANNEL)
+@@ -173,6 +200,51 @@ static int is_control_channel(u16 chan)
+ 		return 0;
+ }
+ 
++static struct open_channel *get_channel(u32 link_id, u16 chan)
++{
++	if (!xmux->channels[link_id][chan].opchan)
++		return NULL;
++	mutex_lock(&xmux->channels[link_id][chan].opchan->lock);
++	return xmux->channels[link_id][chan].opchan;
++}
++
++static void release_channel(struct open_channel *opchan)
++{
++	if (opchan)
++		mutex_unlock(&opchan->lock);
++}
++
++static int add_packet_to_channel(struct open_channel *opchan,
++				 struct packet_queue *queue,
++				 void *buffer, u32 size,
++				 dma_addr_t paddr)
++{
++	struct packet *pkt;
++
++	if (queue->count < queue->capacity) {
++		pkt = kzalloc(sizeof(*pkt), GFP_KERNEL);
++		if (!pkt)
++			return X_LINK_ERROR;
++		pkt->data = buffer;
++		pkt->length = size;
++		pkt->paddr = paddr;
++		list_add_tail(&pkt->list, &queue->head);
++		queue->count++;
++		opchan->rx_fill_level += pkt->length;
++	}
++	return X_LINK_SUCCESS;
++}
++
++static struct packet *get_packet_from_channel(struct packet_queue *queue)
++{
++	struct packet *pkt = NULL;
++	// get first packet in queue
++	if (!list_empty(&queue->head))
++		pkt = list_first_entry(&queue->head, struct packet, list);
++
++	return pkt;
++}
++
+ static int release_packet_from_channel(struct open_channel *opchan,
+ 				       struct packet_queue *queue,
+ 				       u8 * const addr,	u32 *size)
+@@ -355,15 +427,46 @@ enum xlink_error xlink_multiplexer_destroy(void)
+ 	return X_LINK_SUCCESS;
+ }
+ 
++static int compl_wait(struct completion *compl, struct open_channel *opchan)
++{
++	int rc;
++	unsigned long tout = msecs_to_jiffies(opchan->chan->timeout);
++
++	if (opchan->chan->timeout == 0) {
++		mutex_unlock(&opchan->lock);
++		rc = wait_for_completion_interruptible(compl);
++		mutex_lock(&opchan->lock);
++		if (rc < 0)	// wait interrupted
++			rc = X_LINK_ERROR;
++	} else {
++		mutex_unlock(&opchan->lock);
++		rc = wait_for_completion_interruptible_timeout(compl, tout);
++		mutex_lock(&opchan->lock);
++		if (rc == 0)
++			rc = X_LINK_TIMEOUT;
++		else if (rc < 0)	// wait interrupted
++			rc = X_LINK_ERROR;
++		else if (rc > 0)
++			rc = X_LINK_SUCCESS;
++	}
++	return rc;
++}
++
+ enum xlink_error xlink_multiplexer_tx(struct xlink_event *event,
+ 				      int *event_queued)
+ {
++	struct open_channel *opchan = NULL;
++	struct packet *pkt = NULL;
+ 	int rc = X_LINK_SUCCESS;
++	u32 link_id = 0;
++	u32 size = 0;
+ 	u16 chan = 0;
++	u32 save_timeout = 0;
+ 
+ 	if (!xmux || !event)
+ 		return X_LINK_ERROR;
+ 
++	link_id = event->link_id;
+ 	chan = event->header.chan;
+ 
+ 	// verify channel ID is in range
+@@ -379,9 +482,402 @@ enum xlink_error xlink_multiplexer_tx(struct xlink_event *event,
+ 	if (is_control_channel(chan))
+ 		return X_LINK_ERROR;
+ 
+-	if (chan < XLINK_IPC_MAX_CHANNELS && event->interface == IPC_INTERFACE)
++	if (chan < XLINK_IPC_MAX_CHANNELS && event->interface == IPC_INTERFACE) {
+ 		// event should be handled by passthrough
+ 		rc = xlink_passthrough(event);
++		return rc;
++	}
++	// event should be handled by dispatcher
++	switch (event->header.type) {
++	case XLINK_WRITE_REQ:
++	case XLINK_WRITE_VOLATILE_REQ:
++		opchan = get_channel(link_id, chan);
++		if (!opchan || opchan->chan->status != CHAN_OPEN) {
++			rc = X_LINK_COMMUNICATION_FAIL;
++		} else {
++			event->header.timeout = opchan->chan->timeout;
++			while (!is_enough_space_in_channel(opchan,
++							   event->header.size)) {
++				if (opchan->chan->mode == RXN_TXB ||
++				    opchan->chan->mode == RXB_TXB) {
++					// channel is blocking,
++					// wait for packet to be released
++					rc = compl_wait(&opchan->pkt_released, opchan);
++				} else {
++					rc = X_LINK_CHAN_FULL;
++					break;
++				}
++			}
++			if (rc == X_LINK_SUCCESS) {
++				opchan->tx_fill_level += event->header.size;
++				opchan->tx_packet_level++;
++				xlink_dispatcher_event_add(EVENT_TX, event);
++				*event_queued = 1;
++				if (opchan->chan->mode == RXN_TXB ||
++				    opchan->chan->mode == RXB_TXB) {
++					// channel is blocking,
++					// wait for packet to be consumed
++					mutex_unlock(&opchan->lock);
++					rc = compl_wait(&opchan->pkt_consumed, opchan);
++					mutex_lock(&opchan->lock);
++				}
++			}
++		}
++		release_channel(opchan);
++		break;
++	case XLINK_READ_REQ:
++		opchan = get_channel(link_id, chan);
++		if (!opchan || opchan->chan->status != CHAN_OPEN) {
++			rc = X_LINK_COMMUNICATION_FAIL;
++		} else {
++			event->header.timeout = opchan->chan->timeout;
++			if (opchan->chan->mode == RXB_TXN ||
++			    opchan->chan->mode == RXB_TXB) {
++				// channel is blocking, wait for packet to become available
++				mutex_unlock(&opchan->lock);
++				rc = compl_wait(&opchan->pkt_available, opchan);
++				mutex_lock(&opchan->lock);
++			}
++			if (rc == X_LINK_SUCCESS) {
++				pkt = get_packet_from_channel(&opchan->rx_queue);
++				if (pkt) {
++					*(u32 **)event->pdata = (u32 *)pkt->data;
++					*event->length = pkt->length;
++					xlink_dispatcher_event_add(EVENT_TX, event);
++					*event_queued = 1;
++				} else {
++					rc = X_LINK_ERROR;
++				}
++			}
++		}
++		release_channel(opchan);
++		break;
++	case XLINK_READ_TO_BUFFER_REQ:
++		opchan = get_channel(link_id, chan);
++		if (!opchan || opchan->chan->status != CHAN_OPEN) {
++			rc = X_LINK_COMMUNICATION_FAIL;
++		} else {
++			event->header.timeout = opchan->chan->timeout;
++			if (opchan->chan->mode == RXB_TXN ||
++			    opchan->chan->mode == RXB_TXB) {
++				// channel is blocking, wait for packet to become available
++				mutex_unlock(&opchan->lock);
++				rc = compl_wait(&opchan->pkt_available, opchan);
++				mutex_lock(&opchan->lock);
++			}
++			if (rc == X_LINK_SUCCESS) {
++				pkt = get_packet_from_channel(&opchan->rx_queue);
++				if (pkt) {
++					memcpy(event->data, pkt->data, pkt->length);
++					*event->length = pkt->length;
++					xlink_dispatcher_event_add(EVENT_TX, event);
++					*event_queued = 1;
++				} else {
++					rc = X_LINK_ERROR;
++				}
++			}
++		}
++		release_channel(opchan);
++		break;
++	case XLINK_RELEASE_REQ:
++		opchan = get_channel(link_id, chan);
++		if (!opchan) {
++			rc = X_LINK_COMMUNICATION_FAIL;
++		} else {
++			rc = release_packet_from_channel(opchan,
++							 &opchan->rx_queue,
++							 event->data,
++							 &size);
++			if (rc) {
++				rc = X_LINK_ERROR;
++			} else {
++				event->header.size = size;
++				xlink_dispatcher_event_add(EVENT_TX, event);
++				*event_queued = 1;
++			}
++		}
++		release_channel(opchan);
++		break;
++	case XLINK_OPEN_CHANNEL_REQ:
++		if (xmux->channels[link_id][chan].status == CHAN_CLOSED) {
++			xmux->channels[link_id][chan].size = event->header.size;
++			xmux->channels[link_id][chan].timeout = event->header.timeout;
++			xmux->channels[link_id][chan].mode = (uintptr_t)event->data;
++			rc = multiplexer_open_channel(link_id, chan);
++			if (rc) {
++				rc = X_LINK_ERROR;
++			} else {
++				opchan = get_channel(link_id, chan);
++				if (!opchan) {
++					rc = X_LINK_COMMUNICATION_FAIL;
++				} else {
++					xlink_dispatcher_event_add(EVENT_TX, event);
++					*event_queued = 1;
++					mutex_unlock(&opchan->lock);
++					save_timeout = opchan->chan->timeout;
++					opchan->chan->timeout = OPEN_CHANNEL_TIMEOUT_MSEC;
++					rc = compl_wait(&opchan->opened, opchan);
++					opchan->chan->timeout = save_timeout;
++					if (rc == 0) {
++						xmux->channels[link_id][chan].status = CHAN_OPEN;
++						release_channel(opchan);
++					} else {
++						multiplexer_close_channel(opchan);
++					}
++				}
++			}
++		} else if (xmux->channels[link_id][chan].status == CHAN_OPEN_PEER) {
++			/* channel already open */
++			xmux->channels[link_id][chan].status = CHAN_OPEN; // opened locally
++			xmux->channels[link_id][chan].size = event->header.size;
++			xmux->channels[link_id][chan].timeout = event->header.timeout;
++			xmux->channels[link_id][chan].mode = (uintptr_t)event->data;
++			rc = multiplexer_open_channel(link_id, chan);
++		} else {
++			/* channel already open */
++			rc = X_LINK_ALREADY_OPEN;
++		}
++		break;
++	case XLINK_CLOSE_CHANNEL_REQ:
++		if (xmux->channels[link_id][chan].status == CHAN_OPEN) {
++			opchan = get_channel(link_id, chan);
++			if (!opchan)
++				return X_LINK_COMMUNICATION_FAIL;
++			rc = multiplexer_close_channel(opchan);
++			if (rc)
++				rc = X_LINK_ERROR;
++			else
++				xmux->channels[link_id][chan].status = CHAN_CLOSED;
++		} else {
++			/* can't close channel not open */
++			rc = X_LINK_ERROR;
++		}
++		break;
++	case XLINK_PING_REQ:
++		break;
++	case XLINK_WRITE_RESP:
++	case XLINK_WRITE_VOLATILE_RESP:
++	case XLINK_READ_RESP:
++	case XLINK_READ_TO_BUFFER_RESP:
++	case XLINK_RELEASE_RESP:
++	case XLINK_OPEN_CHANNEL_RESP:
++	case XLINK_CLOSE_CHANNEL_RESP:
++	case XLINK_PING_RESP:
++	default:
++		rc = X_LINK_ERROR;
++	}
++return rc;
++}
++
++enum xlink_error xlink_multiplexer_rx(struct xlink_event *event)
++{
++	struct xlink_event *passthru_event = NULL;
++	struct open_channel *opchan = NULL;
++	int rc = X_LINK_SUCCESS;
++	dma_addr_t paddr = 0;
++	void *buffer = NULL;
++	size_t size = 0;
++	u32 link_id;
++	u16 chan;
++
++	if (!xmux || !event)
++		return X_LINK_ERROR;
++
++	link_id = event->link_id;
++	chan = event->header.chan;
++
++	switch (event->header.type) {
++	case XLINK_WRITE_REQ:
++	case XLINK_WRITE_VOLATILE_REQ:
++		opchan = get_channel(link_id, chan);
++		if (!opchan) {
++			// if we receive data on a closed channel - flush/read the data
++			buffer = xlink_platform_allocate(xmux->dev, &paddr,
++							 event->header.size,
++							 XLINK_PACKET_ALIGNMENT,
++							 XLINK_NORMAL_MEMORY);
++			if (buffer) {
++				size = event->header.size;
++				xlink_platform_read(event->interface,
++						    event->handle->sw_device_id,
++						    buffer, &size, 1000, NULL);
++				xlink_platform_deallocate(xmux->dev, buffer,
++							  paddr,
++							  event->header.size,
++							  XLINK_PACKET_ALIGNMENT,
++							  XLINK_NORMAL_MEMORY);
++			} else {
++				pr_err("Fatal error: can't allocate memory in line:%d func:%s\n", __LINE__, __func__);
++			}
++			rc = X_LINK_COMMUNICATION_FAIL;
++		} else {
++			event->header.timeout = opchan->chan->timeout;
++			buffer = xlink_platform_allocate(xmux->dev, &paddr,
++							 event->header.size,
++							 XLINK_PACKET_ALIGNMENT,
++							 XLINK_NORMAL_MEMORY);
++			if (buffer) {
++				size = event->header.size;
++				rc = xlink_platform_read(event->interface,
++							 event->handle->sw_device_id,
++							 buffer, &size,
++							 opchan->chan->timeout,
++							 NULL);
++				if (rc || event->header.size != size) {
++					xlink_platform_deallocate(xmux->dev, buffer,
++								  paddr,
++								  event->header.size,
++								  XLINK_PACKET_ALIGNMENT,
++								  XLINK_NORMAL_MEMORY);
++					rc = X_LINK_ERROR;
++					release_channel(opchan);
++					break;
++				}
++				event->paddr = paddr;
++				event->data = buffer;
++				if (add_packet_to_channel(opchan, &opchan->rx_queue,
++							  event->data,
++							  event->header.size,
++							  paddr)) {
++					xlink_platform_deallocate(xmux->dev,
++								  buffer, paddr,
++								  event->header.size,
++								  XLINK_PACKET_ALIGNMENT,
++								  XLINK_NORMAL_MEMORY);
++					rc = X_LINK_ERROR;
++					release_channel(opchan);
++					break;
++				}
++				event->header.type = XLINK_WRITE_VOLATILE_RESP;
++				xlink_dispatcher_event_add(EVENT_RX, event);
++				//complete regardless of mode/timeout
++				complete(&opchan->pkt_available);
++			} else {
++				// failed to allocate buffer
++				rc = X_LINK_ERROR;
++			}
++		}
++		release_channel(opchan);
++		break;
++	case XLINK_READ_REQ:
++	case XLINK_READ_TO_BUFFER_REQ:
++		opchan = get_channel(link_id, chan);
++		if (!opchan) {
++			rc = X_LINK_COMMUNICATION_FAIL;
++			break;
++		}
++		event->header.timeout = opchan->chan->timeout;
++		event->header.type = XLINK_READ_TO_BUFFER_RESP;
++		xlink_dispatcher_event_add(EVENT_RX, event);
++		//complete regardless of mode/timeout
++		complete(&opchan->pkt_consumed);
++		release_channel(opchan);
++		break;
++	case XLINK_RELEASE_REQ:
++		opchan = get_channel(link_id, chan);
++		if (!opchan) {
++			rc = X_LINK_COMMUNICATION_FAIL;
++		} else {
++			event->header.timeout = opchan->chan->timeout;
++			opchan->tx_fill_level -= event->header.size;
++			opchan->tx_packet_level--;
++			event->header.type = XLINK_RELEASE_RESP;
++			xlink_dispatcher_event_add(EVENT_RX, event);
++			//complete regardless of mode/timeout
++			complete(&opchan->pkt_released);
++		}
++		release_channel(opchan);
++		break;
++	case XLINK_OPEN_CHANNEL_REQ:
++		if (xmux->channels[link_id][chan].status == CHAN_CLOSED) {
++			xmux->channels[link_id][chan].size = event->header.size;
++			xmux->channels[link_id][chan].timeout = event->header.timeout;
++			//xmux->channels[link_id][chan].mode = *(enum xlink_opmode *)event->data;
++			rc = multiplexer_open_channel(link_id, chan);
++			if (rc) {
++				rc = X_LINK_ERROR;
++			} else {
++				opchan = get_channel(link_id, chan);
++				if (!opchan) {
++					rc = X_LINK_COMMUNICATION_FAIL;
++				} else {
++					xmux->channels[link_id][chan].status = CHAN_OPEN_PEER;
++					complete(&opchan->opened);
++					passthru_event = xlink_create_event(link_id,
++									    XLINK_OPEN_CHANNEL_RESP,
++									    event->handle,
++									    chan,
++									    0,
++									    opchan->chan->timeout);
++					if (!passthru_event) {
++						rc = X_LINK_ERROR;
++						release_channel(opchan);
++						break;
++					}
++					xlink_dispatcher_event_add(EVENT_RX,
++								   passthru_event);
++				}
++				release_channel(opchan);
++			}
++		} else {
++			/* channel already open */
++			opchan = get_channel(link_id, chan);
++			if (!opchan) {
++				rc = X_LINK_COMMUNICATION_FAIL;
++			} else {
++				passthru_event = xlink_create_event(link_id,
++								    XLINK_OPEN_CHANNEL_RESP,
++								    event->handle,
++								    chan, 0, 0);
++				if (!passthru_event) {
++					release_channel(opchan);
++					rc = X_LINK_ERROR;
++					break;
++				}
++				xlink_dispatcher_event_add(EVENT_RX,
++							   passthru_event);
++			}
++			release_channel(opchan);
++		}
++		rc = xlink_passthrough(event);
++		if (rc == 0)
++			xlink_destroy_event(event); // event is handled and can now be freed
++		break;
++	case XLINK_CLOSE_CHANNEL_REQ:
++	case XLINK_PING_REQ:
++		break;
++	case XLINK_WRITE_RESP:
++	case XLINK_WRITE_VOLATILE_RESP:
++		opchan = get_channel(link_id, chan);
++		if (!opchan)
++			rc = X_LINK_COMMUNICATION_FAIL;
++		else
++			xlink_destroy_event(event); // event is handled and can now be freed
++		release_channel(opchan);
++		break;
++	case XLINK_READ_RESP:
++	case XLINK_READ_TO_BUFFER_RESP:
++	case XLINK_RELEASE_RESP:
++		xlink_destroy_event(event); // event is handled and can now be freed
++		break;
++	case XLINK_OPEN_CHANNEL_RESP:
++		opchan = get_channel(link_id, chan);
++		if (!opchan) {
++			rc = X_LINK_COMMUNICATION_FAIL;
++		} else {
++			xlink_destroy_event(event); // event is handled and can now be freed
++			complete(&opchan->opened);
++		}
++		release_channel(opchan);
++		break;
++	case XLINK_CLOSE_CHANNEL_RESP:
++	case XLINK_PING_RESP:
++		xlink_destroy_event(event); // event is handled and can now be freed
++		break;
++	default:
++		rc = X_LINK_ERROR;
++	}
++
+ 	return rc;
+ }
+ 
 -- 
 2.17.1
 
