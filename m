@@ -2,96 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB7A309527
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 13:49:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B546530952A
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 13:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbhA3Mo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 07:44:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33934 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229786AbhA3Mox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 07:44:53 -0500
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E63E564E09;
-        Sat, 30 Jan 2021 12:44:11 +0000 (UTC)
-Date:   Sat, 30 Jan 2021 07:44:10 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Nikolay Borisov <nborisov@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter()
- with nmi_enter()")
-Message-ID: <20210130074410.6384c2e2@oasis.local.home>
-In-Reply-To: <YBUYsFlxjsQxuvfB@hirez.programming.kicks-ass.net>
-References: <YBMBTsY1uuQb9wCP@hirez.programming.kicks-ass.net>
-        <20210129013452.njuh3fomws62m4rc@ast-mbp.dhcp.thefacebook.com>
-        <YBPNyRyrkzw2echi@hirez.programming.kicks-ass.net>
-        <20210129224011.81bcdb3eba1227c414e69e1f@kernel.org>
-        <20210129105952.74dc8464@gandalf.local.home>
-        <20210129162438.GC8912@worktop.programming.kicks-ass.net>
-        <CAADnVQLMqHpSsZ1OdZRFmKqNWKiRq3dxRxw+y=kvMdmkN7htUw@mail.gmail.com>
-        <20210129175943.GH8912@worktop.programming.kicks-ass.net>
-        <20210129140103.3ce971b7@gandalf.local.home>
-        <20210129162454.293523c6@gandalf.local.home>
-        <YBUYsFlxjsQxuvfB@hirez.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231396AbhA3Mp6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 30 Jan 2021 07:45:58 -0500
+Received: from mail.fireflyinternet.com ([77.68.26.236]:59078 "EHLO
+        fireflyinternet.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229498AbhA3Mp5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 07:45:57 -0500
+X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
+Received: from localhost (unverified [78.156.65.138]) 
+        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 23745921-1500050 
+        for multiple; Sat, 30 Jan 2021 12:45:11 +0000
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210130123411.GB1822@llvm-development.us-central1-a.c.llvm-285123.internal>
+References: <20210129181519.69963-1-viniciustinti@gmail.com> <161195375417.17568.2762721732398065240@build.alporthouse.com> <20210130123411.GB1822@llvm-development.us-central1-a.c.llvm-285123.internal>
+Subject: Re: [PATCH] drm/i915: Remove unreachable code
+From:   Chris Wilson <chris@chris-wilson.co.uk>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+To:     Vinicius Tinti <viniciustinti@gmail.com>
+Date:   Sat, 30 Jan 2021 12:45:10 +0000
+Message-ID: <161201071009.32035.9188382145053741268@build.alporthouse.com>
+User-Agent: alot/0.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 30 Jan 2021 09:28:32 +0100
-Peter Zijlstra <peterz@infradead.org> wrote:
-
-> On Fri, Jan 29, 2021 at 04:24:54PM -0500, Steven Rostedt wrote:
-> > Specifically, kprobe and ftrace callbacks may have this:
+Quoting Vinicius Tinti (2021-01-30 12:34:11)
+> On Fri, Jan 29, 2021 at 08:55:54PM +0000, Chris Wilson wrote:
+> > Quoting Vinicius Tinti (2021-01-29 18:15:19)
+> > > By enabling -Wunreachable-code-aggressive on Clang the following code
+> > > paths are unreachable.
 > > 
-> > 	if (in_nmi())
-> > 		return;
-> > 
-> > 	raw_spin_lock_irqsave(&lock, flags);
-> > 	[..]
-> > 	raw_spin_unlock_irqrestore(&lock, flags);
-> > 
-> > Which is totally fine to have,  
+> > That code exists as commentary and, especially for sdvo, library
+> > functions that we may need in future.
 > 
-> Why? There's a distinct lack of explaining here.
+> I would argue that this code could be removed since it is in git history.
+> It can be restored when needed.
 > 
-> Note that we ripped out all such dodgy locking from kretprobes.
+> This will make the code cleaner.
 
-Actually, I think you helped explain the distinction. You mention
-"kretpobes" do you mean the infrastructure of kretprobes or all its
-users?
+It doesn't change the control flow, so no complexity argument. It
+removes documentation from the code, so I have the opposite opinion.
 
-The infrastructure of ftrace and kprobes can work in any context, it
-does not mean that the callbacks must. Again, these are more like
-exceptions. Why have "in_nmi()"? If anything that can be called by an
-NMI should just work, right? That's basically your argument for having
-ftrace and kprobes set "in_nmi".
+> > The ivb-gt1 case => as we now set the gt level for ivb, should we not
+> > enable the optimisation for ivb unaffected by the w/a? Just no one has
+> > taken the time to see if it causes a regression.
+> 
+> I don't know. I just found out that the code is unreachable.
+> 
+> > For error state, the question remains whether we should revert to
+> > uncompressed data if the compressed stream is larger than the original.
+> 
+> I don't know too.
+> 
+> In this last two cases the code could be commented and the decisions
+> and problems explained in the comment section.
 
-You can have locking in NMIs if the locking is *only* in NMI handlers,
-right? If that's the case, then so should ftrace and kprobe callbacks.
-
-The stack tracer checks the size of the stack, compares it to the
-largest recorded size, and if it's bigger, it will save the stack. But
-if this happens on two CPUs at the same time, only one can do the
-recording at the same time. To synchronize this, a spin lock must be
-taken. Similar to spin locks in an NMI.
-
-But the problem here is, the callbacks can also be done from an NMI
-context, so if we are in NMI, we don't want to take any locks, and
-simply don't record the stack traces from NMIs.
-
-The more I think about it, the more I hate the idea that ftrace
-callbacks and kprobes are considered NMIs. Simply because they are not!
-
--- Steve
-
+They already are, that is the point.
+-Chris
