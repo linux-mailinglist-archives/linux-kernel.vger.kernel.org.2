@@ -2,79 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7213094FE
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 12:52:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 737F9309504
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 12:57:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231244AbhA3LwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 06:52:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhA3LwH (ORCPT
+        id S231179AbhA3L4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 06:56:06 -0500
+Received: from bgl-iport-3.cisco.com ([72.163.197.27]:54102 "EHLO
+        bgl-iport-3.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229636AbhA3L4F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 06:52:07 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE37C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 03:51:27 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id b2so16228837lfq.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 03:51:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=bHtq+ZBX10c2q0z8JAS2ebteuFsc1ynl1YB4qANrg+4=;
-        b=jwP289MKmnh4Ev+vuDX/eEiRSArmwox641D9I+Ao+nJ1Z1X2hKYzSfQKUhaPzNJqr2
-         P7V0Sk/AAN/yW6eUrMB+OLNtySCifddh1/qdqlZc402Cbn3IWF3PLAR7Pq+EN6V4gyux
-         29d+WU8vnJlExZuwOYqhamVXkPYUBpByHeTNbEInNEkF9U7zMUisNOB4raBvUNvxaP/J
-         Kl0oHu+fkgEEPtlpj7AhtpTm719NfgED1FJyNXNlVypLzu7ohZBsn0EZHy1HLEGZ82bF
-         maE3f1S+HfVTUcQHSagv/e0nsAttA3WiQ2U3RqniChLnouUsQ/h7ntxLy6GV3+eCYw6Y
-         JSJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=bHtq+ZBX10c2q0z8JAS2ebteuFsc1ynl1YB4qANrg+4=;
-        b=OOH9xvL81AEJjwMqIxSFxjtYlt4SlxRXjNOSXbG3D+FoXONpUgCwUu37h2FU/5EJqY
-         MCfNGiGCOpVXHKU0wy347/pcWsFpNtSd6d7GU1u5nMD66i33CClGuzRmnNmtekideGkr
-         t5gyo3ej9kXVc774oPZhLJXHjmQ9CthvpNPiHaE/wRi5hHIMq+aNKd/e/o9sP9j2eGhq
-         kTsO5/duCzE9/sl8yNpC6Wa8FJrFpwuA2NohGcMJUMGIWya1sqmZNJnWBREvIZS/keJ1
-         Wr3N/566oUlgPSuQ24eQLOXA/0xdG0E9AyTx8e8BJJnwZGDlfNiXT2Qz4B/4mdgWhFcl
-         bbjg==
-X-Gm-Message-State: AOAM530z9+uAGp38k0VK/5ag/acSwn0icoTemB81rdhviVsuoqgvb+D/
-        t9cspw92L65Ps9bv4FEHqs910nxE7IylMuQ6Pbk=
-X-Google-Smtp-Source: ABdhPJxDsufdS1dmKHMBF8saPtA4pTjdqSmCWeJ7AQ3TBqvzWDO3B0j+w/uuEcnn+WsTiRgdZbVlgbIVtJb1YegPwpY=
-X-Received: by 2002:a05:6512:510:: with SMTP id o16mr4402957lfb.378.1612007485899;
- Sat, 30 Jan 2021 03:51:25 -0800 (PST)
+        Sat, 30 Jan 2021 06:56:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=1031; q=dns/txt; s=iport;
+  t=1612007764; x=1613217364;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=SjQny2U0SmNslQRFB24Sf6IeYW9zw4iqoArd6ysixCo=;
+  b=PB2oOHNvIrbDXYE9NtmFp+FI8gzfCltEeFQXT7uJeorcUfzDoa7w+QWO
+   5GcsyXSyTicby6PWCKr/ecASHQLNjqo+MvSHz6QAorTWb0IcXqsFKtK5M
+   T/6MceMnIQVn1O2s5VsGHLiAEcLx/gmCwxDD7CiFvL7U29z9oy8bSWzqM
+   A=;
+X-IronPort-AV: E=Sophos;i="5.79,388,1602547200"; 
+   d="scan'208";a="136659721"
+Received: from vla196-nat.cisco.com (HELO bgl-core-3.cisco.com) ([72.163.197.24])
+  by bgl-iport-3.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 30 Jan 2021 11:55:21 +0000
+Received: from bgl-ads-1848.cisco.com (bgl-ads-1848.cisco.com [173.39.51.250])
+        by bgl-core-3.cisco.com (8.15.2/8.15.2) with ESMTPS id 10UBtLIB019333
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Sat, 30 Jan 2021 11:55:21 GMT
+Received: by bgl-ads-1848.cisco.com (Postfix, from userid 838444)
+        id 1E221CC1251; Sat, 30 Jan 2021 17:25:21 +0530 (IST)
+From:   Aviraj CJ <acj@cisco.com>
+To:     davem@davemloft.net, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, xe-linux-external@cisco.com,
+        acj@cisco.com
+Cc:     Hangbin Liu <liuhangbin@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH stable v5.4 1/2] ICMPv6: Add ICMPv6 Parameter Problem, code 3 definition
+Date:   Sat, 30 Jan 2021 17:24:51 +0530
+Message-Id: <20210130115452.19192-1-acj@cisco.com>
+X-Mailer: git-send-email 2.26.2.Cisco
 MIME-Version: 1.0
-Received: by 2002:a05:6520:4032:b029:b6:41f8:1014 with HTTP; Sat, 30 Jan 2021
- 03:51:25 -0800 (PST)
-Reply-To: georgemike7031@gmail.com
-From:   george mike <barrimurphy1965@gmail.com>
-Date:   Sat, 30 Jan 2021 12:51:25 +0100
-Message-ID: <CAGZA+7pqdQXie_YnHUhkFMm6DkX=o8o7foofaW+rK7oRsz0zKg@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-Outbound-SMTP-Client: 173.39.51.250, bgl-ads-1848.cisco.com
+X-Outbound-Node: bgl-core-3.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo
+From: Hangbin Liu <liuhangbin@gmail.com>
 
-Mitt navn er George Mike. Jeg er advokat av yrke. Jeg =C3=B8nsker =C3=A5 ti=
-lby deg
-den p=C3=A5r=C3=B8rende til klienten min. Du vil arve summen av ($ 8,5 mill=
-ioner)
-dollar klienten min etterlot seg i banken f=C3=B8r han d=C3=B8de.
+commit b59e286be280fa3c2e94a0716ddcee6ba02bc8ba upstream.
 
-Min klient er statsborger i landet ditt som d=C3=B8de i en bilulykke med si=
-n kone
-og eneste s=C3=B8nn. Jeg vil v=C3=A6re berettiget med 50% av det totale fon=
-det
-mens 50% vil
-v=C3=A6re for deg.
-Ta kontakt med min private e-post her for mer informasjon:
-georgemike7031@gmail.com
+Based on RFC7112, Section 6:
 
-Takk p=C3=A5 forh=C3=A5nd,
-Mr. George Mike,
+   IANA has added the following "Type 4 - Parameter Problem" message to
+   the "Internet Control Message Protocol version 6 (ICMPv6) Parameters"
+   registry:
+
+      CODE     NAME/DESCRIPTION
+       3       IPv6 First Fragment has incomplete IPv6 Header Chain
+
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Aviraj CJ <acj@cisco.com>
+---
+ include/uapi/linux/icmpv6.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/uapi/linux/icmpv6.h b/include/uapi/linux/icmpv6.h
+index 2622b5a3e616..9a31ea2ad1cf 100644
+--- a/include/uapi/linux/icmpv6.h
++++ b/include/uapi/linux/icmpv6.h
+@@ -137,6 +137,7 @@ struct icmp6hdr {
+ #define ICMPV6_HDR_FIELD		0
+ #define ICMPV6_UNK_NEXTHDR		1
+ #define ICMPV6_UNK_OPTION		2
++#define ICMPV6_HDR_INCOMP		3
+ 
+ /*
+  *	constants for (set|get)sockopt
+-- 
+2.26.2.Cisco
+
