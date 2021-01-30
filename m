@@ -2,113 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0355309909
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 00:56:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9753F309937
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 01:06:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232676AbhA3XzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 18:55:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45304 "EHLO
+        id S232537AbhAaAFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 19:05:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232763AbhA3Xxx (ORCPT
+        with ESMTP id S232490AbhA3XtP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 18:53:53 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF157C0617AA
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 15:52:03 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id i7so9399413pgc.8
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 15:52:03 -0800 (PST)
+        Sat, 30 Jan 2021 18:49:15 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733DAC0613ED;
+        Sat, 30 Jan 2021 15:47:57 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id i8so2120557ejc.7;
+        Sat, 30 Jan 2021 15:47:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=Ui0BeJCwGOKq8ej5x7M1Q9u0lMO3l7TRN0DCBw5DBWc=;
-        b=MzV7DeqSQEU06RPg78K/siciEFk1jfbTpumwWmLQl6H6Gtps4XMqo2d69/O5cLG2ib
-         sWHVna8f+tRiTekQ27iMrabwakv/X6Gbl2kRVK/U/BGlRXp3T9i1yQQSuVnU6lr+dm/x
-         8FEPu29yNnBux/VASHH7ScQ+Jl0IiYohkU6+RCuQUg1EgQPqAcab+9vyY4J5yCbNcTRR
-         nr53UK6NJNWZfhq5VD+V3Le0HG/nMeKhW74bPHwhTL5zw+kABM4AX6dL+VwufuqFX1nq
-         tUL0JTNvh8Ct349k+VfR9Xo8+biP3GeU+ESkvAHVcmQEBivIFsiEhTmpY/WaIHhwMGhe
-         hhVw==
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=l1vBwvopkVoZW1LdSHZ0VntQhbz1e+J1ify4RkFAUDg=;
+        b=nCgfM79Cv1gKTkdnZi+iTVkIXmdJIhRtPl2up6JysfrtdUsAtapHTnrBj9JOzzuP3y
+         6jteTY5b+UbXw3j3hUYB0UsRYQbJzqONVhX2mEeHFMnuiSRKLtg9UfO5TWsSzR5XQeAi
+         txdjfDP8I8CcLFDTptZLCUIZAiwBVOllsCEAG5kGLHEflBrhPzQzOfymbJDMD9V1fCD9
+         xqLAQwFQZ11O0Qr7g1JkwsQ8mKpZY10Im3F4b9TrZvGcDR7zKOfbTYwppG4/4JNCtjHl
+         mBNpEdQKCA6jVqbUitSl8lMMrRGieegva9AxUhmKRze8N4SMPWCh4gaKPhrj4r6MjpUu
+         L66Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=Ui0BeJCwGOKq8ej5x7M1Q9u0lMO3l7TRN0DCBw5DBWc=;
-        b=FPHtupHC9B/gfK6A/iz6Ptyn76polG0nT2Xi+ueAgRI8bAsUsiuYktznpiMkCv2fNH
-         dwBtG37KcdLg49e3ljYpYh29oMOmm4KLaWJXRkGLZAYl3T2plfV04+F70HjX4LCNK9M+
-         TFYkpZlqEgv8PDACO1MZ8XSs4BhH3dXkM5IwG90e3ZzPZfEDWnA9GYIcy1gRmi7j1QGe
-         03ow473NEJ33b3+c5xBwd3VTAiqUt75DQNzdvubFTRkBqX/sk0VsVyA/RAAlqq+iwg1m
-         ThkaWfL/dGfhsKc4cIJiMTO1sm9UoHJ1Vi08uY0Sr1toSgM1ftrVhikrEAskWm+L9F8R
-         6vmA==
-X-Gm-Message-State: AOAM531hL8IVpD7P9xgGPOJ21zLI5u/g8QoOv6G/5HuFsH0MI3Gf1/Gs
-        iiAt54Rc9FtIyDoe91hJHhjk2A==
-X-Google-Smtp-Source: ABdhPJwhLUNT7kvzAUWFbzT9Lc1dFYnkmDtxMuvH7NNwX3Q8WOwnNGrRfaRhmDarU4sLoHVBNmVU6w==
-X-Received: by 2002:a63:7947:: with SMTP id u68mr3474320pgc.451.1612050723241;
-        Sat, 30 Jan 2021 15:52:03 -0800 (PST)
-Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id e12sm13104562pga.13.2021.01.30.15.52.01
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=l1vBwvopkVoZW1LdSHZ0VntQhbz1e+J1ify4RkFAUDg=;
+        b=loi/M1nfOXXN3wLawYi1oakN50JIQQGnUUvoj9udLsjIHGPtnKO0/6Vkl9I8E+f0FH
+         3T3jijMME4fdCUUlxNW4RTb1cv6OkISAQpuugKHhb/FxR7MEOAPgTsc1BoSebXgNMIMt
+         63ZSfTHvqlc7nS5mqebPFptmnTLC/xcGArdI+5QFyrr3AFokSr+VRlQClCQT628fj5CM
+         9kKY7ikmtle22XP8qgNBbzBNFpbOEWxqoojBTho6xxz3XHXd/ip/0m9r8MJopXfcoV0R
+         mF5E4O7nBuMLG1spwdAeTG5xcp27ystQjDwFPKBPcDPbfQEQ537usRWE8KXsNs9miKyg
+         bL0g==
+X-Gm-Message-State: AOAM530ZP88MTke1MddPD7c1LIXoMT1H9A6+e62IIw2IRniNS7sAeEuL
+        f7QmYnTb2TN6Edf6mV/FKlORb6vCTI7g4aHw
+X-Google-Smtp-Source: ABdhPJzpHTsZkK8Pa94gAzrIL7rzOqlHSImWy/F8RfwN3spTn1VbC9nzYNpa8S+xYB+ItKRu4NxBaQ==
+X-Received: by 2002:a17:906:bc5a:: with SMTP id s26mr10653887ejv.327.1612050476291;
+        Sat, 30 Jan 2021 15:47:56 -0800 (PST)
+Received: from stitch.. ([80.71.140.73])
+        by smtp.gmail.com with ESMTPSA id u17sm6628009edr.0.2021.01.30.15.47.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Jan 2021 15:52:02 -0800 (PST)
-Date:   Sat, 30 Jan 2021 15:52:01 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-cc:     linux-cxl@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        daniel.lll@alibaba-inc.com,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH 05/14] cxl/mem: Register CXL memX devices
-In-Reply-To: <20210130002438.1872527-6-ben.widawsky@intel.com>
-Message-ID: <ecd93422-b272-2b76-1ec-cf6af744ae@google.com>
-References: <20210130002438.1872527-1-ben.widawsky@intel.com> <20210130002438.1872527-6-ben.widawsky@intel.com>
+        Sat, 30 Jan 2021 15:47:55 -0800 (PST)
+Sender: Emil Renner Berthing <emil.renner.berthing@gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+To:     netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-ppp@vger.kernel.org
+Cc:     Emil Renner Berthing <kernel@esmil.dk>,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com, Petko Manolov <petkan@nucleusys.com>,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        Jing Xiangfeng <jingxiangfeng@huawei.com>,
+        Oliver Neukum <oneukum@suse.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH 5/9] net: usb: hso: use new tasklet API
+Date:   Sun, 31 Jan 2021 00:47:26 +0100
+Message-Id: <20210130234730.26565-6-kernel@esmil.dk>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210130234730.26565-1-kernel@esmil.dk>
+References: <20210130234730.26565-1-kernel@esmil.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Jan 2021, Ben Widawsky wrote:
+This converts the driver to use the new tasklet API introduced in
+commit 12cc923f1ccc ("tasklet: Introduce new initialization API")
 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-cxl b/Documentation/ABI/testing/sysfs-bus-cxl
-> new file mode 100644
-> index 000000000000..fe7b87eba988
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-bus-cxl
-> @@ -0,0 +1,26 @@
-> +What:		/sys/bus/cxl/devices/memX/firmware_version
-> +Date:		December, 2020
-> +KernelVersion:	v5.12
-> +Contact:	linux-cxl@vger.kernel.org
-> +Description:
-> +		(RO) "FW Revision" string as reported by the Identify
-> +		Memory Device Output Payload in the CXL-2.0
-> +		specification.
-> +
-> +What:		/sys/bus/cxl/devices/memX/ram/size
-> +Date:		December, 2020
-> +KernelVersion:	v5.12
-> +Contact:	linux-cxl@vger.kernel.org
-> +Description:
-> +		(RO) "Volatile Only Capacity" as reported by the
-> +		Identify Memory Device Output Payload in the CXL-2.0
-> +		specification.
-> +
-> +What:		/sys/bus/cxl/devices/memX/pmem/size
-> +Date:		December, 2020
-> +KernelVersion:	v5.12
-> +Contact:	linux-cxl@vger.kernel.org
-> +Description:
-> +		(RO) "Persistent Only Capacity" as reported by the
-> +		Identify Memory Device Output Payload in the CXL-2.0
-> +		specification.
+Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+---
+ drivers/net/usb/hso.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Aren't volatile and persistent capacities expressed in multiples of 256MB?
+diff --git a/drivers/net/usb/hso.c b/drivers/net/usb/hso.c
+index ef6dd012b8c4..31d51346786a 100644
+--- a/drivers/net/usb/hso.c
++++ b/drivers/net/usb/hso.c
+@@ -1213,9 +1213,10 @@ static void hso_std_serial_read_bulk_callback(struct urb *urb)
+  * This needs to be a tasklet otherwise we will
+  * end up recursively calling this function.
+  */
+-static void hso_unthrottle_tasklet(unsigned long data)
++static void hso_unthrottle_tasklet(struct tasklet_struct *t)
+ {
+-	struct hso_serial *serial = (struct hso_serial *)data;
++	struct hso_serial *serial = from_tasklet(serial, t,
++						 unthrottle_tasklet);
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(&serial->serial_lock, flags);
+@@ -1264,9 +1265,8 @@ static int hso_serial_open(struct tty_struct *tty, struct file *filp)
+ 		serial->rx_state = RX_IDLE;
+ 		/* Force default termio settings */
+ 		_hso_serial_set_termios(tty, NULL);
+-		tasklet_init(&serial->unthrottle_tasklet,
+-			     hso_unthrottle_tasklet,
+-			     (unsigned long)serial);
++		tasklet_setup(&serial->unthrottle_tasklet,
++			      hso_unthrottle_tasklet);
+ 		result = hso_start_serial_device(serial->parent, GFP_KERNEL);
+ 		if (result) {
+ 			hso_stop_serial_device(serial->parent);
+-- 
+2.30.0
+
