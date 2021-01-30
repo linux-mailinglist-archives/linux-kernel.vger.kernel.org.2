@@ -2,104 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 248D9309684
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 17:09:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5DA43096A8
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 17:22:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232413AbhA3QIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 11:08:44 -0500
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:36908 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231903AbhA3QDd (ORCPT
+        id S232405AbhA3QV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 11:21:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231846AbhA3Plp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 11:03:33 -0500
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10UFHhtL024362;
-        Sat, 30 Jan 2021 09:25:30 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=wu2BmKAmJwuH5eUZiZFTsmcq0Qh2USc2IKxpS+55d3Q=;
- b=EiiRDOX530k6BHXWcBXOjmX5bHYfFf1Sdx4m2EGmgCVSQ37rLSlGujVAEaR/MnFjk9np
- i8EUVoQeTMsd/+pnwG0ZP1jYnaJT2V+QUwi8WglsaZaLxa3/A7dZh3NOwn87Rrvd2PE5
- dDzzRNBfbADP0GrkvkOJcpZC99WH2mBglu9p17ZqimT2OQkRdY0yVjlIEWPuw0LTksfb
- RCW7khwoZwFeDqEGR+zlNJqHAddQ560ne5dj8S39lAGB/VfI1hVP3YbynvH0QkKaE/Ii
- JSobgJYIcugxWdGHCZE3AtXuBip8KB0W9PhnIxdXVv8Vz4HGMeFfEs4pWq/GiBOAYxXl vA== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 36d4rtg63q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sat, 30 Jan 2021 09:25:29 -0600
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Sat, 30 Jan
- 2021 15:25:28 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.1913.5 via Frontend
- Transport; Sat, 30 Jan 2021 15:25:28 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5D15245;
-        Sat, 30 Jan 2021 15:25:28 +0000 (UTC)
-Date:   Sat, 30 Jan 2021 15:25:28 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-CC:     Lee Jones <lee.jones@linaro.org>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Jie Yang <yang.jie@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        <patches@opensource.cirrus.com>, <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        <alsa-devel@alsa-project.org>
-Subject: Re: [PATCH v4 09/13] ASoC: arizona-jack: convert into a helper
- library for codec drivers
-Message-ID: <20210130152528.GT106851@ediswmail.ad.cirrus.com>
-References: <20210123121313.79530-1-hdegoede@redhat.com>
- <20210123121313.79530-10-hdegoede@redhat.com>
+        Sat, 30 Jan 2021 10:41:45 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20EBAC06178B;
+        Sat, 30 Jan 2021 07:31:52 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id a109so11740292otc.1;
+        Sat, 30 Jan 2021 07:31:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4mAYRqh94wVbHYGuNT1IglBbw+lxlLFKWIdE2hgD2SI=;
+        b=We/xU+7g967j71Fk1W6IZvxeXlVvWWC8vyBzyJbh5fTbKa+EywGOrV2mdXPEtYyCLb
+         nZ2M0t2rUh4cUuDckdQoR6HDjqZquxttw4dtUF40KIQ1ToMUknWpjHM+eaXKDoJTTGch
+         F9vHx8GMReyDx8Wjedhm2vvR9mV8c469eLLWqmQxdoPCNgSNmFC73X7CsmyWVdGi0mu+
+         7MXrIE+1aoGrmmD1Au3jkJXvE1tsbpoM/B6fqgnEoOl3UqHDFc4LgeJPfBgc3uzAkpW+
+         V3r7dva3sxgJM9gc2QAutqKnjfEikEVLo3KwZUHFW61Th+XmoSM07rPnOycMpmykwBua
+         fVyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=4mAYRqh94wVbHYGuNT1IglBbw+lxlLFKWIdE2hgD2SI=;
+        b=na/VE9Ftd8ws6La0YYYblzW8sAH/co2JUXTiJwHVvc6Asjmdskx51lIbXNw3yDaixl
+         7FBgXoNCMJbh5c7FnBB2oCOt8GfIRUxLpFdd08CPmxojehuCqYChAEHjKlH+xJ6KhN2u
+         vn4ytK88BYy8YdOulaQmPdHdmHY6RJ/arYOe4qtD0ehQr6AWTnGh3KbgvFCkFyhqzqzR
+         3L8P8ZHFZ3JJSkm/8xUan/XRz+bFxMWWV+U8dfo8GMp60BRIm9+8BX2noHtUW+CxSLIv
+         UqevorlXm37WrupuCvtO8zFfllDXJaMt0+igbF+1t9uXgMScqSwvtN8+e1S8tv8j0WNo
+         ksVg==
+X-Gm-Message-State: AOAM531YOeY8FFqsX7U/ODox7q/Vaf66QtYQP0pghDd2V5Ht4DtwaBPI
+        Dt1vIxqHLeEtdcEPDSVfSmM=
+X-Google-Smtp-Source: ABdhPJxmZjC37t0mtPBLreJAiljPrlr8oz+WWUEPhCQ8n4LsRwFP/l3GyCL1JprgeFTqzpeTB/Ap2g==
+X-Received: by 2002:a9d:639a:: with SMTP id w26mr6129936otk.201.1612020711525;
+        Sat, 30 Jan 2021 07:31:51 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id m7sm2773261otq.33.2021.01.30.07.31.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 30 Jan 2021 07:31:50 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH] hwmon: lm75: Use zero lm75_type for lm75
+To:     "Matwey V. Kornilov" <matwey@sai.msu.ru>,
+        Jean Delvare <jdelvare@suse.com>,
+        Javier Martinez Canillas <javier@osg.samsung.com>,
+        "open list:HARDWARE MONITORING" <linux-hwmon@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     matwey.kornilov@gmail.com
+References: <20210130101038.26331-1-matwey@sai.msu.ru>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <a771f5b8-aa24-b736-4e8f-b3b46a15dcb6@roeck-us.net>
+Date:   Sat, 30 Jan 2021 07:31:48 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210123121313.79530-10-hdegoede@redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 mlxscore=0
- mlxlogscore=908 impostorscore=0 malwarescore=0 spamscore=0
- lowpriorityscore=0 suspectscore=0 adultscore=0 phishscore=0 clxscore=1015
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101300085
+In-Reply-To: <20210130101038.26331-1-matwey@sai.msu.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 23, 2021 at 01:13:09PM +0100, Hans de Goede wrote:
-> Convert the arizona extcon driver into a helper library for direct use
-> from the arizona codec-drivers, rather then being bound to a separate
-> MFD cell.
+On 1/30/21 2:10 AM, Matwey V. Kornilov wrote:
+> There is a logical flaw in lm75_probe() function introduced in
 > 
-> Note the probe (and remove) sequence is split into 2 parts:
+>     e97a45f1b460 ("hwmon: (lm75) Add OF device ID table")
 > 
-> 1. The arizona_jack_codec_dev_probe() function inits a bunch of
-> jack-detect specific variables in struct arizona_priv and tries to get
-> a number of resources where getting them may fail with -EPROBE_DEFER.
+> Note, that of_device_get_match_data() returns NULL when no match
+> found. This is the case when OF node exists but has unknown
+> compatible line, while the module is still loaded via i2c
+> detection.
 > 
-> 2. Then once the machine driver has create a snd_sock_jack through
-> snd_soc_card_jack_new() it calls snd_soc_component_set_jack() on
-> the codec component, which will call the new arizona_jack_set_jack(),
-> which sets up jack-detection and requests the IRQs.
+> arch/powerpc/boot/dts/fsl/p2041rdb.dts:
 > 
-> This split is necessary, because the IRQ handlers need access to the
-> arizona->dapm pointer and the snd_sock_jack which are not available
-> when the codec-driver's probe function runs.
+>     lm75b@48 {
+>     	compatible = "nxp,lm75a";
+>     	reg = <0x48>;
+>     };
 > 
-> Note this requires that machine-drivers for codecs which are converted
-> to use the new helper functions from arizona-jack.c are modified to
-> create a snd_soc_jack through snd_soc_card_jack_new() and register
-> this jack with the codec through snd_soc_component_set_jack().
+> In this case, the sensor is mistakenly considered as ADT75 variant.
+> The simplest way to handle this issue is to make the LM75 code
+> zero.
 > 
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+
+This doesn't really solve the problem since it would match _all_
+non-existing entries with lm75 (instead of whatever is intended).
+That doesn't matter for lm75a, but it would matter if someone
+would enter, say, "bla,adt75".
+
+On a side note, "nxp,lm75a" (nor "nxp,lm75", for that matter) is not a
+documented compatible string for this driver. If anything, we would
+need a means to explicitly reject such undefined compatible strings.
+One option might be to define the first entry in enum lm75_type
+explicitly as invalid, check for it and reject it if returned.
+
+Guenter
+
+> Fixes: e97a45f1b460 ("hwmon: (lm75) Add OF device ID table")
+> Signed-off-by: Matwey V. Kornilov <matwey@sai.msu.ru>
 > ---
+>  drivers/hwmon/lm75.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwmon/lm75.c b/drivers/hwmon/lm75.c
+> index e447febd121a..3aa7f9454f57 100644
+> --- a/drivers/hwmon/lm75.c
+> +++ b/drivers/hwmon/lm75.c
+> @@ -25,12 +25,12 @@
+>   */
+>  
+>  enum lm75_type {		/* keep sorted in alphabetical order */
+> +	lm75 = 0,		/* except of lm75 which is default fallback */
+>  	adt75,
+>  	ds1775,
+>  	ds75,
+>  	ds7505,
+>  	g751,
+> -	lm75,
+>  	lm75a,
+>  	lm75b,
+>  	max6625,
+> 
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Tested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-
-Thanks,
-Charles
