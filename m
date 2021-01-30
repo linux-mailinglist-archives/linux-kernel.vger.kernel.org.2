@@ -2,84 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F394830935D
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:28:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FD9830933D
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:24:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbhA3J2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 04:28:41 -0500
-Received: from smtprelay0013.hostedemail.com ([216.40.44.13]:45002 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231843AbhA3J0n (ORCPT
+        id S231483AbhA3JW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 04:22:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231901AbhA3JVQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 04:26:43 -0500
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave02.hostedemail.com (Postfix) with ESMTP id E87B61801B76B
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 07:03:16 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 1E126181D341E;
-        Sat, 30 Jan 2021 07:01:34 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2895:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3871:3872:4250:4321:5007:6737:7576:7652:10004:10400:10848:11026:11232:11473:11658:11914:12043:12048:12297:12438:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21627:21990:30046:30054:30055:30064:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: tail00_061180a275af
-X-Filterd-Recvd-Size: 2026
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf15.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 30 Jan 2021 07:01:31 +0000 (UTC)
-Message-ID: <5137ab3793f03c17a719445f14131c16e7766434.camel@perches.com>
-Subject: Re: [PATCH v3 28/34] misc: Intel tsens IA host driver.
-From:   Joe Perches <joe@perches.com>
-To:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
-        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
-        gregkh@linuxfoundation.org, corbet@lwn.net,
-        palmerdabbelt@google.com, paul.walmsley@sifive.com,
-        peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
-        jassisinghbrar@gmail.com
-Cc:     linux-kernel@vger.kernel.org,
-        "C, Udhayakumar" <udhayakumar.c@intel.com>, C@linux.intel.com
-Date:   Fri, 29 Jan 2021 23:01:30 -0800
-In-Reply-To: <20210130022124.65083-29-mgross@linux.intel.com>
-References: <20210130022124.65083-1-mgross@linux.intel.com>
-         <20210130022124.65083-29-mgross@linux.intel.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sat, 30 Jan 2021 04:21:16 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C705C06178B
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 23:08:20 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id w1so16217334ejf.11
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 23:08:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Ry6Qb3LtDfSd8utk83ksKXuJR9WO1Rwondq0p79UHag=;
+        b=nr3Dg1AM1IDiDMNREal00hrpmRebINposmH2kVBoZi0e4mAxIfBPWHZssv50YXobRk
+         gR6kTbTuZjgG49Z9NfDIIH/WAd4G6TZxxNJU0LQNU4i3molOCIBAHjnMIeOLIwZG0i9U
+         kHDkZofzGvo3Cwo/rZkeWvmAEe7ZRAFWhP7A/wvOqGVVKITaGzCmWXi38RjOXDEJ/RQz
+         WTCBtHZ7zm+SYnAPM+6T/YgrQubUW/0HvCptmiqCxWLH4R6/Mrzx468M9Swwcr5ROUW9
+         JeJTfcEU6WaN32DRUqAjU/A1Yc/CnXpt0Tult5ufIezA0D9QdcpWsQdr7dPq8Fw0p6RJ
+         kh8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Ry6Qb3LtDfSd8utk83ksKXuJR9WO1Rwondq0p79UHag=;
+        b=MqMOSV7ZWmnWCwa31McDm+X1ocrZJYVvUYJyGYebs/xMNHjDArXOj10HDvVCTNA3H0
+         sg3sntwGsEUo/W42vEsDKf2Kbsi6M4aVkiaIpPu28hQ472abLC3AJ0sxPB/TsaatlZeI
+         RPNae3sYpSD1NRpXTCr+jq+Jc58V1vXVHDZDIOmq3j3BvZcb/QdaOuspZJT6/6ZroXLP
+         odgPgEqc6xmahrWeKF0/ZaRD/tm1M5DAvIW2we0+Dx3NzLC32FepvHZZophM22BlqITn
+         pl+BMLT+n9MV0SOTtNPs/4vUPonbtb1LSaU/ZZSYDJk8LCYhdLAbs+UsOYKmLtkVwjwf
+         GFMw==
+X-Gm-Message-State: AOAM531LWN5eG28IfGg3nqVE0Ty8xZU0KKEJqcZNJB5AYecMwwNHioDs
+        nL+s9IvXr9stdNP/2eImITUcMaoxx/5lBQKeHLl99A==
+X-Google-Smtp-Source: ABdhPJwa0vF9IXr7IgGMxj3dC3u9EUGRKpCpOMCnhJ31ixpyPyjFuHnEeTbRp4b+8C4zViRQTlfNy3w0S/GJafv5ZyI=
+X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr7872486eju.375.1611990498869;
+ Fri, 29 Jan 2021 23:08:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20210129105910.583037839@linuxfoundation.org>
+In-Reply-To: <20210129105910.583037839@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 30 Jan 2021 12:38:07 +0530
+Message-ID: <CA+G9fYvEDbj2o0MuBFikeNGJvc3oVDeZqn4-_ej8gKr7T5ZJQA@mail.gmail.com>
+Subject: Re: [PATCH 4.9 00/30] 4.9.254-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-01-29 at 18:20 -0800, mgross@linux.intel.com wrote:
-> From: "C, Udhayakumar" <udhayakumar.c@intel.com>
-> 
-> Add Intel tsens IA host driver for Intel Edge.AI Computer Vision
-> platforms.
-[]
-> diff --git a/drivers/misc/intel_tsens/intel_tsens_host.c b/drivers/misc/intel_tsens/intel_tsens_host.c
-[]
-> +static int tsens_i2c_smbus_read_byte_data(struct i2c_client *i2c, u8 command,
-> +					  u8 *i2c_val)
-> +{
-> +	union i2c_smbus_data data;
-> +	int status;
-> +
-> +	status = i2c_smbus_xfer(i2c->adapter, i2c->addr, i2c->flags,
-> +				I2C_SMBUS_READ, command,
-> +				I2C_SMBUS_BYTE_DATA, &data);
+On Fri, 29 Jan 2021 at 16:42, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.9.254 release.
+> There are 30 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 31 Jan 2021 10:59:01 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.254-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-this can fail
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-> +	*i2c_val = data.byte;
-
-Is it appropriate to set the value if it failed and data was
-not initialized?
-
-> +	return status;
-> +}
-> +
-> +/**
-> + * intel_tsens_get_temp - get updated temperatue
-
-Might want to use codespell on all files.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
 
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.9.254-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.9.y
+git commit: 1aa322729224bcf6471557d67a263fb060158de6
+git describe: v4.9.253-31-g1aa322729224
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.=
+y/build/v4.9.253-31-g1aa322729224
+
+
+No regressions (compared to build v4.9.253-28-g02d9a5638c82)
+
+
+No fixes (compared to build v4.9.253-28-g02d9a5638c82)
+
+Ran 40883 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* perf
+* v4l2-compliance
+* ltp-cve-tests
+* network-basic-tests
+* ltp-open-posix-tests
+* kvm-unit-tests
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
