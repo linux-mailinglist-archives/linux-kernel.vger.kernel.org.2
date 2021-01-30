@@ -2,191 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1B2309124
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 02:01:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E828430912D
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 02:11:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233086AbhA3A7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 19:59:48 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:58326 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232709AbhA3Aro (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 19:47:44 -0500
-Received: from tusharsu-Ubuntu.lan (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 7588820B6C42;
-        Fri, 29 Jan 2021 16:45:29 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7588820B6C42
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1611967530;
-        bh=xbUSoVcgOIGV7nfEfL10khfV1qEza6GJY81X5AvCiwY=;
+        id S232504AbhA3BJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 20:09:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49748 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233039AbhA3A67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 19:58:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AA4864E0C;
+        Sat, 30 Jan 2021 00:47:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611967661;
+        bh=4MU9n3dKEMA3J95RMUATsgBTduGFFuZ1jKrLeN0z26k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ILnocgY7vnbLuWCwn0yo3qf+tvgh4ErmEk3bVs5Pjb1+zOR41okvFUPXNjGYqPJVT
-         ilWm5N+SZQCFVVU4cbDLD705tpEdAcFNuWtcBBm1nNM/fiJn2BRy2zw3VwiGsoQG6+
-         VjGeJN4LX1xkHjx630eRjaGGeVKLuHaPk0qkxnWU=
-From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
-To:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, paul@paul-moore.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-Subject: [PATCH 3/3] IMA: add support to measure duplicate buffer for critical data hook
-Date:   Fri, 29 Jan 2021 16:45:19 -0800
-Message-Id: <20210130004519.25106-4-tusharsu@linux.microsoft.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210130004519.25106-1-tusharsu@linux.microsoft.com>
-References: <20210130004519.25106-1-tusharsu@linux.microsoft.com>
+        b=ZjfiNCTjFu6a2QGTO1XaxD0YhiaaEFNkCbj16zbpFDTVRZc+r/tBJnC1Nv1RkGNPB
+         mTRpo7FEr27AODBSEc3m0w8lFVjr6ZoYeUPuYOqWHP2IQSJNPkelqtPrNafZFosGtP
+         Dn+MxRK0J8YnDhSAzALpWL5zAlnFy++e4RMrcruLXB4NKLX3310GZf7NRYNzi0JGqv
+         sKBAe26UgAaF0NPXP5Oy2/zXES6Y0PZXnJ5eI28RXClgypmEIqbliVHLaOgAGEA45K
+         yYxN7MAqwg21X1TVS3SHGdauuc11zf0MW/KY+R/Kz9UDv/o3Ypvl3CvOrzPyWIICsQ
+         ezZgnUuc67Iog==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Fangrui Song <maskray@google.com>
+Subject: [PATCH v3] vmlinux.lds.h: Define SANTIZER_DISCARDS with CONFIG_GCOV_KERNEL=y
+Date:   Fri, 29 Jan 2021 17:46:51 -0700
+Message-Id: <20210130004650.2682422-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210130002557.2681512-1-nathan@kernel.org>
+References: <20210130002557.2681512-1-nathan@kernel.org>
+MIME-Version: 1.0
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-process_buffer_measurement() and the underlying functions do not use the
-policy condition to measure duplicate buffer entries for integrity
-critical data.
+clang produces .eh_frame sections when CONFIG_GCOV_KERNEL is enabled,
+even when -fno-asynchronous-unwind-tables is in KBUILD_CFLAGS:
 
-Update process_buffer_measurement(), ima_add_template_entry(), and
-ima_store_template() to use the policy condition to decide if a
-duplicate buffer entry for integrity critical data should be measured.
+$ make CC=clang vmlinux
+...
+ld: warning: orphan section `.eh_frame' from `init/main.o' being placed in section `.eh_frame'
+ld: warning: orphan section `.eh_frame' from `init/version.o' being placed in section `.eh_frame'
+ld: warning: orphan section `.eh_frame' from `init/do_mounts.o' being placed in section `.eh_frame'
+ld: warning: orphan section `.eh_frame' from `init/do_mounts_initrd.o' being placed in section `.eh_frame'
+ld: warning: orphan section `.eh_frame' from `init/initramfs.o' being placed in section `.eh_frame'
+ld: warning: orphan section `.eh_frame' from `init/calibrate.o' being placed in section `.eh_frame'
+ld: warning: orphan section `.eh_frame' from `init/init_task.o' being placed in section `.eh_frame'
+...
 
-Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+$ rg "GCOV_KERNEL|GCOV_PROFILE_ALL" .config
+CONFIG_GCOV_KERNEL=y
+CONFIG_ARCH_HAS_GCOV_PROFILE_ALL=y
+CONFIG_GCOV_PROFILE_ALL=y
+
+This was already handled for a couple of other options in
+commit d812db78288d ("vmlinux.lds.h: Avoid KASAN and KCSAN's unwanted
+sections") and there is an open LLVM bug for this issue. Take advantage
+of that section for this config as well so that there are no more orphan
+warnings.
+
+Link: https://bugs.llvm.org/show_bug.cgi?id=46478
+Link: https://github.com/ClangBuiltLinux/linux/issues/1069
+Reported-by: kernel test robot <lkp@intel.com>
+Reviewed-by: Fangrui Song <maskray@google.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 ---
- security/integrity/ima/ima.h       | 4 ++--
- security/integrity/ima/ima_api.c   | 9 +++++----
- security/integrity/ima/ima_init.c  | 2 +-
- security/integrity/ima/ima_main.c  | 5 +++--
- security/integrity/ima/ima_queue.c | 5 +++--
- 5 files changed, 14 insertions(+), 11 deletions(-)
 
-diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
-index 59324173497f..b06732560949 100644
---- a/security/integrity/ima/ima.h
-+++ b/security/integrity/ima/ima.h
-@@ -139,7 +139,7 @@ int ima_init(void);
- int ima_fs_init(void);
- int ima_add_template_entry(struct ima_template_entry *entry, int violation,
- 			   const char *op, struct inode *inode,
--			   const unsigned char *filename);
-+			   const unsigned char *filename, bool allow_dup);
- int ima_calc_file_hash(struct file *file, struct ima_digest_data *hash);
- int ima_calc_buffer_hash(const void *buf, loff_t len,
- 			 struct ima_digest_data *hash);
-@@ -278,7 +278,7 @@ int ima_alloc_init_template(struct ima_event_data *event_data,
- 			    struct ima_template_desc *template_desc);
- int ima_store_template(struct ima_template_entry *entry, int violation,
- 		       struct inode *inode,
--		       const unsigned char *filename, int pcr);
-+		       const unsigned char *filename, int pcr, bool allow_dup);
- void ima_free_template_entry(struct ima_template_entry *entry);
- const char *ima_d_path(const struct path *path, char **pathbuf, char *filename);
+v2 -> v3:
+
+* Fix double "unwanted" in comment section per Sedat.
+
+v1 -> v2:
+
+* Keep configs and flag names alphabetized.
+
+* Drop mention of -ftest-coverage since it does not cause this issue per
+  Fangrui.
+
+* Pick up review tags from Fangrui and Nick.
+
+ include/asm-generic/vmlinux.lds.h | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index b2b3d81b1535..b61b537177fb 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -988,12 +988,13 @@
+ #endif
  
-diff --git a/security/integrity/ima/ima_api.c b/security/integrity/ima/ima_api.c
-index d273373e6be9..f84369f9905e 100644
---- a/security/integrity/ima/ima_api.c
-+++ b/security/integrity/ima/ima_api.c
-@@ -101,7 +101,7 @@ int ima_alloc_init_template(struct ima_event_data *event_data,
+ /*
+- * Clang's -fsanitize=kernel-address and -fsanitize=thread produce
+- * unwanted sections (.eh_frame and .init_array.*), but
+- * CONFIG_CONSTRUCTORS wants to keep any .init_array.* sections.
++ * Clang's -fprofile-arcs, -fsanitize=kernel-address, and
++ * -fsanitize=thread produce unwanted sections (.eh_frame
++ * and .init_array.*), but CONFIG_CONSTRUCTORS wants to
++ * keep any .init_array.* sections.
+  * https://bugs.llvm.org/show_bug.cgi?id=46478
   */
- int ima_store_template(struct ima_template_entry *entry,
- 		       int violation, struct inode *inode,
--		       const unsigned char *filename, int pcr)
-+		       const unsigned char *filename, int pcr, bool allow_dup)
- {
- 	static const char op[] = "add_template_measure";
- 	static const char audit_cause[] = "hashing_error";
-@@ -119,7 +119,8 @@ int ima_store_template(struct ima_template_entry *entry,
- 		}
- 	}
- 	entry->pcr = pcr;
--	result = ima_add_template_entry(entry, violation, op, inode, filename);
-+	result = ima_add_template_entry(entry, violation, op, inode, filename,
-+					allow_dup);
- 	return result;
- }
- 
-@@ -152,7 +153,7 @@ void ima_add_violation(struct file *file, const unsigned char *filename,
- 		goto err_out;
- 	}
- 	result = ima_store_template(entry, violation, inode,
--				    filename, CONFIG_IMA_MEASURE_PCR_IDX);
-+				    filename, CONFIG_IMA_MEASURE_PCR_IDX, false);
- 	if (result < 0)
- 		ima_free_template_entry(entry);
- err_out:
-@@ -330,7 +331,7 @@ void ima_store_measurement(struct integrity_iint_cache *iint,
- 		return;
- 	}
- 
--	result = ima_store_template(entry, violation, inode, filename, pcr);
-+	result = ima_store_template(entry, violation, inode, filename, pcr, false);
- 	if ((!result || result == -EEXIST) && !(file->f_flags & O_DIRECT)) {
- 		iint->flags |= IMA_MEASURED;
- 		iint->measured_pcrs |= (0x1 << pcr);
-diff --git a/security/integrity/ima/ima_init.c b/security/integrity/ima/ima_init.c
-index 6e8742916d1d..d0a79d7b8d89 100644
---- a/security/integrity/ima/ima_init.c
-+++ b/security/integrity/ima/ima_init.c
-@@ -88,7 +88,7 @@ static int __init ima_add_boot_aggregate(void)
- 
- 	result = ima_store_template(entry, violation, NULL,
- 				    boot_aggregate_name,
--				    CONFIG_IMA_MEASURE_PCR_IDX);
-+				    CONFIG_IMA_MEASURE_PCR_IDX, false);
- 	if (result < 0) {
- 		ima_free_template_entry(entry);
- 		audit_cause = "store_entry";
-diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
-index 2774139845b6..ff6d15d7594c 100644
---- a/security/integrity/ima/ima_main.c
-+++ b/security/integrity/ima/ima_main.c
-@@ -843,6 +843,7 @@ void process_buffer_measurement(struct inode *inode, const void *buf, int size,
- 	int digest_hash_len = hash_digest_size[ima_hash_algo];
- 	int violation = 0;
- 	int action = 0;
-+	bool allow_dup = false;
- 	u32 secid;
- 
- 	if (!ima_policy_flag)
-@@ -865,7 +866,7 @@ void process_buffer_measurement(struct inode *inode, const void *buf, int size,
- 	if (func) {
- 		security_task_getsecid(current, &secid);
- 		action = ima_get_action(inode, current_cred(), secid, 0, func,
--					&pcr, &template, func_data, NULL);
-+					&pcr, &template, func_data, &allow_dup);
- 		if (!(action & IMA_MEASURE))
- 			return;
- 	}
-@@ -903,7 +904,7 @@ void process_buffer_measurement(struct inode *inode, const void *buf, int size,
- 		goto out;
- 	}
- 
--	ret = ima_store_template(entry, violation, NULL, event_data.buf, pcr);
-+	ret = ima_store_template(entry, violation, NULL, event_data.buf, pcr, allow_dup);
- 	if (ret < 0) {
- 		audit_cause = "store_entry";
- 		ima_free_template_entry(entry);
-diff --git a/security/integrity/ima/ima_queue.c b/security/integrity/ima/ima_queue.c
-index c096ef8945c7..fbf359495fa8 100644
---- a/security/integrity/ima/ima_queue.c
-+++ b/security/integrity/ima/ima_queue.c
-@@ -158,7 +158,7 @@ static int ima_pcr_extend(struct tpm_digest *digests_arg, int pcr)
-  */
- int ima_add_template_entry(struct ima_template_entry *entry, int violation,
- 			   const char *op, struct inode *inode,
--			   const unsigned char *filename)
-+			   const unsigned char *filename, bool allow_dup)
- {
- 	u8 *digest = entry->digests[ima_hash_algo_idx].digest;
- 	struct tpm_digest *digests_arg = entry->digests;
-@@ -169,7 +169,8 @@ int ima_add_template_entry(struct ima_template_entry *entry, int violation,
- 
- 	mutex_lock(&ima_extend_list_mutex);
- 	if (!violation) {
--		if (ima_lookup_digest_entry(digest, entry->pcr)) {
-+		if (!allow_dup &&
-+		    ima_lookup_digest_entry(digest, entry->pcr)) {
- 			audit_cause = "hash_exists";
- 			result = -EEXIST;
- 			goto out;
+-#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KCSAN)
++#if defined(CONFIG_GCOV_KERNEL) || defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KCSAN)
+ # ifdef CONFIG_CONSTRUCTORS
+ #  define SANITIZER_DISCARDS						\
+ 	*(.eh_frame)
+
+base-commit: bec4c2968fce2f44ce62d05288a633cd99a722eb
 -- 
-2.17.1
+2.30.0
 
