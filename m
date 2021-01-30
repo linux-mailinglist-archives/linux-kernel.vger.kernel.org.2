@@ -2,231 +2,367 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C5A3093A3
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:46:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20AC5309392
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:42:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231169AbhA3JpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 04:45:21 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:49872 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231886AbhA3Jnl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 04:43:41 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10U9Ulbe009215;
-        Sat, 30 Jan 2021 01:42:56 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : content-type : content-transfer-encoding :
- mime-version; s=pfpt0220; bh=z9RA7C1O3sPq/cPVtu4bxmI5Wzq9JBAvHrxfhQTOL7c=;
- b=fuutvMEwn3ilfueh3rSuMerewB/Gu1q8xg3SkxMFulWTQqggddq0wFTLCGJB6ofmYp18
- +mX07QvM80xk2lTwCDXui6l1BkMvBxcV7SXuoIooX3y7yDIJBb07kCGz45LfbYgk2qK+
- OL8YEbLY4LLONFYXqfPaNXo3mP/rEsRnPHCk0F9547djiaaIZhNns+yeaAuGswUPeMZS
- JnXUv7jsK9cTuTQUDz/6DQDTZBpXdiei2KQZFju5VgDD+hZwN1TZIUvc9mtAwwWgUThw
- k1qQ+LXXCkgc/1b9H3EKBj7odcSN1mm9gskIVfji/4Qqdc24kkV+mn86ZCyUQPmvThOY qw== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 36d0kd8bgb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Sat, 30 Jan 2021 01:42:56 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 30 Jan
- 2021 01:42:54 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.171)
- by DC5-EXCH01.marvell.com (10.69.176.38) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2 via Frontend Transport; Sat, 30 Jan 2021 01:42:53 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Zph2aSWjPjoN/M3eQ+HcvU7Zm+hfbtQdSi3uRA8ZSSZyo3JXIIsX18DRzG9s3lmsNMUmTdEJg3x/5pF/ZuTDMQqCzu+kS/ExxmOGoG24/xxiVht3ISbse0mZTzJTlOHzT4TVkoiaKlSeo23AOUzxkImS3ZtYMLwfqc3KWHYteOHPY6kgHLqnWeOehE0oL5RgVoSTHe5XqyC+62xZ02dEFIX3GZmLTp+HsgJdkd1JmEN6ZYMXX0dwaaap79oQ/l7Z3++ZumHGnYhMacoLt8kNRiV7wxaINUWWs5+dYJWqAENoYdpfK42PgmGQ6dDE0uRAgin2vSdHdia2r0bZRWZl6g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z9RA7C1O3sPq/cPVtu4bxmI5Wzq9JBAvHrxfhQTOL7c=;
- b=lxCs5Ta0u9dariAsp7nuLZEwztHamcdLMr8P3+tVoVdjlvFUtWVJGyM9hukESdBfwUbFZmuOyXvm+RK9ZBe7MNzubRUij+8ye0Q5hRMz33oiDPss7/Ok4h8/4IigkciwOng9CLHWrwXu7gbKPvQrpr8Z+JNYE930dxPLmj4ZPOnQJlSdf6f1eb7K3/MFpAYsyW2++7WkCYTUBcMU5SWz+NPh6fRw23wV0v9EO9QJmcxCAWp1jTyvnCwFLDWDVywKNs78l1i73jIcZSVwMTTd9LcsPasYsYyIsQ8zOy64SXR2X+4p8/m6vjh+ruXwkHMltqjNrMPMR2zGBPpL/OU91w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
- dkim=pass header.d=marvell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z9RA7C1O3sPq/cPVtu4bxmI5Wzq9JBAvHrxfhQTOL7c=;
- b=ZQJooqQFJ59a2zSDvJC6cubK097SrRdRnDu3WW53f2dgP5dMQZxn3+jFDW7gGFl7y1C3j4f03aCBYAbEWsL3DKCnsuXhqjwZNjW7Sh6sc2091nPpnc+HuSQedPe/h5FzeLU/5amwbyXY1ADDvezqp5QjC8OZREKd/IcH3o8Sw48=
-Received: from MWHPR18MB1421.namprd18.prod.outlook.com (2603:10b6:320:2a::23)
- by MW3PR18MB3481.namprd18.prod.outlook.com (2603:10b6:303:2d::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Sat, 30 Jan
- 2021 09:42:52 +0000
-Received: from MWHPR18MB1421.namprd18.prod.outlook.com
- ([fe80::25eb:fce2:fba7:327d]) by MWHPR18MB1421.namprd18.prod.outlook.com
- ([fe80::25eb:fce2:fba7:327d%4]) with mapi id 15.20.3805.022; Sat, 30 Jan 2021
- 09:42:52 +0000
-From:   Hariprasad Kelam <hkelam@marvell.com>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-CC:     Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geethasowjanya Akula <gakula@marvell.com>,
-        Jerin Jacob Kollanukkaran <jerinj@marvell.com>,
-        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
-        Christina Jacob <cjacob@marvell.com>
-Subject: Re: [Patch v2 net-next 1/7] octeontx2-af: forward error correction
- configuration
-Thread-Topic: [Patch v2 net-next 1/7] octeontx2-af: forward error correction
- configuration
-Thread-Index: Adb27Arlo7Q8sqIFQnWYAldRpK+MAw==
-Date:   Sat, 30 Jan 2021 09:42:52 +0000
-Message-ID: <MWHPR18MB14217664A28BDBF32A31233BDEB89@MWHPR18MB1421.namprd18.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=marvell.com;
-x-originating-ip: [117.201.216.226]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 205bf909-ba39-4418-3f6f-08d8c50369f0
-x-ms-traffictypediagnostic: MW3PR18MB3481:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW3PR18MB3481B908569C7F0158F99095DEB89@MW3PR18MB3481.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:121;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: prWNy2UeoFxHdQSqpga3n5ltOI/vV3XS9O1CNXXRVh4xoHRNHRLnNZDV/aH8Pb4OSIjVWIPm95avkM7+KDnocg67MlFYRjJDV+ZkWjKWp7fKE5ne8ah47gsK5CAhBGZZWfauLJ4o/rjpJrw9g7FHSvWLUc4qP0VxzpnXCC4TwHt55ApTCayJsADv7j3fC8i0dGQdX6FYYAZr8A5ngwGHH8rAqRCHx5Gaxr6vIFVncz6/Al7sRAzbmP2NPPJUEWYCoeu8nUu6We4iQbLvqZbCr4jeqnP+L1Kt/P8H79NcDy+S9Odj+1WTwMhahnedpXN72aMil4VoPrnNLGB4xA77C2drydy8RTflBMKh+D56YPuc+hNwY7rbsSK8t+W/eh/8MoxmSJr6+sPqzS58JOjGFQ0mgkJHP5607EXifm5p6hHqFJMTxoQywviT+gh/dtTTmmQTj4JxiqZ51LQyBzXefytgcPwhMEHuwxZ1GW0Ooq+bcCblN8Lpt7JqFiOpqWdHY8hV2fHqE5HovRGKSjke4A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR18MB1421.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(396003)(366004)(376002)(136003)(33656002)(52536014)(26005)(71200400001)(8936002)(86362001)(478600001)(6916009)(53546011)(6506007)(5660300002)(66476007)(66556008)(4326008)(55016002)(9686003)(66446008)(64756008)(54906003)(76116006)(66946007)(2906002)(316002)(186003)(83380400001)(55236004)(8676002)(107886003)(7696005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?c044eSs3dEtSeEQ0SFZhdlZHT01MVm9DUGRITnVXK1JQbTZEZ3hPdWJMek1k?=
- =?utf-8?B?dEtRdWZWY2orMjhkODgwbnkwdmtHdGtnZW15Z2VGdVd3d3IvcmlPblFQVWdM?=
- =?utf-8?B?NTJkSVpjV2tFT3JRN0E3ME42NVFBZWJEZjhQNExLTGd1cjgySUFGMUJEMlph?=
- =?utf-8?B?L0F1U3hUdFBMMUFsWmp4M255UkJ0S2YzSU5WZTRKMjBLdVo4ZlQrUHhRWlVn?=
- =?utf-8?B?MTJrREFJVVoxTE9LNGpxTUR4TmZhZkdta3lCY0xJd1czM0x1U2tTTW1ONlRD?=
- =?utf-8?B?YXE5L3YwNlcvdkdVdWE3S3J6ZElhN3hHRi9XRWlEZEJpelczS1FYUzBDV0JG?=
- =?utf-8?B?dXRuSkR0blVGTEQ1ajczd2RBT0hraWxVRTZVUXZVYjN5R1pPV2ZYM05xTXZF?=
- =?utf-8?B?eVZyV0NUSTluK0VuYTBCZm5XeDRDVGNUMGYvRlFjSnp5VDlmcUc3T0NqNGlV?=
- =?utf-8?B?Vk56WHloRzZkaTl5eHNwSVZlM2dNS1l0WllkYTRJeTZHZkY2NFhRajhLQk9s?=
- =?utf-8?B?UXZmZCs2a2NaM2g0aHhESlgyNVIzclN4WldwU0x5N1RnMlRIS3hJNFFrNHRa?=
- =?utf-8?B?Q01SV2RlaVpWRExEbHJEMTUxRENtdVNscnJ4SVpqbFowRUZNQ0UwTFFOQ00z?=
- =?utf-8?B?amt3NmNJZVdTTkk0KzJhVlpEdW5xY2VCb25qZkRMREJOQmFnN0tUS0t2bmZa?=
- =?utf-8?B?bk10aEZGUHJ0dkFueXRCcFhKWWpsRzlEWlg4MDlwZVkydWJBU3ZaL3RmOHY4?=
- =?utf-8?B?c1VmVWdNQU5jZ0NTYXRDYlpFOEJ3SGt6bjNQSjVRbkJFa0dOOWNZQzB6UWNy?=
- =?utf-8?B?eHlQVGVQeDJER0tUZm5aQVU2SWU4Q2NqZlZIcnByVTdDNzl0cHR6N1FWU2ZG?=
- =?utf-8?B?Z3NyTzdHYmVVWml0bzZFaW1zRjdweHhtUlQ5cWZLRmJXcWZieCtIUWxxNXMr?=
- =?utf-8?B?endUMTlzaFgyTGxPNE5RL2VWaVlBVm85SHNFbGVFSUtxcXJHOGFMZmxnSEpz?=
- =?utf-8?B?bzEvYU1TUlltWFJVVjFFN0FSenJaajRJZ0ozOVQyK24zdXd4c3lCSDZ4bytP?=
- =?utf-8?B?S2V0TTVOWFk0b1lNUmx3STBCWWlOWmN6azAwL000WVRrYklNakRzU1dOYVJX?=
- =?utf-8?B?R2RnTnk2UHNNelJpWS9IZlduQzQ4S2VQbkIvQkYxMFFIaEQyTmVDejVyMTho?=
- =?utf-8?B?RDJCd2ZodFRRYjY5b0ZkL0ZHMlBLTjNTWVRMK1ZZcCs3YkFxY2hSSkNZbWhk?=
- =?utf-8?B?cDA5UUMzQXFIY09WMXVPSGFQSVU0dm15U3U3THJRdnc0aDN5S1Q1SW9OS1NV?=
- =?utf-8?B?amhtYlh3Q0U1cjhVdWtmZWcrenFTNzZ5M0F0Vk9kS2hnaGNQM0NEWkQ2eGpG?=
- =?utf-8?B?a0dvdzYxKytyTUExQVY3cktHdHNyZ2JBUEFOUmRiV1lBWXZYMjM1blZRdHh1?=
- =?utf-8?Q?Cv2JAIhm?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S229825AbhA3Jlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 04:41:52 -0500
+Received: from foss.arm.com ([217.140.110.172]:34122 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231901AbhA3JlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 04:41:22 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 71D6B113E;
+        Sat, 30 Jan 2021 01:40:30 -0800 (PST)
+Received: from [10.57.44.129] (unknown [10.57.44.129])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EE0423F885;
+        Sat, 30 Jan 2021 01:40:28 -0800 (PST)
+Subject: Re: [PATCH v6 2/4] scmi-cpufreq: Move CPU initialisation to probe
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pm@vger.kernel.org, sudeep.holla@arm.com, rjw@rjwysocki.net,
+        vireshk@kernel.org, morten.rasmussen@arm.com, chris.redpath@arm.com
+References: <20210111154524.20196-1-nicola.mazzucato@arm.com>
+ <20210111154524.20196-3-nicola.mazzucato@arm.com>
+ <20210114165427.GC46841@e120937-lin>
+From:   Nicola Mazzucato <nicola.mazzucato@arm.com>
+Message-ID: <5a4c82bb-093c-3953-c762-835e38be5d31@arm.com>
+Date:   Sat, 30 Jan 2021 09:43:08 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR18MB1421.namprd18.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 205bf909-ba39-4418-3f6f-08d8c50369f0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 30 Jan 2021 09:42:52.4312
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SA5u7v8U+cvjm05FlqkOSVc1tyJVCzJwx6pLIIUCxIKKb+k571aX9G6qJQnUOPkIvJQ15jYiII1ths5875E7XA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR18MB3481
-X-OriginatorOrg: marvell.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-01-30_06:2021-01-29,2021-01-30 signatures=0
+In-Reply-To: <20210114165427.GC46841@e120937-lin>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgV2lsbGVtLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFdpbGxl
-bSBkZSBCcnVpam4gPHdpbGxlbWRlYnJ1aWpuLmtlcm5lbEBnbWFpbC5jb20+DQo+IFNlbnQ6IFRo
-dXJzZGF5LCBKYW51YXJ5IDI4LCAyMDIxIDE6NDUgQU0NCj4gVG86IEhhcmlwcmFzYWQgS2VsYW0g
-PGhrZWxhbUBtYXJ2ZWxsLmNvbT4NCj4gQ2M6IE5ldHdvcmsgRGV2ZWxvcG1lbnQgPG5ldGRldkB2
-Z2VyLmtlcm5lbC5vcmc+OyBMS01MIDxsaW51eC0NCj4ga2VybmVsQHZnZXIua2VybmVsLm9yZz47
-IERhdmlkIE1pbGxlciA8ZGF2ZW1AZGF2ZW1sb2Z0Lm5ldD47IEpha3ViDQo+IEtpY2luc2tpIDxr
-dWJhQGtlcm5lbC5vcmc+OyBTdW5pbCBLb3Z2dXJpIEdvdXRoYW0NCj4gPHNnb3V0aGFtQG1hcnZl
-bGwuY29tPjsgTGludSBDaGVyaWFuIDxsY2hlcmlhbkBtYXJ2ZWxsLmNvbT47DQo+IEdlZXRoYXNv
-d2phbnlhIEFrdWxhIDxnYWt1bGFAbWFydmVsbC5jb20+OyBKZXJpbiBKYWNvYiBLb2xsYW51a2th
-cmFuDQo+IDxqZXJpbmpAbWFydmVsbC5jb20+OyBTdWJiYXJheWEgU3VuZGVlcCBCaGF0dGEgPHNi
-aGF0dGFAbWFydmVsbC5jb20+Ow0KPiBDaHJpc3RpbmEgSmFjb2IgPGNqYWNvYkBtYXJ2ZWxsLmNv
-bT4NCj4gU3ViamVjdDogW0VYVF0gUmU6IFtQYXRjaCB2MiBuZXQtbmV4dCAxLzddIG9jdGVvbnR4
-Mi1hZjogZm9yd2FyZCBlcnJvcg0KPiBjb3JyZWN0aW9uIGNvbmZpZ3VyYXRpb24NCj4gDQo+IEV4
-dGVybmFsIEVtYWlsDQo+IA0KPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+IE9uIFdlZCwgSmFuIDI3LCAyMDIx
-IGF0IDQ6MDUgQU0gSGFyaXByYXNhZCBLZWxhbSA8aGtlbGFtQG1hcnZlbGwuY29tPg0KPiB3cm90
-ZToNCj4gPg0KPiA+IEZyb206IENocmlzdGluYSBKYWNvYiA8Y2phY29iQG1hcnZlbGwuY29tPg0K
-PiA+DQo+ID4gQ0dYIGJsb2NrIHN1cHBvcnRzIGZvcndhcmQgZXJyb3IgY29ycmVjdGlvbiBtb2Rl
-cyBiYXNlUiBhbmQgUlMuIFRoaXMNCj4gPiBwYXRjaCBhZGRzIHN1cHBvcnQgdG8gc2V0IGVuY29k
-aW5nIG1vZGUgYW5kIHRvIHJlYWQNCj4gPiBjb3JyZWN0ZWQvdW5jb3JyZWN0ZWQgYmxvY2sgY291
-bnRlcnMNCj4gPg0KPiA+IEFkZHMgbmV3IG1haWxib3ggaGFuZGxlcnMgc2V0X2ZlYyB0byBjb25m
-aWd1cmUgZW5jb2RpbmcgbW9kZXMgYW5kDQo+ID4gZmVjX3N0YXRzIHRvIHJlYWQgY291bnRlcnMg
-YW5kIGFsc28gaW5jcmVhc2UgbWJveCB0aW1lb3V0IHRvIGFjY29tZGF0ZQ0KPiA+IGZpcm13YXJl
-IGNvbW1hbmQgcmVzcG9uc2UgdGltZW91dC4NCj4gPg0KPiA+IEFsb25nIHdpdGggbmV3IENHWF9D
-TURfU0VUX0ZFQyBjb21tYW5kIGFkZCBvdGhlciBjb21tYW5kcyB0bw0KPiBzeW5jIHdpdGgNCj4g
-PiBrZXJuZWwgZW51bSBsaXN0IHdpdGggZmlybXdhcmUuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5
-OiBDaHJpc3RpbmEgSmFjb2IgPGNqYWNvYkBtYXJ2ZWxsLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5
-OiBTdW5pbCBHb3V0aGFtIDxzZ291dGhhbUBtYXJ2ZWxsLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5
-OiBIYXJpcHJhc2FkIEtlbGFtIDxoa2VsYW1AbWFydmVsbC5jb20+DQo+ID4gLS0tDQo+ID4gIGRy
-aXZlcnMvbmV0L2V0aGVybmV0L21hcnZlbGwvb2N0ZW9udHgyL2FmL2NneC5jICAgIHwgNzQNCj4g
-KysrKysrKysrKysrKysrKysrKysrKw0KPiA+ICBkcml2ZXJzL25ldC9ldGhlcm5ldC9tYXJ2ZWxs
-L29jdGVvbnR4Mi9hZi9jZ3guaCAgICB8ICA3ICsrDQo+ID4gIC4uLi9uZXQvZXRoZXJuZXQvbWFy
-dmVsbC9vY3Rlb250eDIvYWYvY2d4X2Z3X2lmLmggIHwgMTcgKysrKy0NCj4gPiAgZHJpdmVycy9u
-ZXQvZXRoZXJuZXQvbWFydmVsbC9vY3Rlb250eDIvYWYvbWJveC5oICAgfCAyMiArKysrKystDQo+
-ID4gIC4uLi9uZXQvZXRoZXJuZXQvbWFydmVsbC9vY3Rlb250eDIvYWYvcnZ1X2NneC5jICAgIHwg
-MzMgKysrKysrKysrKw0KPiA+ICA1IGZpbGVzIGNoYW5nZWQsIDE1MSBpbnNlcnRpb25zKCspLCAy
-IGRlbGV0aW9ucygtKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbmV0L2V0aGVybmV0
-L21hcnZlbGwvb2N0ZW9udHgyL2FmL2NneC5jDQo+ID4gYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9t
-YXJ2ZWxsL29jdGVvbnR4Mi9hZi9jZ3guYw0KPiA+IGluZGV4IDg0YTkxMjMuLjU0ODlkYWIgMTAw
-NjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9uZXQvZXRoZXJuZXQvbWFydmVsbC9vY3Rlb250eDIvYWYv
-Y2d4LmMNCj4gPiArKysgYi9kcml2ZXJzL25ldC9ldGhlcm5ldC9tYXJ2ZWxsL29jdGVvbnR4Mi9h
-Zi9jZ3guYw0KPiA+IEBAIC0zNDAsNiArMzQwLDU4IEBAIGludCBjZ3hfZ2V0X3R4X3N0YXRzKHZv
-aWQgKmNneGQsIGludCBsbWFjX2lkLCBpbnQNCj4gaWR4LCB1NjQgKnR4X3N0YXQpDQo+ID4gICAg
-ICAgICByZXR1cm4gMDsNCj4gPiAgfQ0KPiA+DQo+ID4gK3N0YXRpYyBpbnQgY2d4X3NldF9mZWNf
-c3RhdHNfY291bnQoc3RydWN0IGNneF9saW5rX3VzZXJfaW5mbyAqbGluZm8pDQo+ID4gK3sNCj4g
-PiArICAgICAgIGlmIChsaW5mby0+ZmVjKSB7DQo+ID4gKyAgICAgICAgICAgICAgIHN3aXRjaCAo
-bGluZm8tPmxtYWNfdHlwZV9pZCkgew0KPiA+ICsgICAgICAgICAgICAgICBjYXNlIExNQUNfTU9E
-RV9TR01JSToNCj4gPiArICAgICAgICAgICAgICAgY2FzZSBMTUFDX01PREVfWEFVSToNCj4gPiAr
-ICAgICAgICAgICAgICAgY2FzZSBMTUFDX01PREVfUlhBVUk6DQo+ID4gKyAgICAgICAgICAgICAg
-IGNhc2UgTE1BQ19NT0RFX1FTR01JSToNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICByZXR1
-cm4gMDsNCj4gPiArICAgICAgICAgICAgICAgY2FzZSBMTUFDX01PREVfMTBHX1I6DQo+ID4gKyAg
-ICAgICAgICAgICAgIGNhc2UgTE1BQ19NT0RFXzI1R19SOg0KPiA+ICsgICAgICAgICAgICAgICBj
-YXNlIExNQUNfTU9ERV8xMDBHX1I6DQo+ID4gKyAgICAgICAgICAgICAgIGNhc2UgTE1BQ19NT0RF
-X1VTWEdNSUk6DQo+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIDE7DQo+ID4gKyAg
-ICAgICAgICAgICAgIGNhc2UgTE1BQ19NT0RFXzQwR19SOg0KPiA+ICsgICAgICAgICAgICAgICAg
-ICAgICAgIHJldHVybiA0Ow0KPiA+ICsgICAgICAgICAgICAgICBjYXNlIExNQUNfTU9ERV81MEdf
-UjoNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICBpZiAobGluZm8tPmZlYyA9PSBPVFgyX0ZF
-Q19CQVNFUikNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiAyOw0K
-PiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGVsc2UNCj4gPiArICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIHJldHVybiAxOw0KPiA+ICsgICAgICAgICAgICAgICB9DQo+ID4gKyAgICAg
-ICB9DQo+ID4gKyAgICAgICByZXR1cm4gMDsNCj4gDQo+IG1heSBjb25zaWRlciBpbnZlcnRpbmcg
-dGhlIGNvbmRpdGlvbiwgdG8gcmVtb3ZlIG9uZSBsZXZlbCBvZiBpbmRlbnRhdGlvbi4NCj4gDQpB
-Z3JlZWQuIFdpbGwgZml4IGluIG5leHQgdmVyc2lvbi4NCg0KPiA+ICtpbnQgY2d4X3NldF9mZWMo
-dTY0IGZlYywgaW50IGNneF9pZCwgaW50IGxtYWNfaWQpIHsNCj4gPiArICAgICAgIHU2NCByZXEg
-PSAwLCByZXNwOw0KPiA+ICsgICAgICAgc3RydWN0IGNneCAqY2d4Ow0KPiA+ICsgICAgICAgaW50
-IGVyciA9IDA7DQo+ID4gKw0KPiA+ICsgICAgICAgY2d4ID0gY2d4X2dldF9wZGF0YShjZ3hfaWQp
-Ow0KPiA+ICsgICAgICAgaWYgKCFjZ3gpDQo+ID4gKyAgICAgICAgICAgICAgIHJldHVybiAtRU5Y
-SU87DQo+ID4gKw0KPiA+ICsgICAgICAgcmVxID0gRklFTERfU0VUKENNRFJFR19JRCwgQ0dYX0NN
-RF9TRVRfRkVDLCByZXEpOw0KPiA+ICsgICAgICAgcmVxID0gRklFTERfU0VUKENNRFNFVEZFQywg
-ZmVjLCByZXEpOw0KPiA+ICsgICAgICAgZXJyID0gY2d4X2Z3aV9jbWRfZ2VuZXJpYyhyZXEsICZy
-ZXNwLCBjZ3gsIGxtYWNfaWQpOw0KPiA+ICsgICAgICAgaWYgKCFlcnIpIHsNCj4gPiArICAgICAg
-ICAgICAgICAgY2d4LT5sbWFjX2lkbWFwW2xtYWNfaWRdLT5saW5rX2luZm8uZmVjID0NCj4gPiAr
-ICAgICAgICAgICAgICAgICAgICAgICBGSUVMRF9HRVQoUkVTUF9MSU5LU1RBVF9GRUMsIHJlc3Ap
-Ow0KPiA+ICsgICAgICAgICAgICAgICByZXR1cm4gY2d4LT5sbWFjX2lkbWFwW2xtYWNfaWRdLT5s
-aW5rX2luZm8uZmVjOw0KPiA+ICsgICAgICAgfQ0KPiA+ICsgICAgICAgcmV0dXJuIGVycjsNCj4g
-DQo+IFByZWZlciBrZWVwaW5nIHRoZSBzdWNjZXNzIHBhdGggbGluZWFyIGFuZCByZXR1cm4gZWFy
-bHkgaWYgKGVycikgaW4gZXhwbGljaXQNCj4gYnJhbmNoLiBUaGlzIGFsc28gYWlkcyBicmFuY2gg
-cHJlZGljdGlvbi4NCj4NCkFncmVlZC4gV2lsbCBmaXggdGhpcyBpbiBuZXh0IHZlcnNpb24uDQog
-DQo+ID4gK2ludCBydnVfbWJveF9oYW5kbGVyX2NneF9mZWNfc3RhdHMoc3RydWN0IHJ2dSAqcnZ1
-LA0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RydWN0IG1zZ19yZXEg
-KnJlcSwNCj4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCBjZ3hf
-ZmVjX3N0YXRzX3JzcCAqcnNwKSB7DQo+ID4gKyAgICAgICBpbnQgcGYgPSBydnVfZ2V0X3BmKHJl
-cS0+aGRyLnBjaWZ1bmMpOw0KPiA+ICsgICAgICAgdTggY2d4X2lkeCwgbG1hYzsNCj4gPiArICAg
-ICAgIGludCBlcnIgPSAwOw0KPiA+ICsgICAgICAgdm9pZCAqY2d4ZDsNCj4gPiArDQo+ID4gKyAg
-ICAgICBpZiAoIWlzX2NneF9jb25maWdfcGVybWl0dGVkKHJ2dSwgcmVxLT5oZHIucGNpZnVuYykp
-DQo+ID4gKyAgICAgICAgICAgICAgIHJldHVybiAtRVBFUk07DQo+ID4gKyAgICAgICBydnVfZ2V0
-X2NneF9sbWFjX2lkKHJ2dS0+cGYyY2d4bG1hY19tYXBbcGZdLCAmY2d4X2lkeCwgJmxtYWMpOw0K
-PiA+ICsNCj4gPiArICAgICAgIGNneGQgPSBydnVfY2d4X3BkYXRhKGNneF9pZHgsIHJ2dSk7DQo+
-ID4gKyAgICAgICBlcnIgPSBjZ3hfZ2V0X2ZlY19zdGF0cyhjZ3hkLCBsbWFjLCByc3ApOw0KPiA+
-ICsgICAgICAgcmV0dXJuIGVycjsNCj4gDQo+IG5vIG5lZWQgZm9yIHZhcmlhYmxlIGVycg0KQWdy
-ZWVkIHdpbGwgZml4IHRoaXMgaW4gbmV4dCB2ZXJzaW9uLg0KDQpUaGFua3MsDQpIYXJpcHJhc2Fk
-IGsNCg==
+Hi Cristian,
+
+sorry for my late reply.
+Thanks for looking into this.
+
+I am preparing a v7 with suggestions proposed by Viresh which, hopefully, should
+remove some unclear parts and resolve your comments.
+I had left behind some dealloc, so thanks for spotting!
+
+Many thanks,
+Nicola
+
+On 1/14/21 4:54 PM, Cristian Marussi wrote:
+> Hi Nicola,
+> 
+> a few remarks down below.
+> 
+> On Mon, Jan 11, 2021 at 03:45:22PM +0000, Nicola Mazzucato wrote:
+>> Some of the cpu related initialisation can be done at probe stage.
+>> This patch moves those initialisations from the ->init callback to the
+>> probe stage.
+>>
+>> This is done in preparation for adding support to retrieve additional
+>> information from DT (CPUs sharing v/f lines).
+>>
+>> Signed-off-by: Nicola Mazzucato <nicola.mazzucato@arm.com>
+>> ---
+>>  drivers/cpufreq/scmi-cpufreq.c | 180 ++++++++++++++++++++++++---------
+>>  1 file changed, 135 insertions(+), 45 deletions(-)
+>>
+>> diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
+>> index 15b213ed78fa..4aa97cdc5997 100644
+>> --- a/drivers/cpufreq/scmi-cpufreq.c
+>> +++ b/drivers/cpufreq/scmi-cpufreq.c
+>> @@ -25,6 +25,14 @@ struct scmi_data {
+>>  	struct device *cpu_dev;
+>>  };
+>>  
+>> +/* Per-CPU storage for runtime management */
+>> +struct scmi_cpudata {
+>> +	cpumask_var_t scmi_shared_cpus;
+>> +	struct cpufreq_frequency_table *freq_table;
+>> +};
+>> +
+>> +static struct scmi_cpudata *cpudata_table;
+>> +
+>>  static const struct scmi_handle *handle;
+>>  
+>>  static unsigned int scmi_cpufreq_get_rate(unsigned int cpu)
+>> @@ -120,13 +128,10 @@ scmi_get_cpu_power(unsigned long *power, unsigned long *KHz,
+>>  
+>>  static int scmi_cpufreq_init(struct cpufreq_policy *policy)
+>>  {
+>> -	int ret, nr_opp;
+>> +	int ret;
+>>  	unsigned int latency;
+>>  	struct device *cpu_dev;
+>>  	struct scmi_data *priv;
+>> -	struct cpufreq_frequency_table *freq_table;
+>> -	struct em_data_callback em_cb = EM_DATA_CB(scmi_get_cpu_power);
+>> -	bool power_scale_mw;
+>>  
+>>  	cpu_dev = get_cpu_device(policy->cpu);
+>>  	if (!cpu_dev) {
+>> @@ -134,42 +139,19 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
+>>  		return -ENODEV;
+>>  	}
+>>  
+>> -	ret = handle->perf_ops->device_opps_add(handle, cpu_dev);
+>> -	if (ret) {
+>> -		dev_warn(cpu_dev, "failed to add opps to the device\n");
+>> -		return ret;
+>> -	}
+>> -
+>> -	ret = scmi_get_sharing_cpus(cpu_dev, policy->cpus);
+>> -	if (ret) {
+>> -		dev_warn(cpu_dev, "failed to get sharing cpumask\n");
+>> -		return ret;
+>> -	}
+>> -
+>> -	ret = dev_pm_opp_set_sharing_cpus(cpu_dev, policy->cpus);
+>> -	if (ret) {
+>> -		dev_err(cpu_dev, "%s: failed to mark OPPs as shared: %d\n",
+>> -			__func__, ret);
+>> -		return ret;
+>> -	}
+>> -
+>>  	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+>>  	if (!priv) {
+>>  		ret = -ENOMEM;
+>>  		goto out_free_opp;
+>>  	}
+>>  
+>> -	ret = dev_pm_opp_init_cpufreq_table(cpu_dev, &freq_table);
+>> -	if (ret) {
+>> -		dev_err(cpu_dev, "failed to init cpufreq table: %d\n", ret);
+>> -		goto out_free_priv;
+>> -	}
+>> +	cpumask_copy(policy->cpus, cpudata_table[policy->cpu].scmi_shared_cpus);
+>>  
+>>  	priv->cpu_dev = cpu_dev;
+>>  	priv->domain_id = handle->perf_ops->device_domain_id(cpu_dev);
+>>  
+>>  	policy->driver_data = priv;
+>> -	policy->freq_table = freq_table;
+>> +	policy->freq_table = cpudata_table[policy->cpu].freq_table;
+>>  
+>>  	/* SCMI allows DVFS request for any domain from any CPU */
+>>  	policy->dvfs_possible_from_any_cpu = true;
+>> @@ -183,23 +165,8 @@ static int scmi_cpufreq_init(struct cpufreq_policy *policy)
+>>  	policy->fast_switch_possible =
+>>  		handle->perf_ops->fast_switch_possible(handle, cpu_dev);
+>>  
+>> -	nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
+>> -	if (nr_opp <= 0) {
+>> -		dev_err(cpu_dev, "%s: No OPPs for this device: %d\n",
+>> -			__func__, ret);
+>> -
+>> -		ret = -ENODEV;
+>> -		goto out_free_priv;
+>> -	}
+>> -
+>> -	power_scale_mw = handle->perf_ops->power_scale_mw_get(handle);
+>> -	em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb, policy->cpus,
+>> -				    power_scale_mw);
+>> -
+>>  	return 0;
+>>  
+>> -out_free_priv:
+>> -	kfree(priv);
+>>  out_free_opp:
+>>  	dev_pm_opp_remove_all_dynamic(cpu_dev);
+>>  
+> 
+> My understanding (but I could be wrong given my limited familiarity with
+> CPUFREQ ... so bear with me) is that dev_pm_opp_remove_all_dynamic() is
+> meant to clean dynamic OPPs added by dev_pm_opp_add() which in turn in
+> this driver is folded inside the handle->perf_ops->device_opps_add() call,
+> so is not that this call should be added also on the error path inside
+> the new scmi_init_device() ? (this was already faulty this way in the
+> original code to be honest...if faulty at all :D)
+> 
+> I added a few such invocations down below as rough untested example of
+> what I mean.
+> 
+>> @@ -210,7 +177,6 @@ static int scmi_cpufreq_exit(struct cpufreq_policy *policy)
+>>  {
+>>  	struct scmi_data *priv = policy->driver_data;
+>>  
+>> -	dev_pm_opp_free_cpufreq_table(priv->cpu_dev, &policy->freq_table);
+>>  	dev_pm_opp_remove_all_dynamic(priv->cpu_dev);
+>>  	kfree(priv);
+>>  
+>> @@ -231,10 +197,102 @@ static struct cpufreq_driver scmi_cpufreq_driver = {
+>>  	.exit	= scmi_cpufreq_exit,
+>>  };
+>>  
+>> +static int scmi_init_cpudata(void)
+>> +{
+>> +	int cpu;
+>> +	unsigned int ncpus = num_possible_cpus();
+>> +
+>> +	cpudata_table = kzalloc(sizeof(*cpudata_table) * ncpus, GFP_KERNEL);
+> Shouldn/t this be a kcalloc() given it's an array allocation, checkpatch
+> complains too.
+> 
+>> +	if (!cpudata_table)
+>> +		return -ENOMEM;
+>> +
+>> +	for_each_possible_cpu(cpu) {
+>> +		if (!zalloc_cpumask_var(&cpudata_table[cpu].scmi_shared_cpus,
+>> +					GFP_KERNEL))
+>> +			goto out;
+>> +	}
+>> +
+>> +	return 0;
+>> +
+>> +out:
+>> +	kfree(cpudata_table);
+>> +	return -ENOMEM;
+>> +}
+>> +
+>> +static int scmi_init_device(const struct scmi_handle *handle, int cpu)
+>> +{
+>> +	struct device *cpu_dev;
+>> +	int ret, nr_opp;
+>> +	struct em_data_callback em_cb = EM_DATA_CB(scmi_get_cpu_power);
+>> +	bool power_scale_mw;
+>> +	cpumask_var_t scmi_cpus;
+>> +
+>> +	if (!zalloc_cpumask_var(&scmi_cpus, GFP_KERNEL))
+>> +		return -ENOMEM;
+>> +
+>> +	cpumask_set_cpu(cpu, scmi_cpus);
+>> +
+>> +	cpu_dev = get_cpu_device(cpu);
+>> +
+>> +	ret = scmi_get_sharing_cpus(cpu_dev, scmi_cpus);
+>> +	if (ret) {
+>> +		dev_warn(cpu_dev, "failed to get sharing cpumask\n");
+>> +		goto free_cpumask;
+>> +	}
+>> +
+>> +	/*
+>> +	 * We get here for each CPU. Add OPPs only on those CPUs for which we
+>> +	 * haven't already done so, or set their OPPs as shared.
+>> +	 */
+>> +	nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
+>> +	if (nr_opp <= 0) {
+>> +		ret = handle->perf_ops->device_opps_add(handle, cpu_dev);
+>> +		if (ret) {
+>> +			dev_warn(cpu_dev, "failed to add opps to the device\n");
+>> +			goto free_cpumask;
+>> +		}
+>> +
+>> +		ret = dev_pm_opp_set_sharing_cpus(cpu_dev, scmi_cpus);
+>> +		if (ret) {
+>> +			dev_err(cpu_dev, "%s: failed to mark OPPs as shared: %d\n",
+>> +				__func__, ret);
+> 			goto free_dynamic_opps;
+>> +		}
+>> +
+>> +		nr_opp = dev_pm_opp_get_opp_count(cpu_dev);
+>> +		if (nr_opp <= 0) {
+>> +			dev_err(cpu_dev, "%s: No OPPs for this device: %d\n",
+>> +				__func__, ret);
+>> +
+>> +			ret = -ENODEV;
+> 			goto free_dynamic_opps;
+>> +		}
+>> +
+>> +		power_scale_mw = handle->perf_ops->power_scale_mw_get(handle);
+>> +		em_dev_register_perf_domain(cpu_dev, nr_opp, &em_cb, scmi_cpus,
+>> +					    power_scale_mw);
+>> +	}
+>> +
+>> +	ret = dev_pm_opp_init_cpufreq_table(cpu_dev,
+>> +					    &cpudata_table[cpu].freq_table);
+>> +	if (ret) {
+>> +		dev_err(cpu_dev, "failed to init cpufreq table: %d\n", ret);
+> 		goto free_dynamic_opps;
+>> +	}
+>> +
+>> +	cpumask_copy(cpudata_table[cpu].scmi_shared_cpus, scmi_cpus);
+>> +
+>    free_dynamic_opps:
+> 	   dev_pm_opp_remove_all_dynamic(cpu_dev);
+>> +free_cpumask:
+>> +	free_cpumask_var(scmi_cpus);
+>> +	return ret;
+>> +}
+>> +
+>>  static int scmi_cpufreq_probe(struct scmi_device *sdev)
+>>  {
+>>  	int ret;
+>>  	struct device *dev = &sdev->dev;
+>> +	int cpu;
+>> +	struct device *cpu_dev;
+>>  
+>>  	handle = sdev->handle;
+>>  
+>> @@ -247,6 +305,24 @@ static int scmi_cpufreq_probe(struct scmi_device *sdev)
+>>  		devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get, NULL);
+>>  #endif
+>>  
+>> +	ret = scmi_init_cpudata();
+>> +	if (ret) {
+>> +		pr_err("%s: init cpu data failed\n", __func__);
+>> +		return ret;
+>> +	}
+>> +
+>> +	for_each_possible_cpu(cpu) {
+>> +		cpu_dev = get_cpu_device(cpu);
+>> +
+>> +		ret = scmi_init_device(handle, cpu);
+>> +		if (ret) {
+>> +			dev_err(cpu_dev, "%s: init device failed\n",
+>> +				__func__);
+>> +
+> 			goto clean;
+>> +		}
+>> +	}
+>> +
+>>  	ret = cpufreq_register_driver(&scmi_cpufreq_driver);
+>>  	if (ret) {
+>>  		dev_err(dev, "%s: registering cpufreq failed, err: %d\n",
+> 
+> 	/* clean any dynamic OPPs already set */
+> clean:
+> 	for_each_possible_cpu(cpu) {
+> 		cpu_dev = get_cpu_device(cpu);
+> 
+> 		dev_pm_opp_remove_all_dynamic(cpu_dev);
+> 	}
+> 
+> 	return ret;
+> }
+> 
+> 
+> Thanks
+> 
+> Cristian
+> 
+>> @@ -258,6 +334,20 @@ static int scmi_cpufreq_probe(struct scmi_device *sdev)
+>>  
+>>  static void scmi_cpufreq_remove(struct scmi_device *sdev)
+>>  {
+>> +	int cpu;
+>> +	struct device *cpu_dev;
+>> +
+>> +	for_each_possible_cpu(cpu) {
+>> +		cpu_dev = get_cpu_device(cpu);
+>> +
+>> +		dev_pm_opp_free_cpufreq_table(cpu_dev,
+>> +					      &cpudata_table[cpu].freq_table);
+>> +
+>> +		free_cpumask_var(cpudata_table[cpu].scmi_shared_cpus);
+>> +	}
+>> +
+>> +	kfree(cpudata_table);
+>> +
+>>  	cpufreq_unregister_driver(&scmi_cpufreq_driver);
+>>  }
+>>  
+>> -- 
+>> 2.27.0
+>>
