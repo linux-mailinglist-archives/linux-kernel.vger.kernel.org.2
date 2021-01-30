@@ -2,578 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3504E309521
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 13:38:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F31AD309519
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 13:32:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231381AbhA3Mhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 07:37:38 -0500
-Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.20]:25402 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbhA3Mhf (ORCPT
+        id S231317AbhA3MbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 07:31:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230472AbhA3MbJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 07:37:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1612010020;
-        s=strato-dkim-0002; d=dawncrow.de;
-        h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-        bh=hu2FRa0aMvtwNeDVDj//SD6cWCvR0WciJ1k00GaBXv4=;
-        b=iIHlGiIHXUowyQqoAJyTlKZZ/lMEmKlYM09YPo/1XjwPFBKo78qQeuRtOKG8adIpf1
-        ZAaFPWBYU9L9EzYWjq42QoCJVDT2UlTZZFI0iIQI2PLUVl7uL22eLlcNpnttAMzoKUZn
-        b4wKEvkomYSQ8XxxvG9pr3nh0CDsVnqOQroOorR0hiB9m1s6bnb5WgQ7A3CxzUkbySur
-        Lfu3RiXE2zMsshekn2SSWNPSSL4ExKv0P971mE6olakPSSwXOoDyzleccGhRPNpc4Z9c
-        6ZicHAoLKO25XWTHFVfwP4BflHJHPm4FdN5ROI6UHZOwFq9ZweMnQJIPfS5b5z4BE7ZB
-        6phQ==
-X-RZG-AUTH: ":ImkWY2CseuihIZy6ZWWciR6unPhpN+aXzZGGjY6ptdusOaLnXzn3ovD/FrJVNw=="
-X-RZG-CLASS-ID: mo00
-Received: from tesla.fritz.box
-        by smtp.strato.de (RZmta 47.16.0 DYNA|AUTH)
-        with ESMTPSA id h096ddx0UCPc826
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Sat, 30 Jan 2021 13:25:38 +0100 (CET)
-From:   =?UTF-8?q?Andr=C3=A9=20Hentschel?= <nerv@dawncrow.de>
-To:     robh+dt@kernel.org, bcousson@baylibre.com, tony@atomide.com,
-        linux-omap@vger.kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] ARM: dts: omap3-echo: Update LED configuration
-Date:   Sat, 30 Jan 2021 13:25:13 +0100
-Message-Id: <20210130122514.58375-1-nerv@dawncrow.de>
-X-Mailer: git-send-email 2.25.1
+        Sat, 30 Jan 2021 07:31:09 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C0FFC061573
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 04:30:29 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id kx7so7200426pjb.2
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 04:30:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NwzQouq4wLhBg31vxb6TOAhOsYgc86R3TJHjUdQCgb0=;
+        b=aHxEk3rd9Qj8rE4OQcZVBVrEnXjc/D7+4PxrVI4HwWVq44KPjBkPxztBmQmt7R4pGY
+         M+hyw/VTsI1JBNQqaqgZH9l4/pufQUUB4paOhd14GlaFvZy4NvZBFUKC37f8JjsiG1uv
+         Xpel/cfyW4t7ecuEvWYQ7xobHikLAMxKWT4d/5nNQKohORQr/ckWgcMNSZ7jjHtzM59Q
+         08pv3HR1m5FVduPMYq9CbwIpxrGKkj3pY/v54skTSIro5lMAxR0/4dD8Gv7OzcGwGZ1Y
+         2Wakpu/FVxSQto2qRaMuV3iGwUBppcN/r3iS6McJzTXEUWReW9pcEw9soEzds2k1obiG
+         pDBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NwzQouq4wLhBg31vxb6TOAhOsYgc86R3TJHjUdQCgb0=;
+        b=kVqNiQBrKY/UQ1umM0QG4N6wknxbuab3CmxxrLPHR7QoxIQCvE5edyDc1rCjBF4CS0
+         vBxtRQm6r9MXrVBvCuT8Le6ok8pQ/ywXxYc3+URYAhc2Wak50TEBrcerDI2+5CSI+OtS
+         RWA113fnJQ8iIuatdf8fuJxCGso/JlTBOdoDwu9uDNVV2/593JEP2ukXBdGmPq+mN0IP
+         UNeMvsz7hbu8ZOFkBx7Y97sMtXqA4f41T2KV5INe6PHdsmyy15cnyslHIbbKIX7fzGbC
+         L650+NLwSUnpFpCWMGjh8oDqi7/K1qNta9ekfbwvlJe2OSTtVrzU2lmxI1NRKlQgkN5G
+         /Cpw==
+X-Gm-Message-State: AOAM530LmxbtIaNYsjcAdXx3+dOyYIstyoNtNebEZwJ86JHBm8vv88dO
+        Ti+RIPJxBqzCnp3WapSZ6zOdHA==
+X-Google-Smtp-Source: ABdhPJwRSH4lAxG6I42j7tdUsKdfBncPzgnRMlML5jH0T23wcMonoqxDFIqUnlDj8T7jGNFaSJv+HA==
+X-Received: by 2002:a17:90a:d02:: with SMTP id t2mr8645860pja.130.1612009828434;
+        Sat, 30 Jan 2021 04:30:28 -0800 (PST)
+Received: from [192.168.10.23] (124-171-107-241.dyn.iinet.net.au. [124.171.107.241])
+        by smtp.gmail.com with UTF8SMTPSA id z2sm2209094pfa.121.2021.01.30.04.30.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 30 Jan 2021 04:30:27 -0800 (PST)
+Subject: Re: [PATCH v5] tracepoint: Do not fail unregistering a probe due to
+ memory failure
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Matt Mullins <mmullins@mmlx.us>, paulmck <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+References: <20210127170721.58bce7cc@gandalf.local.home>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+Message-ID: <ac000ed4-3eeb-60df-f896-c05cabb4c1c9@ozlabs.ru>
+Date:   Sat, 30 Jan 2021 23:30:18 +1100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
+ Thunderbird/85.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210127170721.58bce7cc@gandalf.local.home>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: André Hentschel <nerv@dawncrow.de>
----
 
-Changes made in 54212f5a1ba3123281877e54c1e5f672bf7563d8 and previous commits broke with the way
-the LED drivers were described in device-trees before. These adjustments fix that.
 
- arch/arm/boot/dts/omap3-echo.dts | 469 ++++++++++++++++++++++---------
- 1 file changed, 329 insertions(+), 140 deletions(-)
+On 28/01/2021 09:07, Steven Rostedt wrote:
+> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+> 
+> The list of tracepoint callbacks is managed by an array that is protected
+> by RCU. To update this array, a new array is allocated, the updates are
+> copied over to the new array, and then the list of functions for the
+> tracepoint is switched over to the new array. After a completion of an RCU
+> grace period, the old array is freed.
+> 
+> This process happens for both adding a callback as well as removing one.
+> But on removing a callback, if the new array fails to be allocated, the
+> callback is not removed, and may be used after it is freed by the clients
+> of the tracepoint.
+> 
+> The handling of a failed allocation for removing an event can break use
+> cases as the error report is not propagated up to the original callers. To
+> make matters worse, there's some paths that can not handle error cases.
+> 
+> Instead of allocating a new array for removing a tracepoint, allocate twice
+> the needed size when adding tracepoints to the array. On removing, use the
+> second half of the allocated array. This removes the need to allocate memory
+> for removing a tracepoint, as the allocation for removals will already have
+> been done.
+> 
+> Link: https://lkml.kernel.org/r/20201115055256.65625-1-mmullins@mmlx.us
+> Link: https://lkml.kernel.org/r/20201116175107.02db396d@gandalf.local.home
+> Link: https://lkml.kennel.org/r/20201118093405.7a6d2290@gandalf.local.home
+> 
+> Reported-by: Matt Mullins <mmullins@mmlx.us>
+> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-diff --git a/arch/arm/boot/dts/omap3-echo.dts b/arch/arm/boot/dts/omap3-echo.dts
-index b9fd113979f2..3382480d5f19 100644
---- a/arch/arm/boot/dts/omap3-echo.dts
-+++ b/arch/arm/boot/dts/omap3-echo.dts
-@@ -7,6 +7,7 @@
- #include "dm3725.dtsi"
+
+I still need the following chunk (same "if (it_func_ptr)" as in the v2's 
+reply) in order to stop crashes:
+
+
+
+diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
+index 82eba6a05a1c..b7cf7a5a4f43 100644
+--- a/include/linux/tracepoint.h
++++ b/include/linux/tracepoint.h
+@@ -311,6 +311,7 @@ static inline struct tracepoint 
+*tracepoint_ptr_deref(tracepoint_ptr_t *p)
+                                                                         \
+                 it_func_ptr =                                           \
  
- #include <dt-bindings/input/input.h>
-+#include <dt-bindings/leds/common.h>
- 
- / {
- 	model = "Amazon Echo (first generation)";
-@@ -139,179 +140,367 @@ &i2c2 {
- 	clock-frequency = <400000>;
- 
- 	lp5523A: lp5523A@32 {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
- 		compatible = "national,lp5523";
- 		label = "q1";
- 		reg = <0x32>;
- 		clock-mode = /bits/ 8 <0>; /* LP55XX_CLOCK_AUTO */
- 		enable-gpio = <&gpio4 13 GPIO_ACTIVE_HIGH>; /* GPIO_109 */
- 
--		chan0 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan1 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan2 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan3 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan4 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan5 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan6 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan7 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan8 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
-+		multi-led@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0x0>;
-+			color = <LED_COLOR_ID_RGB>;
-+
-+			led@0 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x0>;
-+				color = <LED_COLOR_ID_GREEN>;
-+			};
-+
-+			led@1 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x1>;
-+				color = <LED_COLOR_ID_BLUE>;
-+			};
-+
-+			led@6 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x6>;
-+				color = <LED_COLOR_ID_RED>;
-+			};
-+		};
-+		multi-led@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0x1>;
-+			color = <LED_COLOR_ID_RGB>;
-+
-+			led@2 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x2>;
-+				color = <LED_COLOR_ID_GREEN>;
-+			};
-+
-+			led@3 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x3>;
-+				color = <LED_COLOR_ID_BLUE>;
-+			};
-+
-+			led@7 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x7>;
-+				color = <LED_COLOR_ID_RED>;
-+			};
-+		};
-+		multi-led@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0x2>;
-+			color = <LED_COLOR_ID_RGB>;
-+
-+			led@4 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x4>;
-+				color = <LED_COLOR_ID_GREEN>;
-+			};
-+
-+			led@5 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x5>;
-+				color = <LED_COLOR_ID_BLUE>;
-+			};
-+
-+			led@8 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x8>;
-+				color = <LED_COLOR_ID_RED>;
-+			};
- 		};
- 	};
- 
- 	lp5523B: lp5523B@33 {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
- 		compatible = "national,lp5523";
- 		label = "q3";
- 		reg = <0x33>;
- 		clock-mode = /bits/ 8 <0>; /* LP55XX_CLOCK_AUTO */
- 
--		chan0 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan1 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan2 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan3 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan4 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan5 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan6 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan7 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan8 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
-+		multi-led@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0x0>;
-+			color = <LED_COLOR_ID_RGB>;
-+
-+			led@0 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x0>;
-+				color = <LED_COLOR_ID_GREEN>;
-+			};
-+
-+			led@1 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x1>;
-+				color = <LED_COLOR_ID_BLUE>;
-+			};
-+
-+			led@6 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x6>;
-+				color = <LED_COLOR_ID_RED>;
-+			};
-+		};
-+		multi-led@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0x1>;
-+			color = <LED_COLOR_ID_RGB>;
-+
-+			led@2 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x2>;
-+				color = <LED_COLOR_ID_GREEN>;
-+			};
-+
-+			led@3 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x3>;
-+				color = <LED_COLOR_ID_BLUE>;
-+			};
-+
-+			led@7 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x7>;
-+				color = <LED_COLOR_ID_RED>;
-+			};
-+		};
-+		multi-led@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0x2>;
-+			color = <LED_COLOR_ID_RGB>;
-+
-+			led@4 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x4>;
-+				color = <LED_COLOR_ID_GREEN>;
-+			};
-+
-+			led@5 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x5>;
-+				color = <LED_COLOR_ID_BLUE>;
-+			};
-+
-+			led@8 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x8>;
-+				color = <LED_COLOR_ID_RED>;
-+			};
- 		};
- 	};
- 
- 	lp5523C: lp5523C@34 {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
- 		compatible = "national,lp5523";
- 		label = "q4";
- 		reg = <0x34>;
- 		clock-mode = /bits/ 8 <0>; /* LP55XX_CLOCK_AUTO */
- 
--		chan0 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan1 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan2 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan3 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan4 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan5 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan6 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan7 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan8 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
-+		multi-led@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0x0>;
-+			color = <LED_COLOR_ID_RGB>;
-+
-+			led@0 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x0>;
-+				color = <LED_COLOR_ID_GREEN>;
-+			};
-+
-+			led@1 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x1>;
-+				color = <LED_COLOR_ID_BLUE>;
-+			};
-+
-+			led@6 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x6>;
-+				color = <LED_COLOR_ID_RED>;
-+			};
-+		};
-+		multi-led@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0x1>;
-+			color = <LED_COLOR_ID_RGB>;
-+
-+			led@2 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x2>;
-+				color = <LED_COLOR_ID_GREEN>;
-+			};
-+
-+			led@3 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x3>;
-+				color = <LED_COLOR_ID_BLUE>;
-+			};
-+
-+			led@7 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x7>;
-+				color = <LED_COLOR_ID_RED>;
-+			};
-+		};
-+		multi-led@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0x2>;
-+			color = <LED_COLOR_ID_RGB>;
-+
-+			led@4 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x4>;
-+				color = <LED_COLOR_ID_GREEN>;
-+			};
-+
-+			led@5 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x5>;
-+				color = <LED_COLOR_ID_BLUE>;
-+			};
-+
-+			led@8 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x8>;
-+				color = <LED_COLOR_ID_RED>;
-+			};
- 		};
- 	};
- 
- 	lp5523D: lp552D@35 {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
- 		compatible = "national,lp5523";
- 		label = "q2";
- 		reg = <0x35>;
- 		clock-mode = /bits/ 8 <0>; /* LP55XX_CLOCK_AUTO */
- 
--		chan0 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan1 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan2 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan3 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan4 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan5 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan6 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan7 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
--		};
--		chan8 {
--			led-cur = /bits/ 8 <12>;
--			max-cur = /bits/ 8 <15>;
-+		multi-led@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0x0>;
-+			color = <LED_COLOR_ID_RGB>;
-+
-+			led@0 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x0>;
-+				color = <LED_COLOR_ID_GREEN>;
-+			};
-+
-+			led@1 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x1>;
-+				color = <LED_COLOR_ID_BLUE>;
-+			};
-+
-+			led@6 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x6>;
-+				color = <LED_COLOR_ID_RED>;
-+			};
-+		};
-+		multi-led@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0x1>;
-+			color = <LED_COLOR_ID_RGB>;
-+
-+			led@2 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x2>;
-+				color = <LED_COLOR_ID_GREEN>;
-+			};
-+
-+			led@3 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x3>;
-+				color = <LED_COLOR_ID_BLUE>;
-+			};
-+
-+			led@7 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x7>;
-+				color = <LED_COLOR_ID_RED>;
-+			};
-+		};
-+		multi-led@2 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0x2>;
-+			color = <LED_COLOR_ID_RGB>;
-+
-+			led@4 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x4>;
-+				color = <LED_COLOR_ID_GREEN>;
-+			};
-+
-+			led@5 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x5>;
-+				color = <LED_COLOR_ID_BLUE>;
-+			};
-+
-+			led@8 {
-+				led-cur = /bits/ 8 <12>;
-+				max-cur = /bits/ 8 <15>;
-+				reg = <0x8>;
-+				color = <LED_COLOR_ID_RED>;
-+			};
- 		};
- 	};
- };
+rcu_dereference_raw((&__tracepoint_##_name)->funcs); \
++               if (it_func_ptr) \
+                 do {                                                    \
+                         it_func = (it_func_ptr)->func;                  \
+                         __data = (it_func_ptr)->data;                   \
+
+
+
+
 -- 
-2.25.1
-
+Alexey
