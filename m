@@ -2,303 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6358E309503
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 12:55:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A5A3094FA
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 12:48:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231444AbhA3LyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 06:54:09 -0500
-Received: from smtp12.smtpout.orange.fr ([80.12.242.134]:46021 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhA3LyI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 06:54:08 -0500
-Received: from localhost.localdomain ([92.131.99.25])
-        by mwinf5d35 with ME
-        id NuY32400A0Ys01Y03uY3bc; Sat, 30 Jan 2021 07:32:04 +0100
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 30 Jan 2021 07:32:04 +0100
-X-ME-IP: 92.131.99.25
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
-        romain.perier@gmail.com, allen.lkml@gmail.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH resend] media: ngene: switch from 'pci_' to 'dma_' API
-Date:   Sat, 30 Jan 2021 07:32:00 +0100
-Message-Id: <20210130063200.752615-1-christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231316AbhA3LrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 06:47:20 -0500
+Received: from m12-14.163.com ([220.181.12.14]:56124 "EHLO m12-14.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229854AbhA3LrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 06:47:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=3HDPhqmHgPvzBuo5bl
+        I2uMvrIMia8BZyw9nwfQ+vqKI=; b=qSO5dwxKRPS+O7ue1pZWMtRYe4apzK0OHk
+        4+KscBzTNAtxPfEbDPakqPZuWZ98v00Jin2ChKzGumdscgJAKqoV0JRVQ/MQH6ss
+        rjoAMEtv1h5/uY9gmBSbyXWNEk4F60p6g4ukie6hiPTBd4Z6T5c1vssLulMLHRsy
+        JdBnWfBgs=
+Received: from wengjianfeng.ccdomain.com (unknown [119.137.55.243])
+        by smtp10 (Coremail) with SMTP id DsCowAAXHSHjAhVgHN0oig--.12311S2;
+        Sat, 30 Jan 2021 14:55:33 +0800 (CST)
+From:   samirweng1979 <samirweng1979@163.com>
+To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+Subject: [PATCH] wl1251: cmd: remove redundant assignment
+Date:   Sat, 30 Jan 2021 14:55:42 +0800
+Message-Id: <20210130065542.20252-1-samirweng1979@163.com>
+X-Mailer: git-send-email 2.15.0.windows.1
+X-CM-TRANSID: DsCowAAXHSHjAhVgHN0oig--.12311S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxJF45uw15ArW5AFW8tF1DKFg_yoW5Jw13pF
+        93u347tr98tr1UXrWrZw4kZa9ag3W8JrW7GrWDu34qqF1ayr4FkrZ0gFy09F98ua9YyrW3
+        tFZ0gF4rWF1DCFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jNUUUUUUUU=
+X-Originating-IP: [119.137.55.243]
+X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiRQUqsVl91BTTQAAAss
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+From: wengjianfeng <wengjianfeng@yulong.com>
 
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
+-ENOMEM has been used as a return value,it is not necessary to
+assign it, and if kzalloc fail,not need free it,so just return
+-ENOMEM when kzalloc fail.
 
-When memory is allocated, GFP_KERNEL can be used because in all cases,
-it is called from a probe function and no lock is taken in the between.
-
-The call chain is:
-  ngene_probe                       (probe function, used in ngene-cards.c)
-    --> ngene_get_buffers
-      --> AllocCommonBuffers                  (call dma_alloc_coherent)
-        --> create_ring_buffer                (call dma_alloc_coherent)
-        --> AllocateRingBuffers               (call dma_alloc_coherent)
-
-
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
 ---
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/media/pci/ngene/ngene-core.c | 56 ++++++++++++++--------------
- 1 file changed, 28 insertions(+), 28 deletions(-)
+ drivers/net/wireless/ti/wl1251/cmd.c | 36 ++++++++++++------------------------
+ 1 file changed, 12 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/media/pci/ngene/ngene-core.c b/drivers/media/pci/ngene/ngene-core.c
-index f9f94f47d76b..07f342db6701 100644
---- a/drivers/media/pci/ngene/ngene-core.c
-+++ b/drivers/media/pci/ngene/ngene-core.c
-@@ -763,23 +763,22 @@ static void free_ringbuffer(struct ngene *dev, struct SRingBufferDescriptor *rb)
+diff --git a/drivers/net/wireless/ti/wl1251/cmd.c b/drivers/net/wireless/ti/wl1251/cmd.c
+index e1095b8..498c8db 100644
+--- a/drivers/net/wireless/ti/wl1251/cmd.c
++++ b/drivers/net/wireless/ti/wl1251/cmd.c
+@@ -175,10 +175,8 @@ int wl1251_cmd_vbm(struct wl1251 *wl, u8 identity,
+ 	wl1251_debug(DEBUG_CMD, "cmd vbm");
  
- 	for (j = 0; j < rb->NumBuffers; j++, Cur = Cur->Next) {
- 		if (Cur->Buffer1)
--			pci_free_consistent(dev->pci_dev,
--					    rb->Buffer1Length,
--					    Cur->Buffer1,
--					    Cur->scList1->Address);
-+			dma_free_coherent(&dev->pci_dev->dev,
-+					  rb->Buffer1Length, Cur->Buffer1,
-+					  Cur->scList1->Address);
+ 	vbm = kzalloc(sizeof(*vbm), GFP_KERNEL);
+-	if (!vbm) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
++	if (!vbm)
++		return -ENOMEM;
  
- 		if (Cur->Buffer2)
--			pci_free_consistent(dev->pci_dev,
--					    rb->Buffer2Length,
--					    Cur->Buffer2,
--					    Cur->scList2->Address);
-+			dma_free_coherent(&dev->pci_dev->dev,
-+					  rb->Buffer2Length, Cur->Buffer2,
-+					  Cur->scList2->Address);
- 	}
+ 	/* Count and period will be filled by the target */
+ 	vbm->tim.bitmap_ctrl = bitmap_control;
+@@ -213,10 +211,8 @@ int wl1251_cmd_data_path_rx(struct wl1251 *wl, u8 channel, bool enable)
+ 	wl1251_debug(DEBUG_CMD, "cmd data path");
  
- 	if (rb->SCListMem)
--		pci_free_consistent(dev->pci_dev, rb->SCListMemSize,
--				    rb->SCListMem, rb->PASCListMem);
-+		dma_free_coherent(&dev->pci_dev->dev, rb->SCListMemSize,
-+				  rb->SCListMem, rb->PASCListMem);
+ 	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
+-	if (!cmd) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
++	if (!cmd)
++		return -ENOMEM;
  
--	pci_free_consistent(dev->pci_dev, rb->MemSize, rb->Head, rb->PAHead);
-+	dma_free_coherent(&dev->pci_dev->dev, rb->MemSize, rb->Head,
-+			  rb->PAHead);
- }
+ 	cmd->channel = channel;
  
- static void free_idlebuffer(struct ngene *dev,
-@@ -813,15 +812,13 @@ static void free_common_buffers(struct ngene *dev)
- 	}
+@@ -279,10 +275,8 @@ int wl1251_cmd_join(struct wl1251 *wl, u8 bss_type, u8 channel,
+ 	u8 *bssid;
  
- 	if (dev->OverflowBuffer)
--		pci_free_consistent(dev->pci_dev,
--				    OVERFLOW_BUFFER_SIZE,
--				    dev->OverflowBuffer, dev->PAOverflowBuffer);
-+		dma_free_coherent(&dev->pci_dev->dev, OVERFLOW_BUFFER_SIZE,
-+				  dev->OverflowBuffer, dev->PAOverflowBuffer);
+ 	join = kzalloc(sizeof(*join), GFP_KERNEL);
+-	if (!join) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
++	if (!join)
++		return -ENOMEM;
  
- 	if (dev->FWInterfaceBuffer)
--		pci_free_consistent(dev->pci_dev,
--				    4096,
--				    dev->FWInterfaceBuffer,
--				    dev->PAFWInterfaceBuffer);
-+		dma_free_coherent(&dev->pci_dev->dev, 4096,
-+				  dev->FWInterfaceBuffer,
-+				  dev->PAFWInterfaceBuffer);
- }
+ 	wl1251_debug(DEBUG_CMD, "cmd join%s ch %d %d/%d",
+ 		     bss_type == BSS_TYPE_IBSS ? " ibss" : "",
+@@ -324,10 +318,8 @@ int wl1251_cmd_ps_mode(struct wl1251 *wl, u8 ps_mode)
+ 	wl1251_debug(DEBUG_CMD, "cmd set ps mode");
  
- /****************************************************************************/
-@@ -848,7 +845,7 @@ static int create_ring_buffer(struct pci_dev *pci_dev,
- 	if (MemSize < 4096)
- 		MemSize = 4096;
+ 	ps_params = kzalloc(sizeof(*ps_params), GFP_KERNEL);
+-	if (!ps_params) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
++	if (!ps_params)
++		return -ENOMEM;
  
--	Head = pci_alloc_consistent(pci_dev, MemSize, &tmp);
-+	Head = dma_alloc_coherent(&pci_dev->dev, MemSize, &tmp, GFP_KERNEL);
- 	PARingBufferHead = tmp;
+ 	ps_params->ps_mode = ps_mode;
+ 	ps_params->send_null_data = 1;
+@@ -356,10 +348,8 @@ int wl1251_cmd_read_memory(struct wl1251 *wl, u32 addr, void *answer,
+ 	wl1251_debug(DEBUG_CMD, "cmd read memory");
  
- 	if (!Head)
-@@ -899,7 +896,8 @@ static int AllocateRingBuffers(struct pci_dev *pci_dev,
- 	if (SCListMemSize < 4096)
- 		SCListMemSize = 4096;
+ 	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
+-	if (!cmd) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
++	if (!cmd)
++		return -ENOMEM;
  
--	SCListMem = pci_alloc_consistent(pci_dev, SCListMemSize, &tmp);
-+	SCListMem = dma_alloc_coherent(&pci_dev->dev, SCListMemSize, &tmp,
-+				       GFP_KERNEL);
+ 	WARN_ON(len > MAX_READ_SIZE);
+ 	len = min_t(size_t, len, MAX_READ_SIZE);
+@@ -401,10 +391,8 @@ int wl1251_cmd_template_set(struct wl1251 *wl, u16 cmd_id,
+ 	cmd_len = ALIGN(sizeof(*cmd) + buf_len, 4);
  
- 	PASCListMem = tmp;
- 	if (SCListMem == NULL)
-@@ -918,8 +916,8 @@ static int AllocateRingBuffers(struct pci_dev *pci_dev,
- 	for (i = 0; i < pRingBuffer->NumBuffers; i += 1, Cur = Cur->Next) {
- 		u64 PABuffer;
+ 	cmd = kzalloc(cmd_len, GFP_KERNEL);
+-	if (!cmd) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
++	if (!cmd)
++		return -ENOMEM;
  
--		void *Buffer = pci_alloc_consistent(pci_dev, Buffer1Length,
--						    &tmp);
-+		void *Buffer = dma_alloc_coherent(&pci_dev->dev,
-+						  Buffer1Length, &tmp, GFP_KERNEL);
- 		PABuffer = tmp;
- 
- 		if (Buffer == NULL)
-@@ -951,7 +949,8 @@ static int AllocateRingBuffers(struct pci_dev *pci_dev,
- 		if (!Buffer2Length)
- 			continue;
- 
--		Buffer = pci_alloc_consistent(pci_dev, Buffer2Length, &tmp);
-+		Buffer = dma_alloc_coherent(&pci_dev->dev, Buffer2Length,
-+					    &tmp, GFP_KERNEL);
- 		PABuffer = tmp;
- 
- 		if (Buffer == NULL)
-@@ -1040,17 +1039,18 @@ static int AllocCommonBuffers(struct ngene *dev)
- {
- 	int status = 0, i;
- 
--	dev->FWInterfaceBuffer = pci_alloc_consistent(dev->pci_dev, 4096,
--						     &dev->PAFWInterfaceBuffer);
-+	dev->FWInterfaceBuffer = dma_alloc_coherent(&dev->pci_dev->dev, 4096,
-+						    &dev->PAFWInterfaceBuffer,
-+						    GFP_KERNEL);
- 	if (!dev->FWInterfaceBuffer)
- 		return -ENOMEM;
- 	dev->hosttongene = dev->FWInterfaceBuffer;
- 	dev->ngenetohost = dev->FWInterfaceBuffer + 256;
- 	dev->EventBuffer = dev->FWInterfaceBuffer + 512;
- 
--	dev->OverflowBuffer = pci_zalloc_consistent(dev->pci_dev,
--						    OVERFLOW_BUFFER_SIZE,
--						    &dev->PAOverflowBuffer);
-+	dev->OverflowBuffer = dma_alloc_coherent(&dev->pci_dev->dev,
-+						 OVERFLOW_BUFFER_SIZE,
-+						 &dev->PAOverflowBuffer, GFP_KERNEL);
- 	if (!dev->OverflowBuffer)
- 		return -ENOMEM;
+ 	cmd->size = cpu_to_le16(buf_len);
  
 -- 
-2.25.1
+1.9.1
+
 
