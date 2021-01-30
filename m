@@ -2,90 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B663309852
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 21:42:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6E2309857
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 21:48:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232223AbhA3Umo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 15:42:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52266 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231969AbhA3Umj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 15:42:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 490DC64E15;
-        Sat, 30 Jan 2021 20:41:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612039318;
-        bh=9mhbseMDeeEPJLa7m3ZtmYfGwikz5Yei33edIsU/u2E=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=U6PbDMYYw8jqrFViOUAxXUtDn74/zqRZpzWAR2YSHQtk4ggv33JrZu9qeZIipTC+f
-         iLr0L8PrJNWcUC74SEouluR3iSuWLxsjWHgjceV2KMw6HR46TfNL0poszXDmACZ/FN
-         rCkVaPd0EqMvvRmk4gSTieYvWEzuspmzpsmM8IYjMk5LbmWAY7qFYgCc2/epJxL9FL
-         CIuGrSWiClvf+l4BGfXlkQRYD1W75aOPimZBnwm638d39+FVbS87RYmSnvAM0MG+lB
-         /5mCvuUAU3Zm+EWdSCN+r3NW5PbXHFnkigJPWmyV+I2U7acdl51BzfHaQ+hgdR/6wx
-         +8qcPUA/A80bQ==
-Message-ID: <aeed663344d3f777780ded82a9b1572c4b6c20d2.camel@kernel.org>
-Subject: Re: [PATCH v5 0/5] Enable root to update the blacklist keyring
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-        David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>
-Cc:     "David S . Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        James Morris <jmorris@namei.org>,
-        =?ISO-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Date:   Sat, 30 Jan 2021 22:41:54 +0200
-In-Reply-To: <20210128191705.3568820-1-mic@digikod.net>
-References: <20210128191705.3568820-1-mic@digikod.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.38.3 
+        id S231641AbhA3Urs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 15:47:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231690AbhA3Urp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 15:47:45 -0500
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F22C061756
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 12:47:05 -0800 (PST)
+Received: by mail-lj1-x230.google.com with SMTP id s18so14691546ljg.7
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 12:47:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=waldekranz-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:in-reply-to:references:date:message-id:mime-version;
+        bh=HKVoS2rrydn4evqBfByv/fLsc4rWiOOxhn5xpMDPXuA=;
+        b=YYeRX8uAMTy24PjmszEhE+U3nh9+PUkvfH5lFjYKPjLlKQi4Y7wPwMdSXr73v5nGhT
+         w7Qpwvnys9VY3g2E87RIaOt3Myz2aBYmjUuHJV/h5UggQBIDXwxEK8ub8z07JR3+3om5
+         FIf5Hpbw8zk+W5wiThS0kmC2WVUf95/yUFs0KWjmuPQg+LIryz9JbW0WltoaNcUk0+0Y
+         O4rBaf6qEQSqYKagcRiBRdpHrV2bQLpst6Xl/+V0nlvjlQrdHsxEc/odK+wZIre0akpP
+         9QAidkVDhgIVua6uj4N6r91NWRbdszuihXIqboOhJPffqMl+ymIGgmZLC48yhd5bBwB5
+         h1PQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=HKVoS2rrydn4evqBfByv/fLsc4rWiOOxhn5xpMDPXuA=;
+        b=uZBATnWyfbSL9LUcPeJ707iZ9fTlJV1PLldjdy8nFwIHGgsXiEPdyco3Kpb4EyYsQ+
+         SDVAMSftPLWfObeuOVlsHaK2O+Q2q6XrN8RTDO3r+d+qWYfTvi4V2iPxsNI7NARoO4Og
+         VjDtAxEAuCsFsqu2jbP9wAehKLD5KXp1Fibx95tjFKw1vEwhxb80KcjQuJFcuzQm90XI
+         aVRlTYNdDAapwrtzLAFBDl07mj8WJgkE/HU0PGXMT3HU3eLPTfXoeWP4rwtQonAO9Pym
+         V2HVdAuQQPRliZK54U0nvxTlI+J9D9Au0CUvVX20qBfUVGRSR1Lf65zauVpLTHwFGPTw
+         t/yg==
+X-Gm-Message-State: AOAM530UHv8GiUDcUKFEAUg2aA3e2rNNSlxVJADXlEiaRh7gH6gZlG/y
+        U3iGIs0m1iEOW9kckKf7ltn4kmhM5VcSNrFJ
+X-Google-Smtp-Source: ABdhPJyBffwdVBDn7wJB1j+Q9tDxTRJch4YacsEqxY56NHI4ZHWYhR9QsgZwnQUW854ywKZiTYtzyA==
+X-Received: by 2002:a2e:7812:: with SMTP id t18mr2128221ljc.168.1612039623579;
+        Sat, 30 Jan 2021 12:47:03 -0800 (PST)
+Received: from wkz-x280 (h-236-82.A259.priv.bahnhof.se. [98.128.236.82])
+        by smtp.gmail.com with ESMTPSA id t7sm3088951ljc.87.2021.01.30.12.47.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Jan 2021 12:47:02 -0800 (PST)
+From:   Tobias Waldekranz <tobias@waldekranz.com>
+To:     DENG Qingfang <dqfext@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: dsa: mv88e6xxx: override existent unicast portvec in port_fdb_add
+In-Reply-To: <20210130134334.10243-1-dqfext@gmail.com>
+References: <20210130134334.10243-1-dqfext@gmail.com>
+Date:   Sat, 30 Jan 2021 21:47:02 +0100
+Message-ID: <87eei25f09.fsf@waldekranz.com>
 MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTAxLTI4IGF0IDIwOjE3ICswMTAwLCBNaWNrYcOrbCBTYWxhw7xuIHdyb3Rl
-Ogo+IFRoaXMgZmlmdGggcGF0Y2ggc2VyaWVzIGlzIGEgcmViYXNlIG9uIERhdmlkIEhvd2VsbHMn
-cyBrZXlzLW1pc2MgYnJhbmNoLgo+IFRoZSBmaXggcGF0Y2hlcyBhcmUgYWxyZWFkeSBpbiB0aGlz
-IGJyYW5jaCBhbmQgdGhlbiByZW1vdmVkIGZyb20gdGhpcwo+IHNlcmllcywgb3RoZXIgcGF0Y2hl
-cyBhcmUgdW5jaGFuZ2VkLgo+IAo+IFRoZSBnb2FsIG9mIHRoZXNlIHBhdGNoZXMgaXMgdG8gYWRk
-IGEgbmV3IGNvbmZpZ3VyYXRpb24gb3B0aW9uIHRvIGVuYWJsZSB0aGUKPiByb290IHVzZXIgdG8g
-bG9hZCBzaWduZWQga2V5cyBpbiB0aGUgYmxhY2tsaXN0IGtleXJpbmcuwqAgVGhpcyBrZXlyaW5n
-IGlzIHVzZWZ1bAo+IHRvICJ1bnRydXN0IiBjZXJ0aWZpY2F0ZXMgb3IgZmlsZXMuwqAgRW5hYmxp
-bmcgdG8gc2FmZWx5IHVwZGF0ZSB0aGlzIGtleXJpbmcKPiB3aXRob3V0IHJlY29tcGlsaW5nIHRo
-ZSBrZXJuZWwgbWFrZXMgaXQgbW9yZSB1c2FibGUuCj4gCj4gUHJldmlvdXMgcGF0Y2ggc2VyaWVz
-Ogo+IGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xrbWwvMjAyMTAxMjExNTU1MTMuNTM5NTE5LTEt
-bWljQGRpZ2lrb2QubmV0Lwo+IAo+IFJlZ2FyZHMsCj4gCj4gTWlja2HDq2wgU2FsYcO8biAoNSk6
-Cj4gwqAgdG9vbHMvY2VydHM6IEFkZCBwcmludC1jZXJ0LXRicy1oYXNoLnNoCj4gwqAgY2VydHM6
-IENoZWNrIHRoYXQgYnVpbHRpbiBibGFja2xpc3QgaGFzaGVzIGFyZSB2YWxpZAo+IMKgIGNlcnRz
-OiBNYWtlIGJsYWNrbGlzdF92ZXRfZGVzY3JpcHRpb24oKSBtb3JlIHN0cmljdAo+IMKgIGNlcnRz
-OiBGYWN0b3Igb3V0IHRoZSBibGFja2xpc3QgaGFzaCBjcmVhdGlvbgo+IMKgIGNlcnRzOiBBbGxv
-dyByb290IHVzZXIgdG8gYXBwZW5kIHNpZ25lZCBoYXNoZXMgdG8gdGhlIGJsYWNrbGlzdAo+IMKg
-wqDCoCBrZXlyaW5nCj4gCj4gwqBNQUlOVEFJTkVSU8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoMKgIDIgKwo+IMKg
-Y2VydHMvLmdpdGlnbm9yZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgfMKgwqAgMSArCj4gwqBjZXJ0cy9LY29uZmlnwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqAg
-MTcgKy0KPiDCoGNlcnRzL01ha2VmaWxlwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgIDE1ICstCj4gwqBjZXJ0cy9ibGFja2xp
-c3QuY8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIHwgMjA3ICsrKysrKysrKysrKysrLS0tLQo+IMKgY3J5cHRvL2FzeW1tZXRyaWNfa2V5cy94
-NTA5X3B1YmxpY19rZXkuY8KgwqDCoMKgwqAgfMKgwqAgMyArLQo+IMKgaW5jbHVkZS9rZXlzL3N5
-c3RlbV9rZXlyaW5nLmjCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqAgMTQgKy0K
-PiDCoHNjcmlwdHMvY2hlY2stYmxhY2tsaXN0LWhhc2hlcy5hd2vCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIHzCoCAzNyArKysrCj4gwqAuLi4vcGxhdGZvcm1fY2VydHMva2V5cmluZ19oYW5kbGVyLmPC
-oMKgwqDCoMKgwqDCoMKgwqAgfMKgIDI2ICstLQo+IMKgdG9vbHMvY2VydHMvcHJpbnQtY2VydC10
-YnMtaGFzaC5zaMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfMKgIDkxICsrKysrKysrCj4gwqAxMCBm
-aWxlcyBjaGFuZ2VkLCAzMzYgaW5zZXJ0aW9ucygrKSwgNzcgZGVsZXRpb25zKC0pCj4gwqBjcmVh
-dGUgbW9kZSAxMDA3NTUgc2NyaXB0cy9jaGVjay1ibGFja2xpc3QtaGFzaGVzLmF3awo+IMKgY3Jl
-YXRlIG1vZGUgMTAwNzU1IHRvb2xzL2NlcnRzL3ByaW50LWNlcnQtdGJzLWhhc2guc2gKPiAKPiAK
-PiBiYXNlLWNvbW1pdDogOGYwYmZjMjVjOTA3ZjM4ZTdmOWRjNDk4ZThmNDMwMDBkNzczMjdlZgoK
-SSB0ZXN0ZWQgdGhlc2UsIHNvIHlvdSBib3RoIHJldmlld2VkLWJ5IGFuZCB0ZXN0ZWQtYnkKZnJv
-bSBzaWRlIHRvIGFsbC4KCi9KYXJra28KCg==
+On Sat, Jan 30, 2021 at 21:43, DENG Qingfang <dqfext@gmail.com> wrote:
+> Having multiple destination ports for a unicast address does not make
+> sense.
+> Make port_db_load_purge override existent unicast portvec instead of
+> adding a new port bit.
 
+Is this the layer we want to solve this problem at? What are the
+contents of the software FDB at this stage?
+
+Here is a quick example I tried on one of my systems:
+
+root@envoy:~# bridge fdb add 02:00:de:ad:00:01 dev eth1 static vlan 1
+root@envoy:~# bridge fdb add 02:00:de:ad:00:01 dev eth2 static vlan 1
+root@envoy:~# bridge fdb | grep de:ad
+02:00:de:ad:00:01 dev eth2 vlan 1 self static
+02:00:de:ad:00:01 dev eth1 vlan 1 self static
+
+Why does the second add operation succeed? Am I missing some magic flag?
+Presumably the bridge will only ever forward packets to which ever entry
+ends up being first in the relevant hash list. Is that not the real
+problem here?
+
+As it stands today, those commands will result in the following ATU
+config (eth1/2 being mapped to port 10/9):
+
+root@envoy:~# mvls atu
+ADDRESS             FID  STATE      Q  F  0  1  2  3  4  5  6  7  8  9  a
+ff:ff:ff:ff:ff:ff     0  static     -  -  0  1  2  3  4  5  6  7  8  9  a
+02:00:de:ad:00:01     1  static     -  -  .  .  .  .  .  .  .  .  .  9  a
+ff:ff:ff:ff:ff:ff     1  static     -  -  0  1  2  3  4  5  6  7  8  9  a
+
+One might argue that this is no more wrong than what would have been set
+up with this patch applied. The problem is that the bridge allows this
+configuration in the first place.
