@@ -2,291 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973AE3098D5
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 00:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C55913098DC
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 00:48:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232086AbhA3XkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 18:40:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42268 "EHLO
+        id S232305AbhA3Xrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 18:47:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230168AbhA3XkD (ORCPT
+        with ESMTP id S230168AbhA3Xr1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 18:40:03 -0500
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A9DC061573;
-        Sat, 30 Jan 2021 15:39:23 -0800 (PST)
-Received: by mail-il1-x12c.google.com with SMTP id q5so12107384ilc.10;
-        Sat, 30 Jan 2021 15:39:23 -0800 (PST)
+        Sat, 30 Jan 2021 18:47:27 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8CFCC061573;
+        Sat, 30 Jan 2021 15:46:46 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id s11so14799165edd.5;
+        Sat, 30 Jan 2021 15:46:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=CA+t1dL75EerdwPHdKGgU/V0NlU+y75OmzU0/LZVlt8=;
-        b=OMQ32M6pyY4263/GzInAl226zRqxnFVU3IMQy9sAvnxQVMkgi41EdNWgI4KPnTRxpp
-         R4ljQG5P61ARZOyEAzr5s1SYV7Ig8vsErZHWlXwW0HGLy+cJXovpVX+ehrk9tnH6J5p5
-         iNBaez/2yxP7b21OhjQMK6iZANh1FNLoG9ruF40KQ/OHOeA93u8YCqSodpyWPILulquQ
-         Nfg0XtYQs+ONI8ky+xKFlNOFAwCyAisqoCS/L0xsrbL7m5ME4Q6XU7aWcbG1hQdyyja2
-         qY8CdyFNVOFNmCQPaDcddeZaFmIMpu94zoUZCjpIS194UmwqOZ4u3r0xhjFA4tEQcdcQ
-         uSKg==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=qwA2gP4Z6kauBc6Cc73AmShh3FB/zzrpeQJUUXZmIH0=;
+        b=e3Oc9m+umdOmjwsP9KdTReObMY0/FdDSHDqvzx+xhoBMqgcJW0U+RTlW8C/N2LagAR
+         9s3UZleEBmOpIllSckwltFkKvhNrOF07BV46894A7TiWFn9A5sAipwYbG0V8CKX1Lg4s
+         K+KCsvQ1prpMbyCWPO8DyHKCwFwqVPGVpvBQppC9jcuBsfAAYe9EtdKoR+BJqmXF6y5r
+         TbcbqEPftKg9emW5VUit1lcLCicRW1t6TjB8GfITcfLpxMbSqfFmd1wKQ0tV+aCS7rfO
+         ixdT3pHwXBPaCyGA/MHbXr7mXJtnmoP/ThzJs4bj8jZwcuuKY3yJ3u3TNOB9Gk3EDvGT
+         4MKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=CA+t1dL75EerdwPHdKGgU/V0NlU+y75OmzU0/LZVlt8=;
-        b=kyoeh+Ia1YWtiJsW21RBRWIXlPT1eONiri6OmBkniibxNv6sa3vHL3c7umRuYYm8QE
-         LrqUkkiKr3KDuY4N1r6QcZyqSVV8tPnxlHghMuFiEDj9W0BNVYZWqfrQPO0M5aPAGx2B
-         LVvfC/L8iglZTL+uIdhLLwtPZ39Jj1gUZkyRmMD7yqGLYZjwApCMqUfjybfVIXBXmeHi
-         liKmPMwrHmhIv8PETpaXIoipQkXJWdIAxdrrQbfcylyDN98/7fG5aANZcOqKRGb5BMjd
-         notQKV72DOf7H43sEEZwIiNDk86yclYSshmWNf3+1ERc7xoinSNZJOIbBJi9CG4zc2qq
-         xYTg==
-X-Gm-Message-State: AOAM532snHOHf5uVeMZkIUXhX3xa4dfiGv8C/1maf98a8kOWvABycIwe
-        KP/rUtJYqsDU5oTwKM3odtn1d5xktC/uJ7h/0YrdPZErNZr8zw==
-X-Google-Smtp-Source: ABdhPJzPDBNYn+qKMcdj0LMtBkS+DqM6z1zLoRUviMNSTowrAg2jT7H/b00UG4h7XWLPxw+l0JOhG4kSHsXNLCZSu3c=
-X-Received: by 2002:a05:6e02:d0:: with SMTP id r16mr7786122ilq.112.1612049962550;
- Sat, 30 Jan 2021 15:39:22 -0800 (PST)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=qwA2gP4Z6kauBc6Cc73AmShh3FB/zzrpeQJUUXZmIH0=;
+        b=JEPgXQapRnxVXM/be4Ds29RCvrD2riYWzHlX7isuBLJL1CnsZXN7CIL49bWm59m74k
+         HIZSjBiJmGycRgP0yTSVzmVEeeduunrJ9ToroRlMncwj8FgPKDvEjeeVlyKZCd7GYIOH
+         pxkmxku8iyjqYmFka8Z56bA3npgUbM3b9LkNPrGOS7hILyY1MLpGm3aQ7s9JrjokHcJD
+         n5FgBVsJreLLJHIQmRcv8L6U/ZKDLNBb62V7l9qzfDfscKmsfFxvgkFekRRsyOIjVDzI
+         j4ELEo6fRVkcvkFqtTUzv0Nm71YlZcSm0W/TqvyijfEDLQwDuy6m/4yFf6ed2iTvVrpm
+         vxKA==
+X-Gm-Message-State: AOAM5325gbk4tEjy98B0SBWneF9PMtz4dZKle/8jYYoKRffSPoVOnK8c
+        yT7b32o2aC1MnLhjUC8udSmaHIjQL/EzyQ==
+X-Google-Smtp-Source: ABdhPJx7XVrefx5b4ETT32hLZdkRAaatr8F8S3u8Z8ooDjHPjy9JaoL3I9vchwk0Yv6jb8Em26UvSQ==
+X-Received: by 2002:a05:6402:60a:: with SMTP id n10mr11779375edv.230.1612050405218;
+        Sat, 30 Jan 2021 15:46:45 -0800 (PST)
+Received: from stitch.. ([80.71.140.73])
+        by smtp.gmail.com with ESMTPSA id ah12sm5814197ejc.70.2021.01.30.15.46.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Jan 2021 15:46:44 -0800 (PST)
+Sender: Emil Renner Berthing <emil.renner.berthing@gmail.com>
+From:   Emil Renner Berthing <kernel@esmil.dk>
+To:     netdev@vger.kernel.org, linux-usb@vger.kernel.org
+Cc:     Emil Renner Berthing <kernel@esmil.dk>,
+        Oliver Neukum <oliver@neukum.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net: usb: cdc_ncm: use new API for bh tasklet
+Date:   Sun, 31 Jan 2021 00:46:37 +0100
+Message-Id: <20210130234637.26505-1-kernel@esmil.dk>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20210130004401.2528717-1-ndesaulniers@google.com>
- <20210130004401.2528717-3-ndesaulniers@google.com> <CA+icZUW8N8La=HX6PT0_gWzPPxqW8EMooYpc4jJx6g44przOnA@mail.gmail.com>
-In-Reply-To: <CA+icZUW8N8La=HX6PT0_gWzPPxqW8EMooYpc4jJx6g44przOnA@mail.gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Sun, 31 Jan 2021 00:39:11 +0100
-Message-ID: <CA+icZUX9pii=vJq-jmp=WyC_b=cAJ+0skSssU0mgm_b-HteRBw@mail.gmail.com>
-Subject: Re: [PATCH v7 2/2] Kbuild: implement support for DWARF v5
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 12:10 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
->
-> On Sat, Jan 30, 2021 at 1:44 AM Nick Desaulniers
-> <ndesaulniers@google.com> wrote:
-> >
-> > DWARF v5 is the latest standard of the DWARF debug info format.
-> >
-> > Feature detection of DWARF5 is onerous, especially given that we've
-> > removed $(AS), so we must query $(CC) for DWARF5 assembler directive
-> > support.
-> >
-> > The DWARF version of a binary can be validated with:
-> > $ llvm-dwarfdump vmlinux | head -n 4 | grep version
-> > or
-> > $ readelf --debug-dump=3Dinfo vmlinux 2>/dev/null | grep Version
-> >
-> > DWARF5 wins significantly in terms of size when mixed with compression
-> > (CONFIG_DEBUG_INFO_COMPRESSED).
-> >
-> > 363M    vmlinux.clang12.dwarf5.compressed
-> > 434M    vmlinux.clang12.dwarf4.compressed
-> > 439M    vmlinux.clang12.dwarf2.compressed
-> > 457M    vmlinux.clang12.dwarf5
-> > 536M    vmlinux.clang12.dwarf4
-> > 548M    vmlinux.clang12.dwarf2
-> >
-> > 515M    vmlinux.gcc10.2.dwarf5.compressed
-> > 599M    vmlinux.gcc10.2.dwarf4.compressed
-> > 624M    vmlinux.gcc10.2.dwarf2.compressed
-> > 630M    vmlinux.gcc10.2.dwarf5
-> > 765M    vmlinux.gcc10.2.dwarf4
-> > 809M    vmlinux.gcc10.2.dwarf2
-> >
-> > Though the quality of debug info is harder to quantify; size is not a
-> > proxy for quality.
-> >
-> > Jakub notes:
-> >   All [GCC] 5.1 - 6.x did was start accepting -gdwarf-5 as experimental
-> >   option that enabled some small DWARF subset (initially only a few
-> >   DW_LANG_* codes newly added to DWARF5 drafts).  Only GCC 7 (released
-> >   after DWARF 5 has been finalized) started emitting DWARF5 section
-> >   headers and got most of the DWARF5 changes in...
-> >
-> > Version check GCC so that we don't need to worry about the difference i=
-n
-> > command line args between GNU readelf and llvm-readelf/llvm-dwarfdump t=
-o
-> > validate the DWARF Version in the assembler feature detection script.
-> >
-> > GNU `as` only recently gained support for specifying -gdwarf-5, so when
-> > compiling with Clang but without Clang's integrated assembler
-> > (LLVM_IAS=3D1 is not set), explicitly add -Wa,-gdwarf-5 to DEBUG_CFLAGS=
-.
-> >
-> > Disabled for now if CONFIG_DEBUG_INFO_BTF is set; pahole doesn't yet
-> > recognize the new additions to the DWARF debug info. Thanks to Sedat fo=
-r
-> > the report.
-> >
-> > Link: http://www.dwarfstd.org/doc/DWARF5.pdf
-> > Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-> > Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-> > Suggested-by: Caroline Tice <cmtice@google.com>
-> > Suggested-by: Fangrui Song <maskray@google.com>
-> > Suggested-by: Jakub Jelinek <jakub@redhat.com>
-> > Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> > Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
-> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-> > ---
-> >  Makefile                          |  1 +
-> >  include/asm-generic/vmlinux.lds.h |  7 ++++++-
-> >  lib/Kconfig.debug                 | 18 ++++++++++++++++++
-> >  scripts/test_dwarf5_support.sh    |  8 ++++++++
-> >  4 files changed, 33 insertions(+), 1 deletion(-)
-> >  create mode 100755 scripts/test_dwarf5_support.sh
-> >
-> > diff --git a/Makefile b/Makefile
-> > index d2b4980807e0..5387a6f2f62d 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -831,6 +831,7 @@ KBUILD_AFLAGS       +=3D -Wa,-gdwarf-2
-> >  endif
-> >
-> >  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) :=3D 4
-> > +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) :=3D 5
-> >  DEBUG_CFLAGS   +=3D -gdwarf-$(dwarf-version-y)
-> >
-> >  ifdef CONFIG_DEBUG_INFO_REDUCED
-> > diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vm=
-linux.lds.h
-> > index 34b7e0d2346c..1e7cde4bd3f9 100644
-> > --- a/include/asm-generic/vmlinux.lds.h
-> > +++ b/include/asm-generic/vmlinux.lds.h
-> > @@ -842,8 +842,13 @@
-> >                 /* DWARF 4 */                                          =
- \
-> >                 .debug_types    0 : { *(.debug_types) }                =
- \
-> >                 /* DWARF 5 */                                          =
- \
-> > +               .debug_addr     0 : { *(.debug_addr) }                 =
- \
-> > +               .debug_line_str 0 : { *(.debug_line_str) }             =
- \
-> > +               .debug_loclists 0 : { *(.debug_loclists) }             =
- \
-> >                 .debug_macro    0 : { *(.debug_macro) }                =
- \
-> > -               .debug_addr     0 : { *(.debug_addr) }
-> > +               .debug_names    0 : { *(.debug_names) }                =
- \
-> > +               .debug_rnglists 0 : { *(.debug_rnglists) }             =
- \
-> > +               .debug_str_offsets      0 : { *(.debug_str_offsets) }
-> >
->
-> I just looked at binutils 2.36 in the Debian/experimental repositories.
->
-> [1] says:
->
-> + PR ld/27230
-> =EF=BF=BC+ * scripttempl/DWARF.sc: Add DWARF-5 .debug_* sections.
->
-> ...
->
-> -  /* DWARF Extension.  */
-> =EF=BF=BC-  .debug_macro    0 : { *(.debug_macro) }
-> +  /* DWARF 5.  */
->    .debug_addr     0 : { *(.debug_addr) }
-> +  .debug_line_str 0 : { *(.debug_line_str) }
-> +  .debug_loclists 0 : { *(.debug_loclists) }
-> +  .debug_macro    0 : { *(.debug_macro) }
-> +  .debug_names    0 : { *(.debug_names) }
-> +  .debug_rnglists 0 : { *(.debug_rnglists) }
-> +  .debug_str_offsets 0 : { *(.debug_str_offsets) }
-> =EF=BF=BC+  .debug_sup      0 : { *(.debug_sup) }
->
-> The list of DWARF-5 .debug_* sections is alphabetically sorted.
-> AFAICS .debug_sup section is missing?
->
+This converts the driver to use the new tasklet API introduced in
+commit 12cc923f1ccc ("tasklet: Introduce new initialization API")
 
-Here the link to PR ld/27230 ("[PATCH] Add DWARF v5 sections and v4
-.debug_types").
+It is unfortunate that we need to add a pointer to the driver context to
+get back to the usbnet device, but the space will be reclaimed once
+there are no more users of the old API left and we can remove the data
+value and flag from the tasklet struct.
 
-- Sedat -
+Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+---
+Let me know if you know of a better way to get the usbnet device from
+the cdc_ncn_ctx context.
 
-[1] https://sourceware.org/pipermail/binutils/2021-January/115064.html
+ drivers/net/usb/cdc_ncm.c   | 12 +++++++-----
+ include/linux/usb/cdc_ncm.h |  2 ++
+ 2 files changed, 9 insertions(+), 5 deletions(-)
 
-> - Sedat -
->
-> [1] https://salsa.debian.org/toolchain-team/binutils/-/commit/f58f3308103=
-5672b01a04326a9c8daadbd09a430
->
-> >  /* Stabs debugging sections. */
-> >  #define STABS_DEBUG                                                   =
- \
-> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> > index 94c1a7ed6306..ad6f78989d4f 100644
-> > --- a/lib/Kconfig.debug
-> > +++ b/lib/Kconfig.debug
-> > @@ -268,6 +268,24 @@ config DEBUG_INFO_DWARF4
-> >           It makes the debug information larger, but it significantly
-> >           improves the success of resolving variables in gdb on optimiz=
-ed code.
-> >
-> > +config DEBUG_INFO_DWARF5
-> > +       bool "Generate DWARF Version 5 debuginfo"
-> > +       depends on GCC_VERSION >=3D 50000 || CC_IS_CLANG
-> > +       depends on CC_IS_GCC || $(success,$(srctree)/scripts/test_dwarf=
-5_support.sh $(CC) $(CLANG_FLAGS))
-> > +       depends on !DEBUG_INFO_BTF
-> > +       help
-> > +         Generate DWARF v5 debug info. Requires binutils 2.35.2, gcc 5=
-.0+ (gcc
-> > +         5.0+ accepts the -gdwarf-5 flag but only had partial support =
-for some
-> > +         draft features until 7.0), and gdb 8.0+.
-> > +
-> > +         Changes to the structure of debug info in Version 5 allow for=
- around
-> > +         15-18% savings in resulting image and debug info section size=
-s as
-> > +         compared to DWARF Version 4. DWARF Version 5 standardizes pre=
-vious
-> > +         extensions such as accelerators for symbol indexing and the f=
-ormat
-> > +         for fission (.dwo/.dwp) files. Users may not want to select t=
-his
-> > +         config if they rely on tooling that has not yet been updated =
-to
-> > +         support DWARF Version 5.
-> > +
-> >  endchoice # "DWARF version"
-> >
-> >  config DEBUG_INFO_BTF
-> > diff --git a/scripts/test_dwarf5_support.sh b/scripts/test_dwarf5_suppo=
-rt.sh
-> > new file mode 100755
-> > index 000000000000..c46e2456b47a
-> > --- /dev/null
-> > +++ b/scripts/test_dwarf5_support.sh
-> > @@ -0,0 +1,8 @@
-> > +#!/bin/sh
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +
-> > +# Test that the assembler doesn't need -Wa,-gdwarf-5 when presented wi=
-th DWARF
-> > +# v5 input, such as `.file 0` and `md5 0x00`. Should be fixed in GNU b=
-inutils
-> > +# 2.35.2. https://sourceware.org/bugzilla/show_bug.cgi?id=3D25611
-> > +echo '.file 0 "filename" md5 0x7a0b65214090b6693bd1dc24dd248245' | \
-> > +  $* -gdwarf-5 -Wno-unused-command-line-argument -c -x assembler -o /d=
-ev/null -
-> > --
-> > 2.30.0.365.g02bc693789-goog
-> >
+diff --git a/drivers/net/usb/cdc_ncm.c b/drivers/net/usb/cdc_ncm.c
+index 291e76d32abe..4087c9e33781 100644
+--- a/drivers/net/usb/cdc_ncm.c
++++ b/drivers/net/usb/cdc_ncm.c
+@@ -61,7 +61,7 @@ static bool prefer_mbim;
+ module_param(prefer_mbim, bool, 0644);
+ MODULE_PARM_DESC(prefer_mbim, "Prefer MBIM setting on dual NCM/MBIM functions");
+ 
+-static void cdc_ncm_txpath_bh(unsigned long param);
++static void cdc_ncm_txpath_bh(struct tasklet_struct *t);
+ static void cdc_ncm_tx_timeout_start(struct cdc_ncm_ctx *ctx);
+ static enum hrtimer_restart cdc_ncm_tx_timer_cb(struct hrtimer *hr_timer);
+ static struct usb_driver cdc_ncm_driver;
+@@ -813,9 +813,11 @@ int cdc_ncm_bind_common(struct usbnet *dev, struct usb_interface *intf, u8 data_
+ 	if (!ctx)
+ 		return -ENOMEM;
+ 
++	ctx->dev = dev;
++
+ 	hrtimer_init(&ctx->tx_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+ 	ctx->tx_timer.function = &cdc_ncm_tx_timer_cb;
+-	tasklet_init(&ctx->bh, cdc_ncm_txpath_bh, (unsigned long)dev);
++	tasklet_setup(&ctx->bh, cdc_ncm_txpath_bh);
+ 	atomic_set(&ctx->stop, 0);
+ 	spin_lock_init(&ctx->mtx);
+ 
+@@ -1472,10 +1474,10 @@ static enum hrtimer_restart cdc_ncm_tx_timer_cb(struct hrtimer *timer)
+ 	return HRTIMER_NORESTART;
+ }
+ 
+-static void cdc_ncm_txpath_bh(unsigned long param)
++static void cdc_ncm_txpath_bh(struct tasklet_struct *t)
+ {
+-	struct usbnet *dev = (struct usbnet *)param;
+-	struct cdc_ncm_ctx *ctx = (struct cdc_ncm_ctx *)dev->data[0];
++	struct cdc_ncm_ctx *ctx = from_tasklet(ctx, t, bh);
++	struct usbnet *dev = ctx->dev;
+ 
+ 	spin_lock_bh(&ctx->mtx);
+ 	if (ctx->tx_timer_pending != 0) {
+diff --git a/include/linux/usb/cdc_ncm.h b/include/linux/usb/cdc_ncm.h
+index 0ce4377545f8..f7cb3ddce7fb 100644
+--- a/include/linux/usb/cdc_ncm.h
++++ b/include/linux/usb/cdc_ncm.h
+@@ -98,6 +98,8 @@ struct cdc_ncm_ctx {
+ 	struct hrtimer tx_timer;
+ 	struct tasklet_struct bh;
+ 
++	struct usbnet *dev;
++
+ 	const struct usb_cdc_ncm_desc *func_desc;
+ 	const struct usb_cdc_mbim_desc *mbim_desc;
+ 	const struct usb_cdc_mbim_extended_desc *mbim_extended_desc;
+-- 
+2.30.0
+
