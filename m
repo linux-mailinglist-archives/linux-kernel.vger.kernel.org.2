@@ -2,183 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEDC83098C8
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 00:18:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5E03098CB
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 00:23:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232288AbhA3XSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 18:18:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37688 "EHLO
+        id S232166AbhA3XXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 18:23:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232200AbhA3XSk (ORCPT
+        with ESMTP id S231690AbhA3XW4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 18:18:40 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D6E9C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 15:18:00 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id p21so17683514lfu.11
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 15:18:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=zFgn0TmKFtNNs3cjJkq4u2lwCNPKs6ofIywWaibKc80=;
-        b=Xig1rfH9tRAPhK78YlTYa9duURS00/sfQaL74K5th9BCOZ4c60VF1jSvo44gPA+ise
-         6tgubmTJG8eCoB7LIJi2SWd838uykd/h6XCXPxkOUqkWZ7N22Nkjd7JjKSaPtyikyPS3
-         kGx//2K8721RjSygFZV8yZCc2s7FqkKYEM9saoZYNMtP65JbX1cFk2qYhuNmWXN9HrPE
-         Y/TUuXBtaresDTTZittTWdEaEktm+CyOW2EDjqUrjIJ3LqiFwCFCr8yZBF/PLoYOnLU+
-         w4rLjQoOoPbHBwL9fmg+s69fSefR1RGtu3RWiKpQ/Njo2ibDjC3EJhkUkXFqUi8w4vws
-         WfFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=zFgn0TmKFtNNs3cjJkq4u2lwCNPKs6ofIywWaibKc80=;
-        b=kXHSMljIKTSzycbLOWf/bH3+9gZ5+JQpJbXRkE2ZioEdxqBBd4CqaNeyEoJIVV/26T
-         vBQXEoackr2outwGmjYODfMmf61CCG1TN5BbiWqtWMVcTPISw/NRAVlB4x7qZoU1rjIh
-         5zsLOnzlidW2I2V7FLVFNgsCgFi5DSX8dKPAmN9T/JsKrO5hbM/ZP3l8wDkXYLzijDqF
-         1pDtCtGTNTwZyCslliQNL2cqVXIee285cL+l3OiHWlGdVwckLS8aZUWfEiQi/Gagxt6t
-         o+KHzKIrxyUoZ92qv47m+sBU3zrhFeCwPcy0radvLVRYcM0zTAkt/0fr/SvLm+Z9gE5X
-         0k7A==
-X-Gm-Message-State: AOAM531LM0d6u9YZE4wPGcYpNaCW0O8vPNbvXS4Iart1Q7pIN5J45kse
-        FxaUrkdAcrlWZUyMePuB4PhXRZBd091mlmSoewQ=
-X-Google-Smtp-Source: ABdhPJzZczXPTbJ/JlIRlD9Bcb3Sr4V6hfGS+lQC2J810q0+K0WcdPP6idY98cUtyzTzprZD+Y9iUhcxuF5on5u9tgg=
-X-Received: by 2002:a19:985:: with SMTP id 127mr5545337lfj.66.1612048678702;
- Sat, 30 Jan 2021 15:17:58 -0800 (PST)
+        Sat, 30 Jan 2021 18:22:56 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87A9C061573
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 15:22:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=NKrR+Lj4ywGNRc3dhLV33eCl8FFCpLqHQ8RPAMbWaq0=; b=RvXATeuxxW9BPT4eFoS+ezlA7x
+        AzNeUxYcC16HVzGdJl+y74LgICGZPe+VYIS3Q62YiVrX3HON5BGuc1hGtvAM1VETG0DqKI9h0yKHc
+        L5bNP9w3VjFmpMrgsxXIReZZrMRz9o+Cbz/1RT3aXew0HO984JrfPFN/z1TCmvbLcGoltgYNggYWv
+        1Mdnb4hsS9tFYvbavjx8xzQY5MMXEyosFv34THawvsqDuP6n9Gx9XbQpCjUwBZiEYkMVCh90Ch8KA
+        tynGusYEKRnJT0fQMhq0vaaMlXIsxuimSqolnx2jE0u98/QkL3uuaWmjuhsZT2WY8iGCQnUPg2vWB
+        XJOJmbIw==;
+Received: from [2601:1c0:6280:3f0::1d53]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l5zZ0-00Bft3-IK; Sat, 30 Jan 2021 23:22:02 +0000
+Subject: Re: [PATCH] powerpc: fix AKEBONO build failures
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Yury Norov <yury.norov@gmail.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
+References: <CAAH8bW8-6Dp29fe6rrnA4eL1vo+mu0HuAVJ-5yjbwxDSvaHdeQ@mail.gmail.com>
+ <6c442012-3bef-321b-bbc3-09c54608661f@infradead.org>
+ <875z3prcwg.fsf@mpe.ellerman.id.au>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <4572579a-7208-628d-cbe2-b70a74a84ae7@infradead.org>
+Date:   Sat, 30 Jan 2021 15:21:55 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Date:   Sun, 31 Jan 2021 04:17:46 +0500
-Message-ID: <CABXGCsNazWZQGfSnFgQ_K5_H9uBQ=8gBdFORXrU1FEMGMohO2w@mail.gmail.com>
-Subject: [bug] 5.11-rc5 brought page allocation failure issue [ttm][amdgpu]
-To:     ckoenig.leichtzumerken@gmail.com
-Cc:     Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <875z3prcwg.fsf@mpe.ellerman.id.au>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 5.11-rc5 (git 76c057c84d28) brought a new issue.
-Now the kernel log is flooded with the message "page allocation failure".
+On 1/21/21 5:14 PM, Michael Ellerman wrote:
+> Randy Dunlap <rdunlap@infradead.org> writes:
+>> On 1/20/21 1:29 PM, Yury Norov wrote:
+>>> Hi all,
+>>>
+>>> I found the power pc build broken on today's
+>>> linux-next (647060f3b592).
+>>
+>> Darn, I was building linux-5.11-rc4.
+>>
+>> I'll try linux-next after I send this.
+>>
+>> ---
+>> From: Randy Dunlap <rdunlap@infradead.org>
+>>
+>> Fulfill AKEBONO Kconfig requirements.
+>>
+>> Fixes these Kconfig warnings (and more) and fixes the subsequent
+>> build errors:
+>>
+>> WARNING: unmet direct dependencies detected for NETDEVICES
+>>    Depends on [n]: NET [=n]
+>>    Selected by [y]:
+>>    - AKEBONO [=y] && PPC_47x [=y]
+>>
+>> WARNING: unmet direct dependencies detected for MMC_SDHCI
+>>    Depends on [n]: MMC [=n] && HAS_DMA [=y]
+>>    Selected by [y]:
+>>    - AKEBONO [=y] && PPC_47x [=y]
+>>
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Cc: Michael Ellerman <mpe@ellerman.id.au>
+>> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+>> Cc: Paul Mackerras <paulus@samba.org>
+>> Cc: linuxppc-dev@lists.ozlabs.org
+>> Cc: Yury Norov <yury.norov@gmail.com>
+>> ---
+>>   arch/powerpc/platforms/44x/Kconfig |    2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> --- lnx-511-rc4.orig/arch/powerpc/platforms/44x/Kconfig
+>> +++ lnx-511-rc4/arch/powerpc/platforms/44x/Kconfig
+>> @@ -206,6 +206,7 @@ config AKEBONO
+>>   	select PPC4xx_HSTA_MSI
+>>   	select I2C
+>>   	select I2C_IBM_IIC
+>> +	select NET
+>>   	select NETDEVICES
+>>   	select ETHERNET
+>>   	select NET_VENDOR_IBM
+> 
+> I think the problem here is too much use of select, for things that
+> should instead be in the defconfig.
+> 
+> The patch below results in the same result for make
+> 44x/akebono_defconfig. Does it fix the original issue?
 
-Trace:
-msedge:cs0: page allocation failure: order:10,
-mode:0x190cc2(GFP_HIGHUSER|__GFP_NORETRY|__GFP_NOMEMALLOC),
-nodemask=(null),cpuset=/,mems_allowed=0
-CPU: 18 PID: 4540 Comm: msedge:cs0 Tainted: G        W
---------- ---  5.11.0-0.rc5.20210128git76c057c84d28.138.fc34.x86_64 #1
-Hardware name: System manufacturer System Product Name/ROG STRIX
-X570-I GAMING, BIOS 3402 01/13/2021
-Call Trace:
- dump_stack+0x8b/0xb0
- warn_alloc.cold+0x72/0xd6
- ? _cond_resched+0x16/0x50
- ? __alloc_pages_direct_compact+0x1a1/0x210
- __alloc_pages_slowpath.constprop.0+0xf64/0xf90
- ? kmem_cache_alloc+0x299/0x310
- ? lock_acquire+0x173/0x380
- ? trace_hardirqs_on+0x1b/0xe0
- ? lock_release+0x1e9/0x400
- __alloc_pages_nodemask+0x37d/0x400
- ttm_pool_alloc+0x2a3/0x630 [ttm]
- ttm_tt_populate+0x37/0xe0 [ttm]
- ttm_bo_handle_move_mem+0x142/0x180 [ttm]
- ttm_bo_evict+0x12e/0x1b0 [ttm]
- ? kfree+0xeb/0x660
- ? amdgpu_vram_mgr_new+0x34d/0x3d0 [amdgpu]
- ttm_mem_evict_first+0x101/0x4d0 [ttm]
- ttm_bo_mem_space+0x2c8/0x330 [ttm]
- ttm_bo_validate+0x163/0x1c0 [ttm]
- amdgpu_cs_bo_validate+0x82/0x190 [amdgpu]
- amdgpu_cs_list_validate+0x105/0x150 [amdgpu]
- amdgpu_cs_ioctl+0x803/0x1ef0 [amdgpu]
- ? trace_hardirqs_off_caller+0x41/0xd0
- ? amdgpu_cs_find_mapping+0xe0/0xe0 [amdgpu]
- drm_ioctl_kernel+0x8c/0xe0 [drm]
- drm_ioctl+0x20f/0x3c0 [drm]
- ? amdgpu_cs_find_mapping+0xe0/0xe0 [amdgpu]
- ? selinux_file_ioctl+0x147/0x200
- ? lock_acquired+0x1fa/0x380
- ? lock_release+0x1e9/0x400
- ? trace_hardirqs_on+0x1b/0xe0
- amdgpu_drm_ioctl+0x49/0x80 [amdgpu]
- __x64_sys_ioctl+0x82/0xb0
- do_syscall_64+0x33/0x40
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x7f829c36c11b
-Code: ff ff ff 85 c0 79 9b 49 c7 c4 ff ff ff ff 5b 5d 4c 89 e0 41 5c
-c3 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa b8 10 00 00 00 0f 05 <48> 3d
-01 f0 ff ff 73 01 c3 48 8b 0d 25 bd 0c 00 f7 d8 64 89 01 48
-RSP: 002b:00007f8282c14f38 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f8282c14fa0 RCX: 00007f829c36c11b
-RDX: 00007f8282c14fa0 RSI: 00000000c0186444 RDI: 0000000000000018
-RBP: 00000000c0186444 R08: 00007f8282c15640 R09: 00007f8282c14f80
-R10: 0000000000000000 R11: 0000000000000246 R12: 00001f592c0fe088
-R13: 0000000000000018 R14: 0000000000000000 R15: 00000000fffffffd
-Mem-Info:
-active_anon:24325 inactive_anon:3569299 isolated_anon:0
- active_file:704540 inactive_file:2709725 isolated_file:0
- unevictable:1230 dirty:256317 writeback:7074
- slab_reclaimable:222328 slab_unreclaimable:112852
- mapped:838359 shmem:469422 pagetables:47722 bounce:0
- free:107165 free_pcp:1298 free_cma:0
-Node 0 active_anon:97300kB inactive_anon:14277196kB
-active_file:2818160kB inactive_file:10838900kB unevictable:4920kB
-isolated(anon):0kB isolated(file):0kB mapped:3353436kB dirty:1025268kB
-writeback:28296kB shmem:1877688kB shmem_thp: 0kB shmem_pmdmapped: 0kB
-anon_thp: 0kB writeback_tmp:0kB kernel_stack:62528kB
-pagetables:190888kB all_unreclaimable? no
-Node 0 DMA free:11800kB min:32kB low:44kB high:56kB
-reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB
-active_file:0kB inactive_file:0kB unevictable:0kB writepending:0kB
-present:15992kB managed:15900kB mlocked:0kB bounce:0kB free_pcp:0kB
-local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 3056 31787 31787 31787
-Node 0 DMA32 free:303044kB min:6492kB low:9620kB high:12748kB
-reserved_highatomic:0KB active_anon:20kB inactive_anon:1322808kB
-active_file:5136kB inactive_file:483136kB unevictable:0kB
-writepending:220876kB present:3314552kB managed:3246620kB mlocked:0kB
-bounce:0kB free_pcp:4kB local_pcp:0kB free_cma:0kB
-lowmem_reserve[]: 0 0 28731 28731 28731
-Node 0 Normal free:113816kB min:61052kB low:90472kB high:119892kB
-reserved_highatomic:0KB active_anon:97280kB inactive_anon:12953852kB
-active_file:2812656kB inactive_file:10355000kB unevictable:4920kB
-writepending:832688kB present:30133248kB managed:29421044kB
-mlocked:4920kB bounce:0kB free_pcp:5180kB local_pcp:4kB free_cma:0kB
-lowmem_reserve[]: 0 0 0 0 0
-Node 0 DMA: 0*4kB 1*8kB (U) 1*16kB (U) 0*32kB 2*64kB (U) 1*128kB (U)
-1*256kB (U) 0*512kB 1*1024kB (U) 1*2048kB (M) 2*4096kB (M) = 11800kB
-Node 0 DMA32: 1009*4kB (UME) 724*8kB (UME) 488*16kB (UME) 1111*32kB
-(UME) 950*64kB (UME) 620*128kB (UME) 223*256kB (UME) 74*512kB (M)
-11*1024kB (M) 2*2048kB (ME) 0*4096kB = 303684kB
-Node 0 Normal: 964*4kB (UME) 719*8kB (ME) 379*16kB (UME) 192*32kB
-(UME) 127*64kB (UME) 130*128kB (UME) 122*256kB (UME) 18*512kB (UME)
-4*1024kB (UM) 11*2048kB (UM) 0*4096kB = 113656kB
-Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0
-hugepages_size=1048576kB
-Node 0 hugepages_total=0 hugepages_free=0 hugepages_surp=0 hugepages_size=2048kB
-3881804 total pagecache pages
-0 pages in swap cache
-Swap cache stats: add 0, delete 0, find 0/0
-Free swap  = 67108860kB
-Total swap = 67108860kB
-8365948 pages RAM
-0 pages HighMem/MovableOnly
-195057 pages reserved
-0 pages cma reserved
-0 pages hwpoisoned
+Hi Michael,
+Sorry for the delay.
 
-Full kernel log: https://pastebin.com/dJEzxzQ7
+Changing the akebono_defconfig doesn't cause the missing symbols
+to be set -- the defconfig is not being used here.
 
-$ /usr/src/kernels/`uname -r`/scripts/faddr2line
-/lib/debug/lib/modules/`uname
--r`/kernel/drivers/gpu/drm/ttm/ttm.ko.debug ttm_pool_alloc+0x2a3
-ttm_pool_alloc+0x2a3/0x630:
-alloc_pages at /usr/src/debug/kernel-20210128git76c057c84d28/linux-5.11.0-0.rc5.20210128git76c057c84d28.138.fc34.x86_64/./include/linux/gfp.h:547
-(inlined by) ttm_pool_alloc_page at
-/usr/src/debug/kernel-20210128git76c057c84d28/linux-5.11.0-0.rc5.20210128git76c057c84d28.138.fc34.x86_64/drivers/gpu/drm/ttm/ttm_pool.c:91
-(inlined by) ttm_pool_alloc at
-/usr/src/debug/kernel-20210128git76c057c84d28/linux-5.11.0-0.rc5.20210128git76c057c84d28.138.fc34.x86_64/drivers/gpu/drm/ttm/ttm_pool.c:383
+I guess that if you have users who set CONFIG_AKEBONO and expect
+it to build cleanly, you will need something like my patch or the
+patch that Florian just posted.
+
+Changing the akebono_defconfig also would not help 'make randconfig'
+builds to build cleanly if they had happened to enable AKEBONO.
 
 
+> We don't need to add ETHERNET or NET_VENDOR_IBM to the defconfig because
+> they're both default y.
+> 
+> cheers
 
--- 
-Best Regards,
-Mike Gavrilov.
