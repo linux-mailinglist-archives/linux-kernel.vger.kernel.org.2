@@ -2,138 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9A5A3094FA
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 12:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7CBE3094E6
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 12:32:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231316AbhA3LrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 06:47:20 -0500
-Received: from m12-14.163.com ([220.181.12.14]:56124 "EHLO m12-14.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229854AbhA3LrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 06:47:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=3HDPhqmHgPvzBuo5bl
-        I2uMvrIMia8BZyw9nwfQ+vqKI=; b=qSO5dwxKRPS+O7ue1pZWMtRYe4apzK0OHk
-        4+KscBzTNAtxPfEbDPakqPZuWZ98v00Jin2ChKzGumdscgJAKqoV0JRVQ/MQH6ss
-        rjoAMEtv1h5/uY9gmBSbyXWNEk4F60p6g4ukie6hiPTBd4Z6T5c1vssLulMLHRsy
-        JdBnWfBgs=
-Received: from wengjianfeng.ccdomain.com (unknown [119.137.55.243])
-        by smtp10 (Coremail) with SMTP id DsCowAAXHSHjAhVgHN0oig--.12311S2;
-        Sat, 30 Jan 2021 14:55:33 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     kvalo@codeaurora.org, davem@davemloft.net, kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH] wl1251: cmd: remove redundant assignment
-Date:   Sat, 30 Jan 2021 14:55:42 +0800
-Message-Id: <20210130065542.20252-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: DsCowAAXHSHjAhVgHN0oig--.12311S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxJF45uw15ArW5AFW8tF1DKFg_yoW5Jw13pF
-        93u347tr98tr1UXrWrZw4kZa9ag3W8JrW7GrWDu34qqF1ayr4FkrZ0gFy09F98ua9YyrW3
-        tFZ0gF4rWF1DCFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jNUUUUUUUU=
-X-Originating-IP: [119.137.55.243]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiRQUqsVl91BTTQAAAss
+        id S231406AbhA3Lbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 06:31:41 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.82]:19181 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229498AbhA3Lbi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 06:31:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1612006123;
+        s=strato-dkim-0002; d=gerhold.net;
+        h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
+        From:Subject:Sender;
+        bh=Hz2RfQlTwbQJbFjbuznooGtZkfflXXOwIhLHe5UW440=;
+        b=W+OQxYfN3npRZQVIh34Y4PyXSVdFqlOlM1qY+lUxcQ/EpRGSk5zzupYQDIJ+JRaZVV
+        x7rqhQ3QwZOL3Vwn/466qCGXAxRNy9mMqTHhHIAOvrhuvYvFahI9XcTzBxgA6AJ5gUZw
+        1PcKrISTifAiNRgW0S1lCBMFyy3urqZNBkhjOiOjETCqSxsVCntG69pgFFcJgGUVaAbC
+        1/LmSjbWN3boCasoPrclPGMZRUMqh1ZBQSdCN6+CsKoO7u3fB1nNzr2aq7YSs04V76Wp
+        dJZ5XPY7vqnGeXsdOjsHTPU0BGkRi3j+DROqiN6GCuD/N0hoveQWGfcK3zd4dzOkj5q9
+        9AVg==
+X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j7IczGbYo="
+X-RZG-CLASS-ID: mo00
+Received: from gerhold.net
+        by smtp.strato.de (RZmta 47.16.0 DYNA|AUTH)
+        with ESMTPSA id j0a9bax0UBSQ81F
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Sat, 30 Jan 2021 12:28:26 +0100 (CET)
+Date:   Sat, 30 Jan 2021 12:28:24 +0100
+From:   Stephan Gerhold <stephan@gerhold.net>
+To:     Vincent Knecht <vincent.knecht@mailoo.org>
+Cc:     phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sam Ravnborg <sam@ravnborg.org>, Arnd Bergmann <arnd@arndb.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Daniel Palmer <daniel@0x0f.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Max Merchel <Max.Merchel@tq-group.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        allen <allen.chen@ite.com.tw>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 3/4] arm64: dts: qcom: Disable MDSS by default for
+ 8916/8016 devices
+Message-ID: <YBVC2KfT4pLJ5/XX@gerhold.net>
+References: <20210130105717.2628781-1-vincent.knecht@mailoo.org>
+ <20210130105717.2628781-4-vincent.knecht@mailoo.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210130105717.2628781-4-vincent.knecht@mailoo.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
+On Sat, Jan 30, 2021 at 11:57:12AM +0100, Vincent Knecht wrote:
+> Disable MDSS (Mobile Display Subsystem) by default in msm8916.dtsi
+> and only explicitly enable it in devices' DT which actually use it.
+> 
+> This leads to faster boot and cleaner logs for other devices,
+> which also won't have to explicitly disable MDSS to use framebuffer.
+> 
+> Signed-off-by: Vincent Knecht <vincent.knecht@mailoo.org>
 
--ENOMEM has been used as a return value,it is not necessary to
-assign it, and if kzalloc fail,not need free it,so just return
--ENOMEM when kzalloc fail.
+Thanks for the patch! I think this is a good thing because normally most
+things are disabled by default in msm8916.dtsi (e.g. eMMC, SD card,
+WCNSS, ....). Also, there are actually some devices that don't have a
+display (e.g. the 4IoT board [1]). Having to disable it specifically is
+kind of weird. So:
 
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
----
- drivers/net/wireless/ti/wl1251/cmd.c | 36 ++++++++++++------------------------
- 1 file changed, 12 insertions(+), 24 deletions(-)
+Reviewed-by: Stephan Gerhold <stephan@gerhold.net>
 
-diff --git a/drivers/net/wireless/ti/wl1251/cmd.c b/drivers/net/wireless/ti/wl1251/cmd.c
-index e1095b8..498c8db 100644
---- a/drivers/net/wireless/ti/wl1251/cmd.c
-+++ b/drivers/net/wireless/ti/wl1251/cmd.c
-@@ -175,10 +175,8 @@ int wl1251_cmd_vbm(struct wl1251 *wl, u8 identity,
- 	wl1251_debug(DEBUG_CMD, "cmd vbm");
- 
- 	vbm = kzalloc(sizeof(*vbm), GFP_KERNEL);
--	if (!vbm) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+	if (!vbm)
-+		return -ENOMEM;
- 
- 	/* Count and period will be filled by the target */
- 	vbm->tim.bitmap_ctrl = bitmap_control;
-@@ -213,10 +211,8 @@ int wl1251_cmd_data_path_rx(struct wl1251 *wl, u8 channel, bool enable)
- 	wl1251_debug(DEBUG_CMD, "cmd data path");
- 
- 	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
--	if (!cmd) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+	if (!cmd)
-+		return -ENOMEM;
- 
- 	cmd->channel = channel;
- 
-@@ -279,10 +275,8 @@ int wl1251_cmd_join(struct wl1251 *wl, u8 bss_type, u8 channel,
- 	u8 *bssid;
- 
- 	join = kzalloc(sizeof(*join), GFP_KERNEL);
--	if (!join) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+	if (!join)
-+		return -ENOMEM;
- 
- 	wl1251_debug(DEBUG_CMD, "cmd join%s ch %d %d/%d",
- 		     bss_type == BSS_TYPE_IBSS ? " ibss" : "",
-@@ -324,10 +318,8 @@ int wl1251_cmd_ps_mode(struct wl1251 *wl, u8 ps_mode)
- 	wl1251_debug(DEBUG_CMD, "cmd set ps mode");
- 
- 	ps_params = kzalloc(sizeof(*ps_params), GFP_KERNEL);
--	if (!ps_params) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+	if (!ps_params)
-+		return -ENOMEM;
- 
- 	ps_params->ps_mode = ps_mode;
- 	ps_params->send_null_data = 1;
-@@ -356,10 +348,8 @@ int wl1251_cmd_read_memory(struct wl1251 *wl, u32 addr, void *answer,
- 	wl1251_debug(DEBUG_CMD, "cmd read memory");
- 
- 	cmd = kzalloc(sizeof(*cmd), GFP_KERNEL);
--	if (!cmd) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+	if (!cmd)
-+		return -ENOMEM;
- 
- 	WARN_ON(len > MAX_READ_SIZE);
- 	len = min_t(size_t, len, MAX_READ_SIZE);
-@@ -401,10 +391,8 @@ int wl1251_cmd_template_set(struct wl1251 *wl, u16 cmd_id,
- 	cmd_len = ALIGN(sizeof(*cmd) + buf_len, 4);
- 
- 	cmd = kzalloc(cmd_len, GFP_KERNEL);
--	if (!cmd) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+	if (!cmd)
-+		return -ENOMEM;
- 
- 	cmd->size = cpu_to_le16(buf_len);
- 
--- 
-1.9.1
+[1]: https://www.96boards.org/product/4iot/
 
-
+> ---
+>  arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi                  | 4 ++++
+>  arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi | 4 ++++
+>  arch/arm64/boot/dts/qcom/msm8916.dtsi                      | 1 +
+>  3 files changed, 9 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi b/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
+> index 3a9538e1ec97..6aef0c2e4f0a 100644
+> --- a/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/apq8016-sbc.dtsi
+> @@ -301,6 +301,10 @@ &lpass {
+>  	status = "okay";
+>  };
+>  
+> +&mdss {
+> +	status = "okay";
+> +};
+> +
+>  &pm8916_resin {
+>  	status = "okay";
+>  	linux,code = <KEY_VOLUMEDOWN>;
+> diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi b/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi
+> index f1af798abd74..230ba3ce3277 100644
+> --- a/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-a2015-common.dtsi
+> @@ -132,6 +132,10 @@ &dsi0 {
+>  	pinctrl-1 = <&mdss_sleep>;
+>  };
+>  
+> +&mdss {
+> +	status = "okay";
+> +};
+> +
+>  &pm8916_resin {
+>  	status = "okay";
+>  	linux,code = <KEY_VOLUMEDOWN>;
+> diff --git a/arch/arm64/boot/dts/qcom/msm8916.dtsi b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+> index 402e891a84ab..8f9a651d3827 100644
+> --- a/arch/arm64/boot/dts/qcom/msm8916.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/msm8916.dtsi
+> @@ -913,6 +913,7 @@ tcsr: syscon@1937000 {
+>  		};
+>  
+>  		mdss: mdss@1a00000 {
+> +			status = "disabled";
+>  			compatible = "qcom,mdss";
+>  			reg = <0x01a00000 0x1000>,
+>  			      <0x01ac8000 0x3000>;
+> -- 
+> 2.29.2
+> 
+> 
+> 
