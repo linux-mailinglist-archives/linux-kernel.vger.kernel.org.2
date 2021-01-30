@@ -2,155 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0506B3098EA
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 00:51:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA67F3098F0
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 00:51:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232517AbhA3Xt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 18:49:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232321AbhA3Xsh (ORCPT
+        id S232625AbhA3Xv2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 30 Jan 2021 18:51:28 -0500
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:43881 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232531AbhA3XuW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 18:48:37 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68E9DC0613D6;
-        Sat, 30 Jan 2021 15:47:56 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id n6so14747010edt.10;
-        Sat, 30 Jan 2021 15:47:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1zRwD9qdAbO8fK598YRqxgb8mENfF+ajdr9W7w7+HkI=;
-        b=Ohy7riB2thMin4OEstXOEn/eLXtkv998O6y0+FvfpNSYWu+23y99sNMmDhwS78t4Yq
-         NMq7iWUIOsTkKBkCa0h7lRebOEYTeuiG+kvXuoN+GDr39McsTuwlPMHrSSt7Sb4pximB
-         ++asPFQkaDe9WD/3/4PkB9fPGpMpvWOvH9yd4KrcmO/FEwhkBXmWVwfpZt1MqxesqZAK
-         mCpnJqzWEA6vWSgzY1ngEdH+1GI7lA34WEWYeyyJzH531pfrnq8EO95FyAbg4ucjyPPL
-         eDuXhiSdfC7CwdnfrE3Y4uOUQUuBz/neUytCBjmmlXVhyes1YnpbvoYV/yZSNQ6d2mYN
-         WcZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=1zRwD9qdAbO8fK598YRqxgb8mENfF+ajdr9W7w7+HkI=;
-        b=J5H9ZrecplGWFDgizAKH1VvCHdie0VS8hI13gW4WsGu+v8+xQ/0aPbcurwXMPffrZ9
-         a9T5D9Xit+jQq532L9+rvZM0KqmZVLWmdgwyKZDULXrRY0RTCmdoi6SI86Q6Lc36GdUo
-         R0G0y0C4+CuOMsRaDmN7IWsBk9X0LuYbEbEsFSxa6r68KQ0cwykX351F2VwCiNZUBaOi
-         yxLj+Cc1yNUjhAgfIto/1k13zXE9DF6yQdcJLjE2aDqcb6mvSm/66XPWfoH8P2829KRY
-         SFioH9k1j97FWNNINlCozXHuZcAZmFL8YSNG/r5EBX3pPmYR++2Idp//CpxVcfc7H8G6
-         EwIQ==
-X-Gm-Message-State: AOAM533WSFeznIPLQfhCl3GZJwopG1zkJ9xornzDuaYJp7wtNFweAZcm
-        iVbwsqQCYwxNxKfBRijlCze1foLrJY+3Rl24
-X-Google-Smtp-Source: ABdhPJxiIz46Vt1P0xn/IbTDl3Bas4tq2o8OftuhU9qGcPDm2XgWBaZOIX7kG3EQMvyhnncrtuRw2w==
-X-Received: by 2002:aa7:cdc7:: with SMTP id h7mr12234530edw.353.1612050475189;
-        Sat, 30 Jan 2021 15:47:55 -0800 (PST)
-Received: from stitch.. ([80.71.140.73])
-        by smtp.gmail.com with ESMTPSA id u17sm6628009edr.0.2021.01.30.15.47.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Jan 2021 15:47:54 -0800 (PST)
-Sender: Emil Renner Berthing <emil.renner.berthing@gmail.com>
-From:   Emil Renner Berthing <kernel@esmil.dk>
-To:     netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-ppp@vger.kernel.org
-Cc:     Emil Renner Berthing <kernel@esmil.dk>,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com, Petko Manolov <petkan@nucleusys.com>,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        Jing Xiangfeng <jingxiangfeng@huawei.com>,
-        Oliver Neukum <oneukum@suse.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/9] ppp: use new tasklet API
-Date:   Sun, 31 Jan 2021 00:47:25 +0100
-Message-Id: <20210130234730.26565-5-kernel@esmil.dk>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210130234730.26565-1-kernel@esmil.dk>
-References: <20210130234730.26565-1-kernel@esmil.dk>
+        Sat, 30 Jan 2021 18:50:22 -0500
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-232-vxHeuP0xM1Ox5VFFZlxQiA-1; Sat, 30 Jan 2021 18:49:03 -0500
+X-MC-Unique: vxHeuP0xM1Ox5VFFZlxQiA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E054F10054FF;
+        Sat, 30 Jan 2021 23:49:00 +0000 (UTC)
+Received: from krava.redhat.com (unknown [10.40.192.30])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2855760DA0;
+        Sat, 30 Jan 2021 23:48:56 +0000 (UTC)
+From:   Jiri Olsa <jolsa@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Subject: [PATCHv3 00/24] perf tools: Add daemon command
+Date:   Sun, 31 Jan 2021 00:48:32 +0100
+Message-Id: <20210130234856.271282-1-jolsa@kernel.org>
+In-Reply-To: <20210129134855.195810-1-jolsa@redhat.com>
+References: <20210129134855.195810-1-jolsa@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=jolsa@kernel.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kernel.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This converts the async and synctty drivers to use the new tasklet API n
-commit 12cc923f1ccc ("tasklet: Introduce new initialization API")
+hi,
+we were asked for possibility to be able run record
+sessions on background.
 
-Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
+This patchset adds support to configure and run record
+sessions on background via new 'perf daemon' command.
+
+Please check below the example on usage.
+
+Available also here:
+  git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+  perf/daemon
+
+v3 changes:
+  - several patches merged
+  - add comments to daemon locking [Namhyung]
+  - split patch 1 to multiple patches [Namhyung]
+  - add missing allocation checks [Namhyung]
+  - add comments for session state transitions [Namhyung]
+  - add base directory check [Namhyung]
+  - use ',' as default for -x option [Namhyung]
+  - remove extra close before dup2 [Namhyung]
+  - add new reconfig test for empty config
+  - add --base option
+
+v2 changes:
+  - switch options to sub-commands [Namhyung]
+  - use signalfd to track on sessions [Alexei]
+  - use stop command to stop sessions [Alexei]
+  - couple minor fixes [Alexei]
+  - more detailed changelogs [Arnaldo]
+  - added tests
+
+thanks,
+jirka
+
+
 ---
- drivers/net/ppp/ppp_async.c   | 8 ++++----
- drivers/net/ppp/ppp_synctty.c | 8 ++++----
- 2 files changed, 8 insertions(+), 8 deletions(-)
+Jiri Olsa (24):
+      perf daemon: Add daemon command
+      perf daemon: Add config option
+      perf daemon: Add base option
+      perf daemon: Add server socket support
+      perf daemon: Add client socket support
+      perf daemon: Add config file support
+      perf daemon: Add config file change check
+      perf daemon: Add background support
+      perf daemon: Add signalfd support
+      perf daemon: Add list command
+      perf daemon: Add signal command
+      perf daemon: Add stop command
+      perf daemon: Allow only one daemon over base directory
+      perf daemon: Set control fifo for session
+      perf daemon: Add ping command
+      perf daemon: Use control to stop session
+      perf daemon: Add up time for daemon/session list
+      perf daemon: Add man page for perf-daemon
+      perf tests: Add daemon list command test
+      perf tests: Add daemon reconfig test
+      perf tests: Add daemon stop command test
+      perf tests: Add daemon signal command test
+      perf tests: Add daemon ping command test
+      perf tests: Add daemon lock test
 
-diff --git a/drivers/net/ppp/ppp_async.c b/drivers/net/ppp/ppp_async.c
-index 29a0917a81e6..2b66cf301b0e 100644
---- a/drivers/net/ppp/ppp_async.c
-+++ b/drivers/net/ppp/ppp_async.c
-@@ -101,7 +101,7 @@ static void ppp_async_input(struct asyncppp *ap, const unsigned char *buf,
- 			    char *flags, int count);
- static int ppp_async_ioctl(struct ppp_channel *chan, unsigned int cmd,
- 			   unsigned long arg);
--static void ppp_async_process(unsigned long arg);
-+static void ppp_async_process(struct tasklet_struct *t);
- 
- static void async_lcp_peek(struct asyncppp *ap, unsigned char *data,
- 			   int len, int inbound);
-@@ -179,7 +179,7 @@ ppp_asynctty_open(struct tty_struct *tty)
- 	ap->lcp_fcs = -1;
- 
- 	skb_queue_head_init(&ap->rqueue);
--	tasklet_init(&ap->tsk, ppp_async_process, (unsigned long) ap);
-+	tasklet_setup(&ap->tsk, ppp_async_process);
- 
- 	refcount_set(&ap->refcnt, 1);
- 	init_completion(&ap->dead);
-@@ -488,9 +488,9 @@ ppp_async_ioctl(struct ppp_channel *chan, unsigned int cmd, unsigned long arg)
-  * to the ppp_generic code, and to tell the ppp_generic code
-  * if we can accept more output now.
-  */
--static void ppp_async_process(unsigned long arg)
-+static void ppp_async_process(struct tasklet_struct *t)
- {
--	struct asyncppp *ap = (struct asyncppp *) arg;
-+	struct asyncppp *ap = from_tasklet(ap, t, tsk);
- 	struct sk_buff *skb;
- 
- 	/* process received packets */
-diff --git a/drivers/net/ppp/ppp_synctty.c b/drivers/net/ppp/ppp_synctty.c
-index 0f338752c38b..86ee5149f4f2 100644
---- a/drivers/net/ppp/ppp_synctty.c
-+++ b/drivers/net/ppp/ppp_synctty.c
-@@ -90,7 +90,7 @@ static struct sk_buff* ppp_sync_txmunge(struct syncppp *ap, struct sk_buff *);
- static int ppp_sync_send(struct ppp_channel *chan, struct sk_buff *skb);
- static int ppp_sync_ioctl(struct ppp_channel *chan, unsigned int cmd,
- 			  unsigned long arg);
--static void ppp_sync_process(unsigned long arg);
-+static void ppp_sync_process(struct tasklet_struct *t);
- static int ppp_sync_push(struct syncppp *ap);
- static void ppp_sync_flush_output(struct syncppp *ap);
- static void ppp_sync_input(struct syncppp *ap, const unsigned char *buf,
-@@ -177,7 +177,7 @@ ppp_sync_open(struct tty_struct *tty)
- 	ap->raccm = ~0U;
- 
- 	skb_queue_head_init(&ap->rqueue);
--	tasklet_init(&ap->tsk, ppp_sync_process, (unsigned long) ap);
-+	tasklet_setup(&ap->tsk, ppp_sync_process);
- 
- 	refcount_set(&ap->refcnt, 1);
- 	init_completion(&ap->dead_cmp);
-@@ -480,9 +480,9 @@ ppp_sync_ioctl(struct ppp_channel *chan, unsigned int cmd, unsigned long arg)
-  * to the ppp_generic code, and to tell the ppp_generic code
-  * if we can accept more output now.
-  */
--static void ppp_sync_process(unsigned long arg)
-+static void ppp_sync_process(struct tasklet_struct *t)
- {
--	struct syncppp *ap = (struct syncppp *) arg;
-+	struct syncppp *ap = from_tasklet(ap, t, tsk);
- 	struct sk_buff *skb;
- 
- 	/* process received packets */
--- 
-2.30.0
+ tools/perf/Build                         |    1 +
+ tools/perf/Documentation/perf-config.txt |   14 ++
+ tools/perf/Documentation/perf-daemon.txt |  187 +++++++++++++++++++++
+ tools/perf/builtin-daemon.c              | 1448 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tools/perf/builtin.h                     |    1 +
+ tools/perf/command-list.txt              |    1 +
+ tools/perf/perf.c                        |    1 +
+ tools/perf/tests/shell/daemon.sh         |  475 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 8 files changed, 2128 insertions(+)
+ create mode 100644 tools/perf/Documentation/perf-daemon.txt
+ create mode 100644 tools/perf/builtin-daemon.c
+ create mode 100755 tools/perf/tests/shell/daemon.sh
+
+
+---
+Example with 2 record sessions:
+
+  # cat ~/.perfconfig
+  [daemon]
+  base=/opt/perfdata
+
+  [session-cycles]
+  run = -m 10M -e cycles --overwrite --switch-output -a
+
+  [session-sched]
+  run = -m 20M -e sched:* --overwrite --switch-output -a
+
+
+Starting the daemon:
+
+  # perf daemon start
+
+
+Check sessions:
+
+  # perf daemon
+  [603349:daemon] base: /opt/perfdata
+  [603350:cycles] perf record -m 10M -e cycles --overwrite --switch-output -a
+  [603351:sched] perf record -m 20M -e sched:* --overwrite --switch-output -a
+
+First line is daemon process info with configured daemon base.
+
+
+Check sessions with more info:
+
+  # perf daemon -v
+  [603349:daemon] base: /opt/perfdata
+    output:  /opt/perfdata/output
+    lock:    /opt/perfdata/lock
+    up:      1 minutes
+  [603350:cycles] perf record -m 10M -e cycles --overwrite --switch-output -a
+    base:    /opt/perfdata/session-cycles
+    output:  /opt/perfdata/session-cycles/output
+    control: /opt/perfdata/session-cycles/control
+    ack:     /opt/perfdata/session-cycles/ack
+    up:      1 minutes
+  [603351:sched] perf record -m 20M -e sched:* --overwrite --switch-output -a
+    base:    /opt/perfdata/session-sched
+    output:  /opt/perfdata/session-sched/output
+    control: /opt/perfdata/session-sched/control
+    ack:     /opt/perfdata/session-sched/ack
+    up:      1 minutes
+
+The 'base' path is daemon/session base.
+The 'lock' file is daemon's lock file guarding that no other
+daemon is running on top of the base.
+The 'output' file is perf record output for specific session.
+The 'control' and 'ack' files are perf control files.
+The 'up' number shows minutes daemon/session is running.
+
+
+Make sure control session is online:
+
+  # perf daemon ping
+  OK   cycles
+  OK   sched
+
+
+Send USR2 signal to session 'cycles' to generate perf.data file:
+
+  # perf daemon signal --session cycles
+  signal 12 sent to session 'cycles [603452]'
+
+  # tail -2  /opt/perfdata/session-cycles/output
+  [ perf record: dump data: Woken up 1 times ]
+  [ perf record: Dump perf.data.2020123017013149 ]
+
+
+Send USR2 signal to all sessions:
+
+  # perf daemon signal
+  signal 12 sent to session 'cycles [603452]'
+  signal 12 sent to session 'sched [603453]'
+
+  # tail -2  /opt/perfdata/session-cycles/output
+  [ perf record: dump data: Woken up 1 times ]
+  [ perf record: Dump perf.data.2020123017024689 ]
+  # tail -2  /opt/perfdata/session-sched/output
+  [ perf record: dump data: Woken up 1 times ]
+  [ perf record: Dump perf.data.2020123017024713 ]
+
+
+Stop daemon:
+
+  # perf daemon stop
 
