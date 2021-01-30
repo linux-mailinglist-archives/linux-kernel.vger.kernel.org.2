@@ -2,149 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45B1730922B
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 06:26:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A8E6309260
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 06:59:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233818AbhA3FYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 00:24:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233780AbhA3FQY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 00:16:24 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4036BC06174A;
-        Fri, 29 Jan 2021 21:15:41 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id o20so7562547pfu.0;
-        Fri, 29 Jan 2021 21:15:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DajhKcQbvSudZ+FOJNrz2aW0zOcE1tiQUOXaXnxB8PI=;
-        b=A2wpAIaWTg4pDD9bNSTe4FEpzxuaqCYRaCVihvKx9wk4a53sZUM30exdllaZC+58wB
-         DcS/Eju4Mj+AWigJelaiXevcBUWJgdFgRGpphd01ISsYAwKghf1M6aksu+BlnwN6eX8w
-         2LctfS3dvly0L7a/zRbjYVfOCKG0X2vW3nIh5bYs0+u4Y4OZ6ZoeUJaKj9qOUh7XeBoL
-         RsILgZWUtTyoktjsIFoSGaxIv5MTTFaN4KJSZe5FBaZV5hTghnl1KrHqz1cmWfdOB+EH
-         +x1t/hUWbaWdRZGKDmXZMXVrYhScbRb2bbsA1he8ykO28gGC1Dn0efZe94Q/Xan9wJEq
-         elPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DajhKcQbvSudZ+FOJNrz2aW0zOcE1tiQUOXaXnxB8PI=;
-        b=b/e4jLpodm4lg8QlXMewuFFDiCGVqTQKbSfFe1Z5wRBpoz87HiZcuydxYPyW7ZVnmf
-         /MR7O+9tGFnCLq+u4hCmynGPzeNM73rKSTgjGHKk3b0wPs5PiOfMQDp7msXL/WoTHCyY
-         7ZUqemvP4Wqq4sjOTHyGNWTUb9U242ceHle7xrMKUPn6zIbhoZrMFGTUvxZt8t4nDeMx
-         HNVZLfma9uzH/Qs+usErZROUgqXCxMe29E5oZfZugZahEZWg/tBB6TYprR9zAKPY4c7u
-         OrT2VIssjRQVMJzCi/HF6jr2mmLsNgM9CvfIYSQ3ldRNw92qtQkfvCRMkjspN9pDVrwh
-         WKmw==
-X-Gm-Message-State: AOAM531iNEiYYDuGjw03qx/yChFrUSRoMvewi0CR+wCcF8ve3yMfV/OR
-        i4tWcEZI4kiVoDFKGjaw/lg=
-X-Google-Smtp-Source: ABdhPJz3xXOhtRoebqWMcQVAVlzvOHOj3KQTzng9Dt2tFdWx6XxcAnUKxQc98am3f2V4rV+jkl4rog==
-X-Received: by 2002:a65:62cd:: with SMTP id m13mr7931884pgv.108.1611983740662;
-        Fri, 29 Jan 2021 21:15:40 -0800 (PST)
-Received: from shinobu (113x33x126x33.ap113.ftth.ucom.ne.jp. [113.33.126.33])
-        by smtp.gmail.com with ESMTPSA id v8sm10269068pfn.114.2021.01.29.21.15.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Jan 2021 21:15:39 -0800 (PST)
-Date:   Sat, 30 Jan 2021 14:15:29 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     jic23@kernel.org, kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        a.fatoum@pengutronix.de, david@lechnology.com,
-        linux-iio@vger.kernel.org, patrick.havelange@essensium.com,
-        alexandre.belloni@bootlin.com, mcoquelin.stm32@gmail.com,
-        linux-kernel@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        kernel@pengutronix.de, fabrice.gasnier@st.com,
-        syednwaris@gmail.com, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, alexandre.torgue@st.com
-Subject: Re: [PATCH v7 3/5] counter: Add character device interface
-Message-ID: <YBTrcYgbXfKYaQnX@shinobu>
-References: <cover.1608935587.git.vilhelm.gray@gmail.com>
- <57bc509273bf288d74835e6ebdaebf27b4991888.1608935587.git.vilhelm.gray@gmail.com>
- <20210128090113.GA8734@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="mYrx736tSU4e+spo"
-Content-Disposition: inline
-In-Reply-To: <20210128090113.GA8734@pengutronix.de>
+        id S233846AbhA3F6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 00:58:09 -0500
+Received: from mga01.intel.com ([192.55.52.88]:37812 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230321AbhA3Fz7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 00:55:59 -0500
+IronPort-SDR: kVBlipPUuF6WuLfINXgMpPVfL04mf1KwhorC4KJSM1hWX5q80FFzrg4tOYNofgBDiuK2SCndG4
+ QLajh5lX0oUw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="199358155"
+X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
+   d="scan'208";a="199358155"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:30 -0800
+IronPort-SDR: FPKXr9jDyE0q18bocgtGzOavLczovuLFRNq7I1ROWh+T+uadAlhEB5ilIGLhzKW77yDgSPGSD4
+ pJ4U03W9q+Pw==
+X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
+   d="scan'208";a="431263329"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:29 -0800
+Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
+        by smtp.ostc.intel.com (Postfix) with ESMTP id E25E2636B;
+        Fri, 29 Jan 2021 18:21:29 -0800 (PST)
+Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
+        id D6DFB363683; Fri, 29 Jan 2021 18:21:29 -0800 (PST)
+From:   mgross@linux.intel.com
+To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
+        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        gregkh@linuxfoundation.org, corbet@lwn.net,
+        palmerdabbelt@google.com, paul.walmsley@sifive.com,
+        peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
+        jassisinghbrar@gmail.com
+Cc:     linux-kernel@vger.kernel.org,
+        Srikanth Thokala <srikanth.thokala@intel.com>
+Subject: [PATCH v4 12/34] misc: xlink-pcie: lh: Prepare changes for adding remote host driver
+Date:   Fri, 29 Jan 2021 18:21:02 -0800
+Message-Id: <20210130022124.65083-48-mgross@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210130022124.65083-1-mgross@linux.intel.com>
+References: <20210130022124.65083-1-mgross@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Srikanth Thokala <srikanth.thokala@intel.com>
 
---mYrx736tSU4e+spo
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Move logic that can be reused between local host and remote host to
+common/ folder
 
-On Thu, Jan 28, 2021 at 10:01:13AM +0100, Oleksij Rempel wrote:
-> Hello William,
->=20
->=20
-> On Fri, Dec 25, 2020 at 07:15:36PM -0500, William Breathitt Gray wrote:
-> > This patch introduces a character device interface for the Counter
-> > subsystem. Device data is exposed through standard character device read
-> > operations. Device data is gathered when a Counter event is pushed by
-> > the respective Counter device driver. Configuration is handled via ioctl
-> > operations on the respective Counter character device node.
-> >=20
-> > Cc: David Lechner <david@lechnology.com>
-> > Cc: Gwendal Grignou <gwendal@chromium.org>
-> > Cc: Dan Carpenter <dan.carpenter@oracle.com>
-> > Signed-off-by: William Breathitt Gray <vilhelm.gray@gmail.com>
-> > ---
-> ...
-> > +struct counter_event {
-> > +	__aligned_u64 timestamp;
-> > +	__aligned_u64 value;
-> > +	struct counter_watch watch;
-> > +	__u8 errno;
->=20
-> This variable clashed in user space, as soon as you include errno.h,
-> with the libc's "magic" definition of errno. What about "err" instead.
-> I'm not sure it an __u8 is the proper type, IIRC usually it's an int.
->=20
-> Regards,
-> Oleksij
-> --=20
-> Pengutronix e.K.                           |                             |
-> Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Mark Gross <mgross@linux.intel.com>
+Signed-off-by: Mark Gross <mgross@linux.intel.com>
+Signed-off-by: Srikanth Thokala <srikanth.thokala@intel.com>
+---
+ drivers/misc/xlink-pcie/{local_host => common}/core.h  | 8 +++-----
+ drivers/misc/xlink-pcie/{local_host => common}/util.c  | 8 +++-----
+ drivers/misc/xlink-pcie/{local_host => common}/util.h  | 8 +++-----
+ drivers/misc/xlink-pcie/{local_host => common}/xpcie.h | 8 +++-----
+ drivers/misc/xlink-pcie/local_host/Makefile            | 2 +-
+ drivers/misc/xlink-pcie/local_host/core.c              | 4 ++--
+ drivers/misc/xlink-pcie/local_host/epf.h               | 4 ++--
+ 7 files changed, 17 insertions(+), 25 deletions(-)
+ rename drivers/misc/xlink-pcie/{local_host => common}/core.h (96%)
+ rename drivers/misc/xlink-pcie/{local_host => common}/util.c (97%)
+ rename drivers/misc/xlink-pcie/{local_host => common}/util.h (91%)
+ rename drivers/misc/xlink-pcie/{local_host => common}/xpcie.h (92%)
 
-Sure, I can rename this to avoid a possible clash with libc's errno.
-Maybe "status" would be more apt to indicate that this is an exit status
-for the event -- the code returned may simply be a warning and not
-necessarily a critical error.
+diff --git a/drivers/misc/xlink-pcie/local_host/core.h b/drivers/misc/xlink-pcie/common/core.h
+similarity index 96%
+rename from drivers/misc/xlink-pcie/local_host/core.h
+rename to drivers/misc/xlink-pcie/common/core.h
+index 84985ef41a64..656b5e2dbfae 100644
+--- a/drivers/misc/xlink-pcie/local_host/core.h
++++ b/drivers/misc/xlink-pcie/common/core.h
+@@ -1,11 +1,9 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+-/*****************************************************************************
+- *
++/*
+  * Intel Keem Bay XLink PCIe Driver
+  *
+- * Copyright (C) 2020 Intel Corporation
+- *
+- ****************************************************************************/
++ * Copyright (C) 2021 Intel Corporation
++ */
+ 
+ #ifndef XPCIE_CORE_HEADER_
+ #define XPCIE_CORE_HEADER_
+diff --git a/drivers/misc/xlink-pcie/local_host/util.c b/drivers/misc/xlink-pcie/common/util.c
+similarity index 97%
+rename from drivers/misc/xlink-pcie/local_host/util.c
+rename to drivers/misc/xlink-pcie/common/util.c
+index ec808b0cd72b..d99125f61ba0 100644
+--- a/drivers/misc/xlink-pcie/local_host/util.c
++++ b/drivers/misc/xlink-pcie/common/util.c
+@@ -1,11 +1,9 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+-/*****************************************************************************
+- *
++/*
+  * Intel Keem Bay XLink PCIe Driver
+  *
+- * Copyright (C) 2020 Intel Corporation
+- *
+- ****************************************************************************/
++ * Copyright (C) 2021 Intel Corporation
++ */
+ 
+ #include "util.h"
+ 
+diff --git a/drivers/misc/xlink-pcie/local_host/util.h b/drivers/misc/xlink-pcie/common/util.h
+similarity index 91%
+rename from drivers/misc/xlink-pcie/local_host/util.h
+rename to drivers/misc/xlink-pcie/common/util.h
+index 908be897a61d..5295783b0437 100644
+--- a/drivers/misc/xlink-pcie/local_host/util.h
++++ b/drivers/misc/xlink-pcie/common/util.h
+@@ -1,11 +1,9 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+-/*****************************************************************************
+- *
++/*
+  * Intel Keem Bay XLink PCIe Driver
+  *
+- * Copyright (C) 2020 Intel Corporation
+- *
+- ****************************************************************************/
++ * Copyright (C) 2021 Intel Corporation
++ */
+ 
+ #ifndef XPCIE_UTIL_HEADER_
+ #define XPCIE_UTIL_HEADER_
+diff --git a/drivers/misc/xlink-pcie/local_host/xpcie.h b/drivers/misc/xlink-pcie/common/xpcie.h
+similarity index 92%
+rename from drivers/misc/xlink-pcie/local_host/xpcie.h
+rename to drivers/misc/xlink-pcie/common/xpcie.h
+index 8a559617daba..48529eb49be0 100644
+--- a/drivers/misc/xlink-pcie/local_host/xpcie.h
++++ b/drivers/misc/xlink-pcie/common/xpcie.h
+@@ -1,11 +1,9 @@
+ /* SPDX-License-Identifier: GPL-2.0-only */
+-/*****************************************************************************
+- *
++/*
+  * Intel Keem Bay XLink PCIe Driver
+  *
+- * Copyright (C) 2020 Intel Corporation
+- *
+- ****************************************************************************/
++ * Copyright (C) 2021 Intel Corporation
++ */
+ 
+ #ifndef XPCIE_HEADER_
+ #define XPCIE_HEADER_
+diff --git a/drivers/misc/xlink-pcie/local_host/Makefile b/drivers/misc/xlink-pcie/local_host/Makefile
+index 28761751d43b..65df94c7e860 100644
+--- a/drivers/misc/xlink-pcie/local_host/Makefile
++++ b/drivers/misc/xlink-pcie/local_host/Makefile
+@@ -2,4 +2,4 @@ obj-$(CONFIG_XLINK_PCIE_LH_DRIVER) += mxlk_ep.o
+ mxlk_ep-objs := epf.o
+ mxlk_ep-objs += dma.o
+ mxlk_ep-objs += core.o
+-mxlk_ep-objs += util.o
++mxlk_ep-objs += ../common/util.o
+diff --git a/drivers/misc/xlink-pcie/local_host/core.c b/drivers/misc/xlink-pcie/local_host/core.c
+index c67ce2c3067d..2c4e29bce7f7 100644
+--- a/drivers/misc/xlink-pcie/local_host/core.c
++++ b/drivers/misc/xlink-pcie/local_host/core.c
+@@ -8,8 +8,8 @@
+ #include <linux/of_reserved_mem.h>
+ 
+ #include "epf.h"
+-#include "core.h"
+-#include "util.h"
++#include "../common/core.h"
++#include "../common/util.h"
+ 
+ static struct xpcie *global_xpcie;
+ 
+diff --git a/drivers/misc/xlink-pcie/local_host/epf.h b/drivers/misc/xlink-pcie/local_host/epf.h
+index 7220cead0973..40bf4ff36580 100644
+--- a/drivers/misc/xlink-pcie/local_host/epf.h
++++ b/drivers/misc/xlink-pcie/local_host/epf.h
+@@ -11,8 +11,8 @@
+ #include <linux/pci-epc.h>
+ #include <linux/pci-epf.h>
+ 
+-#include "xpcie.h"
+-#include "util.h"
++#include "../common/xpcie.h"
++#include "../common/util.h"
+ 
+ #define XPCIE_DRIVER_NAME "mxlk_pcie_epf"
+ #define XPCIE_DRIVER_DESC "Intel(R) xLink PCIe endpoint function driver"
+-- 
+2.17.1
 
-Regarding the datatype for this value, I've opened up the discussion in
-my reply to David Lechner [1], so perhaps we can continue it there.
-
-[1] https://lkml.org/lkml/2021/1/30/5
-
-William Breathitt Gray
-
---mYrx736tSU4e+spo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAmAU63EACgkQhvpINdm7
-VJLsxRAAhlCPUhj65vzfuqQStMkmCoKCekEBmx0CS9yJR2Ilrcqm0yvEZdq5q/c4
-/FjnucZRerDshexfeRaaDg4h8guEXzp8YcmM74NTEn8tpsvwNVFWFcbwbePlvHTt
-VtU6qRRN8Bu50wVwdqchRiMuJA9jcAR/5YcfGslq7bxGcvEhQgNvlrjI+NG9tNUU
-smKjjeqBW1AMMFs7CQ4i2QwNA+Vdfy3/Fun9Qsx41zMHAV8/c7UVbIBF3XsqdJHl
-AAphNutr43FIjqrvb3MMVrk06sQ0f8SjEjypX6jODB0dzug5JDtnt1/MdvBO5gSN
-e6/QLq4wgz8Rvl6YECPFBZvt9Bk31tmPWsUg6JQduASolLoM7kCW4XDIGzeHBEiT
-ESipbOGVVeM3WQlON5+bf9li7ARIPEFajcOViw1R8LbASwSXv1MOuDoLHHHfVRg4
-kVFJCD0K/g635AkOHB/Nve9ju0x15u7aJOibOzU6YyyuY+kkj1Yir8QMYf2IBUvA
-CMHkZwxt2uSIFvjVdXrOFuHCoqQnRSIL+USgBk3T/NtCMrGDaPd2RDEE0VL2+O0Z
-T2Dwuzzd1QnCYrZWQFgjaPOgUIPYf1sRWUpkr4s1//RQN+kLCEepauTHgApP9+4m
-7peK1qgaGSNZYjq7lcdzv8J410JU6D9ZgIGe3BpUhLqGGBDHQcE=
-=9dBE
------END PGP SIGNATURE-----
-
---mYrx736tSU4e+spo--
