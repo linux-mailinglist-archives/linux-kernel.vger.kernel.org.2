@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F779309382
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:38:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 107A53093C8
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:55:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231271AbhA3Jhc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 04:37:32 -0500
-Received: from mga02.intel.com ([134.134.136.20]:46340 "EHLO mga02.intel.com"
+        id S231896AbhA3Jzp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 04:55:45 -0500
+Received: from mga04.intel.com ([192.55.52.120]:31692 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233495AbhA3DTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 22:19:33 -0500
-IronPort-SDR: Txc6rGkn5vEh3Fal7g73pC5LMgCx10BhFxPljZcNHhoTPBeWb+i6ecnyzvf3JC9JZvK/dw/aJ/
- kCYXALegu7og==
-X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="167606751"
+        id S232836AbhA3DAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 22:00:46 -0500
+IronPort-SDR: z8oEtLdoxLMBecCsB2eDreFCF6ZwxP7/ElqZaVfQo6IpMPOjLTIsQZ6MVCHHfbASg5SuWblC/0
+ K/F6Age45/tg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="177945191"
 X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="167606751"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:30 -0800
-IronPort-SDR: uCEDT2GnF3wQnIyBErHsLo3IGdnX1vxud7Vm3jxxINc3ywBTCMcXAsntvZ38NnKSHx8jOJJ4e6
- LaywyRxOGJcg==
+   d="scan'208";a="177945191"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:29 -0800
+IronPort-SDR: ECoZVLB6APRQCA+EBD22AXtp6L6st6VuanyNRvK8d3J3ir90g1cJFUeEpzg7UNppc/8t0Vy5qF
+ XD67A7d/8Zrw==
 X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="352488066"
+   d="scan'208";a="475674092"
 Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:29 -0800
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:29 -0800
 Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id 534746365;
+        by smtp.ostc.intel.com (Postfix) with ESMTP id 5DD8E6369;
         Fri, 29 Jan 2021 18:21:29 -0800 (PST)
 Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
-        id 479AF363652; Fri, 29 Jan 2021 18:21:29 -0800 (PST)
+        id 521CF36364F; Fri, 29 Jan 2021 18:21:29 -0800 (PST)
 From:   mgross@linux.intel.com
 To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
@@ -37,524 +37,345 @@ To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
         jassisinghbrar@gmail.com
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v4 00/34] Intel Vision Processing base enabling
-Date:   Fri, 29 Jan 2021 18:20:50 -0800
-Message-Id: <20210130022124.65083-36-mgross@linux.intel.com>
+Subject: [PATCH v4 01/34] Add Vision Processing Unit (VPU) documentation.
+Date:   Fri, 29 Jan 2021 18:20:51 -0800
+Message-Id: <20210130022124.65083-37-mgross@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210130022124.65083-1-mgross@linux.intel.com>
 References: <20210130022124.65083-1-mgross@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Gross <mgross@linux.intel.com>
+From: mark gross <mgross@linux.intel.com>
 
-The Intel Vision Processing Unit (VPU) is an IP block that is showing up for
-the first time as part of the Keem Bay SOC.  Keem Bay is a quad core A53 Arm
-SOC.  It is designed to be used as a stand alone SOC as well as in an PCIe
-Vision Processing accelerator add in card.
+The Intel VPU needs a complicated SW stack to make it work.  Add a
+directory to hold VPU related documentation including an architectural
+overview of the SW stack that the patches implement.
 
-This forth version of this patch set includes updates to the dt yaml files and
-some missed updates from feedback given on the V2 patch set for keembay-vpu-ipc
-and the Kconfig for intel_tsens 
-
-At the bottom of this coverletter is the delta between v2 and V3 for easy
-review of the modifications.  Feels like things are converging. :)
-
-Thanks for looking at these and providing feedback.
-
---mark
-
-
-C, Udhayakumar (8):
-  dt-bindings: misc: intel_tsens: Add tsens thermal bindings
-    documentation
-  misc: Tsens ARM host thermal driver.
-  misc: Intel tsens IA host driver.
-  Intel tsens i2c slave driver.
-  misc:intel_tsens: Intel Keem Bay tsens driver.
-  dt-bindings: misc: hddl_dev: Add hddl device management documentation
-  misc: Hddl device management for local host
-  misc: HDDL device management for IA host
-
-Daniele Alessandrelli (4):
-  dt-bindings: mailbox: Add Intel VPU IPC mailbox bindings
-  mailbox: vpu-ipc-mailbox: Add support for Intel VPU IPC mailbox
-  dt-bindings: Add bindings for Keem Bay IPC driver
-  keembay-ipc: Add Keem Bay IPC module
-
-Li, Tingqian (2):
-  dt-bindings: misc: Add Keem Bay vpumgr
-  misc: Add Keem Bay VPU manager
-
-Paul Murphy (2):
-  dt-bindings: Add bindings for Keem Bay VPU IPC driver
-  keembay-vpu-ipc: Add Keem Bay VPU IPC module
-
-Ramya P Karanth (1):
-  Intel Keem Bay XLink SMBus driver
-
-Seamus Kelly (7):
-  xlink-ipc: Add xlink ipc device tree bindings
-  xlink-ipc: Add xlink ipc driver
-  xlink-core: Add xlink core device tree bindings
-  xlink-core: Add xlink core driver xLink
-  xlink-core: Enable xlink protocol over pcie
-  xlink-core: Enable VPU IP management and runtime control
-  xlink-core: add async channel and events
-
-Srikanth Thokala (9):
-  misc: xlink-pcie: Add documentation for XLink PCIe driver
-  misc: xlink-pcie: lh: Add PCIe EPF driver for Local Host
-  misc: xlink-pcie: lh: Add PCIe EP DMA functionality
-  misc: xlink-pcie: lh: Add core communication logic
-  misc: xlink-pcie: lh: Prepare changes for adding remote host driver
-  misc: xlink-pcie: rh: Add PCIe EP driver for Remote Host
-  misc: xlink-pcie: rh: Add core communication logic
-  misc: xlink-pcie: Add XLink API interface
-  misc: xlink-pcie: Add asynchronous event notification support for
-    XLink
-
-mark gross (1):
-  Add Vision Processing Unit (VPU) documentation.
-
- .../mailbox/intel,vpu-ipc-mailbox.yaml        |   69 +
- .../bindings/misc/intel,hddl-client.yaml      |  114 +
- .../bindings/misc/intel,intel-tsens.yaml      |  118 +
- .../bindings/misc/intel,keembay-vpu-mgr.yaml  |   48 +
- .../misc/intel,keembay-xlink-ipc.yaml         |   51 +
- .../bindings/misc/intel,keembay-xlink.yaml    |   29 +
- .../bindings/soc/intel/intel,keembay-ipc.yaml |   45 +
- .../soc/intel/intel,keembay-vpu-ipc.yaml      |  143 ++
- Documentation/hwmon/index.rst                 |    2 +
- Documentation/hwmon/intel_tsens_host.rst      |   71 +
- Documentation/hwmon/intel_tsens_sensor.rst    |   67 +
- Documentation/i2c/busses/index.rst            |    1 +
- .../i2c/busses/intel-xlink-smbus.rst          |   71 +
- Documentation/index.rst                       |    1 +
- .../misc-devices/hddl_device_client.rst       |  212 ++
- .../misc-devices/hddl_device_server.rst       |  205 ++
- Documentation/misc-devices/index.rst          |    2 +
- Documentation/vpu/index.rst                   |   20 +
- Documentation/vpu/vpu-stack-overview.rst      |  270 +++
- Documentation/vpu/xlink-core.rst              |   81 +
- Documentation/vpu/xlink-ipc.rst               |   51 +
- Documentation/vpu/xlink-pcie.rst              |   90 +
- MAINTAINERS                                   |   54 +
- drivers/mailbox/Kconfig                       |   11 +
- drivers/mailbox/Makefile                      |    2 +
- drivers/mailbox/vpu-ipc-mailbox.c             |  297 +++
- drivers/misc/Kconfig                          |    7 +
- drivers/misc/Makefile                         |    7 +
- drivers/misc/hddl_device/Kconfig              |   26 +
- drivers/misc/hddl_device/Makefile             |    7 +
- drivers/misc/hddl_device/hddl_device.c        |  565 +++++
- drivers/misc/hddl_device/hddl_device_lh.c     |  764 +++++++
- drivers/misc/hddl_device/hddl_device_rh.c     |  837 +++++++
- drivers/misc/hddl_device/hddl_device_util.h   |   52 +
- drivers/misc/intel_tsens/Kconfig              |   54 +
- drivers/misc/intel_tsens/Makefile             |   10 +
- drivers/misc/intel_tsens/intel_tsens_host.c   |  351 +++
- drivers/misc/intel_tsens/intel_tsens_i2c.c    |  119 +
- .../misc/intel_tsens/intel_tsens_thermal.c    |  651 ++++++
- .../misc/intel_tsens/intel_tsens_thermal.h    |   38 +
- drivers/misc/intel_tsens/keembay_thermal.c    |  169 ++
- drivers/misc/intel_tsens/keembay_tsens.h      |  366 +++
- drivers/misc/vpumgr/Kconfig                   |    9 +
- drivers/misc/vpumgr/Makefile                  |    3 +
- drivers/misc/vpumgr/vpu_common.h              |   31 +
- drivers/misc/vpumgr/vpu_mgr.c                 |  370 +++
- drivers/misc/vpumgr/vpu_smm.c                 |  554 +++++
- drivers/misc/vpumgr/vpu_smm.h                 |   30 +
- drivers/misc/vpumgr/vpu_vcm.c                 |  584 +++++
- drivers/misc/vpumgr/vpu_vcm.h                 |   84 +
- drivers/misc/xlink-core/Kconfig               |   33 +
- drivers/misc/xlink-core/Makefile              |    5 +
- drivers/misc/xlink-core/xlink-core.c          | 1331 +++++++++++
- drivers/misc/xlink-core/xlink-core.h          |   25 +
- drivers/misc/xlink-core/xlink-defs.h          |  181 ++
- drivers/misc/xlink-core/xlink-dispatcher.c    |  436 ++++
- drivers/misc/xlink-core/xlink-dispatcher.h    |   26 +
- drivers/misc/xlink-core/xlink-ioctl.c         |  554 +++++
- drivers/misc/xlink-core/xlink-ioctl.h         |   36 +
- drivers/misc/xlink-core/xlink-multiplexer.c   | 1164 ++++++++++
- drivers/misc/xlink-core/xlink-multiplexer.h   |   35 +
- drivers/misc/xlink-core/xlink-platform.c      |  273 +++
- drivers/misc/xlink-core/xlink-platform.h      |   65 +
- drivers/misc/xlink-ipc/Kconfig                |    7 +
- drivers/misc/xlink-ipc/Makefile               |    4 +
- drivers/misc/xlink-ipc/xlink-ipc.c            |  878 +++++++
- drivers/misc/xlink-pcie/Kconfig               |   20 +
- drivers/misc/xlink-pcie/Makefile              |    2 +
- drivers/misc/xlink-pcie/common/core.h         |  245 ++
- drivers/misc/xlink-pcie/common/interface.c    |  124 +
- drivers/misc/xlink-pcie/common/util.c         |  373 +++
- drivers/misc/xlink-pcie/common/util.h         |   68 +
- drivers/misc/xlink-pcie/common/xpcie.h        |  100 +
- drivers/misc/xlink-pcie/local_host/Makefile   |    6 +
- drivers/misc/xlink-pcie/local_host/core.c     |  817 +++++++
- drivers/misc/xlink-pcie/local_host/dma.c      |  575 +++++
- drivers/misc/xlink-pcie/local_host/epf.c      |  482 ++++
- drivers/misc/xlink-pcie/local_host/epf.h      |  101 +
- drivers/misc/xlink-pcie/remote_host/Makefile  |    6 +
- drivers/misc/xlink-pcie/remote_host/core.c    |  621 +++++
- drivers/misc/xlink-pcie/remote_host/main.c    |   93 +
- drivers/misc/xlink-pcie/remote_host/pci.c     |  523 +++++
- drivers/misc/xlink-pcie/remote_host/pci.h     |   65 +
- drivers/misc/xlink-smbus/Kconfig              |   26 +
- drivers/misc/xlink-smbus/Makefile             |    5 +
- drivers/misc/xlink-smbus/xlink-smbus.c        |  467 ++++
- drivers/soc/Kconfig                           |    1 +
- drivers/soc/Makefile                          |    1 +
- drivers/soc/intel/Kconfig                     |   33 +
- drivers/soc/intel/Makefile                    |    5 +
- drivers/soc/intel/keembay-ipc.c               | 1364 +++++++++++
- drivers/soc/intel/keembay-vpu-ipc.c           | 2026 +++++++++++++++++
- include/linux/hddl_device.h                   |  153 ++
- include/linux/intel_tsens_host.h              |   34 +
- include/linux/soc/intel/keembay-ipc.h         |   30 +
- include/linux/soc/intel/keembay-vpu-ipc.h     |   62 +
- include/linux/xlink-ipc.h                     |   48 +
- include/linux/xlink.h                         |  146 ++
- include/linux/xlink_drv_inf.h                 |   70 +
- include/uapi/misc/vpumgr.h                    |   64 +
- include/uapi/misc/xlink_uapi.h                |  145 ++
- 101 files changed, 21767 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mailbox/intel,vpu-ipc-mailbox.yaml
- create mode 100644 Documentation/devicetree/bindings/misc/intel,hddl-client.yaml
- create mode 100644 Documentation/devicetree/bindings/misc/intel,intel-tsens.yaml
- create mode 100644 Documentation/devicetree/bindings/misc/intel,keembay-vpu-mgr.yaml
- create mode 100644 Documentation/devicetree/bindings/misc/intel,keembay-xlink-ipc.yaml
- create mode 100644 Documentation/devicetree/bindings/misc/intel,keembay-xlink.yaml
- create mode 100644 Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
- create mode 100644 Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml
- create mode 100644 Documentation/hwmon/intel_tsens_host.rst
- create mode 100644 Documentation/hwmon/intel_tsens_sensor.rst
- create mode 100644 Documentation/i2c/busses/intel-xlink-smbus.rst
- create mode 100644 Documentation/misc-devices/hddl_device_client.rst
- create mode 100644 Documentation/misc-devices/hddl_device_server.rst
+Cc: Jonathan Corbet <corbet@lwn.net>
+Signed-off-by: Mark Gross <mgross@linux.intel.com>
+---
+ Documentation/index.rst                  |   1 +
+ Documentation/vpu/index.rst              |  16 ++
+ Documentation/vpu/vpu-stack-overview.rst | 270 +++++++++++++++++++++++
+ 3 files changed, 287 insertions(+)
  create mode 100644 Documentation/vpu/index.rst
  create mode 100644 Documentation/vpu/vpu-stack-overview.rst
- create mode 100644 Documentation/vpu/xlink-core.rst
- create mode 100644 Documentation/vpu/xlink-ipc.rst
- create mode 100644 Documentation/vpu/xlink-pcie.rst
- create mode 100644 drivers/mailbox/vpu-ipc-mailbox.c
- create mode 100644 drivers/misc/hddl_device/Kconfig
- create mode 100644 drivers/misc/hddl_device/Makefile
- create mode 100644 drivers/misc/hddl_device/hddl_device.c
- create mode 100644 drivers/misc/hddl_device/hddl_device_lh.c
- create mode 100644 drivers/misc/hddl_device/hddl_device_rh.c
- create mode 100644 drivers/misc/hddl_device/hddl_device_util.h
- create mode 100644 drivers/misc/intel_tsens/Kconfig
- create mode 100644 drivers/misc/intel_tsens/Makefile
- create mode 100644 drivers/misc/intel_tsens/intel_tsens_host.c
- create mode 100644 drivers/misc/intel_tsens/intel_tsens_i2c.c
- create mode 100644 drivers/misc/intel_tsens/intel_tsens_thermal.c
- create mode 100644 drivers/misc/intel_tsens/intel_tsens_thermal.h
- create mode 100644 drivers/misc/intel_tsens/keembay_thermal.c
- create mode 100644 drivers/misc/intel_tsens/keembay_tsens.h
- create mode 100644 drivers/misc/vpumgr/Kconfig
- create mode 100644 drivers/misc/vpumgr/Makefile
- create mode 100644 drivers/misc/vpumgr/vpu_common.h
- create mode 100644 drivers/misc/vpumgr/vpu_mgr.c
- create mode 100644 drivers/misc/vpumgr/vpu_smm.c
- create mode 100644 drivers/misc/vpumgr/vpu_smm.h
- create mode 100644 drivers/misc/vpumgr/vpu_vcm.c
- create mode 100644 drivers/misc/vpumgr/vpu_vcm.h
- create mode 100644 drivers/misc/xlink-core/Kconfig
- create mode 100644 drivers/misc/xlink-core/Makefile
- create mode 100644 drivers/misc/xlink-core/xlink-core.c
- create mode 100644 drivers/misc/xlink-core/xlink-core.h
- create mode 100644 drivers/misc/xlink-core/xlink-defs.h
- create mode 100644 drivers/misc/xlink-core/xlink-dispatcher.c
- create mode 100644 drivers/misc/xlink-core/xlink-dispatcher.h
- create mode 100644 drivers/misc/xlink-core/xlink-ioctl.c
- create mode 100644 drivers/misc/xlink-core/xlink-ioctl.h
- create mode 100644 drivers/misc/xlink-core/xlink-multiplexer.c
- create mode 100644 drivers/misc/xlink-core/xlink-multiplexer.h
- create mode 100644 drivers/misc/xlink-core/xlink-platform.c
- create mode 100644 drivers/misc/xlink-core/xlink-platform.h
- create mode 100644 drivers/misc/xlink-ipc/Kconfig
- create mode 100644 drivers/misc/xlink-ipc/Makefile
- create mode 100644 drivers/misc/xlink-ipc/xlink-ipc.c
- create mode 100644 drivers/misc/xlink-pcie/Kconfig
- create mode 100644 drivers/misc/xlink-pcie/Makefile
- create mode 100644 drivers/misc/xlink-pcie/common/core.h
- create mode 100644 drivers/misc/xlink-pcie/common/interface.c
- create mode 100644 drivers/misc/xlink-pcie/common/util.c
- create mode 100644 drivers/misc/xlink-pcie/common/util.h
- create mode 100644 drivers/misc/xlink-pcie/common/xpcie.h
- create mode 100644 drivers/misc/xlink-pcie/local_host/Makefile
- create mode 100644 drivers/misc/xlink-pcie/local_host/core.c
- create mode 100644 drivers/misc/xlink-pcie/local_host/dma.c
- create mode 100644 drivers/misc/xlink-pcie/local_host/epf.c
- create mode 100644 drivers/misc/xlink-pcie/local_host/epf.h
- create mode 100644 drivers/misc/xlink-pcie/remote_host/Makefile
- create mode 100644 drivers/misc/xlink-pcie/remote_host/core.c
- create mode 100644 drivers/misc/xlink-pcie/remote_host/main.c
- create mode 100644 drivers/misc/xlink-pcie/remote_host/pci.c
- create mode 100644 drivers/misc/xlink-pcie/remote_host/pci.h
- create mode 100644 drivers/misc/xlink-smbus/Kconfig
- create mode 100644 drivers/misc/xlink-smbus/Makefile
- create mode 100644 drivers/misc/xlink-smbus/xlink-smbus.c
- create mode 100644 drivers/soc/intel/Kconfig
- create mode 100644 drivers/soc/intel/Makefile
- create mode 100644 drivers/soc/intel/keembay-ipc.c
- create mode 100644 drivers/soc/intel/keembay-vpu-ipc.c
- create mode 100644 include/linux/hddl_device.h
- create mode 100644 include/linux/intel_tsens_host.h
- create mode 100644 include/linux/soc/intel/keembay-ipc.h
- create mode 100644 include/linux/soc/intel/keembay-vpu-ipc.h
- create mode 100644 include/linux/xlink-ipc.h
- create mode 100644 include/linux/xlink.h
- create mode 100644 include/linux/xlink_drv_inf.h
- create mode 100644 include/uapi/misc/vpumgr.h
- create mode 100644 include/uapi/misc/xlink_uapi.h
 
+diff --git a/Documentation/index.rst b/Documentation/index.rst
+index 5888e8a7272f..81a02f2af939 100644
+--- a/Documentation/index.rst
++++ b/Documentation/index.rst
+@@ -137,6 +137,7 @@ needed).
+    misc-devices/index
+    scheduler/index
+    mhi/index
++   vpu/index
+ 
+ Architecture-agnostic documentation
+ -----------------------------------
+diff --git a/Documentation/vpu/index.rst b/Documentation/vpu/index.rst
+new file mode 100644
+index 000000000000..7e290e048910
+--- /dev/null
++++ b/Documentation/vpu/index.rst
+@@ -0,0 +1,16 @@
++.. SPDX-License-Identifier: GPL-2.0-only
++
++============================================
++Vision Processor Unit Documentation
++============================================
++
++This documentation contains information for the Intel VPU stack.
++
++.. class:: toc-title
++
++	   Table of contents
++
++.. toctree::
++   :maxdepth: 2
++
++   vpu-stack-overview
+diff --git a/Documentation/vpu/vpu-stack-overview.rst b/Documentation/vpu/vpu-stack-overview.rst
+new file mode 100644
+index 000000000000..1fe9ce423177
+--- /dev/null
++++ b/Documentation/vpu/vpu-stack-overview.rst
+@@ -0,0 +1,270 @@
++.. SPDX-License-Identifier: GPL-2.0
++
++======================
++Intel VPU architecture
++======================
++
++Overview
++========
++
++The Intel Movidius acquisition has developed a Vision Processing Unit (VPU)
++roadmap of products starting with Keem Bay (KMB). The hardware configurations
++the VPU can support include:
++
++1. Standalone smart camera that does local Computer Vision (CV) processing in
++   camera
++2. Standalone appliance or signel board computer connected to a network and
++   tethered cameras doing local CV processing
++3. Embedded in a USB dongle or M.2 as an CV accelerator.
++4. Multiple VPU enabled SOC's on a PCIe card as a CV accelerator in a larger IA
++   box or server.
++
++Keem Bay is the first instance of this family of products. This document
++provides an architectural overview of the software stack supporting the VPU
++enabled products.
++
++Keem Bay (KMB) is a Computer Vision AI processing SoC based on ARM A53 CPU that
++provides Edge neural network acceleration (inference) and includes a Vision
++Processing Unit (VPU) hardware. The ARM CPU SubSystem (CPUSS) interfaces
++locally to the VPU and enables integration/interfacing with a remote host over
++PCIe or USB or Ethernet interfaces. The interface between the CPUSS and the VPU
++is implemented with hardware FIFOs (Control) and coherent memory mapping (Data)
++such that zero copy processing can happen within the VPU.
++
++The KMB can be used in all 4 of the above classes of designs.
++
++We refer to the 'local host' as being the ARM part of the SoC, while the
++'remote host' as the IA system hosting the KMB device(s). The KMB SoC boots
++from an eMMC via uBoot and ARM Linux compatible device tree interface with an
++expectation to fully boot within hundreds of milliseconds. There is also
++support for downloading the kernel and root file system image from a remote
++host.
++
++The eMMC can be updated with standard Mender update process.
++See https://github.com/mendersoftware/mender
++
++The VPU is started and controlled from the A53 local host. Its firmware image
++is loaded using the drive firware helper KAPI's.
++
++The VPU IP firware payload consists of a SPARC ISA RTEMS bootloader and/or
++application binary.
++
++The interface allowing (remote or local) host clients to access VPU IP
++capabilities is realized through an abstracted programming model, which
++provides Remote Proxy APIs for a host CPU application to dynamically create and
++execute CV and NN workloads on the VPU. All frameworks exposed through
++programming model’s APIs are contained in the pre-compiled standard firmware
++image.
++
++There is a significant software stack built up to support KMB and the use
++cases. The rest of this documentation provides an overview of the components
++of the stack.
++
++Keem Bay IPC
++============
++
++Directly interfaces with the KMB hardware FIFOs to provide zero copy processing
++from the VPU. It implements the lowest level protocol for interacting with the
++VPU.
++
++The Keem Bay IPC mechanism is based on shared memory and hardware FIFOs.
++Specifically there are:
++
++* Two 128-entry hardware FIFOs, one for the CPU and one for the VPU.
++* Two shared memory regions, used as memory pool for allocating IPC buffers.
++
++An IPC channel is a software abstraction allowing communication multiplexing,
++so that multiple applications / users can concurrently communicate with the
++VPU.  IPC channels area conceptually similar to socket ports.
++
++There are a total of 1024 channels, each one identified by a channel ID,
++ranging from 0 to 1023.
++
++Channels are divided in two categories:
++
++* High-Speed (HS) channels, having IDs in the 0-9 range.
++* General-Purpose (GP) channels, having IDs in the 10-1023 range.
++
++HS channels have higher priority over GP channels and can be used by
++applications requiring higher throughput or lower latency.
++
++Since all the channels share the same hardare resources (i.e., the hardware
++FIFOs and the IPC memory pools), the Keem Bay IPC driver uses software queues
++to give a higher priority to HS channels.
++
++The driver supports a build-time configurable number of communication channels
++defined in a so-called Channel Mapping Table.
++
++An IPC channel is full duplex: a pending operation from a certain channel does
++not block other operations on the same channel, regardless of their operation
++mode (blocking or non-blocking).
++
++Operation mode is individually selectable for each channel, per operation
++direction (read or write). All operations for that direction comply to
++selection.
++
++
++Keem Bay-VPU-IPC
++================
++
++This is the MMIO driver of the VPU IP block inside the SOC. It is a control
++driver mapping IPC channel communication to Xlink virtual channels.
++
++This driver provides the following functionality to other drivers in the
++communication stack:
++
++* VPU IP execution control (firmware load, start, reset)
++* VPU IP event notifications (device connected, device disconnected, WDT event)
++* VPU IP device status query (OFF, BUSY, READY, ERROR, RECOVERY)
++* Communication via the IPC protocol (wrapping the Keem Bay IPC driver and
++  exposing it to higher level Xlink layer)
++
++In addition to the above, the driver exposes SoC information (like stepping,
++device ID, etc.) to user-space via sysfs.
++
++This driver depends on the 'Keem Bay IPC' driver, which enables the Keem Bay
++IPC communication protocol.
++
++The driver uses the Firmware API to load the VPU firmware from user-space.
++
++Xlink-IPC
++=========
++This component implements the IPC specific Xlink protocol. It maps channel
++IDs to hardware FIFO entries, using the Keem Bay VPU IPC driver.
++
++Some of the main functions this driver provides:
++
++* establishing a connection with an IPC device
++* obtaining a list with the available devices
++* obtaining the status for a device
++* booting a device
++* resetting a device
++* opening and closing channels
++* issuing read and write operations
++
++Xlink-core
++==========
++
++This component implements an abstracted set of control and communication APIs
++based on channel identification. It is intended to support VPU technology both
++at SoC level as well as at IP level, over multiple interfaces.
++
++It provides symmetrical services, where the producer and the consumer have
++the same privileges.
++
++Xlink driver has the ability to abstract several types of communication
++channels underneath, allowing the usage of different interfaces with the same
++function calls.
++
++Xlink services are available to both kernel and user space clients and include:
++
++* interface abstract control and communication API
++* multi device support
++* concurrent communication across 4096 communication channels (from 0 to
++  0xFFF), with customizable properties
++* full duplex channels with multiprocess and multithread support
++* channel IDs can be mapped to desired physical interface (PCIe, USB, ETH, IPC)
++  via a Channel Mapping Table
++* asynchronous fast passthrough mode: remote host data packets are directly
++  dispatched using interrupt systems running on local host to IPC calls for low
++  overhead
++* channel handshaking mechanism for peer to peer communication, without the
++  need of static channel preallocation
++* channel resource management
++* asynchronous data and device notifications to subscribers
++
++Xlink transports: PCIe, USB, ETH, IPC, XLink-PCIe
++
++XLink-PCIe
++==========
++This is an endpoint driver that maps Xlink channel IDs to PCIe channels.
++
++This component ensures (remote)host-to-(local)host communication, and VPU IP
++communication via an asynchronous passthrough mode, where PCIe data loads are
++directly dispatched to Xlink-IPC.
++
++The component builds and advertises Device IDs that are used by local host
++application in case of multi device scenarios.
++
++XLink-USB
++==========
++This is an endpoint driver that maps Xlink channel IDs to bidirectional
++USB endpoints and supports CDC USB class protocol. More than one Xlink channels
++can be mapped to a single USB endpoint.
++
++This component ensures host-to-host communication, and, as well, asynchronous
++passthrough communication, where USB transfer packets are directly dispatched
++to Xlink-IPC.
++
++The component builds and advertises Device IDs that can are used by local host
++application in case of multi device scenarios.
++
++XLink-ETH
++=========
++
++This is an endpoint driver that maps Xlink channel IDs to Ethernet
++sockets.
++
++This component ensures host-to-host communication, and, as well, asynchronous
++passthrough communication, where Ethernet data loads are directly dispatched to
++Xlink-IPC.
++
++The component builds and advertises Device IDs that can are used by local host
++application in case of multi device scenarios.
++
++Assorted drivers that depend on this stack:
++
++Xlink-SMB
++=========
++The Intel Edge.AI Computer Vision platforms have to be monitored using platform
++devices like sensors, fan controller, IO expander etc. Some of these devices
++are memory mapped and some are I2C-based. None of these devices is directly
++accessible to the host.
++
++The host here refers to the server to which the vision accelerators are
++connected over PCIe Interface. The Host needs to do a consolidated action based
++on the parameters of platform devices. In general, most of the standard devices
++(includes sensors, fan controller, IO expander etc) are I2C/SMBus based and are
++used to provide the status of the accelerator. Standard drivers for these
++devices are available based on I2C/SMBus APIs.
++
++Instead of changing the sensor drivers to adapt to PCIe interface, a generic
++I2C adapter "Xlink-SMBus" which underneath uses Xlink as physical medium is
++used. With Xlink-SMBus, the drivers for the platform devices don't need to
++undergo any interface change.
++
++TSEN
++====
++
++Thermal sensor driver for exporting thermal events to the local Arm64 host as
++well as to the remote X86 host if in the PCIe add-in CV accelerator
++configuration.
++
++The driver receives the junction temperature from different heating points
++inside the SOC. The driver will receive the temperature on SMBus connection and
++forward over Xlink-smb when in a remote host configuration.
++
++In Keem Bay, the four thermal junction temperature points are Media Subsystem
++(mss), Neral Network subsystem (nce), Compute subsystem (cse) and SOC(maximum
++of mss, nce and cse).
++
++HDDL
++====
++
++- Exports details of temperature sensor, current sensor and fan controller
++  present in Intel Edge.AI Computer Vision platforms to IA host.
++- Enable Time sync of Intel Edge.AI Computer Vision platform with IA host.
++- Handles device connect and disconnect events.
++- Receives slave address from the IA host for memory mapped thermal sensors
++  present in SoC (Documentation/hwmon/intel_tsens_sensors.rst).
++- Registers I2C slave device for slaves present in Intel Edge.AI Computer
++  Vision platform
++
++
++VPUMGR (VPU Manager)
++====================
++
++Bridges firmware on VPU side and applications on CPU user-space, it assists
++firmware on VPU side serving multiple user space application processes on CPU
++side concurrently while also performing necessary data buffer management on
++behalf of VPU IP.
 -- 
 2.17.1
-
-diff --git a/Documentation/devicetree/bindings/misc/intel,intel-tsens.yaml b/Documentation/devicetree/bindings/misc/intel,intel-tsens.yaml
-index abac41995643..2418355d9c47 100644
---- a/Documentation/devicetree/bindings/misc/intel,intel-tsens.yaml
-+++ b/Documentation/devicetree/bindings/misc/intel,intel-tsens.yaml
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
- %YAML 1.2
- ---
--$id: "http://devicetree.org/schemas/misc/intel,intel_tsens.yaml#"
-+$id: "http://devicetree.org/schemas/misc/intel,intel-tsens.yaml#"
- $schema: "http://devicetree.org/meta-schemas/core.yaml#"
- 
- title: Intel Temperature sensors in Bay series
-@@ -36,8 +36,6 @@ properties:
-       - description: thermal sensor clock
- 
-   clk-rate:
--    minItems: 1
--    maxItems: 1
-     additionalItems: false
-     items:
-       - description: thermal sensor clock freq
-@@ -85,8 +83,6 @@ examples:
-     tsens: tsens@20260000 {
-         compatible = "intel,intel-tsens";
-         status = "disabled";
--        #address-cells = <2>;
--        #size-cells = <2>;
-         plat_name = "intel,keembay_thermal";
-         reg = <0x0 0x20260000 0x0 0x100>;
-         clocks = <&scmi_clk>;
-diff --git a/Documentation/devicetree/bindings/misc/intel,keembay-vpu-mgr.yaml b/Documentation/devicetree/bindings/misc/intel,keembay-vpu-mgr.yaml
-index 7fad14274ee2..a44f492277ab 100644
---- a/Documentation/devicetree/bindings/misc/intel,keembay-vpu-mgr.yaml
-+++ b/Documentation/devicetree/bindings/misc/intel,keembay-vpu-mgr.yaml
-@@ -19,8 +19,8 @@ properties:
-   compatible:
-     items:
-       - enum:
--        - intel,keembay-vpu-mgr
--        - intel,keembay-vpusmm
-+          - intel,keembay-vpu-mgr
-+          - intel,keembay-vpusmm
- 
-   memory-region:
-     description:
-diff --git a/Documentation/devicetree/bindings/misc/intel,keembay-xlink-ipc.yaml b/Documentation/devicetree/bindings/misc/intel,keembay-xlink-ipc.yaml
-index 699e43c4cd40..70a3061d024d 100644
---- a/Documentation/devicetree/bindings/misc/intel,keembay-xlink-ipc.yaml
-+++ b/Documentation/devicetree/bindings/misc/intel,keembay-xlink-ipc.yaml
-@@ -18,7 +18,7 @@ properties:
-   compatible:
-     oneOf:
-       - items:
--        - const: intel,keembay-xlink-ipc
-+          - const: intel,keembay-xlink-ipc
- 
-   memory-region:
-     items:
-@@ -37,6 +37,8 @@ properties:
-     $ref: "/schemas/types.yaml#/definitions/phandle"
-     description: reference to the corresponding intel,keembay-vpu-ipc node.
- 
-+additionalProperties: False
-+
- examples:
-   - |
-     xlink-ipc {
-diff --git a/Documentation/devicetree/bindings/misc/intel,keembay-xlink.yaml b/Documentation/devicetree/bindings/misc/intel,keembay-xlink.yaml
-index 89c34018fa04..5ac2e7fa5b5e 100644
---- a/Documentation/devicetree/bindings/misc/intel,keembay-xlink.yaml
-+++ b/Documentation/devicetree/bindings/misc/intel,keembay-xlink.yaml
-@@ -18,7 +18,9 @@ properties:
-   compatible:
-     oneOf:
-       - items:
--        - const: intel,keembay-xlink
-+          - const: intel,keembay-xlink
-+
-+additionalProperties: False
- 
- examples:
-   - |
-diff --git a/Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml b/Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml
-index cd1c4abe8bc9..9dae8ab4c723 100644
---- a/Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml
-+++ b/Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml
-@@ -9,16 +9,21 @@ title: Intel Keem Bay VPU IPC
- 
- maintainers:
-   - Paul Murphy <paul.j.murphy@intel.com>
-+  - Daniele Alessandrelli <daniele.alessandrelli@intel.com>
- 
- description:
--  The VPU IPC driver facilitates loading of firmware, control, and communication
--  with the VPU over the IPC FIFO in the Intel Keem Bay SoC.
-+  This binding provides support for the Vision Processing Unit (VPU) found on
-+  the Intel Keem Bay SoC.
-+
-+  The VPU is started and controlled by SoC CPU, which is in charge of loading
-+  the VPU firmware. The SoC CPU can communicate with the VPU firmware using an
-+  Inter-Processor Communication (IPC) mechanism.
- 
- properties:
-   compatible:
-     oneOf:
-       - items:
--        - const: intel,keembay-vpu-ipc
-+          - const: intel,keembay-vpu-ipc
- 
-   reg:
-     items:
-@@ -82,24 +87,11 @@ properties:
-       - const: nce_wdt
-       - const: mss_wdt
- 
--  intel,keembay-vpu-ipc-nce-wdt-redirect:
--    $ref: "/schemas/types.yaml#/definitions/uint32"
--    description:
--      Number to which we will request that the NCE sub-system
--      re-directs it's WDT timeout IRQ
--
--  intel,keembay-vpu-ipc-mss-wdt-redirect:
--    $ref: "/schemas/types.yaml#/definitions/uint32"
--    description:
--      Number to which we will request that the MSS sub-system
--      re-directs it's WDT timeout IRQ
--
-   intel,keembay-vpu-ipc-imr:
-     $ref: "/schemas/types.yaml#/definitions/uint32"
-     description:
--      IMR (isolated memory region) number which we will request
--      the runtime service uses to protect the VPU memory region
--      before authentication
-+      Isolated Memory Region (IMR) number that the runtime service must use to
-+      protect the VPU memory region before authentication.
- 
-   intel,keembay-vpu-ipc-id:
-     $ref: "/schemas/types.yaml#/definitions/uint32"
-@@ -146,8 +138,6 @@ examples:
-         interrupts = <GIC_SPI 63 IRQ_TYPE_LEVEL_HIGH>,
-                      <GIC_SPI 47 IRQ_TYPE_LEVEL_HIGH>;
-         interrupt-names = "nce_wdt", "mss_wdt";
--        intel,keembay-vpu-ipc-nce-wdt-redirect = <63>;
--        intel,keembay-vpu-ipc-mss-wdt-redirect = <47>;
-         intel,keembay-vpu-ipc-imr = <9>;
-         intel,keembay-vpu-ipc-id = <0>;
-     };
-diff --git a/drivers/misc/intel_tsens/Kconfig b/drivers/misc/intel_tsens/Kconfig
-index bd575d99281d..5cfe6b4004e5 100644
---- a/drivers/misc/intel_tsens/Kconfig
-+++ b/drivers/misc/intel_tsens/Kconfig
-@@ -17,8 +17,7 @@ config INTEL_TSENS_LOCAL_HOST
- config INTEL_TSENS_I2C_SLAVE
- 	bool "I2C slave driver for intel tsens"
- 	depends on INTEL_TSENS_LOCAL_HOST
--	select I2C
--	select I2C_SLAVE
-+	depends on I2C=y && I2C_SLAVE
- 	help
- 	  This option enables tsens I2C slave driver.
- 
-diff --git a/drivers/soc/intel/keembay-vpu-ipc.c b/drivers/soc/intel/keembay-vpu-ipc.c
-index 31b880195cac..8f3d6a466629 100644
---- a/drivers/soc/intel/keembay-vpu-ipc.c
-+++ b/drivers/soc/intel/keembay-vpu-ipc.c
-@@ -81,6 +81,7 @@
- #include <linux/firmware.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
-+#include <linux/irq.h>
- #include <linux/kernel.h>
- #include <linux/kthread.h>
- #include <linux/module.h>
-@@ -175,6 +176,13 @@
- /* SoC stepping length, in bytes. */
- #define SOC_INFO_STEPPING_BYTES		2
- 
-+/*
-+ * The offset to convert the HW IRQ reported by irqd_to_hwirq() to the GIC_SPI
-+ * IRQ number specified in the device tree:
-+ * GIC_SPI x = irqd_to_hwirq() - 32
-+ */
-+#define GIC_SPI_HWIRQ_OFFSET		32
-+
- /**
-  * struct boot_parameters - Boot parameters passed to the VPU.
-  * @magic_number:		Magic number to indicate structure populated
-@@ -315,8 +323,6 @@ struct atf_mem {
-  *			the NCE WDT timeout interrupt.
-  * @mss_irq:		IRQ number of the A53 re-direct IRQ which will be used
-  *			for receiving the MSS WDT timeout interrupt.
-- * @nce_wdt_redirect:   Re-direct IRQ for NCE ICB.
-- * @mss_wdt_redirect:	Re-direct IRQ for MSS ICB.
-  * @imr:		Isolated Memory Region (IMR) to be used to protect the
-  *			loaded VPU firmware.
-  * @vpu_id:		The ID of the VPU associated with this device.
-@@ -349,8 +355,6 @@ struct vpu_ipc_dev {
- 	struct clk *pll[NUM_PLLS][NUM_PLL_OUTPUTS];
- 	int nce_irq;
- 	int mss_irq;
--	u32 nce_wdt_redirect;
--	u32 mss_wdt_redirect;
- 	u32 imr;
- 	u32 vpu_id;
- 	void __iomem *nce_wdt_reg;
-@@ -897,22 +901,6 @@ static int setup_watchdog_resources(struct vpu_ipc_dev *vpu_dev)
- 		return rc;
- 	}
- 
--	/* Request interrupt re-direct numbers */
--	rc = of_property_read_u32(dev->of_node,
--				  "intel,keembay-vpu-ipc-nce-wdt-redirect",
--				  &vpu_dev->nce_wdt_redirect);
--	if (rc) {
--		dev_err(dev, "failed to get NCE WDT redirect number.\n");
--		return rc;
--	}
--	rc = of_property_read_u32(dev->of_node,
--				  "intel,keembay-vpu-ipc-mss-wdt-redirect",
--				  &vpu_dev->mss_wdt_redirect);
--	if (rc) {
--		dev_err(dev, "failed to get MSS WDT redirect number.\n");
--		return rc;
--	}
--
- 	return 0;
- }
- 
-@@ -956,9 +944,11 @@ static int setup_boot_parameters(struct vpu_ipc_dev *vpu_dev)
- 
- 	/* Fill in IRQ re-direct request information */
- 	vpu_dev->boot_params->mss_wdt_to_irq_a53_redir =
--		vpu_dev->mss_wdt_redirect;
-+			irqd_to_hwirq(irq_get_irq_data(vpu_dev->mss_irq)) -
-+			GIC_SPI_HWIRQ_OFFSET;
- 	vpu_dev->boot_params->nce_wdt_to_irq_a53_redir =
--		vpu_dev->nce_wdt_redirect;
-+			irqd_to_hwirq(irq_get_irq_data(vpu_dev->nce_irq)) -
-+			GIC_SPI_HWIRQ_OFFSET;
- 
- 	/* Setup A53SS_VERSION_ID */
- 	vpu_dev->boot_params->a53ss_version_id = vpu_ipc_soc_info->hardware_id;
 
