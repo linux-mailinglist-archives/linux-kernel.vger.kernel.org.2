@@ -2,122 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73CFD309877
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 22:25:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC1230987A
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 22:28:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231969AbhA3VY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 16:24:26 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2160 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230517AbhA3VYX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 16:24:23 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B6015ce5e0002>; Sat, 30 Jan 2021 13:23:42 -0800
-Received: from [10.2.62.101] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 30 Jan
- 2021 21:23:30 +0000
-Subject: Re: [PATCH v2 net-next 3/4] net: introduce common
- dev_page_is_reserved()
-To:     Alexander Lobakin <alobakin@pm.me>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        David Rientjes <rientjes@google.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        "Randy Dunlap" <rdunlap@infradead.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <intel-wired-lan@lists.osuosl.org>,
-        <linux-rdma@vger.kernel.org>, <linux-mm@kvack.org>
-References: <20210127201031.98544-1-alobakin@pm.me>
- <20210127201031.98544-4-alobakin@pm.me>
- <20210129183907.2ae5ca3d@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210130154149.8107-1-alobakin@pm.me>
- <20210130110707.3122a360@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20210130194459.37837-1-alobakin@pm.me>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <752a57a6-3f45-8b9b-e8b1-939bc9450947@nvidia.com>
-Date:   Sat, 30 Jan 2021 13:23:30 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
- Thunderbird/85.0
+        id S232054AbhA3V1W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 16:27:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55484 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231690AbhA3V1V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 16:27:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8DDB60234;
+        Sat, 30 Jan 2021 21:26:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612042000;
+        bh=bw/P+2VsfMk32PiR9DYyk44JSGogJ5Ltc51M+OxLiUM=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=G4SinYpxrXAcFvEqWLeIc3DBnYXKx4K8g9W+ygN+Y285NYKHPBWSpNMFEeHHc3Nl0
+         sBnrggsDpngu4vPPPhrfDy+yZEeiP0thHBtz0QXHELMq5KVV6U91bdc1Az6hSVC1aa
+         B1r249FN2D2le+nEAnDUkmI1VXwcn790OSUXb+VUY24Via7C9t6+KigVfMiLDsMR8m
+         hyK6TvHuNPZv7W2ZKGl9LGt+HMUDu6SZx3DFr3arayuU7bZzyCc9xMP5dUHelhpCJ6
+         Jfxf5pS+oTVM2rrIehhdEPShq2ALYHBfajI+KoA3nYpi0c5jVtEFSRk4PBv7rBcPW9
+         Pz10Jw5ua6h2A==
+Message-ID: <689c44925d60238181390e775b52809e89e0b26a.camel@kernel.org>
+Subject: Re: [PATCH v3 1/3] x509: Detect sm2 keys by their parameters OID
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Stefan Berger <stefanb@linux.vnet.ibm.com>, dhowells@redhat.com,
+        keyrings@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, linux-crypto@vger.kernel.org,
+        patrick@puiterwijk.org, Stefan Berger <stefanb@linux.ibm.com>
+Date:   Sat, 30 Jan 2021 23:26:35 +0200
+In-Reply-To: <20210127123350.817593-2-stefanb@linux.vnet.ibm.com>
+References: <20210127123350.817593-1-stefanb@linux.vnet.ibm.com>
+         <20210127123350.817593-2-stefanb@linux.vnet.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+User-Agent: Evolution 3.38.3 
 MIME-Version: 1.0
-In-Reply-To: <20210130194459.37837-1-alobakin@pm.me>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612041822; bh=XdEBWDGTZuiWQxyc+j9VORWv1cft7WIfWK/EqPUa+p4=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=CgBuB8hJYU+MIBPQME3YhhtMFWXo3UeYILMxnQGrIaEN3YYevfyNPOUu/2Ox8YS1E
-         ghXmFo3e/yaJuPpXKJXPz+UU5J8mMJpKradqvcIim2gTRnC40Psz8zdWwgxsjsNqLY
-         zagJMVx3lia+GGBPt+o5cF5+iuquSwS72PmYYkY+b0n1WmELYe90cn1qMFDrFW8XH8
-         TSUtIL3EY9vQtb/yfp/1KhVceVxez4JYu8mq/s+XtXkbcA5DMqU34O7/cjmj2AdGge
-         vfGCrA6OmrQksCFUrXOAb9FpY3Pok/3MTu6v9rBgvK4GuxVmA4oIgaS4QVYPO4Vf9A
-         VM7OcNZQarHeQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+T24gV2VkLCAyMDIxLTAxLTI3IGF0IDA3OjMzIC0wNTAwLCBTdGVmYW4gQmVyZ2VyIHdyb3RlOgo+
+IEZyb206IFN0ZWZhbiBCZXJnZXIgPHN0ZWZhbmJAbGludXguaWJtLmNvbT4KPiAKPiBEZXRlY3Qg
+d2hldGhlciBhIGtleSBpcyBhbiBzbTIgdHlwZSBvZiBrZXkgYnkgaXRzIE9JRCBpbiB0aGUgcGFy
+YW1ldGVycwo+IGFycmF5IHJhdGhlciB0aGFuIGFzc3VtaW5nIHRoYXQgZXZlcnl0aGluZyB1bmRl
+ciBPSURfaWRfZWNQdWJsaWNLZXkKPiBpcyBzbTIsIHdoaWNoIGlzIG5vdCB0aGUgY2FzZS4KPiAK
+PiBTaWduZWQtb2ZmLWJ5OiBTdGVmYW4gQmVyZ2VyIDxzdGVmYW5iQGxpbnV4LmlibS5jb20+Cj4g
+LS0tCj4gwqBjcnlwdG8vYXN5bW1ldHJpY19rZXlzL3g1MDlfY2VydF9wYXJzZXIuYyB8IDEzICsr
+KysrKysrKysrKy0KPiDCoDEgZmlsZSBjaGFuZ2VkLCAxMiBpbnNlcnRpb25zKCspLCAxIGRlbGV0
+aW9uKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2NyeXB0by9hc3ltbWV0cmljX2tleXMveDUwOV9jZXJ0
+X3BhcnNlci5jIGIvY3J5cHRvL2FzeW1tZXRyaWNfa2V5cy94NTA5X2NlcnRfcGFyc2VyLmMKPiBp
+bmRleCA1MmM5YjQ1NWZjN2QuLjQ2NDNmZTVlZDY5YSAxMDA2NDQKPiAtLS0gYS9jcnlwdG8vYXN5
+bW1ldHJpY19rZXlzL3g1MDlfY2VydF9wYXJzZXIuYwo+ICsrKyBiL2NyeXB0by9hc3ltbWV0cmlj
+X2tleXMveDUwOV9jZXJ0X3BhcnNlci5jCj4gQEAgLTQ1OSw2ICs0NTksNyBAQCBpbnQgeDUwOV9l
+eHRyYWN0X2tleV9kYXRhKHZvaWQgKmNvbnRleHQsIHNpemVfdCBoZHJsZW4sCj4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY29uc3Qgdm9pZCAqdmFs
+dWUsIHNpemVfdCB2bGVuKQo+IMKgewo+IMKgwqDCoMKgwqDCoMKgwqBzdHJ1Y3QgeDUwOV9wYXJz
+ZV9jb250ZXh0ICpjdHggPSBjb250ZXh0Owo+ICvCoMKgwqDCoMKgwqDCoGVudW0gT0lEIG9pZDsK
+PiDCoAo+IMKgwqDCoMKgwqDCoMKgwqBjdHgtPmtleV9hbGdvID0gY3R4LT5sYXN0X29pZDsKPiDC
+oMKgwqDCoMKgwqDCoMKgc3dpdGNoIChjdHgtPmxhc3Rfb2lkKSB7Cj4gQEAgLTQ3MCw3ICs0NzEs
+MTcgQEAgaW50IHg1MDlfZXh0cmFjdF9rZXlfZGF0YSh2b2lkICpjb250ZXh0LCBzaXplX3QgaGRy
+bGVuLAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgY3R4LT5jZXJ0LT5wdWItPnBr
+ZXlfYWxnbyA9ICJlY3Jkc2EiOwo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgYnJl
+YWs7Cj4gwqDCoMKgwqDCoMKgwqDCoGNhc2UgT0lEX2lkX2VjUHVibGljS2V5Ogo+IC3CoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBjdHgtPmNlcnQtPnB1Yi0+cGtleV9hbGdvID0gInNtMiI7
+Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmIChjdHgtPnBhcmFtc19zaXplIDwg
+MikKCkVpdGhlciBhIG5hbWVkIGNvbnN0YW50LCBvciBhdCBsZWFzdCBhIGNvbW1lbnQgaW5zdGVh
+ZCBvZiBqdXN0ICcyJy4KCgo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgcmV0dXJuIC1FTk9QS0c7Cj4gKwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqBvaWQgPSBsb29rX3VwX09JRChjdHgtPnBhcmFtcyArIDIsIGN0eC0+cGFyYW1zX3NpemUg
+LSAyKTsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3dpdGNoIChvaWQpIHsKPiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgY2FzZSBPSURfc20yOgo+ICvCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgY3R4LT5jZXJ0LT5wdWItPnBrZXlf
+YWxnbyA9ICJzbTIiOwo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgYnJlYWs7Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGRlZmF1bHQ6Cj4g
+K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gLUVO
+T1BLRzsKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfQo+IMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgYnJlYWs7Cj4gwqDCoMKgwqDCoMKgwqDCoGRlZmF1bHQ6Cj4gwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqByZXR1cm4gLUVOT1BLRzsKCi9KYXJra28K
 
-On 1/30/21 11:45 AM, Alexander Lobakin wrote:
-> From: Jakub Kicinski <kuba@kernel.org>
-> Date: Sat, 30 Jan 2021 11:07:07 -0800
-> 
->> On Sat, 30 Jan 2021 15:42:29 +0000 Alexander Lobakin wrote:
->>>> On Wed, 27 Jan 2021 20:11:23 +0000 Alexander Lobakin wrote:
->>>>> + * dev_page_is_reserved - check whether a page can be reused for network Rx
->>>>> + * @page: the page to test
->>>>> + *
->>>>> + * A page shouldn't be considered for reusing/recycling if it was allocated
->>>>> + * under memory pressure or at a distant memory node.
->>>>> + *
->>>>> + * Returns true if this page should be returned to page allocator, false
->>>>> + * otherwise.
->>>>> + */
->>>>> +static inline bool dev_page_is_reserved(const struct page *page)
->>>>
->>>> Am I the only one who feels like "reusable" is a better term than
->>>> "reserved".
->>>
->>> I thought about it, but this will need to inverse the conditions in
->>> most of the drivers. I decided to keep it as it is.
->>> I can redo if "reusable" is preferred.
->>
->> Naming is hard. As long as the condition is not a double negative it
->> reads fine to me, but that's probably personal preference.
->> The thing that doesn't sit well is the fact that there is nothing
->> "reserved" about a page from another NUMA node.. But again, if nobody
->> +1s this it's whatever...
-> 
-> Agree on NUMA and naming. I'm a bit surprised that 95% of drivers
-> have this helper called "reserved" (one of the reasons why I finished
-> with this variant).
-> Let's say, if anybody else will vote for "reusable", I'll pick it for
-> v3.
-
-Definitely "reusable" seems better to me, and especially anything *other*
-than "reserved" is a good idea, IMHO.
-
-
-thanks,
--- 
-John Hubbard
-NVIDIA
