@@ -2,131 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED293096D4
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 17:37:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C72E3096CB
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 17:35:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231660AbhA3Qh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 11:37:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41448 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231645AbhA3OPU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 09:15:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D587464E10;
-        Sat, 30 Jan 2021 14:14:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612016079;
-        bh=/AtKtrrlHyDG0AseYvAsw71LNNAIpYYpMeX9pgP0Vpo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=g0l4ddoYWA0QkPsO8Cq38BNF/ZbalNBvbBXJGsTfrOiy/gDCWyLwwAeBNmSNY46Mp
-         ads3ysJd6KUUP4cqOJ26u+eZRtphOT3TeXd0Qnz7sgOfVZwspQzjwnBb3mzXAP6Xy3
-         A22TlejztU6Fc3spju+GI5xsWi0YWurObsuZiCXVk8A34N28O+ARizwQZ3w8QkFbJG
-         YGNv9VUNB5S1P7yApLnuFmqG/qStX40jl6gBvBa7jqCkEc5z4wcggoD09RY5uBOlH2
-         BEP7xzV3gCLPK1WkqaXuOZtlVTsPTKsjfSyrSgxwzo7mDVaTscDalF3aT7zNiF+Soy
-         0M1UxfaqGxqpw==
-Received: by mail-oo1-f44.google.com with SMTP id q3so3080507oog.4;
-        Sat, 30 Jan 2021 06:14:39 -0800 (PST)
-X-Gm-Message-State: AOAM530JgpCkB53yoBSd4mC4mGBIsDHFsq2CpWWP1uwDrF6hVVbPnxjW
-        QIMaOnKxzyd5UXTjUllXSYvEjoUPpMOO48Vkhp8=
-X-Google-Smtp-Source: ABdhPJyZ2H9rQbIwdiTimJPeKWXhNMuD4YorZtcLr1sWnqLLmHfEB0DyubkgQ4cGgAd5woECqHY3XqKKdctnrj6Tfv4=
-X-Received: by 2002:a4a:88c9:: with SMTP id q9mr6580670ooh.26.1612016079179;
- Sat, 30 Jan 2021 06:14:39 -0800 (PST)
+        id S231949AbhA3Qfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 11:35:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231614AbhA3OaM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 09:30:12 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD172C06174A;
+        Sat, 30 Jan 2021 06:29:31 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id s24so7278173pjp.5;
+        Sat, 30 Jan 2021 06:29:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Nkx9uFScRqctjDlwBC992ocBDlhUqlgA/eQzRKO6pEo=;
+        b=np49WVh5Hdtn/4dlc9UfL4hMeh3AM37lFA867olQjLMMGUr9rc1YHeMvq2H2c6mvnb
+         X/oFZtkBP7PwcirZHNoYsNtTJnjTFVevA7XXtu4arT6BAc+viA38faGtljoyKWO8XUPs
+         K2CSYrR64K9hr2lIgeRER7Uu+wicIstBS5JqCucyoFx5jqrJro267wNL6fKJokDKTOEx
+         vAXfHTBpgvPuwoZi/cbeie3nwhXMtDY9F9pLHIS2y0R0ve927dWvR8wNiHcjI8Ism+ek
+         9ntuImRyQgg6Xpur8TntWnIpbsqSNOnl92DP8FOKzQ4lzhSBn9q46P+QeNabTFoGrOKZ
+         ZzCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Nkx9uFScRqctjDlwBC992ocBDlhUqlgA/eQzRKO6pEo=;
+        b=XLd3hj8HQ/QGvTjFv2Lc7y+UHO7YvJJmjSCkWe8GmleypEYHft1vKdn966olXraYtq
+         aKesohP6xCJuusF0qjZpkM6BMzwXZLr/58mXLoiBD+GKlrSoMqvJp3z7oHtV8Nx+9o9n
+         xKM4iY08AAw4qyi5nXDarB+Yqtjh90aCQJr3AMRnFtLcPYf3dcQtdHTN3SR6zct6rE5c
+         RPYEfoCpQXox+SvQgBphDpnrgUu4wGrXh8qCVBwXiVAryR2jsRnzk3Zz3f+U8JSI6eGS
+         ufae+WusALU2khhAVObL+Rrr5b143USoEs4gswX+uzoc8cEXsJplKeddGddprRIwCYM5
+         xVkA==
+X-Gm-Message-State: AOAM531CRiRVFKXZQyxE6/MmPVZTOpIghxr2H81r1wiP9zbKTSHQbRi6
+        k5s22LktWMeqWICE9dS+CTjisIsMwznroNEFWgw=
+X-Google-Smtp-Source: ABdhPJxlDZZVEyCnDCGicthJ0wFieV9xlRfczDlr4w8KAG+ZMB2oBh8RlCToOF3Wo8NIhR3yyxFONCet4rbUR+SrJbE=
+X-Received: by 2002:a17:902:9a4a:b029:dc:435c:70ad with SMTP id
+ x10-20020a1709029a4ab02900dc435c70admr10068737plv.77.1612016971407; Sat, 30
+ Jan 2021 06:29:31 -0800 (PST)
 MIME-Version: 1.0
-References: <20201120085637.7299-1-m.szyprowski@samsung.com>
- <CGME20201120085652eucas1p1da360ab03f5b5b02a197d0f1ee435737@eucas1p1.samsung.com>
- <20201120085637.7299-3-m.szyprowski@samsung.com> <20201120110503.GB26836@kozik-lap>
- <14102bab-33a1-45e0-0faf-883c7b1133a5@samsung.com> <CAK8P3a3QvbfYe5d_X4YcaRZaO4rykqoM_hm7nF-jwJGn0AQaug@mail.gmail.com>
- <20210127075902.esm3tukq4pwmdf3j@kozik-lap>
-In-Reply-To: <20210127075902.esm3tukq4pwmdf3j@kozik-lap>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sat, 30 Jan 2021 15:14:22 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a0M_u=o0M7ppw4pBAYuvMNH=10RmJdLov5zPXf4+HYw4A@mail.gmail.com>
-Message-ID: <CAK8P3a0M_u=o0M7ppw4pBAYuvMNH=10RmJdLov5zPXf4+HYw4A@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ARM: dts: exynos: use Exynos5420 dedicated USB2 PHY compatible
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        "moderated list:ARM/SAMSUNG EXYNOS ARM ARCHITECTURES" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Willy Wolff <willy.mh.wolff.ml@gmail.com>,
-        Marian Mihailescu <mihailescu2m@gmail.com>
+References: <20210127090747.364951-1-xie.he.0141@gmail.com>
+ <20210128114659.2d81a85f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAJht_EOSB-m--Ombr6wLMFq4mPy8UTpsBri2CPsaRTU-aks7Uw@mail.gmail.com>
+ <3f67b285671aaa4b7903733455a730e1@dev.tdt.de> <20210129173650.7c0b7cda@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210129173650.7c0b7cda@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Sat, 30 Jan 2021 06:29:20 -0800
+Message-ID: <CAJht_EPMtn5E-Y312vPQfH2AwDAi+j1OP4zzpg+AUKf46XE1Yw@mail.gmail.com>
+Subject: Re: [PATCH net] net: hdlc_x25: Use qdisc to queue outgoing LAPB frames
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Martin Schiller <ms@dev.tdt.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Krzysztof Halasa <khc@pm.waw.pl>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 8:59 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> On Tue, Jan 26, 2021 at 11:44:26PM +0100, Arnd Bergmann wrote:
-> > On Fri, Nov 20, 2020 at 12:10 PM Marek Szyprowski <m.szyprowski@samsung.com> wrote:
-
-> > > It won't work easily with both compatibles, because in the 5420 variant
-> > > I've also changed the PHY indices (5420 has no device and second hsic
-> > > phy). IMHO the dts change can wait for the next release.
-> >
-> > I see this made it into the pull request now, but I had not been aware
-> > of the change earlier, and I'm slightly annoyed to have received it this
-> > way:
-> >
-> > - This is clearly an incompatible change to the dtb, and you all
-> >    noticed that because it would cause a bisection problem. As
-> >    a general rule, if a dts change does not work across bisection,
-> >    we should not merge it at all, because it causes problems for
-> >    anyone with external dts or dtb files.
+On Fri, Jan 29, 2021 at 5:36 PM Jakub Kicinski <kuba@kernel.org> wrote:
 >
-> Hi Arnd,
+> I'm still struggling to wrap my head around this.
 >
-> No, it does not create a bisection problem. The driver change adding new
-> compatible is already in v5.11-rc1.
+> Did you test your code with lockdep enabled? Which Qdisc are you using?
+> You're queuing the frames back to the interface they came from - won't
+> that cause locking issues?
 
-What I meant is that you knew there would be a bisection problem
-if you had not delayed this patch.
+Hmm... Thanks for bringing this to my attention. I indeed find issues
+when the "noqueue" qdisc is used.
 
-> > - It would likely have been possible to define the new binding in
-> >   a backward-compatible way. I don't see a reason why the index
-> >   values in the binding had to change here, other than a slight
-> >   inconvenience for the driver.
->
-> It does not matter since it's a new compatible and old one is not
-> affected. Nothing got broken before this patch, nothing got broken after
-> applying it via samsung-soc. No backwards compatibility is affected.
->
-> > - If the change was really unavoidable, I would have expected
-> >   a long explanation about why it had to be done in both the
-> >   commit message and in the tag description for the pull
-> >   request.
-> >
-> > I've dropped the pull request for now, maybe this can still
-> > be sorted out with another driver change that makes the
-> > new compatible string backward-compatible.
->
-> It's a different hardware. New hardware does not have to be compatible
-> with old hardware. However old DTB is still doing fine (although with
-> the original issue not fixed).
+When using a qdisc other than "noqueue", when sending an skb:
+"__dev_queue_xmit" will call "__dev_xmit_skb";
+"__dev_xmit_skb" will call "qdisc_run_begin" to mark the beginning of
+a qdisc run, and if the qdisc is already running, "qdisc_run_begin"
+will fail, then "__dev_xmit_skb" will just enqueue this skb without
+starting qdisc. There is no problem.
 
-There are around ten boards including this file, and most (maybe all)
-of them are not newly added machines, so there is a good chance
-that there are existing users. You are right that you took care that
-the combination of an old dtb with a new kernel would not be any
-worse than before, and that is good. What is however missing is
-the consideration of the reverse: If anyone wants to dual-boot between
-old and new kernels, they are stuck with the old dtb and is missing
-the bugfix along with any additional changes that may get added
-in the future.
+When using "noqueue" as the qdisc, when sending an skb:
+"__dev_queue_xmit" will try to send this skb directly. Before it does
+that, it will first check "txq->xmit_lock_owner" and will find that
+the current cpu already owns the xmit lock, it will then print a
+warning message "Dead loop on virtual device ..." and drop the skb.
 
-The same is true if there are any non-Linux operating systems running
-on these. For instance, FreeBSD runs on Peach Pit, and if they
-were using the old dtb from Linux (I have not checked if they
-were compatible before this change), then booting with the latest
-dtb from Linux will require the same changes to their driver to avoid
-a regression.
+A solution can be queuing the outgoing L2 frames in this driver first,
+and then using a tasklet to send them to the qdisc TX queue.
 
-I can live with an explanation of "we've looked at all the alternatives
-and decided to break old kernels with new dtbs in this particular
-case because ...", but I don't like the idea of silently changing dts
-in a way that breaks using them with anything but the latest kernel
-and arguing that it's not even worth debating.
-
-       Arnd
+Thanks! I'll make changes to fix this.
