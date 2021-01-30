@@ -2,167 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBBC4309507
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 12:57:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9619830950F
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 13:11:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231560AbhA3L4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 06:56:18 -0500
-Received: from bgl-iport-1.cisco.com ([72.163.197.25]:55933 "EHLO
-        bgl-iport-1.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229636AbhA3L4P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 06:56:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=3911; q=dns/txt; s=iport;
-  t=1612007774; x=1613217374;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=8T6xhh/+97MYL69HOZHijmar/RuLTo27yNHNS+EKjJA=;
-  b=ZowTdEvZq9ACt1BsaRUOFIfmJTV0qidqZR3h9cUHdaSPshv9eG6lf1L3
-   OhDMyEaAfeKrm3tXRe92nr0HLss8tRLbkFIDJ/KLbzLPfgh3h1ZtwwY3J
-   tgZi2MyylQCeCffMCAnBB8tOXa9hwjFFkCmztMY7hf1evykrwQkxCV2qJ
-   4=;
-X-IronPort-AV: E=Sophos;i="5.79,388,1602547200"; 
-   d="scan'208";a="164142947"
-Received: from vla196-nat.cisco.com (HELO bgl-core-1.cisco.com) ([72.163.197.24])
-  by bgl-iport-1.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 30 Jan 2021 11:55:29 +0000
-Received: from bgl-ads-1848.cisco.com (bgl-ads-1848.cisco.com [173.39.51.250])
-        by bgl-core-1.cisco.com (8.15.2/8.15.2) with ESMTPS id 10UBtTHh006232
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Sat, 30 Jan 2021 11:55:29 GMT
-Received: by bgl-ads-1848.cisco.com (Postfix, from userid 838444)
-        id DF9E3CC1251; Sat, 30 Jan 2021 17:25:28 +0530 (IST)
-From:   Aviraj CJ <acj@cisco.com>
-To:     davem@davemloft.net, kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, xe-linux-external@cisco.com,
-        acj@cisco.com
-Cc:     Hangbin Liu <liuhangbin@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH stable v5.4 2/2] IPv6: reply ICMP error if the first fragment don't include all headers
-Date:   Sat, 30 Jan 2021 17:24:52 +0530
-Message-Id: <20210130115452.19192-2-acj@cisco.com>
-X-Mailer: git-send-email 2.26.2.Cisco
-In-Reply-To: <20210130115452.19192-1-acj@cisco.com>
-References: <20210130115452.19192-1-acj@cisco.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 173.39.51.250, bgl-ads-1848.cisco.com
-X-Outbound-Node: bgl-core-1.cisco.com
+        id S230198AbhA3MLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 07:11:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60136 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229854AbhA3MLJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 07:11:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7952664DDC;
+        Sat, 30 Jan 2021 12:10:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612008628;
+        bh=p3IJGlMdtX9I1kgadKwx0x2GqQLSItjvV7ppyHSL2/E=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=eWZuYfUnlm3B3qwR+nwqP+w0gYbO9+bUsDyh+xYlwkQ97lly0HU2gEsq2+ALvgDyu
+         bk7uKVZoUzv7USeAxTzux0oY2trIxfTQhUzhuJLL1+sZMsxKs+n+JYfgK4TXfl/fb1
+         V8uwJuxxyhGcWJRySXg1HY1ZfgJpPsFqWMdiDqaHQNajll48gWKIjVh51LAjb/5r2P
+         9SV5iBOLXzUgR6EIN7KIFD0iNrJCXYNFnWDCmdANjRtP8XGd44JGGZdDKPlsnOr1qg
+         P5tMF7Px9hk0uhvZy7tOkDOdYqZ+uqgQY6KG5NkonkLrWDtXRC6ZsdHkulGNhSi95S
+         JdAhhaBRFPJpQ==
+Date:   Sat, 30 Jan 2021 21:10:22 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Nikolay Borisov <nborisov@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: kprobes broken since 0d00449c7a28
+ ("x86: Replace ist_enter() with nmi_enter()")
+Message-Id: <20210130211022.d64c4caaf6667ec70a871420@kernel.org>
+In-Reply-To: <20210130030840.hodq2ixpkdoue5jd@ast-mbp.dhcp.thefacebook.com>
+References: <eb1ec6a3-9e11-c769-84a4-228f23dc5e23@suse.com>
+        <YBMBTsY1uuQb9wCP@hirez.programming.kicks-ass.net>
+        <20210129013452.njuh3fomws62m4rc@ast-mbp.dhcp.thefacebook.com>
+        <YBPNyRyrkzw2echi@hirez.programming.kicks-ass.net>
+        <20210129224011.81bcdb3eba1227c414e69e1f@kernel.org>
+        <20210129105952.74dc8464@gandalf.local.home>
+        <20210129162438.GC8912@worktop.programming.kicks-ass.net>
+        <CAADnVQLMqHpSsZ1OdZRFmKqNWKiRq3dxRxw+y=kvMdmkN7htUw@mail.gmail.com>
+        <20210129175943.GH8912@worktop.programming.kicks-ass.net>
+        <20210130110249.61fdad8f0cfe51a121c72302@kernel.org>
+        <20210130030840.hodq2ixpkdoue5jd@ast-mbp.dhcp.thefacebook.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hangbin Liu <liuhangbin@gmail.com>
+On Fri, 29 Jan 2021 19:08:40 -0800
+Alexei Starovoitov <alexei.starovoitov@gmail.com> wrote:
 
-commit 2efdaaaf883a143061296467913c01aa1ff4b3ce upstream.
+> On Sat, Jan 30, 2021 at 11:02:49AM +0900, Masami Hiramatsu wrote:
+> > On Fri, 29 Jan 2021 18:59:43 +0100
+> > Peter Zijlstra <peterz@infradead.org> wrote:
+> > 
+> > > On Fri, Jan 29, 2021 at 09:45:48AM -0800, Alexei Starovoitov wrote:
+> > > > Same things apply to bpf side. We can statically prove safety for
+> > > > ftrace and kprobe attaching whereas to deal with NMI situation we
+> > > > have to use run-time checks for recursion prevention, etc.
+> > > 
+> > > I have no idea what you're saying. You can attach to functions that are
+> > > called with random locks held, you can create kprobes in some very
+> > > sensitive places.
+> > > 
+> > > What can you staticlly prove about that?
+> > 
+> > For the bpf and the kprobe tracer, if a probe hits in the NMI context,
+> > it can call the handler with another handler processing events.
+> > 
+> > kprobes is carefully avoiding the deadlock by checking recursion
+> > with per-cpu variable. But if the handler is shared with the other events
+> > like tracepoints, it needs to its own recursion cheker too.
+> > 
+> > So, Alexei, maybe you need something like this instead of in_nmi() check.
+> > 
+> > DEFINE_PER_CPU(bool, under_running_bpf);
+> > 
+> > common_handler()
+> > {
+> > 	if (__this_cpu_read(under_running_bpf))
+> > 		return;
+> > 	__this_cpu_write(under_running_bpf, true);
+> > 	/* execute bpf prog */
+> > 	__this_cpu_write(under_running_bpf, false);	
+> > }
+> > 
+> > Does this work for you?
+> 
+> This exactly check is already in trace_call_bpf.
+> Right after if (in_nmi()).
+> See bpf_prog_active. It serves different purpose though.
+> Simply removing if (in_nmi()) from trace_call_bpf is a bit scary.
+> I need to analyze all code paths first.
 
-Based on RFC 8200, Section 4.5 Fragment Header:
+OK, if bpf already avoids its recursion, other considerable case is
+that some resources are shared among bpf_prog and other parts. Since
+asynchronous NMI can occur anywhere, such resource usage can conflict
+with bpf_prog.
 
-  -  If the first fragment does not include all headers through an
-     Upper-Layer header, then that fragment should be discarded and
-     an ICMP Parameter Problem, Code 3, message should be sent to
-     the source of the fragment, with the Pointer field set to zero.
+Kprobes had similar issue, so I set a dummy kprobes to current_kprobes
+for protecting such critical sections.
+See kprobe_busy_begin()/end() and where those are used.
 
-Checking each packet header in IPv6 fast path will have performance impact,
-so I put the checking in ipv6_frag_rcv().
+Thank you,
 
-As the packet may be any kind of L4 protocol, I only checked some common
-protocols' header length and handle others by (offset + 1) > skb->len.
-Also use !(frag_off & htons(IP6_OFFSET)) to catch atomic fragments
-(fragmented packet with only one fragment).
-
-When send ICMP error message, if the 1st truncated fragment is ICMP message,
-icmp6_send() will break as is_ineligible() return true. So I added a check
-in is_ineligible() to let fragment packet with nexthdr ICMP but no ICMP header
-return false.
-
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Aviraj CJ <acj@cisco.com>
----
- net/ipv6/icmp.c       |  8 +++++++-
- net/ipv6/reassembly.c | 33 ++++++++++++++++++++++++++++++++-
- 2 files changed, 39 insertions(+), 2 deletions(-)
-
-diff --git a/net/ipv6/icmp.c b/net/ipv6/icmp.c
-index 7d3a3894f785..e9bb89131e02 100644
---- a/net/ipv6/icmp.c
-+++ b/net/ipv6/icmp.c
-@@ -158,7 +158,13 @@ static bool is_ineligible(const struct sk_buff *skb)
- 		tp = skb_header_pointer(skb,
- 			ptr+offsetof(struct icmp6hdr, icmp6_type),
- 			sizeof(_type), &_type);
--		if (!tp || !(*tp & ICMPV6_INFOMSG_MASK))
-+
-+		/* Based on RFC 8200, Section 4.5 Fragment Header, return
-+		 * false if this is a fragment packet with no icmp header info.
-+		 */
-+		if (!tp && frag_off != 0)
-+			return false;
-+		else if (!tp || !(*tp & ICMPV6_INFOMSG_MASK))
- 			return true;
- 	}
- 	return false;
-diff --git a/net/ipv6/reassembly.c b/net/ipv6/reassembly.c
-index 1f5d4d196dcc..c8cf1bbad74a 100644
---- a/net/ipv6/reassembly.c
-+++ b/net/ipv6/reassembly.c
-@@ -42,6 +42,8 @@
- #include <linux/skbuff.h>
- #include <linux/slab.h>
- #include <linux/export.h>
-+#include <linux/tcp.h>
-+#include <linux/udp.h>
- 
- #include <net/sock.h>
- #include <net/snmp.h>
-@@ -322,7 +324,9 @@ static int ipv6_frag_rcv(struct sk_buff *skb)
- 	struct frag_queue *fq;
- 	const struct ipv6hdr *hdr = ipv6_hdr(skb);
- 	struct net *net = dev_net(skb_dst(skb)->dev);
--	int iif;
-+	__be16 frag_off;
-+	int iif, offset;
-+	u8 nexthdr;
- 
- 	if (IP6CB(skb)->flags & IP6SKB_FRAGMENTED)
- 		goto fail_hdr;
-@@ -351,6 +355,33 @@ static int ipv6_frag_rcv(struct sk_buff *skb)
- 		return 1;
- 	}
- 
-+	/* RFC 8200, Section 4.5 Fragment Header:
-+	 * If the first fragment does not include all headers through an
-+	 * Upper-Layer header, then that fragment should be discarded and
-+	 * an ICMP Parameter Problem, Code 3, message should be sent to
-+	 * the source of the fragment, with the Pointer field set to zero.
-+	 */
-+	nexthdr = hdr->nexthdr;
-+	offset = ipv6_skip_exthdr(skb, skb_transport_offset(skb), &nexthdr, &frag_off);
-+	if (offset >= 0) {
-+		/* Check some common protocols' header */
-+		if (nexthdr == IPPROTO_TCP)
-+			offset += sizeof(struct tcphdr);
-+		else if (nexthdr == IPPROTO_UDP)
-+			offset += sizeof(struct udphdr);
-+		else if (nexthdr == IPPROTO_ICMPV6)
-+			offset += sizeof(struct icmp6hdr);
-+		else
-+			offset += 1;
-+
-+		if (!(frag_off & htons(IP6_OFFSET)) && offset > skb->len) {
-+			__IP6_INC_STATS(net, __in6_dev_get_safely(skb->dev),
-+					IPSTATS_MIB_INHDRERRORS);
-+			icmpv6_param_prob(skb, ICMPV6_HDR_INCOMP, 0);
-+			return -1;
-+		}
-+	}
-+
- 	iif = skb->dev ? skb->dev->ifindex : 0;
- 	fq = fq_find(net, fhdr->identification, hdr, iif);
- 	if (fq) {
 -- 
-2.26.2.Cisco
-
+Masami Hiramatsu <mhiramat@kernel.org>
