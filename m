@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD22E3091B1
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 04:37:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43E893091B0
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 04:33:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233557AbhA3DhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 22:37:03 -0500
-Received: from mga04.intel.com ([192.55.52.120]:31692 "EHLO mga04.intel.com"
+        id S233555AbhA3Dbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 22:31:38 -0500
+Received: from mga04.intel.com ([192.55.52.120]:31753 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233481AbhA3DLZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 22:11:25 -0500
-IronPort-SDR: 5tZ2BFFEYV7LzAmziE7nmwpvV3dOb5rxYa7Uu037Vl3CAhsIRZILHi5cjTGLOhoA5sYGgTvtBn
- v8txvOAuMWnQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="177945231"
+        id S233392AbhA3DIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 22:08:55 -0500
+IronPort-SDR: xxON84UCIl7Lm+7fthOcSW6eRi0qRNKSWDCYIBbljIWDWJ2wiDq/8Y/xYuj3lcooB7Tws9sWd1
+ mXL9nfIFe0FA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="177945230"
 X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="177945231"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+   d="scan'208";a="177945230"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
   by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:31 -0800
-IronPort-SDR: 6I04TajHZnQIy52PvD0ugdhXQQoc31ecl62XYBnMhZKHgMKdEq3JSw4eYRAO5TnX4UJ5woZu0W
- VEVLFzRQbR7w==
+IronPort-SDR: IimvENlk8JN0+JEJAW5y/oEU8+amSFbdlCV0aLxSfLt3ebMLP6biXuF3h6A+ONvP0XZBHoCequ
+ KJzNByIswIuA==
 X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="410955361"
+   d="scan'208";a="475674128"
 Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:30 -0800
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:30 -0800
 Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id 9CCF7636D;
+        by smtp.ostc.intel.com (Postfix) with ESMTP id C199A636B;
         Fri, 29 Jan 2021 18:21:30 -0800 (PST)
 Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
-        id 8BC3D3636A1; Fri, 29 Jan 2021 18:21:30 -0800 (PST)
+        id B4A743636A9; Fri, 29 Jan 2021 18:21:30 -0800 (PST)
 From:   mgross@linux.intel.com
 To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
@@ -38,9 +38,9 @@ To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         jassisinghbrar@gmail.com
 Cc:     linux-kernel@vger.kernel.org,
         "C, Udhayakumar" <udhayakumar.c@intel.com>
-Subject: [PATCH v4 27/34] misc: Tsens ARM host thermal driver.
-Date:   Fri, 29 Jan 2021 18:21:17 -0800
-Message-Id: <20210130022124.65083-63-mgross@linux.intel.com>
+Subject: [PATCH v4 30/34] misc:intel_tsens: Intel Keem Bay tsens driver.
+Date:   Fri, 29 Jan 2021 18:21:20 -0800
+Message-Id: <20210130022124.65083-66-mgross@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210130022124.65083-1-mgross@linux.intel.com>
 References: <20210130022124.65083-1-mgross@linux.intel.com>
@@ -50,241 +50,70 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "C, Udhayakumar" <udhayakumar.c@intel.com>
 
-Add tsens ARM host thermal driver for Intel Edge.AI Computer Vision
-platforms.
+Add keembey_thermal driver to expose on chip temperature
+sensors, and register call back functions for periodic sampling.
 
-About Intel Edge.AI Computer Vision platforms:
----------------------------------------------
-The Intel Edge.AI Computer Vision platforms are vision processing systems
-targeting machine vision applications for connected devices.
+This driver does following:
+* Reads temperature data from on chip sensors present in Keem Bay
+  platform.
+* Registers callback function to intel tsens driver for sampling
+  temperature values periodically.
+* Decode the raw values from registers to Celsius.
 
-They are based on ARM A53 CPU running Linux and acts as a PCIe
-endpoint device.
-
-High-level architecture:
-------------------------
-
-Remote Host IA CPU                    Local Host ARM CPU
-----------------                     --------------------------
-|  Platform    |                     |  Thermal Daemon        |
-| Management SW|                     |                        |
-----------------                     --------------------------
-|  Intel tsens |                     |  intel tsens i2c slave |
-|  i2c client  |                     |  and thermal driver    |
-----------------                     --------------------------
-|  XLINK I2C   |                     |  XLINK I2C Slave       |
-|  controller  |     <=========>     |   controller           |
-----------------        smbus        --------------------------
-
-intel tsens module:
--------------------
-The tsens module enables reading of on chip sensors present
-in the Intel Edge.AI Computer Vision platforms. In the tsens module
-various junction and SoC temperatures are reported using thermal
-subsystem and i2c subsystem.
-
-Temperature data reported using thermal subsystem will be used for
-various cooling agents such as DVFS, fan control and shutdown the
-system in case of critical temperature.
-
-Temperature data reported using i2c subsystem will be used by
-platform manageability software running in IA host.
-
-- Local Host driver
-  * Intended for ARM CPU
-  * It is based on Thermal and I2C slave  Framework
-  * Driver path:
-  {tree}/drivers/misc/intel_tsens/intel_tsens_thermal.c
-
-Local host and Remote host drivers communicates using
-XLINK I2C SMBUS protocol.
-
-Acked-by: Mark Gross <mgross@linux.intel.com>
+Acked-by: mark gross <mgross@linux.intel.com>
 Signed-off-by: C Udhayakumar <udhayakumar.c@intel.com>
 Signed-off-by: Mark Gross <mgross@linux.intel.com>
 ---
- Documentation/hwmon/index.rst                 |   1 +
- Documentation/hwmon/intel_tsens_sensor.rst    |  67 ++
- MAINTAINERS                                   |   5 +
- drivers/misc/Kconfig                          |   1 +
- drivers/misc/Makefile                         |   1 +
- drivers/misc/intel_tsens/Kconfig              |  15 +
- drivers/misc/intel_tsens/Makefile             |   7 +
- .../misc/intel_tsens/intel_tsens_thermal.c    | 651 ++++++++++++++++++
- .../misc/intel_tsens/intel_tsens_thermal.h    |  38 +
- include/linux/hddl_device.h                   | 153 ++++
- 10 files changed, 939 insertions(+)
- create mode 100644 Documentation/hwmon/intel_tsens_sensor.rst
- create mode 100644 drivers/misc/intel_tsens/Kconfig
- create mode 100644 drivers/misc/intel_tsens/Makefile
- create mode 100644 drivers/misc/intel_tsens/intel_tsens_thermal.c
- create mode 100644 drivers/misc/intel_tsens/intel_tsens_thermal.h
- create mode 100644 include/linux/hddl_device.h
+ drivers/misc/intel_tsens/Kconfig           |  12 +
+ drivers/misc/intel_tsens/Makefile          |   1 +
+ drivers/misc/intel_tsens/keembay_thermal.c | 169 ++++++++++
+ drivers/misc/intel_tsens/keembay_tsens.h   | 366 +++++++++++++++++++++
+ 4 files changed, 548 insertions(+)
+ create mode 100644 drivers/misc/intel_tsens/keembay_thermal.c
+ create mode 100644 drivers/misc/intel_tsens/keembay_tsens.h
 
-diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-index fcb870ce6286..fc29100bef73 100644
---- a/Documentation/hwmon/index.rst
-+++ b/Documentation/hwmon/index.rst
-@@ -80,6 +80,7 @@ Hardware Monitoring Kernel Drivers
-    ir38064
-    isl68137
-    it87
-+   intel_tsens_sensor.rst
-    jc42
-    k10temp
-    k8temp
-diff --git a/Documentation/hwmon/intel_tsens_sensor.rst b/Documentation/hwmon/intel_tsens_sensor.rst
-new file mode 100644
-index 000000000000..0f53dfca477e
---- /dev/null
-+++ b/Documentation/hwmon/intel_tsens_sensor.rst
-@@ -0,0 +1,67 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+==================================
-+Kernel driver: intel_tsens_thermal
-+==================================
-+
-+Supported chips:
-+  * Intel Edge.AI Computer Vision platforms: Keem Bay
-+
-+    Slave address: The address is assigned by the hddl device management
-+                   driver.
-+
-+Authors:
-+    - Thalaiappan, Rathina <rathina.thalaiappan@intel.com>
-+    - Udhayakumar C <udhayakumar.c@intel.com>
-+
-+Description
-+===========
-+The Intel Edge.AI Computer Vision platforms have memory mapped thermal sensors
-+which are accessible locally. The intel_tsens_thermal driver handles these
-+thermal sensor and exposes the temperature to
-+
-+* the external host similar to the standard SMBUS based thermal sensor
-+    (like LM73) to the host by registering to the I2C subsystem as
-+    slave interface (Documentation/i2c/slave-interface.rst).
-+* the local CPU as a standard thermal device.
-+
-+In Keem Bay, the four thermal junction temperature points are,
-+Media Subsystem (mss), NN subsystem (nce), Compute subsystem (cse) and
-+SOC(Maximum of mss, nce and cse).
-+
-+Similarity: /drivers/thermal/qcom
-+
-+Example
-+=======
-+Local Thermal Interface:
-+
-+Temperature reported in Keem Bay on the Linux Thermal sysfs interface.
-+
-+# cat /sys/class/thermal/thermal_zone*/type
-+mss
-+css
-+nce
-+soc
-+
-+# cat /sys/class/thermal/thermal_zone*/temp
-+0
-+29210
-+28478
-+29210
-+
-+Remote Thermal Interface:
-+
-+tsens i2c slave driver reports temperature of various subsytem
-+junction temperature based on table as below.
-+
-++-----------+-------------+
-+| offset    |   Sensor    |
-++-----------+-------------+
-+|   0       |   mss       |
-++-----------+-------------+
-+|   1       |   css       |
-++-----------+-------------+
-+|   2       |   nce       |
-++-----------+-------------+
-+|   3       |   soc       |
-++-----------+-------------+
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 2b5631ced220..b5688a6738ce 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1985,6 +1985,11 @@ S:	Supported
- F:	drivers/misc/hddl_device/
- F:	drivers/misc/intel_tsens/
- 
-+ARM/INTEL TSENS SUPPORT
-+M:	Udhayakumar C <udhayakumar.c@intel.com>
-+S:	Supported
-+F:	drivers/misc/intel_tsens/
-+
- ARM/INTEL RESEARCH IMOTE/STARGATE 2 MACHINE SUPPORT
- M:	Jonathan Cameron <jic23@cam.ac.uk>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
-diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-index 2d1f7b165cc8..aed3ef61897c 100644
---- a/drivers/misc/Kconfig
-+++ b/drivers/misc/Kconfig
-@@ -485,4 +485,5 @@ source "drivers/misc/xlink-pcie/Kconfig"
- source "drivers/misc/xlink-ipc/Kconfig"
- source "drivers/misc/xlink-core/Kconfig"
- source "drivers/misc/vpumgr/Kconfig"
-+source "drivers/misc/intel_tsens/Kconfig"
- endmenu
-diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-index 2936930f3edc..c08502b22778 100644
---- a/drivers/misc/Makefile
-+++ b/drivers/misc/Makefile
-@@ -61,3 +61,4 @@ obj-y                           += xlink-pcie/
- obj-$(CONFIG_XLINK_IPC)		+= xlink-ipc/
- obj-$(CONFIG_XLINK_CORE)	+= xlink-core/
- obj-$(CONFIG_VPUMGR)		+= vpumgr/
-+obj-y                           += intel_tsens/
 diff --git a/drivers/misc/intel_tsens/Kconfig b/drivers/misc/intel_tsens/Kconfig
-new file mode 100644
-index 000000000000..bfb8fe1997f4
---- /dev/null
+index be8d27e81864..5cfe6b4004e5 100644
+--- a/drivers/misc/intel_tsens/Kconfig
 +++ b/drivers/misc/intel_tsens/Kconfig
-@@ -0,0 +1,15 @@
-+# Copyright (C) 2020 Intel Corporation
-+# SPDX-License-Identifier: GPL-2.0-only
-+
-+config INTEL_TSENS_LOCAL_HOST
-+	bool "Temperature sensor driver for intel tsens"
-+	select THERMAL
+@@ -28,6 +28,18 @@ config INTEL_TSENS_I2C_SLAVE
+ 	  Say Y if using a processor that includes the Intel VPU such as
+ 	  Keem Bay.  If unsure, say N.
+ 
++config KEEMBAY_THERMAL
++	tristate "Temperature sensor driver for intel Keem Bay"
++	depends on INTEL_TSENS_LOCAL_HOST && ARCH_KEEMBAY
 +	help
-+	  This option enables tsens thermal local Host driver.
++	  Enable this option if you want to have support for Keem Bay
++	  thermal management sensors.
 +
-+	  This driver is used for reporting thermal data via thermal
-+	  framework.
-+	  Enable this option if you want to have support for thermal
-+	  management controller.
++	  This driver is used for reading onchip temperature sensor
++	  values from Keem Bay SoC.
 +	  Say Y if using a processor that includes the Intel VPU such as
 +	  Keem Bay.  If unsure, say N.
-diff --git a/drivers/misc/intel_tsens/Makefile b/drivers/misc/intel_tsens/Makefile
-new file mode 100644
-index 000000000000..93dee8b9f481
---- /dev/null
-+++ b/drivers/misc/intel_tsens/Makefile
-@@ -0,0 +1,7 @@
-+# Copyright (C) 2020 Intel Corporation
-+# SPDX-License-Identifier: GPL-2.0-only
-+#
-+# Makefile for intel tsens Thermal Linux driver
-+#
 +
-+obj-$(CONFIG_INTEL_TSENS_LOCAL_HOST)	+= intel_tsens_thermal.o
-diff --git a/drivers/misc/intel_tsens/intel_tsens_thermal.c b/drivers/misc/intel_tsens/intel_tsens_thermal.c
+ config INTEL_TSENS_IA_HOST
+ 	tristate "Temperature sensor driver for intel tsens remote host"
+ 	depends on I2C && THERMAL
+diff --git a/drivers/misc/intel_tsens/Makefile b/drivers/misc/intel_tsens/Makefile
+index f6f41bbca80c..00f63c2d5b2f 100644
+--- a/drivers/misc/intel_tsens/Makefile
++++ b/drivers/misc/intel_tsens/Makefile
+@@ -7,3 +7,4 @@
+ obj-$(CONFIG_INTEL_TSENS_LOCAL_HOST)	+= intel_tsens_thermal.o
+ obj-$(CONFIG_INTEL_TSENS_I2C_SLAVE)	+= intel_tsens_i2c.o
+ obj-$(CONFIG_INTEL_TSENS_IA_HOST)	+= intel_tsens_host.o
++obj-$(CONFIG_KEEMBAY_THERMAL)		+= keembay_thermal.o
+diff --git a/drivers/misc/intel_tsens/keembay_thermal.c b/drivers/misc/intel_tsens/keembay_thermal.c
 new file mode 100644
-index 000000000000..5a08e6f216f2
+index 000000000000..d6c8fa8fc3aa
 --- /dev/null
-+++ b/drivers/misc/intel_tsens/intel_tsens_thermal.c
-@@ -0,0 +1,651 @@
++++ b/drivers/misc/intel_tsens/keembay_thermal.c
+@@ -0,0 +1,169 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
 + *
-+ * Intel tsens thermal Driver
++ * Intel Keem Bay thermal Driver
 + *
 + * Copyright (C) 2020 Intel Corporation
 + *
@@ -294,847 +123,534 @@ index 000000000000..5a08e6f216f2
 +#include <linux/delay.h>
 +#include <linux/device.h>
 +#include <linux/err.h>
-+#include <linux/i2c.h>
 +#include <linux/io.h>
 +#include <linux/kernel.h>
 +#include <linux/module.h>
 +#include <linux/of.h>
++#include <linux/platform_device.h>
 +#include <linux/slab.h>
 +#include <linux/thermal.h>
 +#include "intel_tsens_thermal.h"
++#include "keembay_tsens.h"
 +
-+struct intel_tsens_trip_info {
-+	enum thermal_trip_type trip_type;
-+	int temp;
-+};
-+
-+struct intel_tsens {
-+	char name[20];
-+	u32 n_trips;
-+	u32 passive_delay;
-+	u32 polling_delay;
-+	u32 sensor_type;
-+	u64 addr;
-+	u64 size;
-+	u32 curr_temp;
++struct keembay_thermal_priv {
++	const char *name;
 +	void __iomem *base_addr;
-+	struct intel_tsens_trip_info **trip_info;
-+	struct thermal_zone_device *tz;
-+	void *pdata;
-+	struct intel_tsens_plat_info plat_info;
-+};
-+
-+struct intel_tsens_priv {
-+	int n_sens;
-+	bool global_clk_available;
-+	void __iomem *base_addr;
-+	struct clk *tsens_clk;
-+	u32 tsens_clk_rate;
-+	struct intel_tsens **intel_tsens;
-+	struct device *dev;
-+	struct platform_device *pdev;
-+	struct intel_tsens_plat_info plat_info;
-+};
-+
-+static int intel_tsens_register_pdev(struct intel_tsens_plat_info *plat_info)
-+{
-+	struct intel_tsens_plat_data plat_data;
-+	struct platform_device_info pdevinfo;
-+	struct platform_device *dd;
-+
-+	memset(&pdevinfo, 0, sizeof(pdevinfo));
-+	pdevinfo.name = plat_info->plat_name;
-+	pdevinfo.id = plat_info->id;
-+	plat_data.base_addr = plat_info->base_addr;
-+	plat_data.name = plat_info->plat_name;
-+	plat_data.get_temp = NULL;
-+	pdevinfo.data = &plat_data;
-+	pdevinfo.size_data = sizeof(plat_data);
-+	dd = platform_device_register_full(&pdevinfo);
-+	if (IS_ERR(dd))
-+		return -EINVAL;
-+	plat_info->pdev = dd;
-+
-+	return 0;
-+}
-+
-+static void intel_tsens_unregister_pdev(struct intel_tsens_priv *priv)
-+{
-+	int i;
-+
-+	for (i = 0; i < priv->n_sens; i++) {
-+		if (priv->plat_info.pdev)
-+			platform_device_unregister(priv->plat_info.pdev);
-+	}
-+}
-+
-+static int intel_tsens_add_pdev(struct intel_tsens_priv *priv)
-+{
-+	int i, ret;
-+
-+	/*
-+	 * Register platform device for each sensor.
-+	 *
-+	 */
-+	if (priv->plat_info.plat_name) {
-+		priv->plat_info.base_addr = priv->base_addr;
-+		ret = intel_tsens_register_pdev(&priv->plat_info);
-+		if (ret) {
-+			dev_err(&priv->pdev->dev,
-+				"platform device register failed for %s\n",
-+				priv->plat_info.plat_name);
-+			return ret;
-+		}
-+	}
-+	for (i = 0; i < priv->n_sens; i++) {
-+		struct intel_tsens *tsens = priv->intel_tsens[i];
-+
-+		if (!tsens->plat_info.plat_name)
-+			continue;
-+		tsens->plat_info.base_addr = tsens->base_addr;
-+		ret = intel_tsens_register_pdev(&tsens->plat_info);
-+		if (ret) {
-+			dev_err(&priv->pdev->dev,
-+				"platform device register failed for %s\n",
-+				tsens->name);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int intel_tsens_thermal_get_temp(struct thermal_zone_device *tz,
-+					int *temp)
-+{
-+	struct intel_tsens *tsens = (struct intel_tsens *)tz->devdata;
-+	struct intel_tsens_priv *priv =
-+		(struct intel_tsens_priv *)tsens->pdata;
++	/* sensor lock*/
++	spinlock_t lock;
++	int current_temp[KEEMBAY_SENSOR_MAX];
 +	struct intel_tsens_plat_data *plat_data;
-+	int type = tsens->sensor_type;
-+	struct platform_device *pdev;
-+
-+	if (tsens->plat_info.plat_name) {
-+		pdev = tsens->plat_info.pdev;
-+		plat_data = pdev->dev.platform_data;
-+
-+		if (!plat_data) {
-+			dev_err(&pdev->dev, "Platform data not found for %s\n",
-+				tsens->name);
-+			return -EINVAL;
-+		}
-+		if (!plat_data->get_temp) {
-+			*temp = 0;
-+			return -EINVAL;
-+		}
-+		if (plat_data->get_temp(pdev, type, temp))
-+			return -EINVAL;
-+		tsens->curr_temp = *temp;
-+		return 0;
-+	}
-+	if (priv->plat_info.plat_name) {
-+		pdev = priv->plat_info.pdev;
-+		plat_data = pdev->dev.platform_data;
-+
-+		if (!plat_data) {
-+			dev_err(&pdev->dev, "Platform data not found for %s\n",
-+				tsens->name);
-+			return -EINVAL;
-+		}
-+		if (!plat_data->get_temp) {
-+			*temp = 0;
-+			return -EINVAL;
-+		}
-+
-+		if (plat_data->get_temp(pdev, type, temp))
-+			return -EINVAL;
-+		tsens->curr_temp = *temp;
-+		return 0;
-+	}
-+
-+	return -EINVAL;
-+}
-+
-+static int intel_tsens_thermal_get_trip_type(struct thermal_zone_device *tz,
-+					     int trip,
-+					     enum thermal_trip_type *type)
-+{
-+	struct intel_tsens *tsens = (struct intel_tsens *)tz->devdata;
-+
-+	*type = tsens->trip_info[trip]->trip_type;
-+	return 0;
-+}
-+
-+static int intel_tsens_thermal_get_trip_temp(struct thermal_zone_device *tz,
-+					     int trip, int *temp)
-+{
-+	struct intel_tsens *tsens = (struct intel_tsens *)tz->devdata;
-+
-+	*temp = tsens->trip_info[trip]->temp;
-+	return 0;
-+}
-+
-+/* Refer https://lwn.net/Articles/242046/
-+ * how to receive this event in userspace
-+ */
-+static int intel_tsens_notify_user_space(struct thermal_zone_device *tz,
-+					 int trip)
-+{
-+	char *thermal_prop[5];
-+	int i, ret = 0;
-+
-+	mutex_lock(&tz->lock);
-+	thermal_prop[0] = kasprintf(GFP_KERNEL, "NAME=%s", tz->type);
-+	thermal_prop[1] = kasprintf(GFP_KERNEL, "TEMP=%d",
-+				    tz->emul_temperature);
-+	thermal_prop[2] = kasprintf(GFP_KERNEL, "TRIP=%d", trip);
-+	thermal_prop[3] = kasprintf(GFP_KERNEL, "EVENT=%d", tz->notify_event);
-+	thermal_prop[4] = NULL;
-+	if (thermal_prop[0] && thermal_prop[1] &&
-+	    thermal_prop[2] && thermal_prop[3]) {
-+		kobject_uevent_env(&tz->device.kobj, KOBJ_CHANGE,
-+				   thermal_prop);
-+	} else {
-+		ret = -ENOMEM;
-+	}
-+	for (i = 0; i < 4; ++i)
-+		kfree(thermal_prop[i]);
-+	mutex_unlock(&tz->lock);
-+	return ret;
-+}
-+
-+static int intel_tsens_thermal_notify(struct thermal_zone_device *tz,
-+				      int trip, enum thermal_trip_type type)
-+{
-+	intel_tsens_notify_user_space(tz, trip);
-+
-+	if (type == THERMAL_TRIP_PASSIVE || type == THERMAL_TRIP_CRITICAL)
-+		return 1;
-+	return 0;
-+}
-+
-+static int intel_tsens_thermal_bind(struct thermal_zone_device *tz,
-+				    struct thermal_cooling_device *cdev)
-+{
-+	struct intel_tsens *tsens = (struct intel_tsens *)tz->devdata;
-+	struct intel_tsens_priv *priv =
-+		(struct intel_tsens_priv *)tsens->pdata;
-+	int ret = -EINVAL;
-+
-+	/*
-+	 * Check here thermal device zone name and cdev name to match,
-+	 * then call the bind device
-+	 */
-+	if (!strncmp(tz->type, cdev->type, THERMAL_NAME_LENGTH) == 0) {
-+		ret = thermal_zone_bind_cooling_device
-+				(tz,
-+				THERMAL_TRIP_PASSIVE,
-+				cdev,
-+				THERMAL_NO_LIMIT,
-+				THERMAL_NO_LIMIT,
-+				THERMAL_WEIGHT_DEFAULT);
-+		if (ret) {
-+			dev_err(&priv->pdev->dev,
-+				"binding zone %s with cdev %s failed:%d\n",
-+				tz->type, cdev->type, ret);
-+		}
-+	}
-+	return ret;
-+}
-+
-+static int intel_tsens_thermal_unbind(struct thermal_zone_device *tz,
-+				      struct thermal_cooling_device *cdev)
-+{
-+	int ret;
-+
-+	ret = thermal_zone_unbind_cooling_device(tz, 0, cdev);
-+	if (ret) {
-+		dev_err(&tz->device,
-+			"unbinding zone %s with cdev %s failed:%d\n",
-+			tz->type, cdev->type, ret);
-+	}
-+	return ret;
-+}
-+
-+static struct thermal_zone_device_ops tsens_thermal_ops = {
-+	.bind = intel_tsens_thermal_bind,
-+	.unbind = intel_tsens_thermal_unbind,
-+	.get_temp = intel_tsens_thermal_get_temp,
-+	.get_trip_type	= intel_tsens_thermal_get_trip_type,
-+	.get_trip_temp	= intel_tsens_thermal_get_trip_temp,
-+	.notify		= intel_tsens_thermal_notify,
-+/*	.set_emul_temp = tsens_thermal_emulation */
-+
 +};
 +
-+static int intel_tsens_get_temp(int type, int *temp, void *pdata)
++static void kmb_sensor_read_temp(void __iomem *regs_val,
++				 int offset,
++				 int sample_valid_mask,
++				 int sample_value,
++				 int bit_shift,
++				 int *temp)
 +{
-+	struct intel_tsens_priv *priv = (struct intel_tsens_priv *)pdata;
++	int reg_val, kmb_raw_index;
 +
-+	if (!priv)
-+		return -EINVAL;
-+
-+	return intel_tsens_thermal_get_temp(priv->intel_tsens[type]->tz, temp);
-+}
-+
-+struct intel_tsens_i2c_plat_data i2c_plat_data = {
-+	.get_temp	= intel_tsens_get_temp,
-+};
-+
-+static void intel_tsens_remove_thermal_zones(struct intel_tsens_priv *priv)
-+{
-+	int i;
-+
-+	for (i = 0; i < priv->n_sens; i++) {
-+		struct intel_tsens *tsens = priv->intel_tsens[i];
-+
-+		if (tsens->tz) {
-+			thermal_zone_device_unregister(tsens->tz);
-+			tsens->tz = NULL;
-+		}
-+	}
-+}
-+
-+static int intel_tsens_add_thermal_zones(struct intel_tsens_priv *priv)
-+{
-+	int i;
-+
-+	for (i = 0; i < priv->n_sens; i++) {
-+		struct intel_tsens *tsens = priv->intel_tsens[i];
-+
-+		tsens->tz =
-+		thermal_zone_device_register(tsens->name,
-+					     tsens->n_trips,
-+					     0,
-+					     tsens,
-+					     &tsens_thermal_ops,
-+					     NULL,
-+					     tsens->passive_delay,
-+					     tsens->polling_delay);
-+		if (IS_ERR(tsens->tz)) {
-+			dev_err(&priv->pdev->dev,
-+				"failed to register thermal zone device %s\n",
-+				tsens->name);
-+			return PTR_ERR(tsens->tz);
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static void intel_tsens_remove_clk(struct intel_tsens_priv *priv)
-+{
-+	struct platform_device *pdev = priv->pdev;
-+
-+	clk_disable_unprepare(priv->tsens_clk);
-+	devm_clk_put(&pdev->dev, priv->tsens_clk);
-+}
-+
-+static int intel_tsens_clk_config(struct intel_tsens_priv *priv)
-+{
-+	struct platform_device *pdev = priv->pdev;
-+	int ret;
-+
-+	if (priv->global_clk_available) {
-+		priv->tsens_clk = devm_clk_get(&pdev->dev, NULL);
-+		if (IS_ERR(priv->tsens_clk)) {
-+			ret = PTR_ERR(priv->tsens_clk);
-+			if (ret != -EPROBE_DEFER) {
-+				dev_err(&pdev->dev,
-+					"failed to get thermal clk: %d\n", ret);
-+			}
-+			return PTR_ERR(priv->tsens_clk);
-+		}
-+		ret = clk_set_rate(priv->tsens_clk, priv->tsens_clk_rate);
-+		if (ret) {
-+			dev_err(&pdev->dev,
-+				"failed to set rate for thermal clk: %d\n",
-+				ret);
-+			devm_clk_put(&pdev->dev, priv->tsens_clk);
-+			return ret;
-+		}
-+		ret = clk_prepare_enable(priv->tsens_clk);
-+		if (ret) {
-+			dev_err(&pdev->dev,
-+				"failed to enable thermal clk: %d\n",
-+				ret);
-+			devm_clk_put(&pdev->dev, priv->tsens_clk);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int intel_tsens_config_sensors(struct device_node *s_node,
-+				      struct intel_tsens *tsens,
-+				      int sensor_type)
-+{
-+	struct intel_tsens_priv *priv = (struct intel_tsens_priv *)tsens->pdata;
-+	struct platform_device *pdev = priv->pdev;
-+	s32 trip_temp_count, trip_temp_type_c, i;
-+
-+	of_property_read_string_index(s_node, "plat_name", 0,
-+				      &tsens->plat_info.plat_name);
-+	tsens->plat_info.id = 1 << sensor_type;
-+	tsens->sensor_type = sensor_type;
-+	if (of_property_read_u32(s_node, "passive_delay",
-+				 &tsens->passive_delay)) {
-+		dev_err(&pdev->dev,
-+			"passive_delay missing in dt for %s\n",
-+			tsens->name);
-+		return -EINVAL;
-+	}
-+	if (of_property_read_u32(s_node, "polling_delay",
-+				 &tsens->polling_delay)) {
-+		dev_err(&pdev->dev,
-+			"polling_delay missing in dt for %s\n",
-+			tsens->name);
-+		return -EINVAL;
-+	}
-+	trip_temp_count = of_property_count_u32_elems(s_node, "trip_temp");
-+	trip_temp_type_c = of_property_count_strings(s_node, "trip_type");
-+	if (trip_temp_count != trip_temp_type_c ||
-+	    trip_temp_count <= 0 || trip_temp_type_c <= 0) {
-+		dev_err(&pdev->dev,
-+			"trip temp config is missing in dt for %s\n",
-+			tsens->name);
-+		return -EINVAL;
-+	}
-+
-+	tsens->trip_info =
-+		devm_kcalloc(&pdev->dev, trip_temp_count,
-+			     sizeof(struct intel_tsens_trip_info *),
-+			     GFP_KERNEL);
-+	if (!tsens->trip_info)
-+		return -ENOMEM;
-+	tsens->n_trips = trip_temp_count;
-+	for (i = 0; i < trip_temp_count; i++) {
-+		struct intel_tsens_trip_info *trip_info;
-+		const char *trip_name;
-+
-+		trip_info = devm_kzalloc(&pdev->dev,
-+					 sizeof(struct intel_tsens_trip_info),
-+					 GFP_KERNEL);
-+		if (!trip_info)
-+			return -ENOMEM;
-+
-+		of_property_read_u32_index(s_node, "trip_temp", i,
-+					   &trip_info->temp);
-+		of_property_read_string_index(s_node, "trip_type", i,
-+					      &trip_name);
-+		if (!strcmp(trip_name, "passive"))
-+			trip_info->trip_type = THERMAL_TRIP_PASSIVE;
-+		else if (!strcmp(trip_name, "critical"))
-+			trip_info->trip_type = THERMAL_TRIP_CRITICAL;
-+		else if (!strcmp(trip_name, "hot"))
-+			trip_info->trip_type = THERMAL_TRIP_HOT;
++	/* clear the bit of TSENS_EN and re-enable again */
++	iowrite32(0x00, regs_val + AON_TSENS_CFG);
++	iowrite32(CFG_MASK_MANUAL, regs_val + AON_TSENS_CFG);
++	reg_val = ioread32(regs_val + offset);
++	if (reg_val & sample_valid_mask) {
++		reg_val = (reg_val >> bit_shift) & sample_value;
++		kmb_raw_index = reg_val - KEEMBAY_SENSOR_BASE_TEMP;
++		if (kmb_raw_index < 0)
++			reg_val = raw_kmb[0];
++		else if (kmb_raw_index > (raw_kmb_size - 1))
++			reg_val = raw_kmb[raw_kmb_size - 1];
 +		else
-+			trip_info->trip_type = THERMAL_TRIP_ACTIVE;
-+		tsens->trip_info[i] = trip_info;
-+	}
-+
-+	return 0;
-+}
-+
-+static int intel_tsens_config_dt(struct intel_tsens_priv *priv)
-+{
-+	struct platform_device *pdev = priv->pdev;
-+	struct device_node *np = pdev->dev.of_node;
-+	struct device_node *s_node = NULL, *node;
-+	struct resource *res;
-+	int i = 0, ret;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	priv->base_addr = devm_ioremap_resource(&pdev->dev, res);
-+	node = of_parse_phandle(np, "soc-sensors", 0);
-+	if (!node)
-+		return -EINVAL;
-+	priv->n_sens = of_get_child_count(node);
-+	if (priv->n_sens == 0) {
-+		dev_err(&pdev->dev, "No sensors configured in dt\n");
-+		return -EINVAL;
-+	}
-+	priv->global_clk_available = of_property_read_bool(np, "clocks");
-+	if (priv->global_clk_available) {
-+		ret = of_property_read_u32(np, "clk-rate",
-+					   &priv->tsens_clk_rate);
-+		if (ret) {
-+			dev_err(&pdev->dev, "clk-rate not available in dt");
-+			return ret;
-+		}
-+	}
-+	of_property_read_string_index(np, "plat_name", 0,
-+				      &priv->plat_info.plat_name);
-+	priv->intel_tsens =
-+		devm_kcalloc(&pdev->dev, priv->n_sens,
-+			     sizeof(struct intel_tsens *),
-+			     GFP_KERNEL);
-+	if (!priv->intel_tsens)
-+		return -ENOMEM;
-+	for_each_child_of_node(node, s_node) {
-+		int r_count, size_count;
-+		struct intel_tsens *ts;
-+
-+		ts = devm_kzalloc(&pdev->dev, sizeof(struct intel_tsens),
-+				  GFP_KERNEL);
-+		if (!ts) {
-+			of_node_put(s_node);
-+			return -ENOMEM;
-+		}
-+		strcpy(ts->name, s_node->name);
-+		if (!of_property_read_u32(s_node, "address-cells", &r_count) &&
-+		    !of_property_read_u32(s_node, "size-cells", &size_count)) {
-+			if (r_count > 1) {
-+				ret = of_property_read_u64_index(s_node, "reg",
-+								 0, &ts->addr);
-+			} else {
-+				u32 *addr = (u32 *)&ts->addr;
-+
-+				ret = of_property_read_u32_index(s_node, "reg",
-+								 0, addr);
-+			}
-+			if (ret) {
-+				dev_err(&pdev->dev, "Invalid reg base address");
-+				of_node_put(s_node);
-+				return ret;
-+			}
-+			if (size_count > 1) {
-+				int index =
-+					(r_count > 1) ? (r_count / 2) :
-+					r_count;
-+
-+				ret = of_property_read_u64_index(s_node, "reg",
-+								 index,
-+								 &ts->size);
-+			} else {
-+				u32 *size = (u32 *)&ts->size;
-+
-+				ret = of_property_read_u32_index(s_node, "reg",
-+								 r_count, size);
-+			}
-+			if (ret) {
-+				dev_err(&pdev->dev, "Invalid size");
-+				of_node_put(s_node);
-+				return ret;
-+			}
-+			ts->base_addr = devm_ioremap(&pdev->dev,
-+						     ts->addr,
-+						     ts->size);
-+		} else {
-+			ts->base_addr = priv->base_addr;
-+		}
-+		if (!ts->base_addr) {
-+			dev_err(&pdev->dev, "ioremap failed for %s\n",
-+				ts->name);
-+			of_node_put(s_node);
-+			return -EINVAL;
-+		}
-+		ts->pdata = priv;
-+		if (intel_tsens_config_sensors(s_node, ts, i)) {
-+			dev_err(&pdev->dev,
-+				"Missing sensor info in dts for %s\n",
-+				ts->name);
-+			of_node_put(s_node);
-+			return -EINVAL;
-+		}
-+		priv->intel_tsens[i] = ts;
-+		i++;
-+	}
-+
-+	return 0;
-+}
-+
-+static int intel_tsens_thermal_probe(struct platform_device *pdev)
-+{
-+	struct intel_tsens_priv *intel_tsens_priv;
-+	int ret;
-+
-+	intel_tsens_priv = devm_kzalloc(&pdev->dev,
-+					sizeof(struct intel_tsens_priv),
-+					GFP_KERNEL);
-+	if (!intel_tsens_priv)
-+		return -ENOMEM;
-+	intel_tsens_priv->pdev = pdev;
-+	if (pdev->dev.of_node) {
-+		ret = intel_tsens_config_dt(intel_tsens_priv);
-+		if (ret) {
-+			dev_err(&pdev->dev, "dt configuration failed\n");
-+			return ret;
-+		}
++			reg_val = raw_kmb[kmb_raw_index];
++		*temp = reg_val;
 +	} else {
-+		dev_err(&pdev->dev, "Non Device Tree build is not supported\n");
-+		return -EINVAL;
++		*temp = -255;
 +	}
-+	ret = intel_tsens_clk_config(intel_tsens_priv);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Thermal clk config failed\n");
-+		return ret;
-+	}
-+	ret = intel_tsens_add_pdev(intel_tsens_priv);
-+	if (ret) {
-+		dev_err(&pdev->dev, "platform device registration failed\n");
-+		goto remove_pdev;
-+	}
-+	ret = intel_tsens_add_thermal_zones(intel_tsens_priv);
-+	if (ret) {
-+		dev_err(&pdev->dev, "thermal zone configuration failed\n");
-+		goto remove_tz;
-+	}
-+	platform_set_drvdata(pdev, intel_tsens_priv);
-+	i2c_plat_data.pdata = intel_tsens_priv;
-+	return 0;
-+
-+remove_tz:
-+	intel_tsens_remove_thermal_zones(intel_tsens_priv);
-+remove_pdev:
-+	intel_tsens_unregister_pdev(intel_tsens_priv);
-+	intel_tsens_remove_clk(intel_tsens_priv);
-+	return ret;
 +}
 +
-+/* Device Exit */
-+static int intel_tsens_thermal_exit(struct platform_device *pdev)
++/*The lock is assumed to be held by the caller.*/
++static int keembay_get_temp(struct platform_device *pdev, int type, int *temp)
 +{
-+	struct intel_tsens_priv *priv = platform_get_drvdata(pdev);
++	struct keembay_thermal_priv *priv = platform_get_drvdata(pdev);
 +
-+	if (!priv) {
-+		dev_err(&pdev->dev,
-+			"unable to get private data\n");
-+		return -EINVAL;
++	spin_lock(&priv->lock);
++	switch (type) {
++	case KEEMBAY_SENSOR_MSS:
++		kmb_sensor_read_temp(priv->base_addr,
++				     AON_TSENS_DATA0,
++				     MSS_T_SAMPLE_VALID,
++				     MSS_T_SAMPLE,
++				     MSS_BIT_SHIFT,
++				     temp);
++		priv->current_temp[KEEMBAY_SENSOR_MSS] = *temp;
++		break;
++
++	case KEEMBAY_SENSOR_CSS:
++		kmb_sensor_read_temp(priv->base_addr,
++				     AON_TSENS_DATA0,
++				     CSS_T_SAMPLE_VALID,
++				     CSS_T_SAMPLE,
++				     CSS_BIT_SHIFT,
++				     temp);
++		priv->current_temp[KEEMBAY_SENSOR_CSS] = *temp;
++		break;
++
++	case KEEMBAY_SENSOR_NCE:
++	{
++		int nce0, nce1;
++
++		kmb_sensor_read_temp(priv->base_addr,
++				     AON_TSENS_DATA1,
++				     NCE0_T_SAMPLE_VALID,
++				     NCE0_T_SAMPLE,
++				     NCE0_BIT_SHIFT,
++				     &nce0);
++		kmb_sensor_read_temp(priv->base_addr,
++				     AON_TSENS_DATA1,
++				     NCE1_T_SAMPLE_VALID,
++				     NCE1_T_SAMPLE,
++				     NCE1_BIT_SHIFT,
++				     &nce1);
++		*temp = max(nce0, nce1);
++		priv->current_temp[KEEMBAY_SENSOR_NCE] = *temp;
 +	}
-+	intel_tsens_remove_thermal_zones(priv);
-+	intel_tsens_unregister_pdev(priv);
-+	intel_tsens_remove_clk(priv);
++		break;
++
++	case KEEMBAY_SENSOR_SOC:
++	{
++		int i;
++
++		*temp = 0;
++		for (i = 0; i < KEEMBAY_SENSOR_MAX; i++)
++			*temp = max(*temp, priv->current_temp[i]);
++	}
++		break;
++
++	default:
++		break;
++	}
++	spin_unlock(&priv->lock);
 +
 +	return 0;
 +}
 +
-+static const struct of_device_id intel_tsens_thermal_id_table[] = {
-+	{ .compatible = "intel,intel-tsens" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, intel_tsens_thermal_id_table);
++static int keembay_thermal_probe(struct platform_device *pdev)
++{
++	struct intel_tsens_plat_data *plat_data;
++	struct keembay_thermal_priv *priv;
 +
-+static struct platform_driver intel_tsens_thermal_driver = {
-+	.probe = intel_tsens_thermal_probe,
-+	.remove = intel_tsens_thermal_exit,
++	plat_data = pdev->dev.platform_data;
++	if (!plat_data) {
++		dev_err(&pdev->dev, "Platform data not found\n");
++		return -EINVAL;
++	}
++	if (!plat_data->base_addr)
++		return -EINVAL;
++
++	priv = devm_kzalloc(&pdev->dev,
++			    sizeof(struct keembay_thermal_priv),
++			    GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++	priv->name = plat_data->name;
++	priv->base_addr = plat_data->base_addr;
++	priv->plat_data = plat_data;
++	plat_data->get_temp = keembay_get_temp;
++	spin_lock_init(&priv->lock);
++	platform_set_drvdata(pdev, priv);
++	dev_info(&pdev->dev, "Thermal driver loaded for %s\n",
++		 plat_data->name);
++	return 0;
++}
++
++static struct platform_driver keembay_thermal_driver = {
++	.probe = keembay_thermal_probe,
 +	.driver = {
-+		.name = "intel_tsens_thermal",
-+		.of_match_table = intel_tsens_thermal_id_table,
++		.name = "intel,keembay_thermal",
 +	},
 +};
 +
-+module_platform_driver(intel_tsens_thermal_driver);
++module_platform_driver(keembay_thermal_driver);
 +
-+MODULE_DESCRIPTION("TSENS Thermal Driver");
++MODULE_DESCRIPTION("Keem Bay Thermal Driver");
 +MODULE_AUTHOR("Sandeep Singh <sandeep1.singh@intel.com>");
 +MODULE_AUTHOR("Raja Subramanian, Lakshmi Bai <lakshmi.bai.raja.subramanian@intel.com>");
 +MODULE_AUTHOR("Udhayakumar C <udhayakumar.c@intel.com>");
 +MODULE_LICENSE("GPL v2");
-diff --git a/drivers/misc/intel_tsens/intel_tsens_thermal.h b/drivers/misc/intel_tsens/intel_tsens_thermal.h
+diff --git a/drivers/misc/intel_tsens/keembay_tsens.h b/drivers/misc/intel_tsens/keembay_tsens.h
 new file mode 100644
-index 000000000000..a531c95b20b3
+index 000000000000..e9b927a31e22
 --- /dev/null
-+++ b/drivers/misc/intel_tsens/intel_tsens_thermal.h
-@@ -0,0 +1,38 @@
++++ b/drivers/misc/intel_tsens/keembay_tsens.h
+@@ -0,0 +1,366 @@
 +/* SPDX-License-Identifier: GPL-2.0-only */
 +/*
 + *
-+ * Intel tsens thermal Driver
++ * Intel Keem Bay thermal Driver
 + *
 + * Copyright (C) 2020 Intel Corporation
 + *
 + */
 +
-+#ifndef _LINUX_INTEL_TSENS_H
-+#define _LINUX_INTEL_TSENS_H
++#ifndef _LINUX_KEEMBAY_TSENS_H
++#define _LINUX_KEEMBAY_TSENS_H
 +
-+#include <linux/platform_device.h>
 +#include <linux/thermal.h>
 +
-+struct intel_tsens_plat_data {
-+	const char *name;
-+	void __iomem *base_addr;
-+	int (*get_temp)(struct platform_device *pdev, int type, int *temp);
-+	void *pdata;
-+};
++/* Register values for keembay temperature (PVT Sensor) */
++#define AON_TSENS_TRIM0_CFG		0x0030
++#define AON_TSENS_TRIM1_CFG		0x0034
++#define AON_TSENS_CFG			0x0038
++#define AON_TSENS_INT0			0x203c
++#define AON_TSENS_INT1			0x2040
++#define AON_TSENS_IRQ_CLEAR		0x0044
++#define AON_TSENS_DATA0			0x0048
++#define MSS_T_SAMPLE_VALID		0x80000000
++#define MSS_T_SAMPLE			0x3ff
++#define CSS_T_SAMPLE_VALID		0x8000
++#define CSS_T_SAMPLE			0x3ff
++#define NCE1_T_SAMPLE_VALID		0x80000000
++#define NCE1_T_SAMPLE			0x3ff
++#define NCE0_T_SAMPLE_VALID		0x8000
++#define NCE0_T_SAMPLE			0x3ff
++#define AON_TSENS_DATA1			0x004c
++#define AON_INTERFACE			0x20260000
++/* Bit shift for registers*/
++#define MSS_BIT_SHIFT			16
++#define CSS_BIT_SHIFT			0
++#define NCE0_BIT_SHIFT			0
++#define NCE1_BIT_SHIFT			16
++/* mask values for config register */
++#define CFG_MASK_AUTO			0x80ff //(auto configuration)
++#define CFG_IRQ_MASK			0x8fff
++#define CFG_MASK_MANUAL		0x000f // TSENS_EN (manual config)
 +
-+struct intel_tsens_plat_info {
-+	const char *plat_name;
-+	int id;
-+	struct platform_device *pdev;
-+	void __iomem *base_addr;
-+};
-+
-+struct intel_tsens_i2c_plat_data {
-+	int (*get_temp)(int type, int *temp, void *pdata);
-+	void *pdata;
-+};
-+
-+/* TSENS i2c platform data */
-+extern struct intel_tsens_i2c_plat_data i2c_plat_data;
-+
-+#endif /* _LINUX_INTEL_TSENS_H */
-diff --git a/include/linux/hddl_device.h b/include/linux/hddl_device.h
-new file mode 100644
-index 000000000000..1c21ad27ea33
---- /dev/null
-+++ b/include/linux/hddl_device.h
-@@ -0,0 +1,153 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ *
-+ * High Density Deep Learning Kernel module.
-+ *
-+ * Copyright (C) 2020 Intel Corporation
-+ *
++/**
++ * KEEMBAY_SENSOR_MSS - Media subsystem junction temperature.
++ * KEEMBAY_SENSOR_CSS - Compute subsystem junction temperature.
++ * KEEMBAY_SENSOR_NCE - Neural computing engine junction temperature.
++ *			For NCE two sensors are available in kemmaby paltform,
++ *			maximum temperature of these two sensors will be
++ *			returned as NCE temperature.
++ * KEEMBAY_SENSOR_SOC - Soc temperature.
++ *			Maximum of MSS, CSS and NCE would be returned as
++ *			SOC temperature.
 + */
-+
-+#ifndef __HDDL_DEVICE_H
-+#define __HDDL_DEVICE_H
-+
-+#include <linux/i2c.h>
-+#include <linux/platform_device.h>
-+#include <linux/thermal.h>
-+#include <linux/types.h>
-+#if IS_ENABLED(CONFIG_XLINK_CORE)
-+#include <linux/xlink.h>
-+#include <linux/xlink_drv_inf.h>
-+#endif /* XLINK_CORE */
-+
-+#define HDDL_ALIGN 4
-+
-+#define HDDL_MAGIC 'x'
-+#define HDDL_READ_SW_ID_DATA		_IOW(HDDL_MAGIC, 'a', void*)
-+#define HDDL_SOFT_RESET		_IOW(HDDL_MAGIC, 'b', void*)
-+
-+struct sw_id_hddl_data {
-+	u32 board_id;
-+	u32 soc_id;
-+	u32 soc_adaptor_no[2];
-+	u32 sw_id;
-+	u32 return_id;
++enum keembay_thermal_sensor_en {
++	KEEMBAY_SENSOR_MSS,
++	KEEMBAY_SENSOR_CSS,
++	KEEMBAY_SENSOR_NCE,
++	KEEMBAY_SENSOR_SOC,
++	KEEMBAY_SENSOR_MAX
 +};
 +
-+struct sw_id_soft_reset {
-+	u32 sw_id;
-+	u32 return_id;
++#define KEEMBAY_SENSOR_BASE_TEMP 27
++
++static const int raw_kmb[] = {
++39956,  -39637, -39319, -39001, -38684,
++
++38367,  -38050, -37734, -37418, -37103,
++
++36787,  -36472, -36158, -35844, -35530,
++
++35216,  -34903, -34590, -34278, -33966,
++
++33654,  -33343, -33032, -32721, -32411,
++
++32101,  -31791, -31482, -31173, -30864,
++
++30556,  -30248, -29940, -29633, -29326,
++
++29020,  -28713, -28407, -28102, -27797,
++
++27492,  -27187, -26883, -26579, -26276,
++
++25973,  -25670, -25367, -25065, -24763,
++
++24462,  -24160, -23860, -23559, -23259,
++
++22959,  -22660, -22360, -22062, -21763,
++
++21465,  -21167, -20869, -20572, -20275,
++
++19979,  -19683, -19387, -19091, -18796,
++
++18501,  -18206, -17912, -17618, -17325,
++
++-17031, -16738,  -16446, -16153, -15861,
++
++-15570, -15278,  -14987, -14697, -14406,
++
++-14116, -13826,  -13537, -13248, -12959,
++
++-12670, -12382,  -12094, -11807, -11520,
++
++-11233, -10946,  -10660, -10374, -10088,
++
++-9803, -9518, -9233, -8949, -8665,
++
++-8381, -8097, -7814, -7531, -7249,
++
++-6967, -6685, -6403, -6122, -5841,
++
++-5560, -5279, -4999, -4720, -4440,
++
++-4161, -3882, -3603, -3325, -3047,
++
++-2770, -2492, -2215, -1938, -1662,
++
++-1386, -1110, -834, -559, -284,
++
++-9, 265, 539, 813, 1086,
++
++1360, 1633, 1905, 2177, 2449,
++
++2721, 2993, 3264, 3535, 3805,
++
++4075, 4345, 4615, 4884, 5153,
++
++5422, 5691, 5959, 6227, 6495,
++
++6762, 7029, 7296, 7562, 7829,
++
++8095, 8360, 8626, 8891, 9155,
++
++9420, 9684, 9948, 10212, 10475,
++
++10738, 11001, 11264, 11526, 11788,
++
++12049, 12311, 12572, 12833, 13093,
++
++13354, 13614, 13874, 14133, 14392,
++
++14651, 14910, 15168, 15426, 15684,
++
++15942, 16199, 16456, 16713, 16969,
++
++17225, 17481, 17737, 17992, 18247,
++
++18502, 18757, 19011, 19265, 19519,
++
++19772, 20025, 20278, 20531, 20784,
++
++21036, 21288, 21539, 21791, 22042,
++
++22292, 22543, 22793, 23043, 23293,
++
++23543, 23792, 24041, 24290, 24538,
++
++24786, 25034, 25282, 25529, 25776,
++
++26023, 26270, 26516, 26763, 27008,
++
++27254, 27499, 27745, 27989, 28234,
++
++28478, 28722, 28966, 29210, 29453,
++
++29696, 29939, 30182, 30424, 30666,
++
++30908, 31149, 31391, 31632, 31873,
++
++32113, 32353, 32593, 32833, 33073,
++
++33312, 33551, 33790, 34029, 34267,
++
++34505, 34743, 34980, 35218, 35455,
++
++35692, 35928, 36165, 36401, 36637,
++
++36872, 37108, 37343, 37578, 37813,
++
++38047, 38281, 38515, 38749, 38982,
++
++39216, 39448, 39681, 39914, 40146,
++
++40378, 40610, 40841, 41073, 41304,
++
++41535, 41765, 41996, 42226, 42456,
++
++42686, 42915, 43144, 43373, 43602,
++
++43830, 44059, 44287, 44515, 44742,
++
++44970, 45197, 45424, 45650, 45877,
++
++46103, 46329, 46555, 46780, 47006,
++
++47231, 47456, 47680, 47905, 48129,
++
++48353, 48576, 48800,  49023, 49246,
++
++49469, 49692, 49914,  50136, 50358,
++
++50580, 50801, 51023,  51244, 51464,
++
++51685, 51905, 52126,  52346, 52565,
++
++52785, 53004, 53223,  53442, 53661,
++
++53879, 54097, 54315,  54533, 54750,
++
++54968, 55185, 55402,  55618, 55835,
++
++56051, 56267, 56483,  56699, 56914,
++
++57129, 57344, 57559,  57773, 57988,
++
++58202, 58416, 58630,  58843, 59056,
++
++59269, 59482, 59695,  59907, 60120,
++
++60332, 60543, 60755,  60966, 61178,
++
++61389, 61599, 61810,  62020, 62231,
++
++62440, 62650, 62860,  63069, 63278,
++
++63487, 63696, 63904,  64113, 64321,
++
++64529, 64737, 64944,  65151, 65358,
++
++65565, 65772, 65979,  66185, 66391,
++
++66597, 66803, 67008, 67213, 67419,
++
++67624, 67828, 68033, 68237, 68441,
++
++68645, 68849, 69052, 69256, 69459,
++
++69662, 69865, 70067, 70270, 70472,
++
++70674, 70876, 71077, 71279, 71480,
++
++71681, 71882, 72082, 72283, 72483,
++
++72683, 72883, 73083, 73282, 73481,
++
++73680, 73879, 74078, 74277, 74475,
++
++74673, 74871, 75069, 75266, 75464,
++
++75661, 75858, 76055, 76252, 76448,
++
++76644, 76841, 77037, 77232, 77428,
++
++77623, 77818, 78013, 78208, 78403,
++
++78597, 78792, 78986, 79180, 79373,
++
++79567, 79760, 79953, 80146, 80339,
++
++80532, 80724, 80917, 81109, 81301,
++
++81492, 81684, 81875, 82066, 82258,
++
++82448, 82639, 82830, 83020, 83210,
++
++83400, 83590, 83779, 83969, 84158,
++
++84347, 84536, 84725, 84913, 85102,
++
++85290, 85478, 85666, 85854, 86041,
++
++86228, 86416, 86603, 86789, 86976,
++
++87163, 87349, 87535, 87721, 87907,
++
++88092, 88278, 88463, 88648, 88833,
++
++89018, 89203, 89387, 89571, 89755,
++
++89939, 90123, 90307, 90490, 90674,
++
++90857, 91040, 91222, 91405, 91587,
++
++91770, 91952, 92134, 92315, 92497,
++
++92679, 92860, 93041, 93222, 93403,
++
++93583, 93764, 93944, 94124, 94304,
++
++94484, 94664, 94843, 95023, 95202,
++
++95381, 95560, 95738, 95917, 96095,
++
++96273, 96451, 96629, 96807, 96985,
++
++97162, 97339, 97516, 97693, 97870,
++
++98047, 98223, 98399, 98576, 98752,
++
++98927, 99103, 99279, 99454, 99629,
++
++99804, 99979, 100154, 100328, 100503,
++
++100677, 100851, 101025, 101199, 101373,
++
++101546, 101720, 101893, 102066, 102239,
++
++102411, 102584, 102756, 102929, 103101,
++
++103273, 103445, 103616, 103788, 103959,
++
++104130, 104302, 104472, 104643, 104814,
++
++104984, 105155, 105325, 105495, 105665,
++
++105835, 106004, 106174, 106343, 106512,
++
++106681, 106850, 107019, 107187, 107355,
++
++107524, 107692, 107860, 108028, 108195,
++
++108363, 108530, 108697, 108865, 109031,
++
++109198, 109365, 109531, 109698, 109864,
++
++110030, 110196, 110362, 110528, 110693,
++
++110858, 111024, 111189, 111354, 111518,
++
++111683, 111848, 112012, 112176, 112340,
++
++112504, 112668, 112832, 112995, 113159,
++
++113322, 113485, 113648, 113811, 113973,
++
++114136, 114298, 114461, 114623, 114785,
++
++114947, 115108, 115270, 115431, 115593,
++
++115754, 115915, 116076, 116236, 116397,
++
++116558, 116718, 116878, 117038, 117198,
++
++117358, 117518, 117677, 117836, 117996,
++
++118155, 118314, 118473, 118631, 118790,
++
++118948, 119107, 119265, 119423, 119581,
++
++119739, 119896, 120054, 120211, 120368,
++
++120525, 120682, 120839, 120996, 121153,
++
++121309, 121465, 121622, 121778, 121934,
++
++122089, 122245, 122400, 122556, 122711,
++
++122866, 123021, 123176, 123331, 123486,
++
++123640, 123794, 123949, 124103, 124257,
++
++124411, 124564, 124718, 124871, 125025,
 +};
 +
-+enum hddl_xlink_adapter {
-+	HDDL_XLINK_I2C_MASTER,
-+	HDDL_XLINK_I2C_SLAVE,
-+	HDDL_XLINK_I2C_END,
-+};
++static int raw_kmb_size = sizeof(raw_kmb) / sizeof(int);
 +
-+enum hddl_device {
-+	HDDL_I2C_CLIENT		= (1 << 0),
-+	HDDL_XLINK_CLIENT	= (1 << 1),
-+	HDDL_XLINK_SMBUS_CLIENT	= (1 << 2),
-+};
-+
-+enum hddl_device_status {
-+	HDDL_DEV_STATUS_START,
-+	HDDL_DEV_STATUS_CONNECTED,
-+	HDDL_DEV_STATUS_DISCONNECTED,
-+	HDDL_DEV_STATUS_END,
-+};
-+
-+enum hddl_msg_type {
-+	HDDL_GET_NSENS		= 0x10,
-+	HDDL_GET_SENS_NAME	= 0x11,
-+	HDDL_GET_SENS_DETAILS	= 0x12,
-+	HDDL_GET_SENS_TRIP_INFO	= 0x13,
-+	HDDL_GET_N_I2C_DEVS	= 0x14,
-+	HDDL_GET_I2C_DEVS	= 0x15,
-+	HDDL_GET_I2C_DEV_ADDR	= 0x16,
-+	HDDL_GET_SENS_COMPLETE	= 0x20,
-+};
-+
-+struct intel_hddl_tsens_msg {
-+	int msg_type;
-+	u32 sensor_type;
-+	u32 trip_info_idx;
-+} __packed __aligned(HDDL_ALIGN);
-+
-+struct intel_hddl_board_info {
-+	int board_id;
-+	int soc_id;
-+} __packed __aligned(HDDL_ALIGN);
-+
-+struct intel_tsens_data {
-+	char name[20];
-+	u32 n_trips;
-+	u32 passive_delay;
-+	u32 polling_delay;
-+	u32 sensor_type;
-+} __packed __aligned(HDDL_ALIGN);
-+
-+struct intel_hddl_i2c_devs_data {
-+	char name[20];
-+	u32 addr;
-+	u32 bus;
-+	int enabled;
-+	int local_host;
-+	int remote_host;
-+} __packed __aligned(HDDL_ALIGN);
-+
-+struct intel_hddl_i2c_devs {
-+	char name[20];
-+	u32 addr;
-+	u32 bus;
-+	int enabled;
-+	int local_host;
-+	int remote_host;
-+	struct i2c_board_info board_info;
-+	struct i2c_client *xlk_client;
-+	struct i2c_client *i2c_client;
-+	struct i2c_client *smbus_client;
-+};
-+
-+struct intel_hddl_clients {
-+#if IS_ENABLED(CONFIG_XLINK_CORE)
-+	struct xlink_handle xlink_dev;
-+#endif /* XLINK_CORE */
-+	struct task_struct *hddl_dev_connect_task;
-+	void *task;
-+	u32 chan_num;
-+	void *pdata;
-+	struct intel_hddl_board_info board_info;
-+	u32 xlink_i2c_ch[HDDL_XLINK_I2C_END];
-+	u32 i2c_chan_num;
-+	void **tsens;
-+	u32 nsens;
-+	struct platform_device *xlink_i2c_plt_dev[HDDL_XLINK_I2C_END];
-+	struct platform_device *pdev;
-+	struct i2c_adapter *adap[HDDL_XLINK_I2C_END];
-+	struct i2c_adapter *smbus_adap;
-+	struct intel_hddl_i2c_devs **i2c_devs;
-+	int n_clients;
-+	enum hddl_device_status status;
-+	/* hddl device lock */
-+	struct mutex lock;
-+};
-+
-+struct intel_tsens_trip_info {
-+	enum thermal_trip_type trip_type;
-+	int temp;
-+} __packed __aligned(HDDL_ALIGN);
-+
-+#if IS_ENABLED(CONFIG_XLINK_CORE)
-+static inline u32 tsens_get_device_id(struct intel_hddl_clients *d)
-+{
-+	return d->xlink_dev.sw_device_id;
-+}
-+#else
-+static inline u32 tsens_get_device_id(struct intel_hddl_clients *d)
-+{
-+	return -EINVAL;
-+}
-+#endif /* XLINK_CORE */
-+
-+#endif /* __HDDL_DEVICE_H */
++#endif /* _LINUX_KEEMBAY_TSENS_H */
 -- 
 2.17.1
 
