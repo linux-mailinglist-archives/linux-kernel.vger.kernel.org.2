@@ -2,208 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0B9130984B
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 21:42:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1251030984D
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 21:42:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231907AbhA3Ul2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 15:41:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52100 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229990AbhA3UlZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 15:41:25 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7670864E0C;
-        Sat, 30 Jan 2021 20:40:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612039245;
-        bh=DKQK33mpM/iViVFNbv8TDOJi1lqJMU2DVixsIqk2mW0=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=g1aOScIkLWmri33ssnNrJ4k6JVvZpVVILp/LuhDofe1VJ3ua2WxPL6jsdz/orycWT
-         j8RKWFzwBVMQnU1/sS+4bS2670hjv8VN1+n8u3BBKgt86gLsI7DVBEal9iunMLhEym
-         zfp5GXMQmG85eKONcfXuxYYHkEHjMRREskFEhVBYQhJo+E4jb6GWb+KoltXwkvD9mr
-         R4sGgrIblh1xtBtvXKicYze9YD4+cyyiXYQ2hyDk8qsfrYqXDA8z4Byxupqr3OYDOp
-         UtjYYD8J+UwntP+Bmq8BRjOXcLgkUBsTmBvohS5/vUvTSq1SHDXbkgNjl2Jt2/zCM7
-         4W1TYZre/+YBw==
-Message-ID: <464454f440df67d3470e67ff0386bbc306d07dac.camel@kernel.org>
-Subject: Re: [PATCH v2] tpm_tis: Add missing tpm_request/relinquish_locality
- calls
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Lukasz Majczak <lma@semihalf.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Tj <ml.linux@elloe.vision>, Dirk Gouders <dirk@gouders.net>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Radoslaw Biernacki <rad@semihalf.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Alex Levin <levinale@google.com>
-Date:   Sat, 30 Jan 2021 22:40:40 +0200
-In-Reply-To: <20210128130753.1283534-1-lma@semihalf.com>
-References: <20210123014247.989368-1-lma@semihalf.com>
-         <20210128130753.1283534-1-lma@semihalf.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.38.3 
+        id S232101AbhA3Ulm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 15:41:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229990AbhA3Uli (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 15:41:38 -0500
+Received: from mail.archlinux.org (mail.archlinux.org [IPv6:2a01:4f9:c010:3052::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76293C061573;
+        Sat, 30 Jan 2021 12:40:58 -0800 (PST)
+Received: from [192.168.1.78] (unknown [188.251.63.183])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: ffy00)
+        by mail.archlinux.org (Postfix) with ESMTPSA id 5589B3AF3D4;
+        Sat, 30 Jan 2021 20:40:56 +0000 (UTC)
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=archlinux.org;
+        s=dkim-ed25519; t=1612039256;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9Qw7daadslk55i2mN8fjtpIkKg98qlHCf0dW9/tThnE=;
+        b=sMBC8x9AmfLA9G8MojINA3LB73WkrKjNwIQwxsC2kLVLsMzlRH5rgCcO/powxRor1Xtb7Q
+        uKWkrbn+xy2MFpBQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=archlinux.org;
+        s=dkim-rsa; t=1612039256;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9Qw7daadslk55i2mN8fjtpIkKg98qlHCf0dW9/tThnE=;
+        b=jN0h52Q21JmsMJBhTcPqY7iZHmjM3m+Fo1e0KKT9QN0HC/aXja52AwIHZyCmg6NcwX4Idh
+        R4okiioBZ07Qn4LGN7NXVQs1VyAEOWrBPWbIg8QPcE0OStVRq8y2YYxcDUu+6iDNEINY+K
+        N5lYq1Tq6UBoAUTGBZwsgMuJNskLWkHXi4IISnlmzxqgVs6qhMx0S2VdkRm2gkSFj49Zi4
+        PacDmIDYj6W1gi7Ach8UHGQxtHkg60NEguay+MOa8xNdJSmipx4ffMTFbJdtuE2ib20Kd3
+        Tbzfc68F8xOaURQhjcWgZ3vFWdWiKRObTXctSAMmMk+CUVwxLVBX85cP0qxtOWb3fozT1F
+        RCZkSOXpPhRxL+U4jk2rFURAQKyZPhtMtZrUgTivQDayd+rgMAcFBMuycbmpojauaBVbBu
+        g9Qi0PeEUuKAjqFTqqyJ6pMygT3ggtssKBzlWCPiRJblp1qgfTKN4Ji34jW3kwUKghzD8u
+        4jR4XWQscT101UMST//K/zjx9rIuCY86dxq8OthdEauZbInDJEYQBuVXV0ynuPiL1jcAfd
+        B3E/3YsFUC6gxvTKLXqcuhcy2q1xz9w31USxjZQwkbncBenkA2l7f2LQHccEvydh23jucI
+        S6M1HvHhDvLUgK81ayiDU9EAXws50jigJdonMekgGjyzHhV8s0FwI=
+Message-ID: <25a6c40cd26158b74c9a58dc53a2f0905a2ea1d8.camel@archlinux.org>
+Subject: Re: [PATCH] HID: logitech-dj: add support for keyboard events in
+ eQUAD step 4 Gaming
+From:   Filipe =?ISO-8859-1?Q?La=EDns?= <lains@archlinux.org>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <0a3aa6fb-3f22-d6f5-1748-42430f6e7ccc@redhat.com>
+References: <20210130191027.1225465-1-lains@archlinux.org>
+         <265604c19e2e875ca17e4cf713000492b9ffd8d8.camel@riseup.net>
+         <0a3aa6fb-3f22-d6f5-1748-42430f6e7ccc@redhat.com>
+Organization: Archlinux
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-VziGShXEcAn3/QByDcN+"
+Date:   Sat, 30 Jan 2021 20:40:52 +0000
 MIME-Version: 1.0
+User-Agent: Evolution 3.38.3 
+Authentication-Results: mail.archlinux.org;
+        auth=pass smtp.auth=ffy00 smtp.mailfrom=lains@archlinux.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-01-28 at 14:07 +0100, Lukasz Majczak wrote:
-> There is a missing call to tpm_request_locality before the call to
-> the tpm_get_timeouts() and tpm_tis_probe_irq_single(). As the current
-> approach might work for tpm2, it fails for tpm1.x - in that case
-> call to tpm_get_timeouts() or tpm_tis_probe_irq_single()
-> without locality fails and in turn causes tpm_tis_core_init() to fail.
-> Tested on Samsung Chromebook Pro (Caroline).
+
+--=-VziGShXEcAn3/QByDcN+
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, 2021-01-30 at 21:27 +0100, Hans de Goede wrote:
+> Hi,
 >=20
-> Signed-off-by: Lukasz Majczak <lma@semihalf.com>
-
-Is it possible that you test against linux-next and see if any
-problems still arise? I've applied the locality fixes from James.
-
-> ---
-> Jarkko, James, Guenter
+> On 1/30/21 8:14 PM, Filipe La=C3=ADns wrote:
+> > Hans,
+> >=20
+> > You added support for non unifying receivers in
+> > 74808f9115cee2bb53e7161432959f3e87b631e4, could you please test and mak=
+e
+> > sure
+> > this cause any breakage with your devices?
+> >=20
+> > AFAIK, they could only break if they have a 0x01 report which is differ=
+ent
+> > from
+> > kbd_descriptor.
 >=20
-> I=E2=80=99m aware about the other thread, but it seems to be dead for a f=
-ew months.
-> Here is the small patch as fixing this specific issue
-> would allow us to unblock the ChromeOs development.=20
-> We want to upstream all of our patches,
-> so the ChromeOs will not diverge even more,
-> so I'm hoping this could be applied, if you see it neat enough.
-
-The usual approach is that you construct a series picking the pre-existing
-fixes and on top of that create your own, if any required.
-
-> Best regards,
-> Lukasz
-
-/Jarkko
-
+> I don't have any receivers hitting the "case 7" which you are modifying,
+> so I don't expect to see any effects of this change on my hw.
 >=20
-> v1 -> v2:
-> =C2=A0- fixed typos
-> =C2=A0- as there is no need to enable clock, switched to
-> =C2=A0=C2=A0 use only tpm_request/relinquish_locality calls
-> =C2=A0- narrowed down boundaries of tpm_request/relinquish_locality calls
-> =C2=A0
-> =C2=A0drivers/char/tpm/tpm-chip.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 4=
- ++--
-> =C2=A0drivers/char/tpm/tpm-interface.c | 11 +++++++++--
-> =C2=A0drivers/char/tpm/tpm.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 |=C2=A0 2 ++
-> =C2=A0drivers/char/tpm/tpm_tis_core.c=C2=A0 | 12 ++++++++++--
-> =C2=A04 files changed, 23 insertions(+), 6 deletions(-)
+> Regards,
 >=20
-> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
-> index ddaeceb7e109..5351963a4b19 100644
-> --- a/drivers/char/tpm/tpm-chip.c
-> +++ b/drivers/char/tpm/tpm-chip.c
-> @@ -32,7 +32,7 @@ struct class *tpm_class;
-> =C2=A0struct class *tpmrm_class;
-> =C2=A0dev_t tpm_devt;
-> =C2=A0
-> -static int tpm_request_locality(struct tpm_chip *chip)
-> +int tpm_request_locality(struct tpm_chip *chip)
-> =C2=A0{
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int rc;
-> =C2=A0
-> @@ -47,7 +47,7 @@ static int tpm_request_locality(struct tpm_chip *chip)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return 0;
-> =C2=A0}
-> =C2=A0
-> -static void tpm_relinquish_locality(struct tpm_chip *chip)
-> +void tpm_relinquish_locality(struct tpm_chip *chip)
-> =C2=A0{
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int rc;
-> =C2=A0
-> diff --git a/drivers/char/tpm/tpm-interface.c b/drivers/char/tpm/tpm-inte=
-rface.c
-> index 1621ce818705..69309b2bea6a 100644
-> --- a/drivers/char/tpm/tpm-interface.c
-> +++ b/drivers/char/tpm/tpm-interface.c
-> @@ -243,8 +243,15 @@ int tpm_get_timeouts(struct tpm_chip *chip)
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (chip->flags & TPM_CHI=
-P_FLAG_TPM2)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0return tpm2_get_timeouts(chip);
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0else
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0return tpm1_get_timeouts(chip);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0else {
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0ssize_t ret =3D tpm_request_locality(chip);
-> +
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0if (ret)
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return re=
-t;
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0ret =3D tpm1_get_timeouts(chip);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0tpm_relinquish_locality(chip);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0return ret;
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> =C2=A0}
-> =C2=A0EXPORT_SYMBOL_GPL(tpm_get_timeouts);
-> =C2=A0
-> diff --git a/drivers/char/tpm/tpm.h b/drivers/char/tpm/tpm.h
-> index 947d1db0a5cc..8c13008437dd 100644
-> --- a/drivers/char/tpm/tpm.h
-> +++ b/drivers/char/tpm/tpm.h
-> @@ -193,6 +193,8 @@ static inline void tpm_msleep(unsigned int delay_msec=
-)
-> =C2=A0
-> =C2=A0int tpm_chip_start(struct tpm_chip *chip);
-> =C2=A0void tpm_chip_stop(struct tpm_chip *chip);
-> +int tpm_request_locality(struct tpm_chip *chip);
-> +void tpm_relinquish_locality(struct tpm_chip *chip);
-> =C2=A0struct tpm_chip *tpm_find_get_ops(struct tpm_chip *chip);
-> =C2=A0__must_check int tpm_try_get_ops(struct tpm_chip *chip);
-> =C2=A0void tpm_put_ops(struct tpm_chip *chip);
-> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_c=
-ore.c
-> index 92c51c6cfd1b..0ae675e8cf2f 100644
-> --- a/drivers/char/tpm/tpm_tis_core.c
-> +++ b/drivers/char/tpm/tpm_tis_core.c
-> @@ -754,9 +754,17 @@ static int tpm_tis_gen_interrupt(struct tpm_chip *ch=
-ip)
-> =C2=A0
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (chip->flags & TPM_CHI=
-P_FLAG_TPM2)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0return tpm2_get_tpm_pt(chip, 0x100, &cap2, desc);
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0else
-> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0return tpm1_getcap(chip, TPM_CAP_PROP_TIS_TIMEOUT, &cap, =
-desc,
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0else {
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0ssize_t ret =3D tpm_request_locality(chip);
-> +
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0if (ret)
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return re=
-t;
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0ret =3D tpm1_getcap(chip, TPM_CAP_PROP_TIS_TIMEOUT, &cap,=
- desc,
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0tpm_relinquish_locality(chip);
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0return ret;
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
-> +
-> =C2=A0}
-> =C2=A0
-> =C2=A0/* Register the IRQ and issue a command that will cause an interrup=
-t. If an
+> Hans
+>=20
+
+Alright, then we should not have any other receivers that use this protocol=
+.
+
+Cheers,
+Filipe La=C3=ADns
+
+--=-VziGShXEcAn3/QByDcN+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEE0jW0leqs33gyftiw+JPGdIFqqV0FAmAVxE0ACgkQ+JPGdIFq
+qV0vMw/+MGym95j68jfbztaS4iV/uZYL78DwpwvPywRXfT8XuH/hub5ZHWWQnfDt
+8m3aq4Bz2aT9A+832vL9okuLHqVJ75kzw+cCaKw01VlhPifngRpiieseC8VqTiFI
+BVgpCZ3iqL4/DkTaBnzzggLH6vZ0FO6X+Nok/VZ2FBK3ykaYZ9YeKNs7RYMY/Or5
+rORoOudfXC8OKd5sYvTmHH8/VaQQwum0TY/YMdYfKAN04A6s3hKW3QJmpibbR8sm
+WeAROHEtwuatYKh9Eu5K/nhpxG8hK0I0prEU/sR997kbRJH5nxALN6SjgYI0ojyI
+RgAciTngRFpVX7LEiKyAHOUA4eklJV0iiVPlYsDnH2kISN8uQRDyU0fTIvmM7iGz
+RiSVlR5AUK+Xi7wPP5fjOgyYZ6APcf4j6kgR5JC2F8lXM40qhhdCgpqD3YWVg6bE
+f9qJn+sBu6VmfV5Ih7QRYKMg6Gs5MyJZPaws3zikpLqZxP1v8Lfi8hUQoCCnvQgM
+m6GNe6KCqs8Et57O3kpPWAUA0MW+WppSOjTSvyhyn2BxV718/qhYUEA1ocYO0tpI
+F5nkRPTwhqoDm3N17x8k3HSLV/WYFop6w0mOWZQpjTE3eM5c6hn1OviG2ZdqSBqe
+pKEG8HYIbWNJqqBIFlJ/s830kB2wRRjrd5YW5tJwRT3zG8lkwLs=
+=x1uj
+-----END PGP SIGNATURE-----
+
+--=-VziGShXEcAn3/QByDcN+--
 
