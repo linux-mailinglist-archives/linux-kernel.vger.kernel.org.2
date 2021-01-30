@@ -2,128 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB4C3094B7
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 12:26:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37BE23094B8
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 12:26:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbhA3LWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 06:22:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54562 "EHLO
+        id S230258AbhA3LY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 06:24:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbhA3LWh (ORCPT
+        with ESMTP id S230111AbhA3LYx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 06:22:37 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA4F3C061573;
-        Sat, 30 Jan 2021 03:21:56 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id f19so13529638ljn.5;
-        Sat, 30 Jan 2021 03:21:56 -0800 (PST)
+        Sat, 30 Jan 2021 06:24:53 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E551C061573
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 03:24:13 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id y10so2713936plk.7
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 03:24:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=jg0IO2721rJAPRyDMSXIv6xNyC+AJXZG5LyquGPskMs=;
-        b=gLrXY82j7HE9RbjUVEdPaUxV4sY6rEhZ5WRZeDyiYGVyzx2DLtVexh6dMu5nJc0H5b
-         GVHi441+A3byd7yAA38T6NhT78HyUWEcCaTrOG93DHvx1uqikzISJ7vlwT41MNRnJ6jG
-         n7MKn8VWB0EgTnugTS/PagR31MV4Gq+cStucQwrnxW44vLiM3mvmXNdvheQSbOHgTLYU
-         bdOf5pQr7eQVJg8AnerLNzD5uwTxbwQt/6dnrf2sZliORiUfkAu3uZbyWuSoiCvHGBTz
-         qWU6Mflt2o970TYdvCWqNLTRkJr2IMm7S9rcAq3YGB15Xg2qn+yidIiBftMhim+CosTF
-         owpg==
+        h=from:to:cc:subject:date:message-id;
+        bh=fl6RQ7WSY02b+Iix5UTUs3UQEEz4GozFuGFCITkdTGg=;
+        b=YBOYHEizDP1M6mvMVE/VcdQMGzyl+BcF1ct4jewLHU27UYKg0n0tHmGS04XTTketX+
+         EoVxRB0SDKBYpOz5qGmb4yV5J/eLs3lV2BIxLJU4Ti3TlhZ4Plf0zAMBXZgXQKxlQ1fT
+         Nx9vQ3J3PYKBJCLEvzKzRgp+PssG4DTTOzoqhjFrMN9k/FCVRhMegfc1zwBmJV7FsU77
+         OH6noseTsZBA+z4OWnofgKaaR7oBwEddlusaE9l/Q/Y0Bj7th6543+QdPwBpM7OhA74e
+         zSYoHusELdtajxiaFzt3mfBjrvmmo+Y7hKBUTk68UbT818bufxTU/TzOgs9lvH1kawsK
+         iQWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=jg0IO2721rJAPRyDMSXIv6xNyC+AJXZG5LyquGPskMs=;
-        b=RfU5Ew70ZP7iMsH3wb4B4xK6xoQ8CIIpzakj67z9ObyMTuWxdU5FCMuvqVcDO4+qyg
-         dhxZV70M1FbpjXo7RhvVLfzGawivUx6COlCJt+C9IVLBcGFGeYGUpUpcq4YZAhvVP0D7
-         HeojMA29Rcj36FshHofbCSGbZByqXNKTyg4VMAJUKMwSvsGNZs/b+FuM+uXTNwDWdqJ0
-         ndrGkLHrysC5SOsCBvm1RJussR1p+ElAfOWmbGujPN97K60V1jOBgczMzXHHErcaiELz
-         Q+15cNpd5+UwNDev+mo1nC0cbe0MsehTXdKhQNiEwy5ldylIsP4+ykxE7bfxXbVL1Qwf
-         aKZg==
-X-Gm-Message-State: AOAM533Cp3wJE9hLvkTws3fQ+dgTJUeLNC3fa+2k7gK6VnwkLGvzprss
-        Pfav6gTpXJ7/gr9q6+/m+e4=
-X-Google-Smtp-Source: ABdhPJxvfD2G/QjPf3AbJh1DHeaFNULkTrE7VlnvvQfxWXHid+/Y4RaazE7KdJmZiIGlhRwfcAF8wQ==
-X-Received: by 2002:a2e:7803:: with SMTP id t3mr2958909ljc.202.1612005714982;
-        Sat, 30 Jan 2021 03:21:54 -0800 (PST)
-Received: from pc636 (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id 13sm2327929lft.5.2021.01.30.03.21.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Jan 2021 03:21:54 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Sat, 30 Jan 2021 12:21:52 +0100
-To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "paulmck@kernel.org" <paulmck@kernel.org>,
-        "joel@joelfernandes.org" <joel@joelfernandes.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: =?utf-8?B?5Zue5aSNOiBbUEFUQw==?= =?utf-8?Q?H?= v2] kvfree_rcu:
- Release page cache under memory pressure
-Message-ID: <20210130112152.GA1977@pc636>
-References: <20210129080442.16055-1-qiang.zhang@windriver.com>
- <20210129141953.GA29827@pc638.lan>
- <BYAPR11MB2632B16DBD0A3EBEA5EA2FAFFFB89@BYAPR11MB2632.namprd11.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <BYAPR11MB2632B16DBD0A3EBEA5EA2FAFFFB89@BYAPR11MB2632.namprd11.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=fl6RQ7WSY02b+Iix5UTUs3UQEEz4GozFuGFCITkdTGg=;
+        b=iyB5SwP79aiNBGri6M8fkhsugmdnaN9jUfeGtQjXkvfxJE12JwjLHh+Bf7DmPDSmKV
+         F3/KlTc8aPhljxB1jjQJjEIvGnnjbZp3QSdjurVBlMyKCi3kZAJ0ktZS9IPmo9mtTr+X
+         hsydiHZfpmMgAjNvinlR5CY8k2h9m4y95eK8A62JoafroFpz9ZHMhXVaXXsG/BXOQ/G5
+         6InPFs85vc7skPw5s9Zm7a/17zZSlC4FWQ1K5Nu/H8T1iwEe/eo6troZHe8ffSlzj9sv
+         OWWA60kXJdPYdTowlrPBI9oUpaBODUn6hNzj0h9WF41iztH0Xaz1M95PKTjbp+mz1/XD
+         Re6Q==
+X-Gm-Message-State: AOAM5317NZ0dtd5Oq3yKnpROO+xcYbHAeLU1LMlFOIS/DxW8h/1ogzNq
+        TH3siT0igHdzraQRgzsD/khNAtG94sA=
+X-Google-Smtp-Source: ABdhPJyrHBNQf1zG5XY6QM8xUGdHu0RAlQtJRgsrBDfh9aHMy+iPg+JRRGXR/xrjPI9M4ILhYQvjhQ==
+X-Received: by 2002:a17:90b:4c85:: with SMTP id my5mr8967401pjb.225.1612005852655;
+        Sat, 30 Jan 2021 03:24:12 -0800 (PST)
+Received: from localhost.localdomain ([125.227.22.95])
+        by smtp.gmail.com with ESMTPSA id gk2sm10487163pjb.6.2021.01.30.03.24.09
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 30 Jan 2021 03:24:12 -0800 (PST)
+From:   Stephen Zhang <stephenzhangzsd@gmail.com>
+To:     jason.wessel@windriver.com, daniel.thompson@linaro.org,
+        dianders@chromium.org, gustavoars@kernel.org
+Cc:     kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        Stephen Zhang <stephenzhangzsd@gmail.com>
+Subject: [PATCH v3] kdb: kdb_support: Fix debugging information problem
+Date:   Sat, 30 Jan 2021 19:24:00 +0800
+Message-Id: <1612005840-4342-1-git-send-email-stephenzhangzsd@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 06:47:31AM +0000, Zhang, Qiang wrote:
-> 
-> 
-> ________________________________________
-> 发件人: Uladzislau Rezki <urezki@gmail.com>
-> 发送时间: 2021年1月29日 22:19
-> 收件人: Zhang, Qiang
-> 抄送: urezki@gmail.com; paulmck@kernel.org; joel@joelfernandes.org; rcu@vger.kernel.org; linux-kernel@vger.kernel.org
-> 主题: Re: [PATCH v2] kvfree_rcu: Release page cache under memory pressure
-> 
-> [Please note: This e-mail is from an EXTERNAL e-mail address]
-> 
-> On Fri, Jan 29, 2021 at 04:04:42PM +0800, qiang.zhang@windriver.com wrote:
-> > From: Zqiang <qiang.zhang@windriver.com>
-> >
-> > Add free per-cpu existing krcp's page cache operation, when
-> > the system is under memory pressure.
-> >
-> > Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-> > ---
-> >  kernel/rcu/tree.c | 25 +++++++++++++++++++++++++
-> >  1 file changed, 25 insertions(+)
-> >
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index c1ae1e52f638..ec098910d80b 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -3571,17 +3571,40 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
-> >  }
-> >  EXPORT_SYMBOL_GPL(kvfree_call_rcu);
-> >
-> > +static int free_krc_page_cache(struct kfree_rcu_cpu *krcp)
-> > +{
-> > +     unsigned long flags;
-> > +     struct kvfree_rcu_bulk_data *bnode;
-> > +     int i;
-> > +
-> > +     for (i = 0; i < rcu_min_cached_objs; i++) {
-> > +             raw_spin_lock_irqsave(&krcp->lock, flags);
-> >I am not sure why we should disable IRQs. I think it can be >avoided.
-> 
-> Suppose in multi CPU system, the kfree_rcu_shrink_scan function is runing on CPU2,
-> and we just traverse to CPU2, and then call free_krc_page_cache function,
-> if not disable irq, a interrupt may be occurs on CPU2 after the CPU2 corresponds to krcp variable 's lock be acquired,  if the interrupt or softirq handler function to call kvfree_rcu function, in this function , acquire CPU2 corresponds to krcp variable 's lock , will happen deadlock.
-> Or in single CPU scenario.
-> 
-Right. Deadlock scenario. It went away from my head during writing that :)
+There are several common patterns.
 
-Thanks!
+0:
+        kdb_printf("...",...);
 
---
-Vlad Rezki
+which is the normal one.
+
+1:
+        kdb_printf("%s: "...,__func__,...)
+
+We could improve '1' to this :
+
+        #define kdb_func_printf(format, args...) \
+                   kdb_printf("%s: " format, __func__, ## args)
+
+2:
+        if(KDB_DEBUG(AR))
+                kdb_printf("%s "...,__func__,...);
+
+We could improve '2' to this :
+        #define kdb_dbg_printf(mask, format, args...) \
+                           do { \
+                                        if (KDB_DEBUG(mask)) \
+                                                kdb_func_printf(format, ## args); \
+                           } while (0)
+
+In additon, we changed the format code of size_t to %zu.
+
+Signed-off-by: Stephen Zhang <stephenzhangzsd@gmail.com>
+---
+v1->v2 Changelog:
+- Add 'mask' parameter in kdb_dbg_printf()
+
+Thanks to Daniel and Doug's suggestions and review.
+
+v2->v3 Changelog:
+- Adjust alignment for some lines.
+
+Suggested by Douglas Anderson.
+
+ kernel/debug/kdb/kdb_private.h | 10 ++++++++
+ kernel/debug/kdb/kdb_support.c | 53 ++++++++++++++++++------------------------
+ 2 files changed, 32 insertions(+), 31 deletions(-)
+
+diff --git a/kernel/debug/kdb/kdb_private.h b/kernel/debug/kdb/kdb_private.h
+index a4281fb..0a56d35 100644
+--- a/kernel/debug/kdb/kdb_private.h
++++ b/kernel/debug/kdb/kdb_private.h
+@@ -254,4 +254,14 @@ extern unsigned long kdb_task_state(const struct task_struct *p,
+ #define	KDB_WORD_SIZE	((int)sizeof(unsigned long))
+ 
+ #endif /* CONFIG_KGDB_KDB */
++
++#define kdb_func_printf(format, args...) \
++	kdb_printf("%s: " format, __func__, ## args)
++
++#define kdb_dbg_printf(mask, format, args...) \
++	do { \
++		if (KDB_DEBUG(mask)) \
++			kdb_func_printf(format, ## args); \
++	} while (0)
++
+ #endif	/* !_KDBPRIVATE_H */
+diff --git a/kernel/debug/kdb/kdb_support.c b/kernel/debug/kdb/kdb_support.c
+index 6226502..99a6232 100644
+--- a/kernel/debug/kdb/kdb_support.c
++++ b/kernel/debug/kdb/kdb_support.c
+@@ -39,20 +39,15 @@
+  */
+ int kdbgetsymval(const char *symname, kdb_symtab_t *symtab)
+ {
+-	if (KDB_DEBUG(AR))
+-		kdb_printf("kdbgetsymval: symname=%s, symtab=%px\n", symname,
+-			   symtab);
++	kdb_dbg_printf(AR, "symname=%s, symtab=%px\n", symname, symtab);
+ 	memset(symtab, 0, sizeof(*symtab));
+ 	symtab->sym_start = kallsyms_lookup_name(symname);
+ 	if (symtab->sym_start) {
+-		if (KDB_DEBUG(AR))
+-			kdb_printf("kdbgetsymval: returns 1, "
+-				   "symtab->sym_start=0x%lx\n",
+-				   symtab->sym_start);
++		kdb_dbg_printf(AR, "returns 1,symtab->sym_start=0x%lx\n",
++			      symtab->sym_start);
+ 		return 1;
+ 	}
+-	if (KDB_DEBUG(AR))
+-		kdb_printf("kdbgetsymval: returns 0\n");
++	kdb_dbg_printf(AR, "returns 0\n");
+ 	return 0;
+ }
+ EXPORT_SYMBOL(kdbgetsymval);
+@@ -87,15 +82,14 @@ int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
+ #define knt1_size 128		/* must be >= kallsyms table size */
+ 	char *knt1 = NULL;
+ 
+-	if (KDB_DEBUG(AR))
+-		kdb_printf("kdbnearsym: addr=0x%lx, symtab=%px\n", addr, symtab);
++	kdb_dbg_printf(AR, "addr=0x%lx, symtab=%px\n", addr, symtab);
+ 	memset(symtab, 0, sizeof(*symtab));
+ 
+ 	if (addr < 4096)
+ 		goto out;
+ 	knt1 = debug_kmalloc(knt1_size, GFP_ATOMIC);
+ 	if (!knt1) {
+-		kdb_printf("kdbnearsym: addr=0x%lx cannot kmalloc knt1\n",
++		kdb_func_printf("addr=0x%lx cannot kmalloc knt1\n",
+ 			   addr);
+ 		goto out;
+ 	}
+@@ -147,11 +141,10 @@ int kdbnearsym(unsigned long addr, kdb_symtab_t *symtab)
+ 
+ 	if (symtab->mod_name == NULL)
+ 		symtab->mod_name = "kernel";
+-	if (KDB_DEBUG(AR))
+-		kdb_printf("kdbnearsym: returns %d symtab->sym_start=0x%lx, "
+-		   "symtab->mod_name=%px, symtab->sym_name=%px (%s)\n", ret,
+-		   symtab->sym_start, symtab->mod_name, symtab->sym_name,
+-		   symtab->sym_name);
++	kdb_dbg_printf(AR, "returns %d symtab->sym_start=0x%lx, "
++		"symtab->mod_name=%px, symtab->sym_name=%px (%s)\n", ret,
++		symtab->sym_start, symtab->mod_name, symtab->sym_name,
++		symtab->sym_name);
+ 
+ out:
+ 	debug_kfree(knt1);
+@@ -328,7 +321,7 @@ int kdb_getarea_size(void *res, unsigned long addr, size_t size)
+ 	int ret = copy_from_kernel_nofault((char *)res, (char *)addr, size);
+ 	if (ret) {
+ 		if (!KDB_STATE(SUPPRESS)) {
+-			kdb_printf("kdb_getarea: Bad address 0x%lx\n", addr);
++			kdb_func_printf("Bad address 0x%lx\n", addr);
+ 			KDB_STATE_SET(SUPPRESS);
+ 		}
+ 		ret = KDB_BADADDR;
+@@ -353,7 +346,7 @@ int kdb_putarea_size(unsigned long addr, void *res, size_t size)
+ 	int ret = copy_from_kernel_nofault((char *)addr, (char *)res, size);
+ 	if (ret) {
+ 		if (!KDB_STATE(SUPPRESS)) {
+-			kdb_printf("kdb_putarea: Bad address 0x%lx\n", addr);
++			kdb_func_printf("Bad address 0x%lx\n", addr);
+ 			KDB_STATE_SET(SUPPRESS);
+ 		}
+ 		ret = KDB_BADADDR;
+@@ -435,7 +428,7 @@ int kdb_getphysword(unsigned long *word, unsigned long addr, size_t size)
+ 		fallthrough;
+ 	default:
+ 		diag = KDB_BADWIDTH;
+-		kdb_printf("kdb_getphysword: bad width %ld\n", (long) size);
++		kdb_func_printf("bad width %zu\n", size);
+ 	}
+ 	return diag;
+ }
+@@ -484,7 +477,7 @@ int kdb_getword(unsigned long *word, unsigned long addr, size_t size)
+ 		fallthrough;
+ 	default:
+ 		diag = KDB_BADWIDTH;
+-		kdb_printf("kdb_getword: bad width %ld\n", (long) size);
++		kdb_func_printf("bad width %zu\n", size);
+ 	}
+ 	return diag;
+ }
+@@ -528,7 +521,7 @@ int kdb_putword(unsigned long addr, unsigned long word, size_t size)
+ 		fallthrough;
+ 	default:
+ 		diag = KDB_BADWIDTH;
+-		kdb_printf("kdb_putword: bad width %ld\n", (long) size);
++		kdb_func_printf("bad width %zu\n", size);
+ 	}
+ 	return diag;
+ }
+@@ -602,8 +595,7 @@ unsigned long kdb_task_state_string(const char *s)
+ 			res = ~0UL;
+ 			break;
+ 		default:
+-			  kdb_printf("%s: unknown flag '%c' ignored\n",
+-				     __func__, *s);
++			  kdb_func_printf("unknown flag '%c' ignored\n", *s);
+ 			  break;
+ 		}
+ 		++s;
+@@ -884,18 +876,17 @@ void debug_kusage(void)
+ 	if (!debug_kusage_one_time)
+ 		goto out;
+ 	debug_kusage_one_time = 0;
+-	kdb_printf("%s: debug_kmalloc memory leak dah_first %d\n",
+-		   __func__, dah_first);
++	kdb_func_printf("debug_kmalloc memory leak dah_first %d\n", dah_first);
+ 	if (dah_first) {
+ 		h_used = (struct debug_alloc_header *)debug_alloc_pool;
+-		kdb_printf("%s: h_used %px size %d\n", __func__, h_used,
++		kdb_func_printf("h_used %px size %d\n", h_used,
+ 			   h_used->size);
+ 	}
+ 	do {
+ 		h_used = (struct debug_alloc_header *)
+ 			  ((char *)h_free + dah_overhead + h_free->size);
+-		kdb_printf("%s: h_used %px size %d caller %px\n",
+-			   __func__, h_used, h_used->size, h_used->caller);
++		kdb_func_printf("h_used %px size %d caller %px\n",
++			  h_used, h_used->size, h_used->caller);
+ 		h_free = (struct debug_alloc_header *)
+ 			  (debug_alloc_pool + h_free->next);
+ 	} while (h_free->next);
+@@ -903,8 +894,8 @@ void debug_kusage(void)
+ 		  ((char *)h_free + dah_overhead + h_free->size);
+ 	if ((char *)h_used - debug_alloc_pool !=
+ 	    sizeof(debug_alloc_pool_aligned))
+-		kdb_printf("%s: h_used %px size %d caller %px\n",
+-			   __func__, h_used, h_used->size, h_used->caller);
++		kdb_func_printf("h_used %px size %d caller %px\n",
++			   h_used, h_used->size, h_used->caller);
+ out:
+ 	spin_unlock(&dap_lock);
+ }
+-- 
+1.8.3.1
+
