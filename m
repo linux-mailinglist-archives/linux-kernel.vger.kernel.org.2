@@ -2,81 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A971309363
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:30:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F394830935D
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:28:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbhA3J3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 04:29:23 -0500
-Received: from mga02.intel.com ([134.134.136.20]:47814 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231668AbhA3J1c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 04:27:32 -0500
-IronPort-SDR: HvVow2k8quNeuvP0f+7KtKadGH1lgI991vr0/VCFu3uw0LAaOIX7osn7FArhgubDNAnKGAkmcB
- PJcBqzaZaRcA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="167616204"
-X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="167616204"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 22:49:54 -0800
-IronPort-SDR: Q64dFHw/De9JkkTQE2S6EZVPZpB4ve2EHh7SSIZpC+NPBOo8d4MYoglWOfzJejikq6BUTd5Svo
- PVFSc6EVjo3Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="576761034"
-Received: from lkp-server02.sh.intel.com (HELO 625d3a354f04) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 29 Jan 2021 22:49:52 -0800
-Received: from kbuild by 625d3a354f04 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1l5k4t-0004LQ-UR; Sat, 30 Jan 2021 06:49:51 +0000
-Date:   Sat, 30 Jan 2021 14:49:27 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     kbuild-all@lists.01.org, David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Chris Mason <chris.mason@fusionio.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] btrfs: fix boolreturn.cocci warnings
-Message-ID: <20210130064927.GA96852@a09516cde295>
-References: <202101301416.gmP3XmvI-lkp@intel.com>
+        id S231849AbhA3J2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 04:28:41 -0500
+Received: from smtprelay0013.hostedemail.com ([216.40.44.13]:45002 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231843AbhA3J0n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 04:26:43 -0500
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave02.hostedemail.com (Postfix) with ESMTP id E87B61801B76B
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 07:03:16 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 1E126181D341E;
+        Sat, 30 Jan 2021 07:01:34 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:2895:3138:3139:3140:3141:3142:3352:3622:3865:3867:3868:3871:3872:4250:4321:5007:6737:7576:7652:10004:10400:10848:11026:11232:11473:11658:11914:12043:12048:12297:12438:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:21080:21627:21990:30046:30054:30055:30064:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: tail00_061180a275af
+X-Filterd-Recvd-Size: 2026
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf15.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 30 Jan 2021 07:01:31 +0000 (UTC)
+Message-ID: <5137ab3793f03c17a719445f14131c16e7766434.camel@perches.com>
+Subject: Re: [PATCH v3 28/34] misc: Intel tsens IA host driver.
+From:   Joe Perches <joe@perches.com>
+To:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
+        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        gregkh@linuxfoundation.org, corbet@lwn.net,
+        palmerdabbelt@google.com, paul.walmsley@sifive.com,
+        peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
+        jassisinghbrar@gmail.com
+Cc:     linux-kernel@vger.kernel.org,
+        "C, Udhayakumar" <udhayakumar.c@intel.com>, C@linux.intel.com
+Date:   Fri, 29 Jan 2021 23:01:30 -0800
+In-Reply-To: <20210130022124.65083-29-mgross@linux.intel.com>
+References: <20210130022124.65083-1-mgross@linux.intel.com>
+         <20210130022124.65083-29-mgross@linux.intel.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202101301416.gmP3XmvI-lkp@intel.com>
-X-Patchwork-Hint: ignore
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: kernel test robot <lkp@intel.com>
+On Fri, 2021-01-29 at 18:20 -0800, mgross@linux.intel.com wrote:
+> From: "C, Udhayakumar" <udhayakumar.c@intel.com>
+> 
+> Add Intel tsens IA host driver for Intel Edge.AI Computer Vision
+> platforms.
+[]
+> diff --git a/drivers/misc/intel_tsens/intel_tsens_host.c b/drivers/misc/intel_tsens/intel_tsens_host.c
+[]
+> +static int tsens_i2c_smbus_read_byte_data(struct i2c_client *i2c, u8 command,
+> +					  u8 *i2c_val)
+> +{
+> +	union i2c_smbus_data data;
+> +	int status;
+> +
+> +	status = i2c_smbus_xfer(i2c->adapter, i2c->addr, i2c->flags,
+> +				I2C_SMBUS_READ, command,
+> +				I2C_SMBUS_BYTE_DATA, &data);
 
-fs/btrfs/volumes.c:1462:10-11: WARNING: return of 0/1 in function 'dev_extent_hole_check_zoned' with return type bool
+this can fail
 
- Return statements in functions returning bool should use
- true/false instead of 1/0.
-Generated by: scripts/coccinelle/misc/boolreturn.cocci
+> +	*i2c_val = data.byte;
 
-Fixes: 69e81c8e2824 ("btrfs: implement zoned chunk allocator")
-CC: Naohiro Aota <naohiro.aota@wdc.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: kernel test robot <lkp@intel.com>
----
+Is it appropriate to set the value if it failed and data was
+not initialized?
 
-tree:   https://github.com/kdave/btrfs-devel.git for-next-20210129
-head:   6e043613b2c4377ce095ea826160d42031156d35
-commit: 69e81c8e2824ec495071293cfebb74faca15e616 [14784/14851] btrfs: implement zoned chunk allocator
+> +	return status;
+> +}
+> +
+> +/**
+> + * intel_tsens_get_temp - get updated temperatue
 
- volumes.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Might want to use codespell on all files.
 
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1459,7 +1459,7 @@ static bool dev_extent_hole_check_zoned(
- 		if (ret == -ERANGE) {
- 			*hole_start += *hole_size;
- 			*hole_size = 0;
--			return 1;
-+			return true;
- 		}
- 
- 		*hole_start += zone_size;
+
