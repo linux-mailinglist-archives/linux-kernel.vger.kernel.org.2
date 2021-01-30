@@ -2,78 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D03B8309730
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 18:24:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3F6309734
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 18:24:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231863AbhA3RYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 12:24:31 -0500
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:43185 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231627AbhA3RY1 (ORCPT
+        id S231964AbhA3RYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 12:24:40 -0500
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:34218 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231701AbhA3RYa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 12:24:27 -0500
-Received: by mail-ot1-f43.google.com with SMTP id v1so11926793ott.10;
-        Sat, 30 Jan 2021 09:24:12 -0800 (PST)
+        Sat, 30 Jan 2021 12:24:30 -0500
+Received: by mail-ot1-f44.google.com with SMTP id a109so11968043otc.1;
+        Sat, 30 Jan 2021 09:24:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=5lm7/hV6c65Q/cr5m5sS/rDOMt7YQe2hob//4UI9ygY=;
-        b=jPnbMbKNeEoUVJ/B+G0yZ2HWful3K9ag+IuSg95xQDVpUiAVfCTycl7JxX48UXhDEt
-         obQYNyUQCmjeVOlfGENqlhK2G7it/q5DSCnyQmMmth3192uLyRhgVIdfbljhnVUOggkg
-         bHe+Gx3fEpSyF0oQoU14EUwryct69rYyqEt5nYRIwlc4so/mqBKHI0CxjUZhxwfUnPpM
-         R8CDGH7jMiYiQlMvi3Qf1SYn9lfjsTzAzX1KCpIn/F78tm1YWMCfaR89s6deeU468tM9
-         BI5LLO2tCRXh3SNWr0tj4cLr/thsdKRDIl46TBMrty/PygROvCqw934Ospuu0DIJtqy5
-         BjuA==
-X-Gm-Message-State: AOAM531XB/cbvKYxnku9SMLjJFNWsY9dhmIzPY4ZTFRjpc088+rsKPwN
-        rRsrP+hh0E/2DX+wBatj8w==
-X-Google-Smtp-Source: ABdhPJyhGSjrtearJ7B0HPT/DK9nWeCKSNSbetxEe9fIbZlYqZYRIWpOtCXi+5rFhjJ/QqYCOH5yRA==
-X-Received: by 2002:a9d:58c9:: with SMTP id s9mr6633245oth.332.1612027427057;
-        Sat, 30 Jan 2021 09:23:47 -0800 (PST)
+        bh=9UU0fPRjeLPZnus41uS3atTuyIZgZVJ3nKD7dA4ziy8=;
+        b=OastlA+1DEOnePnRuPZb14q19Ym+QMqcLlv7hBPBSeb0+K4zGIQyrf0cH6XRZtw7hv
+         V3nnL8+q28+dga+UqDa42adRxJkhVvdz28ZovM4wce01jpuHsy5+ga7RIzPy901qZfVV
+         84f6/+5wweQ0HPT2odTTBKmM0k7v0V8nDOhQJpef4/yADH0WXnIUoKZWXiIvF+gmD78F
+         Nfg+Rw3ENXEoRCWpSKyumo13bTGR0d/9cmCSdjAqk9rDyE1alMy0pycVYBZseKj11nIj
+         AqW63jgHHZ07P5pckI+Ky3xqp4Ri7zm3KwMl23Aphnj2Cd7csqfd21rg5MbpUpVmZt1V
+         rNHQ==
+X-Gm-Message-State: AOAM530mzneI0D3HC81WokjqKCtadoUgOiTN0djZw2p+XY5YPMiKFRNa
+        ypQGpAAbgeoe7sWa6/S8gA==
+X-Google-Smtp-Source: ABdhPJz9x2jS85HnLhL4DpdmLb2GJWo4CXvMaGkSiz0AtOqPIs9vaKayPjx3qX3R0yiVO24Y+b/j9w==
+X-Received: by 2002:a9d:5909:: with SMTP id t9mr6041294oth.263.1612027429775;
+        Sat, 30 Jan 2021 09:23:49 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id f92sm2207955otb.21.2021.01.30.09.23.45
+        by smtp.gmail.com with ESMTPSA id j1sm3167340oiw.50.2021.01.30.09.23.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Jan 2021 09:23:45 -0800 (PST)
-Received: (nullmailer pid 1419432 invoked by uid 1000);
+        Sat, 30 Jan 2021 09:23:48 -0800 (PST)
+Received: (nullmailer pid 1419428 invoked by uid 1000);
         Sat, 30 Jan 2021 17:23:40 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     mgross@linux.intel.com
-Cc:     palmerdabbelt@google.com, linux-kernel@vger.kernel.org,
-        dragan.cvetic@xilinx.com, paul.walmsley@sifive.com,
-        jassisinghbrar@gmail.com, arnd@arndb.de, bp@suse.de,
-        robh+dt@kernel.org, markgross@kernel.org, shawnguo@kernel.org,
-        gregkh@linuxfoundation.org, damien.lemoal@wdc.com, corbet@lwn.net,
-        peng.fan@nxp.com, devicetree@vger.kernel.org,
-        "C, Udhayakumar" <udhayakumar.c@intel.com>
-In-Reply-To: <20210130022124.65083-68-mgross@linux.intel.com>
-References: <20210130022124.65083-1-mgross@linux.intel.com> <20210130022124.65083-68-mgross@linux.intel.com>
-Subject: Re: [PATCH v4 32/34] dt-bindings: misc: hddl_dev: Add hddl device management documentation
+To:     Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+Cc:     Eddie Huang <eddie.huang@mediatek.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        devicetree@vger.kernel.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-kernel@vger.kernel.org,
+        Yuchen Huang <yuchen.huang@mediatek.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        srv_heupstream@mediatek.com, Sean Wang <sean.wang@mediatek.com>,
+        linux-rtc@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Fei Shao <fshao@chromium.org>,
+        linux-mediatek@lists.infradead.org, Ran Bi <ran.bi@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+In-Reply-To: <1611913781-23460-5-git-send-email-hsin-hsiung.wang@mediatek.com>
+References: <1611913781-23460-1-git-send-email-hsin-hsiung.wang@mediatek.com> <1611913781-23460-5-git-send-email-hsin-hsiung.wang@mediatek.com>
+Subject: Re: [PATCH RESEND v5 4/8] dt-bindings: regulator: Add document for MT6359 regulator
 Date:   Sat, 30 Jan 2021 11:23:40 -0600
-Message-Id: <1612027420.855682.1419431.nullmailer@robh.at.kernel.org>
+Message-Id: <1612027420.840636.1419427.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Jan 2021 18:21:22 -0800, mgross@linux.intel.com wrote:
-> From: "C, Udhayakumar" <udhayakumar.c@intel.com>
+On Fri, 29 Jan 2021 17:49:37 +0800, Hsin-Hsiung Wang wrote:
+> add dt-binding document for MediaTek MT6359 PMIC
 > 
-> Add hddl device management documentation
-> 
-> The HDDL client driver acts as an software RTC to sync with network time.
-> It abstracts xlink protocol to communicate with remote IA host.
-> This driver exports the details about sensors available in the platform
-> to remote IA host as xlink packets.
-> This driver also handles device connect/disconnect events and identifies
-> board id and soc id using gpio's based on platform configuration.
-> 
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: devicetree@vger.kernel.org
-> Signed-off-by: C Udhayakumar <udhayakumar.c@intel.com>
-> Signed-off-by: Mark Gross <mgross@linux.intel.com>
+> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
 > ---
->  .../bindings/misc/intel,hddl-client.yaml      | 114 ++++++++++++++++++
->  1 file changed, 114 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/misc/intel,hddl-client.yaml
+> changes since v4: fix yamllint errors in dt-binding document.
+> ---
+>  .../bindings/regulator/mt6359-regulator.yaml  | 169 ++++++++++++++++++
+>  1 file changed, 169 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
@@ -81,10 +80,16 @@ My bot found errors running 'make dt_binding_check' on your patch:
 yamllint warnings/errors:
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/misc/intel,hddl-client.example.dt.yaml: example-0: hddl@20320000:reg:0: [0, 540147712, 0, 2048] is too long
-	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/ti,palmas-gpadc.example.dt.yaml: pmic: 'adc', 'compatible' do not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/motorola,cpcap-adc.example.dt.yaml: pmic: '#address-cells', '#size-cells', 'adc' do not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/sprd,sc2720-adc.example.dt.yaml: pmic: '#address-cells', '#size-cells', 'adc@480' do not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/iio/adc/qcom,pm8018-adc.example.dt.yaml: pmic: '#address-cells', '#size-cells', 'adc@197' do not match any of the regexes: 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/mt6359-regulator.yaml
 
-See https://patchwork.ozlabs.org/patch/1433603
+See https://patchwork.ozlabs.org/patch/1433233
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
