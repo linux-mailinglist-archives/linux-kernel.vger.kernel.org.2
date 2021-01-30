@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C763097C2
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 20:05:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91CDD3097C4
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 20:06:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231954AbhA3TEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 14:04:45 -0500
-Received: from smtprelay0077.hostedemail.com ([216.40.44.77]:44512 "EHLO
+        id S232109AbhA3TF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 14:05:27 -0500
+Received: from smtprelay0115.hostedemail.com ([216.40.44.115]:44630 "EHLO
         smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229990AbhA3TEn (ORCPT
+        by vger.kernel.org with ESMTP id S231923AbhA3TF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 14:04:43 -0500
+        Sat, 30 Jan 2021 14:05:26 -0500
 Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id E4803180A7FF9;
-        Sat, 30 Jan 2021 19:04:02 +0000 (UTC)
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id BD92F180A7FF9;
+        Sat, 30 Jan 2021 19:04:44 +0000 (UTC)
 X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3868:4321:5007:7652:8603:10004:10400:10848:11026:11232:11658:11914:12296:12297:12555:12740:12895:13069:13311:13357:13439:13894:14181:14659:14721:21080:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: low08_4a03ddb275b3
-X-Filterd-Recvd-Size: 2416
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:69:355:379:599:800:960:966:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1543:1593:1594:1605:1711:1730:1747:1777:1792:2196:2198:2199:2200:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3622:3868:3870:4321:4385:4605:5007:7652:10004:10400:10848:11026:11232:11473:11658:11914:12043:12291:12296:12297:12438:12555:12683:12740:12895:13439:13894:14110:14181:14659:14721:21080:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: guide60_180fe2f275b3
+X-Filterd-Recvd-Size: 3853
 Received: from [192.168.1.159] (unknown [47.151.137.21])
         (Authenticated sender: joe@perches.com)
         by omf19.hostedemail.com (Postfix) with ESMTPA;
-        Sat, 30 Jan 2021 19:04:01 +0000 (UTC)
-Message-ID: <15ab6a821b32d6fd4b49ee2037dc85e4ba6b08cc.camel@perches.com>
-Subject: Re: [PATCH 23/29] fuse: Avoid comma separated statements
+        Sat, 30 Jan 2021 19:04:43 +0000 (UTC)
+Message-ID: <4e90351d3b78154d451a39c1a8577b583b8467a7.camel@perches.com>
+Subject: Re: [PATCH 24/29] reiserfs: Avoid comma separated statements
 From:   Joe Perches <joe@perches.com>
-To:     Jiri Kosina <trivial@kernel.org>,
-        Miklos Szeredi <miklos@szeredi.hu>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Sat, 30 Jan 2021 11:04:00 -0800
-In-Reply-To: <1ccd477e845fe5a114960c6088612945e1a22f23.1598331149.git.joe@perches.com>
+To:     Jiri Kosina <trivial@kernel.org>, linux-kernel@vger.kernel.org
+Cc:     reiserfs-devel@vger.kernel.org
+Date:   Sat, 30 Jan 2021 11:04:43 -0800
+In-Reply-To: <29b5ea94496d64e7a73af216b01f26d9ff7ac1fe.1598331149.git.joe@perches.com>
 References: <cover.1598331148.git.joe@perches.com>
-         <1ccd477e845fe5a114960c6088612945e1a22f23.1598331149.git.joe@perches.com>
+         <29b5ea94496d64e7a73af216b01f26d9ff7ac1fe.1598331149.git.joe@perches.com>
 Content-Type: text/plain; charset="ISO-8859-1"
 User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
@@ -45,47 +44,102 @@ On Mon, 2020-08-24 at 21:56 -0700, Joe Perches wrote:
 > Use semicolons and braces.
 
 ping?
- 
+
 > Signed-off-by: Joe Perches <joe@perches.com>
 > ---
->  fs/fuse/dir.c | 24 ++++++++++++++++--------
->  1 file changed, 16 insertions(+), 8 deletions(-)
+>  fs/reiserfs/fix_node.c | 36 ++++++++++++++++++++++++------------
+>  1 file changed, 24 insertions(+), 12 deletions(-)
 > 
-> diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
-> index 26f028bc760b..ecb6eed832a0 100644
-> --- a/fs/fuse/dir.c
-> +++ b/fs/fuse/dir.c
-> @@ -1362,14 +1362,22 @@ static void iattr_to_fattr(struct fuse_conn *fc, struct iattr *iattr,
->  {
->  	unsigned ivalid = iattr->ia_valid;
+> diff --git a/fs/reiserfs/fix_node.c b/fs/reiserfs/fix_node.c
+> index fefe87e1c099..aea63e67a42b 100644
+> --- a/fs/reiserfs/fix_node.c
+> +++ b/fs/reiserfs/fix_node.c
+> @@ -235,8 +235,10 @@ static void check_left(struct tree_balance *tb, int h, int cur_free)
+>  	d_size = 0, ih_size = IH_SIZE;
 >  
 > 
-> -	if (ivalid & ATTR_MODE)
-> -		arg->valid |= FATTR_MODE,   arg->mode = iattr->ia_mode;
-> -	if (ivalid & ATTR_UID)
-> -		arg->valid |= FATTR_UID,    arg->uid = from_kuid(fc->user_ns, iattr->ia_uid);
-> -	if (ivalid & ATTR_GID)
-> -		arg->valid |= FATTR_GID,    arg->gid = from_kgid(fc->user_ns, iattr->ia_gid);
-> -	if (ivalid & ATTR_SIZE)
-> -		arg->valid |= FATTR_SIZE,   arg->size = iattr->ia_size;
-> +	if (ivalid & ATTR_MODE) {
-> +		arg->valid |= FATTR_MODE;
-> +		arg->mode = iattr->ia_mode;
+>  	/* first item may be merge with last item in left neighbor */
+> -	if (vi->vi_type & VI_TYPE_LEFT_MERGEABLE)
+> -		d_size = -((int)IH_SIZE), ih_size = 0;
+> +	if (vi->vi_type & VI_TYPE_LEFT_MERGEABLE) {
+> +		d_size = -((int)IH_SIZE);
+> +		ih_size = 0;
 > +	}
-> +	if (ivalid & ATTR_UID) {
-> +		arg->valid |= FATTR_UID;
-> +		arg->uid = from_kuid(fc->user_ns, iattr->ia_uid);
+>  
+> 
+>  	tb->lnum[0] = 0;
+>  	for (i = 0; i < vn->vn_nr_item;
+> @@ -321,8 +323,10 @@ static void check_right(struct tree_balance *tb, int h, int cur_free)
+>  	d_size = 0, ih_size = IH_SIZE;
+>  
+> 
+>  	/* last item may be merge with first item in right neighbor */
+> -	if (vi->vi_type & VI_TYPE_RIGHT_MERGEABLE)
+> -		d_size = -(int)IH_SIZE, ih_size = 0;
+> +	if (vi->vi_type & VI_TYPE_RIGHT_MERGEABLE) {
+> +		d_size = -(int)IH_SIZE;
+> +		ih_size = 0;
 > +	}
-> +	if (ivalid & ATTR_GID) {
-> +		arg->valid |= FATTR_GID;
-> +		arg->gid = from_kgid(fc->user_ns, iattr->ia_gid);
-> +	}
-> +	if (ivalid & ATTR_SIZE) {
-> +		arg->valid |= FATTR_SIZE;
-> +		arg->size = iattr->ia_size;
-> +	}
->  	if (ivalid & ATTR_ATIME) {
->  		arg->valid |= FATTR_ATIME;
->  		arg->atime = iattr->ia_atime.tv_sec;
+>  
+> 
+>  	tb->rnum[0] = 0;
+>  	for (i = vn->vn_nr_item - 1; i >= 0;
+> @@ -1534,8 +1538,10 @@ static int ip_check_balance(struct tree_balance *tb, int h)
+>  			nver1 = get_num_ver(vn->vn_mode, tb, h,
+>  					    0, -1, 0, -1,
+>  					    snum012 + NOTHING_SHIFT_FLOW, FLOW);
+> -			if (nver > nver1)
+> -				nset = NOTHING_SHIFT_FLOW, nver = nver1;
+> +			if (nver > nver1) {
+> +				nset = NOTHING_SHIFT_FLOW;
+> +				nver = nver1;
+> +			}
+>  		}
+>  
+> 
+>  		/*
+> @@ -1559,8 +1565,10 @@ static int ip_check_balance(struct tree_balance *tb, int h)
+>  					     ((tb->lbytes != -1) ? 1 : 0),
+>  					     tb->lbytes, 0, -1,
+>  					     snum012 + LEFT_SHIFT_FLOW, FLOW);
+> -			if (lnver > lnver1)
+> -				lset = LEFT_SHIFT_FLOW, lnver = lnver1;
+> +			if (lnver > lnver1) {
+> +				lset = LEFT_SHIFT_FLOW;
+> +				lnver = lnver1;
+> +			}
+>  		}
+>  
+> 
+>  		/*
+> @@ -1590,8 +1598,10 @@ static int ip_check_balance(struct tree_balance *tb, int h)
+>  					     tb->rbytes,
+>  					     snum012 + RIGHT_SHIFT_FLOW, FLOW);
+>  
+> 
+> -			if (rnver > rnver1)
+> -				rset = RIGHT_SHIFT_FLOW, rnver = rnver1;
+> +			if (rnver > rnver1) {
+> +				rset = RIGHT_SHIFT_FLOW;
+> +				rnver = rnver1;
+> +			}
+>  		}
+>  
+> 
+>  		/*
+> @@ -1622,8 +1632,10 @@ static int ip_check_balance(struct tree_balance *tb, int h)
+>  					       ((tb->rbytes != -1) ? 1 : 0)),
+>  					      tb->rbytes,
+>  					      snum012 + LR_SHIFT_FLOW, FLOW);
+> -			if (lrnver > lrnver1)
+> -				lrset = LR_SHIFT_FLOW, lrnver = lrnver1;
+> +			if (lrnver > lrnver1) {
+> +				lrset = LR_SHIFT_FLOW;
+> +				lrnver = lrnver1;
+> +			}
+>  		}
+>  
+> 
+>  		/*
 
 
