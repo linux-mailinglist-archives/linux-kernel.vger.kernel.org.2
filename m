@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D16430939E
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:46:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F483093C7
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:55:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231668AbhA3JoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 04:44:21 -0500
-Received: from mga04.intel.com ([192.55.52.120]:31754 "EHLO mga04.intel.com"
+        id S231764AbhA3Jz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 04:55:27 -0500
+Received: from mga06.intel.com ([134.134.136.31]:41430 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233421AbhA3DJ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 22:09:59 -0500
-IronPort-SDR: cpJ3dgUGEG1ZexoNNjfhcPqOfkyvlHsnrfwslGEFipBPQvEIRVNb4Fd/hLc9DNulTrGVQ2vLT0
- uUKGvGTw2nwA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="177945236"
+        id S233148AbhA3DAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 22:00:46 -0500
+IronPort-SDR: /QOu6WX5O5hTXpYV1vYPrRN1W5bFyRkFCLgiocGrrbTDm/2gpd+GlVZSU5KaQ/7JMWF67Guu8O
+ ZNh07loPhsMA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="242028070"
 X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="177945236"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:31 -0800
-IronPort-SDR: v8FUStmiXRMb2KAZq+RSH82xMlR5NyD7gHMOhd1N8FVFAB83s0unCVwvCXl3fh+xTLzxHQpy/F
- fGybhUS8rmbw==
+   d="scan'208";a="242028070"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:31 -0800
+IronPort-SDR: fliegbaFHBKbnNCLVqnXTZa80DvkqvpG3P4S9q2vmltREH1rEDei/Z0q0eIUPyjgRuigGjQxQs
+ x3zr9Baz5Mpg==
 X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="410955363"
+   d="scan'208";a="365585733"
 Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:31 -0800
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:31 -0800
 Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id B3F556365;
+        by smtp.ostc.intel.com (Postfix) with ESMTP id DAAAB6371;
         Fri, 29 Jan 2021 18:21:30 -0800 (PST)
 Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
-        id A2CC83636A5; Fri, 29 Jan 2021 18:21:30 -0800 (PST)
+        id CE48C3636AB; Fri, 29 Jan 2021 18:21:30 -0800 (PST)
 From:   mgross@linux.intel.com
 To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
@@ -37,10 +37,11 @@ To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
         jassisinghbrar@gmail.com
 Cc:     linux-kernel@vger.kernel.org,
-        "C, Udhayakumar" <udhayakumar.c@intel.com>
-Subject: [PATCH v4 29/34] Intel tsens i2c slave driver.
-Date:   Fri, 29 Jan 2021 18:21:19 -0800
-Message-Id: <20210130022124.65083-65-mgross@linux.intel.com>
+        "C, Udhayakumar" <udhayakumar.c@intel.com>,
+        devicetree@vger.kernel.org
+Subject: [PATCH v4 32/34] dt-bindings: misc: hddl_dev: Add hddl device management documentation
+Date:   Fri, 29 Jan 2021 18:21:22 -0800
+Message-Id: <20210130022124.65083-68-mgross@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210130022124.65083-1-mgross@linux.intel.com>
 References: <20210130022124.65083-1-mgross@linux.intel.com>
@@ -50,183 +51,144 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "C, Udhayakumar" <udhayakumar.c@intel.com>
 
-Add Intel tsens i2c slave driver for Intel Edge.AI Computer Vision
-platforms.
+Add hddl device management documentation
 
-The tsens i2c slave driver enables reading of on chip sensors present
-in the Intel Edge.AI Computer Vision platforms. In the tsens i2c module
-various junction and SoC temperatures are reported using i2c slave
-protocol.
+The HDDL client driver acts as an software RTC to sync with network time.
+It abstracts xlink protocol to communicate with remote IA host.
+This driver exports the details about sensors available in the platform
+to remote IA host as xlink packets.
+This driver also handles device connect/disconnect events and identifies
+board id and soc id using gpio's based on platform configuration.
 
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: devicetree@vger.kernel.org
 Signed-off-by: C Udhayakumar <udhayakumar.c@intel.com>
 Signed-off-by: Mark Gross <mgross@linux.intel.com>
 ---
- drivers/misc/intel_tsens/Kconfig           |  14 +++
- drivers/misc/intel_tsens/Makefile          |   1 +
- drivers/misc/intel_tsens/intel_tsens_i2c.c | 119 +++++++++++++++++++++
- 3 files changed, 134 insertions(+)
- create mode 100644 drivers/misc/intel_tsens/intel_tsens_i2c.c
+ .../bindings/misc/intel,hddl-client.yaml      | 114 ++++++++++++++++++
+ 1 file changed, 114 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/misc/intel,hddl-client.yaml
 
-diff --git a/drivers/misc/intel_tsens/Kconfig b/drivers/misc/intel_tsens/Kconfig
-index 8b263fdd80c3..be8d27e81864 100644
---- a/drivers/misc/intel_tsens/Kconfig
-+++ b/drivers/misc/intel_tsens/Kconfig
-@@ -14,6 +14,20 @@ config INTEL_TSENS_LOCAL_HOST
- 	  Say Y if using a processor that includes the Intel VPU such as
- 	  Keem Bay.  If unsure, say N.
- 
-+config INTEL_TSENS_I2C_SLAVE
-+	bool "I2C slave driver for intel tsens"
-+	depends on INTEL_TSENS_LOCAL_HOST
-+	depends on I2C=y && I2C_SLAVE
-+	help
-+	  This option enables tsens I2C slave driver.
-+
-+	  This driver is used for reporting thermal data via I2C
-+	  SMBUS to remote host.
-+	  Enable this option if you want to have support for thermal
-+	  management controller.
-+	  Say Y if using a processor that includes the Intel VPU such as
-+	  Keem Bay.  If unsure, say N.
-+
- config INTEL_TSENS_IA_HOST
- 	tristate "Temperature sensor driver for intel tsens remote host"
- 	depends on I2C && THERMAL
-diff --git a/drivers/misc/intel_tsens/Makefile b/drivers/misc/intel_tsens/Makefile
-index 250dc484fb49..f6f41bbca80c 100644
---- a/drivers/misc/intel_tsens/Makefile
-+++ b/drivers/misc/intel_tsens/Makefile
-@@ -5,4 +5,5 @@
- #
- 
- obj-$(CONFIG_INTEL_TSENS_LOCAL_HOST)	+= intel_tsens_thermal.o
-+obj-$(CONFIG_INTEL_TSENS_I2C_SLAVE)	+= intel_tsens_i2c.o
- obj-$(CONFIG_INTEL_TSENS_IA_HOST)	+= intel_tsens_host.o
-diff --git a/drivers/misc/intel_tsens/intel_tsens_i2c.c b/drivers/misc/intel_tsens/intel_tsens_i2c.c
+diff --git a/Documentation/devicetree/bindings/misc/intel,hddl-client.yaml b/Documentation/devicetree/bindings/misc/intel,hddl-client.yaml
 new file mode 100644
-index 000000000000..520c3f4bf392
+index 000000000000..c1d121c35fc5
 --- /dev/null
-+++ b/drivers/misc/intel_tsens/intel_tsens_i2c.c
-@@ -0,0 +1,119 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ *
-+ * Intel tsens I2C thermal Driver
-+ *
-+ * Copyright (C) 2020 Intel Corporation
-+ *
-+ */
++++ b/Documentation/devicetree/bindings/misc/intel,hddl-client.yaml
+@@ -0,0 +1,114 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/misc/intel,hddl-client.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 +
-+#include <linux/i2c.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/slab.h>
-+#include "intel_tsens_thermal.h"
++title: Intel hddl client device to handle platform management in Bay series
 +
-+#define TSENS_BYTE_INDEX_SHIFT	0x6
-+#define TSENS_BYTE_INDEX_MASK	0x3
-+#define TSENS_SENSOR_TYPE_MASK	0x3F
++maintainers:
++  - Udhayakumar C <udhayakumar.c@intel.com>
 +
-+struct intel_tsens_i2c {
-+	int sensor_type;
-+	u16 buffer_idx;
-+	bool read_only;
-+	u8 idx_write_cnt;
-+	struct intel_tsens_i2c_plat_data *plat_data;
-+};
++description: |
++  The HDDL client driver acts as an software RTC to sync with network time.
++  It abstracts xlink protocol to communicate with remote host. This driver
++  exports the details about sensors available in the platform to remote
++  host as xlink packets.
++  This driver also handles device connect/disconnect events and identifies
++  board id and soc id using gpio's based on platform configuration.
 +
-+static int intel_i2c_tsens_slave_cb(struct i2c_client *client,
-+				    enum i2c_slave_event event, u8 *val)
-+{
-+	struct intel_tsens_i2c *tsens_i2c = i2c_get_clientdata(client);
-+	struct intel_tsens_i2c_plat_data *plat_data = tsens_i2c->plat_data;
-+	int ret = 0;
++select: false
 +
-+	switch (event) {
-+	case I2C_SLAVE_WRITE_RECEIVED:
-+		tsens_i2c->sensor_type = *val;
-+		break;
++properties:
++  compatible:
++    items:
++      - const: intel,hddl-client
 +
-+	case I2C_SLAVE_READ_PROCESSED:
-+	case I2C_SLAVE_READ_REQUESTED:
-+		if (plat_data->get_temp) {
-+			int temp;
-+			int sensor_type = tsens_i2c->sensor_type &
-+						TSENS_SENSOR_TYPE_MASK;
++  reg:
++    minItems: 4
++    maxItems: 4
 +
-+			if (!plat_data->get_temp(sensor_type, &temp,
-+						 plat_data->pdata)) {
-+				u8 offset = (tsens_i2c->sensor_type >>
-+						TSENS_BYTE_INDEX_SHIFT) &
-+						TSENS_BYTE_INDEX_MASK;
-+				u8 *ptr_temp = (u8 *)&temp;
++  xlink_chan:
++    minItems: 1
++    maxItems: 1
++    description: xlink channel number used for communication
++                 with remote host for time sync and sharing sensor
++                 details available in platform.
 +
-+				*val = ptr_temp[offset];
-+				tsens_i2c->buffer_idx++;
-+				ret = 0;
-+			} else {
-+				ret = -EINVAL;
-+			}
-+		} else {
-+			ret = -EINVAL;
-+		}
-+		break;
++  i2c_xlink_chan:
++    minItems: 1
++    maxItems: 1
++    description: xlink channel number used for communication
++                 with remote host for xlink i2c smbus.
 +
-+	case I2C_SLAVE_STOP:
-+	case I2C_SLAVE_WRITE_REQUESTED:
-+		tsens_i2c->idx_write_cnt = 0;
-+		tsens_i2c->buffer_idx = 0;
-+		break;
++  sensor_name:
++    type: object
++    description:
++      Details about sensors and its configuration on local host and remote
++      host.
 +
-+	default:
-+		break;
-+	}
-+	return ret;
-+}
++    properties:
++      compatible:
++        items:
++          - const: intel_tsens
 +
-+static int intel_i2c_tsens_slave_probe(struct i2c_client *client,
-+				       const struct i2c_device_id *id)
-+{	struct intel_tsens_i2c *priv;
-+	int ret;
++      reg:
++        description: i2c slave address for sensor.
 +
-+	if (!id->driver_data) {
-+		dev_err(&client->dev, "No platform data");
-+		return -EINVAL;
-+	}
-+	priv = devm_kzalloc(&client->dev,
-+			    sizeof(struct intel_tsens_i2c),
-+			    GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+	priv->plat_data = (struct intel_tsens_i2c_plat_data *)id->driver_data;
-+	i2c_set_clientdata(client, priv);
-+	ret = i2c_slave_register(client, intel_i2c_tsens_slave_cb);
-+	if (ret)
-+		dev_err(&client->dev, "i2c slave register failed\n");
++      local-host:
++        minItems: 1
++        maxItems: 1
++        description: enable bit 0 to register sensor as i2c slave
++                     in local host (normal i2c client)
++                     enable bit 1 to mimic sensor as i2c slave
++                     in local host (onchip sensors as i2c slave)
++                     enable bit 2 to register i2c slave as xlink smbus slave
++                     in local host.
++      remote-host:
++        minItems: 1
++        maxItems: 1
++        description: enable bit 0 to register sensor as i2c slave
++                     in remote host (normal i2c client)
++                     enable bit 1 to mimic sensor as i2c slave
++                     in remote host (onchip sensors as i2c slave)
++                     enable bit 2 to register i2c slave as xlink smbus slave
++                     in remote host.
 +
-+	return ret;
-+};
++      bus:
++        minItems: 1
++        maxItems: 1
++        description: i2c bus number for the i2c client device.
 +
-+static struct i2c_device_id intel_i2c_tsens_slave_id[] = {
-+	{ "intel_tsens", (kernel_ulong_t)&i2c_plat_data},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(i2c, intel_i2c_tsens_slave_id);
++    required:
++      - compatible
++      - reg
++      - local-host
++      - remote-host
++      - bus
 +
-+static struct i2c_driver intel_i2c_tsens_slave_driver = {
-+	.driver = {
-+		.name = "intel_tsens",
-+	},
-+	.probe = intel_i2c_tsens_slave_probe,
-+	.remove = i2c_slave_unregister,
-+	.id_table = intel_i2c_tsens_slave_id,
-+};
++required:
++  - compatible
++  - reg
++  - xlink_chan
++  - i2c_xlink_chan
 +
-+module_i2c_driver(intel_i2c_tsens_slave_driver);
++additionalProperties: false
 +
-+MODULE_AUTHOR("Udhayakumar C <udhayakumar.c@intel.com>");
-+MODULE_DESCRIPTION("tsens i2c slave driver");
-+MODULE_LICENSE("GPL");
++examples:
++  - |
++    hddl_dev: hddl@20320000 {
++       compatible = "intel,hddl-client";
++       #address-cells = <2>;
++       #size-cells = <2>;
++       status = "disabled";
++       reg = <0x0 0x20320000 0x0 0x800>;
++       xlink_chan = <1080>;
++       i2c_xlink_chan = <1081>;
++       kmb_xlink_tj {
++         status = "okay";
++         compatible = "intel_tsens";
++         local-host = <0x3>;
++         remote-host = <0x3>;
++         bus = <0x1>;
++      };
++    };
 -- 
 2.17.1
 
