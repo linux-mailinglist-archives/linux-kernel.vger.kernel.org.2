@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F027B309903
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 00:54:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E38C309907
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 00:55:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232774AbhA3Xx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 18:53:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44940 "EHLO
+        id S232617AbhA3Xyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 18:54:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232630AbhA3XwV (ORCPT
+        with ESMTP id S232653AbhA3XxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 18:52:21 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B98EDC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 15:51:41 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id g15so8791280pjd.2
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 15:51:41 -0800 (PST)
+        Sat, 30 Jan 2021 18:53:07 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 349A8C0613ED
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 15:51:45 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id o20so9069055pfu.0
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 15:51:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:in-reply-to:message-id:references
          :mime-version;
-        bh=cxvqbAo1IAIrwLB5kk+h8Luaw/WcNq7od57uwR/z/0A=;
-        b=PjLjww8QTw6X6rVMAjtISyXtX7JMmqVaUJx3F60RM3ylFSLWRRcZCFrQlsjCSBGBqx
-         Oj3eIeIel+lx5s/2LzA2cqzsOlBvs+jrSV4AXQBePenX9TqRNh4fBF2xa1vy/ZURdeOn
-         +lhC0/eWjRwZcBS/1uE7a0/fxUpCmQEsIlkvVUw8XTrYgT7HEkD84ilH2PhECtGuizOl
-         3L/Qf/himoTN1JGUyeYCivImS0tAyPYb9OeJvkMbXST578xzSCdUkQFxivOMQrwZRtAE
-         nxCiaSxwoehw8rIP5fQZOuvdxKVzXZHozdLwXh4cjAQrPf6k9Zf1rWPHmWo72HtJywGU
-         U2Sg==
+        bh=GDv15DwnRp3MS5y0X9bL9QkhV0S8PjNmrscexBhhUtA=;
+        b=Mniksk0+xMkFOMZyyZxYvBktssUOJFhazgAfgAHn9e+16eIYt+3GlpWg6E0DAJ8fYY
+         WDuDlRb+ul9uZLNgaLXC4pv8dqBpjAjemOJWnSsOSyiy69MNK+dOs/FZDn7dLcxhzUNS
+         59fLeXPXG9kHc1/bO/wl17ZNmqBSO12pGkj4fTSPU8f8wXSUykglI65cZ1o3wa7S+uC7
+         WjnOnqrs8SPFn6yfNbHYcMWzjiHuBQaWXhxy6t+TrLWD5+PfN1LqKdWyN5QyGpSwfr9m
+         ec4kibCqC+jcrS3ail6HKNoQTR0CkaVYGqzRs/nXdEYb5wVMTjzQ8l7kqTklE8pFArx7
+         bm3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
          :references:mime-version;
-        bh=cxvqbAo1IAIrwLB5kk+h8Luaw/WcNq7od57uwR/z/0A=;
-        b=pZd4viC1CFN6lxIn42hgJ3sh52FlIpsp8CMrdzpuuprDd27rQJF4E7nySBr+AyCCkZ
-         dDLIGUMQk8zKiCAztxOnCEDb/rY4+MnmgdiXTEWTgBcXq0VQl6FE5S14XkdkFY1vMobc
-         599ycgBugCM7Hjohhyx2P4/UX6Y0VG9CCngrb2CiWieTfkkSBxMS0riprnpfNjvNh53u
-         v6hLotwAR4SvXS0x5q/jWSvikndlW+RpzHd/FVmHJBZ2DTrJRJPf2+nahWjdQh4bw4wj
-         iUSDNkQpscaZQP80PtVI12aXSb0Ay6w8q1SDHG8zXOEYdw0FhsC7xZhJnM+xxIPwxauP
-         wQxA==
-X-Gm-Message-State: AOAM532oHFojNo2TJuGtu8h2w2oID9uIC7YXNDyY6+0t//aMP+LXeqS/
-        m90FxXj5vIpsOfHwtNSC/DT8Bg==
-X-Google-Smtp-Source: ABdhPJyDODycXpp/h5ITu3myrcAhtELZTjRYPPBKofKsdhKWkycX4cAiMkSboMfRs6hOUzcld1n8Cw==
-X-Received: by 2002:a17:902:edcd:b029:df:d2b1:ecf0 with SMTP id q13-20020a170902edcdb02900dfd2b1ecf0mr11639635plk.15.1612050701068;
-        Sat, 30 Jan 2021 15:51:41 -0800 (PST)
+        bh=GDv15DwnRp3MS5y0X9bL9QkhV0S8PjNmrscexBhhUtA=;
+        b=F81/ka7Ytw8jgeCOhrreR0QeVIOtZpY6H96/M2/M151XFlWJ3/DDgz/IflQ4BwgJOE
+         BeHLbH5iS7ROSpGrjYKMLv4jonbvERWxnXqFL/JP5Hi6g1WnJwywrtgLhSbzKrpjHVII
+         iqoZW5fWkWbATS1FqDVMW5W/URF4v6cBP47lRtE26mG05koV87XakvYRtAuA/vsOnzWf
+         McdB9/pydLV+auSFFYe0jmDBWj2xJCl6TvwJ79MnsVuy+kolcwDtT+J9tRL2npwDH2kJ
+         lRv1gyCZsScyNojwgoomglDWwI1PHkFaqnhFZI0nOkY5+bORcPHAwRp/O9GsYPiz+It5
+         TGbA==
+X-Gm-Message-State: AOAM530i2Po8WRm7knzJkKfTr5NttX2OgAHK63GLHTs21eMOJqg5Y6h0
+        WcDZLrBnev3AkChN1f6jqU/p5fdpg0++SA==
+X-Google-Smtp-Source: ABdhPJwbuQ4nVg0OQPgeWs57sXjRNYE2dA+6UJRCYf1jVILDhdLj6k91Bbw9k3VuSrWFNKVhFs7mpg==
+X-Received: by 2002:a63:f405:: with SMTP id g5mr10896366pgi.276.1612050704574;
+        Sat, 30 Jan 2021 15:51:44 -0800 (PST)
 Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id c5sm12745797pfi.5.2021.01.30.15.51.39
+        by smtp.gmail.com with ESMTPSA id a25sm12812739pgv.40.2021.01.30.15.51.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Jan 2021 15:51:40 -0800 (PST)
-Date:   Sat, 30 Jan 2021 15:51:39 -0800 (PST)
+        Sat, 30 Jan 2021 15:51:43 -0800 (PST)
+Date:   Sat, 30 Jan 2021 15:51:42 -0800 (PST)
 From:   David Rientjes <rientjes@google.com>
 To:     Ben Widawsky <ben.widawsky@intel.com>
-cc:     linux-cxl@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-acpi@vger.kernel.org,
+cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
         linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
         Chris Browy <cbrowy@avery-design.com>,
         Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
         Ira Weiny <ira.weiny@intel.com>,
         Jon Masters <jcm@jonmasters.org>,
         Jonathan Cameron <Jonathan.Cameron@huawei.com>,
@@ -66,11 +66,10 @@ cc:     linux-cxl@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
         daniel.lll@alibaba-inc.com,
         "John Groves (jgroves)" <jgroves@micron.com>,
         "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH 01/14] cxl/mem: Introduce a driver for CXL-2.0-Type-3
- endpoints
-In-Reply-To: <20210130002438.1872527-2-ben.widawsky@intel.com>
-Message-ID: <54655f17-2e4a-cc1e-262c-b365e3de9b20@google.com>
-References: <20210130002438.1872527-1-ben.widawsky@intel.com> <20210130002438.1872527-2-ben.widawsky@intel.com>
+Subject: Re: [PATCH 02/14] cxl/mem: Map memory device registers
+In-Reply-To: <20210130002438.1872527-3-ben.widawsky@intel.com>
+Message-ID: <792edaa-a11b-41c6-c2a1-2c72a3e4e815@google.com>
+References: <20210130002438.1872527-1-ben.widawsky@intel.com> <20210130002438.1872527-3-ben.widawsky@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
@@ -79,31 +78,117 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Fri, 29 Jan 2021, Ben Widawsky wrote:
 
-> diff --git a/drivers/cxl/Kconfig b/drivers/cxl/Kconfig
+> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
 > new file mode 100644
-> index 000000000000..3b66b46af8a0
+> index 000000000000..d81d0ba4617c
 > --- /dev/null
-> +++ b/drivers/cxl/Kconfig
-> @@ -0,0 +1,35 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +menuconfig CXL_BUS
-> +	tristate "CXL (Compute Express Link) Devices Support"
-> +	depends on PCI
-> +	help
-> +	  CXL is a bus that is electrically compatible with PCI Express, but
-> +	  layers three protocols on that signalling (CXL.io, CXL.cache, and
-> +	  CXL.mem). The CXL.cache protocol allows devices to hold cachelines
-> +	  locally, the CXL.mem protocol allows devices to be fully coherent
-> +	  memory targets, the CXL.io protocol is equivalent to PCI Express.
-> +	  Say 'y' to enable support for the configuration and management of
-> +	  devices supporting these protocols.
+> +++ b/drivers/cxl/cxl.h
+> @@ -0,0 +1,17 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/* Copyright(c) 2020 Intel Corporation. */
 > +
-> +if CXL_BUS
+> +#ifndef __CXL_H__
+> +#define __CXL_H__
 > +
-> +config CXL_MEM
-> +	tristate "CXL.mem: Endpoint Support"
+> +/**
+> + * struct cxl_mem - A CXL memory device
+> + * @pdev: The PCI device associated with this CXL device.
+> + * @regs: IO mappings to the device's MMIO
+> + */
+> +struct cxl_mem {
+> +	struct pci_dev *pdev;
+> +	void __iomem *regs;
+> +};
+> +
+> +#endif
 
-Nit: "CXL.mem: Memory Devices" or "CXL Memory Devices: CXL.mem" might look 
-better, but feel free to ignore.
+Stupid question: can there be more than one CXL.mem capable logical 
+device?  I only ask to determine if an ordinal is needed to enumerate 
+multiple LDs.
+
+> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
+> index f4ee9a507ac9..a869c8dc24cc 100644
+> --- a/drivers/cxl/mem.c
+> +++ b/drivers/cxl/mem.c
+> @@ -4,6 +4,58 @@
+>  #include <linux/pci.h>
+>  #include <linux/io.h>
+>  #include "pci.h"
+> +#include "cxl.h"
+> +
+> +/**
+> + * cxl_mem_create() - Create a new &struct cxl_mem.
+> + * @pdev: The pci device associated with the new &struct cxl_mem.
+> + * @reg_lo: Lower 32b of the register locator
+> + * @reg_hi: Upper 32b of the register locator.
+> + *
+> + * Return: The new &struct cxl_mem on success, NULL on failure.
+> + *
+> + * Map the BAR for a CXL memory device. This BAR has the memory device's
+> + * registers for the device as specified in CXL specification.
+> + */
+> +static struct cxl_mem *cxl_mem_create(struct pci_dev *pdev, u32 reg_lo,
+> +				      u32 reg_hi)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct cxl_mem *cxlm;
+> +	void __iomem *regs;
+> +	u64 offset;
+> +	u8 bar;
+> +	int rc;
+> +
+> +	offset = ((u64)reg_hi << 32) | (reg_lo & CXL_REGLOC_ADDR_MASK);
+> +	bar = (reg_lo >> CXL_REGLOC_BIR_SHIFT) & CXL_REGLOC_BIR_MASK;
+> +
+> +	/* Basic sanity check that BAR is big enough */
+> +	if (pci_resource_len(pdev, bar) < offset) {
+> +		dev_err(dev, "BAR%d: %pr: too small (offset: %#llx)\n", bar,
+> +			&pdev->resource[bar], (unsigned long long)offset);
+> +		return NULL;
+> +	}
+> +
+> +	rc = pcim_iomap_regions(pdev, BIT(bar), pci_name(pdev));
+> +	if (rc != 0) {
+> +		dev_err(dev, "failed to map registers\n");
+> +		return NULL;
+> +	}
+> +
+> +	cxlm = devm_kzalloc(&pdev->dev, sizeof(*cxlm), GFP_KERNEL);
+> +	if (!cxlm) {
+> +		dev_err(dev, "No memory available\n");
+> +		return NULL;
+> +	}
+> +
+> +	regs = pcim_iomap_table(pdev)[bar];
+> +	cxlm->pdev = pdev;
+> +	cxlm->regs = regs + offset;
+> +
+> +	dev_dbg(dev, "Mapped CXL Memory Device resource\n");
+> +	return cxlm;
+> +}
+>  
+>  static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
+>  {
+> @@ -32,15 +84,42 @@ static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
+>  static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+>  {
+>  	struct device *dev = &pdev->dev;
+> -	int regloc;
+> +	struct cxl_mem *cxlm;
+> +	int rc, regloc, i;
+> +
+> +	rc = pcim_enable_device(pdev);
+> +	if (rc)
+> +		return rc;
+>  
+>  	regloc = cxl_mem_dvsec(pdev, PCI_DVSEC_ID_CXL_REGLOC);
+>  	if (!regloc) {
+>  		dev_err(dev, "register location dvsec not found\n");
+>  		return -ENXIO;
+>  	}
+> +	regloc += 0xc; /* Skip DVSEC + reserved fields */
+
+Assuming the DVSEC revision number is always 0x0 or there's no value in 
+storing this in struct cxl_mem for the future.
 
 Acked-by: David Rientjes <rientjes@google.com>
