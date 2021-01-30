@@ -2,97 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E77153097D7
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 20:12:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D9A3097DD
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 20:16:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232185AbhA3TLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 14:11:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232156AbhA3TLx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 14:11:53 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D435EC061573
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 11:11:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=LoscN5jD19xm5adnVXv8iTMljlY3qu2cWhabLlLMNqA=; b=I04Rmy5P6yA6iNfFGzMrg8vMzV
-        FUe0VokZUkBOWaKhSjbNeRGhCIiSiwC0CHZXHDSk6AKeqiSqL9D43RwHhr2S+Z33ernY+E8Z4ASsQ
-        q5cuGESbYw275/Fp7U7kQg9wIo3tTief5GwWW8Gz3I8ZuqD7uvmMwVmcDppXCRbBCKMsvIrtcNYnh
-        ahkNLds4OCsT9LbgchTmkR0amCi3flfm/Qv+9Qnbyr5v7eh3xkuleUuZ1DNMVRu8odt2ZeEDTFSmo
-        KxzvbCwygLi6y6g2L3Jk2wKwTmy5ZXN9QUkbDuZLsWdnN92yJhHDc58wgE1FZODMPXpsOODZFOA4p
-        YnSh3V2w==;
-Received: from [2601:1c0:6280:3f0::7650]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l5veF-00036D-Nz; Sat, 30 Jan 2021 19:11:08 +0000
-Subject: Re: bnx2x_main.c:undefined reference to `synchronize_net'
-To:     Jakub Kicinski <kuba@kernel.org>, kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@kernel.org>
-References: <202101301843.jB5QqizS-lkp@intel.com>
- <20210130103104.28a4ed6b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <d087f29f-e9d1-382d-0a5e-50d9a5280a82@infradead.org>
-Date:   Sat, 30 Jan 2021 11:11:01 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S232240AbhA3TPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 14:15:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229990AbhA3TPO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 14:15:14 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C7CBF64E11;
+        Sat, 30 Jan 2021 19:14:32 +0000 (UTC)
+Date:   Sat, 30 Jan 2021 19:14:29 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Ye Xiang <xiang.ye@intel.com>
+Cc:     jikos@kernel.org, srinivas.pandruvada@linux.intel.com,
+        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iio: hid-sensor-prox: Fix scale not correct issue
+Message-ID: <20210130191429.2c485212@archlinux>
+In-Reply-To: <20210130102530.31064-1-xiang.ye@intel.com>
+References: <20210130102530.31064-1-xiang.ye@intel.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210130103104.28a4ed6b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/30/21 10:31 AM, Jakub Kicinski wrote:
-> I don't understand how this one happens and don't have a PPC build
-> setup :S So many things seem to depend on NET here that "this should
-> never happen". Must be some rogue "select" pulling BNX2 without its
-> dependencies?
+On Sat, 30 Jan 2021 18:25:30 +0800
+Ye Xiang <xiang.ye@intel.com> wrote:
 
-Yes, the problem is overuse of Kconfig "select" in powerpc for the
-AKEBONO platform. The Kconfig warnings are listed at the end:
+> Currently, the proxy sensor scale is zero because it just return the
+> exponent directly. To fix this issue, this patch use
+> hid_sensor_format_scale to process the scale first then return the
+> output.
+> 
+> Fixes: 39a3a0138f61 ("iio: hid-sensors: Added Proximity Sensor Driver")
+> Signed-off-by: Ye Xiang <xiang.ye@intel.com>
 
->>
->> Kconfig warnings: (for reference only)
->>    WARNING: unmet direct dependencies detected for NETDEVICES
->>    Depends on NET
->>    Selected by
->>    - AKEBONO && PPC_47x
->>    WARNING: unmet direct dependencies detected for ETHERNET
->>    Depends on NETDEVICES && NET
->>    Selected by
->>    - AKEBONO && PPC_47x
->>    WARNING: unmet direct dependencies detected for HOTPLUG_CPU
->>    Depends on SMP && (PPC_PSERIES || PPC_PMAC || PPC_POWERNV || FSL_SOC_BOOKE
->>    Selected by
->>    - PM_SLEEP_SMP && SMP && (ARCH_SUSPEND_POSSIBLE || ARCH_HIBERNATION_POSSIBLE && PM_SLEEP
->>    WARNING: unmet direct dependencies detected for NET_DEVLINK
->>    Depends on NET
->>    Selected by
->>    - QED && NETDEVICES && ETHERNET && NET_VENDOR_QLOGIC && PCI
->>    WARNING: unmet direct dependencies detected for GRO_CELLS
->>    Depends on NET
->>    Selected by
->>    - MACSEC && NETDEVICES && NET_CORE
->>    WARNING: unmet direct dependencies detected for FAILOVER
->>    Depends on NET
->>    Selected by
->>    - NET_FAILOVER && NETDEVICES
+Hi Ye Xiang,
 
-I'm pretty sure that Michael Ellerman (powerpc maintainer) was going to make
-some defconfig file changes for AKEBONO, but I'm not so sure that that
-change will prevent randconfig build errors. I'm in a wait-and-see mode on that.
+There was a bit of fuzz on this so please take a look at
+my fixes-togreg branch and check it went in cleanly.
 
-Hm, looking back at his reply to my (powerpc, not net:) patch,
-I owe him a reply, so I'll look into that.
 
-https://lore.kernel.org/linuxppc-dev/875z3prcwg.fsf@mpe.ellerman.id.au/
-
--- 
-~Randy
+> ---
+> v2:
+>   - Add Fixes tag
+> 
+> ---
+>  drivers/iio/light/hid-sensor-prox.c | 13 +++++++++++--
+>  1 file changed, 11 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iio/light/hid-sensor-prox.c b/drivers/iio/light/hid-sensor-prox.c
+> index 4ab285a418d5..4abcfe48f1d4 100644
+> --- a/drivers/iio/light/hid-sensor-prox.c
+> +++ b/drivers/iio/light/hid-sensor-prox.c
+> @@ -23,6 +23,9 @@ struct prox_state {
+>  	struct hid_sensor_common common_attributes;
+>  	struct hid_sensor_hub_attribute_info prox_attr;
+>  	u32 human_presence;
+> +	int scale_pre_decml;
+> +	int scale_post_decml;
+> +	int scale_precision;
+>  };
+>  
+>  static const u32 prox_sensitivity_addresses[] = {
+> @@ -98,8 +101,9 @@ static int prox_read_raw(struct iio_dev *indio_dev,
+>  		ret_type = IIO_VAL_INT;
+>  		break;
+>  	case IIO_CHAN_INFO_SCALE:
+> -		*val = prox_state->prox_attr.units;
+> -		ret_type = IIO_VAL_INT;
+> +		*val = prox_state->scale_pre_decml;
+> +		*val2 = prox_state->scale_post_decml;
+> +		ret_type = prox_state->scale_precision;
+>  		break;
+>  	case IIO_CHAN_INFO_OFFSET:
+>  		*val = hid_sensor_convert_exponent(
+> @@ -221,6 +225,11 @@ static int prox_parse_report(struct platform_device *pdev,
+>  	dev_dbg(&pdev->dev, "prox %x:%x\n", st->prox_attr.index,
+>  			st->prox_attr.report_id);
+>  
+> +	st->scale_precision = hid_sensor_format_scale(
+> +				hsdev->usage,
+> +				&st->prox_attr,
+> +				&st->scale_pre_decml, &st->scale_post_decml);
+> +
+>  	return ret;
+>  }
+>  
 
