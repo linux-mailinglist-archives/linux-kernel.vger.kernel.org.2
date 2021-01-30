@@ -2,99 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F7030951E
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 13:37:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5D6E309522
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 13:38:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbhA3Mez (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 07:34:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhA3Mey (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 07:34:54 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3DC6C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 04:34:13 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id q5so11037456ilc.10
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 04:34:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=C7cDNKTuTgw0I2CTtx3BBJ3BTnHf7w/oYJgbFlp2Ulg=;
-        b=JkmqbLLymBqsef5mgjuVS6CDvWa2Mm/XH6Xnmt5dLFtMJleyERnRaKfghpQNn+AX10
-         riQKW8xGp/K0cyTqJE0qAZ4bvDsdJhKMatByqDYmSTGDqK4UNCUroPDDvA66VW78MWFv
-         dXewsHBwtdMozL+u4dSDr6AhcA1KGrGFFf4rptz+Ovitbkd6GHnJeLcMFOZUM49ZY6kC
-         fABj9WQf62QDk5XSqgWZquWfKMt0TsLmPIbFYIPorTEHTF2J1cgO7WSppOjSbdFWd1Ds
-         Yu8n3Xe/d89xWKCc/muWuYlH3RVAZUtN9/mZZ9juYTZM+7DrVw/9uVqbL9bh5CIGgmqy
-         bUWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=C7cDNKTuTgw0I2CTtx3BBJ3BTnHf7w/oYJgbFlp2Ulg=;
-        b=RAgp4VqvDVzsXeEdQJas7inXPUpulNDEeT8sR87X/RzqqIe8PPtEp7lr9rO8WGG6rl
-         0miAdNaiYUNAK9V5TNcyFf3pbPh9Gwvv9UptC6l7n325ZOz9Jk/nUYSskIia6TpQU/3s
-         Om0Raype0KCGWrQaSY2tfZ3yLcWtrQFpeBoXmgbKnffw/cRXCdX1Oqa+/yUTa04karvf
-         OCFc8l+akJ28F9qkLbFSApUjeZn383VnBuniPhY6oZHCVJM8GphkaKnHSXVKA8ABxy3e
-         o2JDBw7dSIJXxZg9p1vtGb8ruVgp2CI5R0npeOFS/fmrxOk69zuBpStZ6QG7pM9CewB6
-         1xpg==
-X-Gm-Message-State: AOAM532Vp1Fk4P1XI3cg9/f0poCV9s9QGNHHpLePzhsa1+lIZRIeD3Nz
-        bCrZTsy8s7mRXwp234o/Lkw=
-X-Google-Smtp-Source: ABdhPJwID2N6KgHnIJzTKMZEvKcXG9pTq70AIKv0+BheRu3F0l+nTV4cYYZad+1hF+fNd+c252xBag==
-X-Received: by 2002:a05:6e02:1a2d:: with SMTP id g13mr6528684ile.228.1612010053300;
-        Sat, 30 Jan 2021 04:34:13 -0800 (PST)
-Received: from llvm-development.us-central1-a.c.llvm-285123.internal (92.190.192.35.bc.googleusercontent.com. [35.192.190.92])
-        by smtp.gmail.com with ESMTPSA id 11sm5781105ilq.88.2021.01.30.04.34.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Jan 2021 04:34:12 -0800 (PST)
-Date:   Sat, 30 Jan 2021 12:34:11 +0000
-From:   Vinicius Tinti <viniciustinti@gmail.com>
-To:     Chris Wilson <chris@chris-wilson.co.uk>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] drm/i915: Remove unreachable code
-Message-ID: <20210130123411.GB1822@llvm-development.us-central1-a.c.llvm-285123.internal>
-References: <20210129181519.69963-1-viniciustinti@gmail.com>
- <161195375417.17568.2762721732398065240@build.alporthouse.com>
+        id S231562AbhA3Mhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 07:37:42 -0500
+Received: from foss.arm.com ([217.140.110.172]:35990 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231252AbhA3Mhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 07:37:38 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F28FED1;
+        Sat, 30 Jan 2021 04:36:53 -0800 (PST)
+Received: from [10.37.8.6] (unknown [10.37.8.6])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0AA313F71B;
+        Sat, 30 Jan 2021 04:36:50 -0800 (PST)
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Subject: Re: [PATCH v10 0/4] arm64: ARMv8.5-A: MTE: Add async mode support
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>
+References: <20210129184905.29760-1-vincenzo.frascino@arm.com>
+ <CAAeHK+w5hHcN-4Q8KYpMnG1rQvz9N_kXc7=uY07nH=937MUTjA@mail.gmail.com>
+Message-ID: <4e14f83d-26a6-b06a-7ef6-f11dcd5457d2@arm.com>
+Date:   Sat, 30 Jan 2021 12:40:47 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <161195375417.17568.2762721732398065240@build.alporthouse.com>
+In-Reply-To: <CAAeHK+w5hHcN-4Q8KYpMnG1rQvz9N_kXc7=uY07nH=937MUTjA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 08:55:54PM +0000, Chris Wilson wrote:
-> Quoting Vinicius Tinti (2021-01-29 18:15:19)
-> > By enabling -Wunreachable-code-aggressive on Clang the following code
-> > paths are unreachable.
+Hi Andrey,
+
+On 1/29/21 7:21 PM, Andrey Konovalov wrote:
+>> The series is based on linux-next/akpm.
+>>
+>> To simplify the testing a tree with the new patches on top has been made
+>> available at [1].
+>>
+>> [1] https://git.gitlab.arm.com/linux-arm/linux-vf.git mte/v10.async.akpm
+>>
+>> Changes:
+>> --------
+>> v10:
+>>   - Rebase on the latest linux-next/akpm
+>>   - Address review comments.
+> Thinking again about this: properly fixing that tracing issue is
+> similar to fixing the issue with the tests. Let's do both as a part of
+> this series.
 > 
-> That code exists as commentary and, especially for sdvo, library
-> functions that we may need in future.
+> Here's a tree with the fixes. I've marked the ones that need to be
+> squashed with "fix!". PTAL, and if the additions look good, please
+> send v11 with them included.
+> 
+> https://github.com/xairy/linux/commits/vf-v10.async.akpm-fixes
 
-I would argue that this code could be removed since it is in git history.
-It can be restored when needed.
+I checked your code this morning and it seems OK (very similar to my proposal in
+logic but done in KASAN code as you anticipated).
 
-This will make the code cleaner.
+I am fine to add the changes to my patches but before then that I would like to
+conduct some testing, hence I will most likely have v11 sometimes this
+afternoon/evening UK time.
 
-> The ivb-gt1 case => as we now set the gt level for ivb, should we not
-> enable the optimisation for ivb unaffected by the w/a? Just no one has
-> taken the time to see if it causes a regression.
-
-I don't know. I just found out that the code is unreachable.
-
-> For error state, the question remains whether we should revert to
-> uncompressed data if the compressed stream is larger than the original.
-
-I don't know too.
-
-In this last two cases the code could be commented and the decisions
-and problems explained in the comment section.
-
-> -Chris
+-- 
+Regards,
+Vincenzo
