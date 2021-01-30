@@ -2,191 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22EB030946A
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 11:23:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87063309460
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 11:22:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232312AbhA3KX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 05:23:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232450AbhA3A1G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 19:27:06 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DEE0C061573;
-        Fri, 29 Jan 2021 16:25:51 -0800 (PST)
-Date:   Sat, 30 Jan 2021 00:25:45 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1611966346;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+O2w7S5EIr+xgRrn3lyGkiuObLVFWzLYI3jLm0zSy/U=;
-        b=ja8CJybGquWcD7wxc/usJyM56b3UFxypqDDDtDspDxVrMoVoYvlT5Q0s7At0cqXOM3roEP
-        R3Rl/+CUltc1hsSR7kfK06bfQEkjriHOkot/CEr5Y3SH+dG5QIPU06cy4TEXHycMX99Sf4
-        Jjc/Z+u2BAx/gn1nfjZouSA779XKP/rbST2724j7U8jgwUzmudwcmpdpIr3MWIBZ88zyb0
-        9aKO65qBI+JQeyshoA9+3AEEPQnszDykyifcWOS0qIvzb2uFfCkvx5pgH4+6Hg93rXGZv5
-        3OmkwTcES8xRF2+3FvDx6fZJAJ2X/HfRTChoWhXTjW/pLzxRU9sHr+8VICahCg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1611966346;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+O2w7S5EIr+xgRrn3lyGkiuObLVFWzLYI3jLm0zSy/U=;
-        b=MRBubB14FDQzEGB0tTRGQtmEY00BfkciJEEtiWpfLIpBuQm87AJOg+c8d5+4nbzsCAU8qc
-        m7rtiZT71xnxkXDw==
-From:   "tip-bot2 for Marc Zyngier" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: irq/urgent] genirq/msi: Activate Multi-MSI early when
- MSI_FLAG_ACTIVATE_EARLY is set
-Cc:     Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210123122759.1781359-1-maz@kernel.org>
-References: <20210123122759.1781359-1-maz@kernel.org>
+        id S231817AbhA3KVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 05:21:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44944 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231423AbhA3A16 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 19:27:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7BA3764E00;
+        Sat, 30 Jan 2021 00:27:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1611966435;
+        bh=T6CSjbBhjBe08pyip59nu5BecvICMTSZdw9QpUPIIHs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=pGK18VaLZTQOfi8+66QN4kHlHzjo23VuSHdPsntDxYAH64wUjqHh8FkoPFo4CmDbv
+         i8shE68JzyhYJ/rj5eFy34Ib90yTqJZf6NEd3UydvmB5MqqsZ6aHb4l8FWRGq2TNQx
+         Uo2TqIAzhaxzpOEmoh9SGvIotQs/5UFvH+qj6z1WD393ZsH30P4JCQpEAVXNQwP8wH
+         5CslTXVdLI/1RumHZiO/ZhyYmgrYkh8Db6162j/Hum045SyCuOI9Gs0wDJgHk74ZcD
+         mbknya/pJmNNz4cPaNXyBa3a0ihkY2tcdYqilb8zCEtNDf5DH5QSSpoRK20FQ5pLU7
+         DeLsvWCvzJMQg==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Fangrui Song <maskray@google.com>
+Subject: [PATCH v2] vmlinux.lds.h: Define SANTIZER_DISCARDS with CONFIG_GCOV_KERNEL=y
+Date:   Fri, 29 Jan 2021 17:25:58 -0700
+Message-Id: <20210130002557.2681512-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20210129201116.2658179-1-nathan@kernel.org>
+References: <20210129201116.2658179-1-nathan@kernel.org>
 MIME-Version: 1.0
-Message-ID: <161196634552.23325.925660465209901325.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the irq/urgent branch of tip:
+clang produces .eh_frame sections when CONFIG_GCOV_KERNEL is enabled,
+even when -fno-asynchronous-unwind-tables is in KBUILD_CFLAGS:
 
-Commit-ID:     4c457e8cb75eda91906a4f89fc39bde3f9a43922
-Gitweb:        https://git.kernel.org/tip/4c457e8cb75eda91906a4f89fc39bde3f9a43922
-Author:        Marc Zyngier <maz@kernel.org>
-AuthorDate:    Sat, 23 Jan 2021 12:27:59 
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Sat, 30 Jan 2021 01:22:31 +01:00
+$ make CC=clang vmlinux
+...
+ld: warning: orphan section `.eh_frame' from `init/main.o' being placed in section `.eh_frame'
+ld: warning: orphan section `.eh_frame' from `init/version.o' being placed in section `.eh_frame'
+ld: warning: orphan section `.eh_frame' from `init/do_mounts.o' being placed in section `.eh_frame'
+ld: warning: orphan section `.eh_frame' from `init/do_mounts_initrd.o' being placed in section `.eh_frame'
+ld: warning: orphan section `.eh_frame' from `init/initramfs.o' being placed in section `.eh_frame'
+ld: warning: orphan section `.eh_frame' from `init/calibrate.o' being placed in section `.eh_frame'
+ld: warning: orphan section `.eh_frame' from `init/init_task.o' being placed in section `.eh_frame'
+...
 
-genirq/msi: Activate Multi-MSI early when MSI_FLAG_ACTIVATE_EARLY is set
+$ rg "GCOV_KERNEL|GCOV_PROFILE_ALL" .config
+CONFIG_GCOV_KERNEL=y
+CONFIG_ARCH_HAS_GCOV_PROFILE_ALL=y
+CONFIG_GCOV_PROFILE_ALL=y
 
-When MSI_FLAG_ACTIVATE_EARLY is set (which is the case for PCI),
-__msi_domain_alloc_irqs() performs the activation of the interrupt (which
-in the case of PCI results in the endpoint being programmed) as soon as the
-interrupt is allocated.
+This was already handled for a couple of other options in
+commit d812db78288d ("vmlinux.lds.h: Avoid KASAN and KCSAN's unwanted
+sections") and there is an open LLVM bug for this issue. Take advantage
+of that section for this config as well so that there are no more orphan
+warnings.
 
-But it appears that this is only done for the first vector, introducing an
-inconsistent behaviour for PCI Multi-MSI.
-
-Fix it by iterating over the number of vectors allocated to each MSI
-descriptor. This is easily achieved by introducing a new
-"for_each_msi_vector" iterator, together with a tiny bit of refactoring.
-
-Fixes: f3b0946d629c ("genirq/msi: Make sure PCI MSIs are activated early")
-Reported-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210123122759.1781359-1-maz@kernel.org
-
+Link: https://bugs.llvm.org/show_bug.cgi?id=46478
+Link: https://github.com/ClangBuiltLinux/linux/issues/1069
+Reported-by: kernel test robot <lkp@intel.com>
+Reviewed-by: Fangrui Song <maskray@google.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 ---
- include/linux/msi.h |  6 ++++++-
- kernel/irq/msi.c    | 44 ++++++++++++++++++++------------------------
- 2 files changed, 26 insertions(+), 24 deletions(-)
 
-diff --git a/include/linux/msi.h b/include/linux/msi.h
-index 360a0a7..aef35fd 100644
---- a/include/linux/msi.h
-+++ b/include/linux/msi.h
-@@ -178,6 +178,12 @@ struct msi_desc {
- 	list_for_each_entry((desc), dev_to_msi_list((dev)), list)
- #define for_each_msi_entry_safe(desc, tmp, dev)	\
- 	list_for_each_entry_safe((desc), (tmp), dev_to_msi_list((dev)), list)
-+#define for_each_msi_vector(desc, __irq, dev)				\
-+	for_each_msi_entry((desc), (dev))				\
-+		if ((desc)->irq)					\
-+			for (__irq = (desc)->irq;			\
-+			     __irq < ((desc)->irq + (desc)->nvec_used);	\
-+			     __irq++)
+v1 -> v2:
+
+* Keep configs and flag names alphabetized.
+
+* Drop mention of -ftest-coverage since it does not cause this issue per
+  Fangrui.
+
+* Pick up review tags from Fangrui and Nick.
+
+ include/asm-generic/vmlinux.lds.h | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index b2b3d81b1535..0e6c5da667a7 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -988,12 +988,13 @@
+ #endif
  
- #ifdef CONFIG_IRQ_MSI_IOMMU
- static inline const void *msi_desc_get_iommu_cookie(struct msi_desc *desc)
-diff --git a/kernel/irq/msi.c b/kernel/irq/msi.c
-index dc0e2d7..b338d62 100644
---- a/kernel/irq/msi.c
-+++ b/kernel/irq/msi.c
-@@ -436,22 +436,22 @@ int __msi_domain_alloc_irqs(struct irq_domain *domain, struct device *dev,
- 
- 	can_reserve = msi_check_reservation_mode(domain, info, dev);
- 
--	for_each_msi_entry(desc, dev) {
--		virq = desc->irq;
--		if (desc->nvec_used == 1)
--			dev_dbg(dev, "irq %d for MSI\n", virq);
--		else
-+	/*
-+	 * This flag is set by the PCI layer as we need to activate
-+	 * the MSI entries before the PCI layer enables MSI in the
-+	 * card. Otherwise the card latches a random msi message.
-+	 */
-+	if (!(info->flags & MSI_FLAG_ACTIVATE_EARLY))
-+		goto skip_activate;
-+
-+	for_each_msi_vector(desc, i, dev) {
-+		if (desc->irq == i) {
-+			virq = desc->irq;
- 			dev_dbg(dev, "irq [%d-%d] for MSI\n",
- 				virq, virq + desc->nvec_used - 1);
--		/*
--		 * This flag is set by the PCI layer as we need to activate
--		 * the MSI entries before the PCI layer enables MSI in the
--		 * card. Otherwise the card latches a random msi message.
--		 */
--		if (!(info->flags & MSI_FLAG_ACTIVATE_EARLY))
--			continue;
-+		}
- 
--		irq_data = irq_domain_get_irq_data(domain, desc->irq);
-+		irq_data = irq_domain_get_irq_data(domain, i);
- 		if (!can_reserve) {
- 			irqd_clr_can_reserve(irq_data);
- 			if (domain->flags & IRQ_DOMAIN_MSI_NOMASK_QUIRK)
-@@ -462,28 +462,24 @@ int __msi_domain_alloc_irqs(struct irq_domain *domain, struct device *dev,
- 			goto cleanup;
- 	}
- 
-+skip_activate:
- 	/*
- 	 * If these interrupts use reservation mode, clear the activated bit
- 	 * so request_irq() will assign the final vector.
- 	 */
- 	if (can_reserve) {
--		for_each_msi_entry(desc, dev) {
--			irq_data = irq_domain_get_irq_data(domain, desc->irq);
-+		for_each_msi_vector(desc, i, dev) {
-+			irq_data = irq_domain_get_irq_data(domain, i);
- 			irqd_clr_activated(irq_data);
- 		}
- 	}
- 	return 0;
- 
- cleanup:
--	for_each_msi_entry(desc, dev) {
--		struct irq_data *irqd;
--
--		if (desc->irq == virq)
--			break;
--
--		irqd = irq_domain_get_irq_data(domain, desc->irq);
--		if (irqd_is_activated(irqd))
--			irq_domain_deactivate_irq(irqd);
-+	for_each_msi_vector(desc, i, dev) {
-+		irq_data = irq_domain_get_irq_data(domain, i);
-+		if (irqd_is_activated(irq_data))
-+			irq_domain_deactivate_irq(irq_data);
- 	}
- 	msi_domain_free_irqs(domain, dev);
- 	return ret;
+ /*
+- * Clang's -fsanitize=kernel-address and -fsanitize=thread produce
+- * unwanted sections (.eh_frame and .init_array.*), but
+- * CONFIG_CONSTRUCTORS wants to keep any .init_array.* sections.
++ * Clang's -fprofile-arcs, -fsanitize=kernel-address, and
++ * -fsanitize=thread produce unwanted unwanted sections
++ * (.eh_frame and .init_array.*), but CONFIG_CONSTRUCTORS
++ * wants to keep any .init_array.* sections.
+  * https://bugs.llvm.org/show_bug.cgi?id=46478
+  */
+-#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KCSAN)
++#if defined(CONFIG_GCOV_KERNEL) || defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KCSAN)
+ # ifdef CONFIG_CONSTRUCTORS
+ #  define SANITIZER_DISCARDS						\
+ 	*(.eh_frame)
+
+base-commit: bec4c2968fce2f44ce62d05288a633cd99a722eb
+-- 
+2.30.0
+
