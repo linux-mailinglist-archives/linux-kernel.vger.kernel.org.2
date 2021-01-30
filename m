@@ -2,69 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1317309539
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 14:04:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D7BD30952F
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 14:01:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231778AbhA3ND3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 08:03:29 -0500
-Received: from m12-11.163.com ([220.181.12.11]:39610 "EHLO m12-11.163.com"
+        id S231194AbhA3NBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 08:01:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34948 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229620AbhA3NDZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 08:03:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=brTi98KYrf7biHo0Yw
-        HGNh8Yu8nQX0FxJDmIDrvdGxA=; b=fCRf3YEfQosarwTRLGiP4P9OnEuija+7nX
-        Y/GcOP11eB6++Esc+zmmn4XzaL2XDRreLCPvb4JfxF46vDLg8TSzQVt+yRCWFNbO
-        YNTv7lBLKRO3hTFCMGos2+dbgHooFoZmYqT/PATlXSs5JdIhwJc0Ddk7FMH9WDHq
-        m0Tbu6XR4=
-Received: from wengjianfeng.ccdomain.com (unknown [119.137.55.243])
-        by smtp7 (Coremail) with SMTP id C8CowACHsqxTCRVgZyo8LQ--.30869S2;
-        Sat, 30 Jan 2021 15:23:00 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     Jes.Sorensen@gmail.com, kvalo@codeaurora.org, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH v2] rtl8xxxu: remove unused assignment value
-Date:   Sat, 30 Jan 2021 15:23:10 +0800
-Message-Id: <20210130072310.17252-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: C8CowACHsqxTCRVgZyo8LQ--.30869S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtrWrtw4DXF4rGr4fJrWxCrg_yoWfuwb_uw
-        1Iv3ZrZry8Jr1Fyr43KrsrArWFyFWDJ3Z5Cay29FW3Ww43JayFvwnYv343Gr4fWw4ruryU
-        WwnrGa48trW8XjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU5ku4UUUUUU==
-X-Originating-IP: [119.137.55.243]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiHRQqsVSIpMzD7AAAsJ
+        id S229804AbhA3NBg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 08:01:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E2DC64DD6;
+        Sat, 30 Jan 2021 13:00:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612011655;
+        bh=5Tq2NcQDKndnGyT7gy9FBXC99oU9GBET5462mH6D0+M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kN/yAvBGhhr72Xc/OHbuBZ2LUKgESl3QhIDWQoQ2yCtOUAnSL0XaWJlzIidYK35Mv
+         0iyYQsfH0ccDA5sLAoqKb4HAsBvEOfeESX0pnyQ5EdaEVRa66xiXgHo9RvN7jjgb6v
+         +YSG6XafAZ1p3av8etQt5z4xVR9Ush0k9FSiDQK0=
+Date:   Sat, 30 Jan 2021 14:00:53 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 00/32] 5.10.12-rc1 review
+Message-ID: <YBVYhQshqCzPg4A0@kroah.com>
+References: <20210129105912.628174874@linuxfoundation.org>
+ <20210129125914.GA23853@duo.ucw.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210129125914.GA23853@duo.ucw.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
+On Fri, Jan 29, 2021 at 01:59:14PM +0100, Pavel Machek wrote:
+> On Fri 2021-01-29 12:07:10, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.10.12 release.
+> > There are 32 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> 
+> CIP testing did not find any problems here:
+> 
+> https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-5.10.y
+> 
+> Tested-by: Pavel Machek (CIP) <pavel@denx.de>
 
-at first, ret was assigned to zero, but later assigned to
-a funciton,so the assignment to zero is no use, which can
-simple be removed instead.
+Thanks for testing these and letting me know.
 
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
----
- drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192e.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192e.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192e.c
-index 9f1f93d..cfe2dfd 100644
---- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192e.c
-+++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_8192e.c
-@@ -1507,8 +1507,6 @@ static int rtl8192eu_power_on(struct rtl8xxxu_priv *priv)
- 	u32 val32;
- 	int ret;
- 
--	ret = 0;
--
- 	val32 = rtl8xxxu_read32(priv, REG_SYS_CFG);
- 	if (val32 & SYS_CFG_SPS_LDO_SEL) {
- 		rtl8xxxu_write8(priv, REG_LDO_SW_CTRL, 0xc3);
--- 
-1.9.1
-
+greg k-h
