@@ -2,120 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E828430912D
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 02:11:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3674E309136
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 02:20:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232504AbhA3BJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 20:09:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233039AbhA3A67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 19:58:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AA4864E0C;
-        Sat, 30 Jan 2021 00:47:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611967661;
-        bh=4MU9n3dKEMA3J95RMUATsgBTduGFFuZ1jKrLeN0z26k=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZjfiNCTjFu6a2QGTO1XaxD0YhiaaEFNkCbj16zbpFDTVRZc+r/tBJnC1Nv1RkGNPB
-         mTRpo7FEr27AODBSEc3m0w8lFVjr6ZoYeUPuYOqWHP2IQSJNPkelqtPrNafZFosGtP
-         Dn+MxRK0J8YnDhSAzALpWL5zAlnFy++e4RMrcruLXB4NKLX3310GZf7NRYNzi0JGqv
-         sKBAe26UgAaF0NPXP5Oy2/zXES6Y0PZXnJ5eI28RXClgypmEIqbliVHLaOgAGEA45K
-         yYxN7MAqwg21X1TVS3SHGdauuc11zf0MW/KY+R/Kz9UDv/o3Ypvl3CvOrzPyWIICsQ
-         ezZgnUuc67Iog==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Fangrui Song <maskray@google.com>
-Subject: [PATCH v3] vmlinux.lds.h: Define SANTIZER_DISCARDS with CONFIG_GCOV_KERNEL=y
-Date:   Fri, 29 Jan 2021 17:46:51 -0700
-Message-Id: <20210130004650.2682422-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210130002557.2681512-1-nathan@kernel.org>
-References: <20210130002557.2681512-1-nathan@kernel.org>
+        id S232347AbhA3BR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 20:17:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233071AbhA3A7Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 19:59:25 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B08DC06178A
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 16:58:30 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id w14so7303317pfi.2
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 16:58:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=vY5qfUxdXCT/eobTl+36hSbsQCTFZU3e/5axsUhR+gY=;
+        b=F9ABbjx9K8dh+DHwtMVe1pNmo1PfZnrNKt7BOp/DfjurjXFLxFKYJibjtIR0SgqvgQ
+         Eh3ncYjaLS1o8k0Y3M8FzZe6kVZR8zbkj9mqIGl4iP0Mi9zAG02//q2gbf0FVFDP1Kb0
+         JnSB5OiM1EXI14+qYkx6D0zO05icm48bzeRqO5DObQnYOcWCBJsqvHl9CeRQk25KWkze
+         vXJiDqsh8vscqg96wHrDVLHq04dDmO7u4tVMLge+j5pybhGyOlDeyzJ4l4TGb3xO+94q
+         BOZaBaya8hYeNjjd8JlZIs/21v2uTWMxuRnplN8PZNyFX2iylIn5GwDPyDZamNq6lW4K
+         2YJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vY5qfUxdXCT/eobTl+36hSbsQCTFZU3e/5axsUhR+gY=;
+        b=G1N5SGfvAAAxGH1SEr75pESqw+8dS3UOHPGIH2w9l0ZQB+NRB5iGcmBe8eQVvkHXP2
+         7ztfuiAcP2KxhRtBHFMhVbM8J2kkiq7dmixgz/nhh5TYJRymiZ8RQ7c7eF1PpjoabLa6
+         0uIxgJa4OS0sVFiTSvZvUXjM+9EJ50CrBGEdsfPK6prtDwkF2vGD9cReuWbVop9+6q8Y
+         UQSPFecYaTX3Kd9bVJ1PMY/45ZqiddIXj/kWKihoBZphI5RbONQ3q1GRhBCyippVZqVC
+         R8dCw5bfb1uKkMFNvEZroTStuWF66JG/BSoIEWuENDFntEDHeIQlcMZFJ/KgamR80JhG
+         bHXw==
+X-Gm-Message-State: AOAM532QcJGoxWtrmWF12DIi3EOsc++vYSwQqkKs7uW+jzQ5SkJx8ytE
+        ge6f73Ox1Ia33Ai/oR6Tp9bH+9wU/jjtVuNbEO3hjw==
+X-Google-Smtp-Source: ABdhPJxMeluNQVHvcV1ZnNWC6PT/4wuUBMB0oK9z5Rwk+bZ1VF2lhvL8TNsNrEdGkTUaqwtI5qp7n7/UeDworva0+U8=
+X-Received: by 2002:a65:628a:: with SMTP id f10mr6909626pgv.380.1611968309986;
+ Fri, 29 Jan 2021 16:58:29 -0800 (PST)
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+References: <20210129194318.2125748-1-ndesaulniers@google.com>
+ <CA+icZUXpn_VKePTpnEhcpuSxPkuQTSKYfsVeMbxU9-rBp1ZJXw@mail.gmail.com> <CAKwvOdniSiaBkGOO32ZuGCv=1SBwaqdRsHUo31n+O+g0ek5P_Q@mail.gmail.com>
+In-Reply-To: <CAKwvOdniSiaBkGOO32ZuGCv=1SBwaqdRsHUo31n+O+g0ek5P_Q@mail.gmail.com>
+From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Date:   Fri, 29 Jan 2021 16:58:18 -0800
+Message-ID: <CAFP8O3KcyPH-sjwoTet-W8_L5vfbiXmkWgxwyPJFY=_JFxvsTA@mail.gmail.com>
+Subject: Re: [PATCH v6 0/2] Kbuild: DWARF v5 support
+To:     Nick Desaulniers <ndesaulniers@google.com>,
+        Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-clang produces .eh_frame sections when CONFIG_GCOV_KERNEL is enabled,
-even when -fno-asynchronous-unwind-tables is in KBUILD_CFLAGS:
+On Fri, Jan 29, 2021 at 4:46 PM 'Nick Desaulniers' via Clang Built
+Linux <clang-built-linux@googlegroups.com> wrote:
+>
+> On Fri, Jan 29, 2021 at 4:08 PM Sedat Dilek <sedat.dilek@gmail.com> wrote=
+:
+> >
+> > On Fri, Jan 29, 2021 at 8:43 PM Nick Desaulniers
+> > <ndesaulniers@google.com> wrote:
+> > >
+> > > DWARF v5 is the latest standard of the DWARF debug info format.
+> > >
+> > > DWARF5 wins significantly in terms of size and especially so when mix=
+ed
+> > > with compression (CONFIG_DEBUG_INFO_COMPRESSED).
+> > >
+> > > Link: http://www.dwarfstd.org/doc/DWARF5.pdf
+> > >
+> > > Patch 1 is a cleanup that lays the ground work and isn't DWARF
+> > > v5 specific.
+> > > Patch 2 implements Kconfig and Kbuild support for DWARFv5.
+> > >
+> >
+> > When you will do a v7...
+> >
+> > Can you look also at places where we have hardcoded DWARF-2 handling...
+>
+> Ah, sorry, I just saw this now, after sending v7.  Can we wait to
+> purge DWARF v2 until after we have DWARF v5?
+>
+> In fact, if they are orthogonal like I suspect, why don't you send
+> some patches and I will help you test them?
+> --
+> Thanks,
+> ~Nick Desaulniers
 
-$ make CC=clang vmlinux
-...
-ld: warning: orphan section `.eh_frame' from `init/main.o' being placed in section `.eh_frame'
-ld: warning: orphan section `.eh_frame' from `init/version.o' being placed in section `.eh_frame'
-ld: warning: orphan section `.eh_frame' from `init/do_mounts.o' being placed in section `.eh_frame'
-ld: warning: orphan section `.eh_frame' from `init/do_mounts_initrd.o' being placed in section `.eh_frame'
-ld: warning: orphan section `.eh_frame' from `init/initramfs.o' being placed in section `.eh_frame'
-ld: warning: orphan section `.eh_frame' from `init/calibrate.o' being placed in section `.eh_frame'
-ld: warning: orphan section `.eh_frame' from `init/init_task.o' being placed in section `.eh_frame'
-...
+Basically the distinction is just between DWARF v2 .debug_line and
+DWARF v5 .debug_line .
+(-gdwarf-4 adds an extra maximum_operations_per_instruction (constant
+1) compared with -gdwarf-2 but that can mostly be ignored).
 
-$ rg "GCOV_KERNEL|GCOV_PROFILE_ALL" .config
-CONFIG_GCOV_KERNEL=y
-CONFIG_ARCH_HAS_GCOV_PROFILE_ALL=y
-CONFIG_GCOV_PROFILE_ALL=y
+Refinement among -gdwarf-[234] just clarifies things and is not going
+to affect debugging experience in any case.
+So I agree with Nick that it can be done separately.
+Note: such clarification can make things a bit ugly because binutils
+before 2020 does not recognize -gdwarf-[345].
 
-This was already handled for a couple of other options in
-commit d812db78288d ("vmlinux.lds.h: Avoid KASAN and KCSAN's unwanted
-sections") and there is an open LLVM bug for this issue. Take advantage
-of that section for this config as well so that there are no more orphan
-warnings.
 
-Link: https://bugs.llvm.org/show_bug.cgi?id=46478
-Link: https://github.com/ClangBuiltLinux/linux/issues/1069
-Reported-by: kernel test robot <lkp@intel.com>
-Reviewed-by: Fangrui Song <maskray@google.com>
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
 
-v2 -> v3:
-
-* Fix double "unwanted" in comment section per Sedat.
-
-v1 -> v2:
-
-* Keep configs and flag names alphabetized.
-
-* Drop mention of -ftest-coverage since it does not cause this issue per
-  Fangrui.
-
-* Pick up review tags from Fangrui and Nick.
-
- include/asm-generic/vmlinux.lds.h | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index b2b3d81b1535..b61b537177fb 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -988,12 +988,13 @@
- #endif
- 
- /*
-- * Clang's -fsanitize=kernel-address and -fsanitize=thread produce
-- * unwanted sections (.eh_frame and .init_array.*), but
-- * CONFIG_CONSTRUCTORS wants to keep any .init_array.* sections.
-+ * Clang's -fprofile-arcs, -fsanitize=kernel-address, and
-+ * -fsanitize=thread produce unwanted sections (.eh_frame
-+ * and .init_array.*), but CONFIG_CONSTRUCTORS wants to
-+ * keep any .init_array.* sections.
-  * https://bugs.llvm.org/show_bug.cgi?id=46478
-  */
--#if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KCSAN)
-+#if defined(CONFIG_GCOV_KERNEL) || defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KCSAN)
- # ifdef CONFIG_CONSTRUCTORS
- #  define SANITIZER_DISCARDS						\
- 	*(.eh_frame)
-
-base-commit: bec4c2968fce2f44ce62d05288a633cd99a722eb
--- 
-2.30.0
-
+--=20
+=E5=AE=8B=E6=96=B9=E7=9D=BF
