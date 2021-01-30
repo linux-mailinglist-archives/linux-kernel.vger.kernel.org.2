@@ -2,93 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10AC13090E1
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 01:19:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF253090E4
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 01:22:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232303AbhA3ASn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 19:18:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232016AbhA3AQe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 19:16:34 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B235BC06174A;
-        Fri, 29 Jan 2021 16:15:43 -0800 (PST)
+        id S231489AbhA3AVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 19:21:48 -0500
+Received: from ms.lwn.net ([45.79.88.28]:56862 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231316AbhA3AVl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 19:21:41 -0500
 Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 468C36142;
-        Sat, 30 Jan 2021 00:15:42 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 468C36142
+        by ms.lwn.net (Postfix) with ESMTPSA id 2CCC86183;
+        Sat, 30 Jan 2021 00:20:29 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 2CCC86183
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1611965742; bh=M2tjm2zvpwz+6McLyPCdVsfVAKOBKj8VqkTZQibMfiM=;
+        t=1611966029; bh=y1fFJHKIoUxe218IAZpwByu/fhOX2js7qwLkwd1p6zU=;
         h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=BKy484P3LlfiDsc2tWkvciRrtHOVRbwBMWJs9fR9wf8Z0GIUTJmmf4ZvnkVv2F4Nu
-         xHCcvSKmFXbdZ/vqXNNW9CA5j06HY6O5MTc3PBAihx1tIjE8RdUSKkHNh2N9eGGSxH
-         vb8FB7yIhqpqR6+ZsEsDua4HiIF9XB5Irp2tmvSayEu62ABTz8Ba9CclgSkr2nKVWP
-         kHccip/bUrJL7RTZYji/NNKIIkkFugXj0kZ72pJWC+ZrjUIB79n5n3kUwpube4z7e/
-         tOS4mitZx4B9StbG0pd4377Bdjt3owntYUL9YGe/obxOaHxuaVvPeM4PRMTmRUOEd7
-         g8rHoO0ZCdyEA==
+        b=KZvoFDi1JkbU4s1BAXKECLwbfc7G9fXHOr2F5KydiGHTHbKZ3H2ZvCE10PkSiwi+A
+         UpukPA/JNSDeLdZVGADYpp7rhjllPiSQ10Tq8eW0lRDP4p1x9OeV2/ANRMiBm7oWpc
+         +Pml8i/rb/TbGJxS7zlxw3iFgmzeCqbaelJ7+AvuoN/L3b1o93lVEI/OEcxSKaDRcr
+         imUlC+rks0Sy9WMwgDfVwToIs4aWGzgJrBB7DjtspKtBZScaJ6mu4fNq7oR5oQb0lz
+         UMnHu23oL+Sb8ydiM7wjEWQKIdBt/kdtGI0IziWVgH0IXEzYkjmn55h7wTiizQ4pew
+         AJAFQbjorFsyw==
 From:   Jonathan Corbet <corbet@lwn.net>
-To:     Noa Sakurajin <noasakurajin@web.de>
-Cc:     Noa Sakurajin <noasakurajin@web.de>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Subject: Re: [PATCH] Updates Documentation/Makefile to use Python3 as fallback
-In-Reply-To: <20210129113544.25946-1-noasakurajin@web.de>
-References: <20210129113544.25946-1-noasakurajin@web.de>
-Date:   Fri, 29 Jan 2021 17:15:41 -0700
-Message-ID: <87y2gbwa8i.fsf@meer.lwn.net>
+To:     Lubomir Rintel <lkundrak@v3.sk>
+Cc:     Maen Suleiman <maen@marvell.com>, Lior Amsalem <alior@marvell.com>,
+        Thomas Petazzoni <thomas.petazzoni@free-electrons.com>,
+        Andrew Lunn <andrew@lunn.ch>, Nicolas Pitre <nico@fluxnic.net>,
+        Eric Miao <eric.y.miao@gmail.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Lubomir Rintel <lkundrak@v3.sk>
+Subject: Re: [PATCH 1/5] docs: arm: marvell: turn the automatic links into
+ labels
+In-Reply-To: <20210129183950.75405-2-lkundrak@v3.sk>
+References: <20210129183950.75405-1-lkundrak@v3.sk>
+ <20210129183950.75405-2-lkundrak@v3.sk>
+Date:   Fri, 29 Jan 2021 17:20:28 -0700
+Message-ID: <87tuqzwa0j.fsf@meer.lwn.net>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Noa Sakurajin <noasakurajin@web.de> writes:
+Lubomir Rintel <lkundrak@v3.sk> writes:
 
-[CC += kbuild maintainers]
-
->  Before the command python was needed for the documentation to build.
->  This patch checks if python is available and uses python3 as
->  fallback.
+> Lines ending with obscenely long URLs at the end don't look good.
 >
->  This is needed because a lot of distribution (at least Ubuntu)
->  only provide python3 and not python. scripts/sphinx-pre-install
->  checks for python3 first and does not check if python exists
->  which causes it to report that everything is installed even
->  if the documentation build failed.
+> Even if these links are not that long at this point, they will be when
+> replaced with an archive link in a subsequent patch -- let's prepare for
+> that.
 >
-> Signed-off-by: Noa Sakurajin <noasakurajin@web.de>
+> Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
 > ---
->  Documentation/Makefile | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  Documentation/arm/marvel.rst | 209 ++++++++++++++++++++++++-----------
+>  1 file changed, 143 insertions(+), 66 deletions(-)
 >
-> diff --git a/Documentation/Makefile b/Documentation/Makefile
-> index 61a7310b49e0..8a4a7df3b74a 100644
-> --- a/Documentation/Makefile
-> +++ b/Documentation/Makefile
-> @@ -75,7 +75,8 @@ quiet_cmd_sphinx = SPHINX  $@ --> file://$(abspath $(BUILDDIR)/$3/$4)
->        cmd_sphinx = $(MAKE) BUILDDIR=$(abspath $(BUILDDIR)) $(build)=Documentation/userspace-api/media $2 && \
->  	PYTHONDONTWRITEBYTECODE=1 \
->  	BUILDDIR=$(abspath $(BUILDDIR)) SPHINX_CONF=$(abspath $(srctree)/$(src)/$5/$(SPHINX_CONF)) \
-> -	$(PYTHON) $(srctree)/scripts/jobserver-exec \
-> +	PY=$(shell command -v $(PYTHON) 2> /dev/null) \
-> +	$${PY:-"$(PYTHON3)"} $(srctree)/scripts/jobserver-exec \
+> diff --git a/Documentation/arm/marvel.rst b/Documentation/arm/marvel.rst
+> index 16ab2eb085b86..716551f9b60a1 100644
+> --- a/Documentation/arm/marvel.rst
+> +++ b/Documentation/arm/marvel.rst
+> @@ -18,12 +18,12 @@ Orion family
+>          - 88F5181L
+>          - 88F5182
+>  
+> -               - Datasheet: http://www.embeddedarm.com/documentation/third-party/MV88F5182-datasheet.pdf
+> -               - Programmer's User Guide: http://www.embeddedarm.com/documentation/third-party/MV88F5182-opensource-manual.pdf
+> -               - User Manual: http://www.embeddedarm.com/documentation/third-party/MV88F5182-usermanual.pdf
+> +               - Datasheet: `MV88F5182-datasheet.pdf`_
+> +               - Programmer's User Guide: `MV88F5182-opensource-manual.pdf`_
+> +               - User Manual: `MV88F5182-usermanual.pdf`_
+>          - 88F5281
+>  
+> -               - Datasheet: http://www.ocmodshop.com/images/reviews/networking/qnap_ts409u/marvel_88f5281_data_sheet.pdf
+> +               - Datasheet: `marvel_88f5281_data_sheet.pdf`_
+>          - 88F6183
+>    Core:
+>  	Feroceon 88fr331 (88f51xx) or 88fr531-vd (88f52xx) ARMv5 compatible
+> @@ -32,37 +32,42 @@ Orion family
+>    Linux kernel plat directory:
+>  	arch/arm/plat-orion
+>  
+> +.. _MV88F5182-datasheet.pdf: http://www.embeddedarm.com/documentation/third-party/MV88F5182-datasheet.pdf
+> +.. _MV88F5182-opensource-manual.pdf: http://www.embeddedarm.com/documentation/third-party/MV88F5182-opensource-manual.pdf
+> +.. _MV88F5182-usermanual.pdf: http://www.embeddedarm.com/documentation/third-party/MV88F5182-usermanual.pdf
+> +.. _marvel_88f5281_data_sheet.pdf: http://www.ocmodshop.com/images/reviews/networking/qnap_ts409u/marvel_88f5281_data_sheet.pdf
 
-So I see what you're trying to do, and we definitely want this to work.
-I susped this isn't the right fix, though; it could leave us open to
-similar issues elsewhere in the tree.
+So I see what you're trying to do, but this has the effect of prettying
+up the processed docs at the expense of making the plain-text version
+harder to read.  Somebody who wants to find one of these datasheets from
+the plain-text version has to skip further down in the file, hoping that
+they pick out the right one among a set of long, similar URLs.
+Honestly, I think we may be better off leaving them as they are.
+Failing that, the right thing to do is to keep the lines defining the
+URL labels right next to where they are referenced.
 
-Personally, I think that $(PYTHON) should get a working Python if it's
-installed, so I would suggest fixing the top-level Makefile to set it
-correctly.  Masahiro, thoughts on that?
-
-Alternatively, we could just say $(PYTHON3) and explicitly leave Python2
-behind; that needs to happen in the not-too-distant future regardless
-but we haven't decided to actually do it yet.
+See what I'm getting at?
 
 Thanks,
 
