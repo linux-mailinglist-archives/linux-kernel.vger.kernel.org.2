@@ -2,201 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16592309176
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 03:08:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C617A309183
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 03:25:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233241AbhA3CBF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 21:01:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233067AbhA3ByX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 20:54:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9371364E02;
-        Sat, 30 Jan 2021 01:53:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611971610;
-        bh=2twdufb3WDhkRf6qz92slUmsgv4sr6vzhDCvXDaglWM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Di7ermcZdqbyH1BoUTyq+UCIhYaGGtauUKffNM4dO6bIbGeTmbwLCq9KjX9qyitv8
-         XaerQkND+MgoN3FZidxycH4G7qaxq0L9ZYTq/UWq+DTaRGWZIUvBO2x7R0vteUmWSg
-         tIHPG4fSL877JyEcXVkazPheVHOG6XA9cbm4L3rUufVOelESh9iAfpfY6wsQ4kYlyz
-         u51W/XEs7YxABnczptRi0j5/cJnrruFeVkwW4pIy/YRKDV2FC5DrNIRpynTYXq6zp5
-         EhkqlhM0VS0gWn2LdaXlmJ1cUT5mMkaBoZfVcacer5hSCzMd4Fc93O6NSwZHvjplCc
-         uRKINzaDjtMzg==
-Date:   Fri, 29 Jan 2021 18:53:27 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Subject: Re: [PATCH v7 2/2] Kbuild: implement support for DWARF v5
-Message-ID: <20210130015327.GD2709570@localhost>
-References: <20210130004401.2528717-1-ndesaulniers@google.com>
- <20210130004401.2528717-3-ndesaulniers@google.com>
+        id S233255AbhA3CY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 21:24:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232836AbhA3CRA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 21:17:00 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F63C061756;
+        Fri, 29 Jan 2021 18:02:31 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id w1so15602650ejf.11;
+        Fri, 29 Jan 2021 18:02:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lWOW7Am2jw5lybt8Sbf6Grdt5LyyZ81zyiJX1cf+NHM=;
+        b=LnUDAChPDt9mSpaSfBx0iTbzwCCR2nqzECbqcY4XtvOOiwZkNcPP2cuxyP8o05XZ3X
+         fy4KmV04FDAM1G+l2nzOVrW/RHyno/FIdvKw5sAdjqyC2xac6K6FOLacOK4bb1Q3sRR8
+         mmVQgqY6sgpBKqxBROse3ZSBOGG5rYDD5SED+JbszNHSJvM8UzXD0OZO+vnMUex+6HeK
+         PORuWS3cBxSbeI8ULzT0i1eyikb2dqIzFVmeNTD0kQBKGUvggcqY6BodpJqMHlLxqPF7
+         T5t1d/RSLDXsIzkZyLxRaeNYGxypY+tcvy/hTjNvp/E93bFmKHcu4v4HxuHJfwK7VsyI
+         4coQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lWOW7Am2jw5lybt8Sbf6Grdt5LyyZ81zyiJX1cf+NHM=;
+        b=UGQKW++IQxuhpFea0R0FJtV9vL8A0yWX5CKRLy0J2ttIPFP2O8YTNIJVtWxpW/6VKY
+         hGzMPM9lKehmTrKI2lihXCQoKfB4CU0fSZvraCxluuqXyjjfcqKW9JWFfu1VLbRjt34W
+         mzhyiqPCYpZkEj1hGjeeXcu3q866mQEuITCgOqao8MLy5+brCxQJKmyb63MW/H6zUPru
+         Bxe4OK9Lip5kle7/j+4X08xoLYo4eBxb5c/Idhvtp2NZIUVNTFagWo9fWXdoC/ymKxwC
+         17N+pVHrmDAAvb0pVMNBef/iU9SwqDgzY3K18Am9+JPCzGgt7h685XhLyMsGuS2O36IT
+         HhpA==
+X-Gm-Message-State: AOAM530mFvQe4lMP81LmE8hIH5uCYwfcNZzSgH/lWm43SK4cr045F2hD
+        abSRa7hOpcQourcH77mysJ8=
+X-Google-Smtp-Source: ABdhPJzhn1Ok/ZrdJEVffsdAfcTDBUaiBkfIVk0nB5XKD2dRHM07QWNjji0MA9JaNpYm586EXE9QXg==
+X-Received: by 2002:a17:906:eb95:: with SMTP id mh21mr7306422ejb.175.1611972149962;
+        Fri, 29 Jan 2021 18:02:29 -0800 (PST)
+Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
+        by smtp.gmail.com with ESMTPSA id s13sm5556926edi.92.2021.01.29.18.02.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 29 Jan 2021 18:02:29 -0800 (PST)
+Date:   Sat, 30 Jan 2021 04:02:27 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Prasanna Vengateshan <prasanna.vengateshan@microchip.com>
+Cc:     andrew@lunn.ch, netdev@vger.kernel.org, robh+dt@kernel.org,
+        kuba@kernel.org, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        davem@davemloft.net, UNGLinuxDriver@microchip.com,
+        Woojung.Huh@microchip.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH net-next 1/8] dt-bindings: net: dsa: dt bindings for
+ microchip lan937x
+Message-ID: <20210130020227.ahiee4goetpp2hb7@skbuf>
+References: <20210128064112.372883-1-prasanna.vengateshan@microchip.com>
+ <20210128064112.372883-2-prasanna.vengateshan@microchip.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210130004401.2528717-3-ndesaulniers@google.com>
+In-Reply-To: <20210128064112.372883-2-prasanna.vengateshan@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 04:44:01PM -0800, Nick Desaulniers wrote:
-> DWARF v5 is the latest standard of the DWARF debug info format.
-> 
-> Feature detection of DWARF5 is onerous, especially given that we've
-> removed $(AS), so we must query $(CC) for DWARF5 assembler directive
-> support.
-> 
-> The DWARF version of a binary can be validated with:
-> $ llvm-dwarfdump vmlinux | head -n 4 | grep version
-> or
-> $ readelf --debug-dump=info vmlinux 2>/dev/null | grep Version
-> 
-> DWARF5 wins significantly in terms of size when mixed with compression
-> (CONFIG_DEBUG_INFO_COMPRESSED).
-> 
-> 363M    vmlinux.clang12.dwarf5.compressed
-> 434M    vmlinux.clang12.dwarf4.compressed
-> 439M    vmlinux.clang12.dwarf2.compressed
-> 457M    vmlinux.clang12.dwarf5
-> 536M    vmlinux.clang12.dwarf4
-> 548M    vmlinux.clang12.dwarf2
-> 
-> 515M    vmlinux.gcc10.2.dwarf5.compressed
-> 599M    vmlinux.gcc10.2.dwarf4.compressed
-> 624M    vmlinux.gcc10.2.dwarf2.compressed
-> 630M    vmlinux.gcc10.2.dwarf5
-> 765M    vmlinux.gcc10.2.dwarf4
-> 809M    vmlinux.gcc10.2.dwarf2
-> 
-> Though the quality of debug info is harder to quantify; size is not a
-> proxy for quality.
-> 
-> Jakub notes:
->   All [GCC] 5.1 - 6.x did was start accepting -gdwarf-5 as experimental
->   option that enabled some small DWARF subset (initially only a few
->   DW_LANG_* codes newly added to DWARF5 drafts).  Only GCC 7 (released
->   after DWARF 5 has been finalized) started emitting DWARF5 section
->   headers and got most of the DWARF5 changes in...
-> 
-> Version check GCC so that we don't need to worry about the difference in
-> command line args between GNU readelf and llvm-readelf/llvm-dwarfdump to
-> validate the DWARF Version in the assembler feature detection script.
-> 
-> GNU `as` only recently gained support for specifying -gdwarf-5, so when
-> compiling with Clang but without Clang's integrated assembler
-> (LLVM_IAS=1 is not set), explicitly add -Wa,-gdwarf-5 to DEBUG_CFLAGS.
-> 
-> Disabled for now if CONFIG_DEBUG_INFO_BTF is set; pahole doesn't yet
-> recognize the new additions to the DWARF debug info. Thanks to Sedat for
-> the report.
-> 
-> Link: http://www.dwarfstd.org/doc/DWARF5.pdf
-> Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
-> Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-> Suggested-by: Caroline Tice <cmtice@google.com>
-> Suggested-by: Fangrui Song <maskray@google.com>
-> Suggested-by: Jakub Jelinek <jakub@redhat.com>
-> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+On Thu, Jan 28, 2021 at 12:11:05PM +0530, Prasanna Vengateshan wrote:
+> +  spi-max-frequency:
+> +    maximum: 50000000
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+And it actually works at 50 MHz? Cool.
 
-> ---
->  Makefile                          |  1 +
->  include/asm-generic/vmlinux.lds.h |  7 ++++++-
->  lib/Kconfig.debug                 | 18 ++++++++++++++++++
->  scripts/test_dwarf5_support.sh    |  8 ++++++++
->  4 files changed, 33 insertions(+), 1 deletion(-)
->  create mode 100755 scripts/test_dwarf5_support.sh
-> 
-> diff --git a/Makefile b/Makefile
-> index d2b4980807e0..5387a6f2f62d 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -831,6 +831,7 @@ KBUILD_AFLAGS	+= -Wa,-gdwarf-2
->  endif
->  
->  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
-> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) := 5
->  DEBUG_CFLAGS	+= -gdwarf-$(dwarf-version-y)
->  
->  ifdef CONFIG_DEBUG_INFO_REDUCED
-> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> index 34b7e0d2346c..1e7cde4bd3f9 100644
-> --- a/include/asm-generic/vmlinux.lds.h
-> +++ b/include/asm-generic/vmlinux.lds.h
-> @@ -842,8 +842,13 @@
->  		/* DWARF 4 */						\
->  		.debug_types	0 : { *(.debug_types) }			\
->  		/* DWARF 5 */						\
-> +		.debug_addr	0 : { *(.debug_addr) }			\
-> +		.debug_line_str	0 : { *(.debug_line_str) }		\
-> +		.debug_loclists	0 : { *(.debug_loclists) }		\
->  		.debug_macro	0 : { *(.debug_macro) }			\
-> -		.debug_addr	0 : { *(.debug_addr) }
-> +		.debug_names	0 : { *(.debug_names) }			\
-> +		.debug_rnglists	0 : { *(.debug_rnglists) }		\
-> +		.debug_str_offsets	0 : { *(.debug_str_offsets) }
->  
->  /* Stabs debugging sections. */
->  #define STABS_DEBUG							\
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 94c1a7ed6306..ad6f78989d4f 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -268,6 +268,24 @@ config DEBUG_INFO_DWARF4
->  	  It makes the debug information larger, but it significantly
->  	  improves the success of resolving variables in gdb on optimized code.
->  
-> +config DEBUG_INFO_DWARF5
-> +	bool "Generate DWARF Version 5 debuginfo"
-> +	depends on GCC_VERSION >= 50000 || CC_IS_CLANG
-> +	depends on CC_IS_GCC || $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC) $(CLANG_FLAGS))
-> +	depends on !DEBUG_INFO_BTF
-> +	help
-> +	  Generate DWARF v5 debug info. Requires binutils 2.35.2, gcc 5.0+ (gcc
-> +	  5.0+ accepts the -gdwarf-5 flag but only had partial support for some
-> +	  draft features until 7.0), and gdb 8.0+.
 > +
-> +	  Changes to the structure of debug info in Version 5 allow for around
-> +	  15-18% savings in resulting image and debug info section sizes as
-> +	  compared to DWARF Version 4. DWARF Version 5 standardizes previous
-> +	  extensions such as accelerators for symbol indexing and the format
-> +	  for fission (.dwo/.dwp) files. Users may not want to select this
-> +	  config if they rely on tooling that has not yet been updated to
-> +	  support DWARF Version 5.
+> +  reset-gpios:
+> +    description: Optional gpio specifier for a reset line
+> +    maxItems: 1
 > +
->  endchoice # "DWARF version"
->  
->  config DEBUG_INFO_BTF
-> diff --git a/scripts/test_dwarf5_support.sh b/scripts/test_dwarf5_support.sh
-> new file mode 100755
-> index 000000000000..c46e2456b47a
-> --- /dev/null
-> +++ b/scripts/test_dwarf5_support.sh
-> @@ -0,0 +1,8 @@
-> +#!/bin/sh
-> +# SPDX-License-Identifier: GPL-2.0
+> +required:
+> +  - compatible
+> +  - reg
 > +
-> +# Test that the assembler doesn't need -Wa,-gdwarf-5 when presented with DWARF
-> +# v5 input, such as `.file 0` and `md5 0x00`. Should be fixed in GNU binutils
-> +# 2.35.2. https://sourceware.org/bugzilla/show_bug.cgi?id=25611
-> +echo '.file 0 "filename" md5 0x7a0b65214090b6693bd1dc24dd248245' | \
-> +  $* -gdwarf-5 -Wno-unused-command-line-argument -c -x assembler -o /dev/null -
-> -- 
-> 2.30.0.365.g02bc693789-goog
-> 
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +
+> +    //Ethernet switch connected via spi to the host, CPU port wired to eth1
+> +    eth1 {
+
+So if you do bother to add the DSA master in the example, can this be
+&eth1 so that we could associate with the phandle below?
+
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      fixed-link {
+> +        speed = <1000>;
+> +        full-duplex;
+> +      };
+> +    };
+> +
+> +    spi1 {
+
+Is this a label or a node name? spi1 or spi@1?
+
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +      pinctrl-0 = <&pinctrl_spi_ksz>;
+> +      cs-gpios = <0>, <0>, <0>, <&pioC 28 0>;
+> +      id = <1>;
+
+I know this is the SPI controller and thus mostly irrelevant, but what
+is "id = <1>"?
+
+> +
+> +      lan9374: switch@0 {
+> +        compatible = "microchip,lan9374";
+> +        reg = <0>;
+> +
+> +        spi-max-frequency = <44000000>;
+> +
+> +        ethernet-ports {
+> +          #address-cells = <1>;
+> +          #size-cells = <0>;
+> +          port@0 {
+> +            reg = <0>;
+> +            label = "lan1";
+> +          };
+> +          port@1 {
+> +            reg = <1>;
+> +            label = "lan2";
+> +          };
+> +          port@2 {
+> +            reg = <7>;
+
+reg should match node index (port@2), here and everywhere below. As for
+the net device labels, I'm not sure if the mismatch is deliberate there.
+
+> +            label = "lan3";
+> +          };
+> +          port@3 {
+> +            reg = <2>;
+> +            label = "lan4";
+> +          };
+> +          port@4 {
+> +            reg = <6>;
+> +            label = "lan5";
+> +          };
+> +          port@5 {
+> +            reg = <3>;
+> +            label = "lan6";
+> +          };
+> +          port@6 {
+> +            reg = <4>;
+> +            label = "cpu";
+
+label for CPU port is not needed/used.
+
+> +            ethernet = <&eth1>;
+> +            fixed-link {
+> +              speed = <1000>;
+> +              full-duplex;
+> +            };
+> +          };
+> +          port@7 {
+> +            reg = <5>;
+> +            label = "lan7";
+> +            fixed-link {
+> +              speed = <1000>;
+> +              full-duplex;
+> +            };
+> +          };
+> +        };
+> +      };
+> +    };
