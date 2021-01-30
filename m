@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB08C309807
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 20:26:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF943097E3
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 20:17:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231722AbhA3T0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 14:26:05 -0500
-Received: from mx1.riseup.net ([198.252.153.129]:44508 "EHLO mx1.riseup.net"
+        id S232285AbhA3TRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 14:17:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229468AbhA3T0E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 14:26:04 -0500
-X-Greylist: delayed 586 seconds by postgrey-1.27 at vger.kernel.org; Sat, 30 Jan 2021 14:26:04 EST
-Received: from fews1.riseup.net (fews1-pn.riseup.net [10.0.1.83])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "*.riseup.net", Issuer "Sectigo RSA Domain Validation Secure Server CA" (not verified))
-        by mx1.riseup.net (Postfix) with ESMTPS id 4DSkRy3KYCzFrZ3;
-        Sat, 30 Jan 2021 11:15:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-        t=1612034133; bh=01W027KtHbXm+NEmaYFFR+K9m9ORoqJ9gOoyoxHZn3Y=;
-        h=Subject:From:To:Cc:In-Reply-To:References:Date:From;
-        b=bTRHhPTGQlXGSQtKuLm1/gMRQVWEFkAEjPZ10wgcM2jIcG7j8OYnmVzlnmN9URgna
-         7tzRJ95UVgV4dhY6/zBIKmsMxULbMPRoQdcfGP1oYLrLectSZ9S9es+gYiG+SFcadk
-         /mx0pXajRpW+0PMJdZhtEWjckAZ5nwNPI9YNFi90=
-X-Riseup-User-ID: 2AE6315AD4F3751793A5853E788D9D4ECD8B26915AFBCD6958B3F1CE47694DA6
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by fews1.riseup.net (Postfix) with ESMTPSA id 4DSkRs1PFvz5wB2;
-        Sat, 30 Jan 2021 11:15:03 -0800 (PST)
-Message-ID: <265604c19e2e875ca17e4cf713000492b9ffd8d8.camel@riseup.net>
-Subject: Re: [PATCH] HID: logitech-dj: add support for keyboard events in
- eQUAD step 4 Gaming
-From:   Filipe =?ISO-8859-1?Q?La=EDns?= <lains@riseup.net>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210130191027.1225465-1-lains@archlinux.org>
-References: <20210130191027.1225465-1-lains@archlinux.org>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-ttFDhVXLX6h3KITV9oN0"
-Date:   Sat, 30 Jan 2021 19:14:56 +0000
+        id S232204AbhA3TRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 14:17:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B41F64E15;
+        Sat, 30 Jan 2021 19:16:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612034179;
+        bh=yNI/zbRVAZi7i5zFsn4fJE94geSUHpso7ntTBnGczLY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=iqFwsa34f4ivyrjHaQKp5Ux+uq79sDlfi5DnKKMtE4Dez3lFsjVobMXk1s1IXHqtf
+         ys72eYfgOTm0XIH251AMP8yEETFP2ueRgeLH/NScZllsrFIneGgwAY/+hT7hmRgwe0
+         +IZWjBHYoatfk4woFA3r6ZUaLmjMhVUpK2/YB1S6Wv75vgoK1+RN/FPfd88lCCjI9t
+         Ffre2qv1RAbe3AERs+qADlP7yCFeA1EA2i/iPBrYipJ/22PnxAInWPppqhb4Z9+3Nd
+         X7C/ndsIvD0SnbLb8ZvplSl7rlD/bqql5mxlz4UG49hrpJKSEoef4NtGCnaF6mGMGT
+         PADC2t17CweAQ==
+Date:   Sat, 30 Jan 2021 11:16:18 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     Martin Schiller <ms@dev.tdt.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Krzysztof Halasa <khc@pm.waw.pl>
+Subject: Re: [PATCH net] net: hdlc_x25: Use qdisc to queue outgoing LAPB
+ frames
+Message-ID: <20210130111618.335b6945@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CAJht_EPMtn5E-Y312vPQfH2AwDAi+j1OP4zzpg+AUKf46XE1Yw@mail.gmail.com>
+References: <20210127090747.364951-1-xie.he.0141@gmail.com>
+        <20210128114659.2d81a85f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CAJht_EOSB-m--Ombr6wLMFq4mPy8UTpsBri2CPsaRTU-aks7Uw@mail.gmail.com>
+        <3f67b285671aaa4b7903733455a730e1@dev.tdt.de>
+        <20210129173650.7c0b7cda@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CAJht_EPMtn5E-Y312vPQfH2AwDAi+j1OP4zzpg+AUKf46XE1Yw@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, 30 Jan 2021 06:29:20 -0800 Xie He wrote:
+> On Fri, Jan 29, 2021 at 5:36 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> > I'm still struggling to wrap my head around this.
+> >
+> > Did you test your code with lockdep enabled? Which Qdisc are you using?
+> > You're queuing the frames back to the interface they came from - won't
+> > that cause locking issues?  
+> 
+> Hmm... Thanks for bringing this to my attention. I indeed find issues
+> when the "noqueue" qdisc is used.
+> 
+> When using a qdisc other than "noqueue", when sending an skb:
+> "__dev_queue_xmit" will call "__dev_xmit_skb";
+> "__dev_xmit_skb" will call "qdisc_run_begin" to mark the beginning of
+> a qdisc run, and if the qdisc is already running, "qdisc_run_begin"
+> will fail, then "__dev_xmit_skb" will just enqueue this skb without
+> starting qdisc. There is no problem.
+> 
+> When using "noqueue" as the qdisc, when sending an skb:
+> "__dev_queue_xmit" will try to send this skb directly. Before it does
+> that, it will first check "txq->xmit_lock_owner" and will find that
+> the current cpu already owns the xmit lock, it will then print a
+> warning message "Dead loop on virtual device ..." and drop the skb.
+> 
+> A solution can be queuing the outgoing L2 frames in this driver first,
+> and then using a tasklet to send them to the qdisc TX queue.
+> 
+> Thanks! I'll make changes to fix this.
 
---=-ttFDhVXLX6h3KITV9oN0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Sounds like too much afford for a sub-optimal workaround.
+The qdisc semantics are borken in the proposed scheme (double 
+counting packets) - both in term of statistics and if user decides 
+to add a policer, filter etc.
 
-Hans,
+Another worry is that something may just inject a packet with
+skb->protocol == ETH_P_HDLC but unexpected structure (IDK if 
+that's a real concern).
 
-You added support for non unifying receivers in
-74808f9115cee2bb53e7161432959f3e87b631e4, could you please test and make su=
-re
-this cause any breakage with your devices?
-
-AFAIK, they could only break if they have a 0x01 report which is different =
-from
-kbd_descriptor.
-
-Cheers,
-Filipe La=C3=ADns
-
---=-ttFDhVXLX6h3KITV9oN0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEE0jW0leqs33gyftiw+JPGdIFqqV0FAmAVsDAACgkQ+JPGdIFq
-qV0O5A/8CSwqFsOoNySySK/ut9TFVugny8nT+0txDw+hH+c8Ilpuy2+g2yuBQ7qy
-J5p6JZtjuy55fS+CNLaxOjWU1ClfziezOaNAxO1ypqUiMDRxIn3DzvTI9mKdHzvu
-yoK5eFmPFhrkkMU75iFR+ajYPx/baRePZht6dBSq38ApOmk5nABalFoa88YNaXfv
-y1DtHiFSEdMfT/Hd55pyvWQO1JI/LDEX+FsgNxFwtB4ClSPLK0Yl7LRG0ssC/sEg
-Bx46B4wPV1Pg29hIDbDvQ2v19PAfZWBALohjP4CNw3U6HOnRqYgpKPow+nWTjVg9
-gFkG2f1/yUA2oWtQs4TY+EYT2WB/3e0y0J/KWbsqcnpb3GIsZD94SLXF5lU8K0Eo
-GswJI0v/1joN2bWrWJVeXHE2AR44shxXjPoVfOoQCt73YvyAV9v7HunDWbM1Z1Se
-ZrPxicyMjw2CjcNZ+cj/NF5SP6uzLGy+KX/KtRTEDsOUnzu54q1apv1FhmlvF5pr
-6E+4iC5yc0475zSDZDi3ysyjJJET3w6gr3wDZDehKP1G/+indvCnMqw0gFusEHbQ
-bhLG7yKTawxJDejCgoRf2zyFYgxFng3SS6Wd+3BZdGY9ITBCyoF1xjFHKprFyBrh
-UvBjf0Uf/ULAHEtoVTeBR1NCyJXFUVarq1sOYXeGC+YIYmjcvY8=
-=Tzqm
------END PGP SIGNATURE-----
-
---=-ttFDhVXLX6h3KITV9oN0--
-
+It may be better to teach LAPB to stop / start the internal queue. 
+The lower level drivers just needs to call LAPB instead of making 
+the start/wake calls directly to the stack, and LAPB can call the 
+stack. Would that not work?
