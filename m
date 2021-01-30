@@ -2,114 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71B7430924C
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 06:47:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE69D30925E
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 06:59:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233885AbhA3Fox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 00:44:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38314 "EHLO
+        id S229877AbhA3F5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 00:57:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233803AbhA3FlQ (ORCPT
+        with ESMTP id S233875AbhA3FwS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 00:41:16 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF009C061573;
-        Fri, 29 Jan 2021 21:40:35 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id s24so6864721pjp.5;
-        Fri, 29 Jan 2021 21:40:35 -0800 (PST)
+        Sat, 30 Jan 2021 00:52:18 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 551EFC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 21:43:37 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id s5so137949edw.8
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 21:43:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YO+dTyu0Ai+JgXkbLN4mpIgMxzzbIfn+Gkh1UirZ+w0=;
-        b=Ql+2kWyOoQtxwkc7Xh87pKZeIG5pnj5MbLPeUbWgtyVrkfmOGwl/+FpLlElmQdaxZi
-         kGp50s4fNPeACBJdAE2+925S4nPXN6N/MUg7MxL5m/Zh8+BwykJmpqZXt2qOULjtMAH4
-         A2J7rSvNmjxCXQQnEz7gMbVKvnXAEyOI+1Ql8RoC20O8VR2SZXafFusnzteAS3205ZIb
-         7QWmbPnqKhaKO6zcIA1cnOWJogY6uqga+9DpoZX3d3YXEyCT8Q8hsmtRwjro4UkC1hTf
-         4OY0EH0VtHvA5A28/EAIXezKfKToShwqd7TIyL37SpfejuWAn192PDHNqdPckCI1GqlP
-         A6fw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=0yXVbLcOAHd620JpYUZl8moLbJpXg6jwgqVqoTUEGTE=;
+        b=SovhJykjW1dJ3gfTEiRvaEepyxqGHAxl8nGb8TFdO++4F+mcp03jvH79d0jHeyKagA
+         pzh5Ce5i0Hqi8Q4uF9Z9ksGSX7qS3JNYtzzg8nTtsfiFpAEzeFmrsjc/bviCsB46QUyz
+         XRr+fYTFS/pLdSVBhEd3PyKfNDUjxmFXJe4pooHclNtwnIekK/VX+rOluNamJgBJxQKH
+         PBZGy3E1jg+BE6g9ukxt9tsLqIvx4LFSXOTN92ZjXHqpOI5sw/U51KJvhTtAPRm3eBog
+         P7gNvZ4bPdUGZvsIGBjtaP0Yu7thpnb/BrNkqhHI46sUC4u6UXX6MOi1Ibq7rVKJm3h/
+         qpsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YO+dTyu0Ai+JgXkbLN4mpIgMxzzbIfn+Gkh1UirZ+w0=;
-        b=LxWnsfkuijVc6lsrirCu3lppk25LDLZOmssLM2f3hvU8/xFGdBTOU8j+MoIJxghu2A
-         pRiQTo2kdiKIOikiiqe/S+2MCUAmeplBDJEwsU3wMmJd1YrnkCLZ21IF+KqUC02tytOq
-         E0O8j63kgQDysToezW4cP1VySoISOdzmW9jhc1o5LZG+xTdAoYpWmDWZ5Cm6qnmWkb5c
-         GAq5Xw9oiV0wIrpX2aGF9n2rpuY7a7Imdc1fsE+bM/ANFXUpAlN0c9LqdPvt7ouUJHnj
-         Bc8dW2lbE3sqK4Y4KDOJxeXdn0TE6YDq8gPRUJ8kj9v1NIeXZzW2oJOxFkowfEZMRMxz
-         IV9A==
-X-Gm-Message-State: AOAM532TE/8DS5U+EmuG7Q1XWadBWPj/XyWWCFgur1OBUSJpdV7196rT
-        Z3481pbyaiUCDY5dazxKe+s=
-X-Google-Smtp-Source: ABdhPJxxaYBoKQANWDrm18IPWzKyIai6drc6hbwdL3dgAul+8/dCXjO9ajA6pYDTOhZLE1tjDDcNtA==
-X-Received: by 2002:a17:902:9005:b029:da:f580:c5f7 with SMTP id a5-20020a1709029005b02900daf580c5f7mr8076247plp.85.1611985235315;
-        Fri, 29 Jan 2021 21:40:35 -0800 (PST)
-Received: from localhost.localdomain (199.19.111.227.16clouds.com. [199.19.111.227])
-        by smtp.gmail.com with ESMTPSA id k10sm10942376pfk.0.2021.01.29.21.40.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Jan 2021 21:40:34 -0800 (PST)
-From:   Artem Lapkin <email2tema@gmail.com>
-X-Google-Original-From: Artem Lapkin <art@khadas.com>
-To:     narmstrong@baylibre.com
-Cc:     khilman@baylibre.com, robh+dt@kernel.org, jbrunet@baylibre.com,
-        christianshewitt@gmail.com, martin.blumenstingl@googlemail.com,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        art@khadas.com, nick@khadas.com, gouwa@khadas.com
-Subject: [PATCH] arm64: dts: meson-gx: remove wrong reserved BL31 memory
-Date:   Sat, 30 Jan 2021 13:40:22 +0800
-Message-Id: <20210130054022.2020338-1-art@khadas.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=0yXVbLcOAHd620JpYUZl8moLbJpXg6jwgqVqoTUEGTE=;
+        b=WiXrpzzfv4XeUrv74HnUwixuAm5q1LiXdU/Iu1ICvQcDfZ8w6DXXGhcil8wfebNulo
+         6LGu4YDNhc2ZW2IppSlsMbsq08Ox3v2kBxnB4gGm8ZN/eGdboVckf7IOkHcq4kKiYFrv
+         qNnVBJqnOObSVblqQFSZlaoEQbB1WKGcPCgVUYiUqYOuBPZJ63PRfwI7/YNbpz5cPJ3F
+         Ar3wU8j6yh/E5DuJrvfxaEhZHY7S42wBFnp+nkwpv7s+2GyzTRD0ODlhH+yJW3BrhJNp
+         MaiCW51DxJGkJupRpYPZrQwiP7y23UnBUQwcaGZGuZ2vPi4HS3sY7KOYVX7ARR3DQA6m
+         Qc7Q==
+X-Gm-Message-State: AOAM531+fb81QXXvcy1IKUEZWMt7TuTfTQsSmEg0doQSPeTU9OCQnHR2
+        tlrwHcUKMobLZAhsKhdUKoTR8WDJcAESRcvks74PKGXlRGSRxnEf
+X-Google-Smtp-Source: ABdhPJxYuUTZP4ALDIsIjPBje8YWvwdJ7FZAmf6/2yV12PcoDU/7rX0gFy4L+KwVk/U3J7ll1kwI1oCV9sGsnNzs6bs=
+X-Received: by 2002:a05:6402:3088:: with SMTP id de8mr8571642edb.221.1611985416284;
+ Fri, 29 Jan 2021 21:43:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210129105910.685105711@linuxfoundation.org>
+In-Reply-To: <20210129105910.685105711@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 30 Jan 2021 11:13:25 +0530
+Message-ID: <CA+G9fYvNt7c=DXUzC1QihQROyWy6Ao65qqc-oPRLUNt3GS8vRg@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/26] 4.19.172-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel boot fail on Khadas VIM1 VIM2 (meson GX) boards
-SOLUTION: just remove wrong mem reservation for 0x10000000 0x200000
+On Fri, 29 Jan 2021 at 16:45, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.172 release.
+> There are 26 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 31 Jan 2021 10:59:01 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.172-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
+>
 
- ## Booting kernel from Legacy Image at 08080000 ...
-   Image Name:   kernel
-   Image Type:   AArch64 Linux Kernel Image (lzma compressed)
-   Data Size:    4657736 Bytes = 4.4 MiB
-   Load Address: 0f080000
-   Entry Point:  0f080000
-   Verifying Checksum ... OK
- ## Flattened Device Tree blob at 08008000
-   Booting using the fdt blob at 0x8008000
-   Uncompressing Kernel Image
- ERROR: reserving fdt memory region failed (addr=10000000 size=200000)
-   Loading Device Tree to 000000007bf23000, end 000000007bf2d3ce ... OK
 
- Starting kernel ...
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
- bl31 reboot reason: 0xd
- bl31 reboot reason: 0x0
- system cmd  1.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Signed-off-by: Artem Lapkin <art@khadas.com>
----
- arch/arm64/boot/dts/amlogic/meson-gx.dtsi | 6 ------
- 1 file changed, 6 deletions(-)
+Summary
+------------------------------------------------------------------------
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gx.dtsi b/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
-index 726b91d3a..71083b89d 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
-@@ -32,12 +32,6 @@ hwrom_reserved: hwrom@0 {
- 			no-map;
- 		};
- 
--		/* 2 MiB reserved for ARM Trusted Firmware (BL31) */
--		secmon_reserved: secmon@10000000 {
--			reg = <0x0 0x10000000 0x0 0x200000>;
--			no-map;
--		};
--
- 		/* Alternate 3 MiB reserved for ARM Trusted Firmware (BL31) */
- 		secmon_reserved_alt: secmon@5000000 {
- 			reg = <0x0 0x05000000 0x0 0x300000>;
--- 
-2.25.1
+kernel: 4.19.172-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.19.y
+git commit: d36f1541af5ac2e86ea3548b7da2e962e4ef5266
+git describe: v4.19.171-27-gd36f1541af5a
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
+.y/build/v4.19.171-27-gd36f1541af5a
 
+No regressions (compared to build v4.19.171)
+
+
+No fixes (compared to build v4.19.171)
+
+
+Ran 48448 total tests in the following environments and test suites.
+
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- nxp-ls2088-64k_page_size
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- s390
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+- x86_64
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* kselftest
+* libhugetlbfs
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* perf
+* fwts
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-sched-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* v4l2-compliance
+* ltp-open-posix-tests
+* kvm-unit-tests
+* rcutorture
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
