@@ -2,127 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A36B309422
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 11:13:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA883309417
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 11:12:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231963AbhA3KM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 05:12:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232691AbhA3BxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 20:53:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C79C964DA1;
-        Sat, 30 Jan 2021 01:52:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1611971545;
-        bh=QD1brHT/zuOqCDivveiwXFVorG1yCZ8pm304EyrgY0E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=C1JKUKDRjf5UBTHPYfc/X9l82lp25ebqm9xoQZMENT8ZUjLUHh1D1WFTJ705hZ5TM
-         EnyS/G1rcEYn/8nKxB1U9qPTnsw9OZUfp4qDBf2NzoSeYm6ymmi7FdxWp/955b+AdJ
-         0gKnEKEDa/hKUoBTRO4DzeE8I2l35EqeXMhJZhx2rld5E/3+EWPmN310hENeGoI6Dm
-         bklzv0TJfPp/dA3hbv9rj4luy5EkwD0jx0ASf4O3Hp0F4FAOdSFCLntrFUUOvBvxWY
-         lqgfCHzSY0wIOaMXWAQTFUYsev1zwTBBpPI7J7ZrWKxVS4iac2JU89pYtiXHCbXUgt
-         DhdL6swAHCuLw==
-Date:   Fri, 29 Jan 2021 18:52:22 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sedat Dilek <sedat.dilek@gmail.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>
-Subject: Re: [PATCH v7 1/2] Kbuild: make DWARF version a choice
-Message-ID: <20210130015222.GC2709570@localhost>
-References: <20210130004401.2528717-1-ndesaulniers@google.com>
- <20210130004401.2528717-2-ndesaulniers@google.com>
+        id S232177AbhA3KL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 05:11:27 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12046 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230525AbhA3Bzd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 20:55:33 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DSHKL030KzMRPn;
+        Sat, 30 Jan 2021 09:52:54 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.220) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Sat, 30 Jan 2021
+ 09:54:27 +0800
+Subject: Re: [PATCH v3 3/3] iommu/arm-smmu-v3: Reserving the entire SMMU
+ register space
+To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+References: <20210127113258.1421-1-thunder.leizhen@huawei.com>
+ <20210127113258.1421-4-thunder.leizhen@huawei.com>
+ <fa170300-57d9-3883-c70f-d455a9e461f0@arm.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <6c5b4dca-24d4-55d7-1345-2238567cb958@huawei.com>
+Date:   Sat, 30 Jan 2021 09:54:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210130004401.2528717-2-ndesaulniers@google.com>
+In-Reply-To: <fa170300-57d9-3883-c70f-d455a9e461f0@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.176.220]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 04:44:00PM -0800, Nick Desaulniers wrote:
-> Modifies CONFIG_DEBUG_INFO_DWARF4 to be a member of a choice which is
-> the default. Does so in a way that's forward compatible with existing
-> configs, and makes adding future versions more straightforward.
+
+
+On 2021/1/29 23:27, Robin Murphy wrote:
+> On 2021-01-27 11:32, Zhen Lei wrote:
+>> commit 52f3fab0067d ("iommu/arm-smmu-v3: Don't reserve implementation
+>> defined register space") only reserves the basic SMMU register space. So
+>> the ECMDQ register space is not covered, it should be mapped again. Due
+>> to the size of this ECMDQ resource is not fixed, depending on
+>> SMMU_IDR6.CMDQ_CONTROL_PAGE_LOG2NUMQ. Processing its resource reservation
+>> to avoid resource conflict with PMCG is a bit more complicated.
+>>
+>> Therefore, the resources of the PMCG are not reserved, and the entire SMMU
+>> resources are reserved.
 > 
-> GCC since ~4.8 has defaulted to this DWARF version implicitly.
+> This is the opposite of what I suggested. My point was that it will make the most sense to map the ECMDQ pages as a separate request anyway, therefore there is no reason to stop mapping page 0 and page 1 separately either.
+
+I don't understand why the ECMDQ mapping must be performed separately. If the conflict with PMCG resources is eliminated. ECMDQ cannot be a separate driver like PMCG.
+
 > 
-> Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
-> Suggested-by: Fangrui Song <maskray@google.com>
-> Suggested-by: Nathan Chancellor <nathan@kernel.org>
-> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-
-One comment below:
-
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-
-> ---
->  Makefile          |  5 ++---
->  lib/Kconfig.debug | 16 +++++++++++-----
->  2 files changed, 13 insertions(+), 8 deletions(-)
+> If we need to expand the page 0 mapping to cover more of page 0 to reach the SMMU_CMDQ_CONTROL_PAGE_* registers, we can do that when we actually add ECMDQ support.
 > 
-> diff --git a/Makefile b/Makefile
-> index 95ab9856f357..d2b4980807e0 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -830,9 +830,8 @@ ifneq ($(LLVM_IAS),1)
->  KBUILD_AFLAGS	+= -Wa,-gdwarf-2
-
-It is probably worth a comment somewhere that assembly files will still
-have DWARF v2.
-
->  endif
->  
-> -ifdef CONFIG_DEBUG_INFO_DWARF4
-> -DEBUG_CFLAGS	+= -gdwarf-4
-> -endif
-> +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) := 4
-> +DEBUG_CFLAGS	+= -gdwarf-$(dwarf-version-y)
->  
->  ifdef CONFIG_DEBUG_INFO_REDUCED
->  DEBUG_CFLAGS	+= $(call cc-option, -femit-struct-debug-baseonly) \
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index e906ea906cb7..94c1a7ed6306 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -256,13 +256,19 @@ config DEBUG_INFO_SPLIT
->  	  to know about the .dwo files and include them.
->  	  Incompatible with older versions of ccache.
->  
-> +choice
-> +	prompt "DWARF version"
-> +	help
-> +	  Which version of DWARF debug info to emit.
-> +
->  config DEBUG_INFO_DWARF4
-> -	bool "Generate dwarf4 debuginfo"
-> +	bool "Generate DWARF Version 4 debuginfo"
->  	help
-> -	  Generate dwarf4 debug info. This requires recent versions
-> -	  of gcc and gdb. It makes the debug information larger.
-> -	  But it significantly improves the success of resolving
-> -	  variables in gdb on optimized code.
-> +	  Generate DWARF v4 debug info. This requires gcc 4.5+ and gdb 7.0+.
-> +	  It makes the debug information larger, but it significantly
-> +	  improves the success of resolving variables in gdb on optimized code.
-> +
-> +endchoice # "DWARF version"
->  
->  config DEBUG_INFO_BTF
->  	bool "Generate BTF typeinfo"
-> -- 
-> 2.30.0.365.g02bc693789-goog
+> Robin.
 > 
+>> Suggested-by: Robin Murphy <robin.murphy@arm.com>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>> ---
+>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 24 ++++--------------------
+>>   drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  2 --
+>>   2 files changed, 4 insertions(+), 22 deletions(-)
+>>
+>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> index f04c55a7503c790..fde24403b06a9e3 100644
+>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>> @@ -3476,14 +3476,6 @@ static int arm_smmu_set_bus_ops(struct iommu_ops *ops)
+>>       return err;
+>>   }
+>>   -static void __iomem *arm_smmu_ioremap(struct device *dev, resource_size_t start,
+>> -                      resource_size_t size)
+>> -{
+>> -    struct resource res = DEFINE_RES_MEM(start, size);
+>> -
+>> -    return devm_ioremap_resource(dev, &res);
+>> -}
+>> -
+>>   static int arm_smmu_device_probe(struct platform_device *pdev)
+>>   {
+>>       int irq, ret;
+>> @@ -3519,22 +3511,14 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
+>>       }
+>>       ioaddr = res->start;
+>>   -    /*
+>> -     * Don't map the IMPLEMENTATION DEFINED regions, since they may contain
+>> -     * the PMCG registers which are reserved by the PMU driver.
+>> -     */
+>> -    smmu->base = arm_smmu_ioremap(dev, ioaddr, ARM_SMMU_REG_SZ);
+>> +    smmu->base = devm_ioremap_resource(dev, res);
+>>       if (IS_ERR(smmu->base))
+>>           return PTR_ERR(smmu->base);
+>>   -    if (arm_smmu_resource_size(smmu) > SZ_64K) {
+>> -        smmu->page1 = arm_smmu_ioremap(dev, ioaddr + SZ_64K,
+>> -                           ARM_SMMU_REG_SZ);
+>> -        if (IS_ERR(smmu->page1))
+>> -            return PTR_ERR(smmu->page1);
+>> -    } else {
+>> +    if (arm_smmu_resource_size(smmu) > SZ_64K)
+>> +        smmu->page1 = smmu->base + SZ_64K;
+>> +    else
+>>           smmu->page1 = smmu->base;
+>> -    }
+>>         /* Interrupt lines */
+>>   diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+>> index da525f46dab4fc1..63f2b476987d6ae 100644
+>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+>> @@ -152,8 +152,6 @@
+>>   #define ARM_SMMU_PRIQ_IRQ_CFG1        0xd8
+>>   #define ARM_SMMU_PRIQ_IRQ_CFG2        0xdc
+>>   -#define ARM_SMMU_REG_SZ            0xe00
+>> -
+>>   /* Common MSI config fields */
+>>   #define MSI_CFG0_ADDR_MASK        GENMASK_ULL(51, 2)
+>>   #define MSI_CFG2_SH            GENMASK(5, 4)
+>>
+> 
+> .
+> 
+
