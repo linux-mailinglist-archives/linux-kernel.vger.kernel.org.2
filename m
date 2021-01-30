@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11B513091F1
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 06:05:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 028E73091F2
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 06:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229949AbhA3FCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 00:02:04 -0500
-Received: from mga06.intel.com ([134.134.136.31]:61934 "EHLO mga06.intel.com"
+        id S230179AbhA3FGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 00:06:23 -0500
+Received: from mga02.intel.com ([134.134.136.20]:2130 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233664AbhA3ELN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 23:11:13 -0500
-IronPort-SDR: Unr96qG7Uk+0iiVGl/Uxk3iIbxC4UhcG4r4o7IVlENxB8/Je8IO8llnSb7WTs9UQ4fg8OG5jZa
- aJHpLxHp7WpA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="242028013"
+        id S233676AbhA3ELO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 23:11:14 -0500
+IronPort-SDR: LZq5Zlq09fDFqvKE2xWEx/qJogfuwCrq9yIb4U5b/fpd3ZI/nApWZubUFQX7jMa11OOp2MbsJV
+ 2o+LL7BtPj5Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="167606744"
 X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="242028013"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:29 -0800
-IronPort-SDR: EZalXu/U29p2msgo3DU6PNnxsZFbeX3EAIPSV4/ZEX+I7V0K+kZhEhUw1GyPFpULIcHyCmb5WU
- UL57pFOaI0cA==
+   d="scan'208";a="167606744"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:30 -0800
+IronPort-SDR: 0cSGcYdL7GJktya9Y3xiPs+4eD/4bh8HHetzEiRQ468Vp5DxjJAVJVrqsSf9Oov1m9RBrHpak7
+ eTN2UWylXreg==
 X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="365585701"
+   d="scan'208";a="370626931"
 Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:29 -0800
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:29 -0800
 Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id EE21F6371;
-        Fri, 29 Jan 2021 18:21:28 -0800 (PST)
+        by smtp.ostc.intel.com (Postfix) with ESMTP id 905DF636D;
+        Fri, 29 Jan 2021 18:21:29 -0800 (PST)
 Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
-        id E275E36363A; Fri, 29 Jan 2021 18:21:28 -0800 (PST)
+        id 844C936366F; Fri, 29 Jan 2021 18:21:29 -0800 (PST)
 From:   mgross@linux.intel.com
 To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
@@ -37,10 +37,10 @@ To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
         jassisinghbrar@gmail.com
 Cc:     linux-kernel@vger.kernel.org,
-        "C, Udhayakumar" <udhayakumar.c@intel.com>, C@linux.intel.com
-Subject: [PATCH v3 28/34] misc: Intel tsens IA host driver.
-Date:   Fri, 29 Jan 2021 18:20:43 -0800
-Message-Id: <20210130022124.65083-29-mgross@linux.intel.com>
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+Subject: [PATCH v4 05/34] keembay-ipc: Add Keem Bay IPC module
+Date:   Fri, 29 Jan 2021 18:20:55 -0800
+Message-Id: <20210130022124.65083-41-mgross@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210130022124.65083-1-mgross@linux.intel.com>
 References: <20210130022124.65083-1-mgross@linux.intel.com>
@@ -48,587 +48,1560 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "C, Udhayakumar" <udhayakumar.c@intel.com>
+From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
 
-Add Intel tsens IA host driver for Intel Edge.AI Computer Vision
-platforms.
+On the Intel Movidius SoC code named Keem Bay, communication between the
+Application Processor(AP) and the VPU is enabled by the Keem Bay
+Inter-Processor
+Communication (IPC) mechanism.
 
-About Intel Edge.AI Computer Vision platforms:
----------------------------------------------
-The Intel Edge.AI Computer Vision platforms are vision processing systems
-targeting machine vision applications for connected devices.
+Add the driver for using Keem Bay IPC from within the Linux Kernel.
 
-They are based on ARM A53 CPU running Linux and acts as a PCIe
-endpoint device.
+The IPC uses the following terminology:
 
-High-level architecture:
-------------------------
+- Node:    A processing entity that can use the IPC to communicate
+           (currently, we just have two nodes, the AP and the VPU).
 
-Remote Host IA CPU                      Local Host ARM CPU
-----------------                     --------------------------
-|  Platform    |                     |  Thermal Daemon        |
-| Management SW|                     |                        |
-----------------                     --------------------------
-|  Intel tsens |                     |  intel tsens i2c slave |
-|  i2c client  |                     |  and thermal driver    |
-----------------                     --------------------------
-|  XLINK I2C   |                     |  XLINK I2C Slave       |
-|  controller  |     <=========>     |   controller           |
-----------------     xlink smbus     --------------------------
+- Link:    Two nodes that can communicate over IPC form an IPC link
+           (currently, we just have one link, the one formed by the AP
+           and the VPU).
 
-intel tsens module:
--------------------
-The tsens module enables reading of on chip sensors present
-in the Intel Edge.AI Computer Vision platforms.In the tsens module
-various junction and SoC temperatures are reported using thermal
-subsystem and i2c subsystem.
+- Channel: An IPC link can provide multiple IPC channels. IPC channels
+           allow communication multiplexing, i.e., the same IPC link can
+           be used by different applications for different
+           communications. Each channel is identified by a channel ID,
+           which must be unique within a single IPC link. Channels are
+           divided in two categories, High-Speed (HS) channels and
+           General-Purpose (GP) channels. HS channels have higher
+           priority over GP channels.
 
-Temperature data reported using thermal subsystem will be used for
-various cooling agents such as DVFS, fan control and shutdown the
-system in case of critical temperature.
+The Keem Bay IPC mechanism is built on top of the VPU IPC mailbox, which
+allows the AP and the VPU to exchange 32-bit messages. Specifically, the
+IPC uses shared memory (shared between the AP and the VPU) to allocate
+IPC packets and then exchanges them using the VPU IPC mailbox (the
+32-bit physical address of the packet is passed as a message to the VPU
+IPC mailbox).
 
-Temperature data reported using i2c subsystem will be used by
-platform manageability software running in IA host.
+IPC packets have a fixed structure containing the (VPU) physical address
+of the payload (which must be located in shared memory too) as well as
+other information (payload size, IPC channel ID, etc.).
 
-- Remote Host driver
-  * Intended for IA CPU
-  * It is a I2C client driver
-  * Driver path:
-  {tree}/drivers/misc/intel_tsens/intel_tsens_host.c
+Each IPC node (i.e., both the AP and the VPU) has its own reserved
+memory region (in shared memory) from which it instantiates its own pool
+of IPC packets.  When instantiated, IPC packets are marked as free. When
+the node needs to send an IPC message, it gets the first free packet it
+finds (from its own pool), marks it as allocated (used), and transfer
+its physical address to the destination node using the VPU IPC mailbox.
+The destination node uses the received physical address to access the
+IPC packet, process the packet, and, once done with it, marks it as free
+(so that the sender can reuse it).
 
-Local host and Remote host drivers communicates using
-I2C SMBUS protocol.
-
-Acked-by: Mark Mross <mgross@linux.intel.com>
-Signed-off-by: C, Udhayakumar <udhayakumar.c@intel.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+Cc: Borislav Petkov <bp@suse.de>
+Cc: Damien Le Moal <damien.lemoal@wdc.com>
+Cc: Peng Fan <peng.fan@nxp.com>
+Cc: Shawn Guo <shawnguo@kernel.org>
+Reviewed-by: Mark Gross <mgross@linux.intel.com>
+Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+Signed-off-by: Mark Gross <mgross@linux.intel.com>
 ---
- Documentation/hwmon/index.rst               |   1 +
- Documentation/hwmon/intel_tsens_host.rst    |  71 ++++
- drivers/misc/intel_tsens/Kconfig            |  13 +
- drivers/misc/intel_tsens/Makefile           |   1 +
- drivers/misc/intel_tsens/intel_tsens_host.c | 351 ++++++++++++++++++++
- include/linux/intel_tsens_host.h            |  34 ++
- 6 files changed, 471 insertions(+)
- create mode 100644 Documentation/hwmon/intel_tsens_host.rst
- create mode 100644 drivers/misc/intel_tsens/intel_tsens_host.c
- create mode 100644 include/linux/intel_tsens_host.h
+ MAINTAINERS                           |    8 +
+ drivers/soc/Kconfig                   |    1 +
+ drivers/soc/Makefile                  |    1 +
+ drivers/soc/intel/Kconfig             |   18 +
+ drivers/soc/intel/Makefile            |    4 +
+ drivers/soc/intel/keembay-ipc.c       | 1364 +++++++++++++++++++++++++
+ include/linux/soc/intel/keembay-ipc.h |   30 +
+ 7 files changed, 1426 insertions(+)
+ create mode 100644 drivers/soc/intel/Kconfig
+ create mode 100644 drivers/soc/intel/Makefile
+ create mode 100644 drivers/soc/intel/keembay-ipc.c
+ create mode 100644 include/linux/soc/intel/keembay-ipc.h
 
-diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-index fc29100bef73..7a9eaddd1ab3 100644
---- a/Documentation/hwmon/index.rst
-+++ b/Documentation/hwmon/index.rst
-@@ -81,6 +81,7 @@ Hardware Monitoring Kernel Drivers
-    isl68137
-    it87
-    intel_tsens_sensor.rst
-+   intel_tsens_host.rst
-    jc42
-    k10temp
-    k8temp
-diff --git a/Documentation/hwmon/intel_tsens_host.rst b/Documentation/hwmon/intel_tsens_host.rst
-new file mode 100644
-index 000000000000..012c593f969f
---- /dev/null
-+++ b/Documentation/hwmon/intel_tsens_host.rst
-@@ -0,0 +1,71 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+==========================
-+Kernel driver: intel_tsens
-+==========================
-+
-+Supported chips:
-+  * Intel Edge.AI Computer Vision platforms: Keem Bay
-+
-+    Slave address: The address is assigned by the hddl device management
-+                   driver.
-+
-+    Datasheet:
-+      Documentation/hwmon/intel_tsens_sensor.rst#Remote Thermal Interface
-+
-+Authors:
-+    - Thalaiappan, Rathina <rathina.thalaiappan@intel.com
-+    - Udhayakumar C <udhayakumar.c@intel.com>
-+
-+Description
-+===========
-+The intel_tsens is a temperature sensor driver receiving the junction temperature
-+from different heating points inside the SOC. The driver will receive the
-+temperature on SMBUS connection. The reported temperature is in degrees Celsius.
-+
-+In Keem Bay, the four thermal junction temperature points are,
-+Media Subsystem (mss), NN subsystem (nce), Compute subsystem (cse) and
-+SOC(Maximum of mss, nce and cse).
-+
-+Example
-+=======
-+Temperature reported by a Keem Bay on the Linux Thermal sysfs interface.
-+
-+# cat /sys/class/thermal/thermal_zone*/type
-+mss
-+css
-+nce
-+soc
-+
-+# cat /sys/class/thermal/thermal_zone*/temp
-+0
-+29210
-+28478
-+29210
-+
-++-----------+-------------+
-+| offset    |   Sensor    |
-++-----------+-------------+
-+|   0       |   mss       |
-++-----------+-------------+
-+|   1       |   css       |
-++-----------+-------------+
-+|   2       |   nce       |
-++-----------+-------------+
-+|   3       |   soc       |
-++-----------+-------------+
-+
-+#sudo i2cdetect -l
-+i2c-8   smbus           SMBus I801 adapter at efa0              SMBus adapte    r
-+
-+To read mss junction temperature:
-+#i2cget -y 8 <slave addr> 0x0 w
-+
-+To read cse junction temperature:
-+#i2cget -y 8 <slave addr> 0x1 w
-+
-+To read nce junction temperature:
-+#i2cget -y 8 <slave addr> 0x2 w
-+
-+To read overall SoC temperature:
-+#i2cget -y 8 <slave addr> 0x3 w
-diff --git a/drivers/misc/intel_tsens/Kconfig b/drivers/misc/intel_tsens/Kconfig
-index bfb8fe1997f4..8b263fdd80c3 100644
---- a/drivers/misc/intel_tsens/Kconfig
-+++ b/drivers/misc/intel_tsens/Kconfig
-@@ -13,3 +13,16 @@ config INTEL_TSENS_LOCAL_HOST
- 	  management controller.
- 	  Say Y if using a processor that includes the Intel VPU such as
- 	  Keem Bay.  If unsure, say N.
-+
-+config INTEL_TSENS_IA_HOST
-+	tristate "Temperature sensor driver for intel tsens remote host"
-+	depends on I2C && THERMAL
-+	depends on I2C_SMBUS
-+	help
-+	  This option enables tsens i2c and thermal local Host driver.
-+
-+	  This driver is used for reading thermal data via I2C SMBUS
-+	  and registers itself to thermal framework, which can be
-+	  used by thermal daemon in remote IA host
-+	  Say Y if using a processor that includes the Intel VPU such as
-+	  Keem Bay.  If unsure, say N.
-diff --git a/drivers/misc/intel_tsens/Makefile b/drivers/misc/intel_tsens/Makefile
-index 93dee8b9f481..250dc484fb49 100644
---- a/drivers/misc/intel_tsens/Makefile
-+++ b/drivers/misc/intel_tsens/Makefile
-@@ -5,3 +5,4 @@
- #
+diff --git a/MAINTAINERS b/MAINTAINERS
+index de23f6e5cfce..684e64e958a4 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9060,6 +9060,14 @@ F:	drivers/crypto/keembay/keembay-ocs-aes-core.c
+ F:	drivers/crypto/keembay/ocs-aes.c
+ F:	drivers/crypto/keembay/ocs-aes.h
  
- obj-$(CONFIG_INTEL_TSENS_LOCAL_HOST)	+= intel_tsens_thermal.o
-+obj-$(CONFIG_INTEL_TSENS_IA_HOST)	+= intel_tsens_host.o
-diff --git a/drivers/misc/intel_tsens/intel_tsens_host.c b/drivers/misc/intel_tsens/intel_tsens_host.c
++INTEL KEEM BAY IPC DRIVER
++M:	Daniele Alessandrelli <daniele.alessandrelli@intel.com>
++M:	Mark Gross <mgross@linux.intel.com>
++S:	Supported
++F:	Documentation/devicetree/bindings/soc/intel/intel,keembay-ipc.yaml
++F:	drivers/soc/intel/keembay-ipc.c
++F:	include/linux/soc/intel/keembay-ipc.h
++
+ INTEL MANAGEMENT ENGINE (mei)
+ M:	Tomas Winkler <tomas.winkler@intel.com>
+ L:	linux-kernel@vger.kernel.org
+diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
+index d097d070f579..b9d69a1eedc7 100644
+--- a/drivers/soc/Kconfig
++++ b/drivers/soc/Kconfig
+@@ -8,6 +8,7 @@ source "drivers/soc/atmel/Kconfig"
+ source "drivers/soc/bcm/Kconfig"
+ source "drivers/soc/fsl/Kconfig"
+ source "drivers/soc/imx/Kconfig"
++source "drivers/soc/intel/Kconfig"
+ source "drivers/soc/ixp4xx/Kconfig"
+ source "drivers/soc/litex/Kconfig"
+ source "drivers/soc/mediatek/Kconfig"
+diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
+index 699b758d28e4..1a6c00d2e32e 100644
+--- a/drivers/soc/Makefile
++++ b/drivers/soc/Makefile
+@@ -12,6 +12,7 @@ obj-$(CONFIG_MACH_DOVE)		+= dove/
+ obj-y				+= fsl/
+ obj-$(CONFIG_ARCH_GEMINI)	+= gemini/
+ obj-y				+= imx/
++obj-y				+= intel/
+ obj-$(CONFIG_ARCH_IXP4XX)	+= ixp4xx/
+ obj-$(CONFIG_SOC_XWAY)		+= lantiq/
+ obj-$(CONFIG_LITEX_SOC_CONTROLLER) += litex/
+diff --git a/drivers/soc/intel/Kconfig b/drivers/soc/intel/Kconfig
 new file mode 100644
-index 000000000000..adb553f3f2e3
+index 000000000000..a575e31e47b4
 --- /dev/null
-+++ b/drivers/misc/intel_tsens/intel_tsens_host.c
-@@ -0,0 +1,351 @@
++++ b/drivers/soc/intel/Kconfig
+@@ -0,0 +1,18 @@
++# SPDX-License-Identifier: GPL-2.0-only
++#
++# Keem Bay SoC drivers
++#
++
++menu "Intel SoC drivers"
++
++config KEEMBAY_IPC
++	tristate "Support for Intel Keem Bay IPC"
++	depends on INTEL_VPU_IPC_MBOX
++	depends on ARCH_KEEMBAY || (ARM64 && COMPILE_TEST)
++	help
++	  Keem Bay IPC enables communication between the Keem Bay CPU
++	  Sub-System (CSS) and the Keem Bay Media Sub-System (MSS).
++
++	  Select this if you are compiling the Kernel for an Intel SoC that
++	  includes the Intel Vision Processing Unit (VPU) such as Keem Bay.
++endmenu
+diff --git a/drivers/soc/intel/Makefile b/drivers/soc/intel/Makefile
+new file mode 100644
+index 000000000000..ecf0246e7822
+--- /dev/null
++++ b/drivers/soc/intel/Makefile
+@@ -0,0 +1,4 @@
++#
++# Makefile for Keem Bay IPC Linux driver
++#
++obj-$(CONFIG_KEEMBAY_IPC) += keembay-ipc.o
+diff --git a/drivers/soc/intel/keembay-ipc.c b/drivers/soc/intel/keembay-ipc.c
+new file mode 100644
+index 000000000000..f097e92b1a99
+--- /dev/null
++++ b/drivers/soc/intel/keembay-ipc.c
+@@ -0,0 +1,1364 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
++ * Keem Bay IPC Driver.
 + *
-+ * Intel tsens I2C thermal Driver
++ * Copyright (C) 2018-2020 Intel Corporation
 + *
-+ * Copyright (C) 2020 Intel Corporation
++ * This driver implements the VPU Inter-Processor Communication (IPC) mechanism
++ * which enables communication between the Application Processor (AP), running
++ * Linux, and the VPU, running a proprietary VPU firmware.
 + *
++ * The IPC uses the following terminology:
++ *
++ * - Node:    A processing entity that can use the IPC to communicate
++ *	      (currently, we just have two nodes, the AP and the VPU).
++ *
++ * - Link:    Two nodes that can communicate over IPC form an IPC link
++ *	      (currently, we just have one link, the one formed by the AP and
++ *	      the VPU).
++ *
++ * - Channel: An IPC link can provide multiple IPC channels. IPC channels allow
++ *            communication multiplexing, i.e., the same IPC link can be used
++ *            by different applications for different communications. Each
++ *            channel is identified by a channel ID, which must be unique
++ *            within a single IPC link. Channels are divided in two categories,
++ *            High-Speed (HS) channels and General-Purpose (GP) channels.
++ *            HS channels have higher priority over GP channels.
++ *
++ * The VPU IPC mechanism is built on top of the VPU IPC mailbox, which allows
++ * the AP and the VPU to exchange 32-bit messages. Specifically, the VPU IPC
++ * mechanism uses shared memory (shared between the AP and the VPU) to allocate
++ * IPC packets and then exchanges them using the VPU IPC mailbox (the 32-bit
++ * physical address of the packet is passed as a message to the VPU IPC
++ * mailbox).
++ *
++ * IPC packets have a fixed structure containing the (VPU) physical address of
++ * the payload (which must be located in shared memory too) as well as other
++ * information (payload size, IPC channel ID, etc.).
++ *
++ * Each IPC node (i.e., both the AP and the VPU) has its own reserved memory
++ * region (in shared memory) from which it instantiates its own pool of IPC
++ * packets.  When instantiated, IPC packets are marked as free. When the node
++ * needs to send an IPC message, it gets the first free packet it finds (from
++ * its own pool), marks it as allocated (used), and transfer its physical
++ * address to the destination node using the VPU IPC mailbox. The destination
++ * node uses the received physical address to access the IPC packet, process
++ * the packet, and, once done with it, marks it as free (so that the sender can
++ * reuse it).
++ *
++ * Note: Keem Bay IPC is not based on RPMsg, since VPU HW/FW does not support
++ * Virtio and Virtqueues.
 + */
 +
-+#include <asm/page.h>
-+#include <linux/cdev.h>
-+#include <linux/delay.h>
-+#include <linux/fs.h>
-+#include <linux/hddl_device.h>
-+#include <linux/i2c.h>
-+#include <linux/ioctl.h>
-+#include <linux/intel_tsens_host.h>
++#include <linux/circ_buf.h>
++#include <linux/completion.h>
++#include <linux/dma-mapping.h>
++#include <linux/interrupt.h>
++#include <linux/io.h>
++#include <linux/jiffies.h>
 +#include <linux/kernel.h>
-+#include <linux/kmod.h>
 +#include <linux/kthread.h>
++#include <linux/mailbox_client.h>
++#include <linux/mailbox_controller.h> /* Needed for MBOX_TX_QUEUE_LEN. */
 +#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/printk.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/of_device.h>
++#include <linux/of_irq.h>
++#include <linux/of_reserved_mem.h>
 +#include <linux/platform_device.h>
-+#include <linux/sched.h>
-+#include <linux/sched/mm.h>
-+#include <linux/sched/task.h>
 +#include <linux/slab.h>
-+#include <linux/thermal.h>
-+#include <linux/time.h>
-+#include <linux/uaccess.h>
 +#include <linux/wait.h>
-+#include <linux/workqueue.h>
 +
-+#include <uapi/linux/stat.h>
++#include <linux/soc/intel/keembay-ipc.h>
 +
-+#define TSENS_BINDING_NAME	"intel_tsens"
-+#define TSENS_BYTE_INDEX_SHIFT  0x6
-+#define TSENS_READ_BYTE0	(0x0 << TSENS_BYTE_INDEX_SHIFT)
-+#define TSENS_READ_BYTE1	(0x1 << TSENS_BYTE_INDEX_SHIFT)
-+#define TSENS_READ_BYTE2	(0x2 << TSENS_BYTE_INDEX_SHIFT)
-+#define TSENS_READ_BYTE3	(0x3 << TSENS_BYTE_INDEX_SHIFT)
++#define DRV_NAME		"keembay-ipc"
 +
-+static int tsens_i2c_smbus_read_byte_data(struct i2c_client *i2c, u8 command,
-+					  u8 *i2c_val)
++/* The alignment to be used for IPC Packets and IPC Data. */
++#define KMB_IPC_ALIGNMENT	64
++
++/* Maximum number of channels per link. */
++#define KMB_IPC_MAX_CHANNELS	1024
++
++/* The number of high-speed channels per link. */
++#define KMB_IPC_NUM_HS_CHANNELS	10
++
++/*
++ * This is used as index for retrieving reserved memory from the device
++ * tree.
++ */
++#define RSVD_MEM_IDX_CPU_PKTS	0
++#define RSVD_MEM_IDX_VPU_PKTS	1
++
++/* The possible states of an IPC packet. */
++enum {
++	/*
++	 * KMB_IPC_PKT_FREE must be set to 0 to ensure that packets can be
++	 * initialized with memset(&buf, 0, sizeof(buf)).
++	 */
++	KMB_IPC_PKT_FREE = 0,
++	KMB_IPC_PKT_ALLOCATED,
++};
++
++/**
++ * struct kmb_ipc_pkt - The IPC packet structure.
++ * @data_addr:	The address where the IPC payload is located; NOTE: this is a
++ *		VPU address (not a CPU one).
++ * @data_size:	The size of the payload.
++ * @channel:	The channel used.
++ * @src_node:	The Node ID of the sender.
++ * @dst_node:	The Node ID of the intended receiver.
++ * @status:	Either free or allocated.
++ */
++struct kmb_ipc_pkt {
++	u32	data_addr;
++	u32	data_size;
++	u16	channel;
++	u8	src_node;
++	u8	dst_node;
++	u8	status;
++} __packed __aligned(KMB_IPC_ALIGNMENT);
++
++/**
++ * struct ipc_pkt_mem - IPC Packet Memory Region.
++ * @dev:	Child device managing the memory region.
++ * @vaddr:	The virtual address of the memory region.
++ * @dma_handle:	The VPU address of the memory region.
++ * @size:	The size of the memory region.
++ */
++struct ipc_pkt_mem {
++	struct device	*dev;
++	void		*vaddr;
++	dma_addr_t	dma_handle;
++	size_t		size;
++};
++
++/**
++ * struct ipc_pkt_pool - IPC packet pool.
++ * @packets:	Pointer to the array of packets.
++ * @buf_cnt:	Pool size (i.e., number of packets).
++ * @idx:	Current index.
++ */
++struct ipc_pkt_pool {
++	struct kmb_ipc_pkt	*packets;
++	size_t			buf_cnt;
++	size_t			idx;
++};
++
++/**
++ * struct ipc_chan - IPC channel.
++ * @rx_data_list:	The list of incoming messages.
++ * @rx_lock:		The lock for modifying the rx_data_list.
++ * @rx_wait_queue:	The wait queue for RX Data (recv() waits on it).
++ * @closing:		Closing flag, set when the channel is being closed.
++ */
++struct ipc_chan {
++	struct list_head	rx_data_list;
++	spinlock_t		rx_lock; /* Protects 'rx_data_list'. */
++	wait_queue_head_t	rx_wait_queue;
++	bool			closing;
++};
++
++/**
++ * struct tx_data - Element of a TX queue.
++ * @list:	The list head used to concatenate TX data elements.
++ * @vpu_addr:	The VPU address of the data to be transferred.
++ * @size:	The size of the data to be transferred.
++ * @chan_id:	The channel to be used for the transfer.
++ * @dst_node:	The destination node.
++ * @retv:	The result of the transfer.
++ * @tx_done:	The completion struct used by the sender to wait for the
++ *		transfer to complete.
++ * @entry:	The IPC packet VPU address to be sent to the VPU (this field is
++ *		set by tx_data_send() and used by ipc_mbox_tx_done() to get a
++ *		reference to the associated tx_data struct).
++ */
++struct tx_data {
++	struct	list_head list;
++	u32	vpu_addr;
++	u32	size;
++	u16	chan_id;
++	u8	dst_node;
++	int	retv;
++	struct	completion tx_done;
++	u32	entry;
++};
++
++/**
++ * struct tx_queue - The TX queue structure.
++ * @tx_data_list: The list of pending TX data on this queue.
++ * @lock:	  The lock protecting the TX data list.
++ */
++struct tx_queue {
++	struct list_head	tx_data_list;
++	spinlock_t		lock;	/* Protects tx_data_list. */
++};
++
++/**
++ * struct ipc_link - An IPC link.
++ * @mbox_cl:	   The mailbox client associated with this link.
++ * @mbox_chan:	   The mailbox channel associated with this link.
++ * @mbox_tx_queue: The completion used to avoid overflowing the mailbox
++ *		   framework queue (MBOX_TX_QUEUE_LEN), which will result in
++ *		   IPC packets being dropped.
++ * @channels:	   The channels associated with this link (the pointers to the
++ *		   channels are RCU-protected).
++ * @chan_lock:	   The lock for modifying the channels array.
++ * @srcu_sp:	   The Sleepable RCU structs associated with the link's
++ *		   channels.
++ * @tx_queues:	   The TX queues for this link (1 queue for each high-speed
++ *		   channels + 1 shared among all the general-purpose channels).
++ * @tx_qidx:	   The index of the next tx_queue to be check for outgoing data.
++ * @tx_queued:	   The TX completion used to signal when new TX data is pending.
++ * @tx_thread:	   The TX thread.
++ * @tx_stopping:   Flag signaling that the IPC Link is being closed.
++ */
++struct ipc_link {
++	struct mbox_client	mbox_cl;
++	struct mbox_chan	*mbox_chan;
++	struct completion       mbox_tx_queue;
++	struct ipc_chan __rcu	*channels[KMB_IPC_MAX_CHANNELS];
++	spinlock_t		chan_lock; /* Protects 'channels'. */
++	struct srcu_struct	srcu_sp[KMB_IPC_MAX_CHANNELS];
++	struct tx_queue		tx_queues[KMB_IPC_NUM_HS_CHANNELS + 1];
++	int			tx_qidx;
++	struct completion	tx_queued;
++	struct task_struct	*tx_thread;
++	bool			tx_stopping;
++};
++
++/**
++ * struct keembay_ipc_dev - IPC private data.
++ *
++ * @plat_dev: Platform device for this driver.
++ * @cpu_ipc_mem:	    Local IPC Packet memory region.
++ * @vpu_ipc_mem:	    Remove IPC Packet memory region.
++ * @ipc_pkt_pool:	    The pool of IPC packets.
++ * @vpu_link:		    The CPU-VPU link.
++ */
++struct keembay_ipc_dev {
++	struct platform_device	*plat_dev;
++	struct ipc_pkt_mem	cpu_ipc_mem;
++	struct ipc_pkt_mem	vpu_ipc_mem;
++	struct ipc_pkt_pool	ipc_pkt_pool;
++	struct ipc_link		vpu_link;
++};
++
++/**
++ * struct rx_data - RX Data Descriptor.
++ * @list:		List head for creating a list of rx_data elements.
++ * @data_vpu_addr:	The VPU address of the received data.
++ * @data_size:		The size of the received data.
++ *
++ * Instances of this struct are meant to be inserted in the RX Data queue
++ * (list) associated with each channel.
++ */
++struct rx_data {
++	struct list_head	list;
++	u32			data_vpu_addr;
++	u32			data_size;
++};
++
++/* Forward declaration of TX thread function. */
++static int tx_thread_fn(void *ptr);
++
++/* Forward declaration of mailbox client callbacks. */
++static void ipc_mbox_rx_callback(struct mbox_client *cl, void *msg);
++static void ipc_mbox_tx_done(struct mbox_client *cl, void *mssg, int r);
++
++/*
++ * Functions related to reserved-memory sub-devices.
++ */
++
++/*
++ * init_ipc_rsvd_mem() - Init the specified IPC reserved memory.
++ * @dev:	The IPC device for which the memory will be initialized.
++ * @mem:	Where to stored information about the initialized memory.
++ * @mem_name:	The name of this IPC memory.
++ * @mem_idx:	The index of the memory to initialize.
++ *
++ * Create a child device for 'dev' and use it to initialize the reserved
++ * memory region specified in the device tree at index 'mem_idx'.
++ * Also allocate DMA memory from the initialized memory region.
++ *
++ * Return:	0 on success, negative error code otherwise.
++ */
++static int init_ipc_rsvd_mem(struct device *dev, struct ipc_pkt_mem *mem,
++			     const char *mem_name, unsigned int mem_idx)
 +{
-+	union i2c_smbus_data data;
-+	int status;
++	struct device *mem_dev;
++	struct device_node *np;
++	struct resource mem_res;
++	dma_addr_t dma_handle;
++	size_t mem_size;
++	void *vaddr;
++	int rc;
 +
-+	status = i2c_smbus_xfer(i2c->adapter, i2c->addr, i2c->flags,
-+				I2C_SMBUS_READ, command,
-+				I2C_SMBUS_BYTE_DATA, &data);
-+	*i2c_val = data.byte;
-+	return status;
++	/* Create a child device (of dev) to own the reserved memory. */
++	mem_dev = devm_kzalloc(dev, sizeof(struct device), GFP_KERNEL);
++	if (!mem_dev)
++		return -ENOMEM;
++
++	device_initialize(mem_dev);
++	dev_set_name(mem_dev, "%s:%s", dev_name(dev), mem_name);
++	mem_dev->parent = dev;
++	mem_dev->dma_mask = dev->dma_mask;
++	mem_dev->coherent_dma_mask = dev->coherent_dma_mask;
++	mem_dev->release = of_reserved_mem_device_release;
++
++	/* Set up DMA configuration using information from parent's DT node. */
++	rc = of_dma_configure(mem_dev, dev->of_node, true);
++	if (rc)
++		goto err_add;
++
++	rc = device_add(mem_dev);
++	if (rc)
++		goto err_add;
++
++	/* Initialized the device reserved memory region. */
++	rc = of_reserved_mem_device_init_by_idx(mem_dev, dev->of_node, mem_idx);
++	if (rc) {
++		dev_err(dev, "Couldn't get reserved memory with idx = %d, %d\n",
++			mem_idx, rc);
++		goto err_post_add;
++	}
++
++	/* Find out the size of the memory region. */
++	np = of_parse_phandle(dev->of_node, "memory-region", mem_idx);
++	if (!np) {
++		dev_err(dev, "Couldn't find memory-region %d\n", mem_idx);
++		rc = -EINVAL;
++		goto err_post_add;
++	}
++	rc = of_address_to_resource(np, 0, &mem_res);
++	if (rc) {
++		dev_err(dev, "Couldn't map address to resource %d\n", mem_idx);
++		goto err_post_add;
++	}
++	mem_size = resource_size(&mem_res);
++
++	/* Allocate memory from the reserved memory regions */
++	vaddr = dmam_alloc_coherent(mem_dev, mem_size, &dma_handle, GFP_KERNEL);
++	if (!vaddr) {
++		dev_err(mem_dev, "Failed to allocate from reserved memory.\n");
++		rc = -ENOMEM;
++		goto err_post_add;
++	}
++
++	mem->dev = mem_dev;
++	mem->vaddr = vaddr;
++	mem->dma_handle = dma_handle;
++	mem->size = mem_size;
++
++	return 0;
++
++err_post_add:
++	device_del(mem_dev);
++err_add:
++	put_device(mem_dev);
++	return rc;
++}
++
++/*
++ * IPC internal functions.
++ */
++
++/**
++ * channel_close() - Close a channel and return whether it was open or not.
++ * @link:	The link the channel belongs to.
++ * @chan_id:	The channel ID of the channel to close.
++ *
++ * Return:	0 if the channel was already closed, 1 otherwise.
++ */
++static int channel_close(struct ipc_link *link, u16 chan_id)
++{
++	struct ipc_chan *chan;
++	struct rx_data *pos, *nxt;
++
++	/* Get channel from channel array. */
++	spin_lock(&link->chan_lock);
++	chan = rcu_dereference_protected(link->channels[chan_id],
++					 lockdep_is_held(&link->chan_lock));
++
++	/* If channel is already NULL, we are done. */
++	if (!chan) {
++		spin_unlock(&link->chan_lock);
++		return 0;
++	}
++
++	/* Otherwise remove it from the 'channels' array. */
++	RCU_INIT_POINTER(link->channels[chan_id], NULL);
++	spin_unlock(&link->chan_lock);
++
++	/* Set closing flag and wake up user threads waiting on recv(). */
++	chan->closing = true;
++	wake_up_all(&chan->rx_wait_queue);
++
++	/* Wait for channel users to drop the reference to the old channel. */
++	synchronize_srcu(&link->srcu_sp[chan_id]);
++
++	/* Free channel memory (rx_data queue and channel struct). */
++	/*
++	 * No need to get chan->rx_lock as we know that nobody is using the
++	 * channel at this point.
++	 */
++	list_for_each_entry_safe(pos, nxt, &chan->rx_data_list, list) {
++		list_del(&pos->list);
++		kfree(pos);
++	}
++	kfree(chan);
++
++	return 1;
 +}
 +
 +/**
-+ * intel_tsens_get_temp - get updated temperatue
-+ * @zone: Thermal zone device
-+ * @temp: updated temperature value.
++ * ipc_pkt_tx_alloc() - Allocate an IPC packet to be used for TX.
++ * @pool:  The IPC packet pool from which the IPC packet will be allocated.
 + *
-+ * Temperature value read from sensors ranging from -40000 (-40 degree Celsius)
-+ * to 126000 (126 degree Celsius). if there is a failure while reading update
-+ * temperature, -255 would be returned as temperature to indicate failure.
++ * Return: The pointer to the allocated packet, or NULL if allocation fails.
 + */
-+static int intel_tsens_get_temp(struct thermal_zone_device *zone,
-+				int *temp)
++static struct kmb_ipc_pkt *ipc_pkt_tx_alloc(struct ipc_pkt_pool *pool)
 +{
-+	struct intel_tsens_host *tsens =
-+		(struct intel_tsens_host *)zone->devdata;
-+	struct i2c_client *i2c_c;
-+	int status, sensor_type;
-+	u8 i2c_val;
-+	s32 val;
-+
-+	if (strstr(zone->type, "smb"))
-+		i2c_c = tsens->i2c_smbus;
-+	else
-+		i2c_c = tsens->i2c_xlk;
-+
-+	*temp = -255;
-+	sensor_type = tsens->t_data->sensor_type | TSENS_READ_BYTE0;
-+	status = tsens_i2c_smbus_read_byte_data(i2c_c,
-+						sensor_type,
-+						&i2c_val);
-+	if (status < 0)
-+		return status;
-+	val = i2c_val;
-+	sensor_type = tsens->t_data->sensor_type | TSENS_READ_BYTE1;
-+	status = tsens_i2c_smbus_read_byte_data(i2c_c,
-+						sensor_type,
-+						&i2c_val);
-+	if (status < 0)
-+		return status;
-+	val |= (i2c_val << 8);
-+	sensor_type = tsens->t_data->sensor_type | TSENS_READ_BYTE2;
-+	status = tsens_i2c_smbus_read_byte_data(i2c_c,
-+						sensor_type,
-+						&i2c_val);
-+	if (status < 0)
-+		return status;
-+	val |= (i2c_val << 16);
-+	sensor_type = tsens->t_data->sensor_type | TSENS_READ_BYTE3;
-+	status = tsens_i2c_smbus_read_byte_data(i2c_c,
-+						sensor_type,
-+						&i2c_val);
-+	if (status < 0)
-+		return status;
-+	val |= (i2c_val << 24);
-+	*temp = val;
-+	return 0;
-+}
-+
-+static int intel_tsens_thermal_get_trip_type(struct thermal_zone_device *zone,
-+					     int trip,
-+					     enum thermal_trip_type *type)
-+{
-+	struct intel_tsens_host *tsens =
-+		(struct intel_tsens_host *)zone->devdata;
-+
-+	*type = tsens->trip_info[trip]->trip_type;
-+	return 0;
-+}
-+
-+static int intel_tsens_thermal_get_trip_temp(struct thermal_zone_device *zone,
-+					     int trip, int *temp)
-+{
-+	struct intel_tsens_host *tsens =
-+		(struct intel_tsens_host *)zone->devdata;
-+
-+	*temp = tsens->trip_info[trip]->temp;
-+	return 0;
-+}
-+
-+static int intel_tsens_thermal_notify(struct thermal_zone_device *tz,
-+				      int trip, enum thermal_trip_type type)
-+{
-+	int ret = 0;
-+
-+	switch (type) {
-+	case THERMAL_TRIP_ACTIVE:
-+		dev_warn(&tz->device,
-+			 "zone %s reached to active temperature %d\n",
-+			 tz->type, tz->temperature);
-+		ret = 1;
-+		break;
-+	case THERMAL_TRIP_CRITICAL:
-+		dev_warn(&tz->device,
-+			 "zone %s reached to critical temperature %d\n",
-+			 tz->type, tz->temperature);
-+		ret = 1;
-+		break;
-+	default:
-+		break;
-+	}
-+	return ret;
-+}
-+
-+static int intel_tsens_bind(struct thermal_zone_device *tz,
-+			    struct thermal_cooling_device *cdev)
-+{
-+	int ret;
-+
-+	/*
-+	 * Check here thermal device zone name and cdev name to match,
-+	 * then call the bind device
-+	 */
-+	if (strncmp(TSENS_BINDING_NAME, cdev->type,
-+		    strlen(TSENS_BINDING_NAME)) == 0) {
-+		ret = thermal_zone_bind_cooling_device
-+				(tz,
-+				THERMAL_TRIP_ACTIVE,
-+				cdev,
-+				THERMAL_NO_LIMIT,
-+				THERMAL_NO_LIMIT,
-+				THERMAL_WEIGHT_DEFAULT);
-+		if (ret) {
-+			dev_err(&tz->device,
-+				"binding zone %s with cdev %s failed:%d\n",
-+				tz->type, cdev->type, ret);
-+			return ret;
-+		}
-+	}
-+	return 0;
-+}
-+
-+static int intel_tsens_unbind(struct thermal_zone_device *tz,
-+			      struct thermal_cooling_device *cdev)
-+{
-+	int ret;
-+
-+	if (strncmp(TSENS_BINDING_NAME, cdev->type,
-+		    strlen(TSENS_BINDING_NAME)) == 0) {
-+		ret = thermal_zone_unbind_cooling_device(tz, 0, cdev);
-+		if (ret) {
-+			dev_err(&tz->device,
-+				"unbinding zone %s with cdev %s failed:%d\n",
-+				tz->type, cdev->type, ret);
-+			return ret;
-+		}
-+	}
-+	return 0;
-+}
-+
-+static struct thermal_zone_device_ops tsens_thermal_ops = {
-+	.bind = intel_tsens_bind,
-+	.unbind = intel_tsens_unbind,
-+	.get_temp = intel_tsens_get_temp,
-+	.get_trip_type	= intel_tsens_thermal_get_trip_type,
-+	.get_trip_temp	= intel_tsens_thermal_get_trip_temp,
-+	.notify		= intel_tsens_thermal_notify,
-+};
-+
-+static int intel_tsens_add_tz(struct intel_tsens_host *tsens,
-+			      struct thermal_zone_device **tz,
-+			      const char *name,
-+			      struct device *dev,
-+			      int i)
-+{
-+	int ret;
-+
-+	*tz =  thermal_zone_device_register(name,
-+					    tsens->t_data->n_trips,
-+					    0, tsens,
-+					    &tsens_thermal_ops,
-+					    NULL,
-+					    tsens->t_data->passive_delay,
-+					    tsens->t_data->polling_delay);
-+	if (IS_ERR(*tz)) {
-+		ret = PTR_ERR(*tz);
-+		dev_err(dev,
-+			"failed to register thermal zone device %s\n",
-+			tsens->t_data->name);
-+		return ret;
-+	}
-+	return 0;
-+}
-+
-+static void intel_tsens_remove_tz(struct intel_hddl_clients *d)
-+{
++	struct kmb_ipc_pkt *buf;
 +	int i;
 +
-+	for (i = 0; i < d->nsens; i++) {
-+		struct intel_tsens_host *tsens = d->tsens[i];
++	/*
++	 * Look for a free packet starting from the last index (pointing to the
++	 * next packet after the last allocated one) and potentially going
++	 * through all the packets in the pool.
++	 */
++	for (i = 0; i < pool->buf_cnt; i++) {
++		/*
++		 * Get reference to current packet and increment index (for
++		 * next iteration or function call).
++		 */
++		buf = &pool->packets[pool->idx++];
++		if (pool->idx == pool->buf_cnt)
++			pool->idx = 0;
 +
-+		if (tsens->tz_smbus) {
-+			thermal_zone_device_unregister(tsens->tz_smbus);
-+			tsens->tz_smbus = NULL;
-+		}
-+		if (tsens->tz_xlk) {
-+			thermal_zone_device_unregister(tsens->tz_xlk);
-+			tsens->tz_xlk = NULL;
++		/* Use current packet if free. */
++		if (buf->status == KMB_IPC_PKT_FREE) {
++			buf->status = KMB_IPC_PKT_ALLOCATED;
++			return buf;
 +		}
 +	}
++
++	/* We went through all the packets and found none free. */
++	return NULL;
 +}
 +
-+static int intel_tsens_tj_probe(struct i2c_client *client,
-+				const struct i2c_device_id *id)
++/**
++ * init_ipc_pkt_pool() - Init the CPU IPC Packet Pool.
++ * @ipc_dev:	The IPC device the pool belongs to.
++ *
++ * Set up the IPC Packet Pool to be used for allocating TX packets.
++ *
++ * The pool uses the CPU IPC Packet memory previously allocated.
++ *
++ * Return:	0 on success, negative error code otherwise.
++ */
++static int init_ipc_pkt_pool(struct keembay_ipc_dev *ipc_dev)
 +{
-+	struct intel_hddl_clients *d = client->dev.platform_data;
-+	u32 device_id = tsens_get_device_id(d);
-+	char *i2c_str;
-+	int ret, i;
++	struct ipc_pkt_mem *mem = &ipc_dev->cpu_ipc_mem;
 +
-+	if (strstr(client->adapter->name, "SMBus I801")) {
-+		i2c_str = "smb";
-+		for (i = 0; i < d->nsens; i++) {
-+			struct intel_tsens_host *tsens = d->tsens[i];
++	ipc_dev->ipc_pkt_pool.buf_cnt = mem->size / sizeof(struct kmb_ipc_pkt);
 +
-+			tsens->sensor_name_smbus =
-+				kasprintf(GFP_KERNEL,
-+					  "%s_%s-%x",
-+					  tsens->t_data->name,
-+					  i2c_str, device_id);
-+			tsens->i2c_smbus = client;
-+			ret = intel_tsens_add_tz(tsens,
-+						 &tsens->tz_smbus,
-+						 tsens->sensor_name_smbus,
-+						 &client->dev,
-+						 i);
-+			if (ret) {
-+				dev_err(&client->dev,
-+					"thermal zone configuration failed\n");
-+				intel_tsens_remove_tz(d);
-+				return ret;
-+			}
-+		}
-+	} else {
-+		i2c_str = "xlk";
-+		for (i = 0; i < d->nsens; i++) {
-+			struct intel_tsens_host *tsens = d->tsens[i];
-+
-+			tsens->sensor_name_xlk =
-+				kasprintf(GFP_KERNEL,
-+					  "%s_%s-%x",
-+					  tsens->t_data->name,
-+					  i2c_str, device_id);
-+			tsens->i2c_xlk = client;
-+			ret = intel_tsens_add_tz(tsens,
-+						 &tsens->tz_xlk,
-+						 tsens->sensor_name_xlk,
-+						 &client->dev,
-+						 i);
-+			if (ret) {
-+				dev_err(&client->dev,
-+					"thermal zone configuration failed\n");
-+				intel_tsens_remove_tz(d);
-+				return ret;
-+			}
-+		}
-+	}
-+
-+	i2c_set_clientdata(client, d);
++	/* Fail if we end up having a pool of 0 packets. */
++	if (ipc_dev->ipc_pkt_pool.buf_cnt == 0)
++		return -ENOMEM;
++	/*
++	 * Set reserved memory to 0 to initialize the IPC Packet array
++	 * (ipc_pkt_pool.packets); this works because the value of
++	 * KMB_IPC_PKT_FREE is 0.
++	 */
++	memset(mem->vaddr, 0, mem->size);
++	ipc_dev->ipc_pkt_pool.packets = mem->vaddr;
++	ipc_dev->ipc_pkt_pool.idx = 0;
 +
 +	return 0;
 +}
 +
-+static int intel_tsens_tj_exit(struct i2c_client *client)
-+{
-+	struct intel_hddl_clients *d = client->dev.platform_data;
-+
-+	if (!d) {
-+		dev_err(&client->dev,
-+			"Unable to get private data\n");
-+		return -EINVAL;
-+	}
-+	intel_tsens_remove_tz(d);
-+	return 0;
-+}
-+
-+static const struct i2c_device_id i2c_intel_tsens_id[] = {
-+	{ "intel_tsens", (kernel_ulong_t)NULL },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(i2c, i2c_intel_tsens_id);
-+
-+static struct i2c_driver i2c_intel_tsens_driver = {
-+	.driver = {
-+		.name = "intel_tsens",
-+	},
-+	.probe = intel_tsens_tj_probe,
-+	.remove = intel_tsens_tj_exit,
-+	.id_table = i2c_intel_tsens_id,
-+};
-+module_i2c_driver(i2c_intel_tsens_driver);
-+
-+MODULE_DESCRIPTION("Intel tsens host Device driver");
-+MODULE_AUTHOR("Sandeep Singh <sandeep1.singh@intel.com>");
-+MODULE_AUTHOR("Vaidya, Mahesh R <mahesh.r.vaidya@intel.com>");
-+MODULE_AUTHOR("Udhayakumar C <udhayakumar.c@intel.com>");
-+MODULE_LICENSE("GPL v2");
-diff --git a/include/linux/intel_tsens_host.h b/include/linux/intel_tsens_host.h
-new file mode 100644
-index 000000000000..4b9b2d6a5cfc
---- /dev/null
-+++ b/include/linux/intel_tsens_host.h
-@@ -0,0 +1,34 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
 +/*
++ * ipc_link_init() - Initialize CPU/VPU IPC link.
++ * @ipc_dev: The IPC device the link belongs to.
 + *
-+ * Intel tsens host I2C thermal Driver
++ * This function is expected to be called during probing.
 + *
-+ * Copyright (C) 2020 Intel Corporation
++ * Return: 0 on success, negative error code otherwise.
++ */
++static int ipc_link_init(struct keembay_ipc_dev *ipc_dev)
++{
++	struct ipc_link *link = &ipc_dev->vpu_link;
++	struct tx_queue *queue;
++	int i;
++
++	/* Init mailbox client. */
++	link->mbox_cl.dev = &ipc_dev->plat_dev->dev;
++	link->mbox_cl.tx_block = false;
++	link->mbox_cl.tx_tout = 0;
++	link->mbox_cl.knows_txdone = false;
++	link->mbox_cl.rx_callback = ipc_mbox_rx_callback;
++	link->mbox_cl.tx_prepare = NULL;
++	link->mbox_cl.tx_done = ipc_mbox_tx_done;
++
++	/* Init completion keeping track of free slots in mbox tx queue. */
++	init_completion(&link->mbox_tx_queue);
++	for (i = 0; i < MBOX_TX_QUEUE_LEN; i++)
++		complete(&link->mbox_tx_queue);
++
++	/* Request mailbox channel */
++	link->mbox_chan = mbox_request_channel(&link->mbox_cl, 0);
++	if (IS_ERR(link->mbox_chan))
++		return PTR_ERR(link->mbox_chan);
++
++	spin_lock_init(&link->chan_lock);
++	for (i = 0; i < ARRAY_SIZE(link->srcu_sp); i++)
++		init_srcu_struct(&link->srcu_sp[i]);
++	memset(link->channels, 0, sizeof(link->channels));
++
++	/* Init TX queues. */
++	for (i = 0; i < ARRAY_SIZE(link->tx_queues); i++) {
++		queue = &link->tx_queues[i];
++		INIT_LIST_HEAD(&queue->tx_data_list);
++		spin_lock_init(&queue->lock);
++	}
++	link->tx_qidx = 0;
++	link->tx_stopping = false;
++	init_completion(&link->tx_queued);
++
++	/* Start TX thread. */
++	link->tx_thread = kthread_run(tx_thread_fn, ipc_dev,
++				      "kmb_ipc_tx_thread");
++	if (IS_ERR(link->tx_thread)) {
++		mbox_free_channel(link->mbox_chan);
++		return PTR_ERR(link->tx_thread);
++	}
++
++	return 0;
++}
++
++/**
++ * ipc_link_deinit() - De-initialize CPU/VPU IPC link.
++ * @ipc_dev:	The IPC device the link belongs to.
++ */
++static void ipc_link_deinit(struct keembay_ipc_dev *ipc_dev)
++{
++	struct ipc_link *link = &ipc_dev->vpu_link;
++	struct tx_queue *queue;
++	struct tx_data *pos, *nxt;
++	int i;
++
++	/* Close all channels. */
++	for (i = 0; i < ARRAY_SIZE(link->channels); i++)
++		channel_close(link, i);
++
++	/* Stop TX Thread. */
++	link->tx_stopping = true;
++	complete(&link->tx_queued);
++	kthread_stop(link->tx_thread);
++
++	/* Flush all TX queue. */
++	for (i = 0; i < ARRAY_SIZE(link->tx_queues); i++) {
++		queue = &link->tx_queues[i];
++		list_for_each_entry_safe(pos, nxt, &queue->tx_data_list, list) {
++			list_del(&pos->list);
++			pos->retv = -EPIPE;
++			complete(&pos->tx_done);
++		}
++	}
++
++	mbox_free_channel(link->mbox_chan);
++}
++
++/* Driver probing. */
++static int kmb_ipc_probe(struct platform_device *pdev)
++{
++	int rc;
++	struct keembay_ipc_dev *ipc_dev;
++	struct device *dev = &pdev->dev;
++
++	ipc_dev = devm_kzalloc(dev, sizeof(*ipc_dev), GFP_KERNEL);
++	if (!ipc_dev)
++		return -ENOMEM;
++
++	ipc_dev->plat_dev = pdev;
++
++	/* Init the memory used for CPU packets. */
++	rc = init_ipc_rsvd_mem(dev, &ipc_dev->cpu_ipc_mem,
++			       "ipc_cpu_rsvd_mem", RSVD_MEM_IDX_CPU_PKTS);
++	if (rc) {
++		dev_err(dev, "Failed to set up CPU reserved memory.\n");
++		return rc;
++	}
++
++	/* Init the memory used for VPU packets. */
++	rc = init_ipc_rsvd_mem(dev, &ipc_dev->vpu_ipc_mem,
++			       "ipc_vpu_rsvd_mem", RSVD_MEM_IDX_VPU_PKTS);
++	if (rc) {
++		dev_err(dev, "Failed to set up VPU reserved memory.\n");
++		device_unregister(ipc_dev->cpu_ipc_mem.dev);
++		return rc;
++	}
++
++	/* Init the pool of IPC packets to be used to TX. */
++	rc = init_ipc_pkt_pool(ipc_dev);
++	if (rc)
++		goto err_post_rsvd_mem;
++
++	/* Init the only link we have (CPU -> VPU). */
++	rc = ipc_link_init(ipc_dev);
++	if (rc)
++		goto err_post_rsvd_mem;
++
++	platform_set_drvdata(pdev, ipc_dev);
++
++	return 0;
++
++err_post_rsvd_mem:
++	device_unregister(ipc_dev->cpu_ipc_mem.dev);
++	device_unregister(ipc_dev->vpu_ipc_mem.dev);
++
++	return rc;
++}
++
++/* Driver removal. */
++static int kmb_ipc_remove(struct platform_device *pdev)
++{
++	struct keembay_ipc_dev *ipc_dev = platform_get_drvdata(pdev);
++
++	ipc_link_deinit(ipc_dev);
++
++	/*
++	 * No need to de-alloc IPC memory (cpu_ipc_mem and vpu_ipc_mem)
++	 * since it was allocated with dmam_alloc_coherent().
++	 */
++
++	device_unregister(ipc_dev->cpu_ipc_mem.dev);
++	device_unregister(ipc_dev->vpu_ipc_mem.dev);
++
++	return 0;
++}
++
++/*
++ * ipc_vpu_to_virt() - Convert a VPU address to a CPU virtual address.
 + *
++ * @ipc_mem:  The IPC memory region where the VPU address is expected to be
++ *	      mapped to.
++ * @vpu_addr: The VPU address to be converted to a virtual one.
++ *
++ * The VPU can map the DDR differently than the CPU. This functions converts
++ * VPU addresses to CPU virtual addresses.
++ *
++ * Return: The corresponding CPU virtual address, or NULL if the VPU address
++ *	   is not in the expected memory range.
++ */
++static void *ipc_vpu_to_virt(const struct ipc_pkt_mem *ipc_mem,
++			     u32 vpu_addr)
++{
++	if (unlikely(vpu_addr < ipc_mem->dma_handle ||
++		     vpu_addr >= (ipc_mem->dma_handle + ipc_mem->size)))
++		return NULL;
++
++	/* Cast to (u8 *) needed since void pointer arithmetic is undefined. */
++	return (u8 *)ipc_mem->vaddr + (vpu_addr - ipc_mem->dma_handle);
++}
++
++/*
++ * ipc_virt_to_vpu() - Convert an CPU virtual address to a VPU address.
++ * @ipc_mem:  [in]  The IPC memory region where the VPU address is expected to
++ *		    be mapped to.
++ * @vaddr:    [in]  The CPU virtual address to be converted to a VPU one.
++ * @vpu_addr: [out] Where to store the computed VPU address.
++ *
++ * The VPU can map the DDR differently than the CPU. This functions converts
++ * CPU virtual addresses to VPU virtual addresses.
++ *
++ * Return: 0 on success, negative error code otherwise.
++ */
++static int ipc_virt_to_vpu(struct ipc_pkt_mem *ipc_mem, void *vaddr,
++			   u32 *vpu_addr)
++{
++	if (unlikely((ipc_mem->dma_handle + ipc_mem->size) > 0xFFFFFFFF))
++		return -EINVAL;
++
++	/* Cast to (u8 *) needed since void pointer arithmetic is undefined. */
++	if (unlikely(vaddr < ipc_mem->vaddr ||
++		     (u8 *)vaddr >= ((u8 *)ipc_mem->vaddr + ipc_mem->size)))
++		return -EINVAL;
++
++	*vpu_addr = ipc_mem->dma_handle + (vaddr - ipc_mem->vaddr);
++
++	return 0;
++}
++
++/**
++ * ipc_mbox_rx_callback() - Process a FIFO entry coming from IPC mailbox.
++ * @cl:		The mailbox client.
++ * @msg:	The FIFO entry to process.
++ *
++ * This function performs the following tasks:
++ * - Check the source node id.
++ * - Process the IPC packet (locate it, validate it, read data info, release
++ *   packet).
++ * - Add an RX Data descriptor (data ptr and data size) to the channel RX queue.
++ */
++static void ipc_mbox_rx_callback(struct mbox_client *cl, void *msg)
++{
++	struct device *dev = cl->dev;
++	struct ipc_link *link = container_of(cl, struct ipc_link, mbox_cl);
++	struct keembay_ipc_dev *ipc_dev = container_of(link,
++						       struct keembay_ipc_dev,
++						       vpu_link);
++	struct kmb_ipc_pkt *ipc_pkt;
++	struct rx_data *rx_data;
++	struct ipc_chan *chan;
++	u32 entry;
++	int idx;
++
++	entry = *((u32 *)msg);
++
++	/* Get IPC packet. */
++	ipc_pkt = ipc_vpu_to_virt(&ipc_dev->vpu_ipc_mem, entry);
++	if (unlikely(!ipc_pkt)) {
++		dev_warn(dev, "RX: Message out of expected memory range: %x\n",
++			 entry);
++
++		/* Return immediately (cannot mark the IPC packet as free). */
++		return;
++	}
++	if (unlikely(ipc_pkt->src_node != KMB_IPC_NODE_LEON_MSS)) {
++		dev_warn(dev, "RX: Message from unexpected source: %d\n",
++			 ipc_pkt->src_node);
++		goto exit;
++	}
++
++	/* Check destination node. */
++	if (unlikely(ipc_pkt->dst_node != KMB_IPC_NODE_CPU)) {
++		dev_warn(dev, "RX: Message is not for this node\n");
++		goto exit;
++	}
++
++	/* Preliminary channel check. */
++	if (unlikely(ipc_pkt->channel >= KMB_IPC_MAX_CHANNELS)) {
++		dev_warn(dev, "RX: Message for invalid channel\n");
++		goto exit;
++	}
++
++	/* Access internal channel struct (this is protected by an SRCU). */
++	idx = srcu_read_lock(&link->srcu_sp[ipc_pkt->channel]);
++	chan = srcu_dereference(link->channels[ipc_pkt->channel],
++				&link->srcu_sp[ipc_pkt->channel]);
++	if (unlikely(!chan)) {
++		srcu_read_unlock(&link->srcu_sp[ipc_pkt->channel], idx);
++		dev_warn(dev, "RX: Message for closed channel.\n");
++		goto exit;
++	}
++	rx_data = kmalloc(sizeof(*rx_data), GFP_ATOMIC);
++	if (unlikely(!rx_data)) {
++		/* If kmalloc fails, we are forced to discard the message. */
++		srcu_read_unlock(&link->srcu_sp[ipc_pkt->channel], idx);
++		dev_err(dev, "RX: Message dropped: Cannot allocate RX Data.\n");
++		goto exit;
++	}
++	/* Read data info. */
++	rx_data->data_vpu_addr = ipc_pkt->data_addr;
++	rx_data->data_size = ipc_pkt->data_size;
++	/*
++	 * Put data info in rx channel queue.
++	 *
++	 * Note: rx_lock is shared with user context only (and this function is
++	 * run in tasklet context), so spin_lock() is enough.
++	 */
++	spin_lock(&chan->rx_lock);
++	list_add_tail(&rx_data->list, &chan->rx_data_list);
++	spin_unlock(&chan->rx_lock);
++
++	/* Wake up thread waiting on recv(). */
++	wake_up_interruptible(&chan->rx_wait_queue);
++
++	/* Exit SRCU region protecting chan struct. */
++	srcu_read_unlock(&link->srcu_sp[ipc_pkt->channel], idx);
++
++exit:
++	barrier(); /* Ensure IPC packet is fully processed before release. */
++	ipc_pkt->status = KMB_IPC_PKT_FREE;
++}
++
++static void ipc_mbox_tx_done(struct mbox_client *cl, void *mssg, int r)
++{
++	struct tx_data *tx_data = container_of(mssg, struct tx_data, entry);
++	struct ipc_link *link = container_of(cl, struct ipc_link, mbox_cl);
++
++	/* Signal that there is one more free slot in mbox tx queue. */
++	complete(&link->mbox_tx_queue);
++
++	/* Save TX result and notify that IPC TX is completed. */
++	tx_data->retv = r;
++	complete(&tx_data->tx_done);
++}
++
++/**
++ * tx_data_send() - Send a TX data element.
++ * @ipc_dev:	The IPC device to use.
++ * @tx_data:	The TX data element to send.
++ */
++static void tx_data_send(struct keembay_ipc_dev *ipc_dev,
++			 struct tx_data *tx_data)
++{
++	struct device *dev = &ipc_dev->plat_dev->dev;
++	struct ipc_link *link = &ipc_dev->vpu_link;
++	struct kmb_ipc_pkt *ipc_pkt;
++	int rc;
++
++	/* Allocate and set IPC packet. */
++	ipc_pkt = ipc_pkt_tx_alloc(&ipc_dev->ipc_pkt_pool);
++	if (unlikely(!ipc_pkt)) {
++		rc = -ENOMEM;
++		goto error;
++	}
++
++	/* Prepare IPC packet. */
++	ipc_pkt->channel = tx_data->chan_id;
++	ipc_pkt->src_node = KMB_IPC_NODE_CPU;
++	ipc_pkt->dst_node = tx_data->dst_node;
++	ipc_pkt->data_addr = tx_data->vpu_addr;
++	ipc_pkt->data_size = tx_data->size;
++
++	/* Ensure changes to IPC Packet are performed before entry is sent. */
++	wmb();
++
++	/* Initialize entry to ipc_pkt VPU address. */
++	rc = ipc_virt_to_vpu(&ipc_dev->cpu_ipc_mem, ipc_pkt, &tx_data->entry);
++
++	/*
++	 * Check validity of IPC packet VPU address (this error should never
++	 * occur if IPC packet region is defined properly in Device Tree).
++	 */
++	if (unlikely(rc)) {
++		dev_err(dev, "Cannot convert IPC buf vaddr to vpu_addr: %p\n",
++			ipc_pkt);
++		rc = -ENXIO;
++		goto error;
++	}
++	if (unlikely(!IS_ALIGNED(tx_data->entry, KMB_IPC_ALIGNMENT))) {
++		dev_err(dev, "Allocated IPC buf is not 64-byte aligned: %p\n",
++			ipc_pkt);
++		rc = -EFAULT;
++		goto error;
++	}
++
++	/*
++	 * Ensure that the mbox TX queue is not full before passing the packet
++	 * to mbox controller with mbox_send_message(). This will ensure that
++	 * the packet won't be dropped by the mbox framework with the error
++	 * "Try increasing MBOX_TX_QUEUE_LEN".
++	 */
++	rc = wait_for_completion_interruptible(&link->mbox_tx_queue);
++	if (unlikely(rc))
++		goto error;
++
++	mbox_send_message(link->mbox_chan, &tx_data->entry);
++
++	return;
++
++error:
++	/* If an error occurred and a packet was allocated, free it. */
++	if (ipc_pkt)
++		ipc_pkt->status = KMB_IPC_PKT_FREE;
++
++	tx_data->retv = rc;
++	complete(&tx_data->tx_done);
++}
++
++/**
++ * tx_data_dequeue() - Dequeue the next TX data waiting for transfer.
++ * @link:  The link from which we dequeue the TX Data.
++ *
++ * The de-queue policy is round robin between each high speed channel queue and
++ * the one queue for all low speed channels.
++ *
++ * Return: The next TX data waiting to be transferred, or NULL if no TX is
++ *	   pending.
++ */
++static struct tx_data *tx_data_dequeue(struct ipc_link *link)
++{
++	struct tx_data *tx_data;
++	struct tx_queue *queue;
++	int i;
++
++	/*
++	 * TX queues are logically organized in a circular array.
++	 * We go through such an array until we find a non-empty queue.
++	 * We start from where we left since last function invocation.
++	 * If all queues are empty we return NULL.
++	 */
++	for (i = 0; i < ARRAY_SIZE(link->tx_queues); i++) {
++		queue = &link->tx_queues[link->tx_qidx];
++		link->tx_qidx++;
++		if (link->tx_qidx == ARRAY_SIZE(link->tx_queues))
++			link->tx_qidx = 0;
++
++		spin_lock(&queue->lock);
++		tx_data = list_first_entry_or_null(&queue->tx_data_list,
++						   struct tx_data, list);
++		/* If no data in the queue, process the next queue. */
++		if (!tx_data) {
++			spin_unlock(&queue->lock);
++			continue;
++		}
++		/* Otherwise remove rx_data from queue and return. */
++		list_del(&tx_data->list);
++		spin_unlock(&queue->lock);
++
++		return tx_data;
++	}
++
++	return NULL;
++}
++
++/**
++ * tx_data_enqueue() - Enqueue TX data for transfer into the specified link.
++ * @link:	The link the data is enqueued to.
++ * @tx_data:	The TX data to enqueue.
++ */
++static void tx_data_enqueue(struct ipc_link *link, struct tx_data *tx_data)
++{
++	struct tx_queue *queue;
++	int qid;
++
++	/*
++	 * Find the right queue where to put TX data:
++	 * - Each high-speed channel has a dedicated queue, whose index is the
++	 *   same as the channel id (e.g., Channel 1 uses tx_queues[1]).
++	 * - All the general-purpose channels use the same TX queue, which is
++	 *   the last element in the tx_queues array.
++	 *
++	 * Note: tx_queues[] has KMB_IPC_NUM_HS_CHANNELS+1 elements)
++	 */
++	qid = tx_data->chan_id < ARRAY_SIZE(link->tx_queues) ?
++	      tx_data->chan_id : (ARRAY_SIZE(link->tx_queues) - 1);
++
++	queue = &link->tx_queues[qid];
++
++	/*
++	 * Lock shared between user contexts (callers of ipc_send()) and tx
++	 * thread; so spin_lock() is enough.
++	 */
++	spin_lock(&queue->lock);
++	list_add_tail(&tx_data->list, &queue->tx_data_list);
++	spin_unlock(&queue->lock);
++}
++
++/**
++ * tx_data_remove() - Remove TX data element from specified link.
++ * @link:	The link the data is currently enqueued to.
++ * @tx_data:	The TX data element to be removed.
++ *
++ * This function is called by the main send function, when the send is
++ * interrupted or has timed out.
++ */
++static void tx_data_remove(struct ipc_link *link, struct tx_data *tx_data)
++{
++	struct tx_queue *queue;
++	int qid;
++
++	/*
++	 * Find the TX queue where TX data is currently located:
++	 * - Each high-speed channel has a dedicated queue, whose index is the
++	 *   same as the channel id (e.g., Channel 1 uses tx_queues[1]).
++	 * - All the general-purpose channels use the same TX queue, which is
++	 *   the last element in the tx_queues array.
++	 *
++	 * Note: tx_queues[] has KMB_IPC_NUM_HS_CHANNELS+1 elements)
++	 */
++	qid = tx_data->chan_id < ARRAY_SIZE(link->tx_queues) ?
++	      tx_data->chan_id : (ARRAY_SIZE(link->tx_queues) - 1);
++
++	queue = &link->tx_queues[qid];
++
++	/*
++	 * Lock shared between user contexts (callers of ipc_send()) and tx
++	 * thread; so spin_lock() is enough.
++	 */
++	spin_lock(&queue->lock);
++	list_del(&tx_data->list);
++	spin_unlock(&queue->lock);
++}
++
++/**
++ * tx_thread_fn() - The function run by the TX thread.
++ * @ptr: A pointer to the keembay_ipc_dev struct associated with the thread.
++ *
++ * This thread continuously dequeues and send TX data elements. The TX
++ * semaphore is used to pause the loop when all the pending TX data elements
++ * have been transmitted (the send function 'ups' the semaphore every time a
++ * new TX data element is enqueued).
++ */
++static int tx_thread_fn(void *ptr)
++{
++	struct keembay_ipc_dev *ipc_dev = ptr;
++	struct ipc_link *link = &ipc_dev->vpu_link;
++	struct tx_data *tx_data;
++	int rc;
++
++	while (1) {
++		rc = wait_for_completion_interruptible(&link->tx_queued);
++		if (rc || link->tx_stopping)
++			break;
++		tx_data = tx_data_dequeue(link);
++		/*
++		 * We can get a null tx_data if tx_data_remove() has been
++		 * called. Just ignore it and continue.
++		 */
++		if (!tx_data)
++			continue;
++		tx_data_send(ipc_dev, tx_data);
++	}
++
++	/* Wait until kthread_stop() is called. */
++	set_current_state(TASK_INTERRUPTIBLE);
++	while (!kthread_should_stop()) {
++		schedule();
++		set_current_state(TASK_INTERRUPTIBLE);
++	}
++	__set_current_state(TASK_RUNNING);
++
++	return rc;
++}
++
++/* Internal send. */
++static int __ipc_send(struct keembay_ipc_dev *ipc_dev, u8 dst_node,
++		      u16 chan_id, u32 vpu_addr, size_t size)
++{
++	struct ipc_link *link = &ipc_dev->vpu_link;
++	struct tx_data *tx_data;
++	int rc;
++
++	/* Allocate and init TX data. */
++	tx_data = kmalloc(sizeof(*tx_data), GFP_KERNEL);
++	if (!tx_data)
++		return -ENOMEM;
++	tx_data->dst_node = dst_node;
++	tx_data->chan_id = chan_id;
++	tx_data->vpu_addr = vpu_addr;
++	tx_data->size = size;
++	tx_data->retv = 1;
++	INIT_LIST_HEAD(&tx_data->list);
++	init_completion(&tx_data->tx_done);
++
++	/* Add tx_data to tx queues. */
++	tx_data_enqueue(link, tx_data);
++
++	/* Signal that we have a new pending TX. */
++	complete(&link->tx_queued);
++
++	/* Wait until data is transmitted. */
++	rc = wait_for_completion_interruptible(&tx_data->tx_done);
++	if (unlikely(rc)) {
++		tx_data_remove(link, tx_data);
++		goto exit;
++	}
++	rc = tx_data->retv;
++
++exit:
++	kfree(tx_data);
++	return rc;
++}
++
++/*
++ * Driver allocation.
 + */
 +
-+#ifndef _LINUX_INTEL_TSENS_HOST_DEVICE_H
-+#define _LINUX_INTEL_TSENS_HOST_DEVICE_H
-+
-+struct intel_tsens_host_trip_info {
-+	enum thermal_trip_type trip_type;
-+	int temp;
-+} __packed __aligned(4);
-+
-+struct intel_tsens_host {
-+	const char *sensor_name_smbus;
-+	const char *sensor_name_xlk;
-+	struct intel_tsens_data *t_data;
-+	struct intel_tsens_host_trip_info **trip_info;
-+	u32 device_id;
-+	struct i2c_client *i2c_xlk;
-+	struct i2c_client *i2c_smbus;
-+	struct thermal_zone_device *tz_xlk;
-+	struct thermal_zone_device *tz_smbus;
++/* Device tree driver match. */
++static const struct of_device_id kmb_ipc_of_match[] = {
++	{
++		.compatible = "intel,keembay-ipc",
++	},
++	{}
 +};
 +
-+struct intel_tsens_host_plat_data {
-+	int nsens;
-+	struct intel_tsens_host **tsens;
++/* The IPC driver is a platform device. */
++static struct platform_driver kmb_ipc_driver = {
++	.probe  = kmb_ipc_probe,
++	.remove = kmb_ipc_remove,
++	.driver = {
++		.name = DRV_NAME,
++		.of_match_table = kmb_ipc_of_match,
++	},
 +};
-+#endif /*_LINUX_INTEL_TSENS_HOST_DEVICE_H*/
++
++module_platform_driver(kmb_ipc_driver);
++
++/*
++ * Perform basic validity check on common API arguments.
++ *
++ * Verify that the specified device is a Keem Bay IPC device and that node ID
++ * and the channel ID are within the allowed ranges.
++ */
++static int validate_api_args(struct device *dev, u8 node_id, u16 chan_id)
++{
++	if (!dev || dev->driver != &kmb_ipc_driver.driver)
++		return -EINVAL;
++	if (node_id != KMB_IPC_NODE_LEON_MSS) {
++		dev_warn(dev, "Invalid Link ID\n");
++		return -EINVAL;
++	}
++	if (chan_id >= KMB_IPC_MAX_CHANNELS) {
++		dev_warn(dev, "Invalid Channel ID\n");
++		return -EINVAL;
++	}
++	return 0;
++}
++
++/*
++ * IPC Kernel API.
++ */
++
++/**
++ * intel_keembay_ipc_open_channel() - Open an IPC channel.
++ * @dev:	The IPC device to use.
++ * @node_id:	The node ID of the remote node (used to identify the link the
++ *		channel must be added to). KMB_IPC_NODE_LEON_MSS is the only
++ *		allowed value for now.
++ * @chan_id:	The ID of the channel to be opened.
++ *
++ * Return:	0 on success, negative error code otherwise.
++ */
++int intel_keembay_ipc_open_channel(struct device *dev, u8 node_id, u16 chan_id)
++{
++	struct ipc_chan *chan, *cur_chan;
++	struct keembay_ipc_dev *ipc_dev;
++	struct ipc_link *link;
++	int rc;
++
++	rc = validate_api_args(dev, node_id, chan_id);
++	if (rc)
++		return rc;
++
++	ipc_dev = dev_get_drvdata(dev);
++	link = &ipc_dev->vpu_link;
++
++	/* Create channel before getting lock. */
++	chan = kzalloc(sizeof(*chan), GFP_KERNEL);
++	if (!chan)
++		return -ENOMEM;
++
++	INIT_LIST_HEAD(&chan->rx_data_list);
++	spin_lock_init(&chan->rx_lock);
++	init_waitqueue_head(&chan->rx_wait_queue);
++
++	/* Add channel to the channel array (if not already present). */
++	spin_lock(&link->chan_lock);
++	cur_chan = rcu_dereference_protected(link->channels[chan_id],
++					     lockdep_is_held(&link->chan_lock));
++	if (cur_chan) {
++		spin_unlock(&link->chan_lock);
++		kfree(chan);
++		return -EEXIST;
++	}
++	rcu_assign_pointer(link->channels[chan_id], chan);
++	spin_unlock(&link->chan_lock);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(intel_keembay_ipc_open_channel);
++
++/**
++ * intel_keembay_ipc_close_channel() - Close an IPC channel.
++ * @dev:	The IPC device to use.
++ * @node_id:	The node ID of the remote node (used to identify the link the
++ *		channel must be added to). KMB_IPC_NODE_LEON_MSS is the only
++ *		allowed value for now.
++ * @chan_id:	The ID of the channel to be closed.
++ *
++ * Return:	0 on success, negative error code otherwise.
++ */
++int intel_keembay_ipc_close_channel(struct device *dev, u8 node_id, u16 chan_id)
++{
++	struct keembay_ipc_dev *ipc_dev;
++	struct ipc_link *link;
++	int rc;
++
++	rc = validate_api_args(dev, node_id, chan_id);
++	if (rc)
++		return rc;
++
++	ipc_dev = dev_get_drvdata(dev);
++	link = &ipc_dev->vpu_link;
++
++	rc = channel_close(link, chan_id);
++	if (!rc)
++		dev_info(dev, "Channel was already closed\n");
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(intel_keembay_ipc_close_channel);
++
++/**
++ * intel_keembay_ipc_send() - Send data via IPC.
++ * @dev:	The IPC device to use.
++ * @node_id:	The node ID of the remote node (used to identify the link the
++ *		channel must be added to). KMB_IPC_NODE_LEON_MSS is the only
++ *		allowed value for now.
++ * @chan_id:	The IPC channel to be used to send the message.
++ * @vpu_addr:	The VPU address of the data to be transferred.
++ * @size:	The size of the data to be transferred.
++ *
++ * Return:	0 on success, negative error code otherwise.
++ */
++int intel_keembay_ipc_send(struct device *dev, u8 node_id, u16 chan_id,
++			   u32 vpu_addr, size_t size)
++{
++	struct keembay_ipc_dev *ipc_dev;
++	struct ipc_link *link;
++	struct ipc_chan *chan;
++	int idx, rc;
++
++	rc = validate_api_args(dev, node_id, chan_id);
++	if (rc)
++		return rc;
++
++	ipc_dev = dev_get_drvdata(dev);
++	link = &ipc_dev->vpu_link;
++	/*
++	 * Start Sleepable RCU critical section (this prevents close() from
++	 * destroying the channels struct while we are sending data)
++	 */
++	idx = srcu_read_lock(&link->srcu_sp[chan_id]);
++
++	/* Get channel. */
++	chan = srcu_dereference(link->channels[chan_id],
++				&link->srcu_sp[chan_id]);
++	if (unlikely(!chan)) {
++		/* The channel is closed. */
++		rc = -ENOENT;
++		goto exit;
++	}
++
++	rc = __ipc_send(ipc_dev, node_id, chan_id, vpu_addr, size);
++
++exit:
++	/* End sleepable RCU critical section. */
++	srcu_read_unlock(&link->srcu_sp[chan_id], idx);
++	return rc;
++}
++EXPORT_SYMBOL_GPL(intel_keembay_ipc_send);
++
++/**
++ * intel_keembay_ipc_recv() - Read data via IPC
++ * @dev:	The IPC device to use.
++ * @node_id:	The node ID of the remote node (used to identify the link the
++ *		channel must be added to). KMB_IPC_NODE_LEON_MSS is the only
++ *		allowed value for now.
++ * @chan_id:	The IPC channel to read from.
++ * @vpu_addr:	[out] The VPU address of the received data.
++ * @size:	[out] Where to store the size of the received data.
++ * @timeout:	How long (in ms) the function will block waiting for an IPC
++ *		message; if UINT32_MAX it will block indefinitely; if 0 it
++ *		will not block.
++ *
++ * Return:	0 on success, negative error code otherwise
++ */
++int intel_keembay_ipc_recv(struct device *dev, u8 node_id, u16 chan_id,
++			   u32 *vpu_addr, size_t *size, u32 timeout)
++{
++	struct keembay_ipc_dev *ipc_dev;
++	struct rx_data *rx_entry;
++	struct ipc_link *link;
++	struct ipc_chan *chan;
++	int idx, rc;
++
++	rc = validate_api_args(dev, node_id, chan_id);
++	if (rc)
++		return rc;
++
++	if (!vpu_addr || !size)
++		return -EINVAL;
++
++	ipc_dev = dev_get_drvdata(dev);
++	link = &ipc_dev->vpu_link;
++
++	/*
++	 * Start Sleepable RCU critical section (this prevents close() from
++	 * destroying the channels struct while we are using it)
++	 */
++	idx = srcu_read_lock(&link->srcu_sp[chan_id]);
++
++	/* Get channel. */
++	chan = srcu_dereference(link->channels[chan_id],
++				&link->srcu_sp[chan_id]);
++	if (unlikely(!chan)) {
++		rc = -ENOENT;
++		goto err;
++	}
++	/*
++	 * Get the lock protecting rx_data_list; the lock will be released by
++	 * wait_event_*_lock_irq() before going to sleep and automatically
++	 * reacquired after wake up.
++	 *
++	 * NOTE: lock_irq() is needed because rx_lock is also used by the RX
++	 * tasklet; also lock_bh() is not used because there is no
++	 * wait_event_interruptible_lock_bh().
++	 */
++	spin_lock_irq(&chan->rx_lock);
++	/*
++	 * Wait for RX data.
++	 *
++	 * Note: wait_event_interruptible_lock_irq_timeout() has different
++	 * return values than wait_event_interruptible_lock_irq().
++	 *
++	 * The following if/then branch ensures that return values are
++	 * consistent for the both cases, that is:
++	 * - rc == 0 only if the wait was successfully (i.e., we were notified
++	 *   of a message or of a channel closure)
++	 * - rc < 0 if an error occurred (we got interrupted or the timeout
++	 *   expired).
++	 */
++	if (timeout == U32_MAX) {
++		rc = wait_event_interruptible_lock_irq(chan->rx_wait_queue,
++						       !list_empty(&chan->rx_data_list) ||
++						       chan->closing,
++						       chan->rx_lock);
++	} else {
++		rc = wait_event_interruptible_lock_irq_timeout(chan->rx_wait_queue,
++							       !list_empty(&chan->rx_data_list) ||
++							       chan->closing,
++							       chan->rx_lock,
++							       msecs_to_jiffies(timeout));
++		if (!rc)
++			rc = -ETIME;
++		if (rc > 0)
++			rc = 0;
++	}
++
++	/* Check if the channel was closed while waiting. */
++	if (chan->closing)
++		rc = -EPIPE;
++	if (rc) {
++		spin_unlock_irq(&chan->rx_lock);
++		goto err;
++	}
++
++	/* Extract RX entry. */
++	rx_entry = list_first_entry(&chan->rx_data_list, struct rx_data, list);
++	list_del(&rx_entry->list);
++	spin_unlock_irq(&chan->rx_lock);
++
++	/* Set output parameters. */
++	*vpu_addr =  rx_entry->data_vpu_addr;
++	*size = rx_entry->data_size;
++
++	/* Free RX entry. */
++	kfree(rx_entry);
++
++err:
++	/* End sleepable RCU critical section. */
++	srcu_read_unlock(&link->srcu_sp[chan_id], idx);
++	return rc;
++}
++EXPORT_SYMBOL_GPL(intel_keembay_ipc_recv);
++
++MODULE_DESCRIPTION("Keem Bay IPC Driver");
++MODULE_AUTHOR("Daniele Alessandrelli <daniele.alessandrelli@intel.com>");
++MODULE_AUTHOR("Paul Murphy <paul.j.murphy@intel.com>");
++MODULE_LICENSE("GPL");
+diff --git a/include/linux/soc/intel/keembay-ipc.h b/include/linux/soc/intel/keembay-ipc.h
+new file mode 100644
+index 000000000000..ac7748d1595f
+--- /dev/null
++++ b/include/linux/soc/intel/keembay-ipc.h
+@@ -0,0 +1,30 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Keem Bay IPC Linux Kernel API
++ *
++ * Copyright (C) 2018-2020 Intel Corporation
++ */
++
++#ifndef __KEEMBAY_IPC_H
++#define __KEEMBAY_IPC_H
++
++#include <linux/types.h>
++
++/* The possible node IDs. */
++enum {
++	KMB_IPC_NODE_CPU = 0,
++	KMB_IPC_NODE_LEON_MSS,
++};
++
++int intel_keembay_ipc_open_channel(struct device *dev, u8 node_id, u16 chan_id);
++
++int intel_keembay_ipc_close_channel(struct device *dev, u8 node_id,
++				    u16 chan_id);
++
++int intel_keembay_ipc_send(struct device *dev, u8 node_id, u16 chan_id,
++			   u32 vpu_addr, size_t size);
++
++int intel_keembay_ipc_recv(struct device *dev, u8 node_id, u16 chan_id,
++			   u32 *vpu_addr, size_t *size, u32 timeout);
++
++#endif /* __KEEMBAY_IPC_H */
 -- 
 2.17.1
 
