@@ -2,101 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12B13309891
+	by mail.lfdr.de (Postfix) with ESMTP id 844BF309892
 	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 23:12:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231970AbhA3WIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 17:08:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230168AbhA3WIN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 17:08:13 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E75C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 14:07:33 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id s15so7824230plr.9
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 14:07:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=/P/b4VQw8CInKf0Exrq1ninzQwAk3br3MdPWZqjCM5w=;
-        b=RnuxL8ThemW1uGFiJS+C2acS9C2US8HUzkp5RgN0kj9o1dwU0VOBcuKG6XOtZssWLQ
-         I3RQ7n3hildS5pk9uJaw188Ax4uVQNBeA8cN7tDqnZUpSmxvM7CwSBF4gHnCXdSvKOFc
-         t+KTIlRo1kTmTIWzbXPph6cQVhQTNtyVtbLmvVi9QVIzzDG+RfDVpGRLjnxerJIByljY
-         GUSp20jDiFJNRUVhpibuvr1hc8VY97QRsVChOp0WFifjy4m1Y5gfDsGkVGM3g/ezfmM3
-         dSgBjkLJdPbem0ZO+HR1WpA8thVwubtjK0L0ppbyzgLhkYbF5WYkycJ4pj+4oWIJO4F5
-         et3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=/P/b4VQw8CInKf0Exrq1ninzQwAk3br3MdPWZqjCM5w=;
-        b=eR3dIIaZcCT09O2adYLCnwb44AQ1p7ocM+iVTXPfF3PzuFruUv8QXkGrhth8/G17Xn
-         lzJxBdxZ//LjznYuxGcCJv+SlJvP9VNIh8JujHDmNYxTFpfQV4X0f/hoVMtcjkgnLXe+
-         Pqj1D0z06qfXOdPcYCPRrt9pBVgtF86k1BigVkbuvO8HGCdL6Bc2vtNErmUHMbKr8wMk
-         aEUxwY9AVZTu/yClP+CJN+wQP0BBEqXDfJcJOJL5mGjNpUFDVzQTOP0SP8NFv9B2HWmT
-         B/pWqln5y4wRlll41MB4XdwcwK8fhBmH04q4XXdN3pgnxy31Uff10nvOVBbf96N87x7i
-         p+lA==
-X-Gm-Message-State: AOAM532irNGzTtgwPUT5PTY13fL3AAWHZQu2ysaIs9PoW1YmX+7K5+Ds
-        STrqGyHdLyRdE9uxRhFMGN5iUtcm2JsASg==
-X-Google-Smtp-Source: ABdhPJzF4+1uWzCoKE7IesB3JWQ/9H0IiQv7PngPRUVmqwH3eeUfxC9UjmOq+5lDB4sP8lod17N5aA==
-X-Received: by 2002:a17:90a:9905:: with SMTP id b5mr10339808pjp.195.1612044452393;
-        Sat, 30 Jan 2021 14:07:32 -0800 (PST)
-Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id b14sm12004292pju.14.2021.01.30.14.07.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Jan 2021 14:07:31 -0800 (PST)
-Date:   Sat, 30 Jan 2021 14:07:30 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-cc:     akpm@linux-foundation.org, mike.kravetz@oracle.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] hugetlbfs: show pagesize in unit of GB if possible
-In-Reply-To: <20210130090339.4378-1-linmiaohe@huawei.com>
-Message-ID: <f5ac7d57-6653-aae-f119-b87d72acf192@google.com>
-References: <20210130090339.4378-1-linmiaohe@huawei.com>
+        id S232120AbhA3WKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 17:10:32 -0500
+Received: from mga17.intel.com ([192.55.52.151]:63303 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230168AbhA3WKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 17:10:32 -0500
+IronPort-SDR: SJCTL/zsMjJvB0pBN1lW3OhCTvnSNQi/BaG+r3GHOkrW0X644HJEQiV+F4AVQLaFUDEjt8lUiP
+ DbLaf/c2VK2A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9880"; a="160324738"
+X-IronPort-AV: E=Sophos;i="5.79,389,1602572400"; 
+   d="scan'208";a="160324738"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2021 14:09:51 -0800
+IronPort-SDR: x9npy6tW89Nbhbtp4lJwOL/sjk94kiwuNXIg96ayqExhxVU9GRjYE9g2RWCzhNlglvJRuJarGM
+ fwvD14vLRBtw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,389,1602572400"; 
+   d="scan'208";a="476920972"
+Received: from lkp-server02.sh.intel.com (HELO 625d3a354f04) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 30 Jan 2021 14:09:50 -0800
+Received: from kbuild by 625d3a354f04 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1l5yRB-00054I-NN; Sat, 30 Jan 2021 22:09:49 +0000
+Date:   Sun, 31 Jan 2021 06:08:51 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ a7e0bdf1b07ea6169930ec42b0bdb17e1c1e3bb0
+Message-ID: <6015d8f3.xnblDS1XqLIcyefv%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 30 Jan 2021, Miaohe Lin wrote:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: a7e0bdf1b07ea6169930ec42b0bdb17e1c1e3bb0  Merge branch 'irq/urgent'
 
-> Hugepage size in unit of GB is supported. We could show pagesize in unit of
-> GB to make it more friendly to read. Also rework the calculation code of
-> page size unit to make it more readable.
-> 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> ---
->  fs/hugetlbfs/inode.c | 12 ++++++++----
->  1 file changed, 8 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-> index 3a08fbae3b53..40a9795f250a 100644
-> --- a/fs/hugetlbfs/inode.c
-> +++ b/fs/hugetlbfs/inode.c
-> @@ -1014,11 +1014,15 @@ static int hugetlbfs_show_options(struct seq_file *m, struct dentry *root)
->  	if (sbinfo->max_inodes != -1)
->  		seq_printf(m, ",nr_inodes=%lu", sbinfo->max_inodes);
->  
-> -	hpage_size /= 1024;
-> -	mod = 'K';
-> -	if (hpage_size >= 1024) {
-> -		hpage_size /= 1024;
-> +	if (hpage_size >= SZ_1G) {
-> +		hpage_size /= SZ_1G;
-> +		mod = 'G';
-> +	} else if (hpage_size >= SZ_1M) {
-> +		hpage_size /= SZ_1M;
->  		mod = 'M';
-> +	} else {
-> +		hpage_size /= SZ_1K;
-> +		mod = 'K';
->  	}
->  	seq_printf(m, ",pagesize=%lu%c", hpage_size, mod);
->  	if (spool) {
+elapsed time: 720m
 
-NACK, this can break existing userspace parsing.
+configs tested: 82
+configs skipped: 2
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                 mpc836x_rdk_defconfig
+mips                           ip28_defconfig
+powerpc                    ge_imp3a_defconfig
+powerpc                    amigaone_defconfig
+mips                          rb532_defconfig
+arm                              alldefconfig
+arm                             pxa_defconfig
+arm                       omap2plus_defconfig
+powerpc                 xes_mpc85xx_defconfig
+arm                         lubbock_defconfig
+microblaze                          defconfig
+xtensa                  cadence_csp_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+powerpc                     tqm8548_defconfig
+sh                           sh2007_defconfig
+xtensa                         virt_defconfig
+mips                      pic32mzda_defconfig
+powerpc                     asp8347_defconfig
+sh                   sh7770_generic_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a005-20210130
+i386                 randconfig-a003-20210130
+i386                 randconfig-a002-20210130
+i386                 randconfig-a001-20210130
+i386                 randconfig-a004-20210130
+i386                 randconfig-a006-20210130
+x86_64               randconfig-a004-20210130
+x86_64               randconfig-a002-20210130
+x86_64               randconfig-a001-20210130
+x86_64               randconfig-a005-20210130
+x86_64               randconfig-a006-20210130
+x86_64               randconfig-a003-20210130
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
