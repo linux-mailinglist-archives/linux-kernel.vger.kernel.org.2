@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA4A130918B
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 03:48:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 237C23091AA
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 04:25:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232626AbhA3Crd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 21:47:33 -0500
-Received: from mga12.intel.com ([192.55.52.136]:11872 "EHLO mga12.intel.com"
+        id S233272AbhA3DXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 22:23:19 -0500
+Received: from mga12.intel.com ([192.55.52.136]:25810 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233238AbhA3CYI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 21:24:08 -0500
-IronPort-SDR: 3BbvdEbGfW3Z6EZcgkHcCEJ4wmp+I7VdBDy/6vwED2exzklim0/TFd7QyCe3tbUwNZKq2qOtIl
- t3pe8usGz0sg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="159675221"
+        id S233350AbhA3DIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 22:08:00 -0500
+IronPort-SDR: cePdNwlE97xSn1SDvkJE33sfnU3PcG0b4S/iqe6wuZeqUDRRt63tVDl6a5mV2rL5E7uJLpxX7L
+ 7SVixQdORV0g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="159675231"
 X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="159675221"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
+   d="scan'208";a="159675231"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
   by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:28 -0800
-IronPort-SDR: X1+J4qJcFBYh1eIlKyFIN6Ekq9HDpramnWyXN+w707HhomnoepLysGS/tt5k3goFzfSmQKauvU
- 5d/tm9KPauNQ==
+IronPort-SDR: FWNDSDSeGclDPCV3t6dWzB1xLoSk63WXd4TE3ztbBOdn1IvPzFK/82Ttr8oevRUYOffg6IN/yv
+ J3J8Hprbynzw==
 X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="431263304"
+   d="scan'208";a="389569442"
 Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:27 -0800
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:28 -0800
 Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id ACEE56368;
-        Fri, 29 Jan 2021 18:21:27 -0800 (PST)
+        by smtp.ostc.intel.com (Postfix) with ESMTP id 1C2FC636E;
+        Fri, 29 Jan 2021 18:21:28 -0800 (PST)
 Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
-        id 94D2F36092D; Fri, 29 Jan 2021 18:21:27 -0800 (PST)
+        id 10084362F0A; Fri, 29 Jan 2021 18:21:28 -0800 (PST)
 From:   mgross@linux.intel.com
 To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
@@ -36,346 +36,726 @@ To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         palmerdabbelt@google.com, paul.walmsley@sifive.com,
         peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
         jassisinghbrar@gmail.com
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH v3 01/34] Add Vision Processing Unit (VPU) documentation.
-Date:   Fri, 29 Jan 2021 18:20:16 -0800
-Message-Id: <20210130022124.65083-2-mgross@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Srikanth Thokala <srikanth.thokala@intel.com>
+Subject: [PATCH v3 10/34] misc: xlink-pcie: lh: Add PCIe EP DMA functionality
+Date:   Fri, 29 Jan 2021 18:20:25 -0800
+Message-Id: <20210130022124.65083-11-mgross@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210130022124.65083-1-mgross@linux.intel.com>
 References: <20210130022124.65083-1-mgross@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: mark gross <mgross@linux.intel.com>
+From: Srikanth Thokala <srikanth.thokala@intel.com>
 
-The Intel VPU needs a complicated SW stack to make it work.  Add a
-directory to hold VPU related documentation including an architectural
-overview of the SW stack that the patches implement.
+Add Synopsys PCIe DWC core embedded-DMA functionality for local host
 
-Cc: Jonathan Corbet <corbet@lwn.net>
-Signed-off-by: Mark Gross <mgross@linux.intel.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Mark Gross <mgross@linux.intel.com>
+Signed-off-by: Srikanth Thokala <srikanth.thokala@intel.com>
 ---
- Documentation/index.rst                  |   1 +
- Documentation/vpu/index.rst              |  16 ++
- Documentation/vpu/vpu-stack-overview.rst | 270 +++++++++++++++++++++++
- 3 files changed, 287 insertions(+)
- create mode 100644 Documentation/vpu/index.rst
- create mode 100644 Documentation/vpu/vpu-stack-overview.rst
+ drivers/misc/xlink-pcie/local_host/Makefile |   1 +
+ drivers/misc/xlink-pcie/local_host/dma.c    | 575 ++++++++++++++++++++
+ drivers/misc/xlink-pcie/local_host/epf.c    |  15 +-
+ drivers/misc/xlink-pcie/local_host/epf.h    |  41 ++
+ 4 files changed, 629 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/misc/xlink-pcie/local_host/dma.c
 
-diff --git a/Documentation/index.rst b/Documentation/index.rst
-index 5888e8a7272f..81a02f2af939 100644
---- a/Documentation/index.rst
-+++ b/Documentation/index.rst
-@@ -137,6 +137,7 @@ needed).
-    misc-devices/index
-    scheduler/index
-    mhi/index
-+   vpu/index
+diff --git a/drivers/misc/xlink-pcie/local_host/Makefile b/drivers/misc/xlink-pcie/local_host/Makefile
+index 514d3f0c91bc..54fc118e2dd1 100644
+--- a/drivers/misc/xlink-pcie/local_host/Makefile
++++ b/drivers/misc/xlink-pcie/local_host/Makefile
+@@ -1,2 +1,3 @@
+ obj-$(CONFIG_XLINK_PCIE_LH_DRIVER) += mxlk_ep.o
+ mxlk_ep-objs := epf.o
++mxlk_ep-objs += dma.o
+diff --git a/drivers/misc/xlink-pcie/local_host/dma.c b/drivers/misc/xlink-pcie/local_host/dma.c
+new file mode 100644
+index 000000000000..42978fb0db49
+--- /dev/null
++++ b/drivers/misc/xlink-pcie/local_host/dma.c
+@@ -0,0 +1,575 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Intel Keem Bay XLink PCIe Driver
++ *
++ * Copyright (C) 2021 Intel Corporation
++ */
++#include <linux/delay.h>
++#include <linux/interrupt.h>
++#include <linux/wait.h>
++
++#include "epf.h"
++
++#define DMA_DBI_OFFSET			(0x380000)
++
++/* PCIe DMA control 1 register definitions. */
++#define DMA_CH_CONTROL1_CB_SHIFT	(0)
++#define DMA_CH_CONTROL1_TCB_SHIFT	(1)
++#define DMA_CH_CONTROL1_LLP_SHIFT	(2)
++#define DMA_CH_CONTROL1_LIE_SHIFT	(3)
++#define DMA_CH_CONTROL1_CS_SHIFT	(5)
++#define DMA_CH_CONTROL1_CCS_SHIFT	(8)
++#define DMA_CH_CONTROL1_LLE_SHIFT	(9)
++#define DMA_CH_CONTROL1_CB_MASK		(BIT(DMA_CH_CONTROL1_CB_SHIFT))
++#define DMA_CH_CONTROL1_TCB_MASK	(BIT(DMA_CH_CONTROL1_TCB_SHIFT))
++#define DMA_CH_CONTROL1_LLP_MASK	(BIT(DMA_CH_CONTROL1_LLP_SHIFT))
++#define DMA_CH_CONTROL1_LIE_MASK	(BIT(DMA_CH_CONTROL1_LIE_SHIFT))
++#define DMA_CH_CONTROL1_CS_MASK		(0x3 << DMA_CH_CONTROL1_CS_SHIFT)
++#define DMA_CH_CONTROL1_CCS_MASK	(BIT(DMA_CH_CONTROL1_CCS_SHIFT))
++#define DMA_CH_CONTROL1_LLE_MASK	(BIT(DMA_CH_CONTROL1_LLE_SHIFT))
++
++/* DMA control 1 register Channel Status */
++#define DMA_CH_CONTROL1_CS_RUNNING	(0x1 << DMA_CH_CONTROL1_CS_SHIFT)
++#define DMA_CH_CONTROL1_CS_HALTED	(0x2 << DMA_CH_CONTROL1_CS_SHIFT)
++#define DMA_CH_CONTROL1_CS_STOPPED	(0x3 << DMA_CH_CONTROL1_CS_SHIFT)
++
++/* PCIe DMA Engine enable register definitions. */
++#define DMA_ENGINE_EN_SHIFT		(0)
++#define DMA_ENGINE_EN_MASK		(BIT(DMA_ENGINE_EN_SHIFT))
++
++/* PCIe DMA interrupt registers definitions. */
++#define DMA_ABORT_INTERRUPT_SHIFT	(16)
++#define DMA_ABORT_INTERRUPT_MASK	(0xFF << DMA_ABORT_INTERRUPT_SHIFT)
++#define DMA_ABORT_INTERRUPT_CH_MASK(_c) (BIT(_c) << DMA_ABORT_INTERRUPT_SHIFT)
++#define DMA_DONE_INTERRUPT_MASK		(0xFF)
++#define DMA_DONE_INTERRUPT_CH_MASK(_c)	(BIT(_c))
++#define DMA_ALL_INTERRUPT_MASK \
++	(DMA_ABORT_INTERRUPT_MASK | DMA_DONE_INTERRUPT_MASK)
++
++#define DMA_LL_ERROR_SHIFT		(16)
++#define DMA_CPL_ABORT_SHIFT		(8)
++#define DMA_CPL_TIMEOUT_SHIFT		(16)
++#define DMA_DATA_POI_SHIFT		(24)
++#define DMA_AR_ERROR_CH_MASK(_c)	(BIT(_c))
++#define DMA_LL_ERROR_CH_MASK(_c)	(BIT(_c) << DMA_LL_ERROR_SHIFT)
++#define DMA_UNREQ_ERROR_CH_MASK(_c)	(BIT(_c))
++#define DMA_CPL_ABORT_ERROR_CH_MASK(_c)	(BIT(_c) << DMA_CPL_ABORT_SHIFT)
++#define DMA_CPL_TIMEOUT_ERROR_CH_MASK(_c) (BIT(_c) << DMA_CPL_TIMEOUT_SHIFT)
++#define DMA_DATA_POI_ERROR_CH_MASK(_c)	(BIT(_c) << DMA_DATA_POI_SHIFT)
++
++#define DMA_LLLAIE_SHIFT		(16)
++#define DMA_LLLAIE_MASK			(0xF << DMA_LLLAIE_SHIFT)
++
++#define DMA_CHAN_WRITE_MAX_WEIGHT	(0x7)
++#define DMA_CHAN_READ_MAX_WEIGHT	(0x3)
++#define DMA_CHAN0_WEIGHT_OFFSET		(0)
++#define DMA_CHAN1_WEIGHT_OFFSET		(5)
++#define DMA_CHAN2_WEIGHT_OFFSET		(10)
++#define DMA_CHAN3_WEIGHT_OFFSET		(15)
++#define DMA_CHAN_WRITE_ALL_MAX_WEIGHT					\
++	((DMA_CHAN_WRITE_MAX_WEIGHT << DMA_CHAN0_WEIGHT_OFFSET) |	\
++	 (DMA_CHAN_WRITE_MAX_WEIGHT << DMA_CHAN1_WEIGHT_OFFSET) |	\
++	 (DMA_CHAN_WRITE_MAX_WEIGHT << DMA_CHAN2_WEIGHT_OFFSET) |	\
++	 (DMA_CHAN_WRITE_MAX_WEIGHT << DMA_CHAN3_WEIGHT_OFFSET))
++#define DMA_CHAN_READ_ALL_MAX_WEIGHT					\
++	((DMA_CHAN_READ_MAX_WEIGHT << DMA_CHAN0_WEIGHT_OFFSET) |	\
++	 (DMA_CHAN_READ_MAX_WEIGHT << DMA_CHAN1_WEIGHT_OFFSET) |	\
++	 (DMA_CHAN_READ_MAX_WEIGHT << DMA_CHAN2_WEIGHT_OFFSET) |	\
++	 (DMA_CHAN_READ_MAX_WEIGHT << DMA_CHAN3_WEIGHT_OFFSET))
++
++#define PCIE_REGS_PCIE_APP_CNTRL	0x8
++#define APP_XFER_PENDING		BIT(6)
++#define PCIE_REGS_PCIE_SII_PM_STATE_1	0xb4
++#define PM_LINKST_IN_L1			BIT(10)
++
++#define DMA_POLLING_TIMEOUT		1000000
++#define DMA_ENABLE_TIMEOUT		1000
++#define DMA_PCIE_PM_L1_TIMEOUT		20
++
++struct __packed pcie_dma_reg {
++	u32 dma_ctrl_data_arb_prior;
++	u32 reserved1;
++	u32 dma_ctrl;
++	u32 dma_write_engine_en;
++	u32 dma_write_doorbell;
++	u32 reserved2;
++	u32 dma_write_channel_arb_weight_low;
++	u32 dma_write_channel_arb_weight_high;
++	u32 reserved3[3];
++	u32 dma_read_engine_en;
++	u32 dma_read_doorbell;
++	u32 reserved4;
++	u32 dma_read_channel_arb_weight_low;
++	u32 dma_read_channel_arb_weight_high;
++	u32 reserved5[3];
++	u32 dma_write_int_status;
++	u32 reserved6;
++	u32 dma_write_int_mask;
++	u32 dma_write_int_clear;
++	u32 dma_write_err_status;
++	u32 dma_write_done_imwr_low;
++	u32 dma_write_done_imwr_high;
++	u32 dma_write_abort_imwr_low;
++	u32 dma_write_abort_imwr_high;
++	u16 dma_write_ch_imwr_data[8];
++	u32 reserved7[4];
++	u32 dma_write_linked_list_err_en;
++	u32 reserved8[3];
++	u32 dma_read_int_status;
++	u32 reserved9;
++	u32 dma_read_int_mask;
++	u32 dma_read_int_clear;
++	u32 reserved10;
++	u32 dma_read_err_status_low;
++	u32 dma_rd_err_sts_h;
++	u32 reserved11[2];
++	u32 dma_read_linked_list_err_en;
++	u32 reserved12;
++	u32 dma_read_done_imwr_low;
++	u32 dma_read_done_imwr_high;
++	u32 dma_read_abort_imwr_low;
++	u32 dma_read_abort_imwr_high;
++	u16 dma_read_ch_imwr_data[8];
++};
++
++struct __packed pcie_dma_chan {
++	u32 dma_ch_control1;
++	u32 reserved1;
++	u32 dma_transfer_size;
++	u32 dma_sar_low;
++	u32 dma_sar_high;
++	u32 dma_dar_low;
++	u32 dma_dar_high;
++	u32 dma_llp_low;
++	u32 dma_llp_high;
++};
++
++enum xpcie_ep_engine_type {
++	WRITE_ENGINE,
++	READ_ENGINE
++};
++
++static u32 dma_chan_offset[2][DMA_CHAN_NUM] = {
++	{ 0x200, 0x400, 0x600, 0x800 },
++	{ 0x300, 0x500, 0x700, 0x900 }
++};
++
++static void __iomem *intel_xpcie_ep_get_dma_base(struct pci_epf *epf)
++{
++	struct device *dev = &epf->dev;
++	struct xpcie_epf *xpcie_epf = (struct xpcie_epf *)dev->driver_data;
++
++	return xpcie_epf->dbi_base + DMA_DBI_OFFSET;
++}
++
++static int intel_xpcie_ep_dma_disable(void __iomem *dma_base,
++				      enum xpcie_ep_engine_type rw)
++{
++	struct __iomem pcie_dma_reg * dma_reg =
++				(struct __iomem pcie_dma_reg *)dma_base;
++	void __iomem *int_mask, *int_clear;
++	void __iomem *engine_en, *ll_err;
++	int i;
++
++	if (rw == WRITE_ENGINE) {
++		engine_en = (void __iomem *)&dma_reg->dma_write_engine_en;
++		int_mask = (void __iomem *)&dma_reg->dma_write_int_mask;
++		int_clear = (void __iomem *)&dma_reg->dma_write_int_clear;
++		ll_err = (void __iomem *)&dma_reg->dma_write_linked_list_err_en;
++	} else {
++		engine_en = (void __iomem *)&dma_reg->dma_read_engine_en;
++		int_mask = (void __iomem *)&dma_reg->dma_read_int_mask;
++		int_clear = (void __iomem *)&dma_reg->dma_read_int_clear;
++		ll_err = (void __iomem *)&dma_reg->dma_read_linked_list_err_en;
++	}
++
++	iowrite32(0x0, engine_en);
++
++	/* Mask all interrupts. */
++	iowrite32(DMA_ALL_INTERRUPT_MASK, int_mask);
++
++	/* Clear all interrupts. */
++	iowrite32(DMA_ALL_INTERRUPT_MASK, int_clear);
++
++	/* Disable LL abort interrupt (LLLAIE). */
++	iowrite32(0, ll_err);
++
++	/* Wait until the engine is disabled. */
++	for (i = 0; i < DMA_ENABLE_TIMEOUT; i++) {
++		if (!(ioread32(engine_en) & DMA_ENGINE_EN_MASK))
++			return 0;
++		msleep(20);
++	}
++
++	return -EBUSY;
++}
++
++static void intel_xpcie_ep_dma_enable(void __iomem *dma_base,
++				      enum xpcie_ep_engine_type rw)
++{
++	struct __iomem pcie_dma_reg * dma_reg =
++				(struct __iomem pcie_dma_reg *)(dma_base);
++	void __iomem *engine_en, *ll_err, *arb_weight;
++	struct __iomem pcie_dma_chan * dma_chan;
++	void __iomem *int_mask, *int_clear;
++	u32 offset, weight;
++	int i;
++
++	if (rw == WRITE_ENGINE) {
++		engine_en = (void __iomem *)&dma_reg->dma_write_engine_en;
++		int_mask = (void __iomem *)&dma_reg->dma_write_int_mask;
++		int_clear = (void __iomem *)&dma_reg->dma_write_int_clear;
++		ll_err = (void __iomem *)&dma_reg->dma_write_linked_list_err_en;
++		arb_weight = (void __iomem *)
++			     &dma_reg->dma_write_channel_arb_weight_low;
++		weight = DMA_CHAN_WRITE_ALL_MAX_WEIGHT;
++	} else {
++		engine_en = (void __iomem *)&dma_reg->dma_read_engine_en;
++		int_mask = (void __iomem *)&dma_reg->dma_read_int_mask;
++		int_clear = (void __iomem *)&dma_reg->dma_read_int_clear;
++		ll_err = (void __iomem *)&dma_reg->dma_read_linked_list_err_en;
++		arb_weight = (void __iomem *)
++			     &dma_reg->dma_read_channel_arb_weight_low;
++		weight = DMA_CHAN_READ_ALL_MAX_WEIGHT;
++	}
++
++	iowrite32(DMA_ENGINE_EN_MASK, engine_en);
++
++	/* Unmask all interrupts, so that the interrupt line gets asserted. */
++	iowrite32(~(u32)DMA_ALL_INTERRUPT_MASK, int_mask);
++
++	/* Clear all interrupts. */
++	iowrite32(DMA_ALL_INTERRUPT_MASK, int_clear);
++
++	/* Set channel round robin weight. */
++	iowrite32(weight, arb_weight);
++
++	/* Enable LL abort interrupt (LLLAIE). */
++	iowrite32(DMA_LLLAIE_MASK, ll_err);
++
++	/* Enable linked list mode. */
++	for (i = 0; i < DMA_CHAN_NUM; i++) {
++		offset = dma_chan_offset[rw][i];
++		dma_chan = (struct __iomem pcie_dma_chan *)(dma_base + offset);
++		iowrite32(DMA_CH_CONTROL1_LLE_MASK,
++			  (void __iomem *)&dma_chan->dma_ch_control1);
++	}
++}
++
++/*
++ * Make sure EP is not in L1 state when DMA doorbell.
++ * The DMA controller may start the wrong channel if doorbell occurs at the
++ * same time as controller is transitioning to L1.
++ */
++static int intel_xpcie_ep_dma_doorbell(struct xpcie_epf *xpcie_epf, int chan,
++				       void __iomem *doorbell)
++{
++	int i = DMA_PCIE_PM_L1_TIMEOUT, rc = 0;
++	u32 val, pm_val;
++
++	val = ioread32(xpcie_epf->apb_base + PCIE_REGS_PCIE_APP_CNTRL);
++	iowrite32(val | APP_XFER_PENDING,
++		  xpcie_epf->apb_base + PCIE_REGS_PCIE_APP_CNTRL);
++	pm_val = ioread32(xpcie_epf->apb_base + PCIE_REGS_PCIE_SII_PM_STATE_1);
++	while (pm_val & PM_LINKST_IN_L1) {
++		if (i-- < 0) {
++			rc = -ETIME;
++			break;
++		}
++		udelay(5);
++		pm_val = ioread32(xpcie_epf->apb_base +
++				  PCIE_REGS_PCIE_SII_PM_STATE_1);
++	}
++
++	iowrite32((u32)chan, doorbell);
++
++	iowrite32(val & ~APP_XFER_PENDING,
++		  xpcie_epf->apb_base + PCIE_REGS_PCIE_APP_CNTRL);
++
++	return rc;
++}
++
++static int intel_xpcie_ep_dma_err_status(void __iomem *err_status, int chan)
++{
++	if (ioread32(err_status) &
++	    (DMA_AR_ERROR_CH_MASK(chan) | DMA_LL_ERROR_CH_MASK(chan)))
++		return -EIO;
++
++	return 0;
++}
++
++static int intel_xpcie_ep_dma_rd_err_sts_h(void __iomem *err_status,
++					   int chan)
++{
++	if (ioread32(err_status) &
++	    (DMA_UNREQ_ERROR_CH_MASK(chan) |
++	     DMA_CPL_ABORT_ERROR_CH_MASK(chan) |
++	     DMA_CPL_TIMEOUT_ERROR_CH_MASK(chan) |
++	     DMA_DATA_POI_ERROR_CH_MASK(chan)))
++		return -EIO;
++
++	return 0;
++}
++
++static void
++intel_xpcie_ep_dma_setup_ll_descs(struct __iomem pcie_dma_chan * dma_chan,
++				  struct xpcie_dma_ll_desc_buf *desc_buf,
++				  int descs_num)
++{
++	struct xpcie_dma_ll_desc *descs = desc_buf->virt;
++	int i;
++
++	/* Setup linked list descriptors */
++	for (i = 0; i < descs_num - 1; i++)
++		descs[i].dma_ch_control1 = DMA_CH_CONTROL1_CB_MASK;
++	descs[descs_num - 1].dma_ch_control1 = DMA_CH_CONTROL1_LIE_MASK |
++						DMA_CH_CONTROL1_CB_MASK;
++	descs[descs_num].dma_ch_control1 = DMA_CH_CONTROL1_LLP_MASK |
++					   DMA_CH_CONTROL1_TCB_MASK;
++	descs[descs_num].src_addr = (phys_addr_t)desc_buf->phys;
++
++	/* Setup linked list settings */
++	iowrite32(DMA_CH_CONTROL1_LLE_MASK | DMA_CH_CONTROL1_CCS_MASK,
++		  (void __iomem *)&dma_chan->dma_ch_control1);
++	iowrite32((u32)desc_buf->phys, (void __iomem *)&dma_chan->dma_llp_low);
++	iowrite32((u64)desc_buf->phys >> 32,
++		  (void __iomem *)&dma_chan->dma_llp_high);
++}
++
++int intel_xpcie_ep_dma_write_ll(struct pci_epf *epf, int chan, int descs_num)
++{
++	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
++	void __iomem *dma_base = xpcie_epf->dma_base;
++	struct __iomem pcie_dma_chan * dma_chan;
++	struct xpcie_dma_ll_desc_buf *desc_buf;
++	struct __iomem pcie_dma_reg * dma_reg =
++				(struct __iomem pcie_dma_reg *)(dma_base);
++	int i, rc;
++
++	if (descs_num <= 0 || descs_num > XPCIE_NUM_TX_DESCS)
++		return -EINVAL;
++
++	if (chan < 0 || chan >= DMA_CHAN_NUM)
++		return -EINVAL;
++
++	dma_chan = (struct __iomem pcie_dma_chan *)
++		(dma_base + dma_chan_offset[WRITE_ENGINE][chan]);
++
++	desc_buf = &xpcie_epf->tx_desc_buf[chan];
++
++	intel_xpcie_ep_dma_setup_ll_descs(dma_chan, desc_buf, descs_num);
++
++	/* Start DMA transfer. */
++	rc = intel_xpcie_ep_dma_doorbell(xpcie_epf, chan,
++					 (void __iomem *)
++					 &dma_reg->dma_write_doorbell);
++	if (rc)
++		return rc;
++
++	/* Wait for DMA transfer to complete. */
++	for (i = 0; i < DMA_POLLING_TIMEOUT; i++) {
++		usleep_range(5, 10);
++		if (ioread32((void __iomem *)&dma_reg->dma_write_int_status) &
++		    (DMA_DONE_INTERRUPT_CH_MASK(chan) |
++		     DMA_ABORT_INTERRUPT_CH_MASK(chan)))
++			break;
++	}
++	if (i == DMA_POLLING_TIMEOUT) {
++		dev_err(&xpcie_epf->epf->dev, "DMA Wr timeout\n");
++		rc = -ETIME;
++		goto cleanup;
++	}
++
++	rc = intel_xpcie_ep_dma_err_status((void __iomem *)
++					   &dma_reg->dma_write_err_status,
++					   chan);
++
++cleanup:
++	/* Clear the done/abort interrupt. */
++	iowrite32((DMA_DONE_INTERRUPT_CH_MASK(chan) |
++		   DMA_ABORT_INTERRUPT_CH_MASK(chan)),
++		  (void __iomem *)&dma_reg->dma_write_int_clear);
++
++	if (rc) {
++		if (intel_xpcie_ep_dma_disable(dma_base, WRITE_ENGINE)) {
++			dev_err(&xpcie_epf->epf->dev,
++				"failed to disable WR DMA\n");
++			return rc;
++		}
++		intel_xpcie_ep_dma_enable(dma_base, WRITE_ENGINE);
++	}
++
++	return rc;
++}
++
++int intel_xpcie_ep_dma_read_ll(struct pci_epf *epf, int chan, int descs_num)
++{
++	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
++	void __iomem *dma_base = xpcie_epf->dma_base;
++	struct xpcie_dma_ll_desc_buf *desc_buf;
++	struct __iomem pcie_dma_reg * dma_reg =
++				(struct __iomem pcie_dma_reg *)(dma_base);
++	struct __iomem pcie_dma_chan * dma_chan;
++	int i, rc;
++
++	if (descs_num <= 0 || descs_num > XPCIE_NUM_RX_DESCS)
++		return -EINVAL;
++
++	if (chan < 0 || chan >= DMA_CHAN_NUM)
++		return -EINVAL;
++
++	dma_chan = (struct __iomem pcie_dma_chan *)
++		(dma_base + dma_chan_offset[READ_ENGINE][chan]);
++
++	desc_buf = &xpcie_epf->rx_desc_buf[chan];
++
++	intel_xpcie_ep_dma_setup_ll_descs(dma_chan, desc_buf, descs_num);
++
++	/* Start DMA transfer. */
++	rc = intel_xpcie_ep_dma_doorbell(xpcie_epf, chan,
++					 (void __iomem *)
++					 &dma_reg->dma_read_doorbell);
++	if (rc)
++		return rc;
++
++	/* Wait for DMA transfer to complete. */
++	for (i = 0; i < DMA_POLLING_TIMEOUT; i++) {
++		usleep_range(5, 10);
++		if (ioread32((void __iomem *)&dma_reg->dma_read_int_status) &
++		    (DMA_DONE_INTERRUPT_CH_MASK(chan) |
++		     DMA_ABORT_INTERRUPT_CH_MASK(chan)))
++			break;
++	}
++	if (i == DMA_POLLING_TIMEOUT) {
++		dev_err(&xpcie_epf->epf->dev, "DMA Rd timeout\n");
++		rc = -ETIME;
++		goto cleanup;
++	}
++
++	rc = intel_xpcie_ep_dma_err_status((void __iomem *)
++					   &dma_reg->dma_read_err_status_low,
++					   chan);
++	if (!rc) {
++		rc =
++		intel_xpcie_ep_dma_rd_err_sts_h((void __iomem *)
++						&dma_reg->dma_rd_err_sts_h,
++						chan);
++	}
++cleanup:
++	/* Clear the done/abort interrupt. */
++	iowrite32((DMA_DONE_INTERRUPT_CH_MASK(chan) |
++		   DMA_ABORT_INTERRUPT_CH_MASK(chan)),
++		  (void __iomem *)&dma_reg->dma_read_int_clear);
++
++	if (rc) {
++		if (intel_xpcie_ep_dma_disable(dma_base, READ_ENGINE)) {
++			dev_err(&xpcie_epf->epf->dev,
++				"failed to disable RD DMA\n");
++			return rc;
++		}
++		intel_xpcie_ep_dma_enable(dma_base, READ_ENGINE);
++	}
++
++	return rc;
++}
++
++static void intel_xpcie_ep_dma_free_ll_descs_mem(struct xpcie_epf *xpcie_epf)
++{
++	struct device *dma_dev = xpcie_epf->epf->epc->dev.parent;
++	int i;
++
++	for (i = 0; i < DMA_CHAN_NUM; i++) {
++		if (xpcie_epf->tx_desc_buf[i].virt) {
++			dma_free_coherent(dma_dev,
++					  xpcie_epf->tx_desc_buf[i].size,
++					  xpcie_epf->tx_desc_buf[i].virt,
++					  xpcie_epf->tx_desc_buf[i].phys);
++		}
++		if (xpcie_epf->rx_desc_buf[i].virt) {
++			dma_free_coherent(dma_dev,
++					  xpcie_epf->rx_desc_buf[i].size,
++					  xpcie_epf->rx_desc_buf[i].virt,
++					  xpcie_epf->rx_desc_buf[i].phys);
++		}
++
++		memset(&xpcie_epf->tx_desc_buf[i], 0,
++		       sizeof(struct xpcie_dma_ll_desc_buf));
++		memset(&xpcie_epf->rx_desc_buf[i], 0,
++		       sizeof(struct xpcie_dma_ll_desc_buf));
++	}
++}
++
++static int intel_xpcie_ep_dma_alloc_ll_descs_mem(struct xpcie_epf *xpcie_epf)
++{
++	struct device *dma_dev = xpcie_epf->epf->epc->dev.parent;
++	int tx_num = XPCIE_NUM_TX_DESCS + 1;
++	int rx_num = XPCIE_NUM_RX_DESCS + 1;
++	size_t tx_size, rx_size;
++	int i;
++
++	tx_size = tx_num * sizeof(struct xpcie_dma_ll_desc);
++	rx_size = rx_num * sizeof(struct xpcie_dma_ll_desc);
++
++	for (i = 0; i < DMA_CHAN_NUM; i++) {
++		xpcie_epf->tx_desc_buf[i].virt =
++			dma_alloc_coherent(dma_dev, tx_size,
++					   &xpcie_epf->tx_desc_buf[i].phys,
++					   GFP_KERNEL);
++		xpcie_epf->rx_desc_buf[i].virt =
++			dma_alloc_coherent(dma_dev, rx_size,
++					   &xpcie_epf->rx_desc_buf[i].phys,
++					   GFP_KERNEL);
++
++		if (!xpcie_epf->tx_desc_buf[i].virt ||
++		    !xpcie_epf->rx_desc_buf[i].virt) {
++			intel_xpcie_ep_dma_free_ll_descs_mem(xpcie_epf);
++			return -ENOMEM;
++		}
++
++		xpcie_epf->tx_desc_buf[i].size = tx_size;
++		xpcie_epf->rx_desc_buf[i].size = rx_size;
++	}
++	return 0;
++}
++
++int intel_xpcie_ep_dma_reset(struct pci_epf *epf)
++{
++	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
++
++	/* Disable the DMA read/write engine. */
++	if (intel_xpcie_ep_dma_disable(xpcie_epf->dma_base, WRITE_ENGINE) ||
++	    intel_xpcie_ep_dma_disable(xpcie_epf->dma_base, READ_ENGINE))
++		return -EBUSY;
++
++	intel_xpcie_ep_dma_enable(xpcie_epf->dma_base, WRITE_ENGINE);
++	intel_xpcie_ep_dma_enable(xpcie_epf->dma_base, READ_ENGINE);
++
++	return 0;
++}
++
++int intel_xpcie_ep_dma_uninit(struct pci_epf *epf)
++{
++	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
++
++	if (intel_xpcie_ep_dma_disable(xpcie_epf->dma_base, WRITE_ENGINE) ||
++	    intel_xpcie_ep_dma_disable(xpcie_epf->dma_base, READ_ENGINE))
++		return -EBUSY;
++
++	intel_xpcie_ep_dma_free_ll_descs_mem(xpcie_epf);
++
++	return 0;
++}
++
++int intel_xpcie_ep_dma_init(struct pci_epf *epf)
++{
++	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
++	int rc;
++
++	xpcie_epf->dma_base = intel_xpcie_ep_get_dma_base(epf);
++
++	rc = intel_xpcie_ep_dma_alloc_ll_descs_mem(xpcie_epf);
++	if (rc)
++		return rc;
++
++	return intel_xpcie_ep_dma_reset(epf);
++}
+diff --git a/drivers/misc/xlink-pcie/local_host/epf.c b/drivers/misc/xlink-pcie/local_host/epf.c
+index 0234756e89ae..7019aecd6a81 100644
+--- a/drivers/misc/xlink-pcie/local_host/epf.c
++++ b/drivers/misc/xlink-pcie/local_host/epf.c
+@@ -43,6 +43,8 @@ static irqreturn_t intel_xpcie_err_interrupt(int irq, void *args)
  
- Architecture-agnostic documentation
- -----------------------------------
-diff --git a/Documentation/vpu/index.rst b/Documentation/vpu/index.rst
-new file mode 100644
-index 000000000000..7e290e048910
---- /dev/null
-+++ b/Documentation/vpu/index.rst
-@@ -0,0 +1,16 @@
-+.. SPDX-License-Identifier: GPL-2.0-only
-+
-+============================================
-+Vision Processor Unit Documentation
-+============================================
-+
-+This documentation contains information for the Intel VPU stack.
-+
-+.. class:: toc-title
-+
-+	   Table of contents
-+
-+.. toctree::
-+   :maxdepth: 2
-+
-+   vpu-stack-overview
-diff --git a/Documentation/vpu/vpu-stack-overview.rst b/Documentation/vpu/vpu-stack-overview.rst
-new file mode 100644
-index 000000000000..1fe9ce423177
---- /dev/null
-+++ b/Documentation/vpu/vpu-stack-overview.rst
-@@ -0,0 +1,270 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+======================
-+Intel VPU architecture
-+======================
-+
-+Overview
-+========
-+
-+The Intel Movidius acquisition has developed a Vision Processing Unit (VPU)
-+roadmap of products starting with Keem Bay (KMB). The hardware configurations
-+the VPU can support include:
-+
-+1. Standalone smart camera that does local Computer Vision (CV) processing in
-+   camera
-+2. Standalone appliance or signel board computer connected to a network and
-+   tethered cameras doing local CV processing
-+3. Embedded in a USB dongle or M.2 as an CV accelerator.
-+4. Multiple VPU enabled SOC's on a PCIe card as a CV accelerator in a larger IA
-+   box or server.
-+
-+Keem Bay is the first instance of this family of products. This document
-+provides an architectural overview of the software stack supporting the VPU
-+enabled products.
-+
-+Keem Bay (KMB) is a Computer Vision AI processing SoC based on ARM A53 CPU that
-+provides Edge neural network acceleration (inference) and includes a Vision
-+Processing Unit (VPU) hardware. The ARM CPU SubSystem (CPUSS) interfaces
-+locally to the VPU and enables integration/interfacing with a remote host over
-+PCIe or USB or Ethernet interfaces. The interface between the CPUSS and the VPU
-+is implemented with hardware FIFOs (Control) and coherent memory mapping (Data)
-+such that zero copy processing can happen within the VPU.
-+
-+The KMB can be used in all 4 of the above classes of designs.
-+
-+We refer to the 'local host' as being the ARM part of the SoC, while the
-+'remote host' as the IA system hosting the KMB device(s). The KMB SoC boots
-+from an eMMC via uBoot and ARM Linux compatible device tree interface with an
-+expectation to fully boot within hundreds of milliseconds. There is also
-+support for downloading the kernel and root file system image from a remote
-+host.
-+
-+The eMMC can be updated with standard Mender update process.
-+See https://github.com/mendersoftware/mender
-+
-+The VPU is started and controlled from the A53 local host. Its firmware image
-+is loaded using the drive firware helper KAPI's.
-+
-+The VPU IP firware payload consists of a SPARC ISA RTEMS bootloader and/or
-+application binary.
-+
-+The interface allowing (remote or local) host clients to access VPU IP
-+capabilities is realized through an abstracted programming model, which
-+provides Remote Proxy APIs for a host CPU application to dynamically create and
-+execute CV and NN workloads on the VPU. All frameworks exposed through
-+programming model’s APIs are contained in the pre-compiled standard firmware
-+image.
-+
-+There is a significant software stack built up to support KMB and the use
-+cases. The rest of this documentation provides an overview of the components
-+of the stack.
-+
-+Keem Bay IPC
-+============
-+
-+Directly interfaces with the KMB hardware FIFOs to provide zero copy processing
-+from the VPU. It implements the lowest level protocol for interacting with the
-+VPU.
-+
-+The Keem Bay IPC mechanism is based on shared memory and hardware FIFOs.
-+Specifically there are:
-+
-+* Two 128-entry hardware FIFOs, one for the CPU and one for the VPU.
-+* Two shared memory regions, used as memory pool for allocating IPC buffers.
-+
-+An IPC channel is a software abstraction allowing communication multiplexing,
-+so that multiple applications / users can concurrently communicate with the
-+VPU.  IPC channels area conceptually similar to socket ports.
-+
-+There are a total of 1024 channels, each one identified by a channel ID,
-+ranging from 0 to 1023.
-+
-+Channels are divided in two categories:
-+
-+* High-Speed (HS) channels, having IDs in the 0-9 range.
-+* General-Purpose (GP) channels, having IDs in the 10-1023 range.
-+
-+HS channels have higher priority over GP channels and can be used by
-+applications requiring higher throughput or lower latency.
-+
-+Since all the channels share the same hardare resources (i.e., the hardware
-+FIFOs and the IPC memory pools), the Keem Bay IPC driver uses software queues
-+to give a higher priority to HS channels.
-+
-+The driver supports a build-time configurable number of communication channels
-+defined in a so-called Channel Mapping Table.
-+
-+An IPC channel is full duplex: a pending operation from a certain channel does
-+not block other operations on the same channel, regardless of their operation
-+mode (blocking or non-blocking).
-+
-+Operation mode is individually selectable for each channel, per operation
-+direction (read or write). All operations for that direction comply to
-+selection.
-+
-+
-+Keem Bay-VPU-IPC
-+================
-+
-+This is the MMIO driver of the VPU IP block inside the SOC. It is a control
-+driver mapping IPC channel communication to Xlink virtual channels.
-+
-+This driver provides the following functionality to other drivers in the
-+communication stack:
-+
-+* VPU IP execution control (firmware load, start, reset)
-+* VPU IP event notifications (device connected, device disconnected, WDT event)
-+* VPU IP device status query (OFF, BUSY, READY, ERROR, RECOVERY)
-+* Communication via the IPC protocol (wrapping the Keem Bay IPC driver and
-+  exposing it to higher level Xlink layer)
-+
-+In addition to the above, the driver exposes SoC information (like stepping,
-+device ID, etc.) to user-space via sysfs.
-+
-+This driver depends on the 'Keem Bay IPC' driver, which enables the Keem Bay
-+IPC communication protocol.
-+
-+The driver uses the Firmware API to load the VPU firmware from user-space.
-+
-+Xlink-IPC
-+=========
-+This component implements the IPC specific Xlink protocol. It maps channel
-+IDs to hardware FIFO entries, using the Keem Bay VPU IPC driver.
-+
-+Some of the main functions this driver provides:
-+
-+* establishing a connection with an IPC device
-+* obtaining a list with the available devices
-+* obtaining the status for a device
-+* booting a device
-+* resetting a device
-+* opening and closing channels
-+* issuing read and write operations
-+
-+Xlink-core
-+==========
-+
-+This component implements an abstracted set of control and communication APIs
-+based on channel identification. It is intended to support VPU technology both
-+at SoC level as well as at IP level, over multiple interfaces.
-+
-+It provides symmetrical services, where the producer and the consumer have
-+the same privileges.
-+
-+Xlink driver has the ability to abstract several types of communication
-+channels underneath, allowing the usage of different interfaces with the same
-+function calls.
-+
-+Xlink services are available to both kernel and user space clients and include:
-+
-+* interface abstract control and communication API
-+* multi device support
-+* concurrent communication across 4096 communication channels (from 0 to
-+  0xFFF), with customizable properties
-+* full duplex channels with multiprocess and multithread support
-+* channel IDs can be mapped to desired physical interface (PCIe, USB, ETH, IPC)
-+  via a Channel Mapping Table
-+* asynchronous fast passthrough mode: remote host data packets are directly
-+  dispatched using interrupt systems running on local host to IPC calls for low
-+  overhead
-+* channel handshaking mechanism for peer to peer communication, without the
-+  need of static channel preallocation
-+* channel resource management
-+* asynchronous data and device notifications to subscribers
-+
-+Xlink transports: PCIe, USB, ETH, IPC, XLink-PCIe
-+
-+XLink-PCIe
-+==========
-+This is an endpoint driver that maps Xlink channel IDs to PCIe channels.
-+
-+This component ensures (remote)host-to-(local)host communication, and VPU IP
-+communication via an asynchronous passthrough mode, where PCIe data loads are
-+directly dispatched to Xlink-IPC.
-+
-+The component builds and advertises Device IDs that are used by local host
-+application in case of multi device scenarios.
-+
-+XLink-USB
-+==========
-+This is an endpoint driver that maps Xlink channel IDs to bidirectional
-+USB endpoints and supports CDC USB class protocol. More than one Xlink channels
-+can be mapped to a single USB endpoint.
-+
-+This component ensures host-to-host communication, and, as well, asynchronous
-+passthrough communication, where USB transfer packets are directly dispatched
-+to Xlink-IPC.
-+
-+The component builds and advertises Device IDs that can are used by local host
-+application in case of multi device scenarios.
-+
-+XLink-ETH
-+=========
-+
-+This is an endpoint driver that maps Xlink channel IDs to Ethernet
-+sockets.
-+
-+This component ensures host-to-host communication, and, as well, asynchronous
-+passthrough communication, where Ethernet data loads are directly dispatched to
-+Xlink-IPC.
-+
-+The component builds and advertises Device IDs that can are used by local host
-+application in case of multi device scenarios.
-+
-+Assorted drivers that depend on this stack:
-+
-+Xlink-SMB
-+=========
-+The Intel Edge.AI Computer Vision platforms have to be monitored using platform
-+devices like sensors, fan controller, IO expander etc. Some of these devices
-+are memory mapped and some are I2C-based. None of these devices is directly
-+accessible to the host.
-+
-+The host here refers to the server to which the vision accelerators are
-+connected over PCIe Interface. The Host needs to do a consolidated action based
-+on the parameters of platform devices. In general, most of the standard devices
-+(includes sensors, fan controller, IO expander etc) are I2C/SMBus based and are
-+used to provide the status of the accelerator. Standard drivers for these
-+devices are available based on I2C/SMBus APIs.
-+
-+Instead of changing the sensor drivers to adapt to PCIe interface, a generic
-+I2C adapter "Xlink-SMBus" which underneath uses Xlink as physical medium is
-+used. With Xlink-SMBus, the drivers for the platform devices don't need to
-+undergo any interface change.
-+
-+TSEN
-+====
-+
-+Thermal sensor driver for exporting thermal events to the local Arm64 host as
-+well as to the remote X86 host if in the PCIe add-in CV accelerator
-+configuration.
-+
-+The driver receives the junction temperature from different heating points
-+inside the SOC. The driver will receive the temperature on SMBus connection and
-+forward over Xlink-smb when in a remote host configuration.
-+
-+In Keem Bay, the four thermal junction temperature points are Media Subsystem
-+(mss), Neral Network subsystem (nce), Compute subsystem (cse) and SOC(maximum
-+of mss, nce and cse).
-+
-+HDDL
-+====
-+
-+- Exports details of temperature sensor, current sensor and fan controller
-+  present in Intel Edge.AI Computer Vision platforms to IA host.
-+- Enable Time sync of Intel Edge.AI Computer Vision platform with IA host.
-+- Handles device connect and disconnect events.
-+- Receives slave address from the IA host for memory mapped thermal sensors
-+  present in SoC (Documentation/hwmon/intel_tsens_sensors.rst).
-+- Registers I2C slave device for slaves present in Intel Edge.AI Computer
-+  Vision platform
-+
-+
-+VPUMGR (VPU Manager)
-+====================
-+
-+Bridges firmware on VPU side and applications on CPU user-space, it assists
-+firmware on VPU side serving multiple user space application processes on CPU
-+side concurrently while also performing necessary data buffer management on
-+behalf of VPU IP.
+ 	xpcie_epf = container_of(xpcie, struct xpcie_epf, xpcie);
+ 	val = ioread32(xpcie_epf->apb_base + PCIE_REGS_PCIE_ERR_INTR_FLAGS);
++	if (val & LINK_REQ_RST_FLG)
++		intel_xpcie_ep_dma_reset(xpcie_epf->epf);
+ 
+ 	iowrite32(val, xpcie_epf->apb_base + PCIE_REGS_PCIE_ERR_INTR_FLAGS);
+ 
+@@ -285,8 +287,17 @@ static int intel_xpcie_epf_bind(struct pci_epf *epf)
+ 		goto err_cleanup_bars;
+ 	}
+ 
++	ret = intel_xpcie_ep_dma_init(epf);
++	if (ret) {
++		dev_err(&epf->dev, "DMA initialization failed\n");
++		goto err_free_err_irq;
++	}
++
+ 	return 0;
+ 
++err_free_err_irq:
++	free_irq(xpcie_epf->irq_err, &xpcie_epf->xpcie);
++
+ err_cleanup_bars:
+ 	intel_xpcie_cleanup_bars(epf);
+ 
+@@ -295,11 +306,9 @@ static int intel_xpcie_epf_bind(struct pci_epf *epf)
+ 
+ static void intel_xpcie_epf_unbind(struct pci_epf *epf)
+ {
+-	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
+ 	struct pci_epc *epc = epf->epc;
+ 
+-	free_irq(xpcie_epf->irq, &xpcie_epf->xpcie);
+-	free_irq(xpcie_epf->irq_err, &xpcie_epf->xpcie);
++	intel_xpcie_ep_dma_uninit(epf);
+ 
+ 	pci_epc_stop(epc);
+ 
+diff --git a/drivers/misc/xlink-pcie/local_host/epf.h b/drivers/misc/xlink-pcie/local_host/epf.h
+index a60cd43fe555..82410404d54e 100644
+--- a/drivers/misc/xlink-pcie/local_host/epf.h
++++ b/drivers/misc/xlink-pcie/local_host/epf.h
+@@ -18,6 +18,38 @@
+ 
+ #define KEEMBAY_XPCIE_STEPPING_MAXLEN 8
+ 
++#define DMA_CHAN_NUM		(4)
++
++#define XPCIE_NUM_TX_DESCS	(64)
++#define XPCIE_NUM_RX_DESCS	(64)
++
++extern bool dma_ll_mode;
++
++struct xpcie_dma_ll_desc {
++	u32 dma_ch_control1;
++	u32 dma_transfer_size;
++	union {
++		struct {
++			u32 dma_sar_low;
++			u32 dma_sar_high;
++		};
++		phys_addr_t src_addr;
++	};
++	union {
++		struct {
++			u32 dma_dar_low;
++			u32 dma_dar_high;
++		};
++		phys_addr_t dst_addr;
++	};
++} __packed;
++
++struct xpcie_dma_ll_desc_buf {
++	struct xpcie_dma_ll_desc *virt;
++	dma_addr_t phys;
++	size_t size;
++};
++
+ struct xpcie_epf {
+ 	struct pci_epf *epf;
+ 	void *vaddr[BAR_5 + 1];
+@@ -32,6 +64,15 @@ struct xpcie_epf {
+ 	void __iomem *dma_base;
+ 	void __iomem *dbi_base;
+ 	char stepping[KEEMBAY_XPCIE_STEPPING_MAXLEN];
++
++	struct xpcie_dma_ll_desc_buf	tx_desc_buf[DMA_CHAN_NUM];
++	struct xpcie_dma_ll_desc_buf	rx_desc_buf[DMA_CHAN_NUM];
+ };
+ 
++int intel_xpcie_ep_dma_init(struct pci_epf *epf);
++int intel_xpcie_ep_dma_uninit(struct pci_epf *epf);
++int intel_xpcie_ep_dma_reset(struct pci_epf *epf);
++int intel_xpcie_ep_dma_read_ll(struct pci_epf *epf, int chan, int descs_num);
++int intel_xpcie_ep_dma_write_ll(struct pci_epf *epf, int chan, int descs_num);
++
+ #endif /* XPCIE_EPF_HEADER_ */
 -- 
 2.17.1
 
