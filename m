@@ -2,151 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2B73098CF
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 00:28:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 973AE3098D5
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 00:40:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232294AbhA3X1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 18:27:34 -0500
-Received: from relay.smtp-ext.broadcom.com ([192.19.221.30]:42194 "EHLO
-        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230168AbhA3X1c (ORCPT
+        id S232086AbhA3XkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 18:40:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230168AbhA3XkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 18:27:32 -0500
-Received: from [10.136.13.65] (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTPS id 158A4EB;
-        Sat, 30 Jan 2021 15:26:27 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 158A4EB
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1612049189;
-        bh=jZOTqEpC48fB1VEQWYsLTBGcGIZMEYSHtVoTXvQqjSk=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=FRz7TRRHG+7nqWtXEtxqK5Dlluv0hfEZP4aBxHh/wL/HOhJubtdlRaofD5UgHLRms
-         VeFYoVhfW6tsPUv7WI5ZtU43tQ0DkvcsZkPtqIGKXhd4J+WlNcUXFwKq+8cfUfMGSK
-         NkgH4zgrFMvI1ZKPFfXCNFoGMGs8GrKB9fMQw7EI=
-Subject: Re: [PATCH v2] misc: bcm-vk: only support ttyVK if CONFIG_TTY is set
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
-        linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        Olof Johansson <olof@lixom.net>,
-        Desmond Yan <desmond.yan@broadcom.com>
-References: <20210129220627.22641-1-scott.branden@broadcom.com>
- <YBUe58hiyI81oUOp@kroah.com>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <0c9be399-9565-8596-48c9-439dc094c543@broadcom.com>
-Date:   Sat, 30 Jan 2021 15:26:25 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 30 Jan 2021 18:40:03 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A9DC061573;
+        Sat, 30 Jan 2021 15:39:23 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id q5so12107384ilc.10;
+        Sat, 30 Jan 2021 15:39:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=CA+t1dL75EerdwPHdKGgU/V0NlU+y75OmzU0/LZVlt8=;
+        b=OMQ32M6pyY4263/GzInAl226zRqxnFVU3IMQy9sAvnxQVMkgi41EdNWgI4KPnTRxpp
+         R4ljQG5P61ARZOyEAzr5s1SYV7Ig8vsErZHWlXwW0HGLy+cJXovpVX+ehrk9tnH6J5p5
+         iNBaez/2yxP7b21OhjQMK6iZANh1FNLoG9ruF40KQ/OHOeA93u8YCqSodpyWPILulquQ
+         Nfg0XtYQs+ONI8ky+xKFlNOFAwCyAisqoCS/L0xsrbL7m5ME4Q6XU7aWcbG1hQdyyja2
+         qY8CdyFNVOFNmCQPaDcddeZaFmIMpu94zoUZCjpIS194UmwqOZ4u3r0xhjFA4tEQcdcQ
+         uSKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=CA+t1dL75EerdwPHdKGgU/V0NlU+y75OmzU0/LZVlt8=;
+        b=kyoeh+Ia1YWtiJsW21RBRWIXlPT1eONiri6OmBkniibxNv6sa3vHL3c7umRuYYm8QE
+         LrqUkkiKr3KDuY4N1r6QcZyqSVV8tPnxlHghMuFiEDj9W0BNVYZWqfrQPO0M5aPAGx2B
+         LVvfC/L8iglZTL+uIdhLLwtPZ39Jj1gUZkyRmMD7yqGLYZjwApCMqUfjybfVIXBXmeHi
+         liKmPMwrHmhIv8PETpaXIoipQkXJWdIAxdrrQbfcylyDN98/7fG5aANZcOqKRGb5BMjd
+         notQKV72DOf7H43sEEZwIiNDk86yclYSshmWNf3+1ERc7xoinSNZJOIbBJi9CG4zc2qq
+         xYTg==
+X-Gm-Message-State: AOAM532snHOHf5uVeMZkIUXhX3xa4dfiGv8C/1maf98a8kOWvABycIwe
+        KP/rUtJYqsDU5oTwKM3odtn1d5xktC/uJ7h/0YrdPZErNZr8zw==
+X-Google-Smtp-Source: ABdhPJzPDBNYn+qKMcdj0LMtBkS+DqM6z1zLoRUviMNSTowrAg2jT7H/b00UG4h7XWLPxw+l0JOhG4kSHsXNLCZSu3c=
+X-Received: by 2002:a05:6e02:d0:: with SMTP id r16mr7786122ilq.112.1612049962550;
+ Sat, 30 Jan 2021 15:39:22 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YBUe58hiyI81oUOp@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-CA
+References: <20210130004401.2528717-1-ndesaulniers@google.com>
+ <20210130004401.2528717-3-ndesaulniers@google.com> <CA+icZUW8N8La=HX6PT0_gWzPPxqW8EMooYpc4jJx6g44przOnA@mail.gmail.com>
+In-Reply-To: <CA+icZUW8N8La=HX6PT0_gWzPPxqW8EMooYpc4jJx6g44przOnA@mail.gmail.com>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Sun, 31 Jan 2021 00:39:11 +0100
+Message-ID: <CA+icZUX9pii=vJq-jmp=WyC_b=cAJ+0skSssU0mgm_b-HteRBw@mail.gmail.com>
+Subject: Re: [PATCH v7 2/2] Kbuild: implement support for DWARF v5
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
+        Jakub Jelinek <jakub@redhat.com>,
+        Fangrui Song <maskray@google.com>,
+        Caroline Tice <cmtice@google.com>,
+        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021-01-30 12:55 a.m., Greg Kroah-Hartman wrote:
-> On Fri, Jan 29, 2021 at 02:06:27PM -0800, Scott Branden wrote:
->> Correct compile issue if CONFIG_TTY is not set by
->> only adding ttyVK devices if CONFIG_TTY is set.
->>
->> Reported-by: Randy Dunlap <rdunlap@infradead.org>
->> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
->>
->> ---
->> Changes since v1:
->> Add function stubs rather than compiling out code
->> ---
->>  drivers/misc/bcm-vk/Makefile     |  4 ++--
->>  drivers/misc/bcm-vk/bcm_vk.h     | 35 +++++++++++++++++++++++++++++---
->>  drivers/misc/bcm-vk/bcm_vk_dev.c |  3 +--
->>  drivers/misc/bcm-vk/bcm_vk_tty.c |  6 ++++++
->>  4 files changed, 41 insertions(+), 7 deletions(-)
->>
->> diff --git a/drivers/misc/bcm-vk/Makefile b/drivers/misc/bcm-vk/Makefile
->> index e4a1486f7209..8d81a734fcad 100644
->> --- a/drivers/misc/bcm-vk/Makefile
->> +++ b/drivers/misc/bcm-vk/Makefile
->> @@ -7,6 +7,6 @@ obj-$(CONFIG_BCM_VK) += bcm_vk.o
->>  bcm_vk-objs := \
->>  	bcm_vk_dev.o \
->>  	bcm_vk_msg.o \
->> -	bcm_vk_sg.o \
->> -	bcm_vk_tty.o
->> +	bcm_vk_sg.o
->>  
->> +bcm_vk-$(CONFIG_TTY) += bcm_vk_tty.o
->> diff --git a/drivers/misc/bcm-vk/bcm_vk.h b/drivers/misc/bcm-vk/bcm_vk.h
->> index 3f37c640a814..4a1d515374c7 100644
->> --- a/drivers/misc/bcm-vk/bcm_vk.h
->> +++ b/drivers/misc/bcm-vk/bcm_vk.h
->> @@ -258,7 +258,11 @@ enum pci_barno {
->>  	BAR_2
->>  };
->>  
->> +#ifdef CONFIG_TTY
->>  #define BCM_VK_NUM_TTY 2
->> +#else
->> +#define BCM_VK_NUM_TTY 0
->> +#endif
->>  
->>  struct bcm_vk_tty {
->>  	struct tty_port port;
->> @@ -366,11 +370,15 @@ struct bcm_vk {
->>  	struct miscdevice miscdev;
->>  	int devid; /* dev id allocated */
->>  
->> +#ifdef CONFIG_TTY
->>  	struct tty_driver *tty_drv;
->>  	struct timer_list serial_timer;
->>  	struct bcm_vk_tty tty[BCM_VK_NUM_TTY];
->>  	struct workqueue_struct *tty_wq_thread;
->>  	struct work_struct tty_wq_work;
->> +#else
->> +	struct bcm_vk_tty *tty;
-> Why do you still need this pointer?
-vk->tty is still in one location in bcm_vk_dev.c when installing the IRQ.
-The loop is never executed as VK_MSIX_TTY_MAX = 0 when CONFIG_TTY is not defined.
-
-I'll move setting vk-tty[i].irq_enabled into an inline function in the header file to clean this up.
-
-    for (i = 0;
-         (i < VK_MSIX_TTY_MAX) && (vk->num_irqs < irq);
-         i++, vk->num_irqs++) {
-        err = devm_request_irq(dev, pci_irq_vector(pdev, vk->num_irqs),
-                       bcm_vk_tty_irqhandler,
-                       IRQF_SHARED, DRV_MODULE_NAME, vk);
-        if (err) {
-            dev_err(dev, "failed request tty IRQ %d for MSIX %d\n",
-                pdev->irq + vk->num_irqs, vk->num_irqs + 1);
-            goto err_irq;
-        }
-        vk->tty[i].irq_enabled = true;
-    }
-
-
-> And should you just have a separate config option for your tty driver
-> instead that depends on CONFIG_TTY?  Would you ever want to run this
-> driver without the tty portion?
-Yes, an additional config option could be added.
-Looking at the code, it would simplify (a non-upstreamable) patch that allows the driver to run on
-an ancient kernel where we compile out some features that don't work due to kernel api changes since then.
-
-I hadn't added such a config as some are of the opinion having a full featured driver without config options is better.
-For example, someone builds the driver without the feature enabled,
-then someone needs to use the feature and the driver would need to be rebuilt.
-
-Since it sounds like you are for such CONFIG options I will add it as it simplifies some legacy kernel support used in manufacturing.
-> Oh, and much better than the previous version, thanks for cleaning it
-> up.
-Thanks - your comments do highlight some issues and we are learning from them.
+On Sun, Jan 31, 2021 at 12:10 AM Sedat Dilek <sedat.dilek@gmail.com> wrote:
 >
-> thanks,
+> On Sat, Jan 30, 2021 at 1:44 AM Nick Desaulniers
+> <ndesaulniers@google.com> wrote:
+> >
+> > DWARF v5 is the latest standard of the DWARF debug info format.
+> >
+> > Feature detection of DWARF5 is onerous, especially given that we've
+> > removed $(AS), so we must query $(CC) for DWARF5 assembler directive
+> > support.
+> >
+> > The DWARF version of a binary can be validated with:
+> > $ llvm-dwarfdump vmlinux | head -n 4 | grep version
+> > or
+> > $ readelf --debug-dump=3Dinfo vmlinux 2>/dev/null | grep Version
+> >
+> > DWARF5 wins significantly in terms of size when mixed with compression
+> > (CONFIG_DEBUG_INFO_COMPRESSED).
+> >
+> > 363M    vmlinux.clang12.dwarf5.compressed
+> > 434M    vmlinux.clang12.dwarf4.compressed
+> > 439M    vmlinux.clang12.dwarf2.compressed
+> > 457M    vmlinux.clang12.dwarf5
+> > 536M    vmlinux.clang12.dwarf4
+> > 548M    vmlinux.clang12.dwarf2
+> >
+> > 515M    vmlinux.gcc10.2.dwarf5.compressed
+> > 599M    vmlinux.gcc10.2.dwarf4.compressed
+> > 624M    vmlinux.gcc10.2.dwarf2.compressed
+> > 630M    vmlinux.gcc10.2.dwarf5
+> > 765M    vmlinux.gcc10.2.dwarf4
+> > 809M    vmlinux.gcc10.2.dwarf2
+> >
+> > Though the quality of debug info is harder to quantify; size is not a
+> > proxy for quality.
+> >
+> > Jakub notes:
+> >   All [GCC] 5.1 - 6.x did was start accepting -gdwarf-5 as experimental
+> >   option that enabled some small DWARF subset (initially only a few
+> >   DW_LANG_* codes newly added to DWARF5 drafts).  Only GCC 7 (released
+> >   after DWARF 5 has been finalized) started emitting DWARF5 section
+> >   headers and got most of the DWARF5 changes in...
+> >
+> > Version check GCC so that we don't need to worry about the difference i=
+n
+> > command line args between GNU readelf and llvm-readelf/llvm-dwarfdump t=
+o
+> > validate the DWARF Version in the assembler feature detection script.
+> >
+> > GNU `as` only recently gained support for specifying -gdwarf-5, so when
+> > compiling with Clang but without Clang's integrated assembler
+> > (LLVM_IAS=3D1 is not set), explicitly add -Wa,-gdwarf-5 to DEBUG_CFLAGS=
+.
+> >
+> > Disabled for now if CONFIG_DEBUG_INFO_BTF is set; pahole doesn't yet
+> > recognize the new additions to the DWARF debug info. Thanks to Sedat fo=
+r
+> > the report.
+> >
+> > Link: http://www.dwarfstd.org/doc/DWARF5.pdf
+> > Reported-by: Sedat Dilek <sedat.dilek@gmail.com>
+> > Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
+> > Suggested-by: Caroline Tice <cmtice@google.com>
+> > Suggested-by: Fangrui Song <maskray@google.com>
+> > Suggested-by: Jakub Jelinek <jakub@redhat.com>
+> > Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> > Suggested-by: Nathan Chancellor <natechancellor@gmail.com>
+> > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> > ---
+> >  Makefile                          |  1 +
+> >  include/asm-generic/vmlinux.lds.h |  7 ++++++-
+> >  lib/Kconfig.debug                 | 18 ++++++++++++++++++
+> >  scripts/test_dwarf5_support.sh    |  8 ++++++++
+> >  4 files changed, 33 insertions(+), 1 deletion(-)
+> >  create mode 100755 scripts/test_dwarf5_support.sh
+> >
+> > diff --git a/Makefile b/Makefile
+> > index d2b4980807e0..5387a6f2f62d 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -831,6 +831,7 @@ KBUILD_AFLAGS       +=3D -Wa,-gdwarf-2
+> >  endif
+> >
+> >  dwarf-version-$(CONFIG_DEBUG_INFO_DWARF4) :=3D 4
+> > +dwarf-version-$(CONFIG_DEBUG_INFO_DWARF5) :=3D 5
+> >  DEBUG_CFLAGS   +=3D -gdwarf-$(dwarf-version-y)
+> >
+> >  ifdef CONFIG_DEBUG_INFO_REDUCED
+> > diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vm=
+linux.lds.h
+> > index 34b7e0d2346c..1e7cde4bd3f9 100644
+> > --- a/include/asm-generic/vmlinux.lds.h
+> > +++ b/include/asm-generic/vmlinux.lds.h
+> > @@ -842,8 +842,13 @@
+> >                 /* DWARF 4 */                                          =
+ \
+> >                 .debug_types    0 : { *(.debug_types) }                =
+ \
+> >                 /* DWARF 5 */                                          =
+ \
+> > +               .debug_addr     0 : { *(.debug_addr) }                 =
+ \
+> > +               .debug_line_str 0 : { *(.debug_line_str) }             =
+ \
+> > +               .debug_loclists 0 : { *(.debug_loclists) }             =
+ \
+> >                 .debug_macro    0 : { *(.debug_macro) }                =
+ \
+> > -               .debug_addr     0 : { *(.debug_addr) }
+> > +               .debug_names    0 : { *(.debug_names) }                =
+ \
+> > +               .debug_rnglists 0 : { *(.debug_rnglists) }             =
+ \
+> > +               .debug_str_offsets      0 : { *(.debug_str_offsets) }
+> >
 >
-> greg k-h
+> I just looked at binutils 2.36 in the Debian/experimental repositories.
+>
+> [1] says:
+>
+> + PR ld/27230
+> =EF=BF=BC+ * scripttempl/DWARF.sc: Add DWARF-5 .debug_* sections.
+>
+> ...
+>
+> -  /* DWARF Extension.  */
+> =EF=BF=BC-  .debug_macro    0 : { *(.debug_macro) }
+> +  /* DWARF 5.  */
+>    .debug_addr     0 : { *(.debug_addr) }
+> +  .debug_line_str 0 : { *(.debug_line_str) }
+> +  .debug_loclists 0 : { *(.debug_loclists) }
+> +  .debug_macro    0 : { *(.debug_macro) }
+> +  .debug_names    0 : { *(.debug_names) }
+> +  .debug_rnglists 0 : { *(.debug_rnglists) }
+> +  .debug_str_offsets 0 : { *(.debug_str_offsets) }
+> =EF=BF=BC+  .debug_sup      0 : { *(.debug_sup) }
+>
+> The list of DWARF-5 .debug_* sections is alphabetically sorted.
+> AFAICS .debug_sup section is missing?
+>
 
+Here the link to PR ld/27230 ("[PATCH] Add DWARF v5 sections and v4
+.debug_types").
+
+- Sedat -
+
+[1] https://sourceware.org/pipermail/binutils/2021-January/115064.html
+
+> - Sedat -
+>
+> [1] https://salsa.debian.org/toolchain-team/binutils/-/commit/f58f3308103=
+5672b01a04326a9c8daadbd09a430
+>
+> >  /* Stabs debugging sections. */
+> >  #define STABS_DEBUG                                                   =
+ \
+> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> > index 94c1a7ed6306..ad6f78989d4f 100644
+> > --- a/lib/Kconfig.debug
+> > +++ b/lib/Kconfig.debug
+> > @@ -268,6 +268,24 @@ config DEBUG_INFO_DWARF4
+> >           It makes the debug information larger, but it significantly
+> >           improves the success of resolving variables in gdb on optimiz=
+ed code.
+> >
+> > +config DEBUG_INFO_DWARF5
+> > +       bool "Generate DWARF Version 5 debuginfo"
+> > +       depends on GCC_VERSION >=3D 50000 || CC_IS_CLANG
+> > +       depends on CC_IS_GCC || $(success,$(srctree)/scripts/test_dwarf=
+5_support.sh $(CC) $(CLANG_FLAGS))
+> > +       depends on !DEBUG_INFO_BTF
+> > +       help
+> > +         Generate DWARF v5 debug info. Requires binutils 2.35.2, gcc 5=
+.0+ (gcc
+> > +         5.0+ accepts the -gdwarf-5 flag but only had partial support =
+for some
+> > +         draft features until 7.0), and gdb 8.0+.
+> > +
+> > +         Changes to the structure of debug info in Version 5 allow for=
+ around
+> > +         15-18% savings in resulting image and debug info section size=
+s as
+> > +         compared to DWARF Version 4. DWARF Version 5 standardizes pre=
+vious
+> > +         extensions such as accelerators for symbol indexing and the f=
+ormat
+> > +         for fission (.dwo/.dwp) files. Users may not want to select t=
+his
+> > +         config if they rely on tooling that has not yet been updated =
+to
+> > +         support DWARF Version 5.
+> > +
+> >  endchoice # "DWARF version"
+> >
+> >  config DEBUG_INFO_BTF
+> > diff --git a/scripts/test_dwarf5_support.sh b/scripts/test_dwarf5_suppo=
+rt.sh
+> > new file mode 100755
+> > index 000000000000..c46e2456b47a
+> > --- /dev/null
+> > +++ b/scripts/test_dwarf5_support.sh
+> > @@ -0,0 +1,8 @@
+> > +#!/bin/sh
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +
+> > +# Test that the assembler doesn't need -Wa,-gdwarf-5 when presented wi=
+th DWARF
+> > +# v5 input, such as `.file 0` and `md5 0x00`. Should be fixed in GNU b=
+inutils
+> > +# 2.35.2. https://sourceware.org/bugzilla/show_bug.cgi?id=3D25611
+> > +echo '.file 0 "filename" md5 0x7a0b65214090b6693bd1dc24dd248245' | \
+> > +  $* -gdwarf-5 -Wno-unused-command-line-argument -c -x assembler -o /d=
+ev/null -
+> > --
+> > 2.30.0.365.g02bc693789-goog
+> >
