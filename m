@@ -2,106 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1C43309714
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 18:08:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3637F309727
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 18:17:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231897AbhA3RHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 12:07:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231138AbhA3RHe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 12:07:34 -0500
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93303C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 09:06:54 -0800 (PST)
-Received: by mail-oi1-x230.google.com with SMTP id j25so13774640oii.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 09:06:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tyhicks-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YXo72go/2zLQsVTpl/DsKgd0Ar0mz1CUAPeP2npE5kE=;
-        b=p24tFRoL9u8Bbj8AzyFg1IzdFVT9w2G0IgE+5EYTPMPhClIkqzfafWHFbGVP5ctvlX
-         llG6kzSpLCttKjPAEBTKhIdKiav6n83VWv1V8P2YNHPnlKmWBtKe8fM7pJ2IKbIelihc
-         WKzl3wj4g8ide8bWXLfe18MenVkqvhsQENqwlIfQ3T4+6l662AecRf3T5cB18sMuzfDx
-         qcuHFTGjgi4G1e9ElWEg8a7ilUOzPPiITsvnuFH88+pD24A3c4Uz9hcZxwxlfEwz+Nbi
-         J+iRAaW5afGP6C5YAgtiXr7LFVpOdWeuzKEkW/qmJlAnCJWL9UXX6xsvxhUgHSwTVC6y
-         /PUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YXo72go/2zLQsVTpl/DsKgd0Ar0mz1CUAPeP2npE5kE=;
-        b=Yy5JOWw/NPaCFeKEW9UlGfPdY88O9rFewooiyrfXAZtJj8QQJIEGIt5rgQB8xtXpj4
-         fBGXwvMiFnCsDWUlBha8KIB2VJoQCSAN7vGHm1Z3YtuQu+RyyEGXtX3m41Yw3Ypsykhy
-         be9nWg3BIDd8cGxNyA7PYwGiXpCPPGmDMB41RuXT69MZ8cwBQTN7DyRlMckFoT0dApae
-         JEmECXgRxP//PiHrIiv1XmruMH5vutV+x0l8+qCng6PO9rB5zeYzZmSdYJvCnRWpfMLI
-         aqdw9PN2yryXxwxfyMWZie/ZUawh0qRH/jR0H5EEL9xD23K80Ois4sbXrIPmEAH0ZjrW
-         X5YA==
-X-Gm-Message-State: AOAM531vAoP3Nifdvp6YqkKpsRZqRLswNuPmMq4INvf4IsGbq6Fj7iZC
-        XVUbE16HhrdiB8ihSF+TUqs/MvPMKay5QHoO
-X-Google-Smtp-Source: ABdhPJxlPLzf6kK0PD4Pe+kPdvKZm30wSBoJzwsypQqW20OyjBGSnMclVR1AR7i10u3AZmiMImvDtw==
-X-Received: by 2002:aca:dc56:: with SMTP id t83mr3454965oig.75.1612026413625;
-        Sat, 30 Jan 2021 09:06:53 -0800 (PST)
-Received: from elm (162-237-133-238.lightspeed.rcsntx.sbcglobal.net. [162.237.133.238])
-        by smtp.gmail.com with ESMTPSA id c10sm2872961otm.22.2021.01.30.09.06.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Jan 2021 09:06:53 -0800 (PST)
-Date:   Sat, 30 Jan 2021 11:06:40 -0600
-From:   Tyler Hicks <code@tyhicks.com>
-To:     Jeffrey Mitchell <jeffrey.mitchell@starlab.io>
-Cc:     ecryptfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dan Robertson <daniel.robertson@starlab.io>
-Subject: Re: [PATCH] ecryptfs: Fix inodes not being evicted until unmount
-Message-ID: <20210130170640.GA58096@elm>
-References: <20201218190730.141761-1-jeffrey.mitchell@starlab.io>
+        id S231775AbhA3RP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 12:15:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57028 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230197AbhA3RPz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 12:15:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A3B464E11;
+        Sat, 30 Jan 2021 17:15:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612026915;
+        bh=Oyuo7h5UergkvVDL9fR3M7gdK4HQFxBivD4yC0hVtr8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QFNMaK5bzrFpO3wQuiTR9G298//O1CINM9cnjrO7/eEAwJQF96FkPEdErNQVcZ8Kp
+         XFaKgco7L/GlyvgOX045oSJGFKPCKVbeEuTNTKBRA9uyHescqlUx4XlV6DWk1kCdHY
+         VkW4chQJnDyIDG0VXwKDyycBK9Yjvle+lrzodOSSeXb74FXzKcDQAfo8Dl0fs3rGAi
+         JbhNn1XRP44/BHdkzhHDWWYiiPbyrMITaOdKofH1ABxhHCCs7FKU53kTe9CiDc75H+
+         6JfcC/cnBNlwUubNqpsoiMWCE59EC1dHsCS8K47mV7WOrjKcc+F4w8BkSzXQuqHn8E
+         pPjiFePwK3x0Q==
+Date:   Sat, 30 Jan 2021 19:15:10 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        James Morris James Morris <jmorris@namei.org>,
+        David Howells <dhowells@redhat.com>,
+        Peter Huewe <peterhuewe@gmx.de>
+Subject: Re: [GIT PULL] tpmdd updates for v5.12-rc1
+Message-ID: <YBWUHkbNt6OLoeUq@kernel.org>
+References: <YBNcv8jLEDE8C/IW@kernel.org>
+ <CAHk-=wjk7zEOFEjGWZmGF8_dcitBQ_dPUMSkr-g7B7cYcXGvSQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201218190730.141761-1-jeffrey.mitchell@starlab.io>
+In-Reply-To: <CAHk-=wjk7zEOFEjGWZmGF8_dcitBQ_dPUMSkr-g7B7cYcXGvSQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-18 13:07:30, Jeffrey Mitchell wrote:
-> On asynchronous base filesystems like NFS, eCryptFS leaves inodes for
-> deleted files in the cache until unmounting. Change call in
-> ecryptfs_do_unlink() from set_nlink() to drop_nlink() in order to reliably
-> evict inodes from the cache even on top of NFS.
+On Thu, Jan 28, 2021 at 07:38:21PM -0800, Linus Torvalds wrote:
+> On Thu, Jan 28, 2021 at 4:54 PM Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> >
+> > This contains bug fixes for tpm_tis driver, which had a racy wait for
+> > hardware state change to be ready to send a command to the TPM chip. The
+> > bug has existed already since 2006, but has only made itself known in
+> > recent past.
 > 
-> Signed-off-by: Dan Robertson <daniel.robertson@starlab.io>
-> Signed-off-by: Jeffrey Mitchell <jeffrey.mitchell@starlab.io>
-
-Hey Jeffrey and Dan - thanks for the patch! Unfortunately, I think this
-would allow the eCryptfs inode's nlink count to get out of sync with the
-lower inode's nlink count in the case of direct manipulation to the
-lower filesystem.
-
-Is the condition that you're trying to fix a result of going through the
-this code path?
-
- ecryptfs_unlink() -> ecryptfs_do_unlink() -> vfs_unlink() -> nfs_unlink() -> nfs_sillyrename() -> nfs_async_unlink()
-
-Tyler
-
-> ---
->  fs/ecryptfs/inode.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Hmm. Is this for the next merge window? The subject line implies that,
+> as does the addition of the cr50 driver.
 > 
-> diff --git a/fs/ecryptfs/inode.c b/fs/ecryptfs/inode.c
-> index e23752d..f7594b6 100644
-> --- a/fs/ecryptfs/inode.c
-> +++ b/fs/ecryptfs/inode.c
-> @@ -147,7 +147,7 @@ static int ecryptfs_do_unlink(struct inode *dir, struct dentry *dentry,
->  		goto out_unlock;
->  	}
->  	fsstack_copy_attr_times(dir, lower_dir_inode);
-> -	set_nlink(inode, ecryptfs_inode_to_lower(inode)->i_nlink);
-> +	drop_nlink(inode);
->  	inode->i_ctime = dir->i_ctime;
->  out_unlock:
->  	dput(lower_dentry);
-> -- 
-> 2.7.4
-> 
+> But the commentary about fixes implies that at least part of it should
+> be in 5.11?
+
+This was meant for 5.12 but the timing was *way* too early. I'll take this
+one back. Just to unambiguity reasons I'll use tpmdd-next-v5.12-rc1-v2 tag
+for my final v5.12 PR, once I send it.
+
+I considered a bit, and I really think that it would make a lot of sense
+to do a late 5.11 just containing the two commits from James, namely:
+
+1. tpm_tis: Fix check_locality for correct locality acquisition
+2. tpm_tis: Clean up locality release 
+
+James: Does this make sense to you? 
+
+>             Linus
+
+/Jarkko
