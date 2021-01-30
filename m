@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB06A3093D0
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:59:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E7F3093C0
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:53:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231983AbhA3J57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 04:57:59 -0500
-Received: from mga12.intel.com ([192.55.52.136]:24253 "EHLO mga12.intel.com"
+        id S232077AbhA3JxM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 04:53:12 -0500
+Received: from mga12.intel.com ([192.55.52.136]:24291 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232683AbhA3DAb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 22:00:31 -0500
-IronPort-SDR: rUMr80GEYNWdBdgKZQRWrVoh2G+jo7YUP5I9QkATxm0moDNnya3VdqXRpmrzb27gppWOm+45am
- VNDZUFWh/T6A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="159675267"
+        id S233260AbhA3DBD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 22:01:03 -0500
+IronPort-SDR: mStY1gfFR3X4Y3UQRSe+OBhZ86VHF5LK0qbvwqMAmeCaxR+hNa8mV2PuxQq10vKbWUU66okVdw
+ +j3EhyQFXnLg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="159675274"
 X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="159675267"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:29 -0800
-IronPort-SDR: rMK9oS01LngBYi77Q3Ky5ty3MxIj74cIa8nhW1+pNBpc6PLOJ7fSo55A/b7uAFtUKDzZnc23PP
- GP6U+HbmnmlA==
+   d="scan'208";a="159675274"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:30 -0800
+IronPort-SDR: y7Bp5tWLWxI/M3tyOTjSZVS3Quy72792ea+r2MeHBXEH+lV0qb5/3XdXgXhFV1A9GUefsiTXPq
+ y1Cd1Q6jKvug==
 X-IronPort-AV: E=Sophos;i="5.79,387,1602572400"; 
-   d="scan'208";a="431263326"
+   d="scan'208";a="574313665"
 Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:29 -0800
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 18:21:29 -0800
 Received: from mtg-dev.jf.intel.com (mtg-dev.jf.intel.com [10.54.74.10])
-        by smtp.ostc.intel.com (Postfix) with ESMTP id 9C54E6371;
+        by smtp.ostc.intel.com (Postfix) with ESMTP id BF4896371;
         Fri, 29 Jan 2021 18:21:29 -0800 (PST)
 Received: by mtg-dev.jf.intel.com (Postfix, from userid 1000)
-        id 905A3363674; Fri, 29 Jan 2021 18:21:29 -0800 (PST)
+        id B3CBD36367D; Fri, 29 Jan 2021 18:21:29 -0800 (PST)
 From:   mgross@linux.intel.com
 To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
@@ -37,12 +37,11 @@ To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
         jassisinghbrar@gmail.com
 Cc:     linux-kernel@vger.kernel.org,
-        Paul Murphy <paul.j.murphy@intel.com>,
-        devicetree@vger.kernel.org,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-Subject: [PATCH v4 06/34] dt-bindings: Add bindings for Keem Bay VPU IPC driver
-Date:   Fri, 29 Jan 2021 18:20:56 -0800
-Message-Id: <20210130022124.65083-42-mgross@linux.intel.com>
+        Srikanth Thokala <srikanth.thokala@intel.com>,
+        Derek Kiernan <derek.kiernan@xilinx.com>
+Subject: [PATCH v4 09/34] misc: xlink-pcie: lh: Add PCIe EPF driver for Local Host
+Date:   Fri, 29 Jan 2021 18:20:59 -0800
+Message-Id: <20210130022124.65083-45-mgross@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210130022124.65083-1-mgross@linux.intel.com>
 References: <20210130022124.65083-1-mgross@linux.intel.com>
@@ -50,171 +49,568 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Murphy <paul.j.murphy@intel.com>
+From: Srikanth Thokala <srikanth.thokala@intel.com>
 
-Add DT bindings documentation for the Keem Bay VPU IPC driver.
+Add PCIe EPF driver for local host (lh) to configure BAR's and other
+HW resources. Underlying PCIe HW controller is a Synopsys DWC PCIe core.
 
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: devicetree@vger.kernel.org
+Cc: Derek Kiernan <derek.kiernan@xilinx.com>
+Cc: Dragan Cvetic <dragan.cvetic@xilinx.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Reviewed-by: Mark Gross <mgross@linux.intel.com>
-Co-developed-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-Signed-off-by: Paul Murphy <paul.j.murphy@intel.com>
-Signed-off-by: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
 Signed-off-by: Mark Gross <mgross@linux.intel.com>
+Signed-off-by: Srikanth Thokala <srikanth.thokala@intel.com>
 ---
- .../soc/intel/intel,keembay-vpu-ipc.yaml      | 143 ++++++++++++++++++
- 1 file changed, 143 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml
+ MAINTAINERS                                 |   6 +
+ drivers/misc/Kconfig                        |   1 +
+ drivers/misc/Makefile                       |   1 +
+ drivers/misc/xlink-pcie/Kconfig             |   9 +
+ drivers/misc/xlink-pcie/Makefile            |   1 +
+ drivers/misc/xlink-pcie/local_host/Makefile |   2 +
+ drivers/misc/xlink-pcie/local_host/epf.c    | 373 ++++++++++++++++++++
+ drivers/misc/xlink-pcie/local_host/epf.h    |  37 ++
+ drivers/misc/xlink-pcie/local_host/xpcie.h  |  38 ++
+ 9 files changed, 468 insertions(+)
+ create mode 100644 drivers/misc/xlink-pcie/Kconfig
+ create mode 100644 drivers/misc/xlink-pcie/Makefile
+ create mode 100644 drivers/misc/xlink-pcie/local_host/Makefile
+ create mode 100644 drivers/misc/xlink-pcie/local_host/epf.c
+ create mode 100644 drivers/misc/xlink-pcie/local_host/epf.h
+ create mode 100644 drivers/misc/xlink-pcie/local_host/xpcie.h
 
-diff --git a/Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml b/Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 6742a1827cd9..3ca6c8c6341b 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1961,6 +1961,12 @@ F:	Documentation/devicetree/bindings/arm/intel,keembay.yaml
+ F:	arch/arm64/boot/dts/intel/keembay-evm.dts
+ F:	arch/arm64/boot/dts/intel/keembay-soc.dtsi
+ 
++ARM KEEM BAY XLINK PCIE SUPPORT
++M:	Srikanth Thokala <srikanth.thokala@intel.com>
++M:	Mark Gross <mgross@linux.intel.com>
++S:	Supported
++F:	drivers/misc/xlink-pcie/
++
+ ARM/INTEL RESEARCH IMOTE/STARGATE 2 MACHINE SUPPORT
+ M:	Jonathan Cameron <jic23@cam.ac.uk>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+index fafa8b0d8099..dfb98e444c6e 100644
+--- a/drivers/misc/Kconfig
++++ b/drivers/misc/Kconfig
+@@ -481,4 +481,5 @@ source "drivers/misc/ocxl/Kconfig"
+ source "drivers/misc/cardreader/Kconfig"
+ source "drivers/misc/habanalabs/Kconfig"
+ source "drivers/misc/uacce/Kconfig"
++source "drivers/misc/xlink-pcie/Kconfig"
+ endmenu
+diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+index d23231e73330..d17621fc43d5 100644
+--- a/drivers/misc/Makefile
++++ b/drivers/misc/Makefile
+@@ -57,3 +57,4 @@ obj-$(CONFIG_HABANA_AI)		+= habanalabs/
+ obj-$(CONFIG_UACCE)		+= uacce/
+ obj-$(CONFIG_XILINX_SDFEC)	+= xilinx_sdfec.o
+ obj-$(CONFIG_HISI_HIKEY_USB)	+= hisi_hikey_usb.o
++obj-y                           += xlink-pcie/
+diff --git a/drivers/misc/xlink-pcie/Kconfig b/drivers/misc/xlink-pcie/Kconfig
 new file mode 100644
-index 000000000000..9dae8ab4c723
+index 000000000000..46aa401d79b7
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/soc/intel/intel,keembay-vpu-ipc.yaml
-@@ -0,0 +1,143 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+# Copyright (c) Intel Corporation. All rights reserved.
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/soc/intel/intel,keembay-vpu-ipc.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++++ b/drivers/misc/xlink-pcie/Kconfig
+@@ -0,0 +1,9 @@
++config XLINK_PCIE_LH_DRIVER
++	tristate "XLink PCIe Local Host driver"
++	depends on PCI_ENDPOINT && ARCH_KEEMBAY
++	help
++	  This option enables XLink PCIe Local Host driver.
 +
-+title: Intel Keem Bay VPU IPC
++	  Choose M here to compile this driver as a module, name is mxlk_ep.
++	  This driver is used for XLink communication over PCIe and is to be
++	  loaded on the Intel Keem Bay platform.
+diff --git a/drivers/misc/xlink-pcie/Makefile b/drivers/misc/xlink-pcie/Makefile
+new file mode 100644
+index 000000000000..d693d382e9c6
+--- /dev/null
++++ b/drivers/misc/xlink-pcie/Makefile
+@@ -0,0 +1 @@
++obj-$(CONFIG_XLINK_PCIE_LH_DRIVER) += local_host/
+diff --git a/drivers/misc/xlink-pcie/local_host/Makefile b/drivers/misc/xlink-pcie/local_host/Makefile
+new file mode 100644
+index 000000000000..514d3f0c91bc
+--- /dev/null
++++ b/drivers/misc/xlink-pcie/local_host/Makefile
+@@ -0,0 +1,2 @@
++obj-$(CONFIG_XLINK_PCIE_LH_DRIVER) += mxlk_ep.o
++mxlk_ep-objs := epf.o
+diff --git a/drivers/misc/xlink-pcie/local_host/epf.c b/drivers/misc/xlink-pcie/local_host/epf.c
+new file mode 100644
+index 000000000000..0234756e89ae
+--- /dev/null
++++ b/drivers/misc/xlink-pcie/local_host/epf.c
+@@ -0,0 +1,373 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Intel Keem Bay XLink PCIe Driver
++ *
++ * Copyright (C) 2021 Intel Corporation
++ */
 +
-+maintainers:
-+  - Paul Murphy <paul.j.murphy@intel.com>
-+  - Daniele Alessandrelli <daniele.alessandrelli@intel.com>
++#include <linux/of.h>
++#include <linux/platform_device.h>
 +
-+description:
-+  This binding provides support for the Vision Processing Unit (VPU) found on
-+  the Intel Keem Bay SoC.
++#include "epf.h"
 +
-+  The VPU is started and controlled by SoC CPU, which is in charge of loading
-+  the VPU firmware. The SoC CPU can communicate with the VPU firmware using an
-+  Inter-Processor Communication (IPC) mechanism.
++#define BAR2_MIN_SIZE			SZ_16K
++#define BAR4_MIN_SIZE			SZ_16K
 +
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - const: intel,keembay-vpu-ipc
++#define PCIE_REGS_PCIE_INTR_ENABLE	0x18
++#define PCIE_REGS_PCIE_INTR_FLAGS	0x1C
++#define LBC_CII_EVENT_FLAG		BIT(18)
++#define PCIE_REGS_PCIE_ERR_INTR_FLAGS	0x24
++#define LINK_REQ_RST_FLG		BIT(15)
 +
-+  reg:
-+    items:
-+      - description: NCE WDT registers
-+      - description: NCE TIM_GEN_CONFIG registers
-+      - description: MSS WDT registers
-+      - description: MSS TIM_GEN_CONFIG registers
++static struct pci_epf_header xpcie_header = {
++	.vendorid = PCI_VENDOR_ID_INTEL,
++	.deviceid = PCI_DEVICE_ID_INTEL_KEEMBAY,
++	.baseclass_code = PCI_BASE_CLASS_MULTIMEDIA,
++	.subclass_code = 0x0,
++	.subsys_vendor_id = 0x0,
++	.subsys_id = 0x0,
++};
 +
-+  reg-names:
-+    items:
-+      - const: nce_wdt
-+      - const: nce_tim_cfg
-+      - const: mss_wdt
-+      - const: mss_tim_cfg
++static const struct pci_epf_device_id xpcie_epf_ids[] = {
++	{
++		.name = "mxlk_pcie_epf",
++	},
++	{},
++};
 +
-+  memory-region:
-+    items:
-+      - description: reference to the VPU reserved memory region
-+      - description: reference to the X509 reserved memory region
-+      - description: reference to the MSS IPC area
++static irqreturn_t intel_xpcie_err_interrupt(int irq, void *args)
++{
++	struct xpcie_epf *xpcie_epf;
++	struct xpcie *xpcie = args;
++	u32 val;
 +
-+  clocks:
-+    items:
-+      - description: cpu clock
-+      - description: pll 0 out 0 rate
-+      - description: pll 0 out 1 rate
-+      - description: pll 0 out 2 rate
-+      - description: pll 0 out 3 rate
-+      - description: pll 1 out 0 rate
-+      - description: pll 1 out 1 rate
-+      - description: pll 1 out 2 rate
-+      - description: pll 1 out 3 rate
-+      - description: pll 2 out 0 rate
-+      - description: pll 2 out 1 rate
-+      - description: pll 2 out 2 rate
-+      - description: pll 2 out 3 rate
++	xpcie_epf = container_of(xpcie, struct xpcie_epf, xpcie);
++	val = ioread32(xpcie_epf->apb_base + PCIE_REGS_PCIE_ERR_INTR_FLAGS);
 +
-+  clock-names:
-+    items:
-+      - const: cpu_clock
-+      - const: pll_0_out_0
-+      - const: pll_0_out_1
-+      - const: pll_0_out_2
-+      - const: pll_0_out_3
-+      - const: pll_1_out_0
-+      - const: pll_1_out_1
-+      - const: pll_1_out_2
-+      - const: pll_1_out_3
-+      - const: pll_2_out_0
-+      - const: pll_2_out_1
-+      - const: pll_2_out_2
-+      - const: pll_2_out_3
++	iowrite32(val, xpcie_epf->apb_base + PCIE_REGS_PCIE_ERR_INTR_FLAGS);
 +
-+  interrupts:
-+    items:
-+      - description: number of NCE sub-system WDT timeout IRQ
-+      - description: number of MSS sub-system WDT timeout IRQ
++	return IRQ_HANDLED;
++}
 +
-+  interrupt-names:
-+    items:
-+      - const: nce_wdt
-+      - const: mss_wdt
++static irqreturn_t intel_xpcie_host_interrupt(int irq, void *args)
++{
++	struct xpcie_epf *xpcie_epf;
++	struct xpcie *xpcie = args;
++	u32 val;
 +
-+  intel,keembay-vpu-ipc-imr:
-+    $ref: "/schemas/types.yaml#/definitions/uint32"
-+    description:
-+      Isolated Memory Region (IMR) number that the runtime service must use to
-+      protect the VPU memory region before authentication.
++	xpcie_epf = container_of(xpcie, struct xpcie_epf, xpcie);
++	val = ioread32(xpcie_epf->apb_base + PCIE_REGS_PCIE_INTR_FLAGS);
++	if (val & LBC_CII_EVENT_FLAG) {
++		iowrite32(LBC_CII_EVENT_FLAG,
++			  xpcie_epf->apb_base + PCIE_REGS_PCIE_INTR_FLAGS);
++	}
 +
-+  intel,keembay-vpu-ipc-id:
-+    $ref: "/schemas/types.yaml#/definitions/uint32"
-+    description: The VPU ID to be passed to the VPU firmware.
++	return IRQ_HANDLED;
++}
 +
-+additionalProperties: False
++static void
++intel_xpcie_configure_bar(struct pci_epf *epf,
++			  const struct pci_epc_features *epc_features)
++{
++	struct pci_epf_bar *epf_bar;
++	bool bar_fixed_64bit;
++	int i;
 +
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    vpu-ipc@3f00209c {
-+        compatible = "intel,keembay-vpu-ipc";
-+        reg = <0x3f00209c 0x10>,
-+              <0x3f003008 0x4>,
-+              <0x2082009c 0x10>,
-+              <0x20821008 0x4>;
-+        reg-names = "nce_wdt",
-+                    "nce_tim_cfg",
-+                    "mss_wdt",
-+                    "mss_tim_cfg";
-+        memory-region = <&vpu_reserved>,
-+                        <&vpu_x509_reserved>,
-+                        <&mss_ipc_reserved>;
-+        clocks = <&scmi_clk 0>,
-+                 <&scmi_clk 0>,
-+                 <&scmi_clk 1>,
-+                 <&scmi_clk 2>,
-+                 <&scmi_clk 3>,
-+                 <&scmi_clk 4>,
-+                 <&scmi_clk 5>,
-+                 <&scmi_clk 6>,
-+                 <&scmi_clk 7>,
-+                 <&scmi_clk 8>,
-+                 <&scmi_clk 9>,
-+                 <&scmi_clk 10>,
-+                 <&scmi_clk 11>;
-+        clock-names = "cpu_clock",
-+                      "pll_0_out_0", "pll_0_out_1",
-+                      "pll_0_out_2", "pll_0_out_3",
-+                      "pll_1_out_0", "pll_1_out_1",
-+                      "pll_1_out_2", "pll_1_out_3",
-+                      "pll_2_out_0", "pll_2_out_1",
-+                      "pll_2_out_2", "pll_2_out_3";
-+        interrupts = <GIC_SPI 63 IRQ_TYPE_LEVEL_HIGH>,
-+                     <GIC_SPI 47 IRQ_TYPE_LEVEL_HIGH>;
-+        interrupt-names = "nce_wdt", "mss_wdt";
-+        intel,keembay-vpu-ipc-imr = <9>;
-+        intel,keembay-vpu-ipc-id = <0>;
-+    };
++	for (i = BAR_0; i <= BAR_5; i++) {
++		epf_bar = &epf->bar[i];
++		bar_fixed_64bit = !!(epc_features->bar_fixed_64bit & (1 << i));
++		if (bar_fixed_64bit)
++			epf_bar->flags |= PCI_BASE_ADDRESS_MEM_TYPE_64;
++		if (epc_features->bar_fixed_size[i])
++			epf_bar->size = epc_features->bar_fixed_size[i];
++	}
++}
++
++static void intel_xpcie_cleanup_bar(struct pci_epf *epf, enum pci_barno barno)
++{
++	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
++	struct pci_epc *epc = epf->epc;
++
++	if (xpcie_epf->vaddr[barno]) {
++		pci_epc_clear_bar(epc, epf->func_no, &epf->bar[barno]);
++		pci_epf_free_space(epf, xpcie_epf->vaddr[barno], barno);
++		xpcie_epf->vaddr[barno] = NULL;
++	}
++}
++
++static void intel_xpcie_cleanup_bars(struct pci_epf *epf)
++{
++	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
++
++	intel_xpcie_cleanup_bar(epf, BAR_2);
++	intel_xpcie_cleanup_bar(epf, BAR_4);
++	xpcie_epf->xpcie.mmio = NULL;
++	xpcie_epf->xpcie.bar4 = NULL;
++}
++
++static int intel_xpcie_setup_bar(struct pci_epf *epf, enum pci_barno barno,
++				 size_t min_size, size_t align)
++{
++	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
++	struct pci_epf_bar *bar = &epf->bar[barno];
++	struct pci_epc *epc = epf->epc;
++	void *vaddr;
++	int ret;
++
++	bar->flags |= PCI_BASE_ADDRESS_MEM_TYPE_64;
++	if (!bar->size)
++		bar->size = min_size;
++
++	if (barno == BAR_4)
++		bar->flags |= PCI_BASE_ADDRESS_MEM_PREFETCH;
++
++	vaddr = pci_epf_alloc_space(epf, bar->size, barno, align);
++	if (!vaddr) {
++		dev_err(&epf->dev, "Failed to map BAR%d\n", barno);
++		return -ENOMEM;
++	}
++
++	ret = pci_epc_set_bar(epc, epf->func_no, bar);
++	if (ret) {
++		pci_epf_free_space(epf, vaddr, barno);
++		dev_err(&epf->dev, "Failed to set BAR%d\n", barno);
++		return ret;
++	}
++
++	xpcie_epf->vaddr[barno] = vaddr;
++
++	return 0;
++}
++
++static int intel_xpcie_setup_bars(struct pci_epf *epf, size_t align)
++{
++	int ret;
++
++	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
++
++	ret = intel_xpcie_setup_bar(epf, BAR_2, BAR2_MIN_SIZE, align);
++	if (ret)
++		return ret;
++
++	ret = intel_xpcie_setup_bar(epf, BAR_4, BAR4_MIN_SIZE, align);
++	if (ret) {
++		intel_xpcie_cleanup_bar(epf, BAR_2);
++		return ret;
++	}
++
++	xpcie_epf->comm_bar = BAR_2;
++	xpcie_epf->xpcie.mmio = (void *)xpcie_epf->vaddr[BAR_2] +
++				XPCIE_MMIO_OFFSET;
++
++	xpcie_epf->bar4 = BAR_4;
++	xpcie_epf->xpcie.bar4 = xpcie_epf->vaddr[BAR_4];
++
++	return 0;
++}
++
++static int intel_xpcie_epf_get_platform_data(struct device *dev,
++					     struct xpcie_epf *xpcie_epf)
++{
++	struct platform_device *pdev = to_platform_device(dev);
++	struct device_node *soc_node, *version_node;
++	struct resource *res;
++	const char *prop;
++	int prop_size;
++
++	xpcie_epf->irq_dma = platform_get_irq_byname(pdev, "intr");
++	if (xpcie_epf->irq_dma < 0) {
++		dev_err(&xpcie_epf->epf->dev, "failed to get IRQ: %d\n",
++			xpcie_epf->irq_dma);
++		return -EINVAL;
++	}
++
++	xpcie_epf->irq_err = platform_get_irq_byname(pdev, "err_intr");
++	if (xpcie_epf->irq_err < 0) {
++		dev_err(&xpcie_epf->epf->dev, "failed to get erroe IRQ: %d\n",
++			xpcie_epf->irq_err);
++		return -EINVAL;
++	}
++
++	xpcie_epf->irq = platform_get_irq_byname(pdev, "ev_intr");
++	if (xpcie_epf->irq < 0) {
++		dev_err(&xpcie_epf->epf->dev, "failed to get event IRQ: %d\n",
++			xpcie_epf->irq);
++		return -EINVAL;
++	}
++
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "apb");
++	xpcie_epf->apb_base =
++		devm_ioremap(dev, res->start, resource_size(res));
++	if (IS_ERR(xpcie_epf->apb_base))
++		return PTR_ERR(xpcie_epf->apb_base);
++
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dbi");
++	xpcie_epf->dbi_base =
++		devm_ioremap(dev, res->start, resource_size(res));
++	if (IS_ERR(xpcie_epf->dbi_base))
++		return PTR_ERR(xpcie_epf->dbi_base);
++
++	memcpy(xpcie_epf->stepping, "B0", 2);
++	soc_node = of_get_parent(pdev->dev.of_node);
++	if (soc_node) {
++		version_node = of_get_child_by_name(soc_node, "version-info");
++		if (version_node) {
++			prop = of_get_property(version_node, "stepping",
++					       &prop_size);
++			if (prop && prop_size <= KEEMBAY_XPCIE_STEPPING_MAXLEN)
++				memcpy(xpcie_epf->stepping, prop, prop_size);
++			of_node_put(version_node);
++		}
++		of_node_put(soc_node);
++	}
++
++	return 0;
++}
++
++static int intel_xpcie_epf_bind(struct pci_epf *epf)
++{
++	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
++	const struct pci_epc_features *features;
++	struct pci_epc *epc = epf->epc;
++	struct device *dev;
++	size_t align = SZ_16K;
++	int ret;
++
++	if (WARN_ON_ONCE(!epc))
++		return -EINVAL;
++
++	dev = epc->dev.parent;
++	features = pci_epc_get_features(epc, epf->func_no);
++	xpcie_epf->epc_features = features;
++	if (features) {
++		align = features->align;
++		intel_xpcie_configure_bar(epf, features);
++	}
++
++	ret = intel_xpcie_setup_bars(epf, align);
++	if (ret) {
++		dev_err(&epf->dev, "BAR initialization failed\n");
++		return ret;
++	}
++
++	ret = intel_xpcie_epf_get_platform_data(dev, xpcie_epf);
++	if (ret) {
++		dev_err(&epf->dev, "Unable to get platform data\n");
++		return -EINVAL;
++	}
++
++	if (!strcmp(xpcie_epf->stepping, "A0")) {
++		xpcie_epf->xpcie.legacy_a0 = true;
++		iowrite32(1, (void __iomem *)xpcie_epf->xpcie.mmio +
++			     XPCIE_MMIO_LEGACY_A0);
++	} else {
++		xpcie_epf->xpcie.legacy_a0 = false;
++		iowrite32(0, (void __iomem *)xpcie_epf->xpcie.mmio +
++			     XPCIE_MMIO_LEGACY_A0);
++	}
++
++	/* Enable interrupt */
++	writel(LBC_CII_EVENT_FLAG,
++	       xpcie_epf->apb_base + PCIE_REGS_PCIE_INTR_ENABLE);
++	ret = devm_request_irq(&epf->dev, xpcie_epf->irq,
++			       &intel_xpcie_host_interrupt, 0,
++			       XPCIE_DRIVER_NAME, &xpcie_epf->xpcie);
++	if (ret) {
++		dev_err(&epf->dev, "failed to request irq\n");
++		goto err_cleanup_bars;
++	}
++
++	ret = devm_request_irq(&epf->dev, xpcie_epf->irq_err,
++			       &intel_xpcie_err_interrupt, 0,
++			       XPCIE_DRIVER_NAME, &xpcie_epf->xpcie);
++	if (ret) {
++		dev_err(&epf->dev, "failed to request error irq\n");
++		goto err_cleanup_bars;
++	}
++
++	return 0;
++
++err_cleanup_bars:
++	intel_xpcie_cleanup_bars(epf);
++
++	return ret;
++}
++
++static void intel_xpcie_epf_unbind(struct pci_epf *epf)
++{
++	struct xpcie_epf *xpcie_epf = epf_get_drvdata(epf);
++	struct pci_epc *epc = epf->epc;
++
++	free_irq(xpcie_epf->irq, &xpcie_epf->xpcie);
++	free_irq(xpcie_epf->irq_err, &xpcie_epf->xpcie);
++
++	pci_epc_stop(epc);
++
++	intel_xpcie_cleanup_bars(epf);
++}
++
++static int intel_xpcie_epf_probe(struct pci_epf *epf)
++{
++	struct device *dev = &epf->dev;
++	struct xpcie_epf *xpcie_epf;
++
++	xpcie_epf = devm_kzalloc(dev, sizeof(*xpcie_epf), GFP_KERNEL);
++	if (!xpcie_epf)
++		return -ENOMEM;
++
++	epf->header = &xpcie_header;
++	xpcie_epf->epf = epf;
++	epf_set_drvdata(epf, xpcie_epf);
++
++	return 0;
++}
++
++static void intel_xpcie_epf_shutdown(struct device *dev)
++{
++	struct pci_epf *epf = to_pci_epf(dev);
++	struct xpcie_epf *xpcie_epf;
++
++	xpcie_epf = epf_get_drvdata(epf);
++
++	/* Notify host in case PCIe hot plug not supported */
++	if (xpcie_epf)
++		pci_epc_raise_irq(epf->epc, epf->func_no, PCI_EPC_IRQ_MSI, 1);
++}
++
++static struct pci_epf_ops ops = {
++	.bind = intel_xpcie_epf_bind,
++	.unbind = intel_xpcie_epf_unbind,
++};
++
++static struct pci_epf_driver xpcie_epf_driver = {
++	.driver.name = "mxlk_pcie_epf",
++	.driver.shutdown = intel_xpcie_epf_shutdown,
++	.probe = intel_xpcie_epf_probe,
++	.id_table = xpcie_epf_ids,
++	.ops = &ops,
++	.owner = THIS_MODULE,
++};
++
++static int __init intel_xpcie_epf_init(void)
++{
++	int ret;
++
++	ret = pci_epf_register_driver(&xpcie_epf_driver);
++	if (ret) {
++		pr_err("Failed to register xlink pcie epf driver: %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++module_init(intel_xpcie_epf_init);
++
++static void __exit intel_xpcie_epf_exit(void)
++{
++	pci_epf_unregister_driver(&xpcie_epf_driver);
++}
++module_exit(intel_xpcie_epf_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Intel Corporation");
++MODULE_DESCRIPTION(XPCIE_DRIVER_DESC);
+diff --git a/drivers/misc/xlink-pcie/local_host/epf.h b/drivers/misc/xlink-pcie/local_host/epf.h
+new file mode 100644
+index 000000000000..a60cd43fe555
+--- /dev/null
++++ b/drivers/misc/xlink-pcie/local_host/epf.h
+@@ -0,0 +1,37 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*
++ * Intel Keem Bay XLink PCIe Driver
++ *
++ * Copyright (C) 2021 Intel Corporation
++ */
++
++#ifndef XPCIE_EPF_HEADER_
++#define XPCIE_EPF_HEADER_
++
++#include <linux/pci-epc.h>
++#include <linux/pci-epf.h>
++
++#include "xpcie.h"
++
++#define XPCIE_DRIVER_NAME "mxlk_pcie_epf"
++#define XPCIE_DRIVER_DESC "Intel(R) xLink PCIe endpoint function driver"
++
++#define KEEMBAY_XPCIE_STEPPING_MAXLEN 8
++
++struct xpcie_epf {
++	struct pci_epf *epf;
++	void *vaddr[BAR_5 + 1];
++	enum pci_barno comm_bar;
++	enum pci_barno bar4;
++	const struct pci_epc_features *epc_features;
++	struct xpcie xpcie;
++	int irq;
++	int irq_dma;
++	int irq_err;
++	void __iomem *apb_base;
++	void __iomem *dma_base;
++	void __iomem *dbi_base;
++	char stepping[KEEMBAY_XPCIE_STEPPING_MAXLEN];
++};
++
++#endif /* XPCIE_EPF_HEADER_ */
+diff --git a/drivers/misc/xlink-pcie/local_host/xpcie.h b/drivers/misc/xlink-pcie/local_host/xpcie.h
+new file mode 100644
+index 000000000000..0745e6dfee10
+--- /dev/null
++++ b/drivers/misc/xlink-pcie/local_host/xpcie.h
+@@ -0,0 +1,38 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++/*****************************************************************************
++ *
++ * Intel Keem Bay XLink PCIe Driver
++ *
++ * Copyright (C) 2020 Intel Corporation
++ *
++ ****************************************************************************/
++
++#ifndef XPCIE_HEADER_
++#define XPCIE_HEADER_
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/pci_ids.h>
++
++#ifndef PCI_DEVICE_ID_INTEL_KEEMBAY
++#define PCI_DEVICE_ID_INTEL_KEEMBAY 0x6240
++#endif
++
++#define XPCIE_IO_COMM_SIZE SZ_16K
++#define XPCIE_MMIO_OFFSET SZ_4K
++
++/* MMIO layout and offsets shared between device and host */
++struct xpcie_mmio {
++	u8 legacy_a0;
++} __packed;
++
++#define XPCIE_MMIO_LEGACY_A0	(offsetof(struct xpcie_mmio, legacy_a0))
++
++struct xpcie {
++	u32 status;
++	bool legacy_a0;
++	void *mmio;
++	void *bar4;
++};
++
++#endif /* XPCIE_HEADER_ */
 -- 
 2.17.1
 
