@@ -2,174 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C27903090D2
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 01:09:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3896F3090D9
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 01:14:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbhA3AJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 29 Jan 2021 19:09:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230009AbhA3AJA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 29 Jan 2021 19:09:00 -0500
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 014D5C061573;
-        Fri, 29 Jan 2021 16:08:20 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id l4so10101745ilo.11;
-        Fri, 29 Jan 2021 16:08:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=VZDd1asC8dvFh6n2YN5mdYVp43kT9MvVXFzgygn8cX8=;
-        b=dUVUO05OD7GnA8IZvMwytebwJWb5RZ0FvAWUmMhd4Nd+dpmOfCHC4XZNghhCVRkTV8
-         YsunGNP6E5+uGHmU9HkrqE9q+/U3hWKkhsn5pFo9lzESIgwH0XJh8vfNhFif8y7iCJjO
-         52k5MoZOeUZjt51rPDefwH31Syie5RNVOWVo9O9tM4WLJ/7/m6t8gRMXPZ6IuLihz51d
-         l4F+bokymp5gVbzSrW6MXqFZRnfeQ3o1svrFooq9NKWdQtiXFD3cKIJB4S/n/eYr7o+K
-         sBeBBHD7d2uOuxs0Hlz22BJlFfLSf4qfssNTeGyWoNsbuVBHB8KVHn9lJTDIDN3H4IFj
-         GWgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=VZDd1asC8dvFh6n2YN5mdYVp43kT9MvVXFzgygn8cX8=;
-        b=sun0kE5Y1yZ6lwxw/oLFY6EVOii7rvF6Lmif2UUpy4NffWQrj7iGJxoIcF7eg5vsuu
-         l0EC65ZcUtbbwlJqe5MZqBVoGttRKNizsv0Y+rM9mJ+8WPbkw+J6Co9eJpGUK3nQuSfz
-         jAkZdosw6CiHvMr/vvbn5uqTx33Ay1mx253pRMvCqkH1Uh/PsdnuV28d/CJx5j60fkad
-         IeiDjxrZPBvL8/kSlvRvroanVTGjmZ553/p4PSi4q01I5x+YTyTetivdke1K7ImRwdjg
-         Jt6Z1qPnLHnHN8P72pvPiDQQ6+h/XgjG01kVsErLhIWXPppGIs5wVJdTfekbSXPK1Gnn
-         YpCw==
-X-Gm-Message-State: AOAM531C55eocfP93M372BIsTjHX0YxeHwVKj+Zyt27VWSGDc4hOEpRF
-        0kyqLIjYHmYOV6EoV3NjlzuqiKTN119UlZQorUw=
-X-Google-Smtp-Source: ABdhPJy2Rz0mXty4O/EX5+19Ui7x7LdPx1jTfCT5q7QYpnPCBuJTZcNxhrutKv/AIN0+MGxsiy9u1D4ThXSCVNUFxP8=
-X-Received: by 2002:a05:6e02:d0:: with SMTP id r16mr4981903ilq.112.1611965299380;
- Fri, 29 Jan 2021 16:08:19 -0800 (PST)
+        id S232270AbhA3AKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 19:10:30 -0500
+Received: from mga04.intel.com ([192.55.52.120]:20313 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232062AbhA3AKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 29 Jan 2021 19:10:23 -0500
+IronPort-SDR: XLm8G1ol8A+4gDilW88R2u320xD3YbTXK1OQ+IjE1JMq76thwplwOYsi9i/TIpT2ovggk2JL8a
+ bDFRV8HFc7XQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="177937915"
+X-IronPort-AV: E=Sophos;i="5.79,386,1602572400"; 
+   d="scan'208";a="177937915"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jan 2021 16:09:36 -0800
+IronPort-SDR: lnAP9u7aDsrEfNyV7WOrsh76wYB+HC1HxEvGUp/DKR21INU0FxvH+edDhQHiJhV5C5uAtisnRZ
+ SIFbLIZoluKA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,386,1602572400"; 
+   d="scan'208";a="574277282"
+Received: from lkp-server02.sh.intel.com (HELO 625d3a354f04) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 29 Jan 2021 16:09:34 -0800
+Received: from kbuild by 625d3a354f04 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1l5dpV-000499-Ey; Sat, 30 Jan 2021 00:09:33 +0000
+Date:   Sat, 30 Jan 2021 08:08:48 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/fpu] BUILD SUCCESS
+ 0a74d61c7d842b583f33f74d7a9e93201826f4c5
+Message-ID: <6014a390.DF7ueIs7zT/b72Pf%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210129194318.2125748-1-ndesaulniers@google.com>
-In-Reply-To: <20210129194318.2125748-1-ndesaulniers@google.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Sat, 30 Jan 2021 01:08:06 +0100
-Message-ID: <CA+icZUXpn_VKePTpnEhcpuSxPkuQTSKYfsVeMbxU9-rBp1ZJXw@mail.gmail.com>
-Subject: Re: [PATCH v6 0/2] Kbuild: DWARF v5 support
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        linux-kbuild@vger.kernel.org, linux-arch@vger.kernel.org,
-        Jakub Jelinek <jakub@redhat.com>,
-        Fangrui Song <maskray@google.com>,
-        Caroline Tice <cmtice@google.com>,
-        Nick Clifton <nickc@redhat.com>, Yonghong Song <yhs@fb.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 8:43 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
->
-> DWARF v5 is the latest standard of the DWARF debug info format.
->
-> DWARF5 wins significantly in terms of size and especially so when mixed
-> with compression (CONFIG_DEBUG_INFO_COMPRESSED).
->
-> Link: http://www.dwarfstd.org/doc/DWARF5.pdf
->
-> Patch 1 is a cleanup that lays the ground work and isn't DWARF
-> v5 specific.
-> Patch 2 implements Kconfig and Kbuild support for DWARFv5.
->
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/fpu
+branch HEAD: 0a74d61c7d842b583f33f74d7a9e93201826f4c5  x86/fpu/xstate: Use sizeof() instead of a constant
 
-When you will do a v7...
+elapsed time: 725m
 
-Can you look also at places where we have hardcoded DWARF-2 handling...
+configs tested: 103
+configs skipped: 29
 
-For example:
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-arch/x86/purgatory/Makefile:AFLAGS_REMOVE_setup-x86_$(BITS).o   += -Wa,-gdwarf-2
-arch/x86/purgatory/Makefile:AFLAGS_REMOVE_entry64.o
- += -Wa,-gdwarf-2
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                           gcw0_defconfig
+mips                         tb0219_defconfig
+s390                             allyesconfig
+arm                       netwinder_defconfig
+mips                          ath25_defconfig
+ia64                            zx1_defconfig
+powerpc                      chrp32_defconfig
+mips                     loongson1c_defconfig
+sh                   secureedge5410_defconfig
+powerpc                     sbc8548_defconfig
+arm                   milbeaut_m10v_defconfig
+powerpc                      bamboo_defconfig
+sparc                       sparc64_defconfig
+c6x                        evmc6472_defconfig
+arm                      integrator_defconfig
+sh                   rts7751r2dplus_defconfig
+sh                           se7780_defconfig
+sh                          polaris_defconfig
+sh                ecovec24-romimage_defconfig
+mips                      bmips_stb_defconfig
+xtensa                    smp_lx200_defconfig
+mips                          malta_defconfig
+mips                         tb0226_defconfig
+powerpc                     powernv_defconfig
+m68k                       m5475evb_defconfig
+arm                          ixp4xx_defconfig
+arm                          collie_defconfig
+openrisc                    or1ksim_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a001-20210129
+i386                 randconfig-a002-20210129
+i386                 randconfig-a004-20210129
+i386                 randconfig-a005-20210129
+i386                 randconfig-a003-20210129
+i386                 randconfig-a006-20210129
+i386                 randconfig-a013-20210129
+i386                 randconfig-a011-20210129
+i386                 randconfig-a012-20210129
+i386                 randconfig-a016-20210129
+i386                 randconfig-a014-20210129
+i386                 randconfig-a015-20210129
+x86_64               randconfig-a002-20210129
+x86_64               randconfig-a003-20210129
+x86_64               randconfig-a001-20210129
+x86_64               randconfig-a005-20210129
+x86_64               randconfig-a006-20210129
+x86_64               randconfig-a004-20210129
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-- Sedat -
+clang tested configs:
+x86_64               randconfig-a012-20210129
+x86_64               randconfig-a015-20210129
+x86_64               randconfig-a016-20210129
+x86_64               randconfig-a011-20210129
+x86_64               randconfig-a013-20210129
+x86_64               randconfig-a014-20210129
 
-> Changes from v5:
-> * Drop previous patch 1, it has been accepted into kbuild:
->   https://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git/commit/?h=kbuild&id=3f4d8ce271c7082be75bacbcbd2048aa78ce2b44
-> * Trying to set -Wa,-gdwarf-4 in the earlier patch was the source of
->   additional complexity. Drop it that part of the patch. We can revisit
->   clang without the integrated assembler setting -Wa,-gdwarf-4 later.
->   That is a separate problem from generally supporting DWARF v5.
-> * Rework the final patch for clang without the integrated assembler.
->   -Wa,-gdwarf-5 is required for DWARF5 in that case otherwise GAS will
->   not accept the assembler directives clang produces from C code when
->   generating asm.
->
-> Changes from v4:
-> * drop set -e from script as per Nathan.
-> * add dependency on !CONFIG_DEBUG_INFO_BTF for DWARF v5 as per Sedat.
-> * Move LLVM_IAS=1 complexity from patch 2 to patch 3 as per Arvind and
->   Masahiro. Sorry it took me a few tries to understand the point (I
->   might still not), but it looks much cleaner this way. Sorry Nathan, I
->   did not carry forward your previous reviews as a result, but I would
->   appreciate if you could look again.
-> * Add Nathan's reviewed by tag to patch 1.
-> * Reword commit message for patch 3 to mention LLVM_IAS=1 and -gdwarf-5
->   binutils addition later, and BTF issue.
-> * I still happen to see a pahole related error spew for the combination
->   of:
->   * LLVM=1
->   * LLVM_IAS=1
->   * CONFIG_DEBUG_INFO_DWARF4
->   * CONFIG_DEBUG_INFO_BTF
->   Though they're non-fatal to the build. I'm not sure yet why removing
->   any one of the above prevents the warning spew. Maybe we'll need a v6.
->
-> Changes from v3:
->
-> Changes as per Arvind:
-> * only add -Wa,-gdwarf-5 for (LLVM=1|CC=clang)+LLVM_IAS=0 builds.
-> * add -gdwarf-5 to Kconfig shell script.
-> * only run Kconfig shell script for Clang.
->
-> Apologies to Sedat and Nathan; I appreciate previous testing/review, but
-> I did no carry forward your Tested-by and Reviewed-by tags, as the
-> patches have changed too much IMO.
->
-> Changes from v2:
-> * Drop two of the earlier patches that have been accepted already.
-> * Add measurements with GCC 10.2 to commit message.
-> * Update help text as per Arvind with help from Caroline.
-> * Improve case/wording between DWARF Versions as per Masahiro.
->
-> Changes from the RFC:
-> * split patch in 3 patch series, include Fangrui's patch, too.
-> * prefer `DWARF vX` format, as per Fangrui.
-> * use spaces between assignment in Makefile as per Masahiro.
-> * simplify setting dwarf-version-y as per Masahiro.
-> * indent `prompt` in Kconfig change as per Masahiro.
-> * remove explicit default in Kconfig as per Masahiro.
-> * add comments to test_dwarf5_support.sh.
-> * change echo in test_dwarf5_support.sh as per Masahiro.
-> * remove -u from test_dwarf5_support.sh as per Masahiro.
-> * add a -gdwarf-5 cc-option check to Kconfig as per Jakub.
->
-> Nick Desaulniers (2):
->   Kbuild: make DWARF version a choice
->   Kbuild: implement support for DWARF v5
->
->  Makefile                          | 16 ++++++++++--
->  include/asm-generic/vmlinux.lds.h |  6 ++++-
->  lib/Kconfig.debug                 | 41 ++++++++++++++++++++++++++-----
->  scripts/test_dwarf5_support.sh    |  8 ++++++
->  4 files changed, 62 insertions(+), 9 deletions(-)
->  create mode 100755 scripts/test_dwarf5_support.sh
->
-> --
-> 2.30.0.365.g02bc693789-goog
->
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
