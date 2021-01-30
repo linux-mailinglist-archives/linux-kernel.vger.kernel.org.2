@@ -2,149 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5CB0309543
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 14:17:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5AB309530
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 14:01:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231228AbhA3NQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 08:16:24 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:50536 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbhA3NQV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 08:16:21 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10UDENVi011926;
-        Sat, 30 Jan 2021 07:14:23 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1612012463;
-        bh=L/J5I2KkIPJZNSrlFwIakXVyKMxvDh3HJ0FmCiOuwPw=;
-        h=Date:From:To:CC:Subject;
-        b=ouyubAwo4PnPE01Q08BEqhi724AsfGMiJlWnlepFMHZFvV1ABKHVyZPo7UcpOlj0x
-         AqPeoY+7W3LYXeQcdJhBbpXQWLnw6Y2KG0klguw8Y5OWX8JRWDAFwMDEj0UCevphFM
-         wbgu0lRG9fdc7UwLKDEehrcWsfwplb8Kft+fvnik=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10UDENSF105895
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 30 Jan 2021 07:14:23 -0600
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Sat, 30
- Jan 2021 07:14:23 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Sat, 30 Jan 2021 07:14:23 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10UDEMWC070354;
-        Sat, 30 Jan 2021 07:14:23 -0600
-Date:   Sat, 30 Jan 2021 07:14:22 -0600
-From:   Nishanth Menon <nm@ti.com>
-To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        <arm@kernel.org>, <soc@kernel.org>
-CC:     Tero Kristo <kristo@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL 2/2] arm64: TI K3 DT updates for v5.12
-Message-ID: <20210130131422.yvq2edxfongys7x5@pendant>
+        id S231533AbhA3NBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 08:01:40 -0500
+Received: from mail-eopbgr680048.outbound.protection.outlook.com ([40.107.68.48]:48755
+        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231228AbhA3NBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 08:01:39 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ESBq9lbIiFHHI8TkgS8epzxVXzr1sZ1HjLLETd9zak8dr5Lz/c9mIo7/425vk3WvmyuMBd8m5Bfg5kIaH/nfoWcKZWB//LPLIFfKrnYH2iOSRNoJRjU7jJecktctLuL70FtRqvGmnoxTMSuTSzYnyAobMIyIWENmM/K2GDgEFBfORRf2puhIxSs3mwgtyc0YfcbcbheWJdpGwYdnMA2vMp63hRXpl8zc8Ly25jhaqARE5FBiOYsi8Mafelwr7sYa7Dx6vaOcmZtVfF1RvYOjL03lWK/6Tm4znIW1GPjXpyG7wvBIuwL2b4VXyjPpkldvEDa3x25D3EZoW+GVvXDWqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pJiRBoN7CJQ/ETQzIalRqR5gqL72iqIiL/RKYWpu+2g=;
+ b=LGtdAIakngqr3OHcN4TQbLdDPUIgQb/BUVE9hlu4k6RhKUEhrOY3gHAg1rEYRbqiLhwgWiaYF1WYfTWMgTtdWM57dpGw3JALKYmHLyOH0LVdLnxVcAw/5zhwWlMXLfive0nM5O3qokK7WEEe/082WKKx4psPrvX9G17/FmKf1HgYofpKlOIdCXZlZBA0q9FISWMyfJ7Hg7ut3mQgEP4yOZZQqyaKhDVUWMdVkCHwm1oDwgzakScQvFSDAlNe2AoQIXfCkC6UXPZiFjaylvM90lKpD31pzxqTBmRuDkadLDCuX+busPLRk7hauY6lr9RUibnOqs3KQ+GoII4S3c6lWQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pJiRBoN7CJQ/ETQzIalRqR5gqL72iqIiL/RKYWpu+2g=;
+ b=jutWqr+oGjELeREX+QyN3JhMADcvdymEftojVmZ8WOd5kfD2ZBAUawsP4zaqZVzsT5XcChPYrROQy/E6TR12G3KVJfqs6d647tlHK2aa60R4q8Nm9zT+i08EmGX4QtJeWMHANOMbqS433p5bXE78FoTYAxN7A4b9TKplM9Io0w8=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=windriver.com;
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by BYAPR11MB3352.namprd11.prod.outlook.com (2603:10b6:a03:1d::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.15; Sat, 30 Jan
+ 2021 13:00:55 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::89a3:42c3:6509:4acd]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::89a3:42c3:6509:4acd%4]) with mapi id 15.20.3784.017; Sat, 30 Jan 2021
+ 13:00:54 +0000
+From:   qiang.zhang@windriver.com
+To:     urezki@gmail.com, paulmck@kernel.org, joel@joelfernandes.org
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] kvfree_rcu: Release page cache under memory pressure
+Date:   Sat, 30 Jan 2021 21:18:51 +0800
+Message-Id: <20210130131851.23285-1-qiang.zhang@windriver.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK0PR03CA0108.apcprd03.prod.outlook.com
+ (2603:1096:203:b0::24) To BYAPR11MB2632.namprd11.prod.outlook.com
+ (2603:10b6:a02:c4::17)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gkd7b7sfbn2ezeg6"
-Content-Disposition: inline
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-lpg-core1-vm1.wrs.com (60.247.85.82) by HK0PR03CA0108.apcprd03.prod.outlook.com (2603:1096:203:b0::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Sat, 30 Jan 2021 13:00:52 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f948e57b-fdab-40bf-ded5-08d8c51f1417
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3352:
+X-Microsoft-Antispam-PRVS: <BYAPR11MB3352F82C896E35C0D7B572FBFFB89@BYAPR11MB3352.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:883;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: m0wGtuzBiSyO31n+9BW4xM+aHM6qLFkBjJq/lTkMuaQk4SUtZYm8t2Y33JXi7vrd/hbrjZo7tXNOdt8fJT5uzXU2phMf0QYMuWYM73MfieAT+IVaIbnb5LYlkqMygOfpHK8LiV2uwrQdihrQUrRBPYiih1RA88DP53BXBrUgJlar9lX4QoFcXTi2VBh5hLOwc3KzF/IbkL8ZZwkFQGa+sbgV9l+frWFMd6SQKssmcxnt3I9L3cgydjnx/VXvlduBO4wqd63/TsRsdcaEHuivJQioBzkhR4Dw4Nn37T3OFYr9oqFH76QeXUhMKuqAKg00Yoh4qIPbzgPRCk8bPcVj34nOAkvWybGqxV6cKTfVYVezbZWl5oEzewDGYdn7JB/wGQD+pBwMrbY/34Bu36u6yGOeJ3i/4qd16WYwTBENw+IWq2AEGBJPB3jQr9fIfxgeUtvN2qoxGafI9rmgo9RDPiscgAK2CINWkGmsAp8N40Ll0xtoLV0oLrIcY/fMw80kxVq9s/hvzO1Z4cGRscpNOA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39850400004)(376002)(136003)(396003)(366004)(956004)(66556008)(6512007)(52116002)(26005)(9686003)(86362001)(8676002)(16526019)(2616005)(66946007)(186003)(66476007)(478600001)(83380400001)(2906002)(6486002)(5660300002)(36756003)(8936002)(316002)(6506007)(4326008)(1076003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?OfOfHBytxW6fC3VHPoLC/NYD9zvEsLatu4MR7A3XSNOZP/1T77CkJU3pFzp6?=
+ =?us-ascii?Q?NmYb6NLem1DFYhc5UMikhei56Iy9UsY1KW83UE89YaJ4hUuzq/voXpfl7Ixt?=
+ =?us-ascii?Q?onISzdmC7f5MHo0KIfrhGBg8IOZkBQUKQjSyPlDWcIRXgM1iq9PPgAAn8H6x?=
+ =?us-ascii?Q?INYvCoPoGy2ThKKweQ2ScfSG1ZH2Pbf1lD81MBti9ckxojk+57G62ynoI+E1?=
+ =?us-ascii?Q?Ada3/CmnqAE9Xxs4nJSyUIlTvCYM4bfishwwzOZ3Z5qlYE8rmrL1LvypXjQE?=
+ =?us-ascii?Q?MxrK/J3GefjLenZu0cw+1gvHE5Ae+LSh1d5DXGI/1qqyEdg1ID6fkP2smmxm?=
+ =?us-ascii?Q?ROV0qIk+PL+AHOrNAIW8su3UQq/tkUDQ1JozDCOw1UmcGc7aiT8MBqd00nLT?=
+ =?us-ascii?Q?r2wwCEmF+nk8/xn+fzj3Y/BsdIg7P9f3qcWuTPoPbf4W9T0UfowpZEZVRcMa?=
+ =?us-ascii?Q?r4XAdXnvTSWcIEVlfSUxBI0dNEVIP9olswNeEL27bf5Yt/zuouFYg7Zz8pF1?=
+ =?us-ascii?Q?Nfas1vNsuZP49hCUrJYL4HSl+Ysgn7ut2X1yJi7hNkJjrZu/eOAKXcxxWYrF?=
+ =?us-ascii?Q?DMNhCHGnITCqRE8T22q/MI/430E0GaH/G7SrprAU46a/40Luh0SrMEVenZ/v?=
+ =?us-ascii?Q?dkfTsfazPKylXB1RA75g++Udbye9ixuhGsnAvFO935EjepV74LVBuCkk8X1k?=
+ =?us-ascii?Q?Ue91wpJgmwux9sxIAfQhzeRjCR4tMlhRJWYOtsoGsN56u3n4stLREoziFlIB?=
+ =?us-ascii?Q?7OT4ty8cIqeBpINOSJu3m21HMM9g9l+TwmUxxe1WlGdo/iVzYpobu/KTfetK?=
+ =?us-ascii?Q?fwmUR62xFkWEonDRCGh2Lx05RVC7Nt7oIc7wNxkiKaA4UgZLita0c/tBIdOP?=
+ =?us-ascii?Q?S4v01JH4v8ViQnOiaT1susAZUOAX2LepUgUPMW/RcgQFoloXfiTBD6kpx6Cx?=
+ =?us-ascii?Q?4WmIbcJtBgUAzQghQqiJXdhyp6jmABUgBs+x7cokd15636VukJ9sX6/izuFA?=
+ =?us-ascii?Q?l1Vr25pk8KYURQV3rchO5EbnxYa4zOCpiwHNFKFPKQqGagCXgv5TMsU3d3er?=
+ =?us-ascii?Q?4lEaWRZG?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f948e57b-fdab-40bf-ded5-08d8c51f1417
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Jan 2021 13:00:54.7840
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: T35+FNocrNr6Fm3RSQUfS1PO9EpNtkyNcPFjRkrZ6VPJQzYSHoq8gJOo5oKx9M2e2hXK9hc4/CO1SI3UQeTfrBgwlr8oBYrsncKTaRXZ0rs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3352
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---gkd7b7sfbn2ezeg6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+From: Zqiang <qiang.zhang@windriver.com>
 
-Hi,
+Add free per-cpu existing krcp's page cache operation, when
+the system is under memory pressure.
 
-Please pull the following device tree changes for v5.12 cycle.
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+---
+ kernel/rcu/tree.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index c1ae1e52f638..644b0f3c7b9f 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -3571,17 +3571,41 @@ void kvfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ }
+ EXPORT_SYMBOL_GPL(kvfree_call_rcu);
+ 
++static int free_krc_page_cache(struct kfree_rcu_cpu *krcp)
++{
++	unsigned long flags;
++	struct llist_node *page_list, *pos, *n;
++	int freed = 0;
++
++	raw_spin_lock_irqsave(&krcp->lock, flags);
++	page_list = llist_del_all(&krcp->bkvcache);
++	krcp->nr_bkv_objs = 0;
++	raw_spin_unlock_irqrestore(&krcp->lock, flags);
++
++	llist_for_each_safe(pos, n, page_list) {
++		free_page((unsigned long)pos);
++		freed++;
++	}
++
++	return freed;
++}
++
+ static unsigned long
+ kfree_rcu_shrink_count(struct shrinker *shrink, struct shrink_control *sc)
+ {
+ 	int cpu;
+ 	unsigned long count = 0;
++	unsigned long flags;
+ 
+ 	/* Snapshot count of all CPUs */
+ 	for_each_possible_cpu(cpu) {
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+ 
+ 		count += READ_ONCE(krcp->count);
++
++		raw_spin_lock_irqsave(&krcp->lock, flags);
++		count += krcp->nr_bkv_objs;
++		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+ 	}
+ 
+ 	return count;
+@@ -3598,6 +3622,8 @@ kfree_rcu_shrink_scan(struct shrinker *shrink, struct shrink_control *sc)
+ 		struct kfree_rcu_cpu *krcp = per_cpu_ptr(&krc, cpu);
+ 
+ 		count = krcp->count;
++		count += free_krc_page_cache(krcp);
++
+ 		raw_spin_lock_irqsave(&krcp->lock, flags);
+ 		if (krcp->monitor_todo)
+ 			kfree_rcu_drain_unlock(krcp, flags);
+-- 
+2.17.1
 
-  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/nmenon/linux.git tags/ti-k3=
--dt-for-v5.12
-
-for you to fetch changes up to ae10ce938da59c19f303a91197ea7d664d1bc080:
-
-  arm64: dts: ti: k3*: Fixup PMU compatibility to be CPU specific (2021-01-=
-28 08:51:18 -0600)
-
-----------------------------------------------------------------
-Devicetree changes for TI K3 platforms for v5.12 merge window:
-
-- Common fixups: PMU compatible, MMC dtbs_check warnings squelch
-
-- J7200: R5F, PCIe, SERDES support
-
-- J721E: PCIE fixups
-
-----------------------------------------------------------------
-Grygorii Strashko (1):
-      arm64: dts: ti: k3: mmc: fix dtbs_check warnings
-
-Kishon Vijay Abraham I (6):
-      arm64: dts: ti: k3-j721e-main: Fix supported max outbound regions
-      arm64: dts: ti: k3-j721e-main: Remove "syscon" nodes added for pcieX_=
-ctrl
-      arm64: dts: ti: k3-j7200-main: Add SERDES and WIZ device tree node
-      arm64: dts: ti: k3-j7200-main: Add PCIe device tree node
-      arm64: dts: ti: k3-j7200-common-proc-board: Enable SERDES0
-      arm64: dts: ti: k3-j7200-common-proc-board: Enable PCIe
-
-Nishanth Menon (1):
-      arm64: dts: ti: k3*: Fixup PMU compatibility to be CPU specific
-
-Suman Anna (3):
-      arm64: dts: ti: k3-j7200: Add R5F cluster nodes
-      arm64: dts: ti: k3-j7200-som-p0: Add mailboxes to R5Fs
-      arm64: dts: ti: k3-j7200-som-p0: Add DDR carveout memory nodes for R5=
-Fs
-
- arch/arm64/boot/dts/ti/k3-am65-main.dtsi           |   4 +-
- arch/arm64/boot/dts/ti/k3-am65.dtsi                |   2 +-
- .../boot/dts/ti/k3-j7200-common-proc-board.dts     |  38 +++++
- arch/arm64/boot/dts/ti/k3-j7200-main.dtsi          | 161 +++++++++++++++++=
-+++-
- arch/arm64/boot/dts/ti/k3-j7200-mcu-wakeup.dtsi    |  42 +++++-
- arch/arm64/boot/dts/ti/k3-j7200-som-p0.dtsi        |  80 +++++++++-
- arch/arm64/boot/dts/ti/k3-j7200.dtsi               |   2 +-
- arch/arm64/boot/dts/ti/k3-j721e-main.dtsi          |  70 +++------
- arch/arm64/boot/dts/ti/k3-j721e.dtsi               |   2 +-
- 9 files changed, 336 insertions(+), 65 deletions(-)
---=20
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5=
- 849D 1736 249D
-
---gkd7b7sfbn2ezeg6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE+KKGk1TrgjIXoxo03bWEnRc2JJ0FAmAVW6cACgkQ3bWEnRc2
-JJ20bQ//c3SydLlkqx1GMrOPBO5n/hpPlJ+C+LddeGifiW1i4Iof+fu8Fj4GgLZF
-O8Q47fGzcAXdjGv3I8jn62K2CHocWAyoKQ70WoJPtLOzLd57hQ4QooQhHHi2edV7
-uJtSh5tWOG7M/mCibs8lik0XROfPRUbYG8Ax/+yNt0zopO8W5nsd15ZzeeIOnuN1
-MWclPoRBlt5Eaa/Br2ettDqBmOJa2mDaYOHQDRfkNrSDBo52h7aVX27HyLOkAj35
-4SwpAT3vUjGq1JH4R61+USJXii06FrCtxMB6cczuewdQkM6HEL/f1VsUzKxfHj8L
-DZhfsnwW5upCyWoogvP7zIwP4qbWW5P7F/NrdyrTd0arBdgXFvyXt7c/ZRIF1i25
-TSo7YkymscR0ZH4Xetr78xtU0GJVfwKmpH5Iv2sbCGuYXo2T+Y1DpdotyQ0Vp+cw
-wdkowdh1jEwZ+nNuEi/sNHBRrIOs0Hn1FyihXD1KcjsuDR5n1OZweHsRKbBnoag8
-RCJYnAMNadlqOg/o98SB9ur2RixSrvJi2UK4UtlPv42NqLDrHb7w5L+OFrQOcWxV
-R31/agA5K3JKyjF8eEQETKHcN1jCltiEfWNzrSoYw80FYQ2K3hweVxHEoMEVg1iP
-mRVvb4XjUjlUGEH+fUDgK+LJvrOkw8cBxr0JRFyhBwgpzLeQNXM=
-=MaoA
------END PGP SIGNATURE-----
-
---gkd7b7sfbn2ezeg6--
