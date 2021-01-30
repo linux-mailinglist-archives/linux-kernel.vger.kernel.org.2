@@ -2,199 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 191723092BD
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 09:59:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5388F3092ED
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 10:12:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233834AbhA3I6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 03:58:03 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:16935 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230518AbhA3FYn (ORCPT
+        id S233726AbhA3EVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 29 Jan 2021 23:21:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233629AbhA3Dsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 00:24:43 -0500
-Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 29 Jan 2021 21:20:28 -0800
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 29 Jan 2021 21:20:25 -0800
-X-QCInternal: smtphost
-Received: from gokulsri-linux.qualcomm.com ([10.201.2.207])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 30 Jan 2021 10:50:14 +0530
-Received: by gokulsri-linux.qualcomm.com (Postfix, from userid 432570)
-        id AFD9A219E7; Sat, 30 Jan 2021 10:50:14 +0530 (IST)
-From:   Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
-To:     sboyd@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org,
-        david.brown@linaro.org, devicetree@vger.kernel.org,
-        jassisinghbrar@gmail.com, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, mark.rutland@arm.com,
-        mturquette@baylibre.com, ohad@wizery.com, robh+dt@kernel.org,
-        sricharan@codeaurora.org, gokulsri@codeaurora.org
-Subject: [PATCH v8 9/9] arm64: dts: qcom: Enable Q6v5 WCSS for ipq8074 SoC
-Date:   Sat, 30 Jan 2021 10:50:13 +0530
-Message-Id: <1611984013-10201-10-git-send-email-gokulsri@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1611984013-10201-1-git-send-email-gokulsri@codeaurora.org>
-References: <1611984013-10201-1-git-send-email-gokulsri@codeaurora.org>
+        Fri, 29 Jan 2021 22:48:30 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3477C0613D6
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 17:59:27 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id by1so15681889ejc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 29 Jan 2021 17:59:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EWo4KjlIrzjbnoyurSSBVNGq8JCtPRxkHzDKnUW80j0=;
+        b=P858ojYjTMLet0tza2ROjVLugxIkJKWKScHcI99wlUNAmdxT/q0A+8k3B4mv69C6zW
+         pZ3i9rKjIGm6RktXcFu6kGETkt4+Jprl742+JAq4QxjvLpmTtFhN3miGluA4/V/VKeJv
+         9nZml1zipllmwJKOv8oSAuBaFNUHz9Rl4zI9JcuPjIHxoW3Bl2UIz3T7v/Mhw5V6YC6F
+         XVFOnWy13TgIeKZ9JZEcevyMlunFbyxb2gWPKmVAZuGq6Nh186yBr2KUEe4zNweU597Q
+         J2WEvdpkdziTYPjCr6ZlwS9Ei/JRG+DNDI+wOaCr7qodi4DudmJQBCv2t/yAQ5R6U3fT
+         df+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EWo4KjlIrzjbnoyurSSBVNGq8JCtPRxkHzDKnUW80j0=;
+        b=bd5X+C7jUOV74a+fExcmzlsEd8C3liZQZWkap8Yx3thk5SolLDwOezoDLteQQSgLAP
+         u1xK37eKanpUyMmaFHAtD5tzzjO4B9bWdMc7nQOHvxB7NL1OxwhJ2ab5rV1PijnD1vmV
+         LDdHEgnCvyg8GkvL/e7/ephb+90A+Rb7adHbgkcouERJvtH8M8UxBUrgshlzIfoP/QJW
+         fRCX4XXfXx58BcmUf0wx7KpjBC0pFaIsdeX6U7RV56yg0PSbgOLSTpVsXiyrdEFiqZzj
+         G5bzlgfoPOGwlYB+/ldPwcfjuNH4s2PqSbB8jMA7z2o9b0vu6AQETsNX8u1LhCFYHiOb
+         gNvA==
+X-Gm-Message-State: AOAM531ovdq8tqgBg02K1SfqOqJgH6cP2d6xyGM4CRaFuDUN1HJYx/Oj
+        unQElZtPWAoMyVHdYIsX2rhB9RqveTBaE2mRwkrXUA==
+X-Google-Smtp-Source: ABdhPJyteHUAK6EjHEtc9xneY7O6pvnG4P0dUDapv2YrqKHQ9TTcKg3Asw/O8AVJSbRScvPOSKnGqXrPFZiktJtSdM8=
+X-Received: by 2002:a17:906:f919:: with SMTP id lc25mr7315521ejb.323.1611971966715;
+ Fri, 29 Jan 2021 17:59:26 -0800 (PST)
+MIME-Version: 1.0
+References: <161117153248.2853729.2452425259045172318.stgit@dwillia2-desk3.amr.corp.intel.com>
+In-Reply-To: <161117153248.2853729.2452425259045172318.stgit@dwillia2-desk3.amr.corp.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 29 Jan 2021 17:59:24 -0800
+Message-ID: <CAPcyv4jEYPsyh0bhbtKGRbK3bgp=_+=2rjx4X0gLi5-25VvDyg@mail.gmail.com>
+Subject: Re: [PATCH 0/3] cdev: Generic shutdown handling
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Ira Weiny <ira.weiny@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+        Alexandre Belloni <alexandre.belloni@free-electrons.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable remoteproc WCSS PIL driver with glink
-and ssr subdevices. Also configures shared memory
-and enables smp2p and mailboxes required for IPC.
+On Wed, Jan 20, 2021 at 11:38 AM Dan Williams <dan.j.williams@intel.com> wrote:
+>
+> After reviewing driver submissions with new cdev + ioctl usages one
+> common stumbling block is coordinating the shutdown of the ioctl path,
+> or other file operations, at driver ->remove() time. While cdev_del()
+> guarantees that no new file descriptors will be established, operations
+> on existing file descriptors can proceed indefinitely.
+>
+> Given the observation that the kernel spends the resources for a percpu_ref
+> per request_queue shared with all block_devices on a gendisk, do the
+> same for all the cdev instances that share the same
+> cdev_add()-to-cdev_del() lifetime.
+>
+> With this in place cdev_del() not only guarantees 'no new opens', but it
+> also guarantees 'no new operations invocations' and 'all threads running
+> in an operation handler have exited that handler'.
 
-Signed-off-by: Gokul Sriram Palanisamy <gokulsri@codeaurora.org>
-Signed-off-by: Sricharan R <sricharan@codeaurora.org>
-Signed-off-by: Nikhil Prakash V <nprakash@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/ipq8074.dtsi | 121 ++++++++++++++++++++++++++++++++++
- 1 file changed, 121 insertions(+)
+Prompted by the reaction I realized that this is pushing an incomplete
+story about why this is needed, and the "queued" concept is way off
+base. The problem this is trying to solve is situations like this:
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-index 6e719b4..9bde3f9c 100644
---- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-@@ -76,12 +76,66 @@
- 		method = "smc";
- 	};
- 
-+	reserved-memory {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		smem_region: memory@4ab00000 {
-+			no-map;
-+			reg = <0x0 0x4ab00000 0x0 0x00100000>;
-+		};
-+
-+		q6_region: memory@4b000000 {
-+			no-map;
-+			reg = <0x0 0x4b000000 0x0 0x05f00000>;
-+		};
-+	};
-+
- 	firmware {
- 		scm {
- 			compatible = "qcom,scm-ipq8074", "qcom,scm";
- 		};
- 	};
- 
-+	tcsr_mutex: hwlock@193d000 {
-+		compatible = "qcom,tcsr-mutex";
-+		syscon = <&tcsr_mutex_regs 0 0x80>;
-+		#hwlock-cells = <1>;
-+	};
-+
-+	smem {
-+		compatible = "qcom,smem";
-+		memory-region = <&smem_region>;
-+		hwlocks = <&tcsr_mutex 0>;
-+	};
-+
-+	wcss: smp2p-wcss {
-+		compatible = "qcom,smp2p";
-+		qcom,smem = <435>, <428>;
-+
-+		interrupt-parent = <&intc>;
-+		interrupts = <0 322 1>;
-+
-+		mboxes = <&apcs_glb 9>;
-+
-+		qcom,local-pid = <0>;
-+		qcom,remote-pid = <1>;
-+
-+		wcss_smp2p_out: master-kernel {
-+			qcom,entry-name = "master-kernel";
-+			qcom,smp2p-feature-ssr-ack;
-+			#qcom,smem-state-cells = <1>;
-+		};
-+
-+		wcss_smp2p_in: slave-kernel {
-+			qcom,entry-name = "slave-kernel";
-+
-+			interrupt-controller;
-+			#interrupt-cells = <2>;
-+		};
-+	};
-+
- 	soc: soc {
- 		#address-cells = <0x1>;
- 		#size-cells = <0x1>;
-@@ -695,5 +749,72 @@
- 				      "axi_m_sticky";
- 			status = "disabled";
- 		};
-+
-+		tcsr_q6: syscon@1945000 {
-+			compatible = "syscon";
-+			reg = <0x01945000 0xe000>;
-+		};
-+
-+		tcsr_mutex_regs: syscon@193d000 {
-+			compatible = "syscon";
-+			reg = <0x01905000 0x8000>;
-+		};
-+
-+		apcs_glb: mailbox@b111000 {
-+			compatible = "qcom,ipq8074-apcs-apps-global";
-+			reg = <0x0b111000 0x1000>;
-+
-+			#mbox-cells = <1>;
-+		};
-+
-+		q6v5_wcss: q6v5_wcss@cd00000 {
-+			compatible = "qcom,ipq8074-wcss-pil";
-+			reg = <0x0cd00000 0x4040>,
-+			      <0x004ab000 0x20>;
-+			reg-names = "qdsp6",
-+				    "rmb";
-+			qca,auto-restart;
-+			qca,extended-intc;
-+			interrupts-extended = <&intc 0 325 1>,
-+					      <&wcss_smp2p_in 0 0>,
-+					      <&wcss_smp2p_in 1 0>,
-+					      <&wcss_smp2p_in 2 0>,
-+					      <&wcss_smp2p_in 3 0>;
-+			interrupt-names = "wdog",
-+					  "fatal",
-+					  "ready",
-+					  "handover",
-+					  "stop-ack";
-+
-+			resets = <&gcc GCC_WCSSAON_RESET>,
-+				 <&gcc GCC_WCSS_BCR>,
-+				 <&gcc GCC_WCSS_Q6_BCR>;
-+
-+			reset-names = "wcss_aon_reset",
-+				      "wcss_reset",
-+				      "wcss_q6_reset";
-+
-+			clocks = <&gcc GCC_PRNG_AHB_CLK>;
-+			clock-names = "prng";
-+
-+			qcom,halt-regs = <&tcsr_q6 0xa000 0xd000 0x0>;
-+
-+			qcom,smem-states = <&wcss_smp2p_out 0>,
-+					   <&wcss_smp2p_out 1>;
-+			qcom,smem-state-names = "shutdown",
-+						"stop";
-+
-+			memory-region = <&q6_region>;
-+
-+			glink-edge {
-+				interrupts = <GIC_SPI 321 IRQ_TYPE_EDGE_RISING>;
-+				qcom,remote-pid = <1>;
-+				mboxes = <&apcs_glb 8>;
-+
-+				rpm_requests {
-+					qcom,glink-channels = "IPCRTR";
-+				};
-+			};
-+		};
- 	};
- };
--- 
-2.7.4
+long xyz_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+{
+        xyz_ioctl_dev = file->private_data;
+        xyz_driver_context = xyz_ioctl_dev->context;
+        ...
+}
 
+int xyz_probe(struct device *dev)
+{
+        xyz_driver_context = devm_kzalloc(...);
+        ...
+        xyz_ioctl_dev = kmalloc(...);
+        device_initialize(&xyz_ioctl_dev->dev);
+        xyz_ioctl_dev->context = xyz_driver_context;
+      ...
+        cdev_device_add(&xyz_ioctl_dev->cdev, xyz_ioctl_dev->dev);
+}
+
+...where a parent driver allocates context tied to the lifetime of the
+parent device driver-bind-lifetime, and that context ends up getting
+used in the ioctl path. I interpret Greg's assertion "if you do this
+right you don't have this problem" as "don't reference anything with a
+lifetime shorter than the xyz_ioctl_dev lifetime in your ioctl
+handler". That is true, but it can be awkward to constraint
+xyz_driver_context to a sub-device, and it constrains some of the
+convenience of devm. So the goal is to have a cdev api that accounts
+for all the common lifetimes when devm is in use. So I'm now thinking
+of an api like:
+
+    devm_cdev_device_add(struct device *host, struct cdev *cdev,
+struct device *dev)
+
+...where @host bounds the lifetime of data used by the cdev
+file_operations, and @dev is the typical containing structure for
+@cdev. Internally I would refactor the debugfs mechanism for flushing
+in-flight file_operations so that is shared by the cdev
+implementation. Either adopt the debugfs method for file_operations
+syncing, or switch debugfs to percpu_ref (leaning towards the former).
+
+Does this clarify the raised concerns?
