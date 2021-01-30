@@ -2,83 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5D6E309522
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 13:38:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB7A309527
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 13:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231562AbhA3Mhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 07:37:42 -0500
-Received: from foss.arm.com ([217.140.110.172]:35990 "EHLO foss.arm.com"
+        id S230135AbhA3Mo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 07:44:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231252AbhA3Mhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 07:37:38 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1F28FED1;
-        Sat, 30 Jan 2021 04:36:53 -0800 (PST)
-Received: from [10.37.8.6] (unknown [10.37.8.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0AA313F71B;
-        Sat, 30 Jan 2021 04:36:50 -0800 (PST)
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Subject: Re: [PATCH v10 0/4] arm64: ARMv8.5-A: MTE: Add async mode support
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        id S229786AbhA3Mox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 07:44:53 -0500
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E63E564E09;
+        Sat, 30 Jan 2021 12:44:11 +0000 (UTC)
+Date:   Sat, 30 Jan 2021 07:44:10 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Nikolay Borisov <nborisov@suse.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>
-References: <20210129184905.29760-1-vincenzo.frascino@arm.com>
- <CAAeHK+w5hHcN-4Q8KYpMnG1rQvz9N_kXc7=uY07nH=937MUTjA@mail.gmail.com>
-Message-ID: <4e14f83d-26a6-b06a-7ef6-f11dcd5457d2@arm.com>
-Date:   Sat, 30 Jan 2021 12:40:47 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter()
+ with nmi_enter()")
+Message-ID: <20210130074410.6384c2e2@oasis.local.home>
+In-Reply-To: <YBUYsFlxjsQxuvfB@hirez.programming.kicks-ass.net>
+References: <YBMBTsY1uuQb9wCP@hirez.programming.kicks-ass.net>
+        <20210129013452.njuh3fomws62m4rc@ast-mbp.dhcp.thefacebook.com>
+        <YBPNyRyrkzw2echi@hirez.programming.kicks-ass.net>
+        <20210129224011.81bcdb3eba1227c414e69e1f@kernel.org>
+        <20210129105952.74dc8464@gandalf.local.home>
+        <20210129162438.GC8912@worktop.programming.kicks-ass.net>
+        <CAADnVQLMqHpSsZ1OdZRFmKqNWKiRq3dxRxw+y=kvMdmkN7htUw@mail.gmail.com>
+        <20210129175943.GH8912@worktop.programming.kicks-ass.net>
+        <20210129140103.3ce971b7@gandalf.local.home>
+        <20210129162454.293523c6@gandalf.local.home>
+        <YBUYsFlxjsQxuvfB@hirez.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CAAeHK+w5hHcN-4Q8KYpMnG1rQvz9N_kXc7=uY07nH=937MUTjA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrey,
+On Sat, 30 Jan 2021 09:28:32 +0100
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-On 1/29/21 7:21 PM, Andrey Konovalov wrote:
->> The series is based on linux-next/akpm.
->>
->> To simplify the testing a tree with the new patches on top has been made
->> available at [1].
->>
->> [1] https://git.gitlab.arm.com/linux-arm/linux-vf.git mte/v10.async.akpm
->>
->> Changes:
->> --------
->> v10:
->>   - Rebase on the latest linux-next/akpm
->>   - Address review comments.
-> Thinking again about this: properly fixing that tracing issue is
-> similar to fixing the issue with the tests. Let's do both as a part of
-> this series.
+> On Fri, Jan 29, 2021 at 04:24:54PM -0500, Steven Rostedt wrote:
+> > Specifically, kprobe and ftrace callbacks may have this:
+> > 
+> > 	if (in_nmi())
+> > 		return;
+> > 
+> > 	raw_spin_lock_irqsave(&lock, flags);
+> > 	[..]
+> > 	raw_spin_unlock_irqrestore(&lock, flags);
+> > 
+> > Which is totally fine to have,  
 > 
-> Here's a tree with the fixes. I've marked the ones that need to be
-> squashed with "fix!". PTAL, and if the additions look good, please
-> send v11 with them included.
+> Why? There's a distinct lack of explaining here.
 > 
-> https://github.com/xairy/linux/commits/vf-v10.async.akpm-fixes
+> Note that we ripped out all such dodgy locking from kretprobes.
 
-I checked your code this morning and it seems OK (very similar to my proposal in
-logic but done in KASAN code as you anticipated).
+Actually, I think you helped explain the distinction. You mention
+"kretpobes" do you mean the infrastructure of kretprobes or all its
+users?
 
-I am fine to add the changes to my patches but before then that I would like to
-conduct some testing, hence I will most likely have v11 sometimes this
-afternoon/evening UK time.
+The infrastructure of ftrace and kprobes can work in any context, it
+does not mean that the callbacks must. Again, these are more like
+exceptions. Why have "in_nmi()"? If anything that can be called by an
+NMI should just work, right? That's basically your argument for having
+ftrace and kprobes set "in_nmi".
 
--- 
-Regards,
-Vincenzo
+You can have locking in NMIs if the locking is *only* in NMI handlers,
+right? If that's the case, then so should ftrace and kprobe callbacks.
+
+The stack tracer checks the size of the stack, compares it to the
+largest recorded size, and if it's bigger, it will save the stack. But
+if this happens on two CPUs at the same time, only one can do the
+recording at the same time. To synchronize this, a spin lock must be
+taken. Similar to spin locks in an NMI.
+
+But the problem here is, the callbacks can also be done from an NMI
+context, so if we are in NMI, we don't want to take any locks, and
+simply don't record the stack traces from NMIs.
+
+The more I think about it, the more I hate the idea that ftrace
+callbacks and kprobes are considered NMIs. Simply because they are not!
+
+-- Steve
+
