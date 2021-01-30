@@ -2,87 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E4F30947E
-	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 11:27:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60AC1309488
+	for <lists+linux-kernel@lfdr.de>; Sat, 30 Jan 2021 11:39:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231408AbhA3KZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 05:25:56 -0500
-Received: from mga06.intel.com ([134.134.136.31]:30877 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232221AbhA3KZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 05:25:27 -0500
-IronPort-SDR: 6T4EdNHxqpBM86DW1PHI4oBEkmKLbznH81XNqfpnx1ofSuemt/mV6Wd34BGWniD/51yhGMGnX/
- nbggDZKluB8A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9879"; a="242045419"
-X-IronPort-AV: E=Sophos;i="5.79,388,1602572400"; 
-   d="scan'208";a="242045419"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2021 02:24:46 -0800
-IronPort-SDR: p+YYND8MYMPvvWpMw0zIWV9d8gKMIumjcD0mHYFFIAm6//U4QAYX8iywbuz5cigbYoKtLuUK7q
- DVyfY01yN9eg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,388,1602572400"; 
-   d="scan'208";a="352940978"
-Received: from host.sh.intel.com ([10.239.154.115])
-  by fmsmga007.fm.intel.com with ESMTP; 30 Jan 2021 02:24:44 -0800
-From:   Ye Xiang <xiang.ye@intel.com>
-To:     jikos@kernel.org, jic23@kernel.org,
-        srinivas.pandruvada@linux.intel.com
-Cc:     linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ye Xiang <xiang.ye@intel.com>
-Subject: [PATCH v2] iio: hid-sensor-rotation: Fix quaternion data not correct
-Date:   Sat, 30 Jan 2021 18:25:46 +0800
-Message-Id: <20210130102546.31397-1-xiang.ye@intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S230248AbhA3Kiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 05:38:50 -0500
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:46787 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229726AbhA3Kit (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 05:38:49 -0500
+Received: by mail-ot1-f48.google.com with SMTP id d1so11188155otl.13
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 02:38:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Oa1dItTmNYKHh5pZMMxxZ+w/cNjCvp3zbGbPpGitjzI=;
+        b=gK44i0YIgajYuuAfxQzY1X8lmDseo2JOdrtyI2W4YiNSCndUZz43Wr2BmXVndWMEea
+         reRiXr37WAh6lYcqlzpmUH5cT6j9tlpIWRtf0T92/phIZWLb7txzePiorHMAToC8ZhY3
+         sFEVMjshUDif0Yfu5fjW00AhiXnxoAWyYek2c3rm02ImsoOdPkQeWaUBF4OlRZNX4kY7
+         24/uUDH05vYTtEZNeCyM9ltsqgwg8VbswGzHaW1wQ9d4vrrVmgdt1tkkKfcRMEm09H5d
+         aAp3poeZo3GFno9j7qNrfoJFyUrS5UXkwEbzDQYPrKLtTuYpZfIUhp2fswx8Pts2kbdq
+         lqWA==
+X-Gm-Message-State: AOAM533G6tYf9MPziUnV3ZWHf+nBCrOvDUWjpE3dgzZc/fZxCLsJRCeH
+        IIzUfNXEBanpZZ/YytrOnXehVPKgqvHuUTaw+6E=
+X-Google-Smtp-Source: ABdhPJw3wzLfopSk6lGbIsIPqDvA4bNPP3OSC7KLiyn2sxLU3oC58ZhxZv/Ts6Jv4aL6XloKpg/pRBDqnZEBnR8fG3g=
+X-Received: by 2002:a05:6830:1489:: with SMTP id s9mr5600635otq.250.1612003088374;
+ Sat, 30 Jan 2021 02:38:08 -0800 (PST)
+MIME-Version: 1.0
+References: <0b26eda7-229d-3dc9-f2ae-19b9212fb0ea@rwth-aachen.de>
+In-Reply-To: <0b26eda7-229d-3dc9-f2ae-19b9212fb0ea@rwth-aachen.de>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Sat, 30 Jan 2021 11:37:57 +0100
+Message-ID: <CAMuHMdWcJuBv94pQ-1Bf7QAb6e3=AjSz7GBFCPLqiCJ0CjXjqA@mail.gmail.com>
+Subject: Re: [PATCH] openrisc: use device tree to determine present cpus
+To:     Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
+Cc:     Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        Stafford Horne <shorne@gmail.com>,
+        Openrisc <openrisc@lists.librecores.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Because the data of HID_USAGE_SENSOR_ORIENT_QUATERNION defined by ISH FW
-is s16, but quaternion data type is in_rot_quaternion_type(le:s16/32X4>>0),
-need to transform data type from s16 to s32
+Hi Jan,
 
-Fixes: fc18dddc0625 ("iio: hid-sensors: Added device rotation support")
-Signed-off-by: Ye Xiang <xiang.ye@intel.com>
----
-v2:
-  - Add Fixes tag
+On Fri, Jan 29, 2021 at 7:34 PM Jan Henrik Weinstock
+<jan.weinstock@rwth-aachen.de> wrote:
+> This patch proposes to use the device tree to determine the present cpus
+> instead of assuming all CONFIG_NRCPUS are actually present in the system.
+>
+> Signed-off-by: Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
 
----
- drivers/iio/orientation/hid-sensor-rotation.c | 13 ++++++++++---
- 1 file changed, 10 insertions(+), 3 deletions(-)
+Thanks for your patch!
 
-diff --git a/drivers/iio/orientation/hid-sensor-rotation.c b/drivers/iio/orientation/hid-sensor-rotation.c
-index b0245b3b7ffc..cf7f57a47681 100644
---- a/drivers/iio/orientation/hid-sensor-rotation.c
-+++ b/drivers/iio/orientation/hid-sensor-rotation.c
-@@ -21,7 +21,7 @@ struct dev_rot_state {
- 	struct hid_sensor_common common_attributes;
- 	struct hid_sensor_hub_attribute_info quaternion;
- 	struct {
--		u32 sampled_vals[4] __aligned(16);
-+		s32 sampled_vals[4] __aligned(16);
- 		u64 timestamp __aligned(8);
- 	} scan;
- 	int scale_pre_decml;
-@@ -175,8 +175,15 @@ static int dev_rot_capture_sample(struct hid_sensor_hub_device *hsdev,
- 	struct dev_rot_state *rot_state = iio_priv(indio_dev);
- 
- 	if (usage_id == HID_USAGE_SENSOR_ORIENT_QUATERNION) {
--		memcpy(&rot_state->scan.sampled_vals, raw_data,
--		       sizeof(rot_state->scan.sampled_vals));
-+		if (raw_len / 4 == sizeof(s16)) {
-+			rot_state->scan.sampled_vals[0] = ((s16 *)raw_data)[0];
-+			rot_state->scan.sampled_vals[1] = ((s16 *)raw_data)[1];
-+			rot_state->scan.sampled_vals[2] = ((s16 *)raw_data)[2];
-+			rot_state->scan.sampled_vals[3] = ((s16 *)raw_data)[3];
-+		} else {
-+			memcpy(&rot_state->scan.sampled_vals, raw_data,
-+			       sizeof(rot_state->scan.sampled_vals));
-+		}
- 
- 		dev_dbg(&indio_dev->dev, "Recd Quat len:%zu::%zu\n", raw_len,
- 			sizeof(rot_state->scan.sampled_vals));
+> --- a/arch/openrisc/kernel/smp.c
+> +++ b/arch/openrisc/kernel/smp.c
+
+> @@ -68,14 +69,25 @@ void __init smp_init_cpus(void)
+>
+>   void __init smp_prepare_cpus(unsigned int max_cpus)
+>   {
+> -       int i;
+> +       u32 cpu_id;
+> +       struct device_node *cpu, *cpus;
+>
+>         /*
+>          * Initialise the present map, which describes the set of CPUs
+>          * actually populated at the present time.
+>          */
+> -       for (i = 0; i < max_cpus; i++)
+> -               set_cpu_present(i, true);
+> +       cpus = of_find_node_by_path("/cpus");
+> +       for_each_child_of_node(cpus, cpu) {
+
+for_each_of_cpu_node()?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.17.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
