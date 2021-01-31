@@ -2,90 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A60A309F5F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 00:09:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34100309F63
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 00:11:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230164AbhAaXIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 18:08:34 -0500
-Received: from mail.z3ntu.xyz ([128.199.32.197]:33444 "EHLO mail.z3ntu.xyz"
+        id S229519AbhAaXKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 18:10:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229852AbhAaXHD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 18:07:03 -0500
-Received: by mail.z3ntu.xyz (Postfix, from userid 182)
-        id 30B2AC1BE0; Sun, 31 Jan 2021 23:06:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=z3ntu.xyz; s=z3ntu;
-        t=1612134370; bh=ZcNE+YqUbFE7ilb2fMS+PExd3K0uSxm8CKC9+sqOxqI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=uvMrcujV8rQrnfI7s6nm6b1D/zJcUE6lUEd4Hm4DBgu0JxZ/QSZjbP8oorF9lT3mP
-         FYeFwv0F/V7KV5jtmuNl+sho9k0k3mos/7sUCz0vs2oZchxUw/OVE8wrejHinKh/Iz
-         3o8ZqCW+9/hhOn3stJY0pHiHSn5UCx46n2F5wHoY=
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on arch-vps
-X-Spam-Level: 
-X-Spam-Status: No, score=0.9 required=5.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
-        PDS_OTHER_BAD_TLD,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.4
-Received: from g550jk.localnet (80-110-106-213.cgn.dynamic.surfer.at [80.110.106.213])
-        by mail.z3ntu.xyz (Postfix) with ESMTPSA id 29673C1BDD;
-        Sun, 31 Jan 2021 23:06:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=z3ntu.xyz; s=z3ntu;
-        t=1612134362; bh=ZcNE+YqUbFE7ilb2fMS+PExd3K0uSxm8CKC9+sqOxqI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=P+jxQO2i9OTmHF2los3Da52AJ1CD+bg6SSnGdH4SsZ7unxE0cYr9VPx01GTKErHab
-         aByOXK/nI9vwnyZ+Hqquf6uc3rFWN9KRL1aAdve6ef7FfzchB+GsRuZX0QT6yVTTGS
-         YmiozrIwJnxsZ/30GSXRkXNPAajuYnuJqEATRi6o=
-From:   Luca Weiss <luca@z3ntu.xyz>
-To:     Rob Clark <robdclark@gmail.com>,
-        ~postmarketos/upstreaming@lists.sr.ht
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        Iskren Chernev <iskren.chernev@gmail.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Lee Jones <lee.jones@linaro.org>,
-        Brian Masney <masneyb@onstation.org>,
-        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Iskren Chernev <iskren.chernev@gmail.com>
-Subject: Re: [PATCH] drm/msm/mdp5: Fix wait-for-commit for cmd panels
-Date:   Mon, 01 Feb 2021 00:06:01 +0100
-Message-ID: <2117852.HdQyuLfLX8@g550jk>
-In-Reply-To: <20210127152442.533468-1-iskren.chernev@gmail.com>
-References: <20210127152442.533468-1-iskren.chernev@gmail.com>
+        id S229852AbhAaXIp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 18:08:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27CF964E3D
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 23:08:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612134484;
+        bh=ML3pWEeMMJmeb16X1p/+6mBPgkFQK4NaFqC/8riKPtw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WdOG68mXaJDIsqRTLcV74BNTBwJoJ9ZOKw1ukhHgB3LFm9C+UrxrpaZwUE7GpMG9n
+         3JMJKvqU5mMCrAQOQTXTyeZz5ILv0/U6y3mboocgvofPc3+n5WXMwRTGFdoNeSjwOp
+         H6yt9Q6CrNVRkqq/PJUrlQxv/V+s7KyZy86soiZFsoghVtt8Yas/DV7AHZI2OVCJ2g
+         KsclbcLDLcCSrUO0LSde+dUJ+yaT008fjdAeUin5kN+K/iJlgMqAcCsnMlQmSfVU8N
+         edWP9ZzNy7Z5IcuLM3TUivxoxcvkEDIHbkWEfvcql+iFZDjU/5NGpfrLCNB0wN6tmM
+         DsenuwSY8j1Og==
+Received: by mail-oo1-f52.google.com with SMTP id z36so3807398ooi.6
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 15:08:04 -0800 (PST)
+X-Gm-Message-State: AOAM532GFuZI5kUo+7nXeiOBXqdwu+A4PtUvj7tBRuAeZxRvY+ZnqWLK
+        +PylsOrdMzTkupP0+kqXMOrpvvtsPnhaOHxTrg0=
+X-Google-Smtp-Source: ABdhPJzKIo+RoOFz1jt6KOjS5O4uIwOWM2x1Px4KxJpMLZ7ekDuu6z/sw9emrjv1JYnEjSV3peFpJYk0hXlMfKwIPls=
+X-Received: by 2002:a05:6820:283:: with SMTP id q3mr10094973ood.13.1612134483478;
+ Sun, 31 Jan 2021 15:08:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+References: <20210129190322.GA4590@gaia> <CAHk-=wh=1K+i6cd-Y_St3ktJAdrqriXf=ct-DcFUR2GkrraLaA@mail.gmail.com>
+ <20210131185443.GA29083@gaia>
+In-Reply-To: <20210131185443.GA29083@gaia>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Mon, 1 Feb 2021 00:07:52 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXFCR=UnvKaX2oEF_M7dm3VXr4br6e6VZCee1QN2s_RjXQ@mail.gmail.com>
+Message-ID: <CAMj1kXFCR=UnvKaX2oEF_M7dm3VXr4br6e6VZCee1QN2s_RjXQ@mail.gmail.com>
+Subject: Re: [GIT PULL] arm64 fixes for 5.11-rc6
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Iskren,
+On Sun, 31 Jan 2021 at 19:55, Catalin Marinas <catalin.marinas@arm.com> wrote:
+>
+> On Fri, Jan 29, 2021 at 02:09:05PM -0800, Linus Torvalds wrote:
+> > On Fri, Jan 29, 2021 at 11:03 AM Catalin Marinas
+> > <catalin.marinas@arm.com> wrote:
+> > >
+> > > arm64 fixes:
+> > >
+> > > - Fix the virt_addr_valid() returning true for < PAGE_OFFSET addresses.
+> >
+> > That's a really odd fix.
+> >
+> > It went from an incorrect bitwise operation (masking) to an _odd_
+> > bitwise operation (xor).
+> >
+> > Yes, PAGE_OFFSET has the bit pattern of all upper bits set, so "(addr
+> > ^ PAGE_OFFSET)" by definition reverses the upper bits - and for a
+> > valid case turns them to zero.
+> >
+> > But isn't the *logical* thing to do to use a subtract instead? For the
+> > valid cases, the two do the same thing (clear the upper bits), but
+> > just conceptually, isn't the operation that you actually want to do
+> > "(addr - PAGE_OFFSET)"?
+> >
+> > IOW, why is it using that odd xor pattern that doesn't make much
+> > sense? I believe it _works_, but it looks very strange to me.
+>
+> This macro used to test a single bit and it evolved into a bitmask. So,
+> yes, basically what we need is:
+>
+> #define __is_lm_address(addr)   ((u64)(addr) >= PAGE_OFFSET && \
+>                                  (u64)(addr) < PAGE_END)
+>
+> I wasn't sure whether the code generation with two comparisons is
+> similar to the xor variant but the compiler should probably be smart
+> enough to use CMP and CCMP. In the grand scheme, it probably doesn't
+> even matter.
+>
+> Unless I miss something, I don't see any overflow issues even if we do
+> (((u64)addr - PAGE_OFFSET) < (PAGE_END - PAGE_OFFSET)).
+>
+> We can backport the fix already upstream and clean-up the code in
+> mainline going forward (after some sanity check on the code generation).
+> It would be easier to parse in the future.
+>
+> > Also, shouldn't _lm_to_phys() do the same? It does that "mask upper
+> > bits" too that was problematic in __is_lm_address(). Again, shouldn't
+> > that logically be a subtract op?
+>
+> Yes, that's similar and a subtract should do.
+>
 
-On Mittwoch, 27. J=E4nner 2021 16:24:40 CET Iskren Chernev wrote:
-> Before the offending commit in msm_atomic_commit_tail wait_flush was
-> called once per frame, after the commit was submitted. After it
-> wait_flush is also called at the beginning to ensure previous
-> potentially async commits are done.
->=20
-> For cmd panels the source of wait_flush is a ping-pong irq notifying
-> a completion. The completion needs to be notified with complete_all so
-> multiple waiting parties (new async committers) can proceed.
->=20
-> Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
-> Suggested-by: Rob Clark <robdclark@gmail.com>
-> Fixes: 2d99ced787e3d ("drm/msm: async commit support")
-> ---
+The original bit test was written like that because it removes the
+need to reason about a potential tag in the upper bits. I tried to
+preserve that behavior when removing the guaranteed 1:1 split between
+the vmalloc and linear regions, by masking with PAGE_OFFSET and
+comparing with PAGE_END - PAGE_OFFSET, but unfortunately, both
+approaches suffer from the issue fixed by this patch, i.e., that
+virt_addr_valid(0x0) erroneously returns true.
 
-I've tested this now on fairphone-fp2 and lge-nexus5-hammerhead, works grea=
-t!
-
-Tested-by: Luca Weiss <luca@z3ntu.xyz>
-
-Regards
-Luca
-
-
+I think both proposed fixes are appropriate, but they both reintroduce
+the need to consider the tag. I don't know whether or where this could
+pose a problem, but it needs to be taken into account.
