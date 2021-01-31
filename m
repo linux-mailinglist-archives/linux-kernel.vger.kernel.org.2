@@ -2,91 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFF1309C06
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 13:37:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 276B1309C19
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 13:51:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231303AbhAaKol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 05:44:41 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:25692 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230298AbhAaJzU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 04:55:20 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10V9ZAlC024770;
-        Sun, 31 Jan 2021 01:51:44 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=/g/es+Tg5FBzCKG2QIZyAEonCnsAEgNRvkP3FuHc02k=;
- b=TgYo11MqA3E/4SO6M9ZQW9vA9SWGlxATT8wcf3mY+/9zQBTEUlM4zLm0u7ozqTDM+wPT
- Aq9vrli8rFRn7FGk4pqV+6fzzeGR8IdwbrZSnt1Z21dwNvIVFKK7IztRJox6lGC1OuJf
- 5KfSjsplkhk5ke+736bGs9BjA85Q5xP9AWz8nhCFdtTlGMmcfhLRcghwu3cgRZ7LcYDA
- dEmVMt9br5An1n3BVAicDMEN3tqy3lI6UPjB4rKwq/RQj4fljeUG4/5wDlivqXwqYf+U
- LwebRoTSfY0LXW/fov+aAs5q+V0PJyi1pGEUovUWJ2nD1KQMrxrVO4drc7Hx47RPgadI Bg== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 36d7uq1bm4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Sun, 31 Jan 2021 01:51:44 -0800
-Received: from SC-EXCH04.marvell.com (10.93.176.84) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 31 Jan
- 2021 01:51:42 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 31 Jan
- 2021 01:51:41 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 31 Jan 2021 01:51:42 -0800
-Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id C30893F7040;
-        Sun, 31 Jan 2021 01:51:38 -0800 (PST)
-From:   <stefanc@marvell.com>
-To:     <netdev@vger.kernel.org>
-CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
-        <nadavh@marvell.com>, <ymarkman@marvell.com>,
-        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
-        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
-        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
-        <atenart@kernel.org>
-Subject: [PATCH v6 net-next 08/18] net: mvpp2: increase RXQ size to 1024 descriptors
-Date:   Sun, 31 Jan 2021 11:50:54 +0200
-Message-ID: <1612086664-23972-9-git-send-email-stefanc@marvell.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1612086664-23972-1-git-send-email-stefanc@marvell.com>
-References: <1612086664-23972-1-git-send-email-stefanc@marvell.com>
+        id S231627AbhAaMr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 07:47:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60892 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230437AbhAaLpX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 06:45:23 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 92C47AC55;
+        Sun, 31 Jan 2021 10:57:20 +0000 (UTC)
+Date:   Sun, 31 Jan 2021 11:57:17 +0100
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/entry for v5.11-rc6
+Message-ID: <20210131105717.GA4432@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-01-31_03:2021-01-29,2021-01-31 signatures=0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+Hi Linus,
 
-RXQ size increased to support Firmware Flow Control.
-Minimum depletion thresholds to support FC is 1024 buffers.
-Default set to 1024 descriptors and maximum size to 2048.
+please pull x86/entry for v5.11-rc6.
 
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+This was originally going to go during the merge window but people can
+already trigger a build error with binutils-2.36 which doesn't emit
+section symbols - something which objtool relies on - so let's expedite
+it.
+
+Thx.
+
 ---
- drivers/net/ethernet/marvell/mvpp2/mvpp2.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-index 8dc669d..cac9885 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-@@ -715,8 +715,8 @@
- #define MVPP2_PORT_MAX_RXQ		32
- 
- /* Max number of Rx descriptors */
--#define MVPP2_MAX_RXD_MAX		1024
--#define MVPP2_MAX_RXD_DFLT		128
-+#define MVPP2_MAX_RXD_MAX		2048
-+#define MVPP2_MAX_RXD_DFLT		1024
- 
- /* Max number of Tx descriptors */
- #define MVPP2_MAX_TXD_MAX		2048
+The following changes since commit 7c53f6b671f4aba70ff15e1b05148b10d58c2837:
+
+  Linux 5.11-rc3 (2021-01-10 14:34:50 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_entry_for_v5.11_rc6
+
+for you to fetch changes up to 0bab9cb2d980d7c075cffb9216155f7835237f98:
+
+  x86/entry: Remove put_ret_addr_in_rdi THUNK macro argument (2021-01-19 11:06:14 +0100)
+
+----------------------------------------------------------------
+A single fix for objtool to generate proper unwind info for newer
+toolchains which do not generate section symbols anymore. And a cleanup
+ontop.
+
+----------------------------------------------------------------
+Borislav Petkov (1):
+      x86/entry: Remove put_ret_addr_in_rdi THUNK macro argument
+
+Nick Desaulniers (1):
+      x86/entry: Emit a symbol for register restoring thunk
+
+ Documentation/asm-annotations.rst |  5 +++++
+ arch/x86/entry/thunk_64.S         | 15 +++++----------
+ include/linux/linkage.h           |  5 +++++
+ 3 files changed, 15 insertions(+), 10 deletions(-)
+
 -- 
-1.9.1
+Regards/Gruss,
+    Boris.
 
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
