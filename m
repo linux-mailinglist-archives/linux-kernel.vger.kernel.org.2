@@ -2,132 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65641309F6D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 00:23:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF55C309F76
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 00:32:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229624AbhAaXUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 18:20:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbhAaXUS (ORCPT
+        id S229870AbhAaXcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 18:32:15 -0500
+Received: from relay.smtp-ext.broadcom.com ([192.19.232.172]:52894 "EHLO
+        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229769AbhAaXb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 18:20:18 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF88C061573;
-        Sun, 31 Jan 2021 15:19:37 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DTRqR4P3xz9t0l;
-        Mon,  1 Feb 2021 10:19:31 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612135174;
-        bh=73uNE7LFH6S0+cjAw3Z4TFxXwm9LHiGGdhDddpFHl4M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FlW4Sw9/mbwfFPCtx4CuxdLqWFCQnryYh4ppxnTubiNW/HKVyDbgjEsWkYPLYmgL/
-         mpRzJ0x7sU0TOcTJMDO1sfphqpKT1ZsQS3MwUVg2YfEo1p3Olgpha6dwCnPSn3Ln1k
-         qLDrly0aLKwP1j+zPxbVbjCeRrxZRAVUMbV8XzE9H1Tb+q624ua44yMQgGf3lR1/tp
-         NJ/npiJTTinuFscv7sjXzJS25KNgaGT80o/BkX6u81Kjp7IQcmk2kOqYbpEpwsu3fF
-         BYo7+EPSvqEQRqO7N80PUlbaS2eMwV7BYLMm9fZ2yBU3s6b7go3Sn50RtJ4ia3FMQh
-         bsJBU5oNrQTDg==
-Date:   Mon, 1 Feb 2021 10:19:29 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Christian Brauner <christian@brauner.io>
-Cc:     Miklos Szeredi <miklos@szeredi.hu>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Tyler Hicks <code@tyhicks.com>
-Subject: Re: linux-next: manual merge of the pidfd tree with the overlayfs
- tree
-Message-ID: <20210201101929.618b32e5@canb.auug.org.au>
-In-Reply-To: <20210125162336.470e3183@canb.auug.org.au>
-References: <20210125162336.470e3183@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/2z7DCM4mIfDsXczMCe4tzS8";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Sun, 31 Jan 2021 18:31:59 -0500
+Received: from lbrmn-lnxub113.broadcom.net (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id 645C37DDA;
+        Sun, 31 Jan 2021 15:30:56 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 645C37DDA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1612135857;
+        bh=/46ablTqIxcOdCVQqcOOIvTTceJIsufOEJVTuv2n8hM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=exnc8lFNzdBUdKSLhoAK5pVV5X2O2K/pt7sNru9DI1s9JtwSkV7Yk8SAv5/pSwzjt
+         vgzeSVB6Xfu0hTSNUxNelR7NmAwzvt4kKUJwiTj9qiUgek15067VlRMHdCVOb3Qgu5
+         JItOLPTBmIqF7kqPxBx9cXXDvHmBiUi0uSyUqhNw=
+From:   Scott Branden <scott.branden@broadcom.com>
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Scott Branden <scott.branden@broadcom.com>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        Olof Johansson <olof@lixom.net>,
+        Desmond Yan <desmond.yan@broadcom.com>
+Subject: [PATCH v3] misc: bcm-vk: only support ttyVK if CONFIG_TTY is set
+Date:   Sun, 31 Jan 2021 15:30:49 -0800
+Message-Id: <20210131233049.5500-1-scott.branden@broadcom.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/2z7DCM4mIfDsXczMCe4tzS8
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Correct compile issue if CONFIG_TTY is not set by
+only adding ttyVK devices if CONFIG_BCM_VK_TTY is set.
 
-Hi all,
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Scott Branden <scott.branden@broadcom.com>
 
-On Mon, 25 Jan 2021 16:23:36 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> Today's linux-next merge of the pidfd tree got a conflict in:
->=20
->   fs/ecryptfs/inode.c
->=20
-> between commit:
->=20
->   176cfe865da6 ("ecryptfs: fix uid translation for setxattr on security.c=
-apability")
->=20
-> from the overlayfs tree and commit:
->=20
->   c7c7a1a18af4 ("xattr: handle idmapped mounts")
->=20
-> from the pidfd tree.
->=20
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
->=20
->=20
-> diff --cc fs/ecryptfs/inode.c
-> index 58d0f7187997,55da9a91f51a..000000000000
-> --- a/fs/ecryptfs/inode.c
-> +++ b/fs/ecryptfs/inode.c
-> @@@ -1024,11 -1043,10 +1045,12 @@@ ecryptfs_setxattr(struct dentry *dentry
->   		rc =3D -EOPNOTSUPP;
->   		goto out;
->   	}
->  -	rc =3D vfs_setxattr(&init_user_ns, lower_dentry, name, value, size,
->  -			  flags);
->  +	inode_lock(lower_inode);
-> - 	rc =3D __vfs_setxattr_locked(lower_dentry, name, value, size, flags, N=
-ULL);
-> ++	rc =3D __vfs_setxattr_locked(&init_user_ns, lower_dentry, name,
-> ++				   value, size, flags, NULL);
->  +	inode_unlock(lower_inode);
->   	if (!rc && inode)
->  -		fsstack_copy_attr_all(inode, d_inode(lower_dentry));
->  +		fsstack_copy_attr_all(inode, lower_inode);
->   out:
->   	return rc;
->   }
+---
+Changes since v2:
+- add CONFIG_BCM_VK_TTY
+- add function and stub for bcm_vk_tty_set_irq_enabled
+Changes since v1:
+- add function stubs rather than compiling out code
+---
+ drivers/misc/bcm-vk/Kconfig      | 16 ++++++++++++
+ drivers/misc/bcm-vk/Makefile     |  4 +--
+ drivers/misc/bcm-vk/bcm_vk.h     | 42 +++++++++++++++++++++++++++++---
+ drivers/misc/bcm-vk/bcm_vk_dev.c |  5 ++--
+ drivers/misc/bcm-vk/bcm_vk_tty.c |  6 +++++
+ 5 files changed, 65 insertions(+), 8 deletions(-)
 
-This is now a conflict between the pidfd tree and Linus' tree.
+diff --git a/drivers/misc/bcm-vk/Kconfig b/drivers/misc/bcm-vk/Kconfig
+index 052f6f28b540..16ce98c964b8 100644
+--- a/drivers/misc/bcm-vk/Kconfig
++++ b/drivers/misc/bcm-vk/Kconfig
+@@ -15,3 +15,19 @@ config BCM_VK
+ 	  accelerators via /dev/bcm-vk.N devices.
+ 
+ 	  If unsure, say N.
++
++if BCM_VK
++
++config BCM_VK_TTY
++	bool "Enable ttyVK"
++	depends on TTY
++	default y
++	help
++	  Select this option to enable ttyVK support to allow console
++	  access to VK cards from host.
++
++	  Device node will in the form /dev/bcm-vk.x_ttyVKy where:
++	  x is the instance of the VK card
++	  y is the tty device number on the VK card.
++
++endif # BCM_VK
+diff --git a/drivers/misc/bcm-vk/Makefile b/drivers/misc/bcm-vk/Makefile
+index e4a1486f7209..1df2ebe851ca 100644
+--- a/drivers/misc/bcm-vk/Makefile
++++ b/drivers/misc/bcm-vk/Makefile
+@@ -7,6 +7,6 @@ obj-$(CONFIG_BCM_VK) += bcm_vk.o
+ bcm_vk-objs := \
+ 	bcm_vk_dev.o \
+ 	bcm_vk_msg.o \
+-	bcm_vk_sg.o \
+-	bcm_vk_tty.o
++	bcm_vk_sg.o
+ 
++bcm_vk-$(CONFIG_BCM_VK_TTY) += bcm_vk_tty.o
+diff --git a/drivers/misc/bcm-vk/bcm_vk.h b/drivers/misc/bcm-vk/bcm_vk.h
+index 3f37c640a814..a1338f375589 100644
+--- a/drivers/misc/bcm-vk/bcm_vk.h
++++ b/drivers/misc/bcm-vk/bcm_vk.h
+@@ -258,7 +258,11 @@ enum pci_barno {
+ 	BAR_2
+ };
+ 
++#ifdef CONFIG_BCM_VK_TTY
+ #define BCM_VK_NUM_TTY 2
++#else
++#define BCM_VK_NUM_TTY 0
++#endif
+ 
+ struct bcm_vk_tty {
+ 	struct tty_port port;
+@@ -366,11 +370,13 @@ struct bcm_vk {
+ 	struct miscdevice miscdev;
+ 	int devid; /* dev id allocated */
+ 
++#ifdef CONFIG_BCM_VK_TTY
+ 	struct tty_driver *tty_drv;
+ 	struct timer_list serial_timer;
+ 	struct bcm_vk_tty tty[BCM_VK_NUM_TTY];
+ 	struct workqueue_struct *tty_wq_thread;
+ 	struct work_struct tty_wq_work;
++#endif
+ 
+ 	/* Reference-counting to handle file operations */
+ 	struct kref kref;
+@@ -501,13 +507,43 @@ int bcm_vk_send_shutdown_msg(struct bcm_vk *vk, u32 shut_type,
+ 			     const pid_t pid, const u32 q_num);
+ void bcm_to_v_q_doorbell(struct bcm_vk *vk, u32 q_num, u32 db_val);
+ int bcm_vk_auto_load_all_images(struct bcm_vk *vk);
+-int bcm_vk_tty_init(struct bcm_vk *vk, char *name);
+-void bcm_vk_tty_exit(struct bcm_vk *vk);
+-void bcm_vk_tty_terminate_tty_user(struct bcm_vk *vk);
+ void bcm_vk_hb_init(struct bcm_vk *vk);
+ void bcm_vk_hb_deinit(struct bcm_vk *vk);
+ void bcm_vk_handle_notf(struct bcm_vk *vk);
+ bool bcm_vk_drv_access_ok(struct bcm_vk *vk);
+ void bcm_vk_set_host_alert(struct bcm_vk *vk, u32 bit_mask);
+ 
++#ifdef CONFIG_BCM_VK_TTY
++int bcm_vk_tty_init(struct bcm_vk *vk, char *name);
++void bcm_vk_tty_exit(struct bcm_vk *vk);
++void bcm_vk_tty_terminate_tty_user(struct bcm_vk *vk);
++void bcm_vk_tty_wq_exit(struct bcm_vk *vk);
++
++static inline void bcm_vk_tty_set_irq_enabled(struct bcm_vk *vk, int index)
++{
++	vk->tty[index].irq_enabled = true;
++}
++#else
++static inline int bcm_vk_tty_init(struct bcm_vk *vk, char *name)
++{
++	return 0;
++}
++
++static inline void bcm_vk_tty_exit(struct bcm_vk *vk)
++{
++}
++
++static inline void bcm_vk_tty_terminate_tty_user(struct bcm_vk *vk)
++{
++}
++
++static inline void bcm_vk_tty_wq_exit(struct bcm_vk *vk)
++{
++}
++
++static inline void bcm_vk_tty_set_irq_enabled(struct bcm_vk *vk, int index)
++{
++}
++#endif /* CONFIG_BCM_VK_TTY */
++
+ #endif
+diff --git a/drivers/misc/bcm-vk/bcm_vk_dev.c b/drivers/misc/bcm-vk/bcm_vk_dev.c
+index c3d2bba68ef1..59b4859d68d2 100644
+--- a/drivers/misc/bcm-vk/bcm_vk_dev.c
++++ b/drivers/misc/bcm-vk/bcm_vk_dev.c
+@@ -1396,7 +1396,7 @@ static int bcm_vk_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 				pdev->irq + vk->num_irqs, vk->num_irqs + 1);
+ 			goto err_irq;
+ 		}
+-		vk->tty[i].irq_enabled = true;
++		bcm_vk_tty_set_irq_enabled(vk, i);
+ 	}
+ 
+ 	id = ida_simple_get(&bcm_vk_ida, 0, 0, GFP_KERNEL);
+@@ -1580,8 +1580,7 @@ static void bcm_vk_remove(struct pci_dev *pdev)
+ 
+ 	cancel_work_sync(&vk->wq_work);
+ 	destroy_workqueue(vk->wq_thread);
+-	cancel_work_sync(&vk->tty_wq_work);
+-	destroy_workqueue(vk->tty_wq_thread);
++	bcm_vk_tty_wq_exit(vk);
+ 
+ 	for (i = 0; i < MAX_BAR; i++) {
+ 		if (vk->bar[i])
+diff --git a/drivers/misc/bcm-vk/bcm_vk_tty.c b/drivers/misc/bcm-vk/bcm_vk_tty.c
+index be3964949b63..4d02692ecfc7 100644
+--- a/drivers/misc/bcm-vk/bcm_vk_tty.c
++++ b/drivers/misc/bcm-vk/bcm_vk_tty.c
+@@ -331,3 +331,9 @@ void bcm_vk_tty_terminate_tty_user(struct bcm_vk *vk)
+ 			kill_pid(find_vpid(vktty->pid), SIGKILL, 1);
+ 	}
+ }
++
++void bcm_vk_tty_wq_exit(struct bcm_vk *vk)
++{
++	cancel_work_sync(&vk->tty_wq_work);
++	destroy_workqueue(vk->tty_wq_thread);
++}
+-- 
+2.17.1
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/2z7DCM4mIfDsXczMCe4tzS8
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAXOwEACgkQAVBC80lX
-0GxydQf8C0/yd2Sf8R/bUl5kk1BwC5eh9CiAYqer0xPMzU7n9KN0I/fEgdB5vRY1
-oFHFexfVP4HkXsB86jDMm+/NTXIzQFejnkkM0Sdw6SuMYjO4kcYElBYPqD/2q0LU
-69xyko9qLGqPnehRiUzihsCSsj6kjfxaAZyQtUEsGASf0rqDquttXiny0YEJf2yZ
-WtSoRNlPBgPRtrncccIY8zzto8ligfYtoPIcFFW7/6pmXsZh/asZZO8/fjFo4yvY
-rUgFupeakLyDJNgfCjulIi3qokfpmp6nW5s3n/Svhdhohrm52klYpIBOi3rLrY9S
-ZaU5es4wIVY2sHpVxwqh1m0xjPrNDA==
-=npri
------END PGP SIGNATURE-----
-
---Sig_/2z7DCM4mIfDsXczMCe4tzS8--
