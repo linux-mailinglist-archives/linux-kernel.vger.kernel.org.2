@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2589309B31
+	by mail.lfdr.de (Postfix) with ESMTP id 2F81C309B30
 	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 09:56:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhAaIyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S230087AbhAaIyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sun, 31 Jan 2021 03:54:32 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58794 "EHLO mx2.suse.de"
+Received: from mx2.suse.de ([195.135.220.15]:58832 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229502AbhAaIvZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 03:51:25 -0500
+        id S229970AbhAaIv3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 03:51:29 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3129FAC97;
-        Sun, 31 Jan 2021 08:50:38 +0000 (UTC)
-Date:   Sun, 31 Jan 2021 09:50:38 +0100
-Message-ID: <s5hlfc9jxr5.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id 64849ACB0;
+        Sun, 31 Jan 2021 08:50:48 +0000 (UTC)
+Date:   Sun, 31 Jan 2021 09:50:48 +0100
+Message-ID: <s5hk0rtjxqv.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
 Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
         alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] ALSA: ac97: Constify static struct attribute_group
-In-Reply-To: <20210131001241.2278-2-rikard.falkeborn@gmail.com>
+Subject: Re: [PATCH 2/2] ALSA: hda: Constify static attribute_group
+In-Reply-To: <20210131001241.2278-3-rikard.falkeborn@gmail.com>
 References: <20210131001241.2278-1-rikard.falkeborn@gmail.com>
-        <20210131001241.2278-2-rikard.falkeborn@gmail.com>
+        <20210131001241.2278-3-rikard.falkeborn@gmail.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -34,12 +34,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 31 Jan 2021 01:12:40 +0100,
+On Sun, 31 Jan 2021 01:12:41 +0100,
 Rikard Falkeborn wrote:
 > 
-> The only usage of ac97_adapter_attr_group is to put its address in an
-> array of pointers to const attribute_group structs. Make it const to
-> allow the compiler to put it in read-only memory.
+> The only usage of hdac_dev_attr_group is to put its address in an array
+> of pointers to const attribute_group structs. Make it const to allow the
+> compiler to put it in read-only memory.
 > 
 > Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 
