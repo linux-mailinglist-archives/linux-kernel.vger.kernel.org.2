@@ -2,197 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E98BD309AC2
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 06:57:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 413C8309AE1
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 08:04:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbhAaF5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 00:57:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbhAaFzf (ORCPT
+        id S229544AbhAaHDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 02:03:01 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:15136 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229471AbhAaHCs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 00:55:35 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B93BC0613ED;
-        Sat, 30 Jan 2021 21:54:16 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id s24so9315083wmj.0;
-        Sat, 30 Jan 2021 21:54:16 -0800 (PST)
+        Sun, 31 Jan 2021 02:02:48 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10V720xV021306;
+        Sat, 30 Jan 2021 23:02:00 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=pfpt0220; bh=nU0PQYfqyFfnPvsT3y53dbnKnnoYFh0Ul9dcSmSL26g=;
+ b=YiMf5MOGJknnBv5hBdr0hH0PKzfZ1xxMTJ9rfEOLIDVihJ41moHIXcxmUmAVeGEo0w5W
+ DD1ROo1k/iobcIXl07qhU4Wn6AAjWSATKlxnTLRCAxRzBVE3P/afpa64SnrXHWxvsP2P
+ ocnWRaz+KrFyPLROiBFnTANUm5XPhNPYGn+ihfhMWedOIvUXJWw2Ps37GUMHthdk98Dl
+ O4V4Txom2UOJa+xlso27g0WPYSBHi88kPO2mjAr4bYGdfHC5vFC+SY4LEurK/GFD7w+c
+ 9LvTiUP2/84uMZeb2vuLrTrRl6ytFcg6X8jeFwydb9lNRa0g8xhEiqubCcheL7ZqCRVZ 4Q== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 36d7uq1537-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sat, 30 Jan 2021 23:02:00 -0800
+Received: from SC-EXCH03.marvell.com (10.93.176.83) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 30 Jan
+ 2021 23:01:58 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sat, 30 Jan
+ 2021 23:01:58 -0800
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.106)
+ by DC5-EXCH02.marvell.com (10.69.176.39) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2 via Frontend Transport; Sat, 30 Jan 2021 23:01:58 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=car4R8Jq8W0Sr/jSVrdLODWulFLEr935BZaGptXJB+GFeVy8Gi5KHO7CTEFk+kuudUrGMF3cmbPkUu0XoT6+fMRFJKJU5dhBTVjEtXxEfY+IZXzvtFP8jbP+E3+MHAL/JmJYPoJkUeUNDnUub9AsBED4wNdi/d0DHv37FL+9EdGLDNFcyzlOcYlNcEVuHs+9zmxGQmAurYUOHXFQ5bNtpuaETVgt2qAsU2Gu1oYkp/DylmeApTk21HbwdFtQ/arKtS/lsJb4Jekug7zUQLRI+HlTIt/93TuN6eD/WevtujWEHUF0jvcVGBX1uRSS7AWKCU0CvjCN98kjoNKKM2eWTA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nU0PQYfqyFfnPvsT3y53dbnKnnoYFh0Ul9dcSmSL26g=;
+ b=kIhgE/8hXztFzwr/PSU7rxexKVVa+JTiMkOsBpuDsgJnBXkK4rczjoJzKYTu3WYmkWdZ3vePN/eXaZQK680NvNzSxp5Ep954XBbMQfeSNw0/bmyA1FnWSxgz8eECIDtaUOmvdHZGPgFKVOOSGfydovr7p6lhJEwtt/jK65UTzUrvfYRE+ORtg2YYqttp82fFd5YndCZGoBzRwfNoEkI9aNDqCHx5yMnpZL5VqXrc+wiuJmC6YZ/kM6ipb1il8kPyDrlzfUW9CHeWnGNXKm22JvSlPE6S01zFYz7U6rOZV1mapM0sAhAsxCKPuhBGOvrDY7v/vvYna1eV7+O26D26RQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=marvell.com; dmarc=pass action=none header.from=marvell.com;
+ dkim=pass header.d=marvell.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=8+AW/kKV57MV1Hg+Mxh63gGp9E1qwTrjnLtYXQZusbg=;
-        b=MGCDMbs4pGnpYYCve9uEvfF4M93qP/pW/Oz5YXgn1PEe3yoKnRW5DwvlKTdX04VboD
-         QPivn5mY+BXDcBRUdCkSVOW96bHeDnEIFj6EhE5hlvIALblnedVqpXN+zYS4MxxrmVh6
-         L7+n/KODPVtyl/af/voeznsvtRMYELIvkhO2pptSg6LIoqA/p875S6cRgfsEcP2UZUsY
-         mv1jlYHrftUKiefxMh97/euXVnX3gS7GBWuAkXCw2sm5zbeNZGT8XznP+IbrJDrbiqRj
-         uYV3pedWRaXYBx8DRlYejDzJ+5vqV8q/J6xG/TFsB8s9wsTyehLe3yeAZcziUcerm3sm
-         Cyiw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=8+AW/kKV57MV1Hg+Mxh63gGp9E1qwTrjnLtYXQZusbg=;
-        b=ZR4EQSszz3L/IF5yqZwiamXP/fQDYmPLt33ySwnarjs92U/1KXMzcfzXUbzFnZWpkE
-         gYjm261eId6XSVIJ8dvjokAmP+MWSJWDeDrtLn7v8NyNsD3ixAGkDeH0eAnW9hJr8lIq
-         TghNViGEZ4dSrdQXqd22kh711p7KR1Yp16RulwZCh+gipA0Lj2nflnJVM3tULlOsBTfc
-         IKK8ZAKSxE+R3UMdSnpn3vbS1eamv7Xvt1UtMhgUXVp/tnL/WfYN2/5yKa296T7oW7Qm
-         ltwnYhwzTfJKat5aZvn/JmG0ETPFu8pIBySIkBcCkHhcr3T1xvgR8lvxp4L7j+h03mNx
-         vq+A==
-X-Gm-Message-State: AOAM532RbWDE1op9hwQBhYbDYqExNUX9/kyk1AsGtY3Ud1sfn1XS1okO
-        wucpeW6Sx5ZmDeXuHaPlq0w=
-X-Google-Smtp-Source: ABdhPJxWRA8y/2Vty7z1wN5H0YKyPzpEX6KiEi97oYHtSefO+dWzS8tMs9vdQVCIrwEEaiLWsbTO/A==
-X-Received: by 2002:a05:600c:35c4:: with SMTP id r4mr9757373wmq.174.1612072454843;
-        Sat, 30 Jan 2021 21:54:14 -0800 (PST)
-Received: from localhost.localdomain ([87.200.95.144])
-        by smtp.gmail.com with ESMTPSA id c9sm20056589wrw.76.2021.01.30.21.54.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Jan 2021 21:54:14 -0800 (PST)
-From:   Christian Hewitt <christianshewitt@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Christian Hewitt <christianshewitt@gmail.com>,
-        Dongjin Kim <tobetter@gmail.com>
-Subject: [PATCH v2 5/5] arm64: dts: meson: add initial device-tree for ODROID-HC4
-Date:   Sun, 31 Jan 2021 05:53:58 +0000
-Message-Id: <20210131055358.21293-6-christianshewitt@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210131055358.21293-1-christianshewitt@gmail.com>
-References: <20210131055358.21293-1-christianshewitt@gmail.com>
+ d=marvell.onmicrosoft.com; s=selector1-marvell-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nU0PQYfqyFfnPvsT3y53dbnKnnoYFh0Ul9dcSmSL26g=;
+ b=RUUFiALqy1jxmq6ACBx2ntYy4taybEgFyepvZ54WkVbUja8aiSsuM39MtT/JeO5B9sRUCWgjDLalOqVx9HGCNI9T7z1oanbMKdeAuzCb5r+caJZiApsrEZUZP0S1BV5PE+JHrKeKzQ/7mV3FpbM3QdU+YGyZSvjqiPIAwOLd7nQ=
+Received: from MWHPR18MB1421.namprd18.prod.outlook.com (2603:10b6:320:2a::23)
+ by MW2PR18MB2348.namprd18.prod.outlook.com (2603:10b6:907:b::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Sun, 31 Jan
+ 2021 07:01:56 +0000
+Received: from MWHPR18MB1421.namprd18.prod.outlook.com
+ ([fe80::25eb:fce2:fba7:327d]) by MWHPR18MB1421.namprd18.prod.outlook.com
+ ([fe80::25eb:fce2:fba7:327d%4]) with mapi id 15.20.3805.022; Sun, 31 Jan 2021
+ 07:01:55 +0000
+From:   Hariprasad Kelam <hkelam@marvell.com>
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+CC:     Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        David Miller <davem@davemloft.net>,
+        "Jakub Kicinski" <kuba@kernel.org>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geethasowjanya Akula <gakula@marvell.com>,
+        Jerin Jacob Kollanukkaran <jerinj@marvell.com>,
+        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>,
+        Felix Manlunas <fmanlunas@marvell.com>,
+        Christina Jacob <cjacob@marvell.com>,
+        "Sunil Kovvuri Goutham" <Sunil.Goutham@cavium.com>
+Subject: Re: [Patch v2 net-next 2/7] octeontx2-af: Add new CGX_CMD to get PHY
+ FEC statistics
+Thread-Topic: [Patch v2 net-next 2/7] octeontx2-af: Add new CGX_CMD to get PHY
+ FEC statistics
+Thread-Index: Adb3ntJ8qz9eRYGTTf2FShS0rhLUQw==
+Date:   Sun, 31 Jan 2021 07:01:55 +0000
+Message-ID: <MWHPR18MB142149F54F5AB88590B4AB2BDEB79@MWHPR18MB1421.namprd18.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=marvell.com;
+x-originating-ip: [117.201.214.104]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 457f2a8b-e0bc-4f10-1b2c-08d8c5b61887
+x-ms-traffictypediagnostic: MW2PR18MB2348:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MW2PR18MB23484AEA297DC8585AE42B88DEB79@MW2PR18MB2348.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 7WGfeUWIdq4i8GMPeX2LGR7KxJ7lgEbvlMCQA75hPq7wyXaQVZuxUoHmdz0xOY09P+og0gUL6/VfBmf8vOM06W1m4fkzW/6N97vN7AKUlPcJpkopy8v0h8R+DZjWoCnX6S46k6c9mwBPuUUNFoQ50ZId0d9yyoS6TbCQiNkSQrTvNdwctbayFf3Dt/ifeULkpg6TEoVB359Nln37Kb6SbIyi5bcrD6kFoORALHYYzFk/5pWhvQMayXbWXEyorND0LKsR5yz0SENeDQd3tACnWqI3f473YwBJq0fW0/8f1/pUxJx8NFuNbGyrP7lYFjLCDmLCyp0ASbogDmt9bjV9L5SkX5GzyHqJbUQm83CX39lcXoD2w7pyL+WxE1URr403vy8Te8PREO1tvWwcYv4JlLU7s0Ihy0hsz5LSFM69XhsohvN+1dW/KFmWOTYFKwUP0TjtTdKsy5ma3VOWPA4/UuWog6+8wDB9+2EWJLnAyOgUy8Cz8nKDSjNdZXaGZjy5jqlB859rMT2wWxho9ymxzg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR18MB1421.namprd18.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(39840400004)(396003)(136003)(478600001)(6506007)(53546011)(9686003)(52536014)(83380400001)(8676002)(2906002)(26005)(55236004)(33656002)(76116006)(86362001)(4326008)(186003)(7696005)(55016002)(64756008)(66556008)(66476007)(71200400001)(6916009)(5660300002)(8936002)(316002)(66946007)(66446008)(54906003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?U1VBTlNwR3hHM0VjMnhHQnRocEFWSHJuU1ZJbi83aTlZck8wZ0NFaDZFT2xm?=
+ =?utf-8?B?L3pPNzltZUtJa1k2WDJWM1hzcmJ4TzFocHhVYkJ1bjgwZmtZbGNIcG82NWtu?=
+ =?utf-8?B?Ny8rcFlxQVFmNWZZL0FuakdQc0Y0U29xcmdxcTk0ZDZwcTRIMXowb2dxZkV6?=
+ =?utf-8?B?cnpoM3pmUStYQWFXZnV0bmNEN3pub3pzQ3pNc3d2L1FYYUF4K1NaS3d3MWJX?=
+ =?utf-8?B?S1Y1ckY5eit2bFNXQ091Um5LY2x4b2RkVWlrUWxKZGpvYTBPWFlnNjZKbUd2?=
+ =?utf-8?B?RWtuWkg3UWZNZVdjRXE3c2tyUXBIY3pCSFhSUXI0UUtPbHhWU2hST2M5NEM4?=
+ =?utf-8?B?bVBTbEdQSE1oblh6VTlRUlVONXFIaEs5aTJTeVIwY1dMcm5iQU5YYUtiUE9Z?=
+ =?utf-8?B?aTl1Q1c4VmduUHlIOEpwR1hnSHlKRFVXSndTOVIyU0Z5TXo0Y01wWVRJYU5X?=
+ =?utf-8?B?ZHhmMHNXYVFuUlkrNTZ2UXBrWGRwYTRBYWZBb0hja3FQWjRoVUxPT0JyWC9P?=
+ =?utf-8?B?clJnQWlrYU1IVXhwV3R5ejNOSVd4L1o4RXluTXVDYjdxWmhNNDZCTGVQWVdS?=
+ =?utf-8?B?VXJLSGlVYUF5d3NNdnBoVERRN0h5SGlEWmdQK0YxNUllNFF2OU5RSzgxMmhz?=
+ =?utf-8?B?VVJBenU5T2paNmlycFZCa0hZemJNVjFYODY4ZnE2alVRZjhPSCsrZHIybEFM?=
+ =?utf-8?B?R0N4RUgzNU5jbm1JWE1BWkZyNFovVGUyMTVNVzJqcityK0dtUmFPa2JoVnpp?=
+ =?utf-8?B?c214eG1YZnJRR3lyeTl0UW0vVlo1ZXJ1a0FWTHVqd0d0bkc5M3lKakJ0RFdh?=
+ =?utf-8?B?eGxqNEZoSldsWEpBNVJoWFdzbEppVHRVWXZ2d3RObXc3anRsaTVqY0VTQ2Jy?=
+ =?utf-8?B?eVBnaTB5azcvdERDaTB3YnRiZHVKQUtDQXhRcGNjVURsYVIzRkphb3ZMVndH?=
+ =?utf-8?B?OVV5TGtJSThsY01laVlLbXZGSGZOR251TXRNcjF0TXZlOVpqZU5xZHVHcXIy?=
+ =?utf-8?B?MS9ibTVsN01OUlpwOUlFTTNYSVV1azRyM1Q1Yk5vSGxCeHVzMWRMbUp2SElz?=
+ =?utf-8?B?dFg1OWdEeHF2YUhLV2xlcTBlZ1hrdHJEbzVuR0ZHaHpPVzBndnhNcW1zRWtr?=
+ =?utf-8?B?MUM3RXR3RnpLN1c5WS9xbU9ueFc0RHlzenRiQ0xZaDdKWU5nT2ZEOXJFT3My?=
+ =?utf-8?B?Z2NaVW9BS01lV1Y3Zm5CdjRxOG5Kemt2NVFBczE0Z1lXQXNrZWVFZHZRdGhj?=
+ =?utf-8?B?LzRHR3lTOU9YTyt1L1dRRHJSU2c3U0g3RmV1UktvdWNwdW9HdDR1SUQ5cXUw?=
+ =?utf-8?B?dWhzZGtYcWJobHpUVzRLdFdkMm83Y1BXMWkvdTJIcGFPdUxmTDByam1uUUJW?=
+ =?utf-8?B?NHlRVFNnYkJvK0lTb1RxWWNuYlR3VWhYejk4NlhWdit4WWRRbWE4Z01oWFhk?=
+ =?utf-8?Q?2HuTsuW9?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR18MB1421.namprd18.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 457f2a8b-e0bc-4f10-1b2c-08d8c5b61887
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jan 2021 07:01:55.6393
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 70e1fb47-1155-421d-87fc-2e58f638b6e0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: xGCfgxsVSoAYQ1YrPBHVRtOXO+ZyrytGsOgXj27kNRux2b/o7//2cr2LXThhpXKOptcQ9dAye/2bAaFehkgoRg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR18MB2348
+X-OriginatorOrg: marvell.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-01-31_02:2021-01-29,2021-01-31 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ODROID-HC4 is a derivative of the C4 with minor differences:
-
-- 16MB XT25F128B SPI-NOR flash
-- 2x SATA ports via ASM1061 PCIe to SATA controller
-- 7-pin header with SPI and I2C for 1-inch OLED display and RTC
-- 1x USB 2.0 host port
-
-Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
-Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
----
- arch/arm64/boot/dts/amlogic/Makefile          |  1 +
- .../boot/dts/amlogic/meson-sm1-odroid-hc4.dts | 96 +++++++++++++++++++
- 2 files changed, 97 insertions(+)
- create mode 100644 arch/arm64/boot/dts/amlogic/meson-sm1-odroid-hc4.dts
-
-diff --git a/arch/arm64/boot/dts/amlogic/Makefile b/arch/arm64/boot/dts/amlogic/Makefile
-index f3c8a85fe987..78a569d7fa20 100644
---- a/arch/arm64/boot/dts/amlogic/Makefile
-+++ b/arch/arm64/boot/dts/amlogic/Makefile
-@@ -47,5 +47,6 @@ dtb-$(CONFIG_ARCH_MESON) += meson-gxm-vega-s96.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-gxm-wetek-core2.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-sm1-khadas-vim3l.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-sm1-odroid-c4.dtb
-+dtb-$(CONFIG_ARCH_MESON) += meson-sm1-odroid-hc4.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-sm1-sei610.dtb
- dtb-$(CONFIG_ARCH_MESON) += meson-a1-ad401.dtb
-diff --git a/arch/arm64/boot/dts/amlogic/meson-sm1-odroid-hc4.dts b/arch/arm64/boot/dts/amlogic/meson-sm1-odroid-hc4.dts
-new file mode 100644
-index 000000000000..bf15700c4b15
---- /dev/null
-+++ b/arch/arm64/boot/dts/amlogic/meson-sm1-odroid-hc4.dts
-@@ -0,0 +1,96 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (c) 2020 Dongjin Kim <tobetter@gmail.com>
-+ */
-+
-+/dts-v1/;
-+
-+#include "meson-sm1-odroid.dtsi"
-+
-+/ {
-+	compatible = "hardkernel,odroid-hc4", "amlogic,sm1";
-+	model = "Hardkernel ODROID-HC4";
-+
-+	aliases {
-+		rtc0 = &rtc;
-+		rtc1 = &vrtc;
-+	};
-+
-+	fan0: pwm-fan {
-+		compatible = "pwm-fan";
-+		#cooling-cells = <2>;
-+		cooling-min-state = <0>;
-+		cooling-max-state = <3>;
-+		cooling-levels = <0 120 170 220>;
-+		pwms = <&pwm_cd 1 40000 0>;
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+
-+		led-blue {
-+			color = <LED_COLOR_ID_BLUE>;
-+			function = LED_FUNCTION_STATUS;
-+			gpios = <&gpio_ao GPIOAO_11 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "heartbeat";
-+			panic-indicator;
-+		};
-+
-+		led-red {
-+			color = <LED_COLOR_ID_RED>;
-+			function = LED_FUNCTION_POWER;
-+			gpios = <&gpio_ao GPIOAO_7 GPIO_ACTIVE_HIGH>;
-+			default-state = "on";
-+		};
-+	};
-+
-+	sound {
-+		model = "ODROID-HC4";
-+	};
-+};
-+
-+&cpu_thermal {
-+	cooling-maps {
-+		map {
-+			trip = <&cpu_passive>;
-+			cooling-device = <&fan0 THERMAL_NO_LIMIT THERMAL_NO_LIMIT>;
-+		};
-+	};
-+};
-+
-+&ir {
-+	linux,rc-map-name = "rc-odroid";
-+};
-+
-+&i2c2 {
-+	status = "okay";
-+	pinctrl-0 = <&i2c2_sda_x_pins>, <&i2c2_sck_x_pins>;
-+	pinctrl-names = "default";
-+
-+	rtc: rtc@51 {
-+		status = "okay";
-+		compatible = "nxp,pcf8563";
-+		reg = <0x51>;
-+		wakeup-source;
-+	};
-+};
-+
-+&pcie {
-+	status = "okay";
-+	reset-gpios = <&gpio GPIOH_4 GPIO_ACTIVE_LOW>;
-+};
-+
-+&pwm_cd {
-+	status = "okay";
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pwm_d_x6_pins>;
-+};
-+
-+&sd_emmc_c {
-+	status = "disabled";
-+};
-+
-+&usb {
-+	phys = <&usb2_phy0>, <&usb2_phy1>;
-+	phy-names = "usb2-phy0", "usb2-phy1";
-+};
--- 
-2.17.1
-
+SGkgV2lsbGVtLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IFdpbGxl
+bSBkZSBCcnVpam4gPHdpbGxlbWRlYnJ1aWpuLmtlcm5lbEBnbWFpbC5jb20+DQo+IFNlbnQ6IFNh
+dHVyZGF5LCBKYW51YXJ5IDMwLCAyMDIxIDc6NTcgUE0NCj4gVG86IEhhcmlwcmFzYWQgS2VsYW0g
+PGhrZWxhbUBtYXJ2ZWxsLmNvbT4NCj4gQ2M6IE5ldHdvcmsgRGV2ZWxvcG1lbnQgPG5ldGRldkB2
+Z2VyLmtlcm5lbC5vcmc+OyBMS01MIDxsaW51eC0NCj4ga2VybmVsQHZnZXIua2VybmVsLm9yZz47
+IERhdmlkIE1pbGxlciA8ZGF2ZW1AZGF2ZW1sb2Z0Lm5ldD47IEpha3ViDQo+IEtpY2luc2tpIDxr
+dWJhQGtlcm5lbC5vcmc+OyBTdW5pbCBLb3Z2dXJpIEdvdXRoYW0NCj4gPHNnb3V0aGFtQG1hcnZl
+bGwuY29tPjsgTGludSBDaGVyaWFuIDxsY2hlcmlhbkBtYXJ2ZWxsLmNvbT47DQo+IEdlZXRoYXNv
+d2phbnlhIEFrdWxhIDxnYWt1bGFAbWFydmVsbC5jb20+OyBKZXJpbiBKYWNvYiBLb2xsYW51a2th
+cmFuDQo+IDxqZXJpbmpAbWFydmVsbC5jb20+OyBTdWJiYXJheWEgU3VuZGVlcCBCaGF0dGEgPHNi
+aGF0dGFAbWFydmVsbC5jb20+Ow0KPiBGZWxpeCBNYW5sdW5hcyA8Zm1hbmx1bmFzQG1hcnZlbGwu
+Y29tPjsgQ2hyaXN0aW5hIEphY29iDQo+IDxjamFjb2JAbWFydmVsbC5jb20+OyBTdW5pbCBLb3Z2
+dXJpIEdvdXRoYW0NCj4gPFN1bmlsLkdvdXRoYW1AY2F2aXVtLmNvbT4NCj4gU3ViamVjdDogW0VY
+VF0gUmU6IFtQYXRjaCB2MiBuZXQtbmV4dCAyLzddIG9jdGVvbnR4Mi1hZjogQWRkIG5ldyBDR1hf
+Q01EDQo+IHRvIGdldCBQSFkgRkVDIHN0YXRpc3RpY3MNCj4gT24gU2F0LCBKYW4gMzAsIDIwMjEg
+YXQgNDo1MyBBTSBIYXJpcHJhc2FkIEtlbGFtIDxoa2VsYW1AbWFydmVsbC5jb20+DQo+IHdyb3Rl
+Og0KPiA+DQo+ID4gSGkgV2lsbGVtLA0KPiA+DQo+ID4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2Ut
+LS0tLQ0KPiA+ID4gRnJvbTogV2lsbGVtIGRlIEJydWlqbiA8d2lsbGVtZGVicnVpam4ua2VybmVs
+QGdtYWlsLmNvbT4NCj4gPiA+IFNlbnQ6IFRodXJzZGF5LCBKYW51YXJ5IDI4LCAyMDIxIDE6NTAg
+QU0NCj4gPiA+IFRvOiBIYXJpcHJhc2FkIEtlbGFtIDxoa2VsYW1AbWFydmVsbC5jb20+DQo+ID4g
+PiBDYzogTmV0d29yayBEZXZlbG9wbWVudCA8bmV0ZGV2QHZnZXIua2VybmVsLm9yZz47IExLTUwg
+PGxpbnV4LQ0KPiA+ID4ga2VybmVsQHZnZXIua2VybmVsLm9yZz47IERhdmlkIE1pbGxlciA8ZGF2
+ZW1AZGF2ZW1sb2Z0Lm5ldD47IEpha3ViDQo+ID4gPiBLaWNpbnNraSA8a3ViYUBrZXJuZWwub3Jn
+PjsgU3VuaWwgS292dnVyaSBHb3V0aGFtDQo+ID4gPiA8c2dvdXRoYW1AbWFydmVsbC5jb20+OyBM
+aW51IENoZXJpYW4gPGxjaGVyaWFuQG1hcnZlbGwuY29tPjsNCj4gPiA+IEdlZXRoYXNvd2phbnlh
+IEFrdWxhIDxnYWt1bGFAbWFydmVsbC5jb20+OyBKZXJpbiBKYWNvYiBLb2xsYW51a2thcmFuDQo+
+ID4gPiA8amVyaW5qQG1hcnZlbGwuY29tPjsgU3ViYmFyYXlhIFN1bmRlZXAgQmhhdHRhDQo+ID4g
+PiA8c2JoYXR0YUBtYXJ2ZWxsLmNvbT47IEZlbGl4IE1hbmx1bmFzIDxmbWFubHVuYXNAbWFydmVs
+bC5jb20+Ow0KPiA+ID4gQ2hyaXN0aW5hIEphY29iIDxjamFjb2JAbWFydmVsbC5jb20+OyBTdW5p
+bCBLb3Z2dXJpIEdvdXRoYW0NCj4gPiA+IDxTdW5pbC5Hb3V0aGFtQGNhdml1bS5jb20+DQo+ID4g
+PiBTdWJqZWN0OiBbRVhUXSBSZTogW1BhdGNoIHYyIG5ldC1uZXh0IDIvN10gb2N0ZW9udHgyLWFm
+OiBBZGQgbmV3DQo+ID4gPiBDR1hfQ01EIHRvIGdldCBQSFkgRkVDIHN0YXRpc3RpY3MNCj4gPiA+
+DQo+ID4gPiBPbiBXZWQsIEphbiAyNywgMjAyMSBhdCA0OjA0IEFNIEhhcmlwcmFzYWQgS2VsYW0N
+Cj4gPiA+IDxoa2VsYW1AbWFydmVsbC5jb20+DQo+ID4gPiB3cm90ZToNCj4gPiA+ID4NCj4gPiA+
+ID4gRnJvbTogRmVsaXggTWFubHVuYXMgPGZtYW5sdW5hc0BtYXJ2ZWxsLmNvbT4NCj4gPiA+ID4N
+Cj4gPiA+ID4gVGhpcyBwYXRjaCBhZGRzIHN1cHBvcnQgdG8gZmV0Y2ggZmVjIHN0YXRzIGZyb20g
+UEhZLiBUaGUgc3RhdHMgYXJlDQo+ID4gPiA+IHB1dCBpbiB0aGUgc2hhcmVkIGRhdGEgc3RydWN0
+IGZ3ZGF0YS4gIEEgUEhZIGRyaXZlciBpbmRpY2F0ZXMgdGhhdA0KPiA+ID4gPiBpdCBoYXMgRkVD
+IHN0YXRzIGJ5IHNldHRpbmcgdGhlIGZsYWcgZndkYXRhLnBoeS5taXNjLmhhc19mZWNfc3RhdHMN
+Cj4gPiA+ID4NCj4gPiA+ID4gQmVzaWRlcyBDR1hfQ01EX0dFVF9QSFlfRkVDX1NUQVRTLCBhbHNv
+IGFkZCBDR1hfQ01EX1BSQlMgYW5kDQo+ID4gPiA+IENHWF9DTURfRElTUExBWV9FWUUgdG8gZW51
+bSBjZ3hfY21kX2lkIHNvIHRoYXQgTGludXgncyBlbnVtIGxpc3QNCj4gPiA+ID4gaXMgaW4gc3lu
+YyB3aXRoIGZpcm13YXJlJ3MgZW51bSBsaXN0Lg0KPiA+ID4gPg0KPiA+ID4gPiBTaWduZWQtb2Zm
+LWJ5OiBGZWxpeCBNYW5sdW5hcyA8Zm1hbmx1bmFzQG1hcnZlbGwuY29tPg0KPiA+ID4gPiBTaWdu
+ZWQtb2ZmLWJ5OiBDaHJpc3RpbmEgSmFjb2IgPGNqYWNvYkBtYXJ2ZWxsLmNvbT4NCj4gPiA+ID4g
+U2lnbmVkLW9mZi1ieTogU3VuaWwgS292dnVyaSBHb3V0aGFtIDxTdW5pbC5Hb3V0aGFtQGNhdml1
+bS5jb20+DQo+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IEhhcmlwcmFzYWQgS2VsYW0gPGhrZWxhbUBt
+YXJ2ZWxsLmNvbT4NCj4gPiA+DQo+ID4gPg0KPiA+ID4gPiArc3RydWN0IHBoeV9zIHsNCj4gPiA+
+ID4gKyAgICAgICBzdHJ1Y3Qgew0KPiA+ID4gPiArICAgICAgICAgICAgICAgdTY0IGNhbl9jaGFu
+Z2VfbW9kX3R5cGUgOiAxOw0KPiA+ID4gPiArICAgICAgICAgICAgICAgdTY0IG1vZF90eXBlICAg
+ICAgICAgICAgOiAxOw0KPiA+ID4gPiArICAgICAgICAgICAgICAgdTY0IGhhc19mZWNfc3RhdHMg
+ICAgICAgOiAxOw0KPiA+ID4NCj4gPiA+IHRoaXMgc3R5bGUgaXMgbm90IGN1c3RvbWFyeQ0KPiA+
+DQo+ID4gVGhlc2Ugc3RydWN0dXJlcyBhcmUgc2hhcmVkIHdpdGggZmlybXdhcmUgYW5kIHN0b3Jl
+ZCBpbiBhIHNoYXJlZCBtZW1vcnkuDQo+IEFueSBjaGFuZ2UgaW4gc2l6ZSBvZiBzdHJ1Y3R1cmVz
+IHdpbGwgYnJlYWsgY29tcGF0aWJpbGl0eS4gVG8gYXZvaWQgZnJlcXVlbnQNCj4gY29tcGF0aWJs
+ZSBpc3N1ZXMgd2l0aCBuZXcgdnMgb2xkIGZpcm13YXJlIHdlIGhhdmUgcHV0IHNwYWNlcyB3aGVy
+ZSBldmVyDQo+IHdlIHNlZSB0aGF0IHRoZXJlIGNvdWxkIGJlIG1vcmUgZmllbGRzIGFkZGVkIGlu
+IGZ1dHVyZS4NCj4gPiBTbyBjaGFuZ2luZyB0aGlzIHRvIHU4IGNhbiBoYXZlIGFuIGltcGFjdCBp
+biBmdXR1cmUuDQo+IA0KPiBNeSBjb21tZW50IHdhcyBpbnRlbmRlZCBtdWNoIHNpbXBsZXI6IGRv
+bid0IGFkZCB3aGl0ZXNwYWNlIGJldHdlZW4gdGhlDQo+IGJpdC1maWVsZCB2YXJpYWJsZSBuYW1l
+IGFuZCBpdHMgc2l6ZSBleHByZXNzaW9uLg0KPiANCj4gICB1NjQgbW9kX3R5cGU6MTsNCj4gDQo+
+IG5vdA0KPiANCj4gICB1NjQgbW9kX3R5cGUgICAgIDogMTsNCj4gDQo+IEF0IGxlYXN0LCBJIGhh
+dmUgbm90IHNlZW4gdGhhdCBzdHlsZSBhbnl3aGVyZSBlbHNlIGluIHRoZSBrZXJuZWwuDQpHb3Qg
+aXQgLiBXaWxsIGZpeCB0aGlzIGluIG5leHQgdmVyc2lvbi4NCg0KVGhhbmtzLA0KSGFyaXByYXNh
+ZCBrDQo=
