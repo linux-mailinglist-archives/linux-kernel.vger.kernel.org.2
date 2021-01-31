@@ -2,99 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0CAA30999B
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 02:22:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7389430999E
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 02:22:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232371AbhAaBUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 20:20:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35460 "EHLO
+        id S232473AbhAaBUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 20:20:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230168AbhAaBUL (ORCPT
+        with ESMTP id S232412AbhAaBUU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 20:20:11 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E67C6C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 17:19:30 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id lw17so7987342pjb.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 17:19:30 -0800 (PST)
+        Sat, 30 Jan 2021 20:20:20 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97557C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 17:19:40 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id t25so9509744pga.2
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 17:19:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=r4XQvxNNoGLJfrMyiuidxyu3QDem5+Pe8JibIIsychI=;
-        b=P/3zdPV7ZT34vyrVy9B+HRiisfmQe69UckhlSgox8Jjvi7v+s7v9FL8J3v4m/P8Qjr
-         HREpcNpk9ED09Pg0lPfOip+Nn04HDhL4OT1XUpiKAjZbNngEOu+AxLb7Ipx3BcCdbaB2
-         exEWJ2tQ09UuLW8I6P9rHwWck/pJ+47qJL4Iyt0vEY2Hxq9Cce4HMDtwqX2hRUhnONGL
-         9MWiKo7IbgzjLsiIvO7D7AiSaHk6LQ1J+qxEfZn0ya18RR0tw3j19rpdCW1wid/Kvml5
-         Y4cLdUa70OB9seYgTJh6HiHncHHuQFro+OJsZ5yBNxEKYoyfJy0gx4c68AGr8qldVKZF
-         kfkQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=g4cGb0A8UugopWEPcP4EL7ZThXZunWx6+RyJ/ItBnVA=;
+        b=FwhoT8kCZ1KxHunWg5EYP4MwyaoEUK38RNJajFVXEAj4w/h3H/3vJD+BJIDlc13SDh
+         9vfdmcb88Bifl4cps/BjcG0D/5cPiKVbflUAtrqVxZepCAfC/42o9K19sxBUI1Xz6j7Z
+         TJfAGZmNPfT51XixOWC6KIuxtqdmBqYoKAMGgEEk1bCgIqil/4yk8tGxsv0Cu8FW6xNP
+         Ko9gdhXuNGXEfO1okQCel9Rpqgp2AwSw9oogPfIZffM7XLQYZC+n23GWutpIJc8hRzy0
+         Mo2IB6V1mUXsABiMjbSWrr4nXhJh1o0F/h5SieEpbg6xCOLKa//1olvzhi3sYb0sJ9kD
+         Y2EQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=r4XQvxNNoGLJfrMyiuidxyu3QDem5+Pe8JibIIsychI=;
-        b=sB7RmpXNZJq0pw0ouUrlRBw4d1pxESwaNl7WDmG9tkyWYdN2Ue0xupinPd6X2mZg+h
-         U7wdLl+D9PlC62OV2cq8jjquV5x7RbWCGb/lQZxU6u2FYoVwwzHgl0nrFMWx7rxDLOtb
-         7+7CWGOh5gAZSMHlu4AQPJA+VOzJLO0SVicon6FDJULw6prluqeq+R887aMixuYWs3u0
-         8IKZNjd3O7DngBrk1nHkhcxHdltbL23/rzHRRASKW981uQN79mImJ1zOiOgA9GaQ+rdf
-         NGXmhaNyTc0D6SxZHEyaB2EtmHPFNAt4ntKhVWMJNmUTjz8H9A6ndt0dlvDJ7wBkY5Cx
-         LkLQ==
-X-Gm-Message-State: AOAM533uzT7qDRP8/Yz/1R1TUCYPuzCeZhOEKO0+Vs5A2202F3Xsp/H/
-        /0b7OPuqHKC15xgtiWskwtIALkqazGnbLw==
-X-Google-Smtp-Source: ABdhPJw9CHRQ+nGcktmizYwkcUqgqyeIAUs422wBi7+OoHVvlsWsk3hXAtOrh+jpwhAx6aYzTFTyRA==
-X-Received: by 2002:a17:90a:5410:: with SMTP id z16mr10755167pjh.110.1612055970357;
-        Sat, 30 Jan 2021 17:19:30 -0800 (PST)
-Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id y5sm13468278pfq.96.2021.01.30.17.19.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Jan 2021 17:19:29 -0800 (PST)
-Date:   Sat, 30 Jan 2021 17:19:28 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-To:     Dave Hansen <dave.hansen@linux.intel.com>
-cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        yang.shi@linux.alibaba.com, ying.huang@intel.com,
-        dan.j.williams@intel.com, david@redhat.com, osalvador@suse.de
-Subject: Re: [RFC][PATCH 04/13] mm/numa: node demotion data structure and
- lookup
-In-Reply-To: <20210126003419.43281680@viggo.jf.intel.com>
-Message-ID: <6115c2e-99b7-75f7-f0dd-bc44e69e21e7@google.com>
-References: <20210126003411.2AC51464@viggo.jf.intel.com> <20210126003419.43281680@viggo.jf.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=g4cGb0A8UugopWEPcP4EL7ZThXZunWx6+RyJ/ItBnVA=;
+        b=bZOVjrZkN6JrS92nWbb7z9uAMVui3WQwL7ERkC6pB4FocwB4FuH+XJi4q5Dvi4WrPw
+         17NdMRESMOhD9234sSsJLJe/14Y+sSXohocJNdnxg9k3v24DhgZnv+r1DtBnqh97ToOg
+         r1TujG9Va3Z97A0EC2OWZfOpRJ+0rr4DZmtsdybaDvNRwnpfhx92NgjYCS7ChA5lL0TI
+         xNmR4cytce6Zhd3YukFe3Z9uLXtR8vi5j2UFiAwEnGC2Mc83dnExvqyeBv3nmR5lIqVo
+         F1r4hb1+5q704Z4cESJS0ZjA57Dk0gv9IKlszDgMTSBqz0NafZFsthBP4YgnL/EwZQvn
+         s1fA==
+X-Gm-Message-State: AOAM531yA1nanPIAfxCc5SEIcEwyEBo2c0ncYI6jS857wJsfE4dc8H5a
+        XHehLT8c4u7Ov24OAWbuvZo=
+X-Google-Smtp-Source: ABdhPJx1mpPAHVecMervxdlGvY7c+PtaaFUFgH5DZRqKy83FJFVnEiO4+nXeMoY3GM4dB9FWmJeyYw==
+X-Received: by 2002:a63:3403:: with SMTP id b3mr10899592pga.308.1612055980026;
+        Sat, 30 Jan 2021 17:19:40 -0800 (PST)
+Received: from [192.168.88.245] (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id p7sm12625366pfn.52.2021.01.30.17.19.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 30 Jan 2021 17:19:38 -0800 (PST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [RFC 01/20] mm/tlb: fix fullmm semantics
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <CALCETrXsbaHJ+riUjWUJyrAaSyoFmRs17q=6ytf3vC2uYNL0sQ@mail.gmail.com>
+Date:   Sat, 30 Jan 2021 17:19:36 -0800
+Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Nick Piggin <npiggin@gmail.com>, X86 ML <x86@kernel.org>
+Content-Transfer-Encoding: 7bit
+Message-Id: <E0013E72-E192-4405-A78D-5D41069ECF76@gmail.com>
+References: <20210131001132.3368247-1-namit@vmware.com>
+ <20210131001132.3368247-2-namit@vmware.com>
+ <CALCETrXsbaHJ+riUjWUJyrAaSyoFmRs17q=6ytf3vC2uYNL0sQ@mail.gmail.com>
+To:     Andy Lutomirski <luto@kernel.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021, Dave Hansen wrote:
-
-> diff -puN mm/migrate.c~0006-node-Define-and-export-memory-migration-path mm/migrate.c
-> --- a/mm/migrate.c~0006-node-Define-and-export-memory-migration-path	2021-01-25 16:23:09.553866709 -0800
-> +++ b/mm/migrate.c	2021-01-25 16:23:09.558866709 -0800
-> @@ -1161,6 +1161,22 @@ out:
->  	return rc;
->  }
->  
-> +static int node_demotion[MAX_NUMNODES] = {[0 ...  MAX_NUMNODES - 1] = NUMA_NO_NODE};
-
-__read_mostly?
-
-> +
-> +/**
-> + * next_demotion_node() - Get the next node in the demotion path
-> + * @node: The starting node to lookup the next node
-> + *
-> + * @returns: node id for next memory node in the demotion path hierarchy
-> + * from @node; NUMA_NO_NODE if @node is terminal.  This does not keep
-> + * @node online or guarantee that it *continues* to be the next demotion
-> + * target.
-> + */
-> +int next_demotion_node(int node)
-> +{
-> +	return node_demotion[node];
-> +}
-> +
->  /*
->   * Obtain the lock on page, remove all ptes and migrate the page
->   * to the newly allocated page in newpage.
-> _
+> On Jan 30, 2021, at 5:02 PM, Andy Lutomirski <luto@kernel.org> wrote:
 > 
+> On Sat, Jan 30, 2021 at 4:16 PM Nadav Amit <nadav.amit@gmail.com> wrote:
+>> From: Nadav Amit <namit@vmware.com>
+>> 
+>> fullmm in mmu_gather is supposed to indicate that the mm is torn-down
+>> (e.g., on process exit) and can therefore allow certain optimizations.
+>> However, tlb_finish_mmu() sets fullmm, when in fact it want to say that
+>> the TLB should be fully flushed.
+> 
+> Maybe also rename fullmm?
+
+Possible. How about mm_torn_down?
+
+I should have also changed the comment in tlb_finish_mmu().
