@@ -2,266 +2,426 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5891309C46
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 14:01:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE21309C3F
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 14:00:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232290AbhAaM6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 07:58:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231614AbhAaML6 (ORCPT
+        id S232095AbhAaM7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 07:59:20 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:32815 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231680AbhAaMMz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 07:11:58 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D77BAC06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 04:02:05 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id s24so8653811pjp.5
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 04:02:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+Wc3uUA2H/tMIs/qQu4DYWaAR4LcSw0G3CtOHfYluew=;
-        b=CaYRIrc7WPEtJLOwA1ONCd1HJshob9QVVFGSgoCjOqAPLkRsQbCfu4EBXUb6WnvdU3
-         fwOeEZ4UoMhhJ4uwOrVMmw+/6k0tbsUq9IHkR+sekNpS1X6Xar8H43BukpcfsDjZ4GB5
-         qNHtfDuT7CRjC87c/8CdmtgNuqrIdb/vc8JFNcupC/NINGDdPYxkxXomMED9KhRdOjSQ
-         qxocrv9B+Dd7Pm4rUgC92SKxSubmta8pah2SxfoxQ98avK3vTVlRwUmRWmIhjEIRRPFd
-         QfOu+3xuUUTmQlo4H4J4GcgU+zmhXAiph2eIyUEo7AdwHCXmdfdn5TOduRD8UMwOW6BH
-         XfLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+Wc3uUA2H/tMIs/qQu4DYWaAR4LcSw0G3CtOHfYluew=;
-        b=QwgOEK3eUqrn3U7Cly+ua1vWZ9V7TPnjyhOz7gAeaIYHepdDYcAbiI2aVqFMW/C8ht
-         nvioivBbjM6Mb0BByd53VgFlXnM09KsAJUZ4PBiz7aFLpv+ueFzuo/MkN4giuJBQ7RsD
-         MIMFG1o6znP7ZFAOHgN/NcoXgQJkKntCCU/huRIWyaVo3jmCubniaVzfqKqSboQNqOWh
-         viJP2zRxOVuXMTtv3tLuf9Hzhp2Je4UbDCrHcIBZBBatKUCFSB1WSpIkFd5FGka+tDpF
-         6/pW3eLIcH4Xt1HxOdN4WhDgkuVHfbuVe4f7U/3aIwwAgOiYd6gVZLhxetqsojthOVsh
-         LQ5g==
-X-Gm-Message-State: AOAM532CXZlh+wjJNkLt+U82kF14/FXi18Ve7n9EpDSJGlzs7cOEg+nB
-        26Bw0fDAtVoawxCf26jRPNRxbg==
-X-Google-Smtp-Source: ABdhPJyuTvqCqtlLQPK0HydVLrqI8Tkrcq+tOmmIlEvLwu0L1r44gBuvrIaKe8wUdkpjxwUf22w54A==
-X-Received: by 2002:a17:90a:1082:: with SMTP id c2mr12644697pja.183.1612094525297;
-        Sun, 31 Jan 2021 04:02:05 -0800 (PST)
-Received: from leoy-ThinkPad-X240s ([204.124.180.10])
-        by smtp.gmail.com with ESMTPSA id ne6sm12217059pjb.44.2021.01.31.04.01.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Jan 2021 04:02:04 -0800 (PST)
-Date:   Sun, 31 Jan 2021 20:01:56 +0800
-From:   Leo Yan <leo.yan@linaro.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Al Grant <al.grant@arm.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Wei Li <liwei391@huawei.com>,
-        Tan Xiaojun <tanxiaojun@huawei.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Subject: Re: [PATCH 8/8] perf arm-spe: Set thread TID
-Message-ID: <20210131120156.GB230721@leoy-ThinkPad-X240s>
-References: <20210119144658.793-1-james.clark@arm.com>
- <20210119144658.793-8-james.clark@arm.com>
+        Sun, 31 Jan 2021 07:12:55 -0500
+Date:   Sun, 31 Jan 2021 12:12:01 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1612095124; bh=Nu/6gBvwiq6e4Mjd+btfSeTplEIyQm1CxP2gQUuPMl4=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=R6/5tCqA90h411Xwf2Ki2/BQYPnmfsnvdziZFOAyxh8ga+IUCSy9+Il0gsyQXC73R
+         JPCACHIxGFFIZPNjXeq8+78Z8eTTEFYPeEWfVsbSHC+bviqbl1UbIloMyiSN28iIwo
+         XODYkYG28lbScXaMbXKhKYAdsqh3RNxwAeDp/Jn7qqz8uJXpJTEu3niq5An/xCYgmQ
+         6Ro1Pkonn7wEFTdg8GQ6Onhq+tPw1zd08ob9e7tf/1AjlrV8Umv6rigEsMwxyFpfhI
+         AV5KbQfV+pDLeUFINUOOrH6zyqWdGkneYxWF0xVzaRU+6pkg/uVyZHraGGVl6z86ar
+         UqwXDxqBS2MlA==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH v3 net-next 4/5] net: use the new dev_page_is_reusable() instead of private versions
+Message-ID: <20210131120844.7529-5-alobakin@pm.me>
+In-Reply-To: <20210131120844.7529-1-alobakin@pm.me>
+References: <20210131120844.7529-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210119144658.793-8-james.clark@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James,
+Now we can remove a bunch of identical functions from the drivers and
+make them use common dev_page_is_reusable(). All {,un}likely() checks
+are omitted since it's already present in this helper.
+Also update some comments near the call sites.
 
-On Tue, Jan 19, 2021 at 04:46:58PM +0200, James Clark wrote:
-> From: Leo Yan <leo.yan@linaro.org>
-> 
-> Set thread TID for SPE samples. Now that the context ID is saved
-> in each record it can be used to set the TID for a sample.
-> 
-> The context ID is only present in SPE data if the kernel is
-> compiled with CONFIG_PID_IN_CONTEXTIDR and perf record is
-> run as root. Otherwise the PID of the first process is assigned
-> to each SPE sample.
+Suggested-by: David Rientjes <rientjes@google.com>
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ drivers/net/ethernet/hisilicon/hns3/hns3_enet.c | 17 ++++++-----------
+ drivers/net/ethernet/intel/fm10k/fm10k_main.c   | 13 ++++---------
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c     | 15 +--------------
+ drivers/net/ethernet/intel/iavf/iavf_txrx.c     | 15 +--------------
+ drivers/net/ethernet/intel/ice/ice_txrx.c       | 13 ++-----------
+ drivers/net/ethernet/intel/igb/igb_main.c       |  9 ++-------
+ drivers/net/ethernet/intel/igc/igc_main.c       |  9 ++-------
+ drivers/net/ethernet/intel/ixgbe/ixgbe_main.c   |  9 ++-------
+ .../net/ethernet/intel/ixgbevf/ixgbevf_main.c   |  9 ++-------
+ drivers/net/ethernet/mellanox/mlx5/core/en_rx.c |  7 +------
+ 10 files changed, 23 insertions(+), 93 deletions(-)
 
-I tested this patch series on Hisilicon D06, it outputs the result as
-expected.  I am comfortable for the testing result based our two sides
-on two different platforms.
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/=
+ethernet/hisilicon/hns3/hns3_enet.c
+index 512080640cbc..f39f5b1c4cec 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+@@ -2800,12 +2800,6 @@ static void hns3_nic_alloc_rx_buffers(struct hns3_en=
+et_ring *ring,
+ =09writel(i, ring->tqp->io_base + HNS3_RING_RX_RING_HEAD_REG);
+ }
+=20
+-static bool hns3_page_is_reusable(struct page *page)
+-{
+-=09return page_to_nid(page) =3D=3D numa_mem_id() &&
+-=09=09!page_is_pfmemalloc(page);
+-}
+-
+ static bool hns3_can_reuse_page(struct hns3_desc_cb *cb)
+ {
+ =09return (page_count(cb->priv) - cb->pagecnt_bias) =3D=3D 1;
+@@ -2823,10 +2817,11 @@ static void hns3_nic_reuse_page(struct sk_buff *skb=
+, int i,
+ =09skb_add_rx_frag(skb, i, desc_cb->priv, desc_cb->page_offset + pull_len,
+ =09=09=09size - pull_len, truesize);
+=20
+-=09/* Avoid re-using remote pages, or the stack is still using the page
+-=09 * when page_offset rollback to zero, flag default unreuse
++=09/* Avoid re-using remote and pfmemalloc pages, or the stack is still
++=09 * using the page when page_offset rollback to zero, flag default
++=09 * unreuse
+ =09 */
+-=09if (unlikely(!hns3_page_is_reusable(desc_cb->priv)) ||
++=09if (!dev_page_is_reusable(desc_cb->priv) ||
+ =09    (!desc_cb->page_offset && !hns3_can_reuse_page(desc_cb))) {
+ =09=09__page_frag_cache_drain(desc_cb->priv, desc_cb->pagecnt_bias);
+ =09=09return;
+@@ -3083,8 +3078,8 @@ static int hns3_alloc_skb(struct hns3_enet_ring *ring=
+, unsigned int length,
+ =09if (length <=3D HNS3_RX_HEAD_SIZE) {
+ =09=09memcpy(__skb_put(skb, length), va, ALIGN(length, sizeof(long)));
+=20
+-=09=09/* We can reuse buffer as-is, just make sure it is local */
+-=09=09if (likely(hns3_page_is_reusable(desc_cb->priv)))
++=09=09/* We can reuse buffer as-is, just make sure it is reusable */
++=09=09if (dev_page_is_reusable(desc_cb->priv))
+ =09=09=09desc_cb->reuse_flag =3D 1;
+ =09=09else /* This page cannot be reused so discard it */
+ =09=09=09__page_frag_cache_drain(desc_cb->priv,
+diff --git a/drivers/net/ethernet/intel/fm10k/fm10k_main.c b/drivers/net/et=
+hernet/intel/fm10k/fm10k_main.c
+index 99b8252eb969..247f44f4cb30 100644
+--- a/drivers/net/ethernet/intel/fm10k/fm10k_main.c
++++ b/drivers/net/ethernet/intel/fm10k/fm10k_main.c
+@@ -194,17 +194,12 @@ static void fm10k_reuse_rx_page(struct fm10k_ring *rx=
+_ring,
+ =09=09=09=09=09 DMA_FROM_DEVICE);
+ }
+=20
+-static inline bool fm10k_page_is_reserved(struct page *page)
+-{
+-=09return (page_to_nid(page) !=3D numa_mem_id()) || page_is_pfmemalloc(pag=
+e);
+-}
+-
+ static bool fm10k_can_reuse_rx_page(struct fm10k_rx_buffer *rx_buffer,
+ =09=09=09=09    struct page *page,
+ =09=09=09=09    unsigned int __maybe_unused truesize)
+ {
+-=09/* avoid re-using remote pages */
+-=09if (unlikely(fm10k_page_is_reserved(page)))
++=09/* avoid re-using remote and pfmemalloc pages */
++=09if (!dev_page_is_reusable(page))
+ =09=09return false;
+=20
+ #if (PAGE_SIZE < 8192)
+@@ -265,8 +260,8 @@ static bool fm10k_add_rx_frag(struct fm10k_rx_buffer *r=
+x_buffer,
+ =09if (likely(size <=3D FM10K_RX_HDR_LEN)) {
+ =09=09memcpy(__skb_put(skb, size), va, ALIGN(size, sizeof(long)));
+=20
+-=09=09/* page is not reserved, we can reuse buffer as-is */
+-=09=09if (likely(!fm10k_page_is_reserved(page)))
++=09=09/* page is reusable, we can reuse buffer as-is */
++=09=09if (dev_page_is_reusable(page))
+ =09=09=09return true;
+=20
+ =09=09/* this page cannot be reused so discard it */
+diff --git a/drivers/net/ethernet/intel/i40e/i40e_txrx.c b/drivers/net/ethe=
+rnet/intel/i40e/i40e_txrx.c
+index 2574e78f7597..8d2ea4293d69 100644
+--- a/drivers/net/ethernet/intel/i40e/i40e_txrx.c
++++ b/drivers/net/ethernet/intel/i40e/i40e_txrx.c
+@@ -1843,19 +1843,6 @@ static bool i40e_cleanup_headers(struct i40e_ring *r=
+x_ring, struct sk_buff *skb,
+ =09return false;
+ }
+=20
+-/**
+- * i40e_page_is_reusable - check if any reuse is possible
+- * @page: page struct to check
+- *
+- * A page is not reusable if it was allocated under low memory
+- * conditions, or it's not in the same NUMA node as this CPU.
+- */
+-static inline bool i40e_page_is_reusable(struct page *page)
+-{
+-=09return (page_to_nid(page) =3D=3D numa_mem_id()) &&
+-=09=09!page_is_pfmemalloc(page);
+-}
+-
+ /**
+  * i40e_can_reuse_rx_page - Determine if this page can be reused by
+  * the adapter for another receive
+@@ -1891,7 +1878,7 @@ static bool i40e_can_reuse_rx_page(struct i40e_rx_buf=
+fer *rx_buffer,
+ =09struct page *page =3D rx_buffer->page;
+=20
+ =09/* Is any reuse possible? */
+-=09if (unlikely(!i40e_page_is_reusable(page)))
++=09if (!dev_page_is_reusable(page))
+ =09=09return false;
+=20
+ #if (PAGE_SIZE < 8192)
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_txrx.c b/drivers/net/ethe=
+rnet/intel/iavf/iavf_txrx.c
+index 256fa07d54d5..ffaf2742a2e0 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_txrx.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_txrx.c
+@@ -1141,19 +1141,6 @@ static void iavf_reuse_rx_page(struct iavf_ring *rx_=
+ring,
+ =09new_buff->pagecnt_bias=09=3D old_buff->pagecnt_bias;
+ }
+=20
+-/**
+- * iavf_page_is_reusable - check if any reuse is possible
+- * @page: page struct to check
+- *
+- * A page is not reusable if it was allocated under low memory
+- * conditions, or it's not in the same NUMA node as this CPU.
+- */
+-static inline bool iavf_page_is_reusable(struct page *page)
+-{
+-=09return (page_to_nid(page) =3D=3D numa_mem_id()) &&
+-=09=09!page_is_pfmemalloc(page);
+-}
+-
+ /**
+  * iavf_can_reuse_rx_page - Determine if this page can be reused by
+  * the adapter for another receive
+@@ -1187,7 +1174,7 @@ static bool iavf_can_reuse_rx_page(struct iavf_rx_buf=
+fer *rx_buffer)
+ =09struct page *page =3D rx_buffer->page;
+=20
+ =09/* Is any reuse possible? */
+-=09if (unlikely(!iavf_page_is_reusable(page)))
++=09if (!dev_page_is_reusable(page))
+ =09=09return false;
+=20
+ #if (PAGE_SIZE < 8192)
+diff --git a/drivers/net/ethernet/intel/ice/ice_txrx.c b/drivers/net/ethern=
+et/intel/ice/ice_txrx.c
+index 2c2de56e2824..8ca63c6a6ba4 100644
+--- a/drivers/net/ethernet/intel/ice/ice_txrx.c
++++ b/drivers/net/ethernet/intel/ice/ice_txrx.c
+@@ -728,15 +728,6 @@ bool ice_alloc_rx_bufs(struct ice_ring *rx_ring, u16 c=
+leaned_count)
+ =09return !!cleaned_count;
+ }
+=20
+-/**
+- * ice_page_is_reserved - check if reuse is possible
+- * @page: page struct to check
+- */
+-static bool ice_page_is_reserved(struct page *page)
+-{
+-=09return (page_to_nid(page) !=3D numa_mem_id()) || page_is_pfmemalloc(pag=
+e);
+-}
+-
+ /**
+  * ice_rx_buf_adjust_pg_offset - Prepare Rx buffer for reuse
+  * @rx_buf: Rx buffer to adjust
+@@ -775,8 +766,8 @@ ice_can_reuse_rx_page(struct ice_rx_buf *rx_buf, int rx=
+_buf_pgcnt)
+ =09unsigned int pagecnt_bias =3D rx_buf->pagecnt_bias;
+ =09struct page *page =3D rx_buf->page;
+=20
+-=09/* avoid re-using remote pages */
+-=09if (unlikely(ice_page_is_reserved(page)))
++=09/* avoid re-using remote and pfmemalloc pages */
++=09if (!dev_page_is_reusable(page))
+ =09=09return false;
+=20
+ #if (PAGE_SIZE < 8192)
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethern=
+et/intel/igb/igb_main.c
+index 84d4284b8b32..7d8e02b4d092 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -8215,18 +8215,13 @@ static void igb_reuse_rx_page(struct igb_ring *rx_r=
+ing,
+ =09new_buff->pagecnt_bias=09=3D old_buff->pagecnt_bias;
+ }
+=20
+-static inline bool igb_page_is_reserved(struct page *page)
+-{
+-=09return (page_to_nid(page) !=3D numa_mem_id()) || page_is_pfmemalloc(pag=
+e);
+-}
+-
+ static bool igb_can_reuse_rx_page(struct igb_rx_buffer *rx_buffer)
+ {
+ =09unsigned int pagecnt_bias =3D rx_buffer->pagecnt_bias;
+ =09struct page *page =3D rx_buffer->page;
+=20
+-=09/* avoid re-using remote pages */
+-=09if (unlikely(igb_page_is_reserved(page)))
++=09/* avoid re-using remote and pfmemalloc pages */
++=09if (!dev_page_is_reusable(page))
+ =09=09return false;
+=20
+ #if (PAGE_SIZE < 8192)
+diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethern=
+et/intel/igc/igc_main.c
+index 43aec42e6d9d..ae0de7f08568 100644
+--- a/drivers/net/ethernet/intel/igc/igc_main.c
++++ b/drivers/net/ethernet/intel/igc/igc_main.c
+@@ -1648,18 +1648,13 @@ static void igc_reuse_rx_page(struct igc_ring *rx_r=
+ing,
+ =09new_buff->pagecnt_bias=09=3D old_buff->pagecnt_bias;
+ }
+=20
+-static inline bool igc_page_is_reserved(struct page *page)
+-{
+-=09return (page_to_nid(page) !=3D numa_mem_id()) || page_is_pfmemalloc(pag=
+e);
+-}
+-
+ static bool igc_can_reuse_rx_page(struct igc_rx_buffer *rx_buffer)
+ {
+ =09unsigned int pagecnt_bias =3D rx_buffer->pagecnt_bias;
+ =09struct page *page =3D rx_buffer->page;
+=20
+-=09/* avoid re-using remote pages */
+-=09if (unlikely(igc_page_is_reserved(page)))
++=09/* avoid re-using remote and pfmemalloc pages */
++=09if (!dev_page_is_reusable(page))
+ =09=09return false;
+=20
+ #if (PAGE_SIZE < 8192)
+diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/et=
+hernet/intel/ixgbe/ixgbe_main.c
+index e08c01525fd2..237e09342f28 100644
+--- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
++++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
+@@ -1940,19 +1940,14 @@ static void ixgbe_reuse_rx_page(struct ixgbe_ring *=
+rx_ring,
+ =09new_buff->pagecnt_bias=09=3D old_buff->pagecnt_bias;
+ }
+=20
+-static inline bool ixgbe_page_is_reserved(struct page *page)
+-{
+-=09return (page_to_nid(page) !=3D numa_mem_id()) || page_is_pfmemalloc(pag=
+e);
+-}
+-
+ static bool ixgbe_can_reuse_rx_page(struct ixgbe_rx_buffer *rx_buffer,
+ =09=09=09=09    int rx_buffer_pgcnt)
+ {
+ =09unsigned int pagecnt_bias =3D rx_buffer->pagecnt_bias;
+ =09struct page *page =3D rx_buffer->page;
+=20
+-=09/* avoid re-using remote pages */
+-=09if (unlikely(ixgbe_page_is_reserved(page)))
++=09/* avoid re-using remote and pfmemalloc pages */
++=09if (!dev_page_is_reusable(page))
+ =09=09return false;
+=20
+ #if (PAGE_SIZE < 8192)
+diff --git a/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c b/drivers/ne=
+t/ethernet/intel/ixgbevf/ixgbevf_main.c
+index a14e55e7fce8..449d7d5b280d 100644
+--- a/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
++++ b/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c
+@@ -781,18 +781,13 @@ static void ixgbevf_reuse_rx_page(struct ixgbevf_ring=
+ *rx_ring,
+ =09new_buff->pagecnt_bias =3D old_buff->pagecnt_bias;
+ }
+=20
+-static inline bool ixgbevf_page_is_reserved(struct page *page)
+-{
+-=09return (page_to_nid(page) !=3D numa_mem_id()) || page_is_pfmemalloc(pag=
+e);
+-}
+-
+ static bool ixgbevf_can_reuse_rx_page(struct ixgbevf_rx_buffer *rx_buffer)
+ {
+ =09unsigned int pagecnt_bias =3D rx_buffer->pagecnt_bias;
+ =09struct page *page =3D rx_buffer->page;
+=20
+-=09/* avoid re-using remote pages */
+-=09if (unlikely(ixgbevf_page_is_reserved(page)))
++=09/* avoid re-using remote and pfmemalloc pages */
++=09if (!dev_page_is_reusable(page))
+ =09=09return false;
+=20
+ #if (PAGE_SIZE < 8192)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/=
+ethernet/mellanox/mlx5/core/en_rx.c
+index 98b56f495b32..e1b4cf506a15 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
+@@ -213,11 +213,6 @@ static inline u32 mlx5e_decompress_cqes_start(struct m=
+lx5e_rq *rq,
+ =09return mlx5e_decompress_cqes_cont(rq, wq, 1, budget_rem) - 1;
+ }
+=20
+-static inline bool mlx5e_page_is_reserved(struct page *page)
+-{
+-=09return page_is_pfmemalloc(page) || page_to_nid(page) !=3D numa_mem_id()=
+;
+-}
+-
+ static inline bool mlx5e_rx_cache_put(struct mlx5e_rq *rq,
+ =09=09=09=09      struct mlx5e_dma_info *dma_info)
+ {
+@@ -230,7 +225,7 @@ static inline bool mlx5e_rx_cache_put(struct mlx5e_rq *=
+rq,
+ =09=09return false;
+ =09}
+=20
+-=09if (unlikely(mlx5e_page_is_reserved(dma_info->page))) {
++=09if (!dev_page_is_reusable(dma_info->page)) {
+ =09=09stats->cache_waive++;
+ =09=09return false;
+ =09}
+--=20
+2.30.0
 
-Based on the discussion in the thread [1], IIUC, there have concern for
-using CONTEXTIDR for non-root namespace.  Thus the patch 08/08 is
-limited to support PID tracing in the root namespace, so we have two
-options:
 
-Option 1: by merging patches 07/08 and 08/08, we can firstly support PID
-tracing for root namespace, and later we can extend to support PID
-tracing in container (and in VMs).
-
-Option 2: we can use the software method to establish PID for SPE
-trace, which can base on kernel's events PERF_RECORD_SWITCH /
-PERF_RECORD_SWITCH_CPU_WIDE and check context switch ip.
-
-To be honest, I am a bit concern for option 1 for later might
-introduce regression when later support PID for containers (and VMs).
-If you have a plan for option 1, I think it's good to record current
-limitation and the plan for next step in the commit log, so we can merge
-this patch at this time and later extend for containers.
-
-Otherwise, we need to consider how to implement the PID tracing with
-option 2.  If it is the case, we should firstly only merge patches
-01 ~ 06 for data source enabling.  How about you think for this?
-
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> Signed-off-by: James Clark <james.clark@arm.com>
-
-Besides for techinical question, you could add your "Co-developed-by"
-tags for patches 06, 07, 08/08, which you have took time to refin them.
-
-Thanks you for kindly efforts.
-
-[1] https://lore.kernel.org/patchwork/patch/1353286/
-
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Jiri Olsa <jolsa@redhat.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: John Garry <john.garry@huawei.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Al Grant <al.grant@arm.com>
-> Cc: Andre Przywara <andre.przywara@arm.com>
-> Cc: Wei Li <liwei391@huawei.com>
-> Cc: Tan Xiaojun <tanxiaojun@huawei.com>
-> Cc: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->  tools/perf/util/arm-spe.c | 75 ++++++++++++++++++++++++++-------------
->  1 file changed, 50 insertions(+), 25 deletions(-)
-> 
-> diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
-> index 27a0b9dfe22d..9828fad7e516 100644
-> --- a/tools/perf/util/arm-spe.c
-> +++ b/tools/perf/util/arm-spe.c
-> @@ -223,6 +223,46 @@ static inline u8 arm_spe_cpumode(struct arm_spe *spe, u64 ip)
->  		PERF_RECORD_MISC_USER;
->  }
->  
-> +static void arm_spe_set_pid_tid_cpu(struct arm_spe *spe,
-> +				    struct auxtrace_queue *queue)
-> +{
-> +	struct arm_spe_queue *speq = queue->priv;
-> +	pid_t tid;
-> +
-> +	tid = machine__get_current_tid(spe->machine, speq->cpu);
-> +	if (tid != -1) {
-> +		speq->tid = tid;
-> +		thread__zput(speq->thread);
-> +	} else
-> +		speq->tid = queue->tid;
-> +
-> +	if ((!speq->thread) && (speq->tid != -1)) {
-> +		speq->thread = machine__find_thread(spe->machine, -1,
-> +						    speq->tid);
-> +	}
-> +
-> +	if (speq->thread) {
-> +		speq->pid = speq->thread->pid_;
-> +		if (queue->cpu == -1)
-> +			speq->cpu = speq->thread->cpu;
-> +	}
-> +}
-> +
-> +static int arm_spe_set_tid(struct arm_spe_queue *speq, pid_t tid)
-> +{
-> +	int err;
-> +	struct arm_spe *spe = speq->spe;
-> +	struct auxtrace_queue *queue;
-> +
-> +	err = machine__set_current_tid(spe->machine, speq->cpu, tid, tid);
-> +	if (err)
-> +		return err;
-> +
-> +	queue = &speq->spe->queues.queue_array[speq->queue_nr];
-> +	arm_spe_set_pid_tid_cpu(speq->spe, queue);
-> +	return 0;
-> +}
-> +
->  static void arm_spe_prep_sample(struct arm_spe *spe,
->  				struct arm_spe_queue *speq,
->  				union perf_event *event,
-> @@ -431,6 +471,7 @@ static int arm_spe_sample(struct arm_spe_queue *speq)
->  static int arm_spe_run_decoder(struct arm_spe_queue *speq, u64 *timestamp)
->  {
->  	struct arm_spe *spe = speq->spe;
-> +	const struct arm_spe_record *record;
->  	int ret;
->  
->  	if (!spe->kernel_start)
-> @@ -450,6 +491,11 @@ static int arm_spe_run_decoder(struct arm_spe_queue *speq, u64 *timestamp)
->  		if (ret < 0)
->  			continue;
->  
-> +		record = &speq->decoder->record;
-> +		ret = arm_spe_set_tid(speq, record->context_id);
-> +		if (ret)
-> +			return ret;
-> +
->  		ret = arm_spe_sample(speq);
->  		if (ret)
->  			return ret;
-> @@ -500,6 +546,10 @@ static int arm_spe__setup_queue(struct arm_spe *spe,
->  
->  		record = &speq->decoder->record;
->  
-> +		ret = arm_spe_set_tid(speq, record->context_id);
-> +		if (ret)
-> +			return ret;
-> +
->  		speq->timestamp = record->timestamp;
->  		ret = auxtrace_heap__add(&spe->heap, queue_nr, speq->timestamp);
->  		if (ret)
-> @@ -552,31 +602,6 @@ static bool arm_spe__is_timeless_decoding(struct arm_spe *spe)
->  	return timeless_decoding;
->  }
->  
-> -static void arm_spe_set_pid_tid_cpu(struct arm_spe *spe,
-> -				    struct auxtrace_queue *queue)
-> -{
-> -	struct arm_spe_queue *speq = queue->priv;
-> -	pid_t tid;
-> -
-> -	tid = machine__get_current_tid(spe->machine, speq->cpu);
-> -	if (tid != -1) {
-> -		speq->tid = tid;
-> -		thread__zput(speq->thread);
-> -	} else
-> -		speq->tid = queue->tid;
-> -
-> -	if ((!speq->thread) && (speq->tid != -1)) {
-> -		speq->thread = machine__find_thread(spe->machine, -1,
-> -						    speq->tid);
-> -	}
-> -
-> -	if (speq->thread) {
-> -		speq->pid = speq->thread->pid_;
-> -		if (queue->cpu == -1)
-> -			speq->cpu = speq->thread->cpu;
-> -	}
-> -}
-> -
->  static int arm_spe_process_queues(struct arm_spe *spe, u64 timestamp)
->  {
->  	unsigned int queue_nr;
-> -- 
-> 2.28.0
-> 
