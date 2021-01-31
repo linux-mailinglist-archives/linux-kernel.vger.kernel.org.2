@@ -2,185 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5714309D82
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 16:32:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB3B309DB7
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 16:40:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229957AbhAaN4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 08:56:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55120 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231783AbhAaMWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 07:22:20 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1EFC64DDF;
-        Sun, 31 Jan 2021 12:18:44 +0000 (UTC)
-Date:   Sun, 31 Jan 2021 12:18:40 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        kernel@pengutronix.de, Holger Assmann <has@pengutronix.de>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        linux-iio@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] iio: adc: stm32-adc: enable timestamping for non-DMA
- usage
-Message-ID: <20210131121840.123d478e@archlinux>
-In-Reply-To: <20210125194824.30549-1-a.fatoum@pengutronix.de>
-References: <20210125194824.30549-1-a.fatoum@pengutronix.de>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S232578AbhAaPkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 10:40:07 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:24611 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232164AbhAaMwj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 07:52:39 -0500
+X-UUID: 9765db983f804114851955871cb8298a-20210131
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=H0bML+eNBmZSuR/PM/yGe8x+G6itpVoj329ds+BexWE=;
+        b=lxRj3uYFtqeOGrghW0NWqi4Po5cxmbgZWSOkp1ZoPdWITBzeLRiSmFBkwlQVGuoc/uFf7cgeaJxhs3KGpMf1Ozg52L/67JG51BPkn0aZynHT9GIgHaKCVxG4/J1gyA0IcAtkYs3sU+UpwxJuC3Zr6qwJQYR6dbLglaZ3EPc1sag=;
+X-UUID: 9765db983f804114851955871cb8298a-20210131
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <hanks.chen@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 623195478; Sun, 31 Jan 2021 20:51:20 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ MTKMBS32N2.mediatek.inc (172.27.4.72) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sun, 31 Jan 2021 20:51:06 +0800
+Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 31 Jan 2021 20:50:59 +0800
+Message-ID: <1612097459.484.5.camel@mtkswgap22>
+Subject: Re: [PATCH v1 1/1] arm64: dts: mt6779: add spi host dts nodes
+From:   Hanks Chen <hanks.chen@mediatek.com>
+To:     Mason Zhang <mason.zhang@mediatek.com>
+CC:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Date:   Sun, 31 Jan 2021 20:50:59 +0800
+In-Reply-To: <20210126131839.2168-2-mason.zhang@mediatek.com>
+References: <20210126131839.2168-1-mason.zhang@mediatek.com>
+         <20210126131839.2168-2-mason.zhang@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-TM-SNTS-SMTP: 6C9DE66BB309684B4BAD733E784C59101D56845D7754F36C8535B840862203462000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021 20:48:23 +0100
-Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
-
-> For non-DMA usage, we have an easy way to associate a timestamp with a
-> sample: iio_pollfunc_store_time stores a timestamp in the primary
-> trigger IRQ handler and stm32_adc_trigger_handler runs in the IRQ thread
-> to push out the buffer along with the timestamp.
-> 
-> For this to work, the driver needs to register an IIO_TIMESTAMP channel.
-> Do this.
-> 
-> For DMA, it's not as easy, because we don't push the buffers out of
-> stm32_adc_trigger, but out of stm32_adc_dma_buffer_done, which runs in
-> a tasklet scheduled after a DMA completion.
-> 
-> Preferably, the DMA controller would copy us the timestamp into that buffer
-> as well. Until this is implemented, restrict timestamping support to
-> only PIO. For low-frequency sampling, PIO is probably good enough.
-> 
-> Cc: Holger Assmann <has@pengutronix.de>
-> Acked-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
-> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
-
-Applied to the togreg branch of iio.git and pushed out as testing for
-the autobuilders to poke at it and see if they can find any issues
-that we missed.
-
-Thanks,
-
-Jonathan
-
-> ---
-> v3 -> v4:
->   - descrease buffer size to correct size (Marc)
-> v2 -> v3:
->   - explicitly specify alignment (Jonathan)
->   - increase buffer size to hold additional timestamp
-> v1 -> v2:
->   - Added comment about timestamping being PIO only (Fabrice)
->   - Added missing DMA resource clean up in error path (Fabrice)
->   - Added Fabrice's Acked-by
-> ---
->  drivers/iio/adc/stm32-adc.c | 39 +++++++++++++++++++++++++++++--------
->  1 file changed, 31 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-> index c067c994dae2..5ebbd28e45ca 100644
-> --- a/drivers/iio/adc/stm32-adc.c
-> +++ b/drivers/iio/adc/stm32-adc.c
-> @@ -177,7 +177,7 @@ struct stm32_adc_cfg {
->   * @offset:		ADC instance register offset in ADC block
->   * @cfg:		compatible configuration data
->   * @completion:		end of single conversion completion
-> - * @buffer:		data buffer
-> + * @buffer:		data buffer + 8 bytes for timestamp if enabled
->   * @clk:		clock for this adc instance
->   * @irq:		interrupt for this adc instance
->   * @lock:		spinlock
-> @@ -200,7 +200,7 @@ struct stm32_adc {
->  	u32			offset;
->  	const struct stm32_adc_cfg	*cfg;
->  	struct completion	completion;
-> -	u16			buffer[STM32_ADC_MAX_SQ];
-> +	u16			buffer[STM32_ADC_MAX_SQ + 4] __aligned(8);
->  	struct clk		*clk;
->  	int			irq;
->  	spinlock_t		lock;		/* interrupt lock */
-> @@ -1718,7 +1718,7 @@ static void stm32_adc_chan_init_one(struct iio_dev *indio_dev,
->  	}
->  }
->  
-> -static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
-> +static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
->  {
->  	struct device_node *node = indio_dev->dev.of_node;
->  	struct stm32_adc *adc = iio_priv(indio_dev);
-> @@ -1766,6 +1766,9 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
->  		return -EINVAL;
->  	}
->  
-> +	if (timestamping)
-> +		num_channels++;
-> +
->  	channels = devm_kcalloc(&indio_dev->dev, num_channels,
->  				sizeof(struct iio_chan_spec), GFP_KERNEL);
->  	if (!channels)
-> @@ -1816,6 +1819,19 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
->  		stm32_adc_smpr_init(adc, channels[i].channel, smp);
->  	}
->  
-> +	if (timestamping) {
-> +		struct iio_chan_spec *timestamp = &channels[scan_index];
-> +
-> +		timestamp->type = IIO_TIMESTAMP;
-> +		timestamp->channel = -1;
-> +		timestamp->scan_index = scan_index;
-> +		timestamp->scan_type.sign = 's';
-> +		timestamp->scan_type.realbits = 64;
-> +		timestamp->scan_type.storagebits = 64;
-> +
-> +		scan_index++;
-> +	}
-> +
->  	indio_dev->num_channels = scan_index;
->  	indio_dev->channels = channels;
->  
-> @@ -1875,6 +1891,7 @@ static int stm32_adc_probe(struct platform_device *pdev)
->  	struct device *dev = &pdev->dev;
->  	irqreturn_t (*handler)(int irq, void *p) = NULL;
->  	struct stm32_adc *adc;
-> +	bool timestamping = false;
->  	int ret;
->  
->  	if (!pdev->dev.of_node)
-> @@ -1931,16 +1948,22 @@ static int stm32_adc_probe(struct platform_device *pdev)
->  	if (ret < 0)
->  		return ret;
->  
-> -	ret = stm32_adc_chan_of_init(indio_dev);
-> -	if (ret < 0)
-> -		return ret;
-> -
->  	ret = stm32_adc_dma_request(dev, indio_dev);
->  	if (ret < 0)
->  		return ret;
->  
-> -	if (!adc->dma_chan)
-> +	if (!adc->dma_chan) {
-> +		/* For PIO mode only, iio_pollfunc_store_time stores a timestamp
-> +		 * in the primary trigger IRQ handler and stm32_adc_trigger_handler
-> +		 * runs in the IRQ thread to push out buffer along with timestamp.
-> +		 */
->  		handler = &stm32_adc_trigger_handler;
-> +		timestamping = true;
-> +	}
-> +
-> +	ret = stm32_adc_chan_of_init(indio_dev, timestamping);
-> +	if (ret < 0)
-> +		goto err_dma_disable;
->  
->  	ret = iio_triggered_buffer_setup(indio_dev,
->  					 &iio_pollfunc_store_time, handler,
+T24gVHVlLCAyMDIxLTAxLTI2IGF0IDIxOjE4ICswODAwLCBNYXNvbiBaaGFuZyB3cm90ZToNCj4g
+RnJvbTogbXRrMjI3ODYgPE1hc29uLlpoYW5nQG1lZGlhdGVrLmNvbT4NCj4gDQo+IHRoaXMgcGF0
+Y2ggYWRkIHNwaSBob3N0IGR0cyBub2RlcyBmb3IgbXQ2Nzc5IElDLg0KPiANCj4gQ2hhbmdlLUlk
+OiBJZjRhM2NiYjA5ODQzZjQ3MjIxMGIzOTAzNTJkYjRiOTg4NmY1YzAwYw0KPiBTaWduZWQtb2Zm
+LWJ5OiBNYXNvbiBaaGFuZyA8bWFzb24uemhhbmdAbWVkaWF0ZWsuY29tPg0KPiAtLS0NCj4gIGFy
+Y2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ2Nzc5LmR0c2kgfCA5NiArKysrKysrKysrKysr
+KysrKysrKysrKysNCj4gIDEgZmlsZSBjaGFuZ2VkLCA5NiBpbnNlcnRpb25zKCspDQo+IA0KPiBk
+aWZmIC0tZ2l0IGEvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDY3NzkuZHRzaSBiL2Fy
+Y2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ2Nzc5LmR0c2kNCj4gaW5kZXggMzcwZjMwOWQz
+MmRlLi4yNzJmNDM0NmQzNWUgMTAwNjQ0DQo+IC0tLSBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVk
+aWF0ZWsvbXQ2Nzc5LmR0c2kNCj4gKysrIGIvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9t
+dDY3NzkuZHRzaQ0KPiBAQCAtMjE5LDYgKzIxOSwxMDIgQEANCj4gIAkJCXN0YXR1cyA9ICJkaXNh
+YmxlZCI7DQo+ICAJCX07DQo+ICANCj4gKwkJc3BpMDogc3BpMEAxMTAwYTAwMCB7DQo+ICsJCQlj
+b21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1zcGkiLA0KPiArCQkJCSAgICAgIm1lZGlhdGVr
+LG10Njc2NS1zcGkiOw0KDQphZGQgdGhlIGNvbXBhdGlibGUgc3RyaW5nIGludG8gdGhlIFNQSSBi
+aW5kaW5nIA0KDQo+ICsJCQltZWRpYXRlayxwYWQtc2VsZWN0ID0gPDA+Ow0KPiArCQkJcmVnID0g
+PDAgMHgxMTAwYTAwMCAwIDB4MTAwMD47DQo+ICsJCQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMTQz
+IElSUV9UWVBFX0xFVkVMX0xPVz47DQoNCmFkZCA0dGggdmFsdWUgaW50byBpbnRlcnJ1cHRzIHBy
+b3BlcnR5IHRvIHN1cHBvcnQgUFBJIHBhcnRpdGlvbiANCigwIGZvciBTUEkpDQppbnRlcnJ1cHRz
+ID0gPEdJQ19TUEkgMTQzIElSUV9UWVBFX0xFVkVMX0xPVyAwPjsNCg0KUmVnYXJkcywNCkhhbmtz
+IENoZW4NCj4gKwkJCWNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9NQUlOUExMX0Q1X0QyPiwN
+Cj4gKwkJCQk8JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCj4gKwkJCQk8JmluZnJhY2ZnX2FvIENM
+S19JTkZSQV9TUEkwPjsNCj4gKwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNs
+ayIsICJzcGktY2xrIjsNCj4gKwkJfTsNCj4gKw0KPiArCQlzcGkxOiBzcGkxQDExMDEwMDAwIHsN
+Cj4gKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQo+ICsJCQkJICAgICAi
+bWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+ICsJCQltZWRpYXRlayxwYWQtc2VsZWN0ID0gPDA+Ow0K
+PiArCQkJcmVnID0gPDAgMHgxMTAxMDAwMCAwIDB4MTAwMD47DQo+ICsJCQlpbnRlcnJ1cHRzID0g
+PEdJQ19TUEkgMTQ3IElSUV9UWVBFX0xFVkVMX0xPVz47DQo+ICsJCQljbG9ja3MgPSA8JnRvcGNr
+Z2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4sDQo+ICsJCQkJPCZ0b3Bja2dlbiBDTEtfVE9QX1NQ
+ST4sDQo+ICsJCQkJPCZpbmZyYWNmZ19hbyBDTEtfSU5GUkFfU1BJMT47DQo+ICsJCQljbG9jay1u
+YW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsiLCAic3BpLWNsayI7DQo+ICsJCX07DQo+ICsN
+Cj4gKwkJc3BpMjogc3BpMkAxMTAxMjAwMCB7DQo+ICsJCQljb21wYXRpYmxlID0gIm1lZGlhdGVr
+LG10Njc3OS1zcGkiLA0KPiArCQkJCSAgICAgIm1lZGlhdGVrLG10Njc2NS1zcGkiOw0KPiArCQkJ
+bWVkaWF0ZWsscGFkLXNlbGVjdCA9IDwwPjsNCj4gKwkJCXJlZyA9IDwwIDB4MTEwMTIwMDAgMCAw
+eDEwMDA+Ow0KPiArCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE1MiBJUlFfVFlQRV9MRVZFTF9M
+T1c+Ow0KPiArCQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5QTExfRDVfRDI+LA0K
+PiArCQkJCSA8JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCj4gKwkJCQk8JmluZnJhY2ZnX2FvIENM
+S19JTkZSQV9TUEkyPjsNCj4gKwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNs
+ayIsICJzcGktY2xrIjsNCj4gKwkJfTsNCj4gKw0KPiArCQlzcGkzOiBzcGkzQDExMDEzMDAwIHsN
+Cj4gKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQo+ICsJCQkJICAgICAi
+bWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+ICsJCQltZWRpYXRlayxwYWQtc2VsZWN0ID0gPDA+Ow0K
+PiArCQkJcmVnID0gPDAgMHgxMTAxMzAwMCAwIDB4MTAwMD47DQo+ICsJCQlpbnRlcnJ1cHRzID0g
+PEdJQ19TUEkgMTUzIElSUV9UWVBFX0xFVkVMX0xPVz47DQo+ICsJCQljbG9ja3MgPSA8JnRvcGNr
+Z2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4sDQo+ICsJCQkJIDwmdG9wY2tnZW4gQ0xLX1RPUF9T
+UEk+LA0KPiArCQkJCSA8JmluZnJhY2ZnX2FvIENMS19JTkZSQV9TUEkzPjsNCj4gKwkJCWNsb2Nr
+LW5hbWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNsayIsICJzcGktY2xrIjsNCj4gKwkJfTsNCj4g
+Kw0KPiArCQlzcGk0OiBzcGk0QDExMDE4MDAwIHsNCj4gKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0
+ZWssbXQ2Nzc5LXNwaSIsDQo+ICsJCQkJICAgICAibWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+ICsJ
+CQltZWRpYXRlayxwYWQtc2VsZWN0ID0gPDA+Ow0KPiArCQkJcmVnID0gPDAgMHgxMTAxODAwMCAw
+IDB4MTAwMD47DQo+ICsJCQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMTU2IElSUV9UWVBFX0xFVkVM
+X0xPVz47DQo+ICsJCQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4s
+DQo+ICsJCQkJIDwmdG9wY2tnZW4gQ0xLX1RPUF9TUEk+LA0KPiArCQkJCSA8JmluZnJhY2ZnX2Fv
+IENMS19JTkZSQV9TUEk0PjsNCj4gKwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1jbGsiLCAic2Vs
+LWNsayIsICJzcGktY2xrIjsNCj4gKwkJfTsNCj4gKw0KPiArCQlzcGk1OiBzcGk1QDExMDE5MDAw
+IHsNCj4gKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQo+ICsJCQkJICAg
+ICAibWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+ICsJCQltZWRpYXRlayxwYWQtc2VsZWN0ID0gPDA+
+Ow0KPiArCQkJcmVnID0gPDAgMHgxMTAxOTAwMCAwIDB4MTAwMD47DQo+ICsJCQlpbnRlcnJ1cHRz
+ID0gPEdJQ19TUEkgMTU3IElSUV9UWVBFX0xFVkVMX0xPVz47DQo+ICsJCQljbG9ja3MgPSA8JnRv
+cGNrZ2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4sDQo+ICsJCQkJPCZ0b3Bja2dlbiBDTEtfVE9Q
+X1NQST4sDQo+ICsJCQkJPCZpbmZyYWNmZ19hbyBDTEtfSU5GUkFfU1BJNT47DQo+ICsJCQljbG9j
+ay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsiLCAic3BpLWNsayI7DQo+ICsJCX07DQo+
+ICsNCj4gKwkJc3BpNjogc3BpNkAxMTAxZDAwMCB7DQo+ICsJCQljb21wYXRpYmxlID0gIm1lZGlh
+dGVrLG10Njc3OS1zcGkiLA0KPiArCQkJCSAgICAgIm1lZGlhdGVrLG10Njc2NS1zcGkiOw0KPiAr
+CQkJbWVkaWF0ZWsscGFkLXNlbGVjdCA9IDwwPjsNCj4gKwkJCXJlZyA9IDwwIDB4MTEwMWQwMDAg
+MCAweDEwMDA+Ow0KPiArCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE0NCBJUlFfVFlQRV9MRVZF
+TF9MT1c+Ow0KPiArCQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5QTExfRDVfRDI+
+LA0KPiArCQkJCSA8JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCj4gKwkJCQkgPCZpbmZyYWNmZ19h
+byBDTEtfSU5GUkFfU1BJNj47DQo+ICsJCQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNl
+bC1jbGsiLCAic3BpLWNsayI7DQo+ICsJCX07DQo+ICsNCj4gKwkJc3BpNzogc3BpN0AxMTAxZTAw
+MCB7DQo+ICsJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1zcGkiLA0KPiArCQkJCSAg
+ICAgIm1lZGlhdGVrLG10Njc2NS1zcGkiOw0KPiArCQkJbWVkaWF0ZWsscGFkLXNlbGVjdCA9IDww
+PjsNCj4gKwkJCXJlZyA9IDwwIDB4MTEwMWUwMDAgMCAweDEwMDA+Ow0KPiArCQkJaW50ZXJydXB0
+cyA9IDxHSUNfU1BJIDE0NSBJUlFfVFlQRV9MRVZFTF9MT1c+Ow0KPiArCQkJY2xvY2tzID0gPCZ0
+b3Bja2dlbiBDTEtfVE9QX01BSU5QTExfRDVfRDI+LA0KPiArCQkJCSA8JnRvcGNrZ2VuIENMS19U
+T1BfU1BJPiwNCj4gKwkJCQkgPCZpbmZyYWNmZ19hbyBDTEtfSU5GUkFfU1BJNz47DQo+ICsJCQlj
+bG9jay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsiLCAic3BpLWNsayI7DQo+ICsJCX07
+DQo+ICsNCj4gIAkJYXVkaW86IGNsb2NrLWNvbnRyb2xsZXJAMTEyMTAwMDAgew0KPiAgCQkJY29t
+cGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3NzktYXVkaW8iLCAic3lzY29uIjsNCj4gIAkJCXJlZyA9
+IDwwIDB4MTEyMTAwMDAgMCAweDEwMDA+Ow0KDQo=
 
