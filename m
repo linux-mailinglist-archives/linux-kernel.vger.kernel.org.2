@@ -2,118 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A791309CF3
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 15:36:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF1E309CF7
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 15:36:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231848AbhAaOcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 09:32:31 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:56856 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231388AbhAaOa0 (ORCPT
+        id S232348AbhAaOdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 09:33:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231579AbhAaObd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 09:30:26 -0500
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10VEMLt2065853;
-        Sun, 31 Jan 2021 09:29:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=t6GOFFqXF4+RT2s3I0nJug5NJG5wMksRVJGgJbwHJ8Q=;
- b=JzzEb71TQyAUqIqVwBZI6Lm5Zqs5Vzy9nTTU3TSyzry9bPUCe3oiZ43M2hdPRHhF0FAJ
- kRiW5TOKl066NrG+fXKytf/hB3stXbaQs+/fly/5tPuloiU6uKF/ASGjmz2GnDOoxIF4
- E+6+nBTocAN9qPH6slDKic3htcMvT8GGGkVK0KNXsobtbx1xIwmziEFMBMrnuVjURTIY
- wRHIdcdXx+7aSTy0Z9xLhoXisG9D4gD27+FQc/hd3adpJJCSuzXk9MzeGrdpux7+w3pS
- W7X6RZOXt6QMBEXZtEB/Dj3Iz5mkTTB1FJoXrmHnh0wKF6Rygosh+QZIogYoRbNBG3dF fw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36dx8m82gq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 31 Jan 2021 09:29:37 -0500
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10VETbT7085826;
-        Sun, 31 Jan 2021 09:29:37 -0500
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36dx8m82gg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 31 Jan 2021 09:29:37 -0500
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10VES3CA003395;
-        Sun, 31 Jan 2021 14:29:35 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03ams.nl.ibm.com with ESMTP id 36cy38h1rn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 31 Jan 2021 14:29:35 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10VETOn533096086
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 31 Jan 2021 14:29:25 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 09E2711C05B;
-        Sun, 31 Jan 2021 14:29:33 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 74D2611C04C;
-        Sun, 31 Jan 2021 14:29:30 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.28.14])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sun, 31 Jan 2021 14:29:30 +0000 (GMT)
-Message-ID: <d4eeefa0c13395e91850630e22d0d9e3690f43ac.camel@linux.ibm.com>
-Subject: Re: Migration to trusted keys: sealing user-provided key?
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Jan =?ISO-8859-1?Q?L=FCbbe?= <jlu@pengutronix.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        James Bottomley <jejb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
-        Sumit Garg <sumit.garg@linaro.org>
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, kernel@pengutronix.de
-Date:   Sun, 31 Jan 2021 09:29:29 -0500
-In-Reply-To: <8b9477e150d7c939dc0def3ebb4443efcc83cd85.camel@pengutronix.de>
-References: <74830d4f-5a76-8ba8-aad0-0d79f7c01af9@pengutronix.de>
-         <6dc99fd9ffbc5f405c5f64d0802d1399fc6428e4.camel@kernel.org>
-         <d1bed49f89495ceb529355cb41655a208fdb2197.camel@linux.ibm.com>
-         <8b9477e150d7c939dc0def3ebb4443efcc83cd85.camel@pengutronix.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
+        Sun, 31 Jan 2021 09:31:33 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 731F7C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 06:30:46 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id h15so8492429pli.8
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 06:30:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=nigauri-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XzVDaJ1fFycebTAvDz+XG3GL0wDkx80opJiUc7Y73GA=;
+        b=nph1gnU+p1YlhYEHYZOEAY5TMqgf7lDjuKRpDI3foQvwW/Ufgxud7XN3oZaWkWr4zc
+         k0t3GUUi7xbeyTQBP0ZbYCFhhYL5+PRYRO+HY1CN6OLpeMfjER1i6ZQPgyS5NTZVRtqc
+         mvuhvE5IVpBCMFwt7cwbqtTLSFnF6E7yhTbAfR8AgKx6bzb5osI+JViS6JTVbPHHZiVh
+         QRlIKbqn++iJYOZ3QBIJPrN3GMh3mQbRHgaxMtHSNUm66i1nm6WukCpqJ7qXP8OtDzWT
+         pga7p7ZxpMIY6/srf00UJiVQXsnXqyw82ZN9WLyuUywLUvsRzVgI9piqjhZec78RxXnx
+         ZQpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XzVDaJ1fFycebTAvDz+XG3GL0wDkx80opJiUc7Y73GA=;
+        b=ZjDayEsho/R/sMwOqY7qi5loowzyaryvOyVHa8tpP2K+CSHzZVb1365k/C4N2ZWYiY
+         lmJie+RwdVonmldwQ3cju/4YcCvOnRbtEs3T3fmuOzOy1XMbK6IOIqqSHwRxkiErJP5E
+         AEhUQgxMZcf46JZAwGcgSRYHGwU3koTBG7yv2FvEh9mWKtQkIZPx1N6kgMRDNEG/o6to
+         lwj6BBdZYCneSEhMcWjf0U/Wy06Uek7hUjgZFw7Br8wPlqew3Yis/KNAGQLrOoh9g41+
+         vRFzV3+BynGcl7DRJURqV+oQ683bEwEmgknjGed9pPhcN4R2tSsiGXybFG9S2JT0c0ZR
+         MrrQ==
+X-Gm-Message-State: AOAM530UazwiAc70WLL5X4QXB0l1/6HY0NefKQp2UUhxeg1AR7CTgTxg
+        w86INg7lxuoUcuR7S/TlWV1/qQjZkRnO
+X-Google-Smtp-Source: ABdhPJzmuNuju7oGIdhsBkMpUdnZr+g+bHAgqsSxYoVL3cn4F9d0oHum6qBfPPnToWL/UYM17WCDCA==
+X-Received: by 2002:a17:90a:470b:: with SMTP id h11mr12927978pjg.186.1612103445995;
+        Sun, 31 Jan 2021 06:30:45 -0800 (PST)
+Received: from localhost ([2405:6581:5360:1800:7285:c2ff:fec2:8f97])
+        by smtp.gmail.com with ESMTPSA id w7sm4487174pjv.24.2021.01.31.06.30.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 Jan 2021 06:30:45 -0800 (PST)
+From:   Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+To:     michal.simek@xilinx.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+Subject: [PATCH] firmware: xilinx: Remove zynqmp_pm_get_eemi_ops() in IS_REACHABLE(CONFIG_ZYNQMP_FIRMWARE)
+Date:   Sun, 31 Jan 2021 23:30:33 +0900
+Message-Id: <20210131143033.7441-1-iwamatsu@nigauri.org>
+X-Mailer: git-send-email 2.30.0
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-01-31_04:2021-01-29,2021-01-31 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- spamscore=0 clxscore=1015 phishscore=0 mlxlogscore=951 impostorscore=0
- adultscore=0 bulkscore=0 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101310076
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2021-01-31 at 15:14 +0100, Jan Lübbe wrote:
-> On Sun, 2021-01-31 at 07:09 -0500, Mimi Zohar wrote:
+zynqmp_pm_get_eemi_ops() was removed in commit 4db8180ffe7c: "Firmware: xilinx:
+Remove eemi ops for fpga related APIs", but not in IS_REACHABLE(CONFIG_ZYNQMP_FIRMWARE).
+This removed zynqmp_pm_get_eemi_ops() in IS_REACHABLE(CONFIG_ZYNQMP_FIRMWARE), and also
+modify the documentation for this driver.
 
-<snip>
+Fixes: 4db8180ffe7c ("firmware: xilinx: Remove eemi ops for fpga related APIs")
+Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
+---
+ Documentation/driver-api/xilinx/eemi.rst | 27 +-----------------------
+ include/linux/firmware/xlnx-zynqmp.h     |  5 -----
+ 2 files changed, 1 insertion(+), 31 deletions(-)
 
-> > 
-> > [1] The ima-evm-utils README contains EVM examples of "trusted" and
-> > "user" based "encrypted" keys.
-> 
-> I assume you refer to
-> https://sourceforge.net/p/linux-ima/ima-evm-utils/ci/master/tree/README#l143
-> "Generate EVM encrypted keys" and "Generate EVM trusted keys (TPM based)"?
-> 
-> In both cases, the key used by EVM is a *newly generated* random key. The only
-> difference is whether it's encrypted to a user key or a (random) trusted key.
+diff --git a/Documentation/driver-api/xilinx/eemi.rst b/Documentation/driver-api/xilinx/eemi.rst
+index 9dcbc6f18d75df..53416d25d309a8 100644
+--- a/Documentation/driver-api/xilinx/eemi.rst
++++ b/Documentation/driver-api/xilinx/eemi.rst
+@@ -19,32 +19,7 @@ device to issue or respond to power management requests.
+ EEMI ops is a structure containing all eemi APIs supported by Zynq MPSoC.
+ The zynqmp-firmware driver maintain all EEMI APIs in zynqmp_eemi_ops
+ structure. Any driver who want to communicate with PMC using EEMI APIs
+-can call zynqmp_pm_get_eemi_ops().
+-
+-Example of EEMI ops::
+-
+-	/* zynqmp-firmware driver maintain all EEMI APIs */
+-	struct zynqmp_eemi_ops {
+-		int (*get_api_version)(u32 *version);
+-		int (*query_data)(struct zynqmp_pm_query_data qdata, u32 *out);
+-	};
+-
+-	static const struct zynqmp_eemi_ops eemi_ops = {
+-		.get_api_version = zynqmp_pm_get_api_version,
+-		.query_data = zynqmp_pm_query_data,
+-	};
+-
+-Example of EEMI ops usage::
+-
+-	static const struct zynqmp_eemi_ops *eemi_ops;
+-	u32 ret_payload[PAYLOAD_ARG_CNT];
+-	int ret;
+-
+-	eemi_ops = zynqmp_pm_get_eemi_ops();
+-	if (IS_ERR(eemi_ops))
+-		return PTR_ERR(eemi_ops);
+-
+-	ret = eemi_ops->query_data(qdata, ret_payload);
++use the functions provided for each function.
  
-The "encrypted" asymmetric key data doesn't change, "update" just
-changes the key under which it is encrypted/decrypted.
-
-Usage::
-
-    keyctl add encrypted name "new [format] key-type:master-key-name
-keylen"
-        ring
-    keyctl add encrypted name "load hex_blob" ring
-    keyctl update keyid "update key-type:master-key-name"
-
-Mimi
+ IOCTL
+ ------
+diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
+index 2a0da841c942f6..4ef77deaf7918c 100644
+--- a/include/linux/firmware/xlnx-zynqmp.h
++++ b/include/linux/firmware/xlnx-zynqmp.h
+@@ -355,11 +355,6 @@ int zynqmp_pm_read_pggs(u32 index, u32 *value);
+ int zynqmp_pm_system_shutdown(const u32 type, const u32 subtype);
+ int zynqmp_pm_set_boot_health_status(u32 value);
+ #else
+-static inline struct zynqmp_eemi_ops *zynqmp_pm_get_eemi_ops(void)
+-{
+-	return ERR_PTR(-ENODEV);
+-}
+-
+ static inline int zynqmp_pm_get_api_version(u32 *version)
+ {
+ 	return -ENODEV;
+-- 
+2.30.0
 
