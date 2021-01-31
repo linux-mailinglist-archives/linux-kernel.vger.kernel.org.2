@@ -2,94 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FEA3309CD7
+	by mail.lfdr.de (Postfix) with ESMTP id DF9F2309CD8
 	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 15:27:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232349AbhAaOYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 09:24:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232536AbhAaNhq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 08:37:46 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20ABEC0613ED
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 05:36:59 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id e2so15391861lfj.13
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 05:36:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2fUb+aaBELq0rEVzt2KbqsNvX2OnZcgMHSYwoPC7nS0=;
-        b=YLLBr18wO6GGFEJyO8oWjW6NEljfLgWkFgF0WTiyLeiall8tdht1tG89L+cDUUTNvd
-         ziIpe2n5D04eauPRhN1Ep4cMaX0d2neI77ppm0G91nyFiRGNb/XfKa702/bb5DdRN7QB
-         03fQYfVQfj9595v7Vonr4WPKLmAJKdoD06kM5cJKKH6Rc7yID1zDi5gtPZ7ciamFX1eO
-         E1QU+REDVIqoC+Y3XISn57nziqjVNGuDxxAC7b2251cEC9dpGw19C11ml4xLlH6ulxz9
-         HCt7dhEbLvLIO2RZvRxbMUucEX3rNn2o3ziH9DECvN88nhOOjkdwX/PL+sv1Vc7vjXdH
-         qaeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2fUb+aaBELq0rEVzt2KbqsNvX2OnZcgMHSYwoPC7nS0=;
-        b=Y2nUUlyLM+YNsgnWpZjYoHFU7DRbJ1kh+XFWZUcRtY0TGANYRoUzCR2vVe8hSVjUp1
-         6eZVYGtBmEd6ZQZxr8/BQs3Vp+toamkosWV68i//1CJbTjegYHLoiob7blpPXq+kgAkY
-         /yC0cT1J+vOq7Aj8bBdoz5TwZ/iIsnuvRIHFmuvzUU/aO82nTwsW4E5Blemine6H5Nu6
-         OuFYxd3rpgYy3okv6Y9qaxO9FpnVCPCSwI44HcbOHsFMkxuFnysVUXTdrtJK5c8gjUYe
-         a51IlUR+wZjiVGR9mHrsVxq7tg4gsl7Xa9Ap+SOwtQD1KbfVvXxB2xIVvQzvZopDOxpV
-         aXqQ==
-X-Gm-Message-State: AOAM532wxlBWIllsHypOONunXInLRCS3n4U+7KZZU27iRRP9Q7pKNF7q
-        +BZ+rr0NxUxluCXB7riH2dk=
-X-Google-Smtp-Source: ABdhPJwBxuDgFcRtCekS3hdsAjmvGF0+To+nhRUaHXoQHeqqQRslFjEW5KPvMLW+S0jQzbYejcOzPQ==
-X-Received: by 2002:a19:8186:: with SMTP id c128mr600941lfd.377.1612100217702;
-        Sun, 31 Jan 2021 05:36:57 -0800 (PST)
-Received: from localhost.localdomain (h-158-174-22-164.NA.cust.bahnhof.se. [158.174.22.164])
-        by smtp.gmail.com with ESMTPSA id m8sm3391216ljb.32.2021.01.31.05.36.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Jan 2021 05:36:57 -0800 (PST)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Tim Harvey <tharvey@gateworks.com>,
-        Robert Jones <rjones@gateworks.com>,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH 3/3] mfd: pcf50633: Constify static struct attribute_group
-Date:   Sun, 31 Jan 2021 14:36:44 +0100
-Message-Id: <20210131133644.8834-4-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210131133644.8834-1-rikard.falkeborn@gmail.com>
-References: <20210131133644.8834-1-rikard.falkeborn@gmail.com>
+        id S232419AbhAaOYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 09:24:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47492 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230479AbhAaNov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 08:44:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1764D64E24;
+        Sun, 31 Jan 2021 13:44:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612100650;
+        bh=AEhfRC2GFsW0jQpuy/pTiPmQNoS8jBKYoe94U2/i/gM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UcHrIJ+lSMXxQ8dEwZFiaUBnAsUYYiFLJKM8mJHnN06JQzDm0VDoGIHpmO9uGimiC
+         YMCx/6IxfeBHf6ilhBtKBcEy/zLVbg6Bwl03Miwp6d4rrfykDw69doq2wkbHO/s36c
+         jmTX5YttWsL0vKvVrYuU2atTkSm1tHGPSjpTS4nM=
+Date:   Sun, 31 Jan 2021 14:44:07 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] serial: 8250: add option to disable registration of
+ legacy ISA ports
+Message-ID: <YBa0J82FrD6mdP/v@kroah.com>
+References: <20210128172244.22859-1-mans@mansr.com>
+ <YBam2m2VMowH5Yth@kroah.com>
+ <yw1xwnvtcki0.fsf@mansr.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <yw1xwnvtcki0.fsf@mansr.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of pcf_attr_group is to pass its address to
-sysfs_create_group() and sysfs_remove_group(), both which takes pointers
-to const attribute_group structs. Make it const to allow the compiler to
-put it in read-only memory.
+On Sun, Jan 31, 2021 at 01:18:47PM +0000, Måns Rullgård wrote:
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
+> 
+> > On Thu, Jan 28, 2021 at 05:22:44PM +0000, Mans Rullgard wrote:
+> >> On systems that do not have the traditional PC ISA serial ports, the
+> >> 8250 driver still creates non-functional device nodes.  This change
+> >> makes only ports that actually exist (PCI, DT, ...) get device nodes.
+> >> 
+> >> Signed-off-by: Mans Rullgard <mans@mansr.com>
+> >> ---
+> >>  drivers/tty/serial/8250/8250_core.c | 26 ++++++++++++++++++++------
+> >>  drivers/tty/serial/8250/Kconfig     |  5 +++++
+> >>  2 files changed, 25 insertions(+), 6 deletions(-)
+> >> 
+> >> diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8250/8250_core.c
+> >> index cae61d1ebec5..49695dd3677c 100644
+> >> --- a/drivers/tty/serial/8250/8250_core.c
+> >> +++ b/drivers/tty/serial/8250/8250_core.c
+> >> @@ -555,6 +555,7 @@ static void __init serial8250_isa_init_ports(void)
+> >>  	}
+> >>  }
+> >>  
+> >> +#ifdef CONFIG_SERIAL_8250_ISA
+> >
+> > This is just making a mess of the code. 
+> 
+> It was already a mess.
 
-Done with the help of coccinelle.
+True, but don't make it a worse one please.
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- drivers/mfd/pcf50633-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> > To do this right, pull the isa code out into a separate file and put
+> > the #ifdef in a .h file, so we can properly maintain and support this
+> > code over time.  This change as-is is not going to make that any
+> > easier :(
+> 
+> I might put in that effort if there's a reasonable chance this change
+> will be accepted.  If it's going to be rejected regardless, I'd rather
+> not waste my time.
+> 
+> >> +config SERIAL_8250_ISA
+> >> +	bool "8250/16550 ISA device support" if EXPERT
+> >
+> > So, no one will set this?
+> 
+> I followed the pattern of the existing SERIAL_8250_PNP option.  Was that
+> a mistake?  How would you prefer it?
 
-diff --git a/drivers/mfd/pcf50633-core.c b/drivers/mfd/pcf50633-core.c
-index 148bcd6120f4..0768d684113a 100644
---- a/drivers/mfd/pcf50633-core.c
-+++ b/drivers/mfd/pcf50633-core.c
-@@ -131,7 +131,7 @@ static struct attribute *pcf_sysfs_entries[] = {
- 	NULL,
- };
- 
--static struct attribute_group pcf_attr_group = {
-+static const struct attribute_group pcf_attr_group = {
- 	.name	= NULL,			/* put in device directory */
- 	.attrs	= pcf_sysfs_entries,
- };
--- 
-2.30.0
+I don't know, I'm just asking.
 
+> > What userspace visable change will be caused by this? 
+> 
+> There won't be /dev/ttyS devices for ports that don't exist.
+> 
+> > Will ports get renumbered?
+> 
+> Not if they had predictable numbers to begin with.
+
+So that would be "yes"?  If so, obviously we couldn't take this, right?
+
+thanks,
+
+greg k-h
