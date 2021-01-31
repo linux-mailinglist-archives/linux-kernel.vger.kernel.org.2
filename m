@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CBB0309E78
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 21:03:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13E48309E79
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 21:03:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231778AbhAaUAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 15:00:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52054 "EHLO mail.kernel.org"
+        id S231822AbhAaUAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 15:00:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231640AbhAaTyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 14:54:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD19364E4A;
-        Sun, 31 Jan 2021 17:24:53 +0000 (UTC)
+        id S231631AbhAaTyg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 14:54:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5800864E46;
+        Sun, 31 Jan 2021 17:24:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612113893;
-        bh=qlemc0Ip7t8ZrpTpREowl+iyGtccMyRXqTe0uwhHJ68=;
+        s=k20201202; t=1612113894;
+        bh=nTDFeXkmZsJl47UC4OiD2WnjDorbMhlFvMZSs0pko3c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YnITeL+vDPB2yKJbB4mBIf/17Vv0mVRjP9lelbGUZC9LLitLvCebxdcTOlTa2mp66
-         VA+g9Hp9Vt9wy2bwhEPbR0ce2kssoGNBdQEfDA5O/j57UfpwDfZGlgYmJWD6J/6wLX
-         iJqDCy2r871Beqx5riBPz35Jgc+PKnkT2skqhaYNclFzgsvsSRZWPamSzOiZfpq5Ya
-         CkaNHreSvzQxzg+5WgmVMZKUof/H6te9z8ofIJo88e7XZo2E97f6cYYcEF2niJYJc4
-         wQAzOat4Ee0Tqb4J+nhMBGDzPCpvQRX+lw5/OE3es/bQHV4lq/mK+IjxB/YNcEcbkx
-         3nMikhbtb8YWg==
+        b=UmelsvIqW/2B3Y4QZ2I77DnsTmfOsPxHhD/idftU7efpRnBgwrtvq4h4sXb/gUBmD
+         94q59tRMRiQnG3XPlrEe6JEDh5RGo85DSqiJieeXXNBD7lnaZkdVhfGRWjQcwcsAmj
+         /igKBOh9bknkUedOII7Hz+5LJekktc8BRhkztwHh8/c9g3kr8WweH+tj0KI7kNzCf9
+         2sOhjQB+lxYWHXUl+vvUZYf0yL/s+WJWkOFZv3thWJFDYQruvSQDfj5LlAByVR2uvl
+         +XwMh5+necZO+v+FGSZi1XdDMnCJhCqibfTDC+oVi+5glI5el+Mr6rh9f+7OGEffWH
+         3qDadgpKOWQuw==
 From:   Andy Lutomirski <luto@kernel.org>
 To:     x86@kernel.org
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -33,9 +33,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Andy Lutomirski <luto@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 09/11] x86/fault: Rename no_context() to kernelmode_fixup_or_oops()
-Date:   Sun, 31 Jan 2021 09:24:40 -0800
-Message-Id: <5b0ad34afeeee15032393367b0945a5032903162.1612113550.git.luto@kernel.org>
+Subject: [PATCH 10/11] x86/fault: Don't run fixups for SMAP violations
+Date:   Sun, 31 Jan 2021 09:24:41 -0800
+Message-Id: <416aa53570523f2659edf9e39d553160cb253c5f.1612113550.git.luto@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1612113550.git.luto@kernel.org>
 References: <cover.1612113550.git.luto@kernel.org>
@@ -45,97 +45,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The name no_context() has never been very clear.  It's only called for
-faults from kernel mode, so rename it and change the no-longer-useful
-user_mode(regs) check to a WARN_ON_ONCE.
+A SMAP-violating kernel access is not a recoverable condition.  Imagine
+kernel code that, outside of a uaccess region, dereferences a pointer to
+the user range by accident.  If SMAP is on, this will reliably generate
+as an intentional user access.  This makes it easy for bugs to be
+overlooked if code is inadequately tested both with and without SMAP.
 
+We discovered this because BPF can generate invalid accesses to user
+memory, but those warnings only got printed if SMAP was off.  With this
+patch, this type of error will be discovered with SMAP on as well.
+
+Cc: Yonghong Song <yhs@fb.com>
 Cc: Dave Hansen <dave.hansen@linux.intel.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
 Signed-off-by: Andy Lutomirski <luto@kernel.org>
 ---
- arch/x86/mm/fault.c | 28 ++++++++++------------------
- 1 file changed, 10 insertions(+), 18 deletions(-)
+ arch/x86/mm/fault.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index 177b612c7f33..04cc98ec2423 100644
+index 04cc98ec2423..d39946ad8a91 100644
 --- a/arch/x86/mm/fault.c
 +++ b/arch/x86/mm/fault.c
-@@ -693,17 +693,10 @@ page_fault_oops(struct pt_regs *regs, unsigned long error_code,
- }
- 
- static noinline void
--no_context(struct pt_regs *regs, unsigned long error_code,
--	   unsigned long address, int signal, int si_code)
-+kernelmode_fixup_or_oops(struct pt_regs *regs, unsigned long error_code,
-+			 unsigned long address, int signal, int si_code)
- {
--	if (user_mode(regs)) {
--		/*
--		 * This is an implicit supervisor-mode access from user
--		 * mode.  Bypass all the kernel-mode recovery code and just
--		 * OOPS.
--		 */
--		goto oops;
--	}
-+	WARN_ON_ONCE(user_mode(regs));
- 
- 	/* Are we prepared to handle this kernel fault? */
- 	if (fixup_exception(regs, X86_TRAP_PF, error_code, address)) {
-@@ -743,7 +736,6 @@ no_context(struct pt_regs *regs, unsigned long error_code,
- 	if (is_prefetch(regs, error_code, address))
- 		return;
- 
--oops:
- 	page_fault_oops(regs, error_code, address);
- }
- 
-@@ -790,7 +782,7 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
- 	struct task_struct *tsk = current;
- 
- 	if (!user_mode(regs)) {
--		no_context(regs, error_code, address, pkey, si_code);
-+		kernelmode_fixup_or_oops(regs, error_code, address, pkey, si_code);
+@@ -1242,7 +1242,11 @@ void do_user_addr_fault(struct pt_regs *regs,
+ 		     !(error_code & X86_PF_USER) &&
+ 		     !(regs->flags & X86_EFLAGS_AC)))
+ 	{
+-		bad_area_nosemaphore(regs, error_code, address);
++		/*
++		 * No extable entry here.  This was a kernel access to an
++		 * invalid pointer.  get_kernel_nofault() will not get here.
++		 */
++		page_fault_oops(regs, error_code, address);
  		return;
  	}
- 
-@@ -922,7 +914,7 @@ do_sigbus(struct pt_regs *regs, unsigned long error_code, unsigned long address,
- {
- 	/* Kernel mode? Handle exceptions or die: */
- 	if (!user_mode(regs)) {
--		no_context(regs, error_code, address, SIGBUS, BUS_ADRERR);
-+		kernelmode_fixup_or_oops(regs, error_code, address, SIGBUS, BUS_ADRERR);
- 		return;
- 	}
- 
-@@ -1382,8 +1374,8 @@ void do_user_addr_fault(struct pt_regs *regs,
- 		 * has unlocked the mm for us if we get here.
- 		 */
- 		if (!user_mode(regs))
--			no_context(regs, error_code, address, SIGBUS,
--				   BUS_ADRERR);
-+			kernelmode_fixup_or_oops(regs, error_code, address,
-+						 SIGBUS, BUS_ADRERR);
- 		return;
- 	}
- 
-@@ -1403,15 +1395,15 @@ void do_user_addr_fault(struct pt_regs *regs,
- 		return;
- 
- 	if (fatal_signal_pending(current) && !user_mode(regs)) {
--		no_context(regs, error_code, address, 0, 0);
-+		kernelmode_fixup_or_oops(regs, error_code, address, 0, 0);
- 		return;
- 	}
- 
- 	if (fault & VM_FAULT_OOM) {
- 		/* Kernel mode? Handle exceptions or die: */
- 		if (!user_mode(regs)) {
--			no_context(regs, error_code, address,
--				   SIGSEGV, SEGV_MAPERR);
-+			kernelmode_fixup_or_oops(regs, error_code, address,
-+						 SIGSEGV, SEGV_MAPERR);
- 			return;
- 		}
  
 -- 
 2.29.2
