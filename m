@@ -2,96 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA4E5309F8C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 00:38:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39963309F8D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 00:39:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbhAaXhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 18:37:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34890 "EHLO
+        id S229889AbhAaXjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 18:39:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230218AbhAaXgW (ORCPT
+        with ESMTP id S230368AbhAaXhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 18:36:22 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DF3AC061573
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 15:35:42 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id s18so17365409ljg.7
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 15:35:42 -0800 (PST)
+        Sun, 31 Jan 2021 18:37:36 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2981DC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 15:36:56 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id e9so9875343pjj.0
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 15:36:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RxtVTOwvFLoCBdKKHCXbA57pJv5BeCvLH+KgQ45jFPE=;
-        b=Uaad/AzNhD9i9qs4hVY7pyJkU4y4IRnbJ+lAT94Z5xheon9TYqV6ritYDdo0Z6BovO
-         Eiiunf+4SLqqb/sM3/HxMYRTLlhWVsnXV7jHKbaJfJMghdaW25T5aMjaCIltgRKELYQv
-         WyK8x5KFjphrAV7DodibwS35q7+RL1pYFmqLM=
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=+DHYDL7w8VhpjSa59jEOypJo9aMjHR9h4IvRm60SiP8=;
+        b=yYMnymv6gtf6EbcGV1hXWTybjceYtSIQhLLio6VTHQaIFLADGye/shGcou2dcZCklI
+         Bh1XMTY6BZIL7Engi7Rv2V5f/6+8gHfuhiZ19WBNvK/a5psapcsQEnYec3UJBnJfo/IR
+         oexSXzJwyZwL0i74T8hHm6z/86n/tjfXLpUHILurVHCANjo6Lol0L/gd7SLiHcNfVi1A
+         +VMa7JvHnjMCHAP2ylxkrO4KQUZdZk6zm7N3sNorTK3J1OkqiPy3bXgpoEV1ECW7nLBG
+         E85jJaRP9DE9RZrh+mY2+hZ6WZc0MHytEnEYO7nUC8G7ZS8s4F3COBhFEK1Pm/mjJm3D
+         Gj7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RxtVTOwvFLoCBdKKHCXbA57pJv5BeCvLH+KgQ45jFPE=;
-        b=C0ApO5jXci6QINtQ61XzrO2jCVvJPinc7queH3Y07pXtWqBzhn5p2ZWc1oLYZ9hVoC
-         C+FkNGZECa77qmMcoYakUgSfApGZemVd8khpIwtIeO3krhvUbirVNCty+YD+7pr9Dzxw
-         uKPkKNAarykPvVgrLoB/oq56M9LhU2J2tpABNdlVSfEN49cN14inBAtEvjrc+lmWkCh+
-         H2JRNqsC3zJDLg2tTXGgoJKCaosiV0d1IQ0fgVzCg//Fpdg0HN5fd7U1gQO/O5MbdQsy
-         xKYaNosno9e0eWNgcH5vBXwZ1XPxYvFqom4HDQoCfy6j2PSc38wsfFSXRcr5wlU0v1C6
-         v1Ww==
-X-Gm-Message-State: AOAM531jtBbTQGC4M7zzD84qL99V2YNLBAH3d3CwqkLif1jmeu/a0K0F
-        VS/UETXrFSz/bp5MmuAa9JsZJ46ivYw0KQ==
-X-Google-Smtp-Source: ABdhPJxizNWfQ15sYqnsLb04Wu8DCI3LU5xajerd4PyRs0TzInTVFzAB7m5ZhUtUJK3Nuwjd9xrMZg==
-X-Received: by 2002:a2e:91c2:: with SMTP id u2mr8440987ljg.346.1612136139436;
-        Sun, 31 Jan 2021 15:35:39 -0800 (PST)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id c17sm2804361lfs.217.2021.01.31.15.35.38
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=+DHYDL7w8VhpjSa59jEOypJo9aMjHR9h4IvRm60SiP8=;
+        b=IrJ11f2C2Lp35csrHpTtISns6M3o4Ny6q3x6HdlrRtEj7EEfUXm2lXEwJXh/C8JtvU
+         ql62Dro9QrVi75IFez6J7CwXrUWCnI+pSuzh5DQp3aaHk+ApQ2vdbNFA9XG/qYRWnXNz
+         yRUwR0oQ7DBZ90+Pa90srLhAgogog7C1zZC6YteMMbnLvLALAzLp6n5dp5/Drnna2uPL
+         WukXXm36P4oxjAK+fUaELTau7noHiIPhR4ie536UQUsLVgxt1JJS2ot0EIUVpIg1Uzy0
+         dbjNXtueMjPM3Ua4CfVZKWqYvBwAq9uJ4HTzDnofZl89wsQyccyNqNlmMoJk5/uNaEAd
+         VDOQ==
+X-Gm-Message-State: AOAM531RXV8llx7TIrGYZsBd6QI9ua0O73IKdtVW0pos9K1ftvG+t26z
+        E9lt4NcPf5zuZgLsejizBY0OXw==
+X-Google-Smtp-Source: ABdhPJw3OY949vrhlicMm7plcWZRvTH3uKMV4aiQSt25VbPPE7a/yjZORhcNy6zAjS42BZQzdujvTg==
+X-Received: by 2002:a17:90a:17af:: with SMTP id q44mr4677524pja.64.1612136215562;
+        Sun, 31 Jan 2021 15:36:55 -0800 (PST)
+Received: from ?IPv6:2601:646:c200:1ef2:8031:8295:6b02:ca64? ([2601:646:c200:1ef2:8031:8295:6b02:ca64])
+        by smtp.gmail.com with ESMTPSA id 78sm14679553pfx.127.2021.01.31.15.36.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Jan 2021 15:35:38 -0800 (PST)
-Received: by mail-lf1-f45.google.com with SMTP id f1so20337331lfu.3
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 15:35:38 -0800 (PST)
-X-Received: by 2002:ac2:4436:: with SMTP id w22mr6894967lfl.41.1612136138002;
- Sun, 31 Jan 2021 15:35:38 -0800 (PST)
-MIME-Version: 1.0
-References: <CAP045Ao_Zb0HGg0=bvUeV6GjX=-3fz0ScsvM_jE7VsZcVk_-tg@mail.gmail.com>
- <C479ACCB-A1A5-4422-8120-999E8D54314B@amacapital.net> <CAP045AoMRNjvVd1PdHvdf-nn3LNpTDp66sp+SAmZgNU888iFQQ@mail.gmail.com>
- <CAP045ApWnr=UQrBrv3fHj-C6EweukMWEyrCgsiY6Bt_i1Vdj6A@mail.gmail.com>
-In-Reply-To: <CAP045ApWnr=UQrBrv3fHj-C6EweukMWEyrCgsiY6Bt_i1Vdj6A@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 31 Jan 2021 15:35:22 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgqRgk0hjvpjHNixK7xSOS_F3fpt3bL9ZUJVhCL3oGgyw@mail.gmail.com>
-Message-ID: <CAHk-=wgqRgk0hjvpjHNixK7xSOS_F3fpt3bL9ZUJVhCL3oGgyw@mail.gmail.com>
+        Sun, 31 Jan 2021 15:36:55 -0800 (PST)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
 Subject: Re: [REGRESSION] x86/entry: TIF_SINGLESTEP handling is still broken
-To:     Kyle Huey <me@kylehuey.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
+Date:   Sun, 31 Jan 2021 15:36:53 -0800
+Message-Id: <BFAB82E3-267B-4CF5-B6F2-8E6A2A3DB42B@amacapital.net>
+References: <CAHk-=wjhQkZ=mUxPog4+kU1y5BRKw2DpbFXsEP=31fgX4KfBZQ@mail.gmail.com>
+Cc:     Kyle Huey <me@kylehuey.com>, Thomas Gleixner <tglx@linutronix.de>,
         Andy Lutomirski <luto@kernel.org>,
         Gabriel Krisman Bertazi <krisman@collabora.com>,
         open list <linux-kernel@vger.kernel.org>,
-        "Robert O'Callahan" <rocallahan@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        Robert O'Callahan <rocallahan@gmail.com>
+In-Reply-To: <CAHk-=wjhQkZ=mUxPog4+kU1y5BRKw2DpbFXsEP=31fgX4KfBZQ@mail.gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+X-Mailer: iPhone Mail (18C66)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 3:18 PM Kyle Huey <me@kylehuey.com> wrote:
->
-> The key to triggering this bug is to enter a ptrace syscall stop and
-> then use PTRACE_SINGLESTEP to exit it. On a good kernel this will not
-> result in any userspace code execution in the tracee because on the
-> way out of the kernel's syscall handling path the singlestep trap will
-> be raised immediately. On a bad kernel that stop will not be raised,
-> and in the example below, the program will crash.
 
-Thanks, great explanation, and I can certainly see the behavior you mention.
 
-I wonder if the simple solution is to just
+> On Jan 31, 2021, at 2:57 PM, Linus Torvalds <torvalds@linux-foundation.org=
+> wrote:
+>=20
+> =EF=BB=BFOn Sun, Jan 31, 2021 at 2:20 PM Andy Lutomirski <luto@amacapital.=
+net> wrote:
+>>=20
+>> A smallish test that we could stick in selftests would be great if that=E2=
+=80=99s straightforward.
+>=20
+> Side note: it would be good to have a test-case for the interaction
+> with the "block step" code too.
+>=20
+> I hate our name for it ("block step"?), but it modifies TF, to only
+> trap on taken branches, not after each instruction.
+>=20
+> So there's all these things that interact:
+>=20
+> - you can set TF yourself in user space with 'popf' and get a debug
+> signal (not after the popf, but after the instruction _after_ popf,
+> iirc)
+>=20
+> - you can set TF as a debugger and that's basically what
+> TIF_SINGLESTEP fundamentally means
+>=20
+> - we have TIF_FORCED_TF, which says whether TF was set by ptrace, or
+> whether it was already set independently by the application before
+> ptrace, so that we can know whether to clear it or keep it set *after*
+> the single-step.
+>=20
+> - you can then *modify* the behavior of TF to trap only on control
+> flow changes (and we use TIF_BLOCKSTEP to specify that behavior)
+>=20
+> - and there's also obviously some very subtle and unclear rules about
+> when system call instructions cause debug traps
+>=20
+> The basic TF behavior is fairly simple: it caused #DB, and we send a signa=
+l.
 
- (a) always set one of the SYSCALL_WORK_EXIT bits on the child in
-ptrace (exactly to catch the child on system call exit)
+This is all fundamentally impossible to do fully correctly because a program=
+ can use PUSHF to read TF, and there is only one TF bit, and the app and the=
+ debugger can fight over it. The insn breakpoint mechanism is much better, b=
+ut even AMD CPUs can=E2=80=99t (I think) be programmed to breakpoint the ent=
+ire user address space. So we do our best to fudge it.
 
- (b) basically revert 299155244770 ("entry: Drop usage of TIF flags in
-the generic syscall code") and have the syscall exit code check the
-TIF_SINGLESTEP flag
+>=20
+> The "app set TF _itself_, and we want to debug across that event" is a
+> lot more interesting, but it's unclear whether anybody does it. It's
+> really just a "we want to be able to debug that case too", and
+> TIF_FORCED_TF means that it should be possible.
+>=20
+> I didn't test that it works, though. Sounds worth a test-case?
+>=20
 
-Hmm?
+I can look. We do have tests for apps setting TF with no debugger attached.
 
-        Linus
+> The TIF_BLOCKSTEP thing changes no other logic, but basically sets the
+> bit in the MSR that modifies just when TF traps. I may hate the name,
+> but I think it works.
+>=20
+
+It has certainly been busted in the past in corner cases. I don=E2=80=99t th=
+ink we have tests.
+
+> The odd system call tracing part I have no idea who depends on it
+> (apparently "rr", which I assume is some replay thing), and I suspect
+> our semantics for it has been basically random historical one, and
+> it's apparently what changed.
+>=20
+> That's the one that we _really_ should have a test-case for, along
+> with some documentation and code comment what the actual semantics
+> need to be so that we don't break it again.
+
+This rr thing may be tangled up with the nonsense semantics of SYSRET.  I=E2=
+=80=99ll muck around with Kyle=E2=80=99s test and try to figure out what bro=
+ke.
+
+I=E2=80=99m guessing the issue is that we are correctly setting TF in the EFL=
+AGS image, but IRET helpfully only traps after the first user insn executes,=
+ which isn=E2=80=99t what the tracer is expects.=20
+
+>=20
+>             Linus
