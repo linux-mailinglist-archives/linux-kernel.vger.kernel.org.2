@@ -2,130 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 660FD309C94
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 15:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 599F2309C7C
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 15:03:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231996AbhAaOKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 09:10:15 -0500
-Received: from fallback22.m.smailru.net ([94.100.176.132]:50388 "EHLO
-        fallback22.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231975AbhAaMiX (ORCPT
+        id S232776AbhAaNzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 08:55:39 -0500
+Received: from mail-41103.protonmail.ch ([185.70.41.103]:56598 "EHLO
+        mail-41103.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231511AbhAaMYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 07:38:23 -0500
-X-Greylist: delayed 2600 seconds by postgrey-1.27 at vger.kernel.org; Sun, 31 Jan 2021 07:38:20 EST
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail3;
-        h=Message-Id:Date:Subject:Cc:To:From; bh=LQKaOz3GM1yz/eUqKljiD5r6FYniubYhj+U3zBFESls=;
-        b=SUt8xqEmqOovQUnRmHhNvhIkdXPiwzVdi2bPpZErUlhN8wTbQ54FDph9vaPv5cgDocB3kI2nvYoaX+wfJClajxyFEKfGF7c4gK/3m2hkk/MAr4jreCdy/WpHMtwodSJFtyDhtw09BlTKssclAyXP76jBx5FsXTtb/c6+WuegEFQ=;
-Received: from [10.161.16.37] (port=55238 helo=smtp63.i.mail.ru)
-        by fallback22.m.smailru.net with esmtp (envelope-from <azdmg@inbox.ru>)
-        id 1l6BIG-0004Cw-Bt; Sun, 31 Jan 2021 14:53:28 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail3;
-        h=Message-Id:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=LQKaOz3GM1yz/eUqKljiD5r6FYniubYhj+U3zBFESls=;
-        b=W+V0Fw9pIuH9kVeCRdT73Fr17ttZKY5wXxAAJ4if9Y8BBzWeFEcKvHNLiqNNVOiU5SOI+vs5XsaiE5CKupm3tUEoJum9vIsxwscmKUg/DyRO1373wnD9bqWoFjFQIsV4u63N7Iui/CJVAKIhOwIHurmxcurnGVrp8bRRtNd5g7k=;
-Received: by smtp63.i.mail.ru with esmtpa (envelope-from <azdmg@inbox.ru>)
-        id 1l6BGa-0001pu-R3; Sun, 31 Jan 2021 14:51:45 +0300
-From:   Dima Azarkin <azdmg@inbox.ru>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Christian Hewitt <christianshewitt@gmail.com>,
-        Dima Azarkin <azdmg@inbox.ru>
-Subject: [PATCH] ARM: dts: imx6qdl-wandboard: add scl/sda gpios definitions for i2c bus recovery
-Date:   Sun, 31 Jan 2021 14:49:44 +0300
-Message-Id: <20210131114944.2094-1-azdmg@inbox.ru>
-X-Mailer: git-send-email 2.17.1
-X-7564579A: 646B95376F6C166E
-X-77F55803: 4F1203BC0FB41BD953AC099BC0052A9C4647521586BE7E6324520D2A088600D8182A05F538085040301C78E64EAD1EF4C0A68F370F7379FF7DBBD334F2668BCAC20B38BAF2E57F5C
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE721810386143EB795EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006378F36A1B9BEFA0A0C8638F802B75D45FF5571747095F342E8C7A0BC55FA0FE5FC35DFE528C83F5B652546A7DFE454D6D1D5DEE2D6651A6BC6389733CBF5DBD5E913377AFFFEAFD269176DF2183F8FC7C0F75B7380DB97F9D88941B15DA834481FCF19DD082D7633A0EF3E4896CB9E6436389733CBF5DBD5E9D5E8D9A59859A8B62610E1DCEBCBDF8FCC7F00164DA146DA6F5DAA56C3B73B237318B6A418E8EAB8D32BA5DBAC0009BE9E8FC8737B5C22492F6CDC8FDE09B81876E601842F6C81A12EF20D2F80756B5F7E9C4E3C761E06A776E601842F6C81A127C277FBC8AE2E8B8B090140527B2FF33AA81AA40904B5D9DBF02ECDB25306B2B25CBF701D1BE8734AD6D5ED66289B5278DA827A17800CE76585D17B8B4F84DD67F23339F89546C5A8DF7F3B2552694A6FED454B719173D6725E5C173C3A84C3FC06EC4CDF47133435872C767BF85DA2F004C906525384306FED454B719173D6462275124DF8B9C9DE2850DD75B2526BE5BFE6E7EFDEDCD789D4C264860C145E
-X-C1DE0DAB: C20DE7B7AB408E4181F030C43753B8183A4AFAF3EA6BDC44C234C8B12C006B7A35DFE528C83F5B652546A7DFE454D6D1B6577F9137C64104B1881A6453793CE9C32612AADDFBE061933755F29123B4109510FB958DCE06DB6ED91DBE5ABE359A3485EE9140A7D39D5E4DBAB5AF249FA793EDB24507CE13387DFF0A840B692CF8
-X-C8649E89: 4E36BF7865823D7055A7F0CF078B5EC49A30900B95165D348B409C2D257583DF6794FAE8B865554F0E1BF8BE2D596231BC797C62E588A355F14BF7E69B906B8E1D7E09C32AA3244CFDF1351F3C0E0FF818B6775967756F866C24832127668422C2E5D8217768D59A
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojBjC2XHTqRV28UV8CZLLq7Q==
-X-Mailru-Sender: 573A2FD82894F0C026E658EFD987AED2290D0449CF08686AC0A68F370F7379FFF7F5837242FA16B226B68C7F86AFC33D9314192DE98EED7F344BC0670A57513BA956D050E05F1CF736D1CE18B8CA5127DC9A6A14530ACBDEDE58F5C545520818B4A721A3011E896F
-X-Mras: Ok
-X-7564579A: 646B95376F6C166E
-X-77F55803: 6242723A09DB00B429696F2DCEDD653A3882F69B6077407E947905E7168E6759049FFFDB7839CE9E186C0D0944DC462BC4723F95BEF20407443F25F44F3BCBB7596E0714EB521457
-X-7FA49CB5: 0D63561A33F958A5038071287CE75EFD483E6E9FAF404008791CB1E529957BE48941B15DA834481FA18204E546F3947C9ECE72BF5266115FF6B57BC7E64490618DEB871D839B7333395957E7521B51C2DFABB839C843B9C08941B15DA834481F8AA50765F7900637D364C8B9A17AC2FF389733CBF5DBD5E9B5C8C57E37DE458BD9DD9810294C998ED8FC6C240DEA76428AA50765F7900637E0EE97BC066B8636D81D268191BDAD3DBD4B6F7A4D31EC0BEA7A3FFF5B025636A7F4EDE966BC389F9E8FC8737B5C2249CB83D7B00AC1CE3D089D37D7C0E48F6CCF19DD082D7633A0E7DDDDC251EA7DABAAAE862A0553A3920E30A4C9C8E338DA65374E87253EB3AA43847C11F186F3C5E7DDDDC251EA7DABCC89B49CDF41148FA8EF81845B15A4842623479134186CDE6BA297DBC24807EABDAD6C7F3747799A
-X-C1DE0DAB: C20DE7B7AB408E4181F030C43753B8183A4AFAF3EA6BDC44C234C8B12C006B7A35DFE528C83F5B65C2FC3383B5011E2D57014794D544FB70B1881A6453793CE9C32612AADDFBE061933755F29123B410DC48ACC2A39D04F89CDFB48F4795C241BDAD6C7F3747799A
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojBjC2XHTqRV3gkR/vbiKUOA==
-X-Mailru-MI: 800
-X-Mailru-Sender: A5480F10D64C90059D04A353E0DED3E62462BD71879121815874E129D9422FF54AF810104A35EE5E26B68C7F86AFC33D9314192DE98EED7F344BC0670A57513BA956D050E05F1CF736D1CE18B8CA5127DC9A6A14530ACBDEDE58F5C545520818B4A721A3011E896F
-X-Mras: Ok
+        Sun, 31 Jan 2021 07:24:20 -0500
+Received: from mail-02.mail-europe.com (mail-02.mail-europe.com [51.89.119.103])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        by mail-41103.protonmail.ch (Postfix) with ESMTPS id 1C2E72000951
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 12:16:40 +0000 (UTC)
+Authentication-Results: mail-41103.protonmail.ch;
+        dkim=pass (2048-bit key) header.d=pm.me header.i=@pm.me header.b="E+7p+Wcl"
+Date:   Sun, 31 Jan 2021 12:12:11 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1612095132; bh=vZbokY1lR2yxpQh6llA40AYewCXOK6n7Mk2VaFMgqMw=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=E+7p+WclLnclb9/oXHSDVoy6bFsJ1HSU47SI8Jc5wa3Kih9aIB5JxLhPcmKFpy52l
+         qFa2Fz5CZNEED9xa3g8SQz9+PfHtZexOUS99c8IUt9IlrHwr9SNTuuEsGMDfvl2KwK
+         8LKh4Dymt71B5fNFJJyG24viVvjiwURtgHKAU22XhC0NS6E4Lx93gdcWRs2qAhK57C
+         KDCReaX4JoYHy7l/R0JT3HV8dtTzED4kQ+LZqboAAjFhgzTzb8nyMngy5c+jyYy8ol
+         aDK45oeEX5yxhRE77Y1ODbcgk7WQ+oLLUk1a9ZS7LDhwbg9pocnvE6Wb1t+ynFoOmr
+         TU7OY3sQLSa1w==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH v3 net-next 5/5] net: page_pool: simplify page recycling condition tests
+Message-ID: <20210131120844.7529-6-alobakin@pm.me>
+In-Reply-To: <20210131120844.7529-1-alobakin@pm.me>
+References: <20210131120844.7529-1-alobakin@pm.me>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The i2c bus on imx6qdl-wandboard has intermittent issues where SDA can freeze
-on low level at the end of transaction so the bus can no longer work. This
-impacts reading of EDID data leading to incorrect TV resolution and no audio.
+pool_page_reusable() is a leftover from pre-NUMA-aware times. For now,
+this function is just a redundant wrapper over page_is_pfmemalloc(),
+so inline it into its sole call site.
 
-This scenario is improved by adding scl/sda gpios definitions to implement the
-i2c bus recovery mechanism.
-
-Signed-off-by: Dima Azarkin <azdmg@inbox.ru>
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
+Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Acked-by: David Rientjes <rientjes@google.com>
 ---
- arch/arm/boot/dts/imx6qdl-wandboard.dtsi | 24 ++++++++++++++++++++++--
- 1 file changed, 22 insertions(+), 2 deletions(-)
+ net/core/page_pool.c | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
 
-diff --git a/arch/arm/boot/dts/imx6qdl-wandboard.dtsi b/arch/arm/boot/dts/imx6qdl-wandboard.dtsi
-index c070893c509e..b62a0dbb033f 100644
---- a/arch/arm/boot/dts/imx6qdl-wandboard.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-wandboard.dtsi
-@@ -97,15 +97,21 @@
- 
- &i2c1 {
- 	clock-frequency = <100000>;
--	pinctrl-names = "default";
-+	pinctrl-names = "default", "gpio";
- 	pinctrl-0 = <&pinctrl_i2c1>;
-+	pinctrl-1 = <&pinctrl_i2c1_gpio>;
-+	scl-gpios = <&gpio3 21 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-+	sda-gpios = <&gpio3 28 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
- 	status = "okay";
- };
- 
- &i2c2 {
- 	clock-frequency = <100000>;
--	pinctrl-names = "default";
-+	pinctrl-names = "default", "gpio";
- 	pinctrl-0 = <&pinctrl_i2c2>;
-+	pinctrl-1 = <&pinctrl_i2c2_gpio>;
-+	scl-gpios = <&gpio4 12 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
-+	sda-gpios = <&gpio4 13 (GPIO_ACTIVE_HIGH | GPIO_OPEN_DRAIN)>;
- 	status = "okay";
- 
- 	codec: sgtl5000@a {
-@@ -185,6 +191,13 @@
- 			>;
- 		};
- 
-+		pinctrl_i2c1_gpio: i2c1gpiogrp {
-+			fsl,pins = <
-+				MX6QDL_PAD_EIM_D21__GPIO3_IO21		0x4001b8b0
-+				MX6QDL_PAD_EIM_D28__GPIO3_IO28		0x4001b8b0
-+			>;
-+		};
-+
- 		pinctrl_i2c2: i2c2grp {
- 			fsl,pins = <
- 				MX6QDL_PAD_KEY_COL3__I2C2_SCL		0x4001b8b1
-@@ -192,6 +205,13 @@
- 			>;
- 		};
- 
-+		pinctrl_i2c2_gpio: i2c2gpiogrp {
-+			fsl,pins = <
-+				MX6QDL_PAD_KEY_COL3__GPIO4_IO12		0x4001b8b0
-+				MX6QDL_PAD_KEY_ROW3__GPIO4_IO13		0x4001b8b0
-+			>;
-+		};
-+
- 		pinctrl_mclk: mclkgrp {
- 			fsl,pins = <
- 				MX6QDL_PAD_GPIO_0__CCM_CLKO1		0x130b0
--- 
-2.17.1
+diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+index f3c690b8c8e3..ad8b0707af04 100644
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -350,14 +350,6 @@ static bool page_pool_recycle_in_cache(struct page *pa=
+ge,
+ =09return true;
+ }
+=20
+-/* page is NOT reusable when:
+- * 1) allocated when system is under some pressure. (page_is_pfmemalloc)
+- */
+-static bool pool_page_reusable(struct page_pool *pool, struct page *page)
+-{
+-=09return !page_is_pfmemalloc(page);
+-}
+-
+ /* If the page refcnt =3D=3D 1, this will try to recycle the page.
+  * if PP_FLAG_DMA_SYNC_DEV is set, we'll try to sync the DMA area for
+  * the configured size min(dma_sync_size, pool->max_len).
+@@ -373,9 +365,11 @@ __page_pool_put_page(struct page_pool *pool, struct pa=
+ge *page,
+ =09 * regular page allocator APIs.
+ =09 *
+ =09 * refcnt =3D=3D 1 means page_pool owns page, and can recycle it.
++=09 *
++=09 * page is NOT reusable when allocated when system is under
++=09 * some pressure. (page_is_pfmemalloc)
+ =09 */
+-=09if (likely(page_ref_count(page) =3D=3D 1 &&
+-=09=09   pool_page_reusable(pool, page))) {
++=09if (likely(page_ref_count(page) =3D=3D 1 && !page_is_pfmemalloc(page)))=
+ {
+ =09=09/* Read barrier done in page_ref_count / READ_ONCE */
+=20
+ =09=09if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
+--=20
+2.30.0
+
 
