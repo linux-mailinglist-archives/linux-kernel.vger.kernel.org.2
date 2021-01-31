@@ -2,91 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78997309DBA
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 16:41:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 442CE309DAA
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 16:38:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231788AbhAaPkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 10:40:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232160AbhAaMwF (ORCPT
+        id S232248AbhAaPhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 10:37:25 -0500
+Received: from mail2.protonmail.ch ([185.70.40.22]:44681 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232253AbhAaM6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 07:52:05 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C90C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 04:51:22 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id j13so15761372edp.2
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 04:51:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=Fjrhs7HTb3KAOHD/Z4OsRiZR3fTTDer1xRtVh5uEzQQ=;
-        b=mggdTO+OzSrMYTeeVpTG18ltZSkuUAgNUjWRpyNavueifr3EL59jk3fHyG9b5MsMze
-         ad8BHI0O2eNoZY97JPbZ1QHjYDxOXDfc0Jt239VSK3FX5ZnmaZZHpHOJmFQjSbsxjrcM
-         EQFgUhi6D24LVeGlH2+65JujeTPiJ2tO6u+UKnOGCjociHuocF6Jg1lQZlju6V4Y4hKQ
-         Qj3D8U930n43hN2SaK/S6T8jBrHsWPs4uSNHaL9ZTNbjR6NZP+NvO9qB64aQnZMESzb+
-         W9RI+8p/GXntTFwJV6saoi+FK5gCYRPq3E2th+r2C8lO1DbiXVrfzBGlFvGyH/92YwYV
-         84aA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Fjrhs7HTb3KAOHD/Z4OsRiZR3fTTDer1xRtVh5uEzQQ=;
-        b=Ie8EgbPQq4GNCiaCRqmJYc1lDd5OmpwGX4/SXy0hf3pH+H1apM4HDLdBLMuCeoYHNG
-         W8SeQjCVFyXixjnTt/0rXDePTdLsIwDfwZZUUUi+qXAKX9XW3VjnYcHb0JwlWxKxQfro
-         lMV+F1fYF0DRnXySYxB11jKkdQVq9nBqsY/ZkN1nIJ1K/trjJ/3z/rullS0p42AOsKTV
-         NRzSmQrD5t64LlQZ98GbNE96HTpEQi9+SBSz9q1rd0RZTXyv8w2r2nVMUVjsmJlM5FSB
-         4v5w1f3hUYGwo4NHGGFcGFnQQlSSsXUxDlgwxXyhjyLaa4QVpFRo0TYGwjR9pbmH1awk
-         dlsw==
-X-Gm-Message-State: AOAM531Lm0vltFoKOzCs4E1Ixuto+zDwBSuypGPBINvMgRjGpTskqZfv
-        hyodQm248Xu9Tmc9L55MkFY=
-X-Google-Smtp-Source: ABdhPJyIMzfAVupXZdw07J+8FbSpRt9OxCqtZKCXvj20Dih48GzJhmB94RAfPNXYaiSCctESwwkr0w==
-X-Received: by 2002:a05:6402:1b11:: with SMTP id by17mr13753486edb.373.1612097481028;
-        Sun, 31 Jan 2021 04:51:21 -0800 (PST)
-Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id i15sm6552820ejj.28.2021.01.31.04.51.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 31 Jan 2021 04:51:20 -0800 (PST)
-From:   Johan Jonker <jbx6244@gmail.com>
-To:     heiko@sntech.de
-Cc:     hjc@rock-chips.com, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] drm/rockchip: vop_reg: add rk3036 hdmi support
-Date:   Sun, 31 Jan 2021 13:51:14 +0100
-Message-Id: <20210131125114.10885-1-jbx6244@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        Sun, 31 Jan 2021 07:58:13 -0500
+Date:   Sun, 31 Jan 2021 12:57:29 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1612097850; bh=hy3HTU1Gr4SJ412CK0eDCO6whxGXOGwlEZQ/bHzh0IY=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=gOF3DQLDOPbnITXBUL2KPwaqec06jg7hgwxBrpixduvxzEnKNGsfv8ItuXKrxv9Ng
+         JiqbWegAiSb0RANpw00MRZt5dHVkVaU/4aT5yLL76tDfJs1aAdwYldD7IWkRc5kxbh
+         1BAJMWanlZQ2JqPkXy6HSIYWPNKbrH0EQAF1HDdchGDHYnALdR6ajs+2btoq67GU9f
+         f5YZ1517Lx6mBTrwwu58TBCcS9IuiaspQ6k7jtFh66w62CLwSumleX42KAPMkjKfzH
+         bHZna372czPrByZznTmm5VyRMiP9VCQ0UQEj/5CLGRQO8Ef03IeNcCrs59678BmNjl
+         NGoTfgARWpgvw==
+To:     Matthew Wilcox <willy@infradead.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        David Rientjes <rientjes@google.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        linux-rdma@vger.kernel.org, linux-mm@kvack.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH v3 net-next 3/5] net: introduce common dev_page_is_reusable()
+Message-ID: <20210131125713.8710-1-alobakin@pm.me>
+In-Reply-To: <20210131122205.GL308988@casper.infradead.org>
+References: <20210131120844.7529-1-alobakin@pm.me> <20210131120844.7529-4-alobakin@pm.me> <20210131122205.GL308988@casper.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A Rockchip Inno HDMI driver was added, but the rk3036
-VOP regs with HDMI support in the manufacturer tree never
-made it to the mainline kernel.
-This patch adds only hdmi_en and hdmi_dclk_pol.
-The inno hdmi driver must set hdmi_pin_pol in
-GRF_SOC_CON2.
+From: Matthew Wilcox <willy@infradead.org>
+Date: Sun, 31 Jan 2021 12:22:05 +0000
 
-Signed-off-by: Johan Jonker <jbx6244@gmail.com>
----
-Not tested with hardware
----
- drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 2 ++
- 1 file changed, 2 insertions(+)
+> On Sun, Jan 31, 2021 at 12:11:52PM +0000, Alexander Lobakin wrote:
+> > A bunch of drivers test the page before reusing/recycling for two
+> > common conditions:
+> >  - if a page was allocated under memory pressure (pfmemalloc page);
+> >  - if a page was allocated at a distant memory node (to exclude
+> >    slowdowns).
+> >
+> > Introduce a new common inline for doing this, with likely() already
+> > folded inside to make driver code a bit simpler.
+>=20
+> I don't see the need for the 'dev_' prefix.  That actually confuses me
+> because it makes me think this is tied to ZONE_DEVICE or some such.
 
-diff --git a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-index 0697057e7..c164690a1 100644
---- a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-+++ b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
-@@ -147,6 +147,8 @@ static const struct vop_modeset rk3036_modeset = {
- 
- static const struct vop_output rk3036_output = {
- 	.pin_pol = VOP_REG(RK3036_DSP_CTRL0, 0xf, 4),
-+	.hdmi_en = VOP_REG(RK3036_AXI_BUS_CTRL, 0x1, 22),
-+	.hdmi_dclk_pol = VOP_REG(RK3036_AXI_BUS_CTRL, 0x1, 23),
- };
- 
- static const struct vop_common rk3036_common = {
--- 
-2.11.0
+Several functions right above this one also use 'dev_' prefix. It's
+a rather old mark that it's about network devices.
+
+> So how about calling it just 'page_is_reusable' and putting it in mm.h
+> with page_is_pfmemalloc() and making the comment a little less network-ce=
+ntric?
+
+This pair of conditions (!pfmemalloc + local memory node) is really
+specific to network drivers. I didn't see any other instances of such
+tests, so I don't see a reason to place it in a more common mm.h.
+
+> Or call it something like skb_page_is_recyclable() since it's only used
+> by networking today.  But I bet it could/should be used more widely.
+
+There's nothing about skb. Tested page is just a memory chunk for DMA
+transaction. It can be used as skb head/frag, for XDP buffer/frame or
+for XSK umem.
+
+> > +/**
+> > + * dev_page_is_reusable - check whether a page can be reused for netwo=
+rk Rx
+> > + * @page: the page to test
+> > + *
+> > + * A page shouldn't be considered for reusing/recycling if it was allo=
+cated
+> > + * under memory pressure or at a distant memory node.
+> > + *
+> > + * Returns false if this page should be returned to page allocator, tr=
+ue
+> > + * otherwise.
+> > + */
+> > +static inline bool dev_page_is_reusable(const struct page *page)
+> > +{
+> > +=09return likely(page_to_nid(page) =3D=3D numa_mem_id() &&
+> > +=09=09      !page_is_pfmemalloc(page));
+> > +}
+> > +
+
+Al
 
