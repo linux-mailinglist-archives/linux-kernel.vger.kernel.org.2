@@ -2,174 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 366C2309F6A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 00:20:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65641309F6D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 00:23:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230009AbhAaXSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 18:18:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59412 "EHLO
+        id S229624AbhAaXUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 18:20:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229959AbhAaXSs (ORCPT
+        with ESMTP id S229481AbhAaXUS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 18:18:48 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A2DC061573
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 15:18:07 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id p20so2123753ejb.6
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 15:18:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=lXh/zepkoRwHY1DFPH6efVLlYByObi9Zs7kzu1OmHVs=;
-        b=HE8gI5YpC5VWSeITDW5wJGif9g8E84FVYqJe7PyTLYtmF7Ko6vvH7DPfAFF6o1uovn
-         wctlJzays4t8uqzttmBAEf63XrMpcCUfMEAUJDJPf+6Qjgp4rb9LeydN5E+Jrw9SlHmV
-         QxzVegwGXqcqkvLnHi9oNwMttp0RGHH5orkRbiqjRtqmjguDBGKOnVjAkDJz51DxyNcp
-         DrA8vD/VLwBrQyRn2R/djq/sYWSKFfowVkYg1GCgk1mbbMNqH8grwUZD3F8VfAZJkJ1s
-         c/XIYjxRKMQ8X8QVBTtlLTt3vhg6V/Gl3ENJ1LhGsIUxmSBbTkhL/yFzy8GFrCRU4UXq
-         Y2rA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=lXh/zepkoRwHY1DFPH6efVLlYByObi9Zs7kzu1OmHVs=;
-        b=IXBsCzs67EEnP6cW+txnE2x965RcageOv7NMqTPVyPhRWU/8yjGZl+ba4hnXzxvuRV
-         igdln31zyNyRcMG382IfaKCFRp1buOJQ1OL2I6uZDF4aGAzH4XBfUm3tnNxFXEMFhrTX
-         aubBdPx01eLL4SBahmorm3Rgmxp6qixoBAKC28H3P5r0SxlbdS/h8EMxDm5Kj+q+BhQE
-         sq6BtguF8kox0/CFAbitiDbmkiqiVGdmENwQJHuM4Mqbh8JtqcM3jwtEJeXeEoml75yv
-         wMQS0a1oMivzy/QZp4ef/PinPraGvCFcRFjo/gO3m1cW6LdaW5tnJIn2DgjrIg4eoSDf
-         BJEw==
-X-Gm-Message-State: AOAM533bLqni5VIOIbyybgMvj9Sjgv28oVU7OSl0ZCI3Vb/r2k48CHgP
-        TDYByhQwzlTtHioAQaOWDCUBmFuG2gskLJMcNZ13iA==
-X-Google-Smtp-Source: ABdhPJwVEwYgpcMBrXRKXFlGp+CBPu5BvQGehi5LSppJQrYgs+n+7uzHBitD+PoYi7iO7sjYIS/qbI8VdwpZuSvlEQ0=
-X-Received: by 2002:a17:906:1741:: with SMTP id d1mr15283637eje.182.1612135085987;
- Sun, 31 Jan 2021 15:18:05 -0800 (PST)
+        Sun, 31 Jan 2021 18:20:18 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF88C061573;
+        Sun, 31 Jan 2021 15:19:37 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DTRqR4P3xz9t0l;
+        Mon,  1 Feb 2021 10:19:31 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1612135174;
+        bh=73uNE7LFH6S0+cjAw3Z4TFxXwm9LHiGGdhDddpFHl4M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=FlW4Sw9/mbwfFPCtx4CuxdLqWFCQnryYh4ppxnTubiNW/HKVyDbgjEsWkYPLYmgL/
+         mpRzJ0x7sU0TOcTJMDO1sfphqpKT1ZsQS3MwUVg2YfEo1p3Olgpha6dwCnPSn3Ln1k
+         qLDrly0aLKwP1j+zPxbVbjCeRrxZRAVUMbV8XzE9H1Tb+q624ua44yMQgGf3lR1/tp
+         NJ/npiJTTinuFscv7sjXzJS25KNgaGT80o/BkX6u81Kjp7IQcmk2kOqYbpEpwsu3fF
+         BYo7+EPSvqEQRqO7N80PUlbaS2eMwV7BYLMm9fZ2yBU3s6b7go3Sn50RtJ4ia3FMQh
+         bsJBU5oNrQTDg==
+Date:   Mon, 1 Feb 2021 10:19:29 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Christian Brauner <christian@brauner.io>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Tyler Hicks <code@tyhicks.com>
+Subject: Re: linux-next: manual merge of the pidfd tree with the overlayfs
+ tree
+Message-ID: <20210201101929.618b32e5@canb.auug.org.au>
+In-Reply-To: <20210125162336.470e3183@canb.auug.org.au>
+References: <20210125162336.470e3183@canb.auug.org.au>
 MIME-Version: 1.0
-References: <CAP045Ao_Zb0HGg0=bvUeV6GjX=-3fz0ScsvM_jE7VsZcVk_-tg@mail.gmail.com>
- <C479ACCB-A1A5-4422-8120-999E8D54314B@amacapital.net> <CAP045AoMRNjvVd1PdHvdf-nn3LNpTDp66sp+SAmZgNU888iFQQ@mail.gmail.com>
-In-Reply-To: <CAP045AoMRNjvVd1PdHvdf-nn3LNpTDp66sp+SAmZgNU888iFQQ@mail.gmail.com>
-From:   Kyle Huey <me@kylehuey.com>
-Date:   Sun, 31 Jan 2021 15:17:54 -0800
-Message-ID: <CAP045ApWnr=UQrBrv3fHj-C6EweukMWEyrCgsiY6Bt_i1Vdj6A@mail.gmail.com>
-Subject: Re: [REGRESSION] x86/entry: TIF_SINGLESTEP handling is still broken
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Robert O'Callahan" <rocallahan@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/2z7DCM4mIfDsXczMCe4tzS8";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 2:27 PM Kyle Huey <me@kylehuey.com> wrote:
+--Sig_/2z7DCM4mIfDsXczMCe4tzS8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hi all,
+
+On Mon, 25 Jan 2021 16:23:36 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
 >
-> On Sun, Jan 31, 2021 at 2:20 PM Andy Lutomirski <luto@amacapital.net> wro=
-te:
-> >
-> >
-> >
-> > > On Jan 31, 2021, at 2:08 PM, Kyle Huey <me@kylehuey.com> wrote:
-> > >
-> > > =EF=BB=BFOn Sun, Jan 31, 2021 at 2:04 PM Andy Lutomirski <luto@amacap=
-ital.net> wrote:
-> > >> Indeed, and I have tests for this.
-> > >
-> > > Do you mean you already have a test case or that you would like a
-> > > minimized test case?
-> >
-> > A smallish test that we could stick in selftests would be great if that=
-=E2=80=99s straightforward.
->
-> I'll look into it.
->
-> - Kyle
+> Today's linux-next merge of the pidfd tree got a conflict in:
+>=20
+>   fs/ecryptfs/inode.c
+>=20
+> between commit:
+>=20
+>   176cfe865da6 ("ecryptfs: fix uid translation for setxattr on security.c=
+apability")
+>=20
+> from the overlayfs tree and commit:
+>=20
+>   c7c7a1a18af4 ("xattr: handle idmapped mounts")
+>=20
+> from the pidfd tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+>=20
+> diff --cc fs/ecryptfs/inode.c
+> index 58d0f7187997,55da9a91f51a..000000000000
+> --- a/fs/ecryptfs/inode.c
+> +++ b/fs/ecryptfs/inode.c
+> @@@ -1024,11 -1043,10 +1045,12 @@@ ecryptfs_setxattr(struct dentry *dentry
+>   		rc =3D -EOPNOTSUPP;
+>   		goto out;
+>   	}
+>  -	rc =3D vfs_setxattr(&init_user_ns, lower_dentry, name, value, size,
+>  -			  flags);
+>  +	inode_lock(lower_inode);
+> - 	rc =3D __vfs_setxattr_locked(lower_dentry, name, value, size, flags, N=
+ULL);
+> ++	rc =3D __vfs_setxattr_locked(&init_user_ns, lower_dentry, name,
+> ++				   value, size, flags, NULL);
+>  +	inode_unlock(lower_inode);
+>   	if (!rc && inode)
+>  -		fsstack_copy_attr_all(inode, d_inode(lower_dentry));
+>  +		fsstack_copy_attr_all(inode, lower_inode);
+>   out:
+>   	return rc;
+>   }
 
-A minimal test case follows.
+This is now a conflict between the pidfd tree and Linus' tree.
 
-The key to triggering this bug is to enter a ptrace syscall stop and
-then use PTRACE_SINGLESTEP to exit it. On a good kernel this will not
-result in any userspace code execution in the tracee because on the
-way out of the kernel's syscall handling path the singlestep trap will
-be raised immediately. On a bad kernel that stop will not be raised,
-and in the example below, the program will crash.
+--=20
+Cheers,
+Stephen Rothwell
 
-- Kyle
+--Sig_/2z7DCM4mIfDsXczMCe4tzS8
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
----
+-----BEGIN PGP SIGNATURE-----
 
-#include <assert.h>
-#include <stdio.h>
-#include <sys/ptrace.h>
-#include <sys/user.h>
-#include <sys/wait.h>
-#include <unistd.h>
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAXOwEACgkQAVBC80lX
+0GxydQf8C0/yd2Sf8R/bUl5kk1BwC5eh9CiAYqer0xPMzU7n9KN0I/fEgdB5vRY1
+oFHFexfVP4HkXsB86jDMm+/NTXIzQFejnkkM0Sdw6SuMYjO4kcYElBYPqD/2q0LU
+69xyko9qLGqPnehRiUzihsCSsj6kjfxaAZyQtUEsGASf0rqDquttXiny0YEJf2yZ
+WtSoRNlPBgPRtrncccIY8zzto8ligfYtoPIcFFW7/6pmXsZh/asZZO8/fjFo4yvY
+rUgFupeakLyDJNgfCjulIi3qokfpmp6nW5s3n/Svhdhohrm52klYpIBOi3rLrY9S
+ZaU5es4wIVY2sHpVxwqh1m0xjPrNDA==
+=npri
+-----END PGP SIGNATURE-----
 
-void do_child() {
-  /* Synchronize with the parent */
-  kill(getpid(), SIGSTOP);
-  /* Do a syscall */
-  printf("child is alive\n");
-  /* Return and exit */
-}
-
-int main() {
-  pid_t child =3D -1;
-  int status =3D 0;
-  unsigned long long previous_rip =3D 0;
-  struct user_regs_struct regs;
-
-  if ((child =3D fork()) =3D=3D 0) {
-      do_child();
-      return 0;
-  }
-
-  /* Adds 0x80 to syscall stops so we can see them easily */
-  intptr_t options =3D PTRACE_O_TRACESYSGOOD;
-  /* Take control of the child (which should be waiting */
-  assert(ptrace(PTRACE_SEIZE, child, NULL, options) =3D=3D 0);
-  assert(waitpid(child, &status, 0) =3D=3D child);
-  assert(WIFSTOPPED(status) && WSTOPSIG(status) =3D=3D SIGSTOP);
-
-  /* Advance to the syscall stop for the write underlying
-   * the child's printf.
-   */
-  assert(ptrace(PTRACE_SYSCALL, child, NULL, 0) =3D=3D 0);
-  assert(waitpid(child, &status, 0) =3D=3D child);
-  /* Should be a syscall stop */
-  assert(WIFSTOPPED(status) && WSTOPSIG(status) =3D=3D SIGTRAP | 0x80);
-
-  /* Mess with the child's registers, so it will crash if
-   * it executes any code
-   */
-  assert(ptrace(PTRACE_GETREGS, child, NULL, &regs) =3D=3D 0);
-  previous_rip =3D regs.rip;
-  regs.rip =3D 0xdeadbeef;
-  assert(ptrace(PTRACE_SETREGS, child, NULL, &regs) =3D=3D 0);
-  /* Singlestep. This should trap without executing any code */
-  assert(ptrace(PTRACE_SINGLESTEP, child, NULL, 0) =3D=3D 0);
-  assert(waitpid(child, &status, 0) =3D=3D child);
-  /* Should be at a singlestep SIGTRAP. In a buggy kernel,
-   * the SIGTRAP is skipped, execution resumes, and we
-   * get a SIGSEGV at the invalid address.
-   */
-  assert(WIFSTOPPED(status) && WSTOPSIG(status) =3D=3D SIGTRAP);
-
-  /* Restore registers */
-  assert(ptrace(PTRACE_GETREGS, child, NULL, &regs) =3D=3D 0);
-  regs.rip =3D previous_rip;
-  assert(ptrace(PTRACE_SETREGS, child, NULL, &regs) =3D=3D 0);
-
-  /* Continue to the end of the program */
-  assert(ptrace(PTRACE_CONT, child, NULL, 0) =3D=3D 0);
-  assert(waitpid(child, &status, 0) =3D=3D child);
-  /* Verify the child exited cleanly */
-  assert(WIFEXITED(status) && WEXITSTATUS(status) =3D=3D 0);
-
-  printf("SUCCESS\n");
-
-  return 0;
-}
+--Sig_/2z7DCM4mIfDsXczMCe4tzS8--
