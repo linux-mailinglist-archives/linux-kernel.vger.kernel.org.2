@@ -2,93 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D97CE309D9E
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 16:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5714309D82
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 16:32:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232224AbhAaM5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 07:57:54 -0500
-Received: from mail2.protonmail.ch ([185.70.40.22]:55090 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231639AbhAaMMj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 07:12:39 -0500
-Date:   Sun, 31 Jan 2021 12:11:30 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1612095099; bh=NakdAHBTDBfMpPGylkZuE67yNEL45d0nvbHsNhM+ASQ=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=EC3h/HnfRnJpL7UbKwpBKEQsyesSbfgBchPTeS1UKyDq1hfrbl1Z3b5UIYKpr0QqI
-         noFjraCw7qbuRCiUjXyUboZ3u5V2zRYImLWAwwhhibCckgKnbjuS/9BR6k6bBaWGP7
-         2GggaSxSwMER7W64BP+SdvK9/+unFUqffugu+twMuCQNx/MlOV5sz+cgWsgmJcP6Lt
-         vhcd887UZDhuwRYJoGn+049jFLsD8WGAWhgfh4Ln3gLsaZj3c/zGmTkF70yMCRnycc
-         LerZ7dOPIUUV6LjkPjI2Lea35hFzVtbqDcDgZrNuXlvimj05DgAkTyUSIXODzClNhN
-         hERRDGEp9T71A==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v3 net-next 1/5] mm: constify page_is_pfmemalloc() argument
-Message-ID: <20210131120844.7529-2-alobakin@pm.me>
-In-Reply-To: <20210131120844.7529-1-alobakin@pm.me>
-References: <20210131120844.7529-1-alobakin@pm.me>
+        id S229957AbhAaN4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 08:56:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55120 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231783AbhAaMWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 07:22:20 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B1EFC64DDF;
+        Sun, 31 Jan 2021 12:18:44 +0000 (UTC)
+Date:   Sun, 31 Jan 2021 12:18:40 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        kernel@pengutronix.de, Holger Assmann <has@pengutronix.de>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        linux-iio@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] iio: adc: stm32-adc: enable timestamping for non-DMA
+ usage
+Message-ID: <20210131121840.123d478e@archlinux>
+In-Reply-To: <20210125194824.30549-1-a.fatoum@pengutronix.de>
+References: <20210125194824.30549-1-a.fatoum@pengutronix.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function only tests for page->index, so its argument should be
-const.
+On Mon, 25 Jan 2021 20:48:23 +0100
+Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
 
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Acked-by: David Rientjes <rientjes@google.com>
----
- include/linux/mm.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> For non-DMA usage, we have an easy way to associate a timestamp with a
+> sample: iio_pollfunc_store_time stores a timestamp in the primary
+> trigger IRQ handler and stm32_adc_trigger_handler runs in the IRQ thread
+> to push out the buffer along with the timestamp.
+> 
+> For this to work, the driver needs to register an IIO_TIMESTAMP channel.
+> Do this.
+> 
+> For DMA, it's not as easy, because we don't push the buffers out of
+> stm32_adc_trigger, but out of stm32_adc_dma_buffer_done, which runs in
+> a tasklet scheduled after a DMA completion.
+> 
+> Preferably, the DMA controller would copy us the timestamp into that buffer
+> as well. Until this is implemented, restrict timestamping support to
+> only PIO. For low-frequency sampling, PIO is probably good enough.
+> 
+> Cc: Holger Assmann <has@pengutronix.de>
+> Acked-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index ecdf8a8cd6ae..078633d43af9 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -1584,7 +1584,7 @@ struct address_space *page_mapping_file(struct page *=
-page);
-  * ALLOC_NO_WATERMARKS and the low watermark was not
-  * met implying that the system is under some pressure.
-  */
--static inline bool page_is_pfmemalloc(struct page *page)
-+static inline bool page_is_pfmemalloc(const struct page *page)
- {
- =09/*
- =09 * Page index cannot be this large so this must be
---=20
-2.30.0
+Applied to the togreg branch of iio.git and pushed out as testing for
+the autobuilders to poke at it and see if they can find any issues
+that we missed.
 
+Thanks,
+
+Jonathan
+
+> ---
+> v3 -> v4:
+>   - descrease buffer size to correct size (Marc)
+> v2 -> v3:
+>   - explicitly specify alignment (Jonathan)
+>   - increase buffer size to hold additional timestamp
+> v1 -> v2:
+>   - Added comment about timestamping being PIO only (Fabrice)
+>   - Added missing DMA resource clean up in error path (Fabrice)
+>   - Added Fabrice's Acked-by
+> ---
+>  drivers/iio/adc/stm32-adc.c | 39 +++++++++++++++++++++++++++++--------
+>  1 file changed, 31 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+> index c067c994dae2..5ebbd28e45ca 100644
+> --- a/drivers/iio/adc/stm32-adc.c
+> +++ b/drivers/iio/adc/stm32-adc.c
+> @@ -177,7 +177,7 @@ struct stm32_adc_cfg {
+>   * @offset:		ADC instance register offset in ADC block
+>   * @cfg:		compatible configuration data
+>   * @completion:		end of single conversion completion
+> - * @buffer:		data buffer
+> + * @buffer:		data buffer + 8 bytes for timestamp if enabled
+>   * @clk:		clock for this adc instance
+>   * @irq:		interrupt for this adc instance
+>   * @lock:		spinlock
+> @@ -200,7 +200,7 @@ struct stm32_adc {
+>  	u32			offset;
+>  	const struct stm32_adc_cfg	*cfg;
+>  	struct completion	completion;
+> -	u16			buffer[STM32_ADC_MAX_SQ];
+> +	u16			buffer[STM32_ADC_MAX_SQ + 4] __aligned(8);
+>  	struct clk		*clk;
+>  	int			irq;
+>  	spinlock_t		lock;		/* interrupt lock */
+> @@ -1718,7 +1718,7 @@ static void stm32_adc_chan_init_one(struct iio_dev *indio_dev,
+>  	}
+>  }
+>  
+> -static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
+> +static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
+>  {
+>  	struct device_node *node = indio_dev->dev.of_node;
+>  	struct stm32_adc *adc = iio_priv(indio_dev);
+> @@ -1766,6 +1766,9 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
+>  		return -EINVAL;
+>  	}
+>  
+> +	if (timestamping)
+> +		num_channels++;
+> +
+>  	channels = devm_kcalloc(&indio_dev->dev, num_channels,
+>  				sizeof(struct iio_chan_spec), GFP_KERNEL);
+>  	if (!channels)
+> @@ -1816,6 +1819,19 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
+>  		stm32_adc_smpr_init(adc, channels[i].channel, smp);
+>  	}
+>  
+> +	if (timestamping) {
+> +		struct iio_chan_spec *timestamp = &channels[scan_index];
+> +
+> +		timestamp->type = IIO_TIMESTAMP;
+> +		timestamp->channel = -1;
+> +		timestamp->scan_index = scan_index;
+> +		timestamp->scan_type.sign = 's';
+> +		timestamp->scan_type.realbits = 64;
+> +		timestamp->scan_type.storagebits = 64;
+> +
+> +		scan_index++;
+> +	}
+> +
+>  	indio_dev->num_channels = scan_index;
+>  	indio_dev->channels = channels;
+>  
+> @@ -1875,6 +1891,7 @@ static int stm32_adc_probe(struct platform_device *pdev)
+>  	struct device *dev = &pdev->dev;
+>  	irqreturn_t (*handler)(int irq, void *p) = NULL;
+>  	struct stm32_adc *adc;
+> +	bool timestamping = false;
+>  	int ret;
+>  
+>  	if (!pdev->dev.of_node)
+> @@ -1931,16 +1948,22 @@ static int stm32_adc_probe(struct platform_device *pdev)
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	ret = stm32_adc_chan_of_init(indio_dev);
+> -	if (ret < 0)
+> -		return ret;
+> -
+>  	ret = stm32_adc_dma_request(dev, indio_dev);
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	if (!adc->dma_chan)
+> +	if (!adc->dma_chan) {
+> +		/* For PIO mode only, iio_pollfunc_store_time stores a timestamp
+> +		 * in the primary trigger IRQ handler and stm32_adc_trigger_handler
+> +		 * runs in the IRQ thread to push out buffer along with timestamp.
+> +		 */
+>  		handler = &stm32_adc_trigger_handler;
+> +		timestamping = true;
+> +	}
+> +
+> +	ret = stm32_adc_chan_of_init(indio_dev, timestamping);
+> +	if (ret < 0)
+> +		goto err_dma_disable;
+>  
+>  	ret = iio_triggered_buffer_setup(indio_dev,
+>  					 &iio_pollfunc_store_time, handler,
 
