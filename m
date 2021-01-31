@@ -2,329 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4202D309B95
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 12:24:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9A9309BC5
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 13:00:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231421AbhAaLUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 06:20:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60596 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbhAaJ6L (ORCPT
+        id S231601AbhAaLxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 06:53:42 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:52760 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230469AbhAaKJO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 04:58:11 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE55C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 01:57:17 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id bl23so19560911ejb.5
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 01:57:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tometzki.de; s=google;
-        h=date:from:to:cc:subject:message-id:reply-to:mail-followup-to
-         :references:mime-version:content-disposition:in-reply-to:user-agent
-         :organization;
-        bh=PiAN+brHY/ZHPNDIbO4riKadqvyt7CKao9l4VyMqIJ0=;
-        b=DardoyLtFSeP/Kzkx+uZOqZmoa4HDPlcxqQsMLPjoFk47txZu7/F7ZsFFcl6qriW8I
-         tZeRfA+UsaxP8qLAzwxJlrbNzQ/zvE3LwFI6QL20r3I4SNleQ7VfABb4gzSRgZIRNlk7
-         7IHD7ic5PYqoclRydtBbKDs74jVQwsjI0w/2JlYQH28bDSvSW/GL6CPbJaKqqQsrDr2U
-         sz/pB///ZPEQ7dL0uxLb9FhE3TWeo9SRpysZPVjXHVg8jK8FtBA385n+rtx+1MFZju2W
-         ZApK2/KiVE5YthswawPnK0ksCsuVYmnzRsuetKuZIVcboPHiRTqxOKJCbPLOO5kVkbSs
-         xT/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to:user-agent:organization;
-        bh=PiAN+brHY/ZHPNDIbO4riKadqvyt7CKao9l4VyMqIJ0=;
-        b=mddfZBwVvgTLYoTCVWMqvy+KuiT6F4BHLF1l25rRNbSoIFC/zDdMmYkU2oFsW5b4mu
-         5RfQ2q227uWCPMKDp4d7PcD+LWu2P6kiloN8ONy6kgtEdZoOT74lOmMmTVAndWsi1xDi
-         /hD6HWidDOznzxCCibWwu09WGvnBcGLrTjiKSG3UuiDQyhdb5gYpSgK+JWozC0RPaO0q
-         qC9cB0EuWQS/TaXMFmJagA5YXSO192nEmeiYd42n3XBehLdZ4cUiWmEp7P19/JurYaxs
-         FWJmRsWFcknTfaZ93Uy1yneiq40fzeAjP4vlnihZutQ9D647SRVQL8F1UreXxOrUwQuq
-         7kGw==
-X-Gm-Message-State: AOAM5305ThDh0t88CzIOq6b6WdnlJR04rMSXZ5cWWHMbKEhkJSHo0zM9
-        PBvrSvQ9PNaTvsqv4VlGSzfRXA==
-X-Google-Smtp-Source: ABdhPJzYlTdlak/BS3uJNtSgV4n28T9/d5k2qQIe83Xv4JFtfa2OZ3u96Te35DbFggDmZRk4zNkDkQ==
-X-Received: by 2002:a17:906:2c0e:: with SMTP id e14mr12328863ejh.299.1612087036021;
-        Sun, 31 Jan 2021 01:57:16 -0800 (PST)
-Received: from fedora.tometzki.de (p200300e68f334e009f56fbcb8d40a599.dip0.t-ipconnect.de. [2003:e6:8f33:4e00:9f56:fbcb:8d40:a599])
-        by smtp.gmail.com with ESMTPSA id f9sm7118726edm.6.2021.01.31.01.57.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Jan 2021 01:57:15 -0800 (PST)
-Date:   Sun, 31 Jan 2021 10:57:13 +0100
-From:   Damian Tometzki <damian@tometzki.de>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Nadav Amit <namit@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Nick Piggin <npiggin@gmail.com>, x86@kernel.org
-Subject: Re: [RFC 13/20] mm/tlb: introduce tlb_start_ptes() and tlb_end_ptes()
-Message-ID: <YBZ++X1xEmXFDiGJ@fedora.tometzki.de>
-Reply-To: Damian Tometzki <damian@tometzki.de>
-Mail-Followup-To: Nadav Amit <nadav.amit@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Nadav Amit <namit@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
-        Yu Zhao <yuzhao@google.com>, Nick Piggin <npiggin@gmail.com>,
-        x86@kernel.org
-References: <20210131001132.3368247-1-namit@vmware.com>
- <20210131001132.3368247-14-namit@vmware.com>
+        Sun, 31 Jan 2021 05:09:14 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10V9o25o015872;
+        Sun, 31 Jan 2021 01:51:33 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=pfpt0220; bh=I3v9TAujTOvZT7lwu8kqSzAcqckl4gp4wF4gypLo92c=;
+ b=NR4T7OhxtBk80swj9urm6DXdrNucXMs3KTA+obHLeAWMS/fOsU7FbuEN76dNVwwYHEIz
+ zgQRycU7QueK5K6INPD/LvqozLc3+hWobl+VF5MbjBC59bNVmbLhVoBXccRHxs0Sh7DP
+ ABDWLoXgXrSY0OsPEQ+IgtDTGLmqFHT+gwGtVc4FzoCHCY0Tip+0pBFq/1RIapCmXhxe
+ YK2d5WozNf+8J9P65qVll6S5R82n2w0MzNvMiKFrHFUd29kzHmn819wWjN0jFeRjAL8x
+ QPkJIHQA3TPUDeW8AW3qyDOvpVW67q9dG5qFlWmug6Ln5orY0JsEUiqHfobjaVFHYqFs WA== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 36d7uq1bkv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 31 Jan 2021 01:51:33 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 31 Jan
+ 2021 01:51:31 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 31 Jan 2021 01:51:31 -0800
+Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
+        by maili.marvell.com (Postfix) with ESMTP id A67583F703F;
+        Sun, 31 Jan 2021 01:51:28 -0800 (PST)
+From:   <stefanc@marvell.com>
+To:     <netdev@vger.kernel.org>
+CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
+        <nadavh@marvell.com>, <ymarkman@marvell.com>,
+        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
+        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
+        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
+        <atenart@kernel.org>
+Subject: [PATCH v6 net-next 05/18] net: mvpp2: add PPv23 version definition
+Date:   Sun, 31 Jan 2021 11:50:51 +0200
+Message-ID: <1612086664-23972-6-git-send-email-stefanc@marvell.com>
+X-Mailer: git-send-email 1.9.1
+In-Reply-To: <1612086664-23972-1-git-send-email-stefanc@marvell.com>
+References: <1612086664-23972-1-git-send-email-stefanc@marvell.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210131001132.3368247-14-namit@vmware.com>
-User-Agent: Mutt
-Organization: Familie Tometzki
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-01-31_03:2021-01-29,2021-01-31 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 30. Jan 16:11, Nadav Amit wrote:
-> From: Nadav Amit <namit@vmware.com>
-> 
-> Introduce tlb_start_ptes() and tlb_end_ptes() which would be called
-> before and after PTEs are updated and TLB flushes are deferred. This
-> will be later be used for fine granualrity deferred TLB flushing
-> detection.
-> 
-> In the meanwhile, move flush_tlb_batched_pending() into
-> tlb_start_ptes(). It was not called from mapping_dirty_helpers by
-> wp_pte() and clean_record_pte(), which might be a bug.
-> 
-> No additional functional change is intended.
-> 
-> Signed-off-by: Nadav Amit <namit@vmware.com>
-> Cc: Andrea Arcangeli <aarcange@redhat.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Yu Zhao <yuzhao@google.com>
-> Cc: Nick Piggin <npiggin@gmail.com>
-> Cc: x86@kernel.org
-> ---
->  fs/proc/task_mmu.c         |  2 ++
->  include/asm-generic/tlb.h  | 18 ++++++++++++++++++
->  mm/madvise.c               |  6 ++++--
->  mm/mapping_dirty_helpers.c | 15 +++++++++++++--
->  mm/memory.c                |  2 ++
->  mm/mprotect.c              |  3 ++-
->  6 files changed, 41 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> index 4cd048ffa0f6..d0cce961fa5c 100644
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-> @@ -1168,6 +1168,7 @@ static int clear_refs_pte_range(pmd_t *pmd, unsigned long addr,
->  		return 0;
->  
->  	pte = pte_offset_map_lock(vma->vm_mm, pmd, addr, &ptl);
-> +	tlb_start_ptes(&cp->tlb);
->  	for (; addr != end; pte++, addr += PAGE_SIZE) {
->  		ptent = *pte;
->  
-> @@ -1190,6 +1191,7 @@ static int clear_refs_pte_range(pmd_t *pmd, unsigned long addr,
->  		tlb_flush_pte_range(&cp->tlb, addr, PAGE_SIZE);
->  		ClearPageReferenced(page);
->  	}
-> +	tlb_end_ptes(&cp->tlb);
->  	pte_unmap_unlock(pte - 1, ptl);
->  	cond_resched();
->  	return 0;
-> diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
-> index 041be2ef4426..10690763090a 100644
-> --- a/include/asm-generic/tlb.h
-> +++ b/include/asm-generic/tlb.h
-> @@ -58,6 +58,11 @@
->   *    Defaults to flushing at tlb_end_vma() to reset the range; helps when
->   *    there's large holes between the VMAs.
->   *
-> + *  - tlb_start_ptes() / tlb_end_ptes; makr the start / end of PTEs change.
-Hello Nadav,
+From: Stefan Chulski <stefanc@marvell.com>
 
-short nid makr/mark
+This patch add PPv23 version definition.
+PPv23 is new packet processor in CP115.
+Everything that supported by PPv22, also supported by PPv23.
+No functional changes in this stage.
 
-Damian
+Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+---
+ drivers/net/ethernet/marvell/mvpp2/mvpp2.h      | 24 ++++++++++++--------
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 17 +++++++++-----
+ 2 files changed, 25 insertions(+), 16 deletions(-)
 
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
+index aec9179..89b3ede 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
+@@ -60,6 +60,9 @@
+ /* Top Registers */
+ #define MVPP2_MH_REG(port)			(0x5040 + 4 * (port))
+ #define MVPP2_DSA_EXTENDED			BIT(5)
++#define MVPP2_VER_ID_REG			0x50b0
++#define MVPP2_VER_PP22				0x10
++#define MVPP2_VER_PP23				0x11
  
-> + *
-> + *    Does internal accounting to allow fine(r) granularity checks for
-> + *    pte_accessible() on certain configuration.
-> + *
->   *  - tlb_remove_table()
->   *
->   *    tlb_remove_table() is the basic primitive to free page-table directories
-> @@ -373,6 +378,10 @@ static inline void tlb_flush(struct mmu_gather *tlb)
->  		flush_tlb_range(tlb->vma, tlb->start, tlb->end);
->  	}
->  }
-> +#endif
-> +
-> +#if __is_defined(tlb_flush) ||						\
-> +	IS_ENABLED(CONFIG_ARCH_WANT_AGGRESSIVE_TLB_FLUSH_BATCHING)
->  
->  static inline void
->  tlb_update_vma(struct mmu_gather *tlb, struct vm_area_struct *vma)
-> @@ -523,6 +532,15 @@ static inline void mark_mm_tlb_gen_done(struct mm_struct *mm, u64 gen)
->  
->  #endif /* CONFIG_ARCH_HAS_TLB_GENERATIONS */
->  
-> +#define tlb_start_ptes(tlb)						\
-> +	do {								\
-> +		struct mmu_gather *_tlb = (tlb);			\
-> +									\
-> +		flush_tlb_batched_pending(_tlb->mm);			\
-> +	} while (0)
-> +
-> +static inline void tlb_end_ptes(struct mmu_gather *tlb) { }
-> +
->  /*
->   * tlb_flush_{pte|pmd|pud|p4d}_range() adjust the tlb->start and tlb->end,
->   * and set corresponding cleared_*.
-> diff --git a/mm/madvise.c b/mm/madvise.c
-> index 0938fd3ad228..932c1c2eb9a3 100644
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -392,7 +392,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->  #endif
->  	tlb_change_page_size(tlb, PAGE_SIZE);
->  	orig_pte = pte = pte_offset_map_lock(vma->vm_mm, pmd, addr, &ptl);
-> -	flush_tlb_batched_pending(mm);
-> +	tlb_start_ptes(tlb);
->  	arch_enter_lazy_mmu_mode();
->  	for (; addr < end; pte++, addr += PAGE_SIZE) {
->  		ptent = *pte;
-> @@ -468,6 +468,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->  	}
->  
->  	arch_leave_lazy_mmu_mode();
-> +	tlb_end_ptes(tlb);
->  	pte_unmap_unlock(orig_pte, ptl);
->  	if (pageout)
->  		reclaim_pages(&page_list);
-> @@ -588,7 +589,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
->  
->  	tlb_change_page_size(tlb, PAGE_SIZE);
->  	orig_pte = pte = pte_offset_map_lock(mm, pmd, addr, &ptl);
-> -	flush_tlb_batched_pending(mm);
-> +	tlb_start_ptes(tlb);
->  	arch_enter_lazy_mmu_mode();
->  	for (; addr != end; pte++, addr += PAGE_SIZE) {
->  		ptent = *pte;
-> @@ -692,6 +693,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
->  		add_mm_counter(mm, MM_SWAPENTS, nr_swap);
->  	}
->  	arch_leave_lazy_mmu_mode();
-> +	tlb_end_ptes(tlb);
->  	pte_unmap_unlock(orig_pte, ptl);
->  	cond_resched();
->  next:
-> diff --git a/mm/mapping_dirty_helpers.c b/mm/mapping_dirty_helpers.c
-> index 2ce6cf431026..063419ade304 100644
-> --- a/mm/mapping_dirty_helpers.c
-> +++ b/mm/mapping_dirty_helpers.c
-> @@ -6,6 +6,8 @@
->  #include <asm/cacheflush.h>
->  #include <asm/tlb.h>
->  
-> +#include "internal.h"
-> +
->  /**
->   * struct wp_walk - Private struct for pagetable walk callbacks
->   * @range: Range for mmu notifiers
-> @@ -36,7 +38,10 @@ static int wp_pte(pte_t *pte, unsigned long addr, unsigned long end,
->  	pte_t ptent = *pte;
->  
->  	if (pte_write(ptent)) {
-> -		pte_t old_pte = ptep_modify_prot_start(walk->vma, addr, pte);
-> +		pte_t old_pte;
-> +
-> +		tlb_start_ptes(&wpwalk->tlb);
-> +		old_pte = ptep_modify_prot_start(walk->vma, addr, pte);
->  
->  		ptent = pte_wrprotect(old_pte);
->  		ptep_modify_prot_commit(walk->vma, addr, pte, old_pte, ptent);
-> @@ -44,6 +49,7 @@ static int wp_pte(pte_t *pte, unsigned long addr, unsigned long end,
->  
->  		if (pte_may_need_flush(old_pte, ptent))
->  			tlb_flush_pte_range(&wpwalk->tlb, addr, PAGE_SIZE);
-> +		tlb_end_ptes(&wpwalk->tlb);
->  	}
->  
->  	return 0;
-> @@ -94,13 +100,18 @@ static int clean_record_pte(pte_t *pte, unsigned long addr,
->  	if (pte_dirty(ptent)) {
->  		pgoff_t pgoff = ((addr - walk->vma->vm_start) >> PAGE_SHIFT) +
->  			walk->vma->vm_pgoff - cwalk->bitmap_pgoff;
-> -		pte_t old_pte = ptep_modify_prot_start(walk->vma, addr, pte);
-> +		pte_t old_pte;
-> +
-> +		tlb_start_ptes(&wpwalk->tlb);
-> +
-> +		old_pte = ptep_modify_prot_start(walk->vma, addr, pte);
->  
->  		ptent = pte_mkclean(old_pte);
->  		ptep_modify_prot_commit(walk->vma, addr, pte, old_pte, ptent);
->  
->  		wpwalk->total++;
->  		tlb_flush_pte_range(&wpwalk->tlb, addr, PAGE_SIZE);
-> +		tlb_end_ptes(&wpwalk->tlb);
->  
->  		__set_bit(pgoff, cwalk->bitmap);
->  		cwalk->start = min(cwalk->start, pgoff);
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 9e8576a83147..929a93c50d9a 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -1221,6 +1221,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
->  	init_rss_vec(rss);
->  	start_pte = pte_offset_map_lock(mm, pmd, addr, &ptl);
->  	pte = start_pte;
-> +	tlb_start_ptes(tlb);
->  	flush_tlb_batched_pending(mm);
->  	arch_enter_lazy_mmu_mode();
->  	do {
-> @@ -1314,6 +1315,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
->  	add_mm_rss_vec(mm, rss);
->  	arch_leave_lazy_mmu_mode();
->  
-> +	tlb_end_ptes(tlb);
->  	/* Do the actual TLB flush before dropping ptl */
->  	if (force_flush)
->  		tlb_flush_mmu_tlbonly(tlb);
-> diff --git a/mm/mprotect.c b/mm/mprotect.c
-> index b7473d2c9a1f..1258bbe42ee1 100644
-> --- a/mm/mprotect.c
-> +++ b/mm/mprotect.c
-> @@ -70,7 +70,7 @@ static unsigned long change_pte_range(struct mmu_gather *tlb,
->  	    atomic_read(&vma->vm_mm->mm_users) == 1)
->  		target_node = numa_node_id();
->  
-> -	flush_tlb_batched_pending(vma->vm_mm);
-> +	tlb_start_ptes(tlb);
->  	arch_enter_lazy_mmu_mode();
->  	do {
->  		oldpte = *pte;
-> @@ -182,6 +182,7 @@ static unsigned long change_pte_range(struct mmu_gather *tlb,
->  		}
->  	} while (pte++, addr += PAGE_SIZE, addr != end);
->  	arch_leave_lazy_mmu_mode();
-> +	tlb_end_ptes(tlb);
->  	pte_unmap_unlock(pte - 1, ptl);
->  
->  	return pages;
-> -- 
-> 2.25.1
-> 
-> 
+ /* Parser Registers */
+ #define MVPP2_PRS_INIT_LOOKUP_REG		0x1000
+@@ -469,7 +472,7 @@
+ #define     MVPP22_GMAC_INT_SUM_MASK_LINK_STAT	BIT(1)
+ #define	    MVPP22_GMAC_INT_SUM_MASK_PTP	BIT(2)
+ 
+-/* Per-port XGMAC registers. PPv2.2 only, only for GOP port 0,
++/* Per-port XGMAC registers. PPv2.2 and PPv2.3, only for GOP port 0,
+  * relative to port->base.
+  */
+ #define MVPP22_XLG_CTRL0_REG			0x100
+@@ -506,7 +509,7 @@
+ #define     MVPP22_XLG_CTRL4_MACMODSELECT_GMAC	BIT(12)
+ #define     MVPP22_XLG_CTRL4_EN_IDLE_CHECK	BIT(14)
+ 
+-/* SMI registers. PPv2.2 only, relative to priv->iface_base. */
++/* SMI registers. PPv2.2 and PPv2.3, relative to priv->iface_base. */
+ #define MVPP22_SMI_MISC_CFG_REG			0x1204
+ #define     MVPP22_SMI_POLLING_EN		BIT(10)
+ 
+@@ -582,7 +585,7 @@
+ #define MVPP2_QUEUE_NEXT_DESC(q, index) \
+ 	(((index) < (q)->last_desc) ? ((index) + 1) : 0)
+ 
+-/* XPCS registers. PPv2.2 only */
++/* XPCS registers.PPv2.2 and PPv2.3 */
+ #define MVPP22_MPCS_BASE(port)			(0x7000 + (port) * 0x1000)
+ #define MVPP22_MPCS_CTRL			0x14
+ #define     MVPP22_MPCS_CTRL_FWD_ERR_CONN	BIT(10)
+@@ -593,7 +596,7 @@
+ #define     MVPP22_MPCS_CLK_RESET_DIV_RATIO(n)	((n) << 4)
+ #define     MVPP22_MPCS_CLK_RESET_DIV_SET	BIT(11)
+ 
+-/* XPCS registers. PPv2.2 only */
++/* XPCS registers. PPv2.2 and PPv2.3 */
+ #define MVPP22_XPCS_BASE(port)			(0x7400 + (port) * 0x1000)
+ #define MVPP22_XPCS_CFG0			0x0
+ #define     MVPP22_XPCS_CFG0_RESET_DIS		BIT(0)
+@@ -930,15 +933,16 @@ struct mvpp2 {
+ 	void __iomem *iface_base;
+ 	void __iomem *cm3_base;
+ 
+-	/* On PPv2.2, each "software thread" can access the base
++	/* On PPv2.2 and PPv2.3, each "software thread" can access the base
+ 	 * register through a separate address space, each 64 KB apart
+ 	 * from each other. Typically, such address spaces will be
+ 	 * used per CPU.
+ 	 */
+ 	void __iomem *swth_base[MVPP2_MAX_THREADS];
+ 
+-	/* On PPv2.2, some port control registers are located into the system
+-	 * controller space. These registers are accessible through a regmap.
++	/* On PPv2.2 and PPv2.3, some port control registers are located into
++	 * the system controller space. These registers are accessible
++	 * through a regmap.
+ 	 */
+ 	struct regmap *sysctrl_base;
+ 
+@@ -980,7 +984,7 @@ struct mvpp2 {
+ 	u32 tclk;
+ 
+ 	/* HW version */
+-	enum { MVPP21, MVPP22 } hw_version;
++	enum { MVPP21, MVPP22, MVPP23 } hw_version;
+ 
+ 	/* Maximum number of RXQs per port */
+ 	unsigned int max_port_rxqs;
+@@ -1227,7 +1231,7 @@ struct mvpp21_rx_desc {
+ 	__le32 reserved8;
+ };
+ 
+-/* HW TX descriptor for PPv2.2 */
++/* HW TX descriptor for PPv2.2 and PPv2.3 */
+ struct mvpp22_tx_desc {
+ 	__le32 command;
+ 	u8  packet_offset;
+@@ -1239,7 +1243,7 @@ struct mvpp22_tx_desc {
+ 	__le64 buf_cookie_misc;
+ };
+ 
+-/* HW RX descriptor for PPv2.2 */
++/* HW RX descriptor for PPv2.2 and PPv2.3 */
+ struct mvpp22_rx_desc {
+ 	__le32 status;
+ 	__le16 reserved1;
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+index 307f9fd..11c56d2 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+@@ -385,7 +385,7 @@ static int mvpp2_bm_pool_create(struct device *dev, struct mvpp2 *priv,
+ 	if (!IS_ALIGNED(size, 16))
+ 		return -EINVAL;
+ 
+-	/* PPv2.1 needs 8 bytes per buffer pointer, PPv2.2 needs 16
++	/* PPv2.1 needs 8 bytes per buffer pointer, PPv2.2 and PPv2.3 needs 16
+ 	 * bytes per buffer pointer
+ 	 */
+ 	if (priv->hw_version == MVPP21)
+@@ -1173,7 +1173,7 @@ static void mvpp2_interrupts_unmask(void *arg)
+ 	u32 val;
+ 	int i;
+ 
+-	if (port->priv->hw_version != MVPP22)
++	if (port->priv->hw_version == MVPP21)
+ 		return;
+ 
+ 	if (mask)
+@@ -5457,7 +5457,7 @@ static void mvpp2_rx_irqs_setup(struct mvpp2_port *port)
+ 		return;
+ 	}
+ 
+-	/* Handle the more complicated PPv2.2 case */
++	/* Handle the more complicated PPv2.2 and PPv2.3 case */
+ 	for (i = 0; i < port->nqvecs; i++) {
+ 		struct mvpp2_queue_vector *qv = port->qvecs + i;
+ 
+@@ -5634,7 +5634,7 @@ static bool mvpp22_port_has_legacy_tx_irqs(struct device_node *port_node,
+ 
+ /* Checks if the port dt description has the required Tx interrupts:
+  * - PPv2.1: there are no such interrupts.
+- * - PPv2.2:
++ * - PPv2.2 and PPv2.3:
+  *   - The old DTs have: "rx-shared", "tx-cpuX" with X in [0...3]
+  *   - The new ones have: "hifX" with X in [0..8]
+  *
+@@ -6622,7 +6622,7 @@ static void mvpp22_rx_fifo_set_hw(struct mvpp2 *priv, int port, int data_size)
+ 	mvpp2_write(priv, MVPP2_RX_ATTR_FIFO_SIZE_REG(port), attr_size);
+ }
+ 
+-/* Initialize TX FIFO's: the total FIFO size is 48kB on PPv2.2.
++/* Initialize TX FIFO's: the total FIFO size is 48kB on PPv2.2 and PPv2.3.
+  * 4kB fixed space must be assigned for the loopback port.
+  * Redistribute remaining avialable 44kB space among all active ports.
+  * Guarantee minimum 32kB for 10G port and 8kB for port 1, capable of 2.5G
+@@ -6679,7 +6679,7 @@ static void mvpp22_tx_fifo_set_hw(struct mvpp2 *priv, int port, int size)
+ 	mvpp2_write(priv, MVPP22_TX_FIFO_THRESH_REG(port), threshold);
+ }
+ 
+-/* Initialize TX FIFO's: the total FIFO size is 19kB on PPv2.2.
++/* Initialize TX FIFO's: the total FIFO size is 19kB on PPv2.2 and PPv2.3.
+  * 3kB fixed space must be assigned for the loopback port.
+  * Redistribute remaining avialable 16kB space among all active ports.
+  * The 10G interface should use 10kB (which is maximum possible size
+@@ -7071,6 +7071,11 @@ static int mvpp2_probe(struct platform_device *pdev)
+ 			priv->port_map |= BIT(i);
+ 	}
+ 
++	if (priv->hw_version != MVPP21) {
++		if (mvpp2_read(priv, MVPP2_VER_ID_REG) == MVPP2_VER_PP23)
++			priv->hw_version = MVPP23;
++	}
++
+ 	/* Initialize network controller */
+ 	err = mvpp2_init(pdev, priv);
+ 	if (err < 0) {
+-- 
+1.9.1
+
