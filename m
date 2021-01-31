@@ -2,67 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51BCD309CB7
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 15:26:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98FF6309CC9
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 15:27:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbhAaOPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 09:15:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48080 "EHLO
+        id S232413AbhAaOTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 09:19:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231878AbhAaN3I (ORCPT
+        with ESMTP id S231944AbhAaN36 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 08:29:08 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB94BC061786;
-        Sun, 31 Jan 2021 05:23:35 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id c127so10866244wmf.5;
-        Sun, 31 Jan 2021 05:23:35 -0800 (PST)
+        Sun, 31 Jan 2021 08:29:58 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC88FC06178C;
+        Sun, 31 Jan 2021 05:27:51 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id i9so10903145wmq.1;
+        Sun, 31 Jan 2021 05:27:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=5E3Apls6csqets4H7DMOXx41lFaOtmaam4e5XL6M4iw=;
-        b=hKM5x/yzzHesMc2ZpkKhTKSmDwsFbaDW8pXz3naNKGR7dtpBt7kB6KqE1u9C2awrce
-         E2mJt7sayawkHsBlBqnZR0sZ98qHFlge6DlwXFBY10lWYoYsxg2SEV9rpQl2avlPySYG
-         /+Xe75o0nfa2ORqJyGplwR9nVJi35CQnx62GFAQ/zTGA6CtDIOZKqOY3RtsEpbrr3+/S
-         vkoNMDDwShhXaBiI27aXHZEhRwyD9wULZfxAmffWqh97FDbjjRfUZ2Ln+b3BH+zTtHQ2
-         fjoTRb2o5IC4lnLDG+4tjFLpE0cj4Pu/b5OOU+jcq/g7hnNqrjUWFc6TG16DNTFkp+2t
-         +otQ==
+        bh=w0AjcOnxN+fVVGn+tV+gduZDAkpbNXFgkp5E/FuYeRA=;
+        b=V8jquRuFkG92B9NiAwvbKnipL0o12U9sc71/MrVsazR4kIQpND2V1ynYJUBUVT34rn
+         g6mu+VW/V+b2wfEzqe8iP0iH4Yb5M9HGHkol7uQltaD43phRWV3eX9QvgvFT7XgH6sqC
+         Ez3iCZFnXlIjCG4tOyVhUrXYEM5ufBR+w+etUo+IrqH+Lm4owWuyEUE/tcDZCGl2uY73
+         GIxDWbVLhhftxPsiaHxDxsz9mGKI9m0pSG9WHbi5osdiFHJ8JIPzPvQt90Ui7fjq8JfN
+         Zt6JsejLXEc1a76amPGTXXhB3cnA0loV5zYEBH1x+mkEI/Frkb4rziXBbs+pLxauu5Bw
+         Ep8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=5E3Apls6csqets4H7DMOXx41lFaOtmaam4e5XL6M4iw=;
-        b=Srruj55V9lLozkbOo0w0o8Qym6UW+xGCokcp//lqeju+2hr98HqBwSixXU1rOYOOwj
-         IrRkNKZl11QqYTamVJAOD0wvqcZwhoCNFdYQidrkZ9rYJnJ2MzOOVJ/avfQnGpZXbul1
-         aIwcGn70bthcg+T+QRi+q1X+PNS8nJH1cG4kV1mdws6PiFjIIlVHnTPgJ6CWu8Np4OHf
-         t65CkHdijbKfL5LcMDb6QxYLlFE1bZgsFae0AGCJBxGu7iE4aD9SGoIrLtVdmlznk1kG
-         mR0FuNlt30sqhMpgPgSvwtBdYPYP+0VkB4rEL0s7BeJPZu1nKn/um7mbrggTBum0+Ej6
-         TxQw==
-X-Gm-Message-State: AOAM531DnNX7+eL0a7nHrHDgB2nuuuuCw2IID0mIJ50xgUWwWfpImBrS
-        KSIQIXTFOnW/W97+LF8Hf5Y=
-X-Google-Smtp-Source: ABdhPJzHqd0I71FRkOquB11nCB3oZaqjsEewergd0ffPGMIBxyOJhBoy0IcAW6hOaIBgt9VG0/TodQ==
-X-Received: by 2002:a1c:2b05:: with SMTP id r5mr11020512wmr.179.1612099414528;
-        Sun, 31 Jan 2021 05:23:34 -0800 (PST)
+        bh=w0AjcOnxN+fVVGn+tV+gduZDAkpbNXFgkp5E/FuYeRA=;
+        b=Ltl7P9NRGbazVF7i32Ob9tD5cPlw9oa7vlwdboSz8DgSpiuwJiyohFQuhMuUIPp/nP
+         Df+OozA08QNBV52Q+RGhth1Dcmz7BnL5YvOLBn60xu78KiOIldozS/aTeUMalHkDfQti
+         HzxLRCa0DZ6QaQ3CoaQP5+sSrZ03SeYMYEXgJ9O5n/BcNcKkFf4S4WZLbejR0PYXBFF5
+         bwj2TwaWdr0aZNKUv31sAFhb8zZT3Vw4fOXdlJPaEwwDRyxAlDDfJZBHqQF8i6OmDzXo
+         DLV1Vc5WLQ2JoM7D/TC8zgv89wiWksYddkymH7aQsbAybxvhxd5z/Gso1UT6mpM5Gfqb
+         qo1g==
+X-Gm-Message-State: AOAM532Rnlf1Rz5cH+L+GVxRvsoYRj5wKCpPlV9xlZ3Kmr3i2/4Oj49Z
+        ZuQ9u3ol50xoeu8shj6fPrk=
+X-Google-Smtp-Source: ABdhPJws8CH4DaeoGzSOwTNOe8P0bjHH0XBzbGAG8etRS+DruKxNIPlbIz5lZhPG5dZwQr1wpu1Uvw==
+X-Received: by 2002:a1c:2501:: with SMTP id l1mr11061166wml.41.1612099670275;
+        Sun, 31 Jan 2021 05:27:50 -0800 (PST)
 Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id d17sm13518011wma.2.2021.01.31.05.23.33
+        by smtp.gmail.com with ESMTPSA id b11sm22538263wrp.60.2021.01.31.05.27.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Jan 2021 05:23:33 -0800 (PST)
-Subject: Re: [PATCH] arm64: dts: mt8192: Add cpu-idle-states
-To:     James Liao <jamesjj.liao@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>
+        Sun, 31 Jan 2021 05:27:49 -0800 (PST)
+Subject: Re: [PATCH 0/2] Add MediaTek MT8192 clock provider device nodes
+To:     Weiyi Lu <weiyi.lu@mediatek.com>, Rob Herring <robh@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        srv_heupstream@mediatek.com
-References: <20201222045820.26355-1-jamesjj.liao@mediatek.com>
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-clk@vger.kernel.org, srv_heupstream@mediatek.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <1608644414-17793-1-git-send-email-weiyi.lu@mediatek.com>
 From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <4b702785-9c30-fa24-e5bc-ad3aa9457a5c@gmail.com>
-Date:   Sun, 31 Jan 2021 14:23:33 +0100
+Message-ID: <4536e0a3-8e64-d2b0-df83-33705d10359a@gmail.com>
+Date:   Sun, 31 Jan 2021 14:27:48 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20201222045820.26355-1-jamesjj.liao@mediatek.com>
+In-Reply-To: <1608644414-17793-1-git-send-email-weiyi.lu@mediatek.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -72,132 +73,25 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 22/12/2020 05:58, James Liao wrote:
-> Add idle states for cpu-off and cluster-off.
+On 22/12/2020 14:40, Weiyi Lu wrote:
+> This series is based on v5.10-rc1, MT8192 dts v6[1] and
+> MT8192 clock v6 series[2].
 > 
-> Signed-off-by: James Liao <jamesjj.liao@mediatek.com>
-> ---
+> [1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=373899
+> [2] https://patchwork.kernel.org/project/linux-mediatek/list/?series=405295
+> 
 
-Applied to v5.11-next/dts64
+[1] is already mainline. You could add this patch as a new one to [2]. But
+please try to improve the series, before sending just a new version with this
+patch added.
 
-Thanks!
+Regards,
+Matthias
 
->  arch/arm64/boot/dts/mediatek/mt8192.dtsi | 44 ++++++++++++++++++++++++
->  1 file changed, 44 insertions(+)
+> Weiyi Lu (2):
+>   arm64: dts: mediatek: Add mt8192 clock controllers
+>   arm64: dts: mediatek: Correct UART0 bus clock of MT8192
 > 
-> This patch bases on v5.10 and [1], adds idle-states for MT8192 CPUs.
-> 
-> [1] https://lore.kernel.org/linux-arm-kernel/20201030092207.26488-2-seiya.wang@mediatek.com/
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-> index e12e024de122..c7f2ec9ea4f1 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-> @@ -39,6 +39,7 @@
->  			reg = <0x000>;
->  			enable-method = "psci";
->  			clock-frequency = <1701000000>;
-> +			cpu-idle-states = <&cpuoff_l &clusteroff_l>;
->  			next-level-cache = <&l2_0>;
->  			capacity-dmips-mhz = <530>;
->  		};
-> @@ -49,6 +50,7 @@
->  			reg = <0x100>;
->  			enable-method = "psci";
->  			clock-frequency = <1701000000>;
-> +			cpu-idle-states = <&cpuoff_l &clusteroff_l>;
->  			next-level-cache = <&l2_0>;
->  			capacity-dmips-mhz = <530>;
->  		};
-> @@ -59,6 +61,7 @@
->  			reg = <0x200>;
->  			enable-method = "psci";
->  			clock-frequency = <1701000000>;
-> +			cpu-idle-states = <&cpuoff_l &clusteroff_l>;
->  			next-level-cache = <&l2_0>;
->  			capacity-dmips-mhz = <530>;
->  		};
-> @@ -69,6 +72,7 @@
->  			reg = <0x300>;
->  			enable-method = "psci";
->  			clock-frequency = <1701000000>;
-> +			cpu-idle-states = <&cpuoff_l &clusteroff_l>;
->  			next-level-cache = <&l2_0>;
->  			capacity-dmips-mhz = <530>;
->  		};
-> @@ -79,6 +83,7 @@
->  			reg = <0x400>;
->  			enable-method = "psci";
->  			clock-frequency = <2171000000>;
-> +			cpu-idle-states = <&cpuoff_b &clusteroff_b>;
->  			next-level-cache = <&l2_1>;
->  			capacity-dmips-mhz = <1024>;
->  		};
-> @@ -89,6 +94,7 @@
->  			reg = <0x500>;
->  			enable-method = "psci";
->  			clock-frequency = <2171000000>;
-> +			cpu-idle-states = <&cpuoff_b &clusteroff_b>;
->  			next-level-cache = <&l2_1>;
->  			capacity-dmips-mhz = <1024>;
->  		};
-> @@ -99,6 +105,7 @@
->  			reg = <0x600>;
->  			enable-method = "psci";
->  			clock-frequency = <2171000000>;
-> +			cpu-idle-states = <&cpuoff_b &clusteroff_b>;
->  			next-level-cache = <&l2_1>;
->  			capacity-dmips-mhz = <1024>;
->  		};
-> @@ -109,6 +116,7 @@
->  			reg = <0x700>;
->  			enable-method = "psci";
->  			clock-frequency = <2171000000>;
-> +			cpu-idle-states = <&cpuoff_b &clusteroff_b>;
->  			next-level-cache = <&l2_1>;
->  			capacity-dmips-mhz = <1024>;
->  		};
-> @@ -158,6 +166,42 @@
->  		l3_0: l3-cache {
->  			compatible = "cache";
->  		};
-> +
-> +		idle-states {
-> +			entry-method = "arm,psci";
-> +			cpuoff_l: cpuoff_l {
-> +				compatible = "arm,idle-state";
-> +				arm,psci-suspend-param = <0x00010001>;
-> +				local-timer-stop;
-> +				entry-latency-us = <55>;
-> +				exit-latency-us = <140>;
-> +				min-residency-us = <780>;
-> +			};
-> +			cpuoff_b: cpuoff_b {
-> +				compatible = "arm,idle-state";
-> +				arm,psci-suspend-param = <0x00010001>;
-> +				local-timer-stop;
-> +				entry-latency-us = <35>;
-> +				exit-latency-us = <145>;
-> +				min-residency-us = <720>;
-> +			};
-> +			clusteroff_l: clusteroff_l {
-> +				compatible = "arm,idle-state";
-> +				arm,psci-suspend-param = <0x01010002>;
-> +				local-timer-stop;
-> +				entry-latency-us = <60>;
-> +				exit-latency-us = <155>;
-> +				min-residency-us = <860>;
-> +			};
-> +			clusteroff_b: clusteroff_b {
-> +				compatible = "arm,idle-state";
-> +				arm,psci-suspend-param = <0x01010002>;
-> +				local-timer-stop;
-> +				entry-latency-us = <40>;
-> +				exit-latency-us = <155>;
-> +				min-residency-us = <780>;
-> +			};
-> +		};
->  	};
->  
->  	pmu-a55 {
+>  arch/arm64/boot/dts/mediatek/mt8192.dtsi | 165 ++++++++++++++++++++++-
+>  1 file changed, 164 insertions(+), 1 deletion(-)
 > 
