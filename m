@@ -2,88 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D17309975
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 01:41:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00376309978
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 01:41:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232508AbhAaAkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 19:40:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232139AbhAaAkN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 19:40:13 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39962C061573;
-        Sat, 30 Jan 2021 16:39:33 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id g12so18653444ejf.8;
-        Sat, 30 Jan 2021 16:39:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8emZ/+wsE6Y2IQlfPHKjyHe/TnMtAbs64va9Ainsf2g=;
-        b=kaJ8pg6reY+C6iLzWJjRcGJZ9NqOq0AthZywh3MABCKnMmDLX12Utj1Mho4cRFY/nd
-         NneVVBYmJIRcPpvf3UWvUhpRhFg77xx9vFKP7jXFgJg5RfXU3h9Xp3/LdMqaQjTVcTid
-         hYoM90gxp67PuCzdC9mL/e9A6RlX0LXVe++gfesPyzFabU9xhtodeud8iLBziTcgi9Wm
-         jntSOe61Ap9ESPmKgCkXRzKM9iMUVg3ROeRvtANMAvI4DDwqrwdaDYAryB7R+HKhTvPB
-         nr73pN7JcBpOZPGezRpWbFctIvvvIv87HKd1kTAltkNtoUqL1OOGyNPQD1E+SMquXFWm
-         auNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8emZ/+wsE6Y2IQlfPHKjyHe/TnMtAbs64va9Ainsf2g=;
-        b=VnBKi8WfeCscCcwKINerCQBvrnkwR0FqmNRlj65R/Esor2MI/jV1xb3dxkf/JQNby7
-         B9PzWkoM/PZvaZDjczazZrUy6MaidRcM8fVUDisAtt/KTSEmSIjB+dEp6oOuihtXnT04
-         RUeBWCz1/LW3RyXjOaLb4wMSBW9A6Icb0Rf6i68ZHEdMn82mq+Eoo9mTzH51oW6aJzln
-         j5jTBK8pDl3LR4eX9y9tLz2iucETtn6iZSMcX/kfXQ8nHjyA4Broq6jxmtMGOnyGS5hG
-         gCDd394JYuUy+Gv1k4k3bwf1J1HQMl85HhkTfSkRVaMdvLfgXGOr8zUq7kZF94CnSncf
-         UaYA==
-X-Gm-Message-State: AOAM5337z4jnyKbGjIaRd5cKDVb/CD+Kcv+b9IMsk7zZcw6n2a4whomT
-        OZMYuzp819hr3x6cT3CCfmg=
-X-Google-Smtp-Source: ABdhPJx6xTXCf8+VgIXEPV6lTUEOMThXkecyGfIYkWoZ7cyvlOrL7ftJa2mWgXImyeEiT8RGUb9Ebg==
-X-Received: by 2002:a17:906:8611:: with SMTP id o17mr11030650ejx.145.1612053571791;
-        Sat, 30 Jan 2021 16:39:31 -0800 (PST)
-Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id b26sm6621984edy.57.2021.01.30.16.39.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Jan 2021 16:39:30 -0800 (PST)
-Date:   Sun, 31 Jan 2021 02:39:29 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tobias Waldekranz <tobias@waldekranz.com>
-Subject: Re: [PATCH net] net: dsa: mv88e6xxx: override existent unicast
- portvec in port_fdb_add
-Message-ID: <20210131003929.2rlr6pv5fu7vfldd@skbuf>
-References: <20210130134334.10243-1-dqfext@gmail.com>
+        id S232532AbhAaAkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 19:40:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46434 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232290AbhAaAkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 19:40:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 404B364E18
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 00:39:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612053594;
+        bh=ZARN4/SNMif8pmhvtSYaVaBh/E7PVLrk6k7KSJ+Cbgg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PIOgJQZUx+1+CIY+uUFr3AqjeBFrwk9ryhp+g65Zv5nDG+pIgk1N/r4mSP5BAz/qJ
+         wQMg2itlvUY/Y4eRQenumglnlA2SblzxOw8ArHfqgmyYRTbIITjWC1vTcrsXO62gjh
+         CAiMWnbH8B47mRo7wSTVqg4YsSNnYSF4R3tLeZ5Nox2xbMZyvruMAPr+CMsXcdN+Qg
+         yCxnUose/9kCLov4O5KXuXEvT6QQKnUrvunhz8aUApExv7JPQ7DJwolqGvEVr3AamM
+         GOOLJp1AsSd6mqmBcOFoHXrUXpH8x4AQ2A+tdRoYbHyuwgyXJA4koCFCmaLQqp9KCL
+         MV5zOeTqz1l8Q==
+Received: by mail-ed1-f42.google.com with SMTP id q2so97834edi.4
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 16:39:54 -0800 (PST)
+X-Gm-Message-State: AOAM532kRrllJ0uRsUqvJYnLkoonLTArpbNcdrDVejevefhXxJMWmqb2
+        N9bUBh9ciZQKU6tMwtmY92BfyfQSIM+JPV9tbhS0zw==
+X-Google-Smtp-Source: ABdhPJz2HtR+oWDJm9Im8a9Zc9ILIiNOJ3sJ5fZY04oSx16Isz5PJWJD/yFlp6cyFbiANw2fuD8+l8VdlPb3QxBCnDs=
+X-Received: by 2002:a05:6402:3585:: with SMTP id y5mr11930169edc.97.1612053592891;
+ Sat, 30 Jan 2021 16:39:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210130134334.10243-1-dqfext@gmail.com>
+References: <20210131001132.3368247-1-namit@vmware.com>
+In-Reply-To: <20210131001132.3368247-1-namit@vmware.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Sat, 30 Jan 2021 16:39:41 -0800
+X-Gmail-Original-Message-ID: <CALCETrUUe_iijSoTYMjibqxUveaYrG3sVTWawbi3HWCjx_ySYg@mail.gmail.com>
+Message-ID: <CALCETrUUe_iijSoTYMjibqxUveaYrG3sVTWawbi3HWCjx_ySYg@mail.gmail.com>
+Subject: Re: [RFC 00/20] TLB batching consolidation and enhancements
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Nadav Amit <namit@vmware.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-csky@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Nick Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, X86 ML <x86@kernel.org>,
+        Yu Zhao <yuzhao@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 09:43:34PM +0800, DENG Qingfang wrote:
-> Having multiple destination ports for a unicast address does not make
-> sense.
-> Make port_db_load_purge override existent unicast portvec instead of
-> adding a new port bit.
-> 
-> Fixes: 884729399260 ("net: dsa: mv88e6xxx: handle multiple ports in ATU")
-> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
-> ---
+On Sat, Jan 30, 2021 at 4:16 PM Nadav Amit <nadav.amit@gmail.com> wrote:
+>
+> From: Nadav Amit <namit@vmware.com>
+>
+> There are currently (at least?) 5 different TLB batching schemes in the
+> kernel:
+>
+> 1. Using mmu_gather (e.g., zap_page_range()).
+>
+> 2. Using {inc|dec}_tlb_flush_pending() to inform other threads on the
+>    ongoing deferred TLB flush and flushing the entire range eventually
+>    (e.g., change_protection_range()).
+>
+> 3. arch_{enter|leave}_lazy_mmu_mode() for sparc and powerpc (and Xen?).
+>
+> 4. Batching per-table flushes (move_ptes()).
+>
+> 5. By setting a flag on that a deferred TLB flush operation takes place,
+>    flushing when (try_to_unmap_one() on x86).
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
-
-Tobias has a point in a way too, you should get used to adding the
-'master static' flags to your bridge fdb commands, otherwise weird
-things like this could happen. The faulty code can only be triggered
-when going through dsa_legacy_fdb_add, but it is still faulty
-nonetheless.
+Are you referring to the arch_tlbbatch_add_mm/flush mechanism?
