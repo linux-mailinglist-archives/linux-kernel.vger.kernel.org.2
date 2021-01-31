@@ -2,141 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D85309F0C
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 22:19:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4CA5309F0B
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 22:19:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230479AbhAaVKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 16:10:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57804 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231169AbhAaVDb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 16:03:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09DFB64E3E;
-        Sun, 31 Jan 2021 17:24:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612113893;
-        bh=wyJOIMqfy6bpIafa5t0YFAYaqCcPgkGd3Ld8Ak0s+4g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GYMmUmNNSToSJ9gFwLv/mu6xNkgP035KUck5/33bz4STmHKwwtzm5mMabUnTtdZad
-         vwNhHo26h8b4x9YRjQhy4R7MS+xTxK5IG0+Bdxs1QTnxQ5mmHKu6Q3Aob4iZfypiQk
-         ULU19rz2g0VcuXiMEuCS4TBwOFyJMMnWpq76PI+h+uKGIQrRRrC6WIn3mDWwEDmVeu
-         kEazVEk+4tQThEn2/W6LescJnukW4udMbxB4A9xg4cMt2CPzg3JDrZ7NMUXwvrkRGi
-         IKhS21uU32A+YOiTw28j/Vv7xNrSx5CCPPd3Ew8i8t8PCfa3Ub9Sb4DO/WDla3AJd5
-         AvW+WkK0rqfeA==
-From:   Andy Lutomirski <luto@kernel.org>
-To:     x86@kernel.org
+        id S230058AbhAaVJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 16:09:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32934 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231453AbhAaVAc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 16:00:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612126745;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BTdfeZUlmDAGnUPUg1Sx+tWBlHdEKi++bIDvsDvVpgY=;
+        b=B8xQ6At5iBbNkz8F1PmFCvLWCDGMui4HDa1Cntw0o4bCKjeDZs6fcYJ/gdYeO081ULacAg
+        9/sE73MOXZKMw6IX5qLCn8eFprAoXoXSMTxEcdIGOQvZ5T5r+J8Juwu8zIVNW52K50AoOi
+        yfOEqjbnDpvyYtmCxjTBdKXuTdWv8Qg=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-342-gn9vdxpeNjSU_FJO3xXkPg-1; Sun, 31 Jan 2021 15:59:03 -0500
+X-MC-Unique: gn9vdxpeNjSU_FJO3xXkPg-1
+Received: by mail-ed1-f69.google.com with SMTP id a24so6900009eda.14
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 12:59:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BTdfeZUlmDAGnUPUg1Sx+tWBlHdEKi++bIDvsDvVpgY=;
+        b=tM3mX0UR+NPEEMTG8y+QncYGqGPsE24JNpemYEO0BQmRC1CquVN0xgWNtMqvMQHKT3
+         XIFHKxcbflxjlvba7OXGEWlZT/n3M1G9vSqg8If27NgfpbJC0YuzalfsnuZNfAOtNffc
+         rCC9TmUJikHBgrZlzWOdPmuI5HXB7qAOgDQVz2QANYmVyCnbJNyuomF9r0khh2FXttd7
+         L+UvIdEr8Ws1JtkDV5SH1b6Re5XeOgnWoLEjMkc/FsXWVmFiQvtTP8pSdEg0FUx4clzq
+         jW4Zall+qh/Bouz7RO21GmpSWVk6g7pmLvBBrnPqpiMg0wM3VP5XtcC6cvhqyXQ3MF2F
+         bvBQ==
+X-Gm-Message-State: AOAM532PG4HvutewZhKyrBr/4+ViULvLye2O5B2WkIPjjQKyVm8oAwmM
+        +MdZFZWRrdvneAw7vlm86PuM37Ptrblg95oMzh/do68GOFzJZcVKOUr8YVCsYcJqJQt5oHnRvnp
+        b7xdgfke6y+lAl7o1SE6P6uCU
+X-Received: by 2002:a17:906:69c2:: with SMTP id g2mr14105193ejs.249.1612126741663;
+        Sun, 31 Jan 2021 12:59:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxjz533QMFNl6H/Ne8MsDH5LPiFLL/aCHyz1ZQYHciPk1o13+N380W5/ysDpK+OT6xjT3K8Gw==
+X-Received: by 2002:a17:906:69c2:: with SMTP id g2mr14105189ejs.249.1612126741520;
+        Sun, 31 Jan 2021 12:59:01 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id cw21sm7601846edb.85.2021.01.31.12.59.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 31 Jan 2021 12:59:00 -0800 (PST)
+Subject: Re: [PATCH] platform/x86: dell-wmi-sysman: fix a NULL pointer
+ dereference
+To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        Mark Gross <mgross@linux.intel.com>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 08/11] x86/fault: Bypass no_context() for implicit kernel faults from usermode
-Date:   Sun, 31 Jan 2021 09:24:39 -0800
-Message-Id: <df70b39a495b927a2ae4d4947fa4a30adc5637e7.1612113550.git.luto@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1612113550.git.luto@kernel.org>
-References: <cover.1612113550.git.luto@kernel.org>
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>
+References: <20210129172654.2326751-1-mario.limonciello@dell.com>
+ <0da9ca30-53b1-8d34-4fc7-62edb6423b26@redhat.com>
+ <SA1PR19MB49263EE7ECF0D06962BE00ECFAB79@SA1PR19MB4926.namprd19.prod.outlook.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <a371c1c9-d803-f2e6-dfca-607a0650345f@redhat.com>
+Date:   Sun, 31 Jan 2021 21:59:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <SA1PR19MB49263EE7ECF0D06962BE00ECFAB79@SA1PR19MB4926.namprd19.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can drop an indentation level and remove the last user_mode(regs) == true
-caller of no_context() by directly OOPSing for implicit kernel faults from
-usermode.
+Hi,
 
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
----
- arch/x86/mm/fault.c | 59 ++++++++++++++++++++++++---------------------
- 1 file changed, 32 insertions(+), 27 deletions(-)
+On 1/31/21 3:04 PM, Limonciello, Mario wrote:
+> 
+> 
+>> -----Original Message-----
+>> From: Hans de Goede <hdegoede@redhat.com>
+>> Sent: Saturday, January 30, 2021 15:44
+>> To: Limonciello, Mario; Mark Gross
+>> Cc: LKML; platform-driver-x86@vger.kernel.org
+>> Subject: Re: [PATCH] platform/x86: dell-wmi-sysman: fix a NULL pointer
+>> dereference
+>>
+>>
+>> [EXTERNAL EMAIL]
+>>
+>> Hi,
+>>
+>> On 1/29/21 6:26 PM, Mario Limonciello wrote:
+>>> An upcoming Dell platform is causing a NULL pointer dereference
+>>> in dell-wmi-sysman initialization.  Validate that the input from
+>>> BIOS matches correct ACPI types and abort module initialization
+>>> if it fails.
+>>>
+>>> This leads to a memory leak that needs to be cleaned up properly.
+>>>
+>>> Signed-off-by: Mario Limonciello <mario.limonciello@dell.com>
+>>> ---
+>>>  drivers/platform/x86/dell-wmi-sysman/sysman.c | 8 +++++++-
+>>>  1 file changed, 7 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/platform/x86/dell-wmi-sysman/sysman.c
+>> b/drivers/platform/x86/dell-wmi-sysman/sysman.c
+>>> index dc6dd531c996..38b497991071 100644
+>>> --- a/drivers/platform/x86/dell-wmi-sysman/sysman.c
+>>> +++ b/drivers/platform/x86/dell-wmi-sysman/sysman.c
+>>> @@ -419,13 +419,19 @@ static int init_bios_attributes(int attr_type, const
+>> char *guid)
+>>>  		return retval;
+>>>  	/* need to use specific instance_id and guid combination to get right
+>> data */
+>>>  	obj = get_wmiobj_pointer(instance_id, guid);
+>>> -	if (!obj)
+>>> +	if (!obj || obj->type != ACPI_TYPE_PACKAGE) {
+>>> +		release_attributes_data();
+>>
+>> All calls of  init_bios_attributes() have the following error handling:
+>>
+>>         ret = init_bios_attributes(INT, DELL_WMI_BIOS_INTEGER_ATTRIBUTE_GUID);
+>>         if (ret) {
+>>                 pr_debug("failed to populate integer type attributes\n");
+>>                 goto fail_create_group;
+>>         }
+>>
+>> 	...
+>>
+>> fail_create_group:
+>>         release_attributes_data();
+>>
+>> So that added release_attributes_data() call is not necessary. If you can
+>> respin
+>> this patch Monday with the release_attributes_data(); addition dropped, then
+>> I will try to get this to Linus in time for 5.11 .
+>>
+>> Or I can fix this up locally if you agree with dropping the unnecessary
+>> release_attributes_data() call.
+>>
+> 
+> Yes, please go ahead and drop the unnecessary call locally.
 
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index 6f43d080e1e8..177b612c7f33 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -789,44 +789,49 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
- {
- 	struct task_struct *tsk = current;
- 
--	/* User mode accesses just cause a SIGSEGV */
--	if (user_mode(regs) && (error_code & X86_PF_USER)) {
--		/*
--		 * It's possible to have interrupts off here:
--		 */
--		local_irq_enable();
-+	if (!user_mode(regs)) {
-+		no_context(regs, error_code, address, pkey, si_code);
-+		return;
-+	}
- 
--		/*
--		 * Valid to do another page fault here because this one came
--		 * from user space:
--		 */
--		if (is_prefetch(regs, error_code, address))
--			return;
-+	if (!(error_code & X86_PF_USER)) {
-+		/* Implicit user access to kernel memory -- just oops */
-+		page_fault_oops(regs, error_code, address);
-+		return;
-+	}
- 
--		if (is_errata100(regs, address))
--			return;
-+	/*
-+	 * User mode accesses just cause a SIGSEGV.
-+	 * It's possible to have interrupts off here:
-+	 */
-+	local_irq_enable();
- 
--		sanitize_error_code(address, &error_code);
-+	/*
-+	 * Valid to do another page fault here because this one came
-+	 * from user space:
-+	 */
-+	if (is_prefetch(regs, error_code, address))
-+		return;
- 
--		if (fixup_vdso_exception(regs, X86_TRAP_PF, error_code, address))
--			return;
-+	if (is_errata100(regs, address))
-+		return;
- 
--		if (likely(show_unhandled_signals))
--			show_signal_msg(regs, error_code, address, tsk);
-+	sanitize_error_code(address, &error_code);
- 
--		set_signal_archinfo(address, error_code);
-+	if (fixup_vdso_exception(regs, X86_TRAP_PF, error_code, address))
-+		return;
- 
--		if (si_code == SEGV_PKUERR)
--			force_sig_pkuerr((void __user *)address, pkey);
-+	if (likely(show_unhandled_signals))
-+		show_signal_msg(regs, error_code, address, tsk);
- 
--		force_sig_fault(SIGSEGV, si_code, (void __user *)address);
-+	set_signal_archinfo(address, error_code);
- 
--		local_irq_disable();
-+	if (si_code == SEGV_PKUERR)
-+		force_sig_pkuerr((void __user *)address, pkey);
- 
--		return;
--	}
-+	force_sig_fault(SIGSEGV, si_code, (void __user *)address);
- 
--	no_context(regs, error_code, address, SIGSEGV, si_code);
-+	local_irq_disable();
- }
- 
- static noinline void
--- 
-2.29.2
+Ok, I've merged this into my review-hans branch and I will push this out
+to for-next as soon as a local build has finished. I'll also include
+this in my last fixes pull-req for Linus later this week.
+
+While working on this I did notice that the function in question still
+has a bunch of further issues. But since this patch fixes a crash and has
+been tested I've decided to move forward with it as is (with the duplicate
+release_attributes_data() call dropped). The further issues can be fixed
+with follow-up patches.
+
+So the other issues which I noticed are:
+
+1. Calling release_attributes_data() in the error-path here:
+
+	obj = get_wmiobj_pointer(instance_id, guid);
+	if (!obj || obj->type != ACPI_TYPE_PACKAGE) {
+		return -ENODEV;
+	}
+
+Is not necessary as discussed, but the added obj->type != ACPI_TYPE_PACKAGE
+which I assume triggers to fix the reported crash, means that obj is not
+NULL in which case we should free it. So this should become:
+
+	obj = get_wmiobj_pointer(instance_id, guid);
+	if (!obj || obj->type != ACPI_TYPE_PACKAGE) {
+		kfree(obj);
+		return -ENODEV;
+	}
+
+Note that the kfree() will be a no-op when obj == NULL. This means that
+with just the current fix merged there is a small memleak on machines
+where we hit the error-path. I've decided that we can live with that,
+since the alternative is the crash or me pushing something untested.
+
+
+2. There is a while below this if, which gets a new obj pointer:
+
+	obj = get_wmiobj_pointer(instance_id, guid);
+	if (!obj || obj->type != ACPI_TYPE_PACKAGE) {
+		kfree(obj);
+		return -ENODEV;
+	}
+	elements = obj->package.elements;
+
+	mutex_lock(&wmi_priv.mutex);
+	while (elements) {
+		...
+
+nextobj:
+		kfree(obj);
+		instance_id++;
+		obj = get_wmiobj_pointer(instance_id, guid);
+		elements = obj ? obj->package.elements : NULL;
+	}
+
+This is missing a check for the obj->type for the new obj when
+going into a second (or higher) iteration of the loop.
+
+This check can be added by moving the original check to inside
+the loop like this:
+
+	obj = get_wmiobj_pointer(instance_id, guid);
+
+	mutex_lock(&wmi_priv.mutex);	
+	while (obj) {
+		if (obj->type != ACPI_TYPE_PACKAGE) {
+			err = ENODEV;
+			goto err_attr_init;
+		}
+		elements = obj->package.elements;
+
+		...
+
+nextobj:
+		kfree(obj);
+		instance_id++;
+		obj = get_wmiobj_pointer(instance_id, guid);
+	}
+
+
+3. Functions like populate_enum_data() (and the others) index the
+elements array with an index > 0 without checking the package length
+and also make assumptions about the types embedded in the package
+without checking them.
+
+
+4. The err_attr_init exit path of init_bios_attributes() calls
+release_attributes_data() but that call does not just cleanup
+the results of that single init_bios_attributes() call but also
+of all previous init_bios_attributes() calls as such it makes more
+sense to leave the calling of release_attributes_data() to the caller.
+
+Either way calling it twice once from the err_attr_init exit path
+and then again in sysman_init() feels wrong, even though I think it
+does no harm.
+
+Regards,
+
+Hans
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+> 
+> Thank you
+> 
+>> Regards,
+>>
+>> Hans
+>>
+>>
+>>
+>>
+>>>  		return -ENODEV;
+>>> +	}
+>>>  	elements = obj->package.elements;
+>>>
+>>>  	mutex_lock(&wmi_priv.mutex);
+>>>  	while (elements) {
+>>>  		/* sanity checking */
+>>> +		if (elements[ATTR_NAME].type != ACPI_TYPE_STRING) {
+>>> +			pr_debug("incorrect element type\n");
+>>> +			goto nextobj;
+>>> +		}
+>>>  		if (strlen(elements[ATTR_NAME].string.pointer) == 0) {
+>>>  			pr_debug("empty attribute found\n");
+>>>  			goto nextobj;
+>>>
+> 
 
