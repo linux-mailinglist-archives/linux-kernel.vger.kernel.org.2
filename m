@@ -2,100 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 154D5309C15
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 13:46:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E2A309C3A
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 14:00:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231759AbhAaMk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 07:40:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53460 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231410AbhAaLlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 06:41:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D41C664E08;
-        Sun, 31 Jan 2021 11:40:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612093230;
-        bh=yPzrFyp0UP0I0YXBc+4d/DLMecTSDmLTl2aebYWTsY4=;
-        h=Date:From:To:Cc:Subject:From;
-        b=LuM6bODIKTpnD2Gg3bUxfSCAV/ekjAR4OadA33FCjHk38SaPVWDsZ8O8GZTz0iy10
-         pQaEA5wGx06JMyRNqxbnlcpD+GeOxiakZITY1EjZh1iLAuYg7eQCFNp5BuXoktRPps
-         M0x4tjJ9+ljEXdLc/iI3NYhoMvKc0BKoF+R3B3uRc2dCLMg/KmyiXVjKnptwTFbgln
-         wygYnGozF68V7vA35SBRDvq2qlT8t1FD7jPq8YIU9fdlQjmMCIqEC0KsXGGT9dq7Dz
-         zcaolziBDhNJ/a/wMErzmH8eRhqxTVGwFwDGgvM0HavP72kckzJaWkA8yfDoJSMe7/
-         hzKx8alEn1Y3A==
-Date:   Sun, 31 Jan 2021 12:40:17 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [PULL REQUEST] i2c for 5.11
-Message-ID: <20210131114017.GA1332@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Nq2Wo0NMKNjxTN9z"
-Content-Disposition: inline
+        id S232310AbhAaM6w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 07:58:52 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:30514 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231314AbhAaMKv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 07:10:51 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10VC2RQm065722;
+        Sun, 31 Jan 2021 07:10:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=785VSoSRSR1skqkUMWCI5pfgN854rcbb+LK5rFkqE8A=;
+ b=jb+1gPMMyVSdsX8rkalNesJF8eu+K6Vz3drFe14+1lzemGXU9CfQS6apIIsLdl4KV1Nf
+ abkKH330XV+T6Zm46oEDJvAPaeITzjX+jYbl1m0jrPsAx2tzRN9mOe5EWDrc//6aPn+z
+ jcboTRC0gMLf0GQ4ODquv7wqcrI14MNRO6qDEMiWB52t3j0y7/3Yvc1XGGab0PSMkPGH
+ ciKWjS/11jOODc1AsGPJY5/zAcm1Kj2PMM5zs8T5wfbx7p96G7Kbq+Eumhf0geDeCcNp
+ MvpKBMnz1W6ck/AR6HGhmmJCBOeycOlnU8+6pGLMvu/3Da1xZ6cyhlZtl/eboFqex1sE wg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36dukv0p0d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 31 Jan 2021 07:10:03 -0500
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10VC9qGY094540;
+        Sun, 31 Jan 2021 07:10:03 -0500
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36dukv0nyg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 31 Jan 2021 07:10:03 -0500
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10VC2UMv018774;
+        Sun, 31 Jan 2021 12:10:01 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma01fra.de.ibm.com with ESMTP id 36cy37rga6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 31 Jan 2021 12:10:01 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10VC9oMo25035082
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 31 Jan 2021 12:09:50 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DD8F94C04A;
+        Sun, 31 Jan 2021 12:09:58 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D6C2A4C040;
+        Sun, 31 Jan 2021 12:09:56 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.28.14])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Sun, 31 Jan 2021 12:09:56 +0000 (GMT)
+Message-ID: <d1bed49f89495ceb529355cb41655a208fdb2197.camel@linux.ibm.com>
+Subject: Re: Migration to trusted keys: sealing user-provided key?
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        James Bottomley <jejb@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, kernel@pengutronix.de,
+        jlu@pengutronix.de
+Date:   Sun, 31 Jan 2021 07:09:55 -0500
+In-Reply-To: <6dc99fd9ffbc5f405c5f64d0802d1399fc6428e4.camel@kernel.org>
+References: <74830d4f-5a76-8ba8-aad0-0d79f7c01af9@pengutronix.de>
+         <6dc99fd9ffbc5f405c5f64d0802d1399fc6428e4.camel@kernel.org>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-01-31_04:2021-01-29,2021-01-31 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ bulkscore=0 adultscore=0 clxscore=1011 mlxlogscore=999 suspectscore=0
+ spamscore=0 lowpriorityscore=0 priorityscore=1501 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101310061
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, 2021-01-30 at 19:53 +0200, Jarkko Sakkinen wrote:
+> On Thu, 2021-01-28 at 18:31 +0100, Ahmad Fatoum wrote:
+> > Hello,
+> > 
+> > I've been looking into how a migration to using trusted/encrypted keys
+> > would look like (particularly with dm-crypt).
+> > 
+> > Currently, it seems the the only way is to re-encrypt the partitions
+> > because trusted/encrypted keys always generate their payloads from
+> > RNG.
+> > 
+> > If instead there was a key command to initialize a new trusted/encrypted
+> > key with a user provided value, users could use whatever mechanism they
+> > used beforehand to get a plaintext key and use that to initialize a new
+> > trusted/encrypted key. From there on, the key will be like any other
+> > trusted/encrypted key and not be disclosed again to userspace.
+> > 
+> > What are your thoughts on this? Would an API like
+> > 
+> >   keyctl add trusted dmcrypt-key 'set <content>' # user-supplied content
+> > 
+> > be acceptable?
+> 
+> Maybe it's the lack of knowledge with dm-crypt, but why this would be
+> useful? Just want to understand the bottleneck, that's all.
 
---Nq2Wo0NMKNjxTN9z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+We upstreamed "trusted" & "encrypted" keys together in order to address
+this sort of problem.   Instead of directly using a "trusted" key for
+persistent file signatures being stored as xattrs, the "encrypted" key
+provides one level of indirection.   The "encrypted" key may be
+encrypted/decrypted with either a TPM based "trusted" key or with a
+"user" type symmetric key[1].
 
-Linus,
+Instead of modifying "trusted" keys, use a "user" type "encrypted" key.
 
-one I2C driver update this time.
+Mimi
 
-Please pull.
+[1] The ima-evm-utils README contains EVM examples of "trusted" and
+"user" based "encrypted" keys.
 
-Thanks,
-
-   Wolfram
-
-
-The following changes since commit 6ee1d745b7c9fd573fba142a2efdad76a9f1cb04:
-
-  Linux 5.11-rc5 (2021-01-24 16:47:14 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
-
-for you to fetch changes up to de96c3943f591018727b862f51953c1b6c55bcc3:
-
-  i2c: mediatek: Move suspend and resume handling to NOIRQ phase (2021-01-28 10:54:45 +0100)
-
-----------------------------------------------------------------
-Qii Wang (1):
-      i2c: mediatek: Move suspend and resume handling to NOIRQ phase
-
- drivers/i2c/busses/i2c-mt65xx.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
-
---Nq2Wo0NMKNjxTN9z
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAWlxwACgkQFA3kzBSg
-Kba/og/+KX79uG+J78ouK2RldNzt8KsIS2KaHkhx73yWiMOzf6OPRAuqsqAg3B7E
-amglZa509qllZOW+1ndTOs4CvsEPtuQKVxw4gTQeLBRIlC0B+fgfbaH6nk+CVdqV
-gXwY9awqNjwu4/TcrWtb/9/6Ug19mB+jrfuTC+qQrxs2Mdrk70ybC47H+wov3DFl
-hT44wyXanAx3DMXpC66PsxORcZtFJEV6kLgGZWPS2S4iUCqihDc8BWxgLheRedps
-80rnPurldaiOhbJqfziZwuB+3Ui+ELT3VgYBCHc2rO2FUnXQSLrn/yIdazfh7JSc
-WzzepIETzROaAGiE5ZkgXF5MtBV4JeZcqjeu65rTowvm+4/XhJSqWodCvbMPzCia
-BLktABgjW4L+7Vxxniu5+GuGXyeBxYjYh71x4a597nXKLGaeM00dsVXulo0JvhSQ
-0qymPU0jDKJsjNZGfvMPqFssI53FTRrIvZdfbzVNrweA3ri/yixflnIMtqGqE2pf
-s7Tmd2/qDh2aDs76LgeicIOcVqguz9mMEdZ3quUNaiMFA6WSgO+oUytzPy+vEGFM
-xorgd+1RcLthOjhDON/fQlRi6gHy67a62fR9p1P22PnPYq0gX5hI354fEruqPeeo
-3tKCraYvk6i/7lJaXW6ixjdnyO5a39wHt+/99qWorOfT/469ppQ=
-=Sq1r
------END PGP SIGNATURE-----
-
---Nq2Wo0NMKNjxTN9z--
