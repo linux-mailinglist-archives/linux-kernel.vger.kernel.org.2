@@ -2,192 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0189C309E4C
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 20:37:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D58B2309E4F
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 20:37:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbhAaTfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 14:35:33 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:55849 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229586AbhAaTcS (ORCPT
+        id S230178AbhAaTfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 14:35:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229893AbhAaTdE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 14:32:18 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 7E15C5C00AD;
-        Sun, 31 Jan 2021 13:51:46 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Sun, 31 Jan 2021 13:51:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=jxeUXLuaimNiZia6MBCJXMUoovo
-        pXP5DSHjG2fgERJw=; b=FkY+KI1S+8v4K9WCq8Cp/LdPifjyMAyFvfimBKjP/rA
-        BEopN5/tyXEUIvvUrX4AqTbZrP92VCsF5IOke6hQDpqaA+C0q9OFHo2ZhyIkRo2l
-        kb7+/X6dfpeZ4vyuR/2h06EV4gInYjmeH+Ei9zQ2RabggbPMKblFDqSrKlIHoQDf
-        hfNAHHv3hsbfnrHIiV2lsUeweRJ9t2z9jHmiFIpuWfuLRdlQiEsurO1l+0/aKlQL
-        vw1Eou4HqhPHisTfRxk3ifRqEyj2gvLRIez2qkAZNt5HlHj7Xr7N+Bnlj87eGY/F
-        3qwg7LpcLCb2ZmgYU2mBk5+TpnwHsy+HIKjL8yrEQZw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=jxeUXL
-        uaimNiZia6MBCJXMUoovopXP5DSHjG2fgERJw=; b=PlRPe1h0Vuc14psbG7A3AF
-        /7Ty2fuZFNSiZs6eg5464j/D2TzprUCyumFYyrTUdO8yDYHkz0Q5zE3z0R6t42PP
-        qevOTqd/8/ZZX8BeDuj/fIK2kx4l09FvhXLQvzPdqUIH37ch8/Lw6LIXbqj+/1ak
-        TEOb3YNB1MlyoZuBQFRY1ORzbO1MtfXsVC7/+/CwiYkPFK6JsexznXXIRhDQiWu4
-        NQ7QlvDosMMKuWA9BCU4nfeiykxqVHjWJ8Fhrzer6zre1oO1Ay0nZb6yygaWbq7o
-        g+aX42vrcmet/iITWWotP2FG1qMEQXsdh3c691n/+k2eiEeChk7UVkl4MwmVlVTA
-        ==
-X-ME-Sender: <xms:QfwWYI1aaGZyditsUPmrjghAa1D9g_q5LCZ7Nij4q-2u_phaxYqfAg>
-    <xme:QfwWYDFYu2OpAlqSapn7TlqnvVHWEJGRkp8lEZrpRZZ9h7BZu-klczKkBir6uSwCb
-    49tCneVTPnlG9YPgAk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeeigdduudegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:QfwWYA7rjIpPyfZkEj2uIUzHcieM-QiXmzZtKVlr3rl9YFKLj9J7dw>
-    <xmx:QfwWYB0V-rIunhk8BS72ESRVvGdkHxE9kkrmm4CMBiHESrXzyU9MUw>
-    <xmx:QfwWYLHPcrwuXqy1eg0I5HoHTOLUj-GXksFRK6wk1oCY2GiG7GdV6A>
-    <xmx:QvwWYDA9oEdd3FN2E9Vs928lbFeHkldhexcTONiv_ypv1-3hCK1PAA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 4D5861080057;
-        Sun, 31 Jan 2021 13:51:45 -0500 (EST)
-Date:   Sun, 31 Jan 2021 19:51:43 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Chen-Yu Tsai <wens@csie.org>
-Cc:     Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: arm: sunxi: &83t: WARNING: CPU: 2 PID: 57 at
- drivers/thermal/thermal_core.c:563 thermal_zone_device_update
-Message-ID: <20210131185143.hnx6sibielrsavvr@gilmour>
-References: <YBWPN3ZHkARxmGe9@Red>
- <CAGb2v67bWu0n--REsmmMo9oqdSu8wh6ys0b4omEQ57223W7suw@mail.gmail.com>
+        Sun, 31 Jan 2021 14:33:04 -0500
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2072b.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe5a::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E924C061A27;
+        Sun, 31 Jan 2021 11:25:46 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dYzR6eIy++1M6IWIYV3HKjoNr/bfEIphWdbwMPd4zphW4XGOSI4/VlSD5b+52rh78HKZqQkSa/01Rx/YRmY0DJIUHiRbTr0AH1bj7KQipDABBzzo7vBKVbUx7nypHvBvdbWb2amFwPNVQK7g8e/CUTu0dexK5zv2sRRsRo/XHsMmCU6rYR2qJbQAFy1DcpMuTEWcM8UnB5Shd4Sj5qSfaW4HL2y/jh/V2OWuV5m8agCFnm8pqAtB8smrUPWbVnnbh0xGWNF1q50xXTcDPHursxG+zhZ1jNjsIwF5k/HoAqZh7Z2yZIl2pKDbrasJ9hzGXz+8UppE82+W/X2Ogid/EA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f6jdcIxbHuI3tcrimesOPrFZ7ZSe4vTFtBXukzY1ljA=;
+ b=DE2UL73vZbYZGh6GGpK9mBo1meSjFjWAW24Anxis+Uy5c0xBB4AE4c+XZ+weV4GwXMfvlEMFA0yAz456/OQcsugylC6dbS7Y93j9ZnMUKjR82fIEOYXORfmFq84PNzqY615VQNObN1AdXRuRnl5i+LCfhmFT+ZnvJgXjBhrLM9y07qwtui6F02+096nIeQKB9repITLDMlH27pXw0y62+Eh/leYyqNJ8XsvDFCLnTtc12iKRK6FzcNLgfUyErUxtPKmp+yiDmVynxth5bh5KNmIiv+nonv/17nPViz+w7wCBpp/wK1q+4kjJJzLHwzPoUG8XW8MoT7bbWDWFyVAoxA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hammerspace.com; dmarc=pass action=none
+ header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f6jdcIxbHuI3tcrimesOPrFZ7ZSe4vTFtBXukzY1ljA=;
+ b=Py0t6jkRnXnEXRcYiVcVvpqL+Fnsmndhk2LgrBVL//UFxpYa8fm12RjlR/YSLt4L3AN1RXrfSqg3VHuRaN9hnI60hMXHl9KhnLDfGRoQ6nWA6FwyX4W5Z1OQ1jLDZ/9hOf+57T+w1HnvFMR6vHdH7RJilpGbDPy+2pHxyLWAj0Q=
+Received: from (2603:10b6:610:21::29) by
+ CH2PR13MB3687.namprd13.prod.outlook.com (2603:10b6:610:9c::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3825.8; Sun, 31 Jan 2021 19:25:30 +0000
+Received: from CH2PR13MB3525.namprd13.prod.outlook.com
+ ([fe80::f453:2dd2:675:d063]) by CH2PR13MB3525.namprd13.prod.outlook.com
+ ([fe80::f453:2dd2:675:d063%3]) with mapi id 15.20.3825.013; Sun, 31 Jan 2021
+ 19:25:30 +0000
+From:   Trond Myklebust <trondmy@hammerspace.com>
+To:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>
+CC:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] Please pull NFS client bugfixes for 5.11
+Thread-Topic: [GIT PULL] Please pull NFS client bugfixes for 5.11
+Thread-Index: AQHW9/J6W/jj3juqlEK7LCc2xpIr4apCHNsAgAAA64A=
+Date:   Sun, 31 Jan 2021 19:25:29 +0000
+Message-ID: <2de1512a4c3f37b6b5e48a0393499032d9fde9fa.camel@hammerspace.com>
+References: <8eb145f609386c98be1ec6381424cf408804ac7d.camel@hammerspace.com>
+         <CAHk-=wjtGGxGYT6aVaGOxwSp2YtdVdOOQj2nUiPiQHhWTHmcwA@mail.gmail.com>
+In-Reply-To: <CAHk-=wjtGGxGYT6aVaGOxwSp2YtdVdOOQj2nUiPiQHhWTHmcwA@mail.gmail.com>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=hammerspace.com;
+x-originating-ip: [68.36.133.222]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1d94a53a-643b-4ee6-54bb-08d8c61df89a
+x-ms-traffictypediagnostic: CH2PR13MB3687:
+x-microsoft-antispam-prvs: <CH2PR13MB36870176DDA98828A925D1EBB8B79@CH2PR13MB3687.namprd13.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: mlyONZXTNgrPgBI4a7BjpLwJVeoJ+UovNR0LzqJwr9ALK4qu2AklUvIsyUfQ4RK3tLjH/Lu1CsXJfWHpY8qs5caIRhezXZOxH2nVkqvsRDPwtbjDtYBoAYVdFecV+SPDj+3/TQeAdd3xmpMAOKFx+nL51vwmOLGIVFKUK91wsDDx7Hgws95KsRRg38+mP9halCmgPGBM9Pp4oqguO/Ox8R89QHmkd+nVp4goRN+MpaqC0qjFSpNWIp4UPAVGTQ/kZODF75XlHVK/2iSXWjoGjX7zR1GnMgEnPJ1BVsfFd/LzRKRQmTe5C4pzX2gAakbsjfuQrc8Zs6bv8Yjgo435DhadeYMj9KDvgT0nXB6Pj4lURs4nZIcwHNe8GlYPX8SDtCaMOvvJvyrAyd4kLNATFePg2vIdOoasYxJ3aBrHWSgeGWqJFf7+sEuSnOo3Y6RbcgghkZO8QdFSKKVrdjfwd2h8th5O/yVynQK4h1XIvrz9IcJLHqzZJGUPmMzKuWgV+H7ZKwcDDOCUy5QYsxoADw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR13MB3525.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(39830400003)(346002)(396003)(376002)(366004)(8936002)(4744005)(71200400001)(76116006)(86362001)(316002)(6916009)(478600001)(5660300002)(54906003)(4326008)(8676002)(6506007)(53546011)(2616005)(66946007)(66476007)(66556008)(66446008)(64756008)(2906002)(6486002)(36756003)(186003)(6512007)(26005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?TWZITEJIVGlWa2pjTitqVDBqRXdRcm55RTUxNHlodlFWN2c5bXJtVkhpRVhC?=
+ =?utf-8?B?L2o3SWRiNDc2MlZZVVBuZlh5c1R5TnloZW0zTmR5aXZ2S2RTckxHRUJCZDlY?=
+ =?utf-8?B?R2srQzRqRUFjTkdYblMvemxqcU5EeVlaL3dMenNuZkJCMzJtSUVTdUZLL0Ur?=
+ =?utf-8?B?cFlKZzJnZk9aakVONWJKb0oyNXhYR2lkOWc2dmN1ejlqNDBQZm1LTDJXdmdV?=
+ =?utf-8?B?eVJGQ3UyT1Y2SUJNdjZqbkFGUVJCRlZSelN4My9rT2pHeWVCK0NOcjBsU0ps?=
+ =?utf-8?B?TWhkdUs1VHE0bE52b3Z6OUFPU1hzd0c4dkVDVEVEZFB1OTJQdzZIalRSMERm?=
+ =?utf-8?B?N1pHZXJtdWJsNGdrSkl4T1VRR1RPNlUxSzRQaVIxamZZSk5oa1F2S1QvWldx?=
+ =?utf-8?B?Q0VCVHRHMGw2MlZSNTdMcks3SkRIK044YjdPY09ZbjFBa2xlWlk5UU9ZYTFR?=
+ =?utf-8?B?UENGQWZVOWdsQkxONnZGaWZCRGxPTDdBUXo4RTZiUDI5aGZtUXlaVGs4bVBX?=
+ =?utf-8?B?NFJTVEdZUVNhYng3MVZZN0ZWUzhLOUpnZlNYaHpOSkp4WDN3U21qWTFhbnBz?=
+ =?utf-8?B?N2p6RzFOYnh2QXUrY05iWG84MFZXaXRQZ1FOYUM4T2J2RzdtY09Td2JsTFJt?=
+ =?utf-8?B?THFLTW1GQ1pHc0VYS2QvK0lzTGFJOGtTaC8xRjhrMTlSREN5b2c3RHpOZFJF?=
+ =?utf-8?B?OGhNUFBsT1UvYmdYZ1ROaUw1REpVZkVOK0dTK2JEV21kNVlHZ0d4SmxLK01H?=
+ =?utf-8?B?OXlCWlpHQ3NBelZUN2F0ck1ZMWREUFRldHJLM0FkMGR3MmlJQWFtZU5OdC9Y?=
+ =?utf-8?B?RzdzekFBNDZXNGJrRit3aU9mcHJZL0pIQUozOUZpVnRkMmd2SmZpUUN6NkI4?=
+ =?utf-8?B?SUc5QXBHbU9lWHZjZjlRYU5LM004YmRLY3d4WHI2R2hSRFNaK1d0Z1ZFZ3ZP?=
+ =?utf-8?B?dHRNOVVSdFVSZzZXVDloQVRYcDdDWnplOXZ6RXd6RHk1cWpGcXBQdndsaUMx?=
+ =?utf-8?B?cTVFc0pTakdHOUl0ZUdCTjlxM1F1QXRMTVpkVzMzK3hCb2hBQms1NE9kZEx3?=
+ =?utf-8?B?WGVSRDJMd3Q4RDN2RmFIV2NheFJ6d0thR25yODJsVnFmbWN3WDlhZjZXakhD?=
+ =?utf-8?B?RjF3ZVhKZElpT3dvbEdqNDZRVDVkTHNNUHVEM2dNeHlKbHhmeFVuaEcxMGNv?=
+ =?utf-8?B?cEEzT0VOWStFTlpQaW16VFgrVHVkamgrUnpNWDd2Q2JoSkJBYWZ3dzNFaUlh?=
+ =?utf-8?B?TlQzdGM0MUl6ZnhtYlRkWEtZa2tjdWZERTMvdjFuaHZEVmZIUDhSeFUvQmRR?=
+ =?utf-8?B?MFZUVW9rWW52alkvZ2lZT1A5SVY5WHY3aHcyR2ZzbHRLYTlpcU1aOXprYnJN?=
+ =?utf-8?B?UHdOdFV2cDB5Y0lXWEJXY2x3K2tiTHFsdDVYOTZDUFd0L2t2SnE0R0dHaFlK?=
+ =?utf-8?B?WXVucGhxVjlQejFWUXdQcWhZaERVd0FDWG5yd3FnPT0=?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D2A1880BC0E5194CB5C050A08469E4E3@namprd13.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="yqmlpou36nljsmcp"
-Content-Disposition: inline
-In-Reply-To: <CAGb2v67bWu0n--REsmmMo9oqdSu8wh6ys0b4omEQ57223W7suw@mail.gmail.com>
+X-OriginatorOrg: hammerspace.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR13MB3525.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1d94a53a-643b-4ee6-54bb-08d8c61df89a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jan 2021 19:25:29.9670
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 02DikoA3dmXftRULt3Hoe5vArduyrbBQ9vgGuLl0C63g3cYBLc0yxbleacZv4zstjXsgGREPqiXYIrmvOzuzOQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR13MB3687
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---yqmlpou36nljsmcp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sun, Jan 31, 2021 at 01:33:32PM +0800, Chen-Yu Tsai wrote:
-> Hi,
->=20
-> On Sun, Jan 31, 2021 at 12:54 AM Corentin Labbe
-> <clabbe.montjoie@gmail.com> wrote:
-> >
-> > Hello
-> >
-> > When booting next-20210128, I got the following warning on by bpim3
-> >     6.148421] ------------[ cut here ]------------
-> > [    6.153145] WARNING: CPU: 2 PID: 57 at drivers/thermal/thermal_core.=
-c:563 thermal_zone_device_update+0x134/0x154
-> > [    6.163378] 'thermal_zone_device_update' must not be called without =
-'get_temp' ops set
-> > [    6.171300] Modules linked in: sha256_generic libsha256
-> > [    6.176553] CPU: 2 PID: 57 Comm: kworker/2:1 Not tainted 5.11.0-rc1-=
-00042-gf3788af62cfe #399
-> > [    6.184984] Hardware name: Allwinner A83t board
-> > [    6.189517] Workqueue: events deferred_probe_work_func
-> > [    6.194686] [<c010d568>] (unwind_backtrace) from [<c010a060>] (show_=
-stack+0x10/0x14)
-> > [    6.202438] [<c010a060>] (show_stack) from [<c07e156c>] (dump_stack+=
-0x98/0xac)
-> > [    6.209666] [<c07e156c>] (dump_stack) from [<c07df02c>] (__warn+0xc0=
-/0xd8)
-> > [    6.216545] [<c07df02c>] (__warn) from [<c07df0dc>] (warn_slowpath_f=
-mt+0x98/0xc0)
-> > [    6.224030] [<c07df0dc>] (warn_slowpath_fmt) from [<c0630384>] (ther=
-mal_zone_device_update+0x134/0x154)
-> > [    6.233426] [<c0630384>] (thermal_zone_device_update) from [<c063091=
-8>] (__thermal_cooling_device_register+0x334/0x35c)
-> > [    6.244204] [<c0630918>] (__thermal_cooling_device_register) from [<=
-c0633ea0>] (__cpufreq_cooling_register.constprop.0+0x184/0x294)
-> > [    6.256026] [<c0633ea0>] (__cpufreq_cooling_register.constprop.0) fr=
-om [<c0633ff0>] (of_cpufreq_cooling_register+0x40/0x7c)
-> > [    6.267153] [<c0633ff0>] (of_cpufreq_cooling_register) from [<c064cb=
-44>] (cpufreq_online+0x2b4/0x8f4)
-> > [    6.276379] [<c064cb44>] (cpufreq_online) from [<c064d200>] (cpufreq=
-_add_dev+0x6c/0x78)
-> > [    6.284383] [<c064d200>] (cpufreq_add_dev) from [<c04f7a98>] (subsys=
-_interface_register+0xa4/0xf0)
-> > [    6.293344] [<c04f7a98>] (subsys_interface_register) from [<c064b664=
->] (cpufreq_register_driver+0x144/0x2dc)
-> > [    6.303169] [<c064b664>] (cpufreq_register_driver) from [<c064de34>]=
- (dt_cpufreq_probe+0x298/0x3b8)
-> > [    6.312215] [<c064de34>] (dt_cpufreq_probe) from [<c04fb540>] (platf=
-orm_probe+0x5c/0xb8)
-> > [    6.320313] [<c04fb540>] (platform_probe) from [<c04f9374>] (really_=
-probe+0x1dc/0x3b8)
-> > [    6.328231] [<c04f9374>] (really_probe) from [<c04f95ac>] (driver_pr=
-obe_device+0x5c/0xb4)
-> > [    6.336406] [<c04f95ac>] (driver_probe_device) from [<c04f778c>] (bu=
-s_for_each_drv+0x84/0xc8)
-> > [    6.344928] [<c04f778c>] (bus_for_each_drv) from [<c04f9124>] (__dev=
-ice_attach+0xe8/0x154)
-> > [    6.353189] [<c04f9124>] (__device_attach) from [<c04f8440>] (bus_pr=
-obe_device+0x84/0x8c)
-> > [    6.361365] [<c04f8440>] (bus_probe_device) from [<c04f88d4>] (defer=
-red_probe_work_func+0x64/0x90)
-> > [    6.370321] [<c04f88d4>] (deferred_probe_work_func) from [<c0134b98>=
-] (process_one_work+0x1dc/0x438)
-> > [    6.379456] [<c0134b98>] (process_one_work) from [<c0135050>] (worke=
-r_thread+0x25c/0x55c)
-> > [    6.387632] [<c0135050>] (worker_thread) from [<c013b7b4>] (kthread+=
-0x124/0x150)
-> > [    6.395032] [<c013b7b4>] (kthread) from [<c0100150>] (ret_from_fork+=
-0x14/0x24)
-> > [    6.402256] Exception stack(0xc12d1fb0 to 0xc12d1ff8)
-> > [    6.407307] 1fa0:                                     00000000 00000=
-000 00000000 00000000
-> > [    6.415478] 1fc0: 00000000 00000000 00000000 00000000 00000000 00000=
-000 00000000 00000000
-> > [    6.423648] 1fe0: 00000000 00000000 00000000 00000000 00000013 00000=
-000
-> > [    6.430301] ---[ end trace bd63a5c976f3611c ]---
-> >
-> > I bisected the problem to
-> > ARM: dts: sunxi: Remove thermal zones without trip points
-> >
-> > Reverting this commit remove the warning.
-
-I dropped the commit from our PR, thanks
-
-> The thermal subsystem seems to require a thermal zone be present for each
-> thermal sensor that is registered.
->=20
-> So maybe a better solution is not to remove the thermal zones without trip
-> points, but just add the standard passive and critical trip points based
-> on the SoC's thermal limits.
-
-I'm not really fond of having trip points that have never been really
-tested either. I guess we should start that discussion with the
-maintainers.
-
-Maxime
-
---yqmlpou36nljsmcp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYBb8PwAKCRDj7w1vZxhR
-xQ7ZAQC3iXvVs2wGEew23zV9CqJ/kL6eUvp2uLuJIeU+DgDXWgEArzdiT/aOr4T3
-Rjrrhwb2Q2vBBHo+U8e/MQMRjleiIAY=
-=Zcsb
------END PGP SIGNATURE-----
-
---yqmlpou36nljsmcp--
+T24gU3VuLCAyMDIxLTAxLTMxIGF0IDExOjIyIC0wODAwLCBMaW51cyBUb3J2YWxkcyB3cm90ZToN
+Cj4gT24gU3VuLCBKYW4gMzEsIDIwMjEgYXQgODo1OSBBTSBUcm9uZCBNeWtsZWJ1c3QgPA0KPiB0
+cm9uZG15QGhhbW1lcnNwYWNlLmNvbT4gd3JvdGU6DQo+ID4gDQo+ID4gwqAgZ2l0Oi8vZ2l0Lmxp
+bnV4LW5mcy5vcmcvcHJvamVjdHMvdHJvbmRteS9saW51eC1uZnMuZ2l0IHRhZ3MvbmZzLQ0KPiA+
+IGZvci01LjExLTMNCj4gDQo+IE1lcmdlZC4gSG93ZXZlciwgaXQgbG9va3MgbGlrZSB5b3Ugd29u
+J3QgZ2V0IGEgcHItdHJhY2tlci1ib3QgcmVwbHkNCj4gYmVjYXVzZSBJJ20gbm90IHNlZWluZyB0
+aGlzIGVtYWlsIG9uIGxvcmUuDQo+IA0KPiBTbyBJJ20gZG9pbmcgdGhlc2UgbWFudWFsIHJlcGxp
+ZXMgZm9yIG5vdywgaXQgbG9va3MgbGlrZSB0aGUgbWFpbGluZw0KPiBsaXN0IGlzIG5vdCBkb2lu
+ZyBncmVhdC4NCj4gDQo+IMKgwqDCoMKgwqDCoMKgwqAgTGludXMNCg0KDQpZZWFoLCBJIHdhcyBj
+dXJpb3VzIGFib3V0IHRoYXQuIFdhc24ndCBzdXJlIGlmIHRoZSBwcm9ibGVtIHdhcyBvbiBteQ0K
+ZW5kIG9yIGlmIGluZGVlZCB0aGUgbWFpbGluZyBsaXN0cyBhcmUgZG93bi4NClRoYW5rcyBhbnl3
+YXkgZm9yIG1lcmdpbmcgYW5kIHRha2luZyB0aGUgdGltZSB0byByZXBseSENCg0KQ2hlZXJzDQog
+IFRyb25kDQoNCi0tIA0KVHJvbmQgTXlrbGVidXN0DQpMaW51eCBORlMgY2xpZW50IG1haW50YWlu
+ZXIsIEhhbW1lcnNwYWNlDQp0cm9uZC5teWtsZWJ1c3RAaGFtbWVyc3BhY2UuY29tDQoNCg0K
