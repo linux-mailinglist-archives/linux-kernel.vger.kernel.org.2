@@ -2,115 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F3B8309AF8
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 08:36:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B177309AFB
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 08:38:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbhAaHgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 02:36:31 -0500
-Received: from mga01.intel.com ([192.55.52.88]:19103 "EHLO mga01.intel.com"
+        id S229927AbhAaHgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 02:36:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229471AbhAaHgB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 02:36:01 -0500
-IronPort-SDR: 4ZCABrrSHiC7qEBakMDnusBCgRw7EAE10ew/xVUivWWQAw/Ir3HtPXMAAM+i9a8of5GCm4lfCd
- sGOqw8PB1jyg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9880"; a="199447121"
-X-IronPort-AV: E=Sophos;i="5.79,389,1602572400"; 
-   d="scan'208";a="199447121"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2021 23:34:13 -0800
-IronPort-SDR: GqTSwjFIpJ/K+Lt8X27D3FV7tcvmIs2g1tB/l22/4wyfxMD3ND6RQwQj//6DihZvYjnnDEsdYW
- KdRRnd4GhZQQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,389,1602572400"; 
-   d="scan'208";a="371148858"
-Received: from host.sh.intel.com (HELO host) ([10.239.154.115])
-  by orsmga002.jf.intel.com with ESMTP; 30 Jan 2021 23:34:11 -0800
-Date:   Sun, 31 Jan 2021 15:35:14 +0800
-From:   "Ye, Xiang" <xiang.ye@intel.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     jikos@kernel.org, srinivas.pandruvada@linux.intel.com,
-        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] iio: hid-sensor-prox: Fix scale not correct issue
-Message-ID: <20210131073514.GA16368@host>
-References: <20210130102530.31064-1-xiang.ye@intel.com>
- <20210130191429.2c485212@archlinux>
+        id S229474AbhAaHgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 02:36:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD7C664E24;
+        Sun, 31 Jan 2021 07:35:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612078528;
+        bh=hfWoFSzQSusZX74pIPkuz0bi7jBqX9foozhC+sJESbI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MWbOIR/KKjXuDPQ0SFqFzHGsrvekMNeiDHAJLQr/ZVNj8HWfcuSKJ1IiZD8TER9JB
+         yWTtLBR4OSnkCwyhCYFHnL2SG4fK/nPW51HV1+UKTnVn2WbDTYMj0i1cFipK1yv8be
+         j8bJ5TCF8w2ZoBszwXv6QZu+qNO0LA7ql4qJijYA=
+Date:   Sun, 31 Jan 2021 08:35:24 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Avri Altman <Avri.Altman@wdc.com>
+Cc:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
+Subject: Re: [PATCH 3/8] scsi: ufshpb: Add region's reads counter
+Message-ID: <YBZdvE8JrNOj3QSa@kroah.com>
+References: <20210127151217.24760-1-avri.altman@wdc.com>
+ <20210127151217.24760-4-avri.altman@wdc.com>
+ <YBGFC+XcibjRg7Y/@kroah.com>
+ <BL0PR04MB6564C0EB1584AE599A13E120FCB79@BL0PR04MB6564.namprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210130191429.2c485212@archlinux>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <BL0PR04MB6564C0EB1584AE599A13E120FCB79@BL0PR04MB6564.namprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 07:14:29PM +0000, Jonathan Cameron wrote:
-> On Sat, 30 Jan 2021 18:25:30 +0800
-> Ye Xiang <xiang.ye@intel.com> wrote:
+On Sun, Jan 31, 2021 at 07:25:37AM +0000, Avri Altman wrote:
+> > >
+> > > +     if (ufshpb_mode == HPB_HOST_CONTROL)
+> > > +             reads = atomic64_inc_return(&rgn->reads);
+> > > +
+> > >       if (!ufshpb_is_support_chunk(transfer_len))
+> > >               return;
+> > >
+> > > +     if (ufshpb_mode == HPB_HOST_CONTROL) {
+> > > +             /*
+> > > +              * in host control mode, reads are the main source for
+> > > +              * activation trials.
+> > > +              */
+> > > +             if (reads == ACTIVATION_THRSHLD) {
+> Oops - this is a bug...
 > 
-> > Currently, the proxy sensor scale is zero because it just return the
-> > exponent directly. To fix this issue, this patch use
-> > hid_sensor_format_scale to process the scale first then return the
-> > output.
+> > > +
+> > > +     /* region reads - for host mode */
+> > > +     atomic64_t reads;
 > > 
-> > Fixes: 39a3a0138f61 ("iio: hid-sensors: Added Proximity Sensor Driver")
-> > Signed-off-by: Ye Xiang <xiang.ye@intel.com>
-> 
-> Hi Ye Xiang,
-> 
-> There was a bit of fuzz on this so please take a look at
-> my fixes-togreg branch and check it went in cleanly.
-Have checked fixes-toreg branch, the patch it's correct.
+> > Why do you need an atomic variable for this?  What are you trying to
+> > "protect" here by flushing the cpus all the time?  What protects this
+> > variable from changing right after you have read from it (hint, you do
+> > that above...)
+> > 
+> > atomics are not race-free, use a real lock if you need that.
+> We are on the data path here - this is called from queuecommand.
+> The "reads" counter is being symmetrically read and written,
+> so adding a spin lock here might become a source for contention.
 
-Thanks
-Ye Xiang
+And an atomic varible is not?  You do know what spinlocks are made of,
+right?  :)
 
-> 
-> 
-> > ---
-> > v2:
-> >   - Add Fixes tag
-> > 
-> > ---
-> >  drivers/iio/light/hid-sensor-prox.c | 13 +++++++++++--
-> >  1 file changed, 11 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/iio/light/hid-sensor-prox.c b/drivers/iio/light/hid-sensor-prox.c
-> > index 4ab285a418d5..4abcfe48f1d4 100644
-> > --- a/drivers/iio/light/hid-sensor-prox.c
-> > +++ b/drivers/iio/light/hid-sensor-prox.c
-> > @@ -23,6 +23,9 @@ struct prox_state {
-> >  	struct hid_sensor_common common_attributes;
-> >  	struct hid_sensor_hub_attribute_info prox_attr;
-> >  	u32 human_presence;
-> > +	int scale_pre_decml;
-> > +	int scale_post_decml;
-> > +	int scale_precision;
-> >  };
-> >  
-> >  static const u32 prox_sensitivity_addresses[] = {
-> > @@ -98,8 +101,9 @@ static int prox_read_raw(struct iio_dev *indio_dev,
-> >  		ret_type = IIO_VAL_INT;
-> >  		break;
-> >  	case IIO_CHAN_INFO_SCALE:
-> > -		*val = prox_state->prox_attr.units;
-> > -		ret_type = IIO_VAL_INT;
-> > +		*val = prox_state->scale_pre_decml;
-> > +		*val2 = prox_state->scale_post_decml;
-> > +		ret_type = prox_state->scale_precision;
-> >  		break;
-> >  	case IIO_CHAN_INFO_OFFSET:
-> >  		*val = hid_sensor_convert_exponent(
-> > @@ -221,6 +225,11 @@ static int prox_parse_report(struct platform_device *pdev,
-> >  	dev_dbg(&pdev->dev, "prox %x:%x\n", st->prox_attr.index,
-> >  			st->prox_attr.report_id);
-> >  
-> > +	st->scale_precision = hid_sensor_format_scale(
-> > +				hsdev->usage,
-> > +				&st->prox_attr,
-> > +				&st->scale_pre_decml, &st->scale_post_decml);
-> > +
-> >  	return ret;
-> >  }
-> >  
-> 
+> Also I am not worried about the exact value of this counter, except of one place - 
+> See above.  Will fix it.
+
+So it's not really needed?
+
+thanks,
+
+greg k-h
