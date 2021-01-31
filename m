@@ -2,153 +2,954 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FCDC309EB0
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 21:11:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C7B5309EF1
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 21:33:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230170AbhAaUKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 15:10:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231408AbhAaTqL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 14:46:11 -0500
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on20608.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe5a::608])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71864C061786;
-        Sun, 31 Jan 2021 09:26:41 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=a+GEO2qBbLIkfN9paQHw/yJl8k7//UJa00StBF4+JfeMXgm3svu7Bi3zXD70TsddqdXJ1e7l5DNFcfo3bJfm4R5hBOCRwU5gVaW1z7/UHO7PdLFv9htzG2/hzJbxsZxq/ExDjeyIaqMc1kuAlQpLeGixcDYJPY9NMG9BxkMRsfqNkUKM/Gn37bUHoUx1SZ/XGSt4YNSgr8JaZbYMsafuxSAj2rUhj8MG5/yRpbGaHyLIC2VyQE6xGN1STqx9agrU12iH4ut8qOSdW9rDMnOQcUmkOxZI8toY08EsRoqLjYrJVIqPCcIFcxt9HZ0Vh0Gr4Qdyjps1b+1vEtpPEZ645Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ENUc2BdwW1rpS7QtjDWGs8xU7yDydB8pyrZf5xECnOk=;
- b=lDJvlvPMBYioD+1QujvzrI8KxxsSQNwvS2dg48DCTh0v0DclA6hLujyszkJtUxI2wZ+zyCD7pWZfOPkESf+DV+5kG3erECJEVrDaAg3gNV7faam+QOu3DbfENSehZmtDw6cixNp/SHS4sJoba2BAk/0MlSYWQRKW4XXcObwTuh4pjKMaqP1Fr0vvWlOs4XeJXhINaxUhYZ5Du3JPNcXE2dbXyQjZOXwO7EDar75edMHTA5ATuBMgJDUqOfMtVmdU3tj/AhAslFXmQMc/SsbI6ggdbUzhDy4bX1Hb9qCwYu0wmdsdOXACIll2ugCixGjkxhWkTUtfUVtJkbrbe8SJBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ENUc2BdwW1rpS7QtjDWGs8xU7yDydB8pyrZf5xECnOk=;
- b=pUepJs58r0g3pitTA967AiP/6jeEzjpP07hypk4ilIzHQJZOBu5Tyu+zRxIog5x3KlsBrS4ca+dx4dBA08NkRASdxqWVJypqPJQ/YXF44ZhAFII39Sr8Q5NOKo0LKcq3YuIbH1nNEuy6b375kkXuJn9xMOVICVrSKYmqyWRCQtM=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com (2603:10b6:208:159::19)
- by MN2PR12MB4208.namprd12.prod.outlook.com (2603:10b6:208:1d0::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Sun, 31 Jan
- 2021 17:26:25 +0000
-Received: from MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::44f:9f01:ece7:f0e5]) by MN2PR12MB3775.namprd12.prod.outlook.com
- ([fe80::44f:9f01:ece7:f0e5%3]) with mapi id 15.20.3805.024; Sun, 31 Jan 2021
- 17:26:25 +0000
-Subject: Re: [PATCH 08/29] dma-buf: Avoid comma separated statements
-To:     Joe Perches <joe@perches.com>, Jiri Kosina <trivial@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>
-Cc:     linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org
-References: <cover.1598331148.git.joe@perches.com>
- <990bf6f33ccaf73ad56eb4bea8bd2c0db5e90a31.1598331148.git.joe@perches.com>
- <a87b95d11c22d997ebc423bba71cabef15ca0bac.camel@perches.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
-Message-ID: <4d5891b7-ea87-974e-d260-f78c3af326bc@amd.com>
-Date:   Wed, 3 Feb 2021 14:26:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <a87b95d11c22d997ebc423bba71cabef15ca0bac.camel@perches.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
-X-ClientProxiedBy: AM8P191CA0028.EURP191.PROD.OUTLOOK.COM
- (2603:10a6:20b:21a::33) To MN2PR12MB3775.namprd12.prod.outlook.com
- (2603:10b6:208:159::19)
+        id S230523AbhAaUdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 15:33:22 -0500
+Received: from foss.arm.com ([217.140.110.172]:37290 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229728AbhAaUcu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 15:32:50 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 867EF1042;
+        Sun, 31 Jan 2021 12:32:01 -0800 (PST)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 354463F71A;
+        Sun, 31 Jan 2021 12:31:58 -0800 (PST)
+Date:   Sun, 31 Jan 2021 20:31:47 +0000
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Jyoti Bhayana <jbhayana@google.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        sudeep.holla@arm.com, egranata@google.com,
+        mikhail.golubev@opensynergy.com, Igor.Skalkin@opensynergy.com,
+        Peter.hilber@opensynergy.com, ankitarora@google.com
+Subject: Re: [RFC PATCH v4 1/1] iio/scmi: Adding support for IIO SCMI Based
+ Sensors
+Message-ID: <20210131203147.GA8355@e120937-lin>
+References: <20210129221818.3540620-1-jbhayana@google.com>
+ <20210129221818.3540620-2-jbhayana@google.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7] (2a02:908:1252:fb60:be8a:bd56:1f94:86e7) by AM8P191CA0028.EURP191.PROD.OUTLOOK.COM (2603:10a6:20b:21a::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17 via Frontend Transport; Sun, 31 Jan 2021 17:26:23 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 359c3818-7be5-42cc-5776-08d8c60d5589
-X-MS-TrafficTypeDiagnostic: MN2PR12MB4208:
-X-Microsoft-Antispam-PRVS: <MN2PR12MB4208489FE1D0F94C09AF44EE83B79@MN2PR12MB4208.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:95;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: kUD2gJD5O4YJyp3jb1xuj3xvP2LAGpHJ2bs8KPZgDfEHlDgVGXgs4qFbANS8+3LCzvUGlNrMkUo794jBcQd7kQ29KunSKE29f50M2D500kqROW78dpsHWLBWRSPCRvCkIXd2ID2mgwyptXxWPveo+Lm4su9rbw+iL7DJYK3qVwpKQwgCq5+DG+Y/BUl7kXFIV6vHFsrYBHqd1Y4lk+lvalScJSzzIKyOvty2nRRyh9n05bsJMfrdoGb6IxMCjzjWtXhVDIVQVIFAnRkKzmrT59iX8VQWGV5cPvm5GpUP9RvewzeajK1sRwBowuAipusRrO38+OTVWF+Cpr9Q0yIWGxJHQnz/fwLDUy/C8XZ6HjfdSWlg5yx5pLtzUmSJoLdNtPoN9YXyi8rqmKiDmgJcMrOHrNb53SfFHRFqetL0cWedAAJvry/8f/gfWXfqkmiWpEKCApyJuRvt8/H2/LNWDnhgcpAc5UYE0YZ6Oyhx4hllhqhVzs7DF6fahGNVQXzyKon7xxW5hoskn8Vo+dq6K++msnS38Eass7ydtRTeO0RBCxzPcHa89YItXYjJpvMc/fggRDg2VqYHXfDEiJs2k5Hj4YEA5jy9Ro3s2Y9V/8Y=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3775.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(396003)(39850400004)(376002)(366004)(316002)(36756003)(6666004)(6486002)(31686004)(110136005)(52116002)(83380400001)(31696002)(8936002)(2616005)(4326008)(478600001)(5660300002)(2906002)(86362001)(4744005)(66556008)(16526019)(8676002)(66476007)(66946007)(186003)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?amQ4aGVNS2hJcWc5dWErQmtkQ1JzOHBMaHl3SWdCMDIxQytURnkrNkdwT2h3?=
- =?utf-8?B?djZXUnNyY1p0aGhqK3hMK0poRlhKbjBHbFhvL3NLdlFENVlrUmwrSVlYMVFR?=
- =?utf-8?B?TFhPMUdWdkJKRDNFNU9HUlM0YTZhckpNaGpWektRbXNXdUw2UXJNR0RHMk0x?=
- =?utf-8?B?YmpBTFYwMnV4Tjh6WldZamwwNG5vbllibU9DcTQzMHV6NzBCaTNQT09IcWNi?=
- =?utf-8?B?QTBXVnFmOEZiK0luUGViK3FzV2JMV2FmdGNPazdMTWlqK3lXYzdQbVNkNWxa?=
- =?utf-8?B?UU84ZDAza2MzbENkOXBCVU10NkJENklRVmloTkpzSHFQNFdoUDdxTU9oM3Z0?=
- =?utf-8?B?Z1daVzFKMFdmZzk4ZCtCc2NKRTRmYnVtckp6U3F1Y1dsUWxrUW1Ib1h6a0VD?=
- =?utf-8?B?WUY5d0I1WTRhQllBUi9XSkxMY3NINHZRQkJrOGducFZrcEFvUWgyZXRzbzFt?=
- =?utf-8?B?blUrbW1oRWFudElSa3pkcTh0NDdGVnc1UTExc0FVSnZockttY2xCNlNkY2gy?=
- =?utf-8?B?MVk5VTJkWnFsS2lEMWJZMFNLZk1FalA0WWVyR2htSkJPUEkrYnFIeW9nMlRo?=
- =?utf-8?B?V2oxd0dWMzlnTG4wWTdOOXUra1E3MjRybUg5c3BSUXZxNVJEWjlrTXVuSmJT?=
- =?utf-8?B?WUYrcWw2T0QyWlJZaENaRWpIam9DbTVLVmJMRjAvM0crWXZJeXZlN25DTlM4?=
- =?utf-8?B?dmFFNmd5ZmlWWlpnTzJCK3ZyalZQVVgyZFBCVmx4M05aMnhuREdSa2M4d1dE?=
- =?utf-8?B?V1JGZHpCNzNHZ0txTmd1cHVVbEpUMi9yOTU2elZ1YWNvaUZOOEM0c1A2WlVN?=
- =?utf-8?B?VmVzd2NuOHA2REVYTFpHdkxRaFJxQ0JpWHprRXdlVHJaUlRndkl0VXd4TFVz?=
- =?utf-8?B?cStZVUh6RGhYRC9PMW1OUDJ2enA3ZUpPOXpmeHpLMzBzOFZSaVl4N2lzT0Fa?=
- =?utf-8?B?MmUrUWVaUWJDeXlHT0xBQXFSYmdtNGdPeTcrbUxLWVZPWk5OU0pRRHgrdGZU?=
- =?utf-8?B?cXVuK2xoTGxqb1YrbkhLaXN0UitjdVE1VU1FVkpLWTlZbVRVUzNBeEJyYy9R?=
- =?utf-8?B?MCtPVkpiQk1qMGNINkl0SVVBQnQwaW5lcVNuYnBIYlI0ZEFIbzkydDRDSDhi?=
- =?utf-8?B?K05hWjIvTjdMYmVaUDQ5ajJ4emR5a1ZNQnJ2VGdrdGJGaVVISVBlOFg4VWdU?=
- =?utf-8?B?QkJGMHVEVmFlOWJ6VTA3b2dhc255bWNyaUxLdDZrZlRWdVNjVUtaZUtzcHBk?=
- =?utf-8?B?WEhRam5OcVUrbTYxd0EyQlVRVENpWjJNZGtZUEJWOTVZMm5oWGU5L1NuTTU1?=
- =?utf-8?B?VmlSTGNiay9LWjZieC8yajNUVENONGQ4Q202Q0pCYm0wOTlPL1dkRjdlUTg5?=
- =?utf-8?B?NzRiVFRCa1BIbVBQQ1ZYajY4cS9tK1BEZk5MR3p4UlZsVmpJQkJsbXRCVUlM?=
- =?utf-8?B?N1dhMGNVNnBNRDJuVk9xaEJ0NnR5aHpUN1BIK0ZDT29ZV1pZY2pBeVVsSXI0?=
- =?utf-8?Q?T3EqRBA/Yvddyi5VQf6yu+pm+Sp?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 359c3818-7be5-42cc-5776-08d8c60d5589
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3775.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Jan 2021 17:26:24.7992
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /gu0vD4JPx0OHCILe54wEUXuGdYskcdPnJnXcM5yRwJEs8jbAr2gGupULsROa8/J
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4208
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210129221818.3540620-2-jbhayana@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 30.01.21 um 19:47 schrieb Joe Perches:
-> On Mon, 2020-08-24 at 21:56 -0700, Joe Perches wrote:
->> Use semicolons and braces.
-> Ping?
->   
->> Signed-off-by: Joe Perches <joe@perches.com>
+Hi Jyoti
 
-Reviewed-by: Christian König <christian.koenig@amd.com>
+a few remarks down below, but beside those, while testing this series on
+a JUNO board (so lacking any GYRO/ACCEL sensor, a limited test case for
+now) I spotted that you missed in this series to add a matching device
+to the SCMI core. (as spotted by Jonathan too in his v4 review)
 
-Do you have commit rights to drm-misc-next?
+In other words in your actual codebase you should have something like
+this, somewhere:
 
->> ---
->>   drivers/dma-buf/st-dma-fence.c | 7 +++++--
->>   1 file changed, 5 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/dma-buf/st-dma-fence.c b/drivers/dma-buf/st-dma-fence.c
->> index e593064341c8..c8a12d7ad71a 100644
->> --- a/drivers/dma-buf/st-dma-fence.c
->> +++ b/drivers/dma-buf/st-dma-fence.c
->> @@ -471,8 +471,11 @@ static int thread_signal_callback(void *arg)
->>   			dma_fence_signal(f1);
->>   
->>
->>   		smp_store_mb(cb.seen, false);
->> -		if (!f2 || dma_fence_add_callback(f2, &cb.cb, simple_callback))
->> -			miss++, cb.seen = true;
->> +		if (!f2 ||
->> +		    dma_fence_add_callback(f2, &cb.cb, simple_callback)) {
->> +			miss++;
->> +			cb.seen = true;
->> +		}
->>   
->>
->>   		if (!t->before)
->>   			dma_fence_signal(f1);
->
+diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+index 3f5e8a42373e..cd6e38a8d8d2 100644
+--- a/drivers/firmware/arm_scmi/driver.c
++++ b/drivers/firmware/arm_scmi/driver.c
+@@ -743,7 +743,7 @@ static struct scmi_prot_devnames devnames[] = {
+        { SCMI_PROTOCOL_SYSTEM, { "syspower" },},
+        { SCMI_PROTOCOL_PERF,   { "cpufreq" },},
+        { SCMI_PROTOCOL_CLOCK,  { "clocks" },},
+-       { SCMI_PROTOCOL_SENSOR, { "hwmon" },},
++       { SCMI_PROTOCOL_SENSOR, { "hwmon", "iiodev" },},
+        { SCMI_PROTOCOL_RESET,  { "reset" },},
+        { SCMI_PROTOCOL_VOLTAGE,  { "regulator" },},
+ };
 
+given that without this there's no chance the SCMI driver could be
+ever matched and probed by the SCMI core at first.
+
+So please commmit the above as a separate patch in this series, to have
+it working too in the upstream.
+
+Other comments below
+
+Thanks
+
+Cristian
+
+On Fri, Jan 29, 2021 at 10:18:18PM +0000, Jyoti Bhayana wrote:
+> This change provides ARM SCMI Protocol based IIO device.
+> This driver provides support for Accelerometer and Gyroscope using
+> SCMI Sensor Protocol extensions added in the SCMIv3.0 ARM specification
+> 
+> Signed-off-by: Jyoti Bhayana <jbhayana@google.com>
+> ---
+>  MAINTAINERS                                |   6 +
+>  drivers/iio/common/Kconfig                 |   1 +
+>  drivers/iio/common/Makefile                |   1 +
+>  drivers/iio/common/scmi_sensors/Kconfig    |  18 +
+>  drivers/iio/common/scmi_sensors/Makefile   |   5 +
+>  drivers/iio/common/scmi_sensors/scmi_iio.c | 742 +++++++++++++++++++++
+>  6 files changed, 773 insertions(+)
+>  create mode 100644 drivers/iio/common/scmi_sensors/Kconfig
+>  create mode 100644 drivers/iio/common/scmi_sensors/Makefile
+>  create mode 100644 drivers/iio/common/scmi_sensors/scmi_iio.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index b516bb34a8d5..ccf37d43ab41 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -8567,6 +8567,12 @@ S:	Maintained
+>  F:	Documentation/devicetree/bindings/iio/multiplexer/io-channel-mux.txt
+>  F:	drivers/iio/multiplexer/iio-mux.c
+>  
+> +IIO SCMI BASED DRIVER
+> +M:	Jyoti Bhayana <jbhayana@google.com>
+> +L:	linux-iio@vger.kernel.org
+> +S:	Maintained
+> +F:	drivers/iio/common/scmi_sensors/scmi_iio.c
+> +
+>  IIO SUBSYSTEM AND DRIVERS
+>  M:	Jonathan Cameron <jic23@kernel.org>
+>  R:	Lars-Peter Clausen <lars@metafoo.de>
+> diff --git a/drivers/iio/common/Kconfig b/drivers/iio/common/Kconfig
+> index 2b9ee9161abd..0334b4954773 100644
+> --- a/drivers/iio/common/Kconfig
+> +++ b/drivers/iio/common/Kconfig
+> @@ -6,5 +6,6 @@
+>  source "drivers/iio/common/cros_ec_sensors/Kconfig"
+>  source "drivers/iio/common/hid-sensors/Kconfig"
+>  source "drivers/iio/common/ms_sensors/Kconfig"
+> +source "drivers/iio/common/scmi_sensors/Kconfig"
+>  source "drivers/iio/common/ssp_sensors/Kconfig"
+>  source "drivers/iio/common/st_sensors/Kconfig"
+> diff --git a/drivers/iio/common/Makefile b/drivers/iio/common/Makefile
+> index 4bc30bb548e2..fad40e1e1718 100644
+> --- a/drivers/iio/common/Makefile
+> +++ b/drivers/iio/common/Makefile
+> @@ -11,5 +11,6 @@
+>  obj-y += cros_ec_sensors/
+>  obj-y += hid-sensors/
+>  obj-y += ms_sensors/
+> +obj-y += scmi_sensors/
+>  obj-y += ssp_sensors/
+>  obj-y += st_sensors/
+> diff --git a/drivers/iio/common/scmi_sensors/Kconfig b/drivers/iio/common/scmi_sensors/Kconfig
+> new file mode 100644
+> index 000000000000..67e084cbb1ab
+> --- /dev/null
+> +++ b/drivers/iio/common/scmi_sensors/Kconfig
+> @@ -0,0 +1,18 @@
+> +#
+> +# IIO over SCMI
+> +#
+> +# When adding new entries keep the list in alphabetical order
+> +
+> +menu "IIO SCMI Sensors"
+> +
+> +config IIO_SCMI
+> +	tristate "IIO SCMI"
+> +        depends on ARM_SCMI_PROTOCOL
+> +        select IIO_BUFFER
+> +        select IIO_KFIFO_BUF
+> +	help
+> +          Say yes here to build support for IIO SCMI Driver.
+> +          This provides ARM SCMI Protocol based IIO device.
+> +          This driver provides support for accelerometer and gyroscope
+> +          sensors available on SCMI based platforms.
+> +endmenu
+> diff --git a/drivers/iio/common/scmi_sensors/Makefile b/drivers/iio/common/scmi_sensors/Makefile
+> new file mode 100644
+> index 000000000000..f13140a2575a
+> --- /dev/null
+> +++ b/drivers/iio/common/scmi_sensors/Makefile
+> @@ -0,0 +1,5 @@
+> +# SPDX - License - Identifier : GPL - 2.0 - only
+> +#
+> +# Makefile for the IIO over SCMI
+> +#
+> +obj-$(CONFIG_IIO_SCMI) += scmi_iio.o
+> diff --git a/drivers/iio/common/scmi_sensors/scmi_iio.c b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> new file mode 100644
+> index 000000000000..331ffaffd06f
+> --- /dev/null
+> +++ b/drivers/iio/common/scmi_sensors/scmi_iio.c
+> @@ -0,0 +1,742 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +/*
+> + * System Control and Management Interface(SCMI) based IIO sensor driver
+> + *
+> + * Copyright (C) 2020 Google LLC
+> + */
+> +
+> +#include <linux/delay.h>
+> +#include <linux/err.h>
+> +#include <linux/iio/buffer.h>
+> +#include <linux/iio/iio.h>
+> +#include <linux/iio/kfifo_buf.h>
+> +#include <linux/iio/sysfs.h>
+> +#include <linux/kernel.h>
+> +#include <linux/kthread.h>
+> +#include <linux/module.h>
+> +#include <linux/scmi_protocol.h>
+> +#include <linux/time.h>
+> +#include <linux/types.h>
+> +
+> +#define ilog10(x) (ilog2(x) / const_ilog2(10))
+> +#define UHZ_PER_HZ 1000000UL
+> +#define ODR_EXPAND(odr, uodr) (((odr) * 1000000ULL) + (uodr))
+> +#define MAX_NUM_OF_CHANNELS 4
+> +#define H32(x) (FIELD_GET(GENMASK_ULL(63, 32), (x)))
+> +#define L32(x) (FIELD_GET(GENMASK_ULL(31, 0), (x)))
+> +
+> +struct scmi_iio_priv {
+> +	struct scmi_handle *handle;
+> +	const struct scmi_sensor_info *sensor_info;
+> +	struct iio_dev *indio_dev;
+> +	long long iio_buf[MAX_NUM_OF_CHANNELS];
+> +	struct notifier_block sensor_update_nb;
+> +	u32 *freq_avail;
+> +	/*
+> +	 * range_avail = [minRange resolution maxRange]
+> +	 * with IIO val type as IIO_VAL_FRACTIONAL.
+> +	 * Hence, array of size 6.
+> +	 */
+> +	int range_avail[6];
+> +};
+> +
+> +static int scmi_iio_sensor_update_cb(struct notifier_block *nb,
+> +				     unsigned long event, void *data)
+> +{
+> +	struct scmi_sensor_update_report *sensor_update = data;
+> +	struct iio_dev *scmi_iio_dev;
+> +	struct scmi_iio_priv *sensor;
+> +	s8 tstamp_scale;
+> +	u64 time, time_ns;
+> +	int i;
+> +
+> +	if (sensor_update->readings_count == 0)
+> +		return NOTIFY_DONE;
+> +
+> +	sensor = container_of(nb, struct scmi_iio_priv, sensor_update_nb);
+> +
+> +	for (i = 0; i < sensor_update->readings_count; i++)
+> +		sensor->iio_buf[i] = sensor_update->readings[i].value;
+> +
+> +	if (!sensor->sensor_info->timestamped) {
+> +		time_ns = sensor_update->timestamp;
+
+If you decided to use the timestamp provided in the notification report,
+it is a ktime_t though, so it should be grabbed with something like:
+
+		time_ns = ktime_to_ns(sensor_update->timestamp);
+
+> +	} else {
+> +		/*
+> +		 * All the axes are supposed to have the same value for timestamp.
+> +		 *  We are just using the values from the Axis 0 here.
+> +		 */
+> +		time = sensor_update->readings[0].timestamp;
+> +
+> +		/*
+> +		 *  Timestamp returned by SCMI is in seconds and is equal to
+> +		 *  time * power-of-10 multiplier(tstamp_scale) seconds.
+> +		 *  Converting the timestamp to nanoseconds below.
+> +		 */
+> +		tstamp_scale = sensor->sensor_info->tstamp_scale +
+> +				  ilog10(NSEC_PER_SEC);
+> +		if (tstamp_scale < 0)
+> +			time_ns = div64_u64(time,
+> +					    int_pow(10, abs(tstamp_scale)));
+> +		else
+> +			time_ns = time * int_pow(10, tstamp_scale);
+> +	}
+> +
+> +	scmi_iio_dev = sensor->indio_dev;
+> +	iio_push_to_buffers_with_timestamp(scmi_iio_dev, sensor->iio_buf,
+> +					   time_ns);
+> +	return NOTIFY_OK;
+> +}
+> +
+> +static int scmi_iio_buffer_preenable(struct iio_dev *iio_dev)
+> +{
+> +	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> +	u32 sensor_id = sensor->sensor_info->id;
+> +	u32 sensor_config;
+> +	int err;
+> +
+> +	if (sensor->sensor_info->timestamped)
+> +		sensor_config |= FIELD_PREP(SCMI_SENS_CFG_TSTAMP_ENABLED_MASK,
+> +					    SCMI_SENS_CFG_TSTAMP_ENABLE);
+
+Here sensor_config is not zeroed at definition time so still not initialized when ORed.
+
+> +
+> +	sensor_config |= FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+> +				    SCMI_SENS_CFG_SENSOR_ENABLE);
+> +
+> +	err = sensor->handle->notify_ops->register_event_notifier(sensor->handle,
+> +			SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
+> +			&sensor_id, &sensor->sensor_update_nb);
+> +	if (err) {
+> +		dev_err(&iio_dev->dev,
+> +			"Error in registering sensor update notifier for sensor %s err %d",
+> +			sensor->sensor_info->name, err);
+> +		return err;
+> +	}
+> +
+> +	err = sensor->handle->sensor_ops->config_set(sensor->handle,
+> +			sensor->sensor_info->id, sensor_config);
+> +	if (err) {
+> +		sensor->handle->notify_ops->unregister_event_notifier(sensor->handle,
+> +			SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
+> +			&sensor_id, &sensor->sensor_update_nb);
+> +		dev_err(&iio_dev->dev, "Error in enabling sensor %s err %d",
+> +			sensor->sensor_info->name, err);
+> +	}
+> +
+> +	return err;
+> +}
+> +
+> +static int scmi_iio_buffer_postdisable(struct iio_dev *iio_dev)
+> +{
+> +	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> +	u32 sensor_id = sensor->sensor_info->id;
+> +	u32 sensor_config = 0;
+> +	int err;
+> +
+> +	sensor_config |= FIELD_PREP(SCMI_SENS_CFG_SENSOR_ENABLED_MASK,
+> +				    SCMI_SENS_CFG_SENSOR_DISABLE);
+> +
+> +	err = sensor->handle->notify_ops->unregister_event_notifier(sensor->handle,
+> +			SCMI_PROTOCOL_SENSOR, SCMI_EVENT_SENSOR_UPDATE,
+> +			&sensor_id, &sensor->sensor_update_nb);
+> +	if (err) {
+> +		dev_err(&iio_dev->dev,
+> +			"Error in unregistering sensor update notifier for sensor %s err %d",
+> +			sensor->sensor_info->name, err);
+> +		return err;
+> +	}
+> +
+> +	err = sensor->handle->sensor_ops->config_set(sensor->handle, sensor_id,
+> +						     sensor_config);
+> +	if (err) {
+> +		dev_err(&iio_dev->dev,
+> +			"Error in disabling sensor %s with err %d",
+> +			sensor->sensor_info->name, err);
+> +	}
+> +
+> +	return err;
+> +}
+> +
+> +static const struct iio_buffer_setup_ops scmi_iio_buffer_ops = {
+> +	.preenable = scmi_iio_buffer_preenable,
+> +	.postdisable = scmi_iio_buffer_postdisable,
+> +};
+> +
+> +static int scmi_iio_read_avail(struct iio_dev *iio_dev,
+> +			       struct iio_chan_spec const *chan,
+> +			       const int **vals, int *type, int *length,
+> +			       long mask)
+> +{
+> +	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> +
+> +	switch (mask) {
+> +	case IIO_CHAN_INFO_SAMP_FREQ:
+> +		*vals = sensor->freq_avail;
+> +		*type = IIO_VAL_INT_PLUS_MICRO;
+> +		*length = sensor->sensor_info->intervals.count * 2;
+> +		if (sensor->sensor_info->intervals.segmented)
+> +			return IIO_AVAIL_RANGE;
+> +		else
+> +			return IIO_AVAIL_LIST;
+> +	case IIO_CHAN_INFO_RAW:
+> +		*vals = sensor->range_avail;
+> +		*type = IIO_VAL_FRACTIONAL;
+> +		*length = ARRAY_SIZE(sensor->range_avail);
+> +		return IIO_AVAIL_RANGE;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static int scmi_iio_set_odr_val(struct iio_dev *iio_dev, int val, int val2)
+> +{
+> +	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> +	u64 sec, mult, uHz;
+> +	u32 sensor_config;
+> +
+> +	int err = sensor->handle->sensor_ops->config_get(sensor->handle,
+> +			sensor->sensor_info->id, &sensor_config);
+> +	if (err) {
+> +		dev_err(&iio_dev->dev,
+> +			"Error in getting sensor config for sensor %s err %d",
+> +			sensor->sensor_info->name, err);
+> +		return err;
+> +	}
+> +
+> +	uHz = ODR_EXPAND(val, val2);
+> +
+> +	/*
+> +	 * The seconds field in the sensor interval in SCMI is 16 bits long
+> +	 * Therefore seconds  = 1/Hz <= 0xFFFF. As floating point calculations are
+> +	 * discouraged in the kernel driver code, to calculate the scale factor (sf)
+> +	 * (1* 1000000 * sf)/uHz <= 0xFFFF. Therefore, sf <= (uHz * 0xFFFF)/1000000
+> +	 */
+> +	mult = ilog10(((u64)uHz * 0xFFFF) / UHZ_PER_HZ);
+> +
+> +	sec = div64_u64(int_pow(10, mult) * UHZ_PER_HZ, uHz);
+> +	if (sec == 0) {
+> +		dev_err(&iio_dev->dev,
+> +			"Trying to set invalid sensor update value for sensor %s",
+> +			sensor->sensor_info->name);
+> +		return -EINVAL;
+> +	}
+> +
+> +	sensor_config &= ~SCMI_SENS_CFG_UPDATE_SECS_MASK;
+> +	sensor_config |= FIELD_PREP(SCMI_SENS_CFG_UPDATE_SECS_MASK, sec);
+> +	sensor_config &= ~SCMI_SENS_CFG_UPDATE_EXP_MASK;
+> +	sensor_config |= FIELD_PREP(SCMI_SENS_CFG_UPDATE_EXP_MASK, -mult);
+> +
+> +	if (sensor->sensor_info->timestamped) {
+> +		sensor_config &= ~SCMI_SENS_CFG_TSTAMP_ENABLED_MASK;
+> +		sensor_config |= FIELD_PREP(SCMI_SENS_CFG_TSTAMP_ENABLED_MASK,
+> +					    SCMI_SENS_CFG_TSTAMP_ENABLE);
+> +	}
+> +
+> +	sensor_config &= ~SCMI_SENS_CFG_ROUND_MASK;
+> +	sensor_config |=
+> +		FIELD_PREP(SCMI_SENS_CFG_ROUND_MASK, SCMI_SENS_CFG_ROUND_AUTO);
+> +
+> +	err = sensor->handle->sensor_ops->config_set(sensor->handle,
+> +			sensor->sensor_info->id, sensor_config);
+> +	if (err)
+> +		dev_err(&iio_dev->dev,
+> +			"Error in setting sensor update interval for sensor %s value %u err %d",
+> +			sensor->sensor_info->name, sensor_config, err);
+> +
+> +	return err;
+> +}
+> +
+> +static int scmi_iio_write_raw(struct iio_dev *iio_dev,
+> +			      struct iio_chan_spec const *chan, int val,
+> +			      int val2, long mask)
+> +{
+> +	int err;
+> +
+> +	switch (mask) {
+> +	case IIO_CHAN_INFO_SAMP_FREQ:
+> +		mutex_lock(&iio_dev->mlock);
+> +		err = scmi_iio_set_odr_val(iio_dev, val, val2);
+> +		mutex_unlock(&iio_dev->mlock);
+> +		return err;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static u64 scmi_iio_convert_interval_to_ns(u32 val)
+> +{
+> +	u64 sensor_update_interval =
+> +		SCMI_SENS_INTVL_GET_SECS(val) * NSEC_PER_SEC;
+> +	u64 sensor_interval_mult;
+> +	int mult;
+> +
+> +	mult = SCMI_SENS_INTVL_GET_EXP(val);
+> +	if (mult < 0) {
+> +		sensor_interval_mult = int_pow(10, abs(mult));
+> +		sensor_update_interval =
+> +			sensor_update_interval / sensor_interval_mult;
+> +	} else {
+> +		sensor_interval_mult = int_pow(10, mult);
+> +		sensor_update_interval =
+> +			sensor_update_interval * sensor_interval_mult;
+> +	}
+> +	return sensor_update_interval;
+> +}
+> +
+> +static void convert_ns_to_freq(u64 interval_ns, u64 *hz, u64 *uhz)
+> +{
+> +	u64 rem;
+> +
+> +	*hz = div64_u64_rem(NSEC_PER_SEC, interval_ns, &rem);
+> +	*uhz = (rem * 1000000UL) / interval_ns;
+> +}
+> +
+> +static int scmi_iio_get_odr_val(struct iio_dev *iio_dev, int *val, int *val2)
+> +{
+> +	u64 sensor_update_interval, sensor_interval_mult, hz, uhz;
+> +	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> +	u32 sensor_config;
+> +	int mult;
+> +
+> +	int err = sensor->handle->sensor_ops->config_get(sensor->handle,
+> +			sensor->sensor_info->id, &sensor_config);
+> +	if (err) {
+> +		dev_err(&iio_dev->dev,
+> +			"Error in getting sensor config for sensor %s err %d",
+> +			sensor->sensor_info->name, err);
+> +		return err;
+> +	}
+> +
+> +	sensor_update_interval =
+> +		SCMI_SENS_CFG_GET_UPDATE_SECS(sensor_config) * NSEC_PER_SEC;
+> +
+> +	mult = SCMI_SENS_CFG_GET_UPDATE_EXP(sensor_config);
+> +	if (mult < 0) {
+> +		sensor_interval_mult = int_pow(10, abs(mult));
+> +		sensor_update_interval =
+> +			sensor_update_interval / sensor_interval_mult;
+> +	} else {
+> +		sensor_interval_mult = int_pow(10, mult);
+> +		sensor_update_interval =
+> +			sensor_update_interval * sensor_interval_mult;
+> +	}
+> +
+> +	convert_ns_to_freq(sensor_update_interval, &hz, &uhz);
+> +	*val = hz;
+> +	*val2 = uhz;
+> +	return 0;
+> +}
+> +
+> +static int scmi_iio_read_raw(struct iio_dev *iio_dev,
+> +			     struct iio_chan_spec const *ch, int *val,
+> +			     int *val2, long mask)
+> +{
+> +	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> +	s8 scale;
+> +	int ret;
+> +
+> +	switch (mask) {
+> +	case IIO_CHAN_INFO_SCALE:
+> +		scale = sensor->sensor_info->axis[ch->scan_index].scale;
+> +		if (scale < 0) {
+> +			*val = 1;
+> +			*val2 = int_pow(10, abs(scale));
+> +			return IIO_VAL_FRACTIONAL;
+> +		}
+> +		*val = int_pow(10, scale);
+> +		return IIO_VAL_INT;
+> +	case IIO_CHAN_INFO_SAMP_FREQ:
+> +		ret = scmi_iio_get_odr_val(iio_dev, val, val2);
+> +		return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static const struct iio_info scmi_iio_info = {
+> +	.read_raw = scmi_iio_read_raw,
+> +	.read_avail = scmi_iio_read_avail,
+> +	.write_raw = scmi_iio_write_raw,
+> +};
+> +
+> +static void scmi_iio_set_timestamp_channel(struct iio_chan_spec *iio_chan,
+> +					   int scan_index)
+> +{
+> +	iio_chan->type = IIO_TIMESTAMP;
+> +	iio_chan->channel = -1;
+> +	iio_chan->scan_index = scan_index;
+> +	iio_chan->scan_type.sign = 'u';
+> +	iio_chan->scan_type.realbits = 64;
+> +	iio_chan->scan_type.storagebits = 64;
+> +}
+> +
+> +static void scmi_iio_set_data_channel(struct iio_chan_spec *iio_chan,
+> +				      enum iio_chan_type type,
+> +				      enum iio_modifier mod, int scan_index)
+> +{
+> +	iio_chan->type = type;
+> +	iio_chan->modified = 1;
+> +	iio_chan->channel2 = mod;
+> +	iio_chan->info_mask_separate = BIT(IIO_CHAN_INFO_SCALE);
+> +	iio_chan->info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SAMP_FREQ);
+> +	iio_chan->info_mask_shared_by_type_available =
+> +		BIT(IIO_CHAN_INFO_SAMP_FREQ) | BIT(IIO_CHAN_INFO_RAW);
+> +	iio_chan->scan_index = scan_index;
+> +	iio_chan->scan_type.sign = 's';
+> +	iio_chan->scan_type.realbits = 64;
+> +	iio_chan->scan_type.storagebits = 64;
+> +	iio_chan->scan_type.endianness = IIO_LE;
+> +}
+> +
+> +static int scmi_iio_get_chan_modifier(const char *name,
+> +				      enum iio_modifier *modifier)
+> +{
+> +	char *pch, mod;
+> +
+> +	if (!name)
+> +		return -EINVAL;
+> +
+> +	pch = strrchr(name, '_');
+> +	if (!pch)
+> +		return -EINVAL;
+> +
+> +	mod = *(pch + 1);
+> +	switch (mod) {
+> +	case 'X':
+> +		*modifier = IIO_MOD_X;
+> +		return 0;
+> +	case 'Y':
+> +		*modifier = IIO_MOD_Y;
+> +		return 0;
+> +	case 'Z':
+> +		*modifier = IIO_MOD_Z;
+> +		return 0;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static int scmi_iio_get_chan_type(u8 scmi_type, enum iio_chan_type *iio_type)
+> +{
+> +	switch (scmi_type) {
+> +	case METERS_SEC_SQUARED:
+> +		*iio_type = IIO_ACCEL;
+> +		return 0;
+> +	case RADIANS_SEC:
+> +		*iio_type = IIO_ANGL_VEL;
+> +		return 0;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static int scmi_iio_get_sensor_max_range(struct iio_dev *iio_dev, int *val,
+> +					 int *val2)
+> +{
+> +	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> +	int max_range_high, max_range_low;
+> +	long long max_range;
+> +
+> +	/*
+> +	 * All the axes are supposed to have the same value for max range.
+> +	 * We are just using the values from the Axis 0 here.
+> +	 */
+> +	if (sensor->sensor_info->axis[0].extended_attrs) {
+> +		max_range = sensor->sensor_info->axis[0].attrs.max_range;
+> +		max_range_high = H32(max_range);
+> +		max_range_low = L32(max_range);
+> +
+> +		/*
+> +		 * As IIO Val types have no provision for 64 bit values,
+> +		 * this driver only supports sensors whose maximum range
+> +		 * reported by the SCMI Platform fits within lower 32 bits
+> +		 */
+> +		if (max_range_high != 0)
+> +			return -EINVAL;
+> +
+> +		*val = max_range_low;
+> +		*val2 = 1;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static void scmi_iio_get_sensor_resolution(struct iio_dev *iio_dev, int *val,
+> +					   int *val2)
+> +{
+> +	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> +
+> +	/*
+> +	 * All the axes are supposed to have the same value for resolution
+> +	 * and exponent. We are just using the values from the Axis 0 here.
+> +	 */
+> +	if (sensor->sensor_info->axis[0].extended_attrs) {
+> +		uint resolution = sensor->sensor_info->axis[0].resolution;
+> +		s8 exponent = sensor->sensor_info->axis[0].exponent;
+> +		s8 scale = sensor->sensor_info->axis[0].scale;
+> +
+> +		/*
+> +		 * To provide the raw value for the resolution to the userspace,
+> +		 * need to divide the resolution exponent by the sensor scale
+> +		 */
+> +		exponent = exponent - scale;
+> +		if (exponent >= 0) {
+> +			*val = resolution * int_pow(10, exponent);
+> +			*val2 = 1;
+> +		} else {
+> +			*val = resolution;
+> +			*val2 = int_pow(10, abs(exponent));
+> +		}
+> +	}
+> +}
+> +
+> +static int scmi_iio_get_sensor_min_range(struct iio_dev *iio_dev, int *val,
+> +					 int *val2)
+> +{
+> +	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> +	int min_range_high, min_range_low;
+> +	long long min_range;
+> +
+> +	/*
+> +	 * All the axes are supposed to have the same value for min range.
+> +	 * We are just using the values from the Axis 0 here.
+> +	 */
+> +	if (sensor->sensor_info->axis[0].extended_attrs) {
+> +		min_range = sensor->sensor_info->axis[0].attrs.min_range;
+> +		min_range_high = H32(min_range);
+> +		min_range_low = L32(min_range);
+> +
+> +		/*
+> +		 * As IIO Val types have no provision for 64 bit values,
+> +		 * this driver only supports sensors whose minimum range
+> +		 * reported by SCMI Platform fits within lower 32 bits
+> +		 */
+> +		if (min_range_high != 0xFFFFFFFF)
+> +			return -EINVAL;
+> +
+> +		*val = min_range_low;
+> +		*val2 = 1;
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int scmi_iio_set_sensor_range_avail(struct iio_dev *iio_dev)
+> +{
+> +	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> +	int ret;
+> +
+> +	ret = scmi_iio_get_sensor_min_range(iio_dev, &sensor->range_avail[0],
+> +					    &sensor->range_avail[1]);
+> +	if (ret)
+> +		return ret;
+> +
+> +	scmi_iio_get_sensor_resolution(iio_dev, &sensor->range_avail[2],
+> +				       &sensor->range_avail[3]);
+> +	ret = scmi_iio_get_sensor_max_range(iio_dev, &sensor->range_avail[4],
+> +					    &sensor->range_avail[5]);
+> +	return ret;
+> +}
+> +
+> +static int scmi_iio_set_sampling_freq_avail(struct iio_dev *iio_dev)
+> +{
+> +	u64 cur_interval_ns, low_interval_ns, high_interval_ns, step_size_ns,
+> +		hz, uhz;
+> +	unsigned int cur_interval, low_interval, high_interval, step_size;
+> +	struct scmi_iio_priv *sensor = iio_priv(iio_dev);
+> +	int i;
+> +
+> +	sensor->freq_avail = devm_kzalloc(&iio_dev->dev,
+> +					  sizeof(u32) * (sensor->sensor_info->intervals.count * 2),
+> +					  GFP_KERNEL);
+> +	if (!sensor->freq_avail)
+> +		return -ENOMEM;
+> +
+> +	if (sensor->sensor_info->intervals.segmented) {
+> +		low_interval = sensor->sensor_info->intervals
+> +				       .desc[SCMI_SENS_INTVL_SEGMENT_LOW];
+> +		low_interval_ns = scmi_iio_convert_interval_to_ns(low_interval);
+> +		convert_ns_to_freq(low_interval_ns, &hz, &uhz);
+> +		sensor->freq_avail[0] = hz;
+> +		sensor->freq_avail[1] = uhz;
+> +
+> +		step_size = sensor->sensor_info->intervals
+> +				    .desc[SCMI_SENS_INTVL_SEGMENT_STEP];
+> +		step_size_ns = scmi_iio_convert_interval_to_ns(step_size);
+> +		convert_ns_to_freq(step_size_ns, &hz, &uhz);
+> +		sensor->freq_avail[2] = hz;
+> +		sensor->freq_avail[3] = uhz;
+> +
+> +		high_interval = sensor->sensor_info->intervals
+> +					.desc[SCMI_SENS_INTVL_SEGMENT_HIGH];
+> +		high_interval_ns =
+> +			scmi_iio_convert_interval_to_ns(high_interval);
+> +		convert_ns_to_freq(high_interval_ns, &hz, &uhz);
+> +		sensor->freq_avail[4] = hz;
+> +		sensor->freq_avail[5] = uhz;
+> +	} else {
+> +		for (i = 0; i < sensor->sensor_info->intervals.count; i++) {
+> +			cur_interval = sensor->sensor_info->intervals.desc[i];
+> +			cur_interval_ns = scmi_iio_convert_interval_to_ns(cur_interval);
+> +			convert_ns_to_freq(cur_interval_ns, &hz, &uhz);
+> +			sensor->freq_avail[i * 2] = hz;
+> +			sensor->freq_avail[i * 2 + 1] = uhz;
+> +		}
+> +	}
+> +	return 0;
+> +}
+> +
+> +static int scmi_iio_buffers_setup(struct iio_dev *scmi_iiodev)
+> +{
+> +	struct iio_buffer *buffer;
+> +
+> +	buffer = devm_iio_kfifo_allocate(&scmi_iiodev->dev);
+> +	if (!buffer)
+> +		return -ENOMEM;
+> +
+> +	iio_device_attach_buffer(scmi_iiodev, buffer);
+> +	scmi_iiodev->modes |= INDIO_BUFFER_SOFTWARE;
+> +	scmi_iiodev->setup_ops = &scmi_iio_buffer_ops;
+> +	return 0;
+> +}
+> +
+> +static int scmi_alloc_iiodev(struct device *dev, struct scmi_handle *handle,
+> +			     const struct scmi_sensor_info *sensor_info,
+> +			     struct iio_dev **scmi_iio_dev)
+> +{
+> +	struct iio_chan_spec *iio_channels;
+> +	struct scmi_iio_priv *sensor;
+> +	enum iio_modifier modifier;
+> +	enum iio_chan_type type;
+> +	struct iio_dev *iiodev;
+> +	int i, ret;
+> +
+> +	iiodev = devm_iio_device_alloc(dev, sizeof(*sensor));
+> +	if (!iiodev)
+> +		return -ENOMEM;
+> +
+> +	iiodev->modes = INDIO_DIRECT_MODE;
+> +	iiodev->dev.parent = dev;
+> +	sensor = iio_priv(iiodev);
+> +	sensor->handle = handle;
+> +	sensor->sensor_info = sensor_info;
+> +	sensor->sensor_update_nb.notifier_call = scmi_iio_sensor_update_cb;
+> +	sensor->indio_dev = iiodev;
+> +
+> +	/* adding one additional channel for timestamp */
+> +	iiodev->num_channels = sensor_info->num_axis + 1;
+> +	iiodev->name = sensor_info->name;
+> +	iiodev->info = &scmi_iio_info;
+> +
+> +	iio_channels =
+> +		devm_kzalloc(dev,
+> +			     sizeof(*iio_channels) * (iiodev->num_channels),
+> +			     GFP_KERNEL);
+> +	if (!iio_channels)
+> +		return -ENOMEM;
+> +
+> +	scmi_iio_set_sampling_freq_avail(iiodev);
+> +
+> +	ret = scmi_iio_set_sensor_range_avail(iiodev);
+> +	if (ret) {
+> +		dev_err(dev, "Error while setting the sensor %s range %d",
+> +			sensor_info->name, ret);
+> +		return ret;
+> +	}
+> +
+> +	for (i = 0; i < sensor_info->num_axis; i++) {
+> +		ret = scmi_iio_get_chan_type(sensor_info->axis[i].type, &type);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		ret = scmi_iio_get_chan_modifier(sensor_info->axis[i].name,
+> +						 &modifier);
+> +		if (ret < 0)
+> +			return ret;
+> +
+> +		scmi_iio_set_data_channel(&iio_channels[i], type, modifier,
+> +					  sensor_info->axis[i].id);
+> +	}
+> +
+> +	scmi_iio_set_timestamp_channel(&iio_channels[i], i);
+> +	iiodev->channels = iio_channels;
+> +	*scmi_iio_dev = iiodev;
+> +	return ret;
+> +}
+> +
+> +static int scmi_iio_dev_probe(struct scmi_device *sdev)
+> +{
+> +	const struct scmi_sensor_info *sensor_info;
+> +	struct scmi_handle *handle = sdev->handle;
+> +	struct device *dev = &sdev->dev;
+> +	struct iio_dev *scmi_iio_dev;
+> +	u16 nr_sensors;
+> +	int err, i;
+> +
+> +	if (!handle || !handle->sensor_ops) {
+> +		dev_err(dev, "SCMI device has no sensor interface\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	nr_sensors = handle->sensor_ops->count_get(handle);
+> +	if (!nr_sensors) {
+> +		dev_dbg(dev, "0 sensors found via SCMI bus\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	dev_dbg(dev, "%d sensors found via SCMI bus\n", nr_sensors);
+> +
+> +	for (i = 0; i < nr_sensors; i++) {
+> +		sensor_info = handle->sensor_ops->info_get(handle, i);
+> +		if (!sensor_info) {
+> +			dev_err(dev, "SCMI sensor %d has missing info\n", i);
+> +			return -EINVAL;
+> +		}
+> +
+> +		/* Skipping scalar sensor,as this driver only supports accel and gyro */
+> +		if (sensor_info->num_axis == 0)
+> +			continue;
+> +
+
+Given that this driver only handles multi-axes sensors of GYRO/ACCEL type,
+maybe here it would make sense to explicitly check also sensor_info->type to be
+of compatible type, similar to what you do already later against axes[0].type in
+scmi_alloc_iiodev()->scmi_iio_get_chan_type(): this way you can just skip a
+non-compatible (NON gyro or accel) multi-axes sensor here, without going further
+into scmi_alloc_iiodev().
+
+Moreover, as it now,  if you'd happen to receive from the SCMI core enumeration
+a list of sensors which includes some non-compatible multi-axes sensor you'd
+fail scmi_iio_get_chan_type() with -EINVAL and so insead of skipping such an
+unsupported sensor you'll end up failing the whole probe even though maybe some
+other supported sensors were indeed present in the list.
+
+(not sure this reasoning is consistent with what Jonathan said about
+returning a -ENODEV here when sensor is not handled..I'll add a comment
+on that other thread too)
+
+
+> +		err = scmi_alloc_iiodev(dev, handle, sensor_info,
+> +					&scmi_iio_dev);
+> +		if (err < 0) {
+> +			dev_err(dev,
+> +				"failed to allocate IIO device for sensor %s: %d\n",
+> +				sensor_info->name, err);
+> +			return err;
+> +		}
+> +
+> +		err = scmi_iio_buffers_setup(scmi_iio_dev);
+> +		if (err < 0) {
+> +			dev_err(dev,
+> +				"IIO buffer setup error at sensor %s: %d\n",
+> +				sensor_info->name, err);
+> +			return err;
+> +		}
+> +
+> +		err = devm_iio_device_register(dev, scmi_iio_dev);
+> +		if (err) {
+> +			dev_err(dev,
+> +				"IIO device registration failed at sensor %s: %d\n",
+> +				sensor_info->name, err);
+> +			return err;
+> +		}
+> +	}
+> +	return err;
+> +}
+> +
+> +static const struct scmi_device_id scmi_id_table[] = {
+> +	{ SCMI_PROTOCOL_SENSOR, "iiodev" },
+> +	{},
+> +};
+> +
+> +MODULE_DEVICE_TABLE(scmi, scmi_id_table);
+> +
+> +static struct scmi_driver scmi_iiodev_driver = {
+> +	.name = "scmi-sensor-iiodev",
+> +	.probe = scmi_iio_dev_probe,
+> +	.id_table = scmi_id_table,
+> +};
+> +
+> +module_scmi_driver(scmi_iiodev_driver);
+> +
+> +MODULE_AUTHOR("Jyoti Bhayana <jbhayana@google.com>");
+> +MODULE_DESCRIPTION("SCMI IIO Driver");
+> +MODULE_LICENSE("GPL v2");
+> -- 
+> 2.30.0.365.g02bc693789-goog
+> 
