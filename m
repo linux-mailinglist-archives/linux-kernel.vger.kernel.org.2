@@ -2,69 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73940309D54
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 16:18:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53143309D45
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 16:13:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231357AbhAaPC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 10:02:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39244 "EHLO
+        id S232295AbhAaPD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 10:03:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231408AbhAaOzM (ORCPT
+        with ESMTP id S232821AbhAaPAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 09:55:12 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBD23C061573;
-        Sun, 31 Jan 2021 06:54:31 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id p15so13775001wrq.8;
-        Sun, 31 Jan 2021 06:54:31 -0800 (PST)
+        Sun, 31 Jan 2021 10:00:25 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEDF4C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 06:59:41 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id m2so10489090wmm.1
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 06:59:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WkJeFPw2kQQYHxR9X8QVdj9OOIogYHSGaWROQp6d23w=;
-        b=qAwxHB4OJZlkt7/CPjTCYo6CtGO7S/7mZXEp2zMkfCcGo6xRAAB+laUFvPRmVamoJ3
-         0IPPFq0o6NNSlu96vVQh6i1Nkjj3I06oTrz0OlBjCsMkn2tCdv9OTmlL+iYtyyd7zYm0
-         syjj1KcONDNeS6HJWFbqh56V+UpM1ygGP9yd2v5bIhuA0FDwbCWUXNs5/RQ4EPKyyWeN
-         IoFQfBJsWE3psQkQZBgVkwGP5jTSyGGNbR6EVfK1gsjMiZ/rJx3WxK2ViAGL7Znrg2OU
-         rIbQmrGFwxHUn5qOXt0IZIA46U/AfHeLwIZVCOTMKNloO4XzMlk5EmjHnaB/d08ynQkt
-         3D9Q==
+        bh=4aT46G28vzJoBnX9iiIsaSmCpy5np56jMcrWEDGLCgE=;
+        b=l5xX7oJCpwybk0kKJpimqxdg3LRZpkUJWSp/E7BeQlQ5bb6VBusuSES6Oi5uIQdb+3
+         kX294KdrgrolGoqHznPX48lDQXaEMqqU25rMh/IHyCJsUFK/4NTzKpxn7vvMGMLHtFT3
+         gKHqTu3Pcn25xaH7dvMXEXrFa/X0szN+jZqeAkI1M5gN4mGqk2gy63C/kEZ9VyDI/feg
+         IILmyk4b86JQZ/QRUVR44AeDh80pLFU4IzjF6Dyu4uQGaZduERzk65MCjXYTycbn197L
+         jb9XSGU5YeWvRd2LePDf+/u+FWiPq3ZaeiqogyqU9XpxjpWNMlEOKYHfpe90d0Z/7F5f
+         yjJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=WkJeFPw2kQQYHxR9X8QVdj9OOIogYHSGaWROQp6d23w=;
-        b=MrFgARmmZpm78mupGd+kGEVgA9TPAwTkoyPpjqFovFBZ1WMiuoqPVvMbVBVzYY97Ks
-         Ss6ATFNmn9XY4nFlHI5Ce7zwOdkqeB1khdAo/U3JHFwh6knB8Y5Iv7MpepZRnW7F+Sx0
-         rnxPKU4UjGu+MdVIbLa4gXkcuVf6PZRpy0sdHAKxdGavsFSl4UiIiQYI6VXuPHGMP60B
-         g9xH67xtBO6tQr3Low41zgC4uyUMW5xSiPPuA9fXf3CAAXC+hsGrAItUrASYhoDHL/7J
-         O/4Y51EtLgwUDqx2tCGFSRly05xch81P41zumgIPMri1bj53qROFKgg40LOlyb5TgGQB
-         +BBw==
-X-Gm-Message-State: AOAM531SlGNhmJqmqXR9CBLspmus6veF8aYqpYoQJvn88HZT/+UgkWIG
-        eNcptTbrG24+Bi0tJqiw4CxBc1TFO1QvEhNp
-X-Google-Smtp-Source: ABdhPJyPJoHnFnU9o8NjgJCD2yBaBGx2MRUsaYHuoUq3BmTa4p8Vbt9wj2k3kE4ie+qGvWgXRchg2A==
-X-Received: by 2002:adf:fc8a:: with SMTP id g10mr14323248wrr.189.1612104870716;
-        Sun, 31 Jan 2021 06:54:30 -0800 (PST)
+        bh=4aT46G28vzJoBnX9iiIsaSmCpy5np56jMcrWEDGLCgE=;
+        b=miZGnq6MK5NbxMEBBvKwQ3fGZ8PLsi0SFzmtdsrdDLQqDsYKSp00b96eYXpqMJ/kMC
+         R1nisWh6JoGcxWqcVn8o35veQ7wii29u3Pu1vCx3Cy3LmQsU2AQ2WTudvo75ormAWA7V
+         2xRX0TgDD91UE71Bv4xWEAr7lKkSQJoULZLaAonb/B/kue/nzhpkauijEyKFr86NB8c6
+         4IqBpPKRDuvoaNJCaRBxuJ8lzyvWbKkF0dp5VJC0fSyhIKOfkK/DBeQ3FW3fOuUr2/El
+         2IeE9ov2kVZ2B2Haol47BHwKuvFUiWyToxhydkWiI7ASL6HE39g/S+vRGoI+y0zwAMju
+         EsGw==
+X-Gm-Message-State: AOAM530gPUk7AVxWiVBEAkzpLIDJzeqnuKCPxaQu3HF1pBC8910hH0px
+        H/yjcHUMmFP+621CYTNuaktpiwi282kP79hC
+X-Google-Smtp-Source: ABdhPJxH9y0L+8UHG7ALoVCnNf478ueZoH4sFRLVR6hzynO+RgpUih7R5yZbnRlVyxw5ZpZqf6DGZw==
+X-Received: by 2002:a1c:e146:: with SMTP id y67mr7643190wmg.55.1612105180308;
+        Sun, 31 Jan 2021 06:59:40 -0800 (PST)
 Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id s25sm17872026wmj.24.2021.01.31.06.54.29
+        by smtp.gmail.com with ESMTPSA id y67sm18886083wmg.47.2021.01.31.06.59.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Jan 2021 06:54:30 -0800 (PST)
-Subject: Re: [PATCH v4 1/3] arm64: dts: mt8183: config dsi node
-To:     Hsin-Yi Wang <hsinyi@chromium.org>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        Sun, 31 Jan 2021 06:59:39 -0800 (PST)
+Subject: Re: [PATCH] soc: mediatek: pm-domains: Don't print an error if child
+ domain is deferred
+To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
         linux-kernel@vger.kernel.org
-References: <20210113110400.616319-1-hsinyi@chromium.org>
+Cc:     Collabora Kernel ML <kernel@collabora.com>, drinkcat@chromium.org,
+        hsinyi@chromium.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20210113213012.67643-1-enric.balletbo@collabora.com>
 From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <5c30dc00-2d0e-8538-fe55-c57e70d46b70@gmail.com>
-Date:   Sun, 31 Jan 2021 15:54:29 +0100
+Message-ID: <60cb2364-7bc5-61da-c4e4-878fa7327776@gmail.com>
+Date:   Sun, 31 Jan 2021 15:59:38 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210113110400.616319-1-hsinyi@chromium.org>
+In-Reply-To: <20210113213012.67643-1-enric.balletbo@collabora.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -74,106 +73,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 13/01/2021 12:03, Hsin-Yi Wang wrote:
-> Config dsi node for mt8183 kukui. Set panel and ports.
+On 13/01/2021 22:30, Enric Balletbo i Serra wrote:
+> Child domains can be deferred by the core because one of its resources
+> is not available yet, in such case, it will print an error, but
+> later it will succeed to probe. Fix that using the dev_err_probe()
+> function so it only prints an error on a real error.
 > 
-> Several kukui boards share the same panel property and only compatible
-> is different. So compatible will be set in board dts for comparison
-> convenience.
-> 
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> Reviewed-by: Nicolas Boichat <drinkcat@chromium.org>
+> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+
+Applied to v5.11-next/soc
+
+Thanks
+
 > ---
-
-Whole series applied to v5.11-next/dts64
-
-Thanks!
-
-> change:
-> v4: add backlight and enable mipi_tx0
-> ---
->  .../mediatek/mt8183-kukui-krane-sku176.dts    |  5 +++
->  .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 42 +++++++++++++++++++
->  2 files changed, 47 insertions(+)
 > 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
-> index 47113e275cb52..721d16f9c3b4f 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
-> @@ -16,3 +16,8 @@ / {
->  	model = "MediaTek krane sku176 board";
->  	compatible = "google,krane-sku176", "google,krane", "mediatek,mt8183";
->  };
-> +
-> +&panel {
-> +        status = "okay";
-> +        compatible = "boe,tv101wum-nl6";
-> +};
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> index bf2ad1294dd30..da1e947587074 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> @@ -249,6 +249,36 @@ &cpu7 {
->  	proc-supply = <&mt6358_vproc11_reg>;
->  };
+>  drivers/soc/mediatek/mtk-pm-domains.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
+> index ae255aa7b1a9..8055fb019ba6 100644
+> --- a/drivers/soc/mediatek/mtk-pm-domains.c
+> +++ b/drivers/soc/mediatek/mtk-pm-domains.c
+> @@ -480,8 +480,8 @@ static int scpsys_add_subdomain(struct scpsys *scpsys, struct device_node *paren
 >  
-> +&dsi0 {
-> +	status = "okay";
-> +	#address-cells = <1>;
-> +	#size-cells = <0>;
-> +	panel: panel@0 {
-> +		/* compatible will be set in board dts */
-> +		reg = <0>;
-> +		enable-gpios = <&pio 45 0>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&panel_pins_default>;
-> +		avdd-supply = <&ppvarn_lcd>;
-> +		avee-supply = <&ppvarp_lcd>;
-> +		pp1800-supply = <&pp1800_lcd>;
-> +		backlight = <&backlight_lcd0>;
-> +		port {
-> +			panel_in: endpoint {
-> +				remote-endpoint = <&dsi_out>;
-> +			};
-> +		};
-> +	};
-> +
-> +	ports {
-> +		port {
-> +			dsi_out: endpoint {
-> +				remote-endpoint = <&panel_in>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
->  &i2c0 {
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&i2c0_pins>;
-> @@ -290,6 +320,10 @@ &i2c6 {
->  	clock-frequency = <100000>;
->  };
+>  		child_pd = scpsys_add_one_domain(scpsys, child);
+>  		if (IS_ERR(child_pd)) {
+> -			ret = PTR_ERR(child_pd);
+> -			dev_err(scpsys->dev, "%pOF: failed to get child domain id\n", child);
+> +			dev_err_probe(scpsys->dev, PTR_ERR(child_pd),
+> +				      "%pOF: failed to get child domain id\n", child);
+>  			goto err_put_node;
+>  		}
 >  
-> +&mipi_tx0 {
-> +	status = "okay";
-> +};
-> +
->  &mmc0 {
->  	status = "okay";
->  	pinctrl-names = "default", "state_uhs";
-> @@ -547,6 +581,14 @@ pins_clk {
->  		};
->  	};
->  
-> +	panel_pins_default: panel_pins_default {
-> +		panel_reset {
-> +			pinmux = <PINMUX_GPIO45__FUNC_GPIO45>;
-> +			output-low;
-> +			bias-pull-up;
-> +		};
-> +	};
-> +
->  	pwm0_pin_default: pwm0_pin_default {
->  		pins1 {
->  			pinmux = <PINMUX_GPIO176__FUNC_GPIO176>;
 > 
