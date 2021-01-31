@@ -2,204 +2,289 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79E54309CC2
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 15:26:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE092309CC5
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 15:27:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231252AbhAaORj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 09:17:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48656 "EHLO
+        id S232294AbhAaOSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 09:18:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231880AbhAaN2r (ORCPT
+        with ESMTP id S231908AbhAaN36 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 08:28:47 -0500
-Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34817C061756
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 05:11:57 -0800 (PST)
-Received: by mail-il1-x135.google.com with SMTP id z18so12744546ile.9
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 05:11:57 -0800 (PST)
+        Sun, 31 Jan 2021 08:29:58 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A168AC0613D6;
+        Sun, 31 Jan 2021 05:15:56 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id v15so13669759wrx.4;
+        Sun, 31 Jan 2021 05:15:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:from:to:cc:references:message-id:date:user-agent
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ot6vWHnfPIpcpEIXnX1FR6G/0Gh4xATqpaqCaCqtjpo=;
-        b=oxoTGE0uwxn3yJRPJSVn0kxvT/nDLqRwZ5QvfdJJr4H/zOUch+MHHxITm6Rj4eCdWG
-         fC+C3HN8deQQP+vMVZvjLWc9iSzSImYi0IjIMGU7mICF6N9Dza1cPGmlUhtg59jSHS3G
-         /GqFz6JjLJT/8M1J2PddTW4ua0GMrIsUqbpegRDN+Igob/HbQAKXK81JiVlVGK6vA1eB
-         jCygXTWD9qwOFVQd0qEgby55OMRWG+X8Tw2cYxaGlaXH1Pm03a7ibUQ3YSNL7NSHeMoZ
-         8XSjTfqZDSBw6Uty/Il9H7qJ0UHFTxSSvENc4Nv6TjDXLCLPR1Nm1KcMDKWHeUWKl3hn
-         EeXQ==
+        bh=z96GBUCs0M5u1QWQOLFBuEN34fEFOJsks2+1bXtFwB8=;
+        b=cJz8+N367PNdVSLb39XzmLY/GhXLdCl6o857tgtkGnssNbT35c8Ej/tJPaEUPp87Fh
+         nEiH2ap/4tavdV1M3Qkmlpo8uhB7lSyVQMPrZ+jUKu/hgCTC0KuK9zL3pm4vSxae/uDu
+         Q1JqLaIqRo5tCHUIWUOCFATNMFZJ41EMu8hw6kSQKnviGB4XTR74dhK1jXjeF9DCyv11
+         BJZxXBsYpEJYfaVdFxm3X6iyntL/FYqaoTklGPoRjgDxN/WC5HgVW2weBS6hm2jAeLRu
+         6SWxjKkg/7JaBR/FKWOOzVzHy68fdcQeX5ZzW+paTZSZb/Re96hl5UuYXPdlHDmkl6Ke
+         Y5jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ot6vWHnfPIpcpEIXnX1FR6G/0Gh4xATqpaqCaCqtjpo=;
-        b=Q5MlviKT02JUE+gAs0JWAq4M3w0gILGldmSlQjsJktgqEhYa7jzjOS/in2Yplv0ckI
-         VDxtKrCJhm8E9bHDlsyN+Y476QBv1/cVcloWBndDK4mCW8sZlrcBiJiOheQHHznfxtzP
-         AzGRhy1RS2bobNzDdpQMoylbkjpDoywITsNVow/in3wN3IBXW8HwwXmC89Cj4BIiSSC4
-         Tx19GPD7PBOta+JrOMyh1B/SXXW1a616M/ts+Uc1z+26alxXuvYl8VLKOKOFlrfhSzK7
-         44uz6T9nqRVI7AO9Ze592F9pq71PWRMSzjhMrc8VoO1SRRU6zRYoFiGggU+axpDOJwnS
-         qGpA==
-X-Gm-Message-State: AOAM533LriHsT5urNB8pa3vfUWGcZENWWKpvTuFyhTyPgNQX8NwN5Oqg
-        PqqLAJDIr9wTnpa43yaR5pz0rJZ9dv05CA==
-X-Google-Smtp-Source: ABdhPJyHXBRh3MAL4W8QH8UMHsKZBBg/6pH5WvtfRcNfPYOBlqOaRQ2gqahIklV2ka7G5NEWFIg60Q==
-X-Received: by 2002:a92:ca81:: with SMTP id t1mr10124757ilo.139.1612098716231;
-        Sun, 31 Jan 2021 05:11:56 -0800 (PST)
-Received: from [172.22.22.26] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id u3sm7758797ilg.48.2021.01.31.05.11.54
+        bh=z96GBUCs0M5u1QWQOLFBuEN34fEFOJsks2+1bXtFwB8=;
+        b=a/5D/Ysh+54K7ss12sXZGMfGpweZkVa4psJmNmzZBUnQgLmcX9i7U4s9a7AoiPj7sU
+         oAGc0nwKQAGKi2KTMxZUptbPf0rZ3IQ1fJlj2C4n+rN0++Z0N9Y86gQg/YrAd00rt90c
+         B3IiaCkjIIYO9fCpx63rtxSqbDfZr5xPvc9Un1ZxhmbZyaOHL4PR0slUDxEEMLRoZwoN
+         MYVbsY/ZXRTHyQzSYTPVHB7Rl8B5mJrmb3Qm+OpyGx/PjJF8yMyy2rsECzqrubuwuiBn
+         gcercR8LAH//XonHdcHKt+JrmOBZCv0Yl8UKB7TTOhje/DvaDVPGmek5tpoPmtdiTeJ2
+         SToA==
+X-Gm-Message-State: AOAM531eZajUhpqFwWHqnA82FcyLOtyyMkXzf8U7oLSMo5De7xdSRiwE
+        fibMc7G+rUODrx6oNZyGlIs=
+X-Google-Smtp-Source: ABdhPJygmlyoGE8kXJ+MPqHsL7t2Uo5PpDqMOOp+jvdNwCfwSH7MHwOuhSMTjefcOD+R+Fo/NDM8cA==
+X-Received: by 2002:a5d:58c2:: with SMTP id o2mr13561306wrf.31.1612098955213;
+        Sun, 31 Jan 2021 05:15:55 -0800 (PST)
+Received: from ziggy.stardust ([213.195.126.134])
+        by smtp.gmail.com with ESMTPSA id h14sm5506478wmq.39.2021.01.31.05.15.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Jan 2021 05:11:55 -0800 (PST)
-Subject: Re: [PATCH net-next 9/9] net: ipa: don't disable NAPI in suspend
-From:   Alex Elder <elder@linaro.org>
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, elder@kernel.org,
-        evgreen@chromium.org, bjorn.andersson@linaro.org,
-        cpratapa@codeaurora.org,
-        Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210129202019.2099259-1-elder@linaro.org>
- <20210129202019.2099259-10-elder@linaro.org>
- <CAF=yD-L1SKzu+gsma7KN4VjGnma-_w+amXx=Y_0e78rQiUCu7Q@mail.gmail.com>
- <e27f5c10-7b77-1f12-fe36-e9261f01bca1@linaro.org>
-Message-ID: <b135f936-e51c-a6a8-511a-ccc316f2dab6@linaro.org>
-Date:   Sun, 31 Jan 2021 07:11:54 -0600
+        Sun, 31 Jan 2021 05:15:54 -0800 (PST)
+Subject: Re: [PATCH v4 2/5] soc: mediatek: pwrap: add arbiter capability
+To:     Nicolas Boichat <drinkcat@chromium.org>,
+        Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Fei Shao <fshao@chromium.org>,
+        Argus Lin <argus.lin@mediatek.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        srv_heupstream <srv_heupstream@mediatek.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
+References: <1605700894-32699-1-git-send-email-hsin-hsiung.wang@mediatek.com>
+ <1605700894-32699-3-git-send-email-hsin-hsiung.wang@mediatek.com>
+ <CANMq1KDsNRk0FWDO3bnbhLrXPhW7O_OVD_a7Q01+ZvuGWL3dhA@mail.gmail.com>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <79cc3385-ad65-db14-124d-53cd69c979be@gmail.com>
+Date:   Sun, 31 Jan 2021 14:15:53 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <e27f5c10-7b77-1f12-fe36-e9261f01bca1@linaro.org>
+In-Reply-To: <CANMq1KDsNRk0FWDO3bnbhLrXPhW7O_OVD_a7Q01+ZvuGWL3dhA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/30/21 10:29 PM, Alex Elder wrote:
-> On 1/30/21 9:25 AM, Willem de Bruijn wrote:
->> On Fri, Jan 29, 2021 at 3:29 PM Alex Elder <elder@linaro.org> wrote:
->>>
->>> The channel stop and suspend paths both call __gsi_channel_stop(),
->>> which quiesces channel activity, disables NAPI, and (on other than
->>> SDM845) stops the channel.  Similarly, the start and resume paths
->>> share __gsi_channel_start(), which starts the channel and re-enables
->>> NAPI again.
->>>
->>> Disabling NAPI should be done when stopping a channel, but this
->>> should *not* be done when suspending.  It's not necessary in the
->>> suspend path anyway, because the stopped channel (or suspended
->>> endpoint on SDM845) will not cause interrupts to schedule NAPI,
->>> and gsi_channel_trans_quiesce() won't return until there are no
->>> more transactions to process in the NAPI polling loop.
+
+
+On 21/12/2020 03:33, Nicolas Boichat wrote:
+> On Wed, Nov 18, 2020 at 8:08 PM Hsin-Hsiung Wang
+> <hsin-hsiung.wang@mediatek.com> wrote:
 >>
->> But why is it incorrect to do so?
-> 
-> Maybe it's not; I also thought it was fine before, but...
-> 
-> Someone at Qualcomm asked me why I thought NAPI needed
-> to be disabled on suspend.  My response was basically
-> that it was a lightweight operation, and it shouldn't
-> really be a problem to do so.
-> 
-> Then, when I posted two patches last month, Jakub's
-> response told me he didn't understand why I was doing
-> what I was doing, and I stepped back to reconsider
-> the details of what was happening at suspend time.
-> 
-> https://lore.kernel.org/netdev/20210107183803.47308e23@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com/
-
-I should have mentioned that *this* response from Jakub
-to a question I had also led to my conclusion that NAPI
-should not be disabled on suspend--at least for IPA.
-  https://lore.kernel.org/netdev/20210105122328.3e5569a4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com/
-
-The channel is *not* reset on suspend for IPA.
-
-					-Alex
-
-> Four things were happening to suspend a channel:
-> quiesce activity; disable interrupt; disable NAPI;
-> and stop the channel.  It occurred to me that a
-> stopped channel would not generate interrupts, so if
-> the channel was stopped earlier there would be no need
-> to disable the interrupt.  Similarly there would be
-> (essentially) no need to disable NAPI once a channel
-> was stopped.
-> 
-> Underlying all of this is that I started chasing a
-> hang that was occurring on suspend over a month ago.
-> It was hard to reproduce (hundreds or thousands of
-> suspend/resume cycles without hitting it), and one
-> of the few times I actually hit the problem it was
-> stuck in napi_disable(), apparently waiting for
-> NAPI_STATE_SCHED to get cleared by napi_complete().
-> 
-> My best guess about how this could occur was if there
-> were a race of some kind between the interrupt handler
-> (scheduling NAPI) and the poll function (completing
-> it).  I found a number of problems while looking
-> at this, and in the past few weeks I've posted some
-> fixes to improve things.  Still, even with some of
-> these fixes in place we have seen a hang (but now
-> even more rarely).
-> 
-> So this grand rework of suspending/stopping channels
-> is an attempt to resolve this hang on suspend.
-> 
-> The channel is now stopped early, and once stopped,
-> everything that completed prior to the channel being
-> stopped is polled before considering the suspend
-> function done.  A stopped channel won't interrupt,
-> so we don't bother disabling the completion interrupt,
-> with no interrupts, NAPI won't be scheduled, so there's
-> no need to disable NAPI either.
-> 
-> The net result is simpler, and seems logical, and
-> should preclude any possible race between the interrupt
-> handler and poll function.  I'm trying to solve the
-> hang problem analytically, because it takes *so* long
-> to reproduce.
-> 
-> I'm open to other suggestions.
-> 
->                     -Alex
-> 
->>  From a quick look, virtio-net disables on both remove and freeze, for instance.
+>> Add arbiter capability for pwrap driver.
+>> The arbiter capability uses new design to judge the priority and latency
+>> for multi-channel.
+>> This patch is preparing for adding mt6873/8192 pwrap support.
 >>
->>> Instead, enable NAPI in gsi_channel_start(), when the completion
->>> interrupt is first enabled.  Disable it again in gsi_channel_stop(),
->>> when finally disabling the interrupt.
->>>
->>> Add a call to napi_synchronize() to __gsi_channel_stop(), to ensure
->>> NAPI polling is done before moving on.
->>>
->>> Signed-off-by: Alex Elder <elder@linaro.org>
->>> ---
->> =
->>> @@ -894,12 +894,16 @@ int gsi_channel_start(struct gsi *gsi, u32 channel_id)
->>>          struct gsi_channel *channel = &gsi->channel[channel_id];
->>>          int ret;
->>>
->>> -       /* Enable the completion interrupt */
->>> +       /* Enable NAPI and the completion interrupt */
->>> +       napi_enable(&channel->napi);
->>>          gsi_irq_ieob_enable_one(gsi, channel->evt_ring_id);
->>>
->>>          ret = __gsi_channel_start(channel, true);
->>> -       if (ret)
->>> -               gsi_irq_ieob_disable_one(gsi, channel->evt_ring_id);
->>> +       if (!ret)
->>> +               return 0;
->>> +
->>> +       gsi_irq_ieob_disable_one(gsi, channel->evt_ring_id);
->>> +       napi_disable(&channel->napi);
->>>
->>>          return ret;
->>>   }
+>> Signed-off-by: Hsin-Hsiung Wang <hsin-hsiung.wang@mediatek.com>
+>> ---
+>>  drivers/soc/mediatek/mtk-pmic-wrap.c | 57 ++++++++++++++++++++++++++++++------
+>>  1 file changed, 48 insertions(+), 9 deletions(-)
 >>
->> subjective, but easier to parse when the normal control flow is linear
->> and the error path takes a branch (or goto, if reused).
+>> diff --git a/drivers/soc/mediatek/mtk-pmic-wrap.c b/drivers/soc/mediatek/mtk-pmic-wrap.c
+>> index c897205..5678f46 100644
+>> --- a/drivers/soc/mediatek/mtk-pmic-wrap.c
+>> +++ b/drivers/soc/mediatek/mtk-pmic-wrap.c
+>> @@ -25,10 +25,12 @@
 >>
+>>  /* macro for wrapper status */
+>>  #define PWRAP_GET_WACS_RDATA(x)                (((x) >> 0) & 0x0000ffff)
+>> +#define PWRAP_GET_WACS_ARB_FSM(x)      (((x) >> 1) & 0x00000007)
+>>  #define PWRAP_GET_WACS_FSM(x)          (((x) >> 16) & 0x00000007)
+>>  #define PWRAP_GET_WACS_REQ(x)          (((x) >> 19) & 0x00000001)
+>>  #define PWRAP_STATE_SYNC_IDLE0         BIT(20)
+>>  #define PWRAP_STATE_INIT_DONE0         BIT(21)
+>> +#define PWRAP_STATE_INIT_DONE1         BIT(15)
+>>
+>>  /* macro for WACS FSM */
+>>  #define PWRAP_WACS_FSM_IDLE            0x00
+>> @@ -74,6 +76,7 @@
+>>  #define PWRAP_CAP_DCM          BIT(2)
+>>  #define PWRAP_CAP_INT1_EN      BIT(3)
+>>  #define PWRAP_CAP_WDT_SRC1     BIT(4)
+>> +#define PWRAP_CAP_ARB          BIT(5)
+>>
+>>  /* defines for slave device wrapper registers */
+>>  enum dew_regs {
+>> @@ -340,6 +343,8 @@ enum pwrap_regs {
+>>         PWRAP_DCM_DBC_PRD,
+>>         PWRAP_EINT_STA0_ADR,
+>>         PWRAP_EINT_STA1_ADR,
+>> +       PWRAP_SWINF_2_WDATA_31_0,
+>> +       PWRAP_SWINF_2_RDATA_31_0,
+>>
+>>         /* MT2701 only regs */
+>>         PWRAP_ADC_CMD_ADDR,
+>> @@ -1108,14 +1113,22 @@ static void pwrap_writel(struct pmic_wrapper *wrp, u32 val, enum pwrap_regs reg)
+>>
+>>  static bool pwrap_is_fsm_idle(struct pmic_wrapper *wrp)
+>>  {
+>> -       u32 val = pwrap_readl(wrp, PWRAP_WACS2_RDATA);
+>> +       u32 val;
+>> +
+>> +       val = pwrap_readl(wrp, PWRAP_WACS2_RDATA);
+>> +       if (HAS_CAP(wrp->master->caps, PWRAP_CAP_ARB))
+>> +               return PWRAP_GET_WACS_ARB_FSM(val) == PWRAP_WACS_FSM_IDLE;
+>>
+>>         return PWRAP_GET_WACS_FSM(val) == PWRAP_WACS_FSM_IDLE;
+>>  }
+>>
+>>  static bool pwrap_is_fsm_vldclr(struct pmic_wrapper *wrp)
+>>  {
+>> -       u32 val = pwrap_readl(wrp, PWRAP_WACS2_RDATA);
+>> +       u32 val;
+>> +
+>> +       val = pwrap_readl(wrp, PWRAP_WACS2_RDATA);
+>> +       if (HAS_CAP(wrp->master->caps, PWRAP_CAP_ARB))
+>> +               return PWRAP_GET_WACS_ARB_FSM(val) == PWRAP_WACS_FSM_WFVLDCLR;
 > 
+> This code is now copied twice. Do you think it'd be better to create a
+> new function?
+> 
+> static u32 pwrap_get_fsm_state(struct pmic_wrapper *wrp) {
+>    if (HAS_CAP(wrp->master->caps, PWRAP_CAP_ARB))
+>       return PWRAP_GET_WACS_ARB_FSM(val);
+>    else
+>       return PWRAP_GET_WACS_FSM(val);
+> }
+> 
+>>
+>>         return PWRAP_GET_WACS_FSM(val) == PWRAP_WACS_FSM_WFVLDCLR;
+>>  }
+>> @@ -1165,6 +1178,7 @@ static int pwrap_wait_for_state(struct pmic_wrapper *wrp,
+>>  static int pwrap_read16(struct pmic_wrapper *wrp, u32 adr, u32 *rdata)
+>>  {
+>>         int ret;
+>> +       u32 val;
+>>
+>>         ret = pwrap_wait_for_state(wrp, pwrap_is_fsm_idle);
+>>         if (ret) {
+>> @@ -1172,13 +1186,21 @@ static int pwrap_read16(struct pmic_wrapper *wrp, u32 adr, u32 *rdata)
+>>                 return ret;
+>>         }
+>>
+>> -       pwrap_writel(wrp, (adr >> 1) << 16, PWRAP_WACS2_CMD);
+>> +       if (HAS_CAP(wrp->master->caps, PWRAP_CAP_ARB))
+>> +               val = adr;
+>> +       else
+>> +               val = (adr >> 1) << 16;
+>> +       pwrap_writel(wrp, val, PWRAP_WACS2_CMD);
+>>
+>>         ret = pwrap_wait_for_state(wrp, pwrap_is_fsm_vldclr);
+>>         if (ret)
+>>                 return ret;
+>>
+>> -       *rdata = PWRAP_GET_WACS_RDATA(pwrap_readl(wrp, PWRAP_WACS2_RDATA));
+>> +       if (HAS_CAP(wrp->master->caps, PWRAP_CAP_ARB))
+>> +               val = pwrap_readl(wrp, PWRAP_SWINF_2_RDATA_31_0);
+>> +       else
+>> +               val = pwrap_readl(wrp, PWRAP_WACS2_RDATA);
+>> +       *rdata = PWRAP_GET_WACS_RDATA(val);
+>>
+>>         pwrap_writel(wrp, 1, PWRAP_WACS2_VLDCLR);
+>>
+>> @@ -1228,8 +1250,13 @@ static int pwrap_write16(struct pmic_wrapper *wrp, u32 adr, u32 wdata)
+>>                 return ret;
+>>         }
+>>
+>> -       pwrap_writel(wrp, (1 << 31) | ((adr >> 1) << 16) | wdata,
+>> -                    PWRAP_WACS2_CMD);
+>> +       if (HAS_CAP(wrp->master->caps, PWRAP_CAP_ARB)) {
+>> +               pwrap_writel(wrp, wdata, PWRAP_SWINF_2_WDATA_31_0);
+>> +               pwrap_writel(wrp, BIT(29) | adr, PWRAP_WACS2_CMD);
+>> +       } else {
+>> +               pwrap_writel(wrp, BIT(31) | ((adr >> 1) << 16) | wdata,
+>> +                            PWRAP_WACS2_CMD);
+>> +       }
+>>
+>>         return 0;
+>>  }
+>> @@ -2022,6 +2049,7 @@ MODULE_DEVICE_TABLE(of, of_pwrap_match_tbl);
+>>  static int pwrap_probe(struct platform_device *pdev)
+>>  {
+>>         int ret, irq;
+>> +       u32 mask_done;
+>>         struct pmic_wrapper *wrp;
+>>         struct device_node *np = pdev->dev.of_node;
+>>         const struct of_device_id *of_slave_id = NULL;
+>> @@ -2116,14 +2144,21 @@ static int pwrap_probe(struct platform_device *pdev)
+>>                 }
+>>         }
+>>
+>> -       if (!(pwrap_readl(wrp, PWRAP_WACS2_RDATA) & PWRAP_STATE_INIT_DONE0)) {
+>> +       if (HAS_CAP(wrp->master->caps, PWRAP_CAP_ARB))
+>> +               mask_done = PWRAP_STATE_INIT_DONE1;
+>> +       else
+>> +               mask_done = PWRAP_STATE_INIT_DONE0;
+>> +
+>> +       if (!(pwrap_readl(wrp, PWRAP_WACS2_RDATA) & mask_done)) {
+>>                 dev_dbg(wrp->dev, "initialization isn't finished\n");
+>>                 ret = -ENODEV;
+>>                 goto err_out2;
+>>         }
+>>
+>>         /* Initialize watchdog, may not be done by the bootloader */
+>> -       pwrap_writel(wrp, 0xf, PWRAP_WDT_UNIT);
+>> +       if (!HAS_CAP(wrp->master->caps, PWRAP_CAP_ARB))
+>> +               pwrap_writel(wrp, 0xf, PWRAP_WDT_UNIT);
+>> +
+> 
+> To expand on Matthias' question on v3
+> (https://patchwork.kernel.org/project/linux-mediatek/patch/1600686235-27979-3-git-send-email-hsin-hsiung.wang@mediatek.com/):
+> is there any PWRAP implementation where a design with an arbiter is
+> still able to control the watchdog?
+> 
+> If not, at the very least, it'd be good to expand the comment above
+> (e.g. "designs with arbiter support cannot change the watchdog
+> timer").
+> 
+>>         /*
+>>          * Since STAUPD was not used on mt8173 platform,
+>>          * so STAUPD of WDT_SRC which should be turned off
+>> @@ -2132,7 +2167,11 @@ static int pwrap_probe(struct platform_device *pdev)
+>>         if (HAS_CAP(wrp->master->caps, PWRAP_CAP_WDT_SRC1))
+>>                 pwrap_writel(wrp, wrp->master->wdt_src, PWRAP_WDT_SRC_EN_1);
+>>
+>> -       pwrap_writel(wrp, 0x1, PWRAP_TIMER_EN);
+>> +       if (!HAS_CAP(wrp->master->caps, PWRAP_CAP_ARB))
+> 
+> Please invert this if test:
+> 
+> if (HAS_CAP(wrp->master->caps, PWRAP_CAP_ARB))
+>    ... 0x3 ...
+> else
+>    ... 0x1 ...
+> 
+>> +               pwrap_writel(wrp, 0x1, PWRAP_TIMER_EN);
+>> +       else
+>> +               pwrap_writel(wrp, 0x3, PWRAP_TIMER_EN);
+>> +
 
+Thanks for the review Nicolas, I think with these two comments addressed the
+patch is ready for mainline. Given of course that 4/5 isn't a hack with all the
+registers being not defined.
+
+Regards,
+Matthias
+
+>>         pwrap_writel(wrp, wrp->master->int_en_all, PWRAP_INT_EN);
+>>         /*
+>>          * We add INT1 interrupt to handle starvation and request exception
+>> --
+>> 2.6.4
+>> _______________________________________________
+>> Linux-mediatek mailing list
+>> Linux-mediatek@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-mediatek
