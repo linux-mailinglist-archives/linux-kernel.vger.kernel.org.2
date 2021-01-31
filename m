@@ -2,149 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 020C8309DCD
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 17:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2272E309E71
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 21:00:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231219AbhAaQE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 11:04:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230034AbhAaQEv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 11:04:51 -0500
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6BB0C06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 08:04:09 -0800 (PST)
-Received: by mail-ed1-x533.google.com with SMTP id s11so16095939edd.5
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 08:04:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ill5FtHsvnGnhyZq4PTZ+wfZWDbj85ydmjcR5hoQtSU=;
-        b=WA9qeWNS7cwGg8EThTQKocqoSAMpMXmdWEN96odCb1lDWcM2Sc6v0Qb7sDlmvA+l+I
-         A8f+UMiuSXRUXIbHorjezUUJhKowq2uMgSlOLaQKlQ2TE2CKW/8nPCtEsN+ULwFm0bCg
-         9/wX7BwKDdipxk5O1KYWXekm+8qe/E4QqrApq/d05iBQtDtZIXya1NS9k8a0s5lWncyh
-         g6ruf7EBD+cG/5qucNNMJ6+m+zjl1MiGsDM8tC4ZUV0lVOP0V6NdY9Qaskw+B2dxa5eF
-         WGMkCC6G04Cz0bCzZ3ggOUmnb142HmddZFEz3cJyHpOYgpANZbbHESkueT3GcqeRKuB9
-         a7HQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ill5FtHsvnGnhyZq4PTZ+wfZWDbj85ydmjcR5hoQtSU=;
-        b=XN86ffoYliDgWIOmwmH0Jyvm7nIj+7dvmqP6BkQy9K98sjcbkvoApRYPgN4sq1A698
-         TKSUQ24rjJFfamDKhOM9Vz2Z/mfFuwlNNiKKzhPmg9c/DRlknffY1/WiXt6lNHZxhY4M
-         EV0dMoul17PUBteNyKvc6AV2ua/J8NDVK9KLx1aTe3T3LWssFptG3q2StvbpczMPepDW
-         3MxblLjrw8bTUwL60MUZCChwnPIdq1a+rGgOnAfZB9hPqa/VneJ8VFNffSwb2WRaydG3
-         Y5+FY6Mx37aHlynbwxT+PXsBfBhTqjo5uEg3VqbzBDq7ZCPNwlaYvrn/9RWf00vlXpDL
-         e9FQ==
-X-Gm-Message-State: AOAM533VizPFrmY7SFqsJlkAzDmBKjS0x0XbPjcw+UH4Lw7aCZbqTdhw
-        GrGZokUCaLsFwUvPDn2HcMK3Zr+d22M1sfYnEt5f6w==
-X-Google-Smtp-Source: ABdhPJyCGWQ/3ra4ZR4qn/M+OGAua47G1o3uToLGNFPGWhEhJk7alqSH8V206c7XvCeXq7s9hKIxxI4DTjqV9Fn0UKc=
-X-Received: by 2002:a05:6402:402:: with SMTP id q2mr14874940edv.116.1612109048337;
- Sun, 31 Jan 2021 08:04:08 -0800 (PST)
-MIME-Version: 1.0
-References: <20210125194751.1275316-8-pasha.tatashin@soleen.com> <20210131130903.4875-1-lecopzer@gmail.com>
-In-Reply-To: <20210131130903.4875-1-lecopzer@gmail.com>
-From:   Pavel Tatashin <pasha.tatashin@soleen.com>
-Date:   Sun, 31 Jan 2021 11:03:32 -0500
-Message-ID: <CA+CK2bC_LKeffiYq8eraM-rLBFPfUS1034eD6FKQo5eR7s28Ew@mail.gmail.com>
-Subject: Re: [PATCH v8 07/14] mm: honor PF_MEMALLOC_PIN for all movable pages
-To:     Lecopzer Chen <lecopzer@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>,
-        James Morris <jmorris@namei.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
+        id S231608AbhAaUAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 15:00:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231627AbhAaTys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 14:54:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E2CA64E29;
+        Sun, 31 Jan 2021 17:24:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612113888;
+        bh=Pgx1xQlhxhvc42+ZU5Of6p7hke3nHkCDSMZPPWV20MQ=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=mRwJZlNBMjLMTVToV0i6u22MXY6CBw1J8Y/fBNV7iJHUUenqSxm9CMSnZ1gNW9vAC
+         2JQlfL3fPYV8EjhFRkEkTbnFG4pOw2f4BSQC39cWDmDJ/far8IWx5RKVG3Ij7GpCvL
+         rlCFj44otlIEfCFF2ygjvn0z79cN4i+D20lFy00wzzRUpMUto4Cp3eY7Yx+9FdFU/A
+         rqrMoDiXQn37UYPcgSl3cReM9vz1eCELrY7FP0fWUjc20DpWpxdR1jmF/t+MehB4fL
+         nTwZQhGtfu5Q6j9AYXtOWy23xm/4SGb+2+nc80gFMcHm47qAovxOsB0NmAGOtR4Bgu
+         gqE+l5L6qYDqw==
+From:   Andy Lutomirski <luto@kernel.org>
+To:     x86@kernel.org
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>, stable@vger.kernel.org,
         Peter Zijlstra <peterz@infradead.org>,
-        David Rientjes <rientjes@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Christoph Hellwig <hch@lst.de>
+Subject: [PATCH 01/11] x86/fault: Fix AMD erratum #91 errata fixup for user code
+Date:   Sun, 31 Jan 2021 09:24:32 -0800
+Message-Id: <7aaa6ff8d29faea5a9324a85e5ad6c41c654e9e0.1612113550.git.luto@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <cover.1612113550.git.luto@kernel.org>
+References: <cover.1612113550.git.luto@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 8:09 AM Lecopzer Chen <lecopzer@gmail.com> wrote:
->
->
-> Hi,
->
-> [...]
-> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> > index c93e801a45e9..3f17c73ad582 100644
-> > --- a/mm/page_alloc.c
-> > +++ b/mm/page_alloc.c
-> > @@ -3807,16 +3807,13 @@ alloc_flags_nofragment(struct zone *zone, gfp_t gfp_mask)
-> >       return alloc_flags;
-> >  }
-> >
-> > -static inline unsigned int current_alloc_flags(gfp_t gfp_mask,
-> > -                                     unsigned int alloc_flags)
-> > +/* Must be called after current_gfp_context() which can change gfp_mask */
-> > +static inline unsigned int gpf_to_alloc_flags(gfp_t gfp_mask,
-> > +                                           unsigned int alloc_flags)
-> >  {
-> >  #ifdef CONFIG_CMA
-> > -     unsigned int pflags = current->flags;
-> > -
-> > -     if (!(pflags & PF_MEMALLOC_PIN) &&
-> > -         gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
-> > +     if (gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
-> >               alloc_flags |= ALLOC_CMA;
-> > -
-> >  #endif
-> >       return alloc_flags;
-> >  }
-> > @@ -4472,7 +4469,7 @@ gfp_to_alloc_flags(gfp_t gfp_mask)
-> >       } else if (unlikely(rt_task(current)) && !in_interrupt())
-> >               alloc_flags |= ALLOC_HARDER;
-> >
-> > -     alloc_flags = current_alloc_flags(gfp_mask, alloc_flags);
-> > +     alloc_flags = gpf_to_alloc_flags(gfp_mask, alloc_flags);
-> >
-> >       return alloc_flags;
-> >  }
-> > @@ -4774,7 +4771,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
-> >
-> >       reserve_flags = __gfp_pfmemalloc_flags(gfp_mask);
-> >       if (reserve_flags)
-> > -             alloc_flags = current_alloc_flags(gfp_mask, reserve_flags);
-> > +             alloc_flags = gpf_to_alloc_flags(gfp_mask, reserve_flags);
-> >
-> >       /*
-> >        * Reset the nodemask and zonelist iterators if memory policies can be
-> > @@ -4943,7 +4940,7 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
-> >       if (should_fail_alloc_page(gfp_mask, order))
-> >               return false;
-> >
-> > -     *alloc_flags = current_alloc_flags(gfp_mask, *alloc_flags);
-> > +     *alloc_flags = gpf_to_alloc_flags(gfp_mask, *alloc_flags);
->
-> I have a question, what is the abbreviation of "gpf" in the function
-> name gpf_to_alloc_flags()?
->
-> It seems that this function still use gfp_mask, is this supposed
-> to be gfp (Get Free Page)?
+The recent rework of probe_kernel_read() and its conversion to
+get_kernel_nofault() inadvertently broke is_prefetch().  We were using
+probe_kernel_read() as a sloppy "read user or kernel memory" helper, but it
+doens't do that any more.  The new get_kernel_nofault() reads *kernel*
+memory only, which completely broke is_prefetch() for user access.
 
-Thank you for noticing this, it was accidental, I will rename the
-function gpf_to_alloc_flags() -> gfp_to_alloc_flags()
+Adjust the code to the the correct accessor based on access mode.  The
+manual address bounds check is no longer necessary, since the accessor
+helpers (get_user() / get_kernel_nofault()) do the right thing all by
+themselves.  As a bonus, by using the correct accessor, we don't need the
+open-coded address bounds check.
 
->
-> Thanks,
-> Lecopzer
->
+While we're at it, disable the workaround on all CPUs except AMD Family
+0xF.  By my reading of the Revision Guide for AMD Athlon™ 64 and AMD
+Opteron™ Processors, only family 0xF is affected.
+
+Fixes: eab0c6089b68 ("maccess: unify the probe kernel arch hooks")
+Cc: stable@vger.kernel.org
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Cc: Alexei Starovoitov <ast@kernel.org>
+Cc: Daniel Borkmann <daniel@iogearbox.net>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
+---
+ arch/x86/mm/fault.c | 31 +++++++++++++++++++++----------
+ 1 file changed, 21 insertions(+), 10 deletions(-)
+
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index 106b22d1d189..50dfdc71761e 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -54,7 +54,7 @@ kmmio_fault(struct pt_regs *regs, unsigned long addr)
+  * 32-bit mode:
+  *
+  *   Sometimes AMD Athlon/Opteron CPUs report invalid exceptions on prefetch.
+- *   Check that here and ignore it.
++ *   Check that here and ignore it.  This is AMD erratum #91.
+  *
+  * 64-bit mode:
+  *
+@@ -83,11 +83,7 @@ check_prefetch_opcode(struct pt_regs *regs, unsigned char *instr,
+ #ifdef CONFIG_X86_64
+ 	case 0x40:
+ 		/*
+-		 * In AMD64 long mode 0x40..0x4F are valid REX prefixes
+-		 * Need to figure out under what instruction mode the
+-		 * instruction was issued. Could check the LDT for lm,
+-		 * but for now it's good enough to assume that long
+-		 * mode only uses well known segments or kernel.
++		 * In 64-bit mode 0x40..0x4F are valid REX prefixes
+ 		 */
+ 		return (!user_mode(regs) || user_64bit_mode(regs));
+ #endif
+@@ -124,23 +120,38 @@ is_prefetch(struct pt_regs *regs, unsigned long error_code, unsigned long addr)
+ 	if (error_code & X86_PF_INSTR)
+ 		return 0;
+ 
++	if (likely(boot_cpu_data.x86_vendor != X86_VENDOR_AMD
++		   || boot_cpu_data.x86 != 0xf))
++		return 0;
++
+ 	instr = (void *)convert_ip_to_linear(current, regs);
+ 	max_instr = instr + 15;
+ 
+-	if (user_mode(regs) && instr >= (unsigned char *)TASK_SIZE_MAX)
+-		return 0;
++	/*
++	 * This code has historically always bailed out if IP points to a
++	 * not-present page (e.g. due to a race).  No one has ever
++	 * complained about this.
++	 */
++	pagefault_disable();
+ 
+ 	while (instr < max_instr) {
+ 		unsigned char opcode;
+ 
+-		if (get_kernel_nofault(opcode, instr))
+-			break;
++		if (user_mode(regs)) {
++			if (get_user(opcode, instr))
++				break;
++		} else {
++			if (get_kernel_nofault(opcode, instr))
++				break;
++		}
+ 
+ 		instr++;
+ 
+ 		if (!check_prefetch_opcode(regs, instr, opcode, &prefetch))
+ 			break;
+ 	}
++
++	pagefault_enable();
+ 	return prefetch;
+ }
+ 
+-- 
+2.29.2
+
