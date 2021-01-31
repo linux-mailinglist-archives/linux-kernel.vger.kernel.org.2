@@ -2,169 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1082309DC8
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 17:04:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 020C8309DCD
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 17:06:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231314AbhAaQDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 11:03:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53772 "EHLO
+        id S231219AbhAaQE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 11:04:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhAaQDa (ORCPT
+        with ESMTP id S230034AbhAaQEv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 11:03:30 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19582C061573;
-        Sun, 31 Jan 2021 08:02:46 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id x71so15990859oia.9;
-        Sun, 31 Jan 2021 08:02:46 -0800 (PST)
+        Sun, 31 Jan 2021 11:04:51 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6BB0C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 08:04:09 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id s11so16095939edd.5
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 08:04:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oQ+2ejn58IaNi0MlouEDRv20CpSyRPS7iSs23L+c8cI=;
-        b=tOHyvD+KFtPn0SkNL6yxfETU1l8kjNB0YQveWLFiVbun+vbpFNoP/UNBN+ZGgbOp42
-         NGoH0aFOIrYnrW0Tgeh8eEKGNc/h7YV904UMA0dp/RdafV8fKL8wIwt2Fkwb7UAIvjuu
-         k8iOX7lwLu3DGLbwRfw4sROESBv0/Uvi5kkOBIflUKNnEoX31OisYcE6LdMxEVVE4Gmz
-         k3VDHl9IVflw+n416Rg4mB33aGNp+KqO5aO7WABCZOEMRMgfRizlNz6JL5Fg/WQygkAd
-         +oUAC2rHzQtTb0ZgJGFNq85arRQI9tNud5zAH0PC9OZjFparQo68Ip0lm+0bDr2P6+rN
-         onXA==
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ill5FtHsvnGnhyZq4PTZ+wfZWDbj85ydmjcR5hoQtSU=;
+        b=WA9qeWNS7cwGg8EThTQKocqoSAMpMXmdWEN96odCb1lDWcM2Sc6v0Qb7sDlmvA+l+I
+         A8f+UMiuSXRUXIbHorjezUUJhKowq2uMgSlOLaQKlQ2TE2CKW/8nPCtEsN+ULwFm0bCg
+         9/wX7BwKDdipxk5O1KYWXekm+8qe/E4QqrApq/d05iBQtDtZIXya1NS9k8a0s5lWncyh
+         g6ruf7EBD+cG/5qucNNMJ6+m+zjl1MiGsDM8tC4ZUV0lVOP0V6NdY9Qaskw+B2dxa5eF
+         WGMkCC6G04Cz0bCzZ3ggOUmnb142HmddZFEz3cJyHpOYgpANZbbHESkueT3GcqeRKuB9
+         a7HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=oQ+2ejn58IaNi0MlouEDRv20CpSyRPS7iSs23L+c8cI=;
-        b=cGenCWa2VnuGX14CjkXFBfOZdlc59n7N6c+jUsbuXJ/JO+y/XD+h/SOWHeGJmnB0zL
-         u5v3o5ZYDWnGNjiYgaIUfv+bDAFGhDWkRghUc+FaiEyx8hE4N/norcWwreEFWJlhDQjG
-         sPC0nsasjnLogRdR3VsUkvzB3PkQBXpdUMFgtCOMDweYfAPeObHC7EsEVdUITKBp+hQ4
-         CTBCNMl9I10e/83Cdr6Fl+2dktLAHXhNKpykESJmTwyJ/pttgwww1GLGran+3nQv1MgC
-         8batuhvgpMQ0iFcj52OjWovY1VM+xc69HZ88c6/8F495HqpC9HXHD7HmVo7YEltjlj4N
-         +jMg==
-X-Gm-Message-State: AOAM533XzwIAT29RV4wXGYNvw32silMoclz2ClKMBuDA+uOSk5GKSRHk
-        4g2UphvZLD+5mchz4kPP4AbPOFRuc7o=
-X-Google-Smtp-Source: ABdhPJzxark+lfhMH04nQ/2Z4ygSqSYh+S69Hb9UkWuyLyiPos+JAb94L0LCfAqQtxvEbWVdnfC7Tg==
-X-Received: by 2002:aca:47ce:: with SMTP id u197mr8208137oia.101.1612108965017;
-        Sun, 31 Jan 2021 08:02:45 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u81sm827643oia.49.2021.01.31.08.02.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Jan 2021 08:02:43 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v2 3/3] usb: typec: tcpm: Get Sink VDO from fwnode
-To:     Kyle Tso <kyletso@google.com>, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org, hdegoede@redhat.com, robh+dt@kernel.org
-Cc:     badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20210131151832.215931-1-kyletso@google.com>
- <20210131151832.215931-4-kyletso@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <950a9361-4cc8-5c01-8c3d-80d812fd663d@roeck-us.net>
-Date:   Sun, 31 Jan 2021 08:02:41 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ill5FtHsvnGnhyZq4PTZ+wfZWDbj85ydmjcR5hoQtSU=;
+        b=XN86ffoYliDgWIOmwmH0Jyvm7nIj+7dvmqP6BkQy9K98sjcbkvoApRYPgN4sq1A698
+         TKSUQ24rjJFfamDKhOM9Vz2Z/mfFuwlNNiKKzhPmg9c/DRlknffY1/WiXt6lNHZxhY4M
+         EV0dMoul17PUBteNyKvc6AV2ua/J8NDVK9KLx1aTe3T3LWssFptG3q2StvbpczMPepDW
+         3MxblLjrw8bTUwL60MUZCChwnPIdq1a+rGgOnAfZB9hPqa/VneJ8VFNffSwb2WRaydG3
+         Y5+FY6Mx37aHlynbwxT+PXsBfBhTqjo5uEg3VqbzBDq7ZCPNwlaYvrn/9RWf00vlXpDL
+         e9FQ==
+X-Gm-Message-State: AOAM533VizPFrmY7SFqsJlkAzDmBKjS0x0XbPjcw+UH4Lw7aCZbqTdhw
+        GrGZokUCaLsFwUvPDn2HcMK3Zr+d22M1sfYnEt5f6w==
+X-Google-Smtp-Source: ABdhPJyCGWQ/3ra4ZR4qn/M+OGAua47G1o3uToLGNFPGWhEhJk7alqSH8V206c7XvCeXq7s9hKIxxI4DTjqV9Fn0UKc=
+X-Received: by 2002:a05:6402:402:: with SMTP id q2mr14874940edv.116.1612109048337;
+ Sun, 31 Jan 2021 08:04:08 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210131151832.215931-4-kyletso@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210125194751.1275316-8-pasha.tatashin@soleen.com> <20210131130903.4875-1-lecopzer@gmail.com>
+In-Reply-To: <20210131130903.4875-1-lecopzer@gmail.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Sun, 31 Jan 2021 11:03:32 -0500
+Message-ID: <CA+CK2bC_LKeffiYq8eraM-rLBFPfUS1034eD6FKQo5eR7s28Ew@mail.gmail.com>
+Subject: Re: [PATCH v8 07/14] mm: honor PF_MEMALLOC_PIN for all movable pages
+To:     Lecopzer Chen <lecopzer@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>,
+        James Morris <jmorris@namei.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kselftest@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/31/21 7:18 AM, Kyle Tso wrote:
-> Commit a079973f462a ("usb: typec: tcpm: Remove tcpc_config
-> configuration mechanism") removed the tcpc_config which includes the
-> Sink VDO and it is not yet added back with fwnode. Add it now.
-> 
-> Signed-off-by: Kyle Tso <kyletso@google.com>
-> ---
-> Changes since v1:
-> - updated the commit message
-> 
->  drivers/usb/typec/tcpm/tcpm.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 403a483645dd..84c8a52f8af1 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -5677,6 +5677,18 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
->  			port->new_source_frs_current = frs_current;
->  	}
->  
-> +	ret = fwnode_property_read_u32_array(fwnode, "sink-vdos", NULL, 0);
+On Sun, Jan 31, 2021 at 8:09 AM Lecopzer Chen <lecopzer@gmail.com> wrote:
+>
+>
+> Hi,
+>
+> [...]
+> > diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> > index c93e801a45e9..3f17c73ad582 100644
+> > --- a/mm/page_alloc.c
+> > +++ b/mm/page_alloc.c
+> > @@ -3807,16 +3807,13 @@ alloc_flags_nofragment(struct zone *zone, gfp_t gfp_mask)
+> >       return alloc_flags;
+> >  }
+> >
+> > -static inline unsigned int current_alloc_flags(gfp_t gfp_mask,
+> > -                                     unsigned int alloc_flags)
+> > +/* Must be called after current_gfp_context() which can change gfp_mask */
+> > +static inline unsigned int gpf_to_alloc_flags(gfp_t gfp_mask,
+> > +                                           unsigned int alloc_flags)
+> >  {
+> >  #ifdef CONFIG_CMA
+> > -     unsigned int pflags = current->flags;
+> > -
+> > -     if (!(pflags & PF_MEMALLOC_PIN) &&
+> > -         gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
+> > +     if (gfp_migratetype(gfp_mask) == MIGRATE_MOVABLE)
+> >               alloc_flags |= ALLOC_CMA;
+> > -
+> >  #endif
+> >       return alloc_flags;
+> >  }
+> > @@ -4472,7 +4469,7 @@ gfp_to_alloc_flags(gfp_t gfp_mask)
+> >       } else if (unlikely(rt_task(current)) && !in_interrupt())
+> >               alloc_flags |= ALLOC_HARDER;
+> >
+> > -     alloc_flags = current_alloc_flags(gfp_mask, alloc_flags);
+> > +     alloc_flags = gpf_to_alloc_flags(gfp_mask, alloc_flags);
+> >
+> >       return alloc_flags;
+> >  }
+> > @@ -4774,7 +4771,7 @@ __alloc_pages_slowpath(gfp_t gfp_mask, unsigned int order,
+> >
+> >       reserve_flags = __gfp_pfmemalloc_flags(gfp_mask);
+> >       if (reserve_flags)
+> > -             alloc_flags = current_alloc_flags(gfp_mask, reserve_flags);
+> > +             alloc_flags = gpf_to_alloc_flags(gfp_mask, reserve_flags);
+> >
+> >       /*
+> >        * Reset the nodemask and zonelist iterators if memory policies can be
+> > @@ -4943,7 +4940,7 @@ static inline bool prepare_alloc_pages(gfp_t gfp_mask, unsigned int order,
+> >       if (should_fail_alloc_page(gfp_mask, order))
+> >               return false;
+> >
+> > -     *alloc_flags = current_alloc_flags(gfp_mask, *alloc_flags);
+> > +     *alloc_flags = gpf_to_alloc_flags(gfp_mask, *alloc_flags);
+>
+> I have a question, what is the abbreviation of "gpf" in the function
+> name gpf_to_alloc_flags()?
+>
+> It seems that this function still use gfp_mask, is this supposed
+> to be gfp (Get Free Page)?
 
-fwnode_property_count_u32(), maybe ?
+Thank you for noticing this, it was accidental, I will rename the
+function gpf_to_alloc_flags() -> gfp_to_alloc_flags()
 
-> +	if (ret <= 0 && ret != -EINVAL) {
-> +		return -EINVAL;
-
-Why return any error except -EINVAL (including return values of 0) as -EINVAL,
-and -EINVAL as no error ?
-
-> +	} else if (ret > 0) {
-> +		port->nr_snk_vdo = min(ret, VDO_MAX_OBJECTS);
-> +		ret = fwnode_property_read_u32_array(fwnode, "sink-vdos",
-> +						     port->snk_vdo,
-> +						     port->nr_snk_vdo);
-> +		if (ret < 0)
-> +			return -EINVAL;
-
-static analyzer code used to complain about overriding error codes.
-Not sure if that is still true. Either case, why not return the
-original error ?
-
-Thanks,
-Guenter
-
-> +	}
-> +
->  	return 0;
->  }
->  
-> 
-
+>
+> Thanks,
+> Lecopzer
+>
