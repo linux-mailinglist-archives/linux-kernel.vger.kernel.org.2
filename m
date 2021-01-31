@@ -2,98 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E59B309973
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 01:40:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D17309975
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 01:41:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232477AbhAaAi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 19:38:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54892 "EHLO
+        id S232508AbhAaAkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 19:40:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230360AbhAaAiz (ORCPT
+        with ESMTP id S232139AbhAaAkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 19:38:55 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E9DC061756
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 16:38:14 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id f19so15051597ljn.5
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 16:38:14 -0800 (PST)
+        Sat, 30 Jan 2021 19:40:13 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39962C061573;
+        Sat, 30 Jan 2021 16:39:33 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id g12so18653444ejf.8;
+        Sat, 30 Jan 2021 16:39:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DD6WrpWIFpx8OEBcyiuO6A2SCACjFJeGyauo7ybABPI=;
-        b=ed5CVkLyOKnKHx2gOTRhmFxU2q6FKrW0udikjcX7cpa463TD+QKnWktODVSFA6jFSs
-         bVmfFtQ0V5LVryuIy+tzPrvF8xQCaThasnQECTTtFo+FSJLo2Q6KNKIVtQC6ATrvDjF1
-         q4Owka2JEFQ+CCivfQ0SQ8QO0QcFVbvhsbmlU=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8emZ/+wsE6Y2IQlfPHKjyHe/TnMtAbs64va9Ainsf2g=;
+        b=kaJ8pg6reY+C6iLzWJjRcGJZ9NqOq0AthZywh3MABCKnMmDLX12Utj1Mho4cRFY/nd
+         NneVVBYmJIRcPpvf3UWvUhpRhFg77xx9vFKP7jXFgJg5RfXU3h9Xp3/LdMqaQjTVcTid
+         hYoM90gxp67PuCzdC9mL/e9A6RlX0LXVe++gfesPyzFabU9xhtodeud8iLBziTcgi9Wm
+         jntSOe61Ap9ESPmKgCkXRzKM9iMUVg3ROeRvtANMAvI4DDwqrwdaDYAryB7R+HKhTvPB
+         nr73pN7JcBpOZPGezRpWbFctIvvvIv87HKd1kTAltkNtoUqL1OOGyNPQD1E+SMquXFWm
+         auNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DD6WrpWIFpx8OEBcyiuO6A2SCACjFJeGyauo7ybABPI=;
-        b=i8rfYraGdNyns2CL+qXhA6nROUxsJ0teTMM/lXHWuLDuc6nqXKBbXY+rnmCi5ReMCm
-         Z+iAg9KtZiij8VK9oS5qNfiSJnpc8By2dxkIRCXoGbNSS/tyyamOI7z3vzqtxRk4hXmp
-         PzAlyXWceKapVXlrgmLndQM3F8/FJJVOCc9LP6SfiDaLEMLgy+4vQC/LXi2LNNGqp4r5
-         7peukp8R4Q8vyVtlfp2+kUhvjhIPwQVIsSci1I5nLeyyYlAEE/Izn6nyIl8jVcsHsXxy
-         V6GjWAzVlJRYaJq1ue3jogSWhNkqhp4NPB7wYsu1KVh/VvqFV+jQBaWBbJ4QtX+ceTuu
-         SThA==
-X-Gm-Message-State: AOAM533LpAOnsGPPeaCwWQuy17kvry+e/rPlRpMz6fxyRoqbfU1USRTH
-        1VkjayrBrNX0eTtwbhxf+FeG54ebfSgDsw==
-X-Google-Smtp-Source: ABdhPJzUIx8PnO4b9i81QO44+itsxHw1pI7vAcHlxmHyOteNM9+A43ET9S47H0Q8a+hHuUp0h488Bg==
-X-Received: by 2002:a05:651c:489:: with SMTP id s9mr6317135ljc.188.1612053492711;
-        Sat, 30 Jan 2021 16:38:12 -0800 (PST)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id n4sm470576ljg.101.2021.01.30.16.38.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Jan 2021 16:38:11 -0800 (PST)
-Received: by mail-lj1-f178.google.com with SMTP id f2so15035298ljp.11
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 16:38:10 -0800 (PST)
-X-Received: by 2002:a2e:8116:: with SMTP id d22mr6026940ljg.48.1612053490367;
- Sat, 30 Jan 2021 16:38:10 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8emZ/+wsE6Y2IQlfPHKjyHe/TnMtAbs64va9Ainsf2g=;
+        b=VnBKi8WfeCscCcwKINerCQBvrnkwR0FqmNRlj65R/Esor2MI/jV1xb3dxkf/JQNby7
+         B9PzWkoM/PZvaZDjczazZrUy6MaidRcM8fVUDisAtt/KTSEmSIjB+dEp6oOuihtXnT04
+         RUeBWCz1/LW3RyXjOaLb4wMSBW9A6Icb0Rf6i68ZHEdMn82mq+Eoo9mTzH51oW6aJzln
+         j5jTBK8pDl3LR4eX9y9tLz2iucETtn6iZSMcX/kfXQ8nHjyA4Broq6jxmtMGOnyGS5hG
+         gCDd394JYuUy+Gv1k4k3bwf1J1HQMl85HhkTfSkRVaMdvLfgXGOr8zUq7kZF94CnSncf
+         UaYA==
+X-Gm-Message-State: AOAM5337z4jnyKbGjIaRd5cKDVb/CD+Kcv+b9IMsk7zZcw6n2a4whomT
+        OZMYuzp819hr3x6cT3CCfmg=
+X-Google-Smtp-Source: ABdhPJx6xTXCf8+VgIXEPV6lTUEOMThXkecyGfIYkWoZ7cyvlOrL7ftJa2mWgXImyeEiT8RGUb9Ebg==
+X-Received: by 2002:a17:906:8611:: with SMTP id o17mr11030650ejx.145.1612053571791;
+        Sat, 30 Jan 2021 16:39:31 -0800 (PST)
+Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
+        by smtp.gmail.com with ESMTPSA id b26sm6621984edy.57.2021.01.30.16.39.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Jan 2021 16:39:30 -0800 (PST)
+Date:   Sun, 31 Jan 2021 02:39:29 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Tobias Waldekranz <tobias@waldekranz.com>
+Subject: Re: [PATCH net] net: dsa: mv88e6xxx: override existent unicast
+ portvec in port_fdb_add
+Message-ID: <20210131003929.2rlr6pv5fu7vfldd@skbuf>
+References: <20210130134334.10243-1-dqfext@gmail.com>
 MIME-Version: 1.0
-References: <20210130221035.4169-1-rppt@kernel.org> <20210130221035.4169-2-rppt@kernel.org>
-In-Reply-To: <20210130221035.4169-2-rppt@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 30 Jan 2021 16:37:54 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjJLdjqN2W_hwUmYCM8u=1tWnKsm46CYfdKPP__anGvJw@mail.gmail.com>
-Message-ID: <CAHk-=wjJLdjqN2W_hwUmYCM8u=1tWnKsm46CYfdKPP__anGvJw@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] x86/setup: always add the beginning of RAM as memblock.memory
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        David Hildenbrand <david@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        =?UTF-8?Q?=C5=81ukasz_Majczak?= <lma@semihalf.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, stable <stable@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210130134334.10243-1-dqfext@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 2:10 PM Mike Rapoport <rppt@kernel.org> wrote:
->
-> In either case, e820__memblock_setup() won't add the range 0x0000 - 0x1000
-> to memblock.memory and later during memory map initialization this range is
-> left outside any zone.
+On Sat, Jan 30, 2021 at 09:43:34PM +0800, DENG Qingfang wrote:
+> Having multiple destination ports for a unicast address does not make
+> sense.
+> Make port_db_load_purge override existent unicast portvec instead of
+> adding a new port bit.
+> 
+> Fixes: 884729399260 ("net: dsa: mv88e6xxx: handle multiple ports in ATU")
+> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+> ---
 
-Honestly, this just sounds like memblock being stupid in the first place.
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
 
-Why aren't these zones padded to sane alignments?
-
-This patch smells like working around the memblock code being fragile
-rather than a real fix.
-
-That's *particularly* true when the very line above it did a
-"memblock_reserve()" of the exact same range that the memblock_add()
-"adds".
-
-              Linus
+Tobias has a point in a way too, you should get used to adding the
+'master static' flags to your bridge fdb commands, otherwise weird
+things like this could happen. The faulty code can only be triggered
+when going through dsa_legacy_fdb_add, but it is still faulty
+nonetheless.
