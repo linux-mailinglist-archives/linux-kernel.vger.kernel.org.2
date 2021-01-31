@@ -2,486 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AFBA309A40
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 05:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CD02309A3B
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 05:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbhAaEgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 23:36:25 -0500
-Received: from mga17.intel.com ([192.55.52.151]:27184 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230153AbhAaEgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 23:36:22 -0500
-IronPort-SDR: hdEQCpFuYOKB07IhCB+5lvmQEdhCCVcUEQubTM9b7dZr/Y8c55RV3dIK0ybOucCfWxJomBiebb
- aESa/f35UJBA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9880"; a="160335783"
-X-IronPort-AV: E=Sophos;i="5.79,389,1602572400"; 
-   d="scan'208";a="160335783"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2021 20:35:04 -0800
-IronPort-SDR: E1aGv94P4IX53w5B66v3/0rnPhzTzXfP3cqhZkzBEodEVk40XXScOABPrf8mYavKMtI4M5GFy5
- qh4vAnn2rIcQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,389,1602572400"; 
-   d="scan'208";a="367337614"
-Received: from pl-dbox.sh.intel.com (HELO intel.com) ([10.239.159.39])
-  by fmsmga008.fm.intel.com with ESMTP; 30 Jan 2021 20:35:02 -0800
-Date:   Sun, 31 Jan 2021 12:29:25 +0800
-From:   Philip Li <philip.li@intel.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [kbuild-all] aarch64-linux-gnu-ld: warning: orphan section
- `.eh_frame' from `kernel/trace/trace_recursion_record.o' being placed in
- section `.eh_frame'
-Message-ID: <20210131042925.GC28302@intel.com>
-References: <202101311020.6pJlxWtd-lkp@intel.com>
+        id S230110AbhAaEbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 23:31:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229468AbhAaEbO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 23:31:14 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20557C061573;
+        Sat, 30 Jan 2021 20:30:33 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DSymg1Xwdz9sXk;
+        Sun, 31 Jan 2021 15:30:25 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1612067428;
+        bh=GU1L0Y5mBTCvPlNltpWJPLGQSUEyYGCgDEE9xYRszhs=;
+        h=Date:From:To:Cc:Subject:From;
+        b=fiuKrnWLayDt7+xwyWCaRi55yhFL0wTeapGIlQiSuJhPeVSrgbPAMomSmojvLDO5v
+         5UT8/xQBV32GTxyYUQllIJlH1/u+kouBZN+ZlNreE6Krc4+/t+AMOonCdfqnHjb7kW
+         Qnb7VK6YmqRXmQBhVn43Q+Y1SSf9sUllWweeI4GOFMgYeuPcABmsPaCZwBqj9wJnoK
+         hrkGwbVzdYfJaBOmkNetXE5PWQGSzbZ7mg/HJWW5sEGqUYd1GJ6HOh8StDtd+bU+hF
+         E0QL1sPDp/2kGXZkg+Gv8Id0MEsNJ4hGQy9peVKIh4ZXVag9aNXtTevylvJMPQupXR
+         7j9tIyPPN11nA==
+Date:   Sun, 31 Jan 2021 15:30:21 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Helge Deller <deller@gmx.de>,
+        Parisc List <linux-parisc@vger.kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Signed-off-by missing for commit in the parisc-hd tree
+Message-ID: <20210131153021.5febfe17@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202101311020.6pJlxWtd-lkp@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_/WMdH4nh0.8TUt6Kxc4DGrIO";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 10:09:22AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   8c947645151cc2c279c75c7f640dd8f0fc0b9aa2
-> commit: 773c16705058e9be7b0f4ce124e89cd231c120a2 ftrace: Add recording of functions that caused recursion
-> date:   3 months ago
-> config: arm64-randconfig-r013-20210130 (attached as .config)
-> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 275c6af7d7f1ed63a03d05b4484413e447133269)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install arm64 cross compiling tool for clang build
->         # apt-get install binutils-aarch64-linux-gnu
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=773c16705058e9be7b0f4ce124e89cd231c120a2
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 773c16705058e9be7b0f4ce124e89cd231c120a2
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64 
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-Sorry, kindly ignore this false positive
+--Sig_/WMdH4nh0.8TUt6Kxc4DGrIO
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> All warnings (new ones prefixed by >>):
-> 
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/irq/irq_sim.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/irq/proc.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/irq/cpuhotplug.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/irq/msi.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/irq/ipi.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/irq/affinity.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/irq/debugfs.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/rcu/update.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/rcu/sync.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/rcu/srcutree.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/rcu/rcuscale.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/rcu/refscale.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/rcu/tree.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/rcu/rcu_segcblist.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/dma/mapping.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/dma/direct.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/dma/ops_helpers.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/dma/dummy.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/dma/coherent.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/dma/swiotlb.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/dma/pool.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/dma/remap.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/freezer.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/profile.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/stacktrace.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/time.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/timer.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/hrtimer.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/timekeeping.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/ntp.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/clocksource.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/jiffies.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/timer_list.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/timeconv.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/timecounter.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/alarmtimer.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/posix-timers.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/posix-cpu-timers.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/posix-clock.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/itimer.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/clockevents.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/tick-common.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/tick-broadcast.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/tick-broadcast-hrtimer.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/sched_clock.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/tick-oneshot.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/tick-sched.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/vsyscall.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/timekeeping_debug.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/namespace.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/futex.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/smp.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/kallsyms.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/cgroup/cgroup.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/cgroup/rstat.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/cgroup/namespace.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/cgroup/cgroup-v1.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/cgroup/freezer.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/cgroup/legacy_freezer.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/cgroup/rdma.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/cgroup/cpuset.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/utsname.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/configs.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/kheaders.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/stop_machine.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/gcov/base.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/gcov/fs.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/gcov/clang.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/debug/debug_core.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/debug/gdbstub.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/watchdog.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/utsname_sysctl.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/tracepoint.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/latencytop.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_selftest_dynamic.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_clock.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/ftrace.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/ring_buffer.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/ring_buffer_benchmark.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_output.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_seq.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_stat.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_printk.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/synth_event_gen_test.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_sched_switch.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_functions.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_preemptirq.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_irqsoff.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_nop.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/blktrace.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_events.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_export.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_event_perf.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_events_filter.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_events_trigger.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_events_synth.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/power-traces.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/rpm-traces.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_dynevent.o' being placed in section `.eh_frame'
-> >> aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_recursion_record.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_benchmark.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/irq_work.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/scs.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/events/core.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/events/ring_buffer.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/events/callchain.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/events/hw_breakpoint.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/jump_label.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/context_tracking.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/torture.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/iomem.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/rseq.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/scftorture.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `certs/system_keyring.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `certs/blacklist.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `certs/blacklist_nohashes.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/filemap.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/mempool.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/oom_kill.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/fadvise.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/maccess.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/page-writeback.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/readahead.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/swap.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/truncate.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/vmscan.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/shmem.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/util.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/mmzone.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/vmstat.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/backing-dev.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/mm_init.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/percpu.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/slab_common.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/compaction.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/vmacache.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/interval_tree.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/list_lru.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/workingset.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/debug.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/gup.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/highmem.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/memory.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/mincore.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/mlock.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/mmap.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/mmu_gather.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/mprotect.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/mremap.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/msync.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/page_vma_mapped.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/pagewalk.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/pgtable-generic.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/rmap.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/vmalloc.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/ioremap.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/process_vm_access.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/page_alloc.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/init-mm.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/memblock.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/madvise.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/page_io.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/swap_state.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/swapfile.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/swap_slots.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/dmapool.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/mempolicy.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/sparse.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/sparse-vmemmap.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/ksm.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/slab.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/failslab.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/memtest.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/migrate.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/rodata_test.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/zpool.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/zbud.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/zsmalloc.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/z3fold.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/early_ioremap.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/frame_vector.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/memfd.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/ptdump.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/page_reporting.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/open.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/read_write.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/file_table.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/super.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/char_dev.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/stat.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/exec.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/pipe.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/namei.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/fcntl.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/ioctl.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/readdir.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/select.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/dcache.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/inode.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/attr.o' being placed in section `.eh_frame'
-> --
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/irq/irq_sim.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/irq/proc.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/irq/cpuhotplug.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/irq/msi.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/irq/ipi.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/irq/affinity.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/irq/debugfs.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/rcu/update.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/rcu/sync.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/rcu/srcutree.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/rcu/rcuscale.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/rcu/refscale.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/rcu/tree.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/rcu/rcu_segcblist.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/dma/mapping.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/dma/direct.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/dma/ops_helpers.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/dma/dummy.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/dma/coherent.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/dma/swiotlb.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/dma/pool.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/dma/remap.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/freezer.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/profile.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/stacktrace.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/time.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/timer.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/hrtimer.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/timekeeping.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/ntp.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/clocksource.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/jiffies.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/timer_list.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/timeconv.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/timecounter.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/alarmtimer.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/posix-timers.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/posix-cpu-timers.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/posix-clock.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/itimer.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/clockevents.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/tick-common.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/tick-broadcast.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/tick-broadcast-hrtimer.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/sched_clock.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/tick-oneshot.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/tick-sched.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/vsyscall.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/timekeeping_debug.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/time/namespace.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/futex.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/smp.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/kallsyms.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/cgroup/cgroup.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/cgroup/rstat.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/cgroup/namespace.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/cgroup/cgroup-v1.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/cgroup/freezer.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/cgroup/legacy_freezer.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/cgroup/rdma.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/cgroup/cpuset.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/utsname.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/configs.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/kheaders.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/stop_machine.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/gcov/base.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/gcov/fs.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/gcov/clang.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/debug/debug_core.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/debug/gdbstub.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/watchdog.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/utsname_sysctl.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/tracepoint.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/latencytop.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_selftest_dynamic.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_clock.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/ftrace.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/ring_buffer.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/ring_buffer_benchmark.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_output.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_seq.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_stat.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_printk.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/synth_event_gen_test.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_sched_switch.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_functions.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_preemptirq.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_irqsoff.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_nop.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/blktrace.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_events.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_export.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_event_perf.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_events_filter.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_events_trigger.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_events_synth.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/power-traces.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/rpm-traces.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_dynevent.o' being placed in section `.eh_frame'
-> >> aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_recursion_record.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/trace/trace_benchmark.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/irq_work.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/scs.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/events/core.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/events/ring_buffer.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/events/callchain.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/events/hw_breakpoint.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/jump_label.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/context_tracking.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/torture.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/iomem.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/rseq.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `kernel/scftorture.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `certs/system_keyring.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `certs/blacklist.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `certs/blacklist_nohashes.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/filemap.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/mempool.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/oom_kill.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/fadvise.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/maccess.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/page-writeback.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/readahead.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/swap.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/truncate.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/vmscan.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/shmem.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/util.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/mmzone.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/vmstat.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/backing-dev.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/mm_init.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/percpu.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/slab_common.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/compaction.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/vmacache.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/interval_tree.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/list_lru.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/workingset.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/debug.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/gup.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/highmem.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/memory.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/mincore.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/mlock.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/mmap.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/mmu_gather.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/mprotect.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/mremap.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/msync.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/page_vma_mapped.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/pagewalk.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/pgtable-generic.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/rmap.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/vmalloc.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/ioremap.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/process_vm_access.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/page_alloc.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/init-mm.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/memblock.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/madvise.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/page_io.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/swap_state.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/swapfile.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/swap_slots.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/dmapool.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/mempolicy.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/sparse.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/sparse-vmemmap.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/ksm.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/slab.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/failslab.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/memtest.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/migrate.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/rodata_test.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/zpool.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/zbud.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/zsmalloc.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/z3fold.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/early_ioremap.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/frame_vector.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/memfd.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/ptdump.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `mm/page_reporting.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/open.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/read_write.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/file_table.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/super.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/char_dev.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/stat.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/exec.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/pipe.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/namei.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/fcntl.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/ioctl.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/readdir.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/select.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/dcache.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/inode.o' being placed in section `.eh_frame'
->    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `fs/attr.o' being placed in section `.eh_frame'
-> ..
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Hi all,
 
+Commit
 
-> _______________________________________________
-> kbuild-all mailing list -- kbuild-all@lists.01.org
-> To unsubscribe send an email to kbuild-all-leave@lists.01.org
+  ca7222dcfff4 ("parisc: Bump 64-bit IRQ stack size to 64 KB")
 
+is missing a Signed-off-by from its committer.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/WMdH4nh0.8TUt6Kxc4DGrIO
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAWMl4ACgkQAVBC80lX
+0GybWwf/U6WKgWyO+x5tIvpcPYearSYVwZJiLW1XwKcti4Pdc12TH+bscCVgk8ID
+A22IM8rfx4LLHghXpQl/oFSY0ixXXLYMwY5ant/EN3SrMuRig4qlO3V13y3icWIl
+h4BwEVUg0uS+O4jacCjo8Niiqj6ghuPRjJXtahoYoUcwrCJE2Lc/+YGpG35pc04x
+LIu4JGkhH+8Q396bHvTxsZxzL0EUtahkJzKqci4sTTx3+QBBeBUGztHqfKPtXf9n
+4LMxHe0rv9jHpZL4XiqGHz5me2hFTPi4QiRsFZRUsMemcSUaXG8IkCqoM6mGfT15
+RpfbdJq5bp/XU1fKvvQQf0tEOy5V2g==
+=z/6P
+-----END PGP SIGNATURE-----
+
+--Sig_/WMdH4nh0.8TUt6Kxc4DGrIO--
