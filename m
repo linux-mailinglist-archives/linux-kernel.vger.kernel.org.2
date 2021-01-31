@@ -2,85 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 639B0309ED5
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 21:25:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5896D309ED8
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 21:25:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231433AbhAaUZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 15:25:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50730 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229596AbhAaTbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 14:31:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B1DB64E31;
-        Sun, 31 Jan 2021 18:54:46 +0000 (UTC)
-Date:   Sun, 31 Jan 2021 18:54:44 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>
-Subject: Re: [GIT PULL] arm64 fixes for 5.11-rc6
-Message-ID: <20210131185443.GA29083@gaia>
-References: <20210129190322.GA4590@gaia>
- <CAHk-=wh=1K+i6cd-Y_St3ktJAdrqriXf=ct-DcFUR2GkrraLaA@mail.gmail.com>
+        id S229724AbhAaUZL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 15:25:11 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2430 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229593AbhAaTbn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 14:31:43 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6016fd2e0000>; Sun, 31 Jan 2021 10:55:42 -0800
+Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3; Sun, 31 Jan 2021 18:55:40 +0000
+Date:   Sun, 31 Jan 2021 20:55:36 +0200
+From:   Eli Cohen <elic@nvidia.com>
+To:     Jason Wang <jasowang@redhat.com>
+CC:     <mst@redhat.com>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lulu@redhat.com>
+Subject: Re: [PATCH 2/2] vdpa/mlx5: Restore the hardware used index after
+ change map
+Message-ID: <20210131185536.GA164217@mtl-vdi-166.wap.labs.mlnx>
+References: <20210128134130.3051-1-elic@nvidia.com>
+ <20210128134130.3051-3-elic@nvidia.com>
+ <54239b51-918c-3475-dc88-4da1a4548da8@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wh=1K+i6cd-Y_St3ktJAdrqriXf=ct-DcFUR2GkrraLaA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <54239b51-918c-3475-dc88-4da1a4548da8@redhat.com>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612119342; bh=20jyDUxM3u6To5ZNhKPEZ3YUoNNoC+gbiffimVvanx4=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:Content-Transfer-Encoding:
+         In-Reply-To:User-Agent:X-Originating-IP:X-ClientProxiedBy;
+        b=AlSbCP5A1I0Kpd2HcPUrt4tbc8oXxZ3oBAHBUcIRE7EnB6KsgVRxGLJ52Qyf2kPiz
+         Hz/aTPetreiL7pt6RfXkmpfYZUaRMUhcFBfWT7+RuXL3oM+Oebq8ow158TE2Fga/G2
+         7KAZNOOytNfPA97Yn4ejgwMquzwYveN0byMIlE+bmq9JrnYhEuSyMUfHdaZuyAuVWU
+         iotc6LnFG9EFghPWIqmZSkdyRAMd4ZzEmtMPHxa9BpfMjnf7lWgv5w4ZRXjoeZZSIG
+         f3ETdPTvjFwsOMilF1OPOaZEZZ2VTAD8TvoEGDAjT8cEeG/FEe85hwgYR6JbG9AkV6
+         LZGCEuYdEcsIw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 02:09:05PM -0800, Linus Torvalds wrote:
-> On Fri, Jan 29, 2021 at 11:03 AM Catalin Marinas
-> <catalin.marinas@arm.com> wrote:
-> >
-> > arm64 fixes:
-> >
-> > - Fix the virt_addr_valid() returning true for < PAGE_OFFSET addresses.
-> 
-> That's a really odd fix.
-> 
-> It went from an incorrect bitwise operation (masking) to an _odd_
-> bitwise operation (xor).
-> 
-> Yes, PAGE_OFFSET has the bit pattern of all upper bits set, so "(addr
-> ^ PAGE_OFFSET)" by definition reverses the upper bits - and for a
-> valid case turns them to zero.
-> 
-> But isn't the *logical* thing to do to use a subtract instead? For the
-> valid cases, the two do the same thing (clear the upper bits), but
-> just conceptually, isn't the operation that you actually want to do
-> "(addr - PAGE_OFFSET)"?
-> 
-> IOW, why is it using that odd xor pattern that doesn't make much
-> sense? I believe it _works_, but it looks very strange to me.
+On Fri, Jan 29, 2021 at 11:49:45AM +0800, Jason Wang wrote:
+>=20
+> On 2021/1/28 =E4=B8=8B=E5=8D=889:41, Eli Cohen wrote:
+> > When a change of memory map occurs, the hardware resources are destroye=
+d
+> > and then re-created again with the new memory map. In such case, we nee=
+d
+> > to restore the hardware available and used indices. The driver failed t=
+o
+> > restore the used index which is added here.
+> >=20
+> > Fixes 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devi=
+ces")
+> > Signed-off-by: Eli Cohen <elic@nvidia.com>
+>=20
+>=20
+> A question. Does this mean after a vq is suspended, the hw used index is =
+not
+> equal to vq used index?
 
-This macro used to test a single bit and it evolved into a bitmask. So,
-yes, basically what we need is:
+Surely there is just one "Used index" for a VQ. What I was trying to say
+is that after the VQ is suspended, I read the used index by querying the
+hardware. The read result is the used index that the hardware wrote to
+memory. After the I create the new hardware object, I need to tell it
+what is the used index (and the available index) as a way to sync it
+with the existing VQ.
 
-#define __is_lm_address(addr)	((u64)(addr) >= PAGE_OFFSET && \
-				 (u64)(addr) < PAGE_END)
+This sync is especially important when a change of map occurs while the
+VQ was already used (hence the indices are likely to be non zero). This
+can be triggered by hot adding memory after the VQs have been used.=20
 
-I wasn't sure whether the code generation with two comparisons is
-similar to the xor variant but the compiler should probably be smart
-enough to use CMP and CCMP. In the grand scheme, it probably doesn't
-even matter.
-
-Unless I miss something, I don't see any overflow issues even if we do
-(((u64)addr - PAGE_OFFSET) < (PAGE_END - PAGE_OFFSET)).
-
-We can backport the fix already upstream and clean-up the code in
-mainline going forward (after some sanity check on the code generation).
-It would be easier to parse in the future.
-
-> Also, shouldn't _lm_to_phys() do the same? It does that "mask upper
-> bits" too that was problematic in __is_lm_address(). Again, shouldn't
-> that logically be a subtract op?
-
-Yes, that's similar and a subtract should do.
-
--- 
-Catalin
+>=20
+> Thanks
+>=20
+>=20
+> > ---
+> >   drivers/vdpa/mlx5/net/mlx5_vnet.c | 7 +++++++
+> >   1 file changed, 7 insertions(+)
+> >=20
+> > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/=
+mlx5_vnet.c
+> > index 549ded074ff3..3fc8588cecae 100644
+> > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > @@ -87,6 +87,7 @@ struct mlx5_vq_restore_info {
+> >   	u64 device_addr;
+> >   	u64 driver_addr;
+> >   	u16 avail_index;
+> > +	u16 used_index;
+> >   	bool ready;
+> >   	struct vdpa_callback cb;
+> >   	bool restore;
+> > @@ -121,6 +122,7 @@ struct mlx5_vdpa_virtqueue {
+> >   	u32 virtq_id;
+> >   	struct mlx5_vdpa_net *ndev;
+> >   	u16 avail_idx;
+> > +	u16 used_idx;
+> >   	int fw_state;
+> >   	/* keep last in the struct */
+> > @@ -804,6 +806,7 @@ static int create_virtqueue(struct mlx5_vdpa_net *n=
+dev, struct mlx5_vdpa_virtque
+> >   	obj_context =3D MLX5_ADDR_OF(create_virtio_net_q_in, in, obj_context=
+);
+> >   	MLX5_SET(virtio_net_q_object, obj_context, hw_available_index, mvq->=
+avail_idx);
+> > +	MLX5_SET(virtio_net_q_object, obj_context, hw_used_index, mvq->used_i=
+dx);
+> >   	MLX5_SET(virtio_net_q_object, obj_context, queue_feature_bit_mask_12=
+_3,
+> >   		 get_features_12_3(ndev->mvdev.actual_features));
+> >   	vq_ctx =3D MLX5_ADDR_OF(virtio_net_q_object, obj_context, virtio_q_c=
+ontext);
+> > @@ -1022,6 +1025,7 @@ static int connect_qps(struct mlx5_vdpa_net *ndev=
+, struct mlx5_vdpa_virtqueue *m
+> >   struct mlx5_virtq_attr {
+> >   	u8 state;
+> >   	u16 available_index;
+> > +	u16 used_index;
+> >   };
+> >   static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vd=
+pa_virtqueue *mvq,
+> > @@ -1052,6 +1056,7 @@ static int query_virtqueue(struct mlx5_vdpa_net *=
+ndev, struct mlx5_vdpa_virtqueu
+> >   	memset(attr, 0, sizeof(*attr));
+> >   	attr->state =3D MLX5_GET(virtio_net_q_object, obj_context, state);
+> >   	attr->available_index =3D MLX5_GET(virtio_net_q_object, obj_context,=
+ hw_available_index);
+> > +	attr->used_index =3D MLX5_GET(virtio_net_q_object, obj_context, hw_us=
+ed_index);
+> >   	kfree(out);
+> >   	return 0;
+> > @@ -1602,6 +1607,7 @@ static int save_channel_info(struct mlx5_vdpa_net=
+ *ndev, struct mlx5_vdpa_virtqu
+> >   		return err;
+> >   	ri->avail_index =3D attr.available_index;
+> > +	ri->used_index =3D attr.used_index;
+> >   	ri->ready =3D mvq->ready;
+> >   	ri->num_ent =3D mvq->num_ent;
+> >   	ri->desc_addr =3D mvq->desc_addr;
+> > @@ -1646,6 +1652,7 @@ static void restore_channels_info(struct mlx5_vdp=
+a_net *ndev)
+> >   			continue;
+> >   		mvq->avail_idx =3D ri->avail_index;
+> > +		mvq->used_idx =3D ri->used_index;
+> >   		mvq->ready =3D ri->ready;
+> >   		mvq->num_ent =3D ri->num_ent;
+> >   		mvq->desc_addr =3D ri->desc_addr;
+>=20
