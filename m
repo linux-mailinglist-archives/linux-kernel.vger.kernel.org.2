@@ -2,104 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9F2309CD8
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 15:27:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD759309CD9
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 15:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232419AbhAaOYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 09:24:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47492 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230479AbhAaNov (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 08:44:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1764D64E24;
-        Sun, 31 Jan 2021 13:44:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612100650;
-        bh=AEhfRC2GFsW0jQpuy/pTiPmQNoS8jBKYoe94U2/i/gM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UcHrIJ+lSMXxQ8dEwZFiaUBnAsUYYiFLJKM8mJHnN06JQzDm0VDoGIHpmO9uGimiC
-         YMCx/6IxfeBHf6ilhBtKBcEy/zLVbg6Bwl03Miwp6d4rrfykDw69doq2wkbHO/s36c
-         jmTX5YttWsL0vKvVrYuU2atTkSm1tHGPSjpTS4nM=
-Date:   Sun, 31 Jan 2021 14:44:07 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     =?iso-8859-1?Q?M=E5ns_Rullg=E5rd?= <mans@mansr.com>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] serial: 8250: add option to disable registration of
- legacy ISA ports
-Message-ID: <YBa0J82FrD6mdP/v@kroah.com>
-References: <20210128172244.22859-1-mans@mansr.com>
- <YBam2m2VMowH5Yth@kroah.com>
- <yw1xwnvtcki0.fsf@mansr.com>
+        id S232455AbhAaOYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 09:24:49 -0500
+Received: from mailoutvs33.siol.net ([185.57.226.224]:37289 "EHLO
+        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231476AbhAaNqY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 08:46:24 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTP id 0427552187D;
+        Sun, 31 Jan 2021 14:44:43 +0100 (CET)
+X-Virus-Scanned: amavisd-new at psrvmta10.zcs-production.pri
+Received: from mail.siol.net ([127.0.0.1])
+        by localhost (psrvmta10.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 2UVdYFwNwfuR; Sun, 31 Jan 2021 14:44:42 +0100 (CET)
+Received: from mail.siol.net (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTPS id A8106521892;
+        Sun, 31 Jan 2021 14:44:42 +0100 (CET)
+Received: from kista.localnet (cpe-86-58-58-53.static.triera.net [86.58.58.53])
+        (Authenticated sender: jernej.skrabec@siol.net)
+        by mail.siol.net (Postfix) with ESMTPA id D547952187D;
+        Sun, 31 Jan 2021 14:44:40 +0100 (CET)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Andre Przywara <andre.przywara@arm.com>
+Cc:     Samuel Holland <samuel@sholland.org>,
+        Icenowy Zheng <icenowy@aosc.io>, Rob Herring <robh@kernel.org>,
+        =?ISO-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        devicetree@vger.kernel.org, linux-rtc@vger.kernel.org
+Subject: Re: [PATCH v5 12/20] dt-bindings: rtc: sun6i: Add H616 compatible string
+Date:   Sun, 31 Jan 2021 14:44:40 +0100
+Message-ID: <1675074.8rG671tKPg@kista>
+In-Reply-To: <20210127172500.13356-13-andre.przywara@arm.com>
+References: <20210127172500.13356-1-andre.przywara@arm.com> <20210127172500.13356-13-andre.przywara@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <yw1xwnvtcki0.fsf@mansr.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 01:18:47PM +0000, Måns Rullgård wrote:
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org> writes:
-> 
-> > On Thu, Jan 28, 2021 at 05:22:44PM +0000, Mans Rullgard wrote:
-> >> On systems that do not have the traditional PC ISA serial ports, the
-> >> 8250 driver still creates non-functional device nodes.  This change
-> >> makes only ports that actually exist (PCI, DT, ...) get device nodes.
-> >> 
-> >> Signed-off-by: Mans Rullgard <mans@mansr.com>
-> >> ---
-> >>  drivers/tty/serial/8250/8250_core.c | 26 ++++++++++++++++++++------
-> >>  drivers/tty/serial/8250/Kconfig     |  5 +++++
-> >>  2 files changed, 25 insertions(+), 6 deletions(-)
-> >> 
-> >> diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8250/8250_core.c
-> >> index cae61d1ebec5..49695dd3677c 100644
-> >> --- a/drivers/tty/serial/8250/8250_core.c
-> >> +++ b/drivers/tty/serial/8250/8250_core.c
-> >> @@ -555,6 +555,7 @@ static void __init serial8250_isa_init_ports(void)
-> >>  	}
-> >>  }
-> >>  
-> >> +#ifdef CONFIG_SERIAL_8250_ISA
-> >
-> > This is just making a mess of the code. 
-> 
-> It was already a mess.
+Hi!
 
-True, but don't make it a worse one please.
+Dne sreda, 27. januar 2021 ob 18:24:52 CET je Andre Przywara napisal(a):
+> Add the obvious compatible name to the existing RTC binding, and pair
+> it with the existing H6 fallback compatible string, as the devices are
+> compatible.
+
+After close lookup I would disagree with this observation. Major difference is 
+that H616 doesn't support usage of external 32768 Hz oscillator. It uses 24 
+MHz oscillator with divider for that case. Due to that change, whole logic for 
+external oscillator should go out. Additionally, this logic overwrites default 
+value in LOSC_CTRL register, which is not nice (there is no documentation for 
+those bits). 
+
+Best regards,
+Jernej
 
 > 
-> > To do this right, pull the isa code out into a separate file and put
-> > the #ifdef in a .h file, so we can properly maintain and support this
-> > code over time.  This change as-is is not going to make that any
-> > easier :(
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> Acked-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml       | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> I might put in that effort if there's a reasonable chance this change
-> will be accepted.  If it's going to be rejected regardless, I'd rather
-> not waste my time.
+> diff --git a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-
+rtc.yaml b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> index b1b0ee769b71..4193e5813344 100644
+> --- a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> +++ b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
+> @@ -26,6 +26,9 @@ properties:
+>            - const: allwinner,sun50i-a64-rtc
+>            - const: allwinner,sun8i-h3-rtc
+>        - const: allwinner,sun50i-h6-rtc
+> +      - items:
+> +          - const: allwinner,sun50i-h616-rtc
+> +          - const: allwinner,sun50i-h6-rtc
+>  
+>    reg:
+>      maxItems: 1
+> -- 
+> 2.17.5
 > 
-> >> +config SERIAL_8250_ISA
-> >> +	bool "8250/16550 ISA device support" if EXPERT
-> >
-> > So, no one will set this?
 > 
-> I followed the pattern of the existing SERIAL_8250_PNP option.  Was that
-> a mistake?  How would you prefer it?
 
-I don't know, I'm just asking.
 
-> > What userspace visable change will be caused by this? 
-> 
-> There won't be /dev/ttyS devices for ports that don't exist.
-> 
-> > Will ports get renumbered?
-> 
-> Not if they had predictable numbers to begin with.
-
-So that would be "yes"?  If so, obviously we couldn't take this, right?
-
-thanks,
-
-greg k-h
