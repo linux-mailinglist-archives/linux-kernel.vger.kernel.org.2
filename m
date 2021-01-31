@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0B7309E84
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 21:03:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE26F309EC9
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 21:14:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231582AbhAaUDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 15:03:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42312 "EHLO
+        id S232203AbhAaUNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 15:13:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231380AbhAaTs0 (ORCPT
+        with ESMTP id S230438AbhAaTfs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 14:48:26 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF3FC061794;
-        Sun, 31 Jan 2021 09:31:26 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id j12so9991737pfj.12;
-        Sun, 31 Jan 2021 09:31:26 -0800 (PST)
+        Sun, 31 Jan 2021 14:35:48 -0500
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF0AFC061797;
+        Sun, 31 Jan 2021 09:31:46 -0800 (PST)
+Received: by mail-pj1-x1043.google.com with SMTP id gx20so343150pjb.1;
+        Sun, 31 Jan 2021 09:31:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=elcSuzCsfiYge55RbGFb9kTR1L7/5bJ4aw6jmtvexpM=;
-        b=WpI7Td9mz/HM9oDzyPiwhy3IQV1iTBEOIEuZa/D/SKv6J/4n+bccfqaJqtRyeBFtkU
-         AIunppgOPhltRXbfPQ6i0CdmjTT4pKHeTUOtLCVsoMBKww5Jz3NbeS3SPRY1nGl3ZL98
-         dlF0yT1h4whxfcj5bDWsLxsIOKibEfYPvaYWUwEpmk+9xaCMF7BIEcGIPL6YWg0IGrK0
-         s0GFcDAQ140iZGRdWkBHTMyeoMmOeCVyJEAnQu+L3l3DNAxKFhE2O82X41fLo6AoDgbV
-         SoHs/+ef54Us6Jh+NeZKEQz8yE/n3lBzU/QbQ3xu+pAVSawxWsUo1qFRP6kOTiXfbspM
-         xm3g==
+        bh=YAFVqpo2auTJUYrtqcdZaCPT+PUXtqA1yzZi4A7sg2M=;
+        b=gfsZBKg7cAaipKTK44sZULsayr/Mkqb6cPw3QqfDlqaATzBwAKNvQGRnZ8G9iQJvq6
+         y5303HIUVPKino6SaIXwqAu5Tci/Tzt2HbWQqq2MCxJn5iOrkIMyNUeri8O6BmLuVXPi
+         87qTgY1RCyNju4kNcPvB8Tw31Emb1d/uI934cKG5o1G7XkB4X8TxFGf0FcJWiMmpvKLE
+         5nAwLdxrnWcY6/lu/1MnPS8+GZ3kpEouQrjxhlnbTImavBmUiZ5epzlC3bY5Fnkxj1jl
+         e+H0b+dSu9OslMzvEStB9LLe2hkht0pV+jZbsFQZzrpFDBBuwp/SGsCzpZuqu9kk95+9
+         G3QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=elcSuzCsfiYge55RbGFb9kTR1L7/5bJ4aw6jmtvexpM=;
-        b=FPJ6tHs0n5p4lAT7WqCnJK1BrHpukeqIrcx3byIy1GUjkPjJQiqwGCEMstJxhrDZ9C
-         F1TsfYRcu/8pbuo22kUKAVKY/T63XH8r1dmEKo2iZXIy12hwnsGP5KjUeQeztbsHZ5SC
-         R+c0JFLwW4RS0dAkal9DhK4fWJ8WgFJDdg9besVvEnRgTeau78QlZD+ifjVtT1EveN9I
-         wY4pguidBZT9YZKj+KaCeLZGcvt2B3lepkaZvc91QvdtYocMeI5AEeUnVN6JDMp0I6ji
-         j5r2FG5CndoOlTWt1poVKOygO58Co+l3DAYb1b2Rif0C1rRafe9bDS+bkz1oJVzsC+Db
-         Dg3Q==
-X-Gm-Message-State: AOAM533OEKXJ2LOo2/ATnnP0c1j4qKMdKbHAvsoJI1SQdUykPW2Lit1X
-        yFuY072qsNIb9qrY9WR3MHc=
-X-Google-Smtp-Source: ABdhPJyxYeeH+ESPtB0JAl+VwK7F+t4XhpvKZBK/qumKbzweqJodO0pWHAslA+k1SpI5/DtlxhBkKQ==
-X-Received: by 2002:a63:1a44:: with SMTP id a4mr13091045pgm.41.1612114286266;
-        Sun, 31 Jan 2021 09:31:26 -0800 (PST)
+        bh=YAFVqpo2auTJUYrtqcdZaCPT+PUXtqA1yzZi4A7sg2M=;
+        b=cFtRF0Wp0zXNd0UQ79DTn7fG/SeSWM/tNxMtPPotfTVYrCl/dn+RaKvW+2vLEBXqN1
+         mqVEopeXapFRFuWBXuEz7pnFrw2J6RFybBW60PzU3F6CxbcA58pYjhohUZ/lota2W+pG
+         j06waKMlLhXxYflJugcTPF4and3/WsXZXRuf9pBSseXnxvZq1dkutxhhOxKhdiJD9Hib
+         AMzVQnfHcyEahQPIFxR9GESco5EfqM2w5YdeF3M41x1ypwJICeMZ0k4AEj4OyysuXzg5
+         e46VBFH9KVIlYytmApFS3Wqy57gpQ4NR52l3PjHQfEbaKK/zKmb262ufjnxKkV9pW/n5
+         HSYQ==
+X-Gm-Message-State: AOAM530tiYLQLNGy+UOoK+Er3sC303QORNSeRJJCNnVkxjsZK7bVI3vJ
+        JYsHbAT6uxT5rq4jBX5E+jM=
+X-Google-Smtp-Source: ABdhPJydIpBl27zWlFzSU3IhagnDXZPJq2whmVIc4lQaYyGAyMUbLfRKz+PJcImBlqe99k/sZnqEYw==
+X-Received: by 2002:a17:90a:7608:: with SMTP id s8mr6952392pjk.105.1612114306505;
+        Sun, 31 Jan 2021 09:31:46 -0800 (PST)
 Received: from localhost ([2402:3a80:11ea:e144:a2a4:c5ff:fe20:7222])
-        by smtp.gmail.com with ESMTPSA id q22sm15746139pgi.66.2021.01.31.09.31.25
+        by smtp.gmail.com with ESMTPSA id ge16sm12997426pjb.41.2021.01.31.09.31.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Jan 2021 09:31:25 -0800 (PST)
+        Sun, 31 Jan 2021 09:31:45 -0800 (PST)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
         linux-kernel@vger.kernel.org
@@ -71,17 +71,16 @@ Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Teddy Wang <teddy.wang@siliconmotion.com>,
         Stephen Rothwell <sfr@canb.auug.org.au>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
         Mike Rapoport <rppt@kernel.org>,
-        William Cohen <wcohen@redhat.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Robert Richter <rric@kernel.org>, greybus-dev@lists.linaro.org,
-        ac100@lists.launchpad.net, linux-tegra@vger.kernel.org,
-        linux-fbdev@vger.kernel.org
-Subject: [PATCH 03/13] staging: fsl-dpaa2: Switch from strlcpy to strscpy
-Date:   Sun, 31 Jan 2021 22:58:24 +0530
-Message-Id: <20210131172838.146706-4-memxor@gmail.com>
+        Robert Richter <rric@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        greybus-dev@lists.linaro.org, ac100@lists.launchpad.net,
+        linux-tegra@vger.kernel.org, linux-fbdev@vger.kernel.org
+Subject: [PATCH 04/13] staging: most: Switch from strlcpy to strscpy
+Date:   Sun, 31 Jan 2021 22:58:25 +0530
+Message-Id: <20210131172838.146706-5-memxor@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210131172838.146706-1-memxor@gmail.com>
 References: <20210131172838.146706-1-memxor@gmail.com>
@@ -101,36 +100,47 @@ This silences the related checkpatch warnings from:
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- drivers/staging/fsl-dpaa2/ethsw/ethsw-ethtool.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/staging/most/sound/sound.c | 2 +-
+ drivers/staging/most/video/video.c | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/staging/fsl-dpaa2/ethsw/ethsw-ethtool.c b/drivers/staging/fsl-dpaa2/ethsw/ethsw-ethtool.c
-index d7f4ed1df..0af2e9914 100644
---- a/drivers/staging/fsl-dpaa2/ethsw/ethsw-ethtool.c
-+++ b/drivers/staging/fsl-dpaa2/ethsw/ethsw-ethtool.c
-@@ -38,19 +38,19 @@ static void dpaa2_switch_get_drvinfo(struct net_device *netdev,
- 	u16 version_major, version_minor;
- 	int err;
+diff --git a/drivers/staging/most/sound/sound.c b/drivers/staging/most/sound/sound.c
+index 3a1a59058..c4287994b 100644
+--- a/drivers/staging/most/sound/sound.c
++++ b/drivers/staging/most/sound/sound.c
+@@ -525,7 +525,7 @@ static int audio_probe_channel(struct most_interface *iface, int channel_id,
+ 		pr_err("Incompatible channel type\n");
+ 		return -EINVAL;
+ 	}
+-	strlcpy(arg_list_cpy, arg_list, STRING_SIZE);
++	strscpy(arg_list_cpy, arg_list, STRING_SIZE);
+ 	ret = split_arg_list(arg_list_cpy, &ch_num, &sample_res);
+ 	if (ret < 0)
+ 		return ret;
+diff --git a/drivers/staging/most/video/video.c b/drivers/staging/most/video/video.c
+index 829df899b..90933d78c 100644
+--- a/drivers/staging/most/video/video.c
++++ b/drivers/staging/most/video/video.c
+@@ -245,8 +245,8 @@ static int vidioc_querycap(struct file *file, void *priv,
+ 	struct comp_fh *fh = priv;
+ 	struct most_video_dev *mdev = fh->mdev;
  
--	strlcpy(drvinfo->driver, KBUILD_MODNAME, sizeof(drvinfo->driver));
-+	strscpy(drvinfo->driver, KBUILD_MODNAME, sizeof(drvinfo->driver));
+-	strlcpy(cap->driver, "v4l2_component", sizeof(cap->driver));
+-	strlcpy(cap->card, "MOST", sizeof(cap->card));
++	strscpy(cap->driver, "v4l2_component", sizeof(cap->driver));
++	strscpy(cap->card, "MOST", sizeof(cap->card));
+ 	snprintf(cap->bus_info, sizeof(cap->bus_info),
+ 		 "%s", mdev->iface->description);
+ 	return 0;
+@@ -483,7 +483,7 @@ static int comp_probe_channel(struct most_interface *iface, int channel_idx,
+ 	mdev->v4l2_dev.release = comp_v4l2_dev_release;
  
- 	err = dpsw_get_api_version(port_priv->ethsw_data->mc_io, 0,
- 				   &version_major,
- 				   &version_minor);
- 	if (err)
--		strlcpy(drvinfo->fw_version, "N/A",
-+		strscpy(drvinfo->fw_version, "N/A",
- 			sizeof(drvinfo->fw_version));
- 	else
- 		snprintf(drvinfo->fw_version, sizeof(drvinfo->fw_version),
- 			 "%u.%u", version_major, version_minor);
- 
--	strlcpy(drvinfo->bus_info, dev_name(netdev->dev.parent->parent),
-+	strscpy(drvinfo->bus_info, dev_name(netdev->dev.parent->parent),
- 		sizeof(drvinfo->bus_info));
- }
- 
+ 	/* Create the v4l2_device */
+-	strlcpy(mdev->v4l2_dev.name, name, sizeof(mdev->v4l2_dev.name));
++	strscpy(mdev->v4l2_dev.name, name, sizeof(mdev->v4l2_dev.name));
+ 	ret = v4l2_device_register(NULL, &mdev->v4l2_dev);
+ 	if (ret) {
+ 		pr_err("v4l2_device_register() failed\n");
 -- 
 2.29.2
 
