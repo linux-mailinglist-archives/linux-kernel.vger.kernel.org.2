@@ -2,124 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 896FC309F21
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 22:39:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D472309F35
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 23:21:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbhAaVjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 16:39:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhAaVjD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 16:39:03 -0500
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88EEAC061573
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 13:38:22 -0800 (PST)
-Received: by mail-yb1-xb31.google.com with SMTP id i71so1426308ybg.7
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 13:38:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NJU/3nLWfYE6pExP6qKy6M7Ia1JZ9MD5Cnrrl/f4oLc=;
-        b=Y+1tg/H1Xmx7A4aTCK/ZDj0zKR48+r+xKEsp02jI2bykn8ngL9Z03SNKVaO7Njjn2E
-         XZM7yd5xsTDewfMVV3Xvd7DzXf2HEsQRQEbwvGbiHLpB3v3VyWCXgkDgRMdHutG2TsYr
-         CpYCd1maTZwD2fqAS9ZBWiDq68sUNFnaCydO15H3zZvFsxsrFYX0nzPEETc5rtg3FYW1
-         tECluSTl+oXOLNRfaCpxvZWIPlHM8oPYemQuyljAO9bdKWvPYCNgBL2ShNSHZfOT47O9
-         KyfhgkN8W6p3c2Yy8jKCl6azv//27bKOkLXMw2r0KvbIMVDI7M8VtJsJ1JFMpPl8G1ew
-         Nh2Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NJU/3nLWfYE6pExP6qKy6M7Ia1JZ9MD5Cnrrl/f4oLc=;
-        b=SPHWy8+6CjrwQ8FGRyR9xO5ahPNw2SNBOSl/XIDAi4uC+Xe5ffhJkW87CWyMD2vi6l
-         Cf8tTqWf8rbdfdn8FQ1W+x2PvOtMoRly9bf2jaedgrt9zZak87TTglvrLb+z2ySelhru
-         HdTNtiuekAjxyyDjarYLdow6JCfGv8nnfA6cE9dybYQ/2tG6d6OTedmyQtE969JdXrMS
-         siDBG8m1kY9d+GHs5D6TaaZZozJ2gzWRL6c2yV2WaC2pPog9X3RQnpyIIO8oLSO0tjno
-         BSX9noFF5+nZjDektRW1SltWHzyJH2X3AQDc2s+2HuI61UkSGOJbs22wg5iH3KMFgp5f
-         E0sQ==
-X-Gm-Message-State: AOAM532hwd4UmFR23yhEy/49GM92J4L2cYRT7lqMknI+83beOe0u3M2k
-        HgZovQl32P05WMbERz/NeKwHaEdZUBF/zVBDycS8aA==
-X-Google-Smtp-Source: ABdhPJz/13wWoQdSbZnWPMrkTpNSQb3LIC9NeVXKKd6iyCDn/zPoL2mUGoD6gLMrbhIq163e5RuMecC98dFMYWfF22Q=
-X-Received: by 2002:a25:cc89:: with SMTP id l131mr19432852ybf.346.1612129101478;
- Sun, 31 Jan 2021 13:38:21 -0800 (PST)
-MIME-Version: 1.0
-References: <20210130040344.2807439-1-saravanak@google.com>
-In-Reply-To: <20210130040344.2807439-1-saravanak@google.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Sun, 31 Jan 2021 13:37:45 -0800
-Message-ID: <CAGETcx9Qg5cwMckeqxUCrf+e4d49Ph-yPYPfHMzUQLYR9jsdNw@mail.gmail.com>
-Subject: Re: [PATCH v1 0/2] Make fw_devlink=on more forgiving
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+        id S229834AbhAaWUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 17:20:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37112 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229755AbhAaWNW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 17:13:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AFB164E35;
+        Sun, 31 Jan 2021 17:24:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612113891;
+        bh=SlJl7V376aZ1Rpgyzy0rzdmTxaqS15CuLY6HqKTGLU4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=caSEFYOWvDKVcEZ/oMYFnRX++pneJ6kTvdaHby1sx8LrOj5SPwd8XWmmnn8C/GWts
+         U66BMOj7IjR6mon1jWhk5y4yuR8wZDtG8PQHsOCKH+L2HrKStpCyPE9IkdNZSBwgPC
+         zNp26sx9H8ryl7mXsXOS4qDaAqKcwy+U3p/bdbu/gQ2ck7vM2qe8EjxL5f6m0xRdBt
+         RnHkMijkrqgw1GLTySofDzjFkhoWJvm/xeuH24/9p4sR8DIg/DumAo2UDrL+Fhh2Ix
+         XmkrZA9q5V+STaBXZ5aUqzH3tX+9nDP2PZ5oe2crxzMzc5mmVGhmDWNPhRl1StIjgR
+         zc5ybo1cQ4sWg==
+From:   Andy Lutomirski <luto@kernel.org>
+To:     x86@kernel.org
 Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH 05/11] x86/fault: Correct a few user vs kernel checks wrt WRUSS
+Date:   Sun, 31 Jan 2021 09:24:36 -0800
+Message-Id: <d5a32187f77197c8adddf9008c085c50d548bae2.1612113550.git.luto@kernel.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <cover.1612113550.git.luto@kernel.org>
+References: <cover.1612113550.git.luto@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 8:03 PM Saravana Kannan <saravanak@google.com> wrote:
->
-> This patch series solves two general issues with fw_devlink=on
->
-> Patch 1/2 addresses the issue of firmware nodes that look like they'll
-> have struct devices created for them, but will never actually have
-> struct devices added for them. For example, DT nodes with a compatible
-> property that don't have devices added for them.
->
-> Patch 2/2 address (for static kernels) the issue of optional suppliers
-> that'll never have a driver registered for them. So, if the device could
-> have probed with fw_devlink=permissive with a static kernel, this patch
-> should allow those devices to probe with a fw_devlink=on. This doesn't
-> solve it for the case where modules are enabled because there's no way
-> to tell if a driver will never be registered or it's just about to be
-> registered. I have some other ideas for that, but it'll have to come
-> later thinking about it a bit.
->
-> These two patches might remove the need for several other patches that
-> went in as fixes for commit e590474768f1 ("driver core: Set
-> fw_devlink=on by default"), but I think all those fixes are good
-> changes. So I think we should leave those in.
->
-> Marek, Geert,
->
-> Can you try this series on a static kernel with your OF_POPULATED
-> changes reverted? I just want to make sure these patches can identify
-> and fix those cases.
->
-> Tudor,
->
-> You should still make the clock driver fix (because it's a bug), but I
-> think this series will fix your issue too (even without the clock driver
-> fix). Can you please give this a shot?
->
-> Marc,
->
-> Can you try this series with the gpiolib fix reverted please? I'm pretty
-> sure this will fix that case.
->
-> Linus,
->
-> This series very likely removes the need for the gpiolib patch (we can
-> wait for Marc to confirm). I'm split on whether we should leave it in or
-> not. Thoughts?
+In general, page fault errors for WRUSS should be just like get_user(),
+etc.  Fix three bugs in this area:
 
-Actually, thinking more about this, we should keep the gpiolib patch.
-It'll ensure the suspend/resume order is always correct.
+We have a comment that says that, if we can't handle a page fault on a user
+address due to OOM, we will skip the OOM-kill-and-retry logic.  The code
+checked kernel *privilege*, not kernel mode, so it missed WRUSS.  This
+means that we would malfunction if we got OOM on a WRUSS fault -- this
+would be a kernel-mode, user-privilege fault, and we would invoke the OOM
+killer and retry.
 
-This series basically gives up on creating device links to firmware
-nodes that don't have a corresponding device added. The gpiolib patch
-makes sure the nodes have a device that corresponds to them. So device
-links will get created to the gpio_device and will make sure the
-parent of the gpio_device doesn't suspend before the consumers of the
-gpio.
+A failed user access from kernel while a fatal signal is pending should
+fail even if the instruction in question was WRUSS.
 
--Saravana
+do_sigbus() should not send SIGBUS for WRUSS -- it should handle it like
+any other kernel mode failure.
+
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Andy Lutomirski <luto@kernel.org>
+---
+ arch/x86/mm/fault.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+index b52064920f0d..602cdf8e070a 100644
+--- a/arch/x86/mm/fault.c
++++ b/arch/x86/mm/fault.c
+@@ -908,7 +908,7 @@ do_sigbus(struct pt_regs *regs, unsigned long error_code, unsigned long address,
+ 	  vm_fault_t fault)
+ {
+ 	/* Kernel mode? Handle exceptions or die: */
+-	if (!(error_code & X86_PF_USER)) {
++	if (!user_mode(regs)) {
+ 		no_context(regs, error_code, address, SIGBUS, BUS_ADRERR);
+ 		return;
+ 	}
+@@ -1180,7 +1180,14 @@ do_kern_addr_fault(struct pt_regs *regs, unsigned long hw_error_code,
+ }
+ NOKPROBE_SYMBOL(do_kern_addr_fault);
+ 
+-/* Handle faults in the user portion of the address space */
++/*
++ * Handle faults in the user portion of the address space.  Nothing in here
++ * should check X86_PF_USER without a specific justification: for almost
++ * all purposes, we should treat a normal kernel access to user memory
++ * (e.g. get_user(), put_user(), etc.) the same as the WRUSS instruction.
++ * The one exception is AC flag handling, which is, per the x86
++ * architecture, special for WRUSS.
++ */
+ static inline
+ void do_user_addr_fault(struct pt_regs *regs,
+ 			unsigned long error_code,
+@@ -1369,14 +1376,14 @@ void do_user_addr_fault(struct pt_regs *regs,
+ 	if (likely(!(fault & VM_FAULT_ERROR)))
+ 		return;
+ 
+-	if (fatal_signal_pending(current) && !(error_code & X86_PF_USER)) {
++	if (fatal_signal_pending(current) && !user_mode(regs)) {
+ 		no_context(regs, error_code, address, 0, 0);
+ 		return;
+ 	}
+ 
+ 	if (fault & VM_FAULT_OOM) {
+ 		/* Kernel mode? Handle exceptions or die: */
+-		if (!(error_code & X86_PF_USER)) {
++		if (!user_mode(regs)) {
+ 			no_context(regs, error_code, address,
+ 				   SIGSEGV, SEGV_MAPERR);
+ 			return;
+-- 
+2.29.2
+
