@@ -2,114 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34100309F63
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 00:11:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 366C2309F6A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 00:20:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229519AbhAaXKi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 18:10:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229852AbhAaXIp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 18:08:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27CF964E3D
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 23:08:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612134484;
-        bh=ML3pWEeMMJmeb16X1p/+6mBPgkFQK4NaFqC/8riKPtw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WdOG68mXaJDIsqRTLcV74BNTBwJoJ9ZOKw1ukhHgB3LFm9C+UrxrpaZwUE7GpMG9n
-         3JMJKvqU5mMCrAQOQTXTyeZz5ILv0/U6y3mboocgvofPc3+n5WXMwRTGFdoNeSjwOp
-         H6yt9Q6CrNVRkqq/PJUrlQxv/V+s7KyZy86soiZFsoghVtt8Yas/DV7AHZI2OVCJ2g
-         KsclbcLDLcCSrUO0LSde+dUJ+yaT008fjdAeUin5kN+K/iJlgMqAcCsnMlQmSfVU8N
-         edWP9ZzNy7Z5IcuLM3TUivxoxcvkEDIHbkWEfvcql+iFZDjU/5NGpfrLCNB0wN6tmM
-         DsenuwSY8j1Og==
-Received: by mail-oo1-f52.google.com with SMTP id z36so3807398ooi.6
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 15:08:04 -0800 (PST)
-X-Gm-Message-State: AOAM532GFuZI5kUo+7nXeiOBXqdwu+A4PtUvj7tBRuAeZxRvY+ZnqWLK
-        +PylsOrdMzTkupP0+kqXMOrpvvtsPnhaOHxTrg0=
-X-Google-Smtp-Source: ABdhPJzKIo+RoOFz1jt6KOjS5O4uIwOWM2x1Px4KxJpMLZ7ekDuu6z/sw9emrjv1JYnEjSV3peFpJYk0hXlMfKwIPls=
-X-Received: by 2002:a05:6820:283:: with SMTP id q3mr10094973ood.13.1612134483478;
- Sun, 31 Jan 2021 15:08:03 -0800 (PST)
+        id S230009AbhAaXSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 18:18:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229959AbhAaXSs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 18:18:48 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A2DC061573
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 15:18:07 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id p20so2123753ejb.6
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 15:18:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kylehuey.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=lXh/zepkoRwHY1DFPH6efVLlYByObi9Zs7kzu1OmHVs=;
+        b=HE8gI5YpC5VWSeITDW5wJGif9g8E84FVYqJe7PyTLYtmF7Ko6vvH7DPfAFF6o1uovn
+         wctlJzays4t8uqzttmBAEf63XrMpcCUfMEAUJDJPf+6Qjgp4rb9LeydN5E+Jrw9SlHmV
+         QxzVegwGXqcqkvLnHi9oNwMttp0RGHH5orkRbiqjRtqmjguDBGKOnVjAkDJz51DxyNcp
+         DrA8vD/VLwBrQyRn2R/djq/sYWSKFfowVkYg1GCgk1mbbMNqH8grwUZD3F8VfAZJkJ1s
+         c/XIYjxRKMQ8X8QVBTtlLTt3vhg6V/Gl3ENJ1LhGsIUxmSBbTkhL/yFzy8GFrCRU4UXq
+         Y2rA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=lXh/zepkoRwHY1DFPH6efVLlYByObi9Zs7kzu1OmHVs=;
+        b=IXBsCzs67EEnP6cW+txnE2x965RcageOv7NMqTPVyPhRWU/8yjGZl+ba4hnXzxvuRV
+         igdln31zyNyRcMG382IfaKCFRp1buOJQ1OL2I6uZDF4aGAzH4XBfUm3tnNxFXEMFhrTX
+         aubBdPx01eLL4SBahmorm3Rgmxp6qixoBAKC28H3P5r0SxlbdS/h8EMxDm5Kj+q+BhQE
+         sq6BtguF8kox0/CFAbitiDbmkiqiVGdmENwQJHuM4Mqbh8JtqcM3jwtEJeXeEoml75yv
+         wMQS0a1oMivzy/QZp4ef/PinPraGvCFcRFjo/gO3m1cW6LdaW5tnJIn2DgjrIg4eoSDf
+         BJEw==
+X-Gm-Message-State: AOAM533bLqni5VIOIbyybgMvj9Sjgv28oVU7OSl0ZCI3Vb/r2k48CHgP
+        TDYByhQwzlTtHioAQaOWDCUBmFuG2gskLJMcNZ13iA==
+X-Google-Smtp-Source: ABdhPJwVEwYgpcMBrXRKXFlGp+CBPu5BvQGehi5LSppJQrYgs+n+7uzHBitD+PoYi7iO7sjYIS/qbI8VdwpZuSvlEQ0=
+X-Received: by 2002:a17:906:1741:: with SMTP id d1mr15283637eje.182.1612135085987;
+ Sun, 31 Jan 2021 15:18:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20210129190322.GA4590@gaia> <CAHk-=wh=1K+i6cd-Y_St3ktJAdrqriXf=ct-DcFUR2GkrraLaA@mail.gmail.com>
- <20210131185443.GA29083@gaia>
-In-Reply-To: <20210131185443.GA29083@gaia>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 1 Feb 2021 00:07:52 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXFCR=UnvKaX2oEF_M7dm3VXr4br6e6VZCee1QN2s_RjXQ@mail.gmail.com>
-Message-ID: <CAMj1kXFCR=UnvKaX2oEF_M7dm3VXr4br6e6VZCee1QN2s_RjXQ@mail.gmail.com>
-Subject: Re: [GIT PULL] arm64 fixes for 5.11-rc6
-To:     Catalin Marinas <catalin.marinas@arm.com>
+References: <CAP045Ao_Zb0HGg0=bvUeV6GjX=-3fz0ScsvM_jE7VsZcVk_-tg@mail.gmail.com>
+ <C479ACCB-A1A5-4422-8120-999E8D54314B@amacapital.net> <CAP045AoMRNjvVd1PdHvdf-nn3LNpTDp66sp+SAmZgNU888iFQQ@mail.gmail.com>
+In-Reply-To: <CAP045AoMRNjvVd1PdHvdf-nn3LNpTDp66sp+SAmZgNU888iFQQ@mail.gmail.com>
+From:   Kyle Huey <me@kylehuey.com>
+Date:   Sun, 31 Jan 2021 15:17:54 -0800
+Message-ID: <CAP045ApWnr=UQrBrv3fHj-C6EweukMWEyrCgsiY6Bt_i1Vdj6A@mail.gmail.com>
+Subject: Re: [REGRESSION] x86/entry: TIF_SINGLESTEP handling is still broken
+To:     Andy Lutomirski <luto@amacapital.net>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Lorenzo Pieralisi <Lorenzo.Pieralisi@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "Robert O'Callahan" <rocallahan@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 31 Jan 2021 at 19:55, Catalin Marinas <catalin.marinas@arm.com> wrote:
+On Sun, Jan 31, 2021 at 2:27 PM Kyle Huey <me@kylehuey.com> wrote:
 >
-> On Fri, Jan 29, 2021 at 02:09:05PM -0800, Linus Torvalds wrote:
-> > On Fri, Jan 29, 2021 at 11:03 AM Catalin Marinas
-> > <catalin.marinas@arm.com> wrote:
+> On Sun, Jan 31, 2021 at 2:20 PM Andy Lutomirski <luto@amacapital.net> wro=
+te:
+> >
+> >
+> >
+> > > On Jan 31, 2021, at 2:08 PM, Kyle Huey <me@kylehuey.com> wrote:
 > > >
-> > > arm64 fixes:
+> > > =EF=BB=BFOn Sun, Jan 31, 2021 at 2:04 PM Andy Lutomirski <luto@amacap=
+ital.net> wrote:
+> > >> Indeed, and I have tests for this.
 > > >
-> > > - Fix the virt_addr_valid() returning true for < PAGE_OFFSET addresses.
+> > > Do you mean you already have a test case or that you would like a
+> > > minimized test case?
 > >
-> > That's a really odd fix.
-> >
-> > It went from an incorrect bitwise operation (masking) to an _odd_
-> > bitwise operation (xor).
-> >
-> > Yes, PAGE_OFFSET has the bit pattern of all upper bits set, so "(addr
-> > ^ PAGE_OFFSET)" by definition reverses the upper bits - and for a
-> > valid case turns them to zero.
-> >
-> > But isn't the *logical* thing to do to use a subtract instead? For the
-> > valid cases, the two do the same thing (clear the upper bits), but
-> > just conceptually, isn't the operation that you actually want to do
-> > "(addr - PAGE_OFFSET)"?
-> >
-> > IOW, why is it using that odd xor pattern that doesn't make much
-> > sense? I believe it _works_, but it looks very strange to me.
+> > A smallish test that we could stick in selftests would be great if that=
+=E2=80=99s straightforward.
 >
-> This macro used to test a single bit and it evolved into a bitmask. So,
-> yes, basically what we need is:
+> I'll look into it.
 >
-> #define __is_lm_address(addr)   ((u64)(addr) >= PAGE_OFFSET && \
->                                  (u64)(addr) < PAGE_END)
->
-> I wasn't sure whether the code generation with two comparisons is
-> similar to the xor variant but the compiler should probably be smart
-> enough to use CMP and CCMP. In the grand scheme, it probably doesn't
-> even matter.
->
-> Unless I miss something, I don't see any overflow issues even if we do
-> (((u64)addr - PAGE_OFFSET) < (PAGE_END - PAGE_OFFSET)).
->
-> We can backport the fix already upstream and clean-up the code in
-> mainline going forward (after some sanity check on the code generation).
-> It would be easier to parse in the future.
->
-> > Also, shouldn't _lm_to_phys() do the same? It does that "mask upper
-> > bits" too that was problematic in __is_lm_address(). Again, shouldn't
-> > that logically be a subtract op?
->
-> Yes, that's similar and a subtract should do.
->
+> - Kyle
 
-The original bit test was written like that because it removes the
-need to reason about a potential tag in the upper bits. I tried to
-preserve that behavior when removing the guaranteed 1:1 split between
-the vmalloc and linear regions, by masking with PAGE_OFFSET and
-comparing with PAGE_END - PAGE_OFFSET, but unfortunately, both
-approaches suffer from the issue fixed by this patch, i.e., that
-virt_addr_valid(0x0) erroneously returns true.
+A minimal test case follows.
 
-I think both proposed fixes are appropriate, but they both reintroduce
-the need to consider the tag. I don't know whether or where this could
-pose a problem, but it needs to be taken into account.
+The key to triggering this bug is to enter a ptrace syscall stop and
+then use PTRACE_SINGLESTEP to exit it. On a good kernel this will not
+result in any userspace code execution in the tracee because on the
+way out of the kernel's syscall handling path the singlestep trap will
+be raised immediately. On a bad kernel that stop will not be raised,
+and in the example below, the program will crash.
+
+- Kyle
+
+---
+
+#include <assert.h>
+#include <stdio.h>
+#include <sys/ptrace.h>
+#include <sys/user.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+void do_child() {
+  /* Synchronize with the parent */
+  kill(getpid(), SIGSTOP);
+  /* Do a syscall */
+  printf("child is alive\n");
+  /* Return and exit */
+}
+
+int main() {
+  pid_t child =3D -1;
+  int status =3D 0;
+  unsigned long long previous_rip =3D 0;
+  struct user_regs_struct regs;
+
+  if ((child =3D fork()) =3D=3D 0) {
+      do_child();
+      return 0;
+  }
+
+  /* Adds 0x80 to syscall stops so we can see them easily */
+  intptr_t options =3D PTRACE_O_TRACESYSGOOD;
+  /* Take control of the child (which should be waiting */
+  assert(ptrace(PTRACE_SEIZE, child, NULL, options) =3D=3D 0);
+  assert(waitpid(child, &status, 0) =3D=3D child);
+  assert(WIFSTOPPED(status) && WSTOPSIG(status) =3D=3D SIGSTOP);
+
+  /* Advance to the syscall stop for the write underlying
+   * the child's printf.
+   */
+  assert(ptrace(PTRACE_SYSCALL, child, NULL, 0) =3D=3D 0);
+  assert(waitpid(child, &status, 0) =3D=3D child);
+  /* Should be a syscall stop */
+  assert(WIFSTOPPED(status) && WSTOPSIG(status) =3D=3D SIGTRAP | 0x80);
+
+  /* Mess with the child's registers, so it will crash if
+   * it executes any code
+   */
+  assert(ptrace(PTRACE_GETREGS, child, NULL, &regs) =3D=3D 0);
+  previous_rip =3D regs.rip;
+  regs.rip =3D 0xdeadbeef;
+  assert(ptrace(PTRACE_SETREGS, child, NULL, &regs) =3D=3D 0);
+  /* Singlestep. This should trap without executing any code */
+  assert(ptrace(PTRACE_SINGLESTEP, child, NULL, 0) =3D=3D 0);
+  assert(waitpid(child, &status, 0) =3D=3D child);
+  /* Should be at a singlestep SIGTRAP. In a buggy kernel,
+   * the SIGTRAP is skipped, execution resumes, and we
+   * get a SIGSEGV at the invalid address.
+   */
+  assert(WIFSTOPPED(status) && WSTOPSIG(status) =3D=3D SIGTRAP);
+
+  /* Restore registers */
+  assert(ptrace(PTRACE_GETREGS, child, NULL, &regs) =3D=3D 0);
+  regs.rip =3D previous_rip;
+  assert(ptrace(PTRACE_SETREGS, child, NULL, &regs) =3D=3D 0);
+
+  /* Continue to the end of the program */
+  assert(ptrace(PTRACE_CONT, child, NULL, 0) =3D=3D 0);
+  assert(waitpid(child, &status, 0) =3D=3D child);
+  /* Verify the child exited cleanly */
+  assert(WIFEXITED(status) && WEXITSTATUS(status) =3D=3D 0);
+
+  printf("SUCCESS\n");
+
+  return 0;
+}
