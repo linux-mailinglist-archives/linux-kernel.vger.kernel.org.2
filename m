@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BB68309E53
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 20:45:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE60309E5A
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 20:47:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229969AbhAaTmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 14:42:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39470 "EHLO
+        id S231307AbhAaTrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 14:47:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230087AbhAaTfS (ORCPT
+        with ESMTP id S231191AbhAaTlX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 14:35:18 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36A8C06178B;
-        Sun, 31 Jan 2021 09:30:52 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id f63so9988311pfa.13;
-        Sun, 31 Jan 2021 09:30:52 -0800 (PST)
+        Sun, 31 Jan 2021 14:41:23 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B15AC061793;
+        Sun, 31 Jan 2021 09:31:15 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id y10so4410762plk.7;
+        Sun, 31 Jan 2021 09:31:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=K5wzP23ErPEWymRBo16kOdWR6OMTJk3Dg5mRlDwF45M=;
-        b=MA1P6sSe/tvl/xNGth0UQ3xw0mCwCUwKzcYbnFlZk0VMO+WcNO/or5FYh85/OjO847
-         RVBv/3AuUzEDlVQFFgp/xqZMRzwlcQ0nqYDhhAgzyxfCxGkgJA87Y0GCg6sRHXBr9e/+
-         Cgfay9/8nQ25MYannxKkNbiR0vR23vpNIaXauQEjW92KZrSzX8kZQ0/J6ESMsVCtvTJq
-         vHxC5a8dszDULQE7vsP2mrdLFmuV8EDcHBQx+HYYcSAY+X1sXMunI2ugIOMl3AZfvDgx
-         v7udoYY8R5ztskYwCnNl5UEtuA/DORxTzUuvMQi390UsIa9OYI5+LqDNyG8Xw715Y2US
-         CvkQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=TEuL+hVALlT8knIGIfWrKAZ33sVizOsXkuWP5jla1Js=;
+        b=ANSbmVI1xwMVRP1E0zjIWUnQq6BtG0DwLwTiHADYdhlxw+zYHUFBREJvvy1Ftb24W7
+         wyXCThnYlwN/wCCjn6aXE1sbHGDpfKlQdGAnjo4OBYMR31sblgGE59ToHFB9zQZCwH+/
+         6Ct4bxT1MTB5R+04ZmXaKmt64SSh5yiQ2dw5J420g0LA3Q3ta1PKeWyhNENozGoB1Sbv
+         lgs9zi/fY7QXvt1MD1QzlCr54G9o4hwxiS9EoR7jsvu5+ffww09twJrJbikAY8LqrdLt
+         FFhCrwiVdkW/mFVkFj9FiN03y1OATjCPUhUJwI5e0UX7dW4MdgGPnSujGAb/fehHbUl+
+         GYxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=K5wzP23ErPEWymRBo16kOdWR6OMTJk3Dg5mRlDwF45M=;
-        b=Mjkw1JII6a2jXFFzAZPkgp+XQnjnZUcwr1/+Erp73KXws3maNj9enp920sv/OV22nL
-         G0PLBwD7xV93RbEsIV6Shw77ZdnW3hQ2REaAVNuqy8rkL+9oJGjdLAWMd0eZQPRjcWG/
-         DQ0R+KLLS5wZybqeMrdch534wc5dd0cnx9EDgxA151Ft1oha+pUvoX9kr7Yx8IWDK0Rf
-         xOa5aR2sn5W9QijM/qEAVWtT4Rx7iFr1khhwv5KCP9Jz0/gZVFb+cm4/tV3nMOwU9NTs
-         g9G9cqw3rU24nbQ+DwdN7sS9HcWCSzIXONmmHTlNi421/xL42s3X5rdU+owzruHSn/eP
-         TNVQ==
-X-Gm-Message-State: AOAM533oxqRgdhGO3aqdLv31YGZ7qgaKfAMJVuWg6g7PTzVeAmoLBcgP
-        K0RpSXYjgt/Lc0Wp1biov5A=
-X-Google-Smtp-Source: ABdhPJxqAvDMo/qrnNX2hVoJHZiC2bLwNfcChMrdrFwGXf+D/Pv16veh3L2vYHbiTMOhsalbhu1+dg==
-X-Received: by 2002:a63:ec09:: with SMTP id j9mr4194282pgh.179.1612114252401;
-        Sun, 31 Jan 2021 09:30:52 -0800 (PST)
-Received: from localhost ([2402:3a80:11ea:e144:19dc:4c7b:99d8:200e])
-        by smtp.gmail.com with ESMTPSA id w7sm4751206pjv.24.2021.01.31.09.30.50
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=TEuL+hVALlT8knIGIfWrKAZ33sVizOsXkuWP5jla1Js=;
+        b=g6OzSXSc7nTG1etEfzMCrHdL1/wyBlR5giurjuq7SQskiF/49/AM6Q6ow2pV7dtQZP
+         g9bwOVE2qafKuqsp4Chhwx1au0KWCI0R3Js58CdmQVSgBF3HXP3xSf/ucGskYgyzXPqZ
+         9wexbVPr+MDqDLjKKongnC6SOKlMNy3r0NBe1XKXTckjDY0Tzi5KM9/hzOvtBc59g8kN
+         DXD+wK36PyBmIrLcrxpygqLBtBYrFJoUcZTidjXcCQFKn6yicn2quSgn8MXnd7o6cjTR
+         /ezL40WkXlSHwAEMrr8I8QkLoyKma9TWxHugTUlxB9MNjZCiHihaHz9ETXYJgNCN6WJT
+         HxmQ==
+X-Gm-Message-State: AOAM532s8j+N3gPMIcFX0DBD0xLSwJXjMRf+CG8/RZTnFrLs5sX6B/GG
+        mqW1K8FT8AtfNO1Vv1Mct4Fq1Kyg2vq1gw==
+X-Google-Smtp-Source: ABdhPJwClbOYDSZgU1qyhZKF5sKoWjPX/HRVrzUbA9w6Ly4Wkml4MfQKKspYRwVmGG102CbvmJnvxg==
+X-Received: by 2002:a17:902:b116:b029:e1:58b2:2280 with SMTP id q22-20020a170902b116b02900e158b22280mr2028228plr.29.1612114274980;
+        Sun, 31 Jan 2021 09:31:14 -0800 (PST)
+Received: from localhost ([2402:3a80:11ea:e144:a2a4:c5ff:fe20:7222])
+        by smtp.gmail.com with ESMTPSA id r194sm14995355pfr.168.2021.01.31.09.31.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Jan 2021 09:30:51 -0800 (PST)
+        Sun, 31 Jan 2021 09:31:14 -0800 (PST)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
         linux-kernel@vger.kernel.org
@@ -72,85 +72,129 @@ Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Stephen Rothwell <sfr@canb.auug.org.au>,
         Andrew Morton <akpm@linux-foundation.org>,
         Florian Fainelli <f.fainelli@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
         William Cohen <wcohen@redhat.com>,
         Mike Rapoport <rppt@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Robert Richter <rric@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        greybus-dev@lists.linaro.org, ac100@lists.launchpad.net,
-        linux-tegra@vger.kernel.org, linux-fbdev@vger.kernel.org
-Subject: [PATCH 00/13] Convert all users of strlcpy to strscpy
-Date:   Sun, 31 Jan 2021 22:58:21 +0530
-Message-Id: <20210131172838.146706-1-memxor@gmail.com>
+        Robert Richter <rric@kernel.org>, greybus-dev@lists.linaro.org,
+        ac100@lists.launchpad.net, linux-tegra@vger.kernel.org,
+        linux-fbdev@vger.kernel.org
+Subject: [PATCH 02/13] staging: greybus: Switch from strlcpy to strscpy
+Date:   Sun, 31 Jan 2021 22:58:23 +0530
+Message-Id: <20210131172838.146706-3-memxor@gmail.com>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210131172838.146706-1-memxor@gmail.com>
+References: <20210131172838.146706-1-memxor@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series converts all existing users of strlcpy in drivers/staging to use
-strscpy instead.
-
-strlcpy is marked as deprecated in Documentation/process/deprecated.rst, and
-there is no functional difference when the caller expects truncation (when not
-checking the return value). strscpy is relatively better as it also avoids
-scanning the whole source string.
+strlcpy is marked as deprecated in Documentation/process/deprecated.rst,
+and there is no functional difference when the caller expects truncation
+(when not checking the return value). strscpy is relatively better as it
+also avoids scanning the whole source string.
 
 This silences the related checkpatch warnings from:
 5dbdb2d87c29 ("checkpatch: prefer strscpy to strlcpy")
 
-The conversions were performed in two steps:
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
+---
+ drivers/staging/greybus/audio_helper.c   | 2 +-
+ drivers/staging/greybus/audio_module.c   | 2 +-
+ drivers/staging/greybus/audio_topology.c | 6 +++---
+ drivers/staging/greybus/power_supply.c   | 2 +-
+ drivers/staging/greybus/spilib.c         | 4 ++--
+ 5 files changed, 8 insertions(+), 8 deletions(-)
 
-1. The following coccinelle script was used to identify and replace call sites
-that expect truncation.
-
-$ spatch --sp-file strscpy.cocci --include-headers --dir --in-place drivers/staging
-
-@strscpy@
-expression dest, src, size;
-@@
--strlcpy(dest, src, size);
-+strscpy(dest, src, size);
-
-2. Each individual automated conversion was rechecked manually for correctness.
-
-Kumar Kartikeya Dwivedi (13):
-  staging: comedi: Switch from strlcpy to strscpy
-  staging: greybus: Switch from strlcpy to strscpy
-  staging: fsl-dpaa2: Switch from strlcpy to strscpy
-  staging: most: Switch from strlcpy to strscpy
-  staging: nvec: Switch from strlcpy to strscpy
-  staging: octeon: Switch from strlcpy to strscpy
-  staging: olpc_dcon: Switch from strlcpy to strscpy
-  staging: rtl8188eu: Switch from strlcpy to strscpy
-  staging: rtl8192e: Switch from strlcpy to strscpy
-  staging: rtl8192u: Switch from strlcpy to strscpy
-  staging: rtl8712: Switch from strlcpy to strscpy
-  staging: sm750fb: Switch from strlcpy to strscpy
-  staging: wimax: Switch from strlcpy to strscpy
-
- drivers/staging/comedi/comedi_fops.c                      | 4 ++--
- drivers/staging/fsl-dpaa2/ethsw/ethsw-ethtool.c           | 6 +++---
- drivers/staging/greybus/audio_helper.c                    | 2 +-
- drivers/staging/greybus/audio_module.c                    | 2 +-
- drivers/staging/greybus/audio_topology.c                  | 6 +++---
- drivers/staging/greybus/power_supply.c                    | 2 +-
- drivers/staging/greybus/spilib.c                          | 4 ++--
- drivers/staging/most/sound/sound.c                        | 2 +-
- drivers/staging/most/video/video.c                        | 6 +++---
- drivers/staging/nvec/nvec_ps2.c                           | 4 ++--
- drivers/staging/octeon/ethernet-mdio.c                    | 6 +++---
- drivers/staging/olpc_dcon/olpc_dcon.c                     | 2 +-
- drivers/staging/rtl8188eu/os_dep/ioctl_linux.c            | 2 +-
- drivers/staging/rtl8192e/rtl8192e/rtl_ethtool.c           | 6 +++---
- drivers/staging/rtl8192u/ieee80211/ieee80211_softmac_wx.c | 2 +-
- drivers/staging/rtl8712/rtl871x_ioctl_linux.c             | 2 +-
- drivers/staging/sm750fb/sm750.c                           | 2 +-
- drivers/staging/wimax/i2400m/netdev.c                     | 6 +++---
- drivers/staging/wimax/i2400m/usb.c                        | 4 ++--
- 19 files changed, 35 insertions(+), 35 deletions(-)
-
+diff --git a/drivers/staging/greybus/audio_helper.c b/drivers/staging/greybus/audio_helper.c
+index 3011b8abc..1ed4772d2 100644
+--- a/drivers/staging/greybus/audio_helper.c
++++ b/drivers/staging/greybus/audio_helper.c
+@@ -166,7 +166,7 @@ static int gbaudio_remove_controls(struct snd_card *card, struct device *dev,
+ 			snprintf(id.name, sizeof(id.name), "%s %s", prefix,
+ 				 control->name);
+ 		else
+-			strlcpy(id.name, control->name, sizeof(id.name));
++			strscpy(id.name, control->name, sizeof(id.name));
+ 		id.numid = 0;
+ 		id.iface = control->iface;
+ 		id.device = control->device;
+diff --git a/drivers/staging/greybus/audio_module.c b/drivers/staging/greybus/audio_module.c
+index a243d60f0..0f9fdc077 100644
+--- a/drivers/staging/greybus/audio_module.c
++++ b/drivers/staging/greybus/audio_module.c
+@@ -342,7 +342,7 @@ static int gb_audio_probe(struct gb_bundle *bundle,
+ 	/* inform above layer for uevent */
+ 	dev_dbg(dev, "Inform set_event:%d to above layer\n", 1);
+ 	/* prepare for the audio manager */
+-	strlcpy(desc.name, gbmodule->name, GB_AUDIO_MANAGER_MODULE_NAME_LEN);
++	strscpy(desc.name, gbmodule->name, GB_AUDIO_MANAGER_MODULE_NAME_LEN);
+ 	desc.vid = 2; /* todo */
+ 	desc.pid = 3; /* todo */
+ 	desc.intf_id = gbmodule->dev_id;
+diff --git a/drivers/staging/greybus/audio_topology.c b/drivers/staging/greybus/audio_topology.c
+index 662e3e8b4..e816e4db5 100644
+--- a/drivers/staging/greybus/audio_topology.c
++++ b/drivers/staging/greybus/audio_topology.c
+@@ -200,7 +200,7 @@ static int gbcodec_mixer_ctl_info(struct snd_kcontrol *kcontrol,
+ 			return -EINVAL;
+ 		name = gbaudio_map_controlid(module, data->ctl_id,
+ 					     uinfo->value.enumerated.item);
+-		strlcpy(uinfo->value.enumerated.name, name, NAME_SIZE);
++		strscpy(uinfo->value.enumerated.name, name, NAME_SIZE);
+ 		break;
+ 	default:
+ 		dev_err(comp->dev, "Invalid type: %d for %s:kcontrol\n",
+@@ -1047,7 +1047,7 @@ static int gbaudio_tplg_create_widget(struct gbaudio_module_info *module,
+ 	}
+ 
+ 	/* Prefix dev_id to widget control_name */
+-	strlcpy(temp_name, w->name, NAME_SIZE);
++	strscpy(temp_name, w->name, NAME_SIZE);
+ 	snprintf(w->name, NAME_SIZE, "GB %d %s", module->dev_id, temp_name);
+ 
+ 	switch (w->type) {
+@@ -1169,7 +1169,7 @@ static int gbaudio_tplg_process_kcontrols(struct gbaudio_module_info *module,
+ 		}
+ 		control->id = curr->id;
+ 		/* Prefix dev_id to widget_name */
+-		strlcpy(temp_name, curr->name, NAME_SIZE);
++		strscpy(temp_name, curr->name, NAME_SIZE);
+ 		snprintf(curr->name, NAME_SIZE, "GB %d %s", module->dev_id,
+ 			 temp_name);
+ 		control->name = curr->name;
+diff --git a/drivers/staging/greybus/power_supply.c b/drivers/staging/greybus/power_supply.c
+index ec96f2888..75cb170e0 100644
+--- a/drivers/staging/greybus/power_supply.c
++++ b/drivers/staging/greybus/power_supply.c
+@@ -449,7 +449,7 @@ static int __gb_power_supply_set_name(char *init_name, char *name, size_t len)
+ 
+ 	if (!strlen(init_name))
+ 		init_name = "gb_power_supply";
+-	strlcpy(name, init_name, len);
++	strscpy(name, init_name, len);
+ 
+ 	while ((ret < len) && (psy = power_supply_get_by_name(name))) {
+ 		power_supply_put(psy);
+diff --git a/drivers/staging/greybus/spilib.c b/drivers/staging/greybus/spilib.c
+index fc27c52de..672d540d3 100644
+--- a/drivers/staging/greybus/spilib.c
++++ b/drivers/staging/greybus/spilib.c
+@@ -455,10 +455,10 @@ static int gb_spi_setup_device(struct gb_spilib *spi, u8 cs)
+ 	dev_type = response.device_type;
+ 
+ 	if (dev_type == GB_SPI_SPI_DEV)
+-		strlcpy(spi_board.modalias, "spidev",
++		strscpy(spi_board.modalias, "spidev",
+ 			sizeof(spi_board.modalias));
+ 	else if (dev_type == GB_SPI_SPI_NOR)
+-		strlcpy(spi_board.modalias, "spi-nor",
++		strscpy(spi_board.modalias, "spi-nor",
+ 			sizeof(spi_board.modalias));
+ 	else if (dev_type == GB_SPI_SPI_MODALIAS)
+ 		memcpy(spi_board.modalias, response.name,
 -- 
 2.29.2
 
