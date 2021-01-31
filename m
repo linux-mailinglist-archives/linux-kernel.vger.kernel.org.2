@@ -2,200 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7591D309A0B
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 04:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76025309A11
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 04:17:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbhAaDAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 22:00:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59354 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229530AbhAaDAy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 22:00:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA46A64E1E
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 03:00:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612062013;
-        bh=HXpsLye8DyRJky+GB3F101QLZIqYLcaXw3RurhIpFwA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=scyQ9R4DTmwgZTgVcM0Be4mB9mTwLj1zjAhaFnzdza6kCowSEPK0IjYX9IbOunZYr
-         GLsq77UbWFxr0olByfafxcvU3yTOxepLYLcldcMO6u0T7XgZARFyZUS/4zK9GAMl9u
-         svgQj7D/ctV6A5dhzENjhWEVsF+zzMqtC/2wSDyYoUCQhsifjS/R54YJi6he8Ct417
-         iLPrRhO2ID0wn4mk8YIBeTgPQC5wBwOjX6fqQnYBwXfv0daPyJiL1xXqxL92MxEFCo
-         bTbk7qcbO2mvHz57rFUJU5iLdnbu2ELfWy++CtISa+JhXoHiuHVVFzuOEIshkHd1UN
-         L2k096J1rGtsg==
-Received: by mail-ej1-f49.google.com with SMTP id w1so18841303ejf.11
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 19:00:12 -0800 (PST)
-X-Gm-Message-State: AOAM530ch+l8eaIZ2egTBlgweTM/TlPjK76yE43pU3Y1FGYlJuPIUWkq
-        ohx+rpiysUvOilpar6+uuH6KrmowyjMMZ6vjkBNCkg==
-X-Google-Smtp-Source: ABdhPJxpk9dsud3j/TxMFEZSRuLXCMc52bP54/5QSs+G8uyaBD6iDi5nwqL0iJCs5nOe9BpnTmJIeb1sS1QGai+h8JU=
-X-Received: by 2002:a17:906:52c1:: with SMTP id w1mr11742341ejn.214.1612062011020;
- Sat, 30 Jan 2021 19:00:11 -0800 (PST)
+        id S229774AbhAaDQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 22:16:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229468AbhAaDQw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 22:16:52 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E180AC061573;
+        Sat, 30 Jan 2021 19:16:11 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id i7so9599126pgc.8;
+        Sat, 30 Jan 2021 19:16:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ohey/n9HC50LcT9SfB1APHEExDxmpN/T94GswSnA44U=;
+        b=NQTJszeGFJ+SLfhMg24MZxPuqDcRn8iY0x6u0pvyOTcY7L3qThofp937GjRnHBtwyd
+         GT9s01S9jxE4Wf2eQYuO6Kc29cIwkcnuDIcBQZE00zAquyuylJBYNWBIjYd8nOUmCc9n
+         JvjTqHtDKkeDNQZIQveJycwgupWWZ3vId/nSy/Z+uXlsv7Gn40wdLIdlkpQy9W6TuQfW
+         V2ckBfRWm9AdsPj+rQ8HU8qIfrgS80SeHd113c8Mgsci8mZOuCiaVOaJx1oLOoU8RwWS
+         N5lLQHZvGkURl0la4UnDmwI+PVUa/NGM6JcOzWq4PMGzulwYOCjAQyOz1tyUteIN18id
+         HCog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ohey/n9HC50LcT9SfB1APHEExDxmpN/T94GswSnA44U=;
+        b=d/8ccOlI9VhK+sEAC2Lza6to5ZMeResGhuv4ATT8niAsSWXAIDDv/fcLh0Dj3NW+eV
+         BPdbianXzsvvy4k+gYUX1rhCnJtFeT8lUFhTMGhVElVY083h72vhUZsDs4VbaNNUOQOc
+         mNKXiUi0mqLm/3bvWX9+31IcRaGMk//Ix3k4yOOWEQiSI0ZVCCYOp/2sPo+dMpwNdfTs
+         Swn4/CrPSF/Gbgq+AdnYv+PI8ROqevxxs3c3WaRo931t8GP61eLKmf5l6pBGjT3vJuI0
+         L/V91BPBtVZZt+RLUzPK4EwLszWJpXVlWRiYf6QlzjyJhDWcaPxobftXnxItgDqZxxsn
+         qPLQ==
+X-Gm-Message-State: AOAM531krJwbzMyW5wDoIyxzLoh+SK/jnA2DLAhof84G13nbJdFln3wn
+        30f62ta0CV6EnJQ+MrCsuiZ3PUurHM+lgDdtKL73mF1vxFU=
+X-Google-Smtp-Source: ABdhPJwgerOH4DnC1TMIe7Yiht7v/g2PsLME1FUL0MQV21tZK2DJ5FIC8WweeEARatrH/Zw2RHWpb8OWTV8WuwZ55zg=
+X-Received: by 2002:a62:503:0:b029:1c0:aed7:c88 with SMTP id
+ 3-20020a6205030000b02901c0aed70c88mr4913844pff.76.1612062971326; Sat, 30 Jan
+ 2021 19:16:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20210131001132.3368247-1-namit@vmware.com> <20210131001132.3368247-4-namit@vmware.com>
- <CALCETrWxyMsD5zEoaFS-aVfkV=QiVWa7pCU_JE3AYDEEU8Hqvg@mail.gmail.com> <68D3C593-A88C-4100-90E9-E90F7733344F@gmail.com>
-In-Reply-To: <68D3C593-A88C-4100-90E9-E90F7733344F@gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Sat, 30 Jan 2021 18:59:59 -0800
-X-Gmail-Original-Message-ID: <CALCETrVnLe6wf+nD-PDfKQAmJhcQm674iCHPiEWW0kiDucqk9g@mail.gmail.com>
-Message-ID: <CALCETrVnLe6wf+nD-PDfKQAmJhcQm674iCHPiEWW0kiDucqk9g@mail.gmail.com>
-Subject: Re: [RFC 03/20] mm/mprotect: do not flush on permission promotion
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Linux-MM <linux-mm@kvack.org>,
+References: <20210127090747.364951-1-xie.he.0141@gmail.com>
+ <20210128114659.2d81a85f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAJht_EOSB-m--Ombr6wLMFq4mPy8UTpsBri2CPsaRTU-aks7Uw@mail.gmail.com>
+ <3f67b285671aaa4b7903733455a730e1@dev.tdt.de> <20210129173650.7c0b7cda@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAJht_EPMtn5E-Y312vPQfH2AwDAi+j1OP4zzpg+AUKf46XE1Yw@mail.gmail.com> <20210130111618.335b6945@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210130111618.335b6945@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Sat, 30 Jan 2021 19:16:00 -0800
+Message-ID: <CAJht_EMQVaKFx7Wjj75F2xVBTCdpmho64wP0bfX6RhFnzNXAZA@mail.gmail.com>
+Subject: Re: [PATCH net] net: hdlc_x25: Use qdisc to queue outgoing LAPB frames
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Martin Schiller <ms@dev.tdt.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Nick Piggin <npiggin@gmail.com>, X86 ML <x86@kernel.org>
+        Krzysztof Halasa <khc@pm.waw.pl>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 5:17 PM Nadav Amit <nadav.amit@gmail.com> wrote:
+On Sat, Jan 30, 2021 at 11:16 AM Jakub Kicinski <kuba@kernel.org> wrote:
 >
-> > On Jan 30, 2021, at 5:07 PM, Andy Lutomirski <luto@kernel.org> wrote:
-> >
-> > Adding Andrew Cooper, who has a distressingly extensive understanding
-> > of the x86 PTE magic.
-> >
-> > On Sat, Jan 30, 2021 at 4:16 PM Nadav Amit <nadav.amit@gmail.com> wrote:
-> >> From: Nadav Amit <namit@vmware.com>
-> >>
-> >> Currently, using mprotect() to unprotect a memory region or uffd to
-> >> unprotect a memory region causes a TLB flush. At least on x86, as
-> >> protection is promoted, no TLB flush is needed.
-> >>
-> >> Add an arch-specific pte_may_need_flush() which tells whether a TLB
-> >> flush is needed based on the old PTE and the new one. Implement an x86
-> >> pte_may_need_flush().
-> >>
-> >> For x86, besides the simple logic that PTE protection promotion or
-> >> changes of software bits does require a flush, also add logic that
-> >> considers the dirty-bit. If the dirty-bit is clear and write-protect is
-> >> set, no TLB flush is needed, as x86 updates the dirty-bit atomically
-> >> on write, and if the bit is clear, the PTE is reread.
-> >>
-> >> Signed-off-by: Nadav Amit <namit@vmware.com>
-> >> Cc: Andrea Arcangeli <aarcange@redhat.com>
-> >> Cc: Andrew Morton <akpm@linux-foundation.org>
-> >> Cc: Andy Lutomirski <luto@kernel.org>
-> >> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> >> Cc: Peter Zijlstra <peterz@infradead.org>
-> >> Cc: Thomas Gleixner <tglx@linutronix.de>
-> >> Cc: Will Deacon <will@kernel.org>
-> >> Cc: Yu Zhao <yuzhao@google.com>
-> >> Cc: Nick Piggin <npiggin@gmail.com>
-> >> Cc: x86@kernel.org
-> >> ---
-> >> arch/x86/include/asm/tlbflush.h | 44 +++++++++++++++++++++++++++++++++
-> >> include/asm-generic/tlb.h       |  4 +++
-> >> mm/mprotect.c                   |  3 ++-
-> >> 3 files changed, 50 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
-> >> index 8c87a2e0b660..a617dc0a9b06 100644
-> >> --- a/arch/x86/include/asm/tlbflush.h
-> >> +++ b/arch/x86/include/asm/tlbflush.h
-> >> @@ -255,6 +255,50 @@ static inline void arch_tlbbatch_add_mm(struct arch_tlbflush_unmap_batch *batch,
-> >>
-> >> extern void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch);
-> >>
-> >> +static inline bool pte_may_need_flush(pte_t oldpte, pte_t newpte)
-> >> +{
-> >> +       const pteval_t ignore_mask = _PAGE_SOFTW1 | _PAGE_SOFTW2 |
-> >> +                                    _PAGE_SOFTW3 | _PAGE_ACCESSED;
-> >
-> > Why is accessed ignored?  Surely clearing the accessed bit needs a
-> > flush if the old PTE is present.
->
-> I am just following the current scheme in the kernel (x86):
->
-> int ptep_clear_flush_young(struct vm_area_struct *vma,
->                            unsigned long address, pte_t *ptep)
-> {
->         /*
->          * On x86 CPUs, clearing the accessed bit without a TLB flush
->          * doesn't cause data corruption. [ It could cause incorrect
->          * page aging and the (mistaken) reclaim of hot pages, but the
->          * chance of that should be relatively low. ]
->          *
+> Sounds like too much afford for a sub-optimal workaround.
+> The qdisc semantics are borken in the proposed scheme (double
+> counting packets) - both in term of statistics and if user decides
+> to add a policer, filter etc.
 
-If anyone ever implements the optimization of skipping the flush when
-unmapping a !accessed page, then this will cause data corruption.
+Hmm...
 
-If nothing else, this deserves a nice comment in the new code.
+Another solution might be creating another virtual device on top of
+the HDLC device (similar to what "hdlc_fr.c" does), so that we can
+first queue L3 packets in the virtual device's qdisc queue, and then
+queue the L2 frames in the actual HDLC device's qdisc queue. This way
+we can avoid the same outgoing data being queued to qdisc twice. But
+this would significantly change the way the user uses the hdlc_x25
+driver.
 
->          * So as a performance optimization don't flush the TLB when
->          * clearing the accessed bit, it will eventually be flushed by
->          * a context switch or a VM operation anyway. [ In the rare
->          * event of it not getting flushed for a long time the delay
->          * shouldn't really matter because there's no real memory
->          * pressure for swapout to react to. ]
->          */
->         return ptep_test_and_clear_young(vma, address, ptep);
-> }
->
->
-> >
-> >> +       const pteval_t enable_mask = _PAGE_RW | _PAGE_DIRTY | _PAGE_GLOBAL;
-> >> +       pteval_t oldval = pte_val(oldpte);
-> >> +       pteval_t newval = pte_val(newpte);
-> >> +       pteval_t diff = oldval ^ newval;
-> >> +       pteval_t disable_mask = 0;
-> >> +
-> >> +       if (IS_ENABLED(CONFIG_X86_64) || IS_ENABLED(CONFIG_X86_PAE))
-> >> +               disable_mask = _PAGE_NX;
-> >> +
-> >> +       /* new is non-present: need only if old is present */
-> >> +       if (pte_none(newpte))
-> >> +               return !pte_none(oldpte);
-> >> +
-> >> +       /*
-> >> +        * If, excluding the ignored bits, only RW and dirty are cleared and the
-> >> +        * old PTE does not have the dirty-bit set, we can avoid a flush. This
-> >> +        * is possible since x86 architecture set the dirty bit atomically while
-> >
-> > s/set/sets/
-> >
-> >> +        * it caches the PTE in the TLB.
-> >> +        *
-> >> +        * The condition considers any change to RW and dirty as not requiring
-> >> +        * flush if the old PTE is not dirty or not writable for simplification
-> >> +        * of the code and to consider (unlikely) cases of changing dirty-bit of
-> >> +        * write-protected PTE.
-> >> +        */
-> >> +       if (!(diff & ~(_PAGE_RW | _PAGE_DIRTY | ignore_mask)) &&
-> >> +           (!(pte_dirty(oldpte) || !pte_write(oldpte))))
-> >> +               return false;
-> >
-> > This logic seems confusing to me.  Is your goal to say that, if the
-> > old PTE was clean and writable and the new PTE is write-protected,
-> > then no flush is needed?
->
-> Yes.
->
-> > If so, I would believe you're right, but I'm
-> > not convinced you've actually implemented this.  Also, there may be
-> > other things going on that need flushing, e.g. a change of the address
-> > or an accessed bit or NX change.
->
-> The first part (diff & ~(_PAGE_RW | _PAGE_DIRTY | ignore_mask) is supposed
-> to capture changes of address, NX-bit, etc.
->
-> The second part is indeed wrong. It should have been:
->  (!pte_dirty(oldpte) || !pte_write(oldpte))
->
-> >
-> > Also, CET makes this extra bizarre.
->
-> I saw something about the not-writeable-and-dirty considered differently. I
-> need to have a look, but I am not sure it affects anything.
->
+> Another worry is that something may just inject a packet with
+> skb->protocol == ETH_P_HDLC but unexpected structure (IDK if
+> that's a real concern).
 
-It affects everyone's sanity. I don't yet have an opinion as to
-whether it affects correctness :)
+This might not be a problem. Ethernet devices also allow the user to
+inject raw frames with user constructed headers. "hdlc_fr.c" also
+allows the user to bypass the virtual circuit interfaces and inject
+raw frames directly on the HDLC interface. I think the receiving side
+should be able to recognize and drop invalid frames.
+
+> It may be better to teach LAPB to stop / start the internal queue.
+> The lower level drivers just needs to call LAPB instead of making
+> the start/wake calls directly to the stack, and LAPB can call the
+> stack. Would that not work?
+
+I think this is a good solution. But this requires changing a lot of
+code. The HDLC subsystem needs to be changed to allow HDLC Hardware
+Drivers to ask HDLC Protocol Drivers (like hdlc_x25.c) to stop/wake
+the TX queue. The hdlc_x25.c driver can then ask the LAPB module to
+stop/wake the queue.
+
+So this means new APIs need to be added to both the HDLC subsystem and
+the LAPB module, and a number of HDLC Hardware Drivers need to be
+changed to call the new API of the HDLC subsystem.
+
+Martin, do you have any suggestions?
