@@ -2,194 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DC3F309B26
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 09:23:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28955309B2A
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 09:46:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229765AbhAaIXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 03:23:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40576 "EHLO
+        id S229879AbhAaIod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 03:44:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhAaIXU (ORCPT
+        with ESMTP id S229603AbhAaIns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 03:23:20 -0500
-Received: from mail-out-1.itc.rwth-aachen.de (mail-out-1.itc.rwth-aachen.de [IPv6:2a00:8a60:1:e501::5:46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B72C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 00:22:33 -0800 (PST)
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2AeBgB9ZxZg/5oagoZiHAEBAQEBAQcBA?=
- =?us-ascii?q?RIBAQQEAQGCD4FTgXoshSSRKDCcQwsBAQEBAQEBAQEEBAEtAgQBAYRKAoF4AiU?=
- =?us-ascii?q?4EwIQAQEGAQEBAQEGBIZfhXQBBAEjVgULCw40AgICVQYNAQcBAYMiAYJmEQ8Bt?=
- =?us-ascii?q?BSBMoVZgziBNBAJAYEugVOLayaBXD+BOIJyPoRVgwKCYASCQIExgkGTAqV+B4F?=
- =?us-ascii?q?ogRGEYoJqlCUFKYMdkAiPboYrozuICIQjAgICAgkCFoFtgXpNJIM5TxcCDZxrQ?=
- =?us-ascii?q?WkCBgoBAQMJfIsZAQE?=
-X-IPAS-Result: =?us-ascii?q?A2AeBgB9ZxZg/5oagoZiHAEBAQEBAQcBARIBAQQEAQGCD4F?=
- =?us-ascii?q?TgXoshSSRKDCcQwsBAQEBAQEBAQEEBAEtAgQBAYRKAoF4AiU4EwIQAQEGAQEBA?=
- =?us-ascii?q?QEGBIZfhXQBBAEjVgULCw40AgICVQYNAQcBAYMiAYJmEQ8BtBSBMoVZgziBNBA?=
- =?us-ascii?q?JAYEugVOLayaBXD+BOIJyPoRVgwKCYASCQIExgkGTAqV+B4FogRGEYoJqlCUFK?=
- =?us-ascii?q?YMdkAiPboYrozuICIQjAgICAgkCFoFtgXpNJIM5TxcCDZxrQWkCBgoBAQMJfIs?=
- =?us-ascii?q?ZAQE?=
-X-IronPort-AV: E=Sophos;i="5.79,390,1602540000"; 
-   d="p7s'?scan'208";a="133995421"
-Received: from rwthex-s2-a.rwth-ad.de ([134.130.26.154])
-  by mail-in-1.itc.rwth-aachen.de with ESMTP; 31 Jan 2021 09:22:32 +0100
-Received: from [IPv6:2a02:908:1089:e060:181:40e2:a3a5:20f9]
- (2a02:908:1089:e060:181:40e2:a3a5:20f9) by rwthex-s2-a.rwth-ad.de
- (2a00:8a60:1:e500::26:154) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Sun, 31
- Jan 2021 09:22:31 +0100
-Subject: Re: [PATCH] openrisc: use device tree to determine present cpus
-To:     Stafford Horne <shorne@gmail.com>
-CC:     <geert@linux-m68k.org>, <jonas@southpole.se>,
-        <stefan.kristiansson@saunalahti.fi>,
-        <openrisc@lists.librecores.org>, <linux-kernel@vger.kernel.org>
-References: <0b26eda7-229d-3dc9-f2ae-19b9212fb0ea@rwth-aachen.de>
- <20210129221643.GZ2002709@lianli.shorne-pla.net>
- <2a018afc-d797-3a91-ffab-e55ae3b0a795@rwth-aachen.de>
- <20210130230310.GC2002709@lianli.shorne-pla.net>
-From:   Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
-Message-ID: <d9f4aafc-4d65-38b0-dde0-5e155836aee1@rwth-aachen.de>
-Date:   Sun, 31 Jan 2021 09:22:31 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Sun, 31 Jan 2021 03:43:48 -0500
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3203C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 00:43:05 -0800 (PST)
+Received: by mail-qt1-x835.google.com with SMTP id h16so8924481qth.11
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 00:43:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=34LF0oUAzvA7L0f72J8AccfB18y2J2I07QbXdiR+PSM=;
+        b=GuUbI0El8uD0Q0avPsmpDFyV2+UcVsg+ZmvkY/c6RduCF9r2q2RK9D86bzAp9VtkGI
+         395JShPKndA6Mrq1eHxJE56QV6ipKwKLbwUzaVkma6iMnfrBCNz6tv99Z7DbfXTWshFX
+         PqOXAczmnmwmDeOuFs4wrqV3RvTF24e9vVNLy6r5ofLehziuTu4p163cz5xGS5H423A8
+         lxFG7BPpinN4HMw1e1gEVSoP2eyQNE4gjOsFKWUO0+U457ANQqXDr1MjI0CPaQ0HUOw2
+         OhZRIvJWEe9ru/y14Wl2MR5dTpdqelwfA4D5OX6YfynSif/QTxA1Ww6DGBAUboeV1YN3
+         gdag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=34LF0oUAzvA7L0f72J8AccfB18y2J2I07QbXdiR+PSM=;
+        b=QH6MrBZLEiyR/O49L46sbTBxL+Hf6/f+uai1sFMFfvj28uw5HnDQu7nTAMcSHw7TYi
+         1Mx+yDNviTT/hoy1suOHbMNh+t2t9IAyPo4HRr93yNPLM6zSs14C5I+9yj6kVfZCzLqk
+         APPlfhShcMvAniDSUIyuxoiHjbdeIxImAYtmJDgsuQni/vQPWp5zv/SQV6zj7lV/yxMO
+         15PenH1TURePy6Cx0nGnXZbTe2HP+3FKdHzFjpCJMdmO4SEyeUqR8M64lk/Kom8DMHUj
+         QkuYqY86d5xVbUQc31lBvWwkVPz1G5lpphIt9cYGpHrALERO1AwGOxTjPn63rvVaJlJm
+         grFA==
+X-Gm-Message-State: AOAM530qGRLkbO+w4qf2Wg9o0kADMzXCewzgU5molWkX0EEoXVwGJbaK
+        oF2yYVElKLJkeDnQluoLiT8DTrMSk3582EsZXGN1Tg==
+X-Google-Smtp-Source: ABdhPJxsJ7PH9FtIyP9C9WAmb997COsD/GLIXO77mK+pUBa8oDOazghml5eT07aVTltA/qksXeFcLtQMN3YGdY+BjLU=
+X-Received: by 2002:ac8:7c82:: with SMTP id y2mr10558143qtv.67.1612082584127;
+ Sun, 31 Jan 2021 00:43:04 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210130230310.GC2002709@lianli.shorne-pla.net>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature";
-        micalg=sha-256; boundary="------------ms070109030207040501030002"
-X-Originating-IP: [2a02:908:1089:e060:181:40e2:a3a5:20f9]
-X-ClientProxiedBy: rwthex-s1-b.rwth-ad.de (2a00:8a60:1:e500::26:153) To
- rwthex-s2-a.rwth-ad.de (2a00:8a60:1:e500::26:154)
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Sun, 31 Jan 2021 09:42:53 +0100
+Message-ID: <CACT4Y+YJp0t0HA3+wDsAVxgTK4J+Pvht-J4-ENkOtS=C=Fhtzg@mail.gmail.com>
+Subject: corrupted pvqspinlock in htab_map_update_elem
+To:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---------------ms070109030207040501030002
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-On 31/01/2021 00:03, Stafford Horne wrote:
+I am testing the following the program:
+https://gist.github.com/dvyukov/e5c0a8ef220ef856363c1080b0936a9e
+on the latest upstream 6642d600b541b81931fb1ab0c041b0d68f77be7e and
+getting the following crash. Config is:
+https://gist.github.com/dvyukov/16d9905e5ef35e44285451f1d330ddbc
 
-> This looks good, one small comment below.  Can you send the next patch =
-as a v2?
->=20
-> Using 'git format-patch -v2 ...'
+The program updates a bpf map from a program called on hw breakpoint
+hit. Not sure if it's a bpf issue or a perf issue. This time it is not
+a fuzzer workload, I am trying to do something useful :)
 
-Sorry, was not aware of that, will do better next time!
-
-> Should we warn on the else case?
-
-I think it is fine for the kernel to have room for more CPUs than are=20
-actually present (i.e. NR_CPUs > present_cpus is OK). Other Archs do not =
-
-show a warning in this case either, therefore I also omitted it.
-
-Gruss
-Jan
-
-
---------------ms070109030207040501030002
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
-EHcwggUSMIID+qADAgECAgkA4wvV+K8l2YEwDQYJKoZIhvcNAQELBQAwgYIxCzAJBgNVBAYT
-AkRFMSswKQYDVQQKDCJULVN5c3RlbXMgRW50ZXJwcmlzZSBTZXJ2aWNlcyBHbWJIMR8wHQYD
-VQQLDBZULVN5c3RlbXMgVHJ1c3QgQ2VudGVyMSUwIwYDVQQDDBxULVRlbGVTZWMgR2xvYmFs
-Um9vdCBDbGFzcyAyMB4XDTE2MDIyMjEzMzgyMloXDTMxMDIyMjIzNTk1OVowgZUxCzAJBgNV
-BAYTAkRFMUUwQwYDVQQKEzxWZXJlaW4genVyIEZvZXJkZXJ1bmcgZWluZXMgRGV1dHNjaGVu
-IEZvcnNjaHVuZ3NuZXR6ZXMgZS4gVi4xEDAOBgNVBAsTB0RGTi1QS0kxLTArBgNVBAMTJERG
-Ti1WZXJlaW4gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkgMjCCASIwDQYJKoZIhvcNAQEBBQAD
-ggEPADCCAQoCggEBAMtg1/9moUHN0vqHl4pzq5lN6mc5WqFggEcVToyVsuXPztNXS43O+FZs
-FVV2B+pG/cgDRWM+cNSrVICxI5y+NyipCf8FXRgPxJiZN7Mg9mZ4F4fCnQ7MSjLnFp2uDo0p
-eQcAIFTcFV9Kltd4tjTTwXS1nem/wHdN6r1ZB+BaL2w8pQDcNb1lDY9/Mm3yWmpLYgHurDg0
-WUU2SQXaeMpqbVvAgWsRzNI8qIv4cRrKO+KA3Ra0Z3qLNupOkSk9s1FcragMvp0049ENF4N1
-xDkesJQLEvHVaY4l9Lg9K7/AjsMeO6W/VRCrKq4Xl14zzsjz9AkH4wKGMUZrAcUQDBHHWekC
-AwEAAaOCAXQwggFwMA4GA1UdDwEB/wQEAwIBBjAdBgNVHQ4EFgQUk+PYMiba1fFKpZFK4OpL
-4qIMz+EwHwYDVR0jBBgwFoAUv1kgNgB5oKAia4zV8mHSuCzLgkowEgYDVR0TAQH/BAgwBgEB
-/wIBAjAzBgNVHSAELDAqMA8GDSsGAQQBga0hgiwBAQQwDQYLKwYBBAGBrSGCLB4wCAYGZ4EM
-AQICMEwGA1UdHwRFMEMwQaA/oD2GO2h0dHA6Ly9wa2kwMzM2LnRlbGVzZWMuZGUvcmwvVGVs
-ZVNlY19HbG9iYWxSb290X0NsYXNzXzIuY3JsMIGGBggrBgEFBQcBAQR6MHgwLAYIKwYBBQUH
-MAGGIGh0dHA6Ly9vY3NwMDMzNi50ZWxlc2VjLmRlL29jc3ByMEgGCCsGAQUFBzAChjxodHRw
-Oi8vcGtpMDMzNi50ZWxlc2VjLmRlL2NydC9UZWxlU2VjX0dsb2JhbFJvb3RfQ2xhc3NfMi5j
-ZXIwDQYJKoZIhvcNAQELBQADggEBAIcL/z4Cm2XIVi3WO5qYi3FP2ropqiH5Ri71sqQPrhE4
-eTizDnS6dl2e6BiClmLbTDPo3flq3zK9LExHYFV/53RrtCyD2HlrtrdNUAtmB7Xts5et6u5/
-MOaZ/SLick0+hFvu+c+Z6n/XUjkurJgARH5pO7917tALOxrN5fcPImxHhPalR6D90Bo0fa3S
-PXez7vTXTf/D6OWST1k+kEcQSrCFWMBvf/iu7QhCnh7U3xQuTY+8npTD5+32GPg8SecmqKc2
-2CzeIs2LgtjZeOJVEqM7h0S2EQvVDFKvaYwPBt/QolOLV5h7z/0HJPT8vcP9SpIClxvyt7bP
-ZYoaorVyGTkwggWsMIIElKADAgECAgcbY7rQHiw9MA0GCSqGSIb3DQEBCwUAMIGVMQswCQYD
-VQQGEwJERTFFMEMGA1UEChM8VmVyZWluIHp1ciBGb2VyZGVydW5nIGVpbmVzIERldXRzY2hl
-biBGb3JzY2h1bmdzbmV0emVzIGUuIFYuMRAwDgYDVQQLEwdERk4tUEtJMS0wKwYDVQQDEyRE
-Rk4tVmVyZWluIENlcnRpZmljYXRpb24gQXV0aG9yaXR5IDIwHhcNMTYwNTI0MTEzODQwWhcN
-MzEwMjIyMjM1OTU5WjCBjTELMAkGA1UEBhMCREUxRTBDBgNVBAoMPFZlcmVpbiB6dXIgRm9l
-cmRlcnVuZyBlaW5lcyBEZXV0c2NoZW4gRm9yc2NodW5nc25ldHplcyBlLiBWLjEQMA4GA1UE
-CwwHREZOLVBLSTElMCMGA1UEAwwcREZOLVZlcmVpbiBHbG9iYWwgSXNzdWluZyBDQTCCASIw
-DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJ07eRxH3h+Gy8Zp1xCeOdfZojDbchwFfylf
-S2jxrRnWTOFrG7ELf6Gr4HuLi9gtzm6IOhDuV+UefwRRNuu6cG1joL6WLkDh0YNMZj0cZGnl
-m6Stcq5oOVGHecwX064vXWNxSzl660Knl5BpBb+Q/6RAcL0D57+eGIgfn5mITQ5HjUhfZZkQ
-0tkqSe3BuS0dnxLLFdM/fx5ULzquk1enfnjK1UriGuXtQX1TX8izKvWKMKztFwUkP7agCwf9
-TRqaA1KgNpzeJIdl5Of6x5ZzJBTN0OgbaJ4YWa52fvfRCng8h0uwN89Tyjo4EPPLR22MZD08
-WkVKusqAfLjz56dMTM0CAwEAAaOCAgUwggIBMBIGA1UdEwEB/wQIMAYBAf8CAQEwDgYDVR0P
-AQH/BAQDAgEGMCkGA1UdIAQiMCAwDQYLKwYBBAGBrSGCLB4wDwYNKwYBBAGBrSGCLAEBBDAd
-BgNVHQ4EFgQUazqYi/nyU4na4K2yMh4JH+iqO3QwHwYDVR0jBBgwFoAUk+PYMiba1fFKpZFK
-4OpL4qIMz+EwgY8GA1UdHwSBhzCBhDBAoD6gPIY6aHR0cDovL2NkcDEucGNhLmRmbi5kZS9n
-bG9iYWwtcm9vdC1nMi1jYS9wdWIvY3JsL2NhY3JsLmNybDBAoD6gPIY6aHR0cDovL2NkcDIu
-cGNhLmRmbi5kZS9nbG9iYWwtcm9vdC1nMi1jYS9wdWIvY3JsL2NhY3JsLmNybDCB3QYIKwYB
-BQUHAQEEgdAwgc0wMwYIKwYBBQUHMAGGJ2h0dHA6Ly9vY3NwLnBjYS5kZm4uZGUvT0NTUC1T
-ZXJ2ZXIvT0NTUDBKBggrBgEFBQcwAoY+aHR0cDovL2NkcDEucGNhLmRmbi5kZS9nbG9iYWwt
-cm9vdC1nMi1jYS9wdWIvY2FjZXJ0L2NhY2VydC5jcnQwSgYIKwYBBQUHMAKGPmh0dHA6Ly9j
-ZHAyLnBjYS5kZm4uZGUvZ2xvYmFsLXJvb3QtZzItY2EvcHViL2NhY2VydC9jYWNlcnQuY3J0
-MA0GCSqGSIb3DQEBCwUAA4IBAQCBeEWkTqR/DlXwCbFqPnjMaDWpHPOVnj/z+N9rOHeJLI21
-rT7H8pTNoAauusyosa0zCLYkhmI2THhuUPDVbmCNT1IxQ5dGdfBi5G5mUcFCMWdQ5UnnOR7L
-n8qGSN4IFP8VSytmm6A4nwDO/afr0X9XLchMX9wQEZc+lgQCXISoKTlslPwQkgZ7nu7YRrQb
-tQMMONncsKk/cQYLsgMHM8KNSGMlJTx6e1du94oFOO+4oK4v9NsH1VuEGMGpuEvObJAaguS5
-Pfp38dIfMwK/U+d2+dwmJUFvL6Yb+qQTkPp8ftkLYF3sv8pBoGH7EUkp2KgtdRXYShjqFu9V
-NCIaE40GMIIFrTCCBJWgAwIBAgIMIShOA5F6a0vPkJFlMA0GCSqGSIb3DQEBCwUAMIGNMQsw
-CQYDVQQGEwJERTFFMEMGA1UECgw8VmVyZWluIHp1ciBGb2VyZGVydW5nIGVpbmVzIERldXRz
-Y2hlbiBGb3JzY2h1bmdzbmV0emVzIGUuIFYuMRAwDgYDVQQLDAdERk4tUEtJMSUwIwYDVQQD
-DBxERk4tVmVyZWluIEdsb2JhbCBJc3N1aW5nIENBMB4XDTE5MDYxODExNTIyNVoXDTIyMDYx
-NzExNTIyNVowQjELMAkGA1UEBhMCREUxFDASBgNVBAoMC1JXVEggQWFjaGVuMR0wGwYDVQQD
-DBRKYW4gSGVucmlrIFdlaW5zdG9jazCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEB
-ALqTMZkiwS7HcKorhnCtWkSdYBssMOoeRrqS/U72ixGRWRduFz9hySdkSdM4tQs5b0ZHWZPR
-x4Ts/URAtPrJtcYhdGG2zsknDxlweFxKg2tJW3tVLnZw3Y3517ruQG3f09/uzJ8lobaQp9N5
-exa1l1vYZbD6cricWaX4k4J8pyPERZ6Ntt70Mse2g2+fb6y2nvEGVqt088dRRgacmd7zrpug
-fWgnPYxM3jGU4pJPQzXzPwNrm5i831dCo1HZNNy+iVNjgpZWd3mPKS6eeaPMKbStXTlvvGuu
-8u7FpRSHnAB6NwejMIVl26eqdMyYI6F98jPpH1mOHuxxopnspYor3FkCAwEAAaOCAlUwggJR
-MD4GA1UdIAQ3MDUwDwYNKwYBBAGBrSGCLAEBBDAQBg4rBgEEAYGtIYIsAQEEBDAQBg4rBgEE
-AYGtIYIsAgEEBDAJBgNVHRMEAjAAMA4GA1UdDwEB/wQEAwIF4DAdBgNVHSUEFjAUBggrBgEF
-BQcDAgYIKwYBBQUHAwQwHQYDVR0OBBYEFB/z05wtpKDoxT7kc83Swux9Ked/MB8GA1UdIwQY
-MBaAFGs6mIv58lOJ2uCtsjIeCR/oqjt0MCcGA1UdEQQgMB6BHGphbi53ZWluc3RvY2tAcnd0
-aC1hYWNoZW4uZGUwgY0GA1UdHwSBhTCBgjA/oD2gO4Y5aHR0cDovL2NkcDEucGNhLmRmbi5k
-ZS9kZm4tY2EtZ2xvYmFsLWcyL3B1Yi9jcmwvY2FjcmwuY3JsMD+gPaA7hjlodHRwOi8vY2Rw
-Mi5wY2EuZGZuLmRlL2Rmbi1jYS1nbG9iYWwtZzIvcHViL2NybC9jYWNybC5jcmwwgdsGCCsG
-AQUFBwEBBIHOMIHLMDMGCCsGAQUFBzABhidodHRwOi8vb2NzcC5wY2EuZGZuLmRlL09DU1At
-U2VydmVyL09DU1AwSQYIKwYBBQUHMAKGPWh0dHA6Ly9jZHAxLnBjYS5kZm4uZGUvZGZuLWNh
-LWdsb2JhbC1nMi9wdWIvY2FjZXJ0L2NhY2VydC5jcnQwSQYIKwYBBQUHMAKGPWh0dHA6Ly9j
-ZHAyLnBjYS5kZm4uZGUvZGZuLWNhLWdsb2JhbC1nMi9wdWIvY2FjZXJ0L2NhY2VydC5jcnQw
-DQYJKoZIhvcNAQELBQADggEBAGGcNvUO+7oXmyLDG8sYt3zyJTC9xvPyVwvCgEnHjwIvnPB2
-hqRMpzRqQ3O8vquhuCLcBD20k8EoPEF1fagZQGzrzMJxgCSUnoJpJtv6M0azpPubHh9I9Geb
-h8HBM+8IgDCJjMvWQcl3TLfvzXS9e7W3+lx7+L8sNOlxu+cF/IS7IYrEcMNr/4VOVNemX5E2
-12rDntadEl+tVqlh42CEM6bMnaWYV0sjj+e3XLvXajaDSohHUwOFX3KtaRfgMbDY0LkergyG
-uVPtU5NAzknRB4fh8/Yo6qNsmyEmZ8DpLFBgUwgEbK3NteTTNWvCnPPIMOoHjDNfDaQ+9rMI
-CXtOvVkxggQLMIIEBwIBATCBnjCBjTELMAkGA1UEBhMCREUxRTBDBgNVBAoMPFZlcmVpbiB6
-dXIgRm9lcmRlcnVuZyBlaW5lcyBEZXV0c2NoZW4gRm9yc2NodW5nc25ldHplcyBlLiBWLjEQ
-MA4GA1UECwwHREZOLVBLSTElMCMGA1UEAwwcREZOLVZlcmVpbiBHbG9iYWwgSXNzdWluZyBD
-QQIMIShOA5F6a0vPkJFlMA0GCWCGSAFlAwQCAQUAoIICPTAYBgkqhkiG9w0BCQMxCwYJKoZI
-hvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMTAxMzEwODIyMzFaMC8GCSqGSIb3DQEJBDEiBCDY
-2trKUyTj75bEkyElfMuAxxyZyZ6jiS71V7bW5KKLSDBsBgkqhkiG9w0BCQ8xXzBdMAsGCWCG
-SAFlAwQBKjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwDgYIKoZIhvcNAwICAgCAMA0GCCqG
-SIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMCAgEoMIGvBgkrBgEEAYI3EAQxgaEwgZ4w
-gY0xCzAJBgNVBAYTAkRFMUUwQwYDVQQKDDxWZXJlaW4genVyIEZvZXJkZXJ1bmcgZWluZXMg
-RGV1dHNjaGVuIEZvcnNjaHVuZ3NuZXR6ZXMgZS4gVi4xEDAOBgNVBAsMB0RGTi1QS0kxJTAj
-BgNVBAMMHERGTi1WZXJlaW4gR2xvYmFsIElzc3VpbmcgQ0ECDCEoTgORemtLz5CRZTCBsQYL
-KoZIhvcNAQkQAgsxgaGggZ4wgY0xCzAJBgNVBAYTAkRFMUUwQwYDVQQKDDxWZXJlaW4genVy
-IEZvZXJkZXJ1bmcgZWluZXMgRGV1dHNjaGVuIEZvcnNjaHVuZ3NuZXR6ZXMgZS4gVi4xEDAO
-BgNVBAsMB0RGTi1QS0kxJTAjBgNVBAMMHERGTi1WZXJlaW4gR2xvYmFsIElzc3VpbmcgQ0EC
-DCEoTgORemtLz5CRZTANBgkqhkiG9w0BAQEFAASCAQCZHxrjiLqxLfi4EOkT40C58rYsQpdL
-O5rDlfoNf5vBjYZYB6W7aY1kLdiVFTzCvlFwN5o51HBse2pqbEaocXHqlgO7rRB5yW4/aRTp
-2EcbMGMDGahnad8K9b4UX+tjP7IKlQksgVB0ueGnMaCZcpQ5iENJYII2tt4xwbJgeTROB8YY
-A+RWb5IQdO7RacInU5KQoyzrcSMikxx1ynZlNl3lq1Sbu/ngExv/grNRtsm2lTSX3QFAcdMu
-AKUhpcDav+cyATkmBQppRAA19qyynD019JWJoQfr01s6i9DEcpKPHZ6JPXsWQnoAnHqM+Qlj
-hc4L1xrsi4RxRAUptOOpnFtEAAAAAAAA
---------------ms070109030207040501030002--
+------------[ cut here ]------------
+pvqspinlock: lock 0xffffffff8f371d80 has corrupted value 0x0!
+WARNING: CPU: 3 PID: 8771 at kernel/locking/qspinlock_paravirt.h:498
+__pv_queued_spin_unlock_slowpath+0x22e/0x2b0
+kernel/locking/qspinlock_paravirt.h:498
+Modules linked in:
+CPU: 3 PID: 8771 Comm: a.out Not tainted 5.11.0-rc5+ #71
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+rel-1.13.0-44-g88ab0c15525c-prebuilt.qemu.org 04/01/2014
+RIP: 0010:__pv_queued_spin_unlock_slowpath+0x22e/0x2b0
+kernel/locking/qspinlock_paravirt.h:498
+Code: ea 03 0f b6 14 02 4c 89 e8 83 e0 07 83 c0 03 38 d0 7c 04 84 d2
+75 62 41 8b 55 00 4c 89 ee 48 c7 c7 20 6b 4c 89 e8 72 d3 5f 07 <0f> 0b
+e9 6cc
+RSP: 0018:fffffe00000c17b0 EFLAGS: 00010086
+RAX: 0000000000000000 RBX: ffffffff8f3b5660 RCX: 0000000000000000
+RDX: ffff8880150222c0 RSI: ffffffff815b624d RDI: fffffbc0000182e8
+RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
+R10: ffffffff817de94f R11: 0000000000000000 R12: ffff8880150222c0
+R13: ffffffff8f371d80 R14: ffff8880181fead8 R15: 0000000000000000
+FS:  00007fa5b51f0700(0000) GS:ffff88802cf80000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000002286908 CR3: 0000000015b24000 CR4: 0000000000750ee0
+DR0: 00000000004cb3d4 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+PKRU: 55555554
+Call Trace:
+ <#DB>
+ __raw_callee_save___pv_queued_spin_unlock_slowpath+0x11/0x20
+ .slowpath+0x9/0xe
+ pv_queued_spin_unlock arch/x86/include/asm/paravirt.h:559 [inline]
+ queued_spin_unlock arch/x86/include/asm/qspinlock.h:56 [inline]
+ lockdep_unlock+0x10e/0x290 kernel/locking/lockdep.c:124
+ debug_locks_off_graph_unlock kernel/locking/lockdep.c:165 [inline]
+ print_usage_bug kernel/locking/lockdep.c:3710 [inline]
+ verify_lock_unused kernel/locking/lockdep.c:5374 [inline]
+ lock_acquire kernel/locking/lockdep.c:5433 [inline]
+ lock_acquire+0x471/0x720 kernel/locking/lockdep.c:5407
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
+ htab_lock_bucket kernel/bpf/hashtab.c:175 [inline]
+ htab_map_update_elem+0x1f0/0x790 kernel/bpf/hashtab.c:1023
+ bpf_prog_60236c52b8017ad1+0x8e/0xab4
+ bpf_dispatcher_nop_func include/linux/bpf.h:651 [inline]
+ bpf_overflow_handler+0x192/0x5b0 kernel/events/core.c:9755
+ __perf_event_overflow+0x13c/0x370 kernel/events/core.c:8979
+ perf_swevent_overflow kernel/events/core.c:9055 [inline]
+ perf_swevent_event+0x347/0x550 kernel/events/core.c:9083
+ perf_bp_event+0x1a2/0x1c0 kernel/events/core.c:9932
+ hw_breakpoint_handler arch/x86/kernel/hw_breakpoint.c:535 [inline]
+ hw_breakpoint_exceptions_notify+0x18a/0x3b0 arch/x86/kernel/hw_breakpoint.c:567
+ notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
+ atomic_notifier_call_chain+0x8d/0x170 kernel/notifier.c:217
+ notify_die+0xda/0x170 kernel/notifier.c:548
+ notify_debug+0x20/0x30 arch/x86/kernel/traps.c:842
+ exc_debug_kernel arch/x86/kernel/traps.c:902 [inline]
+ exc_debug+0x103/0x140 arch/x86/kernel/traps.c:998
+ asm_exc_debug+0x19/0x30 arch/x86/include/asm/idtentry.h:598
+RIP: 0010:copy_user_generic_unrolled+0xa2/0xc0 arch/x86/lib/copy_user_64.S:102
+Code: ff c9 75 b6 89 d1 83 e2 07 c1 e9 03 74 12 4c 8b 06 4c 89 07 48
+8d 76 08 48 8d 7f 08 ff c9 75 ee 21 d2 74 10 89 d1 8a 06 88 07 <48> ff
+c6 484
+RSP: 0018:ffffc90000d67af0 EFLAGS: 00040202
+RAX: 0000000000000001 RBX: 0000000000000001 RCX: 0000000000000001
+RDX: 0000000000000001 RSI: ffff88801341d001 RDI: 00000000004cb3d4
+RBP: 00000000004cb3d4 R08: 0000000000000000 R09: ffff88801341d001
+R10: ffffed1002683a00 R11: 0000000000000000 R12: ffff88801341d001
+R13: 00000000004cb3d5 R14: 0000000000000000 R15: 0000000000000001
+ </#DB>
+ copy_user_generic arch/x86/include/asm/uaccess_64.h:37 [inline]
+ raw_copy_to_user arch/x86/include/asm/uaccess_64.h:58 [inline]
+ copyout.part.0+0xe4/0x110 lib/iov_iter.c:148
+ copyout lib/iov_iter.c:182 [inline]
+ copy_page_to_iter_iovec lib/iov_iter.c:219 [inline]
+ copy_page_to_iter+0x416/0xed0 lib/iov_iter.c:926
+ pipe_read+0x4a4/0x13a0 fs/pipe.c:290
+ call_read_iter include/linux/fs.h:1895 [inline]
+ new_sync_read+0x5b7/0x6e0 fs/read_write.c:415
+ vfs_read+0x35c/0x570 fs/read_write.c:496
+ ksys_read+0x1ee/0x250 fs/read_write.c:634
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x406c1c
+Code: ec 28 48 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 f9 fc ff ff
+48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 31 c0 0f 05 <48> 3d
+00 f08
+RSP: 002b:00007fa5b51f02d0 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+RAX: ffffffffffffffda RBX: 00000000004cb3d4 RCX: 0000000000406c1c
+RDX: 0000000000000001 RSI: 00000000004cb3d4 RDI: 0000000000000004
+RBP: 00007fa5b51f030c R08: 0000000000000000 R09: 0000000000000000
+R10: 00007fa5b51f0700 R11: 0000000000000246 R12: 00000000004cb3d0
+R13: cccccccccccccccd R14: 00007fa5b51f0400 R15: 0000000000802000
