@@ -2,86 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE420309F36
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 23:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D66309F3B
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 23:29:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbhAaWWP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 17:22:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47062 "EHLO
+        id S230035AbhAaW10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 17:27:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbhAaWUr (ORCPT
+        with ESMTP id S229502AbhAaWVi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 17:20:47 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FE92C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 14:20:07 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id y10so4651159plk.7
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 14:20:07 -0800 (PST)
+        Sun, 31 Jan 2021 17:21:38 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF265C06174A;
+        Sun, 31 Jan 2021 14:20:56 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id df22so784039edb.1;
+        Sun, 31 Jan 2021 14:20:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=DdYFear2V9dqZ/pu2Vj/ZMYQfCEnmO587YzIQyXHcqU=;
-        b=e/QKZmx/86jwKfjB1DheqBkWgBh6jp6V5+zR1dkVZKetF31fnCkLbwTcZu+azbEuON
-         6FNWRIKqE5O3YBWGMXVU9QRIATorafVL0r0rvthCrWy/9uIOoPmPnxOglTOtbhYuXfaD
-         HVubZLZFAHTFIZXPjFppIWISzcy1Cqyq+5mN1sNsuehTDCGYxA1Tuhsun65twvAtKDnb
-         6lvBDZ1miB14euzJOlrleL3OOpn/0pBegZN/X7kWNvwPHiH/zfa0QJYGHI5B4freV2rS
-         xoHty+y/b9J5PszeuXpJsfkUUnkb5yGjxAlr24AFYbq5HKLoxKCwB8vTvZfC3yrWgafs
-         kwrA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DHUUmMepH2teJF00B27CJvMsSr8ShoqZntH4j9eDohk=;
+        b=SPtZ0mXppVAiASgxZ9VPs22urbjqMruMKM6c7WVxL4w7U44C2hRHzsPqx1Td8iOxDT
+         1up/tUYCFxZVnY9qnyKxZzoHeI6SpegEmHD0e+DY0Ts8O0K5vD3cuNm8Q9Efd5D/YhNW
+         hDc4yUrNGjYqYoeigXYeEznVn/snNZAM54PYuEyTNn6harTYZEPsg+wwss9YK0XKDSUM
+         NYUWrN4mu+G8bVzTPu9f3152D/FRT0oyx11V/IsaLwQpyYYnwjgEZdBSUN5GWpRzIyJK
+         CDtqR/h7J70Gh8+AEQf6Hr0tbBS63gG9Qp723SKWuOTqRJZ71pART65LkzdxmAtzvKtF
+         6ZuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=DdYFear2V9dqZ/pu2Vj/ZMYQfCEnmO587YzIQyXHcqU=;
-        b=ErMzxEz9bQapXoAhdHcmpj849x+gLLJfYMdgufrEAWjEvmGGLOL6kcveT4TJZPwCKH
-         NEQjgOfQQC+j/0bnHokLFMsoL7+dnPQ+c4psLiLPaAWcYDlsa2ejvHkSyvTvBqfmaks2
-         om+3z9o0qDLGq1q/58qFCY6/T95nQ4im9dYvgZZaw3dSV630Sd+Zht/RNcWdZdQPojYe
-         L0IbsH07Ae8plWSlc0vXE04bmHTE7FMy6w0dW5J5xu6cdD8cPxpSRz795APh+iFoRk4o
-         C1lsYgRi5tA1veT5ClJPrOVimQ1lIcr77DZAEqbsybo8ZQvP97xgDd9xh+2+M/fDtdHv
-         Ds2w==
-X-Gm-Message-State: AOAM531PwZpaFDEsQyyDGmf1Vepdd4tnNGrgnVKhvKJowAPAtP97HiAh
-        i+feCYgPJrmk554zuAIuCQiPbQ==
-X-Google-Smtp-Source: ABdhPJxtXjS7dxE1GXwf/BHWU9mPBZISf14FkZ6jFzSKjQauIG5tEnFrthZs9oDxTp9quWfBcfu2tQ==
-X-Received: by 2002:a17:902:b58f:b029:e1:6a9:f744 with SMTP id a15-20020a170902b58fb02900e106a9f744mr15286937pls.1.1612131606700;
-        Sun, 31 Jan 2021 14:20:06 -0800 (PST)
-Received: from ?IPv6:2600:1010:b05e:e964:2432:9f62:e00b:9795? ([2600:1010:b05e:e964:2432:9f62:e00b:9795])
-        by smtp.gmail.com with ESMTPSA id r9sm5853108pfq.8.2021.01.31.14.20.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Jan 2021 14:20:05 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [REGRESSION] x86/entry: TIF_SINGLESTEP handling is still broken
-Date:   Sun, 31 Jan 2021 14:20:04 -0800
-Message-Id: <C479ACCB-A1A5-4422-8120-999E8D54314B@amacapital.net>
-References: <CAP045Ao_Zb0HGg0=bvUeV6GjX=-3fz0ScsvM_jE7VsZcVk_-tg@mail.gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Robert O'Callahan <rocallahan@gmail.com>
-In-Reply-To: <CAP045Ao_Zb0HGg0=bvUeV6GjX=-3fz0ScsvM_jE7VsZcVk_-tg@mail.gmail.com>
-To:     Kyle Huey <me@kylehuey.com>
-X-Mailer: iPhone Mail (18C66)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DHUUmMepH2teJF00B27CJvMsSr8ShoqZntH4j9eDohk=;
+        b=baRvqL3ncgtBH4gEUKf2cMxmo8lGje2va0DR5d+wPfiif4vYkJONTnuE5Prszvc4wK
+         GDD3ZKRuYvR6RCrEt9oeetW/bjT4trcoI5t92jqiSr81rjevjqMGsWm0dSDHx9UBhwi/
+         9Qlgg/Hh/eDwoQT2YYVePcJlbyZDJuNTVmsKWUyejV9qsGKcFKm7fysDI7FTG6yxA//4
+         AeVzBvwazXZsBDqNlN3nJEdBufKHWg9i4KikulE6BwxaV+HrxLiWJWD/YNg8Xv9mip1J
+         Lxlr/k07p+A3hh2ZRzsKCRe5Sa7WtKerQstH12RCSZtbYTlnMlDeqp7iUDiEJYOEFBDR
+         ADOQ==
+X-Gm-Message-State: AOAM533MVr+HV7sYG5MVMoDEttPgWsUFPeLs3lc2KPSt/4zAtJjx7QrP
+        LsKYEJ2jK58LSnDqnCksX+o=
+X-Google-Smtp-Source: ABdhPJxf7CLPIJBZSBEiHhiSxVCyrbX3/bOBnveY8+nIRQUt/LoweLkjmk/GEAS3+MbrqUbpZICfzA==
+X-Received: by 2002:aa7:d399:: with SMTP id x25mr2179324edq.237.1612131655585;
+        Sun, 31 Jan 2021 14:20:55 -0800 (PST)
+Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
+        by smtp.gmail.com with ESMTPSA id z2sm7072566ejd.44.2021.01.31.14.20.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 Jan 2021 14:20:54 -0800 (PST)
+Date:   Mon, 1 Feb 2021 00:20:53 +0200
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Tobias Waldekranz <tobias@waldekranz.com>
+Subject: Re: [PATCH net] net: dsa: mv88e6xxx: override existent unicast
+ portvec in port_fdb_add
+Message-ID: <CA+h21hrn6q8NAdma3Djov82sNzHTz_tF480Nqpw-A+JLv_TYcQ@mail.gmail.com>
+X-TUID: ujGFqEzNl8hx
+References: <20210130134334.10243-1-dqfext@gmail.com>
+ <20210131003929.2rlr6pv5fu7vfldd@skbuf>
+ <CALW65jYF5jpm+wQQ9yPZPa_gCSwr4gWiPZ35rBXiACmzCbABLA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALW65jYF5jpm+wQQ9yPZPa_gCSwr4gWiPZ35rBXiACmzCbABLA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Jan 31, 2021 at 09:13:15AM +0800, DENG Qingfang wrote:
+> This bug is exposed when I try your patch series on kernel 5.4
+> https://lore.kernel.org/netdev/20210106095136.224739-1-olteanv@gmail.com/
+> https://lore.kernel.org/netdev/20210116012515.3152-1-tobias@waldekranz.com/
+>
+> Without this patch, DSA will add a new port bit to the existing
+> portvec when a client moves to the software part of a bridge. When it
+> moves away, DSA will clear the port bit but the existing one will
+> remain static. This results in connection issues when the client moves
+> to a different port of the switch, and the kernel log below.
+>
+> mv88e6085 f1072004.mdio-mii:00: ATU member violation for
+> xx:xx:xx:xx:xx:xx portvec dc00 spid 0
 
-
-> On Jan 31, 2021, at 2:08 PM, Kyle Huey <me@kylehuey.com> wrote:
->=20
-> =EF=BB=BFOn Sun, Jan 31, 2021 at 2:04 PM Andy Lutomirski <luto@amacapital.=
-net> wrote:
->> Indeed, and I have tests for this.
->=20
-> Do you mean you already have a test case or that you would like a
-> minimized test case?
-
-A smallish test that we could stick in selftests would be great if that=E2=80=
-=99s straightforward.
-
->=20
-> - Kyle
+Ah, ok, DSA adds an FDB entry behind the user's back and it relies upon
+the driver behavior being 'override'. A bit subtle, though it gives one
+good reason against someone suggesting "why don't you just refuse adding
+the new entry instead of overriding, like the software bridge does".
+Probably the refusal of overwriting an entry is what needs to be handled
+at upper layers, we do need to be able to override from DSA.
+I had a quick look through our other drivers and it seems that all of
+them are happy to override an existing FDB entry (or at least the
+software part is).
