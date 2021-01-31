@@ -2,233 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E51D3309BC9
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 13:01:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA8C1309BF4
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 13:22:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbhAaL5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 06:57:00 -0500
-Received: from services.gouders.net ([141.101.32.176]:33274 "EHLO
-        services.gouders.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230517AbhAaKR3 (ORCPT
+        id S231300AbhAaLIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 06:08:46 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:58396 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230358AbhAaJ4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 05:17:29 -0500
-X-Greylist: delayed 1124 seconds by postgrey-1.27 at vger.kernel.org; Sun, 31 Jan 2021 05:17:27 EST
-Received: from localhost (ltea-047-066-000-239.pools.arcor-ip.net [47.66.0.239])
-        (authenticated bits=0)
-        by services.gouders.net (8.14.8/8.14.8) with ESMTP id 10V9ifno020651
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 31 Jan 2021 10:44:42 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gouders.net; s=gnet;
-        t=1612086283; bh=vLKM33XF2MpuIYW7z8Tq/AxC1zWZT620ykbKLfQVP2s=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date;
-        b=DY4M9cBcyaOrE5pu8gzsi6lLsDdG3KNHZCr1onc2+4iGjO4t/SPhWT5aD6yJ6x35K
-         Rxk3J8YjjufGblbS5Dh7llbStZXiu+0U7frMJrAFcVxVoDWvcV7SEkkxdWrn9gc8sU
-         2YvYGkT+tMQdTrGGAAWQWAnN6660vTjE+S0P8/m0=
-From:   Dirk Gouders <dirk@gouders.net>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Lukasz Majczak <lma@semihalf.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Tj <ml.linux@elloe.vision>, Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Radoslaw Biernacki <rad@semihalf.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Alex Levin <levinale@google.com>
-Subject: Re: [PATCH v2] tpm_tis: Add missing tpm_request/relinquish_locality
- calls
-In-Reply-To: <464454f440df67d3470e67ff0386bbc306d07dac.camel@kernel.org>
-        (Jarkko Sakkinen's message of "Sat, 30 Jan 2021 22:40:40 +0200")
-References: <20210123014247.989368-1-lma@semihalf.com>
-        <20210128130753.1283534-1-lma@semihalf.com>
-        <464454f440df67d3470e67ff0386bbc306d07dac.camel@kernel.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
-Date:   Sun, 31 Jan 2021 10:43:05 +0100
-Message-ID: <ghwnvtwifq.fsf@gouders.net>
+        Sun, 31 Jan 2021 04:56:30 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10V9bOwV020287;
+        Sun, 31 Jan 2021 01:51:22 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=pfpt0220; bh=5lKn6Ecz4xGgCyyvpqKHZ0HmmgVVSCgpayo06pbd8FA=;
+ b=Zg0w+d5SaYV1JJp9EAsy6TZpW4dBIuyJOguXMg+td4VQZLJjoAGkytpfWepvUk/ytuAX
+ tPT+ZVYcT+wDVipxDsZh8vRj93bARfsOwob5fWH6Wogg1+7ReK7+CmQ1HcB499AfrVky
+ 8CNNM4EX+RTPW+hXp69vi9F3F+qUnmWU9FTb/s71J2ygxfWvwmWv4FieVQJ+NfStraQd
+ I8njC/6RiFmRjAVhimJxmtDj4Db2HqdlV0NZ4dbJzEgbucYE6+/er8IP1tYV8zGTLXCk
+ AM3QnXPxEfklW5HFH6M+/Jzx2V0ST857ycoXtr4wOMJNI/IhFqZUijotnWoMbZ6IwPCQ iQ== 
+Received: from dc5-exch02.marvell.com ([199.233.59.182])
+        by mx0a-0016f401.pphosted.com with ESMTP id 36d5psshj8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 31 Jan 2021 01:51:22 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 31 Jan
+ 2021 01:51:21 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 31 Jan 2021 01:51:21 -0800
+Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
+        by maili.marvell.com (Postfix) with ESMTP id 4FBB53F7041;
+        Sun, 31 Jan 2021 01:51:18 -0800 (PST)
+From:   <stefanc@marvell.com>
+To:     <netdev@vger.kernel.org>
+CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
+        <nadavh@marvell.com>, <ymarkman@marvell.com>,
+        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
+        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
+        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
+        <atenart@kernel.org>, Konstantin Porotchkin <kostap@marvell.com>
+Subject: [PATCH v6 net-next 02/18] dts: marvell: add CM3 SRAM memory to cp115 ethernet device tree
+Date:   Sun, 31 Jan 2021 11:50:48 +0200
+Message-ID: <1612086664-23972-3-git-send-email-stefanc@marvell.com>
+X-Mailer: git-send-email 1.9.1
+In-Reply-To: <1612086664-23972-1-git-send-email-stefanc@marvell.com>
+References: <1612086664-23972-1-git-send-email-stefanc@marvell.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-01-31_03:2021-01-29,2021-01-31 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jarkko Sakkinen <jarkko@kernel.org> writes:
+From: Konstantin Porotchkin <kostap@marvell.com>
 
-> On Thu, 2021-01-28 at 14:07 +0100, Lukasz Majczak wrote:
->> There is a missing call to tpm_request_locality before the call to
->> the tpm_get_timeouts() and tpm_tis_probe_irq_single(). As the current
->> approach might work for tpm2, it fails for tpm1.x - in that case
->> call to tpm_get_timeouts() or tpm_tis_probe_irq_single()
->> without locality fails and in turn causes tpm_tis_core_init() to fail.
->> Tested on Samsung Chromebook Pro (Caroline).
->>=20
->> Signed-off-by: Lukasz Majczak <lma@semihalf.com>
->
-> Is it possible that you test against linux-next and see if any
-> problems still arise? I've applied the locality fixes from James.
+CM3 SRAM address space would be used for Flow Control configuration.
 
-I tested current linux-next and the warning still appears,
-unfortunately.
+Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+Signed-off-by: Konstantin Porotchkin <kostap@marvell.com>
+---
+ arch/arm64/boot/dts/marvell/armada-cp11x.dtsi | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-I then incrementally applied further patches from James' series [1] and
-after "[PATCH v2 4/5] tpm_tis: fix IRQ probing" the warning has gone:
+diff --git a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
+index 9dcf16b..359cf42 100644
+--- a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
+@@ -69,6 +69,8 @@
+ 			status = "disabled";
+ 			dma-coherent;
+ 
++			cm3-mem = <&CP11X_LABEL(cm3_sram)>;
++
+ 			CP11X_LABEL(eth0): eth0 {
+ 				interrupts = <39 IRQ_TYPE_LEVEL_HIGH>,
+ 					<43 IRQ_TYPE_LEVEL_HIGH>,
+@@ -211,6 +213,14 @@
+ 			};
+ 		};
+ 
++		CP11X_LABEL(cm3_sram): cm3@220000 {
++			compatible = "mmio-sram";
++			reg = <0x220000 0x800>;
++			#address-cells = <1>;
++			#size-cells = <1>;
++			ranges = <0 0x220000 0x800>;
++		};
++
+ 		CP11X_LABEL(rtc): rtc@284000 {
+ 			compatible = "marvell,armada-8k-rtc";
+ 			reg = <0x284000 0x20>, <0x284080 0x24>;
+-- 
+1.9.1
 
-# dmesg | grep tpm
-[    7.220410] tpm_tis STM0125:00: 2.0 TPM (device-id 0x0, rev-id 78)
-[    7.322564] Modules linked in: iwlmvm(+) btusb btrtl btbcm btintel mac80=
-211 amdgpu(+) iwlwifi drm_ttm_helper tpm_crb sdhci_pci ttm cqhci gpu_sched =
-sdhci ccp cfg80211 rng_core tpm_tis tpm_tis_core tpm thinkpad_acpi(+) wmi n=
-vram pinctrl_amd
-
-You might notice there is another warning but that is rtc related and I
-still have to find out if that is something I should report.
-
-Dirk
-
-[1] https://lore.kernel.org/linux-integrity/20201001180925.13808-1-James.Bo=
-ttomley@HansenPartnership.com/
-
->> ---
->> Jarkko, James, Guenter
->>=20
->> I=E2=80=99m aware about the other thread, but it seems to be dead for a =
-few months.
->> Here is the small patch as fixing this specific issue
->> would allow us to unblock the ChromeOs development.=20
->> We want to upstream all of our patches,
->> so the ChromeOs will not diverge even more,
->> so I'm hoping this could be applied, if you see it neat enough.
->
-> The usual approach is that you construct a series picking the pre-existing
-> fixes and on top of that create your own, if any required.
->
->> Best regards,
->> Lukasz
->
-> /Jarkko
->
->>=20
->> v1 -> v2:
->> =C2=A0- fixed typos
->> =C2=A0- as there is no need to enable clock, switched to
->> =C2=A0=C2=A0 use only tpm_request/relinquish_locality calls
->> =C2=A0- narrowed down boundaries of tpm_request/relinquish_locality calls
->> =C2=A0
->> =C2=A0drivers/char/tpm/tpm-chip.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 =
-4 ++--
->> =C2=A0drivers/char/tpm/tpm-interface.c | 11 +++++++++--
->> =C2=A0drivers/char/tpm/tpm.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 |=C2=A0 2 ++
->> =C2=A0drivers/char/tpm/tpm_tis_core.c=C2=A0 | 12 ++++++++++--
->> =C2=A04 files changed, 23 insertions(+), 6 deletions(-)
->>=20
->> diff --git a/drivers/char/tpm/tpm-chip.c b/drivers/char/tpm/tpm-chip.c
->> index ddaeceb7e109..5351963a4b19 100644
->> --- a/drivers/char/tpm/tpm-chip.c
->> +++ b/drivers/char/tpm/tpm-chip.c
->> @@ -32,7 +32,7 @@ struct class *tpm_class;
->> =C2=A0struct class *tpmrm_class;
->> =C2=A0dev_t tpm_devt;
->> =C2=A0
->> -static int tpm_request_locality(struct tpm_chip *chip)
->> +int tpm_request_locality(struct tpm_chip *chip)
->> =C2=A0{
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int rc;
->> =C2=A0
->> @@ -47,7 +47,7 @@ static int tpm_request_locality(struct tpm_chip *chip)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return 0;
->> =C2=A0}
->> =C2=A0
->> -static void tpm_relinquish_locality(struct tpm_chip *chip)
->> +void tpm_relinquish_locality(struct tpm_chip *chip)
->> =C2=A0{
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0int rc;
->> =C2=A0
->> diff --git a/drivers/char/tpm/tpm-interface.c b/drivers/char/tpm/tpm-int=
-erface.c
->> index 1621ce818705..69309b2bea6a 100644
->> --- a/drivers/char/tpm/tpm-interface.c
->> +++ b/drivers/char/tpm/tpm-interface.c
->> @@ -243,8 +243,15 @@ int tpm_get_timeouts(struct tpm_chip *chip)
->> =C2=A0
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (chip->flags & TPM_CH=
-IP_FLAG_TPM2)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0return tpm2_get_timeouts(chip);
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0else
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0return tpm1_get_timeouts(chip);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0else {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0ssize_t ret =3D tpm_request_locality(chip);
->> +
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0if (ret)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return=
- ret;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0ret =3D tpm1_get_timeouts(chip);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0tpm_relinquish_locality(chip);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0return ret;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
->> =C2=A0}
->> =C2=A0EXPORT_SYMBOL_GPL(tpm_get_timeouts);
->> =C2=A0
->> diff --git a/drivers/char/tpm/tpm.h b/drivers/char/tpm/tpm.h
->> index 947d1db0a5cc..8c13008437dd 100644
->> --- a/drivers/char/tpm/tpm.h
->> +++ b/drivers/char/tpm/tpm.h
->> @@ -193,6 +193,8 @@ static inline void tpm_msleep(unsigned int delay_mse=
-c)
->> =C2=A0
->> =C2=A0int tpm_chip_start(struct tpm_chip *chip);
->> =C2=A0void tpm_chip_stop(struct tpm_chip *chip);
->> +int tpm_request_locality(struct tpm_chip *chip);
->> +void tpm_relinquish_locality(struct tpm_chip *chip);
->> =C2=A0struct tpm_chip *tpm_find_get_ops(struct tpm_chip *chip);
->> =C2=A0__must_check int tpm_try_get_ops(struct tpm_chip *chip);
->> =C2=A0void tpm_put_ops(struct tpm_chip *chip);
->> diff --git a/drivers/char/tpm/tpm_tis_core.c b/drivers/char/tpm/tpm_tis_=
-core.c
->> index 92c51c6cfd1b..0ae675e8cf2f 100644
->> --- a/drivers/char/tpm/tpm_tis_core.c
->> +++ b/drivers/char/tpm/tpm_tis_core.c
->> @@ -754,9 +754,17 @@ static int tpm_tis_gen_interrupt(struct tpm_chip *c=
-hip)
->> =C2=A0
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0if (chip->flags & TPM_CH=
-IP_FLAG_TPM2)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0return tpm2_get_tpm_pt(chip, 0x100, &cap2, desc);
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0else
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0return tpm1_getcap(chip, TPM_CAP_PROP_TIS_TIMEOUT, &ca=
-p, desc,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0else {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0ssize_t ret =3D tpm_request_locality(chip);
->> +
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0if (ret)
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0return=
- ret;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0ret =3D tpm1_getcap(chip, TPM_CAP_PROP_TIS_TIMEOUT, &c=
-ap, desc,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0tpm_relinquish_locality(chip);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0return ret;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0}
->> +
->> =C2=A0}
->> =C2=A0
->> =C2=A0/* Register the IRQ and issue a command that will cause an interru=
-pt. If an
