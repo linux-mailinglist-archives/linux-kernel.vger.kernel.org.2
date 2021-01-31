@@ -2,86 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80508309F3D
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 23:29:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6123309F44
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 23:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbhAaW2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 17:28:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229645AbhAaW2J (ORCPT
+        id S229524AbhAaWkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 17:40:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24065 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229481AbhAaWhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 17:28:09 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDBD0C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 14:27:28 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id rv9so21320564ejb.13
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 14:27:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=nsJ8S4pOORlR6TnIUl3ajB3WIZcMJZts3LO/zS/RiX8=;
-        b=e9/kS7h6MQCTaBQU1Ypx5WerBItvVZ2YF3kVY0AakOAOxpWa7lJAQJArFc6eUJuiT5
-         D/Kg1etTw956Vxk2UfRHBhuL+AQiOGqd6uoG+QJltg/opX5We+l3EkZ9E/2EEF3IotLn
-         luVRY9sKpopuVnzOC0bW/wXT60dUauAXjXK7ienQhGYdGyFNWF3/2Li1iWOKtgHqyIKz
-         ig94sTGgSRWU3l7sg356u8sXV8yKXxqminySEU8dZfXBk5Gj+9TOqPmWMvGBoqneO815
-         a0zQQeTKwSjvh5xgQhPMT1xJLV8sTU3idKIzOJ3eEb6oP8U/hw5bLvYGargRXI7YsBkY
-         fEgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nsJ8S4pOORlR6TnIUl3ajB3WIZcMJZts3LO/zS/RiX8=;
-        b=g89tGBxM6hW73LPTFj1xGnXgqZ2ygL5lRCZ/fXnCwkG0ZRj5WHIgBBTejHj8LUwrdE
-         bGxezIJQIGiR4/sWUpSFJAApn8BkkT1QCGYo3OQP6EC+CP4BhRdPltw+tHCpw28payaO
-         IT14KyBJdqc+I8BAROCmolSl2qyqVuM5P5/8Gwa4Ro7nCta592g5IfviWuV6tm0ch+Mx
-         OJ6cOxFxsVpsVVsOuLaR0ft8oSLEHMYp336JVNsY6Tx6F2VXZRjiiTP34qurR8ECuNDb
-         UXWKa7oGxRl4Qokpu9Gs9N8LawICHJJbAOP/mIyV/e+ylif7jMWxOs+cp2T7pukEetA1
-         E/jg==
-X-Gm-Message-State: AOAM533KwoG62Qp84vKFeqhhEn4HykvBNtSlO+LS5PFcguNhlu0zQqMP
-        x32AEs9IE5EOBg8hyAi5fgnq9O7S3Y7yObtgzPGJeA==
-X-Google-Smtp-Source: ABdhPJyOri5VjqsCyn5cYc/3yvayW+WBRXXsqjjjxiRJVySzILQwICiAKnxA6C5z9/6imncg9qZxP5Z6ACRlGSF3rh0=
-X-Received: by 2002:a17:906:24ca:: with SMTP id f10mr7704141ejb.96.1612132047507;
- Sun, 31 Jan 2021 14:27:27 -0800 (PST)
+        Sun, 31 Jan 2021 17:37:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612132534;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=J4E9EA/l7JKgyS7qO1LRTs5yq4ElEah/eNdsAWoWkKQ=;
+        b=bLFmPTIDSUUNWpLoRmSCwLkgWpb4cSHbOUnm1BrCdPT0kAS1+l2Vc56YFh/nML/qKMzjr/
+        tTURv2CfGY3K8fSTwISz4DsYimb+kFKi9FiXPggsnztSVwkxrqcShDHNsni6Gc8QdHOUSX
+        rI1H3T2151+r5E93vrPuH5dwwjZtSDk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-573-qNHcYscoMDSDRvrB2UPZgw-1; Sun, 31 Jan 2021 17:35:30 -0500
+X-MC-Unique: qNHcYscoMDSDRvrB2UPZgw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EBFA6802B44;
+        Sun, 31 Jan 2021 22:35:28 +0000 (UTC)
+Received: from krava (unknown [10.40.192.85])
+        by smtp.corp.redhat.com (Postfix) with SMTP id BF57E10016FC;
+        Sun, 31 Jan 2021 22:35:26 +0000 (UTC)
+Date:   Sun, 31 Jan 2021 23:35:25 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH v2 0/3] perf tools: Minor improvements in event synthesis
+Message-ID: <YBcwrQJATmToLua2@krava>
+References: <20210129054901.1705483-1-namhyung@kernel.org>
 MIME-Version: 1.0
-References: <CAP045Ao_Zb0HGg0=bvUeV6GjX=-3fz0ScsvM_jE7VsZcVk_-tg@mail.gmail.com>
- <C479ACCB-A1A5-4422-8120-999E8D54314B@amacapital.net>
-In-Reply-To: <C479ACCB-A1A5-4422-8120-999E8D54314B@amacapital.net>
-From:   Kyle Huey <me@kylehuey.com>
-Date:   Sun, 31 Jan 2021 14:27:16 -0800
-Message-ID: <CAP045AoMRNjvVd1PdHvdf-nn3LNpTDp66sp+SAmZgNU888iFQQ@mail.gmail.com>
-Subject: Re: [REGRESSION] x86/entry: TIF_SINGLESTEP handling is still broken
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Robert O'Callahan" <rocallahan@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210129054901.1705483-1-namhyung@kernel.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 2:20 PM Andy Lutomirski <luto@amacapital.net> wrote=
-:
->
->
->
-> > On Jan 31, 2021, at 2:08 PM, Kyle Huey <me@kylehuey.com> wrote:
-> >
-> > =EF=BB=BFOn Sun, Jan 31, 2021 at 2:04 PM Andy Lutomirski <luto@amacapit=
-al.net> wrote:
-> >> Indeed, and I have tests for this.
-> >
-> > Do you mean you already have a test case or that you would like a
-> > minimized test case?
->
-> A smallish test that we could stick in selftests would be great if that=
-=E2=80=99s straightforward.
+On Fri, Jan 29, 2021 at 02:48:58PM +0900, Namhyung Kim wrote:
+> Hello,
+> 
+> This is to optimize the event synthesis during perf record.
+> 
+> The first patch is to reduce memory usage when many threads are used.
+> The second is to avoid unncessary syscalls for kernel threads.  And
+> the last one is to reduce the number of threads to iterate when new
+> threads are being created at the same time.
+> 
+> Unfortunately there's no dramatic improvement here but I can see ~5%
+> gain in the 'perf bench internals synthesize' on a big machine.
+> (The numbers are not stable though)
+> 
+> 
+> Before:
+>   # perf bench internals synthesize --mt -M1 -I 100
+>   # Running 'internals/synthesize' benchmark:
+>   Computing performance of multi threaded perf event synthesis by
+>   synthesizing events on CPU 0:
+>     Number of synthesis threads: 1
+>       Average synthesis took: 68831.480 usec (+- 101.450 usec)
+>       Average num. events: 9982.000 (+- 0.000)
+>       Average time per event 6.896 usec
+> 
+> 
+> After:
+>   # perf bench internals synthesize --mt -M1 -I 100
+>   # Running 'internals/synthesize' benchmark:
+>   Computing performance of multi threaded perf event synthesis by
+>   synthesizing events on CPU 0:
+>     Number of synthesis threads: 1
+>       Average synthesis took: 65036.370 usec (+- 158.121 usec)
+>       Average num. events: 9982.000 (+- 0.000)
+>       Average time per event 6.515 usec
+> 
+> 
+> Thanks,
+> Namhyung
+> 
+> 
+> Namhyung Kim (3):
+>   perf tools: Use /proc/<PID>/task/<TID>/status for synthesis
+>   perf tools: Skip MMAP record synthesis for kernel threads
+>   perf tools: Use scandir() to iterate threads
 
-I'll look into it.
+heya,
+is there any change to previous version?
 
-- Kyle
+jirka
+
+> 
+>  tools/perf/util/synthetic-events.c | 88 ++++++++++++++++++++----------
+>  1 file changed, 58 insertions(+), 30 deletions(-)
+> 
+> -- 
+> 2.30.0.365.g02bc693789-goog
+> 
+
