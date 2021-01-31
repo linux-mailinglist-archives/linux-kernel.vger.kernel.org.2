@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA8C1309BF4
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 13:22:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70758309BF2
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 13:22:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231300AbhAaLIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 06:08:46 -0500
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:58396 "EHLO
+        id S231124AbhAaKw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 05:52:59 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:57182 "EHLO
         mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230358AbhAaJ4a (ORCPT
+        by vger.kernel.org with ESMTP id S230342AbhAaJzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 04:56:30 -0500
+        Sun, 31 Jan 2021 04:55:43 -0500
 Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10V9bOwV020287;
-        Sun, 31 Jan 2021 01:51:22 -0800
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10V9cNJd023389;
+        Sun, 31 Jan 2021 01:51:36 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=5lKn6Ecz4xGgCyyvpqKHZ0HmmgVVSCgpayo06pbd8FA=;
- b=Zg0w+d5SaYV1JJp9EAsy6TZpW4dBIuyJOguXMg+td4VQZLJjoAGkytpfWepvUk/ytuAX
- tPT+ZVYcT+wDVipxDsZh8vRj93bARfsOwob5fWH6Wogg1+7ReK7+CmQ1HcB499AfrVky
- 8CNNM4EX+RTPW+hXp69vi9F3F+qUnmWU9FTb/s71J2ygxfWvwmWv4FieVQJ+NfStraQd
- I8njC/6RiFmRjAVhimJxmtDj4Db2HqdlV0NZ4dbJzEgbucYE6+/er8IP1tYV8zGTLXCk
- AM3QnXPxEfklW5HFH6M+/Jzx2V0ST857ycoXtr4wOMJNI/IhFqZUijotnWoMbZ6IwPCQ iQ== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 36d5psshj8-1
+ content-type; s=pfpt0220; bh=O9ezWnA0EfeypSAUzLJDWAxGJHbt13Ief+fvNhEsLf0=;
+ b=IyduOx1FyTMYpVptVDnJwN6Bw7lSqu65kTFXM9cA35+iteuHUz8iUnEt0gHrBt1qlAeI
+ l/m3aMIZMxbxJpWVHXCBLmgc7NEnvNZMGBo+hRR12DjNdRVhmQM8VuaLctho6NKel7fE
+ Us94ieqZCo2LFpeaQcSM3JBHaYIcOFklBjVoLpn1IxwyxwsZoovRroQSyqN8h5vQauaQ
+ aplQQMXPYMN3R+RiaF+/rPc3dcnwtLfixJPK7KBjO4ay4I4I1M9gIT3cbQFD2OI8bHwq
+ V+7LK10gHkrzglRsHRPl9WHmEKnhPs5DJrZMqlUSdUKN4YJCH+p6m5S8ZGn0Xxd//gXW +Q== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 36d5psshjc-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Sun, 31 Jan 2021 01:51:22 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 31 Jan
- 2021 01:51:21 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 31 Jan 2021 01:51:21 -0800
+        Sun, 31 Jan 2021 01:51:36 -0800
+Received: from SC-EXCH02.marvell.com (10.93.176.82) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 31 Jan
+ 2021 01:51:35 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH02.marvell.com
+ (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 31 Jan
+ 2021 01:51:35 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 31 Jan 2021 01:51:34 -0800
 Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id 4FBB53F7041;
-        Sun, 31 Jan 2021 01:51:18 -0800 (PST)
+        by maili.marvell.com (Postfix) with ESMTP id 0D4E13F7040;
+        Sun, 31 Jan 2021 01:51:31 -0800 (PST)
 From:   <stefanc@marvell.com>
 To:     <netdev@vger.kernel.org>
 CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
@@ -43,10 +46,10 @@ CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
         <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
         <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
         <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
-        <atenart@kernel.org>, Konstantin Porotchkin <kostap@marvell.com>
-Subject: [PATCH v6 net-next 02/18] dts: marvell: add CM3 SRAM memory to cp115 ethernet device tree
-Date:   Sun, 31 Jan 2021 11:50:48 +0200
-Message-ID: <1612086664-23972-3-git-send-email-stefanc@marvell.com>
+        <atenart@kernel.org>
+Subject: [PATCH v6 net-next 06/18] net: mvpp2: always compare hw-version vs MVPP21
+Date:   Sun, 31 Jan 2021 11:50:52 +0200
+Message-ID: <1612086664-23972-7-git-send-email-stefanc@marvell.com>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1612086664-23972-1-git-send-email-stefanc@marvell.com>
 References: <1612086664-23972-1-git-send-email-stefanc@marvell.com>
@@ -58,44 +61,185 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Konstantin Porotchkin <kostap@marvell.com>
+From: Stefan Chulski <stefanc@marvell.com>
 
-CM3 SRAM address space would be used for Flow Control configuration.
+Currently we have PP2v1 and PP2v2 hw-versions, with some different
+handlers depending upon condition hw_version = MVPP21/MVPP22.
+In a future there will be also PP2v3. Let's use now the generic
+"if equal/notEqual MVPP21" for all cases instead of "if MVPP22".
+
+This patch does not change any functionality.
+It is not intended to introduce PP2v3.
+It just modifies MVPP21/MVPP22 check-condition
+bringing it to generic and unified form correct for new-code
+introducing and PP2v3 net-next generation.
 
 Signed-off-by: Stefan Chulski <stefanc@marvell.com>
-Signed-off-by: Konstantin Porotchkin <kostap@marvell.com>
 ---
- arch/arm64/boot/dts/marvell/armada-cp11x.dtsi | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 36 ++++++++++----------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
-index 9dcf16b..359cf42 100644
---- a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
-@@ -69,6 +69,8 @@
- 			status = "disabled";
- 			dma-coherent;
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+index 11c56d2..d80947a 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
+@@ -320,7 +320,7 @@ static int mvpp2_get_nrxqs(struct mvpp2 *priv)
+ {
+ 	unsigned int nrxqs;
  
-+			cm3-mem = <&CP11X_LABEL(cm3_sram)>;
-+
- 			CP11X_LABEL(eth0): eth0 {
- 				interrupts = <39 IRQ_TYPE_LEVEL_HIGH>,
- 					<43 IRQ_TYPE_LEVEL_HIGH>,
-@@ -211,6 +213,14 @@
- 			};
- 		};
+-	if (priv->hw_version == MVPP22 && queue_mode == MVPP2_QDIST_SINGLE_MODE)
++	if (priv->hw_version != MVPP21 && queue_mode == MVPP2_QDIST_SINGLE_MODE)
+ 		return 1;
  
-+		CP11X_LABEL(cm3_sram): cm3@220000 {
-+			compatible = "mmio-sram";
-+			reg = <0x220000 0x800>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			ranges = <0 0x220000 0x800>;
-+		};
-+
- 		CP11X_LABEL(rtc): rtc@284000 {
- 			compatible = "marvell,armada-8k-rtc";
- 			reg = <0x284000 0x20>, <0x284080 0x24>;
+ 	/* According to the PPv2.2 datasheet and our experiments on
+@@ -447,7 +447,7 @@ static void mvpp2_bm_bufs_get_addrs(struct device *dev, struct mvpp2 *priv,
+ 				      MVPP2_BM_PHY_ALLOC_REG(bm_pool->id));
+ 	*phys_addr = mvpp2_thread_read(priv, thread, MVPP2_BM_VIRT_ALLOC_REG);
+ 
+-	if (priv->hw_version == MVPP22) {
++	if (priv->hw_version != MVPP21) {
+ 		u32 val;
+ 		u32 dma_addr_highbits, phys_addr_highbits;
+ 
+@@ -743,7 +743,7 @@ static inline void mvpp2_bm_pool_put(struct mvpp2_port *port, int pool,
+ 	if (test_bit(thread, &port->priv->lock_map))
+ 		spin_lock_irqsave(&port->bm_lock[thread], flags);
+ 
+-	if (port->priv->hw_version == MVPP22) {
++	if (port->priv->hw_version != MVPP21) {
+ 		u32 val = 0;
+ 
+ 		if (sizeof(dma_addr_t) == 8)
+@@ -1200,7 +1200,7 @@ static bool mvpp2_port_supports_xlg(struct mvpp2_port *port)
+ 
+ static bool mvpp2_port_supports_rgmii(struct mvpp2_port *port)
+ {
+-	return !(port->priv->hw_version == MVPP22 && port->gop_id == 0);
++	return !(port->priv->hw_version != MVPP21 && port->gop_id == 0);
+ }
+ 
+ /* Port configuration routines */
+@@ -1818,7 +1818,7 @@ static void mvpp2_mac_reset_assert(struct mvpp2_port *port)
+ 	      MVPP2_GMAC_PORT_RESET_MASK;
+ 	writel(val, port->base + MVPP2_GMAC_CTRL_2_REG);
+ 
+-	if (port->priv->hw_version == MVPP22 && port->gop_id == 0) {
++	if (port->priv->hw_version != MVPP21 && port->gop_id == 0) {
+ 		val = readl(port->base + MVPP22_XLG_CTRL0_REG) &
+ 		      ~MVPP22_XLG_CTRL0_MAC_RESET_DIS;
+ 		writel(val, port->base + MVPP22_XLG_CTRL0_REG);
+@@ -1831,7 +1831,7 @@ static void mvpp22_pcs_reset_assert(struct mvpp2_port *port)
+ 	void __iomem *mpcs, *xpcs;
+ 	u32 val;
+ 
+-	if (port->priv->hw_version != MVPP22 || port->gop_id != 0)
++	if (port->priv->hw_version == MVPP21 || port->gop_id != 0)
+ 		return;
+ 
+ 	mpcs = priv->iface_base + MVPP22_MPCS_BASE(port->gop_id);
+@@ -1852,7 +1852,7 @@ static void mvpp22_pcs_reset_deassert(struct mvpp2_port *port)
+ 	void __iomem *mpcs, *xpcs;
+ 	u32 val;
+ 
+-	if (port->priv->hw_version != MVPP22 || port->gop_id != 0)
++	if (port->priv->hw_version == MVPP21 || port->gop_id != 0)
+ 		return;
+ 
+ 	mpcs = priv->iface_base + MVPP22_MPCS_BASE(port->gop_id);
+@@ -4189,7 +4189,7 @@ static void mvpp2_start_dev(struct mvpp2_port *port)
+ 	/* Enable interrupts on all threads */
+ 	mvpp2_interrupts_enable(port);
+ 
+-	if (port->priv->hw_version == MVPP22)
++	if (port->priv->hw_version != MVPP21)
+ 		mvpp22_mode_reconfigure(port);
+ 
+ 	if (port->phylink) {
+@@ -4405,7 +4405,7 @@ static int mvpp2_open(struct net_device *dev)
+ 		valid = true;
+ 	}
+ 
+-	if (priv->hw_version == MVPP22 && port->port_irq) {
++	if (priv->hw_version != MVPP21 && port->port_irq) {
+ 		err = request_irq(port->port_irq, mvpp2_port_isr, 0,
+ 				  dev->name, port);
+ 		if (err) {
+@@ -6053,7 +6053,7 @@ static int mvpp2__mac_prepare(struct phylink_config *config, unsigned int mode,
+ 			     MVPP2_GMAC_PORT_RESET_MASK,
+ 			     MVPP2_GMAC_PORT_RESET_MASK);
+ 
+-		if (port->priv->hw_version == MVPP22) {
++		if (port->priv->hw_version != MVPP21) {
+ 			mvpp22_gop_mask_irq(port);
+ 
+ 			phy_power_off(port->comphy);
+@@ -6107,7 +6107,7 @@ static int mvpp2_mac_finish(struct phylink_config *config, unsigned int mode,
+ {
+ 	struct mvpp2_port *port = mvpp2_phylink_to_port(config);
+ 
+-	if (port->priv->hw_version == MVPP22 &&
++	if (port->priv->hw_version != MVPP21 &&
+ 	    port->phy_interface != interface) {
+ 		port->phy_interface = interface;
+ 
+@@ -6787,7 +6787,7 @@ static int mvpp2_init(struct platform_device *pdev, struct mvpp2 *priv)
+ 	if (dram_target_info)
+ 		mvpp2_conf_mbus_windows(dram_target_info, priv);
+ 
+-	if (priv->hw_version == MVPP22)
++	if (priv->hw_version != MVPP21)
+ 		mvpp2_axi_init(priv);
+ 
+ 	/* Disable HW PHY polling */
+@@ -6950,7 +6950,7 @@ static int mvpp2_probe(struct platform_device *pdev)
+ 			dev_warn(&pdev->dev, "Fail to alloc CM3 SRAM\n");
+ 	}
+ 
+-	if (priv->hw_version == MVPP22 && dev_of_node(&pdev->dev)) {
++	if (priv->hw_version != MVPP21 && dev_of_node(&pdev->dev)) {
+ 		priv->sysctrl_base =
+ 			syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
+ 							"marvell,system-controller");
+@@ -6963,7 +6963,7 @@ static int mvpp2_probe(struct platform_device *pdev)
+ 			priv->sysctrl_base = NULL;
+ 	}
+ 
+-	if (priv->hw_version == MVPP22 &&
++	if (priv->hw_version != MVPP21 &&
+ 	    mvpp2_get_nrxqs(priv) * 2 <= MVPP2_BM_MAX_POOLS)
+ 		priv->percpu_pools = 1;
+ 
+@@ -7010,7 +7010,7 @@ static int mvpp2_probe(struct platform_device *pdev)
+ 		if (err < 0)
+ 			goto err_pp_clk;
+ 
+-		if (priv->hw_version == MVPP22) {
++		if (priv->hw_version != MVPP21) {
+ 			priv->mg_clk = devm_clk_get(&pdev->dev, "mg_clk");
+ 			if (IS_ERR(priv->mg_clk)) {
+ 				err = PTR_ERR(priv->mg_clk);
+@@ -7051,7 +7051,7 @@ static int mvpp2_probe(struct platform_device *pdev)
+ 		return -EINVAL;
+ 	}
+ 
+-	if (priv->hw_version == MVPP22) {
++	if (priv->hw_version != MVPP21) {
+ 		err = dma_set_mask(&pdev->dev, MVPP2_DESC_DMA_MASK);
+ 		if (err)
+ 			goto err_axi_clk;
+@@ -7131,10 +7131,10 @@ static int mvpp2_probe(struct platform_device *pdev)
+ 	clk_disable_unprepare(priv->axi_clk);
+ 
+ err_mg_core_clk:
+-	if (priv->hw_version == MVPP22)
++	if (priv->hw_version != MVPP21)
+ 		clk_disable_unprepare(priv->mg_core_clk);
+ err_mg_clk:
+-	if (priv->hw_version == MVPP22)
++	if (priv->hw_version != MVPP21)
+ 		clk_disable_unprepare(priv->mg_clk);
+ err_gop_clk:
+ 	clk_disable_unprepare(priv->gop_clk);
 -- 
 1.9.1
 
