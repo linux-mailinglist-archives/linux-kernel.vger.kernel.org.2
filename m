@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F9A9309BC5
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 13:00:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DCCA309B9D
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 12:37:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231601AbhAaLxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 06:53:42 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:52760 "EHLO
+        id S231453AbhAaL35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 06:29:57 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:61322 "EHLO
         mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230469AbhAaKJO (ORCPT
+        by vger.kernel.org with ESMTP id S230430AbhAaJ7W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 05:09:14 -0500
+        Sun, 31 Jan 2021 04:59:22 -0500
 Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10V9o25o015872;
-        Sun, 31 Jan 2021 01:51:33 -0800
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10V9q0DN017170;
+        Sun, 31 Jan 2021 01:52:00 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=I3v9TAujTOvZT7lwu8kqSzAcqckl4gp4wF4gypLo92c=;
- b=NR4T7OhxtBk80swj9urm6DXdrNucXMs3KTA+obHLeAWMS/fOsU7FbuEN76dNVwwYHEIz
- zgQRycU7QueK5K6INPD/LvqozLc3+hWobl+VF5MbjBC59bNVmbLhVoBXccRHxs0Sh7DP
- ABDWLoXgXrSY0OsPEQ+IgtDTGLmqFHT+gwGtVc4FzoCHCY0Tip+0pBFq/1RIapCmXhxe
- YK2d5WozNf+8J9P65qVll6S5R82n2w0MzNvMiKFrHFUd29kzHmn819wWjN0jFeRjAL8x
- QPkJIHQA3TPUDeW8AW3qyDOvpVW67q9dG5qFlWmug6Ln5orY0JsEUiqHfobjaVFHYqFs WA== 
+ content-type; s=pfpt0220; bh=LSVMIbZvVt1LCDeW2swsDZnUVUGXgrrPWyMonl/do+Y=;
+ b=cJlDxFVn/k2MFHeLz+L4UtssaxT5s4uLJEsyqmsDticZ+A7ZWJzQrrY39H1DYb0kOHRN
+ 0GoWbWuX5y4VmW4nfvIh/9qr7of8HjAU0gzQ8/icODDSx6eZ9CjzOmb5461BJNEW8qpO
+ ge16o6expHy55bAufmq8u0taS7anehAixBeSlfUZhYazsV0+UlP8GpLDFFgMX0vqq0kU
+ 2k3YXXwmN9IOsvtoMMgrPHX6rMP5/ZD9iQFslV0OS7Sv+zbMXNk5AMaAtLCYwTUeBhDi
+ Ji0UlO7WN/RUEsk2uyVrLSDIbk+3by5XC0wn47FySEpH7HuVPxlpGPwZgWJ0+Elg34BV Zg== 
 Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0b-0016f401.pphosted.com with ESMTP id 36d7uq1bkv-1
+        by mx0b-0016f401.pphosted.com with ESMTP id 36d7uq1bmf-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Sun, 31 Jan 2021 01:51:33 -0800
+        Sun, 31 Jan 2021 01:52:00 -0800
 Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH01.marvell.com
  (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 31 Jan
- 2021 01:51:31 -0800
+ 2021 01:51:58 -0800
 Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
  (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 31 Jan 2021 01:51:31 -0800
+ Transport; Sun, 31 Jan 2021 01:51:58 -0800
 Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id A67583F703F;
-        Sun, 31 Jan 2021 01:51:28 -0800 (PST)
+        by maili.marvell.com (Postfix) with ESMTP id A0BA63F703F;
+        Sun, 31 Jan 2021 01:51:55 -0800 (PST)
 From:   <stefanc@marvell.com>
 To:     <netdev@vger.kernel.org>
 CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
@@ -44,9 +44,9 @@ CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
         <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
         <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
         <atenart@kernel.org>
-Subject: [PATCH v6 net-next 05/18] net: mvpp2: add PPv23 version definition
-Date:   Sun, 31 Jan 2021 11:50:51 +0200
-Message-ID: <1612086664-23972-6-git-send-email-stefanc@marvell.com>
+Subject: [PATCH v6 net-next 13/18] net: mvpp2: add ethtool flow control configuration support
+Date:   Sun, 31 Jan 2021 11:50:59 +0200
+Message-ID: <1612086664-23972-14-git-send-email-stefanc@marvell.com>
 X-Mailer: git-send-email 1.9.1
 In-Reply-To: <1612086664-23972-1-git-send-email-stefanc@marvell.com>
 References: <1612086664-23972-1-git-send-email-stefanc@marvell.com>
@@ -60,184 +60,181 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Stefan Chulski <stefanc@marvell.com>
 
-This patch add PPv23 version definition.
-PPv23 is new packet processor in CP115.
-Everything that supported by PPv22, also supported by PPv23.
-No functional changes in this stage.
+This patch add ethtool flow control configuration support.
+
+Tx flow control retrieved correctly by ethtool get function.
+FW per port ethtool configuration capability added.
+
+Patch also takes care about mtu change procedure, if PPv2 switch
+BM pools during mtu change.
 
 Signed-off-by: Stefan Chulski <stefanc@marvell.com>
 ---
- drivers/net/ethernet/marvell/mvpp2/mvpp2.h      | 24 ++++++++++++--------
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 17 +++++++++-----
- 2 files changed, 25 insertions(+), 16 deletions(-)
+ drivers/net/ethernet/marvell/mvpp2/mvpp2.h      | 13 +++
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 98 ++++++++++++++++++++
+ 2 files changed, 111 insertions(+)
 
 diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-index aec9179..89b3ede 100644
+index 0f27be0..9071ab6 100644
 --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
 +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-@@ -60,6 +60,9 @@
- /* Top Registers */
- #define MVPP2_MH_REG(port)			(0x5040 + 4 * (port))
- #define MVPP2_DSA_EXTENDED			BIT(5)
-+#define MVPP2_VER_ID_REG			0x50b0
-+#define MVPP2_VER_PP22				0x10
-+#define MVPP2_VER_PP23				0x11
+@@ -775,6 +775,19 @@
+ #define MSS_RXQ_TRESH_REG(q, fq)	(MSS_RXQ_TRESH_BASE + (((q) + (fq)) \
+ 					* MSS_RXQ_TRESH_OFFS))
  
- /* Parser Registers */
- #define MVPP2_PRS_INIT_LOOKUP_REG		0x1000
-@@ -469,7 +472,7 @@
- #define     MVPP22_GMAC_INT_SUM_MASK_LINK_STAT	BIT(1)
- #define	    MVPP22_GMAC_INT_SUM_MASK_PTP	BIT(2)
- 
--/* Per-port XGMAC registers. PPv2.2 only, only for GOP port 0,
-+/* Per-port XGMAC registers. PPv2.2 and PPv2.3, only for GOP port 0,
-  * relative to port->base.
-  */
- #define MVPP22_XLG_CTRL0_REG			0x100
-@@ -506,7 +509,7 @@
- #define     MVPP22_XLG_CTRL4_MACMODSELECT_GMAC	BIT(12)
- #define     MVPP22_XLG_CTRL4_EN_IDLE_CHECK	BIT(14)
- 
--/* SMI registers. PPv2.2 only, relative to priv->iface_base. */
-+/* SMI registers. PPv2.2 and PPv2.3, relative to priv->iface_base. */
- #define MVPP22_SMI_MISC_CFG_REG			0x1204
- #define     MVPP22_SMI_POLLING_EN		BIT(10)
- 
-@@ -582,7 +585,7 @@
- #define MVPP2_QUEUE_NEXT_DESC(q, index) \
- 	(((index) < (q)->last_desc) ? ((index) + 1) : 0)
- 
--/* XPCS registers. PPv2.2 only */
-+/* XPCS registers.PPv2.2 and PPv2.3 */
- #define MVPP22_MPCS_BASE(port)			(0x7000 + (port) * 0x1000)
- #define MVPP22_MPCS_CTRL			0x14
- #define     MVPP22_MPCS_CTRL_FWD_ERR_CONN	BIT(10)
-@@ -593,7 +596,7 @@
- #define     MVPP22_MPCS_CLK_RESET_DIV_RATIO(n)	((n) << 4)
- #define     MVPP22_MPCS_CLK_RESET_DIV_SET	BIT(11)
- 
--/* XPCS registers. PPv2.2 only */
-+/* XPCS registers. PPv2.2 and PPv2.3 */
- #define MVPP22_XPCS_BASE(port)			(0x7400 + (port) * 0x1000)
- #define MVPP22_XPCS_CFG0			0x0
- #define     MVPP22_XPCS_CFG0_RESET_DIS		BIT(0)
-@@ -930,15 +933,16 @@ struct mvpp2 {
- 	void __iomem *iface_base;
- 	void __iomem *cm3_base;
- 
--	/* On PPv2.2, each "software thread" can access the base
-+	/* On PPv2.2 and PPv2.3, each "software thread" can access the base
- 	 * register through a separate address space, each 64 KB apart
- 	 * from each other. Typically, such address spaces will be
- 	 * used per CPU.
- 	 */
- 	void __iomem *swth_base[MVPP2_MAX_THREADS];
- 
--	/* On PPv2.2, some port control registers are located into the system
--	 * controller space. These registers are accessible through a regmap.
-+	/* On PPv2.2 and PPv2.3, some port control registers are located into
-+	 * the system controller space. These registers are accessible
-+	 * through a regmap.
- 	 */
- 	struct regmap *sysctrl_base;
- 
-@@ -980,7 +984,7 @@ struct mvpp2 {
- 	u32 tclk;
- 
- 	/* HW version */
--	enum { MVPP21, MVPP22 } hw_version;
-+	enum { MVPP21, MVPP22, MVPP23 } hw_version;
- 
- 	/* Maximum number of RXQs per port */
- 	unsigned int max_port_rxqs;
-@@ -1227,7 +1231,7 @@ struct mvpp21_rx_desc {
- 	__le32 reserved8;
- };
- 
--/* HW TX descriptor for PPv2.2 */
-+/* HW TX descriptor for PPv2.2 and PPv2.3 */
- struct mvpp22_tx_desc {
- 	__le32 command;
- 	u8  packet_offset;
-@@ -1239,7 +1243,7 @@ struct mvpp22_tx_desc {
- 	__le64 buf_cookie_misc;
- };
- 
--/* HW RX descriptor for PPv2.2 */
-+/* HW RX descriptor for PPv2.2 and PPv2.3 */
- struct mvpp22_rx_desc {
- 	__le32 status;
- 	__le16 reserved1;
++#define MSS_BUF_POOL_BASE		0x40
++#define MSS_BUF_POOL_OFFS		4
++#define MSS_BUF_POOL_REG(id)		(MSS_BUF_POOL_BASE		\
++					+ (id) * MSS_BUF_POOL_OFFS)
++
++#define MSS_BUF_POOL_STOP_MASK		0xFFF
++#define MSS_BUF_POOL_START_MASK		(0xFFF << MSS_BUF_POOL_START_OFFS)
++#define MSS_BUF_POOL_START_OFFS		12
++#define MSS_BUF_POOL_PORTS_MASK		(0xF << MSS_BUF_POOL_PORTS_OFFS)
++#define MSS_BUF_POOL_PORTS_OFFS		24
++#define MSS_BUF_POOL_PORT_OFFS(id)	(0x1 <<				\
++					((id) + MSS_BUF_POOL_PORTS_OFFS))
++
+ #define MSS_RXQ_TRESH_START_MASK	0xFFFF
+ #define MSS_RXQ_TRESH_STOP_MASK		(0xFFFF << MSS_RXQ_TRESH_STOP_OFFS)
+ #define MSS_RXQ_TRESH_STOP_OFFS		16
 diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index 307f9fd..11c56d2 100644
+index cb2d0c5..1d4d5a8 100644
 --- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
 +++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -385,7 +385,7 @@ static int mvpp2_bm_pool_create(struct device *dev, struct mvpp2 *priv,
- 	if (!IS_ALIGNED(size, 16))
- 		return -EINVAL;
- 
--	/* PPv2.1 needs 8 bytes per buffer pointer, PPv2.2 needs 16
-+	/* PPv2.1 needs 8 bytes per buffer pointer, PPv2.2 and PPv2.3 needs 16
- 	 * bytes per buffer pointer
- 	 */
- 	if (priv->hw_version == MVPP21)
-@@ -1173,7 +1173,7 @@ static void mvpp2_interrupts_unmask(void *arg)
- 	u32 val;
- 	int i;
- 
--	if (port->priv->hw_version != MVPP22)
-+	if (port->priv->hw_version == MVPP21)
- 		return;
- 
- 	if (mask)
-@@ -5457,7 +5457,7 @@ static void mvpp2_rx_irqs_setup(struct mvpp2_port *port)
- 		return;
- 	}
- 
--	/* Handle the more complicated PPv2.2 case */
-+	/* Handle the more complicated PPv2.2 and PPv2.3 case */
- 	for (i = 0; i < port->nqvecs; i++) {
- 		struct mvpp2_queue_vector *qv = port->qvecs + i;
- 
-@@ -5634,7 +5634,7 @@ static bool mvpp22_port_has_legacy_tx_irqs(struct device_node *port_node,
- 
- /* Checks if the port dt description has the required Tx interrupts:
-  * - PPv2.1: there are no such interrupts.
-- * - PPv2.2:
-+ * - PPv2.2 and PPv2.3:
-  *   - The old DTs have: "rx-shared", "tx-cpuX" with X in [0...3]
-  *   - The new ones have: "hifX" with X in [0..8]
-  *
-@@ -6622,7 +6622,7 @@ static void mvpp22_rx_fifo_set_hw(struct mvpp2 *priv, int port, int data_size)
- 	mvpp2_write(priv, MVPP2_RX_ATTR_FIFO_SIZE_REG(port), attr_size);
+@@ -846,6 +846,59 @@ static void mvpp2_rxq_disable_fc(struct mvpp2_port *port)
+ 	spin_unlock_irqrestore(&port->priv->mss_spinlock, flags);
  }
  
--/* Initialize TX FIFO's: the total FIFO size is 48kB on PPv2.2.
-+/* Initialize TX FIFO's: the total FIFO size is 48kB on PPv2.2 and PPv2.3.
-  * 4kB fixed space must be assigned for the loopback port.
-  * Redistribute remaining avialable 44kB space among all active ports.
-  * Guarantee minimum 32kB for 10G port and 8kB for port 1, capable of 2.5G
-@@ -6679,7 +6679,7 @@ static void mvpp22_tx_fifo_set_hw(struct mvpp2 *priv, int port, int size)
- 	mvpp2_write(priv, MVPP22_TX_FIFO_THRESH_REG(port), threshold);
- }
- 
--/* Initialize TX FIFO's: the total FIFO size is 19kB on PPv2.2.
-+/* Initialize TX FIFO's: the total FIFO size is 19kB on PPv2.2 and PPv2.3.
-  * 3kB fixed space must be assigned for the loopback port.
-  * Redistribute remaining avialable 16kB space among all active ports.
-  * The 10G interface should use 10kB (which is maximum possible size
-@@ -7071,6 +7071,11 @@ static int mvpp2_probe(struct platform_device *pdev)
- 			priv->port_map |= BIT(i);
- 	}
- 
-+	if (priv->hw_version != MVPP21) {
-+		if (mvpp2_read(priv, MVPP2_VER_ID_REG) == MVPP2_VER_PP23)
-+			priv->hw_version = MVPP23;
++/* Routine disable/enable flow control for BM pool condition */
++static void mvpp2_bm_pool_update_fc(struct mvpp2_port *port,
++				    struct mvpp2_bm_pool *pool,
++				    bool en)
++{
++	int val, cm3_state;
++	unsigned long flags;
++
++	spin_lock_irqsave(&port->priv->mss_spinlock, flags);
++
++	/* Remove Flow control enable bit to prevent race between FW and Kernel
++	 * If Flow control were enabled, it would be re-enabled.
++	 */
++	val = mvpp2_cm3_read(port->priv, MSS_FC_COM_REG);
++	cm3_state = (val & FLOW_CONTROL_ENABLE_BIT);
++	val &= ~FLOW_CONTROL_ENABLE_BIT;
++	mvpp2_cm3_write(port->priv, MSS_FC_COM_REG, val);
++
++	/* Check if BM pool should be enabled/disable */
++	if (en) {
++		/* Set BM pool start and stop thresholds per port */
++		val = mvpp2_cm3_read(port->priv, MSS_BUF_POOL_REG(pool->id));
++		val |= MSS_BUF_POOL_PORT_OFFS(port->id);
++		val &= ~MSS_BUF_POOL_START_MASK;
++		val |= (MSS_THRESHOLD_START << MSS_BUF_POOL_START_OFFS);
++		val &= ~MSS_BUF_POOL_STOP_MASK;
++		val |= MSS_THRESHOLD_STOP;
++		mvpp2_cm3_write(port->priv, MSS_BUF_POOL_REG(pool->id), val);
++	} else {
++		/* Remove BM pool from the port */
++		val = mvpp2_cm3_read(port->priv, MSS_BUF_POOL_REG(pool->id));
++		val &= ~MSS_BUF_POOL_PORT_OFFS(port->id);
++
++		/* Zero BM pool start and stop thresholds to disable pool
++		 * flow control if pool empty (not used by any port)
++		 */
++		if (!pool->buf_num) {
++			val &= ~MSS_BUF_POOL_START_MASK;
++			val &= ~MSS_BUF_POOL_STOP_MASK;
++		}
++
++		mvpp2_cm3_write(port->priv, MSS_BUF_POOL_REG(pool->id), val);
 +	}
 +
- 	/* Initialize network controller */
- 	err = mvpp2_init(pdev, priv);
- 	if (err < 0) {
++	/* Notify Firmware that Flow control config space ready for update */
++	val = mvpp2_cm3_read(port->priv, MSS_FC_COM_REG);
++	val |= FLOW_CONTROL_UPDATE_COMMAND_BIT;
++	val |= cm3_state;
++	mvpp2_cm3_write(port->priv, MSS_FC_COM_REG, val);
++
++	spin_unlock_irqrestore(&port->priv->mss_spinlock, flags);
++}
++
+ /* Release buffer to BM */
+ static inline void mvpp2_bm_pool_put(struct mvpp2_port *port, int pool,
+ 				     dma_addr_t buf_dma_addr,
+@@ -1176,6 +1229,16 @@ static int mvpp2_bm_update_mtu(struct net_device *dev, int mtu)
+ 		new_long_pool = MVPP2_BM_LONG;
+ 
+ 	if (new_long_pool != port->pool_long->id) {
++		if (port->tx_fc) {
++			if (pkt_size > MVPP2_BM_LONG_PKT_SIZE)
++				mvpp2_bm_pool_update_fc(port,
++							port->pool_short,
++							false);
++			else
++				mvpp2_bm_pool_update_fc(port, port->pool_long,
++							false);
++		}
++
+ 		/* Remove port from old short & long pool */
+ 		port->pool_long = mvpp2_bm_pool_use(port, port->pool_long->id,
+ 						    port->pool_long->pkt_size);
+@@ -1193,6 +1256,25 @@ static int mvpp2_bm_update_mtu(struct net_device *dev, int mtu)
+ 		mvpp2_swf_bm_pool_init(port);
+ 
+ 		mvpp2_set_hw_csum(port, new_long_pool);
++
++		if (port->tx_fc) {
++			if (pkt_size > MVPP2_BM_LONG_PKT_SIZE)
++				mvpp2_bm_pool_update_fc(port, port->pool_long,
++							true);
++			else
++				mvpp2_bm_pool_update_fc(port, port->pool_short,
++							true);
++		}
++
++		/* Update L4 checksum when jumbo enable/disable on port */
++		if (new_long_pool == MVPP2_BM_JUMBO && port->id != 0) {
++			dev->features &= ~(NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM);
++			dev->hw_features &= ~(NETIF_F_IP_CSUM |
++					      NETIF_F_IPV6_CSUM);
++		} else {
++			dev->features |= NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM;
++			dev->hw_features |= NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM;
++		}
+ 	}
+ 
+ out_set:
+@@ -6356,6 +6438,7 @@ static void mvpp2_mac_link_up(struct phylink_config *config,
+ {
+ 	struct mvpp2_port *port = mvpp2_phylink_to_port(config);
+ 	u32 val;
++	int i;
+ 
+ 	if (mvpp2_is_xlg(interface)) {
+ 		if (!phylink_autoneg_inband(mode)) {
+@@ -6406,6 +6489,21 @@ static void mvpp2_mac_link_up(struct phylink_config *config,
+ 			     val);
+ 	}
+ 
++	if (port->priv->global_tx_fc) {
++		port->tx_fc = tx_pause;
++		if (tx_pause)
++			mvpp2_rxq_enable_fc(port);
++		else
++			mvpp2_rxq_disable_fc(port);
++		if (port->priv->percpu_pools) {
++			for (i = 0; i < port->nrxqs; i++)
++				mvpp2_bm_pool_update_fc(port, &port->priv->bm_pools[i], tx_pause);
++		} else {
++			mvpp2_bm_pool_update_fc(port, port->pool_long, tx_pause);
++			mvpp2_bm_pool_update_fc(port, port->pool_short, tx_pause);
++		}
++	}
++
+ 	mvpp2_port_enable(port);
+ 
+ 	mvpp2_egress_enable(port);
 -- 
 1.9.1
 
