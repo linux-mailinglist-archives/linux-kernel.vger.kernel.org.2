@@ -2,67 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 582A6309D79
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 16:24:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D854309D76
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 16:24:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232839AbhAaPYO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 10:24:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59276 "EHLO
+        id S232478AbhAaPXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 10:23:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231992AbhAaOQo (ORCPT
+        with ESMTP id S232089AbhAaOcv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 09:16:44 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21763C061573;
-        Sun, 31 Jan 2021 06:15:55 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id p15so13707036wrq.8;
-        Sun, 31 Jan 2021 06:15:55 -0800 (PST)
+        Sun, 31 Jan 2021 09:32:51 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D65DC061573;
+        Sun, 31 Jan 2021 06:32:06 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id 6so13766455wri.3;
+        Sun, 31 Jan 2021 06:32:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vHm2GaYgjU/RQgYozOeLN5GW4640nrEkHzr4EfB5zx4=;
-        b=ZsJ3FhgFp/owp0U86EJAxQwbDaodP/Vnl7QXPKUVOxf2WVtl5G3dZnn9VVCEnmBi7i
-         urpsp7KtipY8jExUCmZPgpQTeTPIITCO+6MAifE94eOq4iUunEtEChxCGqmHeBUPiHhy
-         KFHksqhh+q4/oFRO9afOVQaHdzXuDLRsE/3K2mO1H4PElqiBq/jlcnLVPxw+JcrsPuOa
-         HeZljzZVGlWCCSgd6GJjjbT6VW+P3ub6rtwN0cgNfYBDn6CIhY7u+v3mo5oEA/033sxb
-         noOwVHPxgfedI6Yc1qSyUVKnXVOucWL9ogsu2qNNIF2JnNbEk632H8ZHa2xFULI1Wt5b
-         HzGQ==
+        bh=u2p9+7+7O3j8QCS3+foDXHLNj+iaoO85V7bwiF9fy30=;
+        b=FO08rDicnaTDsxhiB5v/qJIBm3pbFjzH7ETT/pzqZOda5AprJZ3nZeUwQWkDUSg7aD
+         Rjc9ShRyP7wI4qWxvxHoGfb6/V9ILwRJvreq15vw5hQW+lAhV2K4PFihRwbyx3Yl9Het
+         usGuPNqhiSQR7d3uSi1Oo/4krOQA3LFXIIbgbogMGOx0hrGIyLCclVYcyWHzaWeJeirj
+         qftpDW5SUhcEo1OHgbXhLBWEY5hvuGt/2N6qA1MNcjMUp9unwd8tlrrWulWkLR4sf1qO
+         cBppl8/Z0+yBbyofi2nlOQCCGitO0WSZ3deezaNoXOx8+vcvrCJgfmKunj2RkNW4N8DW
+         XbeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=vHm2GaYgjU/RQgYozOeLN5GW4640nrEkHzr4EfB5zx4=;
-        b=fMKJ76K009V9p/IIefOyvwv5HV2sItDx9UP+nabLDa3EgFh4UJt5xtdhXJjJqfIYN/
-         K/QFHdeVaPev1QeLTSLgwSLcp44mSSgWZzO0cuAHVrY4dJaxwonUYqhr19qb/YCoN16f
-         APFjSKY9qbikJzabJAWdTbga0aQ2o4rpdMksME7RsaVsVojYr+MmkyXsZ617o7YftT2E
-         AzCLLmFtd0rXgKDvIlaJxci5HRcxEAnY7g9/QV3evEGinX82fa9/ElaGwH1ehHK8uEDk
-         t7xpwniyva68FvHhyU0O3U0Bh+ERgn5ZsVBPJ8M3umN4cPYrfIdS/zTBcjiy2f+5krSl
-         sxNA==
-X-Gm-Message-State: AOAM530t2ja+BrkGXgQ//s2xMlEQwgjut7dFVke3yr866AClqf5cPzpf
-        KGegwPUnVk1QdheL8ZZmauY=
-X-Google-Smtp-Source: ABdhPJxoj72SiMcWoOi8eEnlcMafudsyYsk5bNrdpE8nyslXd7rzYjfwtQDtQBjYRnqTbeUPz453xw==
-X-Received: by 2002:a5d:5283:: with SMTP id c3mr13317681wrv.319.1612102553914;
-        Sun, 31 Jan 2021 06:15:53 -0800 (PST)
+        bh=u2p9+7+7O3j8QCS3+foDXHLNj+iaoO85V7bwiF9fy30=;
+        b=bMXjr/l9fEcRX8SHIOZE26EX12PDYFRrZjky4+K5fEDRCZhg6JPT9TfPVNzqiEX7ZG
+         Lvw7cvEPa+rleVuk70i0Do/IQvUriBY0Szeyor+4uWArcE2N2Ts+wzhGO2IWNr6cVUzk
+         MOV0G3PdPBgaGufGbZQoworGl2qsovyGQXXAKn88TeTtyooBiLcz5qUVD9NfYjXeQ1AG
+         WF3WGbAulO0rvKVI4NgNwsCSEAoD+afjUJf2NS1hGDM/Te+3Htvpp6rdaoH888FqWXgC
+         sEQk9x8lEM+qcFEmTWNvGdVeyzP1q7nLxSNd/BqGaNF5+955Uqn3WH7Cqm4GS+ClwyE9
+         R2pQ==
+X-Gm-Message-State: AOAM532+8PaI9rOs90R+NccogkXwfuNKnPJCSlymbRd3eiGsvmDpmINt
+        cZssx301ewtPtzRZiN6PYIR8XHxSThdhgqhf
+X-Google-Smtp-Source: ABdhPJzDnMQ5jDcOS5dGgIxQjELPxV7neVGid5dyYDMkcc8+kOxTX34EsMSriWbwZaN8hN7Be0Rn6A==
+X-Received: by 2002:a05:6000:1542:: with SMTP id 2mr13905291wry.356.1612103525160;
+        Sun, 31 Jan 2021 06:32:05 -0800 (PST)
 Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id 62sm18476218wmd.34.2021.01.31.06.15.52
+        by smtp.gmail.com with ESMTPSA id y63sm18399305wmd.21.2021.01.31.06.32.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Jan 2021 06:15:53 -0800 (PST)
-Subject: Re: [PATCH] arm64: dts: mediatek: Correct i2c clock of MT8192
-To:     qii.wang@mediatek.com, robh+dt@kernel.org
-Cc:     mark.rutland@arm.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        leilk.liu@mediatek.com
-References: <1608553590-26459-1-git-send-email-qii.wang@mediatek.com>
+        Sun, 31 Jan 2021 06:32:04 -0800 (PST)
+Subject: Re: [PATCH 1/2] arm64: dts: mt6779: Support pwrap on Mediatek MT6779
+ platform
+To:     Argus Lin <argus.lin@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Michael Walle <michael@walle.cc>, agx@sigxcpu.org,
+        Max Krummenacher <max.oss.09@gmail.com>,
+        wsd_upstream@mediatek.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <1609747703-27207-1-git-send-email-argus.lin@mediatek.com>
+ <1609747703-27207-2-git-send-email-argus.lin@mediatek.com>
 From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <3a8411e6-02e7-1c05-7063-aa12dc286ce0@gmail.com>
-Date:   Sun, 31 Jan 2021 15:15:52 +0100
+Message-ID: <61ed414d-3b93-3620-0075-a75734287e30@gmail.com>
+Date:   Sun, 31 Jan 2021 15:32:03 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <1608553590-26459-1-git-send-email-qii.wang@mediatek.com>
+In-Reply-To: <1609747703-27207-2-git-send-email-argus.lin@mediatek.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -72,145 +83,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 21/12/2020 13:26, qii.wang@mediatek.com wrote:
-> From: Qii Wang <qii.wang@mediatek.com>
+On 04/01/2021 09:08, Argus Lin wrote:
+> Support pwrap on Mediatek MT6779 platform by adding pwrap node in dts file.
 > 
-> imp wrapper clock is the i2c source clock of MT8192
-> 
-> Signed-off-by: Qii Wang <qii.wang@mediatek.com>
+> Signed-off-by: Argus Lin <argus.lin@mediatek.com>
 > ---
 
-Thanks for your patch. The next time please provide information about any
-out-of-tree series that are needed to apply cleanly.
+Applied to v5.11-next/dts64
 
-Regards,
-Matthias
 
->  arch/arm64/boot/dts/mediatek/mt8192.dtsi | 43 ++++++++++++++++++++++++--------
->  1 file changed, 33 insertions(+), 10 deletions(-)
+>  arch/arm64/boot/dts/mediatek/mt6779.dtsi | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-> index faea0d9..9c194a8 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-> @@ -17,6 +17,19 @@
->  	#address-cells = <2>;
->  	#size-cells = <2>;
->  
-> +	aliases {
-> +		i2c0 = &i2c0;
-> +		i2c1 = &i2c1;
-> +		i2c2 = &i2c2;
-> +		i2c3 = &i2c3;
-> +		i2c4 = &i2c4;
-> +		i2c5 = &i2c5;
-> +		i2c6 = &i2c6;
-> +		i2c7 = &i2c7;
-> +		i2c8 = &i2c8;
-> +		i2c9 = &i2c9;
-> +	};
+> diff --git a/arch/arm64/boot/dts/mediatek/mt6779.dtsi b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
+> index 370f309..2c2ca33 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt6779.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
+> @@ -189,6 +189,15 @@
+>  			#clock-cells = <1>;
+>  		};
+> 
+> +		pwrap: pwrap@1000d000 {
+> +			compatible = "mediatek,mt6779-pwrap";
+> +			reg = <0 0x1000d000 0 0x1000>;
+> +			reg-names = "pwrap";
+> +			interrupts = <GIC_SPI 212 IRQ_TYPE_LEVEL_HIGH>;
+> +			clocks = <&clk26m>, <&infracfg_ao CLK_INFRA_PMIC_AP>;
+> +			clock-names = "spi", "wrap";
+> +		};
 > +
->  	clk26m: oscillator0 {
->  		compatible = "fixed-clock";
->  		#clock-cells = <0>;
-> @@ -593,7 +606,8 @@
->  			reg = <0 0x11cb0000 0 0x1000>,
->  			      <0 0x10217300 0 0x80>;
->  			interrupts = <GIC_SPI 115 IRQ_TYPE_LEVEL_HIGH 0>;
-> -			clocks = <&clk26m>, <&clk26m>;
-> +			clocks = <&imp_iic_wrap_e CLK_IMP_IIC_WRAP_E_I2C3>,
-> +				 <&infracfg CLK_INFRA_AP_DMA>;
->  			clock-names = "main", "dma";
->  			clock-div = <1>;
->  			#address-cells = <1>;
-> @@ -612,7 +626,8 @@
->  			reg = <0 0x11d00000 0 0x1000>,
->  			      <0 0x10217600 0 0x180>;
->  			interrupts = <GIC_SPI 119 IRQ_TYPE_LEVEL_HIGH 0>;
-> -			clocks = <&clk26m>, <&clk26m>;
-> +			clocks = <&imp_iic_wrap_s CLK_IMP_IIC_WRAP_S_I2C7>,
-> +				 <&infracfg CLK_INFRA_AP_DMA>;
->  			clock-names = "main", "dma";
->  			clock-div = <1>;
->  			#address-cells = <1>;
-> @@ -625,7 +640,8 @@
->  			reg = <0 0x11d01000 0 0x1000>,
->  			      <0 0x10217780 0 0x180>;
->  			interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH 0>;
-> -			clocks = <&clk26m>, <&clk26m>;
-> +			clocks = <&imp_iic_wrap_s CLK_IMP_IIC_WRAP_S_I2C8>,
-> +				 <&infracfg CLK_INFRA_AP_DMA>;
->  			clock-names = "main", "dma";
->  			clock-div = <1>;
->  			#address-cells = <1>;
-> @@ -638,7 +654,8 @@
->  			reg = <0 0x11d02000 0 0x1000>,
->  			      <0 0x10217900 0 0x180>;
->  			interrupts = <GIC_SPI 121 IRQ_TYPE_LEVEL_HIGH 0>;
-> -			clocks = <&clk26m>, <&clk26m>;
-> +			clocks = <&imp_iic_wrap_s CLK_IMP_IIC_WRAP_S_I2C9>,
-> +				 <&infracfg CLK_INFRA_AP_DMA>;
->  			clock-names = "main", "dma";
->  			clock-div = <1>;
->  			#address-cells = <1>;
-> @@ -657,7 +674,8 @@
->  			reg = <0 0x11d20000 0 0x1000>,
->  			      <0 0x10217100 0 0x80>;
->  			interrupts = <GIC_SPI 113 IRQ_TYPE_LEVEL_HIGH 0>;
-> -			clocks = <&clk26m>, <&clk26m>;
-> +			clocks = <&imp_iic_wrap_ws CLK_IMP_IIC_WRAP_WS_I2C1>,
-> +				 <&infracfg CLK_INFRA_AP_DMA>;
->  			clock-names = "main", "dma";
->  			clock-div = <1>;
->  			#address-cells = <1>;
-> @@ -670,7 +688,8 @@
->  			reg = <0 0x11d21000 0 0x1000>,
->  			      <0 0x10217180 0 0x180>;
->  			interrupts = <GIC_SPI 114 IRQ_TYPE_LEVEL_HIGH 0>;
-> -			clocks = <&clk26m>, <&clk26m>;
-> +			clocks = <&imp_iic_wrap_ws CLK_IMP_IIC_WRAP_WS_I2C2>,
-> +				 <&infracfg CLK_INFRA_AP_DMA>;
->  			clock-names = "main", "dma";
->  			clock-div = <1>;
->  			#address-cells = <1>;
-> @@ -683,7 +702,8 @@
->  			reg = <0 0x11d22000 0 0x1000>,
->  			      <0 0x10217380 0 0x180>;
->  			interrupts = <GIC_SPI 116 IRQ_TYPE_LEVEL_HIGH 0>;
-> -			clocks = <&clk26m>, <&clk26m>;
-> +			clocks = <&imp_iic_wrap_ws CLK_IMP_IIC_WRAP_WS_I2C4>,
-> +				 <&infracfg CLK_INFRA_AP_DMA>;
->  			clock-names = "main", "dma";
->  			clock-div = <1>;
->  			#address-cells = <1>;
-> @@ -702,7 +722,8 @@
->  			reg = <0 0x11e00000 0 0x1000>,
->  			      <0 0x10217500 0 0x80>;
->  			interrupts = <GIC_SPI 117 IRQ_TYPE_LEVEL_HIGH 0>;
-> -			clocks = <&clk26m>, <&clk26m>;
-> +			clocks = <&imp_iic_wrap_w CLK_IMP_IIC_WRAP_W_I2C5>,
-> +				 <&infracfg CLK_INFRA_AP_DMA>;
->  			clock-names = "main", "dma";
->  			clock-div = <1>;
->  			#address-cells = <1>;
-> @@ -721,7 +742,8 @@
->  			reg = <0 0x11f00000 0 0x1000>,
->  			      <0 0x10217080 0 0x80>;
->  			interrupts = <GIC_SPI 112 IRQ_TYPE_LEVEL_HIGH 0>;
-> -			clocks = <&clk26m>, <&clk26m>;
-> +			clocks = <&imp_iic_wrap_n CLK_IMP_IIC_WRAP_N_I2C0>,
-> +				 <&infracfg CLK_INFRA_AP_DMA>;
->  			clock-names = "main", "dma";
->  			clock-div = <1>;
->  			#address-cells = <1>;
-> @@ -734,7 +756,8 @@
->  			reg = <0 0x11f01000 0 0x1000>,
->  			      <0 0x10217580 0 0x80>;
->  			interrupts = <GIC_SPI 118 IRQ_TYPE_LEVEL_HIGH 0>;
-> -			clocks = <&clk26m>, <&clk26m>;
-> +			clocks = <&imp_iic_wrap_n CLK_IMP_IIC_WRAP_N_I2C6>,
-> +				 <&infracfg CLK_INFRA_AP_DMA>;
->  			clock-names = "main", "dma";
->  			clock-div = <1>;
->  			#address-cells = <1>;
+>  		uart0: serial@11002000 {
+>  			compatible = "mediatek,mt6779-uart",
+>  				     "mediatek,mt6577-uart";
+> --
+> 1.8.1.1.dirty
 > 
