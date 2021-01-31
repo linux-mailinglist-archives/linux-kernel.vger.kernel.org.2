@@ -2,78 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF06309C7A
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 15:03:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B76309C78
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 15:03:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232716AbhAaNyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 08:54:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50510 "EHLO mail.kernel.org"
+        id S231758AbhAaNxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 08:53:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58074 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231137AbhAaLDA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 06:03:00 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9791B64E21;
-        Sun, 31 Jan 2021 11:00:25 +0000 (UTC)
-Date:   Sun, 31 Jan 2021 11:00:21 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Gwendal Grignou <gwendal@chromium.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>
-Subject: Re: [PATCH 3/3] iio: proximity: Add a ChromeOS EC MKBP proximity
- driver
-Message-ID: <20210131110021.46a700e4@archlinux>
-In-Reply-To: <161161826068.76967.15170332425672601158@swboyd.mtv.corp.google.com>
-References: <20210122225443.186184-1-swboyd@chromium.org>
-        <20210122225443.186184-4-swboyd@chromium.org>
-        <20210124173820.4528b9c9@archlinux>
-        <CAPUE2uuQsa7=pjw+D=r0QtLGTd1kQa7X6VBVa73=gx47Vf7KDA@mail.gmail.com>
-        <161160076017.76967.4467861058817044169@swboyd.mtv.corp.google.com>
-        <CAPUE2uu555NT1=u=1Nb8WExT7RvK8mj5kBiDfGymHiAmoj2WCg@mail.gmail.com>
-        <161161826068.76967.15170332425672601158@swboyd.mtv.corp.google.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231274AbhAaLYy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 06:24:54 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D12D4AC4F;
+        Sun, 31 Jan 2021 11:00:54 +0000 (UTC)
+Date:   Sun, 31 Jan 2021 12:00:57 +0100
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-efi <linux-efi@vger.kernel.org>, x86-ml <x86@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] efi/urgent for v5.11-rc6
+Message-ID: <20210131110057.GB4432@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-...
+Hi Linus,
 
-> > > > > > +static const struct of_device_id cros_ec_proximity_of_match[] = {
-> > > > > > +     { .compatible = "google,cros-ec-proximity" },
-> > > > > > +     {}
-> > > > > > +};
-> > > > > > +MODULE_DEVICE_TABLE(of, cros_ec_proximity_of_match);
-> > > > > > +#endif
-> > > > > > +
-> > > > > > +static struct platform_driver cros_ec_proximity_driver = {
-> > > > > > +     .driver = {
-> > > > > > +             .name = "cros-ec-proximity",
-> > > > > > +             .of_match_table = of_match_ptr(cros_ec_proximity_of_match),  
-> > > > Add a ACPI match table to match.  
-> > >
-> > > I don't have an ACPI system in hand. What should the ACPI table look
-> > > like? Can ACPI use the of_match_table logic?  
-> > AFAIK, ACPI uses .acpi_match_table, see
-> > drivers/iio/magnetometer/ak8975.c for a simple example.  
-> 
-> Ok. I'm leaning towards punting on this. I don't have an ACPI system to
-> test and I don't know what the ACPI match table should have in it. If
-> you can tell me what to put in the acpi_match_table then I can add it.
+please pull a (forwarded) single EFI urgent fix for v5.11-rc6.
 
-Unless we have a known ACPI ID don't add support.  We let a few of those
-in in the past, (mostly because I didn't know better) and they are a pain
-to clean up, particularly as there may be platforms that started using
-them because the Linux driver supported them.
+Thx.
 
-Jonathan
+---
 
+The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
 
+  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/efi-urgent-for-v5.11
+
+for you to fetch changes up to 355845b738e76445c8522802552146d96cb4afa7:
+
+  efi/apple-properties: Reinstate support for boolean properties (2020-12-31 10:28:53 +0100)
+
+----------------------------------------------------------------
+A single EFI fix from Lukas:
+
+- handle boolean device properties imported from Apple firmware
+  correctly.
+
+----------------------------------------------------------------
+Lukas Wunner (1):
+      efi/apple-properties: Reinstate support for boolean properties
+
+ drivers/firmware/efi/apple-properties.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
