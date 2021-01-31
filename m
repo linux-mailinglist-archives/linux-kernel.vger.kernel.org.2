@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1003F309EA2
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 21:08:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0176309ECD
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 21:15:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231653AbhAaUIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 15:08:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42322 "EHLO
+        id S232220AbhAaUN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 15:13:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231374AbhAaTqL (ORCPT
+        with ESMTP id S231124AbhAaTft (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 14:46:11 -0500
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61FB6C0617A7;
-        Sun, 31 Jan 2021 09:31:57 -0800 (PST)
-Received: by mail-pf1-x444.google.com with SMTP id j12so9992415pfj.12;
-        Sun, 31 Jan 2021 09:31:57 -0800 (PST)
+        Sun, 31 Jan 2021 14:35:49 -0500
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0475FC0617A9;
+        Sun, 31 Jan 2021 09:32:08 -0800 (PST)
+Received: by mail-pl1-x642.google.com with SMTP id y10so4411481plk.7;
+        Sun, 31 Jan 2021 09:32:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=qJkSDHaVmo+fJzrmd85PruQ7oVf+hPtIrZplmqs4FsA=;
-        b=jseMqVYIOvqKcPA/OwJOxqo47r1bns7PdZ92MYc8WnLySr4D9EAs7DqgJS0+aE8YHp
-         R8TRcr2mBuWyyAAy5kMFW74lfmeeAxESnQcBgiyn/Ygtzlc+X17sQFhrX3RuiD7jBgjA
-         kQQFOh8zaCwGjKXkO8QQoXf8ti/f7oF7bAzBdFLX6mLNQ56pgi8gdyBaigXw2eEJbFei
-         JREaN7WndHVD5yH56eDTFcjU5L0djrKpOR1X+ITgwK8+NY3wg0y3WgqE03YhgPG9aOLt
-         uqhg3IIWZ1ghNrXu+IabOuwbbptykfG8YcpVq4enlECFi01637z7p7cYH+nTI21I+C0T
-         dnhg==
+        bh=8z7T30JwVaWaq0MDWkzbLRl1Zk2i9+kaaFA/9JES7Xs=;
+        b=Uoqbq4QkgIl9VP9kliAkYuDQm21xB+XmNDU1AxMz1RJf8ufeaxxdJyfbPtuk5Ue9Sy
+         MsdwlBDkuXGbADiWX3vmEvafdwHpDVKRSJ9NoYmEi915UYcqRWEQPKMo+cP6rmBvv8bF
+         qkIqPu6ztvPeb9ysJJLiyUFmRIrZVzyr9cs/x02p9cSb4Pt62moPq/QSkjFuqmHJ/4V6
+         E2opHNxR9Ga44NNvcciGBBq2C025jSGE+TkcgPUq2BZ1KJf5K5IlNq0oVQnrPipGjDLr
+         XRzLuQtPzaP5fBIV1iwtCKI5ZRISbgq/zvxGOm4x9XsH6BxWulI21PlLJsi/m4HS2xyG
+         1Q6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=qJkSDHaVmo+fJzrmd85PruQ7oVf+hPtIrZplmqs4FsA=;
-        b=S3WT3wWog/FPSURSKS9v1t+bzpuhY/rA7S7wDEZQdPT6qRkAmMezn/gAqiPqb3PCUK
-         IFppNG5L+Y5a3/kyXB8wrihJE1EPuiMlFi6k6EB6amolHuryqPi9vIbruQivnwTKV3p3
-         hCMCGNEJNBU4hiQ7T58ZnzcWftXZUU41ndraB8nIgC0o9sPwQKPlqjXTy1EAzwp47hhO
-         Pn0hH2h6htvwUMmxqPfU8zgv++pDavv91SxD8y3pTn84O5xX91oqGUZHHm0menRG4zMT
-         MThHbdnHfpYzhFvGkAAiXEZgoKoFei/Y0uYBpNixLG9NWe1y7w62b4IWg4+Q81R8wZ5m
-         ufpw==
-X-Gm-Message-State: AOAM532UQ1LRLA0qT1HAFx7XlpgBuF7pho8LKkItNTz+g4f++SOz+NQG
-        g/f9fBr2mzCWuC4H7XFU1HyV/Ev6p/gP9Q==
-X-Google-Smtp-Source: ABdhPJx20zg4Eel9orHc/z6tQYJ/L78aqH6IGuvnMGtz2Lor1bTYfNI80zv9b09QNyvsIwBHoDcw5w==
-X-Received: by 2002:a62:32c3:0:b029:1bc:7e0:ae66 with SMTP id y186-20020a6232c30000b02901bc07e0ae66mr13089095pfy.53.1612114316906;
-        Sun, 31 Jan 2021 09:31:56 -0800 (PST)
+        bh=8z7T30JwVaWaq0MDWkzbLRl1Zk2i9+kaaFA/9JES7Xs=;
+        b=sIPB65a505mtAz2pweoDMnJJ0aDeRQcVfOnkeXojixCpqDP4BbPHS/fl2XBK/pfjDp
+         CzfdV01RreRZk7iohA4gWNrp+FaK3HgyEkd7I1I85drvT0YGZTfUaoHg2mboC5+2qKVD
+         ujRM9W5wP4K7gUfXBCnUAcJxlJmOuWc+o6SX3ZYqFI5OkwbfJUsEZq7Y5AJrp6qbwyqq
+         vJMIWGHbuGQzwRwgIfSHgQvqbL0M2J3QpylcRbdmQK6PWSwnMuMsRG97b92omaimYMcX
+         VKvWO1xuGQyTjBLeWQ+ffMbcyMDDlLnsCVA8i1c8ib9TXJ0ZzEEIk7ji1ldc6Qodaul0
+         b+Ew==
+X-Gm-Message-State: AOAM5339L+ZwrsX+I2DGRCpO91y3GnyeSkEvfakEJb1HpJRjGz23DHAX
+        Mz0bBJtKYLu9q8hQrqltuKM=
+X-Google-Smtp-Source: ABdhPJxlrmQpiP0t2W7sFWGvxmRHJQ1EXLzsFuG1+Bm3Y/OPuczoXDBzhNcDmo58qBTT9cFSwqvRTw==
+X-Received: by 2002:a17:902:eacb:b029:e1:2de4:72b6 with SMTP id p11-20020a170902eacbb02900e12de472b6mr8975072pld.17.1612114327515;
+        Sun, 31 Jan 2021 09:32:07 -0800 (PST)
 Received: from localhost ([2402:3a80:11ea:e144:a2a4:c5ff:fe20:7222])
-        by smtp.gmail.com with ESMTPSA id z2sm5127218pfa.121.2021.01.31.09.31.55
+        by smtp.gmail.com with ESMTPSA id 76sm14898291pfz.174.2021.01.31.09.32.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Jan 2021 09:31:56 -0800 (PST)
+        Sun, 31 Jan 2021 09:32:06 -0800 (PST)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
         linux-kernel@vger.kernel.org
@@ -71,17 +71,17 @@ Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Teddy Wang <teddy.wang@siliconmotion.com>,
         Stephen Rothwell <sfr@canb.auug.org.au>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
         William Cohen <wcohen@redhat.com>,
-        Mike Rapoport <rppt@kernel.org>,
         Florian Fainelli <f.fainelli@gmail.com>,
-        Robert Richter <rric@kernel.org>,
         Al Viro <viro@zeniv.linux.org.uk>,
+        Mike Rapoport <rppt@kernel.org>,
+        Robert Richter <rric@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         greybus-dev@lists.linaro.org, ac100@lists.launchpad.net,
         linux-tegra@vger.kernel.org, linux-fbdev@vger.kernel.org
-Subject: [PATCH 05/13] staging: nvec: Switch from strlcpy to strscpy
-Date:   Sun, 31 Jan 2021 22:58:26 +0530
-Message-Id: <20210131172838.146706-6-memxor@gmail.com>
+Subject: [PATCH 06/13] staging: octeon: Switch from strlcpy to strscpy
+Date:   Sun, 31 Jan 2021 22:58:27 +0530
+Message-Id: <20210131172838.146706-7-memxor@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210131172838.146706-1-memxor@gmail.com>
 References: <20210131172838.146706-1-memxor@gmail.com>
@@ -101,24 +101,26 @@ This silences the related checkpatch warnings from:
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- drivers/staging/nvec/nvec_ps2.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/staging/octeon/ethernet-mdio.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/staging/nvec/nvec_ps2.c b/drivers/staging/nvec/nvec_ps2.c
-index 45db29262..157009015 100644
---- a/drivers/staging/nvec/nvec_ps2.c
-+++ b/drivers/staging/nvec/nvec_ps2.c
-@@ -112,8 +112,8 @@ static int nvec_mouse_probe(struct platform_device *pdev)
- 	ser_dev->start = ps2_startstreaming;
- 	ser_dev->stop = ps2_stopstreaming;
+diff --git a/drivers/staging/octeon/ethernet-mdio.c b/drivers/staging/octeon/ethernet-mdio.c
+index 0bf545849..1bb91a904 100644
+--- a/drivers/staging/octeon/ethernet-mdio.c
++++ b/drivers/staging/octeon/ethernet-mdio.c
+@@ -21,9 +21,9 @@
+ static void cvm_oct_get_drvinfo(struct net_device *dev,
+ 				struct ethtool_drvinfo *info)
+ {
+-	strlcpy(info->driver, KBUILD_MODNAME, sizeof(info->driver));
+-	strlcpy(info->version, UTS_RELEASE, sizeof(info->version));
+-	strlcpy(info->bus_info, "Builtin", sizeof(info->bus_info));
++	strscpy(info->driver, KBUILD_MODNAME, sizeof(info->driver));
++	strscpy(info->version, UTS_RELEASE, sizeof(info->version));
++	strscpy(info->bus_info, "Builtin", sizeof(info->bus_info));
+ }
  
--	strlcpy(ser_dev->name, "nvec mouse", sizeof(ser_dev->name));
--	strlcpy(ser_dev->phys, "nvec", sizeof(ser_dev->phys));
-+	strscpy(ser_dev->name, "nvec mouse", sizeof(ser_dev->name));
-+	strscpy(ser_dev->phys, "nvec", sizeof(ser_dev->phys));
- 
- 	ps2_dev.ser_dev = ser_dev;
- 	ps2_dev.notifier.notifier_call = nvec_ps2_notifier;
+ static int cvm_oct_nway_reset(struct net_device *dev)
 -- 
 2.29.2
 
