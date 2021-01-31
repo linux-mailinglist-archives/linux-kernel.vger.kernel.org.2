@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0733E3099F8
+	by mail.lfdr.de (Postfix) with ESMTP id 776773099F9
 	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 03:18:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232499AbhAaCSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 21:18:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55462 "EHLO mail.kernel.org"
+        id S232327AbhAaCSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 21:18:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230517AbhAaCR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231150AbhAaCR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 30 Jan 2021 21:17:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 22A8B64E17;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 39CFB64E0E;
         Sun, 31 Jan 2021 02:17:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1612059438;
-        bh=rxuCpH8f1XXoWTY+VpJnyc63RcPBQ6Gj/LYRimICNnI=;
+        bh=pkAM2tVzKl0Pjc1PqziVkOFxEQHhxhysdUVS24QK1+8=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=qDm1aDU3TuDp+xM9yKo/EBS9LMONizWSpuKKxrE1Jo5OuVfYDUZicslAwpo7IfsqE
-         yMGBXu14+J+cck64Zz7QLaz8rKZQ56VBYXt9ONN4aCWV2R+4CXXZY04i7fM4ImkhGk
-         2v2TgHEASc1fSCvMchQn2ntooYKyUFnGrV8MmU34Wh8m23YeWa4izX4/wxCfgkauDZ
-         HUQoO3yINGQqA4ll+1RyAFkTV0MnJ4Iwtgw4S//lGh+gUHpe4IEiBgZ21GOs+Jlq8O
-         VEjCqLNiAqUsp2fLTrYv0ri9EQyQON7Ba8ttL52sOZGhvcWFWXM2HV4F1qDmUfOqsd
-         ZKxNsOYa5/OBw==
+        b=BF/ntyLwMOfNl1NVi02gq1eFEei8JTYeEy17Y1xz789TfCP282qA0iV3S886zLXTo
+         LeMOrPakc8vYQMYBTnyHGHXkdODNNI4uNfz0dNeWwY4ineHDP5PcdNSc0qlnc1hyU1
+         k3NnqjMLcJy+/w0XQvJc3pp+n5DCsLFxAEF63YcFxMLuQFH2AXx8lwn4Mg9jI6/7Rj
+         O0f/0aoWiYzoGOlD0ZvsXUvK5AGIb7ltmdVWlKpB2DnAjBJt43hjE0fx2kfvPiVxAi
+         mCCSjfpbloMeTJ9sLVKoZNBDesI0kbD39UV+fLlk3QbVMYMTZBbZzK5WKM9wooylLW
+         JGUiIhMS5e1Dg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1061760984;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 2FB0E60989;
         Sun, 31 Jan 2021 02:17:18 +0000 (UTC)
-Subject: Re: [GIT PULL] SCSI fixes for 5.11-rc5
+Subject: Re: [GIT PULL] OpenRISC fixes for 5.11-rc6
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <563ef7e0fbd1a5ac6edf5957cc57aa4af17e4417.camel@HansenPartnership.com>
-References: <563ef7e0fbd1a5ac6edf5957cc57aa4af17e4417.camel@HansenPartnership.com>
+In-Reply-To: <20210130224442.GB2002709@lianli.shorne-pla.net>
+References: <20210130224442.GB2002709@lianli.shorne-pla.net>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <563ef7e0fbd1a5ac6edf5957cc57aa4af17e4417.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: aa2c24e7f415e9c13635cee22ff4e15a80215551
+X-PR-Tracked-Message-Id: <20210130224442.GB2002709@lianli.shorne-pla.net>
+X-PR-Tracked-Remote: git://github.com/openrisc/linux.git tags/for-linus
+X-PR-Tracked-Commit-Id: 1bea2a937dadd188de70198b0cf3915e05a506e4
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ad8b3c1e637cf7b827d26917034fa686af74896b
-Message-Id: <161205943800.4129.12804639174728798706.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 03e319e5465a2da6fb188c77043775f2888df529
+Message-Id: <161205943819.4129.13346730597249255168.pr-tracker-bot@kernel.org>
 Date:   Sun, 31 Jan 2021 02:17:18 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+To:     Stafford Horne <shorne@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Openrisc <openrisc@lists.librecores.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 30 Jan 2021 10:38:05 -0800:
+The pull request you sent on Sun, 31 Jan 2021 07:44:42 +0900:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+> git://github.com/openrisc/linux.git tags/for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ad8b3c1e637cf7b827d26917034fa686af74896b
+https://git.kernel.org/torvalds/c/03e319e5465a2da6fb188c77043775f2888df529
 
 Thank you!
 
