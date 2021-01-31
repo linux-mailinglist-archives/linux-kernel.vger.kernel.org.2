@@ -2,151 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BC86309C07
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 13:37:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 154D5309C15
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 13:46:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231718AbhAaMcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 07:32:33 -0500
-Received: from services.gouders.net ([141.101.32.176]:34049 "EHLO
-        services.gouders.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231452AbhAaLfm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 06:35:42 -0500
-Received: from localhost (ltea-047-066-000-239.pools.arcor-ip.net [47.66.0.239])
-        (authenticated bits=0)
-        by services.gouders.net (8.14.8/8.14.8) with ESMTP id 10VBT2Wt023944
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 31 Jan 2021 12:29:03 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gouders.net; s=gnet;
-        t=1612092543; bh=1UOfvjPVadRcsEZblv5wgGiNEHF3VcM77+wzdncuBgA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date;
-        b=KiUPO1FdL0u3/gLN1egAt6CCGIfPUf0RwjH8Wg8wop+kiHxzA10nVNAmYGdXH9nwI
-         XbgT3daRdKWLOtZcUOlyLGg+Fnh8KsqWeckj1CMIs9ZsxyhwJ5ZJkoeGEUOo3Iya5W
-         ZAeb3C2il36MlpRKI9TXVeoChHo5fS3NLkt1XDgU=
-From:   Dirk Gouders <dirk@gouders.net>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] iommu/vt-d: Add qi_submit trace event
-In-Reply-To: <20210114090400.736104-1-baolu.lu@linux.intel.com> (Lu Baolu's
-        message of "Thu, 14 Jan 2021 17:04:00 +0800")
-References: <20210114090400.736104-1-baolu.lu@linux.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
-Date:   Sun, 31 Jan 2021 12:27:26 +0100
-Message-ID: <gh1re1wdlt.fsf@gouders.net>
+        id S231759AbhAaMk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 07:40:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53460 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231410AbhAaLlW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 06:41:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D41C664E08;
+        Sun, 31 Jan 2021 11:40:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612093230;
+        bh=yPzrFyp0UP0I0YXBc+4d/DLMecTSDmLTl2aebYWTsY4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=LuM6bODIKTpnD2Gg3bUxfSCAV/ekjAR4OadA33FCjHk38SaPVWDsZ8O8GZTz0iy10
+         pQaEA5wGx06JMyRNqxbnlcpD+GeOxiakZITY1EjZh1iLAuYg7eQCFNp5BuXoktRPps
+         M0x4tjJ9+ljEXdLc/iI3NYhoMvKc0BKoF+R3B3uRc2dCLMg/KmyiXVjKnptwTFbgln
+         wygYnGozF68V7vA35SBRDvq2qlT8t1FD7jPq8YIU9fdlQjmMCIqEC0KsXGGT9dq7Dz
+         zcaolziBDhNJ/a/wMErzmH8eRhqxTVGwFwDGgvM0HavP72kckzJaWkA8yfDoJSMe7/
+         hzKx8alEn1Y3A==
+Date:   Sun, 31 Jan 2021 12:40:17 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [PULL REQUEST] i2c for 5.11
+Message-ID: <20210131114017.GA1332@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Nq2Wo0NMKNjxTN9z"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lu Baolu <baolu.lu@linux.intel.com> writes:
 
-> This adds a new trace event to track the submissions of requests to the
-> invalidation queue. This event will provide the information like:
-> - IOMMU name
-> - Invalidation type
-> - Descriptor raw data
->
-> A sample output like:
-> | qi_submit: iotlb_inv dmar1: 0x100e2 0x0 0x0 0x0
-> | qi_submit: dev_tlb_inv dmar1: 0x1000000003 0x7ffffffffffff001 0x0 0x0
-> | qi_submit: iotlb_inv dmar2: 0x800f2 0xf9a00005 0x0 0x0
->
-> This will be helpful for queued invalidation related debugging.
->
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+--Nq2Wo0NMKNjxTN9z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-While compiling current linux-next for some other test I noticed a
-compiler error because of this patch:
+Linus,
 
-drivers/iommu/intel/dmar.c: In function =E2=80=98qi_submit_sync=E2=80=99:
-drivers/iommu/intel/dmar.c:1311:3: error: implicit declaration of function =
-=E2=80=98trace_qi_submit=E2=80=99 [-Werror=3Dimplicit-function-declaration]
- 1311 |   trace_qi_submit(iommu, desc[i].qw0, desc[i].qw1,
-      |   ^~~~~~~~~~~~~~~
-cc1: some warnings being treated as errors
+one I2C driver update this time.
 
-On my machine CONFIG_INTEL_IOMMU is not set so
-#include <trace/events/intel_iommu.h> cannot provide the prototype for
-that function.
+Please pull.
 
-Dirk
+Thanks,
 
-> ---
->  drivers/iommu/intel/dmar.c         |  3 +++
->  include/trace/events/intel_iommu.h | 37 ++++++++++++++++++++++++++++++
->  2 files changed, 40 insertions(+)
->
-> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
-> index 004feaed3c72..bd51f33642e0 100644
-> --- a/drivers/iommu/intel/dmar.c
-> +++ b/drivers/iommu/intel/dmar.c
-> @@ -31,6 +31,7 @@
->  #include <linux/limits.h>
->  #include <asm/irq_remapping.h>
->  #include <asm/iommu_table.h>
-> +#include <trace/events/intel_iommu.h>
->=20=20
->  #include "../irq_remapping.h"
->=20=20
-> @@ -1307,6 +1308,8 @@ int qi_submit_sync(struct intel_iommu *iommu, struc=
-t qi_desc *desc,
->  		offset =3D ((index + i) % QI_LENGTH) << shift;
->  		memcpy(qi->desc + offset, &desc[i], 1 << shift);
->  		qi->desc_status[(index + i) % QI_LENGTH] =3D QI_IN_USE;
-> +		trace_qi_submit(iommu, desc[i].qw0, desc[i].qw1,
-> +				desc[i].qw2, desc[i].qw3);
->  	}
->  	qi->desc_status[wait_index] =3D QI_IN_USE;
->=20=20
-> diff --git a/include/trace/events/intel_iommu.h b/include/trace/events/in=
-tel_iommu.h
-> index 112bd06487bf..aad2ff0c1e2e 100644
-> --- a/include/trace/events/intel_iommu.h
-> +++ b/include/trace/events/intel_iommu.h
-> @@ -135,6 +135,43 @@ DEFINE_EVENT(dma_map_sg, bounce_map_sg,
->  		 struct scatterlist *sg),
->  	TP_ARGS(dev, index, total, sg)
->  );
-> +
-> +TRACE_EVENT(qi_submit,
-> +	TP_PROTO(struct intel_iommu *iommu, u64 qw0, u64 qw1, u64 qw2, u64 qw3),
-> +
-> +	TP_ARGS(iommu, qw0, qw1, qw2, qw3),
-> +
-> +	TP_STRUCT__entry(
-> +		__field(u64, qw0)
-> +		__field(u64, qw1)
-> +		__field(u64, qw2)
-> +		__field(u64, qw3)
-> +		__string(iommu, iommu->name)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__assign_str(iommu, iommu->name);
-> +		__entry->qw0 =3D qw0;
-> +		__entry->qw1 =3D qw1;
-> +		__entry->qw2 =3D qw2;
-> +		__entry->qw3 =3D qw3;
-> +	),
-> +
-> +	TP_printk("%s %s: 0x%llx 0x%llx 0x%llx 0x%llx",
-> +		  __print_symbolic(__entry->qw0 & 0xf,
-> +				   { QI_CC_TYPE,	"cc_inv" },
-> +				   { QI_IOTLB_TYPE,	"iotlb_inv" },
-> +				   { QI_DIOTLB_TYPE,	"dev_tlb_inv" },
-> +				   { QI_IEC_TYPE,	"iec_inv" },
-> +				   { QI_IWD_TYPE,	"inv_wait" },
-> +				   { QI_EIOTLB_TYPE,	"p_iotlb_inv" },
-> +				   { QI_PC_TYPE,	"pc_inv" },
-> +				   { QI_DEIOTLB_TYPE,	"p_dev_tlb_inv" },
-> +				   { QI_PGRP_RESP_TYPE,	"page_grp_resp" }),
-> +		__get_str(iommu),
-> +		__entry->qw0, __entry->qw1, __entry->qw2, __entry->qw3
-> +	)
-> +);
->  #endif /* _TRACE_INTEL_IOMMU_H */
->=20=20
->  /* This part must be outside protection */
+   Wolfram
+
+
+The following changes since commit 6ee1d745b7c9fd573fba142a2efdad76a9f1cb04:
+
+  Linux 5.11-rc5 (2021-01-24 16:47:14 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
+
+for you to fetch changes up to de96c3943f591018727b862f51953c1b6c55bcc3:
+
+  i2c: mediatek: Move suspend and resume handling to NOIRQ phase (2021-01-28 10:54:45 +0100)
+
+----------------------------------------------------------------
+Qii Wang (1):
+      i2c: mediatek: Move suspend and resume handling to NOIRQ phase
+
+ drivers/i2c/busses/i2c-mt65xx.c | 19 ++++++++++++++++---
+ 1 file changed, 16 insertions(+), 3 deletions(-)
+
+--Nq2Wo0NMKNjxTN9z
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAWlxwACgkQFA3kzBSg
+Kba/og/+KX79uG+J78ouK2RldNzt8KsIS2KaHkhx73yWiMOzf6OPRAuqsqAg3B7E
+amglZa509qllZOW+1ndTOs4CvsEPtuQKVxw4gTQeLBRIlC0B+fgfbaH6nk+CVdqV
+gXwY9awqNjwu4/TcrWtb/9/6Ug19mB+jrfuTC+qQrxs2Mdrk70ybC47H+wov3DFl
+hT44wyXanAx3DMXpC66PsxORcZtFJEV6kLgGZWPS2S4iUCqihDc8BWxgLheRedps
+80rnPurldaiOhbJqfziZwuB+3Ui+ELT3VgYBCHc2rO2FUnXQSLrn/yIdazfh7JSc
+WzzepIETzROaAGiE5ZkgXF5MtBV4JeZcqjeu65rTowvm+4/XhJSqWodCvbMPzCia
+BLktABgjW4L+7Vxxniu5+GuGXyeBxYjYh71x4a597nXKLGaeM00dsVXulo0JvhSQ
+0qymPU0jDKJsjNZGfvMPqFssI53FTRrIvZdfbzVNrweA3ri/yixflnIMtqGqE2pf
+s7Tmd2/qDh2aDs76LgeicIOcVqguz9mMEdZ3quUNaiMFA6WSgO+oUytzPy+vEGFM
+xorgd+1RcLthOjhDON/fQlRi6gHy67a62fR9p1P22PnPYq0gX5hI354fEruqPeeo
+3tKCraYvk6i/7lJaXW6ixjdnyO5a39wHt+/99qWorOfT/469ppQ=
+=Sq1r
+-----END PGP SIGNATURE-----
+
+--Nq2Wo0NMKNjxTN9z--
