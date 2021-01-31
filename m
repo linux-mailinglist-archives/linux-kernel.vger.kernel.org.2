@@ -2,175 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0F6309F87
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 00:36:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4E5309F8C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 00:38:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230249AbhAaXf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 18:35:26 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41776 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229765AbhAaXd4 (ORCPT
+        id S230360AbhAaXhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 18:37:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230218AbhAaXgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 18:33:56 -0500
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10VNVnXC165864;
-        Sun, 31 Jan 2021 18:33:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=wN2IIjhkFjHzZIfdAgrW8xts+j0dytluu90YpCqbmyM=;
- b=kuPM67oGjsoO07vVGsXiq5F2visacoinmnFBEwx5g5eCN3Sqgd1vjdwFC8jWuvLlH/aX
- 2HPS/QpSXgC8Eu+W8DCfVwbzXRbzS2LYxAQJSyN7LFAoGxdRKvMYzF3ZCuTZcvWjuvQx
- gA21Ztv0hyO0g4Gvn3jahQhviaS1Bad6nSH4186+y1KJ9cGXnfuyDpZ3QWeJfWdJsG9Q
- Ipk+JyKcNp+PSBix+FXHg2GWUyroP5Q9C/ljnH+E806wH9/lIjBQKEtBaYsE79nXHUH0
- jdQu5Wc7+eeb8jbYA3YzkQP/YsuOvXjwkgNuCmvd/wWKViCHV/7Jm1tqdJMrSn59UqS/ Bg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36e5murmx1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 31 Jan 2021 18:33:11 -0500
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10VNXAhc171766;
-        Sun, 31 Jan 2021 18:33:10 -0500
-Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36e5murmwv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 31 Jan 2021 18:33:10 -0500
-Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
-        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10VNW017013376;
-        Sun, 31 Jan 2021 23:33:09 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma03wdc.us.ibm.com with ESMTP id 36cy38jjru-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 31 Jan 2021 23:33:09 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10VNX8RP36766058
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 31 Jan 2021 23:33:08 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 47954BE051;
-        Sun, 31 Jan 2021 23:33:08 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8479BBE04F;
-        Sun, 31 Jan 2021 23:33:07 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Sun, 31 Jan 2021 23:33:07 +0000 (GMT)
-From:   Stefan Berger <stefanb@linux.ibm.com>
-To:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
-        linux-integrity@vger.kernel.org,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Vitaly Chikunov <vt@altlinux.org>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
-        David Howells <dhowells@redhat.com>
-Subject: [PATCH v6 4/4] ima: Support EC keys for signature verification
-Date:   Sun, 31 Jan 2021 18:33:01 -0500
-Message-Id: <20210131233301.1301787-5-stefanb@linux.ibm.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210131233301.1301787-1-stefanb@linux.ibm.com>
-References: <20210131233301.1301787-1-stefanb@linux.ibm.com>
+        Sun, 31 Jan 2021 18:36:22 -0500
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DF3AC061573
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 15:35:42 -0800 (PST)
+Received: by mail-lj1-x235.google.com with SMTP id s18so17365409ljg.7
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 15:35:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RxtVTOwvFLoCBdKKHCXbA57pJv5BeCvLH+KgQ45jFPE=;
+        b=Uaad/AzNhD9i9qs4hVY7pyJkU4y4IRnbJ+lAT94Z5xheon9TYqV6ritYDdo0Z6BovO
+         Eiiunf+4SLqqb/sM3/HxMYRTLlhWVsnXV7jHKbaJfJMghdaW25T5aMjaCIltgRKELYQv
+         WyK8x5KFjphrAV7DodibwS35q7+RL1pYFmqLM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RxtVTOwvFLoCBdKKHCXbA57pJv5BeCvLH+KgQ45jFPE=;
+        b=C0ApO5jXci6QINtQ61XzrO2jCVvJPinc7queH3Y07pXtWqBzhn5p2ZWc1oLYZ9hVoC
+         C+FkNGZECa77qmMcoYakUgSfApGZemVd8khpIwtIeO3krhvUbirVNCty+YD+7pr9Dzxw
+         uKPkKNAarykPvVgrLoB/oq56M9LhU2J2tpABNdlVSfEN49cN14inBAtEvjrc+lmWkCh+
+         H2JRNqsC3zJDLg2tTXGgoJKCaosiV0d1IQ0fgVzCg//Fpdg0HN5fd7U1gQO/O5MbdQsy
+         xKYaNosno9e0eWNgcH5vBXwZ1XPxYvFqom4HDQoCfy6j2PSc38wsfFSXRcr5wlU0v1C6
+         v1Ww==
+X-Gm-Message-State: AOAM531jtBbTQGC4M7zzD84qL99V2YNLBAH3d3CwqkLif1jmeu/a0K0F
+        VS/UETXrFSz/bp5MmuAa9JsZJ46ivYw0KQ==
+X-Google-Smtp-Source: ABdhPJxizNWfQ15sYqnsLb04Wu8DCI3LU5xajerd4PyRs0TzInTVFzAB7m5ZhUtUJK3Nuwjd9xrMZg==
+X-Received: by 2002:a2e:91c2:: with SMTP id u2mr8440987ljg.346.1612136139436;
+        Sun, 31 Jan 2021 15:35:39 -0800 (PST)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id c17sm2804361lfs.217.2021.01.31.15.35.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 31 Jan 2021 15:35:38 -0800 (PST)
+Received: by mail-lf1-f45.google.com with SMTP id f1so20337331lfu.3
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 15:35:38 -0800 (PST)
+X-Received: by 2002:ac2:4436:: with SMTP id w22mr6894967lfl.41.1612136138002;
+ Sun, 31 Jan 2021 15:35:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-01-31_08:2021-01-29,2021-01-31 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- mlxlogscore=999 suspectscore=0 priorityscore=1501 clxscore=1015
- phishscore=0 mlxscore=0 adultscore=0 impostorscore=0 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101310134
+References: <CAP045Ao_Zb0HGg0=bvUeV6GjX=-3fz0ScsvM_jE7VsZcVk_-tg@mail.gmail.com>
+ <C479ACCB-A1A5-4422-8120-999E8D54314B@amacapital.net> <CAP045AoMRNjvVd1PdHvdf-nn3LNpTDp66sp+SAmZgNU888iFQQ@mail.gmail.com>
+ <CAP045ApWnr=UQrBrv3fHj-C6EweukMWEyrCgsiY6Bt_i1Vdj6A@mail.gmail.com>
+In-Reply-To: <CAP045ApWnr=UQrBrv3fHj-C6EweukMWEyrCgsiY6Bt_i1Vdj6A@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 31 Jan 2021 15:35:22 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgqRgk0hjvpjHNixK7xSOS_F3fpt3bL9ZUJVhCL3oGgyw@mail.gmail.com>
+Message-ID: <CAHk-=wgqRgk0hjvpjHNixK7xSOS_F3fpt3bL9ZUJVhCL3oGgyw@mail.gmail.com>
+Subject: Re: [REGRESSION] x86/entry: TIF_SINGLESTEP handling is still broken
+To:     Kyle Huey <me@kylehuey.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "Robert O'Callahan" <rocallahan@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for IMA signature verification for EC keys. Since SHA type
-of hashes can be used by RSA and ECDSA signature schemes we need to
-look at the key and derive from the key which signature scheme to use.
-Since this can be applied to all types of keys, we change the selection
-of the encoding type to be driven by the key's signature scheme rather
-than by the hash type.
+On Sun, Jan 31, 2021 at 3:18 PM Kyle Huey <me@kylehuey.com> wrote:
+>
+> The key to triggering this bug is to enter a ptrace syscall stop and
+> then use PTRACE_SINGLESTEP to exit it. On a good kernel this will not
+> result in any userspace code execution in the tracee because on the
+> way out of the kernel's syscall handling path the singlestep trap will
+> be raised immediately. On a bad kernel that stop will not be raised,
+> and in the example below, the program will crash.
 
-Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-Reviewed-by: Vitaly Chikunov <vt@altlinux.org>
-Cc: Mimi Zohar <zohar@linux.ibm.com>
-Cc: Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
-Cc: linux-integrity@vger.kernel.org
-Cc: Vitaly Chikunov <vt@altlinux.org>
-Cc: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc: David Howells <dhowells@redhat.com>
-Cc: keyrings@vger.kernel.org
----
- include/keys/asymmetric-type.h         |  6 ++++++
- security/integrity/digsig_asymmetric.c | 29 ++++++++++++--------------
- 2 files changed, 19 insertions(+), 16 deletions(-)
+Thanks, great explanation, and I can certainly see the behavior you mention.
 
-diff --git a/include/keys/asymmetric-type.h b/include/keys/asymmetric-type.h
-index a29d3ff2e7e8..c432fdb8547f 100644
---- a/include/keys/asymmetric-type.h
-+++ b/include/keys/asymmetric-type.h
-@@ -72,6 +72,12 @@ const struct asymmetric_key_ids *asymmetric_key_ids(const struct key *key)
- 	return key->payload.data[asym_key_ids];
- }
- 
-+static inline
-+const struct public_key *asymmetric_key_public_key(const struct key *key)
-+{
-+	return key->payload.data[asym_crypto];
-+}
-+
- extern struct key *find_asymmetric_key(struct key *keyring,
- 				       const struct asymmetric_key_id *id_0,
- 				       const struct asymmetric_key_id *id_1,
-diff --git a/security/integrity/digsig_asymmetric.c b/security/integrity/digsig_asymmetric.c
-index a662024b4c70..29002d016607 100644
---- a/security/integrity/digsig_asymmetric.c
-+++ b/security/integrity/digsig_asymmetric.c
-@@ -84,6 +84,7 @@ int asymmetric_verify(struct key *keyring, const char *sig,
- {
- 	struct public_key_signature pks;
- 	struct signature_v2_hdr *hdr = (struct signature_v2_hdr *)sig;
-+	const struct public_key *pk;
- 	struct key *key;
- 	int ret;
- 
-@@ -105,23 +106,19 @@ int asymmetric_verify(struct key *keyring, const char *sig,
- 	memset(&pks, 0, sizeof(pks));
- 
- 	pks.hash_algo = hash_algo_name[hdr->hash_algo];
--	switch (hdr->hash_algo) {
--	case HASH_ALGO_STREEBOG_256:
--	case HASH_ALGO_STREEBOG_512:
--		/* EC-RDSA and Streebog should go together. */
--		pks.pkey_algo = "ecrdsa";
--		pks.encoding = "raw";
--		break;
--	case HASH_ALGO_SM3_256:
--		/* SM2 and SM3 should go together. */
--		pks.pkey_algo = "sm2";
--		pks.encoding = "raw";
--		break;
--	default:
--		pks.pkey_algo = "rsa";
-+
-+	pk = asymmetric_key_public_key(key);
-+	pks.pkey_algo = pk->pkey_algo;
-+	if (!strcmp(pk->pkey_algo, "rsa"))
- 		pks.encoding = "pkcs1";
--		break;
--	}
-+	else if (!strcmp(pk->pkey_algo, "ecdsa"))
-+		pks.encoding = "x962";
-+	else if (!strcmp(pk->pkey_algo, "ecrdsa") ||
-+		   !strcmp(pk->pkey_algo, "sm2"))
-+		pks.encoding = "raw";
-+	else
-+		return -ENOPKG;
-+
- 	pks.digest = (u8 *)data;
- 	pks.digest_size = datalen;
- 	pks.s = hdr->sig;
--- 
-2.29.2
+I wonder if the simple solution is to just
 
+ (a) always set one of the SYSCALL_WORK_EXIT bits on the child in
+ptrace (exactly to catch the child on system call exit)
+
+ (b) basically revert 299155244770 ("entry: Drop usage of TIF flags in
+the generic syscall code") and have the syscall exit code check the
+TIF_SINGLESTEP flag
+
+Hmm?
+
+        Linus
