@@ -2,86 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13E48309E79
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 21:03:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F001309E98
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 21:07:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231822AbhAaUAp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 15:00:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52046 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231631AbhAaTyg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 14:54:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5800864E46;
-        Sun, 31 Jan 2021 17:24:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612113894;
-        bh=nTDFeXkmZsJl47UC4OiD2WnjDorbMhlFvMZSs0pko3c=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UmelsvIqW/2B3Y4QZ2I77DnsTmfOsPxHhD/idftU7efpRnBgwrtvq4h4sXb/gUBmD
-         94q59tRMRiQnG3XPlrEe6JEDh5RGo85DSqiJieeXXNBD7lnaZkdVhfGRWjQcwcsAmj
-         /igKBOh9bknkUedOII7Hz+5LJekktc8BRhkztwHh8/c9g3kr8WweH+tj0KI7kNzCf9
-         2sOhjQB+lxYWHXUl+vvUZYf0yL/s+WJWkOFZv3thWJFDYQruvSQDfj5LlAByVR2uvl
-         +XwMh5+necZO+v+FGSZi1XdDMnCJhCqibfTDC+oVi+5glI5el+Mr6rh9f+7OGEffWH
-         3qDadgpKOWQuw==
-From:   Andy Lutomirski <luto@kernel.org>
-To:     x86@kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 10/11] x86/fault: Don't run fixups for SMAP violations
-Date:   Sun, 31 Jan 2021 09:24:41 -0800
-Message-Id: <416aa53570523f2659edf9e39d553160cb253c5f.1612113550.git.luto@kernel.org>
+        id S231272AbhAaTrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 14:47:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231186AbhAaTlX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 14:41:23 -0500
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A68C06178C;
+        Sun, 31 Jan 2021 09:31:04 -0800 (PST)
+Received: by mail-pg1-x544.google.com with SMTP id t25so10438915pga.2;
+        Sun, 31 Jan 2021 09:31:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=NsrHxAV5PZRT0YgTo4A1rjxZSTbbsgPPfPS9F8n4M0s=;
+        b=H+vbac//Dohzhqf4uzo7Wh1bTpOU9crwTKPPrwUfD+VR6tfJ3JlTfaTs3nK3gpqBAK
+         DcBUADLAAizhT3jdb44+vU3a86Ury9d03ieXl+El/SRi5d/1a4bPMe715kLrYMpck2nQ
+         s19JaeOV4UbPtkR9P5VgJbR8XgDATxkolNO5mLGbBUf3+wvzK2zfrCjqU6aCDBjZ2i6r
+         /CsKETyuNQ7bM7LhEnoPAjJlCP4EPP6nC8QtggDaUarJfQA+VB6LiF8qiM6Wyf8vwpA5
+         3YLeSTHeGx2eZSxcabtGMTA97EDpmRuiDk2b3u7MitW0ds1a7+jd7OmJdygBBtgyEq84
+         il3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=NsrHxAV5PZRT0YgTo4A1rjxZSTbbsgPPfPS9F8n4M0s=;
+        b=AxVkhGHDx0HPiYJFokycRja03f2fx8OcS1+SD3oSL3BZUV+Ws8OdraXvrXdtkZoeeM
+         xo6pzrnLERwbXAco+3hgMupiKveZT4qd+UKHRF8i4PDJcLEpU31d3mPL0SrhxOB8hREH
+         njXovXSXcbEr16CY1kdnszScuyGf6eK4SbFcW8T4ms3cqKN7412/5vKyyViZi7YtIgAY
+         RYsWp3+9XRVVTRyR5yO0x9L7fb/yaWdPHfM3hOpYe7P1xcvI1r7m40mT+VgZt6CRAryD
+         z/TeTB6BI3c8J+6GiDdMAA+nyS/KctTiGe2XSBT1pC9J0mQ/Bk7XhAf5nGpkqKX+rVt4
+         iOZg==
+X-Gm-Message-State: AOAM533zRCT/IAvQiG1tEsAqPEYzS8DNXjVlekXA23aBgCC4P5Wy0Pjm
+        fliYUNI2yRsBP0D8OSn8/Bk=
+X-Google-Smtp-Source: ABdhPJzda11kt+qccbnF1yfOwNWF3nMY2iL53BppiuYflQwHqJhYz7LlOJWZ4ynLYwJZqbjXTkkFXg==
+X-Received: by 2002:a62:5505:0:b029:1c9:2c59:b1ff with SMTP id j5-20020a6255050000b02901c92c59b1ffmr12194567pfb.69.1612114263947;
+        Sun, 31 Jan 2021 09:31:03 -0800 (PST)
+Received: from localhost ([2402:3a80:11ea:e144:a2a4:c5ff:fe20:7222])
+        by smtp.gmail.com with ESMTPSA id a12sm1929409pjs.53.2021.01.31.09.31.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 Jan 2021 09:31:03 -0800 (PST)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Ian Abbott <abbotti@mev.co.uk>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+        Vaibhav Agarwal <vaibhav.sr@gmail.com>,
+        Mark Greer <mgreer@animalcreek.com>,
+        Rui Miguel Silva <rmfrfs@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Marc Dietrich <marvin24@gmx.de>,
+        Jens Frederich <jfrederich@gmail.com>,
+        Daniel Drake <dsd@laptop.org>,
+        Jon Nettleton <jon.nettleton@gmail.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Teddy Wang <teddy.wang@siliconmotion.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        William Cohen <wcohen@redhat.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Robert Richter <rric@kernel.org>, greybus-dev@lists.linaro.org,
+        ac100@lists.launchpad.net, linux-tegra@vger.kernel.org,
+        linux-fbdev@vger.kernel.org
+Subject: [PATCH 01/13] staging: comedi: Switch from strlcpy to strscpy
+Date:   Sun, 31 Jan 2021 22:58:22 +0530
+Message-Id: <20210131172838.146706-2-memxor@gmail.com>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1612113550.git.luto@kernel.org>
-References: <cover.1612113550.git.luto@kernel.org>
+In-Reply-To: <20210131172838.146706-1-memxor@gmail.com>
+References: <20210131172838.146706-1-memxor@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A SMAP-violating kernel access is not a recoverable condition.  Imagine
-kernel code that, outside of a uaccess region, dereferences a pointer to
-the user range by accident.  If SMAP is on, this will reliably generate
-as an intentional user access.  This makes it easy for bugs to be
-overlooked if code is inadequately tested both with and without SMAP.
+strlcpy is marked as deprecated in Documentation/process/deprecated.rst,
+and there is no functional difference when the caller expects truncation
+(when not checking the return value). strscpy is relatively better as it
+also avoids scanning the whole source string.
 
-We discovered this because BPF can generate invalid accesses to user
-memory, but those warnings only got printed if SMAP was off.  With this
-patch, this type of error will be discovered with SMAP on as well.
+This silences the related checkpatch warnings from:
+5dbdb2d87c29 ("checkpatch: prefer strscpy to strlcpy")
 
-Cc: Yonghong Song <yhs@fb.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
+Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- arch/x86/mm/fault.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ drivers/staging/comedi/comedi_fops.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index 04cc98ec2423..d39946ad8a91 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -1242,7 +1242,11 @@ void do_user_addr_fault(struct pt_regs *regs,
- 		     !(error_code & X86_PF_USER) &&
- 		     !(regs->flags & X86_EFLAGS_AC)))
- 	{
--		bad_area_nosemaphore(regs, error_code, address);
-+		/*
-+		 * No extable entry here.  This was a kernel access to an
-+		 * invalid pointer.  get_kernel_nofault() will not get here.
-+		 */
-+		page_fault_oops(regs, error_code, address);
- 		return;
- 	}
+diff --git a/drivers/staging/comedi/comedi_fops.c b/drivers/staging/comedi/comedi_fops.c
+index 80d74cce2..df77b6bf5 100644
+--- a/drivers/staging/comedi/comedi_fops.c
++++ b/drivers/staging/comedi/comedi_fops.c
+@@ -939,8 +939,8 @@ static int do_devinfo_ioctl(struct comedi_device *dev,
+ 	/* fill devinfo structure */
+ 	devinfo.version_code = COMEDI_VERSION_CODE;
+ 	devinfo.n_subdevs = dev->n_subdevices;
+-	strlcpy(devinfo.driver_name, dev->driver->driver_name, COMEDI_NAMELEN);
+-	strlcpy(devinfo.board_name, dev->board_name, COMEDI_NAMELEN);
++	strscpy(devinfo.driver_name, dev->driver->driver_name, COMEDI_NAMELEN);
++	strscpy(devinfo.board_name, dev->board_name, COMEDI_NAMELEN);
  
+ 	s = comedi_file_read_subdevice(file);
+ 	if (s)
 -- 
 2.29.2
 
