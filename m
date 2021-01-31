@@ -2,132 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB3B309DB7
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 16:40:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78997309DBA
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 16:41:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232578AbhAaPkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 10:40:07 -0500
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:24611 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232164AbhAaMwj (ORCPT
+        id S231788AbhAaPkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 10:40:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232160AbhAaMwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 07:52:39 -0500
-X-UUID: 9765db983f804114851955871cb8298a-20210131
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=H0bML+eNBmZSuR/PM/yGe8x+G6itpVoj329ds+BexWE=;
-        b=lxRj3uYFtqeOGrghW0NWqi4Po5cxmbgZWSOkp1ZoPdWITBzeLRiSmFBkwlQVGuoc/uFf7cgeaJxhs3KGpMf1Ozg52L/67JG51BPkn0aZynHT9GIgHaKCVxG4/J1gyA0IcAtkYs3sU+UpwxJuC3Zr6qwJQYR6dbLglaZ3EPc1sag=;
-X-UUID: 9765db983f804114851955871cb8298a-20210131
-Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <hanks.chen@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 623195478; Sun, 31 Jan 2021 20:51:20 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- MTKMBS32N2.mediatek.inc (172.27.4.72) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sun, 31 Jan 2021 20:51:06 +0800
-Received: from [172.21.77.33] (172.21.77.33) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 31 Jan 2021 20:50:59 +0800
-Message-ID: <1612097459.484.5.camel@mtkswgap22>
-Subject: Re: [PATCH v1 1/1] arm64: dts: mt6779: add spi host dts nodes
-From:   Hanks Chen <hanks.chen@mediatek.com>
-To:     Mason Zhang <mason.zhang@mediatek.com>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Date:   Sun, 31 Jan 2021 20:50:59 +0800
-In-Reply-To: <20210126131839.2168-2-mason.zhang@mediatek.com>
-References: <20210126131839.2168-1-mason.zhang@mediatek.com>
-         <20210126131839.2168-2-mason.zhang@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
-MIME-Version: 1.0
-X-TM-SNTS-SMTP: 6C9DE66BB309684B4BAD733E784C59101D56845D7754F36C8535B840862203462000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Sun, 31 Jan 2021 07:52:05 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36C90C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 04:51:22 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id j13so15761372edp.2
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 04:51:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Fjrhs7HTb3KAOHD/Z4OsRiZR3fTTDer1xRtVh5uEzQQ=;
+        b=mggdTO+OzSrMYTeeVpTG18ltZSkuUAgNUjWRpyNavueifr3EL59jk3fHyG9b5MsMze
+         ad8BHI0O2eNoZY97JPbZ1QHjYDxOXDfc0Jt239VSK3FX5ZnmaZZHpHOJmFQjSbsxjrcM
+         EQFgUhi6D24LVeGlH2+65JujeTPiJ2tO6u+UKnOGCjociHuocF6Jg1lQZlju6V4Y4hKQ
+         Qj3D8U930n43hN2SaK/S6T8jBrHsWPs4uSNHaL9ZTNbjR6NZP+NvO9qB64aQnZMESzb+
+         W9RI+8p/GXntTFwJV6saoi+FK5gCYRPq3E2th+r2C8lO1DbiXVrfzBGlFvGyH/92YwYV
+         84aA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Fjrhs7HTb3KAOHD/Z4OsRiZR3fTTDer1xRtVh5uEzQQ=;
+        b=Ie8EgbPQq4GNCiaCRqmJYc1lDd5OmpwGX4/SXy0hf3pH+H1apM4HDLdBLMuCeoYHNG
+         W8SeQjCVFyXixjnTt/0rXDePTdLsIwDfwZZUUUi+qXAKX9XW3VjnYcHb0JwlWxKxQfro
+         lMV+F1fYF0DRnXySYxB11jKkdQVq9nBqsY/ZkN1nIJ1K/trjJ/3z/rullS0p42AOsKTV
+         NRzSmQrD5t64LlQZ98GbNE96HTpEQi9+SBSz9q1rd0RZTXyv8w2r2nVMUVjsmJlM5FSB
+         4v5w1f3hUYGwo4NHGGFcGFnQQlSSsXUxDlgwxXyhjyLaa4QVpFRo0TYGwjR9pbmH1awk
+         dlsw==
+X-Gm-Message-State: AOAM531Lm0vltFoKOzCs4E1Ixuto+zDwBSuypGPBINvMgRjGpTskqZfv
+        hyodQm248Xu9Tmc9L55MkFY=
+X-Google-Smtp-Source: ABdhPJyIMzfAVupXZdw07J+8FbSpRt9OxCqtZKCXvj20Dih48GzJhmB94RAfPNXYaiSCctESwwkr0w==
+X-Received: by 2002:a05:6402:1b11:: with SMTP id by17mr13753486edb.373.1612097481028;
+        Sun, 31 Jan 2021 04:51:21 -0800 (PST)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id i15sm6552820ejj.28.2021.01.31.04.51.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 31 Jan 2021 04:51:20 -0800 (PST)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     hjc@rock-chips.com, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] drm/rockchip: vop_reg: add rk3036 hdmi support
+Date:   Sun, 31 Jan 2021 13:51:14 +0100
+Message-Id: <20210131125114.10885-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIxLTAxLTI2IGF0IDIxOjE4ICswODAwLCBNYXNvbiBaaGFuZyB3cm90ZToNCj4g
-RnJvbTogbXRrMjI3ODYgPE1hc29uLlpoYW5nQG1lZGlhdGVrLmNvbT4NCj4gDQo+IHRoaXMgcGF0
-Y2ggYWRkIHNwaSBob3N0IGR0cyBub2RlcyBmb3IgbXQ2Nzc5IElDLg0KPiANCj4gQ2hhbmdlLUlk
-OiBJZjRhM2NiYjA5ODQzZjQ3MjIxMGIzOTAzNTJkYjRiOTg4NmY1YzAwYw0KPiBTaWduZWQtb2Zm
-LWJ5OiBNYXNvbiBaaGFuZyA8bWFzb24uemhhbmdAbWVkaWF0ZWsuY29tPg0KPiAtLS0NCj4gIGFy
-Y2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ2Nzc5LmR0c2kgfCA5NiArKysrKysrKysrKysr
-KysrKysrKysrKysNCj4gIDEgZmlsZSBjaGFuZ2VkLCA5NiBpbnNlcnRpb25zKCspDQo+IA0KPiBk
-aWZmIC0tZ2l0IGEvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDY3NzkuZHRzaSBiL2Fy
-Y2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ2Nzc5LmR0c2kNCj4gaW5kZXggMzcwZjMwOWQz
-MmRlLi4yNzJmNDM0NmQzNWUgMTAwNjQ0DQo+IC0tLSBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVk
-aWF0ZWsvbXQ2Nzc5LmR0c2kNCj4gKysrIGIvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9t
-dDY3NzkuZHRzaQ0KPiBAQCAtMjE5LDYgKzIxOSwxMDIgQEANCj4gIAkJCXN0YXR1cyA9ICJkaXNh
-YmxlZCI7DQo+ICAJCX07DQo+ICANCj4gKwkJc3BpMDogc3BpMEAxMTAwYTAwMCB7DQo+ICsJCQlj
-b21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1zcGkiLA0KPiArCQkJCSAgICAgIm1lZGlhdGVr
-LG10Njc2NS1zcGkiOw0KDQphZGQgdGhlIGNvbXBhdGlibGUgc3RyaW5nIGludG8gdGhlIFNQSSBi
-aW5kaW5nIA0KDQo+ICsJCQltZWRpYXRlayxwYWQtc2VsZWN0ID0gPDA+Ow0KPiArCQkJcmVnID0g
-PDAgMHgxMTAwYTAwMCAwIDB4MTAwMD47DQo+ICsJCQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMTQz
-IElSUV9UWVBFX0xFVkVMX0xPVz47DQoNCmFkZCA0dGggdmFsdWUgaW50byBpbnRlcnJ1cHRzIHBy
-b3BlcnR5IHRvIHN1cHBvcnQgUFBJIHBhcnRpdGlvbiANCigwIGZvciBTUEkpDQppbnRlcnJ1cHRz
-ID0gPEdJQ19TUEkgMTQzIElSUV9UWVBFX0xFVkVMX0xPVyAwPjsNCg0KUmVnYXJkcywNCkhhbmtz
-IENoZW4NCj4gKwkJCWNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9NQUlOUExMX0Q1X0QyPiwN
-Cj4gKwkJCQk8JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCj4gKwkJCQk8JmluZnJhY2ZnX2FvIENM
-S19JTkZSQV9TUEkwPjsNCj4gKwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNs
-ayIsICJzcGktY2xrIjsNCj4gKwkJfTsNCj4gKw0KPiArCQlzcGkxOiBzcGkxQDExMDEwMDAwIHsN
-Cj4gKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQo+ICsJCQkJICAgICAi
-bWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+ICsJCQltZWRpYXRlayxwYWQtc2VsZWN0ID0gPDA+Ow0K
-PiArCQkJcmVnID0gPDAgMHgxMTAxMDAwMCAwIDB4MTAwMD47DQo+ICsJCQlpbnRlcnJ1cHRzID0g
-PEdJQ19TUEkgMTQ3IElSUV9UWVBFX0xFVkVMX0xPVz47DQo+ICsJCQljbG9ja3MgPSA8JnRvcGNr
-Z2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4sDQo+ICsJCQkJPCZ0b3Bja2dlbiBDTEtfVE9QX1NQ
-ST4sDQo+ICsJCQkJPCZpbmZyYWNmZ19hbyBDTEtfSU5GUkFfU1BJMT47DQo+ICsJCQljbG9jay1u
-YW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsiLCAic3BpLWNsayI7DQo+ICsJCX07DQo+ICsN
-Cj4gKwkJc3BpMjogc3BpMkAxMTAxMjAwMCB7DQo+ICsJCQljb21wYXRpYmxlID0gIm1lZGlhdGVr
-LG10Njc3OS1zcGkiLA0KPiArCQkJCSAgICAgIm1lZGlhdGVrLG10Njc2NS1zcGkiOw0KPiArCQkJ
-bWVkaWF0ZWsscGFkLXNlbGVjdCA9IDwwPjsNCj4gKwkJCXJlZyA9IDwwIDB4MTEwMTIwMDAgMCAw
-eDEwMDA+Ow0KPiArCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE1MiBJUlFfVFlQRV9MRVZFTF9M
-T1c+Ow0KPiArCQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5QTExfRDVfRDI+LA0K
-PiArCQkJCSA8JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCj4gKwkJCQk8JmluZnJhY2ZnX2FvIENM
-S19JTkZSQV9TUEkyPjsNCj4gKwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNs
-ayIsICJzcGktY2xrIjsNCj4gKwkJfTsNCj4gKw0KPiArCQlzcGkzOiBzcGkzQDExMDEzMDAwIHsN
-Cj4gKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQo+ICsJCQkJICAgICAi
-bWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+ICsJCQltZWRpYXRlayxwYWQtc2VsZWN0ID0gPDA+Ow0K
-PiArCQkJcmVnID0gPDAgMHgxMTAxMzAwMCAwIDB4MTAwMD47DQo+ICsJCQlpbnRlcnJ1cHRzID0g
-PEdJQ19TUEkgMTUzIElSUV9UWVBFX0xFVkVMX0xPVz47DQo+ICsJCQljbG9ja3MgPSA8JnRvcGNr
-Z2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4sDQo+ICsJCQkJIDwmdG9wY2tnZW4gQ0xLX1RPUF9T
-UEk+LA0KPiArCQkJCSA8JmluZnJhY2ZnX2FvIENMS19JTkZSQV9TUEkzPjsNCj4gKwkJCWNsb2Nr
-LW5hbWVzID0gInBhcmVudC1jbGsiLCAic2VsLWNsayIsICJzcGktY2xrIjsNCj4gKwkJfTsNCj4g
-Kw0KPiArCQlzcGk0OiBzcGk0QDExMDE4MDAwIHsNCj4gKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0
-ZWssbXQ2Nzc5LXNwaSIsDQo+ICsJCQkJICAgICAibWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+ICsJ
-CQltZWRpYXRlayxwYWQtc2VsZWN0ID0gPDA+Ow0KPiArCQkJcmVnID0gPDAgMHgxMTAxODAwMCAw
-IDB4MTAwMD47DQo+ICsJCQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMTU2IElSUV9UWVBFX0xFVkVM
-X0xPVz47DQo+ICsJCQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4s
-DQo+ICsJCQkJIDwmdG9wY2tnZW4gQ0xLX1RPUF9TUEk+LA0KPiArCQkJCSA8JmluZnJhY2ZnX2Fv
-IENMS19JTkZSQV9TUEk0PjsNCj4gKwkJCWNsb2NrLW5hbWVzID0gInBhcmVudC1jbGsiLCAic2Vs
-LWNsayIsICJzcGktY2xrIjsNCj4gKwkJfTsNCj4gKw0KPiArCQlzcGk1OiBzcGk1QDExMDE5MDAw
-IHsNCj4gKwkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ2Nzc5LXNwaSIsDQo+ICsJCQkJICAg
-ICAibWVkaWF0ZWssbXQ2NzY1LXNwaSI7DQo+ICsJCQltZWRpYXRlayxwYWQtc2VsZWN0ID0gPDA+
-Ow0KPiArCQkJcmVnID0gPDAgMHgxMTAxOTAwMCAwIDB4MTAwMD47DQo+ICsJCQlpbnRlcnJ1cHRz
-ID0gPEdJQ19TUEkgMTU3IElSUV9UWVBFX0xFVkVMX0xPVz47DQo+ICsJCQljbG9ja3MgPSA8JnRv
-cGNrZ2VuIENMS19UT1BfTUFJTlBMTF9ENV9EMj4sDQo+ICsJCQkJPCZ0b3Bja2dlbiBDTEtfVE9Q
-X1NQST4sDQo+ICsJCQkJPCZpbmZyYWNmZ19hbyBDTEtfSU5GUkFfU1BJNT47DQo+ICsJCQljbG9j
-ay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsiLCAic3BpLWNsayI7DQo+ICsJCX07DQo+
-ICsNCj4gKwkJc3BpNjogc3BpNkAxMTAxZDAwMCB7DQo+ICsJCQljb21wYXRpYmxlID0gIm1lZGlh
-dGVrLG10Njc3OS1zcGkiLA0KPiArCQkJCSAgICAgIm1lZGlhdGVrLG10Njc2NS1zcGkiOw0KPiAr
-CQkJbWVkaWF0ZWsscGFkLXNlbGVjdCA9IDwwPjsNCj4gKwkJCXJlZyA9IDwwIDB4MTEwMWQwMDAg
-MCAweDEwMDA+Ow0KPiArCQkJaW50ZXJydXB0cyA9IDxHSUNfU1BJIDE0NCBJUlFfVFlQRV9MRVZF
-TF9MT1c+Ow0KPiArCQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX01BSU5QTExfRDVfRDI+
-LA0KPiArCQkJCSA8JnRvcGNrZ2VuIENMS19UT1BfU1BJPiwNCj4gKwkJCQkgPCZpbmZyYWNmZ19h
-byBDTEtfSU5GUkFfU1BJNj47DQo+ICsJCQljbG9jay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNl
-bC1jbGsiLCAic3BpLWNsayI7DQo+ICsJCX07DQo+ICsNCj4gKwkJc3BpNzogc3BpN0AxMTAxZTAw
-MCB7DQo+ICsJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc3OS1zcGkiLA0KPiArCQkJCSAg
-ICAgIm1lZGlhdGVrLG10Njc2NS1zcGkiOw0KPiArCQkJbWVkaWF0ZWsscGFkLXNlbGVjdCA9IDww
-PjsNCj4gKwkJCXJlZyA9IDwwIDB4MTEwMWUwMDAgMCAweDEwMDA+Ow0KPiArCQkJaW50ZXJydXB0
-cyA9IDxHSUNfU1BJIDE0NSBJUlFfVFlQRV9MRVZFTF9MT1c+Ow0KPiArCQkJY2xvY2tzID0gPCZ0
-b3Bja2dlbiBDTEtfVE9QX01BSU5QTExfRDVfRDI+LA0KPiArCQkJCSA8JnRvcGNrZ2VuIENMS19U
-T1BfU1BJPiwNCj4gKwkJCQkgPCZpbmZyYWNmZ19hbyBDTEtfSU5GUkFfU1BJNz47DQo+ICsJCQlj
-bG9jay1uYW1lcyA9ICJwYXJlbnQtY2xrIiwgInNlbC1jbGsiLCAic3BpLWNsayI7DQo+ICsJCX07
-DQo+ICsNCj4gIAkJYXVkaW86IGNsb2NrLWNvbnRyb2xsZXJAMTEyMTAwMDAgew0KPiAgCQkJY29t
-cGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3NzktYXVkaW8iLCAic3lzY29uIjsNCj4gIAkJCXJlZyA9
-IDwwIDB4MTEyMTAwMDAgMCAweDEwMDA+Ow0KDQo=
+A Rockchip Inno HDMI driver was added, but the rk3036
+VOP regs with HDMI support in the manufacturer tree never
+made it to the mainline kernel.
+This patch adds only hdmi_en and hdmi_dclk_pol.
+The inno hdmi driver must set hdmi_pin_pol in
+GRF_SOC_CON2.
+
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
+Not tested with hardware
+---
+ drivers/gpu/drm/rockchip/rockchip_vop_reg.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
+index 0697057e7..c164690a1 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
++++ b/drivers/gpu/drm/rockchip/rockchip_vop_reg.c
+@@ -147,6 +147,8 @@ static const struct vop_modeset rk3036_modeset = {
+ 
+ static const struct vop_output rk3036_output = {
+ 	.pin_pol = VOP_REG(RK3036_DSP_CTRL0, 0xf, 4),
++	.hdmi_en = VOP_REG(RK3036_AXI_BUS_CTRL, 0x1, 22),
++	.hdmi_dclk_pol = VOP_REG(RK3036_AXI_BUS_CTRL, 0x1, 23),
+ };
+ 
+ static const struct vop_common rk3036_common = {
+-- 
+2.11.0
 
