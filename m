@@ -2,188 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 956B4309BD9
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 13:07:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D98309BE9
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 13:17:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231720AbhAaL6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 06:58:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231131AbhAaK3Z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 05:29:25 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A60FC061573
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 02:28:45 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id 19so13392799qkh.3
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 02:28:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GKo6hWmrmqC7F16U7mMf06mWlIWvxjQU7OJAP6vComs=;
-        b=Th3JAXV5yW9v1wq8EOPIhgACbrSJKi4kbI2Sx9TlQZR5YC0UWDhHD+RwqdyuQL70N7
-         HvPrsNHWlJ11Z+ICilgPrOu7ouJ87VBg7tB1f+qvzteVNww2PdcYGMhCl38McBAtypZj
-         q1mAN9E8twB9IZAq/NGytit1ObrDHF+NQfP4pJQpIXNEWphCp1vi1whEZ4MrrOipLNQ2
-         nJGdT0kyYmf/AimUZKt+xcy2/na0MMl63o02sUBdc1hGXLf22lSElACCVo3IQc2HnBCE
-         PO5dlI/lFSDdztL+bQY0tS8JrVIHF/1ycy1s7CNfTFf8fdrxDBlhsVBno8cInrUyf0eY
-         7ePQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GKo6hWmrmqC7F16U7mMf06mWlIWvxjQU7OJAP6vComs=;
-        b=nYdB+no2sK1/Ze6WozwkiWI/11bEj6AVJkbKRpxpnm1bIzB2D3B7TVaJgjiKp+Aaep
-         towL8FK5bWvObINFyOSnTDf95NABkG0BraH1qmEmJs7iinEq3xwI2kpWv5R0XKwFEMUr
-         9qcmZ80B8wuUOGQHK/h9J6srqbj5XLMJC3xpA6K559W8656ErZCr7yPXCwJ9OPGJI+Bm
-         VKkq1QREPJUGZj0o+pWWEZdd7jikyUGFCk69tFPuopQNAVKbXjr5YY1jNOlEXKI3sZzW
-         5wj2hJTUyIcsiIaZ+cnKeS4R6g1b/yAGLz3FVXPmUrN6jX82ZDou+0QF/uokEx2mAVXT
-         Fmsw==
-X-Gm-Message-State: AOAM530F0NKKeueY0H/r3BFDxUf+hZwSrGg885Pp3luozN+UmV7vxOZL
-        P+0m6gubHwfzIpZQcHAS+r7twQ7MxMm2kkbBVeNPRQ==
-X-Google-Smtp-Source: ABdhPJxlUnWQEYnlFhqNuBOyVebIh4+3fcWFMsBqM0N5cU3a0V04VizmXJ40Rg3Y4B938LLa2Z4bjrqFKGfzRY2yc5w=
-X-Received: by 2002:a05:620a:49:: with SMTP id t9mr11849421qkt.231.1612088924507;
- Sun, 31 Jan 2021 02:28:44 -0800 (PST)
+        id S231733AbhAaL65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 06:58:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49568 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230041AbhAaKrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 05:47:39 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E14BE64E1F;
+        Sun, 31 Jan 2021 10:46:56 +0000 (UTC)
+Date:   Sun, 31 Jan 2021 10:46:53 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Ahmad Fatoum <a.fatoum@pengutronix.de>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        kernel@pengutronix.de, Holger Assmann <has@pengutronix.de>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        linux-iio@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iio: adc: stm32-adc: enable timestamping for non-DMA
+ usage
+Message-ID: <20210131104653.02b971e6@archlinux>
+In-Reply-To: <04385c49-8f27-a159-b033-a62cdfbda824@pengutronix.de>
+References: <20210122113355.32384-1-a.fatoum@pengutronix.de>
+        <20210124152212.5bc39e57@archlinux>
+        <04385c49-8f27-a159-b033-a62cdfbda824@pengutronix.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <CACT4Y+YPrXGw+AtESxAgPyZ84TYkNZdP0xpocX2jwVAbZD=-XQ@mail.gmail.com>
- <20201112103125.GV2628@hirez.programming.kicks-ass.net> <CACT4Y+ayRHua-6UyRwSM3=_oi+NkXbaO3-zZ1mpDmWonbybkeA@mail.gmail.com>
- <CACT4Y+bW1gpv8bz0vswaVUt-OB07oJ3NBeTi+vchAe8TTWK+mg@mail.gmail.com>
-In-Reply-To: <CACT4Y+bW1gpv8bz0vswaVUt-OB07oJ3NBeTi+vchAe8TTWK+mg@mail.gmail.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Sun, 31 Jan 2021 11:28:32 +0100
-Message-ID: <CACT4Y+ZsKXfAxrzJGQc5mJ+QiP5sAw7zKWtciS+07qZzSf33mw@mail.gmail.com>
-Subject: Re: Process-wide watchpoints
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Matt Morehouse <mascasa@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 11:04 AM Dmitry Vyukov <dvyukov@google.com> wrote:
->
-> On Thu, Nov 12, 2020 at 11:43 AM Dmitry Vyukov <dvyukov@google.com> wrote:
-> > > > for sampling race detection),
-> > > > number of threads in the process can be up to, say, ~~10K and the
-> > > > watchpoint is intended to be set for a very brief period of time
-> > > > (~~few ms).
-> > >
-> > > Performance is a consideration here, doing lots of IPIs in such a short
-> > > window, on potentially large machines is a DoS risk.
-> > >
-> > > > This can be done today with both perf_event_open and ptrace.
-> > > > However, the problem is that both APIs work on a single thread level
-> > > > (? perf_event_open can be inherited by children, but not for existing
-> > > > siblings). So doing this would require iterating over, say, 10K
-> > >
-> > > One way would be to create the event before the process starts spawning
-> > > threads and keeping it disabled. Then every thread will inherit it, but
-> > > it'll be inactive.
-> > >
-> > > > I see at least one potential problem: what do we do if some sibling
-> > > > thread already has all 4 watchpoints consumed?
-> > >
-> > > That would be immediately avoided by this, since it will have the
-> > > watchpoint reserved per inheriting the event.
-> > >
-> > > Then you can do ioctl(PERF_EVENT_IOC_{MODIFY_ATTRIBUTES,ENABLE,DISABLE})
-> > > to update the watch location and enable/disable it. This _will_ indeed
-> > > result in a shitload of IPIs if the threads are active, but it should
-> > > work.
-> >
-> > Aha! That's the possibility I missed.
-> > We will try to prototype this and get back with more questions if/when
-> > we have them.
-> > Thanks!
->
-> Hi Peter,
->
-> I've tested this approach and it works, but only in half.
-> PERF_EVENT_IOC_{ENABLE,DISABLE} work as advertised.
-> However, PERF_EVENT_IOC_MODIFY_ATTRIBUTES does not work for inherited
-> child events.
-> Does something like this make any sense to you? Are you willing to
-> accept such change?
->
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 55d18791a72d..f6974807a32c 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -3174,7 +3174,7 @@ int perf_event_refresh(struct perf_event *event,
-> int refresh)
->  }
->  EXPORT_SYMBOL_GPL(perf_event_refresh);
->
-> -static int perf_event_modify_breakpoint(struct perf_event *bp,
-> +static int _perf_event_modify_breakpoint(struct perf_event *bp,
->                                          struct perf_event_attr *attr)
->  {
->         int err;
-> @@ -3189,6 +3189,28 @@ static int perf_event_modify_breakpoint(struct
-> perf_event *bp,
->         return err;
->  }
->
-> +static int perf_event_modify_breakpoint(struct perf_event *bp,
-> +                                       struct perf_event_attr *attr)
-> +{
-> +       struct perf_event *child;
-> +       int err;
-> +
-> +       WARN_ON_ONCE(bp->ctx->parent_ctx);
-> +
-> +       mutex_lock(&bp->child_mutex);
-> +       err = _perf_event_modify_breakpoint(bp, attr);
-> +       if (err)
-> +               goto unlock;
-> +       list_for_each_entry(child, &bp->child_list, child_list) {
-> +               err = _perf_event_modify_breakpoint(child, attr);
-> +               if (err)
-> +                       goto unlock;
-> +       }
-> +unlock:
-> +       mutex_unlock(&bp->child_mutex);
-> +       return err;
-> +}
-> +
->  static int perf_event_modify_attr(struct perf_event *event,
->                                   struct perf_event_attr *attr)
+On Mon, 25 Jan 2021 12:21:35 +0100
+Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+
+> Hello Jonathan,
+> 
+> On 24.01.21 16:22, Jonathan Cameron wrote:
+> > On Fri, 22 Jan 2021 12:33:55 +0100
+> > Ahmad Fatoum <a.fatoum@pengutronix.de> wrote:
+> >   
+> >> For non-DMA usage, we have an easy way to associate a timestamp with a
+> >> sample: iio_pollfunc_store_time stores a timestamp in the primary
+> >> trigger IRQ handler and stm32_adc_trigger_handler runs in the IRQ thread
+> >> to push out the buffer along with the timestamp.
+> >>
+> >> For this to work, the driver needs to register an IIO_TIMESTAMP channel.
+> >> Do this.
+> >>
+> >> For DMA, it's not as easy, because we don't push the buffers out of
+> >> stm32_adc_trigger, but out of stm32_adc_dma_buffer_done, which runs in
+> >> a tasklet scheduled after a DMA completion.
+> >>
+> >> Preferably, the DMA controller would copy us the timestamp into that buffer
+> >> as well. Until this is implemented, restrict timestamping support to
+> >> only PIO. For low-frequency sampling, PIO is probably good enough.
+> >>
+> >> Cc: Holger Assmann <has@pengutronix.de>
+> >> Acked-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+> >> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>  
+> > 
+> > This patch itself is fine, but it will expose a potential bug.
+> > 
+> > The buffer passed to iio_push_to_buffers_with_timestamp needs to be suitably
+> > aligned to take an 8 byte timestamp and large enough to do so.
+> >  Currently, in this driver it isn't.
+> > 	u16			buffer[STM32_ADC_MAX_SQ];
+> > Appears to be the same length as the channel count, and isn't 8 byte
+> > aligned. (add __aligned(8) to fix that)
+> > 
+> > Could you add that fix to this patch as well?  
+> 
+> Just done so, thanks. But I think it's very surprising API to expect a void *
+> to have a specific alignment. Should this perhaps be encoded into
+> the function signature? e.g.
+> 
+> typedef void __aligned_u64_void __aligned(8);
+> static inline int iio_push_to_buffers_with_timestamp(struct iio_dev *indio_dev,
+>         __aligned_u64_void *data, int64_t timestamp);
+> 
+
+Hmm. Didn't realise you could put __aligned() on a parameter.  May well make sense
+but we can't do it yet.   There are a few left over drivers that don't yet
+guarantee the alignment.  On some architectures that's fine.  Once we've
+done a final pass and fixed those up, we can tidy this up.
+Note that we had this problem for a good 5-10 years before one report of actually
+running into a problem.
+
+> [I assume put_unaligned_* isn't used for performance reasons?)
+
+No, it's actually about expectations of where that buffer might go.  There
+are lots of potential consumers and many of them can assume a fixed
+structure and hence assume alignment.
+
+I agree, it's a very odd ABI requirement :(
+Would probably have done things differently if we'd registered the built in
+alignment issue earlier.  
+
+Jonathan
 
 
-Not directly related to the above question, but related to my use case.
-Could we extend bpf_perf_event_data with some more data re breakpoint events?
+> 
+> Cheers,
+> Ahmad
+> 
+> > 
+> > Thanks,
+> > 
+> > Jonathan
+> > 
+> >   
+> >> ---
+> >> v1 -> v2:
+> >>   - Added comment about timestamping being PIO only (Fabrice)
+> >>   - Added missing DMA resource clean up in error path (Fabrice)
+> >>   - Added Fabrice's Acked-by
+> >> ---
+> >>  drivers/iio/adc/stm32-adc.c | 35 +++++++++++++++++++++++++++++------
+> >>  1 file changed, 29 insertions(+), 6 deletions(-)
+> >>
+> >> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
+> >> index c067c994dae2..885bb514503c 100644
+> >> --- a/drivers/iio/adc/stm32-adc.c
+> >> +++ b/drivers/iio/adc/stm32-adc.c
+> >> @@ -1718,7 +1718,7 @@ static void stm32_adc_chan_init_one(struct iio_dev *indio_dev,
+> >>  	}
+> >>  }
+> >>  
+> >> -static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
+> >> +static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timestamping)
+> >>  {
+> >>  	struct device_node *node = indio_dev->dev.of_node;
+> >>  	struct stm32_adc *adc = iio_priv(indio_dev);
+> >> @@ -1766,6 +1766,9 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
+> >>  		return -EINVAL;
+> >>  	}
+> >>  
+> >> +	if (timestamping)
+> >> +		num_channels++;
+> >> +
+> >>  	channels = devm_kcalloc(&indio_dev->dev, num_channels,
+> >>  				sizeof(struct iio_chan_spec), GFP_KERNEL);
+> >>  	if (!channels)
+> >> @@ -1816,6 +1819,19 @@ static int stm32_adc_chan_of_init(struct iio_dev *indio_dev)
+> >>  		stm32_adc_smpr_init(adc, channels[i].channel, smp);
+> >>  	}
+> >>  
+> >> +	if (timestamping) {
+> >> +		struct iio_chan_spec *timestamp = &channels[scan_index];
+> >> +
+> >> +		timestamp->type = IIO_TIMESTAMP;
+> >> +		timestamp->channel = -1;
+> >> +		timestamp->scan_index = scan_index;
+> >> +		timestamp->scan_type.sign = 's';
+> >> +		timestamp->scan_type.realbits = 64;
+> >> +		timestamp->scan_type.storagebits = 64;
+> >> +
+> >> +		scan_index++;
+> >> +	}
+> >> +
+> >>  	indio_dev->num_channels = scan_index;
+> >>  	indio_dev->channels = channels;
+> >>  
+> >> @@ -1875,6 +1891,7 @@ static int stm32_adc_probe(struct platform_device *pdev)
+> >>  	struct device *dev = &pdev->dev;
+> >>  	irqreturn_t (*handler)(int irq, void *p) = NULL;
+> >>  	struct stm32_adc *adc;
+> >> +	bool timestamping = false;
+> >>  	int ret;
+> >>  
+> >>  	if (!pdev->dev.of_node)
+> >> @@ -1931,16 +1948,22 @@ static int stm32_adc_probe(struct platform_device *pdev)
+> >>  	if (ret < 0)
+> >>  		return ret;
+> >>  
+> >> -	ret = stm32_adc_chan_of_init(indio_dev);
+> >> -	if (ret < 0)
+> >> -		return ret;
+> >> -
+> >>  	ret = stm32_adc_dma_request(dev, indio_dev);
+> >>  	if (ret < 0)
+> >>  		return ret;
+> >>  
+> >> -	if (!adc->dma_chan)
+> >> +	if (!adc->dma_chan) {
+> >> +		/* For PIO mode only, iio_pollfunc_store_time stores a timestamp
+> >> +		 * in the primary trigger IRQ handler and stm32_adc_trigger_handler
+> >> +		 * runs in the IRQ thread to push out buffer along with timestamp.
+> >> +		 */
+> >>  		handler = &stm32_adc_trigger_handler;
+> >> +		timestamping = true;
+> >> +	}
+> >> +
+> >> +	ret = stm32_adc_chan_of_init(indio_dev, timestamping);
+> >> +	if (ret < 0)
+> >> +		goto err_dma_disable;
+> >>  
+> >>  	ret = iio_triggered_buffer_setup(indio_dev,
+> >>  					 &iio_pollfunc_store_time, handler,  
+> > 
+> >   
+> 
 
-struct bpf_perf_event_data {
-    bpf_user_pt_regs_t regs;
-    __u64 sample_period;
-    __u64 addr;
-};
-
-Ideally, I would like to have an actual access address, size and
-read/write type (may not match bp addr/size). Is that info easily
-available at the point of bpf hook call?
-Or, if that's not available at least breakpoint bp_type/bp_size.
-
-Is it correct that we can materialize in bpf_perf_event_data anything
-that's available in bpf_perf_event_data_kern (if it makes sense in the
-public interface of course)?
-
-struct bpf_perf_event_data_kern {
-    bpf_user_pt_regs_t *regs;
-    struct perf_sample_data *data;
-    struct perf_event *event;
-};
-
-Unfortunately I don't see perf_event_attr.bp_type/bp_size
-stored/accessible anywhere in bpf_perf_event_data_kern. What would be
-the right way to expose them in bpf_perf_event_data?
-
-Thanks
