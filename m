@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B95F0309957
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 01:18:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0AA030995C
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 01:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232750AbhAaASh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 19:18:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50296 "EHLO
+        id S232784AbhAaATL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 19:19:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232549AbhAaAQ6 (ORCPT
+        with ESMTP id S232552AbhAaAQ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sat, 30 Jan 2021 19:16:58 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D10AC061797
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 16:16:22 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id z9so234686pjl.5
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 16:16:22 -0800 (PST)
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0C5BC0617A7
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 16:16:23 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id o63so9418009pgo.6
+        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 16:16:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xvDcVWDMqSlgRKDC/415dsNWXRNDCXGyoKkXgRrWozk=;
-        b=sHfvfBFkHKyTyMjCEaanWGOfbmnW6eqnCByHh+aQy9puH39w/8QOImPSD5ESCNZPPW
-         wQMXyW1xHIQs4H84eMYNrngi6phUfigFjDXPZk8ZZ/IYmOaD44gyo16syDWbj8jV14TC
-         DF//wgzY5SSxBGAAk/rmVD9X/AXccea+NItjjkseOFTfaavrdH+/hKdaZ2+COQFlsVg+
-         EDMy2LRt91m0sAKAOiUbPfKufcw8qeeH+NxSjaoUhH9jle5bu6E103GzQBmOH5cRg3em
-         x07MiWMxWGuZMomPESLflaGqR5ddIgqF7FNv9cq2OTImt67OHCo+9HJT0SdQiUODHUGa
-         a42w==
+        bh=6DfXOdul3BLGU90QLFVs7+YmYGOmb4ShgTcRCfB8SKk=;
+        b=rzXYCCMt7lIoTbm1AX0NaK4JcpYl3mpYPtPPWccGVcYlicf90HqGe490fUvOVbLaq9
+         12W0/fh3QMZkRC77RVtEgkJeKfLWcQ5YxEg9HY9nrswO0onKA//7P1lgQwosWV2utIHO
+         Xbijz+GGPfiAOV5rU95L/2S/PNnrGTYvKt8oE8m1V+VadGx3M99K26DAn0rtzFNQb6HV
+         S7UzQ7r2hcEVdE8mdIGcS2ZQnc5ixnSi3g+R9Pg7Jf6oVqOLlqNM5nr3Nb2JeFL0Qpaq
+         Jwh2IrMY6IH3aQo+FmuayEYLKT6MpJvyJKM6/U3ZvMadrbLjhsLefq26XwYQYoDopQ0S
+         RiLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xvDcVWDMqSlgRKDC/415dsNWXRNDCXGyoKkXgRrWozk=;
-        b=qcaVT0xjTjEFU8OF5Saz82wGGWnishuqEtW/A+lhTh3x9LDnbdy/LuwBC6v8guaE5P
-         8uPR7wr9a2lL2VYoAY+0jmuRD4OaxfDwiC4gFLZ6Q9/IblNh91V9/8GqlYizpel6u7Iv
-         npfYU7HM1yVISfhi08W7a+Xj0eTEzrp5U4I8md0Sx2PeygM6qbKEosPGHD1MVT/dL/pk
-         V1LK7Rm/Ql2KBepZxxM2jAuXboNp6beqVlHbPiWkt8k6lCc+JcMu+jOYrYK2ujktFTW+
-         yKY+Lhyki3xPd48DcrlxUHjGM9Qr5Zi2hV4mlDkgV5ozWBlH7VQtABEI6iCVRHgPRcc2
-         Ljng==
-X-Gm-Message-State: AOAM530T15XP7GK+32ne07wy6L8VyVoa/c+fIkmfRx0HW31+Wvu+bwil
-        BoV+67gxdamniLs/Cp6khNk=
-X-Google-Smtp-Source: ABdhPJxSJ3S1Hh834JyxNBWkaIPU+kNlBMZlR30PiuMLpD9MM9sZ1et0g2VBjM/ZMxyGVv2eOMlHTg==
-X-Received: by 2002:a17:90b:30d6:: with SMTP id hi22mr1757058pjb.42.1612052181708;
-        Sat, 30 Jan 2021 16:16:21 -0800 (PST)
+        bh=6DfXOdul3BLGU90QLFVs7+YmYGOmb4ShgTcRCfB8SKk=;
+        b=X6Jl7s2OJVnY7EYgwPva4pR7bj2XlW5+ans7rzTm6VKucfTooG2UTjAH96L4lVzZW0
+         zCZYZKEEdfaYYLcPp5jQ6GXEilmiwgvtRVfTabB1pdXNk6OWX3PjDcNfJfN0Uc5hXo7i
+         Widiyzu24GTFWtpfTmcf1FpvOUzparXjWfhlRQXAWJdYuyT2nYtei/N5oL4wP4jNCg+S
+         KfQUpqAINvfvn4EqlUdUeIKC34wHLgmROHK9EFhhm6P0F0d9nuKY9Hnl1NUYYi3IVSx6
+         tqKfW3VecBVZUW5O/KNC4CKnq7G7uGhbQqr7n56DdEwmwDGcrCdbryqilHIt67vjl6Vw
+         x+9Q==
+X-Gm-Message-State: AOAM530gEFo4cMIIVwF7itFwrDXsQborh7CEnseCS8B9d8oyGGFyKm7R
+        VSy9fxHTNWa2B+lp1GZ0DTg=
+X-Google-Smtp-Source: ABdhPJzymehCQkc1AiOy4wnRhxKaB0Uby6rJCyGv65YnWd4ayACsGKdDOPYrtfb5ztEQ5gLeaTxgVA==
+X-Received: by 2002:a63:cc05:: with SMTP id x5mr10497845pgf.254.1612052183332;
+        Sat, 30 Jan 2021 16:16:23 -0800 (PST)
 Received: from sc2-haas01-esx0118.eng.vmware.com ([66.170.99.1])
-        by smtp.gmail.com with ESMTPSA id e12sm13127365pga.13.2021.01.30.16.16.20
+        by smtp.gmail.com with ESMTPSA id e12sm13127365pga.13.2021.01.30.16.16.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Jan 2021 16:16:21 -0800 (PST)
+        Sat, 30 Jan 2021 16:16:22 -0800 (PST)
 From:   Nadav Amit <nadav.amit@gmail.com>
 X-Google-Original-From: Nadav Amit
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
@@ -60,9 +60,9 @@ Cc:     Nadav Amit <namit@vmware.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
         Nick Piggin <npiggin@gmail.com>, x86@kernel.org
-Subject: [RFC 13/20] mm/tlb: introduce tlb_start_ptes() and tlb_end_ptes()
-Date:   Sat, 30 Jan 2021 16:11:25 -0800
-Message-Id: <20210131001132.3368247-14-namit@vmware.com>
+Subject: [RFC 14/20] mm: move inc/dec_tlb_flush_pending() to mmu_gather.c
+Date:   Sat, 30 Jan 2021 16:11:26 -0800
+Message-Id: <20210131001132.3368247-15-namit@vmware.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210131001132.3368247-1-namit@vmware.com>
 References: <20210131001132.3368247-1-namit@vmware.com>
@@ -74,16 +74,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nadav Amit <namit@vmware.com>
 
-Introduce tlb_start_ptes() and tlb_end_ptes() which would be called
-before and after PTEs are updated and TLB flushes are deferred. This
-will be later be used for fine granualrity deferred TLB flushing
-detection.
-
-In the meanwhile, move flush_tlb_batched_pending() into
-tlb_start_ptes(). It was not called from mapping_dirty_helpers by
-wp_pte() and clean_record_pte(), which might be a bug.
-
-No additional functional change is intended.
+Reduce the chances that inc/dec_tlb_flush_pending() will be abused by
+moving them into mmu_gather.c, which is more of their natural place.
+This also allows to reduce the clutter on mm_types.h.
 
 Signed-off-by: Nadav Amit <namit@vmware.com>
 Cc: Andrea Arcangeli <aarcange@redhat.com>
@@ -97,209 +90,140 @@ Cc: Yu Zhao <yuzhao@google.com>
 Cc: Nick Piggin <npiggin@gmail.com>
 Cc: x86@kernel.org
 ---
- fs/proc/task_mmu.c         |  2 ++
- include/asm-generic/tlb.h  | 18 ++++++++++++++++++
- mm/madvise.c               |  6 ++++--
- mm/mapping_dirty_helpers.c | 15 +++++++++++++--
- mm/memory.c                |  2 ++
- mm/mprotect.c              |  3 ++-
- 6 files changed, 41 insertions(+), 5 deletions(-)
+ include/linux/mm_types.h | 54 ----------------------------------------
+ mm/mmu_gather.c          | 54 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 54 insertions(+), 54 deletions(-)
 
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index 4cd048ffa0f6..d0cce961fa5c 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -1168,6 +1168,7 @@ static int clear_refs_pte_range(pmd_t *pmd, unsigned long addr,
- 		return 0;
- 
- 	pte = pte_offset_map_lock(vma->vm_mm, pmd, addr, &ptl);
-+	tlb_start_ptes(&cp->tlb);
- 	for (; addr != end; pte++, addr += PAGE_SIZE) {
- 		ptent = *pte;
- 
-@@ -1190,6 +1191,7 @@ static int clear_refs_pte_range(pmd_t *pmd, unsigned long addr,
- 		tlb_flush_pte_range(&cp->tlb, addr, PAGE_SIZE);
- 		ClearPageReferenced(page);
- 	}
-+	tlb_end_ptes(&cp->tlb);
- 	pte_unmap_unlock(pte - 1, ptl);
- 	cond_resched();
- 	return 0;
-diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
-index 041be2ef4426..10690763090a 100644
---- a/include/asm-generic/tlb.h
-+++ b/include/asm-generic/tlb.h
-@@ -58,6 +58,11 @@
-  *    Defaults to flushing at tlb_end_vma() to reset the range; helps when
-  *    there's large holes between the VMAs.
-  *
-+ *  - tlb_start_ptes() / tlb_end_ptes; makr the start / end of PTEs change.
-+ *
-+ *    Does internal accounting to allow fine(r) granularity checks for
-+ *    pte_accessible() on certain configuration.
-+ *
-  *  - tlb_remove_table()
-  *
-  *    tlb_remove_table() is the basic primitive to free page-table directories
-@@ -373,6 +378,10 @@ static inline void tlb_flush(struct mmu_gather *tlb)
- 		flush_tlb_range(tlb->vma, tlb->start, tlb->end);
- 	}
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 812ee0fd4c35..676795dfd5d4 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -615,60 +615,6 @@ static inline void init_tlb_flush_pending(struct mm_struct *mm)
+ 	atomic_set(&mm->tlb_flush_pending, 0);
  }
-+#endif
+ 
+-static inline void inc_tlb_flush_pending(struct mm_struct *mm)
+-{
+-	atomic_inc(&mm->tlb_flush_pending);
+-	/*
+-	 * The only time this value is relevant is when there are indeed pages
+-	 * to flush. And we'll only flush pages after changing them, which
+-	 * requires the PTL.
+-	 *
+-	 * So the ordering here is:
+-	 *
+-	 *	atomic_inc(&mm->tlb_flush_pending);
+-	 *	spin_lock(&ptl);
+-	 *	...
+-	 *	set_pte_at();
+-	 *	spin_unlock(&ptl);
+-	 *
+-	 *				spin_lock(&ptl)
+-	 *				mm_tlb_flush_pending();
+-	 *				....
+-	 *				spin_unlock(&ptl);
+-	 *
+-	 *	flush_tlb_range();
+-	 *	atomic_dec(&mm->tlb_flush_pending);
+-	 *
+-	 * Where the increment if constrained by the PTL unlock, it thus
+-	 * ensures that the increment is visible if the PTE modification is
+-	 * visible. After all, if there is no PTE modification, nobody cares
+-	 * about TLB flushes either.
+-	 *
+-	 * This very much relies on users (mm_tlb_flush_pending() and
+-	 * mm_tlb_flush_nested()) only caring about _specific_ PTEs (and
+-	 * therefore specific PTLs), because with SPLIT_PTE_PTLOCKS and RCpc
+-	 * locks (PPC) the unlock of one doesn't order against the lock of
+-	 * another PTL.
+-	 *
+-	 * The decrement is ordered by the flush_tlb_range(), such that
+-	 * mm_tlb_flush_pending() will not return false unless all flushes have
+-	 * completed.
+-	 */
+-}
+-
+-static inline void dec_tlb_flush_pending(struct mm_struct *mm)
+-{
+-	/*
+-	 * See inc_tlb_flush_pending().
+-	 *
+-	 * This cannot be smp_mb__before_atomic() because smp_mb() simply does
+-	 * not order against TLB invalidate completion, which is what we need.
+-	 *
+-	 * Therefore we must rely on tlb_flush_*() to guarantee order.
+-	 */
+-	atomic_dec(&mm->tlb_flush_pending);
+-}
+-
+ static inline bool mm_tlb_flush_pending(struct mm_struct *mm)
+ {
+ 	/*
+diff --git a/mm/mmu_gather.c b/mm/mmu_gather.c
+index 5a659d4e59eb..13338c096cc6 100644
+--- a/mm/mmu_gather.c
++++ b/mm/mmu_gather.c
+@@ -249,6 +249,60 @@ void tlb_flush_mmu(struct mmu_gather *tlb)
+ 	tlb_flush_mmu_free(tlb);
+ }
+ 
++static inline void inc_tlb_flush_pending(struct mm_struct *mm)
++{
++	atomic_inc(&mm->tlb_flush_pending);
++	/*
++	 * The only time this value is relevant is when there are indeed pages
++	 * to flush. And we'll only flush pages after changing them, which
++	 * requires the PTL.
++	 *
++	 * So the ordering here is:
++	 *
++	 *	atomic_inc(&mm->tlb_flush_pending);
++	 *	spin_lock(&ptl);
++	 *	...
++	 *	set_pte_at();
++	 *	spin_unlock(&ptl);
++	 *
++	 *				spin_lock(&ptl)
++	 *				mm_tlb_flush_pending();
++	 *				....
++	 *				spin_unlock(&ptl);
++	 *
++	 *	flush_tlb_range();
++	 *	atomic_dec(&mm->tlb_flush_pending);
++	 *
++	 * Where the increment if constrained by the PTL unlock, it thus
++	 * ensures that the increment is visible if the PTE modification is
++	 * visible. After all, if there is no PTE modification, nobody cares
++	 * about TLB flushes either.
++	 *
++	 * This very much relies on users (mm_tlb_flush_pending() and
++	 * mm_tlb_flush_nested()) only caring about _specific_ PTEs (and
++	 * therefore specific PTLs), because with SPLIT_PTE_PTLOCKS and RCpc
++	 * locks (PPC) the unlock of one doesn't order against the lock of
++	 * another PTL.
++	 *
++	 * The decrement is ordered by the flush_tlb_range(), such that
++	 * mm_tlb_flush_pending() will not return false unless all flushes have
++	 * completed.
++	 */
++}
 +
-+#if __is_defined(tlb_flush) ||						\
-+	IS_ENABLED(CONFIG_ARCH_WANT_AGGRESSIVE_TLB_FLUSH_BATCHING)
- 
- static inline void
- tlb_update_vma(struct mmu_gather *tlb, struct vm_area_struct *vma)
-@@ -523,6 +532,15 @@ static inline void mark_mm_tlb_gen_done(struct mm_struct *mm, u64 gen)
- 
- #endif /* CONFIG_ARCH_HAS_TLB_GENERATIONS */
- 
-+#define tlb_start_ptes(tlb)						\
-+	do {								\
-+		struct mmu_gather *_tlb = (tlb);			\
-+									\
-+		flush_tlb_batched_pending(_tlb->mm);			\
-+	} while (0)
-+
-+static inline void tlb_end_ptes(struct mmu_gather *tlb) { }
-+
- /*
-  * tlb_flush_{pte|pmd|pud|p4d}_range() adjust the tlb->start and tlb->end,
-  * and set corresponding cleared_*.
-diff --git a/mm/madvise.c b/mm/madvise.c
-index 0938fd3ad228..932c1c2eb9a3 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -392,7 +392,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
- #endif
- 	tlb_change_page_size(tlb, PAGE_SIZE);
- 	orig_pte = pte = pte_offset_map_lock(vma->vm_mm, pmd, addr, &ptl);
--	flush_tlb_batched_pending(mm);
-+	tlb_start_ptes(tlb);
- 	arch_enter_lazy_mmu_mode();
- 	for (; addr < end; pte++, addr += PAGE_SIZE) {
- 		ptent = *pte;
-@@ -468,6 +468,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
- 	}
- 
- 	arch_leave_lazy_mmu_mode();
-+	tlb_end_ptes(tlb);
- 	pte_unmap_unlock(orig_pte, ptl);
- 	if (pageout)
- 		reclaim_pages(&page_list);
-@@ -588,7 +589,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
- 
- 	tlb_change_page_size(tlb, PAGE_SIZE);
- 	orig_pte = pte = pte_offset_map_lock(mm, pmd, addr, &ptl);
--	flush_tlb_batched_pending(mm);
-+	tlb_start_ptes(tlb);
- 	arch_enter_lazy_mmu_mode();
- 	for (; addr != end; pte++, addr += PAGE_SIZE) {
- 		ptent = *pte;
-@@ -692,6 +693,7 @@ static int madvise_free_pte_range(pmd_t *pmd, unsigned long addr,
- 		add_mm_counter(mm, MM_SWAPENTS, nr_swap);
- 	}
- 	arch_leave_lazy_mmu_mode();
-+	tlb_end_ptes(tlb);
- 	pte_unmap_unlock(orig_pte, ptl);
- 	cond_resched();
- next:
-diff --git a/mm/mapping_dirty_helpers.c b/mm/mapping_dirty_helpers.c
-index 2ce6cf431026..063419ade304 100644
---- a/mm/mapping_dirty_helpers.c
-+++ b/mm/mapping_dirty_helpers.c
-@@ -6,6 +6,8 @@
- #include <asm/cacheflush.h>
- #include <asm/tlb.h>
- 
-+#include "internal.h"
++static inline void dec_tlb_flush_pending(struct mm_struct *mm)
++{
++	/*
++	 * See inc_tlb_flush_pending().
++	 *
++	 * This cannot be smp_mb__before_atomic() because smp_mb() simply does
++	 * not order against TLB invalidate completion, which is what we need.
++	 *
++	 * Therefore we must rely on tlb_flush_*() to guarantee order.
++	 */
++	atomic_dec(&mm->tlb_flush_pending);
++}
 +
  /**
-  * struct wp_walk - Private struct for pagetable walk callbacks
-  * @range: Range for mmu notifiers
-@@ -36,7 +38,10 @@ static int wp_pte(pte_t *pte, unsigned long addr, unsigned long end,
- 	pte_t ptent = *pte;
- 
- 	if (pte_write(ptent)) {
--		pte_t old_pte = ptep_modify_prot_start(walk->vma, addr, pte);
-+		pte_t old_pte;
-+
-+		tlb_start_ptes(&wpwalk->tlb);
-+		old_pte = ptep_modify_prot_start(walk->vma, addr, pte);
- 
- 		ptent = pte_wrprotect(old_pte);
- 		ptep_modify_prot_commit(walk->vma, addr, pte, old_pte, ptent);
-@@ -44,6 +49,7 @@ static int wp_pte(pte_t *pte, unsigned long addr, unsigned long end,
- 
- 		if (pte_may_need_flush(old_pte, ptent))
- 			tlb_flush_pte_range(&wpwalk->tlb, addr, PAGE_SIZE);
-+		tlb_end_ptes(&wpwalk->tlb);
- 	}
- 
- 	return 0;
-@@ -94,13 +100,18 @@ static int clean_record_pte(pte_t *pte, unsigned long addr,
- 	if (pte_dirty(ptent)) {
- 		pgoff_t pgoff = ((addr - walk->vma->vm_start) >> PAGE_SHIFT) +
- 			walk->vma->vm_pgoff - cwalk->bitmap_pgoff;
--		pte_t old_pte = ptep_modify_prot_start(walk->vma, addr, pte);
-+		pte_t old_pte;
-+
-+		tlb_start_ptes(&wpwalk->tlb);
-+
-+		old_pte = ptep_modify_prot_start(walk->vma, addr, pte);
- 
- 		ptent = pte_mkclean(old_pte);
- 		ptep_modify_prot_commit(walk->vma, addr, pte, old_pte, ptent);
- 
- 		wpwalk->total++;
- 		tlb_flush_pte_range(&wpwalk->tlb, addr, PAGE_SIZE);
-+		tlb_end_ptes(&wpwalk->tlb);
- 
- 		__set_bit(pgoff, cwalk->bitmap);
- 		cwalk->start = min(cwalk->start, pgoff);
-diff --git a/mm/memory.c b/mm/memory.c
-index 9e8576a83147..929a93c50d9a 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -1221,6 +1221,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 	init_rss_vec(rss);
- 	start_pte = pte_offset_map_lock(mm, pmd, addr, &ptl);
- 	pte = start_pte;
-+	tlb_start_ptes(tlb);
- 	flush_tlb_batched_pending(mm);
- 	arch_enter_lazy_mmu_mode();
- 	do {
-@@ -1314,6 +1315,7 @@ static unsigned long zap_pte_range(struct mmu_gather *tlb,
- 	add_mm_rss_vec(mm, rss);
- 	arch_leave_lazy_mmu_mode();
- 
-+	tlb_end_ptes(tlb);
- 	/* Do the actual TLB flush before dropping ptl */
- 	if (force_flush)
- 		tlb_flush_mmu_tlbonly(tlb);
-diff --git a/mm/mprotect.c b/mm/mprotect.c
-index b7473d2c9a1f..1258bbe42ee1 100644
---- a/mm/mprotect.c
-+++ b/mm/mprotect.c
-@@ -70,7 +70,7 @@ static unsigned long change_pte_range(struct mmu_gather *tlb,
- 	    atomic_read(&vma->vm_mm->mm_users) == 1)
- 		target_node = numa_node_id();
- 
--	flush_tlb_batched_pending(vma->vm_mm);
-+	tlb_start_ptes(tlb);
- 	arch_enter_lazy_mmu_mode();
- 	do {
- 		oldpte = *pte;
-@@ -182,6 +182,7 @@ static unsigned long change_pte_range(struct mmu_gather *tlb,
- 		}
- 	} while (pte++, addr += PAGE_SIZE, addr != end);
- 	arch_leave_lazy_mmu_mode();
-+	tlb_end_ptes(tlb);
- 	pte_unmap_unlock(pte - 1, ptl);
- 
- 	return pages;
+  * tlb_gather_mmu - initialize an mmu_gather structure for page-table tear-down
+  * @tlb: the mmu_gather structure to initialize
 -- 
 2.25.1
 
