@@ -2,149 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2272E309E71
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 21:00:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB68309E53
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 20:45:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231608AbhAaUAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 15:00:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52048 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231627AbhAaTys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 14:54:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E2CA64E29;
-        Sun, 31 Jan 2021 17:24:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612113888;
-        bh=Pgx1xQlhxhvc42+ZU5Of6p7hke3nHkCDSMZPPWV20MQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mRwJZlNBMjLMTVToV0i6u22MXY6CBw1J8Y/fBNV7iJHUUenqSxm9CMSnZ1gNW9vAC
-         2JQlfL3fPYV8EjhFRkEkTbnFG4pOw2f4BSQC39cWDmDJ/far8IWx5RKVG3Ij7GpCvL
-         rlCFj44otlIEfCFF2ygjvn0z79cN4i+D20lFy00wzzRUpMUto4Cp3eY7Yx+9FdFU/A
-         rqrMoDiXQn37UYPcgSl3cReM9vz1eCELrY7FP0fWUjc20DpWpxdR1jmF/t+MehB4fL
-         nTwZQhGtfu5Q6j9AYXtOWy23xm/4SGb+2+nc80gFMcHm47qAovxOsB0NmAGOtR4Bgu
-         gqE+l5L6qYDqw==
-From:   Andy Lutomirski <luto@kernel.org>
-To:     x86@kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>, stable@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Christoph Hellwig <hch@lst.de>
-Subject: [PATCH 01/11] x86/fault: Fix AMD erratum #91 errata fixup for user code
-Date:   Sun, 31 Jan 2021 09:24:32 -0800
-Message-Id: <7aaa6ff8d29faea5a9324a85e5ad6c41c654e9e0.1612113550.git.luto@kernel.org>
+        id S229969AbhAaTmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 14:42:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230087AbhAaTfS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 14:35:18 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36A8C06178B;
+        Sun, 31 Jan 2021 09:30:52 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id f63so9988311pfa.13;
+        Sun, 31 Jan 2021 09:30:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K5wzP23ErPEWymRBo16kOdWR6OMTJk3Dg5mRlDwF45M=;
+        b=MA1P6sSe/tvl/xNGth0UQ3xw0mCwCUwKzcYbnFlZk0VMO+WcNO/or5FYh85/OjO847
+         RVBv/3AuUzEDlVQFFgp/xqZMRzwlcQ0nqYDhhAgzyxfCxGkgJA87Y0GCg6sRHXBr9e/+
+         Cgfay9/8nQ25MYannxKkNbiR0vR23vpNIaXauQEjW92KZrSzX8kZQ0/J6ESMsVCtvTJq
+         vHxC5a8dszDULQE7vsP2mrdLFmuV8EDcHBQx+HYYcSAY+X1sXMunI2ugIOMl3AZfvDgx
+         v7udoYY8R5ztskYwCnNl5UEtuA/DORxTzUuvMQi390UsIa9OYI5+LqDNyG8Xw715Y2US
+         CvkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=K5wzP23ErPEWymRBo16kOdWR6OMTJk3Dg5mRlDwF45M=;
+        b=Mjkw1JII6a2jXFFzAZPkgp+XQnjnZUcwr1/+Erp73KXws3maNj9enp920sv/OV22nL
+         G0PLBwD7xV93RbEsIV6Shw77ZdnW3hQ2REaAVNuqy8rkL+9oJGjdLAWMd0eZQPRjcWG/
+         DQ0R+KLLS5wZybqeMrdch534wc5dd0cnx9EDgxA151Ft1oha+pUvoX9kr7Yx8IWDK0Rf
+         xOa5aR2sn5W9QijM/qEAVWtT4Rx7iFr1khhwv5KCP9Jz0/gZVFb+cm4/tV3nMOwU9NTs
+         g9G9cqw3rU24nbQ+DwdN7sS9HcWCSzIXONmmHTlNi421/xL42s3X5rdU+owzruHSn/eP
+         TNVQ==
+X-Gm-Message-State: AOAM533oxqRgdhGO3aqdLv31YGZ7qgaKfAMJVuWg6g7PTzVeAmoLBcgP
+        K0RpSXYjgt/Lc0Wp1biov5A=
+X-Google-Smtp-Source: ABdhPJxqAvDMo/qrnNX2hVoJHZiC2bLwNfcChMrdrFwGXf+D/Pv16veh3L2vYHbiTMOhsalbhu1+dg==
+X-Received: by 2002:a63:ec09:: with SMTP id j9mr4194282pgh.179.1612114252401;
+        Sun, 31 Jan 2021 09:30:52 -0800 (PST)
+Received: from localhost ([2402:3a80:11ea:e144:19dc:4c7b:99d8:200e])
+        by smtp.gmail.com with ESMTPSA id w7sm4751206pjv.24.2021.01.31.09.30.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 Jan 2021 09:30:51 -0800 (PST)
+From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
+To:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
+        Ian Abbott <abbotti@mev.co.uk>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
+        Ioana Ciornei <ioana.ciornei@nxp.com>,
+        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+        Vaibhav Agarwal <vaibhav.sr@gmail.com>,
+        Mark Greer <mgreer@animalcreek.com>,
+        Rui Miguel Silva <rmfrfs@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Marc Dietrich <marvin24@gmx.de>,
+        Jens Frederich <jfrederich@gmail.com>,
+        Daniel Drake <dsd@laptop.org>,
+        Jon Nettleton <jon.nettleton@gmail.com>,
+        Larry Finger <Larry.Finger@lwfinger.net>,
+        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Teddy Wang <teddy.wang@siliconmotion.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        William Cohen <wcohen@redhat.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Robert Richter <rric@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        greybus-dev@lists.linaro.org, ac100@lists.launchpad.net,
+        linux-tegra@vger.kernel.org, linux-fbdev@vger.kernel.org
+Subject: [PATCH 00/13] Convert all users of strlcpy to strscpy
+Date:   Sun, 31 Jan 2021 22:58:21 +0530
+Message-Id: <20210131172838.146706-1-memxor@gmail.com>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1612113550.git.luto@kernel.org>
-References: <cover.1612113550.git.luto@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The recent rework of probe_kernel_read() and its conversion to
-get_kernel_nofault() inadvertently broke is_prefetch().  We were using
-probe_kernel_read() as a sloppy "read user or kernel memory" helper, but it
-doens't do that any more.  The new get_kernel_nofault() reads *kernel*
-memory only, which completely broke is_prefetch() for user access.
+This series converts all existing users of strlcpy in drivers/staging to use
+strscpy instead.
 
-Adjust the code to the the correct accessor based on access mode.  The
-manual address bounds check is no longer necessary, since the accessor
-helpers (get_user() / get_kernel_nofault()) do the right thing all by
-themselves.  As a bonus, by using the correct accessor, we don't need the
-open-coded address bounds check.
+strlcpy is marked as deprecated in Documentation/process/deprecated.rst, and
+there is no functional difference when the caller expects truncation (when not
+checking the return value). strscpy is relatively better as it also avoids
+scanning the whole source string.
 
-While we're at it, disable the workaround on all CPUs except AMD Family
-0xF.  By my reading of the Revision Guide for AMD Athlon™ 64 and AMD
-Opteron™ Processors, only family 0xF is affected.
+This silences the related checkpatch warnings from:
+5dbdb2d87c29 ("checkpatch: prefer strscpy to strlcpy")
 
-Fixes: eab0c6089b68 ("maccess: unify the probe kernel arch hooks")
-Cc: stable@vger.kernel.org
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Daniel Borkmann <daniel@iogearbox.net>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
----
- arch/x86/mm/fault.c | 31 +++++++++++++++++++++----------
- 1 file changed, 21 insertions(+), 10 deletions(-)
+The conversions were performed in two steps:
 
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index 106b22d1d189..50dfdc71761e 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -54,7 +54,7 @@ kmmio_fault(struct pt_regs *regs, unsigned long addr)
-  * 32-bit mode:
-  *
-  *   Sometimes AMD Athlon/Opteron CPUs report invalid exceptions on prefetch.
-- *   Check that here and ignore it.
-+ *   Check that here and ignore it.  This is AMD erratum #91.
-  *
-  * 64-bit mode:
-  *
-@@ -83,11 +83,7 @@ check_prefetch_opcode(struct pt_regs *regs, unsigned char *instr,
- #ifdef CONFIG_X86_64
- 	case 0x40:
- 		/*
--		 * In AMD64 long mode 0x40..0x4F are valid REX prefixes
--		 * Need to figure out under what instruction mode the
--		 * instruction was issued. Could check the LDT for lm,
--		 * but for now it's good enough to assume that long
--		 * mode only uses well known segments or kernel.
-+		 * In 64-bit mode 0x40..0x4F are valid REX prefixes
- 		 */
- 		return (!user_mode(regs) || user_64bit_mode(regs));
- #endif
-@@ -124,23 +120,38 @@ is_prefetch(struct pt_regs *regs, unsigned long error_code, unsigned long addr)
- 	if (error_code & X86_PF_INSTR)
- 		return 0;
- 
-+	if (likely(boot_cpu_data.x86_vendor != X86_VENDOR_AMD
-+		   || boot_cpu_data.x86 != 0xf))
-+		return 0;
-+
- 	instr = (void *)convert_ip_to_linear(current, regs);
- 	max_instr = instr + 15;
- 
--	if (user_mode(regs) && instr >= (unsigned char *)TASK_SIZE_MAX)
--		return 0;
-+	/*
-+	 * This code has historically always bailed out if IP points to a
-+	 * not-present page (e.g. due to a race).  No one has ever
-+	 * complained about this.
-+	 */
-+	pagefault_disable();
- 
- 	while (instr < max_instr) {
- 		unsigned char opcode;
- 
--		if (get_kernel_nofault(opcode, instr))
--			break;
-+		if (user_mode(regs)) {
-+			if (get_user(opcode, instr))
-+				break;
-+		} else {
-+			if (get_kernel_nofault(opcode, instr))
-+				break;
-+		}
- 
- 		instr++;
- 
- 		if (!check_prefetch_opcode(regs, instr, opcode, &prefetch))
- 			break;
- 	}
-+
-+	pagefault_enable();
- 	return prefetch;
- }
- 
+1. The following coccinelle script was used to identify and replace call sites
+that expect truncation.
+
+$ spatch --sp-file strscpy.cocci --include-headers --dir --in-place drivers/staging
+
+@strscpy@
+expression dest, src, size;
+@@
+-strlcpy(dest, src, size);
++strscpy(dest, src, size);
+
+2. Each individual automated conversion was rechecked manually for correctness.
+
+Kumar Kartikeya Dwivedi (13):
+  staging: comedi: Switch from strlcpy to strscpy
+  staging: greybus: Switch from strlcpy to strscpy
+  staging: fsl-dpaa2: Switch from strlcpy to strscpy
+  staging: most: Switch from strlcpy to strscpy
+  staging: nvec: Switch from strlcpy to strscpy
+  staging: octeon: Switch from strlcpy to strscpy
+  staging: olpc_dcon: Switch from strlcpy to strscpy
+  staging: rtl8188eu: Switch from strlcpy to strscpy
+  staging: rtl8192e: Switch from strlcpy to strscpy
+  staging: rtl8192u: Switch from strlcpy to strscpy
+  staging: rtl8712: Switch from strlcpy to strscpy
+  staging: sm750fb: Switch from strlcpy to strscpy
+  staging: wimax: Switch from strlcpy to strscpy
+
+ drivers/staging/comedi/comedi_fops.c                      | 4 ++--
+ drivers/staging/fsl-dpaa2/ethsw/ethsw-ethtool.c           | 6 +++---
+ drivers/staging/greybus/audio_helper.c                    | 2 +-
+ drivers/staging/greybus/audio_module.c                    | 2 +-
+ drivers/staging/greybus/audio_topology.c                  | 6 +++---
+ drivers/staging/greybus/power_supply.c                    | 2 +-
+ drivers/staging/greybus/spilib.c                          | 4 ++--
+ drivers/staging/most/sound/sound.c                        | 2 +-
+ drivers/staging/most/video/video.c                        | 6 +++---
+ drivers/staging/nvec/nvec_ps2.c                           | 4 ++--
+ drivers/staging/octeon/ethernet-mdio.c                    | 6 +++---
+ drivers/staging/olpc_dcon/olpc_dcon.c                     | 2 +-
+ drivers/staging/rtl8188eu/os_dep/ioctl_linux.c            | 2 +-
+ drivers/staging/rtl8192e/rtl8192e/rtl_ethtool.c           | 6 +++---
+ drivers/staging/rtl8192u/ieee80211/ieee80211_softmac_wx.c | 2 +-
+ drivers/staging/rtl8712/rtl871x_ioctl_linux.c             | 2 +-
+ drivers/staging/sm750fb/sm750.c                           | 2 +-
+ drivers/staging/wimax/i2400m/netdev.c                     | 6 +++---
+ drivers/staging/wimax/i2400m/usb.c                        | 4 ++--
+ 19 files changed, 35 insertions(+), 35 deletions(-)
+
 -- 
 2.29.2
 
