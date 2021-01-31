@@ -2,107 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4A8130997E
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 01:42:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 125CA309984
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 01:44:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232586AbhAaAmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 19:42:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55532 "EHLO
+        id S232455AbhAaAoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 19:44:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232295AbhAaAlz (ORCPT
+        with ESMTP id S231923AbhAaAn4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 19:41:55 -0500
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC954C061573;
-        Sat, 30 Jan 2021 16:41:15 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 917F812800EA;
-        Sat, 30 Jan 2021 16:41:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1612053675;
-        bh=ujtvEXo0CAfqmJN44waKH6NoDvjf3jsEyhgN1RaHQKY=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=VdVE+YSjkvz+BQdHyt5wLQrJhz/cGQgTjW55CmdVViEjBK4HKsIlrxNE6/jaTwKO5
-         o5reCzjfiWUryNl7b2UZgZo3F7GBrtxJjmTMDmvgoQFh2gpksWB3s6ArSBPV/eR0lx
-         OHtn2sihbJhl3BggArmpUu9qZE+fzyVGnJXtl3TA=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id OeonLmAfWZ0J; Sat, 30 Jan 2021 16:41:15 -0800 (PST)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::c447])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 00C641280027;
-        Sat, 30 Jan 2021 16:41:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1612053675;
-        bh=ujtvEXo0CAfqmJN44waKH6NoDvjf3jsEyhgN1RaHQKY=;
-        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
-        b=VdVE+YSjkvz+BQdHyt5wLQrJhz/cGQgTjW55CmdVViEjBK4HKsIlrxNE6/jaTwKO5
-         o5reCzjfiWUryNl7b2UZgZo3F7GBrtxJjmTMDmvgoQFh2gpksWB3s6ArSBPV/eR0lx
-         OHtn2sihbJhl3BggArmpUu9qZE+fzyVGnJXtl3TA=
-Message-ID: <bf4564a2f4f761a4c0a00857c7dc346fc43bcd92.camel@HansenPartnership.com>
-Subject: Re: [PATCH] tpm_tis: Add missing start/stop_tpm_chip calls
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        =?UTF-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>
-Cc:     Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Radoslaw Biernacki <rad@semihalf.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Alex Levin <levinale@google.com>
-Date:   Sat, 30 Jan 2021 16:41:13 -0800
-In-Reply-To: <7a702108-ec9e-b2e2-be89-3590437c0eb5@roeck-us.net>
-References: <20210123014247.989368-1-lma@semihalf.com>
-         <20210125171846.GA31929@roeck-us.net>
-         <CAFJ_xboNDcp-XrxfbrBjqTWjLZUdVWe1OJi4KK==ij+yivFeHA@mail.gmail.com>
-         <YBSTOrlgTPpzoblY@kernel.org>
-         <7a702108-ec9e-b2e2-be89-3590437c0eb5@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Sat, 30 Jan 2021 19:43:56 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85307C061573;
+        Sat, 30 Jan 2021 16:43:16 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id m6so9101397pfk.1;
+        Sat, 30 Jan 2021 16:43:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Bi+IsvsSXp0znUX7pYnup3aiWOEdAJ3KLmdVbOIabxQ=;
+        b=J9jHFxXGBJgjbToroef44LlnAzQD1QQ7lpDiqm9cbOf8XZhc7M2BaqLwTRP4ryGs3r
+         8OXEdXohWSG6xQ9JpiaZP9MmOEdYy5DYo/cthuejRkBKTDTthqOVRopkqb2QPC1VaszK
+         co9amzo8I3uvBvE3E3KLztQg0ZnZ61xSFicB9kfP27TppQ303oNdJrz7jqDYElmG9tFV
+         Y5i861nY/oNIs8jAqV9oFk1Pr0KvUyQV5RZXM2Zz1CWwQL5EJSBUmo3acyzcMvWCemH8
+         AebIjyr3IB3PpWXBjiCx6nli+lJWa5Pc8OkEfNdhXhcBHOJB6GjEP59X7G4FsBIFNIdx
+         dyVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Bi+IsvsSXp0znUX7pYnup3aiWOEdAJ3KLmdVbOIabxQ=;
+        b=PwtBGjNfz74WG7rc2jn4PC/zuTJdh8kkkFbQGPO4ZviOj/gwzoukvOmDUlTTrsVBJn
+         KZSoIdjcBaF9HlBO4oXhHinLtg5NgBwApkKqGwUj3xfOpHl1tNuHHH5McDTgi2k9RO/S
+         j6U/VlPGPn39TppCfPk00Pmwd46N/RKEihkgUnEkFuIh4Olu1DxhRTJBFek1SiNOn5J9
+         4arL2drQlKhgqiAwkyg5icubUpX51xsMJ1mOJncad3KoUb/VcJ+0qCZlowQp3I/NAq7n
+         AtRj1u4zuhd6lgHPWi/BCFa+UWWlhta3/yLhKB799mCPezQIcQM0CjCCnRD1mNJZJhWD
+         DTNw==
+X-Gm-Message-State: AOAM533LskO9qsAZdmRR2aa28zk5UEuDE2UoCmU/0g6Paa5NjJT/L0Xb
+        rsKkgoE0i5iNqcD+q9FdgjY=
+X-Google-Smtp-Source: ABdhPJzk8ZLXXQ4Kl3C8+a4c6WQGnQQI1UFvKx32TJ2QWTh8g8/RUkbw/Q4/ME0vHc06OHKjbMzbKQ==
+X-Received: by 2002:a63:7748:: with SMTP id s69mr10772576pgc.81.1612053796058;
+        Sat, 30 Jan 2021 16:43:16 -0800 (PST)
+Received: from sol (106-69-169-43.dyn.iinet.net.au. [106.69.169.43])
+        by smtp.gmail.com with ESMTPSA id q2sm11820333pfj.32.2021.01.30.16.43.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Jan 2021 16:43:15 -0800 (PST)
+Date:   Sun, 31 Jan 2021 08:43:08 +0800
+From:   Kent Gibson <warthog618@gmail.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Joel Becker <jlbec@evilplan.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH 8/8] gpio: sim: new testing module
+Message-ID: <20210131004308.GA4687@sol>
+References: <20210129134624.9247-1-brgl@bgdev.pl>
+ <20210129134624.9247-9-brgl@bgdev.pl>
+ <YBQwUkQz3LrG5G4i@smile.fi.intel.com>
+ <CAMRc=MeSy4zWOAGxfoBih62WxAXuOLtkK3ROyt+4LuqLvDxtaQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMRc=MeSy4zWOAGxfoBih62WxAXuOLtkK3ROyt+4LuqLvDxtaQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-01-30 at 15:49 -0800, Guenter Roeck wrote:
-> On 1/29/21 2:59 PM, Jarkko Sakkinen wrote:
-> > On Tue, Jan 26, 2021 at 04:46:07PM +0100, Łukasz Majczak wrote:
-> > > Hi Jarkko, Guenter
-> > > 
-> > > Yes, here are the logs when failure occurs -
-> > > https://gist.github.com/semihalf-majczak-lukasz/1575461f585f1e7fb1e9366b8eceaab9
-> > > Look for a phrase "TPM returned invalid status"
-> > > 
-> > > Guenter - good suggestion - I will try to keep it as tight as
-> > > possible.
-> > > 
-> > > Best regards,
-> > > Lukasz
-> > 
-> > Is it possible for you try out with linux-next? Thanks. It's a
-> > known issue, which ought to be fixed by now.
-> > 
-> > The log message is harmless, it'a warning not panic, and does not
-> > endanger system stability. WARN()'s always dump stack trace. No
-> > oops is happening.
-> > 
+On Sat, Jan 30, 2021 at 09:37:55PM +0100, Bartosz Golaszewski wrote:
+> On Fri, Jan 29, 2021 at 4:57 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > On Fri, Jan 29, 2021 at 02:46:24PM +0100, Bartosz Golaszewski wrote:
+> > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > ...
+> >
+
+[snip]
+
+> > Honestly, I don't like the idea of Yet Another (custom) Parser in the kernel.
+> >
+> > Have you investigated existing parsers? We have cmdline.c, gpio-aggregator.c,
+> > etc. Besides the fact of test cases which are absent here. And who knows what
+> > we allow to be entered.
+> >
 > 
-> There is a note in the kernel documentation which states:
+> Yes, I looked all around the kernel to find something I could reuse
+> but failed to find anything useful for this particular purpose. If you
+> have something you could point me towards, I'm open to alternatives.
 > 
-> Note that the WARN()-family should only be used for "expected to
-> be unreachable" situations. If you want to warn about "reachable
-> but undesirable" situations, please use the pr_warn()-family of
-> functions.
+> Once we agree on the form of the module, I'll port self-tests to using
+> it instead of gpio-mockup, so we'll have some tests in the tree.
+> 
 
-It fits the definition.  The warning only triggers if the access is in
-the wrong locality, which should be impossible, so the warning should
-be unreachable.
+Given the existing selftests focus on testing the gpio-mockup itself, it
+would be more appropriate that you add separate tests for gpio-sim.
 
-James
+As an end user I'm interested in the concrete example of driving gpio-sim
+that selftests would provide, so I'm looking forward to seeing that.
 
-> It seems to me that "harmless" doesn't really fit the expected
-> use of WARN(). Should it possibly be converted to pr_warn() ?
-
-
+Cheers,
+Kent.
