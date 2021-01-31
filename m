@@ -2,81 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1583099AB
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 02:34:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A323099AD
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 02:34:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232496AbhAaBdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 20:33:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230168AbhAaBdO (ORCPT
+        id S232528AbhAaBdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 20:33:25 -0500
+Received: from relay06.th.seeweb.it ([5.144.164.167]:35359 "EHLO
+        relay06.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230168AbhAaBdU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 20:33:14 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE0E1C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 17:32:33 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id w1so18707397ejf.11
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 17:32:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=7qYklskUu2VAEfgSwebV/QStBWQHOQZ6mWiPbg6iHLs=;
-        b=fsLveMfXsSyI5FfoEdvdrRAjraZsatgeDbdDajigaOGnuqY64N0WwDWHmk0cvnJxLK
-         BBM/V8ihSKXlczpLbYKJI0M4PLlQXxrRJOxYEvt0RZiN0juJ8OEkY254cRZvPlEO21Y/
-         g7B3apBianXKAoHjo4YNbonCERzYfMLdJySfYXlYZdzwj4b+eEjKJftjF1q4aXBWsWya
-         0BG4hV8F99j0GXfNEkOMsaLJOoE9hzDF2YQJoflsX8dG+gGsZqp/s/ywQ0GvDjiKlmGO
-         6xdAceV7P5OZumw1zoBpCDPh25S9QoZeQcIc16yYoNGJFLjM/okUlDY9+RDpZGVvFLCA
-         5/iQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=7qYklskUu2VAEfgSwebV/QStBWQHOQZ6mWiPbg6iHLs=;
-        b=DfTfBS6DJ9D4zYPcHTQ3PYZEzrr689C2BNXZkHFAPNdsZTtQfZsirmTSpZ+OOhaLe+
-         0LP1e53BFDxsXU/iwW7Asrf6bYBshtZLLPk1q0d+dInjrEik2Iuv+qOsFVcMg8mmb8F9
-         d6BmIdBDdd49sGYyk9+CAGpvHPSk6KC86OihySrNx39lyFEI1E8yShHDFQjdj3VUuEUY
-         6sDxKBH7X6QR63ybbTrRMCLTX+sd4cu6kTn1bPNzo3oehu10/ZUMPfBzxRSYGVIpRFBH
-         YZyzqR8kCN9ZSnN0iNSaj+d8CM1nv9rcK9/piNRSBV2hrnVPtAkKeo5mWS3QJp+aET++
-         DcAQ==
-X-Gm-Message-State: AOAM533EmLuqlBXObfBCAAnZXIeLR4MwXQAo/Q8pNCgeYQCraJwYy3gA
-        vE0my6dgt2jhpxDKAkBR/ct8UpCXsR9QGS0nb0XHFEvNh+Izl/6Y
-X-Google-Smtp-Source: ABdhPJxXx/b7OBpWjwRFnHe/d/T0ChYaD+tBlTmZDtIPI8ANBWIOMsQwXU7Lq0Pyj5nRFCXlutZyGv46deLC+GxFGyI=
-X-Received: by 2002:a17:906:4893:: with SMTP id v19mr11167316ejq.454.1612056752381;
- Sat, 30 Jan 2021 17:32:32 -0800 (PST)
+        Sat, 30 Jan 2021 20:33:20 -0500
+Received: from localhost.localdomain (abaf219.neoplus.adsl.tpnet.pl [83.6.169.219])
+        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 23E873F25A;
+        Sun, 31 Jan 2021 02:32:37 +0100 (CET)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] soc: qcom: rpmpd: Add MDM9607 RPM Power Domains
+Date:   Sun, 31 Jan 2021 02:32:32 +0100
+Message-Id: <20210131013233.54666-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-From:   Kyle Huey <me@kylehuey.com>
-Date:   Sat, 30 Jan 2021 17:32:21 -0800
-Message-ID: <CAP045AoL4=6L16Nxi4TW7Jt8dqNXBQTvZZOqBEBRRcZdHCQ_VA@mail.gmail.com>
-Subject: [REGRESSION] x86/entry: TIF_SINGLESTEP handling is still broken
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        "Robert O'Callahan" <rocallahan@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yuxuan Shui previous reported a regression in single step reporting,
-introduced in 64eb35f701f04b30706e21d1b02636b5d31a37d2, with a patch
-to fix it.
+This SoC while being from 8916 era, makes use of the
+newer-style, floor-level management, instead of the older
+floor-corner.
 
-However, after that is fixed, there is another regression introduced
-later in the same series, in 2991552447707d791d9d81a5dc161f9e9e90b163,
-that again breaks the same code.
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+---
+ .../devicetree/bindings/power/qcom,rpmpd.yaml |  1 +
+ drivers/soc/qcom/rpmpd.c                      | 22 +++++++++++++++++++
+ include/dt-bindings/power/qcom-rpmpd.h        |  8 +++++++
+ 3 files changed, 31 insertions(+)
 
-The patch renames ARCH_SYSCALL_EXIT_WORK to ARCH_SYSCALL_WORK_EXIT,
-which orphans the definition of ARCH_SYSCALL_EXIT_WORK in
-arch/x86/include/asm/entry-common.h. No work was done to port
-TIF_SINGLESTEP to syscall_work. Despite the code in report_single_step
-that checks current_thread_info()->flags, because the code is no
-longer checking the TIF values at all to decide whether to enter
-syscall_exit_work, report_single_step will never be called and we will
-again fail to report the single step.
+diff --git a/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml b/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml
+index 64825128ee97..9422131b4236 100644
+--- a/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml
++++ b/Documentation/devicetree/bindings/power/qcom,rpmpd.yaml
+@@ -16,6 +16,7 @@ description:
+ properties:
+   compatible:
+     enum:
++      - qcom,mdm9607-rpmpd
+       - qcom,msm8916-rpmpd
+       - qcom,msm8939-rpmpd
+       - qcom,msm8976-rpmpd
+diff --git a/drivers/soc/qcom/rpmpd.c b/drivers/soc/qcom/rpmpd.c
+index 85d1207b72d7..ebf29a77c8b0 100644
+--- a/drivers/soc/qcom/rpmpd.c
++++ b/drivers/soc/qcom/rpmpd.c
+@@ -116,6 +116,27 @@ struct rpmpd_desc {
+ 
+ static DEFINE_MUTEX(rpmpd_lock);
+ 
++/* mdm9607 RPM Power Domains */
++DEFINE_RPMPD_PAIR(mdm9607, vddcx, vddcx_ao, SMPA, LEVEL, 3);
++DEFINE_RPMPD_VFL(mdm9607, vddcx_vfl, SMPA, 3);
++
++DEFINE_RPMPD_PAIR(mdm9607, vddmx, vddmx_ao, LDOA, LEVEL, 12);
++DEFINE_RPMPD_VFL(mdm9607, vddmx_vfl, LDOA, 12);
++static struct rpmpd *mdm9607_rpmpds[] = {
++	[MDM9607_VDDCX] =	&mdm9607_vddcx,
++	[MDM9607_VDDCX_AO] =	&mdm9607_vddcx_ao,
++	[MDM9607_VDDCX_VFL] =	&mdm9607_vddcx_vfl,
++	[MDM9607_VDDMX] =	&mdm9607_vddmx,
++	[MDM9607_VDDMX_AO] =	&mdm9607_vddmx_ao,
++	[MDM9607_VDDMX_VFL] =	&mdm9607_vddmx_vfl,
++};
++
++static const struct rpmpd_desc mdm9607_desc = {
++	.rpmpds = mdm9607_rpmpds,
++	.num_pds = ARRAY_SIZE(mdm9607_rpmpds),
++	.max_state = RPM_SMD_LEVEL_TURBO,
++};
++
+ /* msm8939 RPM Power Domains */
+ DEFINE_RPMPD_PAIR(msm8939, vddmd, vddmd_ao, SMPA, CORNER, 1);
+ DEFINE_RPMPD_VFC(msm8939, vddmd_vfc, SMPA, 1);
+@@ -299,6 +320,7 @@ static const struct rpmpd_desc sdm660_desc = {
+ };
+ 
+ static const struct of_device_id rpmpd_match_table[] = {
++	{ .compatible = "qcom,mdm9607-rpmpd", .data = &mdm9607_desc },
+ 	{ .compatible = "qcom,msm8916-rpmpd", .data = &msm8916_desc },
+ 	{ .compatible = "qcom,msm8939-rpmpd", .data = &msm8939_desc },
+ 	{ .compatible = "qcom,msm8976-rpmpd", .data = &msm8976_desc },
+diff --git a/include/dt-bindings/power/qcom-rpmpd.h b/include/dt-bindings/power/qcom-rpmpd.h
+index 7714487ac76b..9519eb38d695 100644
+--- a/include/dt-bindings/power/qcom-rpmpd.h
++++ b/include/dt-bindings/power/qcom-rpmpd.h
+@@ -69,6 +69,14 @@
+ #define RPMH_REGULATOR_LEVEL_TURBO	384
+ #define RPMH_REGULATOR_LEVEL_TURBO_L1	416
+ 
++/* MDM9607 Power Domains */
++#define MDM9607_VDDCX		0
++#define MDM9607_VDDCX_AO	1
++#define MDM9607_VDDCX_VFL	2
++#define MDM9607_VDDMX		3
++#define MDM9607_VDDMX_AO	4
++#define MDM9607_VDDMX_VFL	5
++
+ /* MSM8939 Power Domains */
+ #define MSM8939_VDDMDCX		0
+ #define MSM8939_VDDMDCX_AO	1
+-- 
+2.30.0
 
-I tested that with 2991552447707d791d9d81a5dc161f9e9e90b163 reverted
-and Yuxuan's patch applied to Linus's tip rr works and passes all
-tests.
-
-- Kyle
