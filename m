@@ -2,126 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A00309C8F
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 15:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56EE5309C8E
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 15:14:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbhAaOJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 09:09:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230249AbhAaKfQ (ORCPT
+        id S231392AbhAaOI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 09:08:58 -0500
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:60717 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229786AbhAaKjZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 05:35:16 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B6F4C061573;
-        Sun, 31 Jan 2021 02:34:31 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id u14so10149261wml.4;
-        Sun, 31 Jan 2021 02:34:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=W9CKV72LQw4/n8DHvLlfFWWqWP3t9mTNcTVq9zgFDBI=;
-        b=ml8PKnnmBVwUtJhYLrAps2xa09WZPf+AXeAAXBnX2G3emw7Vy1EEUdoJaQrdVgaG1r
-         9mezcZR0R+t+DnxSH8YPChK16hDbrqz1tr0GfLDx2lGbNbfAHV7cjlTWV2UG4b/kVHzL
-         i7/HURt8gH3+WkwoP5l//hg4TjAzrZSWrbmAUG0KyVaDrK8OKr+GKvChOykALEPlgLUZ
-         dVZLalDzCfDlP1Fiisl28ZP8dH4XVahGOMF0epO+eCMkiBrw0QySknwCco2CpRkGObdD
-         yfk9dIbJUVsfqd9cZgOTxHalWseyCADX9lZouQpB+CSFS4DTZXJzxsTPZXrb/MCVV9Me
-         0SrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=W9CKV72LQw4/n8DHvLlfFWWqWP3t9mTNcTVq9zgFDBI=;
-        b=Jgp8DUo1EhEGOrw2E1y/dyYlbLvynAYwHoZewCg9zRhcmxIdK55mVgvb+XysYiCxpU
-         nQ/YFNXFzem7E6toWl768HHFCQCMlci7sFB9J3BmWkYb+qOynVxA0BTJHXShuVLwZXc5
-         Yi3I8TS6pgwjbT6T3muLkPhrdMXpvkZzUDvGlAALNRRV+n2wOEkhO8EaUvzZOaOBI7Fl
-         hRT6VWU3Uhg+MVAhOcksKKSZEJ7PuYP5MkrD6Gt9895qd3wf5KX1BGfj2igV9AqdbZ6G
-         r9Tj3coJOWhH+y4mh76JDQli4smOZXJ6Plqmrx2gEU4VDzFSYl/ohh0xbyt7LLqVYFH5
-         +h4Q==
-X-Gm-Message-State: AOAM530q7zapT+QwwH58DvqfVa4/7WGTqZLWq5Iv2i7A/dqsPeyJjW91
-        cDCxv9vyUP+ChfZEfKlUUsM=
-X-Google-Smtp-Source: ABdhPJwPTJI1CsqFftboMFqkzFWZVTHNIT+DTDdAe3T0tcfqcLxYyFtEaR4/kluCLCarlg8Hk4ZwdQ==
-X-Received: by 2002:a1c:6289:: with SMTP id w131mr2504113wmb.0.1612089269557;
-        Sun, 31 Jan 2021 02:34:29 -0800 (PST)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id d17sm13134357wma.2.2021.01.31.02.34.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Jan 2021 02:34:28 -0800 (PST)
-Subject: Re: [PATCH v10] cpufreq: mediatek-hw: Add support for Mediatek
- cpufreq HW driver
-To:     Hector Yuan <hector.yuan@mediatek.com>,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     wsd_upstream@mediatek.com
-References: <1609222629-2979-1-git-send-email-hector.yuan@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <49f4400f-c803-f044-4974-f4e8703876e7@gmail.com>
-Date:   Sun, 31 Jan 2021 11:34:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <1609222629-2979-1-git-send-email-hector.yuan@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Sun, 31 Jan 2021 05:39:25 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 122F8580B2A;
+        Sun, 31 Jan 2021 05:38:25 -0500 (EST)
+Received: from imap1 ([10.202.2.51])
+  by compute6.internal (MEProxy); Sun, 31 Jan 2021 05:38:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=7otgqLxKMQkk0CVmmkdFrMm2cf/Ti6/
+        Ps6yWtPkznNM=; b=PwotKS36u1S1qfn6SiaYTFLPAMqyCTS4X6eVZ70IUoTbqe5
+        yoJWlDcrhA6U4GYRD3ovW5V/jR3fmJBo6sCKWYWlUzfjNSHHuwpff371bd0DXENu
+        dy6EDqVHAvUyyF336OCeicsLq0Yt43o1pkF3r2XGxeXcihq4Ezph/8BePToVr9rL
+        /ggroIkMHUyavMdMXwFxzz9vc6BWc3GfqgVjuxMpqwVV8/OVmToYxp05urRQAqPA
+        ZRblVxOaLpWrFJQwu/+PzO03lCP0vwEgYLSFq/23afZ0ydFjzBsx8CwqeIF41Okp
+        KJo29EBeGq8Fz8HHgk5cSsH1Vp6Q9QNsagL7aJw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=7otgqL
+        xKMQkk0CVmmkdFrMm2cf/Ti6/Ps6yWtPkznNM=; b=Du5Hg1bVkm4Ygbuk/znFjP
+        WSBL8TmLujWjst3kqoJHIsWFDh93QXW2EzG0w4xUPmt30X82yGmj47U/1lD1U6Uu
+        EgSsk4abzrHALv1/jiu39BARZMht2yYDV/XtIeMsQnB+IHLWrrNZUU8TZWTPS3v0
+        cUkLV2hVm8TNE9y3PF+1qrKGJ4kkOFfnFck2J7VFnJg4gTOpN6k1p7909UCX88pn
+        LtigotaDoNZ93XbtAKMqj+fliyiO53uHCoK6v6fv8qlDeRja8bgdK0bbtT//L1jW
+        08MysRYDp6qKBKU5gDYJRsiev8LMht4VHiAV6Yf/GqKoXlL9FX39Qvv5Ncp2zmjg
+        ==
+X-ME-Sender: <xms:n4gWYNeYSRW-gbRQhdRX5omvfM8Iqe58yXh5L84QCWN2tLnQZwOIOw>
+    <xme:n4gWYLNZ0c9CcBRfvyOgFNjH6V5NWWUApA08lnXJT-QHpQgqVVlZ39myPOXUANy7I
+    MBWAY6u9cctFFwq8KE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeeigddufecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedflfhirgig
+    uhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
+    cuggftrfgrthhtvghrnheptefhkefggeeiheetvdefkedugfevhfdtvdektdelffdukeff
+    tdfhheegueejgfeunecuffhomhgrihhnpehmtghouhhnthdrshgsnecuvehluhhsthgvrh
+    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghes
+    fhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:n4gWYGhbHnWlodPU4xEnjBwawrntM6qcIhUYYm1Nb7KwoD_Xt1ccFA>
+    <xmx:n4gWYG_Hz9wMsZ854-TPcZ_gNDH4Y_gpAWx8yVx5qO1KfkW4VnY4aA>
+    <xmx:n4gWYJtoPQp_zV3T49Uf7mI7wfoBJtWDeq-NR0msjnXOE69VXtWThA>
+    <xmx:oIgWYNjhuoetkxfuxpMAHAvW-6uzDJArHEjzAI0ZPxA97LwKdBriTg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 47D38130005D; Sun, 31 Jan 2021 05:38:23 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-84-gfc141fe8b8-fm-20210125.001-gfc141fe8
+Mime-Version: 1.0
+Message-Id: <b1a5eae4-2032-4ace-aa48-a21893e47528@www.fastmail.com>
+In-Reply-To: <1612080878-5426-1-git-send-email-hejinyang@loongson.cn>
+References: <1612080878-5426-1-git-send-email-hejinyang@loongson.cn>
+Date:   Sun, 31 Jan 2021 18:38:01 +0800
+From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To:     "Jinyang He" <hejinyang@loongson.cn>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "Steven Rostedt" <rostedt@goodmis.org>,
+        "Ingo Molnar" <mingo@redhat.com>
+Cc:     "Wu Zhangjin" <wuzhangjin@gmail.com>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-kernel@vger.kernel.org,
+        "Huacai Chen" <chenhuacai@kernel.org>,
+        "Tiezhu Yang" <yangtiezhu@loongson.cn>
+Subject: Re: [PATCH 1/3] MIPS: ftrace: Fix N32 save registers
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 29/12/2020 07:17, Hector Yuan wrote:
-> The CPUfreq HW present in some Mediatek chipsets offloads the steps necessary for changing the frequency of CPUs. 
-> The driver implements the cpufreq driver interface for this hardware engine. 
-> This patch depends on MT6779 DTS patchset[1] submitted by Hanks Chen.
+On Sun, Jan 31, 2021, at 4:14 PM, Jinyang He wrote:
+> CONFIG_64BIT is confusing. N32 also pass parameters by a0~a7.
 
-This dependency got resolved, the patch is mainline since v5.11. Please delete
-it in further revisions of the patch set to minimize confusion.
+Do we have NEW kernel build?
+CONFIG_64BIT assumed N64 as kernel ABI.
 
-Thanks!
+
+-Jiaxun
 
 > 
-> From v8 to v9, there are three more modifications.
-> 1. Based on patchset[2], align binding with scmi for performance domain.
-> 2. Add the CPUFREQ fast switch function support and define DVFS latency.
-> 3. Based on patchser[3], add energy model API parameter for mW.
+> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+> ---
+>  arch/mips/kernel/mcount.S | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> From v7 to v8, there are three more patches based on patchset v8[4].
-> This patchset is about to register power table to Energy model for EAS and thermal usage.
-> 1. EM CPU power table
-> - Register energy model table for EAS and thermal cooling device usage.
-> - Read the coresponding LUT for power table.
-> 2. SVS initialization
-> - The SVS(Smart Voltage Scaling) engine is a hardware which is
->   used to calculate optimized voltage values for CPU power domain.
->   DVFS driver could apply those optimized voltage values to reduce power consumption.
-> - Driver will polling if HW engine is done for SVS initialization.
->   After that, driver will read power table and register it to EAS.
-> - CPUs must be in power on state when doing SVS. Use pm_qos to block cpu-idle state for SVS initializing.
-> 3. Cooling device flag
-> - Add cooling device flag for thermal
+> diff --git a/arch/mips/kernel/mcount.S b/arch/mips/kernel/mcount.S
+> index cff52b2..808257a 100644
+> --- a/arch/mips/kernel/mcount.S
+> +++ b/arch/mips/kernel/mcount.S
+> @@ -27,7 +27,7 @@
+>  	PTR_S	a1, PT_R5(sp)
+>  	PTR_S	a2, PT_R6(sp)
+>  	PTR_S	a3, PT_R7(sp)
+> -#ifdef CONFIG_64BIT
+> +#if _MIPS_SIM == _MIPS_SIM_ABI64 || _MIPS_SIM == _MIPS_SIM_NABI32
+>  	PTR_S	a4, PT_R8(sp)
+>  	PTR_S	a5, PT_R9(sp)
+>  	PTR_S	a6, PT_R10(sp)
+> @@ -42,7 +42,7 @@
+>  	PTR_L	a1, PT_R5(sp)
+>  	PTR_L	a2, PT_R6(sp)
+>  	PTR_L	a3, PT_R7(sp)
+> -#ifdef CONFIG_64BIT
+> +#if _MIPS_SIM == _MIPS_SIM_ABI64 || _MIPS_SIM == _MIPS_SIM_NABI32
+>  	PTR_L	a4, PT_R8(sp)
+>  	PTR_L	a5, PT_R9(sp)
+>  	PTR_L	a6, PT_R10(sp)
+> -- 
+> 2.1.0
 > 
-> [1]  https://lkml.org/lkml/2020/8/4/1094
-> [2]  https://lore.kernel.org/lkml/20201116181356.804590-1-sudeep.holla@arm.com/
-> [3]  https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git/commit/?h=linux-next&id=c250d50fe2ce627ca9805d9c8ac11cbbf922a4a6
-> [4]  https://lkml.org/lkml/2020/9/23/384
-> 
-> 
-> Hector.Yuan (2):
->   cpufreq: mediatek-hw: Add support for CPUFREQ HW
->   dt-bindings: cpufreq: add bindings for MediaTek cpufreq HW
-> 
->  .../bindings/cpufreq/cpufreq-mediatek-hw.yaml      |  116 ++++++
->  drivers/cpufreq/Kconfig.arm                        |   12 +
->  drivers/cpufreq/Makefile                           |    1 +
->  drivers/cpufreq/mediatek-cpufreq-hw.c              |  370 ++++++++++++++++++++
->  4 files changed, 499 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-mediatek-hw.yaml
->  create mode 100644 drivers/cpufreq/mediatek-cpufreq-hw.c
-> 
+>
+
+-- 
+- Jiaxun
