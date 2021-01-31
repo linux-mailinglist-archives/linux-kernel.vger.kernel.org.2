@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D854309D76
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 16:24:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA64A309D74
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 16:24:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232478AbhAaPXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 10:23:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34464 "EHLO
+        id S232285AbhAaPWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 10:22:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232089AbhAaOcv (ORCPT
+        with ESMTP id S232345AbhAaOdR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 09:32:51 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D65DC061573;
-        Sun, 31 Jan 2021 06:32:06 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id 6so13766455wri.3;
-        Sun, 31 Jan 2021 06:32:06 -0800 (PST)
+        Sun, 31 Jan 2021 09:33:17 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2CB7C061574;
+        Sun, 31 Jan 2021 06:32:29 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id o10so9821078wmc.1;
+        Sun, 31 Jan 2021 06:32:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=u2p9+7+7O3j8QCS3+foDXHLNj+iaoO85V7bwiF9fy30=;
-        b=FO08rDicnaTDsxhiB5v/qJIBm3pbFjzH7ETT/pzqZOda5AprJZ3nZeUwQWkDUSg7aD
-         Rjc9ShRyP7wI4qWxvxHoGfb6/V9ILwRJvreq15vw5hQW+lAhV2K4PFihRwbyx3Yl9Het
-         usGuPNqhiSQR7d3uSi1Oo/4krOQA3LFXIIbgbogMGOx0hrGIyLCclVYcyWHzaWeJeirj
-         qftpDW5SUhcEo1OHgbXhLBWEY5hvuGt/2N6qA1MNcjMUp9unwd8tlrrWulWkLR4sf1qO
-         cBppl8/Z0+yBbyofi2nlOQCCGitO0WSZ3deezaNoXOx8+vcvrCJgfmKunj2RkNW4N8DW
-         XbeA==
+        bh=FWkhcoloomIf/wCpYLZRmkASt8JrJgJ4CUQou1kVpi0=;
+        b=Dai/PVKLRrTBU1URL0yU/x4P2QwlU3Cmsqf2VGfLIoBnH9A/PjbEkEqv+SLpitCBkS
+         PcbdA+H90MKBbQITo/nD2onuWVXsb8fh2QTMM9PR/en+4qNM3eVMaTBhTOTHIuA/a/ZE
+         9kfWztDsVNAIsZPBWa+X51gNcZWg4HP2JhCNv3o9bgJ/MadOuWac6dc50peTFa0fWcMu
+         2+zU4u0EmDdtGe3o9KUCxIqw4YxhH1eqktqwtJXe7FQFL51+k47+Wq2klP4dCHeE0j4J
+         wFOO/nFeN+h+7WEVeQXwzQC1IKiQCD4aGWRiy+efxyIHTA4Yfl7XrUoLozPljVePdHKF
+         JvJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=u2p9+7+7O3j8QCS3+foDXHLNj+iaoO85V7bwiF9fy30=;
-        b=bMXjr/l9fEcRX8SHIOZE26EX12PDYFRrZjky4+K5fEDRCZhg6JPT9TfPVNzqiEX7ZG
-         Lvw7cvEPa+rleVuk70i0Do/IQvUriBY0Szeyor+4uWArcE2N2Ts+wzhGO2IWNr6cVUzk
-         MOV0G3PdPBgaGufGbZQoworGl2qsovyGQXXAKn88TeTtyooBiLcz5qUVD9NfYjXeQ1AG
-         WF3WGbAulO0rvKVI4NgNwsCSEAoD+afjUJf2NS1hGDM/Te+3Htvpp6rdaoH888FqWXgC
-         sEQk9x8lEM+qcFEmTWNvGdVeyzP1q7nLxSNd/BqGaNF5+955Uqn3WH7Cqm4GS+ClwyE9
-         R2pQ==
-X-Gm-Message-State: AOAM532+8PaI9rOs90R+NccogkXwfuNKnPJCSlymbRd3eiGsvmDpmINt
-        cZssx301ewtPtzRZiN6PYIR8XHxSThdhgqhf
-X-Google-Smtp-Source: ABdhPJzDnMQ5jDcOS5dGgIxQjELPxV7neVGid5dyYDMkcc8+kOxTX34EsMSriWbwZaN8hN7Be0Rn6A==
-X-Received: by 2002:a05:6000:1542:: with SMTP id 2mr13905291wry.356.1612103525160;
-        Sun, 31 Jan 2021 06:32:05 -0800 (PST)
+        bh=FWkhcoloomIf/wCpYLZRmkASt8JrJgJ4CUQou1kVpi0=;
+        b=C09/lSnH+tGufqJ35OJwPRPZsFUuAZVrKE0GQ7tSVUReONL1ZgH/hRWT5g8qLElE5s
+         /+qXGHjdGswz/0BbdUSqTIDeKwSYSWwSEbkpjQc7D+5PSJmentT9iGjg3j4WGvWR8LuE
+         cOsb7TjmivBbURtIuif0ZHGURDbsAC4DQNxwg9E64PJeNy0S+Qu7N7Ot1s1AUC5k2shv
+         v3DFJZltbvRSZcxic/D8YWRUROpQOPuOyOYqUMYsprcbT4l3+JeK2N/Y13JHIMPPd/ky
+         k6/VJIZRxhRSab+036tckzNEizRYq/LObmo5R18p8XqXwpMc7ocgQ4GYogbXCMrSf6Xv
+         wa5Q==
+X-Gm-Message-State: AOAM530MXeXG1uQyGU304wF/ArWXriSh7PWYCaDD95+JKmvV/ImPdLBd
+        p1USJtqrOE4kKGXPBT7iwJY=
+X-Google-Smtp-Source: ABdhPJyj7wgFtetm6z3qEvEw8kAksVNfpgYl9/gaF3CnnwgE1h/kpUTnWQ8oEbScQTavtrccspYEdw==
+X-Received: by 2002:a1c:a406:: with SMTP id n6mr11363169wme.53.1612103548450;
+        Sun, 31 Jan 2021 06:32:28 -0800 (PST)
 Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id y63sm18399305wmd.21.2021.01.31.06.32.03
+        by smtp.gmail.com with ESMTPSA id b83sm5000058wmc.44.2021.01.31.06.32.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Jan 2021 06:32:04 -0800 (PST)
-Subject: Re: [PATCH 1/2] arm64: dts: mt6779: Support pwrap on Mediatek MT6779
+        Sun, 31 Jan 2021 06:32:27 -0800 (PST)
+Subject: Re: [PATCH 2/2] arm64: configs: Support pwrap on Mediatek MT6779
  platform
 To:     Argus Lin <argus.lin@mediatek.com>,
         Rob Herring <robh+dt@kernel.org>,
@@ -66,14 +66,14 @@ Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org
 References: <1609747703-27207-1-git-send-email-argus.lin@mediatek.com>
- <1609747703-27207-2-git-send-email-argus.lin@mediatek.com>
+ <1609747703-27207-3-git-send-email-argus.lin@mediatek.com>
 From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <61ed414d-3b93-3620-0075-a75734287e30@gmail.com>
-Date:   Sun, 31 Jan 2021 15:32:03 +0100
+Message-ID: <5d5a67a5-ac2d-9ef9-b20c-66cbd55ebb8f@gmail.com>
+Date:   Sun, 31 Jan 2021 15:32:26 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <1609747703-27207-2-git-send-email-argus.lin@mediatek.com>
+In-Reply-To: <1609747703-27207-3-git-send-email-argus.lin@mediatek.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -84,37 +84,28 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 04/01/2021 09:08, Argus Lin wrote:
-> Support pwrap on Mediatek MT6779 platform by adding pwrap node in dts file.
+> Support pwrap on Mediatek MT6779 platform by enabling CONFIG_MTK_PMIC_WRAP.
 > 
 > Signed-off-by: Argus Lin <argus.lin@mediatek.com>
 > ---
 
-Applied to v5.11-next/dts64
+Applied to v5.11-next/defconfig
 
-
->  arch/arm64/boot/dts/mediatek/mt6779.dtsi | 9 +++++++++
->  1 file changed, 9 insertions(+)
+>  arch/arm64/configs/defconfig | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt6779.dtsi b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-> index 370f309..2c2ca33 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt6779.dtsi
-> @@ -189,6 +189,15 @@
->  			#clock-cells = <1>;
->  		};
-> 
-> +		pwrap: pwrap@1000d000 {
-> +			compatible = "mediatek,mt6779-pwrap";
-> +			reg = <0 0x1000d000 0 0x1000>;
-> +			reg-names = "pwrap";
-> +			interrupts = <GIC_SPI 212 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&clk26m>, <&infracfg_ao CLK_INFRA_PMIC_AP>;
-> +			clock-names = "spi", "wrap";
-> +		};
-> +
->  		uart0: serial@11002000 {
->  			compatible = "mediatek,mt6779-uart",
->  				     "mediatek,mt6577-uart";
+> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> index 8383016..a2c926f 100644
+> --- a/arch/arm64/configs/defconfig
+> +++ b/arch/arm64/configs/defconfig
+> @@ -479,6 +479,7 @@ CONFIG_SPI_S3C64XX=y
+>  CONFIG_SPI_SH_MSIOF=m
+>  CONFIG_SPI_SUN6I=y
+>  CONFIG_SPI_SPIDEV=m
+> +CONFIG_MTK_PMIC_WRAP=m
+>  CONFIG_SPMI=y
+>  CONFIG_PINCTRL_SINGLE=y
+>  CONFIG_PINCTRL_MAX77620=y
 > --
 > 1.8.1.1.dirty
 > 
