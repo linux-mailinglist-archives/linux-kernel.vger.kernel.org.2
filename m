@@ -2,87 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C66E6309F30
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 23:14:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44A17309F31
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 23:14:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229732AbhAaWML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 17:12:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43828 "EHLO
+        id S229545AbhAaWOL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 17:14:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229474AbhAaWFa (ORCPT
+        with ESMTP id S229705AbhAaWKp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 17:05:30 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E97C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 14:04:47 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id s24so9172702pjp.5
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 14:04:47 -0800 (PST)
+        Sun, 31 Jan 2021 17:10:45 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70A11C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 14:08:52 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id b9so1726833ejy.12
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 14:08:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=fMpwIVXy1EXMPiytalR0ppy2UrjVRFooJd8ie54asOY=;
-        b=iAhORKnxxWQ2r9W81ggb4ym4K9riCOx5ywRWM88ub2JfF4OB9QiJbv/SVqz1ygmnSd
-         AW6J4v9YIoDQucReWo3G14M1sWzXGCteVbsnAhAHwQUCcwUc4i3rEZnCIbgrr2R/Rr/t
-         Qava921UX3u7Fj/eIV7Hh2HDoa89L8StonWeRzkmW7/szc2R86kN/0oHlTXHpLZ3p9/y
-         j9CyhM1Oi/F5RNFiVm0Uez/csLPbnXoJOrehCGkklm+iw3nCePqCEeNa4Uwhz9lCpsdJ
-         b5i8Ia4bVqnKGpl3zbKJUGK/LQuzx87AzTFEMdvG3VOC3bUkIUgxqtuKj/CGjbIQ766K
-         fgvw==
+        d=kylehuey.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YwEC/DBzUTfXN/fTV7gO061uOPecLJTSPSEJCwubp8w=;
+        b=d+Nuk0VidlVKOwjW/SPpzvmMZZfgvPFc1Gd+CPhzZOKEhtptkTlbaIbsgjOFPBXmTz
+         WeCxupNSPmHZgtZ2ge4te6o8lubEivvaVVxqLUbZhCkoqy9O+82TfBr6Qs/jnHdGPhz7
+         R/cvgH1mGo5kdgHxK06/vbHeOk3nDLs5L/LDD/gNU9lW/LvhtetlZ5lcjU4249rMxhk9
+         pWRDOpGgTHf0OXV3WquO9GXVJGirokrrQaSte7nLNe7b97EZb3obRFNz7mvrKa94K7+S
+         16Hd9WHH303NX37tStIiJzBbwk8epQSEZYZ/hh0TCpl3dUvqPay/KAXBkekr5wHN9tTl
+         IM1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=fMpwIVXy1EXMPiytalR0ppy2UrjVRFooJd8ie54asOY=;
-        b=uUKjJmzwZoSPwifkQRfiosjl/e8mENpYzo+TnrzL0/K+vbOHNu2Ut4wxkTaAdTuMIy
-         HDxXDEcuaVJgVvAHg2HRvCi23XfS1M7JATlNIMF0Lpd+YXPYvt/NNGfWKUYQIGYidmbg
-         wrSixDI/A4ETQxMGtKHyj2npnEIp/HtZ+5gQ11GRJgSljAJArFdr7pOaXmroB5eTdQ1t
-         VE3PzSrBG0pgDlyfr3PK0yQroGeXW1bequqTIf2LDPN+GxlS4gmW0CWW/ZoHbk2nEv24
-         F9cJSCVRI8XOK75NyR+8G01HZiWrvK90mgShZPjDTiFAxQLIr4syryJZO55ouCMWVUoO
-         EHcQ==
-X-Gm-Message-State: AOAM5338CMZoddRgdckfBmhJjkGrdshvN2V9OPVqKuyIA/gFBi7qX6dS
-        GZ5Wrbc/1EClURvVEFR1NRFxtw==
-X-Google-Smtp-Source: ABdhPJyv1GHgFKkIT0LVGawa5GQ5evss0LgCqhESimh/Ti673OrzwjQ/2kVMlYjaXTv8i/cplSYykA==
-X-Received: by 2002:a17:902:8ec1:b029:dc:8ae1:7a22 with SMTP id x1-20020a1709028ec1b02900dc8ae17a22mr14817479plo.6.1612130686932;
-        Sun, 31 Jan 2021 14:04:46 -0800 (PST)
-Received: from ?IPv6:2600:1010:b05e:e964:2432:9f62:e00b:9795? ([2600:1010:b05e:e964:2432:9f62:e00b:9795])
-        by smtp.gmail.com with ESMTPSA id z15sm15468921pfr.89.2021.01.31.14.04.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Jan 2021 14:04:46 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [REGRESSION] x86/entry: TIF_SINGLESTEP handling is still broken
-Date:   Sun, 31 Jan 2021 14:04:44 -0800
-Message-Id: <0456DEB3-2EA6-4CA6-AA59-E5E1D8F1A77A@amacapital.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YwEC/DBzUTfXN/fTV7gO061uOPecLJTSPSEJCwubp8w=;
+        b=QksOmB/MFvnhNeRdpLPPVzoY9O2SSna9aUpo1tVXd2Tcckgzm1Lx/O6QW3FKggFSe0
+         8n9GgtuMuHXLxAYXn/ZAk2oSITNlYUfSH0gxo2SwGjxk22T8nQhaWRbJkESw406NI6Aa
+         1Js0EsALB6AcgIrFOWd0W3fxqlexu4l5Xv07ADc3HPy6mhFtPf4kZNIUi8rs57M0RM5E
+         FcKYJ+IXs6peSaAtTeLpIBBNxp+SVDr/hfW42W1CS4RTqLdZkan+ykthSXW/VwUUWYZv
+         POvDFhPJ/9AEInhhEUG00hGEumbMsoxdbWJyAstlt1faO9z+0VTqpZBYHwqnqDCuBD6z
+         LT7w==
+X-Gm-Message-State: AOAM532u/jEKZaxN1JMmw00Z0ZXNUhQHqpEfV5F4PGu53/iA2jDNo6Ps
+        zVgGzzGZwcI9Ck2OmpZcKITV1I/CI8T0rjoCwUZTEg==
+X-Google-Smtp-Source: ABdhPJzXeHptZY3z2nKUcL5NPy86/4Kam5MhABmCe9YTlUIBrBBwvzznJJXIk5U04McpmJVommaUca8ffgen20T/kI8=
+X-Received: by 2002:a17:906:e09:: with SMTP id l9mr15007025eji.196.1612130931184;
+ Sun, 31 Jan 2021 14:08:51 -0800 (PST)
+MIME-Version: 1.0
 References: <CAHk-=wgeG7WP_vxho_bfENK3rYP9zUF0_ZjA1X3OftERrs_j2w@mail.gmail.com>
-Cc:     Kyle Huey <me@kylehuey.com>, Thomas Gleixner <tglx@linutronix.de>,
+ <0456DEB3-2EA6-4CA6-AA59-E5E1D8F1A77A@amacapital.net>
+In-Reply-To: <0456DEB3-2EA6-4CA6-AA59-E5E1D8F1A77A@amacapital.net>
+From:   Kyle Huey <me@kylehuey.com>
+Date:   Sun, 31 Jan 2021 14:08:40 -0800
+Message-ID: <CAP045Ao_Zb0HGg0=bvUeV6GjX=-3fz0ScsvM_jE7VsZcVk_-tg@mail.gmail.com>
+Subject: Re: [REGRESSION] x86/entry: TIF_SINGLESTEP handling is still broken
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
         Andy Lutomirski <luto@kernel.org>,
         Gabriel Krisman Bertazi <krisman@collabora.com>,
         open list <linux-kernel@vger.kernel.org>,
-        Robert O'Callahan <rocallahan@gmail.com>
-In-Reply-To: <CAHk-=wgeG7WP_vxho_bfENK3rYP9zUF0_ZjA1X3OftERrs_j2w@mail.gmail.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-X-Mailer: iPhone Mail (18C66)
+        "Robert O'Callahan" <rocallahan@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Jan 31, 2021 at 2:04 PM Andy Lutomirski <luto@amacapital.net> wrote:
+> Indeed, and I have tests for this.
 
+Do you mean you already have a test case or that you would like a
+minimized test case?
 
-> On Jan 31, 2021, at 1:30 PM, Linus Torvalds <torvalds@linux-foundation.org=
-> wrote:
->=20
-> =EF=BB=BFBtw Kyle, do you have a good simple test-case for this? Clearly t=
-his
-> is some weird special case use, and regular single-stepping works
-> fine.
->=20
->=20
-
-Indeed, and I have tests for this.
-
-TBH, the TIF_SINGLESTEP code makes no sense, and I think it has at least thr=
-ee overloaded meanings. I can try to look in a bit.  I=E2=80=99ve mostly avo=
-ided breaking it in the past, but that doesn=E2=80=99t mean I understand the=
- original intent.=
+- Kyle
