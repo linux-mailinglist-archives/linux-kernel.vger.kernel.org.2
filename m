@@ -2,165 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEE0C309F91
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 00:46:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E593A309F94
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 00:51:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229825AbhAaXpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 18:45:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36886 "EHLO
+        id S229981AbhAaXuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 18:50:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbhAaXps (ORCPT
+        with ESMTP id S229481AbhAaXt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 18:45:48 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5CCC061573;
-        Sun, 31 Jan 2021 15:45:08 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id h6so16949530oie.5;
-        Sun, 31 Jan 2021 15:45:08 -0800 (PST)
+        Sun, 31 Jan 2021 18:49:59 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A6FC061573;
+        Sun, 31 Jan 2021 15:49:18 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id b9so1939463ejy.12;
+        Sun, 31 Jan 2021 15:49:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=/MfklXb/fPreEZTP4a/+2979i0zJ9HYWRF0rUS01xT4=;
-        b=Q7P9XwZrFaqX3BfRtb5F59wxFQFPracuGkwFgBC5GxyKvAuYFMbk9YovhUnLw2b5J0
-         WeTAlgEi38LFVusmVYZSJ9WjNNvRGNckNn3GV6lpm3lo09Cb9aKfneru75uV0qRQfffd
-         12Mf5/wZL1vEuCabdtEeZqC3JALYEBup2tqZCLr62ZTmip28TES3gfRuLFNxhRDjMdan
-         ZLdvy16LsaBTrw2eobYJJpOXXBnrHsaKsiYciPo1bgqBBD23FWM/OPUpbmPYpvEjRWMF
-         RgDksqEdw9xOOuTQHsWQbnSWD591BC9Ll+8Cfe8z3xWO5OoUhsaWAhO0uI7KAvjPGFdJ
-         odZg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9u3VCjKt2Gr/6kZ0CP5Tw8UvLHGncCvwPN4iJBZKcMs=;
+        b=lYDqHCRo+aURxVzwc0ShiB0TDCkw81kvah8NjpQA9dbUFCMT1Dd03epfx6q70+glXw
+         2LGTb8uyczLF6ppYBD871890IcglCtlTzC0pBp1M1Lz6qi32juE0X5+Hs8IOvbpiXlso
+         y9LPhycws8rhldlN0BimRCFi3A0m8v1zyOiS8w99gvDs7a+9QkAUXsCRUOIlj08yoON0
+         PsKGcLhjUqffG6QPANrYzp5tVJPjXvFeMEGYT5NL6WNRuBs+zL2uZSN56PYIVX9jXJUe
+         poiFa3DV2cKlQnmJgsd8wp3jQZCmG35uiRDDFgTmgVf4YUW5GrjLCCujxA4q8GH+Nsyd
+         8RiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=/MfklXb/fPreEZTP4a/+2979i0zJ9HYWRF0rUS01xT4=;
-        b=p1cVl34Yno+6mqGbc3MKxEk5Rd7/VBpSNC4YYe1lHaMaZplsxxSjEhsC5q/4xkv4HN
-         49iPxZqP95Dqhfa+KfHKAt7K0fNufX1lnsvps7A6BoE9eLyt6fQ8gf8niJ5d/P4/o53N
-         NKE1P1NjIdrULc03HSvvhBkZk1gEq/oqn1QjtdAOuKkFve16NLnM3ScOBVkA+v4/6X43
-         M7LGbi3De4qlTZ1u4yTFP9z0pTn+258XBlQ0wKmuto4pMrRJw3jeTCkQ1QKeWhSETmCv
-         FeoECHkncG1pKHoLLOXaPKnU/kRWnFM3ttofZHlNYndOEpERSieRk3Il+Yw08VJxrHe+
-         f2AA==
-X-Gm-Message-State: AOAM530ACLMN17efTt0MIzMVxxV/ooGzPPUNEFDtKTucdxxVLpwKeNFV
-        hAuzx9XWmB/GdLRZ9I2Ut9yNX7ZTyDKi6vipZ84=
-X-Google-Smtp-Source: ABdhPJxzE/iWBwXGLvMTUc1b0SKuduY8Kx1fkFZPrhoYcU21x3VptgyFcRoMFIgK6brg1e0HsV7LWP1iUzwUMqYk6rI=
-X-Received: by 2002:aca:d11:: with SMTP id 17mr9423685oin.6.1612136707670;
- Sun, 31 Jan 2021 15:45:07 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9u3VCjKt2Gr/6kZ0CP5Tw8UvLHGncCvwPN4iJBZKcMs=;
+        b=hN4vepziVgLdotNyy19uTFiJRXVLN1clxx0PI3MOe1NisUR3D7fknhPtlFJqDM4alk
+         LNHWAMOCdMv0P0Qw4AJwhqjPkckArI5hYv0OO+WsUDfwrgc8v6+aIzOkvIdKQG/YCDYF
+         ojkOqi5AMYNjt5gMvOOCMH/Csy+w5dtzrFlea1QY1T0Zx1Bd0/kABtV/xZJ6EmZec3yM
+         rdI/NObCFUqB1krEK9c0Vorx5gGRSsNNSef9C2y/n8eEq1fojq3NloPc7KztPgCCBYHF
+         JuIM6+URBXRaRrkuHCaQrto4tv7ksrwt4tPFWhXW28oDPBfvH73dFKpxdDohUS0RJbrb
+         8RrA==
+X-Gm-Message-State: AOAM530clNzl56e2vc4CpkIcK3VAGTAw+1Zxl8P3nKGImzDjf9jBRPCR
+        AujS3y8L3XeYOJr38XrPxMfx87ic7zzsOusM768=
+X-Google-Smtp-Source: ABdhPJwZImVgHQQZzAZ2rZGzt+0YVdpvb6DQzxoVfp65auAlz+i9HwSCDEJs84CDYWvK0k9gbyI6q/lJ+5K62Jp12hc=
+X-Received: by 2002:a17:906:3f8d:: with SMTP id b13mr14801915ejj.464.1612136957300;
+ Sun, 31 Jan 2021 15:49:17 -0800 (PST)
 MIME-Version: 1.0
-From:   Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Date:   Mon, 1 Feb 2021 01:44:56 +0200
-Message-ID: <CAB=otbTVxa=nGWF4K1AYcYyPceYYRkC_1HYSb_Nhu6C9RMZEHA@mail.gmail.com>
-Subject: RPi4 DWC2 gadget doesn't copy data to a buffer in ep0 SETUP + DATA
- OUT transaction
-To:     Minas Harutyunyan <hminas@synopsys.com>,
-        Linux USB <linux-usb@vger.kernel.org>
-Cc:     linux-kernel@vger.kernel.org
+References: <1612025501-91712-1-git-send-email-gakula@marvell.com>
+In-Reply-To: <1612025501-91712-1-git-send-email-gakula@marvell.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Sun, 31 Jan 2021 18:48:41 -0500
+Message-ID: <CAF=yD-J=+opJmqGwCimGm1PnncDDcf1gzTFLuqHrFjZFxSbOeA@mail.gmail.com>
+Subject: Re: [net-next 00/14] Add Marvell CN10K support
+To:     Geetha sowjanya <gakula@marvell.com>
+Cc:     Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Minas and other USB experts,
+On Sat, Jan 30, 2021 at 12:04 PM Geetha sowjanya <gakula@marvell.com> wrote:
+>
+> The current admin function (AF) driver and the netdev driver supports
+> OcteonTx2 silicon variants. The same OcteonTx2's Resource Virtualization Unit (RVU)
+> is carried forward to the next-gen silicon ie OcteonTx3, with some changes
+> and feature enhancements.
+>
+> This patch set adds support for OcteonTx3 (CN10K) silicon and gets the drivers
+> to the same level as OcteonTx2. No new OcteonTx3 specific features are added.
+> Changes cover below HW level differences
+> - PCIe BAR address changes wrt shared mailbox memory region
+> - Receive buffer freeing to HW
+> - Transmit packet's descriptor submission to HW
+> - Programmable HW interface identifiers (channels)
+> - Increased MTU support
+> - A Serdes MAC block (RPM) configuration
+>
+> Geetha sowjanya (6):
+>   octeontx2-af: cn10k: Update NIX/NPA context structure
+>   octeontx2-af: cn10k: Update NIX and NPA context in debugfs
+>   octeontx2-pf: cn10k: Initialise NIX context
+>   octeontx2-pf: cn10k: Map LMTST region
+>   octeontx2-pf: cn10k: Use LMTST lines for NPA/NIX operations
+>
+> Hariprasad Kelam (5):
+>   octeontx2-af: cn10k: Add RPM MAC support
+>   octeontx2-af: cn10K: Add MTU configuration
+>   octeontx2-pf: cn10k: Get max mtu supported from admin function
+>   octeontx2-af: cn10k: Add RPM Rx/Tx stats support
+>   octeontx2-af: cn10k: MAC internal loopback support
+>
+> Rakesh Babu (1):
+>   octeontx2-af: cn10k: Add RPM LMAC pause frame support
+>
+> Subbaraya Sundeep (2):
+>   octeontx2-af: cn10k: Add mbox support for CN10K platform
+>   octeontx2-pf: cn10k: Add mbox support for CN10K
+>   octeontx2-af: cn10k: Add support for programmable channels
+>
+>  drivers/net/ethernet/marvell/octeontx2/af/Makefile |   2 +-
+>  drivers/net/ethernet/marvell/octeontx2/af/cgx.c    | 315 ++++++++---
+>  drivers/net/ethernet/marvell/octeontx2/af/cgx.h    |  15 +-
+>  .../net/ethernet/marvell/octeontx2/af/cgx_fw_if.h  |   1 +
+>  drivers/net/ethernet/marvell/octeontx2/af/common.h |   5 +
+>  .../ethernet/marvell/octeontx2/af/lmac_common.h    | 129 +++++
+>  drivers/net/ethernet/marvell/octeontx2/af/mbox.c   |  59 +-
+>  drivers/net/ethernet/marvell/octeontx2/af/mbox.h   |  70 ++-
+>  drivers/net/ethernet/marvell/octeontx2/af/rpm.c    | 272 ++++++++++
+>  drivers/net/ethernet/marvell/octeontx2/af/rpm.h    |  57 ++
+>  drivers/net/ethernet/marvell/octeontx2/af/rvu.c    | 157 +++++-
+>  drivers/net/ethernet/marvell/octeontx2/af/rvu.h    |  70 +++
+>  .../net/ethernet/marvell/octeontx2/af/rvu_cgx.c    | 135 ++++-
+>  .../net/ethernet/marvell/octeontx2/af/rvu_cn10k.c  | 261 +++++++++
+>  .../ethernet/marvell/octeontx2/af/rvu_debugfs.c    | 339 +++++++++++-
+>  .../net/ethernet/marvell/octeontx2/af/rvu_nix.c    | 112 +++-
+>  .../net/ethernet/marvell/octeontx2/af/rvu_npc.c    |   4 +-
+>  .../net/ethernet/marvell/octeontx2/af/rvu_reg.h    |  24 +
+>  .../net/ethernet/marvell/octeontx2/af/rvu_struct.h | 604 ++++++---------------
+>  .../net/ethernet/marvell/octeontx2/nic/Makefile    |   2 +-
+>  drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c | 182 +++++++
+>  drivers/net/ethernet/marvell/octeontx2/nic/cn10k.h |  17 +
+>  .../ethernet/marvell/octeontx2/nic/otx2_common.c   | 144 +++--
+>  .../ethernet/marvell/octeontx2/nic/otx2_common.h   | 105 +++-
+>  .../net/ethernet/marvell/octeontx2/nic/otx2_pf.c   |  67 ++-
+>  .../net/ethernet/marvell/octeontx2/nic/otx2_reg.h  |   4 +
+>  .../ethernet/marvell/octeontx2/nic/otx2_struct.h   |  10 +-
+>  .../net/ethernet/marvell/octeontx2/nic/otx2_txrx.c |  70 ++-
+>  .../net/ethernet/marvell/octeontx2/nic/otx2_txrx.h |   8 +-
+>  .../net/ethernet/marvell/octeontx2/nic/otx2_vf.c   |  52 +-
+>  include/linux/soc/marvell/octeontx2/asm.h          |   8 +
+>  31 files changed, 2573 insertions(+), 727 deletions(-)
+>  create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/lmac_common.h
+>  create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rpm.c
+>  create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rpm.h
+>  create mode 100644 drivers/net/ethernet/marvell/octeontx2/af/rvu_cn10k.c
+>  create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c
+>  create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/cn10k.h
+>
 
-I'm currently developing new features for UAC1/UAC2 audio gadgets
-like Volume/Mute controls which use Control SETUP + DATA OUT
-transactions through ep0.
+FYI, patchwork shows a number of checkpatch and build warnings to fix up
 
-While it works fine on BeagleBone black board with MUSB UDC,
-on Raspberry Pi 4 with DWC2 UDC there is an issue.
-
-I found that when DWC2 receives ep0 SETUP + DATA OUT transaction,
-it doesn't copy data transferred from the host to EP0 in DATA OUT stage
-to the usb_request->buf buffer. This buffer contains unchanged data from
-previous transactions.
-
-However, when I disable DMA for DWC2 controller (see the patch below)
-it starts to work as expected and correctly copies data transferred from
-the host in the DATA OUT stage, to the usb_request->buf buffer.
-
-So far I tested it on v5.9 kernel and v5.10.10 stable kernel both have
-the same issue.
-
-This issue is easily reproducible with RNDIS gadget which also
-uses ep0 SETUP + DATA OUT transactions for transferring
-RNDIS control messages.
-
-During enumeration of RNDIS gadget attached to Linux host,
-I see next messages for RPi4 DWC2 with DMA enabled:
-
-| ## RPi4 DWC2 DMA
-| [   91.029881] rndis_msg_parser: unknown RNDIS message 0x0052033A len 4456526
-| [   91.029889] RNDIS command error -524, 24/24
-
-In this case rndis_msg_parser can't parse messages from the host
-because they are sent through SETUP + DATA OUT transaction and
-DWC2 didn't copy that messages to the buffer, so buffer contains
-some garbage from previous transactions which can't be parsed.
-
-In case of BBB black or DWC2 with disabled DMA, it looks like:
-
-| ## BBB black
-| [   32.867751] rndis_msg_parser: RNDIS_MSG_INIT
-
-| ## RPi4 DWC2 no DMA
-| [  151.080724] rndis_msg_parser: RNDIS_MSG_INIT
-
-I also did a quick googling and found that same issue was
-recently reported for Raspberry pi OS:
-https://github.com/raspberrypi/Raspberry-Pi-OS-64bit/issues/127
-
-I spent some time on debugging this issue, but without having
-DWC2 documentation and experience with DWC2 internals
-that's all that I found so far.
-
-Is this a known issue? Anybody debugging it? Any ideas?
-
-Thanks,
-Ruslan
-
--------------------------------------8<----------------------------------------
-From ced7a3631d9800d04bcbcd756dac4583459fe48c Mon Sep 17 00:00:00 2001
-From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Date: Wed, 20 Jan 2021 00:27:52 +0200
-Subject: [PATCH] usb: dwc2: workaround: disable DMA for gadget
-
-On Raspberry PI 4 it was observer that in case of control
-transfers with DATA phase from a host, the driver for some
-reason doesn't copy transferred data to the buffer, leaving
-previous data in it.
-
-With disabled DMA the issue isn't reproducible, thus
-temporarily disable it
-
-Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
----
- drivers/usb/dwc2/params.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
-index 267543c..46c18af 100644
---- a/drivers/usb/dwc2/params.c
-+++ b/drivers/usb/dwc2/params.c
-@@ -357,7 +357,11 @@ static void dwc2_set_default_params(struct
-dwc2_hsotg *hsotg)
- {
-  struct dwc2_hw_params *hw = &hsotg->hw_params;
-  struct dwc2_core_params *p = &hsotg->params;
-+#if 0
-  bool dma_capable = !(hw->arch == GHWCFG2_SLAVE_ONLY_ARCH);
-+#else
-+ bool dma_capable = 0;
-+#endif
-
-  dwc2_set_param_otg_cap(hsotg);
-  dwc2_set_param_phy_type(hsotg);
-@@ -651,7 +655,11 @@ static void dwc2_check_params(struct dwc2_hsotg *hsotg)
- {
-  struct dwc2_hw_params *hw = &hsotg->hw_params;
-  struct dwc2_core_params *p = &hsotg->params;
-+#if 0
-  bool dma_capable = !(hw->arch == GHWCFG2_SLAVE_ONLY_ARCH);
-+#else
-+ bool dma_capable = 0;
-+#endif
-
-  dwc2_check_param_otg_cap(hsotg);
-  dwc2_check_param_phy_type(hsotg);
--- 
-1.9.1
+https://patchwork.kernel.org/project/netdevbpf/list/?series=424847
