@@ -2,201 +2,293 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56EC6309F00
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 21:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F98309F05
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 21:58:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231187AbhAaUok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 15:44:40 -0500
-Received: from fallback19.mail.ru ([185.5.136.251]:46274 "EHLO
-        fallback19.mail.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhAaUoh (ORCPT
+        id S231420AbhAaU5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 15:57:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231356AbhAaU5j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 15:44:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bk.ru; s=mail3;
-        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From; bh=x91kNo+EZoeEPgRKuQ2NmVSJ9662TjzAjj9y/QYpoC8=;
-        b=nSRMioSVzcyPV7XxXvWjb4aePU4L1FuoK23pxWxTbUXxKrC66/GkVUqTktvgP5XthfmrOzCreABimqZBUq4fK4PgGwfVpnrLNunDi9JUKPuG6ALUs7HNKPkMIun+kbh05uViGuX2mMt+MR28RiuZA1Vj6sFv9mRz3oCe5uqDyIQ=;
-Received: from [10.161.64.50] (port=44174 helo=smtp42.i.mail.ru)
-        by fallback19.m.smailru.net with esmtp (envelope-from <dev.dragon@bk.ru>)
-        id 1l6JZS-0004h1-Pd; Sun, 31 Jan 2021 23:43:47 +0300
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=bk.ru; s=mail3;
-        h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=x91kNo+EZoeEPgRKuQ2NmVSJ9662TjzAjj9y/QYpoC8=;
-        b=dzMKQPGNzPasuYxwDLNNqvZtaSRSzEMwfkrMazLCS6AOfPLg1HdTy/NMuzgkjmGtO8aqwtk0PPPfy6C2vRUiMj15++GaFj3SomAwPvgPei+wBwZw/O3reRvVvhtcY5bCQnoIHmMd9M1P1h+VJspIcUJYrRJMDbKh1xgEYqx9IWk=;
-Received: by smtp42.i.mail.ru with esmtpa (envelope-from <dev.dragon@bk.ru>)
-        id 1l6JYg-0001eV-Na; Sun, 31 Jan 2021 23:42:59 +0300
-From:   dev.dragon@bk.ru
-To:     gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        Dmitrii Wolf <dev.dragon@bk.ru>
-Subject: [PATCH] Staging: wimax: i2400m: fixing several coding style issues.
-Date:   Sun, 31 Jan 2021 23:42:50 +0300
-Message-Id: <20210131204250.112299-1-dev.dragon@bk.ru>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-7564579A: 78E4E2B564C1792B
-X-77F55803: 4F1203BC0FB41BD953AC099BC0052A9CD238BCF93DF237168F57FB2D6D655B83182A05F5380850401908E7477F209884146BBE44F1E7D0906FF54D6A43B18685D1C0373C7B4A6AFA
-X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE7E5D7EAC6EBA58433EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F79006377845AD97F799C6E88638F802B75D45FF5571747095F342E8C7A0BC55FA0FE5FC6E153D1C801A08924BDCA29D9535C0038B440D6D0EA8E47C389733CBF5DBD5E913377AFFFEAFD269176DF2183F8FC7C04CF195F1528592878941B15DA834481FCF19DD082D7633A0EF3E4896CB9E6436389733CBF5DBD5E9D5E8D9A59859A8B6A50BD5087FBFCDAACC7F00164DA146DA6F5DAA56C3B73B237318B6A418E8EAB8D32BA5DBAC0009BE9E8FC8737B5C22496F6A3E018CF4DC8076E601842F6C81A12EF20D2F80756B5F7E9C4E3C761E06A776E601842F6C81A127C277FBC8AE2E8BDC0F6C5B2EEF3D0C3AA81AA40904B5D9DBF02ECDB25306B2B25CBF701D1BE8734AD6D5ED66289B5278DA827A17800CE7615D336674ED096D67F23339F89546C5A8DF7F3B2552694A6FED454B719173D6725E5C173C3A84C34AF53C55BE5D933E35872C767BF85DA2F004C906525384306FED454B719173D6462275124DF8B9C99B0B8D173C204012BD9CCCA9EDD067B1EDA766A37F9254B7
-X-B7AD71C0: AC4F5C86D027EB782CDD5689AFBDA7A24A6D60772A99906F8E1CD14B953EB46D079C992D0118F219355D89D7DBCDD132
-X-C1DE0DAB: C20DE7B7AB408E4181F030C43753B8186998911F362727C414F749A5E30D975C6FA9FB90A9CF701879637C1C50ABF52CFB5E0A650711DE319C2B6934AE262D3EE7EAB7254005DCEDD39702B95798B16792E1F3B950BCE21616EB5DE968479BF567E3B074FD9791DFBDC6A1CF3F042BAD6DF99611D93F60EF52D31B9D28593E51699F904B3F4130E343918A1A30D5E7FCCB5012B2E24CD356
-X-C8649E89: 4E36BF7865823D7055A7F0CF078B5EC49A30900B95165D34A5970F8A4685C8ABB4CDE1EFF6DF57DB0F4946944468DBD5ADA320FAD1ECDDB44E96CE15A58263811D7E09C32AA3244CE0B5882785AAEB036E4A2806BEE677EBE3D93501275E802F927AC6DF5659F194
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojyKiJYJ15DtKwsJfFAVRJIA==
-X-Mailru-Sender: 3A338A78718AEC5AA85B3E7661095C1EBF4E5C4355551C8E446F0BA90CFFE679B33E51DCCD4AC27D3833C6AC539110AEA432B8CD90067B65A6C5C4E98768B51D7AA22088860DD9FF5CDEF9E650933936342CD0BA774DB6A9AE208404248635DF
-X-Mras: Ok
-X-7564579A: 646B95376F6C166E
-X-77F55803: 6242723A09DB00B429696F2DCEDD653A3882F69B6077407EB31F15AD7B7D4C54049FFFDB7839CE9E186C0D0944DC462B3BC431267A69C345A13E41C30D6794742283C5ABD7B9D202
-X-7FA49CB5: 0D63561A33F958A5BDCF817A81408DC605D2B287DD593CB65934AA15225F69948941B15DA834481FA18204E546F3947C5755EDFBF798C333CC7F00164DA146DAFE8445B8C89999729449624AB7ADAF37F6B57BC7E64490611E7FA7ABCAF51C921661749BA6B97735F6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA73AA81AA40904B5D9A18204E546F3947CA0BCD6C998BE2772040F9FF01DFDA4A84AD6D5ED66289B52698AB9A7B718F8C442539A7722CA490C13377AFFFEAFD2690E30A4C9C8E338DAC2C510BA6FADEC9493EC92FD9297F6715571747095F342E857739F23D657EF2BD5E8D9A59859A8B652133A072312AED0089D37D7C0E48F6C5571747095F342E857739F23D657EF2B6825BDBE14D8E702ABEDDA51113D120200306258E7E6ABB4E4A6367B16DE6309
-X-C1DE0DAB: C20DE7B7AB408E4181F030C43753B8186998911F362727C414F749A5E30D975C6FA9FB90A9CF7018DF758BEBA29023735E24EA6B0388E4719C2B6934AE262D3EE7EAB7254005DCEDD39702B95798B16792E1F3B950BCE21616EB5DE968479BF55FE3B9244D85F0BB8E8E86DC7131B365E7726E8460B7C23C
-X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojyKiJYJ15DtL6gexlJ9/xyA==
-X-Mailru-MI: 800
-X-Mailru-Sender: A5480F10D64C9005CC619DDFF34CA75FBBCBABB393515EE6B8318DDA0DAA5D2520D24A6AA3ADFC6DCD4CDAD98BDCABE8DDBB79867CC2C1EC846E85FF75DBDC4983CE97D6EC8C31C553326A0E03014151EAB4BC95F72C04283CDA0F3B3F5B9367
-X-Mras: Ok
+        Sun, 31 Jan 2021 15:57:39 -0500
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF030C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 12:56:58 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id u66so11784795qkd.13
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 12:56:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=M0/ffCzflaSzm8zegmbrgtKSZrWUkbfyK67XvLh2jA4=;
+        b=e5lbRHX7c9nMDJzgY4V6CSl5cGAINtlBKXqzoKy+GUx9VH/kA5+pcABQ1u1K+UdiSq
+         ovM1czT3X6b0+p5ZpjKXYgtRLUqdoptPaQ+Aqr4lRS3MQLpdKmOs5Rmv4jBV9nZw65ij
+         wbDQj89xwU0y0D4FV0V5WlK/G3Z+5jkN3lbj5jPLyMH0Kc7lEWX7fflur9haIq/P/ilV
+         cvGHByto1dGvif6OhGIaCuIsTYEjGQaHDkI+sqk1iDsan4Wwys/hKLqleV58R6LVbFCj
+         eDDeuDbBjHAOL84cN0zwi5T4IvhTqQH74Dto3Y+d98ClsXRVriAipPzMs7YXquNq5EWj
+         rBjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=M0/ffCzflaSzm8zegmbrgtKSZrWUkbfyK67XvLh2jA4=;
+        b=HQ6k0wn+NBjlKvn7QtlL4aBuLHEdz3yUID8guIztfoWxrBMFUK+GxmOGcKX00puEw7
+         t7+bPnITnheF0xVrpkwhYW3HRp1XmwK4xyDCMVzYkuJfwZcJ2FJ6BP6hg2mhmrwPhvs5
+         r2YufRDFh/lUC6G/H4F39Qop84j3A29bzlp7ihEQR80W83tZ8VX+oLxZgjsZkW8TmGMG
+         2naihmPClE82+SYOvN4TfeFp/bRPaHrRhw8rKOg9suAcnqLj83M0agqpV0WpL2ORaFHe
+         /Q5hrNoNHFxROAGD7e1NCxHzN/17Q8fhcJ7BOTBIdQ+BwKA+TXj1gI0bstEIHfQK9ac/
+         vqwg==
+X-Gm-Message-State: AOAM533QyxyzkPfbAIWAoVRzUODtyPYGdqnkPV3av/2WV/rzuAsgb1X1
+        /dJYEyK2FHJR8HBC8MQ29HmkofHwLR7UVmU=
+X-Google-Smtp-Source: ABdhPJy+M2FKsXWxPbkG0IyqHwoolAG9sb04KgbtDqMBfjWPpcT0bbPu6PfAGvvgkHzbfNl89R7X7LQseqQQdHY=
+Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7220:84ff:fe09:fedc])
+ (user=saravanak job=sendgmr) by 2002:a0c:f582:: with SMTP id
+ k2mr12673609qvm.55.1612126618116; Sun, 31 Jan 2021 12:56:58 -0800 (PST)
+Date:   Sun, 31 Jan 2021 12:56:53 -0800
+Message-Id: <20210131205654.3379661-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+Subject: [PATCH v1] ARM: imx: avic: Convert to using IRQCHIP_DECLARE
+From:   Saravana Kannan <saravanak@google.com>
+To:     Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     Martin Kaiser <martin@kaiser.cx>, kernel-team@android.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitrii Wolf <dev.dragon@bk.ru>
+Remove a lot of boilerplate code. Also address boot issues on imx25 with
+fw_devlink=on that were reported by Martin.
 
-Fixed a coding style issues.
-
-Signed-off-by: Dmitrii Wolf <dev.dragon@bk.ru>
+Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
+Reported-by: Martin Kaiser <martin@kaiser.cx>
+Signed-off-by: Saravana Kannan <saravanak@google.com>
 ---
- drivers/staging/wimax/i2400m/debugfs.c |  2 +-
- drivers/staging/wimax/i2400m/netdev.c  |  2 +-
- drivers/staging/wimax/i2400m/rx.c      | 23 +++++++++++------------
- drivers/staging/wimax/i2400m/usb.c     |  2 +-
- 4 files changed, 14 insertions(+), 15 deletions(-)
 
-diff --git a/drivers/staging/wimax/i2400m/debugfs.c b/drivers/staging/wimax/i2400m/debugfs.c
-index 1c640b41ea4c..4e6e1e3f015e 100644
---- a/drivers/staging/wimax/i2400m/debugfs.c
-+++ b/drivers/staging/wimax/i2400m/debugfs.c
-@@ -170,7 +170,7 @@ int debugfs_i2400m_reset_set(void *data, u64 val)
- 	int result;
- 	struct i2400m *i2400m = data;
- 	enum i2400m_reset_type rt = val;
--	switch(rt) {
-+	switch (rt) {
- 	case I2400M_RT_WARM:
- 	case I2400M_RT_COLD:
- 	case I2400M_RT_BUS:
-diff --git a/drivers/staging/wimax/i2400m/netdev.c b/drivers/staging/wimax/i2400m/netdev.c
-index 8339d600e77b..0895a2e441d3 100644
---- a/drivers/staging/wimax/i2400m/netdev.c
-+++ b/drivers/staging/wimax/i2400m/netdev.c
-@@ -523,7 +523,7 @@ void i2400m_net_erx(struct i2400m *i2400m, struct sk_buff *skb,
- 
- 	d_fnstart(2, dev, "(i2400m %p skb %p [%u] cs %d)\n",
- 		  i2400m, skb, skb->len, cs);
--	switch(cs) {
-+	switch (cs) {
- 	case I2400M_CS_IPV4_0:
- 	case I2400M_CS_IPV4:
- 		i2400m_rx_fake_eth_header(i2400m->wimax_dev.net_dev,
-diff --git a/drivers/staging/wimax/i2400m/rx.c b/drivers/staging/wimax/i2400m/rx.c
-index c9fb619a9e01..807bd3db69e9 100644
---- a/drivers/staging/wimax/i2400m/rx.c
-+++ b/drivers/staging/wimax/i2400m/rx.c
-@@ -485,8 +485,7 @@ struct i2400m_roq_data {
-  * store the sequence number (sn) and the cs (packet type) coming from
-  * the RX payload header from the device.
+I've compile tested this for imx25 and imx27. But I don't have any
+devices to test this on.
+
+-Saravana
+
+ arch/arm/mach-imx/avic.c       | 16 +++++++++++++++-
+ arch/arm/mach-imx/common.h     |  1 -
+ arch/arm/mach-imx/mach-imx1.c  | 11 -----------
+ arch/arm/mach-imx/mach-imx25.c | 12 ------------
+ arch/arm/mach-imx/mach-imx27.c | 12 ------------
+ arch/arm/mach-imx/mach-imx31.c |  1 -
+ arch/arm/mach-imx/mach-imx35.c |  1 -
+ arch/arm/mach-imx/mm-imx3.c    | 24 ------------------------
+ 8 files changed, 15 insertions(+), 63 deletions(-)
+
+diff --git a/arch/arm/mach-imx/avic.c b/arch/arm/mach-imx/avic.c
+index 322caa21bcb3..e67e1c2799d1 100644
+--- a/arch/arm/mach-imx/avic.c
++++ b/arch/arm/mach-imx/avic.c
+@@ -7,6 +7,7 @@
+ #include <linux/module.h>
+ #include <linux/irq.h>
+ #include <linux/irqdomain.h>
++#include <linux/irqchip.h>
+ #include <linux/io.h>
+ #include <linux/of.h>
+ #include <linux/of_address.h>
+@@ -162,7 +163,7 @@ static void __exception_irq_entry avic_handle_irq(struct pt_regs *regs)
+  * interrupts. It registers the interrupt enable and disable functions
+  * to the kernel for each interrupt source.
   */
--struct i2400m_roq
--{
-+struct i2400m_roq {
- 	unsigned ws;
- 	struct sk_buff_head queue;
- 	struct i2400m_roq_log *log;
-@@ -556,7 +555,7 @@ void i2400m_roq_log_entry_print(struct i2400m *i2400m, unsigned index,
+-void __init mxc_init_irq(void __iomem *irqbase)
++static void __init mxc_init_irq(void __iomem *irqbase)
  {
- 	struct device *dev = i2400m_dev(i2400m);
+ 	struct device_node *np;
+ 	int irq_base;
+@@ -220,3 +221,16 @@ void __init mxc_init_irq(void __iomem *irqbase)
  
--	switch(e->type) {
-+	switch (e->type) {
- 	case I2400M_RO_TYPE_RESET:
- 		dev_err(dev, "q#%d reset           ws %u cnt %u sn %u/%u"
- 			" - new nws %u\n",
-@@ -764,9 +763,9 @@ unsigned __i2400m_roq_update_ws(struct i2400m *i2400m, struct i2400m_roq *roq,
- 				 new_nws);
- 			__skb_unlink(skb_itr, &roq->queue);
- 			i2400m_net_erx(i2400m, skb_itr, roq_data_itr->cs);
--		}
--		else
-+		} else {
- 			break;	/* rest of packets all nsn_itr > nws */
-+		}
- 	}
- 	roq->ws = sn;
- 	return new_nws;
-@@ -819,7 +818,7 @@ void i2400m_roq_reset(struct i2400m *i2400m, struct i2400m_roq *roq)
-  */
- static
- void i2400m_roq_queue(struct i2400m *i2400m, struct i2400m_roq *roq,
--		      struct sk_buff * skb, unsigned lbn)
-+		struct sk_buff *skb, unsigned lbn)
- {
- 	struct device *dev = i2400m_dev(i2400m);
- 	unsigned nsn, len;
-@@ -882,7 +881,7 @@ void i2400m_roq_update_ws(struct i2400m *i2400m, struct i2400m_roq *roq,
-  */
- static
- void i2400m_roq_queue_update_ws(struct i2400m *i2400m, struct i2400m_roq *roq,
--				struct sk_buff * skb, unsigned sn)
-+		struct sk_buff *skb, unsigned sn)
- {
- 	struct device *dev = i2400m_dev(i2400m);
- 	unsigned nsn, old_ws, len;
-@@ -1046,7 +1045,7 @@ void i2400m_rx_edata(struct i2400m *i2400m, struct sk_buff *skb_rx,
- 			 ro_type, ro_cin, roq->ws, ro_sn,
- 			 __i2400m_roq_nsn(roq, ro_sn), size);
- 		d_dump(2, dev, payload, size);
--		switch(ro_type) {
-+		switch (ro_type) {
- 		case I2400M_RO_TYPE_RESET:
- 			i2400m_roq_reset(i2400m, roq);
- 			kfree_skb(skb);	/* no data here */
-@@ -1068,9 +1067,9 @@ void i2400m_rx_edata(struct i2400m *i2400m, struct sk_buff *skb_rx,
- 		spin_lock_irqsave(&i2400m->rx_lock, flags);
- 		kref_put(&i2400m->rx_roq_refcount, i2400m_rx_roq_destroy);
- 		spin_unlock_irqrestore(&i2400m->rx_lock, flags);
--	}
--	else
-+	} else {
- 		i2400m_net_erx(i2400m, skb, cs);
-+	}
- error_skb_clone:
- error:
- 	d_fnend(2, dev, "(i2400m %p skb_rx %p single %u payload %p "
-@@ -1346,7 +1345,7 @@ int i2400m_rx_setup(struct i2400m *i2400m)
- {
- 	int result = 0;
- 
--	i2400m->rx_reorder = i2400m_rx_reorder_disabled? 0 : 1;
-+	i2400m->rx_reorder = i2400m_rx_reorder_disabled ? 0 : 1;
- 	if (i2400m->rx_reorder) {
- 		unsigned itr;
- 		struct i2400m_roq_log *rd;
-@@ -1365,7 +1364,7 @@ int i2400m_rx_setup(struct i2400m *i2400m)
- 			goto error_roq_log_alloc;
- 		}
- 
--		for(itr = 0; itr < I2400M_RO_CIN + 1; itr++) {
-+		for (itr = 0; itr < I2400M_RO_CIN + 1; itr++) {
- 			__i2400m_roq_init(&i2400m->rx_roq[itr]);
- 			i2400m->rx_roq[itr].log = &rd[itr];
- 		}
-diff --git a/drivers/staging/wimax/i2400m/usb.c b/drivers/staging/wimax/i2400m/usb.c
-index f250d03ce7c7..3bb8c32414c2 100644
---- a/drivers/staging/wimax/i2400m/usb.c
-+++ b/drivers/staging/wimax/i2400m/usb.c
-@@ -327,7 +327,7 @@ int i2400mu_bus_reset(struct i2400m *i2400m, enum i2400m_reset_type rt)
+ 	printk(KERN_INFO "MXC IRQ initialized\n");
+ }
++
++static int __init imx_avic_init(struct device_node *node,
++			       struct device_node *parent)
++{
++	void __iomem *avic_base;
++
++	avic_base = of_iomap(node, 0);
++	BUG_ON(!avic_base);
++	mxc_init_irq(avic_base);
++	return 0;
++}
++
++IRQCHIP_DECLARE(imx_avic, "fsl,imx31-avic", imx_avic_init);
+diff --git a/arch/arm/mach-imx/common.h b/arch/arm/mach-imx/common.h
+index 2d76e2c6c99e..e988b0978a42 100644
+--- a/arch/arm/mach-imx/common.h
++++ b/arch/arm/mach-imx/common.h
+@@ -22,7 +22,6 @@ void mx35_map_io(void);
+ void imx21_init_early(void);
+ void imx31_init_early(void);
+ void imx35_init_early(void);
+-void mxc_init_irq(void __iomem *);
+ void mx31_init_irq(void);
+ void mx35_init_irq(void);
+ void mxc_set_cpu_type(unsigned int type);
+diff --git a/arch/arm/mach-imx/mach-imx1.c b/arch/arm/mach-imx/mach-imx1.c
+index 32df3b8012f9..8eca92d66a2e 100644
+--- a/arch/arm/mach-imx/mach-imx1.c
++++ b/arch/arm/mach-imx/mach-imx1.c
+@@ -17,16 +17,6 @@ static void __init imx1_init_early(void)
+ 	mxc_set_cpu_type(MXC_CPU_MX1);
  }
  
- static void i2400mu_get_drvinfo(struct net_device *net_dev,
--                                struct ethtool_drvinfo *info)
-+		struct ethtool_drvinfo *info)
- {
- 	struct i2400m *i2400m = net_dev_to_i2400m(net_dev);
- 	struct i2400mu *i2400mu = container_of(i2400m, struct i2400mu, i2400m);
+-static void __init imx1_init_irq(void)
+-{
+-	void __iomem *avic_addr;
+-
+-	avic_addr = ioremap(MX1_AVIC_ADDR, SZ_4K);
+-	WARN_ON(!avic_addr);
+-
+-	mxc_init_irq(avic_addr);
+-}
+-
+ static const char * const imx1_dt_board_compat[] __initconst = {
+ 	"fsl,imx1",
+ 	NULL
+@@ -34,7 +24,6 @@ static const char * const imx1_dt_board_compat[] __initconst = {
+ 
+ DT_MACHINE_START(IMX1_DT, "Freescale i.MX1 (Device Tree Support)")
+ 	.init_early	= imx1_init_early,
+-	.init_irq	= imx1_init_irq,
+ 	.dt_compat	= imx1_dt_board_compat,
+ 	.restart	= mxc_restart,
+ MACHINE_END
+diff --git a/arch/arm/mach-imx/mach-imx25.c b/arch/arm/mach-imx/mach-imx25.c
+index 95de48a1aa7d..51927bd08aef 100644
+--- a/arch/arm/mach-imx/mach-imx25.c
++++ b/arch/arm/mach-imx/mach-imx25.c
+@@ -22,17 +22,6 @@ static void __init imx25_dt_init(void)
+ 	imx_aips_allow_unprivileged_access("fsl,imx25-aips");
+ }
+ 
+-static void __init mx25_init_irq(void)
+-{
+-	struct device_node *np;
+-	void __iomem *avic_base;
+-
+-	np = of_find_compatible_node(NULL, NULL, "fsl,avic");
+-	avic_base = of_iomap(np, 0);
+-	BUG_ON(!avic_base);
+-	mxc_init_irq(avic_base);
+-}
+-
+ static const char * const imx25_dt_board_compat[] __initconst = {
+ 	"fsl,imx25",
+ 	NULL
+@@ -42,6 +31,5 @@ DT_MACHINE_START(IMX25_DT, "Freescale i.MX25 (Device Tree Support)")
+ 	.init_early	= imx25_init_early,
+ 	.init_machine	= imx25_dt_init,
+ 	.init_late      = imx25_pm_init,
+-	.init_irq	= mx25_init_irq,
+ 	.dt_compat	= imx25_dt_board_compat,
+ MACHINE_END
+diff --git a/arch/arm/mach-imx/mach-imx27.c b/arch/arm/mach-imx/mach-imx27.c
+index 262422a9c196..e325c9468105 100644
+--- a/arch/arm/mach-imx/mach-imx27.c
++++ b/arch/arm/mach-imx/mach-imx27.c
+@@ -56,17 +56,6 @@ static void __init imx27_init_early(void)
+ 	mxc_set_cpu_type(MXC_CPU_MX27);
+ }
+ 
+-static void __init mx27_init_irq(void)
+-{
+-	void __iomem *avic_base;
+-	struct device_node *np;
+-
+-	np = of_find_compatible_node(NULL, NULL, "fsl,avic");
+-	avic_base = of_iomap(np, 0);
+-	BUG_ON(!avic_base);
+-	mxc_init_irq(avic_base);
+-}
+-
+ static const char * const imx27_dt_board_compat[] __initconst = {
+ 	"fsl,imx27",
+ 	NULL
+@@ -75,7 +64,6 @@ static const char * const imx27_dt_board_compat[] __initconst = {
+ DT_MACHINE_START(IMX27_DT, "Freescale i.MX27 (Device Tree Support)")
+ 	.map_io		= mx27_map_io,
+ 	.init_early	= imx27_init_early,
+-	.init_irq	= mx27_init_irq,
+ 	.init_late	= imx27_pm_init,
+ 	.dt_compat	= imx27_dt_board_compat,
+ MACHINE_END
+diff --git a/arch/arm/mach-imx/mach-imx31.c b/arch/arm/mach-imx/mach-imx31.c
+index dc69dfe600df..e9a1092b6093 100644
+--- a/arch/arm/mach-imx/mach-imx31.c
++++ b/arch/arm/mach-imx/mach-imx31.c
+@@ -14,6 +14,5 @@ static const char * const imx31_dt_board_compat[] __initconst = {
+ DT_MACHINE_START(IMX31_DT, "Freescale i.MX31 (Device Tree Support)")
+ 	.map_io		= mx31_map_io,
+ 	.init_early	= imx31_init_early,
+-	.init_irq	= mx31_init_irq,
+ 	.dt_compat	= imx31_dt_board_compat,
+ MACHINE_END
+diff --git a/arch/arm/mach-imx/mach-imx35.c b/arch/arm/mach-imx/mach-imx35.c
+index ec5c3068715c..0fc08218b77d 100644
+--- a/arch/arm/mach-imx/mach-imx35.c
++++ b/arch/arm/mach-imx/mach-imx35.c
+@@ -27,6 +27,5 @@ DT_MACHINE_START(IMX35_DT, "Freescale i.MX35 (Device Tree Support)")
+ 	.l2c_aux_mask	= ~0,
+ 	.map_io		= mx35_map_io,
+ 	.init_early	= imx35_init_early,
+-	.init_irq	= mx35_init_irq,
+ 	.dt_compat	= imx35_dt_board_compat,
+ MACHINE_END
+diff --git a/arch/arm/mach-imx/mm-imx3.c b/arch/arm/mach-imx/mm-imx3.c
+index 5056438e5b42..28db97289ee8 100644
+--- a/arch/arm/mach-imx/mm-imx3.c
++++ b/arch/arm/mach-imx/mm-imx3.c
+@@ -109,18 +109,6 @@ void __init imx31_init_early(void)
+ 	mx3_ccm_base = of_iomap(np, 0);
+ 	BUG_ON(!mx3_ccm_base);
+ }
+-
+-void __init mx31_init_irq(void)
+-{
+-	void __iomem *avic_base;
+-	struct device_node *np;
+-
+-	np = of_find_compatible_node(NULL, NULL, "fsl,imx31-avic");
+-	avic_base = of_iomap(np, 0);
+-	BUG_ON(!avic_base);
+-
+-	mxc_init_irq(avic_base);
+-}
+ #endif /* ifdef CONFIG_SOC_IMX31 */
+ 
+ #ifdef CONFIG_SOC_IMX35
+@@ -158,16 +146,4 @@ void __init imx35_init_early(void)
+ 	mx3_ccm_base = of_iomap(np, 0);
+ 	BUG_ON(!mx3_ccm_base);
+ }
+-
+-void __init mx35_init_irq(void)
+-{
+-	void __iomem *avic_base;
+-	struct device_node *np;
+-
+-	np = of_find_compatible_node(NULL, NULL, "fsl,imx35-avic");
+-	avic_base = of_iomap(np, 0);
+-	BUG_ON(!avic_base);
+-
+-	mxc_init_irq(avic_base);
+-}
+ #endif /* ifdef CONFIG_SOC_IMX35 */
 -- 
-2.25.1
+2.30.0.365.g02bc693789-goog
 
