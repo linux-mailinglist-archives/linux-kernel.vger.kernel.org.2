@@ -2,90 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33A57309943
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 01:15:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9876D309947
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 01:16:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232459AbhAaANo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 19:13:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49492 "EHLO
+        id S232463AbhAaAPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 19:15:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232369AbhAaANc (ORCPT
+        with ESMTP id S231792AbhAaAPL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 19:13:32 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CABEC061756
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 16:12:52 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id b20so7154017ljo.1
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 16:12:52 -0800 (PST)
+        Sat, 30 Jan 2021 19:15:11 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CC2C061574;
+        Sat, 30 Jan 2021 16:14:31 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id u14so9614943wml.4;
+        Sat, 30 Jan 2021 16:14:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=batmuya7co49qkeSt7rrFXuUKreU4NnJ2KEEv73JYWE=;
-        b=N0Vw6MDTg3MmEUEM+hsk5w+E42bPcuteYfxeiCXtQlJhfysYBf6F1bwNX6K2/ol9lr
-         B0dvXiBwRWcYze3Z8zbQLJWoiqu2tcI48i/Hprge8E/0JSEwXILtznma+VmymPNiqkM7
-         IXlLDS86Hkhup1wFZEchkUUFQQlHDfH9oadUWwQD/VhYSMrBGHZzx3/3UH1Vl6CcL7Qd
-         CIo9JoTeTwUJubikMXXp1EeDoBPogYAbJ7e99aeXUJjvsK3fR2NVQIZXXEdBiKmwcFDp
-         CHVz2APc8Y3Q5/w6ZOIOpsNNcqWXJe6SDNurmfiJEcoyhE2CzzTyAkDXsQkUFnMq8Zea
-         rZBQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TlZACLBYSiWOJ+PR1UkJhkGCoBOMzhgTmOJYTxZL9PA=;
+        b=eHf3+tbIJp2pu2zKGA6AWA/ybCWQXCVKwZNb8zBWbbVK811Tvts9quv+vae59pNXXu
+         jyl9rIZ56ADmLYwnju9FXzVXU/P1y2aB4XKbt1rMWPiFWT5p0IJnVEFXjAA7fbdzXX/a
+         RG9O4GpkfeblUAGFdc3eKYMcInen+UQszFn7sKlSGqWpiHG68wZk3DGZzS/tZbfuLKCm
+         reJOilZQwXCNzJW6Z/c8VidoHSUNZrPSyzPyJP2ywA/dSvPikVODe+a7Ufa45/2K+W6L
+         rbZ4OvR7b6+SwJcUWVi93P2fRgXxT8Dvp6V5AItTdel+5C6nwhylgAO8ZHDoOe+hBmTF
+         X0qA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=batmuya7co49qkeSt7rrFXuUKreU4NnJ2KEEv73JYWE=;
-        b=jAXu1pvEkBxowF8SrKprqvGwdFRtRakdYIl3jdVrULNVV2tLq4MeLlA9dFuYWWELOi
-         Yg/q/BkD82jDjRtOkNCP8sZp+V79PiPKRO/CW4dZLH9CdNP9l3jzpl7qum7h8GSyfSSh
-         qkwPlRPRFN7OOGKx5I8zeNMT6E15a7q9/9dDZaj/S8qJnpYrgBQY65SuJ/dA2Nd0SKpO
-         G1X5mhX93LXZX72hOOdCwcTGlkEjp3CG7Zwtmis5+Y3seRNcIMfYNOZVOmzGsMTnxn0B
-         xCgEszjac5769OdgVpPnd6wzv0oFHCpHS/7dmCoajC+uDuoatV4br7+ncR6Bj8Vncwr9
-         ZOMg==
-X-Gm-Message-State: AOAM532c/URla/hCw4Dn18dT2grDtq+zCExlYve3ooFn1GIoauXDCZ13
-        FqYLzOvDuCvn1ydviKeGTUU=
-X-Google-Smtp-Source: ABdhPJzqdfGT0I5FjeX+bddT2YdZRIrkK9noae0FfxIJ5yXOyUWdWRzU5toIGWdCbQFzZHTJ6XJRSg==
-X-Received: by 2002:a2e:86d0:: with SMTP id n16mr6250660ljj.51.1612051970975;
-        Sat, 30 Jan 2021 16:12:50 -0800 (PST)
-Received: from localhost.localdomain (h-158-174-22-164.NA.cust.bahnhof.se. [158.174.22.164])
-        by smtp.gmail.com with ESMTPSA id t2sm2503716lfl.141.2021.01.30.16.12.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Jan 2021 16:12:50 -0800 (PST)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-To:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Subject: [PATCH 2/2] ALSA: hda: Constify static attribute_group
-Date:   Sun, 31 Jan 2021 01:12:41 +0100
-Message-Id: <20210131001241.2278-3-rikard.falkeborn@gmail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210131001241.2278-1-rikard.falkeborn@gmail.com>
-References: <20210131001241.2278-1-rikard.falkeborn@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TlZACLBYSiWOJ+PR1UkJhkGCoBOMzhgTmOJYTxZL9PA=;
+        b=WVusL7WpljUpffXokOINqbYh6wF73TmDl5tdIJ/kGI7RmuNg5nrmXJRzxV5hcKnzWu
+         DEo2hXioRpUQyJqgxYxBQ3edTElUqbSDynW4L6+GiXHpo8mKAAXWD7so9oBUL2BTwkGm
+         r+cg8wRisFluQTcj9a2lM6jYktoyrJ4y0qOarYel92Ofx6vw+8c1xDXYvMK/M3C866wm
+         atbLUKOsorbuU0vWqhf6tlq4cNrrFvpG+Sacm71dy6EltB57tMO0TMeTc3vzpyWebERw
+         pj9pmSmBH1XSTmz+1lRr75usoIFplbjr6oGt+gmkYqy7emjIrdywrgphb/dZmT4B6DSl
+         NC2w==
+X-Gm-Message-State: AOAM532zRiLxuCh4DC64juWZEtEPIr1eHktJvtcIoyI2bwujvrjQHnpV
+        gl+GosgvikoyELFVTpXFNePHpdFMiLE3npAKUIM=
+X-Google-Smtp-Source: ABdhPJwYLU28vfMkVC34u5/L2TH5Z7WULGaf2+EJFPJsenVQwQz2erOC726lGl9LBNij4OxVJ2cXUgl1kc20bpxJu6U=
+X-Received: by 2002:a1c:4e:: with SMTP id 75mr9367154wma.150.1612052070192;
+ Sat, 30 Jan 2021 16:14:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210129195240.31871-1-TheSven73@gmail.com> <20210129195240.31871-2-TheSven73@gmail.com>
+ <MN2PR11MB3662C6C13B2D549E339D7DD1FAB89@MN2PR11MB3662.namprd11.prod.outlook.com>
+In-Reply-To: <MN2PR11MB3662C6C13B2D549E339D7DD1FAB89@MN2PR11MB3662.namprd11.prod.outlook.com>
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+Date:   Sat, 30 Jan 2021 19:14:16 -0500
+Message-ID: <CAGngYiX-bccoqYW0zQDwseBPADK-eNEcMDA1mhPqQvQC6FS3qQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v1 1/6] lan743x: boost performance on cpu archs
+ w/o dma cache snooping
+To:     Bryan Whitehead <Bryan.Whitehead@microchip.com>
+Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Alexey Denisov <rtgbnm@gmail.com>,
+        Sergej Bauer <sbauer@blackbox.su>,
+        Tim Harvey <tharvey@gateworks.com>,
+        =?UTF-8?Q?Anders_R=C3=B8nningen?= <anders@ronningen.priv.no>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The only usage of hdac_dev_attr_group is to put its address in an array
-of pointers to const attribute_group structs. Make it const to allow the
-compiler to put it in read-only memory.
+On Sat, Jan 30, 2021 at 5:11 PM <Bryan.Whitehead@microchip.com> wrote:
+>
+> It appears you moved this packet_length assignment from just below the following if block, however  you left out the le32_to_cpu.See next comment
 
-Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
----
- sound/hda/hdac_sysfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/hda/hdac_sysfs.c b/sound/hda/hdac_sysfs.c
-index e56e83325903..0d7771fca9f0 100644
---- a/sound/hda/hdac_sysfs.c
-+++ b/sound/hda/hdac_sysfs.c
-@@ -66,7 +66,7 @@ static struct attribute *hdac_dev_attrs[] = {
- 	NULL
- };
- 
--static struct attribute_group hdac_dev_attr_group = {
-+static const struct attribute_group hdac_dev_attr_group = {
- 	.attrs	= hdac_dev_attrs,
- };
- 
--- 
-2.30.0
-
+PS this merge snafu is removed completely by the next patch in the set.
+So this will not prevent you from reviewing/testing the multi-buffer support,
+should you want to.
