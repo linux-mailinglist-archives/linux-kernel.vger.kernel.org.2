@@ -2,161 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9472B309F15
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 22:29:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CBCC309F17
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 22:30:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229634AbhAaV2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 16:28:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34726 "EHLO
+        id S229783AbhAaV3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 16:29:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229989AbhAaVWj (ORCPT
+        with ESMTP id S229513AbhAaV2h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 16:22:39 -0500
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BDE3C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 13:21:59 -0800 (PST)
-Received: by mail-lj1-x229.google.com with SMTP id s18so17145533ljg.7
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 13:21:59 -0800 (PST)
+        Sun, 31 Jan 2021 16:28:37 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75711C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 13:27:56 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id i63so10253653pfg.7
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 13:27:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OF5ZNCFNSO0oBueNH/k4qhgh/MmAm+w5aisyR1YieHk=;
-        b=Az0Ri32e+Bv2bmVVEHpVP7PhohzbJjNx4jX0KfJZPcHqGl2I9EnTxyrOFBDsGczTpf
-         Vtc735c6kxrIogFVQosZuzhzZf12ag+7CRNKZ9yFqCxxolVzGSHPGeq/r9IonrKPgM2Y
-         9mvb/AmDkCR9SgW7yAkq7PitZVffRTLaFFgVM=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=k5gknQGkGUzASx8c3sQWwxyHAwGAxQHJHYAYO85lVuM=;
+        b=jR8CKT6tJsirIhnvYN4jIKMqMJ5kgouxgnU+gsy8J9L7J00WudqhIbr/bzhJlw8if6
+         8rqEOkiJTqo+IUEsjxMzvLTMpeIuiILKnop7H0zgb6yn/nxI8QZU/hwP0Tb16TQFc/Y1
+         JoTCtPYqRyM4irT6cuvt/Y62A7021eP1V7vjy8PV8eE7syjahvL4DJee9LzfePcBM0aR
+         NwWRHIG1HENOyrubWckByn6zLfAz6tBXJ2HCs6O3hDPwh0kpFBD/QFwcHegvyiobuXI4
+         ZjXvO0yoKPj1cZwHoVzCRr2uCZ1C5rzEXR8Z83y+NolssZfexd3s3A+5b5QD8/QOSBuR
+         Lv5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OF5ZNCFNSO0oBueNH/k4qhgh/MmAm+w5aisyR1YieHk=;
-        b=nV26FEOVZohnZbo4Ap7UlheV1bXY52IaetBg6HUiXmVnz1XUpqu7wOfPqjO14PcJe+
-         NlBapj76qqud7Lzciu6VQxycGgfmWM1HgcBjbskKIgS310dKmoNPfGirP97ZW/b1hfF0
-         Basgyp+qhphC3sxNQwAdlxaLyXj0Wl8Zilk0Tt/sGMHMfKyJm8jYzG725r0/Pb2OqQ+w
-         wle/jVo8qOm7tKD0K9PLP3n+DomADv/HflxQmVcXrRqLYlUR0fHWTf1E7jEnHe/PwbMY
-         Q6cDV2Scr3wHKvUpYpyeOsYQsLyA+JWlT+nh9FSD4n/fmIbvC0N3i07Gis7jY4ySvx6y
-         CuPQ==
-X-Gm-Message-State: AOAM533cpayZj0kntybhDkFkmz1+6lapeBe0o4OFzf+RaSujAfXUMPG0
-        Xruh4gzQzgHIvuxEViM+ZvjwEIN0EDwKww==
-X-Google-Smtp-Source: ABdhPJxTajSd2DL5dFuMAcD6J5CW7kzr8SoVbLmP95lytdcFLkfukqJ+rrsiVADw4CsgKZiOlbWRvw==
-X-Received: by 2002:a2e:9610:: with SMTP id v16mr8208565ljh.374.1612128117247;
-        Sun, 31 Jan 2021 13:21:57 -0800 (PST)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id y29sm2748233lfj.198.2021.01.31.13.21.55
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Jan 2021 13:21:56 -0800 (PST)
-Received: by mail-lf1-f47.google.com with SMTP id h12so20047647lfp.9
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 13:21:55 -0800 (PST)
-X-Received: by 2002:ac2:4436:: with SMTP id w22mr6721301lfl.41.1612128115390;
- Sun, 31 Jan 2021 13:21:55 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=k5gknQGkGUzASx8c3sQWwxyHAwGAxQHJHYAYO85lVuM=;
+        b=Y61pcaReyxhXtZlvTgGcIzXPaySWLUStPJi2fBRZCRpUvJrV6Wg0FZibwlHJ1ljA7D
+         elWCha1zDD2kPTUbH+2FXNjXa2YfGrINh+4TsVMgRXNkuaUp/vyb5fxRNFX3iOJVhC1i
+         KWThZdnKIbTU//Mw59hJqE1KVq+j8lTQA391p0raWSS05ivBpXx0r3hecovNWnBqDQFn
+         d6j9O5jFp3dDUQ9F5M07ZZxtsZzULtXEnLCGGUfVf3uYciKhX2mt/sMelQta7PJl1vix
+         hs1pwyAKXh8p/cTgtAKszFthzTcPUGPqLs0WOtgrKY2Lpn+E0Xwhe906BaEvuJf/mFmq
+         fxPw==
+X-Gm-Message-State: AOAM5311uRrofmgoHOrnv5JEKjaAJnyFjd7Hm4bnc8B6GeK6yYrCwwLF
+        8eqLZg7ZB3kkcHJeIKqjlsY=
+X-Google-Smtp-Source: ABdhPJzpmAvoiBMdL2XIITF8BpfFJkRXIBGtcZpfq2wf+YwUfFGAwfP3D5oSIIK87UmHHlj+TLIyYQ==
+X-Received: by 2002:a05:6a00:148a:b029:1ae:6d20:fbb3 with SMTP id v10-20020a056a00148ab02901ae6d20fbb3mr13231343pfu.55.1612128475890;
+        Sun, 31 Jan 2021 13:27:55 -0800 (PST)
+Received: from localhost (g186.222-224-165.ppp.wakwak.ne.jp. [222.224.165.186])
+        by smtp.gmail.com with ESMTPSA id v9sm13175294pju.33.2021.01.31.13.27.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 Jan 2021 13:27:55 -0800 (PST)
+Date:   Mon, 1 Feb 2021 06:27:52 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
+Cc:     geert@linux-m68k.org, jonas@southpole.se,
+        stefan.kristiansson@saunalahti.fi, openrisc@lists.librecores.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] openrisc: use device tree to determine present cpus
+Message-ID: <20210131212752.GG2002709@lianli.shorne-pla.net>
+References: <0b26eda7-229d-3dc9-f2ae-19b9212fb0ea@rwth-aachen.de>
+ <20210129221643.GZ2002709@lianli.shorne-pla.net>
+ <2a018afc-d797-3a91-ffab-e55ae3b0a795@rwth-aachen.de>
+ <20210130230310.GC2002709@lianli.shorne-pla.net>
+ <d9f4aafc-4d65-38b0-dde0-5e155836aee1@rwth-aachen.de>
 MIME-Version: 1.0
-References: <CAP045ApxLJ7vXOVp5Cwx7WEyDr6v01D9YD3xGFDv3WAp6czaMQ@mail.gmail.com>
- <87v9bdc4yc.fsf@m5Zedd9JOGzJrf0> <CAHk-=wixO7LJKwtD+CQJTQHgJFQjr=sSi_pQEGqcYdczTphncg@mail.gmail.com>
- <87mtwozwn3.fsf@collabora.com>
-In-Reply-To: <87mtwozwn3.fsf@collabora.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 31 Jan 2021 13:21:39 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whfC5Rj+UCepiNaeMFTugpkUjfn7O57NLANFA6FoLA6Vw@mail.gmail.com>
-Message-ID: <CAHk-=whfC5Rj+UCepiNaeMFTugpkUjfn7O57NLANFA6FoLA6Vw@mail.gmail.com>
-Subject: Re: [REGRESSION] x86/entry: TIF_SINGLESTEP handling is still broken
-To:     Gabriel Krisman Bertazi <krisman@collabora.com>
-Cc:     Yuxuan Shui <yshuiv7@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Robert O'Callahan" <rocallahan@gmail.com>,
-        Kyle Huey <me@kylehuey.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d9f4aafc-4d65-38b0-dde0-5e155836aee1@rwth-aachen.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 12:20 PM Gabriel Krisman Bertazi
-<krisman@collabora.com> wrote:
->
->
-> I think we should migrate TIF_SINGLESTEP to a SYSCALL_WORK flag as that
-> is just a simple refactor.
+On Sun, Jan 31, 2021 at 09:22:31AM +0100, Jan Henrik Weinstock wrote:
+> On 31/01/2021 00:03, Stafford Horne wrote:
+> 
+> > This looks good, one small comment below.  Can you send the next patch as a v2?
+> > 
+> > Using 'git format-patch -v2 ...'
+> 
+> Sorry, was not aware of that, will do better next time!
+> 
+> > Should we warn on the else case?
+> 
+> I think it is fine for the kernel to have room for more CPUs than are
+> actually present (i.e. NR_CPUs > present_cpus is OK). Other Archs do not
+> show a warning in this case either, therefore I also omitted it.
 
-That makes no sense at all to me.
+Fair enough.
 
-A single-step has absolutely nothing to do with system calls, and it's
-also not what any other architecture is doing.
+Reviewed-by: Stafford Horne <shorne@gmail.com>
 
-So honestly, something is wrong if TIF_SINGLESTEP should be moved to
-the SYSCALL_WORK_SYSCALL_xyz flags. That's not what single-stepping is
-at all about.
+I can queue this for 5.12 when you send v2.
 
-It looks like commit 299155244770 ("entry: Drop usage of TIF flags in
-the generic syscall code") is simply wrong. The whole premise for it
-was wrong because it didn't notice that TIF_SINGLESTEP isn't a syscall
-flag - and shouldn't be one.
-
-The problem seems to be that TIF_SINGLESTEP has two different
-meanings: the usual "enable single stepping", *and* then a special
-magic hack to also do it at system call exit. You only seem to have
-looked at the magic hack, not the actual REAL meaning of
-TIF_SINGLESTEP, which causes TF to be set and the debug fault.
-
-This whole code is very confusing. What is that
-"arch_syscall_exit_tracehook()" thing in the first place? I see an
-arch wrapper, but I don't see any architecture that actually defines
-it, so it seems to always become just tracehook_report_syscall_exit().
-
-It then does (on x86) the generic version, which does
-
-        if (step)
-                user_single_step_report(regs);
-        else
-                ptrace_report_syscall(regs, PTRACE_EVENTMSG_SYSCALL_EXIT);
-
-where that user_single_step_report() is a nonsensical special case
-that just does what a debug fault does for all the *usual* single step
-events in exc_debug_user() (which does not use that pointless
-"user_single_step_report()" function, but just does
-
-                send_sigtrap(regs, 0, get_si_code(dr6));
-
-so please, let's take a step back here, and look at the basics:
-
- - the *main* user of TIF_SINGLESTEP is regular debugging that causes
-a #DB after each user space instruction, and causes that
-send_sigtrap() in exc_debug_user()
-
- - there is one very odd and weird special case that is about having
-system call tracing enabled, which seems to have unclear semantics and
-this is the case that got broken.
-
-What's the fix here? Because no, single-stepping isn't about system
-calls, and we should not try to change the code to be about system
-calls, because no other architecture does that EITHER.
-
-Now, it's possible that eventually
-
- (a) the normal TF flag setting doesn't actually need TIF_SINGESTEP at all
-
- (b) the TIF_SINGLESTEP bit really only needs to be about the odd
-special case for system calls.
-
-but as things are now, (a) is *NOT* true. We have very magical
-behavior wrt TIF_SINGLESTEP, see enable_single_step(), and the comment
-about
-
-        /*
-         * If TF was already set, check whether it was us who set it.
-         * If not, we should never attempt a block step.
-         */
-
-which actually ends up depending very subtly on whether TIF_SINGLESTEP
-was already set *before* we did that enable_single_step(), and/or
-whether TF was already set on the stack (because users can set it
-themselves without ptrace).
-
-Again, the special system call case is the special case, NOT the
-normal case. Don't try to make TIF_SINGLESTEP be about the special
-case.
-
-              Linus
-
-             Linus
+-Stafford
