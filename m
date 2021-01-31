@@ -2,236 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB59309B09
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 08:59:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72EC4309B10
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 09:09:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbhAaH6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 02:58:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229641AbhAaHzf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 02:55:35 -0500
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC200C06174A;
-        Sat, 30 Jan 2021 23:54:54 -0800 (PST)
-Received: by mail-wr1-x434.google.com with SMTP id v15so13183977wrx.4;
-        Sat, 30 Jan 2021 23:54:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=TlnMMUHzs0gVAUol/fqoFC0sKz26EovlEEypljhkOAU=;
-        b=foo2wXFSFIblemDPocX9l0etI+cNHgr9kVmmBmln/H8p47AX3wT/g/iSYQLxl+Hetv
-         6wgUh3oGf0vGSWi/Rty1dk82UfLJ2ftOa1Af5M2DuiivB38jYKQXs738xRf1mFAAKBsJ
-         6PDxWculAvXNlI5G1lHibIBsGPUXWkGlDcSCRDIqmFWJEWLRQ3INh//laGhITv+Ekv/y
-         1bbWchJuosHwugWkds0Ecb0EnwpYuz7YFWqDH3cHuxvs3GZmKstXinf0cuttH/3iQPwB
-         C5FubnLJjdgCPbp+MbHDwqB04gZhADrMccQ3P54f44e0/wEdah912jL40tfooN/aMZQL
-         SZ/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=TlnMMUHzs0gVAUol/fqoFC0sKz26EovlEEypljhkOAU=;
-        b=f4jqaSxydzCnIzOv6NmWILBHbaCU4jthVnDnLRaiAPZ5IPeMa9Al3DbkiR/Dxqnu4V
-         N/JVCORArDiptxjPAGmXFIHH7aTB56OQFfAIqBuk8vjTQGMlE+cQ7ohyFy2zkJvtbTSl
-         UlRkem8S85wvOl1wbd/F32bPklaRs8qRvsYMrvevQxzFqXxVbol5UhUMdpCgYsdEQQvH
-         WwwlRl8jFS/b7LCm6Ja1p6+EQV9/pK+aeAuvn5RV6+srkTKcFh6Mk8ZOhrQ7Ed6zdLFk
-         j544poI+xejhNHIwl/Fh2WCan5kjZYiU7TnpBNCcsJGOTlF4+R02g/+RfoKOZwmkWm4O
-         q+Gg==
-X-Gm-Message-State: AOAM531vIdEAdldXVMRaTJ4KufFDQ+//TjrVPUI4AgfP0TGQYsy4Wd6X
-        roKNWNTyn8SQvoyeG6Vo9sQ=
-X-Google-Smtp-Source: ABdhPJyCI9dYQOzut+jklS1h+lO1K2qemD54AAaOVMN7mzWvqpHvoFKC4sQqYM9JDv2CCF9o0BMbZw==
-X-Received: by 2002:a05:6000:1202:: with SMTP id e2mr953534wrx.328.1612079693359;
-        Sat, 30 Jan 2021 23:54:53 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2d29:6400:618b:2d13:c477:783d])
-        by smtp.gmail.com with ESMTPSA id n16sm17687386wmi.5.2021.01.30.23.54.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 30 Jan 2021 23:54:52 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Guenter Roeck <linux@roeck-us.net>, linux-hwmon@vger.kernel.org
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-doc@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH for -next] docs: hwmon: rectify table in max16601.rst
-Date:   Sun, 31 Jan 2021 08:54:45 +0100
-Message-Id: <20210131075445.21222-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S230022AbhAaIIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 03:08:51 -0500
+Received: from mail-dm6nam12on2047.outbound.protection.outlook.com ([40.107.243.47]:34209
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229926AbhAaH7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 02:59:16 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nhExYwokGhWDQPZ7b/rTYEaYdY2ainQkvgXSKZO4zkP3pECOwVFLoNtMysD8/VFi0EGiv1NPoWHCczAocydfMCD5+wRey3g6fjDUflPteqTnhJIv6jrySbzevwFNkQ0BxVHZjFnVqr5SvZVuF9OAAsIIs5+p+rxyATiXl4/mh5WX+J0OubGndhk1GqvyMlMB9Wg5+GfQnZgB0iBOJlCBcxmat062iNv1kI2Txg8rYMxJD6ntxgLNpfgcR9gI4GDZqzM/eMDow23xYtbVBLwzeB3PljuRezZ7ag0Lqh1+MzDSDRj59oI8biQOpRT3B3f9gGsFMYQbzSfRxvZPi0oU8w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1jdurUeNEDdHkdMa/vo+XcnMIVKb854aK31RdK5BPgo=;
+ b=eCJrl2KLEQiPcJksYw4O75hdn+Bgvb6mPvvb04VS46xmNVNZ414tLDOr2EhqtO4H4xvOEAMtJ4Lv4YDMWUbb0vlfuYlxmsos0aH//EN7QnzVCAmdTil2n07faUjadplN6zHwjIbHO5SBqZvSymrZkkFyq30rnMvrwDocW0ls/e+gNKyhXhrdxDh+9iCiWYOa8QeHZPCrmdHMj3ov4fqBIokLgogAyZYICdNwSkD+8lL1I+yVnDJq3+aS02I4LaMXhyf/CALbE3XLCPs7lssJx2IB+GeFAzgL+whkMODNIjHx68oiZ8hs4OIffLTrSB/Rxd38Z05SCXouQb9CUkUAeA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1jdurUeNEDdHkdMa/vo+XcnMIVKb854aK31RdK5BPgo=;
+ b=qdKLj4q3WUcsS+8eef0YrIZc1Eu0TgGkQO9n4DXqZ3sNc32xuwkQZWTLmAAO1emUBvAt/siZqRn1eEOW+CCM0RJX2oS7UjB2YSxamPKjS7nmRyXl9LmE4Cn8fjqSwHg84ehR5LUc+WVlTskZr9hMdTQMuWMV5h8aWadmaO8wF8Q=
+Received: from (2603:10b6:a03:4a::18) by
+ SJ0PR05MB7577.namprd05.prod.outlook.com (2603:10b6:a03:2e8::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.11; Sun, 31 Jan
+ 2021 07:57:01 +0000
+Received: from BYAPR05MB4776.namprd05.prod.outlook.com
+ ([fe80::ddba:e1e9:fde7:3b31]) by BYAPR05MB4776.namprd05.prod.outlook.com
+ ([fe80::ddba:e1e9:fde7:3b31%3]) with mapi id 15.20.3825.013; Sun, 31 Jan 2021
+ 07:57:01 +0000
+From:   Nadav Amit <namit@vmware.com>
+To:     Nicholas Piggin <npiggin@gmail.com>
+CC:     LKML <linux-kernel@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, X86 ML <x86@kernel.org>,
+        Yu Zhao <yuzhao@google.com>
+Subject: Re: [RFC 00/20] TLB batching consolidation and enhancements
+Thread-Topic: [RFC 00/20] TLB batching consolidation and enhancements
+Thread-Index: AQHW94F8jqirOcyt10i89p5eRNXwdKpBXksA
+Date:   Sun, 31 Jan 2021 07:57:01 +0000
+Message-ID: <A1589669-34AE-4E15-8358-79BAD7C72520@vmware.com>
+References: <20210131001132.3368247-1-namit@vmware.com>
+ <1612063149.2awdsvvmhj.astroid@bobo.none>
+In-Reply-To: <1612063149.2awdsvvmhj.astroid@bobo.none>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=vmware.com;
+x-originating-ip: [24.6.216.183]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c502c0d6-ce34-406c-052b-08d8c5bdcade
+x-ms-traffictypediagnostic: SJ0PR05MB7577:
+x-microsoft-antispam-prvs: <SJ0PR05MB757725E8519D6FB4B395874FD0B79@SJ0PR05MB7577.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: O8/5dI6iWAaY/ljqSvy2HV+hISleAdkHBhoHt9cuQ38e5633eX5bIVg5J0mxPSroNeV0yK7A3XwZyFFCOrLv0s2sx0VxDY2Qu6aKNe2xGMZ3veJyIIGrvoTqZZ+C7aX+apydYGST38H70nQIT4IxsUgahaz0EdMD3iYgvZwv5dRncNJvajZTmB5lSP21tUDYq4Gp0s60OWSUvtKba4Kk196NlrVkiw43VID52OppuvUaYby44NBQ98pZr0fK9mhWYC4c3XyaRN6pKVm85MAzDn6MHW3ZlsDAFHEGkr1NqtVhlzJD7GRkKkUdwdW2J4OknWz91XfpMyGXJnMLZcbDu+2q6CxDJOrX5aOxBPuKpJkTXzcY6OtBmrLpCHe0tlr/mOXLtyuf9aretCG4/EBEBprb6UWi6B39zUvwl0S7A2iO/fuDQn8+j2c2/q0gbx9FRPHg7eGGzlKMv4DzC1PE7/8zoTsSQlL82WnlKvDiLxEpN+sQj80dTyewwkqLvNRqvjVAhvISM+YFzNhRTI3OBO8P7isYnZop4jiclUCyp2x7Eoe1LIS8XTkThYt2x4DZa0Bv/QkjISa6Y7nPuFgudA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR05MB4776.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(136003)(396003)(39850400004)(376002)(83380400001)(7416002)(66946007)(478600001)(66476007)(53546011)(33656002)(36756003)(6486002)(66446008)(64756008)(86362001)(6506007)(2616005)(6512007)(186003)(5660300002)(8936002)(4326008)(71200400001)(54906003)(66556008)(316002)(76116006)(6916009)(8676002)(2906002)(26005)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?QkZyVm1YQ0syZnliMmNuUnJRRk5EUjBiQmpnMGVSeXhLa1FVekdGWkxrc09n?=
+ =?utf-8?B?K05lQTNWOVJ4QURmazc2UjBiNUcwbEVHRXhLVGRMeVJLRkxSRjF1Z0s5S1px?=
+ =?utf-8?B?UnNQR0plK2ovUHJybTlOMlBlRjE3SEY2UWMyWmd0OWdEc1JNWC9heEJEQ1RC?=
+ =?utf-8?B?Y1BGYTBqNnlPQWc3NHc4R0JUWVBQMU5CaUdHM2RVQUU0VzZCM050MVpETThw?=
+ =?utf-8?B?YVI2dUhUVTIvc0dJcjNsNEpHQlMzeXFrblJVdHhBYjg5VXBsaVNEWERpWXpV?=
+ =?utf-8?B?djlJQjhzY09UMWxqNVdOc1pHQmFZVFJiR01rM1MzVWxVWjY4MVNPWDdqY3Bm?=
+ =?utf-8?B?VElKdEg1K1kzamlWazF2cnhreXNEVmFYM3hHRUI0N0o2MXduV1lXZkRTK1Uz?=
+ =?utf-8?B?SWpMYlRObE1iSzVYVTlTUzdkalFUemU0SzU2Y3lzYzhVbjFMZnpaZVBNSVcz?=
+ =?utf-8?B?aU5wenU4bzVRZWhCQjZrZytrSkNXME0yRmlGUEZKYmVTT2lGMmpOeW5tMDFJ?=
+ =?utf-8?B?SUdNRGptWTBINVl2YyszQkhJdGd3V241UE9YbVl6aFBJUWdBZGpXNEFMOUhG?=
+ =?utf-8?B?dzMrRUVWNzZ1MnhqbXkzdUJ0OWtKWjRSaFlCUkxLNkh4S1NjTUV5eG81UWNZ?=
+ =?utf-8?B?VDJZZFZKbDh4UUZxZ2RURUR5SFNXZGJUckxiRkoyTkplVmpjYVRuMFdSR3VK?=
+ =?utf-8?B?VmF0TVF0NFFsSzBqNDlDZHR0YlRvNDhIZ3NUcDFnNk9seERwSk0waURJRW9m?=
+ =?utf-8?B?RjBCZW10bHlFQU9aRnM0WlhDUldrU3o4WDJOR2tXZ3RPZU9reGpQVVJMZnhw?=
+ =?utf-8?B?RWNFM0tGMW1pMlZzYWdUS3hWVlVycTdua2tSWE4rMDBWUkV4V3JPUzg2dG02?=
+ =?utf-8?B?TXJ1UHAxQi8xZ3RZSlhwQ0w2Y0JxV3hhbWtTYnNENk8vQXRzajMzTHhFcGlE?=
+ =?utf-8?B?MzFmMEdTSk9XSTkvc2IwdTRUcGNkaHJGS2F3MDJ0S0FHTzdKeVdNUmVBRVkr?=
+ =?utf-8?B?WVdDWUhneVBydHRQMUI1b0hEVDhtU0h1blNGTWwzc2d0MC81bVk0QVBjLy82?=
+ =?utf-8?B?dTJiVjRvRnpWcWtrQWxtSlcxdVpFRm9tMmZGYXdrQjNEbGRmQTFPWXhzUS9p?=
+ =?utf-8?B?Q3laTUZBcUZpZkV0QTd0RjVwdGl5cWc5eDFidm93OURmN1Q0Y1pqT2tWZWdl?=
+ =?utf-8?B?NklzZUQ1NTJPUVpacWdvRG9aaW1GV1RHekg1eHVHYTcyeUtybFg4QlA4bE1k?=
+ =?utf-8?B?STh6ZHNaRHIxN1lwK0dDeW8zYThSRTRtRithVjRVTUFvQnZ1WWx3UVVFaVRn?=
+ =?utf-8?B?V2ZmYXBmSjROUzdrM3pyaGpPNWl1a2xlTHhTSnc1R1J5Kzhya1ZKUkhBbUN1?=
+ =?utf-8?B?OFFuRDFENDhENWVMUXhDTjVnYVNZYWU2ZDB4VzlXSWk3MTRQd29DMVpxbksz?=
+ =?utf-8?Q?LZJ3fHNu?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <255E65CB0F9C7542894A7BCF6BD721DF@namprd05.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR05MB4776.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c502c0d6-ce34-406c-052b-08d8c5bdcade
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Jan 2021 07:57:01.4694
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: dq2XtVC0XcQ8rezTTLZRBTQ8oXmrIxybigZ7mAaKFcFMWsKYz/ozS9THwvBZZ7GwOvIsvJkLKOQJqHZDC3seQA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR05MB7577
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 90b0f71d62df ("hwmon: (pmbus/max16601) Determine and use number of
-populated phases") adjusts content in the table of
-./Documentation/hwmon/max16601.rst, but one row went beyond the column's
-length.
-
-Hence, make htmldocs warns:
-
-  Documentation/hwmon/max16601.rst:94: WARNING: Malformed table.
-
-Adjust the column length of that table for this longer row to fit.
-
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on next-20210129
-
-Guenter, please pick this minor fixup for your hwmon-next tree.
-
- Documentation/hwmon/max16601.rst | 143 +++++++++++++++----------------
- 1 file changed, 71 insertions(+), 72 deletions(-)
-
-diff --git a/Documentation/hwmon/max16601.rst b/Documentation/hwmon/max16601.rst
-index d16792be7533..d265a2224354 100644
---- a/Documentation/hwmon/max16601.rst
-+++ b/Documentation/hwmon/max16601.rst
-@@ -53,75 +53,74 @@ Sysfs entries
- 
- The following attributes are supported.
- 
--======================= =======================================================
--in1_label		"vin1"
--in1_input		VCORE input voltage.
--in1_alarm		Input voltage alarm.
--
--in2_label		"vout1"
--in2_input		VCORE output voltage.
--in2_alarm		Output voltage alarm.
--
--curr1_label		"iin1"
--curr1_input		VCORE input current, derived from duty cycle and output
--			current.
--curr1_max		Maximum input current.
--curr1_max_alarm		Current high alarm.
--
--curr[P+2]_label		"iin1.P"
--curr[P+2]_input		VCORE phase P input current.
--
--curr[N+2]_label		"iin2"
--curr[N+2]_input		VCORE input current, derived from sensor element.
--			'N' is the number of enabled/populated phases.
--
--curr[N+3]_label		"iin3"
--curr[N+3]_input		VSA input current.
--
--curr[N+4]_label		"iout1"
--curr[N+4]_input		VCORE output current.
--curr[N+4]_crit		Critical output current.
--curr[N+4]_crit_alarm	Output current critical alarm.
--curr[N+4]_max		Maximum output current.
--curr[N+4]_max_alarm	Output current high alarm.
--
--curr[N+P+5]_label	"iout1.P"
--curr[N+P+5]_input	VCORE phase P output current.
--
--curr[2*N+5]_label	"iout3"
--curr[2*N+5]_input	VSA output current.
--curr[2*N+5]_highest	Historical maximum VSA output current.
--curr[2*N+5]_reset_history
--			Write any value to reset curr21_highest.
--curr[2*N+5]_crit	Critical output current.
--curr[2*N+5]_crit_alarm	Output current critical alarm.
--curr[2*N+5]_max		Maximum output current.
--curr[2*N+5]_max_alarm	Output current high alarm.
--
--power1_label		"pin1"
--power1_input		Input power, derived from duty cycle and output current.
--power1_alarm		Input power alarm.
--
--power2_label		"pin2"
--power2_input		Input power, derived from input current sensor.
--
--power3_label		"pout"
--power3_input		Output power.
--
--temp1_input		VCORE temperature.
--temp1_crit		Critical high temperature.
--temp1_crit_alarm	Chip temperature critical high alarm.
--temp1_max		Maximum temperature.
--temp1_max_alarm		Chip temperature high alarm.
--
--temp2_input		TSENSE_0 temperature
--temp3_input		TSENSE_1 temperature
--temp4_input		TSENSE_2 temperature
--temp5_input		TSENSE_3 temperature
--
--temp6_input		VSA temperature.
--temp6_crit		Critical high temperature.
--temp6_crit_alarm	Chip temperature critical high alarm.
--temp6_max		Maximum temperature.
--temp6_max_alarm		Chip temperature high alarm.
--======================= =======================================================
-+========================= =======================================================
-+in1_label		  "vin1"
-+in1_input		  VCORE input voltage.
-+in1_alarm		  Input voltage alarm.
-+
-+in2_label		  "vout1"
-+in2_input		  VCORE output voltage.
-+in2_alarm		  Output voltage alarm.
-+
-+curr1_label		  "iin1"
-+curr1_input		  VCORE input current, derived from duty cycle and output
-+			  current.
-+curr1_max		  Maximum input current.
-+curr1_max_alarm		  Current high alarm.
-+
-+curr[P+2]_label		  "iin1.P"
-+curr[P+2]_input		  VCORE phase P input current.
-+
-+curr[N+2]_label		  "iin2"
-+curr[N+2]_input		  VCORE input current, derived from sensor element.
-+			  'N' is the number of enabled/populated phases.
-+
-+curr[N+3]_label		  "iin3"
-+curr[N+3]_input		  VSA input current.
-+
-+curr[N+4]_label		  "iout1"
-+curr[N+4]_input		  VCORE output current.
-+curr[N+4]_crit		  Critical output current.
-+curr[N+4]_crit_alarm	  Output current critical alarm.
-+curr[N+4]_max		  Maximum output current.
-+curr[N+4]_max_alarm	  Output current high alarm.
-+
-+curr[N+P+5]_label	  "iout1.P"
-+curr[N+P+5]_input	  VCORE phase P output current.
-+
-+curr[2*N+5]_label	  "iout3"
-+curr[2*N+5]_input	  VSA output current.
-+curr[2*N+5]_highest	  Historical maximum VSA output current.
-+curr[2*N+5]_reset_history Write any value to reset curr21_highest.
-+curr[2*N+5]_crit	  Critical output current.
-+curr[2*N+5]_crit_alarm	  Output current critical alarm.
-+curr[2*N+5]_max		  Maximum output current.
-+curr[2*N+5]_max_alarm	  Output current high alarm.
-+
-+power1_label		  "pin1"
-+power1_input		  Input power, derived from duty cycle and output current.
-+power1_alarm		  Input power alarm.
-+
-+power2_label		  "pin2"
-+power2_input		  Input power, derived from input current sensor.
-+
-+power3_label		  "pout"
-+power3_input		  Output power.
-+
-+temp1_input		  VCORE temperature.
-+temp1_crit		  Critical high temperature.
-+temp1_crit_alarm	  Chip temperature critical high alarm.
-+temp1_max		  Maximum temperature.
-+temp1_max_alarm		  Chip temperature high alarm.
-+
-+temp2_input		  TSENSE_0 temperature
-+temp3_input		  TSENSE_1 temperature
-+temp4_input		  TSENSE_2 temperature
-+temp5_input		  TSENSE_3 temperature
-+
-+temp6_input		  VSA temperature.
-+temp6_crit		  Critical high temperature.
-+temp6_crit_alarm	  Chip temperature critical high alarm.
-+temp6_max		  Maximum temperature.
-+temp6_max_alarm		  Chip temperature high alarm.
-+========================= =======================================================
--- 
-2.17.1
-
+PiBPbiBKYW4gMzAsIDIwMjEsIGF0IDc6MzAgUE0sIE5pY2hvbGFzIFBpZ2dpbiA8bnBpZ2dpbkBn
+bWFpbC5jb20+IHdyb3RlOg0KPiANCj4gRXhjZXJwdHMgZnJvbSBOYWRhdiBBbWl0J3MgbWVzc2Fn
+ZSBvZiBKYW51YXJ5IDMxLCAyMDIxIDEwOjExIGFtOg0KPj4gRnJvbTogTmFkYXYgQW1pdCA8bmFt
+aXRAdm13YXJlLmNvbT4NCj4+IA0KPj4gVGhlcmUgYXJlIGN1cnJlbnRseSAoYXQgbGVhc3Q/KSA1
+IGRpZmZlcmVudCBUTEIgYmF0Y2hpbmcgc2NoZW1lcyBpbiB0aGUNCj4+IGtlcm5lbDoNCj4+IA0K
+Pj4gMS4gVXNpbmcgbW11X2dhdGhlciAoZS5nLiwgemFwX3BhZ2VfcmFuZ2UoKSkuDQo+PiANCj4+
+IDIuIFVzaW5nIHtpbmN8ZGVjfV90bGJfZmx1c2hfcGVuZGluZygpIHRvIGluZm9ybSBvdGhlciB0
+aHJlYWRzIG9uIHRoZQ0KPj4gICBvbmdvaW5nIGRlZmVycmVkIFRMQiBmbHVzaCBhbmQgZmx1c2hp
+bmcgdGhlIGVudGlyZSByYW5nZSBldmVudHVhbGx5DQo+PiAgIChlLmcuLCBjaGFuZ2VfcHJvdGVj
+dGlvbl9yYW5nZSgpKS4NCj4+IA0KPj4gMy4gYXJjaF97ZW50ZXJ8bGVhdmV9X2xhenlfbW11X21v
+ZGUoKSBmb3Igc3BhcmMgYW5kIHBvd2VycGMgKGFuZCBYZW4/KS4NCj4+IA0KPj4gNC4gQmF0Y2hp
+bmcgcGVyLXRhYmxlIGZsdXNoZXMgKG1vdmVfcHRlcygpKS4NCj4+IA0KPj4gNS4gQnkgc2V0dGlu
+ZyBhIGZsYWcgb24gdGhhdCBhIGRlZmVycmVkIFRMQiBmbHVzaCBvcGVyYXRpb24gdGFrZXMgcGxh
+Y2UsDQo+PiAgIGZsdXNoaW5nIHdoZW4gKHRyeV90b191bm1hcF9vbmUoKSBvbiB4ODYpLg0KPj4g
+DQo+PiBJdCBzZWVtcyB0aGF0ICgxKS0oNCkgY2FuIGJlIGNvbnNvbGlkYXRlZC4gSW4gYWRkaXRp
+b24sIGl0IHNlZW1zIHRoYXQNCj4+ICg1KSBpcyByYWN5LiBJdCBhbHNvIHNlZW1zIHRoZXJlIGNh
+biBiZSBtYW55IHJlZHVuZGFudCBUTEIgZmx1c2hlcywgYW5kDQo+PiBwb3RlbnRpYWxseSBUTEIt
+c2hvb3Rkb3duIHN0b3JtcywgZm9yIGluc3RhbmNlIGR1cmluZyBiYXRjaGVkDQo+PiByZWNsYW1h
+dGlvbiAodXNpbmcgdHJ5X3RvX3VubWFwX29uZSgpKSBpZiBhdCB0aGUgc2FtZSB0aW1lIG1tdV9n
+YXRoZXINCj4+IGRlZmVycyBUTEIgZmx1c2hlcy4NCj4+IA0KPj4gTW9yZSBhZ2dyZXNzaXZlIFRM
+QiBiYXRjaGluZyBtYXkgYmUgcG9zc2libGUsIGJ1dCB0aGlzIHBhdGNoLXNldCBkb2VzDQo+PiBu
+b3QgYWRkIHN1Y2ggYmF0Y2hpbmcuIFRoZSBwcm9wb3NlZCBjaGFuZ2VzIHdvdWxkIGVuYWJsZSBz
+dWNoIGJhdGNoaW5nDQo+PiBpbiBhIGxhdGVyIHRpbWUuDQo+PiANCj4+IEFkbWl0dGVkbHksIEkg
+ZG8gbm90IHVuZGVyc3RhbmQgaG93IHRoaW5ncyBhcmUgbm90IGJyb2tlbiB0b2RheSwgd2hpY2gN
+Cj4+IGZyaWdodGVucyBtZSB0byBtYWtlIGZ1cnRoZXIgYmF0Y2hpbmcgYmVmb3JlIGdldHRpbmcg
+dGhpbmdzIGluIG9yZGVyLg0KPj4gRm9yIGluc3RhbmNlLCB3aHkgaXMgb2sgZm9yIHphcF9wdGVf
+cmFuZ2UoKSB0byBiYXRjaCBkaXJ0eS1QVEUgZmx1c2hlcw0KPj4gZm9yIGVhY2ggcGFnZS10YWJs
+ZSAoYnV0IG5vdCBpbiBncmVhdGVyIGdyYW51bGFyaXR5KS4gQ2FuJ3QNCj4+IENsZWFyUGFnZURp
+cnR5KCkgYmUgY2FsbGVkIGJlZm9yZSB0aGUgZmx1c2gsIGNhdXNpbmcgd3JpdGVzIGFmdGVyDQo+
+PiBDbGVhclBhZ2VEaXJ0eSgpIGFuZCBiZWZvcmUgdGhlIGZsdXNoIHRvIGJlIGxvc3Q/DQo+IA0K
+PiBCZWNhdXNlIGl0J3MgaG9sZGluZyB0aGUgcGFnZSB0YWJsZSBsb2NrIHdoaWNoIHN0b3BzIHBh
+Z2VfbWtjbGVhbiBmcm9tIA0KPiBjbGVhbmluZyB0aGUgcGFnZS4gT3IgYW0gSSBtaXN1bmRlcnN0
+YW5kaW5nIHRoZSBxdWVzdGlvbj8NCg0KVGhhbmtzLiBJIHVuZGVyc3Rvb2QgdGhpcyBwYXJ0LiBM
+b29raW5nIGFnYWluIGF0IHRoZSBjb2RlLCBJIG5vdyB1bmRlcnN0YW5kDQpteSBjb25mdXNpb246
+IEkgZm9yZ290IHRoYXQgdGhlIHJldmVyc2UgbWFwcGluZyBpcyByZW1vdmVkIGFmdGVyIHRoZSBQ
+VEUgaXMNCnphcHBlZC4NCg0KTWFrZXMgbWUgd29uZGVyIHdoZXRoZXIgaXQgaXMgb2sgdG8gZGVm
+ZXIgdGhlIFRMQiBmbHVzaCB0byB0bGJfZmluaXNoX21tdSgpLA0KYnkgcGVyZm9ybWluZyBzZXRf
+cGFnZV9kaXJ0eSgpIGZvciB0aGUgYmF0Y2hlZCBwYWdlcyB3aGVuIG5lZWRlZCBpbg0KdGxiX2Zp
+bmlzaF9tbXUoKSBbIGkuZS4sIGJ5IG1hcmtpbmcgZm9yIGVhY2ggYmF0Y2hlZCBwYWdlIHdoZXRo
+ZXINCnNldF9wYWdlX2RpcnR5KCkgc2hvdWxkIGJlIGlzc3VlZCBmb3IgdGhhdCBwYWdlIHdoaWxl
+IGNvbGxlY3RpbmcgdGhlbSBdLg0KDQo+IEknbGwgZ28gdGhyb3VnaCB0aGUgcGF0Y2hlcyBhIGJp
+dCBtb3JlIGNsb3NlbHkgd2hlbiB0aGV5IGFsbCBjb21lIA0KPiB0aHJvdWdoLiBTcGFyYyBhbmQg
+cG93ZXJwYyBvZiBjb3Vyc2UgbmVlZCB0aGUgYXJjaCBsYXp5IG1vZGUgdG8gZ2V0IA0KPiBwZXIt
+cGFnZS9wdGUgaW5mb3JtYXRpb24gZm9yIG9wZXJhdGlvbnMgdGhhdCBhcmUgbm90IGZyZWVpbmcg
+cGFnZXMsIA0KPiB3aGljaCBpcyB3aGF0IG1tdSBnYXRoZXIgaXMgZGVzaWduZWQgZm9yLg0KDQpJ
+SVVDIHlvdSBtZWFuIGFueSBQVEUgY2hhbmdlIHJlcXVpcmVzIGEgVExCIGZsdXNoLiBFdmVuIHNl
+dHRpbmcgdXAgYSBuZXcgUFRFDQp3aGVyZSBubyBwcmV2aW91cyBQVEUgd2FzIHNldCwgcmlnaHQ/
+DQoNCj4gSSB3b3VsZG4ndCBtaW5kIHVzaW5nIGEgc2ltaWxhciBBUEkgc28gaXQncyBsZXNzIG9m
+IGEgYmxhY2sgYm94IHdoZW4gDQo+IHJlYWRpbmcgZ2VuZXJpYyBjb2RlLCBidXQgaXQgbWlnaHQg
+bm90IHF1aXRlIGZpdCB0aGUgbW11IGdhdGhlciBBUEkNCj4gZXhhY3RseSAobW9zdCBvZiB0aGVz
+ZSBwYXRocyBkb24ndCB3YW50IGEgZnVsbCBtbXVfZ2F0aGVyIG9uIHN0YWNrKS4NCg0KSSBzZWUg
+eW91ciBwb2ludC4gSXQgbWF5IGJlIHBvc3NpYmxlIHRvIGNyZWF0ZSB0d28gbW11X2dhdGhlciBz
+dHJ1Y3RzOiBhDQpzbWFsbCBvbmUgdGhhdCBvbmx5IGhvbGRzIHRoZSBmbHVzaCBpbmZvcm1hdGlv
+biBhbmQgYW5vdGhlciB0aGF0IGFsc28gaG9sZHMNCnRoZSBwYWdlcy4gDQoNCj4+IFRoaXMgcGF0
+Y2gtc2V0IHRoZXJlZm9yZSBwZXJmb3JtcyB0aGUgZm9sbG93aW5nIGNoYW5nZXM6DQo+PiANCj4+
+IDEuIENoYW5nZSBtcHJvdGVjdCwgdGFza19tbXUgYW5kIG1hcHBpbmdfZGlydHlfaGVscGVycyB0
+byB1c2UgbW11X2dhdGhlcg0KPj4gICBpbnN0ZWFkIG9mIHtpbmN8ZGVjfV90bGJfZmx1c2hfcGVu
+ZGluZygpLg0KPj4gDQo+PiAyLiBBdm9pZCBUTEIgZmx1c2hlcyBpZiBQVEUgcGVybWlzc2lvbiBp
+cyBub3QgZGVtb3RlZC4NCj4+IA0KPj4gMy4gQ2xlYW5zIHVwIG1tdV9nYXRoZXIgdG8gYmUgbGVz
+cyBhcmNoLWRlcGVuZGFudC4NCj4+IA0KPj4gNC4gVXNlcyBtbSdzIGdlbmVyYXRpb25zIHRvIHRy
+YWNrIGluIGZpbmVyIGdyYW51bGFyaXR5LCBlaXRoZXIgcGVyLVZNQQ0KPj4gICBvciBwZXIgcGFn
+ZS10YWJsZSwgd2hldGhlciBhIHBlbmRpbmcgbW11X2dhdGhlciBvcGVyYXRpb24gaXMNCj4+ICAg
+b3V0c3RhbmRpbmcuIFRoaXMgc2hvdWxkIGFsbG93IHRvIGF2b2lkIHNvbWUgVExCIGZsdXNoZXMg
+d2hlbiBLU00gb3INCj4+ICAgbWVtb3J5IHJlY2xhbWF0aW9uIHRha2VzIHBsYWNlIHdoaWxlIGFu
+b3RoZXIgb3BlcmF0aW9uIHN1Y2ggYXMNCj4+ICAgbXVubWFwKCkgb3IgbXByb3RlY3QoKSBpcyBy
+dW5uaW5nLg0KPj4gDQo+PiA1LiBDaGFuZ2VzIHRyeV90b191bm1hcF9vbmUoKSBmbHVzaGluZyBz
+Y2hlbWUsIGFzIHRoZSBjdXJyZW50IHNlZW1zDQo+PiAgIGJyb2tlbiB0byB0cmFjayBpbiBhIGJp
+dG1hcCB3aGljaCBDUFVzIGhhdmUgb3V0c3RhbmRpbmcgVExCIGZsdXNoZXMNCj4+ICAgaW5zdGVh
+ZCBvZiBoYXZpbmcgYSBmbGFnLg0KPiANCj4gUHV0dGluZyBmaXhlcyBmaXJzdCwgYW5kIGNsZWFu
+dXBzIGFuZCBpbmRlcGVuZGVudCBwYXRjaGVzIChsaWtlICMyKSBuZXh0DQo+IHdvdWxkIGhlbHAg
+d2l0aCBnZXR0aW5nIHN0dWZmIG1lcmdlZCBhbmQgYmFja3BvcnRlZC4NCg0KSSB0cmllZCB0byBk
+byBpdCBtb3N0bHkgdGhpcyB3YXkuIFRoZXJlIGFyZSBzb21lIHRoZW9yZXRpY2FsIHJhY2VzIHdo
+aWNoDQpJIGRpZCBub3QgbWFuYWdlIChvciB0cnkgaGFyZCBlbm91Z2gpIHRvIGNyZWF0ZSwgc28g
+SSBkaWQgbm90IGluY2x1ZGUgaW4NCnRoZSDigJxmaXhlc+KAnSBzZWN0aW9uLiBJIHdpbGwgcmVz
+dHJ1Y3R1cmUgdGhlIHBhdGNoLXNldCBhY2NvcmRpbmcgdG8gdGhlDQpmZWVkYmFjay4NCg0KVGhh
+bmtzLA0KTmFkYXY=
