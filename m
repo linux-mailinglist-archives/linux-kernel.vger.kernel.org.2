@@ -2,112 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76025309A11
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 04:17:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97049309A16
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 04:31:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbhAaDQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 22:16:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60332 "EHLO
+        id S229769AbhAaDbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 22:31:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhAaDQw (ORCPT
+        with ESMTP id S229468AbhAaDbd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 22:16:52 -0500
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E180AC061573;
-        Sat, 30 Jan 2021 19:16:11 -0800 (PST)
-Received: by mail-pg1-x535.google.com with SMTP id i7so9599126pgc.8;
-        Sat, 30 Jan 2021 19:16:11 -0800 (PST)
+        Sat, 30 Jan 2021 22:31:33 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5734CC061573;
+        Sat, 30 Jan 2021 19:30:53 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id o16so9624805pgg.5;
+        Sat, 30 Jan 2021 19:30:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ohey/n9HC50LcT9SfB1APHEExDxmpN/T94GswSnA44U=;
-        b=NQTJszeGFJ+SLfhMg24MZxPuqDcRn8iY0x6u0pvyOTcY7L3qThofp937GjRnHBtwyd
-         GT9s01S9jxE4Wf2eQYuO6Kc29cIwkcnuDIcBQZE00zAquyuylJBYNWBIjYd8nOUmCc9n
-         JvjTqHtDKkeDNQZIQveJycwgupWWZ3vId/nSy/Z+uXlsv7Gn40wdLIdlkpQy9W6TuQfW
-         V2ckBfRWm9AdsPj+rQ8HU8qIfrgS80SeHd113c8Mgsci8mZOuCiaVOaJx1oLOoU8RwWS
-         N5lLQHZvGkURl0la4UnDmwI+PVUa/NGM6JcOzWq4PMGzulwYOCjAQyOz1tyUteIN18id
-         HCog==
+        h=date:from:subject:to:cc:references:in-reply-to:mime-version
+         :message-id:content-transfer-encoding;
+        bh=WWtdonkpI96IFBE23zlui93VOmpriWeRuclQpLHiSrQ=;
+        b=eSCoksJ1Yzv/0BafKpHiRRXPKnSIvcmu5C8r/mihPZT7sg4H85PPlglIDJW80h3clD
+         fd4ivdugrzla49hkbsIq0/rdtSO+B6t0nc6sqXNZECMM4P/dcjvdqKwnLKxwRwZoisSe
+         g4gxwXfE3hl2hwxq7/RE3gBz8t2xrU2wWagJLphFtVXBZZPYK5pLYj74Mw9vS8oM4pKU
+         6QYwv7XtIFq+X7sjnwKdzr75ZO1pp1ztyUUWwfOF5YJ7ZyntGlW+ujiU9AEN8+j3Zrdg
+         j/nxnuRNVYt9tavAg8CtBw8/cQ3AL1zngp18EmiNiGAzmmpMHsfadM9qZ4NZVXJD4hTe
+         mAQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ohey/n9HC50LcT9SfB1APHEExDxmpN/T94GswSnA44U=;
-        b=d/8ccOlI9VhK+sEAC2Lza6to5ZMeResGhuv4ATT8niAsSWXAIDDv/fcLh0Dj3NW+eV
-         BPdbianXzsvvy4k+gYUX1rhCnJtFeT8lUFhTMGhVElVY083h72vhUZsDs4VbaNNUOQOc
-         mNKXiUi0mqLm/3bvWX9+31IcRaGMk//Ix3k4yOOWEQiSI0ZVCCYOp/2sPo+dMpwNdfTs
-         Swn4/CrPSF/Gbgq+AdnYv+PI8ROqevxxs3c3WaRo931t8GP61eLKmf5l6pBGjT3vJuI0
-         L/V91BPBtVZZt+RLUzPK4EwLszWJpXVlWRiYf6QlzjyJhDWcaPxobftXnxItgDqZxxsn
-         qPLQ==
-X-Gm-Message-State: AOAM531krJwbzMyW5wDoIyxzLoh+SK/jnA2DLAhof84G13nbJdFln3wn
-        30f62ta0CV6EnJQ+MrCsuiZ3PUurHM+lgDdtKL73mF1vxFU=
-X-Google-Smtp-Source: ABdhPJwgerOH4DnC1TMIe7Yiht7v/g2PsLME1FUL0MQV21tZK2DJ5FIC8WweeEARatrH/Zw2RHWpb8OWTV8WuwZ55zg=
-X-Received: by 2002:a62:503:0:b029:1c0:aed7:c88 with SMTP id
- 3-20020a6205030000b02901c0aed70c88mr4913844pff.76.1612062971326; Sat, 30 Jan
- 2021 19:16:11 -0800 (PST)
+        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
+         :mime-version:message-id:content-transfer-encoding;
+        bh=WWtdonkpI96IFBE23zlui93VOmpriWeRuclQpLHiSrQ=;
+        b=B1sKy4yNzjTk4z6m2XP1sFBRGxMm7AIzJE2nwslTQ+/POqtsoxbrEbx3l4FRaEPbhA
+         UegUQ/Co2Ap2PvU3qGirtIo8pL9l8CSWeP1+HiheUJzexo2lq2J1XNLgxKrSmQqn1TIh
+         nZ1H48uVWdLiYCLpzs3BDYEu72b7f5hJHz3/o2R1GLY+mR920ti1fR9dRLh0v5imfugv
+         V9Eck/fcu5W6KEODe+UA3v9TM3ohuIuAeIyU7yJBaB/P4qbZcQBlbtkgypXOZpuyojT4
+         KDHBpKQie19FrsG1Csw9V8FmqL2h40vcDC3zLNqusrWRT0cmYQ5XYNHq1YkKV20tlj2F
+         woSQ==
+X-Gm-Message-State: AOAM530CmCUWumN9e7c2aKpNMxFWCr3baESRnSgGznvIV+9MLxVF4cdR
+        jJNyZhRqUccJauRnkAdGtVxlafKIuuw=
+X-Google-Smtp-Source: ABdhPJwg/CC1nlE2QXUEo6aPv7AuExcknG2RvU7iKigAxQiaO+plz8rwLHQC/gO7heys0NGdqRr/GA==
+X-Received: by 2002:a63:5309:: with SMTP id h9mr11066861pgb.19.1612063852569;
+        Sat, 30 Jan 2021 19:30:52 -0800 (PST)
+Received: from localhost (192.156.221.203.dial.dynamic.acc50-nort-cbr.comindico.com.au. [203.221.156.192])
+        by smtp.gmail.com with ESMTPSA id d14sm12961544pfo.156.2021.01.30.19.30.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 30 Jan 2021 19:30:52 -0800 (PST)
+Date:   Sun, 31 Jan 2021 13:30:45 +1000
+From:   Nicholas Piggin <npiggin@gmail.com>
+Subject: Re: [RFC 00/20] TLB batching consolidation and enhancements
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Nadav Amit <nadav.amit@gmail.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-csky@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Nadav Amit <namit@vmware.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, x86@kernel.org,
+        Yu Zhao <yuzhao@google.com>
+References: <20210131001132.3368247-1-namit@vmware.com>
+In-Reply-To: <20210131001132.3368247-1-namit@vmware.com>
 MIME-Version: 1.0
-References: <20210127090747.364951-1-xie.he.0141@gmail.com>
- <20210128114659.2d81a85f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAJht_EOSB-m--Ombr6wLMFq4mPy8UTpsBri2CPsaRTU-aks7Uw@mail.gmail.com>
- <3f67b285671aaa4b7903733455a730e1@dev.tdt.de> <20210129173650.7c0b7cda@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAJht_EPMtn5E-Y312vPQfH2AwDAi+j1OP4zzpg+AUKf46XE1Yw@mail.gmail.com> <20210130111618.335b6945@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210130111618.335b6945@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Sat, 30 Jan 2021 19:16:00 -0800
-Message-ID: <CAJht_EMQVaKFx7Wjj75F2xVBTCdpmho64wP0bfX6RhFnzNXAZA@mail.gmail.com>
-Subject: Re: [PATCH net] net: hdlc_x25: Use qdisc to queue outgoing LAPB frames
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Martin Schiller <ms@dev.tdt.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Krzysztof Halasa <khc@pm.waw.pl>
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <1612063149.2awdsvvmhj.astroid@bobo.none>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 11:16 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> Sounds like too much afford for a sub-optimal workaround.
-> The qdisc semantics are borken in the proposed scheme (double
-> counting packets) - both in term of statistics and if user decides
-> to add a policer, filter etc.
+Excerpts from Nadav Amit's message of January 31, 2021 10:11 am:
+> From: Nadav Amit <namit@vmware.com>
+>=20
+> There are currently (at least?) 5 different TLB batching schemes in the
+> kernel:
+>=20
+> 1. Using mmu_gather (e.g., zap_page_range()).
+>=20
+> 2. Using {inc|dec}_tlb_flush_pending() to inform other threads on the
+>    ongoing deferred TLB flush and flushing the entire range eventually
+>    (e.g., change_protection_range()).
+>=20
+> 3. arch_{enter|leave}_lazy_mmu_mode() for sparc and powerpc (and Xen?).
+>=20
+> 4. Batching per-table flushes (move_ptes()).
+>=20
+> 5. By setting a flag on that a deferred TLB flush operation takes place,
+>    flushing when (try_to_unmap_one() on x86).
+>=20
+> It seems that (1)-(4) can be consolidated. In addition, it seems that
+> (5) is racy. It also seems there can be many redundant TLB flushes, and
+> potentially TLB-shootdown storms, for instance during batched
+> reclamation (using try_to_unmap_one()) if at the same time mmu_gather
+> defers TLB flushes.
+>=20
+> More aggressive TLB batching may be possible, but this patch-set does
+> not add such batching. The proposed changes would enable such batching
+> in a later time.
+>=20
+> Admittedly, I do not understand how things are not broken today, which
+> frightens me to make further batching before getting things in order.
+> For instance, why is ok for zap_pte_range() to batch dirty-PTE flushes
+> for each page-table (but not in greater granularity). Can't
+> ClearPageDirty() be called before the flush, causing writes after
+> ClearPageDirty() and before the flush to be lost?
 
-Hmm...
+Because it's holding the page table lock which stops page_mkclean from=20
+cleaning the page. Or am I misunderstanding the question?
 
-Another solution might be creating another virtual device on top of
-the HDLC device (similar to what "hdlc_fr.c" does), so that we can
-first queue L3 packets in the virtual device's qdisc queue, and then
-queue the L2 frames in the actual HDLC device's qdisc queue. This way
-we can avoid the same outgoing data being queued to qdisc twice. But
-this would significantly change the way the user uses the hdlc_x25
-driver.
+I'll go through the patches a bit more closely when they all come=20
+through. Sparc and powerpc of course need the arch lazy mode to get=20
+per-page/pte information for operations that are not freeing pages,=20
+which is what mmu gather is designed for.
 
-> Another worry is that something may just inject a packet with
-> skb->protocol == ETH_P_HDLC but unexpected structure (IDK if
-> that's a real concern).
+I wouldn't mind using a similar API so it's less of a black box when=20
+reading generic code, but it might not quite fit the mmu gather API
+exactly (most of these paths don't want a full mmu_gather on stack).
 
-This might not be a problem. Ethernet devices also allow the user to
-inject raw frames with user constructed headers. "hdlc_fr.c" also
-allows the user to bypass the virtual circuit interfaces and inject
-raw frames directly on the HDLC interface. I think the receiving side
-should be able to recognize and drop invalid frames.
+>=20
+> This patch-set therefore performs the following changes:
+>=20
+> 1. Change mprotect, task_mmu and mapping_dirty_helpers to use mmu_gather
+>    instead of {inc|dec}_tlb_flush_pending().
+>=20
+> 2. Avoid TLB flushes if PTE permission is not demoted.
+>=20
+> 3. Cleans up mmu_gather to be less arch-dependant.
+>=20
+> 4. Uses mm's generations to track in finer granularity, either per-VMA
+>    or per page-table, whether a pending mmu_gather operation is
+>    outstanding. This should allow to avoid some TLB flushes when KSM or
+>    memory reclamation takes place while another operation such as
+>    munmap() or mprotect() is running.
+>=20
+> 5. Changes try_to_unmap_one() flushing scheme, as the current seems
+>    broken to track in a bitmap which CPUs have outstanding TLB flushes
+>    instead of having a flag.
 
-> It may be better to teach LAPB to stop / start the internal queue.
-> The lower level drivers just needs to call LAPB instead of making
-> the start/wake calls directly to the stack, and LAPB can call the
-> stack. Would that not work?
+Putting fixes first, and cleanups and independent patches (like #2) next
+would help with getting stuff merged and backported.
 
-I think this is a good solution. But this requires changing a lot of
-code. The HDLC subsystem needs to be changed to allow HDLC Hardware
-Drivers to ask HDLC Protocol Drivers (like hdlc_x25.c) to stop/wake
-the TX queue. The hdlc_x25.c driver can then ask the LAPB module to
-stop/wake the queue.
-
-So this means new APIs need to be added to both the HDLC subsystem and
-the LAPB module, and a number of HDLC Hardware Drivers need to be
-changed to call the new API of the HDLC subsystem.
-
-Martin, do you have any suggestions?
+Thanks,
+Nick
