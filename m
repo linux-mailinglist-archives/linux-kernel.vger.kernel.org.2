@@ -2,110 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA64A309D74
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 16:24:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17B6F309D62
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 16:19:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232285AbhAaPWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 10:22:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232345AbhAaOdR (ORCPT
+        id S232592AbhAaPSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 10:18:40 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:38262 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231469AbhAaOfv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 09:33:17 -0500
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2CB7C061574;
-        Sun, 31 Jan 2021 06:32:29 -0800 (PST)
-Received: by mail-wm1-x332.google.com with SMTP id o10so9821078wmc.1;
-        Sun, 31 Jan 2021 06:32:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=FWkhcoloomIf/wCpYLZRmkASt8JrJgJ4CUQou1kVpi0=;
-        b=Dai/PVKLRrTBU1URL0yU/x4P2QwlU3Cmsqf2VGfLIoBnH9A/PjbEkEqv+SLpitCBkS
-         PcbdA+H90MKBbQITo/nD2onuWVXsb8fh2QTMM9PR/en+4qNM3eVMaTBhTOTHIuA/a/ZE
-         9kfWztDsVNAIsZPBWa+X51gNcZWg4HP2JhCNv3o9bgJ/MadOuWac6dc50peTFa0fWcMu
-         2+zU4u0EmDdtGe3o9KUCxIqw4YxhH1eqktqwtJXe7FQFL51+k47+Wq2klP4dCHeE0j4J
-         wFOO/nFeN+h+7WEVeQXwzQC1IKiQCD4aGWRiy+efxyIHTA4Yfl7XrUoLozPljVePdHKF
-         JvJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FWkhcoloomIf/wCpYLZRmkASt8JrJgJ4CUQou1kVpi0=;
-        b=C09/lSnH+tGufqJ35OJwPRPZsFUuAZVrKE0GQ7tSVUReONL1ZgH/hRWT5g8qLElE5s
-         /+qXGHjdGswz/0BbdUSqTIDeKwSYSWwSEbkpjQc7D+5PSJmentT9iGjg3j4WGvWR8LuE
-         cOsb7TjmivBbURtIuif0ZHGURDbsAC4DQNxwg9E64PJeNy0S+Qu7N7Ot1s1AUC5k2shv
-         v3DFJZltbvRSZcxic/D8YWRUROpQOPuOyOYqUMYsprcbT4l3+JeK2N/Y13JHIMPPd/ky
-         k6/VJIZRxhRSab+036tckzNEizRYq/LObmo5R18p8XqXwpMc7ocgQ4GYogbXCMrSf6Xv
-         wa5Q==
-X-Gm-Message-State: AOAM530MXeXG1uQyGU304wF/ArWXriSh7PWYCaDD95+JKmvV/ImPdLBd
-        p1USJtqrOE4kKGXPBT7iwJY=
-X-Google-Smtp-Source: ABdhPJyj7wgFtetm6z3qEvEw8kAksVNfpgYl9/gaF3CnnwgE1h/kpUTnWQ8oEbScQTavtrccspYEdw==
-X-Received: by 2002:a1c:a406:: with SMTP id n6mr11363169wme.53.1612103548450;
-        Sun, 31 Jan 2021 06:32:28 -0800 (PST)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id b83sm5000058wmc.44.2021.01.31.06.32.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Jan 2021 06:32:27 -0800 (PST)
-Subject: Re: [PATCH 2/2] arm64: configs: Support pwrap on Mediatek MT6779
- platform
-To:     Argus Lin <argus.lin@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Michael Walle <michael@walle.cc>, agx@sigxcpu.org,
-        Max Krummenacher <max.oss.09@gmail.com>,
-        wsd_upstream@mediatek.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <1609747703-27207-1-git-send-email-argus.lin@mediatek.com>
- <1609747703-27207-3-git-send-email-argus.lin@mediatek.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <5d5a67a5-ac2d-9ef9-b20c-66cbd55ebb8f@gmail.com>
-Date:   Sun, 31 Jan 2021 15:32:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Sun, 31 Jan 2021 09:35:51 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10VEUHED009095;
+        Sun, 31 Jan 2021 06:35:01 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=pfpt0220; bh=5lKn6Ecz4xGgCyyvpqKHZ0HmmgVVSCgpayo06pbd8FA=;
+ b=ZO6NqSOf/iDANpbDW9VIV8ZptkPeh5orlPUdIytPPE0XikM2tw085FVGytSdGciNMOhs
+ AKocg053RssW15Hw9ab7yK/g8PRRBazv5Z1/eVJoc7PD5YB1LTMLJRIuRUg2HPErkG2w
+ R48ePezWCDx5KRXW/eOKDaM9zlm67qcvO1pHAi5dLR/ABWpgjTTGaeUFNGOK+TAcdGOt
+ YKtA2v4bQsTl0Wi2eWieCMYlOrldPPWyH1c+EktfFP8y04zhgkx1j3M7jgCLMXX79RjB
+ 9X3hh0eDSt5DfT64aL5Pv8pEl+P4KIX4A8AKj8OYsk/pXJfvXkRSHTaVaF3vuLKr43yW DA== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 36d5pssw0c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 31 Jan 2021 06:35:01 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 31 Jan
+ 2021 06:34:59 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 31 Jan 2021 06:34:59 -0800
+Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
+        by maili.marvell.com (Postfix) with ESMTP id 8D52F3F703F;
+        Sun, 31 Jan 2021 06:34:56 -0800 (PST)
+From:   <stefanc@marvell.com>
+To:     <netdev@vger.kernel.org>
+CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
+        <nadavh@marvell.com>, <ymarkman@marvell.com>,
+        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
+        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
+        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
+        <atenart@kernel.org>, Konstantin Porotchkin <kostap@marvell.com>
+Subject: [PATCH v7 net-next 02/15] dts: marvell: add CM3 SRAM memory to cp115 ethernet device tree
+Date:   Sun, 31 Jan 2021 16:33:45 +0200
+Message-ID: <1612103638-16108-3-git-send-email-stefanc@marvell.com>
+X-Mailer: git-send-email 1.9.1
+In-Reply-To: <1612103638-16108-1-git-send-email-stefanc@marvell.com>
+References: <1612103638-16108-1-git-send-email-stefanc@marvell.com>
 MIME-Version: 1.0
-In-Reply-To: <1609747703-27207-3-git-send-email-argus.lin@mediatek.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-01-31_04:2021-01-29,2021-01-31 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Konstantin Porotchkin <kostap@marvell.com>
 
+CM3 SRAM address space would be used for Flow Control configuration.
 
-On 04/01/2021 09:08, Argus Lin wrote:
-> Support pwrap on Mediatek MT6779 platform by enabling CONFIG_MTK_PMIC_WRAP.
-> 
-> Signed-off-by: Argus Lin <argus.lin@mediatek.com>
-> ---
+Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+Signed-off-by: Konstantin Porotchkin <kostap@marvell.com>
+---
+ arch/arm64/boot/dts/marvell/armada-cp11x.dtsi | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-Applied to v5.11-next/defconfig
+diff --git a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
+index 9dcf16b..359cf42 100644
+--- a/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
++++ b/arch/arm64/boot/dts/marvell/armada-cp11x.dtsi
+@@ -69,6 +69,8 @@
+ 			status = "disabled";
+ 			dma-coherent;
+ 
++			cm3-mem = <&CP11X_LABEL(cm3_sram)>;
++
+ 			CP11X_LABEL(eth0): eth0 {
+ 				interrupts = <39 IRQ_TYPE_LEVEL_HIGH>,
+ 					<43 IRQ_TYPE_LEVEL_HIGH>,
+@@ -211,6 +213,14 @@
+ 			};
+ 		};
+ 
++		CP11X_LABEL(cm3_sram): cm3@220000 {
++			compatible = "mmio-sram";
++			reg = <0x220000 0x800>;
++			#address-cells = <1>;
++			#size-cells = <1>;
++			ranges = <0 0x220000 0x800>;
++		};
++
+ 		CP11X_LABEL(rtc): rtc@284000 {
+ 			compatible = "marvell,armada-8k-rtc";
+ 			reg = <0x284000 0x20>, <0x284080 0x24>;
+-- 
+1.9.1
 
->  arch/arm64/configs/defconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-> index 8383016..a2c926f 100644
-> --- a/arch/arm64/configs/defconfig
-> +++ b/arch/arm64/configs/defconfig
-> @@ -479,6 +479,7 @@ CONFIG_SPI_S3C64XX=y
->  CONFIG_SPI_SH_MSIOF=m
->  CONFIG_SPI_SUN6I=y
->  CONFIG_SPI_SPIDEV=m
-> +CONFIG_MTK_PMIC_WRAP=m
->  CONFIG_SPMI=y
->  CONFIG_PINCTRL_SINGLE=y
->  CONFIG_PINCTRL_MAX77620=y
-> --
-> 1.8.1.1.dirty
-> 
