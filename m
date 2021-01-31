@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0176309ECD
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 21:15:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA23309E90
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 21:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232220AbhAaUN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 15:13:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39668 "EHLO
+        id S231604AbhAaUFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 15:05:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231124AbhAaTft (ORCPT
+        with ESMTP id S231283AbhAaTs0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 14:35:49 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0475FC0617A9;
-        Sun, 31 Jan 2021 09:32:08 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id y10so4411481plk.7;
-        Sun, 31 Jan 2021 09:32:08 -0800 (PST)
+        Sun, 31 Jan 2021 14:48:26 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D7DDC0617AA;
+        Sun, 31 Jan 2021 09:32:17 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id b145so3217395pfb.4;
+        Sun, 31 Jan 2021 09:32:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=8z7T30JwVaWaq0MDWkzbLRl1Zk2i9+kaaFA/9JES7Xs=;
-        b=Uoqbq4QkgIl9VP9kliAkYuDQm21xB+XmNDU1AxMz1RJf8ufeaxxdJyfbPtuk5Ue9Sy
-         MsdwlBDkuXGbADiWX3vmEvafdwHpDVKRSJ9NoYmEi915UYcqRWEQPKMo+cP6rmBvv8bF
-         qkIqPu6ztvPeb9ysJJLiyUFmRIrZVzyr9cs/x02p9cSb4Pt62moPq/QSkjFuqmHJ/4V6
-         E2opHNxR9Ga44NNvcciGBBq2C025jSGE+TkcgPUq2BZ1KJf5K5IlNq0oVQnrPipGjDLr
-         XRzLuQtPzaP5fBIV1iwtCKI5ZRISbgq/zvxGOm4x9XsH6BxWulI21PlLJsi/m4HS2xyG
-         1Q6Q==
+        bh=9mx9QDkqfNUwWdACyM2Fn2TS+NlXzO5XMeT4wvvF4yM=;
+        b=FKhRyOzoZSbBuvWwr0fTJ+iFeZN7JT2FPX2669eIzdGFo5UYBxWO2lMckA9wnehLTS
+         xHmrEWENAHskb5BhFX6J42HLdCsFefK2aEtxG+yPckdGw3BsDu96v/DESQiAw56isE0b
+         92NLHHC68hguqKz0GvB+ulD4I9TKRUFtGwmpjbUEFBrTaIf3OgckiVwzJ4/ROpw8BSoX
+         oNKalg6R33IaEWts0MFGrxDLnL3XZx2GMYqee70sRg1dd1sE0JdHazOda1TasbNt87tJ
+         kfglu74r09XJiZR8kMAJf+x7dJ636t7EoxwawooqaIZ/J1affyE1+5moWGYYW8MxlYCO
+         LFZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=8z7T30JwVaWaq0MDWkzbLRl1Zk2i9+kaaFA/9JES7Xs=;
-        b=sIPB65a505mtAz2pweoDMnJJ0aDeRQcVfOnkeXojixCpqDP4BbPHS/fl2XBK/pfjDp
-         CzfdV01RreRZk7iohA4gWNrp+FaK3HgyEkd7I1I85drvT0YGZTfUaoHg2mboC5+2qKVD
-         ujRM9W5wP4K7gUfXBCnUAcJxlJmOuWc+o6SX3ZYqFI5OkwbfJUsEZq7Y5AJrp6qbwyqq
-         vJMIWGHbuGQzwRwgIfSHgQvqbL0M2J3QpylcRbdmQK6PWSwnMuMsRG97b92omaimYMcX
-         VKvWO1xuGQyTjBLeWQ+ffMbcyMDDlLnsCVA8i1c8ib9TXJ0ZzEEIk7ji1ldc6Qodaul0
-         b+Ew==
-X-Gm-Message-State: AOAM5339L+ZwrsX+I2DGRCpO91y3GnyeSkEvfakEJb1HpJRjGz23DHAX
-        Mz0bBJtKYLu9q8hQrqltuKM=
-X-Google-Smtp-Source: ABdhPJxlrmQpiP0t2W7sFWGvxmRHJQ1EXLzsFuG1+Bm3Y/OPuczoXDBzhNcDmo58qBTT9cFSwqvRTw==
-X-Received: by 2002:a17:902:eacb:b029:e1:2de4:72b6 with SMTP id p11-20020a170902eacbb02900e12de472b6mr8975072pld.17.1612114327515;
-        Sun, 31 Jan 2021 09:32:07 -0800 (PST)
+        bh=9mx9QDkqfNUwWdACyM2Fn2TS+NlXzO5XMeT4wvvF4yM=;
+        b=GMqBBOI/ry/26SaQkpjrI8HPYrEQA4nXp4z47OB6knDXyP6j9a0KbiP6pPkV7KlhN8
+         WE1AxWk2ZoyAAikSAa99Axoq2yEacqWhZzmgmjzD7zjR1+pC6RDeL0xl1ErDtScU7w1P
+         bLGmTeSXyfj/+gI86fKpcktuN143g5TdFa8bCwS65m7mLTx4xjiYkhf4/e+EoaIdhhLd
+         1FETHtyRa/ZYo3Ium6reRfZgMXRRVI5Y2HjIqNTM2tSuF/EvlBnQl66TyaQYOmBgJ6Rk
+         vJbkU2dVThz//WaNMSvmARpViV7+YYm6YF0Aa38PWLRTzHs0uLEV8/l703xDvs9kiz4a
+         /wpA==
+X-Gm-Message-State: AOAM533t3Oq30JbCXIiD4fidr8wthLDH8y4TIp3RPg+CGkZUpDd+6HNc
+        ZPBcP/lE4+yC9uGobZ9/gx4=
+X-Google-Smtp-Source: ABdhPJy0FOOeBvw8A30nFmOClcs73UGIMxJUMDIk2k6K7lguT0DTnIX/42iZkIg0q78K2sAG9Txfpw==
+X-Received: by 2002:a63:c43:: with SMTP id 3mr13088289pgm.250.1612114337079;
+        Sun, 31 Jan 2021 09:32:17 -0800 (PST)
 Received: from localhost ([2402:3a80:11ea:e144:a2a4:c5ff:fe20:7222])
-        by smtp.gmail.com with ESMTPSA id 76sm14898291pfz.174.2021.01.31.09.32.06
+        by smtp.gmail.com with ESMTPSA id y11sm14165281pfn.85.2021.01.31.09.32.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Jan 2021 09:32:06 -0800 (PST)
+        Sun, 31 Jan 2021 09:32:16 -0800 (PST)
 From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
 To:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
         linux-kernel@vger.kernel.org
@@ -72,16 +72,16 @@ Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
         Stephen Rothwell <sfr@canb.auug.org.au>,
         Andrew Morton <akpm@linux-foundation.org>,
         William Cohen <wcohen@redhat.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
         Mike Rapoport <rppt@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Robert Richter <rric@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
         greybus-dev@lists.linaro.org, ac100@lists.launchpad.net,
         linux-tegra@vger.kernel.org, linux-fbdev@vger.kernel.org
-Subject: [PATCH 06/13] staging: octeon: Switch from strlcpy to strscpy
-Date:   Sun, 31 Jan 2021 22:58:27 +0530
-Message-Id: <20210131172838.146706-7-memxor@gmail.com>
+Subject: [PATCH 07/13] staging: olpc_dcon: Switch from strlcpy to strscpy
+Date:   Sun, 31 Jan 2021 22:58:28 +0530
+Message-Id: <20210131172838.146706-8-memxor@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210131172838.146706-1-memxor@gmail.com>
 References: <20210131172838.146706-1-memxor@gmail.com>
@@ -101,26 +101,22 @@ This silences the related checkpatch warnings from:
 
 Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- drivers/staging/octeon/ethernet-mdio.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/staging/olpc_dcon/olpc_dcon.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/octeon/ethernet-mdio.c b/drivers/staging/octeon/ethernet-mdio.c
-index 0bf545849..1bb91a904 100644
---- a/drivers/staging/octeon/ethernet-mdio.c
-+++ b/drivers/staging/octeon/ethernet-mdio.c
-@@ -21,9 +21,9 @@
- static void cvm_oct_get_drvinfo(struct net_device *dev,
- 				struct ethtool_drvinfo *info)
- {
--	strlcpy(info->driver, KBUILD_MODNAME, sizeof(info->driver));
--	strlcpy(info->version, UTS_RELEASE, sizeof(info->version));
--	strlcpy(info->bus_info, "Builtin", sizeof(info->bus_info));
-+	strscpy(info->driver, KBUILD_MODNAME, sizeof(info->driver));
-+	strscpy(info->version, UTS_RELEASE, sizeof(info->version));
-+	strscpy(info->bus_info, "Builtin", sizeof(info->bus_info));
- }
+diff --git a/drivers/staging/olpc_dcon/olpc_dcon.c b/drivers/staging/olpc_dcon/olpc_dcon.c
+index e7281212d..6d8e9a481 100644
+--- a/drivers/staging/olpc_dcon/olpc_dcon.c
++++ b/drivers/staging/olpc_dcon/olpc_dcon.c
+@@ -576,7 +576,7 @@ static struct notifier_block dcon_panic_nb = {
  
- static int cvm_oct_nway_reset(struct net_device *dev)
+ static int dcon_detect(struct i2c_client *client, struct i2c_board_info *info)
+ {
+-	strlcpy(info->type, "olpc_dcon", I2C_NAME_SIZE);
++	strscpy(info->type, "olpc_dcon", I2C_NAME_SIZE);
+ 
+ 	return 0;
+ }
 -- 
 2.29.2
 
