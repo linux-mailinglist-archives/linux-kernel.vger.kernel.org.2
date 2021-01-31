@@ -2,192 +2,488 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 349BF309A35
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 05:30:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32345309A3F
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 05:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229530AbhAaEaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 23:30:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbhAaEaC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 23:30:02 -0500
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13BCDC061573
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 20:29:22 -0800 (PST)
-Received: by mail-il1-x12c.google.com with SMTP id e1so12413565ilu.0
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 20:29:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=gXawIvFETXLi83aoT08mO+Z1JKCGEIEXvFdsTFOkKvY=;
-        b=Os3BfSboy+O0cTtNGMkPUvJqV5POK5d7rjHDx7aIYrjhI98QP7+mC6YiYxNwXHqKkT
-         56pJLwUcaTNBG85o9zeKQPHvZTvMHZURPuq2QyPwndBnsPuGyOvGEv+YSmjBVN5IB1us
-         wK8Gzjiz/P8WPX3EruHcyTjEQcOPLUrC2WPxmFFANC5Oo1DEgYM5pKl284j0W3ogrtQ2
-         TjeWJr0vfo9FpnHfGsFqJn2WDl0FDfExMUs1cfab+Z+iwJ3D1tNJ0i8KfJ+OrylPhzQq
-         GsP3ecMallgPkKaWOmrNwLYD9UZGd+wS0Ka4QEWPGCAt5G5ZYrkcB7mBbOw1d7peT2/c
-         eJTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gXawIvFETXLi83aoT08mO+Z1JKCGEIEXvFdsTFOkKvY=;
-        b=Hoj1wTVLEdq8wcBxUhYPbYaXepN0o4+o4sMlpri4ZaRzwRgx8FsKxpRMrWyYRQQyT8
-         oJ6+vBK0lb66PNZTw3q/SwNSxX3YcGxRYS3ODwAOOsr1IArBw/3vY2rhHJ0nc82n/P5+
-         yBe21mwQxJZIssXgSaLk+9tDHw/vJjD6/Y/I3HnNwmX4gUZ+2LMr8jTg5TuqoJtFmKjj
-         2gKDKb3irYqUi1XgMmzdbg9XWnaJ8XcbQXrpvolbZSWH0tkPfvKpzbce6M45ZToD6Htu
-         909H760YXSsb8OLz60uPgMqgPyfBgmwDei9fyimoQaJchvat6UM1bg5kx3oUGVorTrw4
-         dVew==
-X-Gm-Message-State: AOAM533xBvOtXWqf/AhnFr3sq44KUAr31FhN2s8w/ey13sQJg66GVU9a
-        n2Q3BnW7r5SKFWa9g7xlgfTp+k+w79G8kQ==
-X-Google-Smtp-Source: ABdhPJxto5jnnoVH48xH16+rDgHCc4RgPNjxQQhUGmM1NVWIga2+lDnL1oPuVIjtdLHPXHRNavXVkQ==
-X-Received: by 2002:a05:6e02:c9:: with SMTP id r9mr5760472ilq.304.1612067361104;
-        Sat, 30 Jan 2021 20:29:21 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id i4sm6512490ios.54.2021.01.30.20.29.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 30 Jan 2021 20:29:20 -0800 (PST)
-Subject: Re: [PATCH net-next 9/9] net: ipa: don't disable NAPI in suspend
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, elder@kernel.org,
-        evgreen@chromium.org, bjorn.andersson@linaro.org,
-        cpratapa@codeaurora.org,
-        Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210129202019.2099259-1-elder@linaro.org>
- <20210129202019.2099259-10-elder@linaro.org>
- <CAF=yD-L1SKzu+gsma7KN4VjGnma-_w+amXx=Y_0e78rQiUCu7Q@mail.gmail.com>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <e27f5c10-7b77-1f12-fe36-e9261f01bca1@linaro.org>
-Date:   Sat, 30 Jan 2021 22:29:19 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S230281AbhAaEgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 23:36:24 -0500
+Received: from mga03.intel.com ([134.134.136.65]:39053 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230316AbhAaEgT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 30 Jan 2021 23:36:19 -0500
+IronPort-SDR: f08VUH/y5j+X5AG4AFExm5Mw7Cwhah7jh1Q0yOQuW1GUiU4l4iofCrgC2K4O8of9XYO7kYbVuG
+ UaWFEp5Jlezg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9880"; a="180642498"
+X-IronPort-AV: E=Sophos;i="5.79,389,1602572400"; 
+   d="scan'208";a="180642498"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Jan 2021 20:34:44 -0800
+IronPort-SDR: webvbmLL6xcpy6L0Uu7oPmSbxrk+M5fkNL4N8eTKQcihbjgLS5lwwl0+d6hFSyzYUjPfBU+zUG
+ aDCeDuDZ2mEg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,389,1602572400"; 
+   d="scan'208";a="411309692"
+Received: from pl-dbox.sh.intel.com (HELO intel.com) ([10.239.159.39])
+  by fmsmga002.fm.intel.com with ESMTP; 30 Jan 2021 20:34:41 -0800
+Date:   Sun, 31 Jan 2021 12:29:05 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Filip Kokosinski <fkokosinski@antmicro.com>,
+        kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        Mateusz Holenko <mholenko@antmicro.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [kbuild-all] aarch64-linux-gnu-ld: warning: orphan section
+ `.eh_frame' from `drivers/tty/serial/liteuart.o' being placed in section
+ `.eh_frame'
+Message-ID: <20210131042905.GB28302@intel.com>
+References: <202101311131.mjxVXgRz-lkp@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CAF=yD-L1SKzu+gsma7KN4VjGnma-_w+amXx=Y_0e78rQiUCu7Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202101311131.mjxVXgRz-lkp@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/30/21 9:25 AM, Willem de Bruijn wrote:
-> On Fri, Jan 29, 2021 at 3:29 PM Alex Elder <elder@linaro.org> wrote:
->>
->> The channel stop and suspend paths both call __gsi_channel_stop(),
->> which quiesces channel activity, disables NAPI, and (on other than
->> SDM845) stops the channel.  Similarly, the start and resume paths
->> share __gsi_channel_start(), which starts the channel and re-enables
->> NAPI again.
->>
->> Disabling NAPI should be done when stopping a channel, but this
->> should *not* be done when suspending.  It's not necessary in the
->> suspend path anyway, because the stopped channel (or suspended
->> endpoint on SDM845) will not cause interrupts to schedule NAPI,
->> and gsi_channel_trans_quiesce() won't return until there are no
->> more transactions to process in the NAPI polling loop.
+On Sun, Jan 31, 2021 at 11:36:33AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   6642d600b541b81931fb1ab0c041b0d68f77be7e
+> commit: 1da81e5562fac8286567422cc56a7fbd0dc646d4 drivers/tty/serial: add LiteUART driver
+> date:   3 months ago
+> config: arm64-randconfig-r013-20210130 (attached as .config)
+> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project 275c6af7d7f1ed63a03d05b4484413e447133269)
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # install arm64 cross compiling tool for clang build
+>         # apt-get install binutils-aarch64-linux-gnu
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1da81e5562fac8286567422cc56a7fbd0dc646d4
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 1da81e5562fac8286567422cc56a7fbd0dc646d4
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64 
 > 
-> But why is it incorrect to do so?
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+Sorry, kindly ignore this false positive.
 
-Maybe it's not; I also thought it was fine before, but...
-
-Someone at Qualcomm asked me why I thought NAPI needed
-to be disabled on suspend.  My response was basically
-that it was a lightweight operation, and it shouldn't
-really be a problem to do so.
-
-Then, when I posted two patches last month, Jakub's
-response told me he didn't understand why I was doing
-what I was doing, and I stepped back to reconsider
-the details of what was happening at suspend time.
- 
-https://lore.kernel.org/netdev/20210107183803.47308e23@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com/
-
-Four things were happening to suspend a channel:
-quiesce activity; disable interrupt; disable NAPI;
-and stop the channel.  It occurred to me that a
-stopped channel would not generate interrupts, so if
-the channel was stopped earlier there would be no need
-to disable the interrupt.  Similarly there would be
-(essentially) no need to disable NAPI once a channel
-was stopped.
-
-Underlying all of this is that I started chasing a
-hang that was occurring on suspend over a month ago.
-It was hard to reproduce (hundreds or thousands of
-suspend/resume cycles without hitting it), and one
-of the few times I actually hit the problem it was
-stuck in napi_disable(), apparently waiting for
-NAPI_STATE_SCHED to get cleared by napi_complete().
-
-My best guess about how this could occur was if there
-were a race of some kind between the interrupt handler
-(scheduling NAPI) and the poll function (completing
-it).  I found a number of problems while looking
-at this, and in the past few weeks I've posted some
-fixes to improve things.  Still, even with some of
-these fixes in place we have seen a hang (but now
-even more rarely).
-
-So this grand rework of suspending/stopping channels
-is an attempt to resolve this hang on suspend.
-
-The channel is now stopped early, and once stopped,
-everything that completed prior to the channel being
-stopped is polled before considering the suspend
-function done.  A stopped channel won't interrupt,
-so we don't bother disabling the completion interrupt,
-with no interrupts, NAPI won't be scheduled, so there's
-no need to disable NAPI either.
-
-The net result is simpler, and seems logical, and
-should preclude any possible race between the interrupt
-handler and poll function.  I'm trying to solve the
-hang problem analytically, because it takes *so* long
-to reproduce.
-
-I'm open to other suggestions.
-
-					-Alex
-
->  From a quick look, virtio-net disables on both remove and freeze, for instance.
 > 
->> Instead, enable NAPI in gsi_channel_start(), when the completion
->> interrupt is first enabled.  Disable it again in gsi_channel_stop(),
->> when finally disabling the interrupt.
->>
->> Add a call to napi_synchronize() to __gsi_channel_stop(), to ensure
->> NAPI polling is done before moving on.
->>
->> Signed-off-by: Alex Elder <elder@linaro.org>
->> ---
-> =
->> @@ -894,12 +894,16 @@ int gsi_channel_start(struct gsi *gsi, u32 channel_id)
->>          struct gsi_channel *channel = &gsi->channel[channel_id];
->>          int ret;
->>
->> -       /* Enable the completion interrupt */
->> +       /* Enable NAPI and the completion interrupt */
->> +       napi_enable(&channel->napi);
->>          gsi_irq_ieob_enable_one(gsi, channel->evt_ring_id);
->>
->>          ret = __gsi_channel_start(channel, true);
->> -       if (ret)
->> -               gsi_irq_ieob_disable_one(gsi, channel->evt_ring_id);
->> +       if (!ret)
->> +               return 0;
->> +
->> +       gsi_irq_ieob_disable_one(gsi, channel->evt_ring_id);
->> +       napi_disable(&channel->napi);
->>
->>          return ret;
->>   }
+> All warnings (new ones prefixed by >>):
 > 
-> subjective, but easier to parse when the normal control flow is linear
-> and the error path takes a branch (or goto, if reused).
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/max77650-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/max8649.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/max8660.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/max8925-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/max8952.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/max77802-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/max77826-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/mcp16502.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/mp8859.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/mpq7920.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/mt6311-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/mt6360-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/mt6397-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/qcom-labibb-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/qcom_spmi-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/palmas-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/pca9450-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/pfuze100-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/pv88060-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/pv88090-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/tps51632-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/pcf50633-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/rpi-panel-attiny-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/rk808-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/rohm-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/rt5033-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/rtmv20-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/s2mps11.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/sky81452-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/slg51000-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/stpmic1_regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/sy8106a-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/sy8824x.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/sy8827n.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/tps62360-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/tps6507x-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/tps65086-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/tps65090-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/tps65218-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/tps6586x-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/tps65132-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/uniphier-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/vctrl-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/vexpress-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/reset/core.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/reset/tegra/reset-bpmp.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/reset/reset-imx7.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/reset/reset-intel-gw.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/reset/reset-scmi.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/reset/reset-simple.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/reset/reset-ti-syscon.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/reset/reset-zynqmp.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/tty_io.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/n_tty.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/tty_ioctl.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/tty_ldisc.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/tty_buffer.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/tty_port.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/tty_mutex.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/tty_ldsem.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/tty_baudrate.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/tty_jobctrl.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/n_null.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/pty.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/sysrq.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/vt/vt_ioctl.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/vt/vc_screen.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/vt/selection.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/vt/keyboard.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/vt/consolemap.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/vt/consolemap_deftbl.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/vt/vt.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/vt/defkeymap.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/hvc/hvc_dcc.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/hvc/hvc_console.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/serial_core.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/earlycon.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/earlycon-arm-semihost.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/8250/8250_core.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/8250/8250_port.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/8250/8250_dma.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/8250/8250_fintek.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/8250/serial_cs.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/8250/8250_aspeed_vuart.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/8250/8250_mtk.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/8250/8250_tegra.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/8250/8250_of.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/amba-pl010.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/amba-pl011.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/imx_earlycon.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/sc16is7xx.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/uartlite.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/altera_uart.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/altera_jtaguart.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/xilinx_uartps.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/tegra-tcu.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/arc_uart.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/fsl_lpuart.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/fsl_linflexuart.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/digicolor-usart.o' being placed in section `.eh_frame'
+> >> aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/liteuart.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/serial_mctrl_gpio.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/kgdboc.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serdev/core.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serdev/serdev-ttyport.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/ttynull.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/mem.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/random.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/misc.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/virtio_console.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/raw.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/lp.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/hw_random/core.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/hw_random/ba431-rng.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/hw_random/exynos-trng.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/hw_random/virtio-rng.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/hw_random/cctrng.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/ppdev.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/pcmcia/cm4040_cs.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/pcmcia/scr24x_cs.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/arm/arm-smmu/arm-smmu.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/arm/arm-smmu/arm-smmu-impl.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/arm/arm-smmu/arm-smmu-nvidia.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/arm/arm-smmu/arm-smmu-qcom.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/iommu.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/iommu-traces.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/iommu-sysfs.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/dma-iommu.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/io-pgtable.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/io-pgtable-arm-v7s.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/io-pgtable-arm.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/iova.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/of_iommu.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/parport/share.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/parport/ieee1284.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/parport/ieee1284_ops.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/parport/procfs.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/parport/daisy.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/parport/probe.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/parport/parport_ax88796.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/core.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/pblk-init.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/pblk-core.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/pblk-rb.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/pblk-write.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/pblk-cache.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/pblk-read.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/pblk-gc.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/pblk-recovery.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/pblk-map.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/pblk-rl.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/pblk-sysfs.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/component.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/core.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/bus.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/dd.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/syscore.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/driver.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/class.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/platform.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/cpu.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/firmware.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/init.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/map.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/devres.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/attribute_container.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/transport_class.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/topology.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/container.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/property.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/cacheinfo.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/swnode.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/power/sysfs.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/power/generic_ops.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/power/common.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/power/qos.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/power/runtime.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/power/wakeirq.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/power/domain.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/power/domain_governor.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/power/clock_ops.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/firmware_loader/fallback_table.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/firmware_loader/main.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/firmware_loader/fallback.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/node.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regmap.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regcache.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regcache-rbtree.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regcache-flat.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regmap-debugfs.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regmap-i2c.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regmap-slimbus.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regmap-spmi.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regmap-mmio.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regmap-irq.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regmap-w1.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regmap-sdw.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regmap-i3c.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/soc.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/pinctrl.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/platform-msi.o' being placed in section `.eh_frame'
+> --
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/max77650-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/max8649.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/max8660.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/max8925-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/max8952.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/max77802-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/max77826-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/mcp16502.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/mp8859.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/mpq7920.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/mt6311-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/mt6360-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/mt6397-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/qcom-labibb-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/qcom_spmi-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/palmas-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/pca9450-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/pfuze100-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/pv88060-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/pv88090-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/tps51632-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/pcf50633-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/rpi-panel-attiny-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/rk808-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/rohm-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/rt5033-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/rtmv20-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/s2mps11.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/sky81452-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/slg51000-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/stpmic1_regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/sy8106a-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/sy8824x.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/sy8827n.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/tps62360-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/tps6507x-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/tps65086-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/tps65090-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/tps65218-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/tps6586x-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/tps65132-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/uniphier-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/vctrl-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/regulator/vexpress-regulator.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/reset/core.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/reset/tegra/reset-bpmp.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/reset/reset-imx7.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/reset/reset-intel-gw.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/reset/reset-scmi.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/reset/reset-simple.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/reset/reset-ti-syscon.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/reset/reset-zynqmp.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/tty_io.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/n_tty.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/tty_ioctl.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/tty_ldisc.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/tty_buffer.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/tty_port.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/tty_mutex.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/tty_ldsem.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/tty_baudrate.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/tty_jobctrl.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/n_null.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/pty.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/sysrq.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/vt/vt_ioctl.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/vt/vc_screen.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/vt/selection.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/vt/keyboard.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/vt/consolemap.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/vt/consolemap_deftbl.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/vt/vt.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/vt/defkeymap.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/hvc/hvc_dcc.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/hvc/hvc_console.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/serial_core.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/earlycon.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/earlycon-arm-semihost.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/8250/8250_core.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/8250/8250_port.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/8250/8250_dma.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/8250/8250_fintek.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/8250/serial_cs.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/8250/8250_aspeed_vuart.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/8250/8250_mtk.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/8250/8250_tegra.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/8250/8250_of.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/amba-pl010.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/amba-pl011.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/imx_earlycon.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/sc16is7xx.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/uartlite.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/altera_uart.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/altera_jtaguart.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/xilinx_uartps.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/tegra-tcu.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/arc_uart.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/fsl_lpuart.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/fsl_linflexuart.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/digicolor-usart.o' being placed in section `.eh_frame'
+> >> aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/liteuart.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/serial_mctrl_gpio.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serial/kgdboc.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serdev/core.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/serdev/serdev-ttyport.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/tty/ttynull.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/mem.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/random.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/misc.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/virtio_console.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/raw.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/lp.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/hw_random/core.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/hw_random/ba431-rng.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/hw_random/exynos-trng.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/hw_random/virtio-rng.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/hw_random/cctrng.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/ppdev.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/pcmcia/cm4040_cs.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/char/pcmcia/scr24x_cs.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/arm/arm-smmu/arm-smmu.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/arm/arm-smmu/arm-smmu-impl.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/arm/arm-smmu/arm-smmu-nvidia.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/arm/arm-smmu/arm-smmu-qcom.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/iommu.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/iommu-traces.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/iommu-sysfs.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/dma-iommu.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/io-pgtable.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/io-pgtable-arm-v7s.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/io-pgtable-arm.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/iova.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/iommu/of_iommu.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/parport/share.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/parport/ieee1284.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/parport/ieee1284_ops.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/parport/procfs.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/parport/daisy.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/parport/probe.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/parport/parport_ax88796.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/core.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/pblk-init.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/pblk-core.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/pblk-rb.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/pblk-write.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/pblk-cache.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/pblk-read.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/pblk-gc.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/pblk-recovery.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/pblk-map.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/pblk-rl.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/lightnvm/pblk-sysfs.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/component.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/core.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/bus.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/dd.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/syscore.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/driver.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/class.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/platform.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/cpu.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/firmware.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/init.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/map.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/devres.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/attribute_container.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/transport_class.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/topology.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/container.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/property.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/cacheinfo.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/swnode.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/power/sysfs.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/power/generic_ops.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/power/common.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/power/qos.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/power/runtime.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/power/wakeirq.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/power/domain.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/power/domain_governor.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/power/clock_ops.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/firmware_loader/fallback_table.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/firmware_loader/main.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/firmware_loader/fallback.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/node.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regmap.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regcache.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regcache-rbtree.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regcache-flat.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regmap-debugfs.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regmap-i2c.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regmap-slimbus.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regmap-spmi.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regmap-mmio.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regmap-irq.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regmap-w1.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regmap-sdw.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/regmap/regmap-i3c.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/soc.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/pinctrl.o' being placed in section `.eh_frame'
+>    aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from `drivers/base/platform-msi.o' being placed in section `.eh_frame'
+> ..
 > 
+> ---
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+
+> _______________________________________________
+> kbuild-all mailing list -- kbuild-all@lists.01.org
+> To unsubscribe send an email to kbuild-all-leave@lists.01.org
 
