@@ -2,74 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A834D309C90
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 15:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D563F309C7D
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 15:03:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231487AbhAaOJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 09:09:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231953AbhAaMhF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 07:37:05 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A99C061573;
-        Sun, 31 Jan 2021 04:24:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=R8+JxZSpbHiMxsv5TLCmqmv2hyGPLbx0zPwRvsESoT8=; b=Va5+mSbba56ABTdMGmAv/C++pK
-        /W28Q6TwZmVEZsX8HgZZ/HPOcp3zr1hv4YthleldIqNIt6uZunVSsFBBPx7eVDMAcIxW/UPzjIBK5
-        JzdEItl1XJXViz7h1EG+4LZkx3G5PCgKizGxtld/r8iEXwUUG3e0JVvNMhEfSDlbaT/yh74y4FaJ8
-        QQQnRSuWCRET8KgpOA/4ZSLVJTDpR5loU560WdMG4vfu8TxXuXVk3Rol1BRuFWcMico3hLQmcDDsg
-        oMCrWMWO9JPD3DrPG2o6sr2SJtf2cN0pjPpXTlIBrnkM+qtkIE0xt/2OAwNKiOgwxuI2ErKOc6zc5
-        R124FSfg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l6Blc-00CQnr-Gg; Sun, 31 Jan 2021 12:23:48 +0000
-Date:   Sun, 31 Jan 2021 12:23:48 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v3 net-next 5/5] net: page_pool: simplify page recycling
- condition tests
-Message-ID: <20210131122348.GM308988@casper.infradead.org>
-References: <20210131120844.7529-1-alobakin@pm.me>
- <20210131120844.7529-6-alobakin@pm.me>
+        id S232800AbhAaN4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 08:56:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55694 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231818AbhAaMcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 07:32:03 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6269164E25;
+        Sun, 31 Jan 2021 12:31:13 +0000 (UTC)
+Date:   Sun, 31 Jan 2021 12:31:10 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     zuoqilin1@163.com
+Cc:     lars@metafoo.de, Michael.Hennerich@analog.com, pmeerw@pmeerw.net,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zuoqilin <zuoqilin@yulong.com>
+Subject: Re: [PATCH] iio: fix typo
+Message-ID: <20210131123110.5390bf64@archlinux>
+In-Reply-To: <20210128021905.963-1-zuoqilin1@163.com>
+References: <20210128021905.963-1-zuoqilin1@163.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210131120844.7529-6-alobakin@pm.me>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 12:12:11PM +0000, Alexander Lobakin wrote:
-> pool_page_reusable() is a leftover from pre-NUMA-aware times. For now,
-> this function is just a redundant wrapper over page_is_pfmemalloc(),
-> so inline it into its sole call site.
+On Thu, 28 Jan 2021 10:19:05 +0800
+zuoqilin1@163.com wrote:
 
-Why doesn't this want to use {dev_}page_is_reusable()?
+> From: zuoqilin <zuoqilin@yulong.com>
+> 
+> change 'regster' to 'register'
+> 
+> Signed-off-by: zuoqilin <zuoqilin@yulong.com>
+Applied.
+
+thanks,
+
+Jonathan
+
+> ---
+>  drivers/iio/dac/ad5791.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iio/dac/ad5791.c b/drivers/iio/dac/ad5791.c
+> index e3ffa4b..615d72c 100644
+> --- a/drivers/iio/dac/ad5791.c
+> +++ b/drivers/iio/dac/ad5791.c
+> @@ -76,7 +76,7 @@ struct ad5791_chip_info {
+>   * @chip_info:		chip model specific constants
+>   * @vref_mv:		actual reference voltage used
+>   * @vref_neg_mv:	voltage of the negative supply
+> - * @ctrl:		control regster cache
+> + * @ctrl:		control register cache
+>   * @pwr_down_mode:	current power down mode
+>   * @pwr_down:		true if device is powered down
+>   * @data:		spi transfer buffers
 
