@@ -2,98 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D66309F3B
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 23:29:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0734F309F3E
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 23:29:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhAaW10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 17:27:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229502AbhAaWVi (ORCPT
+        id S229831AbhAaW3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 17:29:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40064 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229500AbhAaW2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 17:21:38 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF265C06174A;
-        Sun, 31 Jan 2021 14:20:56 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id df22so784039edb.1;
-        Sun, 31 Jan 2021 14:20:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DHUUmMepH2teJF00B27CJvMsSr8ShoqZntH4j9eDohk=;
-        b=SPtZ0mXppVAiASgxZ9VPs22urbjqMruMKM6c7WVxL4w7U44C2hRHzsPqx1Td8iOxDT
-         1up/tUYCFxZVnY9qnyKxZzoHeI6SpegEmHD0e+DY0Ts8O0K5vD3cuNm8Q9Efd5D/YhNW
-         hDc4yUrNGjYqYoeigXYeEznVn/snNZAM54PYuEyTNn6harTYZEPsg+wwss9YK0XKDSUM
-         NYUWrN4mu+G8bVzTPu9f3152D/FRT0oyx11V/IsaLwQpyYYnwjgEZdBSUN5GWpRzIyJK
-         CDtqR/h7J70Gh8+AEQf6Hr0tbBS63gG9Qp723SKWuOTqRJZ71pART65LkzdxmAtzvKtF
-         6ZuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DHUUmMepH2teJF00B27CJvMsSr8ShoqZntH4j9eDohk=;
-        b=baRvqL3ncgtBH4gEUKf2cMxmo8lGje2va0DR5d+wPfiif4vYkJONTnuE5Prszvc4wK
-         GDD3ZKRuYvR6RCrEt9oeetW/bjT4trcoI5t92jqiSr81rjevjqMGsWm0dSDHx9UBhwi/
-         9Qlgg/Hh/eDwoQT2YYVePcJlbyZDJuNTVmsKWUyejV9qsGKcFKm7fysDI7FTG6yxA//4
-         AeVzBvwazXZsBDqNlN3nJEdBufKHWg9i4KikulE6BwxaV+HrxLiWJWD/YNg8Xv9mip1J
-         Lxlr/k07p+A3hh2ZRzsKCRe5Sa7WtKerQstH12RCSZtbYTlnMlDeqp7iUDiEJYOEFBDR
-         ADOQ==
-X-Gm-Message-State: AOAM533MVr+HV7sYG5MVMoDEttPgWsUFPeLs3lc2KPSt/4zAtJjx7QrP
-        LsKYEJ2jK58LSnDqnCksX+o=
-X-Google-Smtp-Source: ABdhPJxf7CLPIJBZSBEiHhiSxVCyrbX3/bOBnveY8+nIRQUt/LoweLkjmk/GEAS3+MbrqUbpZICfzA==
-X-Received: by 2002:aa7:d399:: with SMTP id x25mr2179324edq.237.1612131655585;
-        Sun, 31 Jan 2021 14:20:55 -0800 (PST)
-Received: from skbuf (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
-        by smtp.gmail.com with ESMTPSA id z2sm7072566ejd.44.2021.01.31.14.20.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Jan 2021 14:20:54 -0800 (PST)
-Date:   Mon, 1 Feb 2021 00:20:53 +0200
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Tobias Waldekranz <tobias@waldekranz.com>
-Subject: Re: [PATCH net] net: dsa: mv88e6xxx: override existent unicast
- portvec in port_fdb_add
-Message-ID: <CA+h21hrn6q8NAdma3Djov82sNzHTz_tF480Nqpw-A+JLv_TYcQ@mail.gmail.com>
-X-TUID: ujGFqEzNl8hx
-References: <20210130134334.10243-1-dqfext@gmail.com>
- <20210131003929.2rlr6pv5fu7vfldd@skbuf>
- <CALW65jYF5jpm+wQQ9yPZPa_gCSwr4gWiPZ35rBXiACmzCbABLA@mail.gmail.com>
+        Sun, 31 Jan 2021 17:28:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612132038;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vXexTKRib8BnpafoLTxdXdc/flCe03J50q0l1UI9szk=;
+        b=GNWPH3ahebfFVFJUMgt8wGJUHXM90jXsRqkibVcoSBSU/2NxJVWhuLvDWZSKJ5oYHeUU8F
+        2cTbCUqLabHjT7rav/WId9ioN6AZWupFDxXN9K1Xt9BBjVH+PTHUJo+nT5QTE1FYe6SU3a
+        bxMPLHu8842X02Dv8uGmu4AOBRi5PY8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-246-FSHJc7gdPZauGKVBxiJI1Q-1; Sun, 31 Jan 2021 17:27:14 -0500
+X-MC-Unique: FSHJc7gdPZauGKVBxiJI1Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 139E6180E476;
+        Sun, 31 Jan 2021 22:27:12 +0000 (UTC)
+Received: from krava (unknown [10.40.192.85])
+        by smtp.corp.redhat.com (Postfix) with SMTP id B9F5962462;
+        Sun, 31 Jan 2021 22:27:09 +0000 (UTC)
+Date:   Sun, 31 Jan 2021 23:27:08 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com, ying.huang@intel.com
+Subject: Re: [PATCH v9] perf stat: Fix wrong skipping for per-die aggregation
+Message-ID: <YBcuvN106bsa7F+9@krava>
+References: <20210128013417.25597-1-yao.jin@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALW65jYF5jpm+wQQ9yPZPa_gCSwr4gWiPZ35rBXiACmzCbABLA@mail.gmail.com>
+In-Reply-To: <20210128013417.25597-1-yao.jin@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 09:13:15AM +0800, DENG Qingfang wrote:
-> This bug is exposed when I try your patch series on kernel 5.4
-> https://lore.kernel.org/netdev/20210106095136.224739-1-olteanv@gmail.com/
-> https://lore.kernel.org/netdev/20210116012515.3152-1-tobias@waldekranz.com/
->
-> Without this patch, DSA will add a new port bit to the existing
-> portvec when a client moves to the software part of a bridge. When it
-> moves away, DSA will clear the port bit but the existing one will
-> remain static. This results in connection issues when the client moves
-> to a different port of the switch, and the kernel log below.
->
-> mv88e6085 f1072004.mdio-mii:00: ATU member violation for
-> xx:xx:xx:xx:xx:xx portvec dc00 spid 0
+On Thu, Jan 28, 2021 at 09:34:17AM +0800, Jin Yao wrote:
+> Uncore becomes die-scope on Xeon Cascade Lake-AP and perf has supported
+> --per-die aggregation yet.
+> 
+> One issue is found in check_per_pkg() for uncore events running on
+> AP system. On cascade Lake-AP, we have:
+> 
+> S0-D0
+> S0-D1
+> S1-D0
+> S1-D1
+> 
+> But in check_per_pkg(), S0-D1 and S1-D1 are skipped because the
+> mask bits for S0 and S1 have been set for S0-D0 and S1-D0. It doesn't
+> check die_id. So the counting for S0-D1 and S1-D1 are set to zero.
+> That's not correct.
+> 
+> root@lkp-csl-2ap4 ~# ./perf stat -a -I 1000 -e llc_misses.mem_read --per-die -- sleep 5
+>      1.001460963 S0-D0           1            1317376 Bytes llc_misses.mem_read
+>      1.001460963 S0-D1           1             998016 Bytes llc_misses.mem_read
+>      1.001460963 S1-D0           1             970496 Bytes llc_misses.mem_read
+>      1.001460963 S1-D1           1            1291264 Bytes llc_misses.mem_read
+>      2.003488021 S0-D0           1            1082048 Bytes llc_misses.mem_read
+>      2.003488021 S0-D1           1            1919040 Bytes llc_misses.mem_read
+>      2.003488021 S1-D0           1             890752 Bytes llc_misses.mem_read
+>      2.003488021 S1-D1           1            2380800 Bytes llc_misses.mem_read
+>      3.005613270 S0-D0           1            1126080 Bytes llc_misses.mem_read
+>      3.005613270 S0-D1           1            2898176 Bytes llc_misses.mem_read
+>      3.005613270 S1-D0           1             870912 Bytes llc_misses.mem_read
+>      3.005613270 S1-D1           1            3388608 Bytes llc_misses.mem_read
+>      4.007627598 S0-D0           1            1124608 Bytes llc_misses.mem_read
+>      4.007627598 S0-D1           1            3884416 Bytes llc_misses.mem_read
+>      4.007627598 S1-D0           1             921088 Bytes llc_misses.mem_read
+>      4.007627598 S1-D1           1            4451840 Bytes llc_misses.mem_read
+>      5.001479927 S0-D0           1             963328 Bytes llc_misses.mem_read
+>      5.001479927 S0-D1           1            4831936 Bytes llc_misses.mem_read
+>      5.001479927 S1-D0           1             895104 Bytes llc_misses.mem_read
+>      5.001479927 S1-D1           1            5496640 Bytes llc_misses.mem_read
+> 
+> From above output, we can see S0-D1 and S1-D1 don't report the interval
+> values, they are continued to grow. That's because check_per_pkg() wrongly
+> decides to use zero counts for S0-D1 and S1-D1.
+> 
+> So in check_per_pkg(), we should use hashmap(socket,die) to decide if
+> the cpu counts needs to skip. Only considering socket is not enough.
+> 
+> Now with this patch,
+> 
+> root@lkp-csl-2ap4 ~# ./perf stat -a -I 1000 -e llc_misses.mem_read --per-die -- sleep 5
+>      1.001586691 S0-D0           1            1229440 Bytes llc_misses.mem_read
+>      1.001586691 S0-D1           1             976832 Bytes llc_misses.mem_read
+>      1.001586691 S1-D0           1             938304 Bytes llc_misses.mem_read
+>      1.001586691 S1-D1           1            1227328 Bytes llc_misses.mem_read
+>      2.003776312 S0-D0           1            1586752 Bytes llc_misses.mem_read
+>      2.003776312 S0-D1           1             875392 Bytes llc_misses.mem_read
+>      2.003776312 S1-D0           1             855616 Bytes llc_misses.mem_read
+>      2.003776312 S1-D1           1             949376 Bytes llc_misses.mem_read
+>      3.006512788 S0-D0           1            1338880 Bytes llc_misses.mem_read
+>      3.006512788 S0-D1           1             920064 Bytes llc_misses.mem_read
+>      3.006512788 S1-D0           1             877184 Bytes llc_misses.mem_read
+>      3.006512788 S1-D1           1            1020736 Bytes llc_misses.mem_read
+>      4.008895291 S0-D0           1             926592 Bytes llc_misses.mem_read
+>      4.008895291 S0-D1           1             906368 Bytes llc_misses.mem_read
+>      4.008895291 S1-D0           1             892224 Bytes llc_misses.mem_read
+>      4.008895291 S1-D1           1             987712 Bytes llc_misses.mem_read
+>      5.001590993 S0-D0           1             962624 Bytes llc_misses.mem_read
+>      5.001590993 S0-D1           1             912512 Bytes llc_misses.mem_read
+>      5.001590993 S1-D0           1             891200 Bytes llc_misses.mem_read
+>      5.001590993 S1-D1           1             978432 Bytes llc_misses.mem_read
+> 
+> On no-die system, die_id is 0, actually it's hashmap(socket,0), original behavior
+> is not changed.
+> 
+> Reported-by: Huang Ying <ying.huang@intel.com>
+> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+> ---
+> v9:
+>  Rename zero_per_pkg to evsel__zero_per_pkg and move it to evsel.c. Then
+>  evsel__zero_per_pkg can be called under different code path.
+> 
+>  Call evsel__zero_per_pkg in evsel__exit().
 
-Ah, ok, DSA adds an FDB entry behind the user's back and it relies upon
-the driver behavior being 'override'. A bit subtle, though it gives one
-good reason against someone suggesting "why don't you just refuse adding
-the new entry instead of overriding, like the software bridge does".
-Probably the refusal of overwriting an entry is what needs to be handled
-at upper layers, we do need to be able to override from DSA.
-I had a quick look through our other drivers and it seems that all of
-them are happy to override an existing FDB entry (or at least the
-software part is).
+Acked-by: Jiri Olsa <jolsa@redhat.com>
+
+thanks,
+jirka
+
