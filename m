@@ -2,81 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03C3309F8F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 00:43:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE0C309F91
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 00:46:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbhAaXlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 18:41:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45802 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229481AbhAaXlg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 18:41:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D34164E2F
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 23:40:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612136454;
-        bh=XbzouG8PydFCDTlas8eNfcrwuHLUjTspuJx0Lwu9f2s=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qMP4MnEQD5ElKte9/fC/X+aYzmUlWwi1djfofXeFU1pTMcZBpAjJZn7U2m/MX9x2Q
-         6TF0B+5NKkZZHGo8wtXvxcHJ6lw3+LDC7R0ezosqziLNfBIXPjyb/K6Zmk3IPTQSzF
-         7OSxLO6cRdRpXiDkfh0At+IUEhnI2aOEhQL1zXBvFh+ZPYY58RSN0J49iQe/AWAPK1
-         9HmUxD+WBun2dd1HFhUAlxjHYqqgAjt0wqI9tJpvpEv5OR4u8BfUoqW/7E30MWtD22
-         Au+Yn7kftelRTM+tyj4+7VwCenR3N7ur9FYvxfiGrJbm8XxHmR3sAmEXYo3fG6Csbp
-         SQfZsLMNcmiFg==
-Received: by mail-ej1-f41.google.com with SMTP id kg20so21540503ejc.4
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 15:40:54 -0800 (PST)
-X-Gm-Message-State: AOAM532sNpS9ufCDr0AAepZXK0kBFEa/spdjlLabT+HoZNJ6e7A4xEKZ
-        A0puw6v5Gx1dBXEKwrgFBf4FkXKrMFgIg4GpOymrew==
-X-Google-Smtp-Source: ABdhPJyVwaM987Sl32fARVfZXIqxw02Dmt3Ne1s1GG8wotUsU4PeDQjTQaAy1QUi7WZ+1+h4wUiMoQja+0i6Qf9pgXs=
-X-Received: by 2002:a17:907:104c:: with SMTP id oy12mr15001661ejb.503.1612136452670;
- Sun, 31 Jan 2021 15:40:52 -0800 (PST)
+        id S229825AbhAaXpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 18:45:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229495AbhAaXps (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 18:45:48 -0500
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A5CCC061573;
+        Sun, 31 Jan 2021 15:45:08 -0800 (PST)
+Received: by mail-oi1-x22a.google.com with SMTP id h6so16949530oie.5;
+        Sun, 31 Jan 2021 15:45:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=/MfklXb/fPreEZTP4a/+2979i0zJ9HYWRF0rUS01xT4=;
+        b=Q7P9XwZrFaqX3BfRtb5F59wxFQFPracuGkwFgBC5GxyKvAuYFMbk9YovhUnLw2b5J0
+         WeTAlgEi38LFVusmVYZSJ9WjNNvRGNckNn3GV6lpm3lo09Cb9aKfneru75uV0qRQfffd
+         12Mf5/wZL1vEuCabdtEeZqC3JALYEBup2tqZCLr62ZTmip28TES3gfRuLFNxhRDjMdan
+         ZLdvy16LsaBTrw2eobYJJpOXXBnrHsaKsiYciPo1bgqBBD23FWM/OPUpbmPYpvEjRWMF
+         RgDksqEdw9xOOuTQHsWQbnSWD591BC9Ll+8Cfe8z3xWO5OoUhsaWAhO0uI7KAvjPGFdJ
+         odZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=/MfklXb/fPreEZTP4a/+2979i0zJ9HYWRF0rUS01xT4=;
+        b=p1cVl34Yno+6mqGbc3MKxEk5Rd7/VBpSNC4YYe1lHaMaZplsxxSjEhsC5q/4xkv4HN
+         49iPxZqP95Dqhfa+KfHKAt7K0fNufX1lnsvps7A6BoE9eLyt6fQ8gf8niJ5d/P4/o53N
+         NKE1P1NjIdrULc03HSvvhBkZk1gEq/oqn1QjtdAOuKkFve16NLnM3ScOBVkA+v4/6X43
+         M7LGbi3De4qlTZ1u4yTFP9z0pTn+258XBlQ0wKmuto4pMrRJw3jeTCkQ1QKeWhSETmCv
+         FeoECHkncG1pKHoLLOXaPKnU/kRWnFM3ttofZHlNYndOEpERSieRk3Il+Yw08VJxrHe+
+         f2AA==
+X-Gm-Message-State: AOAM530ACLMN17efTt0MIzMVxxV/ooGzPPUNEFDtKTucdxxVLpwKeNFV
+        hAuzx9XWmB/GdLRZ9I2Ut9yNX7ZTyDKi6vipZ84=
+X-Google-Smtp-Source: ABdhPJxzE/iWBwXGLvMTUc1b0SKuduY8Kx1fkFZPrhoYcU21x3VptgyFcRoMFIgK6brg1e0HsV7LWP1iUzwUMqYk6rI=
+X-Received: by 2002:aca:d11:: with SMTP id 17mr9423685oin.6.1612136707670;
+ Sun, 31 Jan 2021 15:45:07 -0800 (PST)
 MIME-Version: 1.0
-References: <CAHk-=wjhQkZ=mUxPog4+kU1y5BRKw2DpbFXsEP=31fgX4KfBZQ@mail.gmail.com>
- <BFAB82E3-267B-4CF5-B6F2-8E6A2A3DB42B@amacapital.net> <CAP045Aq7PNQyhkT0S5GBzSRUTY4-SGsjs47Z0cCxoPeE-Od_+A@mail.gmail.com>
-In-Reply-To: <CAP045Aq7PNQyhkT0S5GBzSRUTY4-SGsjs47Z0cCxoPeE-Od_+A@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Sun, 31 Jan 2021 15:40:41 -0800
-X-Gmail-Original-Message-ID: <CALCETrVZp6-1Rg_DEKggUqZAzQ_iXXMd4d690ByPGb8B9F6dzQ@mail.gmail.com>
-Message-ID: <CALCETrVZp6-1Rg_DEKggUqZAzQ_iXXMd4d690ByPGb8B9F6dzQ@mail.gmail.com>
-Subject: Re: [REGRESSION] x86/entry: TIF_SINGLESTEP handling is still broken
-To:     Kyle Huey <me@kylehuey.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Robert O'Callahan" <rocallahan@gmail.com>
+From:   Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Date:   Mon, 1 Feb 2021 01:44:56 +0200
+Message-ID: <CAB=otbTVxa=nGWF4K1AYcYyPceYYRkC_1HYSb_Nhu6C9RMZEHA@mail.gmail.com>
+Subject: RPi4 DWC2 gadget doesn't copy data to a buffer in ep0 SETUP + DATA
+ OUT transaction
+To:     Minas Harutyunyan <hminas@synopsys.com>,
+        Linux USB <linux-usb@vger.kernel.org>
+Cc:     linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 3:39 PM Kyle Huey <me@kylehuey.com> wrote:
->
-> On Sun, Jan 31, 2021 at 3:36 PM Andy Lutomirski <luto@amacapital.net> wro=
-te:
-> > > The odd system call tracing part I have no idea who depends on it
-> > > (apparently "rr", which I assume is some replay thing), and I suspect
-> > > our semantics for it has been basically random historical one, and
-> > > it's apparently what changed.
-> > >
-> > > That's the one that we _really_ should have a test-case for, along
-> > > with some documentation and code comment what the actual semantics
-> > > need to be so that we don't break it again.
-> >
-> > This rr thing may be tangled up with the nonsense semantics of SYSRET. =
- I=E2=80=99ll muck around with Kyle=E2=80=99s test and try to figure out wh=
-at broke.
-> >
-> > I=E2=80=99m guessing the issue is that we are correctly setting TF in t=
-he EFLAGS image, but IRET helpfully only traps after the first user insn ex=
-ecutes, which isn=E2=80=99t what the tracer is expects.
->
-> The state of TF shouldn't really matter here. There should be no user
-> space code execution in the example I gave. This behavior all happens
-> in the kernel and not on the silicon.
->
+Hi Minas and other USB experts,
 
-I admit that PTRACE_SINGLESTEP seems like an odd way to spell "advance
-to the end of the syscall", but you're right, it should work.
+I'm currently developing new features for UAC1/UAC2 audio gadgets
+like Volume/Mute controls which use Control SETUP + DATA OUT
+transactions through ep0.
+
+While it works fine on BeagleBone black board with MUSB UDC,
+on Raspberry Pi 4 with DWC2 UDC there is an issue.
+
+I found that when DWC2 receives ep0 SETUP + DATA OUT transaction,
+it doesn't copy data transferred from the host to EP0 in DATA OUT stage
+to the usb_request->buf buffer. This buffer contains unchanged data from
+previous transactions.
+
+However, when I disable DMA for DWC2 controller (see the patch below)
+it starts to work as expected and correctly copies data transferred from
+the host in the DATA OUT stage, to the usb_request->buf buffer.
+
+So far I tested it on v5.9 kernel and v5.10.10 stable kernel both have
+the same issue.
+
+This issue is easily reproducible with RNDIS gadget which also
+uses ep0 SETUP + DATA OUT transactions for transferring
+RNDIS control messages.
+
+During enumeration of RNDIS gadget attached to Linux host,
+I see next messages for RPi4 DWC2 with DMA enabled:
+
+| ## RPi4 DWC2 DMA
+| [   91.029881] rndis_msg_parser: unknown RNDIS message 0x0052033A len 4456526
+| [   91.029889] RNDIS command error -524, 24/24
+
+In this case rndis_msg_parser can't parse messages from the host
+because they are sent through SETUP + DATA OUT transaction and
+DWC2 didn't copy that messages to the buffer, so buffer contains
+some garbage from previous transactions which can't be parsed.
+
+In case of BBB black or DWC2 with disabled DMA, it looks like:
+
+| ## BBB black
+| [   32.867751] rndis_msg_parser: RNDIS_MSG_INIT
+
+| ## RPi4 DWC2 no DMA
+| [  151.080724] rndis_msg_parser: RNDIS_MSG_INIT
+
+I also did a quick googling and found that same issue was
+recently reported for Raspberry pi OS:
+https://github.com/raspberrypi/Raspberry-Pi-OS-64bit/issues/127
+
+I spent some time on debugging this issue, but without having
+DWC2 documentation and experience with DWC2 internals
+that's all that I found so far.
+
+Is this a known issue? Anybody debugging it? Any ideas?
+
+Thanks,
+Ruslan
+
+-------------------------------------8<----------------------------------------
+From ced7a3631d9800d04bcbcd756dac4583459fe48c Mon Sep 17 00:00:00 2001
+From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Date: Wed, 20 Jan 2021 00:27:52 +0200
+Subject: [PATCH] usb: dwc2: workaround: disable DMA for gadget
+
+On Raspberry PI 4 it was observer that in case of control
+transfers with DATA phase from a host, the driver for some
+reason doesn't copy transferred data to the buffer, leaving
+previous data in it.
+
+With disabled DMA the issue isn't reproducible, thus
+temporarily disable it
+
+Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+---
+ drivers/usb/dwc2/params.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
+index 267543c..46c18af 100644
+--- a/drivers/usb/dwc2/params.c
++++ b/drivers/usb/dwc2/params.c
+@@ -357,7 +357,11 @@ static void dwc2_set_default_params(struct
+dwc2_hsotg *hsotg)
+ {
+  struct dwc2_hw_params *hw = &hsotg->hw_params;
+  struct dwc2_core_params *p = &hsotg->params;
++#if 0
+  bool dma_capable = !(hw->arch == GHWCFG2_SLAVE_ONLY_ARCH);
++#else
++ bool dma_capable = 0;
++#endif
+
+  dwc2_set_param_otg_cap(hsotg);
+  dwc2_set_param_phy_type(hsotg);
+@@ -651,7 +655,11 @@ static void dwc2_check_params(struct dwc2_hsotg *hsotg)
+ {
+  struct dwc2_hw_params *hw = &hsotg->hw_params;
+  struct dwc2_core_params *p = &hsotg->params;
++#if 0
+  bool dma_capable = !(hw->arch == GHWCFG2_SLAVE_ONLY_ARCH);
++#else
++ bool dma_capable = 0;
++#endif
+
+  dwc2_check_param_otg_cap(hsotg);
+  dwc2_check_param_phy_type(hsotg);
+-- 
+1.9.1
