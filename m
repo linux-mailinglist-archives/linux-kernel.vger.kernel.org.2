@@ -2,101 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC9B3309BB3
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9BD309BB2
 	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 12:48:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231540AbhAaLkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 06:40:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34122 "EHLO
+        id S231436AbhAaLhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 06:37:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230438AbhAaKGQ (ORCPT
+        with ESMTP id S230437AbhAaKFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 05:06:16 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2634DC061574
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 02:05:36 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id o18so10079692qtp.10
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 02:05:36 -0800 (PST)
+        Sun, 31 Jan 2021 05:05:36 -0500
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF2EC061573
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 02:04:56 -0800 (PST)
+Received: by mail-qk1-x736.google.com with SMTP id a19so13381053qka.2
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 02:04:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=6XPpC5iWPkqaZeLnJgI3weALZbBUAEPVHmKrFmfIhV4=;
-        b=goNRaFYmTaG8BUEpJjI5+D7VkeSS8Vw3WCidmfh7z5F69eEYlCKPWjUYHKSNv4LlXW
-         aA2wsdAZdn9Sn2JGUVVGTU1c2msJ9juf4It0P+1DcEF0Mh3MGD3mlp50tKxp3iZ0uL/z
-         jmveZhNa4lNCDoakWYshbC2J/EpSiqo70LqMu5Fg6DOLLRcu83ookO0uLUlAasEfSKCm
-         +ba3ahzhHF/IqcVnkG+BHkxjKv1fPtUGwLoUr91HM6N2pRJQgfcMHnu5xR0TBFf4uZZj
-         7iJTQKy48bkQfOcHJqGeTqA4rosGZkxoKQm4X4cXagGcZaIyK3lS6cptn3beUVZge2Mq
-         PLHw==
+        bh=nzheroJB8cIA6Q/LI8iqtJZO27wdGlOAjDJoyuxr+Cw=;
+        b=t5XJThddyWzYRgQeQ++ep+9YXj75dhsgl7+7t/uOV2igBYIWkrxXR9RSP8fGtmYzxi
+         H7gs8QZVpdei1ZdwEe9m7IYRFfCgFOCfUr2frFRcguY+aIGrDcngi9S5bOMAG8UOeHH5
+         mIlVqaMlVoKihg1pYiv4aPLn3ZhamoraJvUIGweGUkNz/Zv5x2N8wOch9Mhq54SemOy2
+         c/EVo8hVc1LTF/8gom/lQY1HEd/6fABqORz+bTzCJFzL1DF75+uR/52D0xYA+rFImCZ5
+         jq2CGU2R8U5Xq9hwtA0NgzBUBZW40TzYsIvpTd4E/OwBK79sphr3W4Cpw0kXwUmqzZSo
+         F2OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6XPpC5iWPkqaZeLnJgI3weALZbBUAEPVHmKrFmfIhV4=;
-        b=lS9jo55i56Rcc19AGObXnJi9UdM0BF1u/gYrMh+WWq0c5YS0jX0YqDyuMTzuxXoI1t
-         QfsAS/ZJmYY+Li9lt+NV+ASBJRmNYMmU/l7ZM03aMuKifbBUMBd1L20RNPmupsdkykQd
-         9h0ohfClLIDJ6Q3/VmaErw8ARausb0mHg+YvyLRTvVghkbjv+8wRJPH+BPGyI1OHXeQh
-         SBQHpSC0M0xiAsS09TSCS4oX5ZZ0nw7WvncZEBz11iCWAyPChA/Z7SmW+Quwhg/DVC1r
-         mKsVcZG+kFoSdJ8R7vkyoJkLJT2jaZ0hP38A8iyn3Ipt9vxyVjYT6sIRHJY+H2W/Lec6
-         ecjw==
-X-Gm-Message-State: AOAM532zqgpvDVEui0jHAVN4miUv+0APPGz+oJQM5LbthOiiIdH6Pqip
-        rFvGHp212GmpgmYFh3eH9EE8MScUl5su7jG8QriG+hG58CqFUA==
-X-Google-Smtp-Source: ABdhPJyph78/rd4/9XFp9fgx0ClwAtxtwK4JgD43nV7zUeghphf7AbgfoQLqOnuLWNHg1FTsBjTrgrmBk1kBkls7FQY=
-X-Received: by 2002:a37:2716:: with SMTP id n22mr11570565qkn.265.1612087224408;
- Sun, 31 Jan 2021 02:00:24 -0800 (PST)
+        bh=nzheroJB8cIA6Q/LI8iqtJZO27wdGlOAjDJoyuxr+Cw=;
+        b=OrfZMAI+rdDxlaVVelR2Rs1+w6cMnzft9PaW3B/WsGmJtU9oKfUTTLqgcCIP8FyZqX
+         ofoqSdTWFESSc9Y1LJ9PDvt0DJLtomxeNd2ihL+hchQxfSVD3gdn4zEZ3ImodXURFg6e
+         6dQ/6GLFWcVWz0GXHNlG9WFWDI+DjAJeTpG1p0mW1PBErCvhVQAiq2KwwHIuxmkHYvDn
+         ACCJu6XuXpbsy+cn/dBN597p1/p2eK1Rb5ZxUR5dhyfZhf5e9J+j6o2Sg3qGhZwPp4qK
+         FFIO2Gqu7KBG5aanZvxWbxldXttZvM0DrgPlVPyQw45Cgie8X+U80QGb+TMO3BauH2O8
+         T0dg==
+X-Gm-Message-State: AOAM533/mt/0X+QR428xNtPa4FKo9EQht5QVCrSww3LHfeZ9pveQ45jF
+        pOI1SWofJf4Nxx2DeaMb3sb23kztNHxQGNsAl1kulw==
+X-Google-Smtp-Source: ABdhPJxG0f17DBUxma0xJnhqszbZXx5dPJnA7oRRxSioGzcEFXC9zpvNhXfqN+5RJEkwolyKXI0Vc4ROqxCTGHB5daQ=
+X-Received: by 2002:a05:620a:918:: with SMTP id v24mr11391742qkv.350.1612087495220;
+ Sun, 31 Jan 2021 02:04:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20210129173105.22020-1-alex@ghiti.fr>
-In-Reply-To: <20210129173105.22020-1-alex@ghiti.fr>
+References: <CACT4Y+YPrXGw+AtESxAgPyZ84TYkNZdP0xpocX2jwVAbZD=-XQ@mail.gmail.com>
+ <20201112103125.GV2628@hirez.programming.kicks-ass.net> <CACT4Y+ayRHua-6UyRwSM3=_oi+NkXbaO3-zZ1mpDmWonbybkeA@mail.gmail.com>
+In-Reply-To: <CACT4Y+ayRHua-6UyRwSM3=_oi+NkXbaO3-zZ1mpDmWonbybkeA@mail.gmail.com>
 From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Sun, 31 Jan 2021 11:00:12 +0100
-Message-ID: <CACT4Y+bPy-XpynfRvUbE-wSXnGe_AitusJ=2cANdb-O0ONtgtw@mail.gmail.com>
-Subject: Re: [PATCH] riscv: virt_addr_valid must check the address belongs to
- linear mapping
-To:     Alexandre Ghiti <alex@ghiti.fr>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
+Date:   Sun, 31 Jan 2021 11:04:43 +0100
+Message-ID: <CACT4Y+bW1gpv8bz0vswaVUt-OB07oJ3NBeTi+vchAe8TTWK+mg@mail.gmail.com>
+Subject: Re: Process-wide watchpoints
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Matt Morehouse <mascasa@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 6:31 PM Alexandre Ghiti <alex@ghiti.fr> wrote:
+On Thu, Nov 12, 2020 at 11:43 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > > for sampling race detection),
+> > > number of threads in the process can be up to, say, ~~10K and the
+> > > watchpoint is intended to be set for a very brief period of time
+> > > (~~few ms).
+> >
+> > Performance is a consideration here, doing lots of IPIs in such a short
+> > window, on potentially large machines is a DoS risk.
+> >
+> > > This can be done today with both perf_event_open and ptrace.
+> > > However, the problem is that both APIs work on a single thread level
+> > > (? perf_event_open can be inherited by children, but not for existing
+> > > siblings). So doing this would require iterating over, say, 10K
+> >
+> > One way would be to create the event before the process starts spawning
+> > threads and keeping it disabled. Then every thread will inherit it, but
+> > it'll be inactive.
+> >
+> > > I see at least one potential problem: what do we do if some sibling
+> > > thread already has all 4 watchpoints consumed?
+> >
+> > That would be immediately avoided by this, since it will have the
+> > watchpoint reserved per inheriting the event.
+> >
+> > Then you can do ioctl(PERF_EVENT_IOC_{MODIFY_ATTRIBUTES,ENABLE,DISABLE})
+> > to update the watch location and enable/disable it. This _will_ indeed
+> > result in a shitload of IPIs if the threads are active, but it should
+> > work.
 >
-> virt_addr_valid macro checks that a virtual address is valid, ie that
-> the address belongs to the linear mapping and that the corresponding
->  physical page exists.
->
-> Add the missing check that ensures the virtual address belongs to the
-> linear mapping, otherwise __virt_to_phys, when compiled with
-> CONFIG_DEBUG_VIRTUAL enabled, raises a WARN that is interpreted as a
-> kernel bug by syzbot.
+> Aha! That's the possibility I missed.
+> We will try to prototype this and get back with more questions if/when
+> we have them.
+> Thanks!
 
-Thanks, Alexandre. Much appreciated.
+Hi Peter,
 
-> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
-> ---
->  arch/riscv/include/asm/page.h | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/riscv/include/asm/page.h b/arch/riscv/include/asm/page.h
-> index 2d50f76efe48..64a675c5c30a 100644
-> --- a/arch/riscv/include/asm/page.h
-> +++ b/arch/riscv/include/asm/page.h
-> @@ -135,7 +135,10 @@ extern phys_addr_t __phys_addr_symbol(unsigned long x);
->
->  #endif /* __ASSEMBLY__ */
->
-> -#define virt_addr_valid(vaddr) (pfn_valid(virt_to_pfn(vaddr)))
-> +#define virt_addr_valid(vaddr) ({                                              \
-> +       unsigned long _addr = (unsigned long)vaddr;                             \
-> +       (unsigned long)(_addr) >= PAGE_OFFSET && pfn_valid(virt_to_pfn(_addr)); \
-> +})
->
->  #define VM_DATA_DEFAULT_FLAGS  VM_DATA_FLAGS_NON_EXEC
->
-> --
-> 2.20.1
->
+I've tested this approach and it works, but only in half.
+PERF_EVENT_IOC_{ENABLE,DISABLE} work as advertised.
+However, PERF_EVENT_IOC_MODIFY_ATTRIBUTES does not work for inherited
+child events.
+Does something like this make any sense to you? Are you willing to
+accept such change?
+
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index 55d18791a72d..f6974807a32c 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -3174,7 +3174,7 @@ int perf_event_refresh(struct perf_event *event,
+int refresh)
+ }
+ EXPORT_SYMBOL_GPL(perf_event_refresh);
+
+-static int perf_event_modify_breakpoint(struct perf_event *bp,
++static int _perf_event_modify_breakpoint(struct perf_event *bp,
+                                         struct perf_event_attr *attr)
+ {
+        int err;
+@@ -3189,6 +3189,28 @@ static int perf_event_modify_breakpoint(struct
+perf_event *bp,
+        return err;
+ }
+
++static int perf_event_modify_breakpoint(struct perf_event *bp,
++                                       struct perf_event_attr *attr)
++{
++       struct perf_event *child;
++       int err;
++
++       WARN_ON_ONCE(bp->ctx->parent_ctx);
++
++       mutex_lock(&bp->child_mutex);
++       err = _perf_event_modify_breakpoint(bp, attr);
++       if (err)
++               goto unlock;
++       list_for_each_entry(child, &bp->child_list, child_list) {
++               err = _perf_event_modify_breakpoint(child, attr);
++               if (err)
++                       goto unlock;
++       }
++unlock:
++       mutex_unlock(&bp->child_mutex);
++       return err;
++}
++
+ static int perf_event_modify_attr(struct perf_event *event,
+                                  struct perf_event_attr *attr)
