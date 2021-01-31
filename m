@@ -2,176 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0A2309D8C
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 16:32:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3629D309D95
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 16:35:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232762AbhAaP0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 10:26:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231270AbhAaP0U (ORCPT
+        id S232345AbhAaPdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 10:33:43 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:6138 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231680AbhAaPch (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 10:26:20 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACDE8C061574;
-        Sun, 31 Jan 2021 07:25:39 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id q7so13836958wre.13;
-        Sun, 31 Jan 2021 07:25:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GhEHGUi/3x7MT7H9Mn5ltAw8hDBUJl2hwLBKiqP3I+0=;
-        b=ewu+JpRJrihfRy3GqoS/jsRKyfq/31+fXXGZJy/U8ueFvzqtjaj116hn1nnyF9DylQ
-         +6kWKcR7Girjy1sd69DBaFzCIsI1KdlDVIKbpK23ZY9avVs1XWH6rhSyZUU3uygM5t/7
-         V9TOVQqZHcj+8ayfAdOWk6ues1fwuM3JapCXgEeGj5FxjDy5NUiIPjg1meJRQnvTCR0y
-         +b8oJurs1zRHe18W1CNUytflx6Tbsr9zvd4XpDiVEyTZGYdnTzdmT5yARWY30UTqRrQi
-         EmnP9AmwyAG/g86YTUToyzs7xx4eOCoeqPE0Q5i2sHLNFP6hm+L5Kr2LnWk9/pCaBEGa
-         6p3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GhEHGUi/3x7MT7H9Mn5ltAw8hDBUJl2hwLBKiqP3I+0=;
-        b=IBwoZVXXgOL0yUj4/kf98vmQiOJ/1+XypZVov3hnSt4zlHvIbb9NxCvXiDBxRxmzTC
-         /mUhDZi964QYVP8ZZVNiadz9zMyAWUVSMgtDDLMZ6BmW+WJ1a8w+qwuP4ivrTY0yTVka
-         dFNZGfPhQouu8a/Lt+HmDL0KyWLGlhX3oElIvAXqXvZMXXjGWb/+GHwgmy+K8x8jPzx+
-         0EMxvEAu1lps0gLzUylgP+0iv7ulUSFqQmfS/PT792+dHF1OzJxVnVXKEptSstuVDiIS
-         uhcJ0s7lVw3iRPvW+BMyCqf/DvFXnrSdevddAJIx1TC+dorlN8uM/KEaETLX7h92aBX1
-         HDaA==
-X-Gm-Message-State: AOAM533U4SLKzM+Yw+DwDR2GAltbjnpmkSuu9pyTb9aGrJLXo9GJBVNd
-        nJSvLT/BI4ZOpdbNm6cpQN3OO/G3K6mG7ntOso/V3TAFqrQ=
-X-Google-Smtp-Source: ABdhPJzhLyDDHAozPJChY+HCFGKTS0PVBcXBZPEBQiFl356hneSOMPCqnYEBjUp2TG6ckqHgKPgu+XX0Z/LusxmqK8g=
-X-Received: by 2002:adf:ed02:: with SMTP id a2mr2806786wro.197.1612106738119;
- Sun, 31 Jan 2021 07:25:38 -0800 (PST)
+        Sun, 31 Jan 2021 10:32:37 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6016cd6a0000>; Sun, 31 Jan 2021 07:31:54 -0800
+Received: from [172.27.11.151] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 31 Jan
+ 2021 15:31:52 +0000
+Subject: Re: [PATCH RFC v2 08/10] vdpa: add vdpa simulator for block device
+To:     Stefano Garzarella <sgarzare@redhat.com>,
+        <virtualization@lists.linux-foundation.org>
+CC:     Xie Yongji <xieyongji@bytedance.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Laurent Vivier <lvivier@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        <linux-kernel@vger.kernel.org>, Jason Wang <jasowang@redhat.com>,
+        <kvm@vger.kernel.org>
+References: <20210128144127.113245-1-sgarzare@redhat.com>
+ <20210128144127.113245-9-sgarzare@redhat.com>
+From:   Max Gurtovoy <mgurtovoy@nvidia.com>
+Message-ID: <e8f97ea2-d179-de37-a0ea-b2858510f3ce@nvidia.com>
+Date:   Sun, 31 Jan 2021 17:31:43 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20210129195240.31871-1-TheSven73@gmail.com> <20210129195240.31871-3-TheSven73@gmail.com>
- <MN2PR11MB3662C081B6CDB8BC1143380FFAB79@MN2PR11MB3662.namprd11.prod.outlook.com>
-In-Reply-To: <MN2PR11MB3662C081B6CDB8BC1143380FFAB79@MN2PR11MB3662.namprd11.prod.outlook.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Sun, 31 Jan 2021 10:25:27 -0500
-Message-ID: <CAGngYiVvuNYC4WPCRfPOfjr98S_BGBNGjPze11AiHY9Pq1eJsA@mail.gmail.com>
-Subject: Re: [PATCH net-next v1 2/6] lan743x: support rx multi-buffer packets
-To:     Bryan Whitehead <Bryan.Whitehead@microchip.com>
-Cc:     Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Alexey Denisov <rtgbnm@gmail.com>,
-        Sergej Bauer <sbauer@blackbox.su>,
-        Tim Harvey <tharvey@gateworks.com>,
-        =?UTF-8?Q?Anders_R=C3=B8nningen?= <anders@ronningen.priv.no>,
-        netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210128144127.113245-9-sgarzare@redhat.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612107115; bh=/0xd12CGdsGgQtAO4roApjViFTPmfrwbBmD5WIKe4bA=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=OSZetRcvpEbs0ZZLIMhzYbQI1yiT2a2zmYRRxH0odZjlWuGGNjgmiMoeS7bjQSHox
+         Mlfwj3FAs1mgHvyp+jRnDDxEOsUJd8e1Jljk4CBM6glQChxwB/xewhjDaO5RWLui/e
+         UOymk5H0YZxawSS98flX4W0WdSSYi+96UsQPP9HEUQRMbXETnRBJIZvFICUWZwTImp
+         9Ae0uZrTi9ByJbkSdW4+DtaM117lgUQq1wY9HOw7EFk3+ECuj4cGU53QIpD1gMZiJL
+         ZalyNj+LmJBBQ30XoiPYCfvHtp5Hq4KNScWQ3PRQnyrlt74yIW6HWMfuCt2eIquWS6
+         2AohHnABGkoYA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 2:06 AM <Bryan.Whitehead@microchip.com> wrote:
+
+On 1/28/2021 4:41 PM, Stefano Garzarella wrote:
+> From: Max Gurtovoy <mgurtovoy@nvidia.com>
 >
-> >  static int lan743x_rx_process_packet(struct lan743x_rx *rx)  {
-> It looks like this function no longer processes a packet, but rather only processes a single buffer.
-> So perhaps it should be renamed to lan743x_rx_process_buffer, so it is not misleading.
-
-Agreed, will do.
-
+> This will allow running vDPA for virtio block protocol.
 >
-> If lan743x_rx_init_ring_element fails to allocate an skb,
-> Then lan743x_rx_reuse_ring_element will be called.
-> But that function expects the skb is already allocated and dma mapped.
-> But the dma was unmapped above.
-
-Good catch. I think you're right, the skb allocation always has to come before
-the unmap. Because if we unmap, and then the skb allocation fails, there is no
-guarantee that we can remap the old skb we've just unmapped (it could fail).
-And then we'd end up with a broken driver.
-
-BUT I actually joined skb alloc and init_ring_element, because of a very subtle
-synchronization bug I was seeing: if someone changes the mtu _in_between_
-skb alloc and init_ring_element, things will go haywire, because the skb and
-mapping lengths would be different !
-
-We could fix that by using a spinlock I guess, but synchronization primitives
-in "hot paths" like these are far from ideal... Would be nice if we could
-avoid that.
-
-Here's an idea: what if we fold "unmap from dma" into init_ring_element()?
-That way, we get the best of both worlds: length cannot change in the middle,
-and the function can always "back out" without touching the ring element
-in case an allocation or mapping fails.
-
-Pseudo-code:
-
-init_ring_element() {
-    /* single "sampling" of mtu, so no synchronization required */
-    length = netdev->mtu + ETH_HLEN + 4 + RX_HEAD_PADDING;
-
-    skb = alloc(length);
-    if (!skb) return FAIL;
-    dma_ptr = dma_map(skb, length);
-    if (!dma_ptr) {
-        free(skb);
-        return FAIL;
-    }
-    if (buffer_info->dma_ptr)
-        dma_unmap(buffer_info->dma_ptr, buffer_info->buffer_length);
-    buffer_info->skb = skb;
-    buffer_info->dma_ptr = dma_ptr;
-    buffer_info->buffer_length = length;
-
-    return SUCCESS;
-}
-
-What do you think?
-
+> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+> [sgarzare: various cleanups/fixes]
+> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> ---
+> v2:
+> - rebased on top of other changes (dev_attr, get_config(), notify(), etc.)
+> - memset to 0 the config structure in vdpasim_blk_get_config()
+> - used vdpasim pointer in vdpasim_blk_get_config()
 >
-> Also if lan743x_rx_init_ring_element fails to allocate an skb.
-> Then control will jump to process_extension and therefor
-> the currently received skb will not be added to the skb list.
-> I assume that would corrupt the packet? Or am I missing something?
+> v1:
+> - Removed unused headers
+> - Used cpu_to_vdpasim*() to store config fields
+> - Replaced 'select VDPA_SIM' with 'depends on VDPA_SIM' since selected
+>    option can not depend on other [Jason]
+> - Start with a single queue for now [Jason]
+> - Add comments to memory barriers
+> ---
+>   drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 145 +++++++++++++++++++++++++++
+>   drivers/vdpa/Kconfig                 |   7 ++
+>   drivers/vdpa/vdpa_sim/Makefile       |   1 +
+>   3 files changed, 153 insertions(+)
+>   create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
 >
+> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
+> new file mode 100644
+> index 000000000000..999f9ca0b628
+> --- /dev/null
+> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
+> @@ -0,0 +1,145 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * VDPA simulator for block device.
+> + *
+> + * Copyright (c) 2020, Mellanox Technologies. All rights reserved.
 
-Yes if an skb alloc failure in the middle of a multi-buffer frame, will corrupt
-the packet inside the frame. A chunk will be missing. I had assumed that this
-would be caught by an upper network layer, some checksum would be incorrect?
+I guess we can change the copyright from Mellanox to:
 
-Are there current networking devices that would send a corrupted packet to
-Linux if there is a corruption on the physical link? Especially if they don't
-support checksumming?
+Copyright (c) 2020, NVIDIA CORPORATION. All rights reserved.
 
-Maybe my assumption is naive.
-I'll fix this up if you believe that it could be an issue.
+Thanks.
 
-> ...
-> > -               if (!skb) {
-> > -                       result = RX_PROCESS_RESULT_PACKET_DROPPED;
-> It looks like this return value is no longer used.
-> If there is no longer a case where a packet will be dropped
-> then maybe this return value should be deleted from the header file.
-
-Agreed, will do.
-
->
-> ...
-> >  move_forward:
-> > -               /* push tail and head forward */
-> > -               rx->last_tail = real_last_index;
-> > -               rx->last_head = lan743x_rx_next_index(rx, real_last_index);
-> > -       }
-> > +       /* push tail and head forward */
-> > +       rx->last_tail = rx->last_head;
-> > +       rx->last_head = lan743x_rx_next_index(rx, rx->last_head);
-> > +       result = RX_PROCESS_RESULT_PACKET_RECEIVED;
->
-> Since this function handles one buffer at a time,
->   The return value RX_PROCESS_RESULT_PACKET_RECEIVED is now misleading.
->   Can you change it to RX_PROCESS_RESULT_BUFFER_RECEIVED.
-
-Agreed, will do.
-
-RX_PROCESS_RESULT_XXX can now only take two values (RECEIVED and NOTHING_TO_DO),
-so in theory it could be replaced by a bool. But perhaps we should keep the
-current names, because they are clearer to the reader?
-
->
->
