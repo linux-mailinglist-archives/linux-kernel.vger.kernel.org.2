@@ -2,132 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF1E309CF7
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 15:36:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EEBD309D05
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 15:37:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232348AbhAaOdK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 09:33:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231579AbhAaObd (ORCPT
+        id S232607AbhAaOg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 09:36:27 -0500
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:50502 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231493AbhAaOfJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 09:31:33 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 731F7C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 06:30:46 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id h15so8492429pli.8
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 06:30:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nigauri-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XzVDaJ1fFycebTAvDz+XG3GL0wDkx80opJiUc7Y73GA=;
-        b=nph1gnU+p1YlhYEHYZOEAY5TMqgf7lDjuKRpDI3foQvwW/Ufgxud7XN3oZaWkWr4zc
-         k0t3GUUi7xbeyTQBP0ZbYCFhhYL5+PRYRO+HY1CN6OLpeMfjER1i6ZQPgyS5NTZVRtqc
-         mvuhvE5IVpBCMFwt7cwbqtTLSFnF6E7yhTbAfR8AgKx6bzb5osI+JViS6JTVbPHHZiVh
-         QRlIKbqn++iJYOZ3QBIJPrN3GMh3mQbRHgaxMtHSNUm66i1nm6WukCpqJ7qXP8OtDzWT
-         pga7p7ZxpMIY6/srf00UJiVQXsnXqyw82ZN9WLyuUywLUvsRzVgI9piqjhZec78RxXnx
-         ZQpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=XzVDaJ1fFycebTAvDz+XG3GL0wDkx80opJiUc7Y73GA=;
-        b=ZjDayEsho/R/sMwOqY7qi5loowzyaryvOyVHa8tpP2K+CSHzZVb1365k/C4N2ZWYiY
-         lmJie+RwdVonmldwQ3cju/4YcCvOnRbtEs3T3fmuOzOy1XMbK6IOIqqSHwRxkiErJP5E
-         AEhUQgxMZcf46JZAwGcgSRYHGwU3koTBG7yv2FvEh9mWKtQkIZPx1N6kgMRDNEG/o6to
-         lwj6BBdZYCneSEhMcWjf0U/Wy06Uek7hUjgZFw7Br8wPlqew3Yis/KNAGQLrOoh9g41+
-         vRFzV3+BynGcl7DRJURqV+oQ683bEwEmgknjGed9pPhcN4R2tSsiGXybFG9S2JT0c0ZR
-         MrrQ==
-X-Gm-Message-State: AOAM530UazwiAc70WLL5X4QXB0l1/6HY0NefKQp2UUhxeg1AR7CTgTxg
-        w86INg7lxuoUcuR7S/TlWV1/qQjZkRnO
-X-Google-Smtp-Source: ABdhPJzmuNuju7oGIdhsBkMpUdnZr+g+bHAgqsSxYoVL3cn4F9d0oHum6qBfPPnToWL/UYM17WCDCA==
-X-Received: by 2002:a17:90a:470b:: with SMTP id h11mr12927978pjg.186.1612103445995;
-        Sun, 31 Jan 2021 06:30:45 -0800 (PST)
-Received: from localhost ([2405:6581:5360:1800:7285:c2ff:fec2:8f97])
-        by smtp.gmail.com with ESMTPSA id w7sm4487174pjv.24.2021.01.31.06.30.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Jan 2021 06:30:45 -0800 (PST)
-From:   Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-To:     michal.simek@xilinx.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
-Subject: [PATCH] firmware: xilinx: Remove zynqmp_pm_get_eemi_ops() in IS_REACHABLE(CONFIG_ZYNQMP_FIRMWARE)
-Date:   Sun, 31 Jan 2021 23:30:33 +0900
-Message-Id: <20210131143033.7441-1-iwamatsu@nigauri.org>
-X-Mailer: git-send-email 2.30.0
+        Sun, 31 Jan 2021 09:35:09 -0500
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10VEOwZB007942;
+        Sun, 31 Jan 2021 06:34:16 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=c2rddH60XFYxAszlahL5rrOo0++P3lB8hRxDhKLmrxs=;
+ b=ON1vF8/4J0tQEyEqmex+vxdPRFCGpY3uYrgYRDYtglq4eIYj0S5mciSO6CqGrNFP3EAZ
+ OinkTLgZCrNtifrD6XaQai8z3lH3t8G9z+oEboftK6sFz/uUOsHhD7NT5ul1/LWcCG/3
+ 3bHGc1S+7bIuTNeb7HYUBQbIKC5a9tjSslEu+43du7wT58gBTXlkSz1DlLaP0jXulHfp
+ sedGVxF4gjPDgJ6PZ3d9WiGD/iCYNxqMTCsoaOjCud6DNjJO4cNHIXmOyT0MSszHvoC7
+ XupNV6hWfV8ZMRVSLwRpPtcbMa+0L4w+AjM6tRJLlC3LZlFumB3EO/XEo3j05RYW7N4h ww== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0b-0016f401.pphosted.com with ESMTP id 36d7uq1px0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Sun, 31 Jan 2021 06:34:16 -0800
+Received: from SC-EXCH03.marvell.com (10.93.176.83) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 31 Jan
+ 2021 06:34:14 -0800
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH03.marvell.com
+ (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 31 Jan
+ 2021 06:34:13 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sun, 31 Jan 2021 06:34:13 -0800
+Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
+        by maili.marvell.com (Postfix) with ESMTP id B01F73F7040;
+        Sun, 31 Jan 2021 06:34:10 -0800 (PST)
+From:   <stefanc@marvell.com>
+To:     <netdev@vger.kernel.org>
+CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
+        <nadavh@marvell.com>, <ymarkman@marvell.com>,
+        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
+        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
+        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
+        <atenart@kernel.org>
+Subject: [PATCH v7 net-next 00/15] net: mvpp2: Add TX Flow Control support
+Date:   Sun, 31 Jan 2021 16:33:43 +0200
+Message-ID: <1612103638-16108-1-git-send-email-stefanc@marvell.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-01-31_04:2021-01-29,2021-01-31 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-zynqmp_pm_get_eemi_ops() was removed in commit 4db8180ffe7c: "Firmware: xilinx:
-Remove eemi ops for fpga related APIs", but not in IS_REACHABLE(CONFIG_ZYNQMP_FIRMWARE).
-This removed zynqmp_pm_get_eemi_ops() in IS_REACHABLE(CONFIG_ZYNQMP_FIRMWARE), and also
-modify the documentation for this driver.
+From: Stefan Chulski <stefanc@marvell.com>
 
-Fixes: 4db8180ffe7c ("firmware: xilinx: Remove eemi ops for fpga related APIs")
-Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@nigauri.org>
----
- Documentation/driver-api/xilinx/eemi.rst | 27 +-----------------------
- include/linux/firmware/xlnx-zynqmp.h     |  5 -----
- 2 files changed, 1 insertion(+), 31 deletions(-)
+Armada hardware has a pause generation mechanism in GOP (MAC).
+The GOP generate flow control frames based on an indication programmed in Ports Control 0 Register. There is a bit per port.
+However assertion of the PortX Pause bits in the ports control 0 register only sends a one time pause.
+To complement the function the GOP has a mechanism to periodically send pause control messages based on periodic counters.
+This mechanism ensures that the pause is effective as long as the Appropriate PortX Pause is asserted.
 
-diff --git a/Documentation/driver-api/xilinx/eemi.rst b/Documentation/driver-api/xilinx/eemi.rst
-index 9dcbc6f18d75df..53416d25d309a8 100644
---- a/Documentation/driver-api/xilinx/eemi.rst
-+++ b/Documentation/driver-api/xilinx/eemi.rst
-@@ -19,32 +19,7 @@ device to issue or respond to power management requests.
- EEMI ops is a structure containing all eemi APIs supported by Zynq MPSoC.
- The zynqmp-firmware driver maintain all EEMI APIs in zynqmp_eemi_ops
- structure. Any driver who want to communicate with PMC using EEMI APIs
--can call zynqmp_pm_get_eemi_ops().
--
--Example of EEMI ops::
--
--	/* zynqmp-firmware driver maintain all EEMI APIs */
--	struct zynqmp_eemi_ops {
--		int (*get_api_version)(u32 *version);
--		int (*query_data)(struct zynqmp_pm_query_data qdata, u32 *out);
--	};
--
--	static const struct zynqmp_eemi_ops eemi_ops = {
--		.get_api_version = zynqmp_pm_get_api_version,
--		.query_data = zynqmp_pm_query_data,
--	};
--
--Example of EEMI ops usage::
--
--	static const struct zynqmp_eemi_ops *eemi_ops;
--	u32 ret_payload[PAYLOAD_ARG_CNT];
--	int ret;
--
--	eemi_ops = zynqmp_pm_get_eemi_ops();
--	if (IS_ERR(eemi_ops))
--		return PTR_ERR(eemi_ops);
--
--	ret = eemi_ops->query_data(qdata, ret_payload);
-+use the functions provided for each function.
- 
- IOCTL
- ------
-diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
-index 2a0da841c942f6..4ef77deaf7918c 100644
---- a/include/linux/firmware/xlnx-zynqmp.h
-+++ b/include/linux/firmware/xlnx-zynqmp.h
-@@ -355,11 +355,6 @@ int zynqmp_pm_read_pggs(u32 index, u32 *value);
- int zynqmp_pm_system_shutdown(const u32 type, const u32 subtype);
- int zynqmp_pm_set_boot_health_status(u32 value);
- #else
--static inline struct zynqmp_eemi_ops *zynqmp_pm_get_eemi_ops(void)
--{
--	return ERR_PTR(-ENODEV);
--}
--
- static inline int zynqmp_pm_get_api_version(u32 *version)
- {
- 	return -ENODEV;
+Problem is that Packet Processor that actually can drop packets due to lack of resources not connected to the GOP flow control generation mechanism.
+To solve this issue Armada has firmware running on CM3 CPU dedicated for Flow Control support.
+Firmware monitors Packet Processor resources and asserts XON/XOFF by writing to Ports Control 0 Register.
+
+MSS shared SRAM memory used to communicate between CM3 firmware and PP2 driver.
+During init PP2 driver informs firmware about used BM pools, RXQs, congestion and depletion thresholds.
+
+The pause frames are generated whenever congestion or depletion in resources is detected.
+The back pressure is stopped when the resource reaches a sufficient level.
+So the congestion/depletion and sufficient level implement a hysteresis that reduces the XON/XOFF toggle frequency.
+
+Packet Processor v23 hardware introduces support for RX FIFO fill level monitor.
+Patch "add PPv23 version definition" to differ between v23 and v22 hardware.
+Patch "add TX FC firmware check" verifies that CM3 firmware supports Flow Control monitoring.
+
+v6 --> v7
+- Reduce patch set from 18 to 15 patches
+ - Documentation change combined into a single patch
+ - RXQ and BM size change combined into a single patch
+ - Ring size change check moved into "add RXQ flow control configurations" commit
+
+v5 --> v6
+- No change
+
+v4 --> v5
+- Add missed Signed-off
+- Fix warnings in patches 3 and 12
+- Add revision requirement to warning message
+- Move mss_spinlock into RXQ flow control configurations patch
+- Improve FCA RXQ non occupied descriptor threshold commit message
+
+v3 --> v4
+- Remove RFC tag
+
+v2 --> v3
+- Remove inline functions
+- Add PPv2.3 description into marvell-pp2.txt
+- Improve mvpp2_interrupts_mask/unmask procedure
+- Improve FC enable/disable procedure
+- Add priv->sram_pool check
+- Remove gen_pool_destroy call
+- Reduce Flow Control timer to x100 faster
+
+v1 --> v2
+- Add memory requirements information
+- Add EPROBE_DEFER if of_gen_pool_get return NULL
+- Move Flow control configuration to mvpp2_mac_link_up callback
+- Add firmware version info with Flow control support
+
+Konstantin Porotchkin (1):
+  dts: marvell: add CM3 SRAM memory to cp115 ethernet device tree
+
+Stefan Chulski (14):
+  doc: marvell: add cm3-mem and PPv2.3 description
+  net: mvpp2: add CM3 SRAM memory map
+  net: mvpp2: add PPv23 version definition
+  net: mvpp2: always compare hw-version vs MVPP21
+  net: mvpp2: increase BM pool and RXQ size
+  net: mvpp2: add FCA periodic timer configurations
+  net: mvpp2: add FCA RXQ non occupied descriptor threshold
+  net: mvpp2: enable global flow control
+  net: mvpp2: add RXQ flow control configurations
+  net: mvpp2: add ethtool flow control configuration support
+  net: mvpp2: add BM protection underrun feature support
+  net: mvpp2: add PPv23 RX FIFO flow control
+  net: mvpp2: set 802.3x GoP Flow Control mode
+  net: mvpp2: add TX FC firmware check
+
+ Documentation/devicetree/bindings/net/marvell-pp2.txt |   4 +-
+ arch/arm64/boot/dts/marvell/armada-cp11x.dtsi         |  10 +
+ drivers/net/ethernet/marvell/mvpp2/mvpp2.h            | 128 ++++-
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c       | 563 ++++++++++++++++++--
+ 4 files changed, 655 insertions(+), 50 deletions(-)
+
 -- 
-2.30.0
+1.9.1
 
