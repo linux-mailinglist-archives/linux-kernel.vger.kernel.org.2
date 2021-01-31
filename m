@@ -2,114 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2755309F6F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 00:23:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6123309F44
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 23:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229852AbhAaXWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 18:22:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229717AbhAaXWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 18:22:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B33D164E41;
-        Sun, 31 Jan 2021 17:24:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612113891;
-        bh=lq4ZxFmRpdCFZ2ngGIPT6XFBBMMwISWkJ4k3VKy0BMk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lVxXwQK+AZQPdhPGApZo/Z/vVJKl/9AKzuVi4K2bcWZHI7Gi6oT+2XZNtus1gASOp
-         MgRx8Owv1/5oZz++gHIG0vDiqqQmaHjBSWduxikLS1YIPiWvVRZfI543zF7IBevrRX
-         lWIZlo7DAtTXmSBhtLKkuMlohxHeTJ+6ERggwOXnhjRgfe7ZnqsUPyXs6lhjgJaVvc
-         F/rTYRV4cgHMdZzMObxqM/wP/NmoXJfNGntRQSJNdS9FduodEwNbOf9U2DiDrHhsvq
-         Cv9j4cd67Ul27dVY6ID7iz0DX8JS5Z+ajy9CxxjyiiCnKpxDxhrTTp4EbYRjPcIo0H
-         GL4Rc+Cw5wtMA==
-From:   Andy Lutomirski <luto@kernel.org>
-To:     x86@kernel.org
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Yonghong Song <yhs@fb.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 06/11] x86/fault: Improve kernel-executing-user-memory handling
-Date:   Sun, 31 Jan 2021 09:24:37 -0800
-Message-Id: <05e787a0d0661d0bfb40e44db39bf5ead5f7e4ef.1612113550.git.luto@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1612113550.git.luto@kernel.org>
-References: <cover.1612113550.git.luto@kernel.org>
+        id S229524AbhAaWkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 17:40:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24065 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229481AbhAaWhQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 17:37:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612132534;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=J4E9EA/l7JKgyS7qO1LRTs5yq4ElEah/eNdsAWoWkKQ=;
+        b=bLFmPTIDSUUNWpLoRmSCwLkgWpb4cSHbOUnm1BrCdPT0kAS1+l2Vc56YFh/nML/qKMzjr/
+        tTURv2CfGY3K8fSTwISz4DsYimb+kFKi9FiXPggsnztSVwkxrqcShDHNsni6Gc8QdHOUSX
+        rI1H3T2151+r5E93vrPuH5dwwjZtSDk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-573-qNHcYscoMDSDRvrB2UPZgw-1; Sun, 31 Jan 2021 17:35:30 -0500
+X-MC-Unique: qNHcYscoMDSDRvrB2UPZgw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EBFA6802B44;
+        Sun, 31 Jan 2021 22:35:28 +0000 (UTC)
+Received: from krava (unknown [10.40.192.85])
+        by smtp.corp.redhat.com (Postfix) with SMTP id BF57E10016FC;
+        Sun, 31 Jan 2021 22:35:26 +0000 (UTC)
+Date:   Sun, 31 Jan 2021 23:35:25 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH v2 0/3] perf tools: Minor improvements in event synthesis
+Message-ID: <YBcwrQJATmToLua2@krava>
+References: <20210129054901.1705483-1-namhyung@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210129054901.1705483-1-namhyung@kernel.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Right now we treat the case of the kernel trying to execute from user
-memory more or less just like the kernel getting a page fault on a user
-access.  In the failure path, we check for erratum #93, try to otherwise
-fix up the error, and then oops.
+On Fri, Jan 29, 2021 at 02:48:58PM +0900, Namhyung Kim wrote:
+> Hello,
+> 
+> This is to optimize the event synthesis during perf record.
+> 
+> The first patch is to reduce memory usage when many threads are used.
+> The second is to avoid unncessary syscalls for kernel threads.  And
+> the last one is to reduce the number of threads to iterate when new
+> threads are being created at the same time.
+> 
+> Unfortunately there's no dramatic improvement here but I can see ~5%
+> gain in the 'perf bench internals synthesize' on a big machine.
+> (The numbers are not stable though)
+> 
+> 
+> Before:
+>   # perf bench internals synthesize --mt -M1 -I 100
+>   # Running 'internals/synthesize' benchmark:
+>   Computing performance of multi threaded perf event synthesis by
+>   synthesizing events on CPU 0:
+>     Number of synthesis threads: 1
+>       Average synthesis took: 68831.480 usec (+- 101.450 usec)
+>       Average num. events: 9982.000 (+- 0.000)
+>       Average time per event 6.896 usec
+> 
+> 
+> After:
+>   # perf bench internals synthesize --mt -M1 -I 100
+>   # Running 'internals/synthesize' benchmark:
+>   Computing performance of multi threaded perf event synthesis by
+>   synthesizing events on CPU 0:
+>     Number of synthesis threads: 1
+>       Average synthesis took: 65036.370 usec (+- 158.121 usec)
+>       Average num. events: 9982.000 (+- 0.000)
+>       Average time per event 6.515 usec
+> 
+> 
+> Thanks,
+> Namhyung
+> 
+> 
+> Namhyung Kim (3):
+>   perf tools: Use /proc/<PID>/task/<TID>/status for synthesis
+>   perf tools: Skip MMAP record synthesis for kernel threads
+>   perf tools: Use scandir() to iterate threads
 
-If we manage to jump to the user address space, with or without SMEP, we
-should not try to resolve the page fault.  This is an error, pure and
-simple.  Rearrange the code so that we catch this case early, check for
-erratum #93, and bail out.
+heya,
+is there any change to previous version?
 
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Signed-off-by: Andy Lutomirski <luto@kernel.org>
----
- arch/x86/mm/fault.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
+jirka
 
-diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index 602cdf8e070a..1939e546beae 100644
---- a/arch/x86/mm/fault.c
-+++ b/arch/x86/mm/fault.c
-@@ -406,8 +406,11 @@ static void dump_pagetable(unsigned long address)
- static int is_errata93(struct pt_regs *regs, unsigned long address)
- {
- #if defined(CONFIG_X86_64) && defined(CONFIG_CPU_SUP_AMD)
--	if (boot_cpu_data.x86_vendor != X86_VENDOR_AMD
--	    || boot_cpu_data.x86 != 0xf)
-+	if (likely(boot_cpu_data.x86_vendor != X86_VENDOR_AMD
-+		   || boot_cpu_data.x86 != 0xf))
-+		return 0;
-+
-+	if (user_mode(regs))
- 		return 0;
- 
- 	if (address != regs->ip)
-@@ -707,9 +710,6 @@ no_context(struct pt_regs *regs, unsigned long error_code,
- 	if (is_prefetch(regs, error_code, address))
- 		return;
- 
--	if (is_errata93(regs, address))
--		return;
--
- 	/*
- 	 * Buggy firmware could access regions which might page fault, try to
- 	 * recover from such faults.
-@@ -1202,6 +1202,19 @@ void do_user_addr_fault(struct pt_regs *regs,
- 	tsk = current;
- 	mm = tsk->mm;
- 
-+	if (unlikely((error_code & (X86_PF_USER | X86_PF_INSTR)) == X86_PF_INSTR)) {
-+		/*
-+		 * Whoops, this is kernel mode code trying to execute from
-+		 * user memory.  Unless this is AMD erratum #93, we are toast.
-+		 * Don't even try to look up the VMA.
-+		 */
-+		if (is_errata93(regs, address))
-+			return;
-+
-+		bad_area_nosemaphore(regs, error_code, address);
-+		return;
-+	}
-+
- 	/* kprobes don't want to hook the spurious faults: */
- 	if (unlikely(kprobe_page_fault(regs, X86_TRAP_PF)))
- 		return;
--- 
-2.29.2
+> 
+>  tools/perf/util/synthetic-events.c | 88 ++++++++++++++++++++----------
+>  1 file changed, 58 insertions(+), 30 deletions(-)
+> 
+> -- 
+> 2.30.0.365.g02bc693789-goog
+> 
 
