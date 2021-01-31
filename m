@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1FC0309E72
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 21:01:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CBB0309E78
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 21:03:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231803AbhAaUAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 15:00:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52044 "EHLO mail.kernel.org"
+        id S231778AbhAaUAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 15:00:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231652AbhAaTyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S231640AbhAaTyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 31 Jan 2021 14:54:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C06464E45;
-        Sun, 31 Jan 2021 17:24:52 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD19364E4A;
+        Sun, 31 Jan 2021 17:24:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612113892;
-        bh=HepQvI0wvXt/1k1onm6Zz8Ow8kY0AcY6XDUlPSCCaVQ=;
+        s=k20201202; t=1612113893;
+        bh=qlemc0Ip7t8ZrpTpREowl+iyGtccMyRXqTe0uwhHJ68=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kthmt4qbvtS/tpzTn/Of6D4YG6PbKRwP6avoNIfh2vdMX6J5l4MUKSXPNDJNbLbXY
-         eIWKHSMragBzpIB+VRSRkioCbz6qTNGpH0cUF1edYgecTvIFbItd5ZdRT44gxpQS3H
-         YhkP3t0WHbAelkzx3RFSf+w8Oa2TIU4B47fTcmBjl3zoazQ6Y86EduZtIKVlSLWK/5
-         v1xIhAleOUQ6BfpAS/ARRUJIA6uY+DE/NWUr9PFQuoJFNXx9va9nQ+Yej9R3ErtoVP
-         UEM05Mul0/4KtfUGr3FBVVG4lF9X2+PpiftvfCdzsllQUm0jOBPPre1UG4kFAU9j9+
-         r72YqlkuhsZlQ==
+        b=YnITeL+vDPB2yKJbB4mBIf/17Vv0mVRjP9lelbGUZC9LLitLvCebxdcTOlTa2mp66
+         VA+g9Hp9Vt9wy2bwhEPbR0ce2kssoGNBdQEfDA5O/j57UfpwDfZGlgYmJWD6J/6wLX
+         iJqDCy2r871Beqx5riBPz35Jgc+PKnkT2skqhaYNclFzgsvsSRZWPamSzOiZfpq5Ya
+         CkaNHreSvzQxzg+5WgmVMZKUof/H6te9z8ofIJo88e7XZo2E97f6cYYcEF2niJYJc4
+         wQAzOat4Ee0Tqb4J+nhMBGDzPCpvQRX+lw5/OE3es/bQHV4lq/mK+IjxB/YNcEcbkx
+         3nMikhbtb8YWg==
 From:   Andy Lutomirski <luto@kernel.org>
 To:     x86@kernel.org
 Cc:     LKML <linux-kernel@vger.kernel.org>,
@@ -33,9 +33,9 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Masami Hiramatsu <mhiramat@kernel.org>,
         Andy Lutomirski <luto@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH 07/11] x86/fault: Split the OOPS code out from no_context()
-Date:   Sun, 31 Jan 2021 09:24:38 -0800
-Message-Id: <c5f715daf95fc7e94e279f0486908b53e1cdba3c.1612113550.git.luto@kernel.org>
+Subject: [PATCH 09/11] x86/fault: Rename no_context() to kernelmode_fixup_or_oops()
+Date:   Sun, 31 Jan 2021 09:24:40 -0800
+Message-Id: <5b0ad34afeeee15032393367b0945a5032903162.1612113550.git.luto@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1612113550.git.luto@kernel.org>
 References: <cover.1612113550.git.luto@kernel.org>
@@ -45,181 +45,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Not all callers of no_context() want to run exception fixups.
-Separate the OOPS code out from the fixup code in no_context().
+The name no_context() has never been very clear.  It's only called for
+faults from kernel mode, so rename it and change the no-longer-useful
+user_mode(regs) check to a WARN_ON_ONCE.
 
 Cc: Dave Hansen <dave.hansen@linux.intel.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Andy Lutomirski <luto@kernel.org>
 ---
- arch/x86/mm/fault.c | 116 +++++++++++++++++++++++---------------------
- 1 file changed, 62 insertions(+), 54 deletions(-)
+ arch/x86/mm/fault.c | 28 ++++++++++------------------
+ 1 file changed, 10 insertions(+), 18 deletions(-)
 
 diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
-index 1939e546beae..6f43d080e1e8 100644
+index 177b612c7f33..04cc98ec2423 100644
 --- a/arch/x86/mm/fault.c
 +++ b/arch/x86/mm/fault.c
-@@ -618,53 +618,20 @@ static void set_signal_archinfo(unsigned long address,
+@@ -693,17 +693,10 @@ page_fault_oops(struct pt_regs *regs, unsigned long error_code,
  }
  
  static noinline void
 -no_context(struct pt_regs *regs, unsigned long error_code,
 -	   unsigned long address, int signal, int si_code)
-+page_fault_oops(struct pt_regs *regs, unsigned long error_code,
-+		unsigned long address)
++kernelmode_fixup_or_oops(struct pt_regs *regs, unsigned long error_code,
++			 unsigned long address, int signal, int si_code)
  {
--	struct task_struct *tsk = current;
- 	unsigned long flags;
- 	int sig;
- 
- 	if (user_mode(regs)) {
- 		/*
+-	if (user_mode(regs)) {
+-		/*
 -		 * This is an implicit supervisor-mode access from user
 -		 * mode.  Bypass all the kernel-mode recovery code and just
 -		 * OOPS.
-+		 * Implicit kernel access from user mode?  Skip the stack
-+		 * overflow and EFI special cases.
- 		 */
- 		goto oops;
- 	}
- 
--	/* Are we prepared to handle this kernel fault? */
--	if (fixup_exception(regs, X86_TRAP_PF, error_code, address)) {
--		/*
--		 * Any interrupt that takes a fault gets the fixup. This makes
--		 * the below recursive fault logic only apply to a faults from
--		 * task context.
 -		 */
--		if (in_interrupt())
--			return;
--
--		/*
--		 * Per the above we're !in_interrupt(), aka. task context.
--		 *
--		 * In this case we need to make sure we're not recursively
--		 * faulting through the emulate_vsyscall() logic.
--		 */
--		if (current->thread.sig_on_uaccess_err && signal) {
--			sanitize_error_code(address, &error_code);
--
--			set_signal_archinfo(address, error_code);
--
--			/* XXX: hwpoison faults will set the wrong code. */
--			force_sig_fault(signal, si_code, (void __user *)address);
--		}
--
--		/*
--		 * Barring that, we can do the fixup and be happy.
--		 */
--		return;
+-		goto oops;
 -	}
--
- #ifdef CONFIG_VMAP_STACK
- 	/*
- 	 * Stack overflow?  During boot, we can fault near the initial
-@@ -672,8 +639,8 @@ no_context(struct pt_regs *regs, unsigned long error_code,
- 	 * that we're in vmalloc space to avoid this.
- 	 */
- 	if (is_vmalloc_addr((void *)address) &&
--	    (((unsigned long)tsk->stack - 1 - address < PAGE_SIZE) ||
--	     address - ((unsigned long)tsk->stack + THREAD_SIZE) < PAGE_SIZE)) {
-+	    (((unsigned long)current->stack - 1 - address < PAGE_SIZE) ||
-+	     address - ((unsigned long)current->stack + THREAD_SIZE) < PAGE_SIZE)) {
- 		unsigned long stack = __this_cpu_ist_top_va(DF) - sizeof(void *);
- 		/*
- 		 * We're likely to be running with very little stack space
-@@ -696,20 +663,6 @@ no_context(struct pt_regs *regs, unsigned long error_code,
- 	}
- #endif
++	WARN_ON_ONCE(user_mode(regs));
  
--	/*
--	 * 32-bit:
--	 *
--	 *   Valid to do another page fault here, because if this fault
--	 *   had been triggered by is_prefetch fixup_exception would have
--	 *   handled it.
--	 *
--	 * 64-bit:
--	 *
--	 *   Hall of shame of CPU/BIOS bugs.
--	 */
--	if (is_prefetch(regs, error_code, address))
--		return;
--
- 	/*
- 	 * Buggy firmware could access regions which might page fault, try to
- 	 * recover from such faults.
-@@ -726,7 +679,7 @@ no_context(struct pt_regs *regs, unsigned long error_code,
+ 	/* Are we prepared to handle this kernel fault? */
+ 	if (fixup_exception(regs, X86_TRAP_PF, error_code, address)) {
+@@ -743,7 +736,6 @@ no_context(struct pt_regs *regs, unsigned long error_code,
+ 	if (is_prefetch(regs, error_code, address))
+ 		return;
  
- 	show_fault_oops(regs, error_code, address);
- 
--	if (task_stack_end_corrupted(tsk))
-+	if (task_stack_end_corrupted(current))
- 		printk(KERN_EMERG "Thread overran stack, or stack corrupted\n");
- 
- 	sig = SIGKILL;
-@@ -739,6 +692,61 @@ no_context(struct pt_regs *regs, unsigned long error_code,
- 	oops_end(flags, regs, sig);
+-oops:
+ 	page_fault_oops(regs, error_code, address);
  }
  
-+static noinline void
-+no_context(struct pt_regs *regs, unsigned long error_code,
-+	   unsigned long address, int signal, int si_code)
-+{
-+	if (user_mode(regs)) {
-+		/*
-+		 * This is an implicit supervisor-mode access from user
-+		 * mode.  Bypass all the kernel-mode recovery code and just
-+		 * OOPS.
-+		 */
-+		goto oops;
-+	}
-+
-+	/* Are we prepared to handle this kernel fault? */
-+	if (fixup_exception(regs, X86_TRAP_PF, error_code, address)) {
-+		/*
-+		 * Any interrupt that takes a fault gets the fixup. This makes
-+		 * the below recursive fault logic only apply to a faults from
-+		 * task context.
-+		 */
-+		if (in_interrupt())
-+			return;
-+
-+		/*
-+		 * Per the above we're !in_interrupt(), aka. task context.
-+		 *
-+		 * In this case we need to make sure we're not recursively
-+		 * faulting through the emulate_vsyscall() logic.
-+		 */
-+		if (current->thread.sig_on_uaccess_err && signal) {
-+			sanitize_error_code(address, &error_code);
-+
-+			set_signal_archinfo(address, error_code);
-+
-+			/* XXX: hwpoison faults will set the wrong code. */
-+			force_sig_fault(signal, si_code, (void __user *)address);
-+		}
-+
-+		/*
-+		 * Barring that, we can do the fixup and be happy.
-+		 */
-+		return;
-+	}
-+
-+	/*
-+	 * AMD erratum #91 manifests as a spurious page fault on a PREFETCH
-+	 * instruction.
-+	 */
-+	if (is_prefetch(regs, error_code, address))
-+		return;
-+
-+oops:
-+	page_fault_oops(regs, error_code, address);
-+}
-+
- /*
-  * Print out info about fatal segfaults, if the show_unhandled_signals
-  * sysctl is set:
+@@ -790,7 +782,7 @@ __bad_area_nosemaphore(struct pt_regs *regs, unsigned long error_code,
+ 	struct task_struct *tsk = current;
+ 
+ 	if (!user_mode(regs)) {
+-		no_context(regs, error_code, address, pkey, si_code);
++		kernelmode_fixup_or_oops(regs, error_code, address, pkey, si_code);
+ 		return;
+ 	}
+ 
+@@ -922,7 +914,7 @@ do_sigbus(struct pt_regs *regs, unsigned long error_code, unsigned long address,
+ {
+ 	/* Kernel mode? Handle exceptions or die: */
+ 	if (!user_mode(regs)) {
+-		no_context(regs, error_code, address, SIGBUS, BUS_ADRERR);
++		kernelmode_fixup_or_oops(regs, error_code, address, SIGBUS, BUS_ADRERR);
+ 		return;
+ 	}
+ 
+@@ -1382,8 +1374,8 @@ void do_user_addr_fault(struct pt_regs *regs,
+ 		 * has unlocked the mm for us if we get here.
+ 		 */
+ 		if (!user_mode(regs))
+-			no_context(regs, error_code, address, SIGBUS,
+-				   BUS_ADRERR);
++			kernelmode_fixup_or_oops(regs, error_code, address,
++						 SIGBUS, BUS_ADRERR);
+ 		return;
+ 	}
+ 
+@@ -1403,15 +1395,15 @@ void do_user_addr_fault(struct pt_regs *regs,
+ 		return;
+ 
+ 	if (fatal_signal_pending(current) && !user_mode(regs)) {
+-		no_context(regs, error_code, address, 0, 0);
++		kernelmode_fixup_or_oops(regs, error_code, address, 0, 0);
+ 		return;
+ 	}
+ 
+ 	if (fault & VM_FAULT_OOM) {
+ 		/* Kernel mode? Handle exceptions or die: */
+ 		if (!user_mode(regs)) {
+-			no_context(regs, error_code, address,
+-				   SIGSEGV, SEGV_MAPERR);
++			kernelmode_fixup_or_oops(regs, error_code, address,
++						 SIGSEGV, SEGV_MAPERR);
+ 			return;
+ 		}
+ 
 -- 
 2.29.2
 
