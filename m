@@ -2,89 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A336309D1F
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 15:45:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3A5309D13
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 15:45:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231181AbhAaOor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 09:44:47 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:15192 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231993AbhAaOk2 (ORCPT
+        id S230316AbhAaOlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 09:41:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232758AbhAaOhA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 09:40:28 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10VEZqoH024782;
-        Sun, 31 Jan 2021 06:39:20 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=migziCnZ7PdHSXho5apmvqn7UBrKN34JL1abM3fmZTk=;
- b=h3OsoZPrHJvUmjiyv3bdqOvseEuTMl/sPTWgS6it3Wh1jVOW5FVd6qJyeBUMB07EXg+P
- LmrX3hZ73X+Br5OoMKmFsHihFooyEPOTaPcLiq4WslE1bIGgCYBbC2Usa/6fhSrcdpr2
- VW3h2jXlhcR4ivAybzlplDtzMxSIHUG2mV+QsChEt+tHxmYWSev5WcC42wShsWz8Ysz+
- r59DklOjY33MA2HMryTQCpd/dqbqzW3JBwt7/SinemvAvjS4MA6v2V90PpC8r/sDRBig
- 6Qhfc61Cowd4uIRWUlRaXyGAgKbB839mF0tP57eMEkn+6XCeXZaAxRoyZoiYqpnQKzVl Gw== 
-Received: from dc5-exch01.marvell.com ([199.233.59.181])
-        by mx0b-0016f401.pphosted.com with ESMTP id 36d7uq1q4n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Sun, 31 Jan 2021 06:39:20 -0800
-Received: from SC-EXCH03.marvell.com (10.93.176.83) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 31 Jan
- 2021 06:39:18 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 31 Jan
- 2021 06:39:18 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 31 Jan 2021 06:39:18 -0800
-Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id 775813F704B;
-        Sun, 31 Jan 2021 06:39:15 -0800 (PST)
-From:   <stefanc@marvell.com>
-To:     <netdev@vger.kernel.org>
-CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
-        <nadavh@marvell.com>, <ymarkman@marvell.com>,
-        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
-        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
-        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
-        <atenart@kernel.org>
-Subject: [PATCH v7 net-next 14/15] net: mvpp2: set 802.3x GoP Flow Control mode
-Date:   Sun, 31 Jan 2021 16:33:57 +0200
-Message-ID: <1612103638-16108-15-git-send-email-stefanc@marvell.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1612103638-16108-1-git-send-email-stefanc@marvell.com>
-References: <1612103638-16108-1-git-send-email-stefanc@marvell.com>
+        Sun, 31 Jan 2021 09:37:00 -0500
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD74C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 06:36:19 -0800 (PST)
+Received: by mail-lj1-x22c.google.com with SMTP id m22so8853767ljj.4
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 06:36:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/UCJ9q9ya5x1hYaVcsdfuQylFq06C62w4UYyWc40RoM=;
+        b=UUezd8qS+leTyd2V/5BGzxU5HfOl/xKtSwtRWtQusvlKpTMtLLx/+fwcp6luWesL/f
+         lg+FAULF8uSLwVRMkAARJMHDTAToySHgwsiLHnOzHYaWuDorKnowye0UgsHIYaYbV4mx
+         Opd7pbhz7D6Tf5ResiVaWIMLTNrJGFxq1/0iOdfaoX2gNLWcgfJAgih/4+CYPEZXhHMk
+         j52k02kjILmPKzoUq13CSN6AIgz6uUVEl3aVqpzfKn/d6KKlsVX0tT+GvSNK/ofKOreZ
+         /ZTjjbyyx/LpfNh6AFbLbFQQWm9fMnGOwxsA6mCU20AOGL6Unps5K+oJlwqArB44Sp6Q
+         mXWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/UCJ9q9ya5x1hYaVcsdfuQylFq06C62w4UYyWc40RoM=;
+        b=Hcv7dOKAtdIQ8R3cDgfnMS4ab42WAly6fKWlbSuvwYUo6LMQBxWNrP0r6QpG4o4qEO
+         09RWZHICcU/sCMWUMV/02kq7gA7iGr2VTa9wAgCY2mH5lFCHHM5+NczvuHiQq1JD3T9u
+         oOVLBk8HcPyztqzHCOdGxx6oVCg2y1e3a8rvs9Tbi7hGr64Hksg3XT/bMrXAcx8pfOMC
+         ezkgmpCRneVDrp2D+zwT+aIVYuvJPtkmtF+bPuPFDgn5QVhNvUOVzRllORI8QA0QTaE0
+         ndzF6y1OIammhHFbvYYWlqOgSuPxme8lhtY+sy4KBnyKyV98HTdbmaZr96pwuV9uY2dH
+         OzOA==
+X-Gm-Message-State: AOAM533XuY+rhGobGAeZPzZPkZUmNJb9AfOJhbAWFP+QsevKVDe1/oQT
+        p7mzySGX7snzpFL5NS11gms=
+X-Google-Smtp-Source: ABdhPJyi3UmfY3F4KBNKCMyQfShVzLkQHTV7fuufIhldBPeM4T4mgmNDf9E7qunKStFXeb6bikXXGw==
+X-Received: by 2002:a2e:b17c:: with SMTP id a28mr7447111ljm.189.1612103778296;
+        Sun, 31 Jan 2021 06:36:18 -0800 (PST)
+Received: from localhost.localdomain (h-158-174-22-164.NA.cust.bahnhof.se. [158.174.22.164])
+        by smtp.gmail.com with ESMTPSA id p3sm2681467lfu.271.2021.01.31.06.36.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 Jan 2021 06:36:17 -0800 (PST)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] arm64: perf: Constify static attribute_group structs
+Date:   Sun, 31 Jan 2021 15:36:15 +0100
+Message-Id: <20210131143615.21376-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-01-31_04:2021-01-29,2021-01-31 signatures=0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+The only usage of these is to put their addresses in an array of
+pointers to const attribute_group structs. Make them const to allow the
+compiler to put them in read-only memory.
 
-This patch fix GMAC TX flow control autoneg.
-Flow control autoneg wrongly were disabled with enabled TX
-flow control.
-
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 ---
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/kernel/perf_event.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index 06d3239..98849b0 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -6284,7 +6284,7 @@ static void mvpp2_gmac_config(struct mvpp2_port *port, unsigned int mode,
- 	old_ctrl4 = ctrl4 = readl(port->base + MVPP22_GMAC_CTRL_4_REG);
+diff --git a/arch/arm64/kernel/perf_event.c b/arch/arm64/kernel/perf_event.c
+index 3605f77ad4df..59b1eed52236 100644
+--- a/arch/arm64/kernel/perf_event.c
++++ b/arch/arm64/kernel/perf_event.c
+@@ -280,7 +280,7 @@ armv8pmu_event_attr_is_visible(struct kobject *kobj,
+ 	return 0;
+ }
  
- 	ctrl0 &= ~MVPP2_GMAC_PORT_TYPE_MASK;
--	ctrl2 &= ~(MVPP2_GMAC_INBAND_AN_MASK | MVPP2_GMAC_PCS_ENABLE_MASK);
-+	ctrl2 &= ~(MVPP2_GMAC_INBAND_AN_MASK | MVPP2_GMAC_PCS_ENABLE_MASK | MVPP2_GMAC_FLOW_CTRL_MASK);
+-static struct attribute_group armv8_pmuv3_events_attr_group = {
++static const struct attribute_group armv8_pmuv3_events_attr_group = {
+ 	.name = "events",
+ 	.attrs = armv8_pmuv3_event_attrs,
+ 	.is_visible = armv8pmu_event_attr_is_visible,
+@@ -300,7 +300,7 @@ static struct attribute *armv8_pmuv3_format_attrs[] = {
+ 	NULL,
+ };
  
- 	/* Configure port type */
- 	if (phy_interface_mode_is_8023z(state->interface)) {
+-static struct attribute_group armv8_pmuv3_format_attr_group = {
++static const struct attribute_group armv8_pmuv3_format_attr_group = {
+ 	.name = "format",
+ 	.attrs = armv8_pmuv3_format_attrs,
+ };
+@@ -322,7 +322,7 @@ static struct attribute *armv8_pmuv3_caps_attrs[] = {
+ 	NULL,
+ };
+ 
+-static struct attribute_group armv8_pmuv3_caps_attr_group = {
++static const struct attribute_group armv8_pmuv3_caps_attr_group = {
+ 	.name = "caps",
+ 	.attrs = armv8_pmuv3_caps_attrs,
+ };
 -- 
-1.9.1
+2.30.0
 
