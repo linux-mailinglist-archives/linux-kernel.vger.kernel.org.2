@@ -2,143 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB3C309EA5
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 21:08:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E224309ECE
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 21:15:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbhAaUIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 15:08:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42324 "EHLO
+        id S232234AbhAaUOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 15:14:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231356AbhAaTqL (ORCPT
+        with ESMTP id S230298AbhAaTfo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 14:46:11 -0500
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D85EC061356;
-        Sun, 31 Jan 2021 09:33:20 -0800 (PST)
-Received: by mail-pg1-x544.google.com with SMTP id z21so10432182pgj.4;
-        Sun, 31 Jan 2021 09:33:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/kqzKgRXAJuYCJnf9qlqUQ95/4dPlUVexaDClNJu+4o=;
-        b=dHvdkQ1j42EiilplhPDB6FhMNUf5ZXLmE/uzaLLqe0OXGT7dcsL7G95zRkDlrlN3f1
-         G4VK+txzHPVHWBdH+epzhHSC4vYX0Z0BDgeYkEH9gD5gAKiz3BMn90itchE/OWGv655N
-         RnNX45jveBHIdz6Fia3lJ78SR2RYjmNXMAigH9Dzg9BXMITx1Ryj4fX0PbvtDtkeLpVZ
-         a5D0q47TCAvw/H026XC55s4TCK+VjLVyeCBSC5BgXVQc+TdNfm53TXhmt+I9LlK0RpID
-         aS7aVxf0F9rW0fwPiByzapSFkmDfZibac4dt7sZgbjdUU1JP+ihY7/HwC6Fple5Hk0Ts
-         /DAQ==
+        Sun, 31 Jan 2021 14:35:44 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE01FC061788;
+        Sun, 31 Jan 2021 09:28:45 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id b9so1081763ejy.12;
+        Sun, 31 Jan 2021 09:28:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/kqzKgRXAJuYCJnf9qlqUQ95/4dPlUVexaDClNJu+4o=;
-        b=n+4iMnw7jSKwxOTl278WoKWQVbZSAT2qEUfGrkZqQG4n0478a4XMZ7Tq9Zrdr+Lp/E
-         hrz/TMF1ITWByAjbZg5diw6Jz+SUovrzq/3WrB3Ovqgfx760qC/ZwP++1UuLDAADE46H
-         Q+QMdUhFP35BWzJEjympsSwHhOmVDySIDiMBscJ98LoWoNU3XPf5lqXZK7ERzKZFM7H5
-         li8jEwbKP1NIOPGbwisYvv66rz4T1H5THWZdrGaY8p9vG82v7i1413Tue7AOEaz1aJ4r
-         cWUDSYHVDusV/2q2bOGysIcouNXSGAgNd1GcvnpMe7BZdbtfx8+K8OyDn+eLeMPggy9W
-         uiDw==
-X-Gm-Message-State: AOAM5300JMIC4zAIAmCytc21L7ADjtiCrIZKC7hNVoF8jYN0jCtUA+db
-        AhjwfNDd/SfXc+IagYmiGo4=
-X-Google-Smtp-Source: ABdhPJys/KIIkqbArr3BBk6zxyfIuIi9uPQFd4sUr7ipe/WtqEH4D4K7cPU/+BVgCni/eif1aK0rvQ==
-X-Received: by 2002:a62:774a:0:b029:1be:ca30:53ad with SMTP id s71-20020a62774a0000b02901beca3053admr12869186pfc.42.1612114399971;
-        Sun, 31 Jan 2021 09:33:19 -0800 (PST)
-Received: from localhost ([2402:3a80:11ea:e144:a2a4:c5ff:fe20:7222])
-        by smtp.gmail.com with ESMTPSA id 72sm14944814pfw.170.2021.01.31.09.33.18
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Gd1kwiYZVZqHxGZ4QrLOcLWC/Yc7tIB41MFJH1DjrOE=;
+        b=QKzEiLQ6NzOtXTY2GxWnm1OdzuV/+KIMM/bxqzcl6AWarRDPmlWsg5XZL634VlvtFk
+         dd0MlMtSNlXnR8BWUFra+7oftF4sCQ/GJOimxqAGa+q2pnfQwAlmIcedzH+B4CrOZ6rH
+         IkbRaW7sGUAmRnPz5KD09KHhUTVl259sUtA1e9LxKU/Ax+rGivv+Mh0QTmLiVWfRiBT8
+         LAiCLoe59/4adve4f9340PyPFbscXnQ2OmBY96w9kwsEGVxlmcibAvM84HoRut599jmL
+         hHdOZZ0XN6ZS3f/hmzJQ484+qTzMtIXqYygLDvuI9S2ybTUgjWcuK0IvNhomx5kfpvpF
+         HqaA==
+X-Gm-Message-State: AOAM5324J7qqm+F/v8dRWbl+jWpZFR9WPNEVdoQ4zsf7SlWHRVCWdzLS
+        1GEZc9L0j9gbzPgLAuW7m50=
+X-Google-Smtp-Source: ABdhPJz+pSN0UgQq9d30A0QB6sxrw8CN2kA2ipY6zlnjIn+rBf6kLJaK1Mc4wolK/V1jCHU+t7Yg1w==
+X-Received: by 2002:a17:906:f144:: with SMTP id gw4mr14257685ejb.189.1612114123011;
+        Sun, 31 Jan 2021 09:28:43 -0800 (PST)
+Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
+        by smtp.googlemail.com with ESMTPSA id u23sm7486937edt.87.2021.01.31.09.28.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Jan 2021 09:33:19 -0800 (PST)
-From:   Kumar Kartikeya Dwivedi <memxor@gmail.com>
-To:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Cc:     Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Ioana Radulescu <ruxandra.radulescu@nxp.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        Vaibhav Agarwal <vaibhav.sr@gmail.com>,
-        Mark Greer <mgreer@animalcreek.com>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Marc Dietrich <marvin24@gmx.de>,
-        Jens Frederich <jfrederich@gmail.com>,
-        Daniel Drake <dsd@laptop.org>,
-        Jon Nettleton <jon.nettleton@gmail.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Florian Schilhabel <florian.c.schilhabel@googlemail.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Teddy Wang <teddy.wang@siliconmotion.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        William Cohen <wcohen@redhat.com>,
-        Robert Richter <rric@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        greybus-dev@lists.linaro.org, ac100@lists.launchpad.net,
-        linux-tegra@vger.kernel.org, linux-fbdev@vger.kernel.org
-Subject: [PATCH 13/13] staging: wimax: Switch from strlcpy to strscpy
-Date:   Sun, 31 Jan 2021 22:58:34 +0530
-Message-Id: <20210131172838.146706-14-memxor@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210131172838.146706-1-memxor@gmail.com>
-References: <20210131172838.146706-1-memxor@gmail.com>
+        Sun, 31 Jan 2021 09:28:41 -0800 (PST)
+Date:   Sun, 31 Jan 2021 18:28:40 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Timon Baetz <timon.baetz@protonmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: Re: [PATCH 3/3] power: supply: max8997_charger: Switch to new binding
+Message-ID: <20210131172840.fxaadhhsafa4aeex@kozik-lap>
+References: <20210130172747.2022977-1-timon.baetz@protonmail.com>
+ <20210130172747.2022977-4-timon.baetz@protonmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210130172747.2022977-4-timon.baetz@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strlcpy is marked as deprecated in Documentation/process/deprecated.rst,
-and there is no functional difference when the caller expects truncation
-(when not checking the return value). strscpy is relatively better as it
-also avoids scanning the whole source string.
+On Sat, Jan 30, 2021 at 05:30:14PM +0000, Timon Baetz wrote:
+> Get regulator from parent device's node and extcon by name.
+> 
+> Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
+> ---
+>  drivers/power/supply/max8997_charger.c | 12 ++++++++----
+>  1 file changed, 8 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/power/supply/max8997_charger.c b/drivers/power/supply/max8997_charger.c
+> index 321bd6b8ee41..625d8cc4312a 100644
+> --- a/drivers/power/supply/max8997_charger.c
+> +++ b/drivers/power/supply/max8997_charger.c
+> @@ -168,6 +168,7 @@ static int max8997_battery_probe(struct platform_device *pdev)
+>  	int ret = 0;
+>  	struct charger_data *charger;
+>  	struct max8997_dev *iodev = dev_get_drvdata(pdev->dev.parent);
+> +	struct device_node *np = pdev->dev.of_node;
+>  	struct i2c_client *i2c = iodev->i2c;
+>  	struct max8997_platform_data *pdata = iodev->pdata;
+>  	struct power_supply_config psy_cfg = {};
+> @@ -237,20 +238,23 @@ static int max8997_battery_probe(struct platform_device *pdev)
+>  		return PTR_ERR(charger->battery);
+>  	}
+>  
+> +	// grab regulator from parent device's node
+> +	pdev->dev.of_node = iodev->dev->of_node;
+>  	charger->reg = devm_regulator_get_optional(&pdev->dev, "charger");
+> +	pdev->dev.of_node = np;
 
-This silences the related checkpatch warnings from:
-5dbdb2d87c29 ("checkpatch: prefer strscpy to strlcpy")
+I think the device does not have its own node anymore. Or did I miss
+something?
 
-Signed-off-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
----
- drivers/staging/wimax/i2400m/netdev.c | 6 +++---
- drivers/staging/wimax/i2400m/usb.c    | 4 ++--
- 2 files changed, 5 insertions(+), 5 deletions(-)
+>  	if (IS_ERR(charger->reg)) {
+>  		if (PTR_ERR(charger->reg) == -EPROBE_DEFER)
+>  			return -EPROBE_DEFER;
+>  		dev_info(&pdev->dev, "couldn't get charger regulator\n");
+>  	}
+> -	charger->edev = extcon_get_edev_by_phandle(&pdev->dev, 0);
+> -	if (IS_ERR(charger->edev)) {
+> -		if (PTR_ERR(charger->edev) == -EPROBE_DEFER)
+> +	charger->edev = extcon_get_extcon_dev("max8997-muic");
+> +	if (IS_ERR_OR_NULL(charger->edev)) {
+> +		if (!charger->edev)
 
-diff --git a/drivers/staging/wimax/i2400m/netdev.c b/drivers/staging/wimax/i2400m/netdev.c
-index 8339d600e..cd06eaf75 100644
---- a/drivers/staging/wimax/i2400m/netdev.c
-+++ b/drivers/staging/wimax/i2400m/netdev.c
-@@ -561,11 +561,11 @@ static void i2400m_get_drvinfo(struct net_device *net_dev,
- {
- 	struct i2400m *i2400m = net_dev_to_i2400m(net_dev);
- 
--	strlcpy(info->driver, KBUILD_MODNAME, sizeof(info->driver));
--	strlcpy(info->fw_version, i2400m->fw_name ? : "",
-+	strscpy(info->driver, KBUILD_MODNAME, sizeof(info->driver));
-+	strscpy(info->fw_version, i2400m->fw_name ? : "",
- 		sizeof(info->fw_version));
- 	if (net_dev->dev.parent)
--		strlcpy(info->bus_info, dev_name(net_dev->dev.parent),
-+		strscpy(info->bus_info, dev_name(net_dev->dev.parent),
- 			sizeof(info->bus_info));
- }
- 
-diff --git a/drivers/staging/wimax/i2400m/usb.c b/drivers/staging/wimax/i2400m/usb.c
-index f250d03ce..481b1ccde 100644
---- a/drivers/staging/wimax/i2400m/usb.c
-+++ b/drivers/staging/wimax/i2400m/usb.c
-@@ -333,8 +333,8 @@ static void i2400mu_get_drvinfo(struct net_device *net_dev,
- 	struct i2400mu *i2400mu = container_of(i2400m, struct i2400mu, i2400m);
- 	struct usb_device *udev = i2400mu->usb_dev;
- 
--	strlcpy(info->driver, KBUILD_MODNAME, sizeof(info->driver));
--	strlcpy(info->fw_version, i2400m->fw_name ? : "",
-+	strscpy(info->driver, KBUILD_MODNAME, sizeof(info->driver));
-+	strscpy(info->fw_version, i2400m->fw_name ? : "",
- 		sizeof(info->fw_version));
- 	usb_make_path(udev, info->bus_info, sizeof(info->bus_info));
- }
--- 
-2.29.2
+Isn't NULL returned when there is simply no extcon? It's different than
+deferred probe. Returning here EPROBE_DEFER might lead to infinite probe
+tries (on every new device probe) instead of just failing it.
 
+Best regards,
+Krzysztof
+
+
+>  			return -EPROBE_DEFER;
+>  		dev_info(charger->dev, "couldn't get extcon device\n");
+>  	}
+>  
+> -	if (!IS_ERR(charger->reg) && !IS_ERR(charger->edev)) {
+> +	if (!IS_ERR(charger->reg) && !IS_ERR_OR_NULL(charger->edev)) {
+>  		INIT_WORK(&charger->extcon_work, max8997_battery_extcon_evt_worker);
+>  		ret = devm_add_action(&pdev->dev, max8997_battery_extcon_evt_stop_work, charger);
+>  		if (ret) {
+> -- 
+> 2.25.1
+> 
+> 
