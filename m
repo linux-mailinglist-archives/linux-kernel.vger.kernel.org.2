@@ -2,92 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A2D1309A05
-	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 03:58:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E31B309A07
+	for <lists+linux-kernel@lfdr.de>; Sun, 31 Jan 2021 03:59:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229810AbhAaCvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 30 Jan 2021 21:51:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhAaCvg (ORCPT
+        id S230016AbhAaC6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 30 Jan 2021 21:58:44 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:32688 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229658AbhAaC6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 30 Jan 2021 21:51:36 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EF99C061573
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 18:50:56 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id ke15so18814730ejc.12
-        for <linux-kernel@vger.kernel.org>; Sat, 30 Jan 2021 18:50:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kylehuey.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pUPQkjW5pYAAUYX4jIZLQH5E02MdUbc4NK9n0fOKeiQ=;
-        b=kIcIJ8aOokcICYWuOxJ9c7LZkX4eYflIkvTt6cAtCXf8wI9DXPpCMQ+JYpvka9We3K
-         vhfhuofSYaqpKSNbPiUp0U/DfT8hn3ESDgz/RWbLs+eaD4+3/XtCeSSmbkydwXAO3DE5
-         S4+ZSuM60kQFe7Px4f5Jf4gjOCweEPSHoCN86HBhOhbEfJO1TdtST7KtE1EoRlzb+GFU
-         TQoxYBeLPknDIFjjiSLVBTMWSrF73aqxw1sEi9Grocrk7d4n3SLVC+XBrOgX/w55Ynfi
-         W/YIM/B24VtWX9zi9pmxJvntV7q1TvYnSwHY3YaLkUNB9okkApBKVT5q06tBKRW9j6X3
-         2yMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pUPQkjW5pYAAUYX4jIZLQH5E02MdUbc4NK9n0fOKeiQ=;
-        b=rqQBaccOtOO2egCnRysz5Rg+itXbGRc+OC1khSD4eZEBhbdPTun2hCn4OvywCsSXx3
-         zb/uMgeXeX1TWj2nXMyIctKPrjMGfPULZ0wbnMmAnFH8r8MYUXsS/AqEZpEqleTH5JuV
-         nKp3HwuqByatQGY3LIplPvWuEDq1TIDkhM4xMoAiEDg+QItoerbkO72zhWeHV3PZ02Zx
-         y2dcEAOUVpJGl+K1+zY2eBKFKNNsIjl5+56YJyg45JIaX+ocDepbCwDWHJlR2R95V0v6
-         9AdoRaqm+OPbwDFnJohXKt9QsMj9yXa9ODPB9mG5Bu6bAqA8l2LM6XtACglE6kN1Sm6i
-         jNDw==
-X-Gm-Message-State: AOAM532eEGhi6+sW+UTRbyWplsR+mlUScUxkfpF3xmJQ6Ugcuemh64Lh
-        Wn0AdEpjPu+T9v7QRGJrcS/zML9/O/+cLUTJiT2bRQ==
-X-Google-Smtp-Source: ABdhPJw4mJLkvojrXjkouJld8U67wqAoO95Mt8cBJsHC+kcE7bawKdMg8+GhVRaAfgw+D2BiCGFIRFuuA6xi+YQ1Yms=
-X-Received: by 2002:a17:906:2454:: with SMTP id a20mr11390025ejb.203.1612061454725;
- Sat, 30 Jan 2021 18:50:54 -0800 (PST)
+        Sat, 30 Jan 2021 21:58:40 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 10V2tIiK181314;
+        Sat, 30 Jan 2021 21:57:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=YDPuxkcZzKm2C8fUKanfD/H6l+IU7POIQ46lP6+M5v0=;
+ b=q/8HNNxxA+yCFZB6yJPNzR85cq6irpwrXqGXa6F0Lnuaxcs1YUtq0gelss55msmCoSes
+ GN/oUO5QvWP/tRRoSbMg9a9yKv56IDokCqQxCr6QhjXq7xeGglQKG5ftIwfUEocj593C
+ zYSI2jQYn9bKbxeGDccYmQJzbPpTdlCH8bH/TRNaO24ZBEFh4mIokVNcJnBy7bx1fJr2
+ KzEUyYNmCMN7tU0v911HS9Oy/8NtWrcvn7s/1fiqmt4wLYWV3z9hEdN5vdncMqkACpfM
+ IioaQRv+rmTIO8JRcTY9KCk+D+wphVGGGytFw75YsbEwPVjkfiGOx3jJcgEENLxw/v6R Jg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36dm6j00vy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 30 Jan 2021 21:57:42 -0500
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 10V2uWrs182937;
+        Sat, 30 Jan 2021 21:57:42 -0500
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36dm6j00vt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 30 Jan 2021 21:57:42 -0500
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 10V2qoeq005543;
+        Sun, 31 Jan 2021 02:57:41 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma02dal.us.ibm.com with ESMTP id 36cy38f6uf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 31 Jan 2021 02:57:41 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 10V2vf1w31326552
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 31 Jan 2021 02:57:41 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 17CA6AC05B;
+        Sun, 31 Jan 2021 02:57:41 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 04783AC059;
+        Sun, 31 Jan 2021 02:57:40 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Sun, 31 Jan 2021 02:57:40 +0000 (GMT)
+Subject: Re: [PATCH v3 1/3] x509: Detect sm2 keys by their parameters OID
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Stefan Berger <stefanb@linux.vnet.ibm.com>,
+        dhowells@redhat.com, keyrings@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net, linux-crypto@vger.kernel.org,
+        patrick@puiterwijk.org
+References: <20210127123350.817593-1-stefanb@linux.vnet.ibm.com>
+ <20210127123350.817593-2-stefanb@linux.vnet.ibm.com>
+ <689c44925d60238181390e775b52809e89e0b26a.camel@kernel.org>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <e975bd1e-5256-ea8f-2247-fc362302e647@linux.ibm.com>
+Date:   Sat, 30 Jan 2021 21:57:40 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <CAP045AoL4=6L16Nxi4TW7Jt8dqNXBQTvZZOqBEBRRcZdHCQ_VA@mail.gmail.com>
- <CAHk-=wjqzP5UuZ4=F4ok18R5_1_vAZw9m_3G-W9Eodc1raM3TQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wjqzP5UuZ4=F4ok18R5_1_vAZw9m_3G-W9Eodc1raM3TQ@mail.gmail.com>
-From:   Kyle Huey <me@kylehuey.com>
-Date:   Sat, 30 Jan 2021 18:50:43 -0800
-Message-ID: <CAP045ApxLJ7vXOVp5Cwx7WEyDr6v01D9YD3xGFDv3WAp6czaMQ@mail.gmail.com>
-Subject: Re: [REGRESSION] x86/entry: TIF_SINGLESTEP handling is still broken
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Robert O'Callahan" <rocallahan@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <689c44925d60238181390e775b52809e89e0b26a.camel@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-01-30_17:2021-01-29,2021-01-30 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 bulkscore=0 impostorscore=0 mlxscore=0 mlxlogscore=999
+ suspectscore=0 adultscore=0 priorityscore=1501 phishscore=0 spamscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101310008
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 5:56 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Sat, Jan 30, 2021 at 5:32 PM Kyle Huey <me@kylehuey.com> wrote:
-> >
-> > I tested that with 2991552447707d791d9d81a5dc161f9e9e90b163 reverted
-> > and Yuxuan's patch applied to Linus's tip rr works and passes all
-> > tests.
->
-> There's a patch in the -tip tree that hasn't been merged yet:
->
->   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git core/urgent
->
-> (there's only that one patch in that branch right now, commit ID
-> 41c1a06d1d1544bed9692ba72a5692454eee1945).
->
-> It should be making its way my direction any day now, but in the
-> meantime if you can verify that it makes things work for you, that
-> would be great..
+On 1/30/21 4:26 PM, Jarkko Sakkinen wrote:
+> On Wed, 2021-01-27 at 07:33 -0500, Stefan Berger wrote:
+>> From: Stefan Berger <stefanb@linux.ibm.com>
+>>
+>> Detect whether a key is an sm2 type of key by its OID in the parameters
+>> array rather than assuming that everything under OID_id_ecPublicKey
+>> is sm2, which is not the case.
+>>
+>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+>> ---
+>>   crypto/asymmetric_keys/x509_cert_parser.c | 13 ++++++++++++-
+>>   1 file changed, 12 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
+>> index 52c9b455fc7d..4643fe5ed69a 100644
+>> --- a/crypto/asymmetric_keys/x509_cert_parser.c
+>> +++ b/crypto/asymmetric_keys/x509_cert_parser.c
+>> @@ -459,6 +459,7 @@ int x509_extract_key_data(void *context, size_t hdrlen,
+>>                            const void *value, size_t vlen)
+>>   {
+>>          struct x509_parse_context *ctx = context;
+>> +       enum OID oid;
+>>   
+>>          ctx->key_algo = ctx->last_oid;
+>>          switch (ctx->last_oid) {
+>> @@ -470,7 +471,17 @@ int x509_extract_key_data(void *context, size_t hdrlen,
+>>                  ctx->cert->pub->pkey_algo = "ecrdsa";
+>>                  break;
+>>          case OID_id_ecPublicKey:
+>> -               ctx->cert->pub->pkey_algo = "sm2";
+>> +               if (ctx->params_size < 2)
+> Either a named constant, or at least a comment instead of just '2'.
 
-Right, I'm saying that that is not sufficient.
 
-41c1a06d1d1544bed9692ba72a5692454eee1945 does indeed fix the bug
-introduced in 64eb35f701f04b30706e21d1b02636b5d31a37d2, but
-2991552447707d791d9d81a5dc161f9e9e90b163 introduced another bug that
-remains unfixed.
+I will look at the 2 entries whether they contain the expected values: 
+ASN1_OID and length
 
-- Kyle
+Thanks!
+
+    Stefan
+
