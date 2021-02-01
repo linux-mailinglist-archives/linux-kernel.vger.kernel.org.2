@@ -2,133 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC9830A9EC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:37:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D023530A9EE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:37:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231179AbhBAOgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 09:36:19 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60930 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230210AbhBAOf5 (ORCPT
+        id S231253AbhBAOgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 09:36:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhBAOgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 09:35:57 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 111EVi23006364;
-        Mon, 1 Feb 2021 09:35:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=NH960khcaH5kqbSEa5tOHjMKvP9yY4aVTJT8WCDyZtY=;
- b=jLXfQy+gulAmt53VGsFZBMHFQxQj5iTt7F9Nm8WILDOLj57uTkOUBZtplv3TM25kUu6p
- qE0LcZozT1HSFIg5qcRaNoIPkIqfDlMl9oSUV92e5RopAF4Yo5XbX6w3bd+hos6lvciL
- bpP1yTiXpQfuvTWujdSMY1bAgtDBhzD9KgsaaeHn0itgIac5jFsO7cvj8bhuafl9Dqo6
- B2d4PISyuwW0KGTCV0Lj/zByLjMKVO2XInjFnS7PLl1BA//S7F+LhrE6qTLr7ZajUZwK
- zWFAbHL5tzdpHgwZ4uhtkttrZb0eoBn/ZWLQrdakuzaJSIo/oryGlRBh7gjj9ysr+s1N Dg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36ejbp2rcg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 09:35:10 -0500
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 111EWvYJ012960;
-        Mon, 1 Feb 2021 09:35:09 -0500
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36ejbp2ray-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 09:35:09 -0500
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 111EOsCB015586;
-        Mon, 1 Feb 2021 14:35:08 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma02wdc.us.ibm.com with ESMTP id 36cy38y1ue-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 14:35:08 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 111EZ7Mn16318802
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 1 Feb 2021 14:35:07 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A5E9EAC065;
-        Mon,  1 Feb 2021 14:35:07 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9310AAC05E;
-        Mon,  1 Feb 2021 14:35:07 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon,  1 Feb 2021 14:35:07 +0000 (GMT)
-Subject: Re: [PATCH v5 2/4] x509: Detect sm2 keys by their parameters OID
-To:     David Howells <dhowells@redhat.com>,
-        Stefan Berger <stefanb@linux.vnet.ibm.com>
-Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
-        linux-integrity@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Mimi Zohar <zohar@linux.vnet.ibm.com>
-References: <20210129150355.850093-3-stefanb@linux.vnet.ibm.com>
- <20210129150355.850093-1-stefanb@linux.vnet.ibm.com>
- <4162801.1612185801@warthog.procyon.org.uk>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-Message-ID: <71a77d10-e645-194f-5073-ebf180a8d70e@linux.ibm.com>
-Date:   Mon, 1 Feb 2021 09:35:07 -0500
+        Mon, 1 Feb 2021 09:36:03 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D291FC061786;
+        Mon,  1 Feb 2021 06:35:22 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id hs11so24719935ejc.1;
+        Mon, 01 Feb 2021 06:35:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=p0y1B4xpVR87SDn57GPRXm1SVNsp6DiLP4/759/Wuh8=;
+        b=K+gFxd8za+oG8OKw/uRdYOGMCOw2HY9GwIFkNWZ7xcPkEIZRMtze+PEmUIzexvr+6m
+         /lKxD9Mo8DvphlsBGkZfh0oGgg0Q5Cg/60ueM/shhQk4DYMhzwgxNvNFfUUlQReqjHf+
+         2xja190TvVsxgSJzxjyHZ7t8/HKxr48ucWiTO0PZw77E/l8lbirulVTLItKVcDy9RrXW
+         lf5MNpMo6cR04iBo+AlqwP14StlmS8dW3k5lMY1o+X8VC4TU86YZ2AZc1MwffEY9LsUQ
+         30jCI9H4J9TsUBfpO1zZZLOIeitQ7xEvFEKDUKM+NjzBhqVYa1uqPgDlbTQKNq9ldYAS
+         fLBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=p0y1B4xpVR87SDn57GPRXm1SVNsp6DiLP4/759/Wuh8=;
+        b=KFDo76rwd13kQ8ZHnQ5SrppE445s1CU947hlWd7QBMmZ0T86s073+ewTpLYtQYCTTc
+         lejJVd/QRpXQic4GXsSyaE6nchWJ8LnFFAvVwnlpWRvVLM4/QZWHKh0oAE49gELhztRm
+         PvTI9B54zjBaczTpWaEikdQINdBuNEVJM270GzkCtGWfqazzA9UBmJ7AUS/JPRmfeED4
+         rwK2YXXOuq3i+TQ358ptwiCPwVAfeNAYeLVpSgXp/xFNzJ99fp44Gv7aprLwPzJbJWll
+         /fomcckvF3uHfDgqytl5AEpugTDH1Z9fITVfD7HUh9xsNw+rQnCpOAmCRhM++2MOienI
+         JBmg==
+X-Gm-Message-State: AOAM532D9VV678Xy59u6xPZr3ibr3W9HHFV1knjm/hSF+D0xB86aXhKc
+        ZMIHBLL6f8bswsQfs7uap0YDuIJ0AJju4EHWXfc=
+X-Google-Smtp-Source: ABdhPJz0GTo2K7lAckez4yf/9SVspRZvlzqmrFBGfIp8PVdkBK8K6gn43IXHJGLCsvCKCe6raQcylQ==
+X-Received: by 2002:a17:906:2e85:: with SMTP id o5mr6995806eji.238.1612190121269;
+        Mon, 01 Feb 2021 06:35:21 -0800 (PST)
+Received: from [10.8.0.2] (terefe.re. [5.255.96.200])
+        by smtp.gmail.com with ESMTPSA id du6sm6377449ejc.78.2021.02.01.06.35.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Feb 2021 06:35:20 -0800 (PST)
+Subject: Re: [PATCH mvebu v2 00/10] Armada 37xx: Fix cpufreq changing base CPU
+ speed to 800 MHz from 1000 MHz
+To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org
+Cc:     =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Andre Heider <a.heider@gmail.com>,
+        Vladimir Vid <vladimir.vid@sartura.hr>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        =?UTF-8?Q?G=c3=a9rald_Kerma?= <gerald@gk2.net>,
+        Konstantin Porotchkin <kostap@marvell.com>
+References: <20210114124032.12765-1-pali@kernel.org>
+From:   Tomasz Maciej Nowak <tmn505@gmail.com>
+Message-ID: <0d5518be-9b22-a714-f5f0-72aadc2eebf5@gmail.com>
+Date:   Mon, 1 Feb 2021 15:35:18 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <4162801.1612185801@warthog.procyon.org.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210114124032.12765-1-pali@kernel.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-01_05:2021-01-29,2021-02-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
- lowpriorityscore=0 mlxscore=0 malwarescore=0 suspectscore=0 clxscore=1015
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2102010073
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/1/21 8:23 AM, David Howells wrote:
-> Stefan Berger <stefanb@linux.vnet.ibm.com> wrote:
->
->> From: Stefan Berger <stefanb@linux.ibm.com>
->>
->> Detect whether a key is an sm2 type of key by its OID in the parameters
->> array rather than assuming that everything under OID_id_ecPublicKey
->> is sm2, which is not the case.
->>
->> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
->> Cc: David Howells <dhowells@redhat.com>
->> Cc: keyrings@vger.kernel.org
-> I presume these cc's are intentionally not on the first patch or the cover (if
-> there is one)?
+W dniu 14.01.2021 o 13:40, Pali Rohár pisze:
+> Hello!
+> 
+> The armada-37xx-cpufreq driver changes base CPU speed from 1000 MHz to
+> 800 MHz on EspressoBIN and Turris MOX. The commit message in patch 2/10
+> explains why and how can this be discovered.
+> 
+> That patch 2/10 led us to discover another bug, in the SOC itself,
+> that causes the CPU to behave weirdly when frequency changes to 1 GHz.
+> A similar erratum is documented by Marvell but only for systems where
+> base frequency is 1.2 GHz.
+> 
+> We've discovered that to make cpufreq scaling stable on Armada 3720
+> systems with base frequency 1 GHz, we also have to set voltage levels
+> for L0 and L1 loads to at least 1108 mV. We were led to this by patch we
+> found in Marvell kernel fork. Fix is in the patch 4/10.
+> 
+> https://github.com/MarvellEmbeddedProcessors/linux-marvell/commit/dc33b62c90696afb6adc7dbcc4ebbd48bedec269
+> 
+> During fixing this voltage issue for 1 GHz we discovered another bug in
+> armada-37xx-cpufreq driver that causes CPU instability. Erratum for VDD
+> stabilization was improperly implemented, details are in patch 6/10.
+> 
+> This patch series is also available in my git tree in branch a3720-cpufreq-issues:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/pali/linux.git/log/?h=a3720-cpufreq-issues
+> 
+> We have tested this patch series on Espressobin v5 and Turris MOX
+> boards. If you have other Armada 3720 boards (Espressobin v5/v7, uDPU,
+> Devel Board, ...) then it will be nice to do an additional tests and
+> check if instability issues are finally fixed.
+> 
+> There is a discussion on armbian forum that Espressobin v7 is unstable
+> when running at 1 GHz and in this thread was also mentioned above
+> voltage patch from Marvell kernel fork:
+> 
+> https://forum.armbian.com/topic/10429-how-to-make-espressobin-v7-stable/
+> 
+> Marek & Pali
+> 
+> 
+> Marek Behún (3):
+>   arm64: dts: marvell: armada-37xx: add syscon compatible to NB clk node
+>   cpufreq: armada-37xx: Fix setting TBG parent for load levels
+>   clk: mvebu: armada-37xx-periph: remove .set_parent method for CPU PM
+>     clock
+> 
+> Pali Rohár (7):
+>   cpufreq: armada-37xx: Fix the AVS value for loads L0 and L1
+>   clk: mvebu: armada-37xx-periph: Fix switching CPU freq from 250 Mhz to
+>     1 GHz
+>   clk: mvebu: armada-37xx-periph: Fix workaround for switching from L1
+>     to L0
+>   cpufreq: armada-37xx: Fix driver cleanup when registration failed
+>   cpufreq: armada-37xx: Fix determining base CPU frequency
+>   cpufreq: armada-37xx: Remove cur_frequency variable
+>   cpufreq: armada-37xx: Fix module unloading
 
-No, this is not intentional. I guess this is a case of wrong use of cc: 
-versus mailing lists - my bad. I posted the whole series to 
-linux-crypto, linux-integrity, keyrings and lkml.
+Hi.
+After running this series for three days, the system is stable and the 
+issue with switching frequency doesn't seem to be there anymore. So:
 
-V6 is at least visible here now:
+Tested-by: Tomasz Maciej Nowak <tmn505@gmail.com>
 
-- https://lkml.org/lkml/2021/1/31/323
+Thanks.
 
-- https://marc.info/?l=linux-crypto-vger&m=161213604618722&w=2
-
-- 
-https://lore.kernel.org/linux-integrity/20210131233301.1301787-1-stefanb@linux.ibm.com/T/#mbc9fae5facb4178f64c1145e2654258c0af8fa96
-
-- https://marc.info/?l=linux-keyrings&m=161213608818735&w=2
-
-
-
->
-> Do you have a branch you want me to pull or did you want me to take just
-> patches 2-4?
-
-Please take it from the mailing list. If there are requests for more 
-changes on the crypto level, I will send another series. I personally am 
-waiting for some sort of verdict on the crypto level...
-
-    Stefan
+> 
+>  arch/arm64/boot/dts/marvell/armada-37xx.dtsi |   3 +-
+>  drivers/clk/mvebu/armada-37xx-periph.c       |  83 ++++++++-------
+>  drivers/cpufreq/armada-37xx-cpufreq.c        | 100 ++++++++++++++-----
+>  3 files changed, 124 insertions(+), 62 deletions(-)
+> 
 
 
+-- 
+TMN
