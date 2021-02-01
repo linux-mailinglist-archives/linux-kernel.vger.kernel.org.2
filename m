@@ -2,181 +2,397 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3479F30A313
+	by mail.lfdr.de (Postfix) with ESMTP id CBD6530A314
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:12:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232399AbhBAILF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 03:11:05 -0500
-Received: from mail29.static.mailgun.info ([104.130.122.29]:56651 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230106AbhBAILD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 03:11:03 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612167041; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=7q0hkkI7/SV27tS3zZ2DRirnX6KJs9dHuIgjQx1XVLU=;
- b=ReX/I1s2vh2tnJOvXjnU6EcIHykwzZCKtSJ5pqu+84g3ADiWbrI2x4KqLBuCeQ/IJX1Okh5z
- fOolCLURy9YARW4baYzaTrLhy7hdCOCDZNR4kf50P/LbgNiT1YurkglCNn+PfmfEwfMP/v3L
- osfWwZN612mrL9BfUyC5K1GCd2I=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 6017b7647a21b36a9d30efd3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Feb 2021 08:10:12
- GMT
-Sender: nitirawa=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3FA96C43465; Mon,  1 Feb 2021 08:10:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: nitirawa)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 20FBFC433C6;
-        Mon,  1 Feb 2021 08:10:10 +0000 (UTC)
+        id S232427AbhBAIMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 03:12:25 -0500
+Received: from vps-vb.mhejs.net ([37.28.154.113]:42918 "EHLO vps-vb.mhejs.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232406AbhBAIMR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 03:12:17 -0500
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.93.0.4)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1l6UIa-0004r0-Au; Mon, 01 Feb 2021 09:11:04 +0100
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Shuah Khan <shuah@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] KVM: selftests: Keep track of memslots more efficiently
+Date:   Mon,  1 Feb 2021 09:10:56 +0100
+Message-Id: <5e5d83b305077e3e65b130dbb31c131bfb831170.1612139762.git.maciej.szmigiero@oracle.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 01 Feb 2021 13:40:10 +0530
-From:   nitirawa@codeaurora.org
-To:     Avri Altman <Avri.Altman@wdc.com>
-Cc:     asutoshd@codeaurora.org, cang@codeaurora.org,
-        stummala@codeaurora.org, vbadigan@codeaurora.org,
-        alim.akhtar@samsung.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Bao D . Nguyen" <nguyenb@codeaurora.org>
-Subject: Re: [PATCH V1 1/3] scsi: ufs: export api for use in vendor file
-In-Reply-To: <DM6PR04MB657574D3D8B99F3A4997D810FCB79@DM6PR04MB6575.namprd04.prod.outlook.com>
-References: <1611852899-2171-1-git-send-email-nitirawa@codeaurora.org>
- <1611852899-2171-2-git-send-email-nitirawa@codeaurora.org>
- <DM6PR04MB657574D3D8B99F3A4997D810FCB79@DM6PR04MB6575.namprd04.prod.outlook.com>
-Message-ID: <505fe60c90b13953d0fd0192aa9e6166@codeaurora.org>
-X-Sender: nitirawa@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-31 19:29, Avri Altman wrote:
->> 
->> Exporting functions ufshcd_set_dev_pwr_mode, ufshcd_disable_vreg
->> and ufshcd_enable_vreg so that vendor drivers can make use of
->> them in setting vendor specific regulator setting
->> in vendor specific file.
-> As for ufshcd_{enable,disable}_vreg - maybe inline ufshcd_toggle_vreg
-> and use it instead?
-> 
->> 
->> Signed-off-by: Nitin Rawat <nitirawa@codeaurora.org>
->> Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
->> Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
->> ---
->>  drivers/scsi/ufs/ufshcd.c | 9 ++++++---
->>  drivers/scsi/ufs/ufshcd.h | 4 ++++
->>  2 files changed, 10 insertions(+), 3 deletions(-)
->> 
->> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> index 9c691e4..000a03a 100644
->> --- a/drivers/scsi/ufs/ufshcd.c
->> +++ b/drivers/scsi/ufs/ufshcd.c
->> @@ -8091,7 +8091,7 @@ static int ufshcd_config_vreg(struct device 
->> *dev,
->>         return ret;
->>  }
->> 
->> -static int ufshcd_enable_vreg(struct device *dev, struct ufs_vreg 
->> *vreg)
->> +int ufshcd_enable_vreg(struct device *dev, struct ufs_vreg *vreg)
->>  {
->>         int ret = 0;
->> 
->> @@ -8110,8 +8110,9 @@ static int ufshcd_enable_vreg(struct device 
->> *dev,
->> struct ufs_vreg *vreg)
->>  out:
->>         return ret;
->>  }
->> +EXPORT_SYMBOL(ufshcd_enable_vreg);
-> Why do you need to export it across the kernel?
-> Isn't making it non-static suffices?
-> Do you need it for a loadable module?
-> 
->> 
->> -static int ufshcd_disable_vreg(struct device *dev, struct ufs_vreg 
->> *vreg)
->> +int ufshcd_disable_vreg(struct device *dev, struct ufs_vreg *vreg)
->>  {
->>         int ret = 0;
->> 
->> @@ -8131,6 +8132,7 @@ static int ufshcd_disable_vreg(struct device 
->> *dev,
->> struct ufs_vreg *vreg)
->>  out:
->>         return ret;
->>  }
->> +EXPORT_SYMBOL(ufshcd_disable_vreg);
->> 
->>  static int ufshcd_setup_vreg(struct ufs_hba *hba, bool on)
->>  {
->> @@ -8455,7 +8457,7 @@ ufshcd_send_request_sense(struct ufs_hba *hba,
->> struct scsi_device *sdp)
->>   * Returns 0 if requested power mode is set successfully
->>   * Returns non-zero if failed to set the requested power mode
->>   */
->> -static int ufshcd_set_dev_pwr_mode(struct ufs_hba *hba,
->> +int ufshcd_set_dev_pwr_mode(struct ufs_hba *hba,
->>                                      enum ufs_dev_pwr_mode pwr_mode)
->>  {
->>         unsigned char cmd[6] = { START_STOP };
->> @@ -8513,6 +8515,7 @@ static int ufshcd_set_dev_pwr_mode(struct 
->> ufs_hba
->> *hba,
->>         hba->host->eh_noresume = 0;
->>         return ret;
->>  }
->> +EXPORT_SYMBOL(ufshcd_set_dev_pwr_mode);
->> 
->>  static int ufshcd_link_state_transition(struct ufs_hba *hba,
->>                                         enum uic_link_state 
->> req_link_state,
->> diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
->> index ee61f82..1410c95 100644
->> --- a/drivers/scsi/ufs/ufshcd.h
->> +++ b/drivers/scsi/ufs/ufshcd.h
->> @@ -997,6 +997,10 @@ extern int ufshcd_dme_get_attr(struct ufs_hba 
->> *hba,
->> u32 attr_sel,
->>                                u32 *mib_val, u8 peer);
->>  extern int ufshcd_config_pwr_mode(struct ufs_hba *hba,
->>                         struct ufs_pa_layer_attr *desired_pwr_mode);
->> +extern int ufshcd_set_dev_pwr_mode(struct ufs_hba *hba,
->> +                                               enum ufs_dev_pwr_mode 
->> pwr_mode);
->> +extern int ufshcd_enable_vreg(struct device *dev, struct ufs_vreg 
->> *vreg);
->> +extern int ufshcd_disable_vreg(struct device *dev, struct ufs_vreg 
->> *vreg);
->> 
->>  /* UIC command interfaces for DME primitives */
->>  #define DME_LOCAL      0
->> --
->> 2.7.4
+From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
 
-Hi Avri,
-Thanks for reviewing it.
-ufs-qcom.c can be a loadable module, so just inlining won't suffice in 
-that case.
-Hence export is needed.
+The KVM selftest framework was using a simple list for keeping track of
+the memslots currently in use.
+This resulted in lookups and adding a single memslot being O(n), the
+later due to linear scanning of the existing memslot set to check for
+the presence of any conflicting entries.
 
-Thanks,
-Nitin
+Before this change, benchmarking high count of memslots was more or less
+impossible as pretty much all the benchmark time was spent in the
+selftest framework code.
+
+We can simply use a rbtree for keeping track of both of gfn and hva.
+We don't need an interval tree for hva here as we can't have overlapping
+memslots because we allocate a completely new memory chunk for each new
+memslot.
+
+Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+---
+ tools/testing/selftests/kvm/Makefile          |   2 +-
+ tools/testing/selftests/kvm/lib/kvm_util.c    | 141 ++++++++++++++----
+ .../selftests/kvm/lib/kvm_util_internal.h     |  15 +-
+ tools/testing/selftests/kvm/lib/rbtree.c      |   1 +
+ 4 files changed, 124 insertions(+), 35 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/lib/rbtree.c
+
+diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+index fe41c6a0fa67..e7c6237d7383 100644
+--- a/tools/testing/selftests/kvm/Makefile
++++ b/tools/testing/selftests/kvm/Makefile
+@@ -33,7 +33,7 @@ ifeq ($(ARCH),s390)
+ 	UNAME_M := s390x
+ endif
+ 
+-LIBKVM = lib/assert.c lib/elf.c lib/io.c lib/kvm_util.c lib/sparsebit.c lib/test_util.c lib/guest_modes.c lib/perf_test_util.c
++LIBKVM = lib/assert.c lib/elf.c lib/io.c lib/kvm_util.c lib/rbtree.c lib/sparsebit.c lib/test_util.c lib/guest_modes.c lib/perf_test_util.c
+ LIBKVM_x86_64 = lib/x86_64/processor.c lib/x86_64/vmx.c lib/x86_64/svm.c lib/x86_64/ucall.c lib/x86_64/handlers.S
+ LIBKVM_aarch64 = lib/aarch64/processor.c lib/aarch64/ucall.c
+ LIBKVM_s390x = lib/s390x/processor.c lib/s390x/ucall.c lib/s390x/diag318_test_handler.c
+diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+index fa5a90e6c6f0..632433dbfa25 100644
+--- a/tools/testing/selftests/kvm/lib/kvm_util.c
++++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+@@ -195,7 +195,9 @@ struct kvm_vm *vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm)
+ 	TEST_ASSERT(vm != NULL, "Insufficient Memory");
+ 
+ 	INIT_LIST_HEAD(&vm->vcpus);
+-	INIT_LIST_HEAD(&vm->userspace_mem_regions);
++	vm->regions.gpa_tree = RB_ROOT;
++	vm->regions.hva_tree = RB_ROOT;
++	hash_init(vm->regions.slot_hash);
+ 
+ 	vm->mode = mode;
+ 	vm->type = 0;
+@@ -347,13 +349,14 @@ struct kvm_vm *vm_create_default(uint32_t vcpuid, uint64_t extra_mem_pages,
+  */
+ void kvm_vm_restart(struct kvm_vm *vmp, int perm)
+ {
++	int ctr;
+ 	struct userspace_mem_region *region;
+ 
+ 	vm_open(vmp, perm);
+ 	if (vmp->has_irqchip)
+ 		vm_create_irqchip(vmp);
+ 
+-	list_for_each_entry(region, &vmp->userspace_mem_regions, list) {
++	hash_for_each(vmp->regions.slot_hash, ctr, region, slot_node) {
+ 		int ret = ioctl(vmp->fd, KVM_SET_USER_MEMORY_REGION, &region->region);
+ 		TEST_ASSERT(ret == 0, "KVM_SET_USER_MEMORY_REGION IOCTL failed,\n"
+ 			    "  rc: %i errno: %i\n"
+@@ -416,14 +419,21 @@ uint32_t kvm_vm_reset_dirty_ring(struct kvm_vm *vm)
+ static struct userspace_mem_region *
+ userspace_mem_region_find(struct kvm_vm *vm, uint64_t start, uint64_t end)
+ {
+-	struct userspace_mem_region *region;
++	struct rb_node *node;
+ 
+-	list_for_each_entry(region, &vm->userspace_mem_regions, list) {
++	for (node = vm->regions.gpa_tree.rb_node; node; ) {
++		struct userspace_mem_region *region =
++			container_of(node, struct userspace_mem_region, gpa_node);
+ 		uint64_t existing_start = region->region.guest_phys_addr;
+ 		uint64_t existing_end = region->region.guest_phys_addr
+ 			+ region->region.memory_size - 1;
+ 		if (start <= existing_end && end >= existing_start)
+ 			return region;
++
++		if (start < existing_start)
++			node = node->rb_left;
++		else
++			node = node->rb_right;
+ 	}
+ 
+ 	return NULL;
+@@ -538,11 +548,16 @@ void kvm_vm_release(struct kvm_vm *vmp)
+ }
+ 
+ static void __vm_mem_region_delete(struct kvm_vm *vm,
+-				   struct userspace_mem_region *region)
++				   struct userspace_mem_region *region,
++				   bool unlink)
+ {
+ 	int ret;
+ 
+-	list_del(&region->list);
++	if (unlink) {
++		rb_erase(&region->gpa_node, &vm->regions.gpa_tree);
++		rb_erase(&region->hva_node, &vm->regions.hva_tree);
++		hash_del(&region->slot_node);
++	}
+ 
+ 	region->region.memory_size = 0;
+ 	ret = ioctl(vm->fd, KVM_SET_USER_MEMORY_REGION, &region->region);
+@@ -561,14 +576,16 @@ static void __vm_mem_region_delete(struct kvm_vm *vm,
+  */
+ void kvm_vm_free(struct kvm_vm *vmp)
+ {
+-	struct userspace_mem_region *region, *tmp;
++	int ctr;
++	struct hlist_node *node;
++	struct userspace_mem_region *region;
+ 
+ 	if (vmp == NULL)
+ 		return;
+ 
+ 	/* Free userspace_mem_regions. */
+-	list_for_each_entry_safe(region, tmp, &vmp->userspace_mem_regions, list)
+-		__vm_mem_region_delete(vmp, region);
++	hash_for_each_safe(vmp->regions.slot_hash, ctr, node, region, slot_node)
++		__vm_mem_region_delete(vmp, region, false);
+ 
+ 	/* Free sparsebit arrays. */
+ 	sparsebit_free(&vmp->vpages_valid);
+@@ -650,6 +667,57 @@ int kvm_memcmp_hva_gva(void *hva, struct kvm_vm *vm, vm_vaddr_t gva, size_t len)
+ 	return 0;
+ }
+ 
++static void vm_userspace_mem_region_gpa_insert(struct rb_root *gpa_tree,
++					       struct userspace_mem_region *region)
++{
++	struct rb_node **cur, *parent;
++
++	for (cur = &gpa_tree->rb_node, parent = NULL; *cur; ) {
++		struct userspace_mem_region *cregion;
++
++		cregion = container_of(*cur, typeof(*cregion), gpa_node);
++		parent = *cur;
++		if (region->region.guest_phys_addr <
++		    cregion->region.guest_phys_addr)
++			cur = &(*cur)->rb_left;
++		else {
++			TEST_ASSERT(region->region.guest_phys_addr !=
++				    cregion->region.guest_phys_addr,
++				    "Duplicate GPA in region tree");
++
++			cur = &(*cur)->rb_right;
++		}
++	}
++
++	rb_link_node(&region->gpa_node, parent, cur);
++	rb_insert_color(&region->gpa_node, gpa_tree);
++}
++
++static void vm_userspace_mem_region_hva_insert(struct rb_root *hva_tree,
++					       struct userspace_mem_region *region)
++{
++	struct rb_node **cur, *parent;
++
++	for (cur = &hva_tree->rb_node, parent = NULL; *cur; ) {
++		struct userspace_mem_region *cregion;
++
++		cregion = container_of(*cur, typeof(*cregion), hva_node);
++		parent = *cur;
++		if (region->host_mem < cregion->host_mem)
++			cur = &(*cur)->rb_left;
++		else {
++			TEST_ASSERT(region->host_mem !=
++				    cregion->host_mem,
++				    "Duplicate HVA in region tree");
++
++			cur = &(*cur)->rb_right;
++		}
++	}
++
++	rb_link_node(&region->hva_node, parent, cur);
++	rb_insert_color(&region->hva_node, hva_tree);
++}
++
+ /*
+  * VM Userspace Memory Region Add
+  *
+@@ -714,7 +782,8 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
+ 			(uint64_t) region->region.memory_size);
+ 
+ 	/* Confirm no region with the requested slot already exists. */
+-	list_for_each_entry(region, &vm->userspace_mem_regions, list) {
++	hash_for_each_possible(vm->regions.slot_hash, region, slot_node,
++			       slot) {
+ 		if (region->region.slot != slot)
+ 			continue;
+ 
+@@ -794,8 +863,10 @@ void vm_userspace_mem_region_add(struct kvm_vm *vm,
+ 		ret, errno, slot, flags,
+ 		guest_paddr, (uint64_t) region->region.memory_size);
+ 
+-	/* Add to linked-list of memory regions. */
+-	list_add(&region->list, &vm->userspace_mem_regions);
++	/* Add to quick lookup data structures */
++	vm_userspace_mem_region_gpa_insert(&vm->regions.gpa_tree, region);
++	vm_userspace_mem_region_hva_insert(&vm->regions.hva_tree, region);
++	hash_add(vm->regions.slot_hash, &region->slot_node, slot);
+ }
+ 
+ /*
+@@ -818,10 +889,10 @@ memslot2region(struct kvm_vm *vm, uint32_t memslot)
+ {
+ 	struct userspace_mem_region *region;
+ 
+-	list_for_each_entry(region, &vm->userspace_mem_regions, list) {
++	hash_for_each_possible(vm->regions.slot_hash, region, slot_node,
++			       memslot)
+ 		if (region->region.slot == memslot)
+ 			return region;
+-	}
+ 
+ 	fprintf(stderr, "No mem region with the requested slot found,\n"
+ 		"  requested slot: %u\n", memslot);
+@@ -906,7 +977,7 @@ void vm_mem_region_move(struct kvm_vm *vm, uint32_t slot, uint64_t new_gpa)
+  */
+ void vm_mem_region_delete(struct kvm_vm *vm, uint32_t slot)
+ {
+-	__vm_mem_region_delete(vm, memslot2region(vm, slot));
++	__vm_mem_region_delete(vm, memslot2region(vm, slot), true);
+ }
+ 
+ /*
+@@ -1178,16 +1249,14 @@ void *addr_gpa2hva(struct kvm_vm *vm, vm_paddr_t gpa)
+ {
+ 	struct userspace_mem_region *region;
+ 
+-	list_for_each_entry(region, &vm->userspace_mem_regions, list) {
+-		if ((gpa >= region->region.guest_phys_addr)
+-			&& (gpa <= (region->region.guest_phys_addr
+-				+ region->region.memory_size - 1)))
+-			return (void *) ((uintptr_t) region->host_mem
+-				+ (gpa - region->region.guest_phys_addr));
++	region = userspace_mem_region_find(vm, gpa, gpa);
++	if (!region) {
++		TEST_FAIL("No vm physical memory at 0x%lx", gpa);
++		return NULL;
+ 	}
+ 
+-	TEST_FAIL("No vm physical memory at 0x%lx", gpa);
+-	return NULL;
++	return (void *)((uintptr_t)region->host_mem
++		+ (gpa - region->region.guest_phys_addr));
+ }
+ 
+ /*
+@@ -1209,15 +1278,22 @@ void *addr_gpa2hva(struct kvm_vm *vm, vm_paddr_t gpa)
+  */
+ vm_paddr_t addr_hva2gpa(struct kvm_vm *vm, void *hva)
+ {
+-	struct userspace_mem_region *region;
++	struct rb_node *node;
++
++	for (node = vm->regions.hva_tree.rb_node; node; ) {
++		struct userspace_mem_region *region =
++			container_of(node, struct userspace_mem_region, hva_node);
++
++		if (hva >= region->host_mem) {
++			if (hva <= (region->host_mem
++				+ region->region.memory_size - 1))
++				return (vm_paddr_t)((uintptr_t)
++					region->region.guest_phys_addr
++					+ (hva - (uintptr_t)region->host_mem));
+ 
+-	list_for_each_entry(region, &vm->userspace_mem_regions, list) {
+-		if ((hva >= region->host_mem)
+-			&& (hva <= (region->host_mem
+-				+ region->region.memory_size - 1)))
+-			return (vm_paddr_t) ((uintptr_t)
+-				region->region.guest_phys_addr
+-				+ (hva - (uintptr_t) region->host_mem));
++			node = node->rb_right;
++		} else
++			node = node->rb_left;
+ 	}
+ 
+ 	TEST_FAIL("No mapping to a guest physical address, hva: %p", hva);
+@@ -1743,6 +1819,7 @@ int _kvm_ioctl(struct kvm_vm *vm, unsigned long cmd, void *arg)
+  */
+ void vm_dump(FILE *stream, struct kvm_vm *vm, uint8_t indent)
+ {
++	int ctr;
+ 	struct userspace_mem_region *region;
+ 	struct vcpu *vcpu;
+ 
+@@ -1750,7 +1827,7 @@ void vm_dump(FILE *stream, struct kvm_vm *vm, uint8_t indent)
+ 	fprintf(stream, "%*sfd: %i\n", indent, "", vm->fd);
+ 	fprintf(stream, "%*spage_size: 0x%x\n", indent, "", vm->page_size);
+ 	fprintf(stream, "%*sMem Regions:\n", indent, "");
+-	list_for_each_entry(region, &vm->userspace_mem_regions, list) {
++	hash_for_each(vm->regions.slot_hash, ctr, region, slot_node) {
+ 		fprintf(stream, "%*sguest_phys: 0x%lx size: 0x%lx "
+ 			"host_virt: %p\n", indent + 2, "",
+ 			(uint64_t) region->region.guest_phys_addr,
+diff --git a/tools/testing/selftests/kvm/lib/kvm_util_internal.h b/tools/testing/selftests/kvm/lib/kvm_util_internal.h
+index 34465dc562d8..af310110602b 100644
+--- a/tools/testing/selftests/kvm/lib/kvm_util_internal.h
++++ b/tools/testing/selftests/kvm/lib/kvm_util_internal.h
+@@ -8,6 +8,9 @@
+ #ifndef SELFTEST_KVM_UTIL_INTERNAL_H
+ #define SELFTEST_KVM_UTIL_INTERNAL_H
+ 
++#include "linux/hashtable.h"
++#include "linux/rbtree.h"
++
+ #include "sparsebit.h"
+ 
+ #define KVM_DEV_PATH		"/dev/kvm"
+@@ -20,7 +23,9 @@ struct userspace_mem_region {
+ 	void *host_mem;
+ 	void *mmap_start;
+ 	size_t mmap_size;
+-	struct list_head list;
++	struct rb_node gpa_node;
++	struct rb_node hva_node;
++	struct hlist_node slot_node;
+ };
+ 
+ struct vcpu {
+@@ -33,6 +38,12 @@ struct vcpu {
+ 	uint32_t dirty_gfns_count;
+ };
+ 
++struct userspace_mem_regions {
++	struct rb_root gpa_tree;
++	struct rb_root hva_tree;
++	DECLARE_HASHTABLE(slot_hash, 9);
++};
++
+ struct kvm_vm {
+ 	int mode;
+ 	unsigned long type;
+@@ -45,7 +56,7 @@ struct kvm_vm {
+ 	unsigned int va_bits;
+ 	uint64_t max_gfn;
+ 	struct list_head vcpus;
+-	struct list_head userspace_mem_regions;
++	struct userspace_mem_regions regions;
+ 	struct sparsebit *vpages_valid;
+ 	struct sparsebit *vpages_mapped;
+ 	bool has_irqchip;
+diff --git a/tools/testing/selftests/kvm/lib/rbtree.c b/tools/testing/selftests/kvm/lib/rbtree.c
+new file mode 100644
+index 000000000000..a703f0194ea3
+--- /dev/null
++++ b/tools/testing/selftests/kvm/lib/rbtree.c
+@@ -0,0 +1 @@
++#include "../../../../lib/rbtree.c"
