@@ -2,137 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7B230AF32
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:27:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5DB30ACE4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232618AbhBAS1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:27:17 -0500
-Received: from mga02.intel.com ([134.134.136.20]:7671 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232589AbhBASQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:16:57 -0500
-IronPort-SDR: X4dk1v47vnNeBC8ujX4DD+m3EhhFMp7GAeGmKSe6IxpWwFLfpPT6I/BKJSog7ULLtNWcUDblsX
- jVgtWSsho06g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="167833511"
-X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="167833511"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 10:13:28 -0800
-IronPort-SDR: gSXK9Wz0LLbo/1o2z8pNJICOfR2OtG/gUJ5mkpRd5bum4FfrsAv7S3wwQcC7KgsPWMOD4zz5GO
- T+j5E3uPaGJA==
-X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="412516938"
-Received: from dkhaldi-mobl1.amr.corp.intel.com (HELO [10.212.126.61]) ([10.212.126.61])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 10:13:27 -0800
-Subject: Re: [PATCH 5/6] soundwire: qcom: update register read/write routine
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        vkoul@kernel.org
-Cc:     yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20210129173248.5941-1-srinivas.kandagatla@linaro.org>
- <20210129173248.5941-6-srinivas.kandagatla@linaro.org>
- <5c69ed09-60be-2f3d-ed25-f6dbfcb9d62f@linux.intel.com>
- <3a2b5c2d-21aa-2bf5-62df-ef85c7c9293c@linaro.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <b87758d0-5862-3b4e-5a90-7b27d0c78d0d@linux.intel.com>
-Date:   Mon, 1 Feb 2021 10:42:49 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229877AbhBAQqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 11:46:11 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:24922 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229481AbhBAQqH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 11:46:07 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 111Gglek185560;
+        Mon, 1 Feb 2021 11:45:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=AcO6AiELQYVzU/NtbPhwlafqcsadvk236o3R/X784Ic=;
+ b=Zyi2lmuL8zX1+xhRtZJ6JVIOIDUgsVhZjH9IXP+OxGzwVebqa/Y4mXWMwl1+ywUW4wrP
+ OQNT66ew7p9D+tXq4PTM7MlCvF3bd+eNyFPx4q8tnZGFzS1bT9ADYGP3MAnDc6HSFgIR
+ HgS+1jrrB13gLRcvXiOzUJiee/tVXFb9K063zNDuQCCwgaVwjJX6JfaxDnBSip2QnuZ5
+ T/T4ig5IwpiS276mz0INUVbpt2R9EowPo3ehNU/Rdj2sLR4u5dfbMG0M2If9AV3I4DLn
+ IhjeHxyA6uU2ygTZc1XVKI85gfLQiP9tC+MkDBPuDvDK/iYaAjhRdpcqN46IXxUKuRPU 3w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36enae097p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 11:45:21 -0500
+Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 111Gh8v5187594;
+        Mon, 1 Feb 2021 11:45:20 -0500
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36enae096k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 11:45:20 -0500
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 111GJLc9009785;
+        Mon, 1 Feb 2021 16:45:18 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma02wdc.us.ibm.com with ESMTP id 36cy38ywrj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 16:45:18 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 111GjI4x7275104
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 1 Feb 2021 16:45:18 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3C214AC068;
+        Mon,  1 Feb 2021 16:45:18 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 11256AC05B;
+        Mon,  1 Feb 2021 16:45:16 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon,  1 Feb 2021 16:45:16 +0000 (GMT)
+Subject: Re: [PATCH v7 0/4] Add support for x509 certs with NIST p256 and p192
+ keys
+To:     David Howells <dhowells@redhat.com>
+Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        davem@davemloft.net, herbert@gondor.apana.org.au,
+        zohar@linux.ibm.com, linux-kernel@vger.kernel.org,
+        patrick@puiterwijk.org, linux-integrity@vger.kernel.org
+References: <7836898a-0a42-5c9b-3a42-7ff4c7a03ea4@linux.ibm.com>
+ <20210201151910.1465705-1-stefanb@linux.ibm.com>
+ <32177.1612196003@warthog.procyon.org.uk>
+ <33903.1612197412@warthog.procyon.org.uk>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <ab3f4f96-6aec-4586-21fa-318fcee997a5@linux.ibm.com>
+Date:   Mon, 1 Feb 2021 11:45:16 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <3a2b5c2d-21aa-2bf5-62df-ef85c7c9293c@linaro.org>
+In-Reply-To: <33903.1612197412@warthog.procyon.org.uk>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-01_06:2021-01-29,2021-02-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 spamscore=0 suspectscore=0 impostorscore=0 mlxscore=0
+ adultscore=0 lowpriorityscore=0 mlxlogscore=999 bulkscore=0 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102010084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2/1/21 11:36 AM, David Howells wrote:
+> Stefan Berger <stefanb@linux.ibm.com> wrote:
+>
+>> 1) the whole series goes through the crypto tree
+>>
+>> 2) I make the OIDs addition patch 1 that both keyrings and crypto take
+>> separately?
+> The first might be easiest, but 2 is okay also.  You'll just need to give
+> myself and Herbert separate branches to pull, rooted on the same commit.
+>
+> Btw, what do patches 2-4 do if patch 1 isn't applied?
+
+With the crypto module missing in the kernel you will get an error 
+trying to load an x509 certificate that needs the algorithm to verify 
+the self-signed signature.
+
+Before I post yet another series I hope that Herbert can say whether 
+option 1) would work for him.
+
+    Stefan
 
 
-On 2/1/21 9:50 AM, Srinivas Kandagatla wrote:
-> 
-> 
-> On 29/01/2021 19:33, Pierre-Louis Bossart wrote:
->>
->>
->> On 1/29/21 11:32 AM, Srinivas Kandagatla wrote:
->>> In the existing code every soundwire register read and register write
->>> are kinda blocked. Each of these are using a special command id that
->>
->> what does 'kinda blocked' mean?
-> 
-> I meant read/writes are waiting for completion interrupt!
-> 
->>
->>> generates interrupt after it successfully finishes. This is really
->>> overhead, limiting and not really necessary unless we are doing
->>> something special.
->>>
->>> We can simply read/write the fifo that should also give exactly
->>> what we need! This will also allow to read/write registers in
->>> interrupt context, which was not possible with the special
->>> command approach.
->>
->> This is really unclear, sorry.
-> 
-> If read/writes are waiting for an interrupt, it becomes difficult to 
-> read or write to any registers from same interrupt handler!
+>
+>
+> David
+>
 
-Well, yes, you need to handle the complete() at a lower level than the 
-code that initiates the transactions otherwise you self-deadlock.
-
-IIRC in the Intel initial code, the complete was in the handler and the 
-register IOs in the thread.
-
-> 
-> 
->>
->>> +    if (id != SWR_BROADCAST_CMD_ID) {
->>> +        if (id < 14)
->>> +            id += 1;
->>> +        else
->>> +            id = 0;
->>
->> that is really odd. if id=13 (group2) then id becomes 14 (master 
->> address). A comment is really needed here.
-> 
-> This is magic value for each fifo read or write, so that we can verify 
-> that them by comparing with this magic value!
-> 
-> This has nothing to do with device number!
-
-You should probably add a comment here then, or use a #define instead of 
-the 14 which threw me off.
-
-> 
->>
->>> +    if (cmd_id == SWR_BROADCAST_CMD_ID) {
->>> +        /*
->>> +         * sleep for 10ms for MSM soundwire variant to allow broadcast
->>> +         * command to complete.
->>
->> that's also super-odd. There is nothing in SoundWire that makes any 
->> difference between a regular and a broadcast command. they all 
->> complete in the same time (a frame).
->>> +         */
->>> +        ret = wait_for_completion_timeout(&swrm->broadcast, (2 * 
->>> HZ/10));
->>
->> is this 10ms really or dependent on CONFIG_HZ?
-
-comment missed?
-
->>
->>> +        if (!ret)
->>> +            ret = SDW_CMD_IGNORED;
->>> +        else
->>> +            ret = SDW_CMD_OK;
->>
->> no CMD_FAILED support?
-> 
-> Qcom controllers does not provide that information if the command is 
-> ignored or failed by any means!
-> 
-> That was the behavior from the starting of this driver.
-
-ah yes, now I remember this.
