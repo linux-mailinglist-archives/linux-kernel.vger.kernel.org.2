@@ -2,93 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1628130A1E0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:16:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 05DAB30A1C2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:01:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231875AbhBAGFz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 01:05:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59064 "EHLO
+        id S231773AbhBAGAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 01:00:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231786AbhBAFzr (ORCPT
+        with ESMTP id S231636AbhBAF5t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 00:55:47 -0500
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279B5C06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 21:55:01 -0800 (PST)
-Received: by mail-il1-x132.google.com with SMTP id p8so14507140ilg.3
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 21:55:01 -0800 (PST)
+        Mon, 1 Feb 2021 00:57:49 -0500
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99321C0613D6;
+        Sun, 31 Jan 2021 21:57:09 -0800 (PST)
+Received: by mail-pj1-x102c.google.com with SMTP id a20so9647885pjs.1;
+        Sun, 31 Jan 2021 21:57:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xcfxkt2vV5vJ2sVl9SMRfKcWT/mJaBdrOn2baNl2lbU=;
-        b=Np24UsS622Zxz/Kxc02jkiK1zbQNj933ufob5jR1NflrLnK0miPPqnTH5v3KmuCrjf
-         8xVFSqNeSXt6is+1OLFRx6zZUKB/c69HOqq+HwB1V968zOEr15a1WcrSpvgWWaaTQOmX
-         HJbpgyFlWLU86r9jPBX6p3WyZ27VQ25ZIVjVo=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zRs35J+9jM+mMBXrhR0hY7dunGBK3siVA/0rJv1BtSU=;
+        b=t9hHWfwLooMNi+qvk9J1pxvRmvzqq3igPQ7GJQwc5bwvUVLAruPSRLjrjY3gNhA4eu
+         pQjWogkhpdC01hXmO+BhCzevvzqUp0a79Ci2pxJHIgQRxCOu30l27uHPUouthN2M1+pF
+         BUmMhBVOzkFpJE/xkbxO7j1TFQeBf5BXTEKDWdsry0bxasJm9j2PexsSxM/5kU6ascw2
+         zGhjt0GEuXJAwhh7FM/iHXTHLIpF1N3bT4+h4mcVLPJZAOeCRsgUZ6vEggCKVAQ3OM2S
+         +GHmcF0d+3wA6xK/NDdoJPt1zXrTWML3Jb8KEy6TgImaX+6uXaVjeBPoxnv2pElpdZfM
+         FmkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xcfxkt2vV5vJ2sVl9SMRfKcWT/mJaBdrOn2baNl2lbU=;
-        b=PTimg+v/L5CFXfcDmpmmrS8iLXmb1jo2SzeEYie7tue9zfvcSHQZb9rdv+MQd/XZ0T
-         uJ0DhF458FGkg6Dr82ZbOOINcYcGjF6/hEHIRyK2mmwNFOnEZsbOAOyTh5I00MxU1thr
-         XK5WXsrnluqJ/O9Y7ceLIQFKQpl+ymkwOqATQz0+n88U7vZmpnmdaT3YRXK2sOzWRmeB
-         xRHu916vr4VBXdcyb17PoU1Yf6ipNwuSncGU8UgtcdZY5ms34e35SFnk6m3meTh/gGFL
-         mvxjELDs7p1O0fspMxBaKPuvDnvVytSlxEHcuylIVq0qQK3Rj0yjWiIZTIYh8R7TLneL
-         9Zgw==
-X-Gm-Message-State: AOAM530yDXUW7k53yJ/6hGvWaHGD7Sq9PzrN1pS6pmiLPNis+RsFAXq0
-        Z415ix2pBbeeKl21zo+D4IFb0vmM76gFgyL4LFGaVj2S47N94g==
-X-Google-Smtp-Source: ABdhPJyQcc5xV2+Kc+LtL1d25ukxRhKQ6G5J8rLlYWaJCj+IIQLKqJetSVUCQIMP5vaiD3q2SZmzGF52Dlt+oDjGO3o=
-X-Received: by 2002:a05:6e02:509:: with SMTP id d9mr12085058ils.150.1612158900584;
- Sun, 31 Jan 2021 21:55:00 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zRs35J+9jM+mMBXrhR0hY7dunGBK3siVA/0rJv1BtSU=;
+        b=ZEkSZaBbdxy4mChTvYFCQmJjMCt7Nl3DD2Xc6Ceb+ZQPBHVTGgVdEoKSOSuaW7e+zE
+         wcOffiy3/Qv6DdHpVY9DsuvrcOjjn2bxjjRfTG+Pzq1HwtA7W2lijZyE/r8fZbQOkPnu
+         lbhkM6z5n/9tUNwSwnmXDO9m/iK7XRNQCot0nhNHR79dTIDusFH/ZYe0c0wOV0RQG/Yb
+         fRFI9KhdJW43m4ljmXBrqSFyGRFi8xb+WlSg9VjE7Z4x2sM5fmkOlH1wRKyeOSYI41m2
+         zZSNqE0DkoaPyd32hy17UIAD1IWgduO0HQKz5Md/zRIykMB6UyTI5YC7sn/0AO/v5Hv2
+         vUig==
+X-Gm-Message-State: AOAM531Gqb+TXdA0/cVPoBWFvIcBE+InI5HdIyRvVtK3DSwpQx8U5gOc
+        mV/cBUZgkBAPaUNkJd8+WLI=
+X-Google-Smtp-Source: ABdhPJzBOmZj5yUpp9460gkMGk7iG4gIAeVGl1jmc69B+H1YlctVewE/+lxTp4AX/X4pauYGCRYSdQ==
+X-Received: by 2002:a17:902:724b:b029:de:229a:47f1 with SMTP id c11-20020a170902724bb02900de229a47f1mr16508347pll.10.1612159029176;
+        Sun, 31 Jan 2021 21:57:09 -0800 (PST)
+Received: from tj.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id e12sm16700820pga.13.2021.01.31.21.57.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 Jan 2021 21:57:08 -0800 (PST)
+From:   Yue Hu <zbestahu@gmail.com>
+To:     ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huyue2@yulong.com, zhangwen@yulong.com, zbestahu@163.com
+Subject: [PATCH] mmc: core: Use host instead of card argument to mmc_spi_send_csd()
+Date:   Mon,  1 Feb 2021 13:55:07 +0800
+Message-Id: <20210201055507.542-1-zbestahu@gmail.com>
+X-Mailer: git-send-email 2.29.2.windows.3
 MIME-Version: 1.0
-References: <20210201054542.1470695-1-Bilal.Wasim@imgtec.com> <20210201054542.1470695-3-Bilal.Wasim@imgtec.com>
-In-Reply-To: <20210201054542.1470695-3-Bilal.Wasim@imgtec.com>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Mon, 1 Feb 2021 13:54:34 +0800
-Message-ID: <CAJMQK-h-HzSSaLw5nuEYLTZkOER70nU-0GG+y9z5x6i+_VODcg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] soc: mediatek: pm-domains: Add domain_supply cap for
- mfg_async PD
-To:     Bilal Wasim <bilalwasim676@gmail.com>
-Cc:     "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Weiyi Lu <weiyi.lu@mediatek.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 1:45 PM Bilal Wasim <bilalwasim676@gmail.com> wrote:
->
-> The mfg_async power domain in mt8173 is used to power up imgtec
-> gpu. This domain requires the da9211 regulator to be enabled before
-> the power domain can be enabled successfully.
->
-> Signed-off-by: Bilal Wasim <Bilal.Wasim@imgtec.com>
+From: Yue Hu <huyue2@yulong.com>
 
-Reviewed-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Since mmc_send_cxd_data() does not care card if opcode is MMC_SEND_CSD.
 
-> ---
->  drivers/soc/mediatek/mt8173-pm-domains.h | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/soc/mediatek/mt8173-pm-domains.h b/drivers/soc/mediatek/mt8173-pm-domains.h
-> index 3e8ee5dabb43..065b8195e7d6 100644
-> --- a/drivers/soc/mediatek/mt8173-pm-domains.h
-> +++ b/drivers/soc/mediatek/mt8173-pm-domains.h
-> @@ -63,6 +63,7 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8173[] = {
->                 .ctl_offs = SPM_MFG_ASYNC_PWR_CON,
->                 .sram_pdn_bits = GENMASK(11, 8),
->                 .sram_pdn_ack_bits = 0,
-> +               .caps = MTK_SCPD_DOMAIN_SUPPLY,
->         },
->         [MT8173_POWER_DOMAIN_MFG_2D] = {
->                 .sta_mask = PWR_STATUS_MFG_2D,
-> --
-> 2.25.1
->
+Signed-off-by: Yue Hu <huyue2@yulong.com>
+---
+ drivers/mmc/core/mmc_ops.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
+index baa6314..265d95e 100644
+--- a/drivers/mmc/core/mmc_ops.c
++++ b/drivers/mmc/core/mmc_ops.c
+@@ -296,7 +296,7 @@ int mmc_set_relative_addr(struct mmc_card *card)
+ 	return 0;
+ }
+ 
+-static int mmc_spi_send_csd(struct mmc_card *card, u32 *csd)
++static int mmc_spi_send_csd(struct mmc_host *host, u32 *csd)
+ {
+ 	int ret, i;
+ 	__be32 *csd_tmp;
+@@ -305,7 +305,7 @@ static int mmc_spi_send_csd(struct mmc_card *card, u32 *csd)
+ 	if (!csd_tmp)
+ 		return -ENOMEM;
+ 
+-	ret = mmc_send_cxd_data(card, card->host, MMC_SEND_CSD, csd_tmp, 16);
++	ret = mmc_send_cxd_data(NULL, host, MMC_SEND_CSD, csd_tmp, 16);
+ 	if (ret)
+ 		goto err;
+ 
+@@ -320,7 +320,7 @@ static int mmc_spi_send_csd(struct mmc_card *card, u32 *csd)
+ int mmc_send_csd(struct mmc_card *card, u32 *csd)
+ {
+ 	if (mmc_host_is_spi(card->host))
+-		return mmc_spi_send_csd(card, csd);
++		return mmc_spi_send_csd(card->host, csd);
+ 
+ 	return mmc_send_cxd_native(card->host, card->rca << 16,	csd,
+ 				MMC_SEND_CSD);
+-- 
+1.9.1
+
