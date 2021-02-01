@@ -2,438 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBBBB30A0A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 04:46:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC6A30A0A8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 04:44:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbhBADpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 22:45:16 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12055 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231302AbhBADpO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 22:45:14 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DTYg96szczMSml;
-        Mon,  1 Feb 2021 11:42:45 +0800 (CST)
-Received: from SWX921481.china.huawei.com (10.126.203.222) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 1 Feb 2021 11:44:16 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <valentin.schneider@arm.com>, <vincent.guittot@linaro.org>,
-        <mgorman@suse.de>, <mingo@kernel.org>, <peterz@infradead.org>,
-        <dietmar.eggemann@arm.com>, <morten.rasmussen@arm.com>,
-        <linux-kernel@vger.kernel.org>
-CC:     <linuxarm@openeuler.org>, <xuwei5@huawei.com>,
-        <liguozhu@hisilicon.com>, <tiantao6@hisilicon.com>,
-        <wanghuiqiang@huawei.com>, <prime.zeng@hisilicon.com>,
-        <jonathan.cameron@huawei.com>, <guodong.xu@linaro.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Meelis Roos <mroos@linux.ee>
-Subject: [PATCH] sched/topology: fix the issue groups don't span domain->span for NUMA diameter > 2
-Date:   Mon, 1 Feb 2021 16:38:30 +1300
-Message-ID: <20210201033830.15040-1-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S231296AbhBADn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 22:43:57 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:44699 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229842AbhBADn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 22:43:56 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DTYgV0YRCz9sxS;
+        Mon,  1 Feb 2021 14:43:02 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1612150993;
+        bh=KTqaMDzVhMEl7jSCUPV87n/UtiRDFVgt/JT3j7vOrCY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=cyEBtM01FQkGAsT+F6J49gi/82x8Oph++A/5TH3ZOrIJC/4YHos14/U5b/D+MyLKE
+         knAn2ybx04Cs+eStOIsgli+ILPgOZ5ePoyWKDb3wvQ2hX9x/BL92x7KKiNCOI+r+e8
+         FuOrcSpToqUfoyDjqu2si4phvedyq+XgUOqFJ53K1DWgg9vUkB4bdRMxOK/5o5oEqP
+         Up/r6k7GTwyLQI8V5AbknCz63oEZ1xjQxbSTmfnQToeS17YoFn27TkCjSbxByb5SB0
+         cXigv9vdz+izDwW11Bp+Pd9qGhSbbDfbnYwt4DV5kfiOtpJXL4MAdTfr8svUS5HrDY
+         XfA6yC9habCpQ==
+Date:   Mon, 1 Feb 2021 14:42:59 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Marc Zyngier <maz@kernel.org>, Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Paul Kocialkowski <contact@paulk.fr>,
+        Samuel Holland <samuel@sholland.org>
+Subject: linux-next: manual merge of the irqchip tree with the sunxi tree
+Message-ID: <20210201144259.102ae6ab@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.126.203.222]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/YF/wh=zL265Gz=mmcmH.iKk";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As long as NUMA diameter > 2, building sched_domain by sibling's child
-domain will definitely create a sched_domain with sched_group which will
-span out of the sched_domain:
+--Sig_/YF/wh=zL265Gz=mmcmH.iKk
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-               +------+         +------+        +-------+       +------+
-               | node |  12     |node  | 20     | node  |  12   |node  |
-               |  0   +---------+1     +--------+ 2     +-------+3     |
-               +------+         +------+        +-------+       +------+
+Hi all,
 
-domain0        node0            node1            node2          node3
+Today's linux-next merge of the irqchip tree got a conflict in:
 
-domain1        node0+1          node0+1          node2+3        node2+3
-                                                 +
-domain2        node0+1+2                         |
-             group: node0+1                      |
-               group:node2+3 <-------------------+
+  Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7i-a2=
+0-sc-nmi.yaml
 
-when node2 is added into the domain2 of node0, kernel is using the child
-domain of node2's domain2, which is domain1(node2+3). Node 3 is outside
-the span of the domain including node0+1+2.
+between commit:
 
-This will make load_balance() run based on the avg_load in the sched_group
-spanning out of the sched_domain, and it also makes select_task_rq_fair()
-pick an idle CPU out of the sched_domain.
+  752b0aac99c7 ("dt-bindings: irq: sun7i-nmi: Add binding documentation for=
+ the V3s NMI")
 
-Real servers which suffer from this problem include Kunpeng920 and 8-node
-Sun Fire X4600-M2, at least.
+from the sunxi tree and commit:
 
-Here we move to use the *child* domain of the *child* domain of node2's
-domain2 to build the sched_group.
+  ad6b47cdef76 ("dt-bindings: irq: sun6i-r: Split the binding from sun7i-nm=
+i")
 
-               +------+         +------+        +-------+       +------+
-               | node |  12     |node  | 20     | node  |  12   |node  |
-               |  0   +---------+1     +--------+ 2     +-------+3     |
-               +------+         +------+        +-------+       +------+
+from the irqchip tree.
 
-domain0        node0            node1          +- node2          node3
-                                               |
-domain1        node0+1          node0+1        | node2+3        node2+3
-                                               |
-domain2        node0+1+2                       |
-             group: node0+1                    |
-               group:node2 <-------------------+
+I fixed it up (I think - see below) and can carry the fix as
+necessary. This is now fixed as far as linux-next is concerned, but any
+non trivial conflicts should be mentioned to your upstream maintainer
+when your tree is submitted for merging.  You may also want to consider
+cooperating with the maintainer of the conflicting tree to minimise any
+particularly complex conflicts.
 
-A tricky thing is that we shouldn't use the sgc of the 1st CPU of node2
-for the sched_group generated by grandchild, otherwise, when this cpu
-becomes the balance_cpu of another sched_group of cpus other than node0,
-our sched_group generated by grandchild will access the same sgc with
-the sched_group generated by child of another CPU.
+--=20
+Cheers,
+Stephen Rothwell
 
-So in init_overlap_sched_group(), sgc's capacity be overwritten:
-        build_balance_mask(sd, sg, mask);
-        cpu = cpumask_first_and(sched_group_span(sg), mask);
+diff --cc Documentation/devicetree/bindings/interrupt-controller/allwinner,=
+sun7i-a20-sc-nmi.yaml
+index 4fd1e2780026,f34ecc8c7093..000000000000
+--- a/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7=
+i-a20-sc-nmi.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7=
+i-a20-sc-nmi.yaml
+@@@ -25,17 -25,7 +25,10 @@@ properties
+        - const: allwinner,sun6i-a31-sc-nmi
+          deprecated: true
+        - const: allwinner,sun7i-a20-sc-nmi
+-       - items:
+-           - const: allwinner,sun8i-a83t-r-intc
+-           - const: allwinner,sun6i-a31-r-intc
+ +      - items:
+ +          - const: allwinner,sun8i-v3s-nmi
+ +          - const: allwinner,sun9i-a80-nmi
+        - const: allwinner,sun9i-a80-nmi
+-       - items:
+-           - const: allwinner,sun50i-a64-r-intc
+-           - const: allwinner,sun6i-a31-r-intc
+        - items:
+            - const: allwinner,sun50i-a100-nmi
+            - const: allwinner,sun9i-a80-nmi
 
-        sg->sgc = *per_cpu_ptr(sdd->sgc, cpu);
+--Sig_/YF/wh=zL265Gz=mmcmH.iKk
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-And WARN_ON_ONCE(!cpumask_equal(group_balance_mask(sg), mask)) will
-also be triggered:
-static void init_overlap_sched_group(struct sched_domain *sd,
-                                     struct sched_group *sg)
-{
-        if (atomic_inc_return(&sg->sgc->ref) == 1)
-                cpumask_copy(group_balance_mask(sg), mask);
-        else
-                WARN_ON_ONCE(!cpumask_equal(group_balance_mask(sg), mask));
-}
+-----BEGIN PGP SIGNATURE-----
 
-So here move to use the sgc of the 2nd cpu. For the corner case, if NUMA
-has only one CPU, we will still trigger this WARN_ON_ONCE. But It is
-really unlikely to be a real case for one NUMA to have one CPU only.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAXeMMACgkQAVBC80lX
+0GyrsggAonTf1sRAIjnS1f19ragVdJNtLT9m/7JBHrOswNyWaA+3OdlljtSzHyHY
+ANyPCZj77w1+6WclEPFNqCHtb4FfNw0zjaErXPy30iE3hcs12uJdhJ1LcsA1xj2P
+nvrN0j1BMpi9fRLq/6lGMsZVk86hBGD0CN7RgffnVsmq+hjMEIyH5mxFgAKqaCkj
+wgXeHKYWgQUMCy8HQb9RPUnJbniVA+23fVehZpH+7eOzIqGMRv1+0eytA241zAvp
+FG6iJPgWBMyQaM5UHJVEz6PDkvCdDmzcgF7Q6HHDwZYqrLDxUmuyKucF6zhVTkWs
+Urds/P/aguo6przyk1gq0LR2/uHQiQ==
+=uP0U
+-----END PGP SIGNATURE-----
 
-Tested by the below topology:
-qemu-system-aarch64  -M virt -nographic \
- -smp cpus=8 \
- -numa node,cpus=0-1,nodeid=0 \
- -numa node,cpus=2-3,nodeid=1 \
- -numa node,cpus=4-5,nodeid=2 \
- -numa node,cpus=6-7,nodeid=3 \
- -numa dist,src=0,dst=1,val=12 \
- -numa dist,src=0,dst=2,val=20 \
- -numa dist,src=0,dst=3,val=22 \
- -numa dist,src=1,dst=2,val=22 \
- -numa dist,src=2,dst=3,val=12 \
- -numa dist,src=1,dst=3,val=24 \
- -m 4G -cpu cortex-a57 -kernel arch/arm64/boot/Image
-
-w/o patch, we get lots of "groups don't span domain->span":
-[    0.802139] CPU0 attaching sched-domain(s):
-[    0.802193]  domain-0: span=0-1 level=MC
-[    0.802443]   groups: 0:{ span=0 cap=1013 }, 1:{ span=1 cap=979 }
-[    0.802693]   domain-1: span=0-3 level=NUMA
-[    0.802731]    groups: 0:{ span=0-1 cap=1992 }, 2:{ span=2-3 cap=1943 }
-[    0.802811]    domain-2: span=0-5 level=NUMA
-[    0.802829]     groups: 0:{ span=0-3 cap=3935 }, 4:{ span=4-7 cap=3937 }
-[    0.802881] ERROR: groups don't span domain->span
-[    0.803058]     domain-3: span=0-7 level=NUMA
-[    0.803080]      groups: 0:{ span=0-5 mask=0-1 cap=5843 }, 6:{ span=4-7 mask=6-7 cap=4077 }
-[    0.804055] CPU1 attaching sched-domain(s):
-[    0.804072]  domain-0: span=0-1 level=MC
-[    0.804096]   groups: 1:{ span=1 cap=979 }, 0:{ span=0 cap=1013 }
-[    0.804152]   domain-1: span=0-3 level=NUMA
-[    0.804170]    groups: 0:{ span=0-1 cap=1992 }, 2:{ span=2-3 cap=1943 }
-[    0.804219]    domain-2: span=0-5 level=NUMA
-[    0.804236]     groups: 0:{ span=0-3 cap=3935 }, 4:{ span=4-7 cap=3937 }
-[    0.804302] ERROR: groups don't span domain->span
-[    0.804520]     domain-3: span=0-7 level=NUMA
-[    0.804546]      groups: 0:{ span=0-5 mask=0-1 cap=5843 }, 6:{ span=4-7 mask=6-7 cap=4077 }
-[    0.804677] CPU2 attaching sched-domain(s):
-[    0.804687]  domain-0: span=2-3 level=MC
-[    0.804705]   groups: 2:{ span=2 cap=934 }, 3:{ span=3 cap=1009 }
-[    0.804754]   domain-1: span=0-3 level=NUMA
-[    0.804772]    groups: 2:{ span=2-3 cap=1943 }, 0:{ span=0-1 cap=1992 }
-[    0.804820]    domain-2: span=0-5 level=NUMA
-[    0.804836]     groups: 2:{ span=0-3 mask=2-3 cap=3991 }, 4:{ span=0-1,4-7 mask=4-5 cap=5985 }
-[    0.804944] ERROR: groups don't span domain->span
-[    0.805108]     domain-3: span=0-7 level=NUMA
-[    0.805134]      groups: 2:{ span=0-5 mask=2-3 cap=5899 }, 6:{ span=0-1,4-7 mask=6-7 cap=6125 }
-[    0.805223] CPU3 attaching sched-domain(s):
-[    0.805232]  domain-0: span=2-3 level=MC
-[    0.805249]   groups: 3:{ span=3 cap=1009 }, 2:{ span=2 cap=934 }
-[    0.805319]   domain-1: span=0-3 level=NUMA
-[    0.805336]    groups: 2:{ span=2-3 cap=1943 }, 0:{ span=0-1 cap=1992 }
-[    0.805383]    domain-2: span=0-5 level=NUMA
-[    0.805399]     groups: 2:{ span=0-3 mask=2-3 cap=3991 }, 4:{ span=0-1,4-7 mask=4-5 cap=5985 }
-[    0.805458] ERROR: groups don't span domain->span
-[    0.805605]     domain-3: span=0-7 level=NUMA
-[    0.805626]      groups: 2:{ span=0-5 mask=2-3 cap=5899 }, 6:{ span=0-1,4-7 mask=6-7 cap=6125 }
-[    0.805712] CPU4 attaching sched-domain(s):
-[    0.805721]  domain-0: span=4-5 level=MC
-[    0.805738]   groups: 4:{ span=4 cap=984 }, 5:{ span=5 cap=924 }
-[    0.805787]   domain-1: span=4-7 level=NUMA
-[    0.805803]    groups: 4:{ span=4-5 cap=1908 }, 6:{ span=6-7 cap=2029 }
-[    0.805851]    domain-2: span=0-1,4-7 level=NUMA
-[    0.805867]     groups: 4:{ span=4-7 cap=3937 }, 0:{ span=0-3 cap=3935 }
-[    0.805915] ERROR: groups don't span domain->span
-[    0.806108]     domain-3: span=0-7 level=NUMA
-[    0.806130]      groups: 4:{ span=0-1,4-7 mask=4-5 cap=5985 }, 2:{ span=0-3 mask=2-3 cap=3991 }
-[    0.806214] CPU5 attaching sched-domain(s):
-[    0.806222]  domain-0: span=4-5 level=MC
-[    0.806240]   groups: 5:{ span=5 cap=924 }, 4:{ span=4 cap=984 }
-[    0.806841]   domain-1: span=4-7 level=NUMA
-[    0.806866]    groups: 4:{ span=4-5 cap=1908 }, 6:{ span=6-7 cap=2029 }
-[    0.806934]    domain-2: span=0-1,4-7 level=NUMA
-[    0.806953]     groups: 4:{ span=4-7 cap=3937 }, 0:{ span=0-3 cap=3935 }
-[    0.807004] ERROR: groups don't span domain->span
-[    0.807312]     domain-3: span=0-7 level=NUMA
-[    0.807386]      groups: 4:{ span=0-1,4-7 mask=4-5 cap=5985 }, 2:{ span=0-3 mask=2-3 cap=3991 }
-[    0.807686] CPU6 attaching sched-domain(s):
-[    0.807710]  domain-0: span=6-7 level=MC
-[    0.807750]   groups: 6:{ span=6 cap=1017 }, 7:{ span=7 cap=1012 }
-[    0.807840]   domain-1: span=4-7 level=NUMA
-[    0.807870]    groups: 6:{ span=6-7 cap=2029 }, 4:{ span=4-5 cap=1908 }
-[    0.807952]    domain-2: span=0-1,4-7 level=NUMA
-[    0.807985]     groups: 6:{ span=4-7 mask=6-7 cap=4077 }, 0:{ span=0-5 mask=0-1 cap=5843 }
-[    0.808045] ERROR: groups don't span domain->span
-[    0.808257]     domain-3: span=0-7 level=NUMA
-[    0.808571]      groups: 6:{ span=0-1,4-7 mask=6-7 cap=6125 }, 2:{ span=0-5 mask=2-3 cap=5899 }
-[    0.808848] CPU7 attaching sched-domain(s):
-[    0.808860]  domain-0: span=6-7 level=MC
-[    0.808880]   groups: 7:{ span=7 cap=1012 }, 6:{ span=6 cap=1017 }
-[    0.808953]   domain-1: span=4-7 level=NUMA
-[    0.808974]    groups: 6:{ span=6-7 cap=2029 }, 4:{ span=4-5 cap=1908 }
-[    0.809034]    domain-2: span=0-1,4-7 level=NUMA
-[    0.809055]     groups: 6:{ span=4-7 mask=6-7 cap=4077 }, 0:{ span=0-5 mask=0-1 cap=5843 }
-[    0.809128] ERROR: groups don't span domain->span
-[    0.810361]     domain-3: span=0-7 level=NUMA
-[    0.810400]      groups: 6:{ span=0-1,4-7 mask=6-7 cap=5961 }, 2:{ span=0-5 mask=2-3 cap=5903 }
-
-w/ patch, we don't get "groups don't span domain->span" any more:
-[    0.868907] CPU0 attaching sched-domain(s):
-[    0.868962]  domain-0: span=0-1 level=MC
-[    0.869179]   groups: 0:{ span=0 cap=1013 }, 1:{ span=1 cap=983 }
-[    0.869405]   domain-1: span=0-3 level=NUMA
-[    0.869438]    groups: 0:{ span=0-1 cap=1996 }, 2:{ span=2-3 cap=2006 }
-[    0.869542]    domain-2: span=0-5 level=NUMA
-[    0.869559]     groups: 0:{ span=0-3 cap=4002 }, 5:{ span=4-5 cap=2048 }
-[    0.869603]     domain-3: span=0-7 level=NUMA
-[    0.869618]      groups: 0:{ span=0-5 mask=0-1 cap=5980 }, 6:{ span=4-7 mask=6-7 cap=4016 }
-[    0.870303] CPU1 attaching sched-domain(s):
-[    0.870314]  domain-0: span=0-1 level=MC
-[    0.870334]   groups: 1:{ span=1 cap=983 }, 0:{ span=0 cap=1013 }
-[    0.870381]   domain-1: span=0-3 level=NUMA
-[    0.870396]    groups: 0:{ span=0-1 cap=1996 }, 2:{ span=2-3 cap=2006 }
-[    0.870440]    domain-2: span=0-5 level=NUMA
-[    0.870454]     groups: 0:{ span=0-3 cap=4002 }, 5:{ span=4-5 cap=2048 }
-[    0.870507]     domain-3: span=0-7 level=NUMA
-[    0.870530]      groups: 0:{ span=0-5 mask=0-1 cap=5980 }, 6:{ span=4-7 mask=6-7 cap=4016 }
-[    0.870611] CPU2 attaching sched-domain(s):
-[    0.870619]  domain-0: span=2-3 level=MC
-[    0.870634]   groups: 2:{ span=2 cap=1007 }, 3:{ span=3 cap=999 }
-[    0.870677]   domain-1: span=0-3 level=NUMA
-[    0.870691]    groups: 2:{ span=2-3 cap=2006 }, 0:{ span=0-1 cap=1996 }
-[    0.870734]    domain-2: span=0-5 level=NUMA
-[    0.870748]     groups: 2:{ span=0-3 mask=2-3 cap=4054 }, 5:{ span=4-5 cap=2048 }
-[    0.870795]     domain-3: span=0-7 level=NUMA
-[    0.870809]      groups: 2:{ span=0-5 mask=2-3 cap=6032 }, 6:{ span=0-1,4-7 mask=6-7 cap=6064 }
-[    0.870913] CPU3 attaching sched-domain(s):
-[    0.870921]  domain-0: span=2-3 level=MC
-[    0.870936]   groups: 3:{ span=3 cap=999 }, 2:{ span=2 cap=1007 }
-[    0.870979]   domain-1: span=0-3 level=NUMA
-[    0.870993]    groups: 2:{ span=2-3 cap=2006 }, 0:{ span=0-1 cap=1996 }
-[    0.871035]    domain-2: span=0-5 level=NUMA
-[    0.871049]     groups: 2:{ span=0-3 mask=2-3 cap=4054 }, 5:{ span=4-5 cap=2048 }
-[    0.871096]     domain-3: span=0-7 level=NUMA
-[    0.871110]      groups: 2:{ span=0-5 mask=2-3 cap=6032 }, 6:{ span=0-1,4-7 mask=6-7 cap=6064 }
-[    0.871177] CPU4 attaching sched-domain(s):
-[    0.871185]  domain-0: span=4-5 level=MC
-[    0.871200]   groups: 4:{ span=4 cap=977 }, 5:{ span=5 cap=1001 }
-[    0.871243]   domain-1: span=4-7 level=NUMA
-[    0.871257]    groups: 4:{ span=4-5 cap=1978 }, 6:{ span=6-7 cap=1968 }
-[    0.871300]    domain-2: span=0-1,4-7 level=NUMA
-[    0.871314]     groups: 4:{ span=4-7 cap=3946 }, 1:{ span=0-1 cap=2048 }
-[    0.871356]     domain-3: span=0-7 level=NUMA
-[    0.871370]      groups: 4:{ span=0-1,4-7 mask=4-5 cap=5994 }, 2:{ span=0-3 mask=2-3 cap=4054 }
-[    0.871436] CPU5 attaching sched-domain(s):
-[    0.871443]  domain-0: span=4-5 level=MC
-[    0.871457]   groups: 5:{ span=5 cap=1001 }, 4:{ span=4 cap=977 }
-[    0.871512]   domain-1: span=4-7 level=NUMA
-[    0.871893]    groups: 4:{ span=4-5 cap=1978 }, 6:{ span=6-7 cap=1968 }
-[    0.871949]    domain-2: span=0-1,4-7 level=NUMA
-[    0.871966]     groups: 4:{ span=4-7 cap=3946 }, 1:{ span=0-1 cap=2048 }
-[    0.872010]     domain-3: span=0-7 level=NUMA
-[    0.872025]      groups: 4:{ span=0-1,4-7 mask=4-5 cap=5994 }, 2:{ span=0-3 mask=2-3 cap=4054 }
-[    0.872115] CPU6 attaching sched-domain(s):
-[    0.872123]  domain-0: span=6-7 level=MC
-[    0.872139]   groups: 6:{ span=6 cap=993 }, 7:{ span=7 cap=975 }
-[    0.872186]   domain-1: span=4-7 level=NUMA
-[    0.872202]    groups: 6:{ span=6-7 cap=1968 }, 4:{ span=4-5 cap=1978 }
-[    0.872246]    domain-2: span=0-1,4-7 level=NUMA
-[    0.872260]     groups: 6:{ span=4-7 mask=6-7 cap=4016 }, 1:{ span=0-1 cap=2048 }
-[    0.872309]     domain-3: span=0-7 level=NUMA
-[    0.872323]      groups: 6:{ span=0-1,4-7 mask=6-7 cap=6064 }, 2:{ span=0-5 mask=2-3 cap=6032 }
-[    0.872392] CPU7 attaching sched-domain(s):
-[    0.872399]  domain-0: span=6-7 level=MC
-[    0.872414]   groups: 7:{ span=7 cap=975 }, 6:{ span=6 cap=993 }
-[    0.872458]   domain-1: span=4-7 level=NUMA
-[    0.872472]    groups: 6:{ span=6-7 cap=1968 }, 4:{ span=4-5 cap=1978 }
-[    0.872662]    domain-2: span=0-1,4-7 level=NUMA
-[    0.872685]     groups: 6:{ span=4-7 mask=6-7 cap=4016 }, 1:{ span=0-1 cap=2048 }
-[    0.872737]     domain-3: span=0-7 level=NUMA
-[    0.872752]      groups: 6:{ span=0-1,4-7 mask=6-7 cap=6064 }, 2:{ span=0-5 mask=2-3 cap=6032 }
-
-Reported-by: Valentin Schneider <valentin.schneider@arm.com>
-Tested-by: Meelis Roos <mroos@linux.ee>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
----
- Differences with RFC v2
- * added tested-by Meelis Roos for the fixed "8-node Sun Fire X4600-M2"
- * removed the hacking code in balance_mask and should_we_balance()
- * removed the redundant "from_grandchild" field from sched_group
-
- The patch is based on 5.11-rc6;
-
- kernel/sched/topology.c | 83 ++++++++++++++++++++++++++---------------
- 1 file changed, 52 insertions(+), 31 deletions(-)
-
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 5d3675c7a76b..100feb2fd8a0 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -723,35 +723,6 @@ cpu_attach_domain(struct sched_domain *sd, struct root_domain *rd, int cpu)
- 	for (tmp = sd; tmp; tmp = tmp->parent)
- 		numa_distance += !!(tmp->flags & SD_NUMA);
- 
--	/*
--	 * FIXME: Diameter >=3 is misrepresented.
--	 *
--	 * Smallest diameter=3 topology is:
--	 *
--	 *   node   0   1   2   3
--	 *     0:  10  20  30  40
--	 *     1:  20  10  20  30
--	 *     2:  30  20  10  20
--	 *     3:  40  30  20  10
--	 *
--	 *   0 --- 1 --- 2 --- 3
--	 *
--	 * NUMA-3	0-3		N/A		N/A		0-3
--	 *  groups:	{0-2},{1-3}					{1-3},{0-2}
--	 *
--	 * NUMA-2	0-2		0-3		0-3		1-3
--	 *  groups:	{0-1},{1-3}	{0-2},{2-3}	{1-3},{0-1}	{2-3},{0-2}
--	 *
--	 * NUMA-1	0-1		0-2		1-3		2-3
--	 *  groups:	{0},{1}		{1},{2},{0}	{2},{3},{1}	{3},{2}
--	 *
--	 * NUMA-0	0		1		2		3
--	 *
--	 * The NUMA-2 groups for nodes 0 and 3 are obviously buggered, as the
--	 * group span isn't a subset of the domain span.
--	 */
--	WARN_ONCE(numa_distance > 2, "Shortest NUMA path spans too many nodes\n");
--
- 	sched_domain_debug(sd, cpu);
- 
- 	rq_attach_root(rq, rd);
-@@ -916,6 +887,11 @@ build_balance_mask(struct sched_domain *sd, struct sched_group *sg, struct cpuma
- 		if (!sibling->child)
- 			continue;
- 
-+		while (sibling->child &&
-+			!cpumask_subset(sched_domain_span(sibling->child),
-+					sched_domain_span(sd)))
-+			sibling = sibling->child;
-+
- 		/* If we would not end up here, we can't continue from here */
- 		if (!cpumask_equal(sg_span, sched_domain_span(sibling->child)))
- 			continue;
-@@ -955,7 +931,8 @@ build_group_from_child_sched_domain(struct sched_domain *sd, int cpu)
- }
- 
- static void init_overlap_sched_group(struct sched_domain *sd,
--				     struct sched_group *sg)
-+				     struct sched_group *sg,
-+				     int from_grandchild)
- {
- 	struct cpumask *mask = sched_domains_tmpmask2;
- 	struct sd_data *sdd = sd->private;
-@@ -964,6 +941,12 @@ static void init_overlap_sched_group(struct sched_domain *sd,
- 
- 	build_balance_mask(sd, sg, mask);
- 	cpu = cpumask_first_and(sched_group_span(sg), mask);
-+	/*
-+	 * for the group generated by grandchild, use the sgc of 2nd cpu
-+	 * because the 1st cpu might be used by another sched_group
-+	 */
-+	if (from_grandchild && cpumask_weight(mask) > 1)
-+		cpu = cpumask_next_and(cpu, sched_group_span(sg), mask);
- 
- 	sg->sgc = *per_cpu_ptr(sdd->sgc, cpu);
- 	if (atomic_inc_return(&sg->sgc->ref) == 1)
-@@ -996,6 +979,7 @@ build_overlap_sched_groups(struct sched_domain *sd, int cpu)
- 
- 	for_each_cpu_wrap(i, span, cpu) {
- 		struct cpumask *sg_span;
-+		int from_grandchild = 0;
- 
- 		if (cpumask_test_cpu(i, covered))
- 			continue;
-@@ -1015,6 +999,43 @@ build_overlap_sched_groups(struct sched_domain *sd, int cpu)
- 		if (!cpumask_test_cpu(i, sched_domain_span(sibling)))
- 			continue;
- 
-+		/*
-+		 * for NUMA diameter >= 3, building sched_domain by sibling's
-+		 * child's child domain to prevent sched_group from spanning
-+		 * out of sched_domain
-+		 * if we don't do this, Diameter >=3 is misrepresented:
-+		 *
-+		 * Smallest diameter=3 topology is:
-+		 *
-+		 *   node   0   1   2   3
-+		 *     0:  10  20  30  40
-+		 *     1:  20  10  20  30
-+		 *     2:  30  20  10  20
-+		 *     3:  40  30  20  10
-+		 *
-+		 *   0 --- 1 --- 2 --- 3
-+		 *
-+		 * NUMA-3       0-3             N/A             N/A             0-3
-+		 *  groups:     {0-2},{1-3}                                     {1-3},{0-2}
-+		 *
-+		 * NUMA-2       0-2             0-3             0-3             1-3
-+		 *  groups:     {0-1},{1-3}     {0-2},{2-3}     {1-3},{0-1}     {2-3},{0-2}
-+		 *
-+		 * NUMA-1       0-1             0-2             1-3             2-3
-+		 *  groups:     {0},{1}         {1},{2},{0}     {2},{3},{1}     {3},{2}
-+		 *
-+		 * NUMA-0       0               1               2               3
-+		 *
-+		 * The NUMA-2 groups for nodes 0 and 3 are obviously buggered, as the
-+		 * group span isn't a subset of the domain span.
-+		 */
-+		while (sibling->child &&
-+		       !cpumask_subset(sched_domain_span(sibling->child),
-+				       span)) {
-+			sibling = sibling->child;
-+			from_grandchild = 1;
-+		}
-+
- 		sg = build_group_from_child_sched_domain(sibling, cpu);
- 		if (!sg)
- 			goto fail;
-@@ -1022,7 +1043,7 @@ build_overlap_sched_groups(struct sched_domain *sd, int cpu)
- 		sg_span = sched_group_span(sg);
- 		cpumask_or(covered, covered, sg_span);
- 
--		init_overlap_sched_group(sd, sg);
-+		init_overlap_sched_group(sd, sg, from_grandchild);
- 
- 		if (!first)
- 			first = sg;
--- 
-2.25.1
-
+--Sig_/YF/wh=zL265Gz=mmcmH.iKk--
