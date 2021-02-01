@@ -2,121 +2,295 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C314D30AD9F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:20:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A1730AD92
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:17:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232109AbhBARTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:19:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36950 "EHLO
+        id S231919AbhBARQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:16:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbhBARTH (ORCPT
+        with ESMTP id S230055AbhBARQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:19:07 -0500
-Received: from srv1.deutnet.info (srv1.deutnet.info [IPv6:2a01:4f8:c2c:6846::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8382AC06174A;
-        Mon,  1 Feb 2021 09:18:27 -0800 (PST)
-Received: from [2a01:cb14:a98:4900:be5f:f4ff:fe8b:2fc1] (helo=sonata)
-        by srv1.deutnet.info with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <agriveaux@deutnet.info>)
-        id 1l6cqA-0005fW-TW; Mon, 01 Feb 2021 18:18:18 +0100
-Received: from agriveaux by sonata with local (Exim 4.92)
-        (envelope-from <agriveaux@localhost.localdomain>)
-        id 1l6cqA-0002FD-JO; Mon, 01 Feb 2021 18:18:18 +0100
-Date:   Mon, 1 Feb 2021 18:18:18 +0100
-From:   agriveaux <agriveaux@deutnet.info>
-To:     Maxime Ripard <maxime@cerno.tech>, robh+dt@kernel.org,
-        mark.rutland@arm.com, wens@csie.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        agriveaux@deutnet.info
-Subject: Re: [PATCH v2] ARM: dts: sun5i: Add dts for inet86v_rev2
-Message-ID: <20210201171236.GA7024@localhost.localdomain>
-References: <20210124193903.21401-1-agriveaux@deutnet.info>
- <20210128172329.ncuda3xlgpmefpqk@gilmour>
+        Mon, 1 Feb 2021 12:16:45 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D37A2C061573;
+        Mon,  1 Feb 2021 09:16:05 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id m1so10571311wml.2;
+        Mon, 01 Feb 2021 09:16:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jza2TCvepnCYL9M6zFAH+I68SUDTkRuu7p3LhyJ4FqU=;
+        b=qHnAH+x5R7MI/2K2x4nIwjyPb9W4s3w5AqHCt/oM4TlUz9mxM1ofp6+lNgGncuagze
+         5Xa3E86lkhiFlhihsmcVCeHfRt+VbXtfWDZ9chXT6VC/WoGa2nf51WkjSj+LH3mEvzBV
+         WVRN+MfxpD7ozAnJk1kB3hNVSlsK1JqTp8tZ72L6BLpM/dR4OjMdjetOjNqtQaXTnWff
+         aEbIJQKG2tctmUkbd87WyUNxqpOJp5kLlrQeqJdqWJs7zctgJJYAAUGYRkThF2gA/RWi
+         btiKcDv+tAs0s4ftM+nrpYPljXjp7MGLgtY9M/tZbZO42BSwk/IAUTwEkrOZAUNQf0TF
+         NsUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jza2TCvepnCYL9M6zFAH+I68SUDTkRuu7p3LhyJ4FqU=;
+        b=F/vZo5XH7YFGDs9B56m1wHG05w3jKLQ3L1INdhjSYsQq7TRcFlJfDzj/A0sBSssXIw
+         tp62Iyk6yF8u6gDhuYrBcGNpXdX4lRPIBik9boEZe0IMzE80d0eAm1uJosfWeMj1Eybu
+         ymJdEVsX0+WSISNOJsPWr7Wono2/yFewcqWqVeFw6KWYsdRqK8ngT6jdukQODmHnXJbD
+         lbcTmtj4X0p1oDAmjeB8rkylkxFJO31ApVckLmdeKH/wpol9TZUDjHON5yAgTu5PdD8M
+         HUsQ5HRJq/7IgWlqx+8N8E9yFW0Bwf1vFlEflo01rcd3cKdQCbbOldx8NFCPPbiJ8wVv
+         I0Ug==
+X-Gm-Message-State: AOAM530rjezkUrg4eXcYOEtZdzxsvWOWfQAqj8F0/4f5VGsiYw/XsekV
+        ie1n44tc45Hgodxhs8BROc58QKaAKR3bqsq2P3QEYw4DRBk=
+X-Google-Smtp-Source: ABdhPJyFJ+2AZFW70+q1+Jby7otE+8aOmh+s3hw0aPLCKS5KP8yQ6PDvz8v7rr6SeBgL1vl4tkmZAJ7o26rp43T8BHQ=
+X-Received: by 2002:a05:600c:2902:: with SMTP id i2mr16103614wmd.123.1612199764376;
+ Mon, 01 Feb 2021 09:16:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210128172329.ncuda3xlgpmefpqk@gilmour>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210109135112.147759-1-angelogioacchino.delregno@somainline.org>
+ <20210109135112.147759-4-angelogioacchino.delregno@somainline.org>
+ <CAF6AEGvDzdgDy7Znw6dQCV7Z=YxnF2_XsqkV+7BT+oY777TqHA@mail.gmail.com>
+ <8f8c7c37-f7b2-f763-19e1-d89e5c454ab4@somainline.org> <CAF6AEGsQp4xHpH2brUdHmAX1ic2k88EFJRVVWDRxWXUqF9njfw@mail.gmail.com>
+ <CAF6AEGueo71HVBcLW2Mtu5GQ=9HgwL43WczUGLuTk2JWLoH=ew@mail.gmail.com>
+In-Reply-To: <CAF6AEGueo71HVBcLW2Mtu5GQ=9HgwL43WczUGLuTk2JWLoH=ew@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 1 Feb 2021 09:18:38 -0800
+Message-ID: <CAF6AEGspvnwRrXurmRvvRhr8dsFRc6fNnLsSo52Te0rHXtj4jA@mail.gmail.com>
+Subject: Re: [PATCH 3/5] drm/msm/dsi_pll_10nm: Fix bad VCO rate calculation
+ and prescaler
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        phone-devel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 06:23:29PM +0100, Maxime Ripard wrote:
-> Hi,
-Hi,
-> 
-> On Sun, Jan 24, 2021 at 08:39:03PM +0100, Alexandre GRIVEAUX wrote:
-> > Add Inet 86V Rev 2 support, based upon Inet 86VS.
-> > 
-> > The Inet 86V use SL1536 touchpanel controller, the Inet 86VS a GSL1680,
-> > which make them both incompatible.
-> > 
-> > Missing things:
-> > - Accelerometer (MXC6225X)
-> > - Touchpanel (Sitronix SL1536)
-> > - Nand (29F32G08CBACA)
-> > - Camera (HCWY0308)
-> > 
-> > Signed-off-by: Alexandre GRIVEAUX <agriveaux@deutnet.info>
-> > ---
-> >  arch/arm/boot/dts/sun5i-a13-inet-86v-rev2.dts | 17 +++++++++++++++++
-> 
-> You have to add it to the Makefile
-> 
-Ok.
-> >  1 file changed, 17 insertions(+)
-> >  create mode 100644 arch/arm/boot/dts/sun5i-a13-inet-86v-rev2.dts
-> > 
-> > diff --git a/arch/arm/boot/dts/sun5i-a13-inet-86v-rev2.dts b/arch/arm/boot/dts/sun5i-a13-inet-86v-rev2.dts
-> > new file mode 100644
-> > index 000000000000..581083e932d8
-> > --- /dev/null
-> > +++ b/arch/arm/boot/dts/sun5i-a13-inet-86v-rev2.dts
-> > @@ -0,0 +1,17 @@
-> > +// SPDX-License-Identifier: GPL-2.0+
-> > +/*
-> > + * Copyright 2021 Alexandre Griveaux <agriveaux@deutnet.info>
-> > + *
-> > + * Minimal dts file for the iNet 86V
-> > + */
-> > +
-> > +/dts-v1/;
-> > +
-> > +#include "sun5i-a13.dtsi"
-> > +#include "sun5i-reference-design-tablet.dtsi"
-> > +
-> > +/ {
-> > +	model = "iNET 86V Rev 02";
-> > +	compatible = "inet,86v-rev2", "allwinner,sun5i-a13";
-> 
-> inet should be documented in the vendor prefixes, and that compatible
-> should be documented in Documentation/devicetree/bindings/arm/sunxi.yaml
-> 
+On Mon, Feb 1, 2021 at 9:05 AM Rob Clark <robdclark@gmail.com> wrote:
+>
+> On Mon, Feb 1, 2021 at 7:47 AM Rob Clark <robdclark@gmail.com> wrote:
+> >
+> > On Mon, Feb 1, 2021 at 2:11 AM AngeloGioacchino Del Regno
+> > <angelogioacchino.delregno@somainline.org> wrote:
+> > >
+> > > Il 31/01/21 20:50, Rob Clark ha scritto:
+> > > > On Sat, Jan 9, 2021 at 5:51 AM AngeloGioacchino Del Regno
+> > > > <angelogioacchino.delregno@somainline.org> wrote:
+> > > >>
+> > > >> The VCO rate was being miscalculated due to a big overlook during
+> > > >> the process of porting this driver from downstream to upstream:
+> > > >> here we are really recalculating the rate of the VCO by reading
+> > > >> the appropriate registers and returning a real frequency, while
+> > > >> downstream the driver was doing something entirely different.
+> > > >>
+> > > >> In our case here, the recalculated rate was wrong, as it was then
+> > > >> given back to the set_rate function, which was erroneously doing
+> > > >> a division on the fractional value, based on the prescaler being
+> > > >> either enabled or disabled: this was actually producing a bug for
+> > > >> which the final VCO rate was being doubled, causing very obvious
+> > > >> issues when trying to drive a DSI panel because the actual divider
+> > > >> value was multiplied by two!
+> > > >>
+> > > >> To make things work properly, remove the multiplication of the
+> > > >> reference clock by two from function dsi_pll_calc_dec_frac and
+> > > >> account for the prescaler enablement in the vco_recalc_rate (if
+> > > >> the prescaler is enabled, then the hardware will divide the rate
+> > > >> by two).
+> > > >>
+> > > >> This will make the vco_recalc_rate function to pass the right
+> > > >> frequency to the (clock framework) set_rate function when called,
+> > > >> which will - in turn - program the right values in both the
+> > > >> DECIMAL_DIV_START_1 and the FRAC_DIV_START_{LOW/MID/HIGH}_1
+> > > >> registers, finally making the PLL to output the right clock.
+> > > >>
+> > > >> Also, while at it, remove the prescaler TODO by also adding the
+> > > >> possibility of disabling the prescaler on the PLL (it is in the
+> > > >> PLL_ANALOG_CONTROLS_ONE register).
+> > > >> Of course, both prescaler-ON and OFF cases were tested.
+> > > >
+> > > > This somehow breaks things on sc7180 (display gets stuck at first
+> > > > frame of splash screen).  (This is a setup w/ an ti-sn65dsi86 dsi->eDP
+> > > > bridge)
+> > > >
+> > >
+> > > First frame of the splash means that something is "a bit" wrong...
+> > > ...like the DSI clock is a little off.
+> > >
+> > > I don't have such hardware, otherwise I would've tried... but what you
+> > > describe is a bit strange.
+> > > Is there any other older qcom platform using this chip? Any other
+> > > non-qcom platform? Is the driver for the SN65DSI86 surely fine?
+> > > Anyway, as you know, I would never propose untested patches nor
+> > > partially working ones for any reason: I'm sorry that this happened.
+> >
+> > I don't think there is anything publicly avail w/ sc7180 (yet.. but very soon)
+> >
+> > The ti-sn65dsi86 bridge is used on a bunch of 845/850 devices (like
+> > the snapdragon windows laptops).. and I think also the older 835
+> > laptops.. ofc that doesn't mean that there isn't some bug, but I'd
+> > guess maybe more likely that there is some small difference in DSI vs
+> > older devices, or some cmd vs video mode difference.
+> >
+> > Anyways, seems like the screen did eventually recover so that gives me
+> > a bit of confidence to bisect this series, which I'll do a bit later
+> > today.
+>
+> fwiw, this series minus this patch, and everything looks ok.. let me
+> take a closer look at what changes with this patch
 
-I forgot, but should be:
+Btw, it looks like upstream, config->disable_prescaler is always
+false.. I don't suppose you have anything WIP that changes this?
 
-      - description: iNet-86V Rev 02
-        items:
-          - const: primux,inet86v-rev2
-          - const: allwinner,sun5i-a13
+BR,
+-R
 
-> Having the first rev compatible would be good too
-
-Unfortunatly, I didn't find inet86v rev1 on FCC website and on
-linux-sunxi. 
-
-> 
-> > +
-> > +};
-> 
-> But I'm wondering. If there's nothing here to add, why would we need
-> that DT in the first place?
-> 
-I prefer to add often instead of bulk adding, and to show there are some
-board to add missing things like those above.
-
-> Maxime
-
-Thanks,
-Alexandre.
+>
+> > > In any case, just to be perfectly transparent, while being here waiting
+> > > for review, this patch series got tested on more smartphones, even ones
+> > > that I don't personally own, with different displays.
+> > >
+> > > For your reference, here's a list (all MSM8998..):
+> > > - OnePlus 5               (1920x1080)
+> > > - F(x)Tec Pro 1           (2160x1080)
+> > > - Sony Xperia XZ1 Compact (1280x720)
+> > > - Sony Xperia XZ1         (1920x1080)
+> > > - Sony Xperia XZ Premium  (3840x2160)
+> > >
+> >
+> > Yeah, no worries, I wasn't trying to imply that the patch was untested.
+> >
+> > Out of curiosity, are any of those video mode panels?
+> >
+> > >
+> > > > Also, something (I assume DSI related) that I was testing on
+> > > > msm-next-staging seems to have effected the colors on the panel (ie.
+> > > > they are more muted).. which seems to persist across reboots (ie. when
+> > >
+> > > So much "fun". This makes me think something about the PCC block doing
+> > > the wrong thing (getting misconfigured).
+> > >
+> > > > switching back to a good kernel), and interestingly if I reboot from a
+> > > > good kernel I see part of the login prompt (or whatever was previously
+> > > > on-screen) in the firmware ui screen !?!  (so maybe somehow triggered
+> > > > the display to think it is in PSR mode??)
+> > > >
+> > >
+> > >  From a fast read, the SN65DSI86 is on I2C.. giving it a wrong dsi clock
+> > > cannot produce (logically, at least) this, so I say that it is very
+> > > unlikely for this to be a consequence of the 10nm pll fixes...
+> > >
+> >
+> > Note that the bridge can also be programmed via dsi cmd mode packets,
+> > which I believe is the case on the 835 laptops (or at least one of
+> > them).. but all the things I have are using i2c as the control path.
+> >
+> > > ...unless the bootloader is not configuring the DSI rates, but that's
+> > > also veeeeery unlikely (it always does, or it always does not).
+> >
+> > I haven't looked at the bootloader display code, but booting back to
+> > an old/good kernel didn't change anything..  even powering off didn't.
+> > But the ghost image seemed to fade after some time, and by the next
+> > morning it was fine.  Which is strange. (But tbf, I'm more a gpu guy
+> > who works on display only when necessary.. ie. a gpu without a display
+> > isn't so much fun ;-))
+> >
+> > > > Not sure if that is caused by these patches, but if I can figure out
+> > > > how to get the panel back to normal I can bisect.  I think for now
+> > > > I'll drop this series.  Possibly it could be a
+> > > > two-wrongs-makes-a-right situation that had things working before, but
+> > > > I think someone from qcom who knows the DSI IP should take a look.
+> > > >
+> > >
+> > > I would be happy if someone from Qualcomm takes a look: after all, there
+> > > is no documentation and they're the only ones that can verify this kind
+> > > of stuff. Please, Qualcomm.
+> >
+> > Hopefully someone can take a look.
+> >
+> > > Besides that, if there's anything I can help with to solve this riddle,
+> > > I'm here for you.
+> >
+> > Thanks, like I said I'll try applying the patches one by one and see
+> > if I can narrow down what made the panel go funny, and we can go from
+> > there
+> >
+> > BR,
+> > -R
+> >
+> > > Yours,
+> > > -- Angelo
+> > >
+> > > > BR,
+> > > > -R
+> > > >
+> > > >
+> > > >> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> > > >> ---
+> > > >>   drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c | 22 +++++++++-------------
+> > > >>   1 file changed, 9 insertions(+), 13 deletions(-)
+> > > >>
+> > > >> diff --git a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
+> > > >> index 8b66e852eb36..5be562dfbf06 100644
+> > > >> --- a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
+> > > >> +++ b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
+> > > >> @@ -165,11 +165,7 @@ static void dsi_pll_calc_dec_frac(struct dsi_pll_10nm *pll)
+> > > >>
+> > > >>          pll_freq = pll->vco_current_rate;
+> > > >>
+> > > >> -       if (config->disable_prescaler)
+> > > >> -               divider = fref;
+> > > >> -       else
+> > > >> -               divider = fref * 2;
+> > > >> -
+> > > >> +       divider = fref;
+> > > >>          multiplier = 1 << config->frac_bits;
+> > > >>          dec_multiple = div_u64(pll_freq * multiplier, divider);
+> > > >>          dec = div_u64_rem(dec_multiple, multiplier, &frac);
+> > > >> @@ -266,9 +262,11 @@ static void dsi_pll_ssc_commit(struct dsi_pll_10nm *pll)
+> > > >>
+> > > >>   static void dsi_pll_config_hzindep_reg(struct dsi_pll_10nm *pll)
+> > > >>   {
+> > > >> +       struct dsi_pll_config *config = &pll->pll_configuration;
+> > > >>          void __iomem *base = pll->mmio;
+> > > >> +       u32 val = config->disable_prescaler ? 0x0 : 0x80;
+> > > >>
+> > > >> -       pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_ONE, 0x80);
+> > > >> +       pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_ONE, val);
+> > > >>          pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_TWO, 0x03);
+> > > >>          pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_THREE, 0x00);
+> > > >>          pll_write(base + REG_DSI_10nm_PHY_PLL_DSM_DIVIDER, 0x00);
+> > > >> @@ -499,17 +497,15 @@ static unsigned long dsi_pll_10nm_vco_recalc_rate(struct clk_hw *hw,
+> > > >>          frac |= ((pll_read(base + REG_DSI_10nm_PHY_PLL_FRAC_DIV_START_HIGH_1) &
+> > > >>                    0x3) << 16);
+> > > >>
+> > > >> -       /*
+> > > >> -        * TODO:
+> > > >> -        *      1. Assumes prescaler is disabled
+> > > >> -        */
+> > > >>          multiplier = 1 << config->frac_bits;
+> > > >> -       pll_freq = dec * (ref_clk * 2);
+> > > >> -       tmp64 = (ref_clk * 2 * frac);
+> > > >> +       pll_freq = dec * ref_clk;
+> > > >> +       tmp64 = ref_clk * frac;
+> > > >>          pll_freq += div_u64(tmp64, multiplier);
+> > > >> -
+> > > >>          vco_rate = pll_freq;
+> > > >>
+> > > >> +       if (config->disable_prescaler)
+> > > >> +               vco_rate = div_u64(vco_rate, 2);
+> > > >> +
+> > > >>          DBG("DSI PLL%d returning vco rate = %lu, dec = %x, frac = %x",
+> > > >>              pll_10nm->id, (unsigned long)vco_rate, dec, frac);
+> > > >>
+> > > >> --
+> > > >> 2.29.2
+> > > >>
+> > >
