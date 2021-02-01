@@ -2,148 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B831630AC0D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:54:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D01930AC15
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:56:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232146AbhBAPyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 10:54:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52502 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232094AbhBAPwu (ORCPT
+        id S231816AbhBAPy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 10:54:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231896AbhBAPvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 10:52:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612194684;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k7JcQqia2+dIQ5jR2h/xA1wGbQRmVVlja2/HYWBBHWM=;
-        b=bDvejn226PM8OFlUvzXpUYG2O6lUEeWDNOCnc4TxQqEsi1qZWGO8KNtCSaZWGg4zeDlpcf
-        dbZuipXycvEHHTJ0eV/fjmdEWJkJr623gb+Ox7HGkDOrQOkfNsNq9Y45KQl0xzs5fgfiSx
-        coeBv0F9kUQVujhWCKV91Jw8NmrUVk0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-87-uXYghaC-NlG2uuwXgi1lcA-1; Mon, 01 Feb 2021 10:51:20 -0500
-X-MC-Unique: uXYghaC-NlG2uuwXgi1lcA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0B4781054FA3;
-        Mon,  1 Feb 2021 15:51:04 +0000 (UTC)
-Received: from [10.36.115.24] (ovpn-115-24.ams2.redhat.com [10.36.115.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0F7F61346F;
-        Mon,  1 Feb 2021 15:50:55 +0000 (UTC)
-To:     Oscar Salvador <osalvador@suse.de>
-Cc:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
-        mike.kravetz@oracle.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
-        mhocko@suse.com, song.bao.hua@hisilicon.com,
-        naoya.horiguchi@nec.com, duanxiongchun@bytedance.com,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
-References: <20210117151053.24600-1-songmuchun@bytedance.com>
- <20210117151053.24600-6-songmuchun@bytedance.com>
- <20210126092942.GA10602@linux>
- <6fe52a7e-ebd8-f5ce-1fcd-5ed6896d3797@redhat.com>
- <20210126145819.GB16870@linux>
- <259b9669-0515-01a2-d714-617011f87194@redhat.com>
- <20210126153448.GA17455@linux>
- <9475b139-1b33-76c7-ef5c-d43d2ea1dba5@redhat.com>
- <e28399e1-3a24-0f22-b057-76e7c7e70017@redhat.com>
- <20210128222906.GA3826@localhost.localdomain>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [PATCH v13 05/12] mm: hugetlb: allocate the vmemmap pages
- associated with each HugeTLB page
-Message-ID: <0f34d46b-cb42-0bbf-1d7e-0b4731bdb5e9@redhat.com>
-Date:   Mon, 1 Feb 2021 16:50:55 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Mon, 1 Feb 2021 10:51:48 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 866BBC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 07:51:08 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <jlu@pengutronix.de>)
+        id 1l6bTf-0008E3-O0; Mon, 01 Feb 2021 16:50:59 +0100
+Received: from localhost ([127.0.0.1])
+        by ptx.hi.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <jlu@pengutronix.de>)
+        id 1l6bTe-0007Gf-Md; Mon, 01 Feb 2021 16:50:58 +0100
+Message-ID: <6b362abd95b116e26c65809a3a1525c7951ed0bd.camel@pengutronix.de>
+Subject: Re: Migration to trusted keys: sealing user-provided key?
+From:   Jan =?ISO-8859-1?Q?L=FCbbe?= <jlu@pengutronix.de>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        James Bottomley <jejb@linux.ibm.com>, keyrings@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, kernel@pengutronix.de
+Date:   Mon, 01 Feb 2021 16:50:58 +0100
+In-Reply-To: <4153718.1612179361@warthog.procyon.org.uk>
+References: <8b9477e150d7c939dc0def3ebb4443efcc83cd85.camel@pengutronix.de>
+         <74830d4f-5a76-8ba8-aad0-0d79f7c01af9@pengutronix.de>
+         <6dc99fd9ffbc5f405c5f64d0802d1399fc6428e4.camel@kernel.org>
+         <d1bed49f89495ceb529355cb41655a208fdb2197.camel@linux.ibm.com>
+         <4153718.1612179361@warthog.procyon.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-In-Reply-To: <20210128222906.GA3826@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: jlu@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.01.21 23:29, Oscar Salvador wrote:
-> On Wed, Jan 27, 2021 at 11:36:15AM +0100, David Hildenbrand wrote:
->> Extending on that, I just discovered that only x86-64, ppc64, and arm64
->> really support hugepage migration.
->>
->> Maybe one approach with the "magic switch" really would be to disable
->> hugepage migration completely in hugepage_migration_supported(), and
->> consequently making hugepage_movable_supported() always return false.
+On Mon, 2021-02-01 at 11:36 +0000, David Howells wrote:
+> Jan Lübbe <jlu@pengutronix.de> wrote:
 > 
-> Ok, so migration would not fork for these pages, and since them would
-> lay in !ZONE_MOVABLE there is no guarantee we can unplug the memory.
-> Well, we really cannot unplug it unless the hugepage is not used
-> (it can be dissolved at least).
+> > ... But at this point, you can still do 'keyctl read' on that key, exposing
+> > the key material to user space.
 > 
-> Now to the allocation-when-freeing.
-> Current implementation uses GFP_ATOMIC(or wants to use) + forever loop.
-> One of the problems I see with GFP_ATOMIC is that gives you access
-> to memory reserves, but there are more users using those reserves.
-> Then, worst-scenario case we need to allocate 16MB order-0 pages
-> to free up 1GB hugepage, so the question would be whether reserves
-> really scale to 16MB + more users accessing reserves.
+> I wonder if it would help to provide a keyctl function to mark a key as being
+> permanently unreadable - so that it overrides the READ permission bit.
 > 
-> As I said, if anything I would go for an optimistic allocation-try
-> , if we fail just refuse to shrink the pool.
-> User can always try to shrink it later again via /sys interface.
-> 
-> Since hugepages would not be longer in ZONE_MOVABLE/CMA and are not
-> expected to be migratable, is that ok?
-> 
-> Using the hugepage for the vmemmap array was brought up several times,
-> but that would imply fragmenting memory over time.
-> 
-> All in all seems to be overly complicated (I might be wrong).
-> 
-> 
->> Huge pages would never get placed onto ZONE_MOVABLE/CMA and cannot be
->> migrated. The problem I describe would apply (careful with using
->> ZONE_MOVABLE), but well, it can at least be documented.
-> 
-> I am not a page allocator expert but cannot the allocation fallback
-> to ZONE_MOVABLE under memory shortage on other zones?
+> Alternatively, you can disable READ and SETATTR permission - but that then
+> prevents you from removing other perms if you want to :-/
 
-No, for now it's not done. Only movable allocations target ZONE_MOVABLE. 
-Doing so would be controversial: when would be the right point in time 
-to start spilling unmovable allocations into CMA/ZONE_MOVABLE? You 
-certainly want to try other things first (swapping, reclaim, 
-compaction), before breaking any guarantees regarding 
-hotunplug+migration/compaction you have with CMA/ZONE_MOVABLE. And even 
-if you would allow it, your workload would already suffer extremely.
+That would mean using user type keys, right? Then we'd still have the core
+problem how a master key can be protected against simply reading it from
+flash/disk, as it would be unencrypted in this scenario.
 
-So it smells more like a setup issue. But then, who knows when 
-allocating huge pages (esp. at runtime) that there are such side effects 
-before actually running into them?
 
-We can make sure that all relevant archs support migration of ordinary 
-(!gigantic) huge pages (for now, only x86-64, ppc64/spapr, arm64), so we 
-can place them onto ZONE_MOVABLE. It gets harder with more special cases.
+Maybe a bit of background:
 
-Gigantic pages (without CMA) are more of a general issue, but at least 
-it's simple to document ("Careful when pairing ZONE_MOVABLE with 
-gigantic pages on !CMA").
+We're looking at the trusted/encrypted keys because we want to store the key
+material in an encrypted format, only loadable into the same system where they
+were generated and only if that's in a trusted state (to solve the master key
+problem above).
 
-An unexpected high amount of unmovable memory is just extremely 
-difficult to handle with ZONE_MOVABLE; it's hard for the user/admin to 
-figure out that such restrictions actually apply.
+This binding can be done with trusted keys via a TPM (and soon with Sumit's OP-
+TEE backend, or later based on SoC-specific hardware like NXP's CAAM). In the
+OP-TEE/CAAM case, the bootloader would ensure that the backend can only be used
+when booting a correctly authenticated kernel.
 
+Of course, that's not as flexible as TPMs with a custom policy, but much simpler
+and a good fit for many embedded use-cases.
+
+Best regards,
+Jan Lübbe
 -- 
-Thanks,
-
-David / dhildenb
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
