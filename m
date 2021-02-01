@@ -2,92 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ED2E30AE9B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E35130AE9D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:00:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232604AbhBAR7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:59:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232326AbhBAR7F (ORCPT
+        id S231797AbhBASAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:00:20 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:37786 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229555AbhBASAS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:59:05 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E39AC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 09:58:25 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id 16so18360454ioz.5
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 09:58:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Bv8ZgkdpbtWRz3CeKeqPHjo/hOCKsBVIEdmTNlxLJSM=;
-        b=klKDnUELxUZeEjyVuPIjtkORiqDrPDKxzUfGKgFJ8y8IYEVq7fDn+tN4RCOOYQJDIi
-         yvj4eVFn2BjhA5at4JWsUXeIa3B2lzIkzfeZwKMcS+4XELsCUhy/0gugDnbAeu+0K8xR
-         UWS10sPUqt7GwwHrkhURpyvJcuU2giHTUmrvopCEgnHfx1KiMqbB9CUxqlERhf2IX5aL
-         jl5TosryvAyFvAosWd0Wyvhd0vEy4u1cqL5KbIy1RyeXlXUiAei/U9tmhXNypbbM4GuR
-         d/NPY0RPjtGKTMpiZwDTl5EY+i8TQGVorYk686FAkIaX6iM2zDcodSx5pFSFHAG8wBB+
-         G/Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Bv8ZgkdpbtWRz3CeKeqPHjo/hOCKsBVIEdmTNlxLJSM=;
-        b=rjsYcynVHjd6okNz9+MV6x6LDaQ0Q/fAeMBJttedHHLi0sobTAcbKdq2+ZcNZ2Fb32
-         mUNSQ6bMiF3u1DQUG6LTQStXwkhS35B9I8ksDwhRtpWfKrDS7xsyn5s6ZVjDOITMJtpZ
-         jraKimRqAv7xzvns3VLSWDD/w0LOI/h8jC4kPBIa+mfcGmcZa1A//LEIeptJYLn2F1qE
-         tF8o2cTYbTPGa7hD17iu2TnYhZ/JRpIahDw65dPu9+oDj5eR28vGAfrJXI1C3FcROW4+
-         h0xdvHiC/N1p15Fa7eKdJErKrPub/4Ot2KINOvhZOjj43eGaA67oaq4Ajzo7RgaurqYc
-         tsmA==
-X-Gm-Message-State: AOAM532OS8/7/EryT3r7cSGfn9RRIMP8fshubbT/C8tLxa8hc0UazBo4
-        zrGpmekbmZGF5F07KFP6/a5zpfjLfDBxYnwl2813VQ==
-X-Google-Smtp-Source: ABdhPJworOiTAhpDnz2geF6mGwnmzvskFQFo+HEu27UpDCq/rJieGNrWIG4qKLQUHm18Mj12jU/n1y9UKsQq4odITi4=
-X-Received: by 2002:a02:e87:: with SMTP id 129mr15622009jae.34.1612202304740;
- Mon, 01 Feb 2021 09:58:24 -0800 (PST)
+        Mon, 1 Feb 2021 13:00:18 -0500
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 111HxPfR028486
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 1 Feb 2021 12:59:25 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 15A5B15C39D9; Mon,  1 Feb 2021 12:59:25 -0500 (EST)
+Date:   Mon, 1 Feb 2021 12:59:25 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Joe Perches <joe@perches.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [Linux-kernel-mentees] Patches from the future - can checkpatch
+ help?
+Message-ID: <YBhBfdZecMscxPOE@mit.edu>
+References: <CABJPP5AxB8-kafFEpsMydg8eMx8bH5ooT5g7r0fKWV2T2Hjtng@mail.gmail.com>
+ <YBguQ/dENrfvtptJ@kroah.com>
+ <CAKXUXMwtXTYfs_9Asnmpd09zsucg8tRehMi2Shv8V49H-rs4xA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210201160420.2826895-1-elver@google.com> <CALMXkpYaEEv6u1oY3cFSznWsGCeiFRxRJRDS0j+gZxAc8VESZg@mail.gmail.com>
- <CANpmjNNbK=99yjoWFOmPGHM8BH7U44v9qAyo6ZbC+Vap58iPPQ@mail.gmail.com>
-In-Reply-To: <CANpmjNNbK=99yjoWFOmPGHM8BH7U44v9qAyo6ZbC+Vap58iPPQ@mail.gmail.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Mon, 1 Feb 2021 18:58:12 +0100
-Message-ID: <CANn89iJbAQU7U61RD2pyZfcXah0P5huqK3W92OEP513pqGT_wA@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: fix up truesize of cloned skb in skb_prepare_for_shift()
-To:     Marco Elver <elver@google.com>
-Cc:     Christoph Paasch <christoph.paasch@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        linmiaohe <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        Dongseok Yi <dseok.yi@samsung.com>,
-        Yadu Kishore <kyk.segfault@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        netdev <netdev@vger.kernel.org>,
-        Alexander Potapenko <glider@google.com>,
-        syzbot <syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKXUXMwtXTYfs_9Asnmpd09zsucg8tRehMi2Shv8V49H-rs4xA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 6:34 PM Marco Elver <elver@google.com> wrote:
->
-> On Mon, 1 Feb 2021 at 17:50, Christoph Paasch
+On Mon, Feb 01, 2021 at 05:50:45PM +0100, Lukas Bulwahn wrote:
+> 
+> Dwaipayan, there are two ways:
+> - We build a bot listening to mailing lists and check. I like that
+> implementation idea for various other checks.
+> - Stephen Rothwell could include this as a check on linux-next and
+> inform the git author and committer.
+> 
+> I am wondering though if that is worth the effort, three instances of
+> a wrong date among 1M commits seems to be very seldom and the harm of
+> that mistake is quite small as well.
 
-> > just a few days ago we found out that this also fixes a syzkaller
-> > issue on MPTCP (https://github.com/multipath-tcp/mptcp_net-next/issues/136).
-> > I confirmed that this patch fixes the issue for us as well:
-> >
-> > Tested-by: Christoph Paasch <christoph.paasch@gmail.com>
->
-> That's interesting, because according to your config you did not have
-> KFENCE enabled. Although it's hard to say what exactly caused the
-> truesize mismatch in your case, because it clearly can't be KFENCE
-> that caused ksize(kmalloc(S))!=ksize(kmalloc(S)) for you.
+Another solution might be to ask the git developers if they would be
+willing to have "git am" print a warning if the date is sufficiently
+insane (say, more than 3 months in the past or present).
 
-Indeed, this seems strange. This might be a different issue.
+One could also imagine a request that "git log" would have a new
+format where normally the author time is printed, but if it's
+sufficiently different from the commit time, the commit time is also
+printed in parenthesis.
 
-Maybe S != S ;)
+Or you could set up your git config so that "git log" uses
+--pretty=fuller by default, which prints both the author date and
+commit date.
+
+Like Lukas, I'm not really sure it's worth the effort, however.
+
+     	    	    	   	     - Ted
