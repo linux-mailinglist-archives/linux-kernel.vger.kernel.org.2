@@ -2,159 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B4D830B1FE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83DB630B205
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:23:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbhBAVVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 16:21:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbhBAVU7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 16:20:59 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F1AC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 13:20:18 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id p20so7289080ejb.6
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 13:20:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RKV8tfXM/P2yr23U8IrmSV+OjOgK46IvUPsK7p0jMgk=;
-        b=jZLlF1BLcZiQNvZuriBZtAzF6XOXuBz6zZN01Lb11NP+6NRYwxYB0ZMdTbEIExzDKb
-         r/gC0LbZUA18tkBHhoxigMtqVYDxB4j+RWtLlmqHfDvcPVcvDdr3AUlNiqW2LxbOfb3O
-         +V+GSB9O1BjCxxSnLTCxG8gvlUz2B5Itq3vnR+d9KT98zWWMdBnlW1/DAzbz4ulPCc4G
-         nq+Wrn51F//JFhDa2w3l398dovOGhgDJhWKfhYV/ofnLxv7doKXgn3rI+ESCn2v5Ofq9
-         ZecFkI5v7FgvOkds/8sJojnO2M7YKnUAbPpdVdFqGTVqquOyo2GU3ijaFXNzoa5HRNf0
-         nLAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RKV8tfXM/P2yr23U8IrmSV+OjOgK46IvUPsK7p0jMgk=;
-        b=Bc1qIny9Vu8ZttIulDOedr97AcILZgo+P7unJwfm19az/7hvlqlDSR2AxpLZlo2BmQ
-         ogEtz3UT3JLBKjH0GUmjFGm18ESmIcZzParAKHv/HK8yPwsWpSHO7kfKqftWNiOAhuDm
-         /+0sXU9FW7YBu1DbUlbJ4zzpfUJxv4mjjkGDayzUOKXSxikgbslvFCTH08e3aLDlzx1/
-         dLGwy0LwIN2fF4oL+FbaX89ugDF7OqEI+C/6r+BeriwYXT0N9oVt4ZmYAIJQMtuf782c
-         w1DvIngVVzqctTRV87X/dCGgTm8vG4Qng/8rDci/ARoOZpRsAcv28KlY7Ph3haz5j6jf
-         q4PQ==
-X-Gm-Message-State: AOAM533fzjz6T20YYCX+y0SnicYNZFQ1At3aznyYCBEThyvtTAr+l/FW
-        9kyZHDn0idICqITpbwMdYMMUMRim7HXgFE0J/ECVLAruMCp/Sw==
-X-Google-Smtp-Source: ABdhPJwA3l0e3MUGip6gEtrbLA1M+onIFo5pqjzQ23LyigVAMvz9JEe/SBsagHRrDaseCVuas2GfBzS5C8qSA8H7dF0=
-X-Received: by 2002:a17:906:f919:: with SMTP id lc25mr20142627ejb.323.1612214417615;
- Mon, 01 Feb 2021 13:20:17 -0800 (PST)
+        id S232313AbhBAVWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 16:22:32 -0500
+Received: from ms.lwn.net ([45.79.88.28]:50674 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230094AbhBAVWa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 16:22:30 -0500
+X-Greylist: delayed 16994 seconds by postgrey-1.27 at vger.kernel.org; Mon, 01 Feb 2021 16:22:30 EST
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 66D3E384;
+        Mon,  1 Feb 2021 21:21:49 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 66D3E384
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1612214509; bh=zFCLGfAujq4fIR8VwOuNF0Vsve0622fqbiBDx88X0K8=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=EVyjPSnYscr9FSXgpl9ustjG4EMy7MWz4+J8hStXFNLzXhKJueffpwm0GmFJ0R08O
+         VWxOTmaUV/yJWR3OU2DBRkreM2AV3+SyK8ziZWdVktlQnzt2V9GCVM8uHP7eMz6Txw
+         FUBfXgnkipxQdRd7ME4Zl9iAFrCIyAV/pz+cUFIUSvfW1cZl8n8sgPhlXF6NSZdNB7
+         CMPMA2asNUTzEqEXNQUxWoHhf6pfATNUI91+vnfvwiGcuZWKMuisvie25d97xC+Waw
+         AXfmmkhLjd+79DgryDlwHfkfwI/5gz4ysyTF8btHQjLPaYmsN+qgIixBOisn0LYXyt
+         jY/NtCop4AXWA==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] kbuild: remove PYTHON variable
+In-Reply-To: <CAK7LNAQQ=kqhx6REix7j+ZndABjuCBEwp=yiQp71Z0fBrQZxog@mail.gmail.com>
+References: <20210201010024.654526-1-masahiroy@kernel.org>
+ <87r1lzvj3q.fsf@meer.lwn.net>
+ <CAK7LNAQQ=kqhx6REix7j+ZndABjuCBEwp=yiQp71Z0fBrQZxog@mail.gmail.com>
+Date:   Mon, 01 Feb 2021 14:21:48 -0700
+Message-ID: <87czxjv5zn.fsf@meer.lwn.net>
 MIME-Version: 1.0
-References: <20210130002438.1872527-1-ben.widawsky@intel.com>
- <20210130002438.1872527-10-ben.widawsky@intel.com> <20210201182400.GK197521@fedora>
- <20210201192708.5cvyecbcdrwx77de@intel.com> <20210201193453.GA308086@fedora>
-In-Reply-To: <20210201193453.GA308086@fedora>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 1 Feb 2021 13:20:14 -0800
-Message-ID: <CAPcyv4hivzQh=rresymO+fRP2g1LLJzEr2d7Or6Pha7V_1L6Pg@mail.gmail.com>
-Subject: Re: [PATCH 09/14] cxl/mem: Add a "RAW" send command
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        daniel.lll@alibaba-inc.com,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 11:36 AM Konrad Rzeszutek Wilk
-<konrad.wilk@oracle.com> wrote:
->
-> On Mon, Feb 01, 2021 at 11:27:08AM -0800, Ben Widawsky wrote:
-> > On 21-02-01 13:24:00, Konrad Rzeszutek Wilk wrote:
-> > > On Fri, Jan 29, 2021 at 04:24:33PM -0800, Ben Widawsky wrote:
-> > > > The CXL memory device send interface will have a number of supported
-> > > > commands. The raw command is not such a command. Raw commands allow
-> > > > userspace to send a specified opcode to the underlying hardware and
-> > > > bypass all driver checks on the command. This is useful for a couple of
-> > > > usecases, mainly:
-> > > > 1. Undocumented vendor specific hardware commands
-> > > > 2. Prototyping new hardware commands not yet supported by the driver
-> > >
-> > > This sounds like a recipe for ..
-> > >
-> > > In case you really really want this may I recommend you do two things:
-> > >
-> > > - Wrap this whole thing with #ifdef
-> > >   CONFIG_CXL_DEBUG_THIS_WILL_DESTROY_YOUR_LIFE
-> > >
-> > >  (or something equivalant to make it clear this should never be
-> > >   enabled in production kernels).
-> > >
-> > >  - Add a nice big fat printk in dmesg telling the user that they
-> > >    are creating a unstable parallel universe that will lead to their
-> > >    blood pressure going sky-high, or perhaps something more professional
-> > >    sounding.
-> > >
-> > > - Rethink this. Do you really really want to encourage vendors
-> > >   to use this raw API instead of them using the proper APIs?
-> >
-> > Again, the ideal is proper APIs. Barring that they get a WARN, and a taint if
-> > they use the raw commands.
->
-> Linux upstream is all about proper APIs. Just don't do this.
-> >
-> > >
-> > > >
-> > > > While this all sounds very powerful it comes with a couple of caveats:
-> > > > 1. Bug reports using raw commands will not get the same level of
-> > > >    attention as bug reports using supported commands (via taint).
-> > > > 2. Supported commands will be rejected by the RAW command.
-> > > >
-> > > > With this comes new debugfs knob to allow full access to your toes with
-> > > > your weapon of choice.
-> > >
-> > > Problem is that debugfs is no longer "debug" but is enabled in
-> > > production kernel.
-> >
-> > I don't see this as my problem. Again, they've been WARNed and tainted. If they
->
-> Right not your problem, nice.
->
-> But it is going to be the problem of vendor kernel engineers who don't have this luxury.
->
-> > want to do this, that's their business. They will be asked to reproduce without
-> > RAW if they file a bug report.
->
->
-> This is not how customers see the world. "If it is there, then it is
-> there to used right? Why else would someone give me the keys to this?"
->
-> Just kill this. Or better yet, make it a seperate set of patches for
-> folks developing code but not have it as part of this patchset.
+Masahiro Yamada <masahiroy@kernel.org> writes:
 
-In the ACPI NFIT driver, the only protection against vendor
-shenanigans is the requirement that any and all DSM functions be
-described in a public specification, so there is no unfettered access
-to the DSM interface However, multiple vendors just went ahead and
-included a "vendor passthrough" as a DSM sub-command in their
-implementation. The driver does have the "disable_vendor_specific"
-module parameter, however that does not amount to much more than a
-stern look from the kernel at vendors shipping functionality through
-that path rather than proper functions. It has been a source of bugs.
+> On Tue, Feb 2, 2021 at 1:38 AM Jonathan Corbet <corbet@lwn.net> wrote:
+>> So this will have the effect of making the docs build impossible for
+>> folks who only have Python 2.
+>
+> Is this a problem?  Python 2 is EOL.
+>
+> Everybody who wants to use Python
+> must install Python 3.
 
-The RAW command proposal Ben has here is a significant improvement on
-that status quo. It's built on the observation that customers pick up
-the phone whenever their kernel backtraces, and makes it is easy to
-spot broken tooling. That said, I think it is reasonable to place the
-RAW interface behind a configuration option and let distribution
-policy decide the availability.
+I honestly don't know, but people do keep things around for a
+surprisingly long time.
+
+>>  As I said before, this is a step that we
+>> knew was coming, we just hadn't decided on the exact timing - I guess
+>> this decides for us :)
+>>
+>> That said, I'll copy linux-doc to see if anybody screams.  I assume this
+>> is a 5.12 change?
+>
+> No, I am planning to do this for 5.11
+> (a pull request this week if there is no objection).
+
+I'm not going to truly object and try to block this, but I worry that
+it's soon and without warning.  It's not a change I would merge for
+-rc7.  IMO this should be done in 5.12 with an appropriate note added to
+Documentation/process/changes.rst as well.
+
+Thanks,
+
+jon
