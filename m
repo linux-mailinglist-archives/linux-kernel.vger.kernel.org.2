@@ -2,89 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA2F30A849
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:07:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3FAD30A847
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:07:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231901AbhBANHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:07:03 -0500
-Received: from mga09.intel.com ([134.134.136.24]:13861 "EHLO mga09.intel.com"
+        id S231822AbhBANGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:06:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231821AbhBANGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:06:41 -0500
-IronPort-SDR: frxP/wnYac5hPXbtAQ2JLNpPTp5yLgawip68681SggrivcA6cz/wU9BfFVhHTGnK2u2J8g21VE
- 0y7jHWb5HplA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="180824718"
-X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
-   d="scan'208";a="180824718"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 05:04:54 -0800
-IronPort-SDR: AK4THoZJYK1Ba5XswMeCZXCVcRC0dQrby+5U0//H7DsBxhDH3/Tco4eNOfDNI3LjNuNy/zTBQe
- v0JS8fA0VJNw==
-X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
-   d="scan'208";a="355759930"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 05:04:51 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id A03A42074F; Mon,  1 Feb 2021 15:04:47 +0200 (EET)
-Date:   Mon, 1 Feb 2021 15:04:47 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     Julia Lawall <julia.lawall@inria.fr>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        =?iso-8859-1?Q?K=E9vin_L'h=F4pital?= <kevin.lhopital@bootlin.com>,
-        linux-kernel@vger.kernel.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        kbuild-all@lists.01.org
-Subject: Re: [PATCH] media: i2c: fix odd_ptr_err.cocci warnings
-Message-ID: <20210201130447.GN32460@paasikivi.fi.intel.com>
-References: <alpine.DEB.2.22.394.2101162109350.2697@hadrien>
- <YAWTO11tkNPnslKV@aptenodytes>
+        id S229500AbhBANGU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 08:06:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8693C64EA2;
+        Mon,  1 Feb 2021 13:05:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612184738;
+        bh=MM8WH0IvCN8GfFKYW8sdTTYdArhCxEvBpBqATMu+6UM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=je8UoaT41GN2v+qvPQaftc4km4+KO4QvUkH+0YL1qsKJWH+e+xDl/04UYBazvz2yw
+         gMl4DkdN+bwcSVpH45DuT0jt44HmieyGOONDy3Kcb48PigezF5kjbthaPhCqygofWe
+         iFoJKHEFLFVfsnlVr9wXfygIvonW49qYk9wCBP2z0YxaHV4DNJN0f/TS/prWyslKTv
+         oQcU63vXCInVw+1vmZ/3YiXrrkPQy6hksvOzZmunLh+8PqHUQjqaSAP+Qve5ZWGhTi
+         trrNTMn0f40t0s9Wfd/62+9xv+S+rndYtzeDxpNYjI8DO1J7uEkRBM/TrEiN9bAR6p
+         J8v70H2zz7I6w==
+From:   Will Deacon <will@kernel.org>
+To:     mark.rutland@arm.com, John Garry <john.garry@huawei.com>
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>, thunder.leizhen@huawei.com,
+        shameerali.kolothum.thodi@huawei.com, jean-philippe@linaro.org,
+        robin.murphy@arm.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] driver/perf: Remove ARM_SMMU_V3_PMU dependency on ARM_SMMU_V3
+Date:   Mon,  1 Feb 2021 13:05:32 +0000
+Message-Id: <161218318071.2645311.5418215713079588987.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <1612175042-56866-1-git-send-email-john.garry@huawei.com>
+References: <1612175042-56866-1-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YAWTO11tkNPnslKV@aptenodytes>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 02:55:07PM +0100, Paul Kocialkowski wrote:
-> Hi,
+On Mon, 1 Feb 2021 18:24:02 +0800, John Garry wrote:
+> The ARM_SMMU_V3_PMU dependency on ARM_SMMU_V3_PMU was added with the idea
+> that a SMMUv3 PMCG would only exist on a system with an associated SMMUv3.
 > 
-> On Sat 16 Jan 21, 21:11, Julia Lawall wrote:
-> > From: kernel test robot <lkp@intel.com>
-> > 
-> > PTR_ERR should access the value just tested by IS_ERR
-> 
-> Good catch!
-> 
-> Reviewed-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> However it is not the job of Kconfig to make these sorts of decisions (even
+> if it were true), so remove the dependency.
 
-Thanks, Julia and Paul.
+Applied to will (for-joerg/arm-smmu/updates), thanks!
 
-A patch with similar content got recently merged:
+[1/1] driver/perf: Remove ARM_SMMU_V3_PMU dependency on ARM_SMMU_V3
+      https://git.kernel.org/will/c/34eb9359c111
 
-commit 6e7cca2790a54057ddf64da7843271e192f71ca0
-Author: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Date:   Wed Jan 20 09:42:38 2021 +0100
-
-    media: i2c/ov8865.c: fix error checks using wrong variable
-    
-    Fix two typos: dvdd -> dovdd and dvdd -> avdd
-    
-    Both clearly copy-and-paste mistakes.
-    
-    Fixes this smatch warning:
-    
-    drivers/media/i2c/ov8865.c:2852 ov8865_probe() warn: passing zero to 'PTR_ERR'
-    
-    Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-    Reported-by: kernel test robot <lkp@intel.com>
-    Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-    Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
+Cheers,
 -- 
-Kind regards,
+Will
 
-Sakari Ailus
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
