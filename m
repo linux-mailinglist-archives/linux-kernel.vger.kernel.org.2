@@ -2,392 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC4FB30B19C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 21:33:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B523930B19A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 21:33:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231896AbhBAUcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 15:32:52 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:34576 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231603AbhBAUco (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 15:32:44 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CD236556;
-        Mon,  1 Feb 2021 21:32:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1612211521;
-        bh=jyIVuGf3EGcPMVwAAPO/NUEYKehW7X7dQX/KlSR+thU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KgdARKpQ001g7HVYMLOXxWbH3XdH5Fhbz2BAQsQFOb8atX/cDzIG2sulcrC4ucLev
-         mdC0OV5zOkRQdKYR1tvMJZpZ20wGsDps3Y7p8mk+EmZVyUTavan7q5Cqbe4jV4qTzn
-         Ckq2Ne9pIEHLTcJz1+OgdgFbOySzAPxvbD9mXlXo=
-Date:   Mon, 1 Feb 2021 22:31:39 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Tomasz Figa <tfiga@chromium.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: Re: [PATCH] media: uvcvideo: initial UVC 1.5 region of interest
- support
-Message-ID: <YBhlKyZMEnvxhwHe@pendragon.ideasonboard.com>
-References: <20210201033441.112092-1-senozhatsky@chromium.org>
+        id S231754AbhBAUch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 15:32:37 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:39726 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231603AbhBAUc3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 15:32:29 -0500
+Received: from zn.tnic (p200300ec2f06fe00e55f3102cc5eb27e.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:fe00:e55f:3102:cc5e:b27e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BB27E1EC0323;
+        Mon,  1 Feb 2021 21:31:47 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1612211507;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TV9f+dpKWOVsk2LSoz04Z2RDuyCnkg95cSCDMqN5B9s=;
+        b=bfGckd5M+f8QRAdD+DDtDRCQirda9nLvUBcAt5ZdCHXXCypTwGa8xrYXUbA7kjZ1if6Hzz
+        cMq/UGC2eL/YcFvHWqJ/krVlNfc4KOJPQrm6+06nNdc+dn1z2XZP5tyYVKuvSLpkmkMMDI
+        tz0OU4whXdfOwOjsNdnq5V0sncwJuQA=
+Date:   Mon, 1 Feb 2021 21:31:46 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>, stable@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 01/11] x86/fault: Fix AMD erratum #91 errata fixup for
+ user code
+Message-ID: <20210201203146.GC14590@zn.tnic>
+References: <cover.1612113550.git.luto@kernel.org>
+ <7aaa6ff8d29faea5a9324a85e5ad6c41c654e9e0.1612113550.git.luto@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210201033441.112092-1-senozhatsky@chromium.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7aaa6ff8d29faea5a9324a85e5ad6c41c654e9e0.1612113550.git.luto@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sergey,
+On Sun, Jan 31, 2021 at 09:24:32AM -0800, Andy Lutomirski wrote:
+> The recent rework of probe_kernel_read() and its conversion to
 
-Thank you for the patch.
+Judging by
 
-On Mon, Feb 01, 2021 at 12:34:41PM +0900, Sergey Senozhatsky wrote:
-> This patch implements parts of UVC 1.5 Region of Interest (ROI)
-> control, using the uvcvideo selection API.
+  25f12ae45fc1 ("maccess: rename probe_kernel_address to get_kernel_nofault")
+
+I think you mean probe_kernel_address() above and below.
+
+> get_kernel_nofault() inadvertently broke is_prefetch().  We were using
+
+Let's drop the "we" pls and switch to passive voice.
+
+> probe_kernel_read() as a sloppy "read user or kernel memory" helper, but it
+> doens't do that any more.  The new get_kernel_nofault() reads *kernel*
+> memory only, which completely broke is_prefetch() for user access.
 > 
-> There are several things to mention here.
+> Adjust the code to the the correct accessor based on access mode.  The
+
+s/the //
+
+> manual address bounds check is no longer necessary, since the accessor
+> helpers (get_user() / get_kernel_nofault()) do the right thing all by
+> themselves.  As a bonus, by using the correct accessor, we don't need the
+> open-coded address bounds check.
 > 
-> First, UVC 1.5 defines CT_DIGITAL_WINDOW_CONTROL; and ROI rectangle
-> coordinates "must be within the current Digital Window as specified
-> by the CT_WINDOW control."  (4.2.2.1.20 Digital Region of Interest
-> (ROI) Control.) This is not entirely clear if we need to implement
-> CT_DIGITAL_WINDOW_CONTROL. ROI is naturally limited by:
-> a) ROI GET_MIN and GET_MAX rectangles
-> b) current image crop
-> c) stream->cur_frame->wWidth/stream->cur_frame->wHeight
-> 
-> Second, ROI control is a compound data type:
->   Control Selector     CT_REGION_OF_INTEREST_CONTROL
->   Mandatory Requests   SET_CUR, GET_CUR, GET_MIN, GET_MAX, GET_DEF
->   wLength 10
->   Offset   Field            Size
->   0        wROI_Top         2
->   2        wROI_Left        2
->   4        wROI_Bottom      2
->   6        wROI_Right       2
->   8        bmAutoControls   2       (Bitmap)
-> 
-> While uvc_control_mapping can handle only s32 data at the moment:
-> ->get() returns s32 value, ->set() accepts s32 value; while v4l2_ctrl
-> maximum/minimum/default_value can hold only s64 values.
-> 
-> Therefore ROI control handling is split into two parts:
-> a) bmAutoControls is handled via uvc_control_mapping as V4L2_CTRL_TYPE_MENU
-> b) ROI rectangle (SET_CUR, GET_CUR, GET_DEF) handling is implemented
->    by the means of selection API.
-> 
-> Third, the patch adds new selection targets in order to handle ROI
-> control requests, but it doesn't implement all of the requests.
-> Namely, SEL_TGT_BOUNDS for ROI implements GET_MAX (that is maximal
-> ROI rectangle area). GET_MIN is not implemented ( as of now) since
-> it's not very clear if user space would need such information.
-> 
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> While we're at it, disable the workaround on all CPUs except AMD Family
+> 0xF.  By my reading of the Revision Guide for AMD Athlon™ 64 and AMD
+> Opteron™ Processors, only family 0xF is affected.
+
+Yah, actually, only !NPT K8s have the erratum listed, i.e., CPU models <
+0x40, AFAICT.
+
+I.e., your test should be:
+
+	struct cpuinfo_x86 *c = &boot_cpu_data;
+
+	...
+
+	/* Erratum #91 on AMD K8, pre-NPT CPUs */
+        if (likely(c->x86_vendor != X86_VENDOR_AMD ||
+		   c->x86 != 0xf ||
+		   c->x86_model >= 0x40))
+		return 0;
+
+I can try to dig out such a machine to test this on if you wanna. We
+might still have one collecting dust somewhere in a corner...
+
+> Fixes: eab0c6089b68 ("maccess: unify the probe kernel arch hooks")
+> Cc: stable@vger.kernel.org
+
+@stable because theoretically without that fix, kernel should explode on
+those machines when it #PFs on a prefetch insn in user mode?
+
+Hmm, yap, probably...
+
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Cc: Alexei Starovoitov <ast@kernel.org>
+> Cc: Daniel Borkmann <daniel@iogearbox.net>
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Signed-off-by: Andy Lutomirski <luto@kernel.org>
 > ---
->  drivers/media/usb/uvc/uvc_ctrl.c   |  32 +++++++
->  drivers/media/usb/uvc/uvc_v4l2.c   | 143 ++++++++++++++++++++++++++++-
->  include/uapi/linux/usb/video.h     |   1 +
->  include/uapi/linux/v4l2-common.h   |  10 ++
->  include/uapi/linux/v4l2-controls.h |   1 +
-
-Before commenting on the uvcvideo-specific implementation, I'd like to
-discuss the API. For this we need documentation for the new selection
-targets. While doing so, could you split this patch in three:
-
-- The new selection rectangles in the V4L2 core (and documentation)
-- The new V4L2 control (and its documentation)
-- The implementation of the feature in the uvcvideo driver
-
-The first and second patches could be squashed if the two API elements
-are tightly coupled.
-
-Please note that the documentation should explain what the selection
-rectangles apply to, whether they're only valid on video nodes, or on
-subdevs as well, and how they related to other API elements.
-
->  5 files changed, 184 insertions(+), 3 deletions(-)
+>  arch/x86/mm/fault.c | 31 +++++++++++++++++++++----------
+>  1 file changed, 21 insertions(+), 10 deletions(-)
 > 
-> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-> index b3dde98499f4..4e55a0922f15 100644
-> --- a/drivers/media/usb/uvc/uvc_ctrl.c
-> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
-> @@ -355,6 +355,15 @@ static const struct uvc_control_info uvc_ctrls[] = {
->  		.flags		= UVC_CTRL_FLAG_GET_CUR
->  				| UVC_CTRL_FLAG_AUTO_UPDATE,
->  	},
-> +	{
-> +		.entity		= UVC_GUID_UVC_CAMERA,
-> +		.selector	= UVC_CT_REGION_OF_INTEREST_CONTROL,
-> +		.index		= 21,
-> +		.size		= 10,
-> +		.flags		= UVC_CTRL_FLAG_SET_CUR | UVC_CTRL_FLAG_GET_CUR
-> +				| UVC_CTRL_FLAG_GET_MIN | UVC_CTRL_FLAG_GET_MAX
-> +				| UVC_CTRL_FLAG_GET_DEF
-> +	},
->  };
->  
->  static const struct uvc_menu_info power_line_frequency_controls[] = {
-> @@ -370,6 +379,17 @@ static const struct uvc_menu_info exposure_auto_controls[] = {
->  	{ 8, "Aperture Priority Mode" },
->  };
->  
-> +static struct uvc_menu_info roi_auto_controls[] = {
-> +	{ 0, "Auto Exposure" },
-> +	{ 1, "Auto Iris" },
-> +	{ 2, "Auto White Balance" },
-> +	{ 3, "Auto Focus" },
-> +	{ 4, "Auto Face Detect" },
-> +	{ 5, "Auto Detect and Track" },
-> +	{ 6, "Image Stabilization" },
-> +	{ 7, "Higher Quality" },
-> +};
-> +
->  static s32 uvc_ctrl_get_zoom(struct uvc_control_mapping *mapping,
->  	u8 query, const u8 *data)
->  {
-> @@ -753,6 +773,18 @@ static const struct uvc_control_mapping uvc_ctrl_mappings[] = {
->  		.v4l2_type	= V4L2_CTRL_TYPE_BOOLEAN,
->  		.data_type	= UVC_CTRL_DATA_TYPE_BOOLEAN,
->  	},
-> +	{
-> +		.id		= V4L2_CID_REGION_OF_INTEREST_CONTROLS,
-> +		.name		= "Region of Interest (controls)",
-> +		.entity		= UVC_GUID_UVC_CAMERA,
-> +		.selector	= UVC_CT_REGION_OF_INTEREST_CONTROL,
-> +		.size		= 16,
-> +		.offset		= 64,
-> +		.v4l2_type	= V4L2_CTRL_TYPE_MENU,
-> +		.data_type	= UVC_CTRL_DATA_TYPE_BITMASK,
-> +		.menu_info	= roi_auto_controls,
-> +		.menu_count	= ARRAY_SIZE(roi_auto_controls),
-> +	},
->  };
->  
->  /* ------------------------------------------------------------------------
-> diff --git a/drivers/media/usb/uvc/uvc_v4l2.c b/drivers/media/usb/uvc/uvc_v4l2.c
-> index 252136cc885c..71b4577196e5 100644
-> --- a/drivers/media/usb/uvc/uvc_v4l2.c
-> +++ b/drivers/media/usb/uvc/uvc_v4l2.c
-> @@ -1139,14 +1139,60 @@ static int uvc_ioctl_querymenu(struct file *file, void *fh,
->  	return uvc_query_v4l2_menu(chain, qm);
->  }
->  
-> -static int uvc_ioctl_g_selection(struct file *file, void *fh,
-> -				 struct v4l2_selection *sel)
-> +/* UVC 1.5 ROI rectangle is half the size of v4l2_rect */
-> +struct uvc_roi_rect {
-> +	__u16			top;
-> +	__u16			left;
-> +	__u16			bottom;
-> +	__u16			right;
-> +};
-> +
-> +static int uvc_ioctl_g_roi_target(struct file *file, void *fh,
-> +				  struct v4l2_selection *sel)
->  {
->  	struct uvc_fh *handle = fh;
->  	struct uvc_streaming *stream = handle->stream;
-> +	struct uvc_roi_rect *roi;
-> +	u8 query;
-> +	int ret;
->  
-> -	if (sel->type != stream->type)
-> +	switch (sel->target) {
-> +	case V4L2_SEL_TGT_ROI_DEFAULT:
-> +		query = UVC_GET_DEF;
-> +		break;
-> +	case V4L2_SEL_TGT_ROI_CURRENT:
-> +		query = UVC_GET_CUR;
-> +		break;
-> +	case V4L2_SEL_TGT_ROI_BOUNDS:
-> +		query = UVC_GET_MAX;
-> +		break;
-> +	default:
->  		return -EINVAL;
-> +	}
-> +
-> +	roi = kzalloc(sizeof(struct uvc_roi_rect), GFP_KERNEL);
-> +	if (!roi)
-> +		return -ENOMEM;
-> +
-> +	ret = uvc_query_ctrl(stream->dev, query, 1, stream->dev->intfnum,
-> +			     UVC_CT_REGION_OF_INTEREST_CONTROL, roi,
-> +			     sizeof(struct uvc_roi_rect));
-> +	if (!ret) {
-> +		sel->r.left	= roi->left;
-> +		sel->r.top	= roi->top;
-> +		sel->r.width	= roi->right;
-> +		sel->r.height	= roi->bottom;
-> +	}
-> +
-> +	kfree(roi);
-> +	return ret;
-> +}
-> +
-> +static int uvc_ioctl_g_sel_target(struct file *file, void *fh,
-> +				  struct v4l2_selection *sel)
-> +{
-> +	struct uvc_fh *handle = fh;
-> +	struct uvc_streaming *stream = handle->stream;
->  
->  	switch (sel->target) {
->  	case V4L2_SEL_TGT_CROP_DEFAULT:
-> @@ -1173,6 +1219,96 @@ static int uvc_ioctl_g_selection(struct file *file, void *fh,
->  	return 0;
->  }
->  
-> +static int uvc_ioctl_g_selection(struct file *file, void *fh,
-> +				 struct v4l2_selection *sel)
-> +{
-> +	struct uvc_fh *handle = fh;
-> +	struct uvc_streaming *stream = handle->stream;
-> +
-> +	if (sel->type != stream->type)
-> +		return -EINVAL;
-> +
-> +	switch (sel->target) {
-> +	case V4L2_SEL_TGT_CROP_DEFAULT:
-> +	case V4L2_SEL_TGT_CROP_BOUNDS:
-> +	case V4L2_SEL_TGT_COMPOSE_DEFAULT:
-> +	case V4L2_SEL_TGT_COMPOSE_BOUNDS:
-> +		return uvc_ioctl_g_sel_target(file, fh, sel);
-> +	case V4L2_SEL_TGT_ROI_CURRENT:
-> +	case V4L2_SEL_TGT_ROI_DEFAULT:
-> +	case V4L2_SEL_TGT_ROI_BOUNDS:
-> +		return uvc_ioctl_g_roi_target(file, fh, sel);
-> +	}
-> +
-> +	return -EINVAL;
-> +}
-> +
-> +static bool validate_roi_bounds(struct uvc_streaming *stream,
-> +				struct v4l2_selection *sel)
-> +{
-> +	bool ok = true;
-> +
-> +	if (sel->r.left > USHRT_MAX || sel->r.top > USHRT_MAX ||
-> +	    sel->r.width > USHRT_MAX || sel->r.height > USHRT_MAX)
-> +		return false;
-> +
-> +	/* perhaps also can test against ROI GET_MAX */
-> +
-> +	mutex_lock(&stream->mutex);
-> +	if ((u16)sel->r.width > stream->cur_frame->wWidth)
-> +		ok = false;
-> +	if ((u16)sel->r.height > stream->cur_frame->wHeight)
-> +		ok = false;
-> +	mutex_unlock(&stream->mutex);
-> +
-> +	return ok;
-> +}
-> +
-> +static int uvc_ioctl_s_roi(struct file *file, void *fh,
-> +			   struct v4l2_selection *sel)
-> +{
-> +	struct uvc_fh *handle = fh;
-> +	struct uvc_streaming *stream = handle->stream;
-> +	struct uvc_roi_rect *roi;
-> +	int ret;
-> +
-> +	if (!validate_roi_bounds(stream, sel))
-> +		return -E2BIG;
-> +
-> +	roi = kzalloc(sizeof(struct uvc_roi_rect), GFP_KERNEL);
-> +	if (!roi)
-> +		return -ENOMEM;
-> +
-> +	roi->left	= sel->r.left;
-> +	roi->top	= sel->r.top;
-> +	roi->right	= sel->r.width;
-> +	roi->bottom	= sel->r.height;
-> +
-> +	ret = uvc_query_ctrl(stream->dev, UVC_SET_CUR, 1, stream->dev->intfnum,
-> +			     UVC_CT_REGION_OF_INTEREST_CONTROL, roi,
-> +			     sizeof(struct uvc_roi_rect));
-> +
-> +	kfree(roi);
-> +	return ret;
-> +}
-> +
-> +static int uvc_ioctl_s_selection(struct file *file, void *fh,
-> +				 struct v4l2_selection *sel)
-> +{
-> +	struct uvc_fh *handle = fh;
-> +	struct uvc_streaming *stream = handle->stream;
-> +
-> +	if (sel->type != stream->type)
-> +		return -EINVAL;
-> +
-> +	switch (sel->target) {
-> +	case V4L2_SEL_TGT_ROI:
-> +		return uvc_ioctl_s_roi(file, fh, sel);
-> +	}
-> +
-> +	return -EINVAL;
-> +}
-> +
->  static int uvc_ioctl_g_parm(struct file *file, void *fh,
->  			    struct v4l2_streamparm *parm)
->  {
-> @@ -1533,6 +1669,7 @@ const struct v4l2_ioctl_ops uvc_ioctl_ops = {
->  	.vidioc_try_ext_ctrls = uvc_ioctl_try_ext_ctrls,
->  	.vidioc_querymenu = uvc_ioctl_querymenu,
->  	.vidioc_g_selection = uvc_ioctl_g_selection,
-> +	.vidioc_s_selection = uvc_ioctl_s_selection,
->  	.vidioc_g_parm = uvc_ioctl_g_parm,
->  	.vidioc_s_parm = uvc_ioctl_s_parm,
->  	.vidioc_enum_framesizes = uvc_ioctl_enum_framesizes,
-> diff --git a/include/uapi/linux/usb/video.h b/include/uapi/linux/usb/video.h
-> index d854cb19c42c..c87624962896 100644
-> --- a/include/uapi/linux/usb/video.h
-> +++ b/include/uapi/linux/usb/video.h
-> @@ -104,6 +104,7 @@
->  #define UVC_CT_ROLL_ABSOLUTE_CONTROL			0x0f
->  #define UVC_CT_ROLL_RELATIVE_CONTROL			0x10
->  #define UVC_CT_PRIVACY_CONTROL				0x11
-> +#define UVC_CT_REGION_OF_INTEREST_CONTROL		0x14
->  
->  /* A.9.5. Processing Unit Control Selectors */
->  #define UVC_PU_CONTROL_UNDEFINED			0x00
-> diff --git a/include/uapi/linux/v4l2-common.h b/include/uapi/linux/v4l2-common.h
-> index 7d21c1634b4d..60d5228f9113 100644
-> --- a/include/uapi/linux/v4l2-common.h
-> +++ b/include/uapi/linux/v4l2-common.h
-> @@ -70,6 +70,16 @@
->  #define V4L2_SEL_TGT_CROP_BOUNDS	0x0002
->  /* Native frame size */
->  #define V4L2_SEL_TGT_NATIVE_SIZE	0x0003
-> +
-> +/* Current Region of Interest area */
-> +#define V4L2_SEL_TGT_ROI_CURRENT	0x0004
-> +/* Default Region of Interest area */
-> +#define V4L2_SEL_TGT_ROI_DEFAULT	0x0005
-> +/* Region of Interest bounds */
-> +#define V4L2_SEL_TGT_ROI_BOUNDS	0x0006
-> +/* Set Region of Interest area */
-> +#define V4L2_SEL_TGT_ROI		0x0007
-> +
->  /* Current composing area */
->  #define V4L2_SEL_TGT_COMPOSE		0x0100
->  /* Default composing area */
-> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-> index 039c0d7add1b..cbc1635046a0 100644
-> --- a/include/uapi/linux/v4l2-controls.h
-> +++ b/include/uapi/linux/v4l2-controls.h
-> @@ -976,6 +976,7 @@ enum v4l2_auto_focus_range {
->  
->  #define V4L2_CID_PAN_SPEED			(V4L2_CID_CAMERA_CLASS_BASE+32)
->  #define V4L2_CID_TILT_SPEED			(V4L2_CID_CAMERA_CLASS_BASE+33)
-> +#define V4L2_CID_REGION_OF_INTEREST_CONTROLS	(V4L2_CID_CAMERA_CLASS_BASE+34)
->  
->  #define V4L2_CID_CAMERA_ORIENTATION		(V4L2_CID_CAMERA_CLASS_BASE+34)
->  #define V4L2_CAMERA_ORIENTATION_FRONT		0
+> diff --git a/arch/x86/mm/fault.c b/arch/x86/mm/fault.c
+> index 106b22d1d189..50dfdc71761e 100644
+> --- a/arch/x86/mm/fault.c
+> +++ b/arch/x86/mm/fault.c
+> @@ -54,7 +54,7 @@ kmmio_fault(struct pt_regs *regs, unsigned long addr)
+>   * 32-bit mode:
+>   *
+>   *   Sometimes AMD Athlon/Opteron CPUs report invalid exceptions on prefetch.
+> - *   Check that here and ignore it.
+> + *   Check that here and ignore it.  This is AMD erratum #91.
+>   *
+>   * 64-bit mode:
+>   *
+> @@ -83,11 +83,7 @@ check_prefetch_opcode(struct pt_regs *regs, unsigned char *instr,
+>  #ifdef CONFIG_X86_64
+>  	case 0x40:
+>  		/*
+> -		 * In AMD64 long mode 0x40..0x4F are valid REX prefixes
+> -		 * Need to figure out under what instruction mode the
+> -		 * instruction was issued. Could check the LDT for lm,
+> -		 * but for now it's good enough to assume that long
+> -		 * mode only uses well known segments or kernel.
+> +		 * In 64-bit mode 0x40..0x4F are valid REX prefixes
+>  		 */
+>  		return (!user_mode(regs) || user_64bit_mode(regs));
+>  #endif
+
+Yah, no need to convert that to the insn decoder - that can die together
+with the hardware it is supposed to query...
 
 -- 
-Regards,
+Regards/Gruss,
+    Boris.
 
-Laurent Pinchart
+https://people.kernel.org/tglx/notes-about-netiquette
