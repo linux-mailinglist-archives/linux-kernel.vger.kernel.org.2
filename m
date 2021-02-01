@@ -2,79 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA9A30ADED
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:33:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBBA830ADE3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:32:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232202AbhBARcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:32:51 -0500
-Received: from lpdvacalvio01.broadcom.com ([192.19.229.182]:48078 "EHLO
-        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232021AbhBARcM (ORCPT
+        id S232039AbhBARbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:31:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230479AbhBARaj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:32:12 -0500
-Received: from [10.136.13.65] (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTPS id 57C927DC5;
-        Mon,  1 Feb 2021 09:31:18 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 57C927DC5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1612200678;
-        bh=ii84u06WrT1wiRPFXlO0+eF4/FLJ4dFwcrOss1Lc6eA=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=QpuYK2w/7lPWXicgXQL/GcriLG2q2s1bXucpzb/a/peLGHJud2LpfTe5ceUb8ON5q
-         nSwQhYA6Ui/ZUynwD3N9PKe5Z+RhJF36eM6xdE4PmdeNWc7fBqq6wvdxlyPsykWwOv
-         J/ND1doXxrVt5JfTBGnxG1e+ofO5FqiaY985sqp8=
-Subject: Re: [PATCH] misc: bcm-vk: unlock on error in bcm_to_h_msg_dequeue()
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Olof Johansson <olof@lixom.net>,
-        Desmond Yan <desmond.yan@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <YBfyb+jU5lDUe+5g@mwanda>
-From:   Scott Branden <scott.branden@broadcom.com>
-Message-ID: <cf899c97-2c26-afc4-f0ea-4976a074a05e@broadcom.com>
-Date:   Mon, 1 Feb 2021 09:31:17 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 1 Feb 2021 12:30:39 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7D9FC0617AB;
+        Mon,  1 Feb 2021 09:29:09 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id j18so13331491wmi.3;
+        Mon, 01 Feb 2021 09:29:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q7iSFKPQnY7htpgRxXxEoZo/eBaqwddVGwHVjV7n17w=;
+        b=Q5mEBiXKw1amXBBuN3EMwRNsqrZK8/NXbwltxpYAnqzm6vkBzXTc7XGdEyGiqjDy3d
+         ZN46Eon3p/5S1yn7ZTrDaHAWew1Dlgxpnv8l+SjX20UeU78LS5fCIKNgk+RE9kDuwhln
+         qh9aGB5y8CWLpdLGwPAybY9osVjtCwzpS9feI7UGW568lHIn3+4R/wptcv3w7xLJrqtM
+         vS4x+GdE++8FAU66PyX6ilywaxHlwpFhUMIjnWH4ozcSjN8pkF4p0fC3QZcu7coobr6h
+         6fIoxk9nSTgQng0S3rc0Tnk5vd/0AZW5/Ozp2nFT8LesTdHR1A0kZliHfl8m8AwqSopt
+         zTsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q7iSFKPQnY7htpgRxXxEoZo/eBaqwddVGwHVjV7n17w=;
+        b=PCPtBJdFKuNR8Z4kC9l8UF+WTBJR9tiwIPFi/SlYLUPO1bQh7KnIygbYvHBQNO4DeZ
+         uDuiMYdIThEdKEpdU4CbjKx52vFEXiis0BIJeVsk0SqMOuLPtYus+J5KRK9zWD6mHcHc
+         uhaf24UhYcwz0f6Xvj2aXpsx5Kky8gBpBnglTeIHG3ZwyT/0adx0RA3X2WVqshqN6s72
+         wqmdy5zKUSps/ZyaqUc1z/aGOcwvvKVqHieZi4Li/q51UmNkO+AWo3OzW4UISd7SNzHB
+         DcMG5Wp0WJzzh1ybVE86dY380QFNH+4+S3WYhKQ6A+hQKehWmkMG27GKWD1JY3I33fM6
+         zmZw==
+X-Gm-Message-State: AOAM5318mnMoXuZz/Yof/P2tV5QeAmy/1nOifPA/vygr/1PvRXy7yiS+
+        VtlnAKepaRcwqZVxvCAKFCstkg7GpempKZ4SPkUphyDMr7289Q==
+X-Google-Smtp-Source: ABdhPJw+XoLZf9mqX141njeFpHuPfDHx1K7JkInSMz5b+lSSqMynhp2j/ETP9RO78i3nk9mkyh/KU1uV+nU+hK+9Hic=
+X-Received: by 2002:a05:600c:2902:: with SMTP id i2mr16150078wmd.123.1612200548513;
+ Mon, 01 Feb 2021 09:29:08 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <YBfyb+jU5lDUe+5g@mwanda>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-CA
+References: <20210109135112.147759-1-angelogioacchino.delregno@somainline.org>
+ <20210109135112.147759-4-angelogioacchino.delregno@somainline.org>
+ <CAF6AEGvDzdgDy7Znw6dQCV7Z=YxnF2_XsqkV+7BT+oY777TqHA@mail.gmail.com>
+ <8f8c7c37-f7b2-f763-19e1-d89e5c454ab4@somainline.org> <CAF6AEGsQp4xHpH2brUdHmAX1ic2k88EFJRVVWDRxWXUqF9njfw@mail.gmail.com>
+ <CAF6AEGueo71HVBcLW2Mtu5GQ=9HgwL43WczUGLuTk2JWLoH=ew@mail.gmail.com> <CAF6AEGspvnwRrXurmRvvRhr8dsFRc6fNnLsSo52Te0rHXtj4jA@mail.gmail.com>
+In-Reply-To: <CAF6AEGspvnwRrXurmRvvRhr8dsFRc6fNnLsSo52Te0rHXtj4jA@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 1 Feb 2021 09:31:42 -0800
+Message-ID: <CAF6AEGsDL-qRyXWftTgzHGn=UTvz=rcyEUcJv+oGtVXCkYibug@mail.gmail.com>
+Subject: Re: [PATCH 3/5] drm/msm/dsi_pll_10nm: Fix bad VCO rate calculation
+ and prescaler
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        phone-devel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021-02-01 4:22 a.m., Dan Carpenter wrote:
-> Unlock before returning on this error path.
+On Mon, Feb 1, 2021 at 9:18 AM Rob Clark <robdclark@gmail.com> wrote:
 >
-> Fixes: 111d746bb476 ("misc: bcm-vk: add VK messaging support")
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> ---
->  drivers/misc/bcm-vk/bcm_vk_msg.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> On Mon, Feb 1, 2021 at 9:05 AM Rob Clark <robdclark@gmail.com> wrote:
+> >
+> > On Mon, Feb 1, 2021 at 7:47 AM Rob Clark <robdclark@gmail.com> wrote:
+> > >
+> > > On Mon, Feb 1, 2021 at 2:11 AM AngeloGioacchino Del Regno
+> > > <angelogioacchino.delregno@somainline.org> wrote:
+> > > >
+> > > > Il 31/01/21 20:50, Rob Clark ha scritto:
+> > > > > On Sat, Jan 9, 2021 at 5:51 AM AngeloGioacchino Del Regno
+> > > > > <angelogioacchino.delregno@somainline.org> wrote:
+> > > > >>
+> > > > >> The VCO rate was being miscalculated due to a big overlook during
+> > > > >> the process of porting this driver from downstream to upstream:
+> > > > >> here we are really recalculating the rate of the VCO by reading
+> > > > >> the appropriate registers and returning a real frequency, while
+> > > > >> downstream the driver was doing something entirely different.
+> > > > >>
+> > > > >> In our case here, the recalculated rate was wrong, as it was then
+> > > > >> given back to the set_rate function, which was erroneously doing
+> > > > >> a division on the fractional value, based on the prescaler being
+> > > > >> either enabled or disabled: this was actually producing a bug for
+> > > > >> which the final VCO rate was being doubled, causing very obvious
+> > > > >> issues when trying to drive a DSI panel because the actual divider
+> > > > >> value was multiplied by two!
+> > > > >>
+> > > > >> To make things work properly, remove the multiplication of the
+> > > > >> reference clock by two from function dsi_pll_calc_dec_frac and
+> > > > >> account for the prescaler enablement in the vco_recalc_rate (if
+> > > > >> the prescaler is enabled, then the hardware will divide the rate
+> > > > >> by two).
+> > > > >>
+> > > > >> This will make the vco_recalc_rate function to pass the right
+> > > > >> frequency to the (clock framework) set_rate function when called,
+> > > > >> which will - in turn - program the right values in both the
+> > > > >> DECIMAL_DIV_START_1 and the FRAC_DIV_START_{LOW/MID/HIGH}_1
+> > > > >> registers, finally making the PLL to output the right clock.
+> > > > >>
+> > > > >> Also, while at it, remove the prescaler TODO by also adding the
+> > > > >> possibility of disabling the prescaler on the PLL (it is in the
+> > > > >> PLL_ANALOG_CONTROLS_ONE register).
+> > > > >> Of course, both prescaler-ON and OFF cases were tested.
+> > > > >
+> > > > > This somehow breaks things on sc7180 (display gets stuck at first
+> > > > > frame of splash screen).  (This is a setup w/ an ti-sn65dsi86 dsi->eDP
+> > > > > bridge)
+> > > > >
+> > > >
+> > > > First frame of the splash means that something is "a bit" wrong...
+> > > > ...like the DSI clock is a little off.
+> > > >
+> > > > I don't have such hardware, otherwise I would've tried... but what you
+> > > > describe is a bit strange.
+> > > > Is there any other older qcom platform using this chip? Any other
+> > > > non-qcom platform? Is the driver for the SN65DSI86 surely fine?
+> > > > Anyway, as you know, I would never propose untested patches nor
+> > > > partially working ones for any reason: I'm sorry that this happened.
+> > >
+> > > I don't think there is anything publicly avail w/ sc7180 (yet.. but very soon)
+> > >
+> > > The ti-sn65dsi86 bridge is used on a bunch of 845/850 devices (like
+> > > the snapdragon windows laptops).. and I think also the older 835
+> > > laptops.. ofc that doesn't mean that there isn't some bug, but I'd
+> > > guess maybe more likely that there is some small difference in DSI vs
+> > > older devices, or some cmd vs video mode difference.
+> > >
+> > > Anyways, seems like the screen did eventually recover so that gives me
+> > > a bit of confidence to bisect this series, which I'll do a bit later
+> > > today.
+> >
+> > fwiw, this series minus this patch, and everything looks ok.. let me
+> > take a closer look at what changes with this patch
 >
-> diff --git a/drivers/misc/bcm-vk/bcm_vk_msg.c b/drivers/misc/bcm-vk/bcm_vk_msg.c
-> index eec90494777d..fc972e43258a 100644
-> --- a/drivers/misc/bcm-vk/bcm_vk_msg.c
-> +++ b/drivers/misc/bcm-vk/bcm_vk_msg.c
-> @@ -849,7 +849,8 @@ s32 bcm_to_h_msg_dequeue(struct bcm_vk *vk)
->  				 * that is fatal.
->  				 */
->  				dev_crit(dev, "Kernel mem allocation failure.\n");
-> -				return -ENOMEM;
-> +				total = -ENOMEM;
-> +				goto idx_err;
->  			}
->  
-This is a pretty fatal case if we fail to allocate memory here.
-Will let Desmond respond if we wanted to keep the mutex locked forever in this
-case or if we do want to return and keep mutex locked if it is fatal and there is
-no real recovery path.
->  			/* flush rd pointer after a message is dequeued */
+> Btw, it looks like upstream, config->disable_prescaler is always
+> false.. I don't suppose you have anything WIP that changes this?
 
+fwiw, this is the clk_summary diff with and without this patch:
+
+------------------
+270,282c270,282
+<     dsi0_pll_out_div_clk              1        1        0
+887039941          0     0  50000         Y
+<        dsi0_pll_post_out_div_clk       0        0        0
+221759985          0     0  50000         Y
+<        dsi0_pll_bit_clk               2        2        0
+887039941          0     0  50000         Y
+<           dsi0_pclk_mux               1        1        0
+887039941          0     0  50000         Y
+<              dsi0_phy_pll_out_dsiclk       1        1        0
+147839991          0     0  50000         Y
+<                 disp_cc_mdss_pclk0_clk_src       1        1        0
+  147839991          0     0  50000         Y
+<                    disp_cc_mdss_pclk0_clk       1        1        0
+ 147839991          0     0  50000         Y
+<           dsi0_pll_by_2_bit_clk       0        0        0
+443519970          0     0  50000         Y
+<           dsi0_phy_pll_out_byteclk       1        1        0
+110879992          0     0  50000         Y
+<              disp_cc_mdss_byte0_clk_src       2        2        0
+110879992          0     0  50000         Y
+<                 disp_cc_mdss_byte0_div_clk_src       1        1
+  0    55439996          0     0  50000         Y
+<                    disp_cc_mdss_byte0_intf_clk       1        1
+  0    55439996          0     0  50000         Y
+<                 disp_cc_mdss_byte0_clk       1        1        0
+110879992          0     0  50000         Y
+---
+>     dsi0_pll_out_div_clk              1        1        0   887039978          0     0  50000         Y
+>        dsi0_pll_post_out_div_clk       0        0        0   221759994          0     0  50000         Y
+>        dsi0_pll_bit_clk               2        2        0   887039978          0     0  50000         Y
+>           dsi0_pclk_mux               1        1        0   887039978          0     0  50000         Y
+>              dsi0_phy_pll_out_dsiclk       1        1        0   147839997          0     0  50000         Y
+>                 disp_cc_mdss_pclk0_clk_src       1        1        0   147839997          0     0  50000         Y
+>                    disp_cc_mdss_pclk0_clk       1        1        0   147839997          0     0  50000         Y
+>           dsi0_pll_by_2_bit_clk       0        0        0   443519989          0     0  50000         Y
+>           dsi0_phy_pll_out_byteclk       1        1        0   110879997          0     0  50000         Y
+>              disp_cc_mdss_byte0_clk_src       2        2        0   110879997          0     0  50000         Y
+>                 disp_cc_mdss_byte0_div_clk_src       1        1        0    55439999          0     0  50000         Y
+>                    disp_cc_mdss_byte0_intf_clk       1        1        0    55439999          0     0  50000         Y
+>                 disp_cc_mdss_byte0_clk       1        1        0   110879997          0     0  50000         Y
+------------------
+
+
+> >
+> > > > In any case, just to be perfectly transparent, while being here waiting
+> > > > for review, this patch series got tested on more smartphones, even ones
+> > > > that I don't personally own, with different displays.
+> > > >
+> > > > For your reference, here's a list (all MSM8998..):
+> > > > - OnePlus 5               (1920x1080)
+> > > > - F(x)Tec Pro 1           (2160x1080)
+> > > > - Sony Xperia XZ1 Compact (1280x720)
+> > > > - Sony Xperia XZ1         (1920x1080)
+> > > > - Sony Xperia XZ Premium  (3840x2160)
+> > > >
+> > >
+> > > Yeah, no worries, I wasn't trying to imply that the patch was untested.
+> > >
+> > > Out of curiosity, are any of those video mode panels?
+> > >
+> > > >
+> > > > > Also, something (I assume DSI related) that I was testing on
+> > > > > msm-next-staging seems to have effected the colors on the panel (ie.
+> > > > > they are more muted).. which seems to persist across reboots (ie. when
+> > > >
+> > > > So much "fun". This makes me think something about the PCC block doing
+> > > > the wrong thing (getting misconfigured).
+> > > >
+> > > > > switching back to a good kernel), and interestingly if I reboot from a
+> > > > > good kernel I see part of the login prompt (or whatever was previously
+> > > > > on-screen) in the firmware ui screen !?!  (so maybe somehow triggered
+> > > > > the display to think it is in PSR mode??)
+> > > > >
+> > > >
+> > > >  From a fast read, the SN65DSI86 is on I2C.. giving it a wrong dsi clock
+> > > > cannot produce (logically, at least) this, so I say that it is very
+> > > > unlikely for this to be a consequence of the 10nm pll fixes...
+> > > >
+> > >
+> > > Note that the bridge can also be programmed via dsi cmd mode packets,
+> > > which I believe is the case on the 835 laptops (or at least one of
+> > > them).. but all the things I have are using i2c as the control path.
+> > >
+> > > > ...unless the bootloader is not configuring the DSI rates, but that's
+> > > > also veeeeery unlikely (it always does, or it always does not).
+> > >
+> > > I haven't looked at the bootloader display code, but booting back to
+> > > an old/good kernel didn't change anything..  even powering off didn't.
+> > > But the ghost image seemed to fade after some time, and by the next
+> > > morning it was fine.  Which is strange. (But tbf, I'm more a gpu guy
+> > > who works on display only when necessary.. ie. a gpu without a display
+> > > isn't so much fun ;-))
+> > >
+> > > > > Not sure if that is caused by these patches, but if I can figure out
+> > > > > how to get the panel back to normal I can bisect.  I think for now
+> > > > > I'll drop this series.  Possibly it could be a
+> > > > > two-wrongs-makes-a-right situation that had things working before, but
+> > > > > I think someone from qcom who knows the DSI IP should take a look.
+> > > > >
+> > > >
+> > > > I would be happy if someone from Qualcomm takes a look: after all, there
+> > > > is no documentation and they're the only ones that can verify this kind
+> > > > of stuff. Please, Qualcomm.
+> > >
+> > > Hopefully someone can take a look.
+> > >
+> > > > Besides that, if there's anything I can help with to solve this riddle,
+> > > > I'm here for you.
+> > >
+> > > Thanks, like I said I'll try applying the patches one by one and see
+> > > if I can narrow down what made the panel go funny, and we can go from
+> > > there
+> > >
+> > > BR,
+> > > -R
+> > >
+> > > > Yours,
+> > > > -- Angelo
+> > > >
+> > > > > BR,
+> > > > > -R
+> > > > >
+> > > > >
+> > > > >> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> > > > >> ---
+> > > > >>   drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c | 22 +++++++++-------------
+> > > > >>   1 file changed, 9 insertions(+), 13 deletions(-)
+> > > > >>
+> > > > >> diff --git a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
+> > > > >> index 8b66e852eb36..5be562dfbf06 100644
+> > > > >> --- a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
+> > > > >> +++ b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
+> > > > >> @@ -165,11 +165,7 @@ static void dsi_pll_calc_dec_frac(struct dsi_pll_10nm *pll)
+> > > > >>
+> > > > >>          pll_freq = pll->vco_current_rate;
+> > > > >>
+> > > > >> -       if (config->disable_prescaler)
+> > > > >> -               divider = fref;
+> > > > >> -       else
+> > > > >> -               divider = fref * 2;
+> > > > >> -
+> > > > >> +       divider = fref;
+> > > > >>          multiplier = 1 << config->frac_bits;
+> > > > >>          dec_multiple = div_u64(pll_freq * multiplier, divider);
+> > > > >>          dec = div_u64_rem(dec_multiple, multiplier, &frac);
+> > > > >> @@ -266,9 +262,11 @@ static void dsi_pll_ssc_commit(struct dsi_pll_10nm *pll)
+> > > > >>
+> > > > >>   static void dsi_pll_config_hzindep_reg(struct dsi_pll_10nm *pll)
+> > > > >>   {
+> > > > >> +       struct dsi_pll_config *config = &pll->pll_configuration;
+> > > > >>          void __iomem *base = pll->mmio;
+> > > > >> +       u32 val = config->disable_prescaler ? 0x0 : 0x80;
+> > > > >>
+> > > > >> -       pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_ONE, 0x80);
+> > > > >> +       pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_ONE, val);
+> > > > >>          pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_TWO, 0x03);
+> > > > >>          pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_THREE, 0x00);
+> > > > >>          pll_write(base + REG_DSI_10nm_PHY_PLL_DSM_DIVIDER, 0x00);
+> > > > >> @@ -499,17 +497,15 @@ static unsigned long dsi_pll_10nm_vco_recalc_rate(struct clk_hw *hw,
+> > > > >>          frac |= ((pll_read(base + REG_DSI_10nm_PHY_PLL_FRAC_DIV_START_HIGH_1) &
+> > > > >>                    0x3) << 16);
+> > > > >>
+> > > > >> -       /*
+> > > > >> -        * TODO:
+> > > > >> -        *      1. Assumes prescaler is disabled
+> > > > >> -        */
+> > > > >>          multiplier = 1 << config->frac_bits;
+> > > > >> -       pll_freq = dec * (ref_clk * 2);
+> > > > >> -       tmp64 = (ref_clk * 2 * frac);
+> > > > >> +       pll_freq = dec * ref_clk;
+> > > > >> +       tmp64 = ref_clk * frac;
+> > > > >>          pll_freq += div_u64(tmp64, multiplier);
+> > > > >> -
+> > > > >>          vco_rate = pll_freq;
+> > > > >>
+> > > > >> +       if (config->disable_prescaler)
+> > > > >> +               vco_rate = div_u64(vco_rate, 2);
+> > > > >> +
+> > > > >>          DBG("DSI PLL%d returning vco rate = %lu, dec = %x, frac = %x",
+> > > > >>              pll_10nm->id, (unsigned long)vco_rate, dec, frac);
+> > > > >>
+> > > > >> --
+> > > > >> 2.29.2
+> > > > >>
+> > > >
