@@ -2,166 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D73630A0AE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 04:48:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4AE30A0B0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 04:49:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231401AbhBADsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 22:48:12 -0500
-Received: from foss.arm.com ([217.140.110.172]:46872 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231153AbhBADsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 22:48:09 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8A39C1042;
-        Sun, 31 Jan 2021 19:47:23 -0800 (PST)
-Received: from [10.163.93.126] (unknown [10.163.93.126])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 382673F718;
-        Sun, 31 Jan 2021 19:47:18 -0800 (PST)
-Subject: Re: [PATCH 2/2] arm64/mm: Reorganize pfn_valid()
-To:     David Hildenbrand <david@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
+        id S231414AbhBADsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 22:48:53 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:53203 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231126AbhBADss (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 22:48:48 -0500
+X-UUID: 5e1ee2eb50a74496b375a3ef7e447988-20210201
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=ycki3f22lu0G/Y5pcD1WAXwXxWSc4abbISJZOTSNMNc=;
+        b=pDOFhhxmjFLzOmwmHC4x9N38et/+Q01E1gSTzVtbD/xVJLLYDaoSXHkNsVS3sI1srpQ0GSORnxDwTEwdyvH3MBv+ELeNA98fRQUjHCZF9qvgP4cmRkLawcHYAjCffp6Vdr7HNcQnW61jSbxw6ws3DtrXsvP4NLROvku/oxEc4NY=;
+X-UUID: 5e1ee2eb50a74496b375a3ef7e447988-20210201
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <jitao.shi@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1357974449; Mon, 01 Feb 2021 11:48:02 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
+ (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 1 Feb
+ 2021 11:47:58 +0800
+Received: from mszsdaap41.gcn.mediatek.inc (10.16.6.141) by
+ MTKCAS36.mediatek.inc (172.27.4.170) with Microsoft SMTP Server id
+ 15.0.1497.2 via Frontend Transport; Mon, 1 Feb 2021 11:47:57 +0800
+From:   Jitao Shi <jitao.shi@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Mike Rapoport <rppt@linux.ibm.com>
-References: <1611905986-20155-1-git-send-email-anshuman.khandual@arm.com>
- <1611905986-20155-3-git-send-email-anshuman.khandual@arm.com>
- <9050792c-feba-1b72-681e-ebc28fc1fcc5@redhat.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <681dd64b-e10a-1ec8-abad-d3eee0ddfa45@arm.com>
-Date:   Mon, 1 Feb 2021 09:17:47 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+CC:     <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>, <yingjoe.chen@mediatek.com>,
+        <eddie.huang@mediatek.com>, <cawa.cheng@mediatek.com>,
+        <bibby.hsieh@mediatek.com>, <ck.hu@mediatek.com>,
+        <stonea168@163.com>, <huijuan.xie@mediatek.com>,
+        <shuijing.li@mediatek.com>, Jitao Shi <jitao.shi@mediatek.com>
+Subject: [PATCH] drm/mediatek: fine tune the data lane trail by project dts
+Date:   Mon, 1 Feb 2021 11:47:55 +0800
+Message-ID: <20210201034755.15793-1-jitao.shi@mediatek.com>
+X-Mailer: git-send-email 2.12.5
 MIME-Version: 1.0
-In-Reply-To: <9050792c-feba-1b72-681e-ebc28fc1fcc5@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TM-SNTS-SMTP: C09D5F74431AB1B049045EEA52CC4FCA78AF2ACAE1755FA553EE30718D904CAA2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+U29tZSBwYW5lbHMgb3IgYnJpZGdlcyByZXF1aXJlIGN1c3RvbWl6ZWQgaHNfZGFfdHJhaWwgdGlt
+ZS4NClNvIGFkZCBhIHByb3BlcnR5IGluIGRldmljZXRyZWUgZm9yIHRoaXMgcGFuZWxzIGFuZCBi
+cmlkZ2VzLg0KDQpTaWduZWQtb2ZmLWJ5OiBKaXRhbyBTaGkgPGppdGFvLnNoaUBtZWRpYXRlay5j
+b20+DQotLS0NCiBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RzaS5jIHwgMTAgKysrKysr
+KysrLQ0KIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCg0K
+ZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHNpLmMgYi9kcml2ZXJz
+L2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RzaS5jDQppbmRleCA4YzcwZWMzOWJmZTEuLjZlNzA5MmZh
+MmZlZSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHNpLmMNCisr
+KyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHNpLmMNCkBAIC0xOTQsNiArMTk0LDcg
+QEAgc3RydWN0IG10a19kc2kgew0KIAlzdHJ1Y3QgY2xrICpoc19jbGs7DQogDQogCXUzMiBkYXRh
+X3JhdGU7DQorCXUzMiBkYV90cmFpbF9kZWx0YTsNCiANCiAJdW5zaWduZWQgbG9uZyBtb2RlX2Zs
+YWdzOw0KIAllbnVtIG1pcGlfZHNpX3BpeGVsX2Zvcm1hdCBmb3JtYXQ7DQpAQCAtMjM0LDcgKzIz
+NSw3IEBAIHN0YXRpYyB2b2lkIG10a19kc2lfcGh5X3RpbWNvbmZpZyhzdHJ1Y3QgbXRrX2RzaSAq
+ZHNpKQ0KIAl0aW1pbmctPmRhX2hzX3ByZXBhcmUgPSAoODAgKiBkYXRhX3JhdGVfbWh6ICsgNCAq
+IDEwMDApIC8gODAwMDsNCiAJdGltaW5nLT5kYV9oc196ZXJvID0gKDE3MCAqIGRhdGFfcmF0ZV9t
+aHogKyAxMCAqIDEwMDApIC8gODAwMCArIDEgLQ0KIAkJCSAgICAgdGltaW5nLT5kYV9oc19wcmVw
+YXJlOw0KLQl0aW1pbmctPmRhX2hzX3RyYWlsID0gdGltaW5nLT5kYV9oc19wcmVwYXJlICsgMTsN
+CisJdGltaW5nLT5kYV9oc190cmFpbCA9IHRpbWluZy0+ZGFfaHNfcHJlcGFyZSArIDEgKyBkc2kt
+PmRhX3RyYWlsX2RlbHRhOw0KIA0KIAl0aW1pbmctPnRhX2dvID0gNCAqIHRpbWluZy0+bHB4IC0g
+MjsNCiAJdGltaW5nLT50YV9zdXJlID0gdGltaW5nLT5scHggKyAyOw0KQEAgLTEwOTQsNiArMTA5
+NSwxMyBAQCBzdGF0aWMgaW50IG10a19kc2lfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAq
+cGRldikNCiAJCWdvdG8gZXJyX3VucmVnaXN0ZXJfaG9zdDsNCiAJfQ0KIA0KKwlyZXQgPSBvZl9w
+cm9wZXJ0eV9yZWFkX3UzMl9pbmRleChkZXYtPm9mX25vZGUsICJkYV90cmFpbF9kZWx0YSIsIDAs
+DQorCQkJCQkgJmRzaS0+ZGFfdHJhaWxfZGVsdGEpOw0KKwlpZiAocmV0KSB7DQorCQlkZXZfaW5m
+byhkZXYsICJDYW4ndCBnZXQgZGFfdHJhaWxfZGVsdGEsIGtlZXAgaXQgYXMgMDogJWRcbiIsIHJl
+dCk7DQorCQlkc2ktPmRhX3RyYWlsX2RlbHRhID0gMDsNCisJfQ0KKw0KIAljb21wX2lkID0gbXRr
+X2RkcF9jb21wX2dldF9pZChkZXYtPm9mX25vZGUsIE1US19EU0kpOw0KIAlpZiAoY29tcF9pZCA8
+IDApIHsNCiAJCWRldl9lcnIoZGV2LCAiRmFpbGVkIHRvIGlkZW50aWZ5IGJ5IGFsaWFzOiAlZFxu
+IiwgY29tcF9pZCk7DQotLSANCjIuMTIuNQ0K
 
-
-On 1/29/21 3:37 PM, David Hildenbrand wrote:
-> On 29.01.21 08:39, Anshuman Khandual wrote:
->> There are multiple instances of pfn_to_section_nr() and __pfn_to_section()
->> when CONFIG_SPARSEMEM is enabled. This can be just optimized if the memory
->> section is fetched earlier. Hence bifurcate pfn_valid() into two different
->> definitions depending on whether CONFIG_SPARSEMEM is enabled. Also replace
->> the open coded pfn <--> addr conversion with __[pfn|phys]_to_[phys|pfn]().
->> This does not cause any functional change.
->>
->> Cc: Catalin Marinas <catalin.marinas@arm.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Ard Biesheuvel <ardb@kernel.org>
->> Cc: linux-arm-kernel@lists.infradead.org
->> Cc: linux-kernel@vger.kernel.org
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>   arch/arm64/mm/init.c | 38 +++++++++++++++++++++++++++++++-------
->>   1 file changed, 31 insertions(+), 7 deletions(-)
->>
->> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
->> index 1141075e4d53..09adca90c57a 100644
->> --- a/arch/arm64/mm/init.c
->> +++ b/arch/arm64/mm/init.c
->> @@ -217,18 +217,25 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max)
->>       free_area_init(max_zone_pfns);
->>   }
->>   +#ifdef CONFIG_SPARSEMEM
->>   int pfn_valid(unsigned long pfn)
->>   {
->> -    phys_addr_t addr = pfn << PAGE_SHIFT;
->> +    struct mem_section *ms = __pfn_to_section(pfn);
->> +    phys_addr_t addr = __pfn_to_phys(pfn);
-> 
-> I'd just use PFN_PHYS() here, which is more frequently used in the kernel.
-
-Sure, will replace.
-
-> 
->>   -    if ((addr >> PAGE_SHIFT) != pfn)
->> +    /*
->> +     * Ensure the upper PAGE_SHIFT bits are clear in the
->> +     * pfn. Else it might lead to false positives when
->> +     * some of the upper bits are set, but the lower bits
->> +     * match a valid pfn.
->> +     */
->> +    if (__phys_to_pfn(addr) != pfn)
-> 
-> and here PHYS_PFN(). Comment is helpful. :)
-
-Sure, will replace.
-
-> 
->>           return 0;
->>   -#ifdef CONFIG_SPARSEMEM
->>       if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
->>           return 0;
->>   -    if (!valid_section(__pfn_to_section(pfn)))
->> +    if (!valid_section(ms))
->>           return 0;
->>         /*
->> @@ -240,11 +247,28 @@ int pfn_valid(unsigned long pfn)
->>        * memory sections covering all of hotplug memory including
->>        * both normal and ZONE_DEVICE based.
->>        */
->> -    if (!early_section(__pfn_to_section(pfn)))
->> -        return pfn_section_valid(__pfn_to_section(pfn), pfn);
->> -#endif
->> +    if (!early_section(ms))
->> +        return pfn_section_valid(ms, pfn);
->> +
->>       return memblock_is_map_memory(addr);
->>   }
->> +#else
->> +int pfn_valid(unsigned long pfn)
->> +{
->> +    phys_addr_t addr = __pfn_to_phys(pfn);
->> +
->> +    /*
->> +     * Ensure the upper PAGE_SHIFT bits are clear in the
->> +     * pfn. Else it might lead to false positives when
->> +     * some of the upper bits are set, but the lower bits
->> +     * match a valid pfn.
->> +     */
->> +    if (__phys_to_pfn(addr) != pfn)
->> +        return 0;
->> +
->> +    return memblock_is_map_memory(addr);
->> +}
-> 
-> 
-> I think you can avoid duplicating the code by doing something like:
-
-Right and also this looks more compact as well. Initially though about
-it but then was apprehensive about the style in #ifdef { } #endif code
-block inside the function. After this change, the resulting patch also
-clears checkpatch.pl test. Will do the change.
-
-> 
-> 
-> phys_addr_t addr = PFN_PHYS(pfn);
-> 
-> if (PHYS_PFN(addr) != pfn)
->     return 0;
-> 
-> #ifdef CONFIG_SPARSEMEM
-> {
->     struct mem_section *ms = __pfn_to_section(pfn);
-> 
->     if (!valid_section(ms))
->         return 0;
->     if (!early_section(ms))
->         return pfn_section_valid(ms, pfn);
-> }
-> #endif
-> return memblock_is_map_memory(addr);
-> 
