@@ -2,151 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C89730A456
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:27:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE2D30A45B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:28:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232614AbhBAJZz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 04:25:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232285AbhBAJZx (ORCPT
+        id S232667AbhBAJ1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 04:27:34 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:34738 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231748AbhBAJ1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 04:25:53 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67BCAC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 01:25:13 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1l6VRq-0002Vs-QX; Mon, 01 Feb 2021 10:24:42 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1l6VRo-000717-EJ; Mon, 01 Feb 2021 10:24:40 +0100
-Date:   Mon, 1 Feb 2021 10:24:36 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Joel Becker <jlbec@evilplan.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH 0/8] gpio: implement the configfs testing module
-Message-ID: <20210201092436.srqgfemnchyuubsf@pengutronix.de>
-References: <20210129134624.9247-1-brgl@bgdev.pl>
- <20210130212009.2uugdj6vmisegau2@pengutronix.de>
- <CAMRc=MdwoJCw1-BdNRnfRFaXYfZD0+vn_8yq0J+rshHqZMdDXQ@mail.gmail.com>
+        Mon, 1 Feb 2021 04:27:33 -0500
+Date:   Mon, 01 Feb 2021 09:26:42 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1612171608;
+        bh=l4VqyLGfHDzFtVncVKqnkbusTB+SkuizzKV916LTdLQ=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=Eq3LlrxFIyggLVlgKjM+6pmPSOvgf/6JoqN06oTF/IGXtrdNx5lTX6OYWtQuZ8tG7
+         +R+8c9N29FdjRtcYY0eSEE9gekGgGp0grq0craZybbcDWcS2BemwZbRhOyeEb2no0/
+         w3dPs5/APhL5JDK6tvvDFi7q9t5/9k/Mnon9Gdxo=
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+From:   Timon Baetz <timon.baetz@protonmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org
+Reply-To: Timon Baetz <timon.baetz@protonmail.com>
+Subject: Re: [PATCH 3/3] power: supply: max8997_charger: Switch to new binding
+Message-ID: <20210201083128.18499ffd.timon.baetz@protonmail.com>
+In-Reply-To: <20210131172840.fxaadhhsafa4aeex@kozik-lap>
+References: <20210130172747.2022977-1-timon.baetz@protonmail.com> <20210130172747.2022977-4-timon.baetz@protonmail.com> <20210131172840.fxaadhhsafa4aeex@kozik-lap>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="65y6muqcwz6jdecn"
-Content-Disposition: inline
-In-Reply-To: <CAMRc=MdwoJCw1-BdNRnfRFaXYfZD0+vn_8yq0J+rshHqZMdDXQ@mail.gmail.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---65y6muqcwz6jdecn
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Feb 01, 2021 at 09:37:30AM +0100, Bartosz Golaszewski wrote:
-> On Sat, Jan 30, 2021 at 10:20 PM Uwe Kleine-K=F6nig
-> <u.kleine-koenig@pengutronix.de> wrote:
+On Sun, 31 Jan 2021 18:28:40 +0100, Krzysztof Kozlowski wrote:
+> On Sat, Jan 30, 2021 at 05:30:14PM +0000, Timon Baetz wrote:
+> > Get regulator from parent device's node and extcon by name.
 > >
-> > Hello,
+> > Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
+> > ---
+> >  drivers/power/supply/max8997_charger.c | 12 ++++++++----
+> >  1 file changed, 8 insertions(+), 4 deletions(-)
 > >
-> > On Fri, Jan 29, 2021 at 02:46:16PM +0100, Bartosz Golaszewski wrote:
-> > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > >
-> > > This series adds a new GPIO testing module based on configfs committa=
-ble items
-> > > and sysfs. The goal is to provide a testing driver that will be confi=
-gurable
-> > > at runtime (won't need module reload) and easily extensible. The cont=
-rol over
-> > > the attributes is also much more fine-grained than in gpio-mockup.
-> > >
-> > > I am aware that Uwe submitted a virtual driver called gpio-simulator =
-some time
-> > > ago and I was against merging it as it wasn't much different from gpi=
-o-mockup.
-> > > I would ideally want to have a single testing driver to maintain so I=
- am
-> > > proposing this module as a replacement for gpio-mockup but since self=
-tests
-> > > and libgpiod depend on it and it also has users in the community, we =
-can't
-> > > outright remove it until everyone switched to the new interface. As f=
-or Uwe's
-> > > idea for linking two simulated chips so that one controls the other -=
- while
-> > > I prefer to have an independent code path for controlling the lines (=
-hence
-> > > the sysfs attributes), I'm open to implementing it in this new driver=
-=2E It
-> > > should be much more feature friendly thanks to configfs than gpio-moc=
-kup.
+> > diff --git a/drivers/power/supply/max8997_charger.c b/drivers/power/sup=
+ply/max8997_charger.c
+> > index 321bd6b8ee41..625d8cc4312a 100644
+> > --- a/drivers/power/supply/max8997_charger.c
+> > +++ b/drivers/power/supply/max8997_charger.c
+> > @@ -168,6 +168,7 @@ static int max8997_battery_probe(struct platform_de=
+vice *pdev)
+> >  =09int ret =3D 0;
+> >  =09struct charger_data *charger;
+> >  =09struct max8997_dev *iodev =3D dev_get_drvdata(pdev->dev.parent);
+> > +=09struct device_node *np =3D pdev->dev.of_node;
+> >  =09struct i2c_client *i2c =3D iodev->i2c;
+> >  =09struct max8997_platform_data *pdata =3D iodev->pdata;
+> >  =09struct power_supply_config psy_cfg =3D {};
+> > @@ -237,20 +238,23 @@ static int max8997_battery_probe(struct platform_=
+device *pdev)
+> >  =09=09return PTR_ERR(charger->battery);
+> >  =09}
 > >
-> > Funny you still think about my simulator driver. I recently thought
+> > +=09// grab regulator from parent device's node
+> > +=09pdev->dev.of_node =3D iodev->dev->of_node;
+> >  =09charger->reg =3D devm_regulator_get_optional(&pdev->dev, "charger")=
+;
+> > +=09pdev->dev.of_node =3D np; =20
 >=20
-> It's because I always feel bad when I refuse to merge someone's hard work.
+> I think the device does not have its own node anymore. Or did I miss
+> something?
+
+The idea is to reset of_node to whatever it was before (NULL) and basically=
+=20
+leave the device unchanged. Probe might run again because of deferral.
+
+> >  =09if (IS_ERR(charger->reg)) {
+> >  =09=09if (PTR_ERR(charger->reg) =3D=3D -EPROBE_DEFER)
+> >  =09=09=09return -EPROBE_DEFER;
+> >  =09=09dev_info(&pdev->dev, "couldn't get charger regulator\n");
+> >  =09}
+> > -=09charger->edev =3D extcon_get_edev_by_phandle(&pdev->dev, 0);
+> > -=09if (IS_ERR(charger->edev)) {
+> > -=09=09if (PTR_ERR(charger->edev) =3D=3D -EPROBE_DEFER)
+> > +=09charger->edev =3D extcon_get_extcon_dev("max8997-muic");
+> > +=09if (IS_ERR_OR_NULL(charger->edev)) {
+> > +=09=09if (!charger->edev) =20
 >=20
-> > about reanimating it for my private use. The idea was to implement a
-> > rotary-encoder driver (that contrast to
-> > drivers/input/misc/rotary_encoder.c really implements an encoder and not
-> > a decoder). With the two linked chips I can plug
-> > drivers/input/misc/rotary_encoder.c on one side and my encoder on the
-> > other to test both drivers completely in software.
-> >
-> > I didn't look into your driver yet, but getting such a driver into
-> > mainline would be very welcome!
-> >
->=20
-> My idea for linking chips (although that's not implemented yet) is an
-> attribute in each configfs group called 'link' or something like that,
-> that would take as argument the name of the chip to link to making the
-> 'linker' the input and the 'linkee' the output.
+> Isn't NULL returned when there is simply no extcon? It's different than
+> deferred probe. Returning here EPROBE_DEFER might lead to infinite probe
+> tries (on every new device probe) instead of just failing it.
 
-I still wonder why you prefer to drive the lines using configfs (or
-sysfs before). Using the idea of two interlinked chips and being able to
-use gpio functions on one side to modify the other side is (in my eyes)
-so simple and beautiful that it's obviously the right choice. But note I
-still didn't look into details so there might be stuff you can modify
-that wouldn't be possible with my idea. But obviously your mileage
-varies here.
+extcon_get_extcon_dev() just loops through all registered extcon devices
+and compared names. It will return NULL when "max8997-muic" isn't
+registered yet. extcon_get_extcon_dev() never returns EPROBE_DEFER so
+checking for NULL seems to be the only way. Other drivers using that
+function also do NULL check and return EPROBE_DEFER.
 
-Best regards
-Uwe
+Thanks for reviewing,
+Timon
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---65y6muqcwz6jdecn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAXyNEACgkQwfwUeK3K
-7AnlOQf+PJp3sYhc7rZc/co0aN9yGRJUKxFqDOqbbeRv059P0vkaD7iZ9DRIXRkH
-HuK7Wn5WFKl42OncXTA7pIMJM5jMc22AgYEG8ttWTmxtI9nKK1MuACTWWMWhzvMv
-MWeFM8zo7PMOvC0Exkh1K52TA7zfhAJ6Lc6+GJtl9wfb1P4W/EbER6lGFu/dN7y2
-sGNG1+dl3RSkdPDGUTyKDX5c/xRir6pHwRwjkKQo3MxhJIwzWs9rh3WtPwsRKfL9
-UJmu09J9y4Y7L+nNk/7odCd0FwI4oxBfs9hL7Ic4V7Kfw94hFNF6J7fKGbHqgPe8
-Zb+PhZw6Rr0gY1O7EZmobl4Y0MHeXQ==
-=KxeP
------END PGP SIGNATURE-----
-
---65y6muqcwz6jdecn--
