@@ -2,61 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00DB930A0B8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 04:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62E7E30A0DB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 05:31:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbhBADxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 22:53:43 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:42595 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231268AbhBADxl (ORCPT
+        id S231419AbhBAEaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 23:30:55 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:59955 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231459AbhBAE3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 22:53:41 -0500
-X-UUID: 14ba998c3fd447cea435064f79533fea-20210201
-X-UUID: 14ba998c3fd447cea435064f79533fea-20210201
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <yz.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 275207347; Mon, 01 Feb 2021 11:52:57 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 1 Feb 2021 11:52:56 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 1 Feb 2021 11:52:56 +0800
-From:   <Yz.Wu@mediatek.com>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Seiya Wang <seiya.wang@mediatek.com>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Ryan Wu <Yz.Wu@mediatek.com>
-Subject: [PATCH 0/2] Add Mediatek Efuse Device Node for MT8192 SoC
-Date:   Mon, 1 Feb 2021 11:51:48 +0800
-Message-ID: <1612151510-19696-1-git-send-email-Yz.Wu@mediatek.com>
-X-Mailer: git-send-email 2.6.4
-MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+        Sun, 31 Jan 2021 23:29:20 -0500
+Received: from epcas3p1.samsung.com (unknown [182.195.41.19])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210201042803epoutp046f958e80538c643587575bae57047459~fhTvCgJdN2133921339epoutp04D
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 04:28:03 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210201042803epoutp046f958e80538c643587575bae57047459~fhTvCgJdN2133921339epoutp04D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1612153683;
+        bh=dw0dZpbp7++/1JRtnsngSTgQrJqru0N6BGIt535XPHk=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=GLqu0eVfuPjPDza1e+uzh18WNpHOnw/FnwD1agmgeXDH47O9SH2MpYK/gRlx3w2we
+         LfuJlpeG1xP3v2P9KZyTJyJ3sDVzwCPARZ+VCcOLP1rJMHpbu5s2IEmHBikTc35p2B
+         B41Af26HTQD7/gI3gt5WsfXgTtf5LYC9XR5WgSlg=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas3p1.samsung.com (KnoxPortal) with ESMTP id
+        20210201042801epcas3p1d4384e01e28f82b54809c5dc47fa98aa~fhTtlRHl30194001940epcas3p1f;
+        Mon,  1 Feb 2021 04:28:01 +0000 (GMT)
+Received: from epcpadp4 (unknown [182.195.40.18]) by epsnrtp3.localdomain
+        (Postfix) with ESMTP id 4DTZgP5Bnyz4x9Pr; Mon,  1 Feb 2021 04:28:01 +0000
+        (GMT)
+Mime-Version: 1.0
+Subject: RE: [PATCH 4/8] scsi: ufshpb: Make eviction depends on region's
+ reads
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        Avri Altman <avri.altman@wdc.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <20210127151217.24760-5-avri.altman@wdc.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <1891546521.01612153681714.JavaMail.epsvc@epcpadp4>
+Date:   Mon, 01 Feb 2021 12:59:33 +0900
+X-CMS-MailID: 20210201035933epcms2p4213209edf14280e1b1603335328da7f4
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20210127151318epcas2p1cdad0118807907e55b8d8277daec6f1a
+References: <20210127151217.24760-5-avri.altman@wdc.com>
+        <20210127151217.24760-1-avri.altman@wdc.com>
+        <CGME20210127151318epcas2p1cdad0118807907e55b8d8277daec6f1a@epcms2p4>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ryan Wu <Yz.Wu@mediatek.com>
+Hi Avri,
 
-This patch adds efuse to read via NVMEM.
+> +		/*
+> +		 * in host control mode, verify that the exiting region
+> +		 * has less reads
+> +		 */
+> +		if (ufshpb_mode == HPB_HOST_CONTROL &&
+> +		    atomic64_read(&rgn->reads) > (EVICTION_THRSHLD >> 1))
+Why we use shifted value to verify less read? I think we should use another
+value to verify.
 
-Ryan Wu (2):
-  dt-bindings: nvmem: mediatek: add support for MediaTek mt8192 SoC
-  arm64: dts: mt8192: add eFuse support for MT8192 SoC
-
- Documentation/devicetree/bindings/nvmem/mtk-efuse.txt | 1 +
- arch/arm64/boot/dts/mediatek/mt8192.dtsi              | 5 +++++
- 2 files changed, 6 insertions(+)
-
--- 
-2.6.4
-
+Thanks,
+Daejun
