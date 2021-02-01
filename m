@@ -2,125 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B93D330A6DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:51:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6F330A6E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:54:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230388AbhBALuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 06:50:50 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46518 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229717AbhBALuf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 06:50:35 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612180188; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NFnrMJIQEE2ourhyO+GKx2F39xv/yVWuIZUE5mKeW+I=;
-        b=IMq1SAd6dx+bVBYZCNiF9zAdI1LdLLtBebxw15V/F+f2UvUafy6fWfnnH7k0S5LM2PRpl+
-        kC8iLryKlvjX3YiE5CPdnPeswErWS3eIvCZcytUK4MCnR+8ui2haYc2RjVDdKLRc7nJhMw
-        QJbR9Xhe7kqPq8dDrgWIY2lN+UERkwo=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CEB47AD29;
-        Mon,  1 Feb 2021 11:49:48 +0000 (UTC)
-Date:   Mon, 1 Feb 2021 12:49:47 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>
-Subject: Re: [PATCH v3 3/5] hugetlb: only set HPageMigratable for migratable
- hstates
-Message-ID: <YBfqzlG1C1mtKj4Z@dhcp22.suse.cz>
-References: <20210122195231.324857-1-mike.kravetz@oracle.com>
- <20210122195231.324857-4-mike.kravetz@oracle.com>
- <20210127103523.GI827@dhcp22.suse.cz>
- <2196d93e-f573-7163-183e-0ad2cec7555e@oracle.com>
- <20210128055221.GA3166@localhost.localdomain>
- <20210128133733.ce1fb2eac98ab5696c08f288@linux-foundation.org>
- <12187293-e972-acd8-7789-22ebfa736f95@oracle.com>
- <20210128141531.17fec31e6075fe0eb6e33683@linux-foundation.org>
- <62a80585-2a73-10cc-4a2d-5721540d4ad2@oracle.com>
+        id S230122AbhBALxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 06:53:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51446 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229495AbhBALw7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 06:52:59 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0874C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 03:52:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DFvEMuSmJTMwKrx37KZALAZlQNbzmwOQTAjJ5KIsmrw=; b=w8cvjP/EhS0PSzIPxW+VuBQ9mb
+        TZNQ7dWwgSY6NA0ZJzbMQK6Ku1B2KLt6pqyzZ16Bw1txT58zsTw7Ni3J459la9y5DYgKtNxTVmjyo
+        YUgjsCd7fg6FJ67kJFf80vej3f4ZFRlLieWTI74UD6BVEXKpeGP1XG03NP6MH1MCL+ilraOrakuJl
+        x1dNXJMRx+BR604fYQUQJfEZ1Q84nXFh7f+XKp3wdr2ExO7Tw9AQ36LdJ0z0Wxs+ovIQ5UtmUMquN
+        +jbZ74Xwlo+ObX9Ain6ZPLDiMmMS94XtxKFzz2oC8cueQNZw1+LgT9gWroaPexBgFc9m9QARKLmR3
+        AV0epSdQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l6XkX-00035y-Bm; Mon, 01 Feb 2021 11:52:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AE3CA3011FE;
+        Mon,  1 Feb 2021 12:52:07 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 98E9121A2F1E2; Mon,  1 Feb 2021 12:52:07 +0100 (CET)
+Date:   Mon, 1 Feb 2021 12:52:07 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Nadav Amit <namit@vmware.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Nick Piggin <npiggin@gmail.com>, x86@kernel.org
+Subject: Re: [RFC 08/20] mm: store completed TLB generation
+Message-ID: <YBfrZ+gBCTYFS995@hirez.programming.kicks-ass.net>
+References: <20210131001132.3368247-1-namit@vmware.com>
+ <20210131001132.3368247-9-namit@vmware.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <62a80585-2a73-10cc-4a2d-5721540d4ad2@oracle.com>
+In-Reply-To: <20210131001132.3368247-9-namit@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 29-01-21 10:46:15, Mike Kravetz wrote:
-> On 1/28/21 2:15 PM, Andrew Morton wrote:
-> > On Thu, 28 Jan 2021 14:00:29 -0800 Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> >>
-> >> Michal suggested that comments describing synchronization be added for each
-> >> flag.  Since I did 'one patch per flag', that would be an update to each patch.
-> >> Or, I could simply add a patch to update the comment block based on what you
-> >> already have.
-> >>
-> >> Let me know what is best/easiest for you.
-> > 
-> > I guess just one patch is best for reviewers.  Then I'll split up into
-> > a sprinkle of -fix patches if I'm feeling energetic ;)
-> 
-> Here is a patch to update the comments for all those flags.  It should
-> apply on top of what is in your tree.
-> 
-> From: Mike Kravetz <mike.kravetz@oracle.com>
-> Date: Fri, 29 Jan 2021 10:36:12 -0800
-> Subject: [PATCH] huegtlb: add synchronization information for new hugetlb
->  specific flags
-> 
-> Adding comments, no functional change.
-> 
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+On Sat, Jan 30, 2021 at 04:11:20PM -0800, Nadav Amit wrote:
+> +static inline void tlb_update_generation(atomic64_t *gen, u64 new_gen)
+> +{
+> +	u64 cur_gen = atomic64_read(gen);
+> +
+> +	while (cur_gen < new_gen) {
+> +		u64 old_gen = atomic64_cmpxchg(gen, cur_gen, new_gen);
+> +
+> +		/* Check if we succeeded in the cmpxchg */
+> +		if (likely(cur_gen == old_gen))
+> +			break;
+> +
+> +		cur_gen = old_gen;
+> +	};
+> +}
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+	u64 cur_gen = atomic64_read(gen);
+	while (cur_gen < new_gen && !atomic64_try_cmpxchg(gen, &cur_gen, new_gen))
+		;
 
-Thanks Mike!
-
-> ---
->  include/linux/hugetlb.h | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index e5e6ffd55392..cf70795d2209 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -480,14 +480,24 @@ unsigned long hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
->   * HPG_restore_reserve - Set when a hugetlb page consumes a reservation at
->   *	allocation time.  Cleared when page is fully instantiated.  Free
->   *	routine checks flag to restore a reservation on error paths.
-> + *	Synchronization:  Examined or modified by code that knows it has
-> + *	the only reference to page.  i.e. After allocation but before use
-> + *	or when the page is being freed.
->   * HPG_migratable  - Set after a newly allocated page is added to the page
->   *	cache and/or page tables.  Indicates the page is a candidate for
->   *	migration.
-> + *	Synchronization:  Initially set after new page allocation with no
-> + *	locking.  When examined and modified during migration processing
-> + *	(isolate, migrate, putback) the hugetlb_lock is held.
->   * HPG_temporary - - Set on a page that is temporarily allocated from the buddy
->   *	allocator.  Typically used for migration target pages when no pages
->   *	are available in the pool.  The hugetlb free page path will
->   *	immediately free pages with this flag set to the buddy allocator.
-> + *	Synchronization: Can be set after huge page allocation from buddy when
-> + *	code knows it has only reference.  All other examinations and
-> + *	modifications require hugetlb_lock.
->   * HPG_freed - Set when page is on the free lists.
-> + *	Synchronization: hugetlb_lock held for examination and modification.
->   */
->  enum hugetlb_page_flags {
->  	HPG_restore_reserve = 0,
-> -- 
-> 2.29.2
-> 
-
--- 
-Michal Hocko
-SUSE Labs
