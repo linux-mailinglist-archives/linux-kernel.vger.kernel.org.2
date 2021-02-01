@@ -2,76 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1FE630AD73
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:12:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8FBF30ADB3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:25:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbhBARKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:10:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36077 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229763AbhBARKM (ORCPT
+        id S230179AbhBARYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:24:44 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:4982 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229612AbhBARYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:10:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612199320;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pW3FtlUJS2fN56E7BRK6xYg8pzPm9uc4qoRwK8ELBPM=;
-        b=cPwkdBFDaH55ywT2wjtZFFGQ2M5CK8wcqzHVS1sFQDKe033kOQdkofM/pOpzE+hbR8Iuej
-        RISyy+uY3hAGq19KEwF+Bpsk2CHPiqNfie9qMwxUSUxoCwdD/X3iv02OfzmhTTbHtnzwv6
-        L5OhdL23RLMTM27DUkAI3jsAFCDNkJU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-61-n5sR1x5xMNSY4bwcGtO9dA-1; Mon, 01 Feb 2021 12:08:36 -0500
-X-MC-Unique: n5sR1x5xMNSY4bwcGtO9dA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2B36B801B1D;
-        Mon,  1 Feb 2021 17:08:34 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0A2B960C7A;
-        Mon,  1 Feb 2021 17:08:30 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <702232df-e229-a716-b688-918fe7e168e8@digikod.net>
-References: <702232df-e229-a716-b688-918fe7e168e8@digikod.net> <20210128191705.3568820-1-mic@digikod.net> <4160652.1612184844@warthog.procyon.org.uk> <9d95ec74-cc89-9e0c-dac8-c05ea52991ac@digikod.net>
-To:     =?us-ascii?Q?=3D=3FUTF-8=3FQ=3FMicka=3Dc3=3Dabl=5FSala=3Dc3=3Dbcn=3F?=
-         =?us-ascii?Q?=3D?= <mic@digikod.net>
-Cc:     dhowells@redhat.com, David Woodhouse <dwmw2@infradead.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        James Morris <jmorris@namei.org>,
-        =?us-ascii?Q?=3D=3FUTF-8=3FQ=3FMicka=3Dc3=3Dabl?=
-         =?us-ascii?Q?=5FSala=3Dc3=3Dbcn=3F=3D?= <mic@linux.microsoft.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Tyler Hicks <tyhicks@linux.microsoft.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v5 0/5] Enable root to update the blacklist keyring
+        Mon, 1 Feb 2021 12:24:40 -0500
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 111HG8FL148172;
+        Mon, 1 Feb 2021 12:23:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=5h6L+W9OKzWFhKXfgMXfJnyDMNx2bJEz/rcoPDTozZU=;
+ b=gpPncXGzG6Yc9TluGbmqcK1Gr5KD861UwW+6gn6ZMSW3/VJxsM2bwdwEx+1YWCwORJ6s
+ VOBHwgTGUMavi/TJrg0CwMFlwfzB3j6/tCJFCuigeFgcd7Tb+M93FKWF9sYBJFwfiZsg
+ +RY/eIcSGwcY0uZzEb5IOoo9OlIQnfBpWgNibEqLX+UakzK5cF/H5uxsEKWIuwjqb0Re
+ jmKZ/GtQzX+5GKoTf4wEj/aUvcK5ALPC4Bow6qWCEOoRdf+P9c20d3UZ2aqNMENGEb8v
+ HZ8/jAyt840b+N4kqhvGHQsBeKQl1N230XWqhCHBL4vSCq8pQ/61SvyPQG1ea6zH1PNL eQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36enw3r5hp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 12:23:54 -0500
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 111HGoCC150138;
+        Mon, 1 Feb 2021 12:23:53 -0500
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36enw3r5es-7
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 12:23:53 -0500
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 111GjiBd007782;
+        Mon, 1 Feb 2021 17:08:52 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma02wdc.us.ibm.com with ESMTP id 36cy39049c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 17:08:52 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 111H8pKi23462320
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 1 Feb 2021 17:08:51 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BCABD112067;
+        Mon,  1 Feb 2021 17:08:51 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1617A112062;
+        Mon,  1 Feb 2021 17:08:47 +0000 (GMT)
+Received: from oc4221205838.ibm.com (unknown [9.211.84.157])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon,  1 Feb 2021 17:08:46 +0000 (GMT)
+Subject: Re: [PATCH 6/9] vfio-pci/zdev: fix possible segmentation fault issue
+To:     Cornelia Huck <cohuck@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     jgg@nvidia.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alex.williamson@redhat.com, liranl@nvidia.com, oren@nvidia.com,
+        tzahio@nvidia.com, leonro@nvidia.com, yarong@nvidia.com,
+        aviadye@nvidia.com, shahafs@nvidia.com, artemp@nvidia.com,
+        kwankhede@nvidia.com, ACurrid@nvidia.com, gmataev@nvidia.com,
+        cjia@nvidia.com, yishaih@nvidia.com, aik@ozlabs.ru
+References: <20210201162828.5938-1-mgurtovoy@nvidia.com>
+ <20210201162828.5938-7-mgurtovoy@nvidia.com>
+ <20210201175214.0dc3ba14.cohuck@redhat.com>
+From:   Matthew Rosato <mjrosato@linux.ibm.com>
+Message-ID: <139adb14-f75a-25ef-06da-e87729c2ccf2@linux.ibm.com>
+Date:   Mon, 1 Feb 2021 12:08:45 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date:   Mon, 01 Feb 2021 17:08:30 +0000
-Message-ID: <36340.1612199310@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20210201175214.0dc3ba14.cohuck@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-01_06:2021-01-29,2021-02-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 bulkscore=0 impostorscore=0 clxscore=1011 mlxscore=0
+ spamscore=0 priorityscore=1501 phishscore=0 malwarescore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102010087
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Micka=C3=ABl Sala=C3=BCn <mic@digikod.net> wrote:
+On 2/1/21 11:52 AM, Cornelia Huck wrote:
+> On Mon, 1 Feb 2021 16:28:25 +0000
+> Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
+> 
+>> In case allocation fails, we must behave correctly and exit with error.
+>>
+>> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+> 
+> Fixes: e6b817d4b821 ("vfio-pci/zdev: Add zPCI capabilities to VFIO_DEVICE_GET_INFO")
+> 
+> Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+> 
+> I think this should go in independently of this series. >
 
-> It doesn't contain Jarkko's Tested-by and Reviewed-by tags though.
+Agreed, makes sense to me -- thanks for finding.
 
-I can add that in the merge.
+Reviewed-by: Matthew Rosato <mjrosato@linux.ibm.com>
 
-David
+>> ---
+>>   drivers/vfio/pci/vfio_pci_zdev.c | 4 ++++
+>>   1 file changed, 4 insertions(+)
+> 
 
