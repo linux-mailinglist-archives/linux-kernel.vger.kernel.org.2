@@ -2,108 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE8F30AB5F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:32:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B966530AB84
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:35:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231791AbhBAPb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 10:31:26 -0500
-Received: from foss.arm.com ([217.140.110.172]:33638 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231758AbhBAPbF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 10:31:05 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A6B3F101E;
-        Mon,  1 Feb 2021 07:30:17 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.41.104])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 74E943F71A;
-        Mon,  1 Feb 2021 07:30:15 -0800 (PST)
-Date:   Mon, 1 Feb 2021 15:30:12 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
-        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        rppt@kernel.org, penberg@kernel.org, geert@linux-m68k.org,
-        giancarlo.ferrari@nokia.com
-Subject: Re: [PATCH] ARM: kexec: Fix panic after TLB are invalidated
-Message-ID: <20210201153012.GC66060@C02TD0UTHF1T.local>
-References: <1612140296-12546-1-git-send-email-giancarlo.ferrari89@gmail.com>
- <20210201124720.GA66060@C02TD0UTHF1T.local>
- <20210201143943.GA15399@p4>
+        id S229663AbhBAPfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 10:35:12 -0500
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:56129 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231147AbhBAPee (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 10:34:34 -0500
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <jlu@pengutronix.de>)
+        id 1l6bAp-00061s-PF; Mon, 01 Feb 2021 16:31:31 +0100
+Received: from localhost ([127.0.0.1])
+        by ptx.hi.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <jlu@pengutronix.de>)
+        id 1l6bAp-0006V4-2s; Mon, 01 Feb 2021 16:31:31 +0100
+Message-ID: <64472434a367060ddce6e03425156b8312a5ad6c.camel@pengutronix.de>
+Subject: Re: Migration to trusted keys: sealing user-provided key?
+From:   Jan =?ISO-8859-1?Q?L=FCbbe?= <jlu@pengutronix.de>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        James Bottomley <jejb@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, kernel@pengutronix.de
+Date:   Mon, 01 Feb 2021 16:31:30 +0100
+In-Reply-To: <d4eeefa0c13395e91850630e22d0d9e3690f43ac.camel@linux.ibm.com>
+References: <74830d4f-5a76-8ba8-aad0-0d79f7c01af9@pengutronix.de>
+         <6dc99fd9ffbc5f405c5f64d0802d1399fc6428e4.camel@kernel.org>
+         <d1bed49f89495ceb529355cb41655a208fdb2197.camel@linux.ibm.com>
+         <8b9477e150d7c939dc0def3ebb4443efcc83cd85.camel@pengutronix.de>
+         <d4eeefa0c13395e91850630e22d0d9e3690f43ac.camel@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201143943.GA15399@p4>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: jlu@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Mon, Feb 01, 2021 at 02:39:46PM +0000, Giancarlo Ferrari wrote:
-> On Mon, Feb 01, 2021 at 12:47:20PM +0000, Mark Rutland wrote:
-> > On Mon, Feb 01, 2021 at 12:44:56AM +0000, Giancarlo Ferrari wrote:
-> > > machine_kexec() need to set rw permission in text and rodata sections
-> > > to assign some variables (e.g. kexec_start_address). To do that at
-> > > the end (after flushing pdm in memory, etc.) it needs to invalidate
-> > > TLB [section] entries.
-> > 
-> > It'd be worth noting explicitly that set_kernel_text_rw() alters
-> > current->active_mm...
-> > 
-> > > If during the TLB invalidation an interrupt occours, which might cause
-> > > a context switch, there is the risk to inject invalid TLBs, with ro
-> > > permissions.
-> > 
-> > ... which is why if there's a context switch things can go wrong, since
-> > active_mm isn't stable, and so it's possible that set_kernel_text_rw()
-> > updates multiple tables, none of which might be the active table at the
-> > point we try to make an access.
+On Sun, 2021-01-31 at 09:29 -0500, Mimi Zohar wrote:
+> On Sun, 2021-01-31 at 15:14 +0100, Jan Lübbe wrote:
+> > On Sun, 2021-01-31 at 07:09 -0500, Mimi Zohar wrote:
 > 
-> Maybe the behaviour causing issue is not completely clear to me, and I do
-> apologize for that (moreover I haven't eougth debug capabilities).
+> <snip>
+> 
+> > > 
+> > > [1] The ima-evm-utils README contains EVM examples of "trusted" and
+> > > "user" based "encrypted" keys.
+> > 
+> > I assume you refer to
+> > https://sourceforge.net/p/linux-ima/ima-evm-utils/ci/master/tree/README#l143
+> > "Generate EVM encrypted keys" and "Generate EVM trusted keys (TPM based)"?
+> > 
+> > In both cases, the key used by EVM is a *newly generated* random key. The only
+> > difference is whether it's encrypted to a user key or a (random) trusted key.
+> 
+> The "encrypted" asymmetric key data doesn't change, "update" just
+> changes the key under which it is encrypted/decrypted.
+> 
+> Usage::
+> 
+>     keyctl add encrypted name "new [format] key-type:master-key-name keylen"
+>         ring
+>     keyctl add encrypted name "load hex_blob" ring
 
-I think we're in rough agreement that the issue is likely related to the
-context switch, but our understanding of the specifics differs (and I
-think we're missing a detail here).
+'load' (as I understand the code) only accepts an encrypted blob.
 
-> However, current-active_mm is switched among context switches. Correct ?
+So the only way I see to have an encrypted key with a non-random key data would
+be:
+- create a random temporary master key and load a copy as a user key
+- encrypt the chosen key data with the temporary master key (using a new
+userspace reimplementation of the kernel encrypted key blob format)
+- use keyctl add encrypted dmcrypt "load <encrypted blob>" <keyring>
+- create new trusted master key (OP-TEE or CAAM in our case) as 
+- use keyctl update to switch to the new trusted master key
+- use keyctl pipe on the trusted and encrypted keys and store both for loading
+on later boots
 
-In some cases current->active_mm is not switched, and can be inherited
-over a context switch. When switching to a user task, we always switch
-to its mm (which becomes the active_mm), but when switching to a kthread
-we retain the previous task's mm as the active_mm as part of the lazy
-context switch.
+If we'd support importing a pre-existing key into a trusted or encrypted key,
+we'd do instead:
+- use keyctl add trusted dmcrypt "import <unencrypted key data>"
+- use keyctl pipe on the trusted key and store it for loading on later boots
 
-So while a kthread is preemptible, its active_mm (and active ASID) can
-change under its feet. That could happen anywhere while the task is
-preemptible, e.g. in the middle of set_kernel_text_rw(), or
-mid-modification to the kexec variables.
+This way, users wouldn't need to care which backend is used by trusted keys
+(TPM/OP-TEE/CAAM/...). That would make use-cases where a random key is not
+suitable as straight-forward as the those where a random key is OK.
 
-> So, in principle, the invalidation, if stopped, is carried on where it
-> left.
+Best regards
+Jan
 
-That's true so long as all the processes we switch between share the
-same leaf tables for the region we're altering. If not, then the lazy
-context switch means that those tables can change under our feet.
+>     keyctl update keyid "update key-type:master-key-name"
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
-I believe the tables mapping the kernel text are shared by all threads,
-and if so this _should_ be true. Russell might be able to confirm that
-or correct me if I have that wrong.
-
-> I thought the issue was that the PageTable entry for the section 0x8010_0000
-> is global, thus not indexed by ASID (Address Space ID). By the fact that each
-> process has its own version of that entry, is the cause of the issue, as the
-> schedule process might bringing a spurious entry (with ro permission) in the
-> MMU cache.
-
-The TLB invalidation performed under set_kernel_text_rw() affects all
-ASIDs on the current CPU, so there shouldn't be any stale RO TLB entries
-to hit unless the kthread is migrated to another CPU.
-
-> If the entry is not global holds the ASID, and the issue cannot happen.
-
-I don't think that's true, since switching to a different active_mm
-would also change ASID, and we'd have no additional guarantee.
-
-Thanks,
-Mark.
