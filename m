@@ -2,99 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 747CC30A4DA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 435D730A4F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233004AbhBAKDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 05:03:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56180 "EHLO
+        id S233074AbhBAKGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 05:06:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232893AbhBAKDb (ORCPT
+        with ESMTP id S233055AbhBAKGd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 05:03:31 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD952C061786
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 02:02:16 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id u14so8234121plf.4
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 02:02:16 -0800 (PST)
+        Mon, 1 Feb 2021 05:06:33 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA222C061786
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 02:05:05 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id t25so11753470pga.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 02:05:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=Og/c9ZLdNwsrZjaKOb5Rw1KYlib1KDQj+P2JjTzCuz0=;
-        b=DmWfY39Wj7fxUx8ibl+Z+al1uxv6KEvvJsECeAKzMQwk0gXAQ/qhPSzhoOXv/sXLIK
-         8H9oT3lTTOlpfoEpIZOsNxCe2A2HMY4dpzwWeAnk5vF03qnv6cOG+gBUBYsCVanFmNxT
-         HdQVFG8EmIEZSo4W4nrOkXpz/36FHTzoDZMMVxoNjuFl3rwmsQ8WwqADYRhD8mOTubIA
-         g2NgHZdjmKLO/9O9QHMcQJNl6JjqrDo7tL1N8B0WD2c2csh4VkRlxUxP9EcNlQgcOpJS
-         Mm8tkLY6ah6k7mBQoYFbRObRud4wqTyg6N/rhUokphC6LUccEjIAdV/R5Dke5GBgFueu
-         iX+Q==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=frVr/xCUvbYcgOOMMYBu0rOoutvXVeUOoguRH3Tfir4=;
+        b=KwK6870QDpRjaQinp8V2YB7qTqptw0NUC4QQzI6GlaPFwXhH4XhywUDn/dr3sbz6Gy
+         OC4dJlWbmACnp5g0iaHf7r2ef2MJMzVA4SX9JzX0tQzX3dH9LjJrJmtGptQfM2hAb75z
+         UwUleW6xFmNJZ+WzH6n/lRLf7noLT5jz5vNrR3OyxLR8GSEIHs3YpR9lunUV5AVQaJ5e
+         xUsgx/9Q29q66NefdOejr8sBM9dmVUXClEIPnF5lvzGZDfQAj90Vfg6rzlDhsmHnyaIj
+         BgQ6zroUKfsLkQfJtGCrRgiUkguq9n6eaDLq/9bX4KdNIES/ladpVGwk5SF3htHMTj4K
+         ukHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=Og/c9ZLdNwsrZjaKOb5Rw1KYlib1KDQj+P2JjTzCuz0=;
-        b=jKNXIUhAtCzGF9KwtgFZd4vi4vGOBJZoBBVAkFSvlXXbHjol2DqqQI9voaAAo0ZW0l
-         zo8onlX3K027rnmYD7kBPWs8mtQv+QkHG3GuVSI558PCJgP5aCvZen3HhgN0yd5p30IZ
-         md+8h5NYw4ooXzmwwvyo+r434OqUaPkNqWCiG8jqdIzzce6LZupRHSImUNB/EWqdEjpV
-         Pi2Q20Ahj4tTHfA6G93cMSNO0vH0j9g+qv2fuHGQ6ofZ67wKmP21pj618iH4GgYTxLM3
-         fK3Z+iWVcyOf7j7frXeM+C1i4Gcbe/QN9vGGTwAoDTsyL60wX4iwJVaWqohWWQfjv6H2
-         +AmA==
-X-Gm-Message-State: AOAM5308o17bIznFh0J0k2XISBehI+/CrBu+bUKi07iqe6/Yigd8UIas
-        eITqrNeaXgsQEZwAJWQfdkgVBHL04BY=
-X-Google-Smtp-Source: ABdhPJwuXWe0OtSSniZkbe8CTK0ILYwh7B9NbHem64lmhhBWV3ivpxgrXlz4jQuYO1v6IShRAlkmrZhhGrk=
-Sender: "badhri via sendgmr" <badhri@badhri.mtv.corp.google.com>
-X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:201:f292:1cff:fee0:66cf])
- (user=badhri job=sendgmr) by 2002:a17:902:429:b029:de:2bee:150d with SMTP id
- 38-20020a1709020429b02900de2bee150dmr11263515ple.18.1612173736228; Mon, 01
- Feb 2021 02:02:16 -0800 (PST)
-Date:   Mon,  1 Feb 2021 02:02:12 -0800
-Message-Id: <20210201100212.49863-1-badhri@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v1] usb: typec: tcpm: Handle vbus shutoff when in source mode
-From:   Badhri Jagan Sridharan <badhri@google.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kyle Tso <kyletso@google.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Badhri Jagan Sridharan <badhri@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=frVr/xCUvbYcgOOMMYBu0rOoutvXVeUOoguRH3Tfir4=;
+        b=KUNJQ0tb97ovyGQaa2AVtxAaSwbQLrtm26n8SKxyd2GGMbAs3D3t2gUsPjJfv8XhRW
+         5Hq2TueagVOeTVmN6KzKzjc9wK7NTPANIifN2SBGdqQVmSHo+SfZoIWh38PyFWlm9rKL
+         IeGmoWqp/4zX0xaiwRnexWfhCsOCbknzUmSHYg6a5vQVib/H4wRtxLuw6XZ3kzE/Bie3
+         V/dwyxykRPmrTXQtjMN7Axir6eIaTki9Ce9vk4JaUwo5EenJ5oH7w6Wsk0ZPaVCvDHJB
+         yVRacY2btfbgG+adndTO4JQdaPk68Z6ojZdPdS00UAYxXlCJyeGjLXsqFBbK+oLiHtsl
+         +pNA==
+X-Gm-Message-State: AOAM532aQZSvBB6qbLbV+rF+aWwONx+OaIPc9l0mEfg0YPSTZbj2fg8P
+        4ltuy3yhoRlKzjo8hOmTjfsKwQ==
+X-Google-Smtp-Source: ABdhPJyxP1XDmrI0MqAUO7EnoKcwJKb1624sQpyrFq75F363UpbEny2r9jczdiB/yEeu8ohEE5Gqfw==
+X-Received: by 2002:aa7:8698:0:b029:1be:aef7:449d with SMTP id d24-20020aa786980000b02901beaef7449dmr15532020pfo.60.1612173905191;
+        Mon, 01 Feb 2021 02:05:05 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id c11sm15454066pfl.185.2021.02.01.02.05.03
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 Feb 2021 02:05:04 -0800 (PST)
+Date:   Mon, 1 Feb 2021 15:35:02 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Dominik Brodowski <linux@dominikbrodowski.net>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Keguang Zhang <keguang.zhang@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] cpufreq: Remove CPUFREQ_STICKY flag
+Message-ID: <20210201100502.xluaj5rpqosqsq7b@vireshk-i7>
+References: <377d2e2d328276070ae2f26c65daa1497bb3c3cf.1612166647.git.viresh.kumar@linaro.org>
+ <YBfNb91psVcf3TAS@light.dominikbrodowski.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YBfNb91psVcf3TAS@light.dominikbrodowski.net>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While in source mode, vbus could be shutoff by protections
-circuits. TCPM does not move back to toggling state to
-re-initiate connection. Fix this by moving to SRC_UNATTACHED
-state when vbus shuts off while in source mode.
+On 01-02-21, 10:44, Dominik Brodowski wrote:
+> IIRC, it was required on various ARM systems,[*] as CPUs were registered as
+> subsys_initcall(), while cpufreq used to be initialized only later, as an
 
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
----
- drivers/usb/typec/tcpm/tcpm.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+s/later/earlier ? arch happens before subsys not at least and that is
+the only way we can break cpufreq here, i.e. when the driver comes up
+before the CPUs are registered.
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 0afd8ef692e8..ff0732c12b8a 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -4897,6 +4897,17 @@ static void _tcpm_pd_vbus_off(struct tcpm_port *port)
- 		/* Do nothing, waiting for sink detection */
- 		break;
+> arch_initcall(). If the ordering is opposite now on all architectures (it
+> wasn't on ARM back then), we should be fine.
+> 
+> [*] https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git/commit/arch/arm/mach-sa1100/cpu-sa1100.c?id=f59d3bbe35f6268d729f51be82af8325d62f20f5
+
+Thanks for your reply, it made me look at that aspect in some more
+detail to confirm I don't end up breaking anything. Unless I am making
+a mistake in reading the code, this is the code flow that we have
+right now:
+
+start_kernel()
+-> kernel_init()
+   -> kernel_init_freeable()
+      -> do_basic_setup()
+         -> driver_init()
+            -> cpu_dev_init()
+               -> subsys_system_register(for-CPUs)
  
-+	case SRC_STARTUP:
-+	case SRC_SEND_CAPABILITIES:
-+	case SRC_SEND_CAPABILITIES_TIMEOUT:
-+	case SRC_NEGOTIATE_CAPABILITIES:
-+	case SRC_TRANSITION_SUPPLY:
-+	case SRC_READY:
-+	case SRC_WAIT_NEW_CAPABILITIES:
-+		/* Force to unattached state to re-initiate connection */
-+		tcpm_set_state(port, SRC_UNATTACHED, 0);
-+		break;
-+
- 	case PORT_RESET:
- 		/*
- 		 * State set back to default mode once the timer completes.
--- 
-2.30.0.365.g02bc693789-goog
+         -> do_initcalls()
+            -> register-cpufreq-driver from any level
 
+And so CPUs should always be there for a cpufreq driver.
+
+Makes sense ?
+
+-- 
+viresh
