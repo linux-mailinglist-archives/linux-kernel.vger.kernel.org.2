@@ -2,151 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D8930A4F6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:09:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE2B530A501
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:09:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233097AbhBAKHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 05:07:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56830 "EHLO
+        id S233162AbhBAKIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 05:08:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233056AbhBAKGo (ORCPT
+        with ESMTP id S233113AbhBAKHT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 05:06:44 -0500
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0184BC061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 02:06:28 -0800 (PST)
-Received: by mail-qk1-x72a.google.com with SMTP id t63so15642212qkc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 02:06:28 -0800 (PST)
+        Mon, 1 Feb 2021 05:07:19 -0500
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 041BEC061756;
+        Mon,  1 Feb 2021 02:06:39 -0800 (PST)
+Received: by mail-io1-xd32.google.com with SMTP id x21so16707184iog.10;
+        Mon, 01 Feb 2021 02:06:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Sjt/JjpcscfEvtBP7EMVUaDK8j1N22A9/cE7A8z1fNQ=;
-        b=RWGlo0LF/xf0B6XMXJt4uEKHEI1PMWjoAzhk2jM1knlpTyoxZlXjsTGiphTN2+gWRQ
-         CfcfBynFycq6HShZmXTMtsL32rhWghYM7wEOPYcBCLQqoX5/zLN0JVOmCedt7+b4ylhV
-         aYFI0MlGniLS4Po7+bLxc0k6dfeNVZnjJPY6VSHXW4a7QEzI3yLS2JAx1S8qUgnCeySe
-         JTUGK5hONej427H1zqtvZoVMKjdHLNMYwJ/I/43/3VsWsjpQS09AuRuBojFy4GWeDPCu
-         EzNru2aRUgwTxsodEFirvxS0kN93jAd+IeehH1fEA8oXWAG0Z5bJIz9k6KsOAB4c/ayt
-         +QGg==
+        bh=7TfQmnWXMLDV4KK/yrcdrfGH4xnHu8H2yQVDi+jxI8o=;
+        b=DcJodsdGPhHoTDR0XCKR/FQyAr+wuYt54P6QT5FfSC/v5mZ8yxDOGKaT0ZV41Bm2Vz
+         THVPeBLfJjSFx+FdWrG2sk9ZaqtC1RM5lyvxy/uW4JJbWGNIdF5fR4YpVZowNfyDGl00
+         AtoK2G8aKQJjvRAtaGbvTObHrr6dCyV1/lAFxBMoD9GJxkmjQt4HXrNwwhmb0IdXZgyK
+         aBvzRE54rJQsrOtT99uOrus5nNMztvpC+lVvj0lNwUusdKi7ckxGvNxaX5WbzG9syErG
+         RWWACUUTqg3mmHiW8CxAotcTMpx6ZH8w45jwPJY5nVqoExc8WJ69Hadp5VS348+C3Wxt
+         UmEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Sjt/JjpcscfEvtBP7EMVUaDK8j1N22A9/cE7A8z1fNQ=;
-        b=M0AmGxMR8pQR7EczRA/uOezuVPJ5wsKuGYx3VnghpgDfH8xIAEd2XcNnyFQj6O8NQu
-         Py3iDO2wcPW6FLNJ4TuPijRw9QRK6WtVEOqA7PgQ44eXdKc/udQNoZwpI68kFnNqYkMi
-         952zayv2UlenF/rSIujTU7xWmcqUwjlkyCQ422OQG9/rwaAbk/GIAtciDqZjgqCryFaH
-         qwsYZcLODnYE/+QdHMmkz9NjHhxw+Ana286lpRVAY6Qm1skiWYgCLH2/XAOgFVEKBXOQ
-         V/iNQ0fe0W0FJocIw5HHf2t7S5qWgjkiWAb400WRs5TESypKt/lOfNUMyB7FuVAyntwN
-         FWhg==
-X-Gm-Message-State: AOAM531I69a6uSAvt7t7JPZaYoYM8fpNFnI+irWqtJz46EUSKUT/e6nB
-        A/kDfxvZlPQkQDgk9mLx6VJb1XyC9KfDyUk/kjo6rw==
-X-Google-Smtp-Source: ABdhPJz1neDI6y2opCjejp39+RFPmdlUHPXrFefxOn9wklgPLmQPMf8ui0W8o2qIpXB9V8ohhvWgsAt8x04qGTAFxyU=
-X-Received: by 2002:a05:620a:918:: with SMTP id v24mr15329179qkv.350.1612173987508;
- Mon, 01 Feb 2021 02:06:27 -0800 (PST)
+        bh=7TfQmnWXMLDV4KK/yrcdrfGH4xnHu8H2yQVDi+jxI8o=;
+        b=hdFeGUV8PpCNluI2V8evdDx/DejVx18tChxdT8/s1dcDJuvL8eau0Wv9fTGxCX/zvv
+         WiKpJKx3LSruwjWTWi5xApHleCsxFALWthdVa8NYLMp7UV5/5M3hjXPMRVufTP7mlvXx
+         M2MyS9VfZl7MaRFGS6WKBCioWNTO6iXvQhc+RWTnuPX6cvE5NnuR+8cQuJrFYxzYDUMq
+         lXQY0N3yVaIXZRuimxlijVSSXJ9fsfXtmWRzLjNU01fYavya+wfLvkRgBbxF3fLuXNFv
+         AtNHyo3O50pQTKliJLWZRRNZe1fJtPsQEwdNhqpnu7oBSEEHLQvz64dl96dkbN2q1stz
+         HYwQ==
+X-Gm-Message-State: AOAM5332POQ6AZMym8gvNnFgCJ+PTgJm5JjwZ9eiCDNOIm7Pj/tXc1G0
+        r+HW0VrWvfSjdaopHU/ODcrpoNkX2Giz2uKf7KY=
+X-Google-Smtp-Source: ABdhPJyEfujie8aFaCvV9ytfbM2Mtx4GZXZgdspt0XnngJwS0diLdConHLVDXJLB3KzTpQt1ZOrC0rY0cE05tj5ntks=
+X-Received: by 2002:a02:c98b:: with SMTP id b11mr4313067jap.123.1612173998414;
+ Mon, 01 Feb 2021 02:06:38 -0800 (PST)
 MIME-Version: 1.0
-References: <CACT4Y+YJp0t0HA3+wDsAVxgTK4J+Pvht-J4-ENkOtS=C=Fhtzg@mail.gmail.com>
- <YBfPAvBa8bbSU2nZ@hirez.programming.kicks-ass.net>
-In-Reply-To: <YBfPAvBa8bbSU2nZ@hirez.programming.kicks-ass.net>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 1 Feb 2021 11:06:16 +0100
-Message-ID: <CACT4Y+YGY+fanogUFYXxpGZsCp53gjUi7Xua4Bmvs6gAvSfLoA@mail.gmail.com>
-Subject: Re: corrupted pvqspinlock in htab_map_update_elem
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>
+References: <0000000000006689ee05ba42aa3d@google.com>
+In-Reply-To: <0000000000006689ee05ba42aa3d@google.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Mon, 1 Feb 2021 12:06:27 +0200
+Message-ID: <CAOQ4uxirYSKzhPOYwnZy=BjvNiJyAcwZoVvde28aYG=7zcAJpg@mail.gmail.com>
+Subject: Re: WARNING: suspicious RCU usage in kernfs_iop_permission
+To:     syzbot <syzbot+0e507d08417ca2d565bf@syzkaller.appspotmail.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        overlayfs <linux-unionfs@vger.kernel.org>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Tejun Heo <tj@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 10:51 AM Peter Zijlstra <peterz@infradead.org> wrote:
+On Mon, Feb 1, 2021 at 11:06 AM syzbot
+<syzbot+0e507d08417ca2d565bf@syzkaller.appspotmail.com> wrote:
 >
-> On Sun, Jan 31, 2021 at 09:42:53AM +0100, Dmitry Vyukov wrote:
-> > Hi,
-> >
-> > I am testing the following the program:
-> > https://gist.github.com/dvyukov/e5c0a8ef220ef856363c1080b0936a9e
-> > on the latest upstream 6642d600b541b81931fb1ab0c041b0d68f77be7e and
-> > getting the following crash. Config is:
-> > https://gist.github.com/dvyukov/16d9905e5ef35e44285451f1d330ddbc
-> >
-> > The program updates a bpf map from a program called on hw breakpoint
-> > hit. Not sure if it's a bpf issue or a perf issue. This time it is not
-> > a fuzzer workload, I am trying to do something useful :)
+> Hello,
 >
-> Something useful and BPF don't go together as far as I'm concerned.
+> syzbot found the following issue on:
 >
-> > ------------[ cut here ]------------
-> > pvqspinlock: lock 0xffffffff8f371d80 has corrupted value 0x0!
-> > WARNING: CPU: 3 PID: 8771 at kernel/locking/qspinlock_paravirt.h:498
-> > __pv_queued_spin_unlock_slowpath+0x22e/0x2b0
-> > kernel/locking/qspinlock_paravirt.h:498
-> > Modules linked in:
-> > CPU: 3 PID: 8771 Comm: a.out Not tainted 5.11.0-rc5+ #71
-> > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
-> > rel-1.13.0-44-g88ab0c15525c-prebuilt.qemu.org 04/01/2014
-> > RIP: 0010:__pv_queued_spin_unlock_slowpath+0x22e/0x2b0
-> > kernel/locking/qspinlock_paravirt.h:498
-> > Code: ea 03 0f b6 14 02 4c 89 e8 83 e0 07 83 c0 03 38 d0 7c 04 84 d2
-> > 75 62 41 8b 55 00 4c 89 ee 48 c7 c7 20 6b 4c 89 e8 72 d3 5f 07 <0f> 0b
-> > e9 6cc
-> > RSP: 0018:fffffe00000c17b0 EFLAGS: 00010086
-> > RAX: 0000000000000000 RBX: ffffffff8f3b5660 RCX: 0000000000000000
-> > RDX: ffff8880150222c0 RSI: ffffffff815b624d RDI: fffffbc0000182e8
-> > RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
-> > R10: ffffffff817de94f R11: 0000000000000000 R12: ffff8880150222c0
-> > R13: ffffffff8f371d80 R14: ffff8880181fead8 R15: 0000000000000000
-> > FS:  00007fa5b51f0700(0000) GS:ffff88802cf80000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 0000000002286908 CR3: 0000000015b24000 CR4: 0000000000750ee0
-> > DR0: 00000000004cb3d4 DR1: 0000000000000000 DR2: 0000000000000000
-> > DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
-> > PKRU: 55555554
-> > Call Trace:
-> >  <#DB>
-> >  __raw_callee_save___pv_queued_spin_unlock_slowpath+0x11/0x20
-> >  .slowpath+0x9/0xe
-> >  pv_queued_spin_unlock arch/x86/include/asm/paravirt.h:559 [inline]
-> >  queued_spin_unlock arch/x86/include/asm/qspinlock.h:56 [inline]
-> >  lockdep_unlock+0x10e/0x290 kernel/locking/lockdep.c:124
-> >  debug_locks_off_graph_unlock kernel/locking/lockdep.c:165 [inline]
-> >  print_usage_bug kernel/locking/lockdep.c:3710 [inline]
+> HEAD commit:    6642d600 Merge tag '5.11-rc5-smb3' of git://git.samba.org/..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=171405bf500000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=9408d1770a50819c
+> dashboard link: https://syzkaller.appspot.com/bug?extid=0e507d08417ca2d565bf
+> compiler:       clang version 11.0.1
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13b8a330d00000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16f3628cd00000
 >
-> Ha, I think you hit a bug in lockdep. But it was about to tell you you
-> can't go take locks from NMI context that are also used outside of it.
+> The issue was bisected to:
+>
+> commit 89bdfaf93d9157499c3a0d61f489df66f2dead7f
+> Author: Miklos Szeredi <mszeredi@redhat.com>
+> Date:   Mon Dec 14 14:26:14 2020 +0000
+>
+>     ovl: make ioctl() safe
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=11b85fb4d00000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=13b85fb4d00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=15b85fb4d00000
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+0e507d08417ca2d565bf@syzkaller.appspotmail.com
+> Fixes: 89bdfaf93d91 ("ovl: make ioctl() safe")
+>
+> =============================
+> WARNING: suspicious RCU usage
+> 5.11.0-rc5-syzkaller #0 Not tainted
+> -----------------------------
+> kernel/sched/core.c:7932 Illegal context switch in RCU-sched read-side critical section!
+>
+> other info that might help us debug this:
+>
+>
+> rcu_scheduler_active = 2, debug_locks = 0
+> no locks held by systemd/1.
+>
+> stack backtrace:
+> CPU: 0 PID: 1 Comm: systemd Not tainted 5.11.0-rc5-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x137/0x1be lib/dump_stack.c:120
+>  ___might_sleep+0xb4/0x530 kernel/sched/core.c:7932
+>  __mutex_lock_common+0x4e/0x2f00 kernel/locking/mutex.c:935
+>  __mutex_lock kernel/locking/mutex.c:1103 [inline]
+>  mutex_lock_nested+0x1a/0x20 kernel/locking/mutex.c:1118
+>  kernfs_iop_permission+0x66/0x2f0 fs/kernfs/inode.c:284
+>  do_inode_permission fs/namei.c:398 [inline]
+>  inode_permission+0x234/0x4a0 fs/namei.c:463
+>  may_lookup fs/namei.c:1575 [inline]
+>  link_path_walk+0x226/0xc10 fs/namei.c:2128
+>  path_openat+0x1f5/0x37a0 fs/namei.c:3367
+>  do_filp_open+0x191/0x3a0 fs/namei.c:3398
+>  do_sys_openat2+0xba/0x380 fs/open.c:1172
+>  do_sys_open fs/open.c:1188 [inline]
+>  __do_sys_open fs/open.c:1196 [inline]
+>  __se_sys_open fs/open.c:1192 [inline]
+>  __x64_sys_open+0x1af/0x1e0 fs/open.c:1192
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x7fdaf5f1370d
+> Code: 30 2c 00 00 75 10 b8 02 00 00 00 0f 05 48 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 fe 9d 01 00 48 89 04 24 b8 02 00 00 00 0f 05 <48> 8b 3c 24 48 89 c2 e8 47 9e 01 00 48 89 d0 48 83 c4 08 48 3d 01
+> RSP: 002b:00007ffedccb56f0 EFLAGS: 00000293 ORIG_RAX: 0000000000000002
+> RAX: ffffffffffffffda RBX: 000055b998e80590 RCX: 00007fdaf5f1370d
+> RDX: 00000000000001b6 RSI: 0000000000080000 RDI: 00007ffedccb57d0
+> RBP: 0000000000000008 R08: 0000000000000008 R09: 0000000000000001
+> R10: 0000000000080000 R11: 0000000000000293 R12: 00007fdaf764d7b4
+> R13: 0000000000000001 R14: 000055b998d5ad60 R15: 00007ffedccb57d0
+>
+>
 
-Mkay. Perf calls a BPF program from NMI context. Should that program
-type be significantly restricted? But even if maps can't be used, is
-there anything useful a program invoked from such context can do at
-all?
+The bisection result is questionable.
+The repro does ioctl NS_GET_OWNER_UID which should not be hitting
+any code affected by the bisected commit.
 
-> >  verify_lock_unused kernel/locking/lockdep.c:5374 [inline]
-> >  lock_acquire kernel/locking/lockdep.c:5433 [inline]
-> >  lock_acquire+0x471/0x720 kernel/locking/lockdep.c:5407
-> >  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-> >  _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
-> >  htab_lock_bucket kernel/bpf/hashtab.c:175 [inline]
-> >  htab_map_update_elem+0x1f0/0x790 kernel/bpf/hashtab.c:1023
-> >  bpf_prog_60236c52b8017ad1+0x8e/0xab4
-> >  bpf_dispatcher_nop_func include/linux/bpf.h:651 [inline]
-> >  bpf_overflow_handler+0x192/0x5b0 kernel/events/core.c:9755
-> >  __perf_event_overflow+0x13c/0x370 kernel/events/core.c:8979
-> >  perf_swevent_overflow kernel/events/core.c:9055 [inline]
-> >  perf_swevent_event+0x347/0x550 kernel/events/core.c:9083
-> >  perf_bp_event+0x1a2/0x1c0 kernel/events/core.c:9932
-> >  hw_breakpoint_handler arch/x86/kernel/hw_breakpoint.c:535 [inline]
-> >  hw_breakpoint_exceptions_notify+0x18a/0x3b0 arch/x86/kernel/hw_breakpoint.c:567
-> >  notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
-> >  atomic_notifier_call_chain+0x8d/0x170 kernel/notifier.c:217
-> >  notify_die+0xda/0x170 kernel/notifier.c:548
-> >  notify_debug+0x20/0x30 arch/x86/kernel/traps.c:842
-> >  exc_debug_kernel arch/x86/kernel/traps.c:902 [inline]
-> >  exc_debug+0x103/0x140 arch/x86/kernel/traps.c:998
-> >  asm_exc_debug+0x19/0x30 arch/x86/include/asm/idtentry.h:598
+If anything I would also try:
+
+#syz fix: ovl: avoid deadlock on directory ioctl
+
+Perhaps a lock left help by some ioctl that happened before the repro has
+caused this report.
+
+Thanks,
+Amir.
