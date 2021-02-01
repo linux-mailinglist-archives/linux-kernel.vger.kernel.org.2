@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8DD030A8D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:36:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB1B30A8D9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:36:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231575AbhBANff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:35:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45248 "EHLO
+        id S231594AbhBANfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:35:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232091AbhBANfW (ORCPT
+        with ESMTP id S231821AbhBANfV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:35:22 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95157C061786
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 05:34:41 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id v7so1959810ybl.15
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 05:34:41 -0800 (PST)
+        Mon, 1 Feb 2021 08:35:21 -0500
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C874C061793
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 05:34:45 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id p185so13259687qkc.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 05:34:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=mnds11y9FNrp323GajJFK8KvbscLeWeMbT619mwXZXg=;
-        b=N6V1sdDKd2j8yiond4zOT3GJQv+esIjI5wNVn7T7h1wLDzd31Ga62NX+HJ8kLWS+jn
-         Zme6/AUKB2l9lZqiCriXyvVArcv6p/ij2JzvnCblVSCSyqlKFVkSACARLkzp1kMNYoua
-         nF7xd4Nt60T2hsPGOY5uRdu/BISNO9aUGPWoMw51/AeF+7WbZU97FGLuHWy48A/pFD7j
-         jSEadts9nhms/tJgWGmodZ6yHhmIQduuIFVD5aOdQN31xHyR8IOGG3LU9gZ8L9SQO4gX
-         TPPG2x2EIgdKpP2n9+Lviuck89ttEgjsKHf3n/5EKbWcbZJJ1ro8a2+OJ4j05cLiTny9
-         465Q==
+        bh=m8W+FCLX1Pun/JEQrxjXJAxYcdieBOkLO1+R1avD5+g=;
+        b=vf2LA+x9n/dXcnOgJhGFxuRXXoMru5V+FYQOUDlRYP1aGvCRHIAGc8iw5b5Xe7TZgI
+         jW2zIpXlpuM+W8789sqfWiLSEw87PMyDlJsDw0N97EYzeBuzzj0UWaG/bp73Lf7WYJzw
+         sWxi+ttMOmSt0MWs/w7IOP2JRZn28piC9KtSZwJZNjD9vj1vkM224HEM3V4OiZ1riMXA
+         rHo8GNP1xBGaDRm8+TKOT+70gkFmNaNZ1w1ykkdjHI44ro3IiuY1HKsw323n87l+3E12
+         pTLec6llUZGUYBJppwUcILPXf26MosorT0KUd8FMYvGP2IXUcwYp2b/qPZtoQJZlXnxG
+         TVrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=mnds11y9FNrp323GajJFK8KvbscLeWeMbT619mwXZXg=;
-        b=tiWcoG2id0mGLygWM6HgH8K/YHZRvMTZUE92AVUU+ZaZR2j5Rm8aUaJbQZBH0TT6Cb
-         dN/U480HtdU4BB8g4+nwMsIxMZz3eAm+LaxyKHhprtdN2NfPTldvY5DBC4XOebMzom36
-         r4NNfZypwaL0BGEK/49LVhIzqz/q37XBLyfYEpGW/95WM5vPrhg96znctLj5dwbGw5Bc
-         nf52jXY5VTpxCqAkgjAIONVydY30DekneADm1JE0y4xuLr0irU8qtsJqd/wjpTNSrW7m
-         +IbmByZz+uITGkPqvxuwg5jdHXtWkMWYoj9r3ee1DEQIh7S4XZwV8OEdFUpjSskr8R3l
-         LTZg==
-X-Gm-Message-State: AOAM5306Ta/YfzTrIF7QB1vh/HQgrfeR63oQWX5IkNE+bhDsgjV1zBWk
-        YB/n/aelVbJSO21OQniMHAC8gIbChyZl
-X-Google-Smtp-Source: ABdhPJxv9G9EEEx3OCjKCpvcxhiIir4BwZV7Pre1qxiSf+f/BEhu16XFcuQQGTisAngpx/VK1bntyOxZhyNs
+        bh=m8W+FCLX1Pun/JEQrxjXJAxYcdieBOkLO1+R1avD5+g=;
+        b=AlLUrg8BFFJ4gfGF2INAC/XKLJFNVZWhI0zpr/JH+9yrA23rmaFClODvB5hYmCXB7H
+         80Jb9V6xNBie1DvD2K1S+5HMaBFWbCjtLHfbpmz/unvWN10yOIXGAZj4Hq6ZnpO4Mtbx
+         bOU2bwOHulhy91LAzckmIhx3yg7KMqCQ4/mgFNyrfS/TlKzUGDwSQxYzguYSV20wWEvb
+         WeWBKjjN6fnrMb4yb4FIMNeTESg7UBgUCK3zTDn/0kSR2t77b83wAdBHXMcyalQUEGsE
+         WOxR5SntImHw9Od8hP6gnlKkjV8bz1DRxEXq1IpGJEYoKdSCaO5UlvC7m1bckZOMqFq7
+         1UFQ==
+X-Gm-Message-State: AOAM532UsCkQwrFVDoK3fRQr6GyyDEePtM3Qm5pB5rB44l+nO7Xt2TaI
+        fHNPy0P35VhLaqwE4w0Rjb4v7HQvBJTz
+X-Google-Smtp-Source: ABdhPJyjoJgQGM/Yyew+jPVYJjPUXEU9r3T/D+IW2MyMMn6+4i/S3wLp/9j8/ro2ePtOKmzdsHbawOvApEDt
 Sender: "kyletso via sendgmr" <kyletso@kyletso.ntc.corp.google.com>
 X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:dd94:c753:a81d:c855])
- (user=kyletso job=sendgmr) by 2002:a25:be4b:: with SMTP id
- d11mr26961489ybm.16.1612186480829; Mon, 01 Feb 2021 05:34:40 -0800 (PST)
-Date:   Mon,  1 Feb 2021 21:34:19 +0800
+ (user=kyletso job=sendgmr) by 2002:a0c:efd2:: with SMTP id
+ a18mr15070341qvt.7.1612186484498; Mon, 01 Feb 2021 05:34:44 -0800 (PST)
+Date:   Mon,  1 Feb 2021 21:34:20 +0800
 In-Reply-To: <20210201133421.408508-1-kyletso@google.com>
-Message-Id: <20210201133421.408508-2-kyletso@google.com>
+Message-Id: <20210201133421.408508-3-kyletso@google.com>
 Mime-Version: 1.0
 References: <20210201133421.408508-1-kyletso@google.com>
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v3 1/3] usb: typec: Determine common SVDM Versions
+Subject: [PATCH v3 2/3] dt-bindings: connector: Add SVDM VDO properties
 From:   Kyle Tso <kyletso@google.com>
 To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
         gregkh@linuxfoundation.org, hdegoede@redhat.com, robh+dt@kernel.org
@@ -64,500 +64,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PD Spec Revision 3.0 Version 2.0 + ECNs 2020-12-10
-  6.4.4.2.3 Structured VDM Version
-  "The Structured VDM Version field of the Discover Identity Command
-  sent and received during VDM discovery Shall be used to determine the
-  lowest common Structured VDM Version supported by the Port Partners or
-  Cable Plug and Shall continue to operate using this Specification
-  Revision until they are Detached."
-
-Also clear the fields newly defined in SVDM version 2.0 for
-compatibilities. And fix some VDO definitions changed in the Spec.
+Add bindings of VDO properties of USB PD SVDM so that they can be
+used in device tree.
 
 Signed-off-by: Kyle Tso <kyletso@google.com>
 ---
 Changes since v2:
-- rename the variable and the functions (remove the text "common")
-- remove the macro
+- no change
 
- drivers/usb/typec/altmodes/displayport.c |   8 +-
- drivers/usb/typec/class.c                |  21 +-
- drivers/usb/typec/tcpm/tcpm.c            |  47 +++-
- drivers/usb/typec/ucsi/displayport.c     |  12 +-
- drivers/usb/typec/ucsi/ucsi.c            |   2 +
- include/linux/usb/pd_vdo.h               | 315 +++++++++++++++++------
- include/linux/usb/typec.h                |  10 +
- 7 files changed, 326 insertions(+), 89 deletions(-)
+ .../bindings/connector/usb-connector.yaml     |  11 +
+ include/dt-bindings/usb/pd.h                  | 311 +++++++++++++++++-
+ 2 files changed, 321 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/usb/typec/altmodes/displayport.c b/drivers/usb/typec/altmodes/displayport.c
-index e62e5e3da01e..7b47dd4ea531 100644
---- a/drivers/usb/typec/altmodes/displayport.c
-+++ b/drivers/usb/typec/altmodes/displayport.c
-@@ -15,8 +15,10 @@
- #include <linux/usb/typec_dp.h>
- #include "displayport.h"
+diff --git a/Documentation/devicetree/bindings/connector/usb-connector.yaml b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+index 4286ed767a0a..d385026944ec 100644
+--- a/Documentation/devicetree/bindings/connector/usb-connector.yaml
++++ b/Documentation/devicetree/bindings/connector/usb-connector.yaml
+@@ -137,6 +137,17 @@ properties:
+     maxItems: 7
+     $ref: /schemas/types.yaml#/definitions/uint32-array
  
--#define DP_HEADER(_dp, cmd)		(VDO((_dp)->alt->svid, 1, cmd) | \
--					 VDO_OPOS(USB_TYPEC_DP_MODE))
-+#define DP_HEADER(_dp, cmd)		(VDO((_dp)->alt->svid, 1,			\
-+					     typec_get_svdm_version((_dp)->typec),	\
-+					     cmd)					\
-+					 | VDO_OPOS(USB_TYPEC_DP_MODE))
- 
- enum {
- 	DP_CONF_USB,
-@@ -62,6 +64,7 @@ struct dp_altmode {
- 	struct work_struct work;
- 	struct typec_altmode *alt;
- 	const struct typec_altmode *port;
-+	struct typec_port *typec;
- };
- 
- static int dp_altmode_notify(struct dp_altmode *dp)
-@@ -536,6 +539,7 @@ int dp_altmode_probe(struct typec_altmode *alt)
- 	mutex_init(&dp->lock);
- 	dp->port = port;
- 	dp->alt = alt;
-+	dp->typec = typec_altmode2port(alt);
- 
- 	alt->desc = "DisplayPort";
- 	alt->ops = &dp_altmode_ops;
-diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-index 8f77669f9cf4..4cbdb7974b4a 100644
---- a/drivers/usb/typec/class.c
-+++ b/drivers/usb/typec/class.c
-@@ -49,6 +49,7 @@ struct typec_port {
- 	enum typec_role			vconn_role;
- 	enum typec_pwr_opmode		pwr_opmode;
- 	enum typec_port_type		port_type;
-+	enum usb_pd_svdm_ver		svdm_version;
- 	struct mutex			port_type_lock;
- 
- 	enum typec_orientation		orientation;
-@@ -86,7 +87,7 @@ static const char * const typec_accessory_modes[] = {
- 
- /* Product types defined in USB PD Specification R3.0 V2.0 */
- static const char * const product_type_ufp[8] = {
--	[IDH_PTYPE_UNDEF]		= "undefined",
-+	[IDH_PTYPE_NOT_UFP]		= "not_ufp",
- 	[IDH_PTYPE_HUB]			= "hub",
- 	[IDH_PTYPE_PERIPH]		= "peripheral",
- 	[IDH_PTYPE_PSD]			= "psd",
-@@ -94,17 +95,17 @@ static const char * const product_type_ufp[8] = {
- };
- 
- static const char * const product_type_dfp[8] = {
--	[IDH_PTYPE_DFP_UNDEF]		= "undefined",
-+	[IDH_PTYPE_NOT_DFP]		= "not_dfp",
- 	[IDH_PTYPE_DFP_HUB]		= "hub",
- 	[IDH_PTYPE_DFP_HOST]		= "host",
- 	[IDH_PTYPE_DFP_PB]		= "power_brick",
--	[IDH_PTYPE_DFP_AMC]		= "amc",
- };
- 
- static const char * const product_type_cable[8] = {
--	[IDH_PTYPE_UNDEF]		= "undefined",
-+	[IDH_PTYPE_NOT_CABLE]		= "not_cable",
- 	[IDH_PTYPE_PCABLE]		= "passive",
- 	[IDH_PTYPE_ACABLE]		= "active",
-+	[IDH_PTYPE_VPD]			= "vpd",
- };
- 
- static struct usb_pd_identity *get_pd_identity(struct device *dev)
-@@ -1788,6 +1789,18 @@ int typec_find_port_data_role(const char *name)
- }
- EXPORT_SYMBOL_GPL(typec_find_port_data_role);
- 
-+void typec_set_svdm_version(struct typec_port *port, enum usb_pd_svdm_ver ver)
-+{
-+	port->svdm_version = ver;
-+}
-+EXPORT_SYMBOL_GPL(typec_set_svdm_version);
++  sink-vdos:
++    description: An array of u32 with each entry (VDM Objects) providing additional information
++      corresponding to the product, the detailed bit definitions and the order of each VDO can be
++      found in "USB Power Delivery Specification Revision 3.0, Version 2.0 + ECNs 2020-12-10"
++      chapter 6.4.4.3.1 Discover Identity. User can specify the VDO array via
++      VDO_IDH/_CERT/_PRODUCT/_UFP/_DFP/_PCABLE/_ACABLE(1/2)/_VPD() defined in
++      dt-bindings/usb/pd.h.
++    minItems: 3
++    maxItems: 6
++    $ref: /schemas/types.yaml#/definitions/uint32-array
 +
-+enum usb_pd_svdm_ver typec_get_svdm_version(struct typec_port *port)
-+{
-+	return port->svdm_version;
-+}
-+EXPORT_SYMBOL_GPL(typec_get_svdm_version);
+   op-sink-microwatt:
+     description: Sink required operating power in microwatt, if source can't
+       offer the power, Capability Mismatch is set. Required for power sink and
+diff --git a/include/dt-bindings/usb/pd.h b/include/dt-bindings/usb/pd.h
+index 0352893697f0..fef3ef65967f 100644
+--- a/include/dt-bindings/usb/pd.h
++++ b/include/dt-bindings/usb/pd.h
+@@ -93,4 +93,313 @@
+ #define FRS_DEFAULT_POWER      1
+ #define FRS_5V_1P5A            2
+ #define FRS_5V_3A              3
+- #endif /* __DT_POWER_DELIVERY_H */
 +
- /* ------------------------------------------ */
- /* API for Multiplexer/DeMultiplexer Switches */
- 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 0afd8ef692e8..979b7ee6473c 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -1475,6 +1475,7 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
- 			const u32 *p, int cnt, u32 *response,
- 			enum adev_actions *adev_action)
- {
-+	struct typec_port *typec = port->typec_port;
- 	struct typec_altmode *pdev;
- 	struct pd_mode_data *modep;
- 	int rlen = 0;
-@@ -1500,10 +1501,21 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
- 			if (PD_VDO_VID(p[0]) != USB_SID_PD)
- 				break;
- 
-+			if (PD_VDO_SVDM_VER(p[0]) < typec_get_svdm_version(typec))
-+				typec_set_svdm_version(typec, PD_VDO_SVDM_VER(p[0]));
- 			/* 6.4.4.3.1: Only respond as UFP (device) */
- 			if (port->data_role == TYPEC_DEVICE &&
- 			    port->nr_snk_vdo) {
--				for (i = 0; i <  port->nr_snk_vdo; i++)
-+				/*
-+				 * Product Type DFP and Connector Type are not defined in SVDM
-+				 * version 1.0 and shall be set to zero.
-+				 */
-+				if (typec_get_svdm_version(typec) < SVDM_VER_2_0)
-+					response[1] = port->snk_vdo[0] & ~IDH_DFP_MASK
-+						      & ~IDH_CONN_MASK;
-+				else
-+					response[1] = port->snk_vdo[0];
-+				for (i = 1; i <  port->nr_snk_vdo; i++)
- 					response[i + 1] = port->snk_vdo[i];
- 				rlen = port->nr_snk_vdo + 1;
- 			}
-@@ -1532,6 +1544,8 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
- 			response[0] = p[0] | VDO_CMDT(CMDT_RSP_BUSY);
- 			rlen = 1;
- 		}
-+		response[0] = (response[0] & ~VDO_SVDM_VERS_MASK) |
-+			      (VDO_SVDM_VERS(typec_get_svdm_version(typec)));
- 		break;
- 	case CMDT_RSP_ACK:
- 		/* silently drop message if we are not connected */
-@@ -1542,19 +1556,23 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
- 
- 		switch (cmd) {
- 		case CMD_DISCOVER_IDENT:
-+			if (PD_VDO_SVDM_VER(p[0]) < typec_get_svdm_version(typec))
-+				typec_set_svdm_version(typec, PD_VDO_SVDM_VER(p[0]));
- 			/* 6.4.4.3.1 */
- 			svdm_consume_identity(port, p, cnt);
--			response[0] = VDO(USB_SID_PD, 1, CMD_DISCOVER_SVID);
-+			response[0] = VDO(USB_SID_PD, 1, typec_get_svdm_version(typec),
-+					  CMD_DISCOVER_SVID);
- 			rlen = 1;
- 			break;
- 		case CMD_DISCOVER_SVID:
- 			/* 6.4.4.3.2 */
- 			if (svdm_consume_svids(port, p, cnt)) {
--				response[0] = VDO(USB_SID_PD, 1,
-+				response[0] = VDO(USB_SID_PD, 1, typec_get_svdm_version(typec),
- 						  CMD_DISCOVER_SVID);
- 				rlen = 1;
- 			} else if (modep->nsvids && supports_modal(port)) {
- 				response[0] = VDO(modep->svids[0], 1,
-+						  typec_get_svdm_version(typec),
- 						  CMD_DISCOVER_MODES);
- 				rlen = 1;
- 			}
-@@ -1565,7 +1583,8 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
- 			modep->svid_index++;
- 			if (modep->svid_index < modep->nsvids) {
- 				u16 svid = modep->svids[modep->svid_index];
--				response[0] = VDO(svid, 1, CMD_DISCOVER_MODES);
-+				response[0] = VDO(svid, 1, typec_get_svdm_version(typec),
-+						  CMD_DISCOVER_MODES);
- 				rlen = 1;
- 			} else {
- 				tcpm_register_partner_altmodes(port);
-@@ -1592,6 +1611,8 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
- 			/* Unrecognized SVDM */
- 			response[0] = p[0] | VDO_CMDT(CMDT_RSP_NAK);
- 			rlen = 1;
-+			response[0] = (response[0] & ~VDO_SVDM_VERS_MASK) |
-+				      (VDO_SVDM_VERS(typec_get_svdm_version(typec)));
- 			break;
- 		}
- 		break;
-@@ -1611,6 +1632,8 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
- 			/* Unrecognized SVDM */
- 			response[0] = p[0] | VDO_CMDT(CMDT_RSP_NAK);
- 			rlen = 1;
-+			response[0] = (response[0] & ~VDO_SVDM_VERS_MASK) |
-+				      (VDO_SVDM_VERS(typec_get_svdm_version(typec)));
- 			break;
- 		}
- 		port->vdm_sm_running = false;
-@@ -1618,6 +1641,8 @@ static int tcpm_pd_svdm(struct tcpm_port *port, struct typec_altmode *adev,
- 	default:
- 		response[0] = p[0] | VDO_CMDT(CMDT_RSP_NAK);
- 		rlen = 1;
-+		response[0] = (response[0] & ~VDO_SVDM_VERS_MASK) |
-+			      (VDO_SVDM_VERS(typec_get_svdm_version(typec)));
- 		port->vdm_sm_running = false;
- 		break;
- 	}
-@@ -1695,7 +1720,9 @@ static void tcpm_handle_vdm_request(struct tcpm_port *port,
- 			break;
- 		case ADEV_QUEUE_VDM_SEND_EXIT_MODE_ON_FAIL:
- 			if (typec_altmode_vdm(adev, p[0], &p[1], cnt)) {
--				response[0] = VDO(adev->svid, 1, CMD_EXIT_MODE);
-+				response[0] = VDO(adev->svid, 1,
-+						  typec_get_svdm_version(port->typec_port),
-+						  CMD_EXIT_MODE);
- 				response[0] |= VDO_OPOS(adev->mode);
- 				rlen = 1;
- 			}
-@@ -1729,7 +1756,8 @@ static void tcpm_send_vdm(struct tcpm_port *port, u32 vid, int cmd,
- 
- 	/* set VDM header with VID & CMD */
- 	header = VDO(vid, ((vid & USB_SID_PD) == USB_SID_PD) ?
--			1 : (PD_VDO_CMD(cmd) <= CMD_ATTENTION), cmd);
-+			1 : (PD_VDO_CMD(cmd) <= CMD_ATTENTION),
-+			typec_get_svdm_version(port->typec_port), cmd);
- 	tcpm_queue_vdm(port, header, data, count);
- }
- 
-@@ -2024,7 +2052,8 @@ static int tcpm_altmode_enter(struct typec_altmode *altmode, u32 *vdo)
- 	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
- 	u32 header;
- 
--	header = VDO(altmode->svid, vdo ? 2 : 1, CMD_ENTER_MODE);
-+	header = VDO(altmode->svid, vdo ? 2 : 1, typec_get_svdm_version(port->typec_port),
-+		     CMD_ENTER_MODE);
- 	header |= VDO_OPOS(altmode->mode);
- 
- 	tcpm_queue_vdm_unlocked(port, header, vdo, vdo ? 1 : 0);
-@@ -2036,7 +2065,7 @@ static int tcpm_altmode_exit(struct typec_altmode *altmode)
- 	struct tcpm_port *port = typec_altmode_get_drvdata(altmode);
- 	u32 header;
- 
--	header = VDO(altmode->svid, 1, CMD_EXIT_MODE);
-+	header = VDO(altmode->svid, 1, typec_get_svdm_version(port->typec_port), CMD_EXIT_MODE);
- 	header |= VDO_OPOS(altmode->mode);
- 
- 	tcpm_queue_vdm_unlocked(port, header, NULL, 0);
-@@ -3445,6 +3474,7 @@ static void tcpm_reset_port(struct tcpm_port *port)
- 	port->attached = false;
- 	port->pd_capable = false;
- 	port->pps_data.supported = false;
-+	typec_set_svdm_version(port->typec_port, port->typec_caps.svdm_version);
- 
- 	/*
- 	 * First Rx ID should be 0; set this to a sentinel of -1 so that
-@@ -5952,6 +5982,7 @@ struct tcpm_port *tcpm_register_port(struct device *dev, struct tcpc_dev *tcpc)
- 	port->typec_caps.fwnode = tcpc->fwnode;
- 	port->typec_caps.revision = 0x0120;	/* Type-C spec release 1.2 */
- 	port->typec_caps.pd_revision = 0x0300;	/* USB-PD spec release 3.0 */
-+	port->typec_caps.svdm_version = SVDM_VER_2_0;
- 	port->typec_caps.driver_data = port;
- 	port->typec_caps.ops = &tcpm_ops;
- 	port->typec_caps.orientation_aware = 1;
-diff --git a/drivers/usb/typec/ucsi/displayport.c b/drivers/usb/typec/ucsi/displayport.c
-index 261131c9e37c..b58ef26a50e0 100644
---- a/drivers/usb/typec/ucsi/displayport.c
-+++ b/drivers/usb/typec/ucsi/displayport.c
-@@ -48,6 +48,7 @@ struct ucsi_dp {
- static int ucsi_displayport_enter(struct typec_altmode *alt, u32 *vdo)
- {
- 	struct ucsi_dp *dp = typec_altmode_get_drvdata(alt);
-+	struct typec_port *port = dp->con->port;
- 	struct ucsi *ucsi = dp->con->ucsi;
- 	u64 command;
- 	u8 cur = 0;
-@@ -83,7 +84,7 @@ static int ucsi_displayport_enter(struct typec_altmode *alt, u32 *vdo)
- 	 * mode, and letting the alt mode driver continue.
- 	 */
- 
--	dp->header = VDO(USB_TYPEC_DP_SID, 1, CMD_ENTER_MODE);
-+	dp->header = VDO(USB_TYPEC_DP_SID, 1, typec_get_svdm_version(port), CMD_ENTER_MODE);
- 	dp->header |= VDO_OPOS(USB_TYPEC_DP_MODE);
- 	dp->header |= VDO_CMDT(CMDT_RSP_ACK);
- 
-@@ -101,6 +102,7 @@ static int ucsi_displayport_enter(struct typec_altmode *alt, u32 *vdo)
- static int ucsi_displayport_exit(struct typec_altmode *alt)
- {
- 	struct ucsi_dp *dp = typec_altmode_get_drvdata(alt);
-+	struct typec_port *port = dp->con->port;
- 	u64 command;
- 	int ret = 0;
- 
-@@ -120,7 +122,7 @@ static int ucsi_displayport_exit(struct typec_altmode *alt)
- 	if (ret < 0)
- 		goto out_unlock;
- 
--	dp->header = VDO(USB_TYPEC_DP_SID, 1, CMD_EXIT_MODE);
-+	dp->header = VDO(USB_TYPEC_DP_SID, 1, typec_get_svdm_version(port), CMD_EXIT_MODE);
- 	dp->header |= VDO_OPOS(USB_TYPEC_DP_MODE);
- 	dp->header |= VDO_CMDT(CMDT_RSP_ACK);
- 
-@@ -184,6 +186,7 @@ static int ucsi_displayport_vdm(struct typec_altmode *alt,
- 				u32 header, const u32 *data, int count)
- {
- 	struct ucsi_dp *dp = typec_altmode_get_drvdata(alt);
-+	struct typec_port *port = dp->con->port;
- 	int cmd_type = PD_VDO_CMDT(header);
- 	int cmd = PD_VDO_CMD(header);
- 
-@@ -200,7 +203,10 @@ static int ucsi_displayport_vdm(struct typec_altmode *alt,
- 
- 	switch (cmd_type) {
- 	case CMDT_INIT:
--		dp->header = VDO(USB_TYPEC_DP_SID, 1, cmd);
-+		if (PD_VDO_SVDM_VER(header) < typec_get_svdm_version(port))
-+			typec_set_svdm_version(port, PD_VDO_SVDM_VER(header));
-+
-+		dp->header = VDO(USB_TYPEC_DP_SID, 1, typec_get_svdm_version(port), cmd);
- 		dp->header |= VDO_OPOS(USB_TYPEC_DP_MODE);
- 
- 		switch (cmd) {
-diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
-index ca3f4194ad90..8c4897a7bf75 100644
---- a/drivers/usb/typec/ucsi/ucsi.c
-+++ b/drivers/usb/typec/ucsi/ucsi.c
-@@ -764,6 +764,7 @@ static void ucsi_handle_connector_change(struct work_struct *work)
- 
- 	if (con->status.change & UCSI_CONSTAT_CONNECT_CHANGE) {
- 		typec_set_pwr_role(con->port, role);
-+		typec_set_svdm_version(con->port, con->typec_cap.svdm_version);
- 
- 		switch (UCSI_CONSTAT_PARTNER_TYPE(con->status.flags)) {
- 		case UCSI_CONSTAT_PARTNER_TYPE_UFP:
-@@ -1052,6 +1053,7 @@ static int ucsi_register_port(struct ucsi *ucsi, int index)
- 
- 	cap->revision = ucsi->cap.typec_version;
- 	cap->pd_revision = ucsi->cap.pd_version;
-+	cap->svdm_version = SVDM_VER_2_0;
- 	cap->prefer_role = TYPEC_NO_PREFERRED_ROLE;
- 
- 	if (con->cap.op_mode & UCSI_CONCAP_OPMODE_AUDIO_ACCESSORY)
-diff --git a/include/linux/usb/pd_vdo.h b/include/linux/usb/pd_vdo.h
-index 8c08eeb9a74b..c30d893c9c81 100644
---- a/include/linux/usb/pd_vdo.h
-+++ b/include/linux/usb/pd_vdo.h
-@@ -21,22 +21,24 @@
-  * ----------
-  * <31:16>  :: SVID
-  * <15>     :: VDM type ( 1b == structured, 0b == unstructured )
-- * <14:13>  :: Structured VDM version (can only be 00 == 1.0 currently)
-+ * <14:13>  :: Structured VDM version
-  * <12:11>  :: reserved
-  * <10:8>   :: object position (1-7 valid ... used for enter/exit mode only)
-  * <7:6>    :: command type (SVDM only?)
-  * <5>      :: reserved (SVDM), command type (UVDM)
-  * <4:0>    :: command
-  */
--#define VDO(vid, type, custom)				\
-+#define VDO(vid, type, ver, custom)				\
- 	(((vid) << 16) |				\
- 	 ((type) << 15) |				\
-+	 ((ver) << 13) |				\
- 	 ((custom) & 0x7FFF))
- 
- #define VDO_SVDM_TYPE		(1 << 15)
- #define VDO_SVDM_VERS(x)	((x) << 13)
- #define VDO_OPOS(x)		((x) << 8)
- #define VDO_CMDT(x)		((x) << 6)
-+#define VDO_SVDM_VERS_MASK	VDO_SVDM_VERS(0x3)
- #define VDO_OPOS_MASK		VDO_OPOS(0x7)
- #define VDO_CMDT_MASK		VDO_CMDT(0x3)
- 
-@@ -74,6 +76,7 @@
- 
- #define PD_VDO_VID(vdo)		((vdo) >> 16)
- #define PD_VDO_SVDM(vdo)	(((vdo) >> 15) & 1)
-+#define PD_VDO_SVDM_VER(vdo)	(((vdo) >> 13) & 0x3)
- #define PD_VDO_OPOS(vdo)	(((vdo) >> 8) & 0x7)
- #define PD_VDO_CMD(vdo)		((vdo) & 0x1f)
- #define PD_VDO_CMDT(vdo)	(((vdo) >> 6) & 0x3)
-@@ -103,34 +106,46 @@
-  * --------------------
-  * <31>     :: data capable as a USB host
-  * <30>     :: data capable as a USB device
-- * <29:27>  :: product type (UFP / Cable)
++/*
++ * SVDM Identity Header
++ * --------------------
++ * <31>     :: data capable as a USB host
++ * <30>     :: data capable as a USB device
 + * <29:27>  :: product type (UFP / Cable / VPD)
-  * <26>     :: modal operation supported (1b == yes)
-- * <25:16>  :: product type (DFP)
++ * <26>     :: modal operation supported (1b == yes)
 + * <25:23>  :: product type (DFP) (SVDM version 2.0+ only; set to zero in version 1.0)
 + * <22:21>  :: connector type (SVDM version 2.0+ only; set to zero in version 1.0)
 + * <20:16>  :: Reserved, Shall be set to zero
-  * <15:0>   :: USB-IF assigned VID for this cable vendor
-  */
--#define IDH_PTYPE_UNDEF		0
++ * <15:0>   :: USB-IF assigned VID for this cable vendor
++ */
 +/* SOP Product Type (UFP) */
-+#define IDH_PTYPE_NOT_UFP	0
- #define IDH_PTYPE_HUB		1
- #define IDH_PTYPE_PERIPH	2
- #define IDH_PTYPE_PSD		3
- #define IDH_PTYPE_AMA		5
- 
-+/* SOP' Product Type (Cable Plug / VPD) */
-+#define IDH_PTYPE_NOT_CABLE	0
- #define IDH_PTYPE_PCABLE	3
- #define IDH_PTYPE_ACABLE	4
-+#define IDH_PTYPE_VPD		6
- 
--#define IDH_PTYPE_DFP_UNDEF	0
-+/* SOP Product Type (DFP) */
-+#define IDH_PTYPE_NOT_DFP	0
- #define IDH_PTYPE_DFP_HUB	1
- #define IDH_PTYPE_DFP_HOST	2
- #define IDH_PTYPE_DFP_PB	3
--#define IDH_PTYPE_DFP_AMC	4
- 
--#define VDO_IDH(usbh, usbd, ptype, is_modal, vid)		\
--	((usbh) << 31 | (usbd) << 30 | ((ptype) & 0x7) << 27	\
--	 | (is_modal) << 26 | ((vid) & 0xffff))
-+/* ID Header Mask */
-+#define IDH_DFP_MASK		GENMASK(25, 23)
-+#define IDH_CONN_MASK		GENMASK(22, 21)
++#define IDH_PTYPE_NOT_UFP       0
++#define IDH_PTYPE_HUB           1
++#define IDH_PTYPE_PERIPH        2
++#define IDH_PTYPE_PSD           3
++#define IDH_PTYPE_AMA           5
 +
-+#define VDO_IDH(usbh, usbd, ufp_cable, is_modal, dfp, conn, vid)		\
-+	((usbh) << 31 | (usbd) << 30 | ((ufp_cable) & 0x7) << 27		\
-+	 | (is_modal) << 26 | ((dfp) & 0x7) << 23 | ((conn) & 0x3) << 21	\
++/* SOP' Product Type (Cable Plug / VPD) */
++#define IDH_PTYPE_NOT_CABLE     0
++#define IDH_PTYPE_PCABLE        3
++#define IDH_PTYPE_ACABLE        4
++#define IDH_PTYPE_VPD           6
++
++/* SOP Product Type (DFP) */
++#define IDH_PTYPE_NOT_DFP       0
++#define IDH_PTYPE_DFP_HUB       1
++#define IDH_PTYPE_DFP_HOST      2
++#define IDH_PTYPE_DFP_PB        3
++
++#define VDO_IDH(usbh, usbd, ufp_cable, is_modal, dfp, conn, vid)                \
++	((usbh) << 31 | (usbd) << 30 | ((ufp_cable) & 0x7) << 27                \
++	 | (is_modal) << 26 | ((dfp) & 0x7) << 23 | ((conn) & 0x3) << 21        \
 +	 | ((vid) & 0xffff))
- 
- #define PD_IDH_PTYPE(vdo)	(((vdo) >> 27) & 0x7)
- #define PD_IDH_VID(vdo)		((vdo) & 0xffff)
- #define PD_IDH_MODAL_SUPP(vdo)	((vdo) & (1 << 26))
- #define PD_IDH_DFP_PTYPE(vdo)	(((vdo) >> 23) & 0x7)
-+#define PD_IDH_CONN_TYPE(vdo)	(((vdo) >> 21) & 0x3)
- 
- /*
-  * Cert Stat VDO
-@@ -138,6 +153,7 @@
-  * <31:0>  : USB-IF assigned XID for this cable
-  */
- #define PD_CSTAT_XID(vdo)	(vdo)
++
++/*
++ * Cert Stat VDO
++ * -------------
++ * <31:0>  : USB-IF assigned XID for this cable
++ */
 +#define VDO_CERT(xid)		((xid) & 0xffffffff)
- 
- /*
-  * Product VDO
-@@ -149,112 +165,267 @@
- #define PD_PRODUCT_PID(vdo)	(((vdo) >> 16) & 0xffff)
- 
- /*
-- * UFP VDO1
++
++/*
++ * Product VDO
++ * -----------
++ * <31:16> : USB Product ID
++ * <15:0>  : USB bcdDevice
++ */
++#define VDO_PRODUCT(pid, bcd)   (((pid) & 0xffff) << 16 | ((bcd) & 0xffff))
++
++/*
 + * UFP VDO (PD Revision 3.0+ only)
-  * --------
-  * <31:29> :: UFP VDO version
-  * <28>    :: Reserved
-  * <27:24> :: Device capability
-- * <23:6>  :: Reserved
++ * --------
++ * <31:29> :: UFP VDO version
++ * <28>    :: Reserved
++ * <27:24> :: Device capability
 + * <23:22> :: Connector type (10b == receptacle, 11b == captive plug)
 + * <21:11> :: Reserved
 + * <10:8>  :: Vconn power (AMA only)
 + * <7>     :: Vconn required (AMA only, 0b == no, 1b == yes)
 + * <6>     :: Vbus required (AMA only, 0b == yes, 1b == no)
-  * <5:3>   :: Alternate modes
-  * <2:0>   :: USB highest speed
-  */
--#define PD_VDO1_UFP_DEVCAP(vdo)	(((vdo) & GENMASK(27, 24)) >> 24)
-+#define PD_VDO_UFP_DEVCAP(vdo)	(((vdo) & GENMASK(27, 24)) >> 24)
-+
++ * <5:3>   :: Alternate modes
++ * <2:0>   :: USB highest speed
++ */
 +/* UFP VDO Version */
 +#define UFP_VDO_VER1_2		2
- 
++
 +/* Device Capability */
- #define DEV_USB2_CAPABLE	BIT(0)
- #define DEV_USB2_BILLBOARD	BIT(1)
- #define DEV_USB3_CAPABLE	BIT(2)
- #define DEV_USB4_CAPABLE	BIT(3)
- 
++#define DEV_USB2_CAPABLE	BIT(0)
++#define DEV_USB2_BILLBOARD	BIT(1)
++#define DEV_USB3_CAPABLE	BIT(2)
++#define DEV_USB4_CAPABLE	BIT(3)
++
 +/* Connector Type */
 +#define UFP_RECEPTACLE		2
 +#define UFP_CAPTIVE		3
@@ -596,51 +220,37 @@ index 8c08eeb9a74b..c30d893c9c81 100644
 +	 | ((vcpwr) & 0x7) << 8 | (vcr) << 7 | (vbr) << 6 | ((alt) & 0x7) << 3	\
 +	 | ((spd) & 0x7))
 +
- /*
-- * DFP VDO
++/*
 + * DFP VDO (PD Revision 3.0+ only)
-  * --------
-  * <31:29> :: DFP VDO version
-  * <28:27> :: Reserved
-  * <26:24> :: Host capability
-- * <23:5>  :: Reserved
++ * --------
++ * <31:29> :: DFP VDO version
++ * <28:27> :: Reserved
++ * <26:24> :: Host capability
 + * <23:22> :: Connector type (10b == receptacle, 11b == captive plug)
 + * <21:5>  :: Reserved
-  * <4:0>   :: Port number
-  */
- #define PD_VDO_DFP_HOSTCAP(vdo)	(((vdo) & GENMASK(26, 24)) >> 24)
- 
++ * <4:0>   :: Port number
++ */
 +#define DFP_VDO_VER1_1		1
- #define HOST_USB2_CAPABLE	BIT(0)
- #define HOST_USB3_CAPABLE	BIT(1)
- #define HOST_USB4_CAPABLE	BIT(2)
++#define HOST_USB2_CAPABLE	BIT(0)
++#define HOST_USB3_CAPABLE	BIT(1)
++#define HOST_USB4_CAPABLE	BIT(2)
 +#define DFP_RECEPTACLE		2
 +#define DFP_CAPTIVE		3
 +
 +#define VDO_DFP(ver, cap, conn, pnum)						\
 +	(((ver) & 0x7) << 29 | ((cap) & 0x7) << 24 | ((conn) & 0x3) << 22	\
 +	 | ((pnum) & 0x1f))
- 
- /*
-- * Cable VDO
++
++/*
 + * Passive Cable VDO
-  * ---------
-  * <31:28> :: Cable HW version
-  * <27:24> :: Cable FW version
-- * <23:20> :: Reserved, Shall be set to zero
-- * <19:18> :: type-C to Type-A/B/C/Captive (00b == A, 01 == B, 10 == C, 11 == Captive)
-- * <17>    :: Type-C to Plug/Receptacle (0b == plug, 1b == receptacle)
++ * ---------
++ * <31:28> :: Cable HW version
++ * <27:24> :: Cable FW version
 + * <23:21> :: VDO version
 + * <20>    :: Reserved, Shall be set to zero
 + * <19:18> :: Type-C to Type-C/Captive (10b == C, 11b == Captive)
 + * <17>    :: Reserved, Shall be set to zero
-  * <16:13> :: cable latency (0001 == <10ns(~1m length))
-- * <12:11> :: cable termination type (11b == both ends active VCONN req)
-- * <10>    :: SSTX1 Directionality support (0b == fixed, 1b == cfgable)
-- * <9>     :: SSTX2 Directionality support
-- * <8>     :: SSRX1 Directionality support
-- * <7>     :: SSRX2 Directionality support
-- * <6:5>   :: Vbus current handling capability
++ * <16:13> :: cable latency (0001 == <10ns(~1m length))
 + * <12:11> :: cable termination type (10b == Vconn not req, 01b == Vconn req)
 + * <10:9>  :: Maximum Vbus voltage (00b == 20V, 01b == 30V, 10b == 40V, 11b == 50V)
 + * <8:7>   :: Reserved, Shall be set to zero
@@ -662,23 +272,17 @@ index 8c08eeb9a74b..c30d893c9c81 100644
 + * <8>     :: SBU supported (0b == supported, 1b == not supported)
 + * <7>     :: SBU type (0b == passive, 1b == active)
 + * <6:5>   :: Vbus current handling capability (01b == 3A, 10b == 5A)
-  * <4>     :: Vbus through cable (0b == no, 1b == yes)
-  * <3>     :: SOP" controller present? (0b == no, 1b == yes)
-- * <2:0>   :: USB SS Signaling support
++ * <4>     :: Vbus through cable (0b == no, 1b == yes)
++ * <3>     :: SOP" controller present? (0b == no, 1b == yes)
 + * <2:0>   :: USB highest speed
-  */
--#define CABLE_ATYPE		0
--#define CABLE_BTYPE		1
++ */
 +/* Cable VDO Version */
 +#define CABLE_VDO_VER1_0	0
 +#define CABLE_VDO_VER1_3	3
 +
 +/* Connector Type */
- #define CABLE_CTYPE		2
- #define CABLE_CAPTIVE		3
--#define CABLE_PLUG		0
--#define CABLE_RECEPTACLE	1
--#define CABLE_CURR_1A5		0
++#define CABLE_CTYPE		2
++#define CABLE_CAPTIVE		3
 +
 +/* Cable Latency */
 +#define CABLE_LATENCY_1M	1
@@ -710,18 +314,8 @@ index 8c08eeb9a74b..c30d893c9c81 100644
 +
 +/* Vbus Current Handling Capability */
 +#define CABLE_CURR_DEF		0
- #define CABLE_CURR_3A		1
- #define CABLE_CURR_5A		2
--#define CABLE_USBSS_U2_ONLY	0
--#define CABLE_USBSS_U31_GEN1	1
--#define CABLE_USBSS_U31_GEN2	2
--#define VDO_CABLE(hw, fw, cbl, gdr, lat, term, tx1d, tx2d, rx1d, rx2d, cur,\
--		  vps, sopp, usbss) \
--	(((hw) & 0x7) << 28 | ((fw) & 0x7) << 24 | ((cbl) & 0x3) << 18	\
--	 | (gdr) << 17 | ((lat) & 0x7) << 13 | ((term) & 0x3) << 11	\
--	 | (tx1d) << 10 | (tx2d) << 9 | (rx1d) << 8 | (rx2d) << 7	\
--	 | ((cur) & 0x3) << 5 | (vps) << 4 | (sopp) << 3		\
--	 | ((usbss) & 0x7))
++#define CABLE_CURR_3A		1
++#define CABLE_CURR_5A		2
 +
 +/* USB Highest Speed */
 +#define CABLE_USB2_ONLY		0
@@ -739,23 +333,9 @@ index 8c08eeb9a74b..c30d893c9c81 100644
 +	 | ((vbm) & 0x3) << 9 | (sbu) << 8 | (sbut) << 7 | ((cur) & 0x3) << 5	\
 +	 | (vbt) << 4 | (sopp) << 3 | ((spd) & 0x7))
 +
- #define VDO_TYPEC_CABLE_TYPE(vdo)	(((vdo) >> 18) & 0x3)
- 
- /*
-- * AMA VDO
++/*
 + * Active Cable VDO 2
-  * ---------
-- * <31:28> :: Cable HW version
-- * <27:24> :: Cable FW version
-- * <23:12> :: Reserved, Shall be set to zero
-- * <11>    :: SSTX1 Directionality support (0b == fixed, 1b == cfgable)
-- * <10>    :: SSTX2 Directionality support
-- * <9>     :: SSRX1 Directionality support
-- * <8>     :: SSRX2 Directionality support
-- * <7:5>   :: Vconn power
-- * <4>     :: Vconn power required
-- * <3>     :: Vbus power required
-- * <2:0>   :: USB SS Signaling support
++ * ---------
 + * <31:24> :: Maximum operating temperature
 + * <23:16> :: Shutdown temperature
 + * <15>    :: Reserved, Shall be set to zero
@@ -771,15 +351,7 @@ index 8c08eeb9a74b..c30d893c9c81 100644
 + * <2>     :: Optically isolated active cable (0b == no, 1b == yes)
 + * <1>     :: Reserved, Shall be set to zero
 + * <0>     :: USB gen (0b == gen1, 1b == gen2+)
-  */
--#define VDO_AMA(hw, fw, tx1d, tx2d, rx1d, rx2d, vcpwr, vcr, vbr, usbss) \
--	(((hw) & 0x7) << 28 | ((fw) & 0x7) << 24			\
--	 | (tx1d) << 11 | (tx2d) << 10 | (rx1d) << 9 | (rx2d) << 8	\
--	 | ((vcpwr) & 0x7) << 5 | (vcr) << 4 | (vbr) << 3		\
--	 | ((usbss) & 0x7))
--
--#define PD_VDO_AMA_VCONN_REQ(vdo)	(((vdo) >> 4) & 1)
--#define PD_VDO_AMA_VBUS_REQ(vdo)	(((vdo) >> 3) & 1)
++ */
 +/* U3/CLd Power*/
 +#define ACAB2_U3_CLD_10MW_PLUS	0
 +#define ACAB2_U3_CLD_10MW	1
@@ -814,18 +386,7 @@ index 8c08eeb9a74b..c30d893c9c81 100644
 +	 | (trans) << 11 | (phy) << 10 | (ele) << 9 | (u4) << 8			\
 +	 | ((hops) & 0x3) << 6 | (u2) << 5 | (u32) << 4 | (lane) << 3		\
 +	 | (iso) << 2 | (gen))
- 
--#define AMA_VCONN_PWR_1W	0
--#define AMA_VCONN_PWR_1W5	1
--#define AMA_VCONN_PWR_2W	2
--#define AMA_VCONN_PWR_3W	3
--#define AMA_VCONN_PWR_4W	4
--#define AMA_VCONN_PWR_5W	5
--#define AMA_VCONN_PWR_6W	6
--#define AMA_USBSS_U2_ONLY	0
--#define AMA_USBSS_U31_GEN1	1
--#define AMA_USBSS_U31_GEN2	2
--#define AMA_USBSS_BBONLY	3
++
 +/*
 + * VPD VDO
 + * ---------
@@ -854,48 +415,8 @@ index 8c08eeb9a74b..c30d893c9c81 100644
 +	(((hw) & 0xf) << 28 | ((fw) & 0xf) << 24 | ((ver) & 0x7) << 21	\
 +	 | ((vbm) & 0x3) << 15 | (curr) << 14 | ((vbi) & 0x3f) << 7	\
 +	 | ((gi) & 0x3f) << 1 | (ct))
- 
- /*
-  * SVDM Discover SVIDs request -> response
-diff --git a/include/linux/usb/typec.h b/include/linux/usb/typec.h
-index 54475323f83b..30b640292325 100644
---- a/include/linux/usb/typec.h
-+++ b/include/linux/usb/typec.h
-@@ -206,12 +206,19 @@ struct typec_operations {
- 			     enum typec_port_type type);
- };
- 
-+enum usb_pd_svdm_ver {
-+	SVDM_VER_1_0 = 0,
-+	SVDM_VER_2_0 = 1,
-+	SVDM_VER_MAX = SVDM_VER_2_0,
-+};
 +
- /*
-  * struct typec_capability - USB Type-C Port Capabilities
-  * @type: Supported power role of the port
-  * @data: Supported data role of the port
-  * @revision: USB Type-C Specification release. Binary coded decimal
-  * @pd_revision: USB Power Delivery Specification revision if supported
-+ * @svdm_version: USB PD Structured VDM version if supported
-  * @prefer_role: Initial role preference (DRP ports).
-  * @accessory: Supported Accessory Modes
-  * @fwnode: Optional fwnode of the port
-@@ -225,6 +232,7 @@ struct typec_capability {
- 	enum typec_port_data	data;
- 	u16			revision; /* 0120H = "1.2" */
- 	u16			pd_revision; /* 0300H = "3.0" */
-+	enum usb_pd_svdm_ver	svdm_version;
- 	int			prefer_role;
- 	enum typec_accessory	accessory[TYPEC_MAX_ACCESSORY];
- 	unsigned int		orientation_aware:1;
-@@ -275,4 +283,6 @@ int typec_find_orientation(const char *name);
- int typec_find_port_power_role(const char *name);
- int typec_find_power_role(const char *name);
- int typec_find_port_data_role(const char *name);
-+void typec_set_svdm_version(struct typec_port *port, enum usb_pd_svdm_ver);
-+enum usb_pd_svdm_ver typec_get_svdm_version(struct typec_port *port);
- #endif /* __LINUX_USB_TYPEC_H */
++#endif /* __DT_POWER_DELIVERY_H */
 -- 
 2.30.0.365.g02bc693789-goog
 
