@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F260E30AA23
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:45:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75A4C30AA3A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:52:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231134AbhBAOpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 09:45:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59378 "EHLO
+        id S231287AbhBAOs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 09:48:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231315AbhBAOmD (ORCPT
+        with ESMTP id S231359AbhBAOmV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 09:42:03 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBDF9C0611C2
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 06:40:04 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id m2so12854076wmm.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 06:40:04 -0800 (PST)
+        Mon, 1 Feb 2021 09:42:21 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04EE9C0611BC
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 06:40:06 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id a1so16848673wrq.6
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 06:40:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=em+gLbL0BxMKq+E5i1mocv9ySIOeHFQQcLtILPjRTbE=;
-        b=bYvX8DN6puR8b7BNSHbtD3EGzAX8GmRCTU9rZXqtMjFG8LsRvf5JgcpaN5Eg0SuSzD
-         v99HFxVFAj4ouotyGhhoykw4QRJfl/7p+A2qApaZbAHT1nHbG7qnrUZ9f4puKZ7LT1tw
-         IlB1YbGoj3a2T781/UyZ8YUsJmq92yP5RpBbBSWALaZ0a3O43XpW8mnCdZacEkinmW+3
-         voPWPhDAVw+bGAy/2SlDMcy9MUs1jlwLqRz/f9WZJJ+o+T4KCR8gWp0NpxbTDNVe3gMK
-         HtFGJNFUl3rO9Db476SSvjfd2gPKGcAR0ylzGjZJL2AZwnJcQ1ytaC/Bof4zUO577TxC
-         Qg4Q==
+        bh=g5vWVj1PxyNkZrXGNhPOfAFboUN5KZo8O3CdBy4NesU=;
+        b=B4G7JSQdB4HA8+vgLEnKbugF9Ks5XEiRVYap9L6+9NSD+70VrhCfdfm7XnfeA2Dn15
+         FuZC8w+qFLpr86V5MFxKi/66rZoqFvOwKHShk6axOBXrEb7qs4C0J0KIo5V4kiujlvql
+         U9rY5/Envm5r/vBZ3LVjS7VGPvqxN+cXTIJuGk2N83ODoP72l2QuCJi48ly+JROj9ptR
+         BfIeTExkdYJuCwedU75cYifeXxEqNlZM2YkOAk3lAEM7mL/Je4x3TwgNY6fB5Ofy2vXM
+         1P/WNFhlit/SaOFpzYyCiwhnMqbZzlHuHZuSJj0PWKHjVXj7D/y/xE/da33gjtlpLkHn
+         Qc6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=em+gLbL0BxMKq+E5i1mocv9ySIOeHFQQcLtILPjRTbE=;
-        b=meTFOWN3OGVxJ6nigurnEinmM+jf55GXNpDAmQS7SPsFe9jF8cq4PfnA6ooIQ8Lm8u
-         QoFDVpHP0tzG3yNgsvqaJWuWqhoerwuCSW3Ak+4o7Boy1UdMWKXFwbar6ssu7+rjYgx2
-         9AjWNY8TTS7dHPNrN8xRD2aU4tFRnUNvfZIsD8JqD/5b2HHx6kpnULrmRmk+6ORbe7h3
-         zqkABVbegDelHUvMALZsWizC6Sz/QYamyJzdZVoOMwui3Q9SdjP2MZmHY4E8f2Ay66o/
-         GZUIlPPcK/aP3PDPMppEFqZqDH1g3/oUOc67WyQ7RvbUsRiVaGGtV7Y7QShqdEKKiK3n
-         g/Rw==
-X-Gm-Message-State: AOAM530t2SvkxMqe++3ToAtmtrO5Nf25y9wwFlVvlwHzDKNWsyIqPWBZ
-        TfEOTY+k52af3ZIlaSHVYxsOGQ==
-X-Google-Smtp-Source: ABdhPJyc08NDT3zH5UVhJCpxD73EWT+WifUl/TRZitj6I91P0mVM4NzVQNWwyLo3J7Rjs8SPDueCtQ==
-X-Received: by 2002:a1c:e912:: with SMTP id q18mr15422813wmc.162.1612190403647;
-        Mon, 01 Feb 2021 06:40:03 -0800 (PST)
+        bh=g5vWVj1PxyNkZrXGNhPOfAFboUN5KZo8O3CdBy4NesU=;
+        b=YA2QywqUo7HdQeJb3eBCFIlCitRG10AShmi3+s+itPrHnpxYU9dqhf4en0xQpwr5Tb
+         e6QsHr8rK71NlwR/dny8f+bCAUYL5TJNVfVds2R2gHirdn9xQh5UwWbmI84uO6t85N5o
+         PxNPmXhZXKmP7ozUchUX/eNA21PDgb0TI6yfwcbB8tdtUAbTpj1FwtjEeND5ReIMkxGl
+         WdWxXESI1laU4UY+DELW0VR/knpynT2v1ldL3jWMcYKxwuLQyiOhtEzHsSwwyDEkJAJi
+         SfgTju+dA90WYlCE+G1NGAgzGXB2ZtTKMk4AlPeI/7/fCVhHQpmmNl8P3q6s61DL+GVG
+         DjwA==
+X-Gm-Message-State: AOAM531hpq74MgZIKH7cCKFzMpbJiBZaypi6n01ACKELH3jesmXZzhyk
+        PCIqWBNSna4EbKfOKrSVi2rYYg==
+X-Google-Smtp-Source: ABdhPJyHgmUqVQc96gVAt9CQolaGiQEbbEm8oddOV9JXaA61Fnhy21TVEPpeAq8fVb/tJI/+LbQi8g==
+X-Received: by 2002:a5d:6a85:: with SMTP id s5mr17869868wru.283.1612190404772;
+        Mon, 01 Feb 2021 06:40:04 -0800 (PST)
 Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id h15sm27301359wrt.10.2021.02.01.06.40.02
+        by smtp.gmail.com with ESMTPSA id h15sm27301359wrt.10.2021.02.01.06.40.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 06:40:03 -0800 (PST)
+        Mon, 01 Feb 2021 06:40:04 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
         linux-ide@vger.kernel.org
-Subject: [PATCH 18/20] ata: pata_jmicron: Fix incorrectly documented function parameter
-Date:   Mon,  1 Feb 2021 14:39:38 +0000
-Message-Id: <20210201143940.2070919-19-lee.jones@linaro.org>
+Subject: [PATCH 19/20] ata: pata_optidma: Fix a function misnaming, a formatting issue and a missing description
+Date:   Mon,  1 Feb 2021 14:39:39 +0000
+Message-Id: <20210201143940.2070919-20-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210201143940.2070919-1-lee.jones@linaro.org>
 References: <20210201143940.2070919-1-lee.jones@linaro.org>
@@ -66,29 +66,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/ata/pata_jmicron.c:135: warning: Function parameter or member 'id' not described in 'jmicron_init_one'
- drivers/ata/pata_jmicron.c:135: warning: Excess function parameter 'ent' description in 'jmicron_init_one'
+ drivers/ata/pata_optidma.c:298: warning: expecting prototype for optidma_make_bits(). Prototype was for optidma_make_bits43() instead
+ drivers/ata/pata_optidma.c:319: warning: Function parameter or member 'r_failed' not described in 'optidma_set_mode'
+ drivers/ata/pata_optidma.c:361: warning: Function parameter or member 'pdev' not described in 'optiplus_with_udma'
 
 Cc: Jens Axboe <axboe@kernel.dk>
 Cc: linux-ide@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/ata/pata_jmicron.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/ata/pata_optidma.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/ata/pata_jmicron.c b/drivers/ata/pata_jmicron.c
-index c3dedd3e71fb7..d1b3ce8958ddc 100644
---- a/drivers/ata/pata_jmicron.c
-+++ b/drivers/ata/pata_jmicron.c
-@@ -120,7 +120,7 @@ static struct ata_port_operations jmicron_ops = {
+diff --git a/drivers/ata/pata_optidma.c b/drivers/ata/pata_optidma.c
+index fbcf0af34924d..f6278d9de3486 100644
+--- a/drivers/ata/pata_optidma.c
++++ b/drivers/ata/pata_optidma.c
+@@ -287,7 +287,7 @@ static void optiplus_set_dma_mode(struct ata_port *ap, struct ata_device *adev)
+ }
+ 
  /**
-  *	jmicron_init_one - Register Jmicron ATA PCI device with kernel services
-  *	@pdev: PCI device to register
-- *	@ent: Entry in jmicron_pci_tbl matching with @pdev
-+ *	@id: PCI device ID
+- *	optidma_make_bits	-	PCI setup helper
++ *	optidma_make_bits43	-	PCI setup helper
+  *	@adev: ATA device
   *
-  *	Called from kernel PCI layer.
+  *	Turn the ATA device setup into PCI configuration bits
+@@ -309,6 +309,7 @@ static u8 optidma_make_bits43(struct ata_device *adev)
+ /**
+  *	optidma_set_mode	-	mode setup
+  *	@link: link to set up
++ *	@r_failed: out parameter for failed device
   *
+  *	Use the standard setup to tune the chipset and then finalise the
+  *	configuration by writing the nibble of extra bits of data into
+@@ -354,7 +355,7 @@ static struct ata_port_operations optiplus_port_ops = {
+ 
+ /**
+  *	optiplus_with_udma	-	Look for UDMA capable setup
+- *	@pdev; ATA controller
++ *	@pdev: ATA controller
+  */
+ 
+ static int optiplus_with_udma(struct pci_dev *pdev)
 -- 
 2.25.1
 
