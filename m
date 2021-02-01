@@ -2,97 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56ADF30A8D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:36:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C2130A8DE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:36:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231478AbhBANfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:35:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45230 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232031AbhBANfS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:35:18 -0500
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C220CC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 05:34:37 -0800 (PST)
-Received: by mail-qv1-xf49.google.com with SMTP id l3so11228032qvz.12
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 05:34:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=JRWaNv8CUyRtnGhAv2UGsIw+4RM2ET9YxEDAkb3Ls7Y=;
-        b=aek5t0dPTVzznvKfKlb3j+JOm4kKQh9WdrHHkSe4ZxoC1T6EcGVy7ZjSU8WGloOGpO
-         hN8NSUjcSgMbaaZMR15YDwA1hCNwJEU/46Nid5XFo10dyvRoKTJqlM/XkafslXXhLzWb
-         RixP6l9My0D1EEaPwKo1C68wKWCLL70RNjLyG6SYJZcNGG6/sn9mldfLmUJrFCgNBnvT
-         jzvE+PuZyU4R1YZL77CiI7ljfpJmO3gGqU2w6ydVPRKDtAIEu4txF1P9fPoh84r4gYzS
-         +M3QFbqsycbjavuo+Z+gHdA1JZYhckVfTyEdgekU+K6DdM2AeEf0xBIwEUTavbE4p6zU
-         t91Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=JRWaNv8CUyRtnGhAv2UGsIw+4RM2ET9YxEDAkb3Ls7Y=;
-        b=bLV0iXthfAAc1aVTYAzxhCCsJynXUE6b5jav2v1WEtVxjmPCAgtYy+kOVDSvIr0g2a
-         0n3ao+72FsQxT1zK/HD2ZBDPZd+3wgZ2hOfrgXUKziwXTYSE4FtAvSousHdc9j+mTk+y
-         xbI2XTselVYx5VPzDgzHMFnMrl07BfF7gLdNcEoEk8DG75jZ12qtQaHvh0xVq0RAo2Hd
-         kR8MHSZGV2j/DsoWRP9PdkmOfznkzuhv1CzqEZJfD0ZeZvCjSYfVd2W3n3UFW3GFLIHh
-         plpOKGgk0nqV8RnLc9xpc7WOOoxHDQtUl0qMcdzlZw+bhZMzy0iGruxJ2ql7MxI8gEC4
-         Wwvg==
-X-Gm-Message-State: AOAM531C6XTAmS8j1zNW8vhi340JTaHMe9uIpz7KPc/r05Y2bc0ZQxsO
-        i350ae65tIebvb9Zbn9lEdXllqg6Bj72
-X-Google-Smtp-Source: ABdhPJzyG9LUMNrb3QLRGDnVvKeshlEgn3D13VlkENd+g2VwzIYrnIUvJyTju+kHIZ5UBPcMnAVrXyxA2xmi
-Sender: "kyletso via sendgmr" <kyletso@kyletso.ntc.corp.google.com>
-X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:dd94:c753:a81d:c855])
- (user=kyletso job=sendgmr) by 2002:a0c:b989:: with SMTP id
- v9mr15179560qvf.42.1612186476917; Mon, 01 Feb 2021 05:34:36 -0800 (PST)
-Date:   Mon,  1 Feb 2021 21:34:18 +0800
-Message-Id: <20210201133421.408508-1-kyletso@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v3 0/3] common SVDM version and VDO from dt
-From:   Kyle Tso <kyletso@google.com>
-To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org, hdegoede@redhat.com, robh+dt@kernel.org
-Cc:     badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Kyle Tso <kyletso@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S232235AbhBANg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:36:27 -0500
+Received: from mga11.intel.com ([192.55.52.93]:37916 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231788AbhBANgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 08:36:13 -0500
+IronPort-SDR: Q7iOt39kQtfJDwTWr3iDKvcB+d/C86HtqYb7+5KVS2OFqfWecV4Eo1/2p+/fkT+YdqtFtRSLHs
+ GsPmkuEZtyJQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="177175909"
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="177175909"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 05:34:27 -0800
+IronPort-SDR: 7djqYBFT3il0+5o73I1DkiNMCL9mRxWwzYfvtp+L+rWTzPtSOwN1RGmFCE2ABLoJTvQDOvbf4u
+ aOy+YKM+anfg==
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="353990774"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 05:34:24 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l6ZLP-0018pC-N0; Mon, 01 Feb 2021 15:34:19 +0200
+Date:   Mon, 1 Feb 2021 15:34:19 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Yafang Shao <laoar.shao@gmail.com>, vbabka@suse.cz,
+        linmiaohe@huawei.com, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Joe Perches <joe@perches.com>
+Subject: Re: [PATCH v2 3/3] vsprintf: dump full information of page flags in
+ pGp
+Message-ID: <YBgDW6dbdT7AvCXE@smile.fi.intel.com>
+References: <20210201115610.87808-1-laoar.shao@gmail.com>
+ <20210201115610.87808-4-laoar.shao@gmail.com>
+ <66784ea1-29c7-6bed-ca7f-cd3e7ea9155b@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <66784ea1-29c7-6bed-ca7f-cd3e7ea9155b@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-patch v2:
-https://lore.kernel.org/linux-devicetree/20210131151832.215931-1-kyletso@google.com/
+On Mon, Feb 01, 2021 at 02:23:33PM +0100, David Hildenbrand wrote:
+> On 01.02.21 12:56, Yafang Shao wrote:
+> > Currently the pGp only shows the names of page flags, rather than
+> > the full information including section, node, zone, last cpupid and
+> > kasan tag. While it is not easy to parse these information manually
+> > because there're so many flavors. Let's interpret them in pGp as well.
+> > 
+> > - Before the patch,
+> > [ 6343.396602] Slab 0x000000004382e02b objects=33 used=3 fp=0x000000009ae06ffc flags=0x17ffffc0010200(slab|head)
+> > 
+> > - After the patch,
+> > [ 6871.296131] Slab 0x00000000c0e19a37 objects=33 used=3 fp=0x00000000c4902159 flags=0x17ffffc0010200(Node 0,Zone 2,Lastcpupid 0x1fffff,slab|head)
+> 
+> For debugging purposes, it might be helpful to have the actual zone name
+> (and to know if the value is sane). You could obtain it (without other
+> modifications) via
+> 
+> const char zname = "Invalid";
+> 
+> if (zone < MAX_NR_ZONES)
+> 	zname = first_online_pgdat()->node_zones[zone].name;
+> 
+> 
+> Similarly, it might also be helpful to indicate if a node is
+> online/offline/invalid/.
+> 
+> const char nstate = "Invalid";
+> 
+> if (node_online(nid))
+> 	nstate = "Online";
+> else if (node_possible(nid))
+> 	nstate = "Offline";
+> 
+> 
+> Printing that in addition to the raw value could be helpful. Just some
+> thoughts.
 
-Changes since v2:
-=================
-usb: typec: Determine common SVDM Versions
-- rename the variable and the functions (remove the text "common")
-- remove the macro
-
-dt-bindings: connector: Add SVDM VDO properties
-- no change
-
-usb: typec: tcpm: Get Sink VDO from fwnode
-- use fwnode_property_count_u32 instead to get the count
-- revise the error handling
-
-Kyle Tso (3):
-  usb: typec: Determine common SVDM Versions
-  dt-bindings: connector: Add SVDM VDO properties
-  usb: typec: tcpm: Get Sink VDO from fwnode
-
- .../bindings/connector/usb-connector.yaml     |  11 +
- drivers/usb/typec/altmodes/displayport.c      |   8 +-
- drivers/usb/typec/class.c                     |  21 +-
- drivers/usb/typec/tcpm/tcpm.c                 |  61 +++-
- drivers/usb/typec/ucsi/displayport.c          |  12 +-
- drivers/usb/typec/ucsi/ucsi.c                 |   2 +
- include/dt-bindings/usb/pd.h                  | 311 ++++++++++++++++-
- include/linux/usb/pd_vdo.h                    | 315 ++++++++++++++----
- include/linux/usb/typec.h                     |  10 +
- 9 files changed, 661 insertions(+), 90 deletions(-)
+printf() buffer is not a black hole, esp. when you get it messed with critical
+messages (Oops). I suggest to reduce a burden as much as possible. If you wish
+to get this, make it caller-configurable, i.e. adding another letter to the
+specifier.
 
 -- 
-2.30.0.365.g02bc693789-goog
+With Best Regards,
+Andy Shevchenko
+
 
