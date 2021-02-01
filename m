@@ -2,85 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4AE30A0B0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 04:49:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF4030A0D6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 05:26:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231414AbhBADsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 22:48:53 -0500
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:53203 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231126AbhBADss (ORCPT
+        id S231454AbhBAE0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 23:26:03 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:56523 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231393AbhBAEZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 22:48:48 -0500
-X-UUID: 5e1ee2eb50a74496b375a3ef7e447988-20210201
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=ycki3f22lu0G/Y5pcD1WAXwXxWSc4abbISJZOTSNMNc=;
-        b=pDOFhhxmjFLzOmwmHC4x9N38et/+Q01E1gSTzVtbD/xVJLLYDaoSXHkNsVS3sI1srpQ0GSORnxDwTEwdyvH3MBv+ELeNA98fRQUjHCZF9qvgP4cmRkLawcHYAjCffp6Vdr7HNcQnW61jSbxw6ws3DtrXsvP4NLROvku/oxEc4NY=;
-X-UUID: 5e1ee2eb50a74496b375a3ef7e447988-20210201
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <jitao.shi@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1357974449; Mon, 01 Feb 2021 11:48:02 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
- (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 1 Feb
- 2021 11:47:58 +0800
-Received: from mszsdaap41.gcn.mediatek.inc (10.16.6.141) by
- MTKCAS36.mediatek.inc (172.27.4.170) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Mon, 1 Feb 2021 11:47:57 +0800
-From:   Jitao Shi <jitao.shi@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-CC:     <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <yingjoe.chen@mediatek.com>,
-        <eddie.huang@mediatek.com>, <cawa.cheng@mediatek.com>,
-        <bibby.hsieh@mediatek.com>, <ck.hu@mediatek.com>,
-        <stonea168@163.com>, <huijuan.xie@mediatek.com>,
-        <shuijing.li@mediatek.com>, Jitao Shi <jitao.shi@mediatek.com>
-Subject: [PATCH] drm/mediatek: fine tune the data lane trail by project dts
-Date:   Mon, 1 Feb 2021 11:47:55 +0800
-Message-ID: <20210201034755.15793-1-jitao.shi@mediatek.com>
-X-Mailer: git-send-email 2.12.5
-MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: C09D5F74431AB1B049045EEA52CC4FCA78AF2ACAE1755FA553EE30718D904CAA2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Sun, 31 Jan 2021 23:25:50 -0500
+Received: from epcas3p3.samsung.com (unknown [182.195.41.21])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210201042502epoutp046fe5d973c9ddae7a7c1e95e8b7abd545~fhRGhOKj71663116631epoutp04j
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 04:25:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210201042502epoutp046fe5d973c9ddae7a7c1e95e8b7abd545~fhRGhOKj71663116631epoutp04j
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1612153502;
+        bh=4CaMWmOxTRQ4Yvh5Egmq/VowEgz2jyK7bRflwWVi//g=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=VP7cOWaOIgG3nQaGUVL5/gtwTr3yEG2NfDy2tspxFvR66j6p3owX6kBzYDmOz9i6x
+         GGUNTEAVX7wmDlH5XwBgB7vs98xv7BsgJ6bH4E37+q4ZkpSNRLvMrrMDHXnhzJAuDM
+         DJmCcmqCz/o7G5XRSUKtu7/sL2PUGlHeFg3b1JYA=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas3p3.samsung.com (KnoxPortal) with ESMTP id
+        20210201042501epcas3p324f93d079b2b4cbe46209d413bc811f7~fhRGC5IB91510715107epcas3p3d;
+        Mon,  1 Feb 2021 04:25:01 +0000 (GMT)
+Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp2.localdomain
+        (Postfix) with ESMTP id 4DTZbx5xfjz4x9Q0; Mon,  1 Feb 2021 04:25:01 +0000
+        (GMT)
+Mime-Version: 1.0
+Subject: RE: [PATCH 3/8] scsi: ufshpb: Add region's reads counter
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        Avri Altman <avri.altman@wdc.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <20210127151217.24760-4-avri.altman@wdc.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <1891546521.01612153501819.JavaMail.epsvc@epcpadp3>
+Date:   Mon, 01 Feb 2021 12:51:36 +0900
+X-CMS-MailID: 20210201035136epcms2p2c245b5fc97d5ecdf0c1ca96496d6e0c6
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20210127151311epcas2p1696c2b73f3b4777ac0e7f603790b552f
+References: <20210127151217.24760-4-avri.altman@wdc.com>
+        <20210127151217.24760-1-avri.altman@wdc.com>
+        <CGME20210127151311epcas2p1696c2b73f3b4777ac0e7f603790b552f@epcms2p2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-U29tZSBwYW5lbHMgb3IgYnJpZGdlcyByZXF1aXJlIGN1c3RvbWl6ZWQgaHNfZGFfdHJhaWwgdGlt
-ZS4NClNvIGFkZCBhIHByb3BlcnR5IGluIGRldmljZXRyZWUgZm9yIHRoaXMgcGFuZWxzIGFuZCBi
-cmlkZ2VzLg0KDQpTaWduZWQtb2ZmLWJ5OiBKaXRhbyBTaGkgPGppdGFvLnNoaUBtZWRpYXRlay5j
-b20+DQotLS0NCiBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RzaS5jIHwgMTAgKysrKysr
-KysrLQ0KIDEgZmlsZSBjaGFuZ2VkLCA5IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkNCg0K
-ZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHNpLmMgYi9kcml2ZXJz
-L2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RzaS5jDQppbmRleCA4YzcwZWMzOWJmZTEuLjZlNzA5MmZh
-MmZlZSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHNpLmMNCisr
-KyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHNpLmMNCkBAIC0xOTQsNiArMTk0LDcg
-QEAgc3RydWN0IG10a19kc2kgew0KIAlzdHJ1Y3QgY2xrICpoc19jbGs7DQogDQogCXUzMiBkYXRh
-X3JhdGU7DQorCXUzMiBkYV90cmFpbF9kZWx0YTsNCiANCiAJdW5zaWduZWQgbG9uZyBtb2RlX2Zs
-YWdzOw0KIAllbnVtIG1pcGlfZHNpX3BpeGVsX2Zvcm1hdCBmb3JtYXQ7DQpAQCAtMjM0LDcgKzIz
-NSw3IEBAIHN0YXRpYyB2b2lkIG10a19kc2lfcGh5X3RpbWNvbmZpZyhzdHJ1Y3QgbXRrX2RzaSAq
-ZHNpKQ0KIAl0aW1pbmctPmRhX2hzX3ByZXBhcmUgPSAoODAgKiBkYXRhX3JhdGVfbWh6ICsgNCAq
-IDEwMDApIC8gODAwMDsNCiAJdGltaW5nLT5kYV9oc196ZXJvID0gKDE3MCAqIGRhdGFfcmF0ZV9t
-aHogKyAxMCAqIDEwMDApIC8gODAwMCArIDEgLQ0KIAkJCSAgICAgdGltaW5nLT5kYV9oc19wcmVw
-YXJlOw0KLQl0aW1pbmctPmRhX2hzX3RyYWlsID0gdGltaW5nLT5kYV9oc19wcmVwYXJlICsgMTsN
-CisJdGltaW5nLT5kYV9oc190cmFpbCA9IHRpbWluZy0+ZGFfaHNfcHJlcGFyZSArIDEgKyBkc2kt
-PmRhX3RyYWlsX2RlbHRhOw0KIA0KIAl0aW1pbmctPnRhX2dvID0gNCAqIHRpbWluZy0+bHB4IC0g
-MjsNCiAJdGltaW5nLT50YV9zdXJlID0gdGltaW5nLT5scHggKyAyOw0KQEAgLTEwOTQsNiArMTA5
-NSwxMyBAQCBzdGF0aWMgaW50IG10a19kc2lfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAq
-cGRldikNCiAJCWdvdG8gZXJyX3VucmVnaXN0ZXJfaG9zdDsNCiAJfQ0KIA0KKwlyZXQgPSBvZl9w
-cm9wZXJ0eV9yZWFkX3UzMl9pbmRleChkZXYtPm9mX25vZGUsICJkYV90cmFpbF9kZWx0YSIsIDAs
-DQorCQkJCQkgJmRzaS0+ZGFfdHJhaWxfZGVsdGEpOw0KKwlpZiAocmV0KSB7DQorCQlkZXZfaW5m
-byhkZXYsICJDYW4ndCBnZXQgZGFfdHJhaWxfZGVsdGEsIGtlZXAgaXQgYXMgMDogJWRcbiIsIHJl
-dCk7DQorCQlkc2ktPmRhX3RyYWlsX2RlbHRhID0gMDsNCisJfQ0KKw0KIAljb21wX2lkID0gbXRr
-X2RkcF9jb21wX2dldF9pZChkZXYtPm9mX25vZGUsIE1US19EU0kpOw0KIAlpZiAoY29tcF9pZCA8
-IDApIHsNCiAJCWRldl9lcnIoZGV2LCAiRmFpbGVkIHRvIGlkZW50aWZ5IGJ5IGFsaWFzOiAlZFxu
-IiwgY29tcF9pZCk7DQotLSANCjIuMTIuNQ0K
+Hi Avri,
 
+Thanks for adding HCM support on HPB.
+I have some opinion for this patch.
+
+> +#define WORK_PENDING 0
+> +#define ACTIVATION_THRSHLD 4 /* 4 IOs */
+Rather than fixing it with macro, how about using sysfs and make it
+configurable?
+
+> @@ -306,12 +325,39 @@ void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
+>  		ufshpb_set_ppn_dirty(hpb, rgn_idx, srgn_idx, srgn_offset,
+>  				 transfer_len);
+>  		spin_unlock_irqrestore(&hpb->rgn_state_lock, flags);
+> +
+> +		if (ufshpb_mode == HPB_HOST_CONTROL)
+> +			atomic64_set(&rgn->reads, 0);
+> +
+>  		return;
+>  	}
+>  
+> +	if (ufshpb_mode == HPB_HOST_CONTROL)
+> +		reads = atomic64_inc_return(&rgn->reads);
+> +
+>  	if (!ufshpb_is_support_chunk(transfer_len))
+>  		return; <- *this*
+>  
+> +	if (ufshpb_mode == HPB_HOST_CONTROL) {
+> +		/*
+> +		 * in host control mode, reads are the main source for
+> +		 * activation trials.
+> +		 */
+> +		if (reads == ACTIVATION_THRSHLD) {
+If the chunk size is not supported, we can not active this region
+permanently. It may be returned before get this statement.
+
+> diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+> index 8a34b0f42754..b0e78728af38 100644
+> --- a/drivers/scsi/ufs/ufshpb.h
+> +++ b/drivers/scsi/ufs/ufshpb.h
+> @@ -115,6 +115,9 @@ struct ufshpb_region {
+>  	/* below information is used by lru */
+>  	struct list_head list_lru_rgn;
+>  	unsigned long rgn_flags;
+> +
+> +	/* region reads - for host mode */
+> +	atomic64_t reads;
+I think 32 bits are suitable, because it is normalized by worker on every
+specific time.
+
+Thanks,
+Daejun
