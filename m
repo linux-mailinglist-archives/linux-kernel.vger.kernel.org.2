@@ -2,156 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D155B30A389
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:48:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3475530A38C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232576AbhBAIsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 03:48:22 -0500
-Received: from mail-wr1-f51.google.com ([209.85.221.51]:35344 "EHLO
-        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229613AbhBAIsT (ORCPT
+        id S232583AbhBAIsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 03:48:46 -0500
+Received: from szxga08-in.huawei.com ([45.249.212.255]:2819 "EHLO
+        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229558AbhBAIsl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 03:48:19 -0500
-Received: by mail-wr1-f51.google.com with SMTP id l12so15636087wry.2;
-        Mon, 01 Feb 2021 00:48:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2T72/t+gfWjspMOi6fY4znoktPBAWMpk+HQYetTKm2Y=;
-        b=tFy5WzVFZcHMsWTvCE7GlfHtbkm60E6C6XC0MTswlH6+uM5cm+dhVivHv07esvr/AE
-         DObLt2RnBdlyjyHEeZP17YJpFf2MtO9eyh4qHGSYNxJI4uXjiYGca5j2aBuc1xrefD72
-         sYG1sQzF6WZGfKUhicdc+2DPB8GmKhBmOL8yhKRw678r9ll+e/TNL6qVOovIp6OZHkaO
-         Y463tIePzusIT7sEYOpbHCnU1ClbPrXvIFYdbV1MvWTIbsMBztb8EiR4D7EqHf26zMOT
-         7PRWgRw0ktUQ0LAP6QHJHt2323bCpt4LB/4vm1+opDHcezlQ9hXYmygiwwa+q+ERF4yw
-         w0PQ==
-X-Gm-Message-State: AOAM530Nyj1czC9F1pKNdKvd2mwKGF8AtRS5JXOtFdXzazxgiE6ZucA8
-        rbFOmDXgmCxSdOwdAJ0wYIg=
-X-Google-Smtp-Source: ABdhPJxndKuKJsR3M9TqgEi2Op1P+n3n3buAS1LlFPuolSj3NEmxlPjtI4Np2XjwkqUnpgL6Nx1KUw==
-X-Received: by 2002:a05:6000:1082:: with SMTP id y2mr16236652wrw.27.1612169254477;
-        Mon, 01 Feb 2021 00:47:34 -0800 (PST)
-Received: from localhost.localdomain ([46.166.128.205])
-        by smtp.gmail.com with ESMTPSA id k131sm20860189wmb.37.2021.02.01.00.47.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 00:47:33 -0800 (PST)
-From:   Alexander Popov <alex.popov@linux.com>
-To:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Stefan Schmidt <stefan@datenfreihafen.org>,
-        Jeff Vander Stoep <jeffv@google.com>,
-        Greg KH <greg@kroah.com>,
-        Linus Torvalds <torvalds@linuxfoundation.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alex.popov@linux.com
-Subject: [PATCH v2 1/1] vsock: fix the race conditions in multi-transport support
-Date:   Mon,  1 Feb 2021 11:47:19 +0300
-Message-Id: <20210201084719.2257066-1-alex.popov@linux.com>
-X-Mailer: git-send-email 2.26.2
+        Mon, 1 Feb 2021 03:48:41 -0500
+Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.57])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4DThNv34v3z13pGH;
+        Mon,  1 Feb 2021 16:45:51 +0800 (CST)
+Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
+ DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Mon, 1 Feb 2021 16:47:53 +0800
+Received: from [10.169.42.93] (10.169.42.93) by dggema772-chm.china.huawei.com
+ (10.1.198.214) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2106.2; Mon, 1 Feb
+ 2021 16:47:52 +0800
+Subject: Re: [PATCH v2] nvme-multipath: Early exit if no path is available
+To:     Hannes Reinecke <hare@suse.de>, Sagi Grimberg <sagi@grimberg.me>,
+        "Daniel Wagner" <dwagner@suse.de>
+CC:     <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        "Jens Axboe" <axboe@fb.com>, Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+References: <20210127103033.15318-1-dwagner@suse.de>
+ <db9baae0-547c-7ff4-8b2c-0b95f14be67c@huawei.com>
+ <20210128075837.u5u56t23fq5gu6ou@beryllium.lan>
+ <69575290-200e-b4a1-4269-c71e4c2cc37b@huawei.com>
+ <20210128094004.erwnszjqcxlsi2kd@beryllium.lan>
+ <ebb1d098-3ded-e592-4419-e905aabe824f@huawei.com>
+ <675d3cf7-1ae8-adc5-b6d0-359fe10f6b23@grimberg.me>
+ <59cd053e-46cb-0235-141f-4ce919c93f48@huawei.com>
+ <65392653-6b03-9195-f686-5fe4b3290bd2@suse.de>
+ <81b22bbf-4dd3-6161-e63a-9699690a4e4f@huawei.com>
+ <715dd943-0587-be08-2840-e0948cf0bc62@suse.de>
+ <eb131d8f-f009-42e7-105d-58b84060f0dd@huawei.com>
+ <ac019690-7f02-d28c-ed58-bfc8c1d48879@suse.de>
+ <6ceff3cb-c9e9-7e74-92f0-dd745987c943@huawei.com>
+ <114751ac-1f7d-ce5e-12c5-7d6303bdb999@suse.de>
+From:   Chao Leng <lengchao@huawei.com>
+Message-ID: <aebc6c2d-4711-95ba-daf2-1cd17fc6f0e7@huawei.com>
+Date:   Mon, 1 Feb 2021 16:47:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
+In-Reply-To: <114751ac-1f7d-ce5e-12c5-7d6303bdb999@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.169.42.93]
+X-ClientProxiedBy: dggeme710-chm.china.huawei.com (10.1.199.106) To
+ dggema772-chm.china.huawei.com (10.1.198.214)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are multiple similar bugs implicitly introduced by the
-commit c0cfa2d8a788fcf4 ("vsock: add multi-transports support") and
-commit 6a2c0962105ae8ce ("vsock: prevent transport modules unloading").
 
-The bug pattern:
- [1] vsock_sock.transport pointer is copied to a local variable,
- [2] lock_sock() is called,
- [3] the local variable is used.
-VSOCK multi-transport support introduced the race condition:
-vsock_sock.transport value may change between [1] and [2].
 
-Let's copy vsock_sock.transport pointer to local variables after
-the lock_sock() call.
+On 2021/2/1 15:29, Hannes Reinecke wrote:
+> On 2/1/21 3:16 AM, Chao Leng wrote:
+>>
+>>
+>> On 2021/1/29 17:20, Hannes Reinecke wrote:
+>>> On 1/29/21 9:46 AM, Chao Leng wrote:
+>>>>
+>>>>
+>>>> On 2021/1/29 16:33, Hannes Reinecke wrote:
+>>>>> On 1/29/21 8:45 AM, Chao Leng wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 2021/1/29 15:06, Hannes Reinecke wrote:
+>>>>>>> On 1/29/21 4:07 AM, Chao Leng wrote:
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> On 2021/1/29 9:42, Sagi Grimberg wrote:
+>>>>>>>>>
+>>>>>>>>>>> You can't see exactly where it dies but I followed the assembly to
+>>>>>>>>>>> nvme_round_robin_path(). Maybe it's not the initial nvme_next_ns(head,
+>>>>>>>>>>> old) which returns NULL but nvme_next_ns() is returning NULL eventually
+>>>>>>>>>>> (list_next_or_null_rcu()).
+>>>>>>>>>> So there is other bug cause nvme_next_ns abormal.
+>>>>>>>>>> I review the code about head->list and head->current_path, I find 2 bugs
+>>>>>>>>>> may cause the bug:
+>>>>>>>>>> First, I already send the patch. see:
+>>>>>>>>>> https://lore.kernel.org/linux-nvme/20210128033351.22116-1-lengchao@huawei.com/
+>>>>>>>>>> Second, in nvme_ns_remove, list_del_rcu is before
+>>>>>>>>>> nvme_mpath_clear_current_path. This may cause "old" is deleted from the
+>>>>>>>>>> "head", but still use "old". I'm not sure there's any other
+>>>>>>>>>> consideration here, I will check it and try to fix it.
+>>>>>>>>>
+>>>>>>>>> The reason why we first remove from head->list and only then clear
+>>>>>>>>> current_path is because the other way around there is no way
+>>>>>>>>> to guarantee that that the ns won't be assigned as current_path
+>>>>>>>>> again (because it is in head->list).
+>>>>>>>> ok, I see.
+>>>>>>>>>
+>>>>>>>>> nvme_ns_remove fences continue of deletion of the ns by synchronizing
+>>>>>>>>> the srcu such that for sure the current_path clearance is visible.
+>>>>>>>> The list will be like this:
+>>>>>>>> head->next = ns1;
+>>>>>>>> ns1->next = head;
+>>>>>>>> old->next = ns1;
+>>>>>>>
+>>>>>>> Where does 'old' pointing to?
+>>>>>>>
+>>>>>>>> This may cause infinite loop in nvme_round_robin_path.
+>>>>>>>> for (ns = nvme_next_ns(head, old);
+>>>>>>>>      ns != old;
+>>>>>>>>      ns = nvme_next_ns(head, ns))
+>>>>>>>> The ns will always be ns1, and then infinite loop.
+>>>>>>>
+>>>>>>> No. nvme_next_ns() will return NULL.
+>>>>>> If there is just one path(the "old") and the "old" is deleted,
+>>>>>> nvme_next_ns() will return NULL.
+>>>>>> The list like this:
+>>>>>> head->next = head;
+>>>>>> old->next = head;
+>>>>>> If there is two or more path and the "old" is deleted,
+>>>>>> "for" will be infinite loop. because nvme_next_ns() will return
+>>>>>> the path which in the list except the "old", check condition will
+>>>>>> be true for ever.
+>>>>>
+>>>>> But that will be caught by the statement above:
+>>>>>
+>>>>> if (list_is_singular(&head->list))
+>>>>>
+>>>>> no?
+>>>> Two path just a sample example.
+>>>> If there is just two path, will enter it, may cause no path but there is
+>>>> actually one path. It is falsely assumed that the "old" must be not deleted.
+>>>> If there is more than two path, will cause infinite loop.
+>>> So you mean we'll need something like this?
+>>>
+>>> diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
+>>> index 71696819c228..8ffccaf9c19a 100644
+>>> --- a/drivers/nvme/host/multipath.c
+>>> +++ b/drivers/nvme/host/multipath.c
+>>> @@ -202,10 +202,12 @@ static struct nvme_ns *__nvme_find_path(struct nvme_ns_head *head, int node)
+>>>   static struct nvme_ns *nvme_next_ns(struct nvme_ns_head *head,
+>>>                  struct nvme_ns *ns)
+>>>   {
+>>> -       ns = list_next_or_null_rcu(&head->list, &ns->siblings, struct nvme_ns,
+>>> -                       siblings);
+>>> -       if (ns)
+>>> -               return ns;
+>>> +       if (ns) {
+>>> +               ns = list_next_or_null_rcu(&head->list, &ns->siblings,
+>>> +                                          struct nvme_ns, siblings);
+>>> +               if (ns)
+>>> +                       return ns;
+>>> +       }
+>> No, in the scenario, ns should not be NULL.
+> 
+> Why not? 'ns == NULL' is precisely the corner-case this is trying to fix...
+> 
+>> May be we can do like this:
+>>
+>> diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
+>> index 282b7a4ea9a9..b895011a2cbd 100644
+>> --- a/drivers/nvme/host/multipath.c
+>> +++ b/drivers/nvme/host/multipath.c
+>> @@ -199,30 +199,24 @@ static struct nvme_ns *__nvme_find_path(struct nvme_ns_head *head, int node)
+>>          return found;
+>>   }
+>>
+>> -static struct nvme_ns *nvme_next_ns(struct nvme_ns_head *head,
+>> -               struct nvme_ns *ns)
+>> -{
+>> -       ns = list_next_or_null_rcu(&head->list, &ns->siblings, struct nvme_ns,
+>> -                       siblings);
+>> -       if (ns)
+>> -               return ns;
+>> -       return list_first_or_null_rcu(&head->list, struct nvme_ns, siblings);
+>> -}
+>> +#define nvme_next_ns_condition(head, current, condition) \
+>> +({ \
+>> +       struct nvme_ns *__ptr = list_next_or_null_rcu(&(head)->list, \
+>> +               &(current)->siblings, struct nvme_ns, siblings); \
+>> +       __ptr ? __ptr : (condition) ? (condition) = false, \
+>> +               list_first_or_null_rcu(&(head)->list, struct nvme_ns, \
+>> +                       siblings) : NULL; \
+>> +})
+>>
+> Urgh. Please, no. That is well impossible to debug.
+> Can you please open-code it to demonstrate where the difference to the current (and my fixed) versions is?
+> I'm still not clear where the problem is once we applied both patches.
+For example assume the list has three path, and all path is not NVME_ANA_OPTIMIZED:
+head->next = ns1;
+ns1->next = ns2;
+ns2->next = head;
+old->next = ns2;
 
-Fixes: c0cfa2d8a788fcf4 ("vsock: add multi-transports support")
+My patch work flow:
+nvme_next_ns_condition(head, old, true) return ns2;
+nvme_next_ns_condition(head, ns2, true) change the condition to false
+                                         and return ns1;
+nvme_next_ns_condition(head, ns1, false) return ns2;
+nvme_next_ns_condition(head, ns2, false) return NULL;
+And then the loop end.
 
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
-Signed-off-by: Alexander Popov <alex.popov@linux.com>
----
- net/vmw_vsock/af_vsock.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
-
-diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-index d10916ab4526..f64e681493a5 100644
---- a/net/vmw_vsock/af_vsock.c
-+++ b/net/vmw_vsock/af_vsock.c
-@@ -997,9 +997,12 @@ static __poll_t vsock_poll(struct file *file, struct socket *sock,
- 			mask |= EPOLLOUT | EPOLLWRNORM | EPOLLWRBAND;
- 
- 	} else if (sock->type == SOCK_STREAM) {
--		const struct vsock_transport *transport = vsk->transport;
-+		const struct vsock_transport *transport;
-+
- 		lock_sock(sk);
- 
-+		transport = vsk->transport;
-+
- 		/* Listening sockets that have connections in their accept
- 		 * queue can be read.
- 		 */
-@@ -1082,10 +1085,11 @@ static int vsock_dgram_sendmsg(struct socket *sock, struct msghdr *msg,
- 	err = 0;
- 	sk = sock->sk;
- 	vsk = vsock_sk(sk);
--	transport = vsk->transport;
- 
- 	lock_sock(sk);
- 
-+	transport = vsk->transport;
-+
- 	err = vsock_auto_bind(vsk);
- 	if (err)
- 		goto out;
-@@ -1544,10 +1548,11 @@ static int vsock_stream_setsockopt(struct socket *sock,
- 	err = 0;
- 	sk = sock->sk;
- 	vsk = vsock_sk(sk);
--	transport = vsk->transport;
- 
- 	lock_sock(sk);
- 
-+	transport = vsk->transport;
-+
- 	switch (optname) {
- 	case SO_VM_SOCKETS_BUFFER_SIZE:
- 		COPY_IN(val);
-@@ -1680,7 +1685,6 @@ static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
- 
- 	sk = sock->sk;
- 	vsk = vsock_sk(sk);
--	transport = vsk->transport;
- 	total_written = 0;
- 	err = 0;
- 
-@@ -1689,6 +1693,8 @@ static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
- 
- 	lock_sock(sk);
- 
-+	transport = vsk->transport;
-+
- 	/* Callers should not provide a destination with stream sockets. */
- 	if (msg->msg_namelen) {
- 		err = sk->sk_state == TCP_ESTABLISHED ? -EISCONN : -EOPNOTSUPP;
-@@ -1823,11 +1829,12 @@ vsock_stream_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
- 
- 	sk = sock->sk;
- 	vsk = vsock_sk(sk);
--	transport = vsk->transport;
- 	err = 0;
- 
- 	lock_sock(sk);
- 
-+	transport = vsk->transport;
-+
- 	if (!transport || sk->sk_state != TCP_ESTABLISHED) {
- 		/* Recvmsg is supposed to return 0 if a peer performs an
- 		 * orderly shutdown. Differentiate between that case and when a
--- 
-2.26.2
-
+Your patch work flow:
+nvme_next_ns(head, old) return ns2;
+nvme_next_ns(head, ns2) return ns1;
+nvme_next_ns(head, ns1) return ns2;
+nvme_next_ns(head, ns2) return ns1;
+nvme_next_ns(head, ns1) return ns2;
+And then the loop is infinite.
+> 
+> Cheers,
+> 
+> Hannes
