@@ -2,84 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 911C830B382
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:28:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8957830B384
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:28:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbhBAX06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 18:26:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59758 "EHLO
+        id S231273AbhBAX1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 18:27:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231223AbhBAX0x (ORCPT
+        with ESMTP id S231261AbhBAX0y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 18:26:53 -0500
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAE5EC061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 15:26:13 -0800 (PST)
-Received: by mail-il1-x130.google.com with SMTP id a1so17363660ilr.5
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 15:26:13 -0800 (PST)
+        Mon, 1 Feb 2021 18:26:54 -0500
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B387FC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 15:26:14 -0800 (PST)
+Received: by mail-io1-xd2d.google.com with SMTP id u20so5245534iot.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 15:26:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mK3TDg3+3vFIWxik5WfCnoYuIApFBk1bCtdKkSPB3OA=;
-        b=ibaFMyl0Z1jRyn8PIjc0eT2xGC1SQw/PaMoATtMNx8/RhlizsA7W1YpAVHB+1UcCSq
-         CwfIUthQpDFBX4z/reKqyf9o8lrRjRlBXihyj6GfjVXDT1ZpRRI2ZKOBOlxkfoyUvTrK
-         A2vGhs8sCe2Y+MRmqCQo+5KttZoHg0HJI2zdfygMH2cANvxf8G+29XyQFTsh7Gt7ChtB
-         qWw5KITCZcEbvN9a/62wF4/YDvfom/UIcjSSef0bjQLzLf/1Sm3OdwPW6GCFhogFGfau
-         z9nAH7pnDkXAhtebo4+Rnu8FjVn6JGOI1qGaNJX+ltmwHYKcYk9crQNiJEhCphc6TeAb
-         xLRA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Lc/k5K9QUyP48nZxgWZukJoyJ65VbtFetvLAJEaMjJg=;
+        b=QS+709Ti8z2gOlzrId8etHfiB6R62SANk4U1CHSaRcCSJdHGaWF8H5D4ZVNL7LwxlD
+         8U/AMcARtH4vh6q6k6DbR5ut/Kbg4upYgeY2SCSS8JotI6JcYnUkikr375tUilMM8NwC
+         TInh2poMgo76eVbV0XrsXPe3uJbET31f8c9hqM8rwmDesQF8Z5wwSXte2oeCvqgnUwlI
+         xmyCW8ll23UGYs1HkBfIFHkrM4HXNS6ZRcbkAX61c3RihXUVJO60iq5r/9mZO9FzHMS5
+         iHC7ln/zUAmTUrJJQbYJrGMHNC3FME8nq1Bbgci2Q2ZZtOukNVDG+qFb0jcjnCsMk0p7
+         3ZSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mK3TDg3+3vFIWxik5WfCnoYuIApFBk1bCtdKkSPB3OA=;
-        b=GgnL/+YUFpKPTh0Zf0cfS9bKTzm8ghYSMv9KVSo42AxfWcqU7O+g4/S1vFOZ/aTnjN
-         u8nwrjJchikQvGmhHT4n7XXHmPq6/PA2spkD1QhEU8U2snsJRrS2O6X9vLKxaaFbjC8V
-         os0pZYRRxyLgB+xjssBjUe+ijihsqOSul45oKhHpOFSuz035afrGwNoRafEZa4Ie73L7
-         oTxQ/xkPVY31gBcdQT6l/P8BucRlArIFTCfAFrq8zPVCMLhJWjHHGnVUfj42OcYHj29B
-         2ybx4CW9JhT/7LyLDY4JShcGyDh5ur2xCnHNKO2lyu0wsAqHHcpbISfe3QFMgpj4QeMB
-         msaw==
-X-Gm-Message-State: AOAM530Awu76HpnbjT/XH3IdzrKBtaTSk7B0Moe9w8kHvzqsmYs2Zobz
-        tBjBvEWFdWOKuhsVFYlJdegNow==
-X-Google-Smtp-Source: ABdhPJxeLBYfrlc3Wc5dWsiZR3n9vO5cuyXhziwVNdVZ+6bQ8hw/oCrrYfTl9Or1LDm53uPDAB4NzA==
-X-Received: by 2002:a05:6e02:1d8a:: with SMTP id h10mr3440520ila.224.1612221973211;
-        Mon, 01 Feb 2021 15:26:13 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Lc/k5K9QUyP48nZxgWZukJoyJ65VbtFetvLAJEaMjJg=;
+        b=F0eSpr/W6X7//k3zCxhLGDHQIzTx06SfqIjDDZllAu9kvqhpeSsnqFrY/9Bsn2dZ0N
+         RhqLdZVAOryUX8H7GbTG1OwQq+58Bk4x4J7GLgz5Z8bG2gFgXgZ3Fja5lSLJvm0nysYz
+         1dGCE4oxS3IcpBaaqEYdI0V2IpOLuhoHXr8dOkO+i0adwMhNcI6xt4Z06r5NT6Y0AG3g
+         FnyRBBGPwMM97S3z8bQ7dlgD/41nOS3gHi30lJKkra1Zb2d6m/Q1EwIZpekSa7RITPuo
+         g3oDY037jm+tYolfyO4szW/yGfOPByTn4idS3m3bxKbTvH0VtdbJvN9re3chabsb9Jsg
+         rXRA==
+X-Gm-Message-State: AOAM5313OJVuiG6lsKUZwVw6h5KOro7zLukU8YHYoEp8LTowbLPihPYD
+        ztPaCZ5RVCcnyN1ill01Ni6dvA==
+X-Google-Smtp-Source: ABdhPJw0cpo5vxVLTTBQyAYNebZbIXSs1VHiHP22h5aV6E+P/l6CQ5PjnFpUba5LbMBq8T3bqgrdGw==
+X-Received: by 2002:a02:caaa:: with SMTP id e10mr16083799jap.102.1612221974236;
+        Mon, 01 Feb 2021 15:26:14 -0800 (PST)
 Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id v18sm10359588ila.29.2021.02.01.15.26.12
+        by smtp.gmail.com with ESMTPSA id v18sm10359588ila.29.2021.02.01.15.26.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 15:26:12 -0800 (PST)
+        Mon, 01 Feb 2021 15:26:13 -0800 (PST)
 From:   Alex Elder <elder@linaro.org>
 To:     davem@davemloft.net, kuba@kernel.org
 Cc:     elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
         cpratapa@codeaurora.org, subashab@codeaurora.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net 0/4] net: ipa: a few bug fixes
-Date:   Mon,  1 Feb 2021 17:26:05 -0600
-Message-Id: <20210201232609.3524451-1-elder@linaro.org>
+Subject: [PATCH net 1/4] net: ipa: add a missing __iomem attribute
+Date:   Mon,  1 Feb 2021 17:26:06 -0600
+Message-Id: <20210201232609.3524451-2-elder@linaro.org>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210201232609.3524451-1-elder@linaro.org>
+References: <20210201232609.3524451-1-elder@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series fixes four minor bugs.  The first two are things that
-sparse points out.  All four are very simple and each patch should
-explain itself pretty well.
+The virt local variable in gsi_channel_state() does not have an
+__iomem attribute but should.  Fix this.
 
-					-Alex
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ drivers/net/ipa/gsi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Alex Elder (4):
-  net: ipa: add a missing __iomem attribute
-  net: ipa: be explicit about endianness
-  net: ipa: use the right accessor in ipa_endpoint_status_skip()
-  net: ipa: fix two format specifier errors
-
- drivers/net/ipa/gsi.c          | 2 +-
- drivers/net/ipa/ipa_endpoint.c | 6 +++---
- drivers/net/ipa/ipa_mem.c      | 4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
-
+diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
+index 14d9a791924bf..e2e77f09077a9 100644
+--- a/drivers/net/ipa/gsi.c
++++ b/drivers/net/ipa/gsi.c
+@@ -440,7 +440,7 @@ static void gsi_evt_ring_de_alloc_command(struct gsi *gsi, u32 evt_ring_id)
+ static enum gsi_channel_state gsi_channel_state(struct gsi_channel *channel)
+ {
+ 	u32 channel_id = gsi_channel_id(channel);
+-	void *virt = channel->gsi->virt;
++	void __iomem *virt = channel->gsi->virt;
+ 	u32 val;
+ 
+ 	val = ioread32(virt + GSI_CH_C_CNTXT_0_OFFSET(channel_id));
 -- 
 2.27.0
 
