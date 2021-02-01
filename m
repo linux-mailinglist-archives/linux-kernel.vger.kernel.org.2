@@ -2,330 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06C1530ADA1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:20:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C314D30AD9F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231838AbhBARTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:19:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27092 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229612AbhBARTu (ORCPT
+        id S232109AbhBARTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:19:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36950 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230267AbhBARTH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:19:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612199903;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wS5AbE8UUXpvZT+xdf5rjlY9gVtmvkVMDf6aSsa+WaE=;
-        b=NCMiAVsmy7rdho/hs/6ElKUhc9R0Q1n+BvishhblIW9iG25R1D/ErN/r/CZ84uUUUzbXxh
-        9lFGRW47SgqjajAgzBNNfSPTDhHpcgr/TCK7a/y6t0RP9NtGT7nD4Jz0Ko80EqmBaznXJ4
-        h2fibslcrZkAv8gO/qtcboLXKywReig=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-97-Tf4lJ9pKNIyDHgZCfLpXYA-1; Mon, 01 Feb 2021 12:18:20 -0500
-X-MC-Unique: Tf4lJ9pKNIyDHgZCfLpXYA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C7141005586;
-        Mon,  1 Feb 2021 17:18:17 +0000 (UTC)
-Received: from [10.36.113.43] (ovpn-113-43.ams2.redhat.com [10.36.113.43])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id CC2425C1A1;
-        Mon,  1 Feb 2021 17:18:10 +0000 (UTC)
-Subject: Re: [PATCH v13 01/15] iommu: Introduce attach/detach_pasid_table API
-To:     Keqian Zhu <zhukeqian1@huawei.com>, eric.auger.pro@gmail.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, will@kernel.org,
-        joro@8bytes.org, maz@kernel.org, robin.murphy@arm.com,
-        alex.williamson@redhat.com
-Cc:     jean-philippe@linaro.org, jacob.jun.pan@linux.intel.com,
-        nicoleotsuka@gmail.com, vivek.gautam@arm.com, yi.l.liu@intel.com,
-        zhangfei.gao@linaro.org
-References: <20201118112151.25412-1-eric.auger@redhat.com>
- <20201118112151.25412-2-eric.auger@redhat.com>
- <529d39a0-acf1-9132-b6ae-d7cbd57ba1e5@huawei.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <31cf2f6c-8a18-3ed2-1420-35b3fd939770@redhat.com>
-Date:   Mon, 1 Feb 2021 18:18:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Mon, 1 Feb 2021 12:19:07 -0500
+Received: from srv1.deutnet.info (srv1.deutnet.info [IPv6:2a01:4f8:c2c:6846::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8382AC06174A;
+        Mon,  1 Feb 2021 09:18:27 -0800 (PST)
+Received: from [2a01:cb14:a98:4900:be5f:f4ff:fe8b:2fc1] (helo=sonata)
+        by srv1.deutnet.info with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <agriveaux@deutnet.info>)
+        id 1l6cqA-0005fW-TW; Mon, 01 Feb 2021 18:18:18 +0100
+Received: from agriveaux by sonata with local (Exim 4.92)
+        (envelope-from <agriveaux@localhost.localdomain>)
+        id 1l6cqA-0002FD-JO; Mon, 01 Feb 2021 18:18:18 +0100
+Date:   Mon, 1 Feb 2021 18:18:18 +0100
+From:   agriveaux <agriveaux@deutnet.info>
+To:     Maxime Ripard <maxime@cerno.tech>, robh+dt@kernel.org,
+        mark.rutland@arm.com, wens@csie.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        agriveaux@deutnet.info
+Subject: Re: [PATCH v2] ARM: dts: sun5i: Add dts for inet86v_rev2
+Message-ID: <20210201171236.GA7024@localhost.localdomain>
+References: <20210124193903.21401-1-agriveaux@deutnet.info>
+ <20210128172329.ncuda3xlgpmefpqk@gilmour>
 MIME-Version: 1.0
-In-Reply-To: <529d39a0-acf1-9132-b6ae-d7cbd57ba1e5@huawei.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210128172329.ncuda3xlgpmefpqk@gilmour>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Keqian,
+On Thu, Jan 28, 2021 at 06:23:29PM +0100, Maxime Ripard wrote:
+> Hi,
+Hi,
+> 
+> On Sun, Jan 24, 2021 at 08:39:03PM +0100, Alexandre GRIVEAUX wrote:
+> > Add Inet 86V Rev 2 support, based upon Inet 86VS.
+> > 
+> > The Inet 86V use SL1536 touchpanel controller, the Inet 86VS a GSL1680,
+> > which make them both incompatible.
+> > 
+> > Missing things:
+> > - Accelerometer (MXC6225X)
+> > - Touchpanel (Sitronix SL1536)
+> > - Nand (29F32G08CBACA)
+> > - Camera (HCWY0308)
+> > 
+> > Signed-off-by: Alexandre GRIVEAUX <agriveaux@deutnet.info>
+> > ---
+> >  arch/arm/boot/dts/sun5i-a13-inet-86v-rev2.dts | 17 +++++++++++++++++
+> 
+> You have to add it to the Makefile
+> 
+Ok.
+> >  1 file changed, 17 insertions(+)
+> >  create mode 100644 arch/arm/boot/dts/sun5i-a13-inet-86v-rev2.dts
+> > 
+> > diff --git a/arch/arm/boot/dts/sun5i-a13-inet-86v-rev2.dts b/arch/arm/boot/dts/sun5i-a13-inet-86v-rev2.dts
+> > new file mode 100644
+> > index 000000000000..581083e932d8
+> > --- /dev/null
+> > +++ b/arch/arm/boot/dts/sun5i-a13-inet-86v-rev2.dts
+> > @@ -0,0 +1,17 @@
+> > +// SPDX-License-Identifier: GPL-2.0+
+> > +/*
+> > + * Copyright 2021 Alexandre Griveaux <agriveaux@deutnet.info>
+> > + *
+> > + * Minimal dts file for the iNet 86V
+> > + */
+> > +
+> > +/dts-v1/;
+> > +
+> > +#include "sun5i-a13.dtsi"
+> > +#include "sun5i-reference-design-tablet.dtsi"
+> > +
+> > +/ {
+> > +	model = "iNET 86V Rev 02";
+> > +	compatible = "inet,86v-rev2", "allwinner,sun5i-a13";
+> 
+> inet should be documented in the vendor prefixes, and that compatible
+> should be documented in Documentation/devicetree/bindings/arm/sunxi.yaml
+> 
 
-On 2/1/21 12:27 PM, Keqian Zhu wrote:
-> Hi Eric,
-> 
-> On 2020/11/18 19:21, Eric Auger wrote:
->> In virtualization use case, when a guest is assigned
->> a PCI host device, protected by a virtual IOMMU on the guest,
->> the physical IOMMU must be programmed to be consistent with
->> the guest mappings. If the physical IOMMU supports two
->> translation stages it makes sense to program guest mappings
->> onto the first stage/level (ARM/Intel terminology) while the host
->> owns the stage/level 2.
->>
->> In that case, it is mandated to trap on guest configuration
->> settings and pass those to the physical iommu driver.
->>
->> This patch adds a new API to the iommu subsystem that allows
->> to set/unset the pasid table information.
->>
->> A generic iommu_pasid_table_config struct is introduced in
->> a new iommu.h uapi header. This is going to be used by the VFIO
->> user API.
->>
->> Signed-off-by: Jean-Philippe Brucker <jean-philippe.brucker@arm.com>
->> Signed-off-by: Liu, Yi L <yi.l.liu@linux.intel.com>
->> Signed-off-by: Ashok Raj <ashok.raj@intel.com>
->> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
->> Signed-off-by: Eric Auger <eric.auger@redhat.com>
->>
->> ---
->>
->> v12 -> v13:
->> - Fix config check
->>
->> v11 -> v12:
->> - add argsz, name the union
->> ---
->>  drivers/iommu/iommu.c      | 68 ++++++++++++++++++++++++++++++++++++++
->>  include/linux/iommu.h      | 21 ++++++++++++
->>  include/uapi/linux/iommu.h | 54 ++++++++++++++++++++++++++++++
->>  3 files changed, 143 insertions(+)
->>
->> diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
->> index b53446bb8c6b..978fe34378fb 100644
->> --- a/drivers/iommu/iommu.c
->> +++ b/drivers/iommu/iommu.c
->> @@ -2171,6 +2171,74 @@ int iommu_uapi_sva_unbind_gpasid(struct iommu_domain *domain, struct device *dev
->>  }
->>  EXPORT_SYMBOL_GPL(iommu_uapi_sva_unbind_gpasid);
->>  
->> +int iommu_attach_pasid_table(struct iommu_domain *domain,
->> +			     struct iommu_pasid_table_config *cfg)
->> +{
->> +	if (unlikely(!domain->ops->attach_pasid_table))
->> +		return -ENODEV;
->> +
->> +	return domain->ops->attach_pasid_table(domain, cfg);
->> +}
-> miss export symbol?
-yes we do
-> 
->> +
->> +int iommu_uapi_attach_pasid_table(struct iommu_domain *domain,
->> +				  void __user *uinfo)
->> +{
->> +	struct iommu_pasid_table_config pasid_table_data = { 0 };
->> +	u32 minsz;
->> +
->> +	if (unlikely(!domain->ops->attach_pasid_table))
->> +		return -ENODEV;
->> +
->> +	/*
->> +	 * No new spaces can be added before the variable sized union, the
->> +	 * minimum size is the offset to the union.
->> +	 */
->> +	minsz = offsetof(struct iommu_pasid_table_config, vendor_data);
->> +
->> +	/* Copy minsz from user to get flags and argsz */
->> +	if (copy_from_user(&pasid_table_data, uinfo, minsz))
->> +		return -EFAULT;
->> +
->> +	/* Fields before the variable size union are mandatory */
->> +	if (pasid_table_data.argsz < minsz)
->> +		return -EINVAL;
->> +
->> +	/* PASID and address granu require additional info beyond minsz */
->> +	if (pasid_table_data.version != PASID_TABLE_CFG_VERSION_1)
->> +		return -EINVAL;
->> +	if (pasid_table_data.format == IOMMU_PASID_FORMAT_SMMUV3 &&
->> +	    pasid_table_data.argsz <
->> +		offsetofend(struct iommu_pasid_table_config, vendor_data.smmuv3))
->> +		return -EINVAL;
->> +
->> +	/*
->> +	 * User might be using a newer UAPI header which has a larger data
->> +	 * size, we shall support the existing flags within the current
->> +	 * size. Copy the remaining user data _after_ minsz but not more
->> +	 * than the current kernel supported size.
->> +	 */
->> +	if (copy_from_user((void *)&pasid_table_data + minsz, uinfo + minsz,
->> +			   min_t(u32, pasid_table_data.argsz, sizeof(pasid_table_data)) - minsz))
->> +		return -EFAULT;
->> +
->> +	/* Now the argsz is validated, check the content */
->> +	if (pasid_table_data.config < IOMMU_PASID_CONFIG_TRANSLATE ||
->> +	    pasid_table_data.config > IOMMU_PASID_CONFIG_ABORT)
->> +		return -EINVAL;
->> +
->> +	return domain->ops->attach_pasid_table(domain, &pasid_table_data);
->> +}
->> +EXPORT_SYMBOL_GPL(iommu_uapi_attach_pasid_table);
->> +
->> +void iommu_detach_pasid_table(struct iommu_domain *domain)
->> +{
->> +	if (unlikely(!domain->ops->detach_pasid_table))
->> +		return;
->> +
->> +	domain->ops->detach_pasid_table(domain);
->> +}
->> +EXPORT_SYMBOL_GPL(iommu_detach_pasid_table);
->> +
->>  static void __iommu_detach_device(struct iommu_domain *domain,
->>  				  struct device *dev)
->>  {
->> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
->> index b95a6f8db6ff..464fcbecf841 100644
->> --- a/include/linux/iommu.h
->> +++ b/include/linux/iommu.h
->> @@ -223,6 +223,8 @@ struct iommu_iotlb_gather {
->>   * @cache_invalidate: invalidate translation caches
->>   * @sva_bind_gpasid: bind guest pasid and mm
->>   * @sva_unbind_gpasid: unbind guest pasid and mm
->> + * @attach_pasid_table: attach a pasid table
->> + * @detach_pasid_table: detach the pasid table
->>   * @def_domain_type: device default domain type, return value:
->>   *		- IOMMU_DOMAIN_IDENTITY: must use an identity domain
->>   *		- IOMMU_DOMAIN_DMA: must use a dma domain
->> @@ -287,6 +289,9 @@ struct iommu_ops {
->>  				      void *drvdata);
->>  	void (*sva_unbind)(struct iommu_sva *handle);
->>  	u32 (*sva_get_pasid)(struct iommu_sva *handle);
->> +	int (*attach_pasid_table)(struct iommu_domain *domain,
->> +				  struct iommu_pasid_table_config *cfg);
->> +	void (*detach_pasid_table)(struct iommu_domain *domain);
->>  
->>  	int (*page_response)(struct device *dev,
->>  			     struct iommu_fault_event *evt,
->> @@ -434,6 +439,11 @@ extern int iommu_uapi_sva_unbind_gpasid(struct iommu_domain *domain,
->>  					struct device *dev, void __user *udata);
->>  extern int iommu_sva_unbind_gpasid(struct iommu_domain *domain,
->>  				   struct device *dev, ioasid_t pasid);
->> +extern int iommu_attach_pasid_table(struct iommu_domain *domain,
->> +				    struct iommu_pasid_table_config *cfg);
->> +extern int iommu_uapi_attach_pasid_table(struct iommu_domain *domain,
->> +					 void __user *udata);
->> +extern void iommu_detach_pasid_table(struct iommu_domain *domain);
->>  extern struct iommu_domain *iommu_get_domain_for_dev(struct device *dev);
->>  extern struct iommu_domain *iommu_get_dma_domain(struct device *dev);
->>  extern int iommu_map(struct iommu_domain *domain, unsigned long iova,
->> @@ -639,6 +649,7 @@ struct iommu_sva *iommu_sva_bind_device(struct device *dev,
->>  void iommu_sva_unbind_device(struct iommu_sva *handle);
->>  u32 iommu_sva_get_pasid(struct iommu_sva *handle);
->>  
->> +
-> extra blank line.
-yup
-> 
->>  #else /* CONFIG_IOMMU_API */
->>  
->>  struct iommu_ops {};
->> @@ -1020,6 +1031,16 @@ iommu_aux_get_pasid(struct iommu_domain *domain, struct device *dev)
->>  	return -ENODEV;
->>  }
->>  
->> +static inline
->> +int iommu_attach_pasid_table(struct iommu_domain *domain,
->> +			     struct iommu_pasid_table_config *cfg)
->> +{
->> +	return -ENODEV;
->> +}
-> 
-> miss dummy iommu_uapi_attach_pasid_table?
-yes we do
-> 
->> +
->> +static inline
->> +void iommu_detach_pasid_table(struct iommu_domain *domain) {}
->> +
->>  static inline struct iommu_sva *
->>  iommu_sva_bind_device(struct device *dev, struct mm_struct *mm, void *drvdata)
->>  {
->> diff --git a/include/uapi/linux/iommu.h b/include/uapi/linux/iommu.h
->> index e1d9e75f2c94..082d758dd016 100644
->> --- a/include/uapi/linux/iommu.h
->> +++ b/include/uapi/linux/iommu.h
->> @@ -338,4 +338,58 @@ struct iommu_gpasid_bind_data {
->>  	} vendor;
->>  };
->>  
->> +/**
->> + * struct iommu_pasid_smmuv3 - ARM SMMUv3 Stream Table Entry stage 1 related
->> + *     information
->> + * @version: API version of this structure
->> + * @s1fmt: STE s1fmt (format of the CD table: single CD, linear table
->> + *         or 2-level table)
->> + * @s1dss: STE s1dss (specifies the behavior when @pasid_bits != 0
->> + *         and no PASID is passed along with the incoming transaction)
->> + * @padding: reserved for future use (should be zero)
->> + *
->> + * The PASID table is referred to as the Context Descriptor (CD) table on ARM
->> + * SMMUv3. Please refer to the ARM SMMU 3.x spec (ARM IHI 0070A) for full
->> + * details.
->> + */
->> +struct iommu_pasid_smmuv3 {
->> +#define PASID_TABLE_SMMUV3_CFG_VERSION_1 1
->> +	__u32	version;
->> +	__u8	s1fmt;
->> +	__u8	s1dss;
->> +	__u8	padding[2];
->> +};
->> +
->> +/**
->> + * struct iommu_pasid_table_config - PASID table data used to bind guest PASID
->> + *     table to the host IOMMU
->> + * @argsz: User filled size of this data
->> + * @version: API version to prepare for future extensions
->> + * @format: format of the PASID table
->> + * @base_ptr: guest physical address of the PASID table
->> + * @pasid_bits: number of PASID bits used in the PASID table
->> + * @config: indicates whether the guest translation stage must
->> + *          be translated, bypassed or aborted.
->> + * @padding: reserved for future use (should be zero)
->> + * @vendor_data.smmuv3: table information when @format is
->> + * %IOMMU_PASID_FORMAT_SMMUV3
->> + */
->> +struct iommu_pasid_table_config {
->> +	__u32	argsz;
->> +#define PASID_TABLE_CFG_VERSION_1 1
->> +	__u32	version;
->> +#define IOMMU_PASID_FORMAT_SMMUV3	1
->> +	__u32	format;
->> +	__u64	base_ptr;
-> put @base_ptr between @version and @format can save some memory.
-yes. This padding issue was also reported by Jacob. I will swap both
-format and base_ptr.
-> 
->> +	__u8	pasid_bits;
->> +#define IOMMU_PASID_CONFIG_TRANSLATE	1
->> +#define IOMMU_PASID_CONFIG_BYPASS	2
->> +#define IOMMU_PASID_CONFIG_ABORT	3
->> +	__u8	config;
->> +	__u8    padding[2];
->> +	union {
->> +		struct iommu_pasid_smmuv3 smmuv3;
->> +	} vendor_data;
->> +};
->> +
->>  #endif /* _UAPI_IOMMU_H */
->>
-> 
-> Thanks,
-> Keqian
-> 
-Thanks!
+I forgot, but should be:
 
-Eric
+      - description: iNet-86V Rev 02
+        items:
+          - const: primux,inet86v-rev2
+          - const: allwinner,sun5i-a13
 
+> Having the first rev compatible would be good too
+
+Unfortunatly, I didn't find inet86v rev1 on FCC website and on
+linux-sunxi. 
+
+> 
+> > +
+> > +};
+> 
+> But I'm wondering. If there's nothing here to add, why would we need
+> that DT in the first place?
+> 
+I prefer to add often instead of bulk adding, and to show there are some
+board to add missing things like those above.
+
+> Maxime
+
+Thanks,
+Alexandre.
