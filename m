@@ -2,88 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF06130B1BA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 21:50:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 776F130B1BB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 21:50:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231672AbhBAUtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 15:49:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56123 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230273AbhBAUtc (ORCPT
+        id S231326AbhBAUtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 15:49:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230273AbhBAUtk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 15:49:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612212486;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dx+a2s/jKD+bm6v2qBtcJrio8FJGKN2zZWR18xESCUE=;
-        b=b4DrEK7TIJCFrG2m/R85vxXAiX4EWmDVfvIqu/DnQCX48IWIss2cnjrHEmytkBBjX/y/ba
-        WJNeIG7g4YyVutdPKiV7mgSleJX6DGg0KNBF1cKTOn0k/YvUdahTQ4n7V2TiD31Z/RyJSC
-        gs2kL5Acb5zVjpHrD115/etUi9JPti4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-223-8dV7A_cmM-igASv8WzLAfg-1; Mon, 01 Feb 2021 15:48:02 -0500
-X-MC-Unique: 8dV7A_cmM-igASv8WzLAfg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 89FEC10054FF;
-        Mon,  1 Feb 2021 20:47:59 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2D80260877;
-        Mon,  1 Feb 2021 20:47:58 +0000 (UTC)
-Date:   Mon, 1 Feb 2021 13:47:57 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Matthew Rosato <mjrosato@linux.ibm.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>, jgg@nvidia.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liranl@nvidia.com, oren@nvidia.com, tzahio@nvidia.com,
-        leonro@nvidia.com, yarong@nvidia.com, aviadye@nvidia.com,
-        shahafs@nvidia.com, artemp@nvidia.com, kwankhede@nvidia.com,
-        ACurrid@nvidia.com, gmataev@nvidia.com, cjia@nvidia.com,
-        yishaih@nvidia.com, aik@ozlabs.ru
-Subject: Re: [PATCH 6/9] vfio-pci/zdev: fix possible segmentation fault
- issue
-Message-ID: <20210201134757.375c91bf@omen.home.shazbot.org>
-In-Reply-To: <139adb14-f75a-25ef-06da-e87729c2ccf2@linux.ibm.com>
-References: <20210201162828.5938-1-mgurtovoy@nvidia.com>
-        <20210201162828.5938-7-mgurtovoy@nvidia.com>
-        <20210201175214.0dc3ba14.cohuck@redhat.com>
-        <139adb14-f75a-25ef-06da-e87729c2ccf2@linux.ibm.com>
+        Mon, 1 Feb 2021 15:49:40 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C0CBC061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 12:49:00 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id i71so4712593ybg.7
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 12:49:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JNW21lR2R+YyWCMWh0lJTjefxlo7cRO01En7hjDMgNc=;
+        b=u1UXL9AjqeH8m2JBUfnFhpU5Db/XfsrTwp8rjv7D0By+TcLlxJ/uptc59Q3FxPE1Ub
+         Bss1gKFrFI6a0zSR5rjpZF84tAVXvHTcaC5R9+EeuRpAkAWqwOAgAmUfoZLLe92jCTBl
+         nEAzMc5Z8olMmgiEwy2ShYN+AGHvQ9pt8EpIb0L8M/Rohx97LXecy/7jnuVPTkeTKsub
+         WFRFPIUTjuMl2YiQPFFuRy99H6riRnE5rcqk1S+o9nqc+btbGNG80O9IAnMVyPZrG5i9
+         EMPJcsjhzj/IPGjZmp81sqFKmbMLA/4CCQmPXw1qiXGnMy5unayv6STSraieXiBXjCmD
+         yW1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JNW21lR2R+YyWCMWh0lJTjefxlo7cRO01En7hjDMgNc=;
+        b=Km5jlICxxGqnC0Z7J7Eqr/kyqKqx60P7/LgtkOc6nEiZX/HX9my0UnBQ/FvOEU2FZR
+         sgvEoaCvIFugnKS+Ss06v7MPUn+cM2iCFbIL95mTV6HkK+KRGh8gxg3lHyuW/l59Humw
+         l90MtFukqCvpSGopC3HJhvbErvXc64fzf2L0vYHRZBsycsiwLZFM3SJ1QcO58HmjIbC2
+         KmIEKHjItVCqiWp5RxeL+ll9kppKVI2BpRH6OZQYUtsFkvpgjXaMbLEM7x/D6BTzfPWj
+         x5ph4FMe98UXGBmL5smIFVMef7pQf2gFHyMIqMIjS9Zg/7Y4P6k/8ZQLtE6s5VcpUVr7
+         IYcQ==
+X-Gm-Message-State: AOAM530ijqxTUz9EJZ3CguFDjy3pHzQyCwURB749fqFYEpABtpwxmf32
+        2niE12apoOWvYW5NuvJXwiFxBYl97E9CYTb92BrIcA==
+X-Google-Smtp-Source: ABdhPJzOz0NvQtmaO25zRRp0VLpVvczqldHxJ1yNi7nJR5iLEN4/+wiz9xyKvSbin1MWCFJ4YjjfBmffX1F4DS7QRFE=
+X-Received: by 2002:a25:3345:: with SMTP id z66mr27785968ybz.466.1612212539488;
+ Mon, 01 Feb 2021 12:48:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20210130040344.2807439-1-saravanak@google.com>
+ <20210130040344.2807439-3-saravanak@google.com> <CAMuHMdVWJZrGDvtMiyaAOfnZP5jBJec42oQvYeZSgt9ZLhqDvA@mail.gmail.com>
+In-Reply-To: <CAMuHMdVWJZrGDvtMiyaAOfnZP5jBJec42oQvYeZSgt9ZLhqDvA@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 1 Feb 2021 12:48:23 -0800
+Message-ID: <CAGETcx8KYGHkSdgjxJ55_gdAP7wh_CykKuXq_qXBfFdtsQ4Jsg@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] driver core: fw_devlink: Handle missing drivers
+ for optional suppliers
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Feb 2021 12:08:45 -0500
-Matthew Rosato <mjrosato@linux.ibm.com> wrote:
+On Mon, Feb 1, 2021 at 2:32 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Saravana,
+>
+> On Sat, Jan 30, 2021 at 5:03 AM Saravana Kannan <saravanak@google.com> wrote:
+> > After a deferred probe attempt has exhaused all the devices that can be
+> > bound, any device that remains unbound has one/both of these conditions
+> > true:
+> >
+> > (1) It is waiting on its supplier to bind
+> > (2) It does not have a matching driver
+> >
+> > So, to make fw_devlink=on more forgiving of missing drivers for optional
+> > suppliers, after we've done a full deferred probe attempt, this patch
+> > deletes all device links created by fw_devlink where the supplier hasn't
+> > probed yet and the supplier itself is not waiting on any of its
+> > suppliers. This allows consumers to probe during another deferred probe
+> > attempt if they were waiting on optional suppliers.
+> >
+> > When modules are enabled, we can't differentiate between a driver
+> > that'll never be registered vs a driver that'll be registered soon by
+> > loading a module. So, this patch doesn't do anything for the case where
+> > modules are enabled.
+>
+> For the modular case, can't you do a probe regardless? Or limit it
+> to devices where the missing provider is a DMAC or IOMMU driver?
+> Many drivers can handle missing DMAC controller drivers, and are even
+> supposed to work that way.  They may even retry obtaining DMA releases
+> later.
 
-> On 2/1/21 11:52 AM, Cornelia Huck wrote:
-> > On Mon, 1 Feb 2021 16:28:25 +0000
-> > Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
-> >   
-> >> In case allocation fails, we must behave correctly and exit with error.
-> >>
-> >> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>  
-> > 
-> > Fixes: e6b817d4b821 ("vfio-pci/zdev: Add zPCI capabilities to VFIO_DEVICE_GET_INFO")
-> > 
-> > Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-> > 
-> > I think this should go in independently of this series. >  
-> 
-> Agreed, makes sense to me -- thanks for finding.
-> 
-> Reviewed-by: Matthew Rosato <mjrosato@linux.ibm.com>
+I don't want to handle this at a property/provider-type level. It'll
+be a whack-a-mole that'll never end -- there'll be some driver that
+would work without some resource. Letting it probe is not difficult (I
+just need to drop these device links), but the problem is that a lot
+of drivers are not written properly to be able to handle getting
+deferred and then getting reattempted before the supplier. Either
+because:
 
-I can grab this one, and 5/9.  Connie do you want to toss an R-b at
-5/9?  Thanks,
+1. They were never built and tested as a module
+2. The supplier gets deferred and the consumer doesn't have proper
+deferred probe implementation and when we drop the device links, the
+consumer might be attempted before the supplier and things go bad.
 
-Alex
+One hack I'm thinking of is that with CONFIG_MODULES, I can drop these
+unmet device links after a N-second timeout, but having the timeout
+extended everytime a new driver is registered. So as long as no two
+modules are loaded further than N seconds apart during boot up, it
+would all just work out fine. But it doesn't solve the problem fully
+either. But maybe it'll be good enough? I haven't analyzed this fully
+yet -- so apologies in advance if it's stupid.
 
+-Saravana
