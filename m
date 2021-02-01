@@ -2,228 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B1F430A9E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CC9830A9EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:37:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbhBAOf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 09:35:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231143AbhBAOfr (ORCPT
+        id S231179AbhBAOgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 09:36:19 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60930 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230210AbhBAOf5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 09:35:47 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92C28C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 06:35:05 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id s24so5977053iob.6
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 06:35:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tpFKdqtau4ahR4UB5yONo7WPW5JC6DPpzSRX9ZY8yyc=;
-        b=ZSzDNpp7HahNsuesQxdYvqONbkURXzbxiZs9QtLeEoM6iT0FQrrq7Q/+juqbOJai2g
-         t+g1DEC8SnkBLt22FU5EY0WYK7RANuFdf4WKzJOc0PXwQ8+Y2vfIgnW/XiI161xwb1Gi
-         GrFfuz8th0262M9Sg21GvnxDWUUCajZ1vfEtoGx0E00VqVyKxRM3euGg/aqww2Xktipg
-         /ITc6k0VQSlieoyoxdL/AJRvRyirSy7/W7mPgju0wXxbmdlBDkDooFc9LjZVAbSMSeLQ
-         0dUtX6sqcOboJDuCmn1EIcclQjX+UsPLWNqH3mt126ENMoXGfYTEXw0sEYj3ySa7ZvfN
-         Im+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tpFKdqtau4ahR4UB5yONo7WPW5JC6DPpzSRX9ZY8yyc=;
-        b=jkhRHQ/gscVL8vqK2lQEObARkV0I6HHVclyfiAuVtNnkAGkTUav0G14t2WuFcyLmDA
-         kBbkvNMAhDRPMiL1HNP5YUZc6OzkWCBCyDSMs8a/V8F8JmAHxAtasEqVD3HMItC/o4GR
-         qT8Oru9/7uA4Z26ELVv/XQ9T8PFprRPCk3JIsIRYlD0dOhObGxuXYj8o02xKkkDRXFRg
-         YzAQJN2QH942l0tUBMAZ64upmTlwQPogRFyRwtu23p+T2jBRYjlvHbBREc/irryp5ac4
-         STeSd+fKbv5dHB1FL+R/HfeYgvgQk/wIDU84XeO5lfjdRopj4Rb+QZnGYWmelMSf7pD7
-         UPiA==
-X-Gm-Message-State: AOAM5337Xbqcihogsp5dXTSRE/6MwzZkno7z2MQW9OBRF2YmlipV/Avu
-        MQsISQ5dGT8HnFFG9ejmTYGptAsYaQ1ZLg==
-X-Google-Smtp-Source: ABdhPJyGPN+kannRgCzKXIBe7BwBhRNMuqsZb2Iq1lYaAezIWWFHTHWMOwHfB3NKoZp2EYBGH0/sgA==
-X-Received: by 2002:a02:5dc9:: with SMTP id w192mr5712063jaa.44.1612190104645;
-        Mon, 01 Feb 2021 06:35:04 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id v14sm9505407ilm.18.2021.02.01.06.35.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 06:35:03 -0800 (PST)
-Subject: Re: [PATCH net-next 9/9] net: ipa: don't disable NAPI in suspend
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, elder@kernel.org,
-        evgreen@chromium.org, bjorn.andersson@linaro.org,
-        cpratapa@codeaurora.org,
-        Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210129202019.2099259-1-elder@linaro.org>
- <20210129202019.2099259-10-elder@linaro.org>
- <CAF=yD-L1SKzu+gsma7KN4VjGnma-_w+amXx=Y_0e78rQiUCu7Q@mail.gmail.com>
- <e27f5c10-7b77-1f12-fe36-e9261f01bca1@linaro.org>
- <CAF=yD-+4xNjgkWQw8tMz0uvK45ysL6vnx86ZgEud+kCW9zw9_A@mail.gmail.com>
- <67f4aa5a-4a60-41e6-a049-0ff93fb87b66@linaro.org>
- <CAF=yD-+ABnhRmcHq=1T7PVz8VUVjqC073bjTa89GUt1rA3KVUw@mail.gmail.com>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <a1b12c17-5d65-ce29-3d4f-e09de4fdcf3f@linaro.org>
-Date:   Mon, 1 Feb 2021 08:35:03 -0600
+        Mon, 1 Feb 2021 09:35:57 -0500
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 111EVi23006364;
+        Mon, 1 Feb 2021 09:35:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=NH960khcaH5kqbSEa5tOHjMKvP9yY4aVTJT8WCDyZtY=;
+ b=jLXfQy+gulAmt53VGsFZBMHFQxQj5iTt7F9Nm8WILDOLj57uTkOUBZtplv3TM25kUu6p
+ qE0LcZozT1HSFIg5qcRaNoIPkIqfDlMl9oSUV92e5RopAF4Yo5XbX6w3bd+hos6lvciL
+ bpP1yTiXpQfuvTWujdSMY1bAgtDBhzD9KgsaaeHn0itgIac5jFsO7cvj8bhuafl9Dqo6
+ B2d4PISyuwW0KGTCV0Lj/zByLjMKVO2XInjFnS7PLl1BA//S7F+LhrE6qTLr7ZajUZwK
+ zWFAbHL5tzdpHgwZ4uhtkttrZb0eoBn/ZWLQrdakuzaJSIo/oryGlRBh7gjj9ysr+s1N Dg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36ejbp2rcg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 09:35:10 -0500
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 111EWvYJ012960;
+        Mon, 1 Feb 2021 09:35:09 -0500
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36ejbp2ray-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 09:35:09 -0500
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 111EOsCB015586;
+        Mon, 1 Feb 2021 14:35:08 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma02wdc.us.ibm.com with ESMTP id 36cy38y1ue-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 14:35:08 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 111EZ7Mn16318802
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 1 Feb 2021 14:35:07 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A5E9EAC065;
+        Mon,  1 Feb 2021 14:35:07 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9310AAC05E;
+        Mon,  1 Feb 2021 14:35:07 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon,  1 Feb 2021 14:35:07 +0000 (GMT)
+Subject: Re: [PATCH v5 2/4] x509: Detect sm2 keys by their parameters OID
+To:     David Howells <dhowells@redhat.com>,
+        Stefan Berger <stefanb@linux.vnet.ibm.com>
+Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Mimi Zohar <zohar@linux.vnet.ibm.com>
+References: <20210129150355.850093-3-stefanb@linux.vnet.ibm.com>
+ <20210129150355.850093-1-stefanb@linux.vnet.ibm.com>
+ <4162801.1612185801@warthog.procyon.org.uk>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <71a77d10-e645-194f-5073-ebf180a8d70e@linux.ibm.com>
+Date:   Mon, 1 Feb 2021 09:35:07 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <CAF=yD-+ABnhRmcHq=1T7PVz8VUVjqC073bjTa89GUt1rA3KVUw@mail.gmail.com>
+In-Reply-To: <4162801.1612185801@warthog.procyon.org.uk>
 Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-01_05:2021-01-29,2021-02-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
+ lowpriorityscore=0 mlxscore=0 malwarescore=0 suspectscore=0 clxscore=1015
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2102010073
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/31/21 7:36 PM, Willem de Bruijn wrote:
-> On Sun, Jan 31, 2021 at 10:32 AM Alex Elder <elder@linaro.org> wrote:
+On 2/1/21 8:23 AM, David Howells wrote:
+> Stefan Berger <stefanb@linux.vnet.ibm.com> wrote:
+>
+>> From: Stefan Berger <stefanb@linux.ibm.com>
 >>
->> On 1/31/21 8:52 AM, Willem de Bruijn wrote:
->>> On Sat, Jan 30, 2021 at 11:29 PM Alex Elder <elder@linaro.org> wrote:
->>>>
->>>> On 1/30/21 9:25 AM, Willem de Bruijn wrote:
->>>>> On Fri, Jan 29, 2021 at 3:29 PM Alex Elder <elder@linaro.org> wrote:
->>>>>>
->>>>>> The channel stop and suspend paths both call __gsi_channel_stop(),
->>>>>> which quiesces channel activity, disables NAPI, and (on other than
->>>>>> SDM845) stops the channel.  Similarly, the start and resume paths
->>>>>> share __gsi_channel_start(), which starts the channel and re-enables
->>>>>> NAPI again.
->>>>>>
->>>>>> Disabling NAPI should be done when stopping a channel, but this
->>>>>> should *not* be done when suspending.  It's not necessary in the
->>>>>> suspend path anyway, because the stopped channel (or suspended
->>>>>> endpoint on SDM845) will not cause interrupts to schedule NAPI,
->>>>>> and gsi_channel_trans_quiesce() won't return until there are no
->>>>>> more transactions to process in the NAPI polling loop.
->>>>>
->>>>> But why is it incorrect to do so?
->>>>
->>>> Maybe it's not; I also thought it was fine before, but...
-
-. . .
-
->> The "hang" occurs on an RX endpoint, and in particular it
->> occurs on an endpoint that we *know* will be receiving a
->> packet as part of the suspend process (when clearing the
->> hardware pipeline).  I can go into that further but won't'
->> unless asked.
+>> Detect whether a key is an sm2 type of key by its OID in the parameters
+>> array rather than assuming that everything under OID_id_ecPublicKey
+>> is sm2, which is not the case.
 >>
->>>> A stopped channel won't interrupt,
->>>> so we don't bother disabling the completion interrupt,
->>>> with no interrupts, NAPI won't be scheduled, so there's
->>>> no need to disable NAPI either.
->>>
->>> That sounds plausible. But it doesn't explain why napi_disable "should
->>> *not* be done when suspending" as the commit states.
->>>
->>> Arguably, leaving that won't have much effect either way, and is in
->>> line with other drivers.
->>
->> Understood and agreed.  In fact, if the hang occurrs in
->> napi_disable() when waiting for NAPI_STATE_SCHED to clear,
->> it would occur in napi_synchronize() as well.
-> 
-> Agreed.
-> 
-> So you have an environment to test a patch in, it might be worthwhile
-> to test essentially the same logic reordering as in this patch set,
-> but while still disabling napi.
+>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+>> Cc: David Howells <dhowells@redhat.com>
+>> Cc: keyrings@vger.kernel.org
+> I presume these cc's are intentionally not on the first patch or the cover (if
+> there is one)?
 
-What is the purpose of this test?  Just to guarantee
-that the NAPI hang goes away?  Because you agree that
-the napi_schedule() call would *also* hang if that
-problem exists, right?
+No, this is not intentional. I guess this is a case of wrong use of cc: 
+versus mailing lists - my bad. I posted the whole series to 
+linux-crypto, linux-integrity, keyrings and lkml.
 
-Anyway, what you're suggesting is to simply test with
-this last patch removed.  I can do that but I really
-don't expect it to change anything.  I will start that
-test later today when I'm turning my attention to
-something else for a while.
+V6 is at least visible here now:
 
-> The disappearing race may be due to another change rather than
-> napi_disable vs napi_synchronize. A smaller, more targeted patch could
-> also be a net (instead of net-next) candidate.
+- https://lkml.org/lkml/2021/1/31/323
 
-I am certain it is.
+- https://marc.info/?l=linux-crypto-vger&m=161213604618722&w=2
 
-I can tell you that we have seen a hang (after I think 2500+
-suspend/resume cycles) with the IPA code that is currently
-upstream.
+- 
+https://lore.kernel.org/linux-integrity/20210131233301.1301787-1-stefanb@linux.ibm.com/T/#mbc9fae5facb4178f64c1145e2654258c0af8fa96
 
-But with this latest series of 9, there is no hang after
-10,000+ cycles.  That gives me a bisect window, but I really
-don't want to go through a full bisect of even those 9,
-because it's 4 tests, each of which takes days to complete.
+- https://marc.info/?l=linux-keyrings&m=161213608818735&w=2
 
-Looking at the 9 patches, I think this one is the most
-likely culprit:
-   net: ipa: disable IEOB interrupt after channel stop
 
-I think the race involves the I/O completion handler
-interacting with NAPI in an unwanted way, but I have
-not come up with the exact sequence that would lead
-to getting stuck in napi_disable().
 
-Here are some possible events that could occur on an
-RX channel in *some* order, prior to that patch.  And
-in the order I show there's at least a problem of a
-receive not being processed immediately.
+>
+> Do you have a branch you want me to pull or did you want me to take just
+> patches 2-4?
 
-		. . . (suspend initiated)
+Please take it from the mailing list. If there are requests for more 
+changes on the crypto level, I will send another series. I personally am 
+waiting for some sort of verdict on the crypto level...
 
-	replenish_stop()
-	quiesce()
-			IRQ fires (receive ready)
-	napi_disable()
-			napi_schedule() (ignored)
-	irq_disable()
-			IRQ condition; pending
-	channel_stop()
+    Stefan
 
-		. . . (resume triggered)
 
-	channel_start()
-	irq_enable()
-			pending IRQ fires
-			napi_schedule() (ignored)
-	napi_enable()
-
-		. . . (suspend initiated)
-
->> At this point
->> it's more about the whole set of rework here, and keeping
->> NAPI enabled during suspend seems a little cleaner.
-> 
-> I'm not sure. I haven't looked if there is a common behavior across
-> devices. That might be informative. igb, for one, releases all
-> resources.
-
-I tried to do a survey of that too and did not see a
-consistent pattern.  I didn't look *that* hard because
-doing so would be more involved than I wanted to get.
-
-So in summary:
-- I'm putting together version 2 of this series now
-- Testing this past week seems to show that this series
-   makes the hang in napi_disable() (or synchronize)
-   go away.
-- I think the most likely patch in this series that
-   fixes the problem is the IRQ ordering one I mention
-   above, but right now I can't cite a specific sequence
-   of events that would prove it.
-- I will begin some long testing later today without
-   this last patch applied
-     --> But I think testing without the IRQ ordering
-	patch would be more promising, and I'd like
-	to hear your opinion on that
-
-Thanks again for your input and help on this.
-
-					-Alex
-
-. . .
