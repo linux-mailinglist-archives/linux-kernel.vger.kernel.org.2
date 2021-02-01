@@ -2,89 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 749DD309FF4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 02:23:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF594309FF8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 02:25:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231221AbhBABWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 20:22:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231180AbhBABVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 20:21:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4A9C64E2A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 01:20:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612142459;
-        bh=3B5tXgdUKMP/kU2hx0a2j+XEtprdSI4NTqN/tYMvOAQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=SGW8/jrqCBICdzyH3qwyuJ21Blyali2BK6NksL70kbxDs+h6+09P8sp4BIvZFO9yl
-         yf1utoJewpfcfNXLicNTmcYi72zLkULNiZzP6XOi3K3OXDZqkE+1On/PeyF/p0puap
-         JFypejveDUDyHz3nUGKbhnBULvWnsXF78WSQmLOECjJuknpZlNjkmZJ/kCjnPgw7wx
-         RCo+VwJ3sG9Eniwi+fuxMPci4U1q5qFi7HM8/huwbPiJ2/JJxa+hVCga10/RiQy5z7
-         eHGnEplUArA8IlvmaCHeE1CLQd3vIsLcpQXlmkorgwg6tiN4X/xCi3HpcV4qsseFp6
-         VoPq12coHLF6Q==
-Received: by mail-lj1-f175.google.com with SMTP id v15so14522910ljk.13
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 17:20:58 -0800 (PST)
-X-Gm-Message-State: AOAM533VB4k8Jqo5Pa+1811FP2z9pAkNZr3mJlPKmxHUkRyPeyjUiDej
-        7NiRh8XnBIg2t9H6VuwhPUXaMRWxaewJY5MD4dhRAA==
-X-Google-Smtp-Source: ABdhPJwIJIncC/Oq18m6ce+ZJFI2xIuUS/wzWzDt0DPN0xHeH3UpC5ru89ZhaMxplhSnBvlslmVSQe0TX8XBITTI5ek=
-X-Received: by 2002:a2e:2c11:: with SMTP id s17mr8472300ljs.468.1612142456959;
- Sun, 31 Jan 2021 17:20:56 -0800 (PST)
+        id S231143AbhBABYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 20:24:00 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11221 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231153AbhBABXK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 20:23:10 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DTVWQ38TDzlDTM;
+        Mon,  1 Feb 2021 09:20:50 +0800 (CST)
+Received: from [10.174.179.241] (10.174.179.241) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 1 Feb 2021 09:22:21 +0800
+Subject: Re: [PATCH] hugetlbfs: show pagesize in unit of GB if possible
+To:     David Rientjes <rientjes@google.com>
+CC:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+References: <20210130090339.4378-1-linmiaohe@huawei.com>
+ <f5ac7d57-6653-aae-f119-b87d72acf192@google.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <24ab70d6-1d23-d118-f1e7-473f01615dcc@huawei.com>
+Date:   Mon, 1 Feb 2021 09:22:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210128001948.1637901-1-songliubraving@fb.com> <20210128001948.1637901-2-songliubraving@fb.com>
-In-Reply-To: <20210128001948.1637901-2-songliubraving@fb.com>
-From:   KP Singh <kpsingh@kernel.org>
-Date:   Mon, 1 Feb 2021 02:20:46 +0100
-X-Gmail-Original-Message-ID: <CACYkzJ4Ha1r4oqPge7yJjORdBUPg=huHSjER58ka24OEw_4S0A@mail.gmail.com>
-Message-ID: <CACYkzJ4Ha1r4oqPge7yJjORdBUPg=huHSjER58ka24OEw_4S0A@mail.gmail.com>
-Subject: Re: [PATCH v3 bpf-next 1/4] bpf: enable task local storage for
- tracing programs
-To:     Song Liu <songliubraving@fb.com>
-Cc:     bpf <bpf@vger.kernel.org>, Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>, mingo@redhat.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f5ac7d57-6653-aae-f119-b87d72acf192@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.241]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 1:20 AM Song Liu <songliubraving@fb.com> wrote:
->
-> To access per-task data, BPF programs usually creates a hash table with
-> pid as the key. This is not ideal because:
->  1. The user need to estimate the proper size of the hash table, which may
->     be inaccurate;
->  2. Big hash tables are slow;
->  3. To clean up the data properly during task terminations, the user need
->     to write extra logic.
->
-> Task local storage overcomes these issues and offers a better option for
-> these per-task data. Task local storage is only available to BPF_LSM. Now
-> enable it for tracing programs.
->
-> Unlike LSM progreams, tracing programs can be called in IRQ contexts.
+Hi:
+On 2021/1/31 6:07, David Rientjes wrote:
+> On Sat, 30 Jan 2021, Miaohe Lin wrote:
+> 
+>> Hugepage size in unit of GB is supported. We could show pagesize in unit of
+>> GB to make it more friendly to read. Also rework the calculation code of
+>> page size unit to make it more readable.
+>>
+>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>> ---
+>>  fs/hugetlbfs/inode.c | 12 ++++++++----
+>>  1 file changed, 8 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+>> index 3a08fbae3b53..40a9795f250a 100644
+>> --- a/fs/hugetlbfs/inode.c
+>> +++ b/fs/hugetlbfs/inode.c
+>> @@ -1014,11 +1014,15 @@ static int hugetlbfs_show_options(struct seq_file *m, struct dentry *root)
+>>  	if (sbinfo->max_inodes != -1)
+>>  		seq_printf(m, ",nr_inodes=%lu", sbinfo->max_inodes);
+>>  
+>> -	hpage_size /= 1024;
+>> -	mod = 'K';
+>> -	if (hpage_size >= 1024) {
+>> -		hpage_size /= 1024;
+>> +	if (hpage_size >= SZ_1G) {
+>> +		hpage_size /= SZ_1G;
+>> +		mod = 'G';
+>> +	} else if (hpage_size >= SZ_1M) {
+>> +		hpage_size /= SZ_1M;
+>>  		mod = 'M';
+>> +	} else {
+>> +		hpage_size /= SZ_1K;
+>> +		mod = 'K';
+>>  	}
+>>  	seq_printf(m, ",pagesize=%lu%c", hpage_size, mod);
+>>  	if (spool) {
+> 
+> NACK, this can break existing userspace parsing.
+> .
+> 
 
-nit: typo *programs
-
-> Helpers that accesses task local storage are updated to use
-
-nit: Helpers that access..
-
-> raw_spin_lock_irqsave() instead of raw_spin_lock_bh().
->
-> Tracing programs can attach to functions on the task free path, e.g.
-> exit_creds(). To avoid allocating task local storage after
-> bpf_task_storage_free(). bpf_task_storage_get() is updated to not allocate
-> new storage when the task is not refcounted (task->usage == 0).
->
-> Signed-off-by: Song Liu <songliubraving@fb.com>
-
-Acked-by: KP Singh <kpsingh@kernel.org>
-
-Thanks for adding better commit descriptions :)
-
-I think checking the usage before adding storage should work for the
-task exit path (I could not think of cases where it would break).
-Would also be nice to check with Martin and Hao about this.
+I see. I should take care of this. Many thanks.
