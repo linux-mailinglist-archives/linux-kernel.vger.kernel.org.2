@@ -2,67 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 881A530AAF2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA0530AAF9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:20:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231444AbhBAPSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 10:18:54 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49492 "EHLO mx2.suse.de"
+        id S230129AbhBAPUI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 10:20:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229696AbhBAPSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 10:18:35 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 46D07AD18;
-        Mon,  1 Feb 2021 15:17:52 +0000 (UTC)
-Subject: Re: [v5 PATCH 07/11] mm: vmscan: add per memcg shrinker nr_deferred
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210127233345.339910-1-shy828301@gmail.com>
- <20210127233345.339910-8-shy828301@gmail.com>
- <6b0638ba-2513-67f5-8ef1-9e60a7d9ded6@suse.cz>
- <CAHbLzkpiDBMRRerr7iXtj40p=RVLTmWoWoOQbdkvG7Tsi4iirw@mail.gmail.com>
- <CAHbLzkrg8OYqbKevdV_6qJ5L9P-_8ui=HAgm-0o69yKLtMg8tQ@mail.gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <0ce8b6e4-5abb-3edb-8423-f6c222420a89@suse.cz>
-Date:   Mon, 1 Feb 2021 16:17:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S230192AbhBAPTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 10:19:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7ADC764E97;
+        Mon,  1 Feb 2021 15:18:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612192720;
+        bh=M6Pq1vR46oimtjF7/euCfQOikq+Mmgpo47GOSu/7s0A=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=dbv1bOGZdMDmoS0j+W9Kb7EwQBky5Bhf7NxF4bXaWR8ntocEFL5D0VF4TaVLKM6SP
+         D7vi5UL7r8Da82ln3jbF24Wkdxlbn8IeRbMdNUjKqJiLTH9zqEFjsDr24fyu61XIR+
+         Q4F8kOTm0AL5aPJHq/atgSEFftUh98dtdJu9LYK2gtNK+bsaetyP/EIKco4wF5cfuP
+         OMgm/xQq0tbYAiXVzZprYn4ZUvvPdQjUwCF3a4Sy5mVxS4HFix6uNHVcFIfOHqoNBM
+         Nf+BhYKCZEf2kJkrulEmBdTDuRYu89wXJR2nMhh4E13sYFiDVc3+LcEqGhZHbp4Ioh
+         ZRNMO2AwWDeZg==
+Subject: Re: [PATCH v3] clk: exynos7: Keep aclk_fsys1_200 enabled
+To:     =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        mturquette@baylibre.com, sboyd@kernel.org
+Cc:     kgene@kernel.org, krzk@kernel.org,
+        linux-samsung-soc@vger.kernel.org, tomasz.figa@gmail.com,
+        linux-kernel@vger.kernel.org, cw00.choi@samsung.com,
+        s.nawrocki@samsung.com, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210131170428.3290-1-pawel.mikolaj.chmiel@gmail.com>
+From:   Sylwester Nawrocki <snawrocki@kernel.org>
+Message-ID: <273b996a-8551-8383-5f9d-61ff5bd9663c@kernel.org>
+Date:   Mon, 1 Feb 2021 16:18:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAHbLzkrg8OYqbKevdV_6qJ5L9P-_8ui=HAgm-0o69yKLtMg8tQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210131170428.3290-1-pawel.mikolaj.chmiel@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/29/21 7:04 PM, Yang Shi wrote:
-
->> > > @@ -209,9 +214,15 @@ static int expand_one_shrinker_info(struct mem_cgroup *memcg,
->> > >               if (!new)
->> > >                       return -ENOMEM;
->> > >
->> > > -             /* Set all old bits, clear all new bits */
->> > > -             memset(new->map, (int)0xff, old_size);
->> > > -             memset((void *)new->map + old_size, 0, size - old_size);
->> > > +             new->map = (unsigned long *)(new + 1);
->> > > +             new->nr_deferred = (void *)new->map + m_size;
->> >
->> > This better be aligned to sizeof(atomic_long_t). Can we be sure about that?
->>
->> Good point. No, if unsigned long is 32 bit on some 64 bit machines.
+On 1/31/21 18:04, Paweł Chmiel wrote:
+> This clock must be always enabled to allow access to any registers in
+> fsys1 CMU. Until proper solution based on runtime PM is applied
+> (similar to what was done for Exynos5433), fix this by calling
+> clk_prepare_enable() directly from clock provider driver.
 > 
-> I think we could just change map to "u64" and guarantee struct
-> shrinker_info is aligned to 64 bit.
+> It was observed on Samsung Galaxy S6 device (based on Exynos7420), where
+> UFS module is probed before pmic used to power that device.
+> In this case defer probe was happening and that clock was disabled by
+> UFS driver, causing whole boot to hang on next CMU access.
+> 
+> Signed-off-by: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
+> ---
+> Changes from v2:
+>    - Avoid __clk_lookup() call when enabling clock
+> Changes from v1:
+>    - Instead of marking clock as critical, enable it manually in driver.
 
-What about changing to order, nr_deferred before map? Then the atomics are at
-the beginning of allocated area, thus aligned.
+Acked-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
