@@ -2,294 +2,601 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1615F30B04B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4528F30B0EA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:56:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhBATW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 14:22:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49792 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231318AbhBATWx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 14:22:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612207285;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q2b/N50hu0sHq/kMoTQCMLs3X1tcdQtb/zYbLnwU7BM=;
-        b=eQehGxMSD1Yt3VqGRbujaHOkUo9z0np61Q2s/CBT2VPsHx3jS9xCLMMiLM7V8l1AmLQWNr
-        XWh+t03aF96ny7jCCh6JEGAsXeX41iF5qkA3U1YdT+gDyR1kXSNywRzAlXqKcn5EXUtp7l
-        /qoI5ou6FFExyz+BRhLgSNYhQQJYP7s=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-541-iDKI_BiQP1KxUE3h_wBKbg-1; Mon, 01 Feb 2021 14:21:24 -0500
-X-MC-Unique: iDKI_BiQP1KxUE3h_wBKbg-1
-Received: by mail-qk1-f200.google.com with SMTP id 185so14087482qkl.6
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 11:21:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Q2b/N50hu0sHq/kMoTQCMLs3X1tcdQtb/zYbLnwU7BM=;
-        b=aVyF2DPBUyTOq8XH0WDfm2x4j7uI98CH7xyDZBywF6chT2k88ny/3Z3l/LVLQsckub
-         MeJMNBttzoEKwrO0ZcyBVCTPDmddupZrwjyuujJ78cCfWxoaUq7R9x6uXDr6E5WFNhOf
-         FoqqoHA3itqbMZ8edsaJ/ygQLzXAwoLmpxo2QA7VcQemXeuyMRaetmg/bIt266NTVC+5
-         ScFDuLQ9eBO5dyz0oPYJAalIMsfoy65ySOnizia9m6Mhe1BYP4691gD0rsxHsEjLzRjF
-         hQGvqFBsQ1Z3XrekMdGnFc5fENh/S7APyd7bsiiwenPZQdWdu/QZ1JR/7RQCo0DsKJ9U
-         yHAg==
-X-Gm-Message-State: AOAM530zFM8IChoPihXXHGHZ8NdRQPCGSD2fSgYlhVAw463CS/hMWlU0
-        Cark+/1PxS5rXjtVtw2khT62UNvFrZr6u1QtWvJtyqp7hn4AyjO4B957t0LOpRwhbvs/FWUig8Q
-        Enhd9ukM6oWkKwuYwNi3NtSu2
-X-Received: by 2002:ac8:5cd0:: with SMTP id s16mr16186215qta.309.1612207283700;
-        Mon, 01 Feb 2021 11:21:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwWmFLJGbGwctGCP9A/nYWy61WeOGTKC6d+y1Ba8IhsTF2WrQd3mliiW1G26lcHYKqEou/z+w==
-X-Received: by 2002:ac8:5cd0:: with SMTP id s16mr16186156qta.309.1612207283172;
-        Mon, 01 Feb 2021 11:21:23 -0800 (PST)
-Received: from xz-x1 ([142.126.83.202])
-        by smtp.gmail.com with ESMTPSA id o5sm14755572qko.85.2021.02.01.11.21.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 11:21:22 -0800 (PST)
-Date:   Mon, 1 Feb 2021 14:21:20 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Steven Price <steven.price@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Adam Ruprecht <ruprecht@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v3 7/9] userfaultfd: add UFFDIO_CONTINUE ioctl
-Message-ID: <20210201192120.GG260413@xz-x1>
-References: <20210128224819.2651899-1-axelrasmussen@google.com>
- <20210128224819.2651899-8-axelrasmussen@google.com>
+        id S232893AbhBATzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 14:55:49 -0500
+Received: from mail.pr-group.ru ([178.18.215.3]:50666 "EHLO mail.pr-group.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231219AbhBATzM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 14:55:12 -0500
+X-Greylist: delayed 1869 seconds by postgrey-1.27 at vger.kernel.org; Mon, 01 Feb 2021 14:55:10 EST
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+        d=metrotek.ru; s=mail;
+        h=from:subject:date:message-id:to:cc:mime-version:content-type;
+        bh=myK6cQQzMxgYoV2hhs7cdtiAdqh9UIoSjDmPzAgRz00=;
+        b=RC4n4a+WdolHbC72rjD7eDe/xvDpIgBA0gaMrqZIiywHPVzOXut/6IH8pCXkVlWADYnj22AxvDv0v
+         jWm9EptnDZNN66uF5+pGyTj2dP7nTWKonQW1SXP5NkZBIjHThDnAnfRuxZETUnfyxoIJncj3WfGafM
+         xz6syyL06WF02wb7BT6hGBq0e2b2qJlu9WOIudXoia86LZQC1us1HAOuu5cTTnl6q9nxMN2uoQfob1
+         59OAmjeXC0qIiEA0Tu+HLjvAq4nkQ6ByZChhuuYh5zn5c4nA9wPn/dGqhUbT7s/0YzUybpi11RAomw
+         BYskFG7T31iTm49PQIefONz++6gXbKQ==
+X-Spam-Status: No, hits=0.0 required=3.4
+        tests=BAYES_00: -1.665, CUSTOM_RULE_FROM: ALLOW, TOTAL_SCORE: -1.665,autolearn=ham
+X-Spam-Level: 
+X-Footer: bWV0cm90ZWsucnU=
+Received: from dhcp-179.ddg ([85.143.252.66])
+        (authenticated user i.bornyakov@metrotek.ru)
+        by mail.pr-group.ru with ESMTPSA
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256 bits));
+        Mon, 1 Feb 2021 22:23:01 +0300
+Date:   Mon, 1 Feb 2021 22:22:51 +0300
+From:   Ivan Bornyakov <i.bornyakov@metrotek.ru>
+To:     netdev@vger.kernel.org
+Cc:     i.bornyakov@metrotek.ru, system@metrotek.ru, andrew@lunn.ch,
+        hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] net: phy: add Marvell 88X2222 transceiver support
+Message-ID: <20210201192250.gclztkomtsihczz6@dhcp-179.ddg>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210128224819.2651899-8-axelrasmussen@google.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 02:48:17PM -0800, Axel Rasmussen wrote:
-> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> index f94a35296618..79e1f0155afa 100644
-> --- a/include/linux/hugetlb.h
-> +++ b/include/linux/hugetlb.h
-> @@ -135,11 +135,14 @@ void hugetlb_show_meminfo(void);
->  unsigned long hugetlb_total_pages(void);
->  vm_fault_t hugetlb_fault(struct mm_struct *mm, struct vm_area_struct *vma,
->  			unsigned long address, unsigned int flags);
-> +#ifdef CONFIG_USERFAULTFD
+Add basic support for the Marvell 88X2222 multi-speed ethernet
+transceiver.
 
-I'm confused why this is needed.. hugetlb_mcopy_atomic_pte() should only be
-called in userfaultfd.c, but if without uffd config set it won't compile
-either:
+This PHY provides data transmission over fiber-optic as well as Twinax
+copper links. The 88X2222 supports 2 ports of 10GBase-R and 1000Base-X
+on the line-side interface. The host-side interface supports 4 ports of
+10GBase-R, RXAUI, 1000Base-X and 2 ports of XAUI.
 
-        obj-$(CONFIG_USERFAULTFD) += userfaultfd.o
+This driver, however, supports only XAUI on the host-side and
+1000Base-X/10GBase-R on the line-side, for now. Interrupts are not
+supported also.
 
->  int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm, pte_t *dst_pte,
->  				struct vm_area_struct *dst_vma,
->  				unsigned long dst_addr,
->  				unsigned long src_addr,
-> +				enum mcopy_atomic_mode mode,
->  				struct page **pagep);
-> +#endif
->  int hugetlb_reserve_pages(struct inode *inode, long from, long to,
->  						struct vm_area_struct *vma,
->  						vm_flags_t vm_flags);
-> diff --git a/include/linux/userfaultfd_k.h b/include/linux/userfaultfd_k.h
-> index fb9abaeb4194..2fcb686211e8 100644
-> --- a/include/linux/userfaultfd_k.h
-> +++ b/include/linux/userfaultfd_k.h
-> @@ -37,6 +37,22 @@ extern int sysctl_unprivileged_userfaultfd;
->  
->  extern vm_fault_t handle_userfault(struct vm_fault *vmf, unsigned long reason);
->  
-> +/*
-> + * The mode of operation for __mcopy_atomic and its helpers.
-> + *
-> + * This is almost an implementation detail (mcopy_atomic below doesn't take this
-> + * as a parameter), but it's exposed here because memory-kind-specific
-> + * implementations (e.g. hugetlbfs) need to know the mode of operation.
-> + */
-> +enum mcopy_atomic_mode {
-> +	/* A normal copy_from_user into the destination range. */
-> +	MCOPY_ATOMIC_NORMAL,
-> +	/* Don't copy; map the destination range to the zero page. */
-> +	MCOPY_ATOMIC_ZEROPAGE,
-> +	/* Just setup the dst_vma, without modifying the underlying page(s). */
-> +	MCOPY_ATOMIC_CONTINUE,
-> +};
-> +
+Internal registers access compliant with the Clause 45 specification.
 
-Maybe better to keep this to where it's used, e.g. hugetlb.h where we've
-defined hugetlb_mcopy_atomic_pte()?
+Signed-off-by: Ivan Bornyakov <i.bornyakov@metrotek.ru>
+---
+ drivers/net/phy/Kconfig           |   6 +
+ drivers/net/phy/Makefile          |   1 +
+ drivers/net/phy/marvell-88x2222.c | 480 ++++++++++++++++++++++++++++++
+ include/linux/marvell_phy.h       |   1 +
+ 4 files changed, 488 insertions(+)
+ create mode 100644 drivers/net/phy/marvell-88x2222.c
 
-[...]
-
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 6f9d8349f818..3d318ef3d180 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -4647,6 +4647,7 @@ vm_fault_t hugetlb_fault(struct mm_struct *mm, struct vm_area_struct *vma,
->  	return ret;
->  }
->  
-> +#ifdef CONFIG_USERFAULTFD
-
-So I feel like you added the header ifdef for this.
-
-IMHO we can drop both since that's what we have had.  I agree maybe it's better
-to not compile that without CONFIG_USERFAULTFD but that may worth a standalone
-patch anyways.
-
->  /*
->   * Used by userfaultfd UFFDIO_COPY.  Based on mcopy_atomic_pte with
->   * modifications for huge pages.
-> @@ -4656,6 +4657,7 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
->  			    struct vm_area_struct *dst_vma,
->  			    unsigned long dst_addr,
->  			    unsigned long src_addr,
-> +			    enum mcopy_atomic_mode mode,
->  			    struct page **pagep)
->  {
->  	struct address_space *mapping;
-> @@ -4668,7 +4670,10 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
->  	int ret;
->  	struct page *page;
->  
-> -	if (!*pagep) {
-> +	mapping = dst_vma->vm_file->f_mapping;
-> +	idx = vma_hugecache_offset(h, dst_vma, dst_addr);
-> +
-> +	if (!*pagep && mode != MCOPY_ATOMIC_CONTINUE) {
->  		ret = -ENOMEM;
->  		page = alloc_huge_page(dst_vma, dst_addr, 0);
->  		if (IS_ERR(page))
-> @@ -4685,6 +4690,12 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
->  			/* don't free the page */
->  			goto out;
->  		}
-> +	} else if (mode == MCOPY_ATOMIC_CONTINUE) {
-> +		ret = -EFAULT;
-> +		page = find_lock_page(mapping, idx);
-> +		*pagep = NULL;
-> +		if (!page)
-> +			goto out;
->  	} else {
->  		page = *pagep;
->  		*pagep = NULL;
-
-I would write this as:
-
-    if (mode == MCOPY_ATOMIC_CONTINUE)
-        ...
-    else if (!*pagep)
-        ...
-    else 
-        ...
-
-No strong opinion, but that'll look slightly cleaner to me.
-
-[...]
-
-> @@ -408,7 +407,7 @@ extern ssize_t __mcopy_atomic_hugetlb(struct mm_struct *dst_mm,
->  				      unsigned long dst_start,
->  				      unsigned long src_start,
->  				      unsigned long len,
-> -				      bool zeropage);
-> +				      enum mcopy_atomic_mode mode);
->  #endif /* CONFIG_HUGETLB_PAGE */
->  
->  static __always_inline ssize_t mfill_atomic_pte(struct mm_struct *dst_mm,
-> @@ -417,7 +416,7 @@ static __always_inline ssize_t mfill_atomic_pte(struct mm_struct *dst_mm,
->  						unsigned long dst_addr,
->  						unsigned long src_addr,
->  						struct page **page,
-> -						bool zeropage,
-> +						enum mcopy_atomic_mode mode,
->  						bool wp_copy)
->  {
->  	ssize_t err;
-> @@ -433,22 +432,38 @@ static __always_inline ssize_t mfill_atomic_pte(struct mm_struct *dst_mm,
->  	 * and not in the radix tree.
->  	 */
->  	if (!(dst_vma->vm_flags & VM_SHARED)) {
-> -		if (!zeropage)
-> +		switch (mode) {
-> +		case MCOPY_ATOMIC_NORMAL:
->  			err = mcopy_atomic_pte(dst_mm, dst_pmd, dst_vma,
->  					       dst_addr, src_addr, page,
->  					       wp_copy);
-> -		else
-> +			break;
-> +		case MCOPY_ATOMIC_ZEROPAGE:
->  			err = mfill_zeropage_pte(dst_mm, dst_pmd,
->  						 dst_vma, dst_addr);
-> +			break;
-> +		/* It only makes sense to CONTINUE for shared memory. */
-> +		case MCOPY_ATOMIC_CONTINUE:
-> +			err = -EINVAL;
-> +			break;
-> +		}
->  	} else {
->  		VM_WARN_ON_ONCE(wp_copy);
-> -		if (!zeropage)
-> +		switch (mode) {
-> +		case MCOPY_ATOMIC_NORMAL:
->  			err = shmem_mcopy_atomic_pte(dst_mm, dst_pmd,
->  						     dst_vma, dst_addr,
->  						     src_addr, page);
-> -		else
-> +			break;
-> +		case MCOPY_ATOMIC_ZEROPAGE:
->  			err = shmem_mfill_zeropage_pte(dst_mm, dst_pmd,
->  						       dst_vma, dst_addr);
-> +			break;
-> +		case MCOPY_ATOMIC_CONTINUE:
-> +			/* FIXME: Add minor fault interception for shmem. */
-> +			err = -EINVAL;
-> +			break;
-> +		}
->  	}
->  
->  	return err;
-
-The whole chunk above is not needed for hugetlbfs it seems - I'd avoid touching
-the anon/shmem code path until it's being supported.
-
-What you need is probably set zeropage as below in __mcopy_atomic():
-
-    zeropage = (mode == MCOPY_ATOMIC_ZEROPAGE);
-
-Before passing it over to mfill_atomic_pte().  As long as we reject
-UFFDIO_CONTINUE with !hugetlbfs correctly that'll be enough iiuc.
-
-Thanks,
-
+diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
+index 698bea312adc..a615b3660b05 100644
+--- a/drivers/net/phy/Kconfig
++++ b/drivers/net/phy/Kconfig
+@@ -201,6 +201,12 @@ config MARVELL_10G_PHY
+ 	help
+ 	  Support for the Marvell Alaska MV88X3310 and compatible PHYs.
+ 
++config MARVELL_88X2222_PHY
++	tristate "Marvell 88X2222 PHY"
++	help
++	  Support for the Marvell 88X2222 Dual-port Multi-speed Ethernet
++	  Transceiver.
++
+ config MICREL_PHY
+ 	tristate "Micrel PHYs"
+ 	help
+diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
+index a13e402074cf..de683e3abe63 100644
+--- a/drivers/net/phy/Makefile
++++ b/drivers/net/phy/Makefile
+@@ -63,6 +63,7 @@ obj-$(CONFIG_LSI_ET1011C_PHY)	+= et1011c.o
+ obj-$(CONFIG_LXT_PHY)		+= lxt.o
+ obj-$(CONFIG_MARVELL_10G_PHY)	+= marvell10g.o
+ obj-$(CONFIG_MARVELL_PHY)	+= marvell.o
++obj-$(CONFIG_MARVELL_88X2222_PHY)	+= marvell-88x2222.o
+ obj-$(CONFIG_MESON_GXL_PHY)	+= meson-gxl.o
+ obj-$(CONFIG_MICREL_KS8995MA)	+= spi_ks8995.o
+ obj-$(CONFIG_MICREL_PHY)	+= micrel.o
+diff --git a/drivers/net/phy/marvell-88x2222.c b/drivers/net/phy/marvell-88x2222.c
+new file mode 100644
+index 000000000000..e2c55db4769f
+--- /dev/null
++++ b/drivers/net/phy/marvell-88x2222.c
+@@ -0,0 +1,480 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Marvell 88x2222 dual-port multi-speed ethernet transceiver.
++ *
++ * Supports:
++ *	XAUI on the host side.
++ *	1000Base-X or 10GBase-R on the line side.
++ */
++#include <linux/module.h>
++#include <linux/phy.h>
++#include <linux/gpio.h>
++#include <linux/delay.h>
++#include <linux/mdio.h>
++#include <linux/marvell_phy.h>
++#include <linux/of.h>
++#include <linux/of_device.h>
++#include <linux/of_gpio.h>
++#include <linux/sfp.h>
++#include <linux/netdevice.h>
++
++/* Port PCS Configuration */
++#define	MV_PCS_CONFIG		0xF002
++#define	MV_PCS_HOST_XAUI	0x73
++#define	MV_PCS_LINE_10GBR	(0x71 << 8)
++#define	MV_PCS_LINE_1GBX_AN	(0x7B << 8)
++
++/* Port Reset and Power Down */
++#define	MV_PORT_RST	0xF003
++#define	MV_LINE_RST_SW	BIT(15)
++#define	MV_HOST_RST_SW	BIT(7)
++#define	MV_PORT_RST_SW	(MV_LINE_RST_SW | MV_HOST_RST_SW)
++
++/* LED0 Control */
++#define	MV_LED0_CTRL		0xF020
++#define	MV_LED0_SOLID_MASK	(0xf << 4)
++#define	MV_LED0_SOLID_OFF	(0x0 << 4)
++#define	MV_LED0_SOLID_ON	(0x7 << 4)
++
++/* PMD Transmit Disable */
++#define	MV_TX_DISABLE		0x0009
++#define	MV_TX_DISABLE_GLOBAL	BIT(0)
++
++/* 10GBASE-R PCS Status 1 */
++#define	MV_10GBR_STAT		MDIO_STAT1
++
++/* 10GBASE-R PCS Real Time Status Register */
++#define	MV_10GBR_STAT_RT	0x8002
++
++/* 1000Base-X/SGMII Control Register */
++#define	MV_1GBX_CTRL		0x2000
++
++/* 1000BASE-X/SGMII Status Register */
++#define	MV_1GBX_STAT		0x2001
++
++/* 1000Base-X Auto-Negotiation Advertisement Register */
++#define	MV_1GBX_ADVERTISE	0x2004
++
++/* 1000Base-X PHY Specific Status Register */
++#define	MV_1GBX_PHY_STAT		0xA003
++#define	MV_1GBX_PHY_STAT_LSTATUS_RT	BIT(10)
++#define	MV_1GBX_PHY_STAT_AN_RESOLVED	BIT(11)
++#define	MV_1GBX_PHY_STAT_DUPLEX		BIT(13)
++#define	MV_1GBX_PHY_STAT_SPEED100	BIT(14)
++#define	MV_1GBX_PHY_STAT_SPEED1000	BIT(15)
++
++struct mv2222_data {
++	bool sfp_inserted;
++	bool net_up;
++};
++
++/* SFI PMA transmit enable */
++static void mv2222_tx_enable(struct phy_device *phydev)
++{
++	phy_clear_bits_mmd(phydev, MDIO_MMD_PMAPMD, MV_TX_DISABLE,
++			   MV_TX_DISABLE_GLOBAL);
++}
++
++/* SFI PMA transmit disable */
++static void mv2222_tx_disable(struct phy_device *phydev)
++{
++	phy_set_bits_mmd(phydev, MDIO_MMD_PMAPMD, MV_TX_DISABLE,
++			 MV_TX_DISABLE_GLOBAL);
++}
++
++static void mv2222_link_led_on(struct phy_device *phydev)
++{
++	phy_modify_mmd(phydev, MDIO_MMD_VEND2, MV_LED0_CTRL, MV_LED0_SOLID_MASK,
++		       MV_LED0_SOLID_ON);
++}
++
++static void mv2222_link_led_off(struct phy_device *phydev)
++{
++	phy_modify_mmd(phydev, MDIO_MMD_VEND2, MV_LED0_CTRL, MV_LED0_SOLID_MASK,
++		       MV_LED0_SOLID_OFF);
++}
++
++static int mv2222_soft_reset(struct phy_device *phydev)
++{
++	int ret = phy_write_mmd(phydev, MDIO_MMD_VEND2, MV_PORT_RST, MV_PORT_RST_SW);
++
++	msleep(2000);
++
++	return ret;
++}
++
++static int sfp_module_insert(void *_priv, const struct sfp_eeprom_id *id)
++{
++	struct phy_device *phydev = _priv;
++	struct device *dev = &phydev->mdio.dev;
++	struct mv2222_data *priv = phydev->priv;
++	phy_interface_t interface;
++
++	__ETHTOOL_DECLARE_LINK_MODE_MASK(supported) = { 0, };
++
++	sfp_parse_support(phydev->sfp_bus, id, supported);
++	interface = sfp_select_interface(phydev->sfp_bus, supported);
++
++	dev_info(dev, "%s SFP module inserted", phy_modes(interface));
++
++	switch (interface) {
++	case PHY_INTERFACE_MODE_10GBASER:
++		phydev->speed = SPEED_10000;
++		phydev->interface = PHY_INTERFACE_MODE_10GBASER;
++		linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseKR_Full_BIT,
++				 phydev->supported);
++
++		phy_write_mmd(phydev, MDIO_MMD_VEND2, MV_PCS_CONFIG,
++			      MV_PCS_HOST_XAUI | MV_PCS_LINE_10GBR);
++		mv2222_soft_reset(phydev);
++		break;
++	case PHY_INTERFACE_MODE_1000BASEX:
++	default:
++		phydev->speed = SPEED_1000;
++		phydev->interface = PHY_INTERFACE_MODE_1000BASEX;
++		linkmode_clear_bit(ETHTOOL_LINK_MODE_10000baseKR_Full_BIT,
++				   phydev->supported);
++
++		phy_write_mmd(phydev, MDIO_MMD_VEND2, MV_PCS_CONFIG,
++			      MV_PCS_HOST_XAUI | MV_PCS_LINE_1GBX_AN);
++		mv2222_soft_reset(phydev);
++	}
++
++	priv->sfp_inserted = true;
++
++	if (priv->net_up)
++		mv2222_tx_enable(phydev);
++
++	return 0;
++}
++
++static void sfp_module_remove(void *_priv)
++{
++	struct phy_device *phydev = _priv;
++	struct mv2222_data *priv = phydev->priv;
++
++	priv->sfp_inserted = false;
++	mv2222_tx_disable(phydev);
++}
++
++static const struct sfp_upstream_ops sfp_phy_ops = {
++	.module_insert = sfp_module_insert,
++	.module_remove = sfp_module_remove,
++	.attach = phy_sfp_attach,
++	.detach = phy_sfp_detach,
++};
++
++static int mv2222_config_init(struct phy_device *phydev)
++{
++	linkmode_zero(phydev->supported);
++	linkmode_set_bit(ETHTOOL_LINK_MODE_Autoneg_BIT, phydev->supported);
++	linkmode_set_bit(ETHTOOL_LINK_MODE_FIBRE_BIT, phydev->supported);
++	linkmode_set_bit(ETHTOOL_LINK_MODE_1000baseX_Full_BIT, phydev->supported);
++	linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseKR_Full_BIT, phydev->supported);
++
++	phydev->pause = 0;
++	phydev->asym_pause = 0;
++	phydev->duplex = DUPLEX_FULL;
++	phydev->autoneg = AUTONEG_DISABLE;
++
++	return 0;
++}
++
++static void mv2222_update_interface(struct phy_device *phydev)
++{
++	if ((phydev->speed == SPEED_1000 ||
++	     phydev->speed == SPEED_100 ||
++	     phydev->speed == SPEED_10) &&
++	    phydev->interface != PHY_INTERFACE_MODE_1000BASEX) {
++		phydev->interface = PHY_INTERFACE_MODE_1000BASEX;
++
++		phy_write_mmd(phydev, MDIO_MMD_VEND2, MV_PCS_CONFIG,
++			      MV_PCS_HOST_XAUI | MV_PCS_LINE_1GBX_AN);
++		mv2222_soft_reset(phydev);
++	} else if (phydev->speed == SPEED_10000 &&
++		   phydev->interface != PHY_INTERFACE_MODE_10GBASER) {
++		phydev->interface = PHY_INTERFACE_MODE_10GBASER;
++
++		phy_write_mmd(phydev, MDIO_MMD_VEND2, MV_PCS_CONFIG,
++			      MV_PCS_HOST_XAUI | MV_PCS_LINE_10GBR);
++		mv2222_soft_reset(phydev);
++	}
++}
++
++/* Returns negative on error, 0 if link is down, 1 if link is up */
++static int mv2222_read_status_10g(struct phy_device *phydev)
++{
++	int val, link = 0;
++
++	val = phy_read_mmd(phydev, MDIO_MMD_PCS, MV_10GBR_STAT);
++	if (val < 0)
++		return val;
++
++	if (val & MDIO_STAT1_LSTATUS) {
++		link = 1;
++
++		/* 10GBASE-R do not support auto-negotiation */
++		phydev->autoneg = AUTONEG_DISABLE;
++		phydev->speed = SPEED_10000;
++		phydev->duplex = DUPLEX_FULL;
++	}
++
++	return link;
++}
++
++/* Returns negative on error, 0 if link is down, 1 if link is up */
++static int mv2222_read_status_1g(struct phy_device *phydev)
++{
++	int val, link = 0;
++
++	val = phy_read_mmd(phydev, MDIO_MMD_PCS, MV_1GBX_STAT);
++	if (val < 0)
++		return val;
++
++	if (!(val & MDIO_STAT1_LSTATUS) ||
++	    (phydev->autoneg == AUTONEG_ENABLE && !(val & MDIO_AN_STAT1_COMPLETE)))
++		return 0;
++
++	link = 1;
++
++	if (phydev->autoneg == AUTONEG_DISABLE) {
++		phydev->speed = SPEED_1000;
++		phydev->duplex = DUPLEX_FULL;
++
++		return link;
++	}
++
++	val = phy_read_mmd(phydev, MDIO_MMD_PCS, MV_1GBX_PHY_STAT);
++	if (val < 0)
++		return val;
++
++	if (val & MV_1GBX_PHY_STAT_AN_RESOLVED) {
++		if (val & MV_1GBX_PHY_STAT_DUPLEX)
++			phydev->duplex = DUPLEX_FULL;
++		else
++			phydev->duplex = DUPLEX_HALF;
++
++		if (val & MV_1GBX_PHY_STAT_SPEED1000)
++			phydev->speed = SPEED_1000;
++		else if (val & MV_1GBX_PHY_STAT_SPEED100)
++			phydev->speed = SPEED_100;
++		else
++			phydev->speed = SPEED_10;
++	} else {
++		phydev->duplex = DUPLEX_UNKNOWN;
++		phydev->speed = SPEED_UNKNOWN;
++	}
++
++	return link;
++}
++
++static int mv2222_read_status(struct phy_device *phydev)
++{
++	int link;
++
++	linkmode_zero(phydev->lp_advertising);
++	phydev->pause = 0;
++	phydev->asym_pause = 0;
++
++	switch (phydev->interface) {
++	case PHY_INTERFACE_MODE_10GBASER:
++		link = mv2222_read_status_10g(phydev);
++		break;
++	case PHY_INTERFACE_MODE_1000BASEX:
++	default:
++		link = mv2222_read_status_1g(phydev);
++		break;
++	}
++
++	if (link < 0)
++		return link;
++
++	phydev->link = link;
++
++	if (phydev->link)
++		mv2222_link_led_on(phydev);
++	else
++		mv2222_link_led_off(phydev);
++
++	return 0;
++}
++
++static int mv2222_disable_aneg(struct phy_device *phydev)
++{
++	return phy_clear_bits_mmd(phydev, MDIO_MMD_PCS, MV_1GBX_CTRL,
++				  MDIO_AN_CTRL1_ENABLE | MDIO_AN_CTRL1_RESTART);
++}
++
++static int mv2222_enable_aneg(struct phy_device *phydev)
++{
++	return phy_set_bits_mmd(phydev, MDIO_MMD_PCS, MV_1GBX_CTRL,
++				MDIO_AN_CTRL1_ENABLE | MDIO_CTRL1_RESET);
++}
++
++static int mv2222_config_aneg(struct phy_device *phydev)
++{
++	int ret, adv;
++
++	if (phydev->autoneg == AUTONEG_DISABLE ||
++	    phydev->speed == SPEED_10000) {
++		if (phydev->speed == SPEED_10000 &&
++		    !linkmode_test_bit(ETHTOOL_LINK_MODE_10000baseKR_Full_BIT,
++				      phydev->supported))
++			return -EINVAL;
++
++		/* Link partner advertising modes */
++		linkmode_copy(phydev->advertising, phydev->supported);
++
++		mv2222_update_interface(phydev);
++
++		return mv2222_disable_aneg(phydev);
++	}
++
++	/* Try 10G first */
++	if (linkmode_test_bit(ETHTOOL_LINK_MODE_10000baseKR_Full_BIT,
++			      phydev->supported)) {
++		phydev->speed = SPEED_10000;
++		mv2222_update_interface(phydev);
++
++		ret = phy_read_mmd(phydev, MDIO_MMD_PCS, MV_10GBR_STAT_RT);
++		if (ret < 0)
++			return ret;
++
++		if (ret & MDIO_STAT1_LSTATUS) {
++			phydev->autoneg = AUTONEG_DISABLE;
++			linkmode_copy(phydev->advertising, phydev->supported);
++
++			return mv2222_disable_aneg(phydev);
++		} else {
++			phydev->speed = SPEED_1000;
++			mv2222_update_interface(phydev);
++		}
++	}
++
++	adv = 0;
++	linkmode_zero(phydev->advertising);
++
++	if (linkmode_test_bit(ETHTOOL_LINK_MODE_1000baseX_Full_BIT,
++			      phydev->supported)) {
++		adv |= ADVERTISE_1000XFULL;
++		linkmode_set_bit(ETHTOOL_LINK_MODE_1000baseX_Full_BIT,
++				 phydev->advertising);
++	}
++
++	if (linkmode_test_bit(ETHTOOL_LINK_MODE_Pause_BIT,
++			      phydev->supported)) {
++		adv |= ADVERTISE_1000XPAUSE;
++		linkmode_set_bit(ETHTOOL_LINK_MODE_Pause_BIT,
++				 phydev->advertising);
++	}
++
++	if (linkmode_test_bit(ETHTOOL_LINK_MODE_Asym_Pause_BIT,
++			      phydev->supported)) {
++		adv |= ADVERTISE_1000XPSE_ASYM;
++		linkmode_set_bit(ETHTOOL_LINK_MODE_Asym_Pause_BIT,
++				 phydev->advertising);
++	}
++
++	ret = phy_modify_mmd(phydev, MDIO_MMD_PCS, MV_1GBX_ADVERTISE,
++			     ADVERTISE_1000XFULL |
++			     ADVERTISE_1000XPAUSE | ADVERTISE_1000XPSE_ASYM,
++			     adv);
++	if (ret < 0)
++		return ret;
++
++	return mv2222_enable_aneg(phydev);
++}
++
++static int mv2222_aneg_done(struct phy_device *phydev)
++{
++	int ret;
++
++	if (linkmode_test_bit(ETHTOOL_LINK_MODE_10000baseKR_Full_BIT,
++			      phydev->supported)) {
++		ret = phy_read_mmd(phydev, MDIO_MMD_PCS, MV_10GBR_STAT);
++		if (ret < 0)
++			return ret;
++
++		if (ret & MDIO_STAT1_LSTATUS)
++			return 1;
++	}
++
++	ret = phy_read_mmd(phydev, MDIO_MMD_PCS, MV_1GBX_STAT);
++	if (ret < 0)
++		return ret;
++
++	return (ret & MDIO_AN_STAT1_COMPLETE);
++}
++
++static int mv2222_resume(struct phy_device *phydev)
++{
++	struct mv2222_data *priv = phydev->priv;
++
++	priv->net_up = true;
++
++	if (priv->sfp_inserted)
++		mv2222_tx_enable(phydev);
++
++	return 0;
++}
++
++static int mv2222_suspend(struct phy_device *phydev)
++{
++	struct mv2222_data *priv = phydev->priv;
++
++	priv->net_up = false;
++	mv2222_tx_disable(phydev);
++	mv2222_link_led_off(phydev);
++
++	return 0;
++}
++
++static int mv2222_probe(struct phy_device *phydev)
++{
++	struct device *dev = &phydev->mdio.dev;
++	struct mv2222_data *priv = NULL;
++
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	phydev->priv = priv;
++
++	return phy_sfp_probe(phydev, &sfp_phy_ops);
++}
++
++static void mv2222_remove(struct phy_device *phydev)
++{
++	struct device *dev = &phydev->mdio.dev;
++	struct mv2222_data *priv = phydev->priv;
++
++	if (priv)
++		devm_kfree(dev, priv);
++}
++
++static struct phy_driver mv2222_drivers[] = {
++	{
++		.phy_id = MARVELL_PHY_ID_88X2222,
++		.phy_id_mask = MARVELL_PHY_ID_MASK,
++		.name = "Marvell 88X2222",
++		.soft_reset = mv2222_soft_reset,
++		.config_init = mv2222_config_init,
++		.config_aneg = mv2222_config_aneg,
++		.aneg_done = mv2222_aneg_done,
++		.probe = mv2222_probe,
++		.remove = mv2222_remove,
++		.suspend = mv2222_suspend,
++		.resume = mv2222_resume,
++		.read_status = mv2222_read_status,
++	},
++};
++module_phy_driver(mv2222_drivers);
++
++static struct mdio_device_id __maybe_unused mv2222_tbl[] = {
++	{ MARVELL_PHY_ID_88X2222, MARVELL_PHY_ID_MASK },
++	{ }
++};
++MODULE_DEVICE_TABLE(mdio, mv2222_tbl);
++
++MODULE_DESCRIPTION("Marvell 88x2222 ethernet transceiver driver");
++MODULE_LICENSE("GPL");
+diff --git a/include/linux/marvell_phy.h b/include/linux/marvell_phy.h
+index 52b1610eae68..274abd5fbac3 100644
+--- a/include/linux/marvell_phy.h
++++ b/include/linux/marvell_phy.h
+@@ -24,6 +24,7 @@
+ #define MARVELL_PHY_ID_88E3016		0x01410e60
+ #define MARVELL_PHY_ID_88X3310		0x002b09a0
+ #define MARVELL_PHY_ID_88E2110		0x002b09b0
++#define MARVELL_PHY_ID_88X2222		0x01410f10
+ 
+ /* Marvel 88E1111 in Finisar SFP module with modified PHY ID */
+ #define MARVELL_PHY_ID_88E1111_FINISAR	0x01ff0cc0
 -- 
-Peter Xu
+2.20.1
+
 
