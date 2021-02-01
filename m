@@ -2,128 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAFC330A7E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:44:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5891A30A7E8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:46:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231605AbhBAMnl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 07:43:41 -0500
-Received: from mga04.intel.com ([192.55.52.120]:37202 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231603AbhBAMnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 07:43:37 -0500
-IronPort-SDR: vLGyPMvfrjsPfIvwNqLAhymw/XD41SNM7RYG2wl+W8J9w3vw3xCDZzU6LpQ/O8g9ssF4U6DyLK
- BGQAVfZ3uOEw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="178113811"
-X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
-   d="scan'208";a="178113811"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 04:41:50 -0800
-IronPort-SDR: WrD29CuNhTDE9bFNvntO3tcG9OjgV2oGFCIDW1Jts57OrTsdylCee7ShOJTs6BxYTrpG/sel4H
- pGHk6ezUto+g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
-   d="scan'208";a="478947264"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 01 Feb 2021 04:41:47 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 01 Feb 2021 14:41:47 +0200
-Date:   Mon, 1 Feb 2021 14:41:47 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Benson Leung <bleung@chromium.org>
-Cc:     enric.balletbo@collabora.com, pmalani@chromium.org,
-        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, groeck@chromium.org,
-        bleung@google.com
-Subject: Re: [PATCH 3/6] usb: typec: Add typec_partner_set_pd_revision
-Message-ID: <20210201124147.GC2465@kuha.fi.intel.com>
-References: <20210129061406.2680146-1-bleung@chromium.org>
- <20210129061406.2680146-4-bleung@chromium.org>
+        id S231444AbhBAMpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 07:45:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229707AbhBAMps (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 07:45:48 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 617DCC061573;
+        Mon,  1 Feb 2021 04:45:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=iS8iy+q7Izh8AM4pbDoHtBgYLQUACj4slse1odTb8Xw=; b=m7ji0VO1MSn1lX6BI0jJ/Yb9pR
+        9LbSnyqEyG+WShVFDi6LLpOxh725y4TN5ZOzvkdZzaqe2VLLrMyA0w5DmjmAmnD9zsr9kHInq0sjB
+        ii38K9XKQhFn7sOI40UlVOovRxxAgm9h9jejp9eCBLKegUodvH0TprmeRQ27HIdL/dZ9Y9TeAXH+T
+        AH4kD9PgJxscyRe30c+nsFbhAUZbIF86CVRIvrNnDHqiAHo82ZC5vwPaZdUNJSPPkp0ldDsBPBc8P
+        BJXcBzycInlMsr0+a7N0JA8WObI/EMjH6YDE79gmnKGPIcRn4F4Lq0ejsbhou5qIjm5vd3EqnQ2UW
+        /oN5DJpg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l6YZH-00Dm54-Iu; Mon, 01 Feb 2021 12:44:36 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7D8C9303A02;
+        Mon,  1 Feb 2021 13:44:34 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 65B2620C8E303; Mon,  1 Feb 2021 13:44:34 +0100 (CET)
+Date:   Mon, 1 Feb 2021 13:44:34 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nadav Amit <namit@vmware.com>
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, X86 ML <x86@kernel.org>,
+        Yu Zhao <yuzhao@google.com>
+Subject: Re: [RFC 00/20] TLB batching consolidation and enhancements
+Message-ID: <YBf3sl3M+j3hJRoM@hirez.programming.kicks-ass.net>
+References: <20210131001132.3368247-1-namit@vmware.com>
+ <1612063149.2awdsvvmhj.astroid@bobo.none>
+ <A1589669-34AE-4E15-8358-79BAD7C72520@vmware.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210129061406.2680146-4-bleung@chromium.org>
+In-Reply-To: <A1589669-34AE-4E15-8358-79BAD7C72520@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 10:14:03PM -0800, Benson Leung wrote:
-> The partner's PD revision may be resolved later than the port partner
-> registration since the port partner creation may take place once
-> Type-C detects the port has changed state, but before PD communication is
-> completed.
-> 
-> Add a setter so that the partner's PD revision can be attached to it once
-> it becomes available.
-> 
-> If the revision is set to a valid version (not 0), the setter will also
-> refresh the partner's usb_pd flag and notify on "supports_usb_power_delivery"
-> sysfs property as well.
-> 
-> Signed-off-by: Benson Leung <bleung@chromium.org>
+On Sun, Jan 31, 2021 at 07:57:01AM +0000, Nadav Amit wrote:
+> > On Jan 30, 2021, at 7:30 PM, Nicholas Piggin <npiggin@gmail.com> wrote:
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
-> ---
->  drivers/usb/typec/class.c | 30 ++++++++++++++++++++++++++++++
->  include/linux/usb/typec.h |  1 +
->  2 files changed, 31 insertions(+)
+> > I'll go through the patches a bit more closely when they all come 
+> > through. Sparc and powerpc of course need the arch lazy mode to get 
+> > per-page/pte information for operations that are not freeing pages, 
+> > which is what mmu gather is designed for.
 > 
-> diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-> index b5241f4756c2..b6ceab3dc16b 100644
-> --- a/drivers/usb/typec/class.c
-> +++ b/drivers/usb/typec/class.c
-> @@ -748,6 +748,36 @@ int typec_partner_set_identity(struct typec_partner *partner)
->  }
->  EXPORT_SYMBOL_GPL(typec_partner_set_identity);
->  
-> +/**
-> + * typec_partner_set_pd_revision - Set the PD revision supported by the partner
-> + * @partner: The partner to be updated.
-> + * @pd_revision:  USB Power Delivery Specification Revision supported by partner
-> + *
-> + * This routine is used to report that the PD revision of the port partner has
-> + * become available.
-> + *
-> + * Returns 0 on success or negative error number on failure.
-> + */
-> +int typec_partner_set_pd_revision(struct typec_partner *partner, u16 pd_revision)
-> +{
-> +	int ret;
-> +
-> +	if (partner->pd_revision == pd_revision)
-> +		return 0;
-> +
-> +	partner->pd_revision = pd_revision;
-> +	sysfs_notify(&partner->dev.kobj, NULL, "usb_power_delivery_revision");
-> +	if (pd_revision != 0 && !partner->usb_pd) {
-> +		partner->usb_pd = 1;
-> +		sysfs_notify(&partner->dev.kobj, NULL,
-> +			     "supports_usb_power_delivery");
-> +	}
-> +	kobject_uevent(&partner->dev.kobj, KOBJ_CHANGE);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(typec_partner_set_pd_revision);
-> +
->  /**
->   * typec_partner_set_num_altmodes - Set the number of available partner altmodes
->   * @partner: The partner to be updated.
-> diff --git a/include/linux/usb/typec.h b/include/linux/usb/typec.h
-> index 42c6b7c07a99..4946eca742d5 100644
-> --- a/include/linux/usb/typec.h
-> +++ b/include/linux/usb/typec.h
-> @@ -126,6 +126,7 @@ struct typec_altmode_desc {
->  	enum typec_port_data	roles;
->  };
->  
-> +int typec_partner_set_pd_revision(struct typec_partner *partner, u16 pd_revision);
->  int typec_partner_set_num_altmodes(struct typec_partner *partner, int num_altmodes);
->  struct typec_altmode
->  *typec_partner_register_altmode(struct typec_partner *partner,
-> -- 
-> 2.30.0.365.g02bc693789-goog
+> IIUC you mean any PTE change requires a TLB flush. Even setting up a new PTE
+> where no previous PTE was set, right?
 
-thanks,
+These are the HASH architectures. Their hardware doesn't walk the
+page-tables, but it consults a hash-table to resolve page translations.
 
--- 
-heikki
+They _MUST_ flush the entries under the PTL to avoid ever seeing
+conflicting information, which will make them really unhappy. They can
+do this because they have TLBI broadcast.
+
+There's a few more details I'm sure, but those seem to have slipped from
+my mind.
