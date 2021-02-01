@@ -2,105 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6531930A843
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:06:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E3730A83F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:06:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231687AbhBANFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:05:35 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7096 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231478AbhBANFb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:05:31 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 111D2QKK163281;
-        Mon, 1 Feb 2021 08:04:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=hxuRMRBRfXGHt6rA9F92aI19zpjVyYYQdrKgJ+Z9NTE=;
- b=C+yzMtGHCu6djAbMCOeWLIsHagtbR8OKaWCZGNN9OCjvJFFEbgCZrHFvjo8hylh6zicZ
- lhwsj5omQV8WbiitOu7u7n92DO38/JyUBoD0m5qRSejYb8u0qg13f6a7m8Q9GbUyGn5T
- XgB71mn9/1TVb0ce4MewUrQLg5zPUyQWkIjuWwY8ypoLFJOC3xO16zlnCth8X+kXorop
- 4gL6aL+3K3waohc+6zQitVPOYb/TIli8oL05iv1ELG9STZBQVOfeRMUPxAIMTzgoWTCF
- cvqd3XoAhTB0DMi1s0uQ3OEdUAWIuofRGdMpjoiGFnZRUfkvATpr0Jp+4WmJcJaRos4L DQ== 
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36ej6082kn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 08:04:37 -0500
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 111Cw3v2023924;
-        Mon, 1 Feb 2021 13:04:28 GMT
-Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
-        by ppma01dal.us.ibm.com with ESMTP id 36cy3921c2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 13:04:28 +0000
-Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
-        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 111D4RPM6881828
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 1 Feb 2021 13:04:27 GMT
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8859EAC064;
-        Mon,  1 Feb 2021 13:04:27 +0000 (GMT)
-Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 77A75AC060;
-        Mon,  1 Feb 2021 13:04:27 +0000 (GMT)
-Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
-        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon,  1 Feb 2021 13:04:27 +0000 (GMT)
-Subject: Re: [PATCH v6 1/4] crypto: Add support for ECDSA signature
- verification
-To:     yumeng <yumeng18@huawei.com>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
-        linux-integrity@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>
-References: <20210131233301.1301787-1-stefanb@linux.ibm.com>
- <20210131233301.1301787-2-stefanb@linux.ibm.com>
- <289ef2ac-d653-47b3-7771-5d8a7342ad21@huawei.com>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-Message-ID: <f7660865-3efc-8425-d494-2e6cc9631cc5@linux.ibm.com>
-Date:   Mon, 1 Feb 2021 08:04:27 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S231405AbhBANFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:05:21 -0500
+Received: from foss.arm.com ([217.140.110.172]:59424 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229736AbhBANFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 08:05:20 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AE47B1042;
+        Mon,  1 Feb 2021 05:04:34 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F1C6C3F66E;
+        Mon,  1 Feb 2021 05:04:32 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: qemu boot failure after merge of the tip tree
+In-Reply-To: <20210201200918.386682c5@canb.auug.org.au>
+References: <20210201200918.386682c5@canb.auug.org.au>
+User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
+Date:   Mon, 01 Feb 2021 13:04:30 +0000
+Message-ID: <jhjv9bcym5d.mognet@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <289ef2ac-d653-47b3-7771-5d8a7342ad21@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-01_05:2021-01-29,2021-02-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
- adultscore=0 priorityscore=1501 impostorscore=0 clxscore=1015
- suspectscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102010065
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/1/21 2:24 AM, yumeng wrote:
+On 01/02/21 20:09, Stephen Rothwell wrote:
+> Hi all,
 >
->
-> 在 2021/2/1 7:32, Stefan Berger 写道:
->> +/**
->> + * ecc_get_curve()  - Get a curve given its curve_id
->> + *
->> + * @curve_id:  Id of the curve
->> + *
->> + * Returns pointer to the curve data, NULL if curve is not available
->> + */
->> +const struct ecc_curve *ecc_get_curve(unsigned int curve_id);
->> +
->>   /**
->>    * ecc_is_key_valid() - Validate a given ECDH private key
->
->
-> Shall we move this definition to 'include/crypto'? Other drivers may 
-> also want to use it.
 
-Maybe the driver that starts using would move it?
+Hi Stephen,
 
+> After merging the tip tree, today's linux-next qemu boot test (powerpc
+> pseries_le_defconfig) failed like this:
 
+In case you haven't seen it, Dietmar did the dirty work and fixed my fail
+at
+
+  http://lore.kernel.org/r/6000e39e-7d28-c360-9cd6-8798fd22a9bf@arm.com
