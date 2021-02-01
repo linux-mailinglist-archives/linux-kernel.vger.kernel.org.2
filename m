@@ -2,140 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A1E30AF70
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:35:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE8C30AF77
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:35:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233011AbhBASdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:33:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52584 "EHLO
+        id S233076AbhBASfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:35:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232855AbhBASbI (ORCPT
+        with ESMTP id S231233AbhBAScm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:31:08 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87D20C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 10:30:27 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id bg11so10084965plb.16
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 10:30:27 -0800 (PST)
+        Mon, 1 Feb 2021 13:32:42 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75BB3C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 10:32:01 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id g10so17736517wrx.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 10:32:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to;
-        bh=y7lafpwHwPK5mLUJYNpXf5D/a9FQS9JwhKfquZ6N6PI=;
-        b=Lz9RegoyArGD7/Njm0yeOSa9hVKGX5dIR1sKuXMh7YX9fVDPXJYSrsAMuWEk0bii2V
-         chvtIy+8dFO6PgQd1YJFNO2TWHWUvywrlNFEhcieuyVZXPKa3Ar53CEbzqDKIILsoX1E
-         QMZddPHGcyPHa+g9lscMZg/ciF0UxBTewvkVpBRcEcRYtNcMJLoWOZlomdxonc7YqBqZ
-         lYdUc9id12JfatpvDjALnBnLIIIyRGkiLoLPF/V8+eaOpeiGbP6HkMqDoxSbGzR1Xnly
-         njCSd4DHvsx5U4XHn2T7vF7reiGURphVkVkf6xhrhut71ZGo1XKvLrhruGNRMT11Ggmy
-         JWhA==
+        d=broadcom.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2SoF83zqa4o6wjRaTLITT+SZXWk+cnBlU7tDY3VfJEs=;
+        b=S+uBzCKh1GZJdMZRucSjhjms87AHXTsSRlmCuQhNms3pPR13uXfTL8pCbuM2AENBU4
+         yAx30YHbk/gmTBg8kITJdPGSVp3AAJQRulom6G/yeVYh0X8flD0BBtAko3ITQVJCyHzc
+         uWaR4Obx7k0wM1q79yEs18IncVsryK8n3kIt4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to;
-        bh=y7lafpwHwPK5mLUJYNpXf5D/a9FQS9JwhKfquZ6N6PI=;
-        b=a69fLse3kLIzoVEJ1B6hyNryxXkr2KjgFeAwCK4WKC/udKFOwLcsefMu3yAVKqLXeu
-         wcW3EWfS4334rLAP2qbe1Ai9qZ6DraO4iNIm5UHDeNk6ZJuMMC78ZY50j/rvyGQM9YQw
-         hQEgeoA+uwmrRNGOkmVz80zmtco/1rFvoRZ/CEXSEzA/IBG4uQqY1Z0KQesuoJPEkN6t
-         9G9nXcJMLY49GYSu8MZ0kfWb9pYD3H7Sze10awALG2gXA0Lgih9SUx+De4UdiTAQ4QwY
-         HzkSVPkZ4amTn7gGj1g5+kj5O6MICClGHYEP0vr5xpSJzZxWK3RSMGvrV8uA2rqvTuIP
-         VkSg==
-X-Gm-Message-State: AOAM531scSZb+1wuMVMB0kAyaJaSbic728HE7wgumRzhDex1AXynGrrs
-        eHgqiuAfceWVjK0V7nABSGQiFjtbVw==
-X-Google-Smtp-Source: ABdhPJyxPr/mnKV6SfFRVsYQGdbwoOCXbpgSQ9gKmDR4teO9TwxE5BensFncv9xIqKkCY9ImrCPjV5hgMw==
-Sender: "jxgao via sendgmr" <jxgao@jxgao.kir.corp.google.com>
-X-Received: from jxgao.kir.corp.google.com ([2620:0:1008:11:695f:7f9e:413c:e3c7])
- (user=jxgao job=sendgmr) by 2002:a17:902:d901:b029:e1:6a7f:564c with SMTP id
- c1-20020a170902d901b02900e16a7f564cmr4367057plz.11.1612204227054; Mon, 01 Feb
- 2021 10:30:27 -0800 (PST)
-Date:   Mon,  1 Feb 2021 10:30:17 -0800
-In-Reply-To: <20210201183017.3339130-1-jxgao@google.com>
-Message-Id: <20210201183017.3339130-4-jxgao@google.com>
-Mime-Version: 1.0
-References: <20210201183017.3339130-1-jxgao@google.com>
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH V2 3/3] Adding device_dma_parameters->offset_preserve_mask to
- NVMe driver.
-From:   Jianxiong Gao <jxgao@google.com>
-To:     jxgao@google.com, erdemaktas@google.com, marcorr@google.com,
-        hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com,
-        gregkh@linuxfoundation.org, saravanak@google.com,
-        heikki.krogerus@linux.intel.com, rafael.j.wysocki@intel.com,
-        andriy.shevchenko@linux.intel.com, dan.j.williams@intel.com,
-        bgolaszewski@baylibre.com, jroedel@suse.de,
-        iommu@lists.linux-foundation.org, konrad.wilk@oracle.com,
-        kbusch@kernel.org, axboe@fb.com, sagi@grimberg.me,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2SoF83zqa4o6wjRaTLITT+SZXWk+cnBlU7tDY3VfJEs=;
+        b=rqd09yV0Uky0UXKGinYs1FFpKEQgz2xUu7PUZwUBNdcQKiR8iwQ/LEldSaepydpZ+7
+         X3xis7NUlEOQY+WT3JvTQGy/ucSJbFOSJ2jgLnqLkATbrVrQqQQXuxN+UpQb6q3aQXTG
+         Lz6/b94SOFU9wE6LUCmOuJ6oFCSELY7x9bbB0tJPWGCDlzuYxnkm2v+UKP9lQItEK1+9
+         5ZUaQR/TTpDkpHq52Rx9vZNBqvfv8KJljCEpbz3Wo/bMy56MMjmNwfri+a+J8Pb54ldC
+         xFRIjjlUDB7vxD3rVOailu4NkXOMCLRs04e5nuO0liKwOZgBJGyMxctYdP7R+JFOBDrf
+         OGYw==
+X-Gm-Message-State: AOAM531BJTfsNt6lf/jGxCUo2Q8CjDdbL8Z2Fpo1ay7BgPgZIJD17rPP
+        kZWaidUXS6UDWFEDqZwsYg+AioXeoXII4U3tHE9WUg==
+X-Google-Smtp-Source: ABdhPJzW0raaLdsyJa/pVY1yy1ug4OX5v2KHm51ujt9+9FP9lME1RcuXz6GvwUPifz40r6bFM3BFA2dC7Bt7a0bFlJI=
+X-Received: by 2002:a5d:62c4:: with SMTP id o4mr19909114wrv.292.1612204320100;
+ Mon, 01 Feb 2021 10:32:00 -0800 (PST)
+MIME-Version: 1.0
+References: <YBfyb+jU5lDUe+5g@mwanda> <cf899c97-2c26-afc4-f0ea-4976a074a05e@broadcom.com>
+In-Reply-To: <cf899c97-2c26-afc4-f0ea-4976a074a05e@broadcom.com>
+From:   Desmond Yan <desmond.yan@broadcom.com>
+Date:   Mon, 1 Feb 2021 10:31:49 -0800
+Message-ID: <CAEuuh2-uNkbK6wsJVBUEXMv2TQdhQaRCqtM0GdULWgVHU+JDnQ@mail.gmail.com>
+Subject: Re: [PATCH] misc: bcm-vk: unlock on error in bcm_to_h_msg_dequeue()
+To:     Scott Branden <scott.branden@broadcom.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Olof Johansson <olof@lixom.net>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000d2c3ec05ba4a9186"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-NVMe driver relies on the address offset to function properly.
-This patch adds the offset preserve mask to NVMe driver when mapping
-via dma_map_sg_attrs and unmapping via nvme_unmap_sg. The mask
-depends on the page size defined by CC.MPS register of NVMe
-controller.
+--000000000000d2c3ec05ba4a9186
+Content-Type: text/plain; charset="UTF-8"
 
-Signed-off-by: Jianxiong Gao <jxgao@google.com>
----
- drivers/nvme/host/pci.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+Yes, in this situation, it is fatal and we would turn off processing
+anyway.  But, Dan's change seems more appropriate and proper practice
+(thxs for the patch).
 
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 81e6389b2042..30e45f7e0f75 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -580,12 +580,15 @@ static void nvme_free_sgls(struct nvme_dev *dev, struct request *req)
- static void nvme_unmap_sg(struct nvme_dev *dev, struct request *req)
- {
- 	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
--
-+	if (dma_set_min_align_mask(dev->dev, NVME_CTRL_PAGE_SIZE - 1))
-+		dev_warn(dev->dev, "dma_set_min_align_mask failed to set offset\n");
- 	if (is_pci_p2pdma_page(sg_page(iod->sg)))
- 		pci_p2pdma_unmap_sg(dev->dev, iod->sg, iod->nents,
- 				    rq_dma_dir(req));
- 	else
- 		dma_unmap_sg(dev->dev, iod->sg, iod->nents, rq_dma_dir(req));
-+	if (dma_set_min_align_mask(dev->dev, 0))
-+		dev_warn(dev->dev, "dma_set_min_align_mask failed to reset offset\n");
- }
- 
- static void nvme_unmap_data(struct nvme_dev *dev, struct request *req)
-@@ -842,7 +845,7 @@ static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
- {
- 	struct nvme_iod *iod = blk_mq_rq_to_pdu(req);
- 	blk_status_t ret = BLK_STS_RESOURCE;
--	int nr_mapped;
-+	int nr_mapped, offset_ret;
- 
- 	if (blk_rq_nr_phys_segments(req) == 1) {
- 		struct bio_vec bv = req_bvec(req);
-@@ -868,12 +871,24 @@ static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
- 	if (!iod->nents)
- 		goto out_free_sg;
- 
-+	offset_ret = dma_set_min_align_mask(dev->dev, NVME_CTRL_PAGE_SIZE - 1);
-+	if (offset_ret) {
-+		dev_warn(dev->dev, "dma_set_min_align_mask failed to set offset\n");
-+		goto out_free_sg;
-+	}
-+
- 	if (is_pci_p2pdma_page(sg_page(iod->sg)))
- 		nr_mapped = pci_p2pdma_map_sg_attrs(dev->dev, iod->sg,
- 				iod->nents, rq_dma_dir(req), DMA_ATTR_NO_WARN);
- 	else
- 		nr_mapped = dma_map_sg_attrs(dev->dev, iod->sg, iod->nents,
- 					     rq_dma_dir(req), DMA_ATTR_NO_WARN);
-+
-+	offset_ret = dma_set_min_align_mask(dev->dev, 0);
-+	if (offset_ret) {
-+		dev_warn(dev->dev, "dma_set_min_align_mask failed to reset offset\n");
-+		goto out_free_sg;
-+	}
- 	if (!nr_mapped)
- 		goto out_free_sg;
- 
--- 
-2.27.0
+Des
 
+On Mon, Feb 1, 2021 at 9:31 AM Scott Branden <scott.branden@broadcom.com> wrote:
+>
+>
+>
+> On 2021-02-01 4:22 a.m., Dan Carpenter wrote:
+> > Unlock before returning on this error path.
+> >
+> > Fixes: 111d746bb476 ("misc: bcm-vk: add VK messaging support")
+> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > ---
+> >  drivers/misc/bcm-vk/bcm_vk_msg.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/misc/bcm-vk/bcm_vk_msg.c b/drivers/misc/bcm-vk/bcm_vk_msg.c
+> > index eec90494777d..fc972e43258a 100644
+> > --- a/drivers/misc/bcm-vk/bcm_vk_msg.c
+> > +++ b/drivers/misc/bcm-vk/bcm_vk_msg.c
+> > @@ -849,7 +849,8 @@ s32 bcm_to_h_msg_dequeue(struct bcm_vk *vk)
+> >                                * that is fatal.
+> >                                */
+> >                               dev_crit(dev, "Kernel mem allocation failure.\n");
+> > -                             return -ENOMEM;
+> > +                             total = -ENOMEM;
+> > +                             goto idx_err;
+> >                       }
+> >
+> This is a pretty fatal case if we fail to allocate memory here.
+> Will let Desmond respond if we wanted to keep the mutex locked forever in this
+> case or if we do want to return and keep mutex locked if it is fatal and there is
+> no real recovery path.
+> >                       /* flush rd pointer after a message is dequeued */
+>
+
+--000000000000d2c3ec05ba4a9186
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+C/imrCGPzTVeQHFrCwhpbeRImN6Dxt4RJPXqccMKDYJ6X2SdBHFhCVYewhFlWE6P9lH+lwIDAQAB
+o4IBzzCCAcswDgYDVR0PAQH/BAQDAgWgMIGeBggrBgEFBQcBAQSBkTCBjjBNBggrBgEFBQcwAoZB
+aHR0cDovL3NlY3VyZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NwZXJzb25hbHNpZ24yc2hhMmcz
+b2NzcC5jcnQwPQYIKwYBBQUHMAGGMWh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNvbS9nc3BlcnNv
+bmFsc2lnbjJzaGEyZzMwTQYDVR0gBEYwRDBCBgorBgEEAaAyASgKMDQwMgYIKwYBBQUHAgEWJmh0
+dHBzOi8vd3d3Lmdsb2JhbHNpZ24uY29tL3JlcG9zaXRvcnkvMAkGA1UdEwQCMAAwRAYDVR0fBD0w
+OzA5oDegNYYzaHR0cDovL2NybC5nbG9iYWxzaWduLmNvbS9nc3BlcnNvbmFsc2lnbjJzaGEyZzMu
+Y3JsMCMGA1UdEQQcMBqBGGRlc21vbmQueWFuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEF
+BQcDBDAfBgNVHSMEGDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUjANHprywiIFE
+21XAvmsM2JqOdVAwDQYJKoZIhvcNAQELBQADggEBAIiBxkVwdJubzdNzXu4JI18hnJ4a6i/u7Vok
+eQCoZ1GqqZsuNpJNXVs/EDoAzj33GWBA9yljpVufyTiot99BghGGhFdMk9asp2iABfVKVbelgkjV
+o5qRsPEFKs9CX5YkhefyfeIgmAe4FMMD72DnLpt8Yr0NOaWKrsbE8KYQ8L7T5GZVd1W7ufOAw0JS
+kQkyrew0cHrPRSHhE0qx+BLKJF2SQbb1cH/Ra7JhcLfXeJA/eBw1b9Ss/yfnSj3z/TAKOpYsicFX
+b+ynK9BBF17HGsWw/7TOms5t0Qk1P6+IBbzUxeh5s4cDAMsDfE1xvUvUVu/2ASpap+hXkoss+Vcc
+G2gxggJvMIICawIBATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNh
+MTMwMQYDVQQDEypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDFJS
+0nbv//4itGuVqDANBglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgCMsT0WNSM66IvgdT
+1XlKWLEVp/VpuFMmWhXCS+AOgbQwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0B
+CQUxDxcNMjEwMjAxMTgzMjAwWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgB
+ZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcw
+CwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAL2MJ8i+E+/KaYoJbLFjsAEYR+0TOvCn0oop
+/F3WX14+50bpvqdeoi+VgP8BkbajRrs/YtUX7RuCJsBlYsDIBuIrMWeVpqimItexR0Ve4nXtrcSG
+/uCuHpZz4gxLmNyV/GWxqxQAVSNkq3weSD5yIJEYQtllDHdqUdn/OnatqmSPhBwaHQGpJzUmOcBq
+tMurxYlhQVxeBs0pTD01wmTTWPMIgUC04H+UH/sfm9nsvr780chuX+ODAGFRp4Dx9f7ESRSdmLsP
+yf8K41gAsWOHNpTvwlRUva1it3FdoyLbWEFP3CuYsEf6ZRi5ttpYT7n/Ll7CnH+kSjrdjpdrcZox
+FNY=
+--000000000000d2c3ec05ba4a9186--
