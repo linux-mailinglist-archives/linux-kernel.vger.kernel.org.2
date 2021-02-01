@@ -2,100 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC0D30AD4D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:02:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E843130AD50
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:03:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbhBARBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:01:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39346 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229549AbhBARBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:01:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9E7864EA9;
-        Mon,  1 Feb 2021 17:00:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612198821;
-        bh=CzTEpM9u8CI5p3juLfoehGkHvp3K66pt2EkozHWzGDg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=BDKyXwwlbzYpaj8bPa8R9sERCroTAZz5BTHncFxHx2ICsGc3qyte09xEUwayWINCl
-         p0noJjApDYJuiD9wlP5znE59qgt8fJu/1zNTfWepRSaKT1/ZKM904JyVHUEANoSDUB
-         KwwpQqbBpmo9+rksKSDazzqpBBlZPzWIFDrVizrAspmtC/6w77Ksp3BDIItMDh/5+8
-         59qacGyiE63CBaaRL80+CDdAnKte9cOAWnocFsgqnkpE2A866O3awPgwHwGn+21PkY
-         iOJqw/qR+GmmSErJZxbDKlYakFhHBGQMsITb2bRJJl9nUgD9nqfA9rILzvG79IBwsW
-         IBnnjeF8PdQOA==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Lee Jones <lee.jones@linaro.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Satish Kharat <satishkh@cisco.com>,
-        Lee Duncan <lduncan@suse.com>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: pmcraid: fix 'ioarcb' alignment warning
-Date:   Mon,  1 Feb 2021 17:59:54 +0100
-Message-Id: <20210201170013.727112-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S231603AbhBARCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:02:11 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:53122 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231131AbhBARCE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 12:02:04 -0500
+Received: by mail-il1-f200.google.com with SMTP id e16so1201432ile.19
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 09:01:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=EWHtb+elGAwzn686GSK54ajAkHsqWpmvTIhfzBAVZI0=;
+        b=MHhcXKkxqOm7ZfKH/o3oPSnmT1MhN/+cpfU3ro/BfqNGEr9BF21SC7DeesKEXO++l9
+         Zk0J/pQFZqVEUMeTxOkJxVZjp8M5+XBeWYn7gG9ZUVULlp/xPqRWZhoA2xlBnBK39++j
+         kAXYLh4Pq+mKgxOwZPHEoOcbcrg8OUm5VTBKViEqFqhGe9Q2HKv2u+o33rzLGxl9eEIa
+         AMEYzIoK+An+c+otBoCLYnfBnwiYcGz8JtzaO8uoDVskwpuCVNxkI+qfD9NHpq5r+8Y7
+         xPnKgxMUPsGLByhuLqBqON9JJZxiHjLTTSqAlcKj0yYFhQmyEvoVarMBM3XxI3wVUJ9M
+         cYhg==
+X-Gm-Message-State: AOAM532tQOeWZ3KWeDQ4hffOoB9pu3hj/vPa7Cy+dsVoBN/3eGc1qSVd
+        FjEsIJMdHsYXvehUFtcsDl59l+v45ajrXtr7SryKo8RxyRYa
+X-Google-Smtp-Source: ABdhPJzgbEz31b0MoVZpmBvS3j3/sAlK/F+rBuq4XjqKuB5flxKmji0NAa3iSEvRUOohZvc0kP2DdFMiZdSim/kbVMmNhvOvBc+M
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:130e:: with SMTP id 14mr13350176ilt.58.1612198883902;
+ Mon, 01 Feb 2021 09:01:23 -0800 (PST)
+Date:   Mon, 01 Feb 2021 09:01:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c84e1a05ba494df4@google.com>
+Subject: KASAN: use-after-free Read in bdgrab
+From:   syzbot <syzbot+e4122ba0796a5de0373d@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hello,
 
-Building with 'make W=1' enables -Wpacked-not-aligned, and this
-warns about pmcraid because of incompatible alignment constraints for
-pmcraid_passthrough_ioctl_buffer:
+syzbot found the following issue on:
 
-drivers/scsi/pmcraid.h:1044:1: warning: alignment 1 of 'struct pmcraid_passthrough_ioctl_buffer' is less than 32 [-Wpacked-not-aligned]
- 1044 | } __attribute__ ((packed));
-      | ^
-drivers/scsi/pmcraid.h:1041:24: warning: 'ioarcb' offset 16 in 'struct pmcraid_passthrough_ioctl_buffer' isn't aligned to 32 [-Wpacked-not-aligned]
- 1041 |  struct pmcraid_ioarcb ioarcb;
+HEAD commit:    d03154e8 Add linux-next specific files for 20210128
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=13a9591b500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6953ffb584722a1
+dashboard link: https://syzkaller.appspot.com/bug?extid=e4122ba0796a5de0373d
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-The inner structure is documented as having 32 byte alignment here,
-but is starts at a 16 byte offset in the outer structure, so it's never
-actually aligned, as the outer structure is also marked 'packed'.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Lee Jones point this out as one of the last files that need to be changed
-before the warning can be enabled by default.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e4122ba0796a5de0373d@syzkaller.appspotmail.com
 
-Change the annotations in a way that avoids the warning but leaves the
-layout unchanged, by removing the packing on the inner structure and
-adding it to the outer one. The one-byte request_buffer[] array should
-have been a flexible array member here, which is how I change it to
-avoid extra padding from the alignment attribute.
+==================================================================
+BUG: KASAN: use-after-free in bdgrab+0x4c/0x50 fs/block_dev.c:921
+Read of size 8 at addr ffff888015f5a2a8 by task syz-executor.2/16939
 
-Cc: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+CPU: 1 PID: 16939 Comm: syz-executor.2 Not tainted 5.11.0-rc5-next-20210128-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
+ __kasan_report mm/kasan/report.c:399 [inline]
+ kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
+ bdgrab+0x4c/0x50 fs/block_dev.c:921
+ bdget_disk+0x91/0x180 block/genhd.c:802
+ bdev_del_partition+0x41/0x110 block/partitions/core.c:460
+ blkpg_do_ioctl+0x2e8/0x340 block/ioctl.c:33
+ blkpg_ioctl block/ioctl.c:60 [inline]
+ blkdev_ioctl+0x577/0x6d0 block/ioctl.c:541
+ block_ioctl+0xf9/0x140 fs/block_dev.c:1650
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45e219
+Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f2c4d9e5c68 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045e219
+RDX: 0000000020000240 RSI: 0000000000001269 RDI: 0000000000000004
+RBP: 000000000119bfc0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119bf8c
+R13: 00007ffc408bf1af R14: 00007f2c4d9e69c0 R15: 000000000119bf8c
+
+Allocated by task 12685:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:403 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:434 [inline]
+ ____kasan_kmalloc.constprop.0+0xa0/0xd0 mm/kasan/common.c:406
+ kasan_slab_alloc include/linux/kasan.h:208 [inline]
+ slab_post_alloc_hook mm/slab.h:516 [inline]
+ slab_alloc_node mm/slub.c:2907 [inline]
+ slab_alloc mm/slub.c:2915 [inline]
+ kmem_cache_alloc+0x15e/0x380 mm/slub.c:2920
+ bdev_alloc_inode+0x18/0x80 fs/block_dev.c:778
+ alloc_inode+0x61/0x230 fs/inode.c:234
+ new_inode_pseudo fs/inode.c:928 [inline]
+ new_inode+0x27/0x2f0 fs/inode.c:957
+ bdev_alloc+0x20/0x2f0 fs/block_dev.c:868
+ add_partition+0x1a7/0x860 block/partitions/core.c:346
+ bdev_add_partition+0xb6/0x130 block/partitions/core.c:449
+ blkpg_do_ioctl+0x2d0/0x340 block/ioctl.c:43
+ blkpg_ioctl block/ioctl.c:60 [inline]
+ blkdev_ioctl+0x577/0x6d0 block/ioctl.c:541
+ block_ioctl+0xf9/0x140 fs/block_dev.c:1650
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 16880:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
+ ____kasan_slab_free.part.0+0xe1/0x110 mm/kasan/common.c:364
+ kasan_slab_free include/linux/kasan.h:191 [inline]
+ slab_free_hook mm/slub.c:1562 [inline]
+ slab_free_freelist_hook+0x82/0x1d0 mm/slub.c:1600
+ slab_free mm/slub.c:3161 [inline]
+ kmem_cache_free+0x8b/0x740 mm/slub.c:3177
+ i_callback+0x3f/0x70 fs/inode.c:223
+ rcu_do_batch kernel/rcu/tree.c:2507 [inline]
+ rcu_core+0x746/0x1390 kernel/rcu/tree.c:2742
+ __do_softirq+0x2bc/0xa29 kernel/softirq.c:343
+
+Last potentially related work creation:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+ __call_rcu kernel/rcu/tree.c:2987 [inline]
+ call_rcu+0xbb/0x750 kernel/rcu/tree.c:3062
+ destroy_inode+0x129/0x1b0 fs/inode.c:289
+ iput_final fs/inode.c:1654 [inline]
+ iput.part.0+0x57e/0x810 fs/inode.c:1680
+ iput+0x58/0x70 fs/inode.c:1670
+ bdev_del_partition+0xc8/0x110 block/partitions/core.c:479
+ blkpg_do_ioctl+0x2e8/0x340 block/ioctl.c:33
+ blkpg_ioctl block/ioctl.c:60 [inline]
+ blkdev_ioctl+0x577/0x6d0 block/ioctl.c:541
+ block_ioctl+0xf9/0x140 fs/block_dev.c:1650
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff888015f5a280
+ which belongs to the cache bdev_cache of size 2792
+The buggy address is located 40 bytes inside of
+ 2792-byte region [ffff888015f5a280, ffff888015f5ad68)
+The buggy address belongs to the page:
+page:000000006fcc45fe refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x15f58
+head:000000006fcc45fe order:3 compound_mapcount:0 compound_pincount:0
+flags: 0xfff00000010200(slab|head)
+raw: 00fff00000010200 dead000000000100 dead000000000122 ffff88800fdc2b40
+raw: 0000000000000000 00000000800b000b 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff888015f5a180: 00 00 00 00 00 00 00 00 00 00 00 00 00 fc fc fc
+ ffff888015f5a200: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>ffff888015f5a280: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                  ^
+ ffff888015f5a300: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff888015f5a380: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
 ---
- drivers/scsi/pmcraid.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/scsi/pmcraid.h b/drivers/scsi/pmcraid.h
-index 15c962108075..6d36debde18e 100644
---- a/drivers/scsi/pmcraid.h
-+++ b/drivers/scsi/pmcraid.h
-@@ -244,7 +244,7 @@ struct pmcraid_ioarcb {
- 	__u8  hrrq_id;
- 	__u8  cdb[PMCRAID_MAX_CDB_LEN];
- 	struct pmcraid_ioarcb_add_data add_data;
--} __attribute__((packed, aligned(PMCRAID_IOARCB_ALIGNMENT)));
-+};
- 
- /* well known resource handle values */
- #define PMCRAID_IOA_RES_HANDLE        0xffffffff
-@@ -1040,8 +1040,8 @@ struct pmcraid_passthrough_ioctl_buffer {
- 	struct pmcraid_ioctl_header ioctl_header;
- 	struct pmcraid_ioarcb ioarcb;
- 	struct pmcraid_ioasa  ioasa;
--	u8  request_buffer[1];
--} __attribute__ ((packed));
-+	u8  request_buffer[];
-+} __attribute__ ((packed, aligned(PMCRAID_IOARCB_ALIGNMENT)));
- 
- /*
-  * keys to differentiate between driver handled IOCTLs and passthrough
--- 
-2.29.2
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
