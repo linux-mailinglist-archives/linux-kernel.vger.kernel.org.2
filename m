@@ -2,101 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A48630AD4A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE5B30AD47
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:00:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232008AbhBARAP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:00:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32806 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbhBARAN (ORCPT
+        id S231941AbhBAQ76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 11:59:58 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:54630 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231294AbhBAQ74 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:00:13 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF9FCC061573;
-        Mon,  1 Feb 2021 08:59:32 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id d16so17343856wro.11;
-        Mon, 01 Feb 2021 08:59:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lfvjglo2iWimqrT++GTgmO35jZY6+DY5kg/Ywj5v+9o=;
-        b=MfctAOutPixsTtOSVI72g22GtuHABCVIbpzu1Oui8G1sQJo36pM0l0X373Nnuf1u97
-         jNjbDQHN+oMxTCFQthc0+ppO8DC02kio1JTLQgzHQ2WeoIxkqQ+yX8TWdtvwUZaeS1FT
-         ltuCaso3j2Qp/oAiUJBPhzvNjbhrumNDzhw223d7dYQujNFQhrYQAP0sTQwppq7vZRhr
-         mv7aZPRPEQz7x1w3AuWGTtTrXqFUhJm50cKX4UJtB0Allppm4tHt6q0u1xKb/4GR2XBX
-         ySZWPko4AvfvRMsTXyc0GgGGU8W9Kl9zJOYGvyeV390cFzqJhJQLVBnDgeswmoCLyL0/
-         DtSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lfvjglo2iWimqrT++GTgmO35jZY6+DY5kg/Ywj5v+9o=;
-        b=hoB+lIUCPMXvfXx46jzHMJLbDnTBp7unx/4LZRsxkjIn5p1ve1W6bUysDibg+kKa/B
-         OiqXwv+mOU9G+cSKrjHaYhN6ZpUEOlEO9V28yPMGs55EHUanbCIPgRdoft5yfmF7C3yk
-         Xei7OVCFLxF+WOdW+VmM4MUMtACqIU6VSzPWmzOdNcWYDIuK3tgwmyFfiKFWHRus3+F7
-         ByeLn2A+BHWj6/T96a/7SyJ6ZkOq7Rmw53+Or8BIlGxVZpWf8ya3JJUInOIs7rNSupTr
-         5yo7ZczFuCj+UPdf5UBkachBzYhj3sh8HWeQuoj7RFD9TvW/zjuFq9h295HCJjLvBZLC
-         1GOw==
-X-Gm-Message-State: AOAM533JqdZ0XBVj9qMug3/s20QgMDw29w6mXz5q2gPzWlgn5692/AoX
-        UWxazx6Mvvxpw1ayaQ3mHrs=
-X-Google-Smtp-Source: ABdhPJws59KzzULQEh1KFT0w85G3rFB0Q0RRUDMvlD/iC9yvmrWp9gIruLJ5IU6UfOjFvFgKuWVuKQ==
-X-Received: by 2002:a05:6000:192:: with SMTP id p18mr18958779wrx.69.1612198771621;
-        Mon, 01 Feb 2021 08:59:31 -0800 (PST)
-Received: from localhost (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
-        by smtp.gmail.com with ESMTPSA id l10sm27890759wro.4.2021.02.01.08.59.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 08:59:30 -0800 (PST)
-From:   Iskren Chernev <iskren.chernev@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Iskren Chernev <iskren.chernev@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Andrei Ziureaev <andrei.ziureaev@arm.com>,
-        Cristian Ciocaltea <cristian.ciocaltea@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: Use portable sort for version cmp
-Date:   Mon,  1 Feb 2021 18:58:28 +0200
-Message-Id: <20210201165829.58656-1-iskren.chernev@gmail.com>
-X-Mailer: git-send-email 2.30.0
+        Mon, 1 Feb 2021 11:59:56 -0500
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 111GwwfD032019
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 1 Feb 2021 11:58:58 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 2EEEB15C39D9; Mon,  1 Feb 2021 11:58:58 -0500 (EST)
+Date:   Mon, 1 Feb 2021 11:58:58 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Vinicius Tinti <viniciustinti@gmail.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v2] ext4: Enable code path when DX_DEBUG is set
+Message-ID: <YBgzUoq2Jla7pXAG@mit.edu>
+References: <AAB32610-D238-4137-96DE-33655AAAB545@dilger.ca>
+ <20210201003125.90257-1-viniciustinti@gmail.com>
+ <20210201124924.GA3284018@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210201124924.GA3284018@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-sort -C is like sort -c >/dev/null but less portable. It fails on
-busybox sort (i.e alpine linux).
+On Mon, Feb 01, 2021 at 12:49:24PM +0000, Christoph Hellwig wrote:
+> DX_DEBUG is completely dead code, so either kill it off or make it an
+> actual CONFIG_* symbol through Kconfig if it seems useful.
 
-Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
-Fixes: ea5b8b5eb004 ("dt-bindings: Add a minimum version check for dtschema")
----
- Documentation/devicetree/bindings/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I wouldn't call it completely dead code.  If you manually add "#define
+DX_DEBUG" fs/ext4/namei.c compiles without any problems.  I believe it
+was most recently used when we added large htree support.
 
-diff --git a/Documentation/devicetree/bindings/Makefile b/Documentation/devicetree/bindings/Makefile
-index 90fcad98984d..780e5618ec0a 100644
---- a/Documentation/devicetree/bindings/Makefile
-+++ b/Documentation/devicetree/bindings/Makefile
-@@ -10,7 +10,7 @@ DT_SCHEMA_MIN_VERSION = 2020.8.1
- PHONY += check_dtschema_version
- check_dtschema_version:
- 	@{ echo $(DT_SCHEMA_MIN_VERSION); \
--	$(DT_DOC_CHECKER) --version 2>/dev/null || echo 0; } | sort -VC || \
-+	$(DT_DOC_CHECKER) --version 2>/dev/null || echo 0; } | sort -Vc >/dev/null || \
- 	{ echo "ERROR: dtschema minimum version is v$(DT_SCHEMA_MIN_VERSION)" >&2; false; }
- 
- quiet_cmd_extract_ex = DTEX    $@
+It's true that it can only be enabled via manually enabled via manual
+editing of the .c file, but it's *really* something that only
+developers who are actively involved in modifying the code would want
+to use.  Sure, we could add work to add debug levels to all of the
+dxtrace() statements, and/or switch it all to dyndebug.  We'd also
+have to figure out how to get rid of all of the KERN_CONT printk's in
+the ideal world.  The question is whether doing all of this is
+worth it if the goal is to shut up some clang warnings.
 
-base-commit: fd821bf0ed9a7db09d2e007df697f4d9ecfda99a
-prerequisite-patch-id: c90e3d48df0672dab84da1b294374598bfc45db8
-prerequisite-patch-id: f0b48cda55170cf82855daa6f7b4edfdba83d90c
-prerequisite-patch-id: 48482c0c3e2797459e311f73db1828f2531bd11c
-prerequisite-patch-id: 5512fd0c8367c8c8a2ace8003b533057422e1437
-prerequisite-patch-id: 1635c0e78c99506fd2710f54be4e5fc5980712a6
-prerequisite-patch-id: e80dacf2da55197be027f297617868832ddabfc9
-prerequisite-patch-id: bd3efb4ced6ceb2c6a50dcd8527ea4d6d19baf5d
--- 
-2.30.0
-
+	      	    	     	   - Ted
