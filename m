@@ -2,135 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01EEF30A445
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68AE330A448
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:21:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232827AbhBAJU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 04:20:29 -0500
-Received: from mxout70.expurgate.net ([194.37.255.70]:60653 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232758AbhBAJUT (ORCPT
+        id S232840AbhBAJV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 04:21:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46552 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232681AbhBAJVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 04:20:19 -0500
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.90)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1l6VLl-0004xN-M0; Mon, 01 Feb 2021 10:18:25 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.90)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1l6VLk-0002MG-Ia; Mon, 01 Feb 2021 10:18:24 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id 2426C240041;
-        Mon,  1 Feb 2021 10:18:24 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 97CDE240040;
-        Mon,  1 Feb 2021 10:18:23 +0100 (CET)
-Received: from mail.dev.tdt.de (localhost [IPv6:::1])
-        by mail.dev.tdt.de (Postfix) with ESMTP id 264DB200AA;
-        Mon,  1 Feb 2021 10:18:23 +0100 (CET)
+        Mon, 1 Feb 2021 04:21:22 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54ED0C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 01:20:42 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id w18so11159361pfu.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 01:20:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SbMuFSgh3hr3dFklO+f875czdlYyM5GeImwLmAoRm6w=;
+        b=ifgKEbl2qJf4cTm77gAQDroic8ArAi72Bw5NaKOmairtEYamHEnBR6T/1YJzNntWrW
+         J9VRUdimGea0Dumgw08zuSTRcIBK/J78suy+/732mrFeMUwzits0NxVpsoS2hV7bDmwR
+         ocFx60xoUbw4gCcm8Vhw1MYVB6yKItNQSk63s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SbMuFSgh3hr3dFklO+f875czdlYyM5GeImwLmAoRm6w=;
+        b=DxutYFFb5qOps3/Di2jDYpAzfB5sGCpVUtnJJVfj16UplPzXpJcAVBu8MhN5Q2p3Et
+         rn58m8bELPlpG+B8mYIJeVlW1UCCK7pAek9uquzokFmj/evYOZpCrf+7qfGXiSRaUsU+
+         Jw8M6W6v9jI05yeNkzHdA59d5aEULqVnZFoP64/ANL/s9bhTjxq1uEdNg5w1+8oya4B2
+         d1aLmIfrU+l+UqnOFiShuwqHhK7gz7HIw7els0p2gqhthyZuAzxq6TtuIL5ozotPzoFC
+         H/De/oivPtbSraNsAuMmU68dmjQ7dY0Ofm3A6l9ywUdBhcvPfDi3Ewamp9a0fJivzO1a
+         F4nw==
+X-Gm-Message-State: AOAM531466KQ5fGJjv77hFabmZpyheZ/7PtTXXa9frtitzAdHVHmDjE/
+        wTn/QG4rlSBpSiCPWBE5dv6gYMUdAwZg1uRPz84tdw==
+X-Google-Smtp-Source: ABdhPJzSYnS1s6DdHuyZOGevPBj5cK11OSvI0fuN6o/tNl92e+pA2OwmRQgGtb5EyAYza9zj9EE6xURZmN8TYzSx4zc=
+X-Received: by 2002:a05:6a00:a8f:b029:1bd:bb89:5911 with SMTP id
+ b15-20020a056a000a8fb02901bdbb895911mr15412045pfl.42.1612171241505; Mon, 01
+ Feb 2021 01:20:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 01 Feb 2021 10:18:23 +0100
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Krzysztof Halasa <khc@pm.waw.pl>
-Subject: Re: [PATCH net] net: hdlc_x25: Use qdisc to queue outgoing LAPB
- frames
-Organization: TDT AG
-In-Reply-To: <CAJht_EMQVaKFx7Wjj75F2xVBTCdpmho64wP0bfX6RhFnzNXAZA@mail.gmail.com>
-References: <20210127090747.364951-1-xie.he.0141@gmail.com>
- <20210128114659.2d81a85f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAJht_EOSB-m--Ombr6wLMFq4mPy8UTpsBri2CPsaRTU-aks7Uw@mail.gmail.com>
- <3f67b285671aaa4b7903733455a730e1@dev.tdt.de>
- <20210129173650.7c0b7cda@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAJht_EPMtn5E-Y312vPQfH2AwDAi+j1OP4zzpg+AUKf46XE1Yw@mail.gmail.com>
- <20210130111618.335b6945@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAJht_EMQVaKFx7Wjj75F2xVBTCdpmho64wP0bfX6RhFnzNXAZA@mail.gmail.com>
-Message-ID: <36a6c0769c57cd6835d32cc0fb95bca6@dev.tdt.de>
-X-Sender: ms@dev.tdt.de
-User-Agent: Roundcube Webmail/1.3.16
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
-        autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-X-purgate-ID: 151534::1612171105-0000A9C4-B60B7990/0/0
-X-purgate-type: clean
-X-purgate: clean
+References: <1612159064-28413-1-git-send-email-chunfeng.yun@mediatek.com>
+In-Reply-To: <1612159064-28413-1-git-send-email-chunfeng.yun@mediatek.com>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Mon, 1 Feb 2021 17:20:30 +0800
+Message-ID: <CAATdQgCkLxU2ts_dUq5+MnaxQ6RD69zddVKxqPRRZAGG2iq2hA@mail.gmail.com>
+Subject: Re: [next PATCH] usb: xhci-mtk: skip dropping bandwidth of unchecked endpoints
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Zhanyong Wang <zhanyong.wang@mediatek.com>,
+        linux-usb@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Tianping Fang <tianping.fang@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-31 04:16, Xie He wrote:
-> On Sat, Jan 30, 2021 at 11:16 AM Jakub Kicinski <kuba@kernel.org> 
-> wrote:
->> 
->> Sounds like too much afford for a sub-optimal workaround.
->> The qdisc semantics are borken in the proposed scheme (double
->> counting packets) - both in term of statistics and if user decides
->> to add a policer, filter etc.
-> 
-> Hmm...
-> 
-> Another solution might be creating another virtual device on top of
-> the HDLC device (similar to what "hdlc_fr.c" does), so that we can
-> first queue L3 packets in the virtual device's qdisc queue, and then
-> queue the L2 frames in the actual HDLC device's qdisc queue. This way
-> we can avoid the same outgoing data being queued to qdisc twice. But
-> this would significantly change the way the user uses the hdlc_x25
-> driver.
-> 
->> Another worry is that something may just inject a packet with
->> skb->protocol == ETH_P_HDLC but unexpected structure (IDK if
->> that's a real concern).
-> 
-> This might not be a problem. Ethernet devices also allow the user to
-> inject raw frames with user constructed headers. "hdlc_fr.c" also
-> allows the user to bypass the virtual circuit interfaces and inject
-> raw frames directly on the HDLC interface. I think the receiving side
-> should be able to recognize and drop invalid frames.
-> 
->> It may be better to teach LAPB to stop / start the internal queue.
->> The lower level drivers just needs to call LAPB instead of making
->> the start/wake calls directly to the stack, and LAPB can call the
->> stack. Would that not work?
-> 
-> I think this is a good solution. But this requires changing a lot of
-> code. The HDLC subsystem needs to be changed to allow HDLC Hardware
-> Drivers to ask HDLC Protocol Drivers (like hdlc_x25.c) to stop/wake
-> the TX queue. The hdlc_x25.c driver can then ask the LAPB module to
-> stop/wake the queue.
-> 
-> So this means new APIs need to be added to both the HDLC subsystem and
-> the LAPB module, and a number of HDLC Hardware Drivers need to be
-> changed to call the new API of the HDLC subsystem.
-> 
-> Martin, do you have any suggestions?
+HI Chunfeng,
 
-I have thought about this issue again.
+On Mon, Feb 1, 2021 at 1:58 PM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
+>
+> For those unchecked endpoints, we don't allocate bandwidth for
+> them, so no need free the bandwidth, otherwise will decrease
+> the allocated bandwidth.
+> Meanwhile use xhci_dbg() instead of dev_dbg() to print logs and
+> rename bw_ep_list_new as bw_ep_chk_list.
+>
+> Fixes: 1d69f9d901ef ("usb: xhci-mtk: fix unreleased bandwidth data")
+> Cc: stable <stable@vger.kernel.org>
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 
-I also have to say that I have never noticed any problems in this area
-before.
+Reviewed-and-tested-by: Ikjoon Jang <ikjn@chromium.org>
 
-So again for (my) understanding:
-When a hardware driver calls netif_stop_queue, the frames sent from
-layer 3 (X.25) with dev_queue_xmit are queued and not passed "directly"
-to x25_xmit of the hdlc_x25 driver.
+> ---
+>  drivers/usb/host/xhci-mtk-sch.c | 61 ++++++++++++++++++---------------
+>  drivers/usb/host/xhci-mtk.h     |  4 ++-
+>  2 files changed, 36 insertions(+), 29 deletions(-)
+>
+> diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-mtk-sch.c
+> index a313e75ff1c6..dee8a329076d 100644
+> --- a/drivers/usb/host/xhci-mtk-sch.c
+> +++ b/drivers/usb/host/xhci-mtk-sch.c
+> @@ -200,6 +200,7 @@ static struct mu3h_sch_ep_info *create_sch_ep(struct usb_device *udev,
+>
+>         sch_ep->sch_tt = tt;
+>         sch_ep->ep = ep;
+> +       INIT_LIST_HEAD(&sch_ep->endpoint);
+>         INIT_LIST_HEAD(&sch_ep->tt_endpoint);
+>
+>         return sch_ep;
+> @@ -374,6 +375,7 @@ static void update_bus_bw(struct mu3h_sch_bw_info *sch_bw,
+>                                         sch_ep->bw_budget_table[j];
+>                 }
+>         }
+> +       sch_ep->allocated = used;
 
-So nothing is added to the write_queue anymore (except possibly
-un-acked-frames by lapb_requeue_frames).
+Yes, this is really needed!
 
-Shouldn't it actually be sufficient to check for netif_queue_stopped in
-lapb_kick and then do "nothing" if necessary?
+>  }
+>
+>  static int check_sch_tt(struct usb_device *udev,
+> @@ -542,6 +544,22 @@ static int check_sch_bw(struct usb_device *udev,
+>         return 0;
+>  }
+>
+> +static void destroy_sch_ep(struct usb_device *udev,
+> +       struct mu3h_sch_bw_info *sch_bw, struct mu3h_sch_ep_info *sch_ep)
+> +{
+> +       /* only release ep bw check passed by check_sch_bw() */
+> +       if (sch_ep->allocated)
+> +               update_bus_bw(sch_bw, sch_ep, 0);
 
-As soon as the hardware driver calls netif_wake_queue, the whole thing
-should just continue running.
+So only these two lines really matter.
 
-Or am I missing something?
+> +
+> +       list_del(&sch_ep->endpoint);
+> +
+> +       if (sch_ep->sch_tt) {
+> +               list_del(&sch_ep->tt_endpoint);
+> +               drop_tt(udev);
+> +       }
+> +       kfree(sch_ep);
+> +}
+> +
+>  static bool need_bw_sch(struct usb_host_endpoint *ep,
+>         enum usb_device_speed speed, int has_tt)
+>  {
+> @@ -584,7 +602,7 @@ int xhci_mtk_sch_init(struct xhci_hcd_mtk *mtk)
+>
+>         mtk->sch_array = sch_array;
+>
+> -       INIT_LIST_HEAD(&mtk->bw_ep_list_new);
+> +       INIT_LIST_HEAD(&mtk->bw_ep_chk_list);
+>
+>         return 0;
+>  }
+> @@ -636,29 +654,12 @@ int xhci_mtk_add_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
+>
+>         setup_sch_info(udev, ep_ctx, sch_ep);
+>
+> -       list_add_tail(&sch_ep->endpoint, &mtk->bw_ep_list_new);
+> +       list_add_tail(&sch_ep->endpoint, &mtk->bw_ep_chk_list);
+>
+>         return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(xhci_mtk_add_ep_quirk);
+>
+> -static void xhci_mtk_drop_ep(struct xhci_hcd_mtk *mtk, struct usb_device *udev,
+> -                            struct mu3h_sch_ep_info *sch_ep)
+> -{
+> -       struct xhci_hcd *xhci = hcd_to_xhci(mtk->hcd);
+> -       int bw_index = get_bw_index(xhci, udev, sch_ep->ep);
+> -       struct mu3h_sch_bw_info *sch_bw = &mtk->sch_array[bw_index];
+> -
+> -       update_bus_bw(sch_bw, sch_ep, 0);
+> -       list_del(&sch_ep->endpoint);
+> -
+> -       if (sch_ep->sch_tt) {
+> -               list_del(&sch_ep->tt_endpoint);
+> -               drop_tt(udev);
+> -       }
+> -       kfree(sch_ep);
+> -}
+> -
+>  void xhci_mtk_drop_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
+>                 struct usb_host_endpoint *ep)
+>  {
+> @@ -688,9 +689,8 @@ void xhci_mtk_drop_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
+>         sch_bw = &sch_array[bw_index];
+>
+>         list_for_each_entry_safe(sch_ep, tmp, &sch_bw->bw_ep_list, endpoint) {
+> -               if (sch_ep->ep == ep) {
+> -                       xhci_mtk_drop_ep(mtk, udev, sch_ep);
+> -               }
+> +               if (sch_ep->ep == ep)
+> +                       destroy_sch_ep(udev, sch_bw, sch_ep);
+
+not so critical but I've also missed 'break' here.
+Can you please add a break statement here?
+
+>         }
+>  }
+>  EXPORT_SYMBOL_GPL(xhci_mtk_drop_ep_quirk);
+> @@ -704,9 +704,9 @@ int xhci_mtk_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
+>         struct mu3h_sch_ep_info *sch_ep, *tmp;
+>         int bw_index, ret;
+>
+> -       dev_dbg(&udev->dev, "%s\n", __func__);
+> +       xhci_dbg(xhci, "%s() udev %s\n", __func__, dev_name(&udev->dev));
+>
+> -       list_for_each_entry(sch_ep, &mtk->bw_ep_list_new, endpoint) {
+> +       list_for_each_entry(sch_ep, &mtk->bw_ep_chk_list, endpoint) {
+>                 bw_index = get_bw_index(xhci, udev, sch_ep->ep);
+>                 sch_bw = &mtk->sch_array[bw_index];
+>
+> @@ -717,7 +717,7 @@ int xhci_mtk_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
+>                 }
+>         }
+>
+> -       list_for_each_entry_safe(sch_ep, tmp, &mtk->bw_ep_list_new, endpoint) {
+> +       list_for_each_entry_safe(sch_ep, tmp, &mtk->bw_ep_chk_list, endpoint) {
+>                 struct xhci_ep_ctx *ep_ctx;
+>                 struct usb_host_endpoint *ep = sch_ep->ep;
+>                 unsigned int ep_index = xhci_get_endpoint_index(&ep->desc);
+> @@ -746,12 +746,17 @@ EXPORT_SYMBOL_GPL(xhci_mtk_check_bandwidth);
+>  void xhci_mtk_reset_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
+>  {
+>         struct xhci_hcd_mtk *mtk = hcd_to_mtk(hcd);
+> +       struct xhci_hcd *xhci = hcd_to_xhci(hcd);
+> +       struct mu3h_sch_bw_info *sch_bw;
+>         struct mu3h_sch_ep_info *sch_ep, *tmp;
+> +       int bw_index;
+>
+> -       dev_dbg(&udev->dev, "%s\n", __func__);
+> +       xhci_dbg(xhci, "%s() udev %s\n", __func__, dev_name(&udev->dev));
+>
+> -       list_for_each_entry_safe(sch_ep, tmp, &mtk->bw_ep_list_new, endpoint) {
+> -               xhci_mtk_drop_ep(mtk, udev, sch_ep);
+> +       list_for_each_entry_safe(sch_ep, tmp, &mtk->bw_ep_chk_list, endpoint) {
+> +               bw_index = get_bw_index(xhci, udev, sch_ep->ep);
+> +               sch_bw = &mtk->sch_array[bw_index];
+> +               destroy_sch_ep(udev, sch_bw, sch_ep);
+>         }
+>
+>         xhci_reset_bandwidth(hcd, udev);
+> diff --git a/drivers/usb/host/xhci-mtk.h b/drivers/usb/host/xhci-mtk.h
+> index 577f431c5c93..cbb09dfea62e 100644
+> --- a/drivers/usb/host/xhci-mtk.h
+> +++ b/drivers/usb/host/xhci-mtk.h
+> @@ -59,6 +59,7 @@ struct mu3h_sch_bw_info {
+>   * @ep_type: endpoint type
+>   * @maxpkt: max packet size of endpoint
+>   * @ep: address of usb_host_endpoint struct
+> + * @allocated: the bandwidth is aready allocated from bus_bw
+>   * @offset: which uframe of the interval that transfer should be
+>   *             scheduled first time within the interval
+>   * @repeat: the time gap between two uframes that transfers are
+> @@ -86,6 +87,7 @@ struct mu3h_sch_ep_info {
+>         u32 ep_type;
+>         u32 maxpkt;
+>         void *ep;
+> +       bool allocated;
+>         /*
+>          * mtk xHCI scheduling information put into reserved DWs
+>          * in ep context
+> @@ -130,8 +132,8 @@ struct mu3c_ippc_regs {
+>  struct xhci_hcd_mtk {
+>         struct device *dev;
+>         struct usb_hcd *hcd;
+> -       struct list_head bw_ep_list_new;
+>         struct mu3h_sch_bw_info *sch_array;
+> +       struct list_head bw_ep_chk_list;
+>         struct mu3c_ippc_regs __iomem *ippc_regs;
+>         bool has_ippc;
+>         int num_u2_ports;
+> --
+> 2.18.0
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
