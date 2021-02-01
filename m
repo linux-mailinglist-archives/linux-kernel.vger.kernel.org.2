@@ -2,91 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1880630AE3B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:44:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3B830AE45
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232464AbhBARnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:43:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49832 "EHLO mail.kernel.org"
+        id S231191AbhBARo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:44:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232359AbhBARm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:42:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F5E564E9C;
-        Mon,  1 Feb 2021 17:41:46 +0000 (UTC)
+        id S231287AbhBARoQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 12:44:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD36664E92;
+        Mon,  1 Feb 2021 17:43:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612201309;
-        bh=Coy8GnAXaLr1Ite2Qp1Zmud9F/Xbq++8nLGERyWz1zs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Pya8jRrCvkpzbzb7LfN8NfCpsjbcALtAvceTk+7uAToBACDZndGBfLqO0TvnRs4QD
-         vJt3n3sYn90rFk6cR3ObT0dGnrXLHiHnbGUWRrnA4+sssDkD83ArGPBV8XlQ8+N95j
-         sBDnYQKZQx63cDdgE3rBsE6ck17Mgtp3krhlE6j7VO+NZcoFY1537qQZ1ZpO6OeGif
-         HtFGRpj6wB5J0oYBEf6AGjSOoOhtkpeYK0TEJNYx9zOn4eNiMWXpD1a920S2bMogcL
-         2MjQN0N5j5kJ+fm20uyeCk7W8G9Sa0NgxmKTm7oc445f0HL/SgjiAKCk3gK3mo7LRe
-         zwKfv6/SlM7XQ==
-Date:   Mon, 1 Feb 2021 17:41:43 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, android-kvm@google.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        Fuad Tabba <tabba@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>
-Subject: Re: [RFC PATCH v2 04/26] KVM: arm64: Initialize kvm_nvhe_init_params
- early
-Message-ID: <20210201174143.GB15632@willie-the-truck>
-References: <20210108121524.656872-1-qperret@google.com>
- <20210108121524.656872-5-qperret@google.com>
+        s=k20201202; t=1612201416;
+        bh=6JuMhwiPxB5zwCevxjDcGxnSg7igAiVfttRPt3eGViM=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RzHBn+zcnVxDBGt7mlXIwAfT7kISdYH5yde5MD1mHMHHzUnJCYwEinKiGKenm/oPj
+         4gNFA30b9y2ujEmDtW5YQx6+2qWOGHUW441BU0QAVYzE59NX54GdVwzJGpDMHW1+CS
+         jzSdNGz1qB89qQ8YCoN4sYtkiTrZqMWtzTVeaI+cKyUCOpRQ/wvNPKhi/vUY3+uqyu
+         Wt9gsJJSJyKk9R0q12r4GD+wtxWaxUOjNSTpdKKwLbjNQ5q8UTL349ir0A4M+4SJYA
+         vHB7/t9hfcSja+Lb8/P5lm8/rlCqx9vIziZXWWMlOk+DJcOleoVH7uLw4CoKTLhNEk
+         d3cD5RMLT/TXQ==
+Date:   Mon, 1 Feb 2021 11:43:34 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>
+Cc:     linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] hv: hyperv.h: Replace one-element array with
+ flexible-array in struct icmsg_negotiate
+Message-ID: <20210201174334.GA171933@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210108121524.656872-5-qperret@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 12:15:02PM +0000, Quentin Perret wrote:
-> Move the initialization of kvm_nvhe_init_params in a dedicated function
-> that is run early, and only once during KVM init, rather than every time
-> the KVM vectors are set and reset.
-> 
-> This also opens the opportunity for the hypervisor to change the init
-> structs during boot, hence simplifying the replacement of host-provided
-> page-tables and stacks by the ones the hypervisor will create for
-> itself.
-> 
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> ---
->  arch/arm64/kvm/arm.c | 28 ++++++++++++++++++++--------
->  1 file changed, 20 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index 04c44853b103..3ac0f3425833 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
+There is a regular need in the kernel to provide a way to declare having
+a dynamically sized set of trailing elements in a structure. Kernel code
+should always use “flexible array members”[1] for these cases. The older
+style of one-element or zero-length arrays should no longer be used[2].
 
-[...]
+Refactor the code according to the use of a flexible-array member in
+struct icmsg_negotiate, instead of a one-element array.
 
-> @@ -1807,6 +1813,12 @@ static int init_hyp_mode(void)
->  			goto out_err;
->  	}
->  
-> +	/*
-> +	 * Prepare the CPU initialization parameters
-> +	 */
-> +	for_each_possible_cpu(cpu)
-> +		cpu_prepare_hyp_mode(cpu);
-> +
+Also, this helps the ongoing efforts to enable -Warray-bounds and fix the
+following warnings:
 
-This is the fifth for_each_possible_cpu() loop in this function; can any of
-them be merged together?
+drivers/hv/channel_mgmt.c:315:23: warning: array subscript 1 is above array bounds of ‘struct ic_version[1]’ [-Warray-bounds]
+drivers/hv/channel_mgmt.c:316:23: warning: array subscript 1 is above array bounds of ‘struct ic_version[1]’ [-Warray-bounds]
 
-Will
+[1] https://en.wikipedia.org/wiki/Flexible_array_member
+[2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
+
+Link: https://github.com/KSPP/linux/issues/79
+Link: https://github.com/KSPP/linux/issues/109
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ include/linux/hyperv.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/hyperv.h b/include/linux/hyperv.h
+index f0d48a368f13..7877746f1077 100644
+--- a/include/linux/hyperv.h
++++ b/include/linux/hyperv.h
+@@ -1528,14 +1528,14 @@ struct icmsg_hdr {
+ #define IC_VERSION_NEGOTIATION_MAX_VER_COUNT 100
+ #define ICMSG_HDR (sizeof(struct vmbuspipe_hdr) + sizeof(struct icmsg_hdr))
+ #define ICMSG_NEGOTIATE_PKT_SIZE(icframe_vercnt, icmsg_vercnt) \
+-	(ICMSG_HDR + offsetof(struct icmsg_negotiate, icversion_data) + \
++	(ICMSG_HDR + sizeof(struct icmsg_negotiate) + \
+ 	 (((icframe_vercnt) + (icmsg_vercnt)) * sizeof(struct ic_version)))
+ 
+ struct icmsg_negotiate {
+ 	u16 icframe_vercnt;
+ 	u16 icmsg_vercnt;
+ 	u32 reserved;
+-	struct ic_version icversion_data[1]; /* any size array */
++	struct ic_version icversion_data[]; /* any size array */
+ } __packed;
+ 
+ struct shutdown_msg_data {
+-- 
+2.27.0
+
