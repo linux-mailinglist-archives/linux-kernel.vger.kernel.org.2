@@ -2,59 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A4C30AA3A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:52:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE9430AA26
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:45:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231287AbhBAOs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 09:48:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59390 "EHLO
+        id S230151AbhBAOpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 09:45:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231359AbhBAOmV (ORCPT
+        with ESMTP id S231310AbhBAOmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 09:42:21 -0500
+        Mon, 1 Feb 2021 09:42:36 -0500
 Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04EE9C0611BC
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 06:40:06 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id a1so16848673wrq.6
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 06:40:05 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EECAC061A10
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 06:40:07 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id q7so16802674wre.13
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 06:40:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=g5vWVj1PxyNkZrXGNhPOfAFboUN5KZo8O3CdBy4NesU=;
-        b=B4G7JSQdB4HA8+vgLEnKbugF9Ks5XEiRVYap9L6+9NSD+70VrhCfdfm7XnfeA2Dn15
-         FuZC8w+qFLpr86V5MFxKi/66rZoqFvOwKHShk6axOBXrEb7qs4C0J0KIo5V4kiujlvql
-         U9rY5/Envm5r/vBZ3LVjS7VGPvqxN+cXTIJuGk2N83ODoP72l2QuCJi48ly+JROj9ptR
-         BfIeTExkdYJuCwedU75cYifeXxEqNlZM2YkOAk3lAEM7mL/Je4x3TwgNY6fB5Ofy2vXM
-         1P/WNFhlit/SaOFpzYyCiwhnMqbZzlHuHZuSJj0PWKHjVXj7D/y/xE/da33gjtlpLkHn
-         Qc6A==
+        bh=QyQtn17PTBrcRsPcgHDOZTKxROdnGY6b4VlV5omsb8Y=;
+        b=Ypd5PZfSNYNiJAYSx+BZ9Vu97SLXnMdYKLrCGZ9szRSzrZ1Rdtn03RWttjlyxVJTEP
+         x1llYip6JKBwInGWquGAjb560vGHl7wDHBy7Oehttp2kBaOkOYYDswDAx1yoI7APC8tp
+         vS8kIq4zGoGmeAJlRPyGLWLukENBH8CfRM719g3o8TU7iheZQGGgMynx2+hfWCUj3l9Q
+         w1c59YWEum5h1/HYaFd4thKrhS1fSq3Nu6sNMjr/8UncUEY/6+E3k5oV69wEel2dfx5Z
+         vBSvfkhUurg85FpU//XAbzQ9txe8BDaJg2VdYSEJrc9UKrAKqGM84PftrPe08C38rapL
+         wKVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=g5vWVj1PxyNkZrXGNhPOfAFboUN5KZo8O3CdBy4NesU=;
-        b=YA2QywqUo7HdQeJb3eBCFIlCitRG10AShmi3+s+itPrHnpxYU9dqhf4en0xQpwr5Tb
-         e6QsHr8rK71NlwR/dny8f+bCAUYL5TJNVfVds2R2gHirdn9xQh5UwWbmI84uO6t85N5o
-         PxNPmXhZXKmP7ozUchUX/eNA21PDgb0TI6yfwcbB8tdtUAbTpj1FwtjEeND5ReIMkxGl
-         WdWxXESI1laU4UY+DELW0VR/knpynT2v1ldL3jWMcYKxwuLQyiOhtEzHsSwwyDEkJAJi
-         SfgTju+dA90WYlCE+G1NGAgzGXB2ZtTKMk4AlPeI/7/fCVhHQpmmNl8P3q6s61DL+GVG
-         DjwA==
-X-Gm-Message-State: AOAM531hpq74MgZIKH7cCKFzMpbJiBZaypi6n01ACKELH3jesmXZzhyk
-        PCIqWBNSna4EbKfOKrSVi2rYYg==
-X-Google-Smtp-Source: ABdhPJyHgmUqVQc96gVAt9CQolaGiQEbbEm8oddOV9JXaA61Fnhy21TVEPpeAq8fVb/tJI/+LbQi8g==
-X-Received: by 2002:a5d:6a85:: with SMTP id s5mr17869868wru.283.1612190404772;
-        Mon, 01 Feb 2021 06:40:04 -0800 (PST)
+        bh=QyQtn17PTBrcRsPcgHDOZTKxROdnGY6b4VlV5omsb8Y=;
+        b=g0ebQ94yfpdlyjlw9cDZM1OHpThbcdoRVCTZhBrZTLqcvISkLCZZsYN+0caU6tk6sz
+         ljFzuTCRP51UW8THn/jyBC6o0hGryJnv57iYk5R1zptcQHGHbeeV40neGlnuOVXeN/XB
+         6gcW7f63vQ4mPEVi8Sy1X2kjSwlXpaErXLbpp/G+n7me4WTGajKebl8ZIK+oBQVaxMtw
+         bJNb5vr+GajZ2BkD65bsFfT2gnJtsoaTrcb9GxYC0PNAC9QGnlVdmkw9p8hIdc/pTutf
+         mQg2yxhD0HdrqhGZVQChfmMYcn5oFXtNYJ1lHQu3dqwzMRHAFF5fC6h21lJpRzGt2Qls
+         oFfg==
+X-Gm-Message-State: AOAM531Ka3wRTyQBoouANoiItMEemMZZxy7rqv01tMEZM7xFk5HfC1Kl
+        53MQLuD9GAVLE9l5z8XR3V6Wnw==
+X-Google-Smtp-Source: ABdhPJz8aTRKHvddtB5nncbPFCCIBsYnVI7a6DdrYz/XZgAQ2mtfhZTen/1AL1goK6IY5AAhRytGag==
+X-Received: by 2002:a5d:60d0:: with SMTP id x16mr18578011wrt.269.1612190405951;
+        Mon, 01 Feb 2021 06:40:05 -0800 (PST)
 Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id h15sm27301359wrt.10.2021.02.01.06.40.03
+        by smtp.gmail.com with ESMTPSA id h15sm27301359wrt.10.2021.02.01.06.40.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 06:40:04 -0800 (PST)
+        Mon, 01 Feb 2021 06:40:05 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-ide@vger.kernel.org
-Subject: [PATCH 19/20] ata: pata_optidma: Fix a function misnaming, a formatting issue and a missing description
-Date:   Mon,  1 Feb 2021 14:39:39 +0000
-Message-Id: <20210201143940.2070919-20-lee.jones@linaro.org>
+        Albert Lee <albertcc@tw.ibm.com>,
+        Andre Hedrick <andre@linux-ide.org>,
+        Frank Tiernan <frankt@promise.com>, linux-ide@vger.kernel.org
+Subject: [PATCH 20/20] ata: pata_pdc2027x: Fix some incorrect function names and parameter docs
+Date:   Mon,  1 Feb 2021 14:39:40 +0000
+Message-Id: <20210201143940.2070919-21-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210201143940.2070919-1-lee.jones@linaro.org>
 References: <20210201143940.2070919-1-lee.jones@linaro.org>
@@ -66,47 +68,67 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/ata/pata_optidma.c:298: warning: expecting prototype for optidma_make_bits(). Prototype was for optidma_make_bits43() instead
- drivers/ata/pata_optidma.c:319: warning: Function parameter or member 'r_failed' not described in 'optidma_set_mode'
- drivers/ata/pata_optidma.c:361: warning: Function parameter or member 'pdev' not described in 'optiplus_with_udma'
+ drivers/ata/pata_pdc2027x.c:209: warning: expecting prototype for pdc2027x_pata_cable_detect(). Prototype was for pdc2027x_cable_detect() instead
+ drivers/ata/pata_pdc2027x.c:262: warning: expecting prototype for pdc2720x_mode_filter(). Prototype was for pdc2027x_mode_filter() instead
+ drivers/ata/pata_pdc2027x.c:513: warning: Function parameter or member 'board_idx' not described in 'pdc_adjust_pll'
+ drivers/ata/pata_pdc2027x.c:513: warning: expecting prototype for adjust_pll(). Prototype was for pdc_adjust_pll() instead
+ drivers/ata/pata_pdc2027x.c:599: warning: expecting prototype for detect_pll_input_clock(). Prototype was for pdc_detect_pll_input_clock() instead
 
 Cc: Jens Axboe <axboe@kernel.dk>
+Cc: Albert Lee <albertcc@tw.ibm.com>
+Cc: Andre Hedrick <andre@linux-ide.org>
+Cc: Frank Tiernan <frankt@promise.com>
 Cc: linux-ide@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/ata/pata_optidma.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/ata/pata_pdc2027x.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/ata/pata_optidma.c b/drivers/ata/pata_optidma.c
-index fbcf0af34924d..f6278d9de3486 100644
---- a/drivers/ata/pata_optidma.c
-+++ b/drivers/ata/pata_optidma.c
-@@ -287,7 +287,7 @@ static void optiplus_set_dma_mode(struct ata_port *ap, struct ata_device *adev)
+diff --git a/drivers/ata/pata_pdc2027x.c b/drivers/ata/pata_pdc2027x.c
+index de834fbb6dfe6..effc1a09444de 100644
+--- a/drivers/ata/pata_pdc2027x.c
++++ b/drivers/ata/pata_pdc2027x.c
+@@ -196,7 +196,7 @@ static inline void __iomem *dev_mmio(struct ata_port *ap, struct ata_device *ade
  }
  
  /**
-- *	optidma_make_bits	-	PCI setup helper
-+ *	optidma_make_bits43	-	PCI setup helper
+- *	pdc2027x_pata_cable_detect - Probe host controller cable detect info
++ *	pdc2027x_cable_detect - Probe host controller cable detect info
+  *	@ap: Port for which cable detect info is desired
+  *
+  *	Read 80c cable indicator from Promise extended register.
+@@ -251,7 +251,7 @@ static int pdc2027x_prereset(struct ata_link *link, unsigned long deadline)
+ }
+ 
+ /**
+- *	pdc2720x_mode_filter	-	mode selection filter
++ *	pdc2027x_mode_filter	-	mode selection filter
   *	@adev: ATA device
+  *	@mask: list of modes proposed
   *
-  *	Turn the ATA device setup into PCI configuration bits
-@@ -309,6 +309,7 @@ static u8 optidma_make_bits43(struct ata_device *adev)
- /**
-  *	optidma_set_mode	-	mode setup
-  *	@link: link to set up
-+ *	@r_failed: out parameter for failed device
-  *
-  *	Use the standard setup to tune the chipset and then finalise the
-  *	configuration by writing the nibble of extra bits of data into
-@@ -354,7 +355,7 @@ static struct ata_port_operations optiplus_port_ops = {
+@@ -503,11 +503,11 @@ static long pdc_read_counter(struct ata_host *host)
+ }
  
  /**
-  *	optiplus_with_udma	-	Look for UDMA capable setup
-- *	@pdev; ATA controller
-+ *	@pdev: ATA controller
+- * adjust_pll - Adjust the PLL input clock in Hz.
++ * pdc_adjust_pll - Adjust the PLL input clock in Hz.
+  *
+- * @pdc_controller: controller specific information
+  * @host: target ATA host
+  * @pll_clock: The input of PLL in HZ
++ * @board_idx: board identifier
   */
+ static void pdc_adjust_pll(struct ata_host *host, long pll_clock, unsigned int board_idx)
+ {
+@@ -590,7 +590,7 @@ static void pdc_adjust_pll(struct ata_host *host, long pll_clock, unsigned int b
+ }
  
- static int optiplus_with_udma(struct pci_dev *pdev)
+ /**
+- * detect_pll_input_clock - Detect the PLL input clock in Hz.
++ * pdc_detect_pll_input_clock - Detect the PLL input clock in Hz.
+  * @host: target ATA host
+  * Ex. 16949000 on 33MHz PCI bus for pdc20275.
+  *     Half of the PCI clock.
 -- 
 2.25.1
 
