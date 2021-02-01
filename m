@@ -2,89 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80CBB30A958
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:07:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B505130A95A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:08:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232576AbhBAOGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 09:06:49 -0500
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:38047 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231511AbhBAOGd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 09:06:33 -0500
-Received: by mail-oi1-f170.google.com with SMTP id h6so18877425oie.5;
-        Mon, 01 Feb 2021 06:06:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4SzpemPQB+/TRnRzTNJla8BM75IUCXAeWcKUwN4Y6ms=;
-        b=G/0ur6JrGubFYU5Au+iQKd2fpKUmRFCKN19qC3LlpnsSVXrOatoqe5a9hnjSnqgZD8
-         6J/vj8/mfEnI1RIQnBKjISk1ykauLIvCbcaxmco09P4CfToy+fuyQrbvJqqr4piaOmCU
-         6D9xdc8I+i+IUBrR+VBJ5gUGZIXX2SydZJcLj69CY7+cEEJK9Tj+P3CRuZf4eT/l46OL
-         9CmqqXoNBFSZOPZYIDZlrtc74uuUZFoW5A7pdxF/P5ZxoV/Cg5H5ds/6enEehDTfXbMs
-         mj47/6LOsU/QK1wiNbGhSrb7tIp1SeL0Hf5KQOAyYpgCpeJIWHjvJgRIhEZS8Cz1jNrt
-         4+UQ==
-X-Gm-Message-State: AOAM5334JVeZLvk2k/knabhRf6Orn4b1saA8q7xpqP/MvQoriSN4C89r
-        r50Vn89zBTkWL6tfSVn00VPq13/gej+jtWrmznY=
-X-Google-Smtp-Source: ABdhPJwJB9jBNuY8JgwpRFRdK2Bkqgl8TxJR/6j+4AlzXXofvePOK74g45qZiRTctcZ/Pf1S+BE6Cbq+UFbObKydWys=
-X-Received: by 2002:aca:d14:: with SMTP id 20mr11411887oin.157.1612188353137;
- Mon, 01 Feb 2021 06:05:53 -0800 (PST)
+        id S232617AbhBAOHK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 09:07:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51194 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231511AbhBAOHA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 09:07:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9ED6764EA1;
+        Mon,  1 Feb 2021 14:06:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612188377;
+        bh=tQ4WmAzlyE4k3CyxrsslSldFLnH7v9mWZ6r3RsrN92o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=UL5SEVGET2SxXOjmGMFgkjoD6BYDZRygtnBjTNJu8V+/pemWyIGsJvG9bgE7KLyje
+         Lj0fREqDV8/aSZzmEAC740HLoqXoVG8YqsDmdtGjgNYIh4bifIIX4bgm9L2Vgn6Qf/
+         skfj+H8rithoJoc6YyhJjD5NsHlPBaL1DNXlpEOI3++atJAMJ/RAF4wjCfZWEiyizL
+         b3v4OtZj7m63wkIDoMx+H025TmfyvnDFwsqtqVWV8MWE793bhKAI75OWUW/xLAwoFI
+         +7e+KAO1E4+vH6oUMtql/UMjfj+ECQfyOhDT3uXO8MgZzW6B1/vWG//Ibrwenv7RS0
+         RycHCDmybViNw==
+Date:   Mon, 1 Feb 2021 16:06:05 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        David Hildenbrand <david@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, stable <stable@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [PATCH v4 1/2] x86/setup: always add the beginning of RAM as
+ memblock.memory
+Message-ID: <20210201140605.GG242749@kernel.org>
+References: <20210130221035.4169-1-rppt@kernel.org>
+ <20210130221035.4169-2-rppt@kernel.org>
+ <CAHk-=wjJLdjqN2W_hwUmYCM8u=1tWnKsm46CYfdKPP__anGvJw@mail.gmail.com>
+ <20210131080356.GE242749@kernel.org>
+ <CAHk-=wg-qT41Q1WgPUZPC9UmCi6xquk1KE3_yvxORbmDV3os0g@mail.gmail.com>
 MIME-Version: 1.0
-References: <1611736925-32547-1-git-send-email-abaci-bugfix@linux.alibaba.com> <CAPDyKFrtwFwPjLz7OYOtF4S7WORoyGFgpv9n6xABn-vp3w59dQ@mail.gmail.com>
-In-Reply-To: <CAPDyKFrtwFwPjLz7OYOtF4S7WORoyGFgpv9n6xABn-vp3w59dQ@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 1 Feb 2021 15:05:42 +0100
-Message-ID: <CAJZ5v0h_=Wm_nSNFj_s4+16y3rW0OMzTxNQ=GbUNUfpqYy=EXA@mail.gmail.com>
-Subject: Re: [PATCH] PM: domains: Simplify the calculation of variables
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Abaci Team <abaci-bugfix@linux.alibaba.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Kevin Hilman <khilman@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wg-qT41Q1WgPUZPC9UmCi6xquk1KE3_yvxORbmDV3os0g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 11:11 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> On Wed, 27 Jan 2021 at 09:42, Abaci Team <abaci-bugfix@linux.alibaba.com> wrote:
+On Sun, Jan 31, 2021 at 01:49:27PM -0800, Linus Torvalds wrote:
+> On Sun, Jan 31, 2021 at 12:04 AM Mike Rapoport <rppt@kernel.org> wrote:
 > >
-> > Fix the following coccicheck warnings:
+> > >
+> > > That's *particularly* true when the very line above it did a
+> > > "memblock_reserve()" of the exact same range that the memblock_add()
+> > > "adds".
 > >
-> > ./drivers/base/power/domain.c:938:31-33: WARNING !A || A && B is
-> > equivalent to !A || B.
+> > The most correct thing to do would have been to
 > >
-> > Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> > Suggested-by: Jiapeng Zhong <oswb@linux.alibaba.com>
-> > Signed-off-by: Abaci Team <abaci-bugfix@linux.alibaba.com>
->
-> Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
+> >         memblock_add(0, end_of_first_memory_bank);
+> >
+> > Somewhere at e820__memblock_setup().
+> 
+> You miss my complaint.
+> 
+> Why does the memblock code care about this magical "memblock_add()",
+> when we just told it that the SAME REGION is reserved by doing a
+> "memblock_reserve()"?
+> 
+> IOW, I'm not interested in "the correct thing to do would have been
+> [another memblock_add()]". I'm saying that the memblock code itself is
+> being confused, and no additional thing should have been required at
+> all, because we already *did* that memblock_reserve().
+> 
+> See?
 
-Applied as 5.12 material, thanks!
+There is nothing magical about memblock_add().
 
-> > ---
-> >  drivers/base/power/domain.c | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/base/power/domain.c b/drivers/base/power/domain.c
-> > index 9a14eed..e689710 100644
-> > --- a/drivers/base/power/domain.c
-> > +++ b/drivers/base/power/domain.c
-> > @@ -934,8 +934,7 @@ static int genpd_runtime_resume(struct device *dev)
-> >  err_stop:
-> >         genpd_stop_dev(genpd, dev);
-> >  err_poweroff:
-> > -       if (!pm_runtime_is_irq_safe(dev) ||
-> > -               (pm_runtime_is_irq_safe(dev) && genpd_is_irq_safe(genpd))) {
-> > +       if (!pm_runtime_is_irq_safe(dev) || genpd_is_irq_safe(genpd)) {
-> >                 genpd_lock(genpd);
-> >                 genpd_power_off(genpd, true, 0);
-> >                 genpd_unlock(genpd);
-> > --
-> > 1.8.3.1
-> >
+Memblock presumes that arch code uses memblock_add() to register populated
+physical memory ranges and memblock_reserve() to protect memory ranges that
+should not be touched. These ranges do not necessarily overlap, so there
+maybe reserved ranges that do not have the corresponding registered memory.
+
+This lets architectures to say "here are the memory banks I have" and "this
+memory is in use" (or even "this memory _might_ be in use" ) independently
+of each other.
+
+The downside is that if there is a reserved range there is no way to tell
+whether it is backed by populated memory.
+
+We could change this semantics and enforce the overlap, e.g. by
+implicitly adding all the reserved ranges to the registered memory.
+I've already tried that and I've found out that there are systems that rely
+on memblock's ability to track reserved and available ranges independently.
+For example, arm systems I've mentioned in the previous mail always have a
+reserved chunk at 0xfe000000 in their DTS, but they may have only 2G of
+memory actually populated. 
+
+Now, on x86 there is a gap between e820 and memblock since 2.6 times. As of
+now, only E820_TYPE_RAM is added to memblock as memory, some of the
+E820_*_RESERVED are reserved and on top there are reservations of the
+memory that's known to be used by BIOS or kernel.
+
+I'm trying to close this gap with small steps and with changes that I
+believe will not break too many things at once so it'll become
+unmanageable.
+
+> Honestly, I'm not seeing it being a good thing to move further towards
+> memblock code as the primary model for memory initialization, when the
+> memblock code is so confused.
+
+I'm not sure I follow you here.
+If I'm not mistaken, memblock is used as the primary model for memmap and
+page allocator initialization for almost a decade now...
+ 
+>               Linus
+
+-- 
+Sincerely yours,
+Mike.
