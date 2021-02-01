@@ -2,177 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27EF830A04B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 03:12:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A932930A04C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 03:14:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231319AbhBACLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 21:11:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39684 "EHLO
+        id S231259AbhBACOe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 21:14:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231153AbhBACLg (ORCPT
+        with ESMTP id S229656AbhBACOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 21:11:36 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF24C061573;
-        Sun, 31 Jan 2021 18:10:55 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DTWd85N7zz9srY;
-        Mon,  1 Feb 2021 13:10:51 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612145452;
-        bh=RQMWa2ShLO0GqlUDQFlorzJ5Ee+a7zwuQBEVXVbMpbU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=B/IUWZF1L+NrqoKf4xmPzapI2QMpOV2DmxWWAX1yEgydndyCf9ygtOvWxrWtMd9r7
-         fcoiTBDw8Ze8UIRL/AABX6Yxq1Y/kbC+SBptIvzd6epY28noY2eIt7k07P8vvxp2D0
-         x1VxvSOVLWful678yBsG5XK2S98cb2FRYyrf6m3qD37ngtmEmukm53TnreGwQiLGTV
-         cMh4+7Dk8brvf06RpzylB49uLM9sWPXaenw5xjNEVTjl5TF0bCjaD0SC7Pia1NVLz0
-         OLMP0mfDENyhr0IkDHctbwf3Qjv3NSIx3fwoGtB79MMz+ElRPrGxvqR/373wDK6zor
-         g6Ng3Ugp2YAGA==
-Date:   Mon, 1 Feb 2021 13:10:50 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Luben Tuikov <luben.tuikov@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the drm-misc tree
-Message-ID: <20210201131050.6ac8ea63@canb.auug.org.au>
+        Sun, 31 Jan 2021 21:14:33 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51D8AC061573
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 18:13:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=V/IebqQk3h8MBWYv6rvKZ41ct4qnwDNCUGFINvgQ6n4=; b=FGcRRZPq/5pnlE/eZeS49TN9P4
+        Dew8eKGwqFmcxAAtme3kvDydfQuplwg0lR4WU3QNTMLU9gVALjxaXVmnO91h/RuYINMjOLee6tP4F
+        1kYtEC2eXWgRCIu5Na8pDlvsuPHwYPxRnXQ8EtEiU4sZI0mh82HTcATOHbvqR7I9rEMwONuqbmaHw
+        GnKZtGYIX+dPkwzsQxyiGN7ch7tyx25WsrBGDxgTw3rhklpJhqE8k4isGk7QxyFiet0+mKn/ksmfV
+        QkF7EEu4y4R/oAh9FyUV8nsgbr6pj0iOhak9Q5225VEpq+bw4GrTjto/cn7eotad06/hC7anbGDKD
+        LzaK0XKA==;
+Received: from [2601:1c0:6280:3f0::9abc]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l6Oir-0005mw-CX; Mon, 01 Feb 2021 02:13:49 +0000
+Subject: Re: [PATCH v4 29/34] Intel tsens i2c slave driver.
+To:     mgross@linux.intel.com, markgross@kernel.org, arnd@arndb.de,
+        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        gregkh@linuxfoundation.org, corbet@lwn.net,
+        palmerdabbelt@google.com, paul.walmsley@sifive.com,
+        peng.fan@nxp.com, robh+dt@kernel.org, shawnguo@kernel.org,
+        jassisinghbrar@gmail.com
+Cc:     linux-kernel@vger.kernel.org,
+        "C, Udhayakumar" <udhayakumar.c@intel.com>
+References: <20210130022124.65083-1-mgross@linux.intel.com>
+ <20210130022124.65083-65-mgross@linux.intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <016b292b-df7b-db6e-0935-3744d8343aa8@infradead.org>
+Date:   Sun, 31 Jan 2021 18:13:40 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/NK9oM7n=8nY/gN.b/KbjIo/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210130022124.65083-65-mgross@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/NK9oM7n=8nY/gN.b/KbjIo/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 1/29/21 6:21 PM, mgross@linux.intel.com wrote:
+> diff --git a/drivers/misc/intel_tsens/Kconfig b/drivers/misc/intel_tsens/Kconfig
+> index 8b263fdd80c3..be8d27e81864 100644
+> --- a/drivers/misc/intel_tsens/Kconfig
+> +++ b/drivers/misc/intel_tsens/Kconfig
+> @@ -14,6 +14,20 @@ config INTEL_TSENS_LOCAL_HOST
+>  	  Say Y if using a processor that includes the Intel VPU such as
+>  	  Keem Bay.  If unsure, say N.
+>  
+> +config INTEL_TSENS_I2C_SLAVE
+> +	bool "I2C slave driver for intel tsens"
+> +	depends on INTEL_TSENS_LOCAL_HOST
+> +	depends on I2C=y && I2C_SLAVE
+> +	help
+> +	  This option enables tsens I2C slave driver.
 
-Hi all,
+Good, it's OK now.
+The repeat v3 and then v4 confused me.
 
-After merging the drm-misc tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+> +
+> +	  This driver is used for reporting thermal data via I2C
+> +	  SMBUS to remote host.
+> +	  Enable this option if you want to have support for thermal
+> +	  management controller.
+> +	  Say Y if using a processor that includes the Intel VPU such as
+> +	  Keem Bay.  If unsure, say N.
 
-drivers/gpu/drm/v3d/v3d_sched.c:263:1: error: return type is an incomplete =
-type
-  263 | v3d_gpu_reset_for_timeout(struct v3d_dev *v3d, struct drm_sched_job=
- *sched_job)
-      | ^~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/v3d/v3d_sched.c: In function 'v3d_gpu_reset_for_timeout':
-drivers/gpu/drm/v3d/v3d_sched.c:289:9: error: 'return' with a value, in fun=
-ction returning void [-Werror=3Dreturn-type]
-  289 |  return DRM_GPU_SCHED_STAT_NOMINAL;
-      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/v3d/v3d_sched.c:263:1: note: declared here
-  263 | v3d_gpu_reset_for_timeout(struct v3d_dev *v3d, struct drm_sched_job=
- *sched_job)
-      | ^~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/v3d/v3d_sched.c: At top level:
-drivers/gpu/drm/v3d/v3d_sched.c:298:1: error: return type is an incomplete =
-type
-  298 | v3d_cl_job_timedout(struct drm_sched_job *sched_job, enum v3d_queue=
- q,
-      | ^~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/v3d/v3d_sched.c: In function 'v3d_cl_job_timedout':
-drivers/gpu/drm/v3d/v3d_sched.c:309:10: error: 'return' with a value, in fu=
-nction returning void [-Werror=3Dreturn-type]
-  309 |   return DRM_GPU_SCHED_STAT_NOMINAL;
-      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/v3d/v3d_sched.c:298:1: note: declared here
-  298 | v3d_cl_job_timedout(struct drm_sched_job *sched_job, enum v3d_queue=
- q,
-      | ^~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/v3d/v3d_sched.c: At top level:
-drivers/gpu/drm/v3d/v3d_sched.c:316:1: error: return type is an incomplete =
-type
-  316 | v3d_bin_job_timedout(struct drm_sched_job *sched_job)
-      | ^~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/v3d/v3d_sched.c:325:1: error: return type is an incomplete =
-type
-  325 | v3d_render_job_timedout(struct drm_sched_job *sched_job)
-      | ^~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/v3d/v3d_sched.c:334:1: error: return type is an incomplete =
-type
-  334 | v3d_generic_job_timedout(struct drm_sched_job *sched_job)
-      | ^~~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/v3d/v3d_sched.c:342:1: error: return type is an incomplete =
-type
-  342 | v3d_csd_job_timedout(struct drm_sched_job *sched_job)
-      | ^~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/v3d/v3d_sched.c: In function 'v3d_csd_job_timedout':
-drivers/gpu/drm/v3d/v3d_sched.c:353:10: error: 'return' with a value, in fu=
-nction returning void [-Werror=3Dreturn-type]
-  353 |   return DRM_GPU_SCHED_STAT_NOMINAL;
-      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/v3d/v3d_sched.c:342:1: note: declared here
-  342 | v3d_csd_job_timedout(struct drm_sched_job *sched_job)
-      | ^~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/v3d/v3d_sched.c: At top level:
-drivers/gpu/drm/v3d/v3d_sched.c:362:18: error: initialization of 'enum drm_=
-gpu_sched_stat (*)(struct drm_sched_job *)' from incompatible pointer type =
-'void (*)(struct drm_sched_job *)' [-Werror=3Dincompatible-pointer-types]
-  362 |  .timedout_job =3D v3d_bin_job_timedout,
-      |                  ^~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/v3d/v3d_sched.c:362:18: note: (near initialization for 'v3d=
-_bin_sched_ops.timedout_job')
-drivers/gpu/drm/v3d/v3d_sched.c:369:18: error: initialization of 'enum drm_=
-gpu_sched_stat (*)(struct drm_sched_job *)' from incompatible pointer type =
-'void (*)(struct drm_sched_job *)' [-Werror=3Dincompatible-pointer-types]
-  369 |  .timedout_job =3D v3d_render_job_timedout,
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/v3d/v3d_sched.c:369:18: note: (near initialization for 'v3d=
-_render_sched_ops.timedout_job')
-drivers/gpu/drm/v3d/v3d_sched.c:376:18: error: initialization of 'enum drm_=
-gpu_sched_stat (*)(struct drm_sched_job *)' from incompatible pointer type =
-'void (*)(struct drm_sched_job *)' [-Werror=3Dincompatible-pointer-types]
-  376 |  .timedout_job =3D v3d_generic_job_timedout,
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/v3d/v3d_sched.c:376:18: note: (near initialization for 'v3d=
-_tfu_sched_ops.timedout_job')
-drivers/gpu/drm/v3d/v3d_sched.c:383:18: error: initialization of 'enum drm_=
-gpu_sched_stat (*)(struct drm_sched_job *)' from incompatible pointer type =
-'void (*)(struct drm_sched_job *)' [-Werror=3Dincompatible-pointer-types]
-  383 |  .timedout_job =3D v3d_csd_job_timedout,
-      |                  ^~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/v3d/v3d_sched.c:383:18: note: (near initialization for 'v3d=
-_csd_sched_ops.timedout_job')
-drivers/gpu/drm/v3d/v3d_sched.c:390:18: error: initialization of 'enum drm_=
-gpu_sched_stat (*)(struct drm_sched_job *)' from incompatible pointer type =
-'void (*)(struct drm_sched_job *)' [-Werror=3Dincompatible-pointer-types]
-  390 |  .timedout_job =3D v3d_generic_job_timedout,
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/v3d/v3d_sched.c:390:18: note: (near initialization for 'v3d=
-_cache_clean_sched_ops.timedout_job')
 
-Caused by commit
+-- 
+~Randy
 
-  a6a1f036c74e ("drm/scheduler: Job timeout handler returns status (v3)")
-
-I have used the drm-misc tree from next-20210129 for today.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/NK9oM7n=8nY/gN.b/KbjIo/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAXYyoACgkQAVBC80lX
-0GweCQf+LRzJrP4D4Ztpbsb41AJEP7tfUQiMq/HvEqijwOY7wknNHd383hNhM4uB
-MN/y8IL4wx+2rd4vPjmPJLkUKF0nhmSrvFK4jRE2CrLfLigqIwPzZfx4LShSlcQO
-VBZZLtegJjFuOMDsbWvMAe3Ackr9h9Hv5Yk4Z2Kxmcwvl4xU7B2pQt3zBi1FDs+K
-v/ix8xF5A5ap2niEp+3npz3Np2JMVCSaETeHTcEYl8jrqcFybCig4GIf0k9C6F31
-pX1WcEL8Atg1vE1wV/dqbAEnQIyhVpwfxrPnr4o1I+Gtp8LjtBtmWzTxdNBK2fAo
-2TcdWTo9Eh9WFDF4JP/COAFATUvlsQ==
-=GaHe
------END PGP SIGNATURE-----
-
---Sig_/NK9oM7n=8nY/gN.b/KbjIo/--
