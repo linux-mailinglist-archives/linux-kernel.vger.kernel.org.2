@@ -2,137 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA55230B06B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:35:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F04530B074
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:37:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231209AbhBATfM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 14:35:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33069 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229525AbhBATfH (ORCPT
+        id S232009AbhBAThL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 14:37:11 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:37268 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231791AbhBAThC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 14:35:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612208019;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Cts+A+BD4EzHAWhJKCdYjKO/m6gZhIEKA3PVKIyBlzc=;
-        b=H2TnjTG1BmEBhKcekSRA4IEvRdD+a4gzqvyecOW4FxaL7Y6rV3ATPVK54uEn6emTQrrF4d
-        XyhA5NU/fk50AkwXnUgwwuKQraLmDM0lbpS0CqNlJNZy1h8gw7qH0Hw2OI9VQ9Ycu4Ffep
-        xIlBDP1QCOB+M+GLpUOctyvbbXnMvBg=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-355-9TSZMMgxPNCFG3-mIekhFA-1; Mon, 01 Feb 2021 14:33:38 -0500
-X-MC-Unique: 9TSZMMgxPNCFG3-mIekhFA-1
-Received: by mail-qt1-f197.google.com with SMTP id v13so1423167qtq.18
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 11:33:38 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Cts+A+BD4EzHAWhJKCdYjKO/m6gZhIEKA3PVKIyBlzc=;
-        b=N8j/4Jk7Q9+Sw9w7PyBF9Go1mfffXHVPS5tvnWfdGPUD/5n+EXU9C8sqzSgeW34SRm
-         eo210AAvC/1KFBZSnDlFHyInE9WMa0YDqWtG/jfhPRrEipR0Tg/9HNP1XzBkbZV/2abB
-         NGvbVvuBoLdFvLj0fj0NGhpHTae30FXu0Pq5ST8kscEcrldehgrX2DWpaBC2NTwqmld8
-         CophyA/HyfRvTR8CdmL21oelUYrICaCpOrpPwDDZV+BmJVaSW7RI1k2F3tN79dH9PTIz
-         RB/CPG3+hhGLnc+VJgaJ8uz6X44QSfhMzhbkbXfuFfkXK/Q5wq0Oc3BVE+S3vhJRFTMj
-         s8Ow==
-X-Gm-Message-State: AOAM531GdYILSgsdW/buLXX6Fomkoyg+5N8wQpWWm8sWolD4BSTCN5Kd
-        tVZlarYfkdPlU34sEV1IX0wuLL8rVTL15/+gCHVm8FCWvHWef08o8OhFJUXa5eSZ/l31lZXN5us
-        Z5zSypd9gKdBt3bdL0UFxeUUu
-X-Received: by 2002:ac8:12cd:: with SMTP id b13mr16210977qtj.359.1612208018160;
-        Mon, 01 Feb 2021 11:33:38 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzfTW58+3dbzuXbKBkuhRaH+LVveYkhpMgEMODvnwa7Cja8XS427D9KscJhY7tm0nNom/FFcA==
-X-Received: by 2002:ac8:12cd:: with SMTP id b13mr16210946qtj.359.1612208017944;
-        Mon, 01 Feb 2021 11:33:37 -0800 (PST)
-Received: from xz-x1 ([142.126.83.202])
-        by smtp.gmail.com with ESMTPSA id d3sm12440243qkg.120.2021.02.01.11.33.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 11:33:37 -0800 (PST)
-Date:   Mon, 1 Feb 2021 14:33:34 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Steven Price <steven.price@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Adam Ruprecht <ruprecht@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v3 9/9] userfaultfd/selftests: add test exercising minor
- fault handling
-Message-ID: <20210201193334.GH260413@xz-x1>
-References: <20210128224819.2651899-1-axelrasmussen@google.com>
- <20210128224819.2651899-10-axelrasmussen@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        Mon, 1 Feb 2021 14:37:02 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 111JY8fQ106645;
+        Mon, 1 Feb 2021 19:35:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=xpckslHfF/5+84u/642qnys+bM9cicwqO3479q1W6iA=;
+ b=MR42M1al7qUM2hRojSbMP5t4jMK8GbP/XIIUYuywaxwkL1FNdJrDU6ckyiHojycpcsoZ
+ DtIl4QOANif8Z/IyztKbzRyKpXaMUYRUmGTxg8XDSU/DCEIvYra1WuGMJ3eA6el8DmBu
+ 3IcHIOnMT7Fjw81IY7x60yRXdEW0aKNeaJwMwi4PAHaQIy1ianTvCxfuItjYQuUhRgBS
+ LiD6R/cTXQO4WC9BHnCuX/+xHIfVVzThuN6qAis2Pbr0jqxhS7K8tkWIOb2K51tiBBKb
+ ar2n9lemBwf1ClsyZzHut/gbIvXCrnJIfK0tT7LnUA3hSsLr0QsNeV0XzDFK6hNTyH6Q jw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 36cxvqy5jx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 01 Feb 2021 19:35:03 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 111JYs0a131794;
+        Mon, 1 Feb 2021 19:35:02 GMT
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2168.outbound.protection.outlook.com [104.47.58.168])
+        by aserp3020.oracle.com with ESMTP id 36dhbx3w16-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 01 Feb 2021 19:35:02 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gAOYSmMv9Vv1VnjHodm/RhbKJSPjSqXlhlKih0Rif5M9a8iYUoYXY5OtE30qAEDvlwdxNN5zmtgjULdczSNs0nfQB3igt6E858hmbf8d2MzyZbDo+eUPNIVhk639mRr+1PYMCcdWjglabjZDVRiY3hnqJHylpKxze0m/ik7e40fcJylECEbm7/uCSQJkRtDDQaWw3kIAYQNDW0i2W7wWf/l5PN5Jpje3n8onmf9aIXjCdrc9OewfRKwxPyxs3Uqft+3anSd/fF//rXkvFOnI93H0Aohw48L9Pb4prHGZ7FYgBoQf6clZolU9vF+7442LAFsVXTsqjNiAXU/3+Sysog==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xpckslHfF/5+84u/642qnys+bM9cicwqO3479q1W6iA=;
+ b=C6ZrTdKI+uEW30mfe2SPSsGsQXSb0eSg4L8CmMsSNN0EShk0rPE3YWnsX5aJVY0eTRgaZWuzR0rbrgUIwIA6XA+ug0O9qzXN1nXBxwGcUGaaIFyruZHzQLPkVyWK0v4Ss9f6BI+l2RgZ0o3ShYmfO0F6NloitCDg/idm7jJMIdRF5XPY0CHt3ZVHVwbYgCO8rbNrfNNAR3WiMQb1AZBk2mb3CUHdv3FBwWKvng4D8NnuLPl5nlY/rW028G6h0AyIR6ds45h+6BCtQsM/zWmJzWKkfyxuSHU/P4aS6KV9Kc5aMIoxIjFgm1fp5ngUomw2BxgTk7TvIXdKJysrHuP98w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xpckslHfF/5+84u/642qnys+bM9cicwqO3479q1W6iA=;
+ b=qtr0pJjwiYyK2CwX5/B8VUlfwwM9IgYP0ipKCwIbMm7v/MDxNrdACsydQVmZuPHwBYzuZJaTHmRjYOUc6IKjkQO2BkJ0enwJ00S6qLUscVciirAJ9oWAxAINkseSfGhgIwTZmcw9r9twYsbx12hFDJGOiHgCBJTUp5gOChu72H8=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
+ by BY5PR10MB3874.namprd10.prod.outlook.com (2603:10b6:a03:1fc::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.24; Mon, 1 Feb
+ 2021 19:34:58 +0000
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::e180:1ba2:d87:456]) by BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::e180:1ba2:d87:456%4]) with mapi id 15.20.3784.019; Mon, 1 Feb 2021
+ 19:34:58 +0000
+Date:   Mon, 1 Feb 2021 14:34:53 -0500
+From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH 09/14] cxl/mem: Add a "RAW" send command
+Message-ID: <20210201193453.GA308086@fedora>
+References: <20210130002438.1872527-1-ben.widawsky@intel.com>
+ <20210130002438.1872527-10-ben.widawsky@intel.com>
+ <20210201182400.GK197521@fedora>
+ <20210201192708.5cvyecbcdrwx77de@intel.com>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210128224819.2651899-10-axelrasmussen@google.com>
+In-Reply-To: <20210201192708.5cvyecbcdrwx77de@intel.com>
+X-Originating-IP: [209.6.208.110]
+X-ClientProxiedBy: BL1PR13CA0386.namprd13.prod.outlook.com
+ (2603:10b6:208:2c0::31) To BYAPR10MB2999.namprd10.prod.outlook.com
+ (2603:10b6:a03:85::27)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from fedora (209.6.208.110) by BL1PR13CA0386.namprd13.prod.outlook.com (2603:10b6:208:2c0::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17 via Frontend Transport; Mon, 1 Feb 2021 19:34:56 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 9aa613e5-46ab-4bb4-feac-08d8c6e875e5
+X-MS-TrafficTypeDiagnostic: BY5PR10MB3874:
+X-Microsoft-Antispam-PRVS: <BY5PR10MB387442511B45F4C6FBB273B189B69@BY5PR10MB3874.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1186;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DdCKADQcLUM6lI1X9SLVI14uEln5pJ7nMk5gzUV/aCp058/oUXzCYEBQpdTyZkzptyGfO2767ciiDNqXdPzqvhU/NVaJXsEvdxzo7rIjV6ZsN8+aZMn54rraaPaC1Zujl8mebz93xplQPVbhIv7oiUZTFhBPG+EysCuep7EozPdqg0WkF2wkUnzLBo9A4ZoDADNxMXN6Bs3E0ls36qlg7da1sVVYCRuwjy+ueo2lKQoPl1m4hIq316tJnEdyllbfXTbKIGoxTf+knxqb37aNHcJwCCI8asp0t0FW1gIfnjDP8LU8amyCh23WDF5iB1tbkc/HoGhXiqbxAjOK1QWiQh0XoWNYncbMFvhytWsOp/H7LmZ7VT/UW4qf20xGZ64aA9fpUN32qInZEail35YlvU0DyBDvLgnTE/py+uaZRJ4CTbz11S3hOpOGzowxLG18iT/gKJH8nMk3BNm8CJBATQ/23h2cPUK5iPazbAYI84PJdVZukH5HYU2gnIoNioPqO8I9LdRliCJIYPffKAtpNA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(346002)(376002)(396003)(136003)(366004)(6916009)(9576002)(6496006)(9686003)(54906003)(33656002)(8936002)(55016002)(7416002)(1076003)(478600001)(8676002)(6666004)(956004)(66556008)(66946007)(66476007)(186003)(52116002)(316002)(26005)(16526019)(2906002)(53546011)(4326008)(86362001)(33716001)(83380400001)(5660300002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?vSRmHiQN9lYwYXoZIwXeIDC7fbKunc6Cgw9tlpnRmb408QLTgLMyhUkgzqV0?=
+ =?us-ascii?Q?f0FA0xaGa2sMIFXt2yKx7OmInu6SbW4Ns27JBSam9Ufp0jhGcsC2KTcL6BEw?=
+ =?us-ascii?Q?en9uj298b99//gq6PUCF7GXjNAihrnp/IvVrd9B3hVIACjeC0332P3gduW9g?=
+ =?us-ascii?Q?2LLz8tGqK1gnDpHr8oeQF+nZufPr4ZdQlkSQGtULKzEzwyN00knPwPSIq9Tu?=
+ =?us-ascii?Q?Y5kKnjEdhqcTBem/6Lr1iTfqUsjn8Q4McIzND8n4iXZvYcK6/B87B4iNxXA0?=
+ =?us-ascii?Q?Cfhn1NDhrDfJVCqUQ9pAQTrr4Ce9ir4Njsz8fhegW+Q20Xqn8GEVQg4c+/ml?=
+ =?us-ascii?Q?wzA1T3XGeUVz+U8DZTuqMVhum7AIglhmZu3RjHjBESjulykVCtn2Y/ae7IzD?=
+ =?us-ascii?Q?W0Hcj0SHKx1Z7odzS7I8WcGYJ/P3rlN5BtbHbpvo3M17ITxu5QEtmc6G3xR7?=
+ =?us-ascii?Q?B2CD6cQY73mec87xckRWkSofnWFl8XLwQeSVB4rD2RDNW/3Woz0r8LHdqSPv?=
+ =?us-ascii?Q?HyvMvsXrZahBouB9bvYN8uCkqVkW4f40EadGwSNcXOGmn+a4E5oQc5lk4CSp?=
+ =?us-ascii?Q?g65o410gdhwBi3ul452ofOzx5SWkq50w5ax56EZ+6siE6Mrt/sp/1RBbEutf?=
+ =?us-ascii?Q?HnouFbuoyWH3HHNYD7OhihkmVLP/uDxlntSNw3Trss7QCsBCxXd/IfC6ADJm?=
+ =?us-ascii?Q?jWIqSLPqWu6ogsD613WXtHozj6dUnwLCakppeUQAG1na7WMyv0ErGpKspdgI?=
+ =?us-ascii?Q?Rrl0j6fQ1EezJmUxhvvDA8ZkPhU+B0yuHDayxNkdiPU14IPJtpOT+SBBcCd8?=
+ =?us-ascii?Q?YjqjE9xbpbLjc9xNog8mAE4ZGxZwNZMuinqqdllJh7Y55BOc7Agf6Ev/54yT?=
+ =?us-ascii?Q?UZKiYw35NfVsOnJFi8ZciQNlsGsiswPerVbmkYcng+ondOKZIiu55ANoNF/r?=
+ =?us-ascii?Q?v6IIJDvenvR6g4T2bIkylb71ymM2IlvsWAXmsfZ5bXqqESOusRUVUE9xvA/m?=
+ =?us-ascii?Q?gwbGWE/uyWLM3GRBzLCqSfATVr61EjYfn39TraQYQcLthLdtJWy91y1w+6J2?=
+ =?us-ascii?Q?HyVcaPvj?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9aa613e5-46ab-4bb4-feac-08d8c6e875e5
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2021 19:34:58.7653
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HZsRb4NMKR6FUT4wyaBZeH3uv2YBt7kbqRTC5etjxVK65cwfLzBJOFsVmYYWutMwF6jhrI2QBD3GwPDzT85i6g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3874
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9882 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
+ spamscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102010103
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9882 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
+ mlxscore=0 priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015
+ suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102010103
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 02:48:19PM -0800, Axel Rasmussen wrote:
-> Fix a dormant bug in userfaultfd_events_test(), where we did
-> `return faulting_process(0)` instead of `exit(faulting_process(0))`.
-> This caused the forked process to keep running, trying to execute any
-> further test cases after the events test in parallel with the "real"
-> process.
+On Mon, Feb 01, 2021 at 11:27:08AM -0800, Ben Widawsky wrote:
+> On 21-02-01 13:24:00, Konrad Rzeszutek Wilk wrote:
+> > On Fri, Jan 29, 2021 at 04:24:33PM -0800, Ben Widawsky wrote:
+> > > The CXL memory device send interface will have a number of supported
+> > > commands. The raw command is not such a command. Raw commands allow
+> > > userspace to send a specified opcode to the underlying hardware and
+> > > bypass all driver checks on the command. This is useful for a couple of
+> > > usecases, mainly:
+> > > 1. Undocumented vendor specific hardware commands
+> > > 2. Prototyping new hardware commands not yet supported by the driver
+> > 
+> > This sounds like a recipe for ..
+> > 
+> > In case you really really want this may I recommend you do two things:
+> > 
+> > - Wrap this whole thing with #ifdef
+> >   CONFIG_CXL_DEBUG_THIS_WILL_DESTROY_YOUR_LIFE
+> > 
+> >  (or something equivalant to make it clear this should never be
+> >   enabled in production kernels).
+> > 
+> >  - Add a nice big fat printk in dmesg telling the user that they
+> >    are creating a unstable parallel universe that will lead to their
+> >    blood pressure going sky-high, or perhaps something more professional
+> >    sounding.
+> > 
+> > - Rethink this. Do you really really want to encourage vendors
+> >   to use this raw API instead of them using the proper APIs?
 > 
-> Add a simple test case which exercises minor faults. In short, it does
-> the following:
-> 
-> 1. "Sets up" an area (area_dst) and a second shared mapping to the same
->    underlying pages (area_dst_alias).
-> 
-> 2. Register one of these areas with userfaultfd, in minor fault mode.
-> 
-> 3. Start a second thread to handle any minor faults.
-> 
-> 4. Populate the underlying pages with the non-UFFD-registered side of
->    the mapping. Basically, memset() each page with some arbitrary
->    contents.
-> 
-> 5. Then, using the UFFD-registered mapping, read all of the page
->    contents, asserting that the contents match expectations (we expect
->    the minor fault handling thread can modify the page contents before
->    resolving the fault).
-> 
-> The minor fault handling thread, upon receiving an event, flips all the
-> bits (~) in that page, just to prove that it can modify it in some
-> arbitrary way. Then it issues a UFFDIO_CONTINUE ioctl, to setup the
-> mapping and resolve the fault. The reading thread should wake up and see
-> this modification.
-> 
-> Currently the minor fault test is only enabled in hugetlb_shared mode,
-> as this is the only configuration the kernel feature supports.
-> 
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> Again, the ideal is proper APIs. Barring that they get a WARN, and a taint if
+> they use the raw commands.
 
-Reviewed-by: Peter Xu <peterx@redhat.com>
+Linux upstream is all about proper APIs. Just don't do this.
+> 
+> > 
+> > > 
+> > > While this all sounds very powerful it comes with a couple of caveats:
+> > > 1. Bug reports using raw commands will not get the same level of
+> > >    attention as bug reports using supported commands (via taint).
+> > > 2. Supported commands will be rejected by the RAW command.
+> > > 
+> > > With this comes new debugfs knob to allow full access to your toes with
+> > > your weapon of choice.
+> > 
+> > Problem is that debugfs is no longer "debug" but is enabled in
+> > production kernel.
+> 
+> I don't see this as my problem. Again, they've been WARNed and tainted. If they
 
--- 
-Peter Xu
+Right not your problem, nice.
 
+But it is going to be the problem of vendor kernel engineers who don't have this luxury.
+
+> want to do this, that's their business. They will be asked to reproduce without
+> RAW if they file a bug report.
+
+
+This is not how customers see the world. "If it is there, then it is
+there to used right? Why else would someone give me the keys to this?"
+
+Just kill this. Or better yet, make it a seperate set of patches for
+folks developing code but not have it as part of this patchset.
+
+
+
+> 
