@@ -2,168 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3953F30ABBD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:43:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E286230ABDB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:49:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231314AbhBAPmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 10:42:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231757AbhBAPkr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 10:40:47 -0500
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA59C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 07:39:19 -0800 (PST)
-Received: by mail-pj1-x1033.google.com with SMTP id d2so5147559pjs.4
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 07:39:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=PXC9eT33XzY/s4/vcYqNkyG5cAOxeL/xc7nss0BbEbE=;
-        b=VfHp/waiZVqG2VDLYSCVYni+7TYwgejrhlmjxrZQPg/myt0JuK1hvsksaPeX56eouz
-         YvaYjD76uTNSZTgRc9lSDkf3hskX7knWLkL3VgZvzyUEj1HLUwrZN136fb01ZQsB6cJy
-         /2KgJLegnL/j+w8LwgrSldhKBFFTxAYqyWKmAJdixHeEtH7IoT47lkeIfmAUUbbuU1RD
-         K/mhF1z6uYSFrY29pcvya2Z8d5G84IuRs5jdkPRJkmGZGKtq0yE0LnsNua3aDp31ktje
-         dye2sTlibbtSQ5yspjGveBvKwIQyPlQRz56GvoIA0YtnvtRWhwygEv5yt9otMSiFou6w
-         LnJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=PXC9eT33XzY/s4/vcYqNkyG5cAOxeL/xc7nss0BbEbE=;
-        b=jMcYCsvPZ5/QyG/UJGlbrwYUyig4YX2+7PPYDAG+82FsV1RDvfI1hLOT/Ep65p/QCW
-         Qc9QdexRot3/M+OFe3NGEQ32JaVwaTz1MwwjELAR2EQghTRMHps43q+PC3RCOCXL9Vz5
-         YrxHiTVJSKatomVpTKxcApKeO2qk6J3iJpvBkUrFyIg4EKJaxFs+l+HwIye4mi4WkgdF
-         Q2E5AnmE/YoWKMG1wI6B5tMb1jG+KAjiVh3EysG6j584Qwg05amWYtHunlhLNbNoTW6X
-         8HNLuUjAZ/opjD+JENSuOOTfUbX4wzdjTElo64JPO9r1/Z/1ubMGiGRphVXAiIjQ1q78
-         mRPg==
-X-Gm-Message-State: AOAM532yOIdW/HBznUaT9pYv9BH1GyQZb7PR0lvpHwmrwy36OEyei6Sp
-        z3iBd965nsZIFDfb9VzgbruCYQ==
-X-Google-Smtp-Source: ABdhPJwue7vFFQ464PTMfBB6M+kFjxBcFe9G0nU2E0WWVBkUYxVCp/LHVgQR2W3uryeS6UoegxhGVg==
-X-Received: by 2002:a17:902:b116:b029:e1:58b2:2280 with SMTP id q22-20020a170902b116b02900e158b22280mr5849921plr.29.1612193958610;
-        Mon, 01 Feb 2021 07:39:18 -0800 (PST)
-Received: from ?IPv6:2601:646:c200:1ef2:7d9a:44be:c6b1:962b? ([2601:646:c200:1ef2:7d9a:44be:c6b1:962b])
-        by smtp.gmail.com with ESMTPSA id w66sm18563296pfd.48.2021.02.01.07.39.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 07:39:17 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] seccomp: Improve performance by optimizing memory barrier
-Date:   Mon, 1 Feb 2021 07:39:16 -0800
-Message-Id: <B1DC6A42-15AF-4804-B20E-FC6E2BDD1C8E@amacapital.net>
-References: <1612183830-15506-1-git-send-email-wanghongzhe@huawei.com>
-Cc:     keescook@chromium.org, wad@chromium.org, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
-        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-In-Reply-To: <1612183830-15506-1-git-send-email-wanghongzhe@huawei.com>
-To:     wanghongzhe <wanghongzhe@huawei.com>
-X-Mailer: iPhone Mail (18C66)
+        id S231917AbhBAPrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 10:47:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47168 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231778AbhBAPrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 10:47:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 358D164DE1;
+        Mon,  1 Feb 2021 15:46:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612194398;
+        bh=r4ZiOV3cFWC4KnBUdzF+9ODAarCpp3Tth+L/wlsensE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=pf0VK55jNVj9OhSDLsAG73B2mQPtZDuZxWNyDisEP2Cf3rtMNTW5ZbS9deZ/CyF3h
+         DGsEW9zzor4ck8zGW1sOIM1xvW5j2uEF8feF5Zrpu+lyDZE2pufsuv74VAXhzSCm3V
+         YZkQgj3UMTUCnoiwWoSLFe3cBiIRDc1RFNsTwmT32bY6OfO7decBUePGLNH1u3kSdo
+         IRDdKS7l/JRJR/Z28Xy87dO/M4n5Xuo2+WrQ2jlRCWrTvTw0BmTZOFlFYgISQilVUG
+         u6TLXtUCTtoKUXzD6iy9o+MEhEyKW6d/Xbr0XawTdtKjqDKunaRbVM03fHIdUAZERq
+         WlLI9Sgy9C/lw==
+Date:   Mon, 1 Feb 2021 15:46:33 +0000
+From:   Will Deacon <will@kernel.org>
+To:     joro@8bytes.org
+Cc:     iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        robin.murphy@arm.com, jean-philippe@linaro.org,
+        kernel-team@android.com, yong.wu@mediatek.com
+Subject: [GIT PULL] iommu/arm-smmu: Updates for 5.12
+Message-ID: <20210201154633.GC15263@willie-the-truck>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Joerg,
 
+Please pull these Arm SMMU updates for 5.12. The biggest thing here isn't
+actually Arm SMMU-related at all, but is the addition of a new driver for
+the MT8192 IOMMU. I've included it here because it ended up touching
+quite a bit of the io-pgtable code.
 
-> On Feb 1, 2021, at 4:06 AM, wanghongzhe <wanghongzhe@huawei.com> wrote:
->=20
-> =EF=BB=BFIf a thread(A)'s TSYNC flag is set from seccomp(), then it will
-> synchronize its seccomp filter to other threads(B) in same thread
-> group. To avoid race condition, seccomp puts rmb() between
-> reading the mode and filter in seccomp check patch(in B thread).
-> As a result, every syscall's seccomp check is slowed down by the
-> memory barrier.
->=20
-> However, we can optimize it by calling rmb() only when filter is
-> NULL and reading it again after the barrier, which means the rmb()
-> is called only once in thread lifetime.
->=20
-> The 'filter is NULL' conditon means that it is the first time
-> attaching filter and is by other thread(A) using TSYNC flag.
-> In this case, thread B may read the filter first and mode later
-> in CPU out-of-order exection. After this time, the thread B's
-> mode is always be set, and there will no race condition with the
-> filter/bitmap.
->=20
-> In addtion, we should puts a write memory barrier between writing
-> the filter and mode in smp_mb__before_atomic(), to avoid
-> the race condition in TSYNC case.
+Please note that I've based this branch on the "iommu-fixes" tag I sent for
+-rc4 to avoid conflicts with upstream.
 
-I haven=E2=80=99t fully worked this out, but rmb() is bogus. This should be s=
-mp_rmb().
+Cheers,
 
->=20
-> Signed-off-by: wanghongzhe <wanghongzhe@huawei.com>
-> ---
-> kernel/seccomp.c | 31 ++++++++++++++++++++++---------
-> 1 file changed, 22 insertions(+), 9 deletions(-)
->=20
-> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> index 952dc1c90229..b944cb2b6b94 100644
-> --- a/kernel/seccomp.c
-> +++ b/kernel/seccomp.c
-> @@ -397,8 +397,20 @@ static u32 seccomp_run_filters(const struct seccomp_d=
-ata *sd,
->            READ_ONCE(current->seccomp.filter);
->=20
->    /* Ensure unexpected behavior doesn't result in failing open. */
-> -    if (WARN_ON(f =3D=3D NULL))
-> -        return SECCOMP_RET_KILL_PROCESS;
-> +    if (WARN_ON(f =3D=3D NULL)) {
-> +        /*
-> +         * Make sure the first filter addtion (from another
-> +         * thread using TSYNC flag) are seen.
-> +         */
-> +        rmb();
-> +       =20
-> +        /* Read again */
-> +        f =3D READ_ONCE(current->seccomp.filter);
-> +
-> +        /* Ensure unexpected behavior doesn't result in failing open. */
-> +        if (WARN_ON(f =3D=3D NULL))
-> +            return SECCOMP_RET_KILL_PROCESS;
-> +    }
->=20
->    if (seccomp_cache_check_allow(f, sd))
->        return SECCOMP_RET_ALLOW;
-> @@ -614,9 +626,16 @@ static inline void seccomp_sync_threads(unsigned long=
- flags)
->         * equivalent (see ptrace_may_access), it is safe to
->         * allow one thread to transition the other.
->         */
-> -        if (thread->seccomp.mode =3D=3D SECCOMP_MODE_DISABLED)
-> +        if (thread->seccomp.mode =3D=3D SECCOMP_MODE_DISABLED) {
-> +            /*
-> +             * Make sure mode cannot be set before the filter
-> +             * are set.
-> +             */
-> +            smp_mb__before_atomic();
-> +
->            seccomp_assign_mode(thread, SECCOMP_MODE_FILTER,
->                        flags);
-> +        }
->    }
-> }
->=20
-> @@ -1160,12 +1179,6 @@ static int __seccomp_filter(int this_syscall, const=
- struct seccomp_data *sd,
->    int data;
->    struct seccomp_data sd_local;
->=20
-> -    /*
-> -     * Make sure that any changes to mode from another thread have
-> -     * been seen after SYSCALL_WORK_SECCOMP was seen.
-> -     */
-> -    rmb();
-> -
->    if (!sd) {
->        populate_seccomp_data(&sd_local);
->        sd =3D &sd_local;
-> --=20
-> 2.19.1
->=20
+Will
+
+--->8
+
+The following changes since commit 694a1c0adebee9152a9ba0320468f7921aca647d:
+
+  iommu/vt-d: Fix duplicate included linux/dma-map-ops.h (2021-01-12 16:56:20 +0000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/will/linux.git tags/arm-smmu-updates
+
+for you to fetch changes up to 7060377ce06f9cd3ed6274c0f2310463feb5baec:
+
+  Merge branch 'for-joerg/mtk' into for-joerg/arm-smmu/updates (2021-02-01 12:59:28 +0000)
+
+----------------------------------------------------------------
+Arm SMMU updates for 5.12
+
+- Support for MT8192 IOMMU from Mediatek
+
+- Arm v7s io-pgtable extensions for MT8192
+
+- Removal of TLBI_ON_MAP quirk
+
+- New Qualcomm compatible strings
+
+- Allow SVA without hardware broadcast TLB maintenance on SMMUv3
+
+- Virtualization Host Extension support for SMMUv3 (SVA)
+
+- Allow SMMUv3 PMU (perf) driver to be built independently from IOMMU
+
+- Misc cleanups
+
+----------------------------------------------------------------
+Bjorn Andersson (2):
+      dt-bindings: arm-smmu-qcom: Add Qualcomm SC8180X compatible
+      iommu/arm-smmu-qcom: Add Qualcomm SC8180X impl
+
+Isaac J. Manjarres (1):
+      iommu/arm-smmu-qcom: Fix mask extraction for bootloader programmed SMRs
+
+Jean-Philippe Brucker (3):
+      iommu/arm-smmu-v3: Split arm_smmu_tlb_inv_range()
+      iommu/arm-smmu-v3: Make BTM optional for SVA
+      iommu/arm-smmu-v3: Add support for VHE
+
+John Garry (1):
+      driver/perf: Remove ARM_SMMU_V3_PMU dependency on ARM_SMMU_V3
+
+Robin Murphy (3):
+      iommu/arm-smmu-v3: Remove the page 1 fixup
+      iommu/msm: Hook up iotlb_sync_map
+      iommu/io-pgtable: Remove TLBI_ON_MAP quirk
+
+Vinod Koul (2):
+      dt-bindings: arm-smmu: Add sm8350 compatible string
+      iommu: arm-smmu-impl: Add SM8350 qcom iommu implementation
+
+Will Deacon (1):
+      Merge branch 'for-joerg/mtk' into for-joerg/arm-smmu/updates
+
+Yong Wu (38):
+      iommu: Move iotlb_sync_map out from __iommu_map
+      iommu: Add iova and size as parameters in iotlb_sync_map
+      iommu/mediatek: Add iotlb_sync_map to sync whole the iova range
+      iommu: Switch gather->end to the inclusive end
+      iommu/io-pgtable: Allow io_pgtable_tlb ops optional
+      iommu/mediatek: Gather iova in iommu_unmap to achieve tlb sync once
+      iommu/mediatek: Remove the tlb-ops for v7s
+      dt-bindings: iommu: mediatek: Convert IOMMU to DT schema
+      dt-bindings: memory: mediatek: Add a common memory header file
+      dt-bindings: memory: mediatek: Extend LARB_NR_MAX to 32
+      dt-bindings: memory: mediatek: Rename header guard for SMI header file
+      dt-bindings: mediatek: Add binding for mt8192 IOMMU
+      iommu/mediatek: Use the common mtk-memory-port.h
+      iommu/io-pgtable-arm-v7s: Use ias to check the valid iova in unmap
+      iommu/io-pgtable-arm-v7s: Extend PA34 for MediaTek
+      iommu/io-pgtable-arm-v7s: Clarify LVL_SHIFT/BITS macro
+      iommu/io-pgtable-arm-v7s: Add cfg as a param in some macros
+      iommu/io-pgtable-arm-v7s: Quad lvl1 pgtable for MediaTek
+      iommu/mediatek: Add a flag for iova 34bits case
+      iommu/mediatek: Update oas for v7s
+      iommu/mediatek: Move hw_init into attach_device
+      iommu/mediatek: Add error handle for mtk_iommu_probe
+      iommu/mediatek: Add device link for smi-common and m4u
+      iommu/mediatek: Add pm runtime callback
+      iommu/mediatek: Add power-domain operation
+      iommu/mediatek: Support up to 34bit iova in tlb flush
+      iommu/mediatek: Support report iova 34bit translation fault in ISR
+      iommu/mediatek: Adjust the structure
+      iommu/mediatek: Move domain_finalise into attach_device
+      iommu/mediatek: Move geometry.aperture updating into domain_finalise
+      iommu/mediatek: Add iova_region structure
+      iommu/mediatek: Add get_domain_id from dev->dma_range_map
+      iommu/mediatek: Support for multi domains
+      iommu/mediatek: Add iova reserved function
+      iommu/mediatek: Support master use iova over 32bit
+      iommu/mediatek: Remove unnecessary check in attach_device
+      iommu/mediatek: Add mt8192 support
+      MAINTAINERS: Add entry for MediaTek IOMMU
+
+Zhen Lei (1):
+      iommu/arm-smmu-v3: Use DEFINE_RES_MEM() to simplify code
+
+ .../devicetree/bindings/iommu/arm,smmu.yaml        |   2 +
+ .../devicetree/bindings/iommu/mediatek,iommu.txt   | 105 ------
+ .../devicetree/bindings/iommu/mediatek,iommu.yaml  | 183 +++++++++
+ MAINTAINERS                                        |   9 +
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c    |  10 +-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c        | 154 ++++----
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h        |  14 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c         |   5 +
+ drivers/iommu/io-pgtable-arm-v7s.c                 |  65 ++--
+ drivers/iommu/iommu.c                              |  23 +-
+ drivers/iommu/msm_iommu.c                          |  10 +-
+ drivers/iommu/mtk_iommu.c                          | 409 +++++++++++++++------
+ drivers/iommu/mtk_iommu.h                          |  12 +-
+ drivers/iommu/tegra-gart.c                         |   7 +-
+ drivers/memory/mtk-smi.c                           |   8 +
+ drivers/perf/Kconfig                               |   2 +-
+ include/dt-bindings/memory/mt2701-larb-port.h      |   4 +-
+ include/dt-bindings/memory/mt2712-larb-port.h      |   6 +-
+ include/dt-bindings/memory/mt6779-larb-port.h      |   6 +-
+ include/dt-bindings/memory/mt8167-larb-port.h      |   6 +-
+ include/dt-bindings/memory/mt8173-larb-port.h      |   6 +-
+ include/dt-bindings/memory/mt8183-larb-port.h      |   6 +-
+ include/dt-bindings/memory/mt8192-larb-port.h      | 243 ++++++++++++
+ include/dt-bindings/memory/mtk-memory-port.h       |  15 +
+ include/linux/io-pgtable.h                         |  17 +-
+ include/linux/iommu.h                              |   7 +-
+ include/soc/mediatek/smi.h                         |   3 +-
+ 27 files changed, 981 insertions(+), 356 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/iommu/mediatek,iommu.txt
+ create mode 100644 Documentation/devicetree/bindings/iommu/mediatek,iommu.yaml
+ create mode 100644 include/dt-bindings/memory/mt8192-larb-port.h
+ create mode 100644 include/dt-bindings/memory/mtk-memory-port.h
