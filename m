@@ -2,211 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2D430A7B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:36:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4DA30A7E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:45:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhBAMgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 07:36:19 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11653 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhBAMgR (ORCPT
+        id S229545AbhBAMoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 07:44:19 -0500
+Received: from thsbbfxrt02p.thalesgroup.com ([192.93.158.29]:32966 "EHLO
+        thsbbfxrt02p.thalesgroup.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229707AbhBAMoK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 07:36:17 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DTnSQ63XCz162Rt;
-        Mon,  1 Feb 2021 20:34:14 +0800 (CST)
-Received: from [10.174.184.42] (10.174.184.42) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 1 Feb 2021 20:35:28 +0800
-Subject: Re: [PATCH v13 04/15] iommu/smmuv3: Allow s1 and s2 configs to
- coexist
-To:     Eric Auger <eric.auger@redhat.com>, <eric.auger.pro@gmail.com>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <kvm@vger.kernel.org>, <kvmarm@lists.cs.columbia.edu>,
-        <will@kernel.org>, <joro@8bytes.org>, <maz@kernel.org>,
-        <robin.murphy@arm.com>, <alex.williamson@redhat.com>
-References: <20201118112151.25412-1-eric.auger@redhat.com>
- <20201118112151.25412-5-eric.auger@redhat.com>
-CC:     <jean-philippe@linaro.org>, <jacob.jun.pan@linux.intel.com>,
-        <nicoleotsuka@gmail.com>, <vivek.gautam@arm.com>,
-        <yi.l.liu@intel.com>, <zhangfei.gao@linaro.org>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <01cf1f27-43dc-fb4d-6755-c34c8cac8ec2@huawei.com>
-Date:   Mon, 1 Feb 2021 20:35:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Mon, 1 Feb 2021 07:44:10 -0500
+X-Greylist: delayed 456 seconds by postgrey-1.27 at vger.kernel.org; Mon, 01 Feb 2021 07:44:09 EST
+Received: from thsbbfxrt02p.thalesgroup.com (localhost [127.0.0.1])
+        by localhost (Postfix) with SMTP id 4DTnVG1XSYzJpJL;
+        Mon,  1 Feb 2021 13:35:50 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=thalesgroup.com;
+        s=xrt20181201; t=1612182950;
+        bh=qtfpK5tjKyUoljO0lXeTO/GBAYaTsQ1VB18gL/yZUZc=;
+        h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+         Content-Transfer-Encoding:MIME-Version:From;
+        b=1W1yIUhd54H98rWcFhbK5S1ezDedE3tQrlZsSE5y1vTEtmILtRHqV7pkDKr9ab7Wg
+         h/UbsCeKBMefGifNFdmf4IuuK5P+LR3ncKLyvn/Y5BflPdbg7eZtDAYzdD4BzuxUsr
+         e52f9/HhwX4WgXyvQU7Nxop9iOLorNUgJphkPZ4DvvS16ObrridjO7RDV1tynZdlry
+         DY+2yO9lU+2vFHJyc7x+VuT7IH8BOZW1MdorMs8+TkmwTm4ykTA8IiAv/dGIiZrb8y
+         xKM6OkpkZ0WsEutGXlz4jo/DgEQ5nmpNr8F+97HsUOo1oCj/EKj9aPc4oQIR6D1Quv
+         jLS9KzAZtjFCQ==
+From:   PLATTNER Christoph <christoph.plattner@thalesgroup.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "Michael Ellerman" <mpe@ellerman.id.au>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "HAMETNER Reinhard" <reinhard.hametner@thalesgroup.com>,
+        REITHER Robert - Contractor 
+        <robert.reither@external.thalesgroup.com>,
+        KOENIG Werner <werner.koenig@thalesgroup.com>,
+        "christoph.plattner@gmx.at" <christoph.plattner@gmx.at>,
+        PLATTNER Christoph <christoph.plattner@thalesgroup.com>
+Subject: RE: [PATCH] powerpc/603: Fix protection of user pages mapped with
+ PROT_NONE
+Thread-Topic: [PATCH] powerpc/603: Fix protection of user pages mapped with
+ PROT_NONE
+Thread-Index: AQHW+GOl2yWYuEbTpkiT/C3KqD+6EapDLQPbgAAOyuA=
+Date:   Mon, 1 Feb 2021 12:35:45 +0000
+Message-ID: <63ddf61b-88de-4f42-8342-c4d273b745de@THSDC1IRIMBX11P.iris.infra.thales>
+References: <4a0c6e3bb8f0c162457bf54d9bc6fd8d7b55129f.1612160907.git.christophe.leroy@csgroup.eu>
+ <1b194840-d4e6-4660-94d9-6bac623442cf@THSDC1IRIMBX13P.iris.infra.thales>
+ <035a7cde-7ffd-5f27-81e1-a8d3648e4c1c@csgroup.eu>
+In-Reply-To: <035a7cde-7ffd-5f27-81e1-a8d3648e4c1c@csgroup.eu>
+Accept-Language: en-US, fr-FR
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-pmwin-version: 4.0.3, Antivirus-Engine: 3.79.0, Antivirus-Data: 5.81
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20201118112151.25412-5-eric.auger@redhat.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
-
-On 2020/11/18 19:21, Eric Auger wrote:
-> In true nested mode, both s1_cfg and s2_cfg will coexist.
-> Let's remove the union and add a "set" field in each
-> config structure telling whether the config is set and needs
-> to be applied when writing the STE. In legacy nested mode,
-> only the 2d stage is used. In true nested mode, the "set" field
-nit: s/2d/2nd
-
-> will be set when the guest passes the pasid table.
-nit: ... the "set" filed of s1_cfg and s2_cfg will be set ...
-
-> 
-> Signed-off-by: Eric Auger <eric.auger@redhat.com>
-> 
-> ---
-> v12 -> v13:
-> - does not dynamically allocate s1-cfg and s2_cfg anymore. Add
->   the set field
-> ---
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 43 +++++++++++++--------
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  8 ++--
->  2 files changed, 31 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> index 1e4acc7f3d3c..18ac5af1b284 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-> @@ -1195,8 +1195,8 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
->  	u64 val = le64_to_cpu(dst[0]);
->  	bool ste_live = false;
->  	struct arm_smmu_device *smmu = NULL;
-> -	struct arm_smmu_s1_cfg *s1_cfg = NULL;
-> -	struct arm_smmu_s2_cfg *s2_cfg = NULL;
-> +	struct arm_smmu_s1_cfg *s1_cfg;
-> +	struct arm_smmu_s2_cfg *s2_cfg;
->  	struct arm_smmu_domain *smmu_domain = NULL;
->  	struct arm_smmu_cmdq_ent prefetch_cmd = {
->  		.opcode		= CMDQ_OP_PREFETCH_CFG,
-> @@ -1211,13 +1211,24 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
->  	}
->  
->  	if (smmu_domain) {
-> +		s1_cfg = &smmu_domain->s1_cfg;
-> +		s2_cfg = &smmu_domain->s2_cfg;
-> +
->  		switch (smmu_domain->stage) {
->  		case ARM_SMMU_DOMAIN_S1:
-> -			s1_cfg = &smmu_domain->s1_cfg;
-> +			s1_cfg->set = true;
-> +			s2_cfg->set = false;
->  			break;
->  		case ARM_SMMU_DOMAIN_S2:
-> +			s1_cfg->set = false;
-> +			s2_cfg->set = true;
-> +			break;
->  		case ARM_SMMU_DOMAIN_NESTED:
-> -			s2_cfg = &smmu_domain->s2_cfg;
-> +			/*
-> +			 * Actual usage of stage 1 depends on nested mode:
-> +			 * legacy (2d stage only) or true nested mode
-> +			 */
-> +			s2_cfg->set = true;
->  			break;
->  		default:
->  			break;
-> @@ -1244,7 +1255,7 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
->  	val = STRTAB_STE_0_V;
->  
->  	/* Bypass/fault */
-> -	if (!smmu_domain || !(s1_cfg || s2_cfg)) {
-> +	if (!smmu_domain || !(s1_cfg->set || s2_cfg->set)) {
->  		if (!smmu_domain && disable_bypass)
->  			val |= FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_ABORT);
->  		else
-> @@ -1263,7 +1274,7 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
->  		return;
->  	}
->  
-> -	if (s1_cfg) {
-> +	if (s1_cfg->set) {
->  		BUG_ON(ste_live);
->  		dst[1] = cpu_to_le64(
->  			 FIELD_PREP(STRTAB_STE_1_S1DSS, STRTAB_STE_1_S1DSS_SSID0) |
-> @@ -1282,7 +1293,7 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
->  			FIELD_PREP(STRTAB_STE_0_S1FMT, s1_cfg->s1fmt);
->  	}
->  
-> -	if (s2_cfg) {
-> +	if (s2_cfg->set) {
->  		BUG_ON(ste_live);
->  		dst[2] = cpu_to_le64(
->  			 FIELD_PREP(STRTAB_STE_2_S2VMID, s2_cfg->vmid) |
-> @@ -1846,24 +1857,24 @@ static void arm_smmu_domain_free(struct iommu_domain *domain)
->  {
->  	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
->  	struct arm_smmu_device *smmu = smmu_domain->smmu;
-> +	struct arm_smmu_s1_cfg *s1_cfg = &smmu_domain->s1_cfg;
-> +	struct arm_smmu_s2_cfg *s2_cfg = &smmu_domain->s2_cfg;
->  
->  	iommu_put_dma_cookie(domain);
->  	free_io_pgtable_ops(smmu_domain->pgtbl_ops);
->  
->  	/* Free the CD and ASID, if we allocated them */
-> -	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
-> -		struct arm_smmu_s1_cfg *cfg = &smmu_domain->s1_cfg;
-> -
-> +	if (s1_cfg->set) {
->  		/* Prevent SVA from touching the CD while we're freeing it */
->  		mutex_lock(&arm_smmu_asid_lock);
-> -		if (cfg->cdcfg.cdtab)
-> +		if (s1_cfg->cdcfg.cdtab)
->  			arm_smmu_free_cd_tables(smmu_domain);
-> -		arm_smmu_free_asid(&cfg->cd);
-> +		arm_smmu_free_asid(&s1_cfg->cd);
->  		mutex_unlock(&arm_smmu_asid_lock);
-> -	} else {
-> -		struct arm_smmu_s2_cfg *cfg = &smmu_domain->s2_cfg;
-> -		if (cfg->vmid)
-> -			arm_smmu_bitmap_free(smmu->vmid_map, cfg->vmid);
-> +	}
-> +	if (s2_cfg->set) {
-> +		if (s2_cfg->vmid)
-> +			arm_smmu_bitmap_free(smmu->vmid_map, s2_cfg->vmid);
->  	}
->  
->  	kfree(smmu_domain);
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-> index 19196eea7c1d..07f59252dd21 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
-> @@ -562,12 +562,14 @@ struct arm_smmu_s1_cfg {
->  	struct arm_smmu_ctx_desc	cd;
->  	u8				s1fmt;
->  	u8				s1cdmax;
-> +	bool				set;
->  };
->  
->  struct arm_smmu_s2_cfg {
->  	u16				vmid;
->  	u64				vttbr;
->  	u64				vtcr;
-> +	bool				set;
->  };
->  
->  struct arm_smmu_strtab_cfg {
-> @@ -678,10 +680,8 @@ struct arm_smmu_domain {
->  	atomic_t			nr_ats_masters;
->  
->  	enum arm_smmu_domain_stage	stage;
-> -	union {
-> -		struct arm_smmu_s1_cfg	s1_cfg;
-> -		struct arm_smmu_s2_cfg	s2_cfg;
-> -	};
-> +	struct arm_smmu_s1_cfg	s1_cfg;
-> +	struct arm_smmu_s2_cfg	s2_cfg;
->  
->  	struct iommu_domain		domain;
->  
-Other looks good to me. ;-)
-> 
-
-Thanks,
-Keqian
+VGhhbmsgeW91IHZlcnkgbXVjaCwgSSBhcHByZWNpYXRlIHlvdXIgZmFzdCByZXNwb25zZXMuDQpU
+aGFuayB5b3UgYWxzbyBmb3IgY2xhcmlmaWNhdGlvbiwgSSBkaWQgY29tcGxldGVseSBvdmVyc2Vl
+DQp0aGUgcGVybWlzc2lvbiBzZXR0aW5ncyBpbiB0aGUgc2VnbWVudCBzZXR1cCBhbmQgZXhwZWN0
+ZWQNCnRoZSBmYXVsdCByZWFjdGlvbiBvbiB0aGUgUFAgYml0cyBpbiB0aGUgVExCLg0KQW5kIEkg
+d2lsbCByZS1yZWFkIHRoZSBjaGFwdGVycywgZ290IGdldCBkZWVwZXIgaW50byB0aGlzIHRvcGlj
+Lg0KDQpHcmVldGluZ3MNCkNocmlzdG9waCANCg0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0t
+LQ0KRnJvbTogQ2hyaXN0b3BoZSBMZXJveSA8Y2hyaXN0b3BoZS5sZXJveUBjc2dyb3VwLmV1PiAN
+ClNlbnQ6IE1vbnRhZywgMS4gRmVicnVhciAyMDIxIDEyOjM5DQpUbzogUExBVFRORVIgQ2hyaXN0
+b3BoIDxjaHJpc3RvcGgucGxhdHRuZXJAdGhhbGVzZ3JvdXAuY29tPjsgQmVuamFtaW4gSGVycmVu
+c2NobWlkdCA8YmVuaEBrZXJuZWwuY3Jhc2hpbmcub3JnPjsgUGF1bCBNYWNrZXJyYXMgPHBhdWx1
+c0BzYW1iYS5vcmc+OyBNaWNoYWVsIEVsbGVybWFuIDxtcGVAZWxsZXJtYW4uaWQuYXU+DQpDYzog
+bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgbGludXhwcGMtZGV2QGxpc3RzLm96bGFicy5v
+cmc7IEhBTUVUTkVSIFJlaW5oYXJkIDxyZWluaGFyZC5oYW1ldG5lckB0aGFsZXNncm91cC5jb20+
+OyBSRUlUSEVSIFJvYmVydCAtIENvbnRyYWN0b3IgPHJvYmVydC5yZWl0aGVyQGV4dGVybmFsLnRo
+YWxlc2dyb3VwLmNvbT47IEtPRU5JRyBXZXJuZXIgPHdlcm5lci5rb2VuaWdAdGhhbGVzZ3JvdXAu
+Y29tPg0KU3ViamVjdDogUmU6IFtQQVRDSF0gcG93ZXJwYy82MDM6IEZpeCBwcm90ZWN0aW9uIG9m
+IHVzZXIgcGFnZXMgbWFwcGVkIHdpdGggUFJPVF9OT05FDQoNCg0KDQpMZSAwMS8wMi8yMDIxIMOg
+IDExOjIyLCBQTEFUVE5FUiBDaHJpc3RvcGggYSDDqWNyaXTCoDoNCj4gSGVsbG8gdG8gYWxsLCBh
+bmQgdGhhbmsgeW91IHZlcnkgbXVjaCBmb3IgZmlyc3QgYW5kIHNlY29uZCBmYXN0IHJlc3BvbnNl
+Lg0KPiANCj4gSSBkbyBub3QgaGF2ZSBhIGxvbmcgaGlzdG9yeSBvbiBQb3dlclBDIE1NVSBlbnZp
+cm9ubWVudCwgSSBoYWNrZWQgaW50byANCj4gdGhpcyB0b3BpYyBmb3IgYWJvdXQgMyBtb250aHMg
+Zm9yIGFuYWx5emluZyB0aGF0IHByb2JsZW0tIHNvLCBzb3JyeSwgaWYgSSBhbSB3cm9uZyBpbiBz
+b21lIHBvaW50cyAuLi4NCg0KWWVzIHlvdSBhcmUgd3Jvbmcgb24gc29tZSBwb2ludHMsIHNvcnJ5
+LCBzZWUgYmVsb3cuDQoNCg0KPiANCj4gV2hhdCBJIGxlYXJuIHNvIGZhciBmcm9tIHRoaXMgTVBD
+NTEyMWUgKHZhcmlhbnQgb2YgZTMwMGM0IGNvcmUpOg0KPiAtIEl0IHVzZXMgYm9vazNzMzIgaGFz
+aC1jb2RlLCBidXQgaXQgRE9FUyBOT1QgcHJvdmlkZSBLRVkgaGFzaCBtZXRob2QsIHNvIGFsd2F5
+cyB0aGUNCj4gICAgIGJyYW5jaCAgImlmICghIEhhc2gpIC4uLi4iIGlzIHRha2VuLCBzbywgSSBh
+c3N1bWUgdGhhdCAia2V5IDAiIGFuZCAia2V5IDEiIHNldHVwcyBhcmUgbm90DQo+ICAgICB1c2Vk
+IG9uIHRoaXMgQ1BVIChub3Qgc3VwcG9ydGluZyBNTVVfRlRSX0hQVEVfVEFCTEUpDQoNCmhhc2gg
+bWV0aG9kIGlzIG5vdCB1c2VkLCB0aGlzIGlzIFNXIFRMQiBsb2FkaW5nIHRoYXQgaXMgdXNlZCwg
+YnV0IHN0aWxsLCBhbGwgdGhlIFBQIGFuZCBLcy9LcCBrZXlzIGRlZmluZWQgaW4gdGhlIHNlZ21l
+bnQgcmVnaXN0ZXIgYXJlIHVzZWQsIHNlZSBlMzAwIGNvcmUgcmVmZXJlbmNlIG1hbnVhbCDCpzYu
+NC4yIFBhZ2UgTWVtb3J5IFByb3RlY3Rpb24NCg0KPiAtIFRoZSBQUCBiaXRzIGFyZSBOT1QgY2hl
+Y2tlZCBieSB0aGUgQ1BVIGluIEhXLCBldmVuIGlmIHNldCB0byAwMCwgdGhlIENQVSBkb2VzIG5v
+dCByZWFjdC4NCj4gICAgIEFzIGZhciBJIGhhdmUgdW5kZXJzdG9vZCwgdGhlIFRMQiBtaXNzIHJv
+dXRpbmVzIGFyZSByZXNwb25zaWJsZSBmb3IgY2hlY2tpbmcgcGVybWlzc2lvbnMuDQo+ICAgICBU
+aGUgVExCIG1pc3Mgcm91dGluZXMgY2hlY2sgdGhlIExpbnV4IFBURSBzdHlsZWQgZW50cmllcyBh
+bmQgZ2VuZXJhdGVzIHRoZSBQUCBiaXRzDQo+ICAgICBmb3IgdGhlIFRMQiBlbnRyeS4gVGhlIFBv
+d2VyUEMgUFAgYml0cyBhcmUgbmV2ZXIgY2hlY2sgZWxzZXdoZXJlIG9uIHRoYXQgQ1BVIG1vZGVs
+cyAuLi4NCg0KUFAgYml0cyBBUkUgY2hlY2tlZCBob3BwZWZ1bGx5LiBJZiBpdCB3YXMgbm90IHRo
+ZSBjYXNlLCB0aGVuIHRoZSBUTEIgbWlzcyByb3V0aW5lcyB3b3VsZCBpbnN0YWxsIGEgVExCIG9u
+IGEgcmVhZCwgdGhlbiB0aGUgdXNlciBjb3VsZCBkbyBhIHdyaXRlIHdpdGhvdXQgYW55IHZlcmlm
+aWNhdGlvbiBiZWluZyBkb25lID8NCg0KUmVmZXIgdG8gZTMwMCBDb3JlIHJlZmVyZW5jZSBNYW51
+YWwsIMKnNi4xLjQgTWVtb3J5IFByb3RlY3Rpb24gRmFjaWxpdGllcw0KDQpBcyBJIGV4cGxhaW5l
+ZCBpbiB0aGUgcGF0Y2gsIHRoZSBwcm9ibGVtIGlzIG5vdCB0aGF0IHRoZSBIVyBkb2Vzbid0IGNo
+ZWNrIHRoZSBwZXJtaXNzaW9uLiBJdCBpcyB0aGF0IHVzZXIgYWNjZXNzZWQgYmVlbiBkb25lIHdp
+dGgga2V5IDAgYXMgcHJvZ3JhbW1lZCBpbiB0aGUgc2VnbWVudCByZWdpc3RlcnMsIFBQIDAwIG1l
+YW5zIFJXIGFjY2Vzcy4NCg0KPiAtIFRoZSBQVEUgZW50cmllcyBpbiBMaW51eCBhcmUgZnVsbHkg
+InZvaWQiIGluIHNlbnNlIG9mIHRoaXMgQ1BVIHR5cGUsIGFzIHRoaXMgQ1BVIGRvZXMgbm90DQo+
+ICAgICByZWFkIGFueSBQVEVzIGZyb20gUkFNIChubyBIVyBzdXBwb3J0IGluIGNvbnRyYXN0IHRv
+IHg4NiBvciBBUk0gb3IgbGF0ZXIgcHBjLi4uKS4NCg0KTm8sIHRoZSBQVEUgYXJlIHJlYWQgYnkg
+dGhlIFRMQiBtaXNzIGV4Y2VwdGlvbiBoYW5kbGVycyBhbmQgd3JpdGVuIGludG8gVExCIGVudHJp
+ZXMuDQoNCj4gDQo+IEluIHN1bW1hcnkgLSBhcyBmYXIgYXMgSSB1bmRlcnN0YW5kIGl0IG5vdyAt
+IHdlIGhhdmUgdG8gaGFuZGxlIHRoZSBQVEUgDQo+IGJpdHMgZGlmZmVyZW50bHkgKExpbnV4IHN0
+eWxlKSBmb3IgUFJPVF9OT05FIHBlcm1pc3Npb25zIC0gT1IgLSB3ZSANCj4gaGF2ZSB0byBleHBh
+bmQgdGhlIHBlcm1pc3Npb24gY2hlY2tpbmcgbGlrZSBteSBwcm9wb3NlZCBleHBlcmltZW50YWwg
+DQo+IHBhdGNoLiAoUFJPVF9OT05FIGlzIG5vdCBOVU1BIHJlbGF0ZWQgb25seSwgYnV0IG1heSBu
+b3QgdXNlZCB2ZXJ5IG9mdGVuIC4uLikuDQoNClllcywgZXhwYW5kaW5nIHRoZSBwZXJtaXNzaW9u
+IGNoZWNraW5nIGlzIHRoZSBlYXNpZXN0IHNvbHV0aW9uLCBoZW5jZSB0aGUgcGF0Y2ggSSBzZW50
+IG91dCBiYXNlZCBvbiB5b3VyIHByb3Bvc2FsLg0KDQo+IA0KPiBBbm90aGVyIHJlbGF0ZWQgcG9p
+bnQ6DQo+IEFjY29yZGluZyBlMzAwIFJNIChtYW51YWwpIHRoZSBBQ0NFU1NFRCBiaXQgaW4gdGhl
+IFBURSBzaGFsbCBiZSBzZXQgb24gDQo+IFRMQiBtaXNzLCBhcyBpdCBpcyBhbiBpbmRpY2F0aW9u
+LCB0aGF0IHBhZ2UgaXMgdXNlZC4gSW4gNC40IGtlcm5lbCANCj4gdGhpcyB3cml0ZSBiYWNrIG9m
+IHRoZSBfUEFHRV9BQ0NFU1NFRCBiaXQgd2FzIHBlcmZvcm1lZCBhZnRlciBzdWNjZXNzZnVsIHBl
+cm1pc3Npb24gY2hlY2s6DQo+IA0KPiAgICAgICAgICBibmUtICAgIERhdGFBZGRyZXNzSW52YWxp
+ZCAgICAgIC8qIHJldHVybiBpZiBhY2Nlc3Mgbm90IHBlcm1pdHRlZCAqLw0KPiAgICAgICAgICBv
+cmkgICAgIHIwLHIwLF9QQUdFX0FDQ0VTU0VEICAgIC8qIHNldCBfUEFHRV9BQ0NFU1NFRCBpbiBw
+dGUgKi8NCj4gICAgICAgICAgLyoNCj4gICAgICAgICAgICogTk9URSEgV2UgYXJlIGFzc3VtaW5n
+IHRoaXMgaXMgbm90IGFuIFNNUCBzeXN0ZW0sIG90aGVyd2lzZQ0KPiAgICAgICAgICAgKiB3ZSB3
+b3VsZCBuZWVkIHRvIHVwZGF0ZSB0aGUgcHRlIGF0b21pY2FsbHkgd2l0aCBsd2FyeC9zdHdjeC4N
+Cj4gICAgICAgICAgICovDQo+ICAgICAgICAgIHN0dyAgICAgcjAsMChyMikgICAgICAgICAgICAg
+ICAgLyogdXBkYXRlIFBURSAoYWNjZXNzZWQgYml0KSAqLw0KPiAgICAgICAgICAvKiBDb252ZXJ0
+IGxpbnV4LXN0eWxlIFBURSB0byBsb3cgd29yZCBvZiBQUEMtc3R5bGUgUFRFICovDQo+IA0KPiBC
+aXQgaXMgc2V0IChvcmkgLi4uKSBhbmQgd3JpdHRlbiBiYWNrIChzdHcgLi4uKSB0byBMaW51eCBQ
+VEUuIE1heSBiZSwgDQo+IHRoaXMgaXMgbm90IG5lZWRlZCwgYXMgdGhlIFBURSBpcyBuZXZlciBz
+ZWVuIGJ5IHRoZSBQUEMgY2hpcC4gQnV0IEkgZG8gDQo+IG5vdCB1bmRlcnN0YW5kLCBXSFkgdGhl
+IFBBR0VfQUNDQ0VTU0VEIGlzIHVzZWQgZm9yIHBlcm1pc3Npb24gY2hlY2sgaW4gdGhlIGxhdGUg
+NS40IGtlcm5lbCAobm90IHVzZWQgaW4gNC40IGtlcm5lbCk6DQo+IA0KPiAJY21wbHcJMCxyMSxy
+Mw0KPiAgIAltZnNwcglyMiwgU1BSTl9TRFIxDQo+IAlsaQlyMSwgX1BBR0VfUFJFU0VOVCB8IF9Q
+QUdFX0FDQ0VTU0VEDQo+IAlybHdpbm0JcjIsIHIyLCAyOCwgMHhmZmZmZjAwMA0KPiAgIAliZ3Qt
+CTExMmYNCj4gDQo+IFdoYXQgaXMgdGhlIHJlYXNvbiBvciByZWxldmFuY2UgZm9yIGNoZWNraW5n
+IHRoaXMgaGVyZSA/DQo+IFdhcyBub3QgY2hlY2tlZCBpbiA0LjQsIGJpdCBvci1lZCBhZnRlcndh
+cmRzLCBhcyBpdCBpcyBhY2Nlc3NlZCBub3cuDQo+IERvIHlvdSBrbm93IHRoZSByZWFzb24gb2Yg
+Y2hhbmdlIG9uIHRoaXMgcG9pbnQgPw0KDQpQQUdFX0FDQ0VTU0VEIGlzIGltcG9ydGFudCBmb3Ig
+bWVtb3J5IG1hbmFnZW1lbnQsIGxpbnV4IGtlcm5lbCBuZWVkIGl0Lg0KDQpCdXQgaW5zdGVhZCBv
+ZiBzcGVuZGluZyB0aW1lIGF0IGV2ZXJ5IG1pc3MgdG8gcGVyZm9ybSBhIHdyaXRlIHdoaWNoIHdp
+bGwgYmUgYSBuby1vcCBpbiA5OSUgb2YgY2FzZXMsIHdlIHByZWZlciBiYWlsaW5nIG91dCB0byB0
+aGUgcGFnZV9mYXVsdCBsb2dpYyB3aGVuIHRoZSBhY2Nlc3NlZCBiaXQgaXMgbm90IHNldC4gVGhl
+biB0aGUgcGFnZV9mYXVsdCBsb2dpYyB3aWxsIHNldCB0aGUgYml0Lg0KVGhpcyBhbHNvIGFsbG93
+ZWQgdG8gc2ltcGxpZnkgdGhlIGhhbmRsaW5nIGluIF9fc2V0X3B0ZSgpX2F0IGZ1bmN0aW9uIGJ5
+IGF2b2lkaW5nIHJhY2VzIGluIHRoZSB1cGRhdGUgb2YgUFRFcy4NCg0KPiANCj4gQW5vdGhlciBy
+ZW1hcmsgdG8gQ29yZSBtYW51YWwgcmVsZXZhbnQgZm9yIHRoaXM6DQo+IFRoZXJlIGlzIHRoZSBy
+ZWZlcmVuY2UgbWFudWFsIGZvciBlMzAwIGNvcmUgYXZhaWxhYmxlIChlMzAwIFJNKS4gSXQgaW5j
+bHVkZXMNCj4gbWFueSByZW1hcmtzIGluIHJhbmdlIG9mIE1lbW9yeSBNYW5hZ2VtZW50IHNlY3Rp
+b24sIHRoYXQgbWFueSBmZWF0dXJlcw0KPiBhcmUgb3B0aW9uYWwgb3IgdmFyaWFibGUgZm9yIGRl
+ZGljYXRlZCBpbXBsZW1lbnRhdGlvbnMuIE9uIHRoZSBvdGhlciBoYW5kLA0KPiB0aGUgTVBDNTEy
+MWUgcmVmZXJlbmNlIG1hbnVhbCByZWZlcnMgdG8gdGhlIGUzMDAgY29yZSBSTSwgYnV0IERPRVMg
+Tk9UDQo+IGluZm9ybWF0aW9uLCB3aGljaCBvZiB0aGUgb3B0aW9uYWwgcG9pbnRzIGFyZSB0aGVy
+ZSBvciBub3IuIEFjY29yZGluZyBteQ0KPiBhbmFseXNpcywgTVBDNTEyMWUgZG9lcyBub3QgaW5j
+bHVkZSBhbnkgb2YgdGhlIG9wdGlvbmFsIGZlYXR1cmVzLg0KPiANCg0KTm90IHN1cmUgd2hhdCB5
+b3UgbWVhbi4gQXMgZmFyIGFzIEkgdW5kZXJzdGFuZCwgdGhhdCBjaGFwdGVyIHRlbGxzIHlvdSB0
+aGF0IHNvbWUgZnVuY3Rpb25uYWxpdGllcyANCmFyZSBvcHRpb25hbCBmb3IgdGhlIHBvd2VycGMg
+YXJjaGl0ZWN0ZWN0dXJlLCBhbmQgcHJvdmlkZWQgKG9yIG5vdCkgYnkgdGhlIGUzMDAgY29yZS4g
+VGhlIE1QQzUxMjEgDQpzdXBwb3J0cyBhbGwgdGhlIHRoaW5ncyB0aGF0IGFyZSBkZWZpbmVkIGJ5
+IGUzMDAgY29yZS4NCg0KDQo+IA0KPiBUaGFua3MgYSBsb3QgZm9yIGZpcnN0IHJlYWN0aW9ucw0K
+DQpZb3UgYXJlIHdlbGNvbWUsIGRvbid0IGhlc2l0YXRlIGlmIHlvdSBoYXZlIGFkZGl0aW9uYWwg
+cXVlc3Rpb25zLg0KDQpDaHJpc3RvcGhlDQo=
