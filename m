@@ -2,102 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CAA230AD79
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:12:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C227230AD7D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:12:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231292AbhBARKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:10:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40366 "EHLO mail.kernel.org"
+        id S231639AbhBARLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:11:42 -0500
+Received: from mga04.intel.com ([192.55.52.120]:58996 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229599AbhBARKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:10:51 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7026D64EA9;
-        Mon,  1 Feb 2021 17:10:09 +0000 (UTC)
-Date:   Mon, 1 Feb 2021 12:10:07 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Matt Mullins <mmullins@mmlx.us>, paulmck <paulmck@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH v5] tracepoint: Do not fail unregistering a probe due to
- memory failure
-Message-ID: <20210201121007.51c0ac59@gandalf.local.home>
-In-Reply-To: <13608cdc-2068-6340-6795-28944c9fe3ca@ozlabs.ru>
-References: <20210127170721.58bce7cc@gandalf.local.home>
-        <ac000ed4-3eeb-60df-f896-c05cabb4c1c9@ozlabs.ru>
-        <20210130093626.0b7b3b1b@oasis.local.home>
-        <20210130094211.719f03a6@oasis.local.home>
-        <13608cdc-2068-6340-6795-28944c9fe3ca@ozlabs.ru>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S229599AbhBARLe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 12:11:34 -0500
+IronPort-SDR: QgyF0Z6EBtn3RwR8+WhIQw5DjW+pGNhuuz3EbZoP8aQDa+JqIVk0tTnbBtxNOCbRZ/SrMXj+j2
+ UAuM2KXcPpTQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="178155859"
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="178155859"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 09:10:53 -0800
+IronPort-SDR: HBYH405ROlMEXT03PmawXS4NPL/f9eJXfesa31754JNg5yULll9HHRdK5HY/0W32JLDR6YU/lE
+ D8fqecKtWQ/Q==
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="432430624"
+Received: from jambrizm-mobl1.amr.corp.intel.com (HELO intel.com) ([10.252.133.15])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 09:10:52 -0800
+Date:   Mon, 1 Feb 2021 09:10:51 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     David Rientjes <rientjes@google.com>
+Cc:     linux-cxl@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-pci@vger.kernel.org,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH 05/14] cxl/mem: Register CXL memX devices
+Message-ID: <20210201171051.m3cbr3udczxwghqh@intel.com>
+References: <20210130002438.1872527-1-ben.widawsky@intel.com>
+ <20210130002438.1872527-6-ben.widawsky@intel.com>
+ <ecd93422-b272-2b76-1ec-cf6af744ae@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ecd93422-b272-2b76-1ec-cf6af744ae@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Feb 2021 12:18:34 +1100
-Alexey Kardashevskiy <aik@ozlabs.ru> wrote:
-
-> > Just curious, does the following patch fix it for v5?  
+On 21-01-30 15:52:01, David Rientjes wrote:
+> On Fri, 29 Jan 2021, Ben Widawsky wrote:
 > 
+> > diff --git a/Documentation/ABI/testing/sysfs-bus-cxl b/Documentation/ABI/testing/sysfs-bus-cxl
+> > new file mode 100644
+> > index 000000000000..fe7b87eba988
+> > --- /dev/null
+> > +++ b/Documentation/ABI/testing/sysfs-bus-cxl
+> > @@ -0,0 +1,26 @@
+> > +What:		/sys/bus/cxl/devices/memX/firmware_version
+> > +Date:		December, 2020
+> > +KernelVersion:	v5.12
+> > +Contact:	linux-cxl@vger.kernel.org
+> > +Description:
+> > +		(RO) "FW Revision" string as reported by the Identify
+> > +		Memory Device Output Payload in the CXL-2.0
+> > +		specification.
+> > +
+> > +What:		/sys/bus/cxl/devices/memX/ram/size
+> > +Date:		December, 2020
+> > +KernelVersion:	v5.12
+> > +Contact:	linux-cxl@vger.kernel.org
+> > +Description:
+> > +		(RO) "Volatile Only Capacity" as reported by the
+> > +		Identify Memory Device Output Payload in the CXL-2.0
+> > +		specification.
+> > +
+> > +What:		/sys/bus/cxl/devices/memX/pmem/size
+> > +Date:		December, 2020
+> > +KernelVersion:	v5.12
+> > +Contact:	linux-cxl@vger.kernel.org
+> > +Description:
+> > +		(RO) "Persistent Only Capacity" as reported by the
+> > +		Identify Memory Device Output Payload in the CXL-2.0
+> > +		specification.
 > 
-> Yes it does!
+> Aren't volatile and persistent capacities expressed in multiples of 256MB?
 
-Thanks for verifying.
-
-> 
-> 
-> > 
-> > -- Steve
-> > 
-> > diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-> > index 7261fa0f5e3c..cf3a6d104fdb 100644
-> > --- a/kernel/tracepoint.c
-> > +++ b/kernel/tracepoint.c
-> > @@ -306,6 +306,7 @@ static int tracepoint_remove_func(struct tracepoint *tp,
-> >   			tp->unregfunc();
-> >   
-> >   		static_key_disable(&tp->key);
-> > +		tracepoint_synchronize_unregister();
-> >   		rcu_assign_pointer(tp->funcs, tp_funcs);
-> >   	} else {
-> >   		rcu_assign_pointer(tp->funcs, tp_funcs);
-> >   
-
-OK, since it would be expensive to do a synchronization on every removal
-like that, but the tp->funcs should not be reset.
-
-It appears that your check is still required, since the iterator has been
-added.
-
-The quick fix is the check you gave.
-
-But I think we could optimize this (not having to dereference the array
-twice, and do the check twice) by making the iterator part of the tp_funcs
-array, and having the rest of the array as its argument. But that can be a
-separate update.
-
-The check you added should be a patch and marked for stable. Care to send
-it, and mark it for stable as well as:
-
-Fixes: d25e37d89dd2f ("tracepoint: Optimize using static_call()")
-
-Thanks!
-
--- Steve
+As of the spec today, volatile and persistent capacities are required to be
+in multiples of 256MB, however, future specs may not have such a requirement and
+I think keeping sysfs ABI easily forward portable makes sense.
