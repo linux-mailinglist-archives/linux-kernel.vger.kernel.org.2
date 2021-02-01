@@ -2,78 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B69730AEF1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:19:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 678A730AF1F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:25:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232670AbhBASSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:18:06 -0500
-Received: from relay10.mail.gandi.net ([217.70.178.230]:32939 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232033AbhBASPO (ORCPT
+        id S232729AbhBASY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:24:27 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:50000 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232771AbhBASVz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:15:14 -0500
-Received: from uno.localdomain (93-61-96-190.ip145.fastwebnet.it [93.61.96.190])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id C288A240009;
-        Mon,  1 Feb 2021 18:14:14 +0000 (UTC)
-Date:   Mon, 1 Feb 2021 19:14:36 +0100
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        kieran.bingham+renesas@ideasonboard.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        niklas.soderlund+renesas@ragnatech.se, geert@linux-m68k.org,
-        linux-media@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Hyun Kwon <hyunk@xilinx.com>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        sergei.shtylyov@gmail.com
-Subject: Re: [PATCH v8 0/5] media: i2c: Add RDACM21 camera module
-Message-ID: <20210201181436.6giorxpojizp3rv4@uno.localdomain>
-References: <20210114170429.139762-1-jacopo+renesas@jmondi.org>
- <20210201085440.zcc5kuu4gyiyasvy@uno.localdomain>
- <20210201130029.GM32460@paasikivi.fi.intel.com>
+        Mon, 1 Feb 2021 13:21:55 -0500
+Received: from 89-64-80-124.dynamic.chello.pl (89.64.80.124) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.537)
+ id 7e81ca893097332e; Mon, 1 Feb 2021 19:20:30 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Joe Perches <joe@perches.com>
+Subject: [PATCH v1 0/5] ACPI: More cleanups related to printing messages
+Date:   Mon, 01 Feb 2021 19:14:38 +0100
+Message-ID: <2367702.B5bJTmGzJm@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210201130029.GM32460@paasikivi.fi.intel.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari,
+Hi All,
 
-On Mon, Feb 01, 2021 at 03:00:29PM +0200, Sakari Ailus wrote:
-> Hi Jacopo,
->
-> On Mon, Feb 01, 2021 at 09:54:40AM +0100, Jacopo Mondi wrote:
-> > Hi Sakari,
-> >
-> > On Thu, Jan 14, 2021 at 06:04:24PM +0100, Jacopo Mondi wrote:
-> > > One more iteration to squash in all the fixups sent in v7 and address
-> > > a comment from Sergei in [2/5] commit message.
-> > >
-> > > All patches now reviewed and hopefully ready to be collected!
-> >
-> > All patches seems reviewed, do you think we can still collect this for
-> > the v5.12 merge window ?
->
-> The set seems good to me. There was some fuzz in the DT binding patch; I
-> hope the resolution is ok:
->
-> <URL:https://git.linuxtv.org/sailus/media_tree.git/commit/?id=c9930c965596af73c61e1a6a9ef2d2128582ef38>
+This series is a continuation of the effort to drop ACPICA-specific debug
+code from non-ACPICA pieces of the ACPI subsystem and to make the message
+printing in there more consistent.
 
-Yes, looks good!
+The patches in this series are based on linux-next from today.
 
->
-> Feel free to cc me on the next time. :-)
+Details in the patch changelogs.
 
-yeah sorry, I went through too many iterations :)
+Thanks!
 
-Thanks
-  j
 
->
-> --
-> Regards,
->
-> Sakari Ailus
+
