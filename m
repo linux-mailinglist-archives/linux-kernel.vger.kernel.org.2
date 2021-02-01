@@ -2,85 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEFDF30A121
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 06:17:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9592630A226
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbhBAFRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 00:17:11 -0500
-Received: from mailout4.samsung.com ([203.254.224.34]:57966 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbhBAFPo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 00:15:44 -0500
-Received: from epcas3p4.samsung.com (unknown [182.195.41.22])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210201051502epoutp047495534aa5f11b8c93518d1b30875ff2~fh8w4aapg2568925689epoutp04i
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 05:15:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210201051502epoutp047495534aa5f11b8c93518d1b30875ff2~fh8w4aapg2568925689epoutp04i
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1612156502;
-        bh=DQsAohp7eSFa2KD1KUeAEOSSbc/e06VHkggTf3NAU3c=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=LCrb868gfycrzdm5y9dQSrT/iN1ftEoQkbtL4Y8zsEg6NTu5BqhVKUaIKW89iom7o
-         pyZTkzulh9dm9g4nsoNKApTq9qNGH5IEfcXXAgyTbxpWkku+/oC2/O4/dBMHaHfyGV
-         bXqG/pf2VKx1+H1sERpV2NGthxU6LoGCBTjGWRXQ=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas3p3.samsung.com (KnoxPortal) with ESMTP id
-        20210201051502epcas3p3f5b41ab506a3ac3b3a0274622d3d815e~fh8wWQmde3126231262epcas3p3b;
-        Mon,  1 Feb 2021 05:15:02 +0000 (GMT)
-Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp2.localdomain
-        (Postfix) with ESMTP id 4DTbjf1QD7z4x9Pt; Mon,  1 Feb 2021 05:15:02 +0000
-        (GMT)
-Mime-Version: 1.0
-Subject: RE: [PATCH 6/8] scsi: ufshpb: Add hpb dev reset response
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <avi.shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        Avri Altman <avri.altman@wdc.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <20210127151217.24760-7-avri.altman@wdc.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <1891546521.01612156502170.JavaMail.epsvc@epcpadp3>
-Date:   Mon, 01 Feb 2021 14:10:38 +0900
-X-CMS-MailID: 20210201051038epcms2p4125b764fa0caee066060b402a7e02904
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20210127151338epcas2p2c323a148587e311f7f5e19b4edbe43ec
-References: <20210127151217.24760-7-avri.altman@wdc.com>
-        <20210127151217.24760-1-avri.altman@wdc.com>
-        <CGME20210127151338epcas2p2c323a148587e311f7f5e19b4edbe43ec@epcms2p4>
+        id S232097AbhBAGn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 01:43:59 -0500
+Received: from mga17.intel.com ([192.55.52.151]:9259 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231526AbhBAFZ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 00:25:57 -0500
+IronPort-SDR: DzZefccKcWrXFFmC66ErTBhmiJWeWVU88/bos6bNwcGzyr/fBjqgjYIkdU0QmlSOyeI7AH/qSe
+ nC7+/tisKDGA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="160401859"
+X-IronPort-AV: E=Sophos;i="5.79,391,1602572400"; 
+   d="scan'208";a="160401859"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2021 21:17:42 -0800
+IronPort-SDR: NhN3vMlcPqT31j2OhPbsgj5o64KW5zgmlOvSh4w2SNNGWQ4NTvJNjOCuzSvx32+ICBVYHdJ+Xf
+ Vt1V4YXTaB5g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,391,1602572400"; 
+   d="scan'208";a="390694343"
+Received: from clx-ap-likexu.sh.intel.com ([10.239.48.108])
+  by orsmga008.jf.intel.com with ESMTP; 31 Jan 2021 21:17:39 -0800
+From:   Like Xu <like.xu@linux.intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, ak@linux.intel.com,
+        wei.w.wang@intel.com, kan.liang@intel.com,
+        alex.shi@linux.alibaba.com, kvm@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v14 11/11] selftests: kvm/x86: add test for pmu msr MSR_IA32_PERF_CAPABILITIES
+Date:   Mon,  1 Feb 2021 13:10:39 +0800
+Message-Id: <20210201051039.255478-12-like.xu@linux.intel.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210201051039.255478-1-like.xu@linux.intel.com>
+References: <20210201051039.255478-1-like.xu@linux.intel.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Avri,
+This test will check the effect of various CPUID settings on the
+MSR_IA32_PERF_CAPABILITIES MSR, check that whatever user space writes
+with KVM_SET_MSR is _not_ modified from the guest and can be retrieved
+with KVM_GET_MSR, and check that invalid LBR formats are rejected.
 
-> +	list_for_each_entry_safe(rgn, next_rgn, &lru_info->lh_lru_rgn,
-> +				 list_lru_rgn)
-How about replace list_for_each_entry_safe to list_for_each_entry?
+Signed-off-by: Like Xu <like.xu@linux.intel.com>
+---
+ tools/testing/selftests/kvm/.gitignore        |   1 +
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../selftests/kvm/x86_64/vmx_pmu_msrs_test.c  | 149 ++++++++++++++++++
+ 3 files changed, 151 insertions(+)
+ create mode 100644 tools/testing/selftests/kvm/x86_64/vmx_pmu_msrs_test.c
 
-Thanks,
-Daejun
+diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
+index ce8f4ad39684..28b71efe52a0 100644
+--- a/tools/testing/selftests/kvm/.gitignore
++++ b/tools/testing/selftests/kvm/.gitignore
+@@ -25,6 +25,7 @@
+ /x86_64/vmx_set_nested_state_test
+ /x86_64/vmx_tsc_adjust_test
+ /x86_64/xss_msr_test
++/x86_64/vmx_pmu_msrs_test
+ /demand_paging_test
+ /dirty_log_test
+ /dirty_log_perf_test
+diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+index fe41c6a0fa67..cf8737828dd4 100644
+--- a/tools/testing/selftests/kvm/Makefile
++++ b/tools/testing/selftests/kvm/Makefile
+@@ -59,6 +59,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/vmx_tsc_adjust_test
+ TEST_GEN_PROGS_x86_64 += x86_64/xss_msr_test
+ TEST_GEN_PROGS_x86_64 += x86_64/debug_regs
+ TEST_GEN_PROGS_x86_64 += x86_64/tsc_msrs_test
++TEST_GEN_PROGS_x86_64 += x86_64/vmx_pmu_msrs_test
+ TEST_GEN_PROGS_x86_64 += demand_paging_test
+ TEST_GEN_PROGS_x86_64 += dirty_log_test
+ TEST_GEN_PROGS_x86_64 += dirty_log_perf_test
+diff --git a/tools/testing/selftests/kvm/x86_64/vmx_pmu_msrs_test.c b/tools/testing/selftests/kvm/x86_64/vmx_pmu_msrs_test.c
+new file mode 100644
+index 000000000000..b3ad63e6ff12
+--- /dev/null
++++ b/tools/testing/selftests/kvm/x86_64/vmx_pmu_msrs_test.c
+@@ -0,0 +1,149 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * VMX-pmu related msrs test
++ *
++ * Copyright (C) 2021 Intel Corporation
++ *
++ * Test to check the effect of various CPUID settings
++ * on the MSR_IA32_PERF_CAPABILITIES MSR, and check that
++ * whatever we write with KVM_SET_MSR is _not_ modified
++ * in the guest and test it can be retrieved with KVM_GET_MSR.
++ *
++ * Test to check that invalid LBR formats are rejected.
++ */
++
++#define _GNU_SOURCE /* for program_invocation_short_name */
++#include <sys/ioctl.h>
++
++#include "kvm_util.h"
++#include "vmx.h"
++
++#define VCPU_ID	      0
++
++#define X86_FEATURE_PDCM	(1<<15)
++#define PMU_CAP_FW_WRITES	(1ULL << 13)
++#define PMU_CAP_LBR_FMT		0x3f
++
++union cpuid10_eax {
++	struct {
++		unsigned int version_id:8;
++		unsigned int num_counters:8;
++		unsigned int bit_width:8;
++		unsigned int mask_length:8;
++	} split;
++	unsigned int full;
++};
++
++union perf_capabilities {
++	struct {
++		u64	lbr_format:6;
++		u64	pebs_trap:1;
++		u64	pebs_arch_reg:1;
++		u64	pebs_format:4;
++		u64	smm_freeze:1;
++		u64	full_width_write:1;
++		u64 pebs_baseline:1;
++		u64	perf_metrics:1;
++		u64	pebs_output_pt_available:1;
++		u64	anythread_deprecated:1;
++	};
++	u64	capabilities;
++};
++
++uint64_t rdmsr_on_cpu(uint32_t reg)
++{
++	uint64_t data;
++	int fd;
++	char msr_file[64];
++
++	sprintf(msr_file, "/dev/cpu/%d/msr", 0);
++	fd = open(msr_file, O_RDONLY);
++	if (fd < 0)
++		exit(KSFT_SKIP);
++
++	if (pread(fd, &data, sizeof(data), reg) != sizeof(data))
++		exit(KSFT_SKIP);
++
++	close(fd);
++	return data;
++}
++
++static void guest_code(void)
++{
++	wrmsr(MSR_IA32_PERF_CAPABILITIES, PMU_CAP_LBR_FMT);
++}
++
++int main(int argc, char *argv[])
++{
++	struct kvm_cpuid2 *cpuid;
++	struct kvm_cpuid_entry2 *entry_1_0;
++	struct kvm_cpuid_entry2 *entry_a_0;
++	bool pdcm_supported = false;
++	struct kvm_vm *vm;
++	int ret;
++	union cpuid10_eax eax;
++	union perf_capabilities host_cap;
++
++	host_cap.capabilities = rdmsr_on_cpu(MSR_IA32_PERF_CAPABILITIES);
++	host_cap.capabilities &= (PMU_CAP_FW_WRITES | PMU_CAP_LBR_FMT);
++
++	/* Create VM */
++	vm = vm_create_default(VCPU_ID, 0, guest_code);
++	cpuid = kvm_get_supported_cpuid();
++
++	if (kvm_get_cpuid_max_basic() >= 0xa) {
++		entry_1_0 = kvm_get_supported_cpuid_index(1, 0);
++		entry_a_0 = kvm_get_supported_cpuid_index(0xa, 0);
++		pdcm_supported = entry_1_0 && !!(entry_1_0->ecx & X86_FEATURE_PDCM);
++		eax.full = entry_a_0->eax;
++	}
++	if (!pdcm_supported) {
++		print_skip("MSR_IA32_PERF_CAPABILITIES is not supported by the vCPU");
++		exit(KSFT_SKIP);
++	}
++	if (!eax.split.version_id) {
++		print_skip("PMU is not supported by the vCPU");
++		exit(KSFT_SKIP);
++	}
++
++	/* testcase 1, set capabilities when we have PDCM bit */
++	vcpu_set_cpuid(vm, VCPU_ID, cpuid);
++	vcpu_set_msr(vm, 0, MSR_IA32_PERF_CAPABILITIES, PMU_CAP_FW_WRITES);
++
++	/* check capabilities can be retrieved with KVM_GET_MSR */
++	ASSERT_EQ(vcpu_get_msr(vm, VCPU_ID, MSR_IA32_PERF_CAPABILITIES), PMU_CAP_FW_WRITES);
++
++	/* check whatever we write with KVM_SET_MSR is _not_ modified */
++	vcpu_run(vm, VCPU_ID);
++	ASSERT_EQ(vcpu_get_msr(vm, VCPU_ID, MSR_IA32_PERF_CAPABILITIES), PMU_CAP_FW_WRITES);
++
++	/* testcase 2, check valid LBR formats are accepted */
++	vcpu_set_msr(vm, 0, MSR_IA32_PERF_CAPABILITIES, 0);
++	ASSERT_EQ(vcpu_get_msr(vm, VCPU_ID, MSR_IA32_PERF_CAPABILITIES), 0);
++
++	vcpu_set_msr(vm, 0, MSR_IA32_PERF_CAPABILITIES, host_cap.lbr_format);
++	ASSERT_EQ(vcpu_get_msr(vm, VCPU_ID, MSR_IA32_PERF_CAPABILITIES), (u64)host_cap.lbr_format);
++
++	/* testcase 3, check invalid LBR format is rejected */
++	ret = _vcpu_set_msr(vm, 0, MSR_IA32_PERF_CAPABILITIES, PMU_CAP_LBR_FMT);
++	TEST_ASSERT(ret == 0, "Bad PERF_CAPABILITIES didn't fail.");
++
++	/* testcase 4, set capabilities when we don't have PDCM bit */
++	entry_1_0->ecx &= ~X86_FEATURE_PDCM;
++	vcpu_set_cpuid(vm, VCPU_ID, cpuid);
++	ret = _vcpu_set_msr(vm, 0, MSR_IA32_PERF_CAPABILITIES, host_cap.capabilities);
++	TEST_ASSERT(ret == 0, "Bad PERF_CAPABILITIES didn't fail.");
++
++	/* testcase 5, set capabilities when we don't have PMU version bits */
++	entry_1_0->ecx |= X86_FEATURE_PDCM;
++	eax.split.version_id = 0;
++	entry_1_0->ecx = eax.full;
++	vcpu_set_cpuid(vm, VCPU_ID, cpuid);
++	ret = _vcpu_set_msr(vm, 0, MSR_IA32_PERF_CAPABILITIES, PMU_CAP_FW_WRITES);
++	TEST_ASSERT(ret == 0, "Bad PERF_CAPABILITIES didn't fail.");
++
++	vcpu_set_msr(vm, 0, MSR_IA32_PERF_CAPABILITIES, 0);
++	ASSERT_EQ(vcpu_get_msr(vm, VCPU_ID, MSR_IA32_PERF_CAPABILITIES), 0);
++
++	kvm_vm_free(vm);
++}
+-- 
+2.29.2
+
