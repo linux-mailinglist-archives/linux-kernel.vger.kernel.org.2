@@ -2,152 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B87E30AC5F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:13:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9E3930AC66
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:15:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229557AbhBAQNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 11:13:04 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16132 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230038AbhBAQMc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 11:12:32 -0500
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 111G2NvR048444;
-        Mon, 1 Feb 2021 11:11:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=MEf2Ej0vaq4vyxMbn1+L/rY1MMhnIo8IZ8yGILDx19A=;
- b=gnhnl8jB+tbW+nxHbogHuCm4FdUdNUEUQea2d0qnYhZAND5Jnk5gL7qzAy1gZEoCpEnb
- PWcMSuDHoVUxR9vx1EfnJtVG/K3OwkazTOaC3mxNni9UaNrj/Yoi5cBm47DOumrK7WL+
- Me57jzmhLYHMoNl6tU5YGHQKx+R6Dn8szhdAe07c66WoLUxAVUp+RnWNwhK305cwYDAE
- hJywl55cnO8ps+nUXyR6ZCG1Jc4R41BFpPORpc751n7FHQdQif4Witv/WU2qXHlRPcH/
- wtAexfJm42l0QrN6CKPCzK00eVtWb3tWPZBAdwmnf6Mwat1Z42KVrIUx+v2+fX0j4sVc 3w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36emrggfs3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 11:11:45 -0500
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 111G33kD053700;
-        Mon, 1 Feb 2021 11:11:43 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36emrggfq5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 11:11:43 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 111FXw6C002680;
-        Mon, 1 Feb 2021 16:11:40 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03fra.de.ibm.com with ESMTP id 36cy3891qm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 16:11:39 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 111GBT1C20840866
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 1 Feb 2021 16:11:29 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BA3045204F;
-        Mon,  1 Feb 2021 16:11:37 +0000 (GMT)
-Received: from sig-9-65-218-191.ibm.com (unknown [9.65.218.191])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 3F1BD5205A;
-        Mon,  1 Feb 2021 16:11:35 +0000 (GMT)
-Message-ID: <bd3246ebb4eae526c84efe2d27c6fadff662b0c8.camel@linux.ibm.com>
-Subject: Re: Migration to trusted keys: sealing user-provided key?
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Jan =?ISO-8859-1?Q?L=FCbbe?= <jlu@pengutronix.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        James Bottomley <jejb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
-        Sumit Garg <sumit.garg@linaro.org>
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, kernel@pengutronix.de
-Date:   Mon, 01 Feb 2021 11:11:34 -0500
-In-Reply-To: <64472434a367060ddce6e03425156b8312a5ad6c.camel@pengutronix.de>
-References: <74830d4f-5a76-8ba8-aad0-0d79f7c01af9@pengutronix.de>
-         <6dc99fd9ffbc5f405c5f64d0802d1399fc6428e4.camel@kernel.org>
-         <d1bed49f89495ceb529355cb41655a208fdb2197.camel@linux.ibm.com>
-         <8b9477e150d7c939dc0def3ebb4443efcc83cd85.camel@pengutronix.de>
-         <d4eeefa0c13395e91850630e22d0d9e3690f43ac.camel@linux.ibm.com>
-         <64472434a367060ddce6e03425156b8312a5ad6c.camel@pengutronix.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-01_06:2021-01-29,2021-02-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- priorityscore=1501 impostorscore=0 mlxlogscore=999 bulkscore=0 spamscore=0
- lowpriorityscore=0 mlxscore=0 malwarescore=0 clxscore=1015 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102010084
+        id S229927AbhBAQOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 11:14:48 -0500
+Received: from mga17.intel.com ([192.55.52.151]:32389 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229607AbhBAQOq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 11:14:46 -0500
+IronPort-SDR: gS0b/tNUM2oP9fPqb0eVzh0QtU5G7alXN8PFztQSVn7/aFv4E+ZAquC6bua0em3ZFqGZGItPcV
+ ND9JTm2OLwbw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="160474722"
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="160474722"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 08:13:00 -0800
+IronPort-SDR: 6oPmBHFebm/gP6zjcJxQPupqgsk2fO02WQEF2NnDoUIUuqOs5vCe9L6XOvx4iq2iN357Qwhmdi
+ H3/I9hoK33Rg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="506895242"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga004.jf.intel.com with ESMTP; 01 Feb 2021 08:12:58 -0800
+Received: from [10.255.230.26] (kliang2-MOBL.ccr.corp.intel.com [10.255.230.26])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 291B858045A;
+        Mon,  1 Feb 2021 08:12:57 -0800 (PST)
+Subject: Re: [PATCH V3 0/5] perf core PMU support for Sapphire Rapids (Kernel)
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org,
+        eranian@google.com, namhyung@kernel.org, jolsa@redhat.com,
+        ak@linux.intel.com, yao.jin@linux.intel.com, mpe@ellerman.id.au,
+        maddy@linux.vnet.ibm.com
+References: <1611873611-156687-1-git-send-email-kan.liang@linux.intel.com>
+ <YBgQoWRxpyoHDsmp@hirez.programming.kicks-ass.net>
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+Message-ID: <08df0d66-ae21-6e52-cef6-c003db0b75b2@linux.intel.com>
+Date:   Mon, 1 Feb 2021 11:12:55 -0500
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
+MIME-Version: 1.0
+In-Reply-To: <YBgQoWRxpyoHDsmp@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-02-01 at 16:31 +0100, Jan Lübbe wrote:
-> On Sun, 2021-01-31 at 09:29 -0500, Mimi Zohar wrote:
-> > On Sun, 2021-01-31 at 15:14 +0100, Jan Lübbe wrote:
-> > > On Sun, 2021-01-31 at 07:09 -0500, Mimi Zohar wrote:
-> > 
-> > <snip>
-> > 
-> > > > 
-> > > > [1] The ima-evm-utils README contains EVM examples of "trusted" and
-> > > > "user" based "encrypted" keys.
-> > > 
-> > > I assume you refer to
-> > > https://sourceforge.net/p/linux-ima/ima-evm-utils/ci/master/tree/README#l143
-> > > "Generate EVM encrypted keys" and "Generate EVM trusted keys (TPM based)"?
-> > > 
-> > > In both cases, the key used by EVM is a *newly generated* random key. The only
-> > > difference is whether it's encrypted to a user key or a (random) trusted key.
-> > 
-> > The "encrypted" asymmetric key data doesn't change, "update" just
-> > changes the key under which it is encrypted/decrypted.
-> > 
-> > Usage::
-> > 
-> >     keyctl add encrypted name "new [format] key-type:master-key-name keylen"
-> >         ring
-> >     keyctl add encrypted name "load hex_blob" ring
+
+
+On 2/1/2021 9:30 AM, Peter Zijlstra wrote:
 > 
-> 'load' (as I understand the code) only accepts an encrypted blob.
+> I made the below changes, does that work?
+
+Yes, it works well.
+
+Thanks,
+Kan
+
 > 
-> So the only way I see to have an encrypted key with a non-random key data would
-> be:
-> - create a random temporary master key and load a copy as a user key
-> - encrypt the chosen key data with the temporary master key (using a new
-> userspace reimplementation of the kernel encrypted key blob format)
-> - use keyctl add encrypted dmcrypt "load <encrypted blob>" <keyring>
-> - create new trusted master key (OP-TEE or CAAM in our case) as 
-> - use keyctl update to switch to the new trusted master key
-> - use keyctl pipe on the trusted and encrypted keys and store both for loading
-> on later boots
+> ---
 > 
-> If we'd support importing a pre-existing key into a trusted or encrypted key,
-> we'd do instead:
-> - use keyctl add trusted dmcrypt "import <unencrypted key data>"
-> - use keyctl pipe on the trusted key and store it for loading on later boots
+> --- a/arch/x86/events/intel/core.c
+> +++ b/arch/x86/events/intel/core.c
+> @@ -3627,6 +3627,15 @@ static int core_pmu_hw_config(struct per
+>   	return intel_pmu_bts_config(event);
+>   }
+>   
+> +#define INTEL_TD_METRIC_AVAILABLE_MAX	(INTEL_TD_METRIC_RETIRING + \
+> +					 ((x86_pmu.num_topdown_events - 1) << 8))
+> +
+> +static bool is_available_metric_event(struct perf_event *event)
+> +{
+> +	return is_metric_event(event) &&
+> +		event->attr.config <= INTEL_TD_METRIC_AVAILABLE_MAX;
+> +}
+> +
+>   static inline bool is_mem_loads_event(struct perf_event *event)
+>   {
+>   	return (event->attr.config & INTEL_ARCH_EVENT_MASK) == X86_CONFIG(.event=0xcd, .umask=0x01);
+> @@ -3711,7 +3720,7 @@ static int intel_pmu_hw_config(struct pe
+>   		if (event->attr.config & X86_ALL_EVENT_FLAGS)
+>   			return -EINVAL;
+>   
+> -		if (is_metric_event(event)) {
+> +		if (is_available_metric_event(event)) {
+>   			struct perf_event *leader = event->group_leader;
+>   
+>   			/* The metric events don't support sampling. */
+> --- a/arch/x86/events/perf_event.h
+> +++ b/arch/x86/events/perf_event.h
+> @@ -87,7 +87,14 @@ static inline bool is_topdown_count(stru
+>   	return event->hw.flags & PERF_X86_EVENT_TOPDOWN;
+>   }
+>   
+> -static inline bool is_metric_event(struct perf_event *event);
+> +static inline bool is_metric_event(struct perf_event *event)
+> +{
+> +	u64 config = event->attr.config;
+> +
+> +	return ((config & ARCH_PERFMON_EVENTSEL_EVENT) == 0) &&
+> +		((config & INTEL_ARCH_EVENT_MASK) >= INTEL_TD_METRIC_RETIRING)  &&
+> +		((config & INTEL_ARCH_EVENT_MASK) <= INTEL_TD_METRIC_MAX);
+> +}
+>   
+>   static inline bool is_slots_event(struct perf_event *event)
+>   {
+> @@ -901,18 +908,6 @@ static struct perf_pmu_events_ht_attr ev
+>   struct pmu *x86_get_pmu(void);
+>   extern struct x86_pmu x86_pmu __read_mostly;
+>   
+> -#define INTEL_TD_METRIC_AVAILABLE_MAX	(INTEL_TD_METRIC_RETIRING + \
+> -					 ((x86_pmu.num_topdown_events - 1) << 8))
+> -
+> -static inline bool is_metric_event(struct perf_event *event)
+> -{
+> -	u64 config = event->attr.config;
+> -
+> -	return ((config & ARCH_PERFMON_EVENTSEL_EVENT) == 0) &&
+> -		((config & INTEL_ARCH_EVENT_MASK) >= INTEL_TD_METRIC_RETIRING)  &&
+> -		((config & INTEL_ARCH_EVENT_MASK) <= INTEL_TD_METRIC_AVAILABLE_MAX);
+> -}
+> -
+>   static __always_inline struct x86_perf_task_context_opt *task_context_opt(void *ctx)
+>   {
+>   	if (static_cpu_has(X86_FEATURE_ARCH_LBR))
+> --- a/arch/x86/include/asm/perf_event.h
+> +++ b/arch/x86/include/asm/perf_event.h
+> @@ -284,10 +284,12 @@ struct x86_pmu_capability {
+>   #define INTEL_TD_METRIC_BAD_SPEC		0x8100	/* Bad speculation metric */
+>   #define INTEL_TD_METRIC_FE_BOUND		0x8200	/* FE bound metric */
+>   #define INTEL_TD_METRIC_BE_BOUND		0x8300	/* BE bound metric */
+> -#define INTEL_TD_METRIC_HEAVY_OPS		0x8400	/* Heavy Operations metric */
+> -#define INTEL_TD_METRIC_BR_MISPREDICT		0x8500	/* Branch Mispredict metric */
+> -#define INTEL_TD_METRIC_FETCH_LAT		0x8600	/* Fetch Latency metric */
+> -#define INTEL_TD_METRIC_MEM_BOUND		0x8700	/* Memory bound metric */
+> +/* Level 2 metrics */
+> +#define INTEL_TD_METRIC_HEAVY_OPS		0x8400  /* Heavy Operations metric */
+> +#define INTEL_TD_METRIC_BR_MISPREDICT		0x8500  /* Branch Mispredict metric */
+> +#define INTEL_TD_METRIC_FETCH_LAT		0x8600  /* Fetch Latency metric */
+> +#define INTEL_TD_METRIC_MEM_BOUND		0x8700  /* Memory bound metric */
+> +
+>   #define INTEL_TD_METRIC_MAX			INTEL_TD_METRIC_MEM_BOUND
+>   #define INTEL_TD_METRIC_NUM			8
+>   
+> --- a/include/uapi/linux/perf_event.h
+> +++ b/include/uapi/linux/perf_event.h
+> @@ -908,7 +908,6 @@ enum perf_event_type {
+>   	 *			u32	var1_dw;
+>   	 *		} && PERF_SAMPLE_WEIGHT_STRUCT
+>   	 *	#endif
+> -	 *
+>   	 *	 }
+>   	 *	}
+>   	 *	{ u64			data_src; } && PERF_SAMPLE_DATA_SRC
+> @@ -1276,29 +1275,23 @@ struct perf_branch_entry {
+>   		reserved:40;
+>   };
+>   
+> -#if defined(__LITTLE_ENDIAN_BITFIELD)
+>   union perf_sample_weight {
+>   	__u64		full;
+> +#if defined(__LITTLE_ENDIAN_BITFIELD)
+>   	struct {
+>   		__u32	var1_dw;
+>   		__u16	var2_w;
+>   		__u16	var3_w;
+>   	};
+> -};
+> -
+>   #elif defined(__BIG_ENDIAN_BITFIELD)
+> -
+> -union perf_sample_weight {
+> -	__u64		full;
+>   	struct {
+>   		__u16	var3_w;
+>   		__u16	var2_w;
+>   		__u32	var1_dw;
+>   	};
+> -};
+> -
+>   #else
+>   #error "Unknown endianness"
+>   #endif
+> +};
+>   
+>   #endif /* _UAPI_LINUX_PERF_EVENT_H */
 > 
-> This way, users wouldn't need to care which backend is used by trusted keys
-> (TPM/OP-TEE/CAAM/...). That would make use-cases where a random key is not
-> suitable as straight-forward as the those where a random key is OK.
-
-As I said above, the "encrypted" key update doesn't change the key data
-used for encrypting/decrypting storage in the dm-crypt case, it just
-updates the key under which it is encrypted/signed.
-
-Yes, the reason for using an encrypted "trusted" key, as opposed to an
-encrypted "user" key, is that the "trusted" key is encrypted/decrypted
-by the TPM and never exposed to userspace in the clear.
-
-It doesn't sound like you're wanting to update the storage key in the
-field, just the key used to encrypt/decrypt that key.  So I'm still not
-clear as to why you would want an initial non-random encrypted key. 
-Providing that key on the command line certaining isn't a good idea.
-
-Mimi
-
