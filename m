@@ -2,106 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05DAB30A1C2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:01:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C3C30A1C5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:02:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231773AbhBAGAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 01:00:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59520 "EHLO
+        id S231853AbhBAGCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 01:02:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231636AbhBAF5t (ORCPT
+        with ESMTP id S231835AbhBAF6g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 00:57:49 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99321C0613D6;
-        Sun, 31 Jan 2021 21:57:09 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id a20so9647885pjs.1;
-        Sun, 31 Jan 2021 21:57:09 -0800 (PST)
+        Mon, 1 Feb 2021 00:58:36 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D8EC0613ED;
+        Sun, 31 Jan 2021 21:57:18 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id z9so1698767pjl.5;
+        Sun, 31 Jan 2021 21:57:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=zRs35J+9jM+mMBXrhR0hY7dunGBK3siVA/0rJv1BtSU=;
-        b=t9hHWfwLooMNi+qvk9J1pxvRmvzqq3igPQ7GJQwc5bwvUVLAruPSRLjrjY3gNhA4eu
-         pQjWogkhpdC01hXmO+BhCzevvzqUp0a79Ci2pxJHIgQRxCOu30l27uHPUouthN2M1+pF
-         BUmMhBVOzkFpJE/xkbxO7j1TFQeBf5BXTEKDWdsry0bxasJm9j2PexsSxM/5kU6ascw2
-         zGhjt0GEuXJAwhh7FM/iHXTHLIpF1N3bT4+h4mcVLPJZAOeCRsgUZ6vEggCKVAQ3OM2S
-         +GHmcF0d+3wA6xK/NDdoJPt1zXrTWML3Jb8KEy6TgImaX+6uXaVjeBPoxnv2pElpdZfM
-         FmkA==
+        bh=u9WcgY/7dzWX3O9rNeZQ45WY9vESYPTTGXpSkl0YUkI=;
+        b=Ih0G2mIOJJKmBb2ZACWolGcOpStbwLKcyk6kFoADEB0DP5RFHVEQumuS4q1QL6gRhx
+         XymbM/t3dKVkAO2sV6yIHPRjw93zfHa/7CSinrC2hfs9k0QVVs5hJ8g8APHdfTjetOtk
+         yKHRMGH37CXPXbVtEgNJSPQ9s5dHSs7HprVGRGLZHFR7i7UMz3NO2acZuKmAHVqlUcQp
+         q4z627DeuguOgMLczPFgl5UeNWiVCe1dPCmCEf2VosjvxwZs9qHAW927MooWjH0hbFF2
+         4cIngYZIjDY/Pa2MflMjZSp1hHe1eHHaFX/koE6Ag5nd/4yQ/aVtpBOKd0HXf798WSU7
+         vHpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=zRs35J+9jM+mMBXrhR0hY7dunGBK3siVA/0rJv1BtSU=;
-        b=ZEkSZaBbdxy4mChTvYFCQmJjMCt7Nl3DD2Xc6Ceb+ZQPBHVTGgVdEoKSOSuaW7e+zE
-         wcOffiy3/Qv6DdHpVY9DsuvrcOjjn2bxjjRfTG+Pzq1HwtA7W2lijZyE/r8fZbQOkPnu
-         lbhkM6z5n/9tUNwSwnmXDO9m/iK7XRNQCot0nhNHR79dTIDusFH/ZYe0c0wOV0RQG/Yb
-         fRFI9KhdJW43m4ljmXBrqSFyGRFi8xb+WlSg9VjE7Z4x2sM5fmkOlH1wRKyeOSYI41m2
-         zZSNqE0DkoaPyd32hy17UIAD1IWgduO0HQKz5Md/zRIykMB6UyTI5YC7sn/0AO/v5Hv2
-         vUig==
-X-Gm-Message-State: AOAM531Gqb+TXdA0/cVPoBWFvIcBE+InI5HdIyRvVtK3DSwpQx8U5gOc
-        mV/cBUZgkBAPaUNkJd8+WLI=
-X-Google-Smtp-Source: ABdhPJzBOmZj5yUpp9460gkMGk7iG4gIAeVGl1jmc69B+H1YlctVewE/+lxTp4AX/X4pauYGCRYSdQ==
-X-Received: by 2002:a17:902:724b:b029:de:229a:47f1 with SMTP id c11-20020a170902724bb02900de229a47f1mr16508347pll.10.1612159029176;
-        Sun, 31 Jan 2021 21:57:09 -0800 (PST)
-Received: from tj.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id e12sm16700820pga.13.2021.01.31.21.57.06
+        bh=u9WcgY/7dzWX3O9rNeZQ45WY9vESYPTTGXpSkl0YUkI=;
+        b=fIaTjOlvpVtSW+RfMEYgkl6GeK2zw4OaMkHMPaj9Oz2dYAfE23C9N4ZrhQtMRnPz/5
+         /DfFUIcJ8Btb3TDmoXMK1uE1/bE8puSbDQePBafskkwgIcsJgvL41kz5TsAlHGqo1KDe
+         glOMnwiXDlLJ4TV5ukYj2VJNoqO5YVPym+E8EJzl90mfdB/uKDqksJyEStnYUvw3aGp/
+         yrHKadep4tm6f99k1F4hQYJj7V0n+Hll9P+ML0npDvp9ENO8cN+gNsoN1qNEjjBVaOKM
+         hxqvaqPpC9dBsD2w+INpcOJ5S+Lm0CFcJU6ydH/K1a/J4OfEJdrVrz90KEMRy1nF14eO
+         xR5g==
+X-Gm-Message-State: AOAM531aeT4JlUEiC6MwHkUmVZ3X9YqxMCrz9JrBeCCstAvZ5s10qWCw
+        4mH5wIrckPCZXgyQJMYRzEM=
+X-Google-Smtp-Source: ABdhPJxl+cgcAoXEBEpC1VwLLcuK8i3ig1a4dYX68teiMTM77/zkxVELptriuY7MljTxLwmUrn+BUg==
+X-Received: by 2002:a17:902:e812:b029:de:5af2:3d09 with SMTP id u18-20020a170902e812b02900de5af23d09mr16457146plg.33.1612159038341;
+        Sun, 31 Jan 2021 21:57:18 -0800 (PST)
+Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:f50:a17:3dc5:18ab])
+        by smtp.gmail.com with ESMTPSA id x63sm16992608pfc.145.2021.01.31.21.57.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Jan 2021 21:57:08 -0800 (PST)
-From:   Yue Hu <zbestahu@gmail.com>
-To:     ulf.hansson@linaro.org
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, zhangwen@yulong.com, zbestahu@163.com
-Subject: [PATCH] mmc: core: Use host instead of card argument to mmc_spi_send_csd()
-Date:   Mon,  1 Feb 2021 13:55:07 +0800
-Message-Id: <20210201055507.542-1-zbestahu@gmail.com>
-X-Mailer: git-send-email 2.29.2.windows.3
+        Sun, 31 Jan 2021 21:57:17 -0800 (PST)
+From:   Xie He <xie.he.0141@gmail.com>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Martin Schiller <ms@dev.tdt.de>
+Cc:     Xie He <xie.he.0141@gmail.com>
+Subject: [PATCH net] net: lapb: Copy the skb before sending a packet
+Date:   Sun, 31 Jan 2021 21:57:06 -0800
+Message-Id: <20210201055706.415842-1-xie.he.0141@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yue Hu <huyue2@yulong.com>
+When sending a packet, we will prepend it with an LAPB header.
+This modifies the shared parts of a cloned skb, so we should copy the
+skb rather than just clone it, before we prepend the header.
 
-Since mmc_send_cxd_data() does not care card if opcode is MMC_SEND_CSD.
+In "Documentation/networking/driver.rst" (the 2nd point), it states
+that drivers shouldn't modify the shared parts of a cloned skb when
+transmitting.
 
-Signed-off-by: Yue Hu <huyue2@yulong.com>
+The "dev_queue_xmit_nit" function in "net/core/dev.c", which is called
+when an skb is being sent, clones the skb and sents the clone to
+AF_PACKET sockets. Because the LAPB drivers first remove a 1-byte
+pseudo-header before handing over the skb to us, if we don't copy the
+skb before prepending the LAPB header, the first byte of the packets
+received on AF_PACKET sockets can be corrupted.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Cc: Martin Schiller <ms@dev.tdt.de>
+Signed-off-by: Xie He <xie.he.0141@gmail.com>
 ---
- drivers/mmc/core/mmc_ops.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/lapb/lapb_out.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
-index baa6314..265d95e 100644
---- a/drivers/mmc/core/mmc_ops.c
-+++ b/drivers/mmc/core/mmc_ops.c
-@@ -296,7 +296,7 @@ int mmc_set_relative_addr(struct mmc_card *card)
- 	return 0;
- }
+diff --git a/net/lapb/lapb_out.c b/net/lapb/lapb_out.c
+index 7a4d0715d1c3..a966d29c772d 100644
+--- a/net/lapb/lapb_out.c
++++ b/net/lapb/lapb_out.c
+@@ -82,7 +82,8 @@ void lapb_kick(struct lapb_cb *lapb)
+ 		skb = skb_dequeue(&lapb->write_queue);
  
--static int mmc_spi_send_csd(struct mmc_card *card, u32 *csd)
-+static int mmc_spi_send_csd(struct mmc_host *host, u32 *csd)
- {
- 	int ret, i;
- 	__be32 *csd_tmp;
-@@ -305,7 +305,7 @@ static int mmc_spi_send_csd(struct mmc_card *card, u32 *csd)
- 	if (!csd_tmp)
- 		return -ENOMEM;
- 
--	ret = mmc_send_cxd_data(card, card->host, MMC_SEND_CSD, csd_tmp, 16);
-+	ret = mmc_send_cxd_data(NULL, host, MMC_SEND_CSD, csd_tmp, 16);
- 	if (ret)
- 		goto err;
- 
-@@ -320,7 +320,7 @@ static int mmc_spi_send_csd(struct mmc_card *card, u32 *csd)
- int mmc_send_csd(struct mmc_card *card, u32 *csd)
- {
- 	if (mmc_host_is_spi(card->host))
--		return mmc_spi_send_csd(card, csd);
-+		return mmc_spi_send_csd(card->host, csd);
- 
- 	return mmc_send_cxd_native(card->host, card->rca << 16,	csd,
- 				MMC_SEND_CSD);
+ 		do {
+-			if ((skbn = skb_clone(skb, GFP_ATOMIC)) == NULL) {
++			skbn = skb_copy(skb, GFP_ATOMIC);
++			if (!skbn) {
+ 				skb_queue_head(&lapb->write_queue, skb);
+ 				break;
+ 			}
 -- 
-1.9.1
+2.27.0
 
