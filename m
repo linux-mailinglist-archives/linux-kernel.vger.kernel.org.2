@@ -2,127 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38A3B30A73D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:08:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A1C30A807
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:52:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231150AbhBAMIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 07:08:20 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11997 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231322AbhBAMGd (ORCPT
+        id S231761AbhBAMv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 07:51:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231486AbhBAMvx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 07:06:33 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DTmpB4Pl5zjHSs;
-        Mon,  1 Feb 2021 20:04:34 +0800 (CST)
-Received: from huawei.com (10.175.124.27) by DGGEMS412-HUB.china.huawei.com
- (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Mon, 1 Feb 2021
- 20:05:44 +0800
-From:   wanghongzhe <wanghongzhe@huawei.com>
-To:     <keescook@chromium.org>, <luto@amacapital.net>, <wad@chromium.org>,
-        <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
-        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
-        <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>
-CC:     <wanghongzhe@huawei.com>
-Subject: [PATCH] seccomp: Improve performance by optimizing memory barrier
-Date:   Mon, 1 Feb 2021 20:50:30 +0800
-Message-ID: <1612183830-15506-1-git-send-email-wanghongzhe@huawei.com>
-X-Mailer: git-send-email 1.7.12.4
+        Mon, 1 Feb 2021 07:51:53 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DF25C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 04:51:12 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id z22so18684768edb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 04:51:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=99K/EF8ap1CiP71x9aIjvCk10jXDUyV7c2MsOixEVK4=;
+        b=Y3Nnz8aBRx6Xlc+J5On8wHvesnKtUu0cbQXCzgimdqjPKtjCPm+VMJJ+uPo9Z+tuXc
+         zUEfh0o1RlDTdpxuDg2tBLqnY1xQ8IOBtVDXPXSX3FUU6QowiErZDZlumLCYXHNjSWDX
+         ltHaMtmmOoIzjmPRr86YXUFS+g+I53NGga4nkPel6I8ylQQQBJXmHs+fyICNBrOcfdD/
+         0YmofOgHtgEjCVZCU3FwpzdoTf5hiIf+MjrujbnjrF16nIwLNFLPtYMqHocCix4Mnj2F
+         4X/5mOuchXexuQFYn7+1d8H+mdK60Kh+fpua1B/5XEPAptQHGWG4V2nQ/r10rNmOd3Nk
+         yxlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=99K/EF8ap1CiP71x9aIjvCk10jXDUyV7c2MsOixEVK4=;
+        b=osqFkBfU7dB2M2r8VTch4fxeG/draXY+OisME8amhgy80fy4szY/7m1/PW7kDk1PET
+         0P10rEeh4FSyKo4l8T7t00J4aneM4iBfCXpqtMD+bKnmV/9uzaN7C/IOjdqwySFkLttr
+         ssdJGBgfprSHCHBvld0aJ9yyZYzw2OXT3DR/FFqF77jEbr7BA9jgrGPvE7vBWcV+VpZm
+         rjZwOzHykyBwtpM61Q4rQoQU36jrU8+yKhVIVV0KDkyxwtKnY1p61VSJGbsGLw0Dx1JM
+         bGpomv2hHaDVSqlTpScBgnJwGiXHD4o8F3M+iqC2Dyzrgj8/vORC+YhOum1G7WO2KMoN
+         ByRA==
+X-Gm-Message-State: AOAM530erckNPrpn1TqofRUGhnatsGSr+k+KIIU2NJeg0Ic/k6S9lunw
+        XQtg19Dhxm7wFfplpWoFCcVuGMiwE2sEF1+OqsElKQ==
+X-Google-Smtp-Source: ABdhPJxEJIiYWFh5liELORkIrjhm4NMzljbFC5qJG+8hvYvuAIRHvURuyUo7jeO+MTq0Cvi556IKvPL/Jxc6zm9Lmjk=
+X-Received: by 2002:aa7:d60f:: with SMTP id c15mr18475109edr.232.1612183870704;
+ Mon, 01 Feb 2021 04:51:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
+References: <20210129134624.9247-1-brgl@bgdev.pl> <20210130212009.2uugdj6vmisegau2@pengutronix.de>
+ <CAMRc=MdwoJCw1-BdNRnfRFaXYfZD0+vn_8yq0J+rshHqZMdDXQ@mail.gmail.com> <20210201092436.srqgfemnchyuubsf@pengutronix.de>
+In-Reply-To: <20210201092436.srqgfemnchyuubsf@pengutronix.de>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 1 Feb 2021 13:50:59 +0100
+Message-ID: <CAMRc=McfTsAw4d+hEeRzm5XZ0uGiWEZYCjyFP0xTvN=L1gYh3A@mail.gmail.com>
+Subject: Re: [PATCH 0/8] gpio: implement the configfs testing module
+To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Joel Becker <jlbec@evilplan.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a thread(A)'s TSYNC flag is set from seccomp(), then it will
-synchronize its seccomp filter to other threads(B) in same thread
-group. To avoid race condition, seccomp puts rmb() between
-reading the mode and filter in seccomp check patch(in B thread).
-As a result, every syscall's seccomp check is slowed down by the
-memory barrier.
+On Mon, Feb 1, 2021 at 10:24 AM Uwe Kleine-K=C3=B6nig
+<u.kleine-koenig@pengutronix.de> wrote:
+>
+> On Mon, Feb 01, 2021 at 09:37:30AM +0100, Bartosz Golaszewski wrote:
+> > On Sat, Jan 30, 2021 at 10:20 PM Uwe Kleine-K=C3=B6nig
+> > <u.kleine-koenig@pengutronix.de> wrote:
+> > >
+> > > Hello,
+> > >
+> > > On Fri, Jan 29, 2021 at 02:46:16PM +0100, Bartosz Golaszewski wrote:
+> > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > > >
+> > > > This series adds a new GPIO testing module based on configfs commit=
+table items
+> > > > and sysfs. The goal is to provide a testing driver that will be con=
+figurable
+> > > > at runtime (won't need module reload) and easily extensible. The co=
+ntrol over
+> > > > the attributes is also much more fine-grained than in gpio-mockup.
+> > > >
+> > > > I am aware that Uwe submitted a virtual driver called gpio-simulato=
+r some time
+> > > > ago and I was against merging it as it wasn't much different from g=
+pio-mockup.
+> > > > I would ideally want to have a single testing driver to maintain so=
+ I am
+> > > > proposing this module as a replacement for gpio-mockup but since se=
+lftests
+> > > > and libgpiod depend on it and it also has users in the community, w=
+e can't
+> > > > outright remove it until everyone switched to the new interface. As=
+ for Uwe's
+> > > > idea for linking two simulated chips so that one controls the other=
+ - while
+> > > > I prefer to have an independent code path for controlling the lines=
+ (hence
+> > > > the sysfs attributes), I'm open to implementing it in this new driv=
+er. It
+> > > > should be much more feature friendly thanks to configfs than gpio-m=
+ockup.
+> > >
+> > > Funny you still think about my simulator driver. I recently thought
+> >
+> > It's because I always feel bad when I refuse to merge someone's hard wo=
+rk.
+> >
+> > > about reanimating it for my private use. The idea was to implement a
+> > > rotary-encoder driver (that contrast to
+> > > drivers/input/misc/rotary_encoder.c really implements an encoder and =
+not
+> > > a decoder). With the two linked chips I can plug
+> > > drivers/input/misc/rotary_encoder.c on one side and my encoder on the
+> > > other to test both drivers completely in software.
+> > >
+> > > I didn't look into your driver yet, but getting such a driver into
+> > > mainline would be very welcome!
+> > >
+> >
+> > My idea for linking chips (although that's not implemented yet) is an
+> > attribute in each configfs group called 'link' or something like that,
+> > that would take as argument the name of the chip to link to making the
+> > 'linker' the input and the 'linkee' the output.
+>
+> I still wonder why you prefer to drive the lines using configfs (or
+> sysfs before). Using the idea of two interlinked chips and being able to
+> use gpio functions on one side to modify the other side is (in my eyes)
+> so simple and beautiful that it's obviously the right choice. But note I
+> still didn't look into details so there might be stuff you can modify
+> that wouldn't be possible with my idea. But obviously your mileage
+> varies here.
+>
 
-However, we can optimize it by calling rmb() only when filter is
-NULL and reading it again after the barrier, which means the rmb()
-is called only once in thread lifetime.
+Not only drive but also check the input mode using a different code
+path. My thinking is this: if, for example, we're checking the input
+mode, let's not involve the core gpiolib's output code from a
+different chip. Let's try to isolate the specific use-cases. Keep in
+mind that my particular use-case is testing the uAPI with libgpiod's
+test suite.
 
-The 'filter is NULL' conditon means that it is the first time
-attaching filter and is by other thread(A) using TSYNC flag.
-In this case, thread B may read the filter first and mode later
-in CPU out-of-order exection. After this time, the thread B's
-mode is always be set, and there will no race condition with the
-filter/bitmap.
+Also: previously it was debugfs, now we're switching to configs (for
+configuring the devices) and sysfs (for controlling them).
 
-In addtion, we should puts a write memory barrier between writing
-the filter and mode in smp_mb__before_atomic(), to avoid
-the race condition in TSYNC case.
-
-Signed-off-by: wanghongzhe <wanghongzhe@huawei.com>
----
- kernel/seccomp.c | 31 ++++++++++++++++++++++---------
- 1 file changed, 22 insertions(+), 9 deletions(-)
-
-diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-index 952dc1c90229..b944cb2b6b94 100644
---- a/kernel/seccomp.c
-+++ b/kernel/seccomp.c
-@@ -397,8 +397,20 @@ static u32 seccomp_run_filters(const struct seccomp_data *sd,
- 			READ_ONCE(current->seccomp.filter);
- 
- 	/* Ensure unexpected behavior doesn't result in failing open. */
--	if (WARN_ON(f == NULL))
--		return SECCOMP_RET_KILL_PROCESS;
-+	if (WARN_ON(f == NULL)) {
-+		/*
-+		 * Make sure the first filter addtion (from another
-+		 * thread using TSYNC flag) are seen.
-+		 */
-+		rmb();
-+		
-+		/* Read again */
-+		f = READ_ONCE(current->seccomp.filter);
-+
-+		/* Ensure unexpected behavior doesn't result in failing open. */
-+		if (WARN_ON(f == NULL))
-+			return SECCOMP_RET_KILL_PROCESS;
-+	}
- 
- 	if (seccomp_cache_check_allow(f, sd))
- 		return SECCOMP_RET_ALLOW;
-@@ -614,9 +626,16 @@ static inline void seccomp_sync_threads(unsigned long flags)
- 		 * equivalent (see ptrace_may_access), it is safe to
- 		 * allow one thread to transition the other.
- 		 */
--		if (thread->seccomp.mode == SECCOMP_MODE_DISABLED)
-+		if (thread->seccomp.mode == SECCOMP_MODE_DISABLED) {
-+			/*
-+			 * Make sure mode cannot be set before the filter
-+			 * are set.
-+			 */
-+			smp_mb__before_atomic();
-+
- 			seccomp_assign_mode(thread, SECCOMP_MODE_FILTER,
- 					    flags);
-+		}
- 	}
- }
- 
-@@ -1160,12 +1179,6 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
- 	int data;
- 	struct seccomp_data sd_local;
- 
--	/*
--	 * Make sure that any changes to mode from another thread have
--	 * been seen after SYSCALL_WORK_SECCOMP was seen.
--	 */
--	rmb();
--
- 	if (!sd) {
- 		populate_seccomp_data(&sd_local);
- 		sd = &sd_local;
--- 
-2.19.1
-
+Bart
