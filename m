@@ -2,86 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C3030A5AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:43:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A5830A5A6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:42:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233266AbhBAKnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 05:43:31 -0500
-Received: from mga11.intel.com ([192.55.52.93]:53264 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233332AbhBAKkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 05:40:40 -0500
-IronPort-SDR: YTZ+V0lCXmIe1zYXMfF8siWCwRbKE74t7Hr9m/E6fX+CwoMmh6tt429Ls3u1JYezlV7+ifMD9j
- 4WjDqQmhNp1w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="177158282"
-X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
-   d="scan'208";a="177158282"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 02:38:50 -0800
-IronPort-SDR: Tom3amIGGirqc4JKwoq6x18HoCce2aZEX+Avb9Akh1mQgGGpD59NwSwwxvUfQNknwUv6MHqTpF
- JzUJmFJusHTQ==
-X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
-   d="scan'208";a="390847886"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 02:38:48 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l6WbV-0016OE-By; Mon, 01 Feb 2021 12:38:45 +0200
-Date:   Mon, 1 Feb 2021 12:38:45 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     mail@richard-neumann.de
-Cc:     syniurge@gmail.com, nehal-bakulchandra.shah@amd.com,
-        shyam-sundar.s-k@amd.com, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] i2c: i2c-amd-mp2: Remove unused macro
-Message-ID: <YBfaNQbiUNRvQNli@smile.fi.intel.com>
-References: <20210129192553.55906-1-mail@richard-neumann.de>
- <20210129192553.55906-3-mail@richard-neumann.de>
+        id S233200AbhBAKmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 05:42:39 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:46948 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233296AbhBAKjw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 05:39:52 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UNYB3r1_1612175940;
+Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UNYB3r1_1612175940)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 01 Feb 2021 18:39:01 +0800
+Subject: Re: [PATCH v6 2/4] x509: Detect sm2 keys by their parameters OID
+To:     Stefan Berger <stefanb@linux.ibm.com>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org,
+        David Howells <dhowells@redhat.com>
+References: <20210131233301.1301787-1-stefanb@linux.ibm.com>
+ <20210131233301.1301787-3-stefanb@linux.ibm.com>
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Message-ID: <75a8ff37-3c23-6cf1-f844-cf692eb8adfc@linux.alibaba.com>
+Date:   Mon, 1 Feb 2021 18:39:00 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210129192553.55906-3-mail@richard-neumann.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210131233301.1301787-3-stefanb@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 08:25:53PM +0100, mail@richard-neumann.de wrote:
-> From: Richard Neumann <mail@richard-neumann.de>
+
+
+On 2/1/21 7:32 AM, Stefan Berger wrote:
+> Detect whether a key is an sm2 type of key by its OID in the parameters
+> array rather than assuming that everything under OID_id_ecPublicKey
+> is sm2, which is not the case.
 > 
-> Remove unused work_amd_i2c_common macro.
-
-I think I gave you a tag on this. If no, here it is
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-Please carry it on in a new versions (as a part of the commit message,
-tag block, usually after your SoB in chronological order of receiving).
-
-> Signed-off-by: Richard Neumann <mail@richard-neumann.de>
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> Cc: David Howells <dhowells@redhat.com>
+> Cc: keyrings@vger.kernel.org
 > ---
->  drivers/i2c/busses/i2c-amd-mp2.h | 3 ---
->  1 file changed, 3 deletions(-)
+>   crypto/asymmetric_keys/x509_cert_parser.c | 12 +++++++++++-
+>   include/linux/oid_registry.h              |  1 +
+>   lib/oid_registry.c                        | 13 +++++++++++++
+>   3 files changed, 25 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/i2c/busses/i2c-amd-mp2.h b/drivers/i2c/busses/i2c-amd-mp2.h
-> index 6b91e285745d..ddecd0c88656 100644
-> --- a/drivers/i2c/busses/i2c-amd-mp2.h
-> +++ b/drivers/i2c/busses/i2c-amd-mp2.h
-> @@ -185,9 +185,6 @@ struct amd_mp2_dev {
->  	unsigned int probed;
->  };
->  
-> -#define work_amd_i2c_common(__work) \
-> -	container_of(__work, struct amd_i2c_common, work.work)
-> -
->  /* PCIe communication driver */
->  
->  int amd_mp2_rw(struct amd_i2c_common *i2c_common, enum i2c_cmd reqcmd);
-> -- 
-> 2.30.0
+> diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
+> index 52c9b455fc7d..1621ceaf5c95 100644
+> --- a/crypto/asymmetric_keys/x509_cert_parser.c
+> +++ b/crypto/asymmetric_keys/x509_cert_parser.c
+> @@ -459,6 +459,7 @@ int x509_extract_key_data(void *context, size_t hdrlen,
+>   			  const void *value, size_t vlen)
+>   {
+>   	struct x509_parse_context *ctx = context;
+> +	enum OID oid;
+>   
+>   	ctx->key_algo = ctx->last_oid;
+>   	switch (ctx->last_oid) {
+> @@ -470,7 +471,16 @@ int x509_extract_key_data(void *context, size_t hdrlen,
+>   		ctx->cert->pub->pkey_algo = "ecrdsa";
+>   		break;
+>   	case OID_id_ecPublicKey:
+> -		ctx->cert->pub->pkey_algo = "sm2";
+> +		if (parse_OID(ctx->params, ctx->params_size, &oid) != 0)
+> +			return -EBADMSG;
+> +
+> +		switch (oid) {
+> +		case OID_sm2:
+> +			ctx->cert->pub->pkey_algo = "sm2";
+> +			break;
+> +		default:
+> +			return -ENOPKG;
+> +		}
+>   		break;
+>   	default:
+>   		return -ENOPKG;
+> diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
+> index 4462ed2c18cd..d4982e42c0d2 100644
+> --- a/include/linux/oid_registry.h
+> +++ b/include/linux/oid_registry.h
+> @@ -117,6 +117,7 @@ enum OID {
+>   };
+>   
+>   extern enum OID look_up_OID(const void *data, size_t datasize);
+> +extern int parse_OID(const void *data, size_t datasize, enum OID *oid);
+>   extern int sprint_oid(const void *, size_t, char *, size_t);
+>   extern int sprint_OID(enum OID, char *, size_t);
+>   
+> diff --git a/lib/oid_registry.c b/lib/oid_registry.c
+> index f7ad43f28579..508e0b34b5f0 100644
+> --- a/lib/oid_registry.c
+> +++ b/lib/oid_registry.c
+> @@ -11,6 +11,7 @@
+>   #include <linux/kernel.h>
+>   #include <linux/errno.h>
+>   #include <linux/bug.h>
+> +#include <linux/asn1.h>
+>   #include "oid_registry_data.c"
+>   
+>   MODULE_DESCRIPTION("OID Registry");
+> @@ -92,6 +93,18 @@ enum OID look_up_OID(const void *data, size_t datasize)
+>   }
+>   EXPORT_SYMBOL_GPL(look_up_OID);
+>   
+> +int parse_OID(const void *data, size_t datasize, enum OID *oid)
+> +{
+> +	const unsigned char *v = data;
+> +
+> +	if (datasize < 2 || v[0] != ASN1_OID || v[1] != datasize - 2)
+> +		return -EBADMSG;
+> +
+> +	*oid = look_up_OID(data + 2, datasize - 2);
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(parse_OID);
+> +
+>   /*
+>    * sprint_OID - Print an Object Identifier into a buffer
+>    * @data: The encoded OID to print
 > 
 
--- 
-With Best Regards,
-Andy Shevchenko
+Great job, I'm just curious why we need to add a new function, this 
+seems unnecessary, if possible, please add
 
+Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
+Best regards,
+Tianjia
