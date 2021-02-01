@@ -2,88 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C3D30A227
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:44:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEFDF30A121
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 06:17:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232301AbhBAGoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 01:44:25 -0500
-Received: from mga17.intel.com ([192.55.52.151]:9254 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231513AbhBAFZ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 00:25:57 -0500
-IronPort-SDR: sJLq/ATtHEar+p4mTKyiXdf6/Ln5AkGcDfsK6g5awEz/Oh/qsEaESmkRVc/tmRPYuNhBveAwXt
- 1W4QMIuobFTQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="160401854"
-X-IronPort-AV: E=Sophos;i="5.79,391,1602572400"; 
-   d="scan'208";a="160401854"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2021 21:17:39 -0800
-IronPort-SDR: qYLShahsDQnOc5eCpWaICfHY+mfxnKdCTdXP0KwuqDV+ks+zV0MhHIH9lP677H1PeqJOxOttZp
- sl+kPuymgD4w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,391,1602572400"; 
-   d="scan'208";a="390694331"
-Received: from clx-ap-likexu.sh.intel.com ([10.239.48.108])
-  by orsmga008.jf.intel.com with ESMTP; 31 Jan 2021 21:17:36 -0800
-From:   Like Xu <like.xu@linux.intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, ak@linux.intel.com,
-        wei.w.wang@intel.com, kan.liang@intel.com,
-        alex.shi@linux.alibaba.com, kvm@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v14 10/11] KVM: vmx/pmu: Expose LBR_FMT in the MSR_IA32_PERF_CAPABILITIES
-Date:   Mon,  1 Feb 2021 13:10:38 +0800
-Message-Id: <20210201051039.255478-11-like.xu@linux.intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210201051039.255478-1-like.xu@linux.intel.com>
-References: <20210201051039.255478-1-like.xu@linux.intel.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S229787AbhBAFRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 00:17:11 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:57966 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229515AbhBAFPo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 00:15:44 -0500
+Received: from epcas3p4.samsung.com (unknown [182.195.41.22])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210201051502epoutp047495534aa5f11b8c93518d1b30875ff2~fh8w4aapg2568925689epoutp04i
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 05:15:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210201051502epoutp047495534aa5f11b8c93518d1b30875ff2~fh8w4aapg2568925689epoutp04i
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1612156502;
+        bh=DQsAohp7eSFa2KD1KUeAEOSSbc/e06VHkggTf3NAU3c=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=LCrb868gfycrzdm5y9dQSrT/iN1ftEoQkbtL4Y8zsEg6NTu5BqhVKUaIKW89iom7o
+         pyZTkzulh9dm9g4nsoNKApTq9qNGH5IEfcXXAgyTbxpWkku+/oC2/O4/dBMHaHfyGV
+         bXqG/pf2VKx1+H1sERpV2NGthxU6LoGCBTjGWRXQ=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas3p3.samsung.com (KnoxPortal) with ESMTP id
+        20210201051502epcas3p3f5b41ab506a3ac3b3a0274622d3d815e~fh8wWQmde3126231262epcas3p3b;
+        Mon,  1 Feb 2021 05:15:02 +0000 (GMT)
+Received: from epcpadp3 (unknown [182.195.40.17]) by epsnrtp2.localdomain
+        (Postfix) with ESMTP id 4DTbjf1QD7z4x9Pt; Mon,  1 Feb 2021 05:15:02 +0000
+        (GMT)
+Mime-Version: 1.0
+Subject: RE: [PATCH 6/8] scsi: ufshpb: Add hpb dev reset response
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        Avri Altman <avri.altman@wdc.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <20210127151217.24760-7-avri.altman@wdc.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <1891546521.01612156502170.JavaMail.epsvc@epcpadp3>
+Date:   Mon, 01 Feb 2021 14:10:38 +0900
+X-CMS-MailID: 20210201051038epcms2p4125b764fa0caee066060b402a7e02904
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20210127151338epcas2p2c323a148587e311f7f5e19b4edbe43ec
+References: <20210127151217.24760-7-avri.altman@wdc.com>
+        <20210127151217.24760-1-avri.altman@wdc.com>
+        <CGME20210127151338epcas2p2c323a148587e311f7f5e19b4edbe43ec@epcms2p4>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Userspace could enable guest LBR feature when the exactly supported
-LBR format value is initialized to the MSR_IA32_PERF_CAPABILITIES
-and the LBR is also compatible with vPMU version and host cpu model.
+Hi Avri,
 
-The LBR could be enabled on the guest if host perf supports LBR
-(checked via x86_perf_get_lbr()) and the vcpu model is compatible
-with the host one.
+> +	list_for_each_entry_safe(rgn, next_rgn, &lru_info->lh_lru_rgn,
+> +				 list_lru_rgn)
+How about replace list_for_each_entry_safe to list_for_each_entry?
 
-Signed-off-by: Like Xu <like.xu@linux.intel.com>
----
- arch/x86/kvm/vmx/capabilities.h | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/kvm/vmx/capabilities.h b/arch/x86/kvm/vmx/capabilities.h
-index 57b940c613ab..c49f3ee8eca8 100644
---- a/arch/x86/kvm/vmx/capabilities.h
-+++ b/arch/x86/kvm/vmx/capabilities.h
-@@ -374,11 +374,18 @@ static inline bool vmx_pt_mode_is_host_guest(void)
- 
- static inline u64 vmx_get_perf_capabilities(void)
- {
-+	u64 perf_cap;
-+
-+	if (boot_cpu_has(X86_FEATURE_PDCM))
-+		rdmsrl(MSR_IA32_PERF_CAPABILITIES, perf_cap);
-+
-+	perf_cap &= PMU_CAP_LBR_FMT;
-+
- 	/*
- 	 * Since counters are virtualized, KVM would support full
- 	 * width counting unconditionally, even if the host lacks it.
- 	 */
--	return PMU_CAP_FW_WRITES;
-+	return PMU_CAP_FW_WRITES | perf_cap;
- }
- 
- static inline u64 vmx_supported_debugctl(void)
--- 
-2.29.2
-
+Thanks,
+Daejun
