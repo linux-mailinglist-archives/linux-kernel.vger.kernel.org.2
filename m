@@ -2,171 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1CE30A6C7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:46:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28BA930A6CA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:46:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229787AbhBALpo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 1 Feb 2021 06:45:44 -0500
-Received: from mail-oi1-f169.google.com ([209.85.167.169]:33276 "EHLO
-        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbhBALpm (ORCPT
+        id S229892AbhBALqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 06:46:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229481AbhBALqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 06:45:42 -0500
-Received: by mail-oi1-f169.google.com with SMTP id j25so18502402oii.0;
-        Mon, 01 Feb 2021 03:45:26 -0800 (PST)
+        Mon, 1 Feb 2021 06:46:03 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A4B1C06174A;
+        Mon,  1 Feb 2021 03:45:22 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id f16so12363690wmq.5;
+        Mon, 01 Feb 2021 03:45:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LTeob63vsmUobXodqAiG8SpUrpS7C8Uwp52f74LCJJg=;
+        b=jUu/9QXaLfBlcx+CWhhnlNjanILpEbvu51VrRb8r/IgseXxg8nfWo26Yk4VZzUQSG+
+         zNzBW5aT9qBfENRRyTBCHjCbpQv2xoD9emBMD6Z6LB32epHyhZd3v08a1ahO2fIc7Z5I
+         cw2yW52UbhU+GzghNd4kGEl8xqbbwWZ8HCyADMlKFz0w+oETTs3gRllw6NQkCBqmnkKg
+         2zXyu/gMoAONlCFSdI55iIZGfFlkpEZbVxejaJ/QaUb2EcZ1BkyKcdzOku9k22KYBFmm
+         SprXDDg2yD+5d6tYTevrAoeROYTyKKmFueSJy6HsZ9O0meDge5nDOqOFgSqwmJnC7qHD
+         eciQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=F3brwljMK0uhzeGRjZ/IuBQwp5XiEQw0EzVWxL9yxHk=;
-        b=nOiQxrcJLo1158TBeGPNaNURf699znMIIMT/o+af0IUdw2dnZfcB+RWs9GVw6cn/Nw
-         y+0zC4Dp9ReQMc3InO/AKCmp0mWY/o3nk0TLFfyRurzdZbcpvLxqk2K3Msy4NDzk9LAH
-         AwhG+dmKFkUWI3wYK7FgkFP+oF12REvh2fekpHuyP/qTUy+wu6HUzKQJPOP+z71JCJn+
-         58+60bZ83SIym6kaWNqroxKTaUHxx2T8HaQD8UBdBb+Fy5QJDJmTKLoshprNNoylGmOL
-         zoAMl8PK+dc0DJseoP1YkRhwmAo0lTq9iEOB5tuSSgpKuySKEGanl5pUpp0PUfBfbtRv
-         Jvuw==
-X-Gm-Message-State: AOAM532og5wZ4CkJ2PYywbNrAG+imBfbakm8VPpiLlMK5bYO3FqDOAYA
-        LTKpe3/MkGLgPk3ZYeAHhKoI3/MxAtS2JH2M+ok=
-X-Google-Smtp-Source: ABdhPJzoNEdv4WA1XDyCNcLyrUciFwO8fzlSNHkNfIqwp+f4fXLx2xULurRS7gSTb2eGjCfulRKi0Um3QyNdSJW8w6E=
-X-Received: by 2002:aca:308a:: with SMTP id w132mr10054609oiw.69.1612179901283;
- Mon, 01 Feb 2021 03:45:01 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LTeob63vsmUobXodqAiG8SpUrpS7C8Uwp52f74LCJJg=;
+        b=tw1Vd8yePO9eY2wBe042iIFSf7M6iVtboGhe0I3gJtsflSf0AIVIYl60lJsPIkma34
+         OctMJ71EolBG5h4iEOMcNsNUjV4mjEU/E9ZRX2wCemX/4SCHVFbxt2I+Z6ysJYHIT1rO
+         p/X6k7+gNEZddfD7A5Jva7Psle7dbeTs5ORZ9POpR6fqDNruubYfQbXmYL74IwmEsMP6
+         bDPs1YcSDA3PQInyN3Hvjd5N0ZrzQlmdaEEF5df8dndGg5NR+WM0eV17lrDdNX8BKlV2
+         fVa+Bdz/U5UOkeDN8fl4h7/RuHat78x9/oAocTFE/mczU0X1QXNln/zydQ60/fDccq/V
+         y/Ug==
+X-Gm-Message-State: AOAM530mRvDBwn5YUuHKctYADm5kewSQtKXIX2qXKnZTr5m0yVz/GHBK
+        gvAXPC8Hi+Xe3q79sENG6VJOr5wA6MulFUva
+X-Google-Smtp-Source: ABdhPJw6h2jWNnS4CMbNkwoBh5AfdOqqkEXCADAuVE+E1t5Yd3scYb5jIl9WCOkFDGBgnEYEW6K80w==
+X-Received: by 2002:a1c:c904:: with SMTP id f4mr14939397wmb.14.1612179921358;
+        Mon, 01 Feb 2021 03:45:21 -0800 (PST)
+Received: from ziggy.stardust ([213.195.126.134])
+        by smtp.gmail.com with ESMTPSA id b18sm26360198wrm.57.2021.02.01.03.45.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Feb 2021 03:45:20 -0800 (PST)
+Subject: Re: [PATCH] arm64: dts: mediatek: mt8183: evb: Add domain supply for
+ mfg
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210201093049.87285-1-hsinyi@chromium.org>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <7c76c776-5bd5-d35f-1003-8b1741555ac4@gmail.com>
+Date:   Mon, 1 Feb 2021 12:45:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20200903081550.6012-1-sakari.ailus@linux.intel.com>
- <20210128232729.16064-1-sakari.ailus@linux.intel.com> <CAJZ5v0hdG1W0D5E6GbrTDiAjMyC0mSgb3Z2WEBy3hhb4iJhDNw@mail.gmail.com>
- <20210129164522.GJ32460@paasikivi.fi.intel.com> <CAJZ5v0iJB80QX9ze9_hpNP4R-+C36Rvn8d+7S-4-guWrN=SiWQ@mail.gmail.com>
- <20210129212211.GK32460@paasikivi.fi.intel.com>
-In-Reply-To: <20210129212211.GK32460@paasikivi.fi.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 1 Feb 2021 12:44:46 +0100
-Message-ID: <CAJZ5v0jjgy2KXOw5pyshvaEVzLctu4jsgYK1+YDA+8sZfp-6mw@mail.gmail.com>
-Subject: Re: [PATCH v9 1/7] ACPI: scan: Obtain device's desired enumeration
- power state
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Mani, Rajmohan" <rajmohan.mani@intel.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210201093049.87285-1-hsinyi@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 10:22 PM Sakari Ailus
-<sakari.ailus@linux.intel.com> wrote:
->
-> On Fri, Jan 29, 2021 at 05:57:17PM +0100, Rafael J. Wysocki wrote:
-> > On Fri, Jan 29, 2021 at 5:45 PM Sakari Ailus
-> > <sakari.ailus@linux.intel.com> wrote:
-> > >
-> > > Hi Rafael,
-> > >
-> > > Thanks for the comments.
-> > >
-> > > On Fri, Jan 29, 2021 at 03:07:57PM +0100, Rafael J. Wysocki wrote:
-> > > > On Fri, Jan 29, 2021 at 12:27 AM Sakari Ailus
-> > > > <sakari.ailus@linux.intel.com> wrote:
-> > > > >
-> > > > > Store a device's desired enumeration power state in struct
-> > > > > acpi_device_power_flags during acpi_device object's initialisation.
-> > > > >
-> > > > > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> > > > > ---
-> > > > >  drivers/acpi/scan.c     | 6 ++++++
-> > > > >  include/acpi/acpi_bus.h | 3 ++-
-> > > > >  2 files changed, 8 insertions(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> > > > > index 1d7a02ee45e05..b077c645c9845 100644
-> > > > > --- a/drivers/acpi/scan.c
-> > > > > +++ b/drivers/acpi/scan.c
-> > > > > @@ -987,6 +987,8 @@ static void acpi_bus_init_power_state(struct acpi_device *device, int state)
-> > > > >
-> > > > >  static void acpi_bus_get_power_flags(struct acpi_device *device)
-> > > > >  {
-> > > > > +       unsigned long long pre;
-> > > > > +       acpi_status status;
-> > > > >         u32 i;
-> > > > >
-> > > > >         /* Presence of _PS0|_PR0 indicates 'power manageable' */
-> > > > > @@ -1008,6 +1010,10 @@ static void acpi_bus_get_power_flags(struct acpi_device *device)
-> > > > >         if (acpi_has_method(device->handle, "_DSW"))
-> > > > >                 device->power.flags.dsw_present = 1;
-> > > > >
-> > > > > +       status = acpi_evaluate_integer(device->handle, "_PRE", NULL, &pre);
-> > > > > +       if (ACPI_SUCCESS(status) && !pre)
-> > > > > +               device->power.flags.allow_low_power_probe = 1;
-> > > >
-> > > > While this is what has been discussed and thanks for taking it into
-> > > > account, I'm now thinking that it may be cleaner to introduce a new
-> > > > object to return the deepest power state of the device in which it can
-> > > > be enumerated, say _DSE (Device State for Enumeration) such that 4
-> > > > means D3cold, 3 - D3hot and so on, so the above check can be replaced
-> > > > with something like
-> > > >
-> > > > status = acpi_evaluate_integer(device->handle, "_PRE", NULL, &dse);
-> > >
-> > > s/_PRE/_DSE/
-> > >
-> > > ?
-> >
-> > Yes, sorry.
-> >
-> > >
-> > > > if (ACPI_FAILURE(status))
-> > >
-> > > ACPI_SUCCESS?
-> >
-> > Yup.
-> >
-> > > >         device->power.state_for_enumeratin = dse;
-> > > >
-> > > > And then, it is a matter of comparing ->power.state_for_enumeratin
-> > > > with ->power.state and putting the device into D0 if the former is
-> > > > shallower than the latter.
-> > > >
-> > > > What do you think?
-> > >
-> > > Sounds good. How about calling the function e.g.
-> > > acpi_device_resume_for_probe(), so runtime PM could be used to resume the
-> > > device if the function returns true?
-> >
-> > I'd rather try to power it up before enabling runtime PM, because in
-> > order to do the latter properly, you need to know if the device is
-> > active or suspended to start with.
-> >
-> > So you need something like (pseudo-code)
-> >
-> > if (this_device_needs_to_be_on(ACPI_COMPANION(dev))) {
-> >    acpi_device_set_power(ACPI_COMPANION(dev), ACPI_STATE_D0);
-> >    pm_runtime_set_active(dev);
-> > } else {
-> >    pm_runtime_set_suspended(dev);
->
-> I guess the else branch isn't needed? The device remains suspended if its
-> state hasn't been changed.
 
-Assuming that the initial status is always "suspended", the else
-branch is not needed.
 
-> > }
-> >
-> > and then you can enable PM-runtime.
->
-> Yes, agreed, this is what drivers should do. The I涎 framework would use
-> the function and conditionally power the device on before enabling runtime
-> PM.
->
-> This is how it's implemented by the set already but I think the change in
-> semantics requires a little more still.
+On 01/02/2021 10:30, Hsin-Yi Wang wrote:
+> Add domain supply node for mt8183-evb
+> 
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 
-Agreed.
+Queued in v5.12-tmp/dts64
+
+Thanks
+
+> ---
+>  arch/arm64/boot/dts/mediatek/mt8183-evb.dts | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-evb.dts b/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+> index 3249c959f76fc..edff1e03e6fee 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+> @@ -352,6 +352,10 @@ pins_pwm {
+>  	};
+>  };
+>  
+> +&mfg {
+> +	domain-supply = <&mt6358_vgpu_reg>;
+> +};
+> +
+>  &spi0 {
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&spi_pins_0>;
+> 
