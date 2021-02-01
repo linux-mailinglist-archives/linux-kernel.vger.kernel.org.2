@@ -2,96 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DB3430B28C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:07:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47BDF30B281
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:05:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhBAWGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 17:06:23 -0500
-Received: from foss.arm.com ([217.140.110.172]:40040 "EHLO foss.arm.com"
+        id S230062AbhBAWEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 17:04:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56286 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230009AbhBAWEV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 17:04:21 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5B55D1042;
-        Mon,  1 Feb 2021 14:03:19 -0800 (PST)
-Received: from e123427-lin.arm.com (unknown [10.57.46.207])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 430183F718;
-        Mon,  1 Feb 2021 14:03:16 -0800 (PST)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Arnd Bergmann <arnd@arndb.de>, Jon Mason <jdmason@kudzu.us>,
-        Rob Herring <robh@kernel.org>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-ntb@googlegroups.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v11 00/17] Implement NTB Controller using multiple PCI EP
-Date:   Mon,  1 Feb 2021 22:03:09 +0000
-Message-Id: <161221695543.9151.8142592721154575298.b4-ty@arm.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20210201195809.7342-1-kishon@ti.com>
-References: <20210201195809.7342-1-kishon@ti.com>
+        id S229831AbhBAWD4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 17:03:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A91364D92;
+        Mon,  1 Feb 2021 22:03:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612216995;
+        bh=SD5hcJPKXw5+XdYGFxyx1vpvAOsqU17t1KZiL1O3Ilc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mLitDEYNbSt+zZssJUpc+OtPhxKX9OO//VOAoHOi7r/1bG0eQtRjMlEGTlr/ujWJ7
+         2YiPME/PTSLW92plKj3UIi9UfELFaS9DpWhbokXjzj0Xgd2fxxIfwNcpK1R151c2Vs
+         uB/1K8NDKgfX6lLdmqsCAwl3/g4mjm5NFSCpiDDpbZr5fyDLctOrXuZ6tBmPo8YmqN
+         SkMhWZcM0oObSLC5ybWXq8zDpjW1owaF9FRk33BPhHbz5D96xFwW9VoheMwqU7bq/o
+         yxY3mVwlgg4fyKcfw/apBQ/9SMKjzoA/c/YW1GlL/i798HOOycRwUw77r617Bjzjut
+         DKDQvGiP5iVzQ==
+Date:   Mon, 1 Feb 2021 23:03:11 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Richard Neumann <mail@richard-neumann.de>
+Cc:     syniurge@gmail.com, nehal-bakulchandra.shah@amd.com,
+        shyam-sundar.s-k@amd.com, andriy.shevchenko@linux.intel.com,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] i2c: i2c-amd-mp2: Remove NIH logging functions
+Message-ID: <20210201220311.GD24315@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Richard Neumann <mail@richard-neumann.de>, syniurge@gmail.com,
+        nehal-bakulchandra.shah@amd.com, shyam-sundar.s-k@amd.com,
+        andriy.shevchenko@linux.intel.com, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210201175138.8986-1-mail@richard-neumann.de>
+ <20210201175138.8986-2-mail@richard-neumann.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="zbGR4y+acU1DwHSi"
+Content-Disposition: inline
+In-Reply-To: <20210201175138.8986-2-mail@richard-neumann.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Feb 2021 01:27:52 +0530, Kishon Vijay Abraham I wrote:
-> This series is about implementing SW defined Non-Transparent Bridge (NTB)
-> using multiple endpoint (EP) instances. This series has been tested using
-> 2 endpoint instances in J7 connected to J7 board on one end and DRA7 board
-> on the other end. However there is nothing platform specific for the NTB
-> functionality.
-> 
-> This was presented in Linux Plumbers Conference. Link to presentation
-> and video can be found @ [1]
-> Created a video demo @ [9]
-> 
-> [...]
 
-Applied to pci/ntb, thanks!
+--zbGR4y+acU1DwHSi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[01/17] Documentation: PCI: Add specification for the *PCI NTB* function device
-        https://git.kernel.org/lpieralisi/pci/c/051a6adf6e
-[02/17] PCI: endpoint: Make *_get_first_free_bar() take into account 64 bit BAR
-        https://git.kernel.org/lpieralisi/pci/c/c0527dabcc
-[03/17] PCI: endpoint: Add helper API to get the 'next' unreserved BAR
-        https://git.kernel.org/lpieralisi/pci/c/d91d6ddfd2
-[04/17] PCI: endpoint: Make *_free_bar() to return error codes on failure
-        https://git.kernel.org/lpieralisi/pci/c/b9bdfa3da3
-[05/17] PCI: endpoint: Remove unused pci_epf_match_device()
-        https://git.kernel.org/lpieralisi/pci/c/2872f07cb0
-[06/17] PCI: endpoint: Add support to associate secondary EPC with EPF
-        https://git.kernel.org/lpieralisi/pci/c/6d0b4a7f2c
-[07/17] PCI: endpoint: Add support in configfs to associate two EPCs with EPF
-        https://git.kernel.org/lpieralisi/pci/c/c8e7d97270
-[08/17] PCI: endpoint: Add pci_epc_ops to map MSI irq
-        https://git.kernel.org/lpieralisi/pci/c/2bbb192338
-[09/17] PCI: endpoint: Add pci_epf_ops for epf drivers to expose function specific attrs
-        https://git.kernel.org/lpieralisi/pci/c/cea2edf604
-[10/17] PCI: endpoint: Allow user to create sub-directory of 'EPF Device' directory
-        https://git.kernel.org/lpieralisi/pci/c/1b0ef1c913
-[11/17] PCI: cadence: Implement ->msi_map_irq() ops
-        https://git.kernel.org/lpieralisi/pci/c/743a5d6309
-[12/17] PCI: cadence: Configure LM_EP_FUNC_CFG based on epc->function_num_map
-        https://git.kernel.org/lpieralisi/pci/c/54e9e441b0
-[13/17] PCI: endpoint: Add EP function driver to provide NTB functionality
-        https://git.kernel.org/lpieralisi/pci/c/e9d7f4603e
-[14/17] PCI: Add TI J721E device to pci ids
-        https://git.kernel.org/lpieralisi/pci/c/7aac69682e
-[15/17] NTB: Add support for EPF PCI-Express Non-Transparent Bridge
-        https://git.kernel.org/lpieralisi/pci/c/363baf7d60
-[16/17] Documentation: PCI: Add configfs binding documentation for pci-ntb endpoint function
-        https://git.kernel.org/lpieralisi/pci/c/0456a9cd0a
-[17/17] Documentation: PCI: Add userguide for PCI endpoint NTB function
-        https://git.kernel.org/lpieralisi/pci/c/096ce75bf6
+On Mon, Feb 01, 2021 at 06:51:37PM +0100, Richard Neumann wrote:
+> Use pci_{info,warn,err,dbg} functions of the kernel's PCI API.
+> Remove unnecessary ndev_pdev(), ndev_name() and ndev_dev() macros.
+> While at it, remove useless __func__ from logging.
+>=20
+> Signed-off-by: Richard Neumann <mail@richard-neumann.de>
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Thanks,
-Lorenzo
+$subject looked wrong to me so I changed it to "convert to PCI logging
+functions". Applied to for-next, thanks!
+
+
+--zbGR4y+acU1DwHSi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAYep8ACgkQFA3kzBSg
+KbZP6Q/+IdTaOU1Tino6fMC7XzPc6AuY7SouD4qGDUYIM2gXCSaNoz60MV9Zr93v
+EP5d1rXn9EmDvF7e4hr9oPiP0lF2TGxgWrOiUXDjjt+zNLXz3uBUL3jdwmhxVvK2
+yABZAXjcchAFjxqq6eGzXMvrrmmQlKNITrMTue5COx15hv+2ZSOQ3I1cL/VTjJ6q
+lhNCEeQQaSGFnmIQr/Mpz2xdfz4VTTqBXi+7q1Yfi6jMfvO0++QeUdG8U9XoC/G2
+/0n8FcdNERDO4AFTR0IAEuwKm2Ta5JycgU3NknP24SBVv/d4vo3JdzpTTW+fZ4R9
+ZObGjLRCKdix1o0AvybuHLcck4zRGDV7ESiIaSLN+QrYBbpqf8jsBp9sL7VnJOiw
+GVI3qSYK1CCFfsL5tvrxuRZ5/Wohdv1/OPwtK6rUV7zSVfox16g6L7fx4kO/chPs
+zTbODDS+4oAnKx/m6efQam0COGs02s0H4TII99j4ge9qxVlrctIvukFf2gPl1p2+
+jkWZfkxiUZrXejwYYys957CC9EGt1ecdVfiden0nHO44Bsp06/1EaDqngjhkGL3W
+bHjF2Jpzp9WbAmxy1Qgq5KyNR0uFLNyMsKYAj0NrrbVoQSe1BzRrgLZDBZQMM32a
+JaOisYxIeBy8NWlYm7fUpTivQFcZafxCkvsmVVPddC476jMQjps=
+=L2gM
+-----END PGP SIGNATURE-----
+
+--zbGR4y+acU1DwHSi--
