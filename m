@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A11930B0B0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CDCFA30B0B2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:46:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbhBATpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 14:45:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40192 "EHLO
+        id S231599AbhBATpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 14:45:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232227AbhBATox (ORCPT
+        with ESMTP id S231326AbhBATox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Feb 2021 14:44:53 -0500
-Received: from mail-lj1-x249.google.com (mail-lj1-x249.google.com [IPv6:2a00:1450:4864:20::249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85BFBC061788
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 11:43:51 -0800 (PST)
-Received: by mail-lj1-x249.google.com with SMTP id a5so2034138ljp.5
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 11:43:51 -0800 (PST)
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A17C061786
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 11:43:53 -0800 (PST)
+Received: by mail-wr1-x44a.google.com with SMTP id d7so11038418wri.23
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 11:43:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=vdSQ7N299ttJfkAji9JrIXHPqKuzBqRIB40yh5wvGsM=;
-        b=Phj+HIZS3dxn0owHV5yLJaaC0AGJkEU7TfgxvzoS86S8PoZm4Rt1g+God+bs67EJc+
-         oAD4CGWKbkQlIIbCUNovOV1zLvhKFi5m+ZzhOblNupaIUd5ggX6TEZOlIrDz5XWmWLta
-         JTZs7Uw7XmdRI9FLQF1x63YHp2a9KJzeObyFVOK0Yf424coQsCFXhiGhs5WSS+Wfdr5+
-         DV7O2YJKktRTJmORtVpVqwjlVS56TeRw4d0zGoTpGadYHfwg5/12VFuGKUvo3egw2HjJ
-         JyuLK5fUm/yWENE6Hh73fMc8gwZMa7zXTtIL5S8EwT3PsxdE5NtR2aqDG2mEhfgqxwDS
-         Cr8w==
+        bh=BaU4zsBnF6d3TSTU+6bwjMLYV3de6hEhX75uuk8b+O4=;
+        b=nJiXwOEo+jDWjutl3bPtMddLIEbYjySSqFB9nsRMPC/OyMH1cWW9MJCeCANQqWCKmB
+         4mwP+1VFCx3hJfom58GEOvLp6QCaI9DthbxNDJt5E19vA2IenGYT//kFZ3tt5SKMwPII
+         JUvkgGhGqUDAruV7bZhAZMJVREM4TVtH2aoavGSYKjlNdtFGTAYff54a63RosxywMuHm
+         1rEjzRp24e2Mh+Qobh7XPtIFaq29nychvE8goMeWtgJmRCYM9XxEicpGU9vrO7yzeJf3
+         0BwkX+2NT+5+L7FlbRszkE0nJeL7H4X8e4lzext+ZMwX8Dzov8Ow4AQrlTK8RDIsbmNp
+         XaFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=vdSQ7N299ttJfkAji9JrIXHPqKuzBqRIB40yh5wvGsM=;
-        b=hAnnjQijqm8MsXwdplcZHoy/inN1kbj0441OCg4euBATLl9OuclMrQJYI0W0y88zF0
-         IyR9xpA1VpFbY/QvrElLgxko549XBRTnmf89jkC5k7pXC4usQ0AT54N2YY6c7aFuZpie
-         PYw9j2ZvJtusxiIteATAi79lvVHPscywnEXwWVdVbvEj4KH0mij38vk+G9LDErBB/JjM
-         6rP4oHY1hFeqKS64iPio2fBdMgE9MF3X7AIp1ESpiNpgWw5V1xcnz4ftqERI4GRzSIFO
-         s87ja5aj+BiMME/1iqxQYAXIHT5kLbKNFSyJAsuo+miTEW0JkxJEf3eOsUB0rMCKeWrj
-         6YQQ==
-X-Gm-Message-State: AOAM530X9JUjcMXlG05y/X6BrrNkpVBi9q0ExPaR6yLlngj3Hon2bn0t
-        DWcFrHJAXfLx5hVdCp3RUTSu0e8fFQTElKbU
-X-Google-Smtp-Source: ABdhPJyTPeHvPlSg3evueEvog+d2Wbu3vFUyi7JAGczcnckPOWrvdcuYouS1E9V9e/DkjSKSFt3vDyjaDwqvcObf
+        bh=BaU4zsBnF6d3TSTU+6bwjMLYV3de6hEhX75uuk8b+O4=;
+        b=NB2QM9kxypoRz3mM3Bgh4nS0d1R3dB2ReP6OieojM1OqbutZJXxObUm46iwdIFGrF8
+         5YKc/AwJf2QZ15vCkSEbaRLb98sKseuWNgmjhDwvtQ947A1VUPfXYT5Nmh3+FVYr5nlr
+         q/Znw39/c3MrxMevdH0GwFWs7d9gNi2ZRIslPv7p5ayVgQto4gJLnLPBlEdWCSpmLLRd
+         3Rj/m1ToaUjtWS/U3h/q0AattRxXC2pjzo+/q4a/3ag97tNJtK+YJW+kDVDrwBBfkpBt
+         SVOLfqaxEK6tf4DbA2EwKxyFeqUPtpeWZwY5hKzgvRUvqF7TXV3FblyznWcpGuuiCF9c
+         D7Pw==
+X-Gm-Message-State: AOAM5325IRcbhBw7dU5VJTJ+KYLMa09l06UQdk4MJC9hF4uTUYcNQJgQ
+        t0XvD782NSw7pTFRLot685PgKAaL4PESDgLh
+X-Google-Smtp-Source: ABdhPJw57hRKvoeOE3jkg8dsfKFGhvdZTC70UClQcRWBXmSodKiJDsoN3TWrUtEegspLXmVAevtVI9fb+W66gF3H
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:ac2:44b8:: with SMTP id
- c24mr9569637lfm.155.1612208629709; Mon, 01 Feb 2021 11:43:49 -0800 (PST)
-Date:   Mon,  1 Feb 2021 20:43:28 +0100
+ (user=andreyknvl job=sendgmr) by 2002:a1c:6a02:: with SMTP id
+ f2mr447589wmc.36.1612208631997; Mon, 01 Feb 2021 11:43:51 -0800 (PST)
+Date:   Mon,  1 Feb 2021 20:43:29 +0100
 In-Reply-To: <cover.1612208222.git.andreyknvl@google.com>
-Message-Id: <e762958db74587308514341a18622ff350a75d8a.1612208222.git.andreyknvl@google.com>
+Message-Id: <dbef8131b70766f8d798d24bb1ab9ae75dadea61.1612208222.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1612208222.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH 04/12] kasan: clean up setting free info in kasan_slab_free
+Subject: [PATCH 05/12] kasan: unify large kfree checks
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Vincenzo Frascino <vincenzo.frascino@arm.com>,
@@ -74,39 +74,128 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Put kasan_stack_collection_enabled() check and kasan_set_free_info()
-calls next to each other.
+Unify checks in kasan_kfree_large() and in kasan_slab_free_mempool()
+for large allocations as it's done for small kfree() allocations.
 
-The way this was previously implemented was a minor optimization that
-relied of the the fact that kasan_stack_collection_enabled() is always
-true for generic KASAN. The confusion that this brings outweights saving
-a few instructions.
+With this change, kasan_slab_free_mempool() starts checking that the
+first byte of the memory that's being freed is accessible.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 ---
- mm/kasan/common.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ include/linux/kasan.h | 16 ++++++++--------
+ mm/kasan/common.c     | 36 ++++++++++++++++++++++++++----------
+ 2 files changed, 34 insertions(+), 18 deletions(-)
 
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index 2d5de4092185..d53ea3c047bc 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -200,6 +200,13 @@ static __always_inline bool kasan_slab_free(struct kmem_cache *s, void *object)
+ 	return false;
+ }
+ 
++void __kasan_kfree_large(void *ptr, unsigned long ip);
++static __always_inline void kasan_kfree_large(void *ptr)
++{
++	if (kasan_enabled())
++		__kasan_kfree_large(ptr, _RET_IP_);
++}
++
+ void __kasan_slab_free_mempool(void *ptr, unsigned long ip);
+ static __always_inline void kasan_slab_free_mempool(void *ptr)
+ {
+@@ -247,13 +254,6 @@ static __always_inline void * __must_check kasan_krealloc(const void *object,
+ 	return (void *)object;
+ }
+ 
+-void __kasan_kfree_large(void *ptr, unsigned long ip);
+-static __always_inline void kasan_kfree_large(void *ptr)
+-{
+-	if (kasan_enabled())
+-		__kasan_kfree_large(ptr, _RET_IP_);
+-}
+-
+ /*
+  * Unlike kasan_check_read/write(), kasan_check_byte() is performed even for
+  * the hardware tag-based mode that doesn't rely on compiler instrumentation.
+@@ -302,6 +302,7 @@ static inline bool kasan_slab_free(struct kmem_cache *s, void *object)
+ {
+ 	return false;
+ }
++static inline void kasan_kfree_large(void *ptr) {}
+ static inline void kasan_slab_free_mempool(void *ptr) {}
+ static inline void *kasan_slab_alloc(struct kmem_cache *s, void *object,
+ 				   gfp_t flags)
+@@ -322,7 +323,6 @@ static inline void *kasan_krealloc(const void *object, size_t new_size,
+ {
+ 	return (void *)object;
+ }
+-static inline void kasan_kfree_large(void *ptr) {}
+ static inline bool kasan_check_byte(const void *address)
+ {
+ 	return true;
 diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index a7eb553c8e91..086bb77292b6 100644
+index 086bb77292b6..9c64a00bbf9c 100644
 --- a/mm/kasan/common.c
 +++ b/mm/kasan/common.c
-@@ -350,13 +350,11 @@ static bool ____kasan_slab_free(struct kmem_cache *cache, void *object,
- 
- 	kasan_poison(object, cache->object_size, KASAN_KMALLOC_FREE);
- 
--	if (!kasan_stack_collection_enabled())
--		return false;
--
- 	if ((IS_ENABLED(CONFIG_KASAN_GENERIC) && !quarantine))
- 		return false;
- 
--	kasan_set_free_info(cache, object, tag);
-+	if (kasan_stack_collection_enabled())
-+		kasan_set_free_info(cache, object, tag);
- 
- 	return kasan_quarantine_put(cache, object);
+@@ -364,6 +364,31 @@ bool __kasan_slab_free(struct kmem_cache *cache, void *object, unsigned long ip)
+ 	return ____kasan_slab_free(cache, object, ip, true);
  }
+ 
++static bool ____kasan_kfree_large(void *ptr, unsigned long ip)
++{
++	if (ptr != page_address(virt_to_head_page(ptr))) {
++		kasan_report_invalid_free(ptr, ip);
++		return true;
++	}
++
++	if (!kasan_byte_accessible(ptr)) {
++		kasan_report_invalid_free(ptr, ip);
++		return true;
++	}
++
++	/*
++	 * The object will be poisoned by kasan_free_pages() or
++	 * kasan_slab_free_mempool().
++	 */
++
++	return false;
++}
++
++void __kasan_kfree_large(void *ptr, unsigned long ip)
++{
++	____kasan_kfree_large(ptr, ip);
++}
++
+ void __kasan_slab_free_mempool(void *ptr, unsigned long ip)
+ {
+ 	struct page *page;
+@@ -377,10 +402,8 @@ void __kasan_slab_free_mempool(void *ptr, unsigned long ip)
+ 	 * KMALLOC_MAX_SIZE, and kmalloc falls back onto page_alloc.
+ 	 */
+ 	if (unlikely(!PageSlab(page))) {
+-		if (ptr != page_address(page)) {
+-			kasan_report_invalid_free(ptr, ip);
++		if (____kasan_kfree_large(ptr, ip))
+ 			return;
+-		}
+ 		kasan_poison(ptr, page_size(page), KASAN_FREE_PAGE);
+ 	} else {
+ 		____kasan_slab_free(page->slab_cache, ptr, ip, false);
+@@ -539,13 +562,6 @@ void * __must_check __kasan_krealloc(const void *object, size_t size, gfp_t flag
+ 		return ____kasan_kmalloc(page->slab_cache, object, size, flags);
+ }
+ 
+-void __kasan_kfree_large(void *ptr, unsigned long ip)
+-{
+-	if (ptr != page_address(virt_to_head_page(ptr)))
+-		kasan_report_invalid_free(ptr, ip);
+-	/* The object will be poisoned by kasan_free_pages(). */
+-}
+-
+ bool __kasan_check_byte(const void *address, unsigned long ip)
+ {
+ 	if (!kasan_byte_accessible(address)) {
 -- 
 2.30.0.365.g02bc693789-goog
 
