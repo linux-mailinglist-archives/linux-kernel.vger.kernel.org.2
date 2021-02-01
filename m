@@ -2,75 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0502130A90F
+	by mail.lfdr.de (Postfix) with ESMTP id 80DC130A910
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:50:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231946AbhBANtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:49:42 -0500
-Received: from mga04.intel.com ([192.55.52.120]:41724 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231587AbhBANti (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:49:38 -0500
-IronPort-SDR: xtKhVSOoZ4n1paLzTf+jQ9yqjwdqRWLoYm1i5dOLuc+fP3dvggmdezUxszWepYcBynvO1L5wGH
- xBJqaZBGN/mQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="178121833"
-X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
-   d="scan'208";a="178121833"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 05:47:52 -0800
-IronPort-SDR: e0Pb8xLftFnVZ66obmmc+PebsCnX4ifT8jEX/Rs7q1llwWJkBwsu4wt0fhPE0Je7Tue9zHjHUl
- 4aUybhdfs58g==
-X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
-   d="scan'208";a="371555767"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 05:47:47 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l6ZYN-0018z2-F0; Mon, 01 Feb 2021 15:47:43 +0200
-Date:   Mon, 1 Feb 2021 15:47:43 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-arch@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
-        Dennis Zhou <dennis@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        David Sterba <dsterba@suse.com>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Joe Perches <joe@perches.com>
-Subject: Re: [PATCH 6/8] lib: inline _find_next_bit() wrappers
-Message-ID: <YBgGf8y/K0da5MWz@smile.fi.intel.com>
-References: <20210130191719.7085-1-yury.norov@gmail.com>
- <20210130191719.7085-7-yury.norov@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210130191719.7085-7-yury.norov@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S232147AbhBANt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:49:58 -0500
+Received: from mail29.static.mailgun.info ([104.130.122.29]:21433 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231587AbhBANt5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 08:49:57 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612187376; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=0h6vSmXJIywnHGo/ywgkqW2Fs8pNf3fPzIqOrsfxUCg=; b=JpzqhQxDlKI3MBNxbkkK68ynbH6PmbwLtKpPuzWwyPSQ7csgvIi7/QqObYyKZqkn5tC0ABYQ
+ CQXJ7gHE5suln5lrtQCS532ctTHWeYEdq58yHEeAffjcqYPgesL9Xy9tNDzNgvpp4IifMhCa
+ Ofs+YRkQMA7LpOaIY+4hQeeS1x4=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 601806d52d8ee3f99ff65740 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Feb 2021 13:49:09
+ GMT
+Sender: charante=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2831DC43461; Mon,  1 Feb 2021 13:49:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from charante-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: charante)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BB8E2C433CA;
+        Mon,  1 Feb 2021 13:49:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BB8E2C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
+From:   Charan Teja Reddy <charante@codeaurora.org>
+To:     akpm@linux-foundation.org, vbabka@suse.cz, rientjes@google.com,
+        mhocko@suse.com
+Cc:     vinmenon@codeaurora.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Charan Teja Reddy <charante@codeaurora.org>
+Subject: [PATCH] mm: page_alloc: update the COMPACT[STALL|FAIL] events properly
+Date:   Mon,  1 Feb 2021 19:18:58 +0530
+Message-Id: <1612187338-19100-1-git-send-email-charante@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 11:17:17AM -0800, Yury Norov wrote:
-> lib/find_bit.c declares five single-line wrappers for _find_next_bit().
-> We may turn those wrappers to inline functions. It eliminates unneeded
-> function calls and opens room for compile-time optimizations.
+By defination, COMPACT[STALL|FAIL] events needs to be counted when there
+is 'At least in one zone compaction wasn't deferred or skipped from the
+direct compaction'. And when compaction is skipped or deferred,
+COMPACT_SKIPPED will be returned but it will still go and update these
+compaction events which is wrong in the sense that COMPACT[STALL|FAIL]
+is counted without even trying the compaction.
 
->  tools/include/asm-generic/bitops/find.h | 27 +++++++++---
->  tools/lib/find_bit.c                    | 52 ++++++++++-------------
+Correct this by skipping the counting of these events when
+COMPACT_SKIPPED is returned for compaction. This indirectly also avoid
+the unnecessary try into the get_page_from_freelist() when compaction is
+not even tried.
 
-In a separated patch, please. I don't think we need to defer this series in
-case if tools lagged (which is usual case in my practice).
+Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+---
+ mm/page_alloc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 519a60d..531f244 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -4152,6 +4152,8 @@ __alloc_pages_direct_compact(gfp_t gfp_mask, unsigned int order,
+ 	memalloc_noreclaim_restore(noreclaim_flag);
+ 	psi_memstall_leave(&pflags);
+ 
++	if (*compact_result == COMPACT_SKIPPED)
++		return NULL;
+ 	/*
+ 	 * At least in one zone compaction wasn't deferred or skipped, so let's
+ 	 * count a compaction stall
 -- 
-With Best Regards,
-Andy Shevchenko
-
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of the Code Aurora Forum, hosted by The Linux Foundation
 
