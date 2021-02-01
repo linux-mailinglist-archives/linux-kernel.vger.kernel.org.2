@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D780930AEEC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:17:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E8A30AEF5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:19:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232185AbhBASRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:17:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49014 "EHLO
+        id S232202AbhBASTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:19:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbhBASPM (ORCPT
+        with ESMTP id S232234AbhBASP3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:15:12 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3754BC061356
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 10:14:12 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id u11so10444778plg.13
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 10:14:12 -0800 (PST)
+        Mon, 1 Feb 2021 13:15:29 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6204CC0612F2
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 10:14:13 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id m12so75976pjs.4
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 10:14:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Nkl7K2vw3TX4frhQPmfegkQUMEyqX+IThipL7KY2uDo=;
-        b=iIgmVpOKir7028W23vrGXUNsAxqqcr87Dah8tG6OvnNYIf24c+MTPaS8nMFxSxLlqW
-         v6nXnmm1Gom//iRpRbv8tXFt4hNGfMuFOoeUHNLn/p8Qt48PBym3QJsVk8u1o+nXNQSo
-         oQu/JtFFOMWLV9XEwqVIlPxd9orDLyTXN5LFOs4W39L9SjFHV9mfPXjdECylXiVnUk4s
-         NdgLABs71iWl2y9wFn2KEWLU5S0P6a9DBQNVgfV6pN5A+Goh+3wxTNufMsWM8wpSVfpz
-         /sbOlIa0QvqueF4iIuvieYMI2uvMs3hLhdHVoRN2kNozOw8AKJoqohXsC+iTu5ATu1Nx
-         Ie+w==
+        bh=cry816/nSGJZaakAE5oUCDuh5GR8b59TtsUrvCCp4xM=;
+        b=MEvx6jXdM8va8vSZnJhFkcQgtBPM0HbCoiQnPaLm2SvZgrMCg26IdQEM6jcA9jO+NF
+         aSvrDFmHTRYIYIFht6kA1KdHktDn60vo1l1tnWHAPZ8RMdOHDIZOtgxHSxmUWq19QDDR
+         gy7DB2sBjKpaCFvrz/D1LqZFxKrAC0bt7A+8PjZXJC1UwUukK04JGK+mLug7ZlShncTc
+         k/KppVrz/BTAQ3l5FbpwYgPo7CepiODvBWgPlphEogi1Jc0NcR+SpmZ9d8LTIdm4uWBQ
+         18r4ZckVhceZGAzvBdLwyYmy7qslldy2RM4kpp/viZTBsdbCR5PV7wq3WthCTrs9ubEa
+         fyQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Nkl7K2vw3TX4frhQPmfegkQUMEyqX+IThipL7KY2uDo=;
-        b=Rcu+pekFTo8lUhpU0TWRKDEFPbUtM3Kzn0q/tN4cQQK9Lt7NieqClxi0sNPQ1uPD34
-         KUHprSgpMI2S0p9GIC2EQ2ZMMawtQiMlkNGMNDkelOzMoBwgn/+M058ytah1l7Okgmx/
-         FBp1CzVfypI7dZgFYAFKK8GTxn/GHpAymc48aqPmkL7S5psoA0XGCDBBraQNxG3kdAxS
-         F204oKFReDFstmEHE/i6rSVeoWm3ORq3GaszkLz+al1a8AbzRZGNJIhp2jqRbMPzq733
-         OzKpsJqYny/qZRNcBQfFgQQmz+WdtmzcWif66k75T9S8FueZZi0YIvOpwRytSqhBdYAH
-         ITUA==
-X-Gm-Message-State: AOAM531fL3OKYkqEx7VCydbBtAAowWSBfkGYVSWpej1InZ1yyRdjF6aI
-        itPs3Az5j5ecfST1fYMFC9BPbw==
-X-Google-Smtp-Source: ABdhPJzuIgvytfBVtpkA2FJ9wHNHdDAGigkR/PxPydd4F18Pek1Eo61VNMxbJwmCpy5rOUXZGyoTLA==
-X-Received: by 2002:a17:902:c40b:b029:de:2f1e:825c with SMTP id k11-20020a170902c40bb02900de2f1e825cmr18945101plk.64.1612203251771;
-        Mon, 01 Feb 2021 10:14:11 -0800 (PST)
+        bh=cry816/nSGJZaakAE5oUCDuh5GR8b59TtsUrvCCp4xM=;
+        b=orUTEL1ffvVkA3wC6Gnw4Z3/sVRRAGBR+6aIWbkbFBZGRpndg+z+foCKQVM6bTprCe
+         PoLImuMvsQECa+0ySCVkN/eaQhmOcUhS8TVaguJo5LpyRKJIdSsuR/IHwaBNxVK2iCf1
+         toi+wZxScRtu7Xh5QHzTUFhF90YQi5skFnN8pf1p3o0GFRU/e8O3cTPunaVHuIBYmjsb
+         N+wlXYs+uy6MNhY0qcItN2QoslcEAPzzbjNLMD4FyV2I12ma9thEBlqVMIu0DuDU3Tjq
+         RrbYUtHc1mDX6xYSTjTcNdOqIogx1icsUz/TrtUZQHEgAqUieXhAA4rPqO3MLLYH5AMY
+         bJ1g==
+X-Gm-Message-State: AOAM532uHnilukvafwT12C2zet+hR2tq8r663AFaoh0Ivm0jbbY+1GQ0
+        m3hU+9RQys59T5fiPtpnf0bnLg==
+X-Google-Smtp-Source: ABdhPJzU1zYTOVaXWXqw4dMF6ou0XXtlAyHt0WeOq2zwKSe/eWlmQaAdrVBUYBpRjQBKXTT/C/lM1Q==
+X-Received: by 2002:a17:902:ea0f:b029:de:5fd5:abb9 with SMTP id s15-20020a170902ea0fb02900de5fd5abb9mr18746751plg.46.1612203252860;
+        Mon, 01 Feb 2021 10:14:12 -0800 (PST)
 Received: from xps15.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id e12sm75784pjj.23.2021.02.01.10.14.10
+        by smtp.gmail.com with ESMTPSA id e12sm75784pjj.23.2021.02.01.10.14.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 10:14:11 -0800 (PST)
+        Mon, 01 Feb 2021 10:14:12 -0800 (PST)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 17/31] coresight: etm4x: Cleanup secure exception level masks
-Date:   Mon,  1 Feb 2021 11:13:37 -0700
-Message-Id: <20210201181351.1475223-18-mathieu.poirier@linaro.org>
+Subject: [PATCH 18/31] coresight: etm4x: Clean up exception level masks
+Date:   Mon,  1 Feb 2021 11:13:38 -0700
+Message-Id: <20210201181351.1475223-19-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210201181351.1475223-1-mathieu.poirier@linaro.org>
 References: <20210201181351.1475223-1-mathieu.poirier@linaro.org>
@@ -65,90 +65,223 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-We rely on the ETM architecture version to decide whether
-Secure EL2 is available on the CPU for excluding the level
-for address comparators and viewinst main control register.
-We must instead use the TRCDIDR3.EXLEVEL_S field to detect
-the supported levels.
+etm4_get_access_type() calculates the exception level bits
+for use in address comparator registers. This is also used
+by the TRCVICTLR register by shifting to the required position.
+
+This patch cleans up the logic to make etm4_get_access_type()
+calculate a generic mask which can be used by all users by
+shifting to their field.
+
+No functional changes intended.
 
 Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Link: https://lore.kernel.org/r/20210110224850.1880240-16-suzuki.poulose@arm.com
+Link: https://lore.kernel.org/r/20210110224850.1880240-17-suzuki.poulose@arm.com
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- drivers/hwtracing/coresight/coresight-etm4x-core.c | 13 +++----------
- drivers/hwtracing/coresight/coresight-etm4x.h      |  6 ++++--
- 2 files changed, 7 insertions(+), 12 deletions(-)
+ .../coresight/coresight-etm4x-core.c          | 47 +++++++++----------
+ .../coresight/coresight-etm4x-sysfs.c         | 12 ++---
+ drivers/hwtracing/coresight/coresight-etm4x.h | 47 ++++++++++++-------
+ 3 files changed, 60 insertions(+), 46 deletions(-)
 
 diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index f095ab9949d9..d91b259a4334 100644
+index d91b259a4334..c9fcb17968a0 100644
 --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
 +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -840,7 +840,6 @@ static void etm4_init_arch_data(void *info)
- 	 * TRCARCHMAJ, bits[11:8] architecture major versin number
- 	 */
- 	drvdata->arch = BMVAL(etmidr1, 4, 11);
--	drvdata->config.arch = drvdata->arch;
+@@ -959,20 +959,16 @@ static void etm4_init_arch_data(void *info)
+ 	etm4_cs_lock(drvdata, csa);
+ }
  
- 	/* maximum size of resources */
- 	etmidr2 = etm4x_relaxed_read32(csa, TRCIDR2);
-@@ -856,6 +855,7 @@ static void etm4_init_arch_data(void *info)
- 	drvdata->ccitmin = BMVAL(etmidr3, 0, 11);
- 	/* EXLEVEL_S, bits[19:16] Secure state instruction tracing */
- 	drvdata->s_ex_level = BMVAL(etmidr3, 16, 19);
-+	drvdata->config.s_ex_level = drvdata->s_ex_level;
- 	/* EXLEVEL_NS, bits[23:20] Non-secure state instruction tracing */
- 	drvdata->ns_ex_level = BMVAL(etmidr3, 20, 23);
- 
-@@ -1027,16 +1027,9 @@ static u64 etm4_get_ns_access_type(struct etmv4_config *config)
- static u64 etm4_get_access_type(struct etmv4_config *config)
++static inline u32 etm4_get_victlr_access_type(struct etmv4_config *config)
++{
++	return etm4_get_access_type(config) << TRCVICTLR_EXLEVEL_SHIFT;
++}
++
+ /* Set ELx trace filter access in the TRCVICTLR register */
+ static void etm4_set_victlr_access(struct etmv4_config *config)
  {
- 	u64 access_type = etm4_get_ns_access_type(config);
--	u64 s_hyp = (config->arch & 0x0f) >= 0x4 ? ETM_EXLEVEL_S_HYP : 0;
- 
+-	u64 access_type;
+-
+-	config->vinst_ctrl &= ~(ETM_EXLEVEL_S_VICTLR_MASK | ETM_EXLEVEL_NS_VICTLR_MASK);
+-
 -	/*
--	 * EXLEVEL_S, bits[11:8], don't trace anything happening
--	 * in secure state.
+-	 * TRCVICTLR::EXLEVEL_NS:EXLEVELS: Set kernel / user filtering
+-	 * bits in vinst_ctrl, same bit pattern as TRCACATRn values returned by
+-	 * etm4_get_access_type() but with a relative shift in this register.
 -	 */
--	access_type |= (ETM_EXLEVEL_S_APP	|
--			ETM_EXLEVEL_S_OS	|
--			s_hyp			|
--			ETM_EXLEVEL_S_MON);
-+	/* All supported secure ELs are excluded */
-+	access_type |= (u64)config->s_ex_level << TRCACATR_EXLEVEL_SHIFT;
+-	access_type = etm4_get_access_type(config) << ETM_EXLEVEL_LSHIFT_TRCVICTLR;
+-	config->vinst_ctrl |= (u32)access_type;
++	config->vinst_ctrl &= ~TRCVICTLR_EXLEVEL_MASK;
++	config->vinst_ctrl |= etm4_get_victlr_access_type(config);
+ }
  
+ static void etm4_set_default_config(struct etmv4_config *config)
+@@ -1002,12 +998,9 @@ static u64 etm4_get_ns_access_type(struct etmv4_config *config)
+ 	u64 access_type = 0;
+ 
+ 	/*
+-	 * EXLEVEL_NS, bits[15:12]
+-	 * The Exception levels are:
+-	 *   Bit[12] Exception level 0 - Application
+-	 *   Bit[13] Exception level 1 - OS
+-	 *   Bit[14] Exception level 2 - Hypervisor
+-	 *   Bit[15] Never implemented
++	 * EXLEVEL_NS, for NonSecure Exception levels.
++	 * The mask here is a generic value and must be
++	 * shifted to the corresponding field for the registers
+ 	 */
+ 	if (!is_kernel_in_hyp_mode()) {
+ 		/* Stay away from hypervisor mode for non-VHE */
+@@ -1024,20 +1017,26 @@ static u64 etm4_get_ns_access_type(struct etmv4_config *config)
  	return access_type;
  }
+ 
++/*
++ * Construct the exception level masks for a given config.
++ * This must be shifted to the corresponding register field
++ * for usage.
++ */
+ static u64 etm4_get_access_type(struct etmv4_config *config)
+ {
+-	u64 access_type = etm4_get_ns_access_type(config);
+-
+-	/* All supported secure ELs are excluded */
+-	access_type |= (u64)config->s_ex_level << TRCACATR_EXLEVEL_SHIFT;
++	/* All Secure exception levels are excluded from the trace */
++	return etm4_get_ns_access_type(config) | (u64)config->s_ex_level;
++}
+ 
+-	return access_type;
++static u64 etm4_get_comparator_access_type(struct etmv4_config *config)
++{
++	return etm4_get_access_type(config) << TRCACATR_EXLEVEL_SHIFT;
+ }
+ 
+ static void etm4_set_comparator_filter(struct etmv4_config *config,
+ 				       u64 start, u64 stop, int comparator)
+ {
+-	u64 access_type = etm4_get_access_type(config);
++	u64 access_type = etm4_get_comparator_access_type(config);
+ 
+ 	/* First half of default address comparator */
+ 	config->addr_val[comparator] = start;
+@@ -1072,7 +1071,7 @@ static void etm4_set_start_stop_filter(struct etmv4_config *config,
+ 				       enum etm_addr_type type)
+ {
+ 	int shift;
+-	u64 access_type = etm4_get_access_type(config);
++	u64 access_type = etm4_get_comparator_access_type(config);
+ 
+ 	/* Configure the comparator */
+ 	config->addr_val[comparator] = address;
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
+index e8fdda45ffca..45aeeac2f50e 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
++++ b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
+@@ -743,7 +743,7 @@ static ssize_t s_exlevel_vinst_show(struct device *dev,
+ 	struct etmv4_drvdata *drvdata = dev_get_drvdata(dev->parent);
+ 	struct etmv4_config *config = &drvdata->config;
+ 
+-	val = (config->vinst_ctrl & ETM_EXLEVEL_S_VICTLR_MASK) >> 16;
++	val = (config->vinst_ctrl & TRCVICTLR_EXLEVEL_S_MASK) >> TRCVICTLR_EXLEVEL_S_SHIFT;
+ 	return scnprintf(buf, PAGE_SIZE, "%#lx\n", val);
+ }
+ 
+@@ -760,10 +760,10 @@ static ssize_t s_exlevel_vinst_store(struct device *dev,
+ 
+ 	spin_lock(&drvdata->spinlock);
+ 	/* clear all EXLEVEL_S bits  */
+-	config->vinst_ctrl &= ~(ETM_EXLEVEL_S_VICTLR_MASK);
++	config->vinst_ctrl &= ~(TRCVICTLR_EXLEVEL_S_MASK);
+ 	/* enable instruction tracing for corresponding exception level */
+ 	val &= drvdata->s_ex_level;
+-	config->vinst_ctrl |= (val << 16);
++	config->vinst_ctrl |= (val << TRCVICTLR_EXLEVEL_S_SHIFT);
+ 	spin_unlock(&drvdata->spinlock);
+ 	return size;
+ }
+@@ -778,7 +778,7 @@ static ssize_t ns_exlevel_vinst_show(struct device *dev,
+ 	struct etmv4_config *config = &drvdata->config;
+ 
+ 	/* EXLEVEL_NS, bits[23:20] */
+-	val = (config->vinst_ctrl & ETM_EXLEVEL_NS_VICTLR_MASK) >> 20;
++	val = (config->vinst_ctrl & TRCVICTLR_EXLEVEL_NS_MASK) >> TRCVICTLR_EXLEVEL_NS_SHIFT;
+ 	return scnprintf(buf, PAGE_SIZE, "%#lx\n", val);
+ }
+ 
+@@ -795,10 +795,10 @@ static ssize_t ns_exlevel_vinst_store(struct device *dev,
+ 
+ 	spin_lock(&drvdata->spinlock);
+ 	/* clear EXLEVEL_NS bits  */
+-	config->vinst_ctrl &= ~(ETM_EXLEVEL_NS_VICTLR_MASK);
++	config->vinst_ctrl &= ~(TRCVICTLR_EXLEVEL_NS_MASK);
+ 	/* enable instruction tracing for corresponding exception level */
+ 	val &= drvdata->ns_ex_level;
+-	config->vinst_ctrl |= (val << 20);
++	config->vinst_ctrl |= (val << TRCVICTLR_EXLEVEL_NS_SHIFT);
+ 	spin_unlock(&drvdata->spinlock);
+ 	return size;
+ }
 diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
-index fba3c02eea0b..29cd27f53e72 100644
+index 29cd27f53e72..91b82002e260 100644
 --- a/drivers/hwtracing/coresight/coresight-etm4x.h
 +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
-@@ -557,6 +557,8 @@
- /* PowerDown Control Register bits */
- #define TRCPDCR_PU			BIT(3)
+@@ -559,24 +559,39 @@
  
+ #define TRCACATR_EXLEVEL_SHIFT		8
+ 
+-/* secure state access levels - TRCACATRn */
+-#define ETM_EXLEVEL_S_APP		BIT(8)
+-#define ETM_EXLEVEL_S_OS		BIT(9)
+-#define ETM_EXLEVEL_S_HYP		BIT(10)
+-#define ETM_EXLEVEL_S_MON		BIT(11)
+-/* non-secure state access levels - TRCACATRn */
+-#define ETM_EXLEVEL_NS_APP		BIT(12)
+-#define ETM_EXLEVEL_NS_OS		BIT(13)
+-#define ETM_EXLEVEL_NS_HYP		BIT(14)
+-#define ETM_EXLEVEL_NS_NA		BIT(15)
+-
+-/* access level control in TRCVICTLR - same bits as TRCACATRn but shifted */
+-#define ETM_EXLEVEL_LSHIFT_TRCVICTLR	8
++/*
++ * Exception level mask for Secure and Non-Secure ELs.
++ * ETM defines the bits for EL control (e.g, TRVICTLR, TRCACTRn).
++ * The Secure and Non-Secure ELs are always to gether.
++ * Non-secure EL3 is never implemented.
++ * We use the following generic mask as they appear in different
++ * registers and this can be shifted for the appropriate
++ * fields.
++ */
++#define ETM_EXLEVEL_S_APP		BIT(0)	/* Secure EL0		*/
++#define ETM_EXLEVEL_S_OS		BIT(1)	/* Secure EL1		*/
++#define ETM_EXLEVEL_S_HYP		BIT(2)	/* Secure EL2		*/
++#define ETM_EXLEVEL_S_MON		BIT(3)	/* Secure EL3/Monitor	*/
++#define ETM_EXLEVEL_NS_APP		BIT(4)	/* NonSecure EL0	*/
++#define ETM_EXLEVEL_NS_OS		BIT(5)	/* NonSecure EL1	*/
++#define ETM_EXLEVEL_NS_HYP		BIT(6)	/* NonSecure EL2	*/
++
++#define ETM_EXLEVEL_MASK		(GENMASK(6, 0))
++#define ETM_EXLEVEL_S_MASK		(GENMASK(3, 0))
++#define ETM_EXLEVEL_NS_MASK		(GENMASK(6, 4))
++
++/* access level controls in TRCACATRn */
 +#define TRCACATR_EXLEVEL_SHIFT		8
 +
- /* secure state access levels - TRCACATRn */
- #define ETM_EXLEVEL_S_APP		BIT(8)
- #define ETM_EXLEVEL_S_OS		BIT(9)
-@@ -631,7 +633,7 @@ enum etm_impdef_type {
-  * @vmid_mask0:	VM ID comparator mask for comparator 0-3.
-  * @vmid_mask1:	VM ID comparator mask for comparator 4-7.
-  * @ext_inp:	External input selection.
-- * @arch:	ETM architecture version (for arch dependent config).
-+ * @s_ex_level: Secure ELs where tracing is supported.
-  */
- struct etmv4_config {
- 	u32				mode;
-@@ -675,7 +677,7 @@ struct etmv4_config {
- 	u32				vmid_mask0;
- 	u32				vmid_mask1;
- 	u32				ext_inp;
--	u8				arch;
-+	u8				s_ex_level;
- };
++/* access level control in TRCVICTLR */
++#define TRCVICTLR_EXLEVEL_SHIFT		16
++#define TRCVICTLR_EXLEVEL_S_SHIFT	16
++#define TRCVICTLR_EXLEVEL_NS_SHIFT	20
  
- /**
+ /* secure / non secure masks - TRCVICTLR, IDR3 */
+-#define ETM_EXLEVEL_S_VICTLR_MASK	GENMASK(19, 16)
+-/* NS MON (EL3) mode never implemented */
+-#define ETM_EXLEVEL_NS_VICTLR_MASK	GENMASK(22, 20)
++#define TRCVICTLR_EXLEVEL_MASK		(ETM_EXLEVEL_MASK << TRCVICTLR_EXLEVEL_SHIFT)
++#define TRCVICTLR_EXLEVEL_S_MASK	(ETM_EXLEVEL_S_MASK << TRCVICTLR_EXLEVEL_SHIFT)
++#define TRCVICTLR_EXLEVEL_NS_MASK	(ETM_EXLEVEL_NS_MASK << TRCVICTLR_EXLEVEL_SHIFT)
+ 
+ /* Interpretation of resource numbers change at ETM v4.3 architecture */
+ #define ETM4X_ARCH_4V3	0x43
 -- 
 2.25.1
 
