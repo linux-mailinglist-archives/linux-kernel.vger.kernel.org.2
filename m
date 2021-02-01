@@ -2,85 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7962530A233
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:48:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 042AA30A234
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:49:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232174AbhBAGsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 01:48:22 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11650 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232272AbhBAGnw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 01:43:52 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DTddk6LW6z162QB;
-        Mon,  1 Feb 2021 14:41:46 +0800 (CST)
-Received: from [10.174.179.80] (10.174.179.80) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 1 Feb 2021 14:43:01 +0800
-Subject: Re: [PATCH] nbd: Fix NULL pointer in flush_workqueue
-To:     Markus Elfring <Markus.Elfring@web.de>,
-        <linux-block@vger.kernel.org>, <nbd@other.debian.org>
-CC:     <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
-        "Jens Axboe" <axboe@kernel.dk>, Josef Bacik <josef@toxicpanda.com>
-References: <20210128074153.1633374-1-sunke32@huawei.com>
- <1739e522-5980-f86e-cb90-19b61539a5cf@web.de>
-From:   Sun Ke <sunke32@huawei.com>
-Message-ID: <28c83b00-7d0b-ee0d-640b-017c9f8410eb@huawei.com>
-Date:   Mon, 1 Feb 2021 14:43:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S232005AbhBAGsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 01:48:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33434 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232172AbhBAGoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 01:44:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EC9464E11;
+        Mon,  1 Feb 2021 06:43:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612161799;
+        bh=VWrcrRLqYlZ43SypcWSC4Ova6HDDDLuVvN9BU0monik=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aoy3nVlkmtWO6sr8qsxlqIrnH0enDrOBLP0XdomN8RSDqY0LPrQv4bUbRE4vtm+Sw
+         GKWz4mxX6zeIN1kOmkUcHwBhPuUX8tR/iCdC7boCQlH0eH+o1AqJUmIOevgBlGT6+h
+         Sx7j/lgSmF+gQx7FyIx2AbI5+TewLUGfsNDJS5fpo8WhVULrZg3WoiLg/SJmscFbWh
+         w91KGEXCDSlRdktdaVnWmp6WmCjhSEpBV1zoB3DZtTNIR1ovEZ0i7lKxizoYDCjMyR
+         DgNig9yf3sMfwW0dRjYYxYv4qC2xpkd0+iVD24ZMtuAJrmLrvkgyS+1DstZH3TLRHT
+         kHpbI1fFmLv8w==
+Date:   Mon, 1 Feb 2021 12:13:14 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     mdalam@codeaurora.org
+Cc:     corbet@lwn.net, agross@kernel.org, bjorn.andersson@linaro.org,
+        dan.j.williams@intel.com, dmaengine@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, sricharan@codeaurora.org,
+        mdalam=codeaurora.org@codeaurora.org
+Subject: Re: [PATCH] dmaengine: qcom: bam_dma: Add LOCK and UNLOCK flag bit
+ support
+Message-ID: <20210201064314.GM2771@vkoul-mobl>
+References: <efcc74bbdf36b4ddbf764eb6b4ed99f2@codeaurora.org>
+ <f7de0117c8ff2e61c09f58acdea0e5b0@codeaurora.org>
+ <20210112101056.GI2771@vkoul-mobl>
+ <e3cf7c4fc02c54d17fd2fd213f39005b@codeaurora.org>
+ <20210115055806.GE2771@vkoul-mobl>
+ <97ce29b230164a5848a38f6448d1be60@codeaurora.org>
+ <20210119164511.GE2771@vkoul-mobl>
+ <534308caab7c18730ad0cc25248d116f@codeaurora.org>
+ <20210201060508.GK2771@vkoul-mobl>
+ <9d33d73682f24d92338757e1823ccd88@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <1739e522-5980-f86e-cb90-19b61539a5cf@web.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.179.80]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9d33d73682f24d92338757e1823ccd88@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-hi，Markus
+On 01-02-21, 11:52, mdalam@codeaurora.org wrote:
+> On 2021-02-01 11:35, Vinod Koul wrote:
+> > On 27-01-21, 23:56, mdalam@codeaurora.org wrote:
 
-在 2021/1/29 3:42, Markus Elfring 写道:
-> …
->> +++ b/drivers/block/nbd.c
->> @@ -2011,12 +2011,20 @@ static int nbd_genl_disconnect(struct sk_buff *skb, struct genl_info *info)
->>   		       index);
->>   		return -EINVAL;
->>   	}
->> +	mutex_lock(&nbd->config_lock);
->>   	if (!refcount_inc_not_zero(&nbd->refs)) {
->>   		mutex_unlock(&nbd_index_mutex);
->> +		mutex_unlock(&nbd->config_lock);
-> Can an other function call order become relevant for the unlocking of these mutexes?
-Do you think the nbd->config_lock  mutex here is useless?
->
->
->>   		printk(KERN_ERR "nbd: device at index %d is going down\n",
->>   		       index);
-> May such an error message be moved into the lock scope?
-Sure.
->
->
->>   		return -EINVAL;
->>   	}
->> +	if (!nbd->recv_workq) {
->> +		mutex_unlock(&nbd->config_lock);
->> +		mutex_unlock(&nbd_index_mutex);
->> +		return -EINVAL;
->> +	}
-> How do you think about to connect the code from this if branch
-> with a jump target like “unlock” so that such statements would be shareable
-> for the desired exception handling?
-OK, I will improve it in V2 patch.
->
->
->> +	mutex_unlock(&nbd->config_lock);
->>   	mutex_unlock(&nbd_index_mutex);
->>   	if (!refcount_inc_not_zero(&nbd->config_refs)) {
->>   		nbd_put(nbd);
->
-> Regards,
-> Markus
-> .
+> > >   The actual LOCK/UNLOCK flag should be set on hardware command
+> > > descriptor.
+> > >   so this flag setting should be done in DMA engine driver. The user
+> > > of the
+> > > DMA
+> > >   driver like (in case of IPQ5018) Crypto can use flag
+> > > "DMA_PREP_LOCK" &
+> > > "DMA_PREP_UNLOCK"
+> > >   while preparing CMD descriptor before submitting to the DMA
+> > > engine. In DMA
+> > > engine driver
+> > >   we are checking these flasgs on CMD descriptor and setting actual
+> > > LOCK/UNLOCK flag on hardware
+> > >   descriptor.
+> > 
+> > 
+> > I am not sure I comprehend this yet.. when is that we would need to do
+> > this... is this for each txn submitted to dmaengine.. or something
+> > else..
+> 
+>  Its not for each transaction submitted to dmaengine. We have to set this
+> only
+>  once on CMD descriptor. So when A53 crypto driver need to change the crypto
+> configuration
+>  then first it will lock the all other pipes using setting the LOCK flag bit
+> on CMD
+>  descriptor and then it can start the transaction , on data descriptor this
+> flag will
+>  not get set once all transaction will be completed the A53 crypto driver
+> release the lock on
+>  all other pipes using UNLOCK flag on CMD descriptor. So LOCK/UNLOCK will be
+> only once and not for
+>  the each transaction.
+
+Okay so why cant the bam driver check cmd descriptor and do lock/unlock
+as below, why do we need users to do this.
+
+        if (flags & DMA_PREP_CMD) {
+                do_lock_bam();
+
+The point here is that this seems to be internal to dma and should be
+handled by dma driver.
+
+Also if we do this, it needs to be done for specific platforms..
+
+Thanks
+
+-- 
+~Vinod
