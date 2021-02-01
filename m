@@ -2,133 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE0030A5A3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:42:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81C3030A5AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:43:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233381AbhBAKmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 05:42:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35568 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233278AbhBAKjb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 05:39:31 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFFF9C061353
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 02:38:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Sender:Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
-        Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=cckpZjyejCCA13sUlZDGZnTckF5vDCuYuXSjmMC9Br0=; b=NXofwusQT4WzM2N/CycgGJKr2B
-        tJ5AQlaANw72wb9C9yXyB2oteWCJO3Qr22RkdesOfDZ9kJhswqzkmCoTdUyVbStHMYm6ucaUXgk+u
-        HGYaw7AQduI7CJasCQ0zQf/rknStQi+mBk+4IQTOXffF0iZiWNUQuOhbySN1LA27NgzEhE9URG9vB
-        3jWxiE4ikLO6w7ekjxOrvsEZpTeth59bFnhJeDjTil/xWkXeuF/9GN5V4MajkcAeqti0Dw0z5NDWf
-        a7jAf0Hp0sD3PW4dP101EsuVxtbkjeFXb1Pm3yo4KOXBxXIvmrlwvjK9XlBfCTD72nOFIsHf9cQFx
-        iXdRJ88g==;
-Received: from i7.infradead.org ([2001:8b0:10b:1:21e:67ff:fecb:7a92])
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l6WbL-00Deow-LX; Mon, 01 Feb 2021 10:38:36 +0000
-Received: from dwoodhou by i7.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l6WbL-004NPb-8R; Mon, 01 Feb 2021 10:38:35 +0000
-From:   David Woodhouse <dwmw@amazon.co.uk>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        "shenkai (D)" <shenkai8@huawei.com>, mimoja@amazon.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        X86 ML <x86@kernel.org>, "H . Peter Anvin" <hpa@zytor.com>,
-        hewenliang4@huawei.com, hushiyuan@huawei.com,
-        luolongjun@huawei.com, hejingxian@huawei.com
-Subject: [PATCH 6/6] pre states for x86
-Date:   Mon,  1 Feb 2021 10:38:35 +0000
-Message-Id: <20210201103835.1043254-6-dwmw@amazon.co.uk>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210201103835.1043254-1-dwmw@amazon.co.uk>
-References: <478c56af540eaa47b8f452e51cb0c085f26db738.camel@infradead.org>
- <20210201103835.1043254-1-dwmw@amazon.co.uk>
+        id S233266AbhBAKnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 05:43:31 -0500
+Received: from mga11.intel.com ([192.55.52.93]:53264 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233332AbhBAKkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 05:40:40 -0500
+IronPort-SDR: YTZ+V0lCXmIe1zYXMfF8siWCwRbKE74t7Hr9m/E6fX+CwoMmh6tt429Ls3u1JYezlV7+ifMD9j
+ 4WjDqQmhNp1w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="177158282"
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="177158282"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 02:38:50 -0800
+IronPort-SDR: Tom3amIGGirqc4JKwoq6x18HoCce2aZEX+Avb9Akh1mQgGGpD59NwSwwxvUfQNknwUv6MHqTpF
+ JzUJmFJusHTQ==
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="390847886"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 02:38:48 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l6WbV-0016OE-By; Mon, 01 Feb 2021 12:38:45 +0200
+Date:   Mon, 1 Feb 2021 12:38:45 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     mail@richard-neumann.de
+Cc:     syniurge@gmail.com, nehal-bakulchandra.shah@amd.com,
+        shyam-sundar.s-k@amd.com, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] i2c: i2c-amd-mp2: Remove unused macro
+Message-ID: <YBfaNQbiUNRvQNli@smile.fi.intel.com>
+References: <20210129192553.55906-1-mail@richard-neumann.de>
+ <20210129192553.55906-3-mail@richard-neumann.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: David Woodhouse <dwmw2@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210129192553.55906-3-mail@richard-neumann.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Utterly broken because the bringup uses global initial_stack and initial_gs
-variables, and the TSC sync is similarly hosed (I should probably do one
-at a time).
+On Fri, Jan 29, 2021 at 08:25:53PM +0100, mail@richard-neumann.de wrote:
+> From: Richard Neumann <mail@richard-neumann.de>
+> 
+> Remove unused work_amd_i2c_common macro.
 
-The bringup is going to be the most fun to fix, because the AP coming up
-doesn't actually have a lot that it *can* use to disambiguate itself from
-the others. Starting them at different locations is mostly a non-starter
-as we can only specify a page address under 1MiB and there are only 256
-of those even if we could allocate them *all* to start different CPUs.
-I think we need to get them to find their own logical CPU# from their
-APICID, perhaps by trawling the per_cpu x86_cpu_to_apicid or some other
-means, then find their initial stack / %gs from that.
+I think I gave you a tag on this. If no, here it is
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-We also need to work out if we can eliminate the real-mode stack for the
-trampoline, or do some locking if we really must share it perhaps.
----
- arch/x86/kernel/smpboot.c | 24 ++++++++++++++++--------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+Please carry it on in a new versions (as a part of the commit message,
+tag block, usually after your SoB in chronological order of receiving).
 
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 649b8236309b..03f63027fdad 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -57,6 +57,7 @@
- #include <linux/pgtable.h>
- #include <linux/overflow.h>
- #include <linux/syscore_ops.h>
-+#include <linux/smpboot.h>
- 
- #include <asm/acpi.h>
- #include <asm/desc.h>
-@@ -1217,14 +1218,6 @@ int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
- {
- 	int ret;
- 
--	ret = do_cpu_up(cpu, tidle);
--	if (ret)
--		return ret;
--
--	ret = do_wait_cpu_initialized(cpu);
--	if (ret)
--		return ret;
--
- 	ret = do_wait_cpu_callin(cpu);
- 	if (ret)
- 		return ret;
-@@ -1241,6 +1234,16 @@ int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
- 	return ret;
- }
- 
-+int native_cpu_kick(unsigned int cpu)
-+{
-+	return do_cpu_up(cpu, idle_thread_get(cpu));
-+}
-+
-+int native_cpu_wait_init(unsigned int cpu)
-+{
-+	return do_wait_cpu_initialized(cpu);
-+}
-+
- /**
-  * arch_disable_smp_support() - disables SMP support for x86 at runtime
-  */
-@@ -1412,6 +1415,11 @@ void __init native_smp_prepare_cpus(unsigned int max_cpus)
- 	smp_quirk_init_udelay();
- 
- 	speculative_store_bypass_ht_init();
-+
-+	cpuhp_setup_state_nocalls(CPUHP_BP_PARALLEL_DYN, "x86/cpu:kick",
-+				  native_cpu_kick, NULL);
-+	cpuhp_setup_state_nocalls(CPUHP_BP_PARALLEL_DYN, "x86/cpu:wait-init",
-+				  native_cpu_wait_init, NULL);
- }
- 
- void arch_thaw_secondary_cpus_begin(void)
+> Signed-off-by: Richard Neumann <mail@richard-neumann.de>
+> ---
+>  drivers/i2c/busses/i2c-amd-mp2.h | 3 ---
+>  1 file changed, 3 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-amd-mp2.h b/drivers/i2c/busses/i2c-amd-mp2.h
+> index 6b91e285745d..ddecd0c88656 100644
+> --- a/drivers/i2c/busses/i2c-amd-mp2.h
+> +++ b/drivers/i2c/busses/i2c-amd-mp2.h
+> @@ -185,9 +185,6 @@ struct amd_mp2_dev {
+>  	unsigned int probed;
+>  };
+>  
+> -#define work_amd_i2c_common(__work) \
+> -	container_of(__work, struct amd_i2c_common, work.work)
+> -
+>  /* PCIe communication driver */
+>  
+>  int amd_mp2_rw(struct amd_i2c_common *i2c_common, enum i2c_cmd reqcmd);
+> -- 
+> 2.30.0
+> 
+
 -- 
-2.29.2
+With Best Regards,
+Andy Shevchenko
+
 
