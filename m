@@ -2,167 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20B9430A2FA
+	by mail.lfdr.de (Postfix) with ESMTP id 925B830A2FB
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:05:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232339AbhBAIEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 03:04:09 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:36089 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbhBAIEA (ORCPT
+        id S232386AbhBAIE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 03:04:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230106AbhBAIEY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 03:04:00 -0500
-Received: by mail-il1-f200.google.com with SMTP id z5so5164826ilq.3
+        Mon, 1 Feb 2021 03:04:24 -0500
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91BE1C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 00:03:44 -0800 (PST)
+Received: by mail-qv1-xf2d.google.com with SMTP id h21so7721597qvb.8
         for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 00:03:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cXn86J6LQUtvcwGvVgVroC1EKW3nlsBMdzpnDrpbexI=;
+        b=LZEP2FQVaqbuugiD+wkAkDLFkGEe1vcP/5OdiWUwRnNcyZTFDGMJHkIOCdSmf6Hjcp
+         RsroPUwipXmUHOM9hmiGJun7qLXFyjoYj4WZlHIKyLmNyHsGtEf+JM/2A164iUpbvCfR
+         LlqVSvZHPuf+NyaHoKFNXJL2WDW9ahRmAnH0n6AknrabqsHV1khHF4vQo8xZs2D9X3ds
+         9JCSDJ7mZJJgQTLQUmKd0KSoRh4oQqGpX9/h/ZNNrT94ZuZY/cXFp1u6izoMmGzxPRO5
+         QJ94jJwWDeXNo0Bw89se0rALGLXBf2wkK/6yBPkyNNgKQvbLlplDzo13eSxShUrlnug4
+         8MpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Me0FEEtUvCdz7PmiWrSa9iRahpVN0X5XCbv9pa6JIqY=;
-        b=mBNxq5gCytDfelJMNPrhkkUw2OiEiSZ2JW5Zkw8ZSFNe/2eBrvIFOtma+x0YUj1XuF
-         AIQ7Q5EnD5z7As8IlF/pRqAvkYpTxsHMQFCh3Px/aesgY/8UPPblMIKLCLBsD8swS/bw
-         8N0BzcfaB91+wXstDDf6qrHk5+TlIbnC/Gl2UkXA9EIOqAPS2vBSrilGT753mjc/zcEp
-         QFFkdgeYs0uzUebJt2gXl5YUefN9Gf2G2KJ4LeV08B/Zvw8xqeUDvTVhUA83LjgBTcbV
-         YOKdDAaAtY4nRvTz/1eCP5caCUeeBj8ugy2e1q3tOT47HUWxCVmRPADNTQdapzlvtGo3
-         ZcsA==
-X-Gm-Message-State: AOAM530KdIfFY37OyDRw8mNMGBhFOD1yVLAVth/l+X0T0pdHwpvO4uQ+
-        F1hw5r5ewZi/+62peLLjUWDg+AFJ5aREp2vzjJUZbIYUONBP
-X-Google-Smtp-Source: ABdhPJzgy5L3t7e7+IP9H4Zy+PtTDlgQTaGdx1RYU/xiGUwUXD8d/J//QoQ5rsXSnzqsMN8Rg3NqbtgGmwRPBDG/K8ZDiilCqTmj
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cXn86J6LQUtvcwGvVgVroC1EKW3nlsBMdzpnDrpbexI=;
+        b=X8OntLlHf2PWokyT/AppF59es4E78EN73cWAxE9IbHXDwnccKEXM8FVmkyhwOLHROu
+         gSZiinQzO72pp2dzRbp/IgUAxssa1fwQnzruTgXHUsySDxeDcCy78FXVtcwf/P0X1XHO
+         GHSW3Os+53qp6AS93BZKJcn01BKfbMESToPRNSkWQGAC8wThoKskBJvEgv3Bppi+ToVP
+         ZFoR/OYy1gP9UTBWmuPDTXhBiL/wf3640K4icWuju62PZfBhKzd/TP7JwoYHlrt8dKHz
+         9QRy0vFY6vzrBnofiu8ZoOuZAeHfO/LSyad/HTEK3a3M9Iri8xWEQ+CWww69Osac/Mte
+         6PSA==
+X-Gm-Message-State: AOAM533oA39Z915OecaZUU9Vx2/UIZqiCFRORVYLDQgM+KAMUrUC30i7
+        73JydkrFnVhWB76Z8WW/s3kpgM5jJLt2oOmbkJ2zYQ==
+X-Google-Smtp-Source: ABdhPJwQD44dY6kzIgqv+4vx6DT+iNgIEwfIQL6g4Ii2qq9ht6rpaqYUpv9alyGlgU4XV1SXbr1NG+i6TQk3jlUwWPs=
+X-Received: by 2002:a0c:8304:: with SMTP id j4mr14500567qva.18.1612166623600;
+ Mon, 01 Feb 2021 00:03:43 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a02:634b:: with SMTP id j72mr14300352jac.106.1612166599492;
- Mon, 01 Feb 2021 00:03:19 -0800 (PST)
-Date:   Mon, 01 Feb 2021 00:03:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007b460105ba41c908@google.com>
-Subject: KASAN: use-after-free Read in rxrpc_send_data_packet
-From:   syzbot <syzbot+174de899852504e4a74a@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, dhowells@redhat.com, kuba@kernel.org,
-        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000d4b96a05aedda7e2@google.com> <00000000000079a40e05ba0d702f@google.com>
+In-Reply-To: <00000000000079a40e05ba0d702f@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 1 Feb 2021 09:03:32 +0100
+Message-ID: <CACT4Y+Z4OprUOs6Asp-L=UCM_VGARKremp-w594Dp6dDenoUXQ@mail.gmail.com>
+Subject: Re: possible deadlock in send_sigio (2)
+To:     syzbot <syzbot+907b8537e3b0e55151fc@syzkaller.appspotmail.com>
+Cc:     Bruce Fields <bfields@fieldses.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Will Deacon <will@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Jan 29, 2021 at 6:36 PM syzbot
+<syzbot+907b8537e3b0e55151fc@syzkaller.appspotmail.com> wrote:
+>
+> syzbot suspects this issue was fixed by commit:
+>
+> commit 8d1ddb5e79374fb277985a6b3faa2ed8631c5b4c
+> Author: Boqun Feng <boqun.feng@gmail.com>
+> Date:   Thu Nov 5 06:23:51 2020 +0000
+>
+>     fcntl: Fix potential deadlock in send_sig{io, urg}()
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17455db4d00000
+> start commit:   7b1b868e Merge tag 'for-linus' of git://git.kernel.org/pub..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3416bb960d5c705d
+> dashboard link: https://syzkaller.appspot.com/bug?extid=907b8537e3b0e55151fc
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=163e046b500000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12f8b623500000
+>
+> If the result looks correct, please mark the issue as fixed by replying with:
+>
+> #syz fix: fcntl: Fix potential deadlock in send_sig{io, urg}()
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
-syzbot found the following issue on:
-
-HEAD commit:    78031381 bpf: Drop disabled LSM hooks from the sleepable set
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=11274530d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=be33d8015c9de024
-dashboard link: https://syzkaller.appspot.com/bug?extid=174de899852504e4a74a
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+174de899852504e4a74a@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: use-after-free in rxrpc_send_data_packet+0x19b4/0x1e70 net/rxrpc/output.c:372
-Read of size 4 at addr ffff888011606e04 by task kworker/0:0/5
-
-CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.11.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: krxrpcd rxrpc_process_call
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:230
- __kasan_report mm/kasan/report.c:396 [inline]
- kasan_report.cold+0x79/0xd5 mm/kasan/report.c:413
- rxrpc_send_data_packet+0x19b4/0x1e70 net/rxrpc/output.c:372
- rxrpc_resend net/rxrpc/call_event.c:266 [inline]
- rxrpc_process_call+0x1634/0x1f60 net/rxrpc/call_event.c:412
- process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-
-Allocated by task 2318:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:401 [inline]
- ____kasan_kmalloc.constprop.0+0x82/0xa0 mm/kasan/common.c:429
- kasan_slab_alloc include/linux/kasan.h:209 [inline]
- slab_post_alloc_hook mm/slab.h:512 [inline]
- slab_alloc_node mm/slub.c:2891 [inline]
- kmem_cache_alloc_node+0x1e0/0x470 mm/slub.c:2927
- __alloc_skb+0x71/0x5a0 net/core/skbuff.c:198
- alloc_skb include/linux/skbuff.h:1099 [inline]
- alloc_skb_with_frags+0x93/0x5d0 net/core/skbuff.c:5894
- sock_alloc_send_pskb+0x793/0x920 net/core/sock.c:2348
- rxrpc_send_data+0xb51/0x2bf0 net/rxrpc/sendmsg.c:358
- rxrpc_do_sendmsg+0xc03/0x1350 net/rxrpc/sendmsg.c:744
- rxrpc_sendmsg+0x420/0x630 net/rxrpc/af_rxrpc.c:560
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 2318:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:356
- ____kasan_slab_free+0xe1/0x110 mm/kasan/common.c:362
- kasan_slab_free include/linux/kasan.h:192 [inline]
- slab_free_hook mm/slub.c:1547 [inline]
- slab_free_freelist_hook+0x5d/0x150 mm/slub.c:1580
- slab_free mm/slub.c:3142 [inline]
- kmem_cache_free+0x82/0x350 mm/slub.c:3158
- kfree_skbmem+0xef/0x1b0 net/core/skbuff.c:636
- __kfree_skb net/core/skbuff.c:693 [inline]
- kfree_skb net/core/skbuff.c:710 [inline]
- kfree_skb+0x140/0x3f0 net/core/skbuff.c:704
- rxrpc_free_skb+0x11d/0x150 net/rxrpc/skbuff.c:78
- rxrpc_cleanup_ring net/rxrpc/call_object.c:485 [inline]
- rxrpc_release_call+0x5dd/0x860 net/rxrpc/call_object.c:552
- rxrpc_release_calls_on_socket+0x21c/0x300 net/rxrpc/call_object.c:579
- rxrpc_release_sock net/rxrpc/af_rxrpc.c:885 [inline]
- rxrpc_release+0x263/0x5a0 net/rxrpc/af_rxrpc.c:916
- __sock_release+0xcd/0x280 net/socket.c:597
- sock_close+0x18/0x20 net/socket.c:1256
- __fput+0x283/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x190 kernel/task_work.c:140
- get_signal+0x1c7f/0x20f0 kernel/signal.c:2554
- arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:811
- handle_signal_work kernel/entry/common.c:147 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x148/0x250 kernel/entry/common.c:201
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:302
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff888011606dc0
- which belongs to the cache skbuff_head_cache of size 232
-The buggy address is located 68 bytes inside of
- 232-byte region [ffff888011606dc0, ffff888011606ea8)
-The buggy address belongs to the page:
-page:0000000003512b7c refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x11606
-flags: 0xfff00000000200(slab)
-raw: 00fff00000000200 ffffea00008b6e00 0000000b0000000b ffff888010cbbc80
-raw: 0000000000000000 00000000000c000c 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888011606d00: fb fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc
- ffff888011606d80: fc fc fc fc fc fc fc fc fa fb fb fb fb fb fb fb
->ffff888011606e00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                   ^
- ffff888011606e80: fb fb fb fb fb fc fc fc fc fc fc fc fc fc fc fc
- ffff888011606f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+#syz fix: fcntl: Fix potential deadlock in send_sig{io, urg}()
