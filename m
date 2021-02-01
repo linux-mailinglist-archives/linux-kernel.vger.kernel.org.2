@@ -2,62 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A5530B053
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:27:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BC8630B059
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:28:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231346AbhBAT0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 14:26:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46462 "EHLO mail.kernel.org"
+        id S231508AbhBAT16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 14:27:58 -0500
+Received: from mga01.intel.com ([192.55.52.88]:57606 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229567AbhBAT0N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 14:26:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id B406564EAC;
-        Mon,  1 Feb 2021 19:25:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612207532;
-        bh=VBZMRXKUZsfHfRcpaf5VTalO1WVt69Z6lr60zCJMymA=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=MjI+R8Njc0x7RYcWdTTnPZhP9Ym7tvlb9sq2ohChRjYaFVzzqjbbpu5jwhAOv2BJ9
-         7L4YvoHbNm7vFq/PfgLiQE0fysHf/dnwZcwtvldFOS9GDUZZ7TOvAEgVDCeuVIu3/b
-         wpRVFp9ts0imXwm1T7ShvSFxa9HWGtNo1k20mRxrKYP0Ikx10W2GUaDf9mL6ZHR7cT
-         cZDP1QpbV9oLdmJR1SCp8Embcl2giLyXzXadxmcody/ojmT681JokQxf/D7FV0C6v/
-         QGT/nbKgb4npghCACS177TkMMA5aKTnInnJYXPseAEj++/k5Ut6Khl0OsvXxqHbL3+
-         ZN3xCBRaceCBw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A6F9C609D0;
-        Mon,  1 Feb 2021 19:25:32 +0000 (UTC)
-Subject: Re: [GIT PULL for v5.11-rc7] media fixes
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210201165609.21443571@coco.lan>
-References: <20210201165609.21443571@coco.lan>
-X-PR-Tracked-List-Id: <linux-media.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210201165609.21443571@coco.lan>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.11-3
-X-PR-Tracked-Commit-Id: ef357e02b6c420dc2d668ebf3165838c77358acd
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 88bb507a74ea7d75fa49edd421eaa710a7d80598
-Message-Id: <161220753261.14170.17715091054379190692.pr-tracker-bot@kernel.org>
-Date:   Mon, 01 Feb 2021 19:25:32 +0000
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        id S229555AbhBAT14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 14:27:56 -0500
+IronPort-SDR: 91DOs/c9+6ccIrtarMfJpO2kpUbYKL87kd+lqibePMcI/By7ZPUU9cFWHbB5DrsGGizdzBGfxD
+ HbJijmptH1Xw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="199641575"
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="199641575"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 11:27:10 -0800
+IronPort-SDR: Ar5npZIlmRyHOQSbD4WFo7BWVfXRSQKlTGiCVd73BlEHcqRFpJZVT35dVyiUYoiQkJZUvgY63t
+ /fFyaLde9z+Q==
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="355891726"
+Received: from jambrizm-mobl1.amr.corp.intel.com (HELO intel.com) ([10.252.133.15])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 11:27:09 -0800
+Date:   Mon, 1 Feb 2021 11:27:08 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH 09/14] cxl/mem: Add a "RAW" send command
+Message-ID: <20210201192708.5cvyecbcdrwx77de@intel.com>
+References: <20210130002438.1872527-1-ben.widawsky@intel.com>
+ <20210130002438.1872527-10-ben.widawsky@intel.com>
+ <20210201182400.GK197521@fedora>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210201182400.GK197521@fedora>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 1 Feb 2021 16:56:09 +0100:
+On 21-02-01 13:24:00, Konrad Rzeszutek Wilk wrote:
+> On Fri, Jan 29, 2021 at 04:24:33PM -0800, Ben Widawsky wrote:
+> > The CXL memory device send interface will have a number of supported
+> > commands. The raw command is not such a command. Raw commands allow
+> > userspace to send a specified opcode to the underlying hardware and
+> > bypass all driver checks on the command. This is useful for a couple of
+> > usecases, mainly:
+> > 1. Undocumented vendor specific hardware commands
+> > 2. Prototyping new hardware commands not yet supported by the driver
+> 
+> This sounds like a recipe for ..
+> 
+> In case you really really want this may I recommend you do two things:
+> 
+> - Wrap this whole thing with #ifdef
+>   CONFIG_CXL_DEBUG_THIS_WILL_DESTROY_YOUR_LIFE
+> 
+>  (or something equivalant to make it clear this should never be
+>   enabled in production kernels).
+> 
+>  - Add a nice big fat printk in dmesg telling the user that they
+>    are creating a unstable parallel universe that will lead to their
+>    blood pressure going sky-high, or perhaps something more professional
+>    sounding.
+> 
+> - Rethink this. Do you really really want to encourage vendors
+>   to use this raw API instead of them using the proper APIs?
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mchehab/linux-media tags/media/v5.11-3
+Again, the ideal is proper APIs. Barring that they get a WARN, and a taint if
+they use the raw commands.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/88bb507a74ea7d75fa49edd421eaa710a7d80598
+> 
+> > 
+> > While this all sounds very powerful it comes with a couple of caveats:
+> > 1. Bug reports using raw commands will not get the same level of
+> >    attention as bug reports using supported commands (via taint).
+> > 2. Supported commands will be rejected by the RAW command.
+> > 
+> > With this comes new debugfs knob to allow full access to your toes with
+> > your weapon of choice.
+> 
+> Problem is that debugfs is no longer "debug" but is enabled in
+> production kernel.
 
-Thank you!
+I don't see this as my problem. Again, they've been WARNed and tainted. If they
+want to do this, that's their business. They will be asked to reproduce without
+RAW if they file a bug report.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
