@@ -2,63 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E692930AE9C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:00:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31DCA30AE8B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:56:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232650AbhBAR71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:59:27 -0500
-Received: from mail.zx2c4.com ([104.131.123.232]:36496 "EHLO mail.zx2c4.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229663AbhBAR7Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:59:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1612201916;
+        id S232605AbhBARzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:55:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27643 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229534AbhBARz0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 12:55:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612202040;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8H4PmtHOZLPbqbAwMx0YvCGu/m87MtMsLJaMPY0DO38=;
-        b=JVFb3K3FYo4WqseEMJ7K1AkrpJO6ERZ+yyavwrF0x91dFvQtw4xFEfud1DO4OzPEs7rPe0
-        Bk3hKSh0phvR9yJJ+R3sndETQu0oVbNHwX/m0PeFiB2/5r8WGnRH7DGExjvHcSHprVXvJ0
-        cjWKF5KUEn0apEobo9NtP87MnfOce4A=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 3634a7b4 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO)
-        for <linux-kernel@vger.kernel.org>;
-        Mon, 1 Feb 2021 17:51:56 +0000 (UTC)
-Received: by mail-yb1-f172.google.com with SMTP id r2so155507ybk.11
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 09:51:56 -0800 (PST)
-X-Gm-Message-State: AOAM531peExOj4I5KTHiuQttgo2nh8e+nLrX8ci7y/XVKICSPiLrvT7Y
-        DgIHfFHfo8QCa3OV39jMWt7raaD4pe++BqaShzA=
-X-Google-Smtp-Source: ABdhPJwvsXUL4HnViA7KFLcP8aHPlok8xuysB2NjPKamdocjxG61iK2GYtj5Kb7ZRT1mq1qRKM+ddJbo2CnAcmKyeco=
-X-Received: by 2002:a25:4981:: with SMTP id w123mr25686628yba.123.1612201915772;
- Mon, 01 Feb 2021 09:51:55 -0800 (PST)
+        bh=TItgm0+VXZQkzT+vjmzxyshp9Ksb9PzGNBOZr7Z/D5g=;
+        b=AgS0U4cct9/YXvNWb2z6PzrYAR3qpLPorf5rVA0uSc5zWf5GCzH/Es/KUowmtpi618qdM5
+        5eCPhwjME6015WyRS407iRlun21RRSDNTC4VSzdrh61xlxs9/6BAjjhtCtpB2pud/tPqp5
+        4opV88nhPKA8JapeXh9cikaxGNd135g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-519-TVApnOdZMD-FJdEy0ErIwg-1; Mon, 01 Feb 2021 12:53:57 -0500
+X-MC-Unique: TVApnOdZMD-FJdEy0ErIwg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CAEE259;
+        Mon,  1 Feb 2021 17:53:55 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-118-89.rdu2.redhat.com [10.10.118.89])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 000A419716;
+        Mon,  1 Feb 2021 17:53:53 +0000 (UTC)
+Subject: Re: corrupted pvqspinlock in htab_map_update_elem
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>
+References: <CACT4Y+YJp0t0HA3+wDsAVxgTK4J+Pvht-J4-ENkOtS=C=Fhtzg@mail.gmail.com>
+ <YBfPAvBa8bbSU2nZ@hirez.programming.kicks-ass.net>
+ <YBfkuyIfB1+VRxXP@hirez.programming.kicks-ass.net>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <5936f4a4-f150-e56e-f07d-1efee06eba16@redhat.com>
+Date:   Mon, 1 Feb 2021 12:53:53 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <CAHmME9oHBtR4fBBUY8E_Oi7av-=OjOGkSNhQuMJMHhafCjazBw@mail.gmail.com>
-In-Reply-To: <CAHmME9oHBtR4fBBUY8E_Oi7av-=OjOGkSNhQuMJMHhafCjazBw@mail.gmail.com>
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-Date:   Mon, 1 Feb 2021 18:51:45 +0100
-X-Gmail-Original-Message-ID: <CAHmME9rDC9ObAT=6CJ3h0KQ9ogHsrnDNMnocm5882A2j6OPF6g@mail.gmail.com>
-Message-ID: <CAHmME9rDC9ObAT=6CJ3h0KQ9ogHsrnDNMnocm5882A2j6OPF6g@mail.gmail.com>
-Subject: Re: forkat(int pidfd), execveat(int pidfd), other awful things?
-To:     Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Andy Lutomirski <luto@amacapital.net>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Jann Horn <jann@thejh.net>,
-        Christian Brauner <christian.brauner@canonical.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YBfkuyIfB1+VRxXP@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> int execve_parent(int parent_pidfd, int root_dirfd, int cgroup_fd, int
-> namespace_fd, const char *pathname, char *const argv[], char *const
-> envp[]);
+On 2/1/21 6:23 AM, Peter Zijlstra wrote:
+> On Mon, Feb 01, 2021 at 10:50:58AM +0100, Peter Zijlstra wrote:
+>
+>>>   queued_spin_unlock arch/x86/include/asm/qspinlock.h:56 [inline]
+>>>   lockdep_unlock+0x10e/0x290 kernel/locking/lockdep.c:124
+>>>   debug_locks_off_graph_unlock kernel/locking/lockdep.c:165 [inline]
+>>>   print_usage_bug kernel/locking/lockdep.c:3710 [inline]
+>> Ha, I think you hit a bug in lockdep.
+> Something like so I suppose.
+>
+> ---
+> Subject: locking/lockdep: Avoid unmatched unlock
+> From: Peter Zijlstra <peterz@infradead.org>
+> Date: Mon Feb 1 11:55:38 CET 2021
+>
+> Commit f6f48e180404 ("lockdep: Teach lockdep about "USED" <- "IN-NMI"
+> inversions") overlooked that print_usage_bug() releases the graph_lock
+> and called it without the graph lock held.
+>
+> Fixes: f6f48e180404 ("lockdep: Teach lockdep about "USED" <- "IN-NMI" inversions")
+> Reported-by: Dmitry Vyukov <dvyukov@google.com>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
+>   kernel/locking/lockdep.c |    3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> --- a/kernel/locking/lockdep.c
+> +++ b/kernel/locking/lockdep.c
+> @@ -3773,7 +3773,7 @@ static void
+>   print_usage_bug(struct task_struct *curr, struct held_lock *this,
+>   		enum lock_usage_bit prev_bit, enum lock_usage_bit new_bit)
+>   {
+> -	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
+> +	if (!debug_locks_off() || debug_locks_silent)
+>   		return;
+>   
+>   	pr_warn("\n");
+> @@ -3814,6 +3814,7 @@ valid_state(struct task_struct *curr, st
+>   	    enum lock_usage_bit new_bit, enum lock_usage_bit bad_bit)
+>   {
+>   	if (unlikely(hlock_class(this)->usage_mask & (1 << bad_bit))) {
+> +		graph_unlock()
+>   		print_usage_bug(curr, this, bad_bit, new_bit);
+>   		return 0;
+>   	}
 
-A variant on the same scheme would be:
+I have also suspected doing unlock without a corresponding lock. This 
+patch looks good to me.
 
-int execve_remote(int pidfd, int root_dirfd, int cgroup_fd, int
-namespace_fd, const char *pathname, char *const argv[], char *const
-envp[]);
+Acked-by: Waiman Long <longman@redhat.com>
 
-Unpriv'd process calls fork(), and from that fork sends its pidfd
-through a unix socket to systemd-sudod, which then calls execve_remote
-on that pidfd.
+Cheers,
+Longman
 
-There are a lot of (potentially very bad) ways to skin this cat.
