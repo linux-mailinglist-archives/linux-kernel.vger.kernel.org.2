@@ -2,86 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1138D30B151
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 21:06:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D4530B16A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 21:10:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232557AbhBAUGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 15:06:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232970AbhBAUFR (ORCPT
+        id S233156AbhBAUJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 15:09:51 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31161 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232601AbhBAUJC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 15:05:17 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 485CEC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 12:04:37 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id lw17so470319pjb.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 12:04:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Er+3gSvGmPD8gB+0H5nskQtEmoQnaFUKfPK4BzJ3IdY=;
-        b=DQXWHKUAOl+6nuNBIcPbQqaNwY8TdE+kp78aiNtN4D6zLY853C2Q8NNPnJSR2J/laE
-         D27MyCmz5qygk9b2ZHVMbykuaeF5g2Mo7SXwxQOkt1q9XpgVfK4wpOFTfrqfE01ASkDw
-         3sACp4olX4VzOiATjE+y5nxv1BKJRrlTtwPDIRR9vgap6flWizHnC8gvAxKKxKWzrwhE
-         7xNaRcK1Y3uF2wjE/iA/OD6RTxSanunLfEvuPuEqtf422MaAsa34aVNOrLrGbzxG5p/3
-         D8LwAIMJKynJTVglpYBO3xYXT3EOluDt5/BssadUrOtNBvQfmSls3vGBIETtKpuAqMro
-         xCdg==
+        Mon, 1 Feb 2021 15:09:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612210050;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZfxwGnD+dy8umn1NYGcjVPYpHw77B9r85fxRnvKqVIE=;
+        b=iT0Yzbdokxw5VsERCRliWZwcA+FL6gOMAAWFPbU6saYgnAl/OoN9hqrZ/iVmE+tB4HWu4s
+        9qlSaCyhUHxp+S1XeI++nQ6IlbMQmu+EHiAEd7yPB8IE7LELtlrda1HreW41USN1izvroM
+        NAipySek8tVUz3n6mJUm0DKqUYJUKXU=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-160-ytXvpzX9NPaN_x5EQ4aXHQ-1; Mon, 01 Feb 2021 15:06:58 -0500
+X-MC-Unique: ytXvpzX9NPaN_x5EQ4aXHQ-1
+Received: by mail-qk1-f198.google.com with SMTP id v130so14166250qkb.14
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 12:06:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Er+3gSvGmPD8gB+0H5nskQtEmoQnaFUKfPK4BzJ3IdY=;
-        b=M8r1AVDOHm94ULgQaRUsS/yeSbKppsUvgIZdUq8dissHOYphqtmaHYHFbx1lxyb3xj
-         fphnrdkprjtBGsOFmbxspJc+nMwLMNCKqHJGIGCpogKtaB3pcoKmuPSmBxhRxw/HOfpz
-         D5n9Zpe3g2qhBohnXnGdiz4sfIsHHopj3Ai/b/ViiNE0qz9Rc/qPjrQ0aZbX2186AIoF
-         3zYqQVkJUET4h7QfxRS3iIQPxi8lRUQkoey3BKv+kljxLywqvAJrSx2043RseAu4UVlh
-         xos1IhN+vN6X9JtQZT/vCtbniDJPPAeaFY/PUMREfR4GXxAK91FUHLdHKApd2N9BYc8j
-         ZVQw==
-X-Gm-Message-State: AOAM5307BIbCJM1dGPsX/m49ITYQjN5tqYI4YsgAXcT2U6+SEPt85zvm
-        6ALrJHLW3WlCSfifvpAWxrCxPJ/Q81NtvmxbXEtQ0Q==
-X-Google-Smtp-Source: ABdhPJxA+IMt4iXXITzeYTc61BsQzJCR/cFKLgyNeCCYaJQTuWxQK1fCY3WUu0m8LAjZg5y9ELwSH6lsK7w6RC4vljM=
-X-Received: by 2002:a17:90b:30d4:: with SMTP id hi20mr521695pjb.41.1612209876585;
- Mon, 01 Feb 2021 12:04:36 -0800 (PST)
-MIME-Version: 1.0
-References: <20210130165225.54047-1-vincenzo.frascino@arm.com> <20210130165225.54047-3-vincenzo.frascino@arm.com>
-In-Reply-To: <20210130165225.54047-3-vincenzo.frascino@arm.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Mon, 1 Feb 2021 21:04:25 +0100
-Message-ID: <CAAeHK+y=t4c5FfVx3r3Rvwg3GTYN_q1xme=mwk51hgQfJX9MZw@mail.gmail.com>
-Subject: Re: [PATCH v11 2/5] kasan: Add KASAN mode kernel parameter
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZfxwGnD+dy8umn1NYGcjVPYpHw77B9r85fxRnvKqVIE=;
+        b=jRoZHNK30GCMgbWVRiGnDW2YQx/l1x4/SFqNARMdingpFHO1PNJEzbPNFvk+y/s7qN
+         hluw1Wn7KOGsI8OJJgMNpNhUMM1Kf+N2NQVezMPc0lv6DL+uiiltr6bLeVGk0SA1d65x
+         l89C0T5f9TWMPvcQMYvAG3T5FXQJ8HxVYeEpMSd57JhwLEya3Rt6QIwOw5Uh8pAU0aA/
+         sMglDWSKTGbFZekRkf6/sHK3Xr9Wae2f+OpoAi736Cl/iH4E5qQSOyJmToHutSwK54l8
+         END4zZoVPi4iXddv7sW3yL4zolUAIpyaCuLabE+rTVh4CkMBN8MdSRrWNCvouDTOdjcS
+         GKaA==
+X-Gm-Message-State: AOAM531WTdGLWMl6qdkE7V/YDxZQHKqqsQxhFH5EA+IYx+YKI4Y7jV9+
+        dw7a983NXqQG8VE9P1zzY3UaFAB+9PMQnu0SaCeGr7WtpggIEr9x31iManPjCxlpVTccSHCDKzh
+        4RJK4ZScdKgvWM6bjhqm5HcjI
+X-Received: by 2002:ad4:48c8:: with SMTP id v8mr16720959qvx.38.1612210018039;
+        Mon, 01 Feb 2021 12:06:58 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwHHxydcBEc3CJJbewLgzu9DZ1H4bSs28KW+16tXmuMDdFdnbUkwBL/eKC15pCMhCXHwbCWyw==
+X-Received: by 2002:ad4:48c8:: with SMTP id v8mr16720926qvx.38.1612210017772;
+        Mon, 01 Feb 2021 12:06:57 -0800 (PST)
+Received: from xz-x1 ([142.126.83.202])
+        by smtp.gmail.com with ESMTPSA id z8sm14666242qtu.10.2021.02.01.12.06.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 12:06:57 -0800 (PST)
+Date:   Mon, 1 Feb 2021 15:06:54 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steven Price <steven.price@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        Adam Ruprecht <ruprecht@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH v3 8/9] userfaultfd: update documentation to describe
+ minor fault handling
+Message-ID: <20210201200654.GI260413@xz-x1>
+References: <20210128224819.2651899-1-axelrasmussen@google.com>
+ <20210128224819.2651899-9-axelrasmussen@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210128224819.2651899-9-axelrasmussen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 5:52 PM Vincenzo Frascino
-<vincenzo.frascino@arm.com> wrote:
->
-> @@ -45,6 +52,9 @@ static enum kasan_arg_fault kasan_arg_fault __ro_after_init;
->  DEFINE_STATIC_KEY_FALSE(kasan_flag_enabled);
->  EXPORT_SYMBOL(kasan_flag_enabled);
->
-> +/* Whether the asynchronous mode is enabled. */
-> +bool kasan_flag_async __ro_after_init;
+On Thu, Jan 28, 2021 at 02:48:18PM -0800, Axel Rasmussen wrote:
+> Reword / reorganize things a little bit into "lists", so new features /
+> modes / ioctls can sort of just be appended.
+> 
+> Describe how UFFDIO_REGISTER_MODE_MINOR and UFFDIO_CONTINUE can be used
+> to intercept and resolve minor faults. Make it clear that COPY and
+> ZEROPAGE are used for MISSING faults, whereas CONTINUE is used for MINOR
+> faults.
 
-Just noticed that we need EXPORT_SYMBOL(kasan_flag_async) here.
+Bare with me since I'm not native speaker.. but I'm pointing out things that
+reads odd to me.  Feel free to argue. :)
 
-There are also a few arm64 mte functions that need to be exported, but
-I've addressed that myself here:
+[...]
 
-https://lore.kernel.org/linux-arm-kernel/cover.1612208222.git.andreyknvl@google.com/T/#m4746d3c410c3f6baddb726fc9ea9dd1496a4a788
+> +Resolving Userfaults
+> +--------------------
+> +
+> +There are three basic ways to resolve userfaults:
+> +
+> +- ``UFFDIO_COPY`` atomically copies some existing page contents from
+> +  userspace.
+> +
+> +- ``UFFDIO_ZEROPAGE`` atomically zeros the new page.
+> +
+> +- ``UFFDIO_CONTINUE`` maps an existing, previously-populated page.
+> +
+> +These operations are atomic in the sense that they guarantee nothing can
+> +see a half-populated page, since readers will keep userfaulting until the
+> +operation has finished.
+> +
+> +By default, these wake up userfaults blocked on the range in question.
+> +They support a ``UFFDIO_*_MODE_DONTWAKE`` ``mode`` flag, which indicates
+> +that waking will be done separately at some later time.
+> +
+> +Which of these are used depends on the kind of fault:
+
+Maybe:
+
+"We should choose the ioctl depending on the kind of the page fault, and what
+ we'd like to do with it:"
+
+?
+
+> +
+> +- For ``UFFDIO_REGISTER_MODE_MISSING`` faults, a new page has to be
+> +  provided. This can be done with either ``UFFDIO_COPY`` or
+
+UFFDIO_ZEROPAGE does not need a new page.
+
+> +  ``UFFDIO_ZEROPAGE``. The default (non-userfaultfd) behavior would be to
+> +  provide a zero page, but in userfaultfd this is left up to userspace.
+
+"By default, kernel will provide a zero page for a missing fault.  With
+ userfaultfd, the userspace could decide which content to provide before the
+ faulted thread continues." ?
+
+> +
+> +- For ``UFFDIO_REGISTER_MODE_MINOR`` faults, an existing page already
+
+"page cache existed"?
+
+> +  exists. Userspace needs to ensure its contents are correct (if it needs
+> +  to be modified, by writing directly to the non-userfaultfd-registered
+> +  side of shared memory), and then issue ``UFFDIO_CONTINUE`` to resolve
+> +  the fault.
+
+"... Userspace can modify the page content before asking the faulted thread to
+ continue the fault with UFFDIO_CONTINUE ioctl." ?
+
+-- 
+Peter Xu
+
