@@ -2,73 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F8D130AC6E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:15:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1868230AC74
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:17:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231318AbhBAQPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 11:15:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51444 "EHLO
+        id S231337AbhBAQQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 11:16:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51658 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbhBAQPX (ORCPT
+        with ESMTP id S230224AbhBAQQX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 11:15:23 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F00C06174A;
-        Mon,  1 Feb 2021 08:14:42 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id a20so10599838pjs.1;
-        Mon, 01 Feb 2021 08:14:42 -0800 (PST)
+        Mon, 1 Feb 2021 11:16:23 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C2FC061573;
+        Mon,  1 Feb 2021 08:15:42 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id l12so17226192wry.2;
+        Mon, 01 Feb 2021 08:15:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=oe9kyxs1vAX/uhUOjLvSRTrrpJNRpCHgV3q3Ra/fPlI=;
-        b=ftDEwVWojYxl00NqeNgdsQPlGCHIBg9DH+l7sy8IYd265AqJ48Wq9qdDTLcfWtBfHg
-         SydNN2Fki+4FWKcIs+47Y4TNFN6kChxWYRh1KH7vQJ8S72cvL/q74WCYqxunfrkbnYQe
-         +fzSBITqpRCl3zxUezpAwtBbNAzcrHOupprKpvbZLY3aZdm3bC63uPiDxwNqeJmsSah0
-         pv1W2dPBpYKFfkATUNJAayGLkCaLQN0kNBQn8fBKJMKRDWheXudgCSGEQ3W/q9sxVlN/
-         WZHAkqXZ0TYhhlC264IG/5kuRNfLwSyPfEmHQi+q79r5Y9xVTybwdlMagM/EDRfYWGEY
-         yF4g==
+        bh=ZDuWWmP/CpWd2/GjAQP26lhvef68ZdIbhiH4GoBTIfE=;
+        b=jd50eoQHbsQcPcTxaK3cAhpIqB485plyJpijNhsDjTnWsc952jplkEXh9ZURAfk5xQ
+         2NbazQG9OHsAs/U0T94mCtEph4kFWIwm+dQxCIG9Ho6zNRDTb0fP3fPDY4V69yL8GqoO
+         ZiSGmn/HQ6D0z81GjK3tlYJSNp28buzgrV3kxBHebtJm6jtKly4dfFfFizpnDKoykNFh
+         ptQ316QfeDh8kGmhwWgu1dMBG34BfrVHarT1iIjS+c8MC9sm+a73iza0yoo69fLQG2A5
+         8SIRzMUv50Grpy3rvacpo9yuXcKmYzYGBkLUdqkjVESbBH7dZ4EkYn0imfabNZGniKUE
+         41SQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=oe9kyxs1vAX/uhUOjLvSRTrrpJNRpCHgV3q3Ra/fPlI=;
-        b=qt5/zmSuEyGQhwljGp6tmDI7GH5X+QU5VWDzoubju52TX7TfbI1e7mmo7AaGQ++oIl
-         Miha30TxdCzrKzeU6WnQGF6UjLkX0j9WgdHJcEqLbEBbHSCN5BIexMShdPrJ6HhT7dKy
-         aW3co8dn5wNwuStZlBTFbnRAxHzaQCuj98k7nX+DvU8td254TXmjCfN3o7DxODK6MJiA
-         925iSErnqvctboaAc0NHzIEtNSAKfnsZuOrU7kM3eZH+ModKDR+tgdrZg2W7T5BtwsQy
-         uQ2Z7zyS0YqVIaOH7cWRMn8//cOV2HXjWmA1FKw8+5iNU6/NqAvxYBeo16u8aUTcgXjB
-         zntQ==
-X-Gm-Message-State: AOAM533Ox+GwiAZ+xNLzMRhqwn2BizpUYC8t2Z1cvhiiKhl4x/V4U/yb
-        Fp1oSSKvpcd1N3u4rY6jXaKIKSHQFvGkBnNuRckMnWlrhmo=
-X-Google-Smtp-Source: ABdhPJxT6Mxmrz5OerQe235Y2SgSMqeIpwXqfTzNlzHlwdrw98+9dxUJHindUHj4W1Q58OPz8L7ysGA5UuEAZD1Ggj0=
-X-Received: by 2002:a17:90a:5403:: with SMTP id z3mr18184163pjh.198.1612196082127;
- Mon, 01 Feb 2021 08:14:42 -0800 (PST)
+        bh=ZDuWWmP/CpWd2/GjAQP26lhvef68ZdIbhiH4GoBTIfE=;
+        b=aMeRjfRm0Riy/CqoyzTnVzF5VStcXoXzM7rS0zEd3U/sWE9X/l1IytLwS4sOtuV3vd
+         5ivLxRt/AF5sQpnU8GpFz4c+JKL5aP5hshD6TGHJDCJf7jxi/sQ8MmSbdrq32O6oUI2G
+         ox9KdlwFJS9HVcjKA9qZ/YyHt53Qbck6PoMOf2IBpuOX9Pv7FWd4AbCvJk/O+pfFwXdp
+         AnNPmRhKEUKFiWkRI0oX6G4wzau4tHgU/8kiH0QYgmV3bQjk7ZhM9tbiqa83AZjyZXyX
+         yjhpyTWuuCj7kTpCzZzyN9p6VOLGe2PLxwKvvgkThr1CAK8VneSyB97BXv0vGBRqt9Wb
+         9WEQ==
+X-Gm-Message-State: AOAM533CLf9kx7QoupBhcKy51FEiRMOg6ok2rtjI+SoO8P2nNZEOrcw4
+        vbjXeE1cXlKa88VNlADSppvlHCWGloJo3L/ab/o=
+X-Google-Smtp-Source: ABdhPJwNkGXVFvEICEQjWInJttb7yzXTMJVgFudoMoTE86a1oXks7IIzTY/n8soSger7QYJ7nteq2qaBtbFi5sk+LFU=
+X-Received: by 2002:a5d:69ce:: with SMTP id s14mr18382220wrw.206.1612196140971;
+ Mon, 01 Feb 2021 08:15:40 -0800 (PST)
 MIME-Version: 1.0
-References: <20210201055706.415842-1-xie.he.0141@gmail.com> <4d1988d9-6439-ae37-697c-d2b970450498@linux.ibm.com>
-In-Reply-To: <4d1988d9-6439-ae37-697c-d2b970450498@linux.ibm.com>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Mon, 1 Feb 2021 08:14:31 -0800
-Message-ID: <CAJht_EOw4d9h7LqOsXpucADV5=gAGws-fKj5q7BdH2+h0Yv9Vg@mail.gmail.com>
-Subject: Re: [PATCH net] net: lapb: Copy the skb before sending a packet
-To:     Julian Wiedmann <jwi@linux.ibm.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin Schiller <ms@dev.tdt.de>
+References: <AAB32610-D238-4137-96DE-33655AAAB545@dilger.ca>
+ <20210201003125.90257-1-viniciustinti@gmail.com> <20210201124924.GA3284018@infradead.org>
+In-Reply-To: <20210201124924.GA3284018@infradead.org>
+From:   Vinicius Tinti <viniciustinti@gmail.com>
+Date:   Mon, 1 Feb 2021 13:15:29 -0300
+Message-ID: <CALD9WKxc0kMPCHSoikko+qYk2+ZLUy73+ryKGW9qMSpyzAobLA@mail.gmail.com>
+Subject: Re: [PATCH v2] ext4: Enable code path when DX_DEBUG is set
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 6:10 AM Julian Wiedmann <jwi@linux.ibm.com> wrote:
+On Mon, Feb 1, 2021 at 9:49 AM Christoph Hellwig <hch@infradead.org> wrote:
 >
-> This sounds a bit like you want skb_cow_head() ... ?
+> DX_DEBUG is completely dead code, so either kill it off or make it an
+> actual CONFIG_* symbol through Kconfig if it seems useful.
 
-Calling "skb_cow_head" before we call "skb_clone" would indeed solve
-the problem of writes to our clones affecting clones in other parts of
-the system. But since we are still writing to the skb after
-"skb_clone", it'd still be better to replace "skb_clone" with
-"skb_copy" to avoid interference between our own clones.
+About the unreachable code in "if (0)" I think it could be removed.
+It seems to be doing an extra check.
+
+About the DX_DEBUG I think I can do another patch adding it to Kconfig
+as you and Nathan suggested.
+
+What do you think?
