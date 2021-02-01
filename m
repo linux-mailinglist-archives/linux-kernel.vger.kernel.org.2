@@ -2,68 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58EB930AC4C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:08:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A9B30AC51
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:10:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbhBAQG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 11:06:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51210 "EHLO mail.kernel.org"
+        id S229534AbhBAQKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 11:10:01 -0500
+Received: from mga03.intel.com ([134.134.136.65]:9911 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231144AbhBAQGt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 11:06:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E6ED64D7F;
-        Mon,  1 Feb 2021 16:06:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612195569;
-        bh=sbVt3w4s2AkOOcnW1zod/LGOmTAFaiiCubsVmm7LWpo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LcvVqzSfOFsnKjy2BCLVmc9jrrEF4xPfB6h+gB7sm+YgslGx3x2S9+tLkUYxgIrIY
-         UoMTcB99z+FF5EyC2ZEvZ383ABjT0YdOTyjLs2O6xTrkgplNdfOFhE+koBLzRmqnlA
-         XtIvtOQWDko7TF3RyfIolnIzFOCWte53HYzmrXy8=
-Date:   Mon, 1 Feb 2021 17:06:06 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     eli.billauer@gmail.com
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [RESEND PATCH v2] char: xillybus: Add driver for XillyUSB
- (Xillybus variant for USB)
-Message-ID: <YBgm7qFk3jRl67vk@kroah.com>
-References: <20210201155619.66960-1-eli.billauer@gmail.com>
+        id S229897AbhBAQJ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 11:09:59 -0500
+IronPort-SDR: tmMsnUdcqtrwROFF980siFlweEbpqsLey1zI/KDfDZehQTDjB44ogL+Z7glgTojfaTv4YdETGt
+ 1luX1Wl1sLog==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="180784943"
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="180784943"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 08:08:08 -0800
+IronPort-SDR: FSfa88hx+XVDjLrPi1beO/mBqYjz9PlI9D5VFJTwyb1moJVB5HnTYH83Gaptko9FK++MAicn1e
+ 4YEtBYUYaBFg==
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="479139580"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 08:08:06 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l6bkB-001Aab-Dc; Mon, 01 Feb 2021 18:08:03 +0200
+Date:   Mon, 1 Feb 2021 18:08:03 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>
+Cc:     mojha@codeaurora.org, jkosina@suse.cz, cezary.rojewski@intel.com,
+        neilb@suse.com, b00073877@aus.edu, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] list: add more extensive double add check
+Message-ID: <YBgnY8FXpHJdoDos@smile.fi.intel.com>
+References: <20210201135251.1884-1-christian.koenig@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210201155619.66960-1-eli.billauer@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210201135251.1884-1-christian.koenig@amd.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 05:56:19PM +0200, eli.billauer@gmail.com wrote:
-> From: Eli Billauer <eli.billauer@gmail.com>
+On Mon, Feb 01, 2021 at 02:52:51PM +0100, Christian König wrote:
+> Adding the same element to a linked list multiple times
+> seems to be a rather common programming mistake. To debug
+> those I've more than once written some code to check a
+> linked list for duplicates.
 > 
-> The XillyUSB driver is the USB variant for the Xillybus FPGA IP core.
-> Even though it presents a nearly identical API on the FPGA and host,
-> it's almost a complete rewrite of the driver: The framework for exchanging
-> data on a USB bus is fundamentally different from doing the same with a
-> PCIe interface, which leaves very little in common between the existing
-> driver and the new one for XillyUSB.
+> Since re-inventing the wheel over and over again is a bad
+> idea this patch tries to add some common code which allows
+> to check linked lists for duplicates while adding new
+> elements.
 > 
-> Signed-off-by: Eli Billauer <eli.billauer@gmail.com>
-> ---
+> When list debugging is enabled we currently already check
+> the previous and next element if they are identical to the
+> new one. This patch now adds a configuration option to
+> check N elements before and after the desired position.
 > 
-> Notes:
->     Changelog:
->     
->     v2:
->       - Add comment in Kconfig file, saying XILLYUSB really doesn't depend
->         on XILLYBUS (following comment by Randy Dunlap)
->     
->       - Use SEEK_* predefined constants instead of numbers
+> By default we still only test one item since testing more
+> means quite a large CPU overhead. This can be overwritten
+> on a per C file bases by defining DEBUG_LIST_DOUBLE_ADD
+> before including list.h.
 
-As brought up on the other list, this should either:
-	- use the same device nodes as the existing xillybus drivers do,
-	  as you have the same api
-	- just do it all in userspace using libusb.
+I'm not sure it is a good idea. Currently the implementation is *generic*.
+You are customizing it w/o letting caller know.
 
-thanks,
+Create a derivative implementation and name it exlist (exclusive list) and use
+whenever it makes sense.
 
-greg k-h
+And I think if you are still pushing to modify generic one the default must be
+0 in order not altering current behaviour.
+
+> A new kunit test is also added to the existing list tests
+> which intentionally triggers the debug functionality.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
