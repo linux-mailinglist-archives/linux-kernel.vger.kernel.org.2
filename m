@@ -2,74 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C9A30AD7F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:12:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F33030AD78
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:12:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231705AbhBARLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:11:55 -0500
-Received: from mga04.intel.com ([192.55.52.120]:58930 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231284AbhBARLf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:11:35 -0500
-IronPort-SDR: GsAfh9fYpW+M4YAYDVi33Kntmm86+5S13BrGdLYHP3Zi1rQnB983ZAO+YJnDyLzw9lGCG8EshA
- XxoXATWa/5YA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="178155736"
-X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="178155736"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 09:09:49 -0800
-IronPort-SDR: 7g/nrfiQHaZNp5laeul/q4onJMeUVAA3thjEDrpRMpjApx57DJGIKyCqiXa9xg5u/Ctxv8DCfU
- B2j0dimBY5dA==
-X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="391001227"
-Received: from ljfrost-mobl1.amr.corp.intel.com ([10.252.14.106])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 09:09:45 -0800
-Message-ID: <c3c3d47edbfd61c338deea5a10a4fb39e2ace68a.camel@linux.intel.com>
-Subject: Re: [PATCH v7 4/7] crypto: add ecc curve and expose them
-From:   Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        Ard Biesheuvel <ardb@kernel.org>
-Cc:     Meng Yu <yumeng18@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Zaibo Xu <xuzaibo@huawei.com>, wangzhou1@hisilicon.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        "Khurana, Prabhjot" <prabhjot.khurana@intel.com>,
-        "Reshetova, Elena" <elena.reshetova@intel.com>,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-Date:   Mon, 01 Feb 2021 17:09:41 +0000
-In-Reply-To: <20210128103908.GA32495@gondor.apana.org.au>
-References: <1611299395-675-1-git-send-email-yumeng18@huawei.com>
-         <1611299395-675-5-git-send-email-yumeng18@huawei.com>
-         <20210128050354.GA30874@gondor.apana.org.au>
-         <CAMj1kXHvY9JveFyhtETALCH=AFGMGVbGGFMNDGc6ZVngEKbyDQ@mail.gmail.com>
-         <20210128103908.GA32495@gondor.apana.org.au>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        id S231148AbhBARKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:10:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229599AbhBARKi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 12:10:38 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DA3C061756;
+        Mon,  1 Feb 2021 09:09:58 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id rv9so25496654ejb.13;
+        Mon, 01 Feb 2021 09:09:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8vgOK0RvUyqfEu6HnO0iJIO2aZLK2TMzDkhHoYS2ukk=;
+        b=rHT2bxfQfwZ5mWMk3cDrJ0W1k76tdrPy1AjhRMRXzlGdmEZkPZRyGI0/Cc04fgPGKV
+         S1yiAre1hIGD25E4/RD85YQB5rRHo7GzgexDIU8MtX8M0aWGchMPtLSkXdlFvnD+8eaQ
+         Xwd5jyOvOCav4GCtdW1nIm5u3Dfalt7QjDKwfI8vAJvsG3xVKimYvdYiZzSlnUB+X48k
+         FXxEbXxgcoxCfPU3BFO47EKWIIiwqCfIWl7+dA6fQkYeAbjuGikrSjuBJgo2tibO+v8D
+         nliHJdH0wNTqaMobFYhCAbsgFyw4JMvZxRQtx4qAM9Vp6iedQT9nu52xfDkx2nX7oWhk
+         1lfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8vgOK0RvUyqfEu6HnO0iJIO2aZLK2TMzDkhHoYS2ukk=;
+        b=q1BtuqtA+M3Y5rHiWNq9fW1+to5YcIvrCUCLcVuFjIpuwnV81bAfBEho67nfarvIZt
+         QvYC5F2iqDjzFXwIy8C1XWcKFtHyGSIIKSJWsqtJdrxFazylbXuGKhUUKrhukX5tuiGq
+         m4PvGffiy7c67wzfo1nlkkq26FphViBKkiNQ+ZIq+ToUVu999am9k57brskfNVTYvXrk
+         CnSRfpaJGcpqp6d0Rh+lVGvaCZL4Ky5+wj7MFPDIJr/nlAsyZfRR+T67HRN6ZVIzXZzT
+         xXl6mm7ErwwPo5mpkz0b5sVMB5+SyH2K83ga/8KzF0OhtBDTLty2rVfBfzG+EmhUy4as
+         3atg==
+X-Gm-Message-State: AOAM531AIIUKLfrz3oqCd5ndrh+Mvf/lHQCVDRDoQIirn5XqW7Rnz/4w
+        aWJ066gj4pnJ5OlenV2vto2zzfG+ltEHmlU4O4k=
+X-Google-Smtp-Source: ABdhPJz6meD3gcE/W4R+mj1RkbAqoBFuOOgqCaC+W8HFvdgeR0IXmG7m/hBapbHz45BHGcRZxk8cai3PHauyIhjFFzQ=
+X-Received: by 2002:a17:906:f841:: with SMTP id ks1mr18656870ejb.507.1612199397448;
+ Mon, 01 Feb 2021 09:09:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20210127233345.339910-1-shy828301@gmail.com> <20210127233345.339910-8-shy828301@gmail.com>
+ <6b0638ba-2513-67f5-8ef1-9e60a7d9ded6@suse.cz> <CAHbLzkpiDBMRRerr7iXtj40p=RVLTmWoWoOQbdkvG7Tsi4iirw@mail.gmail.com>
+ <CAHbLzkrg8OYqbKevdV_6qJ5L9P-_8ui=HAgm-0o69yKLtMg8tQ@mail.gmail.com> <0ce8b6e4-5abb-3edb-8423-f6c222420a89@suse.cz>
+In-Reply-To: <0ce8b6e4-5abb-3edb-8423-f6c222420a89@suse.cz>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 1 Feb 2021 09:09:45 -0800
+Message-ID: <CAHbLzkpCLxzy-whY8jiSw59V-tmq=VgDuxyUcdRkWrgkZnxC2w@mail.gmail.com>
+Subject: Re: [v5 PATCH 07/11] mm: vmscan: add per memcg shrinker nr_deferred
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Roman Gushchin <guro@fb.com>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-01-28 at 21:39 +1100, Herbert Xu wrote:
-> Once they're distinct algorithms, we can then make sure that only
-> the ones that are used in the kernel is added, even if some hardware
-> may support more curves.
+On Mon, Feb 1, 2021 at 7:17 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> On 1/29/21 7:04 PM, Yang Shi wrote:
+>
+> >> > > @@ -209,9 +214,15 @@ static int expand_one_shrinker_info(struct mem_cgroup *memcg,
+> >> > >               if (!new)
+> >> > >                       return -ENOMEM;
+> >> > >
+> >> > > -             /* Set all old bits, clear all new bits */
+> >> > > -             memset(new->map, (int)0xff, old_size);
+> >> > > -             memset((void *)new->map + old_size, 0, size - old_size);
+> >> > > +             new->map = (unsigned long *)(new + 1);
+> >> > > +             new->nr_deferred = (void *)new->map + m_size;
+> >> >
+> >> > This better be aligned to sizeof(atomic_long_t). Can we be sure about that?
+> >>
+> >> Good point. No, if unsigned long is 32 bit on some 64 bit machines.
+> >
+> > I think we could just change map to "u64" and guarantee struct
+> > shrinker_info is aligned to 64 bit.
+>
+> What about changing to order, nr_deferred before map? Then the atomics are at
+> the beginning of allocated area, thus aligned.
 
-I like the idea of having different algorithms names (ecdh-nist-
-pXXX) for different curves, but I'm not fully convinced by the above
-statement.
+Yes, it works too. The rcu_head is guaranteed to have aligned at sizeof(void *).
 
-What's the downside of letting device drivers enable all the curves
-supported by the HW (with the exception of obsolete curves /
-algorithms), even if there is (currently) no user of such curves in the
-kernel? Code size and maintainability?
-
-I think that once there is support for certain curves, it's more likely
-that drivers / modules using them will appear.
-
-Also, even if there are no in-tree users, there might be a few out-of-
-tree ones.
-
+Will fix in v6.
