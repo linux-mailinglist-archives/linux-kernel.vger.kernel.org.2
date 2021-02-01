@@ -2,230 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E2130A610
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:01:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE0830A61B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:05:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233398AbhBALBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 06:01:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233369AbhBALAY (ORCPT
+        id S233360AbhBALEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 06:04:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25332 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233269AbhBALEd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 06:00:24 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A05D6C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 02:59:43 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id hs11so23666745ejc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 02:59:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lx4W7u0ABpsM7eUPv7hFsdl/vMIH6Tgd275uM+E90PA=;
-        b=CYaYjyJGWa9M5woKY7/2n3Stl/0XdwpBHtLmupB/ZGWB4aGiwXU5iH9Ob2XBKYqQaS
-         vdx5TDUSMXGBCdc2VqARO0cau3yrkhtUyL2HutROj62M4gYYFGuCUTwOLKSgdP2f0qgP
-         V6VG7RpOxTf4HTXGru7sG1HUp5vc+ZJRdWD/m0a9DaOCo4UdUvK7g64Alr3F4+4DVp/k
-         iJaUIllZupaT44gFREQ8KC1Ak/mRYKDCizxYM66D5z//WHydmd3RM8vFhOzRFxaEcI5j
-         iAaSMPfCbJ9ThaOBZO2dLNXhzgpI41Xd1Ah0C2K4fpipxM06pMwhzz5hSKILElSviv2B
-         JeDw==
+        Mon, 1 Feb 2021 06:04:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612177386;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AXwkC2/bPdrbI6fVlDSTD38OtfXWVbFESDZTO3soPEE=;
+        b=dp9uf7+WCBriARw4lYUvfYeV14wIdcri0CIfdLmszm6PhJLZdumaoO7GslOSV6oGdvTBvL
+        P2u5F9hN+mXZlJ2rh5qzLw1oZ1ival67xsosmB3iA/d1mXwYDUIrXFM9QQWodCO4zwIb4c
+        X0DO+2mzC1GFCr04an23IhDLTZrR+Po=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-77-IUeKx0BsMNyfRZJ3hmSaqA-1; Mon, 01 Feb 2021 06:03:04 -0500
+X-MC-Unique: IUeKx0BsMNyfRZJ3hmSaqA-1
+Received: by mail-wr1-f70.google.com with SMTP id n15so10205492wrv.20
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 03:03:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lx4W7u0ABpsM7eUPv7hFsdl/vMIH6Tgd275uM+E90PA=;
-        b=ItCO94VKcbTCjSNO/L8SilpYZkR6q6HJw42z4VRHbzDFBOoB4v4bS6aS1Fewd0xj+n
-         Zl4oYl83t/rNXevLJyGFFXbimVmYhVeEDGn+jZXFIT/aG3Vhk8IOgpVrZSVMT1Lvd8/c
-         bHNvE4NcDswqSlJf0iyE7mXToN5w6NkYk0d66uMj0j6YU4TpF2rcWjapSBkACM319Dv1
-         qQwokv1u/MBc5gIimjrrTvPM34b5KidWDrvPF/IwJPDpfaDygiXCKOE+kmruqBryOVr0
-         vC2+up+RbU8QkaghEPXQ79y2uFovsVJ0qkxxAfBU1NQPVT1brmGEscaJN2IoyStiUBhB
-         MIgg==
-X-Gm-Message-State: AOAM533I+G4/gmQrHIYZ0BdvGNPIIdpn8zBjZyq+8sZbDbuY1J5ftn4i
-        +t6tMGiWbyE9wYZVOdkSciHK3O+Dmubh7oGdaSue6Jo1nKk=
-X-Google-Smtp-Source: ABdhPJwjRHR8jRfbLq1RCIKHxZhV2YMK/caZS3zW7teEVN9nXdPPVMMHewbZfPTd+X2XEDvLqIdDgSN14peEiWum+Qk=
-X-Received: by 2002:a17:906:e03:: with SMTP id l3mr9190234eji.64.1612177182408;
- Mon, 01 Feb 2021 02:59:42 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=AXwkC2/bPdrbI6fVlDSTD38OtfXWVbFESDZTO3soPEE=;
+        b=PnGzYM8okYCJESfAB0xRz1yFH+aShOrOq3drjyEAO0W6k1ifduOBjlwC8NFdvGWqDh
+         lmfaXrc03TiFr9YXSnL9SOnFkwtnWx5Zi/Ke7uCxwJBV3RAp/0JLmhnZDf0LqLCJilxj
+         3VyPjJG0noNl+daKtnt4pg98dnw/n/xxIZdeloHGocywGF2rL/cWcrT1GIULwp2rzyd5
+         eMK0qEnOknaIuzCKNhW4hMMRSqIgFUCgfez2wme8VKy39nN5a8XKyHBa1a51s+97ffMB
+         XWm76InNxOxdTqA8MT6Rg0L8fjFBi/GyycmsWrn5PGPR3+x+ioUEAqg7p6pp6y5NwLdU
+         g4yg==
+X-Gm-Message-State: AOAM530F/Q3QRJJSrxUAtppndwTXjnzy+uloJhhrkhMiJVNJJUFbmlw/
+        5ki9XFxYqy/giNAfDFWCG44EO9ycN298sBIkeJC+IISEM1HVuWiAmYuNLxsSktrckdr6W1euqdA
+        a2Ax/yDdJBSZZ/hwEZxmlMvPF
+X-Received: by 2002:a05:600c:3506:: with SMTP id h6mr8535106wmq.21.1612177383215;
+        Mon, 01 Feb 2021 03:03:03 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxU2aKt9+Qw3PjsRAcMTwk73YwztptNIG52mUOO7l7e58mm0nQ36WJybasD3SZjm82qzwF5QA==
+X-Received: by 2002:a05:600c:3506:: with SMTP id h6mr8535044wmq.21.1612177382653;
+        Mon, 01 Feb 2021 03:03:02 -0800 (PST)
+Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
+        by smtp.gmail.com with ESMTPSA id g194sm20204347wme.39.2021.02.01.03.03.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 03:03:01 -0800 (PST)
+Date:   Mon, 1 Feb 2021 12:02:58 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Jeff Vander Stoep <jeffv@google.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stsp2@yandex.ru" <stsp2@yandex.ru>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+Subject: Re: [RFC PATCH v3 00/13] virtio/vsock: introduce SOCK_SEQPACKET
+ support
+Message-ID: <20210201110258.7ze7a7izl7gesv4w@steredhat>
+References: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
+ <20210128171923.esyna5ccv5s27jyu@steredhat>
+ <63459bb3-da22-b2a4-71ee-e67660fd2e12@kaspersky.com>
+ <20210129092604.mgaw3ipiyv6xra3b@steredhat>
+ <cb6d5a9c-fd49-a9dd-33b3-52027ae2f71c@kaspersky.com>
 MIME-Version: 1.0
-References: <20210129134624.9247-1-brgl@bgdev.pl> <20210129134624.9247-9-brgl@bgdev.pl>
- <YBQwUkQz3LrG5G4i@smile.fi.intel.com> <CAMRc=MeSy4zWOAGxfoBih62WxAXuOLtkK3ROyt+4LuqLvDxtaQ@mail.gmail.com>
- <YBfX38JBa0psBizQ@smile.fi.intel.com>
-In-Reply-To: <YBfX38JBa0psBizQ@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 1 Feb 2021 11:59:31 +0100
-Message-ID: <CAMRc=Mfgw5oA-TA2PN-Z+ape0POAtLwVeDJnzH1iuzKw5wYQ5Q@mail.gmail.com>
-Subject: Re: [PATCH 8/8] gpio: sim: new testing module
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Joel Becker <jlbec@evilplan.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cb6d5a9c-fd49-a9dd-33b3-52027ae2f71c@kaspersky.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 11:28 AM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+On Fri, Jan 29, 2021 at 06:52:23PM +0300, Arseny Krasnov wrote:
 >
-> On Sat, Jan 30, 2021 at 09:37:55PM +0100, Bartosz Golaszewski wrote:
-> > On Fri, Jan 29, 2021 at 4:57 PM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Fri, Jan 29, 2021 at 02:46:24PM +0100, Bartosz Golaszewski wrote:
+>On 29.01.2021 12:26, Stefano Garzarella wrote:
+>> On Fri, Jan 29, 2021 at 09:41:50AM +0300, Arseny Krasnov wrote:
+>>> On 28.01.2021 20:19, Stefano Garzarella wrote:
+>>>> Hi Arseny,
+>>>> I reviewed a part, tomorrow I hope to finish the other patches.
+>>>>
+>>>> Just a couple of comments in the TODOs below.
+>>>>
+>>>> On Mon, Jan 25, 2021 at 02:09:00PM +0300, Arseny Krasnov wrote:
+>>>>> 	This patchset impelements support of SOCK_SEQPACKET for virtio
+>>>>> transport.
+>>>>> 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
+>>>>> do it, new packet operation was added: it marks start of record (with
+>>>>> record length in header), such packet doesn't carry any data.  To send
+>>>>> record, packet with start marker is sent first, then all data is sent
+>>>>> as usual 'RW' packets. On receiver's side, length of record is known
+>>>> >from packet with start record marker. Now as  packets of one socket
+>>>>> are not reordered neither on vsock nor on vhost transport layers, such
+>>>>> marker allows to restore original record on receiver's side. If user's
+>>>>> buffer is smaller that record length, when all out of size data is
+>>>>> dropped.
+>>>>> 	Maximum length of datagram is not limited as in stream socket,
+>>>>> because same credit logic is used. Difference with stream socket is
+>>>>> that user is not woken up until whole record is received or error
+>>>>> occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
+>>>>> 	Tests also implemented.
+>>>>>
+>>>>> Arseny Krasnov (13):
+>>>>>  af_vsock: prepare for SOCK_SEQPACKET support
+>>>>>  af_vsock: prepare 'vsock_connectible_recvmsg()'
+>>>>>  af_vsock: implement SEQPACKET rx loop
+>>>>>  af_vsock: implement send logic for SOCK_SEQPACKET
+>>>>>  af_vsock: rest of SEQPACKET support
+>>>>>  af_vsock: update comments for stream sockets
+>>>>>  virtio/vsock: dequeue callback for SOCK_SEQPACKET
+>>>>>  virtio/vsock: fetch length for SEQPACKET record
+>>>>>  virtio/vsock: add SEQPACKET receive logic
+>>>>>  virtio/vsock: rest of SOCK_SEQPACKET support
+>>>>>  virtio/vsock: setup SEQPACKET ops for transport
+>>>>>  vhost/vsock: setup SEQPACKET ops for transport
+>>>>>  vsock_test: add SOCK_SEQPACKET tests
+>>>>>
+>>>>> drivers/vhost/vsock.c                   |   7 +-
+>>>>> include/linux/virtio_vsock.h            |  12 +
+>>>>> include/net/af_vsock.h                  |   6 +
+>>>>> include/uapi/linux/virtio_vsock.h       |   9 +
+>>>>> net/vmw_vsock/af_vsock.c                | 543 ++++++++++++++++------
+>>>>> net/vmw_vsock/virtio_transport.c        |   4 +
+>>>>> net/vmw_vsock/virtio_transport_common.c | 295 ++++++++++--
+>>>>> tools/testing/vsock/util.c              |  32 +-
+>>>>> tools/testing/vsock/util.h              |   3 +
+>>>>> tools/testing/vsock/vsock_test.c        | 126 +++++
+>>>>> 10 files changed, 862 insertions(+), 175 deletions(-)
+>>>>>
+>>>>> TODO:
+>>>>> - Support for record integrity control. As transport could drop some
+>>>>>   packets, something like "record-id" and record end marker need to
+>>>>>   be implemented. Idea is that SEQ_BEGIN packet carries both record
+>>>>>   length and record id, end marker(let it be SEQ_END) carries only
+>>>>>   record id. To be sure that no one packet was lost, receiver checks
+>>>>>   length of data between SEQ_BEGIN and SEQ_END(it must be same with
+>>>>>   value in SEQ_BEGIN) and record ids of SEQ_BEGIN and SEQ_END(this
+>>>>>   means that both markers were not dropped. I think that easiest way
+>>>>>   to implement record id for SEQ_BEGIN is to reuse another field of
+>>>>>   packet header(SEQ_BEGIN already uses 'flags' as record length).For
+>>>>>   SEQ_END record id could be stored in 'flags'.
+>>>> I don't really like the idea of reusing the 'flags' field for this
+>>>> purpose.
+>>>>
+>>>>>     Another way to implement it, is to move metadata of both SEQ_END
+>>>>>   and SEQ_BEGIN to payload. But this approach has problem, because
+>>>>>   if we move something to payload, such payload is accounted by
+>>>>>   credit logic, which fragments payload, while payload with record
+>>>>>   length and id couldn't be fragmented. One way to overcome it is to
+>>>>>   ignore credit update for SEQ_BEGIN/SEQ_END packet.Another solution
+>>>>>   is to update 'stream_has_space()' function: current implementation
+>>>>>   return non-zero when at least 1 byte is allowed to use,but updated
+>>>>>   version will have extra argument, which is needed length. For 'RW'
+>>>>>   packet this argument is 1, for SEQ_BEGIN it is sizeof(record len +
+>>>>>   record id) and for SEQ_END it is sizeof(record id).
+>>>> Is the payload accounted by credit logic also if hdr.op is not
+>>>> VIRTIO_VSOCK_OP_RW?
+>>> Yes, on send any packet with payload could be fragmented if
+>>>
+>>> there is not enough space at receiver. On receive 'fwd_cnt' and
+>>>
+>>> 'buf_alloc' are updated with header of every packet. Of course,
+>>>
+>>> to every such case i've described i can add check for 'RW'
+>>>
+>>> packet, to exclude payload from credit accounting, but this is
+>>>
+>>> bunch of dumb checks.
+>>>
+>>>> I think that we can define a specific header to put after the
+>>>> virtio_vsock_hdr when hdr.op is SEQ_BEGIN or SEQ_END, and in this header
+>>>> we can store the id and the length of the message.
+>>> I think it is better than use payload and touch credit logic
+>>>
+>> Cool, so let's try this option, hoping there aren't a lot of issues.
 >
-> ...
+>If i understand, current implementation has 'struct virtio_vsock_hdr',
 >
-> > > > +static int gpio_sim_set_config(struct gpio_chip *gc,
-> > > > +                               unsigned int offset, unsigned long config)
-> > > > +{
-> > > > +     struct gpio_sim_chip *chip = gpiochip_get_data(gc);
-> > > > +
-> > > > +     switch (pinconf_to_config_param(config)) {
-> > >
-> > > > +     case PIN_CONFIG_BIAS_PULL_UP:
-> > > > +             return gpio_sim_apply_pull(chip, offset, 1);
-> > > > +     case PIN_CONFIG_BIAS_PULL_DOWN:
-> > > > +             return gpio_sim_apply_pull(chip, offset, 0);
-> > >
-> > > But aren't we got a parameter (1 or 0) from config? And hence
-> > >
-> > >         case PIN_CONFIG_BIAS_PULL_UP:
-> > >         case PIN_CONFIG_BIAS_PULL_DOWN:
-> > >                 return gpio_sim_apply_pull(chip, offset, <param>);
-> > >
-> > > ?
-> >
-> > I believe this is more explicit and so easier to read if you don't
-> > know the GPIO and pinctrl internals.
+>then i'll add 'struct virtio_vsock_hdr_seq' with message length and id.
 >
+>After that, in 'struct virtio_vsock_pkt' which describes packet, field for
 >
-> If we ever go to change meanings of the values in param, it will require to fix
-> this occurrence which seems to me suboptimal.
+>header(which is 'struct virtio_vsock_hdr') must be replaced with new
 >
+>structure which  contains both 'struct virtio_vsock_hdr' and 'struct
+>
+>virtio_vsock_hdr_seq', because header field of 'struct virtio_vsock_pkt'
+>
+>is buffer for virtio layer. After it all accesses to header(for example to
+>
+>'buf_alloc' field will go accross new  structure with both headers:
+>
+>pkt->hdr.buf_alloc   ->   pkt->extended_hdr.classic_hdr.buf_alloc
+>
+>May be to avoid this, packet's header could be allocated dynamically
+>
+>in the same manner as packet's buffer? Size of allocation is always
+>
+>sizeof(classic header) + sizeof(seq header). In 'struct virtio_vsock_pkt'
+>
+>such header will be implemented as union of two pointers: class header
+>
+>and extended header containing classic and seq header. Which pointer
+>
+>to use is depends on packet's op.
 
-Why would we do it? This is internal to this driver.
+I think that the 'classic header' can stay as is, and the extended 
+header can be dynamically allocated, as we do for the payload.
 
-> > > > +     default:
-> > > > +             break;
-> > > > +     }
-> > > > +
-> > > > +     return -ENOTSUPP;
-> > > > +}
->
-> ...
->
-> > > > +static ssize_t gpio_sim_sysfs_line_store(struct device *dev,
-> > > > +                                      struct device_attribute *attr,
-> > > > +                                      const char *buf, size_t len)
-> > > > +{
-> > > > +     struct gpio_sim_attribute *line_attr = to_gpio_sim_attr(attr);
-> > > > +     struct gpio_sim_chip *chip = dev_get_drvdata(dev);
-> > > > +     int ret, val;
-> > >
-> > > > +     ret = kstrtoint(buf, 0, &val);
-> > > > +     if (ret)
-> > > > +             return ret;
-> > > > +     if (val != 0 && val != 1)
-> > > > +             return -EINVAL;
-> > >
-> > > kstrtobool() ?
-> > >
-> >
-> > No, we really only want 0 or 1, no yes, Y etc.
->
-> Side note: But you allow 0x00001, for example...
+But we have to be careful what happens if the other peer doesn't support 
+SEQPACKET and if it counts this extra header as a payload for the credit 
+mechanism.
 
-Good point. In that case we should check if len > 2 and if buf[0] ==
-'1' or '0' and that's all we allow.
+I'll try to take a closer look in the next few days.
 
->
-> Then why not to use unsigned type from the first place and add a comment?
->
-> > > > +     ret = gpio_sim_apply_pull(chip, line_attr->offset, val);
-> > > > +     if (ret)
-> > > > +             return ret;
-> > > > +
-> > > > +     return len;
-> > > > +}
->
-> ...
->
-> > > > +struct gpio_sim_chip_config {
-> > > > +     struct config_item item;
-> > > > +
-> > > > +     /*
-> > > > +      * If pdev is NULL, the item is 'pending' (waiting for configuration).
-> > > > +      * Once the pointer is assigned, the device has been created and the
-> > > > +      * item is 'live'.
-> > > > +      */
-> > > > +     struct platform_device *pdev;
-> > >
-> > > Are you sure
-> > >
-> > >         struct device *dev;
-> > >
-> > > is not sufficient?
-> > >
-> >
-> > It may be but I really prefer those simulated devices to be on the platform bus.
->
-> My point here is that there is no need to keep specific bus devices type,
-> because you may easily derive it from the struct device pointer. Basically if
-> you are almost using struct device in your code (seems to me the case), you
-> won't need to carry bus specific one and dereference it each time.
->
+Thanks,
+Stefano
 
-But don't we need a bus to even register a device? I haven't checked
-in a long time but IIRC it's mandatory.
-
-Let me give you a different argument - the platform device offers a
-very simple API for registering devices with properties being
-duplicated behind the scenes etc. It seems to me that registering a
-bare struct device * would take more boiler-plate code for not much
-gain.
-
-Bartosz
-
-> > > > +     /*
-> > > > +      * Each configfs filesystem operation is protected with the subsystem
-> > > > +      * mutex. Each separate attribute is protected with the buffer mutex.
-> > > > +      * This structure however can be modified by callbacks of different
-> > > > +      * attributes so we need another lock.
-> > > > +      */
-> > > > +     struct mutex lock;
-> > > > +
-> > > > +     char label[32];
-> > > > +     unsigned int num_lines;
-> > > > +     char **line_names;
-> > > > +     unsigned int num_line_names;
-> > > > +};
->
-> ...
->
-> > > Honestly, I don't like the idea of Yet Another (custom) Parser in the kernel.
-> > >
-> > > Have you investigated existing parsers? We have cmdline.c, gpio-aggregator.c,
-> > > etc. Besides the fact of test cases which are absent here. And who knows what
-> > > we allow to be entered.
-> > >
-> >
-> > Yes, I looked all around the kernel to find something I could reuse
-> > but failed to find anything useful for this particular purpose. If you
-> > have something you could point me towards, I'm open to alternatives.
-> >
-> > Once we agree on the form of the module, I'll port self-tests to using
-> > it instead of gpio-mockup, so we'll have some tests in the tree.
->
-> I will look again when you send a new version, so I might give some hints.
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
