@@ -2,192 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B3830B01B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:10:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88EEB30B017
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:10:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231451AbhBATJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 14:09:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230298AbhBATJo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 14:09:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D383164E24;
-        Mon,  1 Feb 2021 19:09:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612206544;
-        bh=VG9mPOtHquxNPBKnhHB+LOqEx1qe2BWhHRznBKT4Igc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bxFD/N7/oWqJ06XkQFYjmyxnf5kLAG/QYwQpe8vMqbKTH1GzCQZEq3eDVxrG/GiJO
-         ZrhGplskzsMM/+KhMHPE3b7do07fEsgAdhGcUMMhid15jvkXcK2Uds9kHdHO5xqbcZ
-         ehUSnrXTUxhamq+QGyUApQsz4VS3PJzUS7XweTfPD2F+enp0UojThlVfZ7OkqLKvZG
-         FjDuyMpKPRy/qDVqrjdjtt8sPdPwyKyBBjYvt8OT04fSORPIRlMfJYlilwgljfbEq+
-         8UFIaxwBX/TnbORHe6NwVMy6RPk6WMxn7I4xTywTBKWz7qmAXMIsXT6Xfu34Y/rquV
-         B8FgsEnpjZ2Vg==
-Received: by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1l6eZJ-000M4m-9a; Mon, 01 Feb 2021 20:09:01 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] media: uvc: limit max bandwidth for HDMI capture
-Date:   Mon,  1 Feb 2021 20:08:59 +0100
-Message-Id: <b791d5874c83663505cbd4f74907ac38d00bb727.1612206534.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        id S231868AbhBATKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 14:10:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231150AbhBATKV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 14:10:21 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACFE1C061573;
+        Mon,  1 Feb 2021 11:09:41 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612206579;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qIi7Y2wtgcFcE5QpHplMFS5nIPaJWE0ofpSOrxqX7vE=;
+        b=XVmXH/B6KgSVLx6xfI3eJjezpOfEi1eu4mz6Qt71Tm9DLLlI/N5KqKtG0YGJgYNEwFjKkM
+        OK3UjG52+49DUid7jyyf526RvToGf2WR4+Zw1F/mkMwEZAiDdshBq9jFbPeKOEZmG3b6oS
+        4NWgSnfMTqeiWLzcfEy70S6YaA3SE8+7MsywHIbohp3qOI1VxvZiqJ5J23+i8VFWic1FHP
+        5WJSecs1s3G3juRN0lWOUFo4lbBxuWhtQlzwKNPwVJDGx1jEkQs/HrjL/HY7j5GubHICWo
+        k/l/Rq8RBCyzKMGTtX431hXvB7+Ak3cdSak6JEAu3WoyPZ6pFN3cWY5uYZBFZw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612206579;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qIi7Y2wtgcFcE5QpHplMFS5nIPaJWE0ofpSOrxqX7vE=;
+        b=nr5ldRcMu1IXndLxDOTd4OagNk0bW6PEKeYtTng93ri2yrP0by8qsM4kA0qgbeGLMzxpLG
+        S3ac5sUH3lmKJlDw==
+To:     Serge Belyshev <belyshev@depni.sinp.msu.ru>
+Cc:     Dirk Gouders <dirk@gouders.net>,
+        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH] rtc: mc146818: Dont test for bit 0-5 in Register D
+In-Reply-To: <877dnrc2sv.fsf@depni.sinp.msu.ru>
+References: <20201206214613.444124194@linutronix.de> <20201206220541.594826678@linutronix.de> <19a7753c-c492-42e4-241a-8a052b32bb63@digikod.net> <871re7hlsg.fsf@nanos.tec.linutronix.de> <98cb59e8-ecb4-e29d-0b8f-73683ef2bee7@digikod.net> <87y2gfg18p.fsf@nanos.tec.linutronix.de> <87tur3fx7w.fsf@nanos.tec.linutronix.de> <ghft2hwevu.fsf@gouders.net> <877dnrc2sv.fsf@depni.sinp.msu.ru>
+Date:   Mon, 01 Feb 2021 20:09:39 +0100
+Message-ID: <8735yfd2q4.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This device:
-        534d:2109 MacroSilicon
+The recent change to validate the RTC turned out to be overly tight.
 
-Announces that it supports several frame intervals for
-their resolutions for MJPEG compression:
+While it cures the problem on the reporters machine it breaks machines
+with Intel chipsets which use bit 0-5 of the D register. So check only
+for bit 6 being 0 which is the case on these Intel machines as well.
 
-        VideoStreaming Interface Descriptor:
-        bLength                            46
-        bDescriptorType                    36
-        bDescriptorSubtype                  7 (FRAME_MJPEG)
-        bFrameIndex                         1
-        bmCapabilities                   0x00
-          Still image unsupported
-        wWidth                           1920
-        wHeight                          1080
-        dwMinBitRate                   768000
-        dwMaxBitRate                196608000
-        dwMaxVideoFrameBufferSize     4147200
-        dwDefaultFrameInterval         166666
-        bFrameIntervalType                  5
-        dwFrameInterval( 0)            166666
-        dwFrameInterval( 1)            333333
-        dwFrameInterval( 2)            400000
-        dwFrameInterval( 3)            500000
-        dwFrameInterval( 4)           1000000
-
-However, the highest frame interval (166666), which means 60 fps
-is not supported. For such resolution, the maximum interval
-is, instead 333333 (30 fps).
-
-The last format that supports such frame interval is 1280x720.
-
-Add a quirk to estimate a raw bandwidth, by doing:
-        width * height * framerate
-E. g.:
-        1920 * 1080 * 30 = 62208000
-
-if the bandwidth is greater than such threshold, get
-the next value from the dwFrameInterval.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: 211e5db19d15 ("rtc: mc146818: Detect and handle broken RTCs")
+Reported-by: Serge Belyshev <belyshev@depni.sinp.msu.ru>
+Reported-by: Dirk Gouders <dirk@gouders.net>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
- drivers/media/usb/uvc/uvc_driver.c | 15 +++++++++++++++
- drivers/media/usb/uvc/uvc_video.c  | 26 +++++++++++++++++++++++---
- drivers/media/usb/uvc/uvcvideo.h   |  2 ++
- 3 files changed, 40 insertions(+), 3 deletions(-)
+ drivers/rtc/rtc-cmos.c         |    8 ++++++++
+ drivers/rtc/rtc-mc146818-lib.c |    7 +++++++
+ 2 files changed, 15 insertions(+)
 
-diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 1abc122a0977..c83a329f6527 100644
---- a/drivers/media/usb/uvc/uvc_driver.c
-+++ b/drivers/media/usb/uvc/uvc_driver.c
-@@ -2339,6 +2339,7 @@ static int uvc_probe(struct usb_interface *intf,
- 	dev->info = info ? info : &uvc_quirk_none;
- 	dev->quirks = uvc_quirks_param == -1
- 		    ? dev->info->quirks : uvc_quirks_param;
-+	dev->max_bandwidth = dev->info->max_bandwidth;
+--- a/drivers/rtc/rtc-cmos.c
++++ b/drivers/rtc/rtc-cmos.c
+@@ -805,6 +805,14 @@ cmos_do_probe(struct device *dev, struct
  
- 	if (id->idVendor && id->idProduct)
- 		uvc_dbg(dev, PROBE, "Probing known UVC device %s (%04x:%04x)\n",
-@@ -2615,6 +2616,11 @@ static const struct uvc_device_info uvc_quirk_fix_bandwidth = {
- 	.quirks = UVC_QUIRK_FIX_BANDWIDTH,
- };
+ 	spin_lock_irq(&rtc_lock);
  
-+static const struct uvc_device_info uvc_quirk_fix_bw_622 = {
-+	.quirks = UVC_QUIRK_FIX_BANDWIDTH,
-+	.max_bandwidth = 62208000,
-+};
-+
- static const struct uvc_device_info uvc_quirk_probe_def = {
- 	.quirks = UVC_QUIRK_PROBE_DEF,
- };
-@@ -2830,6 +2836,15 @@ static const struct usb_device_id uvc_ids[] = {
- 	  .bInterfaceSubClass	= 1,
- 	  .bInterfaceProtocol	= 0,
- 	  .driver_info		= (kernel_ulong_t)&uvc_quirk_fix_bandwidth },
-+	/* MacroSilicon HDMI capture */
-+	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
-+				| USB_DEVICE_ID_MATCH_INT_INFO,
-+	  .idVendor		= 0x534d,
-+	  .idProduct		= 0x2109,
-+	  .bInterfaceClass	= USB_CLASS_VIDEO,
-+	  .bInterfaceSubClass	= 1,
-+	  .bInterfaceProtocol	= 0,
-+	  .driver_info		= (kernel_ulong_t)&uvc_quirk_fix_bw_622 },
- 	/* Genesys Logic USB 2.0 PC Camera */
- 	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
- 				| USB_DEVICE_ID_MATCH_INT_INFO,
-diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-index f2f565281e63..4afc1fbe0801 100644
---- a/drivers/media/usb/uvc/uvc_video.c
-+++ b/drivers/media/usb/uvc/uvc_video.c
-@@ -162,9 +162,29 @@ static void uvc_fixup_video_ctrl(struct uvc_streaming *stream,
- 	if ((ctrl->dwMaxPayloadTransferSize & 0xffff0000) == 0xffff0000)
- 		ctrl->dwMaxPayloadTransferSize &= ~0xffff0000;
- 
--	if (!(format->flags & UVC_FMT_FLAG_COMPRESSED) &&
--	    stream->dev->quirks & UVC_QUIRK_FIX_BANDWIDTH &&
--	    stream->intf->num_altsetting > 1) {
-+
-+	if (!(stream->dev->quirks & UVC_QUIRK_FIX_BANDWIDTH))
-+		return;
-+
-+	/* Handle UVC_QUIRK_FIX_BANDWIDTH */
-+
-+	if (format->flags & UVC_FMT_FLAG_COMPRESSED &&
-+	    stream->dev->max_bandwidth && frame->bFrameIntervalType) {
-+		u32 bandwidth;
-+
-+		for (i = 0; i < frame->bFrameIntervalType - 1; ++i) {
-+			bandwidth = frame->wWidth * frame->wHeight;
-+			bandwidth *= 10000000 / frame->dwFrameInterval[i];
-+
-+			if (bandwidth <= stream->dev->max_bandwidth)
-+				break;
-+		}
-+
-+		ctrl->dwFrameInterval = frame->dwFrameInterval[i];
-+		return;
++	/* Ensure that the RTC is accessible. Bit 6 must be 0! */
++	if ((CMOS_READ(RTC_VALID) & 0x40) != 0) {
++		spin_unlock_irq(&rtc_lock);
++		dev_warn(dev, "not accessible\n");
++		retval = -ENXIO;
++		goto cleanup1;
 +	}
 +
-+	if (stream->intf->num_altsetting > 1) {
- 		u32 interval;
- 		u32 bandwidth;
+ 	if (!(flags & CMOS_RTC_FLAGS_NOFREQ)) {
+ 		/* force periodic irq to CMOS reset default of 1024Hz;
+ 		 *
+--- a/drivers/rtc/rtc-mc146818-lib.c
++++ b/drivers/rtc/rtc-mc146818-lib.c
+@@ -21,6 +21,13 @@ unsigned int mc146818_get_time(struct rt
  
-diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-index 97df5ecd66c9..b44e0cd4c826 100644
---- a/drivers/media/usb/uvc/uvcvideo.h
-+++ b/drivers/media/usb/uvc/uvcvideo.h
-@@ -658,6 +658,7 @@ static inline u32 uvc_urb_index(const struct uvc_urb *uvc_urb)
- 
- struct uvc_device_info {
- 	u32	quirks;
-+	u32	max_bandwidth;
- 	u32	meta_format;
- 	u16	uvc_version;
- };
-@@ -667,6 +668,7 @@ struct uvc_device {
- 	struct usb_interface *intf;
- 	unsigned long warnings;
- 	u32 quirks;
-+	u32 max_bandwidth;
- 	int intfnum;
- 	char name[32];
- 
--- 
-2.29.2
-
+ again:
+ 	spin_lock_irqsave(&rtc_lock, flags);
++	/* Ensure that the RTC is accessible. Bit 6 must be 0! */
++	if (WARN_ON_ONCE((CMOS_READ(RTC_VALID) & 0x40) != 0)) {
++		spin_unlock_irqrestore(&rtc_lock, flags);
++		memset(time, 0xff, sizeof(*time));
++		return 0;
++	}
++
+ 	/*
+ 	 * Check whether there is an update in progress during which the
+ 	 * readout is unspecified. The maximum update time is ~2ms. Poll
