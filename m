@@ -2,140 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2AEE30A20E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:38:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A75EE30A20D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:37:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232157AbhBAGhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 01:37:25 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:60313 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231794AbhBAGbB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 01:31:01 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4DTdMs6KSQz9ty3Z;
-        Mon,  1 Feb 2021 07:29:45 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id dm3KCNoZYkNq; Mon,  1 Feb 2021 07:29:45 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4DTdMs5CGVz9ty3Y;
-        Mon,  1 Feb 2021 07:29:45 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5F18F8B777;
-        Mon,  1 Feb 2021 07:29:50 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id INx2U6gSzvaF; Mon,  1 Feb 2021 07:29:50 +0100 (CET)
-Received: from po16121vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.103])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 31B3E8B766;
-        Mon,  1 Feb 2021 07:29:50 +0100 (CET)
-Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 170A766B27; Mon,  1 Feb 2021 06:29:50 +0000 (UTC)
-Message-Id: <4a0c6e3bb8f0c162457bf54d9bc6fd8d7b55129f.1612160907.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/603: Fix protection of user pages mapped with
- PROT_NONE
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christoph Plattner <christoph.plattner@thalesgroup.com>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Mon,  1 Feb 2021 06:29:50 +0000 (UTC)
+        id S232253AbhBAGhB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 01:37:01 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51905 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231940AbhBAGdD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 01:33:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612161086;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KQnIWQf9C6+iWPjav1rsxJB9F4geXbdqF7FYdnK6OQI=;
+        b=DULUdzNf5P9xJ1XiC7azAQGEbKgY/CjGkI4Wc0zYBbFzxs0NsIHjHJm2GAbWYE22YrMOnk
+        a4LcXXuoVMwwx60SsfX+Y4HTKWXLw+9SNojGRRlys7zq69z0ffs10st1ToqimzUDyL6L2O
+        0PIgw8/9OV1vJZjKpXWZt+t/JozmnNA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-229-wcxT8NBqOf2e-cmHFTfOkw-1; Mon, 01 Feb 2021 01:31:24 -0500
+X-MC-Unique: wcxT8NBqOf2e-cmHFTfOkw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 286191842140;
+        Mon,  1 Feb 2021 06:31:23 +0000 (UTC)
+Received: from [10.72.13.120] (ovpn-13-120.pek2.redhat.com [10.72.13.120])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3F25210016F5;
+        Mon,  1 Feb 2021 06:31:13 +0000 (UTC)
+Subject: Re: [PATCH RFC v2 02/10] vringh: add 'iotlb_lock' to synchronize
+ iotlb accesses
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Xie Yongji <xieyongji@bytedance.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Laurent Vivier <lvivier@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-kernel@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
+        kvm@vger.kernel.org
+References: <20210128144127.113245-1-sgarzare@redhat.com>
+ <20210128144127.113245-3-sgarzare@redhat.com>
+ <017f6e69-b2ec-aed0-5920-a389199e4cf9@redhat.com>
+ <20210129091850.gatf3ih3knw2p4l4@steredhat>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <40e6c307-b3e0-6bc1-05a1-804500b6fe3f@redhat.com>
+Date:   Mon, 1 Feb 2021 14:31:12 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210129091850.gatf3ih3knw2p4l4@steredhat>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On book3s/32, page protection is defined by the PP bits in the PTE
-which provide the following protection depending on the access
-keys defined in the matching segment register:
-- PP 00 means RW with key 0 and N/A with key 1.
-- PP 01 means RW with key 0 and RO with key 1.
-- PP 10 means RW with both key 0 and key 1.
-- PP 11 means RO with both key 0 and key 1.
 
-Since the implementation of kernel userspace access protection,
-PP bits have been set as follows:
-- PP00 for pages without _PAGE_USER
-- PP01 for pages with _PAGE_USER and _PAGE_RW
-- PP11 for pages with _PAGE_USER and without _PAGE_RW
+On 2021/1/29 下午5:18, Stefano Garzarella wrote:
+> On Fri, Jan 29, 2021 at 03:43:40PM +0800, Jason Wang wrote:
+>>
+>> On 2021/1/28 下午10:41, Stefano Garzarella wrote:
+>>> Usually iotlb accesses are synchronized with a spinlock.
+>>> Let's request it as a new parameter in vringh_set_iotlb() and
+>>> hold it when we navigate the iotlb in iotlb_translate() to avoid
+>>> race conditions with any new additions/deletions of ranges from
+>>> the ioltb.
+>>
+>>
+>> Patch looks fine but I wonder if this is the best approach comparing 
+>> to do locking by the caller.
+>
+> Initially I tried to hold the lock in the vdpasim_blk_work(), but since
+> we have a lot of different functions for vringh, I opted to take the 
+> lock at the beginning and release it at the end.
+> Also because several times I went to see if that call used 
+> iotlb_translate or not.
+>
+> This could be a problem for example if we have multiple workers to 
+> handle multiple queues.
+>
+> Also, some functions are quite long (e.g. vringh_getdesc_iotlb) and 
+> holding the lock for that long could reduce parallelism.
+>
+> For these reasons I thought it was better to hide everything from the 
+> caller who doesn't have to worry about which function calls 
+> iotlb_translate() and thus hold the lock.
 
-For kernelspace segments, kernel accesses are performed with key 0
-and user accesses are performed with key 1. As PP00 is used for
-non _PAGE_USER pages, user can't access kernel pages not flagged
-_PAGE_USER while kernel can.
 
-For userspace segments, both kernel and user accesses are performed
-with key 0, therefore pages not flagged _PAGE_USER are still
-accessible to the user.
+Fine with me.
 
-This shouldn't be an issue, because userspace is expected to be
-accessible to the user. But unlike most other architectures, powerpc
-implements PROT_NONE protection by removing _PAGE_USER flag instead of
-flagging the page as not valid. This means that pages in userspace
-that are not flagged _PAGE_USER shall remain inaccessible.
+Acked-by: Jason Wang <jasowang@redhat.com>
 
-To get the expected behaviour, just mimic other architectures in the
-TLB miss handler by checking _PAGE_USER permission on userspace
-accesses as if it was the _PAGE_PRESENT bit.
+Thanks
 
-Note that this problem only is only for 603 cores. The 604+ have
-an hash table, and hash_page() function already implement the
-verification of _PAGE_USER permission on userspace pages.
 
-Reported-by: Christoph Plattner <christoph.plattner@thalesgroup.com>
-Fixes: f342adca3afc ("powerpc/32s: Prepare Kernel Userspace Access Protection")
-Cc: stable@vger.kernel.org
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/head_book3s_32.S | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
-index 858fbc8b19f3..0004e8a6a58e 100644
---- a/arch/powerpc/kernel/head_book3s_32.S
-+++ b/arch/powerpc/kernel/head_book3s_32.S
-@@ -453,11 +453,12 @@ InstructionTLBMiss:
- 	cmplw	0,r1,r3
- #endif
- 	mfspr	r2, SPRN_SDR1
--	li	r1,_PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_EXEC
-+	li	r1,_PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_EXEC | _PAGE_USER
- 	rlwinm	r2, r2, 28, 0xfffff000
- #ifdef CONFIG_MODULES
- 	bgt-	112f
- 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
-+	li	r1,_PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_EXEC
- 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
- #endif
- 112:	rlwimi	r2,r3,12,20,29		/* insert top 10 bits of address */
-@@ -516,10 +517,11 @@ DataLoadTLBMiss:
- 	lis	r1, TASK_SIZE@h		/* check if kernel address */
- 	cmplw	0,r1,r3
- 	mfspr	r2, SPRN_SDR1
--	li	r1, _PAGE_PRESENT | _PAGE_ACCESSED
-+	li	r1, _PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_USER
- 	rlwinm	r2, r2, 28, 0xfffff000
- 	bgt-	112f
- 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
-+	li	r1, _PAGE_PRESENT | _PAGE_ACCESSED
- 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
- 112:	rlwimi	r2,r3,12,20,29		/* insert top 10 bits of address */
- 	lwz	r2,0(r2)		/* get pmd entry */
-@@ -593,10 +595,11 @@ DataStoreTLBMiss:
- 	lis	r1, TASK_SIZE@h		/* check if kernel address */
- 	cmplw	0,r1,r3
- 	mfspr	r2, SPRN_SDR1
--	li	r1, _PAGE_RW | _PAGE_DIRTY | _PAGE_PRESENT | _PAGE_ACCESSED
-+	li	r1, _PAGE_RW | _PAGE_DIRTY | _PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_USER
- 	rlwinm	r2, r2, 28, 0xfffff000
- 	bgt-	112f
- 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
-+	li	r1, _PAGE_RW | _PAGE_DIRTY | _PAGE_PRESENT | _PAGE_ACCESSED
- 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
- 112:	rlwimi	r2,r3,12,20,29		/* insert top 10 bits of address */
- 	lwz	r2,0(r2)		/* get pmd entry */
--- 
-2.25.0
+>
+> Thanks,
+> Stefano
+>
+>>
+>> Thanks
+>>
+>>
+>>>
+>>> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+>>> ---
+>>>  include/linux/vringh.h           | 6 +++++-
+>>>  drivers/vdpa/vdpa_sim/vdpa_sim.c | 3 ++-
+>>>  drivers/vhost/vringh.c           | 9 ++++++++-
+>>>  3 files changed, 15 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/include/linux/vringh.h b/include/linux/vringh.h
+>>> index 59bd50f99291..9c077863c8f6 100644
+>>> --- a/include/linux/vringh.h
+>>> +++ b/include/linux/vringh.h
+>>> @@ -46,6 +46,9 @@ struct vringh {
+>>>      /* IOTLB for this vring */
+>>>      struct vhost_iotlb *iotlb;
+>>> +    /* spinlock to synchronize IOTLB accesses */
+>>> +    spinlock_t *iotlb_lock;
+>>> +
+>>>      /* The function to call to notify the guest about added buffers */
+>>>      void (*notify)(struct vringh *);
+>>>  };
+>>> @@ -258,7 +261,8 @@ static inline __virtio64 cpu_to_vringh64(const 
+>>> struct vringh *vrh, u64 val)
+>>>  #if IS_REACHABLE(CONFIG_VHOST_IOTLB)
+>>> -void vringh_set_iotlb(struct vringh *vrh, struct vhost_iotlb *iotlb);
+>>> +void vringh_set_iotlb(struct vringh *vrh, struct vhost_iotlb *iotlb,
+>>> +              spinlock_t *iotlb_lock);
+>>>  int vringh_init_iotlb(struct vringh *vrh, u64 features,
+>>>                unsigned int num, bool weak_barriers,
+>>> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c 
+>>> b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+>>> index 2183a833fcf4..53238989713d 100644
+>>> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
+>>> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
+>>> @@ -284,7 +284,8 @@ struct vdpasim *vdpasim_create(struct 
+>>> vdpasim_dev_attr *dev_attr)
+>>>          goto err_iommu;
+>>>      for (i = 0; i < dev_attr->nvqs; i++)
+>>> -        vringh_set_iotlb(&vdpasim->vqs[i].vring, vdpasim->iommu);
+>>> +        vringh_set_iotlb(&vdpasim->vqs[i].vring, vdpasim->iommu,
+>>> +                 &vdpasim->iommu_lock);
+>>>      ret = iova_cache_get();
+>>>      if (ret)
+>>> diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
+>>> index 85d85faba058..f68122705719 100644
+>>> --- a/drivers/vhost/vringh.c
+>>> +++ b/drivers/vhost/vringh.c
+>>> @@ -1074,6 +1074,8 @@ static int iotlb_translate(const struct vringh 
+>>> *vrh,
+>>>      int ret = 0;
+>>>      u64 s = 0;
+>>> +    spin_lock(vrh->iotlb_lock);
+>>> +
+>>>      while (len > s) {
+>>>          u64 size, pa, pfn;
+>>> @@ -1103,6 +1105,8 @@ static int iotlb_translate(const struct vringh 
+>>> *vrh,
+>>>          ++ret;
+>>>      }
+>>> +    spin_unlock(vrh->iotlb_lock);
+>>> +
+>>>      return ret;
+>>>  }
+>>> @@ -1262,10 +1266,13 @@ EXPORT_SYMBOL(vringh_init_iotlb);
+>>>   * vringh_set_iotlb - initialize a vringh for a ring with IOTLB.
+>>>   * @vrh: the vring
+>>>   * @iotlb: iotlb associated with this vring
+>>> + * @iotlb_lock: spinlock to synchronize the iotlb accesses
+>>>   */
+>>> -void vringh_set_iotlb(struct vringh *vrh, struct vhost_iotlb *iotlb)
+>>> +void vringh_set_iotlb(struct vringh *vrh, struct vhost_iotlb *iotlb,
+>>> +              spinlock_t *iotlb_lock)
+>>>  {
+>>>      vrh->iotlb = iotlb;
+>>> +    vrh->iotlb_lock = iotlb_lock;
+>>>  }
+>>>  EXPORT_SYMBOL(vringh_set_iotlb);
+>>
+>
 
