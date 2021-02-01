@@ -2,62 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DDF530AB7B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:34:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA7C30AA1E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:45:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231142AbhBAPdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 10:33:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59392 "EHLO
+        id S231300AbhBAOo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 09:44:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231280AbhBAOlc (ORCPT
+        with ESMTP id S231296AbhBAOl6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 09:41:32 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1660CC0612F2
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 06:39:57 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id y187so13406780wmd.3
+        Mon, 1 Feb 2021 09:41:58 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09DD0C06121E
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 06:39:58 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id d16so16793944wro.11
         for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 06:39:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=JAIDQ52yty18Fyb/YeAsOfkiyO3vjgo1F5NJ+/twun8=;
-        b=qbYFQrEymhU8IyMyd/W+xyHgEQS2ALYVHHu3Tmj3qxjxObq+xE7GMPhYo/3nV3cd0M
-         ixDzbn2zT0p+kMc8QZsuiA0ERK352J/+GcNUjkSyKyEEhsSzFiVO5FlhQoUY7nSRzaFh
-         XmVLFlfxHvX74H3Y1amefFPvgpi9eTCHXUVB2ryU4PWC2IlV1Qk6+CF2SuWAu8RaqTYK
-         eiD0LcqRMTvjUjtgQITUtKJ1+j/eDT3ul7E5b1FhQSSKuQzZyHKPm0CAAYiEboMo2EQE
-         rDw6lpdnu8UPktc1UKCLMzIMun+bgsZenUqIyLyDN18GnXvO6vOjHV5e6la/pwmrTPQt
-         0y5Q==
+        bh=g/xsj8QnzTyjZTuByN2rtr+7Bim8nVB2CCDQafkvd6A=;
+        b=nfEkhzEbgz14R/tMpOwQ02Eojho5vUVU6vM5evj27Ooo/l1N7p5vTWgkfFKNa0uKE7
+         +gL6H7kg3w41Bpb8ofpNmElwXHFyNIzGswnfbEVq/OFUytD3g/H/mgX+4QlicbyFv0/w
+         WljXKAe/AzV6xBwDr0P8gni8A31IN+pDSzCjGJuPRXFeFypKWYwrh+IzBWGDbTzPOHlm
+         bIWi94gCiNKCUhCft7VLMbp9LwTOu26W7vti9odQn6WaLswVKDBHrRMrkc85EeApTMHC
+         YbMkMAAZXD/5paEW4cT6W09tmhnY1tzAB/fUOvKHbMBAcCbWQrVd5pc3c1Lh7e9sI2He
+         OsOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=JAIDQ52yty18Fyb/YeAsOfkiyO3vjgo1F5NJ+/twun8=;
-        b=ROlCtrHSTPIxgMdPTAw9acx0xK4bC3+QI/JapvTQnwlWh9VE4ZBIhhv0v+Zdgve3dh
-         K3KKO1eihq968N8KiHfj/ph1dNMALFhtBxmNV01ld0RAOEWXzGPK0CQtoClCA9wiWOPV
-         7YQp/tz0Z4QLsbls6AjKd8AWpjj6qDyd5PzyjWDokPkwWHnMkCjq3vV/66n2jkZ9cLRK
-         kUrIdyZ6f9vmhEEqcdkpjpwbuw1i8ppg5uQLj0urGapevn+v5XkOJspO1rmjkEv/MgyR
-         X3Gnj0tfJOToJ0itt2l8Fb8h9v2ci9usZghTCKkniaDmOPpqZ2H93MBTtq5Yjib+c2mI
-         1A1g==
-X-Gm-Message-State: AOAM532DDxV+gjUL8KZCnibWWPtuDUe87LgrfPZQw0Iw2NmEmK7XY1nG
-        ruZf/SV2gI1nxa6j1/h7w5G0BA==
-X-Google-Smtp-Source: ABdhPJyigSkulBFJW/jNpdf7+2zKlUAzb6spDNuflsbOwKmOfK+waKamOJQYIESQRrdt2LY7eekrUA==
-X-Received: by 2002:a1c:f70f:: with SMTP id v15mr15072829wmh.38.1612190395853;
-        Mon, 01 Feb 2021 06:39:55 -0800 (PST)
+        bh=g/xsj8QnzTyjZTuByN2rtr+7Bim8nVB2CCDQafkvd6A=;
+        b=gzKMoXf5mWp0lElkJAjELSJNcBmMG4wbL6z/PgZIYbdltCvGa9NGKilonOeTbR7mEn
+         XdBbcv+jL8Gj07BAFLsv4+fUkd7nY2J4RcusepyL6vXJyvUFAsLrviAZyIZw4JrWIF9c
+         mmacUYd7YmUap5zQkJ9WqmpQUGuFM9mRXogQnEiORqMMlkuRAB67J4RovNKvpC9tEmG3
+         oU8C4AsFILBxlJt/xomaZKjMTZXafxCf0b7peIw1Y+y68BJFtXQgo17N+ND/A0SzEiwy
+         Sx26LF7j7hsK2Oc7bdZKJmQ1/9mAoZqGBSOcH2mAX4aJJvAX+Ta0rNacJNjm+eQSiDnM
+         b2ow==
+X-Gm-Message-State: AOAM531BJrMa5xJ+g3J/R5vvZyKVM2EszghNDgFrX3hvMDxGCfXY9MVg
+        sLZiaSwy/W06mPKZjSSEibMQSjX/ymokV9gx
+X-Google-Smtp-Source: ABdhPJzPmYic1cm2Sz5pCBPwPCfylEgtpIbm5kuKCNjN5CBDvdpU0QDAwGLOOSsk3STc3hYIRx2dGQ==
+X-Received: by 2002:adf:dd10:: with SMTP id a16mr18522509wrm.207.1612190396737;
+        Mon, 01 Feb 2021 06:39:56 -0800 (PST)
 Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id h15sm27301359wrt.10.2021.02.01.06.39.54
+        by smtp.gmail.com with ESMTPSA id h15sm27301359wrt.10.2021.02.01.06.39.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 06:39:55 -0800 (PST)
+        Mon, 01 Feb 2021 06:39:56 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        CJ <cjtsai@ali.com.tw>, Andre Hedrick <andre@linux-ide.org>,
-        Alan Cox <alan@redhat.com>,
-        Clear Zhang <Clear.Zhang@ali.com.tw>,
-        linux-ide@vger.kernel.org, and cc <htejun@gmail.com>
-Subject: [PATCH 11/20] ata: pata_ali: Supply description for 'ali_20_filter()'s 'mask' param
-Date:   Mon,  1 Feb 2021 14:39:31 +0000
-Message-Id: <20210201143940.2070919-12-lee.jones@linaro.org>
+        linux-ide@vger.kernel.org
+Subject: [PATCH 12/20] ata: pata_amd: Fix incorrectly named function in the header
+Date:   Mon,  1 Feb 2021 14:39:32 +0000
+Message-Id: <20210201143940.2070919-13-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210201143940.2070919-1-lee.jones@linaro.org>
 References: <20210201143940.2070919-1-lee.jones@linaro.org>
@@ -69,33 +66,28 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/ata/pata_ali.c:119: warning: Function parameter or member 'mask' not described in 'ali_20_filter'
+ drivers/ata/pata_amd.c:331: warning: expecting prototype for nv_probe_init(). Prototype was for nv_pre_reset() instead
 
 Cc: Jens Axboe <axboe@kernel.dk>
-Cc: CJ <cjtsai@ali.com.tw>
-Cc: Andre Hedrick <andre@linux-ide.org>
-Cc: Alan Cox <alan@redhat.com>
-Cc: Clear Zhang <Clear.Zhang@ali.com.tw>
 Cc: linux-ide@vger.kernel.org
-Cc: and cc <htejun@gmail.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/ata/pata_ali.c | 2 +-
+ drivers/ata/pata_amd.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/ata/pata_ali.c b/drivers/ata/pata_ali.c
-index e18aa02f89530..557ecf4661022 100644
---- a/drivers/ata/pata_ali.c
-+++ b/drivers/ata/pata_ali.c
-@@ -109,7 +109,7 @@ static int ali_c2_cable_detect(struct ata_port *ap)
+diff --git a/drivers/ata/pata_amd.c b/drivers/ata/pata_amd.c
+index 75b830eb3c542..c8acba162d02f 100644
+--- a/drivers/ata/pata_amd.c
++++ b/drivers/ata/pata_amd.c
+@@ -319,7 +319,7 @@ static unsigned long nv_mode_filter(struct ata_device *dev,
+ }
+ 
  /**
-  *	ali_20_filter		-	filter for earlier ALI DMA
-  *	@adev: ATA device
-- *	@adev: attached device
-+ *	@mask: received mask to manipulate and pass back
+- *	nv_probe_init	-	cable detection
++ *	nv_pre_reset	-	cable detection
+  *	@link: ATA link
+  *	@deadline: deadline jiffies for the operation
   *
-  *	Ensure that we do not do DMA on CD devices. We may be able to
-  *	fix that later on. Also ensure we do not do UDMA on WDC drives
 -- 
 2.25.1
 
