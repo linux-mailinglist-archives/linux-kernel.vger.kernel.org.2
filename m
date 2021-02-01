@@ -2,74 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA9330A468
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:33:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F75830A46C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:35:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232747AbhBAJcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 04:32:31 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:55919 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232681AbhBAJca (ORCPT
+        id S232807AbhBAJe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 04:34:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46129 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232773AbhBAJeY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 04:32:30 -0500
-X-UUID: a51b790571e247b398cbd7511727f889-20210201
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ZnxN1pLV+rvX9LVEaJLLgeSX4bC8JWZBZLANyFfuHzk=;
-        b=SKsiD2//CU/rGytsU5i0AcICFbv1DBp1mzm42/qoE8Ll4QJVXn/3NkzJKq9vYNDKITfV9HZIMhyhNvsId0m4hyqtM6myxDsjvUD0IrkJxd1T+03QQB1IcCRlaA29ufa5RCp5kt6beFrD378IcAMA/qiL9l+YghA08uQeqEeIpoc=;
-X-UUID: a51b790571e247b398cbd7511727f889-20210201
-Received: from mtkmrs01.mediatek.inc [(172.21.131.159)] by mailgw02.mediatek.com
-        (envelope-from <weiyi.lu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1460415211; Mon, 01 Feb 2021 17:31:45 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 1 Feb 2021 17:31:43 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 1 Feb 2021 17:31:43 +0800
-Message-ID: <1612171903.18201.6.camel@mtksdaap41>
-Subject: Re: [PATCH 0/2] Add MediaTek MT8192 clock provider device nodes
-From:   Weiyi Lu <weiyi.lu@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Rob Herring <robh@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
-        <srv_heupstream@mediatek.com>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>
-Date:   Mon, 1 Feb 2021 17:31:43 +0800
-In-Reply-To: <4536e0a3-8e64-d2b0-df83-33705d10359a@gmail.com>
-References: <1608644414-17793-1-git-send-email-weiyi.lu@mediatek.com>
-         <4536e0a3-8e64-d2b0-df83-33705d10359a@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Mon, 1 Feb 2021 04:34:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612171977;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=TRJgwth9GyqyyQWIRdUel3dkprdXQQtXGasEdO9dd+4=;
+        b=JdPVyIcqPs1kiri/P/wdF3Z4Wcj8fYXt5pF0wHQZhfbEUONGYQs0bjYS8ja8EO8l5ZOc7E
+        ZikDD02+szSQcl686tMe2vzi3/+/pdwITLrkyu2RtAzQXNpYCTTN8seVUE5W6rY3biqPzp
+        BWB8lyRUNhXQDmdpmx0DbpB3o9exUpU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-10-AK_YxLelMz630S1tQGjELQ-1; Mon, 01 Feb 2021 04:32:53 -0500
+X-MC-Unique: AK_YxLelMz630S1tQGjELQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E6304801AF1;
+        Mon,  1 Feb 2021 09:32:50 +0000 (UTC)
+Received: from [10.36.115.24] (ovpn-115-24.ams2.redhat.com [10.36.115.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DBD9260C66;
+        Mon,  1 Feb 2021 09:32:45 +0000 (UTC)
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?UTF-8?Q?=c5=81ukasz_Majczak?= <lma@semihalf.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
+References: <20210130221035.4169-1-rppt@kernel.org>
+ <20210130221035.4169-2-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH v4 1/2] x86/setup: always add the beginning of RAM as
+ memblock.memory
+Message-ID: <56e2c568-b121-8860-a6b0-274ace46d835@redhat.com>
+Date:   Mon, 1 Feb 2021 10:32:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20210130221035.4169-2-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU3VuLCAyMDIxLTAxLTMxIGF0IDE0OjI3ICswMTAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3Rl
-Og0KPiANCj4gT24gMjIvMTIvMjAyMCAxNDo0MCwgV2VpeWkgTHUgd3JvdGU6DQo+ID4gVGhpcyBz
-ZXJpZXMgaXMgYmFzZWQgb24gdjUuMTAtcmMxLCBNVDgxOTIgZHRzIHY2WzFdIGFuZA0KPiA+IE1U
-ODE5MiBjbG9jayB2NiBzZXJpZXNbMl0uDQo+ID4gDQo+ID4gWzFdIGh0dHBzOi8vcGF0Y2h3b3Jr
-Lmtlcm5lbC5vcmcvcHJvamVjdC9saW51eC1tZWRpYXRlay9saXN0Lz9zZXJpZXM9MzczODk5DQo+
-ID4gWzJdIGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcHJvamVjdC9saW51eC1tZWRpYXRl
-ay9saXN0Lz9zZXJpZXM9NDA1Mjk1DQo+ID4gDQo+IA0KPiBbMV0gaXMgYWxyZWFkeSBtYWlubGlu
-ZS4gWW91IGNvdWxkIGFkZCB0aGlzIHBhdGNoIGFzIGEgbmV3IG9uZSB0byBbMl0uIEJ1dA0KPiBw
-bGVhc2UgdHJ5IHRvIGltcHJvdmUgdGhlIHNlcmllcywgYmVmb3JlIHNlbmRpbmcganVzdCBhIG5l
-dyB2ZXJzaW9uIHdpdGggdGhpcw0KPiBwYXRjaCBhZGRlZC4NCj4gDQo+IFJlZ2FyZHMsDQo+IE1h
-dHRoaWFzDQo+IA0KSGkgTWF0dGhpYXMsDQoNCkFjdHVhbGx5IEknbSBhIGxpdHRsZSBjb25mdXNl
-ZCBub3cuIFN0ZXBoZW4gc3VnZ2VzdGVkIG1lIHRvIHNlbmQgY2xvY2sNCmR0cyBzZXBhcmF0ZWx5
-IGJlY2F1c2UgZHRzIG1heSBub3QgZ28gdGhyb3VnaCBoaXMgdHJlZS4NClNvIEkgc2VwYXJhdGVk
-IGl0IGZyb20gdGhlIE1UODE5MiBjbG9jayBzZXJpZXMgc2luY2UgY2xvY2sgdjYuDQpXaGF0IGRv
-IHlvdSBzdWdnZXN0IG1lIHRvIGRvIG5leHQgdGltZT8NCg0KPiA+IFdlaXlpIEx1ICgyKToNCj4g
-PiAgIGFybTY0OiBkdHM6IG1lZGlhdGVrOiBBZGQgbXQ4MTkyIGNsb2NrIGNvbnRyb2xsZXJzDQo+
-ID4gICBhcm02NDogZHRzOiBtZWRpYXRlazogQ29ycmVjdCBVQVJUMCBidXMgY2xvY2sgb2YgTVQ4
-MTkyDQo+ID4gDQo+ID4gIGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTkyLmR0c2kg
-fCAxNjUgKysrKysrKysrKysrKysrKysrKysrKy0NCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDE2NCBp
-bnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQo+ID4gDQoNCg==
+On 30.01.21 23:10, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
+> 
+> The physical memory on an x86 system starts at address 0, but this is not
+> always reflected in e820 map. For example, the BIOS can have e820 entries
+> like
+> 
+> [    0.000000] BIOS-provided physical RAM map:
+> [    0.000000] BIOS-e820: [mem 0x0000000000001000-0x000000000009ffff] usable
+> 
+> or
+> 
+> [    0.000000] BIOS-provided physical RAM map:
+> [    0.000000] BIOS-e820: [mem 0x0000000000000000-0x0000000000000fff] reserved
+> [    0.000000] BIOS-e820: [mem 0x0000000000001000-0x0000000000057fff] usable
+> 
+> In either case, e820__memblock_setup() won't add the range 0x0000 - 0x1000
+> to memblock.memory and later during memory map initialization this range is
+> left outside any zone.
+> 
+> With SPARSEMEM=y there is always a struct page for pfn 0 and this struct
+> page will have it's zone link wrong no matter what value will be set there.
+> 
+> To avoid this inconsistency, add the beginning of RAM to memblock.memory.
+> Limit the added chunk size to match the reserved memory to avoid
+> registering memory that may be used by the firmware but never reserved at
+> e820__memblock_setup() time.
+> 
+> Fixes: bde9cfa3afe4 ("x86/setup: don't remove E820_TYPE_RAM for pfn 0")
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> Cc: stable@vger.kernel.org
+> ---
+>   arch/x86/kernel/setup.c | 8 ++++++++
+>   1 file changed, 8 insertions(+)
+> 
+> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> index 3412c4595efd..67c77ed6eef8 100644
+> --- a/arch/x86/kernel/setup.c
+> +++ b/arch/x86/kernel/setup.c
+> @@ -727,6 +727,14 @@ static void __init trim_low_memory_range(void)
+>   	 * Kconfig help text for X86_RESERVE_LOW.
+>   	 */
+>   	memblock_reserve(0, ALIGN(reserve_low, PAGE_SIZE));
+> +
+> +	/*
+> +	 * Even if the firmware does not report the memory at address 0 as
+> +	 * usable, inform the generic memory management about its existence
+> +	 * to ensure it is a part of ZONE_DMA and the memory map for it is
+> +	 * properly initialized.
+> +	 */
+> +	memblock_add(0, ALIGN(reserve_low, PAGE_SIZE));
+>   }
+>   	
+>   /*
+> 
+
+I think, to make that code more robust, and to not rely on archs to do 
+the right thing, we should do something like
+
+1) Make sure in free_area_init() that each PFN with a memmap (i.e., 
+falls into a partial present section) is spanned by a zone; that would 
+include PFN 0 in this case.
+
+2) In init_zone_unavailable_mem(), similar to round_up(max_pfn, 
+PAGES_PER_SECTION) handling, consider range
+	[round_down(min_pfn, PAGES_PER_SECTION), min_pfn - 1]
+which would handle in the x86-64 case [0..0] and, therefore, initialize 
+PFN 0.
+
+Also, I think the special-case of PFN 0 is analogous to the 
+round_up(max_pfn, PAGES_PER_SECTION) handling in 
+init_zone_unavailable_mem(): who guarantees that these PFN above the 
+highest present PFN are actually spanned by a zone?
+
+I'd suggest going through all zone ranges in free_area_init() first, 
+dealing with zones that have "not section aligned start/end", clamping 
+them up/down if required such that no holes within a section are left 
+uncovered by a zone.
+
+-- 
+Thanks,
+
+David / dhildenb
 
