@@ -2,178 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB4430A086
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 04:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A671130A08E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 04:33:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231365AbhBADZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 22:25:52 -0500
-Received: from foss.arm.com ([217.140.110.172]:46294 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231347AbhBADZt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 22:25:49 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 820E4142F;
-        Sun, 31 Jan 2021 19:25:03 -0800 (PST)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.93.126])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3A6DD3F66E;
-        Sun, 31 Jan 2021 19:24:56 -0800 (PST)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-mm@kvack.org, akpm@linux-foundation.org, hca@linux.ibm.com,
-        catalin.marinas@arm.com, david@redhat.com, osalvador@suse.de
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        teawater <teawaterz@linux.alibaba.com>,
-        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Michal Hocko <mhocko@kernel.org>
-Subject: [PATCH V5 4/4] virtio-mem: check against mhp_get_pluggable_range() which memory we can hotplug
-Date:   Mon,  1 Feb 2021 08:55:02 +0530
-Message-Id: <1612149902-7867-5-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1612149902-7867-1-git-send-email-anshuman.khandual@arm.com>
-References: <1612149902-7867-1-git-send-email-anshuman.khandual@arm.com>
+        id S231254AbhBADdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 22:33:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229842AbhBADdQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 22:33:16 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A10C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 19:32:35 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id m12so301878pjs.4
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 19:32:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=fBoO4RYEH6byZoO1WlacVJT4VjUFT90WWDlxk4juvyk=;
+        b=xEvn8GXDCUMeIsvBdDna7NRSuc5e8RWokoUNNOtIYCW6OeJJCghEXIsiGsKoz9e4xR
+         6uMpYoEp/BA+sw9AYzRBpLwjE1iNSQZuL3IhAVTddfGiKid60yhHGJ3FR25RKuA+s+ui
+         q8FrPimYsAPCc0fADjucbeeXUKbpSQYW6X2DWpjvl/i7XBuwxVzcEB36XudW0WWrEHfi
+         MHTPb2oiDtlVImO/+uSt8ijd8gXUDXIU2iVkvil5T0czjoBYaGWlUykmj0xq7ot+tdzH
+         AzsJZgpsxYp87VX51dklFpwqlPAnsZTwNihY11TWhJ0M0viKcYmPIYqE12+4c+AgcT66
+         11MA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=fBoO4RYEH6byZoO1WlacVJT4VjUFT90WWDlxk4juvyk=;
+        b=BkkrZDiVmRddc8n5U6ZtTfCx0O1XizS+D1hXRtH4BNP0xUpwloAMCQ6d7NiqCnRT1M
+         ReEmasHNYMnF+6qyBrqzoABOx1F1qB3XAa88YIplLklzv/LdsVkI9x/trGhK9hw78uLL
+         HUdVJCj8qJMFq9QGfWnG+qNS2ivclhdF7xILqTSsrDTgy9I21YFBqKnaiVj0iRo+0uhy
+         xbnvGv1zrvhcWWqwPgGiEzsMLzVzB+bRJI/f+wGEy8D242OA/vLzvHBKuSFcIgtNEP1e
+         UPlfjrLyIR6N40hr97463/wSXfcjxlqn6ViA4Iks0k80TcIeiPAglhgchtvgUgzv6SRD
+         qSog==
+X-Gm-Message-State: AOAM530WiNgZ4vhmu1h9LfCTdGBzPmgMNXFHWbu1FJD8nst9KQlwMg0x
+        JnMaH/eG0cf7C4sHTc92r3pcIg==
+X-Google-Smtp-Source: ABdhPJyyF+HHexoS1dd8kPDCEzHezLwX4Nc9PqM3CZNwbO9c+x3NSq5bWABH5gLykhXMaDM/T6M2HA==
+X-Received: by 2002:a17:90a:9602:: with SMTP id v2mr15181860pjo.28.1612150355069;
+        Sun, 31 Jan 2021 19:32:35 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id 17sm16247628pgy.53.2021.01.31.19.32.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 31 Jan 2021 19:32:34 -0800 (PST)
+Date:   Mon, 1 Feb 2021 09:02:31 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Flavio Suligoi <f.suligoi@asem.it>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: thermal: fix spelling mistakes
+Message-ID: <20210201033231.vhhmaf6lvqpiegmk@vireshk-i7>
+References: <20210129132035.16967-1-f.suligoi@asem.it>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210129132035.16967-1-f.suligoi@asem.it>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Hildenbrand <david@redhat.com>
+On 29-01-21, 14:20, Flavio Suligoi wrote:
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+> ---
+>  Documentation/driver-api/thermal/sysfs-api.rst | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/driver-api/thermal/sysfs-api.rst b/Documentation/driver-api/thermal/sysfs-api.rst
+> index e7520cb439ac..71da7dc8c0ba 100644
+> --- a/Documentation/driver-api/thermal/sysfs-api.rst
+> +++ b/Documentation/driver-api/thermal/sysfs-api.rst
+> @@ -54,7 +54,7 @@ temperature) and throttle appropriate devices.
+>      trips:
+>  	the total number of trip points this thermal zone supports.
+>      mask:
+> -	Bit string: If 'n'th bit is set, then trip point 'n' is writeable.
+> +	Bit string: If 'n'th bit is set, then trip point 'n' is writable.
+>      devdata:
+>  	device private data
+>      ops:
+> @@ -406,7 +406,7 @@ Thermal cooling device sys I/F, created once it's registered::
+>      |---stats/reset:		Writing any value resets the statistics
+>      |---stats/time_in_state_ms:	Time (msec) spent in various cooling states
+>      |---stats/total_trans:	Total number of times cooling state is changed
+> -    |---stats/trans_table:	Cooing state transition table
+> +    |---stats/trans_table:	Cooling state transition table
+>  
+>  
+>  Then next two dynamic attributes are created/removed in pairs. They represent
+> @@ -779,5 +779,5 @@ emergency poweroff kicks in after the delay has elapsed and shuts down
+>  the system.
+>  
+>  If set to 0 emergency poweroff will not be supported. So a carefully
+> -profiled non-zero positive value is a must for emergerncy poweroff to be
+> +profiled non-zero positive value is a must for emergency poweroff to be
+>  triggered.
 
-Right now, we only check against MAX_PHYSMEM_BITS - but turns out there
-are more restrictions of which memory we can actually hotplug, especially
-om arm64 or s390x once we support them: we might receive something like
--E2BIG or -ERANGE from add_memory_driver_managed(), stopping device
-operation.
+Reviewed-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-So, check right when initializing the device which memory we can add,
-warning the user. Try only adding actually pluggable ranges: in the worst
-case, no memory provided by our device is pluggable.
-
-In the usual case, we expect all device memory to be pluggable, and in
-corner cases only some memory at the end of the device-managed memory
-region to not be pluggable.
-
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>
-Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
-Cc: Oscar Salvador <osalvador@suse.de>
-Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: catalin.marinas@arm.com
-Cc: teawater <teawaterz@linux.alibaba.com>
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
-Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: hca@linux.ibm.com
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Heiko Carstens <hca@linux.ibm.com>
-Cc: Michal Hocko <mhocko@kernel.org>
-Signed-off-by: David Hildenbrand <david@redhat.com>
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- drivers/virtio/virtio_mem.c | 41 ++++++++++++++++++++++++-------------
- 1 file changed, 27 insertions(+), 14 deletions(-)
-
-diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
-index 9fc9ec4a25f5..c3cd4ad62e5b 100644
---- a/drivers/virtio/virtio_mem.c
-+++ b/drivers/virtio/virtio_mem.c
-@@ -2222,7 +2222,7 @@ static int virtio_mem_unplug_pending_mb(struct virtio_mem *vm)
-  */
- static void virtio_mem_refresh_config(struct virtio_mem *vm)
- {
--	const uint64_t phys_limit = 1UL << MAX_PHYSMEM_BITS;
-+	const struct range pluggable_range = mhp_get_pluggable_range(true);
- 	uint64_t new_plugged_size, usable_region_size, end_addr;
- 
- 	/* the plugged_size is just a reflection of what _we_ did previously */
-@@ -2234,15 +2234,25 @@ static void virtio_mem_refresh_config(struct virtio_mem *vm)
- 	/* calculate the last usable memory block id */
- 	virtio_cread_le(vm->vdev, struct virtio_mem_config,
- 			usable_region_size, &usable_region_size);
--	end_addr = vm->addr + usable_region_size;
--	end_addr = min(end_addr, phys_limit);
-+	end_addr = min(vm->addr + usable_region_size - 1,
-+		       pluggable_range.end);
- 
--	if (vm->in_sbm)
--		vm->sbm.last_usable_mb_id =
--					 virtio_mem_phys_to_mb_id(end_addr) - 1;
--	else
--		vm->bbm.last_usable_bb_id =
--				     virtio_mem_phys_to_bb_id(vm, end_addr) - 1;
-+	if (vm->in_sbm) {
-+		vm->sbm.last_usable_mb_id = virtio_mem_phys_to_mb_id(end_addr);
-+		if (!IS_ALIGNED(end_addr + 1, memory_block_size_bytes()))
-+			vm->sbm.last_usable_mb_id--;
-+	} else {
-+		vm->bbm.last_usable_bb_id = virtio_mem_phys_to_bb_id(vm,
-+								     end_addr);
-+		if (!IS_ALIGNED(end_addr + 1, vm->bbm.bb_size))
-+			vm->bbm.last_usable_bb_id--;
-+	}
-+	/*
-+	 * If we cannot plug any of our device memory (e.g., nothing in the
-+	 * usable region is addressable), the last usable memory block id will
-+	 * be smaller than the first usable memory block id. We'll stop
-+	 * attempting to add memory with -ENOSPC from our main loop.
-+	 */
- 
- 	/* see if there is a request to change the size */
- 	virtio_cread_le(vm->vdev, struct virtio_mem_config, requested_size,
-@@ -2364,7 +2374,7 @@ static int virtio_mem_init_vq(struct virtio_mem *vm)
- 
- static int virtio_mem_init(struct virtio_mem *vm)
- {
--	const uint64_t phys_limit = 1UL << MAX_PHYSMEM_BITS;
-+	const struct range pluggable_range = mhp_get_pluggable_range(true);
- 	uint64_t sb_size, addr;
- 	uint16_t node_id;
- 
-@@ -2405,9 +2415,10 @@ static int virtio_mem_init(struct virtio_mem *vm)
- 	if (!IS_ALIGNED(vm->addr + vm->region_size, memory_block_size_bytes()))
- 		dev_warn(&vm->vdev->dev,
- 			 "The alignment of the physical end address can make some memory unusable.\n");
--	if (vm->addr + vm->region_size > phys_limit)
-+	if (vm->addr < pluggable_range.start ||
-+	    vm->addr + vm->region_size - 1 > pluggable_range.end)
- 		dev_warn(&vm->vdev->dev,
--			 "Some memory is not addressable. This can make some memory unusable.\n");
-+			 "Some device memory is not addressable/pluggable. This can make some memory unusable.\n");
- 
- 	/*
- 	 * We want subblocks to span at least MAX_ORDER_NR_PAGES and
-@@ -2429,7 +2440,8 @@ static int virtio_mem_init(struct virtio_mem *vm)
- 				     vm->sbm.sb_size;
- 
- 		/* Round up to the next full memory block */
--		addr = vm->addr + memory_block_size_bytes() - 1;
-+		addr = max_t(uint64_t, vm->addr, pluggable_range.start) +
-+		       memory_block_size_bytes() - 1;
- 		vm->sbm.first_mb_id = virtio_mem_phys_to_mb_id(addr);
- 		vm->sbm.next_mb_id = vm->sbm.first_mb_id;
- 	} else {
-@@ -2450,7 +2462,8 @@ static int virtio_mem_init(struct virtio_mem *vm)
- 		}
- 
- 		/* Round up to the next aligned big block */
--		addr = vm->addr + vm->bbm.bb_size - 1;
-+		addr = max_t(uint64_t, vm->addr, pluggable_range.start) +
-+		       vm->bbm.bb_size - 1;
- 		vm->bbm.first_bb_id = virtio_mem_phys_to_bb_id(vm, addr);
- 		vm->bbm.next_bb_id = vm->bbm.first_bb_id;
- 	}
 -- 
-2.20.1
-
+viresh
