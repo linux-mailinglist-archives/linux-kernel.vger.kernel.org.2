@@ -2,183 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F8BB309FE0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 02:16:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7AE930A0B6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 04:52:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230527AbhBABPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 20:15:17 -0500
-Received: from mga09.intel.com ([134.134.136.24]:51743 "EHLO mga09.intel.com"
+        id S231395AbhBADwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 22:52:39 -0500
+Received: from m12-16.163.com ([220.181.12.16]:53914 "EHLO m12-16.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229769AbhBABPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 20:15:07 -0500
-IronPort-SDR: Q55Z3udlBtsQ+8loVk5MYU0/aMPHn8DjH6nHLbmmHa7ugg4+RjyL9t/m46FriJY6DAJQBs15iy
- ywW5SfT7JVQg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="180765017"
-X-IronPort-AV: E=Sophos;i="5.79,391,1602572400"; 
-   d="scan'208";a="180765017"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2021 17:13:18 -0800
-IronPort-SDR: 7iL5qJQpqtduVUSEfG4raa+kdnIf5iYU1sKhW9hU7qz23WiyYf+5kq2jXOufGLDp7IwJ6FWQiv
- 3BgnHecTfUJQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,391,1602572400"; 
-   d="scan'208";a="395443267"
-Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
-  by orsmga007.jf.intel.com with ESMTP; 31 Jan 2021 17:13:17 -0800
-From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
-Subject: Re: [PATCH v5 0/4] Scan for an idle sibling in a single pass
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210127135203.19633-1-mgorman@techsingularity.net>
-Message-ID: <cec31f9f-0eda-706e-235d-5bd2bfad6c2c@linux.intel.com>
-Date:   Mon, 1 Feb 2021 09:13:16 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S231302AbhBADwf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 22:52:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=unf2M
+        8g1vcN4LaTMbREEj/+XheFvd1gQDauXFepBi60=; b=iAzkMIdBir37pMVEsLJsH
+        p7mhSGtx34xpQRD51BXDlIuwU7fPnZfy4Ci7SMpLoVvHOiJrrKqAZbnc9cO4qq0E
+        6FEEUiuFuNVhwXvTN25DhAC8rt0CIw8gEasErT933dzzIFGdThQHSV57c4MCouS2
+        EsGXMXVPo9Jh1adJh4l9+E=
+Received: from localhost (unknown [218.94.48.178])
+        by smtp12 (Coremail) with SMTP id EMCowACXZGEsVhdg+daNZw--.25668S2;
+        Mon, 01 Feb 2021 09:15:24 +0800 (CST)
+Date:   Mon, 1 Feb 2021 09:15:35 +0800
+From:   Guoqing Chi <chi962464zy@163.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     trix@redhat.com, linux-iio@vger.kernel.org, huyue2@yulong.com,
+        linux-kernel@vger.kernel.org, zhangwen@yulong.com,
+        chiguoqing@yulong.com
+Subject: Re: [PATCH v2 resend] iio: imu: bmi160: add mutex_lock for avoiding
+ race
+Message-ID: <20210201091535.000035d7@163.com>
+In-Reply-To: <20210131112143.200cf70a@archlinux>
+References: <20210125015344.106-1-chi962464zy@163.com>
+        <20210131112143.200cf70a@archlinux>
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <20210127135203.19633-1-mgorman@techsingularity.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: EMCowACXZGEsVhdg+daNZw--.25668S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxXr1xJry8Jr4DKFWrGFW3Wrg_yoWrtF43pa
+        47KF15CrZ5XF1xCr12qr98CFyYv34SqFnrGwn7Ka45ZrZ0yFn3Kr1UJ34FvF9YkrWDAF1S
+        qrWUXrZ5uF1vv3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UvLv_UUUUU=
+X-Originating-IP: [218.94.48.178]
+X-CM-SenderInfo: pfklmlasuwk6r16rljoofrz/1tbiNxsrRFWBjbYHmQABsz
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/27 21:51, Mel Gorman wrote:
-> Changelog since v4
-> o Avoid use of intermediate variable during select_idle_cpu
+On Sun, 31 Jan 2021 11:21:43 +0000
+Jonathan Cameron <jic23@kernel.org> wrote:
+
+> On Mon, 25 Jan 2021 09:53:44 +0800
+> Guoqing Chi <chi962464zy@163.com> wrote:
 > 
-> Changelog since v3
-> o Drop scanning based on cores, SMT4 results showed problems
+> > From: chiguoqing <chi962464zy@163.com>
+> > 
+> > Adding mutex_lock, when read and write reg need to use this lock to
+> > avoid race.
+> > 
+> > Signed-off-by: Guoqing Chi <chiguoqing@yulong.com>
+> > Reviewed-by: Tom Rix <trix@redhat.com>  
 > 
-> Changelog since v2
-> o Remove unnecessary parameters
-> o Update nr during scan only when scanning for cpus
+> Hi.  Looking at this again, I'm not entirely sure I understand what
+> the race is.  Could you give any example?
 > 
-> Changlog since v1
-> o Move extern declaration to header for coding style
-> o Remove unnecessary parameter from __select_idle_cpu
+> Individual regmap accesses have their own internal protections
+> against races.  We don't have an read modify write cycles that
+> I can see here, so I don't think there are any races.
 > 
-> This series of 4 patches reposts three patches from Peter entitled
-> "select_idle_sibling() wreckage". It only scans the runqueues in a single
-> pass when searching for an idle sibling.
+> On another note however, there is a regmap_bulk_read into
+> a variable on the stack which is a problem for spi.  Unlike i2c
+> the spi patch in regmap for bulk_reads can be zero copy which
+> means that the variable on the stack can be dma'd into.  That's
+> a potential issue for some systems in which you can end up wiping
+> out whatever else gets changed in the same cacheline.
 > 
-> Three patches from Peter were dropped. The first patch altered how scan
-> depth was calculated. Scan depth deletion is a random number generator
-> with two major limitations. The avg_idle time is based on the time
-> between a CPU going idle and being woken up clamped approximately by
-> 2*sysctl_sched_migration_cost.  This is difficult to compare in a sensible
-> fashion to avg_scan_cost. The second issue is that only the avg_scan_cost
-> of scan failures is recorded and it does not decay.  This requires deeper
-> surgery that would justify a patch on its own although Peter notes that
-> https://lkml.kernel.org/r/20180530143105.977759909@infradead.org is
-> potentially useful for an alternative avg_idle metric.
+> To fix that, the variable should be in it's own cacheline. Either
+> do that by using kmalloc etc to put it on the stack, or add a
+> suitable buffer to priv, marked ___cacheline_aligned.  Though once
+> you do that you will need locks to protect it as you've done
+> here.
 > 
-> The second patch dropped scanned based on cores instead of CPUs as it
-> rationalised the difference between core scanning and CPU scanning.
-> Unfortunately, Vincent reported problems with SMT4 so it's dropped
-> for now until depth searching can be fixed.
+> Jonathan
+
+Hi Jonathan
+
+It's my mistake. The regmap_bulk_read func has their own lock.
+So maybe we can give up my patch.
+
+Thanks.
+
 > 
-> The third patch dropped converted the idle core scan throttling mechanism
-> to SIS_PROP. While this would unify the throttling of core and CPU
-> scanning, it was not free of regressions and has_idle_cores is a fairly
-> effective throttling mechanism with the caveat that it can have a lot of
-> false positives for workloads like hackbench.
 > 
-> Peter's series tried to solve three problems at once, this subset addresses
-> one problem.
 > 
->  kernel/sched/fair.c     | 151 +++++++++++++++++++---------------------
->  kernel/sched/features.h |   1 -
->  2 files changed, 70 insertions(+), 82 deletions(-)
-> 
+> > ---
+> > v2:Follow write function to fix read function.
+> > Adding mutex init in core probe function.
+> > Adding break in switch case at read and write function.
+> > 
+> >  drivers/iio/imu/bmi160/bmi160.h      |  2 ++
+> >  drivers/iio/imu/bmi160/bmi160_core.c | 34
+> > +++++++++++++++++++--------- 2 files changed, 25 insertions(+), 11
+> > deletions(-)
+> > 
+> > diff --git a/drivers/iio/imu/bmi160/bmi160.h
+> > b/drivers/iio/imu/bmi160/bmi160.h index 32c2ea2d7112..0c189a8b5b53
+> > 100644 --- a/drivers/iio/imu/bmi160/bmi160.h
+> > +++ b/drivers/iio/imu/bmi160/bmi160.h
+> > @@ -3,9 +3,11 @@
+> >  #define BMI160_H_
+> >  
+> >  #include <linux/iio/iio.h>
+> > +#include <linux/mutex.h>
+> >  #include <linux/regulator/consumer.h>
+> >  
+> >  struct bmi160_data {
+> > +	struct mutex lock;
+> >  	struct regmap *regmap;
+> >  	struct iio_trigger *trig;
+> >  	struct regulator_bulk_data supplies[2];
+> > diff --git a/drivers/iio/imu/bmi160/bmi160_core.c
+> > b/drivers/iio/imu/bmi160/bmi160_core.c index
+> > 290b5ef83f77..e303378f4841 100644 ---
+> > a/drivers/iio/imu/bmi160/bmi160_core.c +++
+> > b/drivers/iio/imu/bmi160/bmi160_core.c @@ -452,26 +452,32 @@ static
+> > int bmi160_read_raw(struct iio_dev *indio_dev, int ret;
+> >  	struct bmi160_data *data = iio_priv(indio_dev);
+> >  
+> > +	mutex_lock(&data->lock);
+> >  	switch (mask) {
+> >  	case IIO_CHAN_INFO_RAW:
+> >  		ret = bmi160_get_data(data, chan->type,
+> > chan->channel2, val);
+> > -		if (ret)
+> > -			return ret;
+> > -		return IIO_VAL_INT;
+> > +		if (!ret)
+> > +			ret = IIO_VAL_INT;
+> > +		break;
+> >  	case IIO_CHAN_INFO_SCALE:
+> >  		*val = 0;
+> >  		ret = bmi160_get_scale(data,
+> >  				       bmi160_to_sensor(chan->type),
+> > val2);
+> > -		return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
+> > +		if (!ret)
+> > +			ret = IIO_VAL_INT_PLUS_MICRO;
+> > +		break;
+> >  	case IIO_CHAN_INFO_SAMP_FREQ:
+> >  		ret = bmi160_get_odr(data,
+> > bmi160_to_sensor(chan->type), val, val2);
+> > -		return ret ? ret : IIO_VAL_INT_PLUS_MICRO;
+> > +		if (!ret)
+> > +			ret = IIO_VAL_INT_PLUS_MICRO;
+> > +		break;
+> >  	default:
+> > -		return -EINVAL;
+> > +		ret = -EINVAL;
+> >  	}
+> > +	mutex_unlock(&data->lock);
+> >  
+> > -	return 0;
+> > +	return ret;
+> >  }
+> >  
+> >  static int bmi160_write_raw(struct iio_dev *indio_dev,
+> > @@ -479,19 +485,24 @@ static int bmi160_write_raw(struct iio_dev
+> > *indio_dev, int val, int val2, long mask)
+> >  {
+> >  	struct bmi160_data *data = iio_priv(indio_dev);
+> > +	int result;
+> >  
+> > +	mutex_lock(&data->lock);
+> >  	switch (mask) {
+> >  	case IIO_CHAN_INFO_SCALE:
+> > -		return bmi160_set_scale(data,
+> > +		result = bmi160_set_scale(data,
+> >  					bmi160_to_sensor(chan->type),
+> > val2);
+> > +		break;
+> >  	case IIO_CHAN_INFO_SAMP_FREQ:
+> > -		return bmi160_set_odr(data,
+> > bmi160_to_sensor(chan->type),
+> > +		result = bmi160_set_odr(data,
+> > bmi160_to_sensor(chan->type), val, val2);
+> > +		break;
+> >  	default:
+> > -		return -EINVAL;
+> > +		result = -EINVAL;
+> >  	}
+> > +	mutex_unlock(&data->lock);
+> >  
+> > -	return 0;
+> > +	return result;
+> >  }
+> >  
+> >  static
+> > @@ -838,6 +849,7 @@ int bmi160_core_probe(struct device *dev,
+> > struct regmap *regmap, return -ENOMEM;
+> >  
+> >  	data = iio_priv(indio_dev);
+> > +	mutex_init(&data->lock);
+> >  	dev_set_drvdata(dev, indio_dev);
+> >  	data->regmap = regmap;
+> >    
 
-4 benchmarks measured on a x86 4s system with 24 cores per socket and
-2 HTs per core, total 192 CPUs. 
 
-The load level is [25%, 50%, 75%, 100%].
-
-- hackbench almost has a universal win.
-- netperf high load has notable changes, as well as tbench 50% load.
-
-Details below:
-
-hackbench: 10 iterations, 10000 loops, 40 fds per group
-======================================================
-
-- pipe process
-
-	group	base	%std	v5	%std
-	3	1	19.18	1.0266	9.06
-	6	1	9.17	0.987	13.03
-	9	1	7.11	1.0195	4.61
-	12	1	1.07	0.9927	1.43
-
-- pipe thread
-
-	group	base	%std	v5	%std
-	3	1	11.14	0.9742	7.27
-	6	1	9.15	0.9572	7.48
-	9	1	2.95	0.986	4.05
-	12	1	1.75	0.9992	1.68
-
-- socket process
-
-	group	base	%std	v5	%std
-	3	1	2.9	0.9586	2.39
-	6	1	0.68	0.9641	1.3
-	9	1	0.64	0.9388	0.76
-	12	1	0.56	0.9375	0.55
-
-- socket thread
-
-	group	base	%std	v5	%std
-	3	1	3.82	0.9686	2.97
-	6	1	2.06	0.9667	1.91
-	9	1	0.44	0.9354	1.25
-	12	1	0.54	0.9362	0.6
-
-netperf: 10 iterations x 100 seconds, transactions rate / sec
-=============================================================
-
-- tcp request/response performance
-
-	thread	base	%std	v4	%std
-	25%	1	5.34	1.0039	5.13
-	50%	1	4.97	1.0115	6.3
-	75%	1	5.09	0.9257	6.75
-	100%	1	4.53	0.908	4.83
-
-
-
-- udp request/response performance
-
-	thread	base	%std	v4	%std
-	25%	1	6.18	0.9896	6.09
-	50%	1	5.88	1.0198	8.92
-	75%	1	24.38	0.9236	29.14
-	100%	1	26.16	0.9063	22.16
-
-tbench: 10 iterations x 100 seconds, throughput / sec
-=====================================================
-
-	thread	base	%std	v4	%std
-	25%	1	0.45	1.003	1.48
-	50%	1	1.71	0.9286	0.82
-	75%	1	0.84	0.9928	0.94
-	100%	1	0.76	0.9762	0.59
-
-schbench: 10 iterations x 100 seconds, 99th percentile latency
-==============================================================
-
-	mthread	base	%std	v4	%std
-	25%	1	2.89	0.9884	7.34
-	50%	1	40.38	1.0055	38.37
-	75%	1	4.76	1.0095	4.62
-	100%	1	10.09	1.0083	8.03
-
-Thanks,
--Aubrey
