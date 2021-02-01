@@ -2,88 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA5330B2A4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:15:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A7CC30B2A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:17:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbhBAWOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 17:14:35 -0500
-Received: from sauhun.de ([88.99.104.3]:57922 "EHLO pokefinder.org"
+        id S229842AbhBAWRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 17:17:02 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54124 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229481AbhBAWOe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 17:14:34 -0500
-Received: from localhost (p5486cf8f.dip0.t-ipconnect.de [84.134.207.143])
-        by pokefinder.org (Postfix) with ESMTPSA id F323E2C04D3;
-        Mon,  1 Feb 2021 23:13:51 +0100 (CET)
-Date:   Mon, 1 Feb 2021 23:13:51 +0100
-From:   Wolfram Sang <wsa@the-dreams.de>
-To:     Kevin Paul Herbert <kph@platinasystems.com>
-Cc:     biwen.li@nxp.com, leoyang.li@nxp.com, linux@rempel-privat.de,
-        kernel@pengutronix.de, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        festevam@gmail.com, aisheng.dong@nxp.com, xiaoning.wang@nxp.com,
-        o.rempel@pengutronix.de, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jiafei.pan@nxp.com,
-        xiaobo.xie@nxp.com, linux-arm-kernel@lists.infradead.org,
-        biwen.li@oss.nxp.com
-Subject: Re: [PATCH] i2c-imx.c: Synthesize end of transaction events without
- idle interrupts
-Message-ID: <20210201221351.GG24315@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@the-dreams.de>,
-        Kevin Paul Herbert <kph@platinasystems.com>, biwen.li@nxp.com,
-        leoyang.li@nxp.com, linux@rempel-privat.de, kernel@pengutronix.de,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        aisheng.dong@nxp.com, xiaoning.wang@nxp.com,
-        o.rempel@pengutronix.de, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jiafei.pan@nxp.com,
-        xiaobo.xie@nxp.com, linux-arm-kernel@lists.infradead.org,
-        biwen.li@oss.nxp.com
-References: <20201222194850.2274527-1-kph@platinasystems.com>
+        id S229527AbhBAWQ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 17:16:58 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 41FD8AD19;
+        Mon,  1 Feb 2021 22:16:16 +0000 (UTC)
+From:   NeilBrown <neilb@suse.de>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Christian =?utf-8?Q?K=C3=B6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>
+Date:   Tue, 02 Feb 2021 09:16:10 +1100
+Cc:     mojha@codeaurora.org, jkosina@suse.cz, cezary.rojewski@intel.com,
+        neilb@suse.com, b00073877@aus.edu, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] list: add more extensive double add check
+In-Reply-To: <YBgnY8FXpHJdoDos@smile.fi.intel.com>
+References: <20210201135251.1884-1-christian.koenig@amd.com>
+ <YBgnY8FXpHJdoDos@smile.fi.intel.com>
+Message-ID: <8735yffn85.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lHGcFxmlz1yfXmOs"
-Content-Disposition: inline
-In-Reply-To: <20201222194850.2274527-1-kph@platinasystems.com>
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha256; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---lHGcFxmlz1yfXmOs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--=-=-=
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 22, 2020 at 11:48:50AM -0800, Kevin Paul Herbert wrote:
-> Only the Layerscape SoCs have interrupts on bus idle, which facilitate
-> sending events which complete slave bus transactions.
->=20
-> Add support for synthesizing missing events. If we see a master request,
-> or a newly addressed slave request, if the last event sent to the backend
-> was I2C_SLAVE_READ_REQUESTED, send the backend a I2C_SLAVE_READ_PROCESSED
-> followed by I2C_SLAVE_STOP. For all other events, send an I2C_SLAVE_STOP.
->=20
-> Signed-off-by: Kevin Paul Herbert <kph@platinasystems.com>
+On Mon, Feb 01 2021, Andy Shevchenko wrote:
 
-Applied to for-next, thanks!
+> On Mon, Feb 01, 2021 at 02:52:51PM +0100, Christian K=C3=B6nig wrote:
+>> Adding the same element to a linked list multiple times
+>> seems to be a rather common programming mistake. To debug
+>> those I've more than once written some code to check a
+>> linked list for duplicates.
+>>=20
+>> Since re-inventing the wheel over and over again is a bad
+>> idea this patch tries to add some common code which allows
+>> to check linked lists for duplicates while adding new
+>> elements.
+>>=20
+>> When list debugging is enabled we currently already check
+>> the previous and next element if they are identical to the
+>> new one. This patch now adds a configuration option to
+>> check N elements before and after the desired position.
+>>=20
+>> By default we still only test one item since testing more
+>> means quite a large CPU overhead. This can be overwritten
+>> on a per C file bases by defining DEBUG_LIST_DOUBLE_ADD
+>> before including list.h.
+>
+> I'm not sure it is a good idea. Currently the implementation is *generic*.
+> You are customizing it w/o letting caller know.
+>
+> Create a derivative implementation and name it exlist (exclusive list) an=
+d use
+> whenever it makes sense.
+>
+> And I think if you are still pushing to modify generic one the default mu=
+st be
+> 0 in order not altering current behaviour.
+
+I don't understand your complaint.
+The extra checks are also completely *generic*.  It can never make sense
+to add sometime to a list if it is already on the list.  All lists are
+exclusive lists.
+The code ALREADY tests if the inserted object is already present either
+side of the insert side of the insertion point.  This patch just extends
+it somewhat.
+
+I myself have never had, or heard of, a bug due to double insertion so
+I'm no strongly in favour of this patch for that reason.
+But I *am* in favour of making the platform more resilient in general,
+and if others have experienced this sort of bug, then I'm in favour of
+make that easier to detect in future.
+
+NeilBrown
 
 
---lHGcFxmlz1yfXmOs
+>
+>> A new kunit test is also added to the existing list tests
+>> which intentionally triggers the debug functionality.
+>
+> --=20
+> With Best Regards,
+> Andy Shevchenko
+
+--=-=-=
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmAYfR8ACgkQFA3kzBSg
-KbYJ0w/9FQnLfC55VmP8t6aTjCqy+E+/nyOQJPuxB/ziB0FircuoZ/mP2S+uctrj
-C4RNKRETehyechcKIgcuMZLBs02Z/6aU/LbyHdNLuyf/gElA9H8NZHIOjB+GUdx7
-NLPPNYb1vNDer+Xa93swWvcrtDBovaD8SVPexCQI1O/Dx/Ymk9agBPpxGQjv1lld
-BOyBacq1JVW2O7I7NBZ1xwPR6xRLZudr9N/yNAKPXXBcC7D3f111nGVUlrl/MYCj
-+laXagVvlRFEXSQkCB+aRZ2HJR2g8GUU0hf57+DBg2bYZ6lsG9hlqG/Pg3gLS2xV
-6e+ONkf9Ao+rZaWmo7E4SITMcLmLUJr9TaO3URUsceIQnotESNbYTY+QImbQG04t
-AL+2500K5MC1vVmQWKg2NcA7qLH+EFo8TjWGCSRLCdO0tqfu/Ft7pUhL4zRSlJfo
-hZam4uOW42p9uLpBWx2NwYT2Sw56xhniD3nUtNLpnLfIs21ovsIwadJPnhsp/S7W
-53nZIfX/8FqA+90hJLrEmuFMcnsC1RgA7An1mUcHo80Eggu89/IMhTMWRjYmSyoO
-YPdufzcn56WSneEdrb6eCvsEHZB5CP84/zi7XEZ8fDkePj8sxE2iU19hjIUbdTdY
-AoP1jzsE/I+kbAUPm6/Vd6QT0o0fp0beMZH/wYKIE8ZiNDqJBHs=
-=7NoN
+iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAmAYfaoOHG5laWxiQHN1
+c2UuZGUACgkQOeye3VZigblvpg/+IE41qHY0foFi44tqQ0fhmO7OSXRc+HhmgCeK
+4omT7d7cBXOe5bcjQIBrIJbBZmbxOr6LF2KUVXIjRT2BqMsqhqSUvgH9NrGZpvE9
+yhnm0U1ud+XHVJ4YZf2+iac/x04nUMeA15B78Zao177HFIqvktExisWFCcAZtsU9
+iQAplC422rKJtfPSdzcsDC7cNr698hROORnV9v/tkZiNFg99R1oVn2hXbgyJxL3z
+zpJZ04wllSdcQ27mjfQUuoZPMEbpFso5HI32K/R+WCJ29ZdlvdRGzHcMVAtGHIlD
+d+kkiDTb1Xz97Zyxzk9W1r10jM8x0lvijH3/lwCwoqxWLpPolhO3x8SvivNs6AGs
+7b5y4/VTjWhbGo26ydF1lUl3nDcNJZpH5ulGpfki61CfnkwbirGy0kPDuL9tkLIk
+K6bSETco4zbtQlf7LVLQ0gXMTVjiewJcGgKuKFO5Gqeq3cjelIcoD0MaXIkUQbWo
+PBYlj+lv4aKDPx+f0NlnnT2XPB98oYOx1MmJOTDiWoRy7xMgWb4aE18hCtspdqAK
++DFjN+w8Ggm+WCU1+JShh4Bmf/IHZgilW6Kj77ibz+SZ5/xfPbdQKFVr/Maagkpb
+H3g7MxvjAb4Crzxghb93Iz1f5kyS9HcV2yEkOj/dsqJzDdRakRMg5JwdWyAGOMXy
+1kVz0As=
+=zjlQ
 -----END PGP SIGNATURE-----
-
---lHGcFxmlz1yfXmOs--
+--=-=-=--
