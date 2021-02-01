@@ -2,107 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3199830AB64
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:32:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE8F30AB5F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:32:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231841AbhBAPcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 10:32:11 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:54754 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231778AbhBAPas (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 10:30:48 -0500
-Received: by mail-il1-f198.google.com with SMTP id s4so3916528ilt.21
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 07:30:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=MA6Z5qApv5SIuE3llf4F8q/viDLzlg0JU+HdpHHeyso=;
-        b=ZlLge5kMLj1g2T8wZ/eGBomWodningqrdrSFzrw9AjIutgWKGPAkKpac1cgidZg/K8
-         dScXhFLGbri7f1nx7wFKIh0MVqL2mdrTC4uEB/eZMV+uPoweyI/KUbVR5zSAoMb59Ss+
-         qAbJZrKpjA3QTlftIQHzJUp/SBPY/AexFSIUdTfLHMXYyQ0FqKMFkANiTmDTpstKjSQu
-         Un5yiiKCuf1ZH8eK9xLyrpsZhzHmvlsZKJtRdxZCjvH2ESbYDKax77W0pgh6+bnbEVzN
-         3d8Iwkd+r6XZyYl85FVrVltVqXTOAcNLNCZp2JXER3/4SWQ9OAq/wmQlhB1M56MwcO5k
-         m7yQ==
-X-Gm-Message-State: AOAM532nuPj8AoRnsgsy4XnqbytNtLmlrkKILR5K/n16fyWj2hcc8ICz
-        tz5LJGCvg1oQQINCWn4YyWU5iyO1PyxEelfFObZkNbbz47Wv
-X-Google-Smtp-Source: ABdhPJxCf+7yJqjthz7S5x5o6J84v259czgNQNJjfsHZTMyGF8zbDMy+jFBCR4O0Suh43taSoStbM6sCfnBG20uy8NpBR0Nno281
+        id S231791AbhBAPb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 10:31:26 -0500
+Received: from foss.arm.com ([217.140.110.172]:33638 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231758AbhBAPbF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 10:31:05 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A6B3F101E;
+        Mon,  1 Feb 2021 07:30:17 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.41.104])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 74E943F71A;
+        Mon,  1 Feb 2021 07:30:15 -0800 (PST)
+Date:   Mon, 1 Feb 2021 15:30:12 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        rppt@kernel.org, penberg@kernel.org, geert@linux-m68k.org,
+        giancarlo.ferrari@nokia.com
+Subject: Re: [PATCH] ARM: kexec: Fix panic after TLB are invalidated
+Message-ID: <20210201153012.GC66060@C02TD0UTHF1T.local>
+References: <1612140296-12546-1-git-send-email-giancarlo.ferrari89@gmail.com>
+ <20210201124720.GA66060@C02TD0UTHF1T.local>
+ <20210201143943.GA15399@p4>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1aa5:: with SMTP id l5mr12605106ilv.278.1612193406830;
- Mon, 01 Feb 2021 07:30:06 -0800 (PST)
-Date:   Mon, 01 Feb 2021 07:30:06 -0800
-In-Reply-To: <39ebb181-6760-cdfd-88f8-5578ad4d7c85@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000052e4f305ba4807ca@google.com>
-Subject: Re: WARNING in io_disable_sqo_submit
-From:   syzbot <syzbot+2f5d1785dc624932da78@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, hdanton@sina.com,
-        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210201143943.GA15399@p4>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in io_uring_cancel_task_requests
+On Mon, Feb 01, 2021 at 02:39:46PM +0000, Giancarlo Ferrari wrote:
+> On Mon, Feb 01, 2021 at 12:47:20PM +0000, Mark Rutland wrote:
+> > On Mon, Feb 01, 2021 at 12:44:56AM +0000, Giancarlo Ferrari wrote:
+> > > machine_kexec() need to set rw permission in text and rodata sections
+> > > to assign some variables (e.g. kexec_start_address). To do that at
+> > > the end (after flushing pdm in memory, etc.) it needs to invalidate
+> > > TLB [section] entries.
+> > 
+> > It'd be worth noting explicitly that set_kernel_text_rw() alters
+> > current->active_mm...
+> > 
+> > > If during the TLB invalidation an interrupt occours, which might cause
+> > > a context switch, there is the risk to inject invalid TLBs, with ro
+> > > permissions.
+> > 
+> > ... which is why if there's a context switch things can go wrong, since
+> > active_mm isn't stable, and so it's possible that set_kernel_text_rw()
+> > updates multiple tables, none of which might be the active table at the
+> > point we try to make an access.
+> 
+> Maybe the behaviour causing issue is not completely clear to me, and I do
+> apologize for that (moreover I haven't eougth debug capabilities).
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 10843 at fs/io_uring.c:9039 io_uring_cancel_task_requests+0xe55/0x10c0 fs/io_uring.c:9039
-Modules linked in:
-CPU: 1 PID: 10843 Comm: syz-executor.3 Not tainted 5.11.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:io_uring_cancel_task_requests+0xe55/0x10c0 fs/io_uring.c:9039
-Code: 00 00 e9 1c fe ff ff 48 8b 7c 24 18 e8 14 21 db ff e9 f2 fc ff ff 48 8b 7c 24 18 e8 05 21 db ff e9 64 f2 ff ff e8 9b a0 98 ff <0f> 0b e9 ed f2 ff ff e8 ff 20 db ff e9 c8 f5 ff ff 4c 89 ef e8 72
-RSP: 0018:ffffc9000cc37950 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff888027fcc000 RCX: 0000000000000000
-RDX: ffff888045a1a040 RSI: ffffffff81da2255 RDI: ffff888027fcc0d0
-RBP: ffff888027fcc0e8 R08: 0000000000000000 R09: ffff888045a1a047
-R10: ffffffff81da14cf R11: 0000000000000000 R12: ffff888027fcc000
-R13: ffff888045a1a040 R14: ffff88802e748000 R15: ffff88803ca86018
-FS:  0000000000000000(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f09d5e60d40 CR3: 0000000028319000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- io_uring_flush+0x47b/0x6e0 fs/io_uring.c:9224
- filp_close+0xb4/0x170 fs/open.c:1286
- close_files fs/file.c:403 [inline]
- put_files_struct fs/file.c:418 [inline]
- put_files_struct+0x1cc/0x350 fs/file.c:415
- exit_files+0x7e/0xa0 fs/file.c:435
- do_exit+0xc22/0x2ae0 kernel/exit.c:820
- do_group_exit+0x125/0x310 kernel/exit.c:922
- get_signal+0x427/0x20f0 kernel/signal.c:2773
- arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:811
- handle_signal_work kernel/entry/common.c:147 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x148/0x250 kernel/entry/common.c:201
- __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
- syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:302
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x465b09
-Code: Unable to access opcode bytes at RIP 0x465adf.
-RSP: 002b:00007f21a56f2108 EFLAGS: 00000202 ORIG_RAX: 00000000000001a9
-RAX: 0000000000000004 RBX: 000000000056c0b0 RCX: 0000000000465b09
-RDX: 00000000206d4000 RSI: 00000000200002c0 RDI: 0000000000000187
-RBP: 00000000200002c0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
-R13: 00000000206d4000 R14: 0000000000000000 R15: 0000000020ee7000
+I think we're in rough agreement that the issue is likely related to the
+context switch, but our understanding of the specifics differs (and I
+think we're missing a detail here).
 
+> However, current-active_mm is switched among context switches. Correct ?
 
-Tested on:
+In some cases current->active_mm is not switched, and can be inherited
+over a context switch. When switching to a user task, we always switch
+to its mm (which becomes the active_mm), but when switching to a kthread
+we retain the previous task's mm as the active_mm as part of the lazy
+context switch.
 
-commit:         1d538571 io_uring: check kthread parked flag before sqthre..
-git tree:       git://git.kernel.dk/linux-block for-5.12/io_uring
-console output: https://syzkaller.appspot.com/x/log.txt?x=14532690d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fe3e1032f57d6d25
-dashboard link: https://syzkaller.appspot.com/bug?extid=2f5d1785dc624932da78
-compiler:       
+So while a kthread is preemptible, its active_mm (and active ASID) can
+change under its feet. That could happen anywhere while the task is
+preemptible, e.g. in the middle of set_kernel_text_rw(), or
+mid-modification to the kexec variables.
 
+> So, in principle, the invalidation, if stopped, is carried on where it
+> left.
+
+That's true so long as all the processes we switch between share the
+same leaf tables for the region we're altering. If not, then the lazy
+context switch means that those tables can change under our feet.
+
+I believe the tables mapping the kernel text are shared by all threads,
+and if so this _should_ be true. Russell might be able to confirm that
+or correct me if I have that wrong.
+
+> I thought the issue was that the PageTable entry for the section 0x8010_0000
+> is global, thus not indexed by ASID (Address Space ID). By the fact that each
+> process has its own version of that entry, is the cause of the issue, as the
+> schedule process might bringing a spurious entry (with ro permission) in the
+> MMU cache.
+
+The TLB invalidation performed under set_kernel_text_rw() affects all
+ASIDs on the current CPU, so there shouldn't be any stale RO TLB entries
+to hit unless the kthread is migrated to another CPU.
+
+> If the entry is not global holds the ASID, and the issue cannot happen.
+
+I don't think that's true, since switching to a different active_mm
+would also change ASID, and we'd have no additional guarantee.
+
+Thanks,
+Mark.
