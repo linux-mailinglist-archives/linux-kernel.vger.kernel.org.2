@@ -2,141 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 868BB30B176
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 21:14:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8D730B197
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 21:31:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233193AbhBAUMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 15:12:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232678AbhBAUMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 15:12:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D8EC464DDB;
-        Mon,  1 Feb 2021 20:11:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612210285;
-        bh=SVk6wZfqxxsHCXT7WOr31/Z4hljLQRXiUCLq5W0mmSU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AkukJlKbzFq/tYjOL1ZqZSLmh7lX2Thorgufxc0WYAbW3R7aZTGNe+Vpb/NfFchlH
-         owWBvBmQlPdbZ/aO5GFvwp3WpSu7yMg0aZ7WMQr1Kwj75fyybr32V/kbj5zbBaBmWB
-         TyBhDGD0MgMkxZhylgIFozuGIOCZHnnq270cl7i1o7ghQFTNospWZzls7twhCeMcuw
-         Vdqgu6uoUrgcG7EbOseFXJSYx3jLiIi/YcyTk8+6vcSO+GeDCBDQnqJYLpkhDQ2MZP
-         zP1D7vOBDeKOQm09LMEelEWgwE3yEbaQo+EIwd0HXnpppwv1veocvfQI9FGiH5X8EB
-         xGNCbxodaqP0w==
-Date:   Mon, 1 Feb 2021 12:11:23 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Daeho Jeong <daeho43@gmail.com>
-Cc:     Chao Yu <chao@kernel.org>, Daeho Jeong <daehojeong@google.com>,
-        kernel-team@android.com, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH] f2fs: fix checkpoint mount option wrong
- combination
-Message-ID: <YBhga9OJPcRa7ntk@google.com>
-References: <20210201000606.2206740-1-daeho43@gmail.com>
- <7e2f440e-6500-04c8-1115-880754a18efa@kernel.org>
- <CACOAw_zW+xnN7pBmTknuJ1=CGiAvVq0sQhe7D6X8sOjgjF_qeg@mail.gmail.com>
+        id S229567AbhBAUa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 15:30:57 -0500
+Received: from services.gouders.net ([141.101.32.176]:48616 "EHLO
+        services.gouders.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229996AbhBAUaq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 15:30:46 -0500
+Received: from localhost (ltea-047-066-000-239.pools.arcor-ip.net [47.66.0.239])
+        (authenticated bits=0)
+        by services.gouders.net (8.14.8/8.14.8) with ESMTP id 111KGcRB016228
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 1 Feb 2021 21:16:38 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gouders.net; s=gnet;
+        t=1612210599; bh=OL61rVU+tFkKTJhOobzoZ+qk74fBZ06cF5QzMmY0Iu4=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date;
+        b=UNQeYSyg3XKkVQt6ENhYCB2/yddwGIeCkFgZLSxzlGpcDEBthzEyCzqL0RHDo2OQ6
+         JjhjZvCUekLogkZSoLGsWsC5AIS9DMZf8ug+B1BRHiTtilpdj/uULG9ObWsDNnYY4N
+         Yp9cYltCViB+amJhnQ3kTCSJVMbgtjpgIC/kmAPc=
+From:   Dirk Gouders <dirk@gouders.net>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Serge Belyshev <belyshev@depni.sinp.msu.ru>,
+        =?utf-8?Q?Micka=C3=ABl?= =?utf-8?Q?_Sala=C3=BCn?= 
+        <mic@digikod.net>, LKML <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH V2] rtc: mc146818: Dont test for bit 0-5 in Register D
+In-Reply-To: <87zh0nbnha.fsf@nanos.tec.linutronix.de> (Thomas Gleixner's
+        message of "Mon, 01 Feb 2021 20:24:17 +0100")
+References: <20201206214613.444124194@linutronix.de>
+        <20201206220541.594826678@linutronix.de>
+        <19a7753c-c492-42e4-241a-8a052b32bb63@digikod.net>
+        <871re7hlsg.fsf@nanos.tec.linutronix.de>
+        <98cb59e8-ecb4-e29d-0b8f-73683ef2bee7@digikod.net>
+        <87y2gfg18p.fsf@nanos.tec.linutronix.de>
+        <87tur3fx7w.fsf@nanos.tec.linutronix.de> <ghft2hwevu.fsf@gouders.net>
+        <877dnrc2sv.fsf@depni.sinp.msu.ru>
+        <8735yfd2q4.fsf@nanos.tec.linutronix.de>
+        <87zh0nbnha.fsf@nanos.tec.linutronix.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+Date:   Mon, 01 Feb 2021 21:15:01 +0100
+Message-ID: <gh7dnro88q.fsf@gouders.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACOAw_zW+xnN7pBmTknuJ1=CGiAvVq0sQhe7D6X8sOjgjF_qeg@mail.gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/01, Daeho Jeong wrote:
-> Actually, I think we need to select one among them, disable, enable
-> and merge. I realized my previous understanding about that was wrong.
-> In that case of "checkpoint=merge,checkpoint=enable", the last option
-> will override the ones before that.
-> This is how the other mount options like fsync_mode, whint_mode and etc.
-> So, the answer will be "checkpoint=enable". What do you think?
+Thomas Gleixner <tglx@linutronix.de> writes:
 
-We need to clarify a bit more. :)
+> The recent change to validate the RTC turned out to be overly tight.
+>
+> While it cures the problem on the reporters machine it breaks machines
+> with Intel chipsets which use bit 0-5 of the D register. So check only
+> for bit 6 being 0 which is the case on these Intel machines as well.
+>
+> Fixes: 211e5db19d15 ("rtc: mc146818: Detect and handle broken RTCs")
+> Reported-by: Serge Belyshev <belyshev@depni.sinp.msu.ru>
+> Reported-by: Dirk Gouders <dirk@gouders.net>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+> V2: Provide the actual delta patch. Should have stayed away from
+>     computers today....
 
-mount checkpoint=disable,checkpoint=merge
-remount checkpoint=enable,checkpoint=merge
+I tested V2 and it eliminates the warning, here.
 
-Then, is it going to enable checkpoint with a thread?
+Thank you,
 
-> 
-> 
-> 
-> 2021년 2월 1일 (월) 오후 9:40, Chao Yu <chao@kernel.org>님이 작성:
-> >
-> > On 2021/2/1 8:06, Daeho Jeong wrote:
-> > > From: Daeho Jeong <daehojeong@google.com>
-> > >
-> > > As checkpoint=merge comes in, mount option setting related to
-> > > checkpoint had been mixed up. Fixed it.
-> > >
-> > > Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> > > ---
-> > >   fs/f2fs/super.c | 11 +++++------
-> > >   1 file changed, 5 insertions(+), 6 deletions(-)
-> > >
-> > > diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> > > index 56696f6cfa86..8231c888c772 100644
-> > > --- a/fs/f2fs/super.c
-> > > +++ b/fs/f2fs/super.c
-> > > @@ -930,20 +930,25 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
-> > >                               return -EINVAL;
-> > >                       F2FS_OPTION(sbi).unusable_cap_perc = arg;
-> > >                       set_opt(sbi, DISABLE_CHECKPOINT);
-> > > +                     clear_opt(sbi, MERGE_CHECKPOINT);
-> > >                       break;
-> > >               case Opt_checkpoint_disable_cap:
-> > >                       if (args->from && match_int(args, &arg))
-> > >                               return -EINVAL;
-> > >                       F2FS_OPTION(sbi).unusable_cap = arg;
-> > >                       set_opt(sbi, DISABLE_CHECKPOINT);
-> > > +                     clear_opt(sbi, MERGE_CHECKPOINT);
-> > >                       break;
-> > >               case Opt_checkpoint_disable:
-> > >                       set_opt(sbi, DISABLE_CHECKPOINT);
-> > > +                     clear_opt(sbi, MERGE_CHECKPOINT);
-> > >                       break;
-> > >               case Opt_checkpoint_enable:
-> > >                       clear_opt(sbi, DISABLE_CHECKPOINT);
-> > > +                     clear_opt(sbi, MERGE_CHECKPOINT);
-> >
-> > What if: -o checkpoint=merge,checkpoint=enable
-> >
-> > Can you please explain the rule of merge/disable/enable combination and their
-> > result? e.g.
-> > checkpoint=merge,checkpoint=enable
-> > checkpoint=enable,checkpoint=merge
-> > checkpoint=merge,checkpoint=disable
-> > checkpoint=disable,checkpoint=merge
-> >
-> > If the rule/result is clear, it should be documented.
-> >
-> > Thanks,
-> >
-> >
-> > >                       break;
-> > >               case Opt_checkpoint_merge:
-> > > +                     clear_opt(sbi, DISABLE_CHECKPOINT);
-> > >                       set_opt(sbi, MERGE_CHECKPOINT);
-> > >                       break;
-> > >   #ifdef CONFIG_F2FS_FS_COMPRESSION
-> > > @@ -1142,12 +1147,6 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
-> > >               return -EINVAL;
-> > >       }
-> > >
-> > > -     if (test_opt(sbi, DISABLE_CHECKPOINT) &&
-> > > -                     test_opt(sbi, MERGE_CHECKPOINT)) {
-> > > -             f2fs_err(sbi, "checkpoint=merge cannot be used with checkpoint=disable\n");
-> > > -             return -EINVAL;
-> > > -     }
-> > > -
-> > >       /* Not pass down write hints if the number of active logs is lesser
-> > >        * than NR_CURSEG_PERSIST_TYPE.
-> > >        */
-> > >
-> 
-> 
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+Dirk
+
+> ---
+>  drivers/rtc/rtc-cmos.c         |    4 ++--
+>  drivers/rtc/rtc-mc146818-lib.c |    4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
+>
+> --- a/drivers/rtc/rtc-cmos.c
+> +++ b/drivers/rtc/rtc-cmos.c
+> @@ -805,8 +805,8 @@ cmos_do_probe(struct device *dev, struct
+>  
+>  	spin_lock_irq(&rtc_lock);
+>  
+> -	/* Ensure that the RTC is accessible. Bit 0-6 must be 0! */
+> -	if ((CMOS_READ(RTC_VALID) & 0x7f) != 0) {
+> +	/* Ensure that the RTC is accessible. Bit 6 must be 0! */
+> +	if ((CMOS_READ(RTC_VALID) & 0x40) != 0) {
+>  		spin_unlock_irq(&rtc_lock);
+>  		dev_warn(dev, "not accessible\n");
+>  		retval = -ENXIO;
+> --- a/drivers/rtc/rtc-mc146818-lib.c
+> +++ b/drivers/rtc/rtc-mc146818-lib.c
+> @@ -21,8 +21,8 @@ unsigned int mc146818_get_time(struct rt
+>  
+>  again:
+>  	spin_lock_irqsave(&rtc_lock, flags);
+> -	/* Ensure that the RTC is accessible. Bit 0-6 must be 0! */
+> -	if (WARN_ON_ONCE((CMOS_READ(RTC_VALID) & 0x7f) != 0)) {
+> +	/* Ensure that the RTC is accessible. Bit 6 must be 0! */
+> +	if (WARN_ON_ONCE((CMOS_READ(RTC_VALID) & 0x40) != 0)) {
+>  		spin_unlock_irqrestore(&rtc_lock, flags);
+>  		memset(time, 0xff, sizeof(*time));
+>  		return 0;
