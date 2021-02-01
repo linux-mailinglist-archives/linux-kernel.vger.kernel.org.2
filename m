@@ -2,85 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A32B30A4B6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:54:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A2F30A4B8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:54:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232983AbhBAJyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 04:54:15 -0500
-Received: from foss.arm.com ([217.140.110.172]:54570 "EHLO foss.arm.com"
+        id S232990AbhBAJya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 04:54:30 -0500
+Received: from mga07.intel.com ([134.134.136.100]:22956 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232972AbhBAJyD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 04:54:03 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5300A101E;
-        Mon,  1 Feb 2021 01:53:17 -0800 (PST)
-Received: from [10.57.8.191] (unknown [10.57.8.191])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AD2FE3F718;
-        Mon,  1 Feb 2021 01:53:15 -0800 (PST)
-Subject: Re: [PATCH] drm/lima: Use delayed timer as default in devfreq profile
-To:     Qiang Yu <yuq825@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, lima@lists.freedesktop.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        christianshewitt@gmail.com
-References: <20210127105121.20345-1-lukasz.luba@arm.com>
- <CAKGbVbsn=xVEa0=c3rywRShVZD18LkmLZ1qDUuDsrT5KnTjr6g@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <3d1b4696-0172-f88a-f41f-c66ac3baa429@arm.com>
-Date:   Mon, 1 Feb 2021 09:53:13 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S232779AbhBAJyY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 04:54:24 -0500
+IronPort-SDR: uY24XbNcq6vei11v5bj+xqSbebmbXxqgQXUzzgOmaNr9cmwuCVPUT87MMU1CSbrUufFg3xEfj+
+ IJQNk33kQrxA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="244743500"
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="244743500"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 01:53:42 -0800
+IronPort-SDR: zVgiQr9TeuhQr64iMqqAOliYb0ySwY8kR4MwpSNzx53MsS9MjlTIbS0Agn4tk/kVXb9/2FGrW5
+ vpv7eI1WUvMw==
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="390834248"
+Received: from cqiang-mobl.ccr.corp.intel.com (HELO [10.238.1.32]) ([10.238.1.32])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 01:53:40 -0800
+Subject: Re: [RFC 2/7] KVM: VMX: Expose IA32_PKRS MSR
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200807084841.7112-1-chenyi.qiang@intel.com>
+ <20200807084841.7112-3-chenyi.qiang@intel.com>
+ <62f5f5ba-cbe9-231d-365a-80a656208e37@redhat.com>
+From:   Chenyi Qiang <chenyi.qiang@intel.com>
+Message-ID: <a311a49b-ea77-99bf-0d0b-b613aed621a4@intel.com>
+Date:   Mon, 1 Feb 2021 17:53:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAKGbVbsn=xVEa0=c3rywRShVZD18LkmLZ1qDUuDsrT5KnTjr6g@mail.gmail.com>
+In-Reply-To: <62f5f5ba-cbe9-231d-365a-80a656208e37@redhat.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Qiang,
 
-On 1/30/21 1:51 PM, Qiang Yu wrote:
-> Thanks for the patch. But I can't observe any difference on glmark2
-> with or without this patch.
-> Maybe you can provide other test which can benefit from it.
 
-This is a design problem and has impact on the whole system.
-There is a few issues. When the device is not checked and there are
-long delays between last check and current, the history is broken.
-It confuses the devfreq governor and thermal governor (Intelligent Power
-Allocation (IPA)). Thermal governor works on stale stats data and makes
-stupid decisions, because there is no new stats (device not checked).
-Similar applies to devfreq simple_ondemand governor, where it 'tires' to
-work on a loooong period even 3sec and make prediction for the next
-frequency based on it (which is broken).
-
-How it should be done: constant reliable check is needed, then:
-- period is guaranteed and has fixed size, e.g 50ms or 100ms.
-- device status is quite recent so thermal devfreq cooling provides
-   'fresh' data into thermal governor
-
-This would prevent odd behavior and solve the broken cases.
-
+On 1/27/2021 2:01 AM, Paolo Bonzini wrote:
+> On 07/08/20 10:48, Chenyi Qiang wrote:
+>> +{
+>> +    struct vcpu_vmx *vmx = to_vmx(vcpu);
+>> +    unsigned long *msr_bitmap = vmx->vmcs01.msr_bitmap;
+>> +    bool pks_supported = guest_cpuid_has(vcpu, X86_FEATURE_PKS);
+>> +
+>> +    /*
+>> +     * set intercept for PKRS when the guest doesn't support pks
+>> +     */
+>> +    vmx_set_intercept_for_msr(msr_bitmap, MSR_IA32_PKRS, MSR_TYPE_RW, 
+>> !pks_supported);
+>> +
+>> +    if (pks_supported) {
+>> +        vm_entry_controls_setbit(vmx, VM_ENTRY_LOAD_IA32_PKRS);
+>> +        vm_exit_controls_setbit(vmx, VM_EXIT_LOAD_IA32_PKRS);
+>> +    } else {
+>> +        vm_entry_controls_clearbit(vmx, VM_ENTRY_LOAD_IA32_PKRS);
+>> +        vm_exit_controls_clearbit(vmx, VM_EXIT_LOAD_IA32_PKRS);
+>> +    }
 > 
-> Considering it will wake up CPU more frequently, and user may choose
-> to change this by sysfs,
-> I'd like to not apply it.
-
-The deferred timer for GPU is wrong option, for UFS or eMMC makes more
-sense. It's also not recommended for NoC busses. I've discovered that
-some time ago and proposed to have option to switch into delayed timer.
-Trust me, it wasn't obvious to find out that this missing check has
-those impacts. So the other engineers or users might not know that some
-problems they faces (especially when the device load is changing) is due
-to this delayed vs deffered timer and they will change it in the sysfs.
-
-Regards,
-Lukasz
-
+> Is the guest expected to do a lot of reads/writes to the MSR (e.g. at 
+> every context switch)?
 > 
-> Regards,
-> Qiang
+> Even if this is the case, the MSR intercepts and the entry/exit controls 
+> should only be done if CR4.PKS=1.  If the guest does not use PKS, KVM 
+> should behave as if these patches did not exist.
+> 
+
+Hi Paolo,
+
+Per the MSR intercepts and entry/exit controls, IA32_PKRS access is 
+independent of the CR4.PKS bit, it just depends on CPUID enumeration. If 
+the guest doesn't set CR4.PKS but still has the CPUID capability, 
+modifying on PKRS should be supported but has no effect. IIUC, we can 
+not ignore these controls if CR4.PKS=0.
+
+Thanks
+Chenyi
+
+> Paolo
 > 
