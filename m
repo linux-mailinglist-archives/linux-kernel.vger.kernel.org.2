@@ -2,101 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B26230B2F1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1493F30B2F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:51:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230058AbhBAWtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 17:49:53 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:43439 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229753AbhBAWtv (ORCPT
+        id S229999AbhBAWuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 17:50:37 -0500
+Received: from lpdvacalvio01.broadcom.com ([192.19.229.182]:48482 "EHLO
+        relay.smtp-ext.broadcom.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229515AbhBAWuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 17:49:51 -0500
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 111MmsZW027971
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 1 Feb 2021 17:48:54 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 4C73615C39E2; Mon,  1 Feb 2021 17:48:54 -0500 (EST)
-Date:   Mon, 1 Feb 2021 17:48:54 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Vinicius Tinti <viniciustinti@gmail.com>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH v2] ext4: Enable code path when DX_DEBUG is set
-Message-ID: <YBiFVgatiz+owBs9@mit.edu>
-References: <20210201003125.90257-1-viniciustinti@gmail.com>
- <20210201124924.GA3284018@infradead.org>
- <CALD9WKxc0kMPCHSoikko+qYk2+ZLUy73+ryKGW9qMSpyzAobLA@mail.gmail.com>
- <YBg20AuSC3/9w2zz@mit.edu>
- <CALD9WKzO53AXQW-qQ82VZ41H5=cGdLTUiEoz3X6BmPkb6XaTag@mail.gmail.com>
- <YBhuHJgZ3QPqHheV@mit.edu>
- <CAKwvOd=ny2TeYV8SGZMD+aj8Yb6OSYGKAzSb-45r-HKk6WTUCQ@mail.gmail.com>
- <YBh0ywVzkUIR3fXg@mit.edu>
- <CAKwvOdkZRdBzzW19sVAs+pX-7wWwN6AWrxUkkZwP8L4OT7SLfQ@mail.gmail.com>
- <CALD9WKx6HREQeTRXuv81v-=DTVuznXG_56YFm2dM1GOG3s4BRQ@mail.gmail.com>
+        Mon, 1 Feb 2021 17:50:35 -0500
+Received: from [10.136.13.65] (lbrmn-lnxub113.ric.broadcom.net [10.136.13.65])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by relay.smtp-ext.broadcom.com (Postfix) with ESMTPS id 9E35B7A28;
+        Mon,  1 Feb 2021 14:49:43 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com 9E35B7A28
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
+        s=dkimrelay; t=1612219784;
+        bh=gXml1x7AeRWAko8NYg61vJptfElb3mouLAr7jiR6V00=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=PSstxdZZ8clRqktDowAmbVoFONhDPjed19QdSq4iSIncscpsigy8I9Cqg6z6Vp3ab
+         +Km/RBKIo3lNP1yqmkFPnBXR/W1xdC9mMTWKSPYCqCHPBNj9HQWYSIbKJVSk07Urd9
+         yoPLPpqAxJ64aiokkYrNvVaokBHeehjvOYR9UhOY=
+Subject: Re: [PATCH] misc: bcm-vk: unlock on error in bcm_to_h_msg_dequeue()
+To:     Desmond Yan <desmond.yan@broadcom.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Olof Johansson <olof@lixom.net>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <YBfyb+jU5lDUe+5g@mwanda>
+ <CAEuuh2_BH4_7bm7tTZ2VSKNv7eCjj-ZU=zcV3vKbD1H_tJRLcQ@mail.gmail.com>
+From:   Scott Branden <scott.branden@broadcom.com>
+Message-ID: <f4f98962-5c0e-c32a-6e12-ae3b830b19c1@broadcom.com>
+Date:   Mon, 1 Feb 2021 14:49:42 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALD9WKx6HREQeTRXuv81v-=DTVuznXG_56YFm2dM1GOG3s4BRQ@mail.gmail.com>
+In-Reply-To: <CAEuuh2_BH4_7bm7tTZ2VSKNv7eCjj-ZU=zcV3vKbD1H_tJRLcQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-CA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 07:05:11PM -0300, Vinicius Tinti wrote:
-> 
-> The goal is to try to detect real bugs. In this instance specifically I
-> suggested to remove the "if (0) {...}" because it sounded like an
-> unused code.
-> 
-> If it is useful it is fine to keep.
+Great, looks good then.
 
-The trick was that it was unused code, but it was pretty obviously
-deliberate, which should have implied that at some point, it was
-considered useful.   :-)
+On 2021-02-01 10:32 a.m., Desmond Yan wrote:
+> Acked-by: Desmond Yan <desmond.yan@broadcom.com>
+Acked-by: Scott Branden <scott.branden@broadcom.com>
+>
+> On Mon, Feb 1, 2021 at 4:24 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>> Unlock before returning on this error path.
+>>
+>> Fixes: 111d746bb476 ("misc: bcm-vk: add VK messaging support")
+>> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+>> ---
+>>  drivers/misc/bcm-vk/bcm_vk_msg.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/misc/bcm-vk/bcm_vk_msg.c b/drivers/misc/bcm-vk/bcm_vk_msg.c
+>> index eec90494777d..fc972e43258a 100644
+>> --- a/drivers/misc/bcm-vk/bcm_vk_msg.c
+>> +++ b/drivers/misc/bcm-vk/bcm_vk_msg.c
+>> @@ -849,7 +849,8 @@ s32 bcm_to_h_msg_dequeue(struct bcm_vk *vk)
+>>                                  * that is fatal.
+>>                                  */
+>>                                 dev_crit(dev, "Kernel mem allocation failure.\n");
+>> -                               return -ENOMEM;
+>> +                               total = -ENOMEM;
+>> +                               goto idx_err;
+>>                         }
+>>
+>>                         /* flush rd pointer after a message is dequeued */
+>> --
+>> 2.29.2
+>>
 
-It was the fact that you were so determined to find a way to suppress
-the warning, suggesting multiple tactics, which made me wonder.... why
-were you going through so much effort to silence the warning if the
-goal was *not* to turn it on unconditionally everywhere?
-
-I suspect the much more useful thing to consider is how can we suggest
-hueristics to the Clang folks to make the warning more helpful.  For
-example, Coverity will warn about the following:
-
-void test_func(unsigned int arg)
-{
-	if (arg < 0) {
-		printf("Hello, world\n")
-	}
-}
-
-This is an example of dead code that is pretty clearly unintended ---
-and it's something that "clang -Wall" or "gcc -Wall" doesn't pick up
-on, but Coverity does.
-
-So in cases where the code is explicitly doing "if (0)" or "if
-(IS_ENABLED(xxx))" where IS_ENABLED resolves down to zero due to
-preprocessor magic, arguably, that's not a useful compiler warning
-because it almost *certainly* is intentional.  But in the case of an
-unsigned int being compared to see if it is less than, or greater than
-or equal to 0, that's almost certainly a bug --- and yes, Coverity has
-found a real bug (tm) in my code due to that kind of static code
-analysis.  So it would actually be quite nice if there was a compiler
-warning (either gcc or clang, I don't really care which) which would
-reliably call that out without having the maintainer submit the code
-to Coverity for analysis.
-
-Cheers,
-
-							- Ted
-
-P.S.  If anyone wants to file a feature request bug with the Clang
-developers, feel free.  :-)
