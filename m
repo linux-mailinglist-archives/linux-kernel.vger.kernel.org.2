@@ -2,183 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08BFF30A076
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 04:09:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 494D130A071
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 04:04:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbhBADJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 22:09:21 -0500
-Received: from mailout3.samsung.com ([203.254.224.33]:47143 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231196AbhBADJR (ORCPT
+        id S231356AbhBADCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 22:02:31 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:41840 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231336AbhBADCa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 22:09:17 -0500
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210201030834epoutp03c386fa229d71402c85955d58edf94708~fgOVRqcCm2428924289epoutp03J
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 03:08:34 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210201030834epoutp03c386fa229d71402c85955d58edf94708~fgOVRqcCm2428924289epoutp03J
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1612148914;
-        bh=2X6s6Byp5hGoC3Vt4J+psoY5PnmWgorBVJRav6oy12E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JOqDjLHu9bblVzRyh5Ac/Ub3U5VoAO6CTtxTRHnPYKrzbmj1xs11ME+SNKTdSO7zH
-         6Ad4e+4Gh6axDyr6zbZ9F+RFZwQIEA9phXgvyL/lCHdFqzK97M6oAD9SbFk/t3B0Aw
-         x3UQaVxgSzciCySihrFFymcxjZnx6zPhMAr+q4xE=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210201030832epcas1p13a1f5b96e69bac616d8d3a3dd3f09e7e~fgOTzbyGx2198121981epcas1p1I;
-        Mon,  1 Feb 2021 03:08:32 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.164]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4DTXvg1Qr3z4x9QB; Mon,  1 Feb
-        2021 03:08:31 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        12.61.09582.FA077106; Mon,  1 Feb 2021 12:08:31 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210201030830epcas1p402e8a088fb16af9fbbb130b152e097f1~fgORpGm0N3073530735epcas1p4D;
-        Mon,  1 Feb 2021 03:08:30 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210201030830epsmtrp140704a88c563377cd6648c9378e6adca~fgORoF3fW0576405764epsmtrp1W;
-        Mon,  1 Feb 2021 03:08:30 +0000 (GMT)
-X-AuditID: b6c32a37-8afff7000000256e-5e-601770af2ebc
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        2D.18.13470.DA077106; Mon,  1 Feb 2021 12:08:29 +0900 (KST)
-Received: from localhost.localdomain (unknown [10.253.99.105]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210201030829epsmtip1e5aec054bd398f857b218e3dbba4d7ca~fgOQrn5j00058900589epsmtip1Y;
-        Mon,  1 Feb 2021 03:08:29 +0000 (GMT)
-From:   Changheun Lee <nanich.lee@samsung.com>
-To:     nanich.lee@samsung.com
-Cc:     Johannes.Thumshirn@wdc.com, asml.silence@gmail.com,
-        axboe@kernel.dk, damien.lemoal@wdc.com, hch@infradead.org,
-        jisoo2146.oh@samsung.com, junho89.kim@samsung.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ming.lei@redhat.com, mj0123.lee@samsung.com, osandov@fb.com,
-        patchwork-bot@kernel.org, seunghwan.hyun@samsung.com,
-        sookwan7.kim@samsung.com, tj@kernel.org, tom.leiming@gmail.com,
-        woosung2.lee@samsung.com, yt0928.kim@samsung.com
-Subject: Re: [PATCH v4 1/2] bio: limit bio max size
-Date:   Mon,  1 Feb 2021 11:52:48 +0900
-Message-Id: <20210201025248.17679-1-nanich.lee@samsung.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210129034909.18785-1-nanich.lee@samsung.com>
+        Sun, 31 Jan 2021 22:02:30 -0500
+X-UUID: 36e3e8bb05c54d0c84966d9b51e58f55-20210201
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=4DaRnR0RDonEuYHoySDMzHFlzRHmLObfdyELeUP0L7A=;
+        b=S+hdQzQiqrfQVr9s1EszAIw9rfagaWlpNkmlESTn9a3ymUqbjfmPNgOuJ5S90D5lvDJKYPM4Tka9WewCRRxzDwlxXXblPjuOvdc453wYS+QiitXTJrzbdbtzZ2auNa8KFjm0/oFHgaRS1B9omq0QfMIaFEUJQAw5z1HVcPSZmqA=;
+X-UUID: 36e3e8bb05c54d0c84966d9b51e58f55-20210201
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <mingchuang.qiao@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 91236079; Mon, 01 Feb 2021 11:01:35 +0800
+Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 1 Feb
+ 2021 11:01:27 +0800
+Received: from [10.19.240.15] (10.19.240.15) by MTKCAS32.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 1 Feb 2021 11:01:26 +0800
+Message-ID: <1612148486.5980.115.camel@mcddlt001>
+Subject: Re: [v2] PCI: Avoid unsync of LTR mechanism configuration
+From:   Mingchuang Qiao <mingchuang.qiao@mediatek.com>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+CC:     <bhelgaas@google.com>, <matthias.bgg@gmail.com>,
+        <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <haijun.liu@mediatek.com>,
+        <lambert.wang@mediatek.com>, <kerun.zhu@mediatek.com>,
+        <alex.williamson@redhat.com>, <rjw@rjwysocki.net>,
+        <utkarsh.h.patel@intel.com>
+Date:   Mon, 1 Feb 2021 11:01:26 +0800
+In-Reply-To: <20210128142742.GV2542@lahna.fi.intel.com>
+References: <20210128100531.2694-1-mingchuang.qiao@mediatek.com>
+         <20210128142742.GV2542@lahna.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrLJsWRmVeSWpSXmKPExsWy7bCmru76AvEEg01zWS3mrNrGaLH6bj+b
-        RWv7NyaL0xMWMVn0PGlitfjbdY/J4uvDYou9t7QtLu+aw2ZxaHIzk8X0zXOYLa7dP8Nucfje
-        VRaLh0smMlucO/mJ1WLeYweLX8uPMlq8/3Gd3eLUjsnMFuv3/mRzEPGY2PyO3WPnrLvsHptX
-        aHlcPlvqsWlVJ5vH+31X2Tz6tqxi9Pi8Sc6j/UA3UwBnVI5NRmpiSmqRQmpecn5KZl66rZJ3
-        cLxzvKmZgaGuoaWFuZJCXmJuqq2Si0+ArltmDtBbSgpliTmlQKGAxOJiJX07m6L80pJUhYz8
-        4hJbpdSClJwCQ4MCveLE3OLSvHS95PxcK0MDAyNToMqEnIy1794xFXyVqLj/7SlbA2M7fxcj
-        B4eEgInEqeOGXYxcHEICOxglJhx+w9rFyAnkfGKUWLZVGyLxjVGisX8iWAKkYee8BcwQib2M
-        EicPPGSCcD4zSqy9s5kdpIpNQEei7+0tNhBbREBKYsvjlywgRcwCF5glDk28xwiyW1jAWGLq
-        GhkQk0VAVWLG1xCQcl4Ba4m1u/5DLZOXeNq7nBnE5hSwkbi5YB4jRI2gxMmZT1hAbGagmuat
-        s8EOkhB4wCGxsP0OG0Szi8SjRWugBglLvDq+hR3ClpJ42d/GDtHQzSjR3DafEcKZwCix5Pky
-        JogqY4lPnz+DHcosoCmxfpc+RFhRYufvuYwQm/kk3n3tYYWEI69ER5sQRImKxJmW+8wwu56v
-        3Qk10UPizMKzjJDA6meUWHjrDeMERoVZSB6aheShWQibFzAyr2IUSy0ozk1PLTYsMEaO4U2M
-        4HSuZb6DcdrbD3qHGJk4GA8xSnAwK4nwnpokliDEm5JYWZValB9fVJqTWnyI0RQY2hOZpUST
-        84EZJa8k3tDUyNjY2MLEzNzM1FhJnDfJ4EG8kEB6YklqdmpqQWoRTB8TB6dUA9OjC8kGW0X4
-        tA5p/JbOS5Mx2rKz1f609z2DdZrrfzFunMfyf4Nd4ay5G6TPsH0/1CJzyM3XQ3OxnA2PZsaP
-        RZ3rma8dEBZlXiI4SY9P1snWNjz9hvTBzJYZ3zk2b7SerLX6sCvHkyNrLpyo+lEyQ7vlzYW2
-        ijdxDJ5nTrplR+7fJN8zR232BkfN/xtcmbtFPJ8Xx+1duiKk/IPJsfrz5y5/1PGf1vi+iTfE
-        PWnfZUnepTM0blpM4P57ykJM1HfW/q5+7a7VgWrrGqu3CjbmhGxh31/LfmVaZqniAXnJJVoW
-        k12vztXPS91cKn2E70te4FH2zFqjSymhwj2r3m8LN34+defH4PJwoQw5ThOF80osxRmJhlrM
-        RcWJAI9ZTU1wBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprCIsWRmVeSWpSXmKPExsWy7bCSnO7aAvEEg7sH+SzmrNrGaLH6bj+b
-        RWv7NyaL0xMWMVn0PGlitfjbdY/J4uvDYou9t7QtLu+aw2ZxaHIzk8X0zXOYLa7dP8Nucfje
-        VRaLh0smMlucO/mJ1WLeYweLX8uPMlq8/3Gd3eLUjsnMFuv3/mRzEPGY2PyO3WPnrLvsHptX
-        aHlcPlvqsWlVJ5vH+31X2Tz6tqxi9Pi8Sc6j/UA3UwBnFJdNSmpOZllqkb5dAlfG2nfvmAq+
-        SlTc//aUrYGxnb+LkZNDQsBEYue8BcxdjFwcQgK7GSUWXZvCDpGQkjh+4i1rFyMHkC0scfhw
-        MUTNR0aJR/d62UBq2AR0JPre3gKzRYDqtzx+yQJSxCzwglnixfcbzCDNwgLGElPXyICYLAKq
-        EjO+hoCU8wpYS6zd9Z8VYpW8xNPe5cwgNqeAjcTNBfMYQcqFgGq+PdKCKBeUODnzCQuIzQxU
-        3rx1NvMERoFZSFKzkKQWMDKtYpRMLSjOTc8tNiwwzEst1ytOzC0uzUvXS87P3cQIjjgtzR2M
-        21d90DvEyMTBeIhRgoNZSYT31CSxBCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8F7pOxgsJpCeW
-        pGanphakFsFkmTg4pRqYVD3Tgpi1nxdUG0VwTQr+s2aNc9eD5W1OBd9+P7rxb6/w3KmqMxv8
-        fpx0YHz0V+YS6xXG7x3ZvmXHNaeFp8lw9AetnSmuMmPmqsAXF17pmXKu+sR791eb1p5U24lr
-        HwWIzd4QvCq3/Z3Azye5IgXnruspz1Rnep1eOHmT0LzNRoETXQ7ar0k8WtC0eGnZ51xuJe9f
-        v80r7nd/CbY3nyqgdGjfMqO9tzVWKScsFG5cm6u285vNdJVciV1TMnpyg9vytE8qXKsofbXh
-        mOmNa9u3CcXxfK45Ijk/XOva5BuswXuCNlc+mnzzY0lXaJ3MI4PbU/tlawIrDBZlT5e6wuGd
-        46P8Pl+WR2ft5Y77P7PklViKMxINtZiLihMB1sDmxCcDAAA=
-X-CMS-MailID: 20210201030830epcas1p402e8a088fb16af9fbbb130b152e097f1
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210201030830epcas1p402e8a088fb16af9fbbb130b152e097f1
-References: <20210129034909.18785-1-nanich.lee@samsung.com>
-        <CGME20210201030830epcas1p402e8a088fb16af9fbbb130b152e097f1@epcas1p4.samsung.com>
+X-TM-SNTS-SMTP: F3737F1BBDFC02D87822EE46E76318472CAB920FD28DF5C228C7598C6FB5B9F92000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Fri, Jan 29, 2021 at 12:49:08PM +0900, Changheun Lee wrote:
-> > bio size can grow up to 4GB when muli-page bvec is enabled.
-> > but sometimes it would lead to inefficient behaviors.
-> > in case of large chunk direct I/O, - 32MB chunk read in user space -
-> > all pages for 32MB would be merged to a bio structure if the pages
-> > physical addresses are contiguous. it makes some delay to submit
-> > until merge complete. bio max size should be limited to a proper size.
-> > 
-> > When 32MB chunk read with direct I/O option is coming from userspace,
-> > kernel behavior is below now. it's timeline.
-> > 
-> >  | bio merge for 32MB. total 8,192 pages are merged.
-> >  | total elapsed time is over 2ms.
-> >  |------------------ ... ----------------------->|
-> >                                                  | 8,192 pages merged a bio.
-> >                                                  | at this time, first bio submit is done.
-> >                                                  | 1 bio is split to 32 read request and issue.
-> >                                                  |--------------->
-> >                                                   |--------------->
-> >                                                    |--------------->
-> >                                                               ......
-> >                                                                    |--------------->
-> >                                                                     |--------------->|
-> >                           total 19ms elapsed to complete 32MB read done from device. |
-> > 
-> > If bio max size is limited with 1MB, behavior is changed below.
-> > 
-> >  | bio merge for 1MB. 256 pages are merged for each bio.
-> >  | total 32 bio will be made.
-> >  | total elapsed time is over 2ms. it's same.
-> >  | but, first bio submit timing is fast. about 100us.
-> >  |--->|--->|--->|---> ... -->|--->|--->|--->|--->|
-> >       | 256 pages merged a bio.
-> >       | at this time, first bio submit is done.
-> >       | and 1 read request is issued for 1 bio.
-> >       |--------------->
-> >            |--------------->
-> >                 |--------------->
-> >                                       ......
-> >                                                  |--------------->
-> >                                                   |--------------->|
-> >         total 17ms elapsed to complete 32MB read done from device. |
-> 
-> Can you share us if enabling THP in your application can avoid this issue? BTW, you
-> need to make the 32MB buffer aligned with huge page size. IMO, THP perfectly fits
-> your case.
-> 
+T24gVGh1LCAyMDIxLTAxLTI4IGF0IDE2OjI3ICswMjAwLCBNaWthIFdlc3RlcmJlcmcgd3JvdGU6
+DQo+IEhpLA0KPiANCj4gT24gVGh1LCBKYW4gMjgsIDIwMjEgYXQgMDY6MDU6MzFQTSArMDgwMCwg
+bWluZ2NodWFuZy5xaWFvQG1lZGlhdGVrLmNvbSB3cm90ZToNCj4gPiBGcm9tOiBNaW5nY2h1YW5n
+IFFpYW8gPG1pbmdjaHVhbmcucWlhb0BtZWRpYXRlay5jb20+DQo+ID4gDQo+ID4gSW4gYnVzIHNj
+YW4gZmxvdywgdGhlICJMVFIgTWVjaGFuaXNtIEVuYWJsZSIgYml0IG9mIERFVkNUTDIgcmVnaXN0
+ZXIgaXMNCj4gPiBjb25maWd1cmVkIGluIHBjaV9jb25maWd1cmVfbHRyKCkuIElmIGRldmljZSBh
+bmQgYnJpZGdlIGJvdGggc3VwcG9ydCBMVFINCj4gPiBtZWNoYW5pc20sIHRoZSAiTFRSIE1lY2hh
+bmlzbSBFbmFibGUiIGJpdCBvZiBkZXZpY2UgYW5kIGJyaWRnZSB3aWxsIGJlDQo+ID4gZW5hYmxl
+ZCBpbiBERVZDVEwyIHJlZ2lzdGVyLiBBbmQgcGNpX2Rldi0+bHRyX3BhdGggd2lsbCBiZSBzZXQg
+YXMgMS4NCj4gPiANCj4gPiBJZiBQQ0llIGxpbmsgZ29lcyBkb3duIHdoZW4gZGV2aWNlIHJlc2V0
+cywgdGhlICJMVFIgTWVjaGFuaXNtIEVuYWJsZSIgYml0DQo+ID4gb2YgYnJpZGdlIHdpbGwgY2hh
+bmdlIHRvIDAgYWNjb3JkaW5nIHRvIFBDSWUgcjUuMCwgc2VjIDcuNS4zLjE2LiBIb3dldmVyLA0K
+PiA+IHRoZSBwY2lfZGV2LT5sdHJfcGF0aCB2YWx1ZSBvZiBicmlkZ2UgaXMgc3RpbGwgMS4NCj4g
+PiANCj4gPiBGb3IgZm9sbG93aW5nIGNvbmRpdGlvbnMsIGNoZWNrIGFuZCByZS1jb25maWd1cmUg
+IkxUUiBNZWNoYW5pc20gRW5hYmxlIiBiaXQNCj4gPiBvZiBicmlkZ2UgdG8gbWFrZSAiTFRSIE1l
+Y2hhbmlzbSBFbmFibGUiIGJpdCBtdGFjaCBsdHJfcGF0aCB2YWx1ZS4NCj4gPiAgICAtYmVmb3Jl
+IGNvbmZpZ3VyaW5nIGRldmljZSdzIExUUiBmb3IgaG90LXJlbW92ZS9ob3QtYWRkDQo+ID4gICAg
+LWJlZm9yZSByZXN0b3JpbmcgZGV2aWNlJ3MgREVWQ1RMMiByZWdpc3RlciB3aGVuIHJlc3RvcmUg
+ZGV2aWNlIHN0YXRlDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogTWluZ2NodWFuZyBRaWFvIDxt
+aW5nY2h1YW5nLnFpYW9AbWVkaWF0ZWsuY29tPg0KPiA+IC0tLQ0KPiA+IGNoYW5nZXMgb2YgdjIN
+Cj4gPiAgLW1vZGlmeSBwYXRjaCBkZXNjcmlwdGlvbg0KPiA+ICAtcmVjb25maWd1cmUgYnJpZGdl
+J3MgTFRSIGJlZm9yZSByZXN0b3JpbmcgZGV2aWNlIERFVkNUTDIgcmVnaXN0ZXINCj4gPiAtLS0N
+Cj4gPiAgZHJpdmVycy9wY2kvcGNpLmMgICB8IDI1ICsrKysrKysrKysrKysrKysrKysrKysrKysN
+Cj4gPiAgZHJpdmVycy9wY2kvcHJvYmUuYyB8IDE5ICsrKysrKysrKysrKysrKystLS0NCj4gPiAg
+MiBmaWxlcyBjaGFuZ2VkLCA0MSBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQ0KPiA+IA0K
+PiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3BjaS9wY2kuYyBiL2RyaXZlcnMvcGNpL3BjaS5jDQo+
+ID4gaW5kZXggYjlmZWNjMjVkMjEzLi44OGI0ZWI3MGMyNTIgMTAwNjQ0DQo+ID4gLS0tIGEvZHJp
+dmVycy9wY2kvcGNpLmMNCj4gPiArKysgYi9kcml2ZXJzL3BjaS9wY2kuYw0KPiA+IEBAIC0xNDM3
+LDYgKzE0MzcsMjQgQEAgc3RhdGljIGludCBwY2lfc2F2ZV9wY2llX3N0YXRlKHN0cnVjdCBwY2lf
+ZGV2ICpkZXYpDQo+ID4gIAlyZXR1cm4gMDsNCj4gPiAgfQ0KPiA+ICANCj4gPiArc3RhdGljIHZv
+aWQgcGNpX3JlY29uZmlndXJlX2JyaWRnZV9sdHIoc3RydWN0IHBjaV9kZXYgKmRldikNCj4gPiAr
+ew0KPiA+ICsjaWZkZWYgQ09ORklHX1BDSUVBU1BNDQo+ID4gKwlzdHJ1Y3QgcGNpX2RldiAqYnJp
+ZGdlOw0KPiA+ICsJdTMyIGN0bDsNCj4gPiArDQo+ID4gKwlicmlkZ2UgPSBwY2lfdXBzdHJlYW1f
+YnJpZGdlKGRldik7DQo+ID4gKwlpZiAoYnJpZGdlICYmIGJyaWRnZS0+bHRyX3BhdGgpIHsNCj4g
+PiArCQlwY2llX2NhcGFiaWxpdHlfcmVhZF9kd29yZChicmlkZ2UsIFBDSV9FWFBfREVWQ1RMMiwg
+JmN0bCk7DQo+ID4gKwkJaWYgKCEoY3RsICYgUENJX0VYUF9ERVZDVEwyX0xUUl9FTikpIHsNCj4g
+PiArCQkJcGNpX2RiZyhicmlkZ2UsICJyZS1lbmFibGluZyBMVFJcbiIpOw0KPiA+ICsJCQlwY2ll
+X2NhcGFiaWxpdHlfc2V0X3dvcmQoYnJpZGdlLCBQQ0lfRVhQX0RFVkNUTDIsDQo+ID4gKwkJCQkJ
+CSBQQ0lfRVhQX0RFVkNUTDJfTFRSX0VOKTsNCj4gPiArCQl9DQo+ID4gKwl9DQo+ID4gKyNlbmRp
+Zg0KPiA+ICt9DQo+ID4gKw0KPiA+ICBzdGF0aWMgdm9pZCBwY2lfcmVzdG9yZV9wY2llX3N0YXRl
+KHN0cnVjdCBwY2lfZGV2ICpkZXYpDQo+ID4gIHsNCj4gPiAgCWludCBpID0gMDsNCj4gPiBAQCAt
+MTQ0Nyw2ICsxNDY1LDEzIEBAIHN0YXRpYyB2b2lkIHBjaV9yZXN0b3JlX3BjaWVfc3RhdGUoc3Ry
+dWN0IHBjaV9kZXYgKmRldikNCj4gPiAgCWlmICghc2F2ZV9zdGF0ZSkNCj4gPiAgCQlyZXR1cm47
+DQo+ID4gIA0KPiA+ICsJLyoNCj4gPiArCSAqIERvd25zdHJlYW0gcG9ydHMgcmVzZXQgdGhlIExU
+UiBlbmFibGUgYml0IHdoZW4gbGluayBnb2VzIGRvd24uDQo+ID4gKwkgKiBDaGVjayBhbmQgcmUt
+Y29uZmlndXJlIHRoZSBiaXQgaGVyZSBiZWZvcmUgcmVzdG9yaW5nIGRldmljZS4NCj4gPiArCSAq
+IFBDSWUgcjUuMCwgc2VjIDcuNS4zLjE2Lg0KPiA+ICsJICovDQo+ID4gKwlwY2lfcmVjb25maWd1
+cmVfYnJpZGdlX2x0cihkZXYpOw0KPiA+ICsNCj4gPiAgCWNhcCA9ICh1MTYgKikmc2F2ZV9zdGF0
+ZS0+Y2FwLmRhdGFbMF07DQo+ID4gIAlwY2llX2NhcGFiaWxpdHlfd3JpdGVfd29yZChkZXYsIFBD
+SV9FWFBfREVWQ1RMLCBjYXBbaSsrXSk7DQo+ID4gIAlwY2llX2NhcGFiaWxpdHlfd3JpdGVfd29y
+ZChkZXYsIFBDSV9FWFBfTE5LQ1RMLCBjYXBbaSsrXSk7DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZl
+cnMvcGNpL3Byb2JlLmMgYi9kcml2ZXJzL3BjaS9wcm9iZS5jDQo+ID4gaW5kZXggOTUzZjE1YWJj
+ODUwLi40YWQxNzI1MTdmZDIgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9wY2kvcHJvYmUuYw0K
+PiA+ICsrKyBiL2RyaXZlcnMvcGNpL3Byb2JlLmMNCj4gPiBAQCAtMjEzMiw5ICsyMTMyLDIyIEBA
+IHN0YXRpYyB2b2lkIHBjaV9jb25maWd1cmVfbHRyKHN0cnVjdCBwY2lfZGV2ICpkZXYpDQo+ID4g
+IAkgKiBDb21wbGV4IGFuZCBhbGwgaW50ZXJtZWRpYXRlIFN3aXRjaGVzIGluZGljYXRlIHN1cHBv
+cnQgZm9yIExUUi4NCj4gPiAgCSAqIFBDSWUgcjQuMCwgc2VjIDYuMTguDQo+ID4gIAkgKi8NCj4g
+PiAtCWlmIChwY2lfcGNpZV90eXBlKGRldikgPT0gUENJX0VYUF9UWVBFX1JPT1RfUE9SVCB8fA0K
+PiA+IC0JICAgICgoYnJpZGdlID0gcGNpX3Vwc3RyZWFtX2JyaWRnZShkZXYpKSAmJg0KPiA+IC0J
+ICAgICAgYnJpZGdlLT5sdHJfcGF0aCkpIHsNCj4gPiArCWlmIChwY2lfcGNpZV90eXBlKGRldikg
+PT0gUENJX0VYUF9UWVBFX1JPT1RfUE9SVCkgew0KPiA+ICsJCXBjaWVfY2FwYWJpbGl0eV9zZXRf
+d29yZChkZXYsIFBDSV9FWFBfREVWQ1RMMiwNCj4gPiArCQkJCQkgUENJX0VYUF9ERVZDVEwyX0xU
+Ul9FTik7DQo+ID4gKwkJZGV2LT5sdHJfcGF0aCA9IDE7DQo+ID4gKwkJcmV0dXJuOw0KPiA+ICsJ
+fQ0KPiA+ICsNCj4gPiArCWJyaWRnZSA9IHBjaV91cHN0cmVhbV9icmlkZ2UoZGV2KTsNCj4gPiAr
+CWlmIChicmlkZ2UgJiYgYnJpZGdlLT5sdHJfcGF0aCkgew0KPiA+ICsJCXBjaWVfY2FwYWJpbGl0
+eV9yZWFkX2R3b3JkKGJyaWRnZSwgUENJX0VYUF9ERVZDVEwyLCAmY3RsKTsNCj4gPiArCQlpZiAo
+IShjdGwgJiBQQ0lfRVhQX0RFVkNUTDJfTFRSX0VOKSkgew0KPiA+ICsJCQlwY2lfZGJnKGJyaWRn
+ZSwgInJlLWVuYWJsaW5nIExUUlxuIik7DQo+ID4gKwkJCXBjaWVfY2FwYWJpbGl0eV9zZXRfd29y
+ZChicmlkZ2UsIFBDSV9FWFBfREVWQ1RMMiwNCj4gPiArCQkJCQkJIFBDSV9FWFBfREVWQ1RMMl9M
+VFJfRU4pOw0KPiA+ICsJCX0NCj4gPiArDQo+IA0KPiBDYW4ndCB5b3UgdXNlIHBjaV9yZWNvbmZp
+Z3VyZV9icmlkZ2VfbHRyKCkgaGVyZSB0b28/DQo+IA0KPiBPdGhlcndpc2UgbG9va3MgZ29vZC4N
+Cg0KVGhhbmtzIGZvciByZXZpZXcuIEkgaGF2ZSBzZW50IGEgbmV3IHBhdGNoIGZvciB0aGlzLg0K
+aHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtYXJtLWtlcm5lbC8yMDIxMDEyOTA3MTEzNy44
+NzQzLTEtbWluZ2NodWFuZy5xaWFvQG1lZGlhdGVrLmNvbS8gDQoNCg==
 
-THP is enabled already like as below in my environment. It has no effect.
-
-cat /sys/kernel/mm/transparent_hugepage/enabled
-[always] madvise never
-
-This issue was reported from performance benchmark application in open market.
-I can't control application's working in open market.
-It's not only my own case. This issue might be occured in many mobile environment.
-At least, I checked this problem in exynos, and qualcomm chipset.
-
-> 
-> Thanks,
-> Ming
-> 
-> 
-
----
-Changheun Lee
-Samsung Electronics.
