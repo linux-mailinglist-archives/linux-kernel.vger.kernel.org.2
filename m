@@ -2,82 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D793A30A04E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 03:17:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 233DB30A04F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 03:18:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231311AbhBACQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 21:16:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231153AbhBACQn (ORCPT
+        id S231318AbhBACRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 21:17:32 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:2572 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231153AbhBACRU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 21:16:43 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A498C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 18:16:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=QGcjppTN2Wzjw2RWxSNHHSSECmYgRKFWpAn4s71PM7Q=; b=KHlBcGl0S7vqgMrMK/BZ9fKs78
-        oRY8p6l/9RqPsqdjQP+ryPtLdugzKGVi+1//f1Fy/kkHw3I3Cm7dzbhUtF97Y1W2+YB6Gkx4KUqvI
-        nxjvYff2+sxqHPVewTbRWNXnTd6RsRa27y/1DA+J+4I1JQ5SbS9ETF947murOzcNbLr0UO53S+cEu
-        BcYiCInBqouZGXa+496tC/Xuxo/cIKY0zYJbs/YmKdivcFpFZfDgh0nq0D5k5IEsBHiiypoQ1ZqkK
-        xQ+xJ7/edt3G+HTStpmBK+ULFQWLGvcu2fGgogPzkenVCYqsKRP1/edgTe8IxcLb5Bzv6B6yjKJ9K
-        qKEhPiJg==;
-Received: from [2601:1c0:6280:3f0::9abc]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l6Okx-0005wf-49; Mon, 01 Feb 2021 02:15:59 +0000
-Subject: Re: [PATCH v3] misc: bcm-vk: only support ttyVK if CONFIG_TTY is set
-To:     Scott Branden <scott.branden@broadcom.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        Olof Johansson <olof@lixom.net>,
-        Desmond Yan <desmond.yan@broadcom.com>
-References: <20210131233049.5500-1-scott.branden@broadcom.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <cd57b586-9dad-f135-a344-0788826906dc@infradead.org>
-Date:   Sun, 31 Jan 2021 18:15:52 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Sun, 31 Jan 2021 21:17:20 -0500
+Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.57])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4DTWjN2ZnJzW62Q;
+        Mon,  1 Feb 2021 10:14:32 +0800 (CST)
+Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
+ DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
+ id 14.3.498.0; Mon, 1 Feb 2021 10:16:36 +0800
+Received: from [10.169.42.93] (10.169.42.93) by dggema772-chm.china.huawei.com
+ (10.1.198.214) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2106.2; Mon, 1 Feb
+ 2021 10:16:35 +0800
+Subject: Re: [PATCH v2] nvme-multipath: Early exit if no path is available
+To:     Hannes Reinecke <hare@suse.de>, Sagi Grimberg <sagi@grimberg.me>,
+        "Daniel Wagner" <dwagner@suse.de>
+CC:     <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        "Jens Axboe" <axboe@fb.com>, Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+References: <20210127103033.15318-1-dwagner@suse.de>
+ <db9baae0-547c-7ff4-8b2c-0b95f14be67c@huawei.com>
+ <20210128075837.u5u56t23fq5gu6ou@beryllium.lan>
+ <69575290-200e-b4a1-4269-c71e4c2cc37b@huawei.com>
+ <20210128094004.erwnszjqcxlsi2kd@beryllium.lan>
+ <ebb1d098-3ded-e592-4419-e905aabe824f@huawei.com>
+ <675d3cf7-1ae8-adc5-b6d0-359fe10f6b23@grimberg.me>
+ <59cd053e-46cb-0235-141f-4ce919c93f48@huawei.com>
+ <65392653-6b03-9195-f686-5fe4b3290bd2@suse.de>
+ <81b22bbf-4dd3-6161-e63a-9699690a4e4f@huawei.com>
+ <715dd943-0587-be08-2840-e0948cf0bc62@suse.de>
+ <eb131d8f-f009-42e7-105d-58b84060f0dd@huawei.com>
+ <ac019690-7f02-d28c-ed58-bfc8c1d48879@suse.de>
+From:   Chao Leng <lengchao@huawei.com>
+Message-ID: <6ceff3cb-c9e9-7e74-92f0-dd745987c943@huawei.com>
+Date:   Mon, 1 Feb 2021 10:16:35 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20210131233049.5500-1-scott.branden@broadcom.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <ac019690-7f02-d28c-ed58-bfc8c1d48879@suse.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.169.42.93]
+X-ClientProxiedBy: dggeme718-chm.china.huawei.com (10.1.199.114) To
+ dggema772-chm.china.huawei.com (10.1.198.214)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/31/21 3:30 PM, Scott Branden wrote:
-> Correct compile issue if CONFIG_TTY is not set by
-> only adding ttyVK devices if CONFIG_BCM_VK_TTY is set.
+
+
+On 2021/1/29 17:20, Hannes Reinecke wrote:
+> On 1/29/21 9:46 AM, Chao Leng wrote:
+>>
+>>
+>> On 2021/1/29 16:33, Hannes Reinecke wrote:
+>>> On 1/29/21 8:45 AM, Chao Leng wrote:
+>>>>
+>>>>
+>>>> On 2021/1/29 15:06, Hannes Reinecke wrote:
+>>>>> On 1/29/21 4:07 AM, Chao Leng wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 2021/1/29 9:42, Sagi Grimberg wrote:
+>>>>>>>
+>>>>>>>>> You can't see exactly where it dies but I followed the assembly to
+>>>>>>>>> nvme_round_robin_path(). Maybe it's not the initial nvme_next_ns(head,
+>>>>>>>>> old) which returns NULL but nvme_next_ns() is returning NULL eventually
+>>>>>>>>> (list_next_or_null_rcu()).
+>>>>>>>> So there is other bug cause nvme_next_ns abormal.
+>>>>>>>> I review the code about head->list and head->current_path, I find 2 bugs
+>>>>>>>> may cause the bug:
+>>>>>>>> First, I already send the patch. see:
+>>>>>>>> https://lore.kernel.org/linux-nvme/20210128033351.22116-1-lengchao@huawei.com/
+>>>>>>>> Second, in nvme_ns_remove, list_del_rcu is before
+>>>>>>>> nvme_mpath_clear_current_path. This may cause "old" is deleted from the
+>>>>>>>> "head", but still use "old". I'm not sure there's any other
+>>>>>>>> consideration here, I will check it and try to fix it.
+>>>>>>>
+>>>>>>> The reason why we first remove from head->list and only then clear
+>>>>>>> current_path is because the other way around there is no way
+>>>>>>> to guarantee that that the ns won't be assigned as current_path
+>>>>>>> again (because it is in head->list).
+>>>>>> ok, I see.
+>>>>>>>
+>>>>>>> nvme_ns_remove fences continue of deletion of the ns by synchronizing
+>>>>>>> the srcu such that for sure the current_path clearance is visible.
+>>>>>> The list will be like this:
+>>>>>> head->next = ns1;
+>>>>>> ns1->next = head;
+>>>>>> old->next = ns1;
+>>>>>
+>>>>> Where does 'old' pointing to?
+>>>>>
+>>>>>> This may cause infinite loop in nvme_round_robin_path.
+>>>>>> for (ns = nvme_next_ns(head, old);
+>>>>>>      ns != old;
+>>>>>>      ns = nvme_next_ns(head, ns))
+>>>>>> The ns will always be ns1, and then infinite loop.
+>>>>>
+>>>>> No. nvme_next_ns() will return NULL.
+>>>> If there is just one path(the "old") and the "old" is deleted,
+>>>> nvme_next_ns() will return NULL.
+>>>> The list like this:
+>>>> head->next = head;
+>>>> old->next = head;
+>>>> If there is two or more path and the "old" is deleted,
+>>>> "for" will be infinite loop. because nvme_next_ns() will return
+>>>> the path which in the list except the "old", check condition will
+>>>> be true for ever.
+>>>
+>>> But that will be caught by the statement above:
+>>>
+>>> if (list_is_singular(&head->list))
+>>>
+>>> no?
+>> Two path just a sample example.
+>> If there is just two path, will enter it, may cause no path but there is
+>> actually one path. It is falsely assumed that the "old" must be not deleted.
+>> If there is more than two path, will cause infinite loop.
+> So you mean we'll need something like this?
 > 
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+> diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
+> index 71696819c228..8ffccaf9c19a 100644
+> --- a/drivers/nvme/host/multipath.c
+> +++ b/drivers/nvme/host/multipath.c
+> @@ -202,10 +202,12 @@ static struct nvme_ns *__nvme_find_path(struct nvme_ns_head *head, int node)
+>   static struct nvme_ns *nvme_next_ns(struct nvme_ns_head *head,
+>                  struct nvme_ns *ns)
+>   {
+> -       ns = list_next_or_null_rcu(&head->list, &ns->siblings, struct nvme_ns,
+> -                       siblings);
+> -       if (ns)
+> -               return ns;
+> +       if (ns) {
+> +               ns = list_next_or_null_rcu(&head->list, &ns->siblings,
+> +                                          struct nvme_ns, siblings);
+> +               if (ns)
+> +                       return ns;
+> +       }
+No, in the scenario, ns should not be NULL.
+May be we can do like this:
+
+diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
+index 282b7a4ea9a9..b895011a2cbd 100644
+--- a/drivers/nvme/host/multipath.c
++++ b/drivers/nvme/host/multipath.c
+@@ -199,30 +199,24 @@ static struct nvme_ns *__nvme_find_path(struct nvme_ns_head *head, int node)
+         return found;
+  }
+
+-static struct nvme_ns *nvme_next_ns(struct nvme_ns_head *head,
+-               struct nvme_ns *ns)
+-{
+-       ns = list_next_or_null_rcu(&head->list, &ns->siblings, struct nvme_ns,
+-                       siblings);
+-       if (ns)
+-               return ns;
+-       return list_first_or_null_rcu(&head->list, struct nvme_ns, siblings);
+-}
++#define nvme_next_ns_condition(head, current, condition) \
++({ \
++       struct nvme_ns *__ptr = list_next_or_null_rcu(&(head)->list, \
++               &(current)->siblings, struct nvme_ns, siblings); \
++       __ptr ? __ptr : (condition) ? (condition) = false, \
++               list_first_or_null_rcu(&(head)->list, struct nvme_ns, \
++                       siblings) : NULL; \
++})
+
+  static struct nvme_ns *nvme_round_robin_path(struct nvme_ns_head *head,
+                 int node, struct nvme_ns *old)
+  {
+         struct nvme_ns *ns, *found = NULL;
++       bool first_half = true;
+
+-       if (list_is_singular(&head->list)) {
+-               if (nvme_path_is_disabled(old))
+-                       return NULL;
+-               return old;
+-       }
+-
+-       for (ns = nvme_next_ns(head, old);
++       for (ns = nvme_next_ns_condition(head, old, first_half);
+              ns && ns != old;
+-            ns = nvme_next_ns(head, ns)) {
++            ns = nvme_next_ns_condition(head, ns, first_half)) {
+                 if (nvme_path_is_disabled(ns))
+                         continue;
+
+>          return list_first_or_null_rcu(&head->list, struct nvme_ns, siblings);
+>   }
 > 
-> ---
-> Changes since v2:
-> - add CONFIG_BCM_VK_TTY
-> - add function and stub for bcm_vk_tty_set_irq_enabled
-> Changes since v1:
-> - add function stubs rather than compiling out code
-> ---
->  drivers/misc/bcm-vk/Kconfig      | 16 ++++++++++++
->  drivers/misc/bcm-vk/Makefile     |  4 +--
->  drivers/misc/bcm-vk/bcm_vk.h     | 42 +++++++++++++++++++++++++++++---
->  drivers/misc/bcm-vk/bcm_vk_dev.c |  5 ++--
->  drivers/misc/bcm-vk/bcm_vk_tty.c |  6 +++++
->  5 files changed, 65 insertions(+), 8 deletions(-)
-
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-
-
-Thanks.
-
-
--- 
-~Randy
-
+> Cheers,
+> 
+> Hannes
