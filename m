@@ -2,148 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9E5730AA2D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:47:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57BDE30AA2E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:47:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231639AbhBAOrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 09:47:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60318 "EHLO
+        id S231350AbhBAOrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 09:47:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231448AbhBAOpV (ORCPT
+        with ESMTP id S231494AbhBAOp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 09:45:21 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0E21C06174A;
-        Mon,  1 Feb 2021 06:44:38 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id i187so23081425lfd.4;
-        Mon, 01 Feb 2021 06:44:38 -0800 (PST)
+        Mon, 1 Feb 2021 09:45:57 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F88EC0613ED
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 06:45:17 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id q5so15753092ilc.10
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 06:45:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HGO7z+i3LytjksTxGFn7QOp9pjyNtbl94ushCl8Zdn0=;
-        b=iiFc0Tp2xx3TnqrxdYc5xMxjoMVbY6olls5pYkfiCIsNlg0fZf1+uJn+rAFM86EFh0
-         M8k6ovAWFkcGb5vOw0jqaDRlZNdaFQXeKAg3/LF1dq8y/n7R5UP0w1M5FgEUt/MIAdO3
-         hdNvKxhSaGc478nKT6PEMdfHMkAvExW+QXPBRCymv7STtaDpKLTUsFc3P2RF1jhSdEHk
-         tQTy5+IPg/LT331T0oKleQ5dByrUysF8uhxdn6CBwmaMqtXV4livX2pb+aK609f0L4c9
-         m6G+bwxPiff1RcayytZ6iqMyiqmL84l12FEHXIWSygXHSqtXthhZSQ1FkzFlh+nn4Aze
-         6iTw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I4D16KIn4mdPhfH6zQNKK7p0fTmhOo1v0cmsmsfFxGA=;
+        b=ug+16pnxrHl306VQCEZxGDt73DrCGl7Zi3egCSW52HPzvQ/Edp9CyOFir9ng16GLUm
+         Yyhrt3Z13jo1fBi6m+vJiQ9GJ6h4bbFEvTw+RdSCZEPgXBTIeTki/oJ7DbbJSqEOI3SM
+         Za5k4fAaBsVrzR3jmWK5zflFA3IF7LZ9ijBB++Wp+AcvobpOId8znN9+/3Xjz9qG0xZU
+         aPAM+USuXjkHZAl2peQIwb6cpUGApEebiM6kCBobWsBBXhwcWHYYdZbveDX8KlDSA7RM
+         DPqGBt+MZMwFBGGbjeMn4mbaSkm61rMebEK/VRw2aHWEZDILkLzr8XJpjhAMCZnae98E
+         WoAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HGO7z+i3LytjksTxGFn7QOp9pjyNtbl94ushCl8Zdn0=;
-        b=h4iZDGw4TF5YFTvxGQnxnCZfD6oO5XV9py9Sp+FhiBMK7iBdBslyKdZuM6+0TXgdF+
-         QvzW7JsHMr7U3GHWOW9LSJ6np43SJEpO5/mDCp4UBiun1QrtJzRu/0m8MMzJnWk+bNoh
-         GuHuQMywsRzgAJzXMZUtZuP2CVCBLpJQ0YY8GgQfF+MM6iq7O32Kg4mT7tVDKNypZ8/U
-         t0H/yoFs+rOAMLd6VPD1hXqrOKNevk5Yo2KyqVqO8HSZT0nXvO1QtRFUABzB/P+f5PH/
-         DaCIgrD+8HGZKKeCW1e06bQtyvkd+xrW0rFWO0qR6NAwHP43kUrTH+7tc7uwZD+wAJyv
-         C9Aw==
-X-Gm-Message-State: AOAM530rlv1uJPDW7tKjagmX4mjmPQzS2g64IYmAnj3xH/RrNUkkgNZC
-        ABSdl7do3vZqasbDJhJngqQ=
-X-Google-Smtp-Source: ABdhPJxBZa2VDTXbLeU0pMnlUJ5+kENfRXdYp3t2hZaAXUfRwU0rqchzNu9qkjBVu8nbSWrUyIVf6A==
-X-Received: by 2002:a19:7507:: with SMTP id y7mr8360046lfe.334.1612190676615;
-        Mon, 01 Feb 2021 06:44:36 -0800 (PST)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id u13sm3916170lju.22.2021.02.01.06.44.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 06:44:36 -0800 (PST)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
-Date:   Mon, 1 Feb 2021 15:44:34 +0100
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Axtens <dja@axtens.net>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH 1/3] kvfree_rcu: Allocate a page for a single argument
-Message-ID: <20210201144434.GA1850@pc638.lan>
-References: <20210125143150.GA2282@pc638.lan>
- <20210125153943.GN827@dhcp22.suse.cz>
- <20210125162559.GA52712@pc638.lan>
- <20210128151152.GA1867@pc638.lan>
- <YBLVbZzy0KSONizm@dhcp22.suse.cz>
- <20210128153017.GA2006@pc638.lan>
- <20210128180237.GA5144@pc638.lan>
- <YBPNvbJLg56XU8co@dhcp22.suse.cz>
- <20210129163531.GA30500@pc638.lan>
- <YBfqa/LzVAG4+zZt@dhcp22.suse.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I4D16KIn4mdPhfH6zQNKK7p0fTmhOo1v0cmsmsfFxGA=;
+        b=bMk42kLEyYNLjf3+KYFpOyx7DazBowp3M70R97X6C8RtjB5folc4HMYGWTbenGwN43
+         XVUQpdFa1RBKw0EKi70hkuAdEi5mjV2kVWOI9xDOwFWhD7BI7NVPzBDFVWI5gvAzsTvC
+         /4Xh885ZhZs7Ns/UM+WJ4FKnS38oei05vzqpAw/aNd8fEdfPigtRjb4w6IJ1ux87XK1d
+         l8a6xUYcAEryiBbZkmaHp2gVmuozgoL5XwqObOtQEVrUH/B3Wi9MNapCEwnBvl9VYmq3
+         vuLdYsGzG+sEhCiUOeJASAj4/M4PebC3AX9v78g7M9rPt4X5wakJ4gBIPd2jwFC8udZH
+         zJ4w==
+X-Gm-Message-State: AOAM532afK3vlEPpHsrm3RQKESOV1DNDRDgohYECSUdGSOtx18JjWwZs
+        8CE0XNEPxbSt8WcJhnXQ5H96JxHAkoyAjxr7G/w=
+X-Google-Smtp-Source: ABdhPJzi7UA8le4Q9njnbQvMd8GQ/IaIjSSCpNOKHw4aAjJVWKUJXO5L9Xg7MA54CfrfIjTfnOyWrHZ9jkJpXGKc4do=
+X-Received: by 2002:a92:d3c7:: with SMTP id c7mr12632482ilh.137.1612190716727;
+ Mon, 01 Feb 2021 06:45:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBfqa/LzVAG4+zZt@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210201115610.87808-1-laoar.shao@gmail.com> <20210201115610.87808-4-laoar.shao@gmail.com>
+ <20210201141505.GR308988@casper.infradead.org>
+In-Reply-To: <20210201141505.GR308988@casper.infradead.org>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Mon, 1 Feb 2021 22:44:41 +0800
+Message-ID: <CALOAHbBzRLYF2Z--OTuO41UEwvcJsYMzuGVdrrqbnCD9U-Ja0A@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] vsprintf: dump full information of page flags in pGp
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Christoph Lameter <cl@linux.com>, penberg@kernel.org,
+        David Rientjes <rientjes@google.com>, iamjoonsoo.kim@lge.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joe Perches <joe@perches.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 12:47:55PM +0100, Michal Hocko wrote:
-> On Fri 29-01-21 17:35:31, Uladzislau Rezki wrote:
-> > On Fri, Jan 29, 2021 at 09:56:29AM +0100, Michal Hocko wrote:
-> > > On Thu 28-01-21 19:02:37, Uladzislau Rezki wrote:
-> > > [...]
-> > > > >From 0bdb8ca1ae62088790e0a452c4acec3821e06989 Mon Sep 17 00:00:00 2001
-> > > > From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-> > > > Date: Wed, 20 Jan 2021 17:21:46 +0100
-> > > > Subject: [PATCH v2 1/1] kvfree_rcu: Directly allocate page for single-argument
-> > > >  case
-> > > > 
-> > > > Single-argument kvfree_rcu() must be invoked from sleepable contexts,
-> > > > so we can directly allocate pages.  Furthermmore, the fallback in case
-> > > > of page-allocation failure is the high-latency synchronize_rcu(), so it
-> > > > makes sense to do these page allocations from the fastpath, and even to
-> > > > permit limited sleeping within the allocator.
-> > > > 
-> > > > This commit therefore allocates if needed on the fastpath using
-> > > > GFP_KERNEL|__GFP_NORETRY.
-> > > 
-> > > Yes, __GFP_NORETRY as a lightweight allocation mode should be fine. It
-> > > is more robust than __GFP_NOWAIT on memory usage spikes.  The caller is
-> > > prepared to handle the failure which is likely much less disruptive than
-> > > OOM or potentially heavy reclaim __GFP_RETRY_MAYFAIL.
-> > > 
-> > > I cannot give you ack as I am not familiar with the code but this makes
-> > > sense to me.
-> > > 
-> > No problem, i can separate it. We can have a patch on top of what we have so
-> > far. The patch only modifies the gfp_mask passed to __get_free_pages():
-> > 
-> > >From ec2feaa9b7f55f73b3b17e9ac372151c1aab5ae0 Mon Sep 17 00:00:00 2001
-> > From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-> > Date: Fri, 29 Jan 2021 17:16:03 +0100
-> > Subject: [PATCH 1/1] kvfree_rcu: replace __GFP_RETRY_MAYFAIL by __GFP_NORETRY
-> > 
-> > __GFP_RETRY_MAYFAIL is a bit heavy from reclaim process of view,
-> > therefore a time consuming. That is not optional and there is
-> > no need in doing it so hard, because we have a fallback path.
-> > 
-> > __GFP_NORETRY in its turn can perform some light-weight reclaim
-> > and it rather fails under high memory pressure or low memory
-> > condition.
-> > 
-> > In general there are four simple criterias we we would like to
-> > achieve:
-> >     a) minimize a fallback hitting;
-> >     b) avoid of OOM invoking;
-> >     c) do a light-wait page request;
-> >     d) avoid of dipping into the emergency reserves.
-> > 
-> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> 
-> Looks good to me. Feel free to add
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> 
-Appreciate it!
+On Mon, Feb 1, 2021 at 10:15 PM Matthew Wilcox <willy@infradead.org> wrote:
+>
+> On Mon, Feb 01, 2021 at 07:56:10PM +0800, Yafang Shao wrote:
+> > - Before the patch,
+> > [ 6343.396602] Slab 0x000000004382e02b objects=33 used=3 fp=0x000000009ae06ffc flags=0x17ffffc0010200(slab|head)
+> >
+> > - After the patch,
+> > [ 6871.296131] Slab 0x00000000c0e19a37 objects=33 used=3 fp=0x00000000c4902159 flags=0x17ffffc0010200(Node 0,Zone 2,Lastcpupid 0x1fffff,slab|head)
+>
+> I would suggest it will be easier to parse as:
+>
+> flags=0x17ffffc0010200(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+>
+> That should alleviate the concerns about debugfs format change -- we've
+> never guaranteed that flag names won't change, and they now look enough
+> like flags that parsers shouldn't fall over them.
 
---
-Vlad Rezki
+Good suggestion!
+I will do it as you suggested in the next version.
+
+-- 
+Thanks
+Yafang
