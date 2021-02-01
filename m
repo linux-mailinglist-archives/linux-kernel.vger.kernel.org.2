@@ -2,82 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E4130B2D1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:40:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0850E30B2D4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:40:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229683AbhBAWji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 17:39:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhBAWjh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 17:39:37 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE7C8C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 14:38:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=X/xiaVfYJ8u/JiSK0Gpt+YqRJoOFLgHoj/ler9WbpGs=; b=EZxqYyBbu5vU8CEJuhPD7gdJIB
-        judphNZNpSyy1dK+czKk5udPaJh5vc9loUi6eeEdzC+bCTlm/9dZ+CkAA7AkmuJTtFPqkpYNIKS3v
-        BLPXliyex11HZr6w0uuvVR1wpcMuJa7J5AljGzO2NED5olCRUm70xVWumLs9oWPJ+KIl1k7+8oAoa
-        cvOTZV9V8iuuB4b3+yzTneaef1IOA6lxVSj/Km42K20ff7ubWSZS1pBirjDSk7xiNvLGt4rmLmSEZ
-        sdENIV+eHABtPb/euEWmKkCDWrkOou76Aae4h7W9tw0CIoqaE576EoUkJrJ7JyhHnUE9JMUqQrLAz
-        LAkdDNxg==;
-Received: from [2601:1c0:6280:3f0::1d53]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l6hqP-00EPbV-Dl; Mon, 01 Feb 2021 22:38:53 +0000
-Subject: Re: s390-linux-ld: ll_temac_main.c:undefined reference to
- `devm_platform_ioremap_resource_byname'
-To:     kernel test robot <lkp@intel.com>, Wang Hai <wanghai38@huawei.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
-References: <202102010812.qthaghhK-lkp@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <ac0c1ba8-d7c7-1868-db25-ccf063effec8@infradead.org>
-Date:   Mon, 1 Feb 2021 14:38:48 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S229927AbhBAWkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 17:40:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60446 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229515AbhBAWkD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 17:40:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5550E64E8F;
+        Mon,  1 Feb 2021 22:39:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612219162;
+        bh=T2g/GTyEcuYjTJ5eWuea1SGLvu0fFatPOt4eo14KckM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=r6LolERSsiJR42kxMxKGo/fI/DYcNEcfAFG7i7J2f7/pjpZTFol4/5a0vauZIujwg
+         EDGio/5OVjuKAstu7I6iyl6h0wLfog2m9ABVQMVWiwwrGagNE+OCLK8j4w1Dgt19jE
+         A/rflOt5eptwn2dYGMFGoL9om9XhQxgmSdGxk3ykKqQ8EjvWwe36RTRB1bKKLdOajO
+         hYtAQve+YKXUhc5rErqdgtIqMPIKh1EkB7q8wsU6ZA3Sry8ie5VY/5FlA2N0r6JmFh
+         7SfhfFEqEwJQ7pT+KV48A0Fb35upTmjuUQP3XlvA3I1xx9aK5lTxO6nXZ5ion8vkfy
+         IKawbJLZE7yPw==
+Date:   Mon, 1 Feb 2021 16:39:20 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        dmaengine@vger.kernel.org
+Subject: Re: [PATCH 04/15] PCI: Add pci_find_vsec_capability() to find a
+ specific VSEC
+Message-ID: <20210201223920.GA46282@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <202102010812.qthaghhK-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cc4b62f333342df8e029b175079203cfe2bd095c.1608053262.git.gustavo.pimentel@synopsys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/31/21 4:06 PM, kernel test robot wrote:
-> Hi Wang,
+[+cc Vinod, Dan, dmaengine]
+
+On Tue, Dec 15, 2020 at 06:30:13PM +0100, Gustavo Pimentel wrote:
+> Add pci_find_vsec_capability() that crawls through the device config
+> space searching in all Vendor-Specific Extended Capabilities for a
+> particular capability ID.
 > 
-> FYI, the error/warning still remains.
+> Vendor-Specific Extended Capability (VSEC) is a PCIe capability (acts
+> like a wrapper) specified by PCI-SIG that allows the vendor to create
+> their own and specific capability in the device config space.
 > 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   1048ba83fb1c00cd24172e23e8263972f6b5d9ac
-> commit: bd69058f50d5ffa659423bcfa6fe6280ce9c760a net: ll_temac: Use devm_platform_ioremap_resource_byname()
-> date:   6 months ago
-> config: s390-randconfig-r034-20210201 (attached as .config)
+> Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
 
-Hi robot,
+If you fix the below, feel free to add my
 
-Instead of hit & miss with s390 randconfigs, you could do what I did:
-(all for arch/s390/):
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
-$ make allmodconfig
-$ scripts/config -d PCI  ## this also disables HAS_IOMEM
-$ make oldconfig
-$ make all
+Otherwise, I can take it myself.  But that will be an ordering issue
+in the merge window if you merge the rest of the series via another
+tree.
 
-The latter gives a full list of drivers etc. that use iomemp/ioremap 
-etc. as well as dev_io* variants instead of just a few random ones.
-
-
-> All errors (new ones prefixed by >>):
+> ---
+>  drivers/pci/pci.c             | 29 +++++++++++++++++++++++++++++
+>  include/linux/pci.h           |  1 +
+>  include/uapi/linux/pci_regs.h |  5 +++++
+>  3 files changed, 35 insertions(+)
 > 
->     s390-linux-ld: drivers/net/ethernet/xilinx/ll_temac_main.o: in function `temac_probe':
->     ll_temac_main.c:(.text+0x39b6): undefined reference to `devm_platform_ioremap_resource_byname'
->>> s390-linux-ld: ll_temac_main.c:(.text+0x3a4c): undefined reference to `devm_platform_ioremap_resource_byname'
->     s390-linux-ld: ll_temac_main.c:(.text+0x3bce): undefined reference to `devm_ioremap'
->     s390-linux-ld: drivers/net/ethernet/xilinx/xilinx_axienet_main.o: in function `axienet_probe':
->     xilinx_axienet_main.c:(.text+0x844): undefined reference to `devm_ioremap_resource'
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 6d4d5a2..235d0b2 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -623,6 +623,35 @@ u64 pci_get_dsn(struct pci_dev *dev)
+>  }
+>  EXPORT_SYMBOL_GPL(pci_get_dsn);
+>  
+> +/**
+> + * pci_find_vsec_capability - Find a vendor-specific extended capability
+> + * @dev: PCI device to query
+> + * @cap: vendor-specific capability id code
 
+s/id/ID/
+
+> + *
+> + * Returns the address of the vendor-specific structure that matches the
+> + * requested capability id code within the device's PCI configuration space
+
+s/id/ID/
+
+> + * or 0 if it does not find a match.
+> + */
+> +int pci_find_vsec_capability(struct pci_dev *dev, int vsec_cap_id)
+> +{
+> +	u32 header;
+> +	int vsec;
+
+  int vsec;
+  u32 header;
+
+since that's the order they're used.
+
+> +
+> +	vsec = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_VNDR);
+> +	while (vsec) {
+> +		if (pci_read_config_dword(dev, vsec + 0x4,
+
+s/0x4/PCI_VSEC_HDR/
+
+> +					  &header) == PCIBIOS_SUCCESSFUL &&
+> +		    PCI_VSEC_CAP_ID(header) == vsec_cap_id)
+> +			break;
+
+  return vsec;
+
+> +
+> +		vsec = pci_find_next_ext_capability(dev, vsec,
+> +						    PCI_EXT_CAP_ID_VNDR);
+> +	}
+> +
+> +	return vsec;
+
+  return 0;
+
+> +}
+> +EXPORT_SYMBOL_GPL(pci_find_vsec_capability);
+> +
+>  static int __pci_find_next_ht_cap(struct pci_dev *dev, int pos, int ht_cap)
+>  {
+>  	int rc, ttl = PCI_FIND_CAP_TTL;
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index 22207a7..effecb0 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -1067,6 +1067,7 @@ int pci_find_capability(struct pci_dev *dev, int cap);
+>  int pci_find_next_capability(struct pci_dev *dev, u8 pos, int cap);
+>  int pci_find_ext_capability(struct pci_dev *dev, int cap);
+>  int pci_find_next_ext_capability(struct pci_dev *dev, int pos, int cap);
+> +int pci_find_vsec_capability(struct pci_dev *dev, int vsec_cap_id);
+>  int pci_find_ht_capability(struct pci_dev *dev, int ht_cap);
+>  int pci_find_next_ht_capability(struct pci_dev *dev, int pos, int ht_cap);
+>  struct pci_bus *pci_find_next_bus(const struct pci_bus *from);
+> diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
+> index a95d55f..f5d17be 100644
+> --- a/include/uapi/linux/pci_regs.h
+> +++ b/include/uapi/linux/pci_regs.h
+> @@ -730,6 +730,11 @@
+>  #define PCI_EXT_CAP_DSN_SIZEOF	12
+>  #define PCI_EXT_CAP_MCAST_ENDPOINT_SIZEOF 40
+>  
+> +/* Vendor-Specific Extended Capabilities */
+> +#define PCI_VSEC_CAP_ID(header)		(header & 0x0000ffff)
+> +#define PCI_VSEC_CAP_REV(header)	((header >> 16) & 0xf)
+> +#define PCI_VSEC_CAP_LEN(header)	((header >> 20) & 0xffc)
+
+Please put these next to the existing PCI_VSEC_HDR.
+
+Why does PCI_VSEC_CAP_LEN mask with 0xffc instead of 0xfff?  I don't
+see anything in the spec about VSEC Length having to be a multiple of
+4 (PCIe r5.0, sec 7.9.5.2).
+
+But you don't use this anyway, so I'd just drop it (and
+PCI_VSEC_CAP_REV) altogether.
+
+>  /* Advanced Error Reporting */
+>  #define PCI_ERR_UNCOR_STATUS	4	/* Uncorrectable Error Status */
+>  #define  PCI_ERR_UNC_UND	0x00000001	/* Undefined */
+> -- 
+> 2.7.4
+> 
