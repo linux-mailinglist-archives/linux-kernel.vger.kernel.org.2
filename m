@@ -2,90 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F08E30A282
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 08:09:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D26730A286
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 08:11:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232008AbhBAHIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 02:08:40 -0500
-Received: from mail29.static.mailgun.info ([104.130.122.29]:47044 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232283AbhBAHFc (ORCPT
+        id S232091AbhBAHKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 02:10:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232397AbhBAHH5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 02:05:32 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612163103; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=1BYDlohroQBmsn+HRU6Cg7Qz97+nC+gSHgZesry6ziY=; b=gXssG7bnMbav8ppsFlkxmUl9146NCCMf9+PjNE6mCyImwS6FCGwH0oL+kT1XUMlKON7lvBZd
- 4G7VbYG3xHgSeZ3RbstvML6A4Meo9ScrGVLHF0iPKvOV9B59VaHbNwzSxXhOKkjfNYKTrddH
- 3i3laXuyw+B5ygq28xmLSkCyfNQ=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6017a7f667765734883ee532 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Feb 2021 07:04:22
- GMT
-Sender: vjitta=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 28F81C43461; Mon,  1 Feb 2021 07:04:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from vjitta-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: vjitta)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A8338C433C6;
-        Mon,  1 Feb 2021 07:04:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A8338C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=vjitta@codeaurora.org
-From:   vjitta@codeaurora.org
-To:     sfr@canb.auug.org.au, akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, vjitta@codeaurora.org,
-        vinmenon@codeaurora.org
-Subject: [PATCH] lib: stackdepot: fix ignoring return value warning
-Date:   Mon,  1 Feb 2021 12:34:08 +0530
-Message-Id: <1612163048-28026-1-git-send-email-vjitta@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Mon, 1 Feb 2021 02:07:57 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E97EC061756
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 23:07:17 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id my11so9123161pjb.1
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 23:07:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yEAXr+uYT47arw+BgtSxxjuiMvD2994EjnVkSqzNVfY=;
+        b=W57OCjk6JbbEC4TjR83KofLCibS8dcJom3IZSNhSRjw5CSmPK6uBlvGID5M8peSK1g
+         qbg2aSsCsVu9ARLEz506EijrXcJ5cuXfR7bEvPEGoLV1lckL1uC9baxQJI3Vvx2z3tj0
+         cyXH9yc3PwbWbOlLXj4Lhsj8YujMnzZQTFyj8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yEAXr+uYT47arw+BgtSxxjuiMvD2994EjnVkSqzNVfY=;
+        b=YdBhdgMpC/sci3oj24GhCqc+irDGO7b6pNKev/H0aIqW4sKzqdDY2+Pa5R8VDSiPKr
+         eK4PRxLg8UzK4R04swNnf5LZaJSP+k05lpN4aNDoqN9RCQYvOkHjF+OO6AxAKahPpdJX
+         ZRg97YIlSDYwoDOXXb6bOg5XIYv2nVX6Gb99X5oI0/sVnlDBbfcGQSU94a7LYgyVC+Ff
+         T7QeH1GF53H2bc2JdddpV0+R8N5+l9+y3r78ZyXFXQDTcGS3GZ3sPI6WjFj+MhpluY54
+         JJ9gzim9frkq3a3CGMVZrQwz3qHfHSm2J/sLtJNDFGUmb7Ozzn2TODUJzv7lg8Kcy+zO
+         V7Sw==
+X-Gm-Message-State: AOAM533VsS3aAV9fXMFHkC/iRFUEkajQ6YyLGKOU3MZsRqn3nv06kAfi
+        VGHXyvxA1vVh42uMAJgBs+zcHA==
+X-Google-Smtp-Source: ABdhPJzYlktOhXkvTLg/xc7MCjc/pyZp0lyHg6HFBKuSA4R/WhR/9EXFwjDKeLhZBARJQLstYAGF8Q==
+X-Received: by 2002:a17:90a:b282:: with SMTP id c2mr16030435pjr.54.1612163236914;
+        Sun, 31 Jan 2021 23:07:16 -0800 (PST)
+Received: from localhost ([2401:fa00:1:b:158e:ed37:38d6:db19])
+        by smtp.gmail.com with ESMTPSA id a22sm14306240pjh.5.2021.01.31.23.07.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 31 Jan 2021 23:07:16 -0800 (PST)
+From:   Yen-lin Lai <yenlinlai@chromium.org>
+To:     linux-wireless@vger.kernel.org
+Cc:     Brian Norris <briannorris@chromium.org>,
+        Yen-lin Lai <yenlinlai@chromium.org>,
+        Amitkumar Karwar <amitkarwar@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Xinming Hu <huxinming820@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH] mwifiex: Report connected BSS with cfg80211_connect_bss()
+Date:   Mon,  1 Feb 2021 15:06:49 +0800
+Message-Id: <20210201070649.1667209-1-yenlinlai@chromium.org>
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vijayanand Jitta <vjitta@codeaurora.org>
+When a network is moved or reconfigured on the different channel, there
+can be multiple BSSes with the same BSSID and SSID in scan result
+before the old one expires. Then, it can cause cfg80211_connect_result
+to map current_bss to a bss with the wrong channel.
 
-fix the below ignoring return value warning for kstrtobool
-in is_stack_depot_disabled function.
+Let mwifiex_cfg80211_assoc return the selected BSS and then the caller
+can report it cfg80211_connect_bss.
 
-lib/stackdepot.c: In function 'is_stack_depot_disabled':
-lib/stackdepot.c:154:2: warning: ignoring return value of 'kstrtobool'
-declared with attribute 'warn_unused_result' [-Wunused-result]
+Signed-off-by: Yen-lin Lai <yenlinlai@chromium.org>
 
-Fixes: b9779abb09a8 ("lib: stackdepot: add support to disable stack depot")
-Signed-off-by: Vijayanand Jitta <vjitta@codeaurora.org>
 ---
- lib/stackdepot.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-index cc21116..49f67a0 100644
---- a/lib/stackdepot.c
-+++ b/lib/stackdepot.c
-@@ -151,8 +151,10 @@ static struct stack_record **stack_table;
- 
- static int __init is_stack_depot_disabled(char *str)
+ .../net/wireless/marvell/mwifiex/cfg80211.c   | 35 ++++++++++++++-----
+ 1 file changed, 26 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/net/wireless/marvell/mwifiex/cfg80211.c b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
+index a6b9dc6700b1..4bae83e47e9e 100644
+--- a/drivers/net/wireless/marvell/mwifiex/cfg80211.c
++++ b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
+@@ -2173,7 +2173,8 @@ static int
+ mwifiex_cfg80211_assoc(struct mwifiex_private *priv, size_t ssid_len,
+ 		       const u8 *ssid, const u8 *bssid, int mode,
+ 		       struct ieee80211_channel *channel,
+-		       struct cfg80211_connect_params *sme, bool privacy)
++		       struct cfg80211_connect_params *sme, bool privacy,
++		       struct cfg80211_bss **sel_bss)
  {
--	kstrtobool(str, &stack_depot_disable);
--	if (stack_depot_disable) {
-+	int ret;
-+
-+	ret = kstrtobool(str, &stack_depot_disable);
-+	if (!ret && stack_depot_disable) {
- 		pr_info("Stack Depot is disabled\n");
- 		stack_table = NULL;
+ 	struct cfg80211_ssid req_ssid;
+ 	int ret, auth_type = 0;
+@@ -2307,17 +2308,31 @@ mwifiex_cfg80211_assoc(struct mwifiex_private *priv, size_t ssid_len,
+ 		}
  	}
+ 
++	if (bss)
++		cfg80211_ref_bss(priv->adapter->wiphy, bss);
++
+ 	ret = mwifiex_bss_start(priv, bss, &req_ssid);
+ 	if (ret)
+-		return ret;
++		goto cleanup;
+ 
+ 	if (mode == NL80211_IFTYPE_ADHOC) {
+ 		/* Inform the BSS information to kernel, otherwise
+ 		 * kernel will give a panic after successful assoc */
+-		if (mwifiex_cfg80211_inform_ibss_bss(priv))
+-			return -EFAULT;
++		if (mwifiex_cfg80211_inform_ibss_bss(priv)) {
++			ret = -EFAULT;
++			goto cleanup;
++		}
+ 	}
+ 
++	/* Pass the selected BSS entry to caller. */
++	if (sel_bss) {
++		*sel_bss = bss;
++		bss = NULL;
++	}
++
++cleanup:
++	if (bss)
++		cfg80211_put_bss(priv->adapter->wiphy, bss);
+ 	return ret;
+ }
+ 
+@@ -2334,6 +2349,7 @@ mwifiex_cfg80211_connect(struct wiphy *wiphy, struct net_device *dev,
+ {
+ 	struct mwifiex_private *priv = mwifiex_netdev_get_priv(dev);
+ 	struct mwifiex_adapter *adapter = priv->adapter;
++	struct cfg80211_bss *bss = NULL;
+ 	int ret;
+ 
+ 	if (GET_BSS_ROLE(priv) != MWIFIEX_BSS_ROLE_STA) {
+@@ -2369,11 +2385,12 @@ mwifiex_cfg80211_connect(struct wiphy *wiphy, struct net_device *dev,
+ 		cfg80211_sched_scan_stopped_rtnl(priv->wdev.wiphy, 0);
+ 
+ 	ret = mwifiex_cfg80211_assoc(priv, sme->ssid_len, sme->ssid, sme->bssid,
+-				     priv->bss_mode, sme->channel, sme, 0);
++				     priv->bss_mode, sme->channel, sme, 0,
++				     &bss);
+ 	if (!ret) {
+-		cfg80211_connect_result(priv->netdev, priv->cfg_bssid, NULL, 0,
+-					NULL, 0, WLAN_STATUS_SUCCESS,
+-					GFP_KERNEL);
++		cfg80211_connect_bss(priv->netdev, priv->cfg_bssid, bss, NULL,
++				     0, NULL, 0, WLAN_STATUS_SUCCESS,
++				     GFP_KERNEL, NL80211_TIMEOUT_UNSPECIFIED);
+ 		mwifiex_dbg(priv->adapter, MSG,
+ 			    "info: associated to bssid %pM successfully\n",
+ 			    priv->cfg_bssid);
+@@ -2504,7 +2521,7 @@ mwifiex_cfg80211_join_ibss(struct wiphy *wiphy, struct net_device *dev,
+ 	ret = mwifiex_cfg80211_assoc(priv, params->ssid_len, params->ssid,
+ 				     params->bssid, priv->bss_mode,
+ 				     params->chandef.chan, NULL,
+-				     params->privacy);
++				     params->privacy, NULL);
+ done:
+ 	if (!ret) {
+ 		cfg80211_ibss_joined(priv->netdev, priv->cfg_bssid,
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
-2.7.4
+2.30.0.365.g02bc693789-goog
+
