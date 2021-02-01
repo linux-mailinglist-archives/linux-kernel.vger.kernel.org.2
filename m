@@ -2,86 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B83530A690
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:31:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B8E30A6A5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:35:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbhBALbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 06:31:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48330 "EHLO mail.kernel.org"
+        id S229736AbhBALeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 06:34:31 -0500
+Received: from mga14.intel.com ([192.55.52.115]:32651 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229753AbhBALay (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 06:30:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A07A264D90;
-        Mon,  1 Feb 2021 11:30:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612179013;
-        bh=QQz4O2D5S55JH+J3HkSd4DfftLbA8u+Bn7/UfRzp8wE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gvAfdnzgD+vtmhm21xrYJNu7rRgdRW2+a+IcbwrXcqUj9utrHCu0jFNIxkHMZrec7
-         d6I9Auy1V5vGVdKmS9Lbkei1tmbEiK60iRBQcbt5LjBpUJuLwogQeNzoO7KE63sgx3
-         CzE5IA7cKQwaIASkDtohipUnYGNlqE4QyscO28OChe/wW6FHYI+nXccZ766U7n9imK
-         dioFM3Hr1BDon91LDxE8WaiVhKloz2uBse/a4fMOsqz8fAwBBqh8i1wC2Lnk3nnB2X
-         +swMa0Ctfex/cj6f6J71CHH+6vGLkNe5j55RqPoKog9H5rUjl7o6L+aGVRpT39h9j5
-         IQkDO/jXnYjdQ==
-Date:   Mon, 1 Feb 2021 13:30:07 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-integrity <linux-integrity@vger.kernel.org>,
-        James Morris James Morris <jmorris@namei.org>,
-        David Howells <dhowells@redhat.com>,
-        Peter Huewe <peterhuewe@gmx.de>
-Subject: Re: [GIT PULL] tpmdd updates for v5.12-rc1
-Message-ID: <YBfmP2qKmsFg4Tfj@kernel.org>
-References: <YBNcv8jLEDE8C/IW@kernel.org>
- <CAHk-=wjk7zEOFEjGWZmGF8_dcitBQ_dPUMSkr-g7B7cYcXGvSQ@mail.gmail.com>
- <YBWUHkbNt6OLoeUq@kernel.org>
- <e9e8a184f482d7f826659427764a7612ab775c3e.camel@HansenPartnership.com>
+        id S229519AbhBALeL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 06:34:11 -0500
+IronPort-SDR: B9NYTBIXfFOB2yzS3wD6VUrdX4jxYOfWgXYK4K+wtW7fr7aT/xCvuRxlItVsrVto1npyJO5zpT
+ dWfh2ptSH8rw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="179893342"
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="179893342"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 03:32:24 -0800
+IronPort-SDR: uDBPuBlI6lww5J63dNZScwPZj5Wp4O3+ZRJ32zypyNKkFRd/SLkGKImhOrVRGJNs0b+p9g+lGo
+ 5sw3ScHdaGDQ==
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="390865226"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 03:32:19 -0800
+Received: by lahna (sSMTP sendmail emulation); Mon, 01 Feb 2021 13:32:17 +0200
+Date:   Mon, 1 Feb 2021 13:32:17 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     mingchuang.qiao@mediatek.com
+Cc:     bhelgaas@google.com, matthias.bgg@gmail.com,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, haijun.liu@mediatek.com,
+        lambert.wang@mediatek.com, kerun.zhu@mediatek.com,
+        alex.williamson@redhat.com, rjw@rjwysocki.net,
+        utkarsh.h.patel@intel.com
+Subject: Re: [v3] PCI: Avoid unsync of LTR mechanism configuration
+Message-ID: <20210201113217.GL2542@lahna.fi.intel.com>
+References: <20210129071137.8743-1-mingchuang.qiao@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e9e8a184f482d7f826659427764a7612ab775c3e.camel@HansenPartnership.com>
+In-Reply-To: <20210129071137.8743-1-mingchuang.qiao@mediatek.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 09:33:47AM -0800, James Bottomley wrote:
-> On Sat, 2021-01-30 at 19:15 +0200, Jarkko Sakkinen wrote:
-> > On Thu, Jan 28, 2021 at 07:38:21PM -0800, Linus Torvalds wrote:
-> > > On Thu, Jan 28, 2021 at 4:54 PM Jarkko Sakkinen <jarkko@kernel.org>
-> > > wrote:
-> > > > This contains bug fixes for tpm_tis driver, which had a racy wait
-> > > > for hardware state change to be ready to send a command to the
-> > > > TPM chip. The bug has existed already since 2006, but has only
-> > > > made itself known in recent past.
-> > > 
-> > > Hmm. Is this for the next merge window? The subject line implies
-> > > that, as does the addition of the cr50 driver.
-> > > 
-> > > But the commentary about fixes implies that at least part of it
-> > > should be in 5.11?
-> > 
-> > This was meant for 5.12 but the timing was *way* too early. I'll take
-> > this one back. Just to unambiguity reasons I'll use tpmdd-next-v5.12-
-> > rc1-v2 tag for my final v5.12 PR, once I send it.
-> > 
-> > I considered a bit, and I really think that it would make a lot of
-> > sense to do a late 5.11 just containing the two commits from James,
-> > namely:
-> > 
-> > 1. tpm_tis: Fix check_locality for correct locality acquisition
-> > 2. tpm_tis: Clean up locality release 
-> > 
-> > James: Does this make sense to you? 
+Hi,
+
+On Fri, Jan 29, 2021 at 03:11:37PM +0800, mingchuang.qiao@mediatek.com wrote:
+> From: Mingchuang Qiao <mingchuang.qiao@mediatek.com>
 > 
-> Yes, that's fine with me.  It will quiet the warning we've had several
-> bug reports about, so it's definitely a bug fix.
+> In bus scan flow, the "LTR Mechanism Enable" bit of DEVCTL2 register is
+> configured in pci_configure_ltr(). If device and bridge both support LTR
+> mechanism, the "LTR Mechanism Enable" bit of device and bridge will be
+> enabled in DEVCTL2 register. And pci_dev->ltr_path will be set as 1.
+> 
+> If PCIe link goes down when device resets, the "LTR Mechanism Enable" bit
+> of bridge will change to 0 according to PCIe r5.0, sec 7.5.3.16. However,
+> the pci_dev->ltr_path value of bridge is still 1.
+> 
+> For following conditions, check and re-configure "LTR Mechanism Enable" bit
+> of bridge to make "LTR Mechanism Enable" bit mtach ltr_path value.
 
-Thanks, this is exactly what I wanted to sanity check. I figured that
-those should be enough, but unfortunately I do not have any hardware
-triggering the issue in my possession.
+Typo mtach -> match.
 
-> James
+>    -before configuring device's LTR for hot-remove/hot-add
+>    -before restoring device's DEVCTL2 register when restore device state
+> 
+> Signed-off-by: Mingchuang Qiao <mingchuang.qiao@mediatek.com>
+> ---
+> changes of v2
+>  -modify patch description
+>  -reconfigure bridge's LTR before restoring device DEVCTL2 register
+> changes of v3
+>  -call pci_reconfigure_bridge_ltr() in probe.c
 
-/Jarkko
+Hmm, which part of this patch takes care of the reset path? It is not
+entirely clear to me at least.
+
+> ---
+>  drivers/pci/pci.c   | 25 +++++++++++++++++++++++++
+>  drivers/pci/pci.h   |  1 +
+>  drivers/pci/probe.c | 13 ++++++++++---
+>  3 files changed, 36 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index b9fecc25d213..12b557c8f062 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -1437,6 +1437,24 @@ static int pci_save_pcie_state(struct pci_dev *dev)
+>  	return 0;
+>  }
+>  
+> +void pci_reconfigure_bridge_ltr(struct pci_dev *dev)
+> +{
+> +#ifdef CONFIG_PCIEASPM
+> +	struct pci_dev *bridge;
+> +	u32 ctl;
+> +
+> +	bridge = pci_upstream_bridge(dev);
+> +	if (bridge && bridge->ltr_path) {
+> +		pcie_capability_read_dword(bridge, PCI_EXP_DEVCTL2, &ctl);
+> +		if (!(ctl & PCI_EXP_DEVCTL2_LTR_EN)) {
+> +			pci_dbg(bridge, "re-enabling LTR\n");
+> +			pcie_capability_set_word(bridge, PCI_EXP_DEVCTL2,
+> +						 PCI_EXP_DEVCTL2_LTR_EN);
+> +		}
+> +	}
+> +#endif
+> +}
+> +
+>  static void pci_restore_pcie_state(struct pci_dev *dev)
+>  {
+>  	int i = 0;
+> @@ -1447,6 +1465,13 @@ static void pci_restore_pcie_state(struct pci_dev *dev)
+>  	if (!save_state)
+>  		return;
+>  
+> +	/*
+> +	 * Downstream ports reset the LTR enable bit when link goes down.
+> +	 * Check and re-configure the bit here before restoring device.
+> +	 * PCIe r5.0, sec 7.5.3.16.
+> +	 */
+> +	pci_reconfigure_bridge_ltr(dev);
+> +
+>  	cap = (u16 *)&save_state->cap.data[0];
+>  	pcie_capability_write_word(dev, PCI_EXP_DEVCTL, cap[i++]);
+>  	pcie_capability_write_word(dev, PCI_EXP_LNKCTL, cap[i++]);
+> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+> index 5c59365092fa..a660a01358c5 100644
+> --- a/drivers/pci/pci.h
+> +++ b/drivers/pci/pci.h
+> @@ -111,6 +111,7 @@ void pci_free_cap_save_buffers(struct pci_dev *dev);
+>  bool pci_bridge_d3_possible(struct pci_dev *dev);
+>  void pci_bridge_d3_update(struct pci_dev *dev);
+>  void pci_bridge_wait_for_secondary_bus(struct pci_dev *dev);
+> +void pci_reconfigure_bridge_ltr(struct pci_dev *dev);
+
+Nit: calling it pci_bridge_reconfigure_ltr() would match better with the
+other function names.
+
+>  
+>  static inline void pci_wakeup_event(struct pci_dev *dev)
+>  {
+> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> index 953f15abc850..fa6075093f3b 100644
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+> @@ -2132,9 +2132,16 @@ static void pci_configure_ltr(struct pci_dev *dev)
+>  	 * Complex and all intermediate Switches indicate support for LTR.
+>  	 * PCIe r4.0, sec 6.18.
+>  	 */
+> -	if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT ||
+> -	    ((bridge = pci_upstream_bridge(dev)) &&
+> -	      bridge->ltr_path)) {
+> +	if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT) {
+> +		pcie_capability_set_word(dev, PCI_EXP_DEVCTL2,
+> +					 PCI_EXP_DEVCTL2_LTR_EN);
+> +		dev->ltr_path = 1;
+> +		return;
+> +	}
+> +
+> +	bridge = pci_upstream_bridge(dev);
+> +	if (bridge && bridge->ltr_path) {
+> +		pci_reconfigure_bridge_ltr(dev);
+>  		pcie_capability_set_word(dev, PCI_EXP_DEVCTL2,
+>  					 PCI_EXP_DEVCTL2_LTR_EN);
+>  		dev->ltr_path = 1;
+> -- 
+> 2.18.0
