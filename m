@@ -2,79 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E558430AECA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 952A230AECF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:14:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231864AbhBASM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:12:28 -0500
-Received: from foss.arm.com ([217.140.110.172]:35594 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229663AbhBASMY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:12:24 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 41FDB1042;
-        Mon,  1 Feb 2021 10:11:38 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0EB9A3F718;
-        Mon,  1 Feb 2021 10:11:35 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Barry Song <song.bao.hua@hisilicon.com>,
-        vincent.guittot@linaro.org, mgorman@suse.de, mingo@kernel.org,
-        peterz@infradead.org, dietmar.eggemann@arm.com,
-        morten.rasmussen@arm.com, linux-kernel@vger.kernel.org
-Cc:     linuxarm@openeuler.org, xuwei5@huawei.com, liguozhu@hisilicon.com,
-        tiantao6@hisilicon.com, wanghuiqiang@huawei.com,
-        prime.zeng@hisilicon.com, jonathan.cameron@huawei.com,
-        guodong.xu@linaro.org, Barry Song <song.bao.hua@hisilicon.com>,
-        Meelis Roos <mroos@linux.ee>
-Subject: Re: [PATCH] sched/topology: fix the issue groups don't span domain->span for NUMA diameter > 2
-In-Reply-To: <20210201033830.15040-1-song.bao.hua@hisilicon.com>
-References: <20210201033830.15040-1-song.bao.hua@hisilicon.com>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Mon, 01 Feb 2021 18:11:26 +0000
-Message-ID: <jhj7dnr4q0h.mognet@arm.com>
+        id S232009AbhBASNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:13:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231196AbhBASNm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 13:13:42 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23E5AC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 10:13:02 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id l27so17183879qki.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 10:13:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0Ps8FU4d7d3oiVbWoQjhiPbJFARiTozLfZPcUixydTI=;
+        b=EvZrIQYVapkr7qX2PPntbHfsHMSJqwUs6Cd3VO5KjP4MeEZjB9UgQ19+GG4gdKTt0J
+         XjymWR3sj/oLh3zqU3FC2YCDqwLXsVGaQK3WPZcp7RAYI9M0uQzz/5Rag84v7VXomFNr
+         1PLTpFo3Z2wlhGHrynFOOGG9ZnNHWDCLmxJGQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0Ps8FU4d7d3oiVbWoQjhiPbJFARiTozLfZPcUixydTI=;
+        b=YqdhNWK/dTsipXQpbPPpq/NxYHfmos9WSIz6HPceqwXvgXpiOLqQ6tD6ysDBpSVpwN
+         O9ZTURfIkpPB5Bll9hQL2WWNV1nnctfv2wisBSkHXbdJWXrgykK69XP21y6TBctRxTE/
+         4Hej4/uXgd3w/9Wer7RMZthvuV2jAyqzZXUboHyJHeXXVGmPRrUTv6cCtii1N7QJlLiD
+         XdRso9VHc9krDN/vE/fcWkLU7m+NBfKj2IqO8/+fF9UenV/yR5MBWEcRyVCjFhaMSTyK
+         7OOoYEQAZqsxtK3pCOvSj2ECCxHxmG3fJAjhEfDYfFOE/CI856+GicB/n90L8tTLuLrC
+         jyng==
+X-Gm-Message-State: AOAM531Pk/HQuLSm3E6sxXWvEnUm09U3xWAy+8iK9wk3OZqLYi8qkikq
+        YQOpeoZbyhIGMZS0S7mZQjh/T66ywlxWjSlRCDfDE7vuFws=
+X-Google-Smtp-Source: ABdhPJzC08aljw8iKeT2/zcYu/8Ecw1WrjCFFv7qOm22f7x3+noWDpmP48mrId+lo2dytgAmS14AgKRhpzsTDpL84vU=
+X-Received: by 2002:a05:620a:22c7:: with SMTP id o7mr17320159qki.157.1612203181358;
+ Mon, 01 Feb 2021 10:13:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210129061406.2680146-1-bleung@chromium.org> <20210129061406.2680146-5-bleung@chromium.org>
+In-Reply-To: <20210129061406.2680146-5-bleung@chromium.org>
+From:   Prashant Malani <pmalani@chromium.org>
+Date:   Mon, 1 Feb 2021 10:12:49 -0800
+Message-ID: <CACeCKafOGXS9nhYKiR-hSMUoC8+010Ye-b7Zd5=wZQtUpuVmQg@mail.gmail.com>
+Subject: Re: [PATCH 4/6] platform/chrome: cros_ec_typec: Report SOP' PD
+ revision from status
+To:     Benson Leung <bleung@chromium.org>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Benson Leung <bleung@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Benson,
 
-Hi,
+On Thu, Jan 28, 2021 at 10:14 PM Benson Leung <bleung@chromium.org> wrote:
+>
+> cros_typec_handle_sop_prime_disc now takes the PD revision provided
+> by the EC_CMD_TYPEC_STATUS command response for the SOP'.
+>
+> Attach the properly formatted pd_revision to the cable desc before
+> registering the cable.
+>
+> Signed-off-by: Benson Leung <bleung@chromium.org>
+Reviewed-by: Prashant Malani <pmalani@chromium.org>
 
-On 01/02/21 16:38, Barry Song wrote:
-> A tricky thing is that we shouldn't use the sgc of the 1st CPU of node2
-> for the sched_group generated by grandchild, otherwise, when this cpu
-> becomes the balance_cpu of another sched_group of cpus other than node0,
-> our sched_group generated by grandchild will access the same sgc with
-> the sched_group generated by child of another CPU.
+> ---
+>  drivers/platform/chrome/cros_ec_typec.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
 >
-> So in init_overlap_sched_group(), sgc's capacity be overwritten:
->         build_balance_mask(sd, sg, mask);
->         cpu = cpumask_first_and(sched_group_span(sg), mask);
+> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+> index e724a5eaef1c..30600e9454e1 100644
+> --- a/drivers/platform/chrome/cros_ec_typec.c
+> +++ b/drivers/platform/chrome/cros_ec_typec.c
+> @@ -748,7 +748,7 @@ static void cros_typec_parse_pd_identity(struct usb_pd_identity *id,
+>                 id->vdo[i - 3] = disc->discovery_vdo[i];
+>  }
 >
->         sg->sgc = *per_cpu_ptr(sdd->sgc, cpu);
+> -static int cros_typec_handle_sop_prime_disc(struct cros_typec_data *typec, int port_num)
+> +static int cros_typec_handle_sop_prime_disc(struct cros_typec_data *typec, int port_num, u16 pd_revision)
+>  {
+>         struct cros_typec_port *port = typec->ports[port_num];
+>         struct ec_response_typec_discovery *disc = port->disc_data;
+> @@ -794,6 +794,7 @@ static int cros_typec_handle_sop_prime_disc(struct cros_typec_data *typec, int p
+>         }
 >
-> And WARN_ON_ONCE(!cpumask_equal(group_balance_mask(sg), mask)) will
-> also be triggered:
-> static void init_overlap_sched_group(struct sched_domain *sd,
->                                      struct sched_group *sg)
-> {
->         if (atomic_inc_return(&sg->sgc->ref) == 1)
->                 cpumask_copy(group_balance_mask(sg), mask);
->         else
->                 WARN_ON_ONCE(!cpumask_equal(group_balance_mask(sg), mask));
-> }
+>         c_desc.identity = &port->c_identity;
+> +       c_desc.pd_revision = pd_revision;
 >
-> So here move to use the sgc of the 2nd cpu. For the corner case, if NUMA
-> has only one CPU, we will still trigger this WARN_ON_ONCE. But It is
-> really unlikely to be a real case for one NUMA to have one CPU only.
+>         port->cable = typec_register_cable(port->port, &c_desc);
+>         if (IS_ERR(port->cable)) {
+> @@ -893,7 +894,11 @@ static void cros_typec_handle_status(struct cros_typec_data *typec, int port_num
 >
-
-Well, it's trivial to boot this with QEMU, and it's actually the example
-the comment atop that WARN_ONCE() is based on. Also, you could end up with
-a single CPU on a node during hotplug operations...
-
-I am not entirely sure whether having more than one CPU per node is a
-sufficient condition. I'm starting to *think* it is, but I'm not entirely
-convinced yet - and now I need a new notebook.
+>         if (resp.events & PD_STATUS_EVENT_SOP_PRIME_DISC_DONE &&
+>             !typec->ports[port_num]->sop_prime_disc_done) {
+> -               ret = cros_typec_handle_sop_prime_disc(typec, port_num);
+> +               u16 sop_prime_revision;
+> +
+> +               /* Convert BCD to the format preferred by the TypeC framework */
+> +               sop_prime_revision = (le16_to_cpu(resp.sop_prime_revision) & 0xff00) >> 4;
+> +               ret = cros_typec_handle_sop_prime_disc(typec, port_num, sop_prime_revision);
+>                 if (ret < 0)
+>                         dev_err(typec->dev, "Couldn't parse SOP' Disc data, port: %d\n", port_num);
+>                 else
+> --
+> 2.30.0.365.g02bc693789-goog
+>
