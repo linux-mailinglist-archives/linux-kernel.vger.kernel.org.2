@@ -2,72 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E5F30A469
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:35:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1EDB30A46E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:35:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232763AbhBAJeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 04:34:02 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11664 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232623AbhBAJeA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 04:34:00 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DTjPm0PZqzlDlc;
-        Mon,  1 Feb 2021 17:31:40 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Mon, 1 Feb 2021
- 17:33:09 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] mm/huge_memory.c: use helper range_in_vma() in __split_huge_p[u|m]d_locked()
-Date:   Mon, 1 Feb 2021 04:32:59 -0500
-Message-ID: <20210201093259.52798-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+        id S232285AbhBAJeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 04:34:50 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:46984 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232830AbhBAJek (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 04:34:40 -0500
+Received: from ubuntu.localdomain (unknown [124.64.18.147])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx3_PxyhdgZS0BAA--.1258S2;
+        Mon, 01 Feb 2021 17:33:44 +0800 (CST)
+From:   Zhaoge Zhang <zhangzhaoge@loongson.cn>
+To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@linux.ie, daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm: Fix drm_atomic_get_new_crtc_state call error
+Date:   Mon,  1 Feb 2021 17:33:44 +0800
+Message-Id: <1612172024-3556-1-git-send-email-zhangzhaoge@loongson.cn>
+X-Mailer: git-send-email 2.7.4
+X-CM-TRANSID: AQAAf9Dx3_PxyhdgZS0BAA--.1258S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrKFW8XFWrAr1DtrW3Jr47Jwb_yoWfAFc_W3
+        W7Xw4xK39xCryvy3Wjyrs8ta4IkasFvF48W3WjqayrAryvgry5Aw43WFnYgr15XF1UX39F
+        qanrX34qyrn7KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb28YjsxI4VW3JwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r4fMxAIw28I
+        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
+        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
+        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+        87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jY89tUUUUU=
+X-CM-SenderInfo: x2kd0w52kd0w3h6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The helper range_in_vma() is introduced via commit 017b1660df89 ("mm:
-migration: fix migration of huge PMD shared pages"). But we forgot to
-use it in __split_huge_pud_locked() and __split_huge_pmd_locked().
+This position is to clear the previous mask flags,
+so drm_atomic_get_crtc_state should be used.
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Signed-off-by: Zhaoge Zhang <zhangzhaoge@loongson.cn>
 ---
- mm/huge_memory.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/drm_atomic_uapi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 987cf5e4cf90..33353a4f95fb 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -1959,8 +1959,7 @@ static void __split_huge_pud_locked(struct vm_area_struct *vma, pud_t *pud,
- 		unsigned long haddr)
- {
- 	VM_BUG_ON(haddr & ~HPAGE_PUD_MASK);
--	VM_BUG_ON_VMA(vma->vm_start > haddr, vma);
--	VM_BUG_ON_VMA(vma->vm_end < haddr + HPAGE_PUD_SIZE, vma);
-+	VM_BUG_ON_VMA(!range_in_vma(vma, haddr, haddr + HPAGE_PUD_SIZE), vma);
- 	VM_BUG_ON(!pud_trans_huge(*pud) && !pud_devmap(*pud));
+diff --git a/drivers/gpu/drm/drm_atomic_uapi.c b/drivers/gpu/drm/drm_atomic_uapi.c
+index 268bb69..07fe01b 100644
+--- a/drivers/gpu/drm/drm_atomic_uapi.c
++++ b/drivers/gpu/drm/drm_atomic_uapi.c
+@@ -313,8 +313,8 @@ drm_atomic_set_crtc_for_connector(struct drm_connector_state *conn_state,
+ 		return 0;
  
- 	count_vm_event(THP_SPLIT_PUD);
-@@ -2039,8 +2038,7 @@ static void __split_huge_pmd_locked(struct vm_area_struct *vma, pmd_t *pmd,
- 	int i;
+ 	if (conn_state->crtc) {
+-		crtc_state = drm_atomic_get_new_crtc_state(conn_state->state,
+-							   conn_state->crtc);
++		crtc_state = drm_atomic_get_crtc_state(conn_state->state,
++							conn_state->crtc);
  
- 	VM_BUG_ON(haddr & ~HPAGE_PMD_MASK);
--	VM_BUG_ON_VMA(vma->vm_start > haddr, vma);
--	VM_BUG_ON_VMA(vma->vm_end < haddr + HPAGE_PMD_SIZE, vma);
-+	VM_BUG_ON_VMA(!range_in_vma(vma, haddr, haddr + HPAGE_PMD_SIZE), vma);
- 	VM_BUG_ON(!is_pmd_migration_entry(*pmd) && !pmd_trans_huge(*pmd)
- 				&& !pmd_devmap(*pmd));
- 
+ 		crtc_state->connector_mask &=
+ 			~drm_connector_mask(conn_state->connector);
 -- 
-2.19.1
+2.7.4
 
