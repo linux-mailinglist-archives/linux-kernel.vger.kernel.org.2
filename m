@@ -2,431 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA0A30B0A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:45:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F7530B088
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:43:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232401AbhBATno (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 14:43:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39714 "EHLO
+        id S232184AbhBATmI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 14:42:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230179AbhBATmo (ORCPT
+        with ESMTP id S231610AbhBATl6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 14:42:44 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38CC2C061756;
-        Mon,  1 Feb 2021 11:42:03 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id u11so10584108plg.13;
-        Mon, 01 Feb 2021 11:42:03 -0800 (PST)
+        Mon, 1 Feb 2021 14:41:58 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC758C061573;
+        Mon,  1 Feb 2021 11:41:18 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id s11so20299324edd.5;
+        Mon, 01 Feb 2021 11:41:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=6sPxRlDZVCgLrmX5i4bW0vNdjIwlKi4D6sFiaqH5u5g=;
-        b=G+qStO7CkVvgsNXqB/Wb0xndz5YAZ0RZrs54KBqSeBWnQwmZZrW4vLkgw3gfK3GZt6
-         RpXWZRrP+uCyvoqxHBKNCS/uC8MXa7J7miKMoZeZelacqSbSARKbDmMaMBP79iE63Mv4
-         CzVYO6kKxCRIdhWNYow5YNV3mfte0MkkmbXcsRdk+Fo3t73XIlUekwU3nv/YhOCC5AKb
-         jqh9UWlv1tRU0f7qxTS1rydAYnNyhZdJZNoYgZUyFfmNOt0R7KLbbTnz4F9unRrd+t5P
-         heRn8ZL7Tj39fs+lxdA7Os0HhAnyzYpgv7n0U3mYoBOVOntHK1FvTDWzuNw3vMw5XtQL
-         re/A==
+        h=from:to:cc:subject:date:message-id;
+        bh=Vudz7Jq3CovoiOUmAZDu7pX1ATasm53I9HD8Bq8Ch+U=;
+        b=uRRkmtSb0gkM4AwKwMZrg0TnMdgcY+sOAQP5H0Fgg6DCU/zZ+a03NzSE+iRuYcT0zh
+         3TmaXRqIJijh6ZUxMY/gKL6NfU6RZAmNm2BO+9WnFeqcON1TgvuIG0R7mnYbWyV2aOwS
+         ccNJCoVu3YMd3prw7pg9vYw8Cc2+UJtNtT2WqLetlTKigTmmg91QPm3bDHVyd0E2i20s
+         +wD81KaOSpoinlgmaaW97zaW248dDcGmVyV4zIjpds20LwjuuIdo87Cm7OdUwG0DDTWQ
+         91Ya4IFiC/VjouZG7rHa0T60S93zO/AkxgDs6yfWE+fClD+Cag/g1QNheHM9+ZqFqFsd
+         RVmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6sPxRlDZVCgLrmX5i4bW0vNdjIwlKi4D6sFiaqH5u5g=;
-        b=a7ifauJVZS6HjI/VUV/c91YGNu3u1sQAGZuU9LSaJmUTRW7XTKugBnkJdsM2nUnxI1
-         7XpI4NfiAk7qA+dMvitW2TplYrvjrxKUukJvXV78PBr0rRkemG187hoILw04PvvN92HI
-         bMFMM5J9N7OJTgVb6B+2GZOsukK2/Oft05xmWOSUYC8nKJGl6UxrYHc5tz2K9p1OW/cA
-         7yOLmZRvuzPQFHH9XjFs+njNwOvuvcA417LO/8mwZiSrb8qyMv7qqx7A3HMDADT1sJSQ
-         Pz+fFZXxbqEC31B0jhb7KqTv6Arw36G+1nPTHuWYR9RvqpAAB07kbey23DPen90JjGHP
-         1CRw==
-X-Gm-Message-State: AOAM5318PH2VEx/c37jf8NuqYoC8QTAYBgU1+5zofXo9BMvi17/j7Qos
-        FSA2B+CJsWQwhSIgR4TyL2Q=
-X-Google-Smtp-Source: ABdhPJw9YWcNuHFuTmMPxsVUG3s1VGIHPRHmuVePCWcxJqJN2Qj4tJcarkH23fR/KYYV3RZnTL99Kg==
-X-Received: by 2002:a17:902:a58c:b029:df:f345:80ec with SMTP id az12-20020a170902a58cb02900dff34580ecmr18525611plb.66.1612208522619;
-        Mon, 01 Feb 2021 11:42:02 -0800 (PST)
-Received: from laptop.hsd1.wa.comcast.net ([2601:600:9b7f:872e:a655:30fb:7373:c762])
-        by smtp.gmail.com with ESMTPSA id i4sm18213155pfo.40.2021.02.01.11.42.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 11:42:01 -0800 (PST)
-From:   Andrei Vagin <avagin@gmail.com>
-To:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        Andrei Vagin <avagin@gmail.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Keno Fischer <keno@juliacomputing.com>
-Subject: [PATCH 3/3] selftest/arm64/ptrace: add tests for PTRACE_O_ARM64_RAW_REGS
-Date:   Mon,  1 Feb 2021 11:40:12 -0800
-Message-Id: <20210201194012.524831-4-avagin@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210201194012.524831-1-avagin@gmail.com>
-References: <20210201194012.524831-1-avagin@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Vudz7Jq3CovoiOUmAZDu7pX1ATasm53I9HD8Bq8Ch+U=;
+        b=evcQGXTfQlh7gR8f5z9nMh0vNATlKbUmThhQRtWTOwhqaG1sC7SeFExE+l0ry4ieAZ
+         WfO7kwT4vlBOtgV2WVknUWGS91oD4ykru/kfdf9JXeSTEq5uujf+cacYSSNhvV3WF+Qz
+         Fuv7qgySm/n+5v5uJ/8FoKvp1+MLTornAsMkvFNkS74GsIG+SXUz1SmLZG7aKEsZSSxo
+         2vJFgswuk66DLmaRjBOlDxNgYNRf/PwrZ+woCgksfnj+u2X4f8szPvd2TTlDhBOxqP68
+         FNKkXHxNR0am/aTlKbCUPSXwHchDe4xjHkeEGVq5/xcfB0pQNVs36r0k3zL3OuNAU+HO
+         aH3g==
+X-Gm-Message-State: AOAM532oHFTLk5QhBLKuVVn5t+Gh3ox7kDhg8S03ur1TA57+dujqNA8l
+        qp+XhLWYAgtEsr/8u338njU=
+X-Google-Smtp-Source: ABdhPJxSZTnKN9WR55MOnNEgcHmJn9O9hya7WEb4ex42obOcKRcFi5f4yDoWnP2PHvnNEchyZtNDKg==
+X-Received: by 2002:a05:6402:1bde:: with SMTP id ch30mr20541649edb.151.1612208477429;
+        Mon, 01 Feb 2021 11:41:17 -0800 (PST)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id du6sm6702799ejc.78.2021.02.01.11.41.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 Feb 2021 11:41:16 -0800 (PST)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, gregkh@linuxfoundation.org, balbi@kernel.org,
+        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1 1/5] dt-bindings: usb: convert rockchip,dwc3.txt to yaml
+Date:   Mon,  1 Feb 2021 20:41:01 +0100
+Message-Id: <20210201194105.32673-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Test output:
- TAP version 13
- 1..2
- # selftests: arm64/ptrace: ptrace_syscall_raw_regs_test
- # 1..2
- # ok 1 x7: 686920776f726c64
- # ok 2 The child exited with code 0.
- # # Totals: pass:2 fail:0 xfail:0 xpass:0 skip:0 error:0
- ok 1 selftests: arm64/ptrace: ptrace_syscall_raw_regs_test
- # selftests: arm64/ptrace: ptrace_syscall_regs_test
- # 1..3
- # ok 1 x7: 0
- # ok 2 x7: 1
- # ok 3 The child exited with code 0.
- # # Totals: pass:3 fail:0 xfail:0 xpass:0 skip:0 error:0
- ok 2 selftests: arm64/ptrace: ptrace_syscall_regs_test
+In the past Rockchip dwc3 usb nodes were manually checked.
+With the conversion of snps,dwc3.yaml as common document
+we now can convert rockchip,dwc3.txt to yaml as well.
 
-Signed-off-by: Andrei Vagin <avagin@gmail.com>
+Added properties for rk3399 are:
+  resets
+  reset-names
+
+Generic properties that are now also filtered:
+  "#address-cells"
+  "#size-cells"
+  ranges
+
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
- tools/testing/selftests/arm64/Makefile        |   2 +-
- tools/testing/selftests/arm64/ptrace/Makefile |   6 +
- .../ptrace/ptrace_syscall_raw_regs_test.c     | 142 +++++++++++++++++
- .../arm64/ptrace/ptrace_syscall_regs_test.c   | 150 ++++++++++++++++++
- 4 files changed, 299 insertions(+), 1 deletion(-)
- create mode 100644 tools/testing/selftests/arm64/ptrace/Makefile
- create mode 100644 tools/testing/selftests/arm64/ptrace/ptrace_syscall_raw_regs_test.c
- create mode 100644 tools/testing/selftests/arm64/ptrace/ptrace_syscall_regs_test.c
+ .../devicetree/bindings/usb/rockchip,dwc3.txt      |  56 -----------
+ .../devicetree/bindings/usb/rockchip,dwc3.yaml     | 107 +++++++++++++++++++++
+ 2 files changed, 107 insertions(+), 56 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
+ create mode 100644 Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
 
-diff --git a/tools/testing/selftests/arm64/Makefile b/tools/testing/selftests/arm64/Makefile
-index 2c9d012797a7..704770a60ece 100644
---- a/tools/testing/selftests/arm64/Makefile
-+++ b/tools/testing/selftests/arm64/Makefile
-@@ -4,7 +4,7 @@
- ARCH ?= $(shell uname -m 2>/dev/null || echo not)
- 
- ifneq (,$(filter $(ARCH),aarch64 arm64))
--ARM64_SUBTARGETS ?= tags signal pauth fp mte
-+ARM64_SUBTARGETS ?= tags signal pauth fp mte ptrace
- else
- ARM64_SUBTARGETS :=
- endif
-diff --git a/tools/testing/selftests/arm64/ptrace/Makefile b/tools/testing/selftests/arm64/ptrace/Makefile
+diff --git a/Documentation/devicetree/bindings/usb/rockchip,dwc3.txt b/Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
+deleted file mode 100644
+index 945204932..000000000
+--- a/Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
++++ /dev/null
+@@ -1,56 +0,0 @@
+-Rockchip SuperSpeed DWC3 USB SoC controller
+-
+-Required properties:
+-- compatible:	should contain "rockchip,rk3399-dwc3" for rk3399 SoC
+-- clocks:	A list of phandle + clock-specifier pairs for the
+-		clocks listed in clock-names
+-- clock-names:	Should contain the following:
+-  "ref_clk"	Controller reference clk, have to be 24 MHz
+-  "suspend_clk"	Controller suspend clk, have to be 24 MHz or 32 KHz
+-  "bus_clk"	Master/Core clock, have to be >= 62.5 MHz for SS
+-		operation and >= 30MHz for HS operation
+-  "grf_clk"	Controller grf clk
+-
+-Required child node:
+-A child node must exist to represent the core DWC3 IP block. The name of
+-the node is not important. The content of the node is defined in dwc3.txt.
+-
+-Phy documentation is provided in the following places:
+-Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml - USB2.0 PHY
+-Documentation/devicetree/bindings/phy/phy-rockchip-typec.txt     - Type-C PHY
+-
+-Example device nodes:
+-
+-	usbdrd3_0: usb@fe800000 {
+-		compatible = "rockchip,rk3399-dwc3";
+-		clocks = <&cru SCLK_USB3OTG0_REF>, <&cru SCLK_USB3OTG0_SUSPEND>,
+-			 <&cru ACLK_USB3OTG0>, <&cru ACLK_USB3_GRF>;
+-		clock-names = "ref_clk", "suspend_clk",
+-			      "bus_clk", "grf_clk";
+-		#address-cells = <2>;
+-		#size-cells = <2>;
+-		ranges;
+-		usbdrd_dwc3_0: dwc3@fe800000 {
+-			compatible = "snps,dwc3";
+-			reg = <0x0 0xfe800000 0x0 0x100000>;
+-			interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
+-			dr_mode = "otg";
+-		};
+-	};
+-
+-	usbdrd3_1: usb@fe900000 {
+-		compatible = "rockchip,rk3399-dwc3";
+-		clocks = <&cru SCLK_USB3OTG1_REF>, <&cru SCLK_USB3OTG1_SUSPEND>,
+-			 <&cru ACLK_USB3OTG1>, <&cru ACLK_USB3_GRF>;
+-		clock-names = "ref_clk", "suspend_clk",
+-			      "bus_clk", "grf_clk";
+-		#address-cells = <2>;
+-		#size-cells = <2>;
+-		ranges;
+-		usbdrd_dwc3_1: dwc3@fe900000 {
+-			compatible = "snps,dwc3";
+-			reg = <0x0 0xfe900000 0x0 0x100000>;
+-			interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
+-			dr_mode = "otg";
+-		};
+-	};
+diff --git a/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml b/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
 new file mode 100644
-index 000000000000..84b27449f3d1
+index 000000000..681086fa6
 --- /dev/null
-+++ b/tools/testing/selftests/arm64/ptrace/Makefile
-@@ -0,0 +1,6 @@
++++ b/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
+@@ -0,0 +1,107 @@
 +# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/usb/rockchip,dwc3.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+CFLAGS += -g -I../../../../../usr/include/
-+TEST_GEN_PROGS := ptrace_syscall_raw_regs_test ptrace_syscall_regs_test
++title: Rockchip SuperSpeed DWC3 USB SoC controller
 +
-+include ../../lib.mk
-diff --git a/tools/testing/selftests/arm64/ptrace/ptrace_syscall_raw_regs_test.c b/tools/testing/selftests/arm64/ptrace/ptrace_syscall_raw_regs_test.c
-new file mode 100644
-index 000000000000..78f913303a99
---- /dev/null
-+++ b/tools/testing/selftests/arm64/ptrace/ptrace_syscall_raw_regs_test.c
-@@ -0,0 +1,142 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include <errno.h>
-+#include <signal.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
++maintainers:
++  - Heiko Stuebner <heiko@sntech.de>
 +
-+#include <sys/types.h>
-+#include <sys/ptrace.h>
-+#include <sys/user.h>
-+#include <sys/wait.h>
-+#include <sys/uio.h>
-+#include <linux/elf.h>
-+#include <linux/unistd.h>
++properties:
++  compatible:
++    enum:
++      - rockchip,rk3399-dwc3
 +
-+#include "../../kselftest.h"
++  clocks:
++    items:
++      - description:
++          Controller reference clock, must to be 24 MHz
++      - description:
++          Controller suspend clock, must to be 24 MHz or 32 KHz
++      - description:
++          Master/Core clock, must to be >= 62.5 MHz for SS
++          operation and >= 30MHz for HS operation
++      - description:
++          Controller aclk_usb3_rksoc_axi_perf clock
++      - description:
++          Controller aclk_usb3 clock
++      - description:
++          Controller grf clock
 +
-+#define TEST_VAL 0x686920776f726c64UL
++  clock-names:
++    items:
++      - const: ref_clk
++      - const: suspend_clk
++      - const: bus_clk
++      - const: aclk_usb3_rksoc_axi_perf
++      - const: aclk_usb3
++      - const: grf_clk
 +
-+#define pr_p(func, fmt, ...)	func(fmt ": %m", ##__VA_ARGS__)
++  resets:
++    maxItems: 1
 +
-+#define pr_err(fmt, ...)						\
-+	({								\
-+		ksft_test_result_error(fmt "\n", ##__VA_ARGS__);		\
-+		-1;							\
-+	})
++  reset-names:
++    const: usb3-otg
 +
-+#define pr_fail(fmt, ...)					\
-+	({							\
-+		ksft_test_result_fail(fmt "\n", ##__VA_ARGS__);	\
-+		-1;						\
-+	})
++  "#address-cells":
++    const: 2
 +
-+#define pr_perror(fmt, ...)	pr_p(pr_err, fmt, ##__VA_ARGS__)
++  "#size-cells":
++    const: 2
 +
-+static long loop(void *val)
-+{
-+	register long x0 __asm__("x0");
-+	register void *x1 __asm__("x1") = val;
-+	register long x8 __asm__("x8") = 555;
++  ranges: true
 +
-+	__asm__ (
-+		"again:\n"
-+		"ldr x7, [x1, 0]\n"
-+		"svc 0\n"
-+		"str x7, [x1, 0]\n"
-+			   : "=r"(x0)
-+			   : "r"(x1), "r"(x8)
-+			   :
-+	);
-+	return 0;
-+}
++patternProperties:
++  "^usb@[a-f0-9]+$":
++    type: object
 +
-+static int child(void)
-+{
-+	long  val = TEST_VAL;
++    $ref: "snps,dwc3.yaml"
 +
-+	loop(&val);
-+	if (val != ~TEST_VAL) {
-+		ksft_print_msg("Unexpected x7: %lx\n", val);
-+		return 1;
-+	}
++    description:
++      A child node must exist to represent the core DWC3 IP block.
++      The content of the node is defined in snps,dwc3.yaml.
 +
-+	return 0;
-+}
++      Phy documentation is provided in the following places.
 +
-+#ifndef PTRACE_SYSEMU
-+#define PTRACE_SYSEMU 31
-+#endif
++      USB2.0 PHY
++      Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml
 +
-+#ifndef PTRACE_O_ARM64_RAW_REGS
-+#define PTRACE_O_ARM64_RAW_REGS                (1 << 28)
-+#endif
++      Type-C PHY
++      Documentation/devicetree/bindings/phy/phy-rockchip-typec.txt
 +
-+int main(int argc, void **argv)
-+{
-+	struct user_regs_struct regs = {};
-+	struct iovec iov = {
-+		.iov_base = &regs,
-+		.iov_len = sizeof(struct user_regs_struct),
-+	};
-+	int status;
-+	pid_t pid;
++    unevaluatedProperties: false
 +
-+	ksft_set_plan(2);
++additionalProperties: false
 +
-+	pid = fork();
-+	if (pid == 0) {
-+		kill(getpid(), SIGSTOP);
-+		child();
-+		_exit(0);
-+	}
-+	if (pid < 0)
-+		return 1;
++required:
++  - compatible
++  - clocks
++  - clock-names
++  - "#address-cells"
++  - "#size-cells"
++  - ranges
 +
-+	if (ptrace(PTRACE_ATTACH, pid, 0, 0))
-+		return pr_perror("Can't attach to the child %d", pid);
-+	if (waitpid(pid, &status, 0) != pid)
-+		return pr_perror("Can't wait for the child %d", pid);
-+	if (ptrace(PTRACE_SETOPTIONS, pid, 0, PTRACE_O_ARM64_RAW_REGS))
-+		return pr_perror("Can't set PTRACE_O_ARM64_RAW_REGS");
-+	/* skip SIGSTOP */
-+	if (ptrace(PTRACE_CONT, pid, 0, 0))
-+		return pr_perror("Can't resume the child %d", pid);
-+	if (waitpid(pid, &status, 0) != pid)
-+		return pr_perror("Can't wait for the child %d", pid);
-+
-+	/* Resume the child to the next system call. */
-+	if (ptrace(PTRACE_SYSEMU, pid, 0, 0))
-+		return pr_perror("Can't resume the child %d", pid);
-+	if (waitpid(pid, &status, 0) != pid)
-+		return pr_perror("Can't wait for the child %d", pid);
-+	if (!WIFSTOPPED(status) || WSTOPSIG(status) != SIGTRAP)
-+		return pr_err("Unexpected status: %d", status);
-+
-+	/* Check that x7 isnt't clobbered if PTRACE_O_ARM64_RAW_REGS is set. */
-+	if (ptrace(PTRACE_GETREGSET, pid, NT_PRSTATUS, &iov))
-+		return pr_perror("Can't get child registers");
-+	if (regs.regs[7] != TEST_VAL)
-+		return pr_fail("unexpected x7: %lx", regs.regs[7]);
-+	ksft_test_result_pass("x7: %llx\n", regs.regs[7]);
-+
-+	/* Check that the child will see a new value of x7. */
-+	regs.regs[0] = 0;
-+	regs.regs[7] = ~TEST_VAL;
-+	if (ptrace(PTRACE_SETREGSET, pid, NT_PRSTATUS, &iov))
-+		return pr_perror("Can't set child registers");
-+
-+	if (ptrace(PTRACE_CONT, pid, 0, 0))
-+		return pr_perror("Can't resume the child %d", pid);
-+	if (waitpid(pid, &status, 0) != pid)
-+		return pr_perror("Can't wait for the child %d", pid);
-+
-+	if (status != 0)
-+		return pr_fail("Child exited with code %d.", status);
-+
-+	ksft_test_result_pass("The child exited with code 0.\n");
-+	ksft_exit_pass();
-+	return 0;
-+}
-+
-diff --git a/tools/testing/selftests/arm64/ptrace/ptrace_syscall_regs_test.c b/tools/testing/selftests/arm64/ptrace/ptrace_syscall_regs_test.c
-new file mode 100644
-index 000000000000..d1534525ef26
---- /dev/null
-+++ b/tools/testing/selftests/arm64/ptrace/ptrace_syscall_regs_test.c
-@@ -0,0 +1,150 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#include <errno.h>
-+#include <signal.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+
-+#include <sys/types.h>
-+#include <sys/ptrace.h>
-+#include <sys/user.h>
-+#include <sys/wait.h>
-+#include <sys/uio.h>
-+#include <linux/elf.h>
-+#include <linux/unistd.h>
-+
-+#include "../../kselftest.h"
-+
-+#define TEST_VAL 0x686920776f726c64UL
-+
-+#define pr_p(func, fmt, ...)	func(fmt ": %m", ##__VA_ARGS__)
-+
-+#define pr_err(fmt, ...)						\
-+	({								\
-+		ksft_test_result_error(fmt "\n", ##__VA_ARGS__);		\
-+		-1;							\
-+	})
-+
-+#define pr_fail(fmt, ...)					\
-+	({							\
-+		ksft_test_result_fail(fmt "\n", ##__VA_ARGS__);	\
-+		-1;						\
-+	})
-+
-+#define pr_perror(fmt, ...)	pr_p(pr_err, fmt, ##__VA_ARGS__)
-+
-+static long loop(void *val)
-+{
-+	register long x0 __asm__("x0");
-+	register void *x1 __asm__("x1") = val;
-+	register long x8 __asm__("x8") = 555;
-+
-+	__asm__ (
-+		"again:\n"
-+		"ldr x7, [x1, 0]\n"
-+		"svc 0\n"
-+		"str x7, [x1, 0]\n"
-+			   : "=r"(x0)
-+			   : "r"(x1), "r"(x8)
-+			   :
-+	);
-+	return 0;
-+}
-+
-+static int child(void)
-+{
-+	long  val = TEST_VAL;
-+
-+	loop(&val);
-+	if (val != TEST_VAL) {
-+		ksft_print_msg("Unexpected x7: %lx\n", val);
-+		return 1;
-+	}
-+
-+	return 0;
-+}
-+
-+#ifndef PTRACE_O_ARM64_RAW_REGS
-+#define PTRACE_O_ARM64_RAW_REGS                (1 << 28)
-+#endif
-+
-+int main(int argc, void **argv)
-+{
-+	struct user_regs_struct regs = {};
-+	struct iovec iov = {
-+		.iov_base = &regs,
-+		.iov_len = sizeof(struct user_regs_struct),
-+	};
-+	int status;
-+	pid_t pid;
-+
-+	ksft_set_plan(3);
-+
-+	pid = fork();
-+	if (pid == 0) {
-+		kill(getpid(), SIGSTOP);
-+		child();
-+		_exit(0);
-+	}
-+	if (pid < 0)
-+		return 1;
-+
-+	if (ptrace(PTRACE_ATTACH, pid, 0, 0))
-+		return pr_perror("Can't attach to the child %d", pid);
-+	if (waitpid(pid, &status, 0) != pid)
-+		return pr_perror("Can't wait for the child %d", pid);
-+	/* skip SIGSTOP */
-+	if (ptrace(PTRACE_CONT, pid, 0, 0))
-+		return pr_perror("Can't resume the child %d", pid);
-+	if (waitpid(pid, &status, 0) != pid)
-+		return pr_perror("Can't wait for the child %d", pid);
-+
-+	/* Resume the child to the next system call. */
-+	if (ptrace(PTRACE_SYSCALL, pid, 0, 0))
-+		return pr_perror("Can't resume the child %d", pid);
-+	if (waitpid(pid, &status, 0) != pid)
-+		return pr_perror("Can't wait for the child %d", pid);
-+	if (!WIFSTOPPED(status) || WSTOPSIG(status) != SIGTRAP)
-+		return pr_err("Unexpected status: %d", status);
-+
-+	/* Check that x7 is 0 on syscall-enter. */
-+	if (ptrace(PTRACE_GETREGSET, pid, NT_PRSTATUS, &iov))
-+		return pr_perror("Can't get child registers");
-+	if (regs.regs[7] != 0)
-+		return pr_fail("Unexpected x7: %lx", regs.regs[7]);
-+	ksft_test_result_pass("x7: %llx\n", regs.regs[7]);
-+
-+	if (ptrace(PTRACE_SYSCALL, pid, 0, 0))
-+		return pr_perror("Can't resume the child %d", pid);
-+	if (waitpid(pid, &status, 0) != pid)
-+		return pr_perror("Can't wait for the child %d", pid);
-+	if (!WIFSTOPPED(status) || WSTOPSIG(status) != SIGTRAP)
-+		return pr_err("Unexpected status: %d", status);
-+
-+	/* Check that x7 is 1 on syscall-exit. */
-+	if (ptrace(PTRACE_GETREGSET, pid, NT_PRSTATUS, &iov))
-+		return pr_perror("Can't get child registers");
-+	if (regs.regs[7] != 1)
-+		return pr_fail("Unexpected x7: %lx", regs.regs[7]);
-+	ksft_test_result_pass("x7: %llx\n", regs.regs[7]);
-+
-+	/* Check that the child will not a new value of x7. */
-+	regs.regs[0] = 0;
-+	regs.regs[7] = ~TEST_VAL;
-+	if (ptrace(PTRACE_SETREGSET, pid, NT_PRSTATUS, &iov))
-+		return pr_perror("Can't set child registers");
-+
-+	if (ptrace(PTRACE_CONT, pid, 0, 0))
-+		return pr_perror("Can't resume the child %d", pid);
-+	if (waitpid(pid, &status, 0) != pid)
-+		return pr_perror("Can't wait for the child %d", pid);
-+
-+	if (status != 0)
-+		return pr_fail("Child exited with code %d.", status);
-+
-+	ksft_test_result_pass("The child exited with code 0.\n");
-+	ksft_exit_pass();
-+	return 0;
-+}
-+
++examples:
++  - |
++    #include <dt-bindings/clock/rk3399-cru.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    usbdrd3_0: usb@fe800000 {
++      compatible = "rockchip,rk3399-dwc3";
++      clocks = <&cru SCLK_USB3OTG0_REF>, <&cru SCLK_USB3OTG0_SUSPEND>,
++               <&cru ACLK_USB3OTG0>, <&cru ACLK_USB3_RKSOC_AXI_PERF>,
++               <&cru ACLK_USB3>, <&cru ACLK_USB3_GRF>;
++      clock-names = "ref_clk", "suspend_clk",
++                    "bus_clk", "aclk_usb3_rksoc_axi_perf",
++                    "aclk_usb3", "grf_clk";
++      #address-cells = <2>;
++      #size-cells = <2>;
++      ranges;
++      usbdrd_dwc3_0: usb@fe800000 {
++        compatible = "snps,dwc3";
++        reg = <0x0 0xfe800000 0x0 0x100000>;
++        interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
++        dr_mode = "otg";
++      };
++    };
 -- 
-2.29.2
+2.11.0
 
