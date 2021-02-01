@@ -2,98 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF0BA30A2F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2497A30A2F5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:03:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232323AbhBAIB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 03:01:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41662 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231598AbhBAIBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 03:01:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 967D064D73;
-        Mon,  1 Feb 2021 08:01:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612166471;
-        bh=dwZGpeS1TcK5yFFhy+waTC8VkChqi0kUMHO06WjX2kE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0dIcGQcYEF2T4qVgJpyt0Lni9yV1hdE2LBY2mV6NPuFFNewm9dvGtxz+Wprqs09bh
-         9SLCyDY3NeRWsWusG5bBq6yW3UMXtdhuauTExJxtkuHD4NhEjZYZ6zj81d8LxXCjhv
-         YHb/nJ0f1B1c+G5qiXAx4xQNYLIZpxjkFaOyoBP8=
-Date:   Mon, 1 Feb 2021 09:01:07 +0100
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Avri Altman <Avri.Altman@wdc.com>
-Cc:     "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
-        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
-Subject: Re: [PATCH 3/8] scsi: ufshpb: Add region's reads counter
-Message-ID: <YBe1QxSyMBKSTJA9@kroah.com>
-References: <20210127151217.24760-4-avri.altman@wdc.com>
- <20210127151217.24760-1-avri.altman@wdc.com>
- <CGME20210127151311epcas2p1696c2b73f3b4777ac0e7f603790b552f@epcms2p2>
- <1891546521.01612153501819.JavaMail.epsvc@epcpadp3>
- <DM6PR04MB657521540E2769C5F1BA2BBFFCB69@DM6PR04MB6575.namprd04.prod.outlook.com>
- <YBeuK92cgBkvYpk1@kroah.com>
- <DM6PR04MB6575018DEE12E7A5910FF2CBFCB69@DM6PR04MB6575.namprd04.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM6PR04MB6575018DEE12E7A5910FF2CBFCB69@DM6PR04MB6575.namprd04.prod.outlook.com>
+        id S232371AbhBAICW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 03:02:22 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:54244 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231598AbhBAICU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 03:02:20 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R951e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UNVd3F._1612166482;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UNVd3F._1612166482)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 01 Feb 2021 16:01:22 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     perex@perex.cz
+Cc:     tiwai@suse.com, broonie@kernel.org, yang.jie@linux.intel.com,
+        liam.r.girdwood@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, cezary.rojewski@intel.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] ASoC: Intel: catpt: remove unneeded semicolon
+Date:   Mon,  1 Feb 2021 16:01:21 +0800
+Message-Id: <1612166481-121376-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 07:51:19AM +0000, Avri Altman wrote:
-> > 
-> > On Mon, Feb 01, 2021 at 07:12:53AM +0000, Avri Altman wrote:
-> > > > > +#define WORK_PENDING 0
-> > > > > +#define ACTIVATION_THRSHLD 4 /* 4 IOs */
-> > > > Rather than fixing it with macro, how about using sysfs and make it
-> > > > configurable?
-> > > Yes.
-> > > I will add a patch making all the logic configurable.
-> > > As all those are hpb-related parameters, I think module parameters are
-> > more adequate.
-> > 
-> > No, this is not the 1990's, please never add new module parameters to
-> > drivers.  If not for the basic problem of they do not work on a
-> > per-device basis, but on a per-driver basis, which is what you almost
-> > never want.
-> OK.
-> 
-> > 
-> > But why would you want to change this value, why can't the driver "just
-> > work" and not need manual intervention?
-> It is.
-> But those are a knobs each vendor may want to tweak,
-> So it'll be optimized with its internal device's implementation.
-> 
-> Tweaking the parameters, as well as the entire logic, is really an endless task.
-> Some logic works better for some scenarios, while falling behind on others.
+Eliminate the following coccicheck warning:
+./sound/soc/intel/catpt/pcm.c:355:2-3: Unneeded semicolon
 
-Shouldn't the hardware know how to handle this dynamically?  If not, how
-is a user going to know?
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ sound/soc/intel/catpt/pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> How about leaving it for now, to be elaborated it in the future?
+diff --git a/sound/soc/intel/catpt/pcm.c b/sound/soc/intel/catpt/pcm.c
+index e5d54bb..88a0879 100644
+--- a/sound/soc/intel/catpt/pcm.c
++++ b/sound/soc/intel/catpt/pcm.c
+@@ -352,7 +352,7 @@ static int catpt_dai_apply_usettings(struct snd_soc_dai *dai,
+ 		break;
+ 	default:
+ 		return 0;
+-	};
++	}
+ 
+ 	list_for_each_entry(pos, &component->card->snd_card->controls, list) {
+ 		if (pos->private_data == component &&
+-- 
+1.8.3.1
 
-I do not care, just do not make it a module parameter for the reason
-that does not work on a per-device basis.
-
-> Maybe even can be a part of a scheme, to make the logic proprietary?
-
-What do you mean by "proprietary"?
-
-thanks,
-
-greg k-h
