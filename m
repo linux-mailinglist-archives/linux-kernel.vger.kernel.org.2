@@ -2,61 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEE5B30AD47
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:00:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CC0D30AD4D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:02:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231941AbhBAQ76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 11:59:58 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:54630 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231294AbhBAQ74 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 11:59:56 -0500
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 111GwwfD032019
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 1 Feb 2021 11:58:58 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 2EEEB15C39D9; Mon,  1 Feb 2021 11:58:58 -0500 (EST)
-Date:   Mon, 1 Feb 2021 11:58:58 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Vinicius Tinti <viniciustinti@gmail.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v2] ext4: Enable code path when DX_DEBUG is set
-Message-ID: <YBgzUoq2Jla7pXAG@mit.edu>
-References: <AAB32610-D238-4137-96DE-33655AAAB545@dilger.ca>
- <20210201003125.90257-1-viniciustinti@gmail.com>
- <20210201124924.GA3284018@infradead.org>
+        id S230000AbhBARBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:01:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39346 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229549AbhBARBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 12:01:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C9E7864EA9;
+        Mon,  1 Feb 2021 17:00:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612198821;
+        bh=CzTEpM9u8CI5p3juLfoehGkHvp3K66pt2EkozHWzGDg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BDKyXwwlbzYpaj8bPa8R9sERCroTAZz5BTHncFxHx2ICsGc3qyte09xEUwayWINCl
+         p0noJjApDYJuiD9wlP5znE59qgt8fJu/1zNTfWepRSaKT1/ZKM904JyVHUEANoSDUB
+         KwwpQqbBpmo9+rksKSDazzqpBBlZPzWIFDrVizrAspmtC/6w77Ksp3BDIItMDh/5+8
+         59qacGyiE63CBaaRL80+CDdAnKte9cOAWnocFsgqnkpE2A866O3awPgwHwGn+21PkY
+         iOJqw/qR+GmmSErJZxbDKlYakFhHBGQMsITb2bRJJl9nUgD9nqfA9rILzvG79IBwsW
+         IBnnjeF8PdQOA==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Lee Jones <lee.jones@linaro.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Satish Kharat <satishkh@cisco.com>,
+        Lee Duncan <lduncan@suse.com>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: pmcraid: fix 'ioarcb' alignment warning
+Date:   Mon,  1 Feb 2021 17:59:54 +0100
+Message-Id: <20210201170013.727112-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201124924.GA3284018@infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 12:49:24PM +0000, Christoph Hellwig wrote:
-> DX_DEBUG is completely dead code, so either kill it off or make it an
-> actual CONFIG_* symbol through Kconfig if it seems useful.
+From: Arnd Bergmann <arnd@arndb.de>
 
-I wouldn't call it completely dead code.  If you manually add "#define
-DX_DEBUG" fs/ext4/namei.c compiles without any problems.  I believe it
-was most recently used when we added large htree support.
+Building with 'make W=1' enables -Wpacked-not-aligned, and this
+warns about pmcraid because of incompatible alignment constraints for
+pmcraid_passthrough_ioctl_buffer:
 
-It's true that it can only be enabled via manually enabled via manual
-editing of the .c file, but it's *really* something that only
-developers who are actively involved in modifying the code would want
-to use.  Sure, we could add work to add debug levels to all of the
-dxtrace() statements, and/or switch it all to dyndebug.  We'd also
-have to figure out how to get rid of all of the KERN_CONT printk's in
-the ideal world.  The question is whether doing all of this is
-worth it if the goal is to shut up some clang warnings.
+drivers/scsi/pmcraid.h:1044:1: warning: alignment 1 of 'struct pmcraid_passthrough_ioctl_buffer' is less than 32 [-Wpacked-not-aligned]
+ 1044 | } __attribute__ ((packed));
+      | ^
+drivers/scsi/pmcraid.h:1041:24: warning: 'ioarcb' offset 16 in 'struct pmcraid_passthrough_ioctl_buffer' isn't aligned to 32 [-Wpacked-not-aligned]
+ 1041 |  struct pmcraid_ioarcb ioarcb;
 
-	      	    	     	   - Ted
+The inner structure is documented as having 32 byte alignment here,
+but is starts at a 16 byte offset in the outer structure, so it's never
+actually aligned, as the outer structure is also marked 'packed'.
+
+Lee Jones point this out as one of the last files that need to be changed
+before the warning can be enabled by default.
+
+Change the annotations in a way that avoids the warning but leaves the
+layout unchanged, by removing the packing on the inner structure and
+adding it to the outer one. The one-byte request_buffer[] array should
+have been a flexible array member here, which is how I change it to
+avoid extra padding from the alignment attribute.
+
+Cc: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/scsi/pmcraid.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/scsi/pmcraid.h b/drivers/scsi/pmcraid.h
+index 15c962108075..6d36debde18e 100644
+--- a/drivers/scsi/pmcraid.h
++++ b/drivers/scsi/pmcraid.h
+@@ -244,7 +244,7 @@ struct pmcraid_ioarcb {
+ 	__u8  hrrq_id;
+ 	__u8  cdb[PMCRAID_MAX_CDB_LEN];
+ 	struct pmcraid_ioarcb_add_data add_data;
+-} __attribute__((packed, aligned(PMCRAID_IOARCB_ALIGNMENT)));
++};
+ 
+ /* well known resource handle values */
+ #define PMCRAID_IOA_RES_HANDLE        0xffffffff
+@@ -1040,8 +1040,8 @@ struct pmcraid_passthrough_ioctl_buffer {
+ 	struct pmcraid_ioctl_header ioctl_header;
+ 	struct pmcraid_ioarcb ioarcb;
+ 	struct pmcraid_ioasa  ioasa;
+-	u8  request_buffer[1];
+-} __attribute__ ((packed));
++	u8  request_buffer[];
++} __attribute__ ((packed, aligned(PMCRAID_IOARCB_ALIGNMENT)));
+ 
+ /*
+  * keys to differentiate between driver handled IOCTLs and passthrough
+-- 
+2.29.2
+
