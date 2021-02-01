@@ -2,128 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F45D30AD11
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:52:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0AC330AD14
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231748AbhBAQvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 11:51:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231706AbhBAQvK (ORCPT
+        id S231725AbhBAQvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 11:51:55 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10672 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229849AbhBAQvu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 11:51:10 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2702C061573;
-        Mon,  1 Feb 2021 08:50:28 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id i8so8980190ejc.7;
-        Mon, 01 Feb 2021 08:50:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=28aWbeuxYU/d3zJdSw4FejdOSZ9mEcviBMdx8cpNqHs=;
-        b=YYB38wSZfAblKXtyMsYf35SYzEdm9cfOvaNlKacJ8HD1JxJZtVSUsQrifmWZgso1gm
-         KzdTouGU1XjeqFjPmRf4TiCCG+If7iZQogIzNKP2sKh39Dy2/sDQ/M9eedtfKVqGUTdR
-         +gFa3x4VUUFQA4OhrqPR57ZjbxblwQhp1qj3v6A/mKxx3eFbjMmn6srposj06ubkZGkA
-         qfa10UfUdDPjK3WaR6qh3i3lTBPAp/ATOqNJ1lKkaxJgYgEc8L8oypG+BoeCE+BtWp14
-         deRpJxOhFVmLIJOU6uSO2Y0ArBZjrVfMiiVqj4S1OVr1b/lzUdNVPe27ReA3RI4t7Qj3
-         wtHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=28aWbeuxYU/d3zJdSw4FejdOSZ9mEcviBMdx8cpNqHs=;
-        b=We67QaowrhpsA48LSz3bvBus6VJySGxsOQIJSrRly2YJILKOG9kpd/CZdsOmwdobU/
-         +JRHcTPTu2G5SUmj7m7uoiN/z1TxmlffwXETqBmrD95AODnvdrPT/wDc59jC0G/hGhgo
-         GUxpVFrbEJum29LpP233UQZmAWXhVGu3ILIlJCxOTTCgYl5d3iJrbJXa7CcS54Gsl2/4
-         5O/97Abmi+wFq34BgLyHbhQ/dZpdqgXbj0y3WLpnKShXkpSdh2qIN1IB4bVgNwvuBfxj
-         dQ+Wag4zOBTuWgndNFlw9Q4qglxKoZFapPB2IpnmAGmIfnompVlKZUgTHtgVeY17oDnJ
-         DabQ==
-X-Gm-Message-State: AOAM533WJEShHMwQfvOTVKXEB2X7BQZdsVHiU5n+dqinLV4RD/Cj7nKH
-        7J0kpmzvvIJGOfwO5cZn/g+0Z8lvPvs6jdDXaG0=
-X-Google-Smtp-Source: ABdhPJxNX/Zc2WZKU5j38fRhdm0PlBgCbf8SmuqspoQjHSPvUvWFmTIkDdyc+pA7KD4ZzZ8geIkh9iYEHc7gxABPI/M=
-X-Received: by 2002:a17:906:719:: with SMTP id y25mr11628409ejb.180.1612198227459;
- Mon, 01 Feb 2021 08:50:27 -0800 (PST)
+        Mon, 1 Feb 2021 11:51:50 -0500
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 111GgbN5002264;
+        Mon, 1 Feb 2021 11:50:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=TkOpFdIQz3xH8BT8vy6qDaHUbR6vxX+2jYK302kDU2Y=;
+ b=P5Ke3A5GGmdQclrkadPOSQ2XVMXcZJTMBWMEU8sxH5QY63YKCr7zdxNOzTkALB5HRShk
+ BL4uXD/Xv+eS2OdySGAzHtejzEP2oowx91MvvwemxReJ4f7m3dQeBX2ThaVMStrNpFMn
+ mnVv7FIMX4LfXa2SVzwwK3iAo2f/d2iY9MYv6ih8ZWSHy5OyisF+kf+H64JLz4IqQ7HM
+ 5X1anj80XqAk7xzOLXyCjWejPwNbSvhEmH5Vq0sS87UW+M3/VmE/sGC2ulaNSxIp3D4Y
+ m0y5oyW/XzWhxVWnHk/D2w0rtZo1dwrwbma0KYRSu4kPT+/d9JLgvuFnShJicNDT8c1/ Fg== 
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36em9j2jg6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 11:50:50 -0500
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 111Gg2Q4002453;
+        Mon, 1 Feb 2021 16:50:49 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma01dal.us.ibm.com with ESMTP id 36cy393v6p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 16:50:49 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 111GomPt5898716
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 1 Feb 2021 16:50:49 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F388B124052;
+        Mon,  1 Feb 2021 16:50:47 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B60F312405C;
+        Mon,  1 Feb 2021 16:50:46 +0000 (GMT)
+Received: from MSBARTH-P50.aus.stglabs.ibm.com (unknown [9.163.45.205])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon,  1 Feb 2021 16:50:46 +0000 (GMT)
+From:   Matthew Barth <msbarth@linux.ibm.com>
+To:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux@roeck-us.net, jdelvare@suse.com
+Cc:     Matthew Barth <msbarth@linux.ibm.com>, joel@jms.id.au,
+        andrew@aj.id.au
+Subject: [PATCH] pmbus:max31785: Support revision "B"
+Date:   Mon,  1 Feb 2021 10:50:43 -0600
+Message-Id: <20210201165043.36751-1-msbarth@linux.ibm.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210201160420.2826895-1-elver@google.com>
-In-Reply-To: <20210201160420.2826895-1-elver@google.com>
-From:   Christoph Paasch <christoph.paasch@gmail.com>
-Date:   Mon, 1 Feb 2021 08:50:16 -0800
-Message-ID: <CALMXkpYaEEv6u1oY3cFSznWsGCeiFRxRJRDS0j+gZxAc8VESZg@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: fix up truesize of cloned skb in skb_prepare_for_shift()
-To:     Marco Elver <elver@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kasan-dev@googlegroups.com,
-        David Miller <davem@davemloft.net>, kuba@kernel.org,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>, linmiaohe@huawei.com,
-        gnault@redhat.com, dseok.yi@samsung.com, kyk.segfault@gmail.com,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        netdev <netdev@vger.kernel.org>, glider@google.com,
-        syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com,
-        Eric Dumazet <edumazet@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-01_06:2021-01-29,2021-02-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ lowpriorityscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ suspectscore=0 impostorscore=0 spamscore=0 phishscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102010084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 8:09 AM Marco Elver <elver@google.com> wrote:
->
-> Avoid the assumption that ksize(kmalloc(S)) == ksize(kmalloc(S)): when
-> cloning an skb, save and restore truesize after pskb_expand_head(). This
-> can occur if the allocator decides to service an allocation of the same
-> size differently (e.g. use a different size class, or pass the
-> allocation on to KFENCE).
->
-> Because truesize is used for bookkeeping (such as sk_wmem_queued), a
-> modified truesize of a cloned skb may result in corrupt bookkeeping and
-> relevant warnings (such as in sk_stream_kill_queues()).
->
-> Link: https://lkml.kernel.org/r/X9JR/J6dMMOy1obu@elver.google.com
-> Reported-by: syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com
-> Suggested-by: Eric Dumazet <edumazet@google.com>
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
->  net/core/skbuff.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
->
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index 2af12f7e170c..3787093239f5 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -3289,7 +3289,19 @@ EXPORT_SYMBOL(skb_split);
->   */
->  static int skb_prepare_for_shift(struct sk_buff *skb)
->  {
-> -       return skb_cloned(skb) && pskb_expand_head(skb, 0, 0, GFP_ATOMIC);
-> +       int ret = 0;
-> +
-> +       if (skb_cloned(skb)) {
-> +               /* Save and restore truesize: pskb_expand_head() may reallocate
-> +                * memory where ksize(kmalloc(S)) != ksize(kmalloc(S)), but we
-> +                * cannot change truesize at this point.
-> +                */
-> +               unsigned int save_truesize = skb->truesize;
-> +
-> +               ret = pskb_expand_head(skb, 0, 0, GFP_ATOMIC);
-> +               skb->truesize = save_truesize;
-> +       }
-> +       return ret;
+There was an issue in how the tach feedbacks of dual rotor fans were
+reported during any change in fan speeds with revision "A" of the
+MAX31785. When the fan speeds would transition to a new target speed,
+the rotor not wired to the TACH input when TACHSEL = 0 would report a
+speed of 0 until the new target was reached. This has been fixed,
+resulting in a revision "B" update where the MFR_REVISION of "B" is
+0x3061.
 
-just a few days ago we found out that this also fixes a syzkaller
-issue on MPTCP (https://github.com/multipath-tcp/mptcp_net-next/issues/136).
-I confirmed that this patch fixes the issue for us as well:
+Signed-off-by: Matthew Barth <msbarth@linux.ibm.com>
+---
+ drivers/hwmon/pmbus/max31785.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Tested-by: Christoph Paasch <christoph.paasch@gmail.com>
+diff --git a/drivers/hwmon/pmbus/max31785.c b/drivers/hwmon/pmbus/max31785.c
+index e5a9f4019cd5..e636a65061df 100644
+--- a/drivers/hwmon/pmbus/max31785.c
++++ b/drivers/hwmon/pmbus/max31785.c
+@@ -17,6 +17,7 @@ enum max31785_regs {
+ 
+ #define MAX31785			0x3030
+ #define MAX31785A			0x3040
++#define MAX31785B			0x3061
+ 
+ #define MFR_FAN_CONFIG_DUAL_TACH	BIT(12)
+ 
+@@ -350,12 +351,13 @@ static int max31785_probe(struct i2c_client *client)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	if (ret == MAX31785A) {
++	if (ret == MAX31785A || ret == MAX31785B) {
+ 		dual_tach = true;
+ 	} else if (ret == MAX31785) {
+ 		if (!strcmp("max31785a", client->name))
+ 			dev_warn(dev, "Expected max3175a, found max31785: cannot provide secondary tachometer readings\n");
+ 	} else {
++		dev_err(dev, "Unrecognized MAX31785 revision: %x\n", ret);
+ 		return -ENODEV;
+ 	}
+ 
+@@ -371,6 +373,7 @@ static int max31785_probe(struct i2c_client *client)
+ static const struct i2c_device_id max31785_id[] = {
+ 	{ "max31785", 0 },
+ 	{ "max31785a", 0 },
++	{ "max31785b", 0 },
+ 	{ },
+ };
+ 
+@@ -379,6 +382,7 @@ MODULE_DEVICE_TABLE(i2c, max31785_id);
+ static const struct of_device_id max31785_of_match[] = {
+ 	{ .compatible = "maxim,max31785" },
+ 	{ .compatible = "maxim,max31785a" },
++	{ .compatible = "maxim,max31785b" },
+ 	{ },
+ };
+ 
+-- 
+2.29.2
 
-
-
-
-
->  }
->
->  /**
->
-> base-commit: 14e8e0f6008865d823a8184a276702a6c3cbef3d
-> --
-> 2.30.0.365.g02bc693789-goog
->
