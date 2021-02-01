@@ -2,80 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6F330A6E3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:54:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03E8F30A6E4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:54:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbhBALxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 06:53:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbhBALw7 (ORCPT
+        id S230184AbhBALxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 06:53:35 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11996 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229481AbhBALxd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 06:52:59 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0874C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 03:52:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DFvEMuSmJTMwKrx37KZALAZlQNbzmwOQTAjJ5KIsmrw=; b=w8cvjP/EhS0PSzIPxW+VuBQ9mb
-        TZNQ7dWwgSY6NA0ZJzbMQK6Ku1B2KLt6pqyzZ16Bw1txT58zsTw7Ni3J459la9y5DYgKtNxTVmjyo
-        YUgjsCd7fg6FJ67kJFf80vej3f4ZFRlLieWTI74UD6BVEXKpeGP1XG03NP6MH1MCL+ilraOrakuJl
-        x1dNXJMRx+BR604fYQUQJfEZ1Q84nXFh7f+XKp3wdr2ExO7Tw9AQ36LdJ0z0Wxs+ovIQ5UtmUMquN
-        +jbZ74Xwlo+ObX9Ain6ZPLDiMmMS94XtxKFzz2oC8cueQNZw1+LgT9gWroaPexBgFc9m9QARKLmR3
-        AV0epSdQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l6XkX-00035y-Bm; Mon, 01 Feb 2021 11:52:09 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id AE3CA3011FE;
-        Mon,  1 Feb 2021 12:52:07 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 98E9121A2F1E2; Mon,  1 Feb 2021 12:52:07 +0100 (CET)
-Date:   Mon, 1 Feb 2021 12:52:07 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Nadav Amit <namit@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Nick Piggin <npiggin@gmail.com>, x86@kernel.org
-Subject: Re: [RFC 08/20] mm: store completed TLB generation
-Message-ID: <YBfrZ+gBCTYFS995@hirez.programming.kicks-ass.net>
-References: <20210131001132.3368247-1-namit@vmware.com>
- <20210131001132.3368247-9-namit@vmware.com>
+        Mon, 1 Feb 2021 06:53:33 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DTmWC0lfWzjHP0;
+        Mon,  1 Feb 2021 19:51:35 +0800 (CST)
+Received: from [10.174.184.42] (10.174.184.42) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 1 Feb 2021 19:52:45 +0800
+Subject: Re: [PATCH v13 02/15] iommu: Introduce bind/unbind_guest_msi
+To:     Eric Auger <eric.auger@redhat.com>, <eric.auger.pro@gmail.com>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <kvm@vger.kernel.org>, <kvmarm@lists.cs.columbia.edu>,
+        <will@kernel.org>, <joro@8bytes.org>, <maz@kernel.org>,
+        <robin.murphy@arm.com>, <alex.williamson@redhat.com>
+References: <20201118112151.25412-1-eric.auger@redhat.com>
+ <20201118112151.25412-3-eric.auger@redhat.com>
+CC:     <jean-philippe@linaro.org>, <jacob.jun.pan@linux.intel.com>,
+        <nicoleotsuka@gmail.com>, <vivek.gautam@arm.com>,
+        <yi.l.liu@intel.com>, <zhangfei.gao@linaro.org>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <6a70d93d-329f-4129-bd90-03f8589c5de4@huawei.com>
+Date:   Mon, 1 Feb 2021 19:52:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210131001132.3368247-9-namit@vmware.com>
+In-Reply-To: <20201118112151.25412-3-eric.auger@redhat.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 04:11:20PM -0800, Nadav Amit wrote:
-> +static inline void tlb_update_generation(atomic64_t *gen, u64 new_gen)
-> +{
-> +	u64 cur_gen = atomic64_read(gen);
-> +
-> +	while (cur_gen < new_gen) {
-> +		u64 old_gen = atomic64_cmpxchg(gen, cur_gen, new_gen);
-> +
-> +		/* Check if we succeeded in the cmpxchg */
-> +		if (likely(cur_gen == old_gen))
-> +			break;
-> +
-> +		cur_gen = old_gen;
-> +	};
-> +}
+Hi Eric,
 
-	u64 cur_gen = atomic64_read(gen);
-	while (cur_gen < new_gen && !atomic64_try_cmpxchg(gen, &cur_gen, new_gen))
-		;
+On 2020/11/18 19:21, Eric Auger wrote:
+> On ARM, MSI are translated by the SMMU. An IOVA is allocated
+> for each MSI doorbell. If both the host and the guest are exposed
+> with SMMUs, we end up with 2 different IOVAs allocated by each.
+> guest allocates an IOVA (gIOVA) to map onto the guest MSI
+> doorbell (gDB). The Host allocates another IOVA (hIOVA) to map
+> onto the physical doorbell (hDB).
+> 
+> So we end up with 2 untied mappings:
+>          S1            S2
+> gIOVA    ->    gDB
+>               hIOVA    ->    hDB
+> 
+> Currently the PCI device is programmed by the host with hIOVA
+> as MSI doorbell. So this does not work.
+> 
+> This patch introduces an API to pass gIOVA/gDB to the host so
+> that gIOVA can be reused by the host instead of re-allocating
+> a new IOVA. So the goal is to create the following nested mapping:
+Does the gDB can be reused under non-nested mode?
+
+> 
+>          S1            S2
+> gIOVA    ->    gDB     ->    hDB
+> 
+> and program the PCI device with gIOVA MSI doorbell.
+> 
+> In case we have several devices attached to this nested domain
+> (devices belonging to the same group), they cannot be isolated
+> on guest side either. So they should also end up in the same domain
+> on guest side. We will enforce that all the devices attached to
+> the host iommu domain use the same physical doorbell and similarly
+> a single virtual doorbell mapping gets registered (1 single
+> virtual doorbell is used on guest as well).
+> 
+[...]
+
+> + *
+> + * The associated IOVA can be reused by the host to create a nested
+> + * stage2 binding mapping translating into the physical doorbell used
+> + * by the devices attached to the domain.
+> + *
+> + * All devices within the domain must share the same physical doorbell.
+> + * A single MSI GIOVA/GPA mapping can be attached to an iommu_domain.
+> + */
+> +
+> +int iommu_bind_guest_msi(struct iommu_domain *domain,
+> +			 dma_addr_t giova, phys_addr_t gpa, size_t size)
+> +{
+> +	if (unlikely(!domain->ops->bind_guest_msi))
+> +		return -ENODEV;
+> +
+> +	return domain->ops->bind_guest_msi(domain, giova, gpa, size);
+> +}
+> +EXPORT_SYMBOL_GPL(iommu_bind_guest_msi);
+> +
+> +void iommu_unbind_guest_msi(struct iommu_domain *domain,
+> +			    dma_addr_t iova)
+nit: s/iova/giova
+
+> +{
+> +	if (unlikely(!domain->ops->unbind_guest_msi))
+> +		return;
+> +
+> +	domain->ops->unbind_guest_msi(domain, iova);
+> +}
+> +EXPORT_SYMBOL_GPL(iommu_unbind_guest_msi);
+> +
+[...]
+
+Thanks,
+Keqian
 
