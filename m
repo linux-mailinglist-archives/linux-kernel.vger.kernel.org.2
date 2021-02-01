@@ -2,168 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D26730A286
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 08:11:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C99C30A284
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 08:09:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232091AbhBAHKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 02:10:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46318 "EHLO
+        id S232184AbhBAHJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 02:09:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232397AbhBAHH5 (ORCPT
+        with ESMTP id S232388AbhBAHHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 02:07:57 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E97EC061756
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 23:07:17 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id my11so9123161pjb.1
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 23:07:17 -0800 (PST)
+        Mon, 1 Feb 2021 02:07:52 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813F3C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 23:07:12 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id e19so10952033pfh.6
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 23:07:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yEAXr+uYT47arw+BgtSxxjuiMvD2994EjnVkSqzNVfY=;
-        b=W57OCjk6JbbEC4TjR83KofLCibS8dcJom3IZSNhSRjw5CSmPK6uBlvGID5M8peSK1g
-         qbg2aSsCsVu9ARLEz506EijrXcJ5cuXfR7bEvPEGoLV1lckL1uC9baxQJI3Vvx2z3tj0
-         cyXH9yc3PwbWbOlLXj4Lhsj8YujMnzZQTFyj8=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p6LP5nmwHHk1JmxzrW73ev9rGdTjCqtJxdKFxpPxFYA=;
+        b=olK/t6SSd+kAv5Y+C6uyu0Lm96rWnEpmUzkuqYFQtEZyoUDxWRihC7dQ7pz4CYkLH9
+         6cl0UktzKMyafofY9sfqG/OWnBuD3bBqNcLz0IKSp4tVtGvIwTkoLkqKLREktjGz5zYN
+         7MZMcLlqQUE6X5OJcXnKK4O7wl97/L6jh0AwyGlotQLD/QUxOdIodvp+McB2CvRqL5CE
+         NYhTB+2RUAK+X2Yg7rBfCfVqZ0b+xZ1+8HL9FSta1oDmrjV61QiHcXA5PUUNOp0HZYQY
+         GYkmSjz5E7K0cAiPSVXfS31z8iM/vdKqQD/Qx0viyE1iw754tr7l+6wIx2DBnkBOSFWC
+         tGkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=yEAXr+uYT47arw+BgtSxxjuiMvD2994EjnVkSqzNVfY=;
-        b=YdBhdgMpC/sci3oj24GhCqc+irDGO7b6pNKev/H0aIqW4sKzqdDY2+Pa5R8VDSiPKr
-         eK4PRxLg8UzK4R04swNnf5LZaJSP+k05lpN4aNDoqN9RCQYvOkHjF+OO6AxAKahPpdJX
-         ZRg97YIlSDYwoDOXXb6bOg5XIYv2nVX6Gb99X5oI0/sVnlDBbfcGQSU94a7LYgyVC+Ff
-         T7QeH1GF53H2bc2JdddpV0+R8N5+l9+y3r78ZyXFXQDTcGS3GZ3sPI6WjFj+MhpluY54
-         JJ9gzim9frkq3a3CGMVZrQwz3qHfHSm2J/sLtJNDFGUmb7Ozzn2TODUJzv7lg8Kcy+zO
-         V7Sw==
-X-Gm-Message-State: AOAM533VsS3aAV9fXMFHkC/iRFUEkajQ6YyLGKOU3MZsRqn3nv06kAfi
-        VGHXyvxA1vVh42uMAJgBs+zcHA==
-X-Google-Smtp-Source: ABdhPJzYlktOhXkvTLg/xc7MCjc/pyZp0lyHg6HFBKuSA4R/WhR/9EXFwjDKeLhZBARJQLstYAGF8Q==
-X-Received: by 2002:a17:90a:b282:: with SMTP id c2mr16030435pjr.54.1612163236914;
-        Sun, 31 Jan 2021 23:07:16 -0800 (PST)
-Received: from localhost ([2401:fa00:1:b:158e:ed37:38d6:db19])
-        by smtp.gmail.com with ESMTPSA id a22sm14306240pjh.5.2021.01.31.23.07.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Jan 2021 23:07:16 -0800 (PST)
-From:   Yen-lin Lai <yenlinlai@chromium.org>
-To:     linux-wireless@vger.kernel.org
-Cc:     Brian Norris <briannorris@chromium.org>,
-        Yen-lin Lai <yenlinlai@chromium.org>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Xinming Hu <huxinming820@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH] mwifiex: Report connected BSS with cfg80211_connect_bss()
-Date:   Mon,  1 Feb 2021 15:06:49 +0800
-Message-Id: <20210201070649.1667209-1-yenlinlai@chromium.org>
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p6LP5nmwHHk1JmxzrW73ev9rGdTjCqtJxdKFxpPxFYA=;
+        b=LwgHnFC6qguCVkSqvG0+MaSA+iQPvuIVZLrlHj/noAUszpF+JJ8SdbOBbQdyrUnNKb
+         EZZ6Apzy1lkrfCGmm5Sb9GYfgBPYI1R8X3UWO7VuwbgrXvnX6ZwsdnmNXPPd6fC+Yn+t
+         5nBQC0pQa3hYO4njjhbiw8n72bWUqAmTRm9IdtZW7kAB9m5pTpEKwQlJoSwXF0VqqO96
+         YPc8KgvGRt6W6UOpAT1wYazZDlwuPejE6vxN9fuU83gfODZF/Nut4YoL1f62ASOnO8GJ
+         kDhPGuHJGrsMnEmgFkZdweW1tk23bVlgbjQciLZxxBV3He8y/zqz9IgVFykbqlD50CkZ
+         hahA==
+X-Gm-Message-State: AOAM533GbTWUGN2rGlYIxC1IrvhsKLUcfPmIW8q3HHxYTZsERsw60/Yq
+        xUF1JaIzyg2mkRM4Avy8YSsJANNIejLqRKqI26g=
+X-Google-Smtp-Source: ABdhPJxDr2oNERZ32QLkofyye8h/80wTHgcO5d5N7oC+fiUo/cSdU1rSv/9ZCYaLbbgb3vA0x6X/sskeIMQXY4p4XPg=
+X-Received: by 2002:aa7:83c2:0:b029:1a5:daa9:f22f with SMTP id
+ j2-20020aa783c20000b02901a5daa9f22fmr14773958pfn.48.1612163232063; Sun, 31
+ Jan 2021 23:07:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210130022124.65083-1-mgross@linux.intel.com> <20210130022124.65083-4-mgross@linux.intel.com>
+In-Reply-To: <20210130022124.65083-4-mgross@linux.intel.com>
+From:   Jassi Brar <jassisinghbrar@gmail.com>
+Date:   Mon, 1 Feb 2021 01:07:01 -0600
+Message-ID: <CABb+yY0cE=qkU7pLx6W-3gJzGOnHbkt-ThPm67fQKGo+79fvDQ@mail.gmail.com>
+Subject: Re: [PATCH v3 03/34] mailbox: vpu-ipc-mailbox: Add support for Intel
+ VPU IPC mailbox
+To:     mgross@linux.intel.com
+Cc:     markgross@kernel.org, "arnd@arndb.de" <arnd@arndb.de>, bp@suse.de,
+        damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Jonathan Corbet <corbet@lwn.net>, palmerdabbelt@google.com,
+        paul.walmsley@sifive.com, Peng Fan <peng.fan@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a network is moved or reconfigured on the different channel, there
-can be multiple BSSes with the same BSSID and SSID in scan result
-before the old one expires. Then, it can cause cfg80211_connect_result
-to map current_bss to a bss with the wrong channel.
+On Fri, Jan 29, 2021 at 8:21 PM <mgross@linux.intel.com> wrote:
+>
+> From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+>
+> Add mailbox controller enabling inter-processor communication (IPC)
+> between the CPU (aka, the Application Processor - AP) and the VPU on
+> Intel Movidius SoCs like Keem Bay.
+>
+> The controller uses HW FIFOs to enable such communication. Specifically,
+> there are two FIFOs, one for the CPU and one for VPU. Each FIFO can hold
+> 128 entries (messages) of 32-bit each (but only 26 bits are actually
+> usable, since the 6 least-significant bits are reserved).
+>
+> When the Linux kernel on the AP needs to send messages to the VPU
+> firmware, it writes them to the VPU FIFO; similarly, when the VPU
+> firmware needs to send messages to the AP, it writes them to the CPU
+> FIFO.
+>
+> The AP is notified of pending messages in the CPU FIFO by means of the
+> 'FIFO-not-empty' interrupt, which is generated by the CPU FIFO while not
+> empty. This interrupt is cleared automatically once all messages have
+> been read from the FIFO (i.e., the FIFO has been emptied).
+>
+> The hardware doesn't provide an TX done IRQ (i.e., an IRQ that allows
+> the VPU firmware to notify the AP that the message put into the VPU FIFO
+> has been received); however the AP can ensure that the message has been
+> successfully put into the VPU FIFO (and therefore transmitted) by
+> checking the VPU FIFO status register to ensure that writing the message
+> didn't cause the FIFO to overflow.
+>
+> Therefore, the mailbox controller is configured as capable of tx_done
+> IRQs and a tasklet is used to simulate the tx_done IRQ. The tasklet is
+> activated by send_data() right after the message has been put into the
+> VPU FIFO and the VPU FIFO status registers has been checked. If an
+> overflow is reported by the status register, the tasklet passes -EBUSY
+> to mbox_chan_txdone(), to notify the mailbox client of the failed TX.
+>
+> The client should therefore register a tx_done() callback to properly
+> handle failed transmissions.
+>
+> Note: the 'txdone_poll' mechanism cannot be used because it doesn't
+> provide a way to report a failed transmission.
+>
+txdone means the last submitted transfer has been done with --
+successfully or not.
+So I think we can do without the tasklet as explained below....
 
-Let mwifiex_cfg80211_assoc return the selected BSS and then the caller
-can report it cfg80211_connect_bss.
+....
 
-Signed-off-by: Yen-lin Lai <yenlinlai@chromium.org>
+> +static int vpu_ipc_mailbox_send_data(struct mbox_chan *chan, void *data)
+> +{
+> +       struct vpu_ipc_mbox *vpu_ipc_mbox = chan->con_priv;
+> +       u32 entry, overflow;
+> +
+> +       entry = *((u32 *)data);
+> +
+Are all messages max 32bits wide?
+Usually the controller specifies a packet format (more than just a
+word but of course that's not mandatory) that a client submits the
+data to be transmitted in. Esp when it has deep FIFOs.
 
----
+> +       /* Ensure last 6-bits of entry are not used. */
+> +       if (unlikely(entry & IPC_FIFO_ENTRY_RSVD_MASK)) {
+> +               vpu_ipc_mbox->txdone_result = -EINVAL;
+> +               goto exit;
+> +       }
+> +
+> +       /* Add processor ID to entry. */
+> +       entry |= IPC_FIFO_ID_CPU & IPC_FIFO_ENTRY_RSVD_MASK;
+> +
+> +       /* Write entry to VPU FIFO. */
+> +       iowrite32(entry, vpu_ipc_mbox->vpu_fifo_base + IPC_FIFO);
+> +
+> +       /* Check if we overflew the VPU FIFO. */
+> +       overflow = ioread32(vpu_ipc_mbox->vpu_fifo_base + IPC_FIFO_OF_FLAG0) &
+> +                  BIT(IPC_FIFO_ID_CPU);
+> +       if (unlikely(overflow)) {
+> +               /* Reset overflow register. */
+> +               iowrite32(BIT(IPC_FIFO_ID_CPU),
+> +                         vpu_ipc_mbox->vpu_fifo_base + IPC_FIFO_OF_FLAG0);
+> +               vpu_ipc_mbox->txdone_result = -EBUSY;
+> +               goto exit;
+> +       }
+> +       vpu_ipc_mbox->txdone_result = 0;
+> +
+> +exit:
+> +       /* Schedule tasklet to call mbox_chan_txdone(). */
+> +       tasklet_schedule(&vpu_ipc_mbox->txdone_tasklet);
+> +
+> +       return 0;
+> +}
+> +
+Maybe set txdone_poll and implement last_tx_done()  where you can wait
+for FIFO to have enough space for another message, so that the next
+submitted request will never return -EBUSY.
 
- .../net/wireless/marvell/mwifiex/cfg80211.c   | 35 ++++++++++++++-----
- 1 file changed, 26 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/net/wireless/marvell/mwifiex/cfg80211.c b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-index a6b9dc6700b1..4bae83e47e9e 100644
---- a/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-+++ b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
-@@ -2173,7 +2173,8 @@ static int
- mwifiex_cfg80211_assoc(struct mwifiex_private *priv, size_t ssid_len,
- 		       const u8 *ssid, const u8 *bssid, int mode,
- 		       struct ieee80211_channel *channel,
--		       struct cfg80211_connect_params *sme, bool privacy)
-+		       struct cfg80211_connect_params *sme, bool privacy,
-+		       struct cfg80211_bss **sel_bss)
- {
- 	struct cfg80211_ssid req_ssid;
- 	int ret, auth_type = 0;
-@@ -2307,17 +2308,31 @@ mwifiex_cfg80211_assoc(struct mwifiex_private *priv, size_t ssid_len,
- 		}
- 	}
- 
-+	if (bss)
-+		cfg80211_ref_bss(priv->adapter->wiphy, bss);
-+
- 	ret = mwifiex_bss_start(priv, bss, &req_ssid);
- 	if (ret)
--		return ret;
-+		goto cleanup;
- 
- 	if (mode == NL80211_IFTYPE_ADHOC) {
- 		/* Inform the BSS information to kernel, otherwise
- 		 * kernel will give a panic after successful assoc */
--		if (mwifiex_cfg80211_inform_ibss_bss(priv))
--			return -EFAULT;
-+		if (mwifiex_cfg80211_inform_ibss_bss(priv)) {
-+			ret = -EFAULT;
-+			goto cleanup;
-+		}
- 	}
- 
-+	/* Pass the selected BSS entry to caller. */
-+	if (sel_bss) {
-+		*sel_bss = bss;
-+		bss = NULL;
-+	}
-+
-+cleanup:
-+	if (bss)
-+		cfg80211_put_bss(priv->adapter->wiphy, bss);
- 	return ret;
- }
- 
-@@ -2334,6 +2349,7 @@ mwifiex_cfg80211_connect(struct wiphy *wiphy, struct net_device *dev,
- {
- 	struct mwifiex_private *priv = mwifiex_netdev_get_priv(dev);
- 	struct mwifiex_adapter *adapter = priv->adapter;
-+	struct cfg80211_bss *bss = NULL;
- 	int ret;
- 
- 	if (GET_BSS_ROLE(priv) != MWIFIEX_BSS_ROLE_STA) {
-@@ -2369,11 +2385,12 @@ mwifiex_cfg80211_connect(struct wiphy *wiphy, struct net_device *dev,
- 		cfg80211_sched_scan_stopped_rtnl(priv->wdev.wiphy, 0);
- 
- 	ret = mwifiex_cfg80211_assoc(priv, sme->ssid_len, sme->ssid, sme->bssid,
--				     priv->bss_mode, sme->channel, sme, 0);
-+				     priv->bss_mode, sme->channel, sme, 0,
-+				     &bss);
- 	if (!ret) {
--		cfg80211_connect_result(priv->netdev, priv->cfg_bssid, NULL, 0,
--					NULL, 0, WLAN_STATUS_SUCCESS,
--					GFP_KERNEL);
-+		cfg80211_connect_bss(priv->netdev, priv->cfg_bssid, bss, NULL,
-+				     0, NULL, 0, WLAN_STATUS_SUCCESS,
-+				     GFP_KERNEL, NL80211_TIMEOUT_UNSPECIFIED);
- 		mwifiex_dbg(priv->adapter, MSG,
- 			    "info: associated to bssid %pM successfully\n",
- 			    priv->cfg_bssid);
-@@ -2504,7 +2521,7 @@ mwifiex_cfg80211_join_ibss(struct wiphy *wiphy, struct net_device *dev,
- 	ret = mwifiex_cfg80211_assoc(priv, params->ssid_len, params->ssid,
- 				     params->bssid, priv->bss_mode,
- 				     params->chandef.chan, NULL,
--				     params->privacy);
-+				     params->privacy, NULL);
- done:
- 	if (!ret) {
- 		cfg80211_ibss_joined(priv->netdev, priv->cfg_bssid,
--- 
-2.30.0.365.g02bc693789-goog
-
+thanks
