@@ -2,160 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1587B30A766
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:17:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD3130A78A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:25:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231490AbhBAMRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 07:17:11 -0500
-Received: from foss.arm.com ([217.140.110.172]:58396 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231432AbhBAMRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 07:17:00 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 079D0ED1;
-        Mon,  1 Feb 2021 04:16:13 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.41.104])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 852D73F718;
-        Mon,  1 Feb 2021 04:16:10 -0800 (PST)
-Date:   Mon, 1 Feb 2021 12:16:07 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+51bed6fc20ecc6362058@syzkaller.appspotmail.com>,
-        Sergey.Semin@baikalelectronics.ru,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        id S231145AbhBAMZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 07:25:16 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:47550 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230002AbhBAMZO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 07:25:14 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 111CEpWQ077887;
+        Mon, 1 Feb 2021 12:24:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=tLvdFlLOpMReHiVP2YoEZepdkqZJj3ibXM9lnjBT0Vc=;
+ b=YC7t2XO1JboNJat8x3dc8+1UvHuDj8jIZ7HONbqoDyj3ycInVkkRr8Bc6bTeJOVs68kT
+ SienA6R8IWtMEy7fsINdeStL4qaHiGd+EbfONipJ3kVfV/FU+rTRhNsB43SxGiDkJn42
+ F6D3ICSlDl4f36XazxTN1OLHWaXHzabyKBr2L/+ZpZNrePNYsxtZawvgRB3GjFGMWo/s
+ FYGBWPmok483WrNuJyDcTcHKESI3SJPz/TiXqio08WWqpZTnAos7vFipvcqNEQd85Ry9
+ cJ/PRQsKWR5AVKc1c9dUmWg0I0J7I5IjX8bQAmhRlOyZ200V+LI1UMNaz2/DoQs13Wdz PQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 36cydkmwxc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 01 Feb 2021 12:24:25 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 111CBOxT118872;
+        Mon, 1 Feb 2021 12:22:23 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 36dh1m9yc8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 01 Feb 2021 12:22:23 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 111CMFsw001328;
+        Mon, 1 Feb 2021 12:22:16 GMT
+Received: from mwanda (/10.175.186.133)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 01 Feb 2021 04:22:14 -0800
+Date:   Mon, 1 Feb 2021 15:22:07 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Scott Branden <scott.branden@broadcom.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        jirislaby@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        Lukas Wunner <lukas@wunner.de>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: Internal error in io_serial_out
-Message-ID: <20210201121607.GB64300@C02TD0UTHF1T.local>
-References: <0000000000005ec92c05ba05de1b@google.com>
- <CACT4Y+aBLoCsc9EFnSm7grXJyzEpek=i3+XdSC_7FrL4JF=MuQ@mail.gmail.com>
+        Olof Johansson <olof@lixom.net>,
+        Desmond Yan <desmond.yan@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] misc: bcm-vk: unlock on error in bcm_to_h_msg_dequeue()
+Message-ID: <YBfyb+jU5lDUe+5g@mwanda>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+aBLoCsc9EFnSm7grXJyzEpek=i3+XdSC_7FrL4JF=MuQ@mail.gmail.com>
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9881 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
+ suspectscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102010064
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9881 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
+ priorityscore=1501 impostorscore=0 malwarescore=0 clxscore=1011
+ spamscore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102010064
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 09:35:46AM +0100, Dmitry Vyukov wrote:
-> On Fri, Jan 29, 2021 at 9:34 AM syzbot
-> <syzbot+51bed6fc20ecc6362058@syzkaller.appspotmail.com> wrote:
-> >
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    76c057c8 Merge branch 'parisc-5.11-2' of git://git.kernel...
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=13728c5f500000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=f75d66d6d359ef2f
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=51bed6fc20ecc6362058
-> > userspace arch: arm64
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+51bed6fc20ecc6362058@syzkaller.appspotmail.com
-> 
-> +Mark
-> 
-> This happens on arm64 only and pretty frequently. Mark, have you seen
-> it in your testing? This is qemu emulation, though.
+Unlock before returning on this error path.
 
-I have not seen this, but:
+Fixes: 111d746bb476 ("misc: bcm-vk: add VK messaging support")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/misc/bcm-vk/bcm_vk_msg.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-* I'm using KVM acceleration (atop a v5.6 host).
+diff --git a/drivers/misc/bcm-vk/bcm_vk_msg.c b/drivers/misc/bcm-vk/bcm_vk_msg.c
+index eec90494777d..fc972e43258a 100644
+--- a/drivers/misc/bcm-vk/bcm_vk_msg.c
++++ b/drivers/misc/bcm-vk/bcm_vk_msg.c
+@@ -849,7 +849,8 @@ s32 bcm_to_h_msg_dequeue(struct bcm_vk *vk)
+ 				 * that is fatal.
+ 				 */
+ 				dev_crit(dev, "Kernel mem allocation failure.\n");
+-				return -ENOMEM;
++				total = -ENOMEM;
++				goto idx_err;
+ 			}
+ 
+ 			/* flush rd pointer after a message is dequeued */
+-- 
+2.29.2
 
-* I haven't tested v5.11-rc5 specifically.
-
-* My config might be different. I use a kconfig fragment to enable
-  a few options atop the latest defconfig:
-  https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/commit/?h=fuzzing/5.10-rc7&id=83abdaa512626051c6eecd7c1dfb41fb061ebcb9
-
-* My Syzkaller instance is older (b6cd37e38acccec1421055549f46948d667f0e60),
-  so it might not be tickling the kernel in the same way.
-
-... and any of those could potentially have some impact.
-
-I had just set off a run on v5.11-rc6; I'll update to the latest
-Syzkaller version and restart that with my config. If that doesn't blow
-up after a while I can give your config a go on v5.11-rc5.
-
-My KVM-accelerated VM is using a PL011 UART as its main UART, but does
-seem to detect an 8250 UART, so it doesn't look like this is down to VM
-configuration.
-
-Thanks,
-Mark.
-
-> > Internal error: synchronous external abort: 97140050 [#1] PREEMPT SMP
-> > Modules linked in:
-> > CPU: 1 PID: 21580 Comm: syz-executor.0 Not tainted 5.11.0-rc5-syzkaller-00040-g76c057c84d28 #0
-> > Hardware name: linux,dummy-virt (DT)
-> > pstate: 80400089 (Nzcv daIf +PAN -UAO -TCO BTYPE=--)
-> > pc : __raw_writeb arch/arm64/include/asm/io.h:27 [inline]
-> > pc : _outb include/asm-generic/io.h:501 [inline]
-> > pc : logic_outb+0x40/0xb0 lib/logic_pio.c:299
-> > lr : io_serial_out+0x2c/0x40 drivers/tty/serial/8250/8250_port.c:453
-> > sp : ffff80001767bbd0
-> > x29: ffff80001767bbd0 x28: f1ff000004267000
-> > x27: ffff800014281000 x26: 0000000000000001
-> > x25: ffff8000142832a0 x24: ffff800014281000
-> > x23: ffff800014281000 x22: 0000000000000fff
-> > x21: 0000000000000001 x20: 0000000000000002
-> > x19: fffffbfffe800001 x18: 00000000fffffffb
-> > x17: 0000000000000000 x16: 0000000000000000
-> > x15: 0000000000000020 x14: ffffffffffffffff
-> > x13: 0000000000000000 x12: ffff80001767bd9f
-> > x11: 0000000000000000 x10: 7f7f7f7f7f7f7f7f
-> > x9 : fefefefefeff3252 x8 : ffff80001767b924
-> > x7 : 0000000000000003 x6 : 0000000000000001
-> > x5 : f1ff000005d7c4e0 x4 : 0000000000000000
-> > x3 : ffff800013c02808 x2 : 0000000000000000
-> > x1 : fffffbfffe800000 x0 : 0000000000ffbffe
-> > Call trace:
-> >  _outb include/asm-generic/io.h:501 [inline]
-> >  logic_outb+0x40/0xb0 lib/logic_pio.c:299
-> >  io_serial_out+0x2c/0x40 drivers/tty/serial/8250/8250_port.c:453
-> >  serial_out drivers/tty/serial/8250/8250.h:118 [inline]
-> >  serial8250_set_THRI drivers/tty/serial/8250/8250.h:138 [inline]
-> >  __start_tx drivers/tty/serial/8250/8250_port.c:1566 [inline]
-> >  serial8250_start_tx+0x98/0x1c4 drivers/tty/serial/8250/8250_port.c:1666
-> >  __uart_start.isra.0+0x3c/0x4c drivers/tty/serial/serial_core.c:127
-> >  uart_start+0x70/0x110 drivers/tty/serial/serial_core.c:137
-> >  uart_flush_chars+0x14/0x20 drivers/tty/serial/serial_core.c:573
-> >  __receive_buf drivers/tty/n_tty.c:1651 [inline]
-> >  n_tty_receive_buf_common+0x2a0/0xb30 drivers/tty/n_tty.c:1744
-> >  n_tty_receive_buf+0x18/0x2c drivers/tty/n_tty.c:1773
-> >  tiocsti drivers/tty/tty_io.c:2203 [inline]
-> >  tty_ioctl+0x5b8/0xe5c drivers/tty/tty_io.c:2577
-> >  vfs_ioctl fs/ioctl.c:48 [inline]
-> >  __do_sys_ioctl fs/ioctl.c:753 [inline]
-> >  __se_sys_ioctl fs/ioctl.c:739 [inline]
-> >  __arm64_sys_ioctl+0xac/0xf0 fs/ioctl.c:739
-> >  __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
-> >  invoke_syscall arch/arm64/kernel/syscall.c:49 [inline]
-> >  el0_svc_common.constprop.0+0x74/0x190 arch/arm64/kernel/syscall.c:159
-> >  do_el0_svc+0x78/0x90 arch/arm64/kernel/syscall.c:198
-> >  el0_svc+0x14/0x20 arch/arm64/kernel/entry-common.c:365
-> >  el0_sync_handler+0x1a8/0x1b0 arch/arm64/kernel/entry-common.c:381
-> >  el0_sync+0x190/0x1c0 arch/arm64/kernel/entry.S:699
-> > Code: d2bfd001 f2df7fe1 f2ffffe1 8b010273 (39000274)
-> > ---[ end trace 00ba385f910422db ]---
-> >
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> >
-> > --
-> > You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> > To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> > To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/0000000000005ec92c05ba05de1b%40google.com.
