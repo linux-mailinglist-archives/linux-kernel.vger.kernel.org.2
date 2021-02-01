@@ -2,73 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD0F30ACC9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:38:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2D830ACC2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:38:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbhBAQik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 11:38:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55704 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229500AbhBAQih (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 11:38:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612197431;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+jj6jBCfn7J2yyMR8iYzgdgBFCJ5rUe4Q6xL1K3yPjY=;
-        b=J8UrwWllvKQb1xdZmhc2k2m5B2xhzzSX0r8zXSdrk+zcq7Le+7h6Xd3Ti2fZfVIp/OtJFe
-        HN6B+9Ft+4qByWdrQcVVQu1YJs3x/bMqfYDBlkf980uzFTSv37AFAdCnM5hWrBadGbSDqe
-        L3DHE4u4f5EkUCohHb5cO7b1Z5byOvQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-522-LR-6CSGbPh6f-swe8BxKjg-1; Mon, 01 Feb 2021 11:37:06 -0500
-X-MC-Unique: LR-6CSGbPh6f-swe8BxKjg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B73248799FA;
-        Mon,  1 Feb 2021 16:36:55 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D22E460D06;
-        Mon,  1 Feb 2021 16:36:53 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <7836898a-0a42-5c9b-3a42-7ff4c7a03ea4@linux.ibm.com>
-References: <7836898a-0a42-5c9b-3a42-7ff4c7a03ea4@linux.ibm.com> <20210201151910.1465705-1-stefanb@linux.ibm.com> <32177.1612196003@warthog.procyon.org.uk>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     dhowells@redhat.com, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, davem@davemloft.net,
-        herbert@gondor.apana.org.au, zohar@linux.ibm.com,
-        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
-        linux-integrity@vger.kernel.org
-Subject: Re: [PATCH v7 0/4] Add support for x509 certs with NIST p256 and p192 keys
+        id S229645AbhBAQh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 11:37:58 -0500
+Received: from foss.arm.com ([217.140.110.172]:34370 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229500AbhBAQh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 11:37:57 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 47F7A1042;
+        Mon,  1 Feb 2021 08:37:10 -0800 (PST)
+Received: from [10.57.8.191] (unknown [10.57.8.191])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F0D063F718;
+        Mon,  1 Feb 2021 08:37:07 -0800 (PST)
+Subject: Re: [RFC][PATCH 0/3] New thermal interface allowing IPA to get max
+ power
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Dietmar Eggemann <Dietmar.Eggemann@arm.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Myungjoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>
+References: <20210126104001.20361-1-lukasz.luba@arm.com>
+ <CAJZ5v0gm7TU59Cr1SUZ8Xk_PwBbwv+J5kA75fNqK7OsGM8F6RA@mail.gmail.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <aa626625-a685-1ab2-953e-b492a03e4b53@arm.com>
+Date:   Mon, 1 Feb 2021 16:37:05 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <33902.1612197412.1@warthog.procyon.org.uk>
-Date:   Mon, 01 Feb 2021 16:36:52 +0000
-Message-ID: <33903.1612197412@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <CAJZ5v0gm7TU59Cr1SUZ8Xk_PwBbwv+J5kA75fNqK7OsGM8F6RA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stefan Berger <stefanb@linux.ibm.com> wrote:
+Hi Rafael,
 
-> 1) the whole series goes through the crypto tree
+On 2/1/21 2:19 PM, Rafael J. Wysocki wrote:
+> On Tue, Jan 26, 2021 at 11:40 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>>
+>> Hi all,
+>>
+>> This patch set tries to add the missing feature in the Intelligent Power
+>> Allocation (IPA) governor which is: frequency limit set by user space.
+>> User can set max allowed frequency for a given device which has impact on
+>> max allowed power.
 > 
-> 2) I make the OIDs addition patch 1 that both keyrings and crypto take
-> separately?
+> If there is more than one frequency that can be limited for the given
+> device, are you going to add a limit knob for each of them?
 
-The first might be easiest, but 2 is okay also.  You'll just need to give
-myself and Herbert separate branches to pull, rooted on the same commit.
+I might be unclear. I was referring to normal sysfs scaling_max_freq,
+which sets the max frequency for CPU:
 
-Btw, what do patches 2-4 do if patch 1 isn't applied?
+echo XYZ > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+
+similar for devfreq device, like GPU.
 
 
-David
+> 
+>> In current design there is no mechanism to figure this
+>> out. IPA must know the maximum allowed power for every device. It is then
+>> used for proper power split and divvy-up. When the user limit for max
+>> frequency is not know, IPA assumes it is the highest possible frequency.
+>> It causes wrong power split across the devices.
+> 
+> Do I think correctly that this depends on the Energy Model?
+
+Not directly, but IPA uses the max freq to ask EM for max power. The
+issue is that I don't know this 'max freq' for a given device, because
+user might set a limit for that device. In that case IPA still blindly 
+picks up the power for highest frequency.
+
+> 
+>> This new mechanism provides the max allowed frequency to the thermal
+>> framework and then max allowed power to the IPA.
+>> The implementation is done in this way because currently there is no way
+>> to retrieve the limits from the PM QoS, without uncapping the local
+>> thermal limit and reading the next value.
+> 
+> The above is unclear.  What PM QoS limit are you referring to in the
+> first place?
+
+The PM QoS which we use in thermal for setting the frequency limits,
+for cpufreq_cooling [1] and for devfreq_cooling [2]. I am able to read
+that PM QoS value, but it's the lowest, but not set by user.
+Example:
+2000MHz
+1800MHz <----- user set this to 'max freq'
+1400MHz <----- thermal set that to 'max freq'
+
+then PM QoS would give me the 1400MHz, because it is the limit for
+the max freq.
+
+That's why I said that PM QoS is not able to give me the user limit,
+unless I revert in IPA the capping for that device.
+
+
+> 
+>> It would be a heavy way of
+>> doing these things, since it should be done every polling time (e.g. 50ms).
+>> Also, the value stored in PM QoS can be different than the real OPP 'rate'
+>> so still would need conversion into proper OPP for comparison with EM.
+>> Furthermore, uncapping the device in thermal just to check the user freq
+>> limit is not the safest way.
+>> Thus, this simple implementation moves the calculation of the proper
+>> frequency to the sysfs write code, since it's called less often. The value
+>> is then used as-is in the thermal framework without any hassle.
+>>
+>> As it's a RFC, it still misses the cpufreq sysfs implementation,
+> 
+> What exactly do you mean by this?
+
+I haven't modified cpufreq.c and cpufreq_cooling.c because
+maybe for CPUs there is a way to solve it differently or you might
+don't want at all to modify CPUs code.
+
+> 
+>> but would be addressed if all agree.
+> 
+> Depending on the answers above.
+> 
+> But my general comment would be that it might turn out to be
+> unrealistic to expect user space to know what frequency limit to use
+> to get the desired result in terms of constraining power.
+> 
+
+There are scenarios, where middleware (which is aware what is on
+the foreground in mobile) might limit the GPU max freq, to not
+burn out some power spent on highest OPPs.
+
+Regards,
+Lukasz
+
+[1] 
+https://elixir.bootlin.com/linux/latest/source/drivers/thermal/cpufreq_cooling.c#L443
+[2] 
+https://elixir.bootlin.com/linux/latest/source/drivers/thermal/devfreq_cooling.c#L106
+
 
