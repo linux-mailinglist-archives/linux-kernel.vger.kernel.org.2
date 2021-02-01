@@ -2,170 +2,377 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02AB030A2FE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:07:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A3E30A307
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:07:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232347AbhBAIGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 03:06:24 -0500
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:35609 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229967AbhBAIGT (ORCPT
+        id S232431AbhBAIH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 03:07:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232332AbhBAIHZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 03:06:19 -0500
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210201080536euoutp0202e6153bcdb56950f382d4edbefe4cad~fkRru_gvL3203632036euoutp02s
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 08:05:36 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210201080536euoutp0202e6153bcdb56950f382d4edbefe4cad~fkRru_gvL3203632036euoutp02s
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1612166736;
-        bh=SxwVmfqCCfL4H/OUmMQD5znpVUctJNDjmNZ1Kb7+vWE=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=Avmrn6E4mJjgNLQKRf0JLkxps8qca0lL2ZSm+/cjjZqf9Qcog3PGsMfiYw1ObPGmi
-         Q48XZQr4X6Dakv6VmjGe2oj7nl6TPQv5yPt1b8SgXdczvs3acIf7KWPBBPJfDtryVv
-         dyhgBDK/gXxDmXmNrgUBBHFc5X8KbNkQzFh1R4i4=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20210201080536eucas1p14c66537f97e67f8f8a712927de8641b3~fkRrfhm242588325883eucas1p1C;
-        Mon,  1 Feb 2021 08:05:36 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id D3.EE.27958.056B7106; Mon,  1
-        Feb 2021 08:05:36 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210201080535eucas1p10a057322737f1c0d435312dc5a18f624~fkRrHiZqg1111011110eucas1p16;
-        Mon,  1 Feb 2021 08:05:35 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210201080535eusmtrp1044271b3057bdf5c2be3bc2325ac4a6e~fkRrG2dXD1468214682eusmtrp1v;
-        Mon,  1 Feb 2021 08:05:35 +0000 (GMT)
-X-AuditID: cbfec7f2-f15ff70000006d36-40-6017b650897d
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 96.D1.21957.F46B7106; Mon,  1
-        Feb 2021 08:05:35 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210201080535eusmtip18cb15051d2ce504939039e516eedc5a1~fkRqdovg51412814128eusmtip1j;
-        Mon,  1 Feb 2021 08:05:35 +0000 (GMT)
-Subject: Re: [PATCH v1 0/2] Make fw_devlink=on more forgiving
-To:     Saravana Kannan <saravanak@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <ca582e9f-bc4d-bb94-f700-1cf9dc897b57@samsung.com>
-Date:   Mon, 1 Feb 2021 09:05:34 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.6.1
+        Mon, 1 Feb 2021 03:07:25 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5B8C061786
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 00:06:04 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id x9so3612220plb.5
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 00:06:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zSmrcZ2A26JOuh5FsZ15C1PITeF0b1i/kaNvThh/kSk=;
+        b=fo3D3DMzQERJDsLmXowrQ07MA3oZRKWFbjZgC5bXDZz66c5Oafpdh9lTXgfaa/MTdQ
+         6c1/itDktYpAvPUCQv6qGKytbwbGS0kqQRPc7MTLCuOMWz2nYBwSy0GZ2vSeo+VEFDE8
+         OAs0RZTje5kMZJixMC3GrXBPPEGrLABEHIxYUjFSKXlV9og7JVtbGiBvpM6ZuaF/FvT4
+         iWszmHx4xtPZyxMPWF/vP2GSbAUfMaelWw4MjT+9OpRXpob3Y1ds9JRHu2Uha6Z+A2bi
+         /yN/TgJxYF+A9fQZXsrAOL8B9Kgbje9BD700LP19QC7i8QtwQv6ECd7Z1UlOmlUzeKFb
+         Rchw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zSmrcZ2A26JOuh5FsZ15C1PITeF0b1i/kaNvThh/kSk=;
+        b=OgE9TItoP/6kqD3ng35qDstmEbEwqWzBzX1DgFaQBzLP6gMlcI0nupC7m5aIxIrqyi
+         iyLoQ/LZ2bACbjcjkpydVRzcl5n6RZG5zEui0tB58y93fDg6AnvjoO9ARs4FcS/9/D+l
+         gv5CH4s/t30RbL0PUXbCyLi/g9TnDoau/pjyYVsFyiA45EOjj8ffLroqd9sRqVYYQJQA
+         2rhVOcDUYORoCg4yIjXq1HR1Eae2gi2GfylgPVPiWShOyq4bLR7FbL8aYdUn/spzJokX
+         3oFD9FmsWsLIZjAEeRogPvvilLq/cRnGqkSot5ApPxI3Ipz3oERJAE4aRGcXqo9gXbIZ
+         Dp8Q==
+X-Gm-Message-State: AOAM532Vy9/y8nZX4/GX2NbiOdUV3HdbN6Sq6P3w3Yo1mgQ/zalVGTpQ
+        wV4Waz9LBvPo5ls1Mv4LJycAgTL33NkqIA==
+X-Google-Smtp-Source: ABdhPJxhoj4fcpqjRGsvKedmlkLH1BVbufSjS/eJwrRzDEu0HkmDjwO1pH/xu51LiOvUJPRXbVScug==
+X-Received: by 2002:a17:902:b08f:b029:dc:8ac6:a147 with SMTP id p15-20020a170902b08fb02900dc8ac6a147mr16869049plr.84.1612166763394;
+        Mon, 01 Feb 2021 00:06:03 -0800 (PST)
+Received: from localhost ([122.172.59.240])
+        by smtp.gmail.com with ESMTPSA id c73sm16553353pfb.77.2021.02.01.00.06.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 Feb 2021 00:06:02 -0800 (PST)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Keguang Zhang <keguang.zhang@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH] cpufreq: Remove CPUFREQ_STICKY flag
+Date:   Mon,  1 Feb 2021 13:35:51 +0530
+Message-Id: <377d2e2d328276070ae2f26c65daa1497bb3c3cf.1612166647.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 MIME-Version: 1.0
-In-Reply-To: <CAGETcx941J7Zhrf=ZjO6PW0fiax5VXcV3gbsLQfM_wU_U0EnYw@mail.gmail.com>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPKsWRmVeSWpSXmKPExsWy7djP87oB28QTDL71sVt8mXuKxeLZrb1M
-        Fs2L17NZ7NguYjHlz3Imi8u75rBZ7JxzktVi7pepzBZdh/6yWXxc4uDA5bFt9zZWj/c3Wtk9
-        Fmwq9di0qpPN4861PWwehw53MHrsn7uG3ePOj6WMHp83yQVwRnHZpKTmZJalFunbJXBl7DrW
-        ylzQIVxx4clBpgbGufxdjJwcEgImEg+W/GDrYuTiEBJYwSjx9F0DI4TzhVHi6PyrzBDOZ0aJ
-        5qanzDAtDbf3Q1UtZ5RYsPI/VNVHRomua9PAqoQFbCWmX13ACGKLCNxjkph6sAzEZhaIkLhw
-        6jtYDZuAoUTX2y42EJtXwE5iw9UT7CA2i4CKxNNDd1hBbFGBJIm7dw4zQdQISpyc+YQFxOYU
-        CJQ4+vI1E8RMeYntb+cwQ9jiEreezGcCOUhCoJtTomVZFwvE2S4S21feZYSwhSVeHd/CDmHL
-        SJye3MMC0dDMKPHw3Fp2CKeHUeJy0wyoDmuJO+d+AZ3KAbRCU2L9Ln2IsKNE89Q3LCBhCQE+
-        iRtvBSGO4JOYtG06M0SYV6KjTQiiWk1i1vF1cGsPXrjEPIFRaRaS12YheWcWkndmIexdwMiy
-        ilE8tbQ4Nz212DAvtVyvODG3uDQvXS85P3cTIzCNnf53/NMOxrmvPuodYmTiYDzEKMHBrCTC
-        e2qSWIIQb0piZVVqUX58UWlOavEhRmkOFiVx3lWz18QLCaQnlqRmp6YWpBbBZJk4OKUamIJi
-        JjRlLS1daLv+y8eK0OIHtbf1PBcZyk3om3Ft3oYJQV93OKQ/kZZ652MdbbJ1DYfz1ltempu+
-        pzsYJ+xUaPjTrb7hfL2tTrDupB1+BfttHNllp8qslz/1wuXNiQ2blG+dPr/+zPlvfYv6ynfH
-        Wb9Z8CZX+ZPiZ7m4tv26Uy8mcLlfDF9516tI104ljJ3998vI9x8cjgr1h3dvFmx8GH5hp1Bf
-        xQRvjk/tE59sm8Vcn7P4Wa7h8oLM85z7OpauKJfJvswZ4t1+U6GmcsaUepmQ+VonD70t5hK3
-        fxM4Y+9ujjmKzs5/bj4+e3rPxU8Kb2tOOy+/5Bn6+8K7F41Pp/nOOfUr7mRuoNp6VxUlswIl
-        luKMREMt5qLiRAAFK1KB0gMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIIsWRmVeSWpSXmKPExsVy+t/xu7r+28QTDPY81Lb4MvcUi8WzW3uZ
-        LJoXr2ez2LFdxGLKn+VMFpd3zWGz2DnnJKvF3C9TmS26Dv1ls/i4xMGBy2Pb7m2sHu9vtLJ7
-        LNhU6rFpVSebx51re9g8Dh3uYPTYP3cNu8edH0sZPT5vkgvgjNKzKcovLUlVyMgvLrFVija0
-        MNIztLTQMzKx1DM0No+1MjJV0rezSUnNySxLLdK3S9DL2HWslbmgQ7jiwpODTA2Mc/m7GDk5
-        JARMJBpu72fsYuTiEBJYyiix4tpRZoiEjMTJaQ2sELawxJ9rXWwQRe8ZJW42vmMDSQgL2EpM
-        v7qAEcQWEXjEJNG2NAXEZhaIkJizYh8zRMM1RomH986CNbAJGEp0ve0Cs3kF7CQ2XD3BDmKz
-        CKhIPD10B2ybqECSxIlZn5ghagQlTs58wgJicwoEShx9+ZoJYoGZxLzND5khbHmJ7W/nQNni
-        EreezGeawCg0C0n7LCQts5C0zELSsoCRZRWjSGppcW56brGhXnFibnFpXrpecn7uJkZg3G47
-        9nPzDsZ5rz7qHWJk4mA8xCjBwawkwntqkliCEG9KYmVValF+fFFpTmrxIUZToH8mMkuJJucD
-        E0deSbyhmYGpoYmZpYGppZmxkjjv1rlr4oUE0hNLUrNTUwtSi2D6mDg4pRqYGk7vfyjFY7yt
-        TuzHK+8PvoumKIfJXUz1SMmxmP6QQT3cNCVgQ0uSrtX73PjCaXxbe0ttMjIWNjBMnM/eKy7w
-        v+iC7q9k85UV65SKHnQd2Nfs82ybi9m74zc05/8XMzj2nbUocPr3H5pJgqI1e/j+fK+q0HNS
-        ONR6zrr7Xe+BN3/uTrK9sfnyIb1J7696zZL8sWe+PttvhT4ONrvOb9smVB4wOPm683zsj8he
-        Yf7eBS4WIku5JZpDDvp0qmVtXPjA7mKmR9/nDx+Zv2ddn/EuaKl30HbR9v5d0SpabH0ejbU/
-        z3OpXpVT2LfpwCnTqLAgs2CPU38rLZ5FbLrG7NVvVOm9bsLvC0wcm7ZGT76rxFKckWioxVxU
-        nAgAfis1PmQDAAA=
-X-CMS-MailID: 20210201080535eucas1p10a057322737f1c0d435312dc5a18f624
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210130040932eucas1p21f614520b70e3aecf3bf384a5821e5e8
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210130040932eucas1p21f614520b70e3aecf3bf384a5821e5e8
-References: <20210130040344.2807439-1-saravanak@google.com>
-        <CGME20210130040932eucas1p21f614520b70e3aecf3bf384a5821e5e8@eucas1p2.samsung.com>
-        <CAGETcx941J7Zhrf=ZjO6PW0fiax5VXcV3gbsLQfM_wU_U0EnYw@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
+During cpufreq driver's registration, if the ->init() callback for all
+the CPUs fail then there is not much point in keeping the driver around
+as it will only account for more unnecessary noise, for example cpufreq
+core will try to suspend/resume the driver which never got registered
+properly.
 
-On 30.01.2021 05:08, Saravana Kannan wrote:
-> On Fri, Jan 29, 2021 at 8:03 PM Saravana Kannan <saravanak@google.com> wrote:
->> This patch series solves two general issues with fw_devlink=on
->>
->> Patch 1/2 addresses the issue of firmware nodes that look like they'll
->> have struct devices created for them, but will never actually have
->> struct devices added for them. For example, DT nodes with a compatible
->> property that don't have devices added for them.
->>
->> Patch 2/2 address (for static kernels) the issue of optional suppliers
->> that'll never have a driver registered for them. So, if the device could
->> have probed with fw_devlink=permissive with a static kernel, this patch
->> should allow those devices to probe with a fw_devlink=on. This doesn't
->> solve it for the case where modules are enabled because there's no way
->> to tell if a driver will never be registered or it's just about to be
->> registered. I have some other ideas for that, but it'll have to come
->> later thinking about it a bit.
->>
->> These two patches might remove the need for several other patches that
->> went in as fixes for commit e590474768f1 ("driver core: Set
->> fw_devlink=on by default"), but I think all those fixes are good
->> changes. So I think we should leave those in.
->>
->> Marek, Geert,
->>
->> Can you try this series on a static kernel with your OF_POPULATED
->> changes reverted? I just want to make sure these patches can identify
->> and fix those cases.
->>
->> Tudor,
->>
->> You should still make the clock driver fix (because it's a bug), but I
->> think this series will fix your issue too (even without the clock driver
->> fix). Can you please give this a shot?
-> Marek, Geert, Tudor,
->
-> Forgot to say that this will probably fix your issues only in a static
-> kernel. So please try this with a static kernel. If you can also try
-> and confirm that this does not fix the issue for a modular kernel,
-> that'd be good too.
+The removal of such a driver is avoided if the driver carries the
+CPUFREQ_STICKY flag. This was added way back [1] in 2004 and perhaps no
+one should ever need it now. A lot of driver do set this flag, probably
+because they just copied it from another driver.
 
-I've checked those patches on top of linux next-20210129 with 
-c09a3e6c97f0 ("soc: samsung: pm_domains: Convert to regular platform 
-driver") commit reverted. Sadly it doesn't help. All devices that belong 
-to the Exynos power domains are never probed and stay endlessly on the 
-deferred devices list. I've used static kernel build - the one from 
-exynos_defconfig.
+Remove the flag and update the relevant drivers.
 
-Best regards
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git/commit/include/linux/cpufreq.h?id=7cc9f0d9a1ab04cedc60d64fd8dcf7df224a3b4d
 
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+---
+ drivers/cpufreq/cpufreq-dt.c           |  2 +-
+ drivers/cpufreq/cpufreq.c              |  3 +--
+ drivers/cpufreq/davinci-cpufreq.c      |  2 +-
+ drivers/cpufreq/loongson1-cpufreq.c    |  2 +-
+ drivers/cpufreq/mediatek-cpufreq.c     |  2 +-
+ drivers/cpufreq/omap-cpufreq.c         |  2 +-
+ drivers/cpufreq/qcom-cpufreq-hw.c      |  2 +-
+ drivers/cpufreq/s3c24xx-cpufreq.c      |  2 +-
+ drivers/cpufreq/s5pv210-cpufreq.c      |  2 +-
+ drivers/cpufreq/sa1100-cpufreq.c       |  2 +-
+ drivers/cpufreq/sa1110-cpufreq.c       |  2 +-
+ drivers/cpufreq/scmi-cpufreq.c         |  2 +-
+ drivers/cpufreq/scpi-cpufreq.c         |  2 +-
+ drivers/cpufreq/spear-cpufreq.c        |  2 +-
+ drivers/cpufreq/tegra186-cpufreq.c     |  2 +-
+ drivers/cpufreq/tegra194-cpufreq.c     |  3 +--
+ drivers/cpufreq/vexpress-spc-cpufreq.c |  3 +--
+ include/linux/cpufreq.h                | 17 +++++++----------
+ 18 files changed, 24 insertions(+), 30 deletions(-)
+
+diff --git a/drivers/cpufreq/cpufreq-dt.c b/drivers/cpufreq/cpufreq-dt.c
+index ad4234518ef6..b1e1bdc63b01 100644
+--- a/drivers/cpufreq/cpufreq-dt.c
++++ b/drivers/cpufreq/cpufreq-dt.c
+@@ -175,7 +175,7 @@ static int cpufreq_exit(struct cpufreq_policy *policy)
+ }
+ 
+ static struct cpufreq_driver dt_cpufreq_driver = {
+-	.flags = CPUFREQ_STICKY | CPUFREQ_NEED_INITIAL_FREQ_CHECK |
++	.flags = CPUFREQ_NEED_INITIAL_FREQ_CHECK |
+ 		 CPUFREQ_IS_COOLING_DEV,
+ 	.verify = cpufreq_generic_frequency_table_verify,
+ 	.target_index = set_target,
+diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+index d0a3525ce27f..7d0ae968def7 100644
+--- a/drivers/cpufreq/cpufreq.c
++++ b/drivers/cpufreq/cpufreq.c
+@@ -2810,8 +2810,7 @@ int cpufreq_register_driver(struct cpufreq_driver *driver_data)
+ 	if (ret)
+ 		goto err_boost_unreg;
+ 
+-	if (!(cpufreq_driver->flags & CPUFREQ_STICKY) &&
+-	    list_empty(&cpufreq_policy_list)) {
++	if (unlikely(list_empty(&cpufreq_policy_list))) {
+ 		/* if all ->init() calls failed, unregister */
+ 		ret = -ENODEV;
+ 		pr_debug("%s: No CPU initialized for driver %s\n", __func__,
+diff --git a/drivers/cpufreq/davinci-cpufreq.c b/drivers/cpufreq/davinci-cpufreq.c
+index 91f477a6cbc4..9e97f60f8199 100644
+--- a/drivers/cpufreq/davinci-cpufreq.c
++++ b/drivers/cpufreq/davinci-cpufreq.c
+@@ -95,7 +95,7 @@ static int davinci_cpu_init(struct cpufreq_policy *policy)
+ }
+ 
+ static struct cpufreq_driver davinci_driver = {
+-	.flags		= CPUFREQ_STICKY | CPUFREQ_NEED_INITIAL_FREQ_CHECK,
++	.flags		= CPUFREQ_NEED_INITIAL_FREQ_CHECK,
+ 	.verify		= cpufreq_generic_frequency_table_verify,
+ 	.target_index	= davinci_target,
+ 	.get		= cpufreq_generic_get,
+diff --git a/drivers/cpufreq/loongson1-cpufreq.c b/drivers/cpufreq/loongson1-cpufreq.c
+index 86f612593e49..fb72d709db56 100644
+--- a/drivers/cpufreq/loongson1-cpufreq.c
++++ b/drivers/cpufreq/loongson1-cpufreq.c
+@@ -116,7 +116,7 @@ static int ls1x_cpufreq_exit(struct cpufreq_policy *policy)
+ 
+ static struct cpufreq_driver ls1x_cpufreq_driver = {
+ 	.name		= "cpufreq-ls1x",
+-	.flags		= CPUFREQ_STICKY | CPUFREQ_NEED_INITIAL_FREQ_CHECK,
++	.flags		= CPUFREQ_NEED_INITIAL_FREQ_CHECK,
+ 	.verify		= cpufreq_generic_frequency_table_verify,
+ 	.target_index	= ls1x_cpufreq_target,
+ 	.get		= cpufreq_generic_get,
+diff --git a/drivers/cpufreq/mediatek-cpufreq.c b/drivers/cpufreq/mediatek-cpufreq.c
+index 022e3e966e71..f2e491b25b07 100644
+--- a/drivers/cpufreq/mediatek-cpufreq.c
++++ b/drivers/cpufreq/mediatek-cpufreq.c
+@@ -463,7 +463,7 @@ static int mtk_cpufreq_exit(struct cpufreq_policy *policy)
+ }
+ 
+ static struct cpufreq_driver mtk_cpufreq_driver = {
+-	.flags = CPUFREQ_STICKY | CPUFREQ_NEED_INITIAL_FREQ_CHECK |
++	.flags = CPUFREQ_NEED_INITIAL_FREQ_CHECK |
+ 		 CPUFREQ_HAVE_GOVERNOR_PER_POLICY |
+ 		 CPUFREQ_IS_COOLING_DEV,
+ 	.verify = cpufreq_generic_frequency_table_verify,
+diff --git a/drivers/cpufreq/omap-cpufreq.c b/drivers/cpufreq/omap-cpufreq.c
+index 3694bb030df3..e035ee216b0f 100644
+--- a/drivers/cpufreq/omap-cpufreq.c
++++ b/drivers/cpufreq/omap-cpufreq.c
+@@ -144,7 +144,7 @@ static int omap_cpu_exit(struct cpufreq_policy *policy)
+ }
+ 
+ static struct cpufreq_driver omap_driver = {
+-	.flags		= CPUFREQ_STICKY | CPUFREQ_NEED_INITIAL_FREQ_CHECK,
++	.flags		= CPUFREQ_NEED_INITIAL_FREQ_CHECK,
+ 	.verify		= cpufreq_generic_frequency_table_verify,
+ 	.target_index	= omap_target,
+ 	.get		= cpufreq_generic_get,
+diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
+index 7df18903b66c..f3b4e471e898 100644
+--- a/drivers/cpufreq/qcom-cpufreq-hw.c
++++ b/drivers/cpufreq/qcom-cpufreq-hw.c
+@@ -374,7 +374,7 @@ static struct freq_attr *qcom_cpufreq_hw_attr[] = {
+ };
+ 
+ static struct cpufreq_driver cpufreq_qcom_hw_driver = {
+-	.flags		= CPUFREQ_STICKY | CPUFREQ_NEED_INITIAL_FREQ_CHECK |
++	.flags		= CPUFREQ_NEED_INITIAL_FREQ_CHECK |
+ 			  CPUFREQ_HAVE_GOVERNOR_PER_POLICY |
+ 			  CPUFREQ_IS_COOLING_DEV,
+ 	.verify		= cpufreq_generic_frequency_table_verify,
+diff --git a/drivers/cpufreq/s3c24xx-cpufreq.c b/drivers/cpufreq/s3c24xx-cpufreq.c
+index 37efc0dc3f91..7380c32b238e 100644
+--- a/drivers/cpufreq/s3c24xx-cpufreq.c
++++ b/drivers/cpufreq/s3c24xx-cpufreq.c
+@@ -420,7 +420,7 @@ static int s3c_cpufreq_resume(struct cpufreq_policy *policy)
+ #endif
+ 
+ static struct cpufreq_driver s3c24xx_driver = {
+-	.flags		= CPUFREQ_STICKY | CPUFREQ_NEED_INITIAL_FREQ_CHECK,
++	.flags		= CPUFREQ_NEED_INITIAL_FREQ_CHECK,
+ 	.target		= s3c_cpufreq_target,
+ 	.get		= cpufreq_generic_get,
+ 	.init		= s3c_cpufreq_init,
+diff --git a/drivers/cpufreq/s5pv210-cpufreq.c b/drivers/cpufreq/s5pv210-cpufreq.c
+index bed496cf8d24..69786e5bbf05 100644
+--- a/drivers/cpufreq/s5pv210-cpufreq.c
++++ b/drivers/cpufreq/s5pv210-cpufreq.c
+@@ -574,7 +574,7 @@ static int s5pv210_cpufreq_reboot_notifier_event(struct notifier_block *this,
+ }
+ 
+ static struct cpufreq_driver s5pv210_driver = {
+-	.flags		= CPUFREQ_STICKY | CPUFREQ_NEED_INITIAL_FREQ_CHECK,
++	.flags		= CPUFREQ_NEED_INITIAL_FREQ_CHECK,
+ 	.verify		= cpufreq_generic_frequency_table_verify,
+ 	.target_index	= s5pv210_target,
+ 	.get		= cpufreq_generic_get,
+diff --git a/drivers/cpufreq/sa1100-cpufreq.c b/drivers/cpufreq/sa1100-cpufreq.c
+index 5c075ef6adc0..252b9fc26124 100644
+--- a/drivers/cpufreq/sa1100-cpufreq.c
++++ b/drivers/cpufreq/sa1100-cpufreq.c
+@@ -186,7 +186,7 @@ static int __init sa1100_cpu_init(struct cpufreq_policy *policy)
+ }
+ 
+ static struct cpufreq_driver sa1100_driver __refdata = {
+-	.flags		= CPUFREQ_STICKY | CPUFREQ_NEED_INITIAL_FREQ_CHECK |
++	.flags		= CPUFREQ_NEED_INITIAL_FREQ_CHECK |
+ 			  CPUFREQ_NO_AUTO_DYNAMIC_SWITCHING,
+ 	.verify		= cpufreq_generic_frequency_table_verify,
+ 	.target_index	= sa1100_target,
+diff --git a/drivers/cpufreq/sa1110-cpufreq.c b/drivers/cpufreq/sa1110-cpufreq.c
+index d9d04d935b3a..1a83c8678a63 100644
+--- a/drivers/cpufreq/sa1110-cpufreq.c
++++ b/drivers/cpufreq/sa1110-cpufreq.c
+@@ -310,7 +310,7 @@ static int __init sa1110_cpu_init(struct cpufreq_policy *policy)
+ /* sa1110_driver needs __refdata because it must remain after init registers
+  * it with cpufreq_register_driver() */
+ static struct cpufreq_driver sa1110_driver __refdata = {
+-	.flags		= CPUFREQ_STICKY | CPUFREQ_NEED_INITIAL_FREQ_CHECK |
++	.flags		= CPUFREQ_NEED_INITIAL_FREQ_CHECK |
+ 			  CPUFREQ_NO_AUTO_DYNAMIC_SWITCHING,
+ 	.verify		= cpufreq_generic_frequency_table_verify,
+ 	.target_index	= sa1110_target,
+diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufreq.c
+index 491a0a24fb1e..5bd03b59887f 100644
+--- a/drivers/cpufreq/scmi-cpufreq.c
++++ b/drivers/cpufreq/scmi-cpufreq.c
+@@ -217,7 +217,7 @@ static int scmi_cpufreq_exit(struct cpufreq_policy *policy)
+ 
+ static struct cpufreq_driver scmi_cpufreq_driver = {
+ 	.name	= "scmi",
+-	.flags	= CPUFREQ_STICKY | CPUFREQ_HAVE_GOVERNOR_PER_POLICY |
++	.flags	= CPUFREQ_HAVE_GOVERNOR_PER_POLICY |
+ 		  CPUFREQ_NEED_INITIAL_FREQ_CHECK |
+ 		  CPUFREQ_IS_COOLING_DEV,
+ 	.verify	= cpufreq_generic_frequency_table_verify,
+diff --git a/drivers/cpufreq/scpi-cpufreq.c b/drivers/cpufreq/scpi-cpufreq.c
+index e5140ad63db8..d6a698a1b5d1 100644
+--- a/drivers/cpufreq/scpi-cpufreq.c
++++ b/drivers/cpufreq/scpi-cpufreq.c
+@@ -191,7 +191,7 @@ static int scpi_cpufreq_exit(struct cpufreq_policy *policy)
+ 
+ static struct cpufreq_driver scpi_cpufreq_driver = {
+ 	.name	= "scpi-cpufreq",
+-	.flags	= CPUFREQ_STICKY | CPUFREQ_HAVE_GOVERNOR_PER_POLICY |
++	.flags	= CPUFREQ_HAVE_GOVERNOR_PER_POLICY |
+ 		  CPUFREQ_NEED_INITIAL_FREQ_CHECK |
+ 		  CPUFREQ_IS_COOLING_DEV,
+ 	.verify	= cpufreq_generic_frequency_table_verify,
+diff --git a/drivers/cpufreq/spear-cpufreq.c b/drivers/cpufreq/spear-cpufreq.c
+index 73bd8dc47074..7d0d62a06bf3 100644
+--- a/drivers/cpufreq/spear-cpufreq.c
++++ b/drivers/cpufreq/spear-cpufreq.c
+@@ -160,7 +160,7 @@ static int spear_cpufreq_init(struct cpufreq_policy *policy)
+ 
+ static struct cpufreq_driver spear_cpufreq_driver = {
+ 	.name		= "cpufreq-spear",
+-	.flags		= CPUFREQ_STICKY | CPUFREQ_NEED_INITIAL_FREQ_CHECK,
++	.flags		= CPUFREQ_NEED_INITIAL_FREQ_CHECK,
+ 	.verify		= cpufreq_generic_frequency_table_verify,
+ 	.target_index	= spear_cpufreq_target,
+ 	.get		= cpufreq_generic_get,
+diff --git a/drivers/cpufreq/tegra186-cpufreq.c b/drivers/cpufreq/tegra186-cpufreq.c
+index e566ea298b59..5d1943e787b0 100644
+--- a/drivers/cpufreq/tegra186-cpufreq.c
++++ b/drivers/cpufreq/tegra186-cpufreq.c
+@@ -117,7 +117,7 @@ static unsigned int tegra186_cpufreq_get(unsigned int cpu)
+ 
+ static struct cpufreq_driver tegra186_cpufreq_driver = {
+ 	.name = "tegra186",
+-	.flags = CPUFREQ_STICKY | CPUFREQ_HAVE_GOVERNOR_PER_POLICY |
++	.flags = CPUFREQ_HAVE_GOVERNOR_PER_POLICY |
+ 			CPUFREQ_NEED_INITIAL_FREQ_CHECK,
+ 	.get = tegra186_cpufreq_get,
+ 	.verify = cpufreq_generic_frequency_table_verify,
+diff --git a/drivers/cpufreq/tegra194-cpufreq.c b/drivers/cpufreq/tegra194-cpufreq.c
+index 6a67f36f3b80..a9620e4489ae 100644
+--- a/drivers/cpufreq/tegra194-cpufreq.c
++++ b/drivers/cpufreq/tegra194-cpufreq.c
+@@ -272,8 +272,7 @@ static int tegra194_cpufreq_set_target(struct cpufreq_policy *policy,
+ 
+ static struct cpufreq_driver tegra194_cpufreq_driver = {
+ 	.name = "tegra194",
+-	.flags = CPUFREQ_STICKY | CPUFREQ_CONST_LOOPS |
+-		CPUFREQ_NEED_INITIAL_FREQ_CHECK,
++	.flags = CPUFREQ_CONST_LOOPS | CPUFREQ_NEED_INITIAL_FREQ_CHECK,
+ 	.verify = cpufreq_generic_frequency_table_verify,
+ 	.target_index = tegra194_cpufreq_set_target,
+ 	.get = tegra194_get_speed,
+diff --git a/drivers/cpufreq/vexpress-spc-cpufreq.c b/drivers/cpufreq/vexpress-spc-cpufreq.c
+index f711d8eaea6a..51dfa9ae6cf5 100644
+--- a/drivers/cpufreq/vexpress-spc-cpufreq.c
++++ b/drivers/cpufreq/vexpress-spc-cpufreq.c
+@@ -486,8 +486,7 @@ static void ve_spc_cpufreq_ready(struct cpufreq_policy *policy)
+ 
+ static struct cpufreq_driver ve_spc_cpufreq_driver = {
+ 	.name			= "vexpress-spc",
+-	.flags			= CPUFREQ_STICKY |
+-					CPUFREQ_HAVE_GOVERNOR_PER_POLICY |
++	.flags			= CPUFREQ_HAVE_GOVERNOR_PER_POLICY |
+ 					CPUFREQ_NEED_INITIAL_FREQ_CHECK,
+ 	.verify			= cpufreq_generic_frequency_table_verify,
+ 	.target_index		= ve_spc_cpufreq_set_target,
+diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
+index 9c8b7437b6cd..c8e40e91fe9b 100644
+--- a/include/linux/cpufreq.h
++++ b/include/linux/cpufreq.h
+@@ -387,8 +387,13 @@ struct cpufreq_driver {
+ 
+ /* flags */
+ 
+-/* driver isn't removed even if all ->init() calls failed */
+-#define CPUFREQ_STICKY				BIT(0)
++/*
++ * Set by drivers that need to update internale upper and lower boundaries along
++ * with the target frequency and so the core and governors should also invoke
++ * the diver if the target frequency does not change, but the policy min or max
++ * may have changed.
++ */
++#define CPUFREQ_NEED_UPDATE_LIMITS		BIT(0)
+ 
+ /* loops_per_jiffy or other kernel "constants" aren't affected by frequency transitions */
+ #define CPUFREQ_CONST_LOOPS			BIT(1)
+@@ -432,14 +437,6 @@ struct cpufreq_driver {
+  */
+ #define CPUFREQ_IS_COOLING_DEV			BIT(7)
+ 
+-/*
+- * Set by drivers that need to update internale upper and lower boundaries along
+- * with the target frequency and so the core and governors should also invoke
+- * the diver if the target frequency does not change, but the policy min or max
+- * may have changed.
+- */
+-#define CPUFREQ_NEED_UPDATE_LIMITS		BIT(8)
+-
+ int cpufreq_register_driver(struct cpufreq_driver *driver_data);
+ int cpufreq_unregister_driver(struct cpufreq_driver *driver_data);
+ 
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+2.25.0.rc1.19.g042ed3e048af
 
