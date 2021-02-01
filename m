@@ -2,79 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6E030A3CC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:58:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BFBE30A3E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232660AbhBAI6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 03:58:05 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42290 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232549AbhBAI6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 03:58:04 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2A994AE42;
-        Mon,  1 Feb 2021 08:57:23 +0000 (UTC)
-Subject: Re: [PATCH v2] nvme-multipath: Early exit if no path is available
-To:     Chao Leng <lengchao@huawei.com>, Sagi Grimberg <sagi@grimberg.me>,
-        Daniel Wagner <dwagner@suse.de>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@fb.com>, Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-References: <20210127103033.15318-1-dwagner@suse.de>
- <db9baae0-547c-7ff4-8b2c-0b95f14be67c@huawei.com>
- <20210128075837.u5u56t23fq5gu6ou@beryllium.lan>
- <69575290-200e-b4a1-4269-c71e4c2cc37b@huawei.com>
- <20210128094004.erwnszjqcxlsi2kd@beryllium.lan>
- <ebb1d098-3ded-e592-4419-e905aabe824f@huawei.com>
- <675d3cf7-1ae8-adc5-b6d0-359fe10f6b23@grimberg.me>
- <59cd053e-46cb-0235-141f-4ce919c93f48@huawei.com>
- <65392653-6b03-9195-f686-5fe4b3290bd2@suse.de>
- <81b22bbf-4dd3-6161-e63a-9699690a4e4f@huawei.com>
- <715dd943-0587-be08-2840-e0948cf0bc62@suse.de>
- <eb131d8f-f009-42e7-105d-58b84060f0dd@huawei.com>
- <ac019690-7f02-d28c-ed58-bfc8c1d48879@suse.de>
- <6ceff3cb-c9e9-7e74-92f0-dd745987c943@huawei.com>
- <114751ac-1f7d-ce5e-12c5-7d6303bdb999@suse.de>
- <aebc6c2d-4711-95ba-daf2-1cd17fc6f0e7@huawei.com>
-From:   Hannes Reinecke <hare@suse.de>
-Message-ID: <47a1b796-9d91-5947-4bac-dd8f397041a3@suse.de>
-Date:   Mon, 1 Feb 2021 09:57:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S232557AbhBAI7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 03:59:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231992AbhBAI6y (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 03:58:54 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D13AC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 00:57:48 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id s5so5037985edw.8
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 00:57:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=GyxsNnWu7EqjyU0NKMwi2dzcVL+ptjeCIPcsXEH/9OY=;
+        b=i6PdTJrbTgfPEq1qvNzYS4t4VsejQHvBMA2i45CHObKGwPzTKS4X3R5W02R02DNRfr
+         9F48UgomgbOq6gppxgT4+6tuQmsSHf5a7Vr2bMdmt57Uk39z4OU49+Do6uCOXRqHkV4f
+         XE510R+cNphZYBjIKhw5YlVF955NPuWlSvhpasOICJu+nCFpU8GkzQKIg6AxYZ2wOFOx
+         7fxMDR9GSb9IaenWC1mMrNc2pzs6J+uQqfoAp42APYhs+a4ElJZZ0CIgjXBbfND2wQFw
+         2uJbWV+HCa/Z5qJx2c+Oo0Etw5ORVx5jgX00rHyrO1+Ug3riu1gD7nHgATlqC2gexrji
+         lbYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=GyxsNnWu7EqjyU0NKMwi2dzcVL+ptjeCIPcsXEH/9OY=;
+        b=ZVoD2AcZOqUCGE/2mkVGZoaxfeQGevVOhXHUTYST05EjCAQCy6nPA3QL/uEsfAdfhO
+         S/mWmkDsT74THXFn57Fuj6zulbdimz3N8//C2Rqj+Ciz6wCi2PKO1Zc1stlicZVJripb
+         ypP4xI910TMH+ZKKYkCaXqf8yteM5gWNOfCPXmsGMC7iwwCcg2sPzq6AohHA35yOm3wu
+         5PyKYLfA35n/tfX8738xB+f4IJYHuim6n2MvjsgGJTlRlE/S1tdSsAdDN/IYGZdz+Dtw
+         pOobTkKzfCIXN4ySvTG583XmfAxFl41VU2kXV5WpKPP5RTBGbIlKOuNoxN1ZOAmlZTnR
+         HWQA==
+X-Gm-Message-State: AOAM533Ux/Pell1ekd6AohQdsXJl157exV5Rfik0DVoVLrIbs041WB5t
+        Z4nYfaCvUPnRH7bvoFt7FXolqtz+H2HoOcu5l1VIDw==
+X-Google-Smtp-Source: ABdhPJx7YJeaIThw9MHlmgqwuHrnNn2An/DeuJv641UUQWTVd5Zapsko0YlOuYX2v/CmLEKKjveQedF2USmYjR4gynw=
+X-Received: by 2002:a05:6402:35ca:: with SMTP id z10mr17750262edc.186.1612169867171;
+ Mon, 01 Feb 2021 00:57:47 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <aebc6c2d-4711-95ba-daf2-1cd17fc6f0e7@huawei.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200903081550.6012-1-sakari.ailus@linux.intel.com>
+ <20210128232729.16064-7-sakari.ailus@linux.intel.com> <CAMpxmJVTPgvxOVdTkmt4VjUnGabNBKauKF_DKtnnkV6O0QYTWA@mail.gmail.com>
+ <20210129121955.GH32460@paasikivi.fi.intel.com>
+In-Reply-To: <20210129121955.GH32460@paasikivi.fi.intel.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 1 Feb 2021 09:57:36 +0100
+Message-ID: <CAMpxmJUfP86jQg11imFUtjt8KtJ25tDRQUGvrZqDbT5xyKoH9A@mail.gmail.com>
+Subject: Re: [PATCH v9 7/7] at24: Support probing while off
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     linux-i2c <linux-i2c@vger.kernel.org>,
+        Wolfram Sang <wsa@the-dreams.de>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rajmohan Mani <rajmohan.mani@intel.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/1/21 9:47 AM, Chao Leng wrote:
-> 
-> 
-> On 2021/2/1 15:29, Hannes Reinecke wrote:[ .. ]
->> Urgh. Please, no. That is well impossible to debug.
->> Can you please open-code it to demonstrate where the difference to the 
->> current (and my fixed) versions is?
->> I'm still not clear where the problem is once we applied both patches.
-> For example assume the list has three path, and all path is not 
-> NVME_ANA_OPTIMIZED:
-> head->next = ns1;
-> ns1->next = ns2;
-> ns2->next = head;
-> old->next = ns2;
-> 
-And this is where I have issues with.
-Where does 'old' come from?
-Clearly it was part of the list at one point; so what happened to it?
+On Fri, Jan 29, 2021 at 1:20 PM Sakari Ailus
+<sakari.ailus@linux.intel.com> wrote:
+>
+> Hi Bartosz,
+>
+> Thanks for the review.
+>
+> On Fri, Jan 29, 2021 at 11:56:00AM +0100, Bartosz Golaszewski wrote:
+> > On Fri, Jan 29, 2021 at 12:27 AM Sakari Ailus
+> > <sakari.ailus@linux.intel.com> wrote:
+> > >
+> > > In certain use cases (where the chip is part of a camera module, and =
+the
+> > > camera module is wired together with a camera privacy LED), powering =
+on
+> > > the device during probe is undesirable. Add support for the at24 to
+> > > execute probe while being powered off. For this to happen, a hint in =
+form
+> > > of a device property is required from the firmware.
+> > >
+> > > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > > ---
+> > >  drivers/misc/eeprom/at24.c | 43 +++++++++++++++++++++++-------------=
+--
+> > >  1 file changed, 26 insertions(+), 17 deletions(-)
+> > >
+> > > diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
+> > > index 926408b41270c..dd0b3f24e3808 100644
+> > > --- a/drivers/misc/eeprom/at24.c
+> > > +++ b/drivers/misc/eeprom/at24.c
+> > > @@ -595,6 +595,7 @@ static int at24_probe(struct i2c_client *client)
+> > >         bool i2c_fn_i2c, i2c_fn_block;
+> > >         unsigned int i, num_addresses;
+> > >         struct at24_data *at24;
+> > > +       bool low_power;
+> > >         struct regmap *regmap;
+> > >         bool writable;
+> > >         u8 test_byte;
+> > > @@ -750,14 +751,16 @@ static int at24_probe(struct i2c_client *client=
+)
+> > >
+> > >         i2c_set_clientdata(client, at24);
+> > >
+> > > -       err =3D regulator_enable(at24->vcc_reg);
+> > > -       if (err) {
+> > > -               dev_err(dev, "Failed to enable vcc regulator\n");
+> > > -               return err;
+> > > -       }
+> > > +       low_power =3D acpi_dev_state_low_power(&client->dev);
+> >
+> > I've raised my concern about the naming of this before but no
+> > discussion followed. Do we really want to name it: "low power"? This
+> > is misleading as the device can actually be powered off at probe().
+> > "Low power" suggests some low-power state or even low battery IMO.
+>
+> This was suggested by Rafael in place of "powered off" as it's not know t=
+he
+> device is powered off. The same terms should be used in all contexts (ACP=
+I
+> and I=C2=B2C frameworks and drivers). Others haven't expressed concerns.
+>
 
-Cheers,
+So we're describing a situation where "device may be powered off" by
+calling it "low_power". This doesn't make sense. Why not something
+like: acpi_dev_may_be_off(), acpi_dev_powerdown_possible(),
+acpi_dev_possibly_off(). If I'm reading a driver's code an see
+"acpi_dev_state_low_power()", I would have never guessed it refers to
+a situation where the device may be potentially powered-down.
 
-Hannes
--- 
-Dr. Hannes Reinecke                Kernel Storage Architect
-hare@suse.de                              +49 911 74053 688
-SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+> ACPI spec appears to be using terms "on" and "off".
+>
+> The use of the function is not limited to driver probe time.
+>
+> >
+> > If anything: I'd prefer the 'low_power' local variable be changed to
+> > "no_test_read".
+>
+> That misses the power management related suggestion now present in the na=
+me
+> --- the device needs to be suspended using runtime PM if probe fails and
+> it's not in "low power state".
+>
+> How about "off_during_probe"?
+>
+
+Yes, this is much better than low_power.
+
+Bartosz
+
+> --
+> Kind regards,
+>
+> Sakari Ailus
