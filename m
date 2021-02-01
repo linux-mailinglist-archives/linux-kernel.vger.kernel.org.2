@@ -2,120 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3805230A92B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:57:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACF1230A930
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:59:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231946AbhBAN5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:57:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbhBAN5R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:57:17 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB8FC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 05:56:36 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id v15so16704452wrx.4
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 05:56:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=hNt79SEwyevHlCnNpQqVrGlo2a3i4FGi8Hmj5UsB0YU=;
-        b=M3PnKpu5bp1bl2yYEhhr4sCnuaO9FGuJbLvEBWPW0WULJh3Cpkm8GLVAU6DYeu8dRy
-         pP1rj3IK0ON+NY7DRc8z82F+pbzd4oDCGZ4CY34AHOaHtMsmT3H+Kfu/PATcu2F/rS8n
-         fWdTB3af7hfwLCuQKmuYr6QEKdfcDNFKdP6rss0uFJmcz3Xkh7xWaW74LQb60V9xNghq
-         le+gHWovZEXM+0zOU7iXpxSh0XQzzeG8QtPWGAyntBAbLKDqt/nouH6NYzMuys4bPzS7
-         85D6QOHH6SbpRMF9pJ4bnPkEvSnP0JfZ/CmETeTm7cmKrcSKysdtSKYsGh/tV6MiBaYl
-         QCuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=hNt79SEwyevHlCnNpQqVrGlo2a3i4FGi8Hmj5UsB0YU=;
-        b=cUDAXge/DP6XAi3VvY7XZ6YA3j47uRGH5k4MFX5jRQVqXVvecJwotHZI766hbaqLbK
-         48HuOrEm+MqGscrH0pi5LecxS6tgvjnDwFrUe/TGMIJtGOmaWCVkcO94jQKsLeb1ThlD
-         HPeF2m7bMAHMFQaNx1IEjmv8ZuUhS5tpsIyS3pwkQydfLAOmByToo8KVK02JpyjJCACC
-         KnOEAcdvG4AEPqWfHKUJAl36e9FhE2EmR2POxZ+RvILe+6hlkPP91ef2MmgYHf2A4dbH
-         SBjA3XbGYeR6MhaYOIfc18unIiD2yEKr3p2LEQuWw9qoGjp0ag6UE2pNJQsyd9OSmq0C
-         C0iQ==
-X-Gm-Message-State: AOAM530GfRE0MJkF01/3LtlYGwD/dmyTHbQF6sl1ttbeyFnG0iX5lm0+
-        mvlo0jqtH+dMjLteqJ7c7FP36n2DSCkE3/34
-X-Google-Smtp-Source: ABdhPJymaH4S/uzykkYB60csZ4w9HpANZ6MSS095a8XKFeEWTFyVP/MB4qAPITf+EkWkOBiUVCMXLg==
-X-Received: by 2002:a5d:69ce:: with SMTP id s14mr17708926wrw.206.1612187795297;
-        Mon, 01 Feb 2021 05:56:35 -0800 (PST)
-Received: from dell ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id u14sm20527162wml.19.2021.02.01.05.56.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 05:56:34 -0800 (PST)
-Date:   Mon, 1 Feb 2021 13:56:33 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        IDE-ML <linux-ide@vger.kernel.org>
-Subject: Re: [PATCH 01/20] ata: ahci_dm816: Ignore -Woverride-init
-Message-ID: <20210201135633.GV4774@dell>
-References: <20210128180239.548512-1-lee.jones@linaro.org>
- <20210128180239.548512-2-lee.jones@linaro.org>
- <20210128181903.GA2099675@infradead.org>
- <20210128182713.GM4774@dell>
- <CAK8P3a3XgqD_bDreG_SPCfrjqLaduEpiwiWFVf73eNkrrMoBtw@mail.gmail.com>
+        id S232284AbhBAN6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:58:05 -0500
+Received: from foss.arm.com ([217.140.110.172]:60624 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232157AbhBAN6E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 08:58:04 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DEE01101E;
+        Mon,  1 Feb 2021 05:57:18 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.41.104])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 50AB83F71A;
+        Mon,  1 Feb 2021 05:57:17 -0800 (PST)
+Date:   Mon, 1 Feb 2021 13:57:14 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>,
+        linux-kernel@vger.kernel.org, penberg@kernel.org,
+        geert@linux-m68k.org, linux-arm-kernel@lists.infradead.org,
+        akpm@linux-foundation.org, rppt@kernel.org,
+        giancarlo.ferrari@nokia.com
+Subject: Re: [PATCH] ARM: kexec: Fix panic after TLB are invalidated
+Message-ID: <20210201135714.GB66060@C02TD0UTHF1T.local>
+References: <1612140296-12546-1-git-send-email-giancarlo.ferrari89@gmail.com>
+ <20210201124720.GA66060@C02TD0UTHF1T.local>
+ <20210201130344.GF1463@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK8P3a3XgqD_bDreG_SPCfrjqLaduEpiwiWFVf73eNkrrMoBtw@mail.gmail.com>
+In-Reply-To: <20210201130344.GF1463@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 01 Feb 2021, Arnd Bergmann wrote:
-
-> On Thu, Jan 28, 2021 at 7:32 PM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > On Thu, 28 Jan 2021, Christoph Hellwig wrote:
-> >
-> > > On Thu, Jan 28, 2021 at 06:02:20PM +0000, Lee Jones wrote:
-> > > > Some ATA drivers use the SCSI host template, a series of interwoven
-> > > > macros, to aid with initialisation.  Some of these macros conflict,
-> > > > resulting in the over-writing of previously set values.
-> > >
-> > > Please just disable this warning globally.  This is a sensible
-> > > patter and we should not sprinkle per-file options for something
-> > > that fundamental.
-> >
-> > Will do.  Just as soon as I've figured out how. :)
+On Mon, Feb 01, 2021 at 01:03:45PM +0000, Russell King - ARM Linux admin wrote:
+> On Mon, Feb 01, 2021 at 12:47:20PM +0000, Mark Rutland wrote:
+> > 1. copy reloc code into buffer
+> > 2. alter variables in copy of reloc code
+> > 3. branch to buffer
+> > 
+> > ... which would avoid this class of problem too.
 > 
-> I have a local patch series doing it like this
-
-Can I leave this in your capable hands then?
-
-I'll drop all my fixes for this if it can be replaced with just one.
-
-> diff --git a/include/linux/libata.h b/include/linux/libata.h
-> index 5f550eb27f81..4e4cc14a289e 100644
-> --- a/include/linux/libata.h
-> +++ b/include/linux/libata.h
-> @@ -1390,6 +1390,8 @@ extern struct device_attribute *ata_common_sdev_attrs[];
->   * edge driver's module reference, otherwise the driver can be unloaded
->   * even if the scsi_device is being accessed.
->   */
-> +__diag_ignore(GCC, 8, "-Woverride-init", "intentional override")
-> +__diag_ignore(CLANG, 9, "-Winitializer-overrides", "intentional override")
->  #define __ATA_BASE_SHT(drv_name)                               \
->         .module                 = THIS_MODULE,                  \
->         .name                   = drv_name,                     \
+> Yep, slightly messy to do though:
 > 
-> I think this also requires a preparation patch to extend __diag_ignore to
-> additional compiler versions, not sure if that was already merged.
-> 
->          Arnd
+> diff --git a/arch/arm/kernel/machine_kexec.c b/arch/arm/kernel/machine_kexec.c
+> index 5d84ad333f05..6058e0d3a40d 100644
+> --- a/arch/arm/kernel/machine_kexec.c
+> +++ b/arch/arm/kernel/machine_kexec.c
+> @@ -174,18 +174,27 @@ void machine_kexec(struct kimage *image)
+>  
+>  	reboot_code_buffer = page_address(image->control_code_page);
+>  
+> -	/* Prepare parameters for reboot_code_buffer*/
+> -	set_kernel_text_rw();
+> -	kexec_start_address = image->start;
+> -	kexec_indirection_page = page_list;
+> -	kexec_mach_type = machine_arch_type;
+> -	kexec_boot_atags = image->arch.kernel_r2;
+> -
+>  	/* copy our kernel relocation code to the control code page */
+>  	reboot_entry = fncpy(reboot_code_buffer,
+>  			     &relocate_new_kernel,
+>  			     relocate_new_kernel_size);
+>  
+> +#define set(what, val) \
+> +	do { \
+> +		uintptr_t __funcp_address; \
+> +		int __offset; \
+> +		void *__ptr; \
+> +		asm("" : "=r" (__funcp_address) : "0" (&relocate_new_kernel)); \
+> +		__offset = (uintptr_t)&(what) - (__funcp_address & ~1); \
+> +		__ptr = reboot_code_buffer + __offset; \
+> +		*(__typeof__(&(what)))__ptr = val; \
+> +	} while (0)
+> +
+> +	set(kexec_start_address, image->start);
+> +	set(kexec_indirection_page, page_list);
+> +	set(kexec_mach_type, machine_arch_type);
+> +	set(kexec_boot_atags, image->arch.kernel_r2);
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+We could simplify this slightly if we moved the kexec_& variables into a
+struct (using asm-offset KEXEC_VAR_* offsets and a KEXEC_VAR_SIZE region
+reserved in the asm), then here we could do something like:
+
+static struct kexec_vars *kexec_buffer_vars(void *buffer)
+{
+	unsigned long code = ((unisigned long)relocate_new_kernel) & ~1;
+	unsigned long vars - (unsigned long)relocate_vars;
+	unsigned long offset = vars - code;
+
+	return buffer + offset;
+}
+
+... and in machine_kexec() do:
+
+	struct kexec_vars *kv = kexec_buffer_vars(reboot_code_buffer);
+
+	kv->start_address = image->start;
+	kv->indirection_page = page_list;
+	kv->mach_type = machine-arch_type;
+	kv->boot_atags = arch.kernel_r2;
+
+... if that looks any better to you?
+
+Mark.
