@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913F230A704
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 977D030A72A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231264AbhBAL71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 06:59:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53768 "EHLO mail.kernel.org"
+        id S231259AbhBAMFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 07:05:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231201AbhBAL6K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 06:58:10 -0500
+        id S230016AbhBAMFh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 07:05:37 -0500
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 316B364EA2;
-        Mon,  1 Feb 2021 11:56:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3878464EA0;
+        Mon,  1 Feb 2021 12:04:27 +0000 (UTC)
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94)
         (envelope-from <maz@kernel.org>)
-        id 1l6Xp6-00BG09-Bp; Mon, 01 Feb 2021 11:56:52 +0000
+        id 1l6Xp7-00BG09-68; Mon, 01 Feb 2021 11:56:53 +0000
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
         linux-kernel@vger.kernel.org
@@ -38,9 +38,9 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         Julien Thierry <julien.thierry.kdev@gmail.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         kernel-team@android.com
-Subject: [PATCH v6 09/21] arm64: cpufeature: Add global feature override facility
-Date:   Mon,  1 Feb 2021 11:56:25 +0000
-Message-Id: <20210201115637.3123740-10-maz@kernel.org>
+Subject: [PATCH v6 10/21] arm64: cpufeature: Use IDreg override in __read_sysreg_by_encoding()
+Date:   Mon,  1 Feb 2021 11:56:26 +0000
+Message-Id: <20210201115637.3123740-11-maz@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210201115637.3123740-1-maz@kernel.org>
 References: <20210201115637.3123740-1-maz@kernel.org>
@@ -54,120 +54,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a facility to globally override a feature, no matter what
-the HW says. Yes, this sounds dangerous, but we do respect the
-"safe" value for a given feature. This doesn't mean the user
-doesn't need to know what they are doing.
+__read_sysreg_by_encoding() is used by a bunch of cpufeature helpers,
+which should take the feature override into account. Let's do that.
 
-Nothing uses this yet, so we are pretty safe. For now.
+For a good measure (and because we are likely to need to further
+down the line), make this helper available to the rest of the
+non-modular kernel.
+
+Code that needs to know the *real* features of a CPU can still
+use read_sysreg_s(), and find the bare, ugly truth.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 Acked-by: David Brazdil <dbrazdil@google.com>
 Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
 ---
- arch/arm64/include/asm/cpufeature.h |  6 ++++
- arch/arm64/kernel/cpufeature.c      | 45 +++++++++++++++++++++++++----
- 2 files changed, 45 insertions(+), 6 deletions(-)
+ arch/arm64/include/asm/cpufeature.h |  1 +
+ arch/arm64/kernel/cpufeature.c      | 15 +++++++++++++--
+ 2 files changed, 14 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-index 9a555809b89c..b1f53147e2b2 100644
+index b1f53147e2b2..b5bf7af68691 100644
 --- a/arch/arm64/include/asm/cpufeature.h
 +++ b/arch/arm64/include/asm/cpufeature.h
-@@ -63,6 +63,11 @@ struct arm64_ftr_bits {
- 	s64		safe_val; /* safe value for FTR_EXACT features */
- };
+@@ -606,6 +606,7 @@ void __init setup_cpu_features(void);
+ void check_local_cpu_capabilities(void);
  
-+struct arm64_ftr_override {
-+	u64		val;
-+	u64		mask;
-+};
-+
- /*
-  * @arm64_ftr_reg - Feature register
-  * @strict_mask		Bits which should match across all CPUs for sanity.
-@@ -74,6 +79,7 @@ struct arm64_ftr_reg {
- 	u64				user_mask;
- 	u64				sys_val;
- 	u64				user_val;
-+	struct arm64_ftr_override	*override;
- 	const struct arm64_ftr_bits	*ftr_bits;
- };
+ u64 read_sanitised_ftr_reg(u32 id);
++u64 __read_sysreg_by_encoding(u32 sys_id);
  
+ static inline bool cpu_supports_mixed_endian_el0(void)
+ {
 diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index e99eddec0a46..a4e5c619a516 100644
+index a4e5c619a516..97da9ed4b79d 100644
 --- a/arch/arm64/kernel/cpufeature.c
 +++ b/arch/arm64/kernel/cpufeature.c
-@@ -352,9 +352,12 @@ static const struct arm64_ftr_bits ftr_ctr[] = {
- 	ARM64_FTR_END,
- };
+@@ -1148,14 +1148,17 @@ u64 read_sanitised_ftr_reg(u32 id)
+ EXPORT_SYMBOL_GPL(read_sanitised_ftr_reg);
  
-+static struct arm64_ftr_override __ro_after_init no_override = { };
+ #define read_sysreg_case(r)	\
+-	case r:		return read_sysreg_s(r)
++	case r:		val = read_sysreg_s(r); break;
+ 
+ /*
+  * __read_sysreg_by_encoding() - Used by a STARTING cpu before cpuinfo is populated.
+  * Read the system register on the current CPU
+  */
+-static u64 __read_sysreg_by_encoding(u32 sys_id)
++u64 __read_sysreg_by_encoding(u32 sys_id)
+ {
++	struct arm64_ftr_reg *regp;
++	u64 val;
 +
- struct arm64_ftr_reg arm64_ftr_reg_ctrel0 = {
- 	.name		= "SYS_CTR_EL0",
--	.ftr_bits	= ftr_ctr
-+	.ftr_bits	= ftr_ctr,
-+	.override	= &no_override,
- };
- 
- static const struct arm64_ftr_bits ftr_id_mmfr0[] = {
-@@ -544,13 +547,16 @@ static const struct arm64_ftr_bits ftr_raz[] = {
- 	ARM64_FTR_END,
- };
- 
--#define ARM64_FTR_REG(id, table) {		\
--	.sys_id = id,				\
--	.reg = 	&(struct arm64_ftr_reg){	\
--		.name = #id,			\
--		.ftr_bits = &((table)[0]),	\
-+#define ARM64_FTR_REG_OVERRIDE(id, table, ovr) {		\
-+		.sys_id = id,					\
-+		.reg = 	&(struct arm64_ftr_reg){		\
-+			.name = #id,				\
-+			.override = (ovr),			\
-+			.ftr_bits = &((table)[0]),		\
- 	}}
- 
-+#define ARM64_FTR_REG(id, table) ARM64_FTR_REG_OVERRIDE(id, table, &no_override)
+ 	switch (sys_id) {
+ 	read_sysreg_case(SYS_ID_PFR0_EL1);
+ 	read_sysreg_case(SYS_ID_PFR1_EL1);
+@@ -1198,6 +1201,14 @@ static u64 __read_sysreg_by_encoding(u32 sys_id)
+ 		BUG();
+ 		return 0;
+ 	}
 +
- static const struct __ftr_reg_entry {
- 	u32			sys_id;
- 	struct arm64_ftr_reg 	*reg;
-@@ -770,6 +776,33 @@ static void __init init_cpu_ftr_reg(u32 sys_reg, u64 new)
- 	for (ftrp = reg->ftr_bits; ftrp->width; ftrp++) {
- 		u64 ftr_mask = arm64_ftr_mask(ftrp);
- 		s64 ftr_new = arm64_ftr_value(ftrp, new);
-+		s64 ftr_ovr = arm64_ftr_value(ftrp, reg->override->val);
++	regp  = get_arm64_ftr_reg(sys_id);
++	if (regp) {
++		val &= ~regp->override->mask;
++		val |= (regp->override->val & regp->override->mask);
++	}
 +
-+		if ((ftr_mask & reg->override->mask) == ftr_mask) {
-+			s64 tmp = arm64_ftr_safe_value(ftrp, ftr_ovr, ftr_new);
-+			char *str = NULL;
-+
-+			if (ftr_ovr != tmp) {
-+				/* Unsafe, remove the override */
-+				reg->override->mask &= ~ftr_mask;
-+				reg->override->val &= ~ftr_mask;
-+				tmp = ftr_ovr;
-+				str = "ignoring override";
-+			} else if (ftr_new != tmp) {
-+				/* Override was valid */
-+				ftr_new = tmp;
-+				str = "forced";
-+			} else if (ftr_ovr == tmp) {
-+				/* Override was the safe value */
-+				str = "already set";
-+			}
-+
-+			if (str)
-+				pr_warn("%s[%d:%d]: %s to %llx\n",
-+					reg->name,
-+					ftrp->shift + ftrp->width - 1,
-+					ftrp->shift, str, tmp);
-+		}
++	return val;
+ }
  
- 		val = arm64_ftr_set_value(ftrp, val, ftr_new);
- 
+ #include <linux/irqchip/arm-gic-v3.h>
 -- 
 2.29.2
 
