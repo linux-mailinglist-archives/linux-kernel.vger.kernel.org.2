@@ -2,82 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 578AC30A248
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 08:01:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 542AE30A25E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 08:03:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231656AbhBAHBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 02:01:06 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:56701 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230370AbhBAHA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 02:00:26 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DTf2H4gPkz9tkd;
-        Mon,  1 Feb 2021 17:59:34 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612162775;
-        bh=6EUWeozn2gOtd6OsNWzU6TOpVifdYqCM/JwIhZZ9ooQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=RVheMq0gPg1+ieiVbtFxPinHSqFSohAgC0FWh9nfyG2t7O1evViWLATGMLEZnFnQT
-         ViiTcaJu85PFqostk04UATDWpQiGgA4NscV/R2UVT8bVSRIngzWuXQA6csJbJPQ7AJ
-         230eDImrdI8/p6rjZM+T2T7jXuLuWv6szcg4z52qB3fusPrDR1yFoPIlGGc032RhOl
-         sPqcTvoxj5lY+Yu6Y2ZtrIeiWj/5vH9+7Gr9/q7636tTqtHJgBlp97KBgWJsGXJN55
-         zkLSODOnwRpzeaLt8+92sFZ3c39KdIsbqwDN51Kb/Txs0bjxRfX4Qyz9ldiGTPqfIQ
-         WwLCPlDPt8qFQ==
-Date:   Mon, 1 Feb 2021 17:59:33 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Parav Pandit <parav@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the net-next tree
-Message-ID: <20210201175933.12cbc38c@canb.auug.org.au>
+        id S232197AbhBAHDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 02:03:48 -0500
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:22167 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231397AbhBAHBV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 02:01:21 -0500
+X-UUID: a57ac4a50aa04cc8a8b4522cc5af59d3-20210201
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=z5r70+9rgwU6y6E7E3plcjbeSmnNuCUMkSNEU5M6n4E=;
+        b=htMQUBCDCqb6gprDjp3r0ShhPHp+80gzUO92AsLhx78cHEvr2zRKg8lpdnodJZTjxCO6k/h9nYAUjacwL68Qk6lcWc97Eeb5p5NgkZse94A21gW0Qm1Z58hsuHEhN2Pr73Xkjtcj8MWVQbI329YsQzUVkFS1VUa737waRIKGVD0=;
+X-UUID: a57ac4a50aa04cc8a8b4522cc5af59d3-20210201
+Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1507167184; Mon, 01 Feb 2021 15:00:33 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 1 Feb 2021 15:00:23 +0800
+Received: from mtkslt301.mediatek.inc (10.21.14.114) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 1 Feb 2021 15:00:23 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Min Guo <min.guo@mediatek.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>
+Subject: [PATCH next v3 01/16] dt-bindings: usb: fix yamllint check warning
+Date:   Mon, 1 Feb 2021 15:00:01 +0800
+Message-ID: <20210201070016.41721-1-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/WfIzfcW3RCLJxfPwZPxL=R0";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 4468B2AEFC27B0EAEC6BAE2D8FB2451B2DF0B819B20A79B05B278FE9CBEE39DF2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/WfIzfcW3RCLJxfPwZPxL=R0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Rml4IHdhcm5pbmc6ICJtaXNzaW5nIHN0YXJ0aW5nIHNwYWNlIGluIGNvbW1lbnQiDQoNClNpZ25l
+ZC1vZmYtYnk6IENodW5mZW5nIFl1biA8Y2h1bmZlbmcueXVuQG1lZGlhdGVrLmNvbT4NCi0tLQ0K
+djJ+djM6IG5vIGNoYW5nZXMNCi0tLQ0KIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5n
+cy91c2IvdXNiLWRldmljZS55YW1sIHwgNiArKystLS0NCiAxIGZpbGUgY2hhbmdlZCwgMyBpbnNl
+cnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9k
+ZXZpY2V0cmVlL2JpbmRpbmdzL3VzYi91c2ItZGV2aWNlLnlhbWwgYi9Eb2N1bWVudGF0aW9uL2Rl
+dmljZXRyZWUvYmluZGluZ3MvdXNiL3VzYi1kZXZpY2UueWFtbA0KaW5kZXggN2JiMjVhNDU0Mjdk
+Li4yM2U3NmNmYjIwNjYgMTAwNjQ0DQotLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
+ZGluZ3MvdXNiL3VzYi1kZXZpY2UueWFtbA0KKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
+L2JpbmRpbmdzL3VzYi91c2ItZGV2aWNlLnlhbWwNCkBAIC04Miw5ICs4Miw5IEBAIHJlcXVpcmVk
+Og0KIGFkZGl0aW9uYWxQcm9wZXJ0aWVzOiB0cnVlDQogDQogZXhhbXBsZXM6DQotICAjaHViIGNv
+bm5lY3RlZCB0byBwb3J0IDENCi0gICNkZXZpY2UgY29ubmVjdGVkIHRvIHBvcnQgMg0KLSAgI2Rl
+dmljZSBjb25uZWN0ZWQgdG8gcG9ydCAzDQorICAjIGh1YiBjb25uZWN0ZWQgdG8gcG9ydCAxDQor
+ICAjIGRldmljZSBjb25uZWN0ZWQgdG8gcG9ydCAyDQorICAjIGRldmljZSBjb25uZWN0ZWQgdG8g
+cG9ydCAzDQogICAjICAgIGludGVyZmFjZSAwIG9mIGNvbmZpZ3VyYXRpb24gMQ0KICAgIyAgICBp
+bnRlcmZhY2UgMCBvZiBjb25maWd1cmF0aW9uIDINCiAgIC0gfA0KLS0gDQoyLjE4LjANCg==
 
-Hi all,
-
-After merging the net-next tree, today's linux-next build (htmldocs)
-produced this warning:
-
-Documentation/networking/device_drivers/ethernet/mellanox/mlx5.rst:16: WARN=
-ING: Unknown target name: "mlx5 port function".
-
-Introduced by commit
-
-  142d93d12dc1 ("net/mlx5: Add devlink subfunction port documentation")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/WfIzfcW3RCLJxfPwZPxL=R0
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAXptUACgkQAVBC80lX
-0Gz1cAgAiVJzZbT9ypLlFxOR79WTntr8/TU78Oqh99x2xdvCVsbC/ARE1Q9/wWaW
-9ZfqD4esknaAPttEy+WUz0+1BdPlFSDMlwwwwna8V3rYJj0Uo3XrgoX0nTxH47qs
-FVydBBzelRs53t1bzI4AeAPfdic44/S+CBP/hMtE2PDGRitwEeIjM89H+5pRtml3
-Ih9nnkblWpJOYI4oFv5p/J88i6MYkUDBS1BkB4pM/3DMBeIG1v8Thf6x2ztyM8SB
-D28eghVry1yoQbOlRkcMGf0uYctdAdUYA6rrrcEVG8khpimKPvjCvztvF/CKEi41
-GIYepwNqkGd/AginQJx/TyPUAfeJ9w==
-=OBaQ
------END PGP SIGNATURE-----
-
---Sig_/WfIzfcW3RCLJxfPwZPxL=R0--
