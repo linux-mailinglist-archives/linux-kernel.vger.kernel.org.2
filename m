@@ -2,78 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9CD30AD8B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:15:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14CEC30AD90
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231721AbhBAROu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:14:50 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57567 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229612AbhBAROp (ORCPT
+        id S231865AbhBARQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:16:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52154 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230055AbhBARQe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:14:45 -0500
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 111HDqQK007142
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 1 Feb 2021 12:13:52 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 2C3B615C39D9; Mon,  1 Feb 2021 12:13:52 -0500 (EST)
-Date:   Mon, 1 Feb 2021 12:13:52 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Vinicius Tinti <viniciustinti@gmail.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v2] ext4: Enable code path when DX_DEBUG is set
-Message-ID: <YBg20AuSC3/9w2zz@mit.edu>
-References: <AAB32610-D238-4137-96DE-33655AAAB545@dilger.ca>
- <20210201003125.90257-1-viniciustinti@gmail.com>
- <20210201124924.GA3284018@infradead.org>
- <CALD9WKxc0kMPCHSoikko+qYk2+ZLUy73+ryKGW9qMSpyzAobLA@mail.gmail.com>
+        Mon, 1 Feb 2021 12:16:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612199708;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zoEgsUnA+6E+zicwySkdMUh9CFwLmdn7EQyiABNkBZY=;
+        b=Yl3LHwBv+x5U0mu4JFC7c7gzBLByA6qBM3mmuJe27eIbj+GhKE8bJxRcz6OyimYnzJSBQJ
+        b6ePCr5GiXHw3imr++OQlBg5ElrU1TjEyUwRHHfVnNJiw4ADZMjZI3JPX925eKMLb317vl
+        HOFOgYCafpeEHa/G6BPucMxC8UFxvWg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-345-ShZAkfjNPAeLanazqPeJtQ-1; Mon, 01 Feb 2021 12:15:06 -0500
+X-MC-Unique: ShZAkfjNPAeLanazqPeJtQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A483AAFAA4;
+        Mon,  1 Feb 2021 17:15:03 +0000 (UTC)
+Received: from gondolin (ovpn-113-126.ams2.redhat.com [10.36.113.126])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D693E5D9DC;
+        Mon,  1 Feb 2021 17:14:56 +0000 (UTC)
+Date:   Mon, 1 Feb 2021 18:14:54 +0100
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     <jgg@nvidia.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <alex.williamson@redhat.com>,
+        <liranl@nvidia.com>, <oren@nvidia.com>, <tzahio@nvidia.com>,
+        <leonro@nvidia.com>, <yarong@nvidia.com>, <aviadye@nvidia.com>,
+        <shahafs@nvidia.com>, <artemp@nvidia.com>, <kwankhede@nvidia.com>,
+        <ACurrid@nvidia.com>, <gmataev@nvidia.com>, <cjia@nvidia.com>,
+        <mjrosato@linux.ibm.com>, <yishaih@nvidia.com>, <aik@ozlabs.ru>
+Subject: Re: [PATCH 8/9] vfio/pci: use x86 naming instead of igd
+Message-ID: <20210201181454.22112b57.cohuck@redhat.com>
+In-Reply-To: <20210201162828.5938-9-mgurtovoy@nvidia.com>
+References: <20210201162828.5938-1-mgurtovoy@nvidia.com>
+        <20210201162828.5938-9-mgurtovoy@nvidia.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALD9WKxc0kMPCHSoikko+qYk2+ZLUy73+ryKGW9qMSpyzAobLA@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 01:15:29PM -0300, Vinicius Tinti wrote:
-> On Mon, Feb 1, 2021 at 9:49 AM Christoph Hellwig <hch@infradead.org> wrote:
-> >
-> > DX_DEBUG is completely dead code, so either kill it off or make it an
-> > actual CONFIG_* symbol through Kconfig if it seems useful.
+On Mon, 1 Feb 2021 16:28:27 +0000
+Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
+
+> This patch doesn't change any logic but only align to the concept of
+> vfio_pci_core extensions. Extensions that are related to a platform
+> and not to a specific vendor of PCI devices should be part of the core
+> driver. Extensions that are specific for PCI device vendor should go
+> to a dedicated vendor vfio-pci driver.
+
+My understanding is that igd means support for Intel graphics, i.e. a
+strict subset of x86. If there are other future extensions that e.g.
+only make sense for some devices found only on AMD systems, I don't
+think they should all be included under the same x86 umbrella.
+
+Similar reasoning for nvlink, that only seems to cover support for some
+GPUs under Power, and is not a general platform-specific extension IIUC.
+
+We can arguably do the zdev -> s390 rename (as zpci appears only on
+s390, and all PCI devices will be zpci on that platform), although I'm
+not sure about the benefit.
+
 > 
-> About the unreachable code in "if (0)" I think it could be removed.
-> It seems to be doing an extra check.
+> For now, x86 extensions will include only igd.
 > 
-> About the DX_DEBUG I think I can do another patch adding it to Kconfig
-> as you and Nathan suggested.
+> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+> ---
+>  drivers/vfio/pci/Kconfig                            | 13 ++++++-------
+>  drivers/vfio/pci/Makefile                           |  2 +-
+>  drivers/vfio/pci/vfio_pci_core.c                    |  2 +-
+>  drivers/vfio/pci/vfio_pci_private.h                 |  2 +-
+>  drivers/vfio/pci/{vfio_pci_igd.c => vfio_pci_x86.c} |  0
+>  5 files changed, 9 insertions(+), 10 deletions(-)
+>  rename drivers/vfio/pci/{vfio_pci_igd.c => vfio_pci_x86.c} (100%)
 
-Yes, it's doing another check which is useful in terms of early
-detection of bugs when a developer has the code open for
-modifications.  It slows down performance under normal circumstances,
-and assuming the code is bug-free(tm), it's entirely unnecessary ---
-which is why it's under an "if (0)".
+(...)
 
-However, if there *is* a bug, having an early detection that the
-representation invariant of the data structure has been violated can
-be useful in root causing a bug.  This would probably be clearer if
-the code was pulled out into a separate function with comments
-explaining that this is a rep invariant check.
+> diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
+> index c559027def2d..e0e258c37fb5 100644
+> --- a/drivers/vfio/pci/vfio_pci_core.c
+> +++ b/drivers/vfio/pci/vfio_pci_core.c
+> @@ -328,7 +328,7 @@ static int vfio_pci_enable(struct vfio_pci_device *vdev)
+>  
+>  	if (vfio_pci_is_vga(pdev) &&
+>  	    pdev->vendor == PCI_VENDOR_ID_INTEL &&
+> -	    IS_ENABLED(CONFIG_VFIO_PCI_IGD)) {
+> +	    IS_ENABLED(CONFIG_VFIO_PCI_X86)) {
+>  		ret = vfio_pci_igd_init(vdev);
 
-The main thing about DX_DEBUG right now is that it is **super**
-verbose.  Unwary users who enable it.... will be sorry.  If we want to
-make it to be a first-class feature enabled via CONFIG_EXT4_DEBUG, we
-should convert all of the dx_trace calls to use pr_debug so they are
-enabled only if dynamic debug enables those pr_debug() statements.
-And this should absolutely be a separate patch.
+This one explicitly checks for Intel devices, so I'm not sure why you
+want to generalize this to x86?
 
-Cheers,
+>  		if (ret && ret != -ENODEV) {
+>  			pci_warn(pdev, "Failed to setup Intel IGD regions\n");
 
-						- Ted
