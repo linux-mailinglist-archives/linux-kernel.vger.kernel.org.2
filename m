@@ -2,107 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9773730B3BE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:59:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B5AF30B3C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 01:00:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230380AbhBAX6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 18:58:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
+        id S231149AbhBAX64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 18:58:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbhBAX6w (ORCPT
+        with ESMTP id S230054AbhBAX6z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 18:58:52 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271BBC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 15:58:12 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id z21so13504447pgj.4
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 15:58:12 -0800 (PST)
+        Mon, 1 Feb 2021 18:58:55 -0500
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF0DC0613ED
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 15:58:15 -0800 (PST)
+Received: by mail-io1-xd2a.google.com with SMTP id q7so5488996iob.0
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 15:58:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=rTKu+xdzo+veIn6KkxdUI/A6PY5YQCPeNp5pTPUY3WQ=;
-        b=VAHjN9JG4k8S/0sgPfPZHZIecEBvqimHWvOeTv0p4etlF/RojXQvnnCs/vX/pzsRi+
-         JPqNGtAokQTisR9hN5EWazgXLVQsteZk19JWjvOj6SdOYPYubYFzsHPhGH32anzd6Id4
-         GY1vNrTWQzIbLJhlWF8hr2bFzaiVj8n555uFHRRa5aB154AwlO1xOFiWwLuAdjmKZSry
-         9qaZvMsCEWpJgZ89LTxQ10Wk9kujeXp8KaWHer4ZPnyoQk+eCODtNru6s2rViglqrz+x
-         HWT8qkCRQf7zzO3hyItdZBMempeoMn+HJdCUXRgLGnKMruuxjDXTBBYvdoCmfqX8GhfV
-         Ts/w==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=a0KwK7+kKnZ6aCt3YGJBN/dqDT4bQUU0HrueyV16eos=;
+        b=V3hH147pvef9wbe/VyEpCGT5lRj5ADwn+YRlx8F4+VMM/rmHRaQ5MGoJDFRjDSHi8g
+         l7OmFGWDASKvbd76JB1ydNPMP3XyBpHRqmnP79+vys7khHydifPpN82sbFUnsc6MnLUO
+         E+BUgRDVEHOj/5hhZnMDnkGnnyYzRwa6I91Rdbarow4aNM3O9f2AgWUG3/E/V30vjU/O
+         bvO1Nfe4dHrrqr23ElV2P3c/jZOgY6miLLhpW4dBBcjnSo+D1mUddFzlF+FYLrm0DU1S
+         QNh7fEiVniyhwVx3LHbCHSqRh6ZhrD6CVk3xiN8+MUrCKcuehzfWZAL5ORfht/ZGIM30
+         oZig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=rTKu+xdzo+veIn6KkxdUI/A6PY5YQCPeNp5pTPUY3WQ=;
-        b=nMZ3dHdqQEEuenjjeOsf3ZOrIocrVlmykBNOlsI6y8QbxkCoAgxhU2lLqC8ejwbTfF
-         x5oyUgQ8pm3ql/b5V61CY4sFd+8jHtQ5ye0DRY16VgMP4XEXtkggM/4qLDxQeJJtH7yU
-         SOANMehJczZAJiqqOoCyMtr0K72CmxBTeO/7vsROOTMH8pi3kbEyeDOLTbo3CK3UWuWh
-         mfsoxYuDDYy5HuCkHeL9/ojLSYZjb7LuCK/0m8hfZ+BN1tH7trVzNb1s6svM4erRbEKQ
-         8mKdv+ZV7fzZKZ9bazOeOE0jbpWc8C4RsrWD7514njjBvfmDqN1DAdJqzUsXRRIXUkMI
-         zCgQ==
-X-Gm-Message-State: AOAM5310x4Q8NGEoqYzGZ56vm4yHuA7LalMY0nHyBlmjKsL9n+xrE4sk
-        140CoOkp8JjQ5n0/gz168jLRmA==
-X-Google-Smtp-Source: ABdhPJzXLITZFTLkuFtUNx2iXI7vVJGwTvh/frUwCyN9/C862kHXzQvcB66CzSuU6g9cBx9FOvRY0w==
-X-Received: by 2002:a65:47c7:: with SMTP id f7mr19057541pgs.305.1612223891284;
-        Mon, 01 Feb 2021 15:58:11 -0800 (PST)
-Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id h15sm3044539pfr.62.2021.02.01.15.58.09
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=a0KwK7+kKnZ6aCt3YGJBN/dqDT4bQUU0HrueyV16eos=;
+        b=fqRaUtfklKWUspzIk4500tmV3JaseeaGr9yQ26Ks82FDaFkjNuuFaMQ9SoHffXwJDs
+         irt9BLiWZ4zDvZjcDZHFs+yGL2LKh6r4IVU2ofM3/kYaSYROw+Ygpy3hXVEsCGNuPrW3
+         ryGzRgrP3G+la8KQl0YYYs07xgA3m5G/WR++09p38CKkRb7JXdLpeidYu1QgPkVV7C7R
+         bJ8nLW8Cbkdh77vqJtwKIXRjwYHjFZtTqSKVpiVq4+wlaHgRAkSX+2wZXzabPBbwFOJv
+         LNveeiFUVRHAWw/Gw1SWzZlFlozan8Opzf/sbbPJIOeg3GEnYwmAuuMZFVpdsDs/Z73n
+         cClQ==
+X-Gm-Message-State: AOAM533wh2mCqkW8pdre5kRkkQZecZyIbZyWqDmAsx7uVC6yzNiS3oto
+        E+hJvyKPdaN0TGdvY3mqeN/KbZlG/bRcBiGL
+X-Google-Smtp-Source: ABdhPJyPcHaS6bn6DxuDIY9UP8O6YzY+RVIzHya2Wm+aKcohYZXNpavteml9YaFPZV21FT/qugKgkw==
+X-Received: by 2002:a5d:9588:: with SMTP id a8mr14240939ioo.34.1612223894545;
+        Mon, 01 Feb 2021 15:58:14 -0800 (PST)
+Received: from localhost.localdomain (tunnel525895-pt.tunnel.tserv15.lax1.ipv6.he.net. [2001:470:c:1200::2])
+        by smtp.googlemail.com with ESMTPSA id g126sm5284813iof.39.2021.02.01.15.58.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 15:58:10 -0800 (PST)
-Date:   Mon, 1 Feb 2021 15:58:09 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        daniel.lll@alibaba-inc.com,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH 03/14] cxl/mem: Find device capabilities
-In-Reply-To: <20210201231718.2hwaqgn2f7kc7usw@intel.com>
-Message-ID: <a789317e-2ac2-10a1-dedd-1851972e3d6b@google.com>
-References: <234711bf-c03f-9aca-e0b5-ca677add3ea@google.com> <20210201165352.wi7tzpnd4ymxlms4@intel.com> <32f33dd-97a-8b1c-d488-e5198a3d7748@google.com> <20210201215857.ud5cpg7hbxj2j5bx@intel.com> <b46ed01-3f1-6643-d371-7764c3bde4f8@google.com>
- <20210201222859.lzw3gvxuqebukvr6@intel.com> <20210201223314.qh24uxd7ajdppgfl@intel.com> <f86149f8-3aea-9d8c-caa9-62771bf22cb5@google.com> <20210201225052.vrrvuxrsgmddjzbb@intel.com> <79b98f60-151b-6c80-65c3-91a37699d121@google.com>
- <20210201231718.2hwaqgn2f7kc7usw@intel.com>
+        Mon, 01 Feb 2021 15:58:13 -0800 (PST)
+From:   Tianling Shen <cnsztl@gmail.com>
+Cc:     Sumit Gupta <sumitg@nvidia.com>, Tianling Shen <cnsztl@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [RESENT PATCH] arm64: cpuinfo: Add "model name" in /proc/cpuinfo for 64bit tasks also
+Date:   Tue,  2 Feb 2021 07:58:09 +0800
+Message-Id: <20210201235809.401-1-cnsztl@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Feb 2021, Ben Widawsky wrote:
+From: Sumit Gupta <sumitg@nvidia.com>
 
-> > I haven't seen the update to 8.2.8.4.5 to know yet :)
-> > 
-> > You make a good point of at least being able to interact with the driver.  
-> > I think you could argue that if the driver binds, then the payload size is 
-> > accepted, in which case it would be strange to get an EINVAL when using 
-> > the ioctl with anything >1MB.
-> > 
-> > Concern was that if we mask off the reserved bits from the command 
-> > register that we could be masking part of the payload size that is being 
-> > passed if the accepted max is >1MB.  Idea was to avoid any possibility of 
-> > this inconsistency.  If this is being checked for ioctl, seems like it's 
-> > checking reserved bits.
-> > 
-> > But maybe I should just wait for the spec update.
-> 
-> Well, I wouldn't hold your breath (it would be an errata in this case anyway).
-> My preference would be to just allow allow mailbox payload size to be 2^31 and
-> not deal with this.
-> 
-> My question was how strongly do you feel it's an error that should prevent
-> binding.
-> 
+Removed restriction of displaying model name for 32 bit tasks only.
+This can be used for 64 bit tasks as well, and it's useful for some
+tools that already parse this, such as coreutils `uname -p`, Ubuntu
+model name display etc.
 
-I don't have an objection to binding, but doesn't this require that the 
-check in cxl_validate_cmd_from_user() guarantees send_cmd->size_in cannot 
-be greater than 1MB?
+It should be like this:
+```
+$ cat '/proc/cpuinfo' | grep 'model name' | head -n 1
+model name : ARMv8 Processor rev X (v8l)
+```
+
+Link: https://lore.kernel.org/lkml/1472461345-28219-1-git-send-email-sumitg@nvidia.com/
+
+Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
+Signed-off-by: Tianling Shen <cnsztl@gmail.com>
+---
+ arch/arm64/kernel/cpuinfo.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/arch/arm64/kernel/cpuinfo.c b/arch/arm64/kernel/cpuinfo.c
+index 77605aec25fe..d69b4e486098 100644
+--- a/arch/arm64/kernel/cpuinfo.c
++++ b/arch/arm64/kernel/cpuinfo.c
+@@ -148,8 +148,7 @@ static int c_show(struct seq_file *m, void *v)
+ 		 * "processor".  Give glibc what it expects.
+ 		 */
+ 		seq_printf(m, "processor\t: %d\n", i);
+-		if (compat)
+-			seq_printf(m, "model name\t: ARMv8 Processor rev %d (%s)\n",
++		seq_printf(m, "model name\t: ARMv8 Processor rev %d (%s)\n",
+ 				   MIDR_REVISION(midr), COMPAT_ELF_PLATFORM);
+ 
+ 		seq_printf(m, "BogoMIPS\t: %lu.%02lu\n",
+-- 
+2.17.1
+
