@@ -2,155 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C20030A640
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:12:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28ACF30A666
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:22:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233484AbhBALL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 06:11:26 -0500
-Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:44307 "EHLO
-        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233111AbhBALLY (ORCPT
+        id S233548AbhBALVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 06:21:49 -0500
+Received: from esa2.hc1455-7.c3s2.iphmx.com ([207.54.90.48]:55232 "EHLO
+        esa2.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233120AbhBALVp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 06:11:24 -0500
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id 6X6LlvAM3efbk6X6PlgJ8O; Mon, 01 Feb 2021 12:10:41 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1612177841; bh=k7XvEqsBC7bcNOg0zjPfcOkYLx7D9V/L2aLQPgX7CsU=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=RclMAo3i5fIXLP0QhPrBTixnN65teTphdKfrtsCw8/t6+xJsAdWuoJ/qSpNEoC52D
-         j1sJLibWQia4Y5w4XjCAFRlq2UyHM6Mk7DXoYXR6Ab4JciTIfS/sq9dpT3UAiUgfLs
-         WjnyENh+VnlGFixhM5NolMavxJMqlOjbzFyrKkdAxDd+HUSRrD/XfjOri6f9XGHqc3
-         RP4vGCilgnec+7gvPwcyNPGKfM8T7WptmLhg+FDQ4wGLiRwhaC3vAUglcpmtlGnkYM
-         wqycW2RxaNkZghrAq5yAayRD/PQdtNZXFtY7+bGg01Th0Ng9ZaG1KrzCQgmlyAUdxL
-         xdLusXfewoZUQ==
-Subject: Re: [PATCH v6 1/2] media: v4l2-ctrl: add controls for long term
- reference.
-To:     Dikshita Agarwal <dikshita@codeaurora.org>,
-        linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        vgarodia@codeaurora.org
-References: <1611553919-17919-1-git-send-email-dikshita@codeaurora.org>
- <1611553919-17919-2-git-send-email-dikshita@codeaurora.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <9b5bd3aa-ca42-0c0f-dfde-de86b27affe4@xs4all.nl>
-Date:   Mon, 1 Feb 2021 12:10:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 1 Feb 2021 06:21:45 -0500
+IronPort-SDR: +qPHHYC7GH4frBzRnBBIvuA5TnMIRwOR2vl9x/ERqF9aEFJwFPysX7UB2rhknz9zVF3Cm2HFLW
+ q/i6f2+nnnOIRS7Wehk3vI6gos86AdibDc97sBuYIyC5OJyc717yQu2ruudMLbRA7h3GGe+WYu
+ 33Eb1a6fWGKwCyaxuMQHsI3wWgBdDVxu7sIplQ7YYGHD76u4bHKQhtEDXv5FrKe7mBvKzsstZL
+ U3BWLCui0OXqxaoqfwFL5pakP5PBF0EOzmYFBIXqsst5E2VF8brpmiqsoFNsJrSqJx1goJFV4U
+ Q1Q=
+X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="17521679"
+X-IronPort-AV: E=Sophos;i="5.79,392,1602514800"; 
+   d="scan'208";a="17521679"
+Received: from unknown (HELO oym-r4.gw.nic.fujitsu.com) ([210.162.30.92])
+  by esa2.hc1455-7.c3s2.iphmx.com with ESMTP; 01 Feb 2021 20:19:29 +0900
+Received: from oym-m1.gw.nic.fujitsu.com (oym-nat-oym-m1.gw.nic.fujitsu.com [192.168.87.58])
+        by oym-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id 27592EF959
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 20:19:27 +0900 (JST)
+Received: from pumpkin.openstacklocal (pumpkin.fct.css.fujitsu.com [10.130.70.189])
+        by oym-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id 5CB3CB4E48
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 20:19:26 +0900 (JST)
+Received: by pumpkin.openstacklocal (Postfix, from userid 1012)
+        id 7DDA04357; Mon,  1 Feb 2021 20:13:12 +0900 (JST)
+From:   Shunsuke Nakamura <nakamura.shun@jp.fujitsu.com>
+To:     john.garry@huawei.com, will@kernel.org, mathieu.poirier@linaro.org,
+        leo.yan@linaro.org, peterz@infradead.org, mingo@redhat.com,
+        acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        nakamura.shun@fujitsu.com,
+        Shunsuke Nakamura <nakamura.shun@jp.fujitsu.com>
+Subject: [PATCH v4 0/4] perf vendor events: Support PMU events for A64FX
+Date:   Mon,  1 Feb 2021 20:13:06 +0900
+Message-Id: <20210201111310.3231469-1-nakamura.shun@jp.fujitsu.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <1611553919-17919-2-git-send-email-dikshita@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfOc4NvLP67ObFJSxe+3fAIL6QL0HFM2ei6OhPQQAb1b64+tbKV6/8JJiqD/psszXSoHK2KzXBFJvjBDnWhGrlE9mv7RVkwFyfkhqhRf+BTlFs+SI+zZt
- i7FX+IcuaOqLlp0taH8F1jsoL406gkvwl7c4lRB7b7y/4ABZt5rqY0AFghVONuB+rbv1oIu9UE0fCxEcQhiITCP990JvzLhE+8PI83H5i+SlQHUaRF0GXUBe
- xWJj/RVuX1XZl2MCSte+oUDspTYEwOVbqafv89ZXRxNAZxMVl1T8tCKKcIQOA3GfoRndSOQjZZk2FE2oOJg04886X2Gug1aJ9nAgEuHWdFcVtnyfz4vGiKuu
- UVs8wDa40r9GVcDtUTSdFL0iWOCuyGUy8II/eWmO9NSBAXwK9os=
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25/01/2021 06:51, Dikshita Agarwal wrote:
-> Long Term Reference (LTR) frames are the frames that are encoded
-> sometime in the past and stored in the DPB buffer list to be used
-> as reference to encode future frames.
-> This change adds controls to enable this feature.
-> 
-> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
-> ---
->  .../userspace-api/media/v4l/ext-ctrls-codec.rst        | 18 ++++++++++++++++++
->  drivers/media/v4l2-core/v4l2-ctrls.c                   | 14 ++++++++++++++
->  include/uapi/linux/v4l2-controls.h                     |  3 +++
->  3 files changed, 35 insertions(+)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> index 400774c..a37d460 100644
-> --- a/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> +++ b/Documentation/userspace-api/media/v4l/ext-ctrls-codec.rst
-> @@ -3637,3 +3637,21 @@ enum v4l2_mpeg_video_hevc_size_of_length_field -
->        - Selecting this value specifies that HEVC slices are expected
->          to be prefixed by Annex B start codes. According to :ref:`hevc`
->          valid start codes can be 3-bytes 0x000001 or 4-bytes 0x00000001.
-> +
-> +``V4L2_CID_MPEG_VIDEO_LTR_COUNT (integer)``
-> +       Specifies the number of Long Term Reference (LTR) frames encoder needs
+(I forgot to add the mailing list to cc. Will resend. Sorry about that.)
 
-frames encoder -> frames the encoder
+This patch series supports A64FX PMU event v1.2.
 
-> +       to generate or keep. This is applicable to the H264 and HEVC encoders.
+The first patch adds a common and microarchitecture event, which can be
+referenced from CPU JSONs.
+This patch uses part of John's patch.[1]
 
-Isn't this really the maximum number of LTR frames? I.e., the actual number
-of LTR frames is something that is determined by userspace, right?
+The second patch adds level 2 instruction TLB, SVE, SIMD, and FP events.
 
-And you say 'generate or keep': but the encoder doesn't generate LTR frames,
-they are marked as such by userspace. So this text would be just: "to keep".
+The third patch fixes the lexical definition of event name so that
+perf can recognize event name that start with a number.
 
-Or am I wrong?
+The fourth patch adds PMU events for A64FX.
 
-Regards,
+Changes in v2:
+ - Added armv8-common-and-microarch based on John's patch.[1]
+ - Fixed A64FX Json to refer to standard events in armv8-common-and-microarch.
 
-	Hans
 
-> +
-> +``V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX (integer)``
-> +       The current frame is marked as a Long Term Reference (LTR) frame
-> +       and given this LTR index which ranges from 0 to LTR_COUNT-1.
-> +       This is applicable to the H264 and HEVC encoders and can be applied using
-> +       Request API.
-> +       Source Rec. ITU-T H.264 (06/2019); Table 7.9
-> +
-> +``V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES (bitmask)``
-> +       Specifies the Long Term Reference (LTR) frame(s) to be used for
-> +       encoding the current frame.
-> +       This provides a bitmask which consists of bits [0, LTR_COUNT-1].
-> +       This is applicable to the H264 and HEVC encoders and can be applied using
-> +       Request API.
-> diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
-> index 16ab54f..84c1eb8 100644
-> --- a/drivers/media/v4l2-core/v4l2-ctrls.c
-> +++ b/drivers/media/v4l2-core/v4l2-ctrls.c
-> @@ -950,6 +950,9 @@ const char *v4l2_ctrl_get_name(u32 id)
->  	case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:		return "Vertical MV Search Range";
->  	case V4L2_CID_MPEG_VIDEO_REPEAT_SEQ_HEADER:		return "Repeat Sequence Header";
->  	case V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME:		return "Force Key Frame";
-> +	case V4L2_CID_MPEG_VIDEO_LTR_COUNT:			return "LTR Count";
-> +	case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:		return "Frame LTR Index";
-> +	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES:		return "Use LTR Frames";
->  	case V4L2_CID_MPEG_VIDEO_MPEG2_SLICE_PARAMS:		return "MPEG-2 Slice Parameters";
->  	case V4L2_CID_MPEG_VIDEO_MPEG2_QUANTIZATION:		return "MPEG-2 Quantization Matrices";
->  	case V4L2_CID_FWHT_I_FRAME_QP:				return "FWHT I-Frame QP Value";
-> @@ -1277,6 +1280,17 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
->  	case V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE:
->  		*type = V4L2_CTRL_TYPE_INTEGER;
->  		break;
-> +	case V4L2_CID_MPEG_VIDEO_LTR_COUNT:
-> +		*type = V4L2_CTRL_TYPE_INTEGER;
-> +		break;
-> +	case V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX:
-> +		*type = V4L2_CTRL_TYPE_INTEGER;
-> +		*flags |= V4L2_CTRL_FLAG_EXECUTE_ON_WRITE;
-> +		break;
-> +	case V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES:
-> +		*type = V4L2_CTRL_TYPE_BITMASK;
-> +		*flags |= V4L2_CTRL_FLAG_EXECUTE_ON_WRITE;
-> +		break;
->  	case V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME:
->  	case V4L2_CID_PAN_RESET:
->  	case V4L2_CID_TILT_RESET:
-> diff --git a/include/uapi/linux/v4l2-controls.h b/include/uapi/linux/v4l2-controls.h
-> index af8dda2..c0bb87b 100644
-> --- a/include/uapi/linux/v4l2-controls.h
-> +++ b/include/uapi/linux/v4l2-controls.h
-> @@ -422,6 +422,9 @@ enum v4l2_mpeg_video_multi_slice_mode {
->  #define V4L2_CID_MPEG_VIDEO_MV_H_SEARCH_RANGE		(V4L2_CID_CODEC_BASE+227)
->  #define V4L2_CID_MPEG_VIDEO_MV_V_SEARCH_RANGE		(V4L2_CID_CODEC_BASE+228)
->  #define V4L2_CID_MPEG_VIDEO_FORCE_KEY_FRAME		(V4L2_CID_CODEC_BASE+229)
-> +#define V4L2_CID_MPEG_VIDEO_LTR_COUNT			(V4L2_CID_CODEC_BASE+230)
-> +#define V4L2_CID_MPEG_VIDEO_FRAME_LTR_INDEX		(V4L2_CID_CODEC_BASE+231)
-> +#define V4L2_CID_MPEG_VIDEO_USE_LTR_FRAMES		(V4L2_CID_CODEC_BASE+232)
->  
->  /* CIDs for the MPEG-2 Part 2 (H.262) codec */
->  #define V4L2_CID_MPEG_VIDEO_MPEG2_LEVEL			(V4L2_CID_CODEC_BASE+270)
-> 
+[1] https://lore.kernel.org/lkml/1611835236-34696-3-git-send-email-john.garry@huawei.com/
+
+
+John Garry (1):
+  perf vendor events arm64: Add common and uarch event JSON
+
+Shunsuke Nakamura (3):
+  perf vendor events: Add L2I_TLB, SVE, SIMD, and FP events
+  perf tools: Fix lexical definition of event name
+  perf vendor events: Add Fujitsu A64FX V1.2 pmu event
+
+ .../arch/arm64/armv8-common-and-microarch.json     | 476 +++++++++++++++++++++
+ .../arch/arm64/fujitsu/a64fx/branch.json           |   8 +
+ .../pmu-events/arch/arm64/fujitsu/a64fx/bus.json   |  62 +++
+ .../pmu-events/arch/arm64/fujitsu/a64fx/cache.json | 128 ++++++
+ .../pmu-events/arch/arm64/fujitsu/a64fx/cycle.json |   5 +
+ .../arch/arm64/fujitsu/a64fx/exception.json        |  29 ++
+ .../arch/arm64/fujitsu/a64fx/instruction.json      | 131 ++++++
+ .../arch/arm64/fujitsu/a64fx/memory.json           |   8 +
+ .../pmu-events/arch/arm64/fujitsu/a64fx/other.json | 188 ++++++++
+ .../arch/arm64/fujitsu/a64fx/pipeline.json         | 194 +++++++++
+ .../pmu-events/arch/arm64/fujitsu/a64fx/sve.json   | 110 +++++
+ tools/perf/pmu-events/arch/arm64/mapfile.csv       |   1 +
+ tools/perf/util/parse-events.l                     |   2 +-
+ 13 files changed, 1341 insertions(+), 1 deletion(-)
+ create mode 100644 tools/perf/pmu-events/arch/arm64/armv8-common-and-microarch.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/branch.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/bus.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cache.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cycle.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/exception.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/instruction.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/memory.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/other.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/pipeline.json
+ create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/sve.json
+
+-- 
+1.8.3.1
 
