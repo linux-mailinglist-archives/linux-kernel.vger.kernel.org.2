@@ -2,149 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A400430B23F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:46:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5AFA30B24D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:52:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229630AbhBAVqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 16:46:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50849 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229514AbhBAVqC (ORCPT
+        id S229623AbhBAVuD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 1 Feb 2021 16:50:03 -0500
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3412 "EHLO
+        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229498AbhBAVuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 16:46:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612215875;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MSmYYJUxjx/txjv3Ym8eyrnxTI/eSH9db57IFYwcwok=;
-        b=ZHjf6r0okTKGJE+rd8C5s3NRksNjGxpWh69K9LpVENXe1C8EbwfN9z25zRjCprNJy8HqVL
-        A8jF/8GujXq4ddA1U3nTZGhxeX+KS8kqdRQN1abKr+w2lvoSQz87yhGy/TI9ukbLKyd0PQ
-        BOD/JJGTQsjMUe0IkVumxcd3CQeik6E=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-38-WO1Z_rXeMVGapiLOI2ZcNQ-1; Mon, 01 Feb 2021 16:44:30 -0500
-X-MC-Unique: WO1Z_rXeMVGapiLOI2ZcNQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4F5401005513;
-        Mon,  1 Feb 2021 21:44:28 +0000 (UTC)
-Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0341739A50;
-        Mon,  1 Feb 2021 21:44:24 +0000 (UTC)
-Date:   Mon, 1 Feb 2021 15:44:23 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Julien Thierry <jthierry@redhat.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Peter Zijlstra <peterz@infradead.org>, raphael.gault@arm.com,
-        Will Deacon <will@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [RFC PATCH 12/17] gcc-plugins: objtool: Add plugin to detect
- switch table on arm64
-Message-ID: <20210201214423.dhsma73k7ccscovm@treble>
-References: <20210120173800.1660730-13-jthierry@redhat.com>
- <20210127221557.1119744-1-ndesaulniers@google.com>
- <20210127232651.rj3mo7c2oqh4ytsr@treble>
- <CAKwvOdkOeENcM5X7X926sv2Xmtko=_nOPeKZ2+51s13CW1QAjw@mail.gmail.com>
+        Mon, 1 Feb 2021 16:50:02 -0500
+Received: from dggeme759-chm.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DV1lN1sQ8z5Mdc;
+        Tue,  2 Feb 2021 05:48:00 +0800 (CST)
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggeme759-chm.china.huawei.com (10.3.19.105) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Tue, 2 Feb 2021 05:49:17 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
+ Tue, 2 Feb 2021 05:49:17 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "morten.rasmussen@arm.com" <morten.rasmussen@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
+        "xuwei (O)" <xuwei5@huawei.com>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "tiantao (H)" <tiantao6@hisilicon.com>,
+        wanghuiqiang <wanghuiqiang@huawei.com>,
+        "Zengtao (B)" <prime.zeng@hisilicon.com>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
+        Meelis Roos <mroos@linux.ee>
+Subject: RE: [PATCH] sched/topology: fix the issue groups don't span
+ domain->span for NUMA diameter > 2
+Thread-Topic: [PATCH] sched/topology: fix the issue groups don't span
+ domain->span for NUMA diameter > 2
+Thread-Index: AQHW+EyH3+RsPKpAu0uyCnuQYKixoapDFJoAgACzNkA=
+Date:   Mon, 1 Feb 2021 21:49:17 +0000
+Message-ID: <8cfd37e2617248f4b008f5564eb854a9@hisilicon.com>
+References: <20210201033830.15040-1-song.bao.hua@hisilicon.com>
+ <jhj7dnr4q0h.mognet@arm.com>
+In-Reply-To: <jhj7dnr4q0h.mognet@arm.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.202.106]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdkOeENcM5X7X926sv2Xmtko=_nOPeKZ2+51s13CW1QAjw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 10:10:01AM -0800, Nick Desaulniers wrote:
-> On Wed, Jan 27, 2021 at 3:27 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> >
-> > On Wed, Jan 27, 2021 at 02:15:57PM -0800, Nick Desaulniers wrote:
-> > > > From: Raphael Gault <raphael.gault@arm.com>
-> > > >
-> > > > This plugins comes into play before the final 2 RTL passes of GCC and
-> > > > detects switch-tables that are to be outputed in the ELF and writes
-> > > > information in an ".discard.switch_table_info" section which will be
-> > > > used by objtool.
-> > > >
-> > > > Signed-off-by: Raphael Gault <raphael.gault@arm.com>
-> > > > [J.T.: Change section name to store switch table information,
-> > > >        Make plugin Kconfig be selected rather than opt-in by user,
-> > > >        Add a relocation in the switch_table_info that points to
-> > > >        the jump operation itself]
-> > > > Signed-off-by: Julien Thierry <jthierry@redhat.com>
-> > >
-> > > Rather than tightly couple this feature to a particular toolchain via
-> > > plugin, it might be nice to consider what features could be spec'ed out
-> > > for toolchains to implement (perhaps via a -f flag).
-> >
-> > The problem is being able to detect switch statement jump table vectors.
-> >
-> > For a given indirect branch (due to a switch statement), what are all
-> > the corresponding jump targets?
-> >
-> > We would need the compiler to annotate that information somehow.
+
+
+> -----Original Message-----
+> From: Valentin Schneider [mailto:valentin.schneider@arm.com]
+> Sent: Tuesday, February 2, 2021 7:11 AM
+> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>;
+> vincent.guittot@linaro.org; mgorman@suse.de; mingo@kernel.org;
+> peterz@infradead.org; dietmar.eggemann@arm.com; morten.rasmussen@arm.com;
+> linux-kernel@vger.kernel.org
+> Cc: linuxarm@openeuler.org; xuwei (O) <xuwei5@huawei.com>; Liguozhu (Kenneth)
+> <liguozhu@hisilicon.com>; tiantao (H) <tiantao6@hisilicon.com>; wanghuiqiang
+> <wanghuiqiang@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>; Jonathan
+> Cameron <jonathan.cameron@huawei.com>; guodong.xu@linaro.org; Song Bao Hua
+> (Barry Song) <song.bao.hua@hisilicon.com>; Meelis Roos <mroos@linux.ee>
+> Subject: Re: [PATCH] sched/topology: fix the issue groups don't span
+> domain->span for NUMA diameter > 2
 > 
-> Makes sense, the compiler should have this information.  How is this
-> problem solved on x86?
-
-Thus far we've been able to successfully reverse engineer it on x86,
-though it hasn't been easy.
-
-There were some particulars for arm64 which made doing so impossible.
-(I don't remember the details.)
-
-
-> > > Distributions (like Android, CrOS) wont be able to use such a feature as
-> > > is.
+> 
+> Hi,
+> 
+> On 01/02/21 16:38, Barry Song wrote:
+> > A tricky thing is that we shouldn't use the sgc of the 1st CPU of node2
+> > for the sched_group generated by grandchild, otherwise, when this cpu
+> > becomes the balance_cpu of another sched_group of cpus other than node0,
+> > our sched_group generated by grandchild will access the same sgc with
+> > the sched_group generated by child of another CPU.
 > >
-> > Would a Clang plugin be out of the question?
+> > So in init_overlap_sched_group(), sgc's capacity be overwritten:
+> >         build_balance_mask(sd, sg, mask);
+> >         cpu = cpumask_first_and(sched_group_span(sg), mask);
+> >
+> >         sg->sgc = *per_cpu_ptr(sdd->sgc, cpu);
+> >
+> > And WARN_ON_ONCE(!cpumask_equal(group_balance_mask(sg), mask)) will
+> > also be triggered:
+> > static void init_overlap_sched_group(struct sched_domain *sd,
+> >                                      struct sched_group *sg)
+> > {
+> >         if (atomic_inc_return(&sg->sgc->ref) == 1)
+> >                 cpumask_copy(group_balance_mask(sg), mask);
+> >         else
+> >                 WARN_ON_ONCE(!cpumask_equal(group_balance_mask(sg), mask));
+> > }
+> >
+> > So here move to use the sgc of the 2nd cpu. For the corner case, if NUMA
+> > has only one CPU, we will still trigger this WARN_ON_ONCE. But It is
+> > really unlikely to be a real case for one NUMA to have one CPU only.
+> >
 > 
-> Generally, we frown on out of tree kernel modules for a couple reasons.
+> Well, it's trivial to boot this with QEMU, and it's actually the example
+> the comment atop that WARN_ONCE() is based on. Also, you could end up with
+> a single CPU on a node during hotplug operations...
+
+Hi Valentin,
+
+The qemu topology is just a reflection of real kunpeng920 case, and pls
+also note Meelis has also tested on another real hardware "8-node Sun
+Fire X4600-M2" and gave the tested-by.
+
+It might not a perfect fix, but it is the simplest way to fix for this
+moment and for real cases. A "perfect" fix will require major
+refactoring of topology.c.
+
+I don't think hotplug is much relevant as even some cpus are unplugged
+and only one cpu is left in the sched_group of the sched_domain, the
+related domain and group are still getting right settings.
+
+On the other hand, the corner could literally  be fixed, but will
+get some very ugly code involved. I mean, two sched_group can result
+in using the same sgc:
+1. the sched_group generated by grandchild with only one numa
+2. the sched_group generated by child with more than one numa
+
+Right now, I'm moving to the 2nd cpu for sched_group1, if we move to
+use 2nd cpu for sched_group2, then having only one cpu in one NUMA
+wouldn't be a problem anymore. But the code will be very ugly.
+So I would prefer to keep this assumption and just ignore the unreal
+corner case.
+
 > 
-> Maintaining ABI compatibility when the core kernel changes is
-> generally not instantaneous; someone has to notice the ABI has changed
-> which will be more delayed than if the module was in tree.  Worse is
-> when semantics subtly change.  While we must not break userspace, we
-> provide no such guarantees within the kernel proper.
-> 
-> Also, it's less likely that out of tree kernel modules have been
-> reviewed by kernel developers.  They may not have the same quality,
-> use the recommended interfaces, follow coding conventions, etc..
-> 
-> Oh, did I say "out of tree kernel modules?"  I meant "compiler
-> plugins."  But it's two different sides of the same coin to me.
+> I am not entirely sure whether having more than one CPU per node is a
+> sufficient condition. I'm starting to *think* it is, but I'm not entirely
+> convinced yet - and now I need a new notebook.
 
-I thought Android already relied on OOT modules.
+Me too. Some extremely complicated topology might break the assumption.
+Really need a new notebook to draw this kind of complicated topology to
+break the assumption :-)
 
-GCC plugins generally enforce the exact same GCC version for OOT
-modules.  So there's no ABI to worry about.  I assume Clang does the
-same?
+But it is sufficient for the existing real cases which need fixing. When
+someday a real case in which each numa has more than one CPU wakes up
+the below warning:
+WARN_ON_ONCE(!cpumask_equal(group_balance_mask(sg), mask)).
+It might be the right time to consider major refactoring of topology.c.
 
-Or did I miss your point?
-
-> FWIW, I think the approach taken by -mstack-protector-guard-reg= is a
-> useful case study.  It was prototyped as a GCC extension, then added
-> to GCC proper, then added to LLVM (currently only x86, but most of the
-> machinery is in place in the compiler to get it running on arm64).  My
-> recommendation is to skip the plugin part and work on a standard
-> interface for compilers to implement, with input from compiler
-> developers.
-
-I like the idea.  Is there a recommended forum for such discussions?
-Just an email to GCC/Clang development lists?
-
--- 
-Josh
-
+Thanks
+Barry
