@@ -2,106 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 042AA30A234
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:49:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 578AC30A248
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 08:01:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232005AbhBAGsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 01:48:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33434 "EHLO mail.kernel.org"
+        id S231656AbhBAHBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 02:01:06 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:56701 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232172AbhBAGoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 01:44:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EC9464E11;
-        Mon,  1 Feb 2021 06:43:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612161799;
-        bh=VWrcrRLqYlZ43SypcWSC4Ova6HDDDLuVvN9BU0monik=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aoy3nVlkmtWO6sr8qsxlqIrnH0enDrOBLP0XdomN8RSDqY0LPrQv4bUbRE4vtm+Sw
-         GKWz4mxX6zeIN1kOmkUcHwBhPuUX8tR/iCdC7boCQlH0eH+o1AqJUmIOevgBlGT6+h
-         Sx7j/lgSmF+gQx7FyIx2AbI5+TewLUGfsNDJS5fpo8WhVULrZg3WoiLg/SJmscFbWh
-         w91KGEXCDSlRdktdaVnWmp6WmCjhSEpBV1zoB3DZtTNIR1ovEZ0i7lKxizoYDCjMyR
-         DgNig9yf3sMfwW0dRjYYxYv4qC2xpkd0+iVD24ZMtuAJrmLrvkgyS+1DstZH3TLRHT
-         kHpbI1fFmLv8w==
-Date:   Mon, 1 Feb 2021 12:13:14 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     mdalam@codeaurora.org
-Cc:     corbet@lwn.net, agross@kernel.org, bjorn.andersson@linaro.org,
-        dan.j.williams@intel.com, dmaengine@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, sricharan@codeaurora.org,
-        mdalam=codeaurora.org@codeaurora.org
-Subject: Re: [PATCH] dmaengine: qcom: bam_dma: Add LOCK and UNLOCK flag bit
- support
-Message-ID: <20210201064314.GM2771@vkoul-mobl>
-References: <efcc74bbdf36b4ddbf764eb6b4ed99f2@codeaurora.org>
- <f7de0117c8ff2e61c09f58acdea0e5b0@codeaurora.org>
- <20210112101056.GI2771@vkoul-mobl>
- <e3cf7c4fc02c54d17fd2fd213f39005b@codeaurora.org>
- <20210115055806.GE2771@vkoul-mobl>
- <97ce29b230164a5848a38f6448d1be60@codeaurora.org>
- <20210119164511.GE2771@vkoul-mobl>
- <534308caab7c18730ad0cc25248d116f@codeaurora.org>
- <20210201060508.GK2771@vkoul-mobl>
- <9d33d73682f24d92338757e1823ccd88@codeaurora.org>
+        id S230370AbhBAHA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 02:00:26 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DTf2H4gPkz9tkd;
+        Mon,  1 Feb 2021 17:59:34 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1612162775;
+        bh=6EUWeozn2gOtd6OsNWzU6TOpVifdYqCM/JwIhZZ9ooQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RVheMq0gPg1+ieiVbtFxPinHSqFSohAgC0FWh9nfyG2t7O1evViWLATGMLEZnFnQT
+         ViiTcaJu85PFqostk04UATDWpQiGgA4NscV/R2UVT8bVSRIngzWuXQA6csJbJPQ7AJ
+         230eDImrdI8/p6rjZM+T2T7jXuLuWv6szcg4z52qB3fusPrDR1yFoPIlGGc032RhOl
+         sPqcTvoxj5lY+Yu6Y2ZtrIeiWj/5vH9+7Gr9/q7636tTqtHJgBlp97KBgWJsGXJN55
+         zkLSODOnwRpzeaLt8+92sFZ3c39KdIsbqwDN51Kb/Txs0bjxRfX4Qyz9ldiGTPqfIQ
+         WwLCPlDPt8qFQ==
+Date:   Mon, 1 Feb 2021 17:59:33 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Parav Pandit <parav@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the net-next tree
+Message-ID: <20210201175933.12cbc38c@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9d33d73682f24d92338757e1823ccd88@codeaurora.org>
+Content-Type: multipart/signed; boundary="Sig_/WfIzfcW3RCLJxfPwZPxL=R0";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01-02-21, 11:52, mdalam@codeaurora.org wrote:
-> On 2021-02-01 11:35, Vinod Koul wrote:
-> > On 27-01-21, 23:56, mdalam@codeaurora.org wrote:
+--Sig_/WfIzfcW3RCLJxfPwZPxL=R0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> > >   The actual LOCK/UNLOCK flag should be set on hardware command
-> > > descriptor.
-> > >   so this flag setting should be done in DMA engine driver. The user
-> > > of the
-> > > DMA
-> > >   driver like (in case of IPQ5018) Crypto can use flag
-> > > "DMA_PREP_LOCK" &
-> > > "DMA_PREP_UNLOCK"
-> > >   while preparing CMD descriptor before submitting to the DMA
-> > > engine. In DMA
-> > > engine driver
-> > >   we are checking these flasgs on CMD descriptor and setting actual
-> > > LOCK/UNLOCK flag on hardware
-> > >   descriptor.
-> > 
-> > 
-> > I am not sure I comprehend this yet.. when is that we would need to do
-> > this... is this for each txn submitted to dmaengine.. or something
-> > else..
-> 
->  Its not for each transaction submitted to dmaengine. We have to set this
-> only
->  once on CMD descriptor. So when A53 crypto driver need to change the crypto
-> configuration
->  then first it will lock the all other pipes using setting the LOCK flag bit
-> on CMD
->  descriptor and then it can start the transaction , on data descriptor this
-> flag will
->  not get set once all transaction will be completed the A53 crypto driver
-> release the lock on
->  all other pipes using UNLOCK flag on CMD descriptor. So LOCK/UNLOCK will be
-> only once and not for
->  the each transaction.
+Hi all,
 
-Okay so why cant the bam driver check cmd descriptor and do lock/unlock
-as below, why do we need users to do this.
+After merging the net-next tree, today's linux-next build (htmldocs)
+produced this warning:
 
-        if (flags & DMA_PREP_CMD) {
-                do_lock_bam();
+Documentation/networking/device_drivers/ethernet/mellanox/mlx5.rst:16: WARN=
+ING: Unknown target name: "mlx5 port function".
 
-The point here is that this seems to be internal to dma and should be
-handled by dma driver.
+Introduced by commit
 
-Also if we do this, it needs to be done for specific platforms..
+  142d93d12dc1 ("net/mlx5: Add devlink subfunction port documentation")
 
-Thanks
+--=20
+Cheers,
+Stephen Rothwell
 
--- 
-~Vinod
+--Sig_/WfIzfcW3RCLJxfPwZPxL=R0
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAXptUACgkQAVBC80lX
+0Gz1cAgAiVJzZbT9ypLlFxOR79WTntr8/TU78Oqh99x2xdvCVsbC/ARE1Q9/wWaW
+9ZfqD4esknaAPttEy+WUz0+1BdPlFSDMlwwwwna8V3rYJj0Uo3XrgoX0nTxH47qs
+FVydBBzelRs53t1bzI4AeAPfdic44/S+CBP/hMtE2PDGRitwEeIjM89H+5pRtml3
+Ih9nnkblWpJOYI4oFv5p/J88i6MYkUDBS1BkB4pM/3DMBeIG1v8Thf6x2ztyM8SB
+D28eghVry1yoQbOlRkcMGf0uYctdAdUYA6rrrcEVG8khpimKPvjCvztvF/CKEi41
+GIYepwNqkGd/AginQJx/TyPUAfeJ9w==
+=OBaQ
+-----END PGP SIGNATURE-----
+
+--Sig_/WfIzfcW3RCLJxfPwZPxL=R0--
