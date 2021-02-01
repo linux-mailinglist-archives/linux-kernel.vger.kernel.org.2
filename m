@@ -2,94 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE47030A8F8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:42:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B26EC30A8FB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:44:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232290AbhBANmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:42:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231308AbhBANmd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:42:33 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C235C061573;
-        Mon,  1 Feb 2021 05:41:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bU766lYCXPgOdHHgx/QYfVKqikbkYZZcWgGhL3Pb1pE=; b=o5dzoXGjMNCKadF6L6XQEABvMM
-        vPZMGfD2U4PeWVkwI7Gmh2s1Y+yEMC4BO889J/d6NzzAnOMaBMpHAARXn4HGuOxcwCGWAVlTfqy/x
-        2ZZE+1XisVt8Y6qiWJvRNtV7FRv+dX8cfrJBqg1hlrmY3Nbj1Hir9uRsThfJPCSzAs+VoUadXvh/3
-        Xj5XlSP2Ga01nuyPokdLmQxW+FpiP5nv21/Utfba96pB7BL7FWSgtjH39sY/dYxatpOTJRX0P9/kK
-        uSW/sp+VQktT0fMBRQo2XrTS0L+NxWqgNI9HEVWSrPOQU02DHr7ONWgD3NPWdrxIMDRQ28lKWtqMK
-        lSQfjwFA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l6ZSQ-00Dpfr-4B; Mon, 01 Feb 2021 13:41:34 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3E47F3003D8;
-        Mon,  1 Feb 2021 14:41:33 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 21B3C20C8E303; Mon,  1 Feb 2021 14:41:33 +0100 (CET)
-Date:   Mon, 1 Feb 2021 14:41:33 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Leo Yan <leo.yan@linaro.org>, coresight@lists.linaro.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        Denis Nikitin <denik@chromium.org>,
-        Mattias Nissler <mnissler@chromium.org>,
-        Al Grant <al.grant@arm.com>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        jannh@google.com
-Subject: Re: [PATCH 1/4] perf/core: Add support to exclude kernel mode
- instruction tracing
-Message-ID: <YBgFDXgX57y5XzOn@hirez.programming.kicks-ass.net>
-References: <cover.1611909025.git.saiprakash.ranjan@codeaurora.org>
- <89c7ff59d887a0360434e607bd625393ec3190e5.1611909025.git.saiprakash.ranjan@codeaurora.org>
- <20210129193040.GJ8912@worktop.programming.kicks-ass.net>
- <3c96026b544c2244e57b46119427b8a0@codeaurora.org>
+        id S231897AbhBANoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:44:24 -0500
+Received: from mga01.intel.com ([192.55.52.88]:27820 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231259AbhBANoW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 08:44:22 -0500
+IronPort-SDR: NzhAKCYhnQXi4XM/YUtH4pHJ+jygKZ/Eg9cKCW9tB8N3QjXczD+vw5qR+BeTYB068swyVbjcGf
+ guKV2pK7B0Rw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="199578880"
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="199578880"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 05:42:35 -0800
+IronPort-SDR: AfFKvMAXe7FVmvGMevF7putl5zn4hCdP5hNEoGE0ehdmlm6i979xyhx1vCzn0j5RAjUyNY0Q0z
+ RHxlfdNlD9MQ==
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="358585103"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 05:42:30 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l6ZTG-0018vK-O7; Mon, 01 Feb 2021 15:42:26 +0200
+Date:   Mon, 1 Feb 2021 15:42:26 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-arch@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
+        Dennis Zhou <dennis@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        David Sterba <dsterba@suse.com>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Joe Perches <joe@perches.com>
+Subject: Re: [PATCH 4/8] lib: introduce BITS_{FIRST,LAST} macro
+Message-ID: <YBgFQmxh5dnPI6HL@smile.fi.intel.com>
+References: <20210130191719.7085-1-yury.norov@gmail.com>
+ <20210130191719.7085-5-yury.norov@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3c96026b544c2244e57b46119427b8a0@codeaurora.org>
+In-Reply-To: <20210130191719.7085-5-yury.norov@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 01:11:04PM +0530, Sai Prakash Ranjan wrote:
+On Sat, Jan 30, 2021 at 11:17:15AM -0800, Yury Norov wrote:
+> BITMAP_{LAST,FIRST}_WORD_MASK() in linux/bitmap.h duplicates the
+> functionality of GENMASK(). The scope of there macros is wider than just
+> bitmap. This patch defines 4 new macros: BITS_FIRST(), BITS_LAST(),
+> BITS_FIRST_MASK() and BITS_LAST_MASK() in linux/bits.h on top of GENMASK()
+> and replaces BITMAP_{LAST,FIRST}_WORD_MASK() to avoid duplication and
+> increases scope of the macros.
 
-> Ok I suppose you mean CONFIG_SECURITY_LOCKDOWN_LSM? But I don't see
-> how this new config has to depend on that? This can work independently
-> whether complete lockdown is enforced or not since it applies to only
-> hardware instruction tracing. Ideally this depends on several hardware
-> tracing configs such as ETMs and others but we don't need them because
-> we are already exposing PERF_PMU_CAP_ITRACE check in the events core.
+...
 
-If you don't have lockdown, root pretty much owns the kernel, or am I
-missing something?
+>  include/linux/bitmap.h            | 27 ++++++++++++---------------
+>  include/linux/bits.h              |  6 ++++++
+>  include/linux/cpumask.h           |  8 ++++----
+>  include/linux/netdev_features.h   |  2 +-
+>  include/linux/nodemask.h          |  2 +-
+>  lib/bitmap.c                      | 26 +++++++++++++-------------
+>  lib/find_bit.c                    |  4 ++--
+>  lib/genalloc.c                    |  8 ++++----
 
-> be used for some speculative execution based attacks. Which other
-> kernel level PMUs can be used to get a full branch trace that is not
-> locked down? If there is one, then this should probably be applied to
-> it as well.
+Answering to your reply. I meant to split the below to a separate patch.
 
-Just the regular counters. The information isn't as accurate, but given
-enough goes you can infer plenty.
+>  tools/include/linux/bitmap.h      | 20 ++++++--------------
+>  tools/include/linux/bits.h        |  6 ++++++
+>  tools/lib/bitmap.c                |  6 +++---
+>  tools/lib/find_bit.c              |  2 +-
+>  tools/testing/radix-tree/bitmap.c |  4 ++--
 
-Just like all the SMT size-channel attacks.
+...
 
-Sure, PT and friends make it even easier, but I don't see a fundamental
-distinction.
+> +#define BITS_FIRST(nr)		GENMASK((nr), 0)
+> +#define BITS_LAST(nr)		GENMASK(BITS_PER_LONG - 1, (nr))
+> +
+> +#define BITS_FIRST_MASK(nr)	BITS_FIRST((nr) % BITS_PER_LONG)
+> +#define BITS_LAST_MASK(nr)	BITS_LAST((nr) % BITS_PER_LONG)
+
+Any pointers to the difference in generated code for popular architectures
+(x86. x86_64, arm, aarch64, ppc, ppc64)?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
