@@ -2,109 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF0F30B1A1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 21:34:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C86230B1A2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 21:34:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232053AbhBAUdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 15:33:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229680AbhBAUdT (ORCPT
+        id S231459AbhBAUea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 15:34:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38351 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229525AbhBAUe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 15:33:19 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F821C061573;
-        Mon,  1 Feb 2021 12:32:39 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id f1so24681435lfu.3;
-        Mon, 01 Feb 2021 12:32:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Mm+gqPPtT3ykIJnjiqZUK3SQ00bT+N0nYZsq8iy0pto=;
-        b=RaPkDX1gPwnslbiiJ17EhK4oGFZW+7DAvlkpmVxv4/2ekpMzFg+l44JlbFhSJimi4K
-         a6ZfeVPYoALr9Ahhd61n47BUNkne2fPX161E4ub1KCylUgREwh3TxmWaeOByzY+Dar+S
-         bADm2s8w0eb79/ldgNES0LagfWgxA1upSZ+RcHr0NmP7WgWWu28GjgNT6LTXfSpBqq1g
-         s757eWXXgfYE62ojzGATr2uVoQcF3dxQF4En/J1ArGLYuTjiH4PcfBSvhKShknwFODeK
-         z2S1FW0DFPFs/3rSKTCafzk/AY1D4mSf/LuGYFIaj1u6C4Wa4kdtbgowdcxdfyS61XZs
-         JQdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Mm+gqPPtT3ykIJnjiqZUK3SQ00bT+N0nYZsq8iy0pto=;
-        b=J08zRBzSYtXdLr2SpyTFE6v76GKJvMKZLzw4H5nUtB9EDDWHDKLHIrWI1UJofX8BXO
-         myOpVobf6Ebq2wsvA9bPwdh65MZ2zkWDDEObg+3snMWeR3n53yWjNnqLes8x+JlWnPoC
-         tSRmsZ5Gc5yuidddHn8VZuTRrGJY08sjthcYM/gYdY5vYyy3abeA0gePTcROHJo09fhn
-         fkAWybU8+N7QLizB8zPKk1k3LsCY840h2Q7Ju92PKWi1B3bN9b7c+ag2Ftz+wzVaVKy+
-         v/0BLiu1d2n42o6hz3YlmoEAyVKCETCg9C0lkc8+9jbNFf3yMGPhkqzr+CJK+tW39VDX
-         evTg==
-X-Gm-Message-State: AOAM531u0d/ZstGFYC+7Rp4QD+agZpDv3D+JTIEekVYooY1L7ebIAidp
-        xpQes959ftk7MIEZRiC6H9DxhlgksKGqiIQs
-X-Google-Smtp-Source: ABdhPJzglxpP8utAXB9egMWGzs+nYcPmfwE4HOvoD5SxSq1ynspf7hhnPKPUoPJR0quypq4e8qXdog==
-X-Received: by 2002:a05:6512:1181:: with SMTP id g1mr5796396lfr.351.1612211557539;
-        Mon, 01 Feb 2021 12:32:37 -0800 (PST)
-Received: from localhost.localdomain ([37.151.209.186])
-        by smtp.googlemail.com with ESMTPSA id u17sm4055497ljj.2.2021.02.01.12.32.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 12:32:35 -0800 (PST)
-From:   Sabyrzhan Tasbolatov <snovitoll@gmail.com>
-To:     santosh.shilimkar@oracle.com, davem@davemloft.net, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-rdma@vger.kernel.org,
-        rds-devel@oss.oracle.com, linux-kernel@vger.kernel.org,
-        syzbot+1bd2b07f93745fa38425@syzkaller.appspotmail.com
-Subject: [PATCH] net/rds: restrict iovecs length for RDS_CMSG_RDMA_ARGS
-Date:   Tue,  2 Feb 2021 02:32:33 +0600
-Message-Id: <20210201203233.1324704-1-snovitoll@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 1 Feb 2021 15:34:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612211579;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xD5KWdsPSIjyMRVxXpYIVnm8ydnIHbfkatyPmbf37Cw=;
+        b=gTMZlk5HZpUZHu3aJ9L4W0CHDx38zVsJw38W4rp8aYsKYv5PfCGU50djinOtAEjtSIHrHu
+        0YBxq3h5d4VGQZXZERQ0vYVhpzjN5V0XN20ccnRRpCnIX+I6Xe93DLKC/U1zjpKT51L+KM
+        vFLfIyU2PSb6p5oZfZWR8y1daYilhuw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-420-RClHPraPNLejUdhPBjkY_g-1; Mon, 01 Feb 2021 15:32:55 -0500
+X-MC-Unique: RClHPraPNLejUdhPBjkY_g-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 14684801B12;
+        Mon,  1 Feb 2021 20:32:54 +0000 (UTC)
+Received: from krava (unknown [10.40.192.169])
+        by smtp.corp.redhat.com (Postfix) with SMTP id C747F6E419;
+        Mon,  1 Feb 2021 20:32:51 +0000 (UTC)
+Date:   Mon, 1 Feb 2021 21:32:50 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCH 2/3] perf tools: Skip MMAP record synthesis for kernel
+ threads
+Message-ID: <YBhlcmCH2K3lI/YJ@krava>
+References: <20210129054901.1705483-1-namhyung@kernel.org>
+ <20210129054901.1705483-3-namhyung@kernel.org>
+ <YBczqtjXRvnMRYjD@krava>
+ <CAM9d7cj7E1u73ExFstFgQ9JMOFGM2KSrZs0zyUKte-C4VdBOjg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAM9d7cj7E1u73ExFstFgQ9JMOFGM2KSrZs0zyUKte-C4VdBOjg@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot found WARNING in rds_rdma_extra_size [1] when RDS_CMSG_RDMA_ARGS
-control message is passed with user-controlled
-0x40001 bytes of args->nr_local, causing order >= MAX_ORDER condition.
+On Mon, Feb 01, 2021 at 01:54:32PM +0900, Namhyung Kim wrote:
+> On Mon, Feb 1, 2021 at 7:48 AM Jiri Olsa <jolsa@redhat.com> wrote:
+> >
+> > On Fri, Jan 29, 2021 at 02:49:00PM +0900, Namhyung Kim wrote:
+> > > To synthesize information to resolve sample IPs, it needs to scan task
+> > > and mmap info from the /proc filesystem.  For each process, it
+> > > opens (and reads) status and maps file respectively.  But as kernel
+> > > threads don't have memory maps so we can skip the maps file.
+> > >
+> > > To find kernel threads, check "VmPeak:" line in /proc/<PID>/status
+> > > file.  It's about the peak virtual memory usage so only user-level
+> > > tasks have that.  Also check "Threads:" line (which follows the VmPeak
+> > > line whether or not it exists) to be sure it's read enough data - just
+> > > in case of deeply nested pid namespaces or large number of
+> > > supplementary groups are involved.
+> >
+> > I don't understand this Threads: check, could you please
+> > show example where it's useful for the check?
+> 
+> Sure!
+> 
+> I think there's a chance that the status file actually has the VmPeak line,
+> but it didn't read to the line for some reason.  In that case, we should
+> not assume the task is a kernel thread.
+> 
+> So it needs to make sure whether there's no such line in the file
+> or it just didn't read enough data.  To check the latter case, it
+> searches the "Threads" line which follows the VmPeak always.
 
-The exact value 0x40001 can be checked with UIO_MAXIOV which is 0x400.
-So for kcalloc() 0x400 iovecs with sizeof(struct rds_iovec) = 0x10
-is the closest limit, with 0x10 leftover.
+ah ok, there's limited buffer for the status file
 
-Same condition is currently done in rds_cmsg_rdma_args().
+we could call filename__read_str to read the whole file
+and skip these checks.. but perhaps that'd be another
+slowdown you trying to prevent
 
-[1] WARNING: mm/page_alloc.c:5011
-[..]
-Call Trace:
- alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2267
- alloc_pages include/linux/gfp.h:547 [inline]
- kmalloc_order+0x2e/0xb0 mm/slab_common.c:837
- kmalloc_order_trace+0x14/0x120 mm/slab_common.c:853
- kmalloc_array include/linux/slab.h:592 [inline]
- kcalloc include/linux/slab.h:621 [inline]
- rds_rdma_extra_size+0xb2/0x3b0 net/rds/rdma.c:568
- rds_rm_size net/rds/send.c:928 [inline]
+if you put that comment to the code, I'm ok with that
 
-Reported-by: syzbot+1bd2b07f93745fa38425@syzkaller.appspotmail.com
-Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
----
- net/rds/rdma.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/net/rds/rdma.c b/net/rds/rdma.c
-index 1d0afb1dd77b..6f1a50d50d06 100644
---- a/net/rds/rdma.c
-+++ b/net/rds/rdma.c
-@@ -565,6 +565,9 @@ int rds_rdma_extra_size(struct rds_rdma_args *args,
- 	if (args->nr_local == 0)
- 		return -EINVAL;
- 
-+	if (args->nr_local > UIO_MAXIOV)
-+		return -EMSGSIZE;
-+
- 	iov->iov = kcalloc(args->nr_local,
- 			   sizeof(struct rds_iovec),
- 			   GFP_KERNEL);
--- 
-2.25.1
+thanks,
+jirka
 
