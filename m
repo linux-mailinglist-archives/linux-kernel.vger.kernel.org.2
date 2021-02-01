@@ -2,104 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C3C30A1C5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F6930A1D0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:04:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231853AbhBAGCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 01:02:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231835AbhBAF6g (ORCPT
+        id S232058AbhBAGEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 01:04:22 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:58450 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231846AbhBAF7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 00:58:36 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D8EC0613ED;
-        Sun, 31 Jan 2021 21:57:18 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id z9so1698767pjl.5;
-        Sun, 31 Jan 2021 21:57:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=u9WcgY/7dzWX3O9rNeZQ45WY9vESYPTTGXpSkl0YUkI=;
-        b=Ih0G2mIOJJKmBb2ZACWolGcOpStbwLKcyk6kFoADEB0DP5RFHVEQumuS4q1QL6gRhx
-         XymbM/t3dKVkAO2sV6yIHPRjw93zfHa/7CSinrC2hfs9k0QVVs5hJ8g8APHdfTjetOtk
-         yKHRMGH37CXPXbVtEgNJSPQ9s5dHSs7HprVGRGLZHFR7i7UMz3NO2acZuKmAHVqlUcQp
-         q4z627DeuguOgMLczPFgl5UeNWiVCe1dPCmCEf2VosjvxwZs9qHAW927MooWjH0hbFF2
-         4cIngYZIjDY/Pa2MflMjZSp1hHe1eHHaFX/koE6Ag5nd/4yQ/aVtpBOKd0HXf798WSU7
-         vHpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=u9WcgY/7dzWX3O9rNeZQ45WY9vESYPTTGXpSkl0YUkI=;
-        b=fIaTjOlvpVtSW+RfMEYgkl6GeK2zw4OaMkHMPaj9Oz2dYAfE23C9N4ZrhQtMRnPz/5
-         /DfFUIcJ8Btb3TDmoXMK1uE1/bE8puSbDQePBafskkwgIcsJgvL41kz5TsAlHGqo1KDe
-         glOMnwiXDlLJ4TV5ukYj2VJNoqO5YVPym+E8EJzl90mfdB/uKDqksJyEStnYUvw3aGp/
-         yrHKadep4tm6f99k1F4hQYJj7V0n+Hll9P+ML0npDvp9ENO8cN+gNsoN1qNEjjBVaOKM
-         hxqvaqPpC9dBsD2w+INpcOJ5S+Lm0CFcJU6ydH/K1a/J4OfEJdrVrz90KEMRy1nF14eO
-         xR5g==
-X-Gm-Message-State: AOAM531aeT4JlUEiC6MwHkUmVZ3X9YqxMCrz9JrBeCCstAvZ5s10qWCw
-        4mH5wIrckPCZXgyQJMYRzEM=
-X-Google-Smtp-Source: ABdhPJxl+cgcAoXEBEpC1VwLLcuK8i3ig1a4dYX68teiMTM77/zkxVELptriuY7MljTxLwmUrn+BUg==
-X-Received: by 2002:a17:902:e812:b029:de:5af2:3d09 with SMTP id u18-20020a170902e812b02900de5af23d09mr16457146plg.33.1612159038341;
-        Sun, 31 Jan 2021 21:57:18 -0800 (PST)
-Received: from shane-XPS-13-9380.hsd1.ca.comcast.net ([2601:646:8800:1c00:f50:a17:3dc5:18ab])
-        by smtp.gmail.com with ESMTPSA id x63sm16992608pfc.145.2021.01.31.21.57.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 31 Jan 2021 21:57:17 -0800 (PST)
-From:   Xie He <xie.he.0141@gmail.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Martin Schiller <ms@dev.tdt.de>
-Cc:     Xie He <xie.he.0141@gmail.com>
-Subject: [PATCH net] net: lapb: Copy the skb before sending a packet
-Date:   Sun, 31 Jan 2021 21:57:06 -0800
-Message-Id: <20210201055706.415842-1-xie.he.0141@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Mon, 1 Feb 2021 00:59:04 -0500
+X-UUID: 4e8daef9ca0d4d6a939c80119b1f19be-20210201
+X-UUID: 4e8daef9ca0d4d6a939c80119b1f19be-20210201
+Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1854773642; Mon, 01 Feb 2021 13:58:00 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 1 Feb 2021 13:57:50 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 1 Feb 2021 13:57:50 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ikjoon Jang <ikjn@chromium.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Zhanyong Wang <zhanyong.wang@mediatek.com>,
+        Tianping Fang <tianping.fang@mediatek.com>,
+        stable <stable@vger.kernel.org>
+Subject: [next PATCH] usb: xhci-mtk: skip dropping bandwidth of unchecked endpoints
+Date:   Mon, 1 Feb 2021 13:57:44 +0800
+Message-ID: <1612159064-28413-1-git-send-email-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 7B8658DABE72D61BB90A22D8DACFB89029C9D3F4800EC3985BB294711E3736262000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When sending a packet, we will prepend it with an LAPB header.
-This modifies the shared parts of a cloned skb, so we should copy the
-skb rather than just clone it, before we prepend the header.
+For those unchecked endpoints, we don't allocate bandwidth for
+them, so no need free the bandwidth, otherwise will decrease
+the allocated bandwidth.
+Meanwhile use xhci_dbg() instead of dev_dbg() to print logs and
+rename bw_ep_list_new as bw_ep_chk_list.
 
-In "Documentation/networking/driver.rst" (the 2nd point), it states
-that drivers shouldn't modify the shared parts of a cloned skb when
-transmitting.
-
-The "dev_queue_xmit_nit" function in "net/core/dev.c", which is called
-when an skb is being sent, clones the skb and sents the clone to
-AF_PACKET sockets. Because the LAPB drivers first remove a 1-byte
-pseudo-header before handing over the skb to us, if we don't copy the
-skb before prepending the LAPB header, the first byte of the packets
-received on AF_PACKET sockets can be corrupted.
-
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Cc: Martin Schiller <ms@dev.tdt.de>
-Signed-off-by: Xie He <xie.he.0141@gmail.com>
+Fixes: 1d69f9d901ef ("usb: xhci-mtk: fix unreleased bandwidth data")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 ---
- net/lapb/lapb_out.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/usb/host/xhci-mtk-sch.c | 61 ++++++++++++++++++---------------
+ drivers/usb/host/xhci-mtk.h     |  4 ++-
+ 2 files changed, 36 insertions(+), 29 deletions(-)
 
-diff --git a/net/lapb/lapb_out.c b/net/lapb/lapb_out.c
-index 7a4d0715d1c3..a966d29c772d 100644
---- a/net/lapb/lapb_out.c
-+++ b/net/lapb/lapb_out.c
-@@ -82,7 +82,8 @@ void lapb_kick(struct lapb_cb *lapb)
- 		skb = skb_dequeue(&lapb->write_queue);
+diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-mtk-sch.c
+index a313e75ff1c6..dee8a329076d 100644
+--- a/drivers/usb/host/xhci-mtk-sch.c
++++ b/drivers/usb/host/xhci-mtk-sch.c
+@@ -200,6 +200,7 @@ static struct mu3h_sch_ep_info *create_sch_ep(struct usb_device *udev,
  
- 		do {
--			if ((skbn = skb_clone(skb, GFP_ATOMIC)) == NULL) {
-+			skbn = skb_copy(skb, GFP_ATOMIC);
-+			if (!skbn) {
- 				skb_queue_head(&lapb->write_queue, skb);
- 				break;
- 			}
+ 	sch_ep->sch_tt = tt;
+ 	sch_ep->ep = ep;
++	INIT_LIST_HEAD(&sch_ep->endpoint);
+ 	INIT_LIST_HEAD(&sch_ep->tt_endpoint);
+ 
+ 	return sch_ep;
+@@ -374,6 +375,7 @@ static void update_bus_bw(struct mu3h_sch_bw_info *sch_bw,
+ 					sch_ep->bw_budget_table[j];
+ 		}
+ 	}
++	sch_ep->allocated = used;
+ }
+ 
+ static int check_sch_tt(struct usb_device *udev,
+@@ -542,6 +544,22 @@ static int check_sch_bw(struct usb_device *udev,
+ 	return 0;
+ }
+ 
++static void destroy_sch_ep(struct usb_device *udev,
++	struct mu3h_sch_bw_info *sch_bw, struct mu3h_sch_ep_info *sch_ep)
++{
++	/* only release ep bw check passed by check_sch_bw() */
++	if (sch_ep->allocated)
++		update_bus_bw(sch_bw, sch_ep, 0);
++
++	list_del(&sch_ep->endpoint);
++
++	if (sch_ep->sch_tt) {
++		list_del(&sch_ep->tt_endpoint);
++		drop_tt(udev);
++	}
++	kfree(sch_ep);
++}
++
+ static bool need_bw_sch(struct usb_host_endpoint *ep,
+ 	enum usb_device_speed speed, int has_tt)
+ {
+@@ -584,7 +602,7 @@ int xhci_mtk_sch_init(struct xhci_hcd_mtk *mtk)
+ 
+ 	mtk->sch_array = sch_array;
+ 
+-	INIT_LIST_HEAD(&mtk->bw_ep_list_new);
++	INIT_LIST_HEAD(&mtk->bw_ep_chk_list);
+ 
+ 	return 0;
+ }
+@@ -636,29 +654,12 @@ int xhci_mtk_add_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
+ 
+ 	setup_sch_info(udev, ep_ctx, sch_ep);
+ 
+-	list_add_tail(&sch_ep->endpoint, &mtk->bw_ep_list_new);
++	list_add_tail(&sch_ep->endpoint, &mtk->bw_ep_chk_list);
+ 
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(xhci_mtk_add_ep_quirk);
+ 
+-static void xhci_mtk_drop_ep(struct xhci_hcd_mtk *mtk, struct usb_device *udev,
+-			     struct mu3h_sch_ep_info *sch_ep)
+-{
+-	struct xhci_hcd *xhci = hcd_to_xhci(mtk->hcd);
+-	int bw_index = get_bw_index(xhci, udev, sch_ep->ep);
+-	struct mu3h_sch_bw_info *sch_bw = &mtk->sch_array[bw_index];
+-
+-	update_bus_bw(sch_bw, sch_ep, 0);
+-	list_del(&sch_ep->endpoint);
+-
+-	if (sch_ep->sch_tt) {
+-		list_del(&sch_ep->tt_endpoint);
+-		drop_tt(udev);
+-	}
+-	kfree(sch_ep);
+-}
+-
+ void xhci_mtk_drop_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
+ 		struct usb_host_endpoint *ep)
+ {
+@@ -688,9 +689,8 @@ void xhci_mtk_drop_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
+ 	sch_bw = &sch_array[bw_index];
+ 
+ 	list_for_each_entry_safe(sch_ep, tmp, &sch_bw->bw_ep_list, endpoint) {
+-		if (sch_ep->ep == ep) {
+-			xhci_mtk_drop_ep(mtk, udev, sch_ep);
+-		}
++		if (sch_ep->ep == ep)
++			destroy_sch_ep(udev, sch_bw, sch_ep);
+ 	}
+ }
+ EXPORT_SYMBOL_GPL(xhci_mtk_drop_ep_quirk);
+@@ -704,9 +704,9 @@ int xhci_mtk_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
+ 	struct mu3h_sch_ep_info *sch_ep, *tmp;
+ 	int bw_index, ret;
+ 
+-	dev_dbg(&udev->dev, "%s\n", __func__);
++	xhci_dbg(xhci, "%s() udev %s\n", __func__, dev_name(&udev->dev));
+ 
+-	list_for_each_entry(sch_ep, &mtk->bw_ep_list_new, endpoint) {
++	list_for_each_entry(sch_ep, &mtk->bw_ep_chk_list, endpoint) {
+ 		bw_index = get_bw_index(xhci, udev, sch_ep->ep);
+ 		sch_bw = &mtk->sch_array[bw_index];
+ 
+@@ -717,7 +717,7 @@ int xhci_mtk_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
+ 		}
+ 	}
+ 
+-	list_for_each_entry_safe(sch_ep, tmp, &mtk->bw_ep_list_new, endpoint) {
++	list_for_each_entry_safe(sch_ep, tmp, &mtk->bw_ep_chk_list, endpoint) {
+ 		struct xhci_ep_ctx *ep_ctx;
+ 		struct usb_host_endpoint *ep = sch_ep->ep;
+ 		unsigned int ep_index = xhci_get_endpoint_index(&ep->desc);
+@@ -746,12 +746,17 @@ EXPORT_SYMBOL_GPL(xhci_mtk_check_bandwidth);
+ void xhci_mtk_reset_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
+ {
+ 	struct xhci_hcd_mtk *mtk = hcd_to_mtk(hcd);
++	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
++	struct mu3h_sch_bw_info *sch_bw;
+ 	struct mu3h_sch_ep_info *sch_ep, *tmp;
++	int bw_index;
+ 
+-	dev_dbg(&udev->dev, "%s\n", __func__);
++	xhci_dbg(xhci, "%s() udev %s\n", __func__, dev_name(&udev->dev));
+ 
+-	list_for_each_entry_safe(sch_ep, tmp, &mtk->bw_ep_list_new, endpoint) {
+-		xhci_mtk_drop_ep(mtk, udev, sch_ep);
++	list_for_each_entry_safe(sch_ep, tmp, &mtk->bw_ep_chk_list, endpoint) {
++		bw_index = get_bw_index(xhci, udev, sch_ep->ep);
++		sch_bw = &mtk->sch_array[bw_index];
++		destroy_sch_ep(udev, sch_bw, sch_ep);
+ 	}
+ 
+ 	xhci_reset_bandwidth(hcd, udev);
+diff --git a/drivers/usb/host/xhci-mtk.h b/drivers/usb/host/xhci-mtk.h
+index 577f431c5c93..cbb09dfea62e 100644
+--- a/drivers/usb/host/xhci-mtk.h
++++ b/drivers/usb/host/xhci-mtk.h
+@@ -59,6 +59,7 @@ struct mu3h_sch_bw_info {
+  * @ep_type: endpoint type
+  * @maxpkt: max packet size of endpoint
+  * @ep: address of usb_host_endpoint struct
++ * @allocated: the bandwidth is aready allocated from bus_bw
+  * @offset: which uframe of the interval that transfer should be
+  *		scheduled first time within the interval
+  * @repeat: the time gap between two uframes that transfers are
+@@ -86,6 +87,7 @@ struct mu3h_sch_ep_info {
+ 	u32 ep_type;
+ 	u32 maxpkt;
+ 	void *ep;
++	bool allocated;
+ 	/*
+ 	 * mtk xHCI scheduling information put into reserved DWs
+ 	 * in ep context
+@@ -130,8 +132,8 @@ struct mu3c_ippc_regs {
+ struct xhci_hcd_mtk {
+ 	struct device *dev;
+ 	struct usb_hcd *hcd;
+-	struct list_head bw_ep_list_new;
+ 	struct mu3h_sch_bw_info *sch_array;
++	struct list_head bw_ep_chk_list;
+ 	struct mu3c_ippc_regs __iomem *ippc_regs;
+ 	bool has_ippc;
+ 	int num_u2_ports;
 -- 
-2.27.0
+2.18.0
 
