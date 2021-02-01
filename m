@@ -2,194 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D09030ACEE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:48:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C333930ACFA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:49:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbhBAQrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 11:47:15 -0500
-Received: from mga01.intel.com ([192.55.52.88]:43772 "EHLO mga01.intel.com"
+        id S229483AbhBAQsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 11:48:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34264 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230368AbhBAQrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 11:47:11 -0500
-IronPort-SDR: Sd75AQB5TUeGcpQJAM8Okp8DrUX/pneKdN3B/2/x9bQnB09zfBNTJJY4PTqoSZUwAcwwlwtHYw
- /RexSpm/G3Nw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="199612725"
-X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
-   d="scan'208";a="199612725"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 08:46:27 -0800
-IronPort-SDR: M3GO0gtPpl4qrl6C556Eviq48tEr0nI9xeXenrjI9aOzDLzPk5EbXy2fLA3f1ny/gNUGsp94NG
- 7a+Tjq+HYd3Q==
-X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="577880723"
-Received: from jambrizm-mobl1.amr.corp.intel.com (HELO intel.com) ([10.252.133.15])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 08:46:26 -0800
-Date:   Mon, 1 Feb 2021 08:46:24 -0800
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     David Rientjes <rientjes@google.com>
-Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        daniel.lll@alibaba-inc.com,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH 02/14] cxl/mem: Map memory device registers
-Message-ID: <20210201164624.bhfufqfalogfazzi@intel.com>
-References: <20210130002438.1872527-1-ben.widawsky@intel.com>
- <20210130002438.1872527-3-ben.widawsky@intel.com>
- <792edaa-a11b-41c6-c2a1-2c72a3e4e815@google.com>
+        id S229567AbhBAQs1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 11:48:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 63AAE64EA4;
+        Mon,  1 Feb 2021 16:47:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612198065;
+        bh=CZeI2uMdSKtpN0SRrNo9xb71YONUgiAnGU2LY/NNQPM=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=Y5e3GDx4v1reTzZTfDxboTTMXlgDnVr260B7MFwsxh/z9IxzKHcfFuLp0fxEmVvhc
+         SphstRbgVGkRKtApThDg/e1Paorx+QdEuSkmETfw39wwwacIh3a32VwO2Rfxnc30ab
+         R4EtTnikzy5cXbp2X6PVghNqKkdjx7jVXPZ95AqTVojGBWhwY2pJ4LlPqV0htsrrP0
+         FNqBdJeTkBsLJSJ+pmtPIe+xXudKHGuyUb8nkTsvY6uzq4WsB5D78Ld3qYOiAA/eMw
+         bsfuMzQShErOfHqB+edFMSfAQZjnbGVZV5a2OG/f8isR4DJAXTP63Bc23xSnZG0eGH
+         +2dszkicu5ddg==
+From:   Mark Brown <broonie@kernel.org>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+In-Reply-To: <20210130143545.505613-1-rasmus.villemoes@prevas.dk>
+References: <20210130143545.505613-1-rasmus.villemoes@prevas.dk>
+Subject: Re: [PATCH] spi: fsl: invert spisel_boot signal on MPC8309
+Message-Id: <161219801882.46355.10875207480645821949.b4-ty@kernel.org>
+Date:   Mon, 01 Feb 2021 16:46:58 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <792edaa-a11b-41c6-c2a1-2c72a3e4e815@google.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-01-30 15:51:42, David Rientjes wrote:
-> On Fri, 29 Jan 2021, Ben Widawsky wrote:
+On Sat, 30 Jan 2021 15:35:45 +0100, Rasmus Villemoes wrote:
+> Commit 7a2da5d7960a ("spi: fsl: Fix driver breakage when SPI_CS_HIGH
+> is not set in spi->mode") broke our MPC8309 board by effectively
+> inverting the boolean value passed to fsl_spi_cs_control. The
+> SPISEL_BOOT signal is used as chipselect, but it's not a gpio, so
+> we cannot rely on gpiolib handling the polarity.
 > 
-> > diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> > new file mode 100644
-> > index 000000000000..d81d0ba4617c
-> > --- /dev/null
-> > +++ b/drivers/cxl/cxl.h
-> > @@ -0,0 +1,17 @@
-> > +/* SPDX-License-Identifier: GPL-2.0-only */
-> > +/* Copyright(c) 2020 Intel Corporation. */
-> > +
-> > +#ifndef __CXL_H__
-> > +#define __CXL_H__
-> > +
-> > +/**
-> > + * struct cxl_mem - A CXL memory device
-> > + * @pdev: The PCI device associated with this CXL device.
-> > + * @regs: IO mappings to the device's MMIO
-> > + */
-> > +struct cxl_mem {
-> > +	struct pci_dev *pdev;
-> > +	void __iomem *regs;
-> > +};
-> > +
-> > +#endif
-> 
-> Stupid question: can there be more than one CXL.mem capable logical 
-> device?  I only ask to determine if an ordinal is needed to enumerate 
-> multiple LDs.
+> Adapt to the new world order by inverting the logic here. This does
+> assume that the slave sitting at the SPISEL_BOOT is active low, but
+> should that ever turn out not to be the case, one can create a stub
+> gpiochip driver controlling a single gpio (or rather, a single "spo",
+> special-purpose output).
 
-Not a stupid question at all. I admit, I haven't spent much time thinking about
-MLDs. I don't have a solid answer to your question. As I understand it, the
-devices in the virtual hierarchy will appear as individual CXL type 3 device
-components (2.4 in the spec) and transparent to software. A few times I've
-attempted to think about MLDs, get confused, and go do something else. The only
-MLD specificity I know of is the MLD DVSEC (8.1.10), which seems not incredibly
-interesting to me at present (basically, only supporting hot reset).
+Applied to
 
-> 
-> > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> > index f4ee9a507ac9..a869c8dc24cc 100644
-> > --- a/drivers/cxl/mem.c
-> > +++ b/drivers/cxl/mem.c
-> > @@ -4,6 +4,58 @@
-> >  #include <linux/pci.h>
-> >  #include <linux/io.h>
-> >  #include "pci.h"
-> > +#include "cxl.h"
-> > +
-> > +/**
-> > + * cxl_mem_create() - Create a new &struct cxl_mem.
-> > + * @pdev: The pci device associated with the new &struct cxl_mem.
-> > + * @reg_lo: Lower 32b of the register locator
-> > + * @reg_hi: Upper 32b of the register locator.
-> > + *
-> > + * Return: The new &struct cxl_mem on success, NULL on failure.
-> > + *
-> > + * Map the BAR for a CXL memory device. This BAR has the memory device's
-> > + * registers for the device as specified in CXL specification.
-> > + */
-> > +static struct cxl_mem *cxl_mem_create(struct pci_dev *pdev, u32 reg_lo,
-> > +				      u32 reg_hi)
-> > +{
-> > +	struct device *dev = &pdev->dev;
-> > +	struct cxl_mem *cxlm;
-> > +	void __iomem *regs;
-> > +	u64 offset;
-> > +	u8 bar;
-> > +	int rc;
-> > +
-> > +	offset = ((u64)reg_hi << 32) | (reg_lo & CXL_REGLOC_ADDR_MASK);
-> > +	bar = (reg_lo >> CXL_REGLOC_BIR_SHIFT) & CXL_REGLOC_BIR_MASK;
-> > +
-> > +	/* Basic sanity check that BAR is big enough */
-> > +	if (pci_resource_len(pdev, bar) < offset) {
-> > +		dev_err(dev, "BAR%d: %pr: too small (offset: %#llx)\n", bar,
-> > +			&pdev->resource[bar], (unsigned long long)offset);
-> > +		return NULL;
-> > +	}
-> > +
-> > +	rc = pcim_iomap_regions(pdev, BIT(bar), pci_name(pdev));
-> > +	if (rc != 0) {
-> > +		dev_err(dev, "failed to map registers\n");
-> > +		return NULL;
-> > +	}
-> > +
-> > +	cxlm = devm_kzalloc(&pdev->dev, sizeof(*cxlm), GFP_KERNEL);
-> > +	if (!cxlm) {
-> > +		dev_err(dev, "No memory available\n");
-> > +		return NULL;
-> > +	}
-> > +
-> > +	regs = pcim_iomap_table(pdev)[bar];
-> > +	cxlm->pdev = pdev;
-> > +	cxlm->regs = regs + offset;
-> > +
-> > +	dev_dbg(dev, "Mapped CXL Memory Device resource\n");
-> > +	return cxlm;
-> > +}
-> >  
-> >  static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
-> >  {
-> > @@ -32,15 +84,42 @@ static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
-> >  static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> >  {
-> >  	struct device *dev = &pdev->dev;
-> > -	int regloc;
-> > +	struct cxl_mem *cxlm;
-> > +	int rc, regloc, i;
-> > +
-> > +	rc = pcim_enable_device(pdev);
-> > +	if (rc)
-> > +		return rc;
-> >  
-> >  	regloc = cxl_mem_dvsec(pdev, PCI_DVSEC_ID_CXL_REGLOC);
-> >  	if (!regloc) {
-> >  		dev_err(dev, "register location dvsec not found\n");
-> >  		return -ENXIO;
-> >  	}
-> > +	regloc += 0xc; /* Skip DVSEC + reserved fields */
-> 
-> Assuming the DVSEC revision number is always 0x0 or there's no value in 
-> storing this in struct cxl_mem for the future.
-
-So this logic actually came from Dan originally, so don't take this necessarily
-as the authoritative answer.
-
-At some point revision id will need to be considered. However, the consortium
-seems to be going to great lengths (kudos) to make all modifications backward
-compatible. As such, we can consider this the driver for rev0 (the only such rev
-in existence today), and when a new rev comes along, figure out how to best
-handle it. However, the expectation is that this code will still work for revN.
-
-> 
-> Acked-by: David Rientjes <rientjes@google.com>
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
+
+[1/1] spi: fsl: invert spisel_boot signal on MPC8309
+      commit: 9d2aa6dbf87af89c13cac2d1b4cccad83fb14a7e
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
