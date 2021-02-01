@@ -2,137 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41A5830A5A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:42:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F95F30A5AC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:43:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233200AbhBAKmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 05:42:39 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:46948 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233296AbhBAKjw (ORCPT
+        id S233309AbhBAKnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 05:43:05 -0500
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:36782 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233338AbhBAKkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 05:39:52 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UNYB3r1_1612175940;
-Received: from B-455UMD6M-2027.local(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UNYB3r1_1612175940)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 01 Feb 2021 18:39:01 +0800
-Subject: Re: [PATCH v6 2/4] x509: Detect sm2 keys by their parameters OID
-To:     Stefan Berger <stefanb@linux.ibm.com>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
-        linux-integrity@vger.kernel.org,
-        David Howells <dhowells@redhat.com>
-References: <20210131233301.1301787-1-stefanb@linux.ibm.com>
- <20210131233301.1301787-3-stefanb@linux.ibm.com>
-From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Message-ID: <75a8ff37-3c23-6cf1-f844-cf692eb8adfc@linux.alibaba.com>
-Date:   Mon, 1 Feb 2021 18:39:00 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.0
+        Mon, 1 Feb 2021 05:40:42 -0500
+Received: by mail-oi1-f177.google.com with SMTP id d18so18314237oic.3;
+        Mon, 01 Feb 2021 02:40:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PbFNPUDjF8u5uZWpIEHcWpaJI3RXUPiFu34mgVi86XY=;
+        b=kR0WBOo5QS9f9TkTTR+rPrsBc4VdyoFrFpj8812H2ZYgAtEV7GbioPzxjtHy1YaL5u
+         GPUq7oJEjxo/smdF5fRdOUne0xGmOp7hb20x5Ta/ph4KgtrxHnwSfLJb93egLupCQQ4X
+         NaoPTFltaK5iYaKWFiKYBBj3T2h5wdD3w8aajNlyZ+Pc2LEtOkORbJ46pJjgHXFQZQZv
+         DSfZNdHf7SJ+7egfSzcRUhiMPz5bXnYdCYTK1sR2wmTkEVkve5/z13EXNawsrG433Dl3
+         xSqsRCIa4Ybq8yR8cb6dLljn4Il/hbO85DkAH6lnj/5Sn6+IQO4r2BETbbpruQAnIalW
+         ch3A==
+X-Gm-Message-State: AOAM532u7fjKKoQJ8eXCP0Kfh8OW7+qqKu94oD01eXZWdOR9ai0e/w8J
+        bKqaIBbGW9yReew7GTd5VH2XO92mPVIW9EeFkf8=
+X-Google-Smtp-Source: ABdhPJw65qTThGcsX9iC1bv+Rc95DdKf2Iuj2OS3RR8/qhbi7vQxnnIIJMJ47LSut7xngwvxuA293xVZ1BzjGh51Fww=
+X-Received: by 2002:aca:4d8d:: with SMTP id a135mr10190512oib.153.1612176001101;
+ Mon, 01 Feb 2021 02:40:01 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210131233301.1301787-3-stefanb@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210130040344.2807439-1-saravanak@google.com> <CAGETcx941J7Zhrf=ZjO6PW0fiax5VXcV3gbsLQfM_wU_U0EnYw@mail.gmail.com>
+In-Reply-To: <CAGETcx941J7Zhrf=ZjO6PW0fiax5VXcV3gbsLQfM_wU_U0EnYw@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 1 Feb 2021 11:39:49 +0100
+Message-ID: <CAMuHMdUGkRmjnkSXQ4VNz5crMJ0S4xUvrV=BenOf96Y_bepPSw@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] Make fw_devlink=on more forgiving
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Saravana,
 
+On Sat, Jan 30, 2021 at 5:09 AM Saravana Kannan <saravanak@google.com> wrote:
+> On Fri, Jan 29, 2021 at 8:03 PM Saravana Kannan <saravanak@google.com> wrote:
+> > This patch series solves two general issues with fw_devlink=on
+> >
+> > Patch 1/2 addresses the issue of firmware nodes that look like they'll
+> > have struct devices created for them, but will never actually have
+> > struct devices added for them. For example, DT nodes with a compatible
+> > property that don't have devices added for them.
+> >
+> > Patch 2/2 address (for static kernels) the issue of optional suppliers
+> > that'll never have a driver registered for them. So, if the device could
+> > have probed with fw_devlink=permissive with a static kernel, this patch
+> > should allow those devices to probe with a fw_devlink=on. This doesn't
+> > solve it for the case where modules are enabled because there's no way
+> > to tell if a driver will never be registered or it's just about to be
+> > registered. I have some other ideas for that, but it'll have to come
+> > later thinking about it a bit.
+> >
+> > These two patches might remove the need for several other patches that
+> > went in as fixes for commit e590474768f1 ("driver core: Set
+> > fw_devlink=on by default"), but I think all those fixes are good
+> > changes. So I think we should leave those in.
+> >
+> > Marek, Geert,
+> >
+> > Can you try this series on a static kernel with your OF_POPULATED
+> > changes reverted? I just want to make sure these patches can identify
+> > and fix those cases.
+> >
+> > Tudor,
+> >
+> > You should still make the clock driver fix (because it's a bug), but I
+> > think this series will fix your issue too (even without the clock driver
+> > fix). Can you please give this a shot?
+>
+> Marek, Geert, Tudor,
+>
+> Forgot to say that this will probably fix your issues only in a static
+> kernel. So please try this with a static kernel. If you can also try
+> and confirm that this does not fix the issue for a modular kernel,
+> that'd be good too.
 
-On 2/1/21 7:32 AM, Stefan Berger wrote:
-> Detect whether a key is an sm2 type of key by its OID in the parameters
-> array rather than assuming that everything under OID_id_ecPublicKey
-> is sm2, which is not the case.
-> 
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> Cc: David Howells <dhowells@redhat.com>
-> Cc: keyrings@vger.kernel.org
-> ---
->   crypto/asymmetric_keys/x509_cert_parser.c | 12 +++++++++++-
->   include/linux/oid_registry.h              |  1 +
->   lib/oid_registry.c                        | 13 +++++++++++++
->   3 files changed, 25 insertions(+), 1 deletion(-)
-> 
-> diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
-> index 52c9b455fc7d..1621ceaf5c95 100644
-> --- a/crypto/asymmetric_keys/x509_cert_parser.c
-> +++ b/crypto/asymmetric_keys/x509_cert_parser.c
-> @@ -459,6 +459,7 @@ int x509_extract_key_data(void *context, size_t hdrlen,
->   			  const void *value, size_t vlen)
->   {
->   	struct x509_parse_context *ctx = context;
-> +	enum OID oid;
->   
->   	ctx->key_algo = ctx->last_oid;
->   	switch (ctx->last_oid) {
-> @@ -470,7 +471,16 @@ int x509_extract_key_data(void *context, size_t hdrlen,
->   		ctx->cert->pub->pkey_algo = "ecrdsa";
->   		break;
->   	case OID_id_ecPublicKey:
-> -		ctx->cert->pub->pkey_algo = "sm2";
-> +		if (parse_OID(ctx->params, ctx->params_size, &oid) != 0)
-> +			return -EBADMSG;
-> +
-> +		switch (oid) {
-> +		case OID_sm2:
-> +			ctx->cert->pub->pkey_algo = "sm2";
-> +			break;
-> +		default:
-> +			return -ENOPKG;
-> +		}
->   		break;
->   	default:
->   		return -ENOPKG;
-> diff --git a/include/linux/oid_registry.h b/include/linux/oid_registry.h
-> index 4462ed2c18cd..d4982e42c0d2 100644
-> --- a/include/linux/oid_registry.h
-> +++ b/include/linux/oid_registry.h
-> @@ -117,6 +117,7 @@ enum OID {
->   };
->   
->   extern enum OID look_up_OID(const void *data, size_t datasize);
-> +extern int parse_OID(const void *data, size_t datasize, enum OID *oid);
->   extern int sprint_oid(const void *, size_t, char *, size_t);
->   extern int sprint_OID(enum OID, char *, size_t);
->   
-> diff --git a/lib/oid_registry.c b/lib/oid_registry.c
-> index f7ad43f28579..508e0b34b5f0 100644
-> --- a/lib/oid_registry.c
-> +++ b/lib/oid_registry.c
-> @@ -11,6 +11,7 @@
->   #include <linux/kernel.h>
->   #include <linux/errno.h>
->   #include <linux/bug.h>
-> +#include <linux/asn1.h>
->   #include "oid_registry_data.c"
->   
->   MODULE_DESCRIPTION("OID Registry");
-> @@ -92,6 +93,18 @@ enum OID look_up_OID(const void *data, size_t datasize)
->   }
->   EXPORT_SYMBOL_GPL(look_up_OID);
->   
-> +int parse_OID(const void *data, size_t datasize, enum OID *oid)
-> +{
-> +	const unsigned char *v = data;
-> +
-> +	if (datasize < 2 || v[0] != ASN1_OID || v[1] != datasize - 2)
-> +		return -EBADMSG;
-> +
-> +	*oid = look_up_OID(data + 2, datasize - 2);
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(parse_OID);
-> +
->   /*
->    * sprint_OID - Print an Object Identifier into a buffer
->    * @data: The encoded OID to print
-> 
+Thanks for your series!
 
-Great job, I'm just curious why we need to add a new function, this 
-seems unnecessary, if possible, please add
+For the modular case, this series has no impact, as expected (i.e. fails
+to boot, no I/O devices probed).
+With modules disabled, both r8a7791/koelsch and r8a77951/salvator-xs
+seem to boot fine, except for one issue on koelsch:
 
-Reviewed-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+dmesg:
 
-Best regards,
-Tianjia
+    +i2c-demux-pinctrl i2c-12: failed to setup demux-adapter 0 (-19)
+    +i2c-demux-pinctrl i2c-13: failed to setup demux-adapter 0 (-19)
+    +i2c-demux-pinctrl i2c-14: failed to setup demux-adapter 0 (-19)
+
+    -  #0: rsnd-dai.0-ak4642-hifi
+    +  No soundcards found.
+
+regulator_summary:
+
+    -13-0050-vcc                   0    0mA     0mV     0mV
+    -13-0039-dvdd-3v               1    0mA     0mV     0mV
+    -13-0039-bgvdd                 1    0mA     0mV     0mV
+    -13-0039-pvdd                  1    0mA     0mV     0mV
+    -13-0039-dvdd                  1    0mA     0mV     0mV
+    -13-0039-avdd                  1    0mA     0mV     0mV
+
+pm_genpd_summary:
+
+    -/devices/platform/soc/e6518000.i2c  suspended                  0
+    -/devices/platform/soc/e6530000.i2c  suspended                  0
+    -/devices/platform/soc/e6520000.i2c  suspended                  0
+
+These are all symptoms of the same issue: i2c buses and devices are not
+probed, due to the use of the i2c demuxer.
+I guess the fw_devlink tracker doesn't consider "i2c-parent" links?
+
+Note that I only tested this on R-Car Gen2 and Gen3.
+I did not test this on Renesas SH/R-Mobile or RZ/A SoCs.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
