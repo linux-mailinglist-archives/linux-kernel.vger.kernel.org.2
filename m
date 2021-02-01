@@ -2,97 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D17730B1F9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:18:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4D830B1FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232345AbhBAVRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 16:17:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60010 "EHLO
+        id S230273AbhBAVVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 16:21:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232310AbhBAVRL (ORCPT
+        with ESMTP id S229646AbhBAVU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 16:17:11 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383B7C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 13:16:31 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id w14so12492007pfi.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 13:16:31 -0800 (PST)
+        Mon, 1 Feb 2021 16:20:59 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0F1AC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 13:20:18 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id p20so7289080ejb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 13:20:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=tPbcRaX1SgEZLu4YCv7l4zPyyMW8dttxgAN/QGCyppw=;
-        b=iHWQb81/ia8DQq3d2ds1zRxrP+jhpqwVi5k5vWZw1g59/lyadKYb1YUzaaxSsDPXEK
-         04eZQ7xLhCIp8ehR+UurOS8YJ+g02SYl0PUJBfSKBRXL4hzxhtw43xqxR7YIjfbOptxC
-         kS8draunkHMry4+vR1OxwbkqsZ1EV1Tdn8yH6XUha6PV3J5X4fP67ANYAKld4hNwSX5z
-         gXMjUCd3XTF2y+GS16jHO/meJWahBHbqXHM4ApYjMln3b5aXUn6FoiswtunMAHU7KZmT
-         J/XhQAxDahP71tMYE6YiJkUbtRe4d70GHKqNlJqT3+7T2y4tL6taaXE30zlBiG7/UdrH
-         vFZg==
+        bh=RKV8tfXM/P2yr23U8IrmSV+OjOgK46IvUPsK7p0jMgk=;
+        b=jZLlF1BLcZiQNvZuriBZtAzF6XOXuBz6zZN01Lb11NP+6NRYwxYB0ZMdTbEIExzDKb
+         r/gC0LbZUA18tkBHhoxigMtqVYDxB4j+RWtLlmqHfDvcPVcvDdr3AUlNiqW2LxbOfb3O
+         +V+GSB9O1BjCxxSnLTCxG8gvlUz2B5Itq3vnR+d9KT98zWWMdBnlW1/DAzbz4ulPCc4G
+         nq+Wrn51F//JFhDa2w3l398dovOGhgDJhWKfhYV/ofnLxv7doKXgn3rI+ESCn2v5Ofq9
+         ZecFkI5v7FgvOkds/8sJojnO2M7YKnUAbPpdVdFqGTVqquOyo2GU3ijaFXNzoa5HRNf0
+         nLAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=tPbcRaX1SgEZLu4YCv7l4zPyyMW8dttxgAN/QGCyppw=;
-        b=XCSaYoAye0oIaBwN/nRxlbCdTDYOE1ziS+jrvx6g+54Z/msc/ceJdKbGSZ5Ogg3TYX
-         np0Xk9NPT+EXO2bo9txtTC25J3fNJNYxy/qahlpyaHTqrRpj/l7OewuuJAxUyQiMN36U
-         iG21Ics3MssjBDm54mR7WT1G4cdvVtjWtcTr1qn2fo/jkZdMBup/A3TNkj9Gbg//iUY6
-         fckLGCDXPrZRtEU8JXRhJm8v/enIfmRElZ06/E8QYNb6duCXqHa/TtSTcBgFi3nLkVUW
-         md7CMi3eUnz04tctvtCi/Zqmxj9z7O5OrWaW3rHN1TUAcD6Fgq7x/VS9WDrk23HvF249
-         /CFw==
-X-Gm-Message-State: AOAM530e8Ow5X6Dgr2wGhLySnFNjJR4m5LPusEF9QG6rLj10NW3f90Eo
-        dWFdPNnvRLFirhqCe/gFKj9AWmOdrA+Ysc7vW4Wdig==
-X-Google-Smtp-Source: ABdhPJx8iYzAdimcqwPEaBhxqxj8JDqf8XEN6LS6P4YdyPCo7YTyNl84jtQ18EM6tRCGWp4QTm/i5l7txXsk4Qii9DM=
-X-Received: by 2002:a62:7896:0:b029:1b6:7319:52a7 with SMTP id
- t144-20020a6278960000b02901b6731952a7mr18577965pfc.30.1612214190673; Mon, 01
- Feb 2021 13:16:30 -0800 (PST)
+        bh=RKV8tfXM/P2yr23U8IrmSV+OjOgK46IvUPsK7p0jMgk=;
+        b=Bc1qIny9Vu8ZttIulDOedr97AcILZgo+P7unJwfm19az/7hvlqlDSR2AxpLZlo2BmQ
+         ogEtz3UT3JLBKjH0GUmjFGm18ESmIcZzParAKHv/HK8yPwsWpSHO7kfKqftWNiOAhuDm
+         /+0sXU9FW7YBu1DbUlbJ4zzpfUJxv4mjjkGDayzUOKXSxikgbslvFCTH08e3aLDlzx1/
+         dLGwy0LwIN2fF4oL+FbaX89ugDF7OqEI+C/6r+BeriwYXT0N9oVt4ZmYAIJQMtuf782c
+         w1DvIngVVzqctTRV87X/dCGgTm8vG4Qng/8rDci/ARoOZpRsAcv28KlY7Ph3haz5j6jf
+         q4PQ==
+X-Gm-Message-State: AOAM533fzjz6T20YYCX+y0SnicYNZFQ1At3aznyYCBEThyvtTAr+l/FW
+        9kyZHDn0idICqITpbwMdYMMUMRim7HXgFE0J/ECVLAruMCp/Sw==
+X-Google-Smtp-Source: ABdhPJwA3l0e3MUGip6gEtrbLA1M+onIFo5pqjzQ23LyigVAMvz9JEe/SBsagHRrDaseCVuas2GfBzS5C8qSA8H7dF0=
+X-Received: by 2002:a17:906:f919:: with SMTP id lc25mr20142627ejb.323.1612214417615;
+ Mon, 01 Feb 2021 13:20:17 -0800 (PST)
 MIME-Version: 1.0
-References: <AAB32610-D238-4137-96DE-33655AAAB545@dilger.ca>
- <20210201003125.90257-1-viniciustinti@gmail.com> <20210201124924.GA3284018@infradead.org>
- <CALD9WKxc0kMPCHSoikko+qYk2+ZLUy73+ryKGW9qMSpyzAobLA@mail.gmail.com>
- <YBg20AuSC3/9w2zz@mit.edu> <CALD9WKzO53AXQW-qQ82VZ41H5=cGdLTUiEoz3X6BmPkb6XaTag@mail.gmail.com>
- <YBhuHJgZ3QPqHheV@mit.edu>
-In-Reply-To: <YBhuHJgZ3QPqHheV@mit.edu>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 1 Feb 2021 13:16:19 -0800
-Message-ID: <CAKwvOd=ny2TeYV8SGZMD+aj8Yb6OSYGKAzSb-45r-HKk6WTUCQ@mail.gmail.com>
-Subject: Re: [PATCH v2] ext4: Enable code path when DX_DEBUG is set
-To:     Vinicius Tinti <viniciustinti@gmail.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        "Theodore Ts'o" <tytso@mit.edu>
+References: <20210130002438.1872527-1-ben.widawsky@intel.com>
+ <20210130002438.1872527-10-ben.widawsky@intel.com> <20210201182400.GK197521@fedora>
+ <20210201192708.5cvyecbcdrwx77de@intel.com> <20210201193453.GA308086@fedora>
+In-Reply-To: <20210201193453.GA308086@fedora>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 1 Feb 2021 13:20:14 -0800
+Message-ID: <CAPcyv4hivzQh=rresymO+fRP2g1LLJzEr2d7Or6Pha7V_1L6Pg@mail.gmail.com>
+Subject: Re: [PATCH 09/14] cxl/mem: Add a "RAW" send command
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 1:09 PM Theodore Ts'o <tytso@mit.edu> wrote:
+On Mon, Feb 1, 2021 at 11:36 AM Konrad Rzeszutek Wilk
+<konrad.wilk@oracle.com> wrote:
 >
-> On Mon, Feb 01, 2021 at 03:41:50PM -0300, Vinicius Tinti wrote:
+> On Mon, Feb 01, 2021 at 11:27:08AM -0800, Ben Widawsky wrote:
+> > On 21-02-01 13:24:00, Konrad Rzeszutek Wilk wrote:
+> > > On Fri, Jan 29, 2021 at 04:24:33PM -0800, Ben Widawsky wrote:
+> > > > The CXL memory device send interface will have a number of supported
+> > > > commands. The raw command is not such a command. Raw commands allow
+> > > > userspace to send a specified opcode to the underlying hardware and
+> > > > bypass all driver checks on the command. This is useful for a couple of
+> > > > usecases, mainly:
+> > > > 1. Undocumented vendor specific hardware commands
+> > > > 2. Prototyping new hardware commands not yet supported by the driver
+> > >
+> > > This sounds like a recipe for ..
+> > >
+> > > In case you really really want this may I recommend you do two things:
+> > >
+> > > - Wrap this whole thing with #ifdef
+> > >   CONFIG_CXL_DEBUG_THIS_WILL_DESTROY_YOUR_LIFE
+> > >
+> > >  (or something equivalant to make it clear this should never be
+> > >   enabled in production kernels).
+> > >
+> > >  - Add a nice big fat printk in dmesg telling the user that they
+> > >    are creating a unstable parallel universe that will lead to their
+> > >    blood pressure going sky-high, or perhaps something more professional
+> > >    sounding.
+> > >
+> > > - Rethink this. Do you really really want to encourage vendors
+> > >   to use this raw API instead of them using the proper APIs?
 > >
-> > My goal is to avoid having a dead code. Three options come to mind.
-> >
-> > The first would be to add another #ifdef SOMETHING (suggest a name).
-> > But this doesn't remove the code and someone could enable it by accident.
+> > Again, the ideal is proper APIs. Barring that they get a WARN, and a taint if
+> > they use the raw commands.
 >
-> I *really* don't see the point of having the compiler whine about
-> "dead code", so I'm not terribly fond of
-> -Wunreachable-code-aggressive.
+> Linux upstream is all about proper APIs. Just don't do this.
+> >
+> > >
+> > > >
+> > > > While this all sounds very powerful it comes with a couple of caveats:
+> > > > 1. Bug reports using raw commands will not get the same level of
+> > > >    attention as bug reports using supported commands (via taint).
+> > > > 2. Supported commands will be rejected by the RAW command.
+> > > >
+> > > > With this comes new debugfs knob to allow full access to your toes with
+> > > > your weapon of choice.
+> > >
+> > > Problem is that debugfs is no longer "debug" but is enabled in
+> > > production kernel.
+> >
+> > I don't see this as my problem. Again, they've been WARNed and tainted. If they
+>
+> Right not your problem, nice.
+>
+> But it is going to be the problem of vendor kernel engineers who don't have this luxury.
+>
+> > want to do this, that's their business. They will be asked to reproduce without
+> > RAW if they file a bug report.
+>
+>
+> This is not how customers see the world. "If it is there, then it is
+> there to used right? Why else would someone give me the keys to this?"
+>
+> Just kill this. Or better yet, make it a seperate set of patches for
+> folks developing code but not have it as part of this patchset.
 
-I agree; Vinicius, my recommendation for -Wunreachable-* with Clang
-was to see whether dead code identified by this more aggressive
-diagnostic (than -Wunused-function) was to ask maintainers whether
-code identified by it was intentionally dead and if they would
-consider removing it.  If they say "no," that's fine, and doesn't need
-to be pushed.  It's not clear to maintainers that:
-1. this warning is not on by default
-2. we're not looking to pursue turning this on by default
+In the ACPI NFIT driver, the only protection against vendor
+shenanigans is the requirement that any and all DSM functions be
+described in a public specification, so there is no unfettered access
+to the DSM interface However, multiple vendors just went ahead and
+included a "vendor passthrough" as a DSM sub-command in their
+implementation. The driver does have the "disable_vendor_specific"
+module parameter, however that does not amount to much more than a
+stern look from the kernel at vendors shipping functionality through
+that path rather than proper functions. It has been a source of bugs.
 
-If maintainers want to keep the dead code, that's fine, let them and
-move on to the next instance to see if that's interesting (or not).
--- 
-Thanks,
-~Nick Desaulniers
+The RAW command proposal Ben has here is a significant improvement on
+that status quo. It's built on the observation that customers pick up
+the phone whenever their kernel backtraces, and makes it is easy to
+spot broken tooling. That said, I think it is reasonable to place the
+RAW interface behind a configuration option and let distribution
+policy decide the availability.
