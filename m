@@ -2,113 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8FBF30ADB3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:25:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C9A30AD7F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:12:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbhBARYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:24:44 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:4982 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229612AbhBARYk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:24:40 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 111HG8FL148172;
-        Mon, 1 Feb 2021 12:23:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=5h6L+W9OKzWFhKXfgMXfJnyDMNx2bJEz/rcoPDTozZU=;
- b=gpPncXGzG6Yc9TluGbmqcK1Gr5KD861UwW+6gn6ZMSW3/VJxsM2bwdwEx+1YWCwORJ6s
- VOBHwgTGUMavi/TJrg0CwMFlwfzB3j6/tCJFCuigeFgcd7Tb+M93FKWF9sYBJFwfiZsg
- +RY/eIcSGwcY0uZzEb5IOoo9OlIQnfBpWgNibEqLX+UakzK5cF/H5uxsEKWIuwjqb0Re
- jmKZ/GtQzX+5GKoTf4wEj/aUvcK5ALPC4Bow6qWCEOoRdf+P9c20d3UZ2aqNMENGEb8v
- HZ8/jAyt840b+N4kqhvGHQsBeKQl1N230XWqhCHBL4vSCq8pQ/61SvyPQG1ea6zH1PNL eQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36enw3r5hp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 12:23:54 -0500
-Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 111HGoCC150138;
-        Mon, 1 Feb 2021 12:23:53 -0500
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36enw3r5es-7
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 12:23:53 -0500
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 111GjiBd007782;
-        Mon, 1 Feb 2021 17:08:52 GMT
-Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
-        by ppma02wdc.us.ibm.com with ESMTP id 36cy39049c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 17:08:52 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 111H8pKi23462320
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 1 Feb 2021 17:08:51 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BCABD112067;
-        Mon,  1 Feb 2021 17:08:51 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1617A112062;
-        Mon,  1 Feb 2021 17:08:47 +0000 (GMT)
-Received: from oc4221205838.ibm.com (unknown [9.211.84.157])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon,  1 Feb 2021 17:08:46 +0000 (GMT)
-Subject: Re: [PATCH 6/9] vfio-pci/zdev: fix possible segmentation fault issue
-To:     Cornelia Huck <cohuck@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>
-Cc:     jgg@nvidia.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alex.williamson@redhat.com, liranl@nvidia.com, oren@nvidia.com,
-        tzahio@nvidia.com, leonro@nvidia.com, yarong@nvidia.com,
-        aviadye@nvidia.com, shahafs@nvidia.com, artemp@nvidia.com,
-        kwankhede@nvidia.com, ACurrid@nvidia.com, gmataev@nvidia.com,
-        cjia@nvidia.com, yishaih@nvidia.com, aik@ozlabs.ru
-References: <20210201162828.5938-1-mgurtovoy@nvidia.com>
- <20210201162828.5938-7-mgurtovoy@nvidia.com>
- <20210201175214.0dc3ba14.cohuck@redhat.com>
-From:   Matthew Rosato <mjrosato@linux.ibm.com>
-Message-ID: <139adb14-f75a-25ef-06da-e87729c2ccf2@linux.ibm.com>
-Date:   Mon, 1 Feb 2021 12:08:45 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S231705AbhBARLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:11:55 -0500
+Received: from mga04.intel.com ([192.55.52.120]:58930 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231284AbhBARLf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 12:11:35 -0500
+IronPort-SDR: GsAfh9fYpW+M4YAYDVi33Kntmm86+5S13BrGdLYHP3Zi1rQnB983ZAO+YJnDyLzw9lGCG8EshA
+ XxoXATWa/5YA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="178155736"
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="178155736"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 09:09:49 -0800
+IronPort-SDR: 7g/nrfiQHaZNp5laeul/q4onJMeUVAA3thjEDrpRMpjApx57DJGIKyCqiXa9xg5u/Ctxv8DCfU
+ B2j0dimBY5dA==
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="391001227"
+Received: from ljfrost-mobl1.amr.corp.intel.com ([10.252.14.106])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 09:09:45 -0800
+Message-ID: <c3c3d47edbfd61c338deea5a10a4fb39e2ace68a.camel@linux.intel.com>
+Subject: Re: [PATCH v7 4/7] crypto: add ecc curve and expose them
+From:   Daniele Alessandrelli <daniele.alessandrelli@linux.intel.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Ard Biesheuvel <ardb@kernel.org>
+Cc:     Meng Yu <yumeng18@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Zaibo Xu <xuzaibo@huawei.com>, wangzhou1@hisilicon.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        "Khurana, Prabhjot" <prabhjot.khurana@intel.com>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>
+Date:   Mon, 01 Feb 2021 17:09:41 +0000
+In-Reply-To: <20210128103908.GA32495@gondor.apana.org.au>
+References: <1611299395-675-1-git-send-email-yumeng18@huawei.com>
+         <1611299395-675-5-git-send-email-yumeng18@huawei.com>
+         <20210128050354.GA30874@gondor.apana.org.au>
+         <CAMj1kXHvY9JveFyhtETALCH=AFGMGVbGGFMNDGc6ZVngEKbyDQ@mail.gmail.com>
+         <20210128103908.GA32495@gondor.apana.org.au>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <20210201175214.0dc3ba14.cohuck@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-01_06:2021-01-29,2021-02-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- suspectscore=0 bulkscore=0 impostorscore=0 clxscore=1011 mlxscore=0
- spamscore=0 priorityscore=1501 phishscore=0 malwarescore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102010087
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/1/21 11:52 AM, Cornelia Huck wrote:
-> On Mon, 1 Feb 2021 16:28:25 +0000
-> Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
-> 
->> In case allocation fails, we must behave correctly and exit with error.
->>
->> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-> 
-> Fixes: e6b817d4b821 ("vfio-pci/zdev: Add zPCI capabilities to VFIO_DEVICE_GET_INFO")
-> 
-> Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-> 
-> I think this should go in independently of this series. >
+On Thu, 2021-01-28 at 21:39 +1100, Herbert Xu wrote:
+> Once they're distinct algorithms, we can then make sure that only
+> the ones that are used in the kernel is added, even if some hardware
+> may support more curves.
 
-Agreed, makes sense to me -- thanks for finding.
+I like the idea of having different algorithms names (ecdh-nist-
+pXXX) for different curves, but I'm not fully convinced by the above
+statement.
 
-Reviewed-by: Matthew Rosato <mjrosato@linux.ibm.com>
+What's the downside of letting device drivers enable all the curves
+supported by the HW (with the exception of obsolete curves /
+algorithms), even if there is (currently) no user of such curves in the
+kernel? Code size and maintainability?
 
->> ---
->>   drivers/vfio/pci/vfio_pci_zdev.c | 4 ++++
->>   1 file changed, 4 insertions(+)
-> 
+I think that once there is support for certain curves, it's more likely
+that drivers / modules using them will appear.
+
+Also, even if there are no in-tree users, there might be a few out-of-
+tree ones.
 
