@@ -2,82 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A78D530A056
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 03:27:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D62130A058
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 03:28:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbhBAC0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 21:26:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231251AbhBAC0i (ORCPT
+        id S231341AbhBAC2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 21:28:36 -0500
+Received: from mail-pg1-f175.google.com ([209.85.215.175]:33854 "EHLO
+        mail-pg1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229765AbhBAC21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 21:26:38 -0500
-Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA53C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 18:25:57 -0800 (PST)
-Received: by mail-vk1-xa2d.google.com with SMTP id m25so3598875vkk.6
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 18:25:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=0ICf8NjpN0hioiKdOAWvppEPLQDsPV7oWSM7AOAfuUY=;
-        b=r0sE/R25jxEdSdV058goeA1oA9KNGgQ5G2mPGouanaFGffcXdOR1cRJl+fsyt6grQ/
-         yZixRJLyJICn8eDJv3UpYhExr0m9QOsau6UxGu17zg8aNXuhgbweuTTKV3ejO+ARMutb
-         xqoYC91G9yWZMEMi7kMKDWB/gLhCX/edviKitJYOGx632+Qgc5czzkgH5Zef1WtDcPVa
-         egH+rfojVuFbG1in/wBSzs9ZV52ABg6Z+f0Hhc/F5IS8fcj/HehjsQghZXYiVJ0I00Fx
-         hNf8LHs4h9aMU51y/mgIpQnBrbOmnhsn08MUTLmLuSb3uWHcu8/9MbcEq02EiRw3jcXW
-         uvXw==
+        Sun, 31 Jan 2021 21:28:27 -0500
+Received: by mail-pg1-f175.google.com with SMTP id o7so11046294pgl.1;
+        Sun, 31 Jan 2021 18:28:12 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=0ICf8NjpN0hioiKdOAWvppEPLQDsPV7oWSM7AOAfuUY=;
-        b=py9M5wmzQeXF0vLeMnFcMt70eQr4BRboEs7yNzguqYU+1TOz8TWtELdKHL9stqw8GI
-         tlOWjVHbJchgfLYPf+N6PeXfrzVgxznlCim1XNpoB5oSeSpimrQb5RtL5Ayp3/4UIbPn
-         qiHXWvKDffKMkTjd/JUcppFJz8cmhTUdYtg5CzZWrvoJ+2+bG8+H3ILEFWsV/zb7Sdpm
-         wTAl6lvbfUzwPqmC1td8y1fmQrI08oByAn527PlzgatZLqTbMvhcYqJ60G/1Qzp7Zmvb
-         iR4zKodso2wqR3In8lhjyB79noerh6nmx/sNFA4VqGCn+jNN15CIabejYGyGk04qnVRS
-         basw==
-X-Gm-Message-State: AOAM531qT9ZaziweJpZ57q8mf2NbBZFuY60FbTybc+d12xB0wgsD69wQ
-        wuVWkEoqIyrka6Qu0H21qgystt7xartxi0y9j+c=
-X-Google-Smtp-Source: ABdhPJx0Ly8KZ+O1oYniJLWFj/fZv3vD/MWOPedIe6C0Xs97s/817nz7qFuAPT18HpERzRa9iEjhrB6EFLEzW0PDBRs=
-X-Received: by 2002:a1f:fecb:: with SMTP id l194mr7930420vki.23.1612146357081;
- Sun, 31 Jan 2021 18:25:57 -0800 (PST)
-MIME-Version: 1.0
-References: <CAHk-=wjhQkZ=mUxPog4+kU1y5BRKw2DpbFXsEP=31fgX4KfBZQ@mail.gmail.com>
- <BFAB82E3-267B-4CF5-B6F2-8E6A2A3DB42B@amacapital.net> <CAP045Aq7PNQyhkT0S5GBzSRUTY4-SGsjs47Z0cCxoPeE-Od_+A@mail.gmail.com>
- <CALCETrVZp6-1Rg_DEKggUqZAzQ_iXXMd4d690ByPGb8B9F6dzQ@mail.gmail.com>
-In-Reply-To: <CALCETrVZp6-1Rg_DEKggUqZAzQ_iXXMd4d690ByPGb8B9F6dzQ@mail.gmail.com>
-Reply-To: robert@ocallahan.org
-From:   "Robert O'Callahan" <rocallahan@gmail.com>
-Date:   Mon, 1 Feb 2021 15:25:44 +1300
-Message-ID: <CAOp6jLaKR3zJDg9bNFkTcj78kKDtrdnMF4U-mxzkXDRgHu94GA@mail.gmail.com>
-Subject: Re: [REGRESSION] x86/entry: TIF_SINGLESTEP handling is still broken
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Kyle Huey <me@kylehuey.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ARGvhnM43cJPff0XjargiMIzKCXDBX6OR95+IhVDQ+w=;
+        b=CNTF5K9YuSv6GUgCLNv0dWWe6kV4Jsi0i1Ajr7I88kcGFu4GQaEidQh7+D90hvP3+v
+         /w1XrfqODWxjxLgMU75grzq+DIfwOnxxXWdSXc0npjXPHiCriDEJiC+L/GW1Aaxz/dKd
+         AOG0OXYXMpLjW47/Qtxs1I+bNrelvmAex6rd3b+56pejngRL0fUtwiuPIPK8N1b8iUQw
+         f8Lku4v2hvI8pEmMJR34bcw5E/LWTQ8gqSJVZPN1cMgDM/94SZ3U+apIr5mRoGprfYXo
+         xMp78rztMwHwDthmt+t40qZM+Ff+ZfoFDBkFpalLZT6YYcmSBViwc4v8OBxVnR/pZL/L
+         tjBw==
+X-Gm-Message-State: AOAM530A1huanHDTbkz6tZIrDWGfxnn1MjWmONRFJnvu6CnTzIR9UyED
+        D1PLderIdf+feKW+8kRlbez5wwu+EwQ=
+X-Google-Smtp-Source: ABdhPJyKK4eKW9eYtRPds+vHvAOxv3JfScWepWr8H+XKACzLjnzaOEBvFsgvVWDOKkYfD4SvgkZy2g==
+X-Received: by 2002:a63:9811:: with SMTP id q17mr15077930pgd.238.1612146465273;
+        Sun, 31 Jan 2021 18:27:45 -0800 (PST)
+Received: from ?IPv6:2601:647:4000:d7:50bb:dc2d:705:e8e2? ([2601:647:4000:d7:50bb:dc2d:705:e8e2])
+        by smtp.gmail.com with ESMTPSA id hs21sm13450661pjb.6.2021.01.31.18.27.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 31 Jan 2021 18:27:43 -0800 (PST)
+Subject: Re: [PATCH v3 2/3] scsi: ufs: Fix a race condition btw task
+ management request send and compl
+To:     Can Guo <cang@codeaurora.org>
+Cc:     jaegeuk@kernel.org, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
         open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <1611807365-35513-1-git-send-email-cang@codeaurora.org>
+ <1611807365-35513-3-git-send-email-cang@codeaurora.org>
+ <73362ca9-93be-c38f-a881-4b7cf690fbc1@acm.org>
+ <5f77542d66732003f0154a4e8a6ae13b@codeaurora.org>
+ <56b26318de92eb88d663bbdc7096edcf@codeaurora.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <687cc78a-cb07-bd4f-e1c7-1ff0aeaef6b5@acm.org>
+Date:   Sun, 31 Jan 2021 18:27:41 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
+MIME-Version: 1.0
+In-Reply-To: <56b26318de92eb88d663bbdc7096edcf@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 12:40 PM Andy Lutomirski <luto@kernel.org> wrote:
-> I admit that PTRACE_SINGLESTEP seems like an odd way to spell "advance
-> to the end of the syscall", but you're right, it should work.
+On 1/28/21 10:29 PM, Can Guo wrote:
+> On second thought, actually the 1st fix alone is enough to eliminate the
+> race condition. Because blk_mq_tagset_busy_iter() only iterates over all
+> requests which are not in IDLE state, if blk_mq_start_request() is called
+> within the protection of host spin lock, ufshcd_compl_tm() shall not run
+> into the scenario where req->end_io_data is set but
+> REG_UTP_TASK_REQ_DOOR_BELL
+> has not been set. What do you think?
 
-We don't know of any better way to advance to the end of the syscall
-without executing any userspace instructions. We could set a
-breakpoint at the syscall return address but weird edge cases
-complicate that.
+That sounds reasonable to me.
 
-Rob
--- 
-"He was pierced for our transgressions, he was crushed for our
-iniquities; the punishment that brought us peace was upon him, and by
-his wounds we are healed. We all, like sheep, have gone astray, each
-of us has turned to his own way; and the LORD has laid on him the
-iniquity of us all." [Isaiah 53:5-6]
+Thanks,
+
+Bart.
