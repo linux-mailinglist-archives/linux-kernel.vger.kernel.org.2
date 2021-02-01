@@ -2,62 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0339730B2E5
+	by mail.lfdr.de (Postfix) with ESMTP id 73F9C30B2E6
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:45:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbhBAWoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 17:44:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60958 "EHLO mail.kernel.org"
+        id S230104AbhBAWow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 17:44:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60984 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229884AbhBAWod (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 17:44:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E807C64EC6;
-        Mon,  1 Feb 2021 22:43:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612219433;
-        bh=ulanPaOvdT2jLgFJH9hnh4U8sVhNedzh7EfP4TfYsrQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iAR+LmlCW8hfv7whvLJhgaP1HLxLx4PkdRL1VNLfuV6MFy+JjRUgs9jYUQdmCiEhQ
-         JnOuRNz5o9/HD26DrZ1tYjBssTr5VfF7KfdrC0POtjE8Qc4PJBUBhY0LYNf5fHgsTF
-         Jt5+2icy2giksA8QNH6KVh57/HYKp2qC6EZqglAtG7oJUm/kzAagm3DWjL2/aOcZ87
-         oYTB5UkpdN2xEBKnCEjhmo1CrdCfmT/s2gjhiw+3ZdrYmgu7BCNZhyRbLN2M2/CcJi
-         nQ5xZt56mpZfl1JltdYYhFhEw6SdQ0Fcyxz2mS7lMr6o4dwTn65nydNU2N78O+2SFj
-         lDVx50BRNw9Bw==
-Date:   Mon, 1 Feb 2021 14:43:51 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-crypto@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
-        Jann Horn <jannh@google.com>, Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH RESEND] random: fix the RNDRESEEDCRNG ioctl
-Message-ID: <YBiEJ9Md60HjAWJg@sol.localdomain>
-References: <20210112192818.69921-1-ebiggers@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210112192818.69921-1-ebiggers@kernel.org>
+        id S229525AbhBAWot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 17:44:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2619D64ECC;
+        Mon,  1 Feb 2021 22:44:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1612219448;
+        bh=bY5TMOz0te68qLVeDd3OlEIhLNM0l3Gtrel8LOEYnS0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Hhq7UvD4wMRGOAqhcU/qsOVoDxHKVK4v+m5plQ3IOEyAVCqYZWoarIQ61bAGp2NDW
+         AMCIZRU6gRuxKGLC0odOIFPLShjvVOdNBD1kgPCNR7otmV3AUuvuYF0ewt3n2llhfd
+         KgyxYOikqbFtLbW479v5j5+9fDNqLOIzANLFubQE=
+Date:   Mon, 1 Feb 2021 14:44:07 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/12] arm64: kasan: simplify and inline MTE functions
+Message-Id: <20210201144407.dd603ec4edcd589643654057@linux-foundation.org>
+In-Reply-To: <17d6bef698d193f5fe0d8baee0e232a351e23a32.1612208222.git.andreyknvl@google.com>
+References: <cover.1612208222.git.andreyknvl@google.com>
+        <17d6bef698d193f5fe0d8baee0e232a351e23a32.1612208222.git.andreyknvl@google.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 11:28:18AM -0800, Eric Biggers wrote:
-> From: Eric Biggers <ebiggers@google.com>
-> 
-> The RNDRESEEDCRNG ioctl reseeds the primary_crng from itself, which
-> doesn't make sense.  Reseed it from the input_pool instead.
-> 
-> Fixes: d848e5f8e1eb ("random: add new ioctl RNDRESEEDCRNG")
-> Cc: stable@vger.kernel.org
-> Cc: linux-crypto@vger.kernel.org
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Jann Horn <jannh@google.com>
-> Cc: Theodore Ts'o <tytso@mit.edu>
-> Reviewed-by: Jann Horn <jannh@google.com>
-> Signed-off-by: Eric Biggers <ebiggers@google.com>
-> ---
-> 
-> Andrew, please consider taking this patch since the maintainer has been
-> ignoring it for 4 months
-> (https://lkml.kernel.org/lkml/20200916041908.66649-1-ebiggers@kernel.org/T/#u).
+On Mon,  1 Feb 2021 20:43:34 +0100 Andrey Konovalov <andreyknvl@google.com> wrote:
 
-Ping.
+> This change provides a simpler implementation of mte_get_mem_tag(),
+> mte_get_random_tag(), and mte_set_mem_tag_range().
+> 
+> Simplifications include removing system_supports_mte() checks as these
+> functions are onlye called from KASAN runtime that had already checked
+> system_supports_mte(). Besides that, size and address alignment checks
+> are removed from mte_set_mem_tag_range(), as KASAN now does those.
+> 
+> This change also moves these functions into the asm/mte-kasan.h header
+> and implements mte_set_mem_tag_range() via inline assembly to avoid
+> unnecessary functions calls.
+> 
+> Co-developed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+
+Co-developed-by requires a Signed-off-by: as well.  Vincenzo, please
+send us one?
+
+
