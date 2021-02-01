@@ -2,106 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E4DB30A01B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 02:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F053830A01C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 02:59:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231131AbhBAB4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 20:56:20 -0500
-Received: from ozlabs.org ([203.11.71.1]:59907 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229813AbhBAB4Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 20:56:16 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DTWHS684cz9srY;
-        Mon,  1 Feb 2021 12:55:32 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612144533;
-        bh=BfyU9bFRiydMRCXL2NWr/Inhh9O6QnDdob3A1iGsWVY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=KFw7qMBdtv4dxz9b0SOZWtrr6l/tzjK+D9X5/EAmzTWZHTp8NH9/k5kRsQlh+ymXH
-         JJCTtqD6MrCcg/wiwBT9KKA60YVVfiCmMTc7tESkkepsoa6hOiAotHN6IUhDC/amz6
-         aSxmgsbMfidjW1wEuxx4rbPlqfenL/9D1VJCjOLg+k4Qh8/uYuAAbnlBpJEdBzBYrd
-         EvlcArdXU0YgmssH14co2eh7Gqi+q9VaMFp92imJarZUoDSLMjcxZ+lwGV5W6C4ZuP
-         KnWnPqqEzfgfRvoqx0rHjpSXMPKETheDGK7qsJhEypidPo98A/p2htk5gUfoXqtERV
-         9IjkY2BWatWbw==
-Date:   Mon, 1 Feb 2021 12:55:32 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the drm tree
-Message-ID: <20210201125532.2d51c381@canb.auug.org.au>
-In-Reply-To: <20210122115918.63b56fa1@canb.auug.org.au>
-References: <20210122115918.63b56fa1@canb.auug.org.au>
+        id S231252AbhBAB5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 20:57:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231248AbhBAB5p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 20:57:45 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5843C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 17:57:02 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id gx20so800032pjb.1
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 17:57:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9M0l27bqKEGBmwJbeFwH8NYxzXyLtRrLK5whmzNy510=;
+        b=OgP06fwgJsihQgFY3HqVdKK90aPhnnBLTibdexhcN229QUen3MEppE8Cfcu+pcdDIT
+         zGIS/XmOk/MuGc6Lx8Hy3A9L38+Gb04PZ1DTQcrhjlNnp9tI1SUa0sOXwo4bmnN5pcI2
+         d4TBMLwLEfx39CyBSfnCTpfMfQO5kI/MLhdGWg8PkVbiqRCvgMvez5hasnZg65FxLyai
+         adnzuFrjN0g3wU6fTM6qXZ9Pj+TDIG64FexMHh/p2HyIRP8RiZuTkWNa0EMADsqgmHxF
+         ewTWrNzKBLnDYjANmYuuD2/EGUljJr7ZItOEt2zmMTXHYjpest1QMO2CyQ9vEx9M9Cx4
+         hpSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9M0l27bqKEGBmwJbeFwH8NYxzXyLtRrLK5whmzNy510=;
+        b=Y9CzN9nl1DeJsFzYWilWFE9XQ+Vq5YfdkrIHe5KaI1dvcft09wgOTvDIJ4gwxe8eep
+         JtesJhoWj3LIe4wv6lX1js6e0MlJQjm+9MZsVnUqAKAPRMvd5kdN0QKz5D860jxTyBHz
+         EsvjYlP86KGmQh9UofJIEfTPRBXwxJOMQ5CDoUx3HJV3swRhF/8FM9OVS4vEbkYfXPH0
+         mUDawGXykAgoJwNx3l6kZd3IHSw+5E9DWCXrjT5GmfeEn4CQ8ulJxRnu6J++FwrHb1YP
+         4yTHWh6YaoK/SlTSaLxEwKrWii3ZbtsmGCZPybk39iOPHRDHkOdzLnfvYAt7HuEWKFzo
+         G7tA==
+X-Gm-Message-State: AOAM533ErMZjeKkNkwgr9xnfQ4ki/sjgnJO+DQXaFnZ5c3W3swtXriy1
+        7rwQbVUeJVDsx0lw2oYAAdoVF2OLiTGFIBIy
+X-Google-Smtp-Source: ABdhPJwPlMfB8+CIqLowW0qm4AwMuRiGZaDHIdTVqhbhU93b2pRVgqYDDQf5YMaRklR4NBQARz/IUg==
+X-Received: by 2002:a17:90a:7f8f:: with SMTP id m15mr15495352pjl.214.1612144621653;
+        Sun, 31 Jan 2021 17:57:01 -0800 (PST)
+Received: from [10.2.218.189] ([61.120.150.75])
+        by smtp.gmail.com with ESMTPSA id w7sm15318519pfb.62.2021.01.31.17.56.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 31 Jan 2021 17:57:01 -0800 (PST)
+Subject: Re: [External] [PATCH] misc: pvpanic: sysfs_emit uses should have a
+ newline
+To:     Joe Perches <joe@perches.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <13b1c892d52c27d4caeccc89506aadda74f61365.camel@perches.com>
+From:   zhenwei pi <pizhenwei@bytedance.com>
+Message-ID: <3369537d-27a9-2a48-9a46-f241a5077dc2@bytedance.com>
+Date:   Mon, 1 Feb 2021 09:56:57 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/C_.j+qZ.bOkaYaCl9P+aeHV";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <13b1c892d52c27d4caeccc89506aadda74f61365.camel@perches.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/C_.j+qZ.bOkaYaCl9P+aeHV
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 1/30/21 3:08 AM, Joe Perches wrote:
+> Add newline terminations to the sysfs_emit uses added by -next
+> commit 8d6da6575ffe ("misc: pvpanic: introduce events device attribue")
+> 
+> Signed-off-by: Joe Perches <joe@perches.com>
+> ---
+>   drivers/misc/pvpanic.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/misc/pvpanic.c b/drivers/misc/pvpanic.c
+> index b1e4922a7fda..9f350e05ef68 100644
+> --- a/drivers/misc/pvpanic.c
+> +++ b/drivers/misc/pvpanic.c
+> @@ -25,13 +25,13 @@ static unsigned int events;
+>   static ssize_t capability_show(struct device *dev,
+>   			       struct device_attribute *attr, char *buf)
+>   {
+> -	return sysfs_emit(buf, "%x", capability);
+> +	return sysfs_emit(buf, "%x\n", capability);
+>   }
+>   static DEVICE_ATTR_RO(capability);
+>   
+>   static ssize_t events_show(struct device *dev,  struct device_attribute *attr, char *buf)
+>   {
+> -	return sysfs_emit(buf, "%x", events);
+> +	return sysfs_emit(buf, "%x\n", events);
+>   }
+>   
+>   static ssize_t events_store(struct device *dev,  struct device_attribute *attr,
+> 
+> 
 
-Hi all,
+Hi, Greg is the maintainer of this driver.
 
-On Fri, 22 Jan 2021 11:59:18 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> After merging the drm tree, today's linux-next build (x86_64 allmodconfig)
-> produced this warning:
->=20
-> WARNING: unmet direct dependencies detected for DRM_I915_WERROR
->   Depends on [n]: HAS_IOMEM [=3Dy] && DRM_I915 [=3Dm] && EXPERT [=3Dy] &&=
- !COMPILE_TEST [=3Dy]
->   Selected by [m]:
->   - DRM_I915_DEBUG [=3Dy] && HAS_IOMEM [=3Dy] && EXPERT [=3Dy] && DRM_I91=
-5 [=3Dm]
->=20
-> WARNING: unmet direct dependencies detected for DRM_I915_WERROR
->   Depends on [n]: HAS_IOMEM [=3Dy] && DRM_I915 [=3Dm] && EXPERT [=3Dy] &&=
- !COMPILE_TEST [=3Dy]
->   Selected by [m]:
->   - DRM_I915_DEBUG [=3Dy] && HAS_IOMEM [=3Dy] && EXPERT [=3Dy] && DRM_I91=
-5 [=3Dm]
->=20
-> WARNING: unmet direct dependencies detected for DRM_I915_WERROR
->   Depends on [n]: HAS_IOMEM [=3Dy] && DRM_I915 [=3Dm] && EXPERT [=3Dy] &&=
- !COMPILE_TEST [=3Dy]
->   Selected by [m]:
->   - DRM_I915_DEBUG [=3Dy] && HAS_IOMEM [=3Dy] && EXPERT [=3Dy] && DRM_I91=
-5 [=3Dm]
->=20
-> Maybe introduced by commit
->=20
->   4f86975f539d ("drm/i915: Add DEBUG_GEM to the recommended CI config")
-
-I am still getting this warning.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/C_.j+qZ.bOkaYaCl9P+aeHV
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAXX5QACgkQAVBC80lX
-0GypAwf+NDRIpkYcNy9Nlt7QWWLrP5UzkVOdnU15x7CXd58ZAjC05WLvM3y1TpXM
-hWwbfnQOiPZ7/sSr1N1ecph6BPzHLI2yZOqnU0ZKAo5ZnfhrHgASml1fLoAF/fDo
-cHQ4e2Im7XnoDDF4gTfTr4CKkQlAGLfaI4Kcg58VRCDkYyRFXTKLtFLZxPYfhjof
-pytu2L8zV63oGfDqYhzXLQOpoeKmLcyeYQCIx5y7gRn6s4G73kmA8A9vETvFiiWf
-SVM7gJB23gu6KnpP2fP5ULRCRCE3lq2KAANEiNnzyZmnmJPjaRM0bM/TcpHyiwc2
-LX7zfG75SVW+Ir3ia1unpxZzZDyLHA==
-=Mf7s
------END PGP SIGNATURE-----
-
---Sig_/C_.j+qZ.bOkaYaCl9P+aeHV--
+-- 
+zhenwei pi
