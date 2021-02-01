@@ -2,112 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB42A30A796
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:28:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0602030A79B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231259AbhBAM1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 07:27:10 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:39792 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbhBAM1H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 07:27:07 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 111CDSfV167612;
-        Mon, 1 Feb 2021 12:26:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=aAmjmImhCIpBX3POrMnvrFA6jSIgT7kpj8DSiYY51Fc=;
- b=U78qmZBE7UsuLvLuJD8ykiPWRFzEV1g6BWUmnuVtp4Eof5B4drJOZCUzUtkG7prN2ftt
- oGq1aa23Wquu59k5cOwWB65eQgx2V5R56ReDc3KLzjAOHTIZ0pwwobmD+DOiGax+NVN7
- +Qvg1R8SrUKFaARYYiZarP7FlObjjD/YmGEWuTBS+TSAChkM+TukngdDCk+r1zxoObn0
- zuszXMaOgc86dBjR+O9MP89HBIKSlTNXuCrTsG4Catss+G7p8oM8osjqUcUxivdfkze/
- uV7ePQMVQcHp5J1ir/oU3ho04lRwbg77G1yViAqfW63p2vTxmTeBbfAGzam+vjZGrQNv 3w== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 36cvyan4x3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 01 Feb 2021 12:25:59 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 111CA7QM146822;
-        Mon, 1 Feb 2021 12:25:57 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 36dh7pn4su-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 01 Feb 2021 12:25:57 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 111CPuXb003418;
-        Mon, 1 Feb 2021 12:25:56 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 36dh7pn4s8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 01 Feb 2021 12:25:56 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 111CPq9q007836;
-        Mon, 1 Feb 2021 12:25:52 GMT
-Received: from mwanda (/10.175.186.133)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 01 Feb 2021 04:25:51 -0800
-Date:   Mon, 1 Feb 2021 15:25:43 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Mark Fasheh <mark@fasheh.com>, Jiri Slaby <jirislaby@kernel.org>
-Cc:     Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Jens Axboe <axboe@kernel.dk>, ocfs2-devel@oss.oracle.com,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] ocfs2: Fix a use after free on error
-Message-ID: <YBfzR7AbZZ4Pp6sq@mwanda>
+        id S231334AbhBAM1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 07:27:36 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54354 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229545AbhBAM10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 07:27:26 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612182398; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=PE9JrNiPE/waS59o8i1v4gEWcbHimWae5gJXMMipSF4=;
+        b=b/z+QBJCHLvZ4MqEWcNfsnAUF2y+/fbIoxnYxOPxMr/8kxauEB51km9hFs5NWqWNg6bZAG
+        GRlMgTdV2yOMh93axDQfX0THW27184QFNHY0j8s3jg78lU13WOVHGBvymgh79G8OSAbiBg
+        yOzdvMXsZJrVmiZtaujLZCxSkIx5zw0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AB3E7AC45;
+        Mon,  1 Feb 2021 12:26:38 +0000 (UTC)
+Date:   Mon, 1 Feb 2021 13:26:38 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk-rework 07/12] printk: add syslog_lock
+Message-ID: <YBfzfs9zU8rgHl6y@alley>
+References: <20210126211551.26536-1-john.ogness@linutronix.de>
+ <20210126211551.26536-8-john.ogness@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9881 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 impostorscore=0
- mlxscore=0 spamscore=0 bulkscore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102010064
+In-Reply-To: <20210126211551.26536-8-john.ogness@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The error handling in this function frees "reg" but it is still on the
-"o2hb_all_regions" list so it will lead to a use after free.  The fix
-for this is to only add it to the list after everything has succeeded.
+On Tue 2021-01-26 22:21:46, John Ogness wrote:
+> The global variables @syslog_seq, @syslog_partial, @syslog_time
+> and write access to @clear_seq are protected by @logbuf_lock.
+> Once @logbuf_lock is removed, these variables will need their
+> own synchronization method. Introduce @syslog_lock for this
+> purpose.
 
-Fixes: 1cf257f51191 ("ocfs2: fix memory leak")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-This is from static analysis and hasn't been tested.
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -390,8 +390,12 @@ DEFINE_RAW_SPINLOCK(logbuf_lock);
+>  		printk_safe_exit_irqrestore(flags);	\
+>  	} while (0)
+>  
+> +/* syslog_lock protects syslog_* variables and write access to clear_seq. */
+> +static DEFINE_RAW_SPINLOCK(syslog_lock);
 
- fs/ocfs2/cluster/heartbeat.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+I am not expert on RT code but I think that it prefers the generic
+spinlocks. syslog_lock seems to be used in a normal context.
+IMHO, it does not need to be a raw spinlock.
 
-diff --git a/fs/ocfs2/cluster/heartbeat.c b/fs/ocfs2/cluster/heartbeat.c
-index 0179a73a3fa2..92af4dc813e7 100644
---- a/fs/ocfs2/cluster/heartbeat.c
-+++ b/fs/ocfs2/cluster/heartbeat.c
-@@ -2025,7 +2025,6 @@ static struct config_item *o2hb_heartbeat_group_make_item(struct config_group *g
- 		}
- 		set_bit(reg->hr_region_num, o2hb_region_bitmap);
- 	}
--	list_add_tail(&reg->hr_all_item, &o2hb_all_regions);
- 	spin_unlock(&o2hb_live_lock);
- 
- 	config_item_init_type_name(&reg->hr_item, name, &o2hb_region_type);
-@@ -2053,6 +2052,10 @@ static struct config_item *o2hb_heartbeat_group_make_item(struct config_group *g
- 
- 	o2hb_debug_region_init(reg, o2hb_debug_dir);
- 
-+	spin_lock(&o2hb_live_lock);
-+	list_add_tail(&reg->hr_all_item, &o2hb_all_regions);
-+	spin_unlock(&o2hb_live_lock);
-+
- 	return &reg->hr_item;
- 
- unregister_handler:
--- 
-2.29.2
+Note that using normal spinlock would require switching the locking
+order. logbuf_lock is a raw lock. Normal spinlock must not be taken
+under a raw spinlock.
 
+Or we could switch syslog_lock to the normal spinlock later
+after logbuf_lock is removed.
+
+> +
+>  #ifdef CONFIG_PRINTK
+>  DECLARE_WAIT_QUEUE_HEAD(log_wait);
+> +/* All 3 protected by @syslog_lock. */
+>  /* the next printk record to read by syslog(READ) or /proc/kmsg */
+>  static u64 syslog_seq;
+>  static size_t syslog_partial;
+> @@ -1631,6 +1643,7 @@ int do_syslog(int type, char __user *buf, int len, int source)
+>  	bool clear = false;
+>  	static int saved_console_loglevel = LOGLEVEL_DEFAULT;
+>  	int error;
+> +	u64 seq;
+
+This allows to remove definition of the same temporary variable
+for case SYSLOG_ACTION_SIZE_UNREAD.
+
+>  
+>  	error = check_syslog_permissions(type, source);
+>  	if (error)
+> @@ -1648,8 +1661,14 @@ int do_syslog(int type, char __user *buf, int len, int source)
+>  			return 0;
+>  		if (!access_ok(buf, len))
+>  			return -EFAULT;
+> +
+> +		/* Get a consistent copy of @syslog_seq. */
+> +		raw_spin_lock_irq(&syslog_lock);
+> +		seq = syslog_seq;
+> +		raw_spin_unlock_irq(&syslog_lock);
+> +
+>  		error = wait_event_interruptible(log_wait,
+> -				prb_read_valid(prb, syslog_seq, NULL));
+> +				prb_read_valid(prb, seq, NULL));
+
+Hmm, this will not detect when syslog_seq gets cleared in parallel.
+I hope that nobody rely on this behavior. But who knows?
+
+A solution might be to have also syslog_seq latched. But I am
+not sure if it is worth it.
+
+I am for taking the risk and use the patch as it is now. Let's keep
+the code for now. We could always use the latched variable when
+anyone complains. Just keep it in mind.
+
+
+>  		if (error)
+>  			return error;
+>  		error = syslog_print(buf, len);
+
+Otherwise, the patch looks good to me.
+
+Best Regards,
+Petr
