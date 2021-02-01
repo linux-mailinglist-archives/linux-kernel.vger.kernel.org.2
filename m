@@ -2,104 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C941E30AAC7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:15:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE9230AAD4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:16:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231469AbhBAPO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 10:14:57 -0500
-Received: from mga06.intel.com ([134.134.136.31]:34708 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231352AbhBAPOY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 10:14:24 -0500
-IronPort-SDR: 5OB1Fo6nzCIco4h+WZJHiky4fniavJSErHtoFoLx1yLjdr+Gt2fi+ItPGJQXOparRmetKfwzDc
- cqRH31nlFKIQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="242216663"
-X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
-   d="scan'208";a="242216663"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 07:12:57 -0800
-IronPort-SDR: D8Eo3K9uxGsdx7eRPyVaS59lfnItmzj9PJFRof3MD+QghKIFhc3DNFD4WYDPepGd4gq6d2qtE0
- 0VoPYxIVV80w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
-   d="scan'208";a="479113880"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 01 Feb 2021 07:12:54 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 01 Feb 2021 17:12:53 +0200
-Date:   Mon, 1 Feb 2021 17:12:53 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kyle Tso <kyletso@google.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/3] usb: typec: tcpm: Add Callback to Usb
- Communication capable partner
-Message-ID: <20210201151253.GG2465@kuha.fi.intel.com>
-References: <20210201095309.39486-1-badhri@google.com>
+        id S230224AbhBAPPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 10:15:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231376AbhBAPPB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 10:15:01 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CBACC0617A9
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 07:14:06 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id e133so6851033iof.8
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 07:14:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FgslTxds/ErDnP5BxjhdWc4Y/zI1rQSLsCH8OSVs/js=;
+        b=F8+Wzz2g4PiiLG9HpRjoBGzi6RD+31RRCKLXg5wsXlRjLRH9SDlEJjhOCvUBEPgwNm
+         ZsrX7dXY6q3OI4q0hCgK1XP7AbxsI4R2VYVEBv6QIU7NbvTjkFiKkNm3xnURKunLh15q
+         IGPfavdag/+USzEzZ48NUSigqDqQvCt9DBOmw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FgslTxds/ErDnP5BxjhdWc4Y/zI1rQSLsCH8OSVs/js=;
+        b=M3xv03zaFavMMPO5cvxp3ENUemB8/Rmg8mv4pbl7SzKXqH5GM/fVoNmWx3gLvP57XE
+         LIqkjU+E0sMvdkOhaZO7+5SGciO2uAU/4+NuV7tcfUJJWG4G70A2dHdCNrMRONGmqLSr
+         TI4zh84jEyBd6epIfPk39T+2t9jxdml+EfqIhjz74nMfsvFhbspMKTGsonwvNcoFd3vA
+         CMOjU35YOfM/Ktj+GPHg1cGl1oVJQUpMsIzujUKworWjU2BsAJgidP5ilJnkTLipQ57a
+         D2sOCM6z9jYRhHMxk64ChrIdGQpB9qpLgEEGqCpFqRq5BBPb9M462lebtnxv/OT8pkjm
+         /PqQ==
+X-Gm-Message-State: AOAM530pchBo/RGIDKvgE5yHMy1xLOXGXNyXSRmtv4ooJUMKwBqf798Q
+        5VdsI0vQucDjEpdY7s3KZNWwlGGdN20BFV1+K9oQlg==
+X-Google-Smtp-Source: ABdhPJxR43Acsu7hhQT8jUWCNSnhx5EbLvhdFGxF4u/4FZ3hR3Ak5aBokEKCBZ6XVmFDJLyWychhW71BjcnRBW8xX+Q=
+X-Received: by 2002:a05:6638:12d3:: with SMTP id v19mr15354182jas.42.1612192445458;
+ Mon, 01 Feb 2021 07:14:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201095309.39486-1-badhri@google.com>
+References: <20210122154600.1722680-1-joel@joelfernandes.org>
+ <CAKfTPtAnzhDKXayicDdymWpK1UswfkTaO8vL-WHxVaoj7DaCFw@mail.gmail.com>
+ <YAsjOqmo7TEeXjoj@google.com> <CAKfTPtBWoRuwwkaqQKNgHTnQBE4fevyYqEoeGc5RpCsBbOS1sQ@mail.gmail.com>
+ <YBG0W5PFGtGRCEuB@google.com> <CAKfTPtBqj5A_7QmxhhmkNTc3+VT6+AqWgw1GDYrgy1V5+PJMmQ@mail.gmail.com>
+ <CAEXW_YRrhEfGcLN5yrLJZm6HrB15M_R5xfpMReG2wE2rSmVWdA@mail.gmail.com> <CAKfTPtBvwm9vZb5C=2oTF6N-Ht6Rvip4Lv18yi7O3G8e-_ZWdg@mail.gmail.com>
+In-Reply-To: <CAKfTPtBvwm9vZb5C=2oTF6N-Ht6Rvip4Lv18yi7O3G8e-_ZWdg@mail.gmail.com>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Mon, 1 Feb 2021 10:13:54 -0500
+Message-ID: <CAEXW_YQ6GCuNsffGi9+=hkNyKZ3t-wHvFOEQZ8iOvKWkF4k8Xg@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: Rate limit calls to update_blocked_averages()
+ for NOHZ
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Paul McKenney <paulmck@kernel.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Dietmar Eggeman <dietmar.eggemann@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Neeraj upadhyay <neeraj.iitr10@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 01:53:07AM -0800, Badhri Jagan Sridharan wrote:
-> The USB Communications Capable bit indicates if port
-> partner is capable of communication over the USB data lines
-> (e.g. D+/- or SS Tx/Rx). Notify the status of the bit to low
-> level drivers to perform chip specific operation.
-> For instance, low level driver enables USB switches on D+/D-
-> lines to set up data path when the bit is set.
-> 
-> Refactored from patch initially authored by
-> Kyle Tso <kyletso@google.com>
-> 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 16 ++++++++++++++++
->  include/linux/usb/tcpm.h      |  5 +++++
->  2 files changed, 21 insertions(+)
+On Fri, Jan 29, 2021 at 5:33 AM Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
+[...]
+> > > > > So why is it a problem for you ? You are mentioning newly idle load
+> > > > > balance so I assume that your root problem is the scheduling delay
+> > > > > generated by the newly idle load balance which then calls
+> > > > > update_blocked_averages
+> > > >
+> > > > Yes, the new idle balance is when I see it happen quite often. I do see it
+> > > > happen with other load balance as well, but it not that often as those LB
+> > > > don't run as often as new idle balance.
+> > >
+> > > The update of average blocked load has been added in newidle_balance
+> > > to take advantage of the cpu becoming idle but it seems to create a
+> > > long preempt off sequence. I 'm going to prepare a patch to move it
+> > > out the schedule path.
+> >
+> > Ok thanks, that would really help!
+> >
+> > > > > rate limiting the call to update_blocked_averages() will only reduce
+> > > > > the number of time it happens but it will not prevent it to happen.
+> > > >
+> > > > Sure, but soft real-time issue can tolerate if the issue does not happen very
+> > > > often. In this case though, it is frequent.
+> > >
+> > > Could you provide details of the problem that you are facing ? It's
+> > > not clear for me what happens in your case at the end. Have you got an
+> > > audio glitch as an example?
+> > >
+> > > "Not often" doesn't really give any clue.
+> >
+> > I believe from my side I have provided details. I shared output from a
+> > function graph tracer and schbench micro benchmark clearly showing the
+> > issue and improvements. Sorry, I don't have a real-world reproducer
+>
+> In fact I disagree and I'm not sure that your results show the right
+> problem but just a side effect related to your system.
+>
+> With schbench -t 2 -m 2 -r 5, the test runs 1 task per CPU and newidle
+> balance should never be triggered because tasks will get an idle cpus
+> everytime. When I run schbench -t 3 -m 2 -r 5 (in order to get 8
+> threads on my 8 cpus system), all threads directly wake up on an idle
+> cpu and newidle balance is never involved.
+> As a result, the schbench
+> results are not impacted by newidle_balance whatever its duration.
 
-...
+I disagree. Here you are assuming that schbench is the only task
+running on the system. There are other processes, daemons as well. I
+see a strong correlation between commenting out
+update_blocked_averages() and not seeing the latency hit at the higher
+percentiles.
 
-> diff --git a/include/linux/usb/tcpm.h b/include/linux/usb/tcpm.h
-> index 3af99f85e8b9..42fcfbe10590 100644
-> --- a/include/linux/usb/tcpm.h
-> +++ b/include/linux/usb/tcpm.h
-> @@ -108,6 +108,10 @@ enum tcpm_transmit_type {
->   *		is supported by TCPC, set this callback for TCPM to query
->   *		whether vbus is at VSAFE0V when needed.
->   *		Returns true when vbus is at VSAFE0V, false otherwise.
-> + * @set_partner_usb_comm_capable:
-> + *              Optional; The USB Communications Capable bit indicates if port
-> + *              partner is capable of communication over the USB data lines
-> + *              (e.g. D+/- or SS Tx/Rx). Called to notify the status of the bit.
->   */
->  struct tcpc_dev {
->  	struct fwnode_handle *fwnode;
-> @@ -139,6 +143,7 @@ struct tcpc_dev {
->  	int (*set_auto_vbus_discharge_threshold)(struct tcpc_dev *dev, enum typec_pwr_opmode mode,
->  						 bool pps_active, u32 requested_vbus_voltage);
->  	bool (*is_vbus_vsafe0v)(struct tcpc_dev *dev);
-> +	void (*set_partner_usb_comm_capable)(struct tcpc_dev *dev, bool enable);
->  };
->  
->  struct tcpm_port;
+> This means that a problem in newidle_balance doesn't impact schbench
+> results with a correct task placement. This also means that in your
+> case, some threads are placed on the same cpu and wait to be scheduled
+> and finally a lot of things can generate the increased delay.... If
+> you look at your results for schbench -t 2 -m 2 -r 5: The  *99.0th:
+> 12656 (8 samples) shows a delayed of around 12ms which is the typical
+> running time slice of a task when several tasks are fighting for the
+> same cpu and one has to wait. So this results does not reflect the
+> duration of newidle balance but instead that the task placement was
+> wrong and one task has to wait before running. Your RFC patch probably
+> changes the dynamic and as a result the task placement but it does not
+> save 12ms and is irrelevant regarding the problem that you raised
+> about the duration of update_blocked_load.
+> If I run schbench -t 3 -m 2 -r 5 on a dragonboard 845 (4 little, 4
+> big) with schedutil and EAS enabled:
+> /home/linaro/Bin/schbench -t 3 -m 2 -r 5
+> Latency percentiles (usec) runtime 5 (s) (318 total samples)
+> 50.0th: 315 (159 samples)
+> 75.0th: 735 (80 samples)
+> 90.0th: 773 (48 samples)
+> 95.0th: 845 (16 samples)
+> *99.0th: 12336 (12 samples)
+> 99.5th: 15408 (2 samples)
+> 99.9th: 17504 (1 samples)
+> min=4, max=17473
 
-There start to be a lot of callback there, separate for each function.
-And I guess flags too... Would it be possible to have a single
-notification callback instead, that would take the type of the
-notification as a parameter (we could have an enum for those), and
-then the specific object(s) for each type as another paramter (RDO I
-guess in this case)?
+Sure, there could be a different problem causing these higher
+percentile latencies on your device. I still think 12ms is awful.
 
-It would then be up to the TCPC driver to extract the detail it needs
-from that object. That would somehow feel more cleaner to me, but what
-do you guys think?
+> I have similar results and a quick look at the trace shows that 2
+> tasks are fighting for the same cpu whereas there are idle cpus. Then
+> If I use another cpufreq governor than schedutil like ondemand as an
+> example, the EAS is disabled and the results becomes:
+> /home/linaro/Bin/schbench -t 3 -m 2 -r 5
+> Latency percentiles (usec) runtime 5 (s) (318 total samples)
+> 50.0th: 232 (159 samples)
+> 75.0th: 268 (80 samples)
+> 90.0th: 292 (49 samples)
+> 95.0th: 307 (15 samples)
+> *99.0th: 394 (12 samples)
+> 99.5th: 397 (2 samples)
+> 99.9th: 400 (1 samples)
+> min=114, max=400
+
+Yes, definitely changing the governor also solves the problem (like
+for example if performance governor is used). The problem happens at
+low frequencies.
+
+> So a quick and wrong conclusion could be to say that you should disable EAS ;-)
+
+Sure, except the power management guys may come after me ;-)
+
+[..]
+> The only point that I agree with, is that running
+> update_blocked_averages with preempt and irq off is not a good thing
+> because we don't manage the number of csf_rq to update and I'm going
+> to provide a patchset for this
+
+That's fine, as long as we agree on this problem ;-) Thanks for
+providing the patches and I will try them once they are ready.
+
+> > for this.
+> >
+> > > Also update_blocked_averages was supposed called in newlyidle_balance
+> > > when the coming idle duration is expected to be long enough
+> >
+> > No, we do not want the schedule loop to take half a millisecond.
+>
+> keep in mind that you are scaling frequency so everything takes time
+> at lowest frequency/capacity ...
+
+Agreed, I was also thinking the same. But that doesn't change the fact
+that there is room for improvement and I'm grateful to you for trying
+to improve it!
 
 thanks,
 
--- 
-heikki
+ - Joel
