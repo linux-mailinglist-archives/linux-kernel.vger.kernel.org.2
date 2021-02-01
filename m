@@ -2,155 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A1C30A807
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:52:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3EEC30A810
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:55:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231761AbhBAMv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 07:51:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231486AbhBAMvx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 07:51:53 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DF25C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 04:51:12 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id z22so18684768edb.9
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 04:51:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=99K/EF8ap1CiP71x9aIjvCk10jXDUyV7c2MsOixEVK4=;
-        b=Y3Nnz8aBRx6Xlc+J5On8wHvesnKtUu0cbQXCzgimdqjPKtjCPm+VMJJ+uPo9Z+tuXc
-         zUEfh0o1RlDTdpxuDg2tBLqnY1xQ8IOBtVDXPXSX3FUU6QowiErZDZlumLCYXHNjSWDX
-         ltHaMtmmOoIzjmPRr86YXUFS+g+I53NGga4nkPel6I8ylQQQBJXmHs+fyICNBrOcfdD/
-         0YmofOgHtgEjCVZCU3FwpzdoTf5hiIf+MjrujbnjrF16nIwLNFLPtYMqHocCix4Mnj2F
-         4X/5mOuchXexuQFYn7+1d8H+mdK60Kh+fpua1B/5XEPAptQHGWG4V2nQ/r10rNmOd3Nk
-         yxlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=99K/EF8ap1CiP71x9aIjvCk10jXDUyV7c2MsOixEVK4=;
-        b=osqFkBfU7dB2M2r8VTch4fxeG/draXY+OisME8amhgy80fy4szY/7m1/PW7kDk1PET
-         0P10rEeh4FSyKo4l8T7t00J4aneM4iBfCXpqtMD+bKnmV/9uzaN7C/IOjdqwySFkLttr
-         ssdJGBgfprSHCHBvld0aJ9yyZYzw2OXT3DR/FFqF77jEbr7BA9jgrGPvE7vBWcV+VpZm
-         rjZwOzHykyBwtpM61Q4rQoQU36jrU8+yKhVIVV0KDkyxwtKnY1p61VSJGbsGLw0Dx1JM
-         bGpomv2hHaDVSqlTpScBgnJwGiXHD4o8F3M+iqC2Dyzrgj8/vORC+YhOum1G7WO2KMoN
-         ByRA==
-X-Gm-Message-State: AOAM530erckNPrpn1TqofRUGhnatsGSr+k+KIIU2NJeg0Ic/k6S9lunw
-        XQtg19Dhxm7wFfplpWoFCcVuGMiwE2sEF1+OqsElKQ==
-X-Google-Smtp-Source: ABdhPJxEJIiYWFh5liELORkIrjhm4NMzljbFC5qJG+8hvYvuAIRHvURuyUo7jeO+MTq0Cvi556IKvPL/Jxc6zm9Lmjk=
-X-Received: by 2002:aa7:d60f:: with SMTP id c15mr18475109edr.232.1612183870704;
- Mon, 01 Feb 2021 04:51:10 -0800 (PST)
+        id S231862AbhBAMxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 07:53:55 -0500
+Received: from mga07.intel.com ([134.134.136.100]:43417 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231656AbhBAMxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 07:53:42 -0500
+IronPort-SDR: SWGnUxQEV3XtR+NiaJmz5wnjz/O0H7zVTjXMF7OcrUVZfqjHwC4yarKyD/8AH9EHSUn6hYlG1B
+ irXi9mmjW9Ww==
+X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="244760469"
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="244760469"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 04:51:50 -0800
+IronPort-SDR: 32zuoe+UTyFBjNX3hD8Fb2ug69U9XzLp0Mih2ehyfqFVfmq330uS8ES85mAF3BpoR7MyoPOzj7
+ VEhiPsqeX2gQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="478948999"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 01 Feb 2021 04:51:47 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 01 Feb 2021 14:51:46 +0200
+Date:   Mon, 1 Feb 2021 14:51:46 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Benson Leung <bleung@chromium.org>
+Cc:     enric.balletbo@collabora.com, pmalani@chromium.org,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, groeck@chromium.org,
+        bleung@google.com
+Subject: Re: [PATCH 4/6] platform/chrome: cros_ec_typec: Report SOP' PD
+ revision from status
+Message-ID: <20210201125146.GD2465@kuha.fi.intel.com>
+References: <20210129061406.2680146-1-bleung@chromium.org>
+ <20210129061406.2680146-5-bleung@chromium.org>
 MIME-Version: 1.0
-References: <20210129134624.9247-1-brgl@bgdev.pl> <20210130212009.2uugdj6vmisegau2@pengutronix.de>
- <CAMRc=MdwoJCw1-BdNRnfRFaXYfZD0+vn_8yq0J+rshHqZMdDXQ@mail.gmail.com> <20210201092436.srqgfemnchyuubsf@pengutronix.de>
-In-Reply-To: <20210201092436.srqgfemnchyuubsf@pengutronix.de>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Mon, 1 Feb 2021 13:50:59 +0100
-Message-ID: <CAMRc=McfTsAw4d+hEeRzm5XZ0uGiWEZYCjyFP0xTvN=L1gYh3A@mail.gmail.com>
-Subject: Re: [PATCH 0/8] gpio: implement the configfs testing module
-To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Joel Becker <jlbec@evilplan.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Kent Gibson <warthog618@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-doc <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210129061406.2680146-5-bleung@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 10:24 AM Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
->
-> On Mon, Feb 01, 2021 at 09:37:30AM +0100, Bartosz Golaszewski wrote:
-> > On Sat, Jan 30, 2021 at 10:20 PM Uwe Kleine-K=C3=B6nig
-> > <u.kleine-koenig@pengutronix.de> wrote:
-> > >
-> > > Hello,
-> > >
-> > > On Fri, Jan 29, 2021 at 02:46:16PM +0100, Bartosz Golaszewski wrote:
-> > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> > > >
-> > > > This series adds a new GPIO testing module based on configfs commit=
-table items
-> > > > and sysfs. The goal is to provide a testing driver that will be con=
-figurable
-> > > > at runtime (won't need module reload) and easily extensible. The co=
-ntrol over
-> > > > the attributes is also much more fine-grained than in gpio-mockup.
-> > > >
-> > > > I am aware that Uwe submitted a virtual driver called gpio-simulato=
-r some time
-> > > > ago and I was against merging it as it wasn't much different from g=
-pio-mockup.
-> > > > I would ideally want to have a single testing driver to maintain so=
- I am
-> > > > proposing this module as a replacement for gpio-mockup but since se=
-lftests
-> > > > and libgpiod depend on it and it also has users in the community, w=
-e can't
-> > > > outright remove it until everyone switched to the new interface. As=
- for Uwe's
-> > > > idea for linking two simulated chips so that one controls the other=
- - while
-> > > > I prefer to have an independent code path for controlling the lines=
- (hence
-> > > > the sysfs attributes), I'm open to implementing it in this new driv=
-er. It
-> > > > should be much more feature friendly thanks to configfs than gpio-m=
-ockup.
-> > >
-> > > Funny you still think about my simulator driver. I recently thought
-> >
-> > It's because I always feel bad when I refuse to merge someone's hard wo=
-rk.
-> >
-> > > about reanimating it for my private use. The idea was to implement a
-> > > rotary-encoder driver (that contrast to
-> > > drivers/input/misc/rotary_encoder.c really implements an encoder and =
-not
-> > > a decoder). With the two linked chips I can plug
-> > > drivers/input/misc/rotary_encoder.c on one side and my encoder on the
-> > > other to test both drivers completely in software.
-> > >
-> > > I didn't look into your driver yet, but getting such a driver into
-> > > mainline would be very welcome!
-> > >
-> >
-> > My idea for linking chips (although that's not implemented yet) is an
-> > attribute in each configfs group called 'link' or something like that,
-> > that would take as argument the name of the chip to link to making the
-> > 'linker' the input and the 'linkee' the output.
->
-> I still wonder why you prefer to drive the lines using configfs (or
-> sysfs before). Using the idea of two interlinked chips and being able to
-> use gpio functions on one side to modify the other side is (in my eyes)
-> so simple and beautiful that it's obviously the right choice. But note I
-> still didn't look into details so there might be stuff you can modify
-> that wouldn't be possible with my idea. But obviously your mileage
-> varies here.
->
+On Thu, Jan 28, 2021 at 10:14:04PM -0800, Benson Leung wrote:
+> cros_typec_handle_sop_prime_disc now takes the PD revision provided
+> by the EC_CMD_TYPEC_STATUS command response for the SOP'.
+> 
+> Attach the properly formatted pd_revision to the cable desc before
+> registering the cable.
+> 
+> Signed-off-by: Benson Leung <bleung@chromium.org>
 
-Not only drive but also check the input mode using a different code
-path. My thinking is this: if, for example, we're checking the input
-mode, let's not involve the core gpiolib's output code from a
-different chip. Let's try to isolate the specific use-cases. Keep in
-mind that my particular use-case is testing the uAPI with libgpiod's
-test suite.
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Also: previously it was debugfs, now we're switching to configs (for
-configuring the devices) and sysfs (for controlling them).
+> ---
+>  drivers/platform/chrome/cros_ec_typec.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+> index e724a5eaef1c..30600e9454e1 100644
+> --- a/drivers/platform/chrome/cros_ec_typec.c
+> +++ b/drivers/platform/chrome/cros_ec_typec.c
+> @@ -748,7 +748,7 @@ static void cros_typec_parse_pd_identity(struct usb_pd_identity *id,
+>  		id->vdo[i - 3] = disc->discovery_vdo[i];
+>  }
+>  
+> -static int cros_typec_handle_sop_prime_disc(struct cros_typec_data *typec, int port_num)
+> +static int cros_typec_handle_sop_prime_disc(struct cros_typec_data *typec, int port_num, u16 pd_revision)
+>  {
+>  	struct cros_typec_port *port = typec->ports[port_num];
+>  	struct ec_response_typec_discovery *disc = port->disc_data;
+> @@ -794,6 +794,7 @@ static int cros_typec_handle_sop_prime_disc(struct cros_typec_data *typec, int p
+>  	}
+>  
+>  	c_desc.identity = &port->c_identity;
+> +	c_desc.pd_revision = pd_revision;
+>  
+>  	port->cable = typec_register_cable(port->port, &c_desc);
+>  	if (IS_ERR(port->cable)) {
+> @@ -893,7 +894,11 @@ static void cros_typec_handle_status(struct cros_typec_data *typec, int port_num
+>  
+>  	if (resp.events & PD_STATUS_EVENT_SOP_PRIME_DISC_DONE &&
+>  	    !typec->ports[port_num]->sop_prime_disc_done) {
+> -		ret = cros_typec_handle_sop_prime_disc(typec, port_num);
+> +		u16 sop_prime_revision;
+> +
+> +		/* Convert BCD to the format preferred by the TypeC framework */
+> +		sop_prime_revision = (le16_to_cpu(resp.sop_prime_revision) & 0xff00) >> 4;
+> +		ret = cros_typec_handle_sop_prime_disc(typec, port_num, sop_prime_revision);
+>  		if (ret < 0)
+>  			dev_err(typec->dev, "Couldn't parse SOP' Disc data, port: %d\n", port_num);
+>  		else
+> -- 
+> 2.30.0.365.g02bc693789-goog
 
-Bart
+thanks,
+
+-- 
+heikki
