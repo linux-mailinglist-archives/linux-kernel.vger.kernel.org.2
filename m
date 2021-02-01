@@ -2,109 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D09C309FDF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 02:14:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F8BB309FE0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 02:16:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230350AbhBABNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 20:13:53 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:42480 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229656AbhBABNr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 20:13:47 -0500
-Received: from [10.130.0.55] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxSdSQVRdg1AcBAA--.1074S3;
-        Mon, 01 Feb 2021 09:12:49 +0800 (CST)
-Subject: Re: [PATCH 1/3] MIPS: ftrace: Fix N32 save registers
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
+        id S230527AbhBABPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 20:15:17 -0500
+Received: from mga09.intel.com ([134.134.136.24]:51743 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229769AbhBABPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 20:15:07 -0500
+IronPort-SDR: Q55Z3udlBtsQ+8loVk5MYU0/aMPHn8DjH6nHLbmmHa7ugg4+RjyL9t/m46FriJY6DAJQBs15iy
+ ywW5SfT7JVQg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="180765017"
+X-IronPort-AV: E=Sophos;i="5.79,391,1602572400"; 
+   d="scan'208";a="180765017"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2021 17:13:18 -0800
+IronPort-SDR: 7iL5qJQpqtduVUSEfG4raa+kdnIf5iYU1sKhW9hU7qz23WiyYf+5kq2jXOufGLDp7IwJ6FWQiv
+ 3BgnHecTfUJQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,391,1602572400"; 
+   d="scan'208";a="395443267"
+Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.125]) ([10.239.161.125])
+  by orsmga007.jf.intel.com with ESMTP; 31 Jan 2021 17:13:17 -0800
+From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
+Subject: Re: [PATCH v5 0/4] Scan for an idle sibling in a single pass
+To:     Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>
-References: <1612080878-5426-1-git-send-email-hejinyang@loongson.cn>
- <b1a5eae4-2032-4ace-aa48-a21893e47528@www.fastmail.com>
-Cc:     Wu Zhangjin <wuzhangjin@gmail.com>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-From:   Jinyang He <hejinyang@loongson.cn>
-Message-ID: <d9548ffc-9d91-baf6-107a-af1b174db29b@loongson.cn>
-Date:   Mon, 1 Feb 2021 09:12:48 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Qais Yousef <qais.yousef@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210127135203.19633-1-mgorman@techsingularity.net>
+Message-ID: <cec31f9f-0eda-706e-235d-5bd2bfad6c2c@linux.intel.com>
+Date:   Mon, 1 Feb 2021 09:13:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <b1a5eae4-2032-4ace-aa48-a21893e47528@www.fastmail.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <20210127135203.19633-1-mgorman@techsingularity.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9AxSdSQVRdg1AcBAA--.1074S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1UtryfZF1rGrWkXFW3trb_yoW8GryDp3
-        y8AF4kWFW0vry5Gry5X39agry5twnxAryvgFWqv34rJFs0g3WrXw1ktrnIgrsFqFW0kr40
-        9rW3WrZ8Aa9ayFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
-        0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
-        0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4CE
-        bIxvr21lc2xSY4AK67AK6w4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnU
-        UI43ZEXa7VUbLiSPUUUUU==
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/31/2021 06:38 PM, Jiaxun Yang wrote:
+On 2021/1/27 21:51, Mel Gorman wrote:
+> Changelog since v4
+> o Avoid use of intermediate variable during select_idle_cpu
+> 
+> Changelog since v3
+> o Drop scanning based on cores, SMT4 results showed problems
+> 
+> Changelog since v2
+> o Remove unnecessary parameters
+> o Update nr during scan only when scanning for cpus
+> 
+> Changlog since v1
+> o Move extern declaration to header for coding style
+> o Remove unnecessary parameter from __select_idle_cpu
+> 
+> This series of 4 patches reposts three patches from Peter entitled
+> "select_idle_sibling() wreckage". It only scans the runqueues in a single
+> pass when searching for an idle sibling.
+> 
+> Three patches from Peter were dropped. The first patch altered how scan
+> depth was calculated. Scan depth deletion is a random number generator
+> with two major limitations. The avg_idle time is based on the time
+> between a CPU going idle and being woken up clamped approximately by
+> 2*sysctl_sched_migration_cost.  This is difficult to compare in a sensible
+> fashion to avg_scan_cost. The second issue is that only the avg_scan_cost
+> of scan failures is recorded and it does not decay.  This requires deeper
+> surgery that would justify a patch on its own although Peter notes that
+> https://lkml.kernel.org/r/20180530143105.977759909@infradead.org is
+> potentially useful for an alternative avg_idle metric.
+> 
+> The second patch dropped scanned based on cores instead of CPUs as it
+> rationalised the difference between core scanning and CPU scanning.
+> Unfortunately, Vincent reported problems with SMT4 so it's dropped
+> for now until depth searching can be fixed.
+> 
+> The third patch dropped converted the idle core scan throttling mechanism
+> to SIS_PROP. While this would unify the throttling of core and CPU
+> scanning, it was not free of regressions and has_idle_cores is a fairly
+> effective throttling mechanism with the caveat that it can have a lot of
+> false positives for workloads like hackbench.
+> 
+> Peter's series tried to solve three problems at once, this subset addresses
+> one problem.
+> 
+>  kernel/sched/fair.c     | 151 +++++++++++++++++++---------------------
+>  kernel/sched/features.h |   1 -
+>  2 files changed, 70 insertions(+), 82 deletions(-)
+> 
 
->
-> On Sun, Jan 31, 2021, at 4:14 PM, Jinyang He wrote:
->> CONFIG_64BIT is confusing. N32 also pass parameters by a0~a7.
-> Do we have NEW kernel build?
-> CONFIG_64BIT assumed N64 as kernel ABI.
->
->
-> -Jiaxun
-Hi, Jiaxun,
+4 benchmarks measured on a x86 4s system with 24 cores per socket and
+2 HTs per core, total 192 CPUs. 
 
-Thank you for your reply, and now I know. Before that, I saw the macro
-from arch/mips/include/asm/regdef.h and thought it needed to be modified
-here. But that seems have no sence.
-Please ignore this patch.
+The load level is [25%, 50%, 75%, 100%].
+
+- hackbench almost has a universal win.
+- netperf high load has notable changes, as well as tbench 50% load.
+
+Details below:
+
+hackbench: 10 iterations, 10000 loops, 40 fds per group
+======================================================
+
+- pipe process
+
+	group	base	%std	v5	%std
+	3	1	19.18	1.0266	9.06
+	6	1	9.17	0.987	13.03
+	9	1	7.11	1.0195	4.61
+	12	1	1.07	0.9927	1.43
+
+- pipe thread
+
+	group	base	%std	v5	%std
+	3	1	11.14	0.9742	7.27
+	6	1	9.15	0.9572	7.48
+	9	1	2.95	0.986	4.05
+	12	1	1.75	0.9992	1.68
+
+- socket process
+
+	group	base	%std	v5	%std
+	3	1	2.9	0.9586	2.39
+	6	1	0.68	0.9641	1.3
+	9	1	0.64	0.9388	0.76
+	12	1	0.56	0.9375	0.55
+
+- socket thread
+
+	group	base	%std	v5	%std
+	3	1	3.82	0.9686	2.97
+	6	1	2.06	0.9667	1.91
+	9	1	0.44	0.9354	1.25
+	12	1	0.54	0.9362	0.6
+
+netperf: 10 iterations x 100 seconds, transactions rate / sec
+=============================================================
+
+- tcp request/response performance
+
+	thread	base	%std	v4	%std
+	25%	1	5.34	1.0039	5.13
+	50%	1	4.97	1.0115	6.3
+	75%	1	5.09	0.9257	6.75
+	100%	1	4.53	0.908	4.83
+
+
+
+- udp request/response performance
+
+	thread	base	%std	v4	%std
+	25%	1	6.18	0.9896	6.09
+	50%	1	5.88	1.0198	8.92
+	75%	1	24.38	0.9236	29.14
+	100%	1	26.16	0.9063	22.16
+
+tbench: 10 iterations x 100 seconds, throughput / sec
+=====================================================
+
+	thread	base	%std	v4	%std
+	25%	1	0.45	1.003	1.48
+	50%	1	1.71	0.9286	0.82
+	75%	1	0.84	0.9928	0.94
+	100%	1	0.76	0.9762	0.59
+
+schbench: 10 iterations x 100 seconds, 99th percentile latency
+==============================================================
+
+	mthread	base	%std	v4	%std
+	25%	1	2.89	0.9884	7.34
+	50%	1	40.38	1.0055	38.37
+	75%	1	4.76	1.0095	4.62
+	100%	1	10.09	1.0083	8.03
 
 Thanks,
-Jinyang
-
->> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
->> ---
->>   arch/mips/kernel/mcount.S | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/arch/mips/kernel/mcount.S b/arch/mips/kernel/mcount.S
->> index cff52b2..808257a 100644
->> --- a/arch/mips/kernel/mcount.S
->> +++ b/arch/mips/kernel/mcount.S
->> @@ -27,7 +27,7 @@
->>   	PTR_S	a1, PT_R5(sp)
->>   	PTR_S	a2, PT_R6(sp)
->>   	PTR_S	a3, PT_R7(sp)
->> -#ifdef CONFIG_64BIT
->> +#if _MIPS_SIM == _MIPS_SIM_ABI64 || _MIPS_SIM == _MIPS_SIM_NABI32
->>   	PTR_S	a4, PT_R8(sp)
->>   	PTR_S	a5, PT_R9(sp)
->>   	PTR_S	a6, PT_R10(sp)
->> @@ -42,7 +42,7 @@
->>   	PTR_L	a1, PT_R5(sp)
->>   	PTR_L	a2, PT_R6(sp)
->>   	PTR_L	a3, PT_R7(sp)
->> -#ifdef CONFIG_64BIT
->> +#if _MIPS_SIM == _MIPS_SIM_ABI64 || _MIPS_SIM == _MIPS_SIM_NABI32
->>   	PTR_L	a4, PT_R8(sp)
->>   	PTR_L	a5, PT_R9(sp)
->>   	PTR_L	a6, PT_R10(sp)
->> -- 
->> 2.1.0
->>
->>
-
+-Aubrey
