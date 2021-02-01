@@ -2,111 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68B1430B325
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:11:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C12F30B32F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:13:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230070AbhBAXKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 18:10:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230013AbhBAXK2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 18:10:28 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFBD6C0613ED
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 15:09:47 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id z9so722804pjl.5
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 15:09:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=3HKABxm2JWW8yXh6Ffuihg4FZgaqjfZi+45jOX+PQQI=;
-        b=CcU5cvGUtNpEhVt6Zcu4H5EeWpk+/H7fNLUyevjipbJe31ZbS4kC70stdBy+qRxQuX
-         bQGTv/PsDN4g+kKCAXTRJfbaPcAtLtu2g2G7PO0ZEND64tDUuXyPxUHFrUWJ66sQXEKP
-         y3nKIvO2CMT9m1Olk6z3pOtYMHnAFGKkus3f9QjH3SfZp3FRkqDGNKcVfBUjYt90JoV5
-         PdCs3Zv1/l93Y4WGYJkTJfGuv2R5x64VDgt169TQMxHy81iven1IoQp9Pa1PwE/KPrFi
-         owifCbIqzF5y9eiPUjgAXKU14kbZ4PlsribJAgzQV9UBoTMLxogxbFT1vqrRtcyn+Nxm
-         BmMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=3HKABxm2JWW8yXh6Ffuihg4FZgaqjfZi+45jOX+PQQI=;
-        b=QtCvWxH3dDgG7VWlDYdbdOM1TE1UunmvvZwpZ//1P9Ju61xZ8djnBHURI2tnEGvJw3
-         2EITrv1XExb8zj9Csbsy9zalQxOr0geFpUNV1tdFbKlu+xmbvsYV2IZ4Zw6R870AvooZ
-         v+bBPoLap91OmEsT6XBDxR02OhnNKdG84jJHAWHxO82QECF+GSlMwMJ4p1gBU9Y04iB9
-         ItJJ8l8GZ35kbycIU4fqxGd+GljOPOZwdXgnpZtUZPmViZaTFXlz4hfbH3riq5gPVhfd
-         O2cIV1HCnPes4QdNBTKOBa8MEodX1ZQnpzpZVol2tIMXAN7417dFRIKEuRBqoKswIzP5
-         x9IA==
-X-Gm-Message-State: AOAM531WdnrYIWAnHPF6nnu+KW725nrEM/IsEAUCLk0WuWpBj5EWDSPO
-        WHL86sovzaMdi+pXbSH90vL2ew==
-X-Google-Smtp-Source: ABdhPJyDaMvGR69SgB9QhG+gcyPBnwjWdXTx/YCd/XS+/X4S/yx5a3E3r1Y0cpZQ0HRKfgAXvzW+NQ==
-X-Received: by 2002:a17:902:70c6:b029:df:d62a:8c69 with SMTP id l6-20020a17090270c6b02900dfd62a8c69mr19315852plt.20.1612220986962;
-        Mon, 01 Feb 2021 15:09:46 -0800 (PST)
-Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id j4sm13872905pfa.131.2021.02.01.15.09.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 15:09:46 -0800 (PST)
-Date:   Mon, 1 Feb 2021 15:09:45 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        id S229774AbhBAXNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 18:13:30 -0500
+Received: from mga05.intel.com ([192.55.52.43]:38278 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229527AbhBAXNY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 18:13:24 -0500
+IronPort-SDR: KdDJxQl2RUvmqf0rFZZ+B0P7lyLbcywlbqmT6Y3G/ZBp4122n5etjTlhRmb7Y1TeflJ5YRRbX6
+ uVF05neeqTwA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="265599256"
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="265599256"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 15:12:42 -0800
+IronPort-SDR: TCnbwCnC3rgbkTbao5tcOlzTEF3mPPza3oEhHCvfKqNMN3XeO4oSMCR0knHqYQiEcrUNW2BEh3
+ ptJNk50ZLi6Q==
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="578078468"
+Received: from ccmincem-mobl1.amr.corp.intel.com (HELO [10.212.145.244]) ([10.212.145.244])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 15:12:40 -0800
+Subject: Re: [PATCH v18 05/25] x86/fpu/xstate: Introduce CET MSR and XSAVES
+ supervisor states
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
         Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        daniel.lll@alibaba-inc.com,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH 03/14] cxl/mem: Find device capabilities
-In-Reply-To: <20210201225052.vrrvuxrsgmddjzbb@intel.com>
-Message-ID: <79b98f60-151b-6c80-65c3-91a37699d121@google.com>
-References: <20210130002438.1872527-1-ben.widawsky@intel.com> <20210130002438.1872527-4-ben.widawsky@intel.com> <234711bf-c03f-9aca-e0b5-ca677add3ea@google.com> <20210201165352.wi7tzpnd4ymxlms4@intel.com> <32f33dd-97a-8b1c-d488-e5198a3d7748@google.com>
- <20210201215857.ud5cpg7hbxj2j5bx@intel.com> <b46ed01-3f1-6643-d371-7764c3bde4f8@google.com> <20210201222859.lzw3gvxuqebukvr6@intel.com> <20210201223314.qh24uxd7ajdppgfl@intel.com> <f86149f8-3aea-9d8c-caa9-62771bf22cb5@google.com>
- <20210201225052.vrrvuxrsgmddjzbb@intel.com>
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+References: <20210127212524.10188-1-yu-cheng.yu@intel.com>
+ <20210127212524.10188-6-yu-cheng.yu@intel.com>
+ <7793b36e-6386-3f2e-36ca-b7ca988a88c9@intel.com>
+ <43f264df-2f3a-ea4c-c737-85cdc6714bd8@intel.com>
+ <0a5a80c0-afc7-5f91-9e28-a300e30f1ab3@intel.com>
+ <465836bd-9c80-fed9-d9af-89275ff810eb@intel.com>
+ <cd8f4889-fbe4-fc0e-0686-9c9ecc4a125b@intel.com>
+ <a6550292-cd99-a5e2-df7b-d43f6cc8fed0@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <834ac0ae-b03c-dfa0-3e91-72587226613f@intel.com>
+Date:   Mon, 1 Feb 2021 15:12:39 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <a6550292-cd99-a5e2-df7b-d43f6cc8fed0@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Feb 2021, Ben Widawsky wrote:
-
-> > I think that's what 8.2.8.4.3 says, no?  And then 8.2.8.4.5 says you 
-> > can use up to Payload Size.  That's why my recommendation was to enforce 
-> > this in cxl_mem_setup_mailbox() up front.
+On 2/1/21 3:05 PM, Yu, Yu-cheng wrote:
+>>>
+>>
+>> Wait a sec...  What about *THIS* series?  Will *THIS* series give us
+>> oopses when userspace blasts a new XSAVE buffer in with NT_X86_XSTATE?
+>>
 > 
-> Yeah. I asked our spec people to update 8.2.8.4.5 to make it clearer. I'd argue
-> the intent is how you describe it, but the implementation isn't.
-> 
-> My argument was silly anyway because if you specify greater than 1M as your
-> payload, you will get EINVAL at the ioctl.
-> 
-> The value of how it works today is the driver will at least bind and allow you
-> to interact with it.
-> 
-> How strongly do you feel about this?
-> 
+> Fortunately, CET states are supervisor states.  NT_x86_XSTATE has only
+> user states.
 
-I haven't seen the update to 8.2.8.4.5 to know yet :)
+Ahhh, good point.  You did mention this in the changelog:
 
-You make a good point of at least being able to interact with the driver.  
-I think you could argue that if the driver binds, then the payload size is 
-accepted, in which case it would be strange to get an EINVAL when using 
-the ioctl with anything >1MB.
+> Control-flow Enforcement Technology (CET) introduces these MSRs:
+> 
+>     MSR_IA32_U_CET (user-mode CET settings),
+>     MSR_IA32_PL3_SSP (user-mode shadow stack pointer),
+> 
+>     MSR_IA32_PL0_SSP (kernel-mode shadow stack pointer),
+>     MSR_IA32_PL1_SSP (Privilege Level 1 shadow stack pointer),
+>     MSR_IA32_PL2_SSP (Privilege Level 2 shadow stack pointer),
+>     MSR_IA32_S_CET (kernel-mode CET settings),
+>     MSR_IA32_INT_SSP_TAB (exception shadow stack table).
+> 
+> The two user-mode MSRs belong to XFEATURE_CET_USER.  The first three of
+> kernel-mode MSRs belong to XFEATURE_CET_KERNEL.  Both XSAVES states are
+> supervisor states.
 
-Concern was that if we mask off the reserved bits from the command 
-register that we could be masking part of the payload size that is being 
-passed if the accepted max is >1MB.  Idea was to avoid any possibility of 
-this inconsistency.  If this is being checked for ioctl, seems like it's 
-checking reserved bits.
+This is another great place to add some information about the feature.
 
-But maybe I should just wait for the spec update.
+"Both XSAVES states are supervisor states." ...  This means that there
+is no direct, unprivileged access to this state, making it harder for an
+attacker to subvert CET.
+
+You could also allude to the future ptrace() support here.
