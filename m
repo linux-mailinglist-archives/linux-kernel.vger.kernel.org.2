@@ -2,116 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 755B230AA2A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:47:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6841B30AA2C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:47:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbhBAOqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 09:46:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231290AbhBAOnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 09:43:42 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E7ABE64E56;
-        Mon,  1 Feb 2021 14:43:00 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l6aPp-00BI8c-Ro; Mon, 01 Feb 2021 14:42:57 +0000
+        id S231593AbhBAOrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 09:47:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231278AbhBAOoX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 09:44:23 -0500
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF41C061573;
+        Mon,  1 Feb 2021 06:43:43 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id A25CA1F4462C
+Subject: Re: [PATCH 0/6] usb: typec: and platform/chrome: Add PD revision
+ numbers
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     Benson Leung <bleung@chromium.org>,
+        heikki.krogerus@linux.intel.com, pmalani@chromium.org,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     groeck@chromium.org, bleung@google.com
+References: <20210129061406.2680146-1-bleung@chromium.org>
+ <24ec5a79-b457-3025-eb37-623ab20314a6@collabora.com>
+Message-ID: <f33a1dcc-40b7-ec14-4e7a-5de0f73e2847@collabora.com>
+Date:   Mon, 1 Feb 2021 15:43:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <24ec5a79-b457-3025-eb37-623ab20314a6@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 01 Feb 2021 14:42:57 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-Subject: Re: [PATCH v1 0/2] Make fw_devlink=on more forgiving
-In-Reply-To: <20210130040344.2807439-1-saravanak@google.com>
-References: <20210130040344.2807439-1-saravanak@google.com>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <5419284dc9008907ccc36f1df5110356@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: saravanak@google.com, gregkh@linuxfoundation.org, rafael@kernel.org, m.szyprowski@samsung.com, geert@linux-m68k.org, Tudor.Ambarus@microchip.com, linus.walleij@linaro.org, bgolaszewski@baylibre.com, linux-kernel@vger.kernel.org, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
+Hi all,
 
-Thanks for this.
+On 1/2/21 15:37, Enric Balletbo i Serra wrote:
+> Hi all,
+> 
+> On 29/1/21 7:14, Benson Leung wrote:
+>> USB Power Delivery has a 3 entity handshake (port, cable, partner), and as
+>> of USB PD R3.0, each entity may independently support either Revision 2 or
+>> Revision 3 signaling and protocol. In order for userspace and the kernel
+>> to properly process the data objects received from a particular SOP*, we
+>> must know to which revision of the spec each conforms.
+>>
+>> This series adds individual version numbers for the partner and the cable,
+>> and exposes them in the appropriate sysfs in /sys/class/typec.
+>>
+>> I provide as a first implementation of this, platform/chrome's cros_ec_typec
+>> driver, whose underlying status messages convey the SOP and SOP' revisions
+>> already.
+>>
+>> Thanks,
+>> Benson
+>>
+>> Benson Leung (6):
+>>   usb: typec: Standardize PD Revision format with Type-C Revision
+>>   usb: typec: Provide PD Specification Revision for cable and partner
+>>   usb: typec: Add typec_partner_set_pd_revision
+>>   platform/chrome: cros_ec_typec: Report SOP' PD revision from status
+>>   platform/chrome: cros_ec_typec: Set Partner PD revision from status
+>>   platform/chrome: cros_ec_typec: Set opmode to PD on SOP connected
+>>
+> 
+> I acked the above chrome/platform patches in case Greg wants to pick up the full
+> series through his usb tree, I think is what makes more sense. They look good to
+> me from the chrome/platform side.
+> 
 
-On 2021-01-30 04:03, Saravana Kannan wrote:
-> This patch series solves two general issues with fw_devlink=on
-> 
-> Patch 1/2 addresses the issue of firmware nodes that look like they'll
-> have struct devices created for them, but will never actually have
-> struct devices added for them. For example, DT nodes with a compatible
-> property that don't have devices added for them.
-> 
-> Patch 2/2 address (for static kernels) the issue of optional suppliers
-> that'll never have a driver registered for them. So, if the device 
-> could
-> have probed with fw_devlink=permissive with a static kernel, this patch
-> should allow those devices to probe with a fw_devlink=on. This doesn't
-> solve it for the case where modules are enabled because there's no way
-> to tell if a driver will never be registered or it's just about to be
-> registered. I have some other ideas for that, but it'll have to come
-> later thinking about it a bit.
-> 
-> These two patches might remove the need for several other patches that
-> went in as fixes for commit e590474768f1 ("driver core: Set
-> fw_devlink=on by default"), but I think all those fixes are good
-> changes. So I think we should leave those in.
-> 
-> Marek, Geert,
-> 
-> Can you try this series on a static kernel with your OF_POPULATED
-> changes reverted? I just want to make sure these patches can identify
-> and fix those cases.
-> 
-> Tudor,
-> 
-> You should still make the clock driver fix (because it's a bug), but I
-> think this series will fix your issue too (even without the clock 
-> driver
-> fix). Can you please give this a shot?
-> 
-> Marc,
-> 
-> Can you try this series with the gpiolib fix reverted please? I'm 
-> pretty
-> sure this will fix that case.
+Sorry, just noticed that the platform/chrome patches depends on some patches
+that we have already queued for 5.12. So we will pick up these patches and take
+care to not merge before the specific usb type-c bits. So forget about the above.
 
-Almost. The board boots and behaves as expected, except that a few 
-devices
-such as the SD card are unusable (probably because the corresponding
-suppliers are still not identified as being available:
+Thanks,
+ Enric
 
-# find /sys -name waiting_for_supplier| xargs grep .| grep -v :0
-/sys/devices/platform/vcc3v0-sd/waiting_for_supplier:1
-/sys/devices/platform/vbus-typec/waiting_for_supplier:1
-/sys/devices/platform/sdio-pwrseq/waiting_for_supplier:1
-/sys/devices/platform/ir-receiver/waiting_for_supplier:1
 
-With the GPIO patch that I reverted, no device is waiting for
-a supplier.
-
-Let me know if I can further help.
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+> Thanks,
+>   Enric
+> 
+>>  Documentation/ABI/testing/sysfs-class-typec | 20 ++++++-
+>>  drivers/platform/chrome/cros_ec_typec.c     | 26 +++++++--
+>>  drivers/usb/typec/class.c                   | 59 +++++++++++++++++++--
+>>  include/linux/usb/typec.h                   | 11 ++++
+>>  4 files changed, 108 insertions(+), 8 deletions(-)
+>>
