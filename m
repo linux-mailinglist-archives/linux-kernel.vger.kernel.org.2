@@ -2,95 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8BC530A51D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:14:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC4F30A521
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:14:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233087AbhBAKM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 05:12:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232943AbhBAKL4 (ORCPT
+        id S233186AbhBAKNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 05:13:16 -0500
+Received: from relay08.th.seeweb.it ([5.144.164.169]:55461 "EHLO
+        relay08.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233256AbhBAKMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 05:11:56 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AADF4C061786
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 02:10:48 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id g10so15915806wrx.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 02:10:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=pVJj2fCNRWDjUKRwKtv4goRlFguknC7kv1PKeYxdDv0=;
-        b=QpSF/puU9glqsBVwzcqqEmZ+yqtBGPHqZ4Wx3nKZSW0hDu5DzYxl8MFw2IAbz3QwU4
-         ZRV0Q1yXyYh+KJHbYdonUwJ5UhccmdjM2/4fGWbMpfGUfT5xpVV0fKN01/emB1ZaGftc
-         pRVwankpaNsK0b/YN482tYTe/VLH4zN3eSIkSQkvAtds3EEiBSwrNfeYLpfDRMnH9CkO
-         oag9NCeb5dor7Vy7JFf+3iroi4KkoQT7zGEfUkM+MQpuKS25jhWmaFa6HFB8NP/vL1o4
-         lxb4pRkykaEVegRAITjQpeMMEEpXkwUIJVcbe9yHrmVS4A+s7GEBMkCU0MDYGi/WLKnA
-         fVhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=pVJj2fCNRWDjUKRwKtv4goRlFguknC7kv1PKeYxdDv0=;
-        b=oY6qg5J29PzssJgfxKExTefLrB4FHwMjNzrrSsdo7BSXouaE8dzLZX8GYyf9+TQU33
-         38rK86cuK8//5Y3G6OTQaMRZsDI1nq27nJwiUGw+nUO4gIG87IGIfeX46BIqcLDOWzbD
-         Hm+6f2wQeYzXf0ksBMShZxv2Bmy2ULMbmgHldIX0BhT1rRrpy5gTnrS+wFbCk6n6UskN
-         3zJHf8U7gX1ngwhlAPoQLKcHagNZXUwHJDvrt+2hulrChHA9jUpZHWT8HMGNu7Vmen08
-         jOHCDFV+ibMHjAG2aTDwZK9Ma1siRqgUsqkaQACY2djF+lb8Mk/WNuDT0LO89EpU1rQ5
-         V3NQ==
-X-Gm-Message-State: AOAM530VfyR5xKNU/+JcS9++Qwo7CZ3EHWlKd0Cr8rDHfHx6KlC9SO9g
-        XnZnb0xV9Ivalm4TRK2fMso=
-X-Google-Smtp-Source: ABdhPJyUB5Ka00Ak9FmyIPy5DCcHp6v+/2ialUaMqLt+5D2jZXLZyrm6xe+A0qYitj8K6swxCuuxgw==
-X-Received: by 2002:a5d:4b46:: with SMTP id w6mr17343321wrs.346.1612174247504;
-        Mon, 01 Feb 2021 02:10:47 -0800 (PST)
-Received: from p4 (net-93-70-85-165.cust.vodafonedsl.it. [93.70.85.165])
-        by smtp.gmail.com with ESMTPSA id q4sm26762945wrg.22.2021.02.01.02.10.46
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Feb 2021 02:10:47 -0800 (PST)
-Date:   Mon, 1 Feb 2021 10:10:43 +0000
-From:   Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>
-To:     linux@armlinux.org.uk
-Cc:     giancarlo.ferrari@nokia.com, michal.simek@xilinx.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: kexec: Fix panic after TLB are invalidated
-Message-ID: <20210201101040.GC13349@p4>
-References: <1610470147-22641-1-git-send-email-giancarlo.ferrari89@gmail.com>
+        Mon, 1 Feb 2021 05:12:18 -0500
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 4C1473E7DE;
+        Mon,  1 Feb 2021 11:11:31 +0100 (CET)
+Subject: Re: [PATCH 3/5] drm/msm/dsi_pll_10nm: Fix bad VCO rate calculation
+ and prescaler
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        phone-devel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>
+References: <20210109135112.147759-1-angelogioacchino.delregno@somainline.org>
+ <20210109135112.147759-4-angelogioacchino.delregno@somainline.org>
+ <CAF6AEGvDzdgDy7Znw6dQCV7Z=YxnF2_XsqkV+7BT+oY777TqHA@mail.gmail.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <8f8c7c37-f7b2-f763-19e1-d89e5c454ab4@somainline.org>
+Date:   Mon, 1 Feb 2021 11:11:30 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1610470147-22641-1-git-send-email-giancarlo.ferrari89@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <CAF6AEGvDzdgDy7Znw6dQCV7Z=YxnF2_XsqkV+7BT+oY777TqHA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
-
-On Tue, Jan 12, 2021 at 04:49:06PM +0000, Giancarlo Ferrari wrote:
-> machine_kexec() need to set rw permission in text and rodata sections
-> to assign some variables (e.g. kexec_start_address). To do that at
-> the end (after flushing pdm in memory, inv D-Cache, etc.) it needs to
-> invalidate TLB [section] entries.
+Il 31/01/21 20:50, Rob Clark ha scritto:
+> On Sat, Jan 9, 2021 at 5:51 AM AngeloGioacchino Del Regno
+> <angelogioacchino.delregno@somainline.org> wrote:
+>>
+>> The VCO rate was being miscalculated due to a big overlook during
+>> the process of porting this driver from downstream to upstream:
+>> here we are really recalculating the rate of the VCO by reading
+>> the appropriate registers and returning a real frequency, while
+>> downstream the driver was doing something entirely different.
+>>
+>> In our case here, the recalculated rate was wrong, as it was then
+>> given back to the set_rate function, which was erroneously doing
+>> a division on the fractional value, based on the prescaler being
+>> either enabled or disabled: this was actually producing a bug for
+>> which the final VCO rate was being doubled, causing very obvious
+>> issues when trying to drive a DSI panel because the actual divider
+>> value was multiplied by two!
+>>
+>> To make things work properly, remove the multiplication of the
+>> reference clock by two from function dsi_pll_calc_dec_frac and
+>> account for the prescaler enablement in the vco_recalc_rate (if
+>> the prescaler is enabled, then the hardware will divide the rate
+>> by two).
+>>
+>> This will make the vco_recalc_rate function to pass the right
+>> frequency to the (clock framework) set_rate function when called,
+>> which will - in turn - program the right values in both the
+>> DECIMAL_DIV_START_1 and the FRAC_DIV_START_{LOW/MID/HIGH}_1
+>> registers, finally making the PLL to output the right clock.
+>>
+>> Also, while at it, remove the prescaler TODO by also adding the
+>> possibility of disabling the prescaler on the PLL (it is in the
+>> PLL_ANALOG_CONTROLS_ONE register).
+>> Of course, both prescaler-ON and OFF cases were tested.
 > 
-> If during the TLB invalidation an interrupt occours, which might cause
-> a context switch, there is the risk to inject invalid TLBs, with ro
-> permissions.
+> This somehow breaks things on sc7180 (display gets stuck at first
+> frame of splash screen).  (This is a setup w/ an ti-sn65dsi86 dsi->eDP
+> bridge)
 > 
-> When trying to assign .text labels, this lead to the following issue:
+
+First frame of the splash means that something is "a bit" wrong...
+...like the DSI clock is a little off.
+
+I don't have such hardware, otherwise I would've tried... but what you
+describe is a bit strange.
+Is there any other older qcom platform using this chip? Any other
+non-qcom platform? Is the driver for the SN65DSI86 surely fine?
+Anyway, as you know, I would never propose untested patches nor
+partially working ones for any reason: I'm sorry that this happened.
+
+In any case, just to be perfectly transparent, while being here waiting
+for review, this patch series got tested on more smartphones, even ones
+that I don't personally own, with different displays.
+
+For your reference, here's a list (all MSM8998..):
+- OnePlus 5               (1920x1080)
+- F(x)Tec Pro 1           (2160x1080)
+- Sony Xperia XZ1 Compact (1280x720)
+- Sony Xperia XZ1         (1920x1080)
+- Sony Xperia XZ Premium  (3840x2160)
+
+
+> Also, something (I assume DSI related) that I was testing on
+> msm-next-staging seems to have effected the colors on the panel (ie.
+> they are more muted).. which seems to persist across reboots (ie. when
+
+So much "fun". This makes me think something about the PCC block doing
+the wrong thing (getting misconfigured).
+
+> switching back to a good kernel), and interestingly if I reboot from a
+> good kernel I see part of the login prompt (or whatever was previously
+> on-screen) in the firmware ui screen !?!  (so maybe somehow triggered
+> the display to think it is in PSR mode??)
 > 
-> "Unable to handle kernel paging request at virtual address <valid_addr>"
+
+ From a fast read, the SN65DSI86 is on I2C.. giving it a wrong dsi clock
+cannot produce (logically, at least) this, so I say that it is very
+unlikely for this to be a consequence of the 10nm pll fixes...
+
+...unless the bootloader is not configuring the DSI rates, but that's
+also veeeeery unlikely (it always does, or it always does not).
+
+> Not sure if that is caused by these patches, but if I can figure out
+> how to get the panel back to normal I can bisect.  I think for now
+> I'll drop this series.  Possibly it could be a
+> two-wrongs-makes-a-right situation that had things working before, but
+> I think someone from qcom who knows the DSI IP should take a look.
 > 
-> with FSR 0x80d.
+
+I would be happy if someone from Qualcomm takes a look: after all, there
+is no documentation and they're the only ones that can verify this kind
+of stuff. Please, Qualcomm.
+
+Besides that, if there's anything I can help with to solve this riddle,
+I'm here for you.
+
+Yours,
+-- Angelo
+
+> BR,
+> -R
 > 
-> Signed-off-by: Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>
-> ---
->  arch/arm/kernel/machine_kexec.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+> 
+>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+>> ---
+>>   drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c | 22 +++++++++-------------
+>>   1 file changed, 9 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
+>> index 8b66e852eb36..5be562dfbf06 100644
+>> --- a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
+>> +++ b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
+>> @@ -165,11 +165,7 @@ static void dsi_pll_calc_dec_frac(struct dsi_pll_10nm *pll)
+>>
+>>          pll_freq = pll->vco_current_rate;
+>>
+>> -       if (config->disable_prescaler)
+>> -               divider = fref;
+>> -       else
+>> -               divider = fref * 2;
+>> -
+>> +       divider = fref;
+>>          multiplier = 1 << config->frac_bits;
+>>          dec_multiple = div_u64(pll_freq * multiplier, divider);
+>>          dec = div_u64_rem(dec_multiple, multiplier, &frac);
+>> @@ -266,9 +262,11 @@ static void dsi_pll_ssc_commit(struct dsi_pll_10nm *pll)
+>>
+>>   static void dsi_pll_config_hzindep_reg(struct dsi_pll_10nm *pll)
+>>   {
+>> +       struct dsi_pll_config *config = &pll->pll_configuration;
+>>          void __iomem *base = pll->mmio;
+>> +       u32 val = config->disable_prescaler ? 0x0 : 0x80;
+>>
+>> -       pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_ONE, 0x80);
+>> +       pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_ONE, val);
+>>          pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_TWO, 0x03);
+>>          pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_THREE, 0x00);
+>>          pll_write(base + REG_DSI_10nm_PHY_PLL_DSM_DIVIDER, 0x00);
+>> @@ -499,17 +497,15 @@ static unsigned long dsi_pll_10nm_vco_recalc_rate(struct clk_hw *hw,
+>>          frac |= ((pll_read(base + REG_DSI_10nm_PHY_PLL_FRAC_DIV_START_HIGH_1) &
+>>                    0x3) << 16);
+>>
+>> -       /*
+>> -        * TODO:
+>> -        *      1. Assumes prescaler is disabled
+>> -        */
+>>          multiplier = 1 << config->frac_bits;
+>> -       pll_freq = dec * (ref_clk * 2);
+>> -       tmp64 = (ref_clk * 2 * frac);
+>> +       pll_freq = dec * ref_clk;
+>> +       tmp64 = ref_clk * frac;
+>>          pll_freq += div_u64(tmp64, multiplier);
+>> -
+>>          vco_rate = pll_freq;
+>>
+>> +       if (config->disable_prescaler)
+>> +               vco_rate = div_u64(vco_rate, 2);
+>> +
+>>          DBG("DSI PLL%d returning vco rate = %lu, dec = %x, frac = %x",
+>>              pll_10nm->id, (unsigned long)vco_rate, dec, frac);
+>>
+>> --
+>> 2.29.2
+>>
 
-has been re-submitted here:
-
-https://lore.kernel.org/lkml/1612140296-12546-1-git-send-email-giancarlo.ferrari89@gmail.com/
-
-
-GF
