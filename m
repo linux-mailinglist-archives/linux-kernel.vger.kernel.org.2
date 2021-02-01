@@ -2,125 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E34EF30AF40
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:29:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D302730AEFF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:21:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232539AbhBAS3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:29:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49306 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231451AbhBASP4 (ORCPT
+        id S232688AbhBASTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:19:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33821 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232297AbhBASPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:15:56 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCFCCC061223
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 10:14:21 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id x9so4559840plb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 10:14:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ujWQ8IDdSbwnxaXGdwQTjjikP4XSbHlkV7TpzfD9xCo=;
-        b=QjzcqOoF+3AYpu6gKQF4yC3TQxBXrzL3mj0CT+BimMgQMbTp27c99IwABcp3t2sERt
-         CatbW0kbH4brDMyfDaoidDWbeapQc8XtVxl1yCKP0dSf4OFqSmDP3oYIcxIEhh1CLoR6
-         mjpAncFt1MAtEDsTW26606Km/TyI1Ux8Rj6R99+VR1kH/REGOu8V7huYvyyff/njmT/V
-         11nkGTrXuaMGn5f5ciToOMU9nIgoA6aaQSTbkb3GlNL1uS9qcmHrpUGwdPQo9iN2v/Qp
-         ctXRQgmECt5xAtl7XwduDl1hygEDbpj3eTzg+ecY+ttac3jsMunPl0sedhW9SaX+cze6
-         Bcag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ujWQ8IDdSbwnxaXGdwQTjjikP4XSbHlkV7TpzfD9xCo=;
-        b=DV/+CfVlidzrh64DBvx5Rc+kruiuXm0Q1V7F6N5X5qEK66I62AcXEFFY2oA/+c8hF1
-         uAWsKktnafe6uycSd/1E0rN/wws39+D6GcipR6+U874bWTIb/88RLi3CA9O/eW8KFsDN
-         pH22fTn/0K7OlzG/hl2WBMMNcBm+cpauJwb7ie0OCOWFIjTvPxJNJYGjkxZ59hnhJD59
-         z6bBONIawXSw00pWzJUCDSyvHYm84PaqEJR3QsRGrhVDAuY1oyZ6cpdJJeutEYRBXxqc
-         MH65QWjjiZljBjgue+2OLCgZxc9oqGG7edIF1TwzWvtHeE/xDFyQIb8RRb7IkhIBaPhD
-         o0lg==
-X-Gm-Message-State: AOAM532M964V/LRViddy2khEv4BVuxd+2cPRBrI/Fc3A5qdRN8TYtkM/
-        +lqCdK4z3fIBv40BIAplc2rP2w==
-X-Google-Smtp-Source: ABdhPJz9ZOmrWeFX+5JZYxQzresYToTz+3Wh8DeKHMzMvM5i51L/SqeO+RvVteVTFPFKCqQV/5TpLA==
-X-Received: by 2002:a17:90a:f295:: with SMTP id fs21mr105601pjb.227.1612203261415;
-        Mon, 01 Feb 2021 10:14:21 -0800 (PST)
-Received: from xps15.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id e12sm75784pjj.23.2021.02.01.10.14.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 10:14:20 -0800 (PST)
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 26/31] coresight: etm4x: Run arch feature detection on the CPU
-Date:   Mon,  1 Feb 2021 11:13:46 -0700
-Message-Id: <20210201181351.1475223-27-mathieu.poirier@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210201181351.1475223-1-mathieu.poirier@linaro.org>
-References: <20210201181351.1475223-1-mathieu.poirier@linaro.org>
+        Mon, 1 Feb 2021 13:15:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612203247;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dAX7GueyVaG6m75iPVmdP5d6g/SwNUAfhVVHI21U71M=;
+        b=MwTXw/tUMamJemtpsc3VNlAkzUhPZO9EEmBkVo6xFGo7EdrFAE4u9VhDMrSCp8+KL1P80w
+        +2MpnRy9lZ0lxyLISjxWlwAoejlggjxrP/SYmqPfBvS95qzoRFsrR+6igZ1A2FhbUsp3Zx
+        Xdq6ZLNVcLSNU2okatrSVGhKNTuQACM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-248-BLBQQZBENLurE5KnNIZZPA-1; Mon, 01 Feb 2021 13:14:04 -0500
+X-MC-Unique: BLBQQZBENLurE5KnNIZZPA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9BEDE106F8F7;
+        Mon,  1 Feb 2021 18:13:57 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-115-24.ams2.redhat.com [10.36.115.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0ADFB18219;
+        Mon,  1 Feb 2021 18:13:53 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Vaibhav Jain <vaibhav@linux.ibm.com>,
+        Tom Rix <trix@redhat.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-doc@vger.kernel.org
+Subject: [PATCH v2 1/2] drivers/base/memory: don't store phys_device in memory blocks
+Date:   Mon,  1 Feb 2021 19:13:46 +0100
+Message-Id: <20210201181347.13262-2-david@redhat.com>
+In-Reply-To: <20210201181347.13262-1-david@redhat.com>
+References: <20210201181347.13262-1-david@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suzuki K Poulose <suzuki.poulose@arm.com>
+No need to store the value for each and every memory block, as we can
+easily query the value at runtime. Reshuffle the members to optimize the
+memory layout. Also, let's clarify what the interface once was used for
+and why it's legacy nowadays.
 
-As we are about to add support for system register based devices,
-we don't get an AMBA pid. So, the detection code could check
-the system registers running on the CPU to check for the architecture
-specific features. Thus we move the arch feature detection to
-run on the CPU. We cannot always read the PID from the HW, as the
-PID could be overridden by DT for broken devices. So, use the
-PID from AMBA layer if available.
+"phys_device" was used on s390x in older versions of lsmem[2]/chmem[3],
+back when they were still part of s390x-tools. They were later replaced
+by the variants in linux-utils. For example, RHEL6 and RHEL7 contain
+lsmem/chmem from s390-utils. RHEL8 switched to versions from util-linux
+on s390x [4].
 
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Mike Leach <mike.leach@linaro.org>
-Cc: liuqi115@huawei.com
-Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Link: https://lore.kernel.org/r/20210110224850.1880240-25-suzuki.poulose@arm.com
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+"phys_device" was added with sysfs support for memory hotplug in
+commit 3947be1969a9 ("[PATCH] memory hotplug: sysfs and add/remove
+functions") in 2005. It always returned 0.
+
+s390x started returning something != 0 on some setups (if sclp.rzm is
+set by HW) in 2010 via commit 57b552ba0b2f ("memory hotplug/s390: set
+phys_device").
+
+For s390x, it allowed for identifying which memory block devices belong
+to the same storage increment (RZM). Only if all memory block devices
+comprising a single storage increment were offline, the memory could
+actually be removed in the hypervisor.
+
+Since commit e5d709bb5fb7 ("s390/memory hotplug: provide
+memory_block_size_bytes() function") in 2013 a memory block device
+spans at least one storage increment - which is why the interface isn't
+really helpful/used anymore (except by old lsmem/chmem tools).
+
+There were once RFC patches to make use of "phys_device" in ACPI context;
+however, the underlying problem could be solved using different
+interfaces [1].
+
+[1] https://patchwork.kernel.org/patch/2163871/
+[2] https://github.com/ibm-s390-tools/s390-tools/blob/v2.1.0/zconf/lsmem
+[3] https://github.com/ibm-s390-tools/s390-tools/blob/v2.1.0/zconf/chmem
+[4] https://bugzilla.redhat.com/show_bug.cgi?id=1504134
+
+Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Dave Hansen <dave.hansen@intel.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc: Ilya Dryomov <idryomov@gmail.com>
+Cc: Vaibhav Jain <vaibhav@linux.ibm.com>
+Cc: Tom Rix <trix@redhat.com>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: linux-doc@vger.kernel.org
+Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- drivers/hwtracing/coresight/coresight-etm4x-core.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ .../ABI/testing/sysfs-devices-memory          |  5 ++--
+ .../admin-guide/mm/memory-hotplug.rst         |  4 +--
+ drivers/base/memory.c                         | 25 +++++++------------
+ include/linux/memory.h                        |  3 +--
+ 4 files changed, 15 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index c3e458af618a..fc26ecbc2d87 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -60,6 +60,7 @@ static u64 etm4_get_access_type(struct etmv4_config *config);
- static enum cpuhp_state hp_online;
+diff --git a/Documentation/ABI/testing/sysfs-devices-memory b/Documentation/ABI/testing/sysfs-devices-memory
+index 246a45b96d22..58dbc592bc57 100644
+--- a/Documentation/ABI/testing/sysfs-devices-memory
++++ b/Documentation/ABI/testing/sysfs-devices-memory
+@@ -26,8 +26,9 @@ Date:		September 2008
+ Contact:	Badari Pulavarty <pbadari@us.ibm.com>
+ Description:
+ 		The file /sys/devices/system/memory/memoryX/phys_device
+-		is read-only and is designed to show the name of physical
+-		memory device.  Implementation is currently incomplete.
++		is read-only;  it is a legacy interface only ever used on s390x
++		to expose the covered storage increment.
++Users:		Legacy s390-tools lsmem/chmem
  
- struct etm4_init_arg {
-+	unsigned int		pid;
- 	struct etmv4_drvdata	*drvdata;
- 	struct csdev_access	*csa;
- };
-@@ -884,6 +885,8 @@ static void etm4_init_arch_data(void *info)
- 	etm4_os_unlock_csa(drvdata, csa);
- 	etm4_cs_unlock(drvdata, csa);
+ What:		/sys/devices/system/memory/memoryX/phys_index
+ Date:		September 2008
+diff --git a/Documentation/admin-guide/mm/memory-hotplug.rst b/Documentation/admin-guide/mm/memory-hotplug.rst
+index 5c4432c96c4b..245739f55ac7 100644
+--- a/Documentation/admin-guide/mm/memory-hotplug.rst
++++ b/Documentation/admin-guide/mm/memory-hotplug.rst
+@@ -160,8 +160,8 @@ Under each memory block, you can see 5 files:
  
-+	etm4_check_arch_features(drvdata, init_arg->pid);
-+
- 	/* find all capabilities of the tracing unit */
- 	etmidr0 = etm4x_relaxed_read32(csa, TRCIDR0);
- 
-@@ -1750,6 +1753,7 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
- 
- 	init_arg.drvdata = drvdata;
- 	init_arg.csa = &desc.access;
-+	init_arg.pid = etm_pid;
- 
- 	if (smp_call_function_single(drvdata->cpu,
- 				etm4_init_arch_data,  &init_arg, 1))
-@@ -1794,8 +1798,6 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
- 		drvdata->boot_enable = true;
- 	}
- 
--	etm4_check_arch_features(drvdata, etm_pid);
--
- 	return 0;
+                     "online_movable", "online", "offline" command
+                     which will be performed on all sections in the block.
+-``phys_device``     read-only: designed to show the name of physical memory
+-                    device.  This is not well implemented now.
++``phys_device``	    read-only: legacy interface only ever used on s390x to
++		    expose the covered storage increment.
+ ``removable``       read-only: contains an integer value indicating
+                     whether the memory block is removable or not
+                     removable.  A value of 1 indicates that the memory
+diff --git a/drivers/base/memory.c b/drivers/base/memory.c
+index 901e379676be..f35298425575 100644
+--- a/drivers/base/memory.c
++++ b/drivers/base/memory.c
+@@ -290,20 +290,20 @@ static ssize_t state_store(struct device *dev, struct device_attribute *attr,
  }
  
+ /*
+- * phys_device is a bad name for this.  What I really want
+- * is a way to differentiate between memory ranges that
+- * are part of physical devices that constitute
+- * a complete removable unit or fru.
+- * i.e. do these ranges belong to the same physical device,
+- * s.t. if I offline all of these sections I can then
+- * remove the physical device?
++ * Legacy interface that we cannot remove: s390x exposes the storage increment
++ * covered by a memory block, allowing for identifying which memory blocks
++ * comprise a storage increment. Since a memory block spans complete
++ * storage increments nowadays, this interface is basically unused. Other
++ * archs never exposed != 0.
+  */
+ static ssize_t phys_device_show(struct device *dev,
+ 				struct device_attribute *attr, char *buf)
+ {
+ 	struct memory_block *mem = to_memory_block(dev);
++	unsigned long start_pfn = section_nr_to_pfn(mem->start_section_nr);
+ 
+-	return sysfs_emit(buf, "%d\n", mem->phys_device);
++	return sysfs_emit(buf, "%d\n",
++			  arch_get_memory_phys_device(start_pfn));
+ }
+ 
+ #ifdef CONFIG_MEMORY_HOTREMOVE
+@@ -488,11 +488,7 @@ static DEVICE_ATTR_WO(soft_offline_page);
+ static DEVICE_ATTR_WO(hard_offline_page);
+ #endif
+ 
+-/*
+- * Note that phys_device is optional.  It is here to allow for
+- * differentiation between which *physical* devices each
+- * section belongs to...
+- */
++/* See phys_device_show(). */
+ int __weak arch_get_memory_phys_device(unsigned long start_pfn)
+ {
+ 	return 0;
+@@ -574,7 +570,6 @@ int register_memory(struct memory_block *memory)
+ static int init_memory_block(unsigned long block_id, unsigned long state)
+ {
+ 	struct memory_block *mem;
+-	unsigned long start_pfn;
+ 	int ret = 0;
+ 
+ 	mem = find_memory_block_by_id(block_id);
+@@ -588,8 +583,6 @@ static int init_memory_block(unsigned long block_id, unsigned long state)
+ 
+ 	mem->start_section_nr = block_id * sections_per_block;
+ 	mem->state = state;
+-	start_pfn = section_nr_to_pfn(mem->start_section_nr);
+-	mem->phys_device = arch_get_memory_phys_device(start_pfn);
+ 	mem->nid = NUMA_NO_NODE;
+ 
+ 	ret = register_memory(mem);
+diff --git a/include/linux/memory.h b/include/linux/memory.h
+index 439a89e758d8..4da95e684e20 100644
+--- a/include/linux/memory.h
++++ b/include/linux/memory.h
+@@ -27,9 +27,8 @@ struct memory_block {
+ 	unsigned long start_section_nr;
+ 	unsigned long state;		/* serialized by the dev->lock */
+ 	int online_type;		/* for passing data to online routine */
+-	int phys_device;		/* to which fru does this belong? */
+-	struct device dev;
+ 	int nid;			/* NID for this memory block */
++	struct device dev;
+ };
+ 
+ int arch_get_memory_phys_device(unsigned long start_pfn);
 -- 
-2.25.1
+2.29.2
 
