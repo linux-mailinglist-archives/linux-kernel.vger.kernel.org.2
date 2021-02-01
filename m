@@ -2,495 +2,259 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7FCA30B027
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:14:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48C9F30B031
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:20:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231790AbhBATOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 14:14:21 -0500
-Received: from mga06.intel.com ([134.134.136.31]:55591 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229663AbhBATON (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 14:14:13 -0500
-IronPort-SDR: iBhq9pKxYbE0XKF3ZCz1gBxdfS3sCxe3pRuRbbRVdmBW7WOD7VbbXvM4DiNxZxQ6WgBDmUj7kI
- BvVONVh3vpFQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="242255848"
-X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="242255848"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 11:13:18 -0800
-IronPort-SDR: bdV3ff9QBU2QuDtP0Cn/Tgx3L20CoxDNGsfdJPPcYKd+C+9vL4a0BY4ha7QB0smxjq4i+bL8cu
- hiIpTc6883Ww==
-X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="506968510"
-Received: from jambrizm-mobl1.amr.corp.intel.com (HELO intel.com) ([10.252.133.15])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 11:13:17 -0800
-Date:   Mon, 1 Feb 2021 11:13:16 -0800
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        daniel.lll@alibaba-inc.com,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH 04/14] cxl/mem: Implement polled mode mailbox
-Message-ID: <20210201191316.e3kkkwqbx5fujp6y@intel.com>
-References: <20210130002438.1872527-1-ben.widawsky@intel.com>
- <20210130002438.1872527-5-ben.widawsky@intel.com>
- <20210201175400.GG197521@fedora>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201175400.GG197521@fedora>
+        id S231426AbhBATRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 14:17:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229525AbhBATRI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 14:17:08 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1054BC061573;
+        Mon,  1 Feb 2021 11:16:28 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id y8so5053965ede.6;
+        Mon, 01 Feb 2021 11:16:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Vudz7Jq3CovoiOUmAZDu7pX1ATasm53I9HD8Bq8Ch+U=;
+        b=NOlicBRSikm/UtWBLnB71WogDHzgE/ktshfE/+H9dMxldgy4S53TuPHzO6DFWyp7om
+         Tkisu2JF0glF1rVvZId9xYSyvLmsVoHCNRBN4A2sWamEKXSTGHRpOpkTnTqDOg82Spy9
+         pa232VTfbmnzbh4ZjA/ivPBI2ayKjpEsXY9s8uPYIxWEwX7Om8Amt50CgB1BVWm+Qyva
+         G8O1tsMPBvl/eiaiy8vZU/ADdjoC18CYxDLE0oL8bXFuYlBJKp6/MYkGbhx85TmhqDIX
+         LtgCN4wW4Kj/LeFFca28hSmeRriTBQnbAAiUVRoeoysAIthTT9KGWtO18IjyUOazj5k1
+         FE9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Vudz7Jq3CovoiOUmAZDu7pX1ATasm53I9HD8Bq8Ch+U=;
+        b=o9YNdaMhCzBWNhOl/+65mKXiiJUhkJhJwa1y0vVCwMshmp46qIBL2YrcRLfhKDsf6X
+         SASiLgOLzqo4YY+3f5LZUyisSPAE3eHL3J0R3+HKvDhymzOvWasZgvFVqvaGMhC/1Q32
+         mX12DywpnC8gnEPfgcpfHj6BdOE1VsM6lhvdQA+5cw0Kt/6zKRS3aBZDjhsrWNVT9iZS
+         hClIY7sG6IHhyYn575pKWNEeQdHFCfXM/WVr2/fG+uVQOG8J8xYfikTbimBI574Qk/St
+         RXHiqNnQZDcd+TLdCl/hNmLq4qizVqQbJNaBO8H0SYxgUuw3ge8HVywAKsClySUgFi/3
+         Nkhw==
+X-Gm-Message-State: AOAM530CFUzmP/8dl32DWn/k9PwZV1bYcUpBEqJnMJZgQTxPiC4UMN99
+        mSQEB1nq93RQLCRN2dJW70U=
+X-Google-Smtp-Source: ABdhPJwj/wg6nbbgC4bHudj+wMwJo0zVmkxIcLcYyFNyKLt7bB/XHOd8IiYRotcGBgJyuBgFB5azcw==
+X-Received: by 2002:a50:fd0b:: with SMTP id i11mr11985392eds.387.1612206986770;
+        Mon, 01 Feb 2021 11:16:26 -0800 (PST)
+Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id a11sm8243630ejc.64.2021.02.01.11.16.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 Feb 2021 11:16:26 -0800 (PST)
+From:   Johan Jonker <jbx6244@gmail.com>
+To:     heiko@sntech.de
+Cc:     robh+dt@kernel.org, gregkh@linuxfoundation.org, balbi@kernel.org,
+        linux-usb@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v1 1/5] dt-bindings: usb: convert rockchip,dwc3.txt to yaml
+Date:   Mon,  1 Feb 2021 20:16:15 +0100
+Message-Id: <20210201191619.32353-1-jbx6244@gmail.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-02-01 12:54:00, Konrad Rzeszutek Wilk wrote:
-> > +#define cxl_doorbell_busy(cxlm)                                                \
-> > +	(cxl_read_mbox_reg32(cxlm, CXLDEV_MB_CTRL_OFFSET) &                    \
-> > +	 CXLDEV_MB_CTRL_DOORBELL)
-> > +
-> > +#define CXL_MAILBOX_TIMEOUT_US 2000
-> 
-> You been using the spec for the values. Is that number also from it ?
-> 
+In the past Rockchip dwc3 usb nodes were manually checked.
+With the conversion of snps,dwc3.yaml as common document
+we now can convert rockchip,dwc3.txt to yaml as well.
 
-Yes it is. I'll add a comment with the spec reference.
+Added properties for rk3399 are:
+  resets
+  reset-names
 
-> > +
-> > +enum opcode {
-> > +	CXL_MBOX_OP_IDENTIFY		= 0x4000,
-> > +	CXL_MBOX_OP_MAX			= 0x10000
-> > +};
-> > +
-> > +/**
-> > + * struct mbox_cmd - A command to be submitted to hardware.
-> > + * @opcode: (input) The command set and command submitted to hardware.
-> > + * @payload_in: (input) Pointer to the input payload.
-> > + * @payload_out: (output) Pointer to the output payload. Must be allocated by
-> > + *		 the caller.
-> > + * @size_in: (input) Number of bytes to load from @payload.
-> > + * @size_out: (output) Number of bytes loaded into @payload.
-> > + * @return_code: (output) Error code returned from hardware.
-> > + *
-> > + * This is the primary mechanism used to send commands to the hardware.
-> > + * All the fields except @payload_* correspond exactly to the fields described in
-> > + * Command Register section of the CXL 2.0 spec (8.2.8.4.5). @payload_in and
-> > + * @payload_out are written to, and read from the Command Payload Registers
-> > + * defined in (8.2.8.4.8).
-> > + */
-> > +struct mbox_cmd {
-> > +	u16 opcode;
-> > +	void *payload_in;
-> > +	void *payload_out;
-> 
-> On a 32-bit OS (not that we use those that more, but lets assume
-> someone really wants to), the void is 4-bytes, while on 64-bit it is
-> 8-bytes.
-> 
-> `pahole` is your friend as I think there is a gap between opcode and
-> payload_in in the structure.
-> 
-> > +	size_t size_in;
-> > +	size_t size_out;
-> 
-> And those can also change depending on 32-bit/64-bit.
-> 
-> > +	u16 return_code;
-> > +#define CXL_MBOX_SUCCESS 0
-> > +};
-> 
-> Do you want to use __packed to match with the spec?
-> 
-> Ah, reading later you don't care about it.
-> 
-> In that case may I recommend you move 'return_code' (or perhaps just
-> call it rc?) to be right after opcode? Less of gaps in that structure.
-> 
+Generic properties that are now also filtered:
+  "#address-cells"
+  "#size-cells"
+  ranges
 
-I guess I hadn't realized we're supposed to try to fully pack structs by
-default.
+Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+---
+ .../devicetree/bindings/usb/rockchip,dwc3.txt      |  56 -----------
+ .../devicetree/bindings/usb/rockchip,dwc3.yaml     | 107 +++++++++++++++++++++
+ 2 files changed, 107 insertions(+), 56 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
+ create mode 100644 Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
 
-> > +
-> > +static int cxl_mem_wait_for_doorbell(struct cxl_mem *cxlm)
-> > +{
-> > +	const int timeout = msecs_to_jiffies(CXL_MAILBOX_TIMEOUT_US);
-> > +	const unsigned long start = jiffies;
-> > +	unsigned long end = start;
-> > +
-> > +	while (cxl_doorbell_busy(cxlm)) {
-> > +		end = jiffies;
-> > +
-> > +		if (time_after(end, start + timeout)) {
-> > +			/* Check again in case preempted before timeout test */
-> > +			if (!cxl_doorbell_busy(cxlm))
-> > +				break;
-> > +			return -ETIMEDOUT;
-> > +		}
-> > +		cpu_relax();
-> > +	}
-> 
-> Hm, that is not very scheduler friendly. I mean we are sitting here for
-> 2000us (2 ms) - that is quite the amount of time spinning.
-> 
-> Should this perhaps be put in a workqueue?
+diff --git a/Documentation/devicetree/bindings/usb/rockchip,dwc3.txt b/Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
+deleted file mode 100644
+index 945204932..000000000
+--- a/Documentation/devicetree/bindings/usb/rockchip,dwc3.txt
++++ /dev/null
+@@ -1,56 +0,0 @@
+-Rockchip SuperSpeed DWC3 USB SoC controller
+-
+-Required properties:
+-- compatible:	should contain "rockchip,rk3399-dwc3" for rk3399 SoC
+-- clocks:	A list of phandle + clock-specifier pairs for the
+-		clocks listed in clock-names
+-- clock-names:	Should contain the following:
+-  "ref_clk"	Controller reference clk, have to be 24 MHz
+-  "suspend_clk"	Controller suspend clk, have to be 24 MHz or 32 KHz
+-  "bus_clk"	Master/Core clock, have to be >= 62.5 MHz for SS
+-		operation and >= 30MHz for HS operation
+-  "grf_clk"	Controller grf clk
+-
+-Required child node:
+-A child node must exist to represent the core DWC3 IP block. The name of
+-the node is not important. The content of the node is defined in dwc3.txt.
+-
+-Phy documentation is provided in the following places:
+-Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml - USB2.0 PHY
+-Documentation/devicetree/bindings/phy/phy-rockchip-typec.txt     - Type-C PHY
+-
+-Example device nodes:
+-
+-	usbdrd3_0: usb@fe800000 {
+-		compatible = "rockchip,rk3399-dwc3";
+-		clocks = <&cru SCLK_USB3OTG0_REF>, <&cru SCLK_USB3OTG0_SUSPEND>,
+-			 <&cru ACLK_USB3OTG0>, <&cru ACLK_USB3_GRF>;
+-		clock-names = "ref_clk", "suspend_clk",
+-			      "bus_clk", "grf_clk";
+-		#address-cells = <2>;
+-		#size-cells = <2>;
+-		ranges;
+-		usbdrd_dwc3_0: dwc3@fe800000 {
+-			compatible = "snps,dwc3";
+-			reg = <0x0 0xfe800000 0x0 0x100000>;
+-			interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
+-			dr_mode = "otg";
+-		};
+-	};
+-
+-	usbdrd3_1: usb@fe900000 {
+-		compatible = "rockchip,rk3399-dwc3";
+-		clocks = <&cru SCLK_USB3OTG1_REF>, <&cru SCLK_USB3OTG1_SUSPEND>,
+-			 <&cru ACLK_USB3OTG1>, <&cru ACLK_USB3_GRF>;
+-		clock-names = "ref_clk", "suspend_clk",
+-			      "bus_clk", "grf_clk";
+-		#address-cells = <2>;
+-		#size-cells = <2>;
+-		ranges;
+-		usbdrd_dwc3_1: dwc3@fe900000 {
+-			compatible = "snps,dwc3";
+-			reg = <0x0 0xfe900000 0x0 0x100000>;
+-			interrupts = <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>;
+-			dr_mode = "otg";
+-		};
+-	};
+diff --git a/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml b/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
+new file mode 100644
+index 000000000..681086fa6
+--- /dev/null
++++ b/Documentation/devicetree/bindings/usb/rockchip,dwc3.yaml
+@@ -0,0 +1,107 @@
++# SPDX-License-Identifier: GPL-2.0
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/usb/rockchip,dwc3.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Rockchip SuperSpeed DWC3 USB SoC controller
++
++maintainers:
++  - Heiko Stuebner <heiko@sntech.de>
++
++properties:
++  compatible:
++    enum:
++      - rockchip,rk3399-dwc3
++
++  clocks:
++    items:
++      - description:
++          Controller reference clock, must to be 24 MHz
++      - description:
++          Controller suspend clock, must to be 24 MHz or 32 KHz
++      - description:
++          Master/Core clock, must to be >= 62.5 MHz for SS
++          operation and >= 30MHz for HS operation
++      - description:
++          Controller aclk_usb3_rksoc_axi_perf clock
++      - description:
++          Controller aclk_usb3 clock
++      - description:
++          Controller grf clock
++
++  clock-names:
++    items:
++      - const: ref_clk
++      - const: suspend_clk
++      - const: bus_clk
++      - const: aclk_usb3_rksoc_axi_perf
++      - const: aclk_usb3
++      - const: grf_clk
++
++  resets:
++    maxItems: 1
++
++  reset-names:
++    const: usb3-otg
++
++  "#address-cells":
++    const: 2
++
++  "#size-cells":
++    const: 2
++
++  ranges: true
++
++patternProperties:
++  "^usb@[a-f0-9]+$":
++    type: object
++
++    $ref: "snps,dwc3.yaml"
++
++    description:
++      A child node must exist to represent the core DWC3 IP block.
++      The content of the node is defined in snps,dwc3.yaml.
++
++      Phy documentation is provided in the following places.
++
++      USB2.0 PHY
++      Documentation/devicetree/bindings/phy/phy-rockchip-inno-usb2.yaml
++
++      Type-C PHY
++      Documentation/devicetree/bindings/phy/phy-rockchip-typec.txt
++
++    unevaluatedProperties: false
++
++additionalProperties: false
++
++required:
++  - compatible
++  - clocks
++  - clock-names
++  - "#address-cells"
++  - "#size-cells"
++  - ranges
++
++examples:
++  - |
++    #include <dt-bindings/clock/rk3399-cru.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    usbdrd3_0: usb@fe800000 {
++      compatible = "rockchip,rk3399-dwc3";
++      clocks = <&cru SCLK_USB3OTG0_REF>, <&cru SCLK_USB3OTG0_SUSPEND>,
++               <&cru ACLK_USB3OTG0>, <&cru ACLK_USB3_RKSOC_AXI_PERF>,
++               <&cru ACLK_USB3>, <&cru ACLK_USB3_GRF>;
++      clock-names = "ref_clk", "suspend_clk",
++                    "bus_clk", "aclk_usb3_rksoc_axi_perf",
++                    "aclk_usb3", "grf_clk";
++      #address-cells = <2>;
++      #size-cells = <2>;
++      ranges;
++      usbdrd_dwc3_0: usb@fe800000 {
++        compatible = "snps,dwc3";
++        reg = <0x0 0xfe800000 0x0 0x100000>;
++        interrupts = <GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
++        dr_mode = "otg";
++      };
++    };
+-- 
+2.11.0
 
-So let me first point you to the friendlier version which was shot down:
-https://lore.kernel.org/linux-cxl/20201111054356.793390-8-ben.widawsky@intel.com/
-
-I'm not opposed to this being moved to a workqueue at some point, but I think
-that's unnecessary complexity currently. The reality is that it's expected that
-commands will finish way sooner than this or be implemented as background
-commands. I've heard a person who makes a lot of the spec decisions say, "if
-it's 2 seconds, nobody will use these things".
-
-I think adding the summary of this back and forth as a comment to the existing
-code makes a lot of sense.
-
-> > +
-> > +	dev_dbg(&cxlm->pdev->dev, "Doorbell wait took %dms",
-> > +		jiffies_to_msecs(end) - jiffies_to_msecs(start));
-> > +	return 0;
-> > +}
-> > +
-> > +static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
-> > +				 struct mbox_cmd *mbox_cmd)
-> > +{
-> > +	dev_warn(&cxlm->pdev->dev, "Mailbox command timed out\n");
-> > +	dev_info(&cxlm->pdev->dev,
-> > +		 "\topcode: 0x%04x\n"
-> > +		 "\tpayload size: %zub\n",
-> > +		 mbox_cmd->opcode, mbox_cmd->size_in);
-> > +
-> > +	if (IS_ENABLED(CONFIG_CXL_MEM_INSECURE_DEBUG)) {
-> > +		print_hex_dump_debug("Payload ", DUMP_PREFIX_OFFSET, 16, 1,
-> > +				     mbox_cmd->payload_in, mbox_cmd->size_in,
-> > +				     true);
-> > +	}
-> > +
-> > +	/* Here's a good place to figure out if a device reset is needed */
-> > +}
-> > +
-> > +/**
-> > + * cxl_mem_mbox_send_cmd() - Send a mailbox command to a memory device.
-> > + * @cxlm: The CXL memory device to communicate with.
-> > + * @mbox_cmd: Command to send to the memory device.
-> > + *
-> > + * Context: Any context. Expects mbox_lock to be held.
-> > + * Return: -ETIMEDOUT if timeout occurred waiting for completion. 0 on success.
-> > + *         Caller should check the return code in @mbox_cmd to make sure it
-> > + *         succeeded.
-> > + *
-> > + * This is a generic form of the CXL mailbox send command, thus the only I/O
-> > + * operations used are cxl_read_mbox_reg(). Memory devices, and perhaps other
-> > + * types of CXL devices may have further information available upon error
-> > + * conditions.
-> > + *
-> > + * The CXL spec allows for up to two mailboxes. The intention is for the primary
-> > + * mailbox to be OS controlled and the secondary mailbox to be used by system
-> > + * firmware. This allows the OS and firmware to communicate with the device and
-> > + * not need to coordinate with each other. The driver only uses the primary
-> > + * mailbox.
-> > + */
-> > +static int cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm,
-> > +				 struct mbox_cmd *mbox_cmd)
-> > +{
-> > +	void __iomem *payload = cxlm->mbox.regs + CXLDEV_MB_PAYLOAD_OFFSET;
-> > +	u64 cmd_reg, status_reg;
-> > +	size_t out_len;
-> > +	int rc;
-> > +
-> > +	lockdep_assert_held(&cxlm->mbox.mutex);
-> > +
-> > +	/*
-> > +	 * Here are the steps from 8.2.8.4 of the CXL 2.0 spec.
-> > +	 *   1. Caller reads MB Control Register to verify doorbell is clear
-> > +	 *   2. Caller writes Command Register
-> > +	 *   3. Caller writes Command Payload Registers if input payload is non-empty
-> > +	 *   4. Caller writes MB Control Register to set doorbell
-> > +	 *   5. Caller either polls for doorbell to be clear or waits for interrupt if configured
-> > +	 *   6. Caller reads MB Status Register to fetch Return code
-> > +	 *   7. If command successful, Caller reads Command Register to get Payload Length
-> > +	 *   8. If output payload is non-empty, host reads Command Payload Registers
-> > +	 *
-> > +	 *   Hardware is free to do whatever it wants before the doorbell is
-> > +	 *   rung, and isn't allowed to change anything after it clears the
-> > +	 *   doorbell. As such, steps 2 and 3 can happen in any order, and steps
-> > +	 *   6, 7, 8 can also happen in any order (though some orders might not
-> > +	 *   make sense).
-> > +	 */
-> > +
-> > +	/* #1 */
-> > +	if (cxl_doorbell_busy(cxlm)) {
-> > +		dev_err_ratelimited(&cxlm->pdev->dev,
-> > +				    "Mailbox re-busy after acquiring\n");
-> > +		return -EBUSY;
-> > +	}
-> > +
-> > +	cmd_reg = CXL_SET_FIELD(mbox_cmd->opcode, CXLDEV_MB_CMD_COMMAND_OPCODE);
-> > +	if (mbox_cmd->size_in) {
-> > +		if (WARN_ON(!mbox_cmd->payload_in))
-> > +			return -EINVAL;
-> > +
-> > +		cmd_reg |= CXL_SET_FIELD(mbox_cmd->size_in,
-> > +					 CXLDEV_MB_CMD_PAYLOAD_LENGTH);
-> > +		memcpy_toio(payload, mbox_cmd->payload_in, mbox_cmd->size_in);
-> > +	}
-> > +
-> > +	/* #2, #3 */
-> > +	cxl_write_mbox_reg64(cxlm, CXLDEV_MB_CMD_OFFSET, cmd_reg);
-> > +
-> > +	/* #4 */
-> > +	dev_dbg(&cxlm->pdev->dev, "Sending command\n");
-> > +	cxl_write_mbox_reg32(cxlm, CXLDEV_MB_CTRL_OFFSET,
-> > +			     CXLDEV_MB_CTRL_DOORBELL);
-> > +
-> > +	/* #5 */
-> > +	rc = cxl_mem_wait_for_doorbell(cxlm);
-> > +	if (rc == -ETIMEDOUT) {
-> > +		cxl_mem_mbox_timeout(cxlm, mbox_cmd);
-> > +		return rc;
-> > +	}
-> > +
-> > +	/* #6 */
-> > +	status_reg = cxl_read_mbox_reg64(cxlm, CXLDEV_MB_STATUS_OFFSET);
-> > +	mbox_cmd->return_code =
-> > +		CXL_GET_FIELD(status_reg, CXLDEV_MB_STATUS_RET_CODE);
-> > +
-> > +	if (mbox_cmd->return_code != 0) {
-> > +		dev_dbg(&cxlm->pdev->dev, "Mailbox operation had an error\n");
-> > +		return 0;
-> > +	}
-> > +
-> > +	/* #7 */
-> > +	cmd_reg = cxl_read_mbox_reg64(cxlm, CXLDEV_MB_CMD_OFFSET);
-> > +	out_len = CXL_GET_FIELD(cmd_reg, CXLDEV_MB_CMD_PAYLOAD_LENGTH);
-> > +
-> > +	/* #8 */
-> > +	if (out_len && mbox_cmd->payload_out)
-> > +		memcpy_fromio(mbox_cmd->payload_out, payload, out_len);
-> > +
-> > +	mbox_cmd->size_out = out_len;
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +/**
-> > + * cxl_mem_mbox_get() - Acquire exclusive access to the mailbox.
-> > + * @cxlm: The memory device to gain access to.
-> > + *
-> > + * Context: Any context. Takes the mbox_lock.
-> > + * Return: 0 if exclusive access was acquired.
-> > + */
-> > +static int cxl_mem_mbox_get(struct cxl_mem *cxlm)
-> > +{
-> > +	struct device *dev = &cxlm->pdev->dev;
-> > +	int rc = -EBUSY;
-> > +	u64 md_status;
-> > +
-> > +	mutex_lock_io(&cxlm->mbox.mutex);
-> > +
-> > +	/*
-> > +	 * XXX: There is some amount of ambiguity in the 2.0 version of the spec
-> > +	 * around the mailbox interface ready (8.2.8.5.1.1).  The purpose of the
-> > +	 * bit is to allow firmware running on the device to notify the driver
-> > +	 * that it's ready to receive commands. It is unclear if the bit needs
-> > +	 * to be read for each transaction mailbox, ie. the firmware can switch
-> > +	 * it on and off as needed. Second, there is no defined timeout for
-> > +	 * mailbox ready, like there is for the doorbell interface.
-> > +	 *
-> > +	 * Assumptions:
-> > +	 * 1. The firmware might toggle the Mailbox Interface Ready bit, check
-> > +	 *    it for every command.
-> > +	 *
-> > +	 * 2. If the doorbell is clear, the firmware should have first set the
-> > +	 *    Mailbox Interface Ready bit. Therefore, waiting for the doorbell
-> > +	 *    to be ready is sufficient.
-> > +	 */
-> > +	rc = cxl_mem_wait_for_doorbell(cxlm);
-> > +	if (rc) {
-> > +		dev_warn(dev, "Mailbox interface not ready\n");
-> > +		goto out;
-> > +	}
-> > +
-> > +	md_status = cxl_read_mem_reg64(cxlm, CXLMDEV_STATUS_OFFSET);
-> > +	if (!(md_status & CXLMDEV_MBOX_IF_READY && CXLMDEV_READY(md_status))) {
-> > +		dev_err(dev,
-> > +			"mbox: reported doorbell ready, but not mbox ready\n");
-> 
-> You can make that oneline.
-> > +		goto out;
-> > +	}
-> > +
-> > +	/*
-> > +	 * Hardware shouldn't allow a ready status but also have failure bits
-> > +	 * set. Spit out an error, this should be a bug report
-> > +	 */
-> > +	rc = -EFAULT;
-> 
-> Should these include more details? As in a dump of other registers to
-> help in the field to debug why the device is busted?
-> 
-
-We've discussed a bit, having kind of a general error state (my driver
-background is in i915 where we did such a thing). I'm not opposed, but as the
-error handling at this point is very minimal, I think it can wait until the next
-round of patches for further enabling.
-
-> > +	if (md_status & CXLMDEV_DEV_FATAL) {
-> > +		dev_err(dev, "mbox: reported ready, but fatal\n");
-> > +		goto out;
-> > +	}
-> > +	if (md_status & CXLMDEV_FW_HALT) {
-> > +		dev_err(dev, "mbox: reported ready, but halted\n");
-> > +		goto out;
-> > +	}
-> > +	if (CXLMDEV_RESET_NEEDED(md_status)) {
-> > +		dev_err(dev, "mbox: reported ready, but reset needed\n");
-> > +		goto out;
-> > +	}
-> > +
-> > +	/* with lock held */
-> > +	return 0;
-> > +
-> > +out:
-> > +	mutex_unlock(&cxlm->mbox.mutex);
-> > +	return rc;
-> > +}
-> > +
-> > +/**
-> > + * cxl_mem_mbox_put() - Release exclusive access to the mailbox.
-> > + * @cxlm: The CXL memory device to communicate with.
-> > + *
-> > + * Context: Any context. Expects mbox_lock to be held.
-> > + */
-> > +static void cxl_mem_mbox_put(struct cxl_mem *cxlm)
-> > +{
-> > +	mutex_unlock(&cxlm->mbox.mutex);
-> > +}
-> > +
-> >  /**
-> >   * cxl_mem_setup_regs() - Setup necessary MMIO.
-> >   * @cxlm: The CXL memory device to communicate with.
-> > @@ -142,6 +406,8 @@ static struct cxl_mem *cxl_mem_create(struct pci_dev *pdev, u32 reg_lo,
-> >  		return NULL;
-> >  	}
-> >  
-> > +	mutex_init(&cxlm->mbox.mutex);
-> > +
-> >  	regs = pcim_iomap_table(pdev)[bar];
-> >  	cxlm->pdev = pdev;
-> >  	cxlm->regs = regs + offset;
-> > @@ -174,6 +440,76 @@ static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
-> >  	return 0;
-> >  }
-> >  
-> > +/**
-> > + * cxl_mem_identify() - Send the IDENTIFY command to the device.
-> > + * @cxlm: The device to identify.
-> > + *
-> > + * Return: 0 if identify was executed successfully.
-> > + *
-> > + * This will dispatch the identify command to the device and on success populate
-> > + * structures to be exported to sysfs.
-> > + */
-> > +static int cxl_mem_identify(struct cxl_mem *cxlm)
-> > +{
-> > +	struct cxl_mbox_identify {
-> > +		char fw_revision[0x10];
-> > +		__le64 total_capacity;
-> > +		__le64 volatile_capacity;
-> > +		__le64 persistent_capacity;
-> > +		__le64 partition_align;
-> > +		__le16 info_event_log_size;
-> > +		__le16 warning_event_log_size;
-> > +		__le16 failure_event_log_size;
-> > +		__le16 fatal_event_log_size;
-> > +		__le32 lsa_size;
-> > +		u8 poison_list_max_mer[3];
-> > +		__le16 inject_poison_limit;
-> > +		u8 poison_caps;
-> > +		u8 qos_telemetry_caps;
-> > +	} __packed id;
-> > +	struct mbox_cmd mbox_cmd;
-> > +	int rc;
-> > +
-> > +	/* Retrieve initial device memory map */
-> > +	rc = cxl_mem_mbox_get(cxlm);
-> > +	if (rc)
-> > +		return rc;
-> > +
-> > +	mbox_cmd = (struct mbox_cmd){
-> > +		.opcode = CXL_MBOX_OP_IDENTIFY,
-> > +		.payload_out = &id,
-> > +		.size_in = 0,
-> > +	};
-> > +	rc = cxl_mem_mbox_send_cmd(cxlm, &mbox_cmd);
-> > +	cxl_mem_mbox_put(cxlm);
-> > +	if (rc)
-> > +		return rc;
-> > +
-> > +	/* TODO: Handle retry or reset responses from firmware. */
-> > +	if (mbox_cmd.return_code != CXL_MBOX_SUCCESS) {
-> > +		dev_err(&cxlm->pdev->dev, "Mailbox command failed (%d)\n",
-> > +			mbox_cmd.return_code);
-> > +		return -ENXIO;
-> > +	}
-> > +
-> > +	if (mbox_cmd.size_out != sizeof(id))
-> > +		return -ENXIO;
-> > +
-> > +	/*
-> > +	 * TODO: enumerate DPA map, as 'ram' and 'pmem' do not alias.
-> 
-> ??? Not sure I understand.
-> 
-
-The current code is showing two aliased/overlapping ranges.
-[0, id.volatile_capacity)
-[0, id.persistent_capacity)
-
-This is not allowed by spec.
-
-> > +	 * For now, only the capacity is exported in sysfs
-> > +	 */
-> > +	cxlm->ram.range.start = 0;
-> > +	cxlm->ram.range.end = le64_to_cpu(id.volatile_capacity) - 1;
-> > +
-> > +	cxlm->pmem.range.start = 0;
-> > +	cxlm->pmem.range.end = le64_to_cpu(id.persistent_capacity) - 1;
-> > +
-> > +	memcpy(cxlm->firmware_version, id.fw_revision, sizeof(id.fw_revision));
-> > +
-> > +	return rc;
-> > +}
-> > +
-> >  static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> >  {
-> >  	struct device *dev = &pdev->dev;
-> > @@ -219,7 +555,11 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-> >  	if (rc)
-> >  		return rc;
-> >  
-> > -	return cxl_mem_setup_mailbox(cxlm);
-> > +	rc = cxl_mem_setup_mailbox(cxlm);
-> > +	if (rc)
-> > +		return rc;
-> > +
-> > +	return cxl_mem_identify(cxlm);
-> >  }
-> >  
-> >  static const struct pci_device_id cxl_mem_pci_tbl[] = {
-> > -- 
-> > 2.30.0
-> > 
