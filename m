@@ -2,191 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA6630A2AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 08:31:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E24C730A2B0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 08:31:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231821AbhBAHaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 02:30:00 -0500
-Received: from mail-eopbgr680048.outbound.protection.outlook.com ([40.107.68.48]:3551
-        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229557AbhBAH36 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 02:29:58 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=igc7JgHNiJhTwYyFrD7HE2cHsXzAbLSZwU8iy2o9yo7peG7QK37EjUP81RVypdW69EUf/vIy/ZM0jP0BSkYRLy7PC0PVjmj8Gd0naFm2iwvEPMOUX4lolyW04KvxOk36KA5E1eNWiAZOUqf/WfmGj9bHWQBAD7UxwXdBJ1atveNcxMU3ir+ne7VrSpGfWQpRzjbemVIDKqa5CO6KQpSm0r7jkxXeUjHoyMnlNzbTlH4Ksw5jvoo5v8m47akAggzEWfY1+WvY6FuiSuNqL4ZV5gvX6ZtLwNIwiLQyzFNIOSAQ2cgmamds7hIGq/LP5cZAIBa9YPaD5TKLyCnb9hSPFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F5DiwjeicPjCiuIy3tNcB2roF2vvdsi3oAs3Mnv4tWI=;
- b=Qc1zZUCxehZpu5tzKwT4DozPNxZDdbZxgWOvaz7xvuouj3OI7KgthMN9T7WABd3fVOm16k+BeeK32SkiBB/O+hgU0XgoSgDY1Vj6KVoXXrHH7bj8TvNdzp621l3oFCYsP6Pu6gm0A9xlSB2PCDFUg5ANalHU59eAWYv7ypaLjUrWHuuM76d595Ex54fyZ+bwDwtcJyXB+3G+uoy6sr84nFqD9TRpIcH4rrZIh3nlp3Uk/4DdqFzBd5vkdlE7707Mzs6o5HPFdg8yeMrt0kg4My1fif1uFGSnKWROdXpaZ49z6rzID8b8TqtlZWIB+VsX4vfMHC8zGpbTvgCopq3y9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F5DiwjeicPjCiuIy3tNcB2roF2vvdsi3oAs3Mnv4tWI=;
- b=ivvfE6x7OEYpcoXiACVI/SzojcouzYCxwRuKcrvo5JhV/CZPX9kTC/ekV0ldq79apc+ZJF9L6JTAkjZpFKNb/Pn4DQJ7kZKxZ+p0SzmBD8gr7UYW/OE7NvWAHEwId6qLs9MU1YcbvgGJ991Uck5TWEm8klElUPh4QyYyM1A3wuo=
-Received: from (2603:10b6:a03:4a::18) by
- SJ0PR05MB7440.namprd05.prod.outlook.com (2603:10b6:a03:280::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.8; Mon, 1 Feb
- 2021 07:29:07 +0000
-Received: from BYAPR05MB4776.namprd05.prod.outlook.com
- ([fe80::ddba:e1e9:fde7:3b31]) by BYAPR05MB4776.namprd05.prod.outlook.com
- ([fe80::ddba:e1e9:fde7:3b31%3]) with mapi id 15.20.3825.013; Mon, 1 Feb 2021
- 07:29:07 +0000
-From:   Nadav Amit <namit@vmware.com>
-To:     Damian Tometzki <damian@tometzki.de>
-CC:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Nick Piggin <npiggin@gmail.com>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: [RFC 13/20] mm/tlb: introduce tlb_start_ptes() and tlb_end_ptes()
-Thread-Topic: [RFC 13/20] mm/tlb: introduce tlb_start_ptes() and
- tlb_end_ptes()
-Thread-Index: AQHW97jxFve1Zrb8YkKsvA/XuoT0HqpC6GYA
-Date:   Mon, 1 Feb 2021 07:29:07 +0000
-Message-ID: <D1BDF583-2F81-464B-B404-25B0C26073BF@vmware.com>
-References: <20210131001132.3368247-1-namit@vmware.com>
- <20210131001132.3368247-14-namit@vmware.com>
- <YBaBcc2jEGaxuxH0@fedora.tometzki.de>
-In-Reply-To: <YBaBcc2jEGaxuxH0@fedora.tometzki.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: tometzki.de; dkim=none (message not signed)
- header.d=none;tometzki.de; dmarc=none action=none header.from=vmware.com;
-x-originating-ip: [24.6.216.183]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7482038b-5301-4f47-241c-08d8c6830f71
-x-ms-traffictypediagnostic: SJ0PR05MB7440:
-x-microsoft-antispam-prvs: <SJ0PR05MB7440AD51F593E33958F1D0E1D0B69@SJ0PR05MB7440.namprd05.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: ObWZA5LEkSI2+sp7DhJ1lJagCh4EdCoYwaCizbYqgOfX5DcP6I7ej7OOIegGWUyyUYBxNZj8o/RD9mQ2oLHcvoE39vNbRmrwLxiHWaiHs1UD1JDvjlwrPdIXlVcu5FnQi6AKryks+gT0yI5I0CJSRm6CW7k52gmPjKxkWj4UrTjazPSPG/4aM2rExD/8Nx+3Q+eOzBL8YL1XiJh93fFdO6PAxjhA1rwLShOfrko9xVVzQP+2+V//9uCsNJ/KZfEymlrggfu9z90cWzlM3gxJbEOTkY0uGFQC65hemoGksOeQeDF0DFpcv4K5/xcFM4KRwp3wiLFXKqudd/wZ+tAQy5nj7rDjN5f44xCKXSS3PCr21FmX8juTk1CuxDC8qUnMxPDLs0lPdNxllumUFjhuBHI2bg2aWVViSsIRDQbSKFcjCXvqU5/a8pMKc02PJkdmYolLAM0xBk2W9avN/RjzotOIe55WK7J3Wfa2/2wJtc0Mz2Tp3LAs3LYrn31hBg+nlTo1Odfbi+ftThgIKw9AZbMOXoW3zOfR/M/fs9Fkezbq9F5dVLdw4NMV9HD5rDbur4eZIwwiFFrqoRTDy4tHMA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR05MB4776.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(39860400002)(136003)(376002)(396003)(8936002)(83380400001)(53546011)(316002)(86362001)(54906003)(186003)(2616005)(6506007)(36756003)(26005)(33656002)(6916009)(6512007)(6486002)(71200400001)(66476007)(478600001)(2906002)(7416002)(76116006)(66446008)(64756008)(66556008)(66946007)(5660300002)(4326008)(8676002)(45980500001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?5mI2EJg7mDXb9uilRK5VDFUgCcirHbstP3U/xIb6mftB5BwzTHs9fTVT/S0U?=
- =?us-ascii?Q?NUlwCFtc6ORlTf1NAnAJOJVGthSZ5eTvn9NFeym5DVkDnwciDA5iWr3qcCKu?=
- =?us-ascii?Q?Rr8JPydUw0i0jzuHkApA/FrPvHETZmTMiO4z2dVsZWAWsH9WTSIxh+yUoDYh?=
- =?us-ascii?Q?9RKxOfyudIUkAYCKUu66r5Tc6tuawSeu8EaFUnh/15nlq1ec52UXnn+49zta?=
- =?us-ascii?Q?bfxRmrvMAszzje7U7lvNa+uWmA1m3wVauktQh9Ces4CGVXQjtDaUkgvOmdej?=
- =?us-ascii?Q?ml8xVcbDYlOmbktteYFCmiEu3gLT92gZLrTwruNYdkpIdYu26yj9aZubbGpl?=
- =?us-ascii?Q?av5JdHFObyOI4lzlIwyltBvymx8plFc4OlPjoI4BAPhVsceVIhGlaudY/3yK?=
- =?us-ascii?Q?BOvzpFIyyGASvf77EpWuDgDvzHsFAdQ/cg5ZXjynSoSy+FmjpHcA7y8hbb4k?=
- =?us-ascii?Q?KRl6MkuZ/e+Y4IOxgoDG6yabq4hnN888xBJY6AcLev0Nzt+SxA1KIPwMvrS9?=
- =?us-ascii?Q?HHZymtnaR7xbCSkv7FvRt7XHbOUQPIpByvLinXTA5ya0sEGsqG7Jn0BOGvD7?=
- =?us-ascii?Q?k7TIic3M/uPZmaX9FGE+qlt0+ptLVjVjwKfCnrHI8wyYY7APnNZ3dH6nHI6g?=
- =?us-ascii?Q?JOOFM7hTpVmgyuF+ZnwZ/TQRpN/guW8J04kWO6DySJlU0X822MVej9g87sru?=
- =?us-ascii?Q?ULeX/ZLgBAqWwwnVGOo/0sHDm2ecLw4gj8GM+C1iavlc24UuKGa0RQYrm3dT?=
- =?us-ascii?Q?ygkOROsiYsRbQQZU0KfRFXvyYzpGFTaFCJuDufJQOn0FyqyX2PIph8mybM+0?=
- =?us-ascii?Q?mVoc0xJMwnc47JSnAm0ewvO0R3Id5QyHuwA0fWZfPNdsGrXxxWxsycneovJ3?=
- =?us-ascii?Q?R1U2yN+O+yhe/M0t40BiNSHfg+4lgE35nGVL+5m2qzAXv3IpE7OjQvHWDIEy?=
- =?us-ascii?Q?eiZevNvPOG53bnjTstJH1F1EP4qYSrUQTRJ7lWNV8GXi2UeGB74+JBF4ioEg?=
- =?us-ascii?Q?o5STvWjdAFqtZMk4Io9QWs1RDO4J6Wfs7oRHG73Uf8RJ5G8HArp3sH6EGgl8?=
- =?us-ascii?Q?vSQLk1WU?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <47976AC7E4F0054789E0D004742EB3B5@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S231603AbhBAHal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 02:30:41 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52438 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229527AbhBAHak (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 02:30:40 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BA620AD19;
+        Mon,  1 Feb 2021 07:29:57 +0000 (UTC)
+Subject: Re: [PATCH v2] nvme-multipath: Early exit if no path is available
+To:     Chao Leng <lengchao@huawei.com>, Sagi Grimberg <sagi@grimberg.me>,
+        Daniel Wagner <dwagner@suse.de>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@fb.com>, Keith Busch <kbusch@kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+References: <20210127103033.15318-1-dwagner@suse.de>
+ <db9baae0-547c-7ff4-8b2c-0b95f14be67c@huawei.com>
+ <20210128075837.u5u56t23fq5gu6ou@beryllium.lan>
+ <69575290-200e-b4a1-4269-c71e4c2cc37b@huawei.com>
+ <20210128094004.erwnszjqcxlsi2kd@beryllium.lan>
+ <ebb1d098-3ded-e592-4419-e905aabe824f@huawei.com>
+ <675d3cf7-1ae8-adc5-b6d0-359fe10f6b23@grimberg.me>
+ <59cd053e-46cb-0235-141f-4ce919c93f48@huawei.com>
+ <65392653-6b03-9195-f686-5fe4b3290bd2@suse.de>
+ <81b22bbf-4dd3-6161-e63a-9699690a4e4f@huawei.com>
+ <715dd943-0587-be08-2840-e0948cf0bc62@suse.de>
+ <eb131d8f-f009-42e7-105d-58b84060f0dd@huawei.com>
+ <ac019690-7f02-d28c-ed58-bfc8c1d48879@suse.de>
+ <6ceff3cb-c9e9-7e74-92f0-dd745987c943@huawei.com>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <114751ac-1f7d-ce5e-12c5-7d6303bdb999@suse.de>
+Date:   Mon, 1 Feb 2021 08:29:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR05MB4776.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7482038b-5301-4f47-241c-08d8c6830f71
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Feb 2021 07:29:07.4004
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PVxMljqdOMu6F3rlK6drLlNY/nE22rlAGILCblNuWLx7eMWFu5fyUIw1ASXqqz8QyxPm5VF3pg3x6kCYb+dn9Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR05MB7440
+In-Reply-To: <6ceff3cb-c9e9-7e74-92f0-dd745987c943@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Jan 31, 2021, at 2:07 AM, Damian Tometzki <linux@tometzki.de> wrote:
->=20
-> On Sat, 30. Jan 16:11, Nadav Amit wrote:
->> From: Nadav Amit <namit@vmware.com>
->>=20
->> Introduce tlb_start_ptes() and tlb_end_ptes() which would be called
->> before and after PTEs are updated and TLB flushes are deferred. This
->> will be later be used for fine granualrity deferred TLB flushing
->> detection.
->>=20
->> In the meanwhile, move flush_tlb_batched_pending() into
->> tlb_start_ptes(). It was not called from mapping_dirty_helpers by
->> wp_pte() and clean_record_pte(), which might be a bug.
->>=20
->> No additional functional change is intended.
->>=20
->> Signed-off-by: Nadav Amit <namit@vmware.com>
->> Cc: Andrea Arcangeli <aarcange@redhat.com>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: Andy Lutomirski <luto@kernel.org>
->> Cc: Dave Hansen <dave.hansen@linux.intel.com>
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> Cc: Thomas Gleixner <tglx@linutronix.de>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Yu Zhao <yuzhao@google.com>
->> Cc: Nick Piggin <npiggin@gmail.com>
->> Cc: x86@kernel.org
->> ---
->> fs/proc/task_mmu.c         |  2 ++
->> include/asm-generic/tlb.h  | 18 ++++++++++++++++++
->> mm/madvise.c               |  6 ++++--
->> mm/mapping_dirty_helpers.c | 15 +++++++++++++--
->> mm/memory.c                |  2 ++
->> mm/mprotect.c              |  3 ++-
->> 6 files changed, 41 insertions(+), 5 deletions(-)
->>=20
->> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
->> index 4cd048ffa0f6..d0cce961fa5c 100644
->> --- a/fs/proc/task_mmu.c
->> +++ b/fs/proc/task_mmu.c
->> @@ -1168,6 +1168,7 @@ static int clear_refs_pte_range(pmd_t *pmd, unsign=
-ed long addr,
->> 		return 0;
->>=20
->> 	pte =3D pte_offset_map_lock(vma->vm_mm, pmd, addr, &ptl);
->> +	tlb_start_ptes(&cp->tlb);
->> 	for (; addr !=3D end; pte++, addr +=3D PAGE_SIZE) {
->> 		ptent =3D *pte;
->>=20
->> @@ -1190,6 +1191,7 @@ static int clear_refs_pte_range(pmd_t *pmd, unsign=
-ed long addr,
->> 		tlb_flush_pte_range(&cp->tlb, addr, PAGE_SIZE);
->> 		ClearPageReferenced(page);
->> 	}
->> +	tlb_end_ptes(&cp->tlb);
->> 	pte_unmap_unlock(pte - 1, ptl);
->> 	cond_resched();
->> 	return 0;
->> diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
->> index 041be2ef4426..10690763090a 100644
->> --- a/include/asm-generic/tlb.h
->> +++ b/include/asm-generic/tlb.h
->> @@ -58,6 +58,11 @@
->>  *    Defaults to flushing at tlb_end_vma() to reset the range; helps wh=
-en
->>  *    there's large holes between the VMAs.
->>  *
->> + *  - tlb_start_ptes() / tlb_end_ptes; makr the start / end of PTEs cha=
-nge.
->=20
-> Hello Nadav,
->=20
-> short nid makr/mark
+On 2/1/21 3:16 AM, Chao Leng wrote:
+> 
+> 
+> On 2021/1/29 17:20, Hannes Reinecke wrote:
+>> On 1/29/21 9:46 AM, Chao Leng wrote:
+>>>
+>>>
+>>> On 2021/1/29 16:33, Hannes Reinecke wrote:
+>>>> On 1/29/21 8:45 AM, Chao Leng wrote:
+>>>>>
+>>>>>
+>>>>> On 2021/1/29 15:06, Hannes Reinecke wrote:
+>>>>>> On 1/29/21 4:07 AM, Chao Leng wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>> On 2021/1/29 9:42, Sagi Grimberg wrote:
+>>>>>>>>
+>>>>>>>>>> You can't see exactly where it dies but I followed the 
+>>>>>>>>>> assembly to
+>>>>>>>>>> nvme_round_robin_path(). Maybe it's not the initial 
+>>>>>>>>>> nvme_next_ns(head,
+>>>>>>>>>> old) which returns NULL but nvme_next_ns() is returning NULL 
+>>>>>>>>>> eventually
+>>>>>>>>>> (list_next_or_null_rcu()).
+>>>>>>>>> So there is other bug cause nvme_next_ns abormal.
+>>>>>>>>> I review the code about head->list and head->current_path, I 
+>>>>>>>>> find 2 bugs
+>>>>>>>>> may cause the bug:
+>>>>>>>>> First, I already send the patch. see:
+>>>>>>>>> https://lore.kernel.org/linux-nvme/20210128033351.22116-1-lengchao@huawei.com/ 
+>>>>>>>>>
+>>>>>>>>> Second, in nvme_ns_remove, list_del_rcu is before
+>>>>>>>>> nvme_mpath_clear_current_path. This may cause "old" is deleted 
+>>>>>>>>> from the
+>>>>>>>>> "head", but still use "old". I'm not sure there's any other
+>>>>>>>>> consideration here, I will check it and try to fix it.
+>>>>>>>>
+>>>>>>>> The reason why we first remove from head->list and only then clear
+>>>>>>>> current_path is because the other way around there is no way
+>>>>>>>> to guarantee that that the ns won't be assigned as current_path
+>>>>>>>> again (because it is in head->list).
+>>>>>>> ok, I see.
+>>>>>>>>
+>>>>>>>> nvme_ns_remove fences continue of deletion of the ns by 
+>>>>>>>> synchronizing
+>>>>>>>> the srcu such that for sure the current_path clearance is visible.
+>>>>>>> The list will be like this:
+>>>>>>> head->next = ns1;
+>>>>>>> ns1->next = head;
+>>>>>>> old->next = ns1;
+>>>>>>
+>>>>>> Where does 'old' pointing to?
+>>>>>>
+>>>>>>> This may cause infinite loop in nvme_round_robin_path.
+>>>>>>> for (ns = nvme_next_ns(head, old);
+>>>>>>>      ns != old;
+>>>>>>>      ns = nvme_next_ns(head, ns))
+>>>>>>> The ns will always be ns1, and then infinite loop.
+>>>>>>
+>>>>>> No. nvme_next_ns() will return NULL.
+>>>>> If there is just one path(the "old") and the "old" is deleted,
+>>>>> nvme_next_ns() will return NULL.
+>>>>> The list like this:
+>>>>> head->next = head;
+>>>>> old->next = head;
+>>>>> If there is two or more path and the "old" is deleted,
+>>>>> "for" will be infinite loop. because nvme_next_ns() will return
+>>>>> the path which in the list except the "old", check condition will
+>>>>> be true for ever.
+>>>>
+>>>> But that will be caught by the statement above:
+>>>>
+>>>> if (list_is_singular(&head->list))
+>>>>
+>>>> no?
+>>> Two path just a sample example.
+>>> If there is just two path, will enter it, may cause no path but there is
+>>> actually one path. It is falsely assumed that the "old" must be not 
+>>> deleted.
+>>> If there is more than two path, will cause infinite loop.
+>> So you mean we'll need something like this?
+>>
+>> diff --git a/drivers/nvme/host/multipath.c 
+>> b/drivers/nvme/host/multipath.c
+>> index 71696819c228..8ffccaf9c19a 100644
+>> --- a/drivers/nvme/host/multipath.c
+>> +++ b/drivers/nvme/host/multipath.c
+>> @@ -202,10 +202,12 @@ static struct nvme_ns *__nvme_find_path(struct 
+>> nvme_ns_head *head, int node)
+>>   static struct nvme_ns *nvme_next_ns(struct nvme_ns_head *head,
+>>                  struct nvme_ns *ns)
+>>   {
+>> -       ns = list_next_or_null_rcu(&head->list, &ns->siblings, struct 
+>> nvme_ns,
+>> -                       siblings);
+>> -       if (ns)
+>> -               return ns;
+>> +       if (ns) {
+>> +               ns = list_next_or_null_rcu(&head->list, &ns->siblings,
+>> +                                          struct nvme_ns, siblings);
+>> +               if (ns)
+>> +                       return ns;
+>> +       }
+> No, in the scenario, ns should not be NULL.
 
-Thanks! I will fix it.
+Why not? 'ns == NULL' is precisely the corner-case this is trying to fix...
 
+> May be we can do like this:
+> 
+> diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
+> index 282b7a4ea9a9..b895011a2cbd 100644
+> --- a/drivers/nvme/host/multipath.c
+> +++ b/drivers/nvme/host/multipath.c
+> @@ -199,30 +199,24 @@ static struct nvme_ns *__nvme_find_path(struct 
+> nvme_ns_head *head, int node)
+>          return found;
+>   }
+> 
+> -static struct nvme_ns *nvme_next_ns(struct nvme_ns_head *head,
+> -               struct nvme_ns *ns)
+> -{
+> -       ns = list_next_or_null_rcu(&head->list, &ns->siblings, struct 
+> nvme_ns,
+> -                       siblings);
+> -       if (ns)
+> -               return ns;
+> -       return list_first_or_null_rcu(&head->list, struct nvme_ns, 
+> siblings);
+> -}
+> +#define nvme_next_ns_condition(head, current, condition) \
+> +({ \
+> +       struct nvme_ns *__ptr = list_next_or_null_rcu(&(head)->list, \
+> +               &(current)->siblings, struct nvme_ns, siblings); \
+> +       __ptr ? __ptr : (condition) ? (condition) = false, \
+> +               list_first_or_null_rcu(&(head)->list, struct nvme_ns, \
+> +                       siblings) : NULL; \
+> +})
+> 
+Urgh. Please, no. That is well impossible to debug.
+Can you please open-code it to demonstrate where the difference to the 
+current (and my fixed) versions is?
+I'm still not clear where the problem is once we applied both patches.
 
+Cheers,
+
+Hannes
+-- 
+Dr. Hannes Reinecke                Kernel Storage Architect
+hare@suse.de                              +49 911 74053 688
+SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
