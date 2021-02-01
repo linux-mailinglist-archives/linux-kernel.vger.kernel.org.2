@@ -2,291 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A577F30B36E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:24:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E94C30B373
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:26:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231254AbhBAXXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 18:23:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38210 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231157AbhBAXXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 18:23:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3AAB64EBD;
-        Mon,  1 Feb 2021 23:22:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612221776;
-        bh=Jz2sUzt4Uu6tgjnQx6lPWmWk1UfFOIboWw+LZ+LnKSQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LmW4yKv6qoQ4brvoDIOPS5OpYqW3264kIMII1H/5UKxjJJDei8bLg4VAVkWbOnYmK
-         w9AgV9+ZfKJe7y/QvxXeDf820UvtivGyCTjgJWobft/Cx02G/uATW8mQBd/JZz/wws
-         zg9I7gGa4xEkwesY4U7fuzIXig9usKb8Rt52qXotVBb+8Rf0oriK3TfaX68ks8ZRSs
-         8qnmWGZi6e/MqJo1NmDdiCNip7tKdmkVSu4ZcJUj+/3Bfstq542aOQg1Z/IS9CSQfw
-         HYbzKdXt3BxQ2Zg9Wkzw/45CN7Xb3zKvHGErk/NtifdYar1cpGqmNq1jFG5dgS/LJZ
-         65R7vDJf+v7qw==
-Date:   Tue, 2 Feb 2021 01:22:43 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
-Subject: Re: [PATCH v4 1/2] x86/setup: always add the beginning of RAM as
- memblock.memory
-Message-ID: <20210201232243.GM242749@kernel.org>
-References: <20210130221035.4169-1-rppt@kernel.org>
- <20210130221035.4169-2-rppt@kernel.org>
- <56e2c568-b121-8860-a6b0-274ace46d835@redhat.com>
- <20210201143014.GI242749@kernel.org>
- <759698b8-ac81-de31-4916-023d8dfa9fe5@redhat.com>
+        id S230517AbhBAXZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 18:25:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230153AbhBAXZa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 18:25:30 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4CACC061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 15:24:49 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id r12so27030137ejb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 15:24:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YHTyOhdcCBOSF1xYU4ShuqdV6jLXyArKbI9xZzFvPk0=;
+        b=NAFm/mQNOdHOs7NCXjyi5VhvNLqf8pi87yCTAFIfRbho0uQixXrlQ1NHVypMfkg4VE
+         AnHVfq00xVgGW4Oa0VrMNCfOENM9lWR3rdYBufl+aiYFrc+OcQmE0bSOiDyJh9N2+JOs
+         JwUwgaS32yFr7JmbZNcG0nRI9ELxKwqN0aktrf0D/izeV6RR9vmbmW6WgGeSXNH5sqox
+         X5EV6nHsR/GM11Ft5Tm1HMy0NY0xvvxdiQHqJXCxB4tNZNupEPw4DRYFpDOCkZj4GC/a
+         VMT/r+LksMD1ugOpQ3spVRyENhXPswR6e2d0rCjXs90t+0BWzvBOBdPSF22xA5qQipYw
+         YGtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YHTyOhdcCBOSF1xYU4ShuqdV6jLXyArKbI9xZzFvPk0=;
+        b=ckj7u1gbg5gzvsRnOqF8Y1jxmSdwVLV1Odgr9oiOVayWeChu7II6efbN9rzOcI/syF
+         xiS9vNtP+SC/0XfD0m76DiPiY6a6PSvyiUnvmVX7H4G/ABONFT+DCe5klnBO2TMoOUC5
+         bH3gCO2WEVuvDe4jAmbzGQCW9EBJgMG6WlSuRgnSME5j5VC/kYCuC0HAAQZp7kiAjK7F
+         /1CakbBkf32ixi2K42UZ7/3rIk3r13bEJOWG+1yYdS7gGMciu8tauxMByGTebYkTyVsQ
+         Dz9cnHOoOeLChND66sn7VbpwrFV4XQwWMjvIVRCceIq+114qAyYdymywHU6zYjvdXptG
+         +WiA==
+X-Gm-Message-State: AOAM532tBnaqHr7w+TFn0a2ml2qbTAQeBVTv5CL1DoLkwcsh5jiU3Qc4
+        hUztSysEWaK6wya59DviUcCWxfjxfqii4ccv6CeVRg==
+X-Google-Smtp-Source: ABdhPJxeRwuiRydUF5fHtDTQRKRAzPyFtnxWPtW+x+JJrWq/E1dePu9VOj8la5c6ojfDuq5SQKiJWa/P1iUlloecQ2g=
+X-Received: by 2002:a17:906:e085:: with SMTP id gh5mr20079628ejb.418.1612221888522;
+ Mon, 01 Feb 2021 15:24:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <759698b8-ac81-de31-4916-023d8dfa9fe5@redhat.com>
+References: <cc4b62f333342df8e029b175079203cfe2bd095c.1608053262.git.gustavo.pimentel@synopsys.com>
+ <20210201223920.GA46282@bjorn-Precision-5520>
+In-Reply-To: <20210201223920.GA46282@bjorn-Precision-5520>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 1 Feb 2021 15:24:45 -0800
+Message-ID: <CAPcyv4ia_0Sn8paGi7y7JGNXQrbCoFhT7st2VOD=L_LKNEMOEg@mail.gmail.com>
+Subject: Re: [PATCH 04/15] PCI: Add pci_find_vsec_capability() to find a
+ specific VSEC
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
+        Ben Widawsky <ben.widawsky@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 03:32:33PM +0100, David Hildenbrand wrote:
-> On 01.02.21 15:30, Mike Rapoport wrote:
-> > > 
-> > > I'd suggest going through all zone ranges in free_area_init() first, dealing
-> > > with zones that have "not section aligned start/end", clamping them up/down
-> > > if required such that no holes within a section are left uncovered by a
-> > > zone.
-> > 
-> > I thought about changing the way zone extents are calculated so that zone
-> > start/end will be always on a section boundary, but zone->zone_start_pfn
-> > depends on node->node_start_pfn which is defined by hardware and expanding
-> > a node to make its start pfn aligned at the section boundary might violate
-> > the HW addressing scheme.
-> > 
-> > Maybe this could never happen, or maybe it's not really important as the
-> > pages there will be reserved anyway, but I'm not sure I can estimate all
-> > the implications.
-> > 
-> 
-> I'm suggesting to let zone (+node?) ranges cover memory holes with a valid
-> memmap. Not to move actual memory between nodes/zones.
+[ add Ben ]
 
-I didn't think you suggest to move actual memory :)
+On Mon, Feb 1, 2021 at 2:39 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+>
+> [+cc Vinod, Dan, dmaengine]
+>
+> On Tue, Dec 15, 2020 at 06:30:13PM +0100, Gustavo Pimentel wrote:
+> > Add pci_find_vsec_capability() that crawls through the device config
+> > space searching in all Vendor-Specific Extended Capabilities for a
+> > particular capability ID.
+> >
+> > Vendor-Specific Extended Capability (VSEC) is a PCIe capability (acts
+> > like a wrapper) specified by PCI-SIG that allows the vendor to create
+> > their own and specific capability in the device config space.
+> >
+> > Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
+>
+> If you fix the below, feel free to add my
+>
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+>
+> Otherwise, I can take it myself.  But that will be an ordering issue
+> in the merge window if you merge the rest of the series via another
+> tree.
 
-My concern was that extending node range might cause troubles, but TBH, I
-cannot think of a memory layout that will be crazy enough to actually get
-us into those troubles.
+I wonder if this warrants and if you'd be willing to stand up a stable
+branch for just this commit for concerned parties to integrate,
+because CXL development should adopt it as well.
 
-So something like the patch below might work. It'll need nice wrapping and
-some comments, but generally it implements your suggestion to extend node's
-range to include partial sections, and then interleave initialization of
-struct pages representing unpopulated memory with the initialization of the
-"real" memory map. Since zone's start/end are derived from node's start/end
-we also get zones covering the holes.
-
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 519a60d5b6f7..179d1eb4a9bb 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -6257,24 +6257,69 @@ static void __meminit zone_init_free_lists(struct zone *zone)
- 	}
- }
- 
-+#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
-+static u64 __meminit init_unavailable_range(unsigned long spfn,
-+					    unsigned long epfn,
-+					    int zone, int node)
-+{
-+	unsigned long pfn;
-+	u64 pgcnt = 0;
-+
-+	for (pfn = spfn; pfn < epfn; pfn++) {
-+		if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
-+			pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
-+				+ pageblock_nr_pages - 1;
-+			continue;
-+		}
-+		__init_single_page(pfn_to_page(pfn), pfn, zone, node);
-+		__SetPageReserved(pfn_to_page(pfn));
-+		pgcnt++;
-+	}
-+
-+	return pgcnt;
-+}
-+#else
-+static inline u64 init_unavailable_range(unsigned long spfn, unsigned long epfn,
-+					 int zone, int node)
-+{
-+	return 0;
-+}
-+#endif
-+
-+
- void __meminit __weak memmap_init(unsigned long size, int nid,
- 				  unsigned long zone,
- 				  unsigned long range_start_pfn)
- {
--	unsigned long start_pfn, end_pfn;
-+	unsigned long start_pfn, end_pfn, next_pfn = 0;
- 	unsigned long range_end_pfn = range_start_pfn + size;
-+	u64 pgcnt = 0;
- 	int i;
- 
- 	for_each_mem_pfn_range(i, nid, &start_pfn, &end_pfn, NULL) {
- 		start_pfn = clamp(start_pfn, range_start_pfn, range_end_pfn);
- 		end_pfn = clamp(end_pfn, range_start_pfn, range_end_pfn);
-+		next_pfn = clamp(next_pfn, range_start_pfn, range_end_pfn);
- 
- 		if (end_pfn > start_pfn) {
- 			size = end_pfn - start_pfn;
- 			memmap_init_zone(size, nid, zone, start_pfn, range_end_pfn,
- 					 MEMINIT_EARLY, NULL, MIGRATE_MOVABLE);
- 		}
-+
-+		if (next_pfn < start_pfn)
-+			pgcnt += init_unavailable_range(next_pfn, start_pfn,
-+							zone, nid);
-+		next_pfn = end_pfn;
- 	}
-+
-+	if (next_pfn < range_end_pfn)
-+		pgcnt += init_unavailable_range(next_pfn, range_end_pfn,
-+						zone, nid);
-+
-+	if (pgcnt)
-+		pr_info("%s: Zeroed struct page in unavailable ranges: %lld\n",
-+			zone_names[zone], pgcnt);
- }
- 
- static int zone_batchsize(struct zone *zone)
-@@ -6523,6 +6568,12 @@ void __init get_pfn_range_for_nid(unsigned int nid,
- 
- 	if (*start_pfn == -1UL)
- 		*start_pfn = 0;
-+	else {
-+#ifdef CONFIG_SPARSEMEM
-+		*start_pfn = round_down(*start_pfn, PAGES_PER_SECTION);
-+		*end_pfn = round_up(*end_pfn, PAGES_PER_SECTION);
-+#endif
-+	}
- }
- 
- /*
-@@ -7075,88 +7126,6 @@ void __init free_area_init_memoryless_node(int nid)
- 	free_area_init_node(nid);
- }
- 
--#if !defined(CONFIG_FLAT_NODE_MEM_MAP)
--/*
-- * Initialize all valid struct pages in the range [spfn, epfn) and mark them
-- * PageReserved(). Return the number of struct pages that were initialized.
-- */
--static u64 __init init_unavailable_range(unsigned long spfn, unsigned long epfn)
--{
--	unsigned long pfn;
--	u64 pgcnt = 0;
--
--	for (pfn = spfn; pfn < epfn; pfn++) {
--		if (!pfn_valid(ALIGN_DOWN(pfn, pageblock_nr_pages))) {
--			pfn = ALIGN_DOWN(pfn, pageblock_nr_pages)
--				+ pageblock_nr_pages - 1;
--			continue;
--		}
--		/*
--		 * Use a fake node/zone (0) for now. Some of these pages
--		 * (in memblock.reserved but not in memblock.memory) will
--		 * get re-initialized via reserve_bootmem_region() later.
--		 */
--		__init_single_page(pfn_to_page(pfn), pfn, 0, 0);
--		__SetPageReserved(pfn_to_page(pfn));
--		pgcnt++;
--	}
--
--	return pgcnt;
--}
--
--/*
-- * Only struct pages that are backed by physical memory are zeroed and
-- * initialized by going through __init_single_page(). But, there are some
-- * struct pages which are reserved in memblock allocator and their fields
-- * may be accessed (for example page_to_pfn() on some configuration accesses
-- * flags). We must explicitly initialize those struct pages.
-- *
-- * This function also addresses a similar issue where struct pages are left
-- * uninitialized because the physical address range is not covered by
-- * memblock.memory or memblock.reserved. That could happen when memblock
-- * layout is manually configured via memmap=, or when the highest physical
-- * address (max_pfn) does not end on a section boundary.
-- */
--static void __init init_unavailable_mem(void)
--{
--	phys_addr_t start, end;
--	u64 i, pgcnt;
--	phys_addr_t next = 0;
--
--	/*
--	 * Loop through unavailable ranges not covered by memblock.memory.
--	 */
--	pgcnt = 0;
--	for_each_mem_range(i, &start, &end) {
--		if (next < start)
--			pgcnt += init_unavailable_range(PFN_DOWN(next),
--							PFN_UP(start));
--		next = end;
--	}
--
--	/*
--	 * Early sections always have a fully populated memmap for the whole
--	 * section - see pfn_valid(). If the last section has holes at the
--	 * end and that section is marked "online", the memmap will be
--	 * considered initialized. Make sure that memmap has a well defined
--	 * state.
--	 */
--	pgcnt += init_unavailable_range(PFN_DOWN(next),
--					round_up(max_pfn, PAGES_PER_SECTION));
--
--	/*
--	 * Struct pages that do not have backing memory. This could be because
--	 * firmware is using some of this memory, or for some other reasons.
--	 */
--	if (pgcnt)
--		pr_info("Zeroed struct page in unavailable ranges: %lld pages", pgcnt);
--}
--#else
--static inline void __init init_unavailable_mem(void)
--{
--}
--#endif /* !CONFIG_FLAT_NODE_MEM_MAP */
--
- #if MAX_NUMNODES > 1
- /*
-  * Figure out the number of possible node ids.
-@@ -7516,7 +7485,7 @@ void __init free_area_init(unsigned long *max_zone_pfn)
- 	memset(arch_zone_highest_possible_pfn, 0,
- 				sizeof(arch_zone_highest_possible_pfn));
- 
--	start_pfn = find_min_pfn_with_active_regions();
-+	start_pfn = 0;
- 	descending = arch_has_descending_max_zone_pfns();
- 
- 	for (i = 0; i < MAX_NR_ZONES; i++) {
-@@ -7580,7 +7549,6 @@ void __init free_area_init(unsigned long *max_zone_pfn)
- 	/* Initialise every node */
- 	mminit_verify_pageflags_layout();
- 	setup_nr_node_ids();
--	init_unavailable_mem();
- 	for_each_online_node(nid) {
- 		pg_data_t *pgdat = NODE_DATA(nid);
- 		free_area_init_node(nid);
- 
-
--- 
-Sincerely yours,
-Mike.
+>
+> > ---
+> >  drivers/pci/pci.c             | 29 +++++++++++++++++++++++++++++
+> >  include/linux/pci.h           |  1 +
+> >  include/uapi/linux/pci_regs.h |  5 +++++
+> >  3 files changed, 35 insertions(+)
+> >
+> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > index 6d4d5a2..235d0b2 100644
+> > --- a/drivers/pci/pci.c
+> > +++ b/drivers/pci/pci.c
+> > @@ -623,6 +623,35 @@ u64 pci_get_dsn(struct pci_dev *dev)
+> >  }
+> >  EXPORT_SYMBOL_GPL(pci_get_dsn);
+> >
+> > +/**
+> > + * pci_find_vsec_capability - Find a vendor-specific extended capability
+> > + * @dev: PCI device to query
+> > + * @cap: vendor-specific capability id code
+>
+> s/id/ID/
+>
+> > + *
+> > + * Returns the address of the vendor-specific structure that matches the
+> > + * requested capability id code within the device's PCI configuration space
+>
+> s/id/ID/
+>
+> > + * or 0 if it does not find a match.
+> > + */
+> > +int pci_find_vsec_capability(struct pci_dev *dev, int vsec_cap_id)
+> > +{
+> > +     u32 header;
+> > +     int vsec;
+>
+>   int vsec;
+>   u32 header;
+>
+> since that's the order they're used.
+>
+> > +
+> > +     vsec = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_VNDR);
+> > +     while (vsec) {
+> > +             if (pci_read_config_dword(dev, vsec + 0x4,
+>
+> s/0x4/PCI_VSEC_HDR/
+>
+> > +                                       &header) == PCIBIOS_SUCCESSFUL &&
+> > +                 PCI_VSEC_CAP_ID(header) == vsec_cap_id)
+> > +                     break;
+>
+>   return vsec;
+>
+> > +
+> > +             vsec = pci_find_next_ext_capability(dev, vsec,
+> > +                                                 PCI_EXT_CAP_ID_VNDR);
+> > +     }
+> > +
+> > +     return vsec;
+>
+>   return 0;
+>
+> > +}
+> > +EXPORT_SYMBOL_GPL(pci_find_vsec_capability);
+> > +
+> >  static int __pci_find_next_ht_cap(struct pci_dev *dev, int pos, int ht_cap)
+> >  {
+> >       int rc, ttl = PCI_FIND_CAP_TTL;
+> > diff --git a/include/linux/pci.h b/include/linux/pci.h
+> > index 22207a7..effecb0 100644
+> > --- a/include/linux/pci.h
+> > +++ b/include/linux/pci.h
+> > @@ -1067,6 +1067,7 @@ int pci_find_capability(struct pci_dev *dev, int cap);
+> >  int pci_find_next_capability(struct pci_dev *dev, u8 pos, int cap);
+> >  int pci_find_ext_capability(struct pci_dev *dev, int cap);
+> >  int pci_find_next_ext_capability(struct pci_dev *dev, int pos, int cap);
+> > +int pci_find_vsec_capability(struct pci_dev *dev, int vsec_cap_id);
+> >  int pci_find_ht_capability(struct pci_dev *dev, int ht_cap);
+> >  int pci_find_next_ht_capability(struct pci_dev *dev, int pos, int ht_cap);
+> >  struct pci_bus *pci_find_next_bus(const struct pci_bus *from);
+> > diff --git a/include/uapi/linux/pci_regs.h b/include/uapi/linux/pci_regs.h
+> > index a95d55f..f5d17be 100644
+> > --- a/include/uapi/linux/pci_regs.h
+> > +++ b/include/uapi/linux/pci_regs.h
+> > @@ -730,6 +730,11 @@
+> >  #define PCI_EXT_CAP_DSN_SIZEOF       12
+> >  #define PCI_EXT_CAP_MCAST_ENDPOINT_SIZEOF 40
+> >
+> > +/* Vendor-Specific Extended Capabilities */
+> > +#define PCI_VSEC_CAP_ID(header)              (header & 0x0000ffff)
+> > +#define PCI_VSEC_CAP_REV(header)     ((header >> 16) & 0xf)
+> > +#define PCI_VSEC_CAP_LEN(header)     ((header >> 20) & 0xffc)
+>
+> Please put these next to the existing PCI_VSEC_HDR.
+>
+> Why does PCI_VSEC_CAP_LEN mask with 0xffc instead of 0xfff?  I don't
+> see anything in the spec about VSEC Length having to be a multiple of
+> 4 (PCIe r5.0, sec 7.9.5.2).
+>
+> But you don't use this anyway, so I'd just drop it (and
+> PCI_VSEC_CAP_REV) altogether.
+>
+> >  /* Advanced Error Reporting */
+> >  #define PCI_ERR_UNCOR_STATUS 4       /* Uncorrectable Error Status */
+> >  #define  PCI_ERR_UNC_UND     0x00000001      /* Undefined */
+> > --
+> > 2.7.4
+> >
