@@ -2,120 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C5A30A48B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:42:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1981F30A48E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:44:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232933AbhBAJlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 04:41:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51484 "EHLO
+        id S232963AbhBAJnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 04:43:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232920AbhBAJlg (ORCPT
+        with ESMTP id S232772AbhBAJnk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 04:41:36 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BFBC061574
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 01:40:55 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id j13so18087160edp.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 01:40:55 -0800 (PST)
+        Mon, 1 Feb 2021 04:43:40 -0500
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F6FC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 01:43:00 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id z9so11749077qtv.6
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 01:43:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=monstr-eu.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=hIUPWGL9LOU/zPCO63a7e5ubCBpwA6j8jBe7AJ0YMCY=;
-        b=rLHbgqVkEul68rFEzQezpbE34F6ih6YVsgGrPQ43VjQa2hNVraIyB1ZVpKXt+sey5l
-         vH76AX1VAfKJw2g6GjzRfz5ijYZD3kZn+q9P8mbjLuzNRnlSIEnOWJC3Q+lIjgJxDuWV
-         KmcIL8Y9TVDOR0VBYdZdBsG1QCxmJKAZ3jMlRLziYarBEHORK6ksk9mO31xgnpyOXdNQ
-         PYDtwY6LtFqpm6zc//jORlupXq2sEeWeLLDOZ9poqzvpQdqKSRk8BS7T1wXa/J82rTIa
-         h4FtDI450iUoSD9lV1ZCsKLhybboUCizgCFcNJM0VOPQwBPWgUyJYdvUZ30/y78UhlSM
-         HSKw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2sHxy9y8qkhEHifIfAe0m1ot0K1d3d52OFzD+qlpuBU=;
+        b=NeM9ON292bcd64Kcp1z5gL6seKO2huIT0uTkbIjuDyCv8g/B7hwOeO2OAamF9B2PEc
+         ZbN3rq15lpmLJV5JUh3CfnQHd9b+YxMq+YDouvd5MsK+lD7L2Ow3FVdaW+XRHlDYD6/H
+         WZVypjR7q4M6jZJbuSPLfv9fUnKjSsyRt/TTmDaYdWR/7zYJd72RrYEMvq0o33pqO4K5
+         lbJBbkeRyO6N0No28SuLusfI0yy55S87qcE434y+K2PqoQt/6gIeyePbUOOuP/aymnBk
+         7oPVPDckhy2fDc1Q/7+/etMpeJc8jE+vtf1E7T6slmA1BWrTkBsk9g0LTJujxL+N2liU
+         63PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hIUPWGL9LOU/zPCO63a7e5ubCBpwA6j8jBe7AJ0YMCY=;
-        b=aa0taKcoJdYb2mYXe0WTNoc9ZO3lcoIHied4o4gr9dZ8TRgK5rLfIdB4XW8DYMMOzG
-         WQ3ZeMGAgIGahPG+Lxfe+jN5b1iOnQlUhjvVhAG2ftU+tD+YhvB33BuM1/mayW6FI2Ao
-         7xy3lyv4gyX2umOUDTTrZaGgRFSpZ6B07AEbO6SupG9U0c3cbujl9XH0fON+/hpPdDLp
-         FgX3r/yod3TFFn7mD9551McSEl2xCfARcKWq4Ojg3M5Ogh8wm1GGBva5at9lxJ3mIYCh
-         TCalHfTWCP3I7ywZcfHIw4ebyRhf7wyBR9ilRbqEiRVJF61ohF+KySND5Rp18WcYeX7o
-         HrCg==
-X-Gm-Message-State: AOAM5305y8Hh5UhkKypwsd96zJksgzRHVBr9La6M102scmRn2XauVwyC
-        2ooAPKlCuKklzgTW9nps4PgVQQ==
-X-Google-Smtp-Source: ABdhPJxWu2QunWYUgAcW1ur5IvAp69p7d1VmB/yHSW0iPnJqIW1cuI7d5j1graYwBbWO7IuD7EbPUw==
-X-Received: by 2002:aa7:ca55:: with SMTP id j21mr17489370edt.172.1612172454672;
-        Mon, 01 Feb 2021 01:40:54 -0800 (PST)
-Received: from [192.168.0.105] (nat-35.starnet.cz. [178.255.168.35])
-        by smtp.gmail.com with ESMTPSA id q4sm7788556ejx.8.2021.02.01.01.40.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 01:40:53 -0800 (PST)
-Subject: Re: [PATCH 0/3] arm64: dts: zynqmp: Enable and Wire DP
-To:     Michal Simek <michal.simek@xilinx.com>,
-        linux-kernel@vger.kernel.org, git@xilinx.com
-Cc:     Kalyani Akula <kalyani.akula@xilinx.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <cover.1611232558.git.michal.simek@xilinx.com>
-From:   Michal Simek <monstr@monstr.eu>
-Message-ID: <06015f0f-dece-a3e5-66d4-814069af4449@monstr.eu>
-Date:   Mon, 1 Feb 2021 10:40:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2sHxy9y8qkhEHifIfAe0m1ot0K1d3d52OFzD+qlpuBU=;
+        b=mP1NAgCjhnTCX5r2oyw8wcOQ8khL36+2zDpMrcECG3szsbkFtFliRoUXis5u0NtA+Y
+         BcdFSchkxmGP4oDuokacrNIJk05llfWQV+NKG4KGGc8r0VxBfkIXqktoU89y3cZo7hae
+         uprG9UykjwJY+fNzFadFIlPf+efWGBKAQVEeD9AnnZm8UxyWdhUnMC3P/Nw2ApORxOsI
+         GDcxHdha8rZWtLjWUDtN0w3AS6aIcUAEDuQtu2Ta+xgropTkobBjxJd9KISGf4WCQZSu
+         J+bGbxAt6UShLrWLKRqq7MY9SIKUbfDUcF9z0y8fAcnLAGGyH2SLOY9ftxQ6POSYfWGu
+         rNKg==
+X-Gm-Message-State: AOAM532GHXNv8vR3n9bsGvr/0COpUxHTGZ5EpgIjluMURcv3zHkSsQXZ
+        uNIS3gMXGJ6bqc2Sf91aUd5aVFEXYghwpJsgQVqp2g==
+X-Google-Smtp-Source: ABdhPJw/FU0ujXSBV1WzoDZvLs4yUz4Di0PBTFwg18+sWEkhAxDhgDVoLq4LU6FoT1MyO3nDH65GPEApRc4rxfiidFA=
+X-Received: by 2002:ac8:480b:: with SMTP id g11mr14124931qtq.290.1612172579083;
+ Mon, 01 Feb 2021 01:42:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <cover.1611232558.git.michal.simek@xilinx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CACT4Y+a7UBQpAY4vwT8Od0JhwbwcDrbJXZ_ULpPfJZ42Ew-yCQ@mail.gmail.com>
+ <YBfIUwtK+QqVlfRt@hirez.programming.kicks-ass.net>
+In-Reply-To: <YBfIUwtK+QqVlfRt@hirez.programming.kicks-ass.net>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 1 Feb 2021 10:42:47 +0100
+Message-ID: <CACT4Y+Yq69nvj2KZUQrYqtyu+Low+jCCcH++U_vuiHkhezQHGw@mail.gmail.com>
+Subject: Re: extended bpf_send_signal_thread with argument
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@davemloft.net>, kpsingh@kernel.org,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Mon, Feb 1, 2021 at 10:22 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Sun, Jan 31, 2021 at 12:14:02PM +0100, Dmitry Vyukov wrote:
+> > Hi,
+> >
+> > I would like to send a signal from a bpf program invoked from a
+> > perf_event. There is:
+>
+> You can't. Sending signals requires sighand lock, and you're not allowed
+> to take locks from perf_event context.
 
-On 1/21/21 1:36 PM, Michal Simek wrote:
-> Hi,
-> 
-> I am updating DT patches which were there part of DP v11 series sent by
-> Laurent in past [1]. Patches have been removed in v12 [2].
-> The series is rebased on the top of [3] which wired si5341 clock chip.
-> 
-> [1] http://lore.kernel.org/r/20200318153728.25843-1-laurent.pinchart@ideasonboard.com
-> [2] http://lore.kernel.org/r/20200718001347.25451-1-laurent.pinchart@ideasonboard.com
-> [3] http://lore.kernel.org/r/cover.1611224800.git.michal.simek@xilinx.com
-> 
-> Thanks,
-> Michal
-> 
-> 
-> Laurent Pinchart (2):
->   arm64: dts: zynqmp: Add DPDMA node
->   arm64: dts: zynqmp: Wire up the DisplayPort subsystem
-> 
-> Michal Simek (1):
->   arm64: dts: zynqmp: Add DisplayPort subsystem
-> 
->  .../arm64/boot/dts/xilinx/zynqmp-clk-ccf.dtsi | 10 ++++++
->  .../boot/dts/xilinx/zynqmp-zcu100-revC.dts    | 31 ++++++++++++++++++
->  .../boot/dts/xilinx/zynqmp-zcu102-revA.dts    | 10 ++++++
->  .../boot/dts/xilinx/zynqmp-zcu104-revA.dts    | 11 +++++++
->  .../boot/dts/xilinx/zynqmp-zcu104-revC.dts    | 11 +++++++
->  .../boot/dts/xilinx/zynqmp-zcu106-revA.dts    | 11 +++++++
->  .../boot/dts/xilinx/zynqmp-zcu111-revA.dts    | 11 +++++++
->  arch/arm64/boot/dts/xilinx/zynqmp.dtsi        | 32 +++++++++++++++++++
->  8 files changed, 127 insertions(+)
-> 
 
-Applied all.
+Then we just found a vulnerability because there is
+bpf_send_signal_thread which can be attached to perf and it passes the
+verifier :)
+https://elixir.bootlin.com/linux/v5.11-rc5/source/kernel/trace/bpf_trace.c#L1145
 
-Thanks,
-Michal
-
--- 
-Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
-w: www.monstr.eu p: +42-0-721842854
-Maintainer of Linux kernel - Xilinx Microblaze
-Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP ARM64 SoCs
-U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal SoCs
-
+It can defer sending the signal to the exit of irq context:
+https://elixir.bootlin.com/linux/v5.11-rc5/source/kernel/trace/bpf_trace.c#L1108
+Perhaps this is what makes it work?
