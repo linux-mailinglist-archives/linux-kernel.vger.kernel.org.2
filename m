@@ -2,184 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7274E30A9D6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:34:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68AB530A9CD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:32:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbhBAOdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 09:33:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229816AbhBAOd1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 09:33:27 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E221EC061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 06:32:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/6Jhlr5rUwwDE3cJVP0+nEd2R6egrnAmrtNfNtrLC1U=; b=gixQuj9vo7YEJkllQqm0OfJjPy
-        KIMHKS6zysp73ufWxas2nK28yrGPgLRBvj83o6FVfQuCDqJAH28oXyh4yyhK1E2WqLtqPoMLw3vwA
-        syfX3AO0tp8f2rXYcYBj/1lAVe9CyyJBeVI/wImwJriDr+vbaMyi54u1vTU2B90wE70psZcJu897+
-        afIotmMO3jNbqDI+SlY70WBkh6XYuwy2jW0+3FTyWMaGGuc0J0OlvfGGOKhW+LIoLMV97xtnTjfIU
-        mWZyms7ZfhkEaOu3vIqLWriEOKgTdTBssB4imXBBWA3QEHnfmVSsa1TI3SwVrGlbBg6s8zB+v2o0w
-        49lt0SIQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l6aFa-00DsiM-FH; Mon, 01 Feb 2021 14:32:22 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 891F33003D8;
-        Mon,  1 Feb 2021 15:30:57 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3F8622C2D9644; Mon,  1 Feb 2021 15:30:57 +0100 (CET)
-Date:   Mon, 1 Feb 2021 15:30:57 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     kan.liang@linux.intel.com
-Cc:     acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org,
-        eranian@google.com, namhyung@kernel.org, jolsa@redhat.com,
-        ak@linux.intel.com, yao.jin@linux.intel.com, mpe@ellerman.id.au,
-        maddy@linux.vnet.ibm.com
-Subject: Re: [PATCH V3 0/5] perf core PMU support for Sapphire Rapids (Kernel)
-Message-ID: <YBgQoWRxpyoHDsmp@hirez.programming.kicks-ass.net>
-References: <1611873611-156687-1-git-send-email-kan.liang@linux.intel.com>
+        id S229634AbhBAOcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 09:32:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58530 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230157AbhBAOcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 09:32:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F2CF60C41;
+        Mon,  1 Feb 2021 14:31:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612189881;
+        bh=bCCyXIJyYjfQMd4EVZhPIo9+AaMpMaQCa5ve/mIIouM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VXwycjkVhuvvrLIQXC0QBYGpVy3zzLuevYiKNuUFXsvFBiamx5N2nl/b7qB8SaF/P
+         MwnB/7NnRm1dZPN0cB7tw/MdjuJwfKwNIFo7B5ftONmvjYDvq+gBuXXD5vx6nh2VEg
+         kuofRZa1PTu4oxzAo0u1MO//wh6FQb8lmIT9urbPn4Ns++rvs00/mqcM4YDbQpimu9
+         sByq4yGjIZfdb2rLZSAHCpzbHt+rjq3bUU/ADva2OJ3iJFrEVuvsSvYPIA68XUaG0f
+         EDvoCokyidFoJ1IHx2sarz5b8QX4cUDB2wyRduPe7JjylX78AfelukwXnja4QqsIvb
+         BX5J1eMTTfb6g==
+Date:   Mon, 1 Feb 2021 20:01:16 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     yung-chuan.liao@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH 6/6] soundwire: qcom: add support to new interrupts
+Message-ID: <20210201143116.GE2771@vkoul-mobl>
+References: <20210129173248.5941-1-srinivas.kandagatla@linaro.org>
+ <20210129173248.5941-7-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1611873611-156687-1-git-send-email-kan.liang@linux.intel.com>
+In-Reply-To: <20210129173248.5941-7-srinivas.kandagatla@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 29-01-21, 17:32, Srinivas Kandagatla wrote:
+> Add support to new interrupts and update irq routine in a way
+> to deal with multiple pending interrupts with in a single interrupt!
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  drivers/soundwire/qcom.c | 191 ++++++++++++++++++++++++++++++---------
+>  1 file changed, 146 insertions(+), 45 deletions(-)
+> 
+> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+> index d61b204dc284..c699bd51d29a 100644
+> --- a/drivers/soundwire/qcom.c
+> +++ b/drivers/soundwire/qcom.c
+> @@ -28,10 +28,21 @@
+>  #define SWRM_COMP_PARAMS_DIN_PORTS_MASK				GENMASK(9, 5)
+>  #define SWRM_INTERRUPT_STATUS					0x200
+>  #define SWRM_INTERRUPT_STATUS_RMSK				GENMASK(16, 0)
+> +#define SWRM_INTERRUPT_STATUS_SLAVE_PEND_IRQ			BIT(0)
+>  #define SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED		BIT(1)
+>  #define SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS		BIT(2)
+> +#define SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET			BIT(3)
+> +#define SWRM_INTERRUPT_STATUS_RD_FIFO_OVERFLOW			BIT(4)
+> +#define SWRM_INTERRUPT_STATUS_RD_FIFO_UNDERFLOW			BIT(5)
+> +#define SWRM_INTERRUPT_STATUS_WR_CMD_FIFO_OVERFLOW		BIT(6)
+>  #define SWRM_INTERRUPT_STATUS_CMD_ERROR				BIT(7)
+> +#define SWRM_INTERRUPT_STATUS_DOUT_PORT_COLLISION		BIT(8)
+> +#define SWRM_INTERRUPT_STATUS_READ_EN_RD_VALID_MISMATCH		BIT(9)
+>  #define SWRM_INTERRUPT_STATUS_SPECIAL_CMD_ID_FINISHED		BIT(10)
+> +#define SWRM_INTERRUPT_STATUS_BUS_RESET_FINISHED_V2             BIT(13)
+> +#define SWRM_INTERRUPT_STATUS_CLK_STOP_FINISHED_V2              BIT(14)
+> +#define SWRM_INTERRUPT_STATUS_EXT_CLK_STOP_WAKEUP               BIT(16)
+> +#define SWRM_INTERRUPT_MAX					17
+>  #define SWRM_INTERRUPT_MASK_ADDR				0x204
+>  #define SWRM_INTERRUPT_CLEAR					0x208
+>  #define SWRM_INTERRUPT_CPU_EN					0x210
+> @@ -105,11 +116,8 @@ struct qcom_swrm_ctrl {
+>  	struct device *dev;
+>  	struct regmap *regmap;
+>  	void __iomem *mmio;
+> -	struct completion *comp;
+>  	struct completion broadcast;
+>  	struct work_struct slave_work;
+> -	/* read/write lock */
+> -	spinlock_t comp_lock;
+>  	/* Port alloc/free lock */
+>  	struct mutex port_lock;
+>  	struct mutex io_lock;
+> @@ -126,6 +134,7 @@ struct qcom_swrm_ctrl {
+>  	int rows_index;
+>  	unsigned long dout_port_mask;
+>  	unsigned long din_port_mask;
+> +	u32 intr_mask;
+>  	u8 rcmd_id;
+>  	u8 wcmd_id;
+>  	struct qcom_swrm_port_config pconfig[QCOM_SDW_MAX_PORTS];
+> @@ -315,6 +324,27 @@ static int qcom_swrm_cmd_fifo_rd_cmd(struct qcom_swrm_ctrl *swrm,
+>  	return ret;
+>  }
+>  
+> +static int qcom_swrm_get_alert_slave(struct qcom_swrm_ctrl *ctrl)
+> +{
+> +	u32 val;
+> +	int i;
+> +
+> +	ctrl->reg_read(ctrl, SWRM_MCP_SLV_STATUS, &val);
+> +
+> +	for (i = 0; i < SDW_MAX_DEVICES; i++) {
+> +		u32 s;
 
-I made the below changes, does that work?
+define at top of the function pls, also maybe better name status?
 
----
+> +
+> +		s = (val >> (i * 2));
 
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -3627,6 +3627,15 @@ static int core_pmu_hw_config(struct per
- 	return intel_pmu_bts_config(event);
- }
- 
-+#define INTEL_TD_METRIC_AVAILABLE_MAX	(INTEL_TD_METRIC_RETIRING + \
-+					 ((x86_pmu.num_topdown_events - 1) << 8))
-+
-+static bool is_available_metric_event(struct perf_event *event)
-+{
-+	return is_metric_event(event) &&
-+		event->attr.config <= INTEL_TD_METRIC_AVAILABLE_MAX;
-+}
-+
- static inline bool is_mem_loads_event(struct perf_event *event)
- {
- 	return (event->attr.config & INTEL_ARCH_EVENT_MASK) == X86_CONFIG(.event=0xcd, .umask=0x01);
-@@ -3711,7 +3720,7 @@ static int intel_pmu_hw_config(struct pe
- 		if (event->attr.config & X86_ALL_EVENT_FLAGS)
- 			return -EINVAL;
- 
--		if (is_metric_event(event)) {
-+		if (is_available_metric_event(event)) {
- 			struct perf_event *leader = event->group_leader;
- 
- 			/* The metric events don't support sampling. */
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -87,7 +87,14 @@ static inline bool is_topdown_count(stru
- 	return event->hw.flags & PERF_X86_EVENT_TOPDOWN;
- }
- 
--static inline bool is_metric_event(struct perf_event *event);
-+static inline bool is_metric_event(struct perf_event *event)
-+{
-+	u64 config = event->attr.config;
-+
-+	return ((config & ARCH_PERFMON_EVENTSEL_EVENT) == 0) &&
-+		((config & INTEL_ARCH_EVENT_MASK) >= INTEL_TD_METRIC_RETIRING)  &&
-+		((config & INTEL_ARCH_EVENT_MASK) <= INTEL_TD_METRIC_MAX);
-+}
- 
- static inline bool is_slots_event(struct perf_event *event)
- {
-@@ -901,18 +908,6 @@ static struct perf_pmu_events_ht_attr ev
- struct pmu *x86_get_pmu(void);
- extern struct x86_pmu x86_pmu __read_mostly;
- 
--#define INTEL_TD_METRIC_AVAILABLE_MAX	(INTEL_TD_METRIC_RETIRING + \
--					 ((x86_pmu.num_topdown_events - 1) << 8))
--
--static inline bool is_metric_event(struct perf_event *event)
--{
--	u64 config = event->attr.config;
--
--	return ((config & ARCH_PERFMON_EVENTSEL_EVENT) == 0) &&
--		((config & INTEL_ARCH_EVENT_MASK) >= INTEL_TD_METRIC_RETIRING)  &&
--		((config & INTEL_ARCH_EVENT_MASK) <= INTEL_TD_METRIC_AVAILABLE_MAX);
--}
--
- static __always_inline struct x86_perf_task_context_opt *task_context_opt(void *ctx)
- {
- 	if (static_cpu_has(X86_FEATURE_ARCH_LBR))
---- a/arch/x86/include/asm/perf_event.h
-+++ b/arch/x86/include/asm/perf_event.h
-@@ -284,10 +284,12 @@ struct x86_pmu_capability {
- #define INTEL_TD_METRIC_BAD_SPEC		0x8100	/* Bad speculation metric */
- #define INTEL_TD_METRIC_FE_BOUND		0x8200	/* FE bound metric */
- #define INTEL_TD_METRIC_BE_BOUND		0x8300	/* BE bound metric */
--#define INTEL_TD_METRIC_HEAVY_OPS		0x8400	/* Heavy Operations metric */
--#define INTEL_TD_METRIC_BR_MISPREDICT		0x8500	/* Branch Mispredict metric */
--#define INTEL_TD_METRIC_FETCH_LAT		0x8600	/* Fetch Latency metric */
--#define INTEL_TD_METRIC_MEM_BOUND		0x8700	/* Memory bound metric */
-+/* Level 2 metrics */
-+#define INTEL_TD_METRIC_HEAVY_OPS		0x8400  /* Heavy Operations metric */
-+#define INTEL_TD_METRIC_BR_MISPREDICT		0x8500  /* Branch Mispredict metric */
-+#define INTEL_TD_METRIC_FETCH_LAT		0x8600  /* Fetch Latency metric */
-+#define INTEL_TD_METRIC_MEM_BOUND		0x8700  /* Memory bound metric */
-+
- #define INTEL_TD_METRIC_MAX			INTEL_TD_METRIC_MEM_BOUND
- #define INTEL_TD_METRIC_NUM			8
- 
---- a/include/uapi/linux/perf_event.h
-+++ b/include/uapi/linux/perf_event.h
-@@ -908,7 +908,6 @@ enum perf_event_type {
- 	 *			u32	var1_dw;
- 	 *		} && PERF_SAMPLE_WEIGHT_STRUCT
- 	 *	#endif
--	 *
- 	 *	 }
- 	 *	}
- 	 *	{ u64			data_src; } && PERF_SAMPLE_DATA_SRC
-@@ -1276,29 +1275,23 @@ struct perf_branch_entry {
- 		reserved:40;
- };
- 
--#if defined(__LITTLE_ENDIAN_BITFIELD)
- union perf_sample_weight {
- 	__u64		full;
-+#if defined(__LITTLE_ENDIAN_BITFIELD)
- 	struct {
- 		__u32	var1_dw;
- 		__u16	var2_w;
- 		__u16	var3_w;
- 	};
--};
--
- #elif defined(__BIG_ENDIAN_BITFIELD)
--
--union perf_sample_weight {
--	__u64		full;
- 	struct {
- 		__u16	var3_w;
- 		__u16	var2_w;
- 		__u32	var1_dw;
- 	};
--};
--
- #else
- #error "Unknown endianness"
- #endif
-+};
- 
- #endif /* _UAPI_LINUX_PERF_EVENT_H */
+why * 2 ? Maybe add a comment for this logic
+
+> +
+> +		if ((s & SWRM_MCP_SLV_STATUS_MASK) == SDW_SLAVE_ALERT) {
+> +			ctrl->status[i] = s;
+> +			return i;
+> +		}
+> +	}
+> +
+> +	return -EINVAL;
+> +}
+> +
+>  static void qcom_swrm_get_device_status(struct qcom_swrm_ctrl *ctrl)
+>  {
+>  	u32 val;
+> @@ -333,40 +363,122 @@ static void qcom_swrm_get_device_status(struct qcom_swrm_ctrl *ctrl)
+>  
+>  static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
+>  {
+> -	struct qcom_swrm_ctrl *ctrl = dev_id;
+> -	u32 sts, value;
+> -	unsigned long flags;
+> -
+> -	ctrl->reg_read(ctrl, SWRM_INTERRUPT_STATUS, &sts);
+> -
+> -	if (sts & SWRM_INTERRUPT_STATUS_CMD_ERROR) {
+> -		ctrl->reg_read(ctrl, SWRM_CMD_FIFO_STATUS, &value);
+> -		dev_err_ratelimited(ctrl->dev,
+> -				    "CMD error, fifo status 0x%x\n",
+> -				     value);
+> -		ctrl->reg_write(ctrl, SWRM_CMD_FIFO_CMD, 0x1);
+> -	}
+> +	struct qcom_swrm_ctrl *swrm = dev_id;
+> +	u32 value, intr_sts, intr_sts_masked;
+> +	u32 i;
+> +	u8 devnum = 0;
+> +	int ret = IRQ_HANDLED;
+> +
+> +
+> +	swrm->reg_read(swrm, SWRM_INTERRUPT_STATUS, &intr_sts);
+> +	intr_sts_masked = intr_sts & swrm->intr_mask;
+> +
+> +handle_irq:
+
+maybe move this into a fn and avoid a goto for non err path?
+
+> +	for (i = 0; i < SWRM_INTERRUPT_MAX; i++) {
+> +		value = intr_sts_masked & (1 << i);
+> +		if (!value)
+> +			continue;
+> +
+> +		switch (value) {
+> +		case SWRM_INTERRUPT_STATUS_SLAVE_PEND_IRQ:
+> +			devnum = qcom_swrm_get_alert_slave(swrm);
+> +			if (devnum < 0) {
+> +				dev_err_ratelimited(swrm->dev,
+> +				    "no slave alert found.spurious interrupt\n");
+> +			} else {
+> +				sdw_handle_slave_status(&swrm->bus, swrm->status);
+> +			}
+>  
+> -	if ((sts & SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED) ||
+> -	    sts & SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS)
+> -		schedule_work(&ctrl->slave_work);
+> -
+> -	/**
+> -	 * clear the interrupt before complete() is called, as complete can
+> -	 * schedule new read/writes which require interrupts, clearing the
+> -	 * interrupt would avoid missing interrupts in such cases.
+> -	 */
+> -	ctrl->reg_write(ctrl, SWRM_INTERRUPT_CLEAR, sts);
+> -
+> -	if (sts & SWRM_INTERRUPT_STATUS_SPECIAL_CMD_ID_FINISHED) {
+> -		spin_lock_irqsave(&ctrl->comp_lock, flags);
+> -		if (ctrl->comp)
+> -			complete(ctrl->comp);
+> -		spin_unlock_irqrestore(&ctrl->comp_lock, flags);
+> +			break;
+> +		case SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED:
+> +		case SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS:
+> +			dev_err_ratelimited(swrm->dev, "%s: SWR new slave attached\n",
+> +				__func__);
+> +			qcom_swrm_get_device_status(swrm);
+> +			sdw_handle_slave_status(&swrm->bus, swrm->status);
+> +			break;
+> +		case SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET:
+> +			dev_err_ratelimited(swrm->dev,
+> +					"%s: SWR bus clsh detected\n",
+> +					__func__);
+> +			swrm->intr_mask &=
+> +				~SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET;
+> +			swrm->reg_write(swrm,
+> +				SWRM_INTERRUPT_CPU_EN,
+> +				swrm->intr_mask);
+> +			break;
+> +		case SWRM_INTERRUPT_STATUS_RD_FIFO_OVERFLOW:
+> +			swrm->reg_read(swrm, SWRM_CMD_FIFO_STATUS, &value);
+> +			dev_err_ratelimited(swrm->dev,
+> +				"%s: SWR read FIFO overflow fifo status 0x%x\n",
+> +				__func__, value);
+> +			break;
+> +		case SWRM_INTERRUPT_STATUS_RD_FIFO_UNDERFLOW:
+> +			swrm->reg_read(swrm, SWRM_CMD_FIFO_STATUS, &value);
+> +			dev_err_ratelimited(swrm->dev,
+> +				"%s: SWR read FIFO underflow fifo status 0x%x\n",
+> +				__func__, value);
+> +			break;
+> +		case SWRM_INTERRUPT_STATUS_WR_CMD_FIFO_OVERFLOW:
+> +			swrm->reg_read(swrm, SWRM_CMD_FIFO_STATUS, &value);
+> +			dev_err(swrm->dev,
+> +				"%s: SWR write FIFO overflow fifo status %x\n",
+> +				__func__, value);
+> +			swrm->reg_write(swrm, SWRM_CMD_FIFO_CMD, 0x1);
+> +			break;
+> +		case SWRM_INTERRUPT_STATUS_CMD_ERROR:
+> +			swrm->reg_read(swrm, SWRM_CMD_FIFO_STATUS, &value);
+> +			dev_err_ratelimited(swrm->dev,
+> +			"%s: SWR CMD error, fifo status 0x%x, flushing fifo\n",
+> +					__func__, value);
+> +			swrm->reg_write(swrm, SWRM_CMD_FIFO_CMD, 0x1);
+> +			break;
+> +		case SWRM_INTERRUPT_STATUS_DOUT_PORT_COLLISION:
+> +			dev_err_ratelimited(swrm->dev,
+> +					"%s: SWR Port collision detected\n",
+> +					__func__);
+> +			swrm->intr_mask &= ~SWRM_INTERRUPT_STATUS_DOUT_PORT_COLLISION;
+> +			swrm->reg_write(swrm,
+> +				SWRM_INTERRUPT_CPU_EN, swrm->intr_mask);
+> +			break;
+> +		case SWRM_INTERRUPT_STATUS_READ_EN_RD_VALID_MISMATCH:
+> +			dev_err_ratelimited(swrm->dev,
+> +				"%s: SWR read enable valid mismatch\n",
+> +				__func__);
+> +			swrm->intr_mask &=
+> +				~SWRM_INTERRUPT_STATUS_READ_EN_RD_VALID_MISMATCH;
+> +			swrm->reg_write(swrm,
+> +				SWRM_INTERRUPT_CPU_EN, swrm->intr_mask);
+> +			break;
+> +		case SWRM_INTERRUPT_STATUS_SPECIAL_CMD_ID_FINISHED:
+> +			complete(&swrm->broadcast);
+> +			break;
+> +		case SWRM_INTERRUPT_STATUS_BUS_RESET_FINISHED_V2:
+> +			break;
+> +		case SWRM_INTERRUPT_STATUS_CLK_STOP_FINISHED_V2:
+> +			break;
+> +		case SWRM_INTERRUPT_STATUS_EXT_CLK_STOP_WAKEUP:
+> +			break;
+> +		default:
+> +			dev_err_ratelimited(swrm->dev,
+> +					"%s: SWR unknown interrupt value: %d\n",
+> +					__func__, value);
+> +			ret = IRQ_NONE;
+> +			break;
+> +		}
+>  	}
+> +	swrm->reg_write(swrm, SWRM_INTERRUPT_CLEAR, intr_sts);
+> +	swrm->reg_write(swrm, SWRM_INTERRUPT_CLEAR, 0x0);
+> +
+> +	swrm->reg_read(swrm, SWRM_INTERRUPT_STATUS, &intr_sts);
+> +	intr_sts_masked = intr_sts & swrm->intr_mask;
+> +
+> +	if (intr_sts_masked)
+> +		goto handle_irq;
+>  
+> -	return IRQ_HANDLED;
+> +	return ret;
+>  }
+> +
+>  static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
+>  {
+>  	u32 val;
+> @@ -380,6 +492,7 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
+>  	/* Disable Auto enumeration */
+>  	ctrl->reg_write(ctrl, SWRM_ENUMERATOR_CFG_ADDR, 0);
+>  
+> +	ctrl->intr_mask = SWRM_INTERRUPT_STATUS_RMSK;
+>  	/* Mask soundwire interrupts */
+>  	ctrl->reg_write(ctrl, SWRM_INTERRUPT_MASK_ADDR,
+>  			SWRM_INTERRUPT_STATUS_RMSK);
+> @@ -615,16 +728,6 @@ static u32 qcom_swrm_freq_tbl[MAX_FREQ_NUM] = {
+>  	DEFAULT_CLK_FREQ,
+>  };
+>  
+> -static void qcom_swrm_slave_wq(struct work_struct *work)
+> -{
+> -	struct qcom_swrm_ctrl *ctrl =
+> -			container_of(work, struct qcom_swrm_ctrl, slave_work);
+> -
+> -	qcom_swrm_get_device_status(ctrl);
+> -	sdw_handle_slave_status(&ctrl->bus, ctrl->status);
+> -}
+> -
+> -
+>  static void qcom_swrm_stream_free_ports(struct qcom_swrm_ctrl *ctrl,
+>  					struct sdw_stream_runtime *stream)
+>  {
+> @@ -989,11 +1092,9 @@ static int qcom_swrm_probe(struct platform_device *pdev)
+>  
+>  	ctrl->dev = dev;
+>  	dev_set_drvdata(&pdev->dev, ctrl);
+> -	spin_lock_init(&ctrl->comp_lock);
+>  	mutex_init(&ctrl->port_lock);
+>  	mutex_init(&ctrl->io_lock);
+>  	init_completion(&ctrl->broadcast);
+> -	INIT_WORK(&ctrl->slave_work, qcom_swrm_slave_wq);
+>  
+>  	ctrl->bus.ops = &qcom_swrm_ops;
+>  	ctrl->bus.port_ops = &qcom_swrm_port_ops;
+> -- 
+> 2.21.0
+
+-- 
+~Vinod
