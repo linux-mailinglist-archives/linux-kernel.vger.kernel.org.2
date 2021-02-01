@@ -2,99 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B626830AEF3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:19:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAC0530AC7F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:19:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232686AbhBASSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:18:25 -0500
-Received: from mga02.intel.com ([134.134.136.20]:7666 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232208AbhBASPO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:15:14 -0500
-IronPort-SDR: gYmzzTCOXInQz9w0W9ZGOuO5HSpTip0kZLnybGdLsZt+cWafk1QK+M87PB0SCUB85LE4tXpw0n
- xs5vuN+aVKWg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="167833497"
-X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="167833497"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 10:13:21 -0800
-IronPort-SDR: GhejXAFevh58ldyZmFLRdCBJ1GI5sKz2A0q9xIOWgmDmIhM+m5E1DC1qWm+ecEpW5SWFb1q3/q
- nryH6bHsZecQ==
-X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="412516898"
-Received: from dkhaldi-mobl1.amr.corp.intel.com (HELO [10.212.126.61]) ([10.212.126.61])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 10:13:20 -0800
-Subject: Re: [PATCH 1/3] soundwire: bus: clear bus clash interrupt before the
- mask is enabled
-To:     Vinod Koul <vkoul@kernel.org>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
-        hui.wang@canonical.com, srinivas.kandagatla@linaro.org,
-        jank@cadence.com, sanyog.r.kale@intel.com,
-        rander.wang@linux.intel.com, bard.liao@intel.com
-References: <20210126083746.3238-1-yung-chuan.liao@linux.intel.com>
- <20210126083746.3238-2-yung-chuan.liao@linux.intel.com>
- <20210201102844.GU2771@vkoul-mobl> <20210201103825.GV2771@vkoul-mobl>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <7c4e1163-a6b3-2886-1963-7e2847dc2836@linux.intel.com>
-Date:   Mon, 1 Feb 2021 10:18:00 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231152AbhBAQTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 11:19:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229557AbhBAQTU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 11:19:20 -0500
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E03B4C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 08:18:38 -0800 (PST)
+Received: by mail-qk1-x736.google.com with SMTP id s77so3333285qke.4
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 08:18:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=PZPy7UuU1m89CqE6Ujqo89pfGymoz3TNkAhBIsQ4ftk=;
+        b=b50IC0A7+YwOShtI3lVdvYnTMyg/RIdFTJK6qX5h/7VICPpSxnO+EJoYFvMopauEti
+         bOlUJTMuYE6lPDWe9klcC8QwL//wXYTJsnwCGEihqAK2qw6MpHnF2brWJEMtI44vcP3I
+         mqGjFf/+l5lhj1+NmhhG8roIrx1WbchEbLM3nwpTJqQCu7wna6sYziJ2FQ3SWN+EhvOT
+         8/nEQLcsl34JXeRUGI2MhSUZnlGEmtobJm58ugBZfG+dq1GhgJfu9pLpbmwEXsdos7ju
+         3Z5FVm+IXMNBs1pVlzyvmZdRK1ja8SNZJPA8HzjlJwIkPWSZ1/ExOdEC3jSBcID5BKlW
+         iXzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=PZPy7UuU1m89CqE6Ujqo89pfGymoz3TNkAhBIsQ4ftk=;
+        b=gjwK9TzllrOGgh36n9x8eA4FqYIkLy4nFDYUxmYgx1ZxpIH35EojdAoRdpc/nzXEjg
+         A9Pu8e935W9xB9ZHZ78Ou633TjE572mLctp7yma8dovOZNnukWjA1lneZQoTBLiaPykT
+         s44X0VnB+9xCMwZQ3i2RgLHB40rTL90X7LaqOEVXEVt2vQbYQZiv1Ts0G4sKqM/rFaeL
+         ay613MrJANbbmZ482BAqEjB1DfeD7TQsDWw1ETwukzZV3ij4DkHU8bYxiWKg7qc32EeY
+         HZFB3xL5zPjRUOAB0hCltDAqmcSRAbk26t1DCkqI7yAShBnod9vKcURXKRGwfM84Ysr0
+         5wKw==
+X-Gm-Message-State: AOAM532GzvBKYIZY76Srnb0zncddF0GraKMkDOudM1Y2h7W9ebGr5zDv
+        DsDEpZQ7sDjcCFYMIgOE6GTPDQ==
+X-Google-Smtp-Source: ABdhPJxCgBtVnjR4SVBuGufGMJ+u1XFal/gdEYmXcjkC/kITEPyeUp1hs6S3ABt09dQ2cxSGKo84BA==
+X-Received: by 2002:a37:458c:: with SMTP id s134mr17213587qka.142.1612196318177;
+        Mon, 01 Feb 2021 08:18:38 -0800 (PST)
+Received: from xanadu.home (modemcable076.50-203-24.mc.videotron.ca. [24.203.50.76])
+        by smtp.gmail.com with ESMTPSA id e5sm14189013qtp.86.2021.02.01.08.18.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 08:18:37 -0800 (PST)
+Date:   Mon, 1 Feb 2021 11:18:37 -0500 (EST)
+From:   Nicolas Pitre <npitre@baylibre.com>
+To:     David Gow <davidgow@google.com>
+cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i3c/master/mipi-i3c-hci: Specify HAS_IOMEM dependency
+In-Reply-To: <20210127040636.1535722-1-davidgow@google.com>
+Message-ID: <9s6n963q-poro-6qnq-q510-83rr59785on@onlyvoer.pbz>
+References: <20210127040636.1535722-1-davidgow@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210201103825.GV2771@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 26 Jan 2021, David Gow wrote:
 
-
-On 2/1/21 4:38 AM, Vinod Koul wrote:
-> On 01-02-21, 15:58, Vinod Koul wrote:
->> On 26-01-21, 16:37, Bard Liao wrote:
+> The MIPI i3c HCI driver makes use of IOMEM functions like
+> devm_platform_ioremap_resource(), which are only available if
+> CONFIG_HAS_IOMEM is defined.
 > 
->>>   struct sdw_master_prop {
->>>   	u32 revision;
->>> @@ -421,8 +422,11 @@ struct sdw_master_prop {
->>>   	u32 err_threshold;
->>>   	u32 mclk_freq;
->>>   	bool hw_disabled;
->>> +	u32 quirks;
->>
->> Can we do u64 here please.. I dont know where we would end up.. but
->> would hate if we start running out of space ..
-No objection.
+> This causes the driver to be enabled under make ARCH=um allyesconfig,
+> even though it won't build.
+> 
+> By adding a dependency on HAS_IOMEM, the driver will not be enabled on
+> architectures which don't support it.
+> 
+> Fixes: 9ad9a52cce28 ("i3c/master: introduce the mipi-i3c-hci driver")
+> Signed-off-by: David Gow <davidgow@google.com>
 
-> Also, is the sdw_master_prop right place for a 'quirk' property. I think
-> we can use sdw_master_device or sdw_bus as this seems like a bus
-> quirk..?
+Acked-by: Nicolas Pitre <npitre@baylibre.com>
 
-It's already part of sdw_bus
 
-struct sdw_bus {
-	struct device *dev;
-	struct sdw_master_device *md;
-	unsigned int link_id;
-	int id;
-	struct list_head slaves;
-	DECLARE_BITMAP(assigned, SDW_MAX_DEVICES);
-	struct mutex bus_lock;
-	struct mutex msg_lock;
-	int (*compute_params)(struct sdw_bus *bus);
-	const struct sdw_master_ops *ops;
-	const struct sdw_master_port_ops *port_ops;
-	struct sdw_bus_params params;
-	struct sdw_master_prop prop;
-
-The quirks could be set by a firmware property, and it seems logical to 
-add them at the same place where we already have properties defined in 
-firmware, no? That way all the standard, vendor-specific and quirks are 
-read or added in the same place.
-
-the sdw_master_device isn't a good place for quirks IMHO, it's a very 
-shallow software-only layer without any existing ties to the hardware 
-definition.
-
+> ---
+>  drivers/i3c/master/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/i3c/master/Kconfig b/drivers/i3c/master/Kconfig
+> index e68f15f4b4d0..afff0e2320f7 100644
+> --- a/drivers/i3c/master/Kconfig
+> +++ b/drivers/i3c/master/Kconfig
+> @@ -25,6 +25,7 @@ config DW_I3C_MASTER
+>  config MIPI_I3C_HCI
+>  	tristate "MIPI I3C Host Controller Interface driver (EXPERIMENTAL)"
+>  	depends on I3C
+> +	depends on HAS_IOMEM
+>  	help
+>  	  Support for hardware following the MIPI Aliance's I3C Host Controller
+>  	  Interface specification.
+> -- 
+> 2.30.0.280.ga3ce27912f-goog
+> 
+> 
+> -- 
+> linux-i3c mailing list
+> linux-i3c@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-i3c
+> 
