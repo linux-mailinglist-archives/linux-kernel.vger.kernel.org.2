@@ -2,69 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D17230A88C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:21:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD7F30A889
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:21:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231758AbhBANV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:21:28 -0500
-Received: from imap3.hz.codethink.co.uk ([176.9.8.87]:47902 "EHLO
-        imap3.hz.codethink.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232033AbhBANTk (ORCPT
+        id S231360AbhBANUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:20:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231860AbhBANUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:19:40 -0500
-Received: from cpc79921-stkp12-2-0-cust288.10-2.cable.virginm.net ([86.16.139.33] helo=[192.168.0.18])
-        by imap3.hz.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
-        id 1l6Z6E-0003lO-2b; Mon, 01 Feb 2021 13:18:38 +0000
-Subject: Re: [PATCH v3 0/2] Let illegal access to user-space memory die
-To:     Palmer Dabbelt <palmer@dabbelt.com>, tesheng@andestech.com
-Cc:     aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org,
-        peterx@redhat.com, penberg@kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        akpm@linux-foundation.org, walken@google.com,
-        linux-riscv@lists.infradead.org, vbabka@suse.cz
-References: <mhng-607cbd62-adc5-45a7-adde-476741f9d63b@palmerdabbelt-glaptop>
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-Message-ID: <ee1f254d-a06e-9725-57d1-ce0210751c05@codethink.co.uk>
-Date:   Mon, 1 Feb 2021 13:18:36 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Mon, 1 Feb 2021 08:20:17 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FAAC061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 05:19:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=w/fczicmbmO1py4GakJT2Tztq29zaHw4eemdxVZO/3c=; b=g4PopCaGcnb3zTBXhvzk+j7oAd
+        zJ8AelvYw1MTMkpBmIjeDx+zuCvzrFeCnDJVpGwz9j1T5xb4smeoznN/3KRhRXjEKKadRofk5wwHm
+        AaMT0Nuh4xjcWhF1jyZY1o0/In5o2hyNVyfh2Y4H1UYkkpNup08QvriYvD5ELoO7xPjx4y6zmVJ/+
+        wZtTZeVnh7igk0s+2e5dCN6JRBVCRospMcA4qpKId9xhk7jynXS2PKCdN4D0ou7hEsaszWZgCkQXp
+        jWBFVX0nNN/sx2tBndNrEcCHyrici0W1wRAMTZlMpasjQP455V7QfPYQI5gz6DlbQ/Prao3jQ77mU
+        pR9FmZgw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l6Z6r-00DoBB-59; Mon, 01 Feb 2021 13:19:23 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6A0ED3011FE;
+        Mon,  1 Feb 2021 14:19:16 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4DEBC20C8E333; Mon,  1 Feb 2021 14:19:16 +0100 (CET)
+Date:   Mon, 1 Feb 2021 14:19:16 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Nadav Amit <namit@vmware.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Nick Piggin <npiggin@gmail.com>, x86@kernel.org
+Subject: Re: [RFC 13/20] mm/tlb: introduce tlb_start_ptes() and tlb_end_ptes()
+Message-ID: <YBf/1H/zZ2LNDf3U@hirez.programming.kicks-ass.net>
+References: <20210131001132.3368247-1-namit@vmware.com>
+ <20210131001132.3368247-14-namit@vmware.com>
 MIME-Version: 1.0
-In-Reply-To: <mhng-607cbd62-adc5-45a7-adde-476741f9d63b@palmerdabbelt-glaptop>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210131001132.3368247-14-namit@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/12/2020 02:35, Palmer Dabbelt wrote:
-> On Thu, 03 Dec 2020 21:42:57 PST (-0800), tesheng@andestech.com wrote:
->> Accesses to user-space memory without calling uaccess routine
->> leads to hanging in page fault handler. Like arm64, we let it
->> die earlier in page fault handler.
->>
->> Changes in v3:
->>     -Let no_context() use die_kernel_fault() helper
->>
->> Changes in v2:
->>     -Add a die_kernel_fault() helper
->>     -Split one long line code into two
->>
->> Eric Lin (2):
->>   riscv/mm: Introduce a die_kernel_fault() helper function
->>   riscv/mm: Prevent kernel module to access user memory without uaccess
->>     routines
->>
->>  arch/riscv/mm/fault.c | 28 ++++++++++++++++++++++------
->>  1 file changed, 22 insertions(+), 6 deletions(-)
-> 
-> Thanks, these will be on for-next when the merge window ends.
+On Sat, Jan 30, 2021 at 04:11:25PM -0800, Nadav Amit wrote:
+> +#define tlb_start_ptes(tlb)						\
+> +	do {								\
+> +		struct mmu_gather *_tlb = (tlb);			\
+> +									\
+> +		flush_tlb_batched_pending(_tlb->mm);			\
+> +	} while (0)
+> +
+> +static inline void tlb_end_ptes(struct mmu_gather *tlb) { }
 
-Just tested this and it seems to be working.
+>  	tlb_change_page_size(tlb, PAGE_SIZE);
+>  	orig_pte = pte = pte_offset_map_lock(vma->vm_mm, pmd, addr, &ptl);
+> -	flush_tlb_batched_pending(mm);
+> +	tlb_start_ptes(tlb);
+>  	arch_enter_lazy_mmu_mode();
+>  	for (; addr < end; pte++, addr += PAGE_SIZE) {
+>  		ptent = *pte;
+> @@ -468,6 +468,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
+>  	}
+>  
+>  	arch_leave_lazy_mmu_mode();
+> +	tlb_end_ptes(tlb);
+>  	pte_unmap_unlock(orig_pte, ptl);
+>  	if (pageout)
+>  		reclaim_pages(&page_list);
 
--- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
+I don't like how you're dubbling up on arch_*_lazy_mmu_mode(). It seems
+to me those should be folded into tlb_{start,end}_ptes().
 
-https://www.codethink.co.uk/privacy.html
+Alternatively, the even more work approach would be to, add an optional
+@tlb argument to pte_offset_map_lock()/pte_unmap_unlock() and friends.
