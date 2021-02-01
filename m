@@ -2,76 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F096530A93B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:01:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38A3B30A73D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:08:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232471AbhBAN7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:59:50 -0500
-Received: from elvis.franken.de ([193.175.24.41]:43717 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232031AbhBAN7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:59:38 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1l6ZjC-0001Qe-00; Mon, 01 Feb 2021 14:58:54 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 57C92C0D38; Mon,  1 Feb 2021 13:50:28 +0100 (CET)
-Date:   Mon, 1 Feb 2021 13:50:28 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jinyang He <hejinyang@loongson.cn>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: relocatable: Provide kaslr_offset() to get the
- kernel offset
-Message-ID: <20210201125028.GA8621@alpha.franken.de>
-References: <1611720745-8256-1-git-send-email-hejinyang@loongson.cn>
+        id S231150AbhBAMIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 07:08:20 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11997 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231322AbhBAMGd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 07:06:33 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DTmpB4Pl5zjHSs;
+        Mon,  1 Feb 2021 20:04:34 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by DGGEMS412-HUB.china.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server id 14.3.498.0; Mon, 1 Feb 2021
+ 20:05:44 +0800
+From:   wanghongzhe <wanghongzhe@huawei.com>
+To:     <keescook@chromium.org>, <luto@amacapital.net>, <wad@chromium.org>,
+        <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <kafai@fb.com>, <songliubraving@fb.com>, <yhs@fb.com>,
+        <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>
+CC:     <wanghongzhe@huawei.com>
+Subject: [PATCH] seccomp: Improve performance by optimizing memory barrier
+Date:   Mon, 1 Feb 2021 20:50:30 +0800
+Message-ID: <1612183830-15506-1-git-send-email-wanghongzhe@huawei.com>
+X-Mailer: git-send-email 1.7.12.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1611720745-8256-1-git-send-email-hejinyang@loongson.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 12:12:25PM +0800, Jinyang He wrote:
-> Use kimage_vaddr to indicate kernel start address. Provide kaslr_offset()
-> to get the kernel offset when KASLR is enabled. Error may occur before
-> update_kimage_vaddr(), so put it at the end of the offset branch.
-> 
-> Fixes: a307a4ce9ecd ("MIPS: Loongson64: Add KASLR support")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
-> ---
->  arch/mips/include/asm/page.h |  6 ++++++
->  arch/mips/kernel/relocate.c  | 12 ++++++++++++
->  arch/mips/kernel/setup.c     |  3 +++
->  3 files changed, 21 insertions(+)
-> 
-> diff --git a/arch/mips/include/asm/page.h b/arch/mips/include/asm/page.h
-> index 6a77bc4..9429520 100644
-> --- a/arch/mips/include/asm/page.h
-> +++ b/arch/mips/include/asm/page.h
-> @@ -255,6 +255,12 @@ extern bool __virt_addr_valid(const volatile void *kaddr);
->  
->  #define VM_DATA_DEFAULT_FLAGS	VM_DATA_FLAGS_TSK_EXEC
->  
-> +extern unsigned long kimage_vaddr;
-> +static inline unsigned long kaslr_offset(void)
-> +{
-> +	return kimage_vaddr - VMLINUX_LOAD_ADDRESS;
-> +}
+If a thread(A)'s TSYNC flag is set from seccomp(), then it will
+synchronize its seccomp filter to other threads(B) in same thread
+group. To avoid race condition, seccomp puts rmb() between
+reading the mode and filter in seccomp check patch(in B thread).
+As a result, every syscall's seccomp check is slowed down by the
+memory barrier.
 
-this breaks for 32bit kernels:
+However, we can optimize it by calling rmb() only when filter is
+NULL and reading it again after the barrier, which means the rmb()
+is called only once in thread lifetime.
 
-<command-line>:0:22: error: large integer implicitly truncated to unsigned type [-Werror=overflow]
-/local/tbogendoerfer/korg/linux/arch/mips/kernel/setup.c:87:41: note: in expansion of macro ‘VMLINUX_LOAD_ADDRESS’
- unsigned long kimage_vaddr __initdata = VMLINUX_LOAD_ADDRESS;
-                                         ^~~~~~~~~~~~~~~~~~~~
-cc1: all warnings being treated as errors
+The 'filter is NULL' conditon means that it is the first time
+attaching filter and is by other thread(A) using TSYNC flag.
+In this case, thread B may read the filter first and mode later
+in CPU out-of-order exection. After this time, the thread B's
+mode is always be set, and there will no race condition with the
+filter/bitmap.
 
+In addtion, we should puts a write memory barrier between writing
+the filter and mode in smp_mb__before_atomic(), to avoid
+the race condition in TSYNC case.
+
+Signed-off-by: wanghongzhe <wanghongzhe@huawei.com>
+---
+ kernel/seccomp.c | 31 ++++++++++++++++++++++---------
+ 1 file changed, 22 insertions(+), 9 deletions(-)
+
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index 952dc1c90229..b944cb2b6b94 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -397,8 +397,20 @@ static u32 seccomp_run_filters(const struct seccomp_data *sd,
+ 			READ_ONCE(current->seccomp.filter);
+ 
+ 	/* Ensure unexpected behavior doesn't result in failing open. */
+-	if (WARN_ON(f == NULL))
+-		return SECCOMP_RET_KILL_PROCESS;
++	if (WARN_ON(f == NULL)) {
++		/*
++		 * Make sure the first filter addtion (from another
++		 * thread using TSYNC flag) are seen.
++		 */
++		rmb();
++		
++		/* Read again */
++		f = READ_ONCE(current->seccomp.filter);
++
++		/* Ensure unexpected behavior doesn't result in failing open. */
++		if (WARN_ON(f == NULL))
++			return SECCOMP_RET_KILL_PROCESS;
++	}
+ 
+ 	if (seccomp_cache_check_allow(f, sd))
+ 		return SECCOMP_RET_ALLOW;
+@@ -614,9 +626,16 @@ static inline void seccomp_sync_threads(unsigned long flags)
+ 		 * equivalent (see ptrace_may_access), it is safe to
+ 		 * allow one thread to transition the other.
+ 		 */
+-		if (thread->seccomp.mode == SECCOMP_MODE_DISABLED)
++		if (thread->seccomp.mode == SECCOMP_MODE_DISABLED) {
++			/*
++			 * Make sure mode cannot be set before the filter
++			 * are set.
++			 */
++			smp_mb__before_atomic();
++
+ 			seccomp_assign_mode(thread, SECCOMP_MODE_FILTER,
+ 					    flags);
++		}
+ 	}
+ }
+ 
+@@ -1160,12 +1179,6 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
+ 	int data;
+ 	struct seccomp_data sd_local;
+ 
+-	/*
+-	 * Make sure that any changes to mode from another thread have
+-	 * been seen after SYSCALL_WORK_SECCOMP was seen.
+-	 */
+-	rmb();
+-
+ 	if (!sd) {
+ 		populate_seccomp_data(&sd_local);
+ 		sd = &sd_local;
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.19.1
+
