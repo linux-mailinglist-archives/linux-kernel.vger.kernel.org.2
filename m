@@ -2,126 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 665E630ADAF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:25:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B69DE30ADB5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:25:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230118AbhBARWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:22:53 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2469 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbhBARWu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:22:50 -0500
-Received: from fraeml741-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DTvjR6tjtz67jtQ;
-        Tue,  2 Feb 2021 01:15:55 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml741-chm.china.huawei.com (10.206.15.222) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Mon, 1 Feb 2021 18:22:03 +0100
-Received: from localhost (10.47.76.76) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Mon, 1 Feb 2021
- 17:22:02 +0000
-Date:   Mon, 1 Feb 2021 17:21:18 +0000
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-CC:     <linux-cxl@vger.kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>, <linux-acpi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-nvdimm@lists.01.org>,
-        <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
-        "Chris Browy" <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Ira Weiny" <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        "Rafael Wysocki" <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        <daniel.lll@alibaba-inc.com>,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH 01/14] cxl/mem: Introduce a driver for CXL-2.0-Type-3
- endpoints
-Message-ID: <20210201172118.0000673f@Huawei.com>
-In-Reply-To: <20210130002438.1872527-2-ben.widawsky@intel.com>
-References: <20210130002438.1872527-1-ben.widawsky@intel.com>
-        <20210130002438.1872527-2-ben.widawsky@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S231184AbhBARY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:24:57 -0500
+Received: from mail.pqgruber.com ([52.59.78.55]:41310 "EHLO mail.pqgruber.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230171AbhBARYq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 12:24:46 -0500
+Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
+        by mail.pqgruber.com (Postfix) with ESMTPSA id 9353EC72B41;
+        Mon,  1 Feb 2021 18:24:03 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
+        s=mail; t=1612200243;
+        bh=+ts/5g1qWFJkzk5tLXZNFyB6pmP9M4qhq/bTMqcP9Go=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SxJvTVxKZ+KJc3ii4sC5rtg8sDwtwuvR1fBUzxxtcTzzz0S42qGNMonJW9FypDKR5
+         gvHnfcfdr2hw5kxY3BXBI+y7qfwLIv9ryvn9ImzFBaeT5Rp+zUg2BKRXgxc7KC0kVD
+         AKB//FPqOHjscfmOmQBJFxzJAbEAbl+BLp5BoFJQ=
+Date:   Mon, 1 Feb 2021 18:24:02 +0100
+From:   Clemens Gruber <clemens.gruber@pqgruber.com>
+To:     Sven Van Asbroeck <thesven73@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>
+Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v5 2/7] pwm: pca9685: Support hardware readout
+Message-ID: <YBg5MlvJQ0N2u+j6@workstation.tuxnet>
+References: <20201216125320.5277-2-clemens.gruber@pqgruber.com>
+ <CAGngYiWkKZGkQ4TTTy8bQYvnGBK45V0A0JCe_+M5V+vuVU+zkQ@mail.gmail.com>
+ <X9uYqGboZg5DuEtf@workstation.tuxnet>
+ <20210111203532.m3yvq6e5bcpjs7mc@pengutronix.de>
+ <CAGngYiW=KhCOZX3tPMFykXzpWLpj3qusN2OXVPSfHLRcyts+wA@mail.gmail.com>
+ <YBQ4c2cYYPDMjkeH@workstation.tuxnet>
+ <CAGngYiWd0u=+DPhvK+8v9FT8Y1Evn1brWRheMNDXWFVVL-wNFw@mail.gmail.com>
+ <YBRyG0vv3gRzygSB@workstation.tuxnet>
+ <CAGngYiXxfz7rtsw4zSj5QX7Lj7hvnoESqyUE_2__=oDaRmGGJQ@mail.gmail.com>
+ <CAGngYiV5GGJvHTwG7k6mv76uR1RLnHOJoO8+d2ofiZAQi3K0BA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.76.76]
-X-ClientProxiedBy: lhreml703-chm.china.huawei.com (10.201.108.52) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAGngYiV5GGJvHTwG7k6mv76uR1RLnHOJoO8+d2ofiZAQi3K0BA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 29 Jan 2021 16:24:25 -0800
-Ben Widawsky <ben.widawsky@intel.com> wrote:
+Hi Sven, Thierry, Uwe,
 
-> From: Dan Williams <dan.j.williams@intel.com>
+On Fri, Jan 29, 2021 at 05:16:51PM -0500, Sven Van Asbroeck wrote:
+> Hi Clemens,
 > 
-> The CXL.mem protocol allows a device to act as a provider of "System
-> RAM" and/or "Persistent Memory" that is fully coherent as if the memory
-> was attached to the typical CPU memory controller.
+> On Fri, Jan 29, 2021 at 4:24 PM Sven Van Asbroeck <thesven73@gmail.com> wrote:
+> >
+> > LEN_ON = 409, LED_OFF = 1228 and
+> > LED_ON = 419, LED_OFF = 1238
+> > produce the same result. you can't see the difference between the two
+> > when scoping the channel. there are probably more ways to do this,
+> > some might surprise us. It's a tricky chip.
 > 
-> With the CXL-2.0 specification a PCI endpoint can implement a "Type-3"
-> device interface and give the operating system control over "Host
-> Managed Device Memory". See section 2.3 Type 3 CXL Device.
+> Please ignore this example, it's bogus. In my defence, it's a Friday
+> afternoon here :)
+
+Happens to the best of us :)
+
 > 
-> The memory range exported by the device may optionally be described by
-> the platform firmware memory map, or by infrastructure like LIBNVDIMM to
-> provision persistent memory capacity from one, or more, CXL.mem devices.
+> But consider the following: imagine the bootloader has enabled a few
+> pwm channels, and the driver's .probe() has left them on/unchanged.
+> Then the user enables another pwm channel, and tries to change the
+> period/prescaler. How would pca9685_may_change_prescaler() know
+> if changing the prescaler is allowed?
 > 
-> A pre-requisite for Linux-managed memory-capacity provisioning is this
-> cxl_mem driver that can speak the mailbox protocol defined in section
-> 8.2.8.4 Mailbox Registers.
+> And the following: imagine the bootloader has enabled a few
+> pwm channels, and the driver's .probe() has left them on/unchanged.
+> After .probe(), the runtime_pm will immediately put the chip to sleep,
+> because it's unaware that some channels are alive.
+
+(We could read out the state in .probe. If a pwm is already enabled by
+the bootloader, then the user can't change the period. Also, the chip
+would not be put to sleep.
+
+The user then can export channels and see if they are enabled. If he
+wants to change the period, he needs to find the one enabled by the
+bootloader and change the period there, before he requests more.
+If the bootloader enabled more than one, then he has to disable all but
+one to change the period.
+
+Or did I miss something?)
+
 > 
-> For now just land the initial driver boiler-plate and Documentation/
-> infrastructure.
-> 
-> Link: https://www.computeexpresslink.org/download-the-specification
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-Hi Ben,
+> I'm sure I'm overlooking a few complications here. probe not changing
+> the existing configuration, will add a lot of complexity to the driver.
+> I'm not saying this is necessarily bad, just a tradeoff. Or, a management
+> decision.
 
-One thing below about using defs from generic PCI headers where
-they are not CXL specific.
+But I agree that it is simpler if we keep the resets in probe. It would
+also avoid a potentially breaking change for users that do not reset
+their pca9685 chips in their bootloader code.
+There might be users out there that depend on the driver to reset the
+OFF registers in .probe.
 
+If Thierry agrees / allows it, I can keep the resets for now.
 
-> diff --git a/drivers/cxl/pci.h b/drivers/cxl/pci.h
-> new file mode 100644
-> index 000000000000..a8a9935fa90b
-> --- /dev/null
-> +++ b/drivers/cxl/pci.h
-> @@ -0,0 +1,20 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/* Copyright(c) 2020 Intel Corporation. All rights reserved. */
-> +#ifndef __CXL_PCI_H__
-> +#define __CXL_PCI_H__
-> +
-> +#define PCI_CLASS_MEMORY_CXL	0x050210
-> +
-> +/*
-> + * See section 8.1 Configuration Space Registers in the CXL 2.0
-> + * Specification
-> + */
-> +#define PCI_EXT_CAP_ID_DVSEC		0x23
-> +#define PCI_DVSEC_VENDOR_ID_CXL		0x1E98
-> +#define PCI_DVSEC_VENDOR_ID_OFFSET	0x4
-> +#define PCI_DVSEC_ID_CXL		0x0
-> +#define PCI_DVSEC_ID_OFFSET		0x8
+Removing the resets could then be left as something to discuss further
+in the future and something that belongs in a separate patch series?
 
-include/uapi/linux/pci-regs.h includes equivalents of generic parts of
-this already though PCI_DVSEC_HEADER1 isn't exactly informative naming.
-
-> +
-> +#define PCI_DVSEC_ID_CXL_REGLOC		0x8
-> +
-> +#endif /* __CXL_PCI_H__ */
-
+Clemens
