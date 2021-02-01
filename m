@@ -2,90 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACB7D30AB44
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:29:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3199830AB64
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:32:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231287AbhBAP2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 10:28:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57948 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231790AbhBAP1V (ORCPT
+        id S231841AbhBAPcL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 10:32:11 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:54754 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231778AbhBAPas (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 10:27:21 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612193154;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BEb2rLftFspGJmXbmXNZKP/pR0mJXCcoYLxWcopTgkE=;
-        b=g/jkFB61lzcFqYgAuOCzMX1XfK01KlBKIvbpK4Euh14BCXbDGWy7DG57EuBiI5Azq4lCg2
-        y0hmGyHrsgU1lf3pRImFr0j9ESYHWI1phB3/3WKOW09PRSGQymxTebuu6HWOMWOKtAtuY1
-        UDDKPd/gOfDExWj+KdmIpy01wkJGx40=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-537-4FQFVO3JPaSRNa_zDuxQ_w-1; Mon, 01 Feb 2021 10:25:50 -0500
-X-MC-Unique: 4FQFVO3JPaSRNa_zDuxQ_w-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C0CD6100C661;
-        Mon,  1 Feb 2021 15:25:48 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4D2425D749;
-        Mon,  1 Feb 2021 15:25:44 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <CAOi1vP_7dfuKgQxFpyeUDMJBGm=cnQSvYHDnU=6YPTzbB9+d6w@mail.gmail.com>
-References: <CAOi1vP_7dfuKgQxFpyeUDMJBGm=cnQSvYHDnU=6YPTzbB9+d6w@mail.gmail.com> <20210126134103.240031-1-jlayton@kernel.org> <CAOi1vP-3Ma4LdCcu6sPpwVbmrto5HnOAsJ6r9_973hYY3ODBUQ@mail.gmail.com> <2301cde67ae7aa54d860fc3962aeb8ed85744c75.camel@kernel.org>
-To:     Ilya Dryomov <idryomov@gmail.com>
-Cc:     dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
-        Ceph Development <ceph-devel@vger.kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-cachefs@redhat.com
-Subject: Re: [PATCH 0/6] ceph: convert to new netfs read helpers
+        Mon, 1 Feb 2021 10:30:48 -0500
+Received: by mail-il1-f198.google.com with SMTP id s4so3916528ilt.21
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 07:30:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=MA6Z5qApv5SIuE3llf4F8q/viDLzlg0JU+HdpHHeyso=;
+        b=ZlLge5kMLj1g2T8wZ/eGBomWodningqrdrSFzrw9AjIutgWKGPAkKpac1cgidZg/K8
+         dScXhFLGbri7f1nx7wFKIh0MVqL2mdrTC4uEB/eZMV+uPoweyI/KUbVR5zSAoMb59Ss+
+         qAbJZrKpjA3QTlftIQHzJUp/SBPY/AexFSIUdTfLHMXYyQ0FqKMFkANiTmDTpstKjSQu
+         Un5yiiKCuf1ZH8eK9xLyrpsZhzHmvlsZKJtRdxZCjvH2ESbYDKax77W0pgh6+bnbEVzN
+         3d8Iwkd+r6XZyYl85FVrVltVqXTOAcNLNCZp2JXER3/4SWQ9OAq/wmQlhB1M56MwcO5k
+         m7yQ==
+X-Gm-Message-State: AOAM532nuPj8AoRnsgsy4XnqbytNtLmlrkKILR5K/n16fyWj2hcc8ICz
+        tz5LJGCvg1oQQINCWn4YyWU5iyO1PyxEelfFObZkNbbz47Wv
+X-Google-Smtp-Source: ABdhPJxCf+7yJqjthz7S5x5o6J84v259czgNQNJjfsHZTMyGF8zbDMy+jFBCR4O0Suh43taSoStbM6sCfnBG20uy8NpBR0Nno281
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4171609.1612193143.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Mon, 01 Feb 2021 15:25:43 +0000
-Message-ID: <4171610.1612193143@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Received: by 2002:a05:6e02:1aa5:: with SMTP id l5mr12605106ilv.278.1612193406830;
+ Mon, 01 Feb 2021 07:30:06 -0800 (PST)
+Date:   Mon, 01 Feb 2021 07:30:06 -0800
+In-Reply-To: <39ebb181-6760-cdfd-88f8-5578ad4d7c85@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000052e4f305ba4807ca@google.com>
+Subject: Re: WARNING in io_disable_sqo_submit
+From:   syzbot <syzbot+2f5d1785dc624932da78@syzkaller.appspotmail.com>
+To:     asml.silence@gmail.com, axboe@kernel.dk, hdanton@sina.com,
+        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ilya Dryomov <idryomov@gmail.com> wrote:
+Hello,
 
-> > David has a fscache-netfs-lib branch that has all of the infrastructur=
-e
-> > changes. See:
-> >
-> >     https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.=
-git/log/?h=3Dfscache-netfs-lib
-> =
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+WARNING in io_uring_cancel_task_requests
 
-> I saw that, but AFAICS it hasn't been declared public (as in suitable
-> for other people to base their work on, with the promise that history
-> won't get rewritten.
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 10843 at fs/io_uring.c:9039 io_uring_cancel_task_requests+0xe55/0x10c0 fs/io_uring.c:9039
+Modules linked in:
+CPU: 1 PID: 10843 Comm: syz-executor.3 Not tainted 5.11.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:io_uring_cancel_task_requests+0xe55/0x10c0 fs/io_uring.c:9039
+Code: 00 00 e9 1c fe ff ff 48 8b 7c 24 18 e8 14 21 db ff e9 f2 fc ff ff 48 8b 7c 24 18 e8 05 21 db ff e9 64 f2 ff ff e8 9b a0 98 ff <0f> 0b e9 ed f2 ff ff e8 ff 20 db ff e9 c8 f5 ff ff 4c 89 ef e8 72
+RSP: 0018:ffffc9000cc37950 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff888027fcc000 RCX: 0000000000000000
+RDX: ffff888045a1a040 RSI: ffffffff81da2255 RDI: ffff888027fcc0d0
+RBP: ffff888027fcc0e8 R08: 0000000000000000 R09: ffff888045a1a047
+R10: ffffffff81da14cf R11: 0000000000000000 R12: ffff888027fcc000
+R13: ffff888045a1a040 R14: ffff88802e748000 R15: ffff88803ca86018
+FS:  0000000000000000(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f09d5e60d40 CR3: 0000000028319000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ io_uring_flush+0x47b/0x6e0 fs/io_uring.c:9224
+ filp_close+0xb4/0x170 fs/open.c:1286
+ close_files fs/file.c:403 [inline]
+ put_files_struct fs/file.c:418 [inline]
+ put_files_struct+0x1cc/0x350 fs/file.c:415
+ exit_files+0x7e/0xa0 fs/file.c:435
+ do_exit+0xc22/0x2ae0 kernel/exit.c:820
+ do_group_exit+0x125/0x310 kernel/exit.c:922
+ get_signal+0x427/0x20f0 kernel/signal.c:2773
+ arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:811
+ handle_signal_work kernel/entry/common.c:147 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
+ exit_to_user_mode_prepare+0x148/0x250 kernel/entry/common.c:201
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:291 [inline]
+ syscall_exit_to_user_mode+0x19/0x50 kernel/entry/common.c:302
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x465b09
+Code: Unable to access opcode bytes at RIP 0x465adf.
+RSP: 002b:00007f21a56f2108 EFLAGS: 00000202 ORIG_RAX: 00000000000001a9
+RAX: 0000000000000004 RBX: 000000000056c0b0 RCX: 0000000000465b09
+RDX: 00000000206d4000 RSI: 00000000200002c0 RDI: 0000000000000187
+RBP: 00000000200002c0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
+R13: 00000000206d4000 R14: 0000000000000000 R15: 0000000020ee7000
 
-My intention to avoid modifying it further, except for extra fix patches
-stacked on the end if necessary, as I want to try to avoid jinxing it from
-getting pulled in the next merge window.
 
-> It is branched off of what looks like a random snapshot of Linus' tree
-> instead of a release point, etc.
+Tested on:
 
-Yeah, sorry about that.  I took what was current linus/master at the time =
-I
-cut the branch with the intention of trying to get it into linux-next befo=
-re
--rc5 was tagged (ie. >3 weeks before the merge window), but including the
-X.509 crash fix.
-
-David
+commit:         1d538571 io_uring: check kthread parked flag before sqthre..
+git tree:       git://git.kernel.dk/linux-block for-5.12/io_uring
+console output: https://syzkaller.appspot.com/x/log.txt?x=14532690d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fe3e1032f57d6d25
+dashboard link: https://syzkaller.appspot.com/bug?extid=2f5d1785dc624932da78
+compiler:       
 
