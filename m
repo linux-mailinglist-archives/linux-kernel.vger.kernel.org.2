@@ -2,85 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FC230B209
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:23:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F75830B20F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:27:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232365AbhBAVXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 16:23:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33168 "EHLO
+        id S232401AbhBAVZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 16:25:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbhBAVXj (ORCPT
+        with ESMTP id S229680AbhBAVZb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 16:23:39 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDF65C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 13:22:58 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id a77so20461328oii.4
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 13:22:58 -0800 (PST)
+        Mon, 1 Feb 2021 16:25:31 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1EC3C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 13:24:51 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id e9so10773351plh.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 13:24:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yOWrw7a+Nf/KygeG78AKIm4KgYP1X9MsGHak8Pcn4zg=;
-        b=o5jpmsDsoy2ji8gpSb36ZTjvFoA1b9ZgnxGP7BNO941bOozBAgb85HxfqP7ke9weQZ
-         SpK7oyNLgUjJX2fDxDZQDiKj5OnmmA1iQLR9Pql9Y7kN07+suHgVlZpX849oC7jsFT57
-         cW0DfuuM2Hw+BuZiiWMrn3sKFp79qYjY1DUgakhu1dQ4GghBwUHxOdFyECtLgJOMYpS7
-         W8pMJq1aTdPk1qovkiZBrTCtatjVdjA9o1hN0/ieRYZ0JWHw8Q5D/5SEmXQsU5cXpIOn
-         sy0df7yFz7oIgQHyrO6/mHCdDwFjmVgfsBhSFTnEzLu5c/U7EipCXJRYolPbbg8FIuOo
-         2P8A==
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=Stmza4ZljYVmGoBag2te1ro2TQptmpx4IjyAJp+jAIQ=;
+        b=RTukz/I15+gomvoxURNPYBaO+iQPAJQ7j8SPTDDhq9UlRjA6hVVdohEFSjz2NLtxzu
+         te4v/zkr2CANQypbMIiFFGvE+IgZAs8yeXiVvxbwVfWfqEyz9Kf5KYxTCiM11sw79LRr
+         lERUPtgup7HUjlKpkk9qpnbY1hnUvEx6r1sbv0Qh1zEvsAeHMVdgD5IhyQ5QT5PO4aIG
+         Ez1F850YBZsn3AqraRfPHUDSCungyeAeR3/3rRZAXBsP7wjLZipfQm89OmyCF9GAcO1t
+         0eL5xJ7Cm8fAKBZWXSTWb3Fwe8M73WqUY17YBU+udWeGB0YtyDZ33tdpC9sbCxtdQH0s
+         o+yA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yOWrw7a+Nf/KygeG78AKIm4KgYP1X9MsGHak8Pcn4zg=;
-        b=ZUMTHmBrXBD08K9pKBCezM6rMdOodyXnIEJ06g8VPhVqsgUZtccKW4fjgYL1dE0/5d
-         NLuvcGYbnqv3vRvvzdLUaeDfCL5xJeC6L+7IR7XuK1s3b6w534K+CfZqvMDw/NvvhNwH
-         LdGFPTGPjEX6rpnoiJk83Ph/gQyLGvpEWhWJGa8bEchl13jfdpHIF+M6Z+KKwsr/7QKm
-         nRC/ZY7boVYc3pP2L6VvI4i0VuLYlAuq+FcEC/7CpDqEjVpDhZumXCm4fHIR1dDSkVMr
-         /k/vVMBaoNS08BaO72QYE/JzoBDtCzihm2tn+j+q5AV3GLzkQM6DF0yBRUlcr9rFGpA1
-         eKqQ==
-X-Gm-Message-State: AOAM532aSBP44LRGS//9ukpWoXL62cTXdShuok96IR6dbIYDnVjeoA6K
-        jHuHJY5on2D9xnns8VUawp3M7lnGO6FfRRYqO2ID4g==
-X-Google-Smtp-Source: ABdhPJwLLr7HE/FPtCzHw8vOCiRi6L3hhZDdCNDFos3jTHmz5rAH077nWm3ycDUwLoEjDXEKNGh/LvplLh9wMECNwRg=
-X-Received: by 2002:aca:be0b:: with SMTP id o11mr575501oif.42.1612214578188;
- Mon, 01 Feb 2021 13:22:58 -0800 (PST)
-MIME-Version: 1.0
-References: <20210201183017.3339130-1-jxgao@google.com> <20210201183017.3339130-4-jxgao@google.com>
- <20210201205759.GA2128135@dhcp-10-100-145-180.wdc.com> <CAMGD6P2Gz9nWELMdsAhwQvXx3PXv2aXet=Tn9Rca61obZawfgw@mail.gmail.com>
-In-Reply-To: <CAMGD6P2Gz9nWELMdsAhwQvXx3PXv2aXet=Tn9Rca61obZawfgw@mail.gmail.com>
-From:   Jianxiong Gao <jxgao@google.com>
-Date:   Mon, 1 Feb 2021 13:22:45 -0800
-Message-ID: <CAMGD6P1_cs1W8jMt7Sz6broDdnFNPrxbiZW-JZ+GAtg5aoTdOQ@mail.gmail.com>
-Subject: Re: [PATCH V2 3/3] Adding device_dma_parameters->offset_preserve_mask
- to NVMe driver.
-To:     Keith Busch <kbusch@kernel.org>
-Cc:     Erdem Aktas <erdemaktas@google.com>, Marc Orr <marcorr@google.com>,
-        Christoph Hellwig <hch@lst.de>, m.szyprowski@samsung.com,
-        Robin Murphy <robin.murphy@arm.com>,
-        gregkh@linuxfoundation.org, Saravana Kannan <saravanak@google.com>,
-        heikki.krogerus@linux.intel.com, rafael.j.wysocki@intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        dan.j.williams@intel.com, bgolaszewski@baylibre.com,
-        jroedel@suse.de, iommu@lists.linux-foundation.org,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, axboe@fb.com,
-        sagi@grimberg.me, linux-nvme@lists.infradead.org,
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=Stmza4ZljYVmGoBag2te1ro2TQptmpx4IjyAJp+jAIQ=;
+        b=GWSJd1OEKQLs24iWlprxYOlN0meG4jJWr10VBNeprce90yntV56jUbjQfTBNBgnwkC
+         MoC5WA9kQa9m62dBRmYdO3djGS4Z0FAejCOngtFFO+j61WSog8nAdgKhzMQT9day/Ria
+         XwiANHFa1xBQ1e6zKvTJGnUNSi/tW/3BUmdu//h+fPmNOREdzhd1aeOCBvkF4pvjweRC
+         lJdYyQ8tCDq99l363gap+8nynqJFBx8CWvvYg1iqrvTbFqWTxnDLeSDxjnZuzXzpY38J
+         n5NEDyfZ6qqblywPzu9JmfJ0tpXoW76pjNhNW6rGvaByqxmTmOq7blbr2DBgfxnsYWOX
+         ljHA==
+X-Gm-Message-State: AOAM530tRmPRSI3GRwn00XJuO386tdd27JfJYVW24OCwo3x/oE7S6jmn
+        1Yfe/spao4Py1FoKWdsLwa7Lkg==
+X-Google-Smtp-Source: ABdhPJx9CNcx+6r2+pPMJecmnoC4EI/ehFFZAVeJII0hBoOBWc2uuDTyC9S6RRznVKolCYuRY9Gbrg==
+X-Received: by 2002:a17:902:b213:b029:db:3a3e:d8ad with SMTP id t19-20020a170902b213b02900db3a3ed8admr19643118plr.73.1612214690922;
+        Mon, 01 Feb 2021 13:24:50 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id y11sm18311381pfn.85.2021.02.01.13.24.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 13:24:49 -0800 (PST)
+Date:   Mon, 1 Feb 2021 13:24:49 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Charan Teja Reddy <charante@codeaurora.org>
+cc:     akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
+        vinmenon@codeaurora.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH] mm: page_alloc: update the COMPACT[STALL|FAIL] events
+ properly
+In-Reply-To: <1612187338-19100-1-git-send-email-charante@codeaurora.org>
+Message-ID: <d9d1dd7b-1fe7-67b6-6ba4-fb1a6faa8fae@google.com>
+References: <1612187338-19100-1-git-send-email-charante@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Why is this setting being done and undone on each IO? Wouldn't it be
-> more efficient to set it once during device initialization?
->
-> And more importantly, this isn't thread safe: one CPU may be setting the
-> device's dma alignment mask to 0 while another CPU is expecting it to be
-> NVME_CTRL_PAGE_SIZE - 1.
+On Mon, 1 Feb 2021, Charan Teja Reddy wrote:
 
- I was having trouble getting the OS booted when setting it once during
- initialization. However when I rebased to the latest rc6 this morning it
- seems to be working with setting the mask on probe. I am still testing out
- and will appreciate any idea what may cause the nvme driver to fail
- with a single mask.
--- 
-Jianxiong Gao
+> By defination, COMPACT[STALL|FAIL] events needs to be counted when there
+
+s/defination/definition/
+
+> is 'At least in one zone compaction wasn't deferred or skipped from the
+> direct compaction'. And when compaction is skipped or deferred,
+> COMPACT_SKIPPED will be returned but it will still go and update these
+> compaction events which is wrong in the sense that COMPACT[STALL|FAIL]
+> is counted without even trying the compaction.
+> 
+> Correct this by skipping the counting of these events when
+> COMPACT_SKIPPED is returned for compaction. This indirectly also avoid
+> the unnecessary try into the get_page_from_freelist() when compaction is
+> not even tried.
+> 
+> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+> ---
+>  mm/page_alloc.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 519a60d..531f244 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -4152,6 +4152,8 @@ __alloc_pages_direct_compact(gfp_t gfp_mask, unsigned int order,
+>  	memalloc_noreclaim_restore(noreclaim_flag);
+>  	psi_memstall_leave(&pflags);
+>  
+> +	if (*compact_result == COMPACT_SKIPPED)
+> +		return NULL;
+>  	/*
+>  	 * At least in one zone compaction wasn't deferred or skipped, so let's
+>  	 * count a compaction stall
+
+This makes sense, I wonder if it would also be useful to check that 
+page == NULL, either in try_to_compact_pages() or here for 
+COMPACT_SKIPPED?
