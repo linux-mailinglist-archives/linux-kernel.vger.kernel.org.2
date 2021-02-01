@@ -2,116 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2487E30B336
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:15:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F01830B347
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:19:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230368AbhBAXPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 18:15:08 -0500
-Received: from mga17.intel.com ([192.55.52.151]:3190 "EHLO mga17.intel.com"
+        id S231167AbhBAXSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 18:18:06 -0500
+Received: from mga14.intel.com ([192.55.52.115]:63595 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229557AbhBAXPG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 18:15:06 -0500
-IronPort-SDR: vvsdMPGtOstwkeFAigLeJ7e96AIiE57OEnec0WzMLYJwblskK6ZTyN+7J0Cijp1VKz6H9lCNmw
- DTJfPWhZwlWQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="160532926"
+        id S230054AbhBAXSB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 18:18:01 -0500
+IronPort-SDR: XxpHcgwfhLO72dOaNzOwNxHGnF8CEeyJnZ9Y+xdpaJ7l62FezQorP9ZVfrLBi0CHQuj960+P88
+ GO2TtFqmv2mw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="179991041"
 X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="160532926"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 15:14:23 -0800
-IronPort-SDR: mcN+Umk6rIyo2zAXvIJpEgfqd+QGtFe5nbhUxtGgLoSo83qgAZjbrRu1ShfsfVHBBnaY7wDomI
- 5dYW9cgE5DKg==
+   d="scan'208";a="179991041"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 15:17:20 -0800
+IronPort-SDR: 8bdJnMFA0kHmvh7DoPbPCnHbnphnf3MPu4bPVWxPwJfsCqN+WEedY9p8s+2FeZLVcRrs3sUus2
+ AQqkT0yDaSbg==
 X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="358783714"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.112.229]) ([10.212.112.229])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 15:14:21 -0800
-Subject: Re: [PATCH v18 05/25] x86/fpu/xstate: Introduce CET MSR and XSAVES
- supervisor states
-To:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
+   d="scan'208";a="575281971"
+Received: from jambrizm-mobl1.amr.corp.intel.com (HELO intel.com) ([10.252.133.15])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 15:17:20 -0800
+Date:   Mon, 1 Feb 2021 15:17:18 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     David Rientjes <rientjes@google.com>
+Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
         Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-References: <20210127212524.10188-1-yu-cheng.yu@intel.com>
- <20210127212524.10188-6-yu-cheng.yu@intel.com>
- <7793b36e-6386-3f2e-36ca-b7ca988a88c9@intel.com>
- <43f264df-2f3a-ea4c-c737-85cdc6714bd8@intel.com>
- <0a5a80c0-afc7-5f91-9e28-a300e30f1ab3@intel.com>
- <465836bd-9c80-fed9-d9af-89275ff810eb@intel.com>
- <cd8f4889-fbe4-fc0e-0686-9c9ecc4a125b@intel.com>
- <a6550292-cd99-a5e2-df7b-d43f6cc8fed0@intel.com>
- <834ac0ae-b03c-dfa0-3e91-72587226613f@intel.com>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <ea573956-a739-aef6-6073-3216eb3158c6@intel.com>
-Date:   Mon, 1 Feb 2021 15:14:20 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH 03/14] cxl/mem: Find device capabilities
+Message-ID: <20210201231718.2hwaqgn2f7kc7usw@intel.com>
+References: <234711bf-c03f-9aca-e0b5-ca677add3ea@google.com>
+ <20210201165352.wi7tzpnd4ymxlms4@intel.com>
+ <32f33dd-97a-8b1c-d488-e5198a3d7748@google.com>
+ <20210201215857.ud5cpg7hbxj2j5bx@intel.com>
+ <b46ed01-3f1-6643-d371-7764c3bde4f8@google.com>
+ <20210201222859.lzw3gvxuqebukvr6@intel.com>
+ <20210201223314.qh24uxd7ajdppgfl@intel.com>
+ <f86149f8-3aea-9d8c-caa9-62771bf22cb5@google.com>
+ <20210201225052.vrrvuxrsgmddjzbb@intel.com>
+ <79b98f60-151b-6c80-65c3-91a37699d121@google.com>
 MIME-Version: 1.0
-In-Reply-To: <834ac0ae-b03c-dfa0-3e91-72587226613f@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <79b98f60-151b-6c80-65c3-91a37699d121@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/1/2021 3:12 PM, Dave Hansen wrote:
-> On 2/1/21 3:05 PM, Yu, Yu-cheng wrote:
->>>>
->>>
->>> Wait a sec...  What about *THIS* series?  Will *THIS* series give us
->>> oopses when userspace blasts a new XSAVE buffer in with NT_X86_XSTATE?
->>>
->>
->> Fortunately, CET states are supervisor states.  NT_x86_XSTATE has only
->> user states.
+On 21-02-01 15:09:45, David Rientjes wrote:
+> On Mon, 1 Feb 2021, Ben Widawsky wrote:
 > 
-> Ahhh, good point.  You did mention this in the changelog:
+> > > I think that's what 8.2.8.4.3 says, no?  And then 8.2.8.4.5 says you 
+> > > can use up to Payload Size.  That's why my recommendation was to enforce 
+> > > this in cxl_mem_setup_mailbox() up front.
+> > 
+> > Yeah. I asked our spec people to update 8.2.8.4.5 to make it clearer. I'd argue
+> > the intent is how you describe it, but the implementation isn't.
+> > 
+> > My argument was silly anyway because if you specify greater than 1M as your
+> > payload, you will get EINVAL at the ioctl.
+> > 
+> > The value of how it works today is the driver will at least bind and allow you
+> > to interact with it.
+> > 
+> > How strongly do you feel about this?
+> > 
 > 
->> Control-flow Enforcement Technology (CET) introduces these MSRs:
->>
->>      MSR_IA32_U_CET (user-mode CET settings),
->>      MSR_IA32_PL3_SSP (user-mode shadow stack pointer),
->>
->>      MSR_IA32_PL0_SSP (kernel-mode shadow stack pointer),
->>      MSR_IA32_PL1_SSP (Privilege Level 1 shadow stack pointer),
->>      MSR_IA32_PL2_SSP (Privilege Level 2 shadow stack pointer),
->>      MSR_IA32_S_CET (kernel-mode CET settings),
->>      MSR_IA32_INT_SSP_TAB (exception shadow stack table).
->>
->> The two user-mode MSRs belong to XFEATURE_CET_USER.  The first three of
->> kernel-mode MSRs belong to XFEATURE_CET_KERNEL.  Both XSAVES states are
->> supervisor states.
+> I haven't seen the update to 8.2.8.4.5 to know yet :)
 > 
-> This is another great place to add some information about the feature.
+> You make a good point of at least being able to interact with the driver.  
+> I think you could argue that if the driver binds, then the payload size is 
+> accepted, in which case it would be strange to get an EINVAL when using 
+> the ioctl with anything >1MB.
 > 
-> "Both XSAVES states are supervisor states." ...  This means that there
-> is no direct, unprivileged access to this state, making it harder for an
-> attacker to subvert CET.
+> Concern was that if we mask off the reserved bits from the command 
+> register that we could be masking part of the payload size that is being 
+> passed if the accepted max is >1MB.  Idea was to avoid any possibility of 
+> this inconsistency.  If this is being checked for ioctl, seems like it's 
+> checking reserved bits.
 > 
-> You could also allude to the future ptrace() support here.
-> 
+> But maybe I should just wait for the spec update.
 
-I will add that.
+Well, I wouldn't hold your breath (it would be an errata in this case anyway).
+My preference would be to just allow allow mailbox payload size to be 2^31 and
+not deal with this.
+
+My question was how strongly do you feel it's an error that should prevent
+binding.
