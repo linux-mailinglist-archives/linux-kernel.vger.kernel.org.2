@@ -2,160 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5AFA30B24D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:52:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A1D30B252
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:52:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbhBAVuD convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 1 Feb 2021 16:50:03 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3412 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhBAVuC (ORCPT
+        id S229767AbhBAVwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 16:52:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229606AbhBAVv7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 16:50:02 -0500
-Received: from dggeme759-chm.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DV1lN1sQ8z5Mdc;
-        Tue,  2 Feb 2021 05:48:00 +0800 (CST)
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- dggeme759-chm.china.huawei.com (10.3.19.105) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2106.2; Tue, 2 Feb 2021 05:49:17 +0800
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.006;
- Tue, 2 Feb 2021 05:49:17 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "morten.rasmussen@arm.com" <morten.rasmussen@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "xuwei (O)" <xuwei5@huawei.com>,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
-        "tiantao (H)" <tiantao6@hisilicon.com>,
-        wanghuiqiang <wanghuiqiang@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        "guodong.xu@linaro.org" <guodong.xu@linaro.org>,
-        Meelis Roos <mroos@linux.ee>
-Subject: RE: [PATCH] sched/topology: fix the issue groups don't span
- domain->span for NUMA diameter > 2
-Thread-Topic: [PATCH] sched/topology: fix the issue groups don't span
- domain->span for NUMA diameter > 2
-Thread-Index: AQHW+EyH3+RsPKpAu0uyCnuQYKixoapDFJoAgACzNkA=
-Date:   Mon, 1 Feb 2021 21:49:17 +0000
-Message-ID: <8cfd37e2617248f4b008f5564eb854a9@hisilicon.com>
-References: <20210201033830.15040-1-song.bao.hua@hisilicon.com>
- <jhj7dnr4q0h.mognet@arm.com>
-In-Reply-To: <jhj7dnr4q0h.mognet@arm.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.202.106]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Mon, 1 Feb 2021 16:51:59 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 024D0C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 13:51:19 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id e19so12540918pfh.6
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 13:51:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=X0Q/ZUQ4hKoawWN2B+locX1+Bltm6iYAtS5TX76PGV0=;
+        b=JcEV6HVaeDaOOL0h5jY3uy6ve5Oys0MQOJ9U4nasE04exuRtFZbJpOIHVfWoYfle1J
+         beI2sJhpCMqlNBKLZqSCeIYmtH728isIhOBGfVtCVebDEkV58CsHbbdI/9BFXOpwyhgi
+         sPhuhxrbexd8U7yQKn0cHEHOHWqmMJ6kjMVmVst139NVTTYL8tb2UsrBxT/gZPOJhQTR
+         bK3XnLbP8oRFa2gAPWEvZAP1vvQ7NrTtztwvuzEw5LaDNbCmxSFGSwPCx7byOdJRUt9C
+         YTDIaUOkG8VOT/SQRV6U7po3pLvDqhE6/hv92a8C2KiIxOr0CrEWaO67fDJMNiOEuu4f
+         93zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=X0Q/ZUQ4hKoawWN2B+locX1+Bltm6iYAtS5TX76PGV0=;
+        b=RiQAFXOOrJQm54cwkBs/zG/ZWMOasyQpRuQw+3ijlFBYILEt3eGoESVd5YxRJIFxpd
+         FDUc8BLWSyAU5jdGnKryL6hbbs07KGOmVwI/Yl5DV34dyXVnoLW6kfzESYeXHtX98g3D
+         uHAjrCaHrMu31jCE3WXnNZr6V87nPT1lcCdSRKfMcH8JyvlHMw/a9lUEudPF5MvGHsr6
+         4/YKSumchzOuo8GBi3+LZyWZbflzHTiqVIArvyzTdGGy81bOliCeXfqoDDxVW5UUL/zj
+         d2NfUrs8z9mF8oHQV5kkw5tUoVUjab+yryVpZ19k7bO267HFRA+97ZNUz11guokcD2sz
+         citw==
+X-Gm-Message-State: AOAM530TYIONyDkuesVP2x3+TaRrNUmAF6F4p+NHU4BXZO3QXD20qIQX
+        Vo5VozQ2ixX0vynr/q+I70UXIxejXlTSSw==
+X-Google-Smtp-Source: ABdhPJy0F0JZ9njhCDrVgT94zzxXJpyJDDqlsbZrnmv0MJhPc/jsWvO86HbtsOo2O3onCME70FZzTQ==
+X-Received: by 2002:aa7:808b:0:b029:1ce:8a32:f5e8 with SMTP id v11-20020aa7808b0000b02901ce8a32f5e8mr3097800pff.34.1612216278371;
+        Mon, 01 Feb 2021 13:51:18 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id a72sm20075000pfa.126.2021.02.01.13.51.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 13:51:17 -0800 (PST)
+Date:   Mon, 1 Feb 2021 13:51:16 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH 03/14] cxl/mem: Find device capabilities
+In-Reply-To: <20210201165352.wi7tzpnd4ymxlms4@intel.com>
+Message-ID: <32f33dd-97a-8b1c-d488-e5198a3d7748@google.com>
+References: <20210130002438.1872527-1-ben.widawsky@intel.com> <20210130002438.1872527-4-ben.widawsky@intel.com> <234711bf-c03f-9aca-e0b5-ca677add3ea@google.com> <20210201165352.wi7tzpnd4ymxlms4@intel.com>
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 1 Feb 2021, Ben Widawsky wrote:
 
-
-> -----Original Message-----
-> From: Valentin Schneider [mailto:valentin.schneider@arm.com]
-> Sent: Tuesday, February 2, 2021 7:11 AM
-> To: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>;
-> vincent.guittot@linaro.org; mgorman@suse.de; mingo@kernel.org;
-> peterz@infradead.org; dietmar.eggemann@arm.com; morten.rasmussen@arm.com;
-> linux-kernel@vger.kernel.org
-> Cc: linuxarm@openeuler.org; xuwei (O) <xuwei5@huawei.com>; Liguozhu (Kenneth)
-> <liguozhu@hisilicon.com>; tiantao (H) <tiantao6@hisilicon.com>; wanghuiqiang
-> <wanghuiqiang@huawei.com>; Zengtao (B) <prime.zeng@hisilicon.com>; Jonathan
-> Cameron <jonathan.cameron@huawei.com>; guodong.xu@linaro.org; Song Bao Hua
-> (Barry Song) <song.bao.hua@hisilicon.com>; Meelis Roos <mroos@linux.ee>
-> Subject: Re: [PATCH] sched/topology: fix the issue groups don't span
-> domain->span for NUMA diameter > 2
+> On 21-01-30 15:51:49, David Rientjes wrote:
+> > On Fri, 29 Jan 2021, Ben Widawsky wrote:
+> > 
+> > > +static int cxl_mem_setup_mailbox(struct cxl_mem *cxlm)
+> > > +{
+> > > +	const int cap = cxl_read_mbox_reg32(cxlm, CXLDEV_MB_CAPS_OFFSET);
+> > > +
+> > > +	cxlm->mbox.payload_size =
+> > > +		1 << CXL_GET_FIELD(cap, CXLDEV_MB_CAP_PAYLOAD_SIZE);
+> > > +
+> > > +	/* 8.2.8.4.3 */
+> > > +	if (cxlm->mbox.payload_size < 256) {
+> > > +		dev_err(&cxlm->pdev->dev, "Mailbox is too small (%zub)",
+> > > +			cxlm->mbox.payload_size);
+> > > +		return -ENXIO;
+> > > +	}
+> > 
+> > Any reason not to check cxlm->mbox.payload_size > (1 << 20) as well and 
+> > return ENXIO if true?
 > 
+> If some crazy vendor wanted to ship a mailbox larger than 1M, why should the
+> driver not allow it?
 > 
-> Hi,
-> 
-> On 01/02/21 16:38, Barry Song wrote:
-> > A tricky thing is that we shouldn't use the sgc of the 1st CPU of node2
-> > for the sched_group generated by grandchild, otherwise, when this cpu
-> > becomes the balance_cpu of another sched_group of cpus other than node0,
-> > our sched_group generated by grandchild will access the same sgc with
-> > the sched_group generated by child of another CPU.
-> >
-> > So in init_overlap_sched_group(), sgc's capacity be overwritten:
-> >         build_balance_mask(sd, sg, mask);
-> >         cpu = cpumask_first_and(sched_group_span(sg), mask);
-> >
-> >         sg->sgc = *per_cpu_ptr(sdd->sgc, cpu);
-> >
-> > And WARN_ON_ONCE(!cpumask_equal(group_balance_mask(sg), mask)) will
-> > also be triggered:
-> > static void init_overlap_sched_group(struct sched_domain *sd,
-> >                                      struct sched_group *sg)
-> > {
-> >         if (atomic_inc_return(&sg->sgc->ref) == 1)
-> >                 cpumask_copy(group_balance_mask(sg), mask);
-> >         else
-> >                 WARN_ON_ONCE(!cpumask_equal(group_balance_mask(sg), mask));
-> > }
-> >
-> > So here move to use the sgc of the 2nd cpu. For the corner case, if NUMA
-> > has only one CPU, we will still trigger this WARN_ON_ONCE. But It is
-> > really unlikely to be a real case for one NUMA to have one CPU only.
-> >
-> 
-> Well, it's trivial to boot this with QEMU, and it's actually the example
-> the comment atop that WARN_ONCE() is based on. Also, you could end up with
-> a single CPU on a node during hotplug operations...
 
-Hi Valentin,
-
-The qemu topology is just a reflection of real kunpeng920 case, and pls
-also note Meelis has also tested on another real hardware "8-node Sun
-Fire X4600-M2" and gave the tested-by.
-
-It might not a perfect fix, but it is the simplest way to fix for this
-moment and for real cases. A "perfect" fix will require major
-refactoring of topology.c.
-
-I don't think hotplug is much relevant as even some cpus are unplugged
-and only one cpu is left in the sched_group of the sched_domain, the
-related domain and group are still getting right settings.
-
-On the other hand, the corner could literally  be fixed, but will
-get some very ugly code involved. I mean, two sched_group can result
-in using the same sgc:
-1. the sched_group generated by grandchild with only one numa
-2. the sched_group generated by child with more than one numa
-
-Right now, I'm moving to the 2nd cpu for sched_group1, if we move to
-use 2nd cpu for sched_group2, then having only one cpu in one NUMA
-wouldn't be a problem anymore. But the code will be very ugly.
-So I would prefer to keep this assumption and just ignore the unreal
-corner case.
-
-> 
-> I am not entirely sure whether having more than one CPU per node is a
-> sufficient condition. I'm starting to *think* it is, but I'm not entirely
-> convinced yet - and now I need a new notebook.
-
-Me too. Some extremely complicated topology might break the assumption.
-Really need a new notebook to draw this kind of complicated topology to
-break the assumption :-)
-
-But it is sufficient for the existing real cases which need fixing. When
-someday a real case in which each numa has more than one CPU wakes up
-the below warning:
-WARN_ON_ONCE(!cpumask_equal(group_balance_mask(sg), mask)).
-It might be the right time to consider major refactoring of topology.c.
-
-Thanks
-Barry
+Because the spec disallows it :)
