@@ -2,65 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E20E530A975
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:16:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B06C30A979
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:18:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232284AbhBAOQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 09:16:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231284AbhBAOQW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 09:16:22 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBBCDC061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 06:15:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=MWlPy8C+pBGPMz0T1Jum1eQKXQgt1lI/s1CODUeEWFE=; b=BxK1TiUxNkckQMGT+mO4ygmHY8
-        Wy3WRlsp3/4/laJL7sfuXoxd+7If/RhRvthiMRRSkonDLcPfjz9AiW1yu6Y+ONdgRrTG3+sXb9mWU
-        iaLhAwlfcc2NDNkcWJR2iV8q1p0ZlFVbuQD/kWAW5tqokVDfnmRGv+b7wI9SCWVQo+BYXtpthaCzI
-        mdFHd8ZWTgKEOpet3H0ZjxViqrzIMlI9Zbaend4Wn7kg01WX1OJqYgmNZc6ysjgpcoZMhWq5w7aAk
-        vm9ZbQupfU8tmn8bzY9bqmGKqq17bCg69da9oZSavjNi9Z16X0aT7HqpunmwxV+2iQu60getI9PWR
-        n0V6AVEQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l6Zyr-00Drh0-Gr; Mon, 01 Feb 2021 14:15:05 +0000
-Date:   Mon, 1 Feb 2021 14:15:05 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     andriy.shevchenko@linux.intel.com, david@redhat.com,
-        vbabka@suse.cz, linmiaohe@huawei.com, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Joe Perches <joe@perches.com>
-Subject: Re: [PATCH v2 3/3] vsprintf: dump full information of page flags in
- pGp
-Message-ID: <20210201141505.GR308988@casper.infradead.org>
-References: <20210201115610.87808-1-laoar.shao@gmail.com>
- <20210201115610.87808-4-laoar.shao@gmail.com>
+        id S232514AbhBAORa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 09:17:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53658 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232042AbhBAOR1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 09:17:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B07B164EA3;
+        Mon,  1 Feb 2021 14:16:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612189006;
+        bh=IOhAKRWhf9s2LcVyWgiTkYA1yms+M5h8BHth71Hm2PY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PTmpqvje7zZKA/bW7tfxiXdRdSMZGDscrq8TlBV2tWqfAfYpPMVxtkIITYwUTMDHN
+         eLiIRNyp4ID63PQQpYoqAV2zgBo3CJ/wo6czRnNc453UAjc893x3Km0t4eh+/M00gZ
+         VgMUKJjUO8x7+VDO8e58o57Ic8ZvCn1iLBHuxakUlcqHPWqaJ6shi+z3rYtfhf3PeQ
+         7MaEmUW/igDHAHqFI3NNG1sSQWJ1+wKDb/UdJtja85R+PDejlkVPxbLa7Y9rgnQNBi
+         Q3LqZ0w06lF8pZ7t2/Ie6Eafnw4RovSsZm6w2K8gDyAJIXnkGpSlaY0oEiCNaY7B/V
+         hbjT7gIlPc0wA==
+Date:   Mon, 1 Feb 2021 19:46:42 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     yung-chuan.liao@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH 3/6] soundwire: qcom: set continue execution flag for
+ ignored commands
+Message-ID: <20210201141642.GB2771@vkoul-mobl>
+References: <20210129173248.5941-1-srinivas.kandagatla@linaro.org>
+ <20210129173248.5941-4-srinivas.kandagatla@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210201115610.87808-4-laoar.shao@gmail.com>
+In-Reply-To: <20210129173248.5941-4-srinivas.kandagatla@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 07:56:10PM +0800, Yafang Shao wrote:
-> - Before the patch,
-> [ 6343.396602] Slab 0x000000004382e02b objects=33 used=3 fp=0x000000009ae06ffc flags=0x17ffffc0010200(slab|head)
+On 29-01-21, 17:32, Srinivas Kandagatla wrote:
+> version 1.5.1 and higher IPs of this controller required to set
+> continue execution on ingored command flag. This patch sets this flag.
 > 
-> - After the patch,
-> [ 6871.296131] Slab 0x00000000c0e19a37 objects=33 used=3 fp=0x00000000c4902159 flags=0x17ffffc0010200(Node 0,Zone 2,Lastcpupid 0x1fffff,slab|head)
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  drivers/soundwire/qcom.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+> index da6e0d4e9622..3669bac11a32 100644
+> --- a/drivers/soundwire/qcom.c
+> +++ b/drivers/soundwire/qcom.c
+> @@ -40,6 +40,7 @@
+>  #define SWRM_CMD_FIFO_CMD					0x308
+>  #define SWRM_CMD_FIFO_STATUS					0x30C
+>  #define SWRM_CMD_FIFO_CFG_ADDR					0x314
+> +#define SWRM_CONTINUE_EXEC_ON_CMD_IGNORE			BIT(31)
+>  #define SWRM_RD_WR_CMD_RETRIES					0x7
+>  #define SWRM_CMD_FIFO_RD_FIFO_ADDR				0x318
+>  #define SWRM_ENUMERATOR_CFG_ADDR				0x500
+> @@ -345,7 +346,16 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
+>  	ctrl->reg_write(ctrl, SWRM_MCP_CFG_ADDR, val);
+>  
+>  	/* Configure number of retries of a read/write cmd */
+> -	ctrl->reg_write(ctrl, SWRM_CMD_FIFO_CFG_ADDR, SWRM_RD_WR_CMD_RETRIES);
+> +	if (ctrl->version_major == 1 && ctrl->version_minor >= 5 &&
+> +	    ctrl->version_step >= 1) {
 
-I would suggest it will be easier to parse as:
+why not use raw version value?
 
-flags=0x17ffffc0010200(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+        if (ctrl->raw > 0x10501 )
 
-That should alleviate the concerns about debugfs format change -- we've
-never guaranteed that flag names won't change, and they now look enough
-like flags that parsers shouldn't fall over them.
+> +		/* Only for versions >= 1.5.1 */
+> +		ctrl->reg_write(ctrl, SWRM_CMD_FIFO_CFG_ADDR,
+> +				SWRM_RD_WR_CMD_RETRIES |
+> +				SWRM_CONTINUE_EXEC_ON_CMD_IGNORE);
+> +	} else {
+> +		ctrl->reg_write(ctrl, SWRM_CMD_FIFO_CFG_ADDR,
+> +				SWRM_RD_WR_CMD_RETRIES);
+> +	}
+>  
+>  	/* Set IRQ to PULSE */
+>  	ctrl->reg_write(ctrl, SWRM_COMP_CFG_ADDR,
+> -- 
+> 2.21.0
+
+-- 
+~Vinod
