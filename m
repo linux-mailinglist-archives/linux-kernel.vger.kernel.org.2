@@ -2,67 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D24CF30A44E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:25:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55AB630A451
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:25:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232611AbhBAJXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 04:23:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47128 "EHLO
+        id S229736AbhBAJYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 04:24:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232543AbhBAJXh (ORCPT
+        with ESMTP id S232543AbhBAJYG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 04:23:37 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE68CC061574;
-        Mon,  1 Feb 2021 01:22:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=m4R5BkzhKMHXACC3fJ4P7syCDqSSnz8E3Zk8HUxOaOY=; b=yyfRMlS8YY3jQfMNd/jpdcqegH
-        kDZU5/i3dGRzP3LOFsCgPdeDIbNJZ9VK9Y3T+n7UUKo4s46/v1Ucnv/1KnbsiEUR3BZYVwac0LtrU
-        5kADJWX4sKKjCCZgcVnUQBxUWAWRluBx6q6B4/McX72rYhRKuaD/mpT2DrNH57eu001K5Pk5TwCY2
-        65FNTTnuJgJmNbtFk8/WLv5YLM/2uDrO2VgVIWvQrkSxCYrqbrQC4jB33+Rb3HZlZb6D6o2wUrVK7
-        9LxoY6nP5RRV2uN+ZCSSK3F842tM5YxsLcreQFXUSO9jgJFEHWbJODbFZwkdi2NkO/fqW6IClYFAF
-        qEOsehFw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l6VPk-0006UK-Sw; Mon, 01 Feb 2021 09:22:33 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 129BF3011FE;
-        Mon,  1 Feb 2021 10:22:27 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9AE942C10ABC9; Mon,  1 Feb 2021 10:22:27 +0100 (CET)
-Date:   Mon, 1 Feb 2021 10:22:27 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@davemloft.net>, kpsingh@kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: extended bpf_send_signal_thread with argument
-Message-ID: <YBfIUwtK+QqVlfRt@hirez.programming.kicks-ass.net>
-References: <CACT4Y+a7UBQpAY4vwT8Od0JhwbwcDrbJXZ_ULpPfJZ42Ew-yCQ@mail.gmail.com>
+        Mon, 1 Feb 2021 04:24:06 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 873E0C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 01:23:26 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1l6VQU-0002Sl-BI; Mon, 01 Feb 2021 10:23:18 +0100
+Received: from mtr by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1l6VQT-0006zv-0x; Mon, 01 Feb 2021 10:23:17 +0100
+Date:   Mon, 1 Feb 2021 10:23:17 +0100
+From:   Michael Tretter <m.tretter@pengutronix.de>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     'Emmanuel Arias' <eamanu@yaerobi.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] media: allegro-dvt: Use __packed sentence
+Message-ID: <20210201092317.GB6717@pengutronix.de>
+Mail-Followup-To: Michael Tretter <m.tretter@pengutronix.de>,
+        David Laight <David.Laight@ACULAB.COM>,
+        'Emmanuel Arias' <eamanu@yaerobi.com>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "devel@driverdev.osuosl.org" <devel@driverdev.osuosl.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <YBRpstkOi685uHef@debian>
+ <63a4ed5c2ef54c09b2df9d6234b68711@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+a7UBQpAY4vwT8Od0JhwbwcDrbJXZ_ULpPfJZ42Ew-yCQ@mail.gmail.com>
+In-Reply-To: <63a4ed5c2ef54c09b2df9d6234b68711@AcuMS.aculab.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 10:09:54 up 60 days, 21:36, 100 users,  load average: 0.07, 0.20,
+ 0.21
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: mtr@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 12:14:02PM +0100, Dmitry Vyukov wrote:
-> Hi,
+On Fri, 29 Jan 2021 23:54:41 +0000, David Laight wrote:
+> From: Emmanuel Arias
+> > Sent: 29 January 2021 20:02
+> > 
+> > Fix coding style using __packed sentece instead of
+> > __attribute__((__packed__)).
+> > 
+> > Signed-off-by: Emmanuel Arias <eamanu@yaerobi.com>
+> > ---
+> >  drivers/staging/media/allegro-dvt/allegro-core.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/staging/media/allegro-dvt/allegro-core.c b/drivers/staging/media/allegro-
+> > dvt/allegro-core.c
+> > index 9f718f43282b..cee624dac61a 100644
+> > --- a/drivers/staging/media/allegro-dvt/allegro-core.c
+> > +++ b/drivers/staging/media/allegro-dvt/allegro-core.c
+> > @@ -670,7 +670,7 @@ static ssize_t allegro_mbox_read(struct allegro_mbox *mbox,
+> >  	struct {
+> >  		u16 length;
+> >  		u16 type;
+> > -	} __attribute__ ((__packed__)) *header;
+> > +	} __packed *header;
+> >  	struct regmap *sram = mbox->dev->sram;
 > 
-> I would like to send a signal from a bpf program invoked from a
-> perf_event. There is:
+> Does this actually need to be packed?
+> The only reason would be if the structure could exist on a 2n+1
+> boundary.
 
-You can't. Sending signals requires sighand lock, and you're not allowed
-to take locks from perf_event context.
+Not sure, what you mean by this.
+
+> But that is only likely if part of some binary sequence.
+> In which case I'd expect it to be marked __be or __le.
+
+It is part of a binary sequence. It is the header of messages in a mailbox
+that is used to exchange data with a co-processor (video encoder). In fact, it
+should be marked as __le.
+
+Michael
