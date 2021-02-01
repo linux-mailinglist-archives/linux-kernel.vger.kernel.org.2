@@ -2,79 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE60B30AFB2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:45:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5290C30AFBB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:47:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229986AbhBASoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:44:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55482 "EHLO
+        id S232240AbhBASqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:46:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbhBASoh (ORCPT
+        with ESMTP id S231975AbhBASpi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:44:37 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A3DFC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 10:43:57 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id b17so10511399plz.6
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 10:43:57 -0800 (PST)
+        Mon, 1 Feb 2021 13:45:38 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C39CC061573;
+        Mon,  1 Feb 2021 10:44:57 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id a9so7620090ejr.2;
+        Mon, 01 Feb 2021 10:44:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PlNBxyGKqX8rTM2Nlq0u1yNj1djA6ZOFZTkUZoytNjs=;
-        b=QREHAf9bNTRvpxtgMZRmhnoM7P6JXcSJGy1pcjXJAKa+fp/F0ZOe1WCZhRF5Y0evjx
-         oHbpoDpmNUyAViOTzPc7HuvKseKotQ4oEcpbXyJEr3+QMHgVqgnBSn1HwYwC2wbbyCvD
-         OlYvTeMquNE0ijxO/2GZ4/OacMaCoieBxqrKlX3UEjJTh6UMHp1vgJJ5D0PPmjhZfQ/w
-         POWk3ZdGCWw2AYjp2v58a99oIYfZvgVf/6fHmXx5wxg6CsLkqAec067ZmYZDCIiqrcWo
-         Aa+v9CU2fwugTuteccp14nFxdPKraNhCagMy0TnZCKYteB6zlkl3wgtH4VoPF/euYphU
-         SQTQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y8+WtpLzvSzCDusr/oGZuPfG2Y+S6t2NjXiqdDh53xI=;
+        b=WFoOdTVj2gp2KTDmDJs4HV7BYqQnNJAtqKBw/LQ6rD7exQQiONehNZk4oqRZ9gWRxf
+         bjPgHAyWJpv4d/BQ3w/UoqDYpoEexCz6CWf134r/8SAr86FG2/y8a0ul8m8QHAG4MILG
+         xvpsAxQ3j9E+Uwd/dOpURhtH8ddckYjG3z4CVUZ/y6CdqApNkdIb32SslEHz+0fYv4cw
+         fc+otZBQd/bryGudPelUTWV7JuodWchU3cNg88u0GkjgD+w5s2f6HYBeOUUuXgyQuP42
+         NgFqg+aqy1L2v0+He8QiFdSGf/i8YeiEyJbjJdPEdm+SoaVq390m89pPoQWLWpCZq3nQ
+         N2xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=PlNBxyGKqX8rTM2Nlq0u1yNj1djA6ZOFZTkUZoytNjs=;
-        b=pIuWUplKURZiaJfAqeMF8a6OUWlpMA5lMoYDGvbJdjd/Md2VFU3TKmAU6Fy3rP+iKh
-         NJy8cm7QnfQTYTYPN3IDYRLxrnv059oqQihPgiCWQPKuCp4tSyOk1s1QgYOepEy6uTkX
-         r5252OZHybcfRQvsFgXp4UsV316Wbr0avv+SFlSff1v48M0rfmCgHpzjRskZ635LHUoT
-         5n0eU0dykQan3CFX4oU/rfN1ws/jm+m5khSdmo/DWFUYa2sX+I55lSVlQKzGlJUSvm4c
-         geQp5qkQtIfRM0mcAFk9UUTmv3bCcZO/PsR+8iMJ5e9JxsyB4Iewicl/JynAIRG8kOuk
-         sOSw==
-X-Gm-Message-State: AOAM532LNG4WfQurcbyzxbJu429hn3Vbtb7oz/aoBm8cX1H+ufqPCHje
-        XnAZBNpZN3bnZSXkziE6VEG9ZlniQ5k=
-X-Google-Smtp-Source: ABdhPJz1TyrNkqlPnmv8BbCuwBEvggzs5mlSYRBRBLn1ZMYBh1z3OpXg9PdaPI8nF7dLMqEbq/2rlA==
-X-Received: by 2002:a17:902:a401:b029:dc:3e1d:234a with SMTP id p1-20020a170902a401b02900dc3e1d234amr18798296plq.48.1612205036799;
-        Mon, 01 Feb 2021 10:43:56 -0800 (PST)
-Received: from google.com ([2620:15c:211:201:540a:d3ca:9e74:48ac])
-        by smtp.gmail.com with ESMTPSA id y75sm18543200pfg.119.2021.02.01.10.43.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 10:43:55 -0800 (PST)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Mon, 1 Feb 2021 10:43:52 -0800
-From:   Minchan Kim <minchan@kernel.org>
-To:     Georgi Djakov <georgi.djakov@linaro.org>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/page_io: Use pr_alert_ratelimited for swap read/write
- errors
-Message-ID: <YBhL6LkWAAV0QEZL@google.com>
-References: <20210201142055.29068-1-georgi.djakov@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y8+WtpLzvSzCDusr/oGZuPfG2Y+S6t2NjXiqdDh53xI=;
+        b=UNVKmFB4wvgNOCC26h6FgbFHNjp1yRDhRIaNROQRGC+O9Y0WoXzn7M/rYYhvFcny4p
+         47jJCBWL3qqMxHDVSBBt6sdTrPcsagvnmI2pB1828I6gEHsP9jb0Y0Eco2TIFCJze1Ca
+         kyqEGXcfGY1hRZaHS82An2HaRemSGfRa+RctOJ+bK7vsBkiGJ3DpG+TO1zV4H9tS60zj
+         8MjTK+ecmY56YAaDbj40ynCwJl+eMg/6hOEl2RA+AhQLS1dAwhLAs9H6fSKiWNkiunhs
+         e/Fgw5C5nyuPXujk9Wj9IB5IdnzuO9K7vmjT8Wa3M4k2p084tuDkftX8cs8eJ03hR1ng
+         fkVg==
+X-Gm-Message-State: AOAM533ULo1l79jPHpGakdZ9BK2oPLSQe5DVbmWawC9EOKlxHinYIYZV
+        oNlFqQUtKubbIxYVKqLFVb58TEgmjADXuNufV88=
+X-Google-Smtp-Source: ABdhPJwGcBcVEQNitkcUvllYju02Dp0PjxrUiOHQfslGGui/UdGyJIzfVQMgvlbIlqnR/HEH+pcgOsNES5MPWqfsUnQ=
+X-Received: by 2002:a17:906:494c:: with SMTP id f12mr19304966ejt.56.1612205095839;
+ Mon, 01 Feb 2021 10:44:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201142055.29068-1-georgi.djakov@linaro.org>
+References: <20210201172850.2221624-1-elder@linaro.org>
+In-Reply-To: <20210201172850.2221624-1-elder@linaro.org>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Mon, 1 Feb 2021 13:44:20 -0500
+Message-ID: <CAF=yD-LerEd9ZyLSFOaW3JqjvWUrp5L0jVvyuJU56atmT=G1oQ@mail.gmail.com>
+Subject: Re: [PATCH net-next v2 0/7] net: ipa: don't disable NAPI in suspend
+To:     Alex Elder <elder@linaro.org>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, elder@kernel.org,
+        evgreen@chromium.org, bjorn.andersson@linaro.org,
+        cpratapa@codeaurora.org,
+        Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 04:20:55PM +0200, Georgi Djakov wrote:
-> If there are errors during swap read or write, they can easily fill
-> the log buffer and remove any previous messages that might be useful
-> for debugging, especially on systems that rely for logging only on
-> the kernel ring-buffer.
-> 
-> For example, on a systems using zram as swap, we are more likely to
-> see any page allocation errors preceding the swap write errors if the
-> alerts are ratelimited.
-> 
-> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
-Acked-by: Minchan Kim <minchan@kernel.org>
+On Mon, Feb 1, 2021 at 12:28 PM Alex Elder <elder@linaro.org> wrote:
+>
+> This is version 2 of a series that reworks the order in which things
+> happen during channel stop and suspend (and start and resume), in
+> order to address a hang that has been observed during suspend.
+> The introductory message on the first version of the series gave
+> some history which is omitted here.
+>
+> The end result of this series is that we only enable NAPI and the
+> I/O completion interrupt on a channel when we start the channel for
+> the first time.  And we only disable them when stopping the channel
+> "for good."  In other words, NAPI and the completion interrupt
+> remain enabled while a channel is stopped for suspend.
+>
+> One comment on version 1 of the series suggested *not* returning
+> early on success in a function, instead having both success and
+> error paths return from the same point at the end of the function
+> block.  This has been addressed in this version.
+>
+> In addition, this version consolidates things a little bit, but the
+> net result of the series is exactly the same as version 1 (with the
+> exception of the return fix mentioned above).
+>
+> First, patch 6 in the first version was a small step to make patch 7
+> easier to understand.  The two have been combined now.
+>
+> Second, previous version moved (and for suspend/resume, eliminated)
+> I/O completion interrupt and NAPI disable/enable control in separate
+> steps (patches).  Now both are moved around together in patch 5 and
+> 6, which eliminates the need for the final (NAPI-only) patch.
+>
+> I won't repeat the patch summaries provided in v1:
+>   https://lore.kernel.org/netdev/20210129202019.2099259-1-elder@linaro.org/
+>
+> Many thanks to Willem de Bruijn for his thoughtful input.
+>
+>                                         -Alex
+>
+> Alex Elder (7):
+>   net: ipa: don't thaw channel if error starting
+>   net: ipa: introduce gsi_channel_stop_retry()
+>   net: ipa: introduce __gsi_channel_start()
+>   net: ipa: kill gsi_channel_freeze() and gsi_channel_thaw()
+>   net: ipa: disable interrupt and NAPI after channel stop
+>   net: ipa: don't disable interrupt on suspend
+>   net: ipa: expand last transaction check
+>
+>  drivers/net/ipa/gsi.c | 138 ++++++++++++++++++++++++++----------------
+>  1 file changed, 85 insertions(+), 53 deletions(-)
+
+Acked-by: Willem de Bruijn <willemb@google.com>
