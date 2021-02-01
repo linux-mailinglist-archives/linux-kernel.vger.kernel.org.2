@@ -2,118 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FAEA30A6B5
+	by mail.lfdr.de (Postfix) with ESMTP id 934FA30A6B6
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:39:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbhBALjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 06:39:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbhBALja (ORCPT
+        id S229926AbhBALjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 06:39:52 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:11965 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229495AbhBALjs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 06:39:30 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CEABC061573;
-        Mon,  1 Feb 2021 03:38:50 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id b17so9817345plz.6;
-        Mon, 01 Feb 2021 03:38:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9Q95PqvGkUzp3INwmIRdQ7b1iYJiecOxAb6O0DpOr0g=;
-        b=JGHk/DRuXxYOJY1bsikB5G3a4n25Rwz1TgpAclgFiYFbK+HZW2xwO9iTVy+izSSLAw
-         +pLPpS4HE2iOzv5QSPBrfWS7Ow/dtZ1zzH5JFSHMgesI21P0aZnnIA0mBqRiJdetKdJ5
-         ITeljf/RRurnq3IZnn0i4x3j5cbM5cNVpHP2rqCWnsSH2rUxA1eaGN+F3juti0aMZ3VH
-         ZifR6x1yUt3M5zaW4dkQpIhDuGm972Z+B/JYQN0peDPbuMl6v0MvtiziwxG4f6GjWtlK
-         cX2JjCXoWHNQKvvCADwrKmtfLCw56vhRSrSpModUUrKi8bRTAmbUsgCGR4/M5t8LI8vP
-         GUjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9Q95PqvGkUzp3INwmIRdQ7b1iYJiecOxAb6O0DpOr0g=;
-        b=i3UjXmISuWNQvfhsTRY32GhXWjNHU2G5JE9grpRAxIpRjw6e/85LeNiu2qQAWORHkV
-         5ByVOYxbXEYTeNLkOhUVGzXHgoEMAppA1KQ/mcnwV2vMtmCr0ehqbH3TYil/uzD89U/W
-         FXUrP4hoidRIvb7ZC6Fp1lg4HGuJnp8T4eiHy8K4OuGUHP0QiPCSot2zT1fSk/NFSawY
-         Nl8vREq80TVFA86jpGbBrlvAFTEQeDhq22UpBeeCq+T4kleAWWOAaZ61DHlB8VG89RRc
-         +MJHEjjCIh4RqwtvA2ruyU3xEtsPIG+EEcytDr/YpGkbqqhjVt47i2Cfs01t1dCWPCkS
-         7Jug==
-X-Gm-Message-State: AOAM533IJA8iealfKW/WWlEUtCfTeGVg59DGgOQizxaNsOhZlmmtehbv
-        kw8XcDfmgw/mk6u4MfFjeJFr2sg266kwWK0Zxzwhmz4I
-X-Google-Smtp-Source: ABdhPJxRlhN1OyRA2lmec2j7rnkmGQNZ9fdTym4x2U4fromKrodYjARBmTZl1YQb3oFlmdCqRPKgr7GR+kQnXX5TNBQ=
-X-Received: by 2002:a17:90a:5403:: with SMTP id z3mr17099299pjh.198.1612179529883;
- Mon, 01 Feb 2021 03:38:49 -0800 (PST)
+        Mon, 1 Feb 2021 06:39:48 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DTmCZ2P9TzjGDg;
+        Mon,  1 Feb 2021 19:38:02 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.220) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Mon, 1 Feb 2021
+ 19:38:57 +0800
+Subject: Re: [PATCH v6 4/4] ARM: Add support for Hisilicon Kunpeng L3 cache
+ controller
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     Russell King <rmk+kernel@arm.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        "Haojian Zhuang" <haojian.zhuang@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210201033601.1642-1-thunder.leizhen@huawei.com>
+ <20210201033601.1642-5-thunder.leizhen@huawei.com>
+ <CAK8P3a0=Aj0Ss3xbgh1ELyB+4d94ybugbza_xUqW_=yVsMwEqg@mail.gmail.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <301c82eb-68ce-1a96-a0b8-d46a29bf6f36@huawei.com>
+Date:   Mon, 1 Feb 2021 19:38:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-References: <20210127090747.364951-1-xie.he.0141@gmail.com>
- <20210128114659.2d81a85f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAJht_EOSB-m--Ombr6wLMFq4mPy8UTpsBri2CPsaRTU-aks7Uw@mail.gmail.com>
- <3f67b285671aaa4b7903733455a730e1@dev.tdt.de> <20210129173650.7c0b7cda@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAJht_EPMtn5E-Y312vPQfH2AwDAi+j1OP4zzpg+AUKf46XE1Yw@mail.gmail.com>
- <20210130111618.335b6945@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CAJht_EMQVaKFx7Wjj75F2xVBTCdpmho64wP0bfX6RhFnzNXAZA@mail.gmail.com> <36a6c0769c57cd6835d32cc0fb95bca6@dev.tdt.de>
-In-Reply-To: <36a6c0769c57cd6835d32cc0fb95bca6@dev.tdt.de>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Mon, 1 Feb 2021 03:38:39 -0800
-Message-ID: <CAJht_ENs1Rnf=2iX8M1ufF=StWHKTei3zuKv-xBtkhDsY-xBOA@mail.gmail.com>
-Subject: Re: [PATCH net] net: hdlc_x25: Use qdisc to queue outgoing LAPB frames
-To:     Martin Schiller <ms@dev.tdt.de>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Krzysztof Halasa <khc@pm.waw.pl>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAK8P3a0=Aj0Ss3xbgh1ELyB+4d94ybugbza_xUqW_=yVsMwEqg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.220]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 1:18 AM Martin Schiller <ms@dev.tdt.de> wrote:
->
-> I have thought about this issue again.
->
-> I also have to say that I have never noticed any problems in this area
-> before.
->
-> So again for (my) understanding:
-> When a hardware driver calls netif_stop_queue, the frames sent from
-> layer 3 (X.25) with dev_queue_xmit are queued and not passed "directly"
-> to x25_xmit of the hdlc_x25 driver.
->
-> So nothing is added to the write_queue anymore (except possibly
-> un-acked-frames by lapb_requeue_frames).
 
-If the LAPB module only emits an L2 frame when an L3 packet comes from
-the upper layer, then yes, there would be no problem because the L3
-packet is already controlled by the qdisc and there is no need to
-control the corresponding L2 frame again.
 
-However, the LAPB module can emits L2 frames when there's no L3 packet
-coming, when 1) there are some packets queued in the LAPB module's
-internal queue; and 2) the LAPB decides to send some control frame
-(e.g. by the timers).
+On 2021/2/1 16:31, Arnd Bergmann wrote:
+> On Mon, Feb 1, 2021 at 4:36 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
+>>
+>> Add support for the Hisilicon Kunpeng L3 cache controller as used with
+>> Kunpeng506 and Kunpeng509 SoCs.
+>>
+>> These Hisilicon SoCs support LPAE, so the physical addresses is wider than
+>> 32-bits, but the actual bit width does not exceed 36 bits. When the cache
+>> operation is performed based on the address range, the upper 30 bits of
+>> the physical address are recorded in registers L3_MAINT_START and
+>> L3_MAINT_END, and ignore the lower 6 bits cacheline offset.
+>>
+>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> 
+> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+> 
+> If you add one more thing:
+> 
+>> +static void l3cache_maint_common(u32 range, u32 op_type)
+>> +{
+>> +       u32 reg;
+>> +
+>> +       reg = readl_relaxed(l3_ctrl_base + L3_MAINT_CTRL);
+>> +       reg &= ~(L3_MAINT_RANGE_MASK | L3_MAINT_TYPE_MASK);
+>> +       reg |= range | op_type;
+>> +       reg |= L3_MAINT_STATUS_START;
+>> +       writel(reg, l3_ctrl_base + L3_MAINT_CTRL);
+>> +
+>> +       /* Wait until the hardware maintenance operation is complete. */
+>> +       do {
+>> +               cpu_relax();
+>> +               reg = readl(l3_ctrl_base + L3_MAINT_CTRL);
+>> +       } while ((reg & L3_MAINT_STATUS_MASK) != L3_MAINT_STATUS_END);
+>> +}
+>> +
+>> +static void l3cache_maint_range(phys_addr_t start, phys_addr_t end, u32 op_type)
+>> +{
+>> +       start = start >> L3_CACHE_LINE_SHITF;
+>> +       end = ((end - 1) >> L3_CACHE_LINE_SHITF) + 1;
+>> +
+>> +       writel_relaxed(start, l3_ctrl_base + L3_MAINT_START);
+>> +       writel_relaxed(end, l3_ctrl_base + L3_MAINT_END);
+>> +
+>> +       l3cache_maint_common(L3_MAINT_RANGE_ADDR, op_type);
+>> +}
+> 
+> As mentioned, I'd like to see a code comment that explains the use
+> the of relaxed() vs non-relaxed MMIO accessors, as it will be impossible
+> for a reader to later understand why you picked a mix of the two,
+> and it also ensures that you have considered which one is the best
+> option to use here and that your explanation matches what you do.
 
-> Shouldn't it actually be sufficient to check for netif_queue_stopped in
-> lapb_kick and then do "nothing" if necessary?
+OK, I'll test the performance and add the comment.
 
-We can consider this situation: When the upper layer has nothing to
-send, but there are some packets in the LAPB module's internal queue
-waiting to be sent. The LAPB module will try to send the packets, but
-after it has sent out the first packet, it will meet the "queue
-stopped" situation. In this situation, it'd be preferable to
-immediately start sending the second packet after the queue is started
-again. "Doing nothing" in this situation would mean waiting until some
-other events occur, such as receiving responses from the other side,
-or receiving more outgoing packets from L3.
+> 
+> Based on Russell's comments, I had expected that you would use
+> only relaxed accessors, plus explicit barriers if you change it, matching
+> what l2x0 does (l2x0 has to do it because of __l2c210_cache_sync(),
+> while you don't have a sync callback and don't need to).
 
-> As soon as the hardware driver calls netif_wake_queue, the whole thing
-> should just continue running.
+I might have been a little conservative, I'll change all of them to _relaxed and then test it. Thanks.
 
-This relies on the fact that the upper layer has something to send. If
-the upper layer has nothing to send, lapb_kick would not be
-automatically called again until some other events occur (such as
-receiving responses from the other side). I think it'd be better if we
-do not rely on the assumption that L3 is going to send more packets to
-us, as L3 itself would assume us to provide it a reliable link service
-and we should fulfill its expectation.
+> 
+>       Arnd
+> 
+> .
+> 
+
