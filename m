@@ -2,122 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FC6A30A0A8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 04:44:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5545430A0AB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 04:46:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231296AbhBADn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 22:43:57 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:44699 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229842AbhBADn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 22:43:56 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DTYgV0YRCz9sxS;
-        Mon,  1 Feb 2021 14:43:02 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612150993;
-        bh=KTqaMDzVhMEl7jSCUPV87n/UtiRDFVgt/JT3j7vOrCY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=cyEBtM01FQkGAsT+F6J49gi/82x8Oph++A/5TH3ZOrIJC/4YHos14/U5b/D+MyLKE
-         knAn2ybx04Cs+eStOIsgli+ILPgOZ5ePoyWKDb3wvQ2hX9x/BL92x7KKiNCOI+r+e8
-         FuOrcSpToqUfoyDjqu2si4phvedyq+XgUOqFJ53K1DWgg9vUkB4bdRMxOK/5o5oEqP
-         Up/r6k7GTwyLQI8V5AbknCz63oEZ1xjQxbSTmfnQToeS17YoFn27TkCjSbxByb5SB0
-         cXigv9vdz+izDwW11Bp+Pd9qGhSbbDfbnYwt4DV5kfiOtpJXL4MAdTfr8svUS5HrDY
-         XfA6yC9habCpQ==
-Date:   Mon, 1 Feb 2021 14:42:59 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Marc Zyngier <maz@kernel.org>, Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Paul Kocialkowski <contact@paulk.fr>,
-        Samuel Holland <samuel@sholland.org>
-Subject: linux-next: manual merge of the irqchip tree with the sunxi tree
-Message-ID: <20210201144259.102ae6ab@canb.auug.org.au>
+        id S231384AbhBADqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 22:46:08 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:11993 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231302AbhBADqG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 22:46:06 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DTYhn0WRRzjH7m;
+        Mon,  1 Feb 2021 11:44:09 +0800 (CST)
+Received: from [10.67.103.10] (10.67.103.10) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Mon, 1 Feb 2021
+ 11:45:16 +0800
+Subject: Re: [PATCH v7 4/7] crypto: add ecc curve and expose them
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+CC:     <davem@davemloft.net>, <linux-crypto@vger.kernel.org>,
+        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>,
+        <linux-kernel@vger.kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
+        "Daniele Alessandrelli" <daniele.alessandrelli@linux.intel.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        "Khurana, Prabhjot" <prabhjot.khurana@intel.com>,
+        "Reshetova, Elena" <elena.reshetova@intel.com>
+References: <1611299395-675-1-git-send-email-yumeng18@huawei.com>
+ <1611299395-675-5-git-send-email-yumeng18@huawei.com>
+ <20210128050354.GA30874@gondor.apana.org.au>
+From:   yumeng <yumeng18@huawei.com>
+Message-ID: <f319d30d-4bd5-a8de-bd0a-bde9e6838ed1@huawei.com>
+Date:   Mon, 1 Feb 2021 11:45:16 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/YF/wh=zL265Gz=mmcmH.iKk";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20210128050354.GA30874@gondor.apana.org.au>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.103.10]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/YF/wh=zL265Gz=mmcmH.iKk
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-Today's linux-next merge of the irqchip tree got a conflict in:
+ÔÚ 2021/1/28 13:03, Herbert Xu Ð´µÀ:
+> On Fri, Jan 22, 2021 at 03:09:52PM +0800, Meng Yu wrote:
+>> 1. Add ecc curves(P224, P384, P521) for ECDH;
+> 
+> OK I think this is getting unwieldy.
+> 
+> In light of the fact that we already have hardware that supports
+> a specific subset of curves, I think perhaps it would be better
+> to move the curve ID from the key into the algorithm name instead.
+> 
+> IOW, instead of allocating ecdh, you would allocate ecdh-nist-pXXX.
+> 
+> Any comments?
+> 
+> Thanks,
+> 
 
-  Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7i-a2=
-0-sc-nmi.yaml
-
-between commit:
-
-  752b0aac99c7 ("dt-bindings: irq: sun7i-nmi: Add binding documentation for=
- the V3s NMI")
-
-from the sunxi tree and commit:
-
-  ad6b47cdef76 ("dt-bindings: irq: sun6i-r: Split the binding from sun7i-nm=
-i")
-
-from the irqchip tree.
-
-I fixed it up (I think - see below) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc Documentation/devicetree/bindings/interrupt-controller/allwinner,=
-sun7i-a20-sc-nmi.yaml
-index 4fd1e2780026,f34ecc8c7093..000000000000
---- a/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7=
-i-a20-sc-nmi.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/allwinner,sun7=
-i-a20-sc-nmi.yaml
-@@@ -25,17 -25,7 +25,10 @@@ properties
-        - const: allwinner,sun6i-a31-sc-nmi
-          deprecated: true
-        - const: allwinner,sun7i-a20-sc-nmi
--       - items:
--           - const: allwinner,sun8i-a83t-r-intc
--           - const: allwinner,sun6i-a31-r-intc
- +      - items:
- +          - const: allwinner,sun8i-v3s-nmi
- +          - const: allwinner,sun9i-a80-nmi
-        - const: allwinner,sun9i-a80-nmi
--       - items:
--           - const: allwinner,sun50i-a64-r-intc
--           - const: allwinner,sun6i-a31-r-intc
-        - items:
-            - const: allwinner,sun50i-a100-nmi
-            - const: allwinner,sun9i-a80-nmi
-
---Sig_/YF/wh=zL265Gz=mmcmH.iKk
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAXeMMACgkQAVBC80lX
-0GyrsggAonTf1sRAIjnS1f19ragVdJNtLT9m/7JBHrOswNyWaA+3OdlljtSzHyHY
-ANyPCZj77w1+6WclEPFNqCHtb4FfNw0zjaErXPy30iE3hcs12uJdhJ1LcsA1xj2P
-nvrN0j1BMpi9fRLq/6lGMsZVk86hBGD0CN7RgffnVsmq+hjMEIyH5mxFgAKqaCkj
-wgXeHKYWgQUMCy8HQb9RPUnJbniVA+23fVehZpH+7eOzIqGMRv1+0eytA241zAvp
-FG6iJPgWBMyQaM5UHJVEz6PDkvCdDmzcgF7Q6HHDwZYqrLDxUmuyKucF6zhVTkWs
-Urds/P/aguo6przyk1gq0LR2/uHQiQ==
-=uP0U
------END PGP SIGNATURE-----
-
---Sig_/YF/wh=zL265Gz=mmcmH.iKk--
+Yes£¬It is a good idea, thank you!
