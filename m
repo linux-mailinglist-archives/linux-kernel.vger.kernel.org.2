@@ -2,181 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 217A330B36B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:24:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D4C30B369
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:23:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231144AbhBAXXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 18:23:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35504 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229530AbhBAXX3 (ORCPT
+        id S231202AbhBAXWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 18:22:45 -0500
+Received: from mx1.opensynergy.com ([217.66.60.4]:28807 "EHLO
+        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229476AbhBAXWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 18:23:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612221723;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JXealjKRFD0r2pq7PhUr7p4RbntHdqXsJgCcMNzSn98=;
-        b=W+QnMGnUV5PvvC6swOo7K7BCSyHy84IsAYAkK+abb9Czv0aJFDb1CL7p48RuhojvaqvuiP
-        zxw6HMYZ1zDSdKn6AsaQ+qTk3IeD1WOo38XVp5amK0qG+Ruph/0CESCUxZwlp7bm+mFHhq
-        9x+LL+LxdAeF1/gICQgif8vGBoRVJz0=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-97-CejP8yOePtScV-qSU-q7hA-1; Mon, 01 Feb 2021 18:22:00 -0500
-X-MC-Unique: CejP8yOePtScV-qSU-q7hA-1
-Received: by mail-qt1-f198.google.com with SMTP id v13so1813051qtq.18
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 15:22:00 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JXealjKRFD0r2pq7PhUr7p4RbntHdqXsJgCcMNzSn98=;
-        b=gk34ZDdJ4JyWKAXNH7WNvu+KPxVrax3Dvk8I2FpvGTKY3Ucu/RCDPsLLjHuphqfusn
-         O66AOuVkwqztItEOXSJ6ysb5+/ExU+g9pLZs1Pjdo8B5NzmYDZKmQcMGik+V57xMB42Q
-         THdh4DBps2b4djt0k5a+zlv/2D07StPepd2GmPJqBShVB9ZTDZNgG5j7B+3+EcqOespd
-         axePfBBAcw34BUAgdeI3iQT4lBIOp/YuhHEbC8pb5RG1QZ2OjhpeZ88WHhQQiRp7QzAq
-         yKAiSyLJnRk6vG84jlORXNRmVyEDpwTE8bOI2Rpasaz7DeVHM7Mr2UdGOJW+Sv0PVTDJ
-         M0jg==
-X-Gm-Message-State: AOAM533VVpfwIwTpjZKcqDP784OoCXjYV2tReEorHH51oE05xpu9EUrd
-        B/IxEYfwM9lcnb7rhBW+pLXnw8Lt8mRN3Df5vhzTouTlm1YPKUkyHFm8D3GXxlmTiP5VRxR7TVa
-        kLXdEiuAl9uIwymlXY2OlmBxi
-X-Received: by 2002:a37:a955:: with SMTP id s82mr18552949qke.121.1612221719636;
-        Mon, 01 Feb 2021 15:21:59 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzS+3wDmDxJ77Mv8mHl7zqigCXAmGJWxZRWwAqLuTopvy7+5ZDn3Q72W9Q6xnbA4goZHL5uNQ==
-X-Received: by 2002:a37:a955:: with SMTP id s82mr18552913qke.121.1612221719336;
-        Mon, 01 Feb 2021 15:21:59 -0800 (PST)
-Received: from xz-x1 ([142.126.83.202])
-        by smtp.gmail.com with ESMTPSA id n24sm14841134qtv.26.2021.02.01.15.21.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 15:21:58 -0800 (PST)
-Date:   Mon, 1 Feb 2021 18:21:55 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Steven Price <steven.price@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Adam Ruprecht <ruprecht@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v3 4/9] hugetlb/userfaultfd: Unshare all pmds for
- hugetlbfs when register wp
-Message-ID: <20210201232155.GL260413@xz-x1>
-References: <20210128224819.2651899-1-axelrasmussen@google.com>
- <20210128224819.2651899-5-axelrasmussen@google.com>
- <bdac0f96-1d6a-6450-c58a-6902d985e3e0@oracle.com>
+        Mon, 1 Feb 2021 18:22:43 -0500
+Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
+        by mx1.opensynergy.com (Proxmox) with ESMTP id 2F489A1570;
+        Tue,  2 Feb 2021 00:22:01 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
+         h=cc:cc:content-transfer-encoding:content-type:content-type
+        :date:from:from:in-reply-to:message-id:mime-version:references
+        :reply-to:subject:subject:to:to; s=srmailgate02; bh=SKZK/1HnMki4
+        hnaBgoFLy/Sx0y22YEddsx1Drd55/gE=; b=00VgjEXjLKlbQOA/Fynwj1uReuEZ
+        NkDv6tUCdGZ/jvJSxz16J253GAez2vKc+1W+o/4nzi4vZw+UHnnXi2+jWvaaDAGh
+        BSF6j7YUIV4i6ho9KKerFFOKfopXiZjFy7+w/vO/jXtEr3nTLHML5z2NrQwBddy1
+        qUwSA69bJKLQPw8OaaEFpGcCQ3r+IGmh2tfP+7PK0IZvr8IGZR0pFvR2Rzq2PDhB
+        VJ8SzmeX3uOL2idQOyPihY2EC7DL5hIwRbaXkUd7XMoDsHrRnDy+3bFP7UqcBJkq
+        d2QMuKjCAGKEr/caEtI6jD+cigUR27hRdPEGNoS442S0XBhcc1ms1ih/dA==
+Subject: Re: [PATCH v2 8/9] ALSA: virtio: introduce PCM channel map support
+To:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+CC:     <virtualization@lists.linux-foundation.org>,
+        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>,
+        <linux-kernel@vger.kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>
+References: <20210124165408.1122868-1-anton.yakovlev@opensynergy.com>
+ <20210124165408.1122868-9-anton.yakovlev@opensynergy.com>
+ <643248d4-d246-686f-34c3-7e592777e3ec@intel.com>
+From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
+Message-ID: <9ac289fd-70f2-5939-cf9f-ad9e60133349@opensynergy.com>
+Date:   Tue, 2 Feb 2021 00:21:59 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <bdac0f96-1d6a-6450-c58a-6902d985e3e0@oracle.com>
+In-Reply-To: <643248d4-d246-686f-34c3-7e592777e3ec@intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SR-MAIL-02.open-synergy.com (10.26.10.22) To
+ SR-MAIL-01.open-synergy.com (10.26.10.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 02:33:20PM -0800, Mike Kravetz wrote:
-> On 1/28/21 2:48 PM, Axel Rasmussen wrote:
-> > From: Peter Xu <peterx@redhat.com>
-> > 
-> > Huge pmd sharing for hugetlbfs is racy with userfaultfd-wp because
-> > userfaultfd-wp is always based on pgtable entries, so they cannot be shared.
-> > 
-> > Walk the hugetlb range and unshare all such mappings if there is, right before
-> > UFFDIO_REGISTER will succeed and return to userspace.
-> > 
-> > This will pair with want_pmd_share() in hugetlb code so that huge pmd sharing
-> > is completely disabled for userfaultfd-wp registered range.
-> > 
-> > Signed-off-by: Peter Xu <peterx@redhat.com>
-> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> > ---
-> >  fs/userfaultfd.c             | 45 ++++++++++++++++++++++++++++++++++++
-> >  include/linux/mmu_notifier.h |  1 +
-> >  2 files changed, 46 insertions(+)
-> > 
-> > diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-> > index 894cc28142e7..2c6706ac2504 100644
-> > --- a/fs/userfaultfd.c
-> > +++ b/fs/userfaultfd.c
-> > @@ -15,6 +15,7 @@
-> >  #include <linux/sched/signal.h>
-> >  #include <linux/sched/mm.h>
-> >  #include <linux/mm.h>
-> > +#include <linux/mmu_notifier.h>
-> >  #include <linux/poll.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/seq_file.h>
-> > @@ -1190,6 +1191,47 @@ static ssize_t userfaultfd_read(struct file *file, char __user *buf,
-> >  	}
-> >  }
-> >  
-> > +/*
-> > + * This function will unconditionally remove all the shared pmd pgtable entries
-> > + * within the specific vma for a hugetlbfs memory range.
-> > + */
-> > +static void hugetlb_unshare_all_pmds(struct vm_area_struct *vma)
-> > +{
-> > +#ifdef CONFIG_HUGETLB_PAGE
-> > +	struct hstate *h = hstate_vma(vma);
-> > +	unsigned long sz = huge_page_size(h);
-> > +	struct mm_struct *mm = vma->vm_mm;
-> > +	struct mmu_notifier_range range;
-> > +	unsigned long address;
-> > +	spinlock_t *ptl;
-> > +	pte_t *ptep;
-> > +
-> 
-> Perhaps we should add a quick to see if vma is sharable.  Might be as
-> simple as !(vma->vm_flags & VM_MAYSHARE).  I see a comment/question in
-> a later patch about only doing minor fault processing on shared mappings.
 
-Yes, that comment was majorly about shmem though - I believe shared case should
-still be the major one, especially for hugetlbfs.
 
-So what I was thinking is something like: one non-uffd process use shared
-mapping of the file, meanwhile the other uffd process used private mapping on
-the same file.  When the uffd process access page it could fault in the page
-cache and continued by UFFDIO_CONTINUE, however when it writes it'll COW into
-private pages.  Something like that.  Not sure whether it's useful, but I just
-don't see why we should block that case.
+On 26.01.2021 10:22, Guennadi Liakhovetski wrote:
+ > CAUTION: This email originated from outside of the organization.
+ > Do not click links or open attachments unless you recognize the sender
+ > and know the content is safe.
+ >
+ >
+ > On Sun, 24 Jan 2021, Anton Yakovlev wrote:
+ >
+ >> Enumerate all available PCM channel maps and create ALSA controls.
+ >>
+ >> Signed-off-by: Anton Yakovlev <anton.yakovlev@opensynergy.com>
+ >> ---
+ >> sound/virtio/Makefile       |   1 +
+ >> sound/virtio/virtio_card.c  |  15 +++
+ >> sound/virtio/virtio_card.h  |   8 ++
+ >> sound/virtio/virtio_chmap.c | 237 ++++++++++++++++++++++++++++++++++++
+ >> sound/virtio/virtio_pcm.h   |   4 +
+ >> 5 files changed, 265 insertions(+)
+ >> create mode 100644 sound/virtio/virtio_chmap.c
+ >
+ > [snip]
+ >
+ >> diff --git a/sound/virtio/virtio_chmap.c b/sound/virtio/virtio_chmap.c
+ >> new file mode 100644
+ >> index 000000000000..8a2ddc4dcffb
+ >> --- /dev/null
+ >> +++ b/sound/virtio/virtio_chmap.c
+ >> @@ -0,0 +1,237 @@
+ >
+ > [snip]
+ >
+ >> +/**
+ >> + * virtsnd_chmap_parse_cfg() - Parse the channel map configuration.
+ >> + * @snd: VirtIO sound device.
+ >> + *
+ >> + * This function is called during initial device initialization.
+ >> + *
+ >> + * Context: Any context that permits to sleep.
+ >> + * Return: 0 on success, -errno on failure.
+ >> + */
+ >> +int virtsnd_chmap_parse_cfg(struct virtio_snd *snd)
+ >> +{
+ >> +     struct virtio_device *vdev = snd->vdev;
+ >> +     unsigned int i;
+ >> +     int rc;
+ >> +
+ >> +     virtio_cread(vdev, struct virtio_snd_config, chmaps,
+ >> &snd->nchmaps);
+ >> +     if (!snd->nchmaps)
+ >> +             return 0;
+ >> +
+ >> +     snd->chmaps = devm_kcalloc(&vdev->dev, snd->nchmaps,
+ >> +                                sizeof(*snd->chmaps), GFP_KERNEL);
+ >> +     if (!snd->chmaps)
+ >> +             return -ENOMEM;
+ >> +
+ >> +     rc = virtsnd_ctl_query_info(snd, VIRTIO_SND_R_CHMAP_INFO, 0,
+ >> +                                 snd->nchmaps, sizeof(*snd->chmaps),
+ >> +                                 snd->chmaps);
+ >> +     if (rc)
+ >> +             return rc;
+ >> +
+ >> +     /* Count the number of channel maps per each PCM device/stream. */
+ >> +     for (i = 0; i < snd->nchmaps; ++i) {
+ >> +             struct virtio_snd_chmap_info *info = &snd->chmaps[i];
+ >> +             unsigned int nid = le32_to_cpu(info->hdr.hda_fn_nid);
+ >> +             struct virtio_pcm *pcm;
+ >> +             struct virtio_pcm_stream *stream;
+ >> +
+ >> +             pcm = virtsnd_pcm_find_or_create(snd, nid);
+ >> +             if (IS_ERR(pcm))
+ >> +                     return PTR_ERR(pcm);
+ >> +
+ >> +             switch (info->direction) {
+ >> +             case VIRTIO_SND_D_OUTPUT: {
+ >> +                     stream = &pcm->streams[SNDRV_PCM_STREAM_PLAYBACK];
+ >> +                     break;
+ >> +             }
+ >> +             case VIRTIO_SND_D_INPUT: {
+ >> +                     stream = &pcm->streams[SNDRV_PCM_STREAM_CAPTURE];
+ >> +                     break;
+ >> +             }
+ >> +             default: {
+ >> +                     dev_err(&vdev->dev,
+ >> +                             "chmap #%u: unknown direction (%u)\n", i,
+ >> +                             info->direction);
+ >> +                     return -EINVAL;
+ >> +             }
+ >> +             }
+ >> +
+ >> +             stream->nchmaps++;
+ >> +     }
+ >> +
+ >> +     return 0;
+ >> +}
+ >> +
+ >> +/**
+ >> + * virtsnd_chmap_add_ctls() - Create an ALSA control for channel maps.
+ >> + * @pcm: ALSA PCM device.
+ >> + * @direction: PCM stream direction (SNDRV_PCM_STREAM_XXX).
+ >> + * @stream: VirtIO PCM stream.
+ >> + *
+ >> + * Context: Any context.
+ >> + * Return: 0 on success, -errno on failure.
+ >> + */
+ >> +static int virtsnd_chmap_add_ctls(struct snd_pcm *pcm, int direction,
+ >> +                               struct virtio_pcm_stream *stream)
+ >> +{
+ >> +     unsigned int i;
+ >> +     int max_channels = 0;
+ >> +
+ >> +     for (i = 0; i < stream->nchmaps; i++)
+ >> +             if (max_channels < stream->chmaps[i].channels)
+ >> +                     max_channels = stream->chmaps[i].channels;
+ >> +
+ >> +     return snd_pcm_add_chmap_ctls(pcm, direction, stream->chmaps,
+ >> +                                   max_channels, 0, NULL);
+ >> +}
+ >> +
+ >> +/**
+ >> + * virtsnd_chmap_build_devs() - Build ALSA controls for channel maps.
+ >> + * @snd: VirtIO sound device.
+ >> + *
+ >> + * Context: Any context.
+ >> + * Return: 0 on success, -errno on failure.
+ >> + */
+ >> +int virtsnd_chmap_build_devs(struct virtio_snd *snd)
+ >> +{
+ >> +     struct virtio_device *vdev = snd->vdev;
+ >> +     struct virtio_pcm *pcm;
+ >> +     struct virtio_pcm_stream *stream;
+ >> +     unsigned int i;
+ >> +     int rc;
+ >> +
+ >> +     /* Allocate channel map elements per each PCM device/stream. */
+ >> +     list_for_each_entry(pcm, &snd->pcm_list, list) {
+ >> +             for (i = 0; i < ARRAY_SIZE(pcm->streams); ++i) {
+ >> +                     stream = &pcm->streams[i];
+ >> +
+ >> +                     if (!stream->nchmaps)
+ >> +                             continue;
+ >> +
+ >> +                     stream->chmaps = devm_kcalloc(&vdev->dev,
+ >> +                                                   stream->nchmaps + 1,
+ >> +
+ >> sizeof(*stream->chmaps),
+ >> +                                                   GFP_KERNEL);
+ >> +                     if (!stream->chmaps)
+ >> +                             return -ENOMEM;
+ >> +
+ >> +                     stream->nchmaps = 0;
+ >> +             }
+ >> +     }
+ >> +
+ >> +     /* Initialize channel maps per each PCM device/stream. */
+ >> +     for (i = 0; i < snd->nchmaps; ++i) {
+ >> +             struct virtio_snd_chmap_info *info = &snd->chmaps[i];
+ >> +             unsigned int nid = le32_to_cpu(info->hdr.hda_fn_nid);
+ >> +             unsigned int channels = info->channels;
+ >> +             unsigned int ch;
+ >> +             struct snd_pcm_chmap_elem *chmap;
+ >> +
+ >> +             pcm = virtsnd_pcm_find(snd, nid);
+ >> +             if (IS_ERR(pcm))
+ >> +                     return PTR_ERR(pcm);
+ >> +
+ >> +             if (info->direction == VIRTIO_SND_D_OUTPUT)
+ >> +                     stream = &pcm->streams[SNDRV_PCM_STREAM_PLAYBACK];
+ >> +             else
+ >> +                     stream = &pcm->streams[SNDRV_PCM_STREAM_CAPTURE];
+ >> +
+ >> +             chmap = &stream->chmaps[stream->nchmaps++];
+ >> +
+ >> +             if (channels > ARRAY_SIZE(chmap->map))
+ >> +                     channels = ARRAY_SIZE(chmap->map);
+ >> +
+ >> +             chmap->channels = channels;
+ >> +
+ >> +             for (ch = 0; ch < channels; ++ch) {
+ >> +                     u8 position = info->positions[ch];
+ >> +
+ >> +                     if (position >= ARRAY_SIZE(g_v2a_position_map))
+ >> +                             return -EINVAL;
+ >> +
+ >> +                     chmap->map[ch] = g_v2a_position_map[position];
+ >> +             }
+ >> +     }
+ >
+ > You enter this function after virtsnd_chmap_parse_cfg() has run. And
+ > virtsnd_chmap_parse_cfg() has already found or created all the PCMs and
+ > counted channel maps - the same way as you do in the above loop. Wouldn't
+ > it be enough to reuse the result of that counting and avoid re-counting
+ > here?
 
-> 
-> Code below looks fine, but it would be a wast to do all that for a vma
-> that could not be shared.
+If I understood your question right, then... it's not re-counting here. :)
+It's just a referencing to each channel map for each stream in one by
+one manner.
 
-Right, still better to check it.
 
-Mike, I agree with all your comments on the initial 4 patches, thanks for the
-input!  To make Axel's life easier, I've modified them locally and pushed since
-after all I'll do it in my series too (I also picked Mike's r-b on patch 3):
-
-https://github.com/xzpeter/linux/commits/uffd-wp-shmem-hugetlbfs
-
-Axel, feel free to fetch from it directly.
-
-Thanks,
-
+ >> +
+ >> +     /* Create an ALSA control per each PCM device/stream. */
+ >> +     list_for_each_entry(pcm, &snd->pcm_list, list) {
+ >> +             if (!pcm->pcm)
+ >> +                     continue;
+ >> +
+ >> +             for (i = 0; i < ARRAY_SIZE(pcm->streams); ++i) {
+ >> +                     stream = &pcm->streams[i];
+ >> +
+ >> +                     if (!stream->nchmaps)
+ >> +                             continue;
+ >> +
+ >> +                     rc = virtsnd_chmap_add_ctls(pcm->pcm, i, stream);
+ >> +                     if (rc)
+ >> +                             return rc;
+ >> +             }
+ >> +     }
+ >> +
+ >> +     return 0;
+ >> +}
+ >
 -- 
-Peter Xu
+Anton Yakovlev
+Senior Software Engineer
+
+OpenSynergy GmbH
+Rotherstr. 20, 10245 Berlin
+
+www.opensynergy.com
 
