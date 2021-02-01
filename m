@@ -2,146 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F378A30ACDE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:41:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 942BF30ACDB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:41:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231476AbhBAQkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 11:40:46 -0500
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:59227 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231492AbhBAQkK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 11:40:10 -0500
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <jlu@pengutronix.de>)
-        id 1l6cDk-0005Ur-2e; Mon, 01 Feb 2021 17:38:36 +0100
-Received: from localhost ([127.0.0.1])
-        by ptx.hi.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <jlu@pengutronix.de>)
-        id 1l6cDj-0003AL-4A; Mon, 01 Feb 2021 17:38:35 +0100
-Message-ID: <0be34899c9686b95cd22aa016f466523579cbeed.camel@pengutronix.de>
-Subject: Re: Migration to trusted keys: sealing user-provided key?
-From:   Jan =?ISO-8859-1?Q?L=FCbbe?= <jlu@pengutronix.de>
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        James Bottomley <jejb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
-        Sumit Garg <sumit.garg@linaro.org>
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, kernel@pengutronix.de
-Date:   Mon, 01 Feb 2021 17:38:34 +0100
-In-Reply-To: <bd3246ebb4eae526c84efe2d27c6fadff662b0c8.camel@linux.ibm.com>
-References: <74830d4f-5a76-8ba8-aad0-0d79f7c01af9@pengutronix.de>
-         <6dc99fd9ffbc5f405c5f64d0802d1399fc6428e4.camel@kernel.org>
-         <d1bed49f89495ceb529355cb41655a208fdb2197.camel@linux.ibm.com>
-         <8b9477e150d7c939dc0def3ebb4443efcc83cd85.camel@pengutronix.de>
-         <d4eeefa0c13395e91850630e22d0d9e3690f43ac.camel@linux.ibm.com>
-         <64472434a367060ddce6e03425156b8312a5ad6c.camel@pengutronix.de>
-         <bd3246ebb4eae526c84efe2d27c6fadff662b0c8.camel@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        id S231439AbhBAQjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 11:39:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60494 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231377AbhBAQjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 11:39:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E50DB60235;
+        Mon,  1 Feb 2021 16:38:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612197537;
+        bh=dmJ780YfV7WU9jyBknVx3SR8qV5fVlxQCRjWvZqC9nc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uIUE2A98mrYmpRQnu428tqjfCOGrx/PWVOBdeDsswJ7aIkxsG0L8h7raptbw1j6GF
+         nHzdk28gIYl3FayMtxN9syesotPNFx3l3yXl35QGf9YrIn7c3vjzTPn2uoUrC7ni/S
+         Rc1N/Lnv+MQuNsDfh0dq3vEq+LVRhxSltyzeoAKU=
+Date:   Mon, 1 Feb 2021 17:38:54 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Badhri Jagan Sridharan <badhri@google.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kyle Tso <kyletso@google.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/3] usb: typec: tcpm: Add Callback to Usb
+ Communication capable partner
+Message-ID: <YBgunjrmQsFkYBvm@kroah.com>
+References: <20210201095309.39486-1-badhri@google.com>
+ <20210201151253.GG2465@kuha.fi.intel.com>
+ <YBgcCu7lx036C+KN@kroah.com>
+ <20210201160925.GA1433721@kuha.fi.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: jlu@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210201160925.GA1433721@kuha.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-02-01 at 11:11 -0500, Mimi Zohar wrote:
-> On Mon, 2021-02-01 at 16:31 +0100, Jan Lübbe wrote:
-> > On Sun, 2021-01-31 at 09:29 -0500, Mimi Zohar wrote:
-<snip>
-> > > Usage::
+On Mon, Feb 01, 2021 at 06:09:25PM +0200, Heikki Krogerus wrote:
+> On Mon, Feb 01, 2021 at 04:19:38PM +0100, Greg Kroah-Hartman wrote:
+> > On Mon, Feb 01, 2021 at 05:12:53PM +0200, Heikki Krogerus wrote:
+> > > On Mon, Feb 01, 2021 at 01:53:07AM -0800, Badhri Jagan Sridharan wrote:
+> > > > The USB Communications Capable bit indicates if port
+> > > > partner is capable of communication over the USB data lines
+> > > > (e.g. D+/- or SS Tx/Rx). Notify the status of the bit to low
+> > > > level drivers to perform chip specific operation.
+> > > > For instance, low level driver enables USB switches on D+/D-
+> > > > lines to set up data path when the bit is set.
+> > > > 
+> > > > Refactored from patch initially authored by
+> > > > Kyle Tso <kyletso@google.com>
+> > > > 
+> > > > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> > > > ---
+> > > >  drivers/usb/typec/tcpm/tcpm.c | 16 ++++++++++++++++
+> > > >  include/linux/usb/tcpm.h      |  5 +++++
+> > > >  2 files changed, 21 insertions(+)
 > > > 
-> > >     keyctl add encrypted name "new [format] key-type:master-key-name keylen"
-> > >         ring
-> > >     keyctl add encrypted name "load hex_blob" ring
+> > > ...
+> > > 
+> > > > diff --git a/include/linux/usb/tcpm.h b/include/linux/usb/tcpm.h
+> > > > index 3af99f85e8b9..42fcfbe10590 100644
+> > > > --- a/include/linux/usb/tcpm.h
+> > > > +++ b/include/linux/usb/tcpm.h
+> > > > @@ -108,6 +108,10 @@ enum tcpm_transmit_type {
+> > > >   *		is supported by TCPC, set this callback for TCPM to query
+> > > >   *		whether vbus is at VSAFE0V when needed.
+> > > >   *		Returns true when vbus is at VSAFE0V, false otherwise.
+> > > > + * @set_partner_usb_comm_capable:
+> > > > + *              Optional; The USB Communications Capable bit indicates if port
+> > > > + *              partner is capable of communication over the USB data lines
+> > > > + *              (e.g. D+/- or SS Tx/Rx). Called to notify the status of the bit.
+> > > >   */
+> > > >  struct tcpc_dev {
+> > > >  	struct fwnode_handle *fwnode;
+> > > > @@ -139,6 +143,7 @@ struct tcpc_dev {
+> > > >  	int (*set_auto_vbus_discharge_threshold)(struct tcpc_dev *dev, enum typec_pwr_opmode mode,
+> > > >  						 bool pps_active, u32 requested_vbus_voltage);
+> > > >  	bool (*is_vbus_vsafe0v)(struct tcpc_dev *dev);
+> > > > +	void (*set_partner_usb_comm_capable)(struct tcpc_dev *dev, bool enable);
+> > > >  };
+> > > >  
+> > > >  struct tcpm_port;
+> > > 
+> > > There start to be a lot of callback there, separate for each function.
+> > > And I guess flags too... Would it be possible to have a single
+> > > notification callback instead, that would take the type of the
+> > > notification as a parameter (we could have an enum for those), and
+> > > then the specific object(s) for each type as another paramter (RDO I
+> > > guess in this case)?
+> > > 
+> > > It would then be up to the TCPC driver to extract the detail it needs
+> > > from that object. That would somehow feel more cleaner to me, but what
+> > > do you guys think?
 > > 
-> > 'load' (as I understand the code) only accepts an encrypted blob.
+> > It's pretty much the same thing, a "mux" function vs. individual
+> > function calls.  Personally, individual callbacks are much more
+> > explicit, and I think make it easier to determine what is really going
+> > on in each driver.
 > > 
-> > So the only way I see to have an encrypted key with a non-random key data would
-> > be:
-> > - create a random temporary master key and load a copy as a user key
-> > - encrypt the chosen key data with the temporary master key (using a new
-> > userspace reimplementation of the kernel encrypted key blob format)
-> > - use keyctl add encrypted dmcrypt "load <encrypted blob>" <keyring>
-> > - create new trusted master key (OP-TEE or CAAM in our case) as 
-> > - use keyctl update to switch to the new trusted master key
-> > - use keyctl pipe on the trusted and encrypted keys and store both for loading
-> > on later boots
+> > But it all does the same thing, if there's going to be loads of
+> > callbacks needed, then a single one makes it easier to maintain over
+> > time.
 > > 
-> > If we'd support importing a pre-existing key into a trusted or encrypted key,
-> > we'd do instead:
-> > - use keyctl add trusted dmcrypt "import <unencrypted key data>"
-> > - use keyctl pipe on the trusted key and store it for loading on later boots
-> > 
-> > This way, users wouldn't need to care which backend is used by trusted keys
-> > (TPM/OP-TEE/CAAM/...). That would make use-cases where a random key is not
-> > suitable as straight-forward as the those where a random key is OK.
+> > So it's up to the maintainer what they want to see :)
 > 
-> As I said above, the "encrypted" key update doesn't change the key data
-> used for encrypting/decrypting storage in the dm-crypt case, it just
-> updates the key under which it is encrypted/signed.
+> I understand your point, and I guess a "generic" notification callback
+> for all that would not be a good idea. However, right now it looks
+> like we are picking individual bits from various PD objects with those
+> callbacks, and that does not feel ideal to me either. After all, each of
+> those bits has its own flag now, even though the details is just
+> extracted from some PD object that we should also have access to.
+> 
+> I think there are ways we can improve this for example by attempting
+> to create the notifications per transaction instead of for each
+> individual result of those transactions. That way we would not need to
+> store the flags at least because we could deliver the entire object
+> that was the result of the specific transaction.
+> 
+> So basically, I fear that dealing with these individual bits will in
+> many case only serve individual device drivers, and in the worst case
+> start making the tcpm.c a bit more difficult to manage if we start to
+> have more and more of these bit callbacks.
+> 
+> But on the other hand, I guess we are nowhere near that point, so
+> let's forget about this for now.
 
-Yes, that's clear. I only used it to demonstrate how a workaround for importing
-key material into an encrypted key could look like.
+If it gets unwieldy, we can always change it in the future, there's no
+reason these types of in-kernel apis can not be modified and cleaned up
+over time.
 
-> Yes, the reason for using an encrypted "trusted" key, as opposed to an
-> encrypted "user" key, is that the "trusted" key is encrypted/decrypted
-> by the TPM and never exposed to userspace in the clear.
+thanks,
 
-Yes, and that's the main reason I'd like to use trusted keys with dm-crypt: a
-much lower chance of exposing this key somewhere it could be extracted.
-
-> It doesn't sound like you're wanting to update the storage key in the
-> field, just the key used to encrypt/decrypt that key.  So I'm still not
-> clear as to why you would want an initial non-random encrypted key. 
-> Providing that key on the command line certaining isn't a good idea.
-
-Some of our customers have systems in the field which use non-mainline patches
-for access to the CAAM [1], which also have the downside of exposing the
-decrypted key material directly to userspace. In that thread you suggested to
-use trusted keys instead. With Sumit's work that rework is finally within reach.
-:)
-
-
-In those systems, we have data that's encrypted with a pre-existing dm-crypt or
-ecryptfs key. As we update those systems in the field to newer kernels, we want
-to get rid of those custom patches, but can't reencrypt everything.
-
-So the approach would be to perform a one-time migration when updating a device:
-- use our old interface to decrypt the key and 'import' it into a trusted key
-- use keyctl pipe and save the re-encrypted key to disk
-- destroy the old encrypted key
-After this migration, the key material is no longer available to userspace (only
-to dm-crypt).
-
-
-Another use-case for supporting key import that we want to support is  analysis
-of broken devices returned from the field:
-- generate an encryption key per device in the factory
-- encrypt it to a private key in escrow and archive it for later use
-- import it into a trusted key on the device
-- keyctl pipe it to a file on the device for use on boot
-
-Later, when you need to do an analysis, you can get the key from escrow even if
-the device cannot boot any longer.
-
-
-Regards,
-Jan
-
-[1] https://lore.kernel.org/linux-crypto/1447082306-19946-2-git-send-email-s.trumtrar@pengutronix.de/
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
-
+greg k-h
