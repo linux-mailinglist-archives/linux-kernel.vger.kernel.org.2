@@ -2,81 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0A530A744
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:10:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0812A30A742
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:10:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231348AbhBAMJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 07:09:56 -0500
-Received: from relay2.uni-heidelberg.de ([129.206.119.212]:12334 "EHLO
-        relay2.uni-heidelberg.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231222AbhBAMJq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 07:09:46 -0500
-X-IPAS-Result: =?us-ascii?q?A2BOAAAA7xdg/1BqzoFiHAEBAQEBAQcBARIBAQQEAQFAg?=
- =?us-ascii?q?TwGAQELAYMLa2eDekaRWY9gimcUgXMBAQEBAQEBAQEJLAECBAEBhkQCJTUID?=
- =?us-ascii?q?gIDAQEBAwIDAQEBAQYBAQEBAQYEhl+FdAEFIzAmEAsYAgImAgIUKCEThi2wS?=
- =?us-ascii?q?oEyiRmBISOBDioBjWMPgU0/hCo+hAkBEgGDOjSCLASCRoEPgQNtFYEbjy4Jp?=
- =?us-ascii?q?n+BWywHgWiBEYEdC5pGAg0igy+KPYU5j26XRp50gVgBgR5wMxokgzhQGQ2ca?=
- =?us-ascii?q?0MwAjUCBgoBAQMJWQEBizoBAQ?=
-X-IronPort-Anti-Spam-Filtered: true
-Received: from lemon.iwr.uni-heidelberg.de ([129.206.106.80])
-  by relay2.uni-heidelberg.de with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 01 Feb 2021 13:08:16 +0100
-Received: from hlauer by lemon.iwr.uni-heidelberg.de with local (Exim 4.92)
-        (envelope-from <hlauer@lemon.iwr.uni-heidelberg.de>)
-        id 1l6Xzv-00045i-Ei; Mon, 01 Feb 2021 13:08:03 +0100
-Date:   Mon, 1 Feb 2021 13:08:03 +0100
-From:   Hermann Lauer <Hermann.Lauer@iwr.uni-heidelberg.de>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     linux-arm-kernel@lists.infradead.org, wens@csie.org,
-        jernej.skrabec@siol.net, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH v4] ARM: dts: sun7i: a20: bananapro: Fix ethernet
- phy-mode
-Message-ID: <20210201120803.GF15207@lemon.iwr.uni-heidelberg.de>
-References: <20210121170836.GA4948@lemon.iwr.uni-heidelberg.de>
- <20210128094040.GD11559@lemon.iwr.uni-heidelberg.de>
- <20210128111842.GA11919@lemon.iwr.uni-heidelberg.de>
- <20210128145937.vtdi4e2aih7milmt@gilmour>
+        id S230517AbhBAMJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 07:09:28 -0500
+Received: from foss.arm.com ([217.140.110.172]:58130 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229554AbhBAMJY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 07:09:24 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2FF1DED1;
+        Mon,  1 Feb 2021 04:08:38 -0800 (PST)
+Received: from [10.57.35.163] (unknown [10.57.35.163])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 54B853F718;
+        Mon,  1 Feb 2021 04:08:36 -0800 (PST)
+Subject: Re: [PATCH v4 1/2] perf/smmuv3: Don't reserve the PMCG register
+ spaces
+To:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+References: <20210130071414.1575-1-thunder.leizhen@huawei.com>
+ <20210130071414.1575-2-thunder.leizhen@huawei.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <9904b39d-f328-14d6-b5d8-8b9e8a1437b6@arm.com>
+Date:   Mon, 1 Feb 2021 12:08:35 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210128145937.vtdi4e2aih7milmt@gilmour>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210130071414.1575-2-thunder.leizhen@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 03:59:37PM +0100, Maxime Ripard wrote:
-> On Thu, Jan 28, 2021 at 12:18:42PM +0100, Hermann.Lauer@uni-heidelberg.de wrote:
-> > BPi Pro needs TX and RX delay for Gbit to work reliable and avoid high
-> > packet loss rates. The realtek phy driver overrides the settings of the
-> > pull ups for the delays, so fix this for BananaPro.
-> >     
-> > Fix the phy-mode description to correctly reflect this so that the
-> > implementation doesn't reconfigure the delays incorrectly. This
-> > happened with commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e
-> > rx/tx delay config").
-> > 
-> > Fixes: 10662a33dcd9 ("ARM: dts: sun7i: Add dts file for Bananapro board")
-> > Signed-off-by: Hermann Lauer <Hermann.Lauer@uni-heidelberg.de>
+On 2021-01-30 07:14, Zhen Lei wrote:
+> According to the SMMUv3 specification:
+> Each PMCG counter group is represented by one 4KB page (Page 0) with one
+> optional additional 4KB page (Page 1), both of which are at IMPLEMENTATION
+> DEFINED base addresses.
 > 
-> Applied since it's a fix simple enough, but please provide a changelog
-> between versions.
+> This means that the PMCG register spaces may be within the 64KB pages of
+> the SMMUv3 register space. When both the SMMU and PMCG drivers reserve
+> their own resources, a resource conflict occurs.
+> 
+> To avoid this conflict, don't reserve the PMCG regions.
 
-v3 added the correct fixes tag, where the problem originated (initial commit
-of banana pro device tree). That worked in the past until a change in
-the phy device driver for realtek phy on banana pro overrode the
-phyical configuration of the hardware pull-ups.
+I said my review on v3 stood either way, but for the avoidance of doubt,
 
-v4 added the commit which implemented that driver change (shamelessly stolen
-from the commit of the fix of the identical problem on the banana pi)
+Reviewed-by: Robin Murphy <robin.murphy@arm.com>
+
+I hadn't considered that a comment is a very good idea, in case the 
+cleanup-script crew find this in future and try to "simplify" it :)
 
 Thanks,
- greetings
-  Hermann
+Robin.
 
--- 
-Administration/Zentrale Dienste, Interdiziplinaeres 
-Zentrum fuer wissenschaftliches Rechnen der Universitaet Heidelberg
-IWR; INF 205; 69120 Heidelberg; Tel: (06221)54-14405 Fax: -14427
-Email: Hermann.Lauer@iwr.uni-heidelberg.de
+> Suggested-by: Robin Murphy <robin.murphy@arm.com>
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> ---
+>   drivers/perf/arm_smmuv3_pmu.c | 25 +++++++++++++++++++------
+>   1 file changed, 19 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
+> index 74474bb322c3f26..5e894f957c7b935 100644
+> --- a/drivers/perf/arm_smmuv3_pmu.c
+> +++ b/drivers/perf/arm_smmuv3_pmu.c
+> @@ -793,17 +793,30 @@ static int smmu_pmu_probe(struct platform_device *pdev)
+>   		.capabilities	= PERF_PMU_CAP_NO_EXCLUDE,
+>   	};
+>   
+> -	smmu_pmu->reg_base = devm_platform_get_and_ioremap_resource(pdev, 0, &res_0);
+> -	if (IS_ERR(smmu_pmu->reg_base))
+> -		return PTR_ERR(smmu_pmu->reg_base);
+> +	/*
+> +	 * The register spaces of the PMCG may be in the register space of
+> +	 * other devices. For example, SMMU. Therefore, the PMCG resources are
+> +	 * not reserved to avoid resource conflicts with other drivers.
+> +	 */
+> +	res_0 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	if (!res_0)
+> +		return ERR_PTR(-EINVAL);
+> +	smmu_pmu->reg_base = devm_ioremap(dev, res_0->start, resource_size(res_0));
+> +	if (!smmu_pmu->reg_base)
+> +		return ERR_PTR(-ENOMEM);
+>   
+>   	cfgr = readl_relaxed(smmu_pmu->reg_base + SMMU_PMCG_CFGR);
+>   
+>   	/* Determine if page 1 is present */
+>   	if (cfgr & SMMU_PMCG_CFGR_RELOC_CTRS) {
+> -		smmu_pmu->reloc_base = devm_platform_ioremap_resource(pdev, 1);
+> -		if (IS_ERR(smmu_pmu->reloc_base))
+> -			return PTR_ERR(smmu_pmu->reloc_base);
+> +		struct resource *res_1;
+> +
+> +		res_1 = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+> +		if (!res_1)
+> +			return ERR_PTR(-EINVAL);
+> +		smmu_pmu->reloc_base = devm_ioremap(dev, res_1->start, resource_size(res_1));
+> +		if (!smmu_pmu->reloc_base)
+> +			return ERR_PTR(-ENOMEM);
+>   	} else {
+>   		smmu_pmu->reloc_base = smmu_pmu->reg_base;
+>   	}
+> 
