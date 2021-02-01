@@ -2,35 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9359F30ACF3
+	by mail.lfdr.de (Postfix) with ESMTP id 1703B30ACF2
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:48:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231506AbhBAQrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 11:47:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34034 "EHLO mail.kernel.org"
+        id S231446AbhBAQrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 11:47:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33980 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231350AbhBAQr2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 11:47:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17DAB64EA8;
-        Mon,  1 Feb 2021 16:46:45 +0000 (UTC)
+        id S231292AbhBAQrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 11:47:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3133A60234;
+        Mon,  1 Feb 2021 16:46:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612198006;
-        bh=3ZSShGaHD21VoaeFlggx+0UQjYQByAjimh392hgvzhY=;
+        s=k20201202; t=1612198001;
+        bh=j9hC3Db3nfPN7oz+V2moYoDKkQqj5CZszG4PUDCe7yo=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=aCjyPqcfr4ofpETKztXWpYbTGn+/khEH/aQpmzyVz+YL0YwbX4QRAqpuLKlBZSGq3
-         IEY6IaslC+Yr/QbSksCQ0O/P2xP3N0EKCSwCSSbyHK9Yw2Yt5fTjCJ94fJNjZMDlTo
-         iIA2UohPVL1mg1ao8grbmS5lXDfWAkVDCuq6Fvy47PH0rKh04+HnLVccoSoVRNoUt8
-         AhEOdUEpHdgW+meyYLP3LrQRjGewbO8+Cmna6m8HUvcVUqsyTI38SQ4CaYwmCYfrws
-         UOc3l7GwaRQw5Bd0lYRXmioc/Ugns3D3zRGi8pKmrB4O7G4uXSw5kQQi7ncDOH6rZR
-         ZMc5ZIUy0MBuw==
+        b=DRWI2OfYdkae8cwpgnSYLd4REIg5apAq3rLMTUqyT5BV7E4KDr+nKps2rqnwZalcU
+         Fe6fV3C8MJzMb0UIM59KCUMvi5O903LBTPVPW1CcWd4Z2Zqf32xmivtIrnLJecSDkY
+         qGCdPSFuAX3eOa2MHIEQnst4s1s7xoTXQFAdq3zdxx5EnDTNdhsnwq8+uVLaEAi8pl
+         Rkt7ISSUEfQ2oUQGfAnKaBgqjUmDAUeuGyqHOOi24LX1uDXO+fv2WuRrKODAEbPYXs
+         jcH/tDBDtoRLsPWr9OzpztKU9ZngXLqul2+u2Zm6zaPANYqVwzBNUUOY9PZaI1oZsj
+         keiykiLA9ELsQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, vkoul@kernel.org,
-        lgirdwood@gmail.com, tiwai@suse.com, alsa-devel@alsa-project.org
-In-Reply-To: <20210201161429.28060-1-srinivas.kandagatla@linaro.org>
-References: <20210201161429.28060-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH] ASoC: codecs: add missing max_register in regmap config
-Message-Id: <161219793996.46194.10385575485346385646.b4-ty@kernel.org>
+To:     Tony Lindgren <tony@atomide.com>, Pavel Machek <pavel@ucw.cz>,
+        Sebastian Reichel <sre@kernel.org>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        alsa-devel@alsa-project.org
+In-Reply-To: <20210123172945.3958622-1-sre@kernel.org>
+References: <YAqOSg2z24NpjKDh@mwanda> <20210123172945.3958622-1-sre@kernel.org>
+Subject: Re: [PATCHv1] ASoC: cpcap: fix microphone timeslot mask
+Message-Id: <161219793995.46194.11902730498139607577.b4-ty@kernel.org>
 Date:   Mon, 01 Feb 2021 16:45:39 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -39,27 +43,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Feb 2021 16:14:29 +0000, Srinivas Kandagatla wrote:
-> For some reason setting max_register was missed from regmap_config.
-> Without this cat /sys/kernel/debug/regmap/sdw:0:217:2010:0:1/range
-> actually throws below Warning.
+On Sat, 23 Jan 2021 18:29:45 +0100, Sebastian Reichel wrote:
+> The correct mask is 0x1f8 (Bit 3-8), but due to missing BIT() 0xf (Bit
+> 0-3) was set instead. This means setting of CPCAP_BIT_MIC1_RX_TIMESLOT0
+> (Bit 3) still worked (part of both masks). On the other hand the code
+> does not properly clear the other MIC timeslot bits. I think this
+> is not a problem, since they are probably initialized to 0 and not
+> touched by the driver anywhere else. But the mask also contains some
+> wrong bits, that will be cleared. Bit 0 (CPCAP_BIT_SMB_CDC) should be
+> safe, since the driver enforces it to be 0 anyways.
 > 
-> WARNING: CPU: 7 PID: 540 at drivers/base/regmap/regmap-debugfs.c:160
->  regmap_debugfs_get_dump_start.part.10+0x1e0/0x220
-> ...
-> Call trace:
->  regmap_debugfs_get_dump_start.part.10+0x1e0/0x220
->  regmap_reg_ranges_read_file+0xc0/0x2e0
->  full_proxy_read+0x64/0x98
->  vfs_read+0xa8/0x1e0
->  ksys_read+0x6c/0x100
->  __arm64_sys_read+0x1c/0x28
->  el0_svc_common.constprop.3+0x6c/0x190
->  do_el0_svc+0x24/0x90
->  el0_svc+0x14/0x20
->  el0_sync_handler+0x90/0xb8
->  el0_sync+0x158/0x180
-> ...
+> [...]
 
 Applied to
 
@@ -67,8 +61,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: codecs: add missing max_register in regmap config
-      commit: e8820dbddbcad7e91daacf7d42a49d1d04a4e489
+[1/1] ASoC: cpcap: fix microphone timeslot mask
+      commit: de5bfae2fd962a9da99f56382305ec7966a604b9
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
