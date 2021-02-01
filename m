@@ -2,80 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E63730ACCB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:38:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9251030ACD1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:41:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230110AbhBAQix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S231233AbhBAQjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 11:39:05 -0500
+Received: from foss.arm.com ([217.140.110.172]:34404 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231186AbhBAQix (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Feb 2021 11:38:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbhBAQit (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 11:38:49 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0151C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 08:37:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=DiYAma/MBy6d/6tlWAVVUX9ISv3Qk+f30UuNARw1WNs=; b=fvEQCjgvdCcZe8Xne0Rfl02dV
-        MvST6TvtR+1gQxy0FPmQi99pVXI//4AtDNmaKJl+5zDQt12hpXfY4qT4JarsgVtZtFpb6ytMMTRcS
-        bxpZpuaBy4n9eOqVQU/3D3ODef721+pW2ovO3gNA6i7VYICbTK5MzC+nH+76vpcM2SVR4ujpbLII8
-        3vpUnpt6bMuXpyN13XRqdjBqwLpTo1loOaDzoBJHQbkOQgtlhQUkW5fn65yVHNyNbtcoDDp5aFdyE
-        s0G7sHLFK+xi8IlXevRPfNPS9aVZhxUo2W2igmToHkHsB87a3TERJLmOY1N3kakEl3HNkQtrcQRHe
-        dyE0mUAZA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37818)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l6cD1-0003VV-RR; Mon, 01 Feb 2021 16:37:51 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l6cD0-0002A0-U9; Mon, 01 Feb 2021 16:37:50 +0000
-Date:   Mon, 1 Feb 2021 16:37:50 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>,
-        linux-kernel@vger.kernel.org, penberg@kernel.org,
-        geert@linux-m68k.org, linux-arm-kernel@lists.infradead.org,
-        akpm@linux-foundation.org, rppt@kernel.org,
-        giancarlo.ferrari@nokia.com
-Subject: Re: [PATCH] ARM: kexec: Fix panic after TLB are invalidated
-Message-ID: <20210201163750.GI1463@shell.armlinux.org.uk>
-References: <1612140296-12546-1-git-send-email-giancarlo.ferrari89@gmail.com>
- <20210201124720.GA66060@C02TD0UTHF1T.local>
- <20210201130344.GF1463@shell.armlinux.org.uk>
- <20210201135714.GB66060@C02TD0UTHF1T.local>
- <20210201160838.GH1463@shell.armlinux.org.uk>
- <20210201163240.GE66060@C02TD0UTHF1T.local>
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A57031042;
+        Mon,  1 Feb 2021 08:38:07 -0800 (PST)
+Received: from [10.57.8.191] (unknown [10.57.8.191])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A9D63F718;
+        Mon,  1 Feb 2021 08:38:00 -0800 (PST)
+Subject: Re: [RFC][PATCH 0/3] New thermal interface allowing IPA to get max
+ power
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+Cc:     cw00.choi@samsung.com, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, vireshk@kernel.org, rafael@kernel.org,
+        Dietmar.Eggemann@arm.com, amitk@kernel.org, rui.zhang@intel.com,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com
+References: <20210126104001.20361-1-lukasz.luba@arm.com>
+ <5751adfa-6e25-3f3c-4a60-9b3c739fec1f@arm.com>
+ <de40eb55-8309-e9a5-68da-eab936cd0580@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <1d0bd56f-be68-2306-3ed6-511e1d533148@arm.com>
+Date:   Mon, 1 Feb 2021 16:37:58 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201163240.GE66060@C02TD0UTHF1T.local>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <de40eb55-8309-e9a5-68da-eab936cd0580@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 04:32:40PM +0000, Mark Rutland wrote:
-> I reckon here we need:
+Hi Daniel,
+
+On 2/1/21 2:21 PM, Daniel Lezcano wrote:
 > 
-> 	__cpuc_flush_dcache_area(reboot_code_buffer,
-> 				 relocate_new_kernel_size + sizeof(*data));
+> Hi Lukasz,
 > 
-> ... to make sure both the instructions and data are visible with the MMU
-> off (since fncpy() only cleans to the PoU, not the PoC).
+> On 01/02/2021 12:23, Lukasz Luba wrote:
+>> Daniel, Chanwoo
+>>
+>> Gentle ping. Have you have a chance to check these patches?
+> 
+> I will review the patches in a couple of days
 
-We don't. When soft_restart() turns the MMU off, and it calls
-flush_cache_all() before and afterwards to ensure that all dirty lines
-are pushed out.
+Thank you, I will wait then.
 
-The flushing to PoU in fncpy() is to cover other cases.
+Regards,
+Lukasz
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+> 
+>    -- Daniel
+> 
+> 
