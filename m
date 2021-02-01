@@ -2,92 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD9430A608
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:59:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E2130A610
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:01:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233405AbhBAK72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 05:59:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39902 "EHLO
+        id S233398AbhBALBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 06:01:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233398AbhBAK7R (ORCPT
+        with ESMTP id S233369AbhBALAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 05:59:17 -0500
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA8C5C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 02:58:35 -0800 (PST)
-Received: from pd956d63d.dip0.t-ipconnect.de ([217.86.214.61] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <postmaster@kaiser.cx>)
-        id 1l6WuX-0000TN-Ap; Mon, 01 Feb 2021 11:58:25 +0100
-Received: from martin by martin-debian-2.paytec.ch with local (Exim 4.92)
-        (envelope-from <martin@martin-debian-2.paytec.ch>)
-        id 1l6WuV-0002RC-JK; Mon, 01 Feb 2021 11:58:23 +0100
-Date:   Mon, 1 Feb 2021 11:58:23 +0100
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Fabio Estevam <festevam@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1] ARM: imx: avic: Convert to using IRQCHIP_DECLARE
-Message-ID: <20210201105823.GB1467@martin-debian-1.paytec.ch>
-References: <20210131205654.3379661-1-saravanak@google.com>
- <CAOMZO5AZgk0N8sN9=bGcWTcnju75TPVxQX3FbLpF=n-=JA-7-w@mail.gmail.com>
- <CAGETcx9YsjPtiBxJEybY5UTWNu-9e=FrYPVd1ORF9hz0M04w5Q@mail.gmail.com>
+        Mon, 1 Feb 2021 06:00:24 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A05D6C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 02:59:43 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id hs11so23666745ejc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 02:59:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lx4W7u0ABpsM7eUPv7hFsdl/vMIH6Tgd275uM+E90PA=;
+        b=CYaYjyJGWa9M5woKY7/2n3Stl/0XdwpBHtLmupB/ZGWB4aGiwXU5iH9Ob2XBKYqQaS
+         vdx5TDUSMXGBCdc2VqARO0cau3yrkhtUyL2HutROj62M4gYYFGuCUTwOLKSgdP2f0qgP
+         V6VG7RpOxTf4HTXGru7sG1HUp5vc+ZJRdWD/m0a9DaOCo4UdUvK7g64Alr3F4+4DVp/k
+         iJaUIllZupaT44gFREQ8KC1Ak/mRYKDCizxYM66D5z//WHydmd3RM8vFhOzRFxaEcI5j
+         iAaSMPfCbJ9ThaOBZO2dLNXhzgpI41Xd1Ah0C2K4fpipxM06pMwhzz5hSKILElSviv2B
+         JeDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lx4W7u0ABpsM7eUPv7hFsdl/vMIH6Tgd275uM+E90PA=;
+        b=ItCO94VKcbTCjSNO/L8SilpYZkR6q6HJw42z4VRHbzDFBOoB4v4bS6aS1Fewd0xj+n
+         Zl4oYl83t/rNXevLJyGFFXbimVmYhVeEDGn+jZXFIT/aG3Vhk8IOgpVrZSVMT1Lvd8/c
+         bHNvE4NcDswqSlJf0iyE7mXToN5w6NkYk0d66uMj0j6YU4TpF2rcWjapSBkACM319Dv1
+         qQwokv1u/MBc5gIimjrrTvPM34b5KidWDrvPF/IwJPDpfaDygiXCKOE+kmruqBryOVr0
+         vC2+up+RbU8QkaghEPXQ79y2uFovsVJ0qkxxAfBU1NQPVT1brmGEscaJN2IoyStiUBhB
+         MIgg==
+X-Gm-Message-State: AOAM533I+G4/gmQrHIYZ0BdvGNPIIdpn8zBjZyq+8sZbDbuY1J5ftn4i
+        +t6tMGiWbyE9wYZVOdkSciHK3O+Dmubh7oGdaSue6Jo1nKk=
+X-Google-Smtp-Source: ABdhPJwjRHR8jRfbLq1RCIKHxZhV2YMK/caZS3zW7teEVN9nXdPPVMMHewbZfPTd+X2XEDvLqIdDgSN14peEiWum+Qk=
+X-Received: by 2002:a17:906:e03:: with SMTP id l3mr9190234eji.64.1612177182408;
+ Mon, 01 Feb 2021 02:59:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx9YsjPtiBxJEybY5UTWNu-9e=FrYPVd1ORF9hz0M04w5Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: "Martin Kaiser,,," <martin@martin-debian-2.paytec.ch>
+References: <20210129134624.9247-1-brgl@bgdev.pl> <20210129134624.9247-9-brgl@bgdev.pl>
+ <YBQwUkQz3LrG5G4i@smile.fi.intel.com> <CAMRc=MeSy4zWOAGxfoBih62WxAXuOLtkK3ROyt+4LuqLvDxtaQ@mail.gmail.com>
+ <YBfX38JBa0psBizQ@smile.fi.intel.com>
+In-Reply-To: <YBfX38JBa0psBizQ@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 1 Feb 2021 11:59:31 +0100
+Message-ID: <CAMRc=Mfgw5oA-TA2PN-Z+ape0POAtLwVeDJnzH1iuzKw5wYQ5Q@mail.gmail.com>
+Subject: Re: [PATCH 8/8] gpio: sim: new testing module
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Joel Becker <jlbec@evilplan.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thus wrote Saravana Kannan (saravanak@google.com):
+On Mon, Feb 1, 2021 at 11:28 AM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Sat, Jan 30, 2021 at 09:37:55PM +0100, Bartosz Golaszewski wrote:
+> > On Fri, Jan 29, 2021 at 4:57 PM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > > On Fri, Jan 29, 2021 at 02:46:24PM +0100, Bartosz Golaszewski wrote:
+>
+> ...
+>
+> > > > +static int gpio_sim_set_config(struct gpio_chip *gc,
+> > > > +                               unsigned int offset, unsigned long config)
+> > > > +{
+> > > > +     struct gpio_sim_chip *chip = gpiochip_get_data(gc);
+> > > > +
+> > > > +     switch (pinconf_to_config_param(config)) {
+> > >
+> > > > +     case PIN_CONFIG_BIAS_PULL_UP:
+> > > > +             return gpio_sim_apply_pull(chip, offset, 1);
+> > > > +     case PIN_CONFIG_BIAS_PULL_DOWN:
+> > > > +             return gpio_sim_apply_pull(chip, offset, 0);
+> > >
+> > > But aren't we got a parameter (1 or 0) from config? And hence
+> > >
+> > >         case PIN_CONFIG_BIAS_PULL_UP:
+> > >         case PIN_CONFIG_BIAS_PULL_DOWN:
+> > >                 return gpio_sim_apply_pull(chip, offset, <param>);
+> > >
+> > > ?
+> >
+> > I believe this is more explicit and so easier to read if you don't
+> > know the GPIO and pinctrl internals.
+>
+>
+> If we ever go to change meanings of the values in param, it will require to fix
+> this occurrence which seems to me suboptimal.
+>
 
-> On Sun, Jan 31, 2021 at 5:26 PM Fabio Estevam <festevam@gmail.com> wrote:
+Why would we do it? This is internal to this driver.
 
-> > Hi Saravana,
+> > > > +     default:
+> > > > +             break;
+> > > > +     }
+> > > > +
+> > > > +     return -ENOTSUPP;
+> > > > +}
+>
+> ...
+>
+> > > > +static ssize_t gpio_sim_sysfs_line_store(struct device *dev,
+> > > > +                                      struct device_attribute *attr,
+> > > > +                                      const char *buf, size_t len)
+> > > > +{
+> > > > +     struct gpio_sim_attribute *line_attr = to_gpio_sim_attr(attr);
+> > > > +     struct gpio_sim_chip *chip = dev_get_drvdata(dev);
+> > > > +     int ret, val;
+> > >
+> > > > +     ret = kstrtoint(buf, 0, &val);
+> > > > +     if (ret)
+> > > > +             return ret;
+> > > > +     if (val != 0 && val != 1)
+> > > > +             return -EINVAL;
+> > >
+> > > kstrtobool() ?
+> > >
+> >
+> > No, we really only want 0 or 1, no yes, Y etc.
+>
+> Side note: But you allow 0x00001, for example...
 
-> > On Sun, Jan 31, 2021 at 5:56 PM Saravana Kannan <saravanak@google.com> wrote:
+Good point. In that case we should check if len > 2 and if buf[0] ==
+'1' or '0' and that's all we allow.
 
-> > > +static int __init imx_avic_init(struct device_node *node,
-> > > +                              struct device_node *parent)
-> > > +{
-> > > +       void __iomem *avic_base;
-> > > +
-> > > +       avic_base = of_iomap(node, 0);
-> > > +       BUG_ON(!avic_base);
-> > > +       mxc_init_irq(avic_base);
-> > > +       return 0;
-> > > +}
-> > > +
-> > > +IRQCHIP_DECLARE(imx_avic, "fsl,imx31-avic", imx_avic_init);
+>
+> Then why not to use unsigned type from the first place and add a comment?
+>
+> > > > +     ret = gpio_sim_apply_pull(chip, line_attr->offset, val);
+> > > > +     if (ret)
+> > > > +             return ret;
+> > > > +
+> > > > +     return len;
+> > > > +}
+>
+> ...
+>
+> > > > +struct gpio_sim_chip_config {
+> > > > +     struct config_item item;
+> > > > +
+> > > > +     /*
+> > > > +      * If pdev is NULL, the item is 'pending' (waiting for configuration).
+> > > > +      * Once the pointer is assigned, the device has been created and the
+> > > > +      * item is 'live'.
+> > > > +      */
+> > > > +     struct platform_device *pdev;
+> > >
+> > > Are you sure
+> > >
+> > >         struct device *dev;
+> > >
+> > > is not sufficient?
+> > >
+> >
+> > It may be but I really prefer those simulated devices to be on the platform bus.
+>
+> My point here is that there is no need to keep specific bus devices type,
+> because you may easily derive it from the struct device pointer. Basically if
+> you are almost using struct device in your code (seems to me the case), you
+> won't need to carry bus specific one and dereference it each time.
+>
 
-> > Shouldn't the compatible be "fsl,avic" instead?
+But don't we need a bus to even register a device? I haven't checked
+in a long time but IIRC it's mandatory.
 
-> Fabio,
+Let me give you a different argument - the platform device offers a
+very simple API for registering devices with properties being
+duplicated behind the scenes etc. It seems to me that registering a
+bare struct device * would take more boiler-plate code for not much
+gain.
 
-> Ah yes. I had that too. I deleted the wrong one in the last minute
-> before sending it out. Thanks for catching it.
+Bartosz
 
-> I'll wait to see if there are any other review comments before I send out v2.
-
-> Martin,
-
-> Please make this fix before you test it.
-
-> -Saravana
-
-with fsl,avic
-
-Tested-by: Martin Kaiser <martin@kaiser.cx>
+> > > > +     /*
+> > > > +      * Each configfs filesystem operation is protected with the subsystem
+> > > > +      * mutex. Each separate attribute is protected with the buffer mutex.
+> > > > +      * This structure however can be modified by callbacks of different
+> > > > +      * attributes so we need another lock.
+> > > > +      */
+> > > > +     struct mutex lock;
+> > > > +
+> > > > +     char label[32];
+> > > > +     unsigned int num_lines;
+> > > > +     char **line_names;
+> > > > +     unsigned int num_line_names;
+> > > > +};
+>
+> ...
+>
+> > > Honestly, I don't like the idea of Yet Another (custom) Parser in the kernel.
+> > >
+> > > Have you investigated existing parsers? We have cmdline.c, gpio-aggregator.c,
+> > > etc. Besides the fact of test cases which are absent here. And who knows what
+> > > we allow to be entered.
+> > >
+> >
+> > Yes, I looked all around the kernel to find something I could reuse
+> > but failed to find anything useful for this particular purpose. If you
+> > have something you could point me towards, I'm open to alternatives.
+> >
+> > Once we agree on the form of the module, I'll port self-tests to using
+> > it instead of gpio-mockup, so we'll have some tests in the tree.
+>
+> I will look again when you send a new version, so I might give some hints.
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
