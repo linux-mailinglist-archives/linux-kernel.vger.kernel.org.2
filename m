@@ -2,91 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F2C30B1E5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 417E630B1E7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:11:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230094AbhBAVJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 16:09:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbhBAVJ1 (ORCPT
+        id S231791AbhBAVKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 16:10:47 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:53180 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229831AbhBAVKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 16:09:27 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF6B3C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 13:08:46 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id a8so24795204lfi.8
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 13:08:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=w4xw7p1Zqxhp9EJUU/TzfN5yh7Qdrt0nLCbnKbIp9fE=;
-        b=rLUugkAhgD6L2nsGFHFaOvNFiWi4R3D1yhuFhsxSUOuu7lvabvkkyRzdXbGGG3KWH0
-         zB7PsivQxvFzOkNfXXfngiUsLWWj2FY+/6L/Gzzu6JsACROS8yD1/1lpbkx+7j6Bpeop
-         P+SikBRBou5U/Ea3DQsqIDwhyo4P0ASjWKGkozQMtZYAWQsOfXFdZIY6KYWtzy9HatFe
-         LtwED+LmCyFHcMW37bRbfvfIZu6mnQ9+j6QSNQQAOs6SeLbFUYdXtWM8T7w2m4vTQiqA
-         Hx9IhnWjG169RH1Z0gUVv00BjIv/9jkLqXYYSitbHed46w6wzUP/ETjm4DdGw+qIh9j6
-         /Okg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=w4xw7p1Zqxhp9EJUU/TzfN5yh7Qdrt0nLCbnKbIp9fE=;
-        b=Bad7LQLgOD+cnWzNu516mbznDdT5wMkyZ0K8mrFQkFoebFiM28xeJLVjtpsZBf3W7o
-         QJpWdmw9pcgOnAK4H/7vg64Z4NuhSnCmeWQwirONGbFs6GjAnEcGezDBTedWWXhP1Ipd
-         m+nMIwSDxLIrGmM8uvF10SIl8XxW+z7/wkSg71Wy+nNeR/8/I4PHIL355b7HDWe09gZv
-         m6L4Ixa+Jqr8b8aL49qNirC2PtJ+d9BJAqiBOYXItxl7TTBgx12CXawbYLyc2nCQgeNL
-         TIaBsHkqb0LdDdrxFyKz9RRkavMIyNptEkL5kNWPpF0Huk0wj7dqgvoqBUO3JBRRiwma
-         7P9Q==
-X-Gm-Message-State: AOAM530qL1d8LfYtkryDF5UPxzaX5hwbBTsYX8PsGLpsuCK96l7w/JpV
-        g3/QoWFgNmlz8I+3BuLR5tE=
-X-Google-Smtp-Source: ABdhPJyoAoXS3JmKTU/9HjAxhgSfVQ51gvRa/Lxtxe8gz5ZSYhQ37sPyXA82/X1DDQyDEepiPe1jBQ==
-X-Received: by 2002:a19:ac49:: with SMTP id r9mr9856190lfc.602.1612213725358;
-        Mon, 01 Feb 2021 13:08:45 -0800 (PST)
-Received: from nova.home (2-108-107-206-static.dk.customer.tdc.net. [2.108.107.206])
-        by smtp.gmail.com with ESMTPSA id v14sm3142227lfo.210.2021.02.01.13.08.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 13:08:44 -0800 (PST)
-From:   Claus Stovgaard <claus.stovgaard@gmail.com>
-To:     linux-nvme@lists.infradead.org
-Cc:     Claus Stovgaard <claus.stovgaard@gmail.com>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>, linux-kernel@vger.kernel.org
-Subject: [PATCH] nvme-pci: Mark Phison E16 (Corsair MP600) as IGNORE_DEV_SUBNQN
-Date:   Mon,  1 Feb 2021 22:08:22 +0100
-Message-Id: <20210201210822.6501-1-claus.stovgaard@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Mon, 1 Feb 2021 16:10:44 -0500
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 111L9m86014210
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 1 Feb 2021 16:09:49 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id B1BCD15C39E2; Mon,  1 Feb 2021 16:09:48 -0500 (EST)
+Date:   Mon, 1 Feb 2021 16:09:48 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Vinicius Tinti <viniciustinti@gmail.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v2] ext4: Enable code path when DX_DEBUG is set
+Message-ID: <YBhuHJgZ3QPqHheV@mit.edu>
+References: <AAB32610-D238-4137-96DE-33655AAAB545@dilger.ca>
+ <20210201003125.90257-1-viniciustinti@gmail.com>
+ <20210201124924.GA3284018@infradead.org>
+ <CALD9WKxc0kMPCHSoikko+qYk2+ZLUy73+ryKGW9qMSpyzAobLA@mail.gmail.com>
+ <YBg20AuSC3/9w2zz@mit.edu>
+ <CALD9WKzO53AXQW-qQ82VZ41H5=cGdLTUiEoz3X6BmPkb6XaTag@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALD9WKzO53AXQW-qQ82VZ41H5=cGdLTUiEoz3X6BmPkb6XaTag@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tested both with Corsairs firmware 11.3 and 13.0 for the MP600 and both
-have the issue as reported by the kernel.
+On Mon, Feb 01, 2021 at 03:41:50PM -0300, Vinicius Tinti wrote:
+> 
+> My goal is to avoid having a dead code. Three options come to mind.
+> 
+> The first would be to add another #ifdef SOMETHING (suggest a name).
+> But this doesn't remove the code and someone could enable it by accident.
 
-nvme nvme0: missing or invalid SUBNQN field.
+I *really* don't see the point of having the compiler whine about
+"dead code", so I'm not terribly fond of
+-Wunreachable-code-aggressive.  There may be times where depending on
+how things are compiled, we *want* the compiler to remove code block,
+and it makes the code less ugly than having #ifdef ... #endif breaking
+up the code.
 
-Signed-off-by: Claus Stovgaard <claus.stovgaard@gmail.com>
----
- drivers/nvme/host/pci.c | 2 ++
- 1 file changed, 2 insertions(+)
+If turning that on requires uglifying many places in the kernel code,
+maybe the right answer is... don't.
 
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index 81e6389b2042..41b1b0731cbd 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -3242,6 +3242,8 @@ static const struct pci_device_id nvme_id_table[] = {
- 	{ PCI_DEVICE(0x144d, 0xa822),   /* Samsung PM1725a */
- 		.driver_data = NVME_QUIRK_DELAY_BEFORE_CHK_RDY |
- 				NVME_QUIRK_IGNORE_DEV_SUBNQN, },
-+	{ PCI_DEVICE(0x1987, 0x5016),	/* Phison E16 (Corsair MP600) */
-+		.driver_data = NVME_QUIRK_IGNORE_DEV_SUBNQN, },
- 	{ PCI_DEVICE(0x1d1d, 0x1f1f),	/* LighNVM qemu device */
- 		.driver_data = NVME_QUIRK_LIGHTNVM, },
- 	{ PCI_DEVICE(0x1d1d, 0x2807),	/* CNEX WL */
--- 
-2.26.2
+That being said, I have no problem of replacing
 
+	if (0) {
+		...
+	}
+
+with
+
+#ifdef DX_DEBUG
+	...
+#endif
+
+In this particular place.
+
+But before we go there, I want to register my extreme skepticsm about
+-Wunreachable-code-aggressive.  How much other places where it is
+***obvious*** that the maintainer really knew what they are doing, and
+it's just the compiler whining about a false positive?
+
+> > However, if there *is* a bug, having an early detection that the
+> > representation invariant of the data structure has been violated can
+> > be useful in root causing a bug.  This would probably be clearer if
+> > the code was pulled out into a separate function with comments
+> > explaining that this is a rep invariant check.
+> 
+> Good idea. I will do that too.
+
+If you want to do that, and do something like
+
+#ifdef DX_DEBUG
+static inline htree_rep_invariant_Check(...)
+{
+	...
+}
+#else
+static inline htree_rep_invariant_check(...) { }
+#endif
+
+I'm not going to complain.  That's actually a better way to go, since
+there may be other places in the code where a developer might want to
+introduce a rep invariant check.  So that's actually improving the
+code, as opposed to making a pointless change just to suppress a
+compiler warning.
+
+Of course, then someone will try enabling a -W flag which causes the
+compiler to whine about empty function bodies....
+
+					- Ted
