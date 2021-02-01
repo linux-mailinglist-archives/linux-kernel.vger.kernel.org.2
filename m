@@ -2,90 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AFD130AC45
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB6330AC44
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:06:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231226AbhBAQFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 11:05:48 -0500
-Received: from mga14.intel.com ([192.55.52.115]:28222 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229739AbhBAQFa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 11:05:30 -0500
-IronPort-SDR: CJtk6+y5BpW7ThlPvL3KEM9UNxFKUGrP8ImbEgYY6d1G9y1dkcbItdeqRgGG6/Fm+K2z55vVpU
- 1x0quq8EErpQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="179929827"
-X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
-   d="scan'208";a="179929827"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 08:03:42 -0800
-IronPort-SDR: ljDc5msUhmj/4lS3B56cYEn1l3RyBTJnAI3TFKuXb7/PJsJ7erdIUNrxtWc+L3hB5cmpPOojTk
- mSRyU9R1zN+A==
-X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
-   d="scan'208";a="506891303"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 08:03:36 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l6bfo-001AXR-RA; Mon, 01 Feb 2021 18:03:32 +0200
-Date:   Mon, 1 Feb 2021 18:03:32 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Christoph Lameter <cl@linux.com>, penberg@kernel.org,
-        David Rientjes <rientjes@google.com>, iamjoonsoo.kim@lge.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joe Perches <joe@perches.com>
-Subject: Re: [PATCH v2 3/3] vsprintf: dump full information of page flags in
- pGp
-Message-ID: <YBgmVDk5ECUiopCu@smile.fi.intel.com>
-References: <20210201115610.87808-1-laoar.shao@gmail.com>
- <20210201115610.87808-4-laoar.shao@gmail.com>
- <66784ea1-29c7-6bed-ca7f-cd3e7ea9155b@redhat.com>
- <YBgDW6dbdT7AvCXE@smile.fi.intel.com>
- <CALOAHbAeU53py1yi7Dd-vrP6fJO1OMJXM4bVo0O3jc9iAY5UTA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALOAHbAeU53py1yi7Dd-vrP6fJO1OMJXM4bVo0O3jc9iAY5UTA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+        id S230135AbhBAQFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 11:05:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229696AbhBAQF1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 11:05:27 -0500
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F20C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 08:04:46 -0800 (PST)
+Received: by mail-wm1-x34a.google.com with SMTP id y9so5014515wmi.8
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 08:04:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=k0C1xWSejIoCUIkR3Xdpp2QfnBoYRRN5HyYkZB6dBTA=;
+        b=NepNoYaSqyIEMzp6Df1/nXS4fC6aPClhYVE07/UQ8P/TA/6hzQq8i4FI1xSSiIMehd
+         JBC4glTTbdqOCO/siFNbS2TTeBHRfWbLk2zqwrl88bzHvv2xfjxmFD5zNrDfFHnnmliK
+         LyYwHowk9nqaJAWtjk0M7k5kGcTTCrvW6oN/+mG/pJHIISh7b/el2cPEP75uvJo2Bmyh
+         IJf28vVsat0mk2unsmH4O/0QG2kWQWtgIAHMrkmmcNmMhKvj+XKzNS3aZSVDOBSUVAeQ
+         NQMBdGPGBnbBnc9Vqzrbrrhq2PBnRwkJfvi34kcKwjrNey1eftKXLGNGt6re4wvO40mD
+         Q4vQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=k0C1xWSejIoCUIkR3Xdpp2QfnBoYRRN5HyYkZB6dBTA=;
+        b=YsB9OK7rdVGn2svGG3xhrMM1hiHZxiIIOp3XIAngm+lqA1LqE2Ayg282I8HJ9nReZq
+         bc0FHVbBwA2ik/UbIjJIeEyrJgAt3ELOxBae+hIkb+CEDZa/Q61DGxbtgVi7wDQjzrP6
+         Fh7PKXIVpyrtewsLBGLI7ZOQPmSWiHQEAKgqwOL6lnBkf1uGjunMIVKsGw65aR6TUPIz
+         6GMtuqi3BkC0x8kcrX7TBOEQcvmUf4Z5kxgajNXgbEuPBqdIyY8nT3om6OCRE4JaUAoE
+         D6xszrSc5Gt+L89Mc/DvhAEiiQsSJZygqcHqLxr2XIG0y2geZ5GZTr+pD5Ho6p+IPmlN
+         3hog==
+X-Gm-Message-State: AOAM532tEj2pnfrbpMBavDKsMesYzEcoIlgHblkJ0kxhNPt5qus98rtF
+        nC3KV8IWMZMDPYNqQxASjJYDoQA2Aw==
+X-Google-Smtp-Source: ABdhPJyfdxQAQE01yNUQDQX5ATRJfd8Q1f/BzqudRhIhMaukawQGypsRjYGiYl0suwLJ8tqxRRVJ6lOy8g==
+Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+ (user=elver job=sendgmr) by 2002:a7b:c76e:: with SMTP id x14mr2587288wmk.17.1612195485394;
+ Mon, 01 Feb 2021 08:04:45 -0800 (PST)
+Date:   Mon,  1 Feb 2021 17:04:20 +0100
+Message-Id: <20210201160420.2826895-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+Subject: [PATCH net-next] net: fix up truesize of cloned skb in skb_prepare_for_shift()
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com
+Cc:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        davem@davemloft.net, kuba@kernel.org, jonathan.lemon@gmail.com,
+        willemb@google.com, linmiaohe@huawei.com, gnault@redhat.com,
+        dseok.yi@samsung.com, kyk.segfault@gmail.com,
+        viro@zeniv.linux.org.uk, netdev@vger.kernel.org, glider@google.com,
+        syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com,
+        Eric Dumazet <edumazet@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 09:52:53PM +0800, Yafang Shao wrote:
-> On Mon, Feb 1, 2021 at 9:34 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Mon, Feb 01, 2021 at 02:23:33PM +0100, David Hildenbrand wrote:
-> > > On 01.02.21 12:56, Yafang Shao wrote:
+Avoid the assumption that ksize(kmalloc(S)) == ksize(kmalloc(S)): when
+cloning an skb, save and restore truesize after pskb_expand_head(). This
+can occur if the allocator decides to service an allocation of the same
+size differently (e.g. use a different size class, or pass the
+allocation on to KFENCE).
 
-...
+Because truesize is used for bookkeeping (such as sk_wmem_queued), a
+modified truesize of a cloned skb may result in corrupt bookkeeping and
+relevant warnings (such as in sk_stream_kill_queues()).
 
-> > > Printing that in addition to the raw value could be helpful. Just some
-> > > thoughts.
-> >
-> > printf() buffer is not a black hole, esp. when you get it messed with critical
-> > messages (Oops). I suggest to reduce a burden as much as possible. If you wish
-> > to get this, make it caller-configurable, i.e. adding another letter to the
-> > specifier.
-> >
-> 
-> I think David's suggestion will help us to identify issues.
-> 
-> You mean that we should use another one like "%pGpd" - means pGp debug
-> - to implement it ?
+Link: https://lkml.kernel.org/r/X9JR/J6dMMOy1obu@elver.google.com
+Reported-by: syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com
+Suggested-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Marco Elver <elver@google.com>
+---
+ net/core/skbuff.c | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-Yes.
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index 2af12f7e170c..3787093239f5 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -3289,7 +3289,19 @@ EXPORT_SYMBOL(skb_split);
+  */
+ static int skb_prepare_for_shift(struct sk_buff *skb)
+ {
+-	return skb_cloned(skb) && pskb_expand_head(skb, 0, 0, GFP_ATOMIC);
++	int ret = 0;
++
++	if (skb_cloned(skb)) {
++		/* Save and restore truesize: pskb_expand_head() may reallocate
++		 * memory where ksize(kmalloc(S)) != ksize(kmalloc(S)), but we
++		 * cannot change truesize at this point.
++		 */
++		unsigned int save_truesize = skb->truesize;
++
++		ret = pskb_expand_head(skb, 0, 0, GFP_ATOMIC);
++		skb->truesize = save_truesize;
++	}
++	return ret;
+ }
+ 
+ /**
 
+base-commit: 14e8e0f6008865d823a8184a276702a6c3cbef3d
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.30.0.365.g02bc693789-goog
 
