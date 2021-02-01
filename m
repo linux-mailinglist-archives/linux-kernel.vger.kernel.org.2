@@ -2,122 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9F130A6A8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:36:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 397D630A6A9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:36:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229785AbhBALfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 06:35:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47578 "EHLO
+        id S230165AbhBALfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 06:35:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbhBALev (ORCPT
+        with ESMTP id S229876AbhBALfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 06:34:51 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D94E2C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 03:34:10 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id p15so16140517wrq.8
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 03:34:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=mZNr3sMKKnD+FnPD7K7m44WYel5d+QW2CiDuUnxj1K0=;
-        b=pOgF7050DDMF+0ni2siGBRYu9wk/5bIonCV8Ux4PP0U3H035s88/lCu8cCr11nX6mT
-         O0kHxaLea3EfF0CM50eJX3d9oM7F1TQisk8YbmApU78zbMm1tufyACMBtuEqJtHsTNK/
-         ckyJ9ZRdVTS4+mogDT6AqR0d+8hfSkO4UruRULHFYvJ6B2JDSAaNzSs+jhphr2n7Bzq3
-         UNsh9O2YePInbFYZq4mgWgQKxPm3rNYqbos4cE4spwJ8XqwMKUgbTWySLD1boEuSNk5F
-         eRpnL0fEDsYCyFNS7ORO/wDK1Gt9UNtzdOqv050cvwehmWQ5ZDONUZLjA4aL5um4sXXk
-         Dp5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=mZNr3sMKKnD+FnPD7K7m44WYel5d+QW2CiDuUnxj1K0=;
-        b=Q9Fc/HSYZ8DZpADzxDjS1LEWhCvVGeNYuT8jQNThbjMIbkyhqAPgdR3iM7wpRNvxd0
-         4etQT9zKVdffstnKa3sp8bYAMWeavq+3LR/zAUfFELL/VhnkqaPheJTC7WnRvHvgYtqn
-         uqOlvqrAD8olNOslwLMDE4DcN1Zo8uIiWAMYp/nMPUAYG05hSqJ16fbcjEU1ikRO4Ne/
-         14BF5Z1akBS+ajIZ8Ptv/Yuh8Kj1pCoYBHSTt+DquDUwkFZwE/V/GnyRB7O6WDUlMpsW
-         tV4jlBOAXCiUqUj/23pJ0mAvAkGEIO/sfrQIiovrM2CqGdxFJ5NNmrcpxXCsNABF9xtl
-         wUmA==
-X-Gm-Message-State: AOAM533hC3BbZrGE7K8FidUQULBUzksw9pp/gndNRJ58wOfn3gOdwCOx
-        fvXikL9xtI+U7Ub8F0JXFVI=
-X-Google-Smtp-Source: ABdhPJw2S2gHxASL2Jaw8ZDxBzTE3cbM0wCuuk8Uefr0JFOky3ssVY2sOlUg5/XpIByXJQJXFq6mWA==
-X-Received: by 2002:a05:6000:12c7:: with SMTP id l7mr17511316wrx.103.1612179249622;
-        Mon, 01 Feb 2021 03:34:09 -0800 (PST)
-Received: from a-VirtualBox (cpc141888-watf13-2-0-cust663.15-2.cable.virginm.net. [86.14.42.152])
-        by smtp.gmail.com with ESMTPSA id 62sm21188427wmd.34.2021.02.01.03.34.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 03:34:09 -0800 (PST)
-Date:   Mon, 1 Feb 2021 16:34:04 +0500
-From:   Bilal Wasim <bilalwasim676@gmail.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        enric.balletbo@collabora.com, hsinyi@chromium.org,
-        weiyi.lu@mediatek.com
-Subject: Re: [PATCH 1/2] soc: mediatek: pm-domains: Use correct mask for
- bus_prot_clr
-Message-ID: <20210201163404.0429fe00@a-VirtualBox>
-In-Reply-To: <e4961c5e-db52-148d-c414-25f16101fb3f@gmail.com>
-References: <20210201054542.1470695-1-Bilal.Wasim@imgtec.com>
-        <20210201054542.1470695-2-Bilal.Wasim@imgtec.com>
-        <e4961c5e-db52-148d-c414-25f16101fb3f@gmail.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        Mon, 1 Feb 2021 06:35:32 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74B7EC061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 03:34:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=TbkJ5lHaa5UNXXcGQEY9HkpxkXaSF9a600yXDUg3OPc=; b=a/E0syQGtT4kG/vw0P3RfxInR
+        JQ2oM7Y+ynbZxFYsWbY/KxKAA7BCB6VQkpdwIC8Cn4b01nTH1Mi4P/tG45e23YoyQTO0slnClCCCG
+        +Gt3GN0HIk+UtEmrQxhsYwD3AXjyYZQgOQJPw9TkgsQRgLJo2pxCV3ij0zamsBl2xLAM8cUoF2YAT
+        De9f/DKLjtyi5hkqcWWgIDXL0JtkznbnYxr9GLLZ1ZiF7ICak8kRKsQrskXTuvqw8+MCSrKV066z5
+        jOEHic+G7pp9sBEtP++bJvFwVQo9D39Q7zbPf38UNLEtetGinaGPVDrku8R0wCr7rqShypZu1GuDM
+        m57/pXjQA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37726)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1l6XTZ-0003Ec-O5; Mon, 01 Feb 2021 11:34:37 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1l6XTY-0001xl-8x; Mon, 01 Feb 2021 11:34:36 +0000
+Date:   Mon, 1 Feb 2021 11:34:36 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        akpm@linux-foundation.org, rppt@kernel.org, penberg@kernel.org,
+        geert@linux-m68k.org, giancarlo.ferrari@nokia.com
+Subject: Re: [PATCH] ARM: kexec: Fix panic after TLB are invalidated
+Message-ID: <20210201113436.GE1463@shell.armlinux.org.uk>
+References: <1612140296-12546-1-git-send-email-giancarlo.ferrari89@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1612140296-12546-1-git-send-email-giancarlo.ferrari89@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Feb 2021 09:59:47 +0100
-Matthias Brugger <matthias.bgg@gmail.com> wrote:
+I wish others who know this code would get involved, and such stuff
+wasn't left to me to research and work out whether a patch is correct
+or not.
 
-> On 01/02/2021 06:45, Bilal Wasim wrote:
-> > When "bus_prot_reg_update" is false, the driver should use
-> > INFRA_TOPAXI_PROTECTEN for both setting and clearing the bus
-> > protection. However, the driver does not use this mask for
-> > clearing bus protection which causes failure when booting
-> > the imgtec gpu.
-> > 
-> > Corrected and tested with mt8173 chromebook.
-> > 
-> > Signed-off-by: Bilal Wasim <Bilal.Wasim@imgtec.com>
-> > ---
-> >  drivers/soc/mediatek/mtk-pm-domains.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/soc/mediatek/mtk-pm-domains.h
-> > b/drivers/soc/mediatek/mtk-pm-domains.h index
-> > 141dc76054e6..7454c0b4f768 100644 ---
-> > a/drivers/soc/mediatek/mtk-pm-domains.h +++
-> > b/drivers/soc/mediatek/mtk-pm-domains.h @@ -60,7 +60,7 @@
-> >  #define BUS_PROT_UPDATE_TOPAXI(_mask)
-> > 	\ BUS_PROT_UPDATE(_mask,				\
-> >  				INFRA_TOPAXI_PROTECTEN,
-> > 	\
-> > -				INFRA_TOPAXI_PROTECTEN_CLR,
-> > \
-> > +				INFRA_TOPAXI_PROTECTEN,
-> > 	\  
+On Mon, Feb 01, 2021 at 12:44:56AM +0000, Giancarlo Ferrari wrote:
+> machine_kexec() need to set rw permission in text and rodata sections
+> to assign some variables (e.g. kexec_start_address). To do that at
+> the end (after flushing pdm in memory, etc.) it needs to invalidate
+> TLB [section] entries.
 > 
-> BUS_PROT_UPDATE sets bus_prot_reg_update to true, which contradicts
-> what you say in the commit message.
+> If during the TLB invalidation an interrupt occours, which might cause
+> a context switch, there is the risk to inject invalid TLBs, with ro
+> permissions.
 > 
-> Please clarify.
+> When trying to assign .text labels, this lead to the following:
 > 
-
-Yes, that's a problem in the commit message - Will fix and send out a
-v2.
-
-Thanks,
-Bilal
-
-> Regards,
-> Matthias
+>  Unable to handle kernel paging request at virtual address 80112f38
+>  pgd = fd7ef03e
+>  [80112f38] *pgd=0001141e(bad)
+>  Internal error: Oops: 80d [#1] PREEMPT SMP ARM
+>  ...
 > 
-> >  				INFRA_TOPAXI_PROTECTSTA1)
-> >  
-> >  struct scpsys_bus_prot_data {
-> >   
+> Signed-off-by: Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>
 
+I don't know this code very well, but I don't think this patch is
+correct. What happens if we have CRASH_DUMP enabled, and we enter this
+function with IRQs already disabled? Should we really be re-enabling
+IRQs?
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
