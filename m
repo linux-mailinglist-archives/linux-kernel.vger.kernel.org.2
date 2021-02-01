@@ -2,97 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8CD730A5B3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:45:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D08B30A613
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:01:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233428AbhBAKoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 05:44:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233430AbhBAKnf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 05:43:35 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B04A5C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 02:42:54 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id l12so16032520wry.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 02:42:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KdljAzvVi5//s6op/UovX5xLDFP4TmnwHCTlJ043Sgk=;
-        b=oDc7dLdep+fwQDEfn8GKNdZwRpnBo6pbFxId8749NzFRiSokjVe3DGWPKGRscTKK+K
-         4uwbAOmL8cdT5tnvzsCWkSs17w/qwu2amo5Z3VgvXadbhwvMy/gOM08WBIcfdYRG+Fwf
-         8/rN00FPZygg5ZVzcKauVFZnt6AtClTUkTAe+vOJ08sDUqm6VXcefnNio8jJswex+lkZ
-         YpGywOvETDx/20tlLBCaFeJTUyiPAB7ttMps/767ajZUfsCgiWKWZNmPfpbW72jJu2h5
-         hOea0XYe7cUUPfWv9aVdiuqCXNBrRZB/uBMqg8j5LUwlx9PaUOzVEXXgZCBtKYs+XwsF
-         53/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KdljAzvVi5//s6op/UovX5xLDFP4TmnwHCTlJ043Sgk=;
-        b=lMqiDFq0wRwcWhIe1+atF2thVmSEVMyrK0RpSCpg2/6Iw0QNNMYqvvyCMM/ktmGCEF
-         iA2ZzKZ++j7tZLKthLxanaJ+fr5FnoF+R5iGBJFZUG7QJkwh8JXi0Ih/QXNYYS3bS7DS
-         6C6F+tQie5jzjZWqw3VUGN5BEEMjN+sxxKRR4OEhVNtI/Y71cye4MQirrBcFrd1Rlb0I
-         2SuegzwdftgI4sPvVPsFXjDT0K2GSAKMqJF1d7k5XIeuPHeTaHNc3kDXvUwJ4y1lnnTI
-         Hzx0slVLs9G5gYXFHHw1+CaTDXw2nELVU/Xyc/lRR/kuORVzOBJNUC/UiA58NIRY2RbC
-         BzKg==
-X-Gm-Message-State: AOAM5334pm5k/RPYXq45B+vYfExqqB8z+xArGCZ74vJ/vWL8EsfRbiYD
-        Ynlg2r2M0ifjisot/bTQqD5BCA==
-X-Google-Smtp-Source: ABdhPJydmzBGxSKJDIIxBGPgQq5UBMTmfHPMLAkRE0ySxb9liEtdsEzf3CE1EZZkSpxZNhIt/1nYkA==
-X-Received: by 2002:adf:e90d:: with SMTP id f13mr17047307wrm.371.1612176173319;
-        Mon, 01 Feb 2021 02:42:53 -0800 (PST)
-Received: from google.com ([2a01:4b00:8523:2d03:1007:9eb8:9b35:92ae])
-        by smtp.gmail.com with ESMTPSA id t15sm4716534wmi.48.2021.02.01.02.42.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 02:42:52 -0800 (PST)
-Date:   Mon, 1 Feb 2021 10:42:51 +0000
-From:   David Brazdil <dbrazdil@google.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>, kvmarm@lists.cs.columbia.edu,
+        id S233448AbhBALBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 06:01:14 -0500
+Received: from elvis.franken.de ([193.175.24.41]:43229 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233145AbhBALAZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 06:00:25 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1l6Wv9-00087b-00; Mon, 01 Feb 2021 11:59:03 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 8C857C0CC6; Mon,  1 Feb 2021 11:43:38 +0100 (CET)
+Date:   Mon, 1 Feb 2021 11:43:38 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        linux-kernel@vger.kernel.org, James Morse <james.morse@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>
-Subject: Re: [PATCH v2 4/8] KVM: arm64: Generate hyp relocation data
-Message-ID: <20210201104251.5foc64qq3ewgnhuz@google.com>
-References: <20210105180541.65031-1-dbrazdil@google.com>
- <20210105180541.65031-5-dbrazdil@google.com>
- <20210129214325.GA195322@roeck-us.net>
- <87r1m2lets.wl-maz@kernel.org>
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        David Daney <david.daney@cavium.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Archer Yan <ayan@wavecomp.com>
+Subject: Re: [PATCH 1/3] MIPS: kernel: Support extracting off-line stack
+ traces from user-space with perf
+Message-ID: <20210201104338.GA6484@alpha.franken.de>
+References: <1609246561-5474-1-git-send-email-yangtiezhu@loongson.cn>
+ <1609246561-5474-2-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87r1m2lets.wl-maz@kernel.org>
+In-Reply-To: <1609246561-5474-2-git-send-email-yangtiezhu@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for writing the fix, Marc! There are no corner cases in this code so
-if it boots, that should be a good indicator that all BE inputs were converted.
+On Tue, Dec 29, 2020 at 08:55:59PM +0800, Tiezhu Yang wrote:
+> +++ b/arch/mips/include/uapi/asm/perf_regs.h
+> @@ -0,0 +1,42 @@
+> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> +#ifndef _ASM_MIPS_PERF_REGS_H
+> +#define _ASM_MIPS_PERF_REGS_H
+> +
+> +enum perf_event_mips_regs {
+> +	PERF_REG_MIPS_PC,
+> +	PERF_REG_MIPS_R1,
+> +	PERF_REG_MIPS_R2,
+> +	PERF_REG_MIPS_R3,
+> +	PERF_REG_MIPS_R4,
+> +	PERF_REG_MIPS_R5,
+> +	PERF_REG_MIPS_R6,
+> +	PERF_REG_MIPS_R7,
+> +	PERF_REG_MIPS_R8,
+> +	PERF_REG_MIPS_R9,
+> +	PERF_REG_MIPS_R10,
+> +	PERF_REG_MIPS_R11,
+> +	PERF_REG_MIPS_R12,
+> +	PERF_REG_MIPS_R13,
+> +	PERF_REG_MIPS_R14,
+> +	PERF_REG_MIPS_R15,
+> +	PERF_REG_MIPS_R16,
+> +	PERF_REG_MIPS_R17,
+> +	PERF_REG_MIPS_R18,
+> +	PERF_REG_MIPS_R19,
+> +	PERF_REG_MIPS_R20,
+> +	PERF_REG_MIPS_R21,
+> +	PERF_REG_MIPS_R22,
+> +	PERF_REG_MIPS_R23,
+> +	PERF_REG_MIPS_R24,
+> +	PERF_REG_MIPS_R25,
+> +	/*
+> +	 * 26 and 27 are k0 and k1, they are always clobbered thus not
+> +	 * stored.
+> +	 */
 
-Just one little thing I noticed below, otherwise:
-Acked-by: David Brazdil <dbrazdil@google.com>
+haveing this hole here make all code more complicated. Does it hurt
+to have R26 and R27 in the list ?
 
->  arch/arm64/kvm/hyp/nvhe/Makefile     |  1 +
->  arch/arm64/kvm/hyp/nvhe/gen-hyprel.c | 57 ++++++++++++++++++++--------
->  2 files changed, 42 insertions(+), 16 deletions(-)
-> 
-> diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
-> index 268be1376f74..09d04dd50eb8 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/Makefile
-> +++ b/arch/arm64/kvm/hyp/nvhe/Makefile
-> @@ -7,6 +7,7 @@ asflags-y := -D__KVM_NVHE_HYPERVISOR__
->  ccflags-y := -D__KVM_NVHE_HYPERVISOR__
->  
->  hostprogs := gen-hyprel
-> +HOST_EXTRACFLAGS += -I$(srctree)/include
-This should be $(objtree), autoconf.h is generated.
+Thomas.
 
-David
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
