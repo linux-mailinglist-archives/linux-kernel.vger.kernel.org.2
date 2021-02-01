@@ -2,98 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3299130AE37
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:44:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1880630AE3B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:44:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231561AbhBARmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:42:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49940 "EHLO mail.kernel.org"
+        id S232464AbhBARnf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:43:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232415AbhBARmj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:42:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7887F64EAA;
-        Mon,  1 Feb 2021 17:41:58 +0000 (UTC)
+        id S232359AbhBARm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 12:42:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F5E564E9C;
+        Mon,  1 Feb 2021 17:41:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612201318;
-        bh=ybs2BjLIvCtgeEHWIhH8ceHvU46UUKeRDstqhNyQg1w=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=uCIM1MZBWbcSRgN8jiYxb9C598chJYIn9WripQhgGRbOIIMu2dy20xxEv4gn5dbOx
-         JepXGPCAOHS0XEl+VjfxfvtucEnoYkNHKRZ5i65gkrc9hvu7r23eMyWhoGkBr7d11+
-         9BpMcekQSJtGFJicLklF5h6vnK1ul8rcxw2ShGd9167+INRffopnaOj2cmLPXv0N/3
-         YNaFIkATuu/Holhk0AoaXupg4tPVE8+wd0UNfup5WXyTDxAdA4UBsIjxt0UjlqJz2U
-         K3Ev5dpx0fjURPkwVlecF7Dv+aSMK2LmqxpuMTiLeIr/jBZ6DKtl7900q8aUQeF/Wi
-         fLIvrTvP+5VGQ==
-Received: by mail-ed1-f48.google.com with SMTP id z22so19843074edb.9;
-        Mon, 01 Feb 2021 09:41:58 -0800 (PST)
-X-Gm-Message-State: AOAM5337pMymA32CYVuz3wdrgwKmCIXoaBJLluQUriU/zxtwMsPXajns
-        Gf7+56WTImixllHu/7ikIKfVzdTkmi5A8yOy4A==
-X-Google-Smtp-Source: ABdhPJycVLHeIeCZoNZihSTEHGT3FA6AUQ769o3mh3xfgMC1ChbE01FdkYLJxISrpMZXi2WR89lVQXbRxEAh7XBTVII=
-X-Received: by 2002:a05:6402:1b11:: with SMTP id by17mr19632838edb.373.1612201317039;
- Mon, 01 Feb 2021 09:41:57 -0800 (PST)
+        s=k20201202; t=1612201309;
+        bh=Coy8GnAXaLr1Ite2Qp1Zmud9F/Xbq++8nLGERyWz1zs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Pya8jRrCvkpzbzb7LfN8NfCpsjbcALtAvceTk+7uAToBACDZndGBfLqO0TvnRs4QD
+         vJt3n3sYn90rFk6cR3ObT0dGnrXLHiHnbGUWRrnA4+sssDkD83ArGPBV8XlQ8+N95j
+         sBDnYQKZQx63cDdgE3rBsE6ck17Mgtp3krhlE6j7VO+NZcoFY1537qQZ1ZpO6OeGif
+         HtFGRpj6wB5J0oYBEf6AGjSOoOhtkpeYK0TEJNYx9zOn4eNiMWXpD1a920S2bMogcL
+         2MjQN0N5j5kJ+fm20uyeCk7W8G9Sa0NgxmKTm7oc445f0HL/SgjiAKCk3gK3mo7LRe
+         zwKfv6/SlM7XQ==
+Date:   Mon, 1 Feb 2021 17:41:43 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, android-kvm@google.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        Fuad Tabba <tabba@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>
+Subject: Re: [RFC PATCH v2 04/26] KVM: arm64: Initialize kvm_nvhe_init_params
+ early
+Message-ID: <20210201174143.GB15632@willie-the-truck>
+References: <20210108121524.656872-1-qperret@google.com>
+ <20210108121524.656872-5-qperret@google.com>
 MIME-Version: 1.0
-References: <91e3405245c89f134676449cf3822285798d2ed2.1612189652.git.michal.simek@xilinx.com>
-In-Reply-To: <91e3405245c89f134676449cf3822285798d2ed2.1612189652.git.michal.simek@xilinx.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 1 Feb 2021 11:41:41 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJnu1M6ut8g_36ve-OG22jFsySHbmVHOgtDRhc-s37rpQ@mail.gmail.com>
-Message-ID: <CAL_JsqJnu1M6ut8g_36ve-OG22jFsySHbmVHOgtDRhc-s37rpQ@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: zynq: Add address-cells property to interrupt controllers
-To:     Michal Simek <michal.simek@xilinx.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Michal Simek <monstr@monstr.eu>, git <git@xilinx.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        devicetree@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210108121524.656872-5-qperret@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 8:27 AM Michal Simek <michal.simek@xilinx.com> wrote:
->
-> The commit 3eb619b2f7d8 ("scripts/dtc: Update to upstream version
-> v1.6.0-11-g9d7888cbf19c") updated dtc version which also contained DTC
-> commit
-> "81e0919a3e21 checks: Add interrupt provider test"
-> where reasons for this checking are mentioned as
-> "A missing #address-cells property is less critical, but creates
-> ambiguities when used in interrupt-map properties, so warn about this as
-> well now."
->
-> Add address-cells property to gic and gpio nodes to get rid of this warning.
-> The similar change has been done for ZynqMP too.
-
-FYI, we're going to make this check dependent on having an
-interrupt-map property. So adding these isn't necessary.
-
->
-> CC: Andre Przywara <andre.przywara@arm.com>
-> Signed-off-by: Michal Simek <michal.simek@xilinx.com>
+On Fri, Jan 08, 2021 at 12:15:02PM +0000, Quentin Perret wrote:
+> Move the initialization of kvm_nvhe_init_params in a dedicated function
+> that is run early, and only once during KVM init, rather than every time
+> the KVM vectors are set and reset.
+> 
+> This also opens the opportunity for the hypervisor to change the init
+> structs during boot, hence simplifying the replacement of host-provided
+> page-tables and stacks by the ones the hypervisor will create for
+> itself.
+> 
+> Signed-off-by: Quentin Perret <qperret@google.com>
 > ---
->
->  arch/arm/boot/dts/zynq-7000.dtsi | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/arch/arm/boot/dts/zynq-7000.dtsi b/arch/arm/boot/dts/zynq-7000.dtsi
-> index df9ad831cf05..c4810d58540b 100644
-> --- a/arch/arm/boot/dts/zynq-7000.dtsi
-> +++ b/arch/arm/boot/dts/zynq-7000.dtsi
-> @@ -133,6 +133,7 @@ can1: can@e0009000 {
->
->                 gpio0: gpio@e000a000 {
->                         compatible = "xlnx,zynq-gpio-1.0";
-> +                       #address-cells = <0>;
->                         #gpio-cells = <2>;
->                         clocks = <&clkc 42>;
->                         gpio-controller;
-> @@ -168,6 +169,7 @@ i2c1: i2c@e0005000 {
->                 intc: interrupt-controller@f8f01000 {
->                         compatible = "arm,cortex-a9-gic";
->                         #interrupt-cells = <3>;
-> +                       #address-cells = <0>;
->                         interrupt-controller;
->                         reg = <0xF8F01000 0x1000>,
->                               <0xF8F00100 0x100>;
-> --
-> 2.30.0
->
+>  arch/arm64/kvm/arm.c | 28 ++++++++++++++++++++--------
+>  1 file changed, 20 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index 04c44853b103..3ac0f3425833 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+
+[...]
+
+> @@ -1807,6 +1813,12 @@ static int init_hyp_mode(void)
+>  			goto out_err;
+>  	}
+>  
+> +	/*
+> +	 * Prepare the CPU initialization parameters
+> +	 */
+> +	for_each_possible_cpu(cpu)
+> +		cpu_prepare_hyp_mode(cpu);
+> +
+
+This is the fifth for_each_possible_cpu() loop in this function; can any of
+them be merged together?
+
+Will
