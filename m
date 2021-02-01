@@ -2,77 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1868230AC74
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:17:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D98630AC7C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:19:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231337AbhBAQQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 11:16:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230224AbhBAQQX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 11:16:23 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46C2FC061573;
-        Mon,  1 Feb 2021 08:15:42 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id l12so17226192wry.2;
-        Mon, 01 Feb 2021 08:15:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZDuWWmP/CpWd2/GjAQP26lhvef68ZdIbhiH4GoBTIfE=;
-        b=jd50eoQHbsQcPcTxaK3cAhpIqB485plyJpijNhsDjTnWsc952jplkEXh9ZURAfk5xQ
-         2NbazQG9OHsAs/U0T94mCtEph4kFWIwm+dQxCIG9Ho6zNRDTb0fP3fPDY4V69yL8GqoO
-         ZiSGmn/HQ6D0z81GjK3tlYJSNp28buzgrV3kxBHebtJm6jtKly4dfFfFizpnDKoykNFh
-         ptQ316QfeDh8kGmhwWgu1dMBG34BfrVHarT1iIjS+c8MC9sm+a73iza0yoo69fLQG2A5
-         8SIRzMUv50Grpy3rvacpo9yuXcKmYzYGBkLUdqkjVESbBH7dZ4EkYn0imfabNZGniKUE
-         41SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZDuWWmP/CpWd2/GjAQP26lhvef68ZdIbhiH4GoBTIfE=;
-        b=aMeRjfRm0Riy/CqoyzTnVzF5VStcXoXzM7rS0zEd3U/sWE9X/l1IytLwS4sOtuV3vd
-         5ivLxRt/AF5sQpnU8GpFz4c+JKL5aP5hshD6TGHJDCJf7jxi/sQ8MmSbdrq32O6oUI2G
-         ox9KdlwFJS9HVcjKA9qZ/YyHt53Qbck6PoMOf2IBpuOX9Pv7FWd4AbCvJk/O+pfFwXdp
-         AnNPmRhKEUKFiWkRI0oX6G4wzau4tHgU/8kiH0QYgmV3bQjk7ZhM9tbiqa83AZjyZXyX
-         yjhpyTWuuCj7kTpCzZzyN9p6VOLGe2PLxwKvvgkThr1CAK8VneSyB97BXv0vGBRqt9Wb
-         9WEQ==
-X-Gm-Message-State: AOAM533CLf9kx7QoupBhcKy51FEiRMOg6ok2rtjI+SoO8P2nNZEOrcw4
-        vbjXeE1cXlKa88VNlADSppvlHCWGloJo3L/ab/o=
-X-Google-Smtp-Source: ABdhPJwNkGXVFvEICEQjWInJttb7yzXTMJVgFudoMoTE86a1oXks7IIzTY/n8soSger7QYJ7nteq2qaBtbFi5sk+LFU=
-X-Received: by 2002:a5d:69ce:: with SMTP id s14mr18382220wrw.206.1612196140971;
- Mon, 01 Feb 2021 08:15:40 -0800 (PST)
+        id S230424AbhBAQSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 11:18:46 -0500
+Received: from mga17.intel.com ([192.55.52.151]:32955 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229793AbhBAQSk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 11:18:40 -0500
+IronPort-SDR: SE9hoT4m542b9hxBWr8sIuPLmGLpbUmDz7BCG9n0CQPjeqUusTGdqJf5ilSXjxdLHQUn4rzAbC
+ 5dYCp+fa9tdQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="160475422"
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="160475422"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 08:16:53 -0800
+IronPort-SDR: 5OS2hvGD0EL98Cah3aGcdogh6ZTv9w4OG1i4fDRsCEPoQPk45SQePQi8lGL/DCPID9RiZwTvLV
+ WzeK5bwYQnQA==
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="479141559"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 08:16:46 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l6bsY-001AhJ-AH; Mon, 01 Feb 2021 18:16:42 +0200
+Date:   Mon, 1 Feb 2021 18:16:42 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Christoph Lameter <cl@linux.com>, penberg@kernel.org,
+        David Rientjes <rientjes@google.com>, iamjoonsoo.kim@lge.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joe Perches <joe@perches.com>
+Subject: Re: [PATCH v2 3/3] vsprintf: dump full information of page flags in
+ pGp
+Message-ID: <YBgpavcZD4VXZri6@smile.fi.intel.com>
+References: <20210201115610.87808-1-laoar.shao@gmail.com>
+ <20210201115610.87808-4-laoar.shao@gmail.com>
+ <YBgBxaFSy8P/nrcH@smile.fi.intel.com>
+ <CALOAHbAUPCUfZp_58QbVzvbP2UqoPqHAzzsgk1UTZ95v1rtqTw@mail.gmail.com>
 MIME-Version: 1.0
-References: <AAB32610-D238-4137-96DE-33655AAAB545@dilger.ca>
- <20210201003125.90257-1-viniciustinti@gmail.com> <20210201124924.GA3284018@infradead.org>
-In-Reply-To: <20210201124924.GA3284018@infradead.org>
-From:   Vinicius Tinti <viniciustinti@gmail.com>
-Date:   Mon, 1 Feb 2021 13:15:29 -0300
-Message-ID: <CALD9WKxc0kMPCHSoikko+qYk2+ZLUy73+ryKGW9qMSpyzAobLA@mail.gmail.com>
-Subject: Re: [PATCH v2] ext4: Enable code path when DX_DEBUG is set
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALOAHbAUPCUfZp_58QbVzvbP2UqoPqHAzzsgk1UTZ95v1rtqTw@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 9:49 AM Christoph Hellwig <hch@infradead.org> wrote:
->
-> DX_DEBUG is completely dead code, so either kill it off or make it an
-> actual CONFIG_* symbol through Kconfig if it seems useful.
+On Mon, Feb 01, 2021 at 09:49:59PM +0800, Yafang Shao wrote:
+> On Mon, Feb 1, 2021 at 9:27 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Mon, Feb 01, 2021 at 07:56:10PM +0800, Yafang Shao wrote:
 
-About the unreachable code in "if (0)" I think it could be removed.
-It seems to be doing an extra check.
+...
 
-About the DX_DEBUG I think I can do another patch adding it to Kconfig
-as you and Nathan suggested.
+> > > - Before the patch,
+> > > [ 6343.396602] Slab 0x000000004382e02b objects=33 used=3 fp=0x000000009ae06ffc flags=0x17ffffc0010200(slab|head)
+> > >
+> > > - After the patch,
+> > > [ 6871.296131] Slab 0x00000000c0e19a37 objects=33 used=3 fp=0x00000000c4902159 flags=0x17ffffc0010200(Node 0,Zone 2,Lastcpupid 0x1fffff,slab|head)
+> > >
+> > > The Documentation and test cases are also updated.
+> >
+> > Thanks for an update, my comments below.
+> >
+> > ...
+> >
+> > > -     %pGp    referenced|uptodate|lru|active|private
+> > > +     %pGp    Node 0,Zone 2,referenced|uptodate|lru|active|private
+> >
+> > Since of the nature of printf() buffer, I wonder if these should be at the end.
+> > I.o.w. the question is is the added material more important to user to see than
+> > the existed one?
+> >
+> 
+> The existing one should be more important than the added one.
+> But the order of output will not match with the value for page->flags.
+> E.g.
+>     flags=0x17ffffc0010200(slab|head,Node 0,Zone 2,Lastcpupid 0x1fffff)
+> It may be strange to compare the value with the string.
 
-What do you think?
+More I'm looking at it, more I'm thinking it should have different specifiers
+for each group of desired flags to be printed.
+
+So, you leave %pGp as is and then add another letter to add more details, so
+user will choose what and in which order they want.
+
+For example, let's assume %pGp == %pGpf and P is a new specifier for what you
+are initially adding here:
+
+  %pGpfP => referenced|uptodate|lru|active|private,Node 0,Zone 2
+  %pGpPf => Node 0,Zone 2,referenced|uptodate|lru|active|private
+
+and so on.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
