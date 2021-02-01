@@ -2,165 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84C9230A730
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:07:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B23A30A70E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:02:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231314AbhBAMGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 07:06:23 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56348 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231194AbhBAMFj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 07:05:39 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 339B064EA7;
-        Mon,  1 Feb 2021 12:04:32 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l6XpO-00BG09-VO; Mon, 01 Feb 2021 11:57:11 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Ajay Patil <pajay@qti.qualcomm.com>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kernel-team@android.com
-Subject: [PATCH v6 21/21] arm64: cpufeatures: Allow disabling of Pointer Auth from the command-line
-Date:   Mon,  1 Feb 2021 11:56:37 +0000
-Message-Id: <20210201115637.3123740-22-maz@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210201115637.3123740-1-maz@kernel.org>
-References: <20210201115637.3123740-1-maz@kernel.org>
+        id S231126AbhBAMBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 07:01:18 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12060 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230159AbhBAMBP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 07:01:15 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DTmgg1Sq7zMTBf;
+        Mon,  1 Feb 2021 19:58:55 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.220) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.498.0; Mon, 1 Feb 2021
+ 20:00:31 +0800
+Subject: Re: [PATCH v3 3/3] iommu/arm-smmu-v3: Reserving the entire SMMU
+ register space
+To:     Robin Murphy <robin.murphy@arm.com>, Will Deacon <will@kernel.org>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Jean-Philippe Brucker <jean-philippe@linaro.org>
+References: <20210127113258.1421-1-thunder.leizhen@huawei.com>
+ <20210127113258.1421-4-thunder.leizhen@huawei.com>
+ <fa170300-57d9-3883-c70f-d455a9e461f0@arm.com>
+ <6c5b4dca-24d4-55d7-1345-2238567cb958@huawei.com>
+ <cd174cbf-e006-c7be-a707-d7973a26ed31@arm.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
+Message-ID: <b20a1f35-381f-676c-a4e9-e42403f29e80@huawei.com>
+Date:   Mon, 1 Feb 2021 20:00:30 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
+In-Reply-To: <cd174cbf-e006-c7be-a707-d7973a26ed31@arm.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, dbrazdil@google.com, alexandru.elisei@arm.com, ardb@kernel.org, jingzhangos@google.com, pajay@qti.qualcomm.com, psodagud@codeaurora.org, sramana@codeaurora.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Originating-IP: [10.174.176.220]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to be able to disable Pointer Authentication  at runtime,
-whether it is for testing purposes, or to work around HW issues,
-let's add support for overriding the ID_AA64ISAR1_EL1.{GPI,GPA,API,APA}
-fields.
 
-This is further mapped on the arm64.nopauth command-line alias.
 
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-Acked-by: David Brazdil <dbrazdil@google.com>
-Tested-by: Srinivas Ramana <sramana@codeaurora.org>
----
- Documentation/admin-guide/kernel-parameters.txt |  3 +++
- arch/arm64/include/asm/cpufeature.h             |  1 +
- arch/arm64/kernel/cpufeature.c                  |  4 +++-
- arch/arm64/kernel/idreg-override.c              | 16 ++++++++++++++++
- 4 files changed, 23 insertions(+), 1 deletion(-)
+On 2021/2/1 19:44, Robin Murphy wrote:
+> On 2021-01-30 01:54, Leizhen (ThunderTown) wrote:
+>>
+>>
+>> On 2021/1/29 23:27, Robin Murphy wrote:
+>>> On 2021-01-27 11:32, Zhen Lei wrote:
+>>>> commit 52f3fab0067d ("iommu/arm-smmu-v3: Don't reserve implementation
+>>>> defined register space") only reserves the basic SMMU register space. So
+>>>> the ECMDQ register space is not covered, it should be mapped again. Due
+>>>> to the size of this ECMDQ resource is not fixed, depending on
+>>>> SMMU_IDR6.CMDQ_CONTROL_PAGE_LOG2NUMQ. Processing its resource reservation
+>>>> to avoid resource conflict with PMCG is a bit more complicated.
+>>>>
+>>>> Therefore, the resources of the PMCG are not reserved, and the entire SMMU
+>>>> resources are reserved.
+>>>
+>>> This is the opposite of what I suggested. My point was that it will make the most sense to map the ECMDQ pages as a separate request anyway, therefore there is no reason to stop mapping page 0 and page 1 separately either.
+>>
+>> I don't understand why the ECMDQ mapping must be performed separately. If the conflict with PMCG resources is eliminated. ECMDQ cannot be a separate driver like PMCG.
+> 
+> I mean in terms of the basic practice of not mapping megabytes worth of IMP-DEF crap that this driver doesn't need or even understand. If we don't have ECMDQ, we definitely don't need anything beyond page 1, so there's no point mapping it all, and indeed it's safest not to anyway. Even if we do have ECMDQ, it's still safer not to map all the unknown stuff that may be in between, and until we've mapped page 0 we don't know whether we have ECMDQ or not.
+> 
+> Therefore the most sensible thing to do either way is to map the basic page(s) first, then map the ECMDQ pages specifically if we determine that we need to. And either way we don't even need to think about this until adding ECMDQ support.
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 7599fd0f1ad7..f9cb28a39bd0 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -376,6 +376,9 @@
- 	arm64.nobti	[ARM64] Unconditionally disable Branch Target
- 			Identification support
- 
-+	arm64.nopauth	[ARM64] Unconditionally disable Pointer Authentication
-+			support
-+
- 	ataflop=	[HW,M68k]
- 
- 	atarimouse=	[HW,MOUSE] Atari Mouse
-diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
-index 30917b9a760b..61177bac49fa 100644
---- a/arch/arm64/include/asm/cpufeature.h
-+++ b/arch/arm64/include/asm/cpufeature.h
-@@ -820,6 +820,7 @@ static inline unsigned int get_vmid_bits(u64 mmfr1)
- 
- extern struct arm64_ftr_override id_aa64mmfr1_override;
- extern struct arm64_ftr_override id_aa64pfr1_override;
-+extern struct arm64_ftr_override id_aa64isar1_override;
- 
- u32 get_kvm_ipa_limit(void);
- void dump_cpu_features(void);
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index 7fbeab497adb..3bce87a03717 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -559,6 +559,7 @@ static const struct arm64_ftr_bits ftr_raz[] = {
- 
- struct arm64_ftr_override __ro_after_init id_aa64mmfr1_override;
- struct arm64_ftr_override __ro_after_init id_aa64pfr1_override;
-+struct arm64_ftr_override __ro_after_init id_aa64isar1_override;
- 
- static const struct __ftr_reg_entry {
- 	u32			sys_id;
-@@ -604,7 +605,8 @@ static const struct __ftr_reg_entry {
- 
- 	/* Op1 = 0, CRn = 0, CRm = 6 */
- 	ARM64_FTR_REG(SYS_ID_AA64ISAR0_EL1, ftr_id_aa64isar0),
--	ARM64_FTR_REG(SYS_ID_AA64ISAR1_EL1, ftr_id_aa64isar1),
-+	ARM64_FTR_REG_OVERRIDE(SYS_ID_AA64ISAR1_EL1, ftr_id_aa64isar1,
-+			       &id_aa64isar1_override),
- 
- 	/* Op1 = 0, CRn = 0, CRm = 7 */
- 	ARM64_FTR_REG(SYS_ID_AA64MMFR0_EL1, ftr_id_aa64mmfr0),
-diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
-index dbe102504630..aaf9f505e518 100644
---- a/arch/arm64/kernel/idreg-override.c
-+++ b/arch/arm64/kernel/idreg-override.c
-@@ -46,6 +46,18 @@ static const struct ftr_set_desc pfr1 __initconst = {
- 	},
- };
- 
-+static const struct ftr_set_desc isar1 __initconst = {
-+	.name		= "id_aa64isar1",
-+	.override	= &id_aa64isar1_override,
-+	.fields		= {
-+	        { "gpi", ID_AA64ISAR1_GPI_SHIFT },
-+	        { "gpa", ID_AA64ISAR1_GPA_SHIFT },
-+	        { "api", ID_AA64ISAR1_API_SHIFT },
-+	        { "apa", ID_AA64ISAR1_APA_SHIFT },
-+		{}
-+	},
-+};
-+
- extern struct arm64_ftr_override kaslr_feature_override;
- 
- static const struct ftr_set_desc kaslr __initconst = {
-@@ -62,6 +74,7 @@ static const struct ftr_set_desc kaslr __initconst = {
- static const struct ftr_set_desc * const regs[] __initconst = {
- 	&mmfr1,
- 	&pfr1,
-+	&isar1,
- 	&kaslr,
- };
- 
-@@ -72,6 +85,9 @@ static const struct {
- 	{ "kvm-arm.mode=nvhe",		"id_aa64mmfr1.vh=0" },
- 	{ "kvm-arm.mode=protected",	"id_aa64mmfr1.vh=0" },
- 	{ "arm64.nobti",		"id_aa64pfr1.bt=0" },
-+	{ "arm64.nopauth",
-+	  "id_aa64isar1.gpi=0 id_aa64isar1.gpa=0 "
-+	  "id_aa64isar1.api=0 id_aa64isar1.apa=0"	   },
- 	{ "nokaslr",			"kaslr.disabled=1" },
- };
- 
--- 
-2.29.2
+Okay, I got it. We really don't have to write code ahead of time for what might happen in the future.
+
+> 
+> Robin.
+> 
+>>> If we need to expand the page 0 mapping to cover more of page 0 to reach the SMMU_CMDQ_CONTROL_PAGE_* registers, we can do that when we actually add ECMDQ support.
+>>>
+>>> Robin.
+>>>
+>>>> Suggested-by: Robin Murphy <robin.murphy@arm.com>
+>>>> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+>>>> ---
+>>>>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 24 ++++--------------------
+>>>>    drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  2 --
+>>>>    2 files changed, 4 insertions(+), 22 deletions(-)
+>>>>
+>>>> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>>> index f04c55a7503c790..fde24403b06a9e3 100644
+>>>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+>>>> @@ -3476,14 +3476,6 @@ static int arm_smmu_set_bus_ops(struct iommu_ops *ops)
+>>>>        return err;
+>>>>    }
+>>>>    -static void __iomem *arm_smmu_ioremap(struct device *dev, resource_size_t start,
+>>>> -                      resource_size_t size)
+>>>> -{
+>>>> -    struct resource res = DEFINE_RES_MEM(start, size);
+>>>> -
+>>>> -    return devm_ioremap_resource(dev, &res);
+>>>> -}
+>>>> -
+>>>>    static int arm_smmu_device_probe(struct platform_device *pdev)
+>>>>    {
+>>>>        int irq, ret;
+>>>> @@ -3519,22 +3511,14 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
+>>>>        }
+>>>>        ioaddr = res->start;
+>>>>    -    /*
+>>>> -     * Don't map the IMPLEMENTATION DEFINED regions, since they may contain
+>>>> -     * the PMCG registers which are reserved by the PMU driver.
+>>>> -     */
+>>>> -    smmu->base = arm_smmu_ioremap(dev, ioaddr, ARM_SMMU_REG_SZ);
+>>>> +    smmu->base = devm_ioremap_resource(dev, res);
+>>>>        if (IS_ERR(smmu->base))
+>>>>            return PTR_ERR(smmu->base);
+>>>>    -    if (arm_smmu_resource_size(smmu) > SZ_64K) {
+>>>> -        smmu->page1 = arm_smmu_ioremap(dev, ioaddr + SZ_64K,
+>>>> -                           ARM_SMMU_REG_SZ);
+>>>> -        if (IS_ERR(smmu->page1))
+>>>> -            return PTR_ERR(smmu->page1);
+>>>> -    } else {
+>>>> +    if (arm_smmu_resource_size(smmu) > SZ_64K)
+>>>> +        smmu->page1 = smmu->base + SZ_64K;
+>>>> +    else
+>>>>            smmu->page1 = smmu->base;
+>>>> -    }
+>>>>          /* Interrupt lines */
+>>>>    diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+>>>> index da525f46dab4fc1..63f2b476987d6ae 100644
+>>>> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+>>>> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+>>>> @@ -152,8 +152,6 @@
+>>>>    #define ARM_SMMU_PRIQ_IRQ_CFG1        0xd8
+>>>>    #define ARM_SMMU_PRIQ_IRQ_CFG2        0xdc
+>>>>    -#define ARM_SMMU_REG_SZ            0xe00
+>>>> -
+>>>>    /* Common MSI config fields */
+>>>>    #define MSI_CFG0_ADDR_MASK        GENMASK_ULL(51, 2)
+>>>>    #define MSI_CFG2_SH            GENMASK(5, 4)
+>>>>
+>>>
+>>> .
+>>>
+>>
+> 
+> .
+> 
 
