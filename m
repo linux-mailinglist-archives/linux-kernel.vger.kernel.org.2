@@ -2,111 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F8330AF9D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:41:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0F630AFA2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:42:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233019AbhBASkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:40:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233090AbhBASjQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:39:16 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4DCCC061786
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 10:38:20 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id n14so4654526iog.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 10:38:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vR0B9VlMvNtAZhaGiDDVhMV/Qg/talwAAAGPTlNsNtk=;
-        b=ClQyNUKzXM47JsEx0o5ozMu+l0YAQEH4Cul5XFHJbMBLm64Z5h9Ivl0gkQigST+UzP
-         DA7uHTnknG+BPG4YRRJp4V36JvOJ+zyx6K2Qg+AGDf2iClTPYYQdQvgE2siKg3SuGqc4
-         tJZ6gri3JHv7onV/u46t0pd+rGwlHNS7eyUhAMNoD53/cTlSO2blo1a8/GkaMwYgJaNu
-         LUu5eEI9eQ++TDpcy2arFsWzxxXYBF7sPFFh4GhDT0TN7jT725maFb3AufQquEtbFLOk
-         uVztoPtN0phKAr0VoUXUSar2ad3eoC8KSiNG4Q/ap37/DqjqxTZx+MgowNsj6XvZeGHD
-         EXAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=vR0B9VlMvNtAZhaGiDDVhMV/Qg/talwAAAGPTlNsNtk=;
-        b=iXszlopBNymPO8tEFx7s2F9m1ceTFfmmpKHMP7f4xHs9b3URL9fBTOH8DNVjw63woe
-         rD6C3bvjSRBOPuK69ARA1xt4Uf00k5v/YMKXPDneVCz7MurLRn2G+TgF/6j9L2wxpsJ/
-         g/m6BXIJeHbPY5vErKYfF0ugiJQMjqUqstbJ/abOCVRfrL3IfPO8VegPB50SfZgdibFw
-         0RCbLX//DO20CMvNVDBQs5qAK24oEDb0cTaRrBiLNHRiKXgBQ/3wgXO66DtJuvO4br4T
-         S4doJWKXa/BtkbPfPxfQjAMaPaua843K3dn4/NZkdwdKrffYGme5R6baKV05CraUi+pI
-         dwig==
-X-Gm-Message-State: AOAM532dECwamV3sKo2QiRQV1wGQNaCtxCVppZzWjfk2jdV81m8EcXYd
-        Lzgb86ou5HN3iGBHl3rb0iHq/XoxTZPnLA==
-X-Google-Smtp-Source: ABdhPJwntFOgORy4jVi4QQK3FXqa3bciAQsugPOFGhLws6tZemaqRuZEXu7iDm3Bv0EH5BdUpL3PZg==
-X-Received: by 2002:a05:6602:2c4e:: with SMTP id x14mr13314766iov.58.1612204700152;
-        Mon, 01 Feb 2021 10:38:20 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id o131sm1751789ila.5.2021.02.01.10.38.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 10:38:19 -0800 (PST)
-Subject: Re: [PATCH net-next 9/9] net: ipa: don't disable NAPI in suspend
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, elder@kernel.org,
-        evgreen@chromium.org, bjorn.andersson@linaro.org,
-        cpratapa@codeaurora.org,
-        Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210129202019.2099259-1-elder@linaro.org>
- <20210129202019.2099259-10-elder@linaro.org>
- <CAF=yD-L1SKzu+gsma7KN4VjGnma-_w+amXx=Y_0e78rQiUCu7Q@mail.gmail.com>
- <e27f5c10-7b77-1f12-fe36-e9261f01bca1@linaro.org>
- <CAF=yD-+4xNjgkWQw8tMz0uvK45ysL6vnx86ZgEud+kCW9zw9_A@mail.gmail.com>
- <67f4aa5a-4a60-41e6-a049-0ff93fb87b66@linaro.org>
- <CAF=yD-+ABnhRmcHq=1T7PVz8VUVjqC073bjTa89GUt1rA3KVUw@mail.gmail.com>
- <a1b12c17-5d65-ce29-3d4f-e09de4fdcf3f@linaro.org>
- <CAF=yD-JSpz5OAp3DtW+1K_w1NZsLLxbrviZRQ5j7=qyJFpZAQg@mail.gmail.com>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <1aa6778a-6aff-e72f-ca98-74ce952c1e56@linaro.org>
-Date:   Mon, 1 Feb 2021 12:38:18 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S232248AbhBASlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:41:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233025AbhBASk1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 13:40:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DDE4B64EA2;
+        Mon,  1 Feb 2021 18:39:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612204786;
+        bh=RWCEVvMfMr07Mj0Dm990NJYMdt/tnBLc1r3RkW1LOpI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Sv7mWTQjdOhFcDIMCbW1iFI0zjx5NhutKWWEwARZFwdSFhjVgHc9Uom5VsUoIPSbv
+         bbsxnuSIKgBN1r5PdCf0vCJDRfzwhL89aJH52aldgfb3hZjzPRWkZ8XSif8y25PBLn
+         OMrHbjZNJSHYSr7y8V3yg6VYCfSgtZSGUtCDFOohMW1atWBUdSRHmjlVw/zDPjdllJ
+         S/Iv5U4ieWYllL8w/npt5/62CWCqdJZMDNdtRLuPjdlD47xFGt0PXJR6oBoi6dPegC
+         Ox9HxzXwXkB506lhN2unGnFjmaoQhkXP8X5+IGSaS7Yvs3mI8o7KYXXNw9zYFCyREZ
+         YeC5KviL9q0gA==
+Date:   Mon, 1 Feb 2021 18:39:40 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, android-kvm@google.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        Fuad Tabba <tabba@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>
+Subject: Re: [RFC PATCH v2 06/26] KVM: arm64: Factor memory allocation out of
+ pgtable.c
+Message-ID: <20210201183940.GF15632@willie-the-truck>
+References: <20210108121524.656872-1-qperret@google.com>
+ <20210108121524.656872-7-qperret@google.com>
+ <20210201181607.GD15632@willie-the-truck>
+ <YBhJVPz124QRAYFf@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CAF=yD-JSpz5OAp3DtW+1K_w1NZsLLxbrviZRQ5j7=qyJFpZAQg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YBhJVPz124QRAYFf@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/1/21 8:47 AM, Willem de Bruijn wrote:
->> - I will begin some long testing later today without
->>     this last patch applied
->>       --> But I think testing without the IRQ ordering
->>          patch would be more promising, and I'd like
->>          to hear your opinion on that
-> Either test depends on whether you find it worthwhile to more
-> specifically identify the root cause. If not, no need to run the tests
-> on my behalf. I understand that these are time consuming.
+On Mon, Feb 01, 2021 at 06:32:52PM +0000, Quentin Perret wrote:
+> On Monday 01 Feb 2021 at 18:16:08 (+0000), Will Deacon wrote:
+> > On Fri, Jan 08, 2021 at 12:15:04PM +0000, Quentin Perret wrote:
+> > > +static struct kvm_pgtable_mm_ops kvm_s2_mm_ops = {
+> > > +	.zalloc_page		= stage2_memcache_alloc_page,
+> > > +	.zalloc_pages_exact	= kvm_host_zalloc_pages_exact,
+> > > +	.free_pages_exact	= free_pages_exact,
+> > > +	.get_page		= kvm_host_get_page,
+> > > +	.put_page		= kvm_host_put_page,
+> > > +	.page_count		= kvm_host_page_count,
+> > > +	.phys_to_virt		= kvm_host_va,
+> > > +	.virt_to_phys		= kvm_host_pa,
+> > > +};
+> > 
+> > Idle thought, but I wonder whether it would be better to have these
+> > implementations as the default and make the mm_ops structure parameter
+> > to kvm_pgtable_stage2_init() optional? I guess you don't gain an awful
+> > lot though, so feel free to ignore me.
+> 
+> No strong opinion really, but I suppose I could do something as simple
+> as having static inline wrappers which provide kvm_s2_mm_ops to the
+> pgtable API for me. I'll probably want to make sure these are not
+> defined when compiling EL2 code, though, to avoid confusion.
+> 
+> Or maybe you had something else in mind?
 
-I *would* like to really understand the root cause.
-And a month ago I would have absolutely gone through
-a bisect process so I could narrow it down.
+No, just food for thought. If we can reduce the changes for normal KVM then
+it's probably worth considering if it doesn't add divergent code paths. But
+I'm also fine with the proposal you have here, so if it doesn't work then
+don't get hung up on it.
 
-But at this point I'm content to have it fixed (fingers
-crossed) and am more interested in putting all this
-behind me.  It's taken a lot of time and attention.
-
-And even though this represents a real bug, at least
-for now I am content to keep all this work in net-next
-rather than isolate the specific problem and try to
-back-port it (without all the other 20+ commits that
-preceded these) to the net branch.
-
-So although I see the value in identifying the specific
-root cause, I'm not going to do that unless/until it
-becomes clear it *must* be done (to back-port to net).
-
-					-Alex
+Will
