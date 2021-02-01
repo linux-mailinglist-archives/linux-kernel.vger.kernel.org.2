@@ -2,166 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BFBE30A3E3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5673230A3E8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:00:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232557AbhBAI7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 03:59:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41658 "EHLO
+        id S232631AbhBAI74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 03:59:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231992AbhBAI6y (ORCPT
+        with ESMTP id S232565AbhBAI7y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 03:58:54 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D13AC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 00:57:48 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id s5so5037985edw.8
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 00:57:48 -0800 (PST)
+        Mon, 1 Feb 2021 03:59:54 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC864C061756;
+        Mon,  1 Feb 2021 00:59:13 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id g10so15667455wrx.1;
+        Mon, 01 Feb 2021 00:59:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=GyxsNnWu7EqjyU0NKMwi2dzcVL+ptjeCIPcsXEH/9OY=;
-        b=i6PdTJrbTgfPEq1qvNzYS4t4VsejQHvBMA2i45CHObKGwPzTKS4X3R5W02R02DNRfr
-         9F48UgomgbOq6gppxgT4+6tuQmsSHf5a7Vr2bMdmt57Uk39z4OU49+Do6uCOXRqHkV4f
-         XE510R+cNphZYBjIKhw5YlVF955NPuWlSvhpasOICJu+nCFpU8GkzQKIg6AxYZ2wOFOx
-         7fxMDR9GSb9IaenWC1mMrNc2pzs6J+uQqfoAp42APYhs+a4ElJZZ0CIgjXBbfND2wQFw
-         2uJbWV+HCa/Z5qJx2c+Oo0Etw5ORVx5jgX00rHyrO1+Ug3riu1gD7nHgATlqC2gexrji
-         lbYw==
+        d=googlemail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=t6zzPkViDAZXtGNaHi4SN0UuGW+D82KkvB10PcytzLM=;
+        b=K5ajE1azXG9rL/tbsndszJWiNLqbCyzpPvOm1T33/TDe6uQGh9QJLbx4qINN/UFmhb
+         FTZymP+5Yo+IpIfx8bRbr6e+R/2xjjOuqgVHO3TOMbCneH80sKxgXHAD2u/And7HA31y
+         1q7428dsyP/bPu7IR2J+hE/SbvRwmIwtAx0iPuqZVXFUb1Gy/bmgljaJRS4q9ptW88Wg
+         0PlrT0hsfltDPvpfmYJtjp6dgnKeQbcNghWe+bYwbOOfe1RpU2HL7A2m1kSPR9OmO1nE
+         0+86waB5NejmlbvV0kCx7byP5dbsF/jQ5KwobdIyorxxJGQwoFqXP4roaQLrJjmtU82l
+         zxlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=GyxsNnWu7EqjyU0NKMwi2dzcVL+ptjeCIPcsXEH/9OY=;
-        b=ZVoD2AcZOqUCGE/2mkVGZoaxfeQGevVOhXHUTYST05EjCAQCy6nPA3QL/uEsfAdfhO
-         S/mWmkDsT74THXFn57Fuj6zulbdimz3N8//C2Rqj+Ciz6wCi2PKO1Zc1stlicZVJripb
-         ypP4xI910TMH+ZKKYkCaXqf8yteM5gWNOfCPXmsGMC7iwwCcg2sPzq6AohHA35yOm3wu
-         5PyKYLfA35n/tfX8738xB+f4IJYHuim6n2MvjsgGJTlRlE/S1tdSsAdDN/IYGZdz+Dtw
-         pOobTkKzfCIXN4ySvTG583XmfAxFl41VU2kXV5WpKPP5RTBGbIlKOuNoxN1ZOAmlZTnR
-         HWQA==
-X-Gm-Message-State: AOAM533Ux/Pell1ekd6AohQdsXJl157exV5Rfik0DVoVLrIbs041WB5t
-        Z4nYfaCvUPnRH7bvoFt7FXolqtz+H2HoOcu5l1VIDw==
-X-Google-Smtp-Source: ABdhPJx7YJeaIThw9MHlmgqwuHrnNn2An/DeuJv641UUQWTVd5Zapsko0YlOuYX2v/CmLEKKjveQedF2USmYjR4gynw=
-X-Received: by 2002:a05:6402:35ca:: with SMTP id z10mr17750262edc.186.1612169867171;
- Mon, 01 Feb 2021 00:57:47 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=t6zzPkViDAZXtGNaHi4SN0UuGW+D82KkvB10PcytzLM=;
+        b=SBLP5e/fq8NSIbBZq1d3Bh7DirGIDDTgpLpV6Ej8w4ycbMVbfHYOFk6araRTuH6aMC
+         4B2bq25kIt69iDZOKKbBu3Ypzr65Vl9a81+4Jx0nDhoRL3z6IUlldF34jLDe9Z1YHwDF
+         s13c8E1wjXtdinOuYI68O1VKzH51PlDE7780XN7cPw1lGdmWR9c0cwNiB/qyTO22hbBV
+         wZ86XCx8Tjz2O/pGQqrLk5tl5g8a/vEGI9rvkoWMYb3vHsliASYct8mw1nHNhlKGfN+J
+         KkcSjgKDLDE4ybfe1ckOB6pI0Ez/jBP3ouAbbVOSJp1mmnRlCCzh+gvEpWawr2IQRqJ8
+         wygQ==
+X-Gm-Message-State: AOAM532/jAb2YGBp70TiRkWNyjFvIJXWSmx5ztmibVG5BRIk/F+Uexe5
+        B4cx2XtwJHj2TrdP+b9JPJY=
+X-Google-Smtp-Source: ABdhPJya50e/HGmsX3+yZ/gKTPzQPvV5G6wva2LODTQUjH6JkEDusLTtKjS756uYT/PBBegntjP3lw==
+X-Received: by 2002:adf:f687:: with SMTP id v7mr16746501wrp.182.1612169952748;
+        Mon, 01 Feb 2021 00:59:12 -0800 (PST)
+Received: from [192.168.1.20] (5ec062a9.skybroadband.com. [94.192.98.169])
+        by smtp.googlemail.com with ESMTPSA id 62sm20685441wmd.34.2021.02.01.00.59.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Feb 2021 00:59:11 -0800 (PST)
+Subject: Re: linux-5.10.11 build failure
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Thomas Backlund <tmb@tmb.nu>, LKML <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org, torvic9@mailbox.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>
+References: <8b3e9d93-1381-b415-9ece-a10fb098b896@tmb.nu>
+ <9617db49-cf67-3b48-1b31-3bcd34cf3e1a@googlemail.com>
+ <20210128160015.phaovyou2m2fgcpi@treble> <YBPfQXSrz+P3TOZf@kroah.com>
+ <f9f8e2c9-3690-52f3-8d96-4f2b735dd6bd@googlemail.com>
+ <YBPtAYK1Nj/WpiTo@kroah.com> <20210129151423.rsyubljbrzxicleq@treble>
+From:   Chris Clayton <chris2553@googlemail.com>
+Message-ID: <064cf941-e7cb-e939-2bd1-f0dc2850cda7@googlemail.com>
+Date:   Mon, 1 Feb 2021 08:59:09 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <20200903081550.6012-1-sakari.ailus@linux.intel.com>
- <20210128232729.16064-7-sakari.ailus@linux.intel.com> <CAMpxmJVTPgvxOVdTkmt4VjUnGabNBKauKF_DKtnnkV6O0QYTWA@mail.gmail.com>
- <20210129121955.GH32460@paasikivi.fi.intel.com>
-In-Reply-To: <20210129121955.GH32460@paasikivi.fi.intel.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 1 Feb 2021 09:57:36 +0100
-Message-ID: <CAMpxmJUfP86jQg11imFUtjt8KtJ25tDRQUGvrZqDbT5xyKoH9A@mail.gmail.com>
-Subject: Re: [PATCH v9 7/7] at24: Support probing while off
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     linux-i2c <linux-i2c@vger.kernel.org>,
-        Wolfram Sang <wsa@the-dreams.de>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rajmohan Mani <rajmohan.mani@intel.com>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
-        Hyungwoo Yang <hyungwoo.yang@intel.com>,
-        linux-media <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210129151423.rsyubljbrzxicleq@treble>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 1:20 PM Sakari Ailus
-<sakari.ailus@linux.intel.com> wrote:
->
-> Hi Bartosz,
->
-> Thanks for the review.
->
-> On Fri, Jan 29, 2021 at 11:56:00AM +0100, Bartosz Golaszewski wrote:
-> > On Fri, Jan 29, 2021 at 12:27 AM Sakari Ailus
-> > <sakari.ailus@linux.intel.com> wrote:
-> > >
-> > > In certain use cases (where the chip is part of a camera module, and =
-the
-> > > camera module is wired together with a camera privacy LED), powering =
-on
-> > > the device during probe is undesirable. Add support for the at24 to
-> > > execute probe while being powered off. For this to happen, a hint in =
-form
-> > > of a device property is required from the firmware.
-> > >
-> > > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> > > ---
-> > >  drivers/misc/eeprom/at24.c | 43 +++++++++++++++++++++++-------------=
---
-> > >  1 file changed, 26 insertions(+), 17 deletions(-)
-> > >
-> > > diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
-> > > index 926408b41270c..dd0b3f24e3808 100644
-> > > --- a/drivers/misc/eeprom/at24.c
-> > > +++ b/drivers/misc/eeprom/at24.c
-> > > @@ -595,6 +595,7 @@ static int at24_probe(struct i2c_client *client)
-> > >         bool i2c_fn_i2c, i2c_fn_block;
-> > >         unsigned int i, num_addresses;
-> > >         struct at24_data *at24;
-> > > +       bool low_power;
-> > >         struct regmap *regmap;
-> > >         bool writable;
-> > >         u8 test_byte;
-> > > @@ -750,14 +751,16 @@ static int at24_probe(struct i2c_client *client=
-)
-> > >
-> > >         i2c_set_clientdata(client, at24);
-> > >
-> > > -       err =3D regulator_enable(at24->vcc_reg);
-> > > -       if (err) {
-> > > -               dev_err(dev, "Failed to enable vcc regulator\n");
-> > > -               return err;
-> > > -       }
-> > > +       low_power =3D acpi_dev_state_low_power(&client->dev);
-> >
-> > I've raised my concern about the naming of this before but no
-> > discussion followed. Do we really want to name it: "low power"? This
-> > is misleading as the device can actually be powered off at probe().
-> > "Low power" suggests some low-power state or even low battery IMO.
->
-> This was suggested by Rafael in place of "powered off" as it's not know t=
-he
-> device is powered off. The same terms should be used in all contexts (ACP=
-I
-> and I=C2=B2C frameworks and drivers). Others haven't expressed concerns.
->
+Hi Greg,
 
-So we're describing a situation where "device may be powered off" by
-calling it "low_power". This doesn't make sense. Why not something
-like: acpi_dev_may_be_off(), acpi_dev_powerdown_possible(),
-acpi_dev_possibly_off(). If I'm reading a driver's code an see
-"acpi_dev_state_low_power()", I would have never guessed it refers to
-a situation where the device may be potentially powered-down.
+On 29/01/2021 15:14, Josh Poimboeuf wrote:
+> On Fri, Jan 29, 2021 at 12:09:53PM +0100, Greg Kroah-Hartman wrote:
+>> On Fri, Jan 29, 2021 at 11:03:26AM +0000, Chris Clayton wrote:
+>>>
+>>>
+>>> On 29/01/2021 10:11, Greg Kroah-Hartman wrote:
+>>>> On Thu, Jan 28, 2021 at 10:00:15AM -0600, Josh Poimboeuf wrote:
+...
+>>>>
+>>>> It is in Linus's tree now :)
+>>>>
+>>>> Now grabbed.
+>>>>
+>>>
+>>> Are you sure, Greg? I don't see the patch in Linus' tree at
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git. Nor do is see it in your stable queue at
+>>> https://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git/. For clarity, I've attached the patch which
+>>> fixes problem I reported and is currently sat in https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git As I
+>>> understand it, the patch is scheduled to be included in a pull request to Linus this weekend in time for -rc6.
+>>>
+>>> In fact, I did a pull from Linus' tree a few minutes ago and the build failed in the way I reported in this thread. I
+>>> added the patch and the build now succeeds.
+>>
+>> Ok, sorry, no, I grabbed 1d489151e9f9 ("objtool: Don't fail on missing
+>> symbol table") which is what Josh asked me to take.  I got that confused
+>> here.
+> 
+> I'm probably responsible for that confusion, I got mixed up myself.
+> It'll be a good idea to take both anyway.
+> 
 
-> ACPI spec appears to be using terms "on" and "off".
->
-> The use of the function is not limited to driver probe time.
->
-> >
-> > If anything: I'd prefer the 'low_power' local variable be changed to
-> > "no_test_read".
->
-> That misses the power management related suggestion now present in the na=
-me
-> --- the device needs to be suspended using runtime PM if probe fails and
-> it's not in "low power state".
->
-> How about "off_during_probe"?
->
+The patch is now in Linus' tree at 5e6dca82bcaa49348f9e5fcb48df4881f6d6c4ae
 
-Yes, this is much better than low_power.
+Thanks.
 
-Bartosz
-
-> --
-> Kind regards,
->
-> Sakari Ailus
+Chris
