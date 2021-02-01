@@ -2,87 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF82530AFED
+	by mail.lfdr.de (Postfix) with ESMTP id 79C2F30AFEC
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:01:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232349AbhBATBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 14:01:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231831AbhBATBK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 14:01:10 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57118C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 11:00:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=fgOq7F84WfyhkfPnzhyCYr96g+FlgtMswaV08yg0yE4=; b=RoXGhrP2Was+Jin2P0O/pP5PU+
-        UszkgEQPN5Sv5YR3shwf87rddmm73hZHr7s8szxxhQOt0a16FxixuzmiMYv+7Zlhw70dtCVAwuwWx
-        bUb1VprT6QEQNo2UAijR86NThUhJvn42SfobKO8wUd1oIsobCgAiRaBSoxCP1s0LcLOvX6vqKwDvN
-        XIA5PToGWJgxG3pVlU4eYWWbvKZsx19bkjOZ6izzS1JPHM0jnIwItxUQ9LbKcjhdFM9l7+9PY/98R
-        /K7QgL28EBVRdHOKkAOemy0b2g3Taa+8FSqmuK3rdn9ANvXmvsfAxHZlWVVUBxwC8i4xYbZa9rYET
-        TVE9D92w==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l6eQG-00EBcI-VK; Mon, 01 Feb 2021 18:59:41 +0000
-Date:   Mon, 1 Feb 2021 18:59:40 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Joe Perches <joe@perches.com>
-Cc:     Yafang Shao <laoar.shao@gmail.com>,
-        andriy.shevchenko@linux.intel.com, david@redhat.com,
-        vbabka@suse.cz, linmiaohe@huawei.com, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] vsprintf: dump full information of page flags in
- pGp
-Message-ID: <20210201185940.GS308988@casper.infradead.org>
-References: <20210201115610.87808-1-laoar.shao@gmail.com>
- <20210201115610.87808-4-laoar.shao@gmail.com>
- <20210201141505.GR308988@casper.infradead.org>
- <9c475803276ea2b32cadc8f72d397c180475d0cc.camel@perches.com>
+        id S232201AbhBATBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 14:01:08 -0500
+Received: from mga17.intel.com ([192.55.52.151]:48704 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231831AbhBATBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 14:01:07 -0500
+IronPort-SDR: /0VBM4DwLfCPB6gAbLxU1/w+1aAfggX7sXfgcvvTL1xbYD1cXGKQjbxy2ZUduHUpVvt3TUONee
+ zh9eBd4XZn/A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="160502028"
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="160502028"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 11:00:25 -0800
+IronPort-SDR: 3t2iewEyPLBzvhYaom2xEgRe257zdR1j8NBaLn88+kz/8aOjGKxytSVkbZQP7PBlnTdP28JyON
+ T0VD8aMiuOOQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="412872194"
+Received: from otcwcpicx3.sc.intel.com ([172.25.55.73])
+  by FMSMGA003.fm.intel.com with ESMTP; 01 Feb 2021 11:00:25 -0800
+From:   Fenghua Yu <fenghua.yu@intel.com>
+To:     "Borislav Petkov" <bp@alien8.de>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Ingo Molnar" <mingo@redhat.com>,
+        "Tony Luck" <tony.luck@intel.com>,
+        "Ravi V Shankar" <ravi.v.shankar@intel.com>
+Cc:     "linux-kernel" <linux-kernel@vger.kernel.org>,
+        "x86" <x86@kernel.org>, Fenghua Yu <fenghua.yu@intel.com>
+Subject: [PATCH] x86/split_lock: Enable the split lock feature on another Alder Lake CPU
+Date:   Mon,  1 Feb 2021 19:00:07 +0000
+Message-Id: <20210201190007.4031869-1-fenghua.yu@intel.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9c475803276ea2b32cadc8f72d397c180475d0cc.camel@perches.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 10:51:03AM -0800, Joe Perches wrote:
-> On Mon, 2021-02-01 at 14:15 +0000, Matthew Wilcox wrote:
-> > On Mon, Feb 01, 2021 at 07:56:10PM +0800, Yafang Shao wrote:
-> > > - Before the patch,
-> > > [ 6343.396602] Slab 0x000000004382e02b objects=33 used=3 fp=0x000000009ae06ffc flags=0x17ffffc0010200(slab|head)
-> > > 
-> > > - After the patch,
-> > > [ 6871.296131] Slab 0x00000000c0e19a37 objects=33 used=3 fp=0x00000000c4902159 flags=0x17ffffc0010200(Node 0,Zone 2,Lastcpupid 0x1fffff,slab|head)
-> > 
-> > I would suggest it will be easier to parse as:
-> > 
-> > flags=0x17ffffc0010200(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
-> > 
-> > That should alleviate the concerns about debugfs format change -- we've
-> > never guaranteed that flag names won't change, and they now look enough
-> > like flags that parsers shouldn't fall over them.
-> 
-> Seems sensible and would make the generating code simpler too.
-> 
-> But is it worth the vsprintf code expansion for the 5 current uses?
-> 
-> mm/debug.c:     pr_warn("%sflags: %#lx(%pGp)%s\n", type, head->flags, &head->flags,
-> mm/memory-failure.c:                    pr_info("soft offline: %#lx: %s migration failed %d, type %lx (%pGp)\n",
-> mm/memory-failure.c:            pr_info("soft offline: %#lx: %s isolation failed, page count %d, type %lx (%pGp)\n",
-> mm/memory-failure.c:            pr_info("%s: %#lx: unknown page type: %lx (%pGp)\n",
-> mm/page_owner.c:                        "PFN %lu type %s Block %lu type %s Flags %#lx(%pGp)\n",
-> 
-> Wouldn't it be more sensible just to put this code in a new function
-> call in mm?
+Add Alder Lake mobile processor to CPU list to enumerate and enable the
+split lock feature.
 
-Does it matter whether the code lives in vsprintf.c or mm/debug.c?  It's
-built into the kernel core either way.  I'm not a huge fan of the current
-way %pFoo is handled, but unless/until it's drastically revised, I don't
-think this proposed patch makes anything worse.
+Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+---
+ arch/x86/kernel/cpu/intel.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+index 59a1e3ce3f14..816fdbec795a 100644
+--- a/arch/x86/kernel/cpu/intel.c
++++ b/arch/x86/kernel/cpu/intel.c
+@@ -1159,6 +1159,7 @@ static const struct x86_cpu_id split_lock_cpu_ids[] __initconst = {
+ 	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE,		1),
+ 	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X,	1),
+ 	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE,		1),
++	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE_L,		1),
+ 	{}
+ };
+ 
+-- 
+2.30.0
+
