@@ -2,175 +2,434 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7570230AD61
+	by mail.lfdr.de (Postfix) with ESMTP id E791F30AD62
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231826AbhBARGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:06:04 -0500
-Received: from mail-il1-f198.google.com ([209.85.166.198]:55999 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230298AbhBARGB (ORCPT
+        id S231856AbhBARG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:06:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34144 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229549AbhBARGU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:06:01 -0500
-Received: by mail-il1-f198.google.com with SMTP id q11so7793360ild.22
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 09:05:46 -0800 (PST)
+        Mon, 1 Feb 2021 12:06:20 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CADCEC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 09:05:40 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id g15so12476871pgu.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 09:05:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=rV0K3F4zmeFdrVc02lSWJwOMPX58ML+v7RlA79PMicU=;
+        b=jJ0VbsO9t5DSWgyjy9Zb5XMirkM538/h0z7vYekgbJ8VlWdqeZod2gMdQ3QMxRPHl6
+         ygozOMFrOcOukUqgY50TWQWWL+JHiDtB3fgFN6bnBU0eRFYxCMNM6CxbhOVgXYTEm0YB
+         GZ0dLFspeAGIXaZ1qhcVxW8VoAvjHOXLfO9jKMS6/P9O/hdoqSqnlhSDDleO3FXavl3K
+         q4sFyAI678eZ5SzBFKb6N3hkzRjyIVszFsB6nmnzk7y6QOSGh6sU89b3k9G7XDVxR5uI
+         rkgKoN7TWGUU8ze+8YxFQi7Agv2KIurgquVNzY+RFDsO20cMqBtIEofyFUWfAHuhx4OA
+         MHjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=MYMEozv9mv+eNjit1PtyRVKgDDO9Jk3vPgSwhA/LXgw=;
-        b=fert9cXKUnENeSf1nFlukpkjm8FYzl39V6FQDXUfZIeAf4CPTC9rhEXFx86TvsduYk
-         rlgeQw/cY8Tw5Nm1hk9wK9kTltnPzeHLpRCHRsBM6dMxLUshhXxQm+Mrdc1Epn0a6qet
-         f5mLvQMdFUaY3BH5UDTsKz2LP0G1fpNQH9fsXOxjcJpZXuHi8Y2z2gJyNGJf4YcMeafo
-         dhwfpiXcXHJlIa1EznXHSaq+dUsEBPJ/uMcPz+g/B5XiM/PBKSzTXgiaFUBcLZkBTM4O
-         BRtxrf4Kik5K3QyVA9Rou8NUjNojTWGrK5c3EY2f9PmyMzr1TwQZDFAak/PHX0ZIvE0f
-         HjjA==
-X-Gm-Message-State: AOAM530M870JXLquo3JNHPoW2xC0KRkzqDQRa5jo/KKiRpXRHLVupObo
-        1WDqlrRPEmvMVCKyWm3874DJ9MQz9647z4q/epqnMjUA3/pH
-X-Google-Smtp-Source: ABdhPJw148elYTD2QZj0SKs5h/Uz3Itq4sKPNHUQX8wSVHTw2SKeYOszt9DwPh2ksERU8Cr5oSurdTzWqrRIjtB9bN0WTsopiO/u
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=rV0K3F4zmeFdrVc02lSWJwOMPX58ML+v7RlA79PMicU=;
+        b=DV1kjqbUyOB4Evw2k+q5BkHQzLLWu9BUINCwCeCMdr3VNuloe7TB+GkXb9FBqBzIcO
+         aGLlw4rjeD17C5Fpg8sm6QrwtmWghbGf8cn48/kvMnnMB/NBYWP/JETpyYMg7Jkug3z7
+         zbirp4EZkUpCMedcMdWJfKAVO3VVMW/Nmv9XZFIkN6bSCDuZBttKKG0aMBGmxyd+aSG1
+         sM8z9YmySKtnDIUpANZRqYhGwPyA/bI0O5DWiH3IsnqsMYvK+17CacUh/wQbgyEnF9XX
+         qfRIEZ7O7f5DO4ZgCe0rp+FzueY7c4sZ16GjgqmqnhysWAuSOOEUseQalLK1rlt15l+U
+         hOXQ==
+X-Gm-Message-State: AOAM533gLChPqTdInPXAtsPQ8Y9qMHBWyi+LE+/+2CQRepSb1B58xlpj
+        5x9EMNWFkGuh26VxR7J4d6p/5w==
+X-Google-Smtp-Source: ABdhPJz6dnxvU47KSjmsC0//Ahz4yMlX3PAzHgWbP7GrUCLItx4zzF7U7B/Tt8UP1HO+8ysyXMfnDw==
+X-Received: by 2002:a63:1f21:: with SMTP id f33mr18240572pgf.31.1612199140061;
+        Mon, 01 Feb 2021 09:05:40 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id i9sm18878851pfo.146.2021.02.01.09.05.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 09:05:39 -0800 (PST)
+Date:   Mon, 1 Feb 2021 10:05:37 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Qi Liu <liuqi115@huawei.com>
+Cc:     suzuki.poulose@arm.com, mike.leach@linaro.org,
+        coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linuxarm@openeuler.org
+Subject: Re: [PATCH] coresight: Remove duplicate header files of coresight
+ drivers
+Message-ID: <20210201170537.GA1399621@xps15>
+References: <1612184564-26613-1-git-send-email-liuqi115@huawei.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:c9:: with SMTP id z9mr13154766ioe.174.1612199120685;
- Mon, 01 Feb 2021 09:05:20 -0800 (PST)
-Date:   Mon, 01 Feb 2021 09:05:20 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e54dd405ba495b1b@google.com>
-Subject: KASAN: use-after-free Read in uprobe_mmap
-From:   syzbot <syzbot+1b42cf51b91edbad28c9@syzkaller.appspotmail.com>
-To:     acme@kernel.org, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, mingo@redhat.com, namhyung@kernel.org,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1612184564-26613-1-git-send-email-liuqi115@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Good day,
 
-syzbot found the following issue on:
+On Mon, Feb 01, 2021 at 09:02:44PM +0800, Qi Liu wrote:
+> Remove duplicate included header files, as coresight-priv.h is included in
+> these coresight drivers.
+> 
+> Signed-off-by: Qi Liu <liuqi115@huawei.com>
+> ---
+>  drivers/hwtracing/coresight/coresight-catu.c         | 2 --
+>  drivers/hwtracing/coresight/coresight-core.c         | 3 ---
+>  drivers/hwtracing/coresight/coresight-cpu-debug.c    | 3 ---
+>  drivers/hwtracing/coresight/coresight-cti-core.c     | 3 ---
+>  drivers/hwtracing/coresight/coresight-cti-platform.c | 1 -
+>  drivers/hwtracing/coresight/coresight-cti.h          | 1 -
+>  drivers/hwtracing/coresight/coresight-etb10.c        | 4 ----
+>  drivers/hwtracing/coresight/coresight-etm-perf.c     | 1 -
+>  drivers/hwtracing/coresight/coresight-etm3x-sysfs.c  | 1 -
+>  drivers/hwtracing/coresight/coresight-etm4x-core.c   | 5 -----
+>  drivers/hwtracing/coresight/coresight-etm4x-sysfs.c  | 1 -
+>  drivers/hwtracing/coresight/coresight-funnel.c       | 3 ---
+>  drivers/hwtracing/coresight/coresight-platform.c     | 2 --
+>  drivers/hwtracing/coresight/coresight-replicator.c   | 3 ---
+>  drivers/hwtracing/coresight/coresight-stm.c          | 3 ---
+>  drivers/hwtracing/coresight/coresight-tmc-core.c     | 3 ---
+>  drivers/hwtracing/coresight/coresight-tmc-etf.c      | 1 -
+>  drivers/hwtracing/coresight/coresight-tmc-etr.c      | 1 -
+>  drivers/hwtracing/coresight/coresight-tpiu.c         | 4 ----
+>  19 files changed, 45 deletions(-)
 
-HEAD commit:    fd821bf0 Add linux-next specific files for 20210201
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=113333d8d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=80ac9f64e6e2c06
-dashboard link: https://syzkaller.appspot.com/bug?extid=1b42cf51b91edbad28c9
+The idea is to make sure every file stands on its own without dependencies on
+other header files.  Otherwise it is difficult and expensive to move files
+around or make changes to any header file.   As such I will not move forward
+with this set.
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+1b42cf51b91edbad28c9@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: use-after-free in find_node_in_range kernel/events/uprobes.c:1271 [inline]
-BUG: KASAN: use-after-free in build_probe_list kernel/events/uprobes.c:1305 [inline]
-BUG: KASAN: use-after-free in uprobe_mmap+0xdbb/0x1080 kernel/events/uprobes.c:1382
-Read of size 8 at addr ffff888011a30168 by task syz-executor.5/11127
-
-CPU: 1 PID: 11127 Comm: syz-executor.5 Not tainted 5.11.0-rc6-next-20210201-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
- __kasan_report mm/kasan/report.c:399 [inline]
- kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
- find_node_in_range kernel/events/uprobes.c:1271 [inline]
- build_probe_list kernel/events/uprobes.c:1305 [inline]
- uprobe_mmap+0xdbb/0x1080 kernel/events/uprobes.c:1382
- mmap_region+0x56c/0x1730 mm/mmap.c:1881
- do_mmap+0xcff/0x11d0 mm/mmap.c:1580
- vm_mmap_pgoff+0x1b7/0x290 mm/util.c:519
- ksys_mmap_pgoff+0x49c/0x620 mm/mmap.c:1631
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x465b09
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f92c6d90188 EFLAGS: 00000246 ORIG_RAX: 0000000000000009
-RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 0000000000465b09
-RDX: 0000000000000000 RSI: 0000000000003000 RDI: 0000000020007000
-RBP: 00000000004b069f R08: 0000000000000003 R09: 0000000000000000
-R10: 0000000000000412 R11: 0000000000000246 R12: 000000000056bf60
-R13: 00007fff798b92af R14: 00007f92c6d90300 R15: 0000000000022000
-
-Allocated by task 11130:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:403 [inline]
- ____kasan_kmalloc mm/kasan/common.c:434 [inline]
- ____kasan_kmalloc.constprop.0+0xa0/0xd0 mm/kasan/common.c:406
- kmalloc include/linux/slab.h:556 [inline]
- kzalloc include/linux/slab.h:686 [inline]
- alloc_uprobe kernel/events/uprobes.c:731 [inline]
- __uprobe_register+0x19c/0x850 kernel/events/uprobes.c:1167
- trace_uprobe_enable kernel/trace/trace_uprobe.c:1063 [inline]
- probe_event_enable+0x441/0xa00 kernel/trace/trace_uprobe.c:1129
- trace_uprobe_register+0x443/0x880 kernel/trace/trace_uprobe.c:1456
- perf_trace_event_reg kernel/trace/trace_event_perf.c:129 [inline]
- perf_trace_event_init+0x549/0xa20 kernel/trace/trace_event_perf.c:204
- perf_uprobe_init+0x16f/0x210 kernel/trace/trace_event_perf.c:336
- perf_uprobe_event_init+0xff/0x1c0 kernel/events/core.c:9721
- perf_try_init_event+0x12a/0x560 kernel/events/core.c:11038
- perf_init_event kernel/events/core.c:11090 [inline]
- perf_event_alloc.part.0+0xe3b/0x3960 kernel/events/core.c:11370
- perf_event_alloc kernel/events/core.c:11749 [inline]
- __do_sys_perf_event_open+0x647/0x2e60 kernel/events/core.c:11847
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 11130:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
- ____kasan_slab_free.part.0+0xe1/0x110 mm/kasan/common.c:364
- kasan_slab_free include/linux/kasan.h:191 [inline]
- slab_free_hook mm/slub.c:1562 [inline]
- slab_free_freelist_hook+0x82/0x1d0 mm/slub.c:1600
- slab_free mm/slub.c:3161 [inline]
- kfree+0xe5/0x7b0 mm/slub.c:4202
- put_uprobe kernel/events/uprobes.c:612 [inline]
- put_uprobe+0x13b/0x190 kernel/events/uprobes.c:601
- uprobe_apply+0xfc/0x130 kernel/events/uprobes.c:1231
- uprobe_perf_open kernel/trace/trace_uprobe.c:1311 [inline]
- trace_uprobe_register+0x5c9/0x880 kernel/trace/trace_uprobe.c:1463
- perf_trace_event_open kernel/trace/trace_event_perf.c:186 [inline]
- perf_trace_event_init kernel/trace/trace_event_perf.c:208 [inline]
- perf_trace_event_init+0x17a/0xa20 kernel/trace/trace_event_perf.c:195
- perf_uprobe_init+0x16f/0x210 kernel/trace/trace_event_perf.c:336
- perf_uprobe_event_init+0xff/0x1c0 kernel/events/core.c:9721
- perf_try_init_event+0x12a/0x560 kernel/events/core.c:11038
- perf_init_event kernel/events/core.c:11090 [inline]
- perf_event_alloc.part.0+0xe3b/0x3960 kernel/events/core.c:11370
- perf_event_alloc kernel/events/core.c:11749 [inline]
- __do_sys_perf_event_open+0x647/0x2e60 kernel/events/core.c:11847
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff888011a30000
- which belongs to the cache kmalloc-512 of size 512
-The buggy address is located 360 bytes inside of
- 512-byte region [ffff888011a30000, ffff888011a30200)
-The buggy address belongs to the page:
-page:00000000db11b7ab refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff888011a31000 pfn:0x11a30
-head:00000000db11b7ab order:1 compound_mapcount:0
-flags: 0xfff00000010200(slab|head)
-raw: 00fff00000010200 dead000000000100 dead000000000122 ffff88800fc41c80
-raw: ffff888011a31000 0000000080080007 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888011a30000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888011a30080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff888011a30100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                          ^
- ffff888011a30180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888011a30200: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
+Thanks,
+Mathieu
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-catu.c b/drivers/hwtracing/coresight/coresight-catu.c
+> index a61313f..fcc0367 100644
+> --- a/drivers/hwtracing/coresight/coresight-catu.c
+> +++ b/drivers/hwtracing/coresight/coresight-catu.c
+> @@ -7,10 +7,8 @@
+>   * Author: Suzuki K Poulose <suzuki.poulose@arm.com>
+>   */
+> 
+> -#include <linux/amba/bus.h>
+>  #include <linux/device.h>
+>  #include <linux/dma-mapping.h>
+> -#include <linux/io.h>
+>  #include <linux/kernel.h>
+>  #include <linux/slab.h>
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+> index 4ba801d..5fb8b12 100644
+> --- a/drivers/hwtracing/coresight/coresight-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-core.c
+> @@ -7,17 +7,14 @@
+>  #include <linux/init.h>
+>  #include <linux/types.h>
+>  #include <linux/device.h>
+> -#include <linux/io.h>
+>  #include <linux/err.h>
+>  #include <linux/export.h>
+>  #include <linux/slab.h>
+>  #include <linux/stringhash.h>
+>  #include <linux/mutex.h>
+>  #include <linux/clk.h>
+> -#include <linux/coresight.h>
+>  #include <linux/of_platform.h>
+>  #include <linux/delay.h>
+> -#include <linux/pm_runtime.h>
+> 
+>  #include "coresight-etm-perf.h"
+>  #include "coresight-priv.h"
+> diff --git a/drivers/hwtracing/coresight/coresight-cpu-debug.c b/drivers/hwtracing/coresight/coresight-cpu-debug.c
+> index e1d2324..f8df512 100644
+> --- a/drivers/hwtracing/coresight/coresight-cpu-debug.c
+> +++ b/drivers/hwtracing/coresight/coresight-cpu-debug.c
+> @@ -4,15 +4,12 @@
+>   *
+>   * Author: Leo Yan <leo.yan@linaro.org>
+>   */
+> -#include <linux/amba/bus.h>
+> -#include <linux/coresight.h>
+>  #include <linux/cpu.h>
+>  #include <linux/debugfs.h>
+>  #include <linux/delay.h>
+>  #include <linux/device.h>
+>  #include <linux/err.h>
+>  #include <linux/init.h>
+> -#include <linux/io.h>
+>  #include <linux/iopoll.h>
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+> diff --git a/drivers/hwtracing/coresight/coresight-cti-core.c b/drivers/hwtracing/coresight/coresight-cti-core.c
+> index 61dbc1a..ed7ab82 100644
+> --- a/drivers/hwtracing/coresight/coresight-cti-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-cti-core.c
+> @@ -4,18 +4,15 @@
+>   * Author: Mike Leach <mike.leach@linaro.org>
+>   */
+> 
+> -#include <linux/amba/bus.h>
+>  #include <linux/atomic.h>
+>  #include <linux/bits.h>
+>  #include <linux/coresight.h>
+>  #include <linux/cpu_pm.h>
+>  #include <linux/cpuhotplug.h>
+>  #include <linux/device.h>
+> -#include <linux/io.h>
+>  #include <linux/kernel.h>
+>  #include <linux/list.h>
+>  #include <linux/mutex.h>
+> -#include <linux/pm_runtime.h>
+>  #include <linux/property.h>
+>  #include <linux/spinlock.h>
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-cti-platform.c b/drivers/hwtracing/coresight/coresight-cti-platform.c
+> index ccef04f..60b0580 100644
+> --- a/drivers/hwtracing/coresight/coresight-cti-platform.c
+> +++ b/drivers/hwtracing/coresight/coresight-cti-platform.c
+> @@ -2,7 +2,6 @@
+>  /*
+>   * Copyright (c) 2019, The Linaro Limited. All rights reserved.
+>   */
+> -#include <linux/coresight.h>
+>  #include <linux/device.h>
+>  #include <linux/err.h>
+>  #include <linux/of.h>
+> diff --git a/drivers/hwtracing/coresight/coresight-cti.h b/drivers/hwtracing/coresight/coresight-cti.h
+> index acf7b54..0a3b313 100644
+> --- a/drivers/hwtracing/coresight/coresight-cti.h
+> +++ b/drivers/hwtracing/coresight/coresight-cti.h
+> @@ -7,7 +7,6 @@
+>  #ifndef _CORESIGHT_CORESIGHT_CTI_H
+>  #define _CORESIGHT_CORESIGHT_CTI_H
+> 
+> -#include <linux/coresight.h>
+>  #include <linux/device.h>
+>  #include <linux/fwnode.h>
+>  #include <linux/list.h>
+> diff --git a/drivers/hwtracing/coresight/coresight-etb10.c b/drivers/hwtracing/coresight/coresight-etb10.c
+> index 0cf6f0b..8d5bc04 100644
+> --- a/drivers/hwtracing/coresight/coresight-etb10.c
+> +++ b/drivers/hwtracing/coresight/coresight-etb10.c
+> @@ -10,17 +10,13 @@
+>  #include <linux/init.h>
+>  #include <linux/types.h>
+>  #include <linux/device.h>
+> -#include <linux/io.h>
+>  #include <linux/err.h>
+>  #include <linux/fs.h>
+>  #include <linux/miscdevice.h>
+>  #include <linux/uaccess.h>
+>  #include <linux/slab.h>
+>  #include <linux/spinlock.h>
+> -#include <linux/pm_runtime.h>
+>  #include <linux/seq_file.h>
+> -#include <linux/coresight.h>
+> -#include <linux/amba/bus.h>
+>  #include <linux/clk.h>
+>  #include <linux/circ_buf.h>
+>  #include <linux/mm.h>
+> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> index bdc34ca..01aba63 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
+> @@ -4,7 +4,6 @@
+>   * Author: Mathieu Poirier <mathieu.poirier@linaro.org>
+>   */
+> 
+> -#include <linux/coresight.h>
+>  #include <linux/coresight-pmu.h>
+>  #include <linux/cpumask.h>
+>  #include <linux/device.h>
+> diff --git a/drivers/hwtracing/coresight/coresight-etm3x-sysfs.c b/drivers/hwtracing/coresight/coresight-etm3x-sysfs.c
+> index e8c7649..5cf6660 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm3x-sysfs.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm3x-sysfs.c
+> @@ -5,7 +5,6 @@
+>   */
+> 
+>  #include <linux/pid_namespace.h>
+> -#include <linux/pm_runtime.h>
+>  #include <linux/sysfs.h>
+>  #include "coresight-etm.h"
+>  #include "coresight-priv.h"
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> index b20b6ff..0438ef7 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> @@ -3,13 +3,11 @@
+>   * Copyright (c) 2014, The Linux Foundation. All rights reserved.
+>   */
+> 
+> -#include <linux/bitops.h>
+>  #include <linux/kernel.h>
+>  #include <linux/moduleparam.h>
+>  #include <linux/init.h>
+>  #include <linux/types.h>
+>  #include <linux/device.h>
+> -#include <linux/io.h>
+>  #include <linux/err.h>
+>  #include <linux/fs.h>
+>  #include <linux/slab.h>
+> @@ -20,14 +18,11 @@
+>  #include <linux/clk.h>
+>  #include <linux/cpu.h>
+>  #include <linux/cpu_pm.h>
+> -#include <linux/coresight.h>
+>  #include <linux/coresight-pmu.h>
+>  #include <linux/pm_wakeup.h>
+> -#include <linux/amba/bus.h>
+>  #include <linux/seq_file.h>
+>  #include <linux/uaccess.h>
+>  #include <linux/perf_event.h>
+> -#include <linux/pm_runtime.h>
+>  #include <linux/property.h>
+> 
+>  #include <asm/sections.h>
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
+> index 989ce7b..347ccb7 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
+> @@ -5,7 +5,6 @@
+>   */
+> 
+>  #include <linux/pid_namespace.h>
+> -#include <linux/pm_runtime.h>
+>  #include <linux/sysfs.h>
+>  #include "coresight-etm4x.h"
+>  #include "coresight-priv.h"
+> diff --git a/drivers/hwtracing/coresight/coresight-funnel.c b/drivers/hwtracing/coresight/coresight-funnel.c
+> index 071c723..c79ded9 100644
+> --- a/drivers/hwtracing/coresight/coresight-funnel.c
+> +++ b/drivers/hwtracing/coresight/coresight-funnel.c
+> @@ -15,9 +15,6 @@
+>  #include <linux/slab.h>
+>  #include <linux/of.h>
+>  #include <linux/platform_device.h>
+> -#include <linux/pm_runtime.h>
+> -#include <linux/coresight.h>
+> -#include <linux/amba/bus.h>
+>  #include <linux/clk.h>
+> 
+>  #include "coresight-priv.h"
+> diff --git a/drivers/hwtracing/coresight/coresight-platform.c b/drivers/hwtracing/coresight/coresight-platform.c
+> index 3629b78..ca22409 100644
+> --- a/drivers/hwtracing/coresight/coresight-platform.c
+> +++ b/drivers/hwtracing/coresight/coresight-platform.c
+> @@ -13,8 +13,6 @@
+>  #include <linux/of_graph.h>
+>  #include <linux/of_platform.h>
+>  #include <linux/platform_device.h>
+> -#include <linux/amba/bus.h>
+> -#include <linux/coresight.h>
+>  #include <linux/cpumask.h>
+>  #include <asm/smp_plat.h>
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
+> index 7e2a2b7..36788de 100644
+> --- a/drivers/hwtracing/coresight/coresight-replicator.c
+> +++ b/drivers/hwtracing/coresight/coresight-replicator.c
+> @@ -6,14 +6,11 @@
+>   */
+> 
+>  #include <linux/acpi.h>
+> -#include <linux/amba/bus.h>
+>  #include <linux/kernel.h>
+>  #include <linux/device.h>
+>  #include <linux/platform_device.h>
+> -#include <linux/io.h>
+>  #include <linux/err.h>
+>  #include <linux/slab.h>
+> -#include <linux/pm_runtime.h>
+>  #include <linux/property.h>
+>  #include <linux/clk.h>
+>  #include <linux/of.h>
+> diff --git a/drivers/hwtracing/coresight/coresight-stm.c b/drivers/hwtracing/coresight/coresight-stm.c
+> index 9979177..75f0bd8 100644
+> --- a/drivers/hwtracing/coresight/coresight-stm.c
+> +++ b/drivers/hwtracing/coresight/coresight-stm.c
+> @@ -17,17 +17,14 @@
+>   */
+>  #include <asm/local.h>
+>  #include <linux/acpi.h>
+> -#include <linux/amba/bus.h>
+>  #include <linux/bitmap.h>
+>  #include <linux/clk.h>
+> -#include <linux/coresight.h>
+>  #include <linux/coresight-stm.h>
+>  #include <linux/err.h>
+>  #include <linux/kernel.h>
+>  #include <linux/moduleparam.h>
+>  #include <linux/of_address.h>
+>  #include <linux/perf_event.h>
+> -#include <linux/pm_runtime.h>
+>  #include <linux/stm.h>
+> 
+>  #include "coresight-priv.h"
+> diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
+> index 8169dff..4fff281 100644
+> --- a/drivers/hwtracing/coresight/coresight-tmc-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
+> @@ -9,7 +9,6 @@
+>  #include <linux/types.h>
+>  #include <linux/device.h>
+>  #include <linux/idr.h>
+> -#include <linux/io.h>
+>  #include <linux/err.h>
+>  #include <linux/fs.h>
+>  #include <linux/miscdevice.h>
+> @@ -21,8 +20,6 @@
+>  #include <linux/spinlock.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/of.h>
+> -#include <linux/coresight.h>
+> -#include <linux/amba/bus.h>
+> 
+>  #include "coresight-priv.h"
+>  #include "coresight-tmc.h"
+> diff --git a/drivers/hwtracing/coresight/coresight-tmc-etf.c b/drivers/hwtracing/coresight/coresight-tmc-etf.c
+> index 989d965..b263f75 100644
+> --- a/drivers/hwtracing/coresight/coresight-tmc-etf.c
+> +++ b/drivers/hwtracing/coresight/coresight-tmc-etf.c
+> @@ -6,7 +6,6 @@
+> 
+>  #include <linux/atomic.h>
+>  #include <linux/circ_buf.h>
+> -#include <linux/coresight.h>
+>  #include <linux/perf_event.h>
+>  #include <linux/slab.h>
+>  #include "coresight-priv.h"
+> diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+> index bf5230e..1ab0b28 100644
+> --- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
+> +++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
+> @@ -5,7 +5,6 @@
+>   */
+> 
+>  #include <linux/atomic.h>
+> -#include <linux/coresight.h>
+>  #include <linux/dma-mapping.h>
+>  #include <linux/iommu.h>
+>  #include <linux/idr.h>
+> diff --git a/drivers/hwtracing/coresight/coresight-tpiu.c b/drivers/hwtracing/coresight/coresight-tpiu.c
+> index d5dfee9..c5675f9 100644
+> --- a/drivers/hwtracing/coresight/coresight-tpiu.c
+> +++ b/drivers/hwtracing/coresight/coresight-tpiu.c
+> @@ -9,12 +9,8 @@
+>  #include <linux/kernel.h>
+>  #include <linux/init.h>
+>  #include <linux/device.h>
+> -#include <linux/io.h>
+>  #include <linux/err.h>
+>  #include <linux/slab.h>
+> -#include <linux/pm_runtime.h>
+> -#include <linux/coresight.h>
+> -#include <linux/amba/bus.h>
+>  #include <linux/clk.h>
+> 
+>  #include "coresight-priv.h"
+> --
+> 2.8.1
+> 
