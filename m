@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF2F630AED9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:15:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D474230AEE6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:17:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231296AbhBASPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:15:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49002 "EHLO
+        id S232448AbhBASQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:16:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229831AbhBASOg (ORCPT
+        with ESMTP id S231785AbhBASOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:14:36 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D455C061786
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 10:13:56 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id m12so75409pjs.4
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 10:13:56 -0800 (PST)
+        Mon, 1 Feb 2021 13:14:37 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78ABCC061788
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 10:13:57 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id s15so10466704plr.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 10:13:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ROzSJ+k0Uh2r90d58CiYcoDg2pZWWxblaGujvBNFeHM=;
-        b=i/YienVEz3qdYBF4/nwO9CuFleIBj9s7iADd2yhy+/daqfs2BU7+4zjKP1FZV5GNvo
-         P1R16Ux80wWZqWcQOcGJKIUm8Qq5q7GOfOXXRhsTOElL4JLG19wGMfx87P+IP7dMeOUq
-         SxlJ8KZXCEC7r79V6RMiYsRguCQWchHWHAvihsG+8uq39wZxS30OgputLXrZtMcvoXmD
-         z7033e1g4QSh74kiJAMeepULA6Q895iQ3Jzq0Yysctuq5jLG5ZVTfo3UPUlG0qthaAUe
-         1ZCzga5/EyRhintg9SwJ2cCUaMXQX552G5tkKahUobQjuRAaSCNiTqJyo8N2nMy0pxN0
-         Mg4A==
+        bh=O41rJTlMZTVcMIElK5KqNnqfKtFcYHMw/qm7GjAEOtc=;
+        b=SicjLH2B3f1NYan3zMCEi76cHb9l2J3UEvYZ9aVjRskpwK1cLtxtylONvSM+kUdSgr
+         tbafOxWVBf5DdwXdQFI4nDmU4peqLTunvKCeEaU6LOv4dasiv+NzY56WnXBVUv+IKp0T
+         4Q3uaNYQN+vfEJFYN9Tdp95GqZrZ3pG5tUaXB6pJNYwxr/hNqzlHWNYyUAYe1QRqAXpf
+         LdiW8Fw+DSmIDHIqdo0qNi6IzRTHOfObJ6wx5+52Qsi3BpTkvQj9N29BOVVqv7mmEI4w
+         lj44xGnxqRKOifns++V8Nop0HvCZPl1i+NP5QUcUccF2EgCXKgXVT8FyMtCzZJdDw1wi
+         xZzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ROzSJ+k0Uh2r90d58CiYcoDg2pZWWxblaGujvBNFeHM=;
-        b=CGWbyWN33wFbDKNvGZdETEXzJzQfrsk+2WeQ5wx+7p08HrlYQuxRrML/y8gTUBwIvc
-         aFyvUNfiGQN4zVSjynbhL/UwEpw88vpfKLkbLaEizfEEUgt4x7kCTVAzWIxtz5GvmAWZ
-         zChXpz6L5Ofk1JRGx68tDksuHtbXF4HXtFEzeoBMhpc92vPhVU/5eq0uIdw+8W8AVYGY
-         umtefxgK4DTUt1BuqiNYOaynQE7M7GWYPCFTCpLBe9PzGax0S10IORWW98Yf1ya9E6sf
-         tyV02ugIByC58y+eRNAVQcZmpNiLoVpn+HLOE9edukLDdUELObXw2xUT+LMOh09531G4
-         H7gg==
-X-Gm-Message-State: AOAM5321jpsvKjgAtFiru+GpOQ5xO9CcKH3KtDm2xl4UA6vmnOAviOz+
-        c8vFduJ5oQLf6v7A0+3OdMA3qV6W4jmzig==
-X-Google-Smtp-Source: ABdhPJz52cgRFfXtGh3utHNSaJuqXeFHReNAE8Ak2VwKdK2GWTHpyvL9GsV0UOY/whGmI3IGufyilA==
-X-Received: by 2002:a17:903:2285:b029:e1:58a2:b937 with SMTP id b5-20020a1709032285b02900e158a2b937mr6528736plh.68.1612203236195;
-        Mon, 01 Feb 2021 10:13:56 -0800 (PST)
+        bh=O41rJTlMZTVcMIElK5KqNnqfKtFcYHMw/qm7GjAEOtc=;
+        b=b/S6qN/DLglpzjPgRwNI+tNdECviUa/k5z+7Ps62cGNo6TRCBqF8eYS6aQzu8ZIpco
+         TBwttJLi0GnuwCGmMvU10INhug5tIosgrh/9HM96T904FuJYD65awPgFWk2vIQCvdgBb
+         DPA/yhAnUtFYCD3r3NQysq9ukhPVJL+KEyG4DjC1ebyQD/d7OPJivua+1pD2c3ghEUBY
+         xoX4DBH9Q2udG4NFrJdxhUPA2HCyvdPUoHlA3jCIUc5YZZs9Nc1bMCcjH7HAP6gIl8XK
+         NWaYeOAaKiDZ+IZGpvOI+Vo8+tVysKj0niG6pIp0Lqj4ZGMIFwCkltwhdVN9lFM4Ugoo
+         AI0g==
+X-Gm-Message-State: AOAM530J63yqcHnI029BN24rz92thb0tX8UBA3LeFPO6NeJrad/9/QSm
+        fsKaYe0Ki4ElIbk0IBKfd7xDGw==
+X-Google-Smtp-Source: ABdhPJwvsIXJgpAx3CYkvtgGeS+y+LHSVT2dOhln0HvqlMpx4ib1syz0J/T0PMim1vZZ1xcsQuLZCA==
+X-Received: by 2002:a17:902:bd0a:b029:e0:612:ad38 with SMTP id p10-20020a170902bd0ab02900e00612ad38mr19262845pls.30.1612203237104;
+        Mon, 01 Feb 2021 10:13:57 -0800 (PST)
 Received: from xps15.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id e12sm75784pjj.23.2021.02.01.10.13.55
+        by smtp.gmail.com with ESMTPSA id e12sm75784pjj.23.2021.02.01.10.13.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 10:13:55 -0800 (PST)
+        Mon, 01 Feb 2021 10:13:56 -0800 (PST)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 03/31] coresight: etm4x: Handle access to TRCSSPCICRn
-Date:   Mon,  1 Feb 2021 11:13:23 -0700
-Message-Id: <20210201181351.1475223-4-mathieu.poirier@linaro.org>
+Subject: [PATCH 04/31] coresight: etm4x: Skip accessing TRCPDCR in save/restore
+Date:   Mon,  1 Feb 2021 11:13:24 -0700
+Message-Id: <20210201181351.1475223-5-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210201181351.1475223-1-mathieu.poirier@linaro.org>
 References: <20210201181351.1475223-1-mathieu.poirier@linaro.org>
@@ -65,95 +65,64 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-TRCSSPCICR<n> is present only if all of the following are true:
-	TRCIDR4.NUMSSCC > n.
-	TRCIDR4.NUMPC > 0b0000 .
-	TRCSSCSR<n>.PC == 0b1
+When the ETM is affected by Qualcomm errata, modifying the
+TRCPDCR could cause the system hang. Even though this is
+taken care of during enable/disable ETM, the ETM state
+save/restore could still access the TRCPDCR. Make sure
+we skip the access during the save/restore.
 
-Add a helper function to check all the conditions.
+Found by code inspection.
 
+Fixes: 02510a5aa78d ("coresight: etm4x: Add support to skip trace unit power up")
+Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
 Cc: Mike Leach <mike.leach@linaro.org>
+Cc: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc: Tingwei Zhang <tingwei@codeaurora.org>
+Reviewed-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Tested-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Link: https://lore.kernel.org/r/20210110224850.1880240-2-suzuki.poulose@arm.com
+Link: https://lore.kernel.org/r/20210110224850.1880240-3-suzuki.poulose@arm.com
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- .../coresight/coresight-etm4x-core.c          | 29 +++++++++++++++----
- drivers/hwtracing/coresight/coresight-etm4x.h |  2 ++
- 2 files changed, 26 insertions(+), 5 deletions(-)
+ drivers/hwtracing/coresight/coresight-etm4x-core.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index 8c4b0c46c8f3..4b615e9f3d76 100644
+index 4b615e9f3d76..0924c376e35a 100644
 --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
 +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -59,6 +59,22 @@ static u64 etm4_get_access_type(struct etmv4_config *config);
+@@ -1373,7 +1373,8 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
  
- static enum cpuhp_state hp_online;
+ 	state->trcclaimset = readl(drvdata->base + TRCCLAIMCLR);
  
-+/*
-+ * Check if TRCSSPCICRn(i) is implemented for a given instance.
-+ *
-+ * TRCSSPCICRn is implemented only if :
-+ *	TRCSSPCICR<n> is present only if all of the following are true:
-+ *		TRCIDR4.NUMSSCC > n.
-+ *		TRCIDR4.NUMPC > 0b0000 .
-+ *		TRCSSCSR<n>.PC == 0b1
-+ */
-+static inline bool etm4x_sspcicrn_present(struct etmv4_drvdata *drvdata, int n)
-+{
-+	return (n < drvdata->nr_ss_cmp) &&
-+	       drvdata->nr_pe &&
-+	       (drvdata->config.ss_status[n] & TRCSSCSRn_PC);
-+}
-+
- static void etm4_os_unlock(struct etmv4_drvdata *drvdata)
- {
- 	/* Writing 0 to TRCOSLAR unlocks the trace registers */
-@@ -270,8 +286,9 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
- 			       drvdata->base + TRCSSCCRn(i));
- 		writel_relaxed(config->ss_status[i],
- 			       drvdata->base + TRCSSCSRn(i));
--		writel_relaxed(config->ss_pe_cmp[i],
--			       drvdata->base + TRCSSPCICRn(i));
-+		if (etm4x_sspcicrn_present(drvdata, i))
-+			writel_relaxed(config->ss_pe_cmp[i],
-+				       drvdata->base + TRCSSPCICRn(i));
- 	}
- 	for (i = 0; i < drvdata->nr_addr_cmp; i++) {
- 		writeq_relaxed(config->addr_val[i],
-@@ -1324,7 +1341,8 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
- 	for (i = 0; i < drvdata->nr_ss_cmp; i++) {
- 		state->trcssccr[i] = readl(drvdata->base + TRCSSCCRn(i));
- 		state->trcsscsr[i] = readl(drvdata->base + TRCSSCSRn(i));
--		state->trcsspcicr[i] = readl(drvdata->base + TRCSSPCICRn(i));
-+		if (etm4x_sspcicrn_present(drvdata, i))
-+			state->trcsspcicr[i] = readl(drvdata->base + TRCSSPCICRn(i));
- 	}
+-	state->trcpdcr = readl(drvdata->base + TRCPDCR);
++	if (!drvdata->skip_power_up)
++		state->trcpdcr = readl(drvdata->base + TRCPDCR);
  
- 	for (i = 0; i < drvdata->nr_addr_cmp * 2; i++) {
-@@ -1440,8 +1458,9 @@ static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
- 			       drvdata->base + TRCSSCCRn(i));
- 		writel_relaxed(state->trcsscsr[i],
- 			       drvdata->base + TRCSSCSRn(i));
--		writel_relaxed(state->trcsspcicr[i],
--			       drvdata->base + TRCSSPCICRn(i));
-+		if (etm4x_sspcicrn_present(drvdata, i))
-+			writel_relaxed(state->trcsspcicr[i],
-+				       drvdata->base + TRCSSPCICRn(i));
- 	}
+ 	/* wait for TRCSTATR.IDLE to go up */
+ 	if (coresight_timeout(drvdata->base, TRCSTATR, TRCSTATR_IDLE_BIT, 1)) {
+@@ -1391,9 +1392,9 @@ static int etm4_cpu_save(struct etmv4_drvdata *drvdata)
+ 	 * potentially save power on systems that respect the TRCPDCR_PU
+ 	 * despite requesting software to save/restore state.
+ 	 */
+-	writel_relaxed((state->trcpdcr & ~TRCPDCR_PU),
+-			drvdata->base + TRCPDCR);
+-
++	if (!drvdata->skip_power_up)
++		writel_relaxed((state->trcpdcr & ~TRCPDCR_PU),
++				drvdata->base + TRCPDCR);
+ out:
+ 	CS_LOCK(drvdata->base);
+ 	return ret;
+@@ -1488,7 +1489,8 @@ static void etm4_cpu_restore(struct etmv4_drvdata *drvdata)
  
- 	for (i = 0; i < drvdata->nr_addr_cmp * 2; i++) {
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
-index 3dd3e0633328..80e480c7fe5c 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x.h
-+++ b/drivers/hwtracing/coresight/coresight-etm4x.h
-@@ -179,6 +179,8 @@
- #define TRCSTATR_PMSTABLE_BIT		1
- #define ETM_DEFAULT_ADDR_COMP		0
+ 	writel_relaxed(state->trcclaimset, drvdata->base + TRCCLAIMSET);
  
-+#define TRCSSCSRn_PC			BIT(3)
-+
- /* PowerDown Control Register bits */
- #define TRCPDCR_PU			BIT(3)
+-	writel_relaxed(state->trcpdcr, drvdata->base + TRCPDCR);
++	if (!drvdata->skip_power_up)
++		writel_relaxed(state->trcpdcr, drvdata->base + TRCPDCR);
+ 
+ 	drvdata->state_needs_restore = false;
  
 -- 
 2.25.1
