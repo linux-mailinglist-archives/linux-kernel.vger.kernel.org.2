@@ -2,162 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A5530AE6E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:52:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CFBA30AE6A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:52:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232556AbhBARvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:51:04 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16658 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232447AbhBARuC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:50:02 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 111HX8in006167;
-        Mon, 1 Feb 2021 12:49:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=YY3ecy/Al7aUatw1iTYUmj9VR3WvKFhhLF5UQ16Krwc=;
- b=bSbnhHqprdj3obR7MYmF261CjZFtcGsq/f6YmrgDVoBE/rVi/BvyfsSqa+uT4eW87pxI
- bff6m++Eo4mQ5zhbsAVPjDjnwtZtW4wNWebDcl/e9z0H44/rNiRZ/2N1BhEStwQw7+Sq
- 9OLsPFeYv8hJH65czipbX9FVwDpQhuc4JYPOOSfOEeazrUM1/zcjLugZA102D3fFvQdg
- wY7xg4uOhHgLkjzPWHUsXGVgDP2OMYvLANMGOBqa3+MN4GR1Y1i9/oEDFV47pGWzIIuf
- TIXWgbjYLYkWp10oucE0KxBR/qg8+Hcs7gsJH2nCWM8Qrz+mS8gStkcFA2Z08dyHV++s Vw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36endua4mv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 12:49:20 -0500
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 111HXF9h006989;
-        Mon, 1 Feb 2021 12:49:20 -0500
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36endua4m8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 12:49:20 -0500
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 111HcHBg008753;
-        Mon, 1 Feb 2021 17:49:18 GMT
-Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
-        by ppma02wdc.us.ibm.com with ESMTP id 36cy390ay2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 17:49:18 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 111HnIYN29557098
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 1 Feb 2021 17:49:18 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3E364112061;
-        Mon,  1 Feb 2021 17:49:18 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C5578112062;
-        Mon,  1 Feb 2021 17:49:13 +0000 (GMT)
-Received: from oc4221205838.ibm.com (unknown [9.211.84.157])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon,  1 Feb 2021 17:49:13 +0000 (GMT)
-Subject: Re: [PATCH 8/9] vfio/pci: use x86 naming instead of igd
-To:     Cornelia Huck <cohuck@redhat.com>,
-        Max Gurtovoy <mgurtovoy@nvidia.com>
-Cc:     jgg@nvidia.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        alex.williamson@redhat.com, liranl@nvidia.com, oren@nvidia.com,
-        tzahio@nvidia.com, leonro@nvidia.com, yarong@nvidia.com,
-        aviadye@nvidia.com, shahafs@nvidia.com, artemp@nvidia.com,
-        kwankhede@nvidia.com, ACurrid@nvidia.com, gmataev@nvidia.com,
-        cjia@nvidia.com, yishaih@nvidia.com, aik@ozlabs.ru
-References: <20210201162828.5938-1-mgurtovoy@nvidia.com>
- <20210201162828.5938-9-mgurtovoy@nvidia.com>
- <20210201181454.22112b57.cohuck@redhat.com>
-From:   Matthew Rosato <mjrosato@linux.ibm.com>
-Message-ID: <599c6452-8ba6-a00a-65e7-0167f21eac35@linux.ibm.com>
-Date:   Mon, 1 Feb 2021 12:49:12 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S232456AbhBARux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:50:53 -0500
+Received: from mga04.intel.com ([192.55.52.120]:62654 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229612AbhBARu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 12:50:26 -0500
+IronPort-SDR: VyAB2oIITClFYqDUc8HeiEWQospyOxgdnmWPYBBAb+AbvbyK8EvWgP3BlRSHCuTvF1cGs9yvHt
+ zkpRDRTcpt3Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="178161909"
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="178161909"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 09:49:45 -0800
+IronPort-SDR: 8YmBipzXoXTDoBbyReckFLT7Dmq3QPPh5nYa4LbOYEZMOOwbxPK8uwRvS13KvGO7ChHItT8oan
+ JCh9pdvh+iUA==
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="370012974"
+Received: from ccmincem-mobl1.amr.corp.intel.com (HELO [10.212.145.244]) ([10.212.145.244])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 09:49:44 -0800
+Subject: Re: [RFC][PATCH 04/13] mm/numa: node demotion data structure and
+ lookup
+To:     David Rientjes <rientjes@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        yang.shi@linux.alibaba.com, ying.huang@intel.com,
+        dan.j.williams@intel.com, david@redhat.com, osalvador@suse.de
+References: <20210126003411.2AC51464@viggo.jf.intel.com>
+ <20210126003419.43281680@viggo.jf.intel.com>
+ <6115c2e-99b7-75f7-f0dd-bc44e69e21e7@google.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <5ff0b3ed-b02c-e198-3b27-931bdcde502d@intel.com>
+Date:   Mon, 1 Feb 2021 09:49:44 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210201181454.22112b57.cohuck@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <6115c2e-99b7-75f7-f0dd-bc44e69e21e7@google.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-01_06:2021-01-29,2021-02-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- bulkscore=0 priorityscore=1501 phishscore=0 impostorscore=0
- lowpriorityscore=0 mlxlogscore=999 clxscore=1015 spamscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102010089
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/1/21 12:14 PM, Cornelia Huck wrote:
-> On Mon, 1 Feb 2021 16:28:27 +0000
-> Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
+On 1/30/21 5:19 PM, David Rientjes wrote:
+> On Mon, 25 Jan 2021, Dave Hansen wrote:
 > 
->> This patch doesn't change any logic but only align to the concept of
->> vfio_pci_core extensions. Extensions that are related to a platform
->> and not to a specific vendor of PCI devices should be part of the core
->> driver. Extensions that are specific for PCI device vendor should go
->> to a dedicated vendor vfio-pci driver.
+>> diff -puN mm/migrate.c~0006-node-Define-and-export-memory-migration-path mm/migrate.c
+>> --- a/mm/migrate.c~0006-node-Define-and-export-memory-migration-path	2021-01-25 16:23:09.553866709 -0800
+>> +++ b/mm/migrate.c	2021-01-25 16:23:09.558866709 -0800
+>> @@ -1161,6 +1161,22 @@ out:
+>>  	return rc;
+>>  }
+>>  
+>> +static int node_demotion[MAX_NUMNODES] = {[0 ...  MAX_NUMNODES - 1] = NUMA_NO_NODE};
 > 
-> My understanding is that igd means support for Intel graphics, i.e. a
-> strict subset of x86. If there are other future extensions that e.g.
-> only make sense for some devices found only on AMD systems, I don't
-> think they should all be included under the same x86 umbrella.
-> 
-> Similar reasoning for nvlink, that only seems to cover support for some
-> GPUs under Power, and is not a general platform-specific extension IIUC.
-> 
-> We can arguably do the zdev -> s390 rename (as zpci appears only on
-> s390, and all PCI devices will be zpci on that platform), although I'm
-> not sure about the benefit.
+> __read_mostly?
 
-As far as I can tell, there isn't any benefit for s390 it's just 
-"re-branding" to match the platform name rather than the zdev moniker, 
-which admittedly perhaps makes it more clear to someone outside of s390 
-that any PCI device on s390 is a zdev/zpci type, and thus will use this 
-extension to vfio_pci(_core).  This would still be true even if we added 
-something later that builds atop it (e.g. a platform-specific device 
-like ism-vfio-pci).  Or for that matter, mlx5 via vfio-pci on s390x uses 
-these zdev extensions today and would need to continue using them in a 
-world where mlx5-vfio-pci.ko exists.
-
-I guess all that to say: if such a rename matches the 'grand scheme' of 
-this design where we treat arch-level extensions to vfio_pci(_core) as 
-"vfio_pci_(arch)" then I'm not particularly opposed to the rename.  But 
-by itself it's not very exciting :)
-
-> 
->>
->> For now, x86 extensions will include only igd.
->>
->> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
->> ---
->>   drivers/vfio/pci/Kconfig                            | 13 ++++++-------
->>   drivers/vfio/pci/Makefile                           |  2 +-
->>   drivers/vfio/pci/vfio_pci_core.c                    |  2 +-
->>   drivers/vfio/pci/vfio_pci_private.h                 |  2 +-
->>   drivers/vfio/pci/{vfio_pci_igd.c => vfio_pci_x86.c} |  0
->>   5 files changed, 9 insertions(+), 10 deletions(-)
->>   rename drivers/vfio/pci/{vfio_pci_igd.c => vfio_pci_x86.c} (100%)
-> 
-> (...)
-> 
->> diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
->> index c559027def2d..e0e258c37fb5 100644
->> --- a/drivers/vfio/pci/vfio_pci_core.c
->> +++ b/drivers/vfio/pci/vfio_pci_core.c
->> @@ -328,7 +328,7 @@ static int vfio_pci_enable(struct vfio_pci_device *vdev)
->>   
->>   	if (vfio_pci_is_vga(pdev) &&
->>   	    pdev->vendor == PCI_VENDOR_ID_INTEL &&
->> -	    IS_ENABLED(CONFIG_VFIO_PCI_IGD)) {
->> +	    IS_ENABLED(CONFIG_VFIO_PCI_X86)) {
->>   		ret = vfio_pci_igd_init(vdev);
-> 
-> This one explicitly checks for Intel devices, so I'm not sure why you
-> want to generalize this to x86?
-> 
->>   		if (ret && ret != -ENODEV) {
->>   			pci_warn(pdev, "Failed to setup Intel IGD regions\n");
-> 
-
+Yep, that's sane.  I'll fix that up in the next revision.
