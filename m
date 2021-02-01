@@ -2,96 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E82AE30A7A6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D2D430A7B7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:36:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbhBAM34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 07:29:56 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:55524 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhBAM3u (ORCPT
+        id S230184AbhBAMgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 07:36:19 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11653 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229500AbhBAMgR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 07:29:50 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 111CEAQA173379;
-        Mon, 1 Feb 2021 12:29:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=PBNq7gOuz6MH/3F/CeGL6t5zFVKRrjV8r/ABw1F27D0=;
- b=YjpTfaVofaVVA/uacU1LiOgPFQ/lRg6AoJ5ep+lA5z376jmbOvb71YX7TZFF3tYtL9/7
- RgeQVkq+ZW9F4ti0pIYpe2gUt+5i7PB1lb56BMuGBq+bSGoOWxKlhwkz2SweeTgN3s8m
- ooCmyifcLEienQz0eC5RlkFA+sML9IGtMSJRh8QjehVCmvQHTj8NUJtL1epNwxVIgzP4
- FntrU5Yk2NLl/mV/JvY9ovUXiX/YDslyByp3myY+1S50awRninsTEX1NldSdjZcgjMPK
- EASiuKA80IotPjziEL8IkBb3NuhxhLSVOR6RBvbiA0qvrid+yVzy57jGgKcTGA+8k+7m gA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 36cxvqw03n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 01 Feb 2021 12:29:03 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 111CA7IJ146815;
-        Mon, 1 Feb 2021 12:29:02 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 36dh7pn8p5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 01 Feb 2021 12:29:02 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 111CT1lf006023;
-        Mon, 1 Feb 2021 12:29:01 GMT
-Received: from mwanda (/10.175.186.133)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 01 Feb 2021 04:29:00 -0800
-Date:   Mon, 1 Feb 2021 15:28:54 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Stuart Yoder <stuyoder@gmail.com>,
-        Ioana Ciornei <ioana.ciornei@nxp.com>
-Cc:     Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] bus: fsl-mc: Fix test for end of loop
-Message-ID: <YBf0Br9obNGZTcNI@mwanda>
+        Mon, 1 Feb 2021 07:36:17 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DTnSQ63XCz162Rt;
+        Mon,  1 Feb 2021 20:34:14 +0800 (CST)
+Received: from [10.174.184.42] (10.174.184.42) by
+ DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 1 Feb 2021 20:35:28 +0800
+Subject: Re: [PATCH v13 04/15] iommu/smmuv3: Allow s1 and s2 configs to
+ coexist
+To:     Eric Auger <eric.auger@redhat.com>, <eric.auger.pro@gmail.com>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <kvm@vger.kernel.org>, <kvmarm@lists.cs.columbia.edu>,
+        <will@kernel.org>, <joro@8bytes.org>, <maz@kernel.org>,
+        <robin.murphy@arm.com>, <alex.williamson@redhat.com>
+References: <20201118112151.25412-1-eric.auger@redhat.com>
+ <20201118112151.25412-5-eric.auger@redhat.com>
+CC:     <jean-philippe@linaro.org>, <jacob.jun.pan@linux.intel.com>,
+        <nicoleotsuka@gmail.com>, <vivek.gautam@arm.com>,
+        <yi.l.liu@intel.com>, <zhangfei.gao@linaro.org>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <01cf1f27-43dc-fb4d-6755-c34c8cac8ec2@huawei.com>
+Date:   Mon, 1 Feb 2021 20:35:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9881 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
- suspectscore=0 spamscore=0 mlxlogscore=999 phishscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102010064
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9881 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- mlxscore=0 priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011
- suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102010064
+In-Reply-To: <20201118112151.25412-5-eric.auger@redhat.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "desc" pointer can't possibly be NULL here.  If we can't find the
-correct "desc" then tt points to the last element of the
-fsl_mc_accepted_cmds[] array.  Fix this by testing if
-"i == FSL_MC_NUM_ACCEPTED_CMDS" instead.
+Hi Eric,
 
-Fixes: 2cf1e703f066 ("bus: fsl-mc: add fsl-mc userspace support")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/bus/fsl-mc/fsl-mc-uapi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 2020/11/18 19:21, Eric Auger wrote:
+> In true nested mode, both s1_cfg and s2_cfg will coexist.
+> Let's remove the union and add a "set" field in each
+> config structure telling whether the config is set and needs
+> to be applied when writing the STE. In legacy nested mode,
+> only the 2d stage is used. In true nested mode, the "set" field
+nit: s/2d/2nd
 
-diff --git a/drivers/bus/fsl-mc/fsl-mc-uapi.c b/drivers/bus/fsl-mc/fsl-mc-uapi.c
-index eeb988c9f4bb..bdcd9d983a78 100644
---- a/drivers/bus/fsl-mc/fsl-mc-uapi.c
-+++ b/drivers/bus/fsl-mc/fsl-mc-uapi.c
-@@ -338,7 +338,7 @@ static int fsl_mc_command_check(struct fsl_mc_device *mc_dev,
- 		if ((cmdid & desc->cmdid_mask) == desc->cmdid_value)
- 			break;
- 	}
--	if (!desc) {
-+	if (i == FSL_MC_NUM_ACCEPTED_CMDS) {
- 		dev_err(&mc_dev->dev, "MC command 0x%04x: cmdid not accepted\n", cmdid);
- 		return -EACCES;
- 	}
--- 
-2.29.2
+> will be set when the guest passes the pasid table.
+nit: ... the "set" filed of s1_cfg and s2_cfg will be set ...
 
+> 
+> Signed-off-by: Eric Auger <eric.auger@redhat.com>
+> 
+> ---
+> v12 -> v13:
+> - does not dynamically allocate s1-cfg and s2_cfg anymore. Add
+>   the set field
+> ---
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 43 +++++++++++++--------
+>  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h |  8 ++--
+>  2 files changed, 31 insertions(+), 20 deletions(-)
+> 
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> index 1e4acc7f3d3c..18ac5af1b284 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
+> @@ -1195,8 +1195,8 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
+>  	u64 val = le64_to_cpu(dst[0]);
+>  	bool ste_live = false;
+>  	struct arm_smmu_device *smmu = NULL;
+> -	struct arm_smmu_s1_cfg *s1_cfg = NULL;
+> -	struct arm_smmu_s2_cfg *s2_cfg = NULL;
+> +	struct arm_smmu_s1_cfg *s1_cfg;
+> +	struct arm_smmu_s2_cfg *s2_cfg;
+>  	struct arm_smmu_domain *smmu_domain = NULL;
+>  	struct arm_smmu_cmdq_ent prefetch_cmd = {
+>  		.opcode		= CMDQ_OP_PREFETCH_CFG,
+> @@ -1211,13 +1211,24 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
+>  	}
+>  
+>  	if (smmu_domain) {
+> +		s1_cfg = &smmu_domain->s1_cfg;
+> +		s2_cfg = &smmu_domain->s2_cfg;
+> +
+>  		switch (smmu_domain->stage) {
+>  		case ARM_SMMU_DOMAIN_S1:
+> -			s1_cfg = &smmu_domain->s1_cfg;
+> +			s1_cfg->set = true;
+> +			s2_cfg->set = false;
+>  			break;
+>  		case ARM_SMMU_DOMAIN_S2:
+> +			s1_cfg->set = false;
+> +			s2_cfg->set = true;
+> +			break;
+>  		case ARM_SMMU_DOMAIN_NESTED:
+> -			s2_cfg = &smmu_domain->s2_cfg;
+> +			/*
+> +			 * Actual usage of stage 1 depends on nested mode:
+> +			 * legacy (2d stage only) or true nested mode
+> +			 */
+> +			s2_cfg->set = true;
+>  			break;
+>  		default:
+>  			break;
+> @@ -1244,7 +1255,7 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
+>  	val = STRTAB_STE_0_V;
+>  
+>  	/* Bypass/fault */
+> -	if (!smmu_domain || !(s1_cfg || s2_cfg)) {
+> +	if (!smmu_domain || !(s1_cfg->set || s2_cfg->set)) {
+>  		if (!smmu_domain && disable_bypass)
+>  			val |= FIELD_PREP(STRTAB_STE_0_CFG, STRTAB_STE_0_CFG_ABORT);
+>  		else
+> @@ -1263,7 +1274,7 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
+>  		return;
+>  	}
+>  
+> -	if (s1_cfg) {
+> +	if (s1_cfg->set) {
+>  		BUG_ON(ste_live);
+>  		dst[1] = cpu_to_le64(
+>  			 FIELD_PREP(STRTAB_STE_1_S1DSS, STRTAB_STE_1_S1DSS_SSID0) |
+> @@ -1282,7 +1293,7 @@ static void arm_smmu_write_strtab_ent(struct arm_smmu_master *master, u32 sid,
+>  			FIELD_PREP(STRTAB_STE_0_S1FMT, s1_cfg->s1fmt);
+>  	}
+>  
+> -	if (s2_cfg) {
+> +	if (s2_cfg->set) {
+>  		BUG_ON(ste_live);
+>  		dst[2] = cpu_to_le64(
+>  			 FIELD_PREP(STRTAB_STE_2_S2VMID, s2_cfg->vmid) |
+> @@ -1846,24 +1857,24 @@ static void arm_smmu_domain_free(struct iommu_domain *domain)
+>  {
+>  	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
+>  	struct arm_smmu_device *smmu = smmu_domain->smmu;
+> +	struct arm_smmu_s1_cfg *s1_cfg = &smmu_domain->s1_cfg;
+> +	struct arm_smmu_s2_cfg *s2_cfg = &smmu_domain->s2_cfg;
+>  
+>  	iommu_put_dma_cookie(domain);
+>  	free_io_pgtable_ops(smmu_domain->pgtbl_ops);
+>  
+>  	/* Free the CD and ASID, if we allocated them */
+> -	if (smmu_domain->stage == ARM_SMMU_DOMAIN_S1) {
+> -		struct arm_smmu_s1_cfg *cfg = &smmu_domain->s1_cfg;
+> -
+> +	if (s1_cfg->set) {
+>  		/* Prevent SVA from touching the CD while we're freeing it */
+>  		mutex_lock(&arm_smmu_asid_lock);
+> -		if (cfg->cdcfg.cdtab)
+> +		if (s1_cfg->cdcfg.cdtab)
+>  			arm_smmu_free_cd_tables(smmu_domain);
+> -		arm_smmu_free_asid(&cfg->cd);
+> +		arm_smmu_free_asid(&s1_cfg->cd);
+>  		mutex_unlock(&arm_smmu_asid_lock);
+> -	} else {
+> -		struct arm_smmu_s2_cfg *cfg = &smmu_domain->s2_cfg;
+> -		if (cfg->vmid)
+> -			arm_smmu_bitmap_free(smmu->vmid_map, cfg->vmid);
+> +	}
+> +	if (s2_cfg->set) {
+> +		if (s2_cfg->vmid)
+> +			arm_smmu_bitmap_free(smmu->vmid_map, s2_cfg->vmid);
+>  	}
+>  
+>  	kfree(smmu_domain);
+> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+> index 19196eea7c1d..07f59252dd21 100644
+> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h
+> @@ -562,12 +562,14 @@ struct arm_smmu_s1_cfg {
+>  	struct arm_smmu_ctx_desc	cd;
+>  	u8				s1fmt;
+>  	u8				s1cdmax;
+> +	bool				set;
+>  };
+>  
+>  struct arm_smmu_s2_cfg {
+>  	u16				vmid;
+>  	u64				vttbr;
+>  	u64				vtcr;
+> +	bool				set;
+>  };
+>  
+>  struct arm_smmu_strtab_cfg {
+> @@ -678,10 +680,8 @@ struct arm_smmu_domain {
+>  	atomic_t			nr_ats_masters;
+>  
+>  	enum arm_smmu_domain_stage	stage;
+> -	union {
+> -		struct arm_smmu_s1_cfg	s1_cfg;
+> -		struct arm_smmu_s2_cfg	s2_cfg;
+> -	};
+> +	struct arm_smmu_s1_cfg	s1_cfg;
+> +	struct arm_smmu_s2_cfg	s2_cfg;
+>  
+>  	struct iommu_domain		domain;
+>  
+Other looks good to me. ;-)
+> 
+
+Thanks,
+Keqian
