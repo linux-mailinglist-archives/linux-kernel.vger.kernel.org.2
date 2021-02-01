@@ -2,77 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A1A130A6B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:38:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3275830A6AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:38:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230210AbhBALhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 06:37:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44304 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229506AbhBALhf (ORCPT
+        id S230194AbhBALhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 06:37:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229596AbhBALhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 06:37:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612179369;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VTFNHmYMNxGpEuIhBb8TR1rvnZN6QF66geki9lSctnE=;
-        b=S8ZeQHhbP5+auBTWeu/+MLlfprMaS3JRFvyZw4SxLNq/KE+3/ajlgBCWWkaKBFojgw995R
-        832tBaSa+mRumBL4tqSmyupHq9zMusM8te35J3W2TolJjP/UwOsY1cEoBkV419tDUE/zAM
-        YP/5mSkZqX4ZQAPBv8Aki8Bc/BU82Pc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-278-65b3QYUnN6WdbbNFkB38Fw-1; Mon, 01 Feb 2021 06:36:05 -0500
-X-MC-Unique: 65b3QYUnN6WdbbNFkB38Fw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DCE08801817;
-        Mon,  1 Feb 2021 11:36:03 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D25303AE1;
-        Mon,  1 Feb 2021 11:36:01 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <8b9477e150d7c939dc0def3ebb4443efcc83cd85.camel@pengutronix.de>
-References: <8b9477e150d7c939dc0def3ebb4443efcc83cd85.camel@pengutronix.de> <74830d4f-5a76-8ba8-aad0-0d79f7c01af9@pengutronix.de> <6dc99fd9ffbc5f405c5f64d0802d1399fc6428e4.camel@kernel.org> <d1bed49f89495ceb529355cb41655a208fdb2197.camel@linux.ibm.com>
-To:     Jan =?us-ascii?Q?=3D=3FISO-8859-1=3FQ=3FL=3DFCbbe=3F=3D?= 
-        <jlu@pengutronix.de>
-Cc:     dhowells@redhat.com, Mimi Zohar <zohar@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        James Bottomley <jejb@linux.ibm.com>, keyrings@vger.kernel.org,
-        Sumit Garg <sumit.garg@linaro.org>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: Migration to trusted keys: sealing user-provided key?
+        Mon, 1 Feb 2021 06:37:18 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D17C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 03:36:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=yJ3roDhQpuO1g9RY91FTVy4LiD9ki1OCoNdC6uPSZVM=; b=DxrXWsJQMthUCzBxi/EeEhuc9V
+        U4tz0HC5b+wHBfdXzdA5YlGS0Oyvz58nkNqVYvXG0XU8IfZoO36nNENYLFWqLTvWwk62Hdwi4tjdA
+        ErkXVlkOIUZsczCxvcSePA0c9DMgIN30lR38AQ8cbAlN9Y1zL3oHLdOR6+ttplM8Fa/o3O0qfih+X
+        VhnksBaymZiHgkqwPdWUl2O2U4CUxn13TXIVZxLMZDIogOPU54whdcwwfc+T5GEuFOZV3L8UaeOvW
+        ZTqVS6WGO0wlMA65pf0MhwH6Ygv3owIFW5rAa5kO1JXWnjnPz+FIGa5TLSNl5B0q21+x+G6Z/0ewu
+        FXrchmtQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l6XVI-00Di18-OO; Mon, 01 Feb 2021 11:36:25 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9BD523003D8;
+        Mon,  1 Feb 2021 12:36:23 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8167E2DA8F98A; Mon,  1 Feb 2021 12:36:23 +0100 (CET)
+Date:   Mon, 1 Feb 2021 12:36:23 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nadav Amit <nadav.amit@gmail.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Nadav Amit <namit@vmware.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Nick Piggin <npiggin@gmail.com>, x86@kernel.org
+Subject: Re: [RFC 01/20] mm/tlb: fix fullmm semantics
+Message-ID: <YBfntzMgNlMDOP9s@hirez.programming.kicks-ass.net>
+References: <20210131001132.3368247-1-namit@vmware.com>
+ <20210131001132.3368247-2-namit@vmware.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date:   Mon, 01 Feb 2021 11:36:01 +0000
-Message-ID: <4153718.1612179361@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210131001132.3368247-2-namit@vmware.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jan L=C3=BCbbe <jlu@pengutronix.de> wrote:
 
-> ... But at this point, you can still do 'keyctl read' on that key, exposi=
-ng
-> the key material to user space.
-
-I wonder if it would help to provide a keyctl function to mark a key as bei=
-ng
-permanently unreadable - so that it overrides the READ permission bit.
-
-Alternatively, you can disable READ and SETATTR permission - but that then
-prevents you from removing other perms if you want to :-/
-
-David
-
+https://lkml.kernel.org/r/20210127235347.1402-1-will@kernel.org
