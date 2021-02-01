@@ -2,127 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FAD30A963
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:12:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B38B630A96A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:14:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231776AbhBAOLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 09:11:40 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7522 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229500AbhBAOLi (ORCPT
+        id S232418AbhBAON6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 09:13:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56820 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231849AbhBAONz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 09:11:38 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 111E33rv088288;
-        Mon, 1 Feb 2021 09:10:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=kFfdiVRSosOPGBsI44S5SiAq787FhllDr5Y5F5u5cYQ=;
- b=cs8rpuv8dySai1YarWb142wHJt556SoyMPcuFzcwp/hyMhhz9qnOko+MBSlIlr4LGGBx
- qdh79pg3YjpLZv3J76TZF/TOkFBKnJK+yUWPkJ5DsaiaL+aUwPTrHb38b4LPazQrKvwB
- GascykC2BjdBQuHzxWOfyV3o54rGpoEx3fXR7x6YV8XT/TZUQGmi7MU0yN0JsYWF66oJ
- U67TsnkaZV5ced82dUM2xDXPz30M/FnOi9iQuTuaBA2KZGCsKPbWbVCSq5N7ut2V7o3k
- sD4oKDZ5P/dNvk+vGhWRYQPj2USdEq6nqcNdHe+q6RlXUdfKToIUm6w74LlTLyEr3r6J NA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36ejj0sjs3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 09:10:53 -0500
-Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 111E39Iq088662;
-        Mon, 1 Feb 2021 09:10:51 -0500
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36ejj0sjq1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 09:10:51 -0500
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 111E4DIf021029;
-        Mon, 1 Feb 2021 14:10:48 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma02fra.de.ibm.com with ESMTP id 36cy38904p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 14:10:47 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 111EAbMX32440762
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 1 Feb 2021 14:10:37 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BB97011C052;
-        Mon,  1 Feb 2021 14:10:45 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 73DBB11C04C;
-        Mon,  1 Feb 2021 14:10:45 +0000 (GMT)
-Received: from [9.145.70.87] (unknown [9.145.70.87])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  1 Feb 2021 14:10:45 +0000 (GMT)
-Subject: Re: [PATCH net] net: lapb: Copy the skb before sending a packet
-To:     Xie He <xie.he.0141@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Martin Schiller <ms@dev.tdt.de>
-References: <20210201055706.415842-1-xie.he.0141@gmail.com>
-From:   Julian Wiedmann <jwi@linux.ibm.com>
-Message-ID: <4d1988d9-6439-ae37-697c-d2b970450498@linux.ibm.com>
-Date:   Mon, 1 Feb 2021 15:10:45 +0100
+        Mon, 1 Feb 2021 09:13:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612188748;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=N2E0S/Z5gWA3ccqYSTotfrJuoUUJBHoeOURjhC0S/Jk=;
+        b=gGSSt9If2vO+t5ejydiQc/7GkBKT+VZmq7iY102/ixbH8cEITinHodF+E68q8zCj9YGYRJ
+        Cx2mMDuqKdW33TS0IwOkWP7QgJVcmurLcmjNX+l+Emmk5OkyQai5hdgA6CU6vd0yRhqzPj
+        9E/bwm/HA/Dg7HE3guVpS/3U1MBLxoo=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-195-lRv_JJWsOsS2UfQlXfVSug-1; Mon, 01 Feb 2021 09:12:24 -0500
+X-MC-Unique: lRv_JJWsOsS2UfQlXfVSug-1
+Received: by mail-qv1-f71.google.com with SMTP id k20so11277352qvm.16
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 06:12:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=N2E0S/Z5gWA3ccqYSTotfrJuoUUJBHoeOURjhC0S/Jk=;
+        b=FbqHYPUkwZgeDtoQPo4MI3/okRV+4itaGsJnx/5AwYfDPAsaAA14b4ACQjnrLPXpcr
+         8nU6LVM3GIcv4JDiYte4gKjkkC2VGNKI2p++thFNDPu6RfCvp8OzMAkDm0OHRwV0DQiy
+         /BVtOd5cSobEdNEA9h1YtSimICJF1Eeym2RFjQk0G+iqgsUYbHKw9vMHMc81nCevy2Ug
+         k3oCiNm3boxs8wFjUPhIAfVj8tMrAYUu9mwrK+u4Uev5/4cyLxft+0jpV8M4wUDDg5xX
+         w5Jgx2PyOULz2sT09RZff7MsHEaxkBhApc0feQzVTa0yfEHiin49yyk0vCjSuV2cnIGW
+         gDXg==
+X-Gm-Message-State: AOAM530PZtHhhlt7ZZrY+GPtnGaKFUOJ4O+5Q4Dcz02m9DL/hUB4zc+G
+        PwCgTwWrKoTVbVBolfdv467qBqtIJFIobrjTa/a4LpKSVnBVis2ojghJa8+PDDFPFkJSF6sHiDC
+        PLId5pFoeLI9elPYEbgVdoWD6
+X-Received: by 2002:ad4:468c:: with SMTP id bq12mr15285037qvb.11.1612188744313;
+        Mon, 01 Feb 2021 06:12:24 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzWcu7QMcVQZmTNtkvnH7tBDsAShHJwxhwlpfixBQHLwHGuCEV7aJwrUjirGWN/Nl9k6PIwtA==
+X-Received: by 2002:ad4:468c:: with SMTP id bq12mr15285009qvb.11.1612188744038;
+        Mon, 01 Feb 2021 06:12:24 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id b17sm484952qkh.57.2021.02.01.06.12.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Feb 2021 06:12:23 -0800 (PST)
+Subject: Re: [PATCH v10 1/2] uio: uio_dfl: add userspace i/o driver for DFL
+ bus
+To:     Xu Yilun <yilun.xu@intel.com>, gregkh@linuxfoundation.org,
+        mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     lgoncalv@redhat.com, hao.wu@intel.com
+References: <1612157883-18616-1-git-send-email-yilun.xu@intel.com>
+ <1612157883-18616-2-git-send-email-yilun.xu@intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <d100069d-c953-209c-9e74-a336c644887b@redhat.com>
+Date:   Mon, 1 Feb 2021 06:12:21 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <20210201055706.415842-1-xie.he.0141@gmail.com>
+In-Reply-To: <1612157883-18616-2-git-send-email-yilun.xu@intel.com>
 Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-01_05:2021-01-29,2021-02-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- priorityscore=1501 lowpriorityscore=0 mlxlogscore=999 malwarescore=0
- mlxscore=0 bulkscore=0 suspectscore=0 adultscore=0 impostorscore=0
- phishscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102010068
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.02.21 06:57, Xie He wrote:
-> When sending a packet, we will prepend it with an LAPB header.
-> This modifies the shared parts of a cloned skb, so we should copy the
-> skb rather than just clone it, before we prepend the header.
-> 
-> In "Documentation/networking/driver.rst" (the 2nd point), it states
-> that drivers shouldn't modify the shared parts of a cloned skb when
-> transmitting.
-> 
 
-This sounds a bit like you want skb_cow_head() ... ?
-
-> The "dev_queue_xmit_nit" function in "net/core/dev.c", which is called
-> when an skb is being sent, clones the skb and sents the clone to
-> AF_PACKET sockets. Because the LAPB drivers first remove a 1-byte
-> pseudo-header before handing over the skb to us, if we don't copy the
-> skb before prepending the LAPB header, the first byte of the packets
-> received on AF_PACKET sockets can be corrupted.
-> 
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Cc: Martin Schiller <ms@dev.tdt.de>
-> Signed-off-by: Xie He <xie.he.0141@gmail.com>
+On 1/31/21 9:38 PM, Xu Yilun wrote:
+> This patch supports the DFL drivers be written in userspace. This is
+> realized by exposing the userspace I/O device interfaces.
+>
+> The driver now only binds the ether group feature, which has no irq. So
+> the irq support is not implemented yet.
+>
+> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
 > ---
->  net/lapb/lapb_out.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/lapb/lapb_out.c b/net/lapb/lapb_out.c
-> index 7a4d0715d1c3..a966d29c772d 100644
-> --- a/net/lapb/lapb_out.c
-> +++ b/net/lapb/lapb_out.c
-> @@ -82,7 +82,8 @@ void lapb_kick(struct lapb_cb *lapb)
->  		skb = skb_dequeue(&lapb->write_queue);
+> v9: switch to add a uio driver in drivers/uio
+> v10: add the source file in MAINTAINERS
+>      more descriptive Kconfig header
+>      add detailed path for opae uio example
+> ---
+>  MAINTAINERS           |  1 +
+>  drivers/uio/Kconfig   | 17 +++++++++++++
+>  drivers/uio/Makefile  |  1 +
+>  drivers/uio/uio_dfl.c | 66 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 85 insertions(+)
+>  create mode 100644 drivers/uio/uio_dfl.c
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 147d1d9..4d01a21 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -6943,6 +6943,7 @@ S:	Maintained
+>  F:	Documentation/ABI/testing/sysfs-bus-dfl*
+>  F:	Documentation/fpga/dfl.rst
+>  F:	drivers/fpga/dfl*
+> +F:	drivers/uio/uio_dfl.c
+>  F:	include/linux/dfl.h
+>  F:	include/uapi/linux/fpga-dfl.h
 >  
->  		do {
-> -			if ((skbn = skb_clone(skb, GFP_ATOMIC)) == NULL) {
-> +			skbn = skb_copy(skb, GFP_ATOMIC);
-> +			if (!skbn) {
->  				skb_queue_head(&lapb->write_queue, skb);
->  				break;
->  			}
-> 
+> diff --git a/drivers/uio/Kconfig b/drivers/uio/Kconfig
+> index 202ee81..5531f3a 100644
+> --- a/drivers/uio/Kconfig
+> +++ b/drivers/uio/Kconfig
+> @@ -165,4 +165,21 @@ config UIO_HV_GENERIC
+>  	  to network and storage devices from userspace.
+>  
+>  	  If you compile this as a module, it will be called uio_hv_generic.
+> +
+> +config UIO_DFL
+> +	tristate "Generic driver for DFL (Device Feature List) bus"
+> +	depends on FPGA_DFL
+> +	help
+> +	  Generic DFL (Device Feature List) driver for Userspace I/O devices.
+> +	  It is useful to provide direct access to DFL devices from userspace.
+> +	  A sample userspace application using this driver is available for
+> +	  download in a git repository:
+> +
+> +	    git clone https://github.com/OPAE/opae-sdk.git
+> +
+> +	  It could be found at:
+> +
+> +	    opae-sdk/tools/libopaeuio/
+
+Yes, it is there.  Thanks!
+
+Reviewed-by: Tom Rix <trix@redhat.com>
+
+> +
+> +	  If you compile this as a module, it will be called uio_dfl.
+>  endif
+> diff --git a/drivers/uio/Makefile b/drivers/uio/Makefile
+> index c285dd2..f2f416a1 100644
+> --- a/drivers/uio/Makefile
+> +++ b/drivers/uio/Makefile
+> @@ -11,3 +11,4 @@ obj-$(CONFIG_UIO_PRUSS)         += uio_pruss.o
+>  obj-$(CONFIG_UIO_MF624)         += uio_mf624.o
+>  obj-$(CONFIG_UIO_FSL_ELBC_GPCM)	+= uio_fsl_elbc_gpcm.o
+>  obj-$(CONFIG_UIO_HV_GENERIC)	+= uio_hv_generic.o
+> +obj-$(CONFIG_UIO_DFL)	+= uio_dfl.o
+> diff --git a/drivers/uio/uio_dfl.c b/drivers/uio/uio_dfl.c
+> new file mode 100644
+> index 0000000..89c0fc7
+> --- /dev/null
+> +++ b/drivers/uio/uio_dfl.c
+> @@ -0,0 +1,66 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Generic DFL driver for Userspace I/O devicess
+> + *
+> + * Copyright (C) 2021 Intel Corporation, Inc.
+> + */
+> +#include <linux/dfl.h>
+> +#include <linux/errno.h>
+> +#include <linux/module.h>
+> +#include <linux/uio_driver.h>
+> +
+> +#define DRIVER_NAME "uio_dfl"
+> +
+> +static int uio_dfl_probe(struct dfl_device *ddev)
+> +{
+> +	struct resource *r = &ddev->mmio_res;
+> +	struct device *dev = &ddev->dev;
+> +	struct uio_info *uioinfo;
+> +	struct uio_mem *uiomem;
+> +	int ret;
+> +
+> +	uioinfo = devm_kzalloc(dev, sizeof(struct uio_info), GFP_KERNEL);
+> +	if (!uioinfo)
+> +		return -ENOMEM;
+> +
+> +	uioinfo->name = DRIVER_NAME;
+> +	uioinfo->version = "0";
+> +
+> +	uiomem = &uioinfo->mem[0];
+> +	uiomem->memtype = UIO_MEM_PHYS;
+> +	uiomem->addr = r->start & PAGE_MASK;
+> +	uiomem->offs = r->start & ~PAGE_MASK;
+> +	uiomem->size = (uiomem->offs + resource_size(r)
+> +			+ PAGE_SIZE - 1) & PAGE_MASK;
+> +	uiomem->name = r->name;
+> +
+> +	/* Irq is yet to be supported */
+> +	uioinfo->irq = UIO_IRQ_NONE;
+> +
+> +	ret = devm_uio_register_device(dev, uioinfo);
+> +	if (ret)
+> +		dev_err(dev, "unable to register uio device\n");
+> +
+> +	return ret;
+> +}
+> +
+> +#define FME_FEATURE_ID_ETH_GROUP	0x10
+> +
+> +static const struct dfl_device_id uio_dfl_ids[] = {
+> +	{ FME_ID, FME_FEATURE_ID_ETH_GROUP },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(dfl, uio_dfl_ids);
+> +
+> +static struct dfl_driver uio_dfl_driver = {
+> +	.drv = {
+> +		.name = DRIVER_NAME,
+> +	},
+> +	.id_table	= uio_dfl_ids,
+> +	.probe		= uio_dfl_probe,
+> +};
+> +module_dfl_driver(uio_dfl_driver);
+> +
+> +MODULE_DESCRIPTION("Generic DFL driver for Userspace I/O devices");
+> +MODULE_AUTHOR("Intel Corporation");
+> +MODULE_LICENSE("GPL v2");
 
