@@ -2,86 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBBDC30B39E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:36:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE30130B3A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:39:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230316AbhBAXei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 18:34:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39690 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229527AbhBAXef (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 18:34:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5DA564D90;
-        Mon,  1 Feb 2021 23:33:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1612222435;
-        bh=IPcG23HxLRgvFstqvEFHiosYl3MWryDjBRJYYpKzO2Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Ca/ruHFPXeRYJjJEHJZHSmK0v9XNR8c3pSbUAJN8BwFLo7ITTnwLCzWI8YASvX7Q1
-         l8mJndST3G86imADhoeSfUp3Ouvo7sePbOQgo/ZAPHsjMee8BhrlV8cGkrUd3MZIIm
-         hhfIOUjfUMhIKtO+1zgXfiV6GFd3DJ2OfoGt9oFY=
-Date:   Mon, 1 Feb 2021 15:33:54 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: simplify the VM_BUG_ON condition in
- pmdp_huge_clear_flush()
-Message-Id: <20210201153354.e640247cb5ab306e909322d0@linux-foundation.org>
-In-Reply-To: <20210201114319.34720-1-linmiaohe@huawei.com>
-References: <20210201114319.34720-1-linmiaohe@huawei.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S230054AbhBAXjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 18:39:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34224 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229524AbhBAXj1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 18:39:27 -0500
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8275C06174A;
+        Mon,  1 Feb 2021 15:38:46 -0800 (PST)
+Received: by mail-qt1-x832.google.com with SMTP id h16so12602599qth.11;
+        Mon, 01 Feb 2021 15:38:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FajrV5jLxHKTArmlhLgITDySSE+0+rV8hmJ9Q4rFS7c=;
+        b=msG2yug91qWFr5UXi/rWjZQBM54WlP2FqpSiTUw2N3gNhMXXWyXGjYidlcvbsD1r0P
+         zNPaF0k4w/eGJunoOGnJtsgZcXGeHGfMrmy1fn/L0mV2gsLQ0P6Y+Hd/ex5bhmxlEDd/
+         XteOVWKpYyqcEN+B7vwI8FrZ9RU15zyS/ARBESCeArNV7YAsmlUcR5aOvOnNMyRA0Pjf
+         D1awHblBkTy/aZbPn+DTRQdyYQpNJ2yPXf8x6Od2hh10BiJES1YB4HqB9pmg5+4sprtu
+         y6PVjWV7B6iLP843kwr3bfP/87R4v0dUZdGMaAY15Zj63nLmXMQUNxGYIkJ45Qgh9tsX
+         jTEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=FajrV5jLxHKTArmlhLgITDySSE+0+rV8hmJ9Q4rFS7c=;
+        b=hbCuE4ENhXq1gyv/vVznQa2grrCncxljCIxR4Zs7ghYWMC8KZnUcpNhyME8PbNPgtH
+         V4pKp4NCB6/5xqhkmQdqZjY4saCxIspB6LSz28DV1l+K2OdnFFus7japrzYlxD5S1XpX
+         yW9sd0C4Mwenb0+JhQYppmdbbqGf0QEaKKvy+VGn957/2D3N1QNBXUOG9EJcNcrYdxwh
+         TxuwHaxZZbQ2Gq5BGrKTnGaschbI1/BK6JLt4iTbWDxkogj+86RcpUpZdIA3hcjBg13Z
+         9hEuOQb2tiafUGZEOfFWoONpyN385U363Zn7VPXwNFPRTZ1rGM6RFbVA2/EzVuomiUAs
+         buow==
+X-Gm-Message-State: AOAM530ZTxKd1lTjF/cz8UcguVIFGChLBPRRccd+tDWilSbBqoVjKmhI
+        lBqoEezigLd9CV+JOyQA+Vs=
+X-Google-Smtp-Source: ABdhPJzcVHW3kr+ZrcbTwnXe1FahAvdXfEktFgKMydJtbJlSKgys2+hI4nJzRMQGZ+TupE5r6V6iuQ==
+X-Received: by 2002:a05:622a:4d3:: with SMTP id q19mr17320400qtx.316.1612222726179;
+        Mon, 01 Feb 2021 15:38:46 -0800 (PST)
+Received: from Gentoo ([138.199.10.33])
+        by smtp.gmail.com with ESMTPSA id u133sm10615653qka.116.2021.02.01.15.38.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 15:38:45 -0800 (PST)
+Date:   Tue, 2 Feb 2021 05:08:35 +0530
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     Bert Vermeulen <bert@biot.com>
+Cc:     tsbogend@alpha.franken.de, peterz@infradead.org,
+        frederic@kernel.org, mingo@kernel.org, peterx@redhat.com,
+        afzal.mohd.ma@gmail.com, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [PATCH] arch: mips: kernel: Made couple of spelling fixes and a
+ sentence construction in smp.c
+Message-ID: <YBiQ+8GDeyS79+hZ@Gentoo>
+Mail-Followup-To: Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        Bert Vermeulen <bert@biot.com>, tsbogend@alpha.franken.de,
+        peterz@infradead.org, frederic@kernel.org, mingo@kernel.org,
+        peterx@redhat.com, afzal.mohd.ma@gmail.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org
+References: <20210201111757.8019-1-unixbhaskar@gmail.com>
+ <48dfc60a-c03c-f9d8-a9aa-268f6ae252eb@biot.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="137A10jDZDoLDy/Q"
+Content-Disposition: inline
+In-Reply-To: <48dfc60a-c03c-f9d8-a9aa-268f6ae252eb@biot.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Feb 2021 06:43:19 -0500 Miaohe Lin <linmiaohe@huawei.com> wrote:
 
-> The condition (A && !C && !D) || !A is equivalent to !A || (A && !C && !D)
-> and can be further simplified to !A || (!C && !D).
-> 
-> ..
+--137A10jDZDoLDy/Q
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+
+On 17:51 Mon 01 Feb 2021, Bert Vermeulen wrote:
+>On 2/1/21 12:17 PM, Bhaskar Chowdhury wrote:
+>> s/debugees/debuge's/
 >
-> --- a/mm/pgtable-generic.c
-> +++ b/mm/pgtable-generic.c
-> @@ -135,8 +135,8 @@ pmd_t pmdp_huge_clear_flush(struct vm_area_struct *vma, unsigned long address,
->  {
->  	pmd_t pmd;
->  	VM_BUG_ON(address & ~HPAGE_PMD_MASK);
-> -	VM_BUG_ON((pmd_present(*pmdp) && !pmd_trans_huge(*pmdp) &&
-> -			   !pmd_devmap(*pmdp)) || !pmd_present(*pmdp));
-> +	VM_BUG_ON(!pmd_present(*pmdp) || (!pmd_trans_huge(*pmdp) &&
-> +					  !pmd_devmap(*pmdp)));
->  	pmd = pmdp_huge_get_and_clear(vma->vm_mm, address, pmdp);
->  	flush_pmd_tlb_range(vma, address, address + HPAGE_PMD_SIZE);
->  	return pmd;
+>Definitely not.
+>
+>
+hmmmm
+>--
+>Bert Vermeulen
+>bert@biot.com
 
-True, and the resulting code is still readable enough.
+--137A10jDZDoLDy/Q
+Content-Type: application/pgp-signature; name="signature.asc"
 
-But a problem with such a complex expression is that the developer will
-have trouble figuring out why the BUG actually triggered.
+-----BEGIN PGP SIGNATURE-----
 
-If we had a VM_BUG_ON_PMD() then we could print the pmd's value and
-permit diagnosis from that.  But we don't have such a thing.
+iQEzBAABCAAdFiEEnwF+nWawchZUPOuwsjqdtxFLKRUFAmAYkPoACgkQsjqdtxFL
+KRVMXAf/TUa4fLzf3ojc3CZMQSKAHep61hWWpg5IJVgmPyxGifAkPR1VesXZQ8Fe
+eTRLTNT0FPCJcDa41ylAj08Z6T7HPe1upO5CqGqzm+x0cxf7FGwq+FsYwytSkpE/
+fN4VETOc2wDKtNDTirDjGQmb5gLEyHHkgjCY8N5XtFUptYfz2dZ3kg41YYnei12L
+1jvvXrp3Vz/Sktg6UjCi3fFuNovqpKPCdBPaXa8WL1JYsoE335fc9wG5J+P18lnr
+aPcn7lNOymU5/SIhqHgUnrbeBbvMGI8bWmaQ9g8rOkXBWaKUhd4pRol6qHpyF/Gv
+bf7RPbQPJPbm5iQSsKwfv5eXPysEZQ==
+=vT0I
+-----END PGP SIGNATURE-----
 
-So I suggest that it would be better to have
-
-	VM_BUG_ON((pmd_present(*pmdp) && !pmd_trans_huge(*pmdp) &&
-			   !pmd_devmap(*pmdp)));
-	VM_BUG_ON(!pmd_present(*pmdp));
-
-This way, the BUG()'s file-n-line output will tell us more about why the
-kernel went splat.
-
-
-I suppose maybe this could be optimized the same way, as
-
-	VM_BUG_ON(!pmd_present(*pmdp));
-	/* Below assumes pmd_present() is true */
-	VM_BUG_ON(!pmd_trans_huge(*pmdp) && !pmd_devmap(*pmdp));
-
-Which works because VM_BUG_ON is, depending up Kconfig, either a no-op
-or a noreturn-if-it-triggered.  I'm not sure if I like this trick much though.
-
+--137A10jDZDoLDy/Q--
