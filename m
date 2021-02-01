@@ -2,155 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C24DD30A7BA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:36:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AA1530A7C1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:39:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231259AbhBAMgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 07:36:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231192AbhBAMgs (ORCPT
+        id S231355AbhBAMim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 07:38:42 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:8680 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229633AbhBAMik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 07:36:48 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A712C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 04:36:08 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id g15so10846050pjd.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 04:36:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aubOLGUr38JbgOFBEsGBKw5otENSJyK21msYOAdprUo=;
-        b=mLci0Qi20948hhLLaInBmW62ubOIpF9fL7qKXMFfTyeFnpOlsbYsl11mhUdnLt5H41
-         opI/BhUu0NmskxVbtZN6B+URC4kcCa27Zj1dih5tG3nvufAV8byOvzr9bMZaSVO/8ezv
-         MHedQ83Pg3QXFGmk0YfZKs4t1XX8L4kK0CmVq5XOyoKDWd/7OdEpMpxAyaxBIL1bvVUC
-         drvC1O0q12vZSX4teqi6SPLFXV3SyF2Vu2GItdY802N3m/3ngEq9OtiF+/Mv72wt8Ykl
-         nVBAzG++C4cfwEiz26b51bpX0i7CuRDn9AfejGnFF4xo/u42GO/fE2vGNIIopSUo5l/p
-         rkrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aubOLGUr38JbgOFBEsGBKw5otENSJyK21msYOAdprUo=;
-        b=Eh9ZT/3Gma3rl+PawDFm+qztrvuddjZJooOe/XfRltNQ9ocxGjCx4ISd+C7nTm6qOr
-         84+N1Les6KJ+E379xpJKmqfHp0InpFJHT8hwjOm6Udfjt0NlewjqsfsuUsf8j/5jwUcV
-         wH99OBhq6vzwIQHUMGWMC7vow3vFRwITK2+yGtQ+wQ3qTF8AYNimQPdlyAl6u+CWZvIM
-         ZSG//kHWEzdwMnb+5FojniCkX10pohj3j0KgnUf0Q4vP0pTPiUX358wwjlPM4CrEvWAN
-         sWirU2qhUh+taWFgjrhlGwOq7Rdqat1LYMGGbY6/gt/1GYx4VQALJywX0t1tblG6ac4F
-         O9kA==
-X-Gm-Message-State: AOAM532hrXJBywLuSX1j3OBP3oqi2YqyutPUIYU9/mWhwD7UdqlHbxpX
-        kWo5XfOWMzkNiwGMIS2K2sVo
-X-Google-Smtp-Source: ABdhPJwEy3jT5OzO6ZIaXOaPhYxmEqRfzl1fLck4+1pJfPg329b18wKkZGACNJ7rHEa6I8+oFVtTvg==
-X-Received: by 2002:a17:902:a710:b029:dc:3817:e7c2 with SMTP id w16-20020a170902a710b02900dc3817e7c2mr17320672plq.0.1612182967365;
-        Mon, 01 Feb 2021 04:36:07 -0800 (PST)
-Received: from thinkpad ([103.77.37.179])
-        by smtp.gmail.com with ESMTPSA id h1sm18590849pgj.59.2021.02.01.04.36.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 04:36:06 -0800 (PST)
-Date:   Mon, 1 Feb 2021 18:06:02 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     linux@armlinux.org.uk, will@kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2] ARM: kernel: Fix interrupted SMC calls
-Message-ID: <20210201123602.GD108653@thinkpad>
-References: <20210118181040.51238-1-manivannan.sadhasivam@linaro.org>
+        Mon, 1 Feb 2021 07:38:40 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 111CWPFv192703;
+        Mon, 1 Feb 2021 07:37:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=KJZk3N4cqWLCM+6mNIeSVbmwjEXs9eS/abWq9A7xuoU=;
+ b=VAaVG2XKteNtKYWH3xM8a8lQy2qHZSioUUI1tiRMrBAyEQ6aLpu2iR4kYtZI9XdQHPFz
+ b3RtkyQ51LPIRCXx/SmensRKtgeI1I8O/CqRWwo27hgqz8lT6emXBFMwtrhYYuxkHaFo
+ 5hfczBKp9pqKUt1Rlodmikohcn8SAUSfCmbatx1tmx9ens1ZdzQwBQbujVWL6w3FQy1s
+ AKwszebi5MbO69cmNYVrcsLh4ih5GfLL0jBpK3BFUbgp6zWQVRHT5lg2UbXLt/oN20EY
+ BAqqREASxve/fePegGYKSAYpM/0bYR8SklcGv6g3ocm34Gxb1FJ+IYIeduIsZ8jd5fgj kg== 
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36egn2thtw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 07:37:39 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 111CXGpr018408;
+        Mon, 1 Feb 2021 12:37:36 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03fra.de.ibm.com with ESMTP id 36cy388xu5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 12:37:36 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 111CbY1G38863138
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 1 Feb 2021 12:37:34 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 691F1A4060;
+        Mon,  1 Feb 2021 12:37:34 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 24FDDA4065;
+        Mon,  1 Feb 2021 12:37:32 +0000 (GMT)
+Received: from linux.ibm.com (unknown [9.145.52.63])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon,  1 Feb 2021 12:37:31 +0000 (GMT)
+Date:   Mon, 1 Feb 2021 14:37:28 +0200
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     syzbot <syzbot+2ae0ca9d7737ad1a62b7@syzkaller.appspotmail.com>
+Cc:     akpm@linux-foundation.org, davem@davemloft.net, hagen@jauu.net,
+        johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, sfr@canb.auug.org.au,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: possible deadlock in cfg80211_netdev_notifier_call
+Message-ID: <20210201123728.GF299309@linux.ibm.com>
+References: <000000000000c3a1b705ba42d1ca@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210118181040.51238-1-manivannan.sadhasivam@linaro.org>
+In-Reply-To: <000000000000c3a1b705ba42d1ca@google.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-01_05:2021-01-29,2021-02-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ priorityscore=1501 mlxscore=0 adultscore=0 malwarescore=0 suspectscore=0
+ phishscore=0 clxscore=1011 lowpriorityscore=0 mlxlogscore=999 spamscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102010063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Mon, Jan 18, 2021 at 11:40:40PM +0530, Manivannan Sadhasivam wrote:
-> On Qualcomm ARM32 platforms, the SMC call can return before it has
-> completed. If this occurs, the call can be restarted, but it requires
-> using the returned session ID value from the interrupted SMC call.
+On Mon, Feb 01, 2021 at 01:17:13AM -0800, syzbot wrote:
+> Hello,
 > 
-> The ARM32 SMCC code already has the provision to add platform specific
-> quirks for things like this. So let's make use of it and add the
-> Qualcomm specific quirk (ARM_SMCCC_QUIRK_QCOM_A6) used by the QCOM_SCM
-> driver.
+> syzbot found the following issue on:
 > 
-> This change is similar to the below one added for ARM64 a while ago:
-> commit 82bcd087029f ("firmware: qcom: scm: Fix interrupted SCM calls")
+> HEAD commit:    b01f250d Add linux-next specific files for 20210129
+> git tree:       linux-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=14daa408d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=725bc96dc234fda7
+> dashboard link: https://syzkaller.appspot.com/bug?extid=2ae0ca9d7737ad1a62b7
+> compiler:       gcc (GCC) 10.1.0-syz 20200507
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1757f2a0d00000
 > 
-> Without this change, the Qualcomm ARM32 platforms like SDX55 will return
-> -EINVAL for SMC calls used for modem firmware loading and validation.
+> The issue was bisected to:
 > 
-> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> commit cc9327f3b085ba5be5639a5ec3ce5b08a0f14a7c
+> Author: Mike Rapoport <rppt@linux.ibm.com>
+> Date:   Thu Jan 28 07:42:40 2021 +0000
+> 
+>     mm: introduce memfd_secret system call to create "secret" memory areas
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1505d28cd00000
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=1705d28cd00000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=1305d28cd00000
 
-A gentle ping on this patch!
-
-Thanks,
-Mani
-
+Sounds really weird to me. At this point the memfd_secret syscall is not
+even wired to arch syscall handlers. I cannot see how it can be a reason of
+deadlock in wireless...
+ 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+2ae0ca9d7737ad1a62b7@syzkaller.appspotmail.com
+> Fixes: cc9327f3b085 ("mm: introduce memfd_secret system call to create "secret" memory areas")
+> 
+> ============================================
+> WARNING: possible recursive locking detected
+> 5.11.0-rc5-next-20210129-syzkaller #0 Not tainted
+> --------------------------------------------
+> syz-executor.1/27924 is trying to acquire lock:
+> ffff88801c7305e8 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: wiphy_lock include/net/cfg80211.h:5267 [inline]
+> ffff88801c7305e8 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: cfg80211_netdev_notifier_call+0x68c/0x1180 net/wireless/core.c:1407
+> 
+> but task is already holding lock:
+> ffff88801c7305e8 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: wiphy_lock include/net/cfg80211.h:5267 [inline]
+> ffff88801c7305e8 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: nl80211_pre_doit+0x347/0x5a0 net/wireless/nl80211.c:14837
+> 
+> other info that might help us debug this:
+>  Possible unsafe locking scenario:
+> 
+>        CPU0
+>        ----
+>   lock(&rdev->wiphy.mtx);
+>   lock(&rdev->wiphy.mtx);
+> 
+>  *** DEADLOCK ***
+> 
+>  May be due to missing lock nesting notation
+> 
+> 3 locks held by syz-executor.1/27924:
+>  #0: ffffffff8cd04eb0 (cb_lock){++++}-{3:3}, at: genl_rcv+0x15/0x40 net/netlink/genetlink.c:810
+>  #1: ffffffff8cc75248 (rtnl_mutex){+.+.}-{3:3}, at: nl80211_pre_doit+0x22/0x5a0 net/wireless/nl80211.c:14793
+>  #2: ffff88801c7305e8 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: wiphy_lock include/net/cfg80211.h:5267 [inline]
+>  #2: ffff88801c7305e8 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: nl80211_pre_doit+0x347/0x5a0 net/wireless/nl80211.c:14837
+> 
+> stack backtrace:
+> CPU: 1 PID: 27924 Comm: syz-executor.1 Not tainted 5.11.0-rc5-next-20210129-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x107/0x163 lib/dump_stack.c:120
+>  print_deadlock_bug kernel/locking/lockdep.c:2829 [inline]
+>  check_deadlock kernel/locking/lockdep.c:2872 [inline]
+>  validate_chain kernel/locking/lockdep.c:3661 [inline]
+>  __lock_acquire.cold+0x14c/0x3b4 kernel/locking/lockdep.c:4899
+>  lock_acquire kernel/locking/lockdep.c:5509 [inline]
+>  lock_acquire+0x1a8/0x720 kernel/locking/lockdep.c:5474
+>  __mutex_lock_common kernel/locking/mutex.c:956 [inline]
+>  __mutex_lock+0x134/0x1110 kernel/locking/mutex.c:1103
+>  wiphy_lock include/net/cfg80211.h:5267 [inline]
+>  cfg80211_netdev_notifier_call+0x68c/0x1180 net/wireless/core.c:1407
+>  notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
+>  call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2040
+>  call_netdevice_notifiers_extack net/core/dev.c:2052 [inline]
+>  call_netdevice_notifiers net/core/dev.c:2066 [inline]
+>  unregister_netdevice_many+0x943/0x1750 net/core/dev.c:10704
+>  unregister_netdevice_queue+0x2dd/0x3c0 net/core/dev.c:10638
+>  register_netdevice+0x109f/0x14a0 net/core/dev.c:10013
+>  cfg80211_register_netdevice+0x11d/0x2a0 net/wireless/core.c:1349
+>  ieee80211_if_add+0xfb8/0x18f0 net/mac80211/iface.c:1990
+>  ieee80211_add_iface+0x99/0x160 net/mac80211/cfg.c:125
+>  rdev_add_virtual_intf net/wireless/rdev-ops.h:45 [inline]
+>  nl80211_new_interface+0x541/0x1100 net/wireless/nl80211.c:3977
+>  genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
+>  genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
+>  genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
+>  netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
+>  genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
+>  netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+>  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+>  netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+>  sock_sendmsg_nosec net/socket.c:654 [inline]
+>  sock_sendmsg+0xcf/0x120 net/socket.c:674
+>  ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+>  ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+>  __sys_sendmsg+0xe5/0x1b0 net/socket.c:2437
+>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> RIP: 0033:0x45e219
+> Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+> RSP: 002b:00007f5dce348c68 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+> RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045e219
+> RDX: 0000000000000000 RSI: 0000000020000400 RDI: 0000000000000004
+> RBP: 000000000119c110 R08: 0000000000000000 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119c0dc
+> R13: 00007ffdf00f97ff R14: 00007f5dce3499c0 R15: 000000000119c0dc
+> 
+> 
 > ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
 > 
-> Changes in v2:
-> 
-> * Preserved callee saved registers and used the registers r4, r5 which
->   are getting pushed onto the stack.
-> 
->  arch/arm/kernel/asm-offsets.c |  3 +++
->  arch/arm/kernel/smccc-call.S  | 11 ++++++++++-
->  2 files changed, 13 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/kernel/asm-offsets.c b/arch/arm/kernel/asm-offsets.c
-> index a1570c8bab25..2e2fa6fc2d4f 100644
-> --- a/arch/arm/kernel/asm-offsets.c
-> +++ b/arch/arm/kernel/asm-offsets.c
-> @@ -23,6 +23,7 @@
->  #include <asm/vdso_datapage.h>
->  #include <asm/hardware/cache-l2x0.h>
->  #include <linux/kbuild.h>
-> +#include <linux/arm-smccc.h>
->  #include "signal.h"
->  
->  /*
-> @@ -147,6 +148,8 @@ int main(void)
->    DEFINE(SLEEP_SAVE_SP_PHYS,	offsetof(struct sleep_save_sp, save_ptr_stash_phys));
->    DEFINE(SLEEP_SAVE_SP_VIRT,	offsetof(struct sleep_save_sp, save_ptr_stash));
->  #endif
-> +  DEFINE(ARM_SMCCC_QUIRK_ID_OFFS,	offsetof(struct arm_smccc_quirk, id));
-> +  DEFINE(ARM_SMCCC_QUIRK_STATE_OFFS,	offsetof(struct arm_smccc_quirk, state));
->    BLANK();
->    DEFINE(DMA_BIDIRECTIONAL,	DMA_BIDIRECTIONAL);
->    DEFINE(DMA_TO_DEVICE,		DMA_TO_DEVICE);
-> diff --git a/arch/arm/kernel/smccc-call.S b/arch/arm/kernel/smccc-call.S
-> index 00664c78faca..931df62a7831 100644
-> --- a/arch/arm/kernel/smccc-call.S
-> +++ b/arch/arm/kernel/smccc-call.S
-> @@ -3,7 +3,9 @@
->   * Copyright (c) 2015, Linaro Limited
->   */
->  #include <linux/linkage.h>
-> +#include <linux/arm-smccc.h>
->  
-> +#include <asm/asm-offsets.h>
->  #include <asm/opcodes-sec.h>
->  #include <asm/opcodes-virt.h>
->  #include <asm/unwind.h>
-> @@ -27,7 +29,14 @@ UNWIND(	.fnstart)
->  UNWIND(	.save	{r4-r7})
->  	ldm	r12, {r4-r7}
->  	\instr
-> -	pop	{r4-r7}
-> +	ldr	r4, [sp, #36]
-> +	cmp	r4, #0
-> +	beq	1f			// No quirk structure
-> +	ldr     r5, [r4, #ARM_SMCCC_QUIRK_ID_OFFS]
-> +	cmp     r5, #ARM_SMCCC_QUIRK_QCOM_A6
-> +	bne	1f			// No quirk present
-> +	str	r6, [r4, #ARM_SMCCC_QUIRK_STATE_OFFS]
-> +1:	pop	{r4-r7}
->  	ldr	r12, [sp, #(4 * 4)]
->  	stm	r12, {r0-r3}
->  	bx	lr
-> -- 
-> 2.25.1
-> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> syzbot can test patches for this issue, for details see:
+> https://goo.gl/tpsmEJ#testing-patches
+
+-- 
+Sincerely yours,
+Mike.
