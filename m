@@ -2,116 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA8030A36A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:38:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F69330A36F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:38:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232531AbhBAIhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 03:37:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37186 "EHLO
+        id S232569AbhBAIid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 03:38:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbhBAIhg (ORCPT
+        with ESMTP id S232560AbhBAIiY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 03:37:36 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2707AC061573;
-        Mon,  1 Feb 2021 00:36:56 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id j2so9937944pgl.0;
-        Mon, 01 Feb 2021 00:36:56 -0800 (PST)
+        Mon, 1 Feb 2021 03:38:24 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A5FAC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 00:37:43 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id kg20so23032164ejc.4
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 00:37:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=eVINvg/Fw9V8hooodk2Ygvx8KN7ol+WUF2ilOSjWNrQ=;
-        b=Nj1jwMQ3BLyOEU9G7jUae9Ir45WM27dbdJkb5RAkU+3teGa59eOJkXNV6ESVQJ+X34
-         3qkKryIAX8hQRWgKeattWPAmBEZCqUtvTwv0yLyX/NO1ubjnqNy0/M4ewa+QCrWUKWDl
-         5z8UEjYEv3PuWLfyKldEPTIYbquhRCLFOksH9ugAJZAQxWJgOAjg53hoqXg8XMPx6lBU
-         9nZhy6Yy75LHuXII1dIYDRzPfGQpMGXagoOZ04pVXVNWEiDby3c3dD6vfwRaEMH9FEAI
-         XLtZRxO4PlQ+WUYzHqlGeuuHPUOVk3ncXq3GX/8zLRNwMY4iZh0MzDYpNgUHKvrs7I8D
-         A+Yw==
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=xpUA4tQkXNeG9xtZvt8WotR4TDH6DJJdjLxiEPVNVP4=;
+        b=E25H5NyvBv+rR9x8HIOsCMCpG3jpr/TmGdn6lrOg1acyCXThOTfgeHQMo9txJ1oLcu
+         Cc9AcfS95/01gFk7GbSx0Yh93k7nzQcZ8+tAyPR380PEOS3lmf6WQASQKOFh7h9dvfg9
+         up1JkSwDtnD9l3ncrjfkkxfEuHvoUgk5RDhFItRW+UrbyJ23JeiVSQ1ghWSYUtZo4vtA
+         3dmx3IJrn7HkgOnriuKu8mPoE4GrlURv1jHaRUK9ct265ATmz6sUzX99ts689E7BS9NU
+         fLUfj0BSXiGAgggYLWm8h3DazLmip6bVzMOUv6/uJAhtqGFqJUMZZ7g2aDxgamDKSNBE
+         1+Mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=eVINvg/Fw9V8hooodk2Ygvx8KN7ol+WUF2ilOSjWNrQ=;
-        b=UiG0Tslyv6NmqV6PogbhPX0vn8BVWPF5g4PZp3jeGkQ/COilCfeCtVhhORxg/hzyUd
-         +xw6JpqDMhJRJRpJiDo57VUsIywH2SzjnjBWs5Wf9UZ+Ok7Wy37uuMzrqfgw8BL4qm9y
-         7cANAlGYC8t8vNeob5weJgGhJj19+kZfftpQsG8V3Hek0IBNpFU1eDuY51MRlUTpe60o
-         QeDJ71ntdni2BYQSFALHNE4j+XbigXW4RiwwfbiuavekSt/4SHGZO9O2eXUxmCRejfWN
-         AvowDiq3aqy5hu4N+Ilz/7GXB7EpXp0mO7Yi1xff+qsLIHLoWcb1lYBa2dGF2gf0fAgF
-         uUWQ==
-X-Gm-Message-State: AOAM531lNspjhlurC8rRgvlps4HJ4dt5mplNx25UEsktmaFwCQHSY4BG
-        NuE0nlIi1N2rS0fJa6hYhjd7SNTwAsPpng==
-X-Google-Smtp-Source: ABdhPJzJjlaC3zpkzKamcZUZW5v4s6e6oNTOtMTymP4gZzLu8JTAVNzp83KtRgZ3oKOKid3mcFZQrw==
-X-Received: by 2002:a63:5526:: with SMTP id j38mr16180273pgb.177.1612168615250;
-        Mon, 01 Feb 2021 00:36:55 -0800 (PST)
-Received: from localhost.localdomain ([103.7.29.6])
-        by smtp.googlemail.com with ESMTPSA id t25sm17234032pgv.30.2021.02.01.00.36.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Feb 2021 00:36:54 -0800 (PST)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: [PATCH v3] KVM: kvmclock: Fix vCPUs > 64 can't be online/hotpluged
-Date:   Mon,  1 Feb 2021 16:36:27 +0800
-Message-Id: <1612168596-3782-1-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=xpUA4tQkXNeG9xtZvt8WotR4TDH6DJJdjLxiEPVNVP4=;
+        b=ksj9ALkWw6i5+lPIX3FBVPfQlvudX6Xl1zK5od4ankIXLFAK7vMdvT2nL1VaIXpxcY
+         vZQa5bqJ1OLY6/xXD+MPtHmesa+tx1h1/lhjKtPkOS+5Ty19F1aSExMXjy33yPXpH+Wq
+         rJ8GYhT9dzz6OMJTnTUF3fducrBkOAP0le7CoQU1Z7QQHtXugP50RPOmF2zerAyOemjz
+         pY92zILqprer2tz8W/pObPs1gxhu2W9t7fOGiSubrANwKOrIZRdM0zpLN0GdBTEzWk26
+         oSqx003l0RvOYJujjnYiEQAUJWp3YAPxSunbyQbdKuUyA1eaGeb/+rdHvspuU5BiCXqv
+         nEmw==
+X-Gm-Message-State: AOAM532+zpRLW2DwDaSRnxH7YKoriBnAo8Mucy31bfcLkTOahyS6eYvy
+        ZZVbIwwdkRC7oyWcAb6oQBZvgTBPkK+plCyk3MEVzw==
+X-Google-Smtp-Source: ABdhPJwY2quGjJdmByP+gMuoEbYEH34iJnCL9i9KVMyKc4bRYauNJYZpzjBnXt2wBEzF3EzPvzdi26YZ8JANKfkXC1M=
+X-Received: by 2002:a17:906:eddd:: with SMTP id sb29mr7734704ejb.383.1612168661707;
+ Mon, 01 Feb 2021 00:37:41 -0800 (PST)
+MIME-Version: 1.0
+References: <20210129134624.9247-1-brgl@bgdev.pl> <20210130212009.2uugdj6vmisegau2@pengutronix.de>
+In-Reply-To: <20210130212009.2uugdj6vmisegau2@pengutronix.de>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 1 Feb 2021 09:37:30 +0100
+Message-ID: <CAMRc=MdwoJCw1-BdNRnfRFaXYfZD0+vn_8yq0J+rshHqZMdDXQ@mail.gmail.com>
+Subject: Re: [PATCH 0/8] gpio: implement the configfs testing module
+To:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Joel Becker <jlbec@evilplan.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+On Sat, Jan 30, 2021 at 10:20 PM Uwe Kleine-K=C3=B6nig
+<u.kleine-koenig@pengutronix.de> wrote:
+>
+> Hello,
+>
+> On Fri, Jan 29, 2021 at 02:46:16PM +0100, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >
+> > This series adds a new GPIO testing module based on configfs committabl=
+e items
+> > and sysfs. The goal is to provide a testing driver that will be configu=
+rable
+> > at runtime (won't need module reload) and easily extensible. The contro=
+l over
+> > the attributes is also much more fine-grained than in gpio-mockup.
+> >
+> > I am aware that Uwe submitted a virtual driver called gpio-simulator so=
+me time
+> > ago and I was against merging it as it wasn't much different from gpio-=
+mockup.
+> > I would ideally want to have a single testing driver to maintain so I a=
+m
+> > proposing this module as a replacement for gpio-mockup but since selfte=
+sts
+> > and libgpiod depend on it and it also has users in the community, we ca=
+n't
+> > outright remove it until everyone switched to the new interface. As for=
+ Uwe's
+> > idea for linking two simulated chips so that one controls the other - w=
+hile
+> > I prefer to have an independent code path for controlling the lines (he=
+nce
+> > the sysfs attributes), I'm open to implementing it in this new driver. =
+It
+> > should be much more feature friendly thanks to configfs than gpio-mocku=
+p.
+>
+> Funny you still think about my simulator driver. I recently thought
 
-The per-cpu vsyscall pvclock data pointer assigns either an element of the 
-static array hv_clock_boot (#vCPU <= 64) or dynamically allocated memory 
-hvclock_mem (vCPU > 64), the dynamically memory will not be allocated if 
-kvmclock vsyscall is disabled, this can result in cpu hotpluged fails in 
-kvmclock_setup_percpu() which returns -ENOMEM. It's broken for no-vsyscall
-and sometimes you end up with vsyscall disabled if the host does something 
-strange. This patch fixes it by allocating this dynamically memory 
-unconditionally even if vsyscall is disabled.
+It's because I always feel bad when I refuse to merge someone's hard work.
 
-Fixes: 6a1cac56f4 ("x86/kvm: Use __bss_decrypted attribute in shared variables")
-Reported-by: Zelin Deng <zelin.deng@linux.alibaba.com>
-Tested-by: Haiwei Li <lihaiwei@tencent.com>
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: stable@vger.kernel.org#v4.19-rc5+
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
----
-v2 -> v3:
- * allocate dynamically memory unconditionally
-v1 -> v2:
- * add code comments
+> about reanimating it for my private use. The idea was to implement a
+> rotary-encoder driver (that contrast to
+> drivers/input/misc/rotary_encoder.c really implements an encoder and not
+> a decoder). With the two linked chips I can plug
+> drivers/input/misc/rotary_encoder.c on one side and my encoder on the
+> other to test both drivers completely in software.
+>
+> I didn't look into your driver yet, but getting such a driver into
+> mainline would be very welcome!
+>
 
- arch/x86/kernel/kvmclock.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+My idea for linking chips (although that's not implemented yet) is an
+attribute in each configfs group called 'link' or something like that,
+that would take as argument the name of the chip to link to making the
+'linker' the input and the 'linkee' the output.
 
-diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
-index aa59374..a72b16e 100644
---- a/arch/x86/kernel/kvmclock.c
-+++ b/arch/x86/kernel/kvmclock.c
-@@ -268,6 +268,8 @@ static void __init kvmclock_init_mem(void)
- 
- static int __init kvm_setup_vsyscall_timeinfo(void)
- {
-+	kvmclock_init_mem();
-+
- #ifdef CONFIG_X86_64
- 	u8 flags;
- 
-@@ -281,8 +283,6 @@ static int __init kvm_setup_vsyscall_timeinfo(void)
- 	kvm_clock.vdso_clock_mode = VDSO_CLOCKMODE_PVCLOCK;
- #endif
- 
--	kvmclock_init_mem();
--
- 	return 0;
- }
- early_initcall(kvm_setup_vsyscall_timeinfo);
--- 
-2.7.4
+It would be tempting to use symbolic links too but I'm afraid this
+would need further extension of configfs.
 
+> I intend to look into your driver next week, but please don't hold back
+> on merging for my feedback.
+>
+
+Don't worry, I'm not really aiming at v5.12 with this.
+
+> Best regards
+> Uwe
+>
+
+Bart
