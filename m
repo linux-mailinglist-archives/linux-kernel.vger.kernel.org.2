@@ -2,147 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F95F30A5AC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:43:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE5230A5AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:44:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233309AbhBAKnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 05:43:05 -0500
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:36782 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233338AbhBAKkm (ORCPT
+        id S233434AbhBAKnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 05:43:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233355AbhBAKk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 05:40:42 -0500
-Received: by mail-oi1-f177.google.com with SMTP id d18so18314237oic.3;
-        Mon, 01 Feb 2021 02:40:26 -0800 (PST)
+        Mon, 1 Feb 2021 05:40:57 -0500
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A005C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 02:40:17 -0800 (PST)
+Received: by mail-ot1-x332.google.com with SMTP id d7so15776609otf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 02:40:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eZ3P7u3TRYoNHUYZqgM31be6IdJ5ULeRL5Xx+spxYug=;
+        b=J+G/5cHAOoeeChiA2gvAbHNdL/cLBHqEBYggQT9DagQENHw2vR2w4LUTIVIvHsJlK3
+         BvSxBLO/KJ9Er43uplO1k6Nn3E7BdwDOUPopWx+aZ2FXgSNK2JI54UIJklO0rX6zBdIw
+         9aE46+23PnFPuBR/2G774C/y/2rLDh99LNWGG61nW8kLmQ/1fKZ7pUel0nZixWV701sR
+         lir1+JvjiGlvFswRQDg9gL3k2utSVl1RbNnAEgpAVy+TGfmBa6+LL3rI3QTkWKj3rHXX
+         wKXMyKhWSF+JDGlBb0PeCkMlr3RwSEiMoODTJAVp6Em7TF2WzW9954ZDEDfbmnbcxnY/
+         Hmkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=PbFNPUDjF8u5uZWpIEHcWpaJI3RXUPiFu34mgVi86XY=;
-        b=kR0WBOo5QS9f9TkTTR+rPrsBc4VdyoFrFpj8812H2ZYgAtEV7GbioPzxjtHy1YaL5u
-         GPUq7oJEjxo/smdF5fRdOUne0xGmOp7hb20x5Ta/ph4KgtrxHnwSfLJb93egLupCQQ4X
-         NaoPTFltaK5iYaKWFiKYBBj3T2h5wdD3w8aajNlyZ+Pc2LEtOkORbJ46pJjgHXFQZQZv
-         DSfZNdHf7SJ+7egfSzcRUhiMPz5bXnYdCYTK1sR2wmTkEVkve5/z13EXNawsrG433Dl3
-         xSqsRCIa4Ybq8yR8cb6dLljn4Il/hbO85DkAH6lnj/5Sn6+IQO4r2BETbbpruQAnIalW
-         ch3A==
-X-Gm-Message-State: AOAM532u7fjKKoQJ8eXCP0Kfh8OW7+qqKu94oD01eXZWdOR9ai0e/w8J
-        bKqaIBbGW9yReew7GTd5VH2XO92mPVIW9EeFkf8=
-X-Google-Smtp-Source: ABdhPJw65qTThGcsX9iC1bv+Rc95DdKf2Iuj2OS3RR8/qhbi7vQxnnIIJMJ47LSut7xngwvxuA293xVZ1BzjGh51Fww=
-X-Received: by 2002:aca:4d8d:: with SMTP id a135mr10190512oib.153.1612176001101;
- Mon, 01 Feb 2021 02:40:01 -0800 (PST)
+        bh=eZ3P7u3TRYoNHUYZqgM31be6IdJ5ULeRL5Xx+spxYug=;
+        b=U8mTenjy7pcwpAwHI8DZ4UBjCjTMubvbu5CmK+KvLkaqUEXtiL0YUfjvsmP0CFcaZI
+         1RluK8UcAJFfPTijh+O6eeWmD3fQVPxZH7vzT0gebXY86VSFd9xeER5UGLgmP82rU4jW
+         YgiSo841LXSkvcXPzGA7LVQyhHcjohPZbzgcnHCaHtrUbNmF9TBslwfODfaufxazCNxU
+         fP3dH3TfQWzzgSoEHn3XnHDv1L1lyzFqT+P9NIfaESA4P67SBFkg7avMCp+GyXGtoiJC
+         lychknyITkEOWxe/i4pjYcuDqJVecXAP+Ph3ZRXlXOaTNotxXLDKaNKCHo0NBwp4na3Y
+         u1Zg==
+X-Gm-Message-State: AOAM530TKINIYb2WHlXM5Ers5mI42wsXUnilTJ1+jt0TUqaQnjSjgED6
+        k/NMbdT7kK77l6JoLlv/X8Hh/ECXgojRAQZOJXucOw==
+X-Google-Smtp-Source: ABdhPJxbLZb3s83wkvuMcsz//ZdUo7T5QE3e00JDOcFsWOEZM13K0O32Rx5cT+vayqYjgDKiCVKQe0Xa2wvImTBggmo=
+X-Received: by 2002:a9d:4687:: with SMTP id z7mr11570191ote.233.1612176016311;
+ Mon, 01 Feb 2021 02:40:16 -0800 (PST)
 MIME-Version: 1.0
-References: <20210130040344.2807439-1-saravanak@google.com> <CAGETcx941J7Zhrf=ZjO6PW0fiax5VXcV3gbsLQfM_wU_U0EnYw@mail.gmail.com>
-In-Reply-To: <CAGETcx941J7Zhrf=ZjO6PW0fiax5VXcV3gbsLQfM_wU_U0EnYw@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 1 Feb 2021 11:39:49 +0100
-Message-ID: <CAMuHMdUGkRmjnkSXQ4VNz5crMJ0S4xUvrV=BenOf96Y_bepPSw@mail.gmail.com>
-Subject: Re: [PATCH v1 0/2] Make fw_devlink=on more forgiving
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+References: <9dc196006921b191d25d10f6e611316db7da2efc.1611946152.git.andreyknvl@google.com>
+In-Reply-To: <9dc196006921b191d25d10f6e611316db7da2efc.1611946152.git.andreyknvl@google.com>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 1 Feb 2021 11:40:05 +0100
+Message-ID: <CANpmjNMWVHttcMsWs0g_US1FsXM_Fwi9A3GzW_gfitnVkR66SA@mail.gmail.com>
+Subject: Re: [PATCH mm] kasan: untag addresses for KFENCE
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
-
-On Sat, Jan 30, 2021 at 5:09 AM Saravana Kannan <saravanak@google.com> wrote:
-> On Fri, Jan 29, 2021 at 8:03 PM Saravana Kannan <saravanak@google.com> wrote:
-> > This patch series solves two general issues with fw_devlink=on
-> >
-> > Patch 1/2 addresses the issue of firmware nodes that look like they'll
-> > have struct devices created for them, but will never actually have
-> > struct devices added for them. For example, DT nodes with a compatible
-> > property that don't have devices added for them.
-> >
-> > Patch 2/2 address (for static kernels) the issue of optional suppliers
-> > that'll never have a driver registered for them. So, if the device could
-> > have probed with fw_devlink=permissive with a static kernel, this patch
-> > should allow those devices to probe with a fw_devlink=on. This doesn't
-> > solve it for the case where modules are enabled because there's no way
-> > to tell if a driver will never be registered or it's just about to be
-> > registered. I have some other ideas for that, but it'll have to come
-> > later thinking about it a bit.
-> >
-> > These two patches might remove the need for several other patches that
-> > went in as fixes for commit e590474768f1 ("driver core: Set
-> > fw_devlink=on by default"), but I think all those fixes are good
-> > changes. So I think we should leave those in.
-> >
-> > Marek, Geert,
-> >
-> > Can you try this series on a static kernel with your OF_POPULATED
-> > changes reverted? I just want to make sure these patches can identify
-> > and fix those cases.
-> >
-> > Tudor,
-> >
-> > You should still make the clock driver fix (because it's a bug), but I
-> > think this series will fix your issue too (even without the clock driver
-> > fix). Can you please give this a shot?
+On Fri, 29 Jan 2021 at 19:50, Andrey Konovalov <andreyknvl@google.com> wrote:
 >
-> Marek, Geert, Tudor,
+> KFENCE annotations operate on untagged addresses.
 >
-> Forgot to say that this will probably fix your issues only in a static
-> kernel. So please try this with a static kernel. If you can also try
-> and confirm that this does not fix the issue for a modular kernel,
-> that'd be good too.
+> Untag addresses in KASAN runtime where they might be tagged.
+>
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 
-Thanks for your series!
+Reviewed-by: Marco Elver <elver@google.com>
 
-For the modular case, this series has no impact, as expected (i.e. fails
-to boot, no I/O devices probed).
-With modules disabled, both r8a7791/koelsch and r8a77951/salvator-xs
-seem to boot fine, except for one issue on koelsch:
+Thank you!
 
-dmesg:
-
-    +i2c-demux-pinctrl i2c-12: failed to setup demux-adapter 0 (-19)
-    +i2c-demux-pinctrl i2c-13: failed to setup demux-adapter 0 (-19)
-    +i2c-demux-pinctrl i2c-14: failed to setup demux-adapter 0 (-19)
-
-    -  #0: rsnd-dai.0-ak4642-hifi
-    +  No soundcards found.
-
-regulator_summary:
-
-    -13-0050-vcc                   0    0mA     0mV     0mV
-    -13-0039-dvdd-3v               1    0mA     0mV     0mV
-    -13-0039-bgvdd                 1    0mA     0mV     0mV
-    -13-0039-pvdd                  1    0mA     0mV     0mV
-    -13-0039-dvdd                  1    0mA     0mV     0mV
-    -13-0039-avdd                  1    0mA     0mV     0mV
-
-pm_genpd_summary:
-
-    -/devices/platform/soc/e6518000.i2c  suspended                  0
-    -/devices/platform/soc/e6530000.i2c  suspended                  0
-    -/devices/platform/soc/e6520000.i2c  suspended                  0
-
-These are all symptoms of the same issue: i2c buses and devices are not
-probed, due to the use of the i2c demuxer.
-I guess the fw_devlink tracker doesn't consider "i2c-parent" links?
-
-Note that I only tested this on R-Car Gen2 and Gen3.
-I did not test this on Renesas SH/R-Mobile or RZ/A SoCs.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> ---
+>
+> This can be squashed into:
+>
+> revert kasan-remove-kfence-leftovers
+> kfence, kasan: make KFENCE compatible with KASA
+>
+> ---
+>  mm/kasan/common.c |  2 +-
+>  mm/kasan/kasan.h  | 12 +++++++++---
+>  2 files changed, 10 insertions(+), 4 deletions(-)
+>
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index a390fae9d64b..fe852f3cfa42 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -416,7 +416,7 @@ static void *____kasan_kmalloc(struct kmem_cache *cache, const void *object,
+>         if (unlikely(object == NULL))
+>                 return NULL;
+>
+> -       if (is_kfence_address(object))
+> +       if (is_kfence_address(kasan_reset_tag(object)))
+>                 return (void *)object;
+>
+>         redzone_start = round_up((unsigned long)(object + size),
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index 11c6e3650468..4fb8106f8e31 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -320,22 +320,28 @@ static inline u8 kasan_random_tag(void) { return 0; }
+>
+>  static inline void kasan_poison(const void *address, size_t size, u8 value)
+>  {
+> +       address = kasan_reset_tag(address);
+> +
+>         /* Skip KFENCE memory if called explicitly outside of sl*b. */
+>         if (is_kfence_address(address))
+>                 return;
+>
+> -       hw_set_mem_tag_range(kasan_reset_tag(address),
+> +       hw_set_mem_tag_range((void *)address,
+>                         round_up(size, KASAN_GRANULE_SIZE), value);
+>  }
+>
+>  static inline void kasan_unpoison(const void *address, size_t size)
+>  {
+> +       u8 tag = get_tag(address);
+> +
+> +       address = kasan_reset_tag(address);
+> +
+>         /* Skip KFENCE memory if called explicitly outside of sl*b. */
+>         if (is_kfence_address(address))
+>                 return;
+>
+> -       hw_set_mem_tag_range(kasan_reset_tag(address),
+> -                       round_up(size, KASAN_GRANULE_SIZE), get_tag(address));
+> +       hw_set_mem_tag_range((void *)address,
+> +                       round_up(size, KASAN_GRANULE_SIZE), tag);
+>  }
+>
+>  static inline bool kasan_byte_accessible(const void *addr)
+> --
+> 2.30.0.365.g02bc693789-goog
+>
