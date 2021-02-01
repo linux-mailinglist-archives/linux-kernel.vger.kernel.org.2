@@ -2,70 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39D2430AD88
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E9CD30AD8B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:15:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231761AbhBAROO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:14:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41234 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229892AbhBAROL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:14:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F34A661481;
-        Mon,  1 Feb 2021 17:13:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612199611;
-        bh=dUiip7qLKy2LGuyjmp5XpIMJXqdoPfl8ZbQdZ7XrFZY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aJBFEJ2WwDMkPDBqnEdXz/wN4fvaLlGg5GudCf3AXYxGhGdBd2Dbm2s36egxJkMzm
-         Cr6QvGhJGcR3AKSms90UJk8ULmqozKHKZBUULEe26tiwxi6wN8oOKcWXoGYcuo5shA
-         tMS+vWc9FQo7H64Hzg4/CD+dsl2rZvUFmfIYoMAkiBG05MLS2CWKghNXS+T9Nv5YXd
-         cPrjyUKZzaIOdSre1kl/K5BEwjcbBx+W8tFMozInlpaQ1dgGntyeG/RmmkP9TzCeKe
-         MT7WdnnW/qRIxS8RGnV2OVpij8Ew481iQ1oL0zudn+3QQKJpQD9rkyF4h+LNeWSHXj
-         6Nt0qG3q7eK8g==
-From:   Will Deacon <will@kernel.org>
-To:     vladimir.murzin@arm.com, matthias.bgg@gmail.com, maz@kernel.org,
-        james.morse@arm.com, corbet@lwn.net, selindag@gmail.com,
-        sashal@kernel.org, mark.rutland@arm.com, catalin.marinas@arm.com,
-        linux-arm-kernel@lists.infradead.org, ebiederm@xmission.com,
-        linux-kernel@vger.kernel.org,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        tyhicks@linux.microsoft.com, rfontana@redhat.com,
-        jmorris@namei.org, steve.capper@arm.com
-Cc:     kernel-team@android.com, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH 0/1] arm64/hibernate: sparse warnings fix
-Date:   Mon,  1 Feb 2021 17:13:24 +0000
-Message-Id: <161219505105.3603742.9530959766797999831.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210201150306.54099-1-pasha.tatashin@soleen.com>
-References: <20210201150306.54099-1-pasha.tatashin@soleen.com>
+        id S231721AbhBAROu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:14:50 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:57567 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229612AbhBAROp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 12:14:45 -0500
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 111HDqQK007142
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 1 Feb 2021 12:13:52 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 2C3B615C39D9; Mon,  1 Feb 2021 12:13:52 -0500 (EST)
+Date:   Mon, 1 Feb 2021 12:13:52 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Vinicius Tinti <viniciustinti@gmail.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v2] ext4: Enable code path when DX_DEBUG is set
+Message-ID: <YBg20AuSC3/9w2zz@mit.edu>
+References: <AAB32610-D238-4137-96DE-33655AAAB545@dilger.ca>
+ <20210201003125.90257-1-viniciustinti@gmail.com>
+ <20210201124924.GA3284018@infradead.org>
+ <CALD9WKxc0kMPCHSoikko+qYk2+ZLUy73+ryKGW9qMSpyzAobLA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALD9WKxc0kMPCHSoikko+qYk2+ZLUy73+ryKGW9qMSpyzAobLA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Feb 2021 10:03:05 -0500, Pavel Tatashin wrote:
-> This is against for-next/kexec, fix for sparse warning that was reported by
-> kernel test robot [1].
+On Mon, Feb 01, 2021 at 01:15:29PM -0300, Vinicius Tinti wrote:
+> On Mon, Feb 1, 2021 at 9:49 AM Christoph Hellwig <hch@infradead.org> wrote:
+> >
+> > DX_DEBUG is completely dead code, so either kill it off or make it an
+> > actual CONFIG_* symbol through Kconfig if it seems useful.
 > 
-> [1] https://lore.kernel.org/linux-arm-kernel/202101292143.C6TcKvvX-lkp@intel.com
+> About the unreachable code in "if (0)" I think it could be removed.
+> It seems to be doing an extra check.
 > 
-> Pavel Tatashin (1):
->   arm64: hibernate: add __force attribute to gfp_t casting
-> 
-> [...]
+> About the DX_DEBUG I think I can do another patch adding it to Kconfig
+> as you and Nathan suggested.
 
-Applied to arm64 (for-next/kexec), thanks!
+Yes, it's doing another check which is useful in terms of early
+detection of bugs when a developer has the code open for
+modifications.  It slows down performance under normal circumstances,
+and assuming the code is bug-free(tm), it's entirely unnecessary ---
+which is why it's under an "if (0)".
 
-[1/1] arm64: hibernate: add __force attribute to gfp_t casting
-      https://git.kernel.org/arm64/c/d1bbc35fcab2
+However, if there *is* a bug, having an early detection that the
+representation invariant of the data structure has been violated can
+be useful in root causing a bug.  This would probably be clearer if
+the code was pulled out into a separate function with comments
+explaining that this is a rep invariant check.
+
+The main thing about DX_DEBUG right now is that it is **super**
+verbose.  Unwary users who enable it.... will be sorry.  If we want to
+make it to be a first-class feature enabled via CONFIG_EXT4_DEBUG, we
+should convert all of the dx_trace calls to use pr_debug so they are
+enabled only if dynamic debug enables those pr_debug() statements.
+And this should absolutely be a separate patch.
 
 Cheers,
--- 
-Will
 
-https://fixes.arm64.dev
-https://next.arm64.dev
-https://will.arm64.dev
+						- Ted
