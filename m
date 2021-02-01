@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED4230A61D
+	by mail.lfdr.de (Postfix) with ESMTP id E018430A61E
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:05:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233385AbhBALFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 06:05:06 -0500
-Received: from esa3.hc1455-7.c3s2.iphmx.com ([207.54.90.49]:34645 "EHLO
-        esa3.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233290AbhBALFE (ORCPT
+        id S233145AbhBALFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 06:05:24 -0500
+Received: from esa2.hc1455-7.c3s2.iphmx.com ([207.54.90.48]:20770 "EHLO
+        esa2.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232290AbhBALFW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 06:05:04 -0500
-IronPort-SDR: 9zDGp8XaV/QbyV66ZbVIbHZoC0BCBe0tbBA3G+Cc43YX81n/TAlRN9OdBHjE+17Q3AUNxiloCC
- 34+poE3BDo6SfaZDUvDlT8Xvvd59SOx8fhdDJWWfJlW+H0y/Y6WUl4vEbCYG37wsQSbrcqZsE7
- gFOvegGhXfx2bnfzHL1+TVVfBivPONkLCr0MxfErftXaHx7GRWCQgstt3ozVxcq4KaWIHHvHST
- 6UsQMocdH8ECIkT37ovKqgrXM6GB2p6RpMzQX3gnyX+KEWiqnpK8C09DBlCN0dssNeWR2s41rk
- +Pc=
-X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="17587208"
+        Mon, 1 Feb 2021 06:05:22 -0500
+IronPort-SDR: qVsvI+goK/xBvE/9PhWyg34qrINqAg69ohEskvn9ZOzePvYnH6yUQnYgWGWFdiMnxQLyZVBI06
+ L3T2DztbpMjMP9ta71qbX4bKvIdbh/zd+Lo8yKZa6+vDrfeExg/mzthVzOvujtED28A7ppYudq
+ e3BCWcD6ap/blQDilrGbIV8udpYSayrH/xhlUBqYtqsBeGP/TBrUNaZqPZD2p6Dx9Iu5zWwBXJ
+ NJl0uAPi6zCE8rfuovW2v+X5Y7A2+2fewe0qS9OCuER37i8NZpLqH25eGp3LZANHIrWzuaFXKA
+ 9aE=
+X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="17519718"
 X-IronPort-AV: E=Sophos;i="5.79,392,1602514800"; 
-   d="scan'208";a="17587208"
-Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
-  by esa3.hc1455-7.c3s2.iphmx.com with ESMTP; 01 Feb 2021 19:54:57 +0900
-Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com [192.168.83.66])
-        by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id 4DF9321EC02
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 19:54:56 +0900 (JST)
+   d="scan'208";a="17519718"
+Received: from unknown (HELO oym-r2.gw.nic.fujitsu.com) ([210.162.30.90])
+  by esa2.hc1455-7.c3s2.iphmx.com with ESMTP; 01 Feb 2021 19:55:01 +0900
+Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com [192.168.87.59])
+        by oym-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 9D3CFE037D
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 19:54:59 +0900 (JST)
 Received: from pumpkin.openstacklocal (pumpkin.fct.css.fujitsu.com [10.130.70.189])
-        by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id A217B56F82
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 19:54:55 +0900 (JST)
+        by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id D3C4E6E017
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 19:54:58 +0900 (JST)
 Received: by pumpkin.openstacklocal (Postfix, from userid 1012)
-        id 072AA4357; Mon,  1 Feb 2021 19:48:42 +0900 (JST)
+        id 273994357; Mon,  1 Feb 2021 19:48:45 +0900 (JST)
 From:   Shunsuke Nakamura <nakamura.shun@jp.fujitsu.com>
 To:     john.garry@huawei.com, will@kernel.org, mathieu.poirier@linaro.org,
         leo.yan@linaro.org, peterz@infradead.org, mingo@redhat.com,
@@ -38,9 +38,9 @@ To:     john.garry@huawei.com, will@kernel.org, mathieu.poirier@linaro.org,
         namhyung@kernel.org
 Cc:     linux-kernel@vger.kernel.org, nakamura.shun@fujitsu.com,
         Shunsuke Nakamura <nakamura.shun@jp.fujitsu.com>
-Subject: [PATCH v3 1/4] perf vendor events arm64: Add common and uarch event JSON
-Date:   Mon,  1 Feb 2021 19:48:19 +0900
-Message-Id: <20210201104822.3230543-2-nakamura.shun@jp.fujitsu.com>
+Subject: [PATCH v3 2/4] perf vendor events: Add L2I_TLB, SVE, SIMD, and FP events
+Date:   Mon,  1 Feb 2021 19:48:20 +0900
+Message-Id: <20210201104822.3230543-3-nakamura.shun@jp.fujitsu.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210201104822.3230543-1-nakamura.shun@jp.fujitsu.com>
 References: <20210201104822.3230543-1-nakamura.shun@jp.fujitsu.com>
@@ -51,277 +51,306 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a common and microarch JSON, which can be referenced from CPU JSONs.
+Add the following events.
 
-For now, brief and public description are as event brief event
-description from the ARMv8 ARM [0], D7-11.
+Common architectural events:
+  - L2I_TLB_REFILL
+  - L2I_TLB
+  - SIMD_INST_RETIRED
+  - SVE_INST_RETIRED
 
-The list of events is not complete, as not all events will be referenced
-yet.
+Common microarchitectural events:
+  - UOP_SPEC
+  - SVE_MATH_SPEC
+  - FP_SPEC
+  - FP_FMA_SPEC
+  - FP_RECPE_SPEC
+  - FP_CVT_SPEC
+  - ASE_SVE_INT_SPEC
+  - SVE_PRED_SPEC
+  - SVE_MOVPRFX_SPEC
+  - SVE_MOVPRFX_U_SPEC
+  - ASE_SVE_LD_SPEC
+  - ASE_SVE_ST_SPEC
+  - PRF_SPEC
+  - BASE_LD_REG_SPEC
+  - BASE_ST_REG_SPEC
+  - SVE_LDR_REG_SPEC
+  - SVE_STR_REG_SPEC
+  - SVE_LDR_PREG_SPEC
+  - SVE_STR_PREG_SPEC
+  - SVE_PRF_CONTIG_SPEC
+  - ASE_SVE_LD_MULTI_SPEC
+  - ASE_SVE_ST_MULTI_SPEC
+  - SVE_LD_GATHER_SPEC
+  - SVE_ST_SCATTER_SPEC
+  - SVE_PRF_GATHER_SPEC
+  - SVE_LDFF_SPEC
+  - FP_SCALE_OPS_SPEC
+  - FP_FIXED_OPS_SPEC
+  - FP_HP_SCALE_OPS_SPEC
+  - FP_HP_FIXED_OPS_SPEC
+  - FP_SP_SCALE_OPS_SPEC
+  - FP_SP_FIXED_OPS_SPEC
+  - FP_DP_SCALE_OPS_SPEC
+  - FP_DP_FIXED_OPS_SPEC
 
-Reference document is at the following:
-[0] https://documentation-service.arm.com/static/5fa3bd1eb209f547eebd4141?token=
-
-Signed-off-by: John Garry <john.garry@huawei.com>
+Signed-off-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
 ---
- .../arch/arm64/armv8-common-and-microarch.json     | 248 +++++++++++++++++++++
- 1 file changed, 248 insertions(+)
- create mode 100644 tools/perf/pmu-events/arch/arm64/armv8-common-and-microarch.json
+ .../arch/arm64/armv8-common-and-microarch.json     | 228 +++++++++++++++++++++
+ 1 file changed, 228 insertions(+)
 
 diff --git a/tools/perf/pmu-events/arch/arm64/armv8-common-and-microarch.json b/tools/perf/pmu-events/arch/arm64/armv8-common-and-microarch.json
-new file mode 100644
-index 0000000..75376c7
---- /dev/null
+index 75376c7..913fb20 100644
+--- a/tools/perf/pmu-events/arch/arm64/armv8-common-and-microarch.json
 +++ b/tools/perf/pmu-events/arch/arm64/armv8-common-and-microarch.json
-@@ -0,0 +1,248 @@
-+[
-+    {
-+        "PublicDescription": "Instruction architecturally executed, Condition code check pass, software increment",
-+        "EventCode": "0x00",
-+        "EventName": "SW_INCR",
-+        "BriefDescription": "Instruction architecturally executed, Condition code check pass, software increment"
+@@ -210,12 +210,24 @@
+         "BriefDescription": "Attributable Level 2 data TLB refill"
+     },
+     {
++        "PublicDescription": "Attributable Level 2 instruction TLB refill.",
++        "EventCode": "0x2E",
++        "EventName": "L2I_TLB_REFILL",
++        "BriefDescription": "Attributable Level 2 instruction TLB refill."
 +    },
 +    {
-+        "PublicDescription": "Level 1 instruction cache refill",
-+        "EventCode": "0x01",
-+        "EventName": "L1I_CACHE_REFILL",
-+        "BriefDescription": "Level 1 instruction cache refill"
+         "PublicDescription": "Attributable Level 2 data or unified TLB access",
+         "EventCode": "0x2F",
+         "EventName": "L2D_TLB",
+         "BriefDescription": "Attributable Level 2 data or unified TLB access"
+     },
+     {
++        "PublicDescription": "Attributable Level 2 instruction TLB access.",
++        "EventCode": "0x30",
++        "EventName": "L2I_TLB",
++        "BriefDescription": "Attributable Level 2 instruction TLB access."
 +    },
 +    {
-+        "PublicDescription": "Attributable Level 1 instruction TLB refill",
-+        "EventCode": "0x02",
-+        "EventName": "L1I_TLB_REFILL",
-+        "BriefDescription": "Attributable Level 1 instruction TLB refill"
+         "PublicDescription": "Access to another socket in a multi-socket system",
+         "EventCode": "0x31",
+         "EventName": "REMOTE_ACCESS",
+@@ -244,5 +256,221 @@
+         "EventCode": "0x37",
+         "EventName": "LL_CACHE_MISS_RD",
+         "BriefDescription": "Last level cache miss, read"
 +    },
 +    {
-+        "PublicDescription": "Level 1 data cache refill",
-+        "EventCode": "0x03",
-+        "EventName": "L1D_CACHE_REFILL",
-+        "BriefDescription": "Level 1 data cache refill"
++        "PublicDescription": "SIMD Instruction architecturally executed.",
++        "EventCode": "0x8000",
++        "EventName": "SIMD_INST_RETIRED",
++        "BriefDescription": "SIMD Instruction architecturally executed."
 +    },
 +    {
-+        "PublicDescription": "Level 1 data cache access",
-+        "EventCode": "0x04",
-+        "EventName": "L1D_CACHE",
-+        "BriefDescription": "Level 1 data cache access"
++        "PublicDescription": "Instruction architecturally executed, SVE.",
++        "EventCode": "0x8002",
++        "EventName": "SVE_INST_RETIRED",
++        "BriefDescription": "Instruction architecturally executed, SVE."
 +    },
 +    {
-+        "PublicDescription": "Attributable Level 1 data TLB refill",
-+        "EventCode": "0x05",
-+        "EventName": "L1D_TLB_REFILL",
-+        "BriefDescription": "Attributable Level 1 data TLB refill"
++        "PublicDescription": "Microarchitectural operation, Operations speculatively executed.",
++        "EventCode": "0x8008",
++        "EventName": "UOP_SPEC",
++        "BriefDescription": "Microarchitectural operation, Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Instruction architecturally executed",
-+        "EventCode": "0x08",
-+        "EventName": "INST_RETIRED",
-+        "BriefDescription": "Instruction architecturally executed"
++        "PublicDescription": "SVE Math accelerator Operations speculatively executed.",
++        "EventCode": "0x800E",
++        "EventName": "SVE_MATH_SPEC",
++        "BriefDescription": "SVE Math accelerator Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Exception taken",
-+        "EventCode": "0x09",
-+        "EventName": "EXC_TAKEN",
-+        "BriefDescription": "Exception taken"
++        "PublicDescription": "Floating-point Operations speculatively executed.",
++        "EventCode": "0x8010",
++        "EventName": "FP_SPEC",
++        "BriefDescription": "Floating-point Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Instruction architecturally executed, condition check pass, exception return",
-+        "EventCode": "0x0a",
-+        "EventName": "EXC_RETURN",
-+        "BriefDescription": "Instruction architecturally executed, condition check pass, exception return"
++        "PublicDescription": "Floating-point FMA Operations speculatively executed.",
++        "EventCode": "0x8028",
++        "EventName": "FP_FMA_SPEC",
++        "BriefDescription": "Floating-point FMA Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Instruction architecturally executed, condition code check pass, write to CONTEXTIDR",
-+        "EventCode": "0x0b",
-+        "EventName": "CID_WRITE_RETIRED",
-+        "BriefDescription": "Instruction architecturally executed, condition code check pass, write to CONTEXTIDR"
++        "PublicDescription": "Floating-point reciprocal estimate Operations speculatively executed.",
++        "EventCode": "0x8034",
++        "EventName": "FP_RECPE_SPEC",
++        "BriefDescription": "Floating-point reciprocal estimate Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Mispredicted or not predicted branch speculatively executed",
-+        "EventCode": "0x10",
-+        "EventName": "BR_MIS_PRED",
-+        "BriefDescription": "Mispredicted or not predicted branch speculatively executed"
++        "PublicDescription": "floating-point convert Operations speculatively executed.",
++        "EventCode": "0x8038",
++        "EventName": "FP_CVT_SPEC",
++        "BriefDescription": "floating-point convert Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Cycle",
-+        "EventCode": "0x11",
-+        "EventName": "CPU_CYCLES",
-+        "BriefDescription": "Cycle"
++        "PublicDescription": "Advanced SIMD and SVE integer Operations speculatively executed.",
++        "EventCode": "0x8043",
++        "EventName": "ASE_SVE_INT_SPEC",
++        "BriefDescription": "Advanced SIMD and SVE integer Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Predictable branch speculatively executed",
-+        "EventCode": "0x12",
-+        "EventName": "BR_PRED",
-+        "BriefDescription": "Predictable branch speculatively executed"
++        "PublicDescription": "SVE predicated Operations speculatively executed.",
++        "EventCode": "0x8074",
++        "EventName": "SVE_PRED_SPEC",
++        "BriefDescription": "SVE predicated Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Data memory access",
-+        "EventCode": "0x13",
-+        "EventName": "MEM_ACCESS",
-+        "BriefDescription": "Data memory access"
++        "PublicDescription": "SVE MOVPRFX Operations speculatively executed.",
++        "EventCode": "0x807C",
++        "EventName": "SVE_MOVPRFX_SPEC",
++        "BriefDescription": "SVE MOVPRFX Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Attributable Level 1 instruction cache access",
-+        "EventCode": "0x14",
-+        "EventName": "L1I_CACHE",
-+        "BriefDescription": "Attributable Level 1 instruction cache access"
++        "PublicDescription": "SVE MOVPRFX unfused Operations speculatively executed.",
++        "EventCode": "0x807F",
++        "EventName": "SVE_MOVPRFX_U_SPEC",
++        "BriefDescription": "SVE MOVPRFX unfused Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Attributable Level 1 data cache write-back",
-+        "EventCode": "0x15",
-+        "EventName": "L1D_CACHE_WB",
-+        "BriefDescription": "Attributable Level 1 data cache write-back"
++        "PublicDescription": "Advanced SIMD and SVE load Operations speculatively executed.",
++        "EventCode": "0x8085",
++        "EventName": "ASE_SVE_LD_SPEC",
++        "BriefDescription": "Advanced SIMD and SVE load Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Level 2 data cache access",
-+        "EventCode": "0x16",
-+        "EventName": "L2D_CACHE",
-+        "BriefDescription": "Level 2 data cache access"
++        "PublicDescription": "Advanced SIMD and SVE store Operations speculatively executed.",
++        "EventCode": "0x8086",
++        "EventName": "ASE_SVE_ST_SPEC",
++        "BriefDescription": "Advanced SIMD and SVE store Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Level 2 data refill",
-+        "EventCode": "0x17",
-+        "EventName": "L2D_CACHE_REFILL",
-+        "BriefDescription": "Level 2 data refill"
++        "PublicDescription": "Prefetch Operations speculatively executed.",
++        "EventCode": "0x8087",
++        "EventName": "PRF_SPEC",
++        "BriefDescription": "Prefetch Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Attributable Level 2 data cache write-back",
-+        "EventCode": "0x18",
-+        "EventName": "L2D_CACHE_WB",
-+        "BriefDescription": "Attributable Level 2 data cache write-back"
++        "PublicDescription": "General-purpose register load Operations speculatively executed.",
++        "EventCode": "0x8089",
++        "EventName": "BASE_LD_REG_SPEC",
++        "BriefDescription": "General-purpose register load Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Attributable Bus access",
-+        "EventCode": "0x19",
-+        "EventName": "BUS_ACCESS",
-+        "BriefDescription": "Attributable Bus access"
++        "PublicDescription": "General-purpose register store Operations speculatively executed.",
++        "EventCode": "0x808A",
++        "EventName": "BASE_ST_REG_SPEC",
++        "BriefDescription": "General-purpose register store Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Local memory error",
-+        "EventCode": "0x1a",
-+        "EventName": "MEMORY_ERROR",
-+        "BriefDescription": "Local memory error"
++        "PublicDescription": "SVE unpredicated load register Operations speculatively executed.",
++        "EventCode": "0x8091",
++        "EventName": "SVE_LDR_REG_SPEC",
++        "BriefDescription": "SVE unpredicated load register Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Operation speculatively executed",
-+        "EventCode": "0x1b",
-+        "EventName": "INST_SPEC",
-+        "BriefDescription": "Operation speculatively executed"
++        "PublicDescription": "SVE unpredicated store register Operations speculatively executed.",
++        "EventCode": "0x8092",
++        "EventName": "SVE_STR_REG_SPEC",
++        "BriefDescription": "SVE unpredicated store register Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Instruction architecturally executed, Condition code check pass, write to TTBR",
-+        "EventCode": "0x1c",
-+        "EventName": "TTBR_WRITE_RETIRED",
-+        "BriefDescription": "Instruction architecturally executed, Condition code check pass, write to TTBR"
++        "PublicDescription": "SVE load predicate register Operations speculatively executed.",
++        "EventCode": "0x8095",
++        "EventName": "SVE_LDR_PREG_SPEC",
++        "BriefDescription": "SVE load predicate register Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Bus cycle",
-+        "EventCode": "0x1D",
-+        "EventName": "BUS_CYCLES",
-+        "BriefDescription": "Bus cycle"
++        "PublicDescription": "SVE store predicate register Operations speculatively executed.",
++        "EventCode": "0x8096",
++        "EventName": "SVE_STR_PREG_SPEC",
++        "BriefDescription": "SVE store predicate register Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Attributable Level 2 data cache allocation without refill",
-+        "EventCode": "0x20",
-+        "EventName": "L2D_CACHE_ALLOCATE",
-+        "BriefDescription": "Attributable Level 2 data cache allocation without refill"
++        "PublicDescription": "SVE contiguous prefetch element Operations speculatively executed.",
++        "EventCode": "0x809F",
++        "EventName": "SVE_PRF_CONTIG_SPEC",
++        "BriefDescription": "SVE contiguous prefetch element Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Instruction architecturally executed, branch",
-+        "EventCode": "0x21",
-+        "EventName": "BR_RETIRED",
-+        "BriefDescription": "Instruction architecturally executed, branch"
++        "PublicDescription": "Advanced SIMD and SVE contiguous load multiple vector Operations speculatively executed.",
++        "EventCode": "0x80A5",
++        "EventName": "ASE_SVE_LD_MULTI_SPEC",
++        "BriefDescription": "Advanced SIMD and SVE contiguous load multiple vector Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Instruction architecturally executed, mispredicted branch",
-+        "EventCode": "0x22",
-+        "EventName": "BR_MIS_PRED_RETIRED",
-+        "BriefDescription": "Instruction architecturally executed, mispredicted branch"
++        "PublicDescription": "Advanced SIMD and SVE contiguous store multiple vector Operations speculatively executed.",
++        "EventCode": "0x80A6",
++        "EventName": "ASE_SVE_ST_MULTI_SPEC",
++        "BriefDescription": "Advanced SIMD and SVE contiguous store multiple vector Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "No operation issued because of the frontend",
-+        "EventCode": "0x23",
-+        "EventName": "STALL_FRONTEND",
-+        "BriefDescription": "No operation issued because of the frontend"
++        "PublicDescription": "SVE gather-load Operations speculatively executed.",
++        "EventCode": "0x80AD",
++        "EventName": "SVE_LD_GATHER_SPEC",
++        "BriefDescription": "SVE gather-load Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "No operation issued due to the backend",
-+        "EventCode": "0x24",
-+        "EventName": "STALL_BACKEND",
-+        "BriefDescription": "No operation issued due to the backend"
++        "PublicDescription": "SVE scatter-store Operations speculatively executed.",
++        "EventCode": "0x80AE",
++        "EventName": "SVE_ST_SCATTER_SPEC",
++        "BriefDescription": "SVE scatter-store Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Attributable Level 1 data or unified TLB access",
-+        "EventCode": "0x25",
-+        "EventName": "L1D_TLB",
-+        "BriefDescription": "Attributable Level 1 data or unified TLB access"
++        "PublicDescription": "SVE gather-prefetch Operations speculatively executed.",
++        "EventCode": "0x80AF",
++        "EventName": "SVE_PRF_GATHER_SPEC",
++        "BriefDescription": "SVE gather-prefetch Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Attributable Level 1 instruction TLB access",
-+        "EventCode": "0x26",
-+        "EventName": "L1I_TLB",
-+        "BriefDescription": "Attributable Level 1 instruction TLB access"
++        "PublicDescription": "SVE First-fault load Operations speculatively executed.",
++        "EventCode": "0x80BC",
++        "EventName": "SVE_LDFF_SPEC",
++        "BriefDescription": "SVE First-fault load Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Attributable Level 3 data cache allocation without refill",
-+        "EventCode": "0x29",
-+        "EventName": "L3D_CACHE_ALLOCATE",
-+        "BriefDescription": "Attributable Level 3 data cache allocation without refill"
++        "PublicDescription": "Scalable floating-point element Operations speculatively executed.",
++        "EventCode": "0x80C0",
++        "EventName": "FP_SCALE_OPS_SPEC",
++        "BriefDescription": "Scalable floating-point element Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Attributable Level 3 data cache refill",
-+        "EventCode": "0x2A",
-+        "EventName": "L3D_CACHE_REFILL",
-+        "BriefDescription": "Attributable Level 3 data cache refill"
++        "PublicDescription": "Non-scalable floating-point element Operations speculatively executed.",
++        "EventCode": "0x80C1",
++        "EventName": "FP_FIXED_OPS_SPEC",
++        "BriefDescription": "Non-scalable floating-point element Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Attributable Level 3 data cache access",
-+        "EventCode": "0x2B",
-+        "EventName": "L3D_CACHE",
-+        "BriefDescription": "Attributable Level 3 data cache access"
++        "PublicDescription": "Scalable half-precision floating-point element Operations speculatively executed.",
++        "EventCode": "0x80C2",
++        "EventName": "FP_HP_SCALE_OPS_SPEC",
++        "BriefDescription": "Scalable half-precision floating-point element Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Attributable Level 2 data TLB refill",
-+        "EventCode": "0x2D",
-+        "EventName": "L2D_TLB_REFILL",
-+        "BriefDescription": "Attributable Level 2 data TLB refill"
++        "PublicDescription": "Non-scalable half-precision floating-point element Operations speculatively executed.",
++        "EventCode": "0x80C3",
++        "EventName": "FP_HP_FIXED_OPS_SPEC",
++        "BriefDescription": "Non-scalable half-precision floating-point element Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Attributable Level 2 data or unified TLB access",
-+        "EventCode": "0x2F",
-+        "EventName": "L2D_TLB",
-+        "BriefDescription": "Attributable Level 2 data or unified TLB access"
++        "PublicDescription": "Scalable single-precision floating-point element Operations speculatively executed.",
++        "EventCode": "0x80C4",
++        "EventName": "FP_SP_SCALE_OPS_SPEC",
++        "BriefDescription": "Scalable single-precision floating-point element Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Access to another socket in a multi-socket system",
-+        "EventCode": "0x31",
-+        "EventName": "REMOTE_ACCESS",
-+        "BriefDescription": "Access to another socket in a multi-socket system"
++        "PublicDescription": "Non-scalable single-precision floating-point element Operations speculatively executed.",
++        "EventCode": "0x80C5",
++        "EventName": "FP_SP_FIXED_OPS_SPEC",
++        "BriefDescription": "Non-scalable single-precision floating-point element Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Access to data TLB causes a translation table walk",
-+        "EventCode": "0x34",
-+        "EventName": "DTLB_WALK",
-+        "BriefDescription": "Access to data TLB causes a translation table walk"
++        "PublicDescription": "Scalable double-precision floating-point element Operations speculatively executed.",
++        "EventCode": "0x80C6",
++        "EventName": "FP_DP_SCALE_OPS_SPEC",
++        "BriefDescription": "Scalable double-precision floating-point element Operations speculatively executed."
 +    },
 +    {
-+        "PublicDescription": "Access to instruction TLB that causes a translation table walk",
-+        "EventCode": "0x35",
-+        "EventName": "ITLB_WALK",
-+        "BriefDescription": "Access to instruction TLB that causes a translation table walk"
-+    },
-+    {
-+        "PublicDescription": "Attributable Last level cache memory read",
-+        "EventCode": "0x36",
-+        "EventName": "LL_CACHE_RD",
-+        "BriefDescription": "Attributable Last level cache memory read"
-+    },
-+    {
-+        "PublicDescription": "Last level cache miss, read",
-+        "EventCode": "0x37",
-+        "EventName": "LL_CACHE_MISS_RD",
-+        "BriefDescription": "Last level cache miss, read"
-+    }
-+]
++        "PublicDescription": "Non-scalable double-precision floating-point element Operations speculatively executed.",
++        "EventCode": "0x80C7",
++        "EventName": "FP_DP_FIXED_OPS_SPEC",
++        "BriefDescription": "Non-scalable double-precision floating-point element Operations speculatively executed."
+     }
+ ]
 -- 
 1.8.3.1
 
