@@ -2,171 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB4DA30A7E4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:45:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C24DD30A7BA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:36:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229545AbhBAMoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 07:44:19 -0500
-Received: from thsbbfxrt02p.thalesgroup.com ([192.93.158.29]:32966 "EHLO
-        thsbbfxrt02p.thalesgroup.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229707AbhBAMoK (ORCPT
+        id S231259AbhBAMgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 07:36:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231192AbhBAMgs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 07:44:10 -0500
-X-Greylist: delayed 456 seconds by postgrey-1.27 at vger.kernel.org; Mon, 01 Feb 2021 07:44:09 EST
-Received: from thsbbfxrt02p.thalesgroup.com (localhost [127.0.0.1])
-        by localhost (Postfix) with SMTP id 4DTnVG1XSYzJpJL;
-        Mon,  1 Feb 2021 13:35:50 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=thalesgroup.com;
-        s=xrt20181201; t=1612182950;
-        bh=qtfpK5tjKyUoljO0lXeTO/GBAYaTsQ1VB18gL/yZUZc=;
-        h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-         Content-Transfer-Encoding:MIME-Version:From;
-        b=1W1yIUhd54H98rWcFhbK5S1ezDedE3tQrlZsSE5y1vTEtmILtRHqV7pkDKr9ab7Wg
-         h/UbsCeKBMefGifNFdmf4IuuK5P+LR3ncKLyvn/Y5BflPdbg7eZtDAYzdD4BzuxUsr
-         e52f9/HhwX4WgXyvQU7Nxop9iOLorNUgJphkPZ4DvvS16ObrridjO7RDV1tynZdlry
-         DY+2yO9lU+2vFHJyc7x+VuT7IH8BOZW1MdorMs8+TkmwTm4ykTA8IiAv/dGIiZrb8y
-         xKM6OkpkZ0WsEutGXlz4jo/DgEQ5nmpNr8F+97HsUOo1oCj/EKj9aPc4oQIR6D1Quv
-         jLS9KzAZtjFCQ==
-From:   PLATTNER Christoph <christoph.plattner@thalesgroup.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        "Michael Ellerman" <mpe@ellerman.id.au>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "HAMETNER Reinhard" <reinhard.hametner@thalesgroup.com>,
-        REITHER Robert - Contractor 
-        <robert.reither@external.thalesgroup.com>,
-        KOENIG Werner <werner.koenig@thalesgroup.com>,
-        "christoph.plattner@gmx.at" <christoph.plattner@gmx.at>,
-        PLATTNER Christoph <christoph.plattner@thalesgroup.com>
-Subject: RE: [PATCH] powerpc/603: Fix protection of user pages mapped with
- PROT_NONE
-Thread-Topic: [PATCH] powerpc/603: Fix protection of user pages mapped with
- PROT_NONE
-Thread-Index: AQHW+GOl2yWYuEbTpkiT/C3KqD+6EapDLQPbgAAOyuA=
-Date:   Mon, 1 Feb 2021 12:35:45 +0000
-Message-ID: <63ddf61b-88de-4f42-8342-c4d273b745de@THSDC1IRIMBX11P.iris.infra.thales>
-References: <4a0c6e3bb8f0c162457bf54d9bc6fd8d7b55129f.1612160907.git.christophe.leroy@csgroup.eu>
- <1b194840-d4e6-4660-94d9-6bac623442cf@THSDC1IRIMBX13P.iris.infra.thales>
- <035a7cde-7ffd-5f27-81e1-a8d3648e4c1c@csgroup.eu>
-In-Reply-To: <035a7cde-7ffd-5f27-81e1-a8d3648e4c1c@csgroup.eu>
-Accept-Language: en-US, fr-FR
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-pmwin-version: 4.0.3, Antivirus-Engine: 3.79.0, Antivirus-Data: 5.81
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 1 Feb 2021 07:36:48 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A712C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 04:36:08 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id g15so10846050pjd.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 04:36:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aubOLGUr38JbgOFBEsGBKw5otENSJyK21msYOAdprUo=;
+        b=mLci0Qi20948hhLLaInBmW62ubOIpF9fL7qKXMFfTyeFnpOlsbYsl11mhUdnLt5H41
+         opI/BhUu0NmskxVbtZN6B+URC4kcCa27Zj1dih5tG3nvufAV8byOvzr9bMZaSVO/8ezv
+         MHedQ83Pg3QXFGmk0YfZKs4t1XX8L4kK0CmVq5XOyoKDWd/7OdEpMpxAyaxBIL1bvVUC
+         drvC1O0q12vZSX4teqi6SPLFXV3SyF2Vu2GItdY802N3m/3ngEq9OtiF+/Mv72wt8Ykl
+         nVBAzG++C4cfwEiz26b51bpX0i7CuRDn9AfejGnFF4xo/u42GO/fE2vGNIIopSUo5l/p
+         rkrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aubOLGUr38JbgOFBEsGBKw5otENSJyK21msYOAdprUo=;
+        b=Eh9ZT/3Gma3rl+PawDFm+qztrvuddjZJooOe/XfRltNQ9ocxGjCx4ISd+C7nTm6qOr
+         84+N1Les6KJ+E379xpJKmqfHp0InpFJHT8hwjOm6Udfjt0NlewjqsfsuUsf8j/5jwUcV
+         wH99OBhq6vzwIQHUMGWMC7vow3vFRwITK2+yGtQ+wQ3qTF8AYNimQPdlyAl6u+CWZvIM
+         ZSG//kHWEzdwMnb+5FojniCkX10pohj3j0KgnUf0Q4vP0pTPiUX358wwjlPM4CrEvWAN
+         sWirU2qhUh+taWFgjrhlGwOq7Rdqat1LYMGGbY6/gt/1GYx4VQALJywX0t1tblG6ac4F
+         O9kA==
+X-Gm-Message-State: AOAM532hrXJBywLuSX1j3OBP3oqi2YqyutPUIYU9/mWhwD7UdqlHbxpX
+        kWo5XfOWMzkNiwGMIS2K2sVo
+X-Google-Smtp-Source: ABdhPJwEy3jT5OzO6ZIaXOaPhYxmEqRfzl1fLck4+1pJfPg329b18wKkZGACNJ7rHEa6I8+oFVtTvg==
+X-Received: by 2002:a17:902:a710:b029:dc:3817:e7c2 with SMTP id w16-20020a170902a710b02900dc3817e7c2mr17320672plq.0.1612182967365;
+        Mon, 01 Feb 2021 04:36:07 -0800 (PST)
+Received: from thinkpad ([103.77.37.179])
+        by smtp.gmail.com with ESMTPSA id h1sm18590849pgj.59.2021.02.01.04.36.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 04:36:06 -0800 (PST)
+Date:   Mon, 1 Feb 2021 18:06:02 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     linux@armlinux.org.uk, will@kernel.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2] ARM: kernel: Fix interrupted SMC calls
+Message-ID: <20210201123602.GD108653@thinkpad>
+References: <20210118181040.51238-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210118181040.51238-1-manivannan.sadhasivam@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhhbmsgeW91IHZlcnkgbXVjaCwgSSBhcHByZWNpYXRlIHlvdXIgZmFzdCByZXNwb25zZXMuDQpU
-aGFuayB5b3UgYWxzbyBmb3IgY2xhcmlmaWNhdGlvbiwgSSBkaWQgY29tcGxldGVseSBvdmVyc2Vl
-DQp0aGUgcGVybWlzc2lvbiBzZXR0aW5ncyBpbiB0aGUgc2VnbWVudCBzZXR1cCBhbmQgZXhwZWN0
-ZWQNCnRoZSBmYXVsdCByZWFjdGlvbiBvbiB0aGUgUFAgYml0cyBpbiB0aGUgVExCLg0KQW5kIEkg
-d2lsbCByZS1yZWFkIHRoZSBjaGFwdGVycywgZ290IGdldCBkZWVwZXIgaW50byB0aGlzIHRvcGlj
-Lg0KDQpHcmVldGluZ3MNCkNocmlzdG9waCANCg0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0t
-LQ0KRnJvbTogQ2hyaXN0b3BoZSBMZXJveSA8Y2hyaXN0b3BoZS5sZXJveUBjc2dyb3VwLmV1PiAN
-ClNlbnQ6IE1vbnRhZywgMS4gRmVicnVhciAyMDIxIDEyOjM5DQpUbzogUExBVFRORVIgQ2hyaXN0
-b3BoIDxjaHJpc3RvcGgucGxhdHRuZXJAdGhhbGVzZ3JvdXAuY29tPjsgQmVuamFtaW4gSGVycmVu
-c2NobWlkdCA8YmVuaEBrZXJuZWwuY3Jhc2hpbmcub3JnPjsgUGF1bCBNYWNrZXJyYXMgPHBhdWx1
-c0BzYW1iYS5vcmc+OyBNaWNoYWVsIEVsbGVybWFuIDxtcGVAZWxsZXJtYW4uaWQuYXU+DQpDYzog
-bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgbGludXhwcGMtZGV2QGxpc3RzLm96bGFicy5v
-cmc7IEhBTUVUTkVSIFJlaW5oYXJkIDxyZWluaGFyZC5oYW1ldG5lckB0aGFsZXNncm91cC5jb20+
-OyBSRUlUSEVSIFJvYmVydCAtIENvbnRyYWN0b3IgPHJvYmVydC5yZWl0aGVyQGV4dGVybmFsLnRo
-YWxlc2dyb3VwLmNvbT47IEtPRU5JRyBXZXJuZXIgPHdlcm5lci5rb2VuaWdAdGhhbGVzZ3JvdXAu
-Y29tPg0KU3ViamVjdDogUmU6IFtQQVRDSF0gcG93ZXJwYy82MDM6IEZpeCBwcm90ZWN0aW9uIG9m
-IHVzZXIgcGFnZXMgbWFwcGVkIHdpdGggUFJPVF9OT05FDQoNCg0KDQpMZSAwMS8wMi8yMDIxIMOg
-IDExOjIyLCBQTEFUVE5FUiBDaHJpc3RvcGggYSDDqWNyaXTCoDoNCj4gSGVsbG8gdG8gYWxsLCBh
-bmQgdGhhbmsgeW91IHZlcnkgbXVjaCBmb3IgZmlyc3QgYW5kIHNlY29uZCBmYXN0IHJlc3BvbnNl
-Lg0KPiANCj4gSSBkbyBub3QgaGF2ZSBhIGxvbmcgaGlzdG9yeSBvbiBQb3dlclBDIE1NVSBlbnZp
-cm9ubWVudCwgSSBoYWNrZWQgaW50byANCj4gdGhpcyB0b3BpYyBmb3IgYWJvdXQgMyBtb250aHMg
-Zm9yIGFuYWx5emluZyB0aGF0IHByb2JsZW0tIHNvLCBzb3JyeSwgaWYgSSBhbSB3cm9uZyBpbiBz
-b21lIHBvaW50cyAuLi4NCg0KWWVzIHlvdSBhcmUgd3Jvbmcgb24gc29tZSBwb2ludHMsIHNvcnJ5
-LCBzZWUgYmVsb3cuDQoNCg0KPiANCj4gV2hhdCBJIGxlYXJuIHNvIGZhciBmcm9tIHRoaXMgTVBD
-NTEyMWUgKHZhcmlhbnQgb2YgZTMwMGM0IGNvcmUpOg0KPiAtIEl0IHVzZXMgYm9vazNzMzIgaGFz
-aC1jb2RlLCBidXQgaXQgRE9FUyBOT1QgcHJvdmlkZSBLRVkgaGFzaCBtZXRob2QsIHNvIGFsd2F5
-cyB0aGUNCj4gICAgIGJyYW5jaCAgImlmICghIEhhc2gpIC4uLi4iIGlzIHRha2VuLCBzbywgSSBh
-c3N1bWUgdGhhdCAia2V5IDAiIGFuZCAia2V5IDEiIHNldHVwcyBhcmUgbm90DQo+ICAgICB1c2Vk
-IG9uIHRoaXMgQ1BVIChub3Qgc3VwcG9ydGluZyBNTVVfRlRSX0hQVEVfVEFCTEUpDQoNCmhhc2gg
-bWV0aG9kIGlzIG5vdCB1c2VkLCB0aGlzIGlzIFNXIFRMQiBsb2FkaW5nIHRoYXQgaXMgdXNlZCwg
-YnV0IHN0aWxsLCBhbGwgdGhlIFBQIGFuZCBLcy9LcCBrZXlzIGRlZmluZWQgaW4gdGhlIHNlZ21l
-bnQgcmVnaXN0ZXIgYXJlIHVzZWQsIHNlZSBlMzAwIGNvcmUgcmVmZXJlbmNlIG1hbnVhbCDCpzYu
-NC4yIFBhZ2UgTWVtb3J5IFByb3RlY3Rpb24NCg0KPiAtIFRoZSBQUCBiaXRzIGFyZSBOT1QgY2hl
-Y2tlZCBieSB0aGUgQ1BVIGluIEhXLCBldmVuIGlmIHNldCB0byAwMCwgdGhlIENQVSBkb2VzIG5v
-dCByZWFjdC4NCj4gICAgIEFzIGZhciBJIGhhdmUgdW5kZXJzdG9vZCwgdGhlIFRMQiBtaXNzIHJv
-dXRpbmVzIGFyZSByZXNwb25zaWJsZSBmb3IgY2hlY2tpbmcgcGVybWlzc2lvbnMuDQo+ICAgICBU
-aGUgVExCIG1pc3Mgcm91dGluZXMgY2hlY2sgdGhlIExpbnV4IFBURSBzdHlsZWQgZW50cmllcyBh
-bmQgZ2VuZXJhdGVzIHRoZSBQUCBiaXRzDQo+ICAgICBmb3IgdGhlIFRMQiBlbnRyeS4gVGhlIFBv
-d2VyUEMgUFAgYml0cyBhcmUgbmV2ZXIgY2hlY2sgZWxzZXdoZXJlIG9uIHRoYXQgQ1BVIG1vZGVs
-cyAuLi4NCg0KUFAgYml0cyBBUkUgY2hlY2tlZCBob3BwZWZ1bGx5LiBJZiBpdCB3YXMgbm90IHRo
-ZSBjYXNlLCB0aGVuIHRoZSBUTEIgbWlzcyByb3V0aW5lcyB3b3VsZCBpbnN0YWxsIGEgVExCIG9u
-IGEgcmVhZCwgdGhlbiB0aGUgdXNlciBjb3VsZCBkbyBhIHdyaXRlIHdpdGhvdXQgYW55IHZlcmlm
-aWNhdGlvbiBiZWluZyBkb25lID8NCg0KUmVmZXIgdG8gZTMwMCBDb3JlIHJlZmVyZW5jZSBNYW51
-YWwsIMKnNi4xLjQgTWVtb3J5IFByb3RlY3Rpb24gRmFjaWxpdGllcw0KDQpBcyBJIGV4cGxhaW5l
-ZCBpbiB0aGUgcGF0Y2gsIHRoZSBwcm9ibGVtIGlzIG5vdCB0aGF0IHRoZSBIVyBkb2Vzbid0IGNo
-ZWNrIHRoZSBwZXJtaXNzaW9uLiBJdCBpcyB0aGF0IHVzZXIgYWNjZXNzZWQgYmVlbiBkb25lIHdp
-dGgga2V5IDAgYXMgcHJvZ3JhbW1lZCBpbiB0aGUgc2VnbWVudCByZWdpc3RlcnMsIFBQIDAwIG1l
-YW5zIFJXIGFjY2Vzcy4NCg0KPiAtIFRoZSBQVEUgZW50cmllcyBpbiBMaW51eCBhcmUgZnVsbHkg
-InZvaWQiIGluIHNlbnNlIG9mIHRoaXMgQ1BVIHR5cGUsIGFzIHRoaXMgQ1BVIGRvZXMgbm90DQo+
-ICAgICByZWFkIGFueSBQVEVzIGZyb20gUkFNIChubyBIVyBzdXBwb3J0IGluIGNvbnRyYXN0IHRv
-IHg4NiBvciBBUk0gb3IgbGF0ZXIgcHBjLi4uKS4NCg0KTm8sIHRoZSBQVEUgYXJlIHJlYWQgYnkg
-dGhlIFRMQiBtaXNzIGV4Y2VwdGlvbiBoYW5kbGVycyBhbmQgd3JpdGVuIGludG8gVExCIGVudHJp
-ZXMuDQoNCj4gDQo+IEluIHN1bW1hcnkgLSBhcyBmYXIgYXMgSSB1bmRlcnN0YW5kIGl0IG5vdyAt
-IHdlIGhhdmUgdG8gaGFuZGxlIHRoZSBQVEUgDQo+IGJpdHMgZGlmZmVyZW50bHkgKExpbnV4IHN0
-eWxlKSBmb3IgUFJPVF9OT05FIHBlcm1pc3Npb25zIC0gT1IgLSB3ZSANCj4gaGF2ZSB0byBleHBh
-bmQgdGhlIHBlcm1pc3Npb24gY2hlY2tpbmcgbGlrZSBteSBwcm9wb3NlZCBleHBlcmltZW50YWwg
-DQo+IHBhdGNoLiAoUFJPVF9OT05FIGlzIG5vdCBOVU1BIHJlbGF0ZWQgb25seSwgYnV0IG1heSBu
-b3QgdXNlZCB2ZXJ5IG9mdGVuIC4uLikuDQoNClllcywgZXhwYW5kaW5nIHRoZSBwZXJtaXNzaW9u
-IGNoZWNraW5nIGlzIHRoZSBlYXNpZXN0IHNvbHV0aW9uLCBoZW5jZSB0aGUgcGF0Y2ggSSBzZW50
-IG91dCBiYXNlZCBvbiB5b3VyIHByb3Bvc2FsLg0KDQo+IA0KPiBBbm90aGVyIHJlbGF0ZWQgcG9p
-bnQ6DQo+IEFjY29yZGluZyBlMzAwIFJNIChtYW51YWwpIHRoZSBBQ0NFU1NFRCBiaXQgaW4gdGhl
-IFBURSBzaGFsbCBiZSBzZXQgb24gDQo+IFRMQiBtaXNzLCBhcyBpdCBpcyBhbiBpbmRpY2F0aW9u
-LCB0aGF0IHBhZ2UgaXMgdXNlZC4gSW4gNC40IGtlcm5lbCANCj4gdGhpcyB3cml0ZSBiYWNrIG9m
-IHRoZSBfUEFHRV9BQ0NFU1NFRCBiaXQgd2FzIHBlcmZvcm1lZCBhZnRlciBzdWNjZXNzZnVsIHBl
-cm1pc3Npb24gY2hlY2s6DQo+IA0KPiAgICAgICAgICBibmUtICAgIERhdGFBZGRyZXNzSW52YWxp
-ZCAgICAgIC8qIHJldHVybiBpZiBhY2Nlc3Mgbm90IHBlcm1pdHRlZCAqLw0KPiAgICAgICAgICBv
-cmkgICAgIHIwLHIwLF9QQUdFX0FDQ0VTU0VEICAgIC8qIHNldCBfUEFHRV9BQ0NFU1NFRCBpbiBw
-dGUgKi8NCj4gICAgICAgICAgLyoNCj4gICAgICAgICAgICogTk9URSEgV2UgYXJlIGFzc3VtaW5n
-IHRoaXMgaXMgbm90IGFuIFNNUCBzeXN0ZW0sIG90aGVyd2lzZQ0KPiAgICAgICAgICAgKiB3ZSB3
-b3VsZCBuZWVkIHRvIHVwZGF0ZSB0aGUgcHRlIGF0b21pY2FsbHkgd2l0aCBsd2FyeC9zdHdjeC4N
-Cj4gICAgICAgICAgICovDQo+ICAgICAgICAgIHN0dyAgICAgcjAsMChyMikgICAgICAgICAgICAg
-ICAgLyogdXBkYXRlIFBURSAoYWNjZXNzZWQgYml0KSAqLw0KPiAgICAgICAgICAvKiBDb252ZXJ0
-IGxpbnV4LXN0eWxlIFBURSB0byBsb3cgd29yZCBvZiBQUEMtc3R5bGUgUFRFICovDQo+IA0KPiBC
-aXQgaXMgc2V0IChvcmkgLi4uKSBhbmQgd3JpdHRlbiBiYWNrIChzdHcgLi4uKSB0byBMaW51eCBQ
-VEUuIE1heSBiZSwgDQo+IHRoaXMgaXMgbm90IG5lZWRlZCwgYXMgdGhlIFBURSBpcyBuZXZlciBz
-ZWVuIGJ5IHRoZSBQUEMgY2hpcC4gQnV0IEkgZG8gDQo+IG5vdCB1bmRlcnN0YW5kLCBXSFkgdGhl
-IFBBR0VfQUNDQ0VTU0VEIGlzIHVzZWQgZm9yIHBlcm1pc3Npb24gY2hlY2sgaW4gdGhlIGxhdGUg
-NS40IGtlcm5lbCAobm90IHVzZWQgaW4gNC40IGtlcm5lbCk6DQo+IA0KPiAJY21wbHcJMCxyMSxy
-Mw0KPiAgIAltZnNwcglyMiwgU1BSTl9TRFIxDQo+IAlsaQlyMSwgX1BBR0VfUFJFU0VOVCB8IF9Q
-QUdFX0FDQ0VTU0VEDQo+IAlybHdpbm0JcjIsIHIyLCAyOCwgMHhmZmZmZjAwMA0KPiAgIAliZ3Qt
-CTExMmYNCj4gDQo+IFdoYXQgaXMgdGhlIHJlYXNvbiBvciByZWxldmFuY2UgZm9yIGNoZWNraW5n
-IHRoaXMgaGVyZSA/DQo+IFdhcyBub3QgY2hlY2tlZCBpbiA0LjQsIGJpdCBvci1lZCBhZnRlcndh
-cmRzLCBhcyBpdCBpcyBhY2Nlc3NlZCBub3cuDQo+IERvIHlvdSBrbm93IHRoZSByZWFzb24gb2Yg
-Y2hhbmdlIG9uIHRoaXMgcG9pbnQgPw0KDQpQQUdFX0FDQ0VTU0VEIGlzIGltcG9ydGFudCBmb3Ig
-bWVtb3J5IG1hbmFnZW1lbnQsIGxpbnV4IGtlcm5lbCBuZWVkIGl0Lg0KDQpCdXQgaW5zdGVhZCBv
-ZiBzcGVuZGluZyB0aW1lIGF0IGV2ZXJ5IG1pc3MgdG8gcGVyZm9ybSBhIHdyaXRlIHdoaWNoIHdp
-bGwgYmUgYSBuby1vcCBpbiA5OSUgb2YgY2FzZXMsIHdlIHByZWZlciBiYWlsaW5nIG91dCB0byB0
-aGUgcGFnZV9mYXVsdCBsb2dpYyB3aGVuIHRoZSBhY2Nlc3NlZCBiaXQgaXMgbm90IHNldC4gVGhl
-biB0aGUgcGFnZV9mYXVsdCBsb2dpYyB3aWxsIHNldCB0aGUgYml0Lg0KVGhpcyBhbHNvIGFsbG93
-ZWQgdG8gc2ltcGxpZnkgdGhlIGhhbmRsaW5nIGluIF9fc2V0X3B0ZSgpX2F0IGZ1bmN0aW9uIGJ5
-IGF2b2lkaW5nIHJhY2VzIGluIHRoZSB1cGRhdGUgb2YgUFRFcy4NCg0KPiANCj4gQW5vdGhlciBy
-ZW1hcmsgdG8gQ29yZSBtYW51YWwgcmVsZXZhbnQgZm9yIHRoaXM6DQo+IFRoZXJlIGlzIHRoZSBy
-ZWZlcmVuY2UgbWFudWFsIGZvciBlMzAwIGNvcmUgYXZhaWxhYmxlIChlMzAwIFJNKS4gSXQgaW5j
-bHVkZXMNCj4gbWFueSByZW1hcmtzIGluIHJhbmdlIG9mIE1lbW9yeSBNYW5hZ2VtZW50IHNlY3Rp
-b24sIHRoYXQgbWFueSBmZWF0dXJlcw0KPiBhcmUgb3B0aW9uYWwgb3IgdmFyaWFibGUgZm9yIGRl
-ZGljYXRlZCBpbXBsZW1lbnRhdGlvbnMuIE9uIHRoZSBvdGhlciBoYW5kLA0KPiB0aGUgTVBDNTEy
-MWUgcmVmZXJlbmNlIG1hbnVhbCByZWZlcnMgdG8gdGhlIGUzMDAgY29yZSBSTSwgYnV0IERPRVMg
-Tk9UDQo+IGluZm9ybWF0aW9uLCB3aGljaCBvZiB0aGUgb3B0aW9uYWwgcG9pbnRzIGFyZSB0aGVy
-ZSBvciBub3IuIEFjY29yZGluZyBteQ0KPiBhbmFseXNpcywgTVBDNTEyMWUgZG9lcyBub3QgaW5j
-bHVkZSBhbnkgb2YgdGhlIG9wdGlvbmFsIGZlYXR1cmVzLg0KPiANCg0KTm90IHN1cmUgd2hhdCB5
-b3UgbWVhbi4gQXMgZmFyIGFzIEkgdW5kZXJzdGFuZCwgdGhhdCBjaGFwdGVyIHRlbGxzIHlvdSB0
-aGF0IHNvbWUgZnVuY3Rpb25uYWxpdGllcyANCmFyZSBvcHRpb25hbCBmb3IgdGhlIHBvd2VycGMg
-YXJjaGl0ZWN0ZWN0dXJlLCBhbmQgcHJvdmlkZWQgKG9yIG5vdCkgYnkgdGhlIGUzMDAgY29yZS4g
-VGhlIE1QQzUxMjEgDQpzdXBwb3J0cyBhbGwgdGhlIHRoaW5ncyB0aGF0IGFyZSBkZWZpbmVkIGJ5
-IGUzMDAgY29yZS4NCg0KDQo+IA0KPiBUaGFua3MgYSBsb3QgZm9yIGZpcnN0IHJlYWN0aW9ucw0K
-DQpZb3UgYXJlIHdlbGNvbWUsIGRvbid0IGhlc2l0YXRlIGlmIHlvdSBoYXZlIGFkZGl0aW9uYWwg
-cXVlc3Rpb25zLg0KDQpDaHJpc3RvcGhlDQo=
+Hi,
+
+On Mon, Jan 18, 2021 at 11:40:40PM +0530, Manivannan Sadhasivam wrote:
+> On Qualcomm ARM32 platforms, the SMC call can return before it has
+> completed. If this occurs, the call can be restarted, but it requires
+> using the returned session ID value from the interrupted SMC call.
+> 
+> The ARM32 SMCC code already has the provision to add platform specific
+> quirks for things like this. So let's make use of it and add the
+> Qualcomm specific quirk (ARM_SMCCC_QUIRK_QCOM_A6) used by the QCOM_SCM
+> driver.
+> 
+> This change is similar to the below one added for ARM64 a while ago:
+> commit 82bcd087029f ("firmware: qcom: scm: Fix interrupted SCM calls")
+> 
+> Without this change, the Qualcomm ARM32 platforms like SDX55 will return
+> -EINVAL for SMC calls used for modem firmware loading and validation.
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+A gentle ping on this patch!
+
+Thanks,
+Mani
+
+> ---
+> 
+> Changes in v2:
+> 
+> * Preserved callee saved registers and used the registers r4, r5 which
+>   are getting pushed onto the stack.
+> 
+>  arch/arm/kernel/asm-offsets.c |  3 +++
+>  arch/arm/kernel/smccc-call.S  | 11 ++++++++++-
+>  2 files changed, 13 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/kernel/asm-offsets.c b/arch/arm/kernel/asm-offsets.c
+> index a1570c8bab25..2e2fa6fc2d4f 100644
+> --- a/arch/arm/kernel/asm-offsets.c
+> +++ b/arch/arm/kernel/asm-offsets.c
+> @@ -23,6 +23,7 @@
+>  #include <asm/vdso_datapage.h>
+>  #include <asm/hardware/cache-l2x0.h>
+>  #include <linux/kbuild.h>
+> +#include <linux/arm-smccc.h>
+>  #include "signal.h"
+>  
+>  /*
+> @@ -147,6 +148,8 @@ int main(void)
+>    DEFINE(SLEEP_SAVE_SP_PHYS,	offsetof(struct sleep_save_sp, save_ptr_stash_phys));
+>    DEFINE(SLEEP_SAVE_SP_VIRT,	offsetof(struct sleep_save_sp, save_ptr_stash));
+>  #endif
+> +  DEFINE(ARM_SMCCC_QUIRK_ID_OFFS,	offsetof(struct arm_smccc_quirk, id));
+> +  DEFINE(ARM_SMCCC_QUIRK_STATE_OFFS,	offsetof(struct arm_smccc_quirk, state));
+>    BLANK();
+>    DEFINE(DMA_BIDIRECTIONAL,	DMA_BIDIRECTIONAL);
+>    DEFINE(DMA_TO_DEVICE,		DMA_TO_DEVICE);
+> diff --git a/arch/arm/kernel/smccc-call.S b/arch/arm/kernel/smccc-call.S
+> index 00664c78faca..931df62a7831 100644
+> --- a/arch/arm/kernel/smccc-call.S
+> +++ b/arch/arm/kernel/smccc-call.S
+> @@ -3,7 +3,9 @@
+>   * Copyright (c) 2015, Linaro Limited
+>   */
+>  #include <linux/linkage.h>
+> +#include <linux/arm-smccc.h>
+>  
+> +#include <asm/asm-offsets.h>
+>  #include <asm/opcodes-sec.h>
+>  #include <asm/opcodes-virt.h>
+>  #include <asm/unwind.h>
+> @@ -27,7 +29,14 @@ UNWIND(	.fnstart)
+>  UNWIND(	.save	{r4-r7})
+>  	ldm	r12, {r4-r7}
+>  	\instr
+> -	pop	{r4-r7}
+> +	ldr	r4, [sp, #36]
+> +	cmp	r4, #0
+> +	beq	1f			// No quirk structure
+> +	ldr     r5, [r4, #ARM_SMCCC_QUIRK_ID_OFFS]
+> +	cmp     r5, #ARM_SMCCC_QUIRK_QCOM_A6
+> +	bne	1f			// No quirk present
+> +	str	r6, [r4, #ARM_SMCCC_QUIRK_STATE_OFFS]
+> +1:	pop	{r4-r7}
+>  	ldr	r12, [sp, #(4 * 4)]
+>  	stm	r12, {r0-r3}
+>  	bx	lr
+> -- 
+> 2.25.1
+> 
