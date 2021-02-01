@@ -2,213 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F94A30AD02
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:50:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9092930AD0F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:52:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231622AbhBAQte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 11:49:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231543AbhBAQt1 (ORCPT
+        id S231694AbhBAQun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 11:50:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47196 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231346AbhBAQua (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 11:49:27 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4C5C0613D6
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 08:48:46 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id u17so18116707iow.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 08:48:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metormote-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UJZgLz0IPXFdEChkfMH0kc4zCluHHdUTmru5kk+kkbs=;
-        b=NlWpMek6MTyixXva1reZbaipgYWOi722iN5JNEBiHwBL53f1sfHtXj/QnRmYZPKgNr
-         kMKx4Uxy0qW7ZdJrZKthq8NfnSWE6gO6iQERO9aAFukbxJdNnMVG8rWDEz4SV8hNTvxe
-         IFZYJ0N+dXG6iHqM6aUKFaJSAweQw10uEtEF2lEL4IC4XP9ZPAGAKIJpCMYIbiGPy31T
-         u3WnBmq/fl09mVIn+WOuHdd2/s2OMlSHWADHXjUkzuyoxk7CwRz6Ra0DCmfMQxjs/CqN
-         DCmXaX/vEfN/Ktdf/q/PTXCxJWRgl7k9D3AgpavEzvSpKLLfVa4bWfrxxCNbRH2cxCYu
-         Tu/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UJZgLz0IPXFdEChkfMH0kc4zCluHHdUTmru5kk+kkbs=;
-        b=d2d7Yj6tE03Ki7mYV8pO4UW4PrbDNNQnlRbOEUJlvDM4IigkMTE+JQGLK0sdWuFq9I
-         unXMBtilDGIGHAOqGO6Y02nh9nHY44ftj4Sl8wXKta24Sl7iVqPj+sE6bKSLEeHsuyw/
-         N3N6jj+I/Kz/awXw3ltmkvp4AtCxVmG9nc/7QEXokCrbVSRRHPvnYFTZyym1qV4CV+XP
-         fxpKV3cnk6bxF9LB6PI+eUQCZFR1xhaR1nnpbWsgFVd8ggMhcz7qjHYnWckdTGT1KCMq
-         Fi58YZQTAQVcXrL/qmrXPK9fnwlEvhGfRQutO3wPfEDp+XAHdcjilnmyOnxTOkScOunc
-         Hskw==
-X-Gm-Message-State: AOAM531n0s4SS4Ahy4Yj13g2IFL2uXJ421lUebWQWm2XAqQ7QNHQRN5H
-        X2YRZs+TSr72n5D9F1rIW8IHNMZ2gGKohB0wnU4Eg5vMHbsWqazuPGY=
-X-Google-Smtp-Source: ABdhPJwnnN9ONplvogUBU6iv2iVmz223Bxcch/O5xKWhP9Lg7Z6cLq99JK0Wi7rT/xbFlg7m11I54O1IX0HfWCX+9Aw=
-X-Received: by 2002:a05:6638:d8a:: with SMTP id l10mr15790042jaj.2.1612198125347;
- Mon, 01 Feb 2021 08:48:45 -0800 (PST)
+        Mon, 1 Feb 2021 11:50:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612198143;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=qsD6edyaNAmXuhff2uVedGUVPiBMr0Zg3mcu+yyc9WM=;
+        b=f2kKOBcdT4hB7vsRNBFCQtwRSZFZjYjJEOsdv0cuTJqKGrBJNgxV9rYKpLGfszX/s3WCun
+        qXc6HORsB4nO4lhxWrY9VUt4s21IZySxWdCUG9QX+640ynUhz/sGpvTyMXt69PGvzxxPZP
+        CUpf8MGZvM/qevumkATEq48/ytbV+dg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-453-EYl9RCoqMEWx4sjzf4S3SQ-1; Mon, 01 Feb 2021 11:48:59 -0500
+X-MC-Unique: EYl9RCoqMEWx4sjzf4S3SQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6FD54100C60A;
+        Mon,  1 Feb 2021 16:48:58 +0000 (UTC)
+Received: from gluttony.redhat.com (ovpn-112-63.rdu2.redhat.com [10.10.112.63])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D969C6EF65;
+        Mon,  1 Feb 2021 16:48:57 +0000 (UTC)
+From:   David Jeffery <djeffery@redhat.com>
+To:     linux-block@vger.kernel.org
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
+        David Jeffery <djeffery@redhat.com>,
+        Laurence Oberman <loberman@redhat.com>
+Subject: [PATCH] block: recalculate segment count for multi-segment discard requests correctly
+Date:   Mon,  1 Feb 2021 11:48:50 -0500
+Message-Id: <20210201164850.391332-1-djeffery@redhat.com>
 MIME-Version: 1.0
-References: <20210127084140.35626-1-erik.rosen@metormote.com>
- <20210127084140.35626-2-erik.rosen@metormote.com> <20210127173255.GA144627@roeck-us.net>
- <CA+ui0HmbcQe_CD-0d+AMgx_jSuY=AG9Qx4Ab2g71kPVFrMDe_w@mail.gmail.com> <ee2a89f6-0f55-9328-b53d-b5893eb625db@roeck-us.net>
-In-Reply-To: <ee2a89f6-0f55-9328-b53d-b5893eb625db@roeck-us.net>
-From:   Erik Rosen <erik.rosen@metormote.com>
-Date:   Mon, 1 Feb 2021 17:48:34 +0100
-Message-ID: <CA+ui0H=UC495kfZuZeg-ryPh_aSa0wFqf=hnn7oS782qFgh60A@mail.gmail.com>
-Subject: Re: [PATCH 1/1] Add ST STPDDC60 pmbus driver
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Jean Delvare <jdelvare@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Guenter
+When a stacked block device inserts a request into another block device
+using blk_insert_cloned_request, the request's nr_phys_segments field gets
+recalculated by a call to blk_recalc_rq_segments in
+blk_cloned_rq_check_limits. But blk_recalc_rq_segments does not know how to
+handle multi-segment discards. For disk types which can handle
+multi-segment discards like nvme, this results in discard requests which
+claim a single segment when it should report several, triggering a warning
+in nvme and causing nvme to fail the discard from the invalid state.
 
+ WARNING: CPU: 5 PID: 191 at drivers/nvme/host/core.c:700 nvme_setup_discard+0x170/0x1e0 [nvme_core]
+ ...
+ nvme_setup_cmd+0x217/0x270 [nvme_core]
+ nvme_loop_queue_rq+0x51/0x1b0 [nvme_loop]
+ __blk_mq_try_issue_directly+0xe7/0x1b0
+ blk_mq_request_issue_directly+0x41/0x70
+ ? blk_account_io_start+0x40/0x50
+ dm_mq_queue_rq+0x200/0x3e0
+ blk_mq_dispatch_rq_list+0x10a/0x7d0
+ ? __sbitmap_queue_get+0x25/0x90
+ ? elv_rb_del+0x1f/0x30
+ ? deadline_remove_request+0x55/0xb0
+ ? dd_dispatch_request+0x181/0x210
+ __blk_mq_do_dispatch_sched+0x144/0x290
+ ? bio_attempt_discard_merge+0x134/0x1f0
+ __blk_mq_sched_dispatch_requests+0x129/0x180
+ blk_mq_sched_dispatch_requests+0x30/0x60
+ __blk_mq_run_hw_queue+0x47/0xe0
+ __blk_mq_delay_run_hw_queue+0x15b/0x170
+ blk_mq_sched_insert_requests+0x68/0xe0
+ blk_mq_flush_plug_list+0xf0/0x170
+ blk_finish_plug+0x36/0x50
+ xlog_cil_committed+0x19f/0x290 [xfs]
+ xlog_cil_process_committed+0x57/0x80 [xfs]
+ xlog_state_do_callback+0x1e0/0x2a0 [xfs]
+ xlog_ioend_work+0x2f/0x80 [xfs]
+ process_one_work+0x1b6/0x350
+ worker_thread+0x53/0x3e0
+ ? process_one_work+0x350/0x350
+ kthread+0x11b/0x140
+ ? __kthread_bind_mask+0x60/0x60
+ ret_from_fork+0x22/0x30
 
-On Fri, Jan 29, 2021 at 4:50 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> Hi Erik,
->
-> On 1/29/21 5:07 AM, Erik Rosen wrote:
-> [ ... ]
-> >>
-> >>> +             break;
-> >>> +     case PMBUS_VOUT_OV_FAULT_LIMIT:
-> >>> +     case PMBUS_VOUT_UV_FAULT_LIMIT:
-> >>> +             ret = pmbus_read_word_data(client, page, phase, reg);
-> >>> +             if (ret < 0)
-> >>> +                     return ret;
-> >>> +             ret &= 0x07ff;
-> >>
-> >> This needs explanation. The BMR481 datasheet does not suggest that only
-> >> 11 bits are valid.
-> >
-> > Ok, I will add a clarification. These registers use LINEAR11 whereas
-> > LINEAR16 is expected for vout-related registers.
-> >
-> Is that the correct fix, then ? LINEAR11 means that the exponent is flexible,
-> while it is fixed for LINEAR16. Just assuming that the exponents always match
-> seems risky. Also, bit 11 in LINEAR11 is the sign bit, meaning negative limits
-> (which seem at least theoretically be possible) would be reported as large
-> positive values.
+This patch fixes blk_recalc_rq_segments to be aware of devices which can
+have multi-segment discards. It calculates the correct discard segment
+count by counting the number of bio as each discard bio is considered its
+own segment.
 
-The chip actually uses fixed exponents for representing all linear values and
-the specification explicitly states the values of the LSB for all registers.
-It also states that the limits can be handled as linear format when
-writing  _if_
-the exponent is the fixed value used for that limit. This means I'll have to
-convert all limit writes to use the expected exponent.
-Given this, I think it's safe to assume that the exponents are
-constant, but I'll
-add a check to handle potential negative values.
+Signed-off-by: David Jeffery <djeffery@redhat.com>
+Tested-by: Laurence Oberman <loberman@redhat.com>
+---
+ block/blk-merge.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
->
-> >>
-> >>> +             break;
-> >>> +     default:
-> >>> +             ret = -ENODATA;
-> >>> +             break;
-> >>> +     }
-> >>> +
-> >>> +     return ret;
-> >>> +}
-> >>> +
-> >>> +/*
-> >>> + * The vout under- and over-voltage limits are readonly for this chip.
-> >>> + */
-> >>
-> >> Not really. The BMR481 datasheet suggests that the value can be changed
-> >> by writing to MFR_OV_LIMIT_OFFSET and MFR_UV_LIMIT_OFFSET.
-> >> I am not saying that you should implement that if you don't want to,
-> >> but I would suggest a better (more accurate) explanation.
-> >
-> > I have looked into this a bit more and it's a bit more to it than I expected.
-> > The limits are actually dynamic values that will follow both commanded
-> > output voltage via the PMBus or SVID/AVSBus as well as current
-> > load (droop). To account for this I propose a mechanism to set the
->
-> Yes, I noticed.
->
-> > 'update' flag on selected sensors after auto-detection of limit attributes.
-> >
-> > Maybe add a function like this to pmbus_core that can be called
-> > after the probing is done?
-> >
-> > int pmbus_set_update(struct i2c_client *client, u8 reg)
-> > {
-> >         struct pmbus_data *data = i2c_get_clientdata(client);
-> >         struct pmbus_sensor *sensor;
-> >
-> >         for (sensor = data->sensors; sensor; sensor = sensor->next) {
-> >                 if (sensor->reg == reg) {
-> >                         sensor->update = true;
-> >                         return 0;
-> >                 }
-> >         }
-> >         return -ENXIO;
-> > }
-> >
->
-> Add a boolean 'update' parameter (to be able to disable updates),
-> and make the function void. Also, remember that 'reg' may be repeated
-> on a chip with multiple pages, so you can't return after the first match.
-> Otherwise looks ok.
+diff --git a/block/blk-merge.c b/block/blk-merge.c
+index 808768f6b174..fe7358bd5d09 100644
+--- a/block/blk-merge.c
++++ b/block/blk-merge.c
+@@ -382,6 +382,13 @@ unsigned int blk_recalc_rq_segments(struct request *rq)
+ 
+ 	switch (bio_op(rq->bio)) {
+ 	case REQ_OP_DISCARD:
++		if (queue_max_discard_segments(rq->q) > 1) {
++			struct bio *bio = rq->bio;
++			for_each_bio(bio)
++				nr_phys_segs++;
++			return nr_phys_segs;
++		}
++		/* fall through */
+ 	case REQ_OP_SECURE_ERASE:
+ 	case REQ_OP_WRITE_ZEROES:
+ 		return 0;
+-- 
+2.29.2
 
-Ok
-
->
-> > I did also implemented writes to the limit registers via the offset
-> > registers but it might be
-> > a bit confusing to the user since the limits are set in relation to
-> > the current commanded
-> > output voltage and will change together with this. In the worst case,
-> > the voltage might
-> > change at the same time as the limit is written to, which will give
-> > unexpected results.
->
-> Agreed, that can be tricky.
->
-> > The alternative would be to just set these limits read-only. What is
-> > your opinion?
-> >
->
-> Your call. Just add a note explaining why it is made read-only to explain
-> the reasoning for future readers.
-
-Ok, I'll keep the functionality and add a note in the docs.
-
-
->
-> > Also, I found a problem in how pmbus_set_sensor() works together with
-> > pmbus_clear_cache()
-> > as used in the zl6100 and lm25066 drivers. The new value is written to
-> > the sensor struct _after_
-> > the _pmbus_write_word_data() has returned and thus after
-> > pmbus_clear_cache() is called.
-> > The effect is that all values are cleared, except the one just written
-> > to, which I believe defeats
-> > the purpose of clearing the cache in the first place.> One solution would be to write the new value to sensor->data before
-> > the _pmbus_write_word_data
-> > is called and to restore the old value in case of error.
-> > I can make a separate patch for this if it seems like a reasonable solution?
-> >
->
-> Good catch.
->
-> An alternate and more generic solution might be to set sensor->data to
-> -ENODATA after updates. After all, it seems risky to assume that the chip
-> returns the value that was written (I have seen it often enough in other
-> drivers that this is not necessarily the case). That would also mean that
-> it would no longer be necessary to call pmbus_clear_cache() in the zl6100
-> and lm25066 drivers. Impact would be that a limit read after a write would
-> always be sent to the chip for all drivers, but that seems minimal compared
-> to the gain (and presumably limit registers are not frequently updated).
-
-I agree that this is a more robust solution. I'll send a separate patch for this
-update. The zl6100 in fact still needs to clear the cache since a write to the
-fault limit also changes the value of the warning limit and vice versa. As far
-as I can see the usage in lm25066 can be removed however.
-
->
-> Thanks,
-> Guenter
