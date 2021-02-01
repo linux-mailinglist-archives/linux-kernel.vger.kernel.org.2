@@ -2,124 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA5D30AFCA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:53:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2C4C30AFD1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:55:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232301AbhBASwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:52:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57086 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231945AbhBASwJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:52:09 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 988ACC061573;
-        Mon,  1 Feb 2021 10:51:28 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id m2so238589wmm.1;
-        Mon, 01 Feb 2021 10:51:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=t+1ROMgCAtu/xArHYsFd1+YZoT/w+IqsJ+s+xa9cGnA=;
-        b=guYjshs7HC0I62X3kkx+RuXbELZ4OroN7UlF1sFZvbTo5jY5iab7DOjQ+EgsZ9Y3zN
-         XimK9A3IfKNlQxOPGATUL1K5/0p9nJp9lH4rvPiKQqLGsvMOsS/d41zMTBwn8FHtorDV
-         2SMUugxEH40GJ/7q5+67s7xGJyl7lGyqy6kSIUtJ2veA2QBD8GRkf5mMkq5RwLgWz0Qr
-         3ZCP1a4xYPwqoBc0j1K3dlH8AjY9U8RWi8w32TvcV7Y7JnSwHSixCzFUviHgtgEksQhF
-         xl49u7rWwyxBUbAaFa2daVYcYliQVWPX7ge76Tces1eY0woLpagr1vM/AeYTsiZlccUu
-         k7Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t+1ROMgCAtu/xArHYsFd1+YZoT/w+IqsJ+s+xa9cGnA=;
-        b=B4QIlb7wzB00SyFRPeLLO5nAvWNu4HzcQrgpoA7SPIjWIKjdHFzBhm4S3vQxfvQ+NH
-         Zx59j+mvIweGAv+Ost6qX2HuOZ6Zu0fgN+BVZrHHkr62PT70OcXY8oRpLiMAv9IK6xpY
-         REFS6So6pHE8MC+GdqvNrhHjWvQ0OGljDWjgSmzGG5oGfaqFI8BUy09OVy04Vk3eDyxG
-         J8fC4RHluL/Vd3XioAkkt0gWI0JYM/oj+mlD+OgwHoJyDDVTALD+4viLMSvANtKBJPWc
-         J0SgWOl6IYWiuSiZYC8rlvo+3SqwECDJuef6GvzN4drNSO8XZEBwwNEtCTEtirIgPo5s
-         3OYg==
-X-Gm-Message-State: AOAM531pYf3IVi03YhliEkws0WIrS1/Z4HOszon34y0gesbiztcxlMOt
-        zDgDoLpZhhgB9m0l+39PdHivY/Sgm9OJ0uXfkiA=
-X-Google-Smtp-Source: ABdhPJy7sQZhNsX1mCxFoVvMIT++Dd517N4q1jo+5ewfDQfszmXr+MYshhj5Mleagi2M9n9PuYkZWVUazvwwP5FgW20=
-X-Received: by 2002:a05:600c:354c:: with SMTP id i12mr235435wmq.51.1612205487194;
- Mon, 01 Feb 2021 10:51:27 -0800 (PST)
+        id S231714AbhBASzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:55:00 -0500
+Received: from foss.arm.com ([217.140.110.172]:36522 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229996AbhBASy6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 13:54:58 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C73D3147A;
+        Mon,  1 Feb 2021 10:54:12 -0800 (PST)
+Received: from e123427-lin.arm.com (unknown [10.57.48.13])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CFDE63F71A;
+        Mon,  1 Feb 2021 10:54:10 -0800 (PST)
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Shradha Todi <shradha.t@samsung.com>, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        pankaj.dubey@samsung.com, bhelgaas@google.com,
+        p.rajanbabu@samsung.com, niyas.ahmed@samsung.com, robh@kernel.org,
+        jingoohan1@gmail.com, hari.tv@samsung.com, sriram.dash@samsung.com,
+        l.mehra@samsung.com, gustavo.pimentel@synopsys.com
+Subject: Re: [PATCH v2] PCI: dwc: Change size to u64 for EP outbound iATU
+Date:   Mon,  1 Feb 2021 18:53:56 +0000
+Message-Id: <161220559963.22650.18120544443650114813.b4-ty@arm.com>
+X-Mailer: git-send-email 2.26.1
+In-Reply-To: <1609929900-19082-1-git-send-email-shradha.t@samsung.com>
+References: <CGME20210106104514epcas5p37d8e3a88aefdf109f7fb4157d4a1f07a@epcas5p3.samsung.com> <1609929900-19082-1-git-send-email-shradha.t@samsung.com>
 MIME-Version: 1.0
-References: <20210128134130.3051-1-elic@nvidia.com> <20210128134130.3051-2-elic@nvidia.com>
-In-Reply-To: <20210128134130.3051-2-elic@nvidia.com>
-From:   Si-Wei Liu <siwliu.kernel@gmail.com>
-Date:   Mon, 1 Feb 2021 10:51:15 -0800
-Message-ID: <CAPWQSg0XtEQ1U5N3a767Ak_naoyPdVF1CeE4r3hmN11a-aoBxg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] vdpa/mlx5: Avoid unnecessary query virtqueue
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     mst@redhat.com, jasowang@redhat.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lulu@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 5:46 AM Eli Cohen <elic@nvidia.com> wrote:
->
-> suspend_vq should only suspend the VQ on not save the current available
-> index. This is done when a change of map occurs when the driver calls
-> save_channel_info().
+On Wed, 6 Jan 2021 16:15:00 +0530, Shradha Todi wrote:
+> Since outbound iATU permits size to be greater than 4GB for which the
+> support is also available, allow EP function to send u64 size instead of
+> truncating to u32.
 
-Hmmm, suspend_vq() is also called by teardown_vq(), the latter of
-which doesn't save the available index as save_channel_info() doesn't
-get called in that path at all. How does it handle the case that
-aget_vq_state() is called from userspace (e.g. QEMU) while the
-hardware VQ object was torn down, but userspace still wants to access
-the queue index?
+Applied to pci/dwc, thanks!
 
-Refer to https://lore.kernel.org/netdev/1601583511-15138-1-git-send-email-si-wei.liu@oracle.com/
+[1/1] PCI: dwc: Change size to u64 for EP outbound iATU
+      https://git.kernel.org/lpieralisi/pci/c/95a3472255
 
-vhost VQ 0 ring restore failed: -1: Resource temporarily unavailable (11)
-vhost VQ 1 ring restore failed: -1: Resource temporarily unavailable (11)
-
-QEMU will complain with the above warning while VM is being rebooted
-or shut down.
-
-Looks to me either the kernel driver should cover this requirement, or
-the userspace has to bear the burden in saving the index and not call
-into kernel if VQ is destroyed.
-
--Siwei
-
-
->
-> Signed-off-by: Eli Cohen <elic@nvidia.com>
-> ---
->  drivers/vdpa/mlx5/net/mlx5_vnet.c | 8 --------
->  1 file changed, 8 deletions(-)
->
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> index 88dde3455bfd..549ded074ff3 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -1148,8 +1148,6 @@ static int setup_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq)
->
->  static void suspend_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq)
->  {
-> -       struct mlx5_virtq_attr attr;
-> -
->         if (!mvq->initialized)
->                 return;
->
-> @@ -1158,12 +1156,6 @@ static void suspend_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *m
->
->         if (modify_virtqueue(ndev, mvq, MLX5_VIRTIO_NET_Q_OBJECT_STATE_SUSPEND))
->                 mlx5_vdpa_warn(&ndev->mvdev, "modify to suspend failed\n");
-> -
-> -       if (query_virtqueue(ndev, mvq, &attr)) {
-> -               mlx5_vdpa_warn(&ndev->mvdev, "failed to query virtqueue\n");
-> -               return;
-> -       }
-> -       mvq->avail_idx = attr.available_index;
->  }
->
->  static void suspend_vqs(struct mlx5_vdpa_net *ndev)
-> --
-> 2.29.2
->
+Thanks,
+Lorenzo
