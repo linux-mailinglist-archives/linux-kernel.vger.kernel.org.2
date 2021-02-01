@@ -2,116 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C876630B2AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4A830B2B3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:21:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbhBAWTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 17:19:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbhBAWTL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 17:19:11 -0500
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C33C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 14:18:30 -0800 (PST)
-Received: by mail-ed1-x52e.google.com with SMTP id y8so5589152ede.6
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 14:18:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ObygprHSjf/mIe84ziGq1dLJAyK92YoMohD2S+3eR34=;
-        b=KmhoERdkRrIhw8VIgPTNi1wxuN2QvfeFJkT89hQLTk063kH6JKSTkov/x6PhqAfAHs
-         kKmDuDTurcFq7c9KTqI2qv36oHP5jmYRCwwQTuOdOcvKKwqQnMDZLoyPHwfwkOAEf0lH
-         0SuArRJydaifldIgpxYQJB9yf9h06H+mY4AkD02kunkBawh6OJozD+/LWq5qiiN3x29v
-         5INCW09cNAVOX07SYp6gDFYG9jFCS/3cT4hXuY5Ed5/9tufFYY9PQ0G5pigzOO052PuX
-         grVwCEfzpX1XESxcRMGPMVn07rA0lcVc3QBw/DOZPjtSx34fw2xBPXFw9OnYquTH3oKK
-         91rQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ObygprHSjf/mIe84ziGq1dLJAyK92YoMohD2S+3eR34=;
-        b=WmkF9S97O9ICL4hkU9VnPRDQFRa375egehbaPWtW19EoBUt91mS0LnJMbNbXwBR1Zk
-         aztRSciwU1ZKWtRcjZsmW9032t1msb2heaP2JuWhDQWpGnKbicV53mXcAygrGIIbenRk
-         2zf2jQMUK89oTVZGPhaMEua+9D+aSzNiUqJR4nDuWW0aVU8hQbCXHHFbEri7B1zxm571
-         5w7oqAlqAoj7fVh/1D7aoaOAVHmoBRe2RN/5xcu5V2V1s43Qe5PI4UOa75L8JbpYDaTI
-         r86yVb4mIcqYfErmJTT6qiRCpV3Q3htU72brrVFQ7FAxM4/7Q6HyCL4TGsLRUW3o2Jpr
-         Mh4A==
-X-Gm-Message-State: AOAM533DRjgJXvPhxwFOqWI0CDY3emVO9gngUYlqHxVB1yZkU8IfyBww
-        5bHIGhIt5riGfy3S3vaaUaIoEpp/XZc=
-X-Google-Smtp-Source: ABdhPJy+5xW4wxQia6EkqUJgNHiZ5LDVelO5J0rP1HSdolWpInTt3ufU/RP/2hppv62cI3SAENN1tg==
-X-Received: by 2002:a05:6402:2683:: with SMTP id w3mr20808726edd.378.1612217909472;
-        Mon, 01 Feb 2021 14:18:29 -0800 (PST)
-Received: from p4 (net-93-70-85-165.cust.vodafonedsl.it. [93.70.85.165])
-        by smtp.gmail.com with ESMTPSA id i90sm1400549edi.52.2021.02.01.14.18.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Feb 2021 14:18:29 -0800 (PST)
-Date:   Mon, 1 Feb 2021 22:18:26 +0000
-From:   Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org,
-        penberg@kernel.org, geert@linux-m68k.org,
-        linux-arm-kernel@lists.infradead.org, akpm@linux-foundation.org,
-        rppt@kernel.org, giancarlo.ferrari@nokia.com
-Subject: Re: [PATCH] ARM: kexec: Fix panic after TLB are invalidated
-Message-ID: <20210201202742.GA17243@p4>
-References: <1612140296-12546-1-git-send-email-giancarlo.ferrari89@gmail.com>
- <20210201124720.GA66060@C02TD0UTHF1T.local>
- <20210201130344.GF1463@shell.armlinux.org.uk>
- <20210201135714.GB66060@C02TD0UTHF1T.local>
- <20210201160838.GH1463@shell.armlinux.org.uk>
- <20210201200734.GC15399@p4>
- <20210201201633.GJ1463@shell.armlinux.org.uk>
+        id S229910AbhBAWUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 17:20:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58844 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229572AbhBAWUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 17:20:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 469FC64D9D;
+        Mon,  1 Feb 2021 22:20:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612218012;
+        bh=zyFHqY7Z7ZGLlxb05bgv94Ltfq2qc5kx29hJwa9Zeiw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=iW/NL/2DVQsv8vtwctljs747yPoVvEdYa0BZmFr/tD9v0aw8bEkdYYCNws6DGnRLz
+         5GGGJXfwSzg3leHB8N7M0NFSWJ2qf8lErjoVW8vU2RUZRPc8NaBJAgTiDxMGV6u7+i
+         69APl7iVhce33J1v4jVSueHzf78DGF7gtE8qOfqNBOMjJPtbWoF4OfznXULlZ1Dnk9
+         4nhAVNVOCJ589uaCdPXRVLNYiGlM8gz26tCTpJLkGob/+WMmg+hk+g0X8a+/j5lg6D
+         gsOteVM8AC0aurloBNI8hKWdObtSpiLjPSSnkCCcse/Z6eDogDqsuVy7j+KGF5vTyA
+         LeqMFkLc+w5oQ==
+Date:   Mon, 1 Feb 2021 16:20:10 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>
+Subject: Re: [PATCH v2] PCI: Fix Intel i210 by avoiding overlapping of BARs
+Message-ID: <20210201222010.GA31234@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210201201633.GJ1463@shell.armlinux.org.uk>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <e8647a2cd4bfbcd42c27183d1c8984a0@walle.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Russell,
-
-On Mon, Feb 01, 2021 at 08:16:33PM +0000, Russell King - ARM Linux admin wrote:
-> On Mon, Feb 01, 2021 at 08:07:37PM +0000, Giancarlo Ferrari wrote:
-> > Hi,
+On Mon, Feb 01, 2021 at 08:49:16PM +0100, Michael Walle wrote:
+> Am 2021-01-17 20:27, schrieb Michael Walle:
+> > Am 2021-01-16 00:57, schrieb Bjorn Helgaas:
+> > > On Wed, Jan 13, 2021 at 12:32:32AM +0100, Michael Walle wrote:
+> > > > Am 2021-01-12 23:58, schrieb Bjorn Helgaas:
+> > > > > On Sat, Jan 09, 2021 at 07:31:46PM +0100, Michael Walle wrote:
+> > > > > > Am 2021-01-08 22:20, schrieb Bjorn Helgaas:
+> > > 
+> > > > > > > 3) If the Intel i210 is defective in how it handles an Expansion ROM
+> > > > > > > that overlaps another BAR, a quirk might be the right fix. But my
+> > > > > > > guess is the device is working correctly per spec and there's
+> > > > > > > something wrong in how firmware/Linux is assigning things.  That would
+> > > > > > > mean we need a more generic fix that's not a quirk and not tied to the
+> > > > > > > Intel i210.
+> > > > > >
+> > > > > > Agreed, but as you already stated (and I've also found that in
+> > > > > > the PCI spec) the Expansion ROM address decoder can be shared by
+> > > > > > the other BARs and it shouldn't matter as long as the ExpROM BAR
+> > > > > > is disabled, which is the case here.
+> > > > >
+> > > > > My point is just that if this could theoretically affect devices
+> > > > > other than the i210, the fix should not be an i210-specific quirk.
+> > > > > I'll assume this is a general problem and wait for a generic PCI
+> > > > > core solution unless it's i210-specific.
+> > > > 
+> > > > I guess the culprit here is that linux skips the programming of the
+> > > > BAR because of some broken Matrox card. That should have been a
+> > > > quirk instead, right? But I don't know if we want to change that, do
+> > > > we? How many other cards depend on that?
+> > > 
+> > > Oh, right.  There's definitely some complicated history there that
+> > > makes me a little scared to change things.  But it's also unfortunate
+> > > if we have to pile quirks on top of quirks.
+> > > 
+> > > > And still, how do we find out that the i210 is behaving correctly?
+> > > > In my opinion it is clearly not. You can change the ExpROM BAR value
+> > > > during runtime and it will start working (while keeping it
+> > > > disabled).  Am I missing something here?
+> > > 
+> > > I agree; if the ROM BAR is disabled, I don't think it should matter at
+> > > all what it contains, so this does look like an i210 defect.
+> > > 
+> > > Would you mind trying the patch below?  It should update the ROM BAR
+> > > value even when it is disabled.  With the current pci_enable_rom()
+> > > code that doesn't rely on the value read from the BAR, I *think* this
+> > > should be safe even on the Matrox and similar devices.
+> > 
+> > Your patch will fix my issue:
+> > 
+> > Tested-by: Michael Walle <michael@walle.cc>
 > 
-> Hi,
-> 
-> > Why we should align 3 ? For the fncpy I suppose.
-> 
-> Slightly arbitary really - it gives a nice 8-byte alignment to the data.
-> .align 2 would also be sufficient.
-> 
-> > I don't know now how to proceed now, as you (Mark and you) do completely
-> > the patch.
-> 
-> Please can you test my patch and let us know if it solves your problem
-> (or even if it works! I haven't tested it beyond build-testing.)
->
+> any news on this?
 
-sure, unfortunately due to restriction, I hope to test it by the end of the
-week. I hope there will be no rush. Otherwise, please let me know.
+Thanks for the reminder.  I was thinking this morning that I need to
+get back to this.  I'm trying to convince myself that doing this
+wouldn't break the problem fixed by 755528c860b0 ("Ignore disabled ROM
+resources at setup").  So far I haven't quite succeeded.
 
-> > You see is my first kernel patch submission :) .
-> 
-> Yay. Sorry for giving you a different patch - Mark is quite right that
-> there's a better solution to this problem, which is eliminating the
-> set_kernel_text_rw() call. The only reason I cooked up the patch was
-> doing that would be more in-depth (as you can see from the increased
-> size of the patch.)
-> 
-
-I definitely agree with you.
-
-> -- 
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
-
-Thanks again,
-
-
-GF
+Bjorn
