@@ -2,290 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FD3230B1DA
+	by mail.lfdr.de (Postfix) with ESMTP id C242830B1DB
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:05:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231643AbhBAVDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 16:03:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229831AbhBAVDt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 16:03:49 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB8CC061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 13:03:08 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id r20so9821105qtm.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 13:03:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8k+54hdZU4bIMIuE/qB/uIoqqs2NrOQg3MOYc8JAwIA=;
-        b=VmKk8nJ8618Xbxb/H896bZfhXIhO+dDFeUnBicg0JgMCZ2SFsaM6lJiSTgdnLMu79D
-         fgKtrmUK5R3fe7Yl0eGTceLLC1GTeGVawyYLpw6NwDpWply35TF6br9QZ6olQ8kVvGpy
-         wO6bCOtQ+xDPXWW6eFg27XfF7zy563tAIUsT781IJQD2I41Yr7aHKUPQzkf7COO8FXIc
-         xvu2Ew+57rxCD3DCWw+JgekQy8f+aEcLR4rkRqxbH8g84l1W4x6REWxjjezelEiJt5kP
-         ktSgklhXzDh78n5AWCjez+Se6nMTNaHgXldwBmPqqHOMSGaVZF6kOfVim4cFAH6JBh1u
-         Tgmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8k+54hdZU4bIMIuE/qB/uIoqqs2NrOQg3MOYc8JAwIA=;
-        b=sNP+5/Yq8n3Advq40RKJ1xld8IPY4hKvePe/jeaGmR/DhzXKLKoqyZhQDGShEaHgJB
-         Wj/EmAMs3KPQKdk7347lWskCkjhx294TrRAy9sQeeaaG92iHLUrfHwmARxebUCr1toxX
-         EV+5CKSa3NqMamahuzwLIBRCiJ6T/+r8Y7sXmjfo8kxuE4tRuq/DfkVKRQkfNElRFdjk
-         qAFef/YnwE94PAbD8yOjvpCOCOXo40QWg22KjsQ0jy/53VWzY/Klm7kfiskW9Z8GUqDU
-         Rre9rI4VyMX47owGyQ/P7OdvdjqstKRjzeekPDVMNSlA99EsHRgwfrIZtSwZKX5rqoBJ
-         RLNw==
-X-Gm-Message-State: AOAM531IF1/aNe1kblSYAekp3NVq6c8DqfdzPhZFmRVCH3SuPa/P8Sao
-        3FB5RHrkEgb+jQHcxnvmlPiHCDdri4rtf3Xk9fLrQw==
-X-Google-Smtp-Source: ABdhPJwcbm4gK4H7fyyIpRz0Xl6GxfAIdJhHRhQfSbWaVCyeQXVfpohXRpRnF7hSKYvQ5FYmbHVO0UY5sH4BSFkJ1OE=
-X-Received: by 2002:ac8:6f0f:: with SMTP id g15mr3296448qtv.322.1612213387657;
- Mon, 01 Feb 2021 13:03:07 -0800 (PST)
+        id S231945AbhBAVD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 16:03:59 -0500
+Received: from mga07.intel.com ([134.134.136.100]:19314 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229831AbhBAVDy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 16:03:54 -0500
+IronPort-SDR: gBS0oKuU7kzKXuuNKdwBL/vJ8SJMF8mpeld13fUpppd6sglFQPloQRbJ2yKAFiGDsobiY2B+aw
+ eD5DyLYenw9A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="244835312"
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="244835312"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 13:03:07 -0800
+IronPort-SDR: EeMcGpsK8a4WXBQnfF2gIr9r5pBNhA59Ldx84FRM6gZw4bgPX8N11Yn4ozZScjVCtQzoMTNkEZ
+ D2ET/79A2yQA==
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="391135495"
+Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.213.23.187]) ([10.213.23.187])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 13:03:04 -0800
+Subject: Re: [PATCH] ASoC: Intel: catpt: remove unneeded semicolon
+To:     Yang Li <yang.lee@linux.alibaba.com>, perex@perex.cz
+Cc:     tiwai@suse.com, broonie@kernel.org, yang.jie@linux.intel.com,
+        liam.r.girdwood@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+References: <1612166481-121376-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Cezary Rojewski <cezary.rojewski@intel.com>
+Message-ID: <fb3dd21b-dde6-d9f7-e497-a443f60e7493@intel.com>
+Date:   Mon, 1 Feb 2021 22:03:01 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-References: <20210126204240.418297-1-hridya@google.com> <YBFXPbePURupbe+y@kroah.com>
- <CAO_48GHrpi9XxPhP2evwH_ZJmbVSWqxCvsYg6S2Syh-mrWBHzA@mail.gmail.com>
- <c0684400-c1e2-0ebd-ad09-cb7b24db5764@gmail.com> <CAO_48GGsOTLdqAQMO9vrLtWAKG6spByMC-GXwDv_f3ENvpemfA@mail.gmail.com>
- <CAKMK7uEwm5tLT3fo_+QtzUthht3JLkhCpZ+6yJ2XSB6U4Qp5wg@mail.gmail.com>
-In-Reply-To: <CAKMK7uEwm5tLT3fo_+QtzUthht3JLkhCpZ+6yJ2XSB6U4Qp5wg@mail.gmail.com>
-From:   Hridya Valsaraju <hridya@google.com>
-Date:   Mon, 1 Feb 2021 13:02:30 -0800
-Message-ID: <CA+wgaPPmTQ2x37rMVsEW=D-adHHyp12sTAh-Gfq3Fn0rOBBHQA@mail.gmail.com>
-Subject: Re: [Linaro-mm-sig] [PATCH v3] dmabuf: Add the capability to expose
- DMA-BUF stats in sysfs
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Sumit Semwal <sumit.semwal@linaro.org>,
-        Christian Koenig <christian.koenig@amd.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        kernel test robot <lkp@intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        Linaro MM SIG <linaro-mm-sig@lists.linaro.org>,
-        Hyesoo Yu <hyesoo.yu@samsung.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1612166481-121376-1-git-send-email-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 10:37 AM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Thu, Jan 28, 2021 at 1:03 PM Sumit Semwal <sumit.semwal@linaro.org> wr=
-ote:
-> >
-> > On Thu, 28 Jan 2021 at 17:23, Christian K=C3=B6nig
-> > <ckoenig.leichtzumerken@gmail.com> wrote:
-> > >
-> > > Am 28.01.21 um 12:00 schrieb Sumit Semwal:
-> > > > Hi Hridya,
-> > > >
-> > > > On Wed, 27 Jan 2021 at 17:36, Greg KH <gregkh@linuxfoundation.org> =
-wrote:
-> > > >> On Tue, Jan 26, 2021 at 12:42:36PM -0800, Hridya Valsaraju wrote:
-> > > >>> This patch allows statistics to be enabled for each DMA-BUF in
-> > > >>> sysfs by enabling the config CONFIG_DMABUF_SYSFS_STATS.
-> > > >>>
-> > > >>> The following stats will be exposed by the interface:
-> > > >>>
-> > > >>> /sys/kernel/dmabuf/buffers/<inode_number>/exporter_name
-> > > >>> /sys/kernel/dmabuf/buffers/<inode_number>/size
-> > > >>> /sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attach_uid=
->/device
-> > > >>> /sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attach_uid=
->/map_counter
-> > > >>>
-> > > >>> The inode_number is unique for each DMA-BUF and was added earlier=
- [1]
-> > > >>> in order to allow userspace to track DMA-BUF usage across differe=
-nt
-> > > >>> processes.
-> > > >>>
-> > > >>> Currently, this information is exposed in
-> > > >>> /sys/kernel/debug/dma_buf/bufinfo.
-> > > >>> However, since debugfs is considered unsafe to be mounted in prod=
-uction,
-> > > >>> it is being duplicated in sysfs.
-> > > >>>
-> > > >>> This information will be used to derive DMA-BUF
-> > > >>> per-exporter stats and per-device usage stats for Android Bug rep=
-orts.
-> > > >>> The corresponding userspace changes can be found at [2].
-> > > >>> Telemetry tools will also capture this information(along with oth=
-er
-> > > >>> memory metrics) periodically as well as on important events like =
-a
-> > > >>> foreground app kill (which might have been triggered by Low Memor=
-y
-> > > >>> Killer). It will also contribute to provide a snapshot of the sys=
-tem
-> > > >>> memory usage on other events such as OOM kills and Application No=
-t
-> > > >>> Responding events.
-> > > >>>
-> > > >>> A shell script that can be run on a classic Linux environment to =
-read
-> > > >>> out the DMA-BUF statistics can be found at [3](suggested by John
-> > > >>> Stultz).
-> > > >>>
-> > > >>> The patch contains the following improvements over the previous v=
-ersion:
-> > > >>> 1) Each attachment is represented by its own directory to allow c=
-reating
-> > > >>> a symlink to the importing device and to also provide room for fu=
-ture
-> > > >>> expansion.
-> > > >>> 2) The number of distinct mappings of each attachment is exposed =
-in a
-> > > >>> separate file.
-> > > >>> 3) The per-buffer statistics are now in /sys/kernel/dmabuf/buffer=
-s
-> > > >>> inorder to make the interface expandable in future.
-> > > >>>
-> > > >>> All of the improvements above are based on suggestions/feedback f=
-rom
-> > > >>> Daniel Vetter and Christian K=C3=B6nig.
-> > > >>>
-> > > >>> [1]: https://lore.kernel.org/patchwork/patch/1088791/
-> > > >>> [2]: https://android-review.googlesource.com/q/topic:%22dmabuf-sy=
-sfs%22+(status:open%20OR%20status:merged)
-> > > >>> [3]: https://android-review.googlesource.com/c/platform/system/me=
-mory/libmeminfo/+/1549734
-> > > >>>
-> > > >>> Signed-off-by: Hridya Valsaraju <hridya@google.com>
-> > > >>> Reported-by: kernel test robot <lkp@intel.com>
-> > > > Thanks for the patch!
-> > > >
-> > > > Christian: If you're satisfied with the explanation around not
-> > > > directly embedding kobjects into the dma_buf and dma_buf_attachment
-> > > > structs, then with Greg's r-b from sysfs PoV, I think we can merge =
-it.
-> > > > Please let me know if you feel otherwise!
-> > >
-> > >  From the technical side it looks clean to me, feel free to add my
-> > > acked-by while pushing.
-> > >
-> > > But I would at least try to convince Daniel on the design. At least s=
-ome
-> > > of his concerns seems to be valid and keep in mind that we need to
-> > > support this interface forever.
-> >
-> > Naturally.
-> >
-> > Since he didn't comment over Hridya's last clarification about the
-> > tracepoints to track total GPU memory allocations being orthogonal to
-> > this series, I assumed he agreed with it.
->
-> The tracepoint being orthogonal didn't really look convincing to me,
-> since I do expect we'll need that at a much more generic level, at
-> allocators. Whether that's dma-buf heaps or in drm or wherever. And we
-> probably also need that to somehow align with cgroups accounting.
->
-> But I guess for this it should be easy to extend however we see fit,
-> so retrofitting allocator sources and anything else we want/need for
-> the overall gpu memory account shouldn't be a problem. Also, it's
-> first, so the proof for showing it all works together is more on the
-> tracepoints :-)
->
-> > Daniel, do you still have objections around adding this patch in?
->
-> Needs docs (especially the uapi I think would be useful to document),
-> igt tests, that kind of stuff still I think? It's meant to be generic
-> uapi across drivers, generally we're a pile stricter for that (and yes
-> dma-buf heaps I think didn't do all that, so maybe there's an argument
-> for doing this a bit more sloppy or at least "the testsuite is
-> somewhere else").
+On 2021-02-01 9:01 AM, Yang Li wrote:
+> Eliminate the following coccicheck warning:
+> ./sound/soc/intel/catpt/pcm.c:355:2-3: Unneeded semicolon
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>   sound/soc/intel/catpt/pcm.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/intel/catpt/pcm.c b/sound/soc/intel/catpt/pcm.c
+> index e5d54bb..88a0879 100644
+> --- a/sound/soc/intel/catpt/pcm.c
+> +++ b/sound/soc/intel/catpt/pcm.c
+> @@ -352,7 +352,7 @@ static int catpt_dai_apply_usettings(struct snd_soc_dai *dai,
+>   		break;
+>   	default:
+>   		return 0;
+> -	};
+> +	}
+>   
+>   	list_for_each_entry(pos, &component->card->snd_card->controls, list) {
+>   		if (pos->private_data == component &&
+> 
 
-Thank you for taking another look Daniel!
+Hello Yang,
 
-I will try adding an IGT test for the sysfs files. Other than the
-documentation in
-Documentation/ABI/testing/sysfs-kernel-dmabuf-buffers(included in the
-patch), is there another place you would like to see the documentation
-copied to?
+Your patch is much appreciated.
+
+I noticed that more mistakes such as this have been made in the code. 
+Could you please also update switch-statements in other parts of catpt 
+(from what I've found, pcm.c has 2 occurrences while loader.c has 1)?
 
 Regards,
-Hridya
-
->
-> But I think it would be good to have this all done.
-> -Daniel
->
-> >
-> > >
-> > > Regards,
-> > > Christian.
-> >
-> > Best,
-> > Sumit.
-> > >
-> > > >
-> > > >>> ---
-> > > >>> Changes in v3:
-> > > >>> Fix a warning reported by the kernel test robot.
-> > > >>>
-> > > >>> Changes in v2:
-> > > >>> -Move statistics to /sys/kernel/dmabuf/buffers in oder to allow a=
-ddition
-> > > >>> of other DMA-BUF-related sysfs stats in future. Based on feedback=
- from
-> > > >>> Daniel Vetter.
-> > > >>> -Each attachment has its own directory to represent attaching dev=
-ices as
-> > > >>> symlinks and to introduce map_count as a separate file. Based on
-> > > >>> feedback from Daniel Vetter and Christian K=C3=B6nig. Thank you b=
-oth!
-> > > >>> -Commit messages updated to point to userspace code in AOSP that =
-will
-> > > >>> read the DMA-BUF sysfs stats.
-> > > >>>
-> > > >>>
-> > > >>>   .../ABI/testing/sysfs-kernel-dmabuf-buffers   |  52 ++++
-> > > >>>   drivers/dma-buf/Kconfig                       |  11 +
-> > > >>>   drivers/dma-buf/Makefile                      |   1 +
-> > > >>>   drivers/dma-buf/dma-buf-sysfs-stats.c         | 285 +++++++++++=
-+++++++
-> > > >>>   drivers/dma-buf/dma-buf-sysfs-stats.h         |  62 ++++
-> > > >>>   drivers/dma-buf/dma-buf.c                     |  37 +++
-> > > >>>   include/linux/dma-buf.h                       |  20 ++
-> > > >>>   7 files changed, 468 insertions(+)
-> > > >>>   create mode 100644 Documentation/ABI/testing/sysfs-kernel-dmabu=
-f-buffers
-> > > >>>   create mode 100644 drivers/dma-buf/dma-buf-sysfs-stats.c
-> > > >>>   create mode 100644 drivers/dma-buf/dma-buf-sysfs-stats.h
-> > > >> I don't know the dma-buf code at all, but from a sysfs/kobject poi=
-nt of
-> > > >> view, this patch looks good to me:
-> > > >>
-> > > >> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > Best,
-> > > > Sumit.
-> > > > _______________________________________________
-> > > > Linaro-mm-sig mailing list
-> > > > Linaro-mm-sig@lists.linaro.org
-> > > > https://lists.linaro.org/mailman/listinfo/linaro-mm-sig
-> > >
-> >
-> >
-> > --
-> > Thanks and regards,
-> >
-> > Sumit Semwal
-> > Linaro Consumer Group - Tech Lead
-> > Linaro.org =E2=94=82 Open source software for ARM SoCs
-> > _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
->
->
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+Czarek
