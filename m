@@ -2,194 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE7B30A2F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:02:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF0BA30A2F4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:02:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232261AbhBAIBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 03:01:17 -0500
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:36847 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbhBAIBP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 03:01:15 -0500
-X-Originating-IP: 82.65.183.113
-Received: from debian.internal.upmem.com (82-65-183-113.subs.proxad.net [82.65.183.113])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 481CE2000E;
-        Mon,  1 Feb 2021 08:00:26 +0000 (UTC)
-From:   Alexandre Ghiti <alex@ghiti.fr>
-To:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, kasan-dev@googlegroups.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Alexandre Ghiti <alex@ghiti.fr>
-Subject: [PATCH] riscv: Improve kasan population by using hugepages when possible
-Date:   Mon,  1 Feb 2021 03:00:24 -0500
-Message-Id: <20210201080024.844-1-alex@ghiti.fr>
-X-Mailer: git-send-email 2.20.1
+        id S232323AbhBAIB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 03:01:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41662 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231598AbhBAIBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 03:01:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 967D064D73;
+        Mon,  1 Feb 2021 08:01:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612166471;
+        bh=dwZGpeS1TcK5yFFhy+waTC8VkChqi0kUMHO06WjX2kE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=0dIcGQcYEF2T4qVgJpyt0Lni9yV1hdE2LBY2mV6NPuFFNewm9dvGtxz+Wprqs09bh
+         9SLCyDY3NeRWsWusG5bBq6yW3UMXtdhuauTExJxtkuHD4NhEjZYZ6zj81d8LxXCjhv
+         YHb/nJ0f1B1c+G5qiXAx4xQNYLIZpxjkFaOyoBP8=
+Date:   Mon, 1 Feb 2021 09:01:07 +0100
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Avri Altman <Avri.Altman@wdc.com>
+Cc:     "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
+        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
+Subject: Re: [PATCH 3/8] scsi: ufshpb: Add region's reads counter
+Message-ID: <YBe1QxSyMBKSTJA9@kroah.com>
+References: <20210127151217.24760-4-avri.altman@wdc.com>
+ <20210127151217.24760-1-avri.altman@wdc.com>
+ <CGME20210127151311epcas2p1696c2b73f3b4777ac0e7f603790b552f@epcms2p2>
+ <1891546521.01612153501819.JavaMail.epsvc@epcpadp3>
+ <DM6PR04MB657521540E2769C5F1BA2BBFFCB69@DM6PR04MB6575.namprd04.prod.outlook.com>
+ <YBeuK92cgBkvYpk1@kroah.com>
+ <DM6PR04MB6575018DEE12E7A5910FF2CBFCB69@DM6PR04MB6575.namprd04.prod.outlook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR04MB6575018DEE12E7A5910FF2CBFCB69@DM6PR04MB6575.namprd04.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kasan function that populates the shadow regions used to allocate them
-page by page and did not take advantage of hugepages, so fix this by
-trying to allocate hugepages of 1GB and fallback to 2MB hugepages or 4K
-pages in case it fails.
+On Mon, Feb 01, 2021 at 07:51:19AM +0000, Avri Altman wrote:
+> > 
+> > On Mon, Feb 01, 2021 at 07:12:53AM +0000, Avri Altman wrote:
+> > > > > +#define WORK_PENDING 0
+> > > > > +#define ACTIVATION_THRSHLD 4 /* 4 IOs */
+> > > > Rather than fixing it with macro, how about using sysfs and make it
+> > > > configurable?
+> > > Yes.
+> > > I will add a patch making all the logic configurable.
+> > > As all those are hpb-related parameters, I think module parameters are
+> > more adequate.
+> > 
+> > No, this is not the 1990's, please never add new module parameters to
+> > drivers.  If not for the basic problem of they do not work on a
+> > per-device basis, but on a per-driver basis, which is what you almost
+> > never want.
+> OK.
+> 
+> > 
+> > But why would you want to change this value, why can't the driver "just
+> > work" and not need manual intervention?
+> It is.
+> But those are a knobs each vendor may want to tweak,
+> So it'll be optimized with its internal device's implementation.
+> 
+> Tweaking the parameters, as well as the entire logic, is really an endless task.
+> Some logic works better for some scenarios, while falling behind on others.
 
-This reduces the page table memory consumption and improves TLB usage,
-as shown below:
+Shouldn't the hardware know how to handle this dynamically?  If not, how
+is a user going to know?
 
-Before this patch:
+> How about leaving it for now, to be elaborated it in the future?
 
----[ Kasan shadow start ]---
-0xffffffc000000000-0xffffffc400000000    0x00000000818ef000        16G PTE     . A . . . . R V
-0xffffffc400000000-0xffffffc447fc0000    0x00000002b7f4f000   1179392K PTE     D A . . . W R V
-0xffffffc480000000-0xffffffc800000000    0x00000000818ef000        14G PTE     . A . . . . R V
----[ Kasan shadow end ]---
+I do not care, just do not make it a module parameter for the reason
+that does not work on a per-device basis.
 
-After this patch:
+> Maybe even can be a part of a scheme, to make the logic proprietary?
 
----[ Kasan shadow start ]---
-0xffffffc000000000-0xffffffc400000000    0x00000000818ef000        16G PTE     . A . . . . R V
-0xffffffc400000000-0xffffffc440000000    0x0000000240000000         1G PGD     D A . . . W R V
-0xffffffc440000000-0xffffffc447e00000    0x00000002b7e00000       126M PMD     D A . . . W R V
-0xffffffc447e00000-0xffffffc447fc0000    0x00000002b818f000      1792K PTE     D A . . . W R V
-0xffffffc480000000-0xffffffc800000000    0x00000000818ef000        14G PTE     . A . . . . R V
----[ Kasan shadow end ]---
+What do you mean by "proprietary"?
 
-Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
----
- arch/riscv/mm/kasan_init.c | 101 +++++++++++++++++++++++++++----------
- 1 file changed, 73 insertions(+), 28 deletions(-)
+thanks,
 
-diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
-index a8a2ffd9114a..8f11b73018b1 100644
---- a/arch/riscv/mm/kasan_init.c
-+++ b/arch/riscv/mm/kasan_init.c
-@@ -47,37 +47,82 @@ asmlinkage void __init kasan_early_init(void)
- 	local_flush_tlb_all();
- }
- 
--static void __init populate(void *start, void *end)
-+static void kasan_populate_pte(pmd_t *pmd, unsigned long vaddr, unsigned long end)
-+{
-+	phys_addr_t phys_addr;
-+	pte_t *ptep = memblock_alloc(PTRS_PER_PTE * sizeof(pte_t), PAGE_SIZE);
-+
-+	do {
-+		phys_addr = memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
-+		set_pte(ptep, pfn_pte(PFN_DOWN(phys_addr), PAGE_KERNEL));
-+	} while (ptep++, vaddr += PAGE_SIZE, vaddr != end);
-+
-+	set_pmd(pmd, pfn_pmd(PFN_DOWN(__pa(ptep)), PAGE_TABLE));
-+}
-+
-+static void kasan_populate_pmd(pgd_t *pgd, unsigned long vaddr, unsigned long end)
-+{
-+	phys_addr_t phys_addr;
-+	pmd_t *pmdp = memblock_alloc(PTRS_PER_PMD * sizeof(pmd_t), PAGE_SIZE);
-+	unsigned long next;
-+
-+	do {
-+		next = pmd_addr_end(vaddr, end);
-+
-+		if (IS_ALIGNED(vaddr, PMD_SIZE) && (next - vaddr) >= PMD_SIZE) {
-+			phys_addr = memblock_phys_alloc(PMD_SIZE, PMD_SIZE);
-+			if (phys_addr) {
-+				set_pmd(pmdp, pfn_pmd(PFN_DOWN(phys_addr), PAGE_KERNEL));
-+				continue;
-+			}
-+		}
-+
-+		kasan_populate_pte(pmdp, vaddr, end);
-+	} while (pmdp++, vaddr = next, vaddr != end);
-+
-+	/*
-+	 * Wait for the whole PGD to be populated before setting the PGD in
-+	 * the page table, otherwise, if we did set the PGD before populating
-+	 * it entirely, memblock could allocate a page at a physical address
-+	 * where KASAN is not populated yet and then we'd get a page fault.
-+	 */
-+	set_pgd(pgd, pfn_pgd(PFN_DOWN(__pa(pmdp)), PAGE_TABLE));
-+}
-+
-+static void kasan_populate_pgd(unsigned long vaddr, unsigned long end)
-+{
-+	phys_addr_t phys_addr;
-+	pgd_t *pgdp = pgd_offset_k(vaddr);
-+	unsigned long next;
-+
-+	do {
-+		next = pgd_addr_end(vaddr, end);
-+
-+		if (IS_ALIGNED(vaddr, PGDIR_SIZE) && (next - vaddr) >= PGDIR_SIZE) {
-+			phys_addr = memblock_phys_alloc(PGDIR_SIZE, PGDIR_SIZE);
-+			if (phys_addr) {
-+				set_pgd(pgdp, pfn_pgd(PFN_DOWN(phys_addr), PAGE_KERNEL));
-+				continue;
-+			}
-+		}
-+
-+		kasan_populate_pmd(pgdp, vaddr, end);
-+	} while (pgdp++, vaddr = next, vaddr != end);
-+}
-+
-+/*
-+ * This function populates KASAN shadow region focusing on hugepages in
-+ * order to minimize the page table cost and TLB usage too.
-+ * Note that start must be PGDIR_SIZE-aligned in SV39 which amounts to be
-+ * 1G aligned (that represents a 8G alignment constraint on virtual address
-+ * ranges because of KASAN_SHADOW_SCALE_SHIFT).
-+ */
-+static void __init kasan_populate(void *start, void *end)
- {
--	unsigned long i, offset;
- 	unsigned long vaddr = (unsigned long)start & PAGE_MASK;
- 	unsigned long vend = PAGE_ALIGN((unsigned long)end);
--	unsigned long n_pages = (vend - vaddr) / PAGE_SIZE;
--	unsigned long n_ptes =
--	    ((n_pages + PTRS_PER_PTE) & -PTRS_PER_PTE) / PTRS_PER_PTE;
--	unsigned long n_pmds =
--	    ((n_ptes + PTRS_PER_PMD) & -PTRS_PER_PMD) / PTRS_PER_PMD;
--
--	pte_t *pte =
--	    memblock_alloc(n_ptes * PTRS_PER_PTE * sizeof(pte_t), PAGE_SIZE);
--	pmd_t *pmd =
--	    memblock_alloc(n_pmds * PTRS_PER_PMD * sizeof(pmd_t), PAGE_SIZE);
--	pgd_t *pgd = pgd_offset_k(vaddr);
--
--	for (i = 0; i < n_pages; i++) {
--		phys_addr_t phys = memblock_phys_alloc(PAGE_SIZE, PAGE_SIZE);
--		set_pte(&pte[i], pfn_pte(PHYS_PFN(phys), PAGE_KERNEL));
--	}
--
--	for (i = 0, offset = 0; i < n_ptes; i++, offset += PTRS_PER_PTE)
--		set_pmd(&pmd[i],
--			pfn_pmd(PFN_DOWN(__pa(&pte[offset])),
--				__pgprot(_PAGE_TABLE)));
- 
--	for (i = 0, offset = 0; i < n_pmds; i++, offset += PTRS_PER_PMD)
--		set_pgd(&pgd[i],
--			pfn_pgd(PFN_DOWN(__pa(&pmd[offset])),
--				__pgprot(_PAGE_TABLE)));
-+	kasan_populate_pgd(vaddr, vend);
- 
- 	local_flush_tlb_all();
- 	memset(start, 0, end - start);
-@@ -99,7 +144,7 @@ void __init kasan_init(void)
- 		if (start >= end)
- 			break;
- 
--		populate(kasan_mem_to_shadow(start), kasan_mem_to_shadow(end));
-+		kasan_populate(kasan_mem_to_shadow(start), kasan_mem_to_shadow(end));
- 	};
- 
- 	for (i = 0; i < PTRS_PER_PTE; i++)
--- 
-2.20.1
-
+greg k-h
