@@ -2,139 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 942BF30ACDB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7B230AF32
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:27:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbhBAQjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 11:39:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60494 "EHLO mail.kernel.org"
+        id S232618AbhBAS1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:27:17 -0500
+Received: from mga02.intel.com ([134.134.136.20]:7671 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231377AbhBAQjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 11:39:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E50DB60235;
-        Mon,  1 Feb 2021 16:38:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612197537;
-        bh=dmJ780YfV7WU9jyBknVx3SR8qV5fVlxQCRjWvZqC9nc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uIUE2A98mrYmpRQnu428tqjfCOGrx/PWVOBdeDsswJ7aIkxsG0L8h7raptbw1j6GF
-         nHzdk28gIYl3FayMtxN9syesotPNFx3l3yXl35QGf9YrIn7c3vjzTPn2uoUrC7ni/S
-         Rc1N/Lnv+MQuNsDfh0dq3vEq+LVRhxSltyzeoAKU=
-Date:   Mon, 1 Feb 2021 17:38:54 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Badhri Jagan Sridharan <badhri@google.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kyle Tso <kyletso@google.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/3] usb: typec: tcpm: Add Callback to Usb
- Communication capable partner
-Message-ID: <YBgunjrmQsFkYBvm@kroah.com>
-References: <20210201095309.39486-1-badhri@google.com>
- <20210201151253.GG2465@kuha.fi.intel.com>
- <YBgcCu7lx036C+KN@kroah.com>
- <20210201160925.GA1433721@kuha.fi.intel.com>
+        id S232589AbhBASQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 13:16:57 -0500
+IronPort-SDR: X4dk1v47vnNeBC8ujX4DD+m3EhhFMp7GAeGmKSe6IxpWwFLfpPT6I/BKJSog7ULLtNWcUDblsX
+ jVgtWSsho06g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="167833511"
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="167833511"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 10:13:28 -0800
+IronPort-SDR: gSXK9Wz0LLbo/1o2z8pNJICOfR2OtG/gUJ5mkpRd5bum4FfrsAv7S3wwQcC7KgsPWMOD4zz5GO
+ T+j5E3uPaGJA==
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="412516938"
+Received: from dkhaldi-mobl1.amr.corp.intel.com (HELO [10.212.126.61]) ([10.212.126.61])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 10:13:27 -0800
+Subject: Re: [PATCH 5/6] soundwire: qcom: update register read/write routine
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        vkoul@kernel.org
+Cc:     yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+References: <20210129173248.5941-1-srinivas.kandagatla@linaro.org>
+ <20210129173248.5941-6-srinivas.kandagatla@linaro.org>
+ <5c69ed09-60be-2f3d-ed25-f6dbfcb9d62f@linux.intel.com>
+ <3a2b5c2d-21aa-2bf5-62df-ef85c7c9293c@linaro.org>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <b87758d0-5862-3b4e-5a90-7b27d0c78d0d@linux.intel.com>
+Date:   Mon, 1 Feb 2021 10:42:49 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201160925.GA1433721@kuha.fi.intel.com>
+In-Reply-To: <3a2b5c2d-21aa-2bf5-62df-ef85c7c9293c@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 06:09:25PM +0200, Heikki Krogerus wrote:
-> On Mon, Feb 01, 2021 at 04:19:38PM +0100, Greg Kroah-Hartman wrote:
-> > On Mon, Feb 01, 2021 at 05:12:53PM +0200, Heikki Krogerus wrote:
-> > > On Mon, Feb 01, 2021 at 01:53:07AM -0800, Badhri Jagan Sridharan wrote:
-> > > > The USB Communications Capable bit indicates if port
-> > > > partner is capable of communication over the USB data lines
-> > > > (e.g. D+/- or SS Tx/Rx). Notify the status of the bit to low
-> > > > level drivers to perform chip specific operation.
-> > > > For instance, low level driver enables USB switches on D+/D-
-> > > > lines to set up data path when the bit is set.
-> > > > 
-> > > > Refactored from patch initially authored by
-> > > > Kyle Tso <kyletso@google.com>
-> > > > 
-> > > > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> > > > ---
-> > > >  drivers/usb/typec/tcpm/tcpm.c | 16 ++++++++++++++++
-> > > >  include/linux/usb/tcpm.h      |  5 +++++
-> > > >  2 files changed, 21 insertions(+)
-> > > 
-> > > ...
-> > > 
-> > > > diff --git a/include/linux/usb/tcpm.h b/include/linux/usb/tcpm.h
-> > > > index 3af99f85e8b9..42fcfbe10590 100644
-> > > > --- a/include/linux/usb/tcpm.h
-> > > > +++ b/include/linux/usb/tcpm.h
-> > > > @@ -108,6 +108,10 @@ enum tcpm_transmit_type {
-> > > >   *		is supported by TCPC, set this callback for TCPM to query
-> > > >   *		whether vbus is at VSAFE0V when needed.
-> > > >   *		Returns true when vbus is at VSAFE0V, false otherwise.
-> > > > + * @set_partner_usb_comm_capable:
-> > > > + *              Optional; The USB Communications Capable bit indicates if port
-> > > > + *              partner is capable of communication over the USB data lines
-> > > > + *              (e.g. D+/- or SS Tx/Rx). Called to notify the status of the bit.
-> > > >   */
-> > > >  struct tcpc_dev {
-> > > >  	struct fwnode_handle *fwnode;
-> > > > @@ -139,6 +143,7 @@ struct tcpc_dev {
-> > > >  	int (*set_auto_vbus_discharge_threshold)(struct tcpc_dev *dev, enum typec_pwr_opmode mode,
-> > > >  						 bool pps_active, u32 requested_vbus_voltage);
-> > > >  	bool (*is_vbus_vsafe0v)(struct tcpc_dev *dev);
-> > > > +	void (*set_partner_usb_comm_capable)(struct tcpc_dev *dev, bool enable);
-> > > >  };
-> > > >  
-> > > >  struct tcpm_port;
-> > > 
-> > > There start to be a lot of callback there, separate for each function.
-> > > And I guess flags too... Would it be possible to have a single
-> > > notification callback instead, that would take the type of the
-> > > notification as a parameter (we could have an enum for those), and
-> > > then the specific object(s) for each type as another paramter (RDO I
-> > > guess in this case)?
-> > > 
-> > > It would then be up to the TCPC driver to extract the detail it needs
-> > > from that object. That would somehow feel more cleaner to me, but what
-> > > do you guys think?
-> > 
-> > It's pretty much the same thing, a "mux" function vs. individual
-> > function calls.  Personally, individual callbacks are much more
-> > explicit, and I think make it easier to determine what is really going
-> > on in each driver.
-> > 
-> > But it all does the same thing, if there's going to be loads of
-> > callbacks needed, then a single one makes it easier to maintain over
-> > time.
-> > 
-> > So it's up to the maintainer what they want to see :)
-> 
-> I understand your point, and I guess a "generic" notification callback
-> for all that would not be a good idea. However, right now it looks
-> like we are picking individual bits from various PD objects with those
-> callbacks, and that does not feel ideal to me either. After all, each of
-> those bits has its own flag now, even though the details is just
-> extracted from some PD object that we should also have access to.
-> 
-> I think there are ways we can improve this for example by attempting
-> to create the notifications per transaction instead of for each
-> individual result of those transactions. That way we would not need to
-> store the flags at least because we could deliver the entire object
-> that was the result of the specific transaction.
-> 
-> So basically, I fear that dealing with these individual bits will in
-> many case only serve individual device drivers, and in the worst case
-> start making the tcpm.c a bit more difficult to manage if we start to
-> have more and more of these bit callbacks.
-> 
-> But on the other hand, I guess we are nowhere near that point, so
-> let's forget about this for now.
 
-If it gets unwieldy, we can always change it in the future, there's no
-reason these types of in-kernel apis can not be modified and cleaned up
-over time.
 
-thanks,
+On 2/1/21 9:50 AM, Srinivas Kandagatla wrote:
+> 
+> 
+> On 29/01/2021 19:33, Pierre-Louis Bossart wrote:
+>>
+>>
+>> On 1/29/21 11:32 AM, Srinivas Kandagatla wrote:
+>>> In the existing code every soundwire register read and register write
+>>> are kinda blocked. Each of these are using a special command id that
+>>
+>> what does 'kinda blocked' mean?
+> 
+> I meant read/writes are waiting for completion interrupt!
+> 
+>>
+>>> generates interrupt after it successfully finishes. This is really
+>>> overhead, limiting and not really necessary unless we are doing
+>>> something special.
+>>>
+>>> We can simply read/write the fifo that should also give exactly
+>>> what we need! This will also allow to read/write registers in
+>>> interrupt context, which was not possible with the special
+>>> command approach.
+>>
+>> This is really unclear, sorry.
+> 
+> If read/writes are waiting for an interrupt, it becomes difficult to 
+> read or write to any registers from same interrupt handler!
 
-greg k-h
+Well, yes, you need to handle the complete() at a lower level than the 
+code that initiates the transactions otherwise you self-deadlock.
+
+IIRC in the Intel initial code, the complete was in the handler and the 
+register IOs in the thread.
+
+> 
+> 
+>>
+>>> +    if (id != SWR_BROADCAST_CMD_ID) {
+>>> +        if (id < 14)
+>>> +            id += 1;
+>>> +        else
+>>> +            id = 0;
+>>
+>> that is really odd. if id=13 (group2) then id becomes 14 (master 
+>> address). A comment is really needed here.
+> 
+> This is magic value for each fifo read or write, so that we can verify 
+> that them by comparing with this magic value!
+> 
+> This has nothing to do with device number!
+
+You should probably add a comment here then, or use a #define instead of 
+the 14 which threw me off.
+
+> 
+>>
+>>> +    if (cmd_id == SWR_BROADCAST_CMD_ID) {
+>>> +        /*
+>>> +         * sleep for 10ms for MSM soundwire variant to allow broadcast
+>>> +         * command to complete.
+>>
+>> that's also super-odd. There is nothing in SoundWire that makes any 
+>> difference between a regular and a broadcast command. they all 
+>> complete in the same time (a frame).
+>>> +         */
+>>> +        ret = wait_for_completion_timeout(&swrm->broadcast, (2 * 
+>>> HZ/10));
+>>
+>> is this 10ms really or dependent on CONFIG_HZ?
+
+comment missed?
+
+>>
+>>> +        if (!ret)
+>>> +            ret = SDW_CMD_IGNORED;
+>>> +        else
+>>> +            ret = SDW_CMD_OK;
+>>
+>> no CMD_FAILED support?
+> 
+> Qcom controllers does not provide that information if the command is 
+> ignored or failed by any means!
+> 
+> That was the behavior from the starting of this driver.
+
+ah yes, now I remember this.
