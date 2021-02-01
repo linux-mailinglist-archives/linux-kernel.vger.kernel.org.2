@@ -2,120 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A268330B042
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:22:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1615F30B04B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:24:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229599AbhBATUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 14:20:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231152AbhBATUH (ORCPT
+        id S231150AbhBATW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 14:22:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49792 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231318AbhBATWx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 14:20:07 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00775C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 11:19:26 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id c4so15162206wru.9
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 11:19:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bpPec5GaqUSpiFKH55nc+mRy05EutxL4zvW4JDLSH2w=;
-        b=L1BFVP6DKWTRXYjr/HG5kzKEhOwfZpItCIQI+widwKu8yrXD87Lkr3WHZ+WOh8FijZ
-         5Yu5VU4MipyyJdu4pN+2CIL9GE0jLdCHpnVSpNjppS0CngxZjBaH17J+P0iFmdebm5ym
-         SNpFdMpRHgguYbfn7wb5MaymuFam3ufPha33+aHG2UjDnQXhe1xjyo5g4GzkxqGCraS6
-         G17Ti1vasQlQsUHGZNiqYEvxCROKO9WOe7SRea2EjzigXHmpIWuHinzDoBadufY6zXh/
-         PJLmLLh62TqV904Q6DHSUGdNpjJfMXCC3eampfSGwkHCgIZnvIDLWF9LSDff6vnUND78
-         xwWg==
+        Mon, 1 Feb 2021 14:22:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612207285;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Q2b/N50hu0sHq/kMoTQCMLs3X1tcdQtb/zYbLnwU7BM=;
+        b=eQehGxMSD1Yt3VqGRbujaHOkUo9z0np61Q2s/CBT2VPsHx3jS9xCLMMiLM7V8l1AmLQWNr
+        XWh+t03aF96ny7jCCh6JEGAsXeX41iF5qkA3U1YdT+gDyR1kXSNywRzAlXqKcn5EXUtp7l
+        /qoI5ou6FFExyz+BRhLgSNYhQQJYP7s=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-541-iDKI_BiQP1KxUE3h_wBKbg-1; Mon, 01 Feb 2021 14:21:24 -0500
+X-MC-Unique: iDKI_BiQP1KxUE3h_wBKbg-1
+Received: by mail-qk1-f200.google.com with SMTP id 185so14087482qkl.6
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 11:21:24 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bpPec5GaqUSpiFKH55nc+mRy05EutxL4zvW4JDLSH2w=;
-        b=oF8NxkUWr2xNMxUaiFoT3/pT3ZdUXQOJx6q5pfOyFlGJo5nOo8D9h80nzR9ea9T2Qe
-         7SsyK3h4YT77rUx7cZotFs2iFKB1xwUs42CaF47xE3WOtl9R1NhJMp9ArqGw/4veFebp
-         8DBrbMf9kaQfSzlkFTpHbhfdW+z2BFsq5NVwJJ2IbU5EDUo9eQM/VzP8MgYFEtkPhtuN
-         +jv58/ftVbpSX3ANdeilpgTePR3mjzgM0E5LUVHmzPselsqm2uhxvM2CJmhsGhwtMHNA
-         zEisn1GZi/2cD76HES3RqvTKarAvagbWKWXaUvRtDoEjCPGP03IBRuKKypsqIbkturyN
-         kHjg==
-X-Gm-Message-State: AOAM5323cz1/D97lhZBrLSz54t4oHb4hMFyMqC/DPlcuH5KdswvzTI/p
-        FyavcsyZ+S4oXPWBjDVB6fQ=
-X-Google-Smtp-Source: ABdhPJx3pMVLb9CkOou36g3t7qqdGANy/dfEotKyLpnw7vAMg5cnQZHLxWuac8auMVYBUSGMG7/Jdw==
-X-Received: by 2002:adf:eacc:: with SMTP id o12mr19659558wrn.202.1612207165733;
-        Mon, 01 Feb 2021 11:19:25 -0800 (PST)
-Received: from [192.168.2.27] (39.35.broadband4.iol.cz. [85.71.35.39])
-        by smtp.gmail.com with ESMTPSA id p15sm27989090wrt.15.2021.02.01.11.19.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 11:19:24 -0800 (PST)
-Subject: Re: Very slow unlockall()
-To:     Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@suse.com>
-Cc:     linux-mm@kvack.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Mikulas Patocka <mpatocka@redhat.com>
-References: <70885d37-62b7-748b-29df-9e94f3291736@gmail.com>
- <20210108134140.GA9883@dhcp22.suse.cz>
- <abb752ce-4447-74cb-dfbc-03af1b38edfc@gmail.com>
- <9474cd07-676a-56ed-1942-5090e0b9a82f@suse.cz>
- <e6f84b27-ed29-0fa4-e466-536b529c5720@gmail.com>
- <6eebb858-d517-b70d-9202-f4e84221ed89@suse.cz>
-From:   Milan Broz <gmazyland@gmail.com>
-Message-ID: <dfc3fe66-07ac-6aba-e10b-c940cdb01ec1@gmail.com>
-Date:   Mon, 1 Feb 2021 20:19:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Q2b/N50hu0sHq/kMoTQCMLs3X1tcdQtb/zYbLnwU7BM=;
+        b=aVyF2DPBUyTOq8XH0WDfm2x4j7uI98CH7xyDZBywF6chT2k88ny/3Z3l/LVLQsckub
+         MeJMNBttzoEKwrO0ZcyBVCTPDmddupZrwjyuujJ78cCfWxoaUq7R9x6uXDr6E5WFNhOf
+         FoqqoHA3itqbMZ8edsaJ/ygQLzXAwoLmpxo2QA7VcQemXeuyMRaetmg/bIt266NTVC+5
+         ScFDuLQ9eBO5dyz0oPYJAalIMsfoy65ySOnizia9m6Mhe1BYP4691gD0rsxHsEjLzRjF
+         hQGvqFBsQ1Z3XrekMdGnFc5fENh/S7APyd7bsiiwenPZQdWdu/QZ1JR/7RQCo0DsKJ9U
+         yHAg==
+X-Gm-Message-State: AOAM530zFM8IChoPihXXHGHZ8NdRQPCGSD2fSgYlhVAw463CS/hMWlU0
+        Cark+/1PxS5rXjtVtw2khT62UNvFrZr6u1QtWvJtyqp7hn4AyjO4B957t0LOpRwhbvs/FWUig8Q
+        Enhd9ukM6oWkKwuYwNi3NtSu2
+X-Received: by 2002:ac8:5cd0:: with SMTP id s16mr16186215qta.309.1612207283700;
+        Mon, 01 Feb 2021 11:21:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwWmFLJGbGwctGCP9A/nYWy61WeOGTKC6d+y1Ba8IhsTF2WrQd3mliiW1G26lcHYKqEou/z+w==
+X-Received: by 2002:ac8:5cd0:: with SMTP id s16mr16186156qta.309.1612207283172;
+        Mon, 01 Feb 2021 11:21:23 -0800 (PST)
+Received: from xz-x1 ([142.126.83.202])
+        by smtp.gmail.com with ESMTPSA id o5sm14755572qko.85.2021.02.01.11.21.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 11:21:22 -0800 (PST)
+Date:   Mon, 1 Feb 2021 14:21:20 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steven Price <steven.price@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        Adam Ruprecht <ruprecht@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH v3 7/9] userfaultfd: add UFFDIO_CONTINUE ioctl
+Message-ID: <20210201192120.GG260413@xz-x1>
+References: <20210128224819.2651899-1-axelrasmussen@google.com>
+ <20210128224819.2651899-8-axelrasmussen@google.com>
 MIME-Version: 1.0
-In-Reply-To: <6eebb858-d517-b70d-9202-f4e84221ed89@suse.cz>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210128224819.2651899-8-axelrasmussen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/02/2021 19:55, Vlastimil Babka wrote:
-> On 2/1/21 7:00 PM, Milan Broz wrote:
->> On 01/02/2021 14:08, Vlastimil Babka wrote:
->>> On 1/8/21 3:39 PM, Milan Broz wrote:
->>>> On 08/01/2021 14:41, Michal Hocko wrote:
->>>>> On Wed 06-01-21 16:20:15, Milan Broz wrote:
->>>>>> Hi,
->>>>>>
->>>>>> we use mlockall(MCL_CURRENT | MCL_FUTURE) / munlockall() in cryptsetup code
->>>>>> and someone tried to use it with hardened memory allocator library.
->>>>>>
->>>>>> Execution time was increased to extreme (minutes) and as we found, the problem
->>>>>> is in munlockall().
->>>>>>
->>>>>> Here is a plain reproducer for the core without any external code - it takes
->>>>>> unlocking on Fedora rawhide kernel more than 30 seconds!
->>>>>> I can reproduce it on 5.10 kernels and Linus' git.
->>>>>>
->>>>>> The reproducer below tries to mmap large amount memory with PROT_NONE (later never used).
->>>>>> The real code of course does something more useful but the problem is the same.
->>>>>>
->>>>>> #include <stdio.h>
->>>>>> #include <stdlib.h>
->>>>>> #include <fcntl.h>
->>>>>> #include <sys/mman.h>
->>>>>>
->>>>>> int main (int argc, char *argv[])
->>>>>> {
->>>>>>         void *p  = mmap(NULL, 1UL << 41, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-> 
-> So, this is 2TB memory area, but PROT_NONE means it's never actually populated,
-> although mlockall(MCL_CURRENT) should do that. Once you put PROT_READ |
-> PROT_WRITE there, the mlockall() starts taking ages.
-> 
-> So does that reflect your use case? munlockall() with large PROT_NONE areas? If
-> so, munlock_vma_pages_range() is indeed not optimized for that, but I would
-> expect such scenario to be uncommon, so better clarify first.
+On Thu, Jan 28, 2021 at 02:48:17PM -0800, Axel Rasmussen wrote:
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index f94a35296618..79e1f0155afa 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -135,11 +135,14 @@ void hugetlb_show_meminfo(void);
+>  unsigned long hugetlb_total_pages(void);
+>  vm_fault_t hugetlb_fault(struct mm_struct *mm, struct vm_area_struct *vma,
+>  			unsigned long address, unsigned int flags);
+> +#ifdef CONFIG_USERFAULTFD
 
-It is just a simple reproducer of the underlying problem, as suggested here 
-https://gitlab.com/cryptsetup/cryptsetup/-/issues/617#note_478342301
+I'm confused why this is needed.. hugetlb_mcopy_atomic_pte() should only be
+called in userfaultfd.c, but if without uffd config set it won't compile
+either:
 
-We use mlockall() in cryptsetup and with hardened malloc it slows down unlock significantly.
-(For the real case problem please read the whole issue report above.)
+        obj-$(CONFIG_USERFAULTFD) += userfaultfd.o
 
-m.
+>  int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm, pte_t *dst_pte,
+>  				struct vm_area_struct *dst_vma,
+>  				unsigned long dst_addr,
+>  				unsigned long src_addr,
+> +				enum mcopy_atomic_mode mode,
+>  				struct page **pagep);
+> +#endif
+>  int hugetlb_reserve_pages(struct inode *inode, long from, long to,
+>  						struct vm_area_struct *vma,
+>  						vm_flags_t vm_flags);
+> diff --git a/include/linux/userfaultfd_k.h b/include/linux/userfaultfd_k.h
+> index fb9abaeb4194..2fcb686211e8 100644
+> --- a/include/linux/userfaultfd_k.h
+> +++ b/include/linux/userfaultfd_k.h
+> @@ -37,6 +37,22 @@ extern int sysctl_unprivileged_userfaultfd;
+>  
+>  extern vm_fault_t handle_userfault(struct vm_fault *vmf, unsigned long reason);
+>  
+> +/*
+> + * The mode of operation for __mcopy_atomic and its helpers.
+> + *
+> + * This is almost an implementation detail (mcopy_atomic below doesn't take this
+> + * as a parameter), but it's exposed here because memory-kind-specific
+> + * implementations (e.g. hugetlbfs) need to know the mode of operation.
+> + */
+> +enum mcopy_atomic_mode {
+> +	/* A normal copy_from_user into the destination range. */
+> +	MCOPY_ATOMIC_NORMAL,
+> +	/* Don't copy; map the destination range to the zero page. */
+> +	MCOPY_ATOMIC_ZEROPAGE,
+> +	/* Just setup the dst_vma, without modifying the underlying page(s). */
+> +	MCOPY_ATOMIC_CONTINUE,
+> +};
+> +
+
+Maybe better to keep this to where it's used, e.g. hugetlb.h where we've
+defined hugetlb_mcopy_atomic_pte()?
+
+[...]
+
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 6f9d8349f818..3d318ef3d180 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -4647,6 +4647,7 @@ vm_fault_t hugetlb_fault(struct mm_struct *mm, struct vm_area_struct *vma,
+>  	return ret;
+>  }
+>  
+> +#ifdef CONFIG_USERFAULTFD
+
+So I feel like you added the header ifdef for this.
+
+IMHO we can drop both since that's what we have had.  I agree maybe it's better
+to not compile that without CONFIG_USERFAULTFD but that may worth a standalone
+patch anyways.
+
+>  /*
+>   * Used by userfaultfd UFFDIO_COPY.  Based on mcopy_atomic_pte with
+>   * modifications for huge pages.
+> @@ -4656,6 +4657,7 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
+>  			    struct vm_area_struct *dst_vma,
+>  			    unsigned long dst_addr,
+>  			    unsigned long src_addr,
+> +			    enum mcopy_atomic_mode mode,
+>  			    struct page **pagep)
+>  {
+>  	struct address_space *mapping;
+> @@ -4668,7 +4670,10 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
+>  	int ret;
+>  	struct page *page;
+>  
+> -	if (!*pagep) {
+> +	mapping = dst_vma->vm_file->f_mapping;
+> +	idx = vma_hugecache_offset(h, dst_vma, dst_addr);
+> +
+> +	if (!*pagep && mode != MCOPY_ATOMIC_CONTINUE) {
+>  		ret = -ENOMEM;
+>  		page = alloc_huge_page(dst_vma, dst_addr, 0);
+>  		if (IS_ERR(page))
+> @@ -4685,6 +4690,12 @@ int hugetlb_mcopy_atomic_pte(struct mm_struct *dst_mm,
+>  			/* don't free the page */
+>  			goto out;
+>  		}
+> +	} else if (mode == MCOPY_ATOMIC_CONTINUE) {
+> +		ret = -EFAULT;
+> +		page = find_lock_page(mapping, idx);
+> +		*pagep = NULL;
+> +		if (!page)
+> +			goto out;
+>  	} else {
+>  		page = *pagep;
+>  		*pagep = NULL;
+
+I would write this as:
+
+    if (mode == MCOPY_ATOMIC_CONTINUE)
+        ...
+    else if (!*pagep)
+        ...
+    else 
+        ...
+
+No strong opinion, but that'll look slightly cleaner to me.
+
+[...]
+
+> @@ -408,7 +407,7 @@ extern ssize_t __mcopy_atomic_hugetlb(struct mm_struct *dst_mm,
+>  				      unsigned long dst_start,
+>  				      unsigned long src_start,
+>  				      unsigned long len,
+> -				      bool zeropage);
+> +				      enum mcopy_atomic_mode mode);
+>  #endif /* CONFIG_HUGETLB_PAGE */
+>  
+>  static __always_inline ssize_t mfill_atomic_pte(struct mm_struct *dst_mm,
+> @@ -417,7 +416,7 @@ static __always_inline ssize_t mfill_atomic_pte(struct mm_struct *dst_mm,
+>  						unsigned long dst_addr,
+>  						unsigned long src_addr,
+>  						struct page **page,
+> -						bool zeropage,
+> +						enum mcopy_atomic_mode mode,
+>  						bool wp_copy)
+>  {
+>  	ssize_t err;
+> @@ -433,22 +432,38 @@ static __always_inline ssize_t mfill_atomic_pte(struct mm_struct *dst_mm,
+>  	 * and not in the radix tree.
+>  	 */
+>  	if (!(dst_vma->vm_flags & VM_SHARED)) {
+> -		if (!zeropage)
+> +		switch (mode) {
+> +		case MCOPY_ATOMIC_NORMAL:
+>  			err = mcopy_atomic_pte(dst_mm, dst_pmd, dst_vma,
+>  					       dst_addr, src_addr, page,
+>  					       wp_copy);
+> -		else
+> +			break;
+> +		case MCOPY_ATOMIC_ZEROPAGE:
+>  			err = mfill_zeropage_pte(dst_mm, dst_pmd,
+>  						 dst_vma, dst_addr);
+> +			break;
+> +		/* It only makes sense to CONTINUE for shared memory. */
+> +		case MCOPY_ATOMIC_CONTINUE:
+> +			err = -EINVAL;
+> +			break;
+> +		}
+>  	} else {
+>  		VM_WARN_ON_ONCE(wp_copy);
+> -		if (!zeropage)
+> +		switch (mode) {
+> +		case MCOPY_ATOMIC_NORMAL:
+>  			err = shmem_mcopy_atomic_pte(dst_mm, dst_pmd,
+>  						     dst_vma, dst_addr,
+>  						     src_addr, page);
+> -		else
+> +			break;
+> +		case MCOPY_ATOMIC_ZEROPAGE:
+>  			err = shmem_mfill_zeropage_pte(dst_mm, dst_pmd,
+>  						       dst_vma, dst_addr);
+> +			break;
+> +		case MCOPY_ATOMIC_CONTINUE:
+> +			/* FIXME: Add minor fault interception for shmem. */
+> +			err = -EINVAL;
+> +			break;
+> +		}
+>  	}
+>  
+>  	return err;
+
+The whole chunk above is not needed for hugetlbfs it seems - I'd avoid touching
+the anon/shmem code path until it's being supported.
+
+What you need is probably set zeropage as below in __mcopy_atomic():
+
+    zeropage = (mode == MCOPY_ATOMIC_ZEROPAGE);
+
+Before passing it over to mfill_atomic_pte().  As long as we reject
+UFFDIO_CONTINUE with !hugetlbfs correctly that'll be enough iiuc.
+
+Thanks,
+
+-- 
+Peter Xu
+
