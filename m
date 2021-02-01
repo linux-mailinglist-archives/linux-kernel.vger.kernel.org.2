@@ -2,120 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E8F30A6E4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:54:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F51930A6E8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:55:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhBALxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 06:53:35 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:11996 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbhBALxd (ORCPT
+        id S230316AbhBALyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 06:54:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229543AbhBALyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 06:53:33 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DTmWC0lfWzjHP0;
-        Mon,  1 Feb 2021 19:51:35 +0800 (CST)
-Received: from [10.174.184.42] (10.174.184.42) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 1 Feb 2021 19:52:45 +0800
-Subject: Re: [PATCH v13 02/15] iommu: Introduce bind/unbind_guest_msi
-To:     Eric Auger <eric.auger@redhat.com>, <eric.auger.pro@gmail.com>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <kvm@vger.kernel.org>, <kvmarm@lists.cs.columbia.edu>,
-        <will@kernel.org>, <joro@8bytes.org>, <maz@kernel.org>,
-        <robin.murphy@arm.com>, <alex.williamson@redhat.com>
-References: <20201118112151.25412-1-eric.auger@redhat.com>
- <20201118112151.25412-3-eric.auger@redhat.com>
-CC:     <jean-philippe@linaro.org>, <jacob.jun.pan@linux.intel.com>,
-        <nicoleotsuka@gmail.com>, <vivek.gautam@arm.com>,
-        <yi.l.liu@intel.com>, <zhangfei.gao@linaro.org>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <6a70d93d-329f-4129-bd90-03f8589c5de4@huawei.com>
-Date:   Mon, 1 Feb 2021 19:52:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Mon, 1 Feb 2021 06:54:46 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62CBCC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 03:54:06 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id z6so16196909wrq.10
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 03:54:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XjOJa7QlABs/occ5tZpsqKRne/eoSWruqT/Ed+n9su0=;
+        b=n8PaiSzGu2DeLewHVdD3N5UTF2mZcDgBcIuFWGB6OD8oOXVsLxmx2n5AGgBgP2W3h2
+         BbxCO77dDysoWLSsdfqAHnsEjaRveFs5ez+SPGU8Y3pFUz/sElF76VVmsKfPcTpFis39
+         CkbFtxCcOU9HXyoHukyU/0NFvyFyxtKkWYfac=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XjOJa7QlABs/occ5tZpsqKRne/eoSWruqT/Ed+n9su0=;
+        b=suxX5KGmP6CH3p1uCq1dr/SAcXwssUc3d9Ko9tWAM9xTtK1bGCu4maepFylUP5LAyu
+         DSIBO15vdO7bO7hGlAgPnjMXhocA/WlXlzqhQ6sJ6XYjT+jyVMaQGef3ZfDwFEGLLINm
+         A93kiXFX11X4frfdB3dtqFVkbMsOZIsFCCIic3FVpKHXoTQueqbWhrvMR7M99LaOjm0z
+         T3s278+zMBSWBCaeYxxU7+IZSwveizg1UjmB+X5Mtwmijwicch5ayD6+wSldA59/tQ8a
+         Yipa1cLl2H/9Zd16td92+UhCFmXQ38mCN25Dc8ETZVJpD477DfbQCNs/kjPtZEM0x7n4
+         oKjQ==
+X-Gm-Message-State: AOAM533dJeaSFqNMUUkxoec5QcosHZ07HnenHkJ9CRKJ9lsFt6G/buUa
+        U1CMaqYctRDR0niX9AmoVHL7CjGiAR9uTXbJxOw5sw==
+X-Google-Smtp-Source: ABdhPJz5ftVYH+BAeT1wbNi+TIqy/F8+dN/r1U+PPd7RakebXcOpaXNF8InVz1DFIv8HE/3hOiUEMJvNLw2Sf3eRUgo=
+X-Received: by 2002:a5d:654f:: with SMTP id z15mr17808025wrv.46.1612180444701;
+ Mon, 01 Feb 2021 03:54:04 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20201118112151.25412-3-eric.auger@redhat.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+References: <20210130082128.3778939-1-michael@amarulasolutions.com> <CAOMZO5DyKDj_RjHM-qwcU9gcuROL6OYzDj3a_fdRRqCwOxWcdw@mail.gmail.com>
+In-Reply-To: <CAOMZO5DyKDj_RjHM-qwcU9gcuROL6OYzDj3a_fdRRqCwOxWcdw@mail.gmail.com>
+From:   Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
+Date:   Mon, 1 Feb 2021 12:53:53 +0100
+Message-ID: <CAOf5uwmSR1MjGdFd2ShHWchrdL6Kxo1HJOys9JoVP1vCDX57Lw@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: Support pin that does not support configuration option
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Angelo Compagnucci <angelo@amarulasolutions.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
+Hi Fabio
 
-On 2020/11/18 19:21, Eric Auger wrote:
-> On ARM, MSI are translated by the SMMU. An IOVA is allocated
-> for each MSI doorbell. If both the host and the guest are exposed
-> with SMMUs, we end up with 2 different IOVAs allocated by each.
-> guest allocates an IOVA (gIOVA) to map onto the guest MSI
-> doorbell (gDB). The Host allocates another IOVA (hIOVA) to map
-> onto the physical doorbell (hDB).
-> 
-> So we end up with 2 untied mappings:
->          S1            S2
-> gIOVA    ->    gDB
->               hIOVA    ->    hDB
-> 
-> Currently the PCI device is programmed by the host with hIOVA
-> as MSI doorbell. So this does not work.
-> 
-> This patch introduces an API to pass gIOVA/gDB to the host so
-> that gIOVA can be reused by the host instead of re-allocating
-> a new IOVA. So the goal is to create the following nested mapping:
-Does the gDB can be reused under non-nested mode?
+On Mon, Feb 1, 2021 at 12:47 PM Fabio Estevam <festevam@gmail.com> wrote:
+>
+> Hi Michael,
+>
+> On Sat, Jan 30, 2021 at 5:21 AM Michael Trimarchi
+> <michael@amarulasolutions.com> wrote:
+> >
+> > Some of the iMX25 pins have not an associated configuration register so
+> > when they are configured the standard way through the device tree the
+> > kernel complains with:
+> >
+> > imx25-pinctrl 43fac000.iomuxc: Pin(MX25_PAD_EXT_ARMCLK) does not support
+> > config function
+>
+> Could you please share your device tree that causes this warning?
+>
+> Shouldn't you pass 0x80000000 in the devicetree for this pad then?
+>
+> 0x80000000 means that the kernel should not touch the PAD_CTL register
+> and use the default configuration from the bootloader/POR.
 
-> 
->          S1            S2
-> gIOVA    ->    gDB     ->    hDB
-> 
-> and program the PCI device with gIOVA MSI doorbell.
-> 
-> In case we have several devices attached to this nested domain
-> (devices belonging to the same group), they cannot be isolated
-> on guest side either. So they should also end up in the same domain
-> on guest side. We will enforce that all the devices attached to
-> the host iommu domain use the same physical doorbell and similarly
-> a single virtual doorbell mapping gets registered (1 single
-> virtual doorbell is used on guest as well).
-> 
-[...]
+arch/arm/boot/dts/imx25-lisa.dts:
+MX25_PAD_EXT_ARMCLK__GPIO_3_15  0x80000000
 
-> + *
-> + * The associated IOVA can be reused by the host to create a nested
-> + * stage2 binding mapping translating into the physical doorbell used
-> + * by the devices attached to the domain.
-> + *
-> + * All devices within the domain must share the same physical doorbell.
-> + * A single MSI GIOVA/GPA mapping can be attached to an iommu_domain.
-> + */
-> +
-> +int iommu_bind_guest_msi(struct iommu_domain *domain,
-> +			 dma_addr_t giova, phys_addr_t gpa, size_t size)
-> +{
-> +	if (unlikely(!domain->ops->bind_guest_msi))
-> +		return -ENODEV;
-> +
-> +	return domain->ops->bind_guest_msi(domain, giova, gpa, size);
-> +}
-> +EXPORT_SYMBOL_GPL(iommu_bind_guest_msi);
-> +
-> +void iommu_unbind_guest_msi(struct iommu_domain *domain,
-> +			    dma_addr_t iova)
-nit: s/iova/giova
+The problem that exists pad that can be muxed but not configured
 
-> +{
-> +	if (unlikely(!domain->ops->unbind_guest_msi))
-> +		return;
-> +
-> +	domain->ops->unbind_guest_msi(domain, iova);
-> +}
-> +EXPORT_SYMBOL_GPL(iommu_unbind_guest_msi);
-> +
-[...]
+Michael
 
-Thanks,
-Keqian
 
+-- 
+Michael Nazzareno Trimarchi
+Amarula Solutions BV
+COO Co-Founder
+Cruquiuskade 47 Amsterdam 1018 AM NL
+T. +31(0)851119172
+M. +39(0)3479132170
+[`as] https://www.amarulasolutions.com
