@@ -2,91 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD7F30A889
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7321E30A894
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:23:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbhBANUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:20:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231860AbhBANUR (ORCPT
+        id S232201AbhBANWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:22:41 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37295 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232102AbhBANVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:20:17 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FAAC061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 05:19:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=w/fczicmbmO1py4GakJT2Tztq29zaHw4eemdxVZO/3c=; b=g4PopCaGcnb3zTBXhvzk+j7oAd
-        zJ8AelvYw1MTMkpBmIjeDx+zuCvzrFeCnDJVpGwz9j1T5xb4smeoznN/3KRhRXjEKKadRofk5wwHm
-        AaMT0Nuh4xjcWhF1jyZY1o0/In5o2hyNVyfh2Y4H1UYkkpNup08QvriYvD5ELoO7xPjx4y6zmVJ/+
-        wZtTZeVnh7igk0s+2e5dCN6JRBVCRospMcA4qpKId9xhk7jynXS2PKCdN4D0ou7hEsaszWZgCkQXp
-        jWBFVX0nNN/sx2tBndNrEcCHyrici0W1wRAMTZlMpasjQP455V7QfPYQI5gz6DlbQ/Prao3jQ77mU
-        pR9FmZgw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l6Z6r-00DoBB-59; Mon, 01 Feb 2021 13:19:23 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6A0ED3011FE;
-        Mon,  1 Feb 2021 14:19:16 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 4DEBC20C8E333; Mon,  1 Feb 2021 14:19:16 +0100 (CET)
-Date:   Mon, 1 Feb 2021 14:19:16 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Nadav Amit <nadav.amit@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Nadav Amit <namit@vmware.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Nick Piggin <npiggin@gmail.com>, x86@kernel.org
-Subject: Re: [RFC 13/20] mm/tlb: introduce tlb_start_ptes() and tlb_end_ptes()
-Message-ID: <YBf/1H/zZ2LNDf3U@hirez.programming.kicks-ass.net>
-References: <20210131001132.3368247-1-namit@vmware.com>
- <20210131001132.3368247-14-namit@vmware.com>
+        Mon, 1 Feb 2021 08:21:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612185604;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IUHx+ZmyPT9Dyu1dEfWtcZBy3fkG4ai+h8kqNZZO+ns=;
+        b=iEQd6R+gXrJi29xISgISc8hylCemrl5SV4try4TFl6OwUmeGm2F08Ff8gjlnHU/x6ImB0h
+        oWCh+dmvd2OifBWEhjTogwcKZV8XwB2dlBQVcsfOttpYDliYi+YLVmu22Wt8pfoJr8ziM9
+        0T3vvOTn/0zAxAd8MMnfk8R2JaDdAMI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-518-HCE66KfhPEWQgCyY3tplGA-1; Mon, 01 Feb 2021 08:20:02 -0500
+X-MC-Unique: HCE66KfhPEWQgCyY3tplGA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D1F181005513;
+        Mon,  1 Feb 2021 13:20:00 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EBDBD5C276;
+        Mon,  1 Feb 2021 13:19:58 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210129155529.brxbmgzzosvtwrzw@altlinux.org>
+References: <20210129155529.brxbmgzzosvtwrzw@altlinux.org> <20210129150355.850093-1-stefanb@linux.vnet.ibm.com> <20210129150355.850093-5-stefanb@linux.vnet.ibm.com>
+To:     Vitaly Chikunov <vt@altlinux.org>
+Cc:     dhowells@redhat.com, Stefan Berger <stefanb@linux.vnet.ibm.com>,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: Re: [PATCH v5 4/4] ima: Support EC keys for signature verification
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210131001132.3368247-14-namit@vmware.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <4162570.1612185598.1@warthog.procyon.org.uk>
+Date:   Mon, 01 Feb 2021 13:19:58 +0000
+Message-ID: <4162571.1612185598@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 04:11:25PM -0800, Nadav Amit wrote:
-> +#define tlb_start_ptes(tlb)						\
-> +	do {								\
-> +		struct mmu_gather *_tlb = (tlb);			\
-> +									\
-> +		flush_tlb_batched_pending(_tlb->mm);			\
-> +	} while (0)
-> +
-> +static inline void tlb_end_ptes(struct mmu_gather *tlb) { }
+Vitaly Chikunov <vt@altlinux.org> wrote:
 
->  	tlb_change_page_size(tlb, PAGE_SIZE);
->  	orig_pte = pte = pte_offset_map_lock(vma->vm_mm, pmd, addr, &ptl);
-> -	flush_tlb_batched_pending(mm);
-> +	tlb_start_ptes(tlb);
->  	arch_enter_lazy_mmu_mode();
->  	for (; addr < end; pte++, addr += PAGE_SIZE) {
->  		ptent = *pte;
-> @@ -468,6 +468,7 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
->  	}
->  
->  	arch_leave_lazy_mmu_mode();
-> +	tlb_end_ptes(tlb);
->  	pte_unmap_unlock(orig_pte, ptl);
->  	if (pageout)
->  		reclaim_pages(&page_list);
+> > +static inline
+> > +const struct public_key *asymmetric_key_public_key(const struct key *key)
+> > +{
+> > +	return key->payload.data[asym_crypto];
+> > +}
+> 
+> I wonder why use this accessor which does nothing else, because in all
+> other places payload.data[asym_crypto] accessed directly.
 
-I don't like how you're dubbling up on arch_*_lazy_mmu_mode(). It seems
-to me those should be folded into tlb_{start,end}_ptes().
+We should probably move to using wrappers rather than accessing directly for
+type safety.
 
-Alternatively, the even more work approach would be to, add an optional
-@tlb argument to pte_offset_map_lock()/pte_unmap_unlock() and friends.
+David
+
