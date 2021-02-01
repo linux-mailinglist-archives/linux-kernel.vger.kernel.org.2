@@ -2,83 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3E5B30A903
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:47:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E84730A909
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232213AbhBANqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:46:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47650 "EHLO mail.kernel.org"
+        id S231511AbhBANsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:48:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47906 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231284AbhBANqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:46:36 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9FAC864D99;
-        Mon,  1 Feb 2021 13:45:55 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l6ZWb-00BHWZ-EK; Mon, 01 Feb 2021 13:45:53 +0000
+        id S229707AbhBANsG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 08:48:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3889564D99;
+        Mon,  1 Feb 2021 13:47:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612187245;
+        bh=OblNRRU9kt2opjlL2A1b+cyHiv7FjD00GN257vO0Hyw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kX4MnFOwjVBTO0dX5qcuLJTS2yo8RCXKR6PQ1fuvA77uLu740cUMxT7zzZ+oiUWS5
+         NZB5sJFOEaW23R7+j0cP/Nn1UZH27I/DOn6DT5xU3sl57uNb1y4yQVCyGqZyHGQFBD
+         gbP651gjDexnAhZANFmg56DKTcoJkfFZdT4eGrqQL96Cv0yUVepoS7PeTHzsXrhRJr
+         ptt0Oigp5jmK8lhy94ylbqEpb0Q72fp8yHOuz1PkWuwHfp9c9OI8Yv1vu0OYQf91F5
+         lqZ784U7BwnTakLFWmy/tgLPMMlzQp4wp4tC05RpuvbIW+DoKDp3cHgPOKf8YpCsRT
+         Xto/3opHaKO4Q==
+Date:   Mon, 1 Feb 2021 14:47:23 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Zhou Ti (x2019cwm)" <x2019cwm@stfx.ca>
+Cc:     "fweisbec@gmail.com" <fweisbec@gmail.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] fix the issue that the tick_nohz_get_sleep_length()
+ function could return a negative value
+Message-ID: <20210201134723.GB41955@lothringen>
+References: <YTBPR01MB3262A1EAA009500DF6DD2132C4A20@YTBPR01MB3262.CANPRD01.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 01 Feb 2021 13:45:53 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>, lkft-triage@lists.linaro.org,
-        kvmarm@lists.cs.columbia.edu,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>,
-        James Morse <james.morse@arm.com>,
-        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Subject: Re: arm64: gen-hyprel.c:40:10: fatal error: generated/autoconf.h: No
- such file or directory
-In-Reply-To: <CA+G9fYvzh5GEssPJHM=r2TVUKOhsFJ8jqrY+pP4t7+jF8ctz9A@mail.gmail.com>
-References: <CA+G9fYvzh5GEssPJHM=r2TVUKOhsFJ8jqrY+pP4t7+jF8ctz9A@mail.gmail.com>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <5f072f84c7c9b03ded810e56687935b2@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: naresh.kamboju@linaro.org, linux-next@vger.kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org, lkft-triage@lists.linaro.org, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, sfr@canb.auug.org.au, arnd@arndb.de, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YTBPR01MB3262A1EAA009500DF6DD2132C4A20@YTBPR01MB3262.CANPRD01.PROD.OUTLOOK.COM>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-01 13:38, Naresh Kamboju wrote:
-> Linux next 20210201 tag arm64 builds failed.
-> kernel config attached to this email.
+On Wed, Jan 20, 2021 at 11:49:38PM +0000, Zhou Ti (x2019cwm) wrote:
+> Fix the issue that the tick_nohz_get_sleep_length() function could return a 
+> negative value.
 > 
-> BAD:    next-20210201
-> GOOD: next-20210129
+> The variable "dev->next_event" has a small possibility to be smaller than 
+> the variable "now" during running, which would result in a negative value 
+> of "*delta_next". The variable "next_event" also has a small posibility to 
+> be smaller than the variable "now". Both case could lead to a negative 
+> return of function tick_nohz_get_sleep_length().
+
+Makes sense, queued, thanks!
+
 > 
-> make --silent --keep-going --jobs=8
-> O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=arm64
-> CROSS_COMPILE=aarch64-linux-gnu- 'CC=sccache aarch64-linux-gnu-gcc'
-> 'HOSTCC=sccache gcc'
-> arch/arm64/kvm/hyp/nvhe/gen-hyprel.c:40:10: fatal error:
-> generated/autoconf.h: No such file or directory
->    40 | #include <generated/autoconf.h>
->       |          ^~~~~~~~~~~~~~~~~~~~~~
-> compilation terminated.
-> 
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-
-Could you please check with the fix suggested at [1]?
-
-Thanks,
-
-         M.
-
-[1] https://lore.kernel.org/r/20210201104251.5foc64qq3ewgnhuz@google.com
--- 
-Jazz is not dead. It just smells funny...
+> Signed-off-by: Ti Zhou <x2019cwm@stfx.ca>
+> ---
+> --- tip/kernel/time/tick-sched.c.orig	2021-01-20 05:34:25.151325912 -0400
+> +++ tip/kernel/time/tick-sched.c	2021-01-20 19:44:28.238538380 -0400
+> @@ -1142,6 +1142,9 @@ ktime_t tick_nohz_get_sleep_length(ktime
+>  
+>  	*delta_next = ktime_sub(dev->next_event, now);
+>  
+> +	if (unlikely(*delta_next < 0))
+> +		*delta_next = 0;
+> +
+>  	if (!can_stop_idle_tick(cpu, ts))
+>  		return *delta_next;
+>  
+> @@ -1156,6 +1159,9 @@ ktime_t tick_nohz_get_sleep_length(ktime
+>  	next_event = min_t(u64, next_event,
+>  			   hrtimer_next_event_without(&ts->sched_timer));
+>  
+> +	if (unlikely(next_event < now))
+> +		next_event = now;
+> +
+>  	return ktime_sub(next_event, now);
+>  }
+>  
