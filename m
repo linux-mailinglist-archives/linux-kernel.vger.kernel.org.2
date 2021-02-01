@@ -2,50 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E3730A83F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:06:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA2F30A849
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:07:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231405AbhBANFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:05:21 -0500
-Received: from foss.arm.com ([217.140.110.172]:59424 "EHLO foss.arm.com"
+        id S231901AbhBANHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:07:03 -0500
+Received: from mga09.intel.com ([134.134.136.24]:13861 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229736AbhBANFU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:05:20 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AE47B1042;
-        Mon,  1 Feb 2021 05:04:34 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F1C6C3F66E;
-        Mon,  1 Feb 2021 05:04:32 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: qemu boot failure after merge of the tip tree
-In-Reply-To: <20210201200918.386682c5@canb.auug.org.au>
-References: <20210201200918.386682c5@canb.auug.org.au>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Mon, 01 Feb 2021 13:04:30 +0000
-Message-ID: <jhjv9bcym5d.mognet@arm.com>
+        id S231821AbhBANGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 08:06:41 -0500
+IronPort-SDR: frxP/wnYac5hPXbtAQ2JLNpPTp5yLgawip68681SggrivcA6cz/wU9BfFVhHTGnK2u2J8g21VE
+ 0y7jHWb5HplA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="180824718"
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="180824718"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 05:04:54 -0800
+IronPort-SDR: AK4THoZJYK1Ba5XswMeCZXCVcRC0dQrby+5U0//H7DsBxhDH3/Tco4eNOfDNI3LjNuNy/zTBQe
+ v0JS8fA0VJNw==
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="355759930"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 05:04:51 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id A03A42074F; Mon,  1 Feb 2021 15:04:47 +0200 (EET)
+Date:   Mon, 1 Feb 2021 15:04:47 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     Julia Lawall <julia.lawall@inria.fr>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        =?iso-8859-1?Q?K=E9vin_L'h=F4pital?= <kevin.lhopital@bootlin.com>,
+        linux-kernel@vger.kernel.org,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        kbuild-all@lists.01.org
+Subject: Re: [PATCH] media: i2c: fix odd_ptr_err.cocci warnings
+Message-ID: <20210201130447.GN32460@paasikivi.fi.intel.com>
+References: <alpine.DEB.2.22.394.2101162109350.2697@hadrien>
+ <YAWTO11tkNPnslKV@aptenodytes>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YAWTO11tkNPnslKV@aptenodytes>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/02/21 20:09, Stephen Rothwell wrote:
-> Hi all,
->
+On Mon, Jan 18, 2021 at 02:55:07PM +0100, Paul Kocialkowski wrote:
+> Hi,
+> 
+> On Sat 16 Jan 21, 21:11, Julia Lawall wrote:
+> > From: kernel test robot <lkp@intel.com>
+> > 
+> > PTR_ERR should access the value just tested by IS_ERR
+> 
+> Good catch!
+> 
+> Reviewed-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
 
-Hi Stephen,
+Thanks, Julia and Paul.
 
-> After merging the tip tree, today's linux-next qemu boot test (powerpc
-> pseries_le_defconfig) failed like this:
+A patch with similar content got recently merged:
 
-In case you haven't seen it, Dietmar did the dirty work and fixed my fail
-at
+commit 6e7cca2790a54057ddf64da7843271e192f71ca0
+Author: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Date:   Wed Jan 20 09:42:38 2021 +0100
 
-  http://lore.kernel.org/r/6000e39e-7d28-c360-9cd6-8798fd22a9bf@arm.com
+    media: i2c/ov8865.c: fix error checks using wrong variable
+    
+    Fix two typos: dvdd -> dovdd and dvdd -> avdd
+    
+    Both clearly copy-and-paste mistakes.
+    
+    Fixes this smatch warning:
+    
+    drivers/media/i2c/ov8865.c:2852 ov8865_probe() warn: passing zero to 'PTR_ERR'
+    
+    Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+    Reported-by: kernel test robot <lkp@intel.com>
+    Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+    Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+-- 
+Kind regards,
+
+Sakari Ailus
