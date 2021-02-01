@@ -2,80 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E84730A909
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:49:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0502130A90F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:50:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231511AbhBANsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:48:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47906 "EHLO mail.kernel.org"
+        id S231946AbhBANtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:49:42 -0500
+Received: from mga04.intel.com ([192.55.52.120]:41724 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229707AbhBANsG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:48:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3889564D99;
-        Mon,  1 Feb 2021 13:47:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612187245;
-        bh=OblNRRU9kt2opjlL2A1b+cyHiv7FjD00GN257vO0Hyw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kX4MnFOwjVBTO0dX5qcuLJTS2yo8RCXKR6PQ1fuvA77uLu740cUMxT7zzZ+oiUWS5
-         NZB5sJFOEaW23R7+j0cP/Nn1UZH27I/DOn6DT5xU3sl57uNb1y4yQVCyGqZyHGQFBD
-         gbP651gjDexnAhZANFmg56DKTcoJkfFZdT4eGrqQL96Cv0yUVepoS7PeTHzsXrhRJr
-         ptt0Oigp5jmK8lhy94ylbqEpb0Q72fp8yHOuz1PkWuwHfp9c9OI8Yv1vu0OYQf91F5
-         lqZ784U7BwnTakLFWmy/tgLPMMlzQp4wp4tC05RpuvbIW+DoKDp3cHgPOKf8YpCsRT
-         Xto/3opHaKO4Q==
-Date:   Mon, 1 Feb 2021 14:47:23 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Zhou Ti (x2019cwm)" <x2019cwm@stfx.ca>
-Cc:     "fweisbec@gmail.com" <fweisbec@gmail.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@kernel.org" <mingo@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] fix the issue that the tick_nohz_get_sleep_length()
- function could return a negative value
-Message-ID: <20210201134723.GB41955@lothringen>
-References: <YTBPR01MB3262A1EAA009500DF6DD2132C4A20@YTBPR01MB3262.CANPRD01.PROD.OUTLOOK.COM>
+        id S231587AbhBANti (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 08:49:38 -0500
+IronPort-SDR: xtKhVSOoZ4n1paLzTf+jQ9yqjwdqRWLoYm1i5dOLuc+fP3dvggmdezUxszWepYcBynvO1L5wGH
+ xBJqaZBGN/mQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="178121833"
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="178121833"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 05:47:52 -0800
+IronPort-SDR: e0Pb8xLftFnVZ66obmmc+PebsCnX4ifT8jEX/Rs7q1llwWJkBwsu4wt0fhPE0Je7Tue9zHjHUl
+ 4aUybhdfs58g==
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="371555767"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 05:47:47 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l6ZYN-0018z2-F0; Mon, 01 Feb 2021 15:47:43 +0200
+Date:   Mon, 1 Feb 2021 15:47:43 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-arch@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
+        Dennis Zhou <dennis@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        David Sterba <dsterba@suse.com>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Joe Perches <joe@perches.com>
+Subject: Re: [PATCH 6/8] lib: inline _find_next_bit() wrappers
+Message-ID: <YBgGf8y/K0da5MWz@smile.fi.intel.com>
+References: <20210130191719.7085-1-yury.norov@gmail.com>
+ <20210130191719.7085-7-yury.norov@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YTBPR01MB3262A1EAA009500DF6DD2132C4A20@YTBPR01MB3262.CANPRD01.PROD.OUTLOOK.COM>
+In-Reply-To: <20210130191719.7085-7-yury.norov@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 11:49:38PM +0000, Zhou Ti (x2019cwm) wrote:
-> Fix the issue that the tick_nohz_get_sleep_length() function could return a 
-> negative value.
-> 
-> The variable "dev->next_event" has a small possibility to be smaller than 
-> the variable "now" during running, which would result in a negative value 
-> of "*delta_next". The variable "next_event" also has a small posibility to 
-> be smaller than the variable "now". Both case could lead to a negative 
-> return of function tick_nohz_get_sleep_length().
+On Sat, Jan 30, 2021 at 11:17:17AM -0800, Yury Norov wrote:
+> lib/find_bit.c declares five single-line wrappers for _find_next_bit().
+> We may turn those wrappers to inline functions. It eliminates unneeded
+> function calls and opens room for compile-time optimizations.
 
-Makes sense, queued, thanks!
+>  tools/include/asm-generic/bitops/find.h | 27 +++++++++---
+>  tools/lib/find_bit.c                    | 52 ++++++++++-------------
 
-> 
-> Signed-off-by: Ti Zhou <x2019cwm@stfx.ca>
-> ---
-> --- tip/kernel/time/tick-sched.c.orig	2021-01-20 05:34:25.151325912 -0400
-> +++ tip/kernel/time/tick-sched.c	2021-01-20 19:44:28.238538380 -0400
-> @@ -1142,6 +1142,9 @@ ktime_t tick_nohz_get_sleep_length(ktime
->  
->  	*delta_next = ktime_sub(dev->next_event, now);
->  
-> +	if (unlikely(*delta_next < 0))
-> +		*delta_next = 0;
-> +
->  	if (!can_stop_idle_tick(cpu, ts))
->  		return *delta_next;
->  
-> @@ -1156,6 +1159,9 @@ ktime_t tick_nohz_get_sleep_length(ktime
->  	next_event = min_t(u64, next_event,
->  			   hrtimer_next_event_without(&ts->sched_timer));
->  
-> +	if (unlikely(next_event < now))
-> +		next_event = now;
-> +
->  	return ktime_sub(next_event, now);
->  }
->  
+In a separated patch, please. I don't think we need to defer this series in
+case if tools lagged (which is usual case in my practice).
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
