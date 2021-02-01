@@ -2,168 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C080D30A3F2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 471D930A3EF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:04:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232683AbhBAJE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 04:04:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42794 "EHLO
+        id S232565AbhBAJDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 04:03:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232596AbhBAJDm (ORCPT
+        with ESMTP id S229736AbhBAJDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 04:03:42 -0500
-Received: from cc-smtpout1.netcologne.de (cc-smtpout1.netcologne.de [IPv6:2001:4dd0:100:1062:25:2:0:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCB8BC061574
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 01:03:01 -0800 (PST)
-Received: from cc-smtpin3.netcologne.de (cc-smtpin3.netcologne.de [89.1.8.203])
-        by cc-smtpout1.netcologne.de (Postfix) with ESMTP id DDF6213666;
-        Mon,  1 Feb 2021 10:01:33 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by cc-smtpin3.netcologne.de (Postfix) with ESMTP id CD09E11E63;
-        Mon,  1 Feb 2021 10:01:33 +0100 (CET)
-Received: from [213.196.193.186] (helo=cc-smtpin3.netcologne.de)
-        by localhost with ESMTP (eXpurgate 4.19.0)
-        (envelope-from <kurt@garloff.de>)
-        id 6017c36d-07b2-7f0000012729-7f000001dc22-1
-        for <multiple-recipients>; Mon, 01 Feb 2021 10:01:33 +0100
-Received: from nas2.garloff.de (xdsl-213-196-193-186.nc.de [213.196.193.186])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by cc-smtpin3.netcologne.de (Postfix) with ESMTPSA;
-        Mon,  1 Feb 2021 10:01:32 +0100 (CET)
-Received: from [192.168.155.202] (ap4.garloff.de [192.168.155.15])
-        by nas2.garloff.de (Postfix) with ESMTPSA id 0070CB3B13A5;
-        Mon,  1 Feb 2021 10:01:31 +0100 (CET)
-From:   Kurt Garloff <kurt@garloff.de>
-To:     Len Brown <len.brown@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <1f1fb01e-0616-34ea-ede6-dc7dd679c3d4@garloff.de>
-Subject: Re: turbostat: Fix Pkg Power on Zen
-Message-ID: <c7074c16-5d64-e829-10f6-ef91f5f6222b@garloff.de>
-Date:   Mon, 1 Feb 2021 10:01:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 1 Feb 2021 04:03:36 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A71C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 01:02:36 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id j84so2949166ybg.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 01:02:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BThrR9f5rNT/Ht36RPlwrxxZyEfeCJHXViQOYJY/Cdc=;
+        b=hIsZcEPzEFGQdAyHvCh3xtrTmgJBxSrvmVaHMURSQcWq3B0OA9ELbKQ+J95ycyoXoB
+         yNs8unt1o/QhvdQmefeVqQmSPwy6oWf5m7ubPucxnNhQVQy1DpcAMMeO5sHvFigz5kfT
+         OwvohcVI3YkwsXS7uP6TUhTptR6gyaWrsJDwB8HTS1euP6wmHeGwogFTd/c3QtOp3gYR
+         NeugeYz/5HH5zhg2qCb2RinbE9G1vRkXKEcXYhUzbUPH4SR/vvQF6lcm1BlrLDh3QYbw
+         m44LJX3d2fP3SJXAvePjn9QlY7JtJP0Fe5SIExVgkxM6mtTijy/RxqTcK/OJ8SLUMvGQ
+         PhDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BThrR9f5rNT/Ht36RPlwrxxZyEfeCJHXViQOYJY/Cdc=;
+        b=TRTeBTUjNsHkgAomBCkJRndWz0rElpFfyPgcmvyx34GRQ6wHpA5TKprQWUb19VXEnJ
+         mnRa9EuiUTLeSfeUkT5C2YnXBuOmIFN2hRpd7giooyjrdUWGFHUWaFT7rzAWNvNLD0sK
+         FOjwlOHIbTuagtkjP0MbcpS9Mk9pvQ/UzBgbzJ1QmQwdgqtwcZK/c3HD+EJjIdLWuxor
+         bowHGZzmuEOdOhzBSLpGRX5gAtYpGHM3cs5nvTtb+PjUawEyhDjHyGLeeFYIlcn5iVE7
+         myTageCrAIVfYefgmCda8Z/aAqHK3nn0a/Cph8PY8WmpdHZaWq6WrnelIGKnzA2hPknx
+         WP/w==
+X-Gm-Message-State: AOAM530amu046S85d1Zc83DayC4zk1rJ0QDmN7bBE5OuVuOR/wQjK5qM
+        MrWQBhewAFPLBbfhHjPntNC/O6i//0RTzNnVvcLXbQ==
+X-Google-Smtp-Source: ABdhPJyVy2CLDO9GmRm25/zj7aVuQPIXdL7jBlnywTGND+UVwuwudwmfm5yawSs4PJdVkcp71SELNf2fPv02r5vd0cs=
+X-Received: by 2002:a25:718b:: with SMTP id m133mr23927132ybc.412.1612170156038;
+ Mon, 01 Feb 2021 01:02:36 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1f1fb01e-0616-34ea-ede6-dc7dd679c3d4@garloff.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-Content-Language: en-US
+References: <20210130040344.2807439-1-saravanak@google.com>
+ <CGME20210130040932eucas1p21f614520b70e3aecf3bf384a5821e5e8@eucas1p2.samsung.com>
+ <CAGETcx941J7Zhrf=ZjO6PW0fiax5VXcV3gbsLQfM_wU_U0EnYw@mail.gmail.com> <ca582e9f-bc4d-bb94-f700-1cf9dc897b57@samsung.com>
+In-Reply-To: <ca582e9f-bc4d-bb94-f700-1cf9dc897b57@samsung.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 1 Feb 2021 01:02:00 -0800
+Message-ID: <CAGETcx9FokhX+omo07Tgky_+NPH4uYSMiz2OctvK3L3AsGz8rg@mail.gmail.com>
+Subject: Re: [PATCH v1 0/2] Make fw_devlink=on more forgiving
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTGVuLAoKSXNzdWUgcGVyc2lzdHMgb24gUnl6ZW4gaW4gNS4xMS1yYzY6Cgprdm1hZG1p
-bkBLdXJ0U3J2MjAxOCgvLyk6fiBbMF0kIHN1ZG8gL2Nhc2Evc3JjL2xpbnV4LXN0YWJsZS90
-b29scy9wb3dlci94ODYvdHVyYm9zdGF0L3R1cmJvc3RhdAp0dXJib3N0YXQgdmVyc2lvbiAy
-MC4wOS4zMCAtIExlbiBCcm93biA8bGVuYkBrZXJuZWwub3JnPgpDUFVJRCgwKTogQXV0aGVu
-dGljQU1EIDB4MTAgQ1BVSUQgbGV2ZWxzOyAweDgwMDAwMDIzIHhsZXZlbHM7IGZhbWlseTpt
-b2RlbDpzdGVwcGluZyAweDE5OjIxOjAgKDI1OjMzOjApCkNQVUlEKDEpOiBTU0UzIE1PTklU
-T1IgLSAtIC0gVFNDIE1TUiAtIEhUIC0KQ1BVSUQoNik6IEFQRVJGLCBOby1UVVJCTywgTm8t
-RFRTLCBOby1QVE0sIE5vLUhXUCwgTm8tSFdQbm90aWZ5LCBOby1IV1B3aW5kb3csIE5vLUhX
-UGVwcCwgTm8tSFdQcGtnLCBOby1FUEIKQ1BVSUQoNyk6IE5vLVNHWApSQVBMOiAyMzQgc2Vj
-LiBKb3VsZSBDb3VudGVyIFJhbmdlLCBhdCAyODAgV2F0dHMKL2Rldi9jcHVfZG1hX2xhdGVu
-Y3k6IDIwMDAwMDAwMDAgdXNlYyAoZGVmYXVsdCkKY3VycmVudF9kcml2ZXI6IGFjcGlfaWRs
-ZQpjdXJyZW50X2dvdmVybm9yOiBtZW51CmN1cnJlbnRfZ292ZXJub3Jfcm86IG1lbnUKY3B1
-MjI6IFBPTEw6IENQVUlETEUgQ09SRSBQT0xMIElETEUKY3B1MjI6IEMxOiBBQ1BJIEZGSCBN
-V0FJVCAweDAKY3B1MjI6IEMyOiBBQ1BJIElPUE9SVCAweDQxNApjcHUyMjogY3B1ZnJlcSBk
-cml2ZXI6IGFjcGktY3B1ZnJlcQpjcHUyMjogY3B1ZnJlcSBnb3Zlcm5vcjogc2NoZWR1dGls
-CmNwdWZyZXEgYm9vc3Q6IDEKY3B1MDogTVNSX1JBUExfUFdSX1VOSVQ6IDB4MDAwYTEwMDMg
-KDAuMTI1MDAwIFdhdHRzLCAwLjAwMDAxNSBKb3VsZXMsIDAuMDAwOTc3IHNlYy4pCmt2bWFk
-bWluQEt1cnRTcnYyMDE4KC8vKTp+IFsyNDNdJAoKwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIF5eXiBFeGl0IGNvZGUKCldpdGggdGhl
-IHBhdGNoOgoKa3ZtYWRtaW5AS3VydFNydjIwMTgoLy8pOn4gWzI0M10kIHN1ZG8gL2Nhc2Ev
-c3JjL2xpbnV4LXN0YWJsZS90b29scy9wb3dlci94ODYvdHVyYm9zdGF0L3R1cmJvc3RhdMKg
-wqDCoAp0dXJib3N0YXQgdmVyc2lvbiAyMC4wOS4zMCAtIExlbiBCcm93biA8bGVuYkBrZXJu
-ZWwub3JnPsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgCkNQVUlEKDApOiBBdXRoZW50aWNBTUQgMHgxMCBDUFVJRCBsZXZlbHM7IDB4ODAwMDAw
-MjMgeGxldmVsczsgZmFtaWx5Om1vZGVsOnN0ZXBwaW5nIDB4MTk6MjE6MCAoMjU6MzM6MCkK
-Q1BVSUQoMSk6IFNTRTMgTU9OSVRPUiAtIC0gLSBUU0MgTVNSIC0gSFQgLcKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAKQ1BVSUQoNik6IEFQRVJGLCBOby1UVVJCTywgTm8tRFRTLCBOby1QVE0s
-IE5vLUhXUCwgTm8tSFdQbm90aWZ5LCBOby1IV1B3aW5kb3csIE5vLUhXUGVwcCwgTm8tSFdQ
-cGtnLCBOby1FUELCoMKgwqDCoMKgwqDCoMKgwqAKQ1BVSUQoNyk6IE5vLVNHWMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAKUkFQTDogMjM0IHNlYy4gSm91bGUgQ291bnRlciBSYW5nZSwgYXQg
-MjgwIFdhdHRzwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgCi9kZXYvY3B1X2RtYV9sYXRlbmN5OiAyMDAwMDAwMDAw
-IHVzZWMgKGRlZmF1bHQpwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAKY3VycmVudF9kcml2ZXI6IGFjcGlfaWRs
-ZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAKY3VycmVudF9nb3Zlcm5vcjogbWVudcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAKY3VycmVudF9nb3Zlcm5v
-cl9ybzogbWVudcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAKY3B1Mjg6IFBPTEw6IENQVUlETEUgQ09SRSBQT0xMIElETEXCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoApjcHUyODogQzE6IEFDUEkgRkZI
-IE1XQUlUIDB4MMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgCmNwdTI4OiBDMjogQUNQSSBJT1BPUlQgMHg0MTTCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgCmNwdTI4OiBjcHVmcmVxIGRyaXZl
-cjogYWNwaS1jcHVmcmVxwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAK
-Y3B1Mjg6IGNwdWZyZXEgZ292ZXJub3I6IHNjaGVkdXRpbMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAKY3B1ZnJlcSBib29zdDogMcKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAKY3B1MDogTVNSX1JBUExfUFdSX1VOSVQ6IDB4MDAwYTEwMDMgKDAuMTI1MDAwIFdh
-dHRzLCAwLjAwMDAxNSBKb3VsZXMsIDAuMDAwOTc3IHNlYy4pwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoApDb3JlwqDCoMKgIENQVcKgwqDCoMKgIEF2
-Z19NSHogQnVzeSXCoMKgIEJ6eV9NSHogVFNDX01IeiBJUlHCoMKgwqDCoCBQT0xMwqDCoMKg
-IEMxwqDCoMKgwqDCoCBDMsKgwqDCoMKgwqAgUE9MTCXCoMKgIEMxJcKgwqDCoMKgIEMyJcKg
-wqDCoMKgIENvcldhdHQgUGtnV2F0dAotwqDCoMKgwqDCoMKgIC3CoMKgwqDCoMKgwqAgMjfC
-oMKgwqDCoMKgIDEuMDTCoMKgwqAgMjU2MsKgwqDCoCAzNDExwqDCoMKgIDE2MDQ2wqDCoCAz
-M8KgwqDCoMKgwqAgMjkzMcKgwqDCoCAxMjg5NcKgwqAgMC4wMMKgwqDCoCAwLjg1wqDCoMKg
-IDk4LjQ4wqDCoCAxLjU3wqDCoMKgIDE4LjgxCjDCoMKgwqDCoMKgwqAgMMKgwqDCoMKgwqDC
-oCAxMsKgwqDCoMKgwqAgMC41NcKgwqDCoCAyMTkzwqDCoMKgIDM0MDDCoMKgwqAgODg1wqDC
-oMKgwqAgMcKgwqDCoMKgwqDCoCAxMTHCoMKgwqDCoCA3NTfCoMKgwqDCoCAwLjAwwqDCoMKg
-IDEuMTLCoMKgwqAgOTguNDLCoMKgIDAuMDTCoMKgwqAgMTguNzQKMMKgwqDCoMKgwqDCoCAx
-NsKgwqDCoMKgwqAgMcKgwqDCoMKgwqDCoCAwLjA1wqDCoMKgIDIzNTHCoMKgwqAgMzQwMMKg
-wqDCoCA1M8KgwqDCoMKgwqAgMMKgwqDCoMKgwqDCoCAzwqDCoMKgwqDCoMKgIDU0wqDCoMKg
-wqDCoCAwLjAwwqDCoMKgIDAuMDXCoMKgwqAgOTkuOTLCoMKgwqDCoMKgwqAKMcKgwqDCoMKg
-wqDCoCAxwqDCoMKgwqDCoMKgIDIwwqDCoMKgwqDCoCAwLjg5wqDCoMKgIDIyNjHCoMKgwqAg
-MzQwMMKgwqDCoCA0NzjCoMKgwqDCoCAwwqDCoMKgwqDCoMKgIDM5wqDCoMKgwqDCoCA0MjfC
-oMKgwqDCoCAwLjAwwqDCoMKgIDAuMzfCoMKgwqAgOTguODDCoMKgIDAuMDYKMcKgwqDCoMKg
-wqDCoCAxN8KgwqDCoMKgwqAgOcKgwqDCoMKgwqDCoCAwLjQwwqDCoMKgIDIzMjnCoMKgwqAg
-MzQwMMKgwqDCoCAzMDjCoMKgwqDCoCAwwqDCoMKgwqDCoMKgIDM4wqDCoMKgwqDCoCAyODLC
-oMKgwqDCoCAwLjAwwqDCoMKgIDAuMzXCoMKgwqAgOTkuMjnCoMKgwqDCoMKgwqAKWy4uLl0K
-Ci0tIApLdXJ0IEdhcmxvZmYgPGt1cnRAZ2FybG9mZi5kZT4KQ29sb2duZSwgR2VybWFueQoK
-T24gMjYvMTIvMjAyMCAxMzoxMywgS3VydCBHYXJsb2ZmIHdyb3RlOgo+IEhpIExlbiwKPgo+
-IGZpbmQgYXR0YWNoZWQgZml4IHRvIGF2b2lkIGV4aXRpbmcgd2l0aCAtMTMgb24gWmVuLiBQ
-YXRjaCBpcyBhZ2FpbnN0IHR1cmJvc3RhdCBhcyBpbmNsdWRlZCBpbiBMaW51eC01LjEwLjIu
-Cj4gUGxlYXNlIG1lcmdlLgo+Cj4gUFM6IFRoaXMgaXMgcHJvYmFibHkgbWF0ZXJpYWwgZm9y
-IC1zdGFibGUsIGFzIGl0IHVzZWQgdG8gd29yayBiZWZvcmUgb24gWmVuIChaZW4yIGFrYSBS
-eXplbiAzMDAwIGluIG15IGNhc2UpLgo+Cg==
+On Mon, Feb 1, 2021 at 12:05 AM Marek Szyprowski
+<m.szyprowski@samsung.com> wrote:
+>
+> Hi Saravana,
+>
+> On 30.01.2021 05:08, Saravana Kannan wrote:
+> > On Fri, Jan 29, 2021 at 8:03 PM Saravana Kannan <saravanak@google.com> wrote:
+> >> This patch series solves two general issues with fw_devlink=on
+> >>
+> >> Patch 1/2 addresses the issue of firmware nodes that look like they'll
+> >> have struct devices created for them, but will never actually have
+> >> struct devices added for them. For example, DT nodes with a compatible
+> >> property that don't have devices added for them.
+> >>
+> >> Patch 2/2 address (for static kernels) the issue of optional suppliers
+> >> that'll never have a driver registered for them. So, if the device could
+> >> have probed with fw_devlink=permissive with a static kernel, this patch
+> >> should allow those devices to probe with a fw_devlink=on. This doesn't
+> >> solve it for the case where modules are enabled because there's no way
+> >> to tell if a driver will never be registered or it's just about to be
+> >> registered. I have some other ideas for that, but it'll have to come
+> >> later thinking about it a bit.
+> >>
+> >> These two patches might remove the need for several other patches that
+> >> went in as fixes for commit e590474768f1 ("driver core: Set
+> >> fw_devlink=on by default"), but I think all those fixes are good
+> >> changes. So I think we should leave those in.
+> >>
+> >> Marek, Geert,
+> >>
+> >> Can you try this series on a static kernel with your OF_POPULATED
+> >> changes reverted? I just want to make sure these patches can identify
+> >> and fix those cases.
+> >>
+> >> Tudor,
+> >>
+> >> You should still make the clock driver fix (because it's a bug), but I
+> >> think this series will fix your issue too (even without the clock driver
+> >> fix). Can you please give this a shot?
+> > Marek, Geert, Tudor,
+> >
+> > Forgot to say that this will probably fix your issues only in a static
+> > kernel. So please try this with a static kernel. If you can also try
+> > and confirm that this does not fix the issue for a modular kernel,
+> > that'd be good too.
+>
+> I've checked those patches on top of linux next-20210129 with
+> c09a3e6c97f0 ("soc: samsung: pm_domains: Convert to regular platform
+> driver") commit reverted.
+
+Hi Marek,
+
+Thanks for testing!
+
+> Sadly it doesn't help.
+
+That sucks. I even partly "tested" it out on my platform (that needs
+CONFIG_MODULES) by commenting out the CONFIG_MODULES check. And I saw
+some device links getting dropped.
+
+> All devices that belong
+
+By belong, I assume you meant "are consumers"?
+
+> to the Exynos power domains are never probed and stay endlessly on the
+> deferred devices list. I've used static kernel build - the one from
+> exynos_defconfig.
+
+Can you enable the dev_dbg in __device_link_del() (the SRCU variant)?
+Hopefully at least some of the device links would be dropped?
+
+If the PD device link is not dropped, I wonder why this condition is
+not hitting for consumers of the PD.
+
+                if (fw_devlink_def_probe_retry &&
+                    link->flags & DL_FLAG_INFERRED &&
+                    !device_links_probe_blocked_by(link->supplier)) {
+                        device_link_drop_managed(link);
+                        continue;
+                }
+
+Could you try logging dev, link->supplier and
+device_links_probe_blocked_by() return value. That should tell when a
+consumer is waiting on a PD, why the PD might appear as waiting on
+something else. I can't imagine the DL_FLAG_INFERRED being cleared
+(it'll only happen when a driver/framework explicitly creates a device
+link). Remind me again where the DT for this board is? Does the PD
+depend on something else?
+
+One other possibility is that some of the consumers of the PD could be
+using the *_platform_driver_probe() macro/function that never
+reattempts a probe. So even though this patch might drop the device
+links, the consumer never tries again.
+
+-Saravana
