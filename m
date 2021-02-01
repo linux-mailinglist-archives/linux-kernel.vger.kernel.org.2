@@ -2,85 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36BD230A528
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:15:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24F9A30A52A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:15:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233171AbhBAKO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 05:14:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54482 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233021AbhBAKOH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 05:14:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612174361;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JzU/btitmBexa+6BHnO0UL9EhKJmr7ZPhN0nWZC0+oY=;
-        b=KopkFXOrTxka/iEOUZg0EDR7RGOxSRMAdl4LGiT9PoUcX8OZKKpkEl8PMZbnmGe7d8xJJ0
-        X+t1NsOXO3+Hp3JWwe2ONvcY0OSS3UNc2E+OkG6IvzOMVr5hUjGHRoBNF4fHNwbLUY5iJU
-        zaRhrAc/KEgiZjKxeuvbZPxJ9mQDFAU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-562-A1uj297bOYCiXNEDgPOeKQ-1; Mon, 01 Feb 2021 05:12:40 -0500
-X-MC-Unique: A1uj297bOYCiXNEDgPOeKQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BC835800D53;
-        Mon,  1 Feb 2021 10:12:38 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3B51562461;
-        Mon,  1 Feb 2021 10:12:37 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210201094403.1979-1-hdanton@sina.com>
-References: <20210201094403.1979-1-hdanton@sina.com> <0000000000007b460105ba41c908@google.com>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     dhowells@redhat.com,
-        syzbot <syzbot+174de899852504e4a74a@syzkaller.appspotmail.com>,
-        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        syzbot+3d1c772efafd3c38d007@syzkaller.appspotmail.com
-Subject: Re: KASAN: use-after-free Read in rxrpc_send_data_packet
+        id S233064AbhBAKOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 05:14:39 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52352 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233117AbhBAKOP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 05:14:15 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E901BACB0;
+        Mon,  1 Feb 2021 10:13:32 +0000 (UTC)
+Subject: Re: [PATCH] mm/page_owner: Record the timestamp of all pages during
+ free
+To:     Georgi Djakov <georgi.djakov@linaro.org>,
+        akpm@linux-foundation.org, linux-mm@kvack.org
+Cc:     corbet@lwn.net, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210129234548.10054-1-georgi.djakov@linaro.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <735983e1-f439-8e77-7959-135164c517ed@suse.cz>
+Date:   Mon, 1 Feb 2021 11:13:31 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4107617.1612174356.1@warthog.procyon.org.uk>
-Date:   Mon, 01 Feb 2021 10:12:36 +0000
-Message-ID: <4107618.1612174356@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20210129234548.10054-1-georgi.djakov@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hillf Danton <hdanton@sina.com> wrote:
+On 1/30/21 12:45 AM, Georgi Djakov wrote:
+> Collect the time when each allocation is freed, to help with memory
+> analysis with kdump/ramdump.
+> 
+> Having another timestamp when we free the page helps for debugging
+> page migration issues. For example both alloc and free timestamps
+> being the same can gave hints that there is an issue with migrating
+> memory, as opposed to a page just being dropped during migration.
 
-> --- a/net/rxrpc/call_object.c
-> +++ b/net/rxrpc/call_object.c
-> @@ -549,6 +549,7 @@ void rxrpc_release_call(struct rxrpc_soc
->  	if (call->security)
->  		call->security->free_call_crypto(call);
+Besides crash dump analysis, we should also provide this timestamp in the
+page_owner file and dump_page()?
+
+> Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
+> ---
+>  Documentation/vm/page_owner.rst | 2 +-
+>  mm/page_owner.c                 | 5 +++++
+>  2 files changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/vm/page_owner.rst b/Documentation/vm/page_owner.rst
+> index 4e67c2e9bbed..5d7a62c2be28 100644
+> --- a/Documentation/vm/page_owner.rst
+> +++ b/Documentation/vm/page_owner.rst
+> @@ -47,7 +47,7 @@ size change due to this facility.
 >  
-> +	cancel_work_sync(&call->processor);
->  	rxrpc_cleanup_ring(call);
->  	_leave("");
+>     text    data     bss     dec     hex filename
+>     48800   2445     644   51889    cab1 mm/page_alloc.o
+> -   6574     108      29    6711    1a37 mm/page_owner.o
+> +   6644     108      29    6777    1a79 mm/page_owner.o
+>     1025       8       8    1041     411 mm/page_ext.o
+>  
+>  Although, roughly, 8 KB code is added in total, page_alloc.o increase by
+> diff --git a/mm/page_owner.c b/mm/page_owner.c
+> index d15c7c4994f5..fbdf064e7494 100644
+> --- a/mm/page_owner.c
+> +++ b/mm/page_owner.c
+> @@ -27,6 +27,7 @@ struct page_owner {
+>  	depot_stack_handle_t handle;
+>  	depot_stack_handle_t free_handle;
+>  	u64 ts_nsec;
+> +	u64 free_ts_nsec;
+>  	pid_t pid;
+>  };
+>  
+> @@ -148,6 +149,7 @@ void __reset_page_owner(struct page *page, unsigned int order)
+>  	struct page_ext *page_ext;
+>  	depot_stack_handle_t handle = 0;
+>  	struct page_owner *page_owner;
+> +	u64 free_ts_nsec = local_clock();
+>  
+>  	handle = save_stack(GFP_NOWAIT | __GFP_NOWARN);
+>  
+> @@ -158,6 +160,7 @@ void __reset_page_owner(struct page *page, unsigned int order)
+>  		__clear_bit(PAGE_EXT_OWNER_ALLOCATED, &page_ext->flags);
+>  		page_owner = get_page_owner(page_ext);
+>  		page_owner->free_handle = handle;
+> +		page_owner->free_ts_nsec = free_ts_nsec;
+>  		page_ext = page_ext_next(page_ext);
+>  	}
 >  }
+> @@ -177,6 +180,7 @@ static inline void __set_page_owner_handle(struct page *page,
+>  		page_owner->last_migrate_reason = -1;
+>  		page_owner->pid = current->pid;
+>  		page_owner->ts_nsec = local_clock();
+> +		page_owner->free_ts_nsec = 0;
 
-It's probably better to do the cancellation before we call
-->free_call_crypto().
+Might be more useful not to reset the time of previous free when the page is
+reallocated?
 
-Two other alternatives would be to lock in rxrpc_cleanup_ring() or just remove
-that call of rxrpc_cleanup_ring() and leave it to rxrpc_cleanup_call() (which
-calls it anyway).  The latter might be the best option as the work function
-holds a ref on the call.
-
-Clearing the ring in rxrpc_release_call() is more of an optimisation, meant to
-recycle skbuffs sooner, but I would hope that the call would be destroyed
-quickly after this point anyway.
-
-David
+>  		__set_bit(PAGE_EXT_OWNER, &page_ext->flags);
+>  		__set_bit(PAGE_EXT_OWNER_ALLOCATED, &page_ext->flags);
+>  
+> @@ -243,6 +247,7 @@ void __copy_page_owner(struct page *oldpage, struct page *newpage)
+>  	new_page_owner->handle = old_page_owner->handle;
+>  	new_page_owner->pid = old_page_owner->pid;
+>  	new_page_owner->ts_nsec = old_page_owner->ts_nsec;
+> +	new_page_owner->free_ts_nsec = old_page_owner->ts_nsec;
+>  
+>  	/*
+>  	 * We don't clear the bit on the oldpage as it's going to be freed
+> 
 
