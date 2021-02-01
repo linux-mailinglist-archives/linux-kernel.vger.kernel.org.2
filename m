@@ -2,197 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC60830AADA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:16:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 839A530AAE8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:18:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230214AbhBAPQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 10:16:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbhBAPPp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 10:15:45 -0500
-Received: from mail-out-2.itc.rwth-aachen.de (mail-out-2.itc.rwth-aachen.de [IPv6:2a00:8a60:1:e501::5:47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09CE5C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 07:15:04 -0800 (PST)
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2D+CwBvGhhg/5oagoZiHgEBCxIMg2KBe?=
- =?us-ascii?q?ixlhECRKZxzCwEBAQEBAQEBAQQEAS0CBAEBhkQCJTgTAhABAQYBAQEBAQYEhl+?=
- =?us-ascii?q?GHQSBLwIEWwEMBgIBAYMiAYJ3DwGwUH8ziRuBNBAJAYEugVOMEYFcP4E4D4Mhh?=
- =?us-ascii?q?AWDUoJgBIJHdBq7XQeBaIERhGKCapQlBSmTJY9tAS2TfZU8jCsCAgICCQIWgW2?=
- =?us-ascii?q?Bek0kXAmCU1AXAg2OLReNawE7QTI3AgYKAQEDCXyIU4JGAQE?=
-X-IPAS-Result: =?us-ascii?q?A2D+CwBvGhhg/5oagoZiHgEBCxIMg2KBeixlhECRKZxzCwE?=
- =?us-ascii?q?BAQEBAQEBAQQEAS0CBAEBhkQCJTgTAhABAQYBAQEBAQYEhl+GHQSBLwIEWwEMB?=
- =?us-ascii?q?gIBAYMiAYJ3DwGwUH8ziRuBNBAJAYEugVOMEYFcP4E4D4MhhAWDUoJgBIJHdBq?=
- =?us-ascii?q?7XQeBaIERhGKCapQlBSmTJY9tAS2TfZU8jCsCAgICCQIWgW2Bek0kXAmCU1AXA?=
- =?us-ascii?q?g2OLReNawE7QTI3AgYKAQEDCXyIU4JGAQE?=
-X-IronPort-AV: E=Sophos;i="5.79,392,1602540000"; 
-   d="p7s'?scan'208";a="133954439"
-Received: from rwthex-s2-a.rwth-ad.de ([134.130.26.154])
-  by mail-in-2.itc.rwth-aachen.de with ESMTP; 01 Feb 2021 16:15:02 +0100
-Received: from [IPv6:2a02:908:1089:e060:bd31:5e5a:6687:b1da]
- (2a02:908:1089:e060:bd31:5e5a:6687:b1da) by rwthex-s2-a.rwth-ad.de
- (2a00:8a60:1:e500::26:154) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Mon, 1 Feb
- 2021 16:14:58 +0100
-From:   Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
-Subject: [PATCH] hw_random/timeriomem-rng: Fix cooldown period calculation
-To:     <mpm@selenic.com>, <herbert@gondor.apana.org.au>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Jan Henrik Weinstock" <jan.weinstock@rwth-aachen.de>
-Date:   Mon, 1 Feb 2021 16:14:59 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+        id S231216AbhBAPRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 10:17:30 -0500
+Received: from mail-dm6nam10on2068.outbound.protection.outlook.com ([40.107.93.68]:17045
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231587AbhBAPQY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 10:16:24 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GHDabpSyw4ihGPO2DTduKpIAtSJqtz8PQxkxOfX4MnpkXu2KTFhHQFsNua3zTAFL8yJB4325LY8r6+6YYs+kvoyOb6njMR6j8Wx6sjG7cH2ta0CbXyURiv8A5WyD+aPsseD4IKlDVoewgcMYLrDVy22FWg0ObWk539ZmGyints7BfjJ1ZE3x57B406MGTKAc7eg1sQ6a5HJo0A8m5pC6l7o+RewmcYvTsFVbfiROlZ6o97uFIFuf5bZ8DkTtecW98c0NTY8FyzifRVOSwTyshAZDkAl9urYhKApYtJW4mCuCBbVJovlAnS8gs/Z8JB77ZoVOIp5E46MArE1Na0WEBA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1kGKHCOGnFhI+2WwQZwR3PE6UObSwtZynuMV8Z8Nryk=;
+ b=S27Bn0bYfY/2UkwuzCpH+dM/IyKIS1NWblLtO3erTXTFO8et7wdeakduaswGtsvRNK55qr+o6197i9vt/owdmw7Kc3zj7/C5UuKZlo3RU88V1eqCztNhy9UHroiRoZqpkWhCwRbXvuVoTFRJQpXo2sCnzVEy92WwMGsQi8BagPr+4qUnOTd6Ntm7aakPKDgBUZLereTRW4aJGSzvHVOJVt/D2BMeKub6FrGTGCY4OZiz2UfUCiD2RYZ/8LVxz41jl8Y6WtZfBfc9lz7/UeyMDqyMmVtUZ75gyDvH0mxqKrAGQyPOh46N9ctn/GX80cw0mb7XZx0wDKas6hFps3nHtA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=analog.com smtp.mailfrom=xilinx.com;
+ dmarc=bestguesspass action=none header.from=xilinx.com; dkim=none (message
+ not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1kGKHCOGnFhI+2WwQZwR3PE6UObSwtZynuMV8Z8Nryk=;
+ b=HIxQi91ebPnFDivO0n2N7wZFyF7pTF/IGUTfEr4a7eB0mCZce7V0i5JG9ugojMC+6IF17m/BGVpRcQ4yOoV/W0NHZ7RO/I5cmexzvfhixOVDxKqB+DdUy/XkF6reqBfcLFtdhXMMLXtqvfp/YLVrnZTOTP0t42Y/aGtpNjliuZg=
+Received: from SN4PR0701CA0035.namprd07.prod.outlook.com
+ (2603:10b6:803:2d::25) by BYAPR02MB5880.namprd02.prod.outlook.com
+ (2603:10b6:a03:11d::24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3784.12; Mon, 1 Feb
+ 2021 15:15:30 +0000
+Received: from SN1NAM02FT027.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:803:2d:cafe::a5) by SN4PR0701CA0035.outlook.office365.com
+ (2603:10b6:803:2d::25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17 via Frontend
+ Transport; Mon, 1 Feb 2021 15:15:30 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; analog.com; dkim=none (message not signed)
+ header.d=none;analog.com; dmarc=bestguesspass action=none
+ header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
+Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
+ SN1NAM02FT027.mail.protection.outlook.com (10.152.72.99) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.3784.12 via Frontend Transport; Mon, 1 Feb 2021 15:15:30 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1913.5; Mon, 1 Feb 2021 07:15:29 -0800
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.1913.5 via Frontend Transport; Mon, 1 Feb 2021 07:15:29 -0800
+Envelope-to: dragos.bogdan@analog.com,
+ ardeleanalex@gmail.com,
+ mdf@kernel.org,
+ linux-fpga@vger.kernel.org,
+ lars@metafoo.de,
+ robh+dt@kernel.org,
+ sboyd@kernel.org,
+ mturquette@baylibre.com,
+ linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org,
+ linux-clk@vger.kernel.org,
+ alexandru.ardelean@analog.com
+Received: from [172.30.17.109] (port=37420)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1l6avJ-000343-Kl; Mon, 01 Feb 2021 07:15:29 -0800
+Subject: Re: [PATCH v3 1/4] clk: axi-clkgen: replace ARCH dependencies with
+ driver deps
+To:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <robh+dt@kernel.org>, <lars@metafoo.de>,
+        <linux-fpga@vger.kernel.org>, <mdf@kernel.org>,
+        <ardeleanalex@gmail.com>, Dragos Bogdan <dragos.bogdan@analog.com>
+References: <20210201151245.21845-1-alexandru.ardelean@analog.com>
+ <20210201151245.21845-2-alexandru.ardelean@analog.com>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <3be0501f-98bf-8371-6994-e77c94b4597b@xilinx.com>
+Date:   Mon, 1 Feb 2021 16:15:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature";
-        micalg=sha-256; boundary="------------ms000404000005030301060908"
-X-Originating-IP: [2a02:908:1089:e060:bd31:5e5a:6687:b1da]
-X-ClientProxiedBy: rwthex-w1-b.rwth-ad.de (2a00:8a60:1:e500::26:157) To
- rwthex-s2-a.rwth-ad.de (2a00:8a60:1:e500::26:154)
-Message-ID: <947aa0ab-1f0c-44d6-943a-cf83a56ac5b8@rwthex-s2-a.rwth-ad.de>
+In-Reply-To: <20210201151245.21845-2-alexandru.ardelean@analog.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 82e75972-71a6-47ba-738f-08d8c6c43692
+X-MS-TrafficTypeDiagnostic: BYAPR02MB5880:
+X-Microsoft-Antispam-PRVS: <BYAPR02MB588022DA41E628739E58FA90C6B69@BYAPR02MB5880.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:6108;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: TLE1kjyI63P4DQlBIFE9shsbh7HNqL/cTcKc08UCcu5nY6F6yaWRxWu+ESh7AT0BjtenSl4ZQb52/LsqQnzUvy6+b+cwa46Fd+56vUP1Jl+Y5TmnCCgUq1QJh5kmjEflipGkFaT3+5r2lz5rEeIkExxRybt6WlIfTfYydwV/BtSvWrJc6HI/LnvT51p6MEvWbS7NfIGMquvdsYgTI/EZTljDVo0dR+3V0gQ1LSFvpoI+JU5Gk7pfth8EdCQWObPFhXXE/YJSJpVm2QVhvTwA8CsgndEhCNG/ZrpKPSCtVd9L1wnoKDtPLtUKxWJTkjHfAhsJ6mas6O9Q7lMb720FUNKcJYdgFp94MhbD0ctq9JfFiA4SQnpSV1q7HInrOTM+26or2yMGfnj0cFjko33WwD5OuMjuHWDKyVF1B5O4nvLvYldckcK2aECnKej0IIIyxujW+0/fvgr3fqK+3pknvcL2Xma+t27MTZhgCJ99oX2Z7264LjDvUnIfgcCzA+AG73XyQGs9WURh9GNhyCQOndyv2NQ2fqiF/CSNKl4gMkWN4NLQLGNadjyypvo5zV3NaTX4U/XiM9QA+f0IGt1+UnS8wDbTHtMlfsC1iB/U943H10fU0tVq+mWRfyXb372lOG+lm0CiYJSB6ufPzbCoDg==
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(396003)(136003)(39860400002)(346002)(46966006)(7636003)(7416002)(54906003)(31686004)(186003)(6666004)(4326008)(82310400003)(70206006)(9786002)(47076005)(36756003)(356005)(336012)(2616005)(82740400003)(70586007)(110136005)(426003)(8936002)(36906005)(5660300002)(316002)(53546011)(31696002)(26005)(83380400001)(478600001)(2906002)(8676002)(44832011)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2021 15:15:30.3582
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82e75972-71a6-47ba-738f-08d8c6c43692
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT027.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR02MB5880
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---------------ms000404000005030301060908
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-Ensure cooldown period tolerance of 1% is actually accounted for.
-
-Signed-off-by: Jan Henrik Weinstock <jan.weinstock@rwth-aachen.de>
----
-
-Before patch, if period_us was less than 100us, no extra sleep time was=20
-added. If it was more than 100us, only 1us extra time (and not 1%) is sle=
-pt.
-
-  drivers/char/hw_random/timeriomem-rng.c | 2 +-
-  1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/char/hw_random/timeriomem-rng.c=20
-b/drivers/char/hw_random/timeriomem-rng.c
-index e262445fe..f35f0f31f 100644
---- a/drivers/char/hw_random/timeriomem-rng.c
-+++ b/drivers/char/hw_random/timeriomem-rng.c
-@@ -69,7 +69,7 @@ static int timeriomem_rng_read(struct hwrng *hwrng,=20
-void *data,
-  		 */
-  		if (retval > 0)
-  			usleep_range(period_us,
--					period_us + min(1, period_us / 100));
-+					period_us + max(1, period_us / 100));
-
-  		*(u32 *)data =3D readl(priv->io_base);
-  		retval +=3D sizeof(u32);
---=20
-2.17.1
 
 
---------------ms000404000005030301060908
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+On 2/1/21 4:12 PM, Alexandru Ardelean wrote:
+> The intent is to be able to run this driver to access the IP core in setups
+> where FPGA board is also connected via a PCIe bus. In such cases the number
+> of combinations explodes, where the host system can be an x86 with Xilinx
+> Zynq/ZynqMP/Microblaze board connected via PCIe.
+> Or even a ZynqMP board with a ZynqMP/Zynq/Microblaze connected via PCIe.
+> 
+> To accommodate for these cases, this change removes the limitation for this
+> driver to be compilable only on Zynq/Microblaze architectures.
+> And adds dependencies on the mechanisms required by the driver to work (OF
+> and HAS_IOMEM).
+> 
+> Signed-off-by: Dragos Bogdan <dragos.bogdan@analog.com>
+> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+> ---
+>  drivers/clk/Kconfig | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
+> index 85856cff506c..cee1d4e657bc 100644
+> --- a/drivers/clk/Kconfig
+> +++ b/drivers/clk/Kconfig
+> @@ -247,7 +247,8 @@ config CLK_TWL6040
+>  
+>  config COMMON_CLK_AXI_CLKGEN
+>  	tristate "AXI clkgen driver"
+> -	depends on ARCH_ZYNQ || MICROBLAZE || COMPILE_TEST
+> +	depends on HAS_IOMEM || COMPILE_TEST
+> +	depends on OF
+>  	help
+>  	  Support for the Analog Devices axi-clkgen pcore clock generator for Xilinx
+>  	  FPGAs. It is commonly used in Analog Devices' reference designs.
+> 
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
-EHcwggUSMIID+qADAgECAgkA4wvV+K8l2YEwDQYJKoZIhvcNAQELBQAwgYIxCzAJBgNVBAYT
-AkRFMSswKQYDVQQKDCJULVN5c3RlbXMgRW50ZXJwcmlzZSBTZXJ2aWNlcyBHbWJIMR8wHQYD
-VQQLDBZULVN5c3RlbXMgVHJ1c3QgQ2VudGVyMSUwIwYDVQQDDBxULVRlbGVTZWMgR2xvYmFs
-Um9vdCBDbGFzcyAyMB4XDTE2MDIyMjEzMzgyMloXDTMxMDIyMjIzNTk1OVowgZUxCzAJBgNV
-BAYTAkRFMUUwQwYDVQQKEzxWZXJlaW4genVyIEZvZXJkZXJ1bmcgZWluZXMgRGV1dHNjaGVu
-IEZvcnNjaHVuZ3NuZXR6ZXMgZS4gVi4xEDAOBgNVBAsTB0RGTi1QS0kxLTArBgNVBAMTJERG
-Ti1WZXJlaW4gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkgMjCCASIwDQYJKoZIhvcNAQEBBQAD
-ggEPADCCAQoCggEBAMtg1/9moUHN0vqHl4pzq5lN6mc5WqFggEcVToyVsuXPztNXS43O+FZs
-FVV2B+pG/cgDRWM+cNSrVICxI5y+NyipCf8FXRgPxJiZN7Mg9mZ4F4fCnQ7MSjLnFp2uDo0p
-eQcAIFTcFV9Kltd4tjTTwXS1nem/wHdN6r1ZB+BaL2w8pQDcNb1lDY9/Mm3yWmpLYgHurDg0
-WUU2SQXaeMpqbVvAgWsRzNI8qIv4cRrKO+KA3Ra0Z3qLNupOkSk9s1FcragMvp0049ENF4N1
-xDkesJQLEvHVaY4l9Lg9K7/AjsMeO6W/VRCrKq4Xl14zzsjz9AkH4wKGMUZrAcUQDBHHWekC
-AwEAAaOCAXQwggFwMA4GA1UdDwEB/wQEAwIBBjAdBgNVHQ4EFgQUk+PYMiba1fFKpZFK4OpL
-4qIMz+EwHwYDVR0jBBgwFoAUv1kgNgB5oKAia4zV8mHSuCzLgkowEgYDVR0TAQH/BAgwBgEB
-/wIBAjAzBgNVHSAELDAqMA8GDSsGAQQBga0hgiwBAQQwDQYLKwYBBAGBrSGCLB4wCAYGZ4EM
-AQICMEwGA1UdHwRFMEMwQaA/oD2GO2h0dHA6Ly9wa2kwMzM2LnRlbGVzZWMuZGUvcmwvVGVs
-ZVNlY19HbG9iYWxSb290X0NsYXNzXzIuY3JsMIGGBggrBgEFBQcBAQR6MHgwLAYIKwYBBQUH
-MAGGIGh0dHA6Ly9vY3NwMDMzNi50ZWxlc2VjLmRlL29jc3ByMEgGCCsGAQUFBzAChjxodHRw
-Oi8vcGtpMDMzNi50ZWxlc2VjLmRlL2NydC9UZWxlU2VjX0dsb2JhbFJvb3RfQ2xhc3NfMi5j
-ZXIwDQYJKoZIhvcNAQELBQADggEBAIcL/z4Cm2XIVi3WO5qYi3FP2ropqiH5Ri71sqQPrhE4
-eTizDnS6dl2e6BiClmLbTDPo3flq3zK9LExHYFV/53RrtCyD2HlrtrdNUAtmB7Xts5et6u5/
-MOaZ/SLick0+hFvu+c+Z6n/XUjkurJgARH5pO7917tALOxrN5fcPImxHhPalR6D90Bo0fa3S
-PXez7vTXTf/D6OWST1k+kEcQSrCFWMBvf/iu7QhCnh7U3xQuTY+8npTD5+32GPg8SecmqKc2
-2CzeIs2LgtjZeOJVEqM7h0S2EQvVDFKvaYwPBt/QolOLV5h7z/0HJPT8vcP9SpIClxvyt7bP
-ZYoaorVyGTkwggWsMIIElKADAgECAgcbY7rQHiw9MA0GCSqGSIb3DQEBCwUAMIGVMQswCQYD
-VQQGEwJERTFFMEMGA1UEChM8VmVyZWluIHp1ciBGb2VyZGVydW5nIGVpbmVzIERldXRzY2hl
-biBGb3JzY2h1bmdzbmV0emVzIGUuIFYuMRAwDgYDVQQLEwdERk4tUEtJMS0wKwYDVQQDEyRE
-Rk4tVmVyZWluIENlcnRpZmljYXRpb24gQXV0aG9yaXR5IDIwHhcNMTYwNTI0MTEzODQwWhcN
-MzEwMjIyMjM1OTU5WjCBjTELMAkGA1UEBhMCREUxRTBDBgNVBAoMPFZlcmVpbiB6dXIgRm9l
-cmRlcnVuZyBlaW5lcyBEZXV0c2NoZW4gRm9yc2NodW5nc25ldHplcyBlLiBWLjEQMA4GA1UE
-CwwHREZOLVBLSTElMCMGA1UEAwwcREZOLVZlcmVpbiBHbG9iYWwgSXNzdWluZyBDQTCCASIw
-DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJ07eRxH3h+Gy8Zp1xCeOdfZojDbchwFfylf
-S2jxrRnWTOFrG7ELf6Gr4HuLi9gtzm6IOhDuV+UefwRRNuu6cG1joL6WLkDh0YNMZj0cZGnl
-m6Stcq5oOVGHecwX064vXWNxSzl660Knl5BpBb+Q/6RAcL0D57+eGIgfn5mITQ5HjUhfZZkQ
-0tkqSe3BuS0dnxLLFdM/fx5ULzquk1enfnjK1UriGuXtQX1TX8izKvWKMKztFwUkP7agCwf9
-TRqaA1KgNpzeJIdl5Of6x5ZzJBTN0OgbaJ4YWa52fvfRCng8h0uwN89Tyjo4EPPLR22MZD08
-WkVKusqAfLjz56dMTM0CAwEAAaOCAgUwggIBMBIGA1UdEwEB/wQIMAYBAf8CAQEwDgYDVR0P
-AQH/BAQDAgEGMCkGA1UdIAQiMCAwDQYLKwYBBAGBrSGCLB4wDwYNKwYBBAGBrSGCLAEBBDAd
-BgNVHQ4EFgQUazqYi/nyU4na4K2yMh4JH+iqO3QwHwYDVR0jBBgwFoAUk+PYMiba1fFKpZFK
-4OpL4qIMz+EwgY8GA1UdHwSBhzCBhDBAoD6gPIY6aHR0cDovL2NkcDEucGNhLmRmbi5kZS9n
-bG9iYWwtcm9vdC1nMi1jYS9wdWIvY3JsL2NhY3JsLmNybDBAoD6gPIY6aHR0cDovL2NkcDIu
-cGNhLmRmbi5kZS9nbG9iYWwtcm9vdC1nMi1jYS9wdWIvY3JsL2NhY3JsLmNybDCB3QYIKwYB
-BQUHAQEEgdAwgc0wMwYIKwYBBQUHMAGGJ2h0dHA6Ly9vY3NwLnBjYS5kZm4uZGUvT0NTUC1T
-ZXJ2ZXIvT0NTUDBKBggrBgEFBQcwAoY+aHR0cDovL2NkcDEucGNhLmRmbi5kZS9nbG9iYWwt
-cm9vdC1nMi1jYS9wdWIvY2FjZXJ0L2NhY2VydC5jcnQwSgYIKwYBBQUHMAKGPmh0dHA6Ly9j
-ZHAyLnBjYS5kZm4uZGUvZ2xvYmFsLXJvb3QtZzItY2EvcHViL2NhY2VydC9jYWNlcnQuY3J0
-MA0GCSqGSIb3DQEBCwUAA4IBAQCBeEWkTqR/DlXwCbFqPnjMaDWpHPOVnj/z+N9rOHeJLI21
-rT7H8pTNoAauusyosa0zCLYkhmI2THhuUPDVbmCNT1IxQ5dGdfBi5G5mUcFCMWdQ5UnnOR7L
-n8qGSN4IFP8VSytmm6A4nwDO/afr0X9XLchMX9wQEZc+lgQCXISoKTlslPwQkgZ7nu7YRrQb
-tQMMONncsKk/cQYLsgMHM8KNSGMlJTx6e1du94oFOO+4oK4v9NsH1VuEGMGpuEvObJAaguS5
-Pfp38dIfMwK/U+d2+dwmJUFvL6Yb+qQTkPp8ftkLYF3sv8pBoGH7EUkp2KgtdRXYShjqFu9V
-NCIaE40GMIIFrTCCBJWgAwIBAgIMIShOA5F6a0vPkJFlMA0GCSqGSIb3DQEBCwUAMIGNMQsw
-CQYDVQQGEwJERTFFMEMGA1UECgw8VmVyZWluIHp1ciBGb2VyZGVydW5nIGVpbmVzIERldXRz
-Y2hlbiBGb3JzY2h1bmdzbmV0emVzIGUuIFYuMRAwDgYDVQQLDAdERk4tUEtJMSUwIwYDVQQD
-DBxERk4tVmVyZWluIEdsb2JhbCBJc3N1aW5nIENBMB4XDTE5MDYxODExNTIyNVoXDTIyMDYx
-NzExNTIyNVowQjELMAkGA1UEBhMCREUxFDASBgNVBAoMC1JXVEggQWFjaGVuMR0wGwYDVQQD
-DBRKYW4gSGVucmlrIFdlaW5zdG9jazCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEB
-ALqTMZkiwS7HcKorhnCtWkSdYBssMOoeRrqS/U72ixGRWRduFz9hySdkSdM4tQs5b0ZHWZPR
-x4Ts/URAtPrJtcYhdGG2zsknDxlweFxKg2tJW3tVLnZw3Y3517ruQG3f09/uzJ8lobaQp9N5
-exa1l1vYZbD6cricWaX4k4J8pyPERZ6Ntt70Mse2g2+fb6y2nvEGVqt088dRRgacmd7zrpug
-fWgnPYxM3jGU4pJPQzXzPwNrm5i831dCo1HZNNy+iVNjgpZWd3mPKS6eeaPMKbStXTlvvGuu
-8u7FpRSHnAB6NwejMIVl26eqdMyYI6F98jPpH1mOHuxxopnspYor3FkCAwEAAaOCAlUwggJR
-MD4GA1UdIAQ3MDUwDwYNKwYBBAGBrSGCLAEBBDAQBg4rBgEEAYGtIYIsAQEEBDAQBg4rBgEE
-AYGtIYIsAgEEBDAJBgNVHRMEAjAAMA4GA1UdDwEB/wQEAwIF4DAdBgNVHSUEFjAUBggrBgEF
-BQcDAgYIKwYBBQUHAwQwHQYDVR0OBBYEFB/z05wtpKDoxT7kc83Swux9Ked/MB8GA1UdIwQY
-MBaAFGs6mIv58lOJ2uCtsjIeCR/oqjt0MCcGA1UdEQQgMB6BHGphbi53ZWluc3RvY2tAcnd0
-aC1hYWNoZW4uZGUwgY0GA1UdHwSBhTCBgjA/oD2gO4Y5aHR0cDovL2NkcDEucGNhLmRmbi5k
-ZS9kZm4tY2EtZ2xvYmFsLWcyL3B1Yi9jcmwvY2FjcmwuY3JsMD+gPaA7hjlodHRwOi8vY2Rw
-Mi5wY2EuZGZuLmRlL2Rmbi1jYS1nbG9iYWwtZzIvcHViL2NybC9jYWNybC5jcmwwgdsGCCsG
-AQUFBwEBBIHOMIHLMDMGCCsGAQUFBzABhidodHRwOi8vb2NzcC5wY2EuZGZuLmRlL09DU1At
-U2VydmVyL09DU1AwSQYIKwYBBQUHMAKGPWh0dHA6Ly9jZHAxLnBjYS5kZm4uZGUvZGZuLWNh
-LWdsb2JhbC1nMi9wdWIvY2FjZXJ0L2NhY2VydC5jcnQwSQYIKwYBBQUHMAKGPWh0dHA6Ly9j
-ZHAyLnBjYS5kZm4uZGUvZGZuLWNhLWdsb2JhbC1nMi9wdWIvY2FjZXJ0L2NhY2VydC5jcnQw
-DQYJKoZIhvcNAQELBQADggEBAGGcNvUO+7oXmyLDG8sYt3zyJTC9xvPyVwvCgEnHjwIvnPB2
-hqRMpzRqQ3O8vquhuCLcBD20k8EoPEF1fagZQGzrzMJxgCSUnoJpJtv6M0azpPubHh9I9Geb
-h8HBM+8IgDCJjMvWQcl3TLfvzXS9e7W3+lx7+L8sNOlxu+cF/IS7IYrEcMNr/4VOVNemX5E2
-12rDntadEl+tVqlh42CEM6bMnaWYV0sjj+e3XLvXajaDSohHUwOFX3KtaRfgMbDY0LkergyG
-uVPtU5NAzknRB4fh8/Yo6qNsmyEmZ8DpLFBgUwgEbK3NteTTNWvCnPPIMOoHjDNfDaQ+9rMI
-CXtOvVkxggQLMIIEBwIBATCBnjCBjTELMAkGA1UEBhMCREUxRTBDBgNVBAoMPFZlcmVpbiB6
-dXIgRm9lcmRlcnVuZyBlaW5lcyBEZXV0c2NoZW4gRm9yc2NodW5nc25ldHplcyBlLiBWLjEQ
-MA4GA1UECwwHREZOLVBLSTElMCMGA1UEAwwcREZOLVZlcmVpbiBHbG9iYWwgSXNzdWluZyBD
-QQIMIShOA5F6a0vPkJFlMA0GCWCGSAFlAwQCAQUAoIICPTAYBgkqhkiG9w0BCQMxCwYJKoZI
-hvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMTAyMDExNTE0NTlaMC8GCSqGSIb3DQEJBDEiBCAK
-0xqF2+DDYYauM5CZwiP3sIqBxvxGcFx8mkrXxJAwrDBsBgkqhkiG9w0BCQ8xXzBdMAsGCWCG
-SAFlAwQBKjALBglghkgBZQMEAQIwCgYIKoZIhvcNAwcwDgYIKoZIhvcNAwICAgCAMA0GCCqG
-SIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMCAgEoMIGvBgkrBgEEAYI3EAQxgaEwgZ4w
-gY0xCzAJBgNVBAYTAkRFMUUwQwYDVQQKDDxWZXJlaW4genVyIEZvZXJkZXJ1bmcgZWluZXMg
-RGV1dHNjaGVuIEZvcnNjaHVuZ3NuZXR6ZXMgZS4gVi4xEDAOBgNVBAsMB0RGTi1QS0kxJTAj
-BgNVBAMMHERGTi1WZXJlaW4gR2xvYmFsIElzc3VpbmcgQ0ECDCEoTgORemtLz5CRZTCBsQYL
-KoZIhvcNAQkQAgsxgaGggZ4wgY0xCzAJBgNVBAYTAkRFMUUwQwYDVQQKDDxWZXJlaW4genVy
-IEZvZXJkZXJ1bmcgZWluZXMgRGV1dHNjaGVuIEZvcnNjaHVuZ3NuZXR6ZXMgZS4gVi4xEDAO
-BgNVBAsMB0RGTi1QS0kxJTAjBgNVBAMMHERGTi1WZXJlaW4gR2xvYmFsIElzc3VpbmcgQ0EC
-DCEoTgORemtLz5CRZTANBgkqhkiG9w0BAQEFAASCAQAwMgNx//ZH5EebqkhiT8tpkFDnn7Gv
-BY5gZwJmUeM/tEl8hGnKAhNPcPF2d8WYQ3d74w2MfuyxmNbLcxmbu0c6WLThMmh5BTjlKLFo
-4u9MHHtGHfwtyW66CGrFGsVenTMzHsgyCeRLxUUFZaQ/k+2rTpuIEC6y5481TkxDnt/jFNHx
-KxRcGNOMDBg7rMkyJgii+dFSyBwUuswnRBFesv+PcpfgI75eISlUtUpMVJmRTaMRfrikMejS
-oiSODr8F/XTmWCB7/qg7G/XZssey/Z5VX/nRyYNAcOw6s+dQFDtarzh/k8fP/kil5MlkWcx/
-dACXInSciikLzc1clqpGOl75AAAAAAAA
---------------ms000404000005030301060908--
+Make sense.
+
+Acked-by: Michal Simek <michal.simek@xilinx.com>
+
+Thanks,
+Michal
