@@ -2,72 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76BD730ACB5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:35:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD0F30ACC9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:38:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230077AbhBAQev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 11:34:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbhBAQep (ORCPT
+        id S231148AbhBAQik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 11:38:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:55704 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229500AbhBAQih (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 11:34:45 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A188DC061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 08:34:03 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id m22so23619624lfg.5
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 08:34:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=sTjaV842e3lQQ0QyQx1MRefCi3psMAfvcNsMB4upxRU=;
-        b=XHwHl+aCytpgITGPXjPcD3MEGGf9pUL11XwiSrKTWIQU5bpB0XH9/40g7y5iItD4Tx
-         MKbKoe4lfV0hQeBJoaN3HP3RMbnB63qMBOMWErgoyZ9y17WKFJESYBC+xRfiXd0XiBXN
-         /NI3gDJhrC60EIjfvYsvYwdULQZkuOlJNQZ7QM35Ri7VCEb10nuv/ZLMsLBNI6kcu+p+
-         f/inB7pfzQYITrcxHs69hM+8P99gRuFKjZBRkqOBR9wsW669FPuR2DjELW/MpDB2fSS5
-         vjVsmqpyNpR6XgiFa9WA0o0PCGD8dJvLTHuIicArktCF5kIniwjzm0M6gFGj4e+YR/ip
-         r5Mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=sTjaV842e3lQQ0QyQx1MRefCi3psMAfvcNsMB4upxRU=;
-        b=mWlRe+YIgZX+fwhzgKPHIumJU1TZdtljiVKaNTCr+4Q4uMw2d8GIpc2/cUUHj5qiRP
-         d0FmsePdJqIxMahxb7z4QB5C3zgDXPN5pIBz2AsZ0dYSESNGHPLwIBdKEopw/53GZejJ
-         B0au0nhYZttchZtn0H/ln13Pt01u0Oau97a2/8JmH1rPymdMMON+TW99MbdE5qXEurxN
-         NvjiUUOHconj3L/aot7YSW1t13YnP3FuVMLcBhdGQ6jEkdq4DKFo0KXLJrFf3snQ5WcJ
-         xvPFj9VrpOdd6EC5HyB6LSb1kJ4esftYDty5LmwERuEsIPedUjXxhEDiMe4BTwvuxR+p
-         3hag==
-X-Gm-Message-State: AOAM530DGsDGttvLA9gfbtL7a99AkJvmEcExamd9YuA6XE2JADo4lg2x
-        7ObyyXq6+yQVBTaPFnJ76wh0PZlL0ijI2DFoJh5RXJcECFZcOHo0
-X-Google-Smtp-Source: ABdhPJwFbmiYLyfj98WwXePFDVTifmSXWyvUKQ5JYfG/iLSGNia7UWB8T6rEOai0cF+VDbxXY0nluvzPVc3iWI8vPuE=
-X-Received: by 2002:a05:6512:3748:: with SMTP id a8mr8694093lfs.31.1612197242078;
- Mon, 01 Feb 2021 08:34:02 -0800 (PST)
+        Mon, 1 Feb 2021 11:38:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612197431;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+jj6jBCfn7J2yyMR8iYzgdgBFCJ5rUe4Q6xL1K3yPjY=;
+        b=J8UrwWllvKQb1xdZmhc2k2m5B2xhzzSX0r8zXSdrk+zcq7Le+7h6Xd3Ti2fZfVIp/OtJFe
+        HN6B+9Ft+4qByWdrQcVVQu1YJs3x/bMqfYDBlkf980uzFTSv37AFAdCnM5hWrBadGbSDqe
+        L3DHE4u4f5EkUCohHb5cO7b1Z5byOvQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-522-LR-6CSGbPh6f-swe8BxKjg-1; Mon, 01 Feb 2021 11:37:06 -0500
+X-MC-Unique: LR-6CSGbPh6f-swe8BxKjg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B73248799FA;
+        Mon,  1 Feb 2021 16:36:55 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D22E460D06;
+        Mon,  1 Feb 2021 16:36:53 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <7836898a-0a42-5c9b-3a42-7ff4c7a03ea4@linux.ibm.com>
+References: <7836898a-0a42-5c9b-3a42-7ff4c7a03ea4@linux.ibm.com> <20210201151910.1465705-1-stefanb@linux.ibm.com> <32177.1612196003@warthog.procyon.org.uk>
+To:     Stefan Berger <stefanb@linux.ibm.com>
+Cc:     dhowells@redhat.com, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, davem@davemloft.net,
+        herbert@gondor.apana.org.au, zohar@linux.ibm.com,
+        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org
+Subject: Re: [PATCH v7 0/4] Add support for x509 certs with NIST p256 and p192 keys
 MIME-Version: 1.0
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Mon, 1 Feb 2021 22:04:01 +0530
-Message-ID: <CABJPP5AxB8-kafFEpsMydg8eMx8bH5ooT5g7r0fKWV2T2Hjtng@mail.gmail.com>
-Subject: Patches from the future - can checkpatch help?
-To:     Joe Perches <joe@perches.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <33902.1612197412.1@warthog.procyon.org.uk>
+Date:   Mon, 01 Feb 2021 16:36:52 +0000
+Message-ID: <33903.1612197412@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-on linux-next,
-$ git log --pretty=format:"%h%x09%ad" | awk '$6>2021 {print $1}'
-gives:
-4a2d78822fdf
-12ca45fea91c
-09f2724a786f
+Stefan Berger <stefanb@linux.ibm.com> wrote:
 
-These are patches from the year 2085, 2037 and 2030 respectively.
+> 1) the whole series goes through the crypto tree
+> 
+> 2) I make the OIDs addition patch 1 that both keyrings and crypto take
+> separately?
 
-Would a checkpatch rule be helpful for these or are they too
-isolated to waste runtime on?
+The first might be easiest, but 2 is okay also.  You'll just need to give
+myself and Herbert separate branches to pull, rooted on the same commit.
 
-Thanks!
-Dwaipayan.
+Btw, what do patches 2-4 do if patch 1 isn't applied?
+
+
+David
+
