@@ -2,107 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AC9030A54C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:28:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A69A030A554
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:30:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233009AbhBAK16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 05:27:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37510 "EHLO mail.kernel.org"
+        id S233105AbhBAK3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 05:29:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37746 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232290AbhBAK14 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 05:27:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 295D764E0F;
-        Mon,  1 Feb 2021 10:27:13 +0000 (UTC)
+        id S232290AbhBAK3a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 05:29:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5D4F64E11;
+        Mon,  1 Feb 2021 10:28:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612175235;
-        bh=PS8IJ5JvjZuy5zHzMyJ9YXXpfetmK358icWc9qRWdAg=;
+        s=k20201202; t=1612175328;
+        bh=cYt/4tFrkPkgMO34ziTHv/Xl1CcvzqikMpKc4YYIK3E=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iXgHbP3by/cp7VCm81uh8jumovxCHj/+brOghZuWOvNupn7obmdzp36kPwTY/j0ll
-         SenD7VNR2YLA/Ag2uCeBfkzvEXrrbFYGQNjK+W07dhHLF/6kmo4aKr/be7ikDehI/6
-         dp8a8DKuFWcx6sWuKBsEjs+u/RDWMUsd46aAiKZMgz4ZYUQhwSZ6qcaVQcK1iexoR3
-         Ag/iEkHozCodKArXpr9U9OtrUOjq5xc47KDzJfvO4KnNDUjHTgmFn3FMfeyn/+FCQ0
-         XINdU4TMDfCR94Qhywdjq1RDN/rqiCHF+jPgcXC06mbp09Ib8+Vn315YFX9ldi3aiI
-         knzPiObvyzObw==
-Date:   Mon, 1 Feb 2021 15:57:09 +0530
+        b=b6ZoHjs8fw7VKf4QcU0XyCtgxal6MYEuJbZNANShek+No1IBv7+gBIir6zc58xDDB
+         niMTmXK/7Wg8ljX3fe5HS4knDBq7ghL3y3B91toy8awjKPwncJ+emGAfwf7ZAtU/Wu
+         y+YIZ2c3tffyUU7Xhe3aeUcnKp4PL3CuBrAWSFRCkD0l8L/gsEG1ktHS5JVgnx9Bwd
+         coyzEzfty0ggFc7/mnIKWPxuKMVeaX9DkUf76A9JbLmyLjNJC0nCU3l3N5CvNK9Abt
+         DmNmEunjd6gg9e7pBBb1AFhVBsWMz2b8VxqD/2OT9eQa+8V6LMM5eXMfUvyPBup/dl
+         ZJ1VKiWZoJ6mQ==
+Date:   Mon, 1 Feb 2021 15:58:44 +0530
 From:   Vinod Koul <vkoul@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        yung-chuan.liao@linux.intel.com, gregkh@linuxfoundation.org,
-        sanyog.r.kale@intel.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 1/2] soundwire: add support for static port mapping
-Message-ID: <20210201102709.GT2771@vkoul-mobl>
-References: <9a688b02-80a6-fb1f-d6fa-36ba2d88d3b9@linux.intel.com>
- <c6278763-57d9-2631-7b43-829259a9ea1f@linaro.org>
- <3ee60ad9-9635-649e-ba67-d40a96b25256@linux.intel.com>
- <487c91f9-f6ea-75c2-9150-52db2de42a3a@linaro.org>
- <eaf13d70-86fe-3e18-7a5a-4043f2d8a22d@linux.intel.com>
- <aaf34f07-5eed-3045-e4c6-dc9416689b20@linaro.org>
- <f960757f-ec8b-6d3f-f00e-27242c687926@linux.intel.com>
- <e962caa8-89c3-4a22-5932-4498c406e8f8@linaro.org>
- <adb91730-35db-db7a-75b3-4771723de945@linux.intel.com>
- <31ff9d2b-760a-374e-5b37-45d8e8116f7b@linaro.org>
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, jank@cadence.com,
+        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
+        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
+        bard.liao@intel.com
+Subject: Re: [PATCH 1/3] soundwire: bus: clear bus clash interrupt before the
+ mask is enabled
+Message-ID: <20210201102844.GU2771@vkoul-mobl>
+References: <20210126083746.3238-1-yung-chuan.liao@linux.intel.com>
+ <20210126083746.3238-2-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <31ff9d2b-760a-374e-5b37-45d8e8116f7b@linaro.org>
+In-Reply-To: <20210126083746.3238-2-yung-chuan.liao@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25-01-21, 16:23, Srinivas Kandagatla wrote:
+On 26-01-21, 16:37, Bard Liao wrote:
+> The SoundWire specification allows a Slave device to report a bus clash
+> with the in-band interrupt mechanism when it detects a conflict while
+> driving a bitSlot it owns. This can be a symptom of an electrical conflict
+> or a programming error, and it's vital to detect reliably.
 > 
+> Unfortunately, on some platforms, bus clashes are randomly reported by
+> Slave devices after a bus reset, with an interrupt status set even before
+> the bus clash interrupt is enabled. These initial spurious interrupts are
+> not relevant and should optionally be filtered out, while leaving the
+> interrupt mechanism enabled to detect 'true' issues.
 > 
-> On 22/01/2021 16:42, Pierre-Louis Bossart wrote:
-> > > > 
-> > > > if you completely remove the stream and re-add it with updated
-> > > > configuration things should work.
-> > > 
-> > > That's exactly what we do currently!
-> > > 
-> > > The updated ports due to new configuration ex: for "mic capture"
-> > > dailink needs to be communicated from slave(codec) to master so that
-> > > it can allocate correct ports. That is what this patch is trying to
-> > > do (share current port map information).
-> > 
-> > .. we have a disconnect on how to do this configuration update.
-> > 
-> > The 'stream' support was designed so that a stream can be split across
-> > multiple devices (both masters and slaves). With this design we need to
-> > have a central configuration and distribute the information to all
-> > devices taking part of the stream.
+> This patch suggests the addition of a Master level quirk to discard such
+> interrupts. The quirk should in theory have been added at the Slave level,
+> but since the problem was detected with different generations of Slave
+> devices it's hard to point to a specific IP. The problem might also be
+> board-dependent and hence dealing with a Master quirk is simpler.
+> 
+> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+>  drivers/soundwire/bus.c       | 10 ++++++++++
+>  include/linux/soundwire/sdw.h |  4 ++++
+>  2 files changed, 14 insertions(+)
+> 
+> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+> index 6e1c988f3845..d394905936e4 100644
+> --- a/drivers/soundwire/bus.c
+> +++ b/drivers/soundwire/bus.c
+> @@ -1240,6 +1240,7 @@ static int sdw_slave_set_frequency(struct sdw_slave *slave)
+>  static int sdw_initialize_slave(struct sdw_slave *slave)
+>  {
+>  	struct sdw_slave_prop *prop = &slave->prop;
+> +	int status;
+>  	int ret;
+>  	u8 val;
+>  
+> @@ -1247,6 +1248,15 @@ static int sdw_initialize_slave(struct sdw_slave *slave)
+>  	if (ret < 0)
+>  		return ret;
+>  
+> +	if (slave->bus->prop.quirks & SDW_MASTER_QUIRKS_CLEAR_INITIAL_CLASH) {
+> +		/* Clear bus clash interrupt before enabling interrupt mask */
+> +		status = sdw_read_no_pm(slave, SDW_SCP_INT1);
+> +		if (status & SDW_SCP_INT1_BUS_CLASH) {
+> +			dev_warn(&slave->dev, "Bus clash detected before INT mask is enabled\n");
+> +			sdw_write_no_pm(slave, SDW_SCP_INT1, SDW_SCP_INT1_BUS_CLASH);
+> +		}
+> +	}
+> +
+>  	/*
+>  	 * Set SCP_INT1_MASK register, typically bus clash and
+>  	 * implementation-defined interrupt mask. The Parity detection
+> diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+> index f0b01b728640..a2766c3b603d 100644
+> --- a/include/linux/soundwire/sdw.h
+> +++ b/include/linux/soundwire/sdw.h
+> @@ -405,6 +405,7 @@ struct sdw_slave_prop {
+>   * command
+>   * @mclk_freq: clock reference passed to SoundWire Master, in Hz.
+>   * @hw_disabled: if true, the Master is not functional, typically due to pin-mux
+> + * @quirks: bitmask identifying optional behavior beyond the scope of the MIPI specification
+>   */
+>  struct sdw_master_prop {
+>  	u32 revision;
+> @@ -421,8 +422,11 @@ struct sdw_master_prop {
+>  	u32 err_threshold;
+>  	u32 mclk_freq;
+>  	bool hw_disabled;
+> +	u32 quirks;
 
-That is correct, but in this case a stream consists of one master and
-one or more slave devices. This is not a multi-master design. The adding
-of multiple masters should not be done here... that does not seem
-logically right in this situation
+Can we do u64 here please.. I dont know where we would end up.. but
+would hate if we start running out of space ..
 
-> > It seems you are in a different solution-space, where the codec driver
-> > needs to notify the master of which ports it needs to use?
-> 
-> Correct! As Codec is the place where we have mixer controls ant it can
-> clearly tell which master ports should be used for that particular
-> configuration.
 
-And that should come from firmware (DT etc) and driver should pass on
-this info
-
-> > I also don't see where the mapping is actually set. Patch 2 uses a
-> > mapping but there's no codec driver change that defines the mapping?
-> > 
-> > Do you actually call sdw_stream_add_slave() with a new mapping?
-> > 
-> Yes, currently am working on a codec driver for WCD938x Codec, which I will
-> posting very soon!
-> 
-> > It feels we are missing the codec part to really see what you are trying
-> > to do?
-> My WIP code is at https://git.linaro.org/people/srinivas.kandagatla/linux.git/tree/sound/soc/codecs/wcd938x.c?h=wcd938x/wip#n4526
-> 
-> Currently the master ports are hardcoded in the driver for now, but these
-> will come from DT.
-> 
-> --srini
+>  };
+>  
+> +#define SDW_MASTER_QUIRKS_CLEAR_INITIAL_CLASH	BIT(0)
+> +
+>  int sdw_master_read_prop(struct sdw_bus *bus);
+>  int sdw_slave_read_prop(struct sdw_slave *slave);
+>  
+> -- 
+> 2.17.1
 
 -- 
 ~Vinod
