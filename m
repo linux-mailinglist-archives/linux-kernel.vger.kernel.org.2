@@ -2,148 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ADF530AC5D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:13:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B87E30AC5F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:13:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbhBAQM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 11:12:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25407 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231152AbhBAQML (ORCPT
+        id S229557AbhBAQNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 11:13:04 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16132 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230038AbhBAQMc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 11:12:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612195844;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=LTkTHTZtrG7r7H93f6RfvQ2RYuYcKcR+efM5cQJVmzE=;
-        b=ViWsUaMszsIFDcxj6WIOlEChcUzwwPwiryEctaIxoVOW0CN56KfdR/SkDTpTGsKFLs98Ea
-        MK/dXII9bP5PiToMjUzmmk0hP15rCLgsYA31L6weLsup4vYS+r23Y/KGT87AEmRx/jax/F
-        uQ4+PED0y6xyw+DEgviZdHQQqoZOtKU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-355-Nv06uFrmOrOjzL9zhKXSug-1; Mon, 01 Feb 2021 11:10:39 -0500
-X-MC-Unique: Nv06uFrmOrOjzL9zhKXSug-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75E0E107ACE8;
-        Mon,  1 Feb 2021 16:10:35 +0000 (UTC)
-Received: from [10.36.115.24] (ovpn-115-24.ams2.redhat.com [10.36.115.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C679B60C66;
-        Mon,  1 Feb 2021 16:10:28 +0000 (UTC)
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Oscar Salvador <osalvador@suse.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>, viro@zeniv.linux.org.uk,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        mchehab+huawei@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-References: <20210117151053.24600-1-songmuchun@bytedance.com>
- <20210117151053.24600-6-songmuchun@bytedance.com>
- <20210126092942.GA10602@linux>
- <6fe52a7e-ebd8-f5ce-1fcd-5ed6896d3797@redhat.com>
- <20210126145819.GB16870@linux>
- <259b9669-0515-01a2-d714-617011f87194@redhat.com>
- <20210126153448.GA17455@linux>
- <9475b139-1b33-76c7-ef5c-d43d2ea1dba5@redhat.com>
- <e28399e1-3a24-0f22-b057-76e7c7e70017@redhat.com>
- <CAMZfGtWCu95Qve8p9mH7C7rm=F+znsc8+VL_6Z-_k4e5hAHzhA@mail.gmail.com>
- <e200c17e-5c95-025e-37a7-af7cfbb05b18@oracle.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Subject: Re: [External] Re: [PATCH v13 05/12] mm: hugetlb: allocate the
- vmemmap pages associated with each HugeTLB page
-Message-ID: <41160c2e-817d-3ef2-0475-4db58827c1c3@redhat.com>
-Date:   Mon, 1 Feb 2021 17:10:27 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
-MIME-Version: 1.0
-In-Reply-To: <e200c17e-5c95-025e-37a7-af7cfbb05b18@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        Mon, 1 Feb 2021 11:12:32 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 111G2NvR048444;
+        Mon, 1 Feb 2021 11:11:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=MEf2Ej0vaq4vyxMbn1+L/rY1MMhnIo8IZ8yGILDx19A=;
+ b=gnhnl8jB+tbW+nxHbogHuCm4FdUdNUEUQea2d0qnYhZAND5Jnk5gL7qzAy1gZEoCpEnb
+ PWcMSuDHoVUxR9vx1EfnJtVG/K3OwkazTOaC3mxNni9UaNrj/Yoi5cBm47DOumrK7WL+
+ Me57jzmhLYHMoNl6tU5YGHQKx+R6Dn8szhdAe07c66WoLUxAVUp+RnWNwhK305cwYDAE
+ hJywl55cnO8ps+nUXyR6ZCG1Jc4R41BFpPORpc751n7FHQdQif4Witv/WU2qXHlRPcH/
+ wtAexfJm42l0QrN6CKPCzK00eVtWb3tWPZBAdwmnf6Mwat1Z42KVrIUx+v2+fX0j4sVc 3w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36emrggfs3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 11:11:45 -0500
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 111G33kD053700;
+        Mon, 1 Feb 2021 11:11:43 -0500
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36emrggfq5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 11:11:43 -0500
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 111FXw6C002680;
+        Mon, 1 Feb 2021 16:11:40 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03fra.de.ibm.com with ESMTP id 36cy3891qm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 16:11:39 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 111GBT1C20840866
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 1 Feb 2021 16:11:29 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BA3045204F;
+        Mon,  1 Feb 2021 16:11:37 +0000 (GMT)
+Received: from sig-9-65-218-191.ibm.com (unknown [9.65.218.191])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 3F1BD5205A;
+        Mon,  1 Feb 2021 16:11:35 +0000 (GMT)
+Message-ID: <bd3246ebb4eae526c84efe2d27c6fadff662b0c8.camel@linux.ibm.com>
+Subject: Re: Migration to trusted keys: sealing user-provided key?
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Jan =?ISO-8859-1?Q?L=FCbbe?= <jlu@pengutronix.de>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        James Bottomley <jejb@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, kernel@pengutronix.de
+Date:   Mon, 01 Feb 2021 11:11:34 -0500
+In-Reply-To: <64472434a367060ddce6e03425156b8312a5ad6c.camel@pengutronix.de>
+References: <74830d4f-5a76-8ba8-aad0-0d79f7c01af9@pengutronix.de>
+         <6dc99fd9ffbc5f405c5f64d0802d1399fc6428e4.camel@kernel.org>
+         <d1bed49f89495ceb529355cb41655a208fdb2197.camel@linux.ibm.com>
+         <8b9477e150d7c939dc0def3ebb4443efcc83cd85.camel@pengutronix.de>
+         <d4eeefa0c13395e91850630e22d0d9e3690f43ac.camel@linux.ibm.com>
+         <64472434a367060ddce6e03425156b8312a5ad6c.camel@pengutronix.de>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-01_06:2021-01-29,2021-02-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ priorityscore=1501 impostorscore=0 mlxlogscore=999 bulkscore=0 spamscore=0
+ lowpriorityscore=0 mlxscore=0 malwarescore=0 clxscore=1015 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102010084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> What's your opinion about this? Should we take this approach?
+On Mon, 2021-02-01 at 16:31 +0100, Jan Lübbe wrote:
+> On Sun, 2021-01-31 at 09:29 -0500, Mimi Zohar wrote:
+> > On Sun, 2021-01-31 at 15:14 +0100, Jan Lübbe wrote:
+> > > On Sun, 2021-01-31 at 07:09 -0500, Mimi Zohar wrote:
+> > 
+> > <snip>
+> > 
+> > > > 
+> > > > [1] The ima-evm-utils README contains EVM examples of "trusted" and
+> > > > "user" based "encrypted" keys.
+> > > 
+> > > I assume you refer to
+> > > https://sourceforge.net/p/linux-ima/ima-evm-utils/ci/master/tree/README#l143
+> > > "Generate EVM encrypted keys" and "Generate EVM trusted keys (TPM based)"?
+> > > 
+> > > In both cases, the key used by EVM is a *newly generated* random key. The only
+> > > difference is whether it's encrypted to a user key or a (random) trusted key.
+> > 
+> > The "encrypted" asymmetric key data doesn't change, "update" just
+> > changes the key under which it is encrypted/decrypted.
+> > 
+> > Usage::
+> > 
+> >     keyctl add encrypted name "new [format] key-type:master-key-name keylen"
+> >         ring
+> >     keyctl add encrypted name "load hex_blob" ring
 > 
-> I think trying to solve all the issues that could happen as the result of
-> not being able to dissolve a hugetlb page has made this extremely complex.
-> I know this is something we need to address/solve.  We do not want to add
-> more unexpected behavior in corner cases.  However, I can not help but think
-> about similar issues today.  For example, if a huge page is in use in
-> ZONE_MOVABLE or CMA there is no guarantee that it can be migrated today.
-
-Yes, hugetlbfs is broken with alloc_contig_range() as e.g., used by CMA 
-and needs fixing. Then, similar problems as with hugetlbfs pages on 
-ZONE_MOVABLE apply.
-
-
-hugetlbfs pages on ZONE_MOVABLE for memory unplug are problematic in 
-corner cases only I think:
-
-1. Not sufficient memory to allocate a destination page. Well, nothing 
-we can really do about that - just like trying to migrate any other 
-memory but running into -ENOMEM.
-
-2. Trying to dissolve a free huge page but running into reservation 
-limits. I think we should at least try allocating a new free huge page 
-before failing. To be tackled in the future.
-
-> Correct?  We may need to allocate another huge page for the target of the
-> migration, and there is no guarantee we can do that.
+> 'load' (as I understand the code) only accepts an encrypted blob.
 > 
+> So the only way I see to have an encrypted key with a non-random key data would
+> be:
+> - create a random temporary master key and load a copy as a user key
+> - encrypt the chosen key data with the temporary master key (using a new
+> userspace reimplementation of the kernel encrypted key blob format)
+> - use keyctl add encrypted dmcrypt "load <encrypted blob>" <keyring>
+> - create new trusted master key (OP-TEE or CAAM in our case) as 
+> - use keyctl update to switch to the new trusted master key
+> - use keyctl pipe on the trusted and encrypted keys and store both for loading
+> on later boots
+> 
+> If we'd support importing a pre-existing key into a trusted or encrypted key,
+> we'd do instead:
+> - use keyctl add trusted dmcrypt "import <unencrypted key data>"
+> - use keyctl pipe on the trusted key and store it for loading on later boots
+> 
+> This way, users wouldn't need to care which backend is used by trusted keys
+> (TPM/OP-TEE/CAAM/...). That would make use-cases where a random key is not
+> suitable as straight-forward as the those where a random key is OK.
 
-I agree that 1. is similar to "cannot migrate because OOM".
+As I said above, the "encrypted" key update doesn't change the key data
+used for encrypting/decrypting storage in the dm-crypt case, it just
+updates the key under which it is encrypted/signed.
 
+Yes, the reason for using an encrypted "trusted" key, as opposed to an
+encrypted "user" key, is that the "trusted" key is encrypted/decrypted
+by the TPM and never exposed to userspace in the clear.
 
-So thinking about it again, we don't actually seem to lose that much when
+It doesn't sound like you're wanting to update the storage key in the
+field, just the key used to encrypt/decrypt that key.  So I'm still not
+clear as to why you would want an initial non-random encrypted key. 
+Providing that key on the command line certaining isn't a good idea.
 
-a) Rejecting migration of a huge page when not being able to allocate 
-the vmemmap for our source page. Our system seems to be under quite some 
-memory pressure already. Migration could just fail because we fail to 
-allocate a migration target already.
-
-b) Rejecting to dissolve a huge page when not able to allocate the 
-vmemmap. Dissolving can fail already. And, again, our system seems to be 
-under quite some memory pressure already.
-
-c) Rejecting freeing huge pages when not able to allocate the vmemmap. I 
-guess the "only" surprise is that the user might now no longer get what 
-he asked for. This seems to be the "real change".
-
-
-So maybe little actually speaks against allowing for migration of such 
-huge pages and optimizing any huge page, besides rejecting freeing of 
-huge pages and surprising the user/admin.
-
-I guess while our system is under memory pressure CMA and ZONE_MOVABLE 
-are already no longer able to always keep their guarantees - until there 
-is no more memory pressure.
-
--- 
-Thanks,
-
-David / dhildenb
+Mimi
 
