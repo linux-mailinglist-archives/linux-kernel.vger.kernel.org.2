@@ -2,112 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC8D730B197
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 21:31:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF63F30B17F
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 21:17:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229567AbhBAUa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 15:30:57 -0500
-Received: from services.gouders.net ([141.101.32.176]:48616 "EHLO
-        services.gouders.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229996AbhBAUaq (ORCPT
+        id S231326AbhBAURQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 15:17:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230479AbhBAURL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 15:30:46 -0500
-Received: from localhost (ltea-047-066-000-239.pools.arcor-ip.net [47.66.0.239])
-        (authenticated bits=0)
-        by services.gouders.net (8.14.8/8.14.8) with ESMTP id 111KGcRB016228
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 1 Feb 2021 21:16:38 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gouders.net; s=gnet;
-        t=1612210599; bh=OL61rVU+tFkKTJhOobzoZ+qk74fBZ06cF5QzMmY0Iu4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date;
-        b=UNQeYSyg3XKkVQt6ENhYCB2/yddwGIeCkFgZLSxzlGpcDEBthzEyCzqL0RHDo2OQ6
-         JjhjZvCUekLogkZSoLGsWsC5AIS9DMZf8ug+B1BRHiTtilpdj/uULG9ObWsDNnYY4N
-         Yp9cYltCViB+amJhnQ3kTCSJVMbgtjpgIC/kmAPc=
-From:   Dirk Gouders <dirk@gouders.net>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Serge Belyshev <belyshev@depni.sinp.msu.ru>,
-        =?utf-8?Q?Micka=C3=ABl?= =?utf-8?Q?_Sala=C3=BCn?= 
-        <mic@digikod.net>, LKML <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Miroslav Lichvar <mlichvar@redhat.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH V2] rtc: mc146818: Dont test for bit 0-5 in Register D
-In-Reply-To: <87zh0nbnha.fsf@nanos.tec.linutronix.de> (Thomas Gleixner's
-        message of "Mon, 01 Feb 2021 20:24:17 +0100")
-References: <20201206214613.444124194@linutronix.de>
-        <20201206220541.594826678@linutronix.de>
-        <19a7753c-c492-42e4-241a-8a052b32bb63@digikod.net>
-        <871re7hlsg.fsf@nanos.tec.linutronix.de>
-        <98cb59e8-ecb4-e29d-0b8f-73683ef2bee7@digikod.net>
-        <87y2gfg18p.fsf@nanos.tec.linutronix.de>
-        <87tur3fx7w.fsf@nanos.tec.linutronix.de> <ghft2hwevu.fsf@gouders.net>
-        <877dnrc2sv.fsf@depni.sinp.msu.ru>
-        <8735yfd2q4.fsf@nanos.tec.linutronix.de>
-        <87zh0nbnha.fsf@nanos.tec.linutronix.de>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
-Date:   Mon, 01 Feb 2021 21:15:01 +0100
-Message-ID: <gh7dnro88q.fsf@gouders.net>
+        Mon, 1 Feb 2021 15:17:11 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0233C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 12:16:30 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id i71so4621938ybg.7
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 12:16:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=E+gC1OaRQRqeefQEyvd9p61rlhxwa+1DLrnlVWGxC1E=;
+        b=PTYrZ8kxoO7i26AracmNzsAH5I6E6tvAmWdSQMbfNF/Ld7uJTBuOksA0vfPOQOoS58
+         EY5WX+zc4VbYj0E62+h6oPLF7i//ooMlsWjKEjEW5k54xuhBmJ91AQJuVC29JC/8JqPB
+         S8QB3k4aSK3eRh0tmuS8lDS4pUfL0e2hAW3TkDTPEmP8SzrHbxq0z9spKtWx9qq65F6i
+         eIU5jeMPfbeVCN235HV7IgDB46kQaWf+YqocCzZWbbZbjDTAPf+Y5O+fpcsgil2lMtr7
+         IPbw/FQHi+9g4TKOLQcyu3MftiyOoZ4FJtF2TBntA8taznalLic738b/TzSLt53Ej5Pp
+         71gA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=E+gC1OaRQRqeefQEyvd9p61rlhxwa+1DLrnlVWGxC1E=;
+        b=e4zIBQRcdXrFxSpg6ruojFChCYe6sMg7PEUx8+07odlnJYADiX6ZfsQrTuKjRawu77
+         /YoA6Ehbzm/q0LmR/qfJR2z+elDry15j4Zki05Pjj2bsA3jjUSNkdJp3kyC4ysHhrOw9
+         sU3JrAvcW5ihoprV4gGaIEd5bl8TlpVURDOI/78xsfQbZ6ddSQUQ3nTD2lhJoWPVabkK
+         +6Nwse5Tz1bLfsYuUlycygitoTSBBQ9Cu9wao0/DBGLPB6weom+H2qLkvkgDMd6fny4E
+         4o2j9xdSxvXAGh5lQXgLV1M0+tfWesLO5X17wq6uHT6mDXymGwAF3poGE9kQS8ZtbEEq
+         zhiw==
+X-Gm-Message-State: AOAM532/dp0MiJ7WsGYtxKB+S1Nm6VhUkHvLF4xJKJRqOIDMAjBGsWd6
+        G9evMfWEcLXyS1xL1gF39wSp7JlXRmiRjZrx1rom6w==
+X-Google-Smtp-Source: ABdhPJzG/w6bMSWvYqFGmODcmTtZxosmmpm1AXG/FdeExuGHcVQZsFa7C7FhEoCS5CvHSPflDK0xbXrOUR9YwG4aHcg=
+X-Received: by 2002:a25:b74c:: with SMTP id e12mr18291544ybm.20.1612210590103;
+ Mon, 01 Feb 2021 12:16:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210122193600.1415639-1-saravanak@google.com>
+ <544ad0e4-0954-274c-8e77-866aaa5661a8@gmail.com> <CAGETcx_CYKczo+geD7yDo+T2+_-tgGYwtjR-2sMPQYHuz-wAgw@mail.gmail.com>
+ <09502076-02e9-39ee-e432-24260696a927@gmail.com>
+In-Reply-To: <09502076-02e9-39ee-e432-24260696a927@gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Mon, 1 Feb 2021 12:15:53 -0800
+Message-ID: <CAGETcx9fqnCZTC=afDUHnS6gES8WW4SwFNmH5sWaGVRYiysOMQ@mail.gmail.com>
+Subject: Re: [PATCH v5] gpiolib: Bind gpio_device to a driver to enable
+ fw_devlink=on by default
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kever Yang <kever.yang@rock-chips.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thomas Gleixner <tglx@linutronix.de> writes:
-
-> The recent change to validate the RTC turned out to be overly tight.
+On Mon, Feb 1, 2021 at 8:49 AM Dmitry Osipenko <digetx@gmail.com> wrote:
 >
-> While it cures the problem on the reporters machine it breaks machines
-> with Intel chipsets which use bit 0-5 of the D register. So check only
-> for bit 6 being 0 which is the case on these Intel machines as well.
+> 01.02.2021 00:28, Saravana Kannan =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >> This patch causes these new errors on NVIDIA Tegra30 Nexus 7 using rec=
+ent linux-next:
+> >>
+> >>  gpio-1022 (cpu-pwr-req-hog): hogged as input
+> >>  max77620-pinctrl max77620-pinctrl: pin gpio4 already requested by max=
+77620-pinctrl; cannot claim for gpiochip1
+> >>  max77620-pinctrl max77620-pinctrl: pin-4 (gpiochip1) status -22
+> >>  max77620-pinctrl max77620-pinctrl: could not request pin 4 (gpio4) fr=
+om group gpio4  on device max77620-pinctrl
+> >>  gpio_stub_drv gpiochip1: Error applying setting, reverse things back
+> >>  gpio_stub_drv: probe of gpiochip1 failed with error -22
+> >>
+> >> Please fix, thanks in advance.
+> > I have a partial guess on why this is happening. So can you try this pa=
+tch?
+> >
+> > Thanks,
+> > Saravana
+> >
+> > --- a/drivers/gpio/gpiolib.c
+> > +++ b/drivers/gpio/gpiolib.c
+> > @@ -4213,6 +4213,8 @@ static int gpio_stub_drv_probe(struct device *dev=
+)
+> >          * gpio_device of the GPIO chip with the firmware node and then=
+ simply
+> >          * bind it to this stub driver.
+> >          */
+> > +       if (dev->fwnode && dev->fwnode->dev !=3D dev)
+> > +               return -EBUSY;
+> >         return 0;
+> >  }
 >
-> Fixes: 211e5db19d15 ("rtc: mc146818: Detect and handle broken RTCs")
-> Reported-by: Serge Belyshev <belyshev@depni.sinp.msu.ru>
-> Reported-by: Dirk Gouders <dirk@gouders.net>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> ---
-> V2: Provide the actual delta patch. Should have stayed away from
->     computers today....
+> This change doesn't help, exactly the same errors are still there.
 
-I tested V2 and it eliminates the warning, here.
+Sorry, I see what's happening. Try this instead. If it works, I'll
+send out a proper patch.
 
-Thank you,
+Thanks,
+Saravana
 
-Dirk
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index 8e0564c50840..f3d0ffe8a930 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -56,8 +56,10 @@
+ static DEFINE_IDA(gpio_ida);
+ static dev_t gpio_devt;
+ #define GPIO_DEV_MAX 256 /* 256 GPIO chip devices supported */
++static int gpio_bus_match(struct device *dev, struct device_driver *drv);
+ static struct bus_type gpio_bus_type =3D {
+        .name =3D "gpio",
++       .match =3D gpio_bus_match,
+ };
 
-> ---
->  drivers/rtc/rtc-cmos.c         |    4 ++--
->  drivers/rtc/rtc-mc146818-lib.c |    4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
->
-> --- a/drivers/rtc/rtc-cmos.c
-> +++ b/drivers/rtc/rtc-cmos.c
-> @@ -805,8 +805,8 @@ cmos_do_probe(struct device *dev, struct
->  
->  	spin_lock_irq(&rtc_lock);
->  
-> -	/* Ensure that the RTC is accessible. Bit 0-6 must be 0! */
-> -	if ((CMOS_READ(RTC_VALID) & 0x7f) != 0) {
-> +	/* Ensure that the RTC is accessible. Bit 6 must be 0! */
-> +	if ((CMOS_READ(RTC_VALID) & 0x40) != 0) {
->  		spin_unlock_irq(&rtc_lock);
->  		dev_warn(dev, "not accessible\n");
->  		retval = -ENXIO;
-> --- a/drivers/rtc/rtc-mc146818-lib.c
-> +++ b/drivers/rtc/rtc-mc146818-lib.c
-> @@ -21,8 +21,8 @@ unsigned int mc146818_get_time(struct rt
->  
->  again:
->  	spin_lock_irqsave(&rtc_lock, flags);
-> -	/* Ensure that the RTC is accessible. Bit 0-6 must be 0! */
-> -	if (WARN_ON_ONCE((CMOS_READ(RTC_VALID) & 0x7f) != 0)) {
-> +	/* Ensure that the RTC is accessible. Bit 6 must be 0! */
-> +	if (WARN_ON_ONCE((CMOS_READ(RTC_VALID) & 0x40) != 0)) {
->  		spin_unlock_irqrestore(&rtc_lock, flags);
->  		memset(time, 0xff, sizeof(*time));
->  		return 0;
+ /*
+@@ -4199,6 +4201,14 @@ void gpiod_put_array(struct gpio_descs *descs)
+ }
+ EXPORT_SYMBOL_GPL(gpiod_put_array);
+
++
++static int gpio_bus_match(struct device *dev, struct device_driver *drv)
++{
++       if (dev->fwnode && dev->fwnode->dev !=3D dev)
++               return 0;
++       return 1;
++}
++
+ static int gpio_stub_drv_probe(struct device *dev)
+ {
+        /*
