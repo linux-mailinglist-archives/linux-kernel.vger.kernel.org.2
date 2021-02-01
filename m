@@ -2,207 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DACE309FD5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 02:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38013309FD8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 02:08:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230432AbhBABEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 20:04:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhBABEH (ORCPT
+        id S230257AbhBABIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 20:08:17 -0500
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:18854 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229535AbhBABIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 20:04:07 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6054CC061573;
-        Sun, 31 Jan 2021 17:03:27 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id u15so9062877plf.1;
-        Sun, 31 Jan 2021 17:03:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HHTgRPDaj1JDsiKjlc8F/LkMGWq5sipTZH1ZsYplwI0=;
-        b=WxTSAw0vOhWFuX0UI6eCbQhxizJ5TQMsJxY7kktLvfjO46sNnyE74m5QV8g1MzKcnS
-         8cRs/J9sb8hvBAgqR3VGmrvjy2bASm1RGpM3cd3gtlxFTKxZzLqbaaNjvFNiaDVIfOeF
-         CHqY9IiOCmnm8OivkQCrtClW9S3aZIa1b/s/tBP/j3zwUhLNEPXKIMWgxcwRZEsXeupI
-         BGD7J1bUaYQcq1WlMkItw0+d0/unqDEjGhgPq4hx0YCfH2SDQusptws4Sl+V1hzjFfcX
-         gfKIkLs0q4yos07ShIHiQz/85bAWPdbv3p3dEj82ckaIJzvNbbK3ytMwGEUziWMGMlKY
-         0pHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HHTgRPDaj1JDsiKjlc8F/LkMGWq5sipTZH1ZsYplwI0=;
-        b=c22KYQMMzOX/tVoLQhiP1kob603J8Oj/H4cahbEzrSyv65OLh/tIeEauRWzFDxC/Cr
-         G8VUvrD/LZCAy0A+6W1CSluD/59FmCkaorvInK+oxpWD5MITiQj0CUPbWeqHtajDeFVr
-         ZcL+Dc3/IBzYNO0EWXHT1wztQLXd/3D8YEDS1WsbZTwaMlln8McJ+7FsZFDKdbJf4vwN
-         JsdESvIf7P7CpfGqOqMSFNWjR2+FCzCzjml8V0OrvkABYrZBfASomiyQAGOEEf8wTSJa
-         Cb96a8/xbEnO7KrHTQxQPcR/vQnpIqt8YGnGkEhxBLXbzc/9zVt/no7KB7f0L6Q4/usw
-         na4Q==
-X-Gm-Message-State: AOAM531jn5F2y6P0uaD9SUFATgIBLfHfslTH1onpcSneNGGkH4JNrwgn
-        gpOdnWEaIBoApmDoflE3P7o=
-X-Google-Smtp-Source: ABdhPJySg4lY4SBh3D+Vt+eImNi1ovIOOwQcU7t5749m6LAAxadtOX7+PjtqhwlbXD43kjdxjLMIFw==
-X-Received: by 2002:a17:90b:1992:: with SMTP id mv18mr15280132pjb.174.1612141406865;
-        Sun, 31 Jan 2021 17:03:26 -0800 (PST)
-Received: from localhost.localdomain ([27.122.242.75])
-        by smtp.gmail.com with ESMTPSA id o190sm15219481pga.2.2021.01.31.17.03.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 31 Jan 2021 17:03:25 -0800 (PST)
-From:   Hyeongseok Kim <hyeongseok@gmail.com>
-To:     namjae.jeon@samsung.com, sj1557.seo@samsung.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hyeongseok Kim <hyeongseok@gmail.com>
-Subject: [PATCH v2] exfat: improve performance of exfat_free_cluster when using dirsync mount option
-Date:   Mon,  1 Feb 2021 10:02:46 +0900
-Message-Id: <20210201010246.25873-1-hyeongseok@gmail.com>
-X-Mailer: git-send-email 2.27.0.83.g0313f36
+        Sun, 31 Jan 2021 20:08:14 -0500
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 11117IVa028927;
+        Mon, 1 Feb 2021 10:07:18 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 11117IVa028927
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1612141638;
+        bh=vAvPxMJka32zGwQcBFPAbW72EOhcATU4gUWaZkEoWnA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WaJSuYZCVQneAQSrh7NLHCCUagXin45j/2DsCqlGFag+cXLu8DNZqIPW16lv5w7Yy
+         J0N6H/1lqkbOxB6xWRtpJvZLjsSE/zRZpCIK3H4I4BKHlpkAykSivfGC2tT8UgAeOT
+         4uM6dKvuph5N7H7jTEW2fVbklWQ3eDQqGgkDX6erhRcmlRK169q18eJ1kX7R1ZcsA+
+         hLiRHBjvVoliClG1FQYSIL2wcurT7s1Et866u67MChHYXPY0KZlPmpus/Q3lvl1RdJ
+         NTGmFOiSx3o38D55tKom5D9Q03ZMQF0V7lmNSW+Oh4VX29g1BA1BNjOfWK2Q60ZTy7
+         Bjs0KOng2BgDA==
+X-Nifty-SrcIP: [209.85.210.171]
+Received: by mail-pf1-f171.google.com with SMTP id b145so3695074pfb.4;
+        Sun, 31 Jan 2021 17:07:18 -0800 (PST)
+X-Gm-Message-State: AOAM53307ddgB/b/z7BNppfoIvpDN+1a5tMU0dRhVtT0rxuPqMJKTmWB
+        PHvGuJi3i9vpLPJDI19NbsbFRF/ai23Ldld0Z2g=
+X-Google-Smtp-Source: ABdhPJw6Rpk4vN6SBU7PD/Zs1zX4ZZgydLT3Jste+n/vaApNsw8VoZaaCcO7bxp7NUmwdYfRR1/0ommo5IW3Kmm81IQ=
+X-Received: by 2002:a63:575e:: with SMTP id h30mr14353295pgm.7.1612141637722;
+ Sun, 31 Jan 2021 17:07:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210129113544.25946-1-noasakurajin@web.de> <87y2gbwa8i.fsf@meer.lwn.net>
+In-Reply-To: <87y2gbwa8i.fsf@meer.lwn.net>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 1 Feb 2021 10:06:40 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQDxF-HSWQ7FuCkdL4Wy_+iw9D5DJma1Mwixb3t3301+A@mail.gmail.com>
+Message-ID: <CAK7LNAQDxF-HSWQ7FuCkdL4Wy_+iw9D5DJma1Mwixb3t3301+A@mail.gmail.com>
+Subject: Re: [PATCH] Updates Documentation/Makefile to use Python3 as fallback
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Noa Sakurajin <noasakurajin@web.de>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are stressful update of cluster allocation bitmap when using
-dirsync mount option which is doing sync buffer on every cluster bit
-clearing. This could result in performance degradation when deleting
-big size file.
-Fix to update only when the bitmap buffer index is changed would make
-less disk access, improving performance especially for truncate operation.
+On Sat, Jan 30, 2021 at 9:15 AM Jonathan Corbet <corbet@lwn.net> wrote:
+>
+> Noa Sakurajin <noasakurajin@web.de> writes:
+>
+> [CC += kbuild maintainers]
+>
+> >  Before the command python was needed for the documentation to build.
+> >  This patch checks if python is available and uses python3 as
+> >  fallback.
+> >
+> >  This is needed because a lot of distribution (at least Ubuntu)
+> >  only provide python3 and not python. scripts/sphinx-pre-install
+> >  checks for python3 first and does not check if python exists
+> >  which causes it to report that everything is installed even
+> >  if the documentation build failed.
+> >
+> > Signed-off-by: Noa Sakurajin <noasakurajin@web.de>
+> > ---
+> >  Documentation/Makefile | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/Makefile b/Documentation/Makefile
+> > index 61a7310b49e0..8a4a7df3b74a 100644
+> > --- a/Documentation/Makefile
+> > +++ b/Documentation/Makefile
+> > @@ -75,7 +75,8 @@ quiet_cmd_sphinx = SPHINX  $@ --> file://$(abspath $(BUILDDIR)/$3/$4)
+> >        cmd_sphinx = $(MAKE) BUILDDIR=$(abspath $(BUILDDIR)) $(build)=Documentation/userspace-api/media $2 && \
+> >       PYTHONDONTWRITEBYTECODE=1 \
+> >       BUILDDIR=$(abspath $(BUILDDIR)) SPHINX_CONF=$(abspath $(srctree)/$(src)/$5/$(SPHINX_CONF)) \
+> > -     $(PYTHON) $(srctree)/scripts/jobserver-exec \
+> > +     PY=$(shell command -v $(PYTHON) 2> /dev/null) \
+> > +     $${PY:-"$(PYTHON3)"} $(srctree)/scripts/jobserver-exec \
+>
+> So I see what you're trying to do, and we definitely want this to work.
+> I susped this isn't the right fix, though; it could leave us open to
+> similar issues elsewhere in the tree.
+>
+> Personally, I think that $(PYTHON) should get a working Python if it's
+> installed, so I would suggest fixing the top-level Makefile to set it
+> correctly.  Masahiro, thoughts on that?
+>
+> Alternatively, we could just say $(PYTHON3) and explicitly leave Python2
+> behind; that needs to happen in the not-too-distant future regardless
+> but we haven't decided to actually do it yet.
 
-Testing with Samsung 256GB sdcard, mounted with dirsync option
-(mount -t exfat /dev/block/mmcblk0p1 /temp/mount -o dirsync)
+We are already doing this in linux-next.
 
-Remove 4GB file, blktrace result.
-[Before] : 39 secs.
-Total (blktrace):
- Reads Queued:      0,        0KiB   Writes Queued:      32775,    16387KiB
- Read Dispatches:   0,        0KiB   Write Dispatches:   32775,    16387KiB
- Reads Requeued:    0                Writes Requeued:        0
- Reads Completed:   0,        0KiB   Writes Completed:   32775,    16387KiB
- Read Merges:       0,        0KiB   Write Merges:           0,        0KiB
- IO unplugs:        2                Timer unplugs:          0
+I will apply this.
+https://lore.kernel.org/patchwork/patch/1373422/
 
-[After] : 1 sec.
-Total (blktrace):
- Reads Queued:      0,        0KiB   Writes Queued:         13,        6KiB
- Read Dispatches:   0,        0KiB   Write Dispatches:      13,        6KiB
- Reads Requeued:    0                Writes Requeued:        0
- Reads Completed:   0,        0KiB   Writes Completed:      13,        6KiB
- Read Merges:       0,        0KiB   Write Merges:           0,        0KiB
- IO unplugs:        1                Timer unplugs:          0
 
-Signed-off-by: Hyeongseok Kim <hyeongseok@gmail.com>
----
- fs/exfat/balloc.c   |  4 ++--
- fs/exfat/exfat_fs.h |  2 +-
- fs/exfat/fatent.c   | 43 +++++++++++++++++++++++++++++++++++++------
- 3 files changed, 40 insertions(+), 9 deletions(-)
 
-diff --git a/fs/exfat/balloc.c b/fs/exfat/balloc.c
-index a987919686c0..761c79c3a4ba 100644
---- a/fs/exfat/balloc.c
-+++ b/fs/exfat/balloc.c
-@@ -166,7 +166,7 @@ int exfat_set_bitmap(struct inode *inode, unsigned int clu)
-  * If the value of "clu" is 0, it means cluster 2 which is the first cluster of
-  * the cluster heap.
-  */
--void exfat_clear_bitmap(struct inode *inode, unsigned int clu)
-+void exfat_clear_bitmap(struct inode *inode, unsigned int clu, bool sync)
- {
- 	int i, b;
- 	unsigned int ent_idx;
-@@ -180,7 +180,7 @@ void exfat_clear_bitmap(struct inode *inode, unsigned int clu)
- 	b = BITMAP_OFFSET_BIT_IN_SECTOR(sb, ent_idx);
- 
- 	clear_bit_le(b, sbi->vol_amap[i]->b_data);
--	exfat_update_bh(sbi->vol_amap[i], IS_DIRSYNC(inode));
-+	exfat_update_bh(sbi->vol_amap[i], sync);
- 
- 	if (opts->discard) {
- 		int ret_discard;
-diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h
-index b8f0e829ecbd..764bc645241e 100644
---- a/fs/exfat/exfat_fs.h
-+++ b/fs/exfat/exfat_fs.h
-@@ -408,7 +408,7 @@ int exfat_count_num_clusters(struct super_block *sb,
- int exfat_load_bitmap(struct super_block *sb);
- void exfat_free_bitmap(struct exfat_sb_info *sbi);
- int exfat_set_bitmap(struct inode *inode, unsigned int clu);
--void exfat_clear_bitmap(struct inode *inode, unsigned int clu);
-+void exfat_clear_bitmap(struct inode *inode, unsigned int clu, bool sync);
- unsigned int exfat_find_free_bitmap(struct super_block *sb, unsigned int clu);
- int exfat_count_used_clusters(struct super_block *sb, unsigned int *ret_count);
- 
-diff --git a/fs/exfat/fatent.c b/fs/exfat/fatent.c
-index c3c9afee7418..7b2e8af17193 100644
---- a/fs/exfat/fatent.c
-+++ b/fs/exfat/fatent.c
-@@ -157,6 +157,7 @@ int exfat_free_cluster(struct inode *inode, struct exfat_chain *p_chain)
- 	unsigned int clu;
- 	struct super_block *sb = inode->i_sb;
- 	struct exfat_sb_info *sbi = EXFAT_SB(sb);
-+	int cur_cmap_i, next_cmap_i;
- 
- 	/* invalid cluster number */
- 	if (p_chain->dir == EXFAT_FREE_CLUSTER ||
-@@ -176,21 +177,51 @@ int exfat_free_cluster(struct inode *inode, struct exfat_chain *p_chain)
- 
- 	clu = p_chain->dir;
- 
-+	cur_cmap_i = next_cmap_i =
-+		BITMAP_OFFSET_SECTOR_INDEX(sb, CLUSTER_TO_BITMAP_ENT(clu));
-+
- 	if (p_chain->flags == ALLOC_NO_FAT_CHAIN) {
-+		unsigned int last_cluster = p_chain->dir + p_chain->size - 1;
- 		do {
--			exfat_clear_bitmap(inode, clu);
--			clu++;
-+			bool sync = false;
-+
-+			if (clu < last_cluster)
-+				next_cmap_i =
-+				  BITMAP_OFFSET_SECTOR_INDEX(sb, CLUSTER_TO_BITMAP_ENT(clu+1));
- 
-+			/* flush bitmap only if index would be changed or for last cluster */
-+			if (clu == last_cluster || cur_cmap_i != next_cmap_i) {
-+				sync = true;
-+				cur_cmap_i = next_cmap_i;
-+			}
-+
-+			exfat_clear_bitmap(inode, clu, (sync && IS_DIRSYNC(inode)));
-+			clu++;
- 			num_clusters++;
- 		} while (num_clusters < p_chain->size);
- 	} else {
- 		do {
--			exfat_clear_bitmap(inode, clu);
--
--			if (exfat_get_next_cluster(sb, &clu))
--				goto dec_used_clus;
-+			bool sync = false;
-+			unsigned int n_clu = clu;
-+			int err = exfat_get_next_cluster(sb, &n_clu);
-+
-+			if (err || n_clu == EXFAT_EOF_CLUSTER)
-+				sync = true;
-+			else
-+				next_cmap_i =
-+				  BITMAP_OFFSET_SECTOR_INDEX(sb, CLUSTER_TO_BITMAP_ENT(n_clu));
-+
-+			if (cur_cmap_i != next_cmap_i) {
-+				sync = true;
-+				cur_cmap_i = next_cmap_i;
-+			}
- 
-+			exfat_clear_bitmap(inode, clu, (sync && IS_DIRSYNC(inode)));
-+			clu = n_clu;
- 			num_clusters++;
-+
-+			if (err)
-+				goto dec_used_clus;
- 		} while (clu != EXFAT_EOF_CLUSTER);
- 	}
- 
+
+> Thanks,
+>
+> jon
+
+
+
 -- 
-2.27.0.83.g0313f36
-
+Best Regards
+Masahiro Yamada
