@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6234230AF4E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:31:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A36B30AF41
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:29:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232735AbhBASae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:30:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48986 "EHLO
+        id S231831AbhBAS3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:29:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232250AbhBASPa (ORCPT
+        with ESMTP id S232377AbhBASPz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:15:30 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B58FDC061220
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 10:14:18 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id j11so7861100plt.11
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 10:14:18 -0800 (PST)
+        Mon, 1 Feb 2021 13:15:55 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D9DC061221
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 10:14:19 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id y205so12141702pfc.5
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 10:14:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=PjnieVeYjaiReOFmA2WdsBKbhVRjBxoMWJClMRBvNZk=;
-        b=tzoyyo4fGQkr6c887iXZVOMnx+ryZvntzpwBoxoqDh8tatuq8RXyaV7wzrd4d2WY5R
-         bY5mKC7WQvtS1LoCBUACkgDweBuGdyMvF3s4J1+OwPIuIvqIHKGd4/hJ2x8V/7eyltC6
-         qv2U+9cvs9L6r15jZjf5SmHK2o4yopin6LG+UdzX7Fk1vd7SqU+IUxsuxhBNJOer6Avh
-         7svfdF9bYqzlXOqAnbZdrePB9CX83/YTejPKi8a76CGixhVJRmugx5VaZ9efHCMa60qi
-         PwgkQIVBtAiowjBOV9WFUxQoPwCe6CKXmEmHhmKexPMqxBpBP1gMlbwtwKA9uL6k3nd8
-         6I4g==
+        bh=Wj97ynLU4juHaZmg3FI2nAyQleSP0VKWb4lYRditvLs=;
+        b=lQwcqLvw8KMiYbtmguszA1QIr306Nxkib7LQWBdGOMDj7eWlz14SqyV1pUT1Ya1RzB
+         VX7b0+KFRA7EXWdn1vvS58zfyXA05FFs85NFkrXR5GY1+mGrzA14T55PUOR8rdySSTM/
+         JO78TY+BsLxNuEiZMtBHTMyumeLv9r5T8KCvENFc2XryGPSjs9zdlfdw/bqhpcFtyJvu
+         ewaRYbE+wBhA1iQs5lWYgHRhrZxZRfXKr7iEdbotiPQVLQ8SOat0dKBOfnRNzKxVCnjy
+         XY+atthpVGUYXbubwSZg0y+v33KcFtztygvTTfsMZwqdkzXfGzWAekIcpGxcCCGfY5hn
+         r+2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=PjnieVeYjaiReOFmA2WdsBKbhVRjBxoMWJClMRBvNZk=;
-        b=qWwY7tM0/O+cX8QB/06e9PRBgo2YVTwE8z4jSbPX6XU/zv74gf+w2bORY0w2kT5tA+
-         eRRwL84QvfyBBrbmtuC908XJ7DC/yettYpaRHG0M2xugdYBmdEK2VbGL3KB1u4DHj29p
-         wtRSrobogC2oMepUX0QbmQHKfFkoofJHsWASRe+sMnSiMI5te4ciyeu7jc9K+Gt/QFHz
-         8AVI+2R5eoWhETEVVnIEjp12ME/Mqel7eKOiamrwnUjSbvEJUNT34zOsbUrqqMLU9GPB
-         svX+LVXCpNykCPi4Fl0e6J4cy0akJ7CvYer/H9oIcSfplc97GGI+mrjt6kATZCJ4QN9Y
-         FHEA==
-X-Gm-Message-State: AOAM531UMRR8mlVfThmsF9w2B2bbFpxA4mo4xZGHXs7lIxunJO4+Yvti
-        ilMBBvqtkTs5g2LLJvEL6Z4G8Q==
-X-Google-Smtp-Source: ABdhPJx2K97OVJujZKHd1ou0m9ucAagyon1tPZtXb0yQuTNbNg1B2WTMRCdpSHs6WdMhECVA/ARwXQ==
-X-Received: by 2002:a17:90a:ba08:: with SMTP id s8mr143205pjr.112.1612203258318;
-        Mon, 01 Feb 2021 10:14:18 -0800 (PST)
+        bh=Wj97ynLU4juHaZmg3FI2nAyQleSP0VKWb4lYRditvLs=;
+        b=kCF7hDmt/1Ppqc+PQMns6HTF7ma5cm9f3NltRpklmUmZeieM9hhyXq/LNTGe4vTPnX
+         BBE5fw0LwBlq0G5i8d9FYeRIjCFGPNgxO0TAaRhtNSD7lmIKV98Pfllev3nzfjlp7JQt
+         bbrV2bwQM1N/L3SQ/Dff4lXbwN1iNoaHBo8N8lWIRXvVH97z4q8NSbIDKKYvPKCak20/
+         bVK+Iw1fpukkbuxF7iqEc9InCM7tXWUdXJK3IOGoRM8uiHNEtvyCjA14288k1fueaTF8
+         HiIIgriCX9CiylwKzoAbTbJV0AmPO9riRpr0dkUCJrzQm96JGqAz0Hgz7YUmMZqmNC79
+         8vhg==
+X-Gm-Message-State: AOAM5329bxb7sUVTiM55fiqk/1lcPOauNaZ3tvImjuV/HUs3IyNSzh6C
+        GOmOjT57bZUglOHHkgqRD2t4ag==
+X-Google-Smtp-Source: ABdhPJx4wBfHeCAFCUmp0yatV/dNTxTk13j+TKULV+UoEXjSRE2imXzytwXf0obfYEDeYMKHwPEX9A==
+X-Received: by 2002:a63:4764:: with SMTP id w36mr17732583pgk.127.1612203259415;
+        Mon, 01 Feb 2021 10:14:19 -0800 (PST)
 Received: from xps15.cg.shawcable.net (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id e12sm75784pjj.23.2021.02.01.10.14.17
+        by smtp.gmail.com with ESMTPSA id e12sm75784pjj.23.2021.02.01.10.14.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 10:14:17 -0800 (PST)
+        Mon, 01 Feb 2021 10:14:18 -0800 (PST)
 From:   Mathieu Poirier <mathieu.poirier@linaro.org>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 23/31] coresight: etm4x: Add necessary synchronization for sysreg access
-Date:   Mon,  1 Feb 2021 11:13:43 -0700
-Message-Id: <20210201181351.1475223-24-mathieu.poirier@linaro.org>
+Subject: [PATCH 24/31] coresight: etm4x: Detect system instructions support
+Date:   Mon,  1 Feb 2021 11:13:44 -0700
+Message-Id: <20210201181351.1475223-25-mathieu.poirier@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210201181351.1475223-1-mathieu.poirier@linaro.org>
 References: <20210201181351.1475223-1-mathieu.poirier@linaro.org>
@@ -65,49 +65,78 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Suzuki K Poulose <suzuki.poulose@arm.com>
 
-As per the specification any update to the TRCPRGCTLR must be synchronized
-by a context synchronization event (in our case an explicist ISB) before
-the TRCSTATR is checked.
+ETM v4.4 onwards adds support for system instruction access
+to the ETM. Detect the support on an ETM and switch to using the
+mode when available.
 
 Cc: Mike Leach <mike.leach@linaro.org>
 Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-Link: https://lore.kernel.org/r/20210110224850.1880240-22-suzuki.poulose@arm.com
+Link: https://lore.kernel.org/r/20210110224850.1880240-23-suzuki.poulose@arm.com
 Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 ---
- drivers/hwtracing/coresight/coresight-etm4x-core.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ .../coresight/coresight-etm4x-core.c          | 39 +++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
 diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-index a09a653fc5b0..8d644e93de51 100644
+index 8d644e93de51..48d8e99e31eb 100644
 --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
 +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-@@ -284,6 +284,15 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
- 	/* Disable the trace unit before programming trace registers */
- 	etm4x_relaxed_write32(csa, 0, TRCPRGCTLR);
+@@ -782,6 +782,37 @@ static const struct coresight_ops etm4_cs_ops = {
+ 	.source_ops	= &etm4_source_ops,
+ };
  
++static inline bool cpu_supports_sysreg_trace(void)
++{
++	u64 dfr0 = read_sysreg_s(SYS_ID_AA64DFR0_EL1);
++
++	return ((dfr0 >> ID_AA64DFR0_TRACEVER_SHIFT) & 0xfUL) > 0;
++}
++
++static bool etm4_init_sysreg_access(struct etmv4_drvdata *drvdata,
++				    struct csdev_access *csa)
++{
++	u32 devarch;
++
++	if (!cpu_supports_sysreg_trace())
++		return false;
++
 +	/*
-+	 * If we use system instructions, we need to synchronize the
-+	 * write to the TRCPRGCTLR, before accessing the TRCSTATR.
-+	 * See ARM IHI0064F, section
-+	 * "4.3.7 Synchronization of register updates"
++	 * ETMs implementing sysreg access must implement TRCDEVARCH.
 +	 */
-+	if (!csa->io_mem)
-+		isb();
++	devarch = read_etm4x_sysreg_const_offset(TRCDEVARCH);
++	if ((devarch & ETM_DEVARCH_ID_MASK) != ETM_DEVARCH_ETMv4x_ARCH)
++		return false;
++	*csa = (struct csdev_access) {
++		.io_mem	= false,
++		.read	= etm4x_sysreg_read,
++		.write	= etm4x_sysreg_write,
++	};
 +
- 	/* wait for TRCSTATR.IDLE to go up */
- 	if (coresight_timeout(csa, TRCSTATR, TRCSTATR_IDLE_BIT, 1))
- 		dev_err(etm_dev,
-@@ -362,6 +371,10 @@ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
- 	/* Enable the trace unit */
- 	etm4x_relaxed_write32(csa, 1, TRCPRGCTLR);
++	drvdata->arch = etm_devarch_to_arch(devarch);
++	return true;
++}
++
+ static bool etm4_init_iomem_access(struct etmv4_drvdata *drvdata,
+ 				   struct csdev_access *csa)
+ {
+@@ -812,9 +843,17 @@ static bool etm4_init_iomem_access(struct etmv4_drvdata *drvdata,
+ static bool etm4_init_csdev_access(struct etmv4_drvdata *drvdata,
+ 				   struct csdev_access *csa)
+ {
++	/*
++	 * Always choose the memory mapped io, if there is
++	 * a memory map to prevent sysreg access on broken
++	 * systems.
++	 */
+ 	if (drvdata->base)
+ 		return etm4_init_iomem_access(drvdata, csa);
  
-+	/* Synchronize the register updates for sysreg access */
-+	if (!csa->io_mem)
-+		isb();
++	if (etm4_init_sysreg_access(drvdata, csa))
++		return true;
 +
- 	/* wait for TRCSTATR.IDLE to go back down to '0' */
- 	if (coresight_timeout(csa, TRCSTATR, TRCSTATR_IDLE_BIT, 0))
- 		dev_err(etm_dev,
+ 	return false;
+ }
+ 
 -- 
 2.25.1
 
