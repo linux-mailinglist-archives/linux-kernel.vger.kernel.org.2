@@ -2,123 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8768530AFAD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:44:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C015830AFB1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:44:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232853AbhBASnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:43:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233099AbhBASmp (ORCPT
+        id S230124AbhBASoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:44:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48918 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231748AbhBASoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:42:45 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD50C061573;
-        Mon,  1 Feb 2021 10:42:03 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id l12so17777871wry.2;
-        Mon, 01 Feb 2021 10:42:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wmtu6bNpF5dPnSRFTlVUqn3pIC+xqRbu0mxekXQ1e2w=;
-        b=WssRBfUX/BP94btJvmYdMC1fwhYweLqdT/gL24i2x8cZbzZqcExDKOPndrRlHiP79a
-         +ZQy9+L8YnXCVSnptYFeVq08iWCvSgqdkWdwFv9UhfRLKdGlaVOV0c5EQkJBFztNGKiG
-         AtP2ywGwFmQXj6sWtdtlNgb5RXe8kqam2YN76dI0jccMUOQHCia2MGWxks8/woiKbSci
-         RULGqr0al2n8tg088fXcJVds9bdoq+A1+p00BszIm8eR3xNOGwWxjZnXiVffo7MA1in+
-         RpzAAAxQi+jZgBikBo+Z+UdVGhTXExfnl2ArBulZdu1H0/svJ+KuYreAvHkJ4lvEw01J
-         grfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wmtu6bNpF5dPnSRFTlVUqn3pIC+xqRbu0mxekXQ1e2w=;
-        b=aAYIB9CHW47cyM8jIn69axc4s+ndc0RGsmuc943HBgx9jsnNlGyCuHSRhPmh1dxYan
-         wdKgmwlHv/ERdiylJDi7TqQD6TuxUgGpumhmSZE73NCnHWkwyxeRJUiLbWDlOEEVS/dQ
-         6Wf32jeinVjRx0YXkGca/Y8o/znBFuNb8HtuCOfI8o0LApFSQLOlbb7ya4SgPheWE3mf
-         Q2xVBq0wUxKCv6B7XfwInxvUTgKwfXtawK/Rri01o8G7E6GxTQoYmhUfPt66BhNYdOpv
-         uXJUKNWDgbwwj9vJouV4gPQulWH9ANexsXD2Wv/Lp7pMDkZpXKgIGooE9ySsFtn4wFv9
-         lSRg==
-X-Gm-Message-State: AOAM533XaAeYFFLtsr+gn3XZ824bPVieReki3tv+AVDStD603fV5nrhW
-        onNQEQ2dupDQxz0k8odfb/7k/IK8efDOBAiwMww=
-X-Google-Smtp-Source: ABdhPJy1mD5KiQw9cpQUdYd28pbpaBz11CVQjBrnrPbhNCuFNUsXXIHBLMwYVjSHwmEsvwTcDFCXVXC/MfjTFpkCtZk=
-X-Received: by 2002:a05:6000:1543:: with SMTP id 3mr19861502wry.254.1612204921821;
- Mon, 01 Feb 2021 10:42:01 -0800 (PST)
+        Mon, 1 Feb 2021 13:44:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612204959;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3gK4DMTFCpUGprBzVCp9eTqWhhzAb26o+GmrY8tvHmw=;
+        b=PTg3vmqh3aEJgfVc75M3LagU4g8MPZXtwwxwGZu0T3tmEoTAK4AuM2tautxWK61pbxk3w5
+        zjASu9iTvRXoNo/vyzUV3yZXgFWnK/JiceMH6ckz01d7A+poI0CAR7FkNl9122qiazrEzH
+        ENk43jnwDEFYLFW9jQ8siHlEkJ050nA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-550-U1cJSbheOw2OhUmi932Sew-1; Mon, 01 Feb 2021 13:42:35 -0500
+X-MC-Unique: U1cJSbheOw2OhUmi932Sew-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A438359;
+        Mon,  1 Feb 2021 18:42:32 +0000 (UTC)
+Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4100A648A3;
+        Mon,  1 Feb 2021 18:42:31 +0000 (UTC)
+Date:   Mon, 1 Feb 2021 11:42:30 -0700
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Matthew Rosato <mjrosato@linux.ibm.com>
+Cc:     Cornelia Huck <cohuck@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>, jgg@nvidia.com,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        liranl@nvidia.com, oren@nvidia.com, tzahio@nvidia.com,
+        leonro@nvidia.com, yarong@nvidia.com, aviadye@nvidia.com,
+        shahafs@nvidia.com, artemp@nvidia.com, kwankhede@nvidia.com,
+        ACurrid@nvidia.com, gmataev@nvidia.com, cjia@nvidia.com,
+        yishaih@nvidia.com, aik@ozlabs.ru
+Subject: Re: [PATCH 8/9] vfio/pci: use x86 naming instead of igd
+Message-ID: <20210201114230.37c18abd@omen.home.shazbot.org>
+In-Reply-To: <599c6452-8ba6-a00a-65e7-0167f21eac35@linux.ibm.com>
+References: <20210201162828.5938-1-mgurtovoy@nvidia.com>
+        <20210201162828.5938-9-mgurtovoy@nvidia.com>
+        <20210201181454.22112b57.cohuck@redhat.com>
+        <599c6452-8ba6-a00a-65e7-0167f21eac35@linux.ibm.com>
 MIME-Version: 1.0
-References: <AAB32610-D238-4137-96DE-33655AAAB545@dilger.ca>
- <20210201003125.90257-1-viniciustinti@gmail.com> <20210201124924.GA3284018@infradead.org>
- <CALD9WKxc0kMPCHSoikko+qYk2+ZLUy73+ryKGW9qMSpyzAobLA@mail.gmail.com> <YBg20AuSC3/9w2zz@mit.edu>
-In-Reply-To: <YBg20AuSC3/9w2zz@mit.edu>
-From:   Vinicius Tinti <viniciustinti@gmail.com>
-Date:   Mon, 1 Feb 2021 15:41:50 -0300
-Message-ID: <CALD9WKzO53AXQW-qQ82VZ41H5=cGdLTUiEoz3X6BmPkb6XaTag@mail.gmail.com>
-Subject: Re: [PATCH v2] ext4: Enable code path when DX_DEBUG is set
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 2:13 PM Theodore Ts'o <tytso@mit.edu> wrote:
->
-> On Mon, Feb 01, 2021 at 01:15:29PM -0300, Vinicius Tinti wrote:
-> > On Mon, Feb 1, 2021 at 9:49 AM Christoph Hellwig <hch@infradead.org> wrote:
-> > >
-> > > DX_DEBUG is completely dead code, so either kill it off or make it an
-> > > actual CONFIG_* symbol through Kconfig if it seems useful.
-> >
-> > About the unreachable code in "if (0)" I think it could be removed.
-> > It seems to be doing an extra check.
-> >
-> > About the DX_DEBUG I think I can do another patch adding it to Kconfig
-> > as you and Nathan suggested.
->
-> Yes, it's doing another check which is useful in terms of early
-> detection of bugs when a developer has the code open for
-> modifications.  It slows down performance under normal circumstances,
-> and assuming the code is bug-free(tm), it's entirely unnecessary ---
-> which is why it's under an "if (0)".
+On Mon, 1 Feb 2021 12:49:12 -0500
+Matthew Rosato <mjrosato@linux.ibm.com> wrote:
 
-My goal is to avoid having a dead code. Three options come to mind.
+> On 2/1/21 12:14 PM, Cornelia Huck wrote:
+> > On Mon, 1 Feb 2021 16:28:27 +0000
+> > Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
+> >   
+> >> This patch doesn't change any logic but only align to the concept of
+> >> vfio_pci_core extensions. Extensions that are related to a platform
+> >> and not to a specific vendor of PCI devices should be part of the core
+> >> driver. Extensions that are specific for PCI device vendor should go
+> >> to a dedicated vendor vfio-pci driver.  
+> > 
+> > My understanding is that igd means support for Intel graphics, i.e. a
+> > strict subset of x86. If there are other future extensions that e.g.
+> > only make sense for some devices found only on AMD systems, I don't
+> > think they should all be included under the same x86 umbrella.
+> > 
+> > Similar reasoning for nvlink, that only seems to cover support for some
+> > GPUs under Power, and is not a general platform-specific extension IIUC.
+> > 
+> > We can arguably do the zdev -> s390 rename (as zpci appears only on
+> > s390, and all PCI devices will be zpci on that platform), although I'm
+> > not sure about the benefit.  
+> 
+> As far as I can tell, there isn't any benefit for s390 it's just 
+> "re-branding" to match the platform name rather than the zdev moniker, 
+> which admittedly perhaps makes it more clear to someone outside of s390 
+> that any PCI device on s390 is a zdev/zpci type, and thus will use this 
+> extension to vfio_pci(_core).  This would still be true even if we added 
+> something later that builds atop it (e.g. a platform-specific device 
+> like ism-vfio-pci).  Or for that matter, mlx5 via vfio-pci on s390x uses 
+> these zdev extensions today and would need to continue using them in a 
+> world where mlx5-vfio-pci.ko exists.
+> 
+> I guess all that to say: if such a rename matches the 'grand scheme' of 
+> this design where we treat arch-level extensions to vfio_pci(_core) as 
+> "vfio_pci_(arch)" then I'm not particularly opposed to the rename.  But 
+> by itself it's not very exciting :)
 
-The first would be to add another #ifdef SOMETHING (suggest a name).
-But this doesn't remove the code and someone could enable it by accident.
+This all seems like the wrong direction to me.  The goal here is to
+modularize vfio-pci into a core library and derived vendor modules that
+make use of that core library.  If existing device specific extensions
+within vfio-pci cannot be turned into vendor modules through this
+support and are instead redefined as platform specific features of the
+new core library, that feels like we're already admitting failure of
+this core library to support known devices, let alone future devices.
 
-The second would be to add the code in a block comment. Then document
-that it is for checking an invariant. This will make it harder to cause
-problems.
+IGD is a specific set of devices.  They happen to rely on some platform
+specific support, whose availability should be determined via the
+vendor module probe callback.  Packing that support into an "x86"
+component as part of the core feels not only short sighted, but also
+avoids addressing the issues around how userspace determines an optimal
+module to use for a device.  Thanks,
 
-The third would be to remove the code and explain the invariant in a block
-comment. Maybe add a pseudo code too in the comment.
+Alex
 
-What do you think?
+> >> For now, x86 extensions will include only igd.
+> >>
+> >> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+> >> ---
+> >>   drivers/vfio/pci/Kconfig                            | 13 ++++++-------
+> >>   drivers/vfio/pci/Makefile                           |  2 +-
+> >>   drivers/vfio/pci/vfio_pci_core.c                    |  2 +-
+> >>   drivers/vfio/pci/vfio_pci_private.h                 |  2 +-
+> >>   drivers/vfio/pci/{vfio_pci_igd.c => vfio_pci_x86.c} |  0
+> >>   5 files changed, 9 insertions(+), 10 deletions(-)
+> >>   rename drivers/vfio/pci/{vfio_pci_igd.c => vfio_pci_x86.c} (100%)  
+> > 
+> > (...)
+> >   
+> >> diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
+> >> index c559027def2d..e0e258c37fb5 100644
+> >> --- a/drivers/vfio/pci/vfio_pci_core.c
+> >> +++ b/drivers/vfio/pci/vfio_pci_core.c
+> >> @@ -328,7 +328,7 @@ static int vfio_pci_enable(struct vfio_pci_device *vdev)
+> >>   
+> >>   	if (vfio_pci_is_vga(pdev) &&
+> >>   	    pdev->vendor == PCI_VENDOR_ID_INTEL &&
+> >> -	    IS_ENABLED(CONFIG_VFIO_PCI_IGD)) {
+> >> +	    IS_ENABLED(CONFIG_VFIO_PCI_X86)) {
+> >>   		ret = vfio_pci_igd_init(vdev);  
+> > 
+> > This one explicitly checks for Intel devices, so I'm not sure why you
+> > want to generalize this to x86?
+> >   
+> >>   		if (ret && ret != -ENODEV) {
+> >>   			pci_warn(pdev, "Failed to setup Intel IGD regions\n");  
+> >   
+> 
 
-> However, if there *is* a bug, having an early detection that the
-> representation invariant of the data structure has been violated can
-> be useful in root causing a bug.  This would probably be clearer if
-> the code was pulled out into a separate function with comments
-> explaining that this is a rep invariant check.
-
-Good idea. I will do that too.
-
-> The main thing about DX_DEBUG right now is that it is **super**
-> verbose.  Unwary users who enable it.... will be sorry.  If we want to
-> make it to be a first-class feature enabled via CONFIG_EXT4_DEBUG, we
-> should convert all of the dx_trace calls to use pr_debug so they are
-> enabled only if dynamic debug enables those pr_debug() statements.
-> And this should absolutely be a separate patch.
-
-Agreed. For now I only want to focus on the "if (0)".
-
-Regards,
-Vinicius
-
-> Cheers,
->
->                                                 - Ted
