@@ -2,87 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A10930AAF6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:20:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9DC230AAEC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231587AbhBAPTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 10:19:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36114 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230091AbhBAOzT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 09:55:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80B7F64E08;
-        Mon,  1 Feb 2021 14:54:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612191269;
-        bh=UfY3ArU2Ba52g7BMgBfvsVQ2y0huUNSig9ApYXP8TIU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ulg+rsdevXRtCjtTFGOizv2sb4y2ls4EABbPyo9gn2WsK0n6vSp6Na2wilJ5T5C0m
-         hK8/LsVRjMUQ+Aa+l+vRce00wC3jqhrVTXlZUgaMHnxcgp/kH+mC0fj/JXC+InheOY
-         y7UjHKCM553yfX5RjpOE6MnP8Gz/jLjFS8YLb4RkzK8r4RQv+/6W0uJiBsZB4BaOjz
-         BFJDSELZCG/g5ezyx7N4LFcjaaXXvRHoLCyO4SKbB67p1jOrG7dvwUBmGGuhT9NwiT
-         +pvv1lmrEIC2y1CrJsa7PUN3NzkH77p+147UW3/uy5+jPO4ZHz2gkWwxlXCxRWDio1
-         AwGMEZD4oK6Mg==
-Date:   Mon, 1 Feb 2021 14:54:23 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Tomasz Figa <tfiga@google.com>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
-        chao.hao@mediatek.com
-Subject: Re: [PATCH v6 00/33] MT8192 IOMMU support
-Message-ID: <20210201145422.GA15263@willie-the-truck>
-References: <20210111111914.22211-1-yong.wu@mediatek.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210111111914.22211-1-yong.wu@mediatek.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S230355AbhBAPSU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 10:18:20 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39472 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229696AbhBAO46 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 09:56:58 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 111Egd34047211;
+        Mon, 1 Feb 2021 09:54:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=Eco68iy3KXQeX5Y/LC/T9Vir6Vx7EB+4u8SHI3aJZHQ=;
+ b=NTBuo+1CI0zvbH4KTihNd622laVsQgzLx00UKb3CsGbIm82bWscCOvyif3NP7Ak9HKhN
+ jEMUNyn5QwIiEsRYHcfz6b7nrHFK8W/Dz8BOpFSNk6yIG2u9/t3U0B0UCugZ6Da6fevo
+ sv0S3KRbdFEdpr4b61xWwKwTE1Lpkw67fniLmV9UEZEQxP4FavF0T0a9cJOmN3BWsBFZ
+ hM8tj0Js/NoMP9l82KXNzr8Bt+iPaB8VGRH8AzFSgXJoKMJrl9O3iQmBIVSe3XXnf/B0
+ 0TQGeFiF2dUpoDSzGEn3bFkNkqufGcbp53h/BBH+fFstiqDfEU+artzRft0OnnmLybRB aQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36ekn20dyu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 09:54:51 -0500
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 111EiiFF057240;
+        Mon, 1 Feb 2021 09:54:51 -0500
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36ekn20dy1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 09:54:50 -0500
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 111Esnf2028698;
+        Mon, 1 Feb 2021 14:54:49 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma01fra.de.ibm.com with ESMTP id 36cy37s0g6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 14:54:49 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 111Eskbq40436012
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 1 Feb 2021 14:54:46 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BAA8142042;
+        Mon,  1 Feb 2021 14:54:46 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7BC4B42041;
+        Mon,  1 Feb 2021 14:54:44 +0000 (GMT)
+Received: from sig-9-65-218-191.ibm.com (unknown [9.65.218.191])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon,  1 Feb 2021 14:54:44 +0000 (GMT)
+Message-ID: <58935b00f65e389e9ae3da2425d06bd88d280e43.camel@linux.ibm.com>
+Subject: Re: [PATCH v5 2/4] x509: Detect sm2 keys by their parameters OID
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Stefan Berger <stefanb@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>
+Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Mimi Zohar <zohar@linux.vnet.ibm.com>
+Date:   Mon, 01 Feb 2021 09:54:43 -0500
+In-Reply-To: <71a77d10-e645-194f-5073-ebf180a8d70e@linux.ibm.com>
+References: <20210129150355.850093-3-stefanb@linux.vnet.ibm.com>
+         <20210129150355.850093-1-stefanb@linux.vnet.ibm.com>
+         <4162801.1612185801@warthog.procyon.org.uk>
+         <71a77d10-e645-194f-5073-ebf180a8d70e@linux.ibm.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-01_05:2021-01-29,2021-02-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 impostorscore=0
+ phishscore=0 lowpriorityscore=0 bulkscore=0 spamscore=0 malwarescore=0
+ priorityscore=1501 adultscore=0 mlxscore=0 suspectscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102010073
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 07:18:41PM +0800, Yong Wu wrote:
-> This patch mainly adds support for mt8192 Multimedia IOMMU and SMI.
+On Mon, 2021-02-01 at 09:35 -0500, Stefan Berger wrote:
+> On 2/1/21 8:23 AM, David Howells wrote:
+> > Stefan Berger <stefanb@linux.vnet.ibm.com> wrote:
+> >
+> >> From: Stefan Berger <stefanb@linux.ibm.com>
+> >>
+> >> Detect whether a key is an sm2 type of key by its OID in the parameters
+> >> array rather than assuming that everything under OID_id_ecPublicKey
+> >> is sm2, which is not the case.
+> >>
+> >> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> >> Cc: David Howells <dhowells@redhat.com>
+> >> Cc: keyrings@vger.kernel.org
+> > I presume these cc's are intentionally not on the first patch or the cover (if
+> > there is one)?
 > 
-> mt8192 also is MTK IOMMU gen2 which uses ARM Short-Descriptor translation
-> table format. The M4U-SMI HW diagram is as below:
+> No, this is not intentional. I guess this is a case of wrong use of cc: 
+> versus mailing lists - my bad. I posted the whole series to 
+> linux-crypto, linux-integrity, keyrings and lkml.
 > 
->                           EMI
->                            |
->                           M4U
->                            |
->                       ------------
->                        SMI Common
->                       ------------
->                            |
->   +-------+------+------+----------------------+-------+
->   |       |      |      |       ......         |       |
->   |       |      |      |                      |       |
-> larb0   larb1  larb2  larb4     ......      larb19   larb20
-> disp0   disp1   mdp    vdec                   IPE      IPE
+> V6 is at least visible here now:
 > 
-> All the connections are HW fixed, SW can NOT adjust it.
+> - https://lkml.org/lkml/2021/1/31/323
 > 
-> Comparing with the preview SoC, this patchset mainly adds two new functions:
-> a) add iova 34 bits support.
-> b) add multi domains support since several HW has the special iova
-> region requirement.
+> - https://marc.info/?l=linux-crypto-vger&m=161213604618722&w=2
 > 
-> change note:
-> v6:a) base on v5.11-rc1. and tlb v4:
->       https://lore.kernel.org/linux-mediatek/20210107122909.16317-1-yong.wu@mediatek.com/T/#t 
+> - 
+> https://lore.kernel.org/linux-integrity/20210131233301.1301787-1-stefanb@linux.ibm.com/T/#mbc9fae5facb4178f64c1145e2654258c0af8fa96
+> 
+> - https://marc.info/?l=linux-keyrings&m=161213608818735&w=2
+> 
+> 
+> 
+> >
+> > Do you have a branch you want me to pull or did you want me to take just
+> > patches 2-4?
+> 
+> Please take it from the mailing list. If there are requests for more 
+> changes on the crypto level, I will send another series. I personally am 
+> waiting for some sort of verdict on the crypto level...
 
-I've queued this up apart from patches 6 and 7.
+The entire patch set should be upstreamed as a single patch set, after
+having each of the maintainer's Ack it.  In addition, the v6 version is
+missing some Reviewed-by tags.  (Stefan will re-post a v7 patch set.)
 
-Thanks,
+David, I don't have problem with this patch set being upstreamed via
+the keys subsystem, assuming it's been tested.
 
-Will
+thanks,
+
+Mimi
+
