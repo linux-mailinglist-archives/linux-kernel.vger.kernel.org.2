@@ -2,342 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 306AC30AC07
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:54:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B831630AC0D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:54:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232108AbhBAPwu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 10:52:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231876AbhBAPvo (ORCPT
+        id S232146AbhBAPyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 10:54:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52502 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232094AbhBAPwu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 10:51:44 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01068C06178B
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 07:50:56 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id q7so17079904wre.13
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 07:50:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Agocalx6amvT73iAIsJBAp9BxcyNS8PBS87OaAq8r9c=;
-        b=zOBcVOc/nM0Zcz4TaDR88FVVE4Hd7YUH+VUSQRJWlNnAQTUQU1BTPmlLuHVhU2v4og
-         PvAdZt9WIcif2Ue8X7K86tmeQbh9fEtq8wjrE7/VsGMrbpLR8+j+lxQSwOyHTyiW/SD5
-         xxxrvnsmXwdp3/v5F9EA2XqAENTmrjdAWkNSLDU6bbW0RHIWuBcNZqkcgLQzbRGWk8cQ
-         P+7AUOzUO34H3LbHeeUY/tsqoGa0cjHyZaZlET8Y40HP7BHsNCpUxli73HX5Og7CQpsv
-         tMjIen90IZk4xwtIzr3VUOFaN1SdSZWBc4Lc0niNgpydHSHxAdPVpcZfYXweRNLJ35sb
-         Rg1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Agocalx6amvT73iAIsJBAp9BxcyNS8PBS87OaAq8r9c=;
-        b=nWuis7diYwRB1vUb9b9xf3cN2NcRgAu/o4O9isNKAjHuCcdtcFgqMREd+d0zhAzKpv
-         UsJ/z2bQQoGTEaxRSWr9Ptz24p2WT8BHgtIjoXo8Wj8qoDnmM04LJ6BMEaFQtSmdRGZh
-         3wn51eeWVq6J0DYFGtOpCWEUppy/ZRmZiDKYkqg946GPELIdLaZBuFzgQU6RnlfAZlc+
-         gIDdPJgwNZQjfb+gWrO4DLnFX97/ctmxhp2fgRZuq7GTQ7HfTsl1FSxDckZ0P6Y/tChc
-         OLxDVjD8T2SGJdA0PV+qG09IiqizVtLsxmP2GhDQ7VaajQNB8yWW9W1Rv5APnuNGG1ji
-         RRPQ==
-X-Gm-Message-State: AOAM5330xevh9p6z1Cb+WeRrxBijHZVmRhsD29fOoeu3NAMR2FPHtEPX
-        HsISyHfMMa6GjW1kHZpXiGXsag==
-X-Google-Smtp-Source: ABdhPJzq24GaWng9oX8jhpJlFLNOrjO9zZuq9VNBlVEJtJP2x0T9bjA3eRiOb0vFnzf15VTo90I/JQ==
-X-Received: by 2002:adf:fb85:: with SMTP id a5mr18737695wrr.331.1612194654681;
-        Mon, 01 Feb 2021 07:50:54 -0800 (PST)
-Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.googlemail.com with ESMTPSA id j7sm3494258wrp.72.2021.02.01.07.50.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Feb 2021 07:50:54 -0800 (PST)
-Subject: Re: [PATCH 5/6] soundwire: qcom: update register read/write routine
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     yung-chuan.liao@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20210129173248.5941-1-srinivas.kandagatla@linaro.org>
- <20210129173248.5941-6-srinivas.kandagatla@linaro.org>
- <20210201142646.GD2771@vkoul-mobl>
-From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Message-ID: <360ddca6-6f64-5297-2e88-9507500dfd4d@linaro.org>
-Date:   Mon, 1 Feb 2021 15:50:53 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Mon, 1 Feb 2021 10:52:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612194684;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=k7JcQqia2+dIQ5jR2h/xA1wGbQRmVVlja2/HYWBBHWM=;
+        b=bDvejn226PM8OFlUvzXpUYG2O6lUEeWDNOCnc4TxQqEsi1qZWGO8KNtCSaZWGg4zeDlpcf
+        dbZuipXycvEHHTJ0eV/fjmdEWJkJr623gb+Ox7HGkDOrQOkfNsNq9Y45KQl0xzs5fgfiSx
+        coeBv0F9kUQVujhWCKV91Jw8NmrUVk0=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-87-uXYghaC-NlG2uuwXgi1lcA-1; Mon, 01 Feb 2021 10:51:20 -0500
+X-MC-Unique: uXYghaC-NlG2uuwXgi1lcA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0B4781054FA3;
+        Mon,  1 Feb 2021 15:51:04 +0000 (UTC)
+Received: from [10.36.115.24] (ovpn-115-24.ams2.redhat.com [10.36.115.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0F7F61346F;
+        Mon,  1 Feb 2021 15:50:55 +0000 (UTC)
+To:     Oscar Salvador <osalvador@suse.de>
+Cc:     Muchun Song <songmuchun@bytedance.com>, corbet@lwn.net,
+        mike.kravetz@oracle.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com, willy@infradead.org,
+        mhocko@suse.com, song.bao.hua@hisilicon.com,
+        naoya.horiguchi@nec.com, duanxiongchun@bytedance.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+References: <20210117151053.24600-1-songmuchun@bytedance.com>
+ <20210117151053.24600-6-songmuchun@bytedance.com>
+ <20210126092942.GA10602@linux>
+ <6fe52a7e-ebd8-f5ce-1fcd-5ed6896d3797@redhat.com>
+ <20210126145819.GB16870@linux>
+ <259b9669-0515-01a2-d714-617011f87194@redhat.com>
+ <20210126153448.GA17455@linux>
+ <9475b139-1b33-76c7-ef5c-d43d2ea1dba5@redhat.com>
+ <e28399e1-3a24-0f22-b057-76e7c7e70017@redhat.com>
+ <20210128222906.GA3826@localhost.localdomain>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH v13 05/12] mm: hugetlb: allocate the vmemmap pages
+ associated with each HugeTLB page
+Message-ID: <0f34d46b-cb42-0bbf-1d7e-0b4731bdb5e9@redhat.com>
+Date:   Mon, 1 Feb 2021 16:50:55 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20210201142646.GD2771@vkoul-mobl>
+In-Reply-To: <20210128222906.GA3826@localhost.localdomain>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 01/02/2021 14:26, Vinod Koul wrote:
-> On 29-01-21, 17:32, Srinivas Kandagatla wrote:
->> In the existing code every soundwire register read and register write
->> are kinda blocked. Each of these are using a special command id that
->> generates interrupt after it successfully finishes. This is really
->> overhead, limiting and not really necessary unless we are doing
->> something special.
+On 28.01.21 23:29, Oscar Salvador wrote:
+> On Wed, Jan 27, 2021 at 11:36:15AM +0100, David Hildenbrand wrote:
+>> Extending on that, I just discovered that only x86-64, ppc64, and arm64
+>> really support hugepage migration.
 >>
->> We can simply read/write the fifo that should also give exactly
->> what we need! This will also allow to read/write registers in
->> interrupt context, which was not possible with the special
+>> Maybe one approach with the "magic switch" really would be to disable
+>> hugepage migration completely in hugepage_migration_supported(), and
+>> consequently making hugepage_movable_supported() always return false.
 > 
-> Okay but then why use a mutex ?
+> Ok, so migration would not fork for these pages, and since them would
+> lay in !ZONE_MOVABLE there is no guarantee we can unplug the memory.
+> Well, we really cannot unplug it unless the hugepage is not used
+> (it can be dissolved at least).
+> 
+> Now to the allocation-when-freeing.
+> Current implementation uses GFP_ATOMIC(or wants to use) + forever loop.
+> One of the problems I see with GFP_ATOMIC is that gives you access
+> to memory reserves, but there are more users using those reserves.
+> Then, worst-scenario case we need to allocate 16MB order-0 pages
+> to free up 1GB hugepage, so the question would be whether reserves
+> really scale to 16MB + more users accessing reserves.
+> 
+> As I said, if anything I would go for an optimistic allocation-try
+> , if we fail just refuse to shrink the pool.
+> User can always try to shrink it later again via /sys interface.
+> 
+> Since hugepages would not be longer in ZONE_MOVABLE/CMA and are not
+> expected to be migratable, is that ok?
+> 
+> Using the hugepage for the vmemmap array was brought up several times,
+> but that would imply fragmenting memory over time.
+> 
+> All in all seems to be overly complicated (I might be wrong).
+> 
+> 
+>> Huge pages would never get placed onto ZONE_MOVABLE/CMA and cannot be
+>> migrated. The problem I describe would apply (careful with using
+>> ZONE_MOVABLE), but well, it can at least be documented.
+> 
+> I am not a page allocator expert but cannot the allocation fallback
+> to ZONE_MOVABLE under memory shortage on other zones?
 
-Read and writes can come from two places,
-1> from SoundWire Core itself which takes care of locking
-2> from interrupt handler in the driver itself, which is why we need an 
-additional locking!
+No, for now it's not done. Only movable allocations target ZONE_MOVABLE. 
+Doing so would be controversial: when would be the right point in time 
+to start spilling unmovable allocations into CMA/ZONE_MOVABLE? You 
+certainly want to try other things first (swapping, reclaim, 
+compaction), before breaking any guarantees regarding 
+hotunplug+migration/compaction you have with CMA/ZONE_MOVABLE. And even 
+if you would allow it, your workload would already suffer extremely.
 
-Having said that I did have look at the current state of driver 
-interrupt handler, and it does not do any soundwire register read/writes 
-from interrupt handler so we can remove the lock for now!
+So it smells more like a setup issue. But then, who knows when 
+allocating huge pages (esp. at runtime) that there are such side effects 
+before actually running into them?
 
-> 
->> command approach.
->>
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> ---
->>   drivers/soundwire/qcom.c | 148 +++++++++++++++++++++++++--------------
->>   1 file changed, 96 insertions(+), 52 deletions(-)
->>
->> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
->> index 83df15d83935..d61b204dc284 100644
->> --- a/drivers/soundwire/qcom.c
->> +++ b/drivers/soundwire/qcom.c
->> @@ -78,13 +78,15 @@
->>   #define SWRM_SPECIAL_CMD_ID	0xF
->>   #define MAX_FREQ_NUM		1
->>   #define TIMEOUT_MS		(2 * HZ)
->> -#define QCOM_SWRM_MAX_RD_LEN	0xf
->> +#define QCOM_SWRM_MAX_RD_LEN	0x1
->>   #define QCOM_SDW_MAX_PORTS	14
->>   #define DEFAULT_CLK_FREQ	9600000
->>   #define SWRM_MAX_DAIS		0xF
->>   #define SWR_INVALID_PARAM 0xFF
->>   #define SWR_HSTOP_MAX_VAL 0xF
->>   #define SWR_HSTART_MIN_VAL 0x0
->> +#define SWR_BROADCAST_CMD_ID    0x0F
->> +#define MAX_FIFO_RD_FAIL_RETRY 3
->>   
->>   struct qcom_swrm_port_config {
->>   	u8 si;
->> @@ -104,11 +106,13 @@ struct qcom_swrm_ctrl {
->>   	struct regmap *regmap;
->>   	void __iomem *mmio;
->>   	struct completion *comp;
->> +	struct completion broadcast;
->>   	struct work_struct slave_work;
->>   	/* read/write lock */
->>   	spinlock_t comp_lock;
->>   	/* Port alloc/free lock */
->>   	struct mutex port_lock;
->> +	struct mutex io_lock;
->>   	struct clk *hclk;
->>   	u8 wr_cmd_id;
->>   	u8 rd_cmd_id;
->> @@ -122,6 +126,8 @@ struct qcom_swrm_ctrl {
->>   	int rows_index;
->>   	unsigned long dout_port_mask;
->>   	unsigned long din_port_mask;
->> +	u8 rcmd_id;
->> +	u8 wcmd_id;
->>   	struct qcom_swrm_port_config pconfig[QCOM_SDW_MAX_PORTS];
->>   	struct sdw_stream_runtime *sruntime[SWRM_MAX_DAIS];
->>   	enum sdw_slave_status status[SDW_MAX_DEVICES];
->> @@ -200,75 +206,111 @@ static int qcom_swrm_cpu_reg_write(struct qcom_swrm_ctrl *ctrl, int reg,
->>   	return SDW_CMD_OK;
->>   }
->>   
->> -static int qcom_swrm_cmd_fifo_wr_cmd(struct qcom_swrm_ctrl *ctrl, u8 cmd_data,
->> -				     u8 dev_addr, u16 reg_addr)
->> +static u32 swrm_get_packed_reg_val(u8 *cmd_id, u8 cmd_data,
->> +				 u8 dev_addr, u16 reg_addr)
->>   {
->> -	DECLARE_COMPLETION_ONSTACK(comp);
->> -	unsigned long flags;
->>   	u32 val;
->> -	int ret;
->> -
->> -	spin_lock_irqsave(&ctrl->comp_lock, flags);
->> -	ctrl->comp = &comp;
->> -	spin_unlock_irqrestore(&ctrl->comp_lock, flags);
->> -	val = SWRM_REG_VAL_PACK(cmd_data, dev_addr,
->> -				SWRM_SPECIAL_CMD_ID, reg_addr);
->> -	ret = ctrl->reg_write(ctrl, SWRM_CMD_FIFO_WR_CMD, val);
->> -	if (ret)
->> -		goto err;
->> -
->> -	ret = wait_for_completion_timeout(ctrl->comp,
->> -					  msecs_to_jiffies(TIMEOUT_MS));
->> +	u8 id = *cmd_id;
->>   
->> -	if (!ret)
->> -		ret = SDW_CMD_IGNORED;
->> -	else
->> -		ret = SDW_CMD_OK;
->> -err:
->> -	spin_lock_irqsave(&ctrl->comp_lock, flags);
->> -	ctrl->comp = NULL;
->> -	spin_unlock_irqrestore(&ctrl->comp_lock, flags);
->> +	if (id != SWR_BROADCAST_CMD_ID) {
->> +		if (id < 14)
->> +			id += 1;
->> +		else
->> +			id = 0;
->> +		*cmd_id = id;
->> +	}
->> +	val = SWRM_REG_VAL_PACK(cmd_data, dev_addr, id, reg_addr);
->>   
->> -	return ret;
->> +	return val;
->>   }
->>   
->> -static int qcom_swrm_cmd_fifo_rd_cmd(struct qcom_swrm_ctrl *ctrl,
->> -				     u8 dev_addr, u16 reg_addr,
->> -				     u32 len, u8 *rval)
->> +
->> +static int qcom_swrm_cmd_fifo_wr_cmd(struct qcom_swrm_ctrl *swrm, u8 cmd_data,
->> +				     u8 dev_addr, u16 reg_addr)
->>   {
->> -	int i, ret;
->> +
->>   	u32 val;
->> -	DECLARE_COMPLETION_ONSTACK(comp);
->> -	unsigned long flags;
->> +	int ret = 0;
->> +	u8 cmd_id = 0x0;
->> +
->> +	mutex_lock(&swrm->io_lock);
->> +	if (dev_addr == SDW_BROADCAST_DEV_NUM) {
->> +		cmd_id = SWR_BROADCAST_CMD_ID;
->> +		val = swrm_get_packed_reg_val(&cmd_id, cmd_data,
->> +					      dev_addr, reg_addr);
->> +	} else {
->> +		val = swrm_get_packed_reg_val(&swrm->wcmd_id, cmd_data,
->> +					      dev_addr, reg_addr);
->> +	}
->>   
->> -	spin_lock_irqsave(&ctrl->comp_lock, flags);
->> -	ctrl->comp = &comp;
->> -	spin_unlock_irqrestore(&ctrl->comp_lock, flags);
->> +	swrm->reg_write(swrm, SWRM_CMD_FIFO_WR_CMD, val);
->>   
->> -	val = SWRM_REG_VAL_PACK(len, dev_addr, SWRM_SPECIAL_CMD_ID, reg_addr);
->> -	ret = ctrl->reg_write(ctrl, SWRM_CMD_FIFO_RD_CMD, val);
->> -	if (ret)
->> -		goto err;
->> +	/* version 1.3 or less */
->> +	if (swrm->version_major == 1 && swrm->version_minor <= 3)
->> +		usleep_range(150, 155);
->>   
->> -	ret = wait_for_completion_timeout(ctrl->comp,
->> -					  msecs_to_jif
---srini
-fies(TIMEOUT_MS));
->> +	if (cmd_id == SWR_BROADCAST_CMD_ID) {
->> +		/*
->> +		 * sleep for 10ms for MSM soundwire variant to allow broadcast
->> +		 * command to complete.
->> +		 */
->> +		ret = wait_for_completion_timeout(&swrm->broadcast, (2 * HZ/10));
->> +		if (!ret)
->> +			ret = SDW_CMD_IGNORED;
->> +		else
->> +			ret = SDW_CMD_OK;
->>   
->> -	if (!ret) {
->> -		ret = SDW_CMD_IGNORED;
->> -		goto err;
->>   	} else {
->>   		ret = SDW_CMD_OK;
->>   	}
->> +	mutex_unlock(&swrm->io_lock);
->> +	return ret;
->> +}
->>   
->> -	for (i = 0; i < len; i++) {
->> -		ctrl->reg_read(ctrl, SWRM_CMD_FIFO_RD_FIFO_ADDR, &val);
->> -		rval[i] = val & 0xFF;
->> +static int qcom_swrm_cmd_fifo_rd_cmd(struct qcom_swrm_ctrl *swrm,
->> +				     u8 dev_addr, u16 reg_addr,
->> +				     u32 len, u8 *rval)
->> +{
->> +	u32 val;
->> +	u32 retry_attempt = 0;
->> +	u32 cmd_data;
->> +	int ret = SDW_CMD_OK;
->> +
->> +	mutex_lock(&swrm->io_lock);
->> +	val = swrm_get_packed_reg_val(&swrm->rcmd_id, len, dev_addr, reg_addr);
->> +
->> +	/* wait for FIFO RD to complete to avoid overflow */
->> +	usleep_range(100, 105);
->> +	swrm->reg_write(swrm, SWRM_CMD_FIFO_RD_CMD, val);
->> +	/* wait for FIFO RD CMD complete to avoid overflow */
->> +	usleep_range(250, 255);
->> +
->> +retry_read:
-> 
-> do while{} ?
+We can make sure that all relevant archs support migration of ordinary 
+(!gigantic) huge pages (for now, only x86-64, ppc64/spapr, arm64), so we 
+can place them onto ZONE_MOVABLE. It gets harder with more special cases.
 
-Sure!
+Gigantic pages (without CMA) are more of a general issue, but at least 
+it's simple to document ("Careful when pairing ZONE_MOVABLE with 
+gigantic pages on !CMA").
 
-> 
->> +
->> +	swrm->reg_read(swrm, SWRM_CMD_FIFO_RD_FIFO_ADDR, &cmd_data);
->> +	rval[0] = cmd_data & 0xFF;
->> +
->> +	if ((((cmd_data) & 0xF00) >> 8) != swrm->rcmd_id) {
->> +		if (retry_attempt < MAX_FIFO_RD_FAIL_RETRY) {
->> +			/* wait 500 us before retry on fifo read failure */
->> +			usleep_range(500, 505);
->> +			if (retry_attempt == (MAX_FIFO_RD_FAIL_RETRY - 1)) {
-> 
-> why not do this at the end if retry fails, that will make code look
-> neater
+An unexpected high amount of unmovable memory is just extremely 
+difficult to handle with ZONE_MOVABLE; it's hard for the user/admin to 
+figure out that such restrictions actually apply.
 
-I agree, will clean this one in next version!
+-- 
+Thanks,
 
-> 
->> +				swrm->reg_write(swrm, SWRM_CMD_FIFO_CMD, 0x1);
->> +				swrm->reg_write(swrm, SWRM_CMD_FIFO_RD_CMD, val);
->> +			}
->> +			retry_attempt++;
->> +			goto retry_read;
->> +		} else {
->> +			dev_err(swrm->dev,
->> +					"failed to read fifo: reg: 0x%x, \
->> +					rcmd_id: 0x%x, dev_num: 0x%x, cmd_data: 0x%x\n",
->> +					reg_addr, swrm->rcmd_id,
->> +					dev_addr, cmd_data);
-> 
-> Do you want to log retry as err..?
-> 
->> +			ret = SDW_CMD_IGNORED;
->> +		}
->>   	}
->>   
->> -err:
->> -	spin_lock_irqsave(&ctrl->comp_lock, flags);
->> -	ctrl->comp = NULL;
->> -	spin_unlock_irqrestore(&ctrl->comp_lock, flags);
->> +	mutex_unlock(&swrm->io_lock);
->>   
->>   	return ret;
->>   }
->> @@ -949,6 +991,8 @@ static int qcom_swrm_probe(struct platform_device *pdev)
->>   	dev_set_drvdata(&pdev->dev, ctrl);
->>   	spin_lock_init(&ctrl->comp_lock);
->>   	mutex_init(&ctrl->port_lock);
->> +	mutex_init(&ctrl->io_lock);
->> +	init_completion(&ctrl->broadcast);
->>   	INIT_WORK(&ctrl->slave_work, qcom_swrm_slave_wq);
->>   
->>   	ctrl->bus.ops = &qcom_swrm_ops;
->> -- 
->> 2.21.0
-> 
+David / dhildenb
+
