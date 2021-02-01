@@ -2,96 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA9330A016
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 02:51:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E4DB30A01B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 02:56:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231229AbhBABsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 20:48:45 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:11920 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229765AbhBABsg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 20:48:36 -0500
-X-UUID: 50cf61722eab4a759cbcf77009172996-20210201
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=cqrms7Ue1/V7oS95GhlRfd1HqRHxwPoPO4V21qXshyk=;
-        b=nAi6dqLoS9jhSl9/cDrzkyXEQmXCt+gNIiBJlXIc180X9tRSSeWnrCnj++Hy/ZnJqlu8cHeErBEbwxg89T8Ir4KvDR3wOqw+TmvIozxiCj72ofmB665V2hyYRWfoC89Vs2aDovBO17hSEpxbkrYkatkxJjNo4YA/jNr6VWjhx3E=;
-X-UUID: 50cf61722eab4a759cbcf77009172996-20210201
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1586998223; Mon, 01 Feb 2021 09:47:47 +0800
-Received: from MTKCAS32.mediatek.inc (172.27.4.184) by MTKMBS31N2.mediatek.inc
- (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 1 Feb
- 2021 09:47:43 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS32.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 1 Feb 2021 09:47:42 +0800
-Message-ID: <1612144062.25113.6.camel@mhfsdcap03>
-Subject: Re: [PATCH 2/3] usb: xhci-mtk: fix UAS issue by XHCI_BROKEN_STREAMS
- quirk
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Rosen Penev <rosenp@gmail.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-usb@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Ikjoon Jang <ikjn@chromium.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
-Date:   Mon, 1 Feb 2021 09:47:42 +0800
-In-Reply-To: <7ad022d3-ff83-9126-ee74-6d1e4d381366@gmail.com>
-References: <20201216115125.5886-1-chunfeng.yun@mediatek.com>
-         <20201216115125.5886-2-chunfeng.yun@mediatek.com>
-         <CANMq1KDBmuoBNeizm9+f1yJgqF9oMqU5k26KfZrSdjrPQm_LwA@mail.gmail.com>
-         <1608171557.23328.53.camel@mhfsdcap03>
-         <CAKxU2N8q1XjDbWbv5ksqYr7RMEedV7fng7OUccVggsT89Oyf5w@mail.gmail.com>
-         <1608794285.23328.79.camel@mhfsdcap03>
-         <7ad022d3-ff83-9126-ee74-6d1e4d381366@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        id S231131AbhBAB4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 20:56:20 -0500
+Received: from ozlabs.org ([203.11.71.1]:59907 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229813AbhBAB4Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 20:56:16 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DTWHS684cz9srY;
+        Mon,  1 Feb 2021 12:55:32 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1612144533;
+        bh=BfyU9bFRiydMRCXL2NWr/Inhh9O6QnDdob3A1iGsWVY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=KFw7qMBdtv4dxz9b0SOZWtrr6l/tzjK+D9X5/EAmzTWZHTp8NH9/k5kRsQlh+ymXH
+         JJCTtqD6MrCcg/wiwBT9KKA60YVVfiCmMTc7tESkkepsoa6hOiAotHN6IUhDC/amz6
+         aSxmgsbMfidjW1wEuxx4rbPlqfenL/9D1VJCjOLg+k4Qh8/uYuAAbnlBpJEdBzBYrd
+         EvlcArdXU0YgmssH14co2eh7Gqi+q9VaMFp92imJarZUoDSLMjcxZ+lwGV5W6C4ZuP
+         KnWnPqqEzfgfRvoqx0rHjpSXMPKETheDGK7qsJhEypidPo98A/p2htk5gUfoXqtERV
+         9IjkY2BWatWbw==
+Date:   Mon, 1 Feb 2021 12:55:32 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Chris Wilson <chris@chris-wilson.co.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build warning after merge of the drm tree
+Message-ID: <20210201125532.2d51c381@canb.auug.org.au>
+In-Reply-To: <20210122115918.63b56fa1@canb.auug.org.au>
+References: <20210122115918.63b56fa1@canb.auug.org.au>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: A5024271AC4526812F95AD3BC549251504E6929E05351F62AF340B5A5392FFC52000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; boundary="Sig_/C_.j+qZ.bOkaYaCl9P+aeHV";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU3VuLCAyMDIxLTAxLTMxIGF0IDE1OjEzICswMTAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdyb3Rl
-Og0KPiANCj4gT24gMjQvMTIvMjAyMCAwODoxOCwgQ2h1bmZlbmcgWXVuIHdyb3RlOg0KPiA+IE9u
-IFdlZCwgMjAyMC0xMi0xNiBhdCAxOTo0MyAtMDgwMCwgUm9zZW4gUGVuZXYgd3JvdGU6DQo+ID4+
-IE9uIFdlZCwgRGVjIDE2LCAyMDIwIGF0IDY6MjkgUE0gQ2h1bmZlbmcgWXVuIDxjaHVuZmVuZy55
-dW5AbWVkaWF0ZWsuY29tPiB3cm90ZToNCj4gPj4+DQo+ID4+PiBPbiBXZWQsIDIwMjAtMTItMTYg
-YXQgMjA6MjggKzA4MDAsIE5pY29sYXMgQm9pY2hhdCB3cm90ZToNCj4gPj4+PiBPbiBXZWQsIERl
-YyAxNiwgMjAyMCBhdCA3OjUzIFBNIENodW5mZW5nIFl1biA8Y2h1bmZlbmcueXVuQG1lZGlhdGVr
-LmNvbT4gd3JvdGU6DQo+IFsuLi5dDQo+ID4+Pj4+ICAgICAgICAgbXRrLT5scG1fc3VwcG9ydCA9
-IG9mX3Byb3BlcnR5X3JlYWRfYm9vbChub2RlLCAidXNiMy1scG0tY2FwYWJsZSIpOw0KPiA+Pj4+
-PiArICAgICAgIG10ay0+YnJva2VuX3N0cmVhbXMgPQ0KPiA+Pj4+PiArICAgICAgICAgICAgICAg
-b2ZfcHJvcGVydHlfcmVhZF9ib29sKG5vZGUsICJtZWRpYXRlayxicm9rZW5fc3RyZWFtc19xdWly
-ayIpOw0KPiA+Pj4+DQo+ID4+Pj4gV291bGQgaXQgYmUgYmV0dGVyIHRvIGFkZCBhIGRhdGEgZmll
-bGQgdG8gc3RydWN0IG9mX2RldmljZV9pZA0KPiA+Pj4+IG10a194aGNpX29mX21hdGNoLCBhbmQg
-ZW5hYmxlIHRoaXMgcXVpcmsgb24gbWVkaWF0ZWssbXQ4MTczLXhoY2kgb25seT8NCj4gPj4+IFRo
-aXMgaXMgdGhlIGNvbW1vbiBpc3N1ZSBmb3IgYWxsIFNvQ3MgKGJlZm9yZSAyMDE2LjA2KSB3aXRo
-IDAuOTYgeEhDSQ0KPiA+Pj4gd2hlbiB0aGUgY29udHJvbGxlciBkb24ndCBzdXBwb3J0IGJ1bGsg
-c3RyZWFtLiBJZiBlbmFibGUgdGhpcyBxdWlyayBvbmx5DQo+ID4+PiBmb3IgbXQ4MTczLCB0aGVu
-IGZvciBvdGhlciBTb0NzLCB0aGUgY29tcGF0aWJsZSBuZWVkIGluY2x1ZGUNCj4gPj4+ICJtZWRp
-YXRlayxtdDgxNzMteGhjaSIgaW4gZHRzLCB0aGlzIG1heSBiZSBub3QgZmxleGlibGUgZm9yIHNv
-bWUgY2FzZXMsDQo+ID4+PiBlLmcuIGEgbmV3IFNvQyBoYXMgdGhlIGJyb2tlbiBzdHJlYW0gYXMg
-bXQ4MTczLCBidXQgYWxzbyBoYXMgYW5vdGhlcg0KPiA+Pj4gZGlmZmVyZW50IHF1aXJrLCB0aGUg
-d2F5IHlvdSBzdWdnZXN0ZWQgd2lsbCBub3QgaGFuZGxlIGl0Lg0KPiA+Pj4gQW5kIEkgcGxhbiB0
-byByZW1vdmUgIm1lZGlhdGVrLG10ODE3My14aGNpIiBpbiBtdGtfeGhjaV9vZl9tYXRjaCBhZnRl
-cg0KPiA+Pj4gY29udmVydGluZyB0aGUgYmluZGluZyB0byBZTUFMLg0KPiA+PiBJJ20gZ3Vlc3Np
-bmcgdGhpcyBhbHNvIGFwcGxpZXMgdG8gbXQ3NjIxPw0KPiA+IFllcywgbXQ3NjIxIGRvZXNuJ3Qg
-c3VwcG9ydCBidWxrIHN0cmVhbQ0KPiA+IA0KPiANCj4gVGhlbiBwbGVhc2UgcHJvdmlkZSBwYXRj
-aGVzIHRvIHRoZSBEVFNJIGZvciBhbGwgU29DcyB0aGF0IGhhdmUgdGhpcyBwcm9ibGVtLg0KPiBF
-aXRoZXIgYXMgYSBmb2xsb3ctdXAgb3IgYXMgcGFydCBvZiB0aGlzIHNlcmllcywgaWYgeW91IG5l
-ZWQgdG8gcmVzdWJtaXQuDQpPaywgSSdsbCBzZW5kIG5ldyB2ZXJzaW9uLCBhbmQgYWxzbyB0cnkg
-b3RoZXIgd2F5IHRvIGZpeCBpdCB3aXRob3V0IGFkZA0KcHJvcGVydHkgaW4gRFRTLCB0aGFua3MN
-Cg0KPiANCj4gUmVnYXJkcywNCj4gTWF0dGhpYXMNCg0K
+--Sig_/C_.j+qZ.bOkaYaCl9P+aeHV
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
+
+On Fri, 22 Jan 2021 11:59:18 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> After merging the drm tree, today's linux-next build (x86_64 allmodconfig)
+> produced this warning:
+>=20
+> WARNING: unmet direct dependencies detected for DRM_I915_WERROR
+>   Depends on [n]: HAS_IOMEM [=3Dy] && DRM_I915 [=3Dm] && EXPERT [=3Dy] &&=
+ !COMPILE_TEST [=3Dy]
+>   Selected by [m]:
+>   - DRM_I915_DEBUG [=3Dy] && HAS_IOMEM [=3Dy] && EXPERT [=3Dy] && DRM_I91=
+5 [=3Dm]
+>=20
+> WARNING: unmet direct dependencies detected for DRM_I915_WERROR
+>   Depends on [n]: HAS_IOMEM [=3Dy] && DRM_I915 [=3Dm] && EXPERT [=3Dy] &&=
+ !COMPILE_TEST [=3Dy]
+>   Selected by [m]:
+>   - DRM_I915_DEBUG [=3Dy] && HAS_IOMEM [=3Dy] && EXPERT [=3Dy] && DRM_I91=
+5 [=3Dm]
+>=20
+> WARNING: unmet direct dependencies detected for DRM_I915_WERROR
+>   Depends on [n]: HAS_IOMEM [=3Dy] && DRM_I915 [=3Dm] && EXPERT [=3Dy] &&=
+ !COMPILE_TEST [=3Dy]
+>   Selected by [m]:
+>   - DRM_I915_DEBUG [=3Dy] && HAS_IOMEM [=3Dy] && EXPERT [=3Dy] && DRM_I91=
+5 [=3Dm]
+>=20
+> Maybe introduced by commit
+>=20
+>   4f86975f539d ("drm/i915: Add DEBUG_GEM to the recommended CI config")
+
+I am still getting this warning.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/C_.j+qZ.bOkaYaCl9P+aeHV
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAXX5QACgkQAVBC80lX
+0GypAwf+NDRIpkYcNy9Nlt7QWWLrP5UzkVOdnU15x7CXd58ZAjC05WLvM3y1TpXM
+hWwbfnQOiPZ7/sSr1N1ecph6BPzHLI2yZOqnU0ZKAo5ZnfhrHgASml1fLoAF/fDo
+cHQ4e2Im7XnoDDF4gTfTr4CKkQlAGLfaI4Kcg58VRCDkYyRFXTKLtFLZxPYfhjof
+pytu2L8zV63oGfDqYhzXLQOpoeKmLcyeYQCIx5y7gRn6s4G73kmA8A9vETvFiiWf
+SVM7gJB23gu6KnpP2fP5ULRCRCE3lq2KAANEiNnzyZmnmJPjaRM0bM/TcpHyiwc2
+LX7zfG75SVW+Ir3ia1unpxZzZDyLHA==
+=Mf7s
+-----END PGP SIGNATURE-----
+
+--Sig_/C_.j+qZ.bOkaYaCl9P+aeHV--
