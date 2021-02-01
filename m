@@ -2,145 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F9E30AFEB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:01:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0975830AFF2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:02:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231975AbhBATA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 14:00:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37380 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231831AbhBATAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 14:00:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6A3064E2E;
-        Mon,  1 Feb 2021 19:00:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612206014;
-        bh=94+bS/EiourB10zg+W1ZE5ZX3BKLOp9sDia13G+JXP8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OCzfA8+UhqzFrSrEujU1gR5id/a6vYbbXk/umvq2WB27VsAHmewXta8psdwQedhCh
-         7yhVccKwymFbAQV1IK/YR6wpb9DbUGai+RDj0A3XGQB/K4c7N88EJxYYltNlqdZtxh
-         ThEadto04WqggFS11j+KzXW/xTwr1GfeoYQoZX7ZkrfG0pVuL0boqbQb06lVDN8dOu
-         OdDNsYH+JuR+MU5UYG6Iuyy4zcpRcrambWoA0vnawTkNpD6Sq95yklASYGILFnzABx
-         1ckRUxXjf4txDfoBP0u91sUbIiv75cuA8YITywXLG1RR6KqYJyWvEOwbls0j1P7U+T
-         AX5eZZQcSunig==
-Date:   Mon, 1 Feb 2021 19:00:08 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, android-kvm@google.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        Fuad Tabba <tabba@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>
-Subject: Re: [RFC PATCH v2 10/26] KVM: arm64: Introduce an early Hyp page
- allocator
-Message-ID: <20210201190008.GI15632@willie-the-truck>
-References: <20210108121524.656872-1-qperret@google.com>
- <20210108121524.656872-11-qperret@google.com>
+        id S231301AbhBATCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 14:02:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230055AbhBATBz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 14:01:55 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1825EC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 11:01:15 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id z22so20127749edb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 11:01:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=C4j8R2NWjOWWuVLjBbyJdPlrlZ/j8TvzFIyUEA+Ndu8=;
+        b=nyzwIexSmOjDJ+JcSNBcdEk6/yXwTc3YKKDydwVmgfPbkLgTinbZm6+ykK0VQzEtXd
+         2FGnsXVks/jQjS4fLAnBKnK11OSqp97qHKPP7ZUqdq9zaUFinHt8zs2HO+5Snar6F84v
+         5kZW9qoTEN+59FePDotW3jAP0kx+s2AOE3I3aKrRS257mRb/6+u9GsKidEMKfGro142s
+         DWpsafh0uFz0iMyedBmo8mVT7/beWRMM3ciL+gitIiUzkwCc6LH/5iwE8X/spV3q0Kbs
+         nPUT/vZZ8B2SFP534Z/VBodBdcFAo7cIr+SWbdYD0ZsBKkAsg8VJmh6BVUYFFwT3Dh2D
+         +6LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=C4j8R2NWjOWWuVLjBbyJdPlrlZ/j8TvzFIyUEA+Ndu8=;
+        b=YhTddVWYjPZ+gzUbs+9w5p+0XH3zNXevFv1Ny/6grEbByB4aGkRp27BbvZo10v2rpn
+         QWO3+7zMrsOQFS0b923b1I5Z/+qpbbRiuiMt4rQbo1a+K5CbHfoFUbuEAcRMIozZnLGu
+         X615gPMlJ6/ly8/2JnUtW4suUl2T7a1Snh1dpFrEMXXcmTNwNhIV+ill1sUcGPCCdI91
+         qnZugZl1K0tF7XFo6oPsRfPNbv0jsicHbkF65h4uCBSDKgyhFLRJB5tkXI7+yqyTP6Jb
+         sagFpXvxpiWKhFQPIdM77yxmy11N3e59CYHmalyE5PQJb0jomb2MOSWB8bc9vm1LBF9x
+         sdcA==
+X-Gm-Message-State: AOAM532lpnC972Ku4gyS15Eico2mwuNwmGyZL/o29ai3I9YdNky/1/jX
+        wTnc+fCRIuK/a7OIdt//P55Qso68/k0Rl9+FaLcQvg==
+X-Google-Smtp-Source: ABdhPJynM6kBjwVDj3TQA0+jvvwTHEb3P0qRRcbLVYHUWU+FzxYi6yyx9m7bmpMHOcX1OWvc84NajYIYsO/BTj6o3/4=
+X-Received: by 2002:aa7:cd87:: with SMTP id x7mr21185852edv.210.1612206073657;
+ Mon, 01 Feb 2021 11:01:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108121524.656872-11-qperret@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210130002438.1872527-1-ben.widawsky@intel.com>
+ <20210130002438.1872527-9-ben.widawsky@intel.com> <20210201181845.GJ197521@fedora>
+ <20210201183455.3dndfwyswwvs2dlm@intel.com>
+In-Reply-To: <20210201183455.3dndfwyswwvs2dlm@intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 1 Feb 2021 11:01:11 -0800
+Message-ID: <CAPcyv4iBbA+PCnTg-hFALuDJNqcJrwwXN_gMEe6z9LZvSfC5hw@mail.gmail.com>
+Subject: Re: [PATCH 08/14] taint: add taint for direct hardware access
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        linux-cxl@vger.kernel.org, Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 12:15:08PM +0000, Quentin Perret wrote:
-> diff --git a/arch/arm64/kvm/hyp/nvhe/early_alloc.c b/arch/arm64/kvm/hyp/nvhe/early_alloc.c
-> new file mode 100644
-> index 000000000000..de4c45662970
-> --- /dev/null
-> +++ b/arch/arm64/kvm/hyp/nvhe/early_alloc.c
-> @@ -0,0 +1,60 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) 2020 Google LLC
-> + * Author: Quentin Perret <qperret@google.com>
-> + */
-> +
-> +#include <asm/kvm_pgtable.h>
-> +
-> +#include <nvhe/memory.h>
-> +
-> +struct kvm_pgtable_mm_ops hyp_early_alloc_mm_ops;
-> +s64 __ro_after_init hyp_physvirt_offset;
-> +
-> +static unsigned long base;
-> +static unsigned long end;
-> +static unsigned long cur;
-> +
-> +unsigned long hyp_early_alloc_nr_pages(void)
-> +{
-> +	return (cur - base) >> PAGE_SHIFT;
-> +}
+On Mon, Feb 1, 2021 at 10:35 AM Ben Widawsky <ben.widawsky@intel.com> wrote:
+>
+> On 21-02-01 13:18:45, Konrad Rzeszutek Wilk wrote:
+> > On Fri, Jan 29, 2021 at 04:24:32PM -0800, Ben Widawsky wrote:
+> > > For drivers that moderate access to the underlying hardware it is
+> > > sometimes desirable to allow userspace to bypass restrictions. Once
+> > > userspace has done this, the driver can no longer guarantee the sanctity
+> > > of either the OS or the hardware. When in this state, it is helpful for
+> > > kernel developers to be made aware (via this taint flag) of this fact
+> > > for subsequent bug reports.
+> > >
+> > > Example usage:
+> > > - Hardware xyzzy accepts 2 commands, waldo and fred.
+> > > - The xyzzy driver provides an interface for using waldo, but not fred.
+> > > - quux is convinced they really need the fred command.
+> > > - xyzzy driver allows quux to frob hardware to initiate fred.
+> >
+> > Would it not be easier to _not_ frob the hardware for fred-operation?
+> > Aka not implement it or just disallow in the first place?
+>
+> Yeah. So the idea is you either are in a transient phase of the command and some
+> future kernel will have real support for fred - or a vendor is being short
+> sighted and not adding support for fred.
+>
+> >
+> >
+> > >   - kernel gets tainted.
+> > > - turns out fred command is borked, and scribbles over memory.
+> > > - developers laugh while closing quux's subsequent bug report.
+> >
+> > Yeah good luck with that theory in-the-field. The customer won't
+> > care about this and will demand a solution for doing fred-operation.
+> >
+> > Just easier to not do fred-operation in the first place,no?
+>
+> The short answer is, in an ideal world you are correct. See nvdimm as an example
+> of the real world.
+>
+> The longer answer. Unless we want to wait until we have all the hardware we're
+> ever going to see, it's impossible to have a fully baked, and validated
+> interface. The RAW interface is my admission that I make no guarantees about
+> being able to provide the perfect interface and giving the power back to the
+> hardware vendors and their driver writers.
+>
+> As an example, suppose a vendor shipped a device with their special vendor
+> opcode. They can enable their customers to use that opcode on any driver
+> version. That seems pretty powerful and worthwhile to me.
+>
 
-nit: but I find this function name confusing (it's returning the number of
-_allocated_ pages, not the number of _free_ pages!). How about something
-like hyp_early_alloc_size() to match hyp_s1_pgtable_size() which you add
-later? [and move the shift out to the caller]?
+Powerful, frightening, and questionably worthwhile when there are
+already examples of commands that need extra coordination for whatever
+reason. However, I still think the decision tilts towards allowing
+this given ongoing spec work.
 
-> +
-> +extern void clear_page(void *to);
+NVDIMM ended up allowing unfettered vendor passthrough given the lack
+of an organizing body to unify vendors. CXL on the other hand appears
+to have more gravity to keep vendors honest. A WARN splat with a
+taint, and a debugfs knob for the truly problematic commands seems
+sufficient protection of system integrity while still following the
+Linux ethos of giving system owners enough rope to make their own
+decisions.
 
-Stick this in a header?
+> Or a more realistic example, we ship a driver that adds a command which is
+> totally broken. Customers can utilize the RAW interface until it gets fixed in a
+> subsequent release which might be quite a ways out.
+>
+> I'll say the RAW interface isn't an encouraged usage, but it's one that I expect
+> to be needed, and if it's not we can always try to kill it later. If nobody is
+> actually using it, nobody will complain, right :D
 
-> +
-> +void *hyp_early_alloc_contig(unsigned int nr_pages)
-
-I think order might make more sense, or do you need to allocate
-non-power-of-2 batches of pages?
-
-> +{
-> +	unsigned long ret = cur, i, p;
-> +
-> +	if (!nr_pages)
-> +		return NULL;
-> +
-> +	cur += nr_pages << PAGE_SHIFT;
-> +	if (cur > end) {
-
-This would mean that concurrent hyp_early_alloc_nr_pages() would transiently
-give the wrong answer. Might be worth sticking the locking expectations with
-the function prototypes.
-
-That said, maybe it would be better to write this check as:
-
-	if (end - cur < (nr_pages << PAGE_SHIFT))
-
-as that also removes the need to worry about overflow if nr_pages is huge
-(which would be a bug in the hypervisor, which we would then catch here).
-
-> +		cur = ret;
-> +		return NULL;
-> +	}
-> +
-> +	for (i = 0; i < nr_pages; i++) {
-> +		p = ret + (i << PAGE_SHIFT);
-> +		clear_page((void *)(p));
-> +	}
-> +
-> +	return (void *)ret;
-> +}
-> +
-> +void *hyp_early_alloc_page(void *arg)
-> +{
-> +	return hyp_early_alloc_contig(1);
-> +}
-> +
-> +void hyp_early_alloc_init(unsigned long virt, unsigned long size)
-> +{
-> +	base = virt;
-> +	end = virt + size;
-> +	cur = virt;
-
-nit: base = cur = virt;
-
-Will
+It might be worthwhile to make RAW support a compile time decision so
+that Linux distros can only ship support for the commands the CXL
+driver-dev community has blessed, but I'll leave it to a distro
+developer to second that approach.
