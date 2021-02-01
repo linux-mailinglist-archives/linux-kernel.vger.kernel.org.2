@@ -2,70 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F58830AFA7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:42:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8768530AFAD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:44:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232995AbhBASml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:42:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34572 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232173AbhBASmc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:42:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1757A64DDF;
-        Mon,  1 Feb 2021 18:41:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612204905;
-        bh=8fU4c65Z1m9hAEXTu2nO/7NiTyQYV8Nb3hUN/A9d9Hg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G93LfQThWoA3J0Ubyc13/PnHLPhueMAMe0lXcjaaX7CEGBd9sg5xj3kG3sWGzMa8j
-         H6cMnZWXdJ9NLf8e3WUAh8gCfsbN5msU+B7CREiIJUdPqqh+jtCihLxeymamPOTSn2
-         +RYAbHscpO9ESQIyQ3eTkortaed8fnGphCAQfsW3r5nZPzvPQ5Z8+kq0JNp8vGJT8B
-         PfSGbvVr/pRUY6ZcODZVuLsZBYIOlxXO69S8WPaHO373WmeabGpXV59/R/Rm/4wQ/s
-         NCpod4Jnz01Witb4Vj8OlMJaNBtDj0WMnLXZRAIl/i15QLW+Lw3QuUPk/eWrfcdmL1
-         0cx62+JEpnm8Q==
-Date:   Mon, 1 Feb 2021 18:41:39 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, android-kvm@google.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        Fuad Tabba <tabba@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>
-Subject: Re: [RFC PATCH v2 08/26] KVM: arm64: Make kvm_call_hyp() a function
- call at Hyp
-Message-ID: <20210201184139.GG15632@willie-the-truck>
-References: <20210108121524.656872-1-qperret@google.com>
- <20210108121524.656872-9-qperret@google.com>
+        id S232853AbhBASnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:43:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233099AbhBASmp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 13:42:45 -0500
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD50C061573;
+        Mon,  1 Feb 2021 10:42:03 -0800 (PST)
+Received: by mail-wr1-x42a.google.com with SMTP id l12so17777871wry.2;
+        Mon, 01 Feb 2021 10:42:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wmtu6bNpF5dPnSRFTlVUqn3pIC+xqRbu0mxekXQ1e2w=;
+        b=WssRBfUX/BP94btJvmYdMC1fwhYweLqdT/gL24i2x8cZbzZqcExDKOPndrRlHiP79a
+         +ZQy9+L8YnXCVSnptYFeVq08iWCvSgqdkWdwFv9UhfRLKdGlaVOV0c5EQkJBFztNGKiG
+         AtP2ywGwFmQXj6sWtdtlNgb5RXe8kqam2YN76dI0jccMUOQHCia2MGWxks8/woiKbSci
+         RULGqr0al2n8tg088fXcJVds9bdoq+A1+p00BszIm8eR3xNOGwWxjZnXiVffo7MA1in+
+         RpzAAAxQi+jZgBikBo+Z+UdVGhTXExfnl2ArBulZdu1H0/svJ+KuYreAvHkJ4lvEw01J
+         grfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wmtu6bNpF5dPnSRFTlVUqn3pIC+xqRbu0mxekXQ1e2w=;
+        b=aAYIB9CHW47cyM8jIn69axc4s+ndc0RGsmuc943HBgx9jsnNlGyCuHSRhPmh1dxYan
+         wdKgmwlHv/ERdiylJDi7TqQD6TuxUgGpumhmSZE73NCnHWkwyxeRJUiLbWDlOEEVS/dQ
+         6Wf32jeinVjRx0YXkGca/Y8o/znBFuNb8HtuCOfI8o0LApFSQLOlbb7ya4SgPheWE3mf
+         Q2xVBq0wUxKCv6B7XfwInxvUTgKwfXtawK/Rri01o8G7E6GxTQoYmhUfPt66BhNYdOpv
+         uXJUKNWDgbwwj9vJouV4gPQulWH9ANexsXD2Wv/Lp7pMDkZpXKgIGooE9ySsFtn4wFv9
+         lSRg==
+X-Gm-Message-State: AOAM533XaAeYFFLtsr+gn3XZ824bPVieReki3tv+AVDStD603fV5nrhW
+        onNQEQ2dupDQxz0k8odfb/7k/IK8efDOBAiwMww=
+X-Google-Smtp-Source: ABdhPJy1mD5KiQw9cpQUdYd28pbpaBz11CVQjBrnrPbhNCuFNUsXXIHBLMwYVjSHwmEsvwTcDFCXVXC/MfjTFpkCtZk=
+X-Received: by 2002:a05:6000:1543:: with SMTP id 3mr19861502wry.254.1612204921821;
+ Mon, 01 Feb 2021 10:42:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108121524.656872-9-qperret@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <AAB32610-D238-4137-96DE-33655AAAB545@dilger.ca>
+ <20210201003125.90257-1-viniciustinti@gmail.com> <20210201124924.GA3284018@infradead.org>
+ <CALD9WKxc0kMPCHSoikko+qYk2+ZLUy73+ryKGW9qMSpyzAobLA@mail.gmail.com> <YBg20AuSC3/9w2zz@mit.edu>
+In-Reply-To: <YBg20AuSC3/9w2zz@mit.edu>
+From:   Vinicius Tinti <viniciustinti@gmail.com>
+Date:   Mon, 1 Feb 2021 15:41:50 -0300
+Message-ID: <CALD9WKzO53AXQW-qQ82VZ41H5=cGdLTUiEoz3X6BmPkb6XaTag@mail.gmail.com>
+Subject: Re: [PATCH v2] ext4: Enable code path when DX_DEBUG is set
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 12:15:06PM +0000, Quentin Perret wrote:
-> kvm_call_hyp() has some logic to issue a function call or a hypercall
-> depending the EL at which the kernel is running. However, all the code
-> compiled under __KVM_NVHE_HYPERVISOR__ is guaranteed to run only at EL2,
-> and in this case a simple function call is needed.
-> 
-> Add ifdefery to kvm_host.h to symplify kvm_call_hyp() in .hyp.text.
-> 
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> ---
->  arch/arm64/include/asm/kvm_host.h | 6 ++++++
->  1 file changed, 6 insertions(+)
+On Mon, Feb 1, 2021 at 2:13 PM Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> On Mon, Feb 01, 2021 at 01:15:29PM -0300, Vinicius Tinti wrote:
+> > On Mon, Feb 1, 2021 at 9:49 AM Christoph Hellwig <hch@infradead.org> wrote:
+> > >
+> > > DX_DEBUG is completely dead code, so either kill it off or make it an
+> > > actual CONFIG_* symbol through Kconfig if it seems useful.
+> >
+> > About the unreachable code in "if (0)" I think it could be removed.
+> > It seems to be doing an extra check.
+> >
+> > About the DX_DEBUG I think I can do another patch adding it to Kconfig
+> > as you and Nathan suggested.
+>
+> Yes, it's doing another check which is useful in terms of early
+> detection of bugs when a developer has the code open for
+> modifications.  It slows down performance under normal circumstances,
+> and assuming the code is bug-free(tm), it's entirely unnecessary ---
+> which is why it's under an "if (0)".
 
-Acked-by: Will Deacon <will@kernel.org>
+My goal is to avoid having a dead code. Three options come to mind.
 
-Will
+The first would be to add another #ifdef SOMETHING (suggest a name).
+But this doesn't remove the code and someone could enable it by accident.
+
+The second would be to add the code in a block comment. Then document
+that it is for checking an invariant. This will make it harder to cause
+problems.
+
+The third would be to remove the code and explain the invariant in a block
+comment. Maybe add a pseudo code too in the comment.
+
+What do you think?
+
+> However, if there *is* a bug, having an early detection that the
+> representation invariant of the data structure has been violated can
+> be useful in root causing a bug.  This would probably be clearer if
+> the code was pulled out into a separate function with comments
+> explaining that this is a rep invariant check.
+
+Good idea. I will do that too.
+
+> The main thing about DX_DEBUG right now is that it is **super**
+> verbose.  Unwary users who enable it.... will be sorry.  If we want to
+> make it to be a first-class feature enabled via CONFIG_EXT4_DEBUG, we
+> should convert all of the dx_trace calls to use pr_debug so they are
+> enabled only if dynamic debug enables those pr_debug() statements.
+> And this should absolutely be a separate patch.
+
+Agreed. For now I only want to focus on the "if (0)".
+
+Regards,
+Vinicius
+
+> Cheers,
+>
+>                                                 - Ted
