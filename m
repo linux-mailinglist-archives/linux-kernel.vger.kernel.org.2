@@ -2,110 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00E7A30ADD7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 696C130ADDC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:30:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231417AbhBAR3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:29:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45760 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230094AbhBAR3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:29:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 77E5F64EA9;
-        Mon,  1 Feb 2021 17:28:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612200520;
-        bh=uHAWWNmon96KsVjmF8ftVBBdEemkthXQ9UJ2fc8srng=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CvvqVRBGSncQ6Xl0DR8gjXVt3iAOTkyc7pce4aId8ICWxg6VACch4KtFpnYVLnmM0
-         PE7ItfKktIRiDNqh7Doo9Xfv5rmfLLKmU179IQx5nVT06+Lw2xgisT7u5GvGOLE94r
-         eYoDXigDq3eE2yjj7UO32kd7q7wtHyt2j8Am/WYH6BPNqYtIUMwk3x2d+qVOfVK1aV
-         bp6HTErm/mDCVqnYV2WdLnjlin63sROqBW/Hht+GatldssqbfS8MA5N1tlWKakjzZC
-         nB83x2hfJxugpY+PMHwWVg7lnc4Y6rHRzCgJ66hnF4T/7xnjvdM4CZQelCzbAER10e
-         0emvH5Ijw9whA==
-Date:   Mon, 1 Feb 2021 17:28:34 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, android-kvm@google.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        Fuad Tabba <tabba@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>
-Subject: Re: [RFC PATCH v2 03/26] arm64: kvm: Add standalone ticket spinlock
- implementation for use at hyp
-Message-ID: <20210201172833.GA15632@willie-the-truck>
-References: <20210108121524.656872-1-qperret@google.com>
- <20210108121524.656872-4-qperret@google.com>
+        id S231783AbhBARaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:30:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230094AbhBAR3e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 12:29:34 -0500
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B0DBC061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 09:28:54 -0800 (PST)
+Received: by mail-io1-xd36.google.com with SMTP id p72so18204294iod.12
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 09:28:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uLCedEHFwqPaDME/K4+4FPLqimlKNLFuYM52ltTab0E=;
+        b=ePEJY2qcloWxjPIxj/5TkvquPA5H1F/P4lrlFUqGBcW/SCjJZPR9Yt36rFocVv8jxd
+         Sdn+w8WnnNuI8UG3Nby5sNs0aF30ia927hJ6IobE8tmtfKYtW2qkHApjXkRkm1jMGnYV
+         fFhdzUJ0V/lvtIB1L33Xfg0MSAmWtP8JB1/k76Rldinglk5UhPYCG4R/f/fHGarV97pg
+         AtEwFAHMCvFCm1Ea3ysDMseqbjmKDBI0liLYc4KHTckXm75zGWN00xSSFDHvqCkUwOMU
+         FIWqXGEI4n5xVCib4JU2IUhRA8UAtLiUJm7hVo9RP1MxrxMi7jJyfBciJIsfIA2CbHd9
+         0bqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uLCedEHFwqPaDME/K4+4FPLqimlKNLFuYM52ltTab0E=;
+        b=Nl51qRcNMNwE/sp6aapZajt6QJP0aaCpJBulq7Yi6ADXd9EuKXS+7kD1999a5OuAoq
+         UUXU9vwTOSee/jCHP4RCYVn8mQyYVA02C2ezt0NN0NQAzo1EyA/bpN3jj9mY9bmNuTio
+         KAZRbCZbHSl3utu036RzumLdYQ1Z8LmrdW+i3xnebsSaVJfq0vPVg6gRFiDG/bDC97En
+         wru+YMjmi7fmtCHPoRFL6brl+EuwnSPl8pqn4CoTCoJzaaWyxjc1IM1gCGE1Mp/+kjL/
+         G32jbeSVeLnguYZp6VDy64AmlTYfZYX14r8bjrpAOe1dQiZpOA4zcAmrRoc5G0EebdS/
+         CnRg==
+X-Gm-Message-State: AOAM530g/vkx/xu4gD2LN/atmw5MdIGH0fWgqwQBsrjXH4OZeyt2Anc3
+        lt214mmbisf69VYWBEb5Uy2i7A==
+X-Google-Smtp-Source: ABdhPJxO6DUhpKl0y3lH7fd314GFIjQ9lJ53uGcMeFjMw3rsgOZ1Iwlml91tAzfL/+/aH6YM9UULtA==
+X-Received: by 2002:a5d:9713:: with SMTP id h19mr13212099iol.14.1612200534065;
+        Mon, 01 Feb 2021 09:28:54 -0800 (PST)
+Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id v2sm9529856ilj.19.2021.02.01.09.28.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 09:28:53 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     willemdebruijn.kernel@gmail.com, elder@kernel.org,
+        evgreen@chromium.org, bjorn.andersson@linaro.org,
+        cpratapa@codeaurora.org, subashab@codeaurora.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v2 0/7] net: ipa: don't disable NAPI in suspend
+Date:   Mon,  1 Feb 2021 11:28:43 -0600
+Message-Id: <20210201172850.2221624-1-elder@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108121524.656872-4-qperret@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 12:15:01PM +0000, Quentin Perret wrote:
-> From: Will Deacon <will@kernel.org>
-> 
-> We will soon need to synchronise multiple CPUs in the hyp text at EL2.
-> The qspinlock-based locking used by the host is overkill for this purpose
-> and relies on the kernel's "percpu" implementation for the MCS nodes.
-> 
-> Implement a simple ticket locking scheme based heavily on the code removed
-> by commit c11090474d70 ("arm64: locking: Replace ticket lock implementation
-> with qspinlock").
-> 
-> Signed-off-by: Will Deacon <will@kernel.org>
-> Signed-off-by: Quentin Perret <qperret@google.com>
-> ---
->  arch/arm64/kvm/hyp/include/nvhe/spinlock.h | 92 ++++++++++++++++++++++
->  1 file changed, 92 insertions(+)
->  create mode 100644 arch/arm64/kvm/hyp/include/nvhe/spinlock.h
-> 
-> diff --git a/arch/arm64/kvm/hyp/include/nvhe/spinlock.h b/arch/arm64/kvm/hyp/include/nvhe/spinlock.h
-> new file mode 100644
-> index 000000000000..7584c397bbac
-> --- /dev/null
-> +++ b/arch/arm64/kvm/hyp/include/nvhe/spinlock.h
-> @@ -0,0 +1,92 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * A stand-alone ticket spinlock implementation for use by the non-VHE
-> + * KVM hypervisor code running at EL2.
-> + *
-> + * Copyright (C) 2020 Google LLC
-> + * Author: Will Deacon <will@kernel.org>
-> + *
-> + * Heavily based on the implementation removed by c11090474d70 which was:
-> + * Copyright (C) 2012 ARM Ltd.
-> + */
-> +
-> +#ifndef __ARM64_KVM_NVHE_SPINLOCK_H__
-> +#define __ARM64_KVM_NVHE_SPINLOCK_H__
-> +
-> +#include <asm/alternative.h>
-> +#include <asm/lse.h>
-> +
-> +typedef union hyp_spinlock {
-> +	u32	__val;
-> +	struct {
-> +#ifdef __AARCH64EB__
-> +		u16 next, owner;
-> +#else
-> +		u16 owner, next;
-> +	};
-> +#endif
+This is version 2 of a series that reworks the order in which things
+happen during channel stop and suspend (and start and resume), in
+order to address a hang that has been observed during suspend.
+The introductory message on the first version of the series gave
+some history which is omitted here.
 
-Looks like I put this #endif in the wrong place; probably needs to be a line
-higher.
+The end result of this series is that we only enable NAPI and the
+I/O completion interrupt on a channel when we start the channel for
+the first time.  And we only disable them when stopping the channel
+"for good."  In other words, NAPI and the completion interrupt
+remain enabled while a channel is stopped for suspend.
 
-Will
+One comment on version 1 of the series suggested *not* returning
+early on success in a function, instead having both success and
+error paths return from the same point at the end of the function
+block.  This has been addressed in this version.
+
+In addition, this version consolidates things a little bit, but the
+net result of the series is exactly the same as version 1 (with the
+exception of the return fix mentioned above).
+
+First, patch 6 in the first version was a small step to make patch 7
+easier to understand.  The two have been combined now.
+
+Second, previous version moved (and for suspend/resume, eliminated)
+I/O completion interrupt and NAPI disable/enable control in separate
+steps (patches).  Now both are moved around together in patch 5 and
+6, which eliminates the need for the final (NAPI-only) patch.
+
+I won't repeat the patch summaries provided in v1:
+  https://lore.kernel.org/netdev/20210129202019.2099259-1-elder@linaro.org/
+
+Many thanks to Willem de Bruijn for his thoughtful input.
+
+					-Alex
+
+Alex Elder (7):
+  net: ipa: don't thaw channel if error starting
+  net: ipa: introduce gsi_channel_stop_retry()
+  net: ipa: introduce __gsi_channel_start()
+  net: ipa: kill gsi_channel_freeze() and gsi_channel_thaw()
+  net: ipa: disable interrupt and NAPI after channel stop
+  net: ipa: don't disable interrupt on suspend
+  net: ipa: expand last transaction check
+
+ drivers/net/ipa/gsi.c | 138 ++++++++++++++++++++++++++----------------
+ 1 file changed, 85 insertions(+), 53 deletions(-)
+
+-- 
+2.27.0
+
