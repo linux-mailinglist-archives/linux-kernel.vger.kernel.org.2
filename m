@@ -2,81 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C8630AF3D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:29:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BD730ACB5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:35:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232637AbhBAS2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:28:44 -0500
-Received: from mga02.intel.com ([134.134.136.20]:7666 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232477AbhBASQu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:16:50 -0500
-IronPort-SDR: +RseacCnqil0Cfw2TPuQQjYyM5eHeRbNk7dXgOc0PzWeqQiwPzoVY000NnEzvGRn4HTVDUi7kY
- Z8LHhlwGNZdA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="167833506"
-X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="167833506"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 10:13:26 -0800
-IronPort-SDR: t1ZT0Rp5UgHO5+G+Rjs+nf9ceH3biy6QpJfLCdyVByIjGwykT8kUnywRnfCd8mRgTlYb3D1yWN
- G12Cit0zw+Rg==
-X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="412516924"
-Received: from dkhaldi-mobl1.amr.corp.intel.com (HELO [10.212.126.61]) ([10.212.126.61])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 10:13:25 -0800
-Subject: Re: [PATCH 1/6] soundwire: qcom: add support to missing transport
- params
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        vkoul@kernel.org
-Cc:     yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20210129173248.5941-1-srinivas.kandagatla@linaro.org>
- <20210129173248.5941-2-srinivas.kandagatla@linaro.org>
- <29eb1b75-d92f-9641-8181-1fe250b189ec@linux.intel.com>
- <3c801cef-0089-721d-d916-bf3eed060c6c@linaro.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <fbfd11e5-eab8-f070-15b1-98559dac9214@linux.intel.com>
-Date:   Mon, 1 Feb 2021 10:33:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S230077AbhBAQev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 11:34:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55582 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229607AbhBAQep (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 11:34:45 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A188DC061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 08:34:03 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id m22so23619624lfg.5
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 08:34:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=sTjaV842e3lQQ0QyQx1MRefCi3psMAfvcNsMB4upxRU=;
+        b=XHwHl+aCytpgITGPXjPcD3MEGGf9pUL11XwiSrKTWIQU5bpB0XH9/40g7y5iItD4Tx
+         MKbKoe4lfV0hQeBJoaN3HP3RMbnB63qMBOMWErgoyZ9y17WKFJESYBC+xRfiXd0XiBXN
+         /NI3gDJhrC60EIjfvYsvYwdULQZkuOlJNQZ7QM35Ri7VCEb10nuv/ZLMsLBNI6kcu+p+
+         f/inB7pfzQYITrcxHs69hM+8P99gRuFKjZBRkqOBR9wsW669FPuR2DjELW/MpDB2fSS5
+         vjVsmqpyNpR6XgiFa9WA0o0PCGD8dJvLTHuIicArktCF5kIniwjzm0M6gFGj4e+YR/ip
+         r5Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=sTjaV842e3lQQ0QyQx1MRefCi3psMAfvcNsMB4upxRU=;
+        b=mWlRe+YIgZX+fwhzgKPHIumJU1TZdtljiVKaNTCr+4Q4uMw2d8GIpc2/cUUHj5qiRP
+         d0FmsePdJqIxMahxb7z4QB5C3zgDXPN5pIBz2AsZ0dYSESNGHPLwIBdKEopw/53GZejJ
+         B0au0nhYZttchZtn0H/ln13Pt01u0Oau97a2/8JmH1rPymdMMON+TW99MbdE5qXEurxN
+         NvjiUUOHconj3L/aot7YSW1t13YnP3FuVMLcBhdGQ6jEkdq4DKFo0KXLJrFf3snQ5WcJ
+         xvPFj9VrpOdd6EC5HyB6LSb1kJ4esftYDty5LmwERuEsIPedUjXxhEDiMe4BTwvuxR+p
+         3hag==
+X-Gm-Message-State: AOAM530DGsDGttvLA9gfbtL7a99AkJvmEcExamd9YuA6XE2JADo4lg2x
+        7ObyyXq6+yQVBTaPFnJ76wh0PZlL0ijI2DFoJh5RXJcECFZcOHo0
+X-Google-Smtp-Source: ABdhPJwFbmiYLyfj98WwXePFDVTifmSXWyvUKQ5JYfG/iLSGNia7UWB8T6rEOai0cF+VDbxXY0nluvzPVc3iWI8vPuE=
+X-Received: by 2002:a05:6512:3748:: with SMTP id a8mr8694093lfs.31.1612197242078;
+ Mon, 01 Feb 2021 08:34:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <3c801cef-0089-721d-d916-bf3eed060c6c@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Mon, 1 Feb 2021 22:04:01 +0530
+Message-ID: <CABJPP5AxB8-kafFEpsMydg8eMx8bH5ooT5g7r0fKWV2T2Hjtng@mail.gmail.com>
+Subject: Patches from the future - can checkpatch help?
+To:     Joe Perches <joe@perches.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+on linux-next,
+$ git log --pretty=format:"%h%x09%ad" | awk '$6>2021 {print $1}'
+gives:
+4a2d78822fdf
+12ca45fea91c
+09f2724a786f
 
->>>   struct qcom_swrm_port_config {
->>>       u8 si;
->>>       u8 off1;
->>>       u8 off2;
->>>       u8 bp_mode;
->>> +    u8 hstart;
->>> +    u8 hstop;
->>> +    u8 word_length;
->>> +    u8 bgp_count;
->>
->> I couldn't figure out what 'bgp' was and had to search. Not sure how 
->> you came up with this abbreviation of "qcom,ports-block-group-count". 
->> Adding a comment wouldn't hurt.
-> 
-> I will rename this to blk_group_count which makes more sense!
+These are patches from the year 2085, 2037 and 2030 respectively.
 
-sounds good.
+Would a checkpatch rule be helpful for these or are they too
+isolated to waste runtime on?
 
-
->>
->>> +    u8 lane_control;
->>
->> Are you able to use lane_control != 0 ? I thought we were missing 
->> stuff at the bus.c level?
-> Am not sure what is missing in bus.c but we do use lane_control for RX 
-> slave on WCD938x codec. This uses datalane 1 for HPH and lane0 for 
-> Compander/Class-H and other ports.
-> 
-> And it works!
-
-Ah, good to know, thanks for the pointer.
+Thanks!
+Dwaipayan.
