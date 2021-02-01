@@ -2,125 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E174330A657
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:17:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B258830A65C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:20:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233494AbhBALQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 06:16:46 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45844 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233338AbhBALQo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 06:16:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4BF4260295;
-        Mon,  1 Feb 2021 11:16:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612178163;
-        bh=hKAt1deWUX5/xDiTH9sYCeS4LQkY0BTslNtqnwjcIjM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IWObnZZlXJUW4JhK2hwnWD3A/oSMtWejuWWNwC2LUGXgEArvEWxH8eZgdi/SlEfNQ
-         Jfmv+EVI6ZlTDPRGfL6hKwRoknp9oWLFaa39J6F23jvjCM92XVKiSCmQ5eZQrcc/Nv
-         8zAwg5+fQBe9sfcmhKidXx4MZjagJ1M+SHQmvf1A+3LFVpLD/ASZKznLCXllzZJGyz
-         x+6z3iRowfF9eh/6NR7qaSdLdRV4o/tPMRo8db7Pu6YkgZIWRkDUST54gebn8JPZkA
-         +ejW4kxmDInSYBPXEPHSfVLFkDhB8ST4L2K0yHFyG3nQJ0B+eBF3/m1KNDI489k2PL
-         sc5by+e4iVAJw==
-Date:   Mon, 1 Feb 2021 11:15:56 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        isaacm@codeaurora.org, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Kristian H Kristensen <hoegsberg@google.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 2/3] iommu/io-pgtable-arm: Add IOMMU_LLC page protection
- flag
-Message-ID: <20210201111556.GA7172@willie-the-truck>
-References: <cover.1610372717.git.saiprakash.ranjan@codeaurora.org>
- <3f589e7de3f9fa93e84c83420c5270c546a0c368.1610372717.git.saiprakash.ranjan@codeaurora.org>
- <20210129090516.GB3998@willie-the-truck>
- <5d23fce629323bcda71594010824aad0@codeaurora.org>
+        id S233528AbhBALTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 06:19:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44264 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233120AbhBALT0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 06:19:26 -0500
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C346C061573;
+        Mon,  1 Feb 2021 03:18:46 -0800 (PST)
+Received: by mail-qk1-x734.google.com with SMTP id a12so15756876qkh.10;
+        Mon, 01 Feb 2021 03:18:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gaGvv58JGYagmylyy3D1eubHzQ869JT6Zg0K0j8aoGI=;
+        b=fgD2p6Ajdg7WbtGKKD/YMRqi8XjTTxoA4P1r7JGjGMwDfrIszRdCEdHX3wWRjJtCh9
+         BG/p6Ck7rV1GdrC7dgLVFnj6suteB9PtEodMsQYIIRta+E2CP30XwnLHtQ3k6aSMQl//
+         IIl+4InxJrY6RX2ER0ZD0rrZDCILvHSB+ceS0B6hTpyzcNMkbh3pCoZDRm2KO+VnEiDM
+         MNf3yHgC13oYACpI1ZFgEXBDiSBbJYolxypr0EqEhrP5fvxvqhILIai3DR+Pi15QamPf
+         NDW/QM0lpnbBLwJpT2TZ5HLeIq/+mYcjs+PQ4ePSbcPLpfAxEcKDluPW48NwQJLPxXax
+         mRdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=gaGvv58JGYagmylyy3D1eubHzQ869JT6Zg0K0j8aoGI=;
+        b=NSnf/xEIF3gc14aSuFRwGtIvtVpxFMuOsydKrYkzOLlweHq0W13y5coQfwLPC7BOre
+         Mcrz2KivicU8tY0p3GIjZ49ob7KogElmfsMGuu47QBBv1D+h4NBah+KxB+RYX0C3ZtNr
+         sbkKybNL6LYuFeSq5FFRVbeL0e4TVmaIfq1k5wvSxonkRm2AujERFEpwviEmdYebFfBR
+         Fo+X9JkljX+z57jKCRnil7ho4+FCWL4PM+IXTzdy8dE7A+7cRyeyNPmpHeIWbMRKo0Ot
+         fNg1GMO/dbyIRFrfB+ZnbvVx1UGG2edDMBhLK8MpczIiRCo69mAmU2Cu6mgDxsXUYaHl
+         eA0w==
+X-Gm-Message-State: AOAM533R5EXPmyKptUqhOcPBAMQqa6DMKlB1qWs8zVxtYPmD+dzcdNNI
+        Sqe0ndmX8Z8EK1p4H0IkYKg1IP9BZF14Mg==
+X-Google-Smtp-Source: ABdhPJxWPHYEGCRXgsWif6sEHzgiAGg/9VSpUB/pAD52/vb97aRqb/y/sdjkVTWQB0NFvr0ORhED7g==
+X-Received: by 2002:a05:620a:ed8:: with SMTP id x24mr15399556qkm.381.1612178325578;
+        Mon, 01 Feb 2021 03:18:45 -0800 (PST)
+Received: from localhost.localdomain ([156.146.54.77])
+        by smtp.gmail.com with ESMTPSA id p23sm14187541qtu.4.2021.02.01.03.18.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 03:18:44 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     tsbogend@alpha.franken.de, peterz@infradead.org,
+        frederic@kernel.org, mingo@kernel.org, peterx@redhat.com,
+        afzal.mohd.ma@gmail.com, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] arch: mips: kernel: Made couple of spelling fixes and a sentence construction in smp.c
+Date:   Mon,  1 Feb 2021 16:47:57 +0530
+Message-Id: <20210201111757.8019-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5d23fce629323bcda71594010824aad0@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 03:12:59PM +0530, Sai Prakash Ranjan wrote:
-> On 2021-01-29 14:35, Will Deacon wrote:
-> > On Mon, Jan 11, 2021 at 07:45:04PM +0530, Sai Prakash Ranjan wrote:
-> > > Add a new page protection flag IOMMU_LLC which can be used
-> > > by non-coherent masters to set cacheable memory attributes
-> > > for an outer level of cache called as last-level cache or
-> > > system cache. Initial user of this page protection flag is
-> > > the adreno gpu and then can later be used by other clients
-> > > such as video where this can be used for per-buffer based
-> > > mapping.
-> > > 
-> > > Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> > > ---
-> > >  drivers/iommu/io-pgtable-arm.c | 3 +++
-> > >  include/linux/iommu.h          | 6 ++++++
-> > >  2 files changed, 9 insertions(+)
-> > > 
-> > > diff --git a/drivers/iommu/io-pgtable-arm.c
-> > > b/drivers/iommu/io-pgtable-arm.c
-> > > index 7439ee7fdcdb..ebe653ef601b 100644
-> > > --- a/drivers/iommu/io-pgtable-arm.c
-> > > +++ b/drivers/iommu/io-pgtable-arm.c
-> > > @@ -415,6 +415,9 @@ static arm_lpae_iopte
-> > > arm_lpae_prot_to_pte(struct arm_lpae_io_pgtable *data,
-> > >  		else if (prot & IOMMU_CACHE)
-> > >  			pte |= (ARM_LPAE_MAIR_ATTR_IDX_CACHE
-> > >  				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
-> > > +		else if (prot & IOMMU_LLC)
-> > > +			pte |= (ARM_LPAE_MAIR_ATTR_IDX_INC_OCACHE
-> > > +				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
-> > >  	}
-> > > 
-> > >  	if (prot & IOMMU_CACHE)
-> > > diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> > > index ffaa389ea128..1f82057df531 100644
-> > > --- a/include/linux/iommu.h
-> > > +++ b/include/linux/iommu.h
-> > > @@ -31,6 +31,12 @@
-> > >   * if the IOMMU page table format is equivalent.
-> > >   */
-> > >  #define IOMMU_PRIV	(1 << 5)
-> > > +/*
-> > > + * Non-coherent masters can use this page protection flag to set
-> > > cacheable
-> > > + * memory attributes for only a transparent outer level of cache,
-> > > also known as
-> > > + * the last-level or system cache.
-> > > + */
-> > > +#define IOMMU_LLC	(1 << 6)
-> > 
-> > On reflection, I'm a bit worried about exposing this because I think it
-> > will
-> > introduce a mismatched virtual alias with the CPU (we don't even have a
-> > MAIR
-> > set up for this memory type). Now, we also have that issue for the PTW,
-> > but
-> > since we always use cache maintenance (i.e. the streaming API) for
-> > publishing the page-tables to a non-coheren walker, it works out.
-> > However,
-> > if somebody expects IOMMU_LLC to be coherent with a DMA API coherent
-> > allocation, then they're potentially in for a nasty surprise due to the
-> > mismatched outer-cacheability attributes.
-> > 
-> 
-> Can't we add the syscached memory type similar to what is done on android?
+s/intercpu/inter CPU/
+s/debugees/debuge's/
 
-Maybe. How does the GPU driver map these things on the CPU side?
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ arch/mips/kernel/smp.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Will
+diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
+index 74b9102fd06e..e8a4ce7330ab 100644
+--- a/arch/mips/kernel/smp.c
++++ b/arch/mips/kernel/smp.c
+@@ -59,7 +59,7 @@ static DECLARE_COMPLETION(cpu_starting);
+ static DECLARE_COMPLETION(cpu_running);
+
+ /*
+- * A logcal cpu mask containing only one VPE per core to
++ * A logical cpu mask containing only one VPE per core to
+  * reduce the number of IPIs on large MT systems.
+  */
+ cpumask_t cpu_foreign_map[NR_CPUS] __read_mostly;
+@@ -510,10 +510,10 @@ static inline void smp_on_each_tlb(void (*func) (void *info), void *info)
+  * address spaces, a new context is obtained on the current cpu, and tlb
+  * context on other cpus are invalidated to force a new context allocation
+  * at switch_mm time, should the mm ever be used on other cpus. For
+- * multithreaded address spaces, intercpu interrupts have to be sent.
+- * Another case where intercpu interrupts are required is when the target
++ * multithreaded address spaces, inter CPU interrupts have to be sent.
++ * Another case where inter CPU interrupts are required is when the target
+  * mm might be active on another cpu (eg debuggers doing the flushes on
+- * behalf of debugees, kswapd stealing pages from another process etc).
++ * behalf of debuge's, kswapd stealing pages from another process etc).
+  * Kanoj 07/00.
+  */
+
+--
+2.26.2
+
