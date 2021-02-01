@@ -2,88 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B2F130A68E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:31:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B83530A690
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbhBALao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 06:30:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229495AbhBALad (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 06:30:33 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF613C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 03:29:49 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id y142so3388369pfb.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 03:29:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8KCQl/gPKG5hY2dWpY33pBHeXNEX1+5+2w4qCOb2UH0=;
-        b=fJEWm6mu8qztco9OUrjWv8uoyKW0BrK/UURiZmWqkU7MOC92a6QL8K4H1LVbAlLvO3
-         0Bk/m8RM0AmPHxe+m1ACrrMvdXtjBnNN5UEPfcKBI/EFjIlQDY2Xii/M9mMdeQNyv/P9
-         f7guQvFGKLU5NmD9ikLkP1+rR+Rdw9eHbcQnci/T+CvF8TXserxx1BvOFhEnSeMgm8kH
-         Ua5uUyi7xk45mXjfgbRMAs4PZyDT9IMz67zq9XZYaxMlV+HzS2zonpibuYKbXjeZR07W
-         ki2oC4wWxJQVtQRWeti1OLKyNZNNiG0u/MfHm/3xmjGYIcCKtl+D0Pqi9L0EQUcQ2Atm
-         9H9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8KCQl/gPKG5hY2dWpY33pBHeXNEX1+5+2w4qCOb2UH0=;
-        b=MS3hgbBWHahdDqADbpbGB+dawma/d/zlH6PPkbuq/yCaSwNjX/VszF1pKCgr0PblEJ
-         R2WK/+ZExZTf1PJkvg+Xeoeuhj3q63+tyH7ZgXqgx0a/Zbyzq/ZxpCYYDk2EqOhwfA9g
-         BOLLFQyV29bbam49WmAjv9fYuzaJm8eEcRhuPdcw4YRjUQJ9pcjprWYmq00yHdUvI+kP
-         e+fTgUAKM+kqSwDdyBd9a4M2+c50emdRa1prudoX+vN9x4qm5YR/aOrW/ON2M5nNyZ8/
-         rfMyeGMrFIK7+ryOuZsvcU8ZpI85p/9eBdQal2lBoXI1DlcGZORtSh8rGvKVPsSgLcYS
-         9CEg==
-X-Gm-Message-State: AOAM530y+aWLwRUaB/G7j6q7XYzjpo+5hRJ+tqc+JTslU7R9d5/FS1JU
-        7fBtZSrXHV0uxNC5enEOAW2ehMgWs1PO+A==
-X-Google-Smtp-Source: ABdhPJz9AKxQT+ESOe9AWQd2dNjg45gbmxQYjje2reRPxuyJsjWodpyGJ8DUH3yRYUH/qQ7dqgvV0w==
-X-Received: by 2002:a63:7f10:: with SMTP id a16mr16550840pgd.416.1612178989086;
-        Mon, 01 Feb 2021 03:29:49 -0800 (PST)
-Received: from localhost ([122.172.59.240])
-        by smtp.gmail.com with ESMTPSA id a20sm17567926pfo.104.2021.02.01.03.29.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Feb 2021 03:29:48 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mailmap: Fix name/email for Viresh Kumar
-Date:   Mon,  1 Feb 2021 16:59:42 +0530
-Message-Id: <d6b80b210d7fe0ddc1d4d0b22eff9708c72ef8b3.1612178938.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+        id S229831AbhBALbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 06:31:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229753AbhBALay (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 06:30:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A07A264D90;
+        Mon,  1 Feb 2021 11:30:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612179013;
+        bh=QQz4O2D5S55JH+J3HkSd4DfftLbA8u+Bn7/UfRzp8wE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=gvAfdnzgD+vtmhm21xrYJNu7rRgdRW2+a+IcbwrXcqUj9utrHCu0jFNIxkHMZrec7
+         d6I9Auy1V5vGVdKmS9Lbkei1tmbEiK60iRBQcbt5LjBpUJuLwogQeNzoO7KE63sgx3
+         CzE5IA7cKQwaIASkDtohipUnYGNlqE4QyscO28OChe/wW6FHYI+nXccZ766U7n9imK
+         dioFM3Hr1BDon91LDxE8WaiVhKloz2uBse/a4fMOsqz8fAwBBqh8i1wC2Lnk3nnB2X
+         +swMa0Ctfex/cj6f6J71CHH+6vGLkNe5j55RqPoKog9H5rUjl7o6L+aGVRpT39h9j5
+         IQkDO/jXnYjdQ==
+Date:   Mon, 1 Feb 2021 13:30:07 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     James Bottomley <James.Bottomley@hansenpartnership.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-integrity <linux-integrity@vger.kernel.org>,
+        James Morris James Morris <jmorris@namei.org>,
+        David Howells <dhowells@redhat.com>,
+        Peter Huewe <peterhuewe@gmx.de>
+Subject: Re: [GIT PULL] tpmdd updates for v5.12-rc1
+Message-ID: <YBfmP2qKmsFg4Tfj@kernel.org>
+References: <YBNcv8jLEDE8C/IW@kernel.org>
+ <CAHk-=wjk7zEOFEjGWZmGF8_dcitBQ_dPUMSkr-g7B7cYcXGvSQ@mail.gmail.com>
+ <YBWUHkbNt6OLoeUq@kernel.org>
+ <e9e8a184f482d7f826659427764a7612ab775c3e.camel@HansenPartnership.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e9e8a184f482d7f826659427764a7612ab775c3e.camel@HansenPartnership.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For some of the patches the email id was misspelled to linaro.com
-instead of linaro.org and for others Viresh Kumar was written as "viresh
-kumar" (all small). Fix both with help of mailmap entries.
+On Sat, Jan 30, 2021 at 09:33:47AM -0800, James Bottomley wrote:
+> On Sat, 2021-01-30 at 19:15 +0200, Jarkko Sakkinen wrote:
+> > On Thu, Jan 28, 2021 at 07:38:21PM -0800, Linus Torvalds wrote:
+> > > On Thu, Jan 28, 2021 at 4:54 PM Jarkko Sakkinen <jarkko@kernel.org>
+> > > wrote:
+> > > > This contains bug fixes for tpm_tis driver, which had a racy wait
+> > > > for hardware state change to be ready to send a command to the
+> > > > TPM chip. The bug has existed already since 2006, but has only
+> > > > made itself known in recent past.
+> > > 
+> > > Hmm. Is this for the next merge window? The subject line implies
+> > > that, as does the addition of the cr50 driver.
+> > > 
+> > > But the commentary about fixes implies that at least part of it
+> > > should be in 5.11?
+> > 
+> > This was meant for 5.12 but the timing was *way* too early. I'll take
+> > this one back. Just to unambiguity reasons I'll use tpmdd-next-v5.12-
+> > rc1-v2 tag for my final v5.12 PR, once I send it.
+> > 
+> > I considered a bit, and I really think that it would make a lot of
+> > sense to do a late 5.11 just containing the two commits from James,
+> > namely:
+> > 
+> > 1. tpm_tis: Fix check_locality for correct locality acquisition
+> > 2. tpm_tis: Clean up locality release 
+> > 
+> > James: Does this make sense to you? 
+> 
+> Yes, that's fine with me.  It will quiet the warning we've had several
+> bug reports about, so it's definitely a bug fix.
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- .mailmap | 2 ++
- 1 file changed, 2 insertions(+)
+Thanks, this is exactly what I wanted to sanity check. I figured that
+those should be enough, but unfortunately I do not have any hardware
+triggering the issue in my possession.
 
-diff --git a/.mailmap b/.mailmap
-index cc4e91d3075e..d6580d267a1b 100644
---- a/.mailmap
-+++ b/.mailmap
-@@ -334,6 +334,8 @@ Vinod Koul <vkoul@kernel.org> <vkoul@infradead.org>
- Viresh Kumar <vireshk@kernel.org> <viresh.kumar2@arm.com>
- Viresh Kumar <vireshk@kernel.org> <viresh.kumar@st.com>
- Viresh Kumar <vireshk@kernel.org> <viresh.linux@gmail.com>
-+Viresh Kumar <viresh.kumar@linaro.org> <viresh.kumar@linaro.org>
-+Viresh Kumar <viresh.kumar@linaro.org> <viresh.kumar@linaro.com>
- Vivien Didelot <vivien.didelot@gmail.com> <vivien.didelot@savoirfairelinux.com>
- Vlad Dogaru <ddvlad@gmail.com> <vlad.dogaru@intel.com>
- Vladimir Davydov <vdavydov.dev@gmail.com> <vdavydov@parallels.com>
--- 
-2.25.0.rc1.19.g042ed3e048af
+> James
 
+/Jarkko
