@@ -2,99 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9438930B150
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 21:06:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1138D30B151
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 21:06:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233042AbhBAUGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 15:06:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44672 "EHLO
+        id S232557AbhBAUGV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 15:06:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232789AbhBAUF3 (ORCPT
+        with ESMTP id S232970AbhBAUFR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 15:05:29 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A60C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 12:04:49 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id k4so18120354ybp.6
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 12:04:49 -0800 (PST)
+        Mon, 1 Feb 2021 15:05:17 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 485CEC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 12:04:37 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id lw17so470319pjb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 12:04:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=L9sw9hSS8Z/uEqXF5ukYAI1b9wH2rffWPop3oA1u9N8=;
-        b=OaqXg573LwGDOY7qNJNrh0QcBeqsUIIqangIggwrbBQxOBAtBk3cpdcdqa2WsrVSS2
-         laGL44tiLg1XML8BpM1iubpZljC7ujabB9YqWWAdNvvTZgQzuTE9+OO8/JkhCszWCvNv
-         LrxCQeksu44w3KXdZXVK1HUeoBD/nP1TJub5dyxoB6NOkN4sBiBXm26tmGqhhOKPK7C8
-         kUo91KC2IK7GUrmmCz1/CGH7H1GK/IzjMDzoTMhzf0Ac4nl7COJGy6l0plw/GiPX/H5B
-         mfD9sO3BVpSlv61DGdi+uXE1iG5Ct92fELaimdzlNifeFGUB2wl92f1tL4+b4IvWDjk0
-         zyAQ==
+        bh=Er+3gSvGmPD8gB+0H5nskQtEmoQnaFUKfPK4BzJ3IdY=;
+        b=DQXWHKUAOl+6nuNBIcPbQqaNwY8TdE+kp78aiNtN4D6zLY853C2Q8NNPnJSR2J/laE
+         D27MyCmz5qygk9b2ZHVMbykuaeF5g2Mo7SXwxQOkt1q9XpgVfK4wpOFTfrqfE01ASkDw
+         3sACp4olX4VzOiATjE+y5nxv1BKJRrlTtwPDIRR9vgap6flWizHnC8gvAxKKxKWzrwhE
+         7xNaRcK1Y3uF2wjE/iA/OD6RTxSanunLfEvuPuEqtf422MaAsa34aVNOrLrGbzxG5p/3
+         D8LwAIMJKynJTVglpYBO3xYXT3EOluDt5/BssadUrOtNBvQfmSls3vGBIETtKpuAqMro
+         xCdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=L9sw9hSS8Z/uEqXF5ukYAI1b9wH2rffWPop3oA1u9N8=;
-        b=fxUShGy11QylTWVMuZKiQ4OgLgfiZvZP9i2uOXXhS3ci/vNN9xgR431ePprSRRHy3a
-         Pl0hBM+4GUshjJ7Jh4GIQOyj2ABOhggiJ5I+RunH++liI5F1yUea5kXwT7PHBzjQKu8w
-         7o33dDdCKD3wxJq0+T6MVeB2SkFyAqH9wQP81WyUoZrF4zeLQU9z8XVzTCNyuQii1JOR
-         PZVC7W2pJOjdA9uYwIw33+zwRv9/LlG9KsvpBAOhY5Unac01byirNIdvsuZemPiU7WU+
-         Czubp1kq46ck2DeWq/pt+/uIYMTwin1J/1laJ9DfHCrL3SwMKaZGThcBUHD0DqtqUY8j
-         HJ8g==
-X-Gm-Message-State: AOAM5304cTk+z9jTFwbHXEkmc3jGuHketI3ssiGYMGZ2XxnFd0RPa6A7
-        plxJHyyE6s9jAM3OBDiPiXtnrQkUfrqm0L/IYhBhwA==
-X-Google-Smtp-Source: ABdhPJw4RFUaM2c3Knj9a5xMEVR7SKifxohoJtjamohf1LlW3VtIH11Ase4ZEm/ickH5qdpZf1yRO+hhRtckErqk53A=
-X-Received: by 2002:a25:c683:: with SMTP id k125mr29048716ybf.32.1612209888649;
- Mon, 01 Feb 2021 12:04:48 -0800 (PST)
+        bh=Er+3gSvGmPD8gB+0H5nskQtEmoQnaFUKfPK4BzJ3IdY=;
+        b=M8r1AVDOHm94ULgQaRUsS/yeSbKppsUvgIZdUq8dissHOYphqtmaHYHFbx1lxyb3xj
+         fphnrdkprjtBGsOFmbxspJc+nMwLMNCKqHJGIGCpogKtaB3pcoKmuPSmBxhRxw/HOfpz
+         D5n9Zpe3g2qhBohnXnGdiz4sfIsHHopj3Ai/b/ViiNE0qz9Rc/qPjrQ0aZbX2186AIoF
+         3zYqQVkJUET4h7QfxRS3iIQPxi8lRUQkoey3BKv+kljxLywqvAJrSx2043RseAu4UVlh
+         xos1IhN+vN6X9JtQZT/vCtbniDJPPAeaFY/PUMREfR4GXxAK91FUHLdHKApd2N9BYc8j
+         ZVQw==
+X-Gm-Message-State: AOAM5307BIbCJM1dGPsX/m49ITYQjN5tqYI4YsgAXcT2U6+SEPt85zvm
+        6ALrJHLW3WlCSfifvpAWxrCxPJ/Q81NtvmxbXEtQ0Q==
+X-Google-Smtp-Source: ABdhPJxA+IMt4iXXITzeYTc61BsQzJCR/cFKLgyNeCCYaJQTuWxQK1fCY3WUu0m8LAjZg5y9ELwSH6lsK7w6RC4vljM=
+X-Received: by 2002:a17:90b:30d4:: with SMTP id hi20mr521695pjb.41.1612209876585;
+ Mon, 01 Feb 2021 12:04:36 -0800 (PST)
 MIME-Version: 1.0
-References: <20210121225712.1118239-1-saravanak@google.com>
- <20210131163823.c4zb47pl4tukcl7c@viti.kaiser.cx> <CAGETcx8A_+Y0sCLPdyeeT+rHOsAPsmg4LVn_ahF0NaD6hfRiZw@mail.gmail.com>
- <20210201105204.GA1467@martin-debian-1.paytec.ch>
-In-Reply-To: <20210201105204.GA1467@martin-debian-1.paytec.ch>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Mon, 1 Feb 2021 12:04:11 -0800
-Message-ID: <CAGETcx91CdvqYpSr6Eg45jrToEFLPBSgzMxTjHh=1rBqi8V3pg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] of: property: Add fw_devlink support for more props
-To:     Martin Kaiser <martin@kaiser.cx>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Android Kernel Team <kernel-team@android.com>
+References: <20210130165225.54047-1-vincenzo.frascino@arm.com> <20210130165225.54047-3-vincenzo.frascino@arm.com>
+In-Reply-To: <20210130165225.54047-3-vincenzo.frascino@arm.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Mon, 1 Feb 2021 21:04:25 +0100
+Message-ID: <CAAeHK+y=t4c5FfVx3r3Rvwg3GTYN_q1xme=mwk51hgQfJX9MZw@mail.gmail.com>
+Subject: Re: [PATCH v11 2/5] kasan: Add KASAN mode kernel parameter
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 2:52 AM Martin Kaiser <martin@kaiser.cx> wrote:
+On Sat, Jan 30, 2021 at 5:52 PM Vincenzo Frascino
+<vincenzo.frascino@arm.com> wrote:
 >
-> Hi Saravana,
+> @@ -45,6 +52,9 @@ static enum kasan_arg_fault kasan_arg_fault __ro_after_init;
+>  DEFINE_STATIC_KEY_FALSE(kasan_flag_enabled);
+>  EXPORT_SYMBOL(kasan_flag_enabled);
 >
-> Thus wrote Saravana Kannan (saravanak@google.com):
->
-> > This series [1] has a high chance of fixing it for you if
-> > CONFIG_MODULES is disabled in your set up. Can you give it a shot?
->
-> sure. This fixes things for me if CONFIG_MODULES is disabled. Booting is
-> still stuck if modules are enabled.
->
-> > The real problem is that arch/arm/mach-imx/avic.c doesn't set the
-> > OF_POPULATED flag for the "fsl,avic" node. fw_devlink uses this
-> > information to know that this device node will never have a struct
-> > device created for it. The proper way to do this for root IRQCHIP
-> > nodes is to use IRQCHIP_DECLARE(). I Cc'ed you on a clean up patch for
-> > IMX [2], can you please give [2] a shot *without* [1] and with
-> > CONFIG_MODULES enabled? Things should boot properly with this
-> > combination too.
->
-> This works as well.
+> +/* Whether the asynchronous mode is enabled. */
+> +bool kasan_flag_async __ro_after_init;
 
-Thanks for testing both. Mind giving Tested-by for [1] too?
+Just noticed that we need EXPORT_SYMBOL(kasan_flag_async) here.
 
--Saravana
+There are also a few arm64 mte functions that need to be exported, but
+I've addressed that myself here:
+
+https://lore.kernel.org/linux-arm-kernel/cover.1612208222.git.andreyknvl@google.com/T/#m4746d3c410c3f6baddb726fc9ea9dd1496a4a788
