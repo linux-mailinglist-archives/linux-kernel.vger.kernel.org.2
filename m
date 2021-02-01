@@ -2,205 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EE5C30AA89
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:10:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB7D30AB44
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:29:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231449AbhBAPIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 10:08:45 -0500
-Received: from mga06.intel.com ([134.134.136.31]:33905 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231423AbhBAPI0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 10:08:26 -0500
-IronPort-SDR: phvDUMW2mBS2AUWremSqHGyT9chhi8hObLT8FljAjrOnkwPMZp8AO1KQRsDgyov87p25BDSYws
- VZZVNLQGCvXw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="242214691"
-X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
-   d="scan'208";a="242214691"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 07:02:33 -0800
-IronPort-SDR: BGsvKW673ilgXMvy1mKx8OOo8EIcUDcfBRzsnP/z64p7GS1ndIFY4xaxABY4YA28oP4dYVFToD
- H0p4DaAfmSkA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
-   d="scan'208";a="369891585"
-Received: from marshy.an.intel.com ([10.122.105.143])
-  by fmsmga008.fm.intel.com with ESMTP; 01 Feb 2021 07:02:32 -0800
-From:   richard.gong@linux.intel.com
-To:     mdf@kernel.org, trix@redhat.com, gregkh@linuxfoundation.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Richard Gong <richard.gong@intel.com>
-Subject: [PATCHv4 6/6] fpga: stratix10-soc: extend driver for bitstream authentication
-Date:   Mon,  1 Feb 2021 09:21:59 -0600
-Message-Id: <1612192919-4069-7-git-send-email-richard.gong@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1612192919-4069-1-git-send-email-richard.gong@linux.intel.com>
-References: <1612192919-4069-1-git-send-email-richard.gong@linux.intel.com>
+        id S231287AbhBAP2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 10:28:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57948 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231790AbhBAP1V (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 10:27:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612193154;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BEb2rLftFspGJmXbmXNZKP/pR0mJXCcoYLxWcopTgkE=;
+        b=g/jkFB61lzcFqYgAuOCzMX1XfK01KlBKIvbpK4Euh14BCXbDGWy7DG57EuBiI5Azq4lCg2
+        y0hmGyHrsgU1lf3pRImFr0j9ESYHWI1phB3/3WKOW09PRSGQymxTebuu6HWOMWOKtAtuY1
+        UDDKPd/gOfDExWj+KdmIpy01wkJGx40=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-537-4FQFVO3JPaSRNa_zDuxQ_w-1; Mon, 01 Feb 2021 10:25:50 -0500
+X-MC-Unique: 4FQFVO3JPaSRNa_zDuxQ_w-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C0CD6100C661;
+        Mon,  1 Feb 2021 15:25:48 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4D2425D749;
+        Mon,  1 Feb 2021 15:25:44 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAOi1vP_7dfuKgQxFpyeUDMJBGm=cnQSvYHDnU=6YPTzbB9+d6w@mail.gmail.com>
+References: <CAOi1vP_7dfuKgQxFpyeUDMJBGm=cnQSvYHDnU=6YPTzbB9+d6w@mail.gmail.com> <20210126134103.240031-1-jlayton@kernel.org> <CAOi1vP-3Ma4LdCcu6sPpwVbmrto5HnOAsJ6r9_973hYY3ODBUQ@mail.gmail.com> <2301cde67ae7aa54d860fc3962aeb8ed85744c75.camel@kernel.org>
+To:     Ilya Dryomov <idryomov@gmail.com>
+Cc:     dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
+        Ceph Development <ceph-devel@vger.kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-cachefs@redhat.com
+Subject: Re: [PATCH 0/6] ceph: convert to new netfs read helpers
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <4171609.1612193143.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Mon, 01 Feb 2021 15:25:43 +0000
+Message-ID: <4171610.1612193143@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Gong <richard.gong@intel.com>
+Ilya Dryomov <idryomov@gmail.com> wrote:
 
-Extend FPGA manager driver to support FPGA bitstream authentication on
-Intel SocFPGA platforms.
+> > David has a fscache-netfs-lib branch that has all of the infrastructur=
+e
+> > changes. See:
+> >
+> >     https://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.=
+git/log/?h=3Dfscache-netfs-lib
+> =
 
-Signed-off-by: Richard Gong <richard.gong@intel.com>
----
-v4: s/FPGA_MGR_BITSTREM_AUTHENTICATION/FPGA_MGR_BITSTREAM_AUTHENTICATE
-v3: add handle to retriev the firmware version to keep driver
-    back compatible
-v2: use flag defined in stratix10-svc driver
----
- drivers/fpga/stratix10-soc.c | 62 +++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 56 insertions(+), 6 deletions(-)
+> I saw that, but AFAICS it hasn't been declared public (as in suitable
+> for other people to base their work on, with the promise that history
+> won't get rewritten.
 
-diff --git a/drivers/fpga/stratix10-soc.c b/drivers/fpga/stratix10-soc.c
-index 657a70c..9ab7afd 100644
---- a/drivers/fpga/stratix10-soc.c
-+++ b/drivers/fpga/stratix10-soc.c
-@@ -24,6 +24,10 @@
- #define S10_BUFFER_TIMEOUT (msecs_to_jiffies(SVC_RECONFIG_BUFFER_TIMEOUT_MS))
- #define S10_RECONFIG_TIMEOUT (msecs_to_jiffies(SVC_RECONFIG_REQUEST_TIMEOUT_MS))
- 
-+#define INVALID_FIRMWARE_VERSION	0xFFFF
-+typedef void (*s10_callback)(struct stratix10_svc_client *client,
-+			     struct stratix10_svc_cb_data *data);
-+
- /*
-  * struct s10_svc_buf
-  * buf:  virtual address of buf provided by service layer
-@@ -40,11 +44,13 @@ struct s10_priv {
- 	struct completion status_return_completion;
- 	struct s10_svc_buf svc_bufs[NUM_SVC_BUFS];
- 	unsigned long status;
-+	unsigned int fw_version;
- };
- 
- static int s10_svc_send_msg(struct s10_priv *priv,
- 			    enum stratix10_svc_command_code command,
--			    void *payload, u32 payload_length)
-+			    void *payload, u32 payload_length,
-+			    s10_callback callback)
- {
- 	struct stratix10_svc_chan *chan = priv->chan;
- 	struct device *dev = priv->client.dev;
-@@ -57,6 +63,7 @@ static int s10_svc_send_msg(struct s10_priv *priv,
- 	msg.command = command;
- 	msg.payload = payload;
- 	msg.payload_length = payload_length;
-+	priv->client.receive_cb = callback;
- 
- 	ret = stratix10_svc_send(chan, &msg);
- 	dev_dbg(dev, "stratix10_svc_send returned status %d\n", ret);
-@@ -134,6 +141,29 @@ static void s10_unlock_bufs(struct s10_priv *priv, void *kaddr)
- }
- 
- /*
-+ * s10_fw_version_callback - callback for the version of running firmware
-+ * @client: service layer client struct
-+ * @data: message from service layer
-+ */
-+static void s10_fw_version_callback(struct stratix10_svc_client *client,
-+				    struct stratix10_svc_cb_data *data)
-+{
-+	struct s10_priv *priv = client->priv;
-+	unsigned int *version = (unsigned int *)data->kaddr1;
-+
-+	if (data->status == BIT(SVC_STATUS_OK))
-+		priv->fw_version = *version;
-+	else if (data->status == BIT(SVC_STATUS_NO_SUPPORT))
-+		dev_warn(client->dev,
-+			 "FW doesn't support bitstream authentication\n");
-+	else
-+		dev_err(client->dev, "Failed to get FW version %lu\n",
-+			BIT(data->status));
-+
-+	complete(&priv->status_return_completion);
-+}
-+
-+/*
-  * s10_receive_callback - callback for service layer to use to provide client
-  * (this driver) messages received through the mailbox.
-  * client: service layer client struct
-@@ -186,13 +216,22 @@ static int s10_ops_write_init(struct fpga_manager *mgr,
- 	if (info->flags & FPGA_MGR_PARTIAL_RECONFIG) {
- 		dev_dbg(dev, "Requesting partial reconfiguration.\n");
- 		ctype.flags |= BIT(COMMAND_RECONFIG_FLAG_PARTIAL);
-+	} else if (info->flags & FPGA_MGR_BITSTREAM_AUTHENTICATE) {
-+		if (priv->fw_version == INVALID_FIRMWARE_VERSION) {
-+			dev_err(dev, "FW doesn't support\n");
-+			return -EINVAL;
-+		}
-+
-+		dev_dbg(dev, "Requesting bitstream authentication.\n");
-+		ctype.flags |= BIT(COMMAND_AUTHENTICATE_BITSTREAM);
- 	} else {
- 		dev_dbg(dev, "Requesting full reconfiguration.\n");
- 	}
- 
- 	reinit_completion(&priv->status_return_completion);
- 	ret = s10_svc_send_msg(priv, COMMAND_RECONFIG,
--			       &ctype, sizeof(ctype));
-+			       &ctype, sizeof(ctype),
-+			       s10_receive_callback);
- 	if (ret < 0)
- 		goto init_done;
- 
-@@ -259,7 +298,7 @@ static int s10_send_buf(struct fpga_manager *mgr, const char *buf, size_t count)
- 	svc_buf = priv->svc_bufs[i].buf;
- 	memcpy(svc_buf, buf, xfer_sz);
- 	ret = s10_svc_send_msg(priv, COMMAND_RECONFIG_DATA_SUBMIT,
--			       svc_buf, xfer_sz);
-+			       svc_buf, xfer_sz, s10_receive_callback);
- 	if (ret < 0) {
- 		dev_err(dev,
- 			"Error while sending data to service layer (%d)", ret);
-@@ -303,7 +342,7 @@ static int s10_ops_write(struct fpga_manager *mgr, const char *buf,
- 
- 			ret = s10_svc_send_msg(
- 				priv, COMMAND_RECONFIG_DATA_CLAIM,
--				NULL, 0);
-+				NULL, 0, s10_receive_callback);
- 			if (ret < 0)
- 				break;
- 		}
-@@ -357,7 +396,8 @@ static int s10_ops_write_complete(struct fpga_manager *mgr,
- 	do {
- 		reinit_completion(&priv->status_return_completion);
- 
--		ret = s10_svc_send_msg(priv, COMMAND_RECONFIG_STATUS, NULL, 0);
-+		ret = s10_svc_send_msg(priv, COMMAND_RECONFIG_STATUS,
-+				       NULL, 0, s10_receive_callback);
- 		if (ret < 0)
- 			break;
- 
-@@ -411,8 +451,9 @@ static int s10_probe(struct platform_device *pdev)
- 	if (!priv)
- 		return -ENOMEM;
- 
-+	priv->fw_version = INVALID_FIRMWARE_VERSION;
- 	priv->client.dev = dev;
--	priv->client.receive_cb = s10_receive_callback;
-+	priv->client.receive_cb = NULL;
- 	priv->client.priv = priv;
- 
- 	priv->chan = stratix10_svc_request_channel_byname(&priv->client,
-@@ -440,6 +481,15 @@ static int s10_probe(struct platform_device *pdev)
- 		goto probe_err;
- 	}
- 
-+	/* get the running firmware version */
-+	ret = s10_svc_send_msg(priv, COMMAND_FIRMWARE_VERSION,
-+			       NULL, 0, s10_fw_version_callback);
-+	if (ret) {
-+		dev_err(dev, "couldn't get firmware version\n");
-+		fpga_mgr_free(mgr);
-+		goto probe_err;
-+	}
-+
- 	platform_set_drvdata(pdev, mgr);
- 	return ret;
- 
--- 
-2.7.4
+My intention to avoid modifying it further, except for extra fix patches
+stacked on the end if necessary, as I want to try to avoid jinxing it from
+getting pulled in the next merge window.
+
+> It is branched off of what looks like a random snapshot of Linus' tree
+> instead of a release point, etc.
+
+Yeah, sorry about that.  I took what was current linus/master at the time =
+I
+cut the branch with the intention of trying to get it into linux-next befo=
+re
+-rc5 was tagged (ie. >3 weeks before the merge window), but including the
+X.509 crash fix.
+
+David
 
