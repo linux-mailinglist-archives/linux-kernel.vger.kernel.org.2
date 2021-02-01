@@ -2,59 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF96830A0AD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 04:48:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D73630A0AE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 04:48:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231488AbhBADrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 22:47:02 -0500
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:59683 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231153AbhBADq7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 22:46:59 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=chenshiyan@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UNSbXUz_1612151143;
-Received: from localhost(mailfrom:chenshiyan@linux.alibaba.com fp:SMTPD_---0UNSbXUz_1612151143)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 01 Feb 2021 11:46:01 +0800
-From:   chenshiyan <chenshiyan@linux.alibaba.com>
-To:     fweisbec@gmail.com, tglx@linutronix.de, mingo@kernel.org,
-        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RESEND] nohz: Restart tick before do softirq
-Date:   Mon,  1 Feb 2021 11:45:43 +0800
-Message-Id: <1612151143-72242-1-git-send-email-chenshiyan@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S231401AbhBADsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 22:48:12 -0500
+Received: from foss.arm.com ([217.140.110.172]:46872 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231153AbhBADsJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 22:48:09 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8A39C1042;
+        Sun, 31 Jan 2021 19:47:23 -0800 (PST)
+Received: from [10.163.93.126] (unknown [10.163.93.126])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 382673F718;
+        Sun, 31 Jan 2021 19:47:18 -0800 (PST)
+Subject: Re: [PATCH 2/2] arm64/mm: Reorganize pfn_valid()
+To:     David Hildenbrand <david@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Mike Rapoport <rppt@linux.ibm.com>
+References: <1611905986-20155-1-git-send-email-anshuman.khandual@arm.com>
+ <1611905986-20155-3-git-send-email-anshuman.khandual@arm.com>
+ <9050792c-feba-1b72-681e-ebc28fc1fcc5@redhat.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <681dd64b-e10a-1ec8-abad-d3eee0ddfa45@arm.com>
+Date:   Mon, 1 Feb 2021 09:17:47 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <9050792c-feba-1b72-681e-ebc28fc1fcc5@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When the cpu is continuously idle, tick_irq_exit() will count next tick
-expiry with maybe several periodic ticks, but if it enters softirq
-before next tick, invoke_softirq() is called before tick_irq_exit(),
-there will be no ticks during softirq. So with sched_clock_irqtime
-closing, sirq is very low in nohz idle even if the softirq costs much
-time beause of the sampling ticks missing(sirq will be much higher and
-seem exact if the cpu is busy).
 
-Signed-off-by: chenshiyan <chenshiyan@linux.alibaba.com>
----
- kernel/softirq.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/softirq.c b/kernel/softirq.c
-index 9d71046..8f3f71b9 100644
---- a/kernel/softirq.c
-+++ b/kernel/softirq.c
-@@ -210,6 +210,7 @@ static inline void invoke_softirq(void)
- 		return;
- 
- 	if (!force_irqthreads) {
-+		tick_nohz_idle_restart_tick();
- #ifdef CONFIG_HAVE_IRQ_EXIT_ON_IRQ_STACK
- 		/*
- 		 * We can safely execute softirq on the current stack if
--- 
-1.8.3.1
+On 1/29/21 3:37 PM, David Hildenbrand wrote:
+> On 29.01.21 08:39, Anshuman Khandual wrote:
+>> There are multiple instances of pfn_to_section_nr() and __pfn_to_section()
+>> when CONFIG_SPARSEMEM is enabled. This can be just optimized if the memory
+>> section is fetched earlier. Hence bifurcate pfn_valid() into two different
+>> definitions depending on whether CONFIG_SPARSEMEM is enabled. Also replace
+>> the open coded pfn <--> addr conversion with __[pfn|phys]_to_[phys|pfn]().
+>> This does not cause any functional change.
+>>
+>> Cc: Catalin Marinas <catalin.marinas@arm.com>
+>> Cc: Will Deacon <will@kernel.org>
+>> Cc: Ard Biesheuvel <ardb@kernel.org>
+>> Cc: linux-arm-kernel@lists.infradead.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+>>   arch/arm64/mm/init.c | 38 +++++++++++++++++++++++++++++++-------
+>>   1 file changed, 31 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+>> index 1141075e4d53..09adca90c57a 100644
+>> --- a/arch/arm64/mm/init.c
+>> +++ b/arch/arm64/mm/init.c
+>> @@ -217,18 +217,25 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max)
+>>       free_area_init(max_zone_pfns);
+>>   }
+>>   +#ifdef CONFIG_SPARSEMEM
+>>   int pfn_valid(unsigned long pfn)
+>>   {
+>> -    phys_addr_t addr = pfn << PAGE_SHIFT;
+>> +    struct mem_section *ms = __pfn_to_section(pfn);
+>> +    phys_addr_t addr = __pfn_to_phys(pfn);
+> 
+> I'd just use PFN_PHYS() here, which is more frequently used in the kernel.
 
+Sure, will replace.
+
+> 
+>>   -    if ((addr >> PAGE_SHIFT) != pfn)
+>> +    /*
+>> +     * Ensure the upper PAGE_SHIFT bits are clear in the
+>> +     * pfn. Else it might lead to false positives when
+>> +     * some of the upper bits are set, but the lower bits
+>> +     * match a valid pfn.
+>> +     */
+>> +    if (__phys_to_pfn(addr) != pfn)
+> 
+> and here PHYS_PFN(). Comment is helpful. :)
+
+Sure, will replace.
+
+> 
+>>           return 0;
+>>   -#ifdef CONFIG_SPARSEMEM
+>>       if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+>>           return 0;
+>>   -    if (!valid_section(__pfn_to_section(pfn)))
+>> +    if (!valid_section(ms))
+>>           return 0;
+>>         /*
+>> @@ -240,11 +247,28 @@ int pfn_valid(unsigned long pfn)
+>>        * memory sections covering all of hotplug memory including
+>>        * both normal and ZONE_DEVICE based.
+>>        */
+>> -    if (!early_section(__pfn_to_section(pfn)))
+>> -        return pfn_section_valid(__pfn_to_section(pfn), pfn);
+>> -#endif
+>> +    if (!early_section(ms))
+>> +        return pfn_section_valid(ms, pfn);
+>> +
+>>       return memblock_is_map_memory(addr);
+>>   }
+>> +#else
+>> +int pfn_valid(unsigned long pfn)
+>> +{
+>> +    phys_addr_t addr = __pfn_to_phys(pfn);
+>> +
+>> +    /*
+>> +     * Ensure the upper PAGE_SHIFT bits are clear in the
+>> +     * pfn. Else it might lead to false positives when
+>> +     * some of the upper bits are set, but the lower bits
+>> +     * match a valid pfn.
+>> +     */
+>> +    if (__phys_to_pfn(addr) != pfn)
+>> +        return 0;
+>> +
+>> +    return memblock_is_map_memory(addr);
+>> +}
+> 
+> 
+> I think you can avoid duplicating the code by doing something like:
+
+Right and also this looks more compact as well. Initially though about
+it but then was apprehensive about the style in #ifdef { } #endif code
+block inside the function. After this change, the resulting patch also
+clears checkpatch.pl test. Will do the change.
+
+> 
+> 
+> phys_addr_t addr = PFN_PHYS(pfn);
+> 
+> if (PHYS_PFN(addr) != pfn)
+>     return 0;
+> 
+> #ifdef CONFIG_SPARSEMEM
+> {
+>     struct mem_section *ms = __pfn_to_section(pfn);
+> 
+>     if (!valid_section(ms))
+>         return 0;
+>     if (!early_section(ms))
+>         return pfn_section_valid(ms, pfn);
+> }
+> #endif
+> return memblock_is_map_memory(addr);
+> 
