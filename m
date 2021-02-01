@@ -2,299 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B41CA30B233
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:40:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DDF230B236
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:42:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbhBAVji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 16:39:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231601AbhBAVjZ (ORCPT
+        id S229692AbhBAVkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 16:40:52 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:52294 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229546AbhBAVkq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 16:39:25 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C93FC06174A;
-        Mon,  1 Feb 2021 13:38:45 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id k142so6066372oib.7;
-        Mon, 01 Feb 2021 13:38:45 -0800 (PST)
+        Mon, 1 Feb 2021 16:40:46 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 111LSrMB058325;
+        Mon, 1 Feb 2021 21:38:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=BYJH3yErQzu6RBUEzYxulVa8HYM3RsZMqyeSQ/fpJL4=;
+ b=s/afVB/NwCFuAY2oeLiRGrxD86oarXPsUZympB7MSVl4TLVPcQbVdvyoHXpaoWDOTa3j
+ 7lpQ+igUohyhEDJ+1ymgAO/YLooHQNEwQkGe4UYfoVNtUuwA8VVstuLY9yGabzwgvc81
+ FGhcSWaf1mzbnofO/o+7nZuRm/lwNXEaNBBKYG3mjrweobYADXD8OtqFsYExgJwE+MTs
+ HNh5EHo9xMfjjVtIrbEFCMBdflaGLr9v+vvDLAWjxkMf6CHo/ykVGlSa1T3UDywoBpqA
+ GeLGTmvULlAr/V53LjN/amvzbSy9dZElf8HyrvTP9ON91xO4y5p3yiu+f64k7KG61jnI vg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 36cydkqq4a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 01 Feb 2021 21:38:57 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 111LUUfF039923;
+        Mon, 1 Feb 2021 21:38:56 GMT
+Received: from nam04-bn3-obe.outbound.protection.outlook.com (mail-bn3nam04lp2053.outbound.protection.outlook.com [104.47.46.53])
+        by userp3030.oracle.com with ESMTP id 36dhcvm1h0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 01 Feb 2021 21:38:56 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SjudZAHWy/YNVoJy5zGqdR54pWag5N/2BPvP//dGZFEMl3hQP6BD33BfsRqW4JfjM15KP+ZXnIjhck6AzDopeO8Neeujklxz5VEUN8rWDrZJJnjpqs/FTopJzq4g8Qr/rrb81c/ErJYz//2gkBladXKsl7WujNd44v80BpVd5ajCjokqDW5qYbl4iv4cGnhRhfikgB9KpaNK2ltJafpDTyxeCp5GeVhX89PzMl+sZHQ4VgAvy8D9rnwcyzJF+Y1ptP/GgYUJBpNk0Mri99hxTHDF/wYST39DLyDaLoVtcXY4hOGY7hGd4zSqJ9HfXdGy0HLtu3DM6Z8VI6mEw1W/ng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BYJH3yErQzu6RBUEzYxulVa8HYM3RsZMqyeSQ/fpJL4=;
+ b=T77gWqob1UOPHZxwlcL/07zynb6if0hJpWm4E7ZN5+cXI76ayCzEoGiFHdJXHp6/sukjzeI94RVuoTWDsQWf2sYJctlOTJfHh3BlU7BvwX569pfro8cuXURrHJzF9UAqcqWxDKnHK0/BRzzitYeS/T0woirZ1KFv7KgR37CN0woTeUfffID9PRN9zzsCAc0LCZAFh7aAoVow+eDZawjuHaaBVbZdJ2TgUnHz4Pb9AFA4uL0gmRhOZaf9TfniiKd0eGjFICNfPMD+sFV6D3BLWIUnt6NMhn8LG4D3Mu8a93Cn6rF9TJhsGArprLV6Jy9TrrfnFe9C7yzVxUQsWqDQ/Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oFWfbtQXqNDNsvzjC2sD6zbLLIN1a5K026e29c7VrKw=;
-        b=WGZBWWmsH9N8JeF2gsgW/L4qHY3LUFmdTWTv45M4BkdYO4hdjUt8WiaskO2nzdNKQo
-         //pTX85C9UQzzfnPtv/+UV6r44wGcjfcV69O5ldrjQLner0iMmHRd4U9tih1Mgn1/GCK
-         c2mdgzK8D1xskZZ7thEOaDL4bnzo8FI3su9vtwRJ2cSSnnVk1HKNvaWCAG+Q2NujWF6I
-         SFbGsybZZEjjffCPXtYurN+BYkcSzPrDxxXyYX7oYK4i4jPO/WdGKAo+agptgbnhdY6M
-         18LGAbwXDoRme/t4CtwQi9CfjM/xxLOd6Q1HCNOZOd3PADigXuOLBkzQoKMP7cttu+eq
-         4kuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=oFWfbtQXqNDNsvzjC2sD6zbLLIN1a5K026e29c7VrKw=;
-        b=YKrh4O0HeiPmdxrgCdkdqPiTdQxpa1AxOQD14jFuQkWyUfZtBWJ9eE3jS8meu9lkp9
-         m4Uc7s0uiSF6i0NUNmpJGzZTY0DQ6ABEIB++uwODLTlYkUVDXlMg8bAjCsBW4llBsLdK
-         /GzQ89HFG3qVOF7uuLlkjLUFIozp07PLy/XD3PP43WugJhkXU4oLTQDAD2tVODKAtdRl
-         GeRnlCOcvIHZskpk3siVYtIcX31fZr5akvbJwR0sfw//7+SEJ/JreoBLApcwgOWL1bNJ
-         eyW8rKdic7zQdBu+fs847+4waR7Y7jHEF+eSByabpD/F1+s1l/XoL45N6aFJBdO0MQl3
-         y+dQ==
-X-Gm-Message-State: AOAM532rDHvzvSI+hFVdh1tuBP74q6HifDsHiBQcZKXmoxKgx1awo2mY
-        gohe4zHFU6l4WB/PgHZHLkIfWvNByqE=
-X-Google-Smtp-Source: ABdhPJw2jv99FKIwNMWAsuZ9QQ2cV+INC9m8uIJ4MitnXY2L7bdtXjU40KRr5kiAMWftRpALRDsdqQ==
-X-Received: by 2002:aca:5208:: with SMTP id g8mr600511oib.2.1612215524529;
-        Mon, 01 Feb 2021 13:38:44 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o14sm4516043oof.38.2021.02.01.13.38.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 13:38:43 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 1/1] Add ST STPDDC60 pmbus driver
-To:     Erik Rosen <erik.rosen@metormote.com>
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Jean Delvare <jdelvare@suse.com>
-References: <20210127084140.35626-1-erik.rosen@metormote.com>
- <20210127084140.35626-2-erik.rosen@metormote.com>
- <20210127173255.GA144627@roeck-us.net>
- <CA+ui0HmbcQe_CD-0d+AMgx_jSuY=AG9Qx4Ab2g71kPVFrMDe_w@mail.gmail.com>
- <ee2a89f6-0f55-9328-b53d-b5893eb625db@roeck-us.net>
- <CA+ui0H=UC495kfZuZeg-ryPh_aSa0wFqf=hnn7oS782qFgh60A@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
- RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
- nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
- 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
- gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
- IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
- kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
- VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
- jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
- BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
- ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
- CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAlVcphcFCRmg06EACgkQyx8mb86fmYFg0RAA
- nzXJzuPkLJaOmSIzPAqqnutACchT/meCOgMEpS5oLf6xn5ySZkl23OxuhpMZTVX+49c9pvBx
- hpvl5bCWFu5qC1jC2eWRYU+aZZE4sxMaAGeWenQJsiG9lP8wkfCJP3ockNu0ZXXAXwIbY1O1
- c+l11zQkZw89zNgWgKobKzrDMBFOYtAh0pAInZ9TSn7oA4Ctejouo5wUugmk8MrDtUVXmEA9
- 7f9fgKYSwl/H7dfKKsS1bDOpyJlqhEAH94BHJdK/b1tzwJCFAXFhMlmlbYEk8kWjcxQgDWMu
- GAthQzSuAyhqyZwFcOlMCNbAcTSQawSo3B9yM9mHJne5RrAbVz4TWLnEaX8gA5xK3uCNCeyI
- sqYuzA4OzcMwnnTASvzsGZoYHTFP3DQwf2nzxD6yBGCfwNGIYfS0i8YN8XcBgEcDFMWpOQhT
- Pu3HeztMnF3HXrc0t7e5rDW9zCh3k2PA6D2NV4fews9KDFhLlTfCVzf0PS1dRVVWM+4jVl6l
- HRIAgWp+2/f8dx5vPc4Ycp4IsZN0l1h9uT7qm1KTwz+sSl1zOqKD/BpfGNZfLRRxrXthvvY8
- BltcuZ4+PGFTcRkMytUbMDFMF9Cjd2W9dXD35PEtvj8wnEyzIos8bbgtLrGTv/SYhmPpahJA
- l8hPhYvmAvpOmusUUyB30StsHIU2LLccUPPOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
- 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
- pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
- J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
- pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
- 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
- ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
- I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
- nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
- HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
- JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAlVcpi8FCRmg08MACgkQyx8mb86fmYHNRQ/+
- J0OZsBYP4leJvQF8lx9zif+v4ZY/6C9tTcUv/KNAE5leyrD4IKbnV4PnbrVhjq861it/zRQW
- cFpWQszZyWRwNPWUUz7ejmm9lAwPbr8xWT4qMSA43VKQ7ZCeTQJ4TC8kjqtcbw41SjkjrcTG
- wF52zFO4bOWyovVAPncvV9eGA/vtnd3xEZXQiSt91kBSqK28yjxAqK/c3G6i7IX2rg6pzgqh
- hiH3/1qM2M/LSuqAv0Rwrt/k+pZXE+B4Ud42hwmMr0TfhNxG+X7YKvjKC+SjPjqp0CaztQ0H
- nsDLSLElVROxCd9m8CAUuHplgmR3seYCOrT4jriMFBtKNPtj2EE4DNV4s7k0Zy+6iRQ8G8ng
- QjsSqYJx8iAR8JRB7Gm2rQOMv8lSRdjva++GT0VLXtHULdlzg8VjDnFZ3lfz5PWEOeIMk7Rj
- trjv82EZtrhLuLjHRCaG50OOm0hwPSk1J64R8O3HjSLdertmw7eyAYOo4RuWJguYMg5DRnBk
- WkRwrSuCn7UG+qVWZeKEsFKFOkynOs3pVbcbq1pxbhk3TRWCGRU5JolI4ohy/7JV1TVbjiDI
- HP/aVnm6NC8of26P40Pg8EdAhajZnHHjA7FrJXsy3cyIGqvg9os4rNkUWmrCfLLsZDHD8FnU
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <778339a4-501c-d73f-4378-9b0c2a6a03c0@roeck-us.net>
-Date:   Mon, 1 Feb 2021 13:38:41 -0800
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BYJH3yErQzu6RBUEzYxulVa8HYM3RsZMqyeSQ/fpJL4=;
+ b=XkH40Sfly0WIEJ5OGi10zM1ZpMBFcLsrz/K4fMAmAETvRTfdRgj2DiOl2zIrEUm2gl34bOUWTxTD5TDE9sEarFRxr23i+Gv7F42R33KSwIBScEhoiYbZ6fFkHR2SDfLH5bjZZnpYPV1qviaGY3pgUM1bmX/V37GAh8lhQZjA3Oo=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR10MB1389.namprd10.prod.outlook.com (2603:10b6:300:21::22)
+ by MWHPR10MB1936.namprd10.prod.outlook.com (2603:10b6:300:10c::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16; Mon, 1 Feb
+ 2021 21:38:53 +0000
+Received: from MWHPR10MB1389.namprd10.prod.outlook.com
+ ([fe80::897d:a360:92db:3074]) by MWHPR10MB1389.namprd10.prod.outlook.com
+ ([fe80::897d:a360:92db:3074%5]) with mapi id 15.20.3805.026; Mon, 1 Feb 2021
+ 21:38:53 +0000
+Subject: Re: [PATCH v4 1/9] hugetlb: Pass vma into huge_pte_alloc()
+To:     Axel Rasmussen <axelrasmussen@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steven Price <steven.price@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, Adam Ruprecht <ruprecht@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Oliver Upton <oupton@google.com>
+References: <20210128224819.2651899-2-axelrasmussen@google.com>
+ <20210128234242.2677079-1-axelrasmussen@google.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <67fc15f3-3182-206b-451b-1622f6657092@oracle.com>
+Date:   Mon, 1 Feb 2021 13:38:50 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <CA+ui0H=UC495kfZuZeg-ryPh_aSa0wFqf=hnn7oS782qFgh60A@mail.gmail.com>
+ Thunderbird/68.1.1
+In-Reply-To: <20210128234242.2677079-1-axelrasmussen@google.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [50.38.35.18]
+X-ClientProxiedBy: MW4PR04CA0183.namprd04.prod.outlook.com
+ (2603:10b6:303:86::8) To MWHPR10MB1389.namprd10.prod.outlook.com
+ (2603:10b6:300:21::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.112] (50.38.35.18) by MW4PR04CA0183.namprd04.prod.outlook.com (2603:10b6:303:86::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17 via Frontend Transport; Mon, 1 Feb 2021 21:38:52 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c8d830ec-4899-4711-70cc-08d8c6f9c554
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1936:
+X-Microsoft-Antispam-PRVS: <MWHPR10MB1936EB710D21ECDD69816E3DE2B69@MWHPR10MB1936.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ko2tm75dktaKTvQfLOHihwyDcTDYwnf5rWPFc9BrrcpVlRAhh0eEtvP0XtHLQ8NRpZ5qnYyFat43vab9Y1O+yqRYYskCroW/V7/GZP2KCkJugEx3XVKBI0Izd2hrwSFWh0pGRvvQMQ+uoSVaso6i5svCdgzttx1LPU1GwGbKzAcdEU+qgDXwsztBhG9dbTJJlS8t6vKMVUfzdLyJ2rbbl3HOifllfDZJDQPUXmPxeos4Mai6CuBy2Vb6yDGwRG6aa+Y4nmPdnF7ppYqD/nIs4eefIb1z6a5x8dm4b9UPHhnSJ7OFv7w7S8p9Ks9LagqAA3oE8zkguVGDq5qxyxT7XbjzwPYasvJArUWAr8E7bGSgkTRifvF9tJHseoezHQ1jowQ98wiPA1hhSKMWVMSDjZD4t3eYsquneo/A2f7Z/NTxFgSuY4cZKXEQPyiAIa9fQNjnY8/T3zJP8fykJyz3/fadtwBvL3gk9h2tNx5/y0EAGXm3YMlrZeJUpe1xPYpOrLIfC5nVMjOKU3oNhLVJG190vbwR18axJlFzasg3+dsF1LhwJDPaNp98ahWRKA841LZuN6BnNyU/HJCudNbmqaw2GetrnAR0cQ63gePEZI/+ypj7ox7Sy1/UTFNYbDpYKiiRgjjrBSBpJ63l3kt+xg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1389.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(136003)(396003)(366004)(39860400002)(36756003)(5660300002)(7406005)(478600001)(921005)(7416002)(956004)(83380400001)(186003)(2906002)(16526019)(44832011)(66556008)(26005)(2616005)(6486002)(66946007)(66476007)(8676002)(52116002)(53546011)(316002)(8936002)(16576012)(31686004)(4326008)(31696002)(86362001)(110136005)(54906003)(14583001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TDVRcmNhREhDemdER2ZIbTNUUzVCWkFiQk94eXNIYWhLNEFuWWwvWkFRY2lm?=
+ =?utf-8?B?dW5Hc3NOeFJRSTV2VlhxeCtyQ0JSY0hZL3A4eGEwZHI3NzIrTk5HN0Jqc2gr?=
+ =?utf-8?B?ZmJURHNOV0JBTkhhc3ZlZ1ZqVzBOaVR1K0k5N0dYK1RqeHZDWnB3SHAzSXI5?=
+ =?utf-8?B?TnZwL1hmMjFsaDByY21PaU4yLytSNENTdTRxR1doRDNCbjlSdFREeWNtSms1?=
+ =?utf-8?B?dGV6YzV2cmNpTHdUT0N1a3MxTUp3Znp0dzhTL2VLWVNNOTZzb3dUaXU1YWFl?=
+ =?utf-8?B?SG12QWlxVzd5Y1lBOEhXbXhaR2g4RWdRU2E4M0FPMEVxc3Z6OTlRSFkvWktU?=
+ =?utf-8?B?d2krWkRBZGZSSWhKbkpuM1FiYUFBWTUwQlhPMldzaXJRd0ZldjNKQy9STks4?=
+ =?utf-8?B?MkNab0luUVM4TXc3Z1N4YmcvRVh2c0RLcE5MYWVibUVIVUlrZzJuRnF3bjcw?=
+ =?utf-8?B?UFc5L1dmNGN6RXZPdWt6M0wyUE00UldsUHYvV1B5UWxlRTQrZkRBWXpzcGs4?=
+ =?utf-8?B?dUJncHV3a01Gd1BneU9XK3ovV3p3enkxVTNVWEIzUDZKYk9lbDhoYlNTMS9X?=
+ =?utf-8?B?U25KK203SmRQdzVSRGZmZkV0Y0x4bXRVS0w3dVdxN3h2Y2VxWUd6Mng3dFlC?=
+ =?utf-8?B?RlNQd1RyaThCalhFd3R5N243N2FGdGt3dC8yUDBMYlBjZmtJVDdKeWdKS25l?=
+ =?utf-8?B?dXdLc1QycXg2NHo3L090WEptRU9hb25ySFkvUXJlVEdPZ3ZJODlPTnJxUHBK?=
+ =?utf-8?B?b2RjeE5tMEdiMU5hRXZvbm1DZzZyOU9CME1oQkNuZFdGYzY4bTNHWS9RdVdS?=
+ =?utf-8?B?THo0OTNDRTIzQzBmc0RvTmNsaDNNajFXQkFPbGdQSzd3MDdrQ1dNQmg0M1p5?=
+ =?utf-8?B?VXF3Q2duaHpka2R5T3JwbnIwSU8xUnhISWZjVGg4T3VJd0JPU1ljUG8rTVl0?=
+ =?utf-8?B?TDNJQndIdC9Gd3lnMER1bmtNcG1Tby9uaTA2UnE3bUhWd3RmUVd4Nk1lbWRw?=
+ =?utf-8?B?NmE1VVlZQnVPWVdPUm1rbTgxQWNhWTh3YWxwMjlQckVYdWMxQ2gwb1JNdUQv?=
+ =?utf-8?B?RVViSXgvVEdEZzhzU0Y3eExXckJEazlCUFNjdGRhNkxieElKT3hKVFZjamp0?=
+ =?utf-8?B?UlZ5VyszMmt1RGUxaGtEbTVxRlhBWGcvaStHcmEyOTl2MVRXVHFwaUo3KzR6?=
+ =?utf-8?B?NVBFd3VFMEdnRkxWblkwelhBWWt1Si9IME1lUjNQeEdoTHBIMWMraFdkbEdm?=
+ =?utf-8?B?M0N4c3pZNzF3NjBYU2hWVFhtclBpWXFUQVdBY3MrWkhrSzI2N1IyNkx1cVRu?=
+ =?utf-8?B?MFhlL1NpRmxmRERqSy94bUo2dVZwSEZyZEZPb29iNWpsTzFNQlJDWVgrV3Br?=
+ =?utf-8?B?a2NzbzJwVGNzTVZlMnJvM2pPWm42TCtlYkF4Y29kbFcxdEdUdi9CdGdnalJt?=
+ =?utf-8?Q?VoNEdUfE?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c8d830ec-4899-4711-70cc-08d8c6f9c554
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1389.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2021 21:38:53.5435
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 91kzFYfwZvvu1l4/0SuE8XmfoURUy9pz1KYR7yVuDQ/xWikcL4BYKWZxtdnPtQLk5GvMhS0mGMjMAMJRgKsbGQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1936
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9882 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999 phishscore=0
+ spamscore=0 suspectscore=0 malwarescore=0 adultscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102010117
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9882 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
+ priorityscore=1501 impostorscore=0 malwarescore=0 clxscore=1011
+ spamscore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102010117
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/1/21 8:48 AM, Erik Rosen wrote:
-> Hi Guenter
+On 1/28/21 3:42 PM, Axel Rasmussen wrote:
+> From: Peter Xu <peterx@redhat.com>
 > 
+> It is a preparation work to be able to behave differently in the per
+> architecture huge_pte_alloc() according to different VMA attributes.
 > 
-> On Fri, Jan 29, 2021 at 4:50 PM Guenter Roeck <linux@roeck-us.net> wrote:
->>
->> Hi Erik,
->>
->> On 1/29/21 5:07 AM, Erik Rosen wrote:
->> [ ... ]
->>>>
->>>>> +             break;
->>>>> +     case PMBUS_VOUT_OV_FAULT_LIMIT:
->>>>> +     case PMBUS_VOUT_UV_FAULT_LIMIT:
->>>>> +             ret = pmbus_read_word_data(client, page, phase, reg);
->>>>> +             if (ret < 0)
->>>>> +                     return ret;
->>>>> +             ret &= 0x07ff;
->>>>
->>>> This needs explanation. The BMR481 datasheet does not suggest that only
->>>> 11 bits are valid.
->>>
->>> Ok, I will add a clarification. These registers use LINEAR11 whereas
->>> LINEAR16 is expected for vout-related registers.
->>>
->> Is that the correct fix, then ? LINEAR11 means that the exponent is flexible,
->> while it is fixed for LINEAR16. Just assuming that the exponents always match
->> seems risky. Also, bit 11 in LINEAR11 is the sign bit, meaning negative limits
->> (which seem at least theoretically be possible) would be reported as large
->> positive values.
-> 
-> The chip actually uses fixed exponents for representing all linear values and
-> the specification explicitly states the values of the LSB for all registers.
-> It also states that the limits can be handled as linear format when
-> writing  _if_
-> the exponent is the fixed value used for that limit. This means I'll have to
-> convert all limit writes to use the expected exponent.
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> [axelrasmussen@google.com: fixed typo in arch/mips/mm/hugetlbpage.c]
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> ---
+>  arch/arm64/mm/hugetlbpage.c   | 2 +-
+>  arch/ia64/mm/hugetlbpage.c    | 3 ++-
+>  arch/mips/mm/hugetlbpage.c    | 4 ++--
+>  arch/parisc/mm/hugetlbpage.c  | 2 +-
+>  arch/powerpc/mm/hugetlbpage.c | 3 ++-
+>  arch/s390/mm/hugetlbpage.c    | 2 +-
+>  arch/sh/mm/hugetlbpage.c      | 2 +-
+>  arch/sparc/mm/hugetlbpage.c   | 2 +-
+>  include/linux/hugetlb.h       | 2 +-
+>  mm/hugetlb.c                  | 6 +++---
+>  mm/userfaultfd.c              | 2 +-
+>  11 files changed, 16 insertions(+), 14 deletions(-)
 
-I understand the datasheet a bit differently. You are correct, the exponent for
-VOUT limits is always the same (LSB=0.00390625V, exponent -8), as it should be.
-But it also seems to me that the data format is LINEAR16, not LINEAR11.
-The datasheet says that the vout limit values are in bit 0..15.
+Sorry for the delay in reviewing.
 
-For other sensors, the datasheet is a bit ambiguous. I can read it as always
-using a fixed exponent when reading, or that it expects a fixed exponent when
-writing. It might make sense to check this with an actual chip instead of
-guessing. In this context, it is a bit odd that the datasheet keeps talking
-about a "System Register IOUT_EXP" without actually specifying it.
+huge_pmd_share() will do a find_vma() to get the vma.  So, it would be
+'possible' to not add an extra argument to huge_pmd_alloc() and simply
+do the uffd_disable_huge_pmd_share() check inside vma_shareable.  This
+would reduce the amount of modified code, but would not be as efficient.
+I prefer passing the vma argument as is done here.
 
-In this context, you might want to watch out for register MFR_SVID_SLOW_SR_SELECTOR.
-Its value seems to impact the exponents used for IOUT and POUT.
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-Also, I am not sure about the scale of other registers. It almost seems as if
-limit registers are LINEAR11, but actual READ_xxx registers are LINEAR16.
-For example, READ_IOUT is supposed to be bit 15:0 with the LSB determined
-by IOUT_EXP, but IOUT_OC_WARN_LIMIT is in bit 9:0. This would be a problem
-if READ_IOUT does not include the exponent, since it is interpreted as
-LINEAR11 and expects the exponent in bit 11..15. With an expected exponent
-of -1, the reported value would always be wrong. The same might apply
-to pretty much all READ_xxx registers (what a mess).
-
-Thanks,
-Guenter
-
-> Given this, I think it's safe to assume that the exponents are
-> constant, but I'll
-> add a check to handle potential negative values.
-> 
->>
->>>>
->>>>> +             break;
->>>>> +     default:
->>>>> +             ret = -ENODATA;
->>>>> +             break;
->>>>> +     }
->>>>> +
->>>>> +     return ret;
->>>>> +}
->>>>> +
->>>>> +/*
->>>>> + * The vout under- and over-voltage limits are readonly for this chip.
->>>>> + */
->>>>
->>>> Not really. The BMR481 datasheet suggests that the value can be changed
->>>> by writing to MFR_OV_LIMIT_OFFSET and MFR_UV_LIMIT_OFFSET.
->>>> I am not saying that you should implement that if you don't want to,
->>>> but I would suggest a better (more accurate) explanation.
->>>
->>> I have looked into this a bit more and it's a bit more to it than I expected.
->>> The limits are actually dynamic values that will follow both commanded
->>> output voltage via the PMBus or SVID/AVSBus as well as current
->>> load (droop). To account for this I propose a mechanism to set the
->>
->> Yes, I noticed.
->>
->>> 'update' flag on selected sensors after auto-detection of limit attributes.
->>>
->>> Maybe add a function like this to pmbus_core that can be called
->>> after the probing is done?
->>>
->>> int pmbus_set_update(struct i2c_client *client, u8 reg)
->>> {
->>>         struct pmbus_data *data = i2c_get_clientdata(client);
->>>         struct pmbus_sensor *sensor;
->>>
->>>         for (sensor = data->sensors; sensor; sensor = sensor->next) {
->>>                 if (sensor->reg == reg) {
->>>                         sensor->update = true;
->>>                         return 0;
->>>                 }
->>>         }
->>>         return -ENXIO;
->>> }
->>>
->>
->> Add a boolean 'update' parameter (to be able to disable updates),
->> and make the function void. Also, remember that 'reg' may be repeated
->> on a chip with multiple pages, so you can't return after the first match.
->> Otherwise looks ok.
-> 
-> Ok
-> 
->>
->>> I did also implemented writes to the limit registers via the offset
->>> registers but it might be
->>> a bit confusing to the user since the limits are set in relation to
->>> the current commanded
->>> output voltage and will change together with this. In the worst case,
->>> the voltage might
->>> change at the same time as the limit is written to, which will give
->>> unexpected results.
->>
->> Agreed, that can be tricky.
->>
->>> The alternative would be to just set these limits read-only. What is
->>> your opinion?
->>>
->>
->> Your call. Just add a note explaining why it is made read-only to explain
->> the reasoning for future readers.
-> 
-> Ok, I'll keep the functionality and add a note in the docs.
-> 
-> 
->>
->>> Also, I found a problem in how pmbus_set_sensor() works together with
->>> pmbus_clear_cache()
->>> as used in the zl6100 and lm25066 drivers. The new value is written to
->>> the sensor struct _after_
->>> the _pmbus_write_word_data() has returned and thus after
->>> pmbus_clear_cache() is called.
->>> The effect is that all values are cleared, except the one just written
->>> to, which I believe defeats
->>> the purpose of clearing the cache in the first place.> One solution would be to write the new value to sensor->data before
->>> the _pmbus_write_word_data
->>> is called and to restore the old value in case of error.
->>> I can make a separate patch for this if it seems like a reasonable solution?
->>>
->>
->> Good catch.
->>
->> An alternate and more generic solution might be to set sensor->data to
->> -ENODATA after updates. After all, it seems risky to assume that the chip
->> returns the value that was written (I have seen it often enough in other
->> drivers that this is not necessarily the case). That would also mean that
->> it would no longer be necessary to call pmbus_clear_cache() in the zl6100
->> and lm25066 drivers. Impact would be that a limit read after a write would
->> always be sent to the chip for all drivers, but that seems minimal compared
->> to the gain (and presumably limit registers are not frequently updated).
-> 
-> I agree that this is a more robust solution. I'll send a separate patch for this
-> update. The zl6100 in fact still needs to clear the cache since a write to the
-> fault limit also changes the value of the warning limit and vice versa. As far
-> as I can see the usage in lm25066 can be removed however.
-> 
->>
->> Thanks,
->> Guenter
-
+-- 
+Mike Kravetz
