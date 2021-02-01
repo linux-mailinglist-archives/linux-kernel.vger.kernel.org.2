@@ -2,105 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4234D30A19E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 06:49:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FEC830A22D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231605AbhBAFsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 00:48:30 -0500
-Received: from mga11.intel.com ([192.55.52.93]:18860 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229917AbhBAFpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 00:45:22 -0500
-IronPort-SDR: L8tueSMKodp4mWVDM79ITvmVwqwJgOdXTR3ab7B3e2O7tmI+6GEugh9Lc6gRLLpcJI5Q4Il/C2
- u6RHigW27/Sw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="177129268"
-X-IronPort-AV: E=Sophos;i="5.79,391,1602572400"; 
-   d="scan'208";a="177129268"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2021 21:42:48 -0800
-IronPort-SDR: PLphEVLiZVB9bAjv1uXDE6J3QX7nlD9kyHW+EUhi0kqwN0sytb+TZSxJTiQwTflZIgck05kJgU
- yproivahxrbg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,391,1602572400"; 
-   d="scan'208";a="368973525"
-Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
-  by fmsmga008.fm.intel.com with ESMTP; 31 Jan 2021 21:42:46 -0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     gregkh@linuxfoundation.org, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com
-Subject: [PATCH v10 2/2] Documentation: fpga: dfl: Add description for DFL UIO support
-Date:   Mon,  1 Feb 2021 13:38:03 +0800
-Message-Id: <1612157883-18616-3-git-send-email-yilun.xu@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1612157883-18616-1-git-send-email-yilun.xu@intel.com>
-References: <1612157883-18616-1-git-send-email-yilun.xu@intel.com>
+        id S232297AbhBAGrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 01:47:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37068 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231597AbhBAFls (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 00:41:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612158016;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5mQIIlM5CFm8xeXBVRv4nhYcFaur8L2TXYtvPPpQAxw=;
+        b=dhKJrP/xoCyPJVF3+19azybF6bXigf5S1QqUbP0OcLRkomGIkEA3LySWzpHkifxUuXWbSz
+        rBSsQD3V/+pwLc0faEQwEoL9/26syyuQeVsDNbzTjzXQandpt9gPgc9Aa0cfsJV1Bq2qAX
+        ZiE2kpegDo8REL30KL8gSu1fDwLa3PU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-229-vKvb8gjeOfq7lZK4FcopZQ-1; Mon, 01 Feb 2021 00:40:15 -0500
+X-MC-Unique: vKvb8gjeOfq7lZK4FcopZQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BD98FCC620;
+        Mon,  1 Feb 2021 05:40:13 +0000 (UTC)
+Received: from [10.72.13.120] (ovpn-13-120.pek2.redhat.com [10.72.13.120])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 476F627CA9;
+        Mon,  1 Feb 2021 05:40:03 +0000 (UTC)
+Subject: Re: [PATCH RFC v2 03/10] vringh: reset kiov 'consumed' field in
+ __vringh_iov()
+To:     Stefano Garzarella <sgarzare@redhat.com>,
+        virtualization@lists.linux-foundation.org
+Cc:     Xie Yongji <xieyongji@bytedance.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Laurent Vivier <lvivier@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        linux-kernel@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
+        kvm@vger.kernel.org
+References: <20210128144127.113245-1-sgarzare@redhat.com>
+ <20210128144127.113245-4-sgarzare@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <62bb2e93-4ac3-edf5-2baa-4c2be8257cf0@redhat.com>
+Date:   Mon, 1 Feb 2021 13:40:01 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210128144127.113245-4-sgarzare@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds description for UIO support for dfl devices on DFL
-bus.
 
-Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-Reviewed-by: Tom Rix <trix@redhat.com>
----
-v2: no doc in v1, add it for v2.
-v3: some documentation fixes.
-v4: documentation change since the driver matching is changed.
-v5: no change.
-v6: improve the title of the userspace driver support section.
-    some word improvement.
-v7: rebased to next-20210119
-v8: some doc fixes.
-v9: some doc change since we switch to the driver in drivers/uio.
-v10: no change.
----
- Documentation/fpga/dfl.rst | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+On 2021/1/28 下午10:41, Stefano Garzarella wrote:
+> __vringh_iov() overwrites the contents of riov and wiov, in fact it
+> resets the 'i' and 'used' fields, but also the consumed field should
+> be reset to avoid an inconsistent state.
+>
+> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
 
-diff --git a/Documentation/fpga/dfl.rst b/Documentation/fpga/dfl.rst
-index c41ac76..e35cf87 100644
---- a/Documentation/fpga/dfl.rst
-+++ b/Documentation/fpga/dfl.rst
-@@ -7,6 +7,7 @@ Authors:
- - Enno Luebbers <enno.luebbers@intel.com>
- - Xiao Guangrong <guangrong.xiao@linux.intel.com>
- - Wu Hao <hao.wu@intel.com>
-+- Xu Yilun <yilun.xu@intel.com>
- 
- The Device Feature List (DFL) FPGA framework (and drivers according to
- this framework) hides the very details of low layer hardwares and provides
-@@ -530,6 +531,28 @@ Being able to specify more than one DFL per BAR has been considered, but it
- was determined the use case did not provide value.  Specifying a single DFL
- per BAR simplifies the implementation and allows for extra error checking.
- 
-+
-+Userspace driver support for DFL devices
-+========================================
-+The purpose of an FPGA is to be reprogrammed with newly developed hardware
-+components. New hardware can instantiate a new private feature in the DFL, and
-+then present a DFL device in the system. In some cases users may need a
-+userspace driver for the DFL device:
-+
-+* Users may need to run some diagnostic test for their hardware.
-+* Users may prototype the kernel driver in user space.
-+* Some hardware is designed for specific purposes and does not fit into one of
-+  the standard kernel subsystems.
-+
-+This requires direct access to MMIO space and interrupt handling from
-+userspace. The uio_dfl module exposes the UIO device interfaces for this
-+purpose.
-+
-+UIO_DFL should be selected to enable the uio_dfl module driver. To support a
-+new DFL feature via UIO direct access, its feature id should be added to the
-+driver's id_table.
-+
-+
- Open discussion
- ===============
- FME driver exports one ioctl (DFL_FPGA_FME_PORT_PR) for partial reconfiguration
--- 
-2.7.4
+
+I had a question(I remember we had some discussion like this but I 
+forget the conclusion):
+
+I see e.g in vringh_getdesc_kern() it has the following comment:
+
+/*
+  * Note that you may need to clean up riov and wiov, even on error!
+  */
+
+So it looks to me the correct way is to call vringh_kiov_cleanup() before?
+
+Thanks
+
+
+> ---
+>   drivers/vhost/vringh.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/vhost/vringh.c b/drivers/vhost/vringh.c
+> index f68122705719..bee63d68201a 100644
+> --- a/drivers/vhost/vringh.c
+> +++ b/drivers/vhost/vringh.c
+> @@ -290,9 +290,9 @@ __vringh_iov(struct vringh *vrh, u16 i,
+>   		return -EINVAL;
+>   
+>   	if (riov)
+> -		riov->i = riov->used = 0;
+> +		riov->i = riov->used = riov->consumed = 0;
+>   	if (wiov)
+> -		wiov->i = wiov->used = 0;
+> +		wiov->i = wiov->used = wiov->consumed = 0;
+>   
+>   	for (;;) {
+>   		void *addr;
 
