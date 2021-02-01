@@ -2,84 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CED0730AA93
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:10:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 714EF30AA8C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:10:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230077AbhBAPJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 10:09:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37360 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229564AbhBAPGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 10:06:33 -0500
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 68A6764DAD;
-        Mon,  1 Feb 2021 14:56:14 +0000 (UTC)
-Date:   Mon, 1 Feb 2021 09:56:12 -0500
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Jinyang He <hejinyang@loongson.cn>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Wu Zhangjin <wuzhangjin@gmail.com>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH 3/3] MIPS: ftrace: Add DYNAMIC_FTRACE_WITH_REGS support
-Message-ID: <20210201095612.62e62544@gandalf.local.home>
-In-Reply-To: <1612080878-5426-3-git-send-email-hejinyang@loongson.cn>
-References: <1612080878-5426-1-git-send-email-hejinyang@loongson.cn>
-        <1612080878-5426-3-git-send-email-hejinyang@loongson.cn>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231459AbhBAPJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 10:09:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231250AbhBAPGr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 10:06:47 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BB00C061573;
+        Mon,  1 Feb 2021 06:56:35 -0800 (PST)
+Date:   Mon, 01 Feb 2021 14:56:30 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612191391;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mBvRYf8ghUpAX/hQt85pG8vGXvaOvOBz5RhndbXyuIY=;
+        b=gEaQYhOJCq50gCHjFjjrk3ilMsoNH1XnEznaCT6JGSfYT7RgiKFIklXg5Cj2F03qXAn4J2
+        rASmWwxDDFPfOfpiogMnHd9W3ZIfECgfOXaZI6E5LdwGA022CU4km8JV5BXvystUGEpiZj
+        jggSgdAMUwX6KulCqpURuUGp48kM9FJAKv7561tLrpb8e6pRmZM4HNkOkm0cElboApuf58
+        Xx67qnawOD1Rnc1jQAUIBt7mNPJ2ExIrJuBPwVyGElcfcz3QgFE9bbm+sQ7L8+oYZimt7Z
+        kutdjnIs6ROmsurf90pTAyyfJWDmkSWSkC+P0mqNwkQafsri2nSdHkIflAolEg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612191391;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mBvRYf8ghUpAX/hQt85pG8vGXvaOvOBz5RhndbXyuIY=;
+        b=oz/T+0RxiRMw4PtEgFQ3DAvy9oxXbRFz5UMtcuz7lsxwZ4ptldxlRi9+LfJvhj4hfJKvcQ
+        s1qShodRZ1itYOCQ==
+From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/debug: Fix DR6 handling
+Cc:     Tom de Vries <tdevries@suse.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Borislav Petkov <bp@suse.de>, <stable@vger.kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <YBMAbQGACujjfz%2Bi@hirez.programming.kicks-ass.net>
+References: <YBMAbQGACujjfz%2Bi@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <161219139027.23325.9791858719126543800.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 31 Jan 2021 16:14:38 +0800
-Jinyang He <hejinyang@loongson.cn> wrote:
+The following commit has been merged into the x86/urgent branch of tip:
 
-> In the past, we have always used the address of _mcount as the address of
-> ftrace_caller. It reduces one ftrace_modify_code operation when do ftrace
-> on modules on 64Bit platform in this way. In order to provide
-> DYNAMIC_FTRACE_WITH_REGS, we have to take _mcount out of ftrace_caller and
-> add a new definition of _mcount. It is necessary to modify 2 instructions.
-> Also add the definition of ftrace_regs_caller. ftrace_regs_caller will
-> store and restore more registers. Of course, some functions in ftrace.c
-> also need to consider ftrace_regs_caller. Modify these functions and add
-> the related code of ftrace_regs_caller.
+Commit-ID:     9ad22e165994ccb64d85b68499eaef97342c175b
+Gitweb:        https://git.kernel.org/tip/9ad22e165994ccb64d85b68499eaef97342c175b
+Author:        Peter Zijlstra <peterz@infradead.org>
+AuthorDate:    Thu, 28 Jan 2021 22:16:27 +01:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 01 Feb 2021 15:49:02 +01:00
 
-Note, while you are making these changes, you may want to look at the new
-feature of ftrace that has HAVE_DYNAMIC_FTRACE_WITH_ARGS.
+x86/debug: Fix DR6 handling
 
-I noticed that with x86 (and probably all other archs), you need to save
-the arguments before calling the ftrace callbacks in the ftrace trampoline.
-If done properly, this means that the callbacks should be able to access
-the function arguments. What happens then, it structures the arguments in a
-way that if the function was called with "WITH_REGS" set, its the full
-pt_regs structure. Otherwise, it's a partial structure called "ftrace_regs".
+Tom reported that one of the GDB test-cases failed, and Boris bisected
+it to commit:
 
+  d53d9bc0cf78 ("x86/debug: Change thread.debugreg6 to thread.virtual_dr6")
 
-See arch/x86/include/asm/ftrace.h for ftrace_regs.
+The debugging session led us to commit:
 
-Then the ftrace_regs is passed to the callback instead of pt_regs (for all
-callbacks!).
+  6c0aca288e72 ("x86: Ignore trap bits on single step exceptions")
 
-If a callback has the REGS flag set (ftrace_caller_regs), then to get the
-pt_regs, it needs to call:
+It turns out that TF and data breakpoints are both traps and will be
+merged, while instruction breakpoints are faults and will not be merged.
+This means 6c0aca288e72 is wrong, only TF and instruction breakpoints
+need to be excluded while TF and data breakpoints can be merged.
 
-	struct pt_regs *regs = arch_ftrace_get_regs(ftrace_regs);
+ [ bp: Massage commit message. ]
 
-Where arch_ftrace_get_regs() returns the full pt_regs if the callback was
-called from a ftrace_caller_regs trampoline, otherwise it must return NULL.
+Fixes: d53d9bc0cf78 ("x86/debug: Change thread.debugreg6 to thread.virtual_dr6")
+Fixes: 6c0aca288e72 ("x86: Ignore trap bits on single step exceptions")
+Reported-by: Tom de Vries <tdevries@suse.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: <stable@vger.kernel.org>
+Link: https://lkml.kernel.org/r/YBMAbQGACujjfz%2Bi@hirez.programming.kicks-ass.net
+Link: https://lkml.kernel.org/r/20210128211627.GB4348@worktop.programming.kicks-ass.net
+---
+ arch/x86/kernel/hw_breakpoint.c | 39 ++++++++++++++------------------
+ 1 file changed, 18 insertions(+), 21 deletions(-)
 
-The reason to return NULL is that we don't want callbacks using pt_regs,
-thinking it's fully populated when it is not.
-
-But if HAVE_DYNAMIC_FTRACE_ARGS is set, then all ftrace callbacks
-(regardless of REGS flag being set) has access to the arguments from the
-ftrace_regs.
-
--- Steve
+diff --git a/arch/x86/kernel/hw_breakpoint.c b/arch/x86/kernel/hw_breakpoint.c
+index 03aa33b..6694c0f 100644
+--- a/arch/x86/kernel/hw_breakpoint.c
++++ b/arch/x86/kernel/hw_breakpoint.c
+@@ -491,15 +491,12 @@ static int hw_breakpoint_handler(struct die_args *args)
+ 	struct perf_event *bp;
+ 	unsigned long *dr6_p;
+ 	unsigned long dr6;
++	bool bpx;
+ 
+ 	/* The DR6 value is pointed by args->err */
+ 	dr6_p = (unsigned long *)ERR_PTR(args->err);
+ 	dr6 = *dr6_p;
+ 
+-	/* If it's a single step, TRAP bits are random */
+-	if (dr6 & DR_STEP)
+-		return NOTIFY_DONE;
+-
+ 	/* Do an early return if no trap bits are set in DR6 */
+ 	if ((dr6 & DR_TRAP_BITS) == 0)
+ 		return NOTIFY_DONE;
+@@ -509,28 +506,29 @@ static int hw_breakpoint_handler(struct die_args *args)
+ 		if (likely(!(dr6 & (DR_TRAP0 << i))))
+ 			continue;
+ 
++		bp = this_cpu_read(bp_per_reg[i]);
++		if (!bp)
++			continue;
++
++		bpx = bp->hw.info.type == X86_BREAKPOINT_EXECUTE;
++
+ 		/*
+-		 * The counter may be concurrently released but that can only
+-		 * occur from a call_rcu() path. We can then safely fetch
+-		 * the breakpoint, use its callback, touch its counter
+-		 * while we are in an rcu_read_lock() path.
++		 * TF and data breakpoints are traps and can be merged, however
++		 * instruction breakpoints are faults and will be raised
++		 * separately.
++		 *
++		 * However DR6 can indicate both TF and instruction
++		 * breakpoints. In that case take TF as that has precedence and
++		 * delay the instruction breakpoint for the next exception.
+ 		 */
+-		rcu_read_lock();
++		if (bpx && (dr6 & DR_STEP))
++			continue;
+ 
+-		bp = this_cpu_read(bp_per_reg[i]);
+ 		/*
+ 		 * Reset the 'i'th TRAP bit in dr6 to denote completion of
+ 		 * exception handling
+ 		 */
+ 		(*dr6_p) &= ~(DR_TRAP0 << i);
+-		/*
+-		 * bp can be NULL due to lazy debug register switching
+-		 * or due to concurrent perf counter removing.
+-		 */
+-		if (!bp) {
+-			rcu_read_unlock();
+-			break;
+-		}
+ 
+ 		perf_bp_event(bp, args->regs);
+ 
+@@ -538,11 +536,10 @@ static int hw_breakpoint_handler(struct die_args *args)
+ 		 * Set up resume flag to avoid breakpoint recursion when
+ 		 * returning back to origin.
+ 		 */
+-		if (bp->hw.info.type == X86_BREAKPOINT_EXECUTE)
++		if (bpx)
+ 			args->regs->flags |= X86_EFLAGS_RF;
+-
+-		rcu_read_unlock();
+ 	}
++
+ 	/*
+ 	 * Further processing in do_debug() is needed for a) user-space
+ 	 * breakpoints (to generate signals) and b) when the system has
