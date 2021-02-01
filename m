@@ -2,178 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 076CE30ADD0
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:28:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E7A30ADD7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:30:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231826AbhBAR2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:28:21 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:1300 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230127AbhBAR2H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:28:07 -0500
-Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 111HNpnK131149;
-        Mon, 1 Feb 2021 12:27:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=F3NMKpux4561ymqoip4Qw2/x23g4rYcK1L2WR60eGEE=;
- b=V+9DfrrJ67QgP6f3vtEkstqLJFZDViZEwpldvFLo2D9Yeqb6GhZGWrmUcb1FhUPKZxNg
- qPx6PRxAXIN0BDCd+UmS61EWPUnxV8BMiZ4rFhcA3vkhhKJj54/dyIeyj1CivCj9UCAz
- 9UlL+g6CU8EsAm7ZzNRWxir4luGErboWUx6BLnFb9R4FDZrFnkydoI3+YvRszegohXI9
- iiBI22fvhAnaaFBeYy8Jxwg1byYRHvseBV9CKiHRj1zko3CTAGHcMifUcedTI9FXkZkW
- PTliMfx4DqIFKDQYKIr8YSWsVmL1A7a6nDd2n3V+wd1KW/r1AXGS89pjN6RZrsgDC2pK mg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36ep0h8267-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 12:27:25 -0500
-Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 111HNoQv131125;
-        Mon, 1 Feb 2021 12:27:24 -0500
-Received: from ppma01wdc.us.ibm.com (fd.55.37a9.ip4.static.sl-reverse.com [169.55.85.253])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 36ep0h825u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 12:27:24 -0500
-Received: from pps.filterd (ppma01wdc.us.ibm.com [127.0.0.1])
-        by ppma01wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 111HE0LG031611;
-        Mon, 1 Feb 2021 17:27:23 GMT
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
-        by ppma01wdc.us.ibm.com with ESMTP id 36cy38g799-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 17:27:23 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 111HRLqL43516406
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 1 Feb 2021 17:27:22 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E0217112061;
-        Mon,  1 Feb 2021 17:27:21 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B1428112064;
-        Mon,  1 Feb 2021 17:27:17 +0000 (GMT)
-Received: from oc4221205838.ibm.com (unknown [9.211.84.157])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Mon,  1 Feb 2021 17:27:17 +0000 (GMT)
-Subject: Re: [PATCH 5/9] vfio-pci/zdev: remove unused vdev argument
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>, jgg@nvidia.com,
-        cohuck@redhat.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alex.williamson@redhat.com
-Cc:     liranl@nvidia.com, oren@nvidia.com, tzahio@nvidia.com,
-        leonro@nvidia.com, yarong@nvidia.com, aviadye@nvidia.com,
-        shahafs@nvidia.com, artemp@nvidia.com, kwankhede@nvidia.com,
-        ACurrid@nvidia.com, gmataev@nvidia.com, cjia@nvidia.com,
-        yishaih@nvidia.com, aik@ozlabs.ru
-References: <20210201162828.5938-1-mgurtovoy@nvidia.com>
- <20210201162828.5938-6-mgurtovoy@nvidia.com>
-From:   Matthew Rosato <mjrosato@linux.ibm.com>
-Message-ID: <ffb61cac-f3ab-a96c-30c6-09ef08907f4b@linux.ibm.com>
-Date:   Mon, 1 Feb 2021 12:27:16 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S231417AbhBAR3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:29:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45760 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230094AbhBAR3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 12:29:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 77E5F64EA9;
+        Mon,  1 Feb 2021 17:28:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612200520;
+        bh=uHAWWNmon96KsVjmF8ftVBBdEemkthXQ9UJ2fc8srng=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CvvqVRBGSncQ6Xl0DR8gjXVt3iAOTkyc7pce4aId8ICWxg6VACch4KtFpnYVLnmM0
+         PE7ItfKktIRiDNqh7Doo9Xfv5rmfLLKmU179IQx5nVT06+Lw2xgisT7u5GvGOLE94r
+         eYoDXigDq3eE2yjj7UO32kd7q7wtHyt2j8Am/WYH6BPNqYtIUMwk3x2d+qVOfVK1aV
+         bp6HTErm/mDCVqnYV2WdLnjlin63sROqBW/Hht+GatldssqbfS8MA5N1tlWKakjzZC
+         nB83x2hfJxugpY+PMHwWVg7lnc4Y6rHRzCgJ66hnF4T/7xnjvdM4CZQelCzbAER10e
+         0emvH5Ijw9whA==
+Date:   Mon, 1 Feb 2021 17:28:34 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, android-kvm@google.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        Fuad Tabba <tabba@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>
+Subject: Re: [RFC PATCH v2 03/26] arm64: kvm: Add standalone ticket spinlock
+ implementation for use at hyp
+Message-ID: <20210201172833.GA15632@willie-the-truck>
+References: <20210108121524.656872-1-qperret@google.com>
+ <20210108121524.656872-4-qperret@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210201162828.5938-6-mgurtovoy@nvidia.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-01_06:2021-01-29,2021-02-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 mlxscore=0
- priorityscore=1501 impostorscore=0 mlxlogscore=999 adultscore=0
- suspectscore=0 bulkscore=0 clxscore=1015 phishscore=0 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102010085
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210108121524.656872-4-qperret@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/1/21 11:28 AM, Max Gurtovoy wrote:
-> Zdev static functions does not use vdev argument. Remove it.
+On Fri, Jan 08, 2021 at 12:15:01PM +0000, Quentin Perret wrote:
+> From: Will Deacon <will@kernel.org>
 > 
-> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-
-Huh.  I must have dropped the use of vdev somewhere during review 
-versions.  Thanks!
-
-Reviewed-by: Matthew Rosato <mjrosato@linux.ibm.com>
-
-@Alex/@Connie This one is just a cleanup and could also go separately 
-from this set if it makes sense.
-
+> We will soon need to synchronise multiple CPUs in the hyp text at EL2.
+> The qspinlock-based locking used by the host is overkill for this purpose
+> and relies on the kernel's "percpu" implementation for the MCS nodes.
+> 
+> Implement a simple ticket locking scheme based heavily on the code removed
+> by commit c11090474d70 ("arm64: locking: Replace ticket lock implementation
+> with qspinlock").
+> 
+> Signed-off-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Quentin Perret <qperret@google.com>
 > ---
->   drivers/vfio/pci/vfio_pci_zdev.c | 20 ++++++++------------
->   1 file changed, 8 insertions(+), 12 deletions(-)
+>  arch/arm64/kvm/hyp/include/nvhe/spinlock.h | 92 ++++++++++++++++++++++
+>  1 file changed, 92 insertions(+)
+>  create mode 100644 arch/arm64/kvm/hyp/include/nvhe/spinlock.h
 > 
-> diff --git a/drivers/vfio/pci/vfio_pci_zdev.c b/drivers/vfio/pci/vfio_pci_zdev.c
-> index 7b20b34b1034..175096fcd902 100644
-> --- a/drivers/vfio/pci/vfio_pci_zdev.c
-> +++ b/drivers/vfio/pci/vfio_pci_zdev.c
-> @@ -24,8 +24,7 @@
->   /*
->    * Add the Base PCI Function information to the device info region.
->    */
-> -static int zpci_base_cap(struct zpci_dev *zdev, struct vfio_pci_device *vdev,
-> -			 struct vfio_info_cap *caps)
-> +static int zpci_base_cap(struct zpci_dev *zdev, struct vfio_info_cap *caps)
->   {
->   	struct vfio_device_info_cap_zpci_base cap = {
->   		.header.id = VFIO_DEVICE_INFO_CAP_ZPCI_BASE,
-> @@ -45,8 +44,7 @@ static int zpci_base_cap(struct zpci_dev *zdev, struct vfio_pci_device *vdev,
->   /*
->    * Add the Base PCI Function Group information to the device info region.
->    */
-> -static int zpci_group_cap(struct zpci_dev *zdev, struct vfio_pci_device *vdev,
-> -			  struct vfio_info_cap *caps)
-> +static int zpci_group_cap(struct zpci_dev *zdev, struct vfio_info_cap *caps)
->   {
->   	struct vfio_device_info_cap_zpci_group cap = {
->   		.header.id = VFIO_DEVICE_INFO_CAP_ZPCI_GROUP,
-> @@ -66,8 +64,7 @@ static int zpci_group_cap(struct zpci_dev *zdev, struct vfio_pci_device *vdev,
->   /*
->    * Add the device utility string to the device info region.
->    */
-> -static int zpci_util_cap(struct zpci_dev *zdev, struct vfio_pci_device *vdev,
-> -			 struct vfio_info_cap *caps)
-> +static int zpci_util_cap(struct zpci_dev *zdev, struct vfio_info_cap *caps)
->   {
->   	struct vfio_device_info_cap_zpci_util *cap;
->   	int cap_size = sizeof(*cap) + CLP_UTIL_STR_LEN;
-> @@ -90,8 +87,7 @@ static int zpci_util_cap(struct zpci_dev *zdev, struct vfio_pci_device *vdev,
->   /*
->    * Add the function path string to the device info region.
->    */
-> -static int zpci_pfip_cap(struct zpci_dev *zdev, struct vfio_pci_device *vdev,
-> -			 struct vfio_info_cap *caps)
-> +static int zpci_pfip_cap(struct zpci_dev *zdev, struct vfio_info_cap *caps)
->   {
->   	struct vfio_device_info_cap_zpci_pfip *cap;
->   	int cap_size = sizeof(*cap) + CLP_PFIP_NR_SEGMENTS;
-> @@ -123,21 +119,21 @@ int vfio_pci_info_zdev_add_caps(struct vfio_pci_device *vdev,
->   	if (!zdev)
->   		return -ENODEV;
->   
-> -	ret = zpci_base_cap(zdev, vdev, caps);
-> +	ret = zpci_base_cap(zdev, caps);
->   	if (ret)
->   		return ret;
->   
-> -	ret = zpci_group_cap(zdev, vdev, caps);
-> +	ret = zpci_group_cap(zdev, caps);
->   	if (ret)
->   		return ret;
->   
->   	if (zdev->util_str_avail) {
-> -		ret = zpci_util_cap(zdev, vdev, caps);
-> +		ret = zpci_util_cap(zdev, caps);
->   		if (ret)
->   			return ret;
->   	}
->   
-> -	ret = zpci_pfip_cap(zdev, vdev, caps);
-> +	ret = zpci_pfip_cap(zdev, caps);
->   
->   	return ret;
->   }
-> 
+> diff --git a/arch/arm64/kvm/hyp/include/nvhe/spinlock.h b/arch/arm64/kvm/hyp/include/nvhe/spinlock.h
+> new file mode 100644
+> index 000000000000..7584c397bbac
+> --- /dev/null
+> +++ b/arch/arm64/kvm/hyp/include/nvhe/spinlock.h
+> @@ -0,0 +1,92 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * A stand-alone ticket spinlock implementation for use by the non-VHE
+> + * KVM hypervisor code running at EL2.
+> + *
+> + * Copyright (C) 2020 Google LLC
+> + * Author: Will Deacon <will@kernel.org>
+> + *
+> + * Heavily based on the implementation removed by c11090474d70 which was:
+> + * Copyright (C) 2012 ARM Ltd.
+> + */
+> +
+> +#ifndef __ARM64_KVM_NVHE_SPINLOCK_H__
+> +#define __ARM64_KVM_NVHE_SPINLOCK_H__
+> +
+> +#include <asm/alternative.h>
+> +#include <asm/lse.h>
+> +
+> +typedef union hyp_spinlock {
+> +	u32	__val;
+> +	struct {
+> +#ifdef __AARCH64EB__
+> +		u16 next, owner;
+> +#else
+> +		u16 owner, next;
+> +	};
+> +#endif
 
+Looks like I put this #endif in the wrong place; probably needs to be a line
+higher.
+
+Will
