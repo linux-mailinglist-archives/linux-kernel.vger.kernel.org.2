@@ -2,98 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 549AA30B38A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:28:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 125E830B390
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:30:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231341AbhBAX1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 18:27:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59922 "EHLO
+        id S229524AbhBAX2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 18:28:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231339AbhBAX1f (ORCPT
+        with ESMTP id S230288AbhBAX2V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 18:27:35 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F060EC06178B
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 15:26:17 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id n2so19357705iom.7
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 15:26:17 -0800 (PST)
+        Mon, 1 Feb 2021 18:28:21 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF753C061573;
+        Mon,  1 Feb 2021 15:27:40 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id h7so25267449lfc.6;
+        Mon, 01 Feb 2021 15:27:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Zd7FyycW3KcctLd6KYXPpMsa8mRy7OXVhvVd96yduhE=;
-        b=x6Zx5mmOYLrYqyolEVeWMSSoYaHG8qWQD7O50XB1xDGSL2PrfJEyowmL6U6r+cgUKq
-         lDYmDHt6c9ReVyZeuBO9n7AaUpr5FE3ZOX22gCjqC2yeiS/cYPPfabOqg6L7+FbGpMaJ
-         CtTVONvHCKzHsjLYtY/z6//NHB62Kv4LhoppEUR4543w2/Dtd5CFkHNFSq1ezrfLizqn
-         IX9YlmtntIZXVM6ZDll+7wQEMasn1VA3ZTLfSIYx9XGfpyW7rfy3VctuLQ8WAe7RRKXm
-         GCx8AKZ4fFQb3DLsw4dVNzp7LBFYGL2xk68PKiC7HCBLjVpRIo3/5jdrffbvkf1v54kt
-         bsdQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EjvkqNV3yKzly7yLuBoaIr5wpK8OrxpWH9YRQsNyHaA=;
+        b=dhMnRDcNX9OsQJKrXz9yYh0j/fhr++0wMYkwXvfeJaHU4y66CTAo96Ir7wY81isDcl
+         fiFp0otLS2O16NYVMBA/JvwWG5xgjrTdle9Z/JM/twrtqu9hzQCvOo0lzBfRiVbnQ/UZ
+         /w6ohU5Zg1FH2tx0KLJtW9LFUEpF5f/39PXJByuGecqFubk038KA2gVkC+brQ2MbwyQ8
+         +au5v9vcbIHk3STl2XDMS/mFwwNycQqYZil/dJUn5XPpe5XK1Vn+JJawXvp0n9fP6+sM
+         9hsGV4l/p3f2xAavrQOgVo7u2t5DswvrQD2qYgf3mYIpy4Ny8kQM8dWYDqeVLav83d2V
+         jmlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Zd7FyycW3KcctLd6KYXPpMsa8mRy7OXVhvVd96yduhE=;
-        b=ZAtIz8Gyt+ghIOp/VipKaxfSXXJTsmLp3YlAAVrMgbOOoTbf+5KuJiajLSf/K+Jfiw
-         3neAVuVLzQx6G+I8kcPTOzl/lq5oAgtHxfMQEClMVniP1cZgjbtT6fqxmC1i2XTdd+XR
-         b3HZXcz8TksKWUc/PIfcMiC2pFzq4Yj3aigDyg2Owqus6NoGS2yOYH6SFMOxgD9mmc/u
-         KB8/qHjrLJxuBsWu3cf6vwmpgw/RHZb9uJM4LCB7VDicR+GxlU0NeK4BpDGUxEuWgYwr
-         oB2TsR9WzkMBhu4iEuqDYFrtCgqHCXY1MTNwUoyGsL3AMJ221Nl1XlEzXR/Ovj7VRUqP
-         iIFg==
-X-Gm-Message-State: AOAM5305thqgJIACW2tXNA2+qtgjm8gy5Zxo0tyKm4NoIEaYKYPVYLcn
-        b2uiBLRPID7UPG33lpAb9eS2WiEHwfJ1jw==
-X-Google-Smtp-Source: ABdhPJyaO9e8s9+LRsKruGS69fzHUr6vWkVzpKTYn9TM2WjIlalWUeX5YFy76SzfWy9kkBO320BpVQ==
-X-Received: by 2002:a5d:9041:: with SMTP id v1mr14086354ioq.155.1612221977473;
-        Mon, 01 Feb 2021 15:26:17 -0800 (PST)
-Received: from presto.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id v18sm10359588ila.29.2021.02.01.15.26.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 15:26:16 -0800 (PST)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     elder@kernel.org, evgreen@chromium.org, bjorn.andersson@linaro.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net 4/4] net: ipa: fix two format specifier errors
-Date:   Mon,  1 Feb 2021 17:26:09 -0600
-Message-Id: <20210201232609.3524451-5-elder@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210201232609.3524451-1-elder@linaro.org>
-References: <20210201232609.3524451-1-elder@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EjvkqNV3yKzly7yLuBoaIr5wpK8OrxpWH9YRQsNyHaA=;
+        b=LhLeTZ1QA1Gplu/AkShG8LvhQwphfxBVzS6ADGXrVU6ReDvQU0JFFSDrx9QIHhDhti
+         jsPWMuwob8+5dwRB5Xa8Dl/vdsPhAPr3Sx7z71K5kTQcjA+wvGvKpEleeJuGUG7d+YTV
+         YrxBGCFzSL+417Epr9TV9OzDdrNObO54zXT+0+h+oBmItsIMgWkmqsyf5bghaBjYqC97
+         pTBAwaso/efxPwBT1JpIVXFb9aug0fbfRQze5zFY3GzwxykdDDMw4IzMsg7n6fJ8RyrO
+         I8p0bkKvVDRuCGUwMCsygstL2g/0pjcqtM4aSN9KDcMHWFUufHRi6rWmx8dRrElSATzv
+         ffAA==
+X-Gm-Message-State: AOAM531ZaL9hM0zOIl7/T9Lq/mGxshI76jRKH5/vVZgyjpf6sKa2bCXm
+        u9GzO4O2tSL7ovc1UmXVH8fs7XTKi8YMUXvfEq1vJkLnCYQ=
+X-Google-Smtp-Source: ABdhPJxDD6oHSznvO+1c0ax7RCtqBpAnpiTQ/JfEnoj4glkmzDwSlKmwqDfmmvpH1oKTqoQRXxznLzro8uiYZfOy17s=
+X-Received: by 2002:a19:ad0d:: with SMTP id t13mr9412240lfc.539.1612222057872;
+ Mon, 01 Feb 2021 15:27:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210201150028.2279522-1-jackmanb@google.com>
+In-Reply-To: <20210201150028.2279522-1-jackmanb@google.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Mon, 1 Feb 2021 15:27:26 -0800
+Message-ID: <CAADnVQKAaoiVM6=VGxKh=T1PWUNWLKFx+3zKf3Ehud6+LsJB3w@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v2] bpf: Propagate memory bounds to registers in
+ atomics w/ BPF_FETCH
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix two format specifiers that used %lu for a size_t in "ipa_mem.c".
+On Mon, Feb 1, 2021 at 7:00 AM Brendan Jackman <jackmanb@google.com> wrote:
+> +
+> +SEC("fentry/bpf_fentry_test1")
+> +int BPF_PROG(sub, int x)
+> +{
+> +       int a = 0;
+> +       int b = __sync_fetch_and_add(&a, 1);
 
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/ipa_mem.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+It probably needs ENABLE_ATOMICS_TESTS ?
 
-diff --git a/drivers/net/ipa/ipa_mem.c b/drivers/net/ipa/ipa_mem.c
-index 0cc3a3374caa2..f25029b9ec857 100644
---- a/drivers/net/ipa/ipa_mem.c
-+++ b/drivers/net/ipa/ipa_mem.c
-@@ -336,7 +336,7 @@ static void ipa_imem_exit(struct ipa *ipa)
- 
- 		size = iommu_unmap(domain, ipa->imem_iova, ipa->imem_size);
- 		if (size != ipa->imem_size)
--			dev_warn(dev, "unmapped %zu IMEM bytes, expected %lu\n",
-+			dev_warn(dev, "unmapped %zu IMEM bytes, expected %zu\n",
- 				 size, ipa->imem_size);
- 	} else {
- 		dev_err(dev, "couldn't get IPA IOMMU domain for IMEM\n");
-@@ -440,7 +440,7 @@ static void ipa_smem_exit(struct ipa *ipa)
- 
- 		size = iommu_unmap(domain, ipa->smem_iova, ipa->smem_size);
- 		if (size != ipa->smem_size)
--			dev_warn(dev, "unmapped %zu SMEM bytes, expected %lu\n",
-+			dev_warn(dev, "unmapped %zu SMEM bytes, expected %zu\n",
- 				 size, ipa->smem_size);
- 
- 	} else {
--- 
-2.27.0
-
+Otherwise clang without -mcpu=v3 will complain:
+"fatal error: error in backend: Invalid usage of the XADD return value"
