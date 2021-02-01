@@ -2,235 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE27630AA6B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:06:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76E0D30AABD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:15:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbhBAPDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 10:03:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35472 "EHLO
+        id S231360AbhBAPOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 10:14:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231290AbhBAPB3 (ORCPT
+        with ESMTP id S231319AbhBAPB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Feb 2021 10:01:29 -0500
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 502ADC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 07:00:35 -0800 (PST)
-Received: by mail-wr1-x44a.google.com with SMTP id p16so10157225wrx.10
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 07:00:35 -0800 (PST)
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41AE8C06178A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 07:01:18 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id q2so4468024edi.4
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 07:01:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=OnUlgQXic23J1KvXsr/ViVLBUAJAIV22sf87uiL75+w=;
-        b=USBu4V2zW1xZPkBuLbe4LugxWWhi5ilT0p1DK5LgmTbQ0ldhGTd6ssuFYCWPZIghg8
-         9kCOe+STqSWw51H6krjnrvuP0ZGZ4IZmAxDywAjEAXlUHKXA5ZE1JI5oTXqLQsboDG/T
-         z0EGLSKNakNxazByddOfEaM3+EqDZKskBVjlqRzkNkaDLEp0M4tBS6b+75QZ5W7Fbx1U
-         pwqFZYW8NzFcoIeYxVhSxUn4yF6IwXQXHbrRxKxMP9y9aamzyjy+Y8geV5iL7taQ9vLw
-         QAUahrfj3u+vOhfM9ik5RhPHnSlRVbjY2zmpzdwt0t9wKdYVLPB6j0a2fMOGHRpoLWe6
-         2CPg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hZ3xD2/2lcYcAhtu708AbjR6mIFxqFO7i7RlxJAZ5ZU=;
+        b=vgNYmiNTNpQzx2jV86jycjLWMXZ6nJ4tSwFTGE5x9SuV+VLEyH6rZomNo5oqBVo48Z
+         DsUNK+cQyv8QkSJJyXCZV4tv7cR0lGYCjwpm+TwjNSzGMAIRQxs9GEmw8ufWoEShxBYa
+         GurBr5HHFFkdq90UWzoaiYGIUkN3QyDzID/0qAL8SuJUtIPCsK6PqLwuBRW7lZ+fqOpE
+         JjjRgi3SE94pzzb3u1PKCrV1lkLEtli/cajzD6YV9W7lzHADaLkPi5/ewt2oaZw4uKdu
+         tgk1m8Lrv1Qvlu+q7sAxQ2juiqAdpdQe2746+17+ZmPEo8rXHJ5J2rZ6cKbFzR+uOsZh
+         Rltg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=OnUlgQXic23J1KvXsr/ViVLBUAJAIV22sf87uiL75+w=;
-        b=aDu44kyTzyohuQxQu0TNanVnS9u+yycaGh0SCgvS8bS+vKA5vbx2Bug0o2r29PcBh2
-         AHE1ibljAVc2kckTpnHFm/3XbpUz/88+vkfUfkgpTch5il9jgGwatxioKUVnJ4MCR6eS
-         PHULdJK699NiOUU4zhCjOCV1HkxqlcHjP3Eoqi6tBurDXtRoe4mZ97B0O407oMryn8Z3
-         +LxwU5Z2EbCbI63H62ZHUKN9qauYvVmZ5AGonh9M/HINacaoTa20QwwUjX0bIfr8q6+d
-         laCAk1waNzrduUD9nAoyc4msp94nxkJ5tK4LPAh3Fxnn/dbiJSLWBA3sXU2A1aermqHB
-         XDGQ==
-X-Gm-Message-State: AOAM530WBDHpOpmKk4ZJShEoVoQRZi1/mHtK0PDSjNyT+8JuVJFpIkzS
-        rWgmICIrdBEfunoiYyACuFtlMoDIxVspMQ==
-X-Google-Smtp-Source: ABdhPJxnEpIwlj8pyrCLCDkUtKrT6vWsNtt8NC7VPoPzFgqZiFGSDXa7SBdgltrBCTMPnpdmP4EtYZtzqAO/dA==
-Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
-X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:11db])
- (user=jackmanb job=sendgmr) by 2002:a1c:678a:: with SMTP id
- b132mr3318499wmc.35.1612191633878; Mon, 01 Feb 2021 07:00:33 -0800 (PST)
-Date:   Mon,  1 Feb 2021 15:00:28 +0000
-Message-Id: <20210201150028.2279522-1-jackmanb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH bpf-next v2] bpf: Propagate memory bounds to registers in
- atomics w/ BPF_FETCH
-From:   Brendan Jackman <jackmanb@google.com>
-To:     bpf@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        KP Singh <kpsingh@chromium.org>,
-        Florent Revest <revest@chromium.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-kernel@vger.kernel.org, Brendan Jackman <jackmanb@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hZ3xD2/2lcYcAhtu708AbjR6mIFxqFO7i7RlxJAZ5ZU=;
+        b=P/deG/nGIk5WS66MU+RXJ3OCyqstaOQZo4rVCJorgr9RkhsahcLmpll5yWI2yDdutI
+         BbiuoKQG+hul03UIwLyBBg68EfCWxkDEbXA6WhKfHKK/GoXd7rqpuSwEwrImq65Vi6zH
+         WZd8LePIOj+1eGz1DPpep2PtRMnfouLFxhj7UrBMgbZK3kGOYdzTpnFhOkihpw30Rpz6
+         RFkRczdnvBbQWUl9vUAuv/y5YLDQ0kcucwDODfyJPSOlZXB3tCeM6E8bINoNHm2SiLzS
+         4JHRePbtUa4xTFuP36re2fGtss242tY8C6TuRB10z+9zX/yh1uyV40iJwmY/2dq5sN0K
+         BWMA==
+X-Gm-Message-State: AOAM530Lk6inc9eYnD7b31Fx9fz1iZ16QPRQqi8367JokZwvoFIBg0Yg
+        O6yigs/dXAcS8NN6josF6Jyc8hAWWL12jxyN+AO0UA==
+X-Google-Smtp-Source: ABdhPJyUKDJgotj2iV/EZDBBDNQh6SKgJOObpqGbdfNKm6jwpeZr7z46WvIqVVcQo2wc5dGjzyguHOPwSCGKOdVqhQ8=
+X-Received: by 2002:a05:6402:26c9:: with SMTP id x9mr19192479edd.365.1612191676837;
+ Mon, 01 Feb 2021 07:01:16 -0800 (PST)
+MIME-Version: 1.0
+References: <CA+G9fYvzh5GEssPJHM=r2TVUKOhsFJ8jqrY+pP4t7+jF8ctz9A@mail.gmail.com>
+ <5f072f84c7c9b03ded810e56687935b2@kernel.org>
+In-Reply-To: <5f072f84c7c9b03ded810e56687935b2@kernel.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 1 Feb 2021 20:31:05 +0530
+Message-ID: <CA+G9fYs4u=E+jMxTds8A-gYWchC4OSdx26cCw7079+w3_bUiZQ@mail.gmail.com>
+Subject: Re: arm64: gen-hyprel.c:40:10: fatal error: generated/autoconf.h: No
+ such file or directory
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>, lkft-triage@lists.linaro.org,
+        kvmarm@lists.cs.columbia.edu,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Arnd Bergmann <arnd@arndb.de>,
+        James Morse <james.morse@arm.com>,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When BPF_FETCH is set, atomic instructions load a value from memory
-into a register. The current verifier code first checks via
-check_mem_access whether we can access the memory, and then checks
-via check_reg_arg whether we can write into the register.
+On Mon, 1 Feb 2021 at 19:15, Marc Zyngier <maz@kernel.org> wrote:
+>
+> On 2021-02-01 13:38, Naresh Kamboju wrote:
+> > Linux next 20210201 tag arm64 builds failed.
+> > kernel config attached to this email.
+> >
+> > BAD:    next-20210201
+> > GOOD: next-20210129
+> >
+> > make --silent --keep-going --jobs=8
+> > O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=arm64
+> > CROSS_COMPILE=aarch64-linux-gnu- 'CC=sccache aarch64-linux-gnu-gcc'
+> > 'HOSTCC=sccache gcc'
+> > arch/arm64/kvm/hyp/nvhe/gen-hyprel.c:40:10: fatal error:
+> > generated/autoconf.h: No such file or directory
+> >    40 | #include <generated/autoconf.h>
+> >       |          ^~~~~~~~~~~~~~~~~~~~~~
+> > compilation terminated.
+> >
+> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+>
+> Could you please check with the fix suggested at [1]?
 
-For loads, check_reg_arg has the side-effect of marking the
-register's value as unkonwn, and check_mem_access has the side effect
-of propagating bounds from memory to the register.
+Here is the change I have applied and the arm64 builds successful now.
 
-Therefore with the current order, bounds information is thrown away,
-but by simply reversing the order of check_reg_arg
-vs. check_mem_access, we can instead propagate bounds smartly.
+diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
+index 09d04dd50eb8..ed10fcf1b345 100644
+--- a/arch/arm64/kvm/hyp/nvhe/Makefile
++++ b/arch/arm64/kvm/hyp/nvhe/Makefile
+@@ -7,7 +7,7 @@ asflags-y := -D__KVM_NVHE_HYPERVISOR__
+ ccflags-y := -D__KVM_NVHE_HYPERVISOR__
 
-A simple test is added with an infinite loop that can only be proved
-unreachable if this propagation is present. This is implemented both
-with C and directly in test_verifier using assembly.
+ hostprogs := gen-hyprel
+-HOST_EXTRACFLAGS += -I$(srctree)/include
++HOST_EXTRACFLAGS += -I$(objtree)/include
 
-Suggested-by: John Fastabend <john.fastabend@gmail.com>
-Signed-off-by: Brendan Jackman <jackmanb@google.com>
+ obj-y := timer-sr.o sysreg-sr.o debug-sr.o switch.o tlb.o hyp-init.o host.o \
+         hyp-main.o hyp-smp.o psci-relay.o
 
----
 
-Difference from v1->v2:
+> [1] https://lore.kernel.org/r/20210201104251.5foc64qq3ewgnhuz@google.com
 
- * Reworked commit message to clarify this only affects stack memory
- * Added the Suggested-by
- * Added a C-based test.
 
- kernel/bpf/verifier.c                         | 32 +++++++++++--------
- .../selftests/bpf/prog_tests/atomic_bounds.c  | 15 +++++++++
- .../selftests/bpf/progs/atomic_bounds.c       | 15 +++++++++
- .../selftests/bpf/verifier/atomic_bounds.c    | 27 ++++++++++++++++
- 4 files changed, 75 insertions(+), 14 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
- create mode 100644 tools/testing/selftests/bpf/progs/atomic_bounds.c
- create mode 100644 tools/testing/selftests/bpf/verifier/atomic_bounds.c
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 972fc38eb62d..5e09632efddb 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -3665,9 +3665,26 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
- 		return -EACCES;
- 	}
-
-+	if (insn->imm & BPF_FETCH) {
-+		if (insn->imm == BPF_CMPXCHG)
-+			load_reg = BPF_REG_0;
-+		else
-+			load_reg = insn->src_reg;
-+
-+		/* check and record load of old value */
-+		err = check_reg_arg(env, load_reg, DST_OP);
-+		if (err)
-+			return err;
-+	} else {
-+		/* This instruction accesses a memory location but doesn't
-+		 * actually load it into a register.
-+		 */
-+		load_reg = -1;
-+	}
-+
- 	/* check whether we can read the memory */
- 	err = check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
--			       BPF_SIZE(insn->code), BPF_READ, -1, true);
-+			       BPF_SIZE(insn->code), BPF_READ, load_reg, true);
- 	if (err)
- 		return err;
-
-@@ -3677,19 +3694,6 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
- 	if (err)
- 		return err;
-
--	if (!(insn->imm & BPF_FETCH))
--		return 0;
--
--	if (insn->imm == BPF_CMPXCHG)
--		load_reg = BPF_REG_0;
--	else
--		load_reg = insn->src_reg;
--
--	/* check and record load of old value */
--	err = check_reg_arg(env, load_reg, DST_OP);
--	if (err)
--		return err;
--
- 	return 0;
- }
-
-diff --git a/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c b/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
-new file mode 100644
-index 000000000000..addf127068e4
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <test_progs.h>
-+
-+#include "atomic_bounds.skel.h"
-+
-+void test_atomic_bounds(void)
-+{
-+	struct atomic_bounds *skel;
-+	__u32 duration = 0;
-+
-+	skel = atomic_bounds__open_and_load();
-+	if (CHECK(!skel, "skel_load", "couldn't load program\n"))
-+		return;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/atomic_bounds.c b/tools/testing/selftests/bpf/progs/atomic_bounds.c
-new file mode 100644
-index 000000000000..ea2e982c7f3f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/atomic_bounds.c
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <linux/bpf.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+
-+SEC("fentry/bpf_fentry_test1")
-+int BPF_PROG(sub, int x)
-+{
-+	int a = 0;
-+	int b = __sync_fetch_and_add(&a, 1);
-+	/* b is certainly 0 here. Can the verifier tell? */
-+	while (b)
-+		continue;
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/verifier/atomic_bounds.c b/tools/testing/selftests/bpf/verifier/atomic_bounds.c
-new file mode 100644
-index 000000000000..e82183e4914f
---- /dev/null
-+++ b/tools/testing/selftests/bpf/verifier/atomic_bounds.c
-@@ -0,0 +1,27 @@
-+{
-+	"BPF_ATOMIC bounds propagation, mem->reg",
-+	.insns = {
-+		/* a = 0; */
-+		/*
-+		 * Note this is implemented with two separate instructions,
-+		 * where you might think one would suffice:
-+		 *
-+		 * BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
-+		 *
-+		 * This is because BPF_ST_MEM doesn't seem to set the stack slot
-+		 * type to 0 when storing an immediate.
-+		 */
-+		BPF_MOV64_IMM(BPF_REG_0, 0),
-+		BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_0, -8),
-+		/* b = atomic_fetch_add(&a, 1); */
-+		BPF_MOV64_IMM(BPF_REG_1, 1),
-+		BPF_ATOMIC_OP(BPF_DW, BPF_ADD | BPF_FETCH, BPF_REG_10, BPF_REG_1, -8),
-+		/* Verifier should be able to tell that this infinite loop isn't reachable. */
-+		/* if (b) while (true) continue; */
-+		BPF_JMP_IMM(BPF_JNE, BPF_REG_1, 0, -1),
-+		BPF_EXIT_INSN(),
-+	},
-+	.result = ACCEPT,
-+	.result_unpriv = REJECT,
-+	.errstr_unpriv = "back-edge",
-+},
-
-base-commit: 61ca36c8c4eb3bae35a285b1ae18c514cde65439
---
-2.30.0.365.g02bc693789-goog
-
+- Naresh
