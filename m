@@ -2,134 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A69A030A554
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:30:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2882030A55D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:32:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233105AbhBAK3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 05:29:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37746 "EHLO mail.kernel.org"
+        id S233131AbhBAKar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 05:30:47 -0500
+Received: from mga17.intel.com ([192.55.52.151]:18699 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232290AbhBAK3a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 05:29:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C5D4F64E11;
-        Mon,  1 Feb 2021 10:28:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612175328;
-        bh=cYt/4tFrkPkgMO34ziTHv/Xl1CcvzqikMpKc4YYIK3E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b6ZoHjs8fw7VKf4QcU0XyCtgxal6MYEuJbZNANShek+No1IBv7+gBIir6zc58xDDB
-         niMTmXK/7Wg8ljX3fe5HS4knDBq7ghL3y3B91toy8awjKPwncJ+emGAfwf7ZAtU/Wu
-         y+YIZ2c3tffyUU7Xhe3aeUcnKp4PL3CuBrAWSFRCkD0l8L/gsEG1ktHS5JVgnx9Bwd
-         coyzEzfty0ggFc7/mnIKWPxuKMVeaX9DkUf76A9JbLmyLjNJC0nCU3l3N5CvNK9Abt
-         DmNmEunjd6gg9e7pBBb1AFhVBsWMz2b8VxqD/2OT9eQa+8V6LMM5eXMfUvyPBup/dl
-         ZJ1VKiWZoJ6mQ==
-Date:   Mon, 1 Feb 2021 15:58:44 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        bard.liao@intel.com
-Subject: Re: [PATCH 1/3] soundwire: bus: clear bus clash interrupt before the
- mask is enabled
-Message-ID: <20210201102844.GU2771@vkoul-mobl>
-References: <20210126083746.3238-1-yung-chuan.liao@linux.intel.com>
- <20210126083746.3238-2-yung-chuan.liao@linux.intel.com>
+        id S233111AbhBAKal (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 05:30:41 -0500
+IronPort-SDR: N96PxczB/xvaorRrl2kmiwfq0W2EsFn6uv1M1qntQiNDxWd3j1kkSGUcWWjoIcWBzTrrTIi/Yp
+ FaZ/nCB/hvrQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="160431215"
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="160431215"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 02:28:54 -0800
+IronPort-SDR: J9R3ax7MyC7rExwiEqkb+Wt6vqctsjzO7ltEF90QLwtAnN26ZUjP7j/QgSdYCViQbwKaaNaIFb
+ s0LHX6Y8MR0A==
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="432282604"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 02:28:51 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l6WRs-0016HE-0L; Mon, 01 Feb 2021 12:28:48 +0200
+Date:   Mon, 1 Feb 2021 12:28:47 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Joel Becker <jlbec@evilplan.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Kent Gibson <warthog618@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH 8/8] gpio: sim: new testing module
+Message-ID: <YBfX38JBa0psBizQ@smile.fi.intel.com>
+References: <20210129134624.9247-1-brgl@bgdev.pl>
+ <20210129134624.9247-9-brgl@bgdev.pl>
+ <YBQwUkQz3LrG5G4i@smile.fi.intel.com>
+ <CAMRc=MeSy4zWOAGxfoBih62WxAXuOLtkK3ROyt+4LuqLvDxtaQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210126083746.3238-2-yung-chuan.liao@linux.intel.com>
+In-Reply-To: <CAMRc=MeSy4zWOAGxfoBih62WxAXuOLtkK3ROyt+4LuqLvDxtaQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26-01-21, 16:37, Bard Liao wrote:
-> The SoundWire specification allows a Slave device to report a bus clash
-> with the in-band interrupt mechanism when it detects a conflict while
-> driving a bitSlot it owns. This can be a symptom of an electrical conflict
-> or a programming error, and it's vital to detect reliably.
-> 
-> Unfortunately, on some platforms, bus clashes are randomly reported by
-> Slave devices after a bus reset, with an interrupt status set even before
-> the bus clash interrupt is enabled. These initial spurious interrupts are
-> not relevant and should optionally be filtered out, while leaving the
-> interrupt mechanism enabled to detect 'true' issues.
-> 
-> This patch suggests the addition of a Master level quirk to discard such
-> interrupts. The quirk should in theory have been added at the Slave level,
-> but since the problem was detected with different generations of Slave
-> devices it's hard to point to a specific IP. The problem might also be
-> board-dependent and hence dealing with a Master quirk is simpler.
-> 
-> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
-> Reviewed-by: Rander Wang <rander.wang@linux.intel.com>
-> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->  drivers/soundwire/bus.c       | 10 ++++++++++
->  include/linux/soundwire/sdw.h |  4 ++++
->  2 files changed, 14 insertions(+)
-> 
-> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-> index 6e1c988f3845..d394905936e4 100644
-> --- a/drivers/soundwire/bus.c
-> +++ b/drivers/soundwire/bus.c
-> @@ -1240,6 +1240,7 @@ static int sdw_slave_set_frequency(struct sdw_slave *slave)
->  static int sdw_initialize_slave(struct sdw_slave *slave)
->  {
->  	struct sdw_slave_prop *prop = &slave->prop;
-> +	int status;
->  	int ret;
->  	u8 val;
->  
-> @@ -1247,6 +1248,15 @@ static int sdw_initialize_slave(struct sdw_slave *slave)
->  	if (ret < 0)
->  		return ret;
->  
-> +	if (slave->bus->prop.quirks & SDW_MASTER_QUIRKS_CLEAR_INITIAL_CLASH) {
-> +		/* Clear bus clash interrupt before enabling interrupt mask */
-> +		status = sdw_read_no_pm(slave, SDW_SCP_INT1);
-> +		if (status & SDW_SCP_INT1_BUS_CLASH) {
-> +			dev_warn(&slave->dev, "Bus clash detected before INT mask is enabled\n");
-> +			sdw_write_no_pm(slave, SDW_SCP_INT1, SDW_SCP_INT1_BUS_CLASH);
-> +		}
-> +	}
-> +
->  	/*
->  	 * Set SCP_INT1_MASK register, typically bus clash and
->  	 * implementation-defined interrupt mask. The Parity detection
-> diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-> index f0b01b728640..a2766c3b603d 100644
-> --- a/include/linux/soundwire/sdw.h
-> +++ b/include/linux/soundwire/sdw.h
-> @@ -405,6 +405,7 @@ struct sdw_slave_prop {
->   * command
->   * @mclk_freq: clock reference passed to SoundWire Master, in Hz.
->   * @hw_disabled: if true, the Master is not functional, typically due to pin-mux
-> + * @quirks: bitmask identifying optional behavior beyond the scope of the MIPI specification
->   */
->  struct sdw_master_prop {
->  	u32 revision;
-> @@ -421,8 +422,11 @@ struct sdw_master_prop {
->  	u32 err_threshold;
->  	u32 mclk_freq;
->  	bool hw_disabled;
-> +	u32 quirks;
+On Sat, Jan 30, 2021 at 09:37:55PM +0100, Bartosz Golaszewski wrote:
+> On Fri, Jan 29, 2021 at 4:57 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Fri, Jan 29, 2021 at 02:46:24PM +0100, Bartosz Golaszewski wrote:
 
-Can we do u64 here please.. I dont know where we would end up.. but
-would hate if we start running out of space ..
+...
+
+> > > +static int gpio_sim_set_config(struct gpio_chip *gc,
+> > > +                               unsigned int offset, unsigned long config)
+> > > +{
+> > > +     struct gpio_sim_chip *chip = gpiochip_get_data(gc);
+> > > +
+> > > +     switch (pinconf_to_config_param(config)) {
+> >
+> > > +     case PIN_CONFIG_BIAS_PULL_UP:
+> > > +             return gpio_sim_apply_pull(chip, offset, 1);
+> > > +     case PIN_CONFIG_BIAS_PULL_DOWN:
+> > > +             return gpio_sim_apply_pull(chip, offset, 0);
+> >
+> > But aren't we got a parameter (1 or 0) from config? And hence
+> >
+> >         case PIN_CONFIG_BIAS_PULL_UP:
+> >         case PIN_CONFIG_BIAS_PULL_DOWN:
+> >                 return gpio_sim_apply_pull(chip, offset, <param>);
+> >
+> > ?
+> 
+> I believe this is more explicit and so easier to read if you don't
+> know the GPIO and pinctrl internals.
 
 
->  };
->  
-> +#define SDW_MASTER_QUIRKS_CLEAR_INITIAL_CLASH	BIT(0)
-> +
->  int sdw_master_read_prop(struct sdw_bus *bus);
->  int sdw_slave_read_prop(struct sdw_slave *slave);
->  
-> -- 
-> 2.17.1
+If we ever go to change meanings of the values in param, it will require to fix
+this occurrence which seems to me suboptimal.
+
+> > > +     default:
+> > > +             break;
+> > > +     }
+> > > +
+> > > +     return -ENOTSUPP;
+> > > +}
+
+...
+
+> > > +static ssize_t gpio_sim_sysfs_line_store(struct device *dev,
+> > > +                                      struct device_attribute *attr,
+> > > +                                      const char *buf, size_t len)
+> > > +{
+> > > +     struct gpio_sim_attribute *line_attr = to_gpio_sim_attr(attr);
+> > > +     struct gpio_sim_chip *chip = dev_get_drvdata(dev);
+> > > +     int ret, val;
+> >
+> > > +     ret = kstrtoint(buf, 0, &val);
+> > > +     if (ret)
+> > > +             return ret;
+> > > +     if (val != 0 && val != 1)
+> > > +             return -EINVAL;
+> >
+> > kstrtobool() ?
+> >
+> 
+> No, we really only want 0 or 1, no yes, Y etc.
+
+Side note: But you allow 0x00001, for example...
+
+Then why not to use unsigned type from the first place and add a comment?
+
+> > > +     ret = gpio_sim_apply_pull(chip, line_attr->offset, val);
+> > > +     if (ret)
+> > > +             return ret;
+> > > +
+> > > +     return len;
+> > > +}
+
+...
+
+> > > +struct gpio_sim_chip_config {
+> > > +     struct config_item item;
+> > > +
+> > > +     /*
+> > > +      * If pdev is NULL, the item is 'pending' (waiting for configuration).
+> > > +      * Once the pointer is assigned, the device has been created and the
+> > > +      * item is 'live'.
+> > > +      */
+> > > +     struct platform_device *pdev;
+> >
+> > Are you sure
+> >
+> >         struct device *dev;
+> >
+> > is not sufficient?
+> >
+> 
+> It may be but I really prefer those simulated devices to be on the platform bus.
+
+My point here is that there is no need to keep specific bus devices type,
+because you may easily derive it from the struct device pointer. Basically if
+you are almost using struct device in your code (seems to me the case), you
+won't need to carry bus specific one and dereference it each time.
+
+> > > +     /*
+> > > +      * Each configfs filesystem operation is protected with the subsystem
+> > > +      * mutex. Each separate attribute is protected with the buffer mutex.
+> > > +      * This structure however can be modified by callbacks of different
+> > > +      * attributes so we need another lock.
+> > > +      */
+> > > +     struct mutex lock;
+> > > +
+> > > +     char label[32];
+> > > +     unsigned int num_lines;
+> > > +     char **line_names;
+> > > +     unsigned int num_line_names;
+> > > +};
+
+...
+
+> > Honestly, I don't like the idea of Yet Another (custom) Parser in the kernel.
+> >
+> > Have you investigated existing parsers? We have cmdline.c, gpio-aggregator.c,
+> > etc. Besides the fact of test cases which are absent here. And who knows what
+> > we allow to be entered.
+> >
+> 
+> Yes, I looked all around the kernel to find something I could reuse
+> but failed to find anything useful for this particular purpose. If you
+> have something you could point me towards, I'm open to alternatives.
+> 
+> Once we agree on the form of the module, I'll port self-tests to using
+> it instead of gpio-mockup, so we'll have some tests in the tree.
+
+I will look again when you send a new version, so I might give some hints.
 
 -- 
-~Vinod
+With Best Regards,
+Andy Shevchenko
+
+
