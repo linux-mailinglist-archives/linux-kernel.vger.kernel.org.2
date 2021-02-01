@@ -2,117 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6E4930B1D3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:02:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D8030B1D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232165AbhBAVAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 16:00:35 -0500
-Received: from conssluserg-01.nifty.com ([210.131.2.80]:40249 "EHLO
-        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229879AbhBAVAb (ORCPT
+        id S232234AbhBAVAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 16:00:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229879AbhBAVAh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 16:00:31 -0500
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173]) (authenticated)
-        by conssluserg-01.nifty.com with ESMTP id 111KxSLi012988;
-        Tue, 2 Feb 2021 05:59:29 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 111KxSLi012988
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1612213169;
-        bh=kAlAHi/OGtvLm+bYrSQ8UHY37fzkJJ3uPPuK5hDluAs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CDJyrsnKeA09Ip8ukvWIBazReG5HhM+cxCQAk7Y7cQ5O+wvJ3ckgvQ5yY1ZCE4Eet
-         ZThkVTyAQ7WK9ScoSsfyTeEkGrBMmMUC2uxGgMNerbBpA+kXkiFS4unCZpny9FN9Ew
-         44wZJYCZETIpQVJMhYyb2AItBIXS8/M6FBnU4K2qUHKf8QjbOH5ZEiQdQCX4LfxUdE
-         mqyuzUdC869wc/cksy+LIqVWh3tUqcmox+xspVxxRFE71N0eyLnh7SuqieMH9RLCG5
-         iLu9noLS+9Ixf/HIjR+VR+1hcQ/AFLwldFCkQ2jS3EAW2AGT8kcJA4s9GtrdWG7/3o
-         SxDABvdSrhuug==
-X-Nifty-SrcIP: [209.85.215.173]
-Received: by mail-pg1-f173.google.com with SMTP id n10so12910564pgl.10;
-        Mon, 01 Feb 2021 12:59:28 -0800 (PST)
-X-Gm-Message-State: AOAM531u0zgqseuZtvQtobrWxgvTDr1NOhw6GadkXEkRce4ASHsG36gX
-        TCpUF7EZEB10GTsf/z3OYmGxDdt1M99W1pwPCxc=
-X-Google-Smtp-Source: ABdhPJys0q96JhGd9rQK509mjBP+Td2+PvZmoi8hhx8MEYI4qlX/UXEaMXaykRrQo4Yg7kC2dDa6Gqg1a9cK56zqQfA=
-X-Received: by 2002:a63:ff09:: with SMTP id k9mr19001783pgi.175.1612213168125;
- Mon, 01 Feb 2021 12:59:28 -0800 (PST)
-MIME-Version: 1.0
-References: <20210201010024.654526-1-masahiroy@kernel.org> <87r1lzvj3q.fsf@meer.lwn.net>
-In-Reply-To: <87r1lzvj3q.fsf@meer.lwn.net>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 2 Feb 2021 05:58:51 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQQ=kqhx6REix7j+ZndABjuCBEwp=yiQp71Z0fBrQZxog@mail.gmail.com>
-Message-ID: <CAK7LNAQQ=kqhx6REix7j+ZndABjuCBEwp=yiQp71Z0fBrQZxog@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: remove PYTHON variable
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 1 Feb 2021 16:00:37 -0500
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7AAC061573;
+        Mon,  1 Feb 2021 12:59:56 -0800 (PST)
+Received: by mail-wm1-x32a.google.com with SMTP id a16so670635wmm.0;
+        Mon, 01 Feb 2021 12:59:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=2V/28VzWHyvh+HY7OGmImro30pfLz2Wvu7X6nZgDwNM=;
+        b=rwFl9CxoyA5tCMaE4vHRwQ3LUWNduEYts0jWOSH8jEdzscTRxtFHm5Jf4gKwpRRkIl
+         JtZGcI/lEFyVKbZRuV+xYed1uCbOZD9cmntnspCJLudSYtwUabmnNYqg/pbFJDZmhiXf
+         2lP5e5aGVmz5fLEujwKi05jU4d2ajSpr7u7ddnVL5Vonyot7HQUnxZpGhKwFg1dAM0UX
+         DsqV3wqlx764dbxhuKHWplb4/WmCNLPHoiiT7BNbV1Aae1MfchyM+yDhZL1euOwrXqdP
+         WLRTFUJd3g3Hq8YJVv1C1h5r1+2FElUlviwYY3dzV7Ozdxh5ISHvtAg8o+Xq9qMlKAW/
+         9gfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=2V/28VzWHyvh+HY7OGmImro30pfLz2Wvu7X6nZgDwNM=;
+        b=S6+XqHvm06rtODgn1hOpCf4xqqA7lknmc1/KgruOxwIYP27t8rEB0VBlqM/e/RRiBA
+         4GTNmfpvQ7695oFOtBfVH7gxLngzF/uzdN0yH+w5DtxDAcviGOdpqeqRf2SwVGAG408A
+         HoO0dr6JmBuGMa63FoQzOJIUGOHNM/TE4sDjNhqi6eMHv7QcQpVT5LMRsSoiQHBNEsIi
+         qnaKEOmJnhEhJZxxp3zZF950BDcXlQPjQeHulowDUcTOs7IP+ke5MfAcgdQeXtRMIjZF
+         YNbtq6p4VSiIMdRFVVAWWXG2TL4TJyRzaOYRl2I5xRbzJAvbu7vLTh1NEEaI0axczBc3
+         Ju7A==
+X-Gm-Message-State: AOAM5333rT7vlwUg37Z/aLBublwrrDeejdX+MpqtB2knPzGv+Ylga4bg
+        j3p/RHz17+NFP2VndFRi13o=
+X-Google-Smtp-Source: ABdhPJzPsyWs4JsB7ODJD2GzaojvMrd81mXinjihlGqfup82NVVMV2KE0AZldyywJOQGGdkDMwV7Gw==
+X-Received: by 2002:a1c:9ad5:: with SMTP id c204mr629117wme.65.1612213195419;
+        Mon, 01 Feb 2021 12:59:55 -0800 (PST)
+Received: from localhost.localdomain ([87.200.95.144])
+        by smtp.gmail.com with ESMTPSA id d10sm3450617wrn.88.2021.02.01.12.59.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 12:59:54 -0800 (PST)
+From:   Christian Hewitt <christianshewitt@gmail.com>
+To:     Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Cc:     Christian Hewitt <christianshewitt@gmail.com>
+Subject: [PATCH] media: rc: add keymap for minix-neo remote
+Date:   Mon,  1 Feb 2021 20:59:51 +0000
+Message-Id: <20210201205951.938-1-christianshewitt@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 1:38 AM Jonathan Corbet <corbet@lwn.net> wrote:
->
-> Masahiro Yamada <masahiroy@kernel.org> writes:
->
-> > Python retired in 2020, and some distributions do not provide the
-> > 'python' command any more.
-> >
-> > As in commit 51839e29cb59 ("scripts: switch explicitly to Python 3"),
-> > we need to use more specific 'python3' to invoke scripts even if they
-> > are written in a way compatible with both Python 2 and 3.
-> >
-> > This commit removes the variable 'PYTHON', and switches the existing
-> > users to 'PYTHON3'.
-> >
-> > BTW, PEP 394 (https://www.python.org/dev/peps/pep-0394/) is a helpful
-> > material.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->
-> So this will have the effect of making the docs build impossible for
-> folks who only have Python 2.
+Add a keymap and bindings for the simple IR (NEC) remote used with
+Minix 'NEO' branded Android STB devices.
 
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+---
+ .../devicetree/bindings/media/rc.yaml         |  1 +
+ drivers/media/rc/keymaps/Makefile             |  1 +
+ drivers/media/rc/keymaps/rc-minix-neo.c       | 55 +++++++++++++++++++
+ include/media/rc-map.h                        |  1 +
+ 4 files changed, 58 insertions(+)
+ create mode 100644 drivers/media/rc/keymaps/rc-minix-neo.c
 
-Is this a problem?  Python 2 is EOL.
-
-Everybody who wants to use Python
-must install Python 3.
-
-
-Rather, people are screaming
-that the 'python' command does not exist.
-
-
-
-
->  As I said before, this is a step that we
-> knew was coming, we just hadn't decided on the exact timing - I guess
-> this decides for us :)
->
-> That said, I'll copy linux-doc to see if anybody screams.  I assume this
-> is a 5.12 change?
-
-
-No, I am planning to do this for 5.11
-(a pull request this week if there is no objection).
-
-
-
-
-
-
-
-
-> Thanks,
->
-> jon
->
-
-
+diff --git a/Documentation/devicetree/bindings/media/rc.yaml b/Documentation/devicetree/bindings/media/rc.yaml
+index 946441b4e1a5..cbffdd6a470d 100644
+--- a/Documentation/devicetree/bindings/media/rc.yaml
++++ b/Documentation/devicetree/bindings/media/rc.yaml
+@@ -93,6 +93,7 @@ properties:
+       - rc-medion-x10
+       - rc-medion-x10-digitainer
+       - rc-medion-x10-or2x
++      - rc-minix-neo
+       - rc-msi-digivox-ii
+       - rc-msi-digivox-iii
+       - rc-msi-tvanywhere
+diff --git a/drivers/media/rc/keymaps/Makefile b/drivers/media/rc/keymaps/Makefile
+index b252a1d2ebd6..b7f53f44c5c8 100644
+--- a/drivers/media/rc/keymaps/Makefile
++++ b/drivers/media/rc/keymaps/Makefile
+@@ -70,6 +70,7 @@ obj-$(CONFIG_RC_MAP) += rc-adstech-dvb-t-pci.o \
+ 			rc-medion-x10.o \
+ 			rc-medion-x10-digitainer.o \
+ 			rc-medion-x10-or2x.o \
++			rc-minix-neo.o \
+ 			rc-msi-digivox-ii.o \
+ 			rc-msi-digivox-iii.o \
+ 			rc-msi-tvanywhere.o \
+diff --git a/drivers/media/rc/keymaps/rc-minix-neo.c b/drivers/media/rc/keymaps/rc-minix-neo.c
+new file mode 100644
+index 000000000000..9165af548ff1
+--- /dev/null
++++ b/drivers/media/rc/keymaps/rc-minix-neo.c
+@@ -0,0 +1,55 @@
++// SPDX-License-Identifier: GPL-2.0+
++//
++// Copyright (C) 2021 Christian Hewitt <christianshewitt@gmail.com>
++
++#include <media/rc-map.h>
++#include <linux/module.h>
++
++//
++// Keytable for the Minix NEO remote control
++//
++
++static struct rc_map_table minix_neo[] = {
++
++	{ 0x118, KEY_POWER },
++
++	{ 0x146, KEY_UP },
++	{ 0x116, KEY_DOWN },
++	{ 0x147, KEY_LEFT },
++	{ 0x115, KEY_RIGHT },
++	{ 0x155, KEY_ENTER },
++
++	{ 0x110, KEY_VOLUMEDOWN },
++	{ 0x140, KEY_BACK },
++	{ 0x114, KEY_VOLUMEUP },
++
++	{ 0x10d, KEY_HOME },
++	{ 0x104, KEY_MENU },
++	{ 0x112, KEY_CONFIG },
++
++};
++
++static struct rc_map_list minix_neo_map = {
++	.map = {
++		.scan     = minix_neo,
++		.size     = ARRAY_SIZE(minix_neo),
++		.rc_proto = RC_PROTO_NEC,
++		.name     = RC_MAP_MINIX_NEO,
++	}
++};
++
++static int __init init_rc_map_minix_neo(void)
++{
++	return rc_map_register(&minix_neo_map);
++}
++
++static void __exit exit_rc_map_minix_neo(void)
++{
++	rc_map_unregister(&minix_neo_map);
++}
++
++module_init(init_rc_map_minix_neo)
++module_exit(exit_rc_map_minix_neo)
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Christian Hewitt <christianshewitt@gmail.com");
+diff --git a/include/media/rc-map.h b/include/media/rc-map.h
+index 999b750bc6b8..a6fca9cc761f 100644
+--- a/include/media/rc-map.h
++++ b/include/media/rc-map.h
+@@ -273,6 +273,7 @@ struct rc_map *rc_map_get(const char *name);
+ #define RC_MAP_MEDION_X10                "rc-medion-x10"
+ #define RC_MAP_MEDION_X10_DIGITAINER     "rc-medion-x10-digitainer"
+ #define RC_MAP_MEDION_X10_OR2X           "rc-medion-x10-or2x"
++#define RC_MAP_MINIX_NEO                 "rc-minix-neo"
+ #define RC_MAP_MSI_DIGIVOX_II            "rc-msi-digivox-ii"
+ #define RC_MAP_MSI_DIGIVOX_III           "rc-msi-digivox-iii"
+ #define RC_MAP_MSI_TVANYWHERE            "rc-msi-tvanywhere"
 -- 
-Best Regards
-Masahiro Yamada
+2.17.1
+
