@@ -2,89 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 646E330AD51
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:03:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5784630AD5B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:07:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231699AbhBARC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:02:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33258 "EHLO
+        id S231742AbhBARE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:04:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231131AbhBARCQ (ORCPT
+        with ESMTP id S230479AbhBARDz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:02:16 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F9E0C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 09:01:36 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id e18so20474813lja.12
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 09:01:36 -0800 (PST)
+        Mon, 1 Feb 2021 12:03:55 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C7FAC0613ED
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 09:03:15 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id 8so5009990plc.10
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 09:03:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9D9BjQCsP/BBIIM4bFem5G7Ivu76rlT1kOYtUbgHA9U=;
-        b=OBG6OcX195i3qCdWRo3LO225VOEQZbfV2XFNhFqRSKDIYuI7GKge1Ixfdq91BOkkCN
-         msEi9S2B3bIrjyNikLHfBTpoGGuq6KH6GxRSEQcMz+9vnq4jNQ4mxYHpqdbqrXv4iE1B
-         +XsRnwh+RRaElaSxHF7pc79kmawuWFgU5QxpHim1bm5ctRmF6zkR5YiI5Fk6lhieEsO8
-         JzdU8RsxTV8MdLY5/57mSOnN2umS2UNQSan5kd38R276ANmdY3xUtJJuXEJVN000MdAA
-         4SAqeGtEc0TUXBG9+3bYV+1e9GOz8TmEAMyH6IS4cQKu3owYCW3v6ldmBsBzWpdjzEW6
-         r0Pg==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AbLcBMadzfPNUKPpChxU3zdp0WkPHuBpL7HFiG9WOA8=;
+        b=iPO/jFlJkD0ioLqPa854SWjC1n4YOUXfH2OQ2aPZAWRcRmbZucOfXp178t7DmONYTM
+         494MAbZ0Eajq1M0wT3gv74Ig1q0clmDanfXx28Kdr/xBSzcC2F61M4rsAQAGi/3hcZy+
+         cDxmSNA0L+2LkQxy89Q+P0sQgqcHzidLVLe0ekEO7DyUMBk+ywbqOe4qIhlvFCs0gTZn
+         MecXJ/nb4Gsb/Uyp+dbghIjdHjcLJqwMtIiEsreIghPKqCWO17NeFMMG78rnrFCywPts
+         yE6FcOx4/5/MhwsQKSB8Yyc3gPgXkKpr4jnH0yCIdaiQAjiooJvyk/beMZyFDZo/Wdku
+         VlHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9D9BjQCsP/BBIIM4bFem5G7Ivu76rlT1kOYtUbgHA9U=;
-        b=jS6IDdluUoocZn8P3n0q4hlzrAmXQHFYogsKoQfEIi7opeiACfLSECw/E+FF/ZcGZj
-         JIYLfA8xUe2ugPZixdDP7ob0gycmuruYbq3+57j4MAqta9+99Bu7Bd0OMZAIh82QTcZq
-         39BhC0dMO9jtg/zYKQ8b5Oy042KVZxU+uIqjM4RpXskrgPz6Y59m0Qc2sH+ZgNVsNo/1
-         +hEfU3CZiucyYiBmVsyebBmtGrZ2y91oTN0+wGIW8JcUc9JcnxuZVQQqPUacY7oKLOcf
-         gSPSLLajDG9Y/M3zf1iMQWu14IuMs1qq8iqLqXxqKB0dwcPFDhvYZ8Y4TgM7wTwI1DlF
-         1ADA==
-X-Gm-Message-State: AOAM532G2R8QCosFSaprr/6q47x/23eRSeUuD3PRfm6y04qTlTeyJbDK
-        3WFhwlREWk0KR/fGJfTWSWTHBQtPg+yp/syIVRQ=
-X-Google-Smtp-Source: ABdhPJwbihW7q+v0w8MC26mCCXinKx9e4nlaayM1Qm04O4/K+BQt+9v55XEH3B5zESt/9GCAp3yx9bg44b51/FE3jb8=
-X-Received: by 2002:a2e:9789:: with SMTP id y9mr10555804lji.482.1612198894409;
- Mon, 01 Feb 2021 09:01:34 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AbLcBMadzfPNUKPpChxU3zdp0WkPHuBpL7HFiG9WOA8=;
+        b=pQwZCtORz90hhPQloF36DdevRN3zUIBbjJ6AuoyZXp2crIGxJkL1ReIZMVdjuqNNST
+         f+k4FW3pQ0Ah53Uui79eo01hfhnHF3bgGPyPShAYgfQFXwNgeVEOi5DstSKqke/efnGo
+         LaOkvucSiHJWN3WicfQTPjpNa4A+Q6BHOsMNji60dRPO03Exvp9QJE4YQ6aCZELwoCRa
+         xHQPHT38sgaiSzK1NF1sKJMU7osZYQJtX9+JV99Vr5OnQ05ZC//7Oo5L4+vR/UCVVR16
+         ThJ4elS+A/ypUQLh+vNyzaA4SFY9B9ARZrCn6YVn6ZQkJIkMIYSgJOxGDXJg/BuREhB0
+         FxDA==
+X-Gm-Message-State: AOAM531tKdzxbX4liIL36NxCdqux8TJcob/u3aUCscwD4CamhFzLjzBZ
+        JBeEwtkeOKh8x71VCdcCbsJ17Q==
+X-Google-Smtp-Source: ABdhPJwhNigfENOgksJTjP0i72PpJc/SwaWNspkOhsfnSt2m32E0FV/18a4q0HPVj3AsIYD3+j4d/Q==
+X-Received: by 2002:a17:902:be0d:b029:e1:4ab:8fd2 with SMTP id r13-20020a170902be0db02900e104ab8fd2mr18582360pls.6.1612198994977;
+        Mon, 01 Feb 2021 09:03:14 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:829:fccd:80d7:796f])
+        by smtp.gmail.com with ESMTPSA id b14sm17152725pfi.74.2021.02.01.09.03.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 09:03:14 -0800 (PST)
+Date:   Mon, 1 Feb 2021 09:03:07 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        jmattson@google.com, stable@vger.kernel.org
+Subject: Re: [PATCH v2] KVM: x86: Allow guests to see MSR_IA32_TSX_CTRL even
+ if tsx=off
+Message-ID: <YBg0Sy3MlD0Rn3mF@google.com>
+References: <20210129101912.1857809-1-pbonzini@redhat.com>
+ <YBQ+peAEdX2h3tro@google.com>
+ <37be5fb8-056f-8fba-3016-464634e069af@redhat.com>
 MIME-Version: 1.0
-References: <CABJPP5AxB8-kafFEpsMydg8eMx8bH5ooT5g7r0fKWV2T2Hjtng@mail.gmail.com>
- <YBguQ/dENrfvtptJ@kroah.com>
-In-Reply-To: <YBguQ/dENrfvtptJ@kroah.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Mon, 1 Feb 2021 22:31:33 +0530
-Message-ID: <CABJPP5Ba9pDJco16R0CfcpXZedT7vPx_Md9QTRX=y_guQcwLww@mail.gmail.com>
-Subject: Re: [Linux-kernel-mentees] Patches from the future - can checkpatch help?
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Joe Perches <joe@perches.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <37be5fb8-056f-8fba-3016-464634e069af@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 10:07 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Mon, Feb 01, 2021 at 10:04:01PM +0530, Dwaipayan Ray wrote:
-> > Hi,
-> > on linux-next,
-> > $ git log --pretty=format:"%h%x09%ad" | awk '$6>2021 {print $1}'
-> > gives:
-> > 4a2d78822fdf
-> > 12ca45fea91c
-> > 09f2724a786f
-> >
-> > These are patches from the year 2085, 2037 and 2030 respectively.
-> >
-> > Would a checkpatch rule be helpful for these or are they too
-> > isolated to waste runtime on?
->
-> Dates come from your email client, not the patch itself, how is
-> checkpatch going to catch this?
->
+On Mon, Feb 01, 2021, Paolo Bonzini wrote:
+> On 29/01/21 17:58, Sean Christopherson wrote:
+> > On Fri, Jan 29, 2021, Paolo Bonzini wrote:
+> > >   	 */
+> > >   	if (!boot_cpu_has(X86_FEATURE_RTM))
+> > > -		data &= ~(ARCH_CAP_TAA_NO | ARCH_CAP_TSX_CTRL_MSR);
+> > > +		data &= ~ARCH_CAP_TAA_NO;
+> > 
+> > Hmm, simply clearing TSX_CTRL will only preserve the host value.  Since
+> > ARCH_CAPABILITIES is unconditionally emulated by KVM, wouldn't it make sense to
+> > unconditionally expose TSX_CTRL as well, as opposed to exposing it only if it's
+> > supported in the host?  I.e. allow migrating a TSX-disabled guest to a host
+> > without TSX.  Or am I misunderstanding how TSX_CTRL is checked/used?
+> 
+> I'm a bit wary of having a combination (MDS_NO=0, TSX_CTRL=1) that does not
+> exist on bare metal.  There are other cases where such combinations can
+> happen, especially with the Spectre and SSBD mitigations (for example due to
+> AMD CPUID bits for Intel processors), but at least those are just
+> redundancies in the CPUID bits and it's more likely that the guest does
+> something sensible with them.
 
-I was hoping that the maintainer could catch it before merging it
-into his tree. Dates being a trivial thing might slip human eyes,
-but checkpatch might detect it there.
+Gotcha.  The vulnerability combos and all the double and triple negatives make
+my head spin.
 
-Thanks,
-Dwaipayan.
+Thanks!
