@@ -2,135 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F113E30B322
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:11:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68B1430B325
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:11:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229992AbhBAXKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 18:10:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56180 "EHLO
+        id S230070AbhBAXKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 18:10:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbhBAXKI (ORCPT
+        with ESMTP id S230013AbhBAXK2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 18:10:08 -0500
+        Mon, 1 Feb 2021 18:10:28 -0500
 Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD601C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 15:09:28 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id my11so685248pjb.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 15:09:28 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFBD6C0613ED
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 15:09:47 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id z9so722804pjl.5
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 15:09:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GEACQRgbmcNz8U0z7UDtnpZG1N/k6q1juxg0BiyuRck=;
-        b=jcCexse5x5viIjyqRk/y5mlMoRBb37kn+h2DynfRh9CPkpCUZvw57riM5Gi3chT72o
-         CbjVM0TyHXwMcYIJF7XQk7oSx3tqL0DJoW+6ZTL7awz2PCOAzWALcKtKIkscqgdAS+Gc
-         77zQL6+T9j9Y50TtmJl9WyyTglQbUcODNt/KvAwo9Ankwfj2hcsMdDLtVxBimPo7YNch
-         4OBb+qFKWQsAS4jSny4JBlmxDnDQsDOJT8zE6iLkurDsvmCMW0kb8R/BDefizWxpO0KE
-         owCJjEWFWzDtQJs+egmj+wBYbKprb/ZVKDFql/vVQCyVTjKpytpTsrvltZRB1Qf0pIV+
-         kSOg==
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=3HKABxm2JWW8yXh6Ffuihg4FZgaqjfZi+45jOX+PQQI=;
+        b=CcU5cvGUtNpEhVt6Zcu4H5EeWpk+/H7fNLUyevjipbJe31ZbS4kC70stdBy+qRxQuX
+         bQGTv/PsDN4g+kKCAXTRJfbaPcAtLtu2g2G7PO0ZEND64tDUuXyPxUHFrUWJ66sQXEKP
+         y3nKIvO2CMT9m1Olk6z3pOtYMHnAFGKkus3f9QjH3SfZp3FRkqDGNKcVfBUjYt90JoV5
+         PdCs3Zv1/l93Y4WGYJkTJfGuv2R5x64VDgt169TQMxHy81iven1IoQp9Pa1PwE/KPrFi
+         owifCbIqzF5y9eiPUjgAXKU14kbZ4PlsribJAgzQV9UBoTMLxogxbFT1vqrRtcyn+Nxm
+         BmMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GEACQRgbmcNz8U0z7UDtnpZG1N/k6q1juxg0BiyuRck=;
-        b=iAbqDR15wHNqhaBx7WuPcV+k6AU7jSrz26NMVn9ka9KhDCYUo0SuC9ZNjHiw3lEU/3
-         1CW0iFQMOzve5I4JT7ht1aiWwMJ6zUSoep6U7J8VNJeMoyo482jkNEJ3F+XeHdFwhMvG
-         01n6SmQSGYXisGTq6OCsXrZ8ISmLiS8TXv3kbjKqwxyR3Z14moK2tRnwkwEcuKYsUdcN
-         DSQn/RPsjQvHDakyIcszS41ugZ+slD+pYpQOxPuv8cXjCmCIVAMgKjHQ/9Sco+fwxPd0
-         MJJXab/hPbPon7Tuh0cktevAWKKqxWoR9XfrkCtrBK1rf0/8+NsMWkEWnyqL1iMnOol6
-         bmCA==
-X-Gm-Message-State: AOAM530h/gO0UsRBbho/y+sij+qgBHHwPzI9rnALi7R7FWeLCralNisa
-        X8jiEMdvcbO5eBaI6OQ1sHdkoXioCwlF/UKoiqWnnw==
-X-Google-Smtp-Source: ABdhPJyUeJz/A2+S7M/6sGFuaKli4u2WLQhwpVweNnvF5ZutgJsE2TgbxoIasIyhDAnP65Mb9LCHT0k8gzhoZqWGsvk=
-X-Received: by 2002:a17:902:728f:b029:e1:70dd:ac67 with SMTP id
- d15-20020a170902728fb02900e170ddac67mr4444213pll.29.1612220967989; Mon, 01
- Feb 2021 15:09:27 -0800 (PST)
-MIME-Version: 1.0
-References: <20210201003125.90257-1-viniciustinti@gmail.com>
- <20210201124924.GA3284018@infradead.org> <CALD9WKxc0kMPCHSoikko+qYk2+ZLUy73+ryKGW9qMSpyzAobLA@mail.gmail.com>
- <YBg20AuSC3/9w2zz@mit.edu> <CALD9WKzO53AXQW-qQ82VZ41H5=cGdLTUiEoz3X6BmPkb6XaTag@mail.gmail.com>
- <YBhuHJgZ3QPqHheV@mit.edu> <CAKwvOd=ny2TeYV8SGZMD+aj8Yb6OSYGKAzSb-45r-HKk6WTUCQ@mail.gmail.com>
- <YBh0ywVzkUIR3fXg@mit.edu> <CAKwvOdkZRdBzzW19sVAs+pX-7wWwN6AWrxUkkZwP8L4OT7SLfQ@mail.gmail.com>
- <CALD9WKx6HREQeTRXuv81v-=DTVuznXG_56YFm2dM1GOG3s4BRQ@mail.gmail.com> <YBiFVgatiz+owBs9@mit.edu>
-In-Reply-To: <YBiFVgatiz+owBs9@mit.edu>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 1 Feb 2021 15:09:16 -0800
-Message-ID: <CAKwvOdk_OdMB5+YMKdWmK08Px=qYFy1X+imK+LqJbyptesEEQw@mail.gmail.com>
-Subject: Re: [PATCH v2] ext4: Enable code path when DX_DEBUG is set
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Vinicius Tinti <viniciustinti@gmail.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=3HKABxm2JWW8yXh6Ffuihg4FZgaqjfZi+45jOX+PQQI=;
+        b=QtCvWxH3dDgG7VWlDYdbdOM1TE1UunmvvZwpZ//1P9Ju61xZ8djnBHURI2tnEGvJw3
+         2EITrv1XExb8zj9Csbsy9zalQxOr0geFpUNV1tdFbKlu+xmbvsYV2IZ4Zw6R870AvooZ
+         v+bBPoLap91OmEsT6XBDxR02OhnNKdG84jJHAWHxO82QECF+GSlMwMJ4p1gBU9Y04iB9
+         ItJJ8l8GZ35kbycIU4fqxGd+GljOPOZwdXgnpZtUZPmViZaTFXlz4hfbH3riq5gPVhfd
+         O2cIV1HCnPes4QdNBTKOBa8MEodX1ZQnpzpZVol2tIMXAN7417dFRIKEuRBqoKswIzP5
+         x9IA==
+X-Gm-Message-State: AOAM531WdnrYIWAnHPF6nnu+KW725nrEM/IsEAUCLk0WuWpBj5EWDSPO
+        WHL86sovzaMdi+pXbSH90vL2ew==
+X-Google-Smtp-Source: ABdhPJyDaMvGR69SgB9QhG+gcyPBnwjWdXTx/YCd/XS+/X4S/yx5a3E3r1Y0cpZQ0HRKfgAXvzW+NQ==
+X-Received: by 2002:a17:902:70c6:b029:df:d62a:8c69 with SMTP id l6-20020a17090270c6b02900dfd62a8c69mr19315852plt.20.1612220986962;
+        Mon, 01 Feb 2021 15:09:46 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id j4sm13872905pfa.131.2021.02.01.15.09.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 15:09:46 -0800 (PST)
+Date:   Mon, 1 Feb 2021 15:09:45 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
         Christoph Hellwig <hch@infradead.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH 03/14] cxl/mem: Find device capabilities
+In-Reply-To: <20210201225052.vrrvuxrsgmddjzbb@intel.com>
+Message-ID: <79b98f60-151b-6c80-65c3-91a37699d121@google.com>
+References: <20210130002438.1872527-1-ben.widawsky@intel.com> <20210130002438.1872527-4-ben.widawsky@intel.com> <234711bf-c03f-9aca-e0b5-ca677add3ea@google.com> <20210201165352.wi7tzpnd4ymxlms4@intel.com> <32f33dd-97a-8b1c-d488-e5198a3d7748@google.com>
+ <20210201215857.ud5cpg7hbxj2j5bx@intel.com> <b46ed01-3f1-6643-d371-7764c3bde4f8@google.com> <20210201222859.lzw3gvxuqebukvr6@intel.com> <20210201223314.qh24uxd7ajdppgfl@intel.com> <f86149f8-3aea-9d8c-caa9-62771bf22cb5@google.com>
+ <20210201225052.vrrvuxrsgmddjzbb@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 2:48 PM Theodore Ts'o <tytso@mit.edu> wrote:
->
-> On Mon, Feb 01, 2021 at 07:05:11PM -0300, Vinicius Tinti wrote:
-> >
-> > The goal is to try to detect real bugs. In this instance specifically I
-> > suggested to remove the "if (0) {...}" because it sounded like an
-> > unused code.
-> >
-> > If it is useful it is fine to keep.
->
-> The trick was that it was unused code, but it was pretty obviously
-> deliberate, which should have implied that at some point, it was
-> considered useful.   :-)
->
-> It was the fact that you were so determined to find a way to suppress
-> the warning, suggesting multiple tactics, which made me wonder.... why
-> were you going through so much effort to silence the warning if the
-> goal was *not* to turn it on unconditionally everywhere?
+On Mon, 1 Feb 2021, Ben Widawsky wrote:
 
-Because a maintainer might say "oh, I meant to turn that back on years
-ago" or "that should not have been committed!"  Hasn't happened yet,
-doesn't mean it's impossible.  Vinicius asked how he can help. I said
-"go see if any instances of this warning are that case."
+> > I think that's what 8.2.8.4.3 says, no?  And then 8.2.8.4.5 says you 
+> > can use up to Payload Size.  That's why my recommendation was to enforce 
+> > this in cxl_mem_setup_mailbox() up front.
+> 
+> Yeah. I asked our spec people to update 8.2.8.4.5 to make it clearer. I'd argue
+> the intent is how you describe it, but the implementation isn't.
+> 
+> My argument was silly anyway because if you specify greater than 1M as your
+> payload, you will get EINVAL at the ioctl.
+> 
+> The value of how it works today is the driver will at least bind and allow you
+> to interact with it.
+> 
+> How strongly do you feel about this?
+> 
 
->
-> I suspect the much more useful thing to consider is how can we suggest
-> hueristics to the Clang folks to make the warning more helpful.  For
-> example, Coverity will warn about the following:
->
-> void test_func(unsigned int arg)
-> {
->         if (arg < 0) {
->                 printf("Hello, world\n")
->         }
-> }
+I haven't seen the update to 8.2.8.4.5 to know yet :)
 
-Put that code in in godbolt.org (https://godbolt.org/z/E7KK9T) and
-you'll see that both compilers already warn here on -Wextra (via
--Wtautological-unsigned-zero-compare in clang or -Wtype-limits in
-GCC).
-clang:
+You make a good point of at least being able to interact with the driver.  
+I think you could argue that if the driver binds, then the payload size is 
+accepted, in which case it would be strange to get an EINVAL when using 
+the ioctl with anything >1MB.
 
-warning: result of comparison of unsigned expression < 0 is always
-false [-Wtautological-unsigned-zero-compare]
-        if (arg < 0) {
-            ~~~ ^ ~
+Concern was that if we mask off the reserved bits from the command 
+register that we could be masking part of the payload size that is being 
+passed if the accepted max is >1MB.  Idea was to avoid any possibility of 
+this inconsistency.  If this is being checked for ioctl, seems like it's 
+checking reserved bits.
 
-gcc:
-
-warning: comparison of unsigned expression in '< 0' is always false
-[-Wtype-limits]
-    3 |         if (arg < 0) {
-      |                 ^
-
-
->
-> P.S.  If anyone wants to file a feature request bug with the Clang
-> developers, feel free.  :-)
-
-
-
--- 
-Thanks,
-~Nick Desaulniers
+But maybe I should just wait for the spec update.
