@@ -2,102 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC3A30A231
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:48:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B548530A1AD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 06:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232190AbhBAGrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 01:47:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30004 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231614AbhBAFss (ORCPT
+        id S229917AbhBAFxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 00:53:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231547AbhBAFuC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 00:48:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612158442;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qzygt8PY+ejYaTw5CY3AQHjM5FXiYjRfhZf967nzudg=;
-        b=IDHqnYqk9YFbH3V8qOgIK928evfA6BFyHsJZT99nBAhppWq72WDCk1jMS/KFgqvMG7B6Tk
-        N0vg7u0so/ruOVVo1WKV3IWh1YXF7AxdRTiR6zmeLUQPRarHIfY1DQA9cwx8NuPcBeNmVz
-        esRBtLjEzriLPVBm92ullTgEUkX7h4Q=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-237-adswYuZvO16IX_bbRm2ArQ-1; Mon, 01 Feb 2021 00:47:20 -0500
-X-MC-Unique: adswYuZvO16IX_bbRm2ArQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7405E425D2;
-        Mon,  1 Feb 2021 05:47:19 +0000 (UTC)
-Received: from [10.72.13.120] (ovpn-13-120.pek2.redhat.com [10.72.13.120])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 67DC563BB8;
-        Mon,  1 Feb 2021 05:47:10 +0000 (UTC)
-Subject: Re: [PATCH RFC v2 06/10] vdpa_sim: cleanup kiovs in vdpasim_free()
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     Xie Yongji <xieyongji@bytedance.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Laurent Vivier <lvivier@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-kernel@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
-        kvm@vger.kernel.org
-References: <20210128144127.113245-1-sgarzare@redhat.com>
- <20210128144127.113245-7-sgarzare@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <9a7051ae-8ae4-7d17-f662-fe8448606e34@redhat.com>
-Date:   Mon, 1 Feb 2021 13:47:08 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 1 Feb 2021 00:50:02 -0500
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2710AC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 21:49:13 -0800 (PST)
+Received: by mail-ot1-x32f.google.com with SMTP id i20so15169570otl.7
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 21:49:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=0WF2alet6JgVDdHzOPxDujjaMDaBGqq2XJ+qxL2r7NA=;
+        b=uwb4NXUI+XRYJBe83fi9EwODkFwNDCTEMXSskzJPmClnVAs1KR0r1XGiZSnclRHwHU
+         tP/EMcEHtb0ZtMcXo9sJ7GHEzANZ30pxT/fUqIpW9nsC+frinO97IvNSFNZwv23+WYYv
+         BAZYfys1nUobzHt+lGRXn8HK9FRAUCOkcFbCpVmLc8zCuQKciIId48Tq12A6CKs1Q4QH
+         01HZdXvPRjc+YxzlOlFWNglx3NXiNuJjU3dWQLXBmwmxIhq9Z3iwSb7fzdpQWr82hSh6
+         1eQSXIT2nt9nefeej6JUS8PF4JYFdZSGOZCnhA4o59kVm34qH5YWbAyzAWLWD3qlYBMG
+         ON4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0WF2alet6JgVDdHzOPxDujjaMDaBGqq2XJ+qxL2r7NA=;
+        b=Q5iCMOWZV+VWAGH0twDVc/Mskl0l3+Fwp63ckSztEVpEpFClB8oOd+bLfJX701ZXNv
+         Gsca/BZDikDiuIi7KJNNwXeSMidBDT0TvTQd1VD9xoR5k6A7/xf8D4gwo9kyasc1V+ZA
+         ZRaNw+dAkYDXkv7Mk3lZRrAPYnCOP5sArwAw5VA+Y006eVfcdcSMRO02mKzZMVubJ+mh
+         KTu/HwyA/0KOMF2ymiShdqBBpekE+MZVGctXPrF6doXQwDd1X4xE4JjVBQmWpHYSwZvf
+         BLT/MOWMzp2lJFd/nMZ3bT2wX+ngklCpKkBKFkAfyfqG/ktHq0cJAeRqkU0Wl/4pNjXb
+         NfNA==
+X-Gm-Message-State: AOAM5332BcQkuO6HkbF3oOwGzZ8n3+NpYWg6XRfwEwHFFT3ZC6xZo+7u
+        RdVPKiG8oYxuvkxMJXnD3TEtNXYz41U=
+X-Google-Smtp-Source: ABdhPJwgwpCCslI5sJLXgYUhPqp6KOwwFElrohrmuXzaeb82h3/VMPDILOy1JVjACjZ/BwowSRrk6g==
+X-Received: by 2002:a9d:20a7:: with SMTP id x36mr10579209ota.172.1612158552644;
+        Sun, 31 Jan 2021 21:49:12 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id b14sm3991106ooj.26.2021.01.31.21.49.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 31 Jan 2021 21:49:11 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Sun, 31 Jan 2021 21:49:10 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.11-rc6
+Message-ID: <20210201054910.GA58001@roeck-us.net>
+References: <CAHk-=wiOjOh4gNkg==Tyjho98cea06UtnZ4ePwMP3uK-9VLCNA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210128144127.113245-7-sgarzare@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wiOjOh4gNkg==Tyjho98cea06UtnZ4ePwMP3uK-9VLCNA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Jan 31, 2021 at 02:01:43PM -0800, Linus Torvalds wrote:
+> Things look a little calmer than last week, and over-all very average
+> for rc6. So - like always this late in the release schedule - I'd
+> certainly have liked things to be even calmer, but nothing here really
+> stands out.
+> 
+> The diffstat is quite flat, meaning lots of small fixes, with the
+> exception of one new LED driver, and a flurry of PI futex fixes (and
+> one nouveau patch that is just a lot of trivial lines).
+> 
+> And all the stats look normal: average number of commits, and they are
+> all in the usual places, with most of the patch being drivers (gpu,
+> networking, sound, etc), but we obviously have all the usual suspects
+> with arch updates, and a smattering of fixes to core code (kernel, mm,
+> networking, filesystems).
+> 
+> A few known issues still, hopefully soon fixed, and on the whole
+> things look quite normal apart from some mailing list hiccups..
+> 
+> Go test,
+> 
 
-On 2021/1/28 下午10:41, Stefano Garzarella wrote:
-> vringh_getdesc_iotlb() allocates memory to store the kvec, that
-> is freed with vringh_kiov_cleanup().
->
-> vringh_getdesc_iotlb() is able to reuse a kvec previously allocated,
-> so in order to avoid to allocate the kvec for each request, we are
-> not calling vringh_kiov_cleanup() when we finished to handle a
-> request, but we should call it when we free the entire device.
->
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+Build results:
+	total: 153 pass: 153 fail: 0
+Qemu test results:
+	total: 430 pass: 430 fail: 0
 
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
-> ---
->   drivers/vdpa/vdpa_sim/vdpa_sim.c | 7 +++++++
->   1 file changed, 7 insertions(+)
->
-> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> index 53238989713d..a7aeb5d01c3e 100644
-> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> @@ -562,8 +562,15 @@ static int vdpasim_dma_unmap(struct vdpa_device *vdpa, u64 iova, u64 size)
->   static void vdpasim_free(struct vdpa_device *vdpa)
->   {
->   	struct vdpasim *vdpasim = vdpa_to_sim(vdpa);
-> +	int i;
->   
->   	cancel_work_sync(&vdpasim->work);
-> +
-> +	for (i = 0; i < vdpasim->dev_attr.nvqs; i++) {
-> +		vringh_kiov_cleanup(&vdpasim->vqs[i].out_iov);
-> +		vringh_kiov_cleanup(&vdpasim->vqs[i].in_iov);
-> +	}
-> +
->   	put_iova_domain(&vdpasim->iova);
->   	iova_cache_put();
->   	kvfree(vdpasim->buffer);
-
+Guenter
