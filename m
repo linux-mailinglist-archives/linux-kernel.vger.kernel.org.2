@@ -2,82 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B744030A884
+	by mail.lfdr.de (Postfix) with ESMTP id 467E130A883
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:20:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232018AbhBANTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:19:55 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45394 "EHLO mx2.suse.de"
+        id S229500AbhBANT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:19:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231875AbhBANSF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:18:05 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612185438; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5lqS3u+NhmZnlbr2J2yI9qILI3OSg7IBw22MBGIPeSs=;
-        b=BfrKchf81WLzvoeZVSbFZNoqSgmkDG24zj5z5dv3v82jlRVYWUCsT3CmSCF0qhLM/dloXx
-        WkqDZbXEheO99V6KOVKwcbEeGG+WJOmHgkOcblnIOSm1+NoU4rgmA7QwqdrQry/N+c+yj7
-        i+KvEcAcEJDEUzgZ6fpqQVcVC/J+vWo=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 13216AB92;
-        Mon,  1 Feb 2021 13:17:18 +0000 (UTC)
-Date:   Mon, 1 Feb 2021 14:17:17 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk-rework 08/12] printk: introduce a kmsg_dump
- iterator
-Message-ID: <YBf/XUmgflhMHtBx@alley>
-References: <20210126211551.26536-1-john.ogness@linutronix.de>
- <20210126211551.26536-9-john.ogness@linutronix.de>
+        id S231849AbhBANSA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 08:18:00 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 346B364E2A;
+        Mon,  1 Feb 2021 13:17:20 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l6Z4w-00BH6m-3U; Mon, 01 Feb 2021 13:17:18 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126211551.26536-9-john.ogness@linutronix.de>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 01 Feb 2021 13:17:18 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Keqian Zhu <zhukeqian1@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        wanghaibin.wang@huawei.com, jiangkunkun@huawei.com,
+        xiexiangyou@huawei.com, zhengchuan@huawei.com, yubihong@huawei.com
+Subject: Re: [RFC PATCH 0/7] kvm: arm64: Implement SW/HW combined dirty log
+In-Reply-To: <f68d12f2-fa98-ebdd-3075-bfdcd690ee51@huawei.com>
+References: <20210126124444.27136-1-zhukeqian1@huawei.com>
+ <f68d12f2-fa98-ebdd-3075-bfdcd690ee51@huawei.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <9a64d4acd8e8b0b8c86143752b8c856d@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: zhukeqian1@huawei.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, will@kernel.org, catalin.marinas@arm.com, alex.williamson@redhat.com, kwankhede@nvidia.com, cohuck@redhat.com, mark.rutland@arm.com, james.morse@arm.com, robin.murphy@arm.com, suzuki.poulose@arm.com, wanghaibin.wang@huawei.com, jiangkunkun@huawei.com, xiexiangyou@huawei.com, zhengchuan@huawei.com, yubihong@huawei.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-01-26 22:21:47, John Ogness wrote:
-> Rather than store the iterator information into the registered
-> kmsg_dump structure, create a separate iterator structure. The
-> kmsg_dump_iter structure can reside on the stack of the caller,
-> thus allowing lockless use of the kmsg_dump functions.
+On 2021-02-01 13:12, Keqian Zhu wrote:
+> Hi Marc,
 > 
-> This is in preparation for removal of @logbuf_lock.
+> Do you have time to have a look at this? Thanks ;-)
 
-> diff --git a/include/linux/kmsg_dump.h b/include/linux/kmsg_dump.h
-> index 76cc4122d08e..ecc98f549d93 100644
-> --- a/include/linux/kmsg_dump.h
-> +++ b/include/linux/kmsg_dump.h
-> @@ -29,6 +29,18 @@ enum kmsg_dump_reason {
->  	KMSG_DUMP_MAX
->  };
->  
-> +/**
-> + * struct kmsg_dumper_iter - iterator for kernel crash message dumper
-> + * @active:	Flag that specifies if this is currently dumping
-> + * @cur_seq:	The record to dump (private)
-> + * @next_seq:	The first record of the next block (private)
+Not immediately. I'm busy with stuff that is planned to go
+in 5.12, which isn't the case for this series. I'll get to
+it eventually.
 
-Just to be sure. This description should get update if you agree with
-the alternative one in the 1st patch.
+Thanks,
 
-> + */
-> +struct kmsg_dumper_iter {
-> +	bool	active;
-> +	u64	cur_seq;
-> +	u64	next_seq;
-> +};
-> +
-
-Otherwise, I like this change.
-
-Best Regards,
-Petr
+         M.
+-- 
+Jazz is not dead. It just smells funny...
