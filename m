@@ -2,84 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7B830B1CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:02:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F31D730B1C8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 21:59:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230273AbhBAU7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 15:59:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231760AbhBAU6o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 15:58:44 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64301C06174A;
-        Mon,  1 Feb 2021 12:58:04 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id e9so387568pjj.0;
-        Mon, 01 Feb 2021 12:58:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Jl2x4idr/8LE23SOnRpzWHW31Y2nI1o4N+NnWkaHBcY=;
-        b=b4yI+5S4Am64ZFz7Sevb7dCOrsIDn+PCflvhjh09vulVBv5Yxn0Xt3Jhsn3aBqgp94
-         mEbybBEgkgqior1b2gTEFhi1eB0qBUON2w6KWeg7fDzP7zNslPVzxmQCUkniYA/UHgvc
-         jcbP6fj/noZSGcy37Orpnp84wxWycnsEVv6HhTquM/LijBacy212VHUFdFpmz9ej5Eam
-         v183TH7nS5Uuro5WlMLU53eUd2spmJBmn6BRSame22HSDxIYWQdKEWX6Xgi2+Z7NpxmE
-         PdfHcKupSCXPat0RmiMGjKamRarqUhnNcjBb/khZNJdnsE7BYhCSGD7oafW3AQuO7f30
-         XiCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Jl2x4idr/8LE23SOnRpzWHW31Y2nI1o4N+NnWkaHBcY=;
-        b=VqiiEakCh3Se7SexGezfIlTBI7qZfvA5yCtER558BCdYZnPGQCifG3PgLjGnujmTwo
-         XOu0wkyxmq9t0gjZmf8TEGNp9RFhW9vyDdTk1caDdvZyknvzFckU5qc1pIxS6qT/c1rb
-         pX/PiXNrTT6H6C+fEvKgLAcscMSyZFs19S7JsZAlgCPQsBeC5J1D0nRGzRWMg0VjVsUZ
-         KSAtvWu3yvM3lN8VuxW+XlafGM0M/Y88CGriE0Vh6786sOgl3YrKgV6AFVVg6DD2EiGd
-         9kJflo4rqOTr7ROSeMGCrBf62Tjx8RymfxYnauiepWJYGW33Qyjvls/bjOfY20c1Yar2
-         gCxw==
-X-Gm-Message-State: AOAM5339DBLQ1/74H+h/6+Gz1NLeqAbxNF0BpaWfeHJdw9LcpxXL74M2
-        3vgWHI01XiyAeD30kuSEaWXh4bY+B7KAd2jqWpE=
-X-Google-Smtp-Source: ABdhPJwNka49ycU5pdtTxMjP+hfQVh3l423R6IOSwz8+T+O1QIRf6d/l+l4MYMncVpe8lOe012lk2ekq8VOyfy88OHc=
-X-Received: by 2002:a17:90a:c84:: with SMTP id v4mr732625pja.228.1612213083824;
- Mon, 01 Feb 2021 12:58:03 -0800 (PST)
+        id S231902AbhBAU6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 15:58:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47430 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229567AbhBAU6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 15:58:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80C2564ECB;
+        Mon,  1 Feb 2021 20:58:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612213083;
+        bh=r/E49oyGnfm/yoB373RLEccYiXcRJsRAzM4O/KWNyro=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MLNeG0uT1Jizxo/VSvEhaAFbENEPr3J3pVkEdTCXFnvp45+WXkRwuNYXZHiAbEQGL
+         6r1vEHo72+yRV52MMdhEHETflCkFaA0zrY6YOtIl04a6LZyRIqgT+M6gFXjQhlqT0+
+         iwxX1RGiP8hYyW8VCRNPNNSsxjw3AukWLTiVCLhELHR8drIrbmn0W4IznkIxMTD1Qv
+         rVRNQqXpzLZJpU/B2IleHHNXcuUdZkteH6tzkEOMz21XK+6r1oGilNaArkXU7QYvFd
+         8nX95YK7aByx+7b9Ch/nQO6Z17wJiZo6/g+UhrvQeL1WWPQQKtc362kVfMuZwVDoa2
+         JqITgx85QiJfA==
+Date:   Mon, 1 Feb 2021 12:57:59 -0800
+From:   Keith Busch <kbusch@kernel.org>
+To:     Jianxiong Gao <jxgao@google.com>
+Cc:     erdemaktas@google.com, marcorr@google.com, hch@lst.de,
+        m.szyprowski@samsung.com, robin.murphy@arm.com,
+        gregkh@linuxfoundation.org, saravanak@google.com,
+        heikki.krogerus@linux.intel.com, rafael.j.wysocki@intel.com,
+        andriy.shevchenko@linux.intel.com, dan.j.williams@intel.com,
+        bgolaszewski@baylibre.com, jroedel@suse.de,
+        iommu@lists.linux-foundation.org, konrad.wilk@oracle.com,
+        axboe@fb.com, sagi@grimberg.me, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2 3/3] Adding
+ device_dma_parameters->offset_preserve_mask to NVMe driver.
+Message-ID: <20210201205759.GA2128135@dhcp-10-100-145-180.wdc.com>
+References: <20210201183017.3339130-1-jxgao@google.com>
+ <20210201183017.3339130-4-jxgao@google.com>
 MIME-Version: 1.0
-References: <20210125193948.56760-1-andriy.shevchenko@linux.intel.com>
- <20210126082101.GD4903@dell> <YA/xfxcwCabETug6@smile.fi.intel.com>
- <YBhLuNZ7xmHdhurU@smile.fi.intel.com> <CAJZ5v0jQLZ7hEn7nDN8AADy7djnrQRrC4jtXKY-YqZiO609_2A@mail.gmail.com>
-In-Reply-To: <CAJZ5v0jQLZ7hEn7nDN8AADy7djnrQRrC4jtXKY-YqZiO609_2A@mail.gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 1 Feb 2021 22:57:47 +0200
-Message-ID: <CAHp75VeYdATpv=PTWqq0--JLqJrGaiMhZEucjY7Fc5GPP+AqMA@mail.gmail.com>
-Subject: Re: [PATCH v1 00/10] mfd, x86: remove msic driver and leftovers
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210201183017.3339130-4-jxgao@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 8:52 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
-> On Mon, Feb 1, 2021 at 7:45 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
+On Mon, Feb 01, 2021 at 10:30:17AM -0800, Jianxiong Gao wrote:
+> @@ -868,12 +871,24 @@ static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
+>  	if (!iod->nents)
+>  		goto out_free_sg;
+>  
+> +	offset_ret = dma_set_min_align_mask(dev->dev, NVME_CTRL_PAGE_SIZE - 1);
+> +	if (offset_ret) {
+> +		dev_warn(dev->dev, "dma_set_min_align_mask failed to set offset\n");
+> +		goto out_free_sg;
+> +	}
+> +
+>  	if (is_pci_p2pdma_page(sg_page(iod->sg)))
+>  		nr_mapped = pci_p2pdma_map_sg_attrs(dev->dev, iod->sg,
+>  				iod->nents, rq_dma_dir(req), DMA_ATTR_NO_WARN);
+>  	else
+>  		nr_mapped = dma_map_sg_attrs(dev->dev, iod->sg, iod->nents,
+>  					     rq_dma_dir(req), DMA_ATTR_NO_WARN);
+> +
+> +	offset_ret = dma_set_min_align_mask(dev->dev, 0);
+> +	if (offset_ret) {
+> +		dev_warn(dev->dev, "dma_set_min_align_mask failed to reset offset\n");
+> +		goto out_free_sg;
+> +	}
+>  	if (!nr_mapped)
+>  		goto out_free_sg;
 
-...
+Why is this setting being done and undone on each IO? Wouldn't it be
+more efficient to set it once during device initialization?
 
-> Speaking of which, the patches here are requisite for SFI support
-> removal, so I'd like to route them through the ACPI tree if that's
-> fine by all of the interested parties.
-
-Fine with me!
-
--- 
-With Best Regards,
-Andy Shevchenko
+And more importantly, this isn't thread safe: one CPU may be setting the
+device's dma alignment mask to 0 while another CPU is expecting it to be
+NVME_CTRL_PAGE_SIZE - 1.
