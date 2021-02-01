@@ -2,127 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A916030A38F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:50:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 854BF30A391
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:52:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232617AbhBAIuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 03:50:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39844 "EHLO
+        id S232621AbhBAIvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 03:51:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232254AbhBAIuU (ORCPT
+        with ESMTP id S232032AbhBAIvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 03:50:20 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC77C061756;
-        Mon,  1 Feb 2021 00:49:19 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id q7so15593033wre.13;
-        Mon, 01 Feb 2021 00:49:19 -0800 (PST)
+        Mon, 1 Feb 2021 03:51:13 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B294C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 00:50:33 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id a19so15514611qka.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 00:50:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=I5quN8hgyIirr+TXubErY4OwtDxCoITlt00TDLVsUo4=;
-        b=t+Dew0pqvYUsHeFn9pF7XWtG201+klBjCcn+/NsZZrV/OFPyuGvvFzJoYoXgKb073S
-         0CrnmhQWlmbW141DHdeHwtCee2wYX97/nzUpd3hnxpaCfZqT/K0Z4tD76Lh4O1tW0GWK
-         sv84IYnI21eOChgIUjL4HnSwuAieM46HZ89OlLlN1PJ/ZvbTao0GQfkXgQgvou5Ays2B
-         EcLd8y4f4Pj2xpcoVcJPXZwGOtpkIbO9MY9SmUscn+YlMblT8zeyqLxDp3aNlKTQWlgQ
-         NLlCcvlpngW2NToD5vVFUH2p282NzcPsH9wonCOxu26I6FgnDc0vvsvedLNSej+vKP5h
-         EnAA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sSBocjFB8ge5e5jPAMsyWKRhZbTb68NknA1isWn8UtE=;
+        b=pUa4Y0wWpyJb4XG7Z41deXyOPcPT3c0csx5oUwHbbKUUyQdzCpogvBqr3VNSkFyHTP
+         x1vhD7kYGTvfbF8XtPUgOh7cvNMFaIEGATHyAvcgAT5M5hRarF3Q3CB9Rw4yNUISu/MF
+         Sg0D4ntJetCPXxS0tEbnRLq/e7gulyXWWYTyfpX8iSZOmUdEue86kBdQW0MvAqbraRxb
+         2ZP6WvN72zASPapNSCusDhZ65Ruh4NbbdvHgTTIZgi05JWH2IGcgKl8TZHa7m0WWHsK8
+         u8uVdZ5jpkXyj3kAdOm2IVcxQTP0pvbfkEfjJOZzD+zyQBXHGCzR2kaH/g+Dk1qmCGez
+         7uYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=I5quN8hgyIirr+TXubErY4OwtDxCoITlt00TDLVsUo4=;
-        b=dvYQqtO70Yi1+vQ7gmwgARaS94+yYL9YvkwuBSuHTPuxkNhRDywrlaasTWS8snA8Vk
-         U1obEG3SA6rUF9BT8glQrS9UaNUUXWscoHMfiJ1Beq4LidF3nbye5QFUKoTQvy/7DJH4
-         5AdskVwwWJ9mPbUCwUH4V6MXxJT0t+NDDoey9cCWvp+pyCLJqeKs+pRA4C1vR5NJP4ID
-         4UoqWltI3SGJVI903jay1oU/FiMCmgxOiwIZTMj+B7FtM2ckA6YvLBPOTZ84G5ajr0J+
-         HZX1swf1wx69xNHHMA+eCRm8DBCG/0DhIH+0gNxOg0QeCx0JjYLPjBWa8jaArxNxlsbG
-         CjPg==
-X-Gm-Message-State: AOAM530NL4J/bP6CY+MjFbwnBcRYNiNA9wiG4rI98OAer2C8dU1md2WM
-        hcAqWQEyyK0Yc63rimEiN1c8C7PXYwxRYXfb
-X-Google-Smtp-Source: ABdhPJzbM41H3fnkeABFIvGY1igV7fKzPcE4QNnGj4BtjholB0xxbRzwTOXd6hDFTtno8iIZpSj3Pg==
-X-Received: by 2002:adf:9b8c:: with SMTP id d12mr17286687wrc.51.1612169358007;
-        Mon, 01 Feb 2021 00:49:18 -0800 (PST)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id o14sm24788202wri.48.2021.02.01.00.49.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 00:49:17 -0800 (PST)
-Subject: Re: [PATCH] arm64: dts: mt8183: Fix GCE include path
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Matthias Brugger <matthias.bgg@kernel.org>
-Cc:     CK Hu <ck.hu@mediatek.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        DTML <devicetree@vger.kernel.org>,
-        Matthias Brugger <mbrugger@suse.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-References: <20210131101726.804-1-matthias.bgg@kernel.org>
- <CAAOTY_87TfpnScL+t624+FbdixosNpfoEkuMi8Y+h_RXttA7Tg@mail.gmail.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <42b6f5ae-bfa9-e28d-21b4-e3f91ad4b046@gmail.com>
-Date:   Mon, 1 Feb 2021 09:49:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sSBocjFB8ge5e5jPAMsyWKRhZbTb68NknA1isWn8UtE=;
+        b=QALqcXK/C+pdqWFpsLSd3Gy4Cn4HYtXdmBGHLXKgyUoWrqvLPI595TI5XyS7EyERWv
+         8jBZx3SeRZNmdDhfGSOfYK9J2RzhT1Tr4cSRi/DqnhvJJnx0h5FF9FQROHRUN2CRgx1V
+         H1OOh2sHiFB+UdVn2LRH0NTxXZyjQPrkh3/zB7LvEedkCSrD91mqFKu8zVU0rQpNHGNo
+         lywswzOcwYffnHqUJI2EAM7khH2+85Lb0JgG0jVDNEZgt65h9k5ITkC2bJazztwoouSP
+         RQKaxPy39YINBEGrRuK+SztdbCOTULvSWmxFvUBqO/OYrYltruc+hyMAgS01uZuYMXnR
+         PVCw==
+X-Gm-Message-State: AOAM5322bGh3TZULIuT1Y7neWqBGzGSo5RFWOKRKp3RXOUkaJ2XxytCQ
+        0UwBkAYTl+uxQezhhjYYr2KQ4+qFI+3bz2xzKlDAaA==
+X-Google-Smtp-Source: ABdhPJyRrKPTM4FMrBpwEsc97tjj5Pd/n4h/Q5cc+YSg5kldA7bTjJ5o4FSOao/kw8mDH503MQxNzNRUBRC2E1TLZyE=
+X-Received: by 2002:a37:2716:: with SMTP id n22mr15319254qkn.265.1612169431923;
+ Mon, 01 Feb 2021 00:50:31 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAAOTY_87TfpnScL+t624+FbdixosNpfoEkuMi8Y+h_RXttA7Tg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CACT4Y+YPrXGw+AtESxAgPyZ84TYkNZdP0xpocX2jwVAbZD=-XQ@mail.gmail.com>
+ <20201112103125.GV2628@hirez.programming.kicks-ass.net> <CACT4Y+ayRHua-6UyRwSM3=_oi+NkXbaO3-zZ1mpDmWonbybkeA@mail.gmail.com>
+ <CACT4Y+bW1gpv8bz0vswaVUt-OB07oJ3NBeTi+vchAe8TTWK+mg@mail.gmail.com> <CACT4Y+ZsKXfAxrzJGQc5mJ+QiP5sAw7zKWtciS+07qZzSf33mw@mail.gmail.com>
+In-Reply-To: <CACT4Y+ZsKXfAxrzJGQc5mJ+QiP5sAw7zKWtciS+07qZzSf33mw@mail.gmail.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 1 Feb 2021 09:50:20 +0100
+Message-ID: <CACT4Y+YeRtOTsMQ8xxZg-=nbv+yuJvYYhBErT46M8jtSHmiw6g@mail.gmail.com>
+Subject: Re: Process-wide watchpoints
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Matt Morehouse <mascasa@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Jan 31, 2021 at 11:28 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Sun, Jan 31, 2021 at 11:04 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> >
+> > On Thu, Nov 12, 2020 at 11:43 AM Dmitry Vyukov <dvyukov@google.com> wrote:
+> > > > > for sampling race detection),
+> > > > > number of threads in the process can be up to, say, ~~10K and the
+> > > > > watchpoint is intended to be set for a very brief period of time
+> > > > > (~~few ms).
+> > > >
+> > > > Performance is a consideration here, doing lots of IPIs in such a short
+> > > > window, on potentially large machines is a DoS risk.
+> > > >
+> > > > > This can be done today with both perf_event_open and ptrace.
+> > > > > However, the problem is that both APIs work on a single thread level
+> > > > > (? perf_event_open can be inherited by children, but not for existing
+> > > > > siblings). So doing this would require iterating over, say, 10K
+> > > >
+> > > > One way would be to create the event before the process starts spawning
+> > > > threads and keeping it disabled. Then every thread will inherit it, but
+> > > > it'll be inactive.
+> > > >
+> > > > > I see at least one potential problem: what do we do if some sibling
+> > > > > thread already has all 4 watchpoints consumed?
+> > > >
+> > > > That would be immediately avoided by this, since it will have the
+> > > > watchpoint reserved per inheriting the event.
+> > > >
+> > > > Then you can do ioctl(PERF_EVENT_IOC_{MODIFY_ATTRIBUTES,ENABLE,DISABLE})
+> > > > to update the watch location and enable/disable it. This _will_ indeed
+> > > > result in a shitload of IPIs if the threads are active, but it should
+> > > > work.
+> > >
+> > > Aha! That's the possibility I missed.
+> > > We will try to prototype this and get back with more questions if/when
+> > > we have them.
+> > > Thanks!
+> >
+> > Hi Peter,
+> >
+> > I've tested this approach and it works, but only in half.
+> > PERF_EVENT_IOC_{ENABLE,DISABLE} work as advertised.
+> > However, PERF_EVENT_IOC_MODIFY_ATTRIBUTES does not work for inherited
+> > child events.
+> > Does something like this make any sense to you? Are you willing to
+> > accept such change?
+> >
+> > diff --git a/kernel/events/core.c b/kernel/events/core.c
+> > index 55d18791a72d..f6974807a32c 100644
+> > --- a/kernel/events/core.c
+> > +++ b/kernel/events/core.c
+> > @@ -3174,7 +3174,7 @@ int perf_event_refresh(struct perf_event *event,
+> > int refresh)
+> >  }
+> >  EXPORT_SYMBOL_GPL(perf_event_refresh);
+> >
+> > -static int perf_event_modify_breakpoint(struct perf_event *bp,
+> > +static int _perf_event_modify_breakpoint(struct perf_event *bp,
+> >                                          struct perf_event_attr *attr)
+> >  {
+> >         int err;
+> > @@ -3189,6 +3189,28 @@ static int perf_event_modify_breakpoint(struct
+> > perf_event *bp,
+> >         return err;
+> >  }
+> >
+> > +static int perf_event_modify_breakpoint(struct perf_event *bp,
+> > +                                       struct perf_event_attr *attr)
+> > +{
+> > +       struct perf_event *child;
+> > +       int err;
+> > +
+> > +       WARN_ON_ONCE(bp->ctx->parent_ctx);
+> > +
+> > +       mutex_lock(&bp->child_mutex);
+> > +       err = _perf_event_modify_breakpoint(bp, attr);
+> > +       if (err)
+> > +               goto unlock;
+> > +       list_for_each_entry(child, &bp->child_list, child_list) {
+> > +               err = _perf_event_modify_breakpoint(child, attr);
+> > +               if (err)
+> > +                       goto unlock;
+> > +       }
+> > +unlock:
+> > +       mutex_unlock(&bp->child_mutex);
+> > +       return err;
+> > +}
+> > +
+> >  static int perf_event_modify_attr(struct perf_event *event,
+> >                                   struct perf_event_attr *attr)
+>
+>
+> Not directly related to the above question, but related to my use case.
+> Could we extend bpf_perf_event_data with some more data re breakpoint events?
+>
+> struct bpf_perf_event_data {
+>     bpf_user_pt_regs_t regs;
+>     __u64 sample_period;
+>     __u64 addr;
+> };
+>
+> Ideally, I would like to have an actual access address, size and
+> read/write type (may not match bp addr/size). Is that info easily
+> available at the point of bpf hook call?
+> Or, if that's not available at least breakpoint bp_type/bp_size.
+>
+> Is it correct that we can materialize in bpf_perf_event_data anything
+> that's available in bpf_perf_event_data_kern (if it makes sense in the
+> public interface of course)?
+>
+> struct bpf_perf_event_data_kern {
+>     bpf_user_pt_regs_t *regs;
+>     struct perf_sample_data *data;
+>     struct perf_event *event;
+> };
+>
+> Unfortunately I don't see perf_event_attr.bp_type/bp_size
+> stored/accessible anywhere in bpf_perf_event_data_kern. What would be
+> the right way to expose them in bpf_perf_event_data?
 
-
-On 31/01/2021 17:17, Chun-Kuang Hu wrote:
-> Hi, Matthias:
-> 
-> <matthias.bgg@kernel.org> 於 2021年1月31日 週日 下午6:17寫道：
->>
->> From: Matthias Brugger <mbrugger@suse.com>
->>
->> The header file of GCE should be for MT8183 SoC instead of MT8173.
->>
-> 
-> Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> 
-
-Applied to v5.11-next/dts64
-
-Thanks
-
->> Fixes: 91f9c963ce79 ("arm64: dts: mt8183: Add display nodes for MT8183")
->> Reported-by: CK Hu <ck.hu@mediatek.com>
->> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
->>
->> ---
->>
->>  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
->> index 5b782a4769e7..80e466ce99f1 100644
->> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
->> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
->> @@ -6,7 +6,7 @@
->>   */
->>
->>  #include <dt-bindings/clock/mt8183-clk.h>
->> -#include <dt-bindings/gce/mt8173-gce.h>
->> +#include <dt-bindings/gce/mt8183-gce.h>
->>  #include <dt-bindings/interrupt-controller/arm-gic.h>
->>  #include <dt-bindings/interrupt-controller/irq.h>
->>  #include <dt-bindings/memory/mt8183-larb-port.h>
->> --
->> 2.30.0
->>
->>
->> _______________________________________________
->> Linux-mediatek mailing list
->> Linux-mediatek@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+Or, alternatively would it be reasonable for perf to generate SIGTRAP
+directly on watchpoint hit (like ptrace does)? That's what I am
+ultimately trying to do by attaching a bpf program.
