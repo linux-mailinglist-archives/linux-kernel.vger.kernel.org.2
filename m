@@ -2,84 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B676A30A8CF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:35:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56ADF30A8D5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:36:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231997AbhBANe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:34:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45134 "EHLO
+        id S231478AbhBANfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:35:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231575AbhBANev (ORCPT
+        with ESMTP id S232031AbhBANfS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:34:51 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FAB9C06174A;
-        Mon,  1 Feb 2021 05:34:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=eu7VX8JvvszySJwHZVTokupuwHECVWP055L+vUMCliY=; b=kqNV/MnPMGMuePTDqne9Tb7qUx
-        22kFtr3q5TR4oQmDl0ZZCik4Fj0OTwXfR7Qspzv8IOCAruTq8HYub/ibswiukXiTXYCBeDS6Bfqf0
-        LfUvM3DtejdPryUgo+MSS1kt57QBIuXVFjyWM5D/zGTSzGRwfUgnbqsIpOAbTV0YRzqyow2tG1gQr
-        C+AUDpwFDFDkT4WXcAruB3h76YZmIjS1uu2pLracRfrR55pvzTo4gFOpJLbxTMljKXkjW5iB6RgOJ
-        naL8Mtm2Eg7pEMFnuqeZfbc3tCSJPcG6V4Npt3FNWXsSPYYYZyBUxauMeP9F+Uj4teK28TaYq8Nit
-        SvfuAAig==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l6ZKv-00017P-Mk; Mon, 01 Feb 2021 13:33:49 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 15B943011FE;
-        Mon,  1 Feb 2021 14:33:46 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BA97E2B802295; Mon,  1 Feb 2021 14:33:46 +0100 (CET)
-Date:   Mon, 1 Feb 2021 14:33:46 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@davemloft.net>, kpsingh@kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: extended bpf_send_signal_thread with argument
-Message-ID: <YBgDOnhrYjByjdIb@hirez.programming.kicks-ass.net>
-References: <CACT4Y+a7UBQpAY4vwT8Od0JhwbwcDrbJXZ_ULpPfJZ42Ew-yCQ@mail.gmail.com>
- <YBfIUwtK+QqVlfRt@hirez.programming.kicks-ass.net>
- <CACT4Y+Yq69nvj2KZUQrYqtyu+Low+jCCcH++U_vuiHkhezQHGw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+Yq69nvj2KZUQrYqtyu+Low+jCCcH++U_vuiHkhezQHGw@mail.gmail.com>
+        Mon, 1 Feb 2021 08:35:18 -0500
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C220CC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 05:34:37 -0800 (PST)
+Received: by mail-qv1-xf49.google.com with SMTP id l3so11228032qvz.12
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 05:34:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=JRWaNv8CUyRtnGhAv2UGsIw+4RM2ET9YxEDAkb3Ls7Y=;
+        b=aek5t0dPTVzznvKfKlb3j+JOm4kKQh9WdrHHkSe4ZxoC1T6EcGVy7ZjSU8WGloOGpO
+         hN8NSUjcSgMbaaZMR15YDwA1hCNwJEU/46Nid5XFo10dyvRoKTJqlM/XkafslXXhLzWb
+         RixP6l9My0D1EEaPwKo1C68wKWCLL70RNjLyG6SYJZcNGG6/sn9mldfLmUJrFCgNBnvT
+         jzvE+PuZyU4R1YZL77CiI7ljfpJmO3gGqU2w6ydVPRKDtAIEu4txF1P9fPoh84r4gYzS
+         +M3QFbqsycbjavuo+Z+gHdA1JZYhckVfTyEdgekU+K6DdM2AeEf0xBIwEUTavbE4p6zU
+         t91Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=JRWaNv8CUyRtnGhAv2UGsIw+4RM2ET9YxEDAkb3Ls7Y=;
+        b=bLV0iXthfAAc1aVTYAzxhCCsJynXUE6b5jav2v1WEtVxjmPCAgtYy+kOVDSvIr0g2a
+         0n3ao+72FsQxT1zK/HD2ZBDPZd+3wgZ2hOfrgXUKziwXTYSE4FtAvSousHdc9j+mTk+y
+         xbI2XTselVYx5VPzDgzHMFnMrl07BfF7gLdNcEoEk8DG75jZ12qtQaHvh0xVq0RAo2Hd
+         kR8MHSZGV2j/DsoWRP9PdkmOfznkzuhv1CzqEZJfD0ZeZvCjSYfVd2W3n3UFW3GFLIHh
+         plpOKGgk0nqV8RnLc9xpc7WOOoxHDQtUl0qMcdzlZw+bhZMzy0iGruxJ2ql7MxI8gEC4
+         Wwvg==
+X-Gm-Message-State: AOAM531C6XTAmS8j1zNW8vhi340JTaHMe9uIpz7KPc/r05Y2bc0ZQxsO
+        i350ae65tIebvb9Zbn9lEdXllqg6Bj72
+X-Google-Smtp-Source: ABdhPJzyG9LUMNrb3QLRGDnVvKeshlEgn3D13VlkENd+g2VwzIYrnIUvJyTju+kHIZ5UBPcMnAVrXyxA2xmi
+Sender: "kyletso via sendgmr" <kyletso@kyletso.ntc.corp.google.com>
+X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:dd94:c753:a81d:c855])
+ (user=kyletso job=sendgmr) by 2002:a0c:b989:: with SMTP id
+ v9mr15179560qvf.42.1612186476917; Mon, 01 Feb 2021 05:34:36 -0800 (PST)
+Date:   Mon,  1 Feb 2021 21:34:18 +0800
+Message-Id: <20210201133421.408508-1-kyletso@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+Subject: [PATCH v3 0/3] common SVDM version and VDO from dt
+From:   Kyle Tso <kyletso@google.com>
+To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org, hdegoede@redhat.com, robh+dt@kernel.org
+Cc:     badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Kyle Tso <kyletso@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 10:42:47AM +0100, Dmitry Vyukov wrote:
-> On Mon, Feb 1, 2021 at 10:22 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Sun, Jan 31, 2021 at 12:14:02PM +0100, Dmitry Vyukov wrote:
-> > > Hi,
-> > >
-> > > I would like to send a signal from a bpf program invoked from a
-> > > perf_event. There is:
-> >
-> > You can't. Sending signals requires sighand lock, and you're not allowed
-> > to take locks from perf_event context.
-> 
-> 
-> Then we just found a vulnerability because there is
-> bpf_send_signal_thread which can be attached to perf and it passes the
-> verifier :)
-> https://elixir.bootlin.com/linux/v5.11-rc5/source/kernel/trace/bpf_trace.c#L1145
-> 
-> It can defer sending the signal to the exit of irq context:
-> https://elixir.bootlin.com/linux/v5.11-rc5/source/kernel/trace/bpf_trace.c#L1108
-> Perhaps this is what makes it work?
+patch v2:
+https://lore.kernel.org/linux-devicetree/20210131151832.215931-1-kyletso@google.com/
 
-Yes.
+Changes since v2:
+=================
+usb: typec: Determine common SVDM Versions
+- rename the variable and the functions (remove the text "common")
+- remove the macro
+
+dt-bindings: connector: Add SVDM VDO properties
+- no change
+
+usb: typec: tcpm: Get Sink VDO from fwnode
+- use fwnode_property_count_u32 instead to get the count
+- revise the error handling
+
+Kyle Tso (3):
+  usb: typec: Determine common SVDM Versions
+  dt-bindings: connector: Add SVDM VDO properties
+  usb: typec: tcpm: Get Sink VDO from fwnode
+
+ .../bindings/connector/usb-connector.yaml     |  11 +
+ drivers/usb/typec/altmodes/displayport.c      |   8 +-
+ drivers/usb/typec/class.c                     |  21 +-
+ drivers/usb/typec/tcpm/tcpm.c                 |  61 +++-
+ drivers/usb/typec/ucsi/displayport.c          |  12 +-
+ drivers/usb/typec/ucsi/ucsi.c                 |   2 +
+ include/dt-bindings/usb/pd.h                  | 311 ++++++++++++++++-
+ include/linux/usb/pd_vdo.h                    | 315 ++++++++++++++----
+ include/linux/usb/typec.h                     |  10 +
+ 9 files changed, 661 insertions(+), 90 deletions(-)
+
+-- 
+2.30.0.365.g02bc693789-goog
+
