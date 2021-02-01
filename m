@@ -2,123 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0602030A79B
+	by mail.lfdr.de (Postfix) with ESMTP id F2F1130A79D
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:28:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231334AbhBAM1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 07:27:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54354 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229545AbhBAM10 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 07:27:26 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612182398; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PE9JrNiPE/waS59o8i1v4gEWcbHimWae5gJXMMipSF4=;
-        b=b/z+QBJCHLvZ4MqEWcNfsnAUF2y+/fbIoxnYxOPxMr/8kxauEB51km9hFs5NWqWNg6bZAG
-        GRlMgTdV2yOMh93axDQfX0THW27184QFNHY0j8s3jg78lU13WOVHGBvymgh79G8OSAbiBg
-        yOzdvMXsZJrVmiZtaujLZCxSkIx5zw0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AB3E7AC45;
-        Mon,  1 Feb 2021 12:26:38 +0000 (UTC)
-Date:   Mon, 1 Feb 2021 13:26:38 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk-rework 07/12] printk: add syslog_lock
-Message-ID: <YBfzfs9zU8rgHl6y@alley>
-References: <20210126211551.26536-1-john.ogness@linutronix.de>
- <20210126211551.26536-8-john.ogness@linutronix.de>
+        id S231378AbhBAM1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 07:27:44 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11652 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229624AbhBAM11 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 07:27:27 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DTnGG4rnkz162kv;
+        Mon,  1 Feb 2021 20:25:26 +0800 (CST)
+Received: from [10.174.184.42] (10.174.184.42) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 1 Feb 2021 20:26:41 +0800
+Subject: Re: [PATCH v13 03/15] iommu/arm-smmu-v3: Maintain a SID->device
+ structure
+To:     Eric Auger <eric.auger@redhat.com>, <eric.auger.pro@gmail.com>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <kvm@vger.kernel.org>, <kvmarm@lists.cs.columbia.edu>,
+        <will@kernel.org>, <joro@8bytes.org>, <maz@kernel.org>,
+        <robin.murphy@arm.com>, <alex.williamson@redhat.com>
+References: <20201118112151.25412-1-eric.auger@redhat.com>
+ <20201118112151.25412-4-eric.auger@redhat.com>
+CC:     <jean-philippe@linaro.org>, <jacob.jun.pan@linux.intel.com>,
+        <nicoleotsuka@gmail.com>, <vivek.gautam@arm.com>,
+        <yi.l.liu@intel.com>, <zhangfei.gao@linaro.org>
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+Message-ID: <a5cc1635-b69b-50a6-404a-5bf667296669@huawei.com>
+Date:   Mon, 1 Feb 2021 20:26:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126211551.26536-8-john.ogness@linutronix.de>
+In-Reply-To: <20201118112151.25412-4-eric.auger@redhat.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.184.42]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-01-26 22:21:46, John Ogness wrote:
-> The global variables @syslog_seq, @syslog_partial, @syslog_time
-> and write access to @clear_seq are protected by @logbuf_lock.
-> Once @logbuf_lock is removed, these variables will need their
-> own synchronization method. Introduce @syslog_lock for this
-> purpose.
+Hi Eric,
 
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -390,8 +390,12 @@ DEFINE_RAW_SPINLOCK(logbuf_lock);
->  		printk_safe_exit_irqrestore(flags);	\
->  	} while (0)
+On 2020/11/18 19:21, Eric Auger wrote:
+> From: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> 
+> When handling faults from the event or PRI queue, we need to find the
+> struct device associated to a SID. Add a rb_tree to keep track of SIDs.
+> 
+> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+[...]
+
+>  }
 >  
-> +/* syslog_lock protects syslog_* variables and write access to clear_seq. */
-> +static DEFINE_RAW_SPINLOCK(syslog_lock);
-
-I am not expert on RT code but I think that it prefers the generic
-spinlocks. syslog_lock seems to be used in a normal context.
-IMHO, it does not need to be a raw spinlock.
-
-Note that using normal spinlock would require switching the locking
-order. logbuf_lock is a raw lock. Normal spinlock must not be taken
-under a raw spinlock.
-
-Or we could switch syslog_lock to the normal spinlock later
-after logbuf_lock is removed.
+> +static int arm_smmu_insert_master(struct arm_smmu_device *smmu,
+> +				  struct arm_smmu_master *master)
+> +{
+> +	int i;
+> +	int ret = 0;
+> +	struct arm_smmu_stream *new_stream, *cur_stream;
+> +	struct rb_node **new_node, *parent_node = NULL;
+> +	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(master->dev);
+> +
+> +	master->streams = kcalloc(fwspec->num_ids,
+> +				  sizeof(struct arm_smmu_stream), GFP_KERNEL);
+> +	if (!master->streams)
+> +		return -ENOMEM;
+> +	master->num_streams = fwspec->num_ids;
+This is not roll-backed when fail.
 
 > +
->  #ifdef CONFIG_PRINTK
->  DECLARE_WAIT_QUEUE_HEAD(log_wait);
-> +/* All 3 protected by @syslog_lock. */
->  /* the next printk record to read by syslog(READ) or /proc/kmsg */
->  static u64 syslog_seq;
->  static size_t syslog_partial;
-> @@ -1631,6 +1643,7 @@ int do_syslog(int type, char __user *buf, int len, int source)
->  	bool clear = false;
->  	static int saved_console_loglevel = LOGLEVEL_DEFAULT;
->  	int error;
-> +	u64 seq;
+> +	mutex_lock(&smmu->streams_mutex);
+> +	for (i = 0; i < fwspec->num_ids && !ret; i++) {
+Check ret at here, makes it hard to decide the start index of rollback.
 
-This allows to remove definition of the same temporary variable
-for case SYSLOG_ACTION_SIZE_UNREAD.
+If we fail at here, then start index is (i-2).
+If we fail in the loop, then start index is (i-1).
 
+> +		u32 sid = fwspec->ids[i];
+> +
+> +		new_stream = &master->streams[i];
+> +		new_stream->id = sid;
+> +		new_stream->master = master;
+> +
+> +		/*
+> +		 * Check the SIDs are in range of the SMMU and our stream table
+> +		 */
+> +		if (!arm_smmu_sid_in_range(smmu, sid)) {
+> +			ret = -ERANGE;
+> +			break;
+> +		}
+> +
+> +		/* Ensure l2 strtab is initialised */
+> +		if (smmu->features & ARM_SMMU_FEAT_2_LVL_STRTAB) {
+> +			ret = arm_smmu_init_l2_strtab(smmu, sid);
+> +			if (ret)
+> +				break;
+> +		}
+> +
+> +		/* Insert into SID tree */
+> +		new_node = &(smmu->streams.rb_node);
+> +		while (*new_node) {
+> +			cur_stream = rb_entry(*new_node, struct arm_smmu_stream,
+> +					      node);
+> +			parent_node = *new_node;
+> +			if (cur_stream->id > new_stream->id) {
+> +				new_node = &((*new_node)->rb_left);
+> +			} else if (cur_stream->id < new_stream->id) {
+> +				new_node = &((*new_node)->rb_right);
+> +			} else {
+> +				dev_warn(master->dev,
+> +					 "stream %u already in tree\n",
+> +					 cur_stream->id);
+> +				ret = -EINVAL;
+> +				break;
+> +			}
+> +		}
+> +
+> +		if (!ret) {
+> +			rb_link_node(&new_stream->node, parent_node, new_node);
+> +			rb_insert_color(&new_stream->node, &smmu->streams);
+> +		}
+> +	}
+> +
+> +	if (ret) {
+> +		for (; i > 0; i--)
+should be (i >= 0)?
+And the start index seems not correct.
+
+> +			rb_erase(&master->streams[i].node, &smmu->streams);
+> +		kfree(master->streams);
+> +	}
+> +	mutex_unlock(&smmu->streams_mutex);
+> +
+> +	return ret;
+> +}
+> +
+> +static void arm_smmu_remove_master(struct arm_smmu_master *master)
+> +{
+> +	int i;
+> +	struct arm_smmu_device *smmu = master->smmu;
+> +	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(master->dev);
+> +
+> +	if (!smmu || !master->streams)
+> +		return;
+> +
+> +	mutex_lock(&smmu->streams_mutex);
+> +	for (i = 0; i < fwspec->num_ids; i++)
+> +		rb_erase(&master->streams[i].node, &smmu->streams);
+> +	mutex_unlock(&smmu->streams_mutex);
+> +
+> +	kfree(master->streams);
+> +}
+> +
+>  static struct iommu_ops arm_smmu_ops;
 >  
->  	error = check_syslog_permissions(type, source);
->  	if (error)
-> @@ -1648,8 +1661,14 @@ int do_syslog(int type, char __user *buf, int len, int source)
->  			return 0;
->  		if (!access_ok(buf, len))
->  			return -EFAULT;
-> +
-> +		/* Get a consistent copy of @syslog_seq. */
-> +		raw_spin_lock_irq(&syslog_lock);
-> +		seq = syslog_seq;
-> +		raw_spin_unlock_irq(&syslog_lock);
-> +
->  		error = wait_event_interruptible(log_wait,
-> -				prb_read_valid(prb, syslog_seq, NULL));
-> +				prb_read_valid(prb, seq, NULL));
+>  static struct iommu_device *arm_smmu_probe_device(struct device *dev)
+>  {
+> -	int i, ret;
+> +	int ret;
+>  	struct arm_smmu_device *smmu;
+>  	struct arm_smmu_master *master;
+>  	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+> @@ -2331,27 +2447,12 @@ static struct iommu_device *arm_smmu_probe_device(struct device *dev)
+>  
+>  	master->dev = dev;
+>  	master->smmu = smmu;
+> -	master->sids = fwspec->ids;
+> -	master->num_sids = fwspec->num_ids;
+>  	INIT_LIST_HEAD(&master->bonds);
+>  	dev_iommu_priv_set(dev, master);
+>  
+> -	/* Check the SIDs are in range of the SMMU and our stream table */
+> -	for (i = 0; i < master->num_sids; i++) {
+> -		u32 sid = master->sids[i];
+> -
+> -		if (!arm_smmu_sid_in_range(smmu, sid)) {
+> -			ret = -ERANGE;
+> -			goto err_free_master;
+> -		}
+> -
+> -		/* Ensure l2 strtab is initialised */
+> -		if (smmu->features & ARM_SMMU_FEAT_2_LVL_STRTAB) {
+> -			ret = arm_smmu_init_l2_strtab(smmu, sid);
+> -			if (ret)
+> -				goto err_free_master;
+> -		}
+> -	}
+> +	ret = arm_smmu_insert_master(smmu, master);
+> +	if (ret)
+> +		goto err_free_master;
+>  
+>  	master->ssid_bits = min(smmu->ssid_bits, fwspec->num_pasid_bits);
+>  
+> @@ -2389,6 +2490,7 @@ static void arm_smmu_release_device(struct device *dev)
+>  	WARN_ON(arm_smmu_master_sva_enabled(master));
+>  	arm_smmu_detach_dev(master);
+>  	arm_smmu_disable_pasid(master);
+> +	arm_smmu_remove_master(master);
+>  	kfree(master);
 
-Hmm, this will not detect when syslog_seq gets cleared in parallel.
-I hope that nobody rely on this behavior. But who knows?
-
-A solution might be to have also syslog_seq latched. But I am
-not sure if it is worth it.
-
-I am for taking the risk and use the patch as it is now. Let's keep
-the code for now. We could always use the latched variable when
-anyone complains. Just keep it in mind.
-
-
->  		if (error)
->  			return error;
->  		error = syslog_print(buf, len);
-
-Otherwise, the patch looks good to me.
-
-Best Regards,
-Petr
+Thanks,
+Keqian
