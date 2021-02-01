@@ -2,88 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1981F30A48E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:44:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6005330A492
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:45:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232963AbhBAJnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 04:43:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232772AbhBAJnk (ORCPT
+        id S232648AbhBAJpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 04:45:12 -0500
+Received: from isilmar-4.linta.de ([136.243.71.142]:48080 "EHLO
+        isilmar-4.linta.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229558AbhBAJpL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 04:43:40 -0500
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F6FC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 01:43:00 -0800 (PST)
-Received: by mail-qt1-x831.google.com with SMTP id z9so11749077qtv.6
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 01:43:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2sHxy9y8qkhEHifIfAe0m1ot0K1d3d52OFzD+qlpuBU=;
-        b=NeM9ON292bcd64Kcp1z5gL6seKO2huIT0uTkbIjuDyCv8g/B7hwOeO2OAamF9B2PEc
-         ZbN3rq15lpmLJV5JUh3CfnQHd9b+YxMq+YDouvd5MsK+lD7L2Ow3FVdaW+XRHlDYD6/H
-         WZVypjR7q4M6jZJbuSPLfv9fUnKjSsyRt/TTmDaYdWR/7zYJd72RrYEMvq0o33pqO4K5
-         lbJBbkeRyO6N0No28SuLusfI0yy55S87qcE434y+K2PqoQt/6gIeyePbUOOuP/aymnBk
-         7oPVPDckhy2fDc1Q/7+/etMpeJc8jE+vtf1E7T6slmA1BWrTkBsk9g0LTJujxL+N2liU
-         63PQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2sHxy9y8qkhEHifIfAe0m1ot0K1d3d52OFzD+qlpuBU=;
-        b=mP1NAgCjhnTCX5r2oyw8wcOQ8khL36+2zDpMrcECG3szsbkFtFliRoUXis5u0NtA+Y
-         BcdFSchkxmGP4oDuokacrNIJk05llfWQV+NKG4KGGc8r0VxBfkIXqktoU89y3cZo7hae
-         uprG9UykjwJY+fNzFadFIlPf+efWGBKAQVEeD9AnnZm8UxyWdhUnMC3P/Nw2ApORxOsI
-         GDcxHdha8rZWtLjWUDtN0w3AS6aIcUAEDuQtu2Ta+xgropTkobBjxJd9KISGf4WCQZSu
-         J+bGbxAt6UShLrWLKRqq7MY9SIKUbfDUcF9z0y8fAcnLAGGyH2SLOY9ftxQ6POSYfWGu
-         rNKg==
-X-Gm-Message-State: AOAM532GHXNv8vR3n9bsGvr/0COpUxHTGZ5EpgIjluMURcv3zHkSsQXZ
-        uNIS3gMXGJ6bqc2Sf91aUd5aVFEXYghwpJsgQVqp2g==
-X-Google-Smtp-Source: ABdhPJw/FU0ujXSBV1WzoDZvLs4yUz4Di0PBTFwg18+sWEkhAxDhgDVoLq4LU6FoT1MyO3nDH65GPEApRc4rxfiidFA=
-X-Received: by 2002:ac8:480b:: with SMTP id g11mr14124931qtq.290.1612172579083;
- Mon, 01 Feb 2021 01:42:59 -0800 (PST)
+        Mon, 1 Feb 2021 04:45:11 -0500
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+X-isilmar-external: YES
+Received: from light.dominikbrodowski.net (brodo.linta [10.2.0.102])
+        by isilmar-4.linta.de (Postfix) with ESMTPSA id B8126200F18;
+        Mon,  1 Feb 2021 09:44:22 +0000 (UTC)
+Received: by light.dominikbrodowski.net (Postfix, from userid 1000)
+        id 4733D2090E; Mon,  1 Feb 2021 10:44:15 +0100 (CET)
+Date:   Mon, 1 Feb 2021 10:44:15 +0100
+From:   Dominik Brodowski <linux@dominikbrodowski.net>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rafael Wysocki <rjw@rjwysocki.net>,
+        Keguang Zhang <keguang.zhang@gmail.com>,
+        Kevin Hilman <khilman@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] cpufreq: Remove CPUFREQ_STICKY flag
+Message-ID: <YBfNb91psVcf3TAS@light.dominikbrodowski.net>
+References: <377d2e2d328276070ae2f26c65daa1497bb3c3cf.1612166647.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
-References: <CACT4Y+a7UBQpAY4vwT8Od0JhwbwcDrbJXZ_ULpPfJZ42Ew-yCQ@mail.gmail.com>
- <YBfIUwtK+QqVlfRt@hirez.programming.kicks-ass.net>
-In-Reply-To: <YBfIUwtK+QqVlfRt@hirez.programming.kicks-ass.net>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Mon, 1 Feb 2021 10:42:47 +0100
-Message-ID: <CACT4Y+Yq69nvj2KZUQrYqtyu+Low+jCCcH++U_vuiHkhezQHGw@mail.gmail.com>
-Subject: Re: extended bpf_send_signal_thread with argument
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        David Miller <davem@davemloft.net>, kpsingh@kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <377d2e2d328276070ae2f26c65daa1497bb3c3cf.1612166647.git.viresh.kumar@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 10:22 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Sun, Jan 31, 2021 at 12:14:02PM +0100, Dmitry Vyukov wrote:
-> > Hi,
-> >
-> > I would like to send a signal from a bpf program invoked from a
-> > perf_event. There is:
->
-> You can't. Sending signals requires sighand lock, and you're not allowed
-> to take locks from perf_event context.
+Viresh,
 
+Am Mon, Feb 01, 2021 at 01:35:51PM +0530 schrieb Viresh Kumar:
+> The removal of such a driver is avoided if the driver carries the
+> CPUFREQ_STICKY flag. This was added way back [1] in 2004 and perhaps no
+> one should ever need it now. A lot of driver do set this flag, probably
+> because they just copied it from another driver.
 
-Then we just found a vulnerability because there is
-bpf_send_signal_thread which can be attached to perf and it passes the
-verifier :)
-https://elixir.bootlin.com/linux/v5.11-rc5/source/kernel/trace/bpf_trace.c#L1145
+IIRC, it was required on various ARM systems,[*] as CPUs were registered as
+subsys_initcall(), while cpufreq used to be initialized only later, as an
+arch_initcall(). If the ordering is opposite now on all architectures (it
+wasn't on ARM back then), we should be fine.
 
-It can defer sending the signal to the exit of irq context:
-https://elixir.bootlin.com/linux/v5.11-rc5/source/kernel/trace/bpf_trace.c#L1108
-Perhaps this is what makes it work?
+[*] https://git.kernel.org/pub/scm/linux/kernel/git/tglx/history.git/commit/arch/arm/mach-sa1100/cpu-sa1100.c?id=f59d3bbe35f6268d729f51be82af8325d62f20f5
+
+Thanks,
+	Dominik
