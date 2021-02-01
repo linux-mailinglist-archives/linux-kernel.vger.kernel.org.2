@@ -2,90 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 712FC30A20F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:38:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2AEE30A20E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:38:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232218AbhBAGh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 01:37:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbhBAGaW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 01:30:22 -0500
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B5ABC061573
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 22:28:40 -0800 (PST)
-Received: by mail-pg1-x52c.google.com with SMTP id i7so11371846pgc.8
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 22:28:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jmzqwJKaMep+rAWHEkV3E0XHPW5uGVDn/m8Uq3t6K1s=;
-        b=gpbU2CR1bZA022s3oXgQXo3d4KUKkERQbixnJso9As04G5Mo5QPPwua7B9kQvPEH/R
-         SvUQtg3bjmmpnmepuJYeR1lFMhTohjxeAALSFZTYgQOYDYy+23k5GAv6As5Nc7Sei8HY
-         JbLGRjNiPqe5UDOwVuKs7VrSnLYYdpx4a3GnBkyaLcxnCEhYOcZi8AHYTFVl0YSB+Vfh
-         IK7+L0E+8Pgx1WXFkDrjX/1TaPZttZIKplMlDGsv2h8mdD8HvbregthB4G6JH4rRFubi
-         uT72t7R4MUK4KC8MygbFh3ogMTGnvAN6pvHhhVB/bSl5OqtAzmV6ikC2vCYVQRKesFNZ
-         NgdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jmzqwJKaMep+rAWHEkV3E0XHPW5uGVDn/m8Uq3t6K1s=;
-        b=ugZgcOanoMr8XQULhEObwmLR6NMjuLUCG+2cSkymPWadrF54rOp+FG8lMr7ZLvp6Nr
-         zaQVVMiGg5YLuofS/grWeuZlwQiqaEucdz/0UfpyJkRZNJpXrxh1pwmTRHsVqY/uKx5Z
-         FxrfXEtWU2tTGndo5l1NZ79nNyrS035P5NAOYW9Tlg//g7ICLJ7QytySpA+UaIoOKHYi
-         pCVbWUKjRsobS8fWjYRsroxCj/mLltu+eTyNxHsuLB3GGukLO8kmcOd4CAwdZPAmSI6E
-         UHcHDjKk70XBzkrRNPQbGPkZxslSKhswh3ULJiKGXTIUGKmfwurpKS+xcImr92JIuIyG
-         NupA==
-X-Gm-Message-State: AOAM53187UPHlB3KxuwGQsUQQ1bpknVyYKJnxPx1qGi8AMHc9a416apw
-        5uOTxJX2rm/9jYG4NA/tUu5nmU8q1v23IGoKtwI=
-X-Google-Smtp-Source: ABdhPJxKzGL91cxqqkH3J9kmCSMsBlJmRhJrBEpoe+IfqE/6GaB4Jy0pUARY5VgwjRiWSirvjG+pMZK+ltSWW7EFjAM=
-X-Received: by 2002:a62:f202:0:b029:1bc:a634:8e9c with SMTP id
- m2-20020a62f2020000b02901bca6348e9cmr15084868pfh.49.1612160919974; Sun, 31
- Jan 2021 22:28:39 -0800 (PST)
-MIME-Version: 1.0
-References: <1608022118-29993-1-git-send-email-yaohaidong369@gmail.com> <CA+kUaCeebDNXi12-nNpw4i_auZbM+JQUC5uNhEzXxqa7=W4LnQ@mail.gmail.com>
-In-Reply-To: <CA+kUaCeebDNXi12-nNpw4i_auZbM+JQUC5uNhEzXxqa7=W4LnQ@mail.gmail.com>
-From:   Jassi Brar <jassisinghbrar@gmail.com>
-Date:   Mon, 1 Feb 2021 00:28:29 -0600
-Message-ID: <CABb+yY3P_iFnKamY=7z5rnNW+BQW4-vAbeS=S33BpqCKR1Rhuw@mail.gmail.com>
-Subject: Re: [PATCH] add chan->cl check in mbox_chan_received_data()
-To:     haidong yao <yaohaidong369@gmail.com>
-Cc:     natechancellor@gmail.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux@googlegroups.com,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S232157AbhBAGhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 01:37:25 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:60313 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231794AbhBAGbB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 01:31:01 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DTdMs6KSQz9ty3Z;
+        Mon,  1 Feb 2021 07:29:45 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id dm3KCNoZYkNq; Mon,  1 Feb 2021 07:29:45 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DTdMs5CGVz9ty3Y;
+        Mon,  1 Feb 2021 07:29:45 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5F18F8B777;
+        Mon,  1 Feb 2021 07:29:50 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id INx2U6gSzvaF; Mon,  1 Feb 2021 07:29:50 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.103])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 31B3E8B766;
+        Mon,  1 Feb 2021 07:29:50 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 170A766B27; Mon,  1 Feb 2021 06:29:50 +0000 (UTC)
+Message-Id: <4a0c6e3bb8f0c162457bf54d9bc6fd8d7b55129f.1612160907.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/603: Fix protection of user pages mapped with
+ PROT_NONE
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christoph Plattner <christoph.plattner@thalesgroup.com>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Mon,  1 Feb 2021 06:29:50 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 5:53 AM haidong yao <yaohaidong369@gmail.com> wrote:
->
-> Hi Jassi Brar
->
-> Thank you very much for your reply.
->
-> Look at the function sprd_mbox_outbox_isr .
->
-> Chan is !NULL.
->
-> chan->cl is NULL when the client driver not loaded, the controller
-> driver don't know the client driver loaded successfully, so, I do not
-> use mbox_free_channel.
->
-> Here,How do you know chan->cl is ok?
->
-The channel is supposed to get/send data _only_ if it is being used by a client.
-Which you can mark in .startup() and .shutdown().
+On book3s/32, page protection is defined by the PP bits in the PTE
+which provide the following protection depending on the access
+keys defined in the matching segment register:
+- PP 00 means RW with key 0 and N/A with key 1.
+- PP 01 means RW with key 0 and RO with key 1.
+- PP 10 means RW with both key 0 and key 1.
+- PP 11 means RO with both key 0 and key 1.
 
-Checking for chan->cl will make your symptoms disappear but that is
-not the right fix for the issue.
-The right fix is to EITHER not cause Rx/Tx interrupt on a channel not
-being used, OR not send it to upper layers.
+Since the implementation of kernel userspace access protection,
+PP bits have been set as follows:
+- PP00 for pages without _PAGE_USER
+- PP01 for pages with _PAGE_USER and _PAGE_RW
+- PP11 for pages with _PAGE_USER and without _PAGE_RW
 
-thanks.
+For kernelspace segments, kernel accesses are performed with key 0
+and user accesses are performed with key 1. As PP00 is used for
+non _PAGE_USER pages, user can't access kernel pages not flagged
+_PAGE_USER while kernel can.
+
+For userspace segments, both kernel and user accesses are performed
+with key 0, therefore pages not flagged _PAGE_USER are still
+accessible to the user.
+
+This shouldn't be an issue, because userspace is expected to be
+accessible to the user. But unlike most other architectures, powerpc
+implements PROT_NONE protection by removing _PAGE_USER flag instead of
+flagging the page as not valid. This means that pages in userspace
+that are not flagged _PAGE_USER shall remain inaccessible.
+
+To get the expected behaviour, just mimic other architectures in the
+TLB miss handler by checking _PAGE_USER permission on userspace
+accesses as if it was the _PAGE_PRESENT bit.
+
+Note that this problem only is only for 603 cores. The 604+ have
+an hash table, and hash_page() function already implement the
+verification of _PAGE_USER permission on userspace pages.
+
+Reported-by: Christoph Plattner <christoph.plattner@thalesgroup.com>
+Fixes: f342adca3afc ("powerpc/32s: Prepare Kernel Userspace Access Protection")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/head_book3s_32.S | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
+index 858fbc8b19f3..0004e8a6a58e 100644
+--- a/arch/powerpc/kernel/head_book3s_32.S
++++ b/arch/powerpc/kernel/head_book3s_32.S
+@@ -453,11 +453,12 @@ InstructionTLBMiss:
+ 	cmplw	0,r1,r3
+ #endif
+ 	mfspr	r2, SPRN_SDR1
+-	li	r1,_PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_EXEC
++	li	r1,_PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_EXEC | _PAGE_USER
+ 	rlwinm	r2, r2, 28, 0xfffff000
+ #ifdef CONFIG_MODULES
+ 	bgt-	112f
+ 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
++	li	r1,_PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_EXEC
+ 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
+ #endif
+ 112:	rlwimi	r2,r3,12,20,29		/* insert top 10 bits of address */
+@@ -516,10 +517,11 @@ DataLoadTLBMiss:
+ 	lis	r1, TASK_SIZE@h		/* check if kernel address */
+ 	cmplw	0,r1,r3
+ 	mfspr	r2, SPRN_SDR1
+-	li	r1, _PAGE_PRESENT | _PAGE_ACCESSED
++	li	r1, _PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_USER
+ 	rlwinm	r2, r2, 28, 0xfffff000
+ 	bgt-	112f
+ 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
++	li	r1, _PAGE_PRESENT | _PAGE_ACCESSED
+ 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
+ 112:	rlwimi	r2,r3,12,20,29		/* insert top 10 bits of address */
+ 	lwz	r2,0(r2)		/* get pmd entry */
+@@ -593,10 +595,11 @@ DataStoreTLBMiss:
+ 	lis	r1, TASK_SIZE@h		/* check if kernel address */
+ 	cmplw	0,r1,r3
+ 	mfspr	r2, SPRN_SDR1
+-	li	r1, _PAGE_RW | _PAGE_DIRTY | _PAGE_PRESENT | _PAGE_ACCESSED
++	li	r1, _PAGE_RW | _PAGE_DIRTY | _PAGE_PRESENT | _PAGE_ACCESSED | _PAGE_USER
+ 	rlwinm	r2, r2, 28, 0xfffff000
+ 	bgt-	112f
+ 	lis	r2, (swapper_pg_dir - PAGE_OFFSET)@ha	/* if kernel address, use */
++	li	r1, _PAGE_RW | _PAGE_DIRTY | _PAGE_PRESENT | _PAGE_ACCESSED
+ 	addi	r2, r2, (swapper_pg_dir - PAGE_OFFSET)@l	/* kernel page table */
+ 112:	rlwimi	r2,r3,12,20,29		/* insert top 10 bits of address */
+ 	lwz	r2,0(r2)		/* get pmd entry */
+-- 
+2.25.0
+
