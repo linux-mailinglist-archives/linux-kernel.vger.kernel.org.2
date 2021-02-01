@@ -2,217 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3475530A38C
+	by mail.lfdr.de (Postfix) with ESMTP id AFB3C30A38D
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232583AbhBAIsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 03:48:46 -0500
-Received: from szxga08-in.huawei.com ([45.249.212.255]:2819 "EHLO
-        szxga08-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbhBAIsl (ORCPT
+        id S232608AbhBAItJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 03:49:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232177AbhBAItE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 03:48:41 -0500
-Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4DThNv34v3z13pGH;
-        Mon,  1 Feb 2021 16:45:51 +0800 (CST)
-Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
- DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Mon, 1 Feb 2021 16:47:53 +0800
-Received: from [10.169.42.93] (10.169.42.93) by dggema772-chm.china.huawei.com
- (10.1.198.214) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2106.2; Mon, 1 Feb
- 2021 16:47:52 +0800
-Subject: Re: [PATCH v2] nvme-multipath: Early exit if no path is available
-To:     Hannes Reinecke <hare@suse.de>, Sagi Grimberg <sagi@grimberg.me>,
-        "Daniel Wagner" <dwagner@suse.de>
-CC:     <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        "Jens Axboe" <axboe@fb.com>, Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-References: <20210127103033.15318-1-dwagner@suse.de>
- <db9baae0-547c-7ff4-8b2c-0b95f14be67c@huawei.com>
- <20210128075837.u5u56t23fq5gu6ou@beryllium.lan>
- <69575290-200e-b4a1-4269-c71e4c2cc37b@huawei.com>
- <20210128094004.erwnszjqcxlsi2kd@beryllium.lan>
- <ebb1d098-3ded-e592-4419-e905aabe824f@huawei.com>
- <675d3cf7-1ae8-adc5-b6d0-359fe10f6b23@grimberg.me>
- <59cd053e-46cb-0235-141f-4ce919c93f48@huawei.com>
- <65392653-6b03-9195-f686-5fe4b3290bd2@suse.de>
- <81b22bbf-4dd3-6161-e63a-9699690a4e4f@huawei.com>
- <715dd943-0587-be08-2840-e0948cf0bc62@suse.de>
- <eb131d8f-f009-42e7-105d-58b84060f0dd@huawei.com>
- <ac019690-7f02-d28c-ed58-bfc8c1d48879@suse.de>
- <6ceff3cb-c9e9-7e74-92f0-dd745987c943@huawei.com>
- <114751ac-1f7d-ce5e-12c5-7d6303bdb999@suse.de>
-From:   Chao Leng <lengchao@huawei.com>
-Message-ID: <aebc6c2d-4711-95ba-daf2-1cd17fc6f0e7@huawei.com>
-Date:   Mon, 1 Feb 2021 16:47:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Mon, 1 Feb 2021 03:49:04 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EBDAC061573;
+        Mon,  1 Feb 2021 00:48:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=IpQ8g4KpVRrhCWJ47QRTJtxg75Bvmi8TXjdGJU/RBFE=; b=WoKJJ0Q4q+pUmOyxczhhYj0bmN
+        bCgw8idFFIiXrGjY62xgh2BpmI/RTRwnmNZ5pmxUotzJ/XkWCYYaxspr4C2TB6WYCsMHpTJGrn+j3
+        ewjfnff6oKHrvSrNRPY6iQlyb+unxvyo8ifSrU9xtJnLog5HU4W5/y1dq4jaA0zj4IVpnkNuRaRgL
+        ILv4nXrku7ZKXAPZ2FM3hoex+0v24PtwoJ8XQWnVcHov9hxIs/0fPAj4BRfvvzthY4PVBYYzErsDL
+        NsdQ1Xhca4DBQm7j0pu5vEapE2uGBhzZy5rEMZYe3r66W3UVgDn27d3B4mAz0eNESGqD9ZGTVyR7q
+        qooZHt2Q==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l6UsW-00DYS1-OF; Mon, 01 Feb 2021 08:48:12 +0000
+Date:   Mon, 1 Feb 2021 08:48:12 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     ira.weiny@intel.com, Jarkko Sakkinen <jarkko@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
+Subject: Re: [PATCH] x86: Remove unnecessary kmap() from
+ sgx_ioc_enclave_init()
+Message-ID: <20210201084812.GA3229269@infradead.org>
+References: <20210129001459.1538805-1-ira.weiny@intel.com>
+ <YBRH2jfPKS8ZofMZ@google.com>
 MIME-Version: 1.0
-In-Reply-To: <114751ac-1f7d-ce5e-12c5-7d6303bdb999@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.169.42.93]
-X-ClientProxiedBy: dggeme710-chm.china.huawei.com (10.1.199.106) To
- dggema772-chm.china.huawei.com (10.1.198.214)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YBRH2jfPKS8ZofMZ@google.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/2/1 15:29, Hannes Reinecke wrote:
-> On 2/1/21 3:16 AM, Chao Leng wrote:
->>
->>
->> On 2021/1/29 17:20, Hannes Reinecke wrote:
->>> On 1/29/21 9:46 AM, Chao Leng wrote:
->>>>
->>>>
->>>> On 2021/1/29 16:33, Hannes Reinecke wrote:
->>>>> On 1/29/21 8:45 AM, Chao Leng wrote:
->>>>>>
->>>>>>
->>>>>> On 2021/1/29 15:06, Hannes Reinecke wrote:
->>>>>>> On 1/29/21 4:07 AM, Chao Leng wrote:
->>>>>>>>
->>>>>>>>
->>>>>>>> On 2021/1/29 9:42, Sagi Grimberg wrote:
->>>>>>>>>
->>>>>>>>>>> You can't see exactly where it dies but I followed the assembly to
->>>>>>>>>>> nvme_round_robin_path(). Maybe it's not the initial nvme_next_ns(head,
->>>>>>>>>>> old) which returns NULL but nvme_next_ns() is returning NULL eventually
->>>>>>>>>>> (list_next_or_null_rcu()).
->>>>>>>>>> So there is other bug cause nvme_next_ns abormal.
->>>>>>>>>> I review the code about head->list and head->current_path, I find 2 bugs
->>>>>>>>>> may cause the bug:
->>>>>>>>>> First, I already send the patch. see:
->>>>>>>>>> https://lore.kernel.org/linux-nvme/20210128033351.22116-1-lengchao@huawei.com/
->>>>>>>>>> Second, in nvme_ns_remove, list_del_rcu is before
->>>>>>>>>> nvme_mpath_clear_current_path. This may cause "old" is deleted from the
->>>>>>>>>> "head", but still use "old". I'm not sure there's any other
->>>>>>>>>> consideration here, I will check it and try to fix it.
->>>>>>>>>
->>>>>>>>> The reason why we first remove from head->list and only then clear
->>>>>>>>> current_path is because the other way around there is no way
->>>>>>>>> to guarantee that that the ns won't be assigned as current_path
->>>>>>>>> again (because it is in head->list).
->>>>>>>> ok, I see.
->>>>>>>>>
->>>>>>>>> nvme_ns_remove fences continue of deletion of the ns by synchronizing
->>>>>>>>> the srcu such that for sure the current_path clearance is visible.
->>>>>>>> The list will be like this:
->>>>>>>> head->next = ns1;
->>>>>>>> ns1->next = head;
->>>>>>>> old->next = ns1;
->>>>>>>
->>>>>>> Where does 'old' pointing to?
->>>>>>>
->>>>>>>> This may cause infinite loop in nvme_round_robin_path.
->>>>>>>> for (ns = nvme_next_ns(head, old);
->>>>>>>>      ns != old;
->>>>>>>>      ns = nvme_next_ns(head, ns))
->>>>>>>> The ns will always be ns1, and then infinite loop.
->>>>>>>
->>>>>>> No. nvme_next_ns() will return NULL.
->>>>>> If there is just one path(the "old") and the "old" is deleted,
->>>>>> nvme_next_ns() will return NULL.
->>>>>> The list like this:
->>>>>> head->next = head;
->>>>>> old->next = head;
->>>>>> If there is two or more path and the "old" is deleted,
->>>>>> "for" will be infinite loop. because nvme_next_ns() will return
->>>>>> the path which in the list except the "old", check condition will
->>>>>> be true for ever.
->>>>>
->>>>> But that will be caught by the statement above:
->>>>>
->>>>> if (list_is_singular(&head->list))
->>>>>
->>>>> no?
->>>> Two path just a sample example.
->>>> If there is just two path, will enter it, may cause no path but there is
->>>> actually one path. It is falsely assumed that the "old" must be not deleted.
->>>> If there is more than two path, will cause infinite loop.
->>> So you mean we'll need something like this?
->>>
->>> diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
->>> index 71696819c228..8ffccaf9c19a 100644
->>> --- a/drivers/nvme/host/multipath.c
->>> +++ b/drivers/nvme/host/multipath.c
->>> @@ -202,10 +202,12 @@ static struct nvme_ns *__nvme_find_path(struct nvme_ns_head *head, int node)
->>>   static struct nvme_ns *nvme_next_ns(struct nvme_ns_head *head,
->>>                  struct nvme_ns *ns)
->>>   {
->>> -       ns = list_next_or_null_rcu(&head->list, &ns->siblings, struct nvme_ns,
->>> -                       siblings);
->>> -       if (ns)
->>> -               return ns;
->>> +       if (ns) {
->>> +               ns = list_next_or_null_rcu(&head->list, &ns->siblings,
->>> +                                          struct nvme_ns, siblings);
->>> +               if (ns)
->>> +                       return ns;
->>> +       }
->> No, in the scenario, ns should not be NULL.
+On Fri, Jan 29, 2021 at 09:37:30AM -0800, Sean Christopherson wrote:
+> On Thu, Jan 28, 2021, ira.weiny@intel.com wrote:
+> > From: Ira Weiny <ira.weiny@intel.com>
+> > 
+> > There is no reason to alloc a page and kmap it to store this temporary
+> > data from the user. 
 > 
-> Why not? 'ns == NULL' is precisely the corner-case this is trying to fix...
-> 
->> May be we can do like this:
->>
->> diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
->> index 282b7a4ea9a9..b895011a2cbd 100644
->> --- a/drivers/nvme/host/multipath.c
->> +++ b/drivers/nvme/host/multipath.c
->> @@ -199,30 +199,24 @@ static struct nvme_ns *__nvme_find_path(struct nvme_ns_head *head, int node)
->>          return found;
->>   }
->>
->> -static struct nvme_ns *nvme_next_ns(struct nvme_ns_head *head,
->> -               struct nvme_ns *ns)
->> -{
->> -       ns = list_next_or_null_rcu(&head->list, &ns->siblings, struct nvme_ns,
->> -                       siblings);
->> -       if (ns)
->> -               return ns;
->> -       return list_first_or_null_rcu(&head->list, struct nvme_ns, siblings);
->> -}
->> +#define nvme_next_ns_condition(head, current, condition) \
->> +({ \
->> +       struct nvme_ns *__ptr = list_next_or_null_rcu(&(head)->list, \
->> +               &(current)->siblings, struct nvme_ns, siblings); \
->> +       __ptr ? __ptr : (condition) ? (condition) = false, \
->> +               list_first_or_null_rcu(&(head)->list, struct nvme_ns, \
->> +                       siblings) : NULL; \
->> +})
->>
-> Urgh. Please, no. That is well impossible to debug.
-> Can you please open-code it to demonstrate where the difference to the current (and my fixed) versions is?
-> I'm still not clear where the problem is once we applied both patches.
-For example assume the list has three path, and all path is not NVME_ANA_OPTIMIZED:
-head->next = ns1;
-ns1->next = ns2;
-ns2->next = head;
-old->next = ns2;
+> Actually, there is, it's just poorly documented.  The sigstruct needs to be
+> page aligned, and the token needs to be 512-byte aligned.  kmcalloc doesn't
+> guarantee alignment.  IIRC things will work until slub_debug is enabled, at
+> which point the natural alignment behavior goes out the window.
 
-My patch work flow:
-nvme_next_ns_condition(head, old, true) return ns2;
-nvme_next_ns_condition(head, ns2, true) change the condition to false
-                                         and return ns1;
-nvme_next_ns_condition(head, ns1, false) return ns2;
-nvme_next_ns_condition(head, ns2, false) return NULL;
-And then the loop end.
-
-Your patch work flow:
-nvme_next_ns(head, old) return ns2;
-nvme_next_ns(head, ns2) return ns1;
-nvme_next_ns(head, ns1) return ns2;
-nvme_next_ns(head, ns2) return ns1;
-nvme_next_ns(head, ns1) return ns2;
-And then the loop is infinite.
-> 
-> Cheers,
-> 
-> Hannes
+Well, there still is absolutely no need for the kmap as you can use
+page_address for a GFP_KERNEL allocation.
