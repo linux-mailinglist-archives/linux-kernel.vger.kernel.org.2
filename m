@@ -2,45 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9779530A43E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:20:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B96E30A441
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:20:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232860AbhBAJTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 04:19:17 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:53282 "EHLO
+        id S232875AbhBAJTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 04:19:32 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:33653 "EHLO
         mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232807AbhBAJSB (ORCPT
+        with ESMTP id S232805AbhBAJSB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Feb 2021 04:18:01 -0500
-Received: by mail-io1-f72.google.com with SMTP id p10so3316211iop.20
+Received: by mail-io1-f72.google.com with SMTP id m3so11342940ioy.0
         for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 01:17:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=SrNfZXHxsIEgxk3N2yFbbCHE4Z9hx44sWpRifIxl/so=;
-        b=SvXIxMFoW02WcyCs0WBkbAEqjg/yd1SFbyNkPnoskovTFrJZ0gl+BgLy0oE6pWUarK
-         No352yXgMALV9CzfLcUHvVDpkXyeLvxXOadC6iwOQi7fi5uB8DywCfl/0s5/WBiy+uEo
-         mqlaE6cQSfDyDCKf5Y+5eNQWlH1c1pEu28ykOy7MgVTgrtP3Jy8MStHZ1z9QsMeEYRKg
-         vgVOMfee0R+XaxKM5jlptX21jdzO5afNKKzQl4EswcmgfqlBPrb+97klJf+vaaMs3YCd
-         XNehi6W9rYqn57rkGUz+HRZE4sA0W6ulRrQeKWpVs/LP2sQ3ogyfib+WjmKOJrGnpsDg
-         pclA==
-X-Gm-Message-State: AOAM5339Ws75l/N1vyQA1JMvnzbdQgaWZtLWVzfu0g8n123vK0EQTSgp
-        l5YZG7CF+lARbjJj9KOo2G8Lna8XFxUymSW4vhJWyc577UfX
-X-Google-Smtp-Source: ABdhPJzBp6bDTAA6yS8c2s7Pg2gEY+OmftfyIdFfbItyeJrPDcy6KQvwArKvZf3Kbhql7In6wo+xVCq6yd3rSEUmqd3fmXO3XxMd
+        bh=b4WyNj/mYmWoFnb16jtfXo7YU8unzJ8Ax1ZCNtN8gHQ=;
+        b=ZSXR6J9ExRraNNsCU2GCf69viT5SZ2PgCt7q3CpjH/R3eib3Ptec4qThmDf7fEU5Gs
+         Dy4BB+zTPVcdQLj9JRaKiG3ThA9Sz2sjCP5fCWrXzD5DT8qyfiQZxbqZntfmTqsLxkC5
+         dRObAide8ZgGPhpxSACdF7KGZmcNyvThWcV/KdcOzJIGoMVKOc1nQVeaXZweOWJS2115
+         ee/la85QqNI1lNGGDxFCsOSxFpsh7TZJQ+ggTfA3JMV1FQWyiSY6DMKzyupW5UFJVJiN
+         +XtVix0OBEvorJ7ooLc2mjaSd1k00FfghtXyIA86etJboSH3m7diCqV5Lps0k5Z417sJ
+         4F7w==
+X-Gm-Message-State: AOAM5312PC38CYXvamQBEDHy0woOT6I7plKF5I2oFFW3QrgpEJb0vxHa
+        VV8UKv7sHp+uOQRoeSUU8qdkA77s5w0X/zB71AorguADQWtQ
+X-Google-Smtp-Source: ABdhPJzfYJvL+V2Mnhtcr53eabCrWQvAnphqYRcNj2x1g0l2aVRxHSC12GrMlkHiGzDdOpaHc32WgVNwpG9u2ZfvKi37xa2123ct
 MIME-Version: 1.0
-X-Received: by 2002:a92:c5c5:: with SMTP id s5mr10130389ilt.111.1612171033418;
+X-Received: by 2002:a5e:9416:: with SMTP id q22mr1522792ioj.98.1612171033720;
  Mon, 01 Feb 2021 01:17:13 -0800 (PST)
 Date:   Mon, 01 Feb 2021 01:17:13 -0800
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c3a1b705ba42d1ca@google.com>
-Subject: possible deadlock in cfg80211_netdev_notifier_call
-From:   syzbot <syzbot+2ae0ca9d7737ad1a62b7@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, davem@davemloft.net, hagen@jauu.net,
-        johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, rppt@linux.ibm.com, sfr@canb.auug.org.au,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000c83a9705ba42d18d@google.com>
+Subject: possible deadlock in ovl_dir_real_file
+From:   syzbot <syzbot+6a023cb2262c79301432@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+        miklos@szeredi.hu, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -50,111 +47,77 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    b01f250d Add linux-next specific files for 20210129
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=14daa408d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=725bc96dc234fda7
-dashboard link: https://syzkaller.appspot.com/bug?extid=2ae0ca9d7737ad1a62b7
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1757f2a0d00000
+HEAD commit:    6642d600 Merge tag '5.11-rc5-smb3' of git://git.samba.org/..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=148aef78d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9408d1770a50819c
+dashboard link: https://syzkaller.appspot.com/bug?extid=6a023cb2262c79301432
+compiler:       clang version 11.0.1
 
-The issue was bisected to:
-
-commit cc9327f3b085ba5be5639a5ec3ce5b08a0f14a7c
-Author: Mike Rapoport <rppt@linux.ibm.com>
-Date:   Thu Jan 28 07:42:40 2021 +0000
-
-    mm: introduce memfd_secret system call to create "secret" memory areas
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1505d28cd00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1705d28cd00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1305d28cd00000
+Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2ae0ca9d7737ad1a62b7@syzkaller.appspotmail.com
-Fixes: cc9327f3b085 ("mm: introduce memfd_secret system call to create "secret" memory areas")
+Reported-by: syzbot+6a023cb2262c79301432@syzkaller.appspotmail.com
 
 ============================================
 WARNING: possible recursive locking detected
-5.11.0-rc5-next-20210129-syzkaller #0 Not tainted
+5.11.0-rc5-syzkaller #0 Not tainted
 --------------------------------------------
-syz-executor.1/27924 is trying to acquire lock:
-ffff88801c7305e8 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: wiphy_lock include/net/cfg80211.h:5267 [inline]
-ffff88801c7305e8 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: cfg80211_netdev_notifier_call+0x68c/0x1180 net/wireless/core.c:1407
+syz-executor.2/3639 is trying to acquire lock:
+ffff888084c0b5f0 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}, at: inode_lock include/linux/fs.h:773 [inline]
+ffff888084c0b5f0 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}, at: ovl_dir_real_file+0x20b/0x310 fs/overlayfs/readdir.c:886
 
 but task is already holding lock:
-ffff88801c7305e8 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: wiphy_lock include/net/cfg80211.h:5267 [inline]
-ffff88801c7305e8 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: nl80211_pre_doit+0x347/0x5a0 net/wireless/nl80211.c:14837
+ffff888084c0b5f0 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}, at: inode_lock include/linux/fs.h:773 [inline]
+ffff888084c0b5f0 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}, at: ovl_ioctl_set_flags fs/overlayfs/file.c:530 [inline]
+ffff888084c0b5f0 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}, at: ovl_ioctl+0x2fb/0x960 fs/overlayfs/file.c:569
 
 other info that might help us debug this:
  Possible unsafe locking scenario:
 
        CPU0
        ----
-  lock(&rdev->wiphy.mtx);
-  lock(&rdev->wiphy.mtx);
+  lock(&ovl_i_mutex_dir_key[depth]);
+  lock(&ovl_i_mutex_dir_key[depth]);
 
  *** DEADLOCK ***
 
  May be due to missing lock nesting notation
 
-3 locks held by syz-executor.1/27924:
- #0: ffffffff8cd04eb0 (cb_lock){++++}-{3:3}, at: genl_rcv+0x15/0x40 net/netlink/genetlink.c:810
- #1: ffffffff8cc75248 (rtnl_mutex){+.+.}-{3:3}, at: nl80211_pre_doit+0x22/0x5a0 net/wireless/nl80211.c:14793
- #2: ffff88801c7305e8 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: wiphy_lock include/net/cfg80211.h:5267 [inline]
- #2: ffff88801c7305e8 (&rdev->wiphy.mtx){+.+.}-{3:3}, at: nl80211_pre_doit+0x347/0x5a0 net/wireless/nl80211.c:14837
+2 locks held by syz-executor.2/3639:
+ #0: ffff88807a706460 (sb_writers#17){.+.+}-{0:0}, at: mnt_want_write_file+0x5a/0x250 fs/namespace.c:412
+ #1: ffff888084c0b5f0 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}, at: inode_lock include/linux/fs.h:773 [inline]
+ #1: ffff888084c0b5f0 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}, at: ovl_ioctl_set_flags fs/overlayfs/file.c:530 [inline]
+ #1: ffff888084c0b5f0 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}, at: ovl_ioctl+0x2fb/0x960 fs/overlayfs/file.c:569
 
 stack backtrace:
-CPU: 1 PID: 27924 Comm: syz-executor.1 Not tainted 5.11.0-rc5-next-20210129-syzkaller #0
+CPU: 1 PID: 3639 Comm: syz-executor.2 Not tainted 5.11.0-rc5-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
 Call Trace:
  __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- print_deadlock_bug kernel/locking/lockdep.c:2829 [inline]
- check_deadlock kernel/locking/lockdep.c:2872 [inline]
- validate_chain kernel/locking/lockdep.c:3661 [inline]
- __lock_acquire.cold+0x14c/0x3b4 kernel/locking/lockdep.c:4899
- lock_acquire kernel/locking/lockdep.c:5509 [inline]
- lock_acquire+0x1a8/0x720 kernel/locking/lockdep.c:5474
- __mutex_lock_common kernel/locking/mutex.c:956 [inline]
- __mutex_lock+0x134/0x1110 kernel/locking/mutex.c:1103
- wiphy_lock include/net/cfg80211.h:5267 [inline]
- cfg80211_netdev_notifier_call+0x68c/0x1180 net/wireless/core.c:1407
- notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
- call_netdevice_notifiers_info+0xb5/0x130 net/core/dev.c:2040
- call_netdevice_notifiers_extack net/core/dev.c:2052 [inline]
- call_netdevice_notifiers net/core/dev.c:2066 [inline]
- unregister_netdevice_many+0x943/0x1750 net/core/dev.c:10704
- unregister_netdevice_queue+0x2dd/0x3c0 net/core/dev.c:10638
- register_netdevice+0x109f/0x14a0 net/core/dev.c:10013
- cfg80211_register_netdevice+0x11d/0x2a0 net/wireless/core.c:1349
- ieee80211_if_add+0xfb8/0x18f0 net/mac80211/iface.c:1990
- ieee80211_add_iface+0x99/0x160 net/mac80211/cfg.c:125
- rdev_add_virtual_intf net/wireless/rdev-ops.h:45 [inline]
- nl80211_new_interface+0x541/0x1100 net/wireless/nl80211.c:3977
- genl_family_rcv_msg_doit+0x228/0x320 net/netlink/genetlink.c:739
- genl_family_rcv_msg net/netlink/genetlink.c:783 [inline]
- genl_rcv_msg+0x328/0x580 net/netlink/genetlink.c:800
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:811
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:674
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2437
+ dump_stack+0x137/0x1be lib/dump_stack.c:120
+ __lock_acquire+0x2333/0x5e90 kernel/locking/lockdep.c:4670
+ lock_acquire+0x114/0x5e0 kernel/locking/lockdep.c:5442
+ down_write+0x56/0x120 kernel/locking/rwsem.c:1406
+ inode_lock include/linux/fs.h:773 [inline]
+ ovl_dir_real_file+0x20b/0x310 fs/overlayfs/readdir.c:886
+ ovl_real_fdget fs/overlayfs/file.c:136 [inline]
+ ovl_real_ioctl fs/overlayfs/file.c:499 [inline]
+ ovl_ioctl_set_flags fs/overlayfs/file.c:545 [inline]
+ ovl_ioctl+0x4de/0x960 fs/overlayfs/file.c:569
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 RIP: 0033:0x45e219
 Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f5dce348c68 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RSP: 002b:00007f02ed677c68 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
 RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045e219
-RDX: 0000000000000000 RSI: 0000000020000400 RDI: 0000000000000004
-RBP: 000000000119c110 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119c0dc
-R13: 00007ffdf00f97ff R14: 00007f5dce3499c0 R15: 000000000119c0dc
+RDX: 0000000000000000 RSI: 0000000040086602 RDI: 0000000000000003
+RBP: 000000000119bfc0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119bf8c
+R13: 00007ffd373df6ef R14: 00007f02ed6789c0 R15: 000000000119bf8c
 
 
 ---
@@ -164,6 +127,3 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
