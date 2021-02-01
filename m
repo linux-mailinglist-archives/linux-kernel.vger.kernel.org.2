@@ -2,204 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAAFE30AFD3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:55:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D7630AFDC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:57:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231920AbhBASzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:55:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229996AbhBASzC (ORCPT
+        id S232021AbhBAS4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:56:01 -0500
+Received: from mail-wm1-f54.google.com ([209.85.128.54]:54017 "EHLO
+        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229680AbhBASz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:55:02 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048F7C061573;
-        Mon,  1 Feb 2021 10:54:22 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id i8so9582818ejc.7;
-        Mon, 01 Feb 2021 10:54:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bR0aC5ypfnZlUqTIt/Yykph1tks+fUNfX9SmuXUEX1M=;
-        b=aA0pXbNqeW6tnFdg4toQRwNDhzTIxjz9idIZRQytaxeyhQCx19qi5qLhxDPkSEXKTn
-         TJehV7Ipy2ZfjPx3cbZKhmJoOqK1XY41DI626/6I59S6nYSIVhPTrPXvbq+lmBWin3E2
-         8yryZmTQ1F4vNPwbq/+aAelLU/9WNdAMSXvHkS5BnGX+c/ySfKh0FjssQSrADosdchL2
-         eVmFw/cBYZO4reBTfyz4bq2fq7uEGSscWrN3Hv+NAWeGyEV1G9XAgmkZRoOgjZj6hwAV
-         kia7JhVkEPQyp7zHdWIFnhpe24KZY1ikh8dNyT6r/aRdSz8E0KQmO51DbrbSsD2XGzoP
-         BwNg==
+        Mon, 1 Feb 2021 13:55:57 -0500
+Received: by mail-wm1-f54.google.com with SMTP id j18so234287wmi.3;
+        Mon, 01 Feb 2021 10:55:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bR0aC5ypfnZlUqTIt/Yykph1tks+fUNfX9SmuXUEX1M=;
-        b=UMYWAOqZ8tGBYcDPMlCKq2m3aPNd5nn4R1sen+MkoZWFuEtmCGW2QL+2+A4UG3SNjG
-         gMmjzKirj+mbr0UpDnfW/JZe1V8Ptpv2LjBKZ8+lNyhhLRiffSfdR1QqR9ECYr3uUx1s
-         gjYNfVDZO7nQrhFBdQERskOw7Aj9AYqypIVW+f8iIOwbvJkVUQI2RgglJof8yax1NDw/
-         8n8cRFErTYvVPFNfKZUowThqz0gRk8EO03btbkuUR9x+02AnOxZb9gx3ZkAZtSLzSlXN
-         zYk/vu6bN4HmdRfk2MNlg+8vPCdElB/ozuptjaIIUBaZbbYnMmqYf7XsdBqz2hPXezkY
-         Cg+Q==
-X-Gm-Message-State: AOAM533rxt8OVE9Xk0vXeK7mbtkon+lu1tI2w3Twx9nOZ+5sEBh8aX5F
-        UJQmMju5itFh94NxEdgHvAkRu1ryjRc=
-X-Google-Smtp-Source: ABdhPJyw20n+79OZ+ckQHrQI3hQ53ZD26a5jAFtICFkXYkkURkqP8QM/14kCg24tHdblOG3rv5nNag==
-X-Received: by 2002:a17:906:1f45:: with SMTP id d5mr19630630ejk.76.1612205660322;
-        Mon, 01 Feb 2021 10:54:20 -0800 (PST)
-Received: from ?IPv6:2003:ea:8f1f:ad00:a01e:aa5d:44a8:4129? (p200300ea8f1fad00a01eaa5d44a84129.dip0.t-ipconnect.de. [2003:ea:8f1f:ad00:a01e:aa5d:44a8:4129])
-        by smtp.googlemail.com with ESMTPSA id u17sm9105575edr.0.2021.02.01.10.54.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 10:54:19 -0800 (PST)
-Subject: Re: [PATCH] r8169: Add support for another RTL8168FP
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     "maintainer:8169 10/100/1000 GIGABIT ETHERNET DRIVER" 
-        <nic_swsd@realtek.com>, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:8169 10/100/1000 GIGABIT ETHERNET DRIVER" 
-        <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-References: <20210201164735.1268796-1-kai.heng.feng@canonical.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <e3a01903-1b3b-4f7c-4458-179fbbd27615@gmail.com>
-Date:   Mon, 1 Feb 2021 19:54:15 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=kLmSIentwLuFLVXnsJMLh0cc8SI2PvhOVhp/gMM3mlA=;
+        b=QPcFhK98jL5M+sPlh2sZPlx6eJq6UG4LwgvdFC5FoVqM0LPzVszYQwSCQBUQopmNBU
+         +rc35aZCLrUElo6ARraXHNbmKsPv7nFYH8Fwi+8sX5pGA6zLVxRwM5KLWk0ld+9Rtt1+
+         dq28U3c5+KnvkexkCdvSL6MsejLxSocR+G3zoreGDTmUVFewXEkrSdB0JKrq72GdenbH
+         V5b8Bg10TTgd8mQed+WqDmaCWr2zbboiIamswAuaO26M5t3gPG6zAQ76WS1F5AEGOC2d
+         IfY7StZN8hXcz8pMJ4fF5LyiHzt1aEKKfjq9ZpjkBBirtjkw8q6jOWn0Ul1IPrt1IB57
+         WzEA==
+X-Gm-Message-State: AOAM532r2Nv1q4DremUKdUJe6neIKaeQy9zQbjhcXHNthCylJIn9uZYr
+        +u4GpDRlz8hjhSKg+Y2g/bE=
+X-Google-Smtp-Source: ABdhPJyvRVCSjNDa60cSoH3aLH+CcVDgVvoBIwyUESbG0jzo2qXpWN/I2vCC3eif+/6T56OcjY8j1w==
+X-Received: by 2002:a1c:2905:: with SMTP id p5mr254457wmp.156.1612205715150;
+        Mon, 01 Feb 2021 10:55:15 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id v25sm224468wmh.4.2021.02.01.10.55.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 10:55:14 -0800 (PST)
+Date:   Mon, 1 Feb 2021 18:55:13 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     sthemmin@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        daniel.lezcano@linaro.org, arnd@arndb.de,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arch@vger.kernel.org
+Subject: Re: [PATCH 08/10] clocksource/drivers/hyper-v: Handle sched_clock
+ differences inline
+Message-ID: <20210201185513.or4eilecqhmxqjme@liuwe-devbox-debian-v2>
+References: <1611779025-21503-1-git-send-email-mikelley@microsoft.com>
+ <1611779025-21503-9-git-send-email-mikelley@microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <20210201164735.1268796-1-kai.heng.feng@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1611779025-21503-9-git-send-email-mikelley@microsoft.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.02.2021 17:47, Kai-Heng Feng wrote:
-> According to the vendor driver, the new chip with XID 0x54b is
-> essentially the same as the one with XID 0x54a, but it doesn't need the
-> firmware.
-> 
-> So add support accordingly.
-> 
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-> ---
->  drivers/net/ethernet/realtek/r8169.h      |  1 +
->  drivers/net/ethernet/realtek/r8169_main.c | 21 +++++++++++++--------
->  2 files changed, 14 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/realtek/r8169.h b/drivers/net/ethernet/realtek/r8169.h
-> index 7be86ef5a584..2728df46ec41 100644
-> --- a/drivers/net/ethernet/realtek/r8169.h
-> +++ b/drivers/net/ethernet/realtek/r8169.h
-> @@ -63,6 +63,7 @@ enum mac_version {
->  	RTL_GIGA_MAC_VER_50,
->  	RTL_GIGA_MAC_VER_51,
->  	RTL_GIGA_MAC_VER_52,
-> +	RTL_GIGA_MAC_VER_53,
->  	RTL_GIGA_MAC_VER_60,
->  	RTL_GIGA_MAC_VER_61,
->  	RTL_GIGA_MAC_VER_63,
-> diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-> index a569abe7f5ef..ee1f72a9d453 100644
-> --- a/drivers/net/ethernet/realtek/r8169_main.c
-> +++ b/drivers/net/ethernet/realtek/r8169_main.c
-> @@ -145,6 +145,7 @@ static const struct {
->  	[RTL_GIGA_MAC_VER_50] = {"RTL8168ep/8111ep"			},
->  	[RTL_GIGA_MAC_VER_51] = {"RTL8168ep/8111ep"			},
->  	[RTL_GIGA_MAC_VER_52] = {"RTL8168fp/RTL8117",  FIRMWARE_8168FP_3},
-> +	[RTL_GIGA_MAC_VER_53] = {"RTL8168fp/RTL8117",			},
->  	[RTL_GIGA_MAC_VER_60] = {"RTL8125A"				},
->  	[RTL_GIGA_MAC_VER_61] = {"RTL8125A",		FIRMWARE_8125A_3},
->  	/* reserve 62 for CFG_METHOD_4 in the vendor driver */
-> @@ -682,7 +683,7 @@ static bool rtl_is_8168evl_up(struct rtl8169_private *tp)
->  {
->  	return tp->mac_version >= RTL_GIGA_MAC_VER_34 &&
->  	       tp->mac_version != RTL_GIGA_MAC_VER_39 &&
-> -	       tp->mac_version <= RTL_GIGA_MAC_VER_52;
-> +	       tp->mac_version <= RTL_GIGA_MAC_VER_53;
->  }
->  
->  static bool rtl_supports_eee(struct rtl8169_private *tp)
-> @@ -1012,7 +1013,9 @@ static u16 rtl_ephy_read(struct rtl8169_private *tp, int reg_addr)
->  static void r8168fp_adjust_ocp_cmd(struct rtl8169_private *tp, u32 *cmd, int type)
->  {
->  	/* based on RTL8168FP_OOBMAC_BASE in vendor driver */
-> -	if (tp->mac_version == RTL_GIGA_MAC_VER_52 && type == ERIAR_OOB)
-> +	if (type == ERIAR_OOB &&
-> +	    (tp->mac_version == RTL_GIGA_MAC_VER_52 ||
-> +	     tp->mac_version == RTL_GIGA_MAC_VER_53))
->  		*cmd |= 0x7f0 << 18;
->  }
->  
-> @@ -1164,7 +1167,7 @@ static void rtl8168_driver_start(struct rtl8169_private *tp)
->  	case RTL_GIGA_MAC_VER_31:
->  		rtl8168dp_driver_start(tp);
->  		break;
-> -	case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_52:
-> +	case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_53:
->  		rtl8168ep_driver_start(tp);
->  		break;
->  	default:
-> @@ -1195,7 +1198,7 @@ static void rtl8168_driver_stop(struct rtl8169_private *tp)
->  	case RTL_GIGA_MAC_VER_31:
->  		rtl8168dp_driver_stop(tp);
->  		break;
-> -	case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_52:
-> +	case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_53:
->  		rtl8168ep_driver_stop(tp);
->  		break;
->  	default:
-> @@ -1223,7 +1226,7 @@ static bool r8168_check_dash(struct rtl8169_private *tp)
->  	case RTL_GIGA_MAC_VER_28:
->  	case RTL_GIGA_MAC_VER_31:
->  		return r8168dp_check_dash(tp);
-> -	case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_52:
-> +	case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_53:
->  		return r8168ep_check_dash(tp);
->  	default:
->  		return false;
-> @@ -1930,6 +1933,7 @@ static enum mac_version rtl8169_get_mac_version(u16 xid, bool gmii)
->  		{ 0x7c8, 0x608,	RTL_GIGA_MAC_VER_61 },
->  
->  		/* RTL8117 */
-> +		{ 0x7cf, 0x54b,	RTL_GIGA_MAC_VER_53 },
->  		{ 0x7cf, 0x54a,	RTL_GIGA_MAC_VER_52 },
->  
->  		/* 8168EP family. */
-> @@ -2274,7 +2278,7 @@ static void rtl_init_rxcfg(struct rtl8169_private *tp)
->  	case RTL_GIGA_MAC_VER_38:
->  		RTL_W32(tp, RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA_BURST);
->  		break;
-> -	case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_52:
-> +	case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_53:
->  		RTL_W32(tp, RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA_BURST | RX_EARLY_OFF);
->  		break;
->  	case RTL_GIGA_MAC_VER_60 ... RTL_GIGA_MAC_VER_63:
-> @@ -2449,7 +2453,7 @@ DECLARE_RTL_COND(rtl_rxtx_empty_cond_2)
->  static void rtl_wait_txrx_fifo_empty(struct rtl8169_private *tp)
->  {
->  	switch (tp->mac_version) {
-> -	case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_52:
-> +	case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_53:
->  		rtl_loop_wait_high(tp, &rtl_txcfg_empty_cond, 100, 42);
->  		rtl_loop_wait_high(tp, &rtl_rxtx_empty_cond, 100, 42);
->  		break;
-> @@ -3708,6 +3712,7 @@ static void rtl_hw_config(struct rtl8169_private *tp)
->  		[RTL_GIGA_MAC_VER_50] = rtl_hw_start_8168ep_2,
->  		[RTL_GIGA_MAC_VER_51] = rtl_hw_start_8168ep_3,
->  		[RTL_GIGA_MAC_VER_52] = rtl_hw_start_8117,
-> +		[RTL_GIGA_MAC_VER_53] = rtl_hw_start_8117,
->  		[RTL_GIGA_MAC_VER_60] = rtl_hw_start_8125a_1,
->  		[RTL_GIGA_MAC_VER_61] = rtl_hw_start_8125a_2,
->  		[RTL_GIGA_MAC_VER_63] = rtl_hw_start_8125b,
-> @@ -5101,7 +5106,7 @@ static void rtl_hw_init_8125(struct rtl8169_private *tp)
->  static void rtl_hw_initialize(struct rtl8169_private *tp)
->  {
->  	switch (tp->mac_version) {
-> -	case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_52:
-> +	case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_53:
->  		rtl8168ep_stop_cmac(tp);
->  		fallthrough;
->  	case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_48:
-> 
+On Wed, Jan 27, 2021 at 12:23:43PM -0800, Michael Kelley wrote:
+[...]
+> +/*
+> + * Reference to pv_ops must be inline so objtool
+> + * detection of noinstr violations can work correctly.
+> + */
+> +static __always_inline void hv_setup_sched_clock(void *sched_clock)
 
-I think you have to add the following in r8169_phy_config.c
-[RTL_GIGA_MAC_VER_53] = rtl8117_hw_phy_config,
-Or doesn't VER_53 need this?
+sched_clock_register is not trivial. Having __always_inline here is
+going to make the compiled object bloated.
+
+Given this is a static function, I don't think we need to specify any
+inline keyword. The compiler should be able to determine whether this
+function should be inlined all by itself.
+
+Wei.
+
+> +{
+> +#ifdef CONFIG_GENERIC_SCHED_CLOCK
+> +	/*
+> +	 * We're on an architecture with generic sched clock (not x86/x64).
+> +	 * The Hyper-V sched clock read function returns nanoseconds, not
+> +	 * the normal 100ns units of the Hyper-V synthetic clock.
+> +	 */
+> +	sched_clock_register(sched_clock, 64, NSEC_PER_SEC);
+> +#else
+> +#ifdef CONFIG_PARAVIRT
+> +	/* We're on x86/x64 *and* using PV ops */
+> +	pv_ops.time.sched_clock = sched_clock;
+> +#endif
+> +#endif
+> +}
+> +
+>  static bool __init hv_init_tsc_clocksource(void)
+>  {
+>  	u64		tsc_msr;
+> -- 
+> 1.8.3.1
+> 
