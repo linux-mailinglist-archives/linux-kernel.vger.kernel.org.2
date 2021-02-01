@@ -2,186 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4351230AF35
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:27:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D80B30AF3A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:29:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232937AbhBAS1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:27:43 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:42260 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232917AbhBAS1H (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:27:07 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 111IEFD8139697;
-        Mon, 1 Feb 2021 18:24:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=l60f08n2UUQ9F7F3myeI2FXfLaXXPiQ5alJJSKZvH80=;
- b=LBCr0/3WVhQl444e1NQPWB3C0vU5e53WYhZXU+RZn4XLfkaVJFz3cjWm8jzWvGvRIhT5
- 75nvBupyd0qJmU3vLmnrrwFKr22kPkua9pK1b4NGc3XX26rKzkL3TI42x/8E6M4QF/7P
- ZkavPwbTu3rAxLJnADX9DH2y2Q6HuL+oZEscgHb8fHF+LSO1NzUuT2DiQyatfch6XW0I
- MBHD6IGZJ4cMl2u9SouVDi6oxCPm9cB4Lzq9hQEZ+u+UnZdOxvU30DGNLPvUJadTea24
- vaPEobGG2a/rNZ1CAaqV8POXTxAqQeHxOjjb65T3UbFCT75wyBgd5NVPuI1S3TU3L/MP bQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 36cxvqxt7e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 01 Feb 2021 18:24:09 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 111IFRRP057545;
-        Mon, 1 Feb 2021 18:24:08 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2046.outbound.protection.outlook.com [104.47.66.46])
-        by aserp3030.oracle.com with ESMTP id 36dh1msbuy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 01 Feb 2021 18:24:08 +0000
+        id S231508AbhBAS21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:28:27 -0500
+Received: from mail-dm6nam10on2044.outbound.protection.outlook.com ([40.107.93.44]:60768
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232776AbhBAS1d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 13:27:33 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fWkqEZtd3OIeluG+4X4rhE54rgfIb06tXmSzdTThvnJBGeq2AHfFYbf6RJyy6yD8K+e2DHcDIVytPTPQZYcLHDO4/IpFlYSwYl30a/bQma/Li4m8QrYqFQUwWLry62OE7wcdgHOZgedG+8z7zV6QcjpeZcCy5IQyL8rSSeSIoJsX6G8/pHN1SMYRHqHQYwMrvNVd8ZY/FMo/R9A9OBg09C/2TyhrKbEHWlbs5fi/49XrP1rH0SXFqjxQTDrV+D3I8Y4DPnPI2C5jumD71KRqSTP1rrzRcN3jPmosIBLdCiW2Un6aQPQA+NFT72QDIotYjRtS4NjBPVAwyTptIWb9Hw==
+ b=gUeMH1d2nRxiEKFDSZ4yoYNIRcq7otAc/bBjdEOW/xJ1Jm6H18U8wsgwvGL79ZHyXIKVLHbPnT8JyxIueCTolOMBNHAUUxeXh3Vdwj92KRu22BmlIDTuHQ1a/e9zdyM1SaDiSlRDEj4pq3m+dGhNEVNhu47VjPuIeYAKCGneQBBr65JHbqwFToS+DyOuIXHNLqoP8zlqT5vdALRIpXGFCfr38hE9dsCMrvmX34tYY4vtGARMAGxUFfI3qtr21ael1+lFApTrJFC7jXwueU7/tHfPKnP+YvIUZlZ77me3FG85ye9PLaHnIa2WkyOz2jNlzCgAhAkmU3Kr99Pd4Kl4bQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l60f08n2UUQ9F7F3myeI2FXfLaXXPiQ5alJJSKZvH80=;
- b=F9ON7cEsf1087McSMSkMUR3qbCpU4fvsmHLCunfgRoHHW+TJoSuERM1ACi6Yuhy/BUvRQJICLxhpzBODY5Wk+imuMPHSVfSQ1M9be/pxnkFMUwaF8awLuWCh/SXU5fOGvcaNB1sriksSxZX2ZGThlKaek+sDqn319oYI1cOB8uOoHSb6JeweLVuJveU7SUJJX2KaLRlOfqzs0ipmXaYqodPho9l5oc8xbClTD5/SyM1w4jyqUuW6+0unh0AY1V/pSiLQIG13mVc8n/qrhoik+bFtOb7+0xf7Q7qIh0prhTmuCzqRmk8OPt1/Ifl9pbpvmIS0d/Nrp455O9BLsvlUkQ==
+ bh=mFIJP/PTLqytAC5Qdf0gtOcN2xgKECHn5IOOsx98rRw=;
+ b=GXpU+K+lV/4F12Z+gvh7V9Vt01SJEKIdxoNHK/KALAquhxUhw/pKiEGJJi/p5LCB3LWpzJVz35a9D0wSXyygvhubf82Sbu+l4KwdW7S8EA0QMmz4zrJNB6JFJVl4qTqPvDV1bdizOyF8D8Nog05fPlvTgED/v6YD3OYNUlrI6DVFXm/+OGOirsRviz0kwlenCV2ypVXajWZ5+dLXt68Bu1kuwkXVIliTbhutx13FgIhkJZMBo41a3/F3gWrFt5P094Z2pblPGoic2MHZfUdZkr5wvH8I6lGa7ghEPrFri7bATxm9h4zcEQPU7P9MnAWs1t5jT8jIRi/8zwxL1DisxQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=l60f08n2UUQ9F7F3myeI2FXfLaXXPiQ5alJJSKZvH80=;
- b=SPA0d3qXkIMDwOb3ocqYLU6EFcdhPUUld6p87yD1GvhXJtlxb5GkhXtefCCikPa3voceSIEXTkvfH4zraQk5HqaOGJ2LjWMX01hmWM9fuL8p3HS/8rCtsoc/xyB+lox91pNwk2TfxWVs+dQA1WCN5XP4aoUJbxLAuaQ5NPpXEjs=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
- by BYAPR10MB3592.namprd10.prod.outlook.com (2603:10b6:a03:11f::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17; Mon, 1 Feb
- 2021 18:24:05 +0000
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::e180:1ba2:d87:456]) by BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::e180:1ba2:d87:456%4]) with mapi id 15.20.3784.019; Mon, 1 Feb 2021
- 18:24:05 +0000
-Date:   Mon, 1 Feb 2021 13:24:00 -0500
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        daniel.lll@alibaba-inc.com,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH 09/14] cxl/mem: Add a "RAW" send command
-Message-ID: <20210201182400.GK197521@fedora>
-References: <20210130002438.1872527-1-ben.widawsky@intel.com>
- <20210130002438.1872527-10-ben.widawsky@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210130002438.1872527-10-ben.widawsky@intel.com>
-X-Originating-IP: [209.6.208.110]
-X-ClientProxiedBy: MN2PR22CA0010.namprd22.prod.outlook.com
- (2603:10b6:208:238::15) To BYAPR10MB2999.namprd10.prod.outlook.com
- (2603:10b6:a03:85::27)
+ bh=mFIJP/PTLqytAC5Qdf0gtOcN2xgKECHn5IOOsx98rRw=;
+ b=Dml+OUEm37rHgwg1qKcAtmpJ97c0ZgFeTJ3fbFLqYbB0/TulNf4+ZN15cDoNgSIVuWVnOu8fyX36/8a8ilOiqK7L5uKSSWLXvNKlpeKn0Yx8/DBWv2tEtJxktZthNoHbnuE/IkHTwdtL/2pKKH6xc9Z923D8TLr0W8tKddhKxUo=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
+ DM6PR12MB3369.namprd12.prod.outlook.com (2603:10b6:5:117::16) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3805.19; Mon, 1 Feb 2021 18:26:40 +0000
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::b8aa:f23e:fcad:23ee]) by DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::b8aa:f23e:fcad:23ee%8]) with mapi id 15.20.3805.025; Mon, 1 Feb 2021
+ 18:26:40 +0000
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+To:     linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <jroedel@suse.de>
+Subject: [PATCH] x86/sev-es: Do not unroll string I/O for SEV-ES guests
+Date:   Mon,  1 Feb 2021 12:26:27 -0600
+Message-Id: <3de04b5b638546ac75d42ba52307fe1a922173d3.1612203987.git.thomas.lendacky@amd.com>
+X-Mailer: git-send-email 2.30.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: SA0PR11CA0117.namprd11.prod.outlook.com
+ (2603:10b6:806:d1::32) To DM5PR12MB1355.namprd12.prod.outlook.com
+ (2603:10b6:3:6e::7)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from fedora (209.6.208.110) by MN2PR22CA0010.namprd22.prod.outlook.com (2603:10b6:208:238::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17 via Frontend Transport; Mon, 1 Feb 2021 18:24:02 +0000
+Received: from tlendack-t1.amd.com (165.204.77.1) by SA0PR11CA0117.namprd11.prod.outlook.com (2603:10b6:806:d1::32) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Mon, 1 Feb 2021 18:26:39 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9d461fed-002c-49e3-9ac4-08d8c6de8e80
-X-MS-TrafficTypeDiagnostic: BYAPR10MB3592:
-X-Microsoft-Antispam-PRVS: <BYAPR10MB35929DAA0162FB50D3D0B66589B69@BYAPR10MB3592.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:517;
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 663fe3b1-d780-4190-de5a-08d8c6deeb08
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3369:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB3369209744B401A417B76C5AECB69@DM6PR12MB3369.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2657;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8fYLKQYRUI1hSIiCIiAi9zeWolG5+hrEaxbHatdmIhbu/FLOP/KgePAgoeBtdlyZZXxoJTWQFvNfvpEexpqacdnz/PKbT3dmTfT5bzOvaUXLvmhKJdtPHNv9hjsIectS5pTmlVMMhJOeKdmhVGTJgzCtUChDV99m3xzlguPJe1fLSWbhD0ku+rqIWQmxuIvVW9Jn2G3mJBvvw5mxAYKY+FjeL1IhmWzmSOCfzWaggdTAc8NO4Wf6UvOJSl2TiLmzow59xpc3s2XfJw+MpOlhO96F75rNlQtab1QOI0OrSQUbkMcbjg5JD0KaNn0LaifnVQSAjqPZP/HQ0oiZDZjgYVXxjyZ+cASg0IRatAdRnYmAWB9P50MQ3mD606f5G1mbKByFP7MkTX3ndYchhNoItn8am0fyYs/6G0qslLtLe9ltKZC9xmQh/FCAT0AGxRkBCN98/zB9FQH+YGddJR/kAL50zXoeFKfe38g0WzrRjYan2/IBSBwf6MLCw+Q0QKaMA3Ngoz1uy3Fq5I+ApvXTuw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(136003)(346002)(376002)(366004)(186003)(16526019)(52116002)(956004)(6496006)(7416002)(54906003)(4326008)(33716001)(316002)(86362001)(8936002)(66946007)(66556008)(55016002)(66476007)(6916009)(5660300002)(9686003)(9576002)(83380400001)(1076003)(478600001)(2906002)(26005)(8676002)(33656002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?knjkINRLpew+T2+ghIBAvf0NYHVEWFS/xsS/K2MaUxyHLYkAlHqQy1mU5ITo?=
- =?us-ascii?Q?rf3RS/aQYn9GJRA4+H6LQbuu9SQRQNASVFue9S6N/Unyq4KO1YLhAqPZzj4Y?=
- =?us-ascii?Q?htDLMXKhTcklg0bpGmgO8svp72YWiQ36HLW4L8QJPQm/G5piYG8Plwkn7J5v?=
- =?us-ascii?Q?rTAuo10ADs/nXuNnYbWVC5nV5MIUgBUnjPzNJwGfef/py9q1fr1Fmg6rnhH5?=
- =?us-ascii?Q?mE2yxy/kzDHCxOG1rjoHTZpt4VhOHCxsS8QUuM6iQLFcAzjW2RTLm6ZcxyN0?=
- =?us-ascii?Q?7ANhc4zaXE7cc/SuTLzXLALRpn1EMdSnyoJQjbXdgtD3W/60qqLd4ys6bAe5?=
- =?us-ascii?Q?mSMGTRLE8x7csKe41kt4DEeZM9AubqEqC+d8ydZ0R3Rnh20TgOVemSgH9KY1?=
- =?us-ascii?Q?dXQpAW4ptxCGdxkjHSmTfoD56zKj5equI0WrkIea24ZIipnI9fGAN4D1RTTU?=
- =?us-ascii?Q?E8BsIuaWxvbmjWzoOOrLcIwzxqqy1Xio6UgjwJK+tCZAuI74aY2jFJ/whLrO?=
- =?us-ascii?Q?8ZzlYNgwdhrivtBtX9kQsb2n0S0s+CzFM0TcXXx0jxjqX/MNOG8cM0O1CCyB?=
- =?us-ascii?Q?sLYONj93/XBxsx5cuIPQXTQA9rF8e1DPu+K+/bfgUsiT7NsFJ4JPk2KFWQXh?=
- =?us-ascii?Q?r3Fz7pxqmAHZ/mBPR/IvVsMbKmDl+ZR4kEfeX+LTRV9KekugFgGR4QibLPfi?=
- =?us-ascii?Q?DdcNB31ZZAqhhz5tuNoi1TwMbUJT8jzxGUf8abFhS7G8Hr43UUUEaLFRd3O8?=
- =?us-ascii?Q?0b+NiE5A7ey7DDGElFoZ795vDSgge3HTN4EJnn2UC5txsDHQnlayUwh1agdE?=
- =?us-ascii?Q?5NRFZ9GzE2Ojm3Z97b5+oxSmwAXNaiK7V2fbMEClJTkOl1SG7C6lRJp9ZFhK?=
- =?us-ascii?Q?F7WwCDF6aeqoFzcycJzHCDWVr+OaDzbF9ixH935RbfJIAwBZPEUUf36cb0q/?=
- =?us-ascii?Q?g0p4Lz4i0i8ZZX5+eWw8vRqcQT+2c0LGP4BGoqNnMBakugg6q20AAe1Goce3?=
- =?us-ascii?Q?Y8oTnyhlCw0KsDCM5v3Lfin9+7IQpBHvDqymVBrQ70NaHPx1s3rPM7ckERbd?=
- =?us-ascii?Q?u29oMIme?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9d461fed-002c-49e3-9ac4-08d8c6de8e80
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: bq4EWYhXpERBAjxH4bIr9umWEzCBCfqaGUxZnSCqRm0SMXr7qcN2A3Gf0/bAqWeNyHK2fZ4n4n/TaXlY0P0MCpndAxiDimAP8PAyxhZAj6UJBBjcorlUw+vfpB3cKBkT8MeHMOKu/UIIrlDtSefoO7kvnkJCUCdkLoBlhv06M2xjzyx2dFY5tROtuSak4eUUR9tEE72aRE50ozga6g1PzavYIKLfir5sozg4AdDWJKQ1voedX/pnM2tjMZkk5HRzmgQh+X9GC10t65g52mESoDLTC6S0VMTZsICYmsGBom3j7rGEYuEMQbP3PgzdR9AoYJNYN/9YJCd55oeHCsfn+dKH/i2U4AJ85fR46HK+oafzJxQA1dqKXjiueNjd4aGY+jquopXTEK2bCfuqiE1cmFukjb+nu689vX1yxgVt0wKjtojfZK3mAbWAZx4kcjd7DtXw+PfIV52QdfXH0nx3Ecw+5R8CGw6tWMG4KF1Wv9tqia5HuyT0PI706e7U/jnj7atEsrzWgZ01vAtpCkWSmw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(136003)(366004)(396003)(376002)(54906003)(8676002)(52116002)(66946007)(478600001)(8936002)(86362001)(956004)(2906002)(7696005)(2616005)(83380400001)(4326008)(16526019)(26005)(186003)(66556008)(7416002)(316002)(6666004)(5660300002)(66476007)(6486002)(36756003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?4TmE5x29g73J/Wsfm1n1R+gkIC/HRYrXetPrMtWlG2oC6P0Tt7R3mnrBg8Jx?=
+ =?us-ascii?Q?REP+94WE8oAEc0zCdGHXU058Kyq8CT16QqxmxMp0CDaVK16kK1gFqUC5p45H?=
+ =?us-ascii?Q?UciJdUw/tiOUY9W9tc7eUNLezERJji8dGTmQ0eo2S8lRjtoDwySkFyO9YMcX?=
+ =?us-ascii?Q?Ry2EBDQDynq7NPq/RAYSEUdSn8yLnJBZfCODcMEske0wMh0beUtTzZyG6znT?=
+ =?us-ascii?Q?6ZCNzfmZdyxoqx2ecCFfT34BP64U9QDuyaGxqdDVASBqiCEZ7DCvx7vad33A?=
+ =?us-ascii?Q?tmpPBcAExjFXGk7vyqblAkr6CUJQNWg8vssGjPxrc8ODYBqB/hJfj2i4Ii3V?=
+ =?us-ascii?Q?3OQkfKzFsEddb0Nk22hywsdRVdAVe661E23mVjKGTLzK/OSsFn+4VJFxklmu?=
+ =?us-ascii?Q?Ts4RoOOrqaaTS9yLsRP2Za6qtF6Tq/J23GH6fPacIvL8F5OfIzWZrvvWVJlI?=
+ =?us-ascii?Q?AN3fO+3Hr95oSXYvEcdQOpRGAjljOf5L5lPDOaZXbX2RlZjBH39Nh0qRn2Gn?=
+ =?us-ascii?Q?aCMSSipqW+FBsM61AcGhcXdlLX1e75I4IJQmPV5p54NC9QtJixRhd3Wpjv/y?=
+ =?us-ascii?Q?9+1HsHqpRfMfzFCrm5KRXRoysqMap7C5oq7U8V5RLIfz2leBAvXiZYoztbLs?=
+ =?us-ascii?Q?+wGb+lop3bCeWMX8T69tYVpG8shbgAAc1nJM912UKpR925XEQtdqhvhE8VmJ?=
+ =?us-ascii?Q?d5t7dHgb1fqRWsWfLDJKxFsBj/kO/2jgQoO28WBoscE0y6SeEZHlyqK+oC3x?=
+ =?us-ascii?Q?Kw4qinwKhkwFpoQP3cc63R8eVdic7J7/hvHBulCWIbNveangXkN9B7P/euC9?=
+ =?us-ascii?Q?VrY23eXEfeszLOwyB2bTqNMWdDKXzPkyOzNhUrwRPJJA5rf3bii6u5X0FfSK?=
+ =?us-ascii?Q?Q7diRT6gf2m6HQb27HPvjkjrA9sP8jPrki3zs1DeMBOMl9N0veby/91SJfTf?=
+ =?us-ascii?Q?aLGa/KGIouW/IagUuvFAhDKPNxs6QsM7wXx9PbOuFZF1WlJ+7v1Nzs3UU9rF?=
+ =?us-ascii?Q?DIlLslwvCeKEdHvPDO2bYAHYgE2gtfJ92hfEOYeX2wcNwy/pYn80vCjyU1+a?=
+ =?us-ascii?Q?qQEcolBW?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 663fe3b1-d780-4190-de5a-08d8c6deeb08
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2021 18:24:05.0306
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2021 18:26:40.3750
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GcK29ybDpcmjYVgqwbtQzSnSoxajqTbxpYMTfCZHDg92TTRoXk68DT7E+Ou+CmU2yIgyuj6n4brpx49YiBmmoQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3592
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9882 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
- suspectscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102010095
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9882 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- mlxscore=0 priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1015
- suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102010095
+X-MS-Exchange-CrossTenant-UserPrincipalName: D1UVGikXrpB4iK8PQYlUUWZxLcZynXeY7GM+Ha7ltGcESAqG8hwM4uY2Lnc/qzXT1kmNsGp2GgeNW8qKUIVcvA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3369
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 04:24:33PM -0800, Ben Widawsky wrote:
-> The CXL memory device send interface will have a number of supported
-> commands. The raw command is not such a command. Raw commands allow
-> userspace to send a specified opcode to the underlying hardware and
-> bypass all driver checks on the command. This is useful for a couple of
-> usecases, mainly:
-> 1. Undocumented vendor specific hardware commands
-> 2. Prototyping new hardware commands not yet supported by the driver
+From: Tom Lendacky <thomas.lendacky@amd.com>
 
-This sounds like a recipe for ..
+Under the GHCB specification, SEV-ES guests can support string I/O. The
+current #VC handler contains this support, so remove the need to unroll
+kernel string I/O operations. This will reduce the number of #VC
+exceptions generated as well as the number VMEXITS for the guest.
 
-In case you really really want this may I recommend you do two things:
+Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+---
+ arch/x86/mm/mem_encrypt.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-- Wrap this whole thing with #ifdef
-  CONFIG_CXL_DEBUG_THIS_WILL_DESTROY_YOUR_LIFE
+diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
+index c79e5736ab2b..d55ea77e1ca8 100644
+--- a/arch/x86/mm/mem_encrypt.c
++++ b/arch/x86/mm/mem_encrypt.c
+@@ -474,9 +474,10 @@ void __init mem_encrypt_init(void)
+ 	swiotlb_update_mem_attributes();
+ 
+ 	/*
+-	 * With SEV, we need to unroll the rep string I/O instructions.
++	 * With SEV, we need to unroll the rep string I/O instructions,
++	 * but SEV-ES supports them through the #VC handler.
+ 	 */
+-	if (sev_active())
++	if (sev_active() && !sev_es_active())
+ 		static_branch_enable(&sev_enable_key);
+ 
+ 	print_mem_encrypt_feature_info();
 
- (or something equivalant to make it clear this should never be
-  enabled in production kernels).
+base-commit: a7e0bdf1b07ea6169930ec42b0bdb17e1c1e3bb0
+-- 
+2.30.0
 
- - Add a nice big fat printk in dmesg telling the user that they
-   are creating a unstable parallel universe that will lead to their
-   blood pressure going sky-high, or perhaps something more professional
-   sounding.
-
-- Rethink this. Do you really really want to encourage vendors
-  to use this raw API instead of them using the proper APIs?
-
-> 
-> While this all sounds very powerful it comes with a couple of caveats:
-> 1. Bug reports using raw commands will not get the same level of
->    attention as bug reports using supported commands (via taint).
-> 2. Supported commands will be rejected by the RAW command.
-> 
-> With this comes new debugfs knob to allow full access to your toes with
-> your weapon of choice.
-
-Problem is that debugfs is no longer "debug" but is enabled in
-production kernel.
