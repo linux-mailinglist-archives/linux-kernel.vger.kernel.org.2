@@ -2,148 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 269C930B2C3
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:34:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3100330B2C7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:34:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229567AbhBAWcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 17:32:48 -0500
-Received: from www62.your-server.de ([213.133.104.62]:42036 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbhBAWcq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 17:32:46 -0500
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1l6hjn-000GL3-1d; Mon, 01 Feb 2021 23:32:03 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1l6hjm-0008TG-PV; Mon, 01 Feb 2021 23:32:02 +0100
-Subject: Re: [PATCH bpf-next v6 2/5] bpf: Expose bpf_get_socket_cookie to
- tracing programs
-To:     Florent Revest <revest@chromium.org>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        KP Singh <kpsingh@kernel.org>, john.fastabend@gmail.com,
-        yhs@fb.com
-References: <20210126183559.1302406-1-revest@chromium.org>
- <20210126183559.1302406-2-revest@chromium.org>
- <CAEf4BzZ9MmdeR9P7bybXEM77MV6C-T=yZPugLOHSFC1ES2e4=g@mail.gmail.com>
- <4a8ceab1-6eef-9fda-0502-5a0550f53ddc@iogearbox.net>
- <37730136-2c33-589c-a749-4221b60b9751@iogearbox.net>
- <CABRcYm+cNW5A_=5qsKRuX7feB--xyTu3vPSRfzZcuFahzwuxhw@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <3f850e85-72ee-5a69-a6f4-7a2daab3af67@iogearbox.net>
-Date:   Mon, 1 Feb 2021 23:32:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S229629AbhBAWd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 17:33:59 -0500
+Received: from mga18.intel.com ([134.134.136.126]:23238 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229476AbhBAWd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 17:33:57 -0500
+IronPort-SDR: H5dNtczqPrQ7fNxVEWogrgbjMvln5J7EHSeBpPfbuGq95M+WymHId9Bo/+DmI8ngw4011ordX9
+ YSBxWO7prNEQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="168443400"
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="168443400"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 14:33:16 -0800
+IronPort-SDR: bucttYvCyhYhFVWXi8aqLkedpRtth8oEkVFB5DTTE+PwULkVuhPMsrGCksQrDpPOQqPFKMiJdX
+ +foCqIcAMB6A==
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="391175610"
+Received: from jambrizm-mobl1.amr.corp.intel.com (HELO intel.com) ([10.252.133.15])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 14:33:16 -0800
+Date:   Mon, 1 Feb 2021 14:33:14 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     David Rientjes <rientjes@google.com>
+Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH 03/14] cxl/mem: Find device capabilities
+Message-ID: <20210201223314.qh24uxd7ajdppgfl@intel.com>
+References: <20210130002438.1872527-1-ben.widawsky@intel.com>
+ <20210130002438.1872527-4-ben.widawsky@intel.com>
+ <234711bf-c03f-9aca-e0b5-ca677add3ea@google.com>
+ <20210201165352.wi7tzpnd4ymxlms4@intel.com>
+ <32f33dd-97a-8b1c-d488-e5198a3d7748@google.com>
+ <20210201215857.ud5cpg7hbxj2j5bx@intel.com>
+ <b46ed01-3f1-6643-d371-7764c3bde4f8@google.com>
+ <20210201222859.lzw3gvxuqebukvr6@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <CABRcYm+cNW5A_=5qsKRuX7feB--xyTu3vPSRfzZcuFahzwuxhw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26067/Mon Feb  1 13:25:31 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210201222859.lzw3gvxuqebukvr6@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/30/21 12:45 PM, Florent Revest wrote:
-> On Fri, Jan 29, 2021 at 1:49 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->> On 1/29/21 11:57 AM, Daniel Borkmann wrote:
->>> On 1/27/21 10:01 PM, Andrii Nakryiko wrote:
->>>> On Tue, Jan 26, 2021 at 10:36 AM Florent Revest <revest@chromium.org> wrote:
->>>>>
->>>>> This needs a new helper that:
->>>>> - can work in a sleepable context (using sock_gen_cookie)
->>>>> - takes a struct sock pointer and checks that it's not NULL
->>>>>
->>>>> Signed-off-by: Florent Revest <revest@chromium.org>
->>>>> Acked-by: KP Singh <kpsingh@kernel.org>
->>>>> ---
->>>>>    include/linux/bpf.h            |  1 +
->>>>>    include/uapi/linux/bpf.h       |  8 ++++++++
->>>>>    kernel/trace/bpf_trace.c       |  2 ++
->>>>>    net/core/filter.c              | 12 ++++++++++++
->>>>>    tools/include/uapi/linux/bpf.h |  8 ++++++++
->>>>>    5 files changed, 31 insertions(+)
->>>>>
->>>>> diff --git a/include/linux/bpf.h b/include/linux/bpf.h
->>>>> index 1aac2af12fed..26219465e1f7 100644
->>>>> --- a/include/linux/bpf.h
->>>>> +++ b/include/linux/bpf.h
->>>>> @@ -1874,6 +1874,7 @@ extern const struct bpf_func_proto bpf_per_cpu_ptr_proto;
->>>>>    extern const struct bpf_func_proto bpf_this_cpu_ptr_proto;
->>>>>    extern const struct bpf_func_proto bpf_ktime_get_coarse_ns_proto;
->>>>>    extern const struct bpf_func_proto bpf_sock_from_file_proto;
->>>>> +extern const struct bpf_func_proto bpf_get_socket_ptr_cookie_proto;
->>>>>
->>>>>    const struct bpf_func_proto *bpf_tracing_func_proto(
->>>>>           enum bpf_func_id func_id, const struct bpf_prog *prog);
->>>>> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
->>>>> index 0b735c2729b2..5855c398d685 100644
->>>>> --- a/include/uapi/linux/bpf.h
->>>>> +++ b/include/uapi/linux/bpf.h
->>>>> @@ -1673,6 +1673,14 @@ union bpf_attr {
->>>>>     *     Return
->>>>>     *             A 8-byte long unique number.
->>>>>     *
->>>>> + * u64 bpf_get_socket_cookie(void *sk)
->>>>
->>>> should the type be `struct sock *` then?
->>>
->>> Checking libbpf's generated bpf_helper_defs.h it generates:
->>>
->>> /*
->>>    * bpf_get_socket_cookie
->>>    *
->>>    *      If the **struct sk_buff** pointed by *skb* has a known socket,
->>>    *      retrieve the cookie (generated by the kernel) of this socket.
->>>    *      If no cookie has been set yet, generate a new cookie. Once
->>>    *      generated, the socket cookie remains stable for the life of the
->>>    *      socket. This helper can be useful for monitoring per socket
->>>    *      networking traffic statistics as it provides a global socket
->>>    *      identifier that can be assumed unique.
->>>    *
->>>    * Returns
->>>    *      A 8-byte long non-decreasing number on success, or 0 if the
->>>    *      socket field is missing inside *skb*.
->>>    */
->>> static __u64 (*bpf_get_socket_cookie)(void *ctx) = (void *) 46;
->>>
->>> So in terms of helper comment it's picking up the description from the
->>> `u64 bpf_get_socket_cookie(struct sk_buff *skb)` signature. With that
->>> in mind it would likely make sense to add the actual `struct sock *` type
->>> to the comment to make it more clear in here.
->>
->> One thought that still came to mind when looking over the series again, do
->> we need to blacklist certain functions from bpf_get_socket_cookie() under
->> tracing e.g. when attaching to, say fexit? For example, if sk_prot_free()
->> would be temporary uninlined/exported for testing and bpf_get_socket_cookie()
->> was invoked from a prog upon fexit where sock was already passed back to
->> allocator, I presume there's risk of mem corruption, no?
+On 21-02-01 14:28:59, Ben Widawsky wrote:
+> On 21-02-01 14:23:47, David Rientjes wrote:
+> > On Mon, 1 Feb 2021, Ben Widawsky wrote:
+> > 
+> > > > > > > +static int cxl_mem_setup_mailbox(struct cxl_mem *cxlm)
+> > > > > > > +{
+> > > > > > > +	const int cap = cxl_read_mbox_reg32(cxlm, CXLDEV_MB_CAPS_OFFSET);
+> > > > > > > +
+> > > > > > > +	cxlm->mbox.payload_size =
+> > > > > > > +		1 << CXL_GET_FIELD(cap, CXLDEV_MB_CAP_PAYLOAD_SIZE);
+> > > > > > > +
+> > > > > > > +	/* 8.2.8.4.3 */
+> > > > > > > +	if (cxlm->mbox.payload_size < 256) {
+> > > > > > > +		dev_err(&cxlm->pdev->dev, "Mailbox is too small (%zub)",
+> > > > > > > +			cxlm->mbox.payload_size);
+> > > > > > > +		return -ENXIO;
+> > > > > > > +	}
+> > > > > > 
+> > > > > > Any reason not to check cxlm->mbox.payload_size > (1 << 20) as well and 
+> > > > > > return ENXIO if true?
+> > > > > 
+> > > > > If some crazy vendor wanted to ship a mailbox larger than 1M, why should the
+> > > > > driver not allow it?
+> > > > > 
+> > > > 
+> > > > Because the spec disallows it :)
+> > > 
+> > > I don't see it being the driver's responsibility to enforce spec correctness
+> > > though. In certain cases, I need to use the spec, like I have to pick /some/
+> > > mailbox timeout. For other cases... 
+> > > 
+> > > I'm not too familiar with what other similar drivers may or may not do in
+> > > situations like this. The current 256 limit is mostly a reflection of that being
+> > > too small to even support advertised mandatory commands. So things can't work in
+> > > that scenario, but things can work if they have a larger register size (so long
+> > > as the BAR advertises enough space).
+> > > 
+> > 
+> > I don't think things can work above 1MB, either, though.  Section 
+> > 8.2.8.4.5 specifies 20 bits to define the payload length, if this is 
+> > larger than cxlm->mbox.payload_size it would venture into the reserved 
+> > bits of the command register.
+> > 
+> > So is the idea to allow cxl_mem_setup_mailbox() to succeed with a payload 
+> > size > 1MB and then only check 20 bits for the command register?
 > 
-> Mh, this is interesting. I can try to add a deny list in v7 but I'm
-> not sure whether I'll be able to catch them all. I'm assuming that
-> __sk_destruct, sk_destruct, __sk_free, sk_free would be other
-> problematic functions but potentially there would be more.
+> So it's probably a spec bug, but actually the payload size is 21 bits... I'll
+> check if that was a mistake.
 
-I was just looking at bpf_skb_output() from a7658e1a4164 ("bpf: Check types of
-arguments passed into helpers") which afaiu has similar issue, back at the time
-this was introduced there was no fentry/fexit but rather raw tp progs, so you
-could still safely dump skb this way including for kfree_skb() tp. Presumably if
-you bpf_skb_output() at 'fexit/kfree_skb' you might be able to similarly crash
-your kernel which I don't think is intentional (also given we go above and beyond
-in other areas to avoid crashing or destabilizing e.g. [0] to mention one). Maybe
-these should really only be for BPF_TRACE_RAW_TP (or BPF_PROG_TYPE_LSM) where it
-can be audited that it's safe to use like a7658e1a4164's original intention ...
-or have some sort of function annotation like __acquires/__releases but for tracing
-e.g. __frees(skb) where use would then be blocked (not sure iff feasible).
+Well I guess they wanted to be able to specify 1M exactly... Spec should
+probably say you can't go over 1M
 
-   [0] https://lore.kernel.org/bpf/20210126001219.845816-1-yhs@fb.com/
