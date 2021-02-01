@@ -2,128 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B96E30A441
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:20:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 01EEF30A445
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:21:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232875AbhBAJTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 04:19:32 -0500
-Received: from mail-io1-f72.google.com ([209.85.166.72]:33653 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232805AbhBAJSB (ORCPT
+        id S232827AbhBAJU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 04:20:29 -0500
+Received: from mxout70.expurgate.net ([194.37.255.70]:60653 "EHLO
+        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232758AbhBAJUT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 04:18:01 -0500
-Received: by mail-io1-f72.google.com with SMTP id m3so11342940ioy.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 01:17:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=b4WyNj/mYmWoFnb16jtfXo7YU8unzJ8Ax1ZCNtN8gHQ=;
-        b=ZSXR6J9ExRraNNsCU2GCf69viT5SZ2PgCt7q3CpjH/R3eib3Ptec4qThmDf7fEU5Gs
-         Dy4BB+zTPVcdQLj9JRaKiG3ThA9Sz2sjCP5fCWrXzD5DT8qyfiQZxbqZntfmTqsLxkC5
-         dRObAide8ZgGPhpxSACdF7KGZmcNyvThWcV/KdcOzJIGoMVKOc1nQVeaXZweOWJS2115
-         ee/la85QqNI1lNGGDxFCsOSxFpsh7TZJQ+ggTfA3JMV1FQWyiSY6DMKzyupW5UFJVJiN
-         +XtVix0OBEvorJ7ooLc2mjaSd1k00FfghtXyIA86etJboSH3m7diCqV5Lps0k5Z417sJ
-         4F7w==
-X-Gm-Message-State: AOAM5312PC38CYXvamQBEDHy0woOT6I7plKF5I2oFFW3QrgpEJb0vxHa
-        VV8UKv7sHp+uOQRoeSUU8qdkA77s5w0X/zB71AorguADQWtQ
-X-Google-Smtp-Source: ABdhPJzfYJvL+V2Mnhtcr53eabCrWQvAnphqYRcNj2x1g0l2aVRxHSC12GrMlkHiGzDdOpaHc32WgVNwpG9u2ZfvKi37xa2123ct
+        Mon, 1 Feb 2021 04:20:19 -0500
+Received: from [127.0.0.1] (helo=localhost)
+        by relay.expurgate.net with smtp (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1l6VLl-0004xN-M0; Mon, 01 Feb 2021 10:18:25 +0100
+Received: from [195.243.126.94] (helo=securemail.tdt.de)
+        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.90)
+        (envelope-from <ms@dev.tdt.de>)
+        id 1l6VLk-0002MG-Ia; Mon, 01 Feb 2021 10:18:24 +0100
+Received: from securemail.tdt.de (localhost [127.0.0.1])
+        by securemail.tdt.de (Postfix) with ESMTP id 2426C240041;
+        Mon,  1 Feb 2021 10:18:24 +0100 (CET)
+Received: from mail.dev.tdt.de (unknown [10.2.4.42])
+        by securemail.tdt.de (Postfix) with ESMTP id 97CDE240040;
+        Mon,  1 Feb 2021 10:18:23 +0100 (CET)
+Received: from mail.dev.tdt.de (localhost [IPv6:::1])
+        by mail.dev.tdt.de (Postfix) with ESMTP id 264DB200AA;
+        Mon,  1 Feb 2021 10:18:23 +0100 (CET)
 MIME-Version: 1.0
-X-Received: by 2002:a5e:9416:: with SMTP id q22mr1522792ioj.98.1612171033720;
- Mon, 01 Feb 2021 01:17:13 -0800 (PST)
-Date:   Mon, 01 Feb 2021 01:17:13 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c83a9705ba42d18d@google.com>
-Subject: possible deadlock in ovl_dir_real_file
-From:   syzbot <syzbot+6a023cb2262c79301432@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        miklos@szeredi.hu, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 01 Feb 2021 10:18:23 +0100
+From:   Martin Schiller <ms@dev.tdt.de>
+To:     Xie He <xie.he.0141@gmail.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux X25 <linux-x25@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Krzysztof Halasa <khc@pm.waw.pl>
+Subject: Re: [PATCH net] net: hdlc_x25: Use qdisc to queue outgoing LAPB
+ frames
+Organization: TDT AG
+In-Reply-To: <CAJht_EMQVaKFx7Wjj75F2xVBTCdpmho64wP0bfX6RhFnzNXAZA@mail.gmail.com>
+References: <20210127090747.364951-1-xie.he.0141@gmail.com>
+ <20210128114659.2d81a85f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAJht_EOSB-m--Ombr6wLMFq4mPy8UTpsBri2CPsaRTU-aks7Uw@mail.gmail.com>
+ <3f67b285671aaa4b7903733455a730e1@dev.tdt.de>
+ <20210129173650.7c0b7cda@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAJht_EPMtn5E-Y312vPQfH2AwDAi+j1OP4zzpg+AUKf46XE1Yw@mail.gmail.com>
+ <20210130111618.335b6945@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CAJht_EMQVaKFx7Wjj75F2xVBTCdpmho64wP0bfX6RhFnzNXAZA@mail.gmail.com>
+Message-ID: <36a6c0769c57cd6835d32cc0fb95bca6@dev.tdt.de>
+X-Sender: ms@dev.tdt.de
+User-Agent: Roundcube Webmail/1.3.16
+X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
+        autolearn_force=no version=3.4.2
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
+X-purgate-ID: 151534::1612171105-0000A9C4-B60B7990/0/0
+X-purgate-type: clean
+X-purgate: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2021-01-31 04:16, Xie He wrote:
+> On Sat, Jan 30, 2021 at 11:16 AM Jakub Kicinski <kuba@kernel.org> 
+> wrote:
+>> 
+>> Sounds like too much afford for a sub-optimal workaround.
+>> The qdisc semantics are borken in the proposed scheme (double
+>> counting packets) - both in term of statistics and if user decides
+>> to add a policer, filter etc.
+> 
+> Hmm...
+> 
+> Another solution might be creating another virtual device on top of
+> the HDLC device (similar to what "hdlc_fr.c" does), so that we can
+> first queue L3 packets in the virtual device's qdisc queue, and then
+> queue the L2 frames in the actual HDLC device's qdisc queue. This way
+> we can avoid the same outgoing data being queued to qdisc twice. But
+> this would significantly change the way the user uses the hdlc_x25
+> driver.
+> 
+>> Another worry is that something may just inject a packet with
+>> skb->protocol == ETH_P_HDLC but unexpected structure (IDK if
+>> that's a real concern).
+> 
+> This might not be a problem. Ethernet devices also allow the user to
+> inject raw frames with user constructed headers. "hdlc_fr.c" also
+> allows the user to bypass the virtual circuit interfaces and inject
+> raw frames directly on the HDLC interface. I think the receiving side
+> should be able to recognize and drop invalid frames.
+> 
+>> It may be better to teach LAPB to stop / start the internal queue.
+>> The lower level drivers just needs to call LAPB instead of making
+>> the start/wake calls directly to the stack, and LAPB can call the
+>> stack. Would that not work?
+> 
+> I think this is a good solution. But this requires changing a lot of
+> code. The HDLC subsystem needs to be changed to allow HDLC Hardware
+> Drivers to ask HDLC Protocol Drivers (like hdlc_x25.c) to stop/wake
+> the TX queue. The hdlc_x25.c driver can then ask the LAPB module to
+> stop/wake the queue.
+> 
+> So this means new APIs need to be added to both the HDLC subsystem and
+> the LAPB module, and a number of HDLC Hardware Drivers need to be
+> changed to call the new API of the HDLC subsystem.
+> 
+> Martin, do you have any suggestions?
 
-syzbot found the following issue on:
+I have thought about this issue again.
 
-HEAD commit:    6642d600 Merge tag '5.11-rc5-smb3' of git://git.samba.org/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=148aef78d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9408d1770a50819c
-dashboard link: https://syzkaller.appspot.com/bug?extid=6a023cb2262c79301432
-compiler:       clang version 11.0.1
+I also have to say that I have never noticed any problems in this area
+before.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+So again for (my) understanding:
+When a hardware driver calls netif_stop_queue, the frames sent from
+layer 3 (X.25) with dev_queue_xmit are queued and not passed "directly"
+to x25_xmit of the hdlc_x25 driver.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6a023cb2262c79301432@syzkaller.appspotmail.com
+So nothing is added to the write_queue anymore (except possibly
+un-acked-frames by lapb_requeue_frames).
 
-============================================
-WARNING: possible recursive locking detected
-5.11.0-rc5-syzkaller #0 Not tainted
---------------------------------------------
-syz-executor.2/3639 is trying to acquire lock:
-ffff888084c0b5f0 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}, at: inode_lock include/linux/fs.h:773 [inline]
-ffff888084c0b5f0 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}, at: ovl_dir_real_file+0x20b/0x310 fs/overlayfs/readdir.c:886
+Shouldn't it actually be sufficient to check for netif_queue_stopped in
+lapb_kick and then do "nothing" if necessary?
 
-but task is already holding lock:
-ffff888084c0b5f0 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}, at: inode_lock include/linux/fs.h:773 [inline]
-ffff888084c0b5f0 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}, at: ovl_ioctl_set_flags fs/overlayfs/file.c:530 [inline]
-ffff888084c0b5f0 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}, at: ovl_ioctl+0x2fb/0x960 fs/overlayfs/file.c:569
+As soon as the hardware driver calls netif_wake_queue, the whole thing
+should just continue running.
 
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock(&ovl_i_mutex_dir_key[depth]);
-  lock(&ovl_i_mutex_dir_key[depth]);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-2 locks held by syz-executor.2/3639:
- #0: ffff88807a706460 (sb_writers#17){.+.+}-{0:0}, at: mnt_want_write_file+0x5a/0x250 fs/namespace.c:412
- #1: ffff888084c0b5f0 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}, at: inode_lock include/linux/fs.h:773 [inline]
- #1: ffff888084c0b5f0 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}, at: ovl_ioctl_set_flags fs/overlayfs/file.c:530 [inline]
- #1: ffff888084c0b5f0 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}, at: ovl_ioctl+0x2fb/0x960 fs/overlayfs/file.c:569
-
-stack backtrace:
-CPU: 1 PID: 3639 Comm: syz-executor.2 Not tainted 5.11.0-rc5-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x137/0x1be lib/dump_stack.c:120
- __lock_acquire+0x2333/0x5e90 kernel/locking/lockdep.c:4670
- lock_acquire+0x114/0x5e0 kernel/locking/lockdep.c:5442
- down_write+0x56/0x120 kernel/locking/rwsem.c:1406
- inode_lock include/linux/fs.h:773 [inline]
- ovl_dir_real_file+0x20b/0x310 fs/overlayfs/readdir.c:886
- ovl_real_fdget fs/overlayfs/file.c:136 [inline]
- ovl_real_ioctl fs/overlayfs/file.c:499 [inline]
- ovl_ioctl_set_flags fs/overlayfs/file.c:545 [inline]
- ovl_ioctl+0x4de/0x960 fs/overlayfs/file.c:569
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl+0xfb/0x170 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45e219
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f02ed677c68 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045e219
-RDX: 0000000000000000 RSI: 0000000040086602 RDI: 0000000000000003
-RBP: 000000000119bfc0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119bf8c
-R13: 00007ffd373df6ef R14: 00007f02ed6789c0 R15: 000000000119bf8c
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Or am I missing something?
