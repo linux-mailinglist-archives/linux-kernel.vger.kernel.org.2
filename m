@@ -2,77 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73F7030AEC9
+	by mail.lfdr.de (Postfix) with ESMTP id E558430AECA
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:14:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231699AbhBASLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:11:53 -0500
-Received: from mail-wm1-f46.google.com ([209.85.128.46]:55028 "EHLO
-        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229680AbhBASLt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:11:49 -0500
-Received: by mail-wm1-f46.google.com with SMTP id u14so115579wml.4;
-        Mon, 01 Feb 2021 10:11:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5mE6GwQL4E/dm2XJFp8NZbVHLfMxsLlSHpFR2Bi18gM=;
-        b=H7ah4I3p8v3szOwBpi4sFY7AOSj+v00BY2w59KBjmflQuQG8ZKpkRmUItZw6yppapm
-         BU4zii7OSV5EvRceAFIBcHTLzvBwDlLFZbgnJivCGVPHMnTFRLNnDuisrMsM3apTQjbs
-         u28xQP2wELRpKVO0kDyYt6otLciehYpMw10ckancvrjrPbjuYIIW8Nz3xa+nENRX/iE5
-         J4Fya4qu6XpJavc4tLq/mtktQ2pDcgM9oHDRgu6rUjG83p14Vr76HPQtaCA8ME1oOTxR
-         Gs3+PdAXz8MjUEZ65+Ffk7tW74eEdyBiyopfgbMb1FvNyVONV3GC8Kqv/fT9x7rC2YOG
-         i5Ig==
-X-Gm-Message-State: AOAM532RMAwo1CvPNk4wAaeL7Vz111qlttkFpBldWq43b5zdOnfF5WX8
-        h9bcTl5DXTAM2TuVmn74/lY=
-X-Google-Smtp-Source: ABdhPJxYXAANkuGsB57jlD/WYbyHorJJbKVMVZ3rUyXw3DZ785MPCY0AApi0PXnrmN442/n+naBZGg==
-X-Received: by 2002:a05:600c:2f81:: with SMTP id t1mr110329wmn.186.1612203066899;
-        Mon, 01 Feb 2021 10:11:06 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id o124sm119597wmb.5.2021.02.01.10.11.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 10:11:06 -0800 (PST)
-Date:   Mon, 1 Feb 2021 18:11:05 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        linux-hyperv@vger.kernel.org,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, x86@kernel.org,
-        linux-arch@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v3 hyperv-next 0/4] Drivers: hv: vmbus: Restrict devices
- and configurations on 'isolated' guests
-Message-ID: <20210201181105.g7tqnniin5cem5x2@liuwe-devbox-debian-v2>
-References: <20210201144814.2701-1-parri.andrea@gmail.com>
+        id S231864AbhBASM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:12:28 -0500
+Received: from foss.arm.com ([217.140.110.172]:35594 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229663AbhBASMY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 13:12:24 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 41FDB1042;
+        Mon,  1 Feb 2021 10:11:38 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0EB9A3F718;
+        Mon,  1 Feb 2021 10:11:35 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Barry Song <song.bao.hua@hisilicon.com>,
+        vincent.guittot@linaro.org, mgorman@suse.de, mingo@kernel.org,
+        peterz@infradead.org, dietmar.eggemann@arm.com,
+        morten.rasmussen@arm.com, linux-kernel@vger.kernel.org
+Cc:     linuxarm@openeuler.org, xuwei5@huawei.com, liguozhu@hisilicon.com,
+        tiantao6@hisilicon.com, wanghuiqiang@huawei.com,
+        prime.zeng@hisilicon.com, jonathan.cameron@huawei.com,
+        guodong.xu@linaro.org, Barry Song <song.bao.hua@hisilicon.com>,
+        Meelis Roos <mroos@linux.ee>
+Subject: Re: [PATCH] sched/topology: fix the issue groups don't span domain->span for NUMA diameter > 2
+In-Reply-To: <20210201033830.15040-1-song.bao.hua@hisilicon.com>
+References: <20210201033830.15040-1-song.bao.hua@hisilicon.com>
+User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
+Date:   Mon, 01 Feb 2021 18:11:26 +0000
+Message-ID: <jhj7dnr4q0h.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201144814.2701-1-parri.andrea@gmail.com>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 03:48:10PM +0100, Andrea Parri (Microsoft) wrote:
-> Andrea Parri (Microsoft) (4):
->   x86/hyperv: Load/save the Isolation Configuration leaf
->   Drivers: hv: vmbus: Restrict vmbus_devices on isolated guests
->   Drivers: hv: vmbus: Enforce 'VMBus version >= 5.2' on isolated guests
->   hv_netvsc: Restrict configurations on isolated guests
 
-Applied to hyperv-next. Thanks.
+Hi,
 
-Wei.
+On 01/02/21 16:38, Barry Song wrote:
+> A tricky thing is that we shouldn't use the sgc of the 1st CPU of node2
+> for the sched_group generated by grandchild, otherwise, when this cpu
+> becomes the balance_cpu of another sched_group of cpus other than node0,
+> our sched_group generated by grandchild will access the same sgc with
+> the sched_group generated by child of another CPU.
+>
+> So in init_overlap_sched_group(), sgc's capacity be overwritten:
+>         build_balance_mask(sd, sg, mask);
+>         cpu = cpumask_first_and(sched_group_span(sg), mask);
+>
+>         sg->sgc = *per_cpu_ptr(sdd->sgc, cpu);
+>
+> And WARN_ON_ONCE(!cpumask_equal(group_balance_mask(sg), mask)) will
+> also be triggered:
+> static void init_overlap_sched_group(struct sched_domain *sd,
+>                                      struct sched_group *sg)
+> {
+>         if (atomic_inc_return(&sg->sgc->ref) == 1)
+>                 cpumask_copy(group_balance_mask(sg), mask);
+>         else
+>                 WARN_ON_ONCE(!cpumask_equal(group_balance_mask(sg), mask));
+> }
+>
+> So here move to use the sgc of the 2nd cpu. For the corner case, if NUMA
+> has only one CPU, we will still trigger this WARN_ON_ONCE. But It is
+> really unlikely to be a real case for one NUMA to have one CPU only.
+>
+
+Well, it's trivial to boot this with QEMU, and it's actually the example
+the comment atop that WARN_ONCE() is based on. Also, you could end up with
+a single CPU on a node during hotplug operations...
+
+I am not entirely sure whether having more than one CPU per node is a
+sufficient condition. I'm starting to *think* it is, but I'm not entirely
+convinced yet - and now I need a new notebook.
