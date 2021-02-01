@@ -2,74 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB49230A098
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 04:38:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58CE230A09E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 04:39:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231360AbhBADhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 22:37:06 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:57998 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230439AbhBADg6 (ORCPT
+        id S231166AbhBADiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 22:38:12 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31864 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231393AbhBADiD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 22:36:58 -0500
-X-UUID: 4e7bcbfed94440ec94ca6d11cb948aae-20210201
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=Fb5TMlb/KzzokWa8gLqQllqr+RMLpIwXrONia/Hh3Ag=;
-        b=G9FhDgV8LqX0bFWYN3SDSs4G2nMZ+zpEW3mJg5yCPIB5kSocvWfX53L9lMUXfQ+dDFjC+nUUpAbIVsF2nRU/wtKF3ZLfYe2mMjd+3V7pcqAu+PM+cjluD0h3d8npbptMK+uEK6SS3d/ur/x24nou9FdlmhqnKJUX5zLak8l8WfY=;
-X-UUID: 4e7bcbfed94440ec94ca6d11cb948aae-20210201
-Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <jitao.shi@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 871101342; Mon, 01 Feb 2021 11:36:11 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS33N2.mediatek.inc
- (172.27.4.76) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 1 Feb
- 2021 11:36:09 +0800
-Received: from mszsdaap41.gcn.mediatek.inc (10.16.6.141) by
- MTKCAS36.mediatek.inc (172.27.4.170) with Microsoft SMTP Server id
- 15.0.1497.2 via Frontend Transport; Mon, 1 Feb 2021 11:36:08 +0800
-From:   Jitao Shi <jitao.shi@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-CC:     <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <yingjoe.chen@mediatek.com>,
-        <eddie.huang@mediatek.com>, <cawa.cheng@mediatek.com>,
-        <bibby.hsieh@mediatek.com>, <ck.hu@mediatek.com>,
-        <stonea168@163.com>, <huijuan.xie@mediatek.com>,
-        Jitao Shi <jitao.shi@mediatek.com>
-Subject: [PATCH v2 2/2] drm/mediatek: dsi: fine tune the line time cause by EOTp
-Date:   Mon, 1 Feb 2021 11:36:03 +0800
-Message-ID: <20210201033603.12616-3-jitao.shi@mediatek.com>
-X-Mailer: git-send-email 2.12.5
-In-Reply-To: <20210201033603.12616-1-jitao.shi@mediatek.com>
-References: <20210201033603.12616-1-jitao.shi@mediatek.com>
+        Sun, 31 Jan 2021 22:38:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612150595;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/gAb6zAwOxu2R4KqWA0oIvyoIahKBpzIeRdzj32BG5w=;
+        b=S6uMOtmy/WFj6fu1viR8Uf+N2x9WshQKQsXWHWD1dvrIDv0J0MJL++r63TFqxpCrXa+gBt
+        izHtbFHlCtKcIqd/hHGdf+H9YuUJENK6wgDhS9CFn7ZY/Oe6ic9VDUyDpdkndNNV15vGYt
+        /k9C6w9S07hKc8yvIkjCVaPxYAxB+gw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-389-3I_W8Ol6Ns6EcSdpf565sA-1; Sun, 31 Jan 2021 22:36:31 -0500
+X-MC-Unique: 3I_W8Ol6Ns6EcSdpf565sA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 83616801B13;
+        Mon,  1 Feb 2021 03:36:30 +0000 (UTC)
+Received: from [10.72.13.233] (ovpn-13-233.pek2.redhat.com [10.72.13.233])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DEE9D5D9DC;
+        Mon,  1 Feb 2021 03:36:24 +0000 (UTC)
+Subject: Re: [PATCH 2/2] vdpa/mlx5: Restore the hardware used index after
+ change map
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lulu@redhat.com
+References: <20210128134130.3051-1-elic@nvidia.com>
+ <20210128134130.3051-3-elic@nvidia.com>
+ <54239b51-918c-3475-dc88-4da1a4548da8@redhat.com>
+ <20210131185536.GA164217@mtl-vdi-166.wap.labs.mlnx>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <0c99f35c-7644-7201-cd11-7d486389a182@redhat.com>
+Date:   Mon, 1 Feb 2021 11:36:23 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: ACEABE82BDDD8AC1D44B065C300327C1A829929A8C583854B1D308A61AB955862000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20210131185536.GA164217@mtl-vdi-166.wap.labs.mlnx>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RW5hYmxpbmcgRW9UcCB3aWxsIG1ha2UgdGhlIGxpbmUgdGltZSBsYXJnZXIsIHNvIHRoZSBoZnAg
-YW5kDQpoYnAgc2hvdWxkIGJlIHJlZHVjZWQgdG8ga2VlcCBsaW5lIHRpbWUuDQoNClNpZ25lZC1v
-ZmYtYnk6IEppdGFvIFNoaSA8aml0YW8uc2hpQG1lZGlhdGVrLmNvbT4NCi0tLQ0KIGRyaXZlcnMv
-Z3B1L2RybS9tZWRpYXRlay9tdGtfZHNpLmMgfCAxICsNCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNl
-cnRpb24oKykNCg0KZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHNp
-LmMgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RzaS5jDQppbmRleCAyYmM0NmYyMzUw
-ZjEuLjhjNzBlYzM5YmZlMSAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9t
-dGtfZHNpLmMNCisrKyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHNpLmMNCkBAIC00
-ODEsNiArNDgxLDcgQEAgc3RhdGljIHZvaWQgbXRrX2RzaV9jb25maWdfdmRvX3RpbWluZyhzdHJ1
-Y3QgbXRrX2RzaSAqZHNpKQ0KIAkJCSAgdGltaW5nLT5kYV9oc196ZXJvICsgdGltaW5nLT5kYV9o
-c19leGl0ICsgMzsNCiANCiAJZGVsdGEgPSBkc2ktPm1vZGVfZmxhZ3MgJiBNSVBJX0RTSV9NT0RF
-X1ZJREVPX0JVUlNUID8gMTggOiAxMjsNCisJZGVsdGEgKz0gZHNpLT5tb2RlX2ZsYWdzICYgTUlQ
-SV9EU0lfTU9ERV9FT1RfUEFDS0VUID8gMiA6IDA7DQogDQogCWhvcml6b250YWxfZnJvbnRwb3Jj
-aF9ieXRlID0gdm0tPmhmcm9udF9wb3JjaCAqIGRzaV90bXBfYnVmX2JwcDsNCiAJaG9yaXpvbnRh
-bF9mcm9udF9iYWNrX2J5dGUgPSBob3Jpem9udGFsX2Zyb250cG9yY2hfYnl0ZSArIGhvcml6b250
-YWxfYmFja3BvcmNoX2J5dGU7DQotLSANCjIuMTIuNQ0K
+
+On 2021/2/1 上午2:55, Eli Cohen wrote:
+> On Fri, Jan 29, 2021 at 11:49:45AM +0800, Jason Wang wrote:
+>> On 2021/1/28 下午9:41, Eli Cohen wrote:
+>>> When a change of memory map occurs, the hardware resources are destroyed
+>>> and then re-created again with the new memory map. In such case, we need
+>>> to restore the hardware available and used indices. The driver failed to
+>>> restore the used index which is added here.
+>>>
+>>> Fixes 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+>>> Signed-off-by: Eli Cohen <elic@nvidia.com>
+>>
+>> A question. Does this mean after a vq is suspended, the hw used index is not
+>> equal to vq used index?
+> Surely there is just one "Used index" for a VQ. What I was trying to say
+> is that after the VQ is suspended, I read the used index by querying the
+> hardware. The read result is the used index that the hardware wrote to
+> memory.
+
+
+Just to make sure I understand here. So it looks to me we had two index. 
+The first is the used index which is stored in the memory/virtqueue, the 
+second is the one that is stored by the device.
+
+
+>   After the I create the new hardware object, I need to tell it
+> what is the used index (and the available index) as a way to sync it
+> with the existing VQ.
+
+
+For avail index I understand that the hardware index is not synced with 
+the avail index stored in the memory/virtqueue. The question is used 
+index, if the hardware one is not synced with the one in the virtqueue. 
+It means after vq is suspended,  some requests is not completed by the 
+hardware (e.g the buffer were not put to used ring).
+
+This may have implications to live migration, it means those 
+unaccomplished requests needs to be migrated to the destination and 
+resubmitted to the device. This looks not easy.
+
+Thanks
+
+
+>
+> This sync is especially important when a change of map occurs while the
+> VQ was already used (hence the indices are likely to be non zero). This
+> can be triggered by hot adding memory after the VQs have been used.
+>
+>> Thanks
+>>
+>>
+>>> ---
+>>>    drivers/vdpa/mlx5/net/mlx5_vnet.c | 7 +++++++
+>>>    1 file changed, 7 insertions(+)
+>>>
+>>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>> index 549ded074ff3..3fc8588cecae 100644
+>>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>> @@ -87,6 +87,7 @@ struct mlx5_vq_restore_info {
+>>>    	u64 device_addr;
+>>>    	u64 driver_addr;
+>>>    	u16 avail_index;
+>>> +	u16 used_index;
+>>>    	bool ready;
+>>>    	struct vdpa_callback cb;
+>>>    	bool restore;
+>>> @@ -121,6 +122,7 @@ struct mlx5_vdpa_virtqueue {
+>>>    	u32 virtq_id;
+>>>    	struct mlx5_vdpa_net *ndev;
+>>>    	u16 avail_idx;
+>>> +	u16 used_idx;
+>>>    	int fw_state;
+>>>    	/* keep last in the struct */
+>>> @@ -804,6 +806,7 @@ static int create_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtque
+>>>    	obj_context = MLX5_ADDR_OF(create_virtio_net_q_in, in, obj_context);
+>>>    	MLX5_SET(virtio_net_q_object, obj_context, hw_available_index, mvq->avail_idx);
+>>> +	MLX5_SET(virtio_net_q_object, obj_context, hw_used_index, mvq->used_idx);
+>>>    	MLX5_SET(virtio_net_q_object, obj_context, queue_feature_bit_mask_12_3,
+>>>    		 get_features_12_3(ndev->mvdev.actual_features));
+>>>    	vq_ctx = MLX5_ADDR_OF(virtio_net_q_object, obj_context, virtio_q_context);
+>>> @@ -1022,6 +1025,7 @@ static int connect_qps(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *m
+>>>    struct mlx5_virtq_attr {
+>>>    	u8 state;
+>>>    	u16 available_index;
+>>> +	u16 used_index;
+>>>    };
+>>>    static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq,
+>>> @@ -1052,6 +1056,7 @@ static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueu
+>>>    	memset(attr, 0, sizeof(*attr));
+>>>    	attr->state = MLX5_GET(virtio_net_q_object, obj_context, state);
+>>>    	attr->available_index = MLX5_GET(virtio_net_q_object, obj_context, hw_available_index);
+>>> +	attr->used_index = MLX5_GET(virtio_net_q_object, obj_context, hw_used_index);
+>>>    	kfree(out);
+>>>    	return 0;
+>>> @@ -1602,6 +1607,7 @@ static int save_channel_info(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqu
+>>>    		return err;
+>>>    	ri->avail_index = attr.available_index;
+>>> +	ri->used_index = attr.used_index;
+>>>    	ri->ready = mvq->ready;
+>>>    	ri->num_ent = mvq->num_ent;
+>>>    	ri->desc_addr = mvq->desc_addr;
+>>> @@ -1646,6 +1652,7 @@ static void restore_channels_info(struct mlx5_vdpa_net *ndev)
+>>>    			continue;
+>>>    		mvq->avail_idx = ri->avail_index;
+>>> +		mvq->used_idx = ri->used_index;
+>>>    		mvq->ready = ri->ready;
+>>>    		mvq->num_ent = ri->num_ent;
+>>>    		mvq->desc_addr = ri->desc_addr;
 
