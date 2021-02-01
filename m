@@ -2,123 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D1830A387
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:48:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D155B30A389
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:48:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232562AbhBAIsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 03:48:12 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44621 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231915AbhBAIsK (ORCPT
+        id S232576AbhBAIsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 03:48:22 -0500
+Received: from mail-wr1-f51.google.com ([209.85.221.51]:35344 "EHLO
+        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229613AbhBAIsT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 03:48:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612169204;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ycWUhqyahgW6IbcyQn5bJ44NFVrcMkISQf6Y9h9Fp5s=;
-        b=XL9I0XUtSRl8guR3fBZbiUAo4sdfEL0qUcOD5RIFr5R2h9TBkrLTp8mrgZVEJFuE5r8DjI
-        jA5oQuEQJr8kzo+Rbpy8Rg8o3D3W18hfUAxfS2lbXHfKLYn5gP33Klk0Qej6iXqtIgXRzr
-        srXSORMz9/bL+fh9VR6yu2xeyDwDC4U=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-588-OvBoRkY8MX2O9WnPk2cmKA-1; Mon, 01 Feb 2021 03:46:41 -0500
-X-MC-Unique: OvBoRkY8MX2O9WnPk2cmKA-1
-Received: by mail-wr1-f72.google.com with SMTP id h17so5202052wrv.15
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 00:46:40 -0800 (PST)
+        Mon, 1 Feb 2021 03:48:19 -0500
+Received: by mail-wr1-f51.google.com with SMTP id l12so15636087wry.2;
+        Mon, 01 Feb 2021 00:48:02 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=ycWUhqyahgW6IbcyQn5bJ44NFVrcMkISQf6Y9h9Fp5s=;
-        b=N1aWvjMA8BbADoNpVrefBdvUYX4wq8Z7OXqQvxmWe0YAR/BpSFnsb02isa4q/RA+P5
-         RY2B1I6Wi8wvknJ427WPLWfZDNYyc77pz2+O0VYA4/WQJlFDLE62fmYLr+dxasf2F1uo
-         12YunHpSgsJbMcnMkvE+bymUhWSP/9tfK1PFHffSPQwVvdobDELHKjAG7YyvTiCVK6/F
-         k/Z+JmrN9CBdpn843xhToBP+s5z9LdzIxFGNeRHTHwvdM+/iy4w1QRe85cRFvso4QlNb
-         zXf49opQUzoIRrq2vPmNBzPbWPsQXME60+9GhtX+wr+c1FWaZE0qvaSxemBE4T988vT8
-         Rs6A==
-X-Gm-Message-State: AOAM532fQmLwgawmAE4s57eUMkBvswMMAQNOuf3XvLK8KeGNZSvWZbIf
-        hHu1TjqaWdid9LGQ0YjMgtCVucqJwQcEQULWq3XZbw5/CAqU3b7w+VuT3ae6/r9O1cuujEPoIoB
-        RTN6Yv0oR8AfjIGs4GqGRMH0g
-X-Received: by 2002:a05:600c:4f93:: with SMTP id n19mr5190608wmq.163.1612169199835;
-        Mon, 01 Feb 2021 00:46:39 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzZiGrlpS95bTxFWPHk0H8gkcJErwBOJHg2jZs2Os89BYpZwVwwXeSl0i1NzT+E6UMGTN8RZw==
-X-Received: by 2002:a05:600c:4f93:: with SMTP id n19mr5190597wmq.163.1612169199660;
-        Mon, 01 Feb 2021 00:46:39 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id w4sm19835679wmc.13.2021.02.01.00.46.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 00:46:38 -0800 (PST)
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        jmattson@google.com, stable@vger.kernel.org
-References: <20210129101912.1857809-1-pbonzini@redhat.com>
- <YBQ+peAEdX2h3tro@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v2] KVM: x86: Allow guests to see MSR_IA32_TSX_CTRL even
- if tsx=off
-Message-ID: <37be5fb8-056f-8fba-3016-464634e069af@redhat.com>
-Date:   Mon, 1 Feb 2021 09:46:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        bh=2T72/t+gfWjspMOi6fY4znoktPBAWMpk+HQYetTKm2Y=;
+        b=tFy5WzVFZcHMsWTvCE7GlfHtbkm60E6C6XC0MTswlH6+uM5cm+dhVivHv07esvr/AE
+         DObLt2RnBdlyjyHEeZP17YJpFf2MtO9eyh4qHGSYNxJI4uXjiYGca5j2aBuc1xrefD72
+         sYG1sQzF6WZGfKUhicdc+2DPB8GmKhBmOL8yhKRw678r9ll+e/TNL6qVOovIp6OZHkaO
+         Y463tIePzusIT7sEYOpbHCnU1ClbPrXvIFYdbV1MvWTIbsMBztb8EiR4D7EqHf26zMOT
+         7PRWgRw0ktUQ0LAP6QHJHt2323bCpt4LB/4vm1+opDHcezlQ9hXYmygiwwa+q+ERF4yw
+         w0PQ==
+X-Gm-Message-State: AOAM530Nyj1czC9F1pKNdKvd2mwKGF8AtRS5JXOtFdXzazxgiE6ZucA8
+        rbFOmDXgmCxSdOwdAJ0wYIg=
+X-Google-Smtp-Source: ABdhPJxndKuKJsR3M9TqgEi2Op1P+n3n3buAS1LlFPuolSj3NEmxlPjtI4Np2XjwkqUnpgL6Nx1KUw==
+X-Received: by 2002:a05:6000:1082:: with SMTP id y2mr16236652wrw.27.1612169254477;
+        Mon, 01 Feb 2021 00:47:34 -0800 (PST)
+Received: from localhost.localdomain ([46.166.128.205])
+        by smtp.gmail.com with ESMTPSA id k131sm20860189wmb.37.2021.02.01.00.47.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 00:47:33 -0800 (PST)
+From:   Alexander Popov <alex.popov@linux.com>
+To:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Jeff Vander Stoep <jeffv@google.com>,
+        Greg KH <greg@kroah.com>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alex.popov@linux.com
+Subject: [PATCH v2 1/1] vsock: fix the race conditions in multi-transport support
+Date:   Mon,  1 Feb 2021 11:47:19 +0300
+Message-Id: <20210201084719.2257066-1-alex.popov@linux.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <YBQ+peAEdX2h3tro@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/01/21 17:58, Sean Christopherson wrote:
-> On Fri, Jan 29, 2021, Paolo Bonzini wrote:
->> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
->> index 76bce832cade..15733013b266 100644
->> --- a/arch/x86/kvm/x86.c
->> +++ b/arch/x86/kvm/x86.c
->> @@ -1401,7 +1401,7 @@ static u64 kvm_get_arch_capabilities(void)
->>   	 *	  This lets the guest use VERW to clear CPU buffers.
-> 
-> 
-> This comment be updated to call out the new TSX_CTRL behavior.
-> 
-> 	/*
-> 	 * On TAA affected systems:
-> 	 *      - nothing to do if TSX is disabled on the host.
-> 	 *      - we emulate TSX_CTRL if present on the host.
-> 	 *	  This lets the guest use VERW to clear CPU buffers.
-> 	 */
+There are multiple similar bugs implicitly introduced by the
+commit c0cfa2d8a788fcf4 ("vsock: add multi-transports support") and
+commit 6a2c0962105ae8ce ("vsock: prevent transport modules unloading").
 
-Ok.
+The bug pattern:
+ [1] vsock_sock.transport pointer is copied to a local variable,
+ [2] lock_sock() is called,
+ [3] the local variable is used.
+VSOCK multi-transport support introduced the race condition:
+vsock_sock.transport value may change between [1] and [2].
 
->>   	 */
->>   	if (!boot_cpu_has(X86_FEATURE_RTM))
->> -		data &= ~(ARCH_CAP_TAA_NO | ARCH_CAP_TSX_CTRL_MSR);
->> +		data &= ~ARCH_CAP_TAA_NO;
-> 
-> Hmm, simply clearing TSX_CTRL will only preserve the host value.  Since
-> ARCH_CAPABILITIES is unconditionally emulated by KVM, wouldn't it make sense to
-> unconditionally expose TSX_CTRL as well, as opposed to exposing it only if it's
-> supported in the host?  I.e. allow migrating a TSX-disabled guest to a host
-> without TSX.  Or am I misunderstanding how TSX_CTRL is checked/used?
+Let's copy vsock_sock.transport pointer to local variables after
+the lock_sock() call.
 
-I'm a bit wary of having a combination (MDS_NO=0, TSX_CTRL=1) that does 
-not exist on bare metal.  There are other cases where such combinations 
-can happen, especially with the Spectre and SSBD mitigations (for 
-example due to AMD CPUID bits for Intel processors), but at least those 
-are just redundancies in the CPUID bits and it's more likely that the 
-guest does something sensible with them.
+Fixes: c0cfa2d8a788fcf4 ("vsock: add multi-transports support")
 
-Paolo
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+Signed-off-by: Alexander Popov <alex.popov@linux.com>
+---
+ net/vmw_vsock/af_vsock.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
->>   	else if (!boot_cpu_has_bug(X86_BUG_TAA))
->>   		data |= ARCH_CAP_TAA_NO;
->>   
->> -- 
->> 2.26.2
->>
-> 
+diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+index d10916ab4526..f64e681493a5 100644
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -997,9 +997,12 @@ static __poll_t vsock_poll(struct file *file, struct socket *sock,
+ 			mask |= EPOLLOUT | EPOLLWRNORM | EPOLLWRBAND;
+ 
+ 	} else if (sock->type == SOCK_STREAM) {
+-		const struct vsock_transport *transport = vsk->transport;
++		const struct vsock_transport *transport;
++
+ 		lock_sock(sk);
+ 
++		transport = vsk->transport;
++
+ 		/* Listening sockets that have connections in their accept
+ 		 * queue can be read.
+ 		 */
+@@ -1082,10 +1085,11 @@ static int vsock_dgram_sendmsg(struct socket *sock, struct msghdr *msg,
+ 	err = 0;
+ 	sk = sock->sk;
+ 	vsk = vsock_sk(sk);
+-	transport = vsk->transport;
+ 
+ 	lock_sock(sk);
+ 
++	transport = vsk->transport;
++
+ 	err = vsock_auto_bind(vsk);
+ 	if (err)
+ 		goto out;
+@@ -1544,10 +1548,11 @@ static int vsock_stream_setsockopt(struct socket *sock,
+ 	err = 0;
+ 	sk = sock->sk;
+ 	vsk = vsock_sk(sk);
+-	transport = vsk->transport;
+ 
+ 	lock_sock(sk);
+ 
++	transport = vsk->transport;
++
+ 	switch (optname) {
+ 	case SO_VM_SOCKETS_BUFFER_SIZE:
+ 		COPY_IN(val);
+@@ -1680,7 +1685,6 @@ static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
+ 
+ 	sk = sock->sk;
+ 	vsk = vsock_sk(sk);
+-	transport = vsk->transport;
+ 	total_written = 0;
+ 	err = 0;
+ 
+@@ -1689,6 +1693,8 @@ static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
+ 
+ 	lock_sock(sk);
+ 
++	transport = vsk->transport;
++
+ 	/* Callers should not provide a destination with stream sockets. */
+ 	if (msg->msg_namelen) {
+ 		err = sk->sk_state == TCP_ESTABLISHED ? -EISCONN : -EOPNOTSUPP;
+@@ -1823,11 +1829,12 @@ vsock_stream_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+ 
+ 	sk = sock->sk;
+ 	vsk = vsock_sk(sk);
+-	transport = vsk->transport;
+ 	err = 0;
+ 
+ 	lock_sock(sk);
+ 
++	transport = vsk->transport;
++
+ 	if (!transport || sk->sk_state != TCP_ESTABLISHED) {
+ 		/* Recvmsg is supposed to return 0 if a peer performs an
+ 		 * orderly shutdown. Differentiate between that case and when a
+-- 
+2.26.2
 
