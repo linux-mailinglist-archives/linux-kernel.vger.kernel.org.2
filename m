@@ -2,87 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0017930A75F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:15:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE2D30A760
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:15:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231422AbhBAMPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 07:15:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58780 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231356AbhBAMPH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 07:15:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B6CF64E9C;
-        Mon,  1 Feb 2021 12:14:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612181665;
-        bh=sr0OUsbbRR2WsZKrfh5DHzgj4ENd6zT4FE0yTLuoIxA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lVRELUvvspJfDU/OnDt8yVqZSnOFnRPx2XHTz/arq2ZUJqiQvsJ/zLrkNlVzit/T+
-         clcyUZNWaKcOoNyKP54mh8If/YdFI2DQ35wr3D4x4PVQUuvp9jQxEpwmgTRX2+aERP
-         qFm5Ft5YYsGtnt3NohdtMZbpNkTWejmuZRlsH3RH/+egSqtvdTdWnlECSdThkXCh5O
-         5UyC7CR+axnrJFDWZw7lx3C86uBkJvFe+7XIjTLOUIlsapVMj+S6SkIdqY++U4KiOX
-         hVNfuKMXjwR7taPImba0omfll0C//PrtySdGmEEh2cjEdIgdSFybQKCLNckbSJL/SH
-         d+HjuFUDzzf8Q==
-Received: by mail-oi1-f176.google.com with SMTP id d18so18560711oic.3;
-        Mon, 01 Feb 2021 04:14:25 -0800 (PST)
-X-Gm-Message-State: AOAM531yiVVWt/jJjKJNpm45AaJDBVgoDFCD+KFqQAtQJg190KBvaPe0
-        QK+Ggxh0SsAQZCUqCsxJn9vGHuZq/m2t+0hZ5vU=
-X-Google-Smtp-Source: ABdhPJyTobnrtpnDFnImo+7fvW0ySpcJqXhTCxou8wKKGkZERHftm+NzPbSkTYvx+sPnAePmaDXjeWprTwCRvnCqXxc=
-X-Received: by 2002:aca:e103:: with SMTP id y3mr10303389oig.11.1612181664884;
- Mon, 01 Feb 2021 04:14:24 -0800 (PST)
+        id S231289AbhBAMPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 07:15:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229842AbhBAMO7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 07:14:59 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E87C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 04:14:18 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id q7so16291432wre.13
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 04:14:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XZqqSEikuKoZ7t9f3u+RFTxn353pYpN9LldSfi3Rr3M=;
+        b=Yw/EY5THxQYott8yUhDX9m0QAA4mX1UaLLa8cq8HCrgwIHknjmi0839RWs5hojWvfA
+         ZiKXGollAHVxbrsrQDo922lKgEjEfOgNx5EnN6VW+j+jClNQfLxrsm9zIpNUlYobVJQR
+         GwKhkRZpId3tVXDQJnWb3AYYU3ZMqGglq2K0fK4m1pusRffzFLte4SX/poLoTbV5xkDG
+         jbTRX6pEpqBo0IpCGR9JoHS0kZ3hwRZNT7BoQODWUTwfbMoG6UKYOdYVji/DMXC0Hx9P
+         gVAx/DWULDNdvshc/2FxWMtuEBUCCnJZbXb8G51Ye+/wC4+KPHXGJwKn+4E6iUfZKWb+
+         SHFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XZqqSEikuKoZ7t9f3u+RFTxn353pYpN9LldSfi3Rr3M=;
+        b=IAXnhxvrW+RFbummR7bwGekdoIFqLFQkjfbKkKbjQ8S+KsJoEkqBHOZUeF3Nf4PYBG
+         vrUcSdDfUL9oUd14xiSzsyhzlOu/gN0jSB2XJdgO9hGwTzYNe0QIQIFaCzVMcVF2ECua
+         L9d/uL/7VuRy00PLd88zOXxDDs/Maf/YhGIRCSpy+fbxA8mHDVmmkuEC79jdtV8czoqG
+         7BEQdVObIHMVmazffNyBNGp1WbBpXchQv7lOjr/CtdRT3IazL7eeJ9oF1Fy+2vc451Rq
+         kibDJb2vczByUEagdz2ek3AN4NP02YB56XwCJ8SO3emleDr9IFD++5NqrgVtHyT14xns
+         E0bg==
+X-Gm-Message-State: AOAM533fIoi50jE3nONccnP8SNBzYFsnYvVdkMq42sEtT1t1RdH7GDvV
+        oYy+d2QJ81eYeFDkV4NODc8=
+X-Google-Smtp-Source: ABdhPJzCm8JqwFovXlYiyJrS9Y8DqOHhf8sUnkwsefp/4vulBLEBvyjuiQd8jg7dMnspNvPLQVMm0g==
+X-Received: by 2002:adf:8464:: with SMTP id 91mr17345253wrf.188.1612181657697;
+        Mon, 01 Feb 2021 04:14:17 -0800 (PST)
+Received: from localhost.localdomain (cpc141888-watf13-2-0-cust663.15-2.cable.virginm.net. [86.14.42.152])
+        by smtp.googlemail.com with ESMTPSA id j13sm20698332wmi.24.2021.02.01.04.14.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 04:14:17 -0800 (PST)
+From:   Bilal Wasim <bilalwasim676@gmail.com>
+X-Google-Original-From: Bilal Wasim <Bilal.Wasim@imgtec.com>
+To:     linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        matthias.bgg@gmail.com, enric.balletbo@collabora.com,
+        hsinyi@chromium.org, weiyi.lu@mediatek.com
+Subject: [PATCH v2 0/3] Misc bug fixes in mtk power domain driver
+Date:   Mon,  1 Feb 2021 17:14:13 +0500
+Message-Id: <20210201121416.1488439-1-Bilal.Wasim@imgtec.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210201033601.1642-1-thunder.leizhen@huawei.com>
- <20210201033601.1642-3-thunder.leizhen@huawei.com> <CAK8P3a142CkJ0kOD6mK+H-E2NrKZ6Ec-aYasddAUmAhTWhrjcA@mail.gmail.com>
- <69103fcc-902a-29f3-1d0e-0d124d778c01@huawei.com>
-In-Reply-To: <69103fcc-902a-29f3-1d0e-0d124d778c01@huawei.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 1 Feb 2021 13:14:08 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3wHP-=qJhgZfgnJ++D8sMJpcBGDQ9Fx7GGBEyu6N-Cng@mail.gmail.com>
-Message-ID: <CAK8P3a3wHP-=qJhgZfgnJ++D8sMJpcBGDQ9Fx7GGBEyu6N-Cng@mail.gmail.com>
-Subject: Re: [PATCH v6 2/4] ARM: hisi: add support for Kunpeng50x SoC
-To:     "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Cc:     Russell King <rmk+kernel@arm.linux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 12:49 PM Leizhen (ThunderTown)
-<thunder.leizhen@huawei.com> wrote:
-> On 2021/2/1 16:35, Arnd Bergmann wrote:
-> > On Mon, Feb 1, 2021 at 4:35 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
-> >>
-> >> Enable support for the Hisilicon Kunpeng506 and Kunpeng509 SoC.
-> >>
-> >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> >
-> > Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-> >
-> > Russell, do you have a preference for how to get this series merged
-> > after the last comments are resolved?
-> >
-> > I think there is no technical problem in having patch two merged through
-> > the soc tree, while merging the other three through your tree, but it
-> > seems more logical to keep all four together in either location.
->
-> Wait, wait. I've coordinated resources urgently. I can run test cases for new changes tonight.
+Incorrect mask for the "bus_prot_clr" field meant that imgtec
+gpu power domain (mfg_async) was not powered up correctly, causing
+failure in driver booting. Fixing this and also adding "domain_suuply"
+capability to "mfg_async" power domain (for mt8173) as imgtec gpu
+needs da9211 regulator to be enabled before enabling this subdomain.
 
-Just to clarify, my question is independent of how quickly it gets merged,
-please continue addressing the review comments and sending new versions
-in the meantime.
+Tested with mt8173 elm chromebook.
 
-If we decide to take it through the two trees separately, that would just mean
-that Wei Xu sends the patch 2/4 to soc@kernel.org for inclusion there
-(I'm happy to take that one right away), while the other three will go through
-https://www.armlinux.org.uk/developer/patches/.
+Bilal Wasim (3):
+  soc: mediatek: pm-domains: Use correct mask for bus_prot_clr
+  soc: mediatek: pm-domains: Add domain_supply cap for mfg_async PD
+  arm64: dts: mediatek: mt8173: Add domain supply for mfg_async
 
-       Arnd
+ arch/arm64/boot/dts/mediatek/mt8173-elm.dtsi | 4 ++++
+ arch/arm64/boot/dts/mediatek/mt8173-evb.dts  | 4 ++++
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi     | 2 +-
+ drivers/soc/mediatek/mt8173-pm-domains.h     | 1 +
+ drivers/soc/mediatek/mtk-pm-domains.h        | 2 +-
+ 5 files changed, 11 insertions(+), 2 deletions(-)
+
+-- 
+2.25.1
+
