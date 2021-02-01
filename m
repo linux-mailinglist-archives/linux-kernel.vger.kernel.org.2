@@ -2,226 +2,495 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1268630B026
+	by mail.lfdr.de (Postfix) with ESMTP id A7FCA30B027
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:14:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231191AbhBATN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 14:13:59 -0500
-Received: from mga06.intel.com ([134.134.136.31]:55575 "EHLO mga06.intel.com"
+        id S231790AbhBATOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 14:14:21 -0500
+Received: from mga06.intel.com ([134.134.136.31]:55591 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229599AbhBATN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 14:13:57 -0500
-IronPort-SDR: 1gFlcogLgve0XtU50NMXiijk3Dymkg7z8zkwBabQR2VSIa7dKvgIPecQOMAPjpVJ5xowqrdJZF
- KLFjg0QCpR7g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="242255840"
+        id S229663AbhBATON (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 14:14:13 -0500
+IronPort-SDR: iBhq9pKxYbE0XKF3ZCz1gBxdfS3sCxe3pRuRbbRVdmBW7WOD7VbbXvM4DiNxZxQ6WgBDmUj7kI
+ BvVONVh3vpFQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="242255848"
 X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="242255840"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 11:13:15 -0800
-IronPort-SDR: A5y68mMuyVxRL2prrrHw/rpJF3wj+J36WCTrZgqUkI/zlUj2f9uRYtuRsftxd/XeKQTkIyevap
- cQOZabHnuXyg==
+   d="scan'208";a="242255848"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 11:13:18 -0800
+IronPort-SDR: bdV3ff9QBU2QuDtP0Cn/Tgx3L20CoxDNGsfdJPPcYKd+C+9vL4a0BY4ha7QB0smxjq4i+bL8cu
+ hiIpTc6883Ww==
 X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="370070836"
-Received: from ccmincem-mobl1.amr.corp.intel.com (HELO [10.212.145.244]) ([10.212.145.244])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 11:13:14 -0800
-Subject: Re: [RFC][PATCH 05/13] mm/numa: automatically generate node migration
- order
-To:     Yang Shi <shy828301@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Rientjes <rientjes@google.com>,
-        Huang Ying <ying.huang@intel.com>,
+   d="scan'208";a="506968510"
+Received: from jambrizm-mobl1.amr.corp.intel.com (HELO intel.com) ([10.252.133.15])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 11:13:17 -0800
+Date:   Mon, 1 Feb 2021 11:13:16 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
         Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>
-References: <20210126003411.2AC51464@viggo.jf.intel.com>
- <20210126003421.45897BF4@viggo.jf.intel.com>
- <CAHbLzkoB98YY0amBWTGcDPStcy1c35CC8D5MPMbVxzRKqVA0Cg@mail.gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <317d4c23-76a7-b653-87a4-bab642fa1717@intel.com>
-Date:   Mon, 1 Feb 2021 11:13:14 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH 04/14] cxl/mem: Implement polled mode mailbox
+Message-ID: <20210201191316.e3kkkwqbx5fujp6y@intel.com>
+References: <20210130002438.1872527-1-ben.widawsky@intel.com>
+ <20210130002438.1872527-5-ben.widawsky@intel.com>
+ <20210201175400.GG197521@fedora>
 MIME-Version: 1.0
-In-Reply-To: <CAHbLzkoB98YY0amBWTGcDPStcy1c35CC8D5MPMbVxzRKqVA0Cg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210201175400.GG197521@fedora>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/29/21 12:46 PM, Yang Shi wrote:
-...
->>  int next_demotion_node(int node)
->>  {
->> -       return node_demotion[node];
->> +       /*
->> +        * node_demotion[] is updated without excluding
->> +        * this function from running.  READ_ONCE() avoids
->> +        * reading multiple, inconsistent 'node' values
->> +        * during an update.
->> +        */
+On 21-02-01 12:54:00, Konrad Rzeszutek Wilk wrote:
+> > +#define cxl_doorbell_busy(cxlm)                                                \
+> > +	(cxl_read_mbox_reg32(cxlm, CXLDEV_MB_CTRL_OFFSET) &                    \
+> > +	 CXLDEV_MB_CTRL_DOORBELL)
+> > +
+> > +#define CXL_MAILBOX_TIMEOUT_US 2000
 > 
-> Don't we need a smp_rmb() here? The single write barrier might be not
-> enough in migration target set. Typically a write barrier should be
-> used in pairs with a read barrier.
-
-I don't think we need one, practically.
-
-Since there is no locking against node_demotion[] updates, although a
-smp_rmb() would ensure that this read is up-to-date, it could change
-freely after the smp_rmb().
-
-In other words, smp_rmb() would shrink the window where a "stale" read
-could occur but would not eliminate it.
-
->> +       return READ_ONCE(node_demotion[node]);
+> You been using the spec for the values. Is that number also from it ?
 > 
-> Why not consolidate the patch #4 in this patch? The patch #4 just add
-> the definition of node_demotion and the function, then the function is
-> changed in this patch, and the function is not used by anyone between
-> the adding and changing.
 
-I really wanted to highlight that the locking scheme and the READ_ONCE()
-(or lack thereof) was specifically due to how node_demotion[] was being
-updated.
+Yes it is. I'll add a comment with the spec reference.
 
-The READ_ONCE() is not, for instance, inherent to the data structure.
-
-...
->> +/*
->> + * When memory fills up on a node, memory contents can be
->> + * automatically migrated to another node instead of
->> + * discarded at reclaim.
->> + *
->> + * Establish a "migration path" which will start at nodes
->> + * with CPUs and will follow the priorities used to build the
->> + * page allocator zonelists.
->> + *
->> + * The difference here is that cycles must be avoided.  If
->> + * node0 migrates to node1, then neither node1, nor anything
->> + * node1 migrates to can migrate to node0.
->> + *
->> + * This function can run simultaneously with readers of
->> + * node_demotion[].  However, it can not run simultaneously
->> + * with itself.  Exclusion is provided by memory hotplug events
->> + * being single-threaded.
+> > +
+> > +enum opcode {
+> > +	CXL_MBOX_OP_IDENTIFY		= 0x4000,
+> > +	CXL_MBOX_OP_MAX			= 0x10000
+> > +};
+> > +
+> > +/**
+> > + * struct mbox_cmd - A command to be submitted to hardware.
+> > + * @opcode: (input) The command set and command submitted to hardware.
+> > + * @payload_in: (input) Pointer to the input payload.
+> > + * @payload_out: (output) Pointer to the output payload. Must be allocated by
+> > + *		 the caller.
+> > + * @size_in: (input) Number of bytes to load from @payload.
+> > + * @size_out: (output) Number of bytes loaded into @payload.
+> > + * @return_code: (output) Error code returned from hardware.
+> > + *
+> > + * This is the primary mechanism used to send commands to the hardware.
+> > + * All the fields except @payload_* correspond exactly to the fields described in
+> > + * Command Register section of the CXL 2.0 spec (8.2.8.4.5). @payload_in and
+> > + * @payload_out are written to, and read from the Command Payload Registers
+> > + * defined in (8.2.8.4.8).
+> > + */
+> > +struct mbox_cmd {
+> > +	u16 opcode;
+> > +	void *payload_in;
+> > +	void *payload_out;
 > 
-> Maybe an example diagram for the physical topology and how the
-> migration target is generated in the comment seems helpful to
-> understand the code.
-
-Sure.  Were you thinking of a code comment, or enhanced changelog?
-
-Let's say there's a system with two sockets each with the same three
-classes of memory: fast, medium and slow.  Each memory class is placed
-in its own NUMA node and the CPUs are attached to the fast memory.  That
-leaves 6 NUMA nodes (0-5):
-
-	Socket A: 0, 1, 2
-	Socket B: 3, 4, 5
-
-The migration path for this configuration path would start on the nodes
-with the processors and fast memory, progress through medium and end
-with the slow memory:
-
-	0 -> 1 -> 2 -> stop
-	3 -> 4 -> 5 -> stop
-
-This is represented in the node_demotion[] like this:
-
-	{  1, // Node 0 migrates to 1
-	   2, // Node 1 migrates to 2
-	  -1, // Node 2 does not migrate
-	   4, // Node 3 migrates to 1
-	   5, // Node 4 migrates to 2
-	  -1} // Node 5 does not migrate
-
-Is that what you were thinking of?
-
-...
->> +again:
->> +       this_pass = next_pass;
->> +       next_pass = NODE_MASK_NONE;
->> +       /*
->> +        * To avoid cycles in the migration "graph", ensure
->> +        * that migration sources are not future targets by
->> +        * setting them in 'used_targets'.  Do this only
->> +        * once per pass so that multiple source nodes can
->> +        * share a target node.
->> +        *
->> +        * 'used_targets' will become unavailable in future
->> +        * passes.  This limits some opportunities for
->> +        * multiple source nodes to share a desintation.
+> On a 32-bit OS (not that we use those that more, but lets assume
+> someone really wants to), the void is 4-bytes, while on 64-bit it is
+> 8-bytes.
 > 
-> s/desination/destination
-
-Fixed, thanks.
-
->> +        */
->> +       nodes_or(used_targets, used_targets, this_pass);
->> +       for_each_node_mask(node, this_pass) {
->> +               int target_node = establish_migrate_target(node, &used_targets);
->> +
->> +               if (target_node == NUMA_NO_NODE)
->> +                       continue;
->> +
->> +               /* Visit targets from this pass in the next pass: */
->> +               node_set(target_node, next_pass);
->> +       }
->> +       /* Is another pass necessary? */
->> +       if (!nodes_empty(next_pass))
->> +               goto again;
->> +}
->> +
->> +void set_migration_target_nodes(void)
+> `pahole` is your friend as I think there is a gap between opcode and
+> payload_in in the structure.
 > 
-> It seems this function is not called outside migrate.c, so it should be static.
+> > +	size_t size_in;
+> > +	size_t size_out;
+> 
+> And those can also change depending on 32-bit/64-bit.
+> 
+> > +	u16 return_code;
+> > +#define CXL_MBOX_SUCCESS 0
+> > +};
+> 
+> Do you want to use __packed to match with the spec?
+> 
+> Ah, reading later you don't care about it.
+> 
+> In that case may I recommend you move 'return_code' (or perhaps just
+> call it rc?) to be right after opcode? Less of gaps in that structure.
+> 
 
-Fixed, thanks.
+I guess I hadn't realized we're supposed to try to fully pack structs by
+default.
+
+> > +
+> > +static int cxl_mem_wait_for_doorbell(struct cxl_mem *cxlm)
+> > +{
+> > +	const int timeout = msecs_to_jiffies(CXL_MAILBOX_TIMEOUT_US);
+> > +	const unsigned long start = jiffies;
+> > +	unsigned long end = start;
+> > +
+> > +	while (cxl_doorbell_busy(cxlm)) {
+> > +		end = jiffies;
+> > +
+> > +		if (time_after(end, start + timeout)) {
+> > +			/* Check again in case preempted before timeout test */
+> > +			if (!cxl_doorbell_busy(cxlm))
+> > +				break;
+> > +			return -ETIMEDOUT;
+> > +		}
+> > +		cpu_relax();
+> > +	}
+> 
+> Hm, that is not very scheduler friendly. I mean we are sitting here for
+> 2000us (2 ms) - that is quite the amount of time spinning.
+> 
+> Should this perhaps be put in a workqueue?
+
+So let me first point you to the friendlier version which was shot down:
+https://lore.kernel.org/linux-cxl/20201111054356.793390-8-ben.widawsky@intel.com/
+
+I'm not opposed to this being moved to a workqueue at some point, but I think
+that's unnecessary complexity currently. The reality is that it's expected that
+commands will finish way sooner than this or be implemented as background
+commands. I've heard a person who makes a lot of the spec decisions say, "if
+it's 2 seconds, nobody will use these things".
+
+I think adding the summary of this back and forth as a comment to the existing
+code makes a lot of sense.
+
+> > +
+> > +	dev_dbg(&cxlm->pdev->dev, "Doorbell wait took %dms",
+> > +		jiffies_to_msecs(end) - jiffies_to_msecs(start));
+> > +	return 0;
+> > +}
+> > +
+> > +static void cxl_mem_mbox_timeout(struct cxl_mem *cxlm,
+> > +				 struct mbox_cmd *mbox_cmd)
+> > +{
+> > +	dev_warn(&cxlm->pdev->dev, "Mailbox command timed out\n");
+> > +	dev_info(&cxlm->pdev->dev,
+> > +		 "\topcode: 0x%04x\n"
+> > +		 "\tpayload size: %zub\n",
+> > +		 mbox_cmd->opcode, mbox_cmd->size_in);
+> > +
+> > +	if (IS_ENABLED(CONFIG_CXL_MEM_INSECURE_DEBUG)) {
+> > +		print_hex_dump_debug("Payload ", DUMP_PREFIX_OFFSET, 16, 1,
+> > +				     mbox_cmd->payload_in, mbox_cmd->size_in,
+> > +				     true);
+> > +	}
+> > +
+> > +	/* Here's a good place to figure out if a device reset is needed */
+> > +}
+> > +
+> > +/**
+> > + * cxl_mem_mbox_send_cmd() - Send a mailbox command to a memory device.
+> > + * @cxlm: The CXL memory device to communicate with.
+> > + * @mbox_cmd: Command to send to the memory device.
+> > + *
+> > + * Context: Any context. Expects mbox_lock to be held.
+> > + * Return: -ETIMEDOUT if timeout occurred waiting for completion. 0 on success.
+> > + *         Caller should check the return code in @mbox_cmd to make sure it
+> > + *         succeeded.
+> > + *
+> > + * This is a generic form of the CXL mailbox send command, thus the only I/O
+> > + * operations used are cxl_read_mbox_reg(). Memory devices, and perhaps other
+> > + * types of CXL devices may have further information available upon error
+> > + * conditions.
+> > + *
+> > + * The CXL spec allows for up to two mailboxes. The intention is for the primary
+> > + * mailbox to be OS controlled and the secondary mailbox to be used by system
+> > + * firmware. This allows the OS and firmware to communicate with the device and
+> > + * not need to coordinate with each other. The driver only uses the primary
+> > + * mailbox.
+> > + */
+> > +static int cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm,
+> > +				 struct mbox_cmd *mbox_cmd)
+> > +{
+> > +	void __iomem *payload = cxlm->mbox.regs + CXLDEV_MB_PAYLOAD_OFFSET;
+> > +	u64 cmd_reg, status_reg;
+> > +	size_t out_len;
+> > +	int rc;
+> > +
+> > +	lockdep_assert_held(&cxlm->mbox.mutex);
+> > +
+> > +	/*
+> > +	 * Here are the steps from 8.2.8.4 of the CXL 2.0 spec.
+> > +	 *   1. Caller reads MB Control Register to verify doorbell is clear
+> > +	 *   2. Caller writes Command Register
+> > +	 *   3. Caller writes Command Payload Registers if input payload is non-empty
+> > +	 *   4. Caller writes MB Control Register to set doorbell
+> > +	 *   5. Caller either polls for doorbell to be clear or waits for interrupt if configured
+> > +	 *   6. Caller reads MB Status Register to fetch Return code
+> > +	 *   7. If command successful, Caller reads Command Register to get Payload Length
+> > +	 *   8. If output payload is non-empty, host reads Command Payload Registers
+> > +	 *
+> > +	 *   Hardware is free to do whatever it wants before the doorbell is
+> > +	 *   rung, and isn't allowed to change anything after it clears the
+> > +	 *   doorbell. As such, steps 2 and 3 can happen in any order, and steps
+> > +	 *   6, 7, 8 can also happen in any order (though some orders might not
+> > +	 *   make sense).
+> > +	 */
+> > +
+> > +	/* #1 */
+> > +	if (cxl_doorbell_busy(cxlm)) {
+> > +		dev_err_ratelimited(&cxlm->pdev->dev,
+> > +				    "Mailbox re-busy after acquiring\n");
+> > +		return -EBUSY;
+> > +	}
+> > +
+> > +	cmd_reg = CXL_SET_FIELD(mbox_cmd->opcode, CXLDEV_MB_CMD_COMMAND_OPCODE);
+> > +	if (mbox_cmd->size_in) {
+> > +		if (WARN_ON(!mbox_cmd->payload_in))
+> > +			return -EINVAL;
+> > +
+> > +		cmd_reg |= CXL_SET_FIELD(mbox_cmd->size_in,
+> > +					 CXLDEV_MB_CMD_PAYLOAD_LENGTH);
+> > +		memcpy_toio(payload, mbox_cmd->payload_in, mbox_cmd->size_in);
+> > +	}
+> > +
+> > +	/* #2, #3 */
+> > +	cxl_write_mbox_reg64(cxlm, CXLDEV_MB_CMD_OFFSET, cmd_reg);
+> > +
+> > +	/* #4 */
+> > +	dev_dbg(&cxlm->pdev->dev, "Sending command\n");
+> > +	cxl_write_mbox_reg32(cxlm, CXLDEV_MB_CTRL_OFFSET,
+> > +			     CXLDEV_MB_CTRL_DOORBELL);
+> > +
+> > +	/* #5 */
+> > +	rc = cxl_mem_wait_for_doorbell(cxlm);
+> > +	if (rc == -ETIMEDOUT) {
+> > +		cxl_mem_mbox_timeout(cxlm, mbox_cmd);
+> > +		return rc;
+> > +	}
+> > +
+> > +	/* #6 */
+> > +	status_reg = cxl_read_mbox_reg64(cxlm, CXLDEV_MB_STATUS_OFFSET);
+> > +	mbox_cmd->return_code =
+> > +		CXL_GET_FIELD(status_reg, CXLDEV_MB_STATUS_RET_CODE);
+> > +
+> > +	if (mbox_cmd->return_code != 0) {
+> > +		dev_dbg(&cxlm->pdev->dev, "Mailbox operation had an error\n");
+> > +		return 0;
+> > +	}
+> > +
+> > +	/* #7 */
+> > +	cmd_reg = cxl_read_mbox_reg64(cxlm, CXLDEV_MB_CMD_OFFSET);
+> > +	out_len = CXL_GET_FIELD(cmd_reg, CXLDEV_MB_CMD_PAYLOAD_LENGTH);
+> > +
+> > +	/* #8 */
+> > +	if (out_len && mbox_cmd->payload_out)
+> > +		memcpy_fromio(mbox_cmd->payload_out, payload, out_len);
+> > +
+> > +	mbox_cmd->size_out = out_len;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +/**
+> > + * cxl_mem_mbox_get() - Acquire exclusive access to the mailbox.
+> > + * @cxlm: The memory device to gain access to.
+> > + *
+> > + * Context: Any context. Takes the mbox_lock.
+> > + * Return: 0 if exclusive access was acquired.
+> > + */
+> > +static int cxl_mem_mbox_get(struct cxl_mem *cxlm)
+> > +{
+> > +	struct device *dev = &cxlm->pdev->dev;
+> > +	int rc = -EBUSY;
+> > +	u64 md_status;
+> > +
+> > +	mutex_lock_io(&cxlm->mbox.mutex);
+> > +
+> > +	/*
+> > +	 * XXX: There is some amount of ambiguity in the 2.0 version of the spec
+> > +	 * around the mailbox interface ready (8.2.8.5.1.1).  The purpose of the
+> > +	 * bit is to allow firmware running on the device to notify the driver
+> > +	 * that it's ready to receive commands. It is unclear if the bit needs
+> > +	 * to be read for each transaction mailbox, ie. the firmware can switch
+> > +	 * it on and off as needed. Second, there is no defined timeout for
+> > +	 * mailbox ready, like there is for the doorbell interface.
+> > +	 *
+> > +	 * Assumptions:
+> > +	 * 1. The firmware might toggle the Mailbox Interface Ready bit, check
+> > +	 *    it for every command.
+> > +	 *
+> > +	 * 2. If the doorbell is clear, the firmware should have first set the
+> > +	 *    Mailbox Interface Ready bit. Therefore, waiting for the doorbell
+> > +	 *    to be ready is sufficient.
+> > +	 */
+> > +	rc = cxl_mem_wait_for_doorbell(cxlm);
+> > +	if (rc) {
+> > +		dev_warn(dev, "Mailbox interface not ready\n");
+> > +		goto out;
+> > +	}
+> > +
+> > +	md_status = cxl_read_mem_reg64(cxlm, CXLMDEV_STATUS_OFFSET);
+> > +	if (!(md_status & CXLMDEV_MBOX_IF_READY && CXLMDEV_READY(md_status))) {
+> > +		dev_err(dev,
+> > +			"mbox: reported doorbell ready, but not mbox ready\n");
+> 
+> You can make that oneline.
+> > +		goto out;
+> > +	}
+> > +
+> > +	/*
+> > +	 * Hardware shouldn't allow a ready status but also have failure bits
+> > +	 * set. Spit out an error, this should be a bug report
+> > +	 */
+> > +	rc = -EFAULT;
+> 
+> Should these include more details? As in a dump of other registers to
+> help in the field to debug why the device is busted?
+> 
+
+We've discussed a bit, having kind of a general error state (my driver
+background is in i915 where we did such a thing). I'm not opposed, but as the
+error handling at this point is very minimal, I think it can wait until the next
+round of patches for further enabling.
+
+> > +	if (md_status & CXLMDEV_DEV_FATAL) {
+> > +		dev_err(dev, "mbox: reported ready, but fatal\n");
+> > +		goto out;
+> > +	}
+> > +	if (md_status & CXLMDEV_FW_HALT) {
+> > +		dev_err(dev, "mbox: reported ready, but halted\n");
+> > +		goto out;
+> > +	}
+> > +	if (CXLMDEV_RESET_NEEDED(md_status)) {
+> > +		dev_err(dev, "mbox: reported ready, but reset needed\n");
+> > +		goto out;
+> > +	}
+> > +
+> > +	/* with lock held */
+> > +	return 0;
+> > +
+> > +out:
+> > +	mutex_unlock(&cxlm->mbox.mutex);
+> > +	return rc;
+> > +}
+> > +
+> > +/**
+> > + * cxl_mem_mbox_put() - Release exclusive access to the mailbox.
+> > + * @cxlm: The CXL memory device to communicate with.
+> > + *
+> > + * Context: Any context. Expects mbox_lock to be held.
+> > + */
+> > +static void cxl_mem_mbox_put(struct cxl_mem *cxlm)
+> > +{
+> > +	mutex_unlock(&cxlm->mbox.mutex);
+> > +}
+> > +
+> >  /**
+> >   * cxl_mem_setup_regs() - Setup necessary MMIO.
+> >   * @cxlm: The CXL memory device to communicate with.
+> > @@ -142,6 +406,8 @@ static struct cxl_mem *cxl_mem_create(struct pci_dev *pdev, u32 reg_lo,
+> >  		return NULL;
+> >  	}
+> >  
+> > +	mutex_init(&cxlm->mbox.mutex);
+> > +
+> >  	regs = pcim_iomap_table(pdev)[bar];
+> >  	cxlm->pdev = pdev;
+> >  	cxlm->regs = regs + offset;
+> > @@ -174,6 +440,76 @@ static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
+> >  	return 0;
+> >  }
+> >  
+> > +/**
+> > + * cxl_mem_identify() - Send the IDENTIFY command to the device.
+> > + * @cxlm: The device to identify.
+> > + *
+> > + * Return: 0 if identify was executed successfully.
+> > + *
+> > + * This will dispatch the identify command to the device and on success populate
+> > + * structures to be exported to sysfs.
+> > + */
+> > +static int cxl_mem_identify(struct cxl_mem *cxlm)
+> > +{
+> > +	struct cxl_mbox_identify {
+> > +		char fw_revision[0x10];
+> > +		__le64 total_capacity;
+> > +		__le64 volatile_capacity;
+> > +		__le64 persistent_capacity;
+> > +		__le64 partition_align;
+> > +		__le16 info_event_log_size;
+> > +		__le16 warning_event_log_size;
+> > +		__le16 failure_event_log_size;
+> > +		__le16 fatal_event_log_size;
+> > +		__le32 lsa_size;
+> > +		u8 poison_list_max_mer[3];
+> > +		__le16 inject_poison_limit;
+> > +		u8 poison_caps;
+> > +		u8 qos_telemetry_caps;
+> > +	} __packed id;
+> > +	struct mbox_cmd mbox_cmd;
+> > +	int rc;
+> > +
+> > +	/* Retrieve initial device memory map */
+> > +	rc = cxl_mem_mbox_get(cxlm);
+> > +	if (rc)
+> > +		return rc;
+> > +
+> > +	mbox_cmd = (struct mbox_cmd){
+> > +		.opcode = CXL_MBOX_OP_IDENTIFY,
+> > +		.payload_out = &id,
+> > +		.size_in = 0,
+> > +	};
+> > +	rc = cxl_mem_mbox_send_cmd(cxlm, &mbox_cmd);
+> > +	cxl_mem_mbox_put(cxlm);
+> > +	if (rc)
+> > +		return rc;
+> > +
+> > +	/* TODO: Handle retry or reset responses from firmware. */
+> > +	if (mbox_cmd.return_code != CXL_MBOX_SUCCESS) {
+> > +		dev_err(&cxlm->pdev->dev, "Mailbox command failed (%d)\n",
+> > +			mbox_cmd.return_code);
+> > +		return -ENXIO;
+> > +	}
+> > +
+> > +	if (mbox_cmd.size_out != sizeof(id))
+> > +		return -ENXIO;
+> > +
+> > +	/*
+> > +	 * TODO: enumerate DPA map, as 'ram' and 'pmem' do not alias.
+> 
+> ??? Not sure I understand.
+> 
+
+The current code is showing two aliased/overlapping ranges.
+[0, id.volatile_capacity)
+[0, id.persistent_capacity)
+
+This is not allowed by spec.
+
+> > +	 * For now, only the capacity is exported in sysfs
+> > +	 */
+> > +	cxlm->ram.range.start = 0;
+> > +	cxlm->ram.range.end = le64_to_cpu(id.volatile_capacity) - 1;
+> > +
+> > +	cxlm->pmem.range.start = 0;
+> > +	cxlm->pmem.range.end = le64_to_cpu(id.persistent_capacity) - 1;
+> > +
+> > +	memcpy(cxlm->firmware_version, id.fw_revision, sizeof(id.fw_revision));
+> > +
+> > +	return rc;
+> > +}
+> > +
+> >  static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> >  {
+> >  	struct device *dev = &pdev->dev;
+> > @@ -219,7 +555,11 @@ static int cxl_mem_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> >  	if (rc)
+> >  		return rc;
+> >  
+> > -	return cxl_mem_setup_mailbox(cxlm);
+> > +	rc = cxl_mem_setup_mailbox(cxlm);
+> > +	if (rc)
+> > +		return rc;
+> > +
+> > +	return cxl_mem_identify(cxlm);
+> >  }
+> >  
+> >  static const struct pci_device_id cxl_mem_pci_tbl[] = {
+> > -- 
+> > 2.30.0
+> > 
