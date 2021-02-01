@@ -2,141 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 548FD30A9C6
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC2C30A9C9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:32:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbhBAOas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 09:30:48 -0500
-Received: from mail-ot1-f47.google.com ([209.85.210.47]:42672 "EHLO
-        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhBAOao (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 09:30:44 -0500
-Received: by mail-ot1-f47.google.com with SMTP id f6so16375184ots.9
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 06:30:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z4a6WyHi1fTY9B5OfxgOlcMOAurztWAvUVTB16LYh9g=;
-        b=saY2phts6zPanJvGie53UbWQcYgoDd2AGAplz81FHRTwxZN2UTtLdgHFtg/pvy85A7
-         wNKZ2h1Tv1rrZrxYjSgiThvwql/QpoFSLm3jE9OBb/kZYLugw9eiUf/1YBIznBsblipu
-         sF9HJtaSRQVHupl37pRbQHEqy9PYytPee70NxY7jvmXvo7NP1Z5xI+UQyOpxizvFFFGZ
-         xrdUtQOIBQbSTjesF+0QXr3dAiFR0tH+jLc+lctY9xZMzOUNkPsFELLFRVoMANckH3Kf
-         xuLq0Ini3JRzfFgtpXVoUzghnbjiVUiBoqgdCGPO9Kv1WP/xGB5yQADTYEFXLjkk3Fbo
-         lh6g==
-X-Gm-Message-State: AOAM533VEZWH8nspaZWloiOeRSIIePy0pDrbXKpQ5SqxFYKWbisOnO5P
-        FJkCW5HQ+p67c7YRkYV6xFnPNmaXdIrBZ7k5gSOZJsUD
-X-Google-Smtp-Source: ABdhPJzR+PWZavRi0lp9V4VXfkbSKlpuPRNTBPKFH0qBukON7r6+zcERUoHFjhGu1ZBWuRJf+S/vEbFz6510cc1YSno=
-X-Received: by 2002:a9d:7a4a:: with SMTP id z10mr12241100otm.206.1612189803781;
- Mon, 01 Feb 2021 06:30:03 -0800 (PST)
+        id S229877AbhBAObU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 09:31:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58222 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229564AbhBAObI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 09:31:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDE0764E46;
+        Mon,  1 Feb 2021 14:30:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612189826;
+        bh=pSp6KogtqHICua0+XffQWrWfoLcultom2kfK3j81FgA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HX8Fi86s+eeswzryT4zcy1KUCIumjs5yI5tU+H2q0Qr8Mg+gbz7uwYYAsIaiuOhwI
+         Mm/8BKIaQcq+/58nkb8gOx1xLgKtNdiCiEJiPlr6UPROFfOAPYx6TvIhcfwSYcHGrU
+         /t/wZ2TwK6cGn8MQ0LL1RgOQ/OPY6nxJYIxjCCA3gv+9r+ezeoAP/SIB0/nbj0unmG
+         CX5mmqxywWGPjyLAPwisX5Qmcja40vEZ1F9lwh+87sYUOnccV44UZRmzSyLFCj09kn
+         jEpS79p8trrsaktnJK305wJ2pfKuuVJI1PFxWauCN/4yBM2s9CQeDmYzKwfw1AbzJP
+         YxQflX/7f+iRw==
+Date:   Mon, 1 Feb 2021 16:30:14 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?utf-8?Q?=C5=81ukasz?= Majczak <lma@semihalf.com>,
+        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
+        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v4 1/2] x86/setup: always add the beginning of RAM as
+ memblock.memory
+Message-ID: <20210201143014.GI242749@kernel.org>
+References: <20210130221035.4169-1-rppt@kernel.org>
+ <20210130221035.4169-2-rppt@kernel.org>
+ <56e2c568-b121-8860-a6b0-274ace46d835@redhat.com>
 MIME-Version: 1.0
-References: <20210130040344.2807439-1-saravanak@google.com> <20210130040344.2807439-2-saravanak@google.com>
-In-Reply-To: <20210130040344.2807439-2-saravanak@google.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 1 Feb 2021 15:29:52 +0100
-Message-ID: <CAJZ5v0i+c+vQ0i3UUzPT9s89OVbVvMQW1ZZ8=cCUYHXq936vzA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] driver core: fw_devlink: Detect supplier devices
- that will never be added
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <56e2c568-b121-8860-a6b0-274ace46d835@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 5:03 AM Saravana Kannan <saravanak@google.com> wrote:
->
-> During the initial parsing of firmware by fw_devlink, fw_devlink might
-> infer that some supplier firmware nodes would get populated as devices.
-> But the inference is not always correct. This patch tries to logically
-> detect and fix such mistakes as boot progresses or more devices probe.
->
-> fw_devlink makes a fundamental assumption that once a device binds to a
-> driver, it will populate (i.e: add as struct devices) all the child
-> firmware nodes that could be populated as devices.
+On Mon, Feb 01, 2021 at 10:32:44AM +0100, David Hildenbrand wrote:
+> On 30.01.21 23:10, Mike Rapoport wrote:
+> > From: Mike Rapoport <rppt@linux.ibm.com>
+> > 
+> > The physical memory on an x86 system starts at address 0, but this is not
+> > always reflected in e820 map. For example, the BIOS can have e820 entries
+> > like
+> > 
+> > [    0.000000] BIOS-provided physical RAM map:
+> > [    0.000000] BIOS-e820: [mem 0x0000000000001000-0x000000000009ffff] usable
+> > 
+> > or
+> > 
+> > [    0.000000] BIOS-provided physical RAM map:
+> > [    0.000000] BIOS-e820: [mem 0x0000000000000000-0x0000000000000fff] reserved
+> > [    0.000000] BIOS-e820: [mem 0x0000000000001000-0x0000000000057fff] usable
+> > 
+> > In either case, e820__memblock_setup() won't add the range 0x0000 - 0x1000
+> > to memblock.memory and later during memory map initialization this range is
+> > left outside any zone.
+> > 
+> > With SPARSEMEM=y there is always a struct page for pfn 0 and this struct
+> > page will have it's zone link wrong no matter what value will be set there.
+> > 
+> > To avoid this inconsistency, add the beginning of RAM to memblock.memory.
+> > Limit the added chunk size to match the reserved memory to avoid
+> > registering memory that may be used by the firmware but never reserved at
+> > e820__memblock_setup() time.
+> > 
+> > Fixes: bde9cfa3afe4 ("x86/setup: don't remove E820_TYPE_RAM for pfn 0")
+> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> > Cc: stable@vger.kernel.org
+> > ---
+> >   arch/x86/kernel/setup.c | 8 ++++++++
+> >   1 file changed, 8 insertions(+)
+> > 
+> > diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> > index 3412c4595efd..67c77ed6eef8 100644
+> > --- a/arch/x86/kernel/setup.c
+> > +++ b/arch/x86/kernel/setup.c
+> > @@ -727,6 +727,14 @@ static void __init trim_low_memory_range(void)
+> >   	 * Kconfig help text for X86_RESERVE_LOW.
+> >   	 */
+> >   	memblock_reserve(0, ALIGN(reserve_low, PAGE_SIZE));
+> > +
+> > +	/*
+> > +	 * Even if the firmware does not report the memory at address 0 as
+> > +	 * usable, inform the generic memory management about its existence
+> > +	 * to ensure it is a part of ZONE_DMA and the memory map for it is
+> > +	 * properly initialized.
+> > +	 */
+> > +	memblock_add(0, ALIGN(reserve_low, PAGE_SIZE));
+> >   }
+> >   	
+> >   /*
+> > 
+> 
+> I think, to make that code more robust, and to not rely on archs to do the
+> right thing, we should do something like
+> 
+> 1) Make sure in free_area_init() that each PFN with a memmap (i.e., falls
+> into a partial present section) is spanned by a zone; that would include PFN
+> 0 in this case.
+> 
+> 2) In init_zone_unavailable_mem(), similar to round_up(max_pfn,
+> PAGES_PER_SECTION) handling, consider range
+> 	[round_down(min_pfn, PAGES_PER_SECTION), min_pfn - 1]
+> which would handle in the x86-64 case [0..0] and, therefore, initialize PFN
+> 0.
+> 
+> Also, I think the special-case of PFN 0 is analogous to the
+> round_up(max_pfn, PAGES_PER_SECTION) handling in
+> init_zone_unavailable_mem(): who guarantees that these PFN above the highest
+> present PFN are actually spanned by a zone?
+> 
+> I'd suggest going through all zone ranges in free_area_init() first, dealing
+> with zones that have "not section aligned start/end", clamping them up/down
+> if required such that no holes within a section are left uncovered by a
+> zone.
 
-That is unless they have been populated earlier.
+I thought about changing the way zone extents are calculated so that zone
+start/end will be always on a section boundary, but zone->zone_start_pfn
+depends on node->node_start_pfn which is defined by hardware and expanding
+a node to make its start pfn aligned at the section boundary might violate
+the HW addressing scheme.
 
-> So, whenever a device probes, we check all its child firmware nodes. If
-> a child firmware node has a corresponding device populated, we don't
-> modify the child node or its descendants. However, if a child firmware
-> node has not been populated as a device, we go an delete all the fwnode
-> links where the child node or its descendants are suppliers. This
-> ensures that no other device is blocked on a firmware node that will
-> never be populated as a device.
->
-> Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
+Maybe this could never happen, or maybe it's not really important as the
+pages there will be reserved anyway, but I'm not sure I can estimate all
+the implications. 
 
-Looks reasonable to me:
-
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-
-> ---
->  drivers/base/core.c | 30 +++++++++++++++++++++++++++---
->  1 file changed, 27 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index 484a942884ba..f380133df63b 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -148,6 +148,20 @@ void fwnode_links_purge(struct fwnode_handle *fwnode)
->         fwnode_links_purge_consumers(fwnode);
->  }
->
-> +static void fw_devlink_purge_absent_suppliers(struct fwnode_handle *fwnode)
-> +{
-> +       struct fwnode_handle *child;
-> +
-> +       /* Don't purge consumer links of an added child */
-> +       if (fwnode->dev)
-> +               return;
-> +
-> +       fwnode_links_purge_consumers(fwnode);
-> +
-> +       fwnode_for_each_available_child_node(fwnode, child)
-> +               fw_devlink_purge_absent_suppliers(child);
-> +}
-> +
->  #ifdef CONFIG_SRCU
->  static DEFINE_MUTEX(device_links_lock);
->  DEFINE_STATIC_SRCU(device_links_srcu);
-> @@ -1154,12 +1168,22 @@ void device_links_driver_bound(struct device *dev)
->         LIST_HEAD(sync_list);
->
->         /*
-> -        * If a device probes successfully, it's expected to have created all
-> +        * If a device binds successfully, it's expected to have created all
->          * the device links it needs to or make new device links as it needs
-> -        * them. So, it no longer needs to wait on any suppliers.
-> +        * them. So, fw_devlink no longer needs to create device links to any
-> +        * of the device's suppliers.
-> +        *
-> +        * Also, if a child firmware node of this bound device is not added as
-> +        * a device by now, assume it is never going to be added and make sure
-> +        * other devices don't defer probe indefinitely by waiting for such a
-> +        * child device.
->          */
-> -       if (dev->fwnode && dev->fwnode->dev == dev)
-> +       if (dev->fwnode && dev->fwnode->dev == dev) {
-> +               struct fwnode_handle *child;
->                 fwnode_links_purge_suppliers(dev->fwnode);
-> +               fwnode_for_each_available_child_node(dev->fwnode, child)
-> +                       fw_devlink_purge_absent_suppliers(child);
-> +       }
->         device_remove_file(dev, &dev_attr_waiting_for_supplier);
->
->         device_links_write_lock();
-> --
-> 2.30.0.365.g02bc693789-goog
->
+-- 
+Sincerely yours,
+Mike.
