@@ -2,209 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6331730AE64
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:50:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A5530AE6E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232550AbhBARt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:49:57 -0500
-Received: from mail-dm6nam10on2095.outbound.protection.outlook.com ([40.107.93.95]:36769
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231748AbhBARtn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:49:43 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UXbMbWoa0A2qSwKYPQjfmLo6TTOPubt4JDTFI0p3hYW9kzkMjR3yzu7Anx5lCmsSFqehUsy5x2iri2pA8MJOYEiMTiflBstq42qsyHOJXUp0MksAw8qjvtDoGQhfay7lbNApw/5XqvaeKoS2s38t1KvZwTUmZE83QZMMMDpL6S1moDEbWA632q8dmGGdIVv+UOWeR9u6cQcuzXtfVxAVeI/gB1hnod8Rh57krri5oGsjjiPVA+N1Da92O1nC+PyAtQ8X1QrIUK0LubUNL7aKqy3s9E5JuXwocjL+92zJbgDaZKNSU232hfM1UklmEcKDHPJVJgrRissKusr2S5W9Mg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N1ihNwhU1mVplqkT7LqYDFQltcUxTXjNEYklI6cxAr4=;
- b=PaoRCkFPWFk71OfxXJVDlDlBzhSZkGc3AotF/TxwXKnFVNzXyGBpOmDoJRixEPpxoVzew9c0L8yvVeL+RWqNjorYqWk55vZBul34C88DRwqIs8xMCht5aioBjA7zDphRuyWKX0SeYWn8nGIIxI89C0lJrXB8AnLiExIYicWZYMnYmnNvOX8jAeSfYkSgeduQBVmALdqBSnNL2p5sUmfcK9pLqn2DeVErddNgPp9l8BEcOrx0+QSYJnuexrWG1pCP2L9xsfnCc6PzRN482XgcRMpP26a7Zc9vEFxs4oQhLDNykxFebPiXIV+l87JFqh2llK4Z7jhwT+ycCWYmfBD/Sg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=N1ihNwhU1mVplqkT7LqYDFQltcUxTXjNEYklI6cxAr4=;
- b=jOlLM0iGHwkqUHErTeUPxqunB5ACJlnPkxhZ6LSPcHU/cnDmHSZgTdeO603da8Lp5W5VKuDbTqL+Ov/T3Um8SPhqfI/ctiSJfCxfztaE4BGXzOl+PzA2uWBmYKAxqwYzpmlZiOXLMAaeUSb4g4VtQUlL/p9OLoP0Qy63cqvUaJE=
-Received: from (2603:10b6:301:7c::11) by
- MW4PR21MB1875.namprd21.prod.outlook.com (2603:10b6:303:72::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3846.4; Mon, 1 Feb 2021 17:48:56 +0000
-Received: from MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::9c8:94c9:faf1:17c2]) by MWHPR21MB1593.namprd21.prod.outlook.com
- ([fe80::9c8:94c9:faf1:17c2%9]) with mapi id 15.20.3846.006; Mon, 1 Feb 2021
- 17:48:56 +0000
-From:   Michael Kelley <mikelley@microsoft.com>
-To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        Saruhan Karademir <skarade@microsoft.com>,
-        Juan Vazquez <juvazq@microsoft.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: RE: [PATCH v3 hyperv-next 4/4] hv_netvsc: Restrict configurations on
- isolated guests
-Thread-Topic: [PATCH v3 hyperv-next 4/4] hv_netvsc: Restrict configurations on
- isolated guests
-Thread-Index: AQHW+KlZXxAZS+dgn0icQWwQcKCw76pDk1kA
-Date:   Mon, 1 Feb 2021 17:48:55 +0000
-Message-ID: <MWHPR21MB1593CB2AA09DA302FA2EC5D0D7B69@MWHPR21MB1593.namprd21.prod.outlook.com>
-References: <20210201144814.2701-1-parri.andrea@gmail.com>
- <20210201144814.2701-5-parri.andrea@gmail.com>
-In-Reply-To: <20210201144814.2701-5-parri.andrea@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-02-01T17:48:54Z;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=b06888ef-5aa3-4c4a-8bba-1da9c3e96182;
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
-authentication-results: gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=none action=none header.from=microsoft.com;
-x-originating-ip: [24.22.167.197]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1a182c6d-45ea-45b0-71fb-08d8c6d9a599
-x-ms-traffictypediagnostic: MW4PR21MB1875:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MW4PR21MB18759ACA09FCDAA5B2FE4D45D7B69@MW4PR21MB1875.namprd21.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4303;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: O/38UHcJE25VnrJLhpq1P3Tcr3zw5jWffuzVFtWwvStuN8yPF7MlquVhQw+CutIWQupkSGwb4WlZvxgO5Jt7pZCvB5D110Ksp67XwuB7CNudL/YbKqik+nWpQztZ4e594IhLwyYx72USxfr3T8aQJygtChEc5rx242a9sWae0ewexGffcuezc+FBOcW6CIn1afh+3mNEhMsfTpYM/cY+1emqmJTRuuMisD5J1SmxOW570/lKq8Wg/JP1IJ3wZ3RUnsM2oCGso3qe3EMvUZIks7Z2NcdIHsMw+X3HlssaYW9H4vAVigs50N1kiITWleDL3c3hhxiKhLevAfcmu31HYRUG6+jcoxOT4GW81EpTo1PEDPx9KYncnrVtEzc+353+lX70JPNqxXNsVZIZ7HtuEKinGoOnEnWiV0oQWiiG1sc6mNQG/7yHd9EcG0iCl16ntIxRKzeGGAHIvEpst/fSvPHNepxBAHPKug0KbQRYjRcGZYJU3Q1LgQCS6tkh5/7NmOEQBn3FC8homNQhFOHhsQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR21MB1593.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(366004)(376002)(136003)(39860400002)(66476007)(66446008)(66556008)(110136005)(64756008)(54906003)(66946007)(8936002)(316002)(8676002)(8990500004)(52536014)(2906002)(83380400001)(9686003)(55016002)(86362001)(76116006)(82950400001)(82960400001)(33656002)(26005)(186003)(10290500003)(5660300002)(4326008)(71200400001)(478600001)(7696005)(6506007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?Q9YM08V1rfyW6l7VDbYXJ49Jg/nOl/7/eHQKQqloMrn54ZsSf8/QiNbRnWtL?=
- =?us-ascii?Q?KUCFEvqQ8ocrjxJ1VB5A0kIO4kIO+1wx8rNs1RG5QdXIvYWWBtuoF9z38tJZ?=
- =?us-ascii?Q?3H5U07qz66AFMTkNpVy23dTLu/iR9oXdGoDOBlviFdk9D4wgutaUGEBv2dk+?=
- =?us-ascii?Q?njIgIOeiWMcA3yLdhkhZMiCnq9u8r1349J0JfxaC1Tk1JXdWYN3w1KMLKBmA?=
- =?us-ascii?Q?HYSjlfES6r9vwrPKVkw4tlyJ+qtJs2JjKaI+PdmXXrQYicXpGXvlVC+jjBVd?=
- =?us-ascii?Q?l/b+t/DNPtDXzMrghSxuSmLrd4JOVAuY/svgUfoaMWmqnPS8CDRXVmBPFqJJ?=
- =?us-ascii?Q?bG4ms9s0xHQuctaL5QSyhm9ptVMIbRQznG7BxdpsIw1it9AUu9CkqW4rRyA1?=
- =?us-ascii?Q?pP0qISWJ6rWZ7p0/rz0Egzolz/xdekUK/P3+SYHKcRXZGgP7emOWacT8ij9+?=
- =?us-ascii?Q?CbwolWRfR5krNKlKlFvRsKUDHzQ5rvyvcmZaHQFIskbSCJqxeNy24twass3a?=
- =?us-ascii?Q?1gpJpyqRQF3BHPVUxEbm0wXxKf1NwgbqOprPvYji0jncUNMS9aq57bHojuV4?=
- =?us-ascii?Q?tYbFwD/YDyCyUb2r9UAI470lWpi6/EX/KtUeyAdlkBYpLkHLyvgSMAqic0lo?=
- =?us-ascii?Q?yTzW0sQzAdry+RaUdPfrTX3oB7yhpBCuNh25Tn7uIk4nwy8b3+wIfKgaxN0s?=
- =?us-ascii?Q?OMB/bYAM8hXHvQmTqNlOfN+RpfcWIeDcU+dCaW7RO1PYJUa5n/h9ZsI3B/z5?=
- =?us-ascii?Q?0DUPXMw/g5lHzWIGRdPkiG7+5uo28h6Ot/tEiB8v97U3kvl4StQ0uKpFjp++?=
- =?us-ascii?Q?WdpBuoQeDRkahPFtoIfWzDy1j18yGXEKpmtTuJpJTW+IFw8eaxLWvvRs64K7?=
- =?us-ascii?Q?fS8rxEdu7UISkpCPKqgVU1C5Dkn3yLRMCeZD5gMKJVch3hEdWkRF5UHFsMBs?=
- =?us-ascii?Q?0Cmv6oHXnpzlOAiG/jE96yPGXpWswh0v8fdiFhldyy3Ua4b9pIxk8+NJcZq6?=
- =?us-ascii?Q?pm7XjcmXR7cyeT9j7wbZlqKQS7GfY1py3eAiUcOHShYZkqC0oZjnSgif0g6A?=
- =?us-ascii?Q?it90yjfBYGNT9zdrFHoi6Vs6KjWwqvC6U7c2ifMigbr/9PBHNijbPUg0qqdn?=
- =?us-ascii?Q?YD+fQDWR7EsqXBuCYrNwujQgB+Bj2k4N82C8OvjUWnTWdGM6p17YCFeADxKI?=
- =?us-ascii?Q?QZYPBwHlUHouFBh4jrGia/bQeh1CDZUBufXaX0Ldkvz6zftcZXlUDFNPBOI+?=
- =?us-ascii?Q?Htc9iVSIL8LKbfIFBqnQdxgpTHu4JWQQrF3sLpRguz90TqlALBp6ql3a/NbR?=
- =?us-ascii?Q?newjkUJhaog4wosm9S52h2L7?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232556AbhBARvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:51:04 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16658 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232447AbhBARuC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 12:50:02 -0500
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 111HX8in006167;
+        Mon, 1 Feb 2021 12:49:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=YY3ecy/Al7aUatw1iTYUmj9VR3WvKFhhLF5UQ16Krwc=;
+ b=bSbnhHqprdj3obR7MYmF261CjZFtcGsq/f6YmrgDVoBE/rVi/BvyfsSqa+uT4eW87pxI
+ bff6m++Eo4mQ5zhbsAVPjDjnwtZtW4wNWebDcl/e9z0H44/rNiRZ/2N1BhEStwQw7+Sq
+ 9OLsPFeYv8hJH65czipbX9FVwDpQhuc4JYPOOSfOEeazrUM1/zcjLugZA102D3fFvQdg
+ wY7xg4uOhHgLkjzPWHUsXGVgDP2OMYvLANMGOBqa3+MN4GR1Y1i9/oEDFV47pGWzIIuf
+ TIXWgbjYLYkWp10oucE0KxBR/qg8+Hcs7gsJH2nCWM8Qrz+mS8gStkcFA2Z08dyHV++s Vw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36endua4mv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 12:49:20 -0500
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 111HXF9h006989;
+        Mon, 1 Feb 2021 12:49:20 -0500
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36endua4m8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 12:49:20 -0500
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 111HcHBg008753;
+        Mon, 1 Feb 2021 17:49:18 GMT
+Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
+        by ppma02wdc.us.ibm.com with ESMTP id 36cy390ay2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 17:49:18 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 111HnIYN29557098
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 1 Feb 2021 17:49:18 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3E364112061;
+        Mon,  1 Feb 2021 17:49:18 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C5578112062;
+        Mon,  1 Feb 2021 17:49:13 +0000 (GMT)
+Received: from oc4221205838.ibm.com (unknown [9.211.84.157])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon,  1 Feb 2021 17:49:13 +0000 (GMT)
+Subject: Re: [PATCH 8/9] vfio/pci: use x86 naming instead of igd
+To:     Cornelia Huck <cohuck@redhat.com>,
+        Max Gurtovoy <mgurtovoy@nvidia.com>
+Cc:     jgg@nvidia.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alex.williamson@redhat.com, liranl@nvidia.com, oren@nvidia.com,
+        tzahio@nvidia.com, leonro@nvidia.com, yarong@nvidia.com,
+        aviadye@nvidia.com, shahafs@nvidia.com, artemp@nvidia.com,
+        kwankhede@nvidia.com, ACurrid@nvidia.com, gmataev@nvidia.com,
+        cjia@nvidia.com, yishaih@nvidia.com, aik@ozlabs.ru
+References: <20210201162828.5938-1-mgurtovoy@nvidia.com>
+ <20210201162828.5938-9-mgurtovoy@nvidia.com>
+ <20210201181454.22112b57.cohuck@redhat.com>
+From:   Matthew Rosato <mjrosato@linux.ibm.com>
+Message-ID: <599c6452-8ba6-a00a-65e7-0167f21eac35@linux.ibm.com>
+Date:   Mon, 1 Feb 2021 12:49:12 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR21MB1593.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1a182c6d-45ea-45b0-71fb-08d8c6d9a599
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Feb 2021 17:48:55.9336
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hZVglyw3Aa7d/0/3LlpsGnXBJBiNLnorAKDNApvcrNfryMvM+4T/Nd4VNWO0zZs2hl6QEItseSWzNoWiaW19A0skmOxnoSu3fpDH/H+L76E=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR21MB1875
+In-Reply-To: <20210201181454.22112b57.cohuck@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-01_06:2021-01-29,2021-02-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ bulkscore=0 priorityscore=1501 phishscore=0 impostorscore=0
+ lowpriorityscore=0 mlxlogscore=999 clxscore=1015 spamscore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102010089
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrea Parri (Microsoft) <parri.andrea@gmail.com> Sent: Monday, Febru=
-ary 1, 2021 6:48 AM
->=20
-> Restrict the NVSP protocol version(s) that will be negotiated with the
-> host to be NVSP_PROTOCOL_VERSION_61 or greater if the guest is running
-> isolated.  Moreover, do not advertise the SR-IOV capability and ignore
-> NVSP_MSG_4_TYPE_SEND_VF_ASSOCIATION messages in isolated guests, which
-> are not supposed to support SR-IOV.  This reduces the footprint of the
-> code that will be exercised by Confidential VMs and hence the exposure
-> to bugs and vulnerabilities.
->=20
-> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> Acked-by: Jakub Kicinski <kuba@kernel.org>
-> Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: netdev@vger.kernel.org
-> ---
->  drivers/net/hyperv/netvsc.c | 18 ++++++++++++++++--
->  1 file changed, 16 insertions(+), 2 deletions(-)
->=20
-> diff --git a/drivers/net/hyperv/netvsc.c b/drivers/net/hyperv/netvsc.c
-> index 1510a236aa341..51005f2d4a821 100644
-> --- a/drivers/net/hyperv/netvsc.c
-> +++ b/drivers/net/hyperv/netvsc.c
-> @@ -22,6 +22,7 @@
->  #include <linux/prefetch.h>
->=20
->  #include <asm/sync_bitops.h>
-> +#include <asm/mshyperv.h>
->=20
->  #include "hyperv_net.h"
->  #include "netvsc_trace.h"
-> @@ -544,7 +545,10 @@ static int negotiate_nvsp_ver(struct hv_device *devi=
-ce,
->  	init_packet->msg.v2_msg.send_ndis_config.capability.ieee8021q =3D 1;
->=20
->  	if (nvsp_ver >=3D NVSP_PROTOCOL_VERSION_5) {
-> -		init_packet->msg.v2_msg.send_ndis_config.capability.sriov =3D 1;
-> +		if (hv_is_isolation_supported())
-> +			netdev_info(ndev, "SR-IOV not advertised by guests on the host suppor=
-ting isolation\n");
-> +		else
-> +			init_packet->msg.v2_msg.send_ndis_config.capability.sriov =3D 1;
->=20
->  		/* Teaming bit is needed to receive link speed updates */
->  		init_packet->msg.v2_msg.send_ndis_config.capability.teaming =3D 1;
-> @@ -591,6 +595,13 @@ static int netvsc_connect_vsp(struct hv_device *devi=
-ce,
->  		goto cleanup;
->  	}
->=20
-> +	if (hv_is_isolation_supported() && net_device->nvsp_version < NVSP_PROT=
-OCOL_VERSION_61) {
-> +		netdev_err(ndev, "Invalid NVSP version 0x%x (expected >=3D 0x%x) from =
-the host supporting isolation\n",
-> +			   net_device->nvsp_version, NVSP_PROTOCOL_VERSION_61);
-> +		ret =3D -EPROTO;
-> +		goto cleanup;
-> +	}
-> +
->  	pr_debug("Negotiated NVSP version:%x\n", net_device->nvsp_version);
->=20
->  	/* Send the ndis version */
-> @@ -1357,7 +1368,10 @@ static void netvsc_receive_inband(struct net_devic=
-e *ndev,
->  		break;
->=20
->  	case NVSP_MSG4_TYPE_SEND_VF_ASSOCIATION:
-> -		netvsc_send_vf(ndev, nvmsg, msglen);
-> +		if (hv_is_isolation_supported())
-> +			netdev_err(ndev, "Ignore VF_ASSOCIATION msg from the host supporting =
-isolation\n");
-> +		else
-> +			netvsc_send_vf(ndev, nvmsg, msglen);
->  		break;
->  	}
->  }
-> --
-> 2.25.1
+On 2/1/21 12:14 PM, Cornelia Huck wrote:
+> On Mon, 1 Feb 2021 16:28:27 +0000
+> Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
+> 
+>> This patch doesn't change any logic but only align to the concept of
+>> vfio_pci_core extensions. Extensions that are related to a platform
+>> and not to a specific vendor of PCI devices should be part of the core
+>> driver. Extensions that are specific for PCI device vendor should go
+>> to a dedicated vendor vfio-pci driver.
+> 
+> My understanding is that igd means support for Intel graphics, i.e. a
+> strict subset of x86. If there are other future extensions that e.g.
+> only make sense for some devices found only on AMD systems, I don't
+> think they should all be included under the same x86 umbrella.
+> 
+> Similar reasoning for nvlink, that only seems to cover support for some
+> GPUs under Power, and is not a general platform-specific extension IIUC.
+> 
+> We can arguably do the zdev -> s390 rename (as zpci appears only on
+> s390, and all PCI devices will be zpci on that platform), although I'm
+> not sure about the benefit.
 
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
+As far as I can tell, there isn't any benefit for s390 it's just 
+"re-branding" to match the platform name rather than the zdev moniker, 
+which admittedly perhaps makes it more clear to someone outside of s390 
+that any PCI device on s390 is a zdev/zpci type, and thus will use this 
+extension to vfio_pci(_core).  This would still be true even if we added 
+something later that builds atop it (e.g. a platform-specific device 
+like ism-vfio-pci).  Or for that matter, mlx5 via vfio-pci on s390x uses 
+these zdev extensions today and would need to continue using them in a 
+world where mlx5-vfio-pci.ko exists.
+
+I guess all that to say: if such a rename matches the 'grand scheme' of 
+this design where we treat arch-level extensions to vfio_pci(_core) as 
+"vfio_pci_(arch)" then I'm not particularly opposed to the rename.  But 
+by itself it's not very exciting :)
+
+> 
+>>
+>> For now, x86 extensions will include only igd.
+>>
+>> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
+>> ---
+>>   drivers/vfio/pci/Kconfig                            | 13 ++++++-------
+>>   drivers/vfio/pci/Makefile                           |  2 +-
+>>   drivers/vfio/pci/vfio_pci_core.c                    |  2 +-
+>>   drivers/vfio/pci/vfio_pci_private.h                 |  2 +-
+>>   drivers/vfio/pci/{vfio_pci_igd.c => vfio_pci_x86.c} |  0
+>>   5 files changed, 9 insertions(+), 10 deletions(-)
+>>   rename drivers/vfio/pci/{vfio_pci_igd.c => vfio_pci_x86.c} (100%)
+> 
+> (...)
+> 
+>> diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
+>> index c559027def2d..e0e258c37fb5 100644
+>> --- a/drivers/vfio/pci/vfio_pci_core.c
+>> +++ b/drivers/vfio/pci/vfio_pci_core.c
+>> @@ -328,7 +328,7 @@ static int vfio_pci_enable(struct vfio_pci_device *vdev)
+>>   
+>>   	if (vfio_pci_is_vga(pdev) &&
+>>   	    pdev->vendor == PCI_VENDOR_ID_INTEL &&
+>> -	    IS_ENABLED(CONFIG_VFIO_PCI_IGD)) {
+>> +	    IS_ENABLED(CONFIG_VFIO_PCI_X86)) {
+>>   		ret = vfio_pci_igd_init(vdev);
+> 
+> This one explicitly checks for Intel devices, so I'm not sure why you
+> want to generalize this to x86?
+> 
+>>   		if (ret && ret != -ENODEV) {
+>>   			pci_warn(pdev, "Failed to setup Intel IGD regions\n");
+> 
 
