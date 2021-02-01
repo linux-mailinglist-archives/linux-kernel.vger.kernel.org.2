@@ -2,114 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A752F30AFDF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:58:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A50B30AFE5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:59:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232372AbhBAS5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:57:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36818 "EHLO mail.kernel.org"
+        id S232411AbhBAS6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:58:16 -0500
+Received: from foss.arm.com ([217.140.110.172]:36580 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232235AbhBAS5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:57:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4477A64E31;
-        Mon,  1 Feb 2021 18:56:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612205790;
-        bh=Fl3Npf+4pVvNh31RXdPU8dppcbyE9HjVP7yvitbpn4g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=U8WNAvciv/P2kJz7GaZrM/Pg2nPahp9pPbQPyB9ZjyivmN3KcvwNAR+S7+v6ICxg4
-         SFKio0B4h/2MqVwcMZ+SnSzki0337HqV1SCYyQBlwBrt0mEulo4AKIuZGU7tpzOSMs
-         4FHWrIL8Jql6anPO7p1NA7D/+sf8sjUGxdaWtYDg22BQAwL3wUJrp6Kaj683tPdF06
-         QFBPhanrAdp0hOyVuLfcoinugPlRTld5TcQs7gB4pUXRVN3tpzJ5K/hRFrpDgjYDKw
-         lZ98A3OxXLbINNsTJsdQYemhnDwnK16IAUffggLeIEl3UiHQ2RZ5kvLjCjpTGRfD4v
-         /wauWqWFM8Orw==
-Received: by mail-ej1-f44.google.com with SMTP id rv9so26004581ejb.13;
-        Mon, 01 Feb 2021 10:56:30 -0800 (PST)
-X-Gm-Message-State: AOAM531vStl/NU5B4vtNwOWrQht75mpSXK1biXuGvuw6T5orD8aVeyPu
-        FiuDnjW1pFNP54687osmbv8uJ/yCEj/p+LLsRA==
-X-Google-Smtp-Source: ABdhPJxqcJ2ZL6F2eAzG2R/j7txAlsnr/4awa7SBSOph3dZPuXrRGALcN4hda5NsXyK5yi82Kn0svJRpym9dDzklP/U=
-X-Received: by 2002:a17:907:16a2:: with SMTP id hc34mr786372ejc.108.1612205788803;
- Mon, 01 Feb 2021 10:56:28 -0800 (PST)
+        id S229996AbhBAS6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 13:58:11 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CE453147A;
+        Mon,  1 Feb 2021 10:57:25 -0800 (PST)
+Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D6FF3F71A;
+        Mon,  1 Feb 2021 10:57:24 -0800 (PST)
+Date:   Mon, 1 Feb 2021 18:57:19 +0000
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Shradha Todi <shradha.t@samsung.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
+        robh@kernel.org, bhelgaas@google.com, pankaj.dubey@samsung.com,
+        sriram.dash@samsung.com, niyas.ahmed@samsung.com,
+        p.rajanbabu@samsung.com, l.mehra@samsung.com, hari.tv@samsung.com
+Subject: Re: [PATCH v2] PCI: dwc: Add upper limit address for outbound iATU
+Message-ID: <20210201185719.GA5767@e121166-lin.cambridge.arm.com>
+References: <CGME20210106105019epcas5p377bdbff5cd9e14e5107ccbf2b87b5754@epcas5p3.samsung.com>
+ <1609930210-19227-1-git-send-email-shradha.t@samsung.com>
 MIME-Version: 1.0
-References: <20210111142309.193441-1-maxime@cerno.tech> <20210111142309.193441-14-maxime@cerno.tech>
-In-Reply-To: <20210111142309.193441-14-maxime@cerno.tech>
-From:   Rob Herring <robh@kernel.org>
-Date:   Mon, 1 Feb 2021 12:56:17 -0600
-X-Gmail-Original-Message-ID: <CAL_JsqJ3QBoJVXnpeMz1X56F6VWEe_HzTKs9efrDWh3ccdr=5A@mail.gmail.com>
-Message-ID: <CAL_JsqJ3QBoJVXnpeMz1X56F6VWEe_HzTKs9efrDWh3ccdr=5A@mail.gmail.com>
-Subject: Re: [PATCH v2 13/15] dt-binding: display: bcm2711-hdmi: Add CEC and
- hotplug interrupts
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Eric Anholt <eric@anholt.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "maintainer:BROADCOM BCM7XXX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1609930210-19227-1-git-send-email-shradha.t@samsung.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 11, 2021 at 8:27 AM Maxime Ripard <maxime@cerno.tech> wrote:
->
-> The CEC and hotplug interrupts were missing when that binding was
-> introduced, let's add them in now that we've figured out how it works.
->
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+On Wed, Jan 06, 2021 at 04:20:10PM +0530, Shradha Todi wrote:
+> The size parameter is unsigned long type which can accept size > 4GB. In
+> that case, the upper limit address must be programmed. Add support to
+> program the upper limit address and set INCREASE_REGION_SIZE in case size >
+> 4GB.
+> 
+> Signed-off-by: Shradha Todi <shradha.t@samsung.com>
 > ---
->  .../bindings/display/brcm,bcm2711-hdmi.yaml   | 20 ++++++++++++++++++-
->  1 file changed, 19 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml b/Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml
-> index 7ce06f9f9f8e..6e8ac910bdd8 100644
-> --- a/Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml
-> +++ b/Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml
-> @@ -53,6 +53,24 @@ properties:
->        - const: audio
->        - const: cec
->
-> +  interrupts:
-> +    items:
-> +      - description: CEC TX interrupt
-> +      - description: CEC RX interrupt
-> +      - description: CEC stuck at low interrupt
-> +      - description: Wake-up interrupt
-> +      - description: Hotplug connected interrupt
-> +      - description: Hotplug removed interrupt
-> +
-> +  interrupt-names:
-> +    items:
-> +      - const: cec-tx
-> +      - const: cec-rx
-> +      - const: cec-low
-> +      - const: wakeup
-> +      - const: hpd-connected
-> +      - const: hpd-removed
-> +
->    ddc:
->      allOf:
->        - $ref: /schemas/types.yaml#/definitions/phandle
-> @@ -90,7 +108,7 @@ required:
->    - resets
->    - ddc
->
-> -additionalProperties: false
-> +unevaluatedProperties: false
+> v1: https://lkml.org/lkml/2020/12/20/187
+> v2:
+>    Addressed Rob's review comment and added PCI version check condition to
+>    avoid writing to reserved registers.
+> 
+>  drivers/pci/controller/dwc/pcie-designware.c | 9 +++++++--
+>  drivers/pci/controller/dwc/pcie-designware.h | 1 +
+>  2 files changed, 8 insertions(+), 2 deletions(-)
 
-/builds/robherring/linux-dt-bindings/Documentation/devicetree/bindings/display/brcm,bcm2711-hdmi.yaml:
-'additionalProperties' is a required property
+Does not apply to my pci/dwc branch, please rebase it on top of it
+and resend it while keeping review tags.
 
-And you missed the DT list, so no checks ran.
+Thanks,
+Lorenzo
 
-Rob
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+> index 74590c7..1d62ca9 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware.c
+> @@ -290,12 +290,17 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
+>  			   upper_32_bits(cpu_addr));
+>  	dw_pcie_writel_dbi(pci, PCIE_ATU_LIMIT,
+>  			   lower_32_bits(cpu_addr + size - 1));
+> +	if (pci->version >= 0x460A)
+> +		dw_pcie_writel_dbi(pci, PCIE_ATU_UPPER_LIMIT,
+> +				   upper_32_bits(cpu_addr + size - 1));
+>  	dw_pcie_writel_dbi(pci, PCIE_ATU_LOWER_TARGET,
+>  			   lower_32_bits(pci_addr));
+>  	dw_pcie_writel_dbi(pci, PCIE_ATU_UPPER_TARGET,
+>  			   upper_32_bits(pci_addr));
+> -	dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, type |
+> -			   PCIE_ATU_FUNC_NUM(func_no));
+> +	val = type | PCIE_ATU_FUNC_NUM(func_no);
+> +	val = ((upper_32_bits(size - 1)) && (pci->version >= 0x460A)) ?
+> +		val | PCIE_ATU_INCREASE_REGION_SIZE : val;
+> +	dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, val);
+>  	dw_pcie_writel_dbi(pci, PCIE_ATU_CR2, PCIE_ATU_ENABLE);
+>  
+>  	/*
+> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+> index 8b905a2..7da79eb 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware.h
+> +++ b/drivers/pci/controller/dwc/pcie-designware.h
+> @@ -102,6 +102,7 @@
+>  #define PCIE_ATU_DEV(x)			FIELD_PREP(GENMASK(23, 19), x)
+>  #define PCIE_ATU_FUNC(x)		FIELD_PREP(GENMASK(18, 16), x)
+>  #define PCIE_ATU_UPPER_TARGET		0x91C
+> +#define PCIE_ATU_UPPER_LIMIT		0x924
+>  
+>  #define PCIE_MISC_CONTROL_1_OFF		0x8BC
+>  #define PCIE_DBI_RO_WR_EN		BIT(0)
+> -- 
+> 2.7.4
+> 
