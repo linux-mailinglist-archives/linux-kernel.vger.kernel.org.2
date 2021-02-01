@@ -2,295 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26A1730AD92
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:17:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1C530ADA9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:22:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231919AbhBARQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:16:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbhBARQp (ORCPT
+        id S231760AbhBARWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:22:19 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29374 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231611AbhBARWP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:16:45 -0500
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D37A2C061573;
-        Mon,  1 Feb 2021 09:16:05 -0800 (PST)
-Received: by mail-wm1-x32e.google.com with SMTP id m1so10571311wml.2;
-        Mon, 01 Feb 2021 09:16:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jza2TCvepnCYL9M6zFAH+I68SUDTkRuu7p3LhyJ4FqU=;
-        b=qHnAH+x5R7MI/2K2x4nIwjyPb9W4s3w5AqHCt/oM4TlUz9mxM1ofp6+lNgGncuagze
-         5Xa3E86lkhiFlhihsmcVCeHfRt+VbXtfWDZ9chXT6VC/WoGa2nf51WkjSj+LH3mEvzBV
-         WVRN+MfxpD7ozAnJk1kB3hNVSlsK1JqTp8tZ72L6BLpM/dR4OjMdjetOjNqtQaXTnWff
-         aEbIJQKG2tctmUkbd87WyUNxqpOJp5kLlrQeqJdqWJs7zctgJJYAAUGYRkThF2gA/RWi
-         btiKcDv+tAs0s4ftM+nrpYPljXjp7MGLgtY9M/tZbZO42BSwk/IAUTwEkrOZAUNQf0TF
-         NsUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jza2TCvepnCYL9M6zFAH+I68SUDTkRuu7p3LhyJ4FqU=;
-        b=F/vZo5XH7YFGDs9B56m1wHG05w3jKLQ3L1INdhjSYsQq7TRcFlJfDzj/A0sBSssXIw
-         tp62Iyk6yF8u6gDhuYrBcGNpXdX4lRPIBik9boEZe0IMzE80d0eAm1uJosfWeMj1Eybu
-         ymJdEVsX0+WSISNOJsPWr7Wono2/yFewcqWqVeFw6KWYsdRqK8ngT6jdukQODmHnXJbD
-         lbcTmtj4X0p1oDAmjeB8rkylkxFJO31ApVckLmdeKH/wpol9TZUDjHON5yAgTu5PdD8M
-         HUsQ5HRJq/7IgWlqx+8N8E9yFW0Bwf1vFlEflo01rcd3cKdQCbbOldx8NFCPPbiJ8wVv
-         I0Ug==
-X-Gm-Message-State: AOAM530rjezkUrg4eXcYOEtZdzxsvWOWfQAqj8F0/4f5VGsiYw/XsekV
-        ie1n44tc45Hgodxhs8BROc58QKaAKR3bqsq2P3QEYw4DRBk=
-X-Google-Smtp-Source: ABdhPJyFJ+2AZFW70+q1+Jby7otE+8aOmh+s3hw0aPLCKS5KP8yQ6PDvz8v7rr6SeBgL1vl4tkmZAJ7o26rp43T8BHQ=
-X-Received: by 2002:a05:600c:2902:: with SMTP id i2mr16103614wmd.123.1612199764376;
- Mon, 01 Feb 2021 09:16:04 -0800 (PST)
+        Mon, 1 Feb 2021 12:22:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612200049;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lB7mBZJ0mzw9zDnoYSD9tBEDLyo8dn6HvaUbvp5AL4E=;
+        b=FV9aPAK/WGJcJ6yOJ8M/mos7OiWrGEuP8Rt8jG3s8DKmS+734XfnjW5/EnwUC+1Gacgc5R
+        O5tD/J6dIUNtiM4JIJ2SUo5m/b/lScl2erQiAwga+ZHEjZEeAIY+HFVYBxtRtPmp5/UZq0
+        nhRQM2lh3av0J9x4o52eHLloV+O4ShA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-1-ASbusc4dOImfoaj0ARpUQw-1; Mon, 01 Feb 2021 12:20:44 -0500
+X-MC-Unique: ASbusc4dOImfoaj0ARpUQw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A17001922048;
+        Mon,  1 Feb 2021 17:20:35 +0000 (UTC)
+Received: from [10.36.113.43] (ovpn-113-43.ams2.redhat.com [10.36.113.43])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DF93A74AA7;
+        Mon,  1 Feb 2021 17:19:53 +0000 (UTC)
+Subject: Re: [PATCH v13 03/15] iommu/arm-smmu-v3: Maintain a SID->device
+ structure
+To:     Keqian Zhu <zhukeqian1@huawei.com>, eric.auger.pro@gmail.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu, will@kernel.org,
+        joro@8bytes.org, maz@kernel.org, robin.murphy@arm.com,
+        alex.williamson@redhat.com
+Cc:     jean-philippe@linaro.org, jacob.jun.pan@linux.intel.com,
+        nicoleotsuka@gmail.com, vivek.gautam@arm.com, yi.l.liu@intel.com,
+        zhangfei.gao@linaro.org
+References: <20201118112151.25412-1-eric.auger@redhat.com>
+ <20201118112151.25412-4-eric.auger@redhat.com>
+ <a5cc1635-b69b-50a6-404a-5bf667296669@huawei.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <c457b450-8755-308e-7c7a-abe23b33d0d6@redhat.com>
+Date:   Mon, 1 Feb 2021 18:19:52 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-References: <20210109135112.147759-1-angelogioacchino.delregno@somainline.org>
- <20210109135112.147759-4-angelogioacchino.delregno@somainline.org>
- <CAF6AEGvDzdgDy7Znw6dQCV7Z=YxnF2_XsqkV+7BT+oY777TqHA@mail.gmail.com>
- <8f8c7c37-f7b2-f763-19e1-d89e5c454ab4@somainline.org> <CAF6AEGsQp4xHpH2brUdHmAX1ic2k88EFJRVVWDRxWXUqF9njfw@mail.gmail.com>
- <CAF6AEGueo71HVBcLW2Mtu5GQ=9HgwL43WczUGLuTk2JWLoH=ew@mail.gmail.com>
-In-Reply-To: <CAF6AEGueo71HVBcLW2Mtu5GQ=9HgwL43WczUGLuTk2JWLoH=ew@mail.gmail.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Mon, 1 Feb 2021 09:18:38 -0800
-Message-ID: <CAF6AEGspvnwRrXurmRvvRhr8dsFRc6fNnLsSo52Te0rHXtj4jA@mail.gmail.com>
-Subject: Re: [PATCH 3/5] drm/msm/dsi_pll_10nm: Fix bad VCO rate calculation
- and prescaler
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        marijn.suijten@somainline.org, martin.botka@somainline.org,
-        phone-devel@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a5cc1635-b69b-50a6-404a-5bf667296669@huawei.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 9:05 AM Rob Clark <robdclark@gmail.com> wrote:
->
-> On Mon, Feb 1, 2021 at 7:47 AM Rob Clark <robdclark@gmail.com> wrote:
-> >
-> > On Mon, Feb 1, 2021 at 2:11 AM AngeloGioacchino Del Regno
-> > <angelogioacchino.delregno@somainline.org> wrote:
-> > >
-> > > Il 31/01/21 20:50, Rob Clark ha scritto:
-> > > > On Sat, Jan 9, 2021 at 5:51 AM AngeloGioacchino Del Regno
-> > > > <angelogioacchino.delregno@somainline.org> wrote:
-> > > >>
-> > > >> The VCO rate was being miscalculated due to a big overlook during
-> > > >> the process of porting this driver from downstream to upstream:
-> > > >> here we are really recalculating the rate of the VCO by reading
-> > > >> the appropriate registers and returning a real frequency, while
-> > > >> downstream the driver was doing something entirely different.
-> > > >>
-> > > >> In our case here, the recalculated rate was wrong, as it was then
-> > > >> given back to the set_rate function, which was erroneously doing
-> > > >> a division on the fractional value, based on the prescaler being
-> > > >> either enabled or disabled: this was actually producing a bug for
-> > > >> which the final VCO rate was being doubled, causing very obvious
-> > > >> issues when trying to drive a DSI panel because the actual divider
-> > > >> value was multiplied by two!
-> > > >>
-> > > >> To make things work properly, remove the multiplication of the
-> > > >> reference clock by two from function dsi_pll_calc_dec_frac and
-> > > >> account for the prescaler enablement in the vco_recalc_rate (if
-> > > >> the prescaler is enabled, then the hardware will divide the rate
-> > > >> by two).
-> > > >>
-> > > >> This will make the vco_recalc_rate function to pass the right
-> > > >> frequency to the (clock framework) set_rate function when called,
-> > > >> which will - in turn - program the right values in both the
-> > > >> DECIMAL_DIV_START_1 and the FRAC_DIV_START_{LOW/MID/HIGH}_1
-> > > >> registers, finally making the PLL to output the right clock.
-> > > >>
-> > > >> Also, while at it, remove the prescaler TODO by also adding the
-> > > >> possibility of disabling the prescaler on the PLL (it is in the
-> > > >> PLL_ANALOG_CONTROLS_ONE register).
-> > > >> Of course, both prescaler-ON and OFF cases were tested.
-> > > >
-> > > > This somehow breaks things on sc7180 (display gets stuck at first
-> > > > frame of splash screen).  (This is a setup w/ an ti-sn65dsi86 dsi->eDP
-> > > > bridge)
-> > > >
-> > >
-> > > First frame of the splash means that something is "a bit" wrong...
-> > > ...like the DSI clock is a little off.
-> > >
-> > > I don't have such hardware, otherwise I would've tried... but what you
-> > > describe is a bit strange.
-> > > Is there any other older qcom platform using this chip? Any other
-> > > non-qcom platform? Is the driver for the SN65DSI86 surely fine?
-> > > Anyway, as you know, I would never propose untested patches nor
-> > > partially working ones for any reason: I'm sorry that this happened.
-> >
-> > I don't think there is anything publicly avail w/ sc7180 (yet.. but very soon)
-> >
-> > The ti-sn65dsi86 bridge is used on a bunch of 845/850 devices (like
-> > the snapdragon windows laptops).. and I think also the older 835
-> > laptops.. ofc that doesn't mean that there isn't some bug, but I'd
-> > guess maybe more likely that there is some small difference in DSI vs
-> > older devices, or some cmd vs video mode difference.
-> >
-> > Anyways, seems like the screen did eventually recover so that gives me
-> > a bit of confidence to bisect this series, which I'll do a bit later
-> > today.
->
-> fwiw, this series minus this patch, and everything looks ok.. let me
-> take a closer look at what changes with this patch
+Hi Keqian,
 
-Btw, it looks like upstream, config->disable_prescaler is always
-false.. I don't suppose you have anything WIP that changes this?
+On 2/1/21 1:26 PM, Keqian Zhu wrote:
+> Hi Eric,
+> 
+> On 2020/11/18 19:21, Eric Auger wrote:
+>> From: Jean-Philippe Brucker <jean-philippe@linaro.org>
+>>
+>> When handling faults from the event or PRI queue, we need to find the
+>> struct device associated to a SID. Add a rb_tree to keep track of SIDs.
+>>
+>> Signed-off-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> [...]
+> 
+>>  }
+>>  
+>> +static int arm_smmu_insert_master(struct arm_smmu_device *smmu,
+>> +				  struct arm_smmu_master *master)
+>> +{
+>> +	int i;
+>> +	int ret = 0;
+>> +	struct arm_smmu_stream *new_stream, *cur_stream;
+>> +	struct rb_node **new_node, *parent_node = NULL;
+>> +	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(master->dev);
+>> +
+>> +	master->streams = kcalloc(fwspec->num_ids,
+>> +				  sizeof(struct arm_smmu_stream), GFP_KERNEL);
+>> +	if (!master->streams)
+>> +		return -ENOMEM;
+>> +	master->num_streams = fwspec->num_ids;
+> This is not roll-backed when fail.
+> 
+>> +
+>> +	mutex_lock(&smmu->streams_mutex);
+>> +	for (i = 0; i < fwspec->num_ids && !ret; i++) {
+> Check ret at here, makes it hard to decide the start index of rollback.
+> 
+> If we fail at here, then start index is (i-2).
+> If we fail in the loop, then start index is (i-1).
+> 
+>> +		u32 sid = fwspec->ids[i];
+>> +
+>> +		new_stream = &master->streams[i];
+>> +		new_stream->id = sid;
+>> +		new_stream->master = master;
+>> +
+>> +		/*
+>> +		 * Check the SIDs are in range of the SMMU and our stream table
+>> +		 */
+>> +		if (!arm_smmu_sid_in_range(smmu, sid)) {
+>> +			ret = -ERANGE;
+>> +			break;
+>> +		}
+>> +
+>> +		/* Ensure l2 strtab is initialised */
+>> +		if (smmu->features & ARM_SMMU_FEAT_2_LVL_STRTAB) {
+>> +			ret = arm_smmu_init_l2_strtab(smmu, sid);
+>> +			if (ret)
+>> +				break;
+>> +		}
+>> +
+>> +		/* Insert into SID tree */
+>> +		new_node = &(smmu->streams.rb_node);
+>> +		while (*new_node) {
+>> +			cur_stream = rb_entry(*new_node, struct arm_smmu_stream,
+>> +					      node);
+>> +			parent_node = *new_node;
+>> +			if (cur_stream->id > new_stream->id) {
+>> +				new_node = &((*new_node)->rb_left);
+>> +			} else if (cur_stream->id < new_stream->id) {
+>> +				new_node = &((*new_node)->rb_right);
+>> +			} else {
+>> +				dev_warn(master->dev,
+>> +					 "stream %u already in tree\n",
+>> +					 cur_stream->id);
+>> +				ret = -EINVAL;
+>> +				break;
+>> +			}
+>> +		}
+>> +
+>> +		if (!ret) {
+>> +			rb_link_node(&new_stream->node, parent_node, new_node);
+>> +			rb_insert_color(&new_stream->node, &smmu->streams);
+>> +		}
+>> +	}
+>> +
+>> +	if (ret) {
+>> +		for (; i > 0; i--)
+> should be (i >= 0)?
+> And the start index seems not correct.
+> 
+>> +			rb_erase(&master->streams[i].node, &smmu->streams);
+>> +		kfree(master->streams);
+>> +	}
+>> +	mutex_unlock(&smmu->streams_mutex);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>> +static void arm_smmu_remove_master(struct arm_smmu_master *master)
+>> +{
+>> +	int i;
+>> +	struct arm_smmu_device *smmu = master->smmu;
+>> +	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(master->dev);
+>> +
+>> +	if (!smmu || !master->streams)
+>> +		return;
+>> +
+>> +	mutex_lock(&smmu->streams_mutex);
+>> +	for (i = 0; i < fwspec->num_ids; i++)
+>> +		rb_erase(&master->streams[i].node, &smmu->streams);
+>> +	mutex_unlock(&smmu->streams_mutex);
+>> +
+>> +	kfree(master->streams);
+>> +}
+>> +
+>>  static struct iommu_ops arm_smmu_ops;
+>>  
+>>  static struct iommu_device *arm_smmu_probe_device(struct device *dev)
+>>  {
+>> -	int i, ret;
+>> +	int ret;
+>>  	struct arm_smmu_device *smmu;
+>>  	struct arm_smmu_master *master;
+>>  	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
+>> @@ -2331,27 +2447,12 @@ static struct iommu_device *arm_smmu_probe_device(struct device *dev)
+>>  
+>>  	master->dev = dev;
+>>  	master->smmu = smmu;
+>> -	master->sids = fwspec->ids;
+>> -	master->num_sids = fwspec->num_ids;
+>>  	INIT_LIST_HEAD(&master->bonds);
+>>  	dev_iommu_priv_set(dev, master);
+>>  
+>> -	/* Check the SIDs are in range of the SMMU and our stream table */
+>> -	for (i = 0; i < master->num_sids; i++) {
+>> -		u32 sid = master->sids[i];
+>> -
+>> -		if (!arm_smmu_sid_in_range(smmu, sid)) {
+>> -			ret = -ERANGE;
+>> -			goto err_free_master;
+>> -		}
+>> -
+>> -		/* Ensure l2 strtab is initialised */
+>> -		if (smmu->features & ARM_SMMU_FEAT_2_LVL_STRTAB) {
+>> -			ret = arm_smmu_init_l2_strtab(smmu, sid);
+>> -			if (ret)
+>> -				goto err_free_master;
+>> -		}
+>> -	}
+>> +	ret = arm_smmu_insert_master(smmu, master);
+>> +	if (ret)
+>> +		goto err_free_master;
+>>  
+>>  	master->ssid_bits = min(smmu->ssid_bits, fwspec->num_pasid_bits);
+>>  
+>> @@ -2389,6 +2490,7 @@ static void arm_smmu_release_device(struct device *dev)
+>>  	WARN_ON(arm_smmu_master_sva_enabled(master));
+>>  	arm_smmu_detach_dev(master);
+>>  	arm_smmu_disable_pasid(master);
+>> +	arm_smmu_remove_master(master);
+>>  	kfree(master);
+> 
+> Thanks,
+> Keqian
+> 
+Thank you for the review. Jean will address this issues in his own
+series and on my end I will rebase on this latter.
 
-BR,
--R
+Best Regards
 
->
-> > > In any case, just to be perfectly transparent, while being here waiting
-> > > for review, this patch series got tested on more smartphones, even ones
-> > > that I don't personally own, with different displays.
-> > >
-> > > For your reference, here's a list (all MSM8998..):
-> > > - OnePlus 5               (1920x1080)
-> > > - F(x)Tec Pro 1           (2160x1080)
-> > > - Sony Xperia XZ1 Compact (1280x720)
-> > > - Sony Xperia XZ1         (1920x1080)
-> > > - Sony Xperia XZ Premium  (3840x2160)
-> > >
-> >
-> > Yeah, no worries, I wasn't trying to imply that the patch was untested.
-> >
-> > Out of curiosity, are any of those video mode panels?
-> >
-> > >
-> > > > Also, something (I assume DSI related) that I was testing on
-> > > > msm-next-staging seems to have effected the colors on the panel (ie.
-> > > > they are more muted).. which seems to persist across reboots (ie. when
-> > >
-> > > So much "fun". This makes me think something about the PCC block doing
-> > > the wrong thing (getting misconfigured).
-> > >
-> > > > switching back to a good kernel), and interestingly if I reboot from a
-> > > > good kernel I see part of the login prompt (or whatever was previously
-> > > > on-screen) in the firmware ui screen !?!  (so maybe somehow triggered
-> > > > the display to think it is in PSR mode??)
-> > > >
-> > >
-> > >  From a fast read, the SN65DSI86 is on I2C.. giving it a wrong dsi clock
-> > > cannot produce (logically, at least) this, so I say that it is very
-> > > unlikely for this to be a consequence of the 10nm pll fixes...
-> > >
-> >
-> > Note that the bridge can also be programmed via dsi cmd mode packets,
-> > which I believe is the case on the 835 laptops (or at least one of
-> > them).. but all the things I have are using i2c as the control path.
-> >
-> > > ...unless the bootloader is not configuring the DSI rates, but that's
-> > > also veeeeery unlikely (it always does, or it always does not).
-> >
-> > I haven't looked at the bootloader display code, but booting back to
-> > an old/good kernel didn't change anything..  even powering off didn't.
-> > But the ghost image seemed to fade after some time, and by the next
-> > morning it was fine.  Which is strange. (But tbf, I'm more a gpu guy
-> > who works on display only when necessary.. ie. a gpu without a display
-> > isn't so much fun ;-))
-> >
-> > > > Not sure if that is caused by these patches, but if I can figure out
-> > > > how to get the panel back to normal I can bisect.  I think for now
-> > > > I'll drop this series.  Possibly it could be a
-> > > > two-wrongs-makes-a-right situation that had things working before, but
-> > > > I think someone from qcom who knows the DSI IP should take a look.
-> > > >
-> > >
-> > > I would be happy if someone from Qualcomm takes a look: after all, there
-> > > is no documentation and they're the only ones that can verify this kind
-> > > of stuff. Please, Qualcomm.
-> >
-> > Hopefully someone can take a look.
-> >
-> > > Besides that, if there's anything I can help with to solve this riddle,
-> > > I'm here for you.
-> >
-> > Thanks, like I said I'll try applying the patches one by one and see
-> > if I can narrow down what made the panel go funny, and we can go from
-> > there
-> >
-> > BR,
-> > -R
-> >
-> > > Yours,
-> > > -- Angelo
-> > >
-> > > > BR,
-> > > > -R
-> > > >
-> > > >
-> > > >> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
-> > > >> ---
-> > > >>   drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c | 22 +++++++++-------------
-> > > >>   1 file changed, 9 insertions(+), 13 deletions(-)
-> > > >>
-> > > >> diff --git a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
-> > > >> index 8b66e852eb36..5be562dfbf06 100644
-> > > >> --- a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
-> > > >> +++ b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
-> > > >> @@ -165,11 +165,7 @@ static void dsi_pll_calc_dec_frac(struct dsi_pll_10nm *pll)
-> > > >>
-> > > >>          pll_freq = pll->vco_current_rate;
-> > > >>
-> > > >> -       if (config->disable_prescaler)
-> > > >> -               divider = fref;
-> > > >> -       else
-> > > >> -               divider = fref * 2;
-> > > >> -
-> > > >> +       divider = fref;
-> > > >>          multiplier = 1 << config->frac_bits;
-> > > >>          dec_multiple = div_u64(pll_freq * multiplier, divider);
-> > > >>          dec = div_u64_rem(dec_multiple, multiplier, &frac);
-> > > >> @@ -266,9 +262,11 @@ static void dsi_pll_ssc_commit(struct dsi_pll_10nm *pll)
-> > > >>
-> > > >>   static void dsi_pll_config_hzindep_reg(struct dsi_pll_10nm *pll)
-> > > >>   {
-> > > >> +       struct dsi_pll_config *config = &pll->pll_configuration;
-> > > >>          void __iomem *base = pll->mmio;
-> > > >> +       u32 val = config->disable_prescaler ? 0x0 : 0x80;
-> > > >>
-> > > >> -       pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_ONE, 0x80);
-> > > >> +       pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_ONE, val);
-> > > >>          pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_TWO, 0x03);
-> > > >>          pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_THREE, 0x00);
-> > > >>          pll_write(base + REG_DSI_10nm_PHY_PLL_DSM_DIVIDER, 0x00);
-> > > >> @@ -499,17 +497,15 @@ static unsigned long dsi_pll_10nm_vco_recalc_rate(struct clk_hw *hw,
-> > > >>          frac |= ((pll_read(base + REG_DSI_10nm_PHY_PLL_FRAC_DIV_START_HIGH_1) &
-> > > >>                    0x3) << 16);
-> > > >>
-> > > >> -       /*
-> > > >> -        * TODO:
-> > > >> -        *      1. Assumes prescaler is disabled
-> > > >> -        */
-> > > >>          multiplier = 1 << config->frac_bits;
-> > > >> -       pll_freq = dec * (ref_clk * 2);
-> > > >> -       tmp64 = (ref_clk * 2 * frac);
-> > > >> +       pll_freq = dec * ref_clk;
-> > > >> +       tmp64 = ref_clk * frac;
-> > > >>          pll_freq += div_u64(tmp64, multiplier);
-> > > >> -
-> > > >>          vco_rate = pll_freq;
-> > > >>
-> > > >> +       if (config->disable_prescaler)
-> > > >> +               vco_rate = div_u64(vco_rate, 2);
-> > > >> +
-> > > >>          DBG("DSI PLL%d returning vco rate = %lu, dec = %x, frac = %x",
-> > > >>              pll_10nm->id, (unsigned long)vco_rate, dec, frac);
-> > > >>
-> > > >> --
-> > > >> 2.29.2
-> > > >>
-> > >
+Eric
+
+
