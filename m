@@ -2,269 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4033230A933
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:59:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F8E30A937
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:59:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232409AbhBAN6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:58:14 -0500
-Received: from mx13.kaspersky-labs.com ([91.103.66.164]:56770 "EHLO
-        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232031AbhBAN6I (ORCPT
+        id S232450AbhBAN7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:59:07 -0500
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:56529 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232042AbhBAN7C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:58:08 -0500
-Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay13.kaspersky-labs.com (Postfix) with ESMTP id 249D552169F;
-        Mon,  1 Feb 2021 16:57:21 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail; t=1612187841;
-        bh=JIQhZmGiqsZDGRJKmrSOh3/yj72rPSfycuCmzuhNXdw=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
-        b=Z3EYJT30tqW9tcbOABrUW1UacH+6PtLGa7HEfQ8LMr8YmPCPOM5p+omlfcn8MmWbK
-         u7gxnfMNS2L3yA71ZtWl54aTNfUsikw/ZnZnYCqfxfihJZZhvolBcqBKOaMSeohrYo
-         zrXd0FC0F4GW8KCGAnhOTdlsaBROGmH42gTKghaI=
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id 266A15216CB;
-        Mon,  1 Feb 2021 16:57:20 +0300 (MSK)
-Received: from [10.16.171.77] (10.64.68.129) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Mon, 1 Feb
- 2021 16:57:19 +0300
-Subject: Re: [RFC PATCH v3 00/13] virtio/vsock: introduce SOCK_SEQPACKET
- support
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Jeff Vander Stoep <jeffv@google.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Mon, 1 Feb 2021 08:59:02 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 28F8972F;
+        Mon,  1 Feb 2021 08:57:55 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 01 Feb 2021 08:57:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=LXmNda8rIzqHWjVV8O1/US9WzhM
+        iddP+KCPS75wqqRM=; b=mZZWY+M7ry2daYTemu8RwX+RQBCD8PEtp43R6TZcjw4
+        4/TuMFAQdRzBcIocXLNdqL/XTSdCw5y6TZKPu/6MaiZ+2NGj5c/LW4csgFwkGH/5
+        TV9jSRsvlOmpR3qhj2ka+Ts464XaNlHs8rRkgWuQ++xHQcLPeHrvH62gPJz5+D4Z
+        ZcxeXC/nysYQFdQTS0XuaEuI0S+uc8mJgO9+xg1mBT+B+Kxzmb4HjG9VDwlp2s9e
+        dci9bSkmBfCqEYXGBnc9eie711CZkzMQjsCdvtvWNIdgTlRKVxHO7lG/DyXie/y2
+        UHntKpjcVK0AGtlBu0GA23JM443TNxijrbVAcVgxgFQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=LXmNda
+        8rIzqHWjVV8O1/US9WzhMiddP+KCPS75wqqRM=; b=m59QPJk9a1Wks6OTK3BTYV
+        dXhoUj4nUMKNEzrTDhIjW0aVBrOiZC9wVnDpE76Tn3me+o5BFV+UynkdTKAPRFln
+        tgtI0rYo0Hvpxq73YMSLLv9q8fg/Ayy66CYKRa4kpx7ADhEqhtKDklqVC3ysqbTN
+        fhhe1Gw57ymGUcwDIhrVODFcwfFbqINCZqZJWL/hBIGrJwu35J23B8/uSRIgeA4g
+        j1voE+Tpwdh3s5we6P859XoGeUjnuKS4NlgL+E2NeL2eWJayWhxiqLsmMfiolZ+6
+        sZqbgIYweIRo+xJBD3fi5+cwv0dbNC555LYiEmbWGmHO7iq5hcHUVC+k6lOa/Qiw
+        ==
+X-ME-Sender: <xms:4QgYYJmQgViESo4Cz1XW6xdHcWuDNzdbijb57EMG1IpMIN_JPYgW2w>
+    <xme:4QgYYE0jFlpy9fbTodCKyPFayw3PwE9E_-t2mMDqYMydQGdUUlBEHQg7UtpXOto7d
+    pBK4vvHxmClKA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeekgdehkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnheplefhfeeuvd
+    eltdefgeetjeehtedvhfekleefveelhefhhfeigedtueevgfeiffdunecuffhomhgrihhn
+    pehkvghrnhgvlhdrohhrghdprhgvughhrghtrdgtohhmnecukfhppeekfedrkeeirdejge
+    drieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
+    ghhrvghgsehkrhhorghhrdgtohhm
+X-ME-Proxy: <xmx:4QgYYPqNgIdscAPM5vlPS9Ha4ZYpnqQLYGYNe5R2BPwFQui1EKkzIQ>
+    <xmx:4QgYYJl7piScJDuwTM3kpEuziWYnJMu3RdaNi0JCAEMHhnV4_nWW2w>
+    <xmx:4QgYYH3aPQl2JhtuMvFo9fBxO-l_0mgt2Gsvdcol-UFIOfVPY416Sw>
+    <xmx:4ggYYMkaM92e6IJmKt_xT6jRKmMyUUHOZd7BRAHpAlcYmuHfMJtlxA>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 5B618240062;
+        Mon,  1 Feb 2021 08:57:53 -0500 (EST)
+Date:   Mon, 1 Feb 2021 14:57:43 +0100
+From:   Greg KH <greg@kroah.com>
+To:     Erich Ritz <erich.public@protonmail.com>
+Cc:     Takashi Iwai <tiwai@suse.de>,
+        Michael Catanzaro <mcatanzaro@redhat.com>,
+        "N, Harshapriya" <harshapriya.n@intel.com>,
+        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stsp2@yandex.ru" <stsp2@yandex.ru>,
-        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
-References: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
- <20210128171923.esyna5ccv5s27jyu@steredhat>
- <63459bb3-da22-b2a4-71ee-e67660fd2e12@kaspersky.com>
- <20210129092604.mgaw3ipiyv6xra3b@steredhat>
- <cb6d5a9c-fd49-a9dd-33b3-52027ae2f71c@kaspersky.com>
- <20210201110258.7ze7a7izl7gesv4w@steredhat>
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Message-ID: <1b80eb27-4818-50d7-7454-ff6cc398422e@kaspersky.com>
-Date:   Mon, 1 Feb 2021 16:57:18 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        "kai.vehmanen@intel.com" <kai.vehmanen@intel.com>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [REGRESSION] "ALSA: HDA: Early Forbid of runtime PM" broke my
+ laptop's internal audio
+Message-ID: <YBgI13zSojWDp2Zr@kroah.com>
+References: <EM1ONQ.OL5CFJTBEBBW@redhat.com>
+ <BY5PR11MB430713319F12454CF71A1E73FDB99@BY5PR11MB4307.namprd11.prod.outlook.com>
+ <U3BPNQ.P8Q6LYEGXHB5@redhat.com>
+ <s5hsg6jlr4q.wl-tiwai@suse.de>
+ <9ACPNQ.AF32G3OJNPHA3@redhat.com>
+ <IECPNQ.0TZXZXWOZX8L2@redhat.com>
+ <8CEPNQ.GAG87LR8RI871@redhat.com>
+ <s5hft2jlnt4.wl-tiwai@suse.de>
+ <CJr5txskJyVLQIDd7L6WNNMBMJ3eQEltNH7Y_yJ_r2X8aflHnfGHT9_Mpuznx8iDgfAu03gs9aIqVO7gXbRp4WCL--tXZAUajwyo_Eet5Os=@protonmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210201110258.7ze7a7izl7gesv4w@steredhat>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.64.68.129]
-X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.16, Database issued on: 02/01/2021 13:23:40
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 161565 [Feb 01 2021]
-X-KSE-AntiSpam-Info: LuaCore: 421 421 33a18ad4049b4a5e5420c907b38d332fafd06b09
-X-KSE-AntiSpam-Info: Version: 5.9.16.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: {Tracking_content_type, plain}
-X-KSE-AntiSpam-Info: {Tracking_date, moscow}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;kaspersky.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 02/01/2021 13:25:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 2/1/2021 12:14:00 PM
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/02/01 10:58:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/02/01 10:06:00 #16068838
-X-KLMS-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CJr5txskJyVLQIDd7L6WNNMBMJ3eQEltNH7Y_yJ_r2X8aflHnfGHT9_Mpuznx8iDgfAu03gs9aIqVO7gXbRp4WCL--tXZAUajwyo_Eet5Os=@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Feb 01, 2021 at 04:24:51AM +0000, Erich Ritz wrote:
+> On Friday, January 29, 2021 9:17 AM, Takashi Iwai <tiwai@suse.de> wrote:
+> 
+> > On Fri, 29 Jan 2021 17:12:08 +0100,
+> > Michael Catanzaro wrote:
+> >
+> > > On Fri, Jan 29, 2021 at 9:30 am, Michael Catanzaro
+> > > mcatanzaro@redhat.com wrote:
+> > >
+> > > > OK, I found "ALSA: hda/via: Apply the workaround generically for
+> > > > Clevo machines" which was just merged yesterday. So I will test
+> > > > again to find out.
+> > >
+> > > Hi Takashi, hi Harsha,
+> > > I can confirm that the problem is fixed by this commit:
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4961167bf7482944ca09a6f71263b9e47f949851
+> >
+> > Thanks, good to hear.
+> >
+> > Then I think we can drop the entry from power_save_denylist in
+> > hda_intel.c. Could you try that it still works with the patch below?
+> >
+> > thanks,
+> >
+> > Takashi
+> >
+> > --- a/sound/pci/hda/hda_intel.c
+> > +++ b/sound/pci/hda/hda_intel.c
+> > @@ -2217,8 +2217,6 @@ static const struct snd_pci_quirk power_save_denylist[] = {
+> > /* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 /
+> > SND_PCI_QUIRK(0x1043, 0x8733, "Asus Prime X370-Pro", 0),
+> > / https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
+> >
+> > -   SND_PCI_QUIRK(0x1558, 0x6504, "Clevo W65_67SB", 0),
+> > -   /* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 /
+> >     SND_PCI_QUIRK(0x1028, 0x0497, "Dell Precision T3600", 0),
+> >     / https://bugzilla.redhat.com/show_bug.cgi?id=1525104 /
+> >     / Note the P55A-UD3 and Z87-D3HP share the subsys id for the HDA dev */
+> 
+> For me applying patch 4961167bf7482944ca09a6f71263b9e47f949851 on top of 5.10.12 fixes audio, but the above quoted patch applied to 5.10.12 does NOT fix audio.  What I mean by fixes:
+> Audio works normally on 5.4.94, and on 5.10.12 with patch 4961167 applied.
+> I hear no audio from the laptop speakers on 5.10.12 and 5.10.12 with the above quoted patch applied.  Opening pavucontrol shows a graphical response in the meter, but no audio is heard from the speakers.  I did not test plugging in headphones and did not test audio over HDMI.
+> 
+> I have a System76 Gazelle Pro 7 (gazp7).
+> 
+> # lspci -s "00:1b" -vv
+> 00:1b.0 Audio device: Intel Corporation 7 Series/C210 Series Chipset Family High Definition Audio Controller (rev 04)
+>         Subsystem: CLEVO/KAPOK Computer 7 Series/C210 Series Chipset Family High Definition Audio Controller
+>         Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+>         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+>         Latency: 0, Cache Line Size: 64 bytes
+>         Interrupt: pin A routed to IRQ 36
+>         Region 0: Memory at f7e10000 (64-bit, non-prefetchable) [size=16K]
+>         Capabilities: [50] Power Management version 2
+>                 Flags: PMEClk- DSI- D1- D2- AuxCurrent=55mA PME(D0+,D1-,D2-,D3hot+,D3cold+)
+>                 Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
+>         Capabilities: [60] MSI: Enable+ Count=1/1 Maskable- 64bit+
+>                 Address: 00000000fee003b8  Data: 0000
+>         Capabilities: [70] Express (v1) Root Complex Integrated Endpoint, MSI 00
+>                 DevCap: MaxPayload 128 bytes, PhantFunc 0
+>                         ExtTag- RBE-
+>                 DevCtl: Report errors: Correctable- Non-Fatal- Fatal- Unsupported-
+>                         RlxdOrd- ExtTag- PhantFunc- AuxPwr- NoSnoop-
+>                         MaxPayload 128 bytes, MaxReadReq 128 bytes
+>                 DevSta: CorrErr- UncorrErr- FatalErr- UnsuppReq- AuxPwr+ TransPend-
+>         Capabilities: [100 v1] Virtual Channel
+>                 Caps:   LPEVC=0 RefClk=100ns PATEntryBits=1
+>                 Arb:    Fixed- WRR32- WRR64- WRR128-
+>                 Ctrl:   ArbSelect=Fixed
+>                 Status: InProgress-
+>                 VC0:    Caps:   PATOffset=00 MaxTimeSlots=1 RejSnoopTrans-
+>                         Arb:    Fixed- WRR32- WRR64- WRR128- TWRR128- WRR256-
+>                         Ctrl:   Enable+ ID=0 ArbSelect=Fixed TC/VC=01
+>                         Status: NegoPending- InProgress-
+>                 VC1:    Caps:   PATOffset=00 MaxTimeSlots=1 RejSnoopTrans-
+>                         Arb:    Fixed- WRR32- WRR64- WRR128- TWRR128- WRR256-
+>                         Ctrl:   Enable+ ID=1 ArbSelect=Fixed TC/VC=22
+>                         Status: NegoPending- InProgress-
+>         Capabilities: [130 v1] Root Complex Link
+>                 Desc:   PortNumber=0f ComponentID=00 EltType=Config
+>                 Link0:  Desc:   TargetPort=00 TargetComponent=00 AssocRCRB- LinkType=MemMapped LinkValid+
+>                         Addr:   00000000fed1c000
+>         Kernel driver in use: snd_hda_intel
+>         Kernel modules: snd_hda_intel
+> 
+> And on kernel 5.4.94:
+> # dmesg | grep hda
+> [   21.307684] snd_hda_intel 0000:00:1b.0: bound 0000:00:02.0 (ops i915_audio_component_bind_ops [i915])
+> [   21.493303] snd_hda_codec_via hdaudioC0D0: autoconfig for VT1802: line_outs=1 (0x24/0x0/0x0/0x0/0x0) type:speaker
+> [   21.493306] snd_hda_codec_via hdaudioC0D0:    speaker_outs=0 (0x0/0x0/0x0/0x0/0x0)
+> [   21.493309] snd_hda_codec_via hdaudioC0D0:    hp_outs=1 (0x25/0x0/0x0/0x0/0x0)
+> [   21.493310] snd_hda_codec_via hdaudioC0D0:    mono: mono_out=0x0
+> [   21.493312] snd_hda_codec_via hdaudioC0D0:    inputs:
+> [   21.493315] snd_hda_codec_via hdaudioC0D0:      Mic=0x2b
+> [   21.493317] snd_hda_codec_via hdaudioC0D0:      Internal Mic=0x29
+> 
+> 
+> Apologies if this is noise.  I haven't been able to find if 4961167bf7482944ca09a6f71263b9e47f949851 is queued up for the next stable release of 5.10.
 
-On 01.02.2021 14:02, Stefano Garzarella wrote:
-> On Fri, Jan 29, 2021 at 06:52:23PM +0300, Arseny Krasnov wrote:
->> On 29.01.2021 12:26, Stefano Garzarella wrote:
->>> On Fri, Jan 29, 2021 at 09:41:50AM +0300, Arseny Krasnov wrote:
->>>> On 28.01.2021 20:19, Stefano Garzarella wrote:
->>>>> Hi Arseny,
->>>>> I reviewed a part, tomorrow I hope to finish the other patches.
->>>>>
->>>>> Just a couple of comments in the TODOs below.
->>>>>
->>>>> On Mon, Jan 25, 2021 at 02:09:00PM +0300, Arseny Krasnov wrote:
->>>>>> 	This patchset impelements support of SOCK_SEQPACKET for virtio
->>>>>> transport.
->>>>>> 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
->>>>>> do it, new packet operation was added: it marks start of record (with
->>>>>> record length in header), such packet doesn't carry any data.  To send
->>>>>> record, packet with start marker is sent first, then all data is sent
->>>>>> as usual 'RW' packets. On receiver's side, length of record is known
->>>>> >from packet with start record marker. Now as  packets of one socket
->>>>>> are not reordered neither on vsock nor on vhost transport layers, such
->>>>>> marker allows to restore original record on receiver's side. If user's
->>>>>> buffer is smaller that record length, when all out of size data is
->>>>>> dropped.
->>>>>> 	Maximum length of datagram is not limited as in stream socket,
->>>>>> because same credit logic is used. Difference with stream socket is
->>>>>> that user is not woken up until whole record is received or error
->>>>>> occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
->>>>>> 	Tests also implemented.
->>>>>>
->>>>>> Arseny Krasnov (13):
->>>>>>  af_vsock: prepare for SOCK_SEQPACKET support
->>>>>>  af_vsock: prepare 'vsock_connectible_recvmsg()'
->>>>>>  af_vsock: implement SEQPACKET rx loop
->>>>>>  af_vsock: implement send logic for SOCK_SEQPACKET
->>>>>>  af_vsock: rest of SEQPACKET support
->>>>>>  af_vsock: update comments for stream sockets
->>>>>>  virtio/vsock: dequeue callback for SOCK_SEQPACKET
->>>>>>  virtio/vsock: fetch length for SEQPACKET record
->>>>>>  virtio/vsock: add SEQPACKET receive logic
->>>>>>  virtio/vsock: rest of SOCK_SEQPACKET support
->>>>>>  virtio/vsock: setup SEQPACKET ops for transport
->>>>>>  vhost/vsock: setup SEQPACKET ops for transport
->>>>>>  vsock_test: add SOCK_SEQPACKET tests
->>>>>>
->>>>>> drivers/vhost/vsock.c                   |   7 +-
->>>>>> include/linux/virtio_vsock.h            |  12 +
->>>>>> include/net/af_vsock.h                  |   6 +
->>>>>> include/uapi/linux/virtio_vsock.h       |   9 +
->>>>>> net/vmw_vsock/af_vsock.c                | 543 ++++++++++++++++------
->>>>>> net/vmw_vsock/virtio_transport.c        |   4 +
->>>>>> net/vmw_vsock/virtio_transport_common.c | 295 ++++++++++--
->>>>>> tools/testing/vsock/util.c              |  32 +-
->>>>>> tools/testing/vsock/util.h              |   3 +
->>>>>> tools/testing/vsock/vsock_test.c        | 126 +++++
->>>>>> 10 files changed, 862 insertions(+), 175 deletions(-)
->>>>>>
->>>>>> TODO:
->>>>>> - Support for record integrity control. As transport could drop some
->>>>>>   packets, something like "record-id" and record end marker need to
->>>>>>   be implemented. Idea is that SEQ_BEGIN packet carries both record
->>>>>>   length and record id, end marker(let it be SEQ_END) carries only
->>>>>>   record id. To be sure that no one packet was lost, receiver checks
->>>>>>   length of data between SEQ_BEGIN and SEQ_END(it must be same with
->>>>>>   value in SEQ_BEGIN) and record ids of SEQ_BEGIN and SEQ_END(this
->>>>>>   means that both markers were not dropped. I think that easiest way
->>>>>>   to implement record id for SEQ_BEGIN is to reuse another field of
->>>>>>   packet header(SEQ_BEGIN already uses 'flags' as record length).For
->>>>>>   SEQ_END record id could be stored in 'flags'.
->>>>> I don't really like the idea of reusing the 'flags' field for this
->>>>> purpose.
->>>>>
->>>>>>     Another way to implement it, is to move metadata of both SEQ_END
->>>>>>   and SEQ_BEGIN to payload. But this approach has problem, because
->>>>>>   if we move something to payload, such payload is accounted by
->>>>>>   credit logic, which fragments payload, while payload with record
->>>>>>   length and id couldn't be fragmented. One way to overcome it is to
->>>>>>   ignore credit update for SEQ_BEGIN/SEQ_END packet.Another solution
->>>>>>   is to update 'stream_has_space()' function: current implementation
->>>>>>   return non-zero when at least 1 byte is allowed to use,but updated
->>>>>>   version will have extra argument, which is needed length. For 'RW'
->>>>>>   packet this argument is 1, for SEQ_BEGIN it is sizeof(record len +
->>>>>>   record id) and for SEQ_END it is sizeof(record id).
->>>>> Is the payload accounted by credit logic also if hdr.op is not
->>>>> VIRTIO_VSOCK_OP_RW?
->>>> Yes, on send any packet with payload could be fragmented if
->>>>
->>>> there is not enough space at receiver. On receive 'fwd_cnt' and
->>>>
->>>> 'buf_alloc' are updated with header of every packet. Of course,
->>>>
->>>> to every such case i've described i can add check for 'RW'
->>>>
->>>> packet, to exclude payload from credit accounting, but this is
->>>>
->>>> bunch of dumb checks.
->>>>
->>>>> I think that we can define a specific header to put after the
->>>>> virtio_vsock_hdr when hdr.op is SEQ_BEGIN or SEQ_END, and in this header
->>>>> we can store the id and the length of the message.
->>>> I think it is better than use payload and touch credit logic
->>>>
->>> Cool, so let's try this option, hoping there aren't a lot of issues.
->> If i understand, current implementation has 'struct virtio_vsock_hdr',
->>
->> then i'll add 'struct virtio_vsock_hdr_seq' with message length and id.
->>
->> After that, in 'struct virtio_vsock_pkt' which describes packet, field for
->>
->> header(which is 'struct virtio_vsock_hdr') must be replaced with new
->>
->> structure which  contains both 'struct virtio_vsock_hdr' and 'struct
->>
->> virtio_vsock_hdr_seq', because header field of 'struct virtio_vsock_pkt'
->>
->> is buffer for virtio layer. After it all accesses to header(for example to
->>
->> 'buf_alloc' field will go accross new  structure with both headers:
->>
->> pkt->hdr.buf_alloc   ->   pkt->extended_hdr.classic_hdr.buf_alloc
->>
->> May be to avoid this, packet's header could be allocated dynamically
->>
->> in the same manner as packet's buffer? Size of allocation is always
->>
->> sizeof(classic header) + sizeof(seq header). In 'struct virtio_vsock_pkt'
->>
->> such header will be implemented as union of two pointers: class header
->>
->> and extended header containing classic and seq header. Which pointer
->>
->> to use is depends on packet's op.
-> I think that the 'classic header' can stay as is, and the extended 
-> header can be dynamically allocated, as we do for the payload.
->
-> But we have to be careful what happens if the other peer doesn't support 
-> SEQPACKET and if it counts this extra header as a payload for the credit 
-> mechanism.
+It will be in the next 5.10.y release.
 
-You mean put extra header to payload(buffer of second virtio desc),
+thanks,
 
-in this way on send/receive auxiliary 'if's are needed to avoid credit
-
-logic(or set length field in header of such packets to 0). But what
-
-about placing extra header after classic header in buffer of first virtio
-
-desc? In this case extra header is not payload and credit works as is.
-
-Or it is critical, that size of first buffer will be not same as size of
-
-classic header?
-
->
-> I'll try to take a closer look in the next few days.
->
-> Thanks,
-> Stefano
->
->
+greg k-h
