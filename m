@@ -2,116 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6215530AB15
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:24:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5104F30AAA8
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:12:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229883AbhBAPWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 10:22:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231720AbhBAPWG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 10:22:06 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21792C06174A;
-        Mon,  1 Feb 2021 07:21:26 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id e70so16568341ote.11;
-        Mon, 01 Feb 2021 07:21:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+jo3Pe8+MXl1+0gBOWiSw5v0BJ545gQ4ZkTl4Ae472o=;
-        b=C68l+shnh8CXf7Al768pOC3kGZUFoh1MAJFgWwa2Q+woCyTZ1UrASd8xMEzScrs0BP
-         SFbseFeub+25gGn3TJ/fyxg8DK0bbeG0lYgXzPsAvqEaZFyRa9aufaTHGQuDG3/encaM
-         ZXFLC9jZe17kgYq4ftgjL3Uy8HWdtDBvY3pJJwP6bVyfgR2Ie+6uUvPp2EGPSAwYqaoi
-         i0GM1XPWHJrdudaHa6mqTFWLiQtcu4k1UnfMX0rsCnZcfcPaPc+NusSNvHqgt5uxPeDI
-         pdSkSQWYzHQV5ehcosjOggSr778TR+yGgsILUsWlSmLQshMEeTxs4ceidv6Zr2D3EZhY
-         jY5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+jo3Pe8+MXl1+0gBOWiSw5v0BJ545gQ4ZkTl4Ae472o=;
-        b=q0VFClCUwEqQQyFv37gcZdMDH2CHrhST2c/006YHNwPNjQmYeita2yTVnC4vxlEDck
-         qIuz3btzDXary+hyXNj+9ztoGodtmResJFNWS4EQ5EhFZ1A4WHE4RxxIwAUYdfFhEtV4
-         A98GFkEW7bXrXwlJ8BM0RlhBo6lVB19yZtaGSFZHAaZdbLUed152gvCZUM1xHslrP8hW
-         x5Sw2TCW3WrdSPmB8g4Gy111NAU6r0IQzjuGliPZ3enzSVTWLbeC8dGEF02fYCoa8yKN
-         v0wO29Lc6J9xj4OAS36WwY0EpLq3tEI0DjLD9BjlutnfW/gpo2WP+Gqt9uTSXRbYv4jy
-         Hizg==
-X-Gm-Message-State: AOAM532xqhDk89EkbjBlViRAfJGoMRvhVHjNsb+urNSCo+J1t8DXxEpj
-        sq4E7SAfY6c5UA5vJCBAkq56RMWV2ICfgFY9jyk=
-X-Google-Smtp-Source: ABdhPJzOOQ7f1C42DXKVDkbqndJUWURkrsejZc9DtMgpfqIuaGu9nReoXOhqXkj4WP2KHTOx6gpq/LDW097hUb+B1M0=
-X-Received: by 2002:a9d:784a:: with SMTP id c10mr12721445otm.132.1612192885533;
- Mon, 01 Feb 2021 07:21:25 -0800 (PST)
-MIME-Version: 1.0
-References: <20210129084327.986630-1-kai.heng.feng@canonical.com>
-In-Reply-To: <20210129084327.986630-1-kai.heng.feng@canonical.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 1 Feb 2021 10:21:14 -0500
-Message-ID: <CADnq5_MduzcezmAjEGK0X7bDiY98f68s8roXc6gOTWjcpNC9Rw@mail.gmail.com>
-Subject: Re: [PATCH] efifb: Ensure graphics device for efifb stays at PCI D0
-To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
-Cc:     pjones@redhat.com, Hans de Goede <hdegoede@redhat.com>,
-        "open list:EFIFB FRAMEBUFFER DRIVER" <linux-fbdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:FRAMEBUFFER LAYER" <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S231555AbhBAPLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 10:11:41 -0500
+Received: from mga06.intel.com ([134.134.136.31]:33905 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229570AbhBAPDu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 10:03:50 -0500
+IronPort-SDR: ibODGu0kGcNmFCIGPevd2JCQ05Kc4yGcoaxevh9wSmHMAz26hcJ4p56pZQigHQNp5MJBoP8p+b
+ /spk1ol0ksig==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="242214662"
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="242214662"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 07:02:30 -0800
+IronPort-SDR: B4o4R491oWUAIaTNLztu5/CK7WQp5+H0fPopXQJi4r7QgYtz1IKBgcfLPvpxH9qpjxhU4W++G/
+ l9+ktH2rKT8Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="369891558"
+Received: from marshy.an.intel.com ([10.122.105.143])
+  by fmsmga008.fm.intel.com with ESMTP; 01 Feb 2021 07:02:29 -0800
+From:   richard.gong@linux.intel.com
+To:     mdf@kernel.org, trix@redhat.com, gregkh@linuxfoundation.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Richard Gong <richard.gong@intel.com>
+Subject: [PATCHv4 0/6] Extend Intel service layer, FPGA manager and region
+Date:   Mon,  1 Feb 2021 09:21:53 -0600
+Message-Id: <1612192919-4069-1-git-send-email-richard.gong@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 6:27 AM Kai-Heng Feng
-<kai.heng.feng@canonical.com> wrote:
->
-> We are seeing root ports on some desktop boards support D3cold for
-> discrete graphics card. So when efifb is in use while graphics device
-> isn't bound to a driver, PCI and ACPI will put the graphics to D3cold
-> when runtime suspend kicks in, makes efifb stop working.
->
-> So ensure the graphics device won't be runtime suspended, to keep efifb
-> work all the time.
->
-> Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Richard Gong <richard.gong@intel.com>
 
-Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+This is 4th submission of Intel service layer and FPGA patches.
 
-> ---
->  drivers/video/fbdev/efifb.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/video/fbdev/efifb.c b/drivers/video/fbdev/efifb.c
-> index e57c00824965..19edd7206409 100644
-> --- a/drivers/video/fbdev/efifb.c
-> +++ b/drivers/video/fbdev/efifb.c
-> @@ -16,6 +16,7 @@
->  #include <linux/platform_device.h>
->  #include <linux/printk.h>
->  #include <linux/screen_info.h>
-> +#include <linux/pm_runtime.h>
->  #include <video/vga.h>
->  #include <asm/efi.h>
->  #include <drm/drm_utils.h> /* For drm_get_panel_orientation_quirk */
-> @@ -575,6 +576,7 @@ static int efifb_probe(struct platform_device *dev)
->                 goto err_fb_dealoc;
->         }
->         fb_info(info, "%s frame buffer device\n", info->fix.id);
-> +       pm_runtime_get_sync(&efifb_pci_dev->dev);
->         return 0;
->
->  err_fb_dealoc:
-> @@ -601,6 +603,7 @@ static int efifb_remove(struct platform_device *pdev)
->         unregister_framebuffer(info);
->         sysfs_remove_groups(&pdev->dev.kobj, efifb_groups);
->         framebuffer_release(info);
-> +       pm_runtime_put(&efifb_pci_dev->dev);
->
->         return 0;
->  }
-> --
-> 2.29.2
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+This submission includes additional changes for Intel service layer driver
+to get the firmware version running at FPGA SoC device. Then FPGA manager
+driver, one of Intel service layer driver's client, can decide whether to
+handle the newly added bitstream authentication function based on the
+retrieved firmware version. So that we can maintain FPGA manager driver
+the back compatible.
+
+Bitstream authentication makes sure a signed bitstream has valid signatures.
+
+The customer sends the bitstream via FPGA framework and overlay, the
+firmware will authenticate the bitstream but not program the bitstream to
+device. If the authentication passes, the bitstream will be programmed into
+QSPI flash and will be expected to boot without issues.
+
+Extend Intel service layer, FPGA manager and region drivers to support the
+bitstream authentication feature.
+
+Richard Gong (6):
+  firmware: stratix10-svc: add COMMAND_AUTHENTICATE_BITSTREAM flag
+  firmware: stratix10-svc: extend SVC driver to get the firmware version
+  fpga: fpga-mgr: add FPGA_MGR_BITSTREAM_AUTHENTICATE flag
+  fpga: of-fpga-region: add authenticate-fpga-config property
+  dt-bindings: fpga: add authenticate-fpga-config property
+  fpga: stratix10-soc: extend driver for bitstream authentication
+
+ .../devicetree/bindings/fpga/fpga-region.txt       |  4 ++
+ drivers/firmware/stratix10-svc.c                   | 12 ++++-
+ drivers/fpga/of-fpga-region.c                      | 24 ++++++---
+ drivers/fpga/stratix10-soc.c                       | 62 +++++++++++++++++++---
+ include/linux/firmware/intel/stratix10-smc.h       | 21 +++++++-
+ .../linux/firmware/intel/stratix10-svc-client.h    |  9 ++++
+ include/linux/fpga/fpga-mgr.h                      |  3 ++
+ 7 files changed, 118 insertions(+), 17 deletions(-)
+
+-- 
+2.7.4
+
