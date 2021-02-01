@@ -2,98 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B50FD30B3AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:46:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32D2730B3AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:46:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230380AbhBAXpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 18:45:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35432 "EHLO
+        id S231124AbhBAXpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 18:45:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229683AbhBAXpG (ORCPT
+        with ESMTP id S229683AbhBAXpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 18:45:06 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91D7C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 15:44:26 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id n8so5353846qtp.5
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 15:44:26 -0800 (PST)
+        Mon, 1 Feb 2021 18:45:15 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B975CC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 15:44:34 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id e12so1926104pls.4
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 15:44:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=hd15FyljMQNb+uHNxQHOyHL+pJdt7H/rF6CqnCRNxkk=;
-        b=k2UK7o8wQKpImEwvMcIofjhqZsF1yjn8WEus+jyV+wEKwNI6Pdakb/8qDqgA9xjczP
-         2vPN1SEc50w2MpyQ7LD+ynXBrNS0ZUMPypuqH73q3LZlHiLudFcbUX2YEdbVreK9GYci
-         hvcm6XoNqV/208cemLwAqA8+PAHjy3gR92TFTOvBBJo7+cm3ioe3aJ52NRp9dC77mPPw
-         oDjDm0ZwCbl0N5JT1o7/W7KfF4QzaCcJx0mZ8QBXv8kRecO95ouX8OEHg3EnsSZjoY8b
-         iZ3BuClJKbypxdM6+deF5MQjc1yclCNHXNUNBUtjO3Rt+RPjmfdltzBcWVgFq5Wf8gYo
-         bQ/w==
+        bh=fwm6mluZA5z9j5m60X7bcq1KDPR0kK7jE0BbvE8y0SA=;
+        b=zPvtRhY8I6xZhECNQRtxMIuGfx13gF4xR1FwvDj3y/r4s6hy2esITYebzwYaiNPkMF
+         3Mqr3aNVKTd6mMRWz6CagJxYOVTWq4vXsnKQwl4mv531lgd1bm4OOGYkfHxj1II3Sgs6
+         kgkN3T5V1B1tXq+1qUhwmtNcEYE7GXbkZC5N4nYz2s2pI269IK9Dy/NGtCL5Tu7/uQf4
+         VJhA3fK31DPiS1Jq38zUlaS7KeYvaUg4jjlQ8rS6IDBUmVl6Mc1J5g6hEVcGyX0SxXDz
+         8ehmHsDyK0sFzcjgJLlDgZZtDiCEVyjNyOKXtxPjqC17RHLTTYo4bTyqLlb6+ODuAdOO
+         L8gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=hd15FyljMQNb+uHNxQHOyHL+pJdt7H/rF6CqnCRNxkk=;
-        b=WfrViVDmW8w09CyQt4wlfcO+VND4VunItHdksdFW3QrCQSYvPGWdxkCrMWKvPv1fzW
-         Hv8H1MT5USW5bVSExR22GhB1VxEfMsqo7rb12n9MzgPSZCucSHUoiZry710q1zJ0Div5
-         KEyMb1d8694MJKLP4cXJfr1ErBRzYBVCJanYxKFN+MiKG3eAHLHLvC2lekW2ec/47oyP
-         JVy70xphjM04nVvSEP0/j4BRaTDxnkcL9NaZiFpzluAzQ1gKAdAm+e/SdtvSThWD3im9
-         suTbfDBRX4dFYM/kP045syuZr/Lob4H4q6qVrzy3QHw8Xxsfggwps46sXWJtBTrixcQ6
-         +6RQ==
-X-Gm-Message-State: AOAM53249Z8scFJ05DLJJyKvNJ0XU3YksRZTby8aWwVpwYdlh14FSpX4
-        11qzOwuv1sGX2XEn+JftlcCnU8+GzWJ89rrl
-X-Google-Smtp-Source: ABdhPJxOk/Gr3FI8hipqpO78EuQbpqBCvzEwZtZKwnaYmY8JYjMc8WYuBvCPpUv8lB3nlvifrKdI9g==
-X-Received: by 2002:ac8:6c48:: with SMTP id z8mr17373676qtu.252.1612223065836;
-        Mon, 01 Feb 2021 15:44:25 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id p22sm15466415qkk.128.2021.02.01.15.44.25
+        bh=fwm6mluZA5z9j5m60X7bcq1KDPR0kK7jE0BbvE8y0SA=;
+        b=EPBDLlbpCIXpUFxooDXns1jAHIHD2YX7CCH4k6tVUHRrdY4zcAIuyFa2gcuh4MKl0q
+         pjX45cNHDRjAxENbAg6di1rygSx9PMwoz7wm7n7KZL63Kky9kFkSXOIyeCQieysjIgdG
+         AYwlM25760LqIJzKBLdiCHUGCdxYnwKCg7RW+r1CN0L878xkVBEIgDg86NwoC88UsQy9
+         XWpWK19D929f7ThmYjH1bj2IOMnChefDJtjRVtMhVjYU7/iP1RLxpSxEHHBchZbxRzdk
+         l17US0vZ65AQ93QJEouMZoaq4hvBFZHAmUSxiu191v9y/yiNKp4RpPN3AEh5pr3W1Rna
+         o2vg==
+X-Gm-Message-State: AOAM531F1K7jDj35BVW/SuetImaUTquts1rQKLqEX6lhLoKiYecAbyK9
+        Pozr+BqcoMNusGToQP7Bk3Fttg==
+X-Google-Smtp-Source: ABdhPJxBU043CZGZI8fRbH2HsQrhXMmtUPQ7rnAVcDNrNRrS3Q/L54u4bE8a6bj3tFWn/tEbHg4f7Q==
+X-Received: by 2002:a17:90b:3907:: with SMTP id ob7mr1279309pjb.18.1612223074311;
+        Mon, 01 Feb 2021 15:44:34 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id c23sm20513453pgc.72.2021.02.01.15.44.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 15:44:25 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1l6iro-002MnI-P8; Mon, 01 Feb 2021 19:44:24 -0400
-Date:   Mon, 1 Feb 2021 19:44:24 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        "chensihang (A)" <chensihang1@hisilicon.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
-        "linux-accelerators@lists.ozlabs.org" 
-        <linux-accelerators@lists.ozlabs.org>
-Subject: Re: [RFC PATCH v2] uacce: Add uacce_ctrl misc device
-Message-ID: <20210201234424.GI4718@ziepe.ca>
-References: <1611563696-235269-1-git-send-email-wangzhou1@hisilicon.com>
- <20210125154717.GW4605@ziepe.ca>
- <96b655ade2534a65974a378bb68383ee@hisilicon.com>
- <20210125231619.GY4605@ziepe.ca>
- <5f64a68042c64f37b5cba74028bd2189@hisilicon.com>
- <20210126011304.GZ4605@ziepe.ca>
- <d7fce136c3644755a7aea5794bddf453@hisilicon.com>
- <MWHPR11MB1886DC78C5FBA3636B94F2578CB99@MWHPR11MB1886.namprd11.prod.outlook.com>
+        Mon, 01 Feb 2021 15:44:33 -0800 (PST)
+Date:   Mon, 1 Feb 2021 16:44:31 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        suzuki.poulose@arm.com, mike.leach@linaro.org,
+        lcherian@marvell.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 02/14] coresight: Do not scan for graph if none is
+ present
+Message-ID: <20210201234431.GC1475392@xps15>
+References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
+ <1611737738-1493-3-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <MWHPR11MB1886DC78C5FBA3636B94F2578CB99@MWHPR11MB1886.namprd11.prod.outlook.com>
+In-Reply-To: <1611737738-1493-3-git-send-email-anshuman.khandual@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 10:09:03AM +0000, Tian, Kevin wrote:
-> > SVA is not doom to work with IO page fault only. If we have SVA+pin,
-> > we would get both sharing address and stable I/O latency.
+On Wed, Jan 27, 2021 at 02:25:26PM +0530, Anshuman Khandual wrote:
+> From: Suzuki K Poulose <suzuki.poulose@arm.com>
 > 
-> Isn't it like a traditional MAP_DMA API (imply pinning) plus specifying 
-> cpu_va of the memory pool as the iova? 
+> If a graph node is not found for a given node, of_get_next_endpoint()
+> will emit the following error message :
+> 
+>  OF: graph: no port node found in /<node_name>
+> 
+> If the given component doesn't have any explicit connections (e.g,
+> ETE) we could simply ignore the graph parsing.
+> 
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+>  drivers/hwtracing/coresight/coresight-platform.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-platform.c b/drivers/hwtracing/coresight/coresight-platform.c
+> index 3629b78..c594f45 100644
+> --- a/drivers/hwtracing/coresight/coresight-platform.c
+> +++ b/drivers/hwtracing/coresight/coresight-platform.c
+> @@ -90,6 +90,12 @@ static void of_coresight_get_ports_legacy(const struct device_node *node,
+>  	struct of_endpoint endpoint;
+>  	int in = 0, out = 0;
+>  
+> +	/*
+> +	 * Avoid warnings in of_graph_get_next_endpoint()
+> +	 * if the device doesn't have any graph connections
+> +	 */
+> +	if (!of_graph_is_present(node))
+> +		return;
 
-I think their issue is the HW can't do the cpu_va trick without also
-involving the system IOMMU in a SVA mode
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-It really is something that belongs under some general /dev/sva as we
-talked on the vfio thread
-
-Jason
+>  	do {
+>  		ep = of_graph_get_next_endpoint(node, ep);
+>  		if (!ep)
+> -- 
+> 2.7.4
+> 
