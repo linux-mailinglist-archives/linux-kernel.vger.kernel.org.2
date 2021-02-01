@@ -2,85 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5733B30AA27
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:45:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 755B230AA2A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:47:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231175AbhBAOpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 09:45:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231293AbhBAOmi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 09:42:38 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D147CC061756;
-        Mon,  1 Feb 2021 06:42:22 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id h11so17544481ioh.11;
-        Mon, 01 Feb 2021 06:42:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=vYWcn7sL4czH23insMbT/xXB/qPApleY+YB9g2DqZvw=;
-        b=srCiPPLg+FKyiypCOM4HhWnQR9qLFpjBesMwYf6bJhq048o7gMqqliN0JoZ8TIrxx7
-         lR2AhWdnqqRR1yM8pTNZYzgB5D8LFIvmsSp6UIlW0Gr2G8pHtDgwTswLA+T1xcC2Dz/s
-         mTlTAYHbuU8GsoSGFIPPk3pUzkWkll0EbNP9gVdE2gFkJMUBTmiMZzLO9V+QwNpYCnXt
-         MbaY22d3pkt7aVOjdbwzfFPez1PFGZ3tqSgM0E/8Yx80X2gkuLgvRACpuQICL1UX77g+
-         gJkyjLusERVpodvFNV/sUnBP+SOlagv7mVfC7PYEcgFauxvzGa/6GHQT9ARSfjY9Z3Jx
-         ShAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=vYWcn7sL4czH23insMbT/xXB/qPApleY+YB9g2DqZvw=;
-        b=bleSF52TPo36+4KnFsEBZxG5A26pEMKhukt+6UqXKGlFj5XSeX3vZSj1SCYg/QpLsU
-         1acJ3MM7l6e7FCkln+l8pMQzUtgYpkiTOgY13c8uZBvbEQcpJqAJ9YAR2/tsVxain1H0
-         J3835kdd9/RIkYG3g1SDORveCNrvRiWopP1ZQzwMrjLzCeClL54MURcDZcuCPOhWllg0
-         mkYOmrz4EqR+kH9ty+W25Q8DHiPI8YOsm+0V127bnuTQtYNOKLbFY3lC6U6JA4RhkAo1
-         ScQ6ECyWkNzulEQ5Cv0snbut3pSWD86LffLiPbkmn+YMcBYfr00v0aDOW73A4QTZbP0f
-         4msA==
-X-Gm-Message-State: AOAM5302ScF/5F2bva73n43IRUTDQhADNTGATi5+QOpQVsDusj6UAFB8
-        U0sYsRnHXzxiTkwF8yGKGtk=
-X-Google-Smtp-Source: ABdhPJybG8fZlQcKGj1GssmKBu/UxhmQ73Q9+3UlPhYlNwH0kDkW72buRTLQh4I5AFqrw8SG5cAWhA==
-X-Received: by 2002:a6b:7501:: with SMTP id l1mr12314288ioh.92.1612190542355;
-        Mon, 01 Feb 2021 06:42:22 -0800 (PST)
-Received: from spring-Precision-5820-Tower.cs.umn.edu ([2607:ea00:101:3c74:b4b0:f34c:770:f33f])
-        by smtp.gmail.com with ESMTPSA id w2sm8470106ioa.46.2021.02.01.06.42.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Feb 2021 06:42:22 -0800 (PST)
-From:   Wenjia Zhao <driverfuzzing@gmail.com>
-Cc:     driverfuzzing@gmail.com, Lee Jones <lee.jones@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] backlight: pcf50633: pdata may be a null pointer, null pointer dereference cause crash
-Date:   Mon,  1 Feb 2021 08:41:38 -0600
-Message-Id: <1612190499-73818-1-git-send-email-driverfuzzing@gmail.com>
-X-Mailer: git-send-email 2.7.4
-To:     unlisted-recipients:; (no To-header on input)
+        id S230135AbhBAOqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 09:46:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33794 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231290AbhBAOnm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 09:43:42 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E7ABE64E56;
+        Mon,  1 Feb 2021 14:43:00 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l6aPp-00BI8c-Ro; Mon, 01 Feb 2021 14:42:57 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 01 Feb 2021 14:42:57 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: Re: [PATCH v1 0/2] Make fw_devlink=on more forgiving
+In-Reply-To: <20210130040344.2807439-1-saravanak@google.com>
+References: <20210130040344.2807439-1-saravanak@google.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <5419284dc9008907ccc36f1df5110356@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: saravanak@google.com, gregkh@linuxfoundation.org, rafael@kernel.org, m.szyprowski@samsung.com, geert@linux-m68k.org, Tudor.Ambarus@microchip.com, linus.walleij@linaro.org, bgolaszewski@baylibre.com, linux-kernel@vger.kernel.org, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Wenjia Zhao <driverfuzzing@gmail.com>
----
- drivers/video/backlight/pcf50633-backlight.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Hi Saravana,
 
-diff --git a/drivers/video/backlight/pcf50633-backlight.c b/drivers/video/backlight/pcf50633-backlight.c
-index 540dd338..43267af 100644
---- a/drivers/video/backlight/pcf50633-backlight.c
-+++ b/drivers/video/backlight/pcf50633-backlight.c
-@@ -127,7 +127,8 @@ static int pcf50633_bl_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, pcf_bl);
- 
--	pcf50633_reg_write(pcf_bl->pcf, PCF50633_REG_LEDDIM, pdata->ramp_time);
-+  if (pdata)
-+    pcf50633_reg_write(pcf_bl->pcf, PCF50633_REG_LEDDIM, pdata->ramp_time);
- 
- 	/*
- 	 * Should be different from bl_props.brightness, so we do not exit
+Thanks for this.
+
+On 2021-01-30 04:03, Saravana Kannan wrote:
+> This patch series solves two general issues with fw_devlink=on
+> 
+> Patch 1/2 addresses the issue of firmware nodes that look like they'll
+> have struct devices created for them, but will never actually have
+> struct devices added for them. For example, DT nodes with a compatible
+> property that don't have devices added for them.
+> 
+> Patch 2/2 address (for static kernels) the issue of optional suppliers
+> that'll never have a driver registered for them. So, if the device 
+> could
+> have probed with fw_devlink=permissive with a static kernel, this patch
+> should allow those devices to probe with a fw_devlink=on. This doesn't
+> solve it for the case where modules are enabled because there's no way
+> to tell if a driver will never be registered or it's just about to be
+> registered. I have some other ideas for that, but it'll have to come
+> later thinking about it a bit.
+> 
+> These two patches might remove the need for several other patches that
+> went in as fixes for commit e590474768f1 ("driver core: Set
+> fw_devlink=on by default"), but I think all those fixes are good
+> changes. So I think we should leave those in.
+> 
+> Marek, Geert,
+> 
+> Can you try this series on a static kernel with your OF_POPULATED
+> changes reverted? I just want to make sure these patches can identify
+> and fix those cases.
+> 
+> Tudor,
+> 
+> You should still make the clock driver fix (because it's a bug), but I
+> think this series will fix your issue too (even without the clock 
+> driver
+> fix). Can you please give this a shot?
+> 
+> Marc,
+> 
+> Can you try this series with the gpiolib fix reverted please? I'm 
+> pretty
+> sure this will fix that case.
+
+Almost. The board boots and behaves as expected, except that a few 
+devices
+such as the SD card are unusable (probably because the corresponding
+suppliers are still not identified as being available:
+
+# find /sys -name waiting_for_supplier| xargs grep .| grep -v :0
+/sys/devices/platform/vcc3v0-sd/waiting_for_supplier:1
+/sys/devices/platform/vbus-typec/waiting_for_supplier:1
+/sys/devices/platform/sdio-pwrseq/waiting_for_supplier:1
+/sys/devices/platform/ir-receiver/waiting_for_supplier:1
+
+With the GPIO patch that I reverted, no device is waiting for
+a supplier.
+
+Let me know if I can further help.
+
+         M.
 -- 
-2.7.4
-
+Jazz is not dead. It just smells funny...
