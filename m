@@ -2,421 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4591430AD29
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:55:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA1630AD31
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231984AbhBAQyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 11:54:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231865AbhBAQyT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 11:54:19 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B57DC06174A;
-        Mon,  1 Feb 2021 08:53:38 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id q7so17329040wre.13;
-        Mon, 01 Feb 2021 08:53:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=dBHdALdEus3O4u73yaAo51PuLorYWKAPerj4FWe40+s=;
-        b=TVsiha+XNfdW0LDdez60wodKt/zg1ZEnoFTFM8aNL2Wg0oLQ/RfrZXMHMwFE+HLMi+
-         1f3/awSvrym2gDoS67TW1iX0iC8ty6sQz1+Q7x0u6hKv3jtcXVRPaF8M4mVcEYnRVniK
-         eBHsCpkGuGkMX//wXBTTm1+Vquo+hjJHXfTBTrPhKYWQB1IKlvho8MsI2FDwIeqSCjYu
-         j2e5IfWSWTdOvoyTFqOgNMUlLSHVTUOB4vwUjjugppI8XbcEQ7PhwPhD8sGIun345nE4
-         IHWu0UdSYfKG68HisqhCVDBbEJaSmdUfk1C8b5bd5fsDj/kD4xt+oky+KmfdffDz0zJV
-         wb4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=dBHdALdEus3O4u73yaAo51PuLorYWKAPerj4FWe40+s=;
-        b=eCFL94AGYB5NBfpEzjOmhg+UbSEZ07vzkC6//zM0YfxgrHUj+1hmuu8ddebNzXYExt
-         S3sXt+QI4Rvh2MtDTxpbXDlbT5rs6UDHdKEYDTJgxCLEGX4qYVvvP+zEFtLrkPRXIqsy
-         nvSIl66UR8d4aKLcI6LkJTMVuy2lQPDJ/R1IWeka2wHfOzvqszHDoFd3YpIwzK4KFH40
-         MbvNG16JaZDXmVpGIa5gkiV+TYhQNYDmO/zL9qxR14t0iQmlYhTurqD0fEu43LpS39IN
-         2//04gdAkzjWvZdEN28E10iOs+THRzcM7lQR7KhfjKPeVPyFDyHtS2QeW9oVrtmanuoY
-         tYPw==
-X-Gm-Message-State: AOAM533UAB+wSkzyhTD1uOaTQhUOgpkyI3TAfBsc0ei5SEcqXrWnQqK3
-        4hA1QAOZXLzMYa12pFVva+oqObDCcxMP9g==
-X-Google-Smtp-Source: ABdhPJzUXIa09h6pTBqLSNvpje1ZAig60yeOMCH75zlEujWHi5874WGLfn4bzWAD7rx5CoC4OCcxpw==
-X-Received: by 2002:a5d:4d08:: with SMTP id z8mr19282280wrt.240.1612198416954;
-        Mon, 01 Feb 2021 08:53:36 -0800 (PST)
-Received: from localhost (178-169-161-196.razgrad.ddns.bulsat.com. [178.169.161.196])
-        by smtp.gmail.com with ESMTPSA id l18sm21171015wme.37.2021.02.01.08.53.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 08:53:36 -0800 (PST)
-From:   Iskren Chernev <iskren.chernev@gmail.com>
-To:     Rob Herring <robh+dt@kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Iskren Chernev <iskren.chernev@gmail.com>
-Subject: [PATCH v3 2/2] drm/panel: Add panel for Samsung Galaxy S5
-Date:   Mon,  1 Feb 2021 18:53:06 +0200
-Message-Id: <20210201165307.51443-2-iskren.chernev@gmail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210201165307.51443-1-iskren.chernev@gmail.com>
-References: <20210201165307.51443-1-iskren.chernev@gmail.com>
+        id S231791AbhBAQ4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 11:56:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36172 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232122AbhBAQzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 11:55:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B662F64EFA
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 16:54:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612198443;
+        bh=R2deLGQWM21T1Z1lsTRnK0sy5WgkBjHWzAzXwxs1sTw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=VvchYXcnbt6NXdW63BfRi48sG/8zBTxEKByh0SmV3Mdg3i++SyHzOg/ssFVdThqqj
+         1+WdRwaK9WEGxu52JBOG94swSWruTdzw9mv4w81V3bzvBohGjAyUHKv8NLF4J9Sr5n
+         64U31lTX74ZmWtt3u8ijcSF/rbHgtykWW++Ql//agV6W15ADj4pVW/RvaKHmqM2vqo
+         UaFkEnF/A1auKzwUl0v+Ir3exWV1x8Q6wVRRU+n8h5mvIKibBJO26/joP1WM9VT5UQ
+         bXDWO193uXfJbMJSxuk4coIWbGMI2jPZiqclawhWpa164wVAh0wwB0lkqTTQkYkPzn
+         AC7w7syzNDXRg==
+Received: by mail-ej1-f49.google.com with SMTP id kg20so25477325ejc.4
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 08:54:02 -0800 (PST)
+X-Gm-Message-State: AOAM531Hai4H9M5qxLEM5juGOhE/lBb2CgioIa0xXS/XqoxSDA933avl
+        MU+b/xKyd0OPTNw+PEbtzJPf8NU80Mfg5Wr4mx5tPQ==
+X-Google-Smtp-Source: ABdhPJyM8RJY1t5s1JqqVoEOT7KAUP76uRrjVcEcLGl8MkAZ0dRMe7ueAwXYhz/VK0W5zRgC+GhG2RX9vrt1mUK70ls=
+X-Received: by 2002:a17:906:5608:: with SMTP id f8mr18580966ejq.101.1612198441106;
+ Mon, 01 Feb 2021 08:54:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210131001132.3368247-1-namit@vmware.com> <20210131001132.3368247-9-namit@vmware.com>
+ <CALCETrUqoG9fhXLGbLomK-QrcSOhLDhJhQi5E=Y3FXNvYCzBcQ@mail.gmail.com> <17B9FE7B-1C92-4890-9B04-B129178C1184@vmware.com>
+In-Reply-To: <17B9FE7B-1C92-4890-9B04-B129178C1184@vmware.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 1 Feb 2021 08:53:49 -0800
+X-Gmail-Original-Message-ID: <CALCETrXZVxqKqryi0xJ+qTLQgHx6XeF_MGbL3qi_5MzygFTJSA@mail.gmail.com>
+Message-ID: <CALCETrXZVxqKqryi0xJ+qTLQgHx6XeF_MGbL3qi_5MzygFTJSA@mail.gmail.com>
+Subject: Re: [RFC 08/20] mm: store completed TLB generation
+To:     Nadav Amit <namit@vmware.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Nick Piggin <npiggin@gmail.com>, X86 ML <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Samsung Galaxy S5 uses the samsung s6e3fa2 AMOLED cmd LCD panel.
+On Sun, Jan 31, 2021 at 11:28 PM Nadav Amit <namit@vmware.com> wrote:
+>
+> > On Jan 31, 2021, at 12:32 PM, Andy Lutomirski <luto@kernel.org> wrote:
+> >
+> > On Sat, Jan 30, 2021 at 4:16 PM Nadav Amit <nadav.amit@gmail.com> wrote=
+:
+> >> From: Nadav Amit <namit@vmware.com>
+> >>
+> >> To detect deferred TLB flushes in fine granularity, we need to keep
+> >> track on the completed TLB flush generation for each mm.
+> >>
+> >> Add logic to track for each mm the tlb_gen_completed, which tracks the
+> >> completed TLB generation. It is the arch responsibility to call
+> >> mark_mm_tlb_gen_done() whenever a TLB flush is completed.
+> >>
+> >> Start the generation numbers from 1 instead of 0. This would allow lat=
+er
+> >> to detect whether flushes of a certain generation were completed.
+> >
+> > Can you elaborate on how this helps?
+>
+> I guess it should have gone to patch 15.
+>
+> The relevant code it interacts with is in read_defer_tlb_flush_gen(). It
+> allows to use a single check to see =E2=80=9Coutdated=E2=80=9D deferred T=
+LB gen. Initially
+> tlb->defer_gen is zero. We are going to do inc_mm_tlb_gen() both on the
+> first time we defer TLB entries and whenever we see mm_gen is newer than
+> tlb->defer_gen:
+>
+> +       mm_gen =3D atomic64_read(&mm->tlb_gen);
+> +
+> +       /*
+> +        * This condition checks for both first deferred TLB flush and fo=
+r other
+> +        * TLB pending or executed TLB flushes after the last table that =
+we
+> +        * updated. In the latter case, we are going to skip a generation=
+, which
+> +        * would lead to a full TLB flush. This should therefore not caus=
+e
+> +        * correctness issues, and should not induce overheads, since any=
+how in
+> +        * TLB storms it is better to perform full TLB flush.
+> +        */
+> +       if (mm_gen !=3D tlb->defer_gen) {
+> +               VM_BUG_ON(mm_gen < tlb->defer_gen);
+> +
+> +               tlb->defer_gen =3D inc_mm_tlb_gen(mm);
+> +       }
+>
+>
+> >
+> > I think you should document that tlb_gen_completed only means that no
+> > outdated TLB entries will be observably used.  In the x86
+> > implementation it's possible for older TLB entries to still exist,
+> > unused, in TLBs of cpus running other mms.
+>
+> You mean entries that be later flushed during switch_mm_irqs_off(), right=
+? I
+> think that overall my comments need some work. Yes.
 
-This driver was generated with [1], with the addition of
-mipi_dsi_dcs_set_display_on at the end of the on method.
+That's exactly what I mean.
 
-[1] https://github.com/msm8916-mainline/linux-mdss-dsi-panel-driver-generator
+>
+> > How does this work with arch_tlbbatch_flush()?
+>
+> completed_gen is not updated by arch_tlbbatch_flush(), since I couldn=E2=
+=80=99t find
+> a way to combine them. completed_gen might not catch up with tlb_gen in t=
+his
+> case until another TLB flush takes place. I do not see correctness issue,
+> but it might result in redundant TLB flush.
 
-Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
----
- drivers/gpu/drm/panel/Kconfig                 |   6 +
- drivers/gpu/drm/panel/Makefile                |   1 +
- drivers/gpu/drm/panel/panel-samsung-s6e3fa2.c | 299 ++++++++++++++++++
- 3 files changed, 306 insertions(+)
- create mode 100644 drivers/gpu/drm/panel/panel-samsung-s6e3fa2.c
+Please at least document this.
 
-diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
-index 4894913936e9..82dff2afd5f1 100644
---- a/drivers/gpu/drm/panel/Kconfig
-+++ b/drivers/gpu/drm/panel/Kconfig
-@@ -348,6 +348,12 @@ config DRM_PANEL_SAMSUNG_S6D16D0
- 	depends on DRM_MIPI_DSI
- 	select VIDEOMODE_HELPERS
- 
-+config DRM_PANEL_SAMSUNG_S6E3FA2
-+	tristate "Samsung S6E3FA2 DSI cmd mode panel"
-+	depends on OF
-+	depends on DRM_MIPI_DSI
-+	select VIDEOMODE_HELPERS
-+
- config DRM_PANEL_SAMSUNG_S6E3HA2
- 	tristate "Samsung S6E3HA2 DSI video mode panel"
- 	depends on OF
-diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
-index cae4d976c069..87d3f76f050e 100644
---- a/drivers/gpu/drm/panel/Makefile
-+++ b/drivers/gpu/drm/panel/Makefile
-@@ -35,6 +35,7 @@ obj-$(CONFIG_DRM_PANEL_RAYDIUM_RM68200) += panel-raydium-rm68200.o
- obj-$(CONFIG_DRM_PANEL_RONBO_RB070D30) += panel-ronbo-rb070d30.o
- obj-$(CONFIG_DRM_PANEL_SAMSUNG_LD9040) += panel-samsung-ld9040.o
- obj-$(CONFIG_DRM_PANEL_SAMSUNG_S6D16D0) += panel-samsung-s6d16d0.o
-+obj-$(CONFIG_DRM_PANEL_SAMSUNG_S6E3FA2) += panel-samsung-s6e3fa2.o
- obj-$(CONFIG_DRM_PANEL_SAMSUNG_S6E3HA2) += panel-samsung-s6e3ha2.o
- obj-$(CONFIG_DRM_PANEL_SAMSUNG_S6E63J0X03) += panel-samsung-s6e63j0x03.o
- obj-$(CONFIG_DRM_PANEL_SAMSUNG_S6E63M0) += panel-samsung-s6e63m0.o
-diff --git a/drivers/gpu/drm/panel/panel-samsung-s6e3fa2.c b/drivers/gpu/drm/panel/panel-samsung-s6e3fa2.c
-new file mode 100644
-index 000000000000..8985fccf9792
---- /dev/null
-+++ b/drivers/gpu/drm/panel/panel-samsung-s6e3fa2.c
-@@ -0,0 +1,299 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+// Copyright (c) 2021 Iskren Chernev <iskren.chernev@gmail.com>
-+// Generated with linux-mdss-dsi-panel-driver-generator from vendor device tree:
-+// Copyright (c) 2021, The Linux Foundation. All rights reserved.
-+
-+#include <linux/delay.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/regulator/consumer.h>
-+
-+#include <drm/drm_mipi_dsi.h>
-+#include <drm/drm_modes.h>
-+#include <drm/drm_panel.h>
-+
-+struct samsung_s6e3fa2 {
-+	struct drm_panel panel;
-+	struct mipi_dsi_device *dsi;
-+	struct regulator_bulk_data supplies[2];
-+	struct gpio_desc *reset_gpio;
-+	bool prepared;
-+};
-+
-+static inline
-+struct samsung_s6e3fa2 *to_samsung_s6e3fa2(struct drm_panel *panel)
-+{
-+	return container_of(panel, struct samsung_s6e3fa2, panel);
-+}
-+
-+#define dsi_generic_write_seq(dsi, seq...) do {				\
-+		static const u8 d[] = { seq };				\
-+		int ret;						\
-+		ret = mipi_dsi_generic_write(dsi, d, ARRAY_SIZE(d));	\
-+		if (ret < 0)						\
-+			return ret;					\
-+	} while (0)
-+
-+#define dsi_dcs_write_seq(dsi, seq...) do {				\
-+		static const u8 d[] = { seq };				\
-+		int ret;						\
-+		ret = mipi_dsi_dcs_write_buffer(dsi, d, ARRAY_SIZE(d));	\
-+		if (ret < 0)						\
-+			return ret;					\
-+	} while (0)
-+
-+static void samsung_s6e3fa2_reset(struct samsung_s6e3fa2 *ctx)
-+{
-+	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
-+	usleep_range(5000, 6000);
-+	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
-+	usleep_range(5000, 6000);
-+	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
-+	usleep_range(7000, 8000);
-+}
-+
-+static int samsung_s6e3fa2_on(struct samsung_s6e3fa2 *ctx)
-+{
-+	struct mipi_dsi_device *dsi = ctx->dsi;
-+	struct device *dev = &dsi->dev;
-+	int ret;
-+
-+	dsi->mode_flags |= MIPI_DSI_MODE_LPM;
-+
-+	dsi_generic_write_seq(dsi, 0xf0, 0x5a, 0x5a);
-+	dsi_generic_write_seq(dsi, 0xfc, 0x5a, 0x5a);
-+	dsi_dcs_write_seq(dsi, 0xf2);
-+	dsi_dcs_write_seq(dsi, 0xf9);
-+	usleep_range(5000, 6000);
-+
-+	ret = mipi_dsi_dcs_exit_sleep_mode(dsi);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to exit sleep mode: %d\n", ret);
-+		return ret;
-+	}
-+	msleep(20);
-+
-+	dsi_generic_write_seq(dsi, 0xca,
-+			      0x01, 0x00, 0x01, 0x00, 0x01, 0x00, 0x80, 0x80,
-+			      0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
-+			      0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80,
-+			      0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x00, 0x00,
-+			      0x00);
-+	dsi_generic_write_seq(dsi, 0xb2, 0x00, 0x0e, 0x00, 0x0e);
-+	dsi_generic_write_seq(dsi, 0xb6,
-+			      0x98, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03,
-+			      0x55, 0x54, 0x20, 0x00, 0x0a, 0xaa, 0xaf, 0x0f,
-+			      0x02, 0x22, 0x22, 0x10);
-+	dsi_generic_write_seq(dsi, 0xb5, 0x41);
-+	dsi_generic_write_seq(dsi, 0xf7, 0x03);
-+	dsi_generic_write_seq(dsi, 0xf7, 0x00);
-+	dsi_generic_write_seq(dsi, 0xb0, 0x02);
-+	dsi_generic_write_seq(dsi, 0xfd, 0x0a);
-+	dsi_generic_write_seq(dsi, 0xfe, 0x80);
-+	dsi_generic_write_seq(dsi, 0xfe, 0x00);
-+	dsi_generic_write_seq(dsi, 0x35, 0x00);
-+	dsi_generic_write_seq(dsi, 0xbd, 0x05, 0x02, 0x02);
-+	dsi_generic_write_seq(dsi, 0xf0, 0xa5, 0xa5);
-+	dsi_generic_write_seq(dsi, 0xfc, 0xa5, 0xa5);
-+
-+	ret = mipi_dsi_dcs_set_display_on(dsi);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to set display on: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int samsung_s6e3fa2_off(struct samsung_s6e3fa2 *ctx)
-+{
-+	struct mipi_dsi_device *dsi = ctx->dsi;
-+	struct device *dev = &dsi->dev;
-+	int ret;
-+
-+	dsi->mode_flags &= ~MIPI_DSI_MODE_LPM;
-+
-+	ret = mipi_dsi_dcs_set_display_off(dsi);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to set display off: %d\n", ret);
-+		return ret;
-+	}
-+	usleep_range(10000, 11000);
-+
-+	ret = mipi_dsi_dcs_enter_sleep_mode(dsi);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to enter sleep mode: %d\n", ret);
-+		return ret;
-+	}
-+	msleep(120);
-+
-+	return 0;
-+}
-+
-+static int samsung_s6e3fa2_prepare(struct drm_panel *panel)
-+{
-+	struct samsung_s6e3fa2 *ctx = to_samsung_s6e3fa2(panel);
-+	struct device *dev = &ctx->dsi->dev;
-+	int ret;
-+
-+	if (ctx->prepared)
-+		return 0;
-+
-+	ret = regulator_bulk_enable(ARRAY_SIZE(ctx->supplies), ctx->supplies);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to enable regulators: %d\n", ret);
-+		return ret;
-+	}
-+
-+	samsung_s6e3fa2_reset(ctx);
-+
-+	ret = samsung_s6e3fa2_on(ctx);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to initialize panel: %d\n", ret);
-+		gpiod_set_value_cansleep(ctx->reset_gpio, 1);
-+		regulator_bulk_disable(ARRAY_SIZE(ctx->supplies), ctx->supplies);
-+		return ret;
-+	}
-+
-+	ctx->prepared = true;
-+	return 0;
-+}
-+
-+static int samsung_s6e3fa2_unprepare(struct drm_panel *panel)
-+{
-+	struct samsung_s6e3fa2 *ctx = to_samsung_s6e3fa2(panel);
-+	struct device *dev = &ctx->dsi->dev;
-+	int ret;
-+
-+	if (!ctx->prepared)
-+		return 0;
-+
-+	ret = samsung_s6e3fa2_off(ctx);
-+	if (ret < 0)
-+		dev_err(dev, "Failed to un-initialize panel: %d\n", ret);
-+
-+	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
-+	regulator_bulk_disable(ARRAY_SIZE(ctx->supplies), ctx->supplies);
-+
-+	ctx->prepared = false;
-+	return 0;
-+}
-+
-+static const struct drm_display_mode samsung_s6e3fa2_mode = {
-+	.clock = (1080 + 162 + 10 + 36) * (1920 + 13 + 2 + 3) * 60 / 1000,
-+	.hdisplay = 1080,
-+	.hsync_start = 1080 + 162,
-+	.hsync_end = 1080 + 162 + 10,
-+	.htotal = 1080 + 162 + 10 + 36,
-+	.vdisplay = 1920,
-+	.vsync_start = 1920 + 13,
-+	.vsync_end = 1920 + 13 + 2,
-+	.vtotal = 1920 + 13 + 2 + 3,
-+	.width_mm = 65,
-+	.height_mm = 115,
-+};
-+
-+static int samsung_s6e3fa2_get_modes(struct drm_panel *panel,
-+				     struct drm_connector *connector)
-+{
-+	struct drm_display_mode *mode;
-+
-+	mode = drm_mode_duplicate(connector->dev, &samsung_s6e3fa2_mode);
-+	if (!mode)
-+		return -ENOMEM;
-+
-+	drm_mode_set_name(mode);
-+
-+	mode->type = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED;
-+	connector->display_info.width_mm = mode->width_mm;
-+	connector->display_info.height_mm = mode->height_mm;
-+	drm_mode_probed_add(connector, mode);
-+
-+	return 1;
-+}
-+
-+static const struct drm_panel_funcs samsung_s6e3fa2_panel_funcs = {
-+	.prepare = samsung_s6e3fa2_prepare,
-+	.unprepare = samsung_s6e3fa2_unprepare,
-+	.get_modes = samsung_s6e3fa2_get_modes,
-+};
-+
-+static int samsung_s6e3fa2_probe(struct mipi_dsi_device *dsi)
-+{
-+	struct device *dev = &dsi->dev;
-+	struct samsung_s6e3fa2 *ctx;
-+	int ret;
-+
-+	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
-+	if (!ctx)
-+		return -ENOMEM;
-+
-+	ctx->supplies[0].supply = "iovdd";
-+	ctx->supplies[1].supply = "vddr";
-+	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(ctx->supplies),
-+				      ctx->supplies);
-+	if (ret < 0)
-+		return dev_err_probe(dev, ret, "Failed to get regulators\n");
-+
-+	ctx->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
-+	if (IS_ERR(ctx->reset_gpio))
-+		return dev_err_probe(dev, PTR_ERR(ctx->reset_gpio),
-+				     "Failed to get reset-gpios\n");
-+
-+	ctx->dsi = dsi;
-+	mipi_dsi_set_drvdata(dsi, ctx);
-+
-+	dsi->lanes = 4;
-+	dsi->format = MIPI_DSI_FMT_RGB888;
-+	dsi->mode_flags = MIPI_DSI_MODE_VIDEO_BURST |
-+			  MIPI_DSI_CLOCK_NON_CONTINUOUS;
-+
-+	drm_panel_init(&ctx->panel, dev, &samsung_s6e3fa2_panel_funcs,
-+		       DRM_MODE_CONNECTOR_DSI);
-+
-+	drm_panel_add(&ctx->panel);
-+
-+	ret = mipi_dsi_attach(dsi);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to attach to DSI host: %d\n", ret);
-+		drm_panel_remove(&ctx->panel);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int samsung_s6e3fa2_remove(struct mipi_dsi_device *dsi)
-+{
-+	struct samsung_s6e3fa2 *ctx = mipi_dsi_get_drvdata(dsi);
-+	int ret;
-+
-+	ret = mipi_dsi_detach(dsi);
-+	if (ret < 0)
-+		dev_err(&dsi->dev, "Failed to detach from DSI host: %d\n", ret);
-+
-+	drm_panel_remove(&ctx->panel);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id samsung_s6e3fa2_of_match[] = {
-+	{ .compatible = "samsung,s6e3fa2" },
-+	{ /* sentinel */ }
-+};
-+MODULE_DEVICE_TABLE(of, samsung_s6e3fa2_of_match);
-+
-+static struct mipi_dsi_driver samsung_s6e3fa2_driver = {
-+	.probe = samsung_s6e3fa2_probe,
-+	.remove = samsung_s6e3fa2_remove,
-+	.driver = {
-+		.name = "panel-samsung-s6e3fa2",
-+		.of_match_table = samsung_s6e3fa2_of_match,
-+	},
-+};
-+module_mipi_dsi_driver(samsung_s6e3fa2_driver);
-+
-+MODULE_AUTHOR("Iskren Chernev <iskren.chernev@gmail.com>");
-+MODULE_DESCRIPTION("DRM driver for samsung,s6e3fa2 panel");
-+MODULE_LICENSE("GPL v2");
--- 
-2.30.0
+FWIW, arch_tlbbatch_flush() is gross.  I'm not convinced it's really
+supportable with proper broadcast invalidation. I suppose we could
+remove it or explicitly track the set of mms that need flushing.
 
+>
+> >> Signed-off-by: Nadav Amit <namit@vmware.com>
+> >> Cc: Andrea Arcangeli <aarcange@redhat.com>
+> >> Cc: Andrew Morton <akpm@linux-foundation.org>
+> >> Cc: Andy Lutomirski <luto@kernel.org>
+> >> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> >> Cc: Peter Zijlstra <peterz@infradead.org>
+> >> Cc: Thomas Gleixner <tglx@linutronix.de>
+> >> Cc: Will Deacon <will@kernel.org>
+> >> Cc: Yu Zhao <yuzhao@google.com>
+> >> Cc: Nick Piggin <npiggin@gmail.com>
+> >> Cc: x86@kernel.org
+> >> ---
+> >> arch/x86/mm/tlb.c         | 10 ++++++++++
+> >> include/asm-generic/tlb.h | 33 +++++++++++++++++++++++++++++++++
+> >> include/linux/mm_types.h  | 15 ++++++++++++++-
+> >> 3 files changed, 57 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
+> >> index 7ab21430be41..d17b5575531e 100644
+> >> --- a/arch/x86/mm/tlb.c
+> >> +++ b/arch/x86/mm/tlb.c
+> >> @@ -14,6 +14,7 @@
+> >> #include <asm/nospec-branch.h>
+> >> #include <asm/cache.h>
+> >> #include <asm/apic.h>
+> >> +#include <asm/tlb.h>
+> >>
+> >> #include "mm_internal.h"
+> >>
+> >> @@ -915,6 +916,9 @@ void flush_tlb_mm_range(struct mm_struct *mm, unsi=
+gned long start,
+> >>        if (cpumask_any_but(mm_cpumask(mm), cpu) < nr_cpu_ids)
+> >>                flush_tlb_others(mm_cpumask(mm), info);
+> >>
+> >> +       /* Update the completed generation */
+> >> +       mark_mm_tlb_gen_done(mm, new_tlb_gen);
+> >> +
+> >>        put_flush_tlb_info();
+> >>        put_cpu();
+> >> }
+> >> @@ -1147,6 +1151,12 @@ void arch_tlbbatch_flush(struct arch_tlbflush_u=
+nmap_batch *batch)
+> >>
+> >>        cpumask_clear(&batch->cpumask);
+> >>
+> >> +       /*
+> >> +        * We cannot call mark_mm_tlb_gen_done() since we do not know =
+which
+> >> +        * mm's should be flushed. This may lead to some unwarranted T=
+LB
+> >> +        * flushes, but not to correction problems.
+> >> +        */
+> >> +
+> >>        put_cpu();
+> >> }
+> >>
+> >> diff --git a/include/asm-generic/tlb.h b/include/asm-generic/tlb.h
+> >> index 517c89398c83..427bfcc6cdec 100644
+> >> --- a/include/asm-generic/tlb.h
+> >> +++ b/include/asm-generic/tlb.h
+> >> @@ -513,6 +513,39 @@ static inline void tlb_end_vma(struct mmu_gather =
+*tlb, struct vm_area_struct *vm
+> >> }
+> >> #endif
+> >>
+> >> +#ifdef CONFIG_ARCH_HAS_TLB_GENERATIONS
+> >> +
+> >> +/*
+> >> + * Helper function to update a generation to have a new value, as lon=
+g as new
+> >> + * value is greater or equal to gen.
+> >> + */
+> >
+> > I read this a couple of times, and I don't understand it.  How about:
+> >
+> > Helper function to atomically set *gen =3D max(*gen, new_gen)
+> >
+> >> +static inline void tlb_update_generation(atomic64_t *gen, u64 new_gen=
+)
+> >> +{
+> >> +       u64 cur_gen =3D atomic64_read(gen);
+> >> +
+> >> +       while (cur_gen < new_gen) {
+> >> +               u64 old_gen =3D atomic64_cmpxchg(gen, cur_gen, new_gen=
+);
+> >> +
+> >> +               /* Check if we succeeded in the cmpxchg */
+> >> +               if (likely(cur_gen =3D=3D old_gen))
+> >> +                       break;
+> >> +
+> >> +               cur_gen =3D old_gen;
+> >> +       };
+> >> +}
+> >> +
+> >> +
+> >> +static inline void mark_mm_tlb_gen_done(struct mm_struct *mm, u64 gen=
+)
+> >> +{
+> >> +       /*
+> >> +        * Update the completed generation to the new generation if th=
+e new
+> >> +        * generation is greater than the previous one.
+> >> +        */
+> >> +       tlb_update_generation(&mm->tlb_gen_completed, gen);
+> >> +}
+> >> +
+> >> +#endif /* CONFIG_ARCH_HAS_TLB_GENERATIONS */
+> >> +
+> >> /*
+> >>  * tlb_flush_{pte|pmd|pud|p4d}_range() adjust the tlb->start and tlb->=
+end,
+> >>  * and set corresponding cleared_*.
+> >> diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+> >> index 2035ac319c2b..8a5eb4bfac59 100644
+> >> --- a/include/linux/mm_types.h
+> >> +++ b/include/linux/mm_types.h
+> >> @@ -571,6 +571,13 @@ struct mm_struct {
+> >>                 * This is not used on Xen PV.
+> >>                 */
+> >>                atomic64_t tlb_gen;
+> >> +
+> >> +               /*
+> >> +                * TLB generation which is guarnateed to be flushed, i=
+ncluding
+> >
+> > guaranteed
+> >
+> >> +                * all the PTE changes that were performed before tlb_=
+gen was
+> >> +                * incremented.
+> >> +                */
+> >
+> > I will defer judgment to future patches before I believe that this isn'=
+t racy :)
+>
+> Fair enough. Thanks for the review.
+>
