@@ -2,148 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3FBF30AE71
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:52:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C71530AE73
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232587AbhBARvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:51:37 -0500
-Received: from mga18.intel.com ([134.134.136.126]:1039 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232434AbhBARv2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:51:28 -0500
-IronPort-SDR: o0ynsxVmxUQiox3lOqK6ZMvrb1mku85W86+fZTRH8hO+8QilqN8CySbtMRJbNVaCCRAAIj/79G
- kqOuQmlvmrNQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="168405657"
-X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="168405657"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 09:50:43 -0800
-IronPort-SDR: vwkcuvc/K6/0HYC/dswoUfGzMUtTJ5RCPPD/dQMvTDarAcRp8pDLdNzcYlXlojKNViGybtDGXQ
- /w90aWaQLK/g==
-X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="371637150"
-Received: from jambrizm-mobl1.amr.corp.intel.com (HELO intel.com) ([10.252.133.15])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 09:50:42 -0800
-Date:   Mon, 1 Feb 2021 09:50:41 -0800
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        daniel.lll@alibaba-inc.com,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH 03/14] cxl/mem: Find device capabilities
-Message-ID: <20210201175041.qs56jk5tdbgn2zia@intel.com>
-References: <20210130002438.1872527-1-ben.widawsky@intel.com>
- <20210130002438.1872527-4-ben.widawsky@intel.com>
- <20210201174136.GF197521@fedora>
+        id S232540AbhBARv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:51:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229915AbhBARvv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 12:51:51 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E37C061573;
+        Mon,  1 Feb 2021 09:51:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=MFF04QL/6jp421ma8zFR1ehIuwZl4YQf365pm4P/HRc=; b=Uspd2UcfpBHaQrFU35B2cHTI3G
+        yLF0RxLoTqXCI8m9GwbvnARm0pVUXuWBhJiXHKDqPweendoZQD/KBGoN0uiDh/MeL3ME9rRn42OA4
+        lpHTu4fJrwQDplwKA6wVBMwGzFHataqGnGoYnTaPOCJcCNHPd6MGhPMNMEPeK+ISxDWhS3FacesJx
+        Q8DBoOs95H3qPMkiwKxp0zkgtYDKRjSK94oIsY2RiZO26u+cSI7xUBnd7sLodr+BQunRnb5gGyNgX
+        89lplbx1JhdDyXnw9sC2fRssEWP9c8QQcs74GnMCgVKVIquZALF6p/Ta+lrDdjdCOLnh6s7ssDmoh
+        SHFHbFyw==;
+Received: from [2601:1c0:6280:3f0::9abc]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l6dLv-0000sq-GV; Mon, 01 Feb 2021 17:51:07 +0000
+Subject: Re: [PATCH] arch: mips: kernel: Made couple of spelling fixes and a
+ sentence construction in smp.c
+To:     Bert Vermeulen <bert@biot.com>,
+        Bhaskar Chowdhury <unixbhaskar@gmail.com>,
+        tsbogend@alpha.franken.de, peterz@infradead.org,
+        frederic@kernel.org, mingo@kernel.org, peterx@redhat.com,
+        afzal.mohd.ma@gmail.com, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210201111757.8019-1-unixbhaskar@gmail.com>
+ <48dfc60a-c03c-f9d8-a9aa-268f6ae252eb@biot.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <5b12db9b-7c06-faf7-1816-09453f48eb1e@infradead.org>
+Date:   Mon, 1 Feb 2021 09:51:00 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201174136.GF197521@fedora>
+In-Reply-To: <48dfc60a-c03c-f9d8-a9aa-268f6ae252eb@biot.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-02-01 12:41:36, Konrad Rzeszutek Wilk wrote:
-> > +static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
-> > +{
-> > +	struct device *dev = &cxlm->pdev->dev;
-> > +	int cap, cap_count;
-> > +	u64 cap_array;
-> > +
-> > +	cap_array = readq(cxlm->regs + CXLDEV_CAP_ARRAY_OFFSET);
-> > +	if (CXL_GET_FIELD(cap_array, CXLDEV_CAP_ARRAY_ID) != CXLDEV_CAP_ARRAY_CAP_ID)
-> > +		return -ENODEV;
-> > +
-> > +	cap_count = CXL_GET_FIELD(cap_array, CXLDEV_CAP_ARRAY_COUNT);
-> > +
-> > +	for (cap = 1; cap <= cap_count; cap++) {
-> > +		void __iomem *register_block;
-> > +		u32 offset;
-> > +		u16 cap_id;
-> > +
-> > +		cap_id = readl(cxlm->regs + cap * 0x10) & 0xffff;
-> > +		offset = readl(cxlm->regs + cap * 0x10 + 0x4);
-> > +		register_block = cxlm->regs + offset;
-> > +
-> > +		switch (cap_id) {
-> > +		case CXLDEV_CAP_CAP_ID_DEVICE_STATUS:
-> > +			dev_dbg(dev, "found Status capability (0x%x)\n",
-> > +				offset);
+On 2/1/21 8:51 AM, Bert Vermeulen wrote:
+> On 2/1/21 12:17 PM, Bhaskar Chowdhury wrote:
+>> s/debugees/debuge's/
 > 
-> That 80 character limit is no longer a requirement. Can you just make
-> this one line? And perhaps change 'found' to 'Found' ?
+> Definitely not.
 > 
 
-Funny that.
-https://lore.kernel.org/linux-cxl/20201111073449.GA16235@infradead.org/
+and preferably "inter-CPU".
 
-> > +			cxlm->status.regs = register_block;
-> > +			break;
-> > +		case CXLDEV_CAP_CAP_ID_PRIMARY_MAILBOX:
-> > +			dev_dbg(dev, "found Mailbox capability (0x%x)\n",
-> > +				offset);
-> > +			cxlm->mbox.regs = register_block;
-> > +			break;
-> > +		case CXLDEV_CAP_CAP_ID_SECONDARY_MAILBOX:
-> > +			dev_dbg(dev,
-> > +				"found Secondary Mailbox capability (0x%x)\n",
-> > +				offset);
-> > +			break;
-> > +		case CXLDEV_CAP_CAP_ID_MEMDEV:
-> > +			dev_dbg(dev, "found Memory Device capability (0x%x)\n",
-> > +				offset);
-> > +			cxlm->mem.regs = register_block;
-> > +			break;
-> > +		default:
-> > +			dev_warn(dev, "Unknown cap ID: %d (0x%x)\n", cap_id,
-> > +				 offset);
-> > +			break;
-> > +		}
-> > +	}
-> > +
-> > +	if (!cxlm->status.regs || !cxlm->mbox.regs || !cxlm->mem.regs) {
-> > +		dev_err(dev, "registers not found: %s%s%s\n",
-> > +			!cxlm->status.regs ? "status " : "",
-> > +			!cxlm->mbox.regs ? "mbox " : "",
-> > +			!cxlm->mem.regs ? "mem" : "");
-> > +		return -ENXIO;
-> > +	}
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int cxl_mem_setup_mailbox(struct cxl_mem *cxlm)
-> > +{
-> > +	const int cap = cxl_read_mbox_reg32(cxlm, CXLDEV_MB_CAPS_OFFSET);
-> > +
-> > +	cxlm->mbox.payload_size =
-> > +		1 << CXL_GET_FIELD(cap, CXLDEV_MB_CAP_PAYLOAD_SIZE);
-> > +
-> 
-> I think the static analyzers are not going to be happy that you are not
-> checking the value of `cap` before using it.
-> 
-> Perhaps you should check that first before doing the manipulations?
-> 
-
-I'm not following the request. CXL_GET_FIELD is just doing the shift and mask on
-cap.
-
-Can you explain what you're hoping to see?
-
-> > +	/* 8.2.8.4.3 */
-> > +	if (cxlm->mbox.payload_size < 256) {
-> 
-> #define for 256?
+-- 
+~Randy
+netiquette: https://people.kernel.org/tglx/notes-about-netiquette
