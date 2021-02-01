@@ -2,100 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1412030B0DB
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1DEE30B0E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:56:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232933AbhBATxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 14:53:20 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:40460 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232747AbhBATwz (ORCPT
+        id S232224AbhBATzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 14:55:01 -0500
+Received: from mail-wr1-f48.google.com ([209.85.221.48]:32969 "EHLO
+        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232713AbhBATyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 14:52:55 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 111Jpsb0021812;
-        Mon, 1 Feb 2021 13:51:54 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1612209114;
-        bh=A9Ut7QjzdlWMCcgbKHeUR2PvD/GrnwvCX5Ls0QhaezU=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=LG8HA72/M6wLUbAyXElsGIDwnEGNTUzEPpHJb0Cf1xVDA5KIA0uppe0f4aydUZPQC
-         26PnAG9kesmisifkF3H11XD5TX+dCXDJTTjxcKnS0MktVy2r1JAgyETvSVEBlFtjsd
-         oAf/gX9gWH+YxEKY630FzgwvZuu/oegVwNRf9AHU=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 111JpsVu064584
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 1 Feb 2021 13:51:54 -0600
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 1 Feb
- 2021 13:51:54 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 1 Feb 2021 13:51:53 -0600
-Received: from [10.250.235.118] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 111JppZl102050;
-        Mon, 1 Feb 2021 13:51:52 -0600
-Subject: Re: [PATCH] PCI: endpoint: Explain NTB in PCI_EPF_NTB help text
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210129130721.2653990-1-geert+renesas@glider.be>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <a2457927-370b-1e71-9c8a-5033cea3035e@ti.com>
-Date:   Tue, 2 Feb 2021 01:21:50 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 1 Feb 2021 14:54:23 -0500
+Received: by mail-wr1-f48.google.com with SMTP id 7so17991980wrz.0;
+        Mon, 01 Feb 2021 11:53:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=DCjhNmegL5cty51UJJiVLzoT3IZRsyqfK3odFUkK4z8=;
+        b=FIi09leopkGtYp/mCaSB3wIWcGzgubDYzeDJOUAbNMa2o8QfR/GV0TyV1UsF0Gk/st
+         PDkVAJYh6QSvYSfJI3SnupXQa5XaaOi1wt4e03hB3g89h6dvWEkhUwMW2jy8rgDSs+VW
+         lobi4qkQHLpndY6OgXFisutCfHDTCnR+yR6UyaNJnEjJ0CIRlbWteD165ijILNmVBEnd
+         6smpxioO0d9YmbAYnKhB195hP9vYaeLlLYOX+kq1hDBxn2zPF7ug3u5kzs76CS+/1N7v
+         MojKGwocRdXOxCINO5IjbDQGDBzk4k68455qvkoH97v9/xWDggMyemQe7dwJaQj1pMPT
+         826Q==
+X-Gm-Message-State: AOAM533Dwak9x3csQIywrzmUiy8lH8LVHGZNF1UVUHtiyN3IizWHIAER
+        WSVPNsOes4i84g8txbMNQ5c=
+X-Google-Smtp-Source: ABdhPJww1TvLldgLGFf0r7SZNri+3W5aYbD06nxT/kZ6LKQbZOATXExXYWTbE0ltqdgS/HE8QDXArg==
+X-Received: by 2002:adf:a11d:: with SMTP id o29mr20016981wro.45.1612209209605;
+        Mon, 01 Feb 2021 11:53:29 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id y6sm328678wma.19.2021.02.01.11.53.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 11:53:29 -0800 (PST)
+Date:   Mon, 1 Feb 2021 19:53:27 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     sthemmin@microsoft.com, kys@microsoft.com, wei.liu@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        daniel.lezcano@linaro.org, arnd@arndb.de,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-arch@vger.kernel.org
+Subject: Re: [PATCH 10/10] clocksource/drivers/hyper-v: Move handling of
+ STIMER0 interrupts
+Message-ID: <20210201195327.2bkhu6sig53prwwg@liuwe-devbox-debian-v2>
+References: <1611779025-21503-1-git-send-email-mikelley@microsoft.com>
+ <1611779025-21503-11-git-send-email-mikelley@microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <20210129130721.2653990-1-geert+renesas@glider.be>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1611779025-21503-11-git-send-email-mikelley@microsoft.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+On Wed, Jan 27, 2021 at 12:23:45PM -0800, Michael Kelley wrote:
+[...]
+> +static int hv_setup_stimer0_irq(void)
+> +{
+> +	int ret;
+> +
+> +	ret = acpi_register_gsi(NULL, HYPERV_STIMER0_VECTOR,
+> +			ACPI_EDGE_SENSITIVE, ACPI_ACTIVE_HIGH);
 
-On 29/01/21 6:37 pm, Geert Uytterhoeven wrote:
-> The help text for the PCI_EPF_NTB config symbol uses the acronym "NTB".
-> However, this acronym is not explained there.
-> Expand the acronym to make it easier for users to decide if they need to
-> enable the PCI_EPF_NTB option or not.
-> 
-> Fixes: 7dc64244f9e90b7b ("PCI: endpoint: Add EP function driver to provide NTB functionality")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+When IO-APIC is enabled on x86, acpi_register_gsi calls
+mp_map_gsi_to_irq. That function then calls mp_find_ioapic. Is
+HYPERV_STIMER0_VECTOR, when used as a GSI, associated with an IO-APIC?
+If not, wouldn't mp_find_ioapic return an error causing
+acpi_register_gsi to fail?
 
-Since I have to send the series one more time, I'll squash this in the
-original patch and keep your signed-off-by.
+Ah, it appears that this function is not called on x86. I haven't
+checked how ARM handles GSI, but presumably this works for you.  It
+would be good if a comment can be added to clarify things.
 
-Thanks
-Kishon
-
-> ---
->  drivers/pci/endpoint/functions/Kconfig | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/pci/endpoint/functions/Kconfig b/drivers/pci/endpoint/functions/Kconfig
-> index 24bfb2af65a10c42..ba1c7b8ab6df2f0c 100644
-> --- a/drivers/pci/endpoint/functions/Kconfig
-> +++ b/drivers/pci/endpoint/functions/Kconfig
-> @@ -17,10 +17,10 @@ config PCI_EPF_NTB
->  	tristate "PCI Endpoint NTB driver"
->  	depends on PCI_ENDPOINT
->  	help
-> -	  Select this configuration option to enable the NTB driver
-> -	  for PCI Endpoint. NTB driver implements NTB controller
-> -	  functionality using multiple PCIe endpoint instances. It
-> -	  can support NTB endpoint function devices created using
-> +	  Select this configuration option to enable the Non-Transparent
-> +	  Bridge (NTB) driver for PCI Endpoint. NTB driver implements NTB
-> +	  controller functionality using multiple PCIe endpoint instances.
-> +	  It can support NTB endpoint function devices created using
->  	  device tree.
->  
->  	  If in doubt, say "N" to disable Endpoint NTB driver.
-> 
+Wei.
