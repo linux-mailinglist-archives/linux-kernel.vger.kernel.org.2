@@ -2,165 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B197530AC9B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:30:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F00CE30AC9E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:30:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbhBAQ3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 11:29:45 -0500
-Received: from verein.lst.de ([213.95.11.211]:41924 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229892AbhBAQ31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 11:29:27 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id A28F56736F; Mon,  1 Feb 2021 17:28:42 +0100 (CET)
-Date:   Mon, 1 Feb 2021 17:28:42 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     Christoph Hellwig <hch@lst.de>, Petr Mladek <pmladek@suse.com>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Jessica Yu <jeyu@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        dri-devel@lists.freedesktop.org, live-patching@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH 05/13] kallsyms: refactor
- {,module_}kallsyms_on_each_symbol
-Message-ID: <20210201162842.GB7276@lst.de>
-References: <20210128181421.2279-1-hch@lst.de> <20210128181421.2279-6-hch@lst.de> <YBPYyEvesLMrRtZM@alley> <20210201114749.GB19696@lst.de> <alpine.LSU.2.21.2102011436320.21637@pobox.suse.cz>
+        id S231296AbhBAQaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 11:30:04 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:16010 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230124AbhBAQ3j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 11:29:39 -0500
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 111GSfoE179195;
+        Mon, 1 Feb 2021 11:28:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=WXJ3sG6uWEMRNmnT/QdS/LYmyndP6SFOZ2x6NqGshbM=;
+ b=EoAXGaAZRCv8HcreZ5K45+KDngq1x+AjGrHcsgqBK7RnJz5TbuYrH2dkfcwTwqC7A9hL
+ OUygrFj6sbTPyCvo3rEzdZlnJ6za9/y516ClegrOSTehtFjzyCEdLWFBlOA8XZWJc1XY
+ T/50OJlyge4LQNe1AiF9xHtLzn6owKFCPBi/cqM1hHbq+7xpL07hr5VDPYBK2yEP9U6s
+ xXwG5rKRuH/8zG59GBMxhvKbU3XktdKbRjR4832+TtSxtGQ8+QpXbGtaVDxBdpd6ek6q
+ ozVxS8Q8xtP4Xq+5/y3yIz68rqHy++hn0sT+GrvPL2X/v9/ORy22tS1t3MLoAXvcBIe2 jQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36emrggxff-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 11:28:50 -0500
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 111GShw5179472;
+        Mon, 1 Feb 2021 11:28:49 -0500
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36emrggxc4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 11:28:49 -0500
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 111GI4uJ005970;
+        Mon, 1 Feb 2021 16:28:46 GMT
+Received: from b01cxnp23033.gho.pok.ibm.com (b01cxnp23033.gho.pok.ibm.com [9.57.198.28])
+        by ppma03wdc.us.ibm.com with ESMTP id 36cy38qu5f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 16:28:46 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp23033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 111GSkkI19530158
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 1 Feb 2021 16:28:46 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2EF0DAC064;
+        Mon,  1 Feb 2021 16:28:46 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1C473AC05F;
+        Mon,  1 Feb 2021 16:28:46 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon,  1 Feb 2021 16:28:46 +0000 (GMT)
+Subject: Re: [PATCH v7 0/4] Add support for x509 certs with NIST p256 and p192
+ keys
+To:     David Howells <dhowells@redhat.com>
+Cc:     keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        davem@davemloft.net, herbert@gondor.apana.org.au,
+        zohar@linux.ibm.com, linux-kernel@vger.kernel.org,
+        patrick@puiterwijk.org, linux-integrity@vger.kernel.org
+References: <20210201151910.1465705-1-stefanb@linux.ibm.com>
+ <32177.1612196003@warthog.procyon.org.uk>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <7836898a-0a42-5c9b-3a42-7ff4c7a03ea4@linux.ibm.com>
+Date:   Mon, 1 Feb 2021 11:28:45 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.21.2102011436320.21637@pobox.suse.cz>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <32177.1612196003@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-01_06:2021-01-29,2021-02-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ priorityscore=1501 impostorscore=0 mlxlogscore=999 bulkscore=0 spamscore=0
+ lowpriorityscore=0 mlxscore=0 malwarescore=0 clxscore=1015 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102010084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 02:37:12PM +0100, Miroslav Benes wrote:
-> > > This change is not needed. (objname == NULL) means that we are
-> > > interested only in symbols in "vmlinux".
-> > > 
-> > > module_kallsyms_on_each_symbol(klp_find_callback, &args)
-> > > will always fail when objname == NULL.
-> > 
-> > I just tried to keep the old behavior.  I can respin it with your
-> > recommended change noting the change in behavior, though.
-> 
-> Yes, please. It would be cleaner that way.
+On 2/1/21 11:13 AM, David Howells wrote:
+> Stefan Berger <stefanb@linux.ibm.com> wrote:
+>
+>> v6->v7:
+>>    - Moved some OID defintions to patch 1 for bisectability
+>>    - Applied R-b's
+> But I can't now apply 2-4 without patch 1.
 
-Let me know if this works for you:
+Two possible solutions:
 
----
-From 18af41e88d088cfb8680d1669fcae2bc2ede5328 Mon Sep 17 00:00:00 2001
-From: Christoph Hellwig <hch@lst.de>
-Date: Wed, 20 Jan 2021 16:23:16 +0100
-Subject: kallsyms: refactor {,module_}kallsyms_on_each_symbol
+1) the whole series goes through the crypto tree
 
-Require an explicit call to module_kallsyms_on_each_symbol to look
-for symbols in modules instead of the call from kallsyms_on_each_symbol,
-and acquire module_mutex inside of module_kallsyms_on_each_symbol instead
-of leaving that up to the caller.  Note that this slightly changes the
-behavior for the livepatch code in that the symbols from vmlinux are not
-iterated anymore if objname is set, but that actually is the desired
-behavior in this case.
+2) I make the OIDs addition patch 1 that both keyrings and crypto take 
+separately?
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- kernel/kallsyms.c       |  6 +++++-
- kernel/livepatch/core.c |  2 --
- kernel/module.c         | 13 ++++---------
- 3 files changed, 9 insertions(+), 12 deletions(-)
 
-diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-index fe9de067771c34..a0d3f0865916f9 100644
---- a/kernel/kallsyms.c
-+++ b/kernel/kallsyms.c
-@@ -177,6 +177,10 @@ unsigned long kallsyms_lookup_name(const char *name)
- 	return module_kallsyms_lookup_name(name);
- }
- 
-+/*
-+ * Iterate over all symbols in vmlinux.  For symbols from modules use
-+ * module_kallsyms_on_each_symbol instead.
-+ */
- int kallsyms_on_each_symbol(int (*fn)(void *, const char *, struct module *,
- 				      unsigned long),
- 			    void *data)
-@@ -192,7 +196,7 @@ int kallsyms_on_each_symbol(int (*fn)(void *, const char *, struct module *,
- 		if (ret != 0)
- 			return ret;
- 	}
--	return module_kallsyms_on_each_symbol(fn, data);
-+	return 0;
- }
- 
- static unsigned long get_symbol_pos(unsigned long addr,
-diff --git a/kernel/livepatch/core.c b/kernel/livepatch/core.c
-index 262cd9b003b9f0..335d988bd81117 100644
---- a/kernel/livepatch/core.c
-+++ b/kernel/livepatch/core.c
-@@ -164,12 +164,10 @@ static int klp_find_object_symbol(const char *objname, const char *name,
- 		.pos = sympos,
- 	};
- 
--	mutex_lock(&module_mutex);
- 	if (objname)
- 		module_kallsyms_on_each_symbol(klp_find_callback, &args);
- 	else
- 		kallsyms_on_each_symbol(klp_find_callback, &args);
--	mutex_unlock(&module_mutex);
- 
- 	/*
- 	 * Ensure an address was found. If sympos is 0, ensure symbol is unique;
-diff --git a/kernel/module.c b/kernel/module.c
-index 6772fb2680eb3e..25345792c770d1 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -255,11 +255,6 @@ static void mod_update_bounds(struct module *mod)
- struct list_head *kdb_modules = &modules; /* kdb needs the list of modules */
- #endif /* CONFIG_KGDB_KDB */
- 
--static void module_assert_mutex(void)
--{
--	lockdep_assert_held(&module_mutex);
--}
--
- static void module_assert_mutex_or_preempt(void)
- {
- #ifdef CONFIG_LOCKDEP
-@@ -4379,8 +4374,7 @@ int module_kallsyms_on_each_symbol(int (*fn)(void *, const char *,
- 	unsigned int i;
- 	int ret;
- 
--	module_assert_mutex();
--
-+	mutex_lock(&module_mutex);
- 	list_for_each_entry(mod, &modules, list) {
- 		/* We hold module_mutex: no need for rcu_dereference_sched */
- 		struct mod_kallsyms *kallsyms = mod->kallsyms;
-@@ -4396,10 +4390,11 @@ int module_kallsyms_on_each_symbol(int (*fn)(void *, const char *,
- 			ret = fn(data, kallsyms_symbol_name(kallsyms, i),
- 				 mod, kallsyms_symbol_value(sym));
- 			if (ret != 0)
--				return ret;
-+				break;
- 		}
- 	}
--	return 0;
-+	mutex_unlock(&module_mutex);
-+	return ret;
- }
- #endif /* CONFIG_KALLSYMS */
- 
--- 
-2.29.2
+   Stefan
+
 
