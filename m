@@ -2,274 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B82130A1B2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 06:56:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A128930A1B9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 06:59:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231482AbhBAFzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 00:55:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27312 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229599AbhBAFwq (ORCPT
+        id S231761AbhBAF6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 00:58:48 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:14724 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231472AbhBAFyO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 00:52:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612158652;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=PyRg2mb7fS8awqsRMxtK0XCpw5C/ARLH4lL9K+4Y9N4=;
-        b=Kg9HT2XP9f7czM9gRp6Hw+D03nglrxXls3N8HOt5sqiQF4wucw8Up7iEWYFOYMqdp0Q1Hp
-        qj4/rNxnYqS158dcpSs5j5ql8DLy4D2KIBxkgf2PLiB4uG5COI6BiJr7hGLWq+VoFVEs77
-        X3PptNKShVCq7ErEkeRLtWFGox6r23I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-562-ETTtlz1bMICSMOwMQFcTKg-1; Mon, 01 Feb 2021 00:50:49 -0500
-X-MC-Unique: ETTtlz1bMICSMOwMQFcTKg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 182D35B36B;
-        Mon,  1 Feb 2021 05:50:48 +0000 (UTC)
-Received: from [10.72.13.120] (ovpn-13-120.pek2.redhat.com [10.72.13.120])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 31C4460C5F;
-        Mon,  1 Feb 2021 05:50:37 +0000 (UTC)
-Subject: Re: [PATCH RFC v2 08/10] vdpa: add vdpa simulator for block device
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     Xie Yongji <xieyongji@bytedance.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Laurent Vivier <lvivier@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-kernel@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
-        kvm@vger.kernel.org
-References: <20210128144127.113245-1-sgarzare@redhat.com>
- <20210128144127.113245-9-sgarzare@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <f799046b-6c8e-7665-40ef-64b93e44a34f@redhat.com>
-Date:   Mon, 1 Feb 2021 13:50:36 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 1 Feb 2021 00:54:14 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B601797350000>; Sun, 31 Jan 2021 21:52:53 -0800
+Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3; Mon, 1 Feb 2021 05:52:50 +0000
+Date:   Mon, 1 Feb 2021 07:52:47 +0200
+From:   Eli Cohen <elic@nvidia.com>
+To:     Jason Wang <jasowang@redhat.com>
+CC:     <mst@redhat.com>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lulu@redhat.com>
+Subject: Re: [PATCH 2/2] vdpa/mlx5: Restore the hardware used index after
+ change map
+Message-ID: <20210201055247.GA184807@mtl-vdi-166.wap.labs.mlnx>
+References: <20210128134130.3051-1-elic@nvidia.com>
+ <20210128134130.3051-3-elic@nvidia.com>
+ <54239b51-918c-3475-dc88-4da1a4548da8@redhat.com>
+ <20210131185536.GA164217@mtl-vdi-166.wap.labs.mlnx>
+ <0c99f35c-7644-7201-cd11-7d486389a182@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210128144127.113245-9-sgarzare@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <0c99f35c-7644-7201-cd11-7d486389a182@redhat.com>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612158773; bh=ijV1+J/HjyKekY+4y2l/rGz/ZdAGBrtBHYp4Z3GYf1E=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:Content-Transfer-Encoding:
+         In-Reply-To:User-Agent:X-Originating-IP:X-ClientProxiedBy;
+        b=rIC8iABWLhFhNHONLDYLu1WQeDPjXN6bNk5j9b+zcwcheLN96pYtt3TqG/SBJqyF5
+         RcfyrUFdcpNyQgaEb0UBy+rr8Hgc8jVObcH1q0Io+qql+Mixgv3iOzGX9X+NI/oFzT
+         wKD+sS/GY/eAsraYYW2DY0S4jXq8pKJS+95NxEDLvL/h9Dg5CUDL6g66JAwq8qqfC8
+         3kB6yz/Cu2s7FazQ7hoPqoAxlaH3WB/AbHRWT3w4Gx8Yw5HgdnWqQTow86Z9+CIvMw
+         a/SdNijDgGEQS9eA1kWWJuVUqJcJgQgcb1qumphFsSlWn0m7ux4F0ltSpg/xJYCtj/
+         CizfCrVJMWmWA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Feb 01, 2021 at 11:36:23AM +0800, Jason Wang wrote:
+>=20
+> On 2021/2/1 =E4=B8=8A=E5=8D=882:55, Eli Cohen wrote:
+> > On Fri, Jan 29, 2021 at 11:49:45AM +0800, Jason Wang wrote:
+> > > On 2021/1/28 =E4=B8=8B=E5=8D=889:41, Eli Cohen wrote:
+> > > > When a change of memory map occurs, the hardware resources are dest=
+royed
+> > > > and then re-created again with the new memory map. In such case, we=
+ need
+> > > > to restore the hardware available and used indices. The driver fail=
+ed to
+> > > > restore the used index which is added here.
+> > > >=20
+> > > > Fixes 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 =
+devices")
+> > > > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> > >=20
+> > > A question. Does this mean after a vq is suspended, the hw used index=
+ is not
+> > > equal to vq used index?
+> > Surely there is just one "Used index" for a VQ. What I was trying to sa=
+y
+> > is that after the VQ is suspended, I read the used index by querying th=
+e
+> > hardware. The read result is the used index that the hardware wrote to
+> > memory.
+>=20
+>=20
+> Just to make sure I understand here. So it looks to me we had two index. =
+The
+> first is the used index which is stored in the memory/virtqueue, the seco=
+nd
+> is the one that is stored by the device.
+>=20
 
-On 2021/1/28 下午10:41, Stefano Garzarella wrote:
-> From: Max Gurtovoy <mgurtovoy@nvidia.com>
->
-> This will allow running vDPA for virtio block protocol.
->
-> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
-> [sgarzare: various cleanups/fixes]
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+It is the structures defined in the virtio spec in 2.6.6 for the
+available ring and 2.6.8 for the used ring. As you know these the
+available ring is written to by the driver and read by the device. The
+opposite happens for the used index.
+The reason I need to restore the last known indices is for the new
+hardware objects to sync on the last state and take over from there.
 
-
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-
-> ---
-> v2:
-> - rebased on top of other changes (dev_attr, get_config(), notify(), etc.)
-> - memset to 0 the config structure in vdpasim_blk_get_config()
-> - used vdpasim pointer in vdpasim_blk_get_config()
->
-> v1:
-> - Removed unused headers
-> - Used cpu_to_vdpasim*() to store config fields
-> - Replaced 'select VDPA_SIM' with 'depends on VDPA_SIM' since selected
->    option can not depend on other [Jason]
-> - Start with a single queue for now [Jason]
-> - Add comments to memory barriers
-> ---
->   drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 145 +++++++++++++++++++++++++++
->   drivers/vdpa/Kconfig                 |   7 ++
->   drivers/vdpa/vdpa_sim/Makefile       |   1 +
->   3 files changed, 153 insertions(+)
->   create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
->
-> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
-> new file mode 100644
-> index 000000000000..999f9ca0b628
-> --- /dev/null
-> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
-> @@ -0,0 +1,145 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * VDPA simulator for block device.
-> + *
-> + * Copyright (c) 2020, Mellanox Technologies. All rights reserved.
-> + *
-> + */
-> +
-> +#include <linux/init.h>
-> +#include <linux/module.h>
-> +#include <linux/device.h>
-> +#include <linux/kernel.h>
-> +#include <linux/sched.h>
-> +#include <linux/vringh.h>
-> +#include <linux/vdpa.h>
-> +#include <uapi/linux/virtio_blk.h>
-> +
-> +#include "vdpa_sim.h"
-> +
-> +#define DRV_VERSION  "0.1"
-> +#define DRV_AUTHOR   "Max Gurtovoy <mgurtovoy@nvidia.com>"
-> +#define DRV_DESC     "vDPA Device Simulator for block device"
-> +#define DRV_LICENSE  "GPL v2"
-> +
-> +#define VDPASIM_BLK_FEATURES	(VDPASIM_FEATURES | \
-> +				 (1ULL << VIRTIO_BLK_F_SIZE_MAX) | \
-> +				 (1ULL << VIRTIO_BLK_F_SEG_MAX)  | \
-> +				 (1ULL << VIRTIO_BLK_F_BLK_SIZE) | \
-> +				 (1ULL << VIRTIO_BLK_F_TOPOLOGY) | \
-> +				 (1ULL << VIRTIO_BLK_F_MQ))
-> +
-> +#define VDPASIM_BLK_CAPACITY	0x40000
-> +#define VDPASIM_BLK_SIZE_MAX	0x1000
-> +#define VDPASIM_BLK_SEG_MAX	32
-> +#define VDPASIM_BLK_VQ_NUM	1
-> +
-> +static struct vdpasim *vdpasim_blk_dev;
-> +
-> +static void vdpasim_blk_work(struct work_struct *work)
-> +{
-> +	struct vdpasim *vdpasim = container_of(work, struct vdpasim, work);
-> +	u8 status = VIRTIO_BLK_S_OK;
-> +	int i;
-> +
-> +	spin_lock(&vdpasim->lock);
-> +
-> +	if (!(vdpasim->status & VIRTIO_CONFIG_S_DRIVER_OK))
-> +		goto out;
-> +
-> +	for (i = 0; i < VDPASIM_BLK_VQ_NUM; i++) {
-> +		struct vdpasim_virtqueue *vq = &vdpasim->vqs[i];
-> +
-> +		if (!vq->ready)
-> +			continue;
-> +
-> +		while (vringh_getdesc_iotlb(&vq->vring, &vq->out_iov,
-> +					    &vq->in_iov, &vq->head,
-> +					    GFP_ATOMIC) > 0) {
-> +			int write;
-> +
-> +			vq->in_iov.i = vq->in_iov.used - 1;
-> +			write = vringh_iov_push_iotlb(&vq->vring, &vq->in_iov,
-> +						      &status, 1);
-> +			if (write <= 0)
-> +				break;
-> +
-> +			/* Make sure data is wrote before advancing index */
-> +			smp_wmb();
-> +
-> +			vringh_complete_iotlb(&vq->vring, vq->head, write);
-> +
-> +			/* Make sure used is visible before rasing the interrupt. */
-> +			smp_wmb();
-> +
-> +			local_bh_disable();
-> +			if (vringh_need_notify_iotlb(&vq->vring) > 0)
-> +				vringh_notify(&vq->vring);
-> +			local_bh_enable();
-> +		}
-> +	}
-> +out:
-> +	spin_unlock(&vdpasim->lock);
-> +}
-> +
-> +static void vdpasim_blk_get_config(struct vdpasim *vdpasim, void *config)
-> +{
-> +	struct virtio_blk_config *blk_config =
-> +		(struct virtio_blk_config *)config;
-> +
-> +	memset(config, 0, sizeof(struct virtio_blk_config));
-> +
-> +	blk_config->capacity = cpu_to_vdpasim64(vdpasim, VDPASIM_BLK_CAPACITY);
-> +	blk_config->size_max = cpu_to_vdpasim32(vdpasim, VDPASIM_BLK_SIZE_MAX);
-> +	blk_config->seg_max = cpu_to_vdpasim32(vdpasim, VDPASIM_BLK_SEG_MAX);
-> +	blk_config->num_queues = cpu_to_vdpasim16(vdpasim, VDPASIM_BLK_VQ_NUM);
-> +	blk_config->min_io_size = cpu_to_vdpasim16(vdpasim, 1);
-> +	blk_config->opt_io_size = cpu_to_vdpasim32(vdpasim, 1);
-> +	blk_config->blk_size = cpu_to_vdpasim32(vdpasim, SECTOR_SIZE);
-> +}
-> +
-> +static int __init vdpasim_blk_init(void)
-> +{
-> +	struct vdpasim_dev_attr dev_attr = {};
-> +	int ret;
-> +
-> +	dev_attr.id = VIRTIO_ID_BLOCK;
-> +	dev_attr.supported_features = VDPASIM_BLK_FEATURES;
-> +	dev_attr.nvqs = VDPASIM_BLK_VQ_NUM;
-> +	dev_attr.config_size = sizeof(struct virtio_blk_config);
-> +	dev_attr.get_config = vdpasim_blk_get_config;
-> +	dev_attr.work_fn = vdpasim_blk_work;
-> +	dev_attr.buffer_size = PAGE_SIZE;
-> +
-> +	vdpasim_blk_dev = vdpasim_create(&dev_attr);
-> +	if (IS_ERR(vdpasim_blk_dev)) {
-> +		ret = PTR_ERR(vdpasim_blk_dev);
-> +		goto out;
-> +	}
-> +
-> +	ret = vdpa_register_device(&vdpasim_blk_dev->vdpa);
-> +	if (ret)
-> +		goto put_dev;
-> +
-> +	return 0;
-> +
-> +put_dev:
-> +	put_device(&vdpasim_blk_dev->vdpa.dev);
-> +out:
-> +	return ret;
-> +}
-> +
-> +static void __exit vdpasim_blk_exit(void)
-> +{
-> +	struct vdpa_device *vdpa = &vdpasim_blk_dev->vdpa;
-> +
-> +	vdpa_unregister_device(vdpa);
-> +}
-> +
-> +module_init(vdpasim_blk_init)
-> +module_exit(vdpasim_blk_exit)
-> +
-> +MODULE_VERSION(DRV_VERSION);
-> +MODULE_LICENSE(DRV_LICENSE);
-> +MODULE_AUTHOR(DRV_AUTHOR);
-> +MODULE_DESCRIPTION(DRV_DESC);
-> diff --git a/drivers/vdpa/Kconfig b/drivers/vdpa/Kconfig
-> index 21a23500f430..b8bd92cf04f9 100644
-> --- a/drivers/vdpa/Kconfig
-> +++ b/drivers/vdpa/Kconfig
-> @@ -26,6 +26,13 @@ config VDPA_SIM_NET
->   	help
->   	  vDPA networking device simulator which loops TX traffic back to RX.
->   
-> +config VDPA_SIM_BLOCK
-> +	tristate "vDPA simulator for block device"
-> +	depends on VDPA_SIM
-> +	help
-> +	  vDPA block device simulator which terminates IO request in a
-> +	  memory buffer.
-> +
->   config IFCVF
->   	tristate "Intel IFC VF vDPA driver"
->   	depends on PCI_MSI
-> diff --git a/drivers/vdpa/vdpa_sim/Makefile b/drivers/vdpa/vdpa_sim/Makefile
-> index 79d4536d347e..d458103302f2 100644
-> --- a/drivers/vdpa/vdpa_sim/Makefile
-> +++ b/drivers/vdpa/vdpa_sim/Makefile
-> @@ -1,3 +1,4 @@
->   # SPDX-License-Identifier: GPL-2.0
->   obj-$(CONFIG_VDPA_SIM) += vdpa_sim.o
->   obj-$(CONFIG_VDPA_SIM_NET) += vdpa_sim_net.o
-> +obj-$(CONFIG_VDPA_SIM_BLOCK) += vdpa_sim_blk.o
-
+>=20
+> >   After the I create the new hardware object, I need to tell it
+> > what is the used index (and the available index) as a way to sync it
+> > with the existing VQ.
+>=20
+>=20
+> For avail index I understand that the hardware index is not synced with t=
+he
+> avail index stored in the memory/virtqueue. The question is used index, i=
+f
+> the hardware one is not synced with the one in the virtqueue. It means af=
+ter
+> vq is suspended,=C2=A0 some requests is not completed by the hardware (e.=
+g the
+> buffer were not put to used ring).
+>=20
+> This may have implications to live migration, it means those unaccomplish=
+ed
+> requests needs to be migrated to the destination and resubmitted to the
+> device. This looks not easy.
+>=20
+> Thanks
+>=20
+>=20
+> >=20
+> > This sync is especially important when a change of map occurs while the
+> > VQ was already used (hence the indices are likely to be non zero). This
+> > can be triggered by hot adding memory after the VQs have been used.
+> >=20
+> > > Thanks
+> > >=20
+> > >=20
+> > > > ---
+> > > >    drivers/vdpa/mlx5/net/mlx5_vnet.c | 7 +++++++
+> > > >    1 file changed, 7 insertions(+)
+> > > >=20
+> > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/=
+net/mlx5_vnet.c
+> > > > index 549ded074ff3..3fc8588cecae 100644
+> > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > @@ -87,6 +87,7 @@ struct mlx5_vq_restore_info {
+> > > >    	u64 device_addr;
+> > > >    	u64 driver_addr;
+> > > >    	u16 avail_index;
+> > > > +	u16 used_index;
+> > > >    	bool ready;
+> > > >    	struct vdpa_callback cb;
+> > > >    	bool restore;
+> > > > @@ -121,6 +122,7 @@ struct mlx5_vdpa_virtqueue {
+> > > >    	u32 virtq_id;
+> > > >    	struct mlx5_vdpa_net *ndev;
+> > > >    	u16 avail_idx;
+> > > > +	u16 used_idx;
+> > > >    	int fw_state;
+> > > >    	/* keep last in the struct */
+> > > > @@ -804,6 +806,7 @@ static int create_virtqueue(struct mlx5_vdpa_ne=
+t *ndev, struct mlx5_vdpa_virtque
+> > > >    	obj_context =3D MLX5_ADDR_OF(create_virtio_net_q_in, in, obj_co=
+ntext);
+> > > >    	MLX5_SET(virtio_net_q_object, obj_context, hw_available_index, =
+mvq->avail_idx);
+> > > > +	MLX5_SET(virtio_net_q_object, obj_context, hw_used_index, mvq->us=
+ed_idx);
+> > > >    	MLX5_SET(virtio_net_q_object, obj_context, queue_feature_bit_ma=
+sk_12_3,
+> > > >    		 get_features_12_3(ndev->mvdev.actual_features));
+> > > >    	vq_ctx =3D MLX5_ADDR_OF(virtio_net_q_object, obj_context, virti=
+o_q_context);
+> > > > @@ -1022,6 +1025,7 @@ static int connect_qps(struct mlx5_vdpa_net *=
+ndev, struct mlx5_vdpa_virtqueue *m
+> > > >    struct mlx5_virtq_attr {
+> > > >    	u8 state;
+> > > >    	u16 available_index;
+> > > > +	u16 used_index;
+> > > >    };
+> > > >    static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct ml=
+x5_vdpa_virtqueue *mvq,
+> > > > @@ -1052,6 +1056,7 @@ static int query_virtqueue(struct mlx5_vdpa_n=
+et *ndev, struct mlx5_vdpa_virtqueu
+> > > >    	memset(attr, 0, sizeof(*attr));
+> > > >    	attr->state =3D MLX5_GET(virtio_net_q_object, obj_context, stat=
+e);
+> > > >    	attr->available_index =3D MLX5_GET(virtio_net_q_object, obj_con=
+text, hw_available_index);
+> > > > +	attr->used_index =3D MLX5_GET(virtio_net_q_object, obj_context, h=
+w_used_index);
+> > > >    	kfree(out);
+> > > >    	return 0;
+> > > > @@ -1602,6 +1607,7 @@ static int save_channel_info(struct mlx5_vdpa=
+_net *ndev, struct mlx5_vdpa_virtqu
+> > > >    		return err;
+> > > >    	ri->avail_index =3D attr.available_index;
+> > > > +	ri->used_index =3D attr.used_index;
+> > > >    	ri->ready =3D mvq->ready;
+> > > >    	ri->num_ent =3D mvq->num_ent;
+> > > >    	ri->desc_addr =3D mvq->desc_addr;
+> > > > @@ -1646,6 +1652,7 @@ static void restore_channels_info(struct mlx5=
+_vdpa_net *ndev)
+> > > >    			continue;
+> > > >    		mvq->avail_idx =3D ri->avail_index;
+> > > > +		mvq->used_idx =3D ri->used_index;
+> > > >    		mvq->ready =3D ri->ready;
+> > > >    		mvq->num_ent =3D ri->num_ent;
+> > > >    		mvq->desc_addr =3D ri->desc_addr;
+>=20
