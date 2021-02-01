@@ -2,114 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA603309FC1
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 01:47:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42AD5309FC4
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 01:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhBAAqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 19:46:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49748 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhBAAqE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 19:46:04 -0500
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31A73C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 16:45:24 -0800 (PST)
-Received: by mail-wr1-x431.google.com with SMTP id 7so14797588wrz.0
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 16:45:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=1eI6OoxYY5CxELsJMC/RuUDLfGSNJ12HWpkeH0Ey/O0=;
-        b=PnbpClYiui8NBTUXe6HVV0I35g04X2V3hYyJlOxNToAIJepdz7J1wGw+8ESIYfJVXP
-         seijK/yTm5H9qAELEf/IhEinJQtmpwmJ0i46tIUgVR0dcEXF1eioXp8622LMyL//4EbX
-         KhxVUu+xvI29Bk/b3tKV+PZTGXeUnr2Iy+98XGmgzqi4QWHoqaFVbJVsXdj3HbBsIgHb
-         8UcKMp8cK7AA5qp/b9wQdKpMK+injIvMwkgOWYyf8+Fukt+UIcLgGo/d+W1gvhsvZcF9
-         x2akI5315VAaQDCEEsIw1UaE3NRQcwJh85R2eqt6woMGd7mzC8ip3s2FukRv7UDMaBK+
-         TvXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=1eI6OoxYY5CxELsJMC/RuUDLfGSNJ12HWpkeH0Ey/O0=;
-        b=B4ZG2NGF832QqPAxWNpYD/J2UnFsn4P65eVM4t/AePQz1QcA9o1BoTzaCRMj/V8Hb7
-         BvQcoHu2r8sHTCq9pjxvGNuDu4jLGoo6UBvSG8biopYFbOT0avhFogozWTHVWQZ9g/+p
-         mCRkUxtczPUwC0uJ7253yj1vl+PWYPFGXAEEM+lKFzOygfYXzqUkahdpZ83kjGFAbqOP
-         dtBdPStjaXEr8vNKrGtNVfqJDBSfMNpUj9MtnkD/q3CqWcd/ixCjIOvBMRvSqJiLiGNq
-         i9tcnsDW5cCSkwhTMM5EGERfx6mDd4t1OPDxZf9dZb5BRWQHRqBhMxyshgobgybk9L1e
-         jXkw==
-X-Gm-Message-State: AOAM5336ASL+wh0OVgK5nhYcM2G1pEZe6K3HooqF+iVYxytJ+qvVE5dG
-        TTeCNewE9R62UJ5SEgaFmeHS1uPVaCQ=
-X-Google-Smtp-Source: ABdhPJz2Jjyzt4ihn9g4E5pYT75jGbcwlSEMGZmL8/fgTf1oxqd88oYOodSEsu0mpPTuZQT3I49/Jw==
-X-Received: by 2002:a5d:544b:: with SMTP id w11mr15794246wrv.1.1612140321043;
-        Sun, 31 Jan 2021 16:45:21 -0800 (PST)
-Received: from localhost.localdomain (net-93-70-85-165.cust.vodafonedsl.it. [93.70.85.165])
-        by smtp.gmail.com with ESMTPSA id z63sm19306745wme.8.2021.01.31.16.45.19
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 31 Jan 2021 16:45:20 -0800 (PST)
-From:   Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org, linux@armlinux.org.uk
-Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        rppt@kernel.org, penberg@kernel.org, geert@linux-m68k.org,
-        giancarlo.ferrari@nokia.com,
-        Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>
-Subject: [PATCH] ARM: kexec: Fix panic after TLB are invalidated
-Date:   Mon,  1 Feb 2021 00:44:56 +0000
-Message-Id: <1612140296-12546-1-git-send-email-giancarlo.ferrari89@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        id S230226AbhBAAtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 19:49:08 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50390 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229535AbhBAAtD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 19:49:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF70364E09;
+        Mon,  1 Feb 2021 00:48:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612140503;
+        bh=UiySlPbagcPbnKf+65+enUICXrYYE5z7ajBqABAZRtI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KNQVvgNEo5AHuTHkyqKFg+huyKQuigJnpXOdaRG4xPPQu6vDXVJIPRTj1gra2y9HZ
+         qg/NWHLb1oihyk4/upE97ogHLcgonrB6qh4eOiAW1jeEHx0L7VAUwqUstWsXYFtDB4
+         uMJu51X+2HU98kpgLtRNr61buysRRWEHwSGQnkd5hVVJ1ZlNkQdPZZRvtt0VF1gjTx
+         6NSU8Y4wxMKTUwdA4TkI55BsIM+59k6hXpQyfEzaMOYF1S+WjOOU5s2AYteVPrdqD4
+         p3bLZMpmrXB7KneRhX2FEAJvWIHw+1Gllm79XVsMsrh1OcPQ3j4ZLZ9Ekf0fIPp1o1
+         V1G2UhZcI7mgg==
+Date:   Sun, 31 Jan 2021 17:48:20 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Vinicius Tinti <viniciustinti@gmail.com>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v2] ext4: Enable code path when DX_DEBUG is set
+Message-ID: <20210201004820.GA26230@localhost>
+References: <AAB32610-D238-4137-96DE-33655AAAB545@dilger.ca>
+ <20210201003125.90257-1-viniciustinti@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210201003125.90257-1-viniciustinti@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-machine_kexec() need to set rw permission in text and rodata sections
-to assign some variables (e.g. kexec_start_address). To do that at
-the end (after flushing pdm in memory, etc.) it needs to invalidate
-TLB [section] entries.
+On Mon, Feb 01, 2021 at 12:31:25AM +0000, Vinicius Tinti wrote:
+> By enabling -Wunreachable-code-aggressive on Clang the following code
+> paths are unreachable.
+> 
+> This has been present since commit ac27a0ec112a ("[PATCH] ext4: initial
+> copy of files from ext3") and fs/ext3 had it present at the beginning of
+> git history. It has not been changed since.
+> 
+> Clang warns:
+> 
+> fs/ext4/namei.c:831:17: warning: code will never be executed
+> [-Wunreachable-code]
+>                         unsigned n = count - 1;
+>                                      ^~~~~
+> fs/ext4/namei.c:830:7: note: silence by adding parentheses to mark code as
+> explicitly dead
+>                 if (0) { // linear search cross check
+>                     ^
+>                     /* DISABLES CODE */ ( )
+> 
+> Signed-off-by: Vinicius Tinti <viniciustinti@gmail.com>
+> ---
+>  fs/ext4/namei.c | 23 ++++++++++++-----------
+>  1 file changed, 12 insertions(+), 11 deletions(-)
+> 
+> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+> index cf652ba3e74d..46ae6a4e4be5 100644
+> --- a/fs/ext4/namei.c
+> +++ b/fs/ext4/namei.c
+> @@ -827,20 +827,21 @@ dx_probe(struct ext4_filename *fname, struct inode *dir,
+>  				p = m + 1;
+>  		}
+>  
+> -		if (0) { // linear search cross check
+> -			unsigned n = count - 1;
+> -			at = entries;
+> -			while (n--)
+> +#ifdef DX_DEBUG
+> +		// linear search cross check
+> +		unsigned n = count - 1;
 
-If during the TLB invalidation an interrupt occours, which might cause
-a context switch, there is the risk to inject invalid TLBs, with ro
-permissions.
+You are going to introduce an instance of -Wdeclaration-after-statement
+here.
 
-When trying to assign .text labels, this lead to the following:
+fs/ext4/namei.c:834:12: warning: ISO C90 forbids mixing declarations and
+code [-Wdeclaration-after-statement]
+                unsigned n = count - 1;
+                         ^
+1 warning generated.
 
- Unable to handle kernel paging request at virtual address 80112f38
- pgd = fd7ef03e
- [80112f38] *pgd=0001141e(bad)
- Internal error: Oops: 80d [#1] PREEMPT SMP ARM
- ...
+The quick hack would be changing the
 
-Signed-off-by: Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>
----
- arch/arm/kernel/machine_kexec.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+if (0) {
 
-diff --git a/arch/arm/kernel/machine_kexec.c b/arch/arm/kernel/machine_kexec.c
-index 5d84ad3..23e8816 100644
---- a/arch/arm/kernel/machine_kexec.c
-+++ b/arch/arm/kernel/machine_kexec.c
-@@ -174,6 +174,13 @@ void machine_kexec(struct kimage *image)
- 
- 	reboot_code_buffer = page_address(image->control_code_page);
- 
-+	/*
-+	 * If below part is not atomic TLB entries might be corrupted after TLB
-+	 * invalidation, which leads to Data Abort in .text variable assignment
-+	 */
-+	raw_local_irq_disable();
-+	local_fiq_disable();
-+
- 	/* Prepare parameters for reboot_code_buffer*/
- 	set_kernel_text_rw();
- 	kexec_start_address = image->start;
-@@ -181,6 +188,9 @@ void machine_kexec(struct kimage *image)
- 	kexec_mach_type = machine_arch_type;
- 	kexec_boot_atags = image->arch.kernel_r2;
- 
-+	local_fiq_enable();
-+	raw_local_irq_enable();
-+
- 	/* copy our kernel relocation code to the control code page */
- 	reboot_entry = fncpy(reboot_code_buffer,
- 			     &relocate_new_kernel,
--- 
-2.7.4
+to
 
+#ifdef DX_DEBUG
+    if (1) {
+
+but that seems kind of ugly.
+
+Other options would be turning DX_DEBUG into a proper Kconfig symbol so
+that IS_ENABLED could be used or maybe combine it into
+CONFIG_EXT4_DEBUG.
+
+Cheers,
+Nathan
