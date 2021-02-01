@@ -2,201 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AB0D30A1FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1E530A20A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231895AbhBAGcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 01:32:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58890 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231802AbhBAGFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 01:05:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 484A264E06;
-        Mon,  1 Feb 2021 06:05:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612159513;
-        bh=Hx6NNSuVfHpvFw6mqku4ZqP8Q+HUcv4PX0RJ8yzvlyI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XM+MxnGxSFO3Ie1PJigLwIOn7wKp/3N8gsEmut1THWcr/WdANG1IHrN6h8L1kzODN
-         YOTmB68bQRn3vjRSzFsts0VjWaULNLeKBM8U0H5F+QAUM1RzWKOfHBF0uxbND0Wxfa
-         tY1tL/ZbQSa0uMH4xLzC8SUvs66o+ntCXGT+Xn84fQt/vV+56kUqTF5KwqLYb/dc39
-         obLLI8IgnsLSWD14iweVJDCW3BcE29gZ0bdXUW3NUqGiEppeAXNlIM4jK17w/E2lEK
-         dI+rJxCdOFshG0nF07ujHIVrDLd1am8LFjrRIHwsM6SUMt25LvGcF498mV0rFtj7zN
-         6v1LWAqm3yISA==
-Date:   Mon, 1 Feb 2021 11:35:08 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     mdalam@codeaurora.org
-Cc:     corbet@lwn.net, agross@kernel.org, bjorn.andersson@linaro.org,
-        dan.j.williams@intel.com, dmaengine@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, sricharan@codeaurora.org,
-        mdalam=codeaurora.org@codeaurora.org
-Subject: Re: [PATCH] dmaengine: qcom: bam_dma: Add LOCK and UNLOCK flag bit
- support
-Message-ID: <20210201060508.GK2771@vkoul-mobl>
-References: <1608215842-15381-1-git-send-email-mdalam@codeaurora.org>
- <20201221092355.GA3323@vkoul-mobl>
- <efcc74bbdf36b4ddbf764eb6b4ed99f2@codeaurora.org>
- <f7de0117c8ff2e61c09f58acdea0e5b0@codeaurora.org>
- <20210112101056.GI2771@vkoul-mobl>
- <e3cf7c4fc02c54d17fd2fd213f39005b@codeaurora.org>
- <20210115055806.GE2771@vkoul-mobl>
- <97ce29b230164a5848a38f6448d1be60@codeaurora.org>
- <20210119164511.GE2771@vkoul-mobl>
- <534308caab7c18730ad0cc25248d116f@codeaurora.org>
+        id S232237AbhBAGgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 01:36:21 -0500
+Received: from mailout2.samsung.com ([203.254.224.25]:59557 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231497AbhBAGUD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 01:20:03 -0500
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210201061822epoutp0261ffd043f7b119b36b5982386fa37ee6~fi0DwSR1E0701207012epoutp02S
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 06:18:22 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210201061822epoutp0261ffd043f7b119b36b5982386fa37ee6~fi0DwSR1E0701207012epoutp02S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1612160302;
+        bh=/gKgMicK2/d+7RHapjaLlXXe/213s+qKQEHFeVCiDa0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gs2Eqm1it+UBJJRmKvrJyW+NC5j0gsXO6I+vXwPmStc7+6M01nMTz7SJVqa9XlBea
+         6tG/YUKLuK5pc9cH5VkUfAkAp6JuFFp1Z+1/wyPROI6907r7eG2NYDh2b5hVGldK3k
+         KDUYxq1krEdck9Xkgk9z8vg1R73nUr01xJOgxusQ=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+        20210201061822epcas2p2af78c3eda718f01591645078f300e38d~fi0DjRlJO3100031000epcas2p2Y;
+        Mon,  1 Feb 2021 06:18:22 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.186]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4DTd6j2ss4z4x9Q2; Mon,  1 Feb
+        2021 06:18:21 +0000 (GMT)
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        0D.E5.05262.C2D97106; Mon,  1 Feb 2021 15:18:20 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
+        20210201061820epcas2p4ee9f0c9415c2157b6ebcb152625c2d2f~fi0BV_7_o0777207772epcas2p4f;
+        Mon,  1 Feb 2021 06:18:20 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210201061820epsmtrp23b5ae3713cdcfa462a2315431aa947b6~fi0BVEN5H2931129311epsmtrp2d;
+        Mon,  1 Feb 2021 06:18:20 +0000 (GMT)
+X-AuditID: b6c32a47-1259fa800000148e-22-60179d2c6235
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        08.41.13470.B2D97106; Mon,  1 Feb 2021 15:18:19 +0900 (KST)
+Received: from ubuntu (unknown [12.36.155.120]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210201061819epsmtip18a5bfe678b5f2c4de91c098ac373cc7a~fi0BKdoA82739327393epsmtip1c;
+        Mon,  1 Feb 2021 06:18:19 +0000 (GMT)
+Date:   Mon, 1 Feb 2021 15:06:46 +0900
+From:   Jung Daehwan <dh10.jung@samsung.com>
+To:     Felipe Balbi <balbi@kernel.org>,
+        Wesley Cheng <wcheng@codeaurora.org>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "supporter:USB SUBSYSTEM open list:DESIGNWARE USB3 DRD IP DRIVER" 
+        <linux-usb@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Subject: Re: usb: dwc3: gadget: skip pullup and set_speed after suspend
+Message-ID: <20210201060646.GA188943@ubuntu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <534308caab7c18730ad0cc25248d116f@codeaurora.org>
+In-Reply-To: <20210201054539.GA188887@ubuntu>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupnk+LIzCtJLcpLzFFi42LZdljTVFdnrniCwYoWCYtjbU/YLZoXr2ez
+        uLxrDpvFomWtzBarFhxgt1jbNIvNgc3jcl8vk8emVZ1sHvvnrmH32LL/M6PH501yAaxROTYZ
+        qYkpqUUKqXnJ+SmZeem2St7B8c7xpmYGhrqGlhbmSgp5ibmptkouPgG6bpk5QBcoKZQl5pQC
+        hQISi4uV9O1sivJLS1IVMvKLS2yVUgtScgoMDQv0ihNzi0vz0vWS83OtDA0MjEyBKhNyMm5c
+        n8JaMJerYvvkYywNjPs5uhg5OCQETCR275DpYuTiEBLYwSixfOpXVgjnE6PE7tkdLBDON0aJ
+        ByefsHcxcoJ1PNpzBcwWEtjLKNFxSAOi6AmjxIlVPWAJFgEViV0dTWwgNpuAlsS9HyeYQWwR
+        AU+J6ws+s4LYzAK9TBIPN5qD2MIC7hITb99lAbF5BXQkVr2azwZhC0qcnPkELM4poCvRPuMX
+        G8jZokDzXx2sB9krIfCTXWLvrmVQx7lILH55nhHCFpZ4dXwLVFxK4vO7vWwQL5dLLJpvB9Hb
+        wSix5tNZqHpjiVnP2hkhbsuQmPdzPgtEvbLEkVssEGE+iY7Df9khwrwSHW1CEJ3KEtMvT2CF
+        sCUlDr4+xwxR4iFxcp0WJKRuMkpceCM+gVF+FpK/ZiHZBWHrSCzY/YltFlA3s4C0xPJ/HBCm
+        psT6XfoLGFlXMYqlFhTnpqcWGxUYI0f0JkZwytRy38E44+0HvUOMTByMhxglOJiVRHhPTRJL
+        EOJNSaysSi3Kjy8qzUktPsRoCoykicxSosn5wKSdVxJvaGpkZmZgaWphamZkoSTOW2zwIF5I
+        ID2xJDU7NbUgtQimj4mDU6qBSSrL5fOa3btajBaULJvKkLpOa251J++h2OQpzpycOts2cSgt
+        uT7hbYR2wtPn2Zuer/7lukNme/2MqLnOhpfPOE7MMwh2mrTUjeH41x+HjOUOfugrS/24P7BF
+        el/Zuwff8na9TN8dzLih+UTV9vzP7zv1s0psr+y6EHLKrvXu29ev/lpHh/J9mO3Cv6pwr773
+        /hPvl2eWCKZwpJmu2ZHb4X3r2Lqzif83lfAt576WWi5rOFHHhNGh7Z5JVR6HpefVfR/15zV3
+        2M/wf7zCPHqLnc8vrftb8k5EX+Bl2y/OYVL4Lf3epHkfVpbeFuY7+Z3/bZ7Vkw/MHZ8cBW5G
+        P1OaLv7Z/t7DxnzGTwW5locfpCuxFGckGmoxFxUnAgAotogvIgQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrBLMWRmVeSWpSXmKPExsWy7bCSnK72XPEEg12frSyOtT1ht2hevJ7N
+        4vKuOWwWi5a1MlusWnCA3WJt0yw2BzaPy329TB6bVnWyeeyfu4bdY8v+z4wenzfJBbBGcdmk
+        pOZklqUW6dslcGUsnH2fqeAue8Xvj/+ZGxhnsHUxcnJICJhIPNpzhb2LkYtDSGA3o0TbwQZG
+        iISkxNK5N9ghbGGJ+y1HWEFsIYFHjBIHZ3GD2CwCKhK7OprABrEJaEnc+3GCGcQWEfCUuL7g
+        MyvIUGaBfiaJXxcugDULC7hLTLx9lwXE5hXQkVj1aj4bxObbjBL9e3ewQSQEJU7OfAJWxAw0
+        9ca/l0xdjBxAtrTE8n8cIGFOAV2J9hm/2EDCokBHvDpYP4FRcBaS5llImmchNC9gZF7FKJla
+        UJybnltsWGCYl1quV5yYW1yal66XnJ+7iREc+FqaOxi3r/qgd4iRiYPxEKMEB7OSCO+pSWIJ
+        QrwpiZVVqUX58UWlOanFhxilOViUxHkvdJ2MFxJITyxJzU5NLUgtgskycXBKNTCdvNgrpW7I
+        3P+B8aiw8ce991z+TV/bPYHhYu0SWecSx/d9sn2N9u+7bm14OW1jf+39h0e3l6zxeuPkvOZf
+        e0F04DXDjJjE/o+awasLrnp1s/YF3J6TEyLLfjtN6prEpV8hMlub37hcfPZ2nb3qyWtVxYsT
+        A06EbGO/nPvt2ALnk4teSUwuuTzZf3+mZ0W8f8+f46tEQ+R3/xOcdybN6NNsdVcvoWNmAQL/
+        CrO6t2SxSNz74F/odiG/Z90NNR3Wxr8m0+vbAoXyF2ydp5/62/PVAY6tMfnqL+yusdxO4hIL
+        mH+7ZfkWpQx/zb33FLLOLBfy2dUY1TgzwvWSsOkjrlqp43qsU/+aLGpdscfpSaESS3FGoqEW
+        c1FxIgBB1Q696wIAAA==
+X-CMS-MailID: 20210201061820epcas2p4ee9f0c9415c2157b6ebcb152625c2d2f
+X-Msg-Generator: CA
+Content-Type: multipart/mixed;
+        boundary="----dZHoiG3rfwxb_Py8wGLYailixDOP787k4OKmtNPLilWg7srF=_804b8_"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210120035123epcas2p2048f6d9896bd21f19d939a56fe0b6610
+References: <CGME20210120035123epcas2p2048f6d9896bd21f19d939a56fe0b6610@epcas2p2.samsung.com>
+        <1611113968-102424-1-git-send-email-dh10.jung@samsung.com>
+        <87ft2qgxle.fsf@kernel.org> <20210201054539.GA188887@ubuntu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27-01-21, 23:56, mdalam@codeaurora.org wrote:
-> On 2021-01-19 22:15, Vinod Koul wrote:
-> > On 18-01-21, 09:21, mdalam@codeaurora.org wrote:
-> > > On 2021-01-15 11:28, Vinod Koul wrote:
-> > > > On 14-01-21, 01:20, mdalam@codeaurora.org wrote:
-> > > > > On 2021-01-12 15:40, Vinod Koul wrote:
-> > > > > > On 12-01-21, 15:01, mdalam@codeaurora.org wrote:
-> > > > > > > On 2020-12-21 23:03, mdalam@codeaurora.org wrote:
-> > > > > > > > On 2020-12-21 14:53, Vinod Koul wrote:
-> > > > > > > > > Hello,
-> > > > > > > > >
-> > > > > > > > > On 17-12-20, 20:07, Md Sadre Alam wrote:
-> > > > > > > > > > This change will add support for LOCK & UNLOCK flag bit support
-> > > > > > > > > > on CMD descriptor.
-> > > > > > > > > >
-> > > > > > > > > > If DMA_PREP_LOCK flag passed in prep_slave_sg then requester of this
-> > > > > > > > > > transaction wanted to lock the DMA controller for this transaction so
-> > > > > > > > > > BAM driver should set LOCK bit for the HW descriptor.
-> > > > > > > > > >
-> > > > > > > > > > If DMA_PREP_UNLOCK flag passed in prep_slave_sg then requester
-> > > > > > > > > > of this
-> > > > > > > > > > transaction wanted to unlock the DMA controller.so BAM driver
-> > > > > > > > > > should set
-> > > > > > > > > > UNLOCK bit for the HW descriptor.
-> > > > > > > > >
-> > > > > > > > > Can you explain why would we need to first lock and then unlock..? How
-> > > > > > > > > would this be used in real world.
-> > > > > > > > >
-> > > > > > > > > I have read a bit of documentation but is unclear to me. Also should
-> > > > > > > > > this be exposed as an API to users, sounds like internal to driver..?
-> > > > > > > > >
-> > > > > > > >
-> > > > > > > > IPQ5018 SoC having only one Crypto Hardware Engine. This Crypto Hardware
-> > > > > > > > Engine
-> > > > > > > > will be shared between A53 core & ubi32 core. There is two separate
-> > > > > > > > driver dedicated
-> > > > > > > > to A53 core and ubi32 core. So to use Crypto Hardware Engine
-> > > > > > > > parallelly for encryption/description
-> > > > > > > > we need bam locking mechanism. if one driver will submit the request
-> > > > > > > > for encryption/description
-> > > > > > > > to Crypto then first it has to set LOCK flag bit on command descriptor
-> > > > > > > > so that other pipes will
-> > > > > > > > get locked.
-> > > > > > > >
-> > > > > > > > The Pipe Locking/Unlocking will be only on command-descriptor. Upon
-> > > > > > > > encountering a command descriptor
-> > > > > >
-> > > > > > Can you explain what is a cmd descriptor?
-> > > > >
-> > > > >   In BAM pipe descriptor structure there is a field called CMD
-> > > > > (Command
-> > > > > descriptor).
-> > > > >   CMD allows the SW to create descriptors of type Command which does
-> > > > > not
-> > > > > generate any data transmissions
-> > > > >   but configures registers in the Peripheral (write operations, and
-> > > > > read
-> > > > > registers operations ).
-> > > > >   Using command descriptor enables the SW to queue new configurations
-> > > > > between data transfers in advance.
-> > > >
-> > > > What and when is the CMD descriptor used for..?
-> > > 
-> > >   CMD descriptor is mainly used for configuring controller register.
-> > >   We can read/write controller register via BAM using CMD descriptor
-> > > only.
-> > >   CMD descriptor use command pipe for the transaction.
-> > 
-> > In which use cases would you need to issue cmd descriptors..?
+------dZHoiG3rfwxb_Py8wGLYailixDOP787k4OKmtNPLilWg7srF=_804b8_
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+
+On Sun, Jan 24, 2021 at 05:31:57PM +0200, Felipe Balbi wrote:
 > 
->   In IPQ5018 there is only one Crypto engine and it will get shared
->   between UBI32 core & A53 core. So here we need to use command
->   descriptor in-order to perform LOCKING/UNLOCKING mechanism. Since
->   LOCK/ULOCK flag we can set only on CMD descriptor.
-
-So when will lock/unlock be performed? Can you please explain that..
-
-> > 
-> > > >
-> > > > > >
-> > > > > > > > with LOCK bit set, The BAM will lock all other pipes not related to
-> > > > > > > > the current pipe group, and keep
-> > > > > > > > handling the current pipe only until it sees the UNLOCK set then it
-> > > > > > > > will release all locked pipes.
-> > > > > > > > locked pipe will not fetch new descriptors even if it got event/events
-> > > > > > > > adding more descriptors for
-> > > > > > > > this pipe (locked pipe).
-> > > > > > > >
-> > > > > > > > No need to expose as an API to user because its internal to driver, so
-> > > > > > > > while preparing command descriptor
-> > > > > > > > just we have to update the LOCK/UNLOCK flag.
-> > > > > >
-> > > > > > So IIUC, no api right? it would be internal to driver..?
-> > > > >
-> > > > >   Yes its totally internal to deriver.
-> > > >
-> > > > So no need for this patch then, right?
-> > > 
-> > >   This patch is needed , because if some hardware will shared between
-> > >   multiple core like A53 and ubi32 for example. In IPQ5018 there is
-> > >   only one crypto engine and this will be shared between A53 core and
-> > >   ubi32 core and in A53 core & ubi32 core there are different drivers
-> > >   is getting used. So if encryption/decryption request come at same
-> > >   time from both the driver then things will get messed up. So here we
-> > >   need LOCKING mechanism.  If first request is from A53 core driver
-> > >   then this driver should lock all the pipes other than pipe dedicated
-> > >   to A53 core. So while preparing CMD descriptor driver should used
-> > >   this flag "DMA_PREP_LOCK", Since LOCK and UNLOCK flag bit we can set
-> > >   only on CMD descriptor. Once request processed then driver will set
-> > >   UNLOCK flag on CMD descriptor. Driver should use this flag
-> > >   "DMA_PREP_UNLOCK" while preparing CMD descriptor. Same logic will be
-> > >   apply for ubi32 core driver as well.
-> > 
-> > Why cant this be applied at driver level, based on txn being issued it
-> > can lock issue the txn and then unlock when done. I am not convinced yet
-> > that this needs to be exported to users and can be managed by dmaengine
-> > driver.
+> Hi,
 > 
->   The actual LOCK/UNLOCK flag should be set on hardware command descriptor.
->   so this flag setting should be done in DMA engine driver. The user of the
-> DMA
->   driver like (in case of IPQ5018) Crypto can use flag "DMA_PREP_LOCK" &
-> "DMA_PREP_UNLOCK"
->   while preparing CMD descriptor before submitting to the DMA engine. In DMA
-> engine driver
->   we are checking these flasgs on CMD descriptor and setting actual
-> LOCK/UNLOCK flag on hardware
->   descriptor.
-
-
-I am not sure I comprehend this yet.. when is that we would need to do
-this... is this for each txn submitted to dmaengine.. or something
-else..
-
+> Daehwan Jung <dh10.jung@samsung.com> writes:
+> > Sometimes dwc3_gadget_pullup and dwc3_gadget_set_speed are called after
+> > entering suspend. That's why it needs to check whether suspend
+> >
+> > 1. dwc3 sends disconnect uevent and turn off. (suspend)
+> > 2. Platform side causes pullup or set_speed(e.g., adbd closes ffs node)
+> > 3. It causes unexpected behavior like ITMON error.
 > 
->    if (flags & DMA_PREP_CMD) { <== check for descriptor type
-> 		if (flags & DMA_PREP_LOCK)
-> 			desc->flags |= cpu_to_le16(DESC_FLAG_LOCK); <== Actual LOCK flag setting
-> on HW descriptor.
-> 		if (flags & DMA_PREP_UNLOCK)
-> 			desc->flags |= cpu_to_le16(DESC_FLAG_UNLOCK); <== Actual UNLOCK flag
-> setting on HW descriptor.
-> 	}
-> > 
-> > Thanks
+> please collect dwc3 trace events showing this problem.
+> 
+> -- 
+> balbi
 
--- 
-~Vinod
+Hi, balbi
+
+I'm sorry for late reply. I pulled in belo patch and that issue didn't occur
+
+usb: dwc3: gadget: Restart DWC3 gadget when enabling pullup
+
+@ Wesley cheng
+But, I think it needs to modify pm_rumtime_put to pm_runtime_put_sync_suspend
+for syncronization. pm_rumtime_put calls rumtime_idle not runtime_suspend
+Please check it.
+
+usb: dwc3: gadget: Allow runtime suspend if UDC unbinded
+
+Best Regards,
+Jung Daehwan
+
+------dZHoiG3rfwxb_Py8wGLYailixDOP787k4OKmtNPLilWg7srF=_804b8_
+Content-Type: text/plain; charset="utf-8"
+
+
+------dZHoiG3rfwxb_Py8wGLYailixDOP787k4OKmtNPLilWg7srF=_804b8_--
