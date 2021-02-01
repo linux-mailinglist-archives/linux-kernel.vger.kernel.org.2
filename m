@@ -2,80 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85FAD30A560
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:32:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B12730A56A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233163AbhBAKcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 05:32:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232573AbhBAKcS (ORCPT
+        id S233175AbhBAKcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 05:32:47 -0500
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:47010 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232392AbhBAKcp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 05:32:18 -0500
-Received: from mail-oo1-xc41.google.com (mail-oo1-xc41.google.com [IPv6:2607:f8b0:4864:20::c41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E62E5C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 02:31:37 -0800 (PST)
-Received: by mail-oo1-xc41.google.com with SMTP id g46so4100560ooi.9
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 02:31:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=zGk/ZhZWEg56YKF9pnwKft4+fj3bPtgDY5IUehTT0YA=;
-        b=iB0yV2YS6DupwP280rGHPwJCCE22rIRWmQaSNABxE3ZeA+QpmTVbcd3ZuUoZNqV7Qp
-         yKJHzmGrnL/ZdhAPfoBWl2amq7MK88zSv6isidnaD5Sli7v+RuTfU9AmTw4DFuNRzA8s
-         nS+fghhK71S1CuhZIsjwiM8VS1MR/OkzmhPP6gyXB2lU4mah1BDhS+hZ6KIf9LnJn6we
-         BXS4ACJ76OfDpRSBZIcreHwKKSmGWOiWE7Rewd342Hb8o2BQpeEsHxrMYsbp7NnoZ2ua
-         2EVOzEeAVsAOk8LSRfFT335XhFq/TZm5CCF91+pQagZ4+DzKtxZ4lolNuEZ1Rp3MVCv8
-         pS/w==
+        Mon, 1 Feb 2021 05:32:45 -0500
+Received: by mail-ot1-f51.google.com with SMTP id d1so15725848otl.13
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 02:32:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=zGk/ZhZWEg56YKF9pnwKft4+fj3bPtgDY5IUehTT0YA=;
-        b=pvn9RW2RQgR8Put7YgQWbqO3vhoPNyECIWneELZyiOEL2AADntLkk44dz4DOThHsqr
-         n0KOMkrCRMh5rLi9BBmjqufTykU/SklR3wfhPelX9tpAidIE81F8phf+tKQWm6vrS8xk
-         khzdGVuNQp1s3ARPp6GoxMNU6++yp4tj7p9kMeN5LZKJbbqdgLPz5QjhttOSApjLUi6c
-         NSc9hGSYOgZk/+48O5Urq1erKAeEFh1F6ioH5TwwNNJSCfGBKinChM3gIlVO6ZI9Ccz/
-         wCHRYKTFVafj3B8ci1DqiyqJkVgyXnfrBWgjr+6oHpSRNb68HxuFpz7xGtsQdzo2Q3NX
-         Qw5A==
-X-Gm-Message-State: AOAM532hX801gaIskJ9rJnkCCAW33xXvXrxrXz6J1kgvHeUm5x1VfTQc
-        FJzF+JT2AL/Vhc03kAm1FwwdtHAYSx5irtmxTPs=
-X-Google-Smtp-Source: ABdhPJwQ6CeXSMrJZItx93RPlK4jhqnxuRcrENPKg27qowUpYF2keQjG+Ym8oUgd7aXzEo0CkzUI/3gGsHdUJUPPPm8=
-X-Received: by 2002:a4a:98a3:: with SMTP id a32mr11454763ooj.51.1612175497296;
- Mon, 01 Feb 2021 02:31:37 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eEz9JbzZ/AJWyi5cYDNo36zch3xhlNqzSsTkQFyeOLA=;
+        b=hPAMQRtrUUc/u3Gj5InfYq+KnTz/z47AGtnrxNSmciGe/hBRpUXoMkkGaFGrvQTTH8
+         K8syZ8NRXS4d3Y9J+ISeWLtbhWgfcptrrI3Lcu5rcqhCR3bjpkBzDM5cbLR+l4TrBNtf
+         Zthem8TlnPUEJWU/8R65JhXdxItX4F1X1+RiW8bbstofKjkQ1Pot85tDpnyW/ckJ+aDw
+         0gOHjRc9HF/9gSKoo1Pla999axEbqrZMlMWUZxmeLUP1fD0BIIO6fo/0wUCGZ6lzVqon
+         6KZuYuaRmjf2tT8y38742HDmnt4VIcpxncBiWQIpOYxXYvY4AWFvdMTczyfi7PI6jBd2
+         T19g==
+X-Gm-Message-State: AOAM533mjo/sDVlMPuy5/NklfbH/UYsNNanp4fYNHFF+mfNCN9JflEQS
+        3d9Pz6FjM1P6vFFFLFk/wHMR1PP2zTsCMtN+CmM=
+X-Google-Smtp-Source: ABdhPJxreOfOW7G89I8e3ktRql4LH6cUeuDugrYAqFm144cBR1Bjmw24p/73ueEflqitPTtMkJSehqJAQ+N/JQBg1Sg=
+X-Received: by 2002:a05:6830:15cc:: with SMTP id j12mr11352990otr.145.1612175524376;
+ Mon, 01 Feb 2021 02:32:04 -0800 (PST)
 MIME-Version: 1.0
-Received: by 2002:ac9:4b15:0:0:0:0:0 with HTTP; Mon, 1 Feb 2021 02:31:36 -0800 (PST)
-Reply-To: mrscarolinemanon02@gmail.com
-From:   "Mrs. Caroline Manon" <mrscarolinemanon9@gmail.com>
-Date:   Mon, 1 Feb 2021 11:31:36 +0100
-Message-ID: <CAK6SevFzhvDQqr0XKsxm+hk2JHPMBBXc1Kdk6w5mheEnsaDLGg@mail.gmail.com>
-Subject: Greetings from Mrs. Caroline Manon.
-To:     undisclosed-recipients:;
+References: <20210130040344.2807439-1-saravanak@google.com> <20210130040344.2807439-3-saravanak@google.com>
+In-Reply-To: <20210130040344.2807439-3-saravanak@google.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 1 Feb 2021 11:31:53 +0100
+Message-ID: <CAMuHMdVWJZrGDvtMiyaAOfnZP5jBJec42oQvYeZSgt9ZLhqDvA@mail.gmail.com>
+Subject: Re: [PATCH v1 2/2] driver core: fw_devlink: Handle missing drivers
+ for optional suppliers
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
+Hi Saravana,
 
-I know that this mail will come to you as a surprise as we have never
-met before, but need not to worry as I am contacting you independently
-of my investigation and no one is informed of this communication. I
-need your urgent assistance in transferring the sum of U$10.5 million
-immediately to your private account, The money has been here in our
-Bank lying dormant for years now without anybody coming for the claim
-of it.
+On Sat, Jan 30, 2021 at 5:03 AM Saravana Kannan <saravanak@google.com> wrote:
+> After a deferred probe attempt has exhaused all the devices that can be
+> bound, any device that remains unbound has one/both of these conditions
+> true:
+>
+> (1) It is waiting on its supplier to bind
+> (2) It does not have a matching driver
+>
+> So, to make fw_devlink=on more forgiving of missing drivers for optional
+> suppliers, after we've done a full deferred probe attempt, this patch
+> deletes all device links created by fw_devlink where the supplier hasn't
+> probed yet and the supplier itself is not waiting on any of its
+> suppliers. This allows consumers to probe during another deferred probe
+> attempt if they were waiting on optional suppliers.
+>
+> When modules are enabled, we can't differentiate between a driver
+> that'll never be registered vs a driver that'll be registered soon by
+> loading a module. So, this patch doesn't do anything for the case where
+> modules are enabled.
 
-I want the money to be release to you as the relative to our deceased
-customer (the account owner) who died a long with his supposed Next Of
-Kin since 16th October 2005. The Banking laws here does not allow such
-money to stay more than 16 years, because the money will be recalled
-to the Bank treasury account as unclaimed fund.
+For the modular case, can't you do a probe regardless? Or limit it
+to devices where the missing provider is a DMAC or IOMMU driver?
+Many drivers can handle missing DMAC controller drivers, and are even
+supposed to work that way.  They may even retry obtaining DMA releases
+later.
 
-By indicating your interest I will send you the full details on how
-the business will be executed.
+Gr{oetje,eeting}s,
 
-Please respond urgently and delete if you are not interested.
+                        Geert
 
-Best Regards,
-Mrs. Caroline Manon.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
