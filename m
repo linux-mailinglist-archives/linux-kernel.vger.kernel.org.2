@@ -2,253 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6097130AC50
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:10:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C048930AC58
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 17:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229981AbhBAQJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 11:09:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbhBAQJW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 11:09:22 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F18C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 08:08:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=DlMrAW06ad5RC0MRLVNOJzQJoLkaCpjO7v7rgY5Ww7g=; b=eOj9UAzVOYtYpXFHFGm00e79X
-        mA7Dqv7PbJSlVoLpMS83ifwNOZ77vwA8WQeQgSgfKs+YBoT/NQAC5C+4gxXAp4qaQSHwXWMctXSDb
-        HcqbTUELkxg2H1OJFb38mLg5OQMskTlUuDBgIT6b4XwzF46YRkArYTGA9HHU5lDyzh0DLymh3EXBj
-        okEE0Bpl0Xg4lRr/62IxHoGsPaR2aU5dDPRVasiRFQDkin09B/oXiZjnEElzB8TD0NiwLxl4/Gmsu
-        D8mUlQJJ90XQpoqEZapDSv5DFRZF32JVL7eKYHD//gcb8EI1WxN1NCLX9WTndIBtGEVGNiZT1M1DR
-        YyIN0gaDA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37808)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l6bkl-0003Tw-Iw; Mon, 01 Feb 2021 16:08:39 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l6bkk-00028g-DK; Mon, 01 Feb 2021 16:08:38 +0000
-Date:   Mon, 1 Feb 2021 16:08:38 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>,
-        linux-kernel@vger.kernel.org, penberg@kernel.org,
-        geert@linux-m68k.org, linux-arm-kernel@lists.infradead.org,
-        akpm@linux-foundation.org, rppt@kernel.org,
-        giancarlo.ferrari@nokia.com
-Subject: Re: [PATCH] ARM: kexec: Fix panic after TLB are invalidated
-Message-ID: <20210201160838.GH1463@shell.armlinux.org.uk>
-References: <1612140296-12546-1-git-send-email-giancarlo.ferrari89@gmail.com>
- <20210201124720.GA66060@C02TD0UTHF1T.local>
- <20210201130344.GF1463@shell.armlinux.org.uk>
- <20210201135714.GB66060@C02TD0UTHF1T.local>
+        id S230129AbhBAQLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 11:11:20 -0500
+Received: from mga09.intel.com ([134.134.136.24]:28248 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229634AbhBAQLQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 11:11:16 -0500
+IronPort-SDR: v+/QT13qHo/PbRyMkhTwsJmTWdh5ZqL0GyWjfdW/oN/UFRKZ45BsDCoHmwsbVQDdGFvGm2tzzG
+ c5lLgTgj7MQQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="180852301"
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="180852301"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 08:09:29 -0800
+IronPort-SDR: rSWPRMiVJNzn2AKUa02o2Rd/7vn5J2sGexoKrHMixux8uuXTh2aMt9JqA64cWkAaRZUaAkFFFf
+ pvbLjrELqOWw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="479139920"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 01 Feb 2021 08:09:26 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 01 Feb 2021 18:09:25 +0200
+Date:   Mon, 1 Feb 2021 18:09:25 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Badhri Jagan Sridharan <badhri@google.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Kyle Tso <kyletso@google.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/3] usb: typec: tcpm: Add Callback to Usb
+ Communication capable partner
+Message-ID: <20210201160925.GA1433721@kuha.fi.intel.com>
+References: <20210201095309.39486-1-badhri@google.com>
+ <20210201151253.GG2465@kuha.fi.intel.com>
+ <YBgcCu7lx036C+KN@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210201135714.GB66060@C02TD0UTHF1T.local>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <YBgcCu7lx036C+KN@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 01:57:14PM +0000, Mark Rutland wrote:
-> We could simplify this slightly if we moved the kexec_& variables into a
-> struct (using asm-offset KEXEC_VAR_* offsets and a KEXEC_VAR_SIZE region
-> reserved in the asm), then here we could do something like:
+On Mon, Feb 01, 2021 at 04:19:38PM +0100, Greg Kroah-Hartman wrote:
+> On Mon, Feb 01, 2021 at 05:12:53PM +0200, Heikki Krogerus wrote:
+> > On Mon, Feb 01, 2021 at 01:53:07AM -0800, Badhri Jagan Sridharan wrote:
+> > > The USB Communications Capable bit indicates if port
+> > > partner is capable of communication over the USB data lines
+> > > (e.g. D+/- or SS Tx/Rx). Notify the status of the bit to low
+> > > level drivers to perform chip specific operation.
+> > > For instance, low level driver enables USB switches on D+/D-
+> > > lines to set up data path when the bit is set.
+> > > 
+> > > Refactored from patch initially authored by
+> > > Kyle Tso <kyletso@google.com>
+> > > 
+> > > Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+> > > ---
+> > >  drivers/usb/typec/tcpm/tcpm.c | 16 ++++++++++++++++
+> > >  include/linux/usb/tcpm.h      |  5 +++++
+> > >  2 files changed, 21 insertions(+)
+> > 
+> > ...
+> > 
+> > > diff --git a/include/linux/usb/tcpm.h b/include/linux/usb/tcpm.h
+> > > index 3af99f85e8b9..42fcfbe10590 100644
+> > > --- a/include/linux/usb/tcpm.h
+> > > +++ b/include/linux/usb/tcpm.h
+> > > @@ -108,6 +108,10 @@ enum tcpm_transmit_type {
+> > >   *		is supported by TCPC, set this callback for TCPM to query
+> > >   *		whether vbus is at VSAFE0V when needed.
+> > >   *		Returns true when vbus is at VSAFE0V, false otherwise.
+> > > + * @set_partner_usb_comm_capable:
+> > > + *              Optional; The USB Communications Capable bit indicates if port
+> > > + *              partner is capable of communication over the USB data lines
+> > > + *              (e.g. D+/- or SS Tx/Rx). Called to notify the status of the bit.
+> > >   */
+> > >  struct tcpc_dev {
+> > >  	struct fwnode_handle *fwnode;
+> > > @@ -139,6 +143,7 @@ struct tcpc_dev {
+> > >  	int (*set_auto_vbus_discharge_threshold)(struct tcpc_dev *dev, enum typec_pwr_opmode mode,
+> > >  						 bool pps_active, u32 requested_vbus_voltage);
+> > >  	bool (*is_vbus_vsafe0v)(struct tcpc_dev *dev);
+> > > +	void (*set_partner_usb_comm_capable)(struct tcpc_dev *dev, bool enable);
+> > >  };
+> > >  
+> > >  struct tcpm_port;
+> > 
+> > There start to be a lot of callback there, separate for each function.
+> > And I guess flags too... Would it be possible to have a single
+> > notification callback instead, that would take the type of the
+> > notification as a parameter (we could have an enum for those), and
+> > then the specific object(s) for each type as another paramter (RDO I
+> > guess in this case)?
+> > 
+> > It would then be up to the TCPC driver to extract the detail it needs
+> > from that object. That would somehow feel more cleaner to me, but what
+> > do you guys think?
 > 
-> static struct kexec_vars *kexec_buffer_vars(void *buffer)
-> {
-> 	unsigned long code = ((unisigned long)relocate_new_kernel) & ~1;
-> 	unsigned long vars - (unsigned long)relocate_vars;
-> 	unsigned long offset = vars - code;
+> It's pretty much the same thing, a "mux" function vs. individual
+> function calls.  Personally, individual callbacks are much more
+> explicit, and I think make it easier to determine what is really going
+> on in each driver.
 > 
-> 	return buffer + offset;
-> }
+> But it all does the same thing, if there's going to be loads of
+> callbacks needed, then a single one makes it easier to maintain over
+> time.
 > 
-> ... and in machine_kexec() do:
-> 
-> 	struct kexec_vars *kv = kexec_buffer_vars(reboot_code_buffer);
-> 
-> 	kv->start_address = image->start;
-> 	kv->indirection_page = page_list;
-> 	kv->mach_type = machine-arch_type;
-> 	kv->boot_atags = arch.kernel_r2;
-> 
-> ... if that looks any better to you?
+> So it's up to the maintainer what they want to see :)
 
-Something like this?
+I understand your point, and I guess a "generic" notification callback
+for all that would not be a good idea. However, right now it looks
+like we are picking individual bits from various PD objects with those
+callbacks, and that does not feel ideal to me either. After all, each of
+those bits has its own flag now, even though the details is just
+extracted from some PD object that we should also have access to.
 
-diff --git a/arch/arm/include/asm/kexec-internal.h b/arch/arm/include/asm/kexec-internal.h
-new file mode 100644
-index 000000000000..ecc2322db7aa
---- /dev/null
-+++ b/arch/arm/include/asm/kexec-internal.h
-@@ -0,0 +1,12 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _ARM_KEXEC_INTERNAL_H
-+#define _ARM_KEXEC_INTERNAL_H
-+
-+struct kexec_relocate_data {
-+	unsigned long kexec_start_address;
-+	unsigned long kexec_indirection_page;
-+	unsigned long kexec_mach_type;
-+	unsigned long kexec_r2;
-+};
-+
-+#endif
-diff --git a/arch/arm/kernel/asm-offsets.c b/arch/arm/kernel/asm-offsets.c
-index a1570c8bab25..be8050b0c3df 100644
---- a/arch/arm/kernel/asm-offsets.c
-+++ b/arch/arm/kernel/asm-offsets.c
-@@ -12,6 +12,7 @@
- #include <linux/mm.h>
- #include <linux/dma-mapping.h>
- #include <asm/cacheflush.h>
-+#include <asm/kexec-internal.h>
- #include <asm/glue-df.h>
- #include <asm/glue-pf.h>
- #include <asm/mach/arch.h>
-@@ -170,5 +171,9 @@ int main(void)
-   DEFINE(MPU_RGN_PRBAR,	offsetof(struct mpu_rgn, prbar));
-   DEFINE(MPU_RGN_PRLAR,	offsetof(struct mpu_rgn, prlar));
- #endif
-+  DEFINE(KEXEC_START_ADDR,	offsetof(struct kexec_relocate_data, kexec_start_address));
-+  DEFINE(KEXEC_INDIR_PAGE,	offsetof(struct kexec_relocate_data, kexec_indirection_page));
-+  DEFINE(KEXEC_MACH_TYPE,	offsetof(struct kexec_relocate_data, kexec_mach_type));
-+  DEFINE(KEXEC_R2,		offsetof(struct kexec_relocate_data, kexec_r2));
-   return 0; 
- }
-diff --git a/arch/arm/kernel/machine_kexec.c b/arch/arm/kernel/machine_kexec.c
-index 5d84ad333f05..2b09dad7935e 100644
---- a/arch/arm/kernel/machine_kexec.c
-+++ b/arch/arm/kernel/machine_kexec.c
-@@ -13,6 +13,7 @@
- #include <linux/of_fdt.h>
- #include <asm/mmu_context.h>
- #include <asm/cacheflush.h>
-+#include <asm/kexec-internal.h>
- #include <asm/fncpy.h>
- #include <asm/mach-types.h>
- #include <asm/smp_plat.h>
-@@ -22,11 +23,6 @@
- extern void relocate_new_kernel(void);
- extern const unsigned int relocate_new_kernel_size;
- 
--extern unsigned long kexec_start_address;
--extern unsigned long kexec_indirection_page;
--extern unsigned long kexec_mach_type;
--extern unsigned long kexec_boot_atags;
--
- static atomic_t waiting_for_crash_ipi;
- 
- /*
-@@ -159,6 +155,7 @@ void (*kexec_reinit)(void);
- void machine_kexec(struct kimage *image)
- {
- 	unsigned long page_list, reboot_entry_phys;
-+	struct kexec_relocate_data *data;
- 	void (*reboot_entry)(void);
- 	void *reboot_code_buffer;
- 
-@@ -174,18 +171,17 @@ void machine_kexec(struct kimage *image)
- 
- 	reboot_code_buffer = page_address(image->control_code_page);
- 
--	/* Prepare parameters for reboot_code_buffer*/
--	set_kernel_text_rw();
--	kexec_start_address = image->start;
--	kexec_indirection_page = page_list;
--	kexec_mach_type = machine_arch_type;
--	kexec_boot_atags = image->arch.kernel_r2;
--
- 	/* copy our kernel relocation code to the control code page */
- 	reboot_entry = fncpy(reboot_code_buffer,
- 			     &relocate_new_kernel,
- 			     relocate_new_kernel_size);
- 
-+	data = reboot_code_buffer + relocate_new_kernel_size;
-+	data->kexec_start_address = image->start;
-+	data->kexec_indirection_page = page_list;
-+	data->kexec_mach_type = machine_arch_type;
-+	data->kexec_r2 = image->arch.kernel_r2;
-+
- 	/* get the identity mapping physical address for the reboot code */
- 	reboot_entry_phys = virt_to_idmap(reboot_entry);
- 
-diff --git a/arch/arm/kernel/relocate_kernel.S b/arch/arm/kernel/relocate_kernel.S
-index 72a08786e16e..218d524360fc 100644
---- a/arch/arm/kernel/relocate_kernel.S
-+++ b/arch/arm/kernel/relocate_kernel.S
-@@ -5,14 +5,16 @@
- 
- #include <linux/linkage.h>
- #include <asm/assembler.h>
-+#include <asm/asm-offsets.h>
- #include <asm/kexec.h>
- 
- 	.align	3	/* not needed for this code, but keeps fncpy() happy */
- 
- ENTRY(relocate_new_kernel)
- 
--	ldr	r0,kexec_indirection_page
--	ldr	r1,kexec_start_address
-+	adr	r7, relocate_new_kernel_end
-+	ldr	r0, [r7, #KEXEC_INDIR_PAGE]
-+	ldr	r1, [r7, #KEXEC_START_ADDR]
- 
- 	/*
- 	 * If there is no indirection page (we are doing crashdumps)
-@@ -57,34 +59,16 @@ ENTRY(relocate_new_kernel)
- 
- 2:
- 	/* Jump to relocated kernel */
--	mov lr,r1
--	mov r0,#0
--	ldr r1,kexec_mach_type
--	ldr r2,kexec_boot_atags
-- ARM(	ret lr	)
-- THUMB(	bx lr		)
--
--	.align
--
--	.globl kexec_start_address
--kexec_start_address:
--	.long	0x0
--
--	.globl kexec_indirection_page
--kexec_indirection_page:
--	.long	0x0
--
--	.globl kexec_mach_type
--kexec_mach_type:
--	.long	0x0
--
--	/* phy addr of the atags for the new kernel */
--	.globl kexec_boot_atags
--kexec_boot_atags:
--	.long	0x0
-+	mov	lr, r1
-+	mov	r0, #0
-+	ldr	r1, [r7, #KEXEC_MACH_TYPE]
-+	ldr	r2, [r7, #KEXEC_R2]
-+ ARM(	ret	lr	)
-+ THUMB(	bx	lr	)
- 
- ENDPROC(relocate_new_kernel)
- 
-+	.align	3
- relocate_new_kernel_end:
- 
- 	.globl relocate_new_kernel_size
+I think there are ways we can improve this for example by attempting
+to create the notifications per transaction instead of for each
+individual result of those transactions. That way we would not need to
+store the flags at least because we could deliver the entire object
+that was the result of the specific transaction.
+
+So basically, I fear that dealing with these individual bits will in
+many case only serve individual device drivers, and in the worst case
+start making the tcpm.c a bit more difficult to manage if we start to
+have more and more of these bit callbacks.
+
+But on the other hand, I guess we are nowhere near that point, so
+let's forget about this for now.
+
+
+thanks,
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+heikki
