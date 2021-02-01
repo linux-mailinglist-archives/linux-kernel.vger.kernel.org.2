@@ -2,288 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DEAE30A00F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 02:37:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3AFB30A012
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 02:45:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231245AbhBABhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 20:37:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60638 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229813AbhBABhT (ORCPT
+        id S231139AbhBABpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 20:45:23 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58486 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229656AbhBABpR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 20:37:19 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F1D5C061573;
-        Sun, 31 Jan 2021 17:36:39 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id hs11so21798899ejc.1;
-        Sun, 31 Jan 2021 17:36:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KZLQhvQu3Vrgzif0cDFF6QzD5gziJnoMo6564Rccbcw=;
-        b=Vh0/8tpaAEBtV3/9Fww8Swkfa3nIX9i5EMzizlsah3XG81u/Tgd7k2E52yy71n6ZVy
-         7U4sZmzqgaiiCasMi09Mr9XdVBGcnjolTOSvuKxc0ySx+yuuni4MqnJhUSWsUWe0GCIw
-         9TaCs1Xs6Lcr8Wp5fAvg2zKDe6rp8JVUR4r+5STNF5xIHGqBzSaI3j6M8fyniGe9y2xW
-         TAfGkK+rhcpIa38O5+LYFYseHEnCfZ9iVUPXq43fIwnUYXHndieGJsRG6qYS2CmFpRjP
-         E2yPH+2+9d/I+a0+e7Zs1IWTZRfJZpm86mXEUM41oShkYax8NQ7uB3xSsXtDf+7JGy9T
-         niKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KZLQhvQu3Vrgzif0cDFF6QzD5gziJnoMo6564Rccbcw=;
-        b=nquTzZKqrOLk+v9Wxu7SeZEqDU6uAyxbcTeZshARZu86Qt4lninwlQwuTbRkYWNSLy
-         zmc2qepnBi4/pyeGhOKvylDcbtwZYdXfmEHaMbUcARcdehqVG0rSXjhJ4koFoKHW4ycR
-         C7M+e63asVUESehiFBpxE/5BEOUpFb5HNlcGjbphKCKrKBhBzPIyp8FZ3a7DhbdFT4nu
-         /+Wvz7DA/pxl+J5LRYc1/EdqvbapKRQwrTH8xLzqf2XTyrfjt1lcFGgnM2jGMQZGwhma
-         wj1hI5pCZ8lw1NFiTyBJ844MLfmI1YSDEEg8PoKleAQna1E3ViZlfCYFWCuAQKBLEFR/
-         kvpQ==
-X-Gm-Message-State: AOAM533VVsKhHEBNGsa6BwZafFyWudliSWE64UzOyK0iaCOeEroTNpz/
-        0HWCcboz7a7pF9XtVKnNfvD4jtxYSTOiI4y+tc0=
-X-Google-Smtp-Source: ABdhPJyWvXYNkM0oM2cAKfCvj5cau94BVNTLa1zvb4sVHfUE0c13tuGHkdLUZUDGrHLQsGRK2dyMs2CdWN+qMnL8UI8=
-X-Received: by 2002:a17:906:4dc5:: with SMTP id f5mr3579665ejw.11.1612143397878;
- Sun, 31 Jan 2021 17:36:37 -0800 (PST)
+        Sun, 31 Jan 2021 20:45:17 -0500
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 1111VIje095320;
+        Sun, 31 Jan 2021 20:44:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=cHsIuP5Z4/Yi57ZdkhzxQxn/1cUm9hMlQlWW/53b2gw=;
+ b=m2Ga3wy8KrLyob3g1hTIuWqw++iG1G9EmaO6lE38oUGgkCM2ILfzU0lMsKp7dogkbTeS
+ 3mG+f/5RZ09UmByNvZiQxmeY6S+VySf8JeTgZbtcV6ta14G13C5Zph4nvFmX4osdoazv
+ ck43LvxvWycUgomLrd3WMKpC2yVKcYHt5jvUQJbzCYprQ/pClQCfvjIT/+AEQ0FLEnyC
+ bm4LZ9YrZ4VO8auKR/k2Zv9+J75EPEMRKipLQoFeH/IsyVNT57fw1D72bCsAfQCHDSVR
+ DcxZAPt5BCTmnRkaYMB2RgXO6Y0WyLMkjfkuCwRFs3jRjfK4YwGg1OMQ8FXk6XYQ87HX rg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36e828g7kw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 31 Jan 2021 20:44:22 -0500
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1111Wsur098740;
+        Sun, 31 Jan 2021 20:44:22 -0500
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 36e828g7kn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 31 Jan 2021 20:44:22 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1111ZxHY010170;
+        Mon, 1 Feb 2021 01:44:19 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma04ams.nl.ibm.com with ESMTP id 36cy38hcq9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 01:44:19 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1111iHnE42664346
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 1 Feb 2021 01:44:17 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 39BBA5204F;
+        Mon,  1 Feb 2021 01:44:17 +0000 (GMT)
+Received: from ozlabs.au.ibm.com (unknown [9.192.253.14])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id DDA495204E;
+        Mon,  1 Feb 2021 01:44:16 +0000 (GMT)
+Received: from [9.206.149.12] (unknown [9.206.149.12])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by ozlabs.au.ibm.com (Postfix) with ESMTPSA id 98B2C60036;
+        Mon,  1 Feb 2021 12:44:15 +1100 (AEDT)
+Subject: Re: [PATCH] cxl: Simplify bool conversion
+To:     Yang Li <yang.lee@linux.alibaba.com>, fbarrat@linux.ibm.com
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <1611908705-98507-1-git-send-email-yang.lee@linux.alibaba.com>
+From:   Andrew Donnellan <ajd@linux.ibm.com>
+Message-ID: <58b3b4f2-09eb-841e-406b-4ec836eaebab@linux.ibm.com>
+Date:   Mon, 1 Feb 2021 12:44:12 +1100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210129202019.2099259-1-elder@linaro.org> <20210129202019.2099259-10-elder@linaro.org>
- <CAF=yD-L1SKzu+gsma7KN4VjGnma-_w+amXx=Y_0e78rQiUCu7Q@mail.gmail.com>
- <e27f5c10-7b77-1f12-fe36-e9261f01bca1@linaro.org> <CAF=yD-+4xNjgkWQw8tMz0uvK45ysL6vnx86ZgEud+kCW9zw9_A@mail.gmail.com>
- <67f4aa5a-4a60-41e6-a049-0ff93fb87b66@linaro.org>
-In-Reply-To: <67f4aa5a-4a60-41e6-a049-0ff93fb87b66@linaro.org>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Sun, 31 Jan 2021 20:36:01 -0500
-Message-ID: <CAF=yD-+ABnhRmcHq=1T7PVz8VUVjqC073bjTa89GUt1rA3KVUw@mail.gmail.com>
-Subject: Re: [PATCH net-next 9/9] net: ipa: don't disable NAPI in suspend
-To:     Alex Elder <elder@linaro.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, elder@kernel.org,
-        evgreen@chromium.org, bjorn.andersson@linaro.org,
-        cpratapa@codeaurora.org,
-        Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1611908705-98507-1-git-send-email-yang.lee@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-01-31_09:2021-01-29,2021-01-31 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ priorityscore=1501 mlxlogscore=999 clxscore=1011 phishscore=0 bulkscore=0
+ impostorscore=0 spamscore=0 lowpriorityscore=0 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102010003
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 10:32 AM Alex Elder <elder@linaro.org> wrote:
->
-> On 1/31/21 8:52 AM, Willem de Bruijn wrote:
-> > On Sat, Jan 30, 2021 at 11:29 PM Alex Elder <elder@linaro.org> wrote:
-> >>
-> >> On 1/30/21 9:25 AM, Willem de Bruijn wrote:
-> >>> On Fri, Jan 29, 2021 at 3:29 PM Alex Elder <elder@linaro.org> wrote:
-> >>>>
-> >>>> The channel stop and suspend paths both call __gsi_channel_stop(),
-> >>>> which quiesces channel activity, disables NAPI, and (on other than
-> >>>> SDM845) stops the channel.  Similarly, the start and resume paths
-> >>>> share __gsi_channel_start(), which starts the channel and re-enables
-> >>>> NAPI again.
-> >>>>
-> >>>> Disabling NAPI should be done when stopping a channel, but this
-> >>>> should *not* be done when suspending.  It's not necessary in the
-> >>>> suspend path anyway, because the stopped channel (or suspended
-> >>>> endpoint on SDM845) will not cause interrupts to schedule NAPI,
-> >>>> and gsi_channel_trans_quiesce() won't return until there are no
-> >>>> more transactions to process in the NAPI polling loop.
-> >>>
-> >>> But why is it incorrect to do so?
-> >>
-> >> Maybe it's not; I also thought it was fine before, but...
-> >>
-> >> Someone at Qualcomm asked me why I thought NAPI needed
-> >> to be disabled on suspend.  My response was basically
-> >> that it was a lightweight operation, and it shouldn't
-> >> really be a problem to do so.
-> >>
-> >> Then, when I posted two patches last month, Jakub's
-> >> response told me he didn't understand why I was doing
-> >> what I was doing, and I stepped back to reconsider
-> >> the details of what was happening at suspend time.
-> >>
-> >> https://lore.kernel.org/netdev/20210107183803.47308e23@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com/
-> >>
-> >> Four things were happening to suspend a channel:
-> >> quiesce activity; disable interrupt; disable NAPI;
-> >> and stop the channel.  It occurred to me that a
-> >> stopped channel would not generate interrupts, so if
-> >> the channel was stopped earlier there would be no need
-> >> to disable the interrupt.  Similarly there would be
-> >> (essentially) no need to disable NAPI once a channel
-> >> was stopped.
-> >>
-> >> Underlying all of this is that I started chasing a
-> >> hang that was occurring on suspend over a month ago.
-> >> It was hard to reproduce (hundreds or thousands of
-> >> suspend/resume cycles without hitting it), and one
-> >> of the few times I actually hit the problem it was
-> >> stuck in napi_disable(), apparently waiting for
-> >> NAPI_STATE_SCHED to get cleared by napi_complete().
-> >
-> > This is important information.
-> >
-> > What exactly do you mean by hang?
->
-> Yes it's important!  Unfortunately I was not able to
-> gather details about the problem in all the cases where
-> it occurred.  But in at least one case I *did* confirm
-> it was in the situation described above.
->
-> What I mean by "hang" is that the system simply stopped
-> on its way down, and the IPA ->suspend callback never
-> completed (stuck in napi_disable).  So I expect that
-> the SCHED flag was never going to get cleared (because
-> of a race, presumably).
->
-> >> My best guess about how this could occur was if there
-> >> were a race of some kind between the interrupt handler
-> >> (scheduling NAPI) and the poll function (completing
-> >> it).  I found a number of problems while looking
-> >> at this, and in the past few weeks I've posted some
-> >> fixes to improve things.  Still, even with some of
-> >> these fixes in place we have seen a hang (but now
-> >> even more rarely).
-> >>
-> >> So this grand rework of suspending/stopping channels
-> >> is an attempt to resolve this hang on suspend.
-> >
-> > Do you have any data that this patchset resolves the issue, or is it
-> > too hard to reproduce to say anything?
->
-> The data I have is that I have been running for weeks
-> with tens of thousands of iterations with this patch
-> (and the rest of them) without any hang.  Unfortunately
-> that doesn't guarantee anything.  I contemplated trying
-> to "catch" the problem and report that it *would have*
-> occurred had the fix not been in place, but I haven't
-> tried that (in part because it might not be easy).
->
-> So...  Too hard to reproduce, but I have evidence that
-> my testing so far has never reproduced the hang.
->
-> >> The channel is now stopped early, and once stopped,
-> >> everything that completed prior to the channel being
-> >> stopped is polled before considering the suspend
-> >> function done.
-> >
-> > Does the call to gsi_channel_trans_quiesce before
-> > gsi_channel_stop_retry leave a race where new transactions may occur
-> > until state GSI_CHANNEL_STATE_STOPPED is reached? Asking without truly
-> > knowing the details of this device.
->
-> It should not.  For TX endpoints that have a net device, new
-> requests will have been stopped earlier by netif_stop_queue()
-> (in ipa_modem_suspend()).  For RX endpoints, receive buffers
-> are replenished to the hardware, but we stop that earlier
-> as well, in ipa_endpoint_suspend_one().  So the quiesce call
-> is meant to figure out what the last submitted request was
-> for an endpoint (channel), and then wait for that to complete.
->
-> The "hang" occurs on an RX endpoint, and in particular it
-> occurs on an endpoint that we *know* will be receiving a
-> packet as part of the suspend process (when clearing the
-> hardware pipeline).  I can go into that further but won't'
-> unless asked.
->
-> >> A stopped channel won't interrupt,
-> >> so we don't bother disabling the completion interrupt,
-> >> with no interrupts, NAPI won't be scheduled, so there's
-> >> no need to disable NAPI either.
-> >
-> > That sounds plausible. But it doesn't explain why napi_disable "should
-> > *not* be done when suspending" as the commit states.
-> >
-> > Arguably, leaving that won't have much effect either way, and is in
-> > line with other drivers.
->
-> Understood and agreed.  In fact, if the hang occurrs in
-> napi_disable() when waiting for NAPI_STATE_SCHED to clear,
-> it would occur in napi_synchronize() as well.
+On 29/1/21 7:25 pm, Yang Li wrote:
+> Fix the following coccicheck warning:
+> ./drivers/misc/cxl/sysfs.c:181:48-53: WARNING: conversion to bool not
+> needed here
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
 
-Agreed.
+Reviewed-by: Andrew Donnellan <ajd@linux.ibm.com>
 
-So you have an environment to test a patch in, it might be worthwhile
-to test essentially the same logic reordering as in this patch set,
-but while still disabling napi.
+Thanks!
 
-The disappearing race may be due to another change rather than
-napi_disable vs napi_synchronize. A smaller, more targeted patch could
-also be a net (instead of net-next) candidate.
+> ---
+>   drivers/misc/cxl/sysfs.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/misc/cxl/sysfs.c b/drivers/misc/cxl/sysfs.c
+> index d97a243..c173a5e 100644
+> --- a/drivers/misc/cxl/sysfs.c
+> +++ b/drivers/misc/cxl/sysfs.c
+> @@ -178,7 +178,7 @@ static ssize_t perst_reloads_same_image_store(struct device *device,
+>   	if ((rc != 1) || !(val == 1 || val == 0))
+>   		return -EINVAL;
+>   
+> -	adapter->perst_same_image = (val == 1 ? true : false);
+> +	adapter->perst_same_image = (val == 1);
+>   	return count;
+>   }
+>   
+> 
 
-> At this point
-> it's more about the whole set of rework here, and keeping
-> NAPI enabled during suspend seems a little cleaner.
-
-I'm not sure. I haven't looked if there is a common behavior across
-devices. That might be informative. igb, for one, releases all
-resources.
-
-> See my followup message, about Jakub's assertion that NAPI
-> assumes the device will be *reset* when NAPI is disabled.
-> (I'm not convinced NAPI assumes that, but that doesn't matter.)
-> In any case, the IPA hardware does *not* reset channels when
-> suspended.
->
-> > Your previous patchset mentions "When stopping a channel, the IPA
-> > driver currently disables NAPI before disabling the interrupt." That
-> > would no longer be the case.
->
-> I'm not sure which patch you're referring to (and I'm in
-> a hurry at the moment).  But yes, with this patch we would
-> only disable NAPI when "really" stopping the channel, not
-> when suspending it.  And we'd similarly be no longer
-> disabling the completion interrupt on suspend either.
->
-> Thanks a lot, I appreciate the help and input on this.
->
->                                         -Alex
->
-> >> The net result is simpler, and seems logical, and
-> >> should preclude any possible race between the interrupt
-> >> handler and poll function.  I'm trying to solve the
-> >> hang problem analytically, because it takes *so* long
-> >> to reproduce.
-> >>
-> >> I'm open to other suggestions.
-> >>
-> >>                                         -Alex
-> >>
-> >>>  From a quick look, virtio-net disables on both remove and freeze, for instance.
-> >>>
-> >>>> Instead, enable NAPI in gsi_channel_start(), when the completion
-> >>>> interrupt is first enabled.  Disable it again in gsi_channel_stop(),
-> >>>> when finally disabling the interrupt.
-> >>>>
-> >>>> Add a call to napi_synchronize() to __gsi_channel_stop(), to ensure
-> >>>> NAPI polling is done before moving on.
-> >>>>
-> >>>> Signed-off-by: Alex Elder <elder@linaro.org>
-> >>>> ---
-> >>> =
-> >>>> @@ -894,12 +894,16 @@ int gsi_channel_start(struct gsi *gsi, u32 channel_id)
-> >>>>          struct gsi_channel *channel = &gsi->channel[channel_id];
-> >>>>          int ret;
-> >>>>
-> >>>> -       /* Enable the completion interrupt */
-> >>>> +       /* Enable NAPI and the completion interrupt */
-> >>>> +       napi_enable(&channel->napi);
-> >>>>          gsi_irq_ieob_enable_one(gsi, channel->evt_ring_id);
-> >>>>
-> >>>>          ret = __gsi_channel_start(channel, true);
-> >>>> -       if (ret)
-> >>>> -               gsi_irq_ieob_disable_one(gsi, channel->evt_ring_id);
-> >>>> +       if (!ret)
-> >>>> +               return 0;
-> >>>> +
-> >>>> +       gsi_irq_ieob_disable_one(gsi, channel->evt_ring_id);
-> >>>> +       napi_disable(&channel->napi);
-> >>>>
-> >>>>          return ret;
-> >>>>   }
-> >>>
-> >>> subjective, but easier to parse when the normal control flow is linear
-> >>> and the error path takes a branch (or goto, if reused).
-> >>>
-> >>
->
+-- 
+Andrew Donnellan              OzLabs, ADL Canberra
+ajd@linux.ibm.com             IBM Australia Limited
