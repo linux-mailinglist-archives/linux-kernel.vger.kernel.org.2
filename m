@@ -2,123 +2,265 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C64AC30AF87
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:38:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA8B30AF97
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232990AbhBAShU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:37:20 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19690 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231124AbhBASgs (ORCPT
+        id S232365AbhBASjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:39:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54098 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232014AbhBASiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:36:48 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B60184a170002>; Mon, 01 Feb 2021 10:36:07 -0800
-Received: from HKMAIL104.nvidia.com (10.18.16.13) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 1 Feb
- 2021 18:36:05 +0000
-Received: from HKMAIL102.nvidia.com (10.18.16.11) by HKMAIL104.nvidia.com
- (10.18.16.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 1 Feb
- 2021 18:36:03 +0000
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.174)
- by HKMAIL102.nvidia.com (10.18.16.11) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 1 Feb 2021 18:36:02 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OZeUhKCvA9N4AiF4RlcIflSIjma3pDzXDhGUctVTErkg53X7GfC+VNCgCmEjaOYrNS+wrnWr3gEuAJHs1fGmydj7K8IRX43z0ZEKdBQ4MFI0FL65X/YHFfC7jwNvcbYlujkLMo5dIZeJrKpZjvKalQPuyku116NIcP6WHBxVEMYQ4SO9pdnZsm4JcxhFxe0x0n7rn0lNLgPGKEc+v0rhqaP2F/j/Mtirb0ze8v7MYLuhiqImvnGOQrAvIIkN97Eq/ar/REntCzyHIBp57X6y3qys7ogquFr18uY+zcJA+36zesn/0HhzZUd4te8tEmndTimysPWRgMhBFk2KKU7hJw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jiTKruJO1AZI7fiHFHE5Rl0gmUMUSvyc/wvIj4+AKSs=;
- b=cGA+oPVlIkknT9qBCBHYXdUh2KOjARMTod2KYS6tuiMFW7AGXdya9V49PMzuakNQXDq4h97g7ot7lva3iUa3RiREf2a1QvcWwaqGnyXWJ2CHrbyQ2/6jbWer1htO+6m2H3xr5VjOVCNIK2aCovzeI204ImD0QCQWhY9B8WscgAmA1xKgiyCqHKrwmALfry6W/b9R+A3ogZNpeQvqHQm8QN4ElKp/rTc1kRgqNF4mSM3Ea6UT5wIFOXKGxIDFNdjlmVVEyjJCdQORhj2EFBz3aVXqMpNyWLhvWYbpIVaLwFqX63kYD04C8xgrisqMlwNN0GO/UbvmEU5q1bEhWERuxg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR12MB1244.namprd12.prod.outlook.com (2603:10b6:3:73::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.24; Mon, 1 Feb
- 2021 18:36:00 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3805.025; Mon, 1 Feb 2021
- 18:35:59 +0000
-Date:   Mon, 1 Feb 2021 14:35:58 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>
-CC:     <cohuck@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <alex.williamson@redhat.com>,
-        <liranl@nvidia.com>, <oren@nvidia.com>, <tzahio@nvidia.com>,
-        <leonro@nvidia.com>, <yarong@nvidia.com>, <aviadye@nvidia.com>,
-        <shahafs@nvidia.com>, <artemp@nvidia.com>, <kwankhede@nvidia.com>,
-        <ACurrid@nvidia.com>, <gmataev@nvidia.com>, <cjia@nvidia.com>,
-        <mjrosato@linux.ibm.com>, <yishaih@nvidia.com>, <aik@ozlabs.ru>
-Subject: Re: [PATCH 9/9] vfio/pci: use powernv naming instead of nvlink2
-Message-ID: <20210201183558.GM4247@nvidia.com>
-References: <20210201162828.5938-1-mgurtovoy@nvidia.com>
- <20210201162828.5938-10-mgurtovoy@nvidia.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210201162828.5938-10-mgurtovoy@nvidia.com>
-X-ClientProxiedBy: MN2PR18CA0001.namprd18.prod.outlook.com
- (2603:10b6:208:23c::6) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Mon, 1 Feb 2021 13:38:10 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A4D4C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 10:37:30 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id i30so17317679ota.6
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 10:37:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=OK3/yMIGSV86DUvu0dfJ5TR43VEdRRr2kp7r5QmuJMg=;
+        b=SqoymMDvywSVy60i1yydFlMnRr6P1zz7cWovIo5AorDgsrF4DGEc/PU3NRtCbAkjAL
+         X6cAbWktocFq1320H7gStljcXXpuJ+un57AgMJDW/STkwFYzZbou6R71onFSn0S1+X0f
+         VhQDGyf9DvwKspvxgiZ4u1+zZ8+izN6s6FD+Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=OK3/yMIGSV86DUvu0dfJ5TR43VEdRRr2kp7r5QmuJMg=;
+        b=FANr7ztGIL4SiATRHg5dvAh0TfqxiQZ7dn9sCHZBx0Srx3Bi1ZGiWtavJCerVux2IG
+         PurErZ6ofICZyVhCvphf8VBrc+uWEX7230pTGGZbFGSKvbuOB61d1TRG6i1KPzgybYyH
+         D9yZ8Xv2CtzAZzOiESXOQ+w06mKQ/C97uRXGoh+5X8kcUaGltLYk0uiPmNyk0pIGI40e
+         V4au/RymS9ZQPBPtYochuhh6KjBj1v1MfPAQUEss0ykCj4t5uvfz86CU5rdtrxh/4aYx
+         L1sw6MkQOHlIRWA3qsaGKIz77qf1yiytaLsFz884EYiWXiyi9HI4J/BVeT8lCj4B8smu
+         8wsQ==
+X-Gm-Message-State: AOAM530d4DgP8KqGvik9QQgIfOWKAgUlkoW4mPmg5wqG9osIFAbsMeUN
+        CLtsdB3dnhx+3YS2nsecbZ/yMWI2JNLsrIKoYMd1DQ==
+X-Google-Smtp-Source: ABdhPJyhEU8xX3mT6PUHT8uMARuTiEksa8FqEw+sjMX8pGPH0y8wnnnhVvVYSun/7uCYlAxpPfgBn8zW4WpFbe/JEys=
+X-Received: by 2002:a9d:6c96:: with SMTP id c22mr12345078otr.303.1612204649387;
+ Mon, 01 Feb 2021 10:37:29 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR18CA0001.namprd18.prod.outlook.com (2603:10b6:208:23c::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Mon, 1 Feb 2021 18:35:59 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l6e3K-002HtE-DT; Mon, 01 Feb 2021 14:35:58 -0400
-X-Header: ProcessedBy-CMR-outbound
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612204567; bh=jiTKruJO1AZI7fiHFHE5Rl0gmUMUSvyc/wvIj4+AKSs=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType:X-Header;
-        b=bi0UtzZlOamrA+yhLa1lWgGCqd0FtocnaKl4jMJoy3wgDwlUsHdeaVHznocEABouK
-         XK/11lEkaknpupxwuMadwzjeZmX+sZJst4ySu0i7iF2PqCQ54CLAFFMARgkZDBkAeC
-         IN5WI0S+eBB7gS1KJi9dORXHwNqMKBJpIGOofHKRFMz8wfWSvmqVbmE9ciAcuV0M/5
-         PRPvNLyLlxpP43KXNIsXO0ouPVx7ZMYg6DrwQADVdCbPjTZzRnI/sFAhBSlI3DJ/SF
-         4Pk9LXbD/CLCaTYxQ9LxvlxoJ+PkzdOQ0+o/jHKb1usMA5bA9IHPH1BJ2oEsbrEJfM
-         woZz3zmHep8qA==
+References: <20210126204240.418297-1-hridya@google.com> <YBFXPbePURupbe+y@kroah.com>
+ <CAO_48GHrpi9XxPhP2evwH_ZJmbVSWqxCvsYg6S2Syh-mrWBHzA@mail.gmail.com>
+ <c0684400-c1e2-0ebd-ad09-cb7b24db5764@gmail.com> <CAO_48GGsOTLdqAQMO9vrLtWAKG6spByMC-GXwDv_f3ENvpemfA@mail.gmail.com>
+In-Reply-To: <CAO_48GGsOTLdqAQMO9vrLtWAKG6spByMC-GXwDv_f3ENvpemfA@mail.gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Mon, 1 Feb 2021 19:37:18 +0100
+Message-ID: <CAKMK7uEwm5tLT3fo_+QtzUthht3JLkhCpZ+6yJ2XSB6U4Qp5wg@mail.gmail.com>
+Subject: Re: [Linaro-mm-sig] [PATCH v3] dmabuf: Add the capability to expose
+ DMA-BUF stats in sysfs
+To:     Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     Christian Koenig <christian.koenig@amd.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        kernel test robot <lkp@intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        Linaro MM SIG <linaro-mm-sig@lists.linaro.org>,
+        hyesoo.yu@samsung.com, Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 04:28:28PM +0000, Max Gurtovoy wrote:
-> This patch doesn't change any logic but only align to the concept of
-> vfio_pci_core extensions. Extensions that are related to a platform
-> and not to a specific vendor of PCI devices should be part of the
-> core driver. Extensions that are specific for PCI device vendor should go
-> to a dedicated vendor vfio-pci driver.
-> 
-> For now, powernv extensions will include only nvlink2.
-> 
-> Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
->  drivers/vfio/pci/Kconfig                                    | 6 ++++--
->  drivers/vfio/pci/Makefile                                   | 2 +-
->  drivers/vfio/pci/vfio_pci_core.c                            | 4 ++--
->  drivers/vfio/pci/{vfio_pci_nvlink2.c => vfio_pci_powernv.c} | 0
->  drivers/vfio/pci/vfio_pci_private.h                         | 2 +-
->  5 files changed, 8 insertions(+), 6 deletions(-)
->  rename drivers/vfio/pci/{vfio_pci_nvlink2.c => vfio_pci_powernv.c} (100%)
+On Thu, Jan 28, 2021 at 1:03 PM Sumit Semwal <sumit.semwal@linaro.org> wrot=
+e:
+>
+> On Thu, 28 Jan 2021 at 17:23, Christian K=C3=B6nig
+> <ckoenig.leichtzumerken@gmail.com> wrote:
+> >
+> > Am 28.01.21 um 12:00 schrieb Sumit Semwal:
+> > > Hi Hridya,
+> > >
+> > > On Wed, 27 Jan 2021 at 17:36, Greg KH <gregkh@linuxfoundation.org> wr=
+ote:
+> > >> On Tue, Jan 26, 2021 at 12:42:36PM -0800, Hridya Valsaraju wrote:
+> > >>> This patch allows statistics to be enabled for each DMA-BUF in
+> > >>> sysfs by enabling the config CONFIG_DMABUF_SYSFS_STATS.
+> > >>>
+> > >>> The following stats will be exposed by the interface:
+> > >>>
+> > >>> /sys/kernel/dmabuf/buffers/<inode_number>/exporter_name
+> > >>> /sys/kernel/dmabuf/buffers/<inode_number>/size
+> > >>> /sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attach_uid>/=
+device
+> > >>> /sys/kernel/dmabuf/buffers/<inode_number>/attachments/<attach_uid>/=
+map_counter
+> > >>>
+> > >>> The inode_number is unique for each DMA-BUF and was added earlier [=
+1]
+> > >>> in order to allow userspace to track DMA-BUF usage across different
+> > >>> processes.
+> > >>>
+> > >>> Currently, this information is exposed in
+> > >>> /sys/kernel/debug/dma_buf/bufinfo.
+> > >>> However, since debugfs is considered unsafe to be mounted in produc=
+tion,
+> > >>> it is being duplicated in sysfs.
+> > >>>
+> > >>> This information will be used to derive DMA-BUF
+> > >>> per-exporter stats and per-device usage stats for Android Bug repor=
+ts.
+> > >>> The corresponding userspace changes can be found at [2].
+> > >>> Telemetry tools will also capture this information(along with other
+> > >>> memory metrics) periodically as well as on important events like a
+> > >>> foreground app kill (which might have been triggered by Low Memory
+> > >>> Killer). It will also contribute to provide a snapshot of the syste=
+m
+> > >>> memory usage on other events such as OOM kills and Application Not
+> > >>> Responding events.
+> > >>>
+> > >>> A shell script that can be run on a classic Linux environment to re=
+ad
+> > >>> out the DMA-BUF statistics can be found at [3](suggested by John
+> > >>> Stultz).
+> > >>>
+> > >>> The patch contains the following improvements over the previous ver=
+sion:
+> > >>> 1) Each attachment is represented by its own directory to allow cre=
+ating
+> > >>> a symlink to the importing device and to also provide room for futu=
+re
+> > >>> expansion.
+> > >>> 2) The number of distinct mappings of each attachment is exposed in=
+ a
+> > >>> separate file.
+> > >>> 3) The per-buffer statistics are now in /sys/kernel/dmabuf/buffers
+> > >>> inorder to make the interface expandable in future.
+> > >>>
+> > >>> All of the improvements above are based on suggestions/feedback fro=
+m
+> > >>> Daniel Vetter and Christian K=C3=B6nig.
+> > >>>
+> > >>> [1]: https://lore.kernel.org/patchwork/patch/1088791/
+> > >>> [2]: https://android-review.googlesource.com/q/topic:%22dmabuf-sysf=
+s%22+(status:open%20OR%20status:merged)
+> > >>> [3]: https://android-review.googlesource.com/c/platform/system/memo=
+ry/libmeminfo/+/1549734
+> > >>>
+> > >>> Signed-off-by: Hridya Valsaraju <hridya@google.com>
+> > >>> Reported-by: kernel test robot <lkp@intel.com>
+> > > Thanks for the patch!
+> > >
+> > > Christian: If you're satisfied with the explanation around not
+> > > directly embedding kobjects into the dma_buf and dma_buf_attachment
+> > > structs, then with Greg's r-b from sysfs PoV, I think we can merge it=
+.
+> > > Please let me know if you feel otherwise!
+> >
+> >  From the technical side it looks clean to me, feel free to add my
+> > acked-by while pushing.
+> >
+> > But I would at least try to convince Daniel on the design. At least som=
+e
+> > of his concerns seems to be valid and keep in mind that we need to
+> > support this interface forever.
+>
+> Naturally.
+>
+> Since he didn't comment over Hridya's last clarification about the
+> tracepoints to track total GPU memory allocations being orthogonal to
+> this series, I assumed he agreed with it.
 
-This is really nothing to do with PPC, "nvlink" is a PCI device that
-shows the entire GPU memory space on these special power systems, and
-the this driver changes the normal vfio-pci behavior to match the
-single device.
+The tracepoint being orthogonal didn't really look convincing to me,
+since I do expect we'll need that at a much more generic level, at
+allocators. Whether that's dma-buf heaps or in drm or wherever. And we
+probably also need that to somehow align with cgroups accounting.
 
-This is probably the best existing example of something that could be
-a vendor PCI driver because of how single-device specific it really
-is.
+But I guess for this it should be easy to extend however we see fit,
+so retrofitting allocator sources and anything else we want/need for
+the overall gpu memory account shouldn't be a problem. Also, it's
+first, so the proof for showing it all works together is more on the
+tracepoints :-)
 
-Read 7f92891778dff62303c070ac81de7b7d80de331a to get some sense of how
-very special a device it is.
+> Daniel, do you still have objections around adding this patch in?
 
-This could be like mlx5, with the single PCI ID pre-populated in a
-match table.
+Needs docs (especially the uapi I think would be useful to document),
+igt tests, that kind of stuff still I think? It's meant to be generic
+uapi across drivers, generally we're a pile stricter for that (and yes
+dma-buf heaps I think didn't do all that, so maybe there's an argument
+for doing this a bit more sloppy or at least "the testsuite is
+somewhere else").
 
-That is probably the key test for vfio_pci_core vs vfio_pci - if the
-modification is triggered by a single PCI ID that can be matched it is
-vfio_pci side, not core.  Compared to the s390 stuff which applies to
-all PCI devices in the system.
+But I think it would be good to have this all done.
+-Daniel
 
-Jason
+>
+> >
+> > Regards,
+> > Christian.
+>
+> Best,
+> Sumit.
+> >
+> > >
+> > >>> ---
+> > >>> Changes in v3:
+> > >>> Fix a warning reported by the kernel test robot.
+> > >>>
+> > >>> Changes in v2:
+> > >>> -Move statistics to /sys/kernel/dmabuf/buffers in oder to allow add=
+ition
+> > >>> of other DMA-BUF-related sysfs stats in future. Based on feedback f=
+rom
+> > >>> Daniel Vetter.
+> > >>> -Each attachment has its own directory to represent attaching devic=
+es as
+> > >>> symlinks and to introduce map_count as a separate file. Based on
+> > >>> feedback from Daniel Vetter and Christian K=C3=B6nig. Thank you bot=
+h!
+> > >>> -Commit messages updated to point to userspace code in AOSP that wi=
+ll
+> > >>> read the DMA-BUF sysfs stats.
+> > >>>
+> > >>>
+> > >>>   .../ABI/testing/sysfs-kernel-dmabuf-buffers   |  52 ++++
+> > >>>   drivers/dma-buf/Kconfig                       |  11 +
+> > >>>   drivers/dma-buf/Makefile                      |   1 +
+> > >>>   drivers/dma-buf/dma-buf-sysfs-stats.c         | 285 +++++++++++++=
++++++
+> > >>>   drivers/dma-buf/dma-buf-sysfs-stats.h         |  62 ++++
+> > >>>   drivers/dma-buf/dma-buf.c                     |  37 +++
+> > >>>   include/linux/dma-buf.h                       |  20 ++
+> > >>>   7 files changed, 468 insertions(+)
+> > >>>   create mode 100644 Documentation/ABI/testing/sysfs-kernel-dmabuf-=
+buffers
+> > >>>   create mode 100644 drivers/dma-buf/dma-buf-sysfs-stats.c
+> > >>>   create mode 100644 drivers/dma-buf/dma-buf-sysfs-stats.h
+> > >> I don't know the dma-buf code at all, but from a sysfs/kobject point=
+ of
+> > >> view, this patch looks good to me:
+> > >>
+> > >> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > Best,
+> > > Sumit.
+> > > _______________________________________________
+> > > Linaro-mm-sig mailing list
+> > > Linaro-mm-sig@lists.linaro.org
+> > > https://lists.linaro.org/mailman/listinfo/linaro-mm-sig
+> >
+>
+>
+> --
+> Thanks and regards,
+>
+> Sumit Semwal
+> Linaro Consumer Group - Tech Lead
+> Linaro.org =E2=94=82 Open source software for ARM SoCs
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+
+
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
