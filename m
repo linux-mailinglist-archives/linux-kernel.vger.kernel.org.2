@@ -2,55 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E12A830A370
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:38:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E296830A372
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232586AbhBAIix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 03:38:53 -0500
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:7647 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232572AbhBAIie (ORCPT
+        id S232303AbhBAIjK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 03:39:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229558AbhBAIip (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 03:38:34 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UNWr9V6_1612168662;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UNWr9V6_1612168662)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 01 Feb 2021 16:37:42 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     keescook@chromium.org
-Cc:     linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] gcc-plugins: remove unneeded semicolon
-Date:   Mon,  1 Feb 2021 16:37:39 +0800
-Message-Id: <1612168659-33332-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Mon, 1 Feb 2021 03:38:45 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF1CC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 00:38:05 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id a9so4639335ejr.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 00:38:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=z4AuE6zxjnO1SI9ppd5bfchNPmK3baNkX/gyPe+l0t8=;
+        b=kCyNznqU+jdacM7Tug3g2mt986OIGwhThXmFdCnBI5qvL7bKM0q4Ue4w33dvry2Nfg
+         BXAOVMrP8rpJ8JjScqAN/7PBO8mvhyP0pBwMr/d+fupexWDNqfFcZvC8GI/yRY8dV++t
+         rU1epvmkKxi3+FCTCONM/tSZE8Z85GGn6xwDdwvdAEX+uB5Del88TU5AolPYq6bZlD6i
+         /irA7W60+faSJVy3yuvhPdkFqBkmr2g/k/Mv1R2PhlBAWIfMWzRLle196mjwzbztwmpU
+         Wx2k4ajd+LAFv7YufsWTAdDV4ywpoS4iqi6G2Kwxv0F1orO3G9NJZLBB+zj+nu3MlOBK
+         K1jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=z4AuE6zxjnO1SI9ppd5bfchNPmK3baNkX/gyPe+l0t8=;
+        b=p28QD1sZ9dX2gVqEFtOhtSn15O7nL6amo0Bcgo3Q1PHxhtJ7+ExQ1Kawz54d+YiC1z
+         90g6/kI07mQO0hP4RrDZjQeDbbF1wSNddjJAW8znYZxdtdMz+8oq3KnpykLEeopSZV1D
+         k6Y73cN4mclzuXa1ugyi0iOWAJNbUzQisX8ZK1LKQtwlZbORVbZbOLrQE1OEwboLEP17
+         7FlUDR41dKVYQfvpid+Uj6ZsGITunoT4vySdPzy7GaqZkF3YKfcEERPq3SlWiK3cLdGC
+         8SrNtq4RlnnwtDiHerI+ZLlsuuXYXiAuyeesKbh+8ii1e2ce2HxaFUY/E56sQ3UoA8Tj
+         1cpA==
+X-Gm-Message-State: AOAM5310FmViD0i7LeU17Bicp5vDRhiPIn6+RGohjUfDERozcXaBQA5Z
+        Kzf3tfTr2u+KkeYqJ4GB5joDEZh2tgGQnljc3A7/zA==
+X-Google-Smtp-Source: ABdhPJw7iZgXyHCD35LZFETL5VROJDAs+q4uynErDBWz1W4mY47jjlfbaQN0o2fztKMogr1ympEDX0yMLs5fnR2rmu0=
+X-Received: by 2002:a17:906:4707:: with SMTP id y7mr4854532ejq.445.1612168684094;
+ Mon, 01 Feb 2021 00:38:04 -0800 (PST)
+MIME-Version: 1.0
+References: <20210129134624.9247-1-brgl@bgdev.pl> <20210129134624.9247-9-brgl@bgdev.pl>
+ <YBQwUkQz3LrG5G4i@smile.fi.intel.com> <CAMRc=MeSy4zWOAGxfoBih62WxAXuOLtkK3ROyt+4LuqLvDxtaQ@mail.gmail.com>
+ <20210131004308.GA4687@sol>
+In-Reply-To: <20210131004308.GA4687@sol>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 1 Feb 2021 09:37:53 +0100
+Message-ID: <CAMRc=Me+Cg1WdV4eaggigBy4ZtnOLmaQ_c34kKv-iWU6Qtg9uQ@mail.gmail.com>
+Subject: Re: [PATCH 8/8] gpio: sim: new testing module
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Joel Becker <jlbec@evilplan.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-doc <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eliminate the following coccicheck warning:
-./scripts/gcc-plugins/latent_entropy_plugin.c:527:2-3: Unneeded
-semicolon
+On Sun, Jan 31, 2021 at 1:43 AM Kent Gibson <warthog618@gmail.com> wrote:
+>
+> On Sat, Jan 30, 2021 at 09:37:55PM +0100, Bartosz Golaszewski wrote:
+> > On Fri, Jan 29, 2021 at 4:57 PM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > >
+> > > On Fri, Jan 29, 2021 at 02:46:24PM +0100, Bartosz Golaszewski wrote:
+> > > > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > > ...
+> > >
+>
+> [snip]
+>
+> > > Honestly, I don't like the idea of Yet Another (custom) Parser in the kernel.
+> > >
+> > > Have you investigated existing parsers? We have cmdline.c, gpio-aggregator.c,
+> > > etc. Besides the fact of test cases which are absent here. And who knows what
+> > > we allow to be entered.
+> > >
+> >
+> > Yes, I looked all around the kernel to find something I could reuse
+> > but failed to find anything useful for this particular purpose. If you
+> > have something you could point me towards, I'm open to alternatives.
+> >
+> > Once we agree on the form of the module, I'll port self-tests to using
+> > it instead of gpio-mockup, so we'll have some tests in the tree.
+> >
+>
+> Given the existing selftests focus on testing the gpio-mockup itself, it
+> would be more appropriate that you add separate tests for gpio-sim.
+>
+> As an end user I'm interested in the concrete example of driving gpio-sim
+> that selftests would provide, so I'm looking forward to seeing that.
+>
+> Cheers,
+> Kent.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- scripts/gcc-plugins/latent_entropy_plugin.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Makes sense, I'll add tests in v2.
 
-diff --git a/scripts/gcc-plugins/latent_entropy_plugin.c b/scripts/gcc-plugins/latent_entropy_plugin.c
-index 9dced66..589454b 100644
---- a/scripts/gcc-plugins/latent_entropy_plugin.c
-+++ b/scripts/gcc-plugins/latent_entropy_plugin.c
-@@ -524,7 +524,7 @@ static unsigned int latent_entropy_execute(void)
- 	while (bb != EXIT_BLOCK_PTR_FOR_FN(cfun)) {
- 		perturb_local_entropy(bb, local_entropy);
- 		bb = bb->next_bb;
--	};
-+	}
- 
- 	/* 4. mix local entropy into the global entropy variable */
- 	perturb_latent_entropy(local_entropy);
--- 
-1.8.3.1
-
+Bartosz
