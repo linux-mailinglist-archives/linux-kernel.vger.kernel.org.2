@@ -2,109 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9648730A83D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:06:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6531930A843
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:06:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbhBANEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:04:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbhBANEn (ORCPT
+        id S231687AbhBANFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:05:35 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:7096 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231478AbhBANFb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:04:43 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FADEC061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 05:03:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=jSruJqvqP42oOvDzzH5lMZkOJMAUz4mT9HH4X7kw/C4=; b=JHqW05K5DJteLosCaiMf13Anp
-        uAEAa2U97sBs5ZlGgUTl8pyHWVurURJGWoFGamVwI6L77AQuAgKwo/AQ7TVYR5qIs9KBQgHeS9Bje
-        yJ0aLiTmFvNZMFo2jWIe9on9VAmz9X4UXEvL6yLUSYo5C6G4rzJbBPDwzmiy5Pz+qSzNprr27YIqi
-        qpucIE+YIcJLSpjjA5KN8cOVyWHxo6EXSYF1R+VlDjHquedK1pC4a+IrbGk6MJoL8Q2h5bPcw46fP
-        XOehEoeSx8H8b7popZKi5rdzcqv6rYs+olXasKST6hJz69c44serqGaSpbcQKAjhWtLAq84oZjFf8
-        ZvOEF3QMw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:37756)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l6Yrp-0003LN-W4; Mon, 01 Feb 2021 13:03:46 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l6Yrp-00021n-1z; Mon, 01 Feb 2021 13:03:45 +0000
-Date:   Mon, 1 Feb 2021 13:03:45 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>,
-        linux-kernel@vger.kernel.org, penberg@kernel.org,
-        geert@linux-m68k.org, linux-arm-kernel@lists.infradead.org,
-        akpm@linux-foundation.org, rppt@kernel.org,
-        giancarlo.ferrari@nokia.com
-Subject: Re: [PATCH] ARM: kexec: Fix panic after TLB are invalidated
-Message-ID: <20210201130344.GF1463@shell.armlinux.org.uk>
-References: <1612140296-12546-1-git-send-email-giancarlo.ferrari89@gmail.com>
- <20210201124720.GA66060@C02TD0UTHF1T.local>
+        Mon, 1 Feb 2021 08:05:31 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 111D2QKK163281;
+        Mon, 1 Feb 2021 08:04:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=hxuRMRBRfXGHt6rA9F92aI19zpjVyYYQdrKgJ+Z9NTE=;
+ b=C+yzMtGHCu6djAbMCOeWLIsHagtbR8OKaWCZGNN9OCjvJFFEbgCZrHFvjo8hylh6zicZ
+ lhwsj5omQV8WbiitOu7u7n92DO38/JyUBoD0m5qRSejYb8u0qg13f6a7m8Q9GbUyGn5T
+ XgB71mn9/1TVb0ce4MewUrQLg5zPUyQWkIjuWwY8ypoLFJOC3xO16zlnCth8X+kXorop
+ 4gL6aL+3K3waohc+6zQitVPOYb/TIli8oL05iv1ELG9STZBQVOfeRMUPxAIMTzgoWTCF
+ cvqd3XoAhTB0DMi1s0uQ3OEdUAWIuofRGdMpjoiGFnZRUfkvATpr0Jp+4WmJcJaRos4L DQ== 
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36ej6082kn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 08:04:37 -0500
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 111Cw3v2023924;
+        Mon, 1 Feb 2021 13:04:28 GMT
+Received: from b01cxnp22036.gho.pok.ibm.com (b01cxnp22036.gho.pok.ibm.com [9.57.198.26])
+        by ppma01dal.us.ibm.com with ESMTP id 36cy3921c2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 13:04:28 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp22036.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 111D4RPM6881828
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 1 Feb 2021 13:04:27 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8859EAC064;
+        Mon,  1 Feb 2021 13:04:27 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 77A75AC060;
+        Mon,  1 Feb 2021 13:04:27 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Mon,  1 Feb 2021 13:04:27 +0000 (GMT)
+Subject: Re: [PATCH v6 1/4] crypto: Add support for ECDSA signature
+ verification
+To:     yumeng <yumeng18@huawei.com>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>
+References: <20210131233301.1301787-1-stefanb@linux.ibm.com>
+ <20210131233301.1301787-2-stefanb@linux.ibm.com>
+ <289ef2ac-d653-47b3-7771-5d8a7342ad21@huawei.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <f7660865-3efc-8425-d494-2e6cc9631cc5@linux.ibm.com>
+Date:   Mon, 1 Feb 2021 08:04:27 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201124720.GA66060@C02TD0UTHF1T.local>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <289ef2ac-d653-47b3-7771-5d8a7342ad21@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-01_05:2021-01-29,2021-02-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 mlxscore=0
+ adultscore=0 priorityscore=1501 impostorscore=0 clxscore=1015
+ suspectscore=0 malwarescore=0 lowpriorityscore=0 bulkscore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102010065
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 12:47:20PM +0000, Mark Rutland wrote:
-> 1. copy reloc code into buffer
-> 2. alter variables in copy of reloc code
-> 3. branch to buffer
-> 
-> ... which would avoid this class of problem too.
+On 2/1/21 2:24 AM, yumeng wrote:
+>
+>
+> 在 2021/2/1 7:32, Stefan Berger 写道:
+>> +/**
+>> + * ecc_get_curve()  - Get a curve given its curve_id
+>> + *
+>> + * @curve_id:  Id of the curve
+>> + *
+>> + * Returns pointer to the curve data, NULL if curve is not available
+>> + */
+>> +const struct ecc_curve *ecc_get_curve(unsigned int curve_id);
+>> +
+>>   /**
+>>    * ecc_is_key_valid() - Validate a given ECDH private key
+>
+>
+> Shall we move this definition to 'include/crypto'? Other drivers may 
+> also want to use it.
 
-Yep, slightly messy to do though:
+Maybe the driver that starts using would move it?
 
-diff --git a/arch/arm/kernel/machine_kexec.c b/arch/arm/kernel/machine_kexec.c
-index 5d84ad333f05..6058e0d3a40d 100644
---- a/arch/arm/kernel/machine_kexec.c
-+++ b/arch/arm/kernel/machine_kexec.c
-@@ -174,18 +174,27 @@ void machine_kexec(struct kimage *image)
- 
- 	reboot_code_buffer = page_address(image->control_code_page);
- 
--	/* Prepare parameters for reboot_code_buffer*/
--	set_kernel_text_rw();
--	kexec_start_address = image->start;
--	kexec_indirection_page = page_list;
--	kexec_mach_type = machine_arch_type;
--	kexec_boot_atags = image->arch.kernel_r2;
--
- 	/* copy our kernel relocation code to the control code page */
- 	reboot_entry = fncpy(reboot_code_buffer,
- 			     &relocate_new_kernel,
- 			     relocate_new_kernel_size);
- 
-+#define set(what, val) \
-+	do { \
-+		uintptr_t __funcp_address; \
-+		int __offset; \
-+		void *__ptr; \
-+		asm("" : "=r" (__funcp_address) : "0" (&relocate_new_kernel)); \
-+		__offset = (uintptr_t)&(what) - (__funcp_address & ~1); \
-+		__ptr = reboot_code_buffer + __offset; \
-+		*(__typeof__(&(what)))__ptr = val; \
-+	} while (0)
-+
-+	set(kexec_start_address, image->start);
-+	set(kexec_indirection_page, page_list);
-+	set(kexec_mach_type, machine_arch_type);
-+	set(kexec_boot_atags, image->arch.kernel_r2);
-+
- 	/* get the identity mapping physical address for the reboot code */
- 	reboot_entry_phys = virt_to_idmap(reboot_entry);
- 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+
