@@ -2,59 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82BCE30AA09
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:42:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7280530AA0B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:42:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231131AbhBAOlY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 09:41:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59384 "EHLO
+        id S231289AbhBAOlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 09:41:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230355AbhBAOlI (ORCPT
+        with ESMTP id S230358AbhBAOlJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 09:41:08 -0500
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92C66C06178A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 06:39:48 -0800 (PST)
-Received: by mail-wm1-x331.google.com with SMTP id j18so12853603wmi.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 06:39:48 -0800 (PST)
+        Mon, 1 Feb 2021 09:41:09 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D4E0C06178B
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 06:39:49 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id z6so16775451wrq.10
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 06:39:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=bM4mPrdGCmHIaP6sSEhqZR0ycPeA2MFnqRQ1Q2Z5NPg=;
-        b=mapxxoizbqOdhL11CoWUraeZYOx5+PqR/p8mC5NxGcTDTQIuJkhsHdh1bXNCU9ADcZ
-         j6YoODnzj2h3IFBHK/69d2IHLnPUZ2sF8zeVuWpjPwk8Y7LG0n7Km76U7zGNajBCrv1T
-         m+SOn6WpVqUEDSpxdczlSX4Z6PThPVcue3a408x+5HNODq+4GBIt777xGiPS4YE0Z8QH
-         +LrupyqH78BeEk1f1u2M9E8Wmt5u/us7gG6VawZa3ef/wYULl/Gwf/Q2I7HacgqCXnkm
-         Oa+0Win/kSyStHptPyUH49e8bYY/4/LfJ9z5Nct7qfvSY42tZznM6I1xpb+YA1gggypV
-         lA2Q==
+        bh=lDwxjOTNwRK/jrgXFyt6Q5KAd5bTTyW5pp6F8HQ+RfM=;
+        b=ra/HweOfs/gsoL7RyLujE631F/5dEYvUbwH3AyoP0y+0qLVXdfz9LBEfiacR6k0Uiv
+         /hmLUtwrpWpF8pMBw/JnZJFgp3UrAG8o0tGYTfvesq3H+057BEMzHQDVk0Wr3l9jmSFC
+         sQzdhrMyVmMfr3Ez5VoTReuvdHasOXOM/18O+D1LAzBmAXSRs8eO/N7sUd611slNq5SP
+         N9HIlQNxRDHpL2M8WPcGlCx9Ea2ECGM94xa9XIVHyGxgO8jfqnoiQoX/e8iMriwr5voJ
+         YLqbsL1SCCeUlEumVhEdHwbDxaC0y4iw28JMpVgAKglMmGIvkmJeRCLSmLOsfFoIJXCN
+         AG5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=bM4mPrdGCmHIaP6sSEhqZR0ycPeA2MFnqRQ1Q2Z5NPg=;
-        b=Wq8LaoWecBiqkYOFSdbH0x3vtf+kV2VpBmPjZmbpW2kThcyu45OophSRBzk0oLuPkq
-         DiqlWo8RgaShozWDfvuBlR+UnhnlHIs3c2mOUjF7+bJLNcPXT3aVlh4NLfVTYP2Utbof
-         8yGCl05XO5xFCCxD9n4MEda5bgBhZkhDxejs3Tg4u9TG1/xmK8+13/Cj+dtGHmGuQ0Rm
-         CyFWSkbBctH2BvboCkj6ek+Tu6KJt4VRabCn2u1yJhx2VOgZ9q9nZv5PhF/nzqFWhPDD
-         oeVOCY+0WS+IpGUDTdhPNyxBJTEUwhWcdU8IadKc5adWpT5vtjdOEZuRI0p00WKIpFRa
-         7hcA==
-X-Gm-Message-State: AOAM5328iqyi6RlqfiGIAUlFJdv2+LVXuAjpaIcXJ/9sgIh6mFHNE7PK
-        c1OiVhNfU28kOxmuDCTcKRmcOA==
-X-Google-Smtp-Source: ABdhPJwSS3qcNCTIijeUJvFc07Hg1M5sq5oqgoWJwehXRFxKDf9xzf9DLuwxxWGKtYcpCq9CaQIcAg==
-X-Received: by 2002:a05:600c:4fce:: with SMTP id o14mr10071229wmq.140.1612190387319;
-        Mon, 01 Feb 2021 06:39:47 -0800 (PST)
+        bh=lDwxjOTNwRK/jrgXFyt6Q5KAd5bTTyW5pp6F8HQ+RfM=;
+        b=n3kPEurrBO9Fz6utvdLT7ryAXi1miudJk3SQCdm7OIdamu0U/gBFLGYDbpmsCNMKGn
+         gtl7tZPTdKx07HkIX5m7WftCvZeGAn4OCwBU/hbR9OxW6fxFAs0hTNjjul6K+U98k2MF
+         hQwOCKJsILvsaWVeCND3PE2bmaluHoe+qXukc2/Gri4h0IgUFv6sZSY+BjQgzLA56+ds
+         0Y/IRI75tN3mPSh20C/kbzgQXPBYY1Un8w7sJ1grEkI+S7k4OGGKSE3d7wtH4JUWQF9K
+         Vx8JLlHhWPee55yn9FS3ZMXTNvf+FyUYNt00Eo3kD+W7pc2rYIBMR0YadsVrqjgfSN7+
+         7bjA==
+X-Gm-Message-State: AOAM530aSJppbJlGKNzNixecf98qL4/EyHpOQ0NDpW7wQ4Dc1JLQGrda
+        LLrdxf23EUlSyn4iyAOgBNFQKw==
+X-Google-Smtp-Source: ABdhPJw4cRTTRwXoePbizxuey8YfKHu06X58Br5OOurPNGDHnCrrdn6vczKshahRCQ+oD4IRxt4AXg==
+X-Received: by 2002:a05:6000:1202:: with SMTP id e2mr6890968wrx.328.1612190388422;
+        Mon, 01 Feb 2021 06:39:48 -0800 (PST)
 Received: from dell.default ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id h15sm27301359wrt.10.2021.02.01.06.39.46
+        by smtp.gmail.com with ESMTPSA id h15sm27301359wrt.10.2021.02.01.06.39.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 06:39:46 -0800 (PST)
+        Mon, 01 Feb 2021 06:39:47 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Tejun Heo <teheo@suse.de>, linux-ide@vger.kernel.org
-Subject: [PATCH 03/20] ata: libata-pmp: Fix misspelling of 'val'
-Date:   Mon,  1 Feb 2021 14:39:23 +0000
-Message-Id: <20210201143940.2070919-4-lee.jones@linaro.org>
+        CJ <cjtsai@ali.com.tw>, Andre Hedrick <andre@linux-ide.org>,
+        Alan Cox <alan@redhat.com>,
+        Clear Zhang <Clear.Zhang@ali.com.tw>,
+        linux-ide@vger.kernel.org, and cc <htejun@gmail.com>
+Subject: [PATCH 04/20] ata: pata_ali: Repair some misnamed kernel-doc issues
+Date:   Mon,  1 Feb 2021 14:39:24 +0000
+Message-Id: <20210201143940.2070919-5-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210201143940.2070919-1-lee.jones@linaro.org>
 References: <20210201143940.2070919-1-lee.jones@linaro.org>
@@ -66,30 +69,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/ata/libata-pmp.c:76: warning: Function parameter or member 'val' not described in 'sata_pmp_write'
- drivers/ata/libata-pmp.c:76: warning: Excess function parameter 'r_val' description in 'sata_pmp_write'
+ drivers/ata/pata_ali.c:119: warning: Function parameter or member 'mask' not described in 'ali_20_filter'
+ drivers/ata/pata_ali.c:119: warning: Excess function parameter 'ap' description in 'ali_20_filter'
+ drivers/ata/pata_ali.c:322: warning: Function parameter or member 'qc' not described in 'ali_check_atapi_dma'
+ drivers/ata/pata_ali.c:322: warning: Excess function parameter 'adev' description in 'ali_check_atapi_dma'
 
 Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Tejun Heo <teheo@suse.de>
+Cc: CJ <cjtsai@ali.com.tw>
+Cc: Andre Hedrick <andre@linux-ide.org>
+Cc: Alan Cox <alan@redhat.com>
+Cc: Clear Zhang <Clear.Zhang@ali.com.tw>
 Cc: linux-ide@vger.kernel.org
+Cc: and cc <htejun@gmail.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/ata/libata-pmp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/ata/pata_ali.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/ata/libata-pmp.c b/drivers/ata/libata-pmp.c
-index 79f2aeeb482ab..ba7be3f386171 100644
---- a/drivers/ata/libata-pmp.c
-+++ b/drivers/ata/libata-pmp.c
-@@ -62,7 +62,7 @@ static unsigned int sata_pmp_read(struct ata_link *link, int reg, u32 *r_val)
-  *	sata_pmp_write - write PMP register
-  *	@link: link to write PMP register for
-  *	@reg: register to write
-- *	@r_val: value to write
-+ *	@val: value to write
+diff --git a/drivers/ata/pata_ali.c b/drivers/ata/pata_ali.c
+index 0b122f903b8a8..e18aa02f89530 100644
+--- a/drivers/ata/pata_ali.c
++++ b/drivers/ata/pata_ali.c
+@@ -108,7 +108,7 @@ static int ali_c2_cable_detect(struct ata_port *ap)
+ 
+ /**
+  *	ali_20_filter		-	filter for earlier ALI DMA
+- *	@ap: ALi ATA port
++ *	@adev: ATA device
+  *	@adev: attached device
   *
-  *	Write PMP register.
+  *	Ensure that we do not do DMA on CD devices. We may be able to
+@@ -313,7 +313,7 @@ static void ali_lock_sectors(struct ata_device *adev)
+ 
+ /**
+  *	ali_check_atapi_dma	-	DMA check for most ALi controllers
+- *	@adev: Device
++ *	@qc: Command to complete
   *
+  *	Called to decide whether commands should be sent by DMA or PIO
+  */
 -- 
 2.25.1
 
