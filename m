@@ -2,118 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E161E30A81B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:56:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9019F30A82A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 13:58:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231703AbhBAMzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 07:55:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36798 "EHLO mail.kernel.org"
+        id S231993AbhBAM5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 07:57:31 -0500
+Received: from mga17.intel.com ([192.55.52.151]:16603 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231733AbhBAMzD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 07:55:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E064264EA5;
-        Mon,  1 Feb 2021 12:54:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612184060;
-        bh=zWF+wd/PULo/VNVJQJXebEqy2S1k4Ep9nQ1G7TCUPGo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p8uQwfyhxCKnCpl7YK40xhXOBD2Y6FXdga9DxkiUjzgICQ0zWinEap4SZs/wV0G90
-         1fm+qS+22XjKt68W1uuH0RYjXouOEHtNH3Fq3du1OGc7tsuUdi676ysPDiLImnzUg5
-         l1JKGMFvIyZpxl9LnBSx9A79LAtaKHC5JQfwNgc/8WPtrxOVCscHp1gXW4kIjqgP8E
-         So86FU5DCiLrcK4rsNy0ufqeghDr5/2HFDHex5QaZlirsO3mCDRD8ug5G2AgLJ3ECE
-         H02kHxC/J9rtlq9VyhUE7DPfqcpKroRyWUIeDOb2vZDf2ivNWHcy+EFQC6ZaL63OZh
-         721NsBB9E96RQ==
-Date:   Mon, 1 Feb 2021 12:54:12 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Zhen Lei <thunder.leizhen@huawei.com>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-Subject: Re: [PATCH v4 1/2] perf/smmuv3: Don't reserve the PMCG register
- spaces
-Message-ID: <20210201125412.GA14772@willie-the-truck>
-References: <20210130071414.1575-1-thunder.leizhen@huawei.com>
- <20210130071414.1575-2-thunder.leizhen@huawei.com>
+        id S231482AbhBAM52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 07:57:28 -0500
+IronPort-SDR: 3xYD5opazcBhMvMZ6SbBJ3UaLpMQ6Dhj7sKp9Zf3sr+SvqYJzbLPKn/VC2t7BHowH5H9WGTefq
+ E3/7rbAvhPdg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="160444627"
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="160444627"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 04:55:42 -0800
+IronPort-SDR: 3UsmtFbxj0oAnbcLa0/rYvgzjTkuLNPHRU96t6Z0hkhblKmousOB6nocmUebKww6X1lOwVi8h3
+ LDzZa+fvCeJQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="478950119"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 01 Feb 2021 04:55:39 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 01 Feb 2021 14:55:39 +0200
+Date:   Mon, 1 Feb 2021 14:55:39 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Benson Leung <bleung@chromium.org>
+Cc:     enric.balletbo@collabora.com, pmalani@chromium.org,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, groeck@chromium.org,
+        bleung@google.com
+Subject: Re: [PATCH 6/6] platform/chrome: cros_ec_typec: Set opmode to PD on
+ SOP connected
+Message-ID: <20210201125539.GF2465@kuha.fi.intel.com>
+References: <20210129061406.2680146-1-bleung@chromium.org>
+ <20210129061406.2680146-7-bleung@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210130071414.1575-2-thunder.leizhen@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210129061406.2680146-7-bleung@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 30, 2021 at 03:14:13PM +0800, Zhen Lei wrote:
-> According to the SMMUv3 specification:
-> Each PMCG counter group is represented by one 4KB page (Page 0) with one
-> optional additional 4KB page (Page 1), both of which are at IMPLEMENTATION
-> DEFINED base addresses.
+On Thu, Jan 28, 2021 at 10:14:06PM -0800, Benson Leung wrote:
+> When SOP Discovery is done, set the opmode to PD if status indicates
+> SOP is connected.
 > 
-> This means that the PMCG register spaces may be within the 64KB pages of
-> the SMMUv3 register space. When both the SMMU and PMCG drivers reserve
-> their own resources, a resource conflict occurs.
+> SOP connected indicates a PD contract is in place, and is a solid
+> indication we have transitioned to PD power negotiation, either as
+> source or sink.
 > 
-> To avoid this conflict, don't reserve the PMCG regions.
-> 
-> Suggested-by: Robin Murphy <robin.murphy@arm.com>
-> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+> Signed-off-by: Benson Leung <bleung@chromium.org>
+
+FWIW:
+
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
 > ---
->  drivers/perf/arm_smmuv3_pmu.c | 25 +++++++++++++++++++------
->  1 file changed, 19 insertions(+), 6 deletions(-)
+>  drivers/platform/chrome/cros_ec_typec.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
-> diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
-> index 74474bb322c3f26..5e894f957c7b935 100644
-> --- a/drivers/perf/arm_smmuv3_pmu.c
-> +++ b/drivers/perf/arm_smmuv3_pmu.c
-> @@ -793,17 +793,30 @@ static int smmu_pmu_probe(struct platform_device *pdev)
->  		.capabilities	= PERF_PMU_CAP_NO_EXCLUDE,
->  	};
+> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+> index 6bc6fafd54a4..a7778258d0a0 100644
+> --- a/drivers/platform/chrome/cros_ec_typec.c
+> +++ b/drivers/platform/chrome/cros_ec_typec.c
+> @@ -900,6 +900,9 @@ static void cros_typec_handle_status(struct cros_typec_data *typec, int port_num
+>  			dev_err(typec->dev, "Couldn't parse SOP Disc data, port: %d\n", port_num);
+>  		else
+>  			typec->ports[port_num]->sop_disc_done = true;
+> +
+> +		if (resp.sop_connected)
+> +			typec_set_pwr_opmode(typec->ports[port_num]->port, TYPEC_PWR_MODE_PD);
+>  	}
 >  
-> -	smmu_pmu->reg_base = devm_platform_get_and_ioremap_resource(pdev, 0, &res_0);
-> -	if (IS_ERR(smmu_pmu->reg_base))
-> -		return PTR_ERR(smmu_pmu->reg_base);
-> +	/*
-> +	 * The register spaces of the PMCG may be in the register space of
-> +	 * other devices. For example, SMMU. Therefore, the PMCG resources are
-> +	 * not reserved to avoid resource conflicts with other drivers.
-> +	 */
-> +	res_0 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	if (!res_0)
-> +		return ERR_PTR(-EINVAL);
+>  	if (resp.events & PD_STATUS_EVENT_SOP_PRIME_DISC_DONE &&
+> -- 
+> 2.30.0.365.g02bc693789-goog
 
-I tried to apply this, but you've got your return type in a muddle:
+thanks,
 
-@@ @@
-+drivers/perf/arm_smmuv3_pmu.c: In function ‘smmu_pmu_probe’:
-+drivers/perf/arm_smmuv3_pmu.c:803:10: warning: returning ‘void *’ from a function with return type ‘int’ makes integer from pointer without a cast [-Wint-conversion]
-+  803 |   return ERR_PTR(-EINVAL);
-+      |          ^~~~~~~~~~~~~~~~
-+drivers/perf/arm_smmuv3_pmu.c:803:31: warning: incorrect type in return expression (different base types) [sparse]
-+drivers/perf/arm_smmuv3_pmu.c:803:31:    expected int [sparse]
-+drivers/perf/arm_smmuv3_pmu.c:803:31:    got void * [sparse]
-+drivers/perf/arm_smmuv3_pmu.c:806:10: warning: returning ‘void *’ from a function with return type ‘int’ makes integer from pointer without a cast [-Wint-conversion]
-+  806 |   return ERR_PTR(-ENOMEM);
-+      |          ^~~~~~~~~~~~~~~~
-+drivers/perf/arm_smmuv3_pmu.c:806:31: warning: incorrect type in return expression (different base types) [sparse]
-+drivers/perf/arm_smmuv3_pmu.c:806:31:    expected int [sparse]
-+drivers/perf/arm_smmuv3_pmu.c:806:31:    got void * [sparse]
-+drivers/perf/arm_smmuv3_pmu.c:816:11: warning: returning ‘void *’ from a function with return type ‘int’ makes integer from pointer without a cast [-Wint-conversion]
-+  816 |    return ERR_PTR(-EINVAL);
-+      |           ^~~~~~~~~~~~~~~~
-+drivers/perf/arm_smmuv3_pmu.c:816:39: warning: incorrect type in return expression (different base types) [sparse]
-+drivers/perf/arm_smmuv3_pmu.c:816:39:    expected int [sparse]
-+drivers/perf/arm_smmuv3_pmu.c:816:39:    got void * [sparse]
-+drivers/perf/arm_smmuv3_pmu.c:819:11: warning: returning ‘void *’ from a function with return type ‘int’ makes integer from pointer without a cast [-Wint-conversion]
-+  819 |    return ERR_PTR(-ENOMEM);
-+      |           ^~~~~~~~~~~~~~~~
-+drivers/perf/arm_smmuv3_pmu.c:819:39: warning: incorrect type in return expression (different base types) [sparse]
-+drivers/perf/arm_smmuv3_pmu.c:819:39:    expected int [sparse]
-+drivers/perf/arm_smmuv3_pmu.c:819:39:    got void * [sparse]
-
-Will
+-- 
+heikki
