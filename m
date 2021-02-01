@@ -2,434 +2,288 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E791F30AD62
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:07:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C047930AD58
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:04:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231856AbhBARG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:06:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34144 "EHLO
+        id S231721AbhBAREB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:04:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhBARGU (ORCPT
+        with ESMTP id S230110AbhBARDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:06:20 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CADCEC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 09:05:40 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id g15so12476871pgu.9
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 09:05:40 -0800 (PST)
+        Mon, 1 Feb 2021 12:03:54 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6072AC061756;
+        Mon,  1 Feb 2021 09:03:14 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id q7so17367220wre.13;
+        Mon, 01 Feb 2021 09:03:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rV0K3F4zmeFdrVc02lSWJwOMPX58ML+v7RlA79PMicU=;
-        b=jJ0VbsO9t5DSWgyjy9Zb5XMirkM538/h0z7vYekgbJ8VlWdqeZod2gMdQ3QMxRPHl6
-         ygozOMFrOcOukUqgY50TWQWWL+JHiDtB3fgFN6bnBU0eRFYxCMNM6CxbhOVgXYTEm0YB
-         GZ0dLFspeAGIXaZ1qhcVxW8VoAvjHOXLfO9jKMS6/P9O/hdoqSqnlhSDDleO3FXavl3K
-         q4sFyAI678eZ5SzBFKb6N3hkzRjyIVszFsB6nmnzk7y6QOSGh6sU89b3k9G7XDVxR5uI
-         rkgKoN7TWGUU8ze+8YxFQi7Agv2KIurgquVNzY+RFDsO20cMqBtIEofyFUWfAHuhx4OA
-         MHjw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4XpIqMTxiPl1u/vZSNC4Lfvq35vHO2o8tdpi31fPPS4=;
+        b=NQENQ3sKSfnCCWZNZads57GT/TPjyGI8+M73fUH7lR1Ot/kInwJ2Avm+Di51ZV6w9l
+         X1OFgQazGwEfQJ/zmSWuoz5nh2lsvU5zFcLkumBQ2Iya9E/vT8KxnFuBm0MYboBYIV8g
+         vSCr+dmaqPTlLyfAkYZOFvyPGqkZg1b0vW1UEIUvZXDULuxWnBNdjYpWXuZnwvFIv6JQ
+         a5e/HdshQ5wUGzs/dZ3sGIxxntXFNIcX0kIs3RHGs5uKkXgzg112VVk8vm8gM2aGFzO+
+         ManIClm+0NTERQfypLyNFfvTrai8exXRVhtUcYBgCOPLIjmanXnHVijkeG+NSFMt0re8
+         VD9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rV0K3F4zmeFdrVc02lSWJwOMPX58ML+v7RlA79PMicU=;
-        b=DV1kjqbUyOB4Evw2k+q5BkHQzLLWu9BUINCwCeCMdr3VNuloe7TB+GkXb9FBqBzIcO
-         aGLlw4rjeD17C5Fpg8sm6QrwtmWghbGf8cn48/kvMnnMB/NBYWP/JETpyYMg7Jkug3z7
-         zbirp4EZkUpCMedcMdWJfKAVO3VVMW/Nmv9XZFIkN6bSCDuZBttKKG0aMBGmxyd+aSG1
-         sM8z9YmySKtnDIUpANZRqYhGwPyA/bI0O5DWiH3IsnqsMYvK+17CacUh/wQbgyEnF9XX
-         qfRIEZ7O7f5DO4ZgCe0rp+FzueY7c4sZ16GjgqmqnhysWAuSOOEUseQalLK1rlt15l+U
-         hOXQ==
-X-Gm-Message-State: AOAM533gLChPqTdInPXAtsPQ8Y9qMHBWyi+LE+/+2CQRepSb1B58xlpj
-        5x9EMNWFkGuh26VxR7J4d6p/5w==
-X-Google-Smtp-Source: ABdhPJz6dnxvU47KSjmsC0//Ahz4yMlX3PAzHgWbP7GrUCLItx4zzF7U7B/Tt8UP1HO+8ysyXMfnDw==
-X-Received: by 2002:a63:1f21:: with SMTP id f33mr18240572pgf.31.1612199140061;
-        Mon, 01 Feb 2021 09:05:40 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id i9sm18878851pfo.146.2021.02.01.09.05.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 09:05:39 -0800 (PST)
-Date:   Mon, 1 Feb 2021 10:05:37 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Qi Liu <liuqi115@huawei.com>
-Cc:     suzuki.poulose@arm.com, mike.leach@linaro.org,
-        coresight@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linuxarm@openeuler.org
-Subject: Re: [PATCH] coresight: Remove duplicate header files of coresight
- drivers
-Message-ID: <20210201170537.GA1399621@xps15>
-References: <1612184564-26613-1-git-send-email-liuqi115@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4XpIqMTxiPl1u/vZSNC4Lfvq35vHO2o8tdpi31fPPS4=;
+        b=djCxmkIY8DlWX/n1hY2uBrTjeSg1ZnitzbMvEW5MDNLInBJEPSmOEudVYzc2LL6LXz
+         8m+/fNuYtDpQVMMUGai5E9rAAVZxPU+czdWkYOeRScQuijctpR3SCxCpIfDpfwNciHoy
+         L9NRH0+VuzHDb4xtLTMdeKrUkh6rYn//5t+vcl91J1nCXq9J3v6OZv+GqwujkDxjripI
+         fwmfAqtW6wseXcZ0TEPYdYduNID45QCkK952FQxR4xOWPc7uSESDc7CvgBR1YZNnK82j
+         t5WF2iTBqOVGkNwxcNfaZls88FXc5WEx4vbtf5uvRJNrTZsUmZfhUEHA4rSmeUIdpx2Y
+         CxvQ==
+X-Gm-Message-State: AOAM532DMr0luBAR5eTcGVIEvPat4G0NJ3dxgA0hxo5UemG3gV1pMvqD
+        Pplk8enEWbnuiKRFy/c5cBeXNG1HlmzcHifxG/8=
+X-Google-Smtp-Source: ABdhPJyh9DlgUiUfElTEXzXXdzq0tFW7ZJGEVYqpzz9oWLuIAJjdLuqueejEYKVQV3W8DWNCKZvelMKWo09CPxJKjwo=
+X-Received: by 2002:adf:f8c8:: with SMTP id f8mr19452006wrq.132.1612198992884;
+ Mon, 01 Feb 2021 09:03:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612184564-26613-1-git-send-email-liuqi115@huawei.com>
+References: <20210109135112.147759-1-angelogioacchino.delregno@somainline.org>
+ <20210109135112.147759-4-angelogioacchino.delregno@somainline.org>
+ <CAF6AEGvDzdgDy7Znw6dQCV7Z=YxnF2_XsqkV+7BT+oY777TqHA@mail.gmail.com>
+ <8f8c7c37-f7b2-f763-19e1-d89e5c454ab4@somainline.org> <CAF6AEGsQp4xHpH2brUdHmAX1ic2k88EFJRVVWDRxWXUqF9njfw@mail.gmail.com>
+In-Reply-To: <CAF6AEGsQp4xHpH2brUdHmAX1ic2k88EFJRVVWDRxWXUqF9njfw@mail.gmail.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Mon, 1 Feb 2021 09:05:46 -0800
+Message-ID: <CAF6AEGueo71HVBcLW2Mtu5GQ=9HgwL43WczUGLuTk2JWLoH=ew@mail.gmail.com>
+Subject: Re: [PATCH 3/5] drm/msm/dsi_pll_10nm: Fix bad VCO rate calculation
+ and prescaler
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        phone-devel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good day,
+On Mon, Feb 1, 2021 at 7:47 AM Rob Clark <robdclark@gmail.com> wrote:
+>
+> On Mon, Feb 1, 2021 at 2:11 AM AngeloGioacchino Del Regno
+> <angelogioacchino.delregno@somainline.org> wrote:
+> >
+> > Il 31/01/21 20:50, Rob Clark ha scritto:
+> > > On Sat, Jan 9, 2021 at 5:51 AM AngeloGioacchino Del Regno
+> > > <angelogioacchino.delregno@somainline.org> wrote:
+> > >>
+> > >> The VCO rate was being miscalculated due to a big overlook during
+> > >> the process of porting this driver from downstream to upstream:
+> > >> here we are really recalculating the rate of the VCO by reading
+> > >> the appropriate registers and returning a real frequency, while
+> > >> downstream the driver was doing something entirely different.
+> > >>
+> > >> In our case here, the recalculated rate was wrong, as it was then
+> > >> given back to the set_rate function, which was erroneously doing
+> > >> a division on the fractional value, based on the prescaler being
+> > >> either enabled or disabled: this was actually producing a bug for
+> > >> which the final VCO rate was being doubled, causing very obvious
+> > >> issues when trying to drive a DSI panel because the actual divider
+> > >> value was multiplied by two!
+> > >>
+> > >> To make things work properly, remove the multiplication of the
+> > >> reference clock by two from function dsi_pll_calc_dec_frac and
+> > >> account for the prescaler enablement in the vco_recalc_rate (if
+> > >> the prescaler is enabled, then the hardware will divide the rate
+> > >> by two).
+> > >>
+> > >> This will make the vco_recalc_rate function to pass the right
+> > >> frequency to the (clock framework) set_rate function when called,
+> > >> which will - in turn - program the right values in both the
+> > >> DECIMAL_DIV_START_1 and the FRAC_DIV_START_{LOW/MID/HIGH}_1
+> > >> registers, finally making the PLL to output the right clock.
+> > >>
+> > >> Also, while at it, remove the prescaler TODO by also adding the
+> > >> possibility of disabling the prescaler on the PLL (it is in the
+> > >> PLL_ANALOG_CONTROLS_ONE register).
+> > >> Of course, both prescaler-ON and OFF cases were tested.
+> > >
+> > > This somehow breaks things on sc7180 (display gets stuck at first
+> > > frame of splash screen).  (This is a setup w/ an ti-sn65dsi86 dsi->eDP
+> > > bridge)
+> > >
+> >
+> > First frame of the splash means that something is "a bit" wrong...
+> > ...like the DSI clock is a little off.
+> >
+> > I don't have such hardware, otherwise I would've tried... but what you
+> > describe is a bit strange.
+> > Is there any other older qcom platform using this chip? Any other
+> > non-qcom platform? Is the driver for the SN65DSI86 surely fine?
+> > Anyway, as you know, I would never propose untested patches nor
+> > partially working ones for any reason: I'm sorry that this happened.
+>
+> I don't think there is anything publicly avail w/ sc7180 (yet.. but very soon)
+>
+> The ti-sn65dsi86 bridge is used on a bunch of 845/850 devices (like
+> the snapdragon windows laptops).. and I think also the older 835
+> laptops.. ofc that doesn't mean that there isn't some bug, but I'd
+> guess maybe more likely that there is some small difference in DSI vs
+> older devices, or some cmd vs video mode difference.
+>
+> Anyways, seems like the screen did eventually recover so that gives me
+> a bit of confidence to bisect this series, which I'll do a bit later
+> today.
 
-On Mon, Feb 01, 2021 at 09:02:44PM +0800, Qi Liu wrote:
-> Remove duplicate included header files, as coresight-priv.h is included in
-> these coresight drivers.
-> 
-> Signed-off-by: Qi Liu <liuqi115@huawei.com>
-> ---
->  drivers/hwtracing/coresight/coresight-catu.c         | 2 --
->  drivers/hwtracing/coresight/coresight-core.c         | 3 ---
->  drivers/hwtracing/coresight/coresight-cpu-debug.c    | 3 ---
->  drivers/hwtracing/coresight/coresight-cti-core.c     | 3 ---
->  drivers/hwtracing/coresight/coresight-cti-platform.c | 1 -
->  drivers/hwtracing/coresight/coresight-cti.h          | 1 -
->  drivers/hwtracing/coresight/coresight-etb10.c        | 4 ----
->  drivers/hwtracing/coresight/coresight-etm-perf.c     | 1 -
->  drivers/hwtracing/coresight/coresight-etm3x-sysfs.c  | 1 -
->  drivers/hwtracing/coresight/coresight-etm4x-core.c   | 5 -----
->  drivers/hwtracing/coresight/coresight-etm4x-sysfs.c  | 1 -
->  drivers/hwtracing/coresight/coresight-funnel.c       | 3 ---
->  drivers/hwtracing/coresight/coresight-platform.c     | 2 --
->  drivers/hwtracing/coresight/coresight-replicator.c   | 3 ---
->  drivers/hwtracing/coresight/coresight-stm.c          | 3 ---
->  drivers/hwtracing/coresight/coresight-tmc-core.c     | 3 ---
->  drivers/hwtracing/coresight/coresight-tmc-etf.c      | 1 -
->  drivers/hwtracing/coresight/coresight-tmc-etr.c      | 1 -
->  drivers/hwtracing/coresight/coresight-tpiu.c         | 4 ----
->  19 files changed, 45 deletions(-)
+fwiw, this series minus this patch, and everything looks ok.. let me
+take a closer look at what changes with this patch
 
-The idea is to make sure every file stands on its own without dependencies on
-other header files.  Otherwise it is difficult and expensive to move files
-around or make changes to any header file.   As such I will not move forward
-with this set.
+BR,
+-R
 
-Thanks,
-Mathieu
-
-
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-catu.c b/drivers/hwtracing/coresight/coresight-catu.c
-> index a61313f..fcc0367 100644
-> --- a/drivers/hwtracing/coresight/coresight-catu.c
-> +++ b/drivers/hwtracing/coresight/coresight-catu.c
-> @@ -7,10 +7,8 @@
->   * Author: Suzuki K Poulose <suzuki.poulose@arm.com>
->   */
-> 
-> -#include <linux/amba/bus.h>
->  #include <linux/device.h>
->  #include <linux/dma-mapping.h>
-> -#include <linux/io.h>
->  #include <linux/kernel.h>
->  #include <linux/slab.h>
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
-> index 4ba801d..5fb8b12 100644
-> --- a/drivers/hwtracing/coresight/coresight-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-core.c
-> @@ -7,17 +7,14 @@
->  #include <linux/init.h>
->  #include <linux/types.h>
->  #include <linux/device.h>
-> -#include <linux/io.h>
->  #include <linux/err.h>
->  #include <linux/export.h>
->  #include <linux/slab.h>
->  #include <linux/stringhash.h>
->  #include <linux/mutex.h>
->  #include <linux/clk.h>
-> -#include <linux/coresight.h>
->  #include <linux/of_platform.h>
->  #include <linux/delay.h>
-> -#include <linux/pm_runtime.h>
-> 
->  #include "coresight-etm-perf.h"
->  #include "coresight-priv.h"
-> diff --git a/drivers/hwtracing/coresight/coresight-cpu-debug.c b/drivers/hwtracing/coresight/coresight-cpu-debug.c
-> index e1d2324..f8df512 100644
-> --- a/drivers/hwtracing/coresight/coresight-cpu-debug.c
-> +++ b/drivers/hwtracing/coresight/coresight-cpu-debug.c
-> @@ -4,15 +4,12 @@
->   *
->   * Author: Leo Yan <leo.yan@linaro.org>
->   */
-> -#include <linux/amba/bus.h>
-> -#include <linux/coresight.h>
->  #include <linux/cpu.h>
->  #include <linux/debugfs.h>
->  #include <linux/delay.h>
->  #include <linux/device.h>
->  #include <linux/err.h>
->  #include <linux/init.h>
-> -#include <linux/io.h>
->  #include <linux/iopoll.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
-> diff --git a/drivers/hwtracing/coresight/coresight-cti-core.c b/drivers/hwtracing/coresight/coresight-cti-core.c
-> index 61dbc1a..ed7ab82 100644
-> --- a/drivers/hwtracing/coresight/coresight-cti-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-cti-core.c
-> @@ -4,18 +4,15 @@
->   * Author: Mike Leach <mike.leach@linaro.org>
->   */
-> 
-> -#include <linux/amba/bus.h>
->  #include <linux/atomic.h>
->  #include <linux/bits.h>
->  #include <linux/coresight.h>
->  #include <linux/cpu_pm.h>
->  #include <linux/cpuhotplug.h>
->  #include <linux/device.h>
-> -#include <linux/io.h>
->  #include <linux/kernel.h>
->  #include <linux/list.h>
->  #include <linux/mutex.h>
-> -#include <linux/pm_runtime.h>
->  #include <linux/property.h>
->  #include <linux/spinlock.h>
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-cti-platform.c b/drivers/hwtracing/coresight/coresight-cti-platform.c
-> index ccef04f..60b0580 100644
-> --- a/drivers/hwtracing/coresight/coresight-cti-platform.c
-> +++ b/drivers/hwtracing/coresight/coresight-cti-platform.c
-> @@ -2,7 +2,6 @@
->  /*
->   * Copyright (c) 2019, The Linaro Limited. All rights reserved.
->   */
-> -#include <linux/coresight.h>
->  #include <linux/device.h>
->  #include <linux/err.h>
->  #include <linux/of.h>
-> diff --git a/drivers/hwtracing/coresight/coresight-cti.h b/drivers/hwtracing/coresight/coresight-cti.h
-> index acf7b54..0a3b313 100644
-> --- a/drivers/hwtracing/coresight/coresight-cti.h
-> +++ b/drivers/hwtracing/coresight/coresight-cti.h
-> @@ -7,7 +7,6 @@
->  #ifndef _CORESIGHT_CORESIGHT_CTI_H
->  #define _CORESIGHT_CORESIGHT_CTI_H
-> 
-> -#include <linux/coresight.h>
->  #include <linux/device.h>
->  #include <linux/fwnode.h>
->  #include <linux/list.h>
-> diff --git a/drivers/hwtracing/coresight/coresight-etb10.c b/drivers/hwtracing/coresight/coresight-etb10.c
-> index 0cf6f0b..8d5bc04 100644
-> --- a/drivers/hwtracing/coresight/coresight-etb10.c
-> +++ b/drivers/hwtracing/coresight/coresight-etb10.c
-> @@ -10,17 +10,13 @@
->  #include <linux/init.h>
->  #include <linux/types.h>
->  #include <linux/device.h>
-> -#include <linux/io.h>
->  #include <linux/err.h>
->  #include <linux/fs.h>
->  #include <linux/miscdevice.h>
->  #include <linux/uaccess.h>
->  #include <linux/slab.h>
->  #include <linux/spinlock.h>
-> -#include <linux/pm_runtime.h>
->  #include <linux/seq_file.h>
-> -#include <linux/coresight.h>
-> -#include <linux/amba/bus.h>
->  #include <linux/clk.h>
->  #include <linux/circ_buf.h>
->  #include <linux/mm.h>
-> diff --git a/drivers/hwtracing/coresight/coresight-etm-perf.c b/drivers/hwtracing/coresight/coresight-etm-perf.c
-> index bdc34ca..01aba63 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm-perf.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm-perf.c
-> @@ -4,7 +4,6 @@
->   * Author: Mathieu Poirier <mathieu.poirier@linaro.org>
->   */
-> 
-> -#include <linux/coresight.h>
->  #include <linux/coresight-pmu.h>
->  #include <linux/cpumask.h>
->  #include <linux/device.h>
-> diff --git a/drivers/hwtracing/coresight/coresight-etm3x-sysfs.c b/drivers/hwtracing/coresight/coresight-etm3x-sysfs.c
-> index e8c7649..5cf6660 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm3x-sysfs.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm3x-sysfs.c
-> @@ -5,7 +5,6 @@
->   */
-> 
->  #include <linux/pid_namespace.h>
-> -#include <linux/pm_runtime.h>
->  #include <linux/sysfs.h>
->  #include "coresight-etm.h"
->  #include "coresight-priv.h"
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index b20b6ff..0438ef7 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -3,13 +3,11 @@
->   * Copyright (c) 2014, The Linux Foundation. All rights reserved.
->   */
-> 
-> -#include <linux/bitops.h>
->  #include <linux/kernel.h>
->  #include <linux/moduleparam.h>
->  #include <linux/init.h>
->  #include <linux/types.h>
->  #include <linux/device.h>
-> -#include <linux/io.h>
->  #include <linux/err.h>
->  #include <linux/fs.h>
->  #include <linux/slab.h>
-> @@ -20,14 +18,11 @@
->  #include <linux/clk.h>
->  #include <linux/cpu.h>
->  #include <linux/cpu_pm.h>
-> -#include <linux/coresight.h>
->  #include <linux/coresight-pmu.h>
->  #include <linux/pm_wakeup.h>
-> -#include <linux/amba/bus.h>
->  #include <linux/seq_file.h>
->  #include <linux/uaccess.h>
->  #include <linux/perf_event.h>
-> -#include <linux/pm_runtime.h>
->  #include <linux/property.h>
-> 
->  #include <asm/sections.h>
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-> index 989ce7b..347ccb7 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-> @@ -5,7 +5,6 @@
->   */
-> 
->  #include <linux/pid_namespace.h>
-> -#include <linux/pm_runtime.h>
->  #include <linux/sysfs.h>
->  #include "coresight-etm4x.h"
->  #include "coresight-priv.h"
-> diff --git a/drivers/hwtracing/coresight/coresight-funnel.c b/drivers/hwtracing/coresight/coresight-funnel.c
-> index 071c723..c79ded9 100644
-> --- a/drivers/hwtracing/coresight/coresight-funnel.c
-> +++ b/drivers/hwtracing/coresight/coresight-funnel.c
-> @@ -15,9 +15,6 @@
->  #include <linux/slab.h>
->  #include <linux/of.h>
->  #include <linux/platform_device.h>
-> -#include <linux/pm_runtime.h>
-> -#include <linux/coresight.h>
-> -#include <linux/amba/bus.h>
->  #include <linux/clk.h>
-> 
->  #include "coresight-priv.h"
-> diff --git a/drivers/hwtracing/coresight/coresight-platform.c b/drivers/hwtracing/coresight/coresight-platform.c
-> index 3629b78..ca22409 100644
-> --- a/drivers/hwtracing/coresight/coresight-platform.c
-> +++ b/drivers/hwtracing/coresight/coresight-platform.c
-> @@ -13,8 +13,6 @@
->  #include <linux/of_graph.h>
->  #include <linux/of_platform.h>
->  #include <linux/platform_device.h>
-> -#include <linux/amba/bus.h>
-> -#include <linux/coresight.h>
->  #include <linux/cpumask.h>
->  #include <asm/smp_plat.h>
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
-> index 7e2a2b7..36788de 100644
-> --- a/drivers/hwtracing/coresight/coresight-replicator.c
-> +++ b/drivers/hwtracing/coresight/coresight-replicator.c
-> @@ -6,14 +6,11 @@
->   */
-> 
->  #include <linux/acpi.h>
-> -#include <linux/amba/bus.h>
->  #include <linux/kernel.h>
->  #include <linux/device.h>
->  #include <linux/platform_device.h>
-> -#include <linux/io.h>
->  #include <linux/err.h>
->  #include <linux/slab.h>
-> -#include <linux/pm_runtime.h>
->  #include <linux/property.h>
->  #include <linux/clk.h>
->  #include <linux/of.h>
-> diff --git a/drivers/hwtracing/coresight/coresight-stm.c b/drivers/hwtracing/coresight/coresight-stm.c
-> index 9979177..75f0bd8 100644
-> --- a/drivers/hwtracing/coresight/coresight-stm.c
-> +++ b/drivers/hwtracing/coresight/coresight-stm.c
-> @@ -17,17 +17,14 @@
->   */
->  #include <asm/local.h>
->  #include <linux/acpi.h>
-> -#include <linux/amba/bus.h>
->  #include <linux/bitmap.h>
->  #include <linux/clk.h>
-> -#include <linux/coresight.h>
->  #include <linux/coresight-stm.h>
->  #include <linux/err.h>
->  #include <linux/kernel.h>
->  #include <linux/moduleparam.h>
->  #include <linux/of_address.h>
->  #include <linux/perf_event.h>
-> -#include <linux/pm_runtime.h>
->  #include <linux/stm.h>
-> 
->  #include "coresight-priv.h"
-> diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
-> index 8169dff..4fff281 100644
-> --- a/drivers/hwtracing/coresight/coresight-tmc-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
-> @@ -9,7 +9,6 @@
->  #include <linux/types.h>
->  #include <linux/device.h>
->  #include <linux/idr.h>
-> -#include <linux/io.h>
->  #include <linux/err.h>
->  #include <linux/fs.h>
->  #include <linux/miscdevice.h>
-> @@ -21,8 +20,6 @@
->  #include <linux/spinlock.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/of.h>
-> -#include <linux/coresight.h>
-> -#include <linux/amba/bus.h>
-> 
->  #include "coresight-priv.h"
->  #include "coresight-tmc.h"
-> diff --git a/drivers/hwtracing/coresight/coresight-tmc-etf.c b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-> index 989d965..b263f75 100644
-> --- a/drivers/hwtracing/coresight/coresight-tmc-etf.c
-> +++ b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-> @@ -6,7 +6,6 @@
-> 
->  #include <linux/atomic.h>
->  #include <linux/circ_buf.h>
-> -#include <linux/coresight.h>
->  #include <linux/perf_event.h>
->  #include <linux/slab.h>
->  #include "coresight-priv.h"
-> diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-> index bf5230e..1ab0b28 100644
-> --- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
-> +++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-> @@ -5,7 +5,6 @@
->   */
-> 
->  #include <linux/atomic.h>
-> -#include <linux/coresight.h>
->  #include <linux/dma-mapping.h>
->  #include <linux/iommu.h>
->  #include <linux/idr.h>
-> diff --git a/drivers/hwtracing/coresight/coresight-tpiu.c b/drivers/hwtracing/coresight/coresight-tpiu.c
-> index d5dfee9..c5675f9 100644
-> --- a/drivers/hwtracing/coresight/coresight-tpiu.c
-> +++ b/drivers/hwtracing/coresight/coresight-tpiu.c
-> @@ -9,12 +9,8 @@
->  #include <linux/kernel.h>
->  #include <linux/init.h>
->  #include <linux/device.h>
-> -#include <linux/io.h>
->  #include <linux/err.h>
->  #include <linux/slab.h>
-> -#include <linux/pm_runtime.h>
-> -#include <linux/coresight.h>
-> -#include <linux/amba/bus.h>
->  #include <linux/clk.h>
-> 
->  #include "coresight-priv.h"
-> --
-> 2.8.1
-> 
+> > In any case, just to be perfectly transparent, while being here waiting
+> > for review, this patch series got tested on more smartphones, even ones
+> > that I don't personally own, with different displays.
+> >
+> > For your reference, here's a list (all MSM8998..):
+> > - OnePlus 5               (1920x1080)
+> > - F(x)Tec Pro 1           (2160x1080)
+> > - Sony Xperia XZ1 Compact (1280x720)
+> > - Sony Xperia XZ1         (1920x1080)
+> > - Sony Xperia XZ Premium  (3840x2160)
+> >
+>
+> Yeah, no worries, I wasn't trying to imply that the patch was untested.
+>
+> Out of curiosity, are any of those video mode panels?
+>
+> >
+> > > Also, something (I assume DSI related) that I was testing on
+> > > msm-next-staging seems to have effected the colors on the panel (ie.
+> > > they are more muted).. which seems to persist across reboots (ie. when
+> >
+> > So much "fun". This makes me think something about the PCC block doing
+> > the wrong thing (getting misconfigured).
+> >
+> > > switching back to a good kernel), and interestingly if I reboot from a
+> > > good kernel I see part of the login prompt (or whatever was previously
+> > > on-screen) in the firmware ui screen !?!  (so maybe somehow triggered
+> > > the display to think it is in PSR mode??)
+> > >
+> >
+> >  From a fast read, the SN65DSI86 is on I2C.. giving it a wrong dsi clock
+> > cannot produce (logically, at least) this, so I say that it is very
+> > unlikely for this to be a consequence of the 10nm pll fixes...
+> >
+>
+> Note that the bridge can also be programmed via dsi cmd mode packets,
+> which I believe is the case on the 835 laptops (or at least one of
+> them).. but all the things I have are using i2c as the control path.
+>
+> > ...unless the bootloader is not configuring the DSI rates, but that's
+> > also veeeeery unlikely (it always does, or it always does not).
+>
+> I haven't looked at the bootloader display code, but booting back to
+> an old/good kernel didn't change anything..  even powering off didn't.
+> But the ghost image seemed to fade after some time, and by the next
+> morning it was fine.  Which is strange. (But tbf, I'm more a gpu guy
+> who works on display only when necessary.. ie. a gpu without a display
+> isn't so much fun ;-))
+>
+> > > Not sure if that is caused by these patches, but if I can figure out
+> > > how to get the panel back to normal I can bisect.  I think for now
+> > > I'll drop this series.  Possibly it could be a
+> > > two-wrongs-makes-a-right situation that had things working before, but
+> > > I think someone from qcom who knows the DSI IP should take a look.
+> > >
+> >
+> > I would be happy if someone from Qualcomm takes a look: after all, there
+> > is no documentation and they're the only ones that can verify this kind
+> > of stuff. Please, Qualcomm.
+>
+> Hopefully someone can take a look.
+>
+> > Besides that, if there's anything I can help with to solve this riddle,
+> > I'm here for you.
+>
+> Thanks, like I said I'll try applying the patches one by one and see
+> if I can narrow down what made the panel go funny, and we can go from
+> there
+>
+> BR,
+> -R
+>
+> > Yours,
+> > -- Angelo
+> >
+> > > BR,
+> > > -R
+> > >
+> > >
+> > >> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+> > >> ---
+> > >>   drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c | 22 +++++++++-------------
+> > >>   1 file changed, 9 insertions(+), 13 deletions(-)
+> > >>
+> > >> diff --git a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
+> > >> index 8b66e852eb36..5be562dfbf06 100644
+> > >> --- a/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
+> > >> +++ b/drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c
+> > >> @@ -165,11 +165,7 @@ static void dsi_pll_calc_dec_frac(struct dsi_pll_10nm *pll)
+> > >>
+> > >>          pll_freq = pll->vco_current_rate;
+> > >>
+> > >> -       if (config->disable_prescaler)
+> > >> -               divider = fref;
+> > >> -       else
+> > >> -               divider = fref * 2;
+> > >> -
+> > >> +       divider = fref;
+> > >>          multiplier = 1 << config->frac_bits;
+> > >>          dec_multiple = div_u64(pll_freq * multiplier, divider);
+> > >>          dec = div_u64_rem(dec_multiple, multiplier, &frac);
+> > >> @@ -266,9 +262,11 @@ static void dsi_pll_ssc_commit(struct dsi_pll_10nm *pll)
+> > >>
+> > >>   static void dsi_pll_config_hzindep_reg(struct dsi_pll_10nm *pll)
+> > >>   {
+> > >> +       struct dsi_pll_config *config = &pll->pll_configuration;
+> > >>          void __iomem *base = pll->mmio;
+> > >> +       u32 val = config->disable_prescaler ? 0x0 : 0x80;
+> > >>
+> > >> -       pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_ONE, 0x80);
+> > >> +       pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_ONE, val);
+> > >>          pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_TWO, 0x03);
+> > >>          pll_write(base + REG_DSI_10nm_PHY_PLL_ANALOG_CONTROLS_THREE, 0x00);
+> > >>          pll_write(base + REG_DSI_10nm_PHY_PLL_DSM_DIVIDER, 0x00);
+> > >> @@ -499,17 +497,15 @@ static unsigned long dsi_pll_10nm_vco_recalc_rate(struct clk_hw *hw,
+> > >>          frac |= ((pll_read(base + REG_DSI_10nm_PHY_PLL_FRAC_DIV_START_HIGH_1) &
+> > >>                    0x3) << 16);
+> > >>
+> > >> -       /*
+> > >> -        * TODO:
+> > >> -        *      1. Assumes prescaler is disabled
+> > >> -        */
+> > >>          multiplier = 1 << config->frac_bits;
+> > >> -       pll_freq = dec * (ref_clk * 2);
+> > >> -       tmp64 = (ref_clk * 2 * frac);
+> > >> +       pll_freq = dec * ref_clk;
+> > >> +       tmp64 = ref_clk * frac;
+> > >>          pll_freq += div_u64(tmp64, multiplier);
+> > >> -
+> > >>          vco_rate = pll_freq;
+> > >>
+> > >> +       if (config->disable_prescaler)
+> > >> +               vco_rate = div_u64(vco_rate, 2);
+> > >> +
+> > >>          DBG("DSI PLL%d returning vco rate = %lu, dec = %x, frac = %x",
+> > >>              pll_10nm->id, (unsigned long)vco_rate, dec, frac);
+> > >>
+> > >> --
+> > >> 2.29.2
+> > >>
+> >
