@@ -2,169 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9734830A52B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:15:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C37630A52E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233081AbhBAKPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 05:15:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34902 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232869AbhBAKPB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 05:15:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C16C64DDD;
-        Mon,  1 Feb 2021 10:14:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612174459;
-        bh=wSWGa0AelgE602zA7s8sVuYnMOyWFW24cLHyxoZNYfQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Gk+wAbdlwBheXAQXLjaJm15extS73qIDqUBGucZqPW5kf/Cc7IsbSde/eoEWpEG6r
-         ysyEJCkXiriqE5jfqSNXEgT4FEpH2Uce3eXfcjHCeRQehaTGwC3IE6ELPkiRH/HPkC
-         YbV1kes4m6ptkpiMPf4C21xicjejLsBRdB0xDwZQOwOE38H5HqNpBWgvK3xeYnglST
-         ogznAUVtWylVTKvwVCKuvr8AD4b8K6JuhKIo9jJNgqsRvliGYBpw0JOINv43EXhO0i
-         +BIgB9k9WdZWd9fsWUJ+R5V/AWK6aX5eDZefYilW+dextu1yx7+jXy5JJdzoH5x/ta
-         Lu8mkzNExbKFg==
-Date:   Mon, 1 Feb 2021 15:44:14 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        gregkh@linuxfoundation.org, alsa-devel@alsa-project.org,
-        yung-chuan.liao@linux.intel.com, linux-kernel@vger.kernel.org,
-        sanyog.r.kale@intel.com
-Subject: Re: [PATCH] soundwire: debugfs: use controller id instead of link_id
-Message-ID: <20210201101414.GS2771@vkoul-mobl>
-References: <20210115162559.20869-1-srinivas.kandagatla@linaro.org>
- <20210119145220.GS2771@vkoul-mobl>
- <45300dc3-00b0-497b-804e-f7f1e857f32a@linux.intel.com>
- <57d5f1bd-50fa-30ab-03c0-260460e45d61@linaro.org>
- <6d4d4a6b-f28c-81db-4e67-2b5b94116fa4@linux.intel.com>
- <1fad2388-27d0-7014-818d-1272fa70ed9b@linaro.org>
- <33fe8455-01b4-f867-4974-a3e867c930f0@linux.intel.com>
- <feee8676-33fe-7929-8b6c-6abe3a09159a@linaro.org>
+        id S233150AbhBAKPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 05:15:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232994AbhBAKPn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 05:15:43 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DECBBC061574;
+        Mon,  1 Feb 2021 02:15:02 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id d16so15878391wro.11;
+        Mon, 01 Feb 2021 02:15:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ANsARq6fL07NGibn8cbk7oUpbzEAXo/i2Ol65lcGXGk=;
+        b=auV2FdGYh4MkV590dDE95x07nWp+vQjkQhprR0m03LfdKoR6gqTNf/rdCs03rgO3P3
+         5dRPyI0yeutlaDLKS+KOUEIvTHP3j/fAC3lGmwbM4DXDC6wk7B/36RhA6PJNgy0WpdcC
+         DS1DQWajtK4tl5W1oCYLX1sV/N6YtnKgXeiVyczFQuRyYs0l7PD7UEeVb/BHZ53i5xfi
+         YRSCkQcuvj6/rPuA1cK4h+n0/TUgW8HNG/7w6Rw3tX0Iq1cqs/VcmZAuXEnrl5kQgtVZ
+         rtmfkTYNN0qq3BjqP81vzpTeu56W1Wdsd/84ThscRZulmNU6swRBslleHxnSOKRzdLi1
+         HLkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ANsARq6fL07NGibn8cbk7oUpbzEAXo/i2Ol65lcGXGk=;
+        b=md9KixQTPUuoOZgESFRZloPY7Fv9QBPMRnWp/b1rHxloYZelD0PXse1Bw0dPxLMm/q
+         wEsqaYVYeIWJaXHnOVM6kQi5zn6XXMX0Nmk9LC1dw6arxXG8LiyOTLwMexUBrQtQzdjq
+         Js4OWRAONtJme3rr3SWnvcSsU4V6vxxzUkr4ma1nbuS/XA6MRuzI1JQ9h61F2877kJGi
+         j/uwTkZMALlpF7jCtwbRVCOb5mqQ3QFphkPKzB6xDkUavdcQNMD76gk7x5m8ChHA+8Dz
+         DXA9Gl93VXamei3vTYjooPNVnKNDZFEOuEr+BBYSxaNUfdWwne8o/JRwL7zWsrHiabG2
+         UJRw==
+X-Gm-Message-State: AOAM532iTp4LEE/LJbkjIEEvxhKZKg7RgDNVoTXVP10xI+4KfTJpYLYn
+        EPSs/wrMfOsiVfhCUZHrhn0=
+X-Google-Smtp-Source: ABdhPJw2bUOgz+nMZFzakj6FRbaxaWpLQcIPs4OFTUfWc/C3daSngW+6ZM4wCuPndF5BEXIGMZjVag==
+X-Received: by 2002:a05:6000:192:: with SMTP id p18mr17067580wrx.69.1612174501673;
+        Mon, 01 Feb 2021 02:15:01 -0800 (PST)
+Received: from ziggy.stardust ([213.195.126.134])
+        by smtp.gmail.com with ESMTPSA id e12sm25284137wrs.67.2021.02.01.02.15.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Feb 2021 02:15:01 -0800 (PST)
+Subject: Re: [PATCH 0/2] Add MediaTek MT8192 clock provider device nodes
+To:     Weiyi Lu <weiyi.lu@mediatek.com>
+Cc:     Rob Herring <robh@kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-clk@vger.kernel.org, srv_heupstream@mediatek.com,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <1608644414-17793-1-git-send-email-weiyi.lu@mediatek.com>
+ <4536e0a3-8e64-d2b0-df83-33705d10359a@gmail.com>
+ <1612171903.18201.6.camel@mtksdaap41>
+From:   Matthias Brugger <matthias.bgg@gmail.com>
+Message-ID: <61667c50-edee-d9ef-0731-ce59e6c19995@gmail.com>
+Date:   Mon, 1 Feb 2021 11:15:00 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <feee8676-33fe-7929-8b6c-6abe3a09159a@linaro.org>
+In-Reply-To: <1612171903.18201.6.camel@mtksdaap41>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-01-21, 17:23, Srinivas Kandagatla wrote:
-> 
-> 
-> On 21/01/2021 15:12, Pierre-Louis Bossart wrote:
-> > 
-> > 
-> > On 1/21/21 6:03 AM, Srinivas Kandagatla wrote:
-> > > 
-> > > 
-> > > On 19/01/2021 19:09, Pierre-Louis Bossart wrote:
-> > > > 
-> > > > > currently we have
-> > > > > /sys/kernel/debug/soundwire/master-*
-> > > > > 
-> > > > > Are you suggesting that we have something like this:
-> > > > > 
-> > > > > /sys/kernel/debug/soundwire/xyz-controller/master-<LINK-ID> ??
-> > > > 
-> > > > Yes this is what I was thinking about.
-> > > 
-> > > Vinod/Pierre,
-> > > 
-> > > One Question here,
-> > > 
-> > > Why is link_id part of "struct sdw_bus", should it not be part of
-> > > "struct sdw_master_device " ?
-> > > 
-> > > Given that "There is one Link per each Master"
-> > 
-> > it's true that link == master == bus at the concept level.
-> > 
-> > but we have an existing code base with different structures and we can't
-> > break too many things at once.
-> > 
-> > In the existing flow, the 'bus' is created and setup first, the
-> > sdw_bus_master_add() routine takes a 'bus' argument, and the link_id is
-> > already set. This routine only creates a device and in the rest of the
-> > code we keep using the 'bus' pointer, so there's no real short-term
-> > scope for moving the information into the 'sdw_master_device' structure
-> > - that would be a lot of surgery when nothing is really broken.
-> 
-> I totally agree!
-> 
-> If I understand it correctly in Intel case there will be only one Link ID
-> per bus.
+Hi Weiyi,
 
-Yes IIUC there would be one link id per bus.
+On 01/02/2021 10:31, Weiyi Lu wrote:
+> On Sun, 2021-01-31 at 14:27 +0100, Matthias Brugger wrote:
+>>
+>> On 22/12/2020 14:40, Weiyi Lu wrote:
+>>> This series is based on v5.10-rc1, MT8192 dts v6[1] and
+>>> MT8192 clock v6 series[2].
+>>>
+>>> [1] https://patchwork.kernel.org/project/linux-mediatek/list/?series=373899
+>>> [2] https://patchwork.kernel.org/project/linux-mediatek/list/?series=405295
+>>>
+>>
+>> [1] is already mainline. You could add this patch as a new one to [2]. But
+>> please try to improve the series, before sending just a new version with this
+>> patch added.
+>>
+>> Regards,
+>> Matthias
+>>
+> Hi Matthias,
+> 
+> Actually I'm a little confused now. Stephen suggested me to send clock
+> dts separately because dts may not go through his tree.
+> So I separated it from the MT8192 clock series since clock v6.
+> What do you suggest me to do next time?
+> 
 
-the ida approach gives us unique id for each master,bus I would like to
-propose using that everywhere
+Yes, now that you mention that, I remember...
+OK, then I'd propose to resend the DTS patches once the clock patches are accepted.
 
-> 
-> 
-> Does this change look good to you?
-> 
-> ---------------->cut<---------------
-> 
-> diff --git a/drivers/soundwire/debugfs.c b/drivers/soundwire/debugfs.c
-> index b6cad0d59b7b..f22868614f09 100644
-> --- a/drivers/soundwire/debugfs.c
-> +++ b/drivers/soundwire/debugfs.c
-> @@ -19,13 +19,14 @@ void sdw_bus_debugfs_init(struct sdw_bus *bus)
->                 return;
-> 
->         /* create the debugfs master-N */
-> +       bus->controller_debugfs = debugfs_create_dir(dev_name(bus->dev),
-> sdw_debugfs_root);
->         snprintf(name, sizeof(name), "master-%d", bus->link_id);
-> -       bus->debugfs = debugfs_create_dir(name, sdw_debugfs_root);
-> +       bus->debugfs = debugfs_create_dir(name, bus->controller_debugfs);
->  }
-> 
->  void sdw_bus_debugfs_exit(struct sdw_bus *bus)
->  {
-> -       debugfs_remove_recursive(bus->debugfs);
-> +       debugfs_remove_recursive(bus->controller_debugfs);
->  }
-> 
->  #define RD_BUF (3 * PAGE_SIZE)
-> diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-> index b198f471bea8..242bde30d8bd 100644
-> --- a/include/linux/soundwire/sdw.h
-> +++ b/include/linux/soundwire/sdw.h
-> @@ -877,6 +877,7 @@ struct sdw_bus {
->         struct sdw_master_prop prop;
->         struct list_head m_rt_list;
->  #ifdef CONFIG_DEBUG_FS
-> +       struct dentry *controller_debugfs;
->         struct dentry *debugfs;
->  #endif
->         struct sdw_defer defer_msg;
-> 
-> ---------------->cut<---------------
-> 
-> With this change I get something like this on my board:
-> 
-> ~# find /sys/kernel/debug/soundwire/
-> /sys/kernel/debug/soundwire/
-> /sys/kernel/debug/soundwire/sdw-master-2
-> /sys/kernel/debug/soundwire/sdw-master-2/master-0
-> /sys/kernel/debug/soundwire/sdw-master-2/master-0/sdw:0:217:2110:0:4
-> /sys/kernel/debug/soundwire/sdw-master-2/master-0/sdw:0:217:2110:0:4/registers
-> /sys/kernel/debug/soundwire/sdw-master-2/master-0/sdw:0:217:2110:0:3
-> /sys/kernel/debug/soundwire/sdw-master-2/master-0/sdw:0:217:2110:0:3/registers
-> /sys/kernel/debug/soundwire/sdw-master-1
-> /sys/kernel/debug/soundwire/sdw-master-1/master-0
-> /sys/kernel/debug/soundwire/sdw-master-1/master-0/sdw:0:217:10d:0:3
-> /sys/kernel/debug/soundwire/sdw-master-1/master-0/sdw:0:217:10d:0:3/registers
-> /sys/kernel/debug/soundwire/sdw-master-0
-> /sys/kernel/debug/soundwire/sdw-master-0/master-0
-> /sys/kernel/debug/soundwire/sdw-master-0/master-0/sdw:0:217:10d:0:4
-> /sys/kernel/debug/soundwire/sdw-master-0/master-0/sdw:0:217:10d:0:4/registers
-> 
-> 
-> 
-> Thanks,
-> srini
+Regards,
+Matthias
 
--- 
-~Vinod
+>>> Weiyi Lu (2):
+>>>   arm64: dts: mediatek: Add mt8192 clock controllers
+>>>   arm64: dts: mediatek: Correct UART0 bus clock of MT8192
+>>>
+>>>  arch/arm64/boot/dts/mediatek/mt8192.dtsi | 165 ++++++++++++++++++++++-
+>>>  1 file changed, 164 insertions(+), 1 deletion(-)
+>>>
+> 
