@@ -2,85 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E6F30AFB5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:45:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD0C30AFAF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:44:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231603AbhBASpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:45:21 -0500
-Received: from mga03.intel.com ([134.134.136.65]:24072 "EHLO mga03.intel.com"
+        id S232040AbhBASoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:44:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231152AbhBASpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:45:10 -0500
-IronPort-SDR: vSIJQNRp1JEvOzMxRayKrkA+Spvw2xBeqTj6lKRNJ7fy9xcaCAYvelTSZf6A+Ru/sYnXDVcHav
- H0XGTG5X87Ew==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="180810324"
-X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="180810324"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 10:43:10 -0800
-IronPort-SDR: fXVApzUD+SS2KQ4MwTnMPLroI1Gw5OZ8k5DiAKNxJflikACXO0KOAWAK38eXNEmv/V/HbCvMSQ
- pZH/dx9SHGtw==
-X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="371652732"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 10:43:07 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1l6eAC-001Cl9-MC; Mon, 01 Feb 2021 20:43:04 +0200
-Date:   Mon, 1 Feb 2021 20:43:04 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v1 00/10] mfd, x86: remove msic driver and leftovers
-Message-ID: <YBhLuNZ7xmHdhurU@smile.fi.intel.com>
-References: <20210125193948.56760-1-andriy.shevchenko@linux.intel.com>
- <20210126082101.GD4903@dell>
- <YA/xfxcwCabETug6@smile.fi.intel.com>
+        id S231134AbhBASn4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 13:43:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 805CE64DDF;
+        Mon,  1 Feb 2021 18:43:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612204995;
+        bh=RhFJNirKCc5qirqDWt9dnB9pJEbvJC3OwoCh/S0tJag=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GvsXOT9M6tx7XU32S2LQD3zE2QDOGi4NxYCdsgJUaIrVYsIaqjvwPE2ahcsSZOj+P
+         DGfrm+cXrn9/hr2JY9DDEnNhvSNIi01Yg9AdtEzGT9z5D8RoJpCNGlZUTJCM8hayoC
+         G4vUpck6IZGgopBzuKucK0HQdLAoaC1pq58RoB/dU8TBUxAc8qggzgQHUslRP3ay7k
+         +ATbfYqpcmfFwBAFaIfMcCGPu+fAvqmkodFkVr6KkGlUwsBw+TluMAKEBHXbmuB7um
+         1OooYeBO0KUdUF5+ux23pxikLy0zOGTvP52Oiiwo2AScyIHpoIHB/mdnPvm6YvyP7W
+         MPwRJF6Mu3s3g==
+Date:   Mon, 1 Feb 2021 18:43:09 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Quentin Perret <qperret@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, android-kvm@google.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        Fuad Tabba <tabba@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>
+Subject: Re: [RFC PATCH v2 09/26] KVM: arm64: Allow using kvm_nvhe_sym() in
+ hyp code
+Message-ID: <20210201184309.GH15632@willie-the-truck>
+References: <20210108121524.656872-1-qperret@google.com>
+ <20210108121524.656872-10-qperret@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YA/xfxcwCabETug6@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210108121524.656872-10-qperret@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 12:39:59PM +0200, Andy Shevchenko wrote:
-> On Tue, Jan 26, 2021 at 08:21:01AM +0000, Lee Jones wrote:
-> > On Mon, 25 Jan 2021, Andy Shevchenko wrote:
-> > 
-> > > This is a second part of the Intel MID outdated platforms removal.
-> > > First part is available as immutable branch [1]. The series has functional
-> > > and build dependencies, so the mentioned branch should be used as a base
-> > > for these changes.
-> > > 
-> > > Note, that some of the drivers, that arch/x86 covers, seems never appeared
-> > > in the upstream (like msic_ocd).
-> > 
-> > What platforms stop working after this removal?
-> 
-> Intel Moorstown, Medfield, Clovertrail.
-> 
-> > Are you sure no-one is using them?
-> 
-> Definitely.
-> 
-> > I wouldn't be keen on breaking Janet's PC that she's been using daily
-> > and keeping up-to-date since the 90's.
-> 
-> They never were in PCs.
-> 
-> All of them were supported by Android and Janet won't update her phone or even
-> Android tablet for sure they never ever run any kind of Linux than Android.
+On Fri, Jan 08, 2021 at 12:15:07PM +0000, Quentin Perret wrote:
+> In order to allow the usage of code shared by the host and the hyp in
+> static inline library function, allow the usage of kvm_nvhe_sym() at el2
 
-So, I hope you are satisfied and we may proceed with removal.
+typo: functions
 
--- 
-With Best Regards,
-Andy Shevchenko
+> by defaulting to the raw symbol name.
+> 
+> Signed-off-by: Quentin Perret <qperret@google.com>
+> ---
+>  arch/arm64/include/asm/hyp_image.h | 4 ++++
+>  1 file changed, 4 insertions(+)
 
+Acked-by: Will Deacon <will@kernel.org>
 
+Will
