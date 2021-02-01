@@ -2,278 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA6730A6FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:59:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFE0830A6FD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:59:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbhBAL6Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 06:58:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231150AbhBAL54 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 06:57:56 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4934C0613ED
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 03:57:15 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id m6so11435956pfk.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 03:57:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=WzQaOBZlTdFeeAyUnIR3ljNVjCjE/Wu9Dlif4gaAJvY=;
-        b=esA7Ry0kwlpxtlu85rhoQcIC9ERb01N9h6G1izh5EeCUv5c0DE4mINXeKW/5QJZ4nf
-         OZQ6/YvViFie6ZkszZ+YKImtPcwd7KEjXTZMns79nK1Z4y13XLug0fM7fM3TJicSXPH1
-         xTCpYhXGh6vzn+oXaRZfFc/sSL9qGZm4tqYrkHUt4dlR+fCQioAOkUeZCY8ECzz7450j
-         8QNx7fkP37R3gE1xBLIIl8ohY3ywoAudl7ymCV09XD8J7TWDnkomeDJhaChlzs53h1p2
-         ZLxB1whrgDdQYtYESWowG4Dx8wriKfqX+VvEVEZUu5mlBO+mzvEArEPiKyfQNKJ4wU/5
-         zQFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=WzQaOBZlTdFeeAyUnIR3ljNVjCjE/Wu9Dlif4gaAJvY=;
-        b=DfQ0GTO6PuwK9fkjZUOkIJ6H4QXNATKXwkTbNP/8dXB+k0+mpVc9cIBPCK/+jOc0Rc
-         +zqRmU+TyiYzXLjBPlgaXQiMymVBI0Sg+4ZT+MLDCBjLRbad0esWJ2+pfiNNzQEf+CL6
-         eQ1Gedym9m7WEAqGi+fIToIkTz911ldv3+mCo1iOpeygElNWJ1NPRkQkkYyTI+0hx2x8
-         Y/SJi4uskf6K+5yjRN5N8bnJLpSwlp3UTcP7PVPKjdrFs0YMwO3a7TCK4Xvu4CV1iE57
-         LyZI56xkQHzBvuGiwE6nEV+S98Py3z4BdGgtgwyH01E0uW47iUMp/H1E4EHFtfc0S/p2
-         C4hA==
-X-Gm-Message-State: AOAM532A9nnH7BegdEmlwO+QBmTas4Vg4u8uVopr/q9y4apVJ1X35v7M
-        tTS679/+Rr/cI7/uaG8dAnk=
-X-Google-Smtp-Source: ABdhPJydLIm3lfBizKgV9U4awm2q56du2GPXWHUcY3QLtYlqtbr5xaEOPzIgFVfvfAv2yVDFc8cw6Q==
-X-Received: by 2002:aa7:8c4a:0:b029:1b8:2cd1:9a69 with SMTP id e10-20020aa78c4a0000b02901b82cd19a69mr15957805pfd.46.1612180635510;
-        Mon, 01 Feb 2021 03:57:15 -0800 (PST)
-Received: from localhost.localdomain ([50.236.19.102])
-        by smtp.gmail.com with ESMTPSA id dw23sm7195152pjb.3.2021.02.01.03.57.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Feb 2021 03:57:14 -0800 (PST)
-From:   Yafang Shao <laoar.shao@gmail.com>
-To:     andriy.shevchenko@linux.intel.com, david@redhat.com,
-        vbabka@suse.cz, linmiaohe@huawei.com, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Joe Perches <joe@perches.com>
-Subject: [PATCH v2 3/3] vsprintf: dump full information of page flags in pGp
-Date:   Mon,  1 Feb 2021 19:56:10 +0800
-Message-Id: <20210201115610.87808-4-laoar.shao@gmail.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
-In-Reply-To: <20210201115610.87808-1-laoar.shao@gmail.com>
-References: <20210201115610.87808-1-laoar.shao@gmail.com>
+        id S231158AbhBAL55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 06:57:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53216 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229500AbhBAL53 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 06:57:29 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C8F064DCC;
+        Mon,  1 Feb 2021 11:56:46 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l6Xoy-00BG09-28; Mon, 01 Feb 2021 11:56:44 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-kernel@vger.kernel.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Brazdil <dbrazdil@google.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Ajay Patil <pajay@qti.qualcomm.com>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        Srinivas Ramana <sramana@codeaurora.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kernel-team@android.com
+Subject: [PATCH v6 00/21] arm64: Early CPU feature override, and applications to VHE, BTI and PAuth
+Date:   Mon,  1 Feb 2021 11:56:16 +0000
+Message-Id: <20210201115637.3123740-1-maz@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, dbrazdil@google.com, alexandru.elisei@arm.com, ardb@kernel.org, jingzhangos@google.com, pajay@qti.qualcomm.com, psodagud@codeaurora.org, sramana@codeaurora.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the pGp only shows the names of page flags, rather than
-the full information including section, node, zone, last cpupid and
-kasan tag. While it is not easy to parse these information manually
-because there're so many flavors. Let's interpret them in pGp as well.
+It recently came to light that there is a need to be able to override
+some CPU features very early on, before the kernel is fully up and
+running. The reasons for this range from specific feature support
+(such as using Protected KVM on VHE HW, which is the main motivation
+for this work) to errata workaround (a feature is broken on a CPU and
+needs to be turned off, or rather not enabled).
 
-- Before the patch,
-[ 6343.396602] Slab 0x000000004382e02b objects=33 used=3 fp=0x000000009ae06ffc flags=0x17ffffc0010200(slab|head)
+This series tries to offer a limited framework for this kind of
+problems, by allowing a set of options to be passed on the
+command-line and altering the feature set that the cpufeature
+subsystem exposes to the rest of the kernel. Note that this doesn't
+change anything for code that directly uses the CPU ID registers.
 
-- After the patch,
-[ 6871.296131] Slab 0x00000000c0e19a37 objects=33 used=3 fp=0x00000000c4902159 flags=0x17ffffc0010200(Node 0,Zone 2,Lastcpupid 0x1fffff,slab|head)
+The series completely changes the way a VHE-capable system boots, by
+*always* booting non-VHE first, and then upgrading to VHE when deemed
+capable. Although it sounds scary, this is actually simple to
+implement (and I wish I had done that five years ago). The "upgrade to
+VHE" path is then conditioned on the VHE feature not being disabled
+from the command-line.
 
-The Documentation and test cases are also updated.
+Said command-line parsing borrows a lot from the kaslr code, and
+subsequently allows the "nokaslr" option to be moved to the new
+infrastructure (though it all looks a bit... odd).
 
-Cc: David Hildenbrand <david@redhat.com>
-Cc: Joe Perches <joe@perches.com>
-Cc: Miaohe Lin <linmiaohe@huawei.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
----
- Documentation/core-api/printk-formats.rst |  2 +-
- lib/test_printf.c                         | 65 ++++++++++++++++++-----
- lib/vsprintf.c                            | 58 +++++++++++++++++++-
- 3 files changed, 109 insertions(+), 16 deletions(-)
+Further patches now add support for disabling BTI and PAuth, the
+latter being based on an initial series by Srinivas Ramana[0]. There
+is some ongoing discussions about being able to disable MTE, but no
+clear resolution on that subject yet.
 
-diff --git a/Documentation/core-api/printk-formats.rst b/Documentation/core-api/printk-formats.rst
-index 6d26c5c6ac48..1374cdd04f0f 100644
---- a/Documentation/core-api/printk-formats.rst
-+++ b/Documentation/core-api/printk-formats.rst
-@@ -538,7 +538,7 @@ Flags bitfields such as page flags, gfp_flags
- 
- ::
- 
--	%pGp	referenced|uptodate|lru|active|private
-+	%pGp	Node 0,Zone 2,referenced|uptodate|lru|active|private
- 	%pGg	GFP_USER|GFP_DMA32|GFP_NOWARN
- 	%pGv	read|exec|mayread|maywrite|mayexec|denywrite
- 
-diff --git a/lib/test_printf.c b/lib/test_printf.c
-index 7ac87f18a10f..4c5e064cbe2e 100644
---- a/lib/test_printf.c
-+++ b/lib/test_printf.c
-@@ -569,6 +569,48 @@ netdev_features(void)
- {
- }
- 
-+static void __init
-+page_flags_test(int section, int node, int zone, int last_cpupid,
-+		int kasan_tag, int flags, const char *name, char *cmp_buf)
-+{
-+	unsigned long page_flags = 0;
-+	unsigned long size = 0;
-+
-+#ifdef SECTION_IN_PAGE_FLAGS
-+	page_flags |= (sec & SECTIONS_MASK) << SECTIONS_PGSHIFT;
-+	snprintf(cmp_buf, BUF_SIZE, "Section %#x,", sec);
-+	size = strlen(cmp_buf);
-+#endif
-+
-+	page_flags |= (node & NODES_MASK) << NODES_PGSHIFT;
-+	snprintf(cmp_buf + size, BUF_SIZE - size, "Node %d", node);
-+	size = strlen(cmp_buf);
-+
-+	page_flags |= (zone & ZONES_MASK) << ZONES_PGSHIFT;
-+	snprintf(cmp_buf + size, BUF_SIZE - size, ",Zone %d", zone);
-+	size = strlen(cmp_buf);
-+
-+#ifndef LAST_CPUPID_NOT_IN_PAGE_FLAGS
-+	page_flags |= (last_cpupid & LAST_CPUPID_MASK) << LAST_CPUPID_PGSHIFT;
-+	snprintf(cmp_buf + size, BUF_SIZE - size, ",Lastcpupid %#x", last_cpupid);
-+	size = strlen(cmp_buf);
-+#endif
-+
-+#if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
-+	page_flags |= (tag & KASAN_TAG_MASK) << KASAN_TAG_PGSHIFT;
-+	snprintf(cmp_buf + size, BUF_SIZE - size, ",Kasantag %#x", tag);
-+	size = strlen(cmp_buf);
-+#endif
-+
-+	test(cmp_buf, "%pGp", &page_flags);
-+
-+	if (flags) {
-+		page_flags |= flags;
-+		snprintf(cmp_buf + size, BUF_SIZE - size, ",%s", name);
-+		test(cmp_buf, "%pGp", &page_flags);
-+	}
-+}
-+
- static void __init
- flags(void)
- {
-@@ -576,17 +618,16 @@ flags(void)
- 	gfp_t gfp;
- 	char *cmp_buffer;
- 
--	flags = 0;
--	test("", "%pGp", &flags);
--
--	/* Page flags should filter the zone id */
--	flags = 1UL << NR_PAGEFLAGS;
--	test("", "%pGp", &flags);
--
--	flags |= 1UL << PG_uptodate | 1UL << PG_dirty | 1UL << PG_lru
--		| 1UL << PG_active | 1UL << PG_swapbacked;
--	test("uptodate|dirty|lru|active|swapbacked", "%pGp", &flags);
-+	cmp_buffer = kmalloc(BUF_SIZE, GFP_KERNEL);
-+	if (!cmp_buffer)
-+		return;
- 
-+	page_flags_test(0, 0, 0, 0, 0, 0, NULL, cmp_buffer);
-+	page_flags_test(1, 1, 1, 0x1ffff, 1,
-+			(1UL << PG_uptodate | 1UL << PG_dirty | 1UL << PG_lru
-+			 | 1UL << PG_active | 1UL << PG_swapbacked),
-+			"uptodate|dirty|lru|active|swapbacked",
-+			cmp_buffer);
- 
- 	flags = VM_READ | VM_EXEC | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC
- 			| VM_DENYWRITE;
-@@ -601,10 +642,6 @@ flags(void)
- 	gfp = __GFP_ATOMIC;
- 	test("__GFP_ATOMIC", "%pGg", &gfp);
- 
--	cmp_buffer = kmalloc(BUF_SIZE, GFP_KERNEL);
--	if (!cmp_buffer)
--		return;
--
- 	/* Any flags not translated by the table should remain numeric */
- 	gfp = ~__GFP_BITS_MASK;
- 	snprintf(cmp_buffer, BUF_SIZE, "%#lx", (unsigned long) gfp);
-diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-index 14c9a6af1b23..5c2b02ad60f1 100644
---- a/lib/vsprintf.c
-+++ b/lib/vsprintf.c
-@@ -1916,6 +1916,62 @@ char *format_flags(char *buf, char *end, unsigned long flags,
- 	return buf;
- }
- 
-+struct page_flags_layout {
-+	int width;
-+	int shift;
-+	int mask;
-+	const struct printf_spec *spec;
-+	const char *name;
-+};
-+
-+static const struct page_flags_layout pfl[] = {
-+	{SECTIONS_WIDTH, SECTIONS_PGSHIFT, SECTIONS_MASK,
-+	 &default_dec_spec, "Section "},
-+	{NODES_WIDTH, NODES_PGSHIFT, NODES_MASK,
-+	 &default_dec_spec, "Node "},
-+	{ZONES_WIDTH, ZONES_PGSHIFT, ZONES_MASK,
-+	 &default_dec_spec, "Zone "},
-+	{LAST_CPUPID_WIDTH, LAST_CPUPID_PGSHIFT, LAST_CPUPID_MASK,
-+	 &default_flag_spec, "Lastcpupid "},
-+	{KASAN_TAG_WIDTH, KASAN_TAG_PGSHIFT, KASAN_TAG_MASK,
-+	 &default_flag_spec, "Kasantag "},
-+};
-+
-+static
-+char *format_page_flags(char *buf, char *end, unsigned long page_flags)
-+{
-+	unsigned long flags = page_flags & ((1UL << NR_PAGEFLAGS) - 1);
-+	int size = ARRAY_SIZE(pfl);
-+	bool separator = false;
-+	int i;
-+
-+	for (i = 0; i < size; i++) {
-+		if (pfl[i].width == 0)
-+			continue;
-+
-+		if (separator) {
-+			if (buf < end)
-+				*buf = ',';
-+			buf++;
-+		}
-+
-+
-+		buf = string(buf, end, pfl[i].name, *pfl[i].spec);
-+
-+		buf = number(buf, end, (page_flags >> pfl[i].shift) & pfl[i].mask,
-+			     *pfl[i].spec);
-+		separator = true;
-+	}
-+
-+	if (flags) {
-+		if (buf < end)
-+			*buf = ',';
-+		buf++;
-+	}
-+
-+	return buf;
-+}
-+
- static noinline_for_stack
- char *flags_string(char *buf, char *end, void *flags_ptr,
- 		   struct printf_spec spec, const char *fmt)
-@@ -1929,7 +1985,7 @@ char *flags_string(char *buf, char *end, void *flags_ptr,
- 	switch (fmt[1]) {
- 	case 'p':
- 		flags = *(unsigned long *)flags_ptr;
--		/* Remove zone id */
-+		buf = format_page_flags(buf, end, flags);
- 		flags &= (1UL << NR_PAGEFLAGS) - 1;
- 		names = pageflag_names;
- 		break;
+This has been tested on multiple VHE and non-VHE systems.
+
+* From v5 [5]:
+  - Turn most __initdata into __initconst
+  - Ensure that all strings are part of the __initconst section.
+    This is a bit ugly, but saves memory once up and running
+  - Make overrides __ro_after_init
+  - Change the command-line parsing so that the same feature can
+    be overridden multiple times, with the expected left-to-right
+    parsing order being respected
+  - Handle all space-like characters as option delimiters
+  - Collected Acks, RBs and TBs
+
+* From v4 [4]:
+  - Documentation fixes
+  - Moved the val/mask pair into a arm64_ftr_override structure,
+    leading to simpler code
+  - All arm64_ftr_reg now have a default override, which simplifies
+    the code a bit further
+  - Dropped some of the "const" attributes
+  - Renamed init_shadow_regs() to init_feature_override()
+  - Renamed struct reg_desc to struct ftr_set_desc
+  - Refactored command-line parsing
+  - Simplified handling of VHE being disabled on the cmdline
+  - Turn EL1 S1 MMU off on switch to VHE
+  - HVC_VHE_RESTART now returns an error code on failure
+  - Added missing asmlinkage and dummy prototypes
+  - Collected Acks and RBs from David, Catalin and Suzuki
+
+* From v3 [3]:
+  - Fixed the VHE_RESTART stub (duh!)
+  - Switched to using arm64_ftr_safe_value() instead of the user
+    provided value
+  - Per-feature override warning
+
+* From v2 [2]:
+  - Simplify the VHE_RESTART stub
+  - Fixed a number of spelling mistakes, and hopefully introduced a
+    few more
+  - Override features in __read_sysreg_by_encoding()
+  - Allow both BTI and PAuth to be overridden on the command line
+  - Rebased on -rc3
+
+* From v1 [1]:
+  - Fix SPE init on VHE when EL2 doesn't own SPE
+  - Fix re-init when KASLR is used
+  - Handle the resume path
+  - Rebased to 5.11-rc2
+
+[0] https://lore.kernel.org/r/1610152163-16554-1-git-send-email-sramana@codeaurora.org
+[1] https://lore.kernel.org/r/20201228104958.1848833-1-maz@kernel.org
+[2] https://lore.kernel.org/r/20210104135011.2063104-1-maz@kernel.org
+[3] https://lore.kernel.org/r/20210111132811.2455113-1-maz@kernel.org
+[4] https://lore.kernel.org/r/20210118094533.2874082-1-maz@kernel.org
+[5] https://lore.kernel.org/r/20210125105019.2946057-1-maz@kernel.org
+
+Marc Zyngier (20):
+  arm64: Fix labels in el2_setup macros
+  arm64: Fix outdated TCR setup comment
+  arm64: Turn the MMU-on sequence into a macro
+  arm64: Provide an 'upgrade to VHE' stub hypercall
+  arm64: Initialise as nVHE before switching to VHE
+  arm64: Move VHE-specific SPE setup to mutate_to_vhe()
+  arm64: Simplify init_el2_state to be non-VHE only
+  arm64: Move SCTLR_EL1 initialisation to EL-agnostic code
+  arm64: cpufeature: Add global feature override facility
+  arm64: cpufeature: Use IDreg override in __read_sysreg_by_encoding()
+  arm64: Extract early FDT mapping from kaslr_early_init()
+  arm64: cpufeature: Add an early command-line cpufeature override
+    facility
+  arm64: Allow ID_AA64MMFR1_EL1.VH to be overridden from the command
+    line
+  arm64: Honor VHE being disabled from the command-line
+  arm64: Add an aliasing facility for the idreg override
+  arm64: Make kvm-arm.mode={nvhe, protected} an alias of
+    id_aa64mmfr1.vh=0
+  KVM: arm64: Document HVC_VHE_RESTART stub hypercall
+  arm64: Move "nokaslr" over to the early cpufeature infrastructure
+  arm64: cpufeatures: Allow disabling of BTI from the command-line
+  arm64: cpufeatures: Allow disabling of Pointer Auth from the
+    command-line
+
+Srinivas Ramana (1):
+  arm64: Defer enabling pointer authentication on boot core
+
+ .../admin-guide/kernel-parameters.txt         |   9 +
+ Documentation/virt/kvm/arm/hyp-abi.rst        |   9 +
+ arch/arm64/include/asm/assembler.h            |  17 ++
+ arch/arm64/include/asm/cpufeature.h           |  11 +
+ arch/arm64/include/asm/el2_setup.h            |  60 ++---
+ arch/arm64/include/asm/pointer_auth.h         |  10 +
+ arch/arm64/include/asm/setup.h                |  11 +
+ arch/arm64/include/asm/stackprotector.h       |   1 +
+ arch/arm64/include/asm/virt.h                 |   7 +-
+ arch/arm64/kernel/Makefile                    |   2 +-
+ arch/arm64/kernel/asm-offsets.c               |   3 +
+ arch/arm64/kernel/cpufeature.c                |  73 +++++-
+ arch/arm64/kernel/head.S                      |  75 +-----
+ arch/arm64/kernel/hyp-stub.S                  | 133 +++++++++-
+ arch/arm64/kernel/idreg-override.c            | 230 ++++++++++++++++++
+ arch/arm64/kernel/kaslr.c                     |  43 +---
+ arch/arm64/kernel/setup.c                     |  15 ++
+ arch/arm64/kernel/sleep.S                     |   1 +
+ arch/arm64/kvm/arm.c                          |   3 +
+ arch/arm64/kvm/hyp/nvhe/hyp-init.S            |   2 +-
+ arch/arm64/mm/mmu.c                           |   2 +-
+ arch/arm64/mm/proc.S                          |  16 +-
+ 22 files changed, 563 insertions(+), 170 deletions(-)
+ create mode 100644 arch/arm64/include/asm/setup.h
+ create mode 100644 arch/arm64/kernel/idreg-override.c
+
 -- 
-2.17.1
+2.29.2
 
