@@ -2,136 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0981230B302
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:57:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5704430B307
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:59:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229984AbhBAW5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 17:57:04 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:42674 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229515AbhBAW5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 17:57:03 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1l6i6z-003iKw-Sn; Mon, 01 Feb 2021 23:56:01 +0100
-Date:   Mon, 1 Feb 2021 23:56:01 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Ivan Bornyakov <i.bornyakov@metrotek.ru>
-Cc:     netdev@vger.kernel.org, system@metrotek.ru, hkallweit1@gmail.com,
-        linux@armlinux.org.uk, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: phy: add Marvell 88X2222 transceiver support
-Message-ID: <YBiHAXSYWGO2weK6@lunn.ch>
-References: <20210201192250.gclztkomtsihczz6@dhcp-179.ddg>
+        id S229992AbhBAW6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 17:58:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229481AbhBAW6U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 17:58:20 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1551FC061573;
+        Mon,  1 Feb 2021 14:57:40 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id m22so25166602lfg.5;
+        Mon, 01 Feb 2021 14:57:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UNajX5UMrbnSG6Fhci3CxkEOGk0tBEGF42Ela8560Tk=;
+        b=p8VQaPLMnmqiEjs0ut449xBUdX/7teONVrKGqE10nq3ZNH8tul7mTRtVN4XMSvIf8b
+         po/VvPp8Su8zI6nXc6CmkujmL0ggbhQfl3DFbi2QlSMqqjjCxZmgPBKwb1OZta0D63Cp
+         boorR2IVtRKeY9YcEBessj49VFFZIMCsbrdesTfhbSPjit7kbyXVMmXiqmXONu60St5A
+         0maGy0jHMkLkwBZsgfey2AcZwv1Atrv9WFGsjSNacuLKnXC3vvKClePUITEuqi22bgK4
+         5qED2vu+SgjdmY5soj1Niha+2aJJ0nPMay/G7FmmhCr4EJ9NJ/DA/05R1+IRCbnaewIC
+         F4YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=UNajX5UMrbnSG6Fhci3CxkEOGk0tBEGF42Ela8560Tk=;
+        b=e9OMFREIyE/o+TpFZgKeT/AjrcCbjvsKq9wdflycsEPM+Zx1F66bfDggOFxByAFp3l
+         kKaPMbjp+DK9X+xL5mGs3pCLCEEJf8uworlffQLLZtQtSxZk3WICEF28U+ATkIXQvBky
+         4B2XRckaf2pFL+Dbyu73ZHulOi4kLDOkVFx06f4odLOrez8gfuvLRo/C2C/tTiltxENF
+         ctEYkFR9OwZU8yb03x3oiRJOitDWBZNLF8XgeX+cL5S3qBQHXUEjbqQC2VQw6tjQZJd8
+         QAq+JSVN2mccof0E9LINQa0Qp2vrcmDthXSUpL+qw8xJ/oZipTQl7NGrYS5V5nZcyPP4
+         OhgA==
+X-Gm-Message-State: AOAM531NrG8D08wZ/29g3pmUanNa0P+MUtm/rJbUvRMJssYqTyUbfj1P
+        HNt6BsEWAAQHIzwWaPTBEGM=
+X-Google-Smtp-Source: ABdhPJxv7UL9syEhm1ffk2mXyjn9923gfgEjJq2a/MZlyuXDpAGLJciG/llvqOqDNv7BDOA3jUxBDw==
+X-Received: by 2002:a19:8156:: with SMTP id c83mr9728619lfd.546.1612220258642;
+        Mon, 01 Feb 2021 14:57:38 -0800 (PST)
+Received: from localhost.localdomain (h-158-174-22-164.NA.cust.bahnhof.se. [158.174.22.164])
+        by smtp.gmail.com with ESMTPSA id c9sm4060727ljk.130.2021.02.01.14.57.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 14:57:37 -0800 (PST)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] PM: Constify static struct attribute_group
+Date:   Mon,  1 Feb 2021 23:57:35 +0100
+Message-Id: <20210201225735.86163-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201192250.gclztkomtsihczz6@dhcp-179.ddg>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +static int mv2222_config_init(struct phy_device *phydev)
-> +{
-> +	linkmode_zero(phydev->supported);
-> +	linkmode_set_bit(ETHTOOL_LINK_MODE_Autoneg_BIT, phydev->supported);
-> +	linkmode_set_bit(ETHTOOL_LINK_MODE_FIBRE_BIT, phydev->supported);
-> +	linkmode_set_bit(ETHTOOL_LINK_MODE_1000baseX_Full_BIT, phydev->supported);
-> +	linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseKR_Full_BIT, phydev->supported);
-> +
-> +	phydev->pause = 0;
-> +	phydev->asym_pause = 0;
-> +	phydev->duplex = DUPLEX_FULL;
-> +	phydev->autoneg = AUTONEG_DISABLE;
-> +
-> +	return 0;
-> +}
-> +
-> +static void mv2222_update_interface(struct phy_device *phydev)
-> +{
-> +	if ((phydev->speed == SPEED_1000 ||
-> +	     phydev->speed == SPEED_100 ||
-> +	     phydev->speed == SPEED_10) &&
-> +	    phydev->interface != PHY_INTERFACE_MODE_1000BASEX) {
-> +		phydev->interface = PHY_INTERFACE_MODE_1000BASEX;
+The only usage of suspend_attr_group is to put its address in an array of
+pointers to const attribute_group structs. Make it const to allow the
+compiler to put it in read-only memory.
 
-The speeds 10 and 100 seem odd here. 1000BaseX only supports 1G. It
-would have to be SGMII in order to also support 10Mbps and 100Mbps.
-Plus you are not listing 10 and 100 as a supported value.
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+ kernel/power/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +/* Returns negative on error, 0 if link is down, 1 if link is up */
-> +static int mv2222_read_status_1g(struct phy_device *phydev)
-> +{
-> +	int val, link = 0;
-> +
-> +	val = phy_read_mmd(phydev, MDIO_MMD_PCS, MV_1GBX_STAT);
-> +	if (val < 0)
-> +		return val;
-> +
-> +	if (!(val & MDIO_STAT1_LSTATUS) ||
-> +	    (phydev->autoneg == AUTONEG_ENABLE && !(val & MDIO_AN_STAT1_COMPLETE)))
-> +		return 0;
-> +
-> +	link = 1;
-> +
-> +	if (phydev->autoneg == AUTONEG_DISABLE) {
-> +		phydev->speed = SPEED_1000;
-> +		phydev->duplex = DUPLEX_FULL;
-> +
-> +		return link;
-> +	}
-> +
-> +	val = phy_read_mmd(phydev, MDIO_MMD_PCS, MV_1GBX_PHY_STAT);
-> +	if (val < 0)
-> +		return val;
-> +
-> +	if (val & MV_1GBX_PHY_STAT_AN_RESOLVED) {
-> +		if (val & MV_1GBX_PHY_STAT_DUPLEX)
-> +			phydev->duplex = DUPLEX_FULL;
-> +		else
-> +			phydev->duplex = DUPLEX_HALF;
-> +
-> +		if (val & MV_1GBX_PHY_STAT_SPEED1000)
-> +			phydev->speed = SPEED_1000;
-> +		else if (val & MV_1GBX_PHY_STAT_SPEED100)
-> +			phydev->speed = SPEED_100;
-> +		else
-> +			phydev->speed = SPEED_10;
+diff --git a/kernel/power/main.c b/kernel/power/main.c
+index 0aefd6f57e0a..12c7e1bb442f 100644
+--- a/kernel/power/main.c
++++ b/kernel/power/main.c
+@@ -387,7 +387,7 @@ static struct attribute *suspend_attrs[] = {
+ 	NULL,
+ };
+ 
+-static struct attribute_group suspend_attr_group = {
++static const struct attribute_group suspend_attr_group = {
+ 	.name = "suspend_stats",
+ 	.attrs = suspend_attrs,
+ };
+-- 
+2.30.0
 
-Are you sure it is not doing SGMII? Maybe it can do both, 1000BaseX
-and SGMII? You would generally use 1000BaseX to connect to a fibre
-SFP, and SGMII to connect to a copper SFP. So ideally you want to be
-able to swap between these modes as needed.
-
-> +static int mv2222_read_status(struct phy_device *phydev)
-> +{
-> +	int link;
-> +
-> +	linkmode_zero(phydev->lp_advertising);
-> +	phydev->pause = 0;
-> +	phydev->asym_pause = 0;
-> +
-> +	switch (phydev->interface) {
-> +	case PHY_INTERFACE_MODE_10GBASER:
-> +		link = mv2222_read_status_10g(phydev);
-> +		break;
-> +	case PHY_INTERFACE_MODE_1000BASEX:
-> +	default:
-> +		link = mv2222_read_status_1g(phydev);
-> +		break;
-> +	}
-> +
-> +	if (link < 0)
-> +		return link;
-> +
-> +	phydev->link = link;
-> +
-> +	if (phydev->link)
-> +		mv2222_link_led_on(phydev);
-> +	else
-> +		mv2222_link_led_off(phydev);
-
-You have to manually control the LED? That is odd for a PHY. Normally
-you just select a mode and it will do it all in hardware.
-
-    Andrew
