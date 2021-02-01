@@ -2,63 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AB8830A336
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:21:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C96730A33C
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232502AbhBAIVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 03:21:06 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:49345 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232443AbhBAIVF (ORCPT
+        id S232361AbhBAIWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 03:22:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56064 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229558AbhBAIWh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 03:21:05 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UNWxyjP_1612167612;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UNWxyjP_1612167612)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 01 Feb 2021 16:20:20 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     horia.geanta@nxp.com
-Cc:     aymen.sghaier@nxp.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] crypto: caam -Replace DEFINE_SIMPLE_ATTRIBUTE with DEFINE_DEBUGFS_ATTRIBUTE
-Date:   Mon,  1 Feb 2021 16:20:11 +0800
-Message-Id: <1612167611-15297-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Mon, 1 Feb 2021 03:22:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612167672;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C8dLlKIHmcyEYeE4z+uH1Shq2VDlSKROXEOZtZ+b36I=;
+        b=VHUR67hV5DBq0P40k1xzIRdDi5HyEVZpAnKW4VDNQsGTDNxRQPEpE0GFmHSOnvCwLCkht3
+        32hnhxwY8+04nXcZ24Qt0Msl0aVVfPq63xkuVkizTrJUHQu6tZvIBSIbJQyXBREQCUm0/f
+        Vrx/HlzcLNyNihMmceXqHrFqGW97Iws=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-232-goWK0xYgMdyZh02nVodsyQ-1; Mon, 01 Feb 2021 03:21:10 -0500
+X-MC-Unique: goWK0xYgMdyZh02nVodsyQ-1
+Received: by mail-wm1-f71.google.com with SMTP id z67so312784wme.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 00:21:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=C8dLlKIHmcyEYeE4z+uH1Shq2VDlSKROXEOZtZ+b36I=;
+        b=gpYtZ6Ahli5bJSxGmbaw6SBF7cbUbTSXONsKNlJIJc/1JUX+lt9/yhfwBaw/AyD8DZ
+         n4CbnfmMHVnokUsuzmdn2buOrL7mgZxxQcGoM+doX2nhF8r4nlsgpTUFbUCP0U68QYbe
+         XEgubuR0GgRW3DBKvK7NhbiYeZhYM9PKW2LVNdloePjw9RuO85T2TwpZPljvjgsxdav7
+         tTRNOEh8BBO78nidTaYMR8W3FSsIAZnVm7Kdwdnx3qQKdA/vsWA5XxgmSG1+6nE+QQhu
+         FwGkR+CHNpHBLMgRdQok9P0cE1p1ecx5rkrm0uIH6aNZwLqw0p71qv7GSDe2v9Pgxx/I
+         yoYg==
+X-Gm-Message-State: AOAM5314tRgJ2s+BPw6YwernfEK12qgcKjpt5qcp3/ZR0o33vQA1sGbH
+        iX8wAeNLtEInhyGLQJjI8VzYhDE+CwpfL9FCzj9nCuaqsSH3ej/LahmdVKjKu8VY3ewMnZxKNI7
+        qAb6OTanoAjWbE93TWersIs853Yms7XgXfai8uXEd2lho9aszGti1lGQrcvK2bokTEEkEJaKCox
+        wv
+X-Received: by 2002:a7b:c395:: with SMTP id s21mr13852648wmj.97.1612167668996;
+        Mon, 01 Feb 2021 00:21:08 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJytGcsyTNl68HmEXIM6PvQnYm0YmMX8xNhecqZC1HSaBYG2HVkz7Mm7gcFTiMP9kCbwzfZk5w==
+X-Received: by 2002:a7b:c395:: with SMTP id s21mr13852614wmj.97.1612167668736;
+        Mon, 01 Feb 2021 00:21:08 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id s23sm19772546wmc.35.2021.02.01.00.21.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Feb 2021 00:21:07 -0800 (PST)
+Subject: Re: [PATCH 1/2] KVM: x86/mmu: Make HVA handler retpoline-friendly
+To:     "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <ceb96527b6f7bb662eec813f05b897a551ebd0b2.1612140117.git.maciej.szmigiero@oracle.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c3f775de-9cb5-5f30-3fbc-a5e80c1654de@redhat.com>
+Date:   Mon, 1 Feb 2021 09:21:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <ceb96527b6f7bb662eec813f05b897a551ebd0b2.1612140117.git.maciej.szmigiero@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
+On 01/02/21 09:13, Maciej S. Szmigiero wrote:
+>   static int kvm_handle_hva_range(struct kvm *kvm,
+>   				unsigned long start,
+>   				unsigned long end,
+> @@ -1495,8 +1534,9 @@ static int kvm_handle_hva_range(struct kvm *kvm,
 
-./drivers/crypto/caam/debugfs.c:23:0-23: WARNING: caam_fops_u64_ro
-should be defined with DEFINE_DEBUGFS_ATTRIBUTE.
 
-./drivers/crypto/caam/debugfs.c:22:0-23: WARNING: caam_fops_u32_ro
-should be defined with DEFINE_DEBUGFS_ATTRIBUTE.
+> -static int kvm_tdp_mmu_handle_hva_range(struct kvm *kvm, unsigned long start,
+> -		unsigned long end, unsigned long data,
+> -		int (*handler)(struct kvm *kvm, struct kvm_memory_slot *slot,
+> -			       struct kvm_mmu_page *root, gfn_t start,
+> -			       gfn_t end, unsigned long data))
+> -{
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/crypto/caam/debugfs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Can you look into just marking these functions __always_inline?  This 
+should help the compiler change (*handler)(...) into a regular function 
+call.
 
-diff --git a/drivers/crypto/caam/debugfs.c b/drivers/crypto/caam/debugfs.c
-index 8ebf183..806bb20 100644
---- a/drivers/crypto/caam/debugfs.c
-+++ b/drivers/crypto/caam/debugfs.c
-@@ -19,8 +19,8 @@ static int caam_debugfs_u32_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(caam_fops_u32_ro, caam_debugfs_u32_get, NULL, "%llu\n");
--DEFINE_SIMPLE_ATTRIBUTE(caam_fops_u64_ro, caam_debugfs_u64_get, NULL, "%llu\n");
-+DEFINE_DEBUGFS_ATTRIBUTE(caam_fops_u32_ro, caam_debugfs_u32_get, NULL, "%llu\n");
-+DEFINE_DEBUGFS_ATTRIBUTE(caam_fops_u64_ro, caam_debugfs_u64_get, NULL, "%llu\n");
- 
- #ifdef CONFIG_CAAM_QI
- /*
--- 
-1.8.3.1
+Paolo
 
