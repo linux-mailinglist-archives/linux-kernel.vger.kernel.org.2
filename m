@@ -2,81 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8EB30A8CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:34:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B676A30A8CF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231737AbhBANdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:33:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44824 "EHLO
+        id S231997AbhBANe5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:34:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbhBANdZ (ORCPT
+        with ESMTP id S231575AbhBANev (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:33:25 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1267EC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 05:32:44 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612186363;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=r82uxta4XDi55BkAqxOkhqSJhZBf6cvt5RLzHkBDbNg=;
-        b=L3Hwt1obaxZ2YsvL6Iv2YkOKkaIdBeoc/wumawwA0H7jWvoZmY7to222JOU+IPafapdyd7
-        HxXyFglPecAXPjl0Tef2zulm5q0PBfFTPD97pzqRrXRdcqLBUNvAUTyX3wKkJEbUBHm08t
-        6wbd/WKZe6S1OYJoELWe5TvBAoIwodLl5xZlQ0RsZkKPEUGci7KlXweD1XRHdVdwQ3OgLW
-        pGNIOCsnUKDujFEurKfFs+b9W4/uUzyYMjqHqXGkGRpsrGQkdvaEmXPWK8QrXmy6cL/Ja4
-        UoEc0K6wnDhplLduuMUTjex0EaWLsnsx4cD2wDtqzlRjTLK/aFgEAddSTtYX/w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612186363;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=r82uxta4XDi55BkAqxOkhqSJhZBf6cvt5RLzHkBDbNg=;
-        b=VP85MJaV5fcPyRmMx/JdQFus53ncdvLjCLdUCkYZWj0AYdlj90RiDLsj4NiSmnZRsSqFbe
-        tEWp06yJWZ5d2RBQ==
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk-rework 08/12] printk: introduce a kmsg_dump iterator
-In-Reply-To: <YBf/XUmgflhMHtBx@alley>
-References: <20210126211551.26536-1-john.ogness@linutronix.de> <20210126211551.26536-9-john.ogness@linutronix.de> <YBf/XUmgflhMHtBx@alley>
-Date:   Mon, 01 Feb 2021 14:38:42 +0106
-Message-ID: <87eehzkj5x.fsf@jogness.linutronix.de>
+        Mon, 1 Feb 2021 08:34:51 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FAB9C06174A;
+        Mon,  1 Feb 2021 05:34:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=eu7VX8JvvszySJwHZVTokupuwHECVWP055L+vUMCliY=; b=kqNV/MnPMGMuePTDqne9Tb7qUx
+        22kFtr3q5TR4oQmDl0ZZCik4Fj0OTwXfR7Qspzv8IOCAruTq8HYub/ibswiukXiTXYCBeDS6Bfqf0
+        LfUvM3DtejdPryUgo+MSS1kt57QBIuXVFjyWM5D/zGTSzGRwfUgnbqsIpOAbTV0YRzqyow2tG1gQr
+        C+AUDpwFDFDkT4WXcAruB3h76YZmIjS1uu2pLracRfrR55pvzTo4gFOpJLbxTMljKXkjW5iB6RgOJ
+        naL8Mtm2Eg7pEMFnuqeZfbc3tCSJPcG6V4Npt3FNWXsSPYYYZyBUxauMeP9F+Uj4teK28TaYq8Nit
+        SvfuAAig==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l6ZKv-00017P-Mk; Mon, 01 Feb 2021 13:33:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 15B943011FE;
+        Mon,  1 Feb 2021 14:33:46 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BA97E2B802295; Mon,  1 Feb 2021 14:33:46 +0100 (CET)
+Date:   Mon, 1 Feb 2021 14:33:46 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        David Miller <davem@davemloft.net>, kpsingh@kernel.org,
+        John Fastabend <john.fastabend@gmail.com>,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: extended bpf_send_signal_thread with argument
+Message-ID: <YBgDOnhrYjByjdIb@hirez.programming.kicks-ass.net>
+References: <CACT4Y+a7UBQpAY4vwT8Od0JhwbwcDrbJXZ_ULpPfJZ42Ew-yCQ@mail.gmail.com>
+ <YBfIUwtK+QqVlfRt@hirez.programming.kicks-ass.net>
+ <CACT4Y+Yq69nvj2KZUQrYqtyu+Low+jCCcH++U_vuiHkhezQHGw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+Yq69nvj2KZUQrYqtyu+Low+jCCcH++U_vuiHkhezQHGw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-01, Petr Mladek <pmladek@suse.com> wrote:
->> Rather than store the iterator information into the registered
->> kmsg_dump structure, create a separate iterator structure. The
->> kmsg_dump_iter structure can reside on the stack of the caller,
->> thus allowing lockless use of the kmsg_dump functions.
->> 
->> This is in preparation for removal of @logbuf_lock.
->
->> diff --git a/include/linux/kmsg_dump.h b/include/linux/kmsg_dump.h
->> index 76cc4122d08e..ecc98f549d93 100644
->> --- a/include/linux/kmsg_dump.h
->> +++ b/include/linux/kmsg_dump.h
->> @@ -29,6 +29,18 @@ enum kmsg_dump_reason {
->>  	KMSG_DUMP_MAX
->>  };
->>  
->> +/**
->> + * struct kmsg_dumper_iter - iterator for kernel crash message dumper
->> + * @active:	Flag that specifies if this is currently dumping
->> + * @cur_seq:	The record to dump (private)
->> + * @next_seq:	The first record of the next block (private)
->
-> Just to be sure. This description should get update if you agree with
-> the alternative one in the 1st patch.
+On Mon, Feb 01, 2021 at 10:42:47AM +0100, Dmitry Vyukov wrote:
+> On Mon, Feb 1, 2021 at 10:22 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Sun, Jan 31, 2021 at 12:14:02PM +0100, Dmitry Vyukov wrote:
+> > > Hi,
+> > >
+> > > I would like to send a signal from a bpf program invoked from a
+> > > perf_event. There is:
+> >
+> > You can't. Sending signals requires sighand lock, and you're not allowed
+> > to take locks from perf_event context.
+> 
+> 
+> Then we just found a vulnerability because there is
+> bpf_send_signal_thread which can be attached to perf and it passes the
+> verifier :)
+> https://elixir.bootlin.com/linux/v5.11-rc5/source/kernel/trace/bpf_trace.c#L1145
+> 
+> It can defer sending the signal to the exit of irq context:
+> https://elixir.bootlin.com/linux/v5.11-rc5/source/kernel/trace/bpf_trace.c#L1108
+> Perhaps this is what makes it work?
 
-Yes, I assumed so and adjusted my preparation-v2 series accordingly.
-
-John
+Yes.
