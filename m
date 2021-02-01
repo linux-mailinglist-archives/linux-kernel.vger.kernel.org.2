@@ -2,145 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C6F30A3ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:04:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C080D30A3F2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232673AbhBAJDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 04:03:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35909 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232667AbhBAJC6 (ORCPT
+        id S232683AbhBAJE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 04:04:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42794 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232596AbhBAJDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 04:02:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612170075;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q2S7KmoEGwvcciLJxV74TxOXB1pGheiXKnwkSrkdCOg=;
-        b=cKVsjvRDxYn5P4886XS0odkGdTb82Ka08zlFnjnnK+79u/GCr7lFMZjTG8boRn3KiWRn8+
-        wxEje/QaJuY7j7OKLcR1NtanjqPF/M1uGj29RVdY5Vwy7KxgdXrTNX8INsXqnStPlfUBsO
-        7UwiuPRBN0A2cw68NE+jsl1FAgYsr6k=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-541-fAU_6t-zMwiNym5qSxpeyA-1; Mon, 01 Feb 2021 04:01:13 -0500
-X-MC-Unique: fAU_6t-zMwiNym5qSxpeyA-1
-Received: by mail-ej1-f72.google.com with SMTP id q11so7946361ejd.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 01:01:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=q2S7KmoEGwvcciLJxV74TxOXB1pGheiXKnwkSrkdCOg=;
-        b=ZpVhaqcKiJwCfkvu0ff/Akr1rfhPjEZ0HpJyYC4vXkJ0yc6tIrVLhZ2TFX8ZYSczw5
-         tlA+vZov0WOnVsNiS3lw/MwhQCRKdQ6ArR3Msy65m0YF82qSufEvGZshE90h8ZS8d4gd
-         WM2bmK2Y+Le6Qfjc/BJJ2EGBW1nqfSwaSobVr6WyMTwh2QF2VS8hv5hsBSYmQy3BX/V6
-         HlSeA6kWPUGF1h0XIHoNjfWsCg2KDC0Hf3WvLEBjs4aScxBvxSB9uolGMoWgREr0G9Vw
-         GHrjNtDijwrowxwxF+9HL7C5bDsdnE/snvTaq/Cbj3lw37J3VbVLZM5xJRERMJwgGnxw
-         6k4Q==
-X-Gm-Message-State: AOAM532DoVazEJMyHrEF0uOrfQFRtTGzzIxQA5ghgZvcC6dBOaUnlmM4
-        TlR018edl5zmWWaZ5qlTeIkwTW8tb+fVaLoM7pO5n3aozJu1GR5VK9YFwTItNoYKLGgbcTgA4Lq
-        zLWnrz5blQaY8qSSFRskT7YBJKVrPbkMDrtWmWHVYFTPQdI/VzXnQFrWQKgosyKdlkYxlSVA9Fr
-        vc
-X-Received: by 2002:a50:a684:: with SMTP id e4mr17453446edc.148.1612170072023;
-        Mon, 01 Feb 2021 01:01:12 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwv4bkf41HeR2HEB6dyR4YTrLaPrlywE4fQjlcW01Bm3fjf+ciYSoGvNn60FwB2kKz+0Da0SA==
-X-Received: by 2002:a50:a684:: with SMTP id e4mr17453413edc.148.1612170071789;
-        Mon, 01 Feb 2021 01:01:11 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id r22sm8252880edp.9.2021.02.01.01.01.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 01:01:10 -0800 (PST)
-Subject: Re: [PATCH] KVM: Replace DEFINE_SIMPLE_ATTRIBUTE with
- DEFINE_DEBUGFS_ATTRIBUTE
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1612168685-33799-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <47e26d54-7663-656e-1033-5e161848c274@redhat.com>
-Date:   Mon, 1 Feb 2021 10:01:09 +0100
+        Mon, 1 Feb 2021 04:03:42 -0500
+Received: from cc-smtpout1.netcologne.de (cc-smtpout1.netcologne.de [IPv6:2001:4dd0:100:1062:25:2:0:1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCB8BC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 01:03:01 -0800 (PST)
+Received: from cc-smtpin3.netcologne.de (cc-smtpin3.netcologne.de [89.1.8.203])
+        by cc-smtpout1.netcologne.de (Postfix) with ESMTP id DDF6213666;
+        Mon,  1 Feb 2021 10:01:33 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by cc-smtpin3.netcologne.de (Postfix) with ESMTP id CD09E11E63;
+        Mon,  1 Feb 2021 10:01:33 +0100 (CET)
+Received: from [213.196.193.186] (helo=cc-smtpin3.netcologne.de)
+        by localhost with ESMTP (eXpurgate 4.19.0)
+        (envelope-from <kurt@garloff.de>)
+        id 6017c36d-07b2-7f0000012729-7f000001dc22-1
+        for <multiple-recipients>; Mon, 01 Feb 2021 10:01:33 +0100
+Received: from nas2.garloff.de (xdsl-213-196-193-186.nc.de [213.196.193.186])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by cc-smtpin3.netcologne.de (Postfix) with ESMTPSA;
+        Mon,  1 Feb 2021 10:01:32 +0100 (CET)
+Received: from [192.168.155.202] (ap4.garloff.de [192.168.155.15])
+        by nas2.garloff.de (Postfix) with ESMTPSA id 0070CB3B13A5;
+        Mon,  1 Feb 2021 10:01:31 +0100 (CET)
+From:   Kurt Garloff <kurt@garloff.de>
+To:     Len Brown <len.brown@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <1f1fb01e-0616-34ea-ede6-dc7dd679c3d4@garloff.de>
+Subject: Re: turbostat: Fix Pkg Power on Zen
+Message-ID: <c7074c16-5d64-e829-10f6-ef91f5f6222b@garloff.de>
+Date:   Mon, 1 Feb 2021 10:01:31 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <1612168685-33799-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <1f1fb01e-0616-34ea-ede6-dc7dd679c3d4@garloff.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/02/21 09:38, Jiapeng Chong wrote:
-> Fix the following coccicheck warning:
-> 
-> ./arch/x86/kvm/debugfs.c:44:0-23: WARNING: vcpu_tsc_scaling_frac_fops
-> should be defined with DEFINE_DEBUGFS_ATTRIBUTE.
-> 
-> ./arch/x86/kvm/debugfs.c:36:0-23: WARNING: vcpu_tsc_scaling_fops should
-> be defined with DEFINE_DEBUGFS_ATTRIBUTE.
-> 
-> ./arch/x86/kvm/debugfs.c:27:0-23: WARNING: vcpu_tsc_offset_fops should
-> be defined with DEFINE_DEBUGFS_ATTRIBUTE.
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->   arch/x86/kvm/debugfs.c | 9 +++++----
->   1 file changed, 5 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/debugfs.c b/arch/x86/kvm/debugfs.c
-> index 7e818d6..9c0e29e 100644
-> --- a/arch/x86/kvm/debugfs.c
-> +++ b/arch/x86/kvm/debugfs.c
-> @@ -15,7 +15,7 @@ static int vcpu_get_timer_advance_ns(void *data, u64 *val)
->   	return 0;
->   }
->   
-> -DEFINE_SIMPLE_ATTRIBUTE(vcpu_timer_advance_ns_fops, vcpu_get_timer_advance_ns, NULL, "%llu\n");
-> +DEFINE_DEBUGFS_ATTRIBUTE(vcpu_timer_advance_ns_fops, vcpu_get_timer_advance_ns, NULL, "%llu\n");
->   
->   static int vcpu_get_tsc_offset(void *data, u64 *val)
->   {
-> @@ -24,7 +24,7 @@ static int vcpu_get_tsc_offset(void *data, u64 *val)
->   	return 0;
->   }
->   
-> -DEFINE_SIMPLE_ATTRIBUTE(vcpu_tsc_offset_fops, vcpu_get_tsc_offset, NULL, "%lld\n");
-> +DEFINE_DEBUGFS_ATTRIBUTE(vcpu_tsc_offset_fops, vcpu_get_tsc_offset, NULL, "%lld\n");
->   
->   static int vcpu_get_tsc_scaling_ratio(void *data, u64 *val)
->   {
-> @@ -33,7 +33,7 @@ static int vcpu_get_tsc_scaling_ratio(void *data, u64 *val)
->   	return 0;
->   }
->   
-> -DEFINE_SIMPLE_ATTRIBUTE(vcpu_tsc_scaling_fops, vcpu_get_tsc_scaling_ratio, NULL, "%llu\n");
-> +DEFINE_DEBUGFS_ATTRIBUTE(vcpu_tsc_scaling_fops, vcpu_get_tsc_scaling_ratio, NULL, "%llu\n");
->   
->   static int vcpu_get_tsc_scaling_frac_bits(void *data, u64 *val)
->   {
-> @@ -41,7 +41,8 @@ static int vcpu_get_tsc_scaling_frac_bits(void *data, u64 *val)
->   	return 0;
->   }
->   
-> -DEFINE_SIMPLE_ATTRIBUTE(vcpu_tsc_scaling_frac_fops, vcpu_get_tsc_scaling_frac_bits, NULL, "%llu\n");
-> +DEFINE_DEBUGFS_ATTRIBUTE(vcpu_tsc_scaling_frac_fops, vcpu_get_tsc_scaling_frac_bits,
-> +			  NULL, "%llu\n");
->   
->   void kvm_arch_create_vcpu_debugfs(struct kvm_vcpu *vcpu, struct dentry *debugfs_dentry)
->   {
-> 
-
-If you wanted to do this, you would have to use 
-debugfs_create_file_unsafe() as well.
-
-In practice, nobody does that because it's not a performance-sensitive 
-path and it's not worth the maintenance cost of using a less safe API.
-
-Paolo
-
+SGkgTGVuLAoKSXNzdWUgcGVyc2lzdHMgb24gUnl6ZW4gaW4gNS4xMS1yYzY6Cgprdm1hZG1p
+bkBLdXJ0U3J2MjAxOCgvLyk6fiBbMF0kIHN1ZG8gL2Nhc2Evc3JjL2xpbnV4LXN0YWJsZS90
+b29scy9wb3dlci94ODYvdHVyYm9zdGF0L3R1cmJvc3RhdAp0dXJib3N0YXQgdmVyc2lvbiAy
+MC4wOS4zMCAtIExlbiBCcm93biA8bGVuYkBrZXJuZWwub3JnPgpDUFVJRCgwKTogQXV0aGVu
+dGljQU1EIDB4MTAgQ1BVSUQgbGV2ZWxzOyAweDgwMDAwMDIzIHhsZXZlbHM7IGZhbWlseTpt
+b2RlbDpzdGVwcGluZyAweDE5OjIxOjAgKDI1OjMzOjApCkNQVUlEKDEpOiBTU0UzIE1PTklU
+T1IgLSAtIC0gVFNDIE1TUiAtIEhUIC0KQ1BVSUQoNik6IEFQRVJGLCBOby1UVVJCTywgTm8t
+RFRTLCBOby1QVE0sIE5vLUhXUCwgTm8tSFdQbm90aWZ5LCBOby1IV1B3aW5kb3csIE5vLUhX
+UGVwcCwgTm8tSFdQcGtnLCBOby1FUEIKQ1BVSUQoNyk6IE5vLVNHWApSQVBMOiAyMzQgc2Vj
+LiBKb3VsZSBDb3VudGVyIFJhbmdlLCBhdCAyODAgV2F0dHMKL2Rldi9jcHVfZG1hX2xhdGVu
+Y3k6IDIwMDAwMDAwMDAgdXNlYyAoZGVmYXVsdCkKY3VycmVudF9kcml2ZXI6IGFjcGlfaWRs
+ZQpjdXJyZW50X2dvdmVybm9yOiBtZW51CmN1cnJlbnRfZ292ZXJub3Jfcm86IG1lbnUKY3B1
+MjI6IFBPTEw6IENQVUlETEUgQ09SRSBQT0xMIElETEUKY3B1MjI6IEMxOiBBQ1BJIEZGSCBN
+V0FJVCAweDAKY3B1MjI6IEMyOiBBQ1BJIElPUE9SVCAweDQxNApjcHUyMjogY3B1ZnJlcSBk
+cml2ZXI6IGFjcGktY3B1ZnJlcQpjcHUyMjogY3B1ZnJlcSBnb3Zlcm5vcjogc2NoZWR1dGls
+CmNwdWZyZXEgYm9vc3Q6IDEKY3B1MDogTVNSX1JBUExfUFdSX1VOSVQ6IDB4MDAwYTEwMDMg
+KDAuMTI1MDAwIFdhdHRzLCAwLjAwMDAxNSBKb3VsZXMsIDAuMDAwOTc3IHNlYy4pCmt2bWFk
+bWluQEt1cnRTcnYyMDE4KC8vKTp+IFsyNDNdJAoKwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIF5eXiBFeGl0IGNvZGUKCldpdGggdGhl
+IHBhdGNoOgoKa3ZtYWRtaW5AS3VydFNydjIwMTgoLy8pOn4gWzI0M10kIHN1ZG8gL2Nhc2Ev
+c3JjL2xpbnV4LXN0YWJsZS90b29scy9wb3dlci94ODYvdHVyYm9zdGF0L3R1cmJvc3RhdMKg
+wqDCoAp0dXJib3N0YXQgdmVyc2lvbiAyMC4wOS4zMCAtIExlbiBCcm93biA8bGVuYkBrZXJu
+ZWwub3JnPsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgCkNQVUlEKDApOiBBdXRoZW50aWNBTUQgMHgxMCBDUFVJRCBsZXZlbHM7IDB4ODAwMDAw
+MjMgeGxldmVsczsgZmFtaWx5Om1vZGVsOnN0ZXBwaW5nIDB4MTk6MjE6MCAoMjU6MzM6MCkK
+Q1BVSUQoMSk6IFNTRTMgTU9OSVRPUiAtIC0gLSBUU0MgTVNSIC0gSFQgLcKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAKQ1BVSUQoNik6IEFQRVJGLCBOby1UVVJCTywgTm8tRFRTLCBOby1QVE0s
+IE5vLUhXUCwgTm8tSFdQbm90aWZ5LCBOby1IV1B3aW5kb3csIE5vLUhXUGVwcCwgTm8tSFdQ
+cGtnLCBOby1FUELCoMKgwqDCoMKgwqDCoMKgwqAKQ1BVSUQoNyk6IE5vLVNHWMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAKUkFQTDogMjM0IHNlYy4gSm91bGUgQ291bnRlciBSYW5nZSwgYXQg
+MjgwIFdhdHRzwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgCi9kZXYvY3B1X2RtYV9sYXRlbmN5OiAyMDAwMDAwMDAw
+IHVzZWMgKGRlZmF1bHQpwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAKY3VycmVudF9kcml2ZXI6IGFjcGlfaWRs
+ZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAKY3VycmVudF9nb3Zlcm5vcjogbWVudcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAKY3VycmVudF9nb3Zlcm5v
+cl9ybzogbWVudcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAKY3B1Mjg6IFBPTEw6IENQVUlETEUgQ09SRSBQT0xMIElETEXCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoApjcHUyODogQzE6IEFDUEkgRkZI
+IE1XQUlUIDB4MMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgCmNwdTI4OiBDMjogQUNQSSBJT1BPUlQgMHg0MTTCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgCmNwdTI4OiBjcHVmcmVxIGRyaXZl
+cjogYWNwaS1jcHVmcmVxwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAK
+Y3B1Mjg6IGNwdWZyZXEgZ292ZXJub3I6IHNjaGVkdXRpbMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAKY3B1ZnJlcSBib29zdDogMcKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAKY3B1MDogTVNSX1JBUExfUFdSX1VOSVQ6IDB4MDAwYTEwMDMgKDAuMTI1MDAwIFdh
+dHRzLCAwLjAwMDAxNSBKb3VsZXMsIDAuMDAwOTc3IHNlYy4pwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoApDb3JlwqDCoMKgIENQVcKgwqDCoMKgIEF2
+Z19NSHogQnVzeSXCoMKgIEJ6eV9NSHogVFNDX01IeiBJUlHCoMKgwqDCoCBQT0xMwqDCoMKg
+IEMxwqDCoMKgwqDCoCBDMsKgwqDCoMKgwqAgUE9MTCXCoMKgIEMxJcKgwqDCoMKgIEMyJcKg
+wqDCoMKgIENvcldhdHQgUGtnV2F0dAotwqDCoMKgwqDCoMKgIC3CoMKgwqDCoMKgwqAgMjfC
+oMKgwqDCoMKgIDEuMDTCoMKgwqAgMjU2MsKgwqDCoCAzNDExwqDCoMKgIDE2MDQ2wqDCoCAz
+M8KgwqDCoMKgwqAgMjkzMcKgwqDCoCAxMjg5NcKgwqAgMC4wMMKgwqDCoCAwLjg1wqDCoMKg
+IDk4LjQ4wqDCoCAxLjU3wqDCoMKgIDE4LjgxCjDCoMKgwqDCoMKgwqAgMMKgwqDCoMKgwqDC
+oCAxMsKgwqDCoMKgwqAgMC41NcKgwqDCoCAyMTkzwqDCoMKgIDM0MDDCoMKgwqAgODg1wqDC
+oMKgwqAgMcKgwqDCoMKgwqDCoCAxMTHCoMKgwqDCoCA3NTfCoMKgwqDCoCAwLjAwwqDCoMKg
+IDEuMTLCoMKgwqAgOTguNDLCoMKgIDAuMDTCoMKgwqAgMTguNzQKMMKgwqDCoMKgwqDCoCAx
+NsKgwqDCoMKgwqAgMcKgwqDCoMKgwqDCoCAwLjA1wqDCoMKgIDIzNTHCoMKgwqAgMzQwMMKg
+wqDCoCA1M8KgwqDCoMKgwqAgMMKgwqDCoMKgwqDCoCAzwqDCoMKgwqDCoMKgIDU0wqDCoMKg
+wqDCoCAwLjAwwqDCoMKgIDAuMDXCoMKgwqAgOTkuOTLCoMKgwqDCoMKgwqAKMcKgwqDCoMKg
+wqDCoCAxwqDCoMKgwqDCoMKgIDIwwqDCoMKgwqDCoCAwLjg5wqDCoMKgIDIyNjHCoMKgwqAg
+MzQwMMKgwqDCoCA0NzjCoMKgwqDCoCAwwqDCoMKgwqDCoMKgIDM5wqDCoMKgwqDCoCA0MjfC
+oMKgwqDCoCAwLjAwwqDCoMKgIDAuMzfCoMKgwqAgOTguODDCoMKgIDAuMDYKMcKgwqDCoMKg
+wqDCoCAxN8KgwqDCoMKgwqAgOcKgwqDCoMKgwqDCoCAwLjQwwqDCoMKgIDIzMjnCoMKgwqAg
+MzQwMMKgwqDCoCAzMDjCoMKgwqDCoCAwwqDCoMKgwqDCoMKgIDM4wqDCoMKgwqDCoCAyODLC
+oMKgwqDCoCAwLjAwwqDCoMKgIDAuMzXCoMKgwqAgOTkuMjnCoMKgwqDCoMKgwqAKWy4uLl0K
+Ci0tIApLdXJ0IEdhcmxvZmYgPGt1cnRAZ2FybG9mZi5kZT4KQ29sb2duZSwgR2VybWFueQoK
+T24gMjYvMTIvMjAyMCAxMzoxMywgS3VydCBHYXJsb2ZmIHdyb3RlOgo+IEhpIExlbiwKPgo+
+IGZpbmQgYXR0YWNoZWQgZml4IHRvIGF2b2lkIGV4aXRpbmcgd2l0aCAtMTMgb24gWmVuLiBQ
+YXRjaCBpcyBhZ2FpbnN0IHR1cmJvc3RhdCBhcyBpbmNsdWRlZCBpbiBMaW51eC01LjEwLjIu
+Cj4gUGxlYXNlIG1lcmdlLgo+Cj4gUFM6IFRoaXMgaXMgcHJvYmFibHkgbWF0ZXJpYWwgZm9y
+IC1zdGFibGUsIGFzIGl0IHVzZWQgdG8gd29yayBiZWZvcmUgb24gWmVuIChaZW4yIGFrYSBS
+eXplbiAzMDAwIGluIG15IGNhc2UpLgo+Cg==
