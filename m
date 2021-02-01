@@ -2,113 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E85B30A1FA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:34:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB0D30A1FF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:35:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231802AbhBAGdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 01:33:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29944 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231883AbhBAGGR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 01:06:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612159491;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3DbrYa9lTM0WfBiv6DqSHzncCEvSptL8lHmERyjThJ8=;
-        b=D5K7nRAkIOhW2kUF2Hk9lTl1UIpy93yDn3tovYs/aJ5gP1MJLVfnv1+8hhfpigNpXG2x24
-        rJwKOeFCOJ+TglRFUTQhpHPN+YrSHo1i9Jcm1iC64cusHBAecz/+lDu8Ha2xn0u7NK9lJL
-        TN9oyrWVttsqL0+n33UZqtSOdIQ+t9M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-366-ZEaupziEMA-dvif1_vOjXQ-1; Mon, 01 Feb 2021 01:04:49 -0500
-X-MC-Unique: ZEaupziEMA-dvif1_vOjXQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 59529107ACE3;
-        Mon,  1 Feb 2021 06:04:48 +0000 (UTC)
-Received: from [10.72.13.120] (ovpn-13-120.pek2.redhat.com [10.72.13.120])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9C07660C5F;
-        Mon,  1 Feb 2021 06:04:39 +0000 (UTC)
-Subject: Re: [PATCH RFC v2 10/10] vdpa_sim_blk: handle VIRTIO_BLK_T_GET_ID
-To:     Stefano Garzarella <sgarzare@redhat.com>,
-        virtualization@lists.linux-foundation.org
-Cc:     Xie Yongji <xieyongji@bytedance.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Laurent Vivier <lvivier@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-kernel@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
-        kvm@vger.kernel.org
-References: <20210128144127.113245-1-sgarzare@redhat.com>
- <20210128144127.113245-11-sgarzare@redhat.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <bcdc7dd7-856e-8aae-0683-e811081a1521@redhat.com>
-Date:   Mon, 1 Feb 2021 14:04:38 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S231895AbhBAGcu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 01:32:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58890 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231802AbhBAGFz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 01:05:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 484A264E06;
+        Mon,  1 Feb 2021 06:05:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612159513;
+        bh=Hx6NNSuVfHpvFw6mqku4ZqP8Q+HUcv4PX0RJ8yzvlyI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XM+MxnGxSFO3Ie1PJigLwIOn7wKp/3N8gsEmut1THWcr/WdANG1IHrN6h8L1kzODN
+         YOTmB68bQRn3vjRSzFsts0VjWaULNLeKBM8U0H5F+QAUM1RzWKOfHBF0uxbND0Wxfa
+         tY1tL/ZbQSa0uMH4xLzC8SUvs66o+ntCXGT+Xn84fQt/vV+56kUqTF5KwqLYb/dc39
+         obLLI8IgnsLSWD14iweVJDCW3BcE29gZ0bdXUW3NUqGiEppeAXNlIM4jK17w/E2lEK
+         dI+rJxCdOFshG0nF07ujHIVrDLd1am8LFjrRIHwsM6SUMt25LvGcF498mV0rFtj7zN
+         6v1LWAqm3yISA==
+Date:   Mon, 1 Feb 2021 11:35:08 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     mdalam@codeaurora.org
+Cc:     corbet@lwn.net, agross@kernel.org, bjorn.andersson@linaro.org,
+        dan.j.williams@intel.com, dmaengine@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, sricharan@codeaurora.org,
+        mdalam=codeaurora.org@codeaurora.org
+Subject: Re: [PATCH] dmaengine: qcom: bam_dma: Add LOCK and UNLOCK flag bit
+ support
+Message-ID: <20210201060508.GK2771@vkoul-mobl>
+References: <1608215842-15381-1-git-send-email-mdalam@codeaurora.org>
+ <20201221092355.GA3323@vkoul-mobl>
+ <efcc74bbdf36b4ddbf764eb6b4ed99f2@codeaurora.org>
+ <f7de0117c8ff2e61c09f58acdea0e5b0@codeaurora.org>
+ <20210112101056.GI2771@vkoul-mobl>
+ <e3cf7c4fc02c54d17fd2fd213f39005b@codeaurora.org>
+ <20210115055806.GE2771@vkoul-mobl>
+ <97ce29b230164a5848a38f6448d1be60@codeaurora.org>
+ <20210119164511.GE2771@vkoul-mobl>
+ <534308caab7c18730ad0cc25248d116f@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <20210128144127.113245-11-sgarzare@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <534308caab7c18730ad0cc25248d116f@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 27-01-21, 23:56, mdalam@codeaurora.org wrote:
+> On 2021-01-19 22:15, Vinod Koul wrote:
+> > On 18-01-21, 09:21, mdalam@codeaurora.org wrote:
+> > > On 2021-01-15 11:28, Vinod Koul wrote:
+> > > > On 14-01-21, 01:20, mdalam@codeaurora.org wrote:
+> > > > > On 2021-01-12 15:40, Vinod Koul wrote:
+> > > > > > On 12-01-21, 15:01, mdalam@codeaurora.org wrote:
+> > > > > > > On 2020-12-21 23:03, mdalam@codeaurora.org wrote:
+> > > > > > > > On 2020-12-21 14:53, Vinod Koul wrote:
+> > > > > > > > > Hello,
+> > > > > > > > >
+> > > > > > > > > On 17-12-20, 20:07, Md Sadre Alam wrote:
+> > > > > > > > > > This change will add support for LOCK & UNLOCK flag bit support
+> > > > > > > > > > on CMD descriptor.
+> > > > > > > > > >
+> > > > > > > > > > If DMA_PREP_LOCK flag passed in prep_slave_sg then requester of this
+> > > > > > > > > > transaction wanted to lock the DMA controller for this transaction so
+> > > > > > > > > > BAM driver should set LOCK bit for the HW descriptor.
+> > > > > > > > > >
+> > > > > > > > > > If DMA_PREP_UNLOCK flag passed in prep_slave_sg then requester
+> > > > > > > > > > of this
+> > > > > > > > > > transaction wanted to unlock the DMA controller.so BAM driver
+> > > > > > > > > > should set
+> > > > > > > > > > UNLOCK bit for the HW descriptor.
+> > > > > > > > >
+> > > > > > > > > Can you explain why would we need to first lock and then unlock..? How
+> > > > > > > > > would this be used in real world.
+> > > > > > > > >
+> > > > > > > > > I have read a bit of documentation but is unclear to me. Also should
+> > > > > > > > > this be exposed as an API to users, sounds like internal to driver..?
+> > > > > > > > >
+> > > > > > > >
+> > > > > > > > IPQ5018 SoC having only one Crypto Hardware Engine. This Crypto Hardware
+> > > > > > > > Engine
+> > > > > > > > will be shared between A53 core & ubi32 core. There is two separate
+> > > > > > > > driver dedicated
+> > > > > > > > to A53 core and ubi32 core. So to use Crypto Hardware Engine
+> > > > > > > > parallelly for encryption/description
+> > > > > > > > we need bam locking mechanism. if one driver will submit the request
+> > > > > > > > for encryption/description
+> > > > > > > > to Crypto then first it has to set LOCK flag bit on command descriptor
+> > > > > > > > so that other pipes will
+> > > > > > > > get locked.
+> > > > > > > >
+> > > > > > > > The Pipe Locking/Unlocking will be only on command-descriptor. Upon
+> > > > > > > > encountering a command descriptor
+> > > > > >
+> > > > > > Can you explain what is a cmd descriptor?
+> > > > >
+> > > > >   In BAM pipe descriptor structure there is a field called CMD
+> > > > > (Command
+> > > > > descriptor).
+> > > > >   CMD allows the SW to create descriptors of type Command which does
+> > > > > not
+> > > > > generate any data transmissions
+> > > > >   but configures registers in the Peripheral (write operations, and
+> > > > > read
+> > > > > registers operations ).
+> > > > >   Using command descriptor enables the SW to queue new configurations
+> > > > > between data transfers in advance.
+> > > >
+> > > > What and when is the CMD descriptor used for..?
+> > > 
+> > >   CMD descriptor is mainly used for configuring controller register.
+> > >   We can read/write controller register via BAM using CMD descriptor
+> > > only.
+> > >   CMD descriptor use command pipe for the transaction.
+> > 
+> > In which use cases would you need to issue cmd descriptors..?
+> 
+>   In IPQ5018 there is only one Crypto engine and it will get shared
+>   between UBI32 core & A53 core. So here we need to use command
+>   descriptor in-order to perform LOCKING/UNLOCKING mechanism. Since
+>   LOCK/ULOCK flag we can set only on CMD descriptor.
 
-On 2021/1/28 下午10:41, Stefano Garzarella wrote:
-> Handle VIRTIO_BLK_T_GET_ID request, always answering the
-> "vdpa_blk_sim" string.
->
-> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
-> ---
-> v2:
-> - made 'vdpasim_blk_id' static [Jason]
+So when will lock/unlock be performed? Can you please explain that..
+
+> > 
+> > > >
+> > > > > >
+> > > > > > > > with LOCK bit set, The BAM will lock all other pipes not related to
+> > > > > > > > the current pipe group, and keep
+> > > > > > > > handling the current pipe only until it sees the UNLOCK set then it
+> > > > > > > > will release all locked pipes.
+> > > > > > > > locked pipe will not fetch new descriptors even if it got event/events
+> > > > > > > > adding more descriptors for
+> > > > > > > > this pipe (locked pipe).
+> > > > > > > >
+> > > > > > > > No need to expose as an API to user because its internal to driver, so
+> > > > > > > > while preparing command descriptor
+> > > > > > > > just we have to update the LOCK/UNLOCK flag.
+> > > > > >
+> > > > > > So IIUC, no api right? it would be internal to driver..?
+> > > > >
+> > > > >   Yes its totally internal to deriver.
+> > > >
+> > > > So no need for this patch then, right?
+> > > 
+> > >   This patch is needed , because if some hardware will shared between
+> > >   multiple core like A53 and ubi32 for example. In IPQ5018 there is
+> > >   only one crypto engine and this will be shared between A53 core and
+> > >   ubi32 core and in A53 core & ubi32 core there are different drivers
+> > >   is getting used. So if encryption/decryption request come at same
+> > >   time from both the driver then things will get messed up. So here we
+> > >   need LOCKING mechanism.  If first request is from A53 core driver
+> > >   then this driver should lock all the pipes other than pipe dedicated
+> > >   to A53 core. So while preparing CMD descriptor driver should used
+> > >   this flag "DMA_PREP_LOCK", Since LOCK and UNLOCK flag bit we can set
+> > >   only on CMD descriptor. Once request processed then driver will set
+> > >   UNLOCK flag on CMD descriptor. Driver should use this flag
+> > >   "DMA_PREP_UNLOCK" while preparing CMD descriptor. Same logic will be
+> > >   apply for ubi32 core driver as well.
+> > 
+> > Why cant this be applied at driver level, based on txn being issued it
+> > can lock issue the txn and then unlock when done. I am not convinced yet
+> > that this needs to be exported to users and can be managed by dmaengine
+> > driver.
+> 
+>   The actual LOCK/UNLOCK flag should be set on hardware command descriptor.
+>   so this flag setting should be done in DMA engine driver. The user of the
+> DMA
+>   driver like (in case of IPQ5018) Crypto can use flag "DMA_PREP_LOCK" &
+> "DMA_PREP_UNLOCK"
+>   while preparing CMD descriptor before submitting to the DMA engine. In DMA
+> engine driver
+>   we are checking these flasgs on CMD descriptor and setting actual
+> LOCK/UNLOCK flag on hardware
+>   descriptor.
 
 
-Acked-by: Jason Wang <jasowang@redhat.com>
+I am not sure I comprehend this yet.. when is that we would need to do
+this... is this for each txn submitted to dmaengine.. or something
+else..
 
+> 
+>    if (flags & DMA_PREP_CMD) { <== check for descriptor type
+> 		if (flags & DMA_PREP_LOCK)
+> 			desc->flags |= cpu_to_le16(DESC_FLAG_LOCK); <== Actual LOCK flag setting
+> on HW descriptor.
+> 		if (flags & DMA_PREP_UNLOCK)
+> 			desc->flags |= cpu_to_le16(DESC_FLAG_UNLOCK); <== Actual UNLOCK flag
+> setting on HW descriptor.
+> 	}
+> > 
+> > Thanks
 
-> ---
->   drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 15 +++++++++++++++
->   1 file changed, 15 insertions(+)
->
-> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
-> index fc47e8320358..a3f8afad8d14 100644
-> --- a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
-> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
-> @@ -37,6 +37,7 @@
->   #define VDPASIM_BLK_VQ_NUM	1
->   
->   static struct vdpasim *vdpasim_blk_dev;
-> +static char vdpasim_blk_id[VIRTIO_BLK_ID_BYTES] = "vdpa_blk_sim";
->   
->   static bool vdpasim_blk_check_range(u64 start_sector, size_t range_size)
->   {
-> @@ -152,6 +153,20 @@ static bool vdpasim_blk_handle_req(struct vdpasim *vdpasim,
->   		}
->   		break;
->   
-> +	case VIRTIO_BLK_T_GET_ID:
-> +		bytes = vringh_iov_push_iotlb(&vq->vring, &vq->in_iov,
-> +					      vdpasim_blk_id,
-> +					      VIRTIO_BLK_ID_BYTES);
-> +		if (bytes < 0) {
-> +			dev_err(&vdpasim->vdpa.dev,
-> +				"vringh_iov_push_iotlb() error: %zd\n", bytes);
-> +			status = VIRTIO_BLK_S_IOERR;
-> +			break;
-> +		}
-> +
-> +		pushed += bytes;
-> +		break;
-> +
->   	default:
->   		dev_warn(&vdpasim->vdpa.dev,
->   			 "Unsupported request type %d\n", type);
-
+-- 
+~Vinod
