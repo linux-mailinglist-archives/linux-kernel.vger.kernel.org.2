@@ -2,91 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80DC130A910
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:50:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B935330A914
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:51:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232147AbhBANt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:49:58 -0500
-Received: from mail29.static.mailgun.info ([104.130.122.29]:21433 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231587AbhBANt5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:49:57 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612187376; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=0h6vSmXJIywnHGo/ywgkqW2Fs8pNf3fPzIqOrsfxUCg=; b=JpzqhQxDlKI3MBNxbkkK68ynbH6PmbwLtKpPuzWwyPSQ7csgvIi7/QqObYyKZqkn5tC0ABYQ
- CQXJ7gHE5suln5lrtQCS532ctTHWeYEdq58yHEeAffjcqYPgesL9Xy9tNDzNgvpp4IifMhCa
- Ofs+YRkQMA7LpOaIY+4hQeeS1x4=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 601806d52d8ee3f99ff65740 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Feb 2021 13:49:09
- GMT
-Sender: charante=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2831DC43461; Mon,  1 Feb 2021 13:49:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from charante-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: charante)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BB8E2C433CA;
-        Mon,  1 Feb 2021 13:49:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BB8E2C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
-From:   Charan Teja Reddy <charante@codeaurora.org>
-To:     akpm@linux-foundation.org, vbabka@suse.cz, rientjes@google.com,
-        mhocko@suse.com
-Cc:     vinmenon@codeaurora.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Charan Teja Reddy <charante@codeaurora.org>
-Subject: [PATCH] mm: page_alloc: update the COMPACT[STALL|FAIL] events properly
-Date:   Mon,  1 Feb 2021 19:18:58 +0530
-Message-Id: <1612187338-19100-1-git-send-email-charante@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S232196AbhBANvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:51:17 -0500
+Received: from mga02.intel.com ([134.134.136.20]:48566 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231259AbhBANvP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 08:51:15 -0500
+IronPort-SDR: +BoOSAD8kFnmhW92MvmSBLCCYbLFzNmd6+JyCUA2mMx/NdsJ+cMZ+JdJQJid+ZpJoMMIzafRqv
+ l+mtH9D4FgBA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="167789228"
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="167789228"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 05:49:27 -0800
+IronPort-SDR: HIGuIYqfme9l0ZvuvTAb7RogaVsqKQpkOy5QozRDhot1puv9UHMLoRNWbb9P1A9eMYYk76lJ7K
+ EHlSloz2I1Vg==
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="577834479"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 05:49:23 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l6ZZv-0018zx-1X; Mon, 01 Feb 2021 15:49:19 +0200
+Date:   Mon, 1 Feb 2021 15:49:19 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+        linux-sh@vger.kernel.org, linux-arch@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
+        Dennis Zhou <dennis@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        David Sterba <dsterba@suse.com>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Joe Perches <joe@perches.com>
+Subject: Re: [PATCH 7/8] lib: add fast path for find_next_*_bit()
+Message-ID: <YBgG35UTDLpVSYWV@smile.fi.intel.com>
+References: <20210130191719.7085-1-yury.norov@gmail.com>
+ <20210130191719.7085-8-yury.norov@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210130191719.7085-8-yury.norov@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By defination, COMPACT[STALL|FAIL] events needs to be counted when there
-is 'At least in one zone compaction wasn't deferred or skipped from the
-direct compaction'. And when compaction is skipped or deferred,
-COMPACT_SKIPPED will be returned but it will still go and update these
-compaction events which is wrong in the sense that COMPACT[STALL|FAIL]
-is counted without even trying the compaction.
+On Sat, Jan 30, 2021 at 11:17:18AM -0800, Yury Norov wrote:
+> Similarly to bitmap functions, find_next_*_bit() users will benefit
+> if we'll handle a case of bitmaps that fit into a single word. In the
+> very best case, the compiler may replace a function call with a
+> single ffs or ffz instruction.
 
-Correct this by skipping the counting of these events when
-COMPACT_SKIPPED is returned for compaction. This indirectly also avoid
-the unnecessary try into the get_page_from_freelist() when compaction is
-not even tried.
+Would be nice to have the examples how it reduces the actual code size (based
+on the existing code in kernel, especially in widely used frameworks /
+subsystems, like PCI).
 
-Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
----
- mm/page_alloc.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 519a60d..531f244 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -4152,6 +4152,8 @@ __alloc_pages_direct_compact(gfp_t gfp_mask, unsigned int order,
- 	memalloc_noreclaim_restore(noreclaim_flag);
- 	psi_memstall_leave(&pflags);
- 
-+	if (*compact_result == COMPACT_SKIPPED)
-+		return NULL;
- 	/*
- 	 * At least in one zone compaction wasn't deferred or skipped, so let's
- 	 * count a compaction stall
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-member of the Code Aurora Forum, hosted by The Linux Foundation
+With Best Regards,
+Andy Shevchenko
+
 
