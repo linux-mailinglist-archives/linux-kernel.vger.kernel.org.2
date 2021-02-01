@@ -2,176 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EAAC30A1D4
+	by mail.lfdr.de (Postfix) with ESMTP id E5FE130A1D5
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:05:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231849AbhBAGEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 01:04:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231784AbhBAGBA (ORCPT
+        id S231809AbhBAGFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 01:05:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34873 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231864AbhBAGCS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 01:01:00 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 463CFC061573
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 22:00:20 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id t63so15226531qkc.1
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 22:00:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Gww9ka74u4kvqObGYvnFu8233+bsNdvejBWZvAY2OVk=;
-        b=SMSTTSFo3W4aFKjztck/kug4TrYzVMCYewfsVTp80GF4qyGb9t47aJ1MnmDg2QGezN
-         qf1Ckv0SxOseL7AnGW9UrfWsLIInME9T0nI/1l9GipMUIkgmnZY52CjiAqbL13/+NulD
-         8nxeIQHDCJ1dwrjpmJ2wjzoxJKXY48AOFSaSIyGQ2gVtrf4YS82x8whNjrNq80bEfWpZ
-         3O5MKetMAgCj6Oup5gQK/cyUZqvCqkqq5L+vUBasRAZkRRfBWGzGN9g8orukuzF07hcf
-         AmGCJ4JbXsAsCDl4DkyQf1IEgJGbpTBH0MMKP3ir5Ln+Q1HuiibuGasE0VMWUSRCet7d
-         L4Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Gww9ka74u4kvqObGYvnFu8233+bsNdvejBWZvAY2OVk=;
-        b=JFnOA3PrG5pBgieJeg1R4Pkunvv+Hmx0lGOX799avbZT8dtc3HzhodbM1YdHdTiv+4
-         n1/ToNrmSwT3xQeSVRGwsbAKAXhSmkKTkfT6vk3TBi0Jt38a9cKS8w9I0mt7S9HN5L7B
-         70Gd1A1zHAQvu1F68768+8zDFj+srRY8bte5QNr6fTNpL8phuqjslryS+V5Qbu08Z96u
-         d1whm3gkXP+Kg6EgRFjM7Ql71sh3kOgrdtbiWAe+u8uLvn8h2toGlHXalPkBCU2EEg6E
-         AiFO+jnrhv9lB1gv4w1Ii6cdXGWnxWQRtwd9VOIpb+rOKn5bfYmrLQf9UwjKW0ZN1T3v
-         uwRw==
-X-Gm-Message-State: AOAM5314exUhdte34zojMXSJE/bDNerV5RobbK/RwbYm/c2QoRCufPhl
-        PBNYDVWP8GU2z1bk/Riw72YIbVP4a9sqGodNzo6TDQ==
-X-Google-Smtp-Source: ABdhPJw9tFahQET678D6nIg2wA5kAwzyhktFWiBuuAl6OA5T+sax5vsdIdzr+CoceWE770pe376rCA1DZVovhRQTg4c=
-X-Received: by 2002:a37:cd5:: with SMTP id 204mr14265264qkm.410.1612159219027;
- Sun, 31 Jan 2021 22:00:19 -0800 (PST)
+        Mon, 1 Feb 2021 01:02:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612159247;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RdybqpikUstylFnotQy48gGt+VsHUqQDR1hNUpuuxFI=;
+        b=V4yP1ZUnxUdx6l1GPCczEyT108ugX0uVd/3waHn69LfwJHBO5Sum0ytFgFEKx9eyz+zoNp
+        g8YK7wOxGwJ2z91K/Lc1AtZS1LM+nbomiUbfNRpJw/bIpVQsMiTf9KOSMomFHSPiJbm2dh
+        oiEHx59vqhtSDyD+sMZCugTdwFLsx7I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-241-fAEQBVTOOKuxJMlZzKKzzQ-1; Mon, 01 Feb 2021 01:00:46 -0500
+X-MC-Unique: fAEQBVTOOKuxJMlZzKKzzQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ED10D800D62;
+        Mon,  1 Feb 2021 06:00:44 +0000 (UTC)
+Received: from [10.72.13.120] (ovpn-13-120.pek2.redhat.com [10.72.13.120])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A339A1001281;
+        Mon,  1 Feb 2021 06:00:37 +0000 (UTC)
+Subject: Re: [PATCH 2/2] vdpa/mlx5: Restore the hardware used index after
+ change map
+To:     Eli Cohen <elic@nvidia.com>
+Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lulu@redhat.com
+References: <20210128134130.3051-1-elic@nvidia.com>
+ <20210128134130.3051-3-elic@nvidia.com>
+ <54239b51-918c-3475-dc88-4da1a4548da8@redhat.com>
+ <20210131185536.GA164217@mtl-vdi-166.wap.labs.mlnx>
+ <0c99f35c-7644-7201-cd11-7d486389a182@redhat.com>
+ <20210201055247.GA184807@mtl-vdi-166.wap.labs.mlnx>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <c013407d-7a6a-adaa-efd1-24a8a48dc6fa@redhat.com>
+Date:   Mon, 1 Feb 2021 14:00:35 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210131151832.215931-1-kyletso@google.com> <20210131151832.215931-2-kyletso@google.com>
- <8737f4b9-0202-aaf8-f461-93e82624ef0d@roeck-us.net>
-In-Reply-To: <8737f4b9-0202-aaf8-f461-93e82624ef0d@roeck-us.net>
-From:   Kyle Tso <kyletso@google.com>
-Date:   Mon, 1 Feb 2021 14:00:02 +0800
-Message-ID: <CAGZ6i=0VxkrDFSnUythLziVpRGK9DF96ihAOnCwWtE5TQ8So2g@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] usb: typec: Determine common SVDM Versions
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>, robh+dt@kernel.org,
-        Badhri Jagan Sridharan <badhri@google.com>,
-        USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210201055247.GA184807@mtl-vdi-166.wap.labs.mlnx>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 12:21 AM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 1/31/21 7:18 AM, Kyle Tso wrote:
-> > Changes since v1:
-> > - removed the "local" variables (svdm_version) in tcpm.c and
-> >   (altmodes/ucsi)/displayport.c
-> > - added a member "svdm_version" in struct typec_capabilities indicating
-> >   the default SVDM version of the port
-> > - added a member "common_svdm_ver" in struct typec_port indicating the
-> >   common SVDM version between the port and the partner
->
-> I personally find the "common" in the variable and function names unnecessary.
-> I would prefer using something like svdm_version instead of common_svdm_ver.
->
-The reason for the common_ prefix is just for the readability.
-That's totally fine with me to remove the prefix.
-Will fix this in the next version.
+
+On 2021/2/1 下午1:52, Eli Cohen wrote:
+> On Mon, Feb 01, 2021 at 11:36:23AM +0800, Jason Wang wrote:
+>> On 2021/2/1 上午2:55, Eli Cohen wrote:
+>>> On Fri, Jan 29, 2021 at 11:49:45AM +0800, Jason Wang wrote:
+>>>> On 2021/1/28 下午9:41, Eli Cohen wrote:
+>>>>> When a change of memory map occurs, the hardware resources are destroyed
+>>>>> and then re-created again with the new memory map. In such case, we need
+>>>>> to restore the hardware available and used indices. The driver failed to
+>>>>> restore the used index which is added here.
+>>>>>
+>>>>> Fixes 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
+>>>>> Signed-off-by: Eli Cohen <elic@nvidia.com>
+>>>> A question. Does this mean after a vq is suspended, the hw used index is not
+>>>> equal to vq used index?
+>>> Surely there is just one "Used index" for a VQ. What I was trying to say
+>>> is that after the VQ is suspended, I read the used index by querying the
+>>> hardware. The read result is the used index that the hardware wrote to
+>>> memory.
+>>
+>> Just to make sure I understand here. So it looks to me we had two index. The
+>> first is the used index which is stored in the memory/virtqueue, the second
+>> is the one that is stored by the device.
+>>
+> It is the structures defined in the virtio spec in 2.6.6 for the
+> available ring and 2.6.8 for the used ring. As you know these the
+> available ring is written to by the driver and read by the device. The
+> opposite happens for the used index.
 
 
-> > diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> > index 0afd8ef692e8..403a483645dd 100644
-> > --- a/drivers/usb/typec/tcpm/tcpm.c
-> > +++ b/drivers/usb/typec/tcpm/tcpm.c
-> > @@ -1470,11 +1470,13 @@ static void tcpm_register_partner_altmodes(struct tcpm_port *port)
-> >  }
-> >
-> >  #define supports_modal(port) PD_IDH_MODAL_SUPP((port)->partner_ident.id_header)
-> > +#define common_svdm_ver(typec)       (typec_get_common_svdm_version(typec))
->
-> I think that is unnecessary and confusing. We now have typec_get_common_svdm_version()
-> as well as common_svdm_ver() and COMMON_SVDM_VER() macros. I would suggest to just use
-> the function name (and maybe drop the 'common_' prefix from it).
->
-will fix this in the next version.
+Right, so for used index it was wrote by device. And the device should 
+have an internal used index value that is used to write to the used 
+ring. And the code is used to sync the device internal used index if I 
+understand this correctly.
 
 
-> > diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
-> > index ca3f4194ad90..b8d693cc7b77 100644
-> > --- a/drivers/usb/typec/ucsi/ucsi.c
-> > +++ b/drivers/usb/typec/ucsi/ucsi.c
-> > @@ -764,6 +764,7 @@ static void ucsi_handle_connector_change(struct work_struct *work)
-> >
-> >       if (con->status.change & UCSI_CONSTAT_CONNECT_CHANGE) {
-> >               typec_set_pwr_role(con->port, role);
-> > +             typec_set_common_svdm_version(con->port, con->typec_cap.svdm_version);
-> >
->
-> I am a bit concerned that svdm_version is added to typec_capabilities but not
-> consistently used by all drivers registering with typec. I am not sure I
-> understand if and how the value in typec_capabilities is used by the typec core.
->
-I am not sure about it as well :p
-From my POV, that is just the same nature as the "pd_revision" is in
-typec_capabilities which means the capabilities the port has
-regardless of the port partners.
-The port needs to reset the operating mode to it's designed SVDM
-version upon detach. I think typec_capabilities is a good place to
-store this information.
-What do you think?
+> The reason I need to restore the last known indices is for the new
+> hardware objects to sync on the last state and take over from there.
 
-BTW, the reset value of the variable "negotiated_rev" in tcpm/tcpm.c
-looks weird to me.
-It is reset to "PD_MAX_REV" in SNK_STARTUP and SRC_STARTUP.
-However, the tcpm.c might not always support the max revision of PD.
-IMO, the pd_revision in typec_capabilities is a better choice compared
-to PD_MAX_REV.
 
-> > diff --git a/include/linux/usb/typec.h b/include/linux/usb/typec.h
-> > index 54475323f83b..df0cb1e595a1 100644
-> > --- a/include/linux/usb/typec.h
-> > +++ b/include/linux/usb/typec.h
-> > @@ -206,12 +206,19 @@ struct typec_operations {
-> >                            enum typec_port_type type);
-> >  };
-> >
-> > +enum usb_pd_svdm_ver {
-> > +     SVDM_VER_1_0 = 0,
-> > +     SVDM_VER_2_0 = 1,
-> > +     SVDM_VER_MAX = SVDM_VER_2_0,
-> > +};
-> > +
-> >  /*
-> >   * struct typec_capability - USB Type-C Port Capabilities
-> >   * @type: Supported power role of the port
-> >   * @data: Supported data role of the port
-> >   * @revision: USB Type-C Specification release. Binary coded decimal
-> >   * @pd_revision: USB Power Delivery Specification revision if supported
-> > + * @svdm_version: USB PD Structured VDM version if supported
-> >   * @prefer_role: Initial role preference (DRP ports).
-> >   * @accessory: Supported Accessory Modes
-> >   * @fwnode: Optional fwnode of the port
-> > @@ -225,6 +232,7 @@ struct typec_capability {
-> >       enum typec_port_data    data;
-> >       u16                     revision; /* 0120H = "1.2" */
-> >       u16                     pd_revision; /* 0300H = "3.0" */
-> > +     enum usb_pd_svdm_ver    svdm_version;
-> >       int                     prefer_role;
-> >       enum typec_accessory    accessory[TYPEC_MAX_ACCESSORY];
-> >       unsigned int            orientation_aware:1;
-> > @@ -275,4 +283,6 @@ int typec_find_orientation(const char *name);
-> >  int typec_find_port_power_role(const char *name);
-> >  int typec_find_power_role(const char *name);
-> >  int typec_find_port_data_role(const char *name);
-> > +void typec_set_common_svdm_version(struct typec_port *port, enum usb_pd_svdm_ver);
-> > +enum usb_pd_svdm_ver typec_get_common_svdm_version(struct typec_port *port);
-> >  #endif /* __LINUX_USB_TYPEC_H */
-> >
+Right, after the vq suspending, the questions are:
+
+1) is hardware internal used index might not be the same with the used 
+index in the virtqueue?
+
+or
+
+2) can we simply sync the virtqueue's used index to the hardware's used 
+index?
+
+Thanks
+
+
 >
+>>>    After the I create the new hardware object, I need to tell it
+>>> what is the used index (and the available index) as a way to sync it
+>>> with the existing VQ.
+>>
+>> For avail index I understand that the hardware index is not synced with the
+>> avail index stored in the memory/virtqueue. The question is used index, if
+>> the hardware one is not synced with the one in the virtqueue. It means after
+>> vq is suspended,  some requests is not completed by the hardware (e.g the
+>> buffer were not put to used ring).
+>>
+>> This may have implications to live migration, it means those unaccomplished
+>> requests needs to be migrated to the destination and resubmitted to the
+>> device. This looks not easy.
+>>
+>> Thanks
+>>
+>>
+>>> This sync is especially important when a change of map occurs while the
+>>> VQ was already used (hence the indices are likely to be non zero). This
+>>> can be triggered by hot adding memory after the VQs have been used.
+>>>
+>>>> Thanks
+>>>>
+>>>>
+>>>>> ---
+>>>>>     drivers/vdpa/mlx5/net/mlx5_vnet.c | 7 +++++++
+>>>>>     1 file changed, 7 insertions(+)
+>>>>>
+>>>>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>>> index 549ded074ff3..3fc8588cecae 100644
+>>>>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+>>>>> @@ -87,6 +87,7 @@ struct mlx5_vq_restore_info {
+>>>>>     	u64 device_addr;
+>>>>>     	u64 driver_addr;
+>>>>>     	u16 avail_index;
+>>>>> +	u16 used_index;
+>>>>>     	bool ready;
+>>>>>     	struct vdpa_callback cb;
+>>>>>     	bool restore;
+>>>>> @@ -121,6 +122,7 @@ struct mlx5_vdpa_virtqueue {
+>>>>>     	u32 virtq_id;
+>>>>>     	struct mlx5_vdpa_net *ndev;
+>>>>>     	u16 avail_idx;
+>>>>> +	u16 used_idx;
+>>>>>     	int fw_state;
+>>>>>     	/* keep last in the struct */
+>>>>> @@ -804,6 +806,7 @@ static int create_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtque
+>>>>>     	obj_context = MLX5_ADDR_OF(create_virtio_net_q_in, in, obj_context);
+>>>>>     	MLX5_SET(virtio_net_q_object, obj_context, hw_available_index, mvq->avail_idx);
+>>>>> +	MLX5_SET(virtio_net_q_object, obj_context, hw_used_index, mvq->used_idx);
+>>>>>     	MLX5_SET(virtio_net_q_object, obj_context, queue_feature_bit_mask_12_3,
+>>>>>     		 get_features_12_3(ndev->mvdev.actual_features));
+>>>>>     	vq_ctx = MLX5_ADDR_OF(virtio_net_q_object, obj_context, virtio_q_context);
+>>>>> @@ -1022,6 +1025,7 @@ static int connect_qps(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *m
+>>>>>     struct mlx5_virtq_attr {
+>>>>>     	u8 state;
+>>>>>     	u16 available_index;
+>>>>> +	u16 used_index;
+>>>>>     };
+>>>>>     static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq,
+>>>>> @@ -1052,6 +1056,7 @@ static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueu
+>>>>>     	memset(attr, 0, sizeof(*attr));
+>>>>>     	attr->state = MLX5_GET(virtio_net_q_object, obj_context, state);
+>>>>>     	attr->available_index = MLX5_GET(virtio_net_q_object, obj_context, hw_available_index);
+>>>>> +	attr->used_index = MLX5_GET(virtio_net_q_object, obj_context, hw_used_index);
+>>>>>     	kfree(out);
+>>>>>     	return 0;
+>>>>> @@ -1602,6 +1607,7 @@ static int save_channel_info(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqu
+>>>>>     		return err;
+>>>>>     	ri->avail_index = attr.available_index;
+>>>>> +	ri->used_index = attr.used_index;
+>>>>>     	ri->ready = mvq->ready;
+>>>>>     	ri->num_ent = mvq->num_ent;
+>>>>>     	ri->desc_addr = mvq->desc_addr;
+>>>>> @@ -1646,6 +1652,7 @@ static void restore_channels_info(struct mlx5_vdpa_net *ndev)
+>>>>>     			continue;
+>>>>>     		mvq->avail_idx = ri->avail_index;
+>>>>> +		mvq->used_idx = ri->used_index;
+>>>>>     		mvq->ready = ri->ready;
+>>>>>     		mvq->num_ent = ri->num_ent;
+>>>>>     		mvq->desc_addr = ri->desc_addr;
 
-Thanks,
-Kyle
