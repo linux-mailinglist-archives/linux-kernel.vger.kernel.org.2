@@ -2,88 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD62630B288
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A9FE30B28D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:07:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbhBAWFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 17:05:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42098 "EHLO
+        id S231124AbhBAWG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 17:06:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230038AbhBAWEW (ORCPT
+        with ESMTP id S230157AbhBAWF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 17:04:22 -0500
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D1DBC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 14:03:42 -0800 (PST)
-Received: by mail-oi1-x236.google.com with SMTP id a77so20586636oii.4
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 14:03:42 -0800 (PST)
+        Mon, 1 Feb 2021 17:05:29 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D584C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 14:04:49 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id u15so10849380plf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 14:04:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=B49gml/8cpgz8Os7F0PVegLTz0oYjIQVNIevIep8kh4=;
-        b=Gh9nYVSmTAOkcwnoYC7iPOHwxtJA70Mk0Z650ygrrx6ADWq9ub7IYWOPuASCC9cfkR
-         GNhMZJWnjvwu8PZuhQEAvjEz9dOe5j3dbaPZKcR1CsU4U6CZJNDNcG3q1TzPmIR7xT5+
-         57Fg8AK0YFDpp5Gd6AIZUFWO5td0ItCu3ZNxs=
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=560t6fBoRJB7pYk+ynZBL69vW684cbwpnt+V28G7u9E=;
+        b=QPkHQFq6Z49wZLxc9MO+bZW/z2SwMNCcUMkQkCgAyST/fL4TXcwsxZoC/1MYxtYHru
+         RgWmLK9mnhYR3Y5crET85kdbAIBm39MKCeCqR0vcHL4KorrO+bhSXUWJnuYcyG8xixdX
+         UnLRCgP/6pBgGHvLIysFxidvtauEaBQp6U9ayK0Ms03mm7exV3F3J1QLICXsfOedHQOM
+         8kgWZalGMxShVN0ymQn6t6KlDqhFgxZx7vS91rCnJyPn/YjvKZ1p80y2hGnB84MSJldA
+         Zzu1KpCtamr+lYDDdpT8xdIMBsDwBymmGs8J5d3oS/eqN37JA7pqvanI71ExM9yCde4T
+         zUyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=B49gml/8cpgz8Os7F0PVegLTz0oYjIQVNIevIep8kh4=;
-        b=bjCx9Ca+8Qw/o0Y46BKI7pu53R5TFekay5hkeKQO/sDYEGuNu76nktvnhVmQRQaHzU
-         OxqWr3BCUTLfFR6C1gVqYz29LtduiGcFqIgF2Ry4qjKX+UYG8zvmFcuD6lC2tTOVuzTm
-         oh4EZnjfD1FK8VTrdkaPibalIAqjL3Kpk792A0RCrDrj/3MN9+OPdhSUYJaDG3fCxP5x
-         NY1CfnlIqAant1ePJ/y93R2ZD6D6rbVuS8zcoBJ4+eQADK3HNVqtfE+PZVLOwYqhjSuc
-         vpoLFtNlXUS1NlPL8SPo05hHk8O871ewPZoFkS0EOP//6CHITBd91Ya5PIvNTCsPwIGd
-         00UA==
-X-Gm-Message-State: AOAM532YcRYou+vL/ARGxXLwF9doNcSYw9064+6zpQXawkWBYK51YXMQ
-        CEP3x6pqiOHsxmhdgJpkOhSxVO1qR+uhJg==
-X-Google-Smtp-Source: ABdhPJxdcq65u3ug52vDbOBzp/bHb/4hjrGaFOo5Ho3z656EM2NdGlx/IQlmiWtQOgWWjEMJ2N+MKg==
-X-Received: by 2002:aca:d643:: with SMTP id n64mr643868oig.151.1612217020465;
-        Mon, 01 Feb 2021 14:03:40 -0800 (PST)
-Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com. [209.85.167.171])
-        by smtp.gmail.com with ESMTPSA id 67sm4137037ott.64.2021.02.01.14.03.39
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 14:03:39 -0800 (PST)
-Received: by mail-oi1-f171.google.com with SMTP id k25so20567713oik.13
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 14:03:39 -0800 (PST)
-X-Received: by 2002:aca:f40c:: with SMTP id s12mr622260oih.105.1612217018531;
- Mon, 01 Feb 2021 14:03:38 -0800 (PST)
-MIME-Version: 1.0
-References: <20210201070649.1667209-1-yenlinlai@chromium.org>
-In-Reply-To: <20210201070649.1667209-1-yenlinlai@chromium.org>
-From:   Brian Norris <briannorris@chromium.org>
-Date:   Mon, 1 Feb 2021 14:03:26 -0800
-X-Gmail-Original-Message-ID: <CA+ASDXO-bVXhEJE+7kSe85e8i31kzACHeypt-8vBD2ZO2_1=3Q@mail.gmail.com>
-Message-ID: <CA+ASDXO-bVXhEJE+7kSe85e8i31kzACHeypt-8vBD2ZO2_1=3Q@mail.gmail.com>
-Subject: Re: [PATCH] mwifiex: Report connected BSS with cfg80211_connect_bss()
-To:     Yen-lin Lai <yenlinlai@chromium.org>
-Cc:     linux-wireless <linux-wireless@vger.kernel.org>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        "<netdev@vger.kernel.org>" <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=560t6fBoRJB7pYk+ynZBL69vW684cbwpnt+V28G7u9E=;
+        b=nZwUSXNRQjfsLA/D+kIeQTADUk6YBMOOQJDCdIkwiKHArQdJ3NAwaYpKC1Dxl0RWX0
+         4eF/qVjmk0QWtPy1RLVuv7EV0qGmV7W0Vua3+XnWNTnVzSBTweca+LNuYigWhC+qYmuU
+         8gmvcqzSw9b8JChQly91FNgx/4TDLE1D9/qIsZuzl3VBe4+k9C4SKhkQZj4dWuSZY/oC
+         hGtDpnf3x7q09Uoqqysbr0hjmawywhjDW65Q0ZZ7a8Uiqwu7ibmWCtlgc+9rVxy7O3fx
+         lLMUgklvWbTS2GncgjukThgH/0rt9VgjmomMt2FAqWC+hAByMwvO1koGtNXZGhGHqWg5
+         sD9A==
+X-Gm-Message-State: AOAM531086m1HFYqNQn1p1qa+CQZEJ/l4U1qVqrOrMMSLSymGVBsItAJ
+        ykpm2hyUDL/eEvI4IyDxDyR8K59cbCemdg==
+X-Google-Smtp-Source: ABdhPJwCsZCRkAE/Mwiu7DtQNEGp0BUUgOUSP+osTV8dFNdnbg9ewRz/DzXZpVRBIuKdXvYUlPotZQ==
+X-Received: by 2002:a17:90b:14cf:: with SMTP id jz15mr919036pjb.180.1612217088619;
+        Mon, 01 Feb 2021 14:04:48 -0800 (PST)
+Received: from [192.168.88.245] (c-24-6-216-183.hsd1.ca.comcast.net. [24.6.216.183])
+        by smtp.gmail.com with ESMTPSA id e21sm18869724pgv.74.2021.02.01.14.04.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 Feb 2021 14:04:47 -0800 (PST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [RFC 15/20] mm: detect deferred TLB flushes in vma granularity
+From:   Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <20210131001132.3368247-16-namit@vmware.com>
+Date:   Mon, 1 Feb 2021 14:04:45 -0800
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, Yu Zhao <yuzhao@google.com>,
+        X86 ML <x86@kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <A6E4897D-8D5A-4084-8288-8E43F3039921@gmail.com>
+References: <20210131001132.3368247-1-namit@vmware.com>
+ <20210131001132.3368247-16-namit@vmware.com>
+To:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 11:07 PM Yen-lin Lai <yenlinlai@chromium.org> wrote:
-> When a network is moved or reconfigured on the different channel, there
-> can be multiple BSSes with the same BSSID and SSID in scan result
-> before the old one expires. Then, it can cause cfg80211_connect_result
-> to map current_bss to a bss with the wrong channel.
->
-> Let mwifiex_cfg80211_assoc return the selected BSS and then the caller
-> can report it cfg80211_connect_bss.
->
-> Signed-off-by: Yen-lin Lai <yenlinlai@chromium.org>
+> On Jan 30, 2021, at 4:11 PM, Nadav Amit <nadav.amit@gmail.com> wrote:
+>=20
+> From: Nadav Amit <namit@vmware.com>
+>=20
+> Currently, deferred TLB flushes are detected in the mm granularity: if
+> there is any deferred TLB flush in the entire address space due to =
+NUMA
+> migration, pte_accessible() in x86 would return true, and
+> ptep_clear_flush() would require a TLB flush. This would happen even =
+if
+> the PTE resides in a completely different vma.
 
-This seems sane to me:
+[ snip ]
 
-Reviewed-by: Brian Norris <briannorris@chromium.org>
+> +static inline void read_defer_tlb_flush_gen(struct mmu_gather *tlb)
+> +{
+> +	struct mm_struct *mm =3D tlb->mm;
+> +	u64 mm_gen;
+> +
+> +	/*
+> +	 * Any change of PTE before calling __track_deferred_tlb_flush() =
+must be
+> +	 * performed using RMW atomic operation that provides a memory =
+barriers,
+> +	 * such as ptep_modify_prot_start().  The barrier ensure the =
+PTEs are
+> +	 * written before the current generation is read, synchronizing
+> +	 * (implicitly) with flush_tlb_mm_range().
+> +	 */
+> +	smp_mb__after_atomic();
+> +
+> +	mm_gen =3D atomic64_read(&mm->tlb_gen);
+> +
+> +	/*
+> +	 * This condition checks for both first deferred TLB flush and =
+for other
+> +	 * TLB pending or executed TLB flushes after the last table that =
+we
+> +	 * updated. In the latter case, we are going to skip a =
+generation, which
+> +	 * would lead to a full TLB flush. This should therefore not =
+cause
+> +	 * correctness issues, and should not induce overheads, since =
+anyhow in
+> +	 * TLB storms it is better to perform full TLB flush.
+> +	 */
+> +	if (mm_gen !=3D tlb->defer_gen) {
+> +		VM_BUG_ON(mm_gen < tlb->defer_gen);
+> +
+> +		tlb->defer_gen =3D inc_mm_tlb_gen(mm);
+> +	}
+> +}
+
+Andy=E2=80=99s comments managed to make me realize this code is wrong. =
+We must
+call inc_mm_tlb_gen(mm) every time.
+
+Otherwise, a CPU that saw the old tlb_gen and updated it in its local
+cpu_tlbstate on a context-switch. If the process was not running when =
+the
+TLB flush was issued, no IPI will be sent to the CPU. Therefore, later
+switch_mm_irqs_off() back to the process will not flush the local TLB.
+
+I need to think if there is a better solution. Multiple calls to
+inc_mm_tlb_gen() during deferred flushes would trigger a full TLB flush
+instead of one that is specific to the ranges, once the flush actually =
+takes
+place. On x86 it=E2=80=99s practically a non-issue, since anyhow any =
+update of more
+than 33-entries or so would cause a full TLB flush, but this is still =
+ugly.
+
