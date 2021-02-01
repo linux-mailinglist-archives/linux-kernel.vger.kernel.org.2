@@ -2,145 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D94B630B1ED
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:15:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D8F30B1F7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:18:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231945AbhBAVPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 16:15:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30887 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229663AbhBAVPA (ORCPT
+        id S232260AbhBAVQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 16:16:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229525AbhBAVQZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 16:15:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612214013;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MmWztmGR5QmsHu5+b9WkkQVWRHsWQU/iqLJE+kYPk+k=;
-        b=FQxg7qe752hONfMYUy/xn9tE+uE2QxaHeuZyptM4iuIwkYJfktR9UVygzts4sijR75uBq8
-        3basGuxJiCu/ROKdFW2diZ9WPKsKMgF7pgqBet1hYASzAZne6HazaEZs9sOZ+E4mCN6gEl
-        ENdyUT7F2oC6lr3PTEJooeWx1INNfYc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-555-dKGUuVngP364zEE8h3y-2Q-1; Mon, 01 Feb 2021 16:13:29 -0500
-X-MC-Unique: dKGUuVngP364zEE8h3y-2Q-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 00D2D1842140;
-        Mon,  1 Feb 2021 21:13:27 +0000 (UTC)
-Received: from treble (ovpn-120-118.rdu2.redhat.com [10.10.120.118])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 70D2560BF3;
-        Mon,  1 Feb 2021 21:13:24 +0000 (UTC)
-Date:   Mon, 1 Feb 2021 15:13:22 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Justin Forbes <jforbes@redhat.com>,
-        Ondrej Mosnacek <omosnace@redhat.com>,
+        Mon, 1 Feb 2021 16:16:25 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C59CC061756;
+        Mon,  1 Feb 2021 13:15:45 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id e15so4661621lft.13;
+        Mon, 01 Feb 2021 13:15:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=irOj1nASK0NREc3BcDFDuw6eRYD59HzaD0YvEhbe2rA=;
+        b=r6u2S91UMDxQwNdFTsw6DnqRBYyHcKo6KI5z0VToO/XYoEQDiQSd1LiKk82mPbMBuu
+         tDuND+PJGJzf0S3OW0DJ2FnLDRrsvjRa766Iby5rjjIFf7B+8jpTAxaPk+8qY9muwp0o
+         EzUkwQuUEVMQN1WV4njw4EvOlpbY6W8bjwlVb9BVzivY2fwVv8u0YC588ma3YgNqIzMR
+         FLHSJyJ8oioo1j0D8N85ZjUegpJNVIoHQ54qOkOGabg604XOPas8rD2Sjj8uDj3WgnXE
+         P42zY6QD2t+cZjXGY7k/h0OeXjrUqWix4u5r0MzEdzE5wrMjX1rlns5sAnglDWroy2wA
+         FxxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=irOj1nASK0NREc3BcDFDuw6eRYD59HzaD0YvEhbe2rA=;
+        b=gZHG0PhAznycy1SESzPmUIuCOvjrUUNJTLlHvHGEwxbm8Gp2lhaWPdxDrXkeIgAR7m
+         vAmqBNpgz+M0f9HB7BgryItZ8EDu7EGnvIdGqzaP/OOIfQQaKIjtyz2jaPUJOiUj1BxD
+         iQT8dFilwjutXqdoaDYvVdC13hhKuN6iqJgIcwlNQHgkuu7+ElVwU7Cx66cKwiRkwzMa
+         buj3fm3eznX2i7h5YjBf3g0meuWKLnETTh+CUgMmirU2Y6SoDqUzlfEcmUNyURlnJ9vS
+         BhFFYihaMqygAPGzTw6WQecMnZQ1HaV4y9P23hWbCrQZkvbRQNLCbF1kmzJIsJAI53EQ
+         LXqQ==
+X-Gm-Message-State: AOAM533dz83QoOxS2rJ1r4N7MqzP837JRRdvY7sciBIM/L694up+O/TP
+        hCi3aue8fukmC/eerymDTotTIWl8UXY=
+X-Google-Smtp-Source: ABdhPJwrYdmYDCxfBTGx/h8g8QUyHPBH1jncl9qWiKnu6iHbto/awpIkRJw2dkXN4Urr8MOt3kHYyg==
+X-Received: by 2002:ac2:4ad0:: with SMTP id m16mr3317361lfp.53.1612214143755;
+        Mon, 01 Feb 2021 13:15:43 -0800 (PST)
+Received: from ?IPv6:2a00:1370:814d:ea25:a10:76ff:fe69:21b6? ([2a00:1370:814d:ea25:a10:76ff:fe69:21b6])
+        by smtp.googlemail.com with ESMTPSA id o16sm988956lft.44.2021.02.01.13.15.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Feb 2021 13:15:43 -0800 (PST)
+Subject: Re: [PATCH v5] gpiolib: Bind gpio_device to a driver to enable
+ fw_devlink=on by default
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        David Laight <David.Laight@aculab.com>,
-        Jessica Yu <jeyu@kernel.org>
-Subject: Re: [PATCH RFC] kbuild: Prevent compiler mismatch with external
- modules
-Message-ID: <20210201211322.t2rxmvnrystc2ky7@treble>
-References: <fff056a7c9e6050c2d60910f70b6d99602f3bec4.1611863075.git.jpoimboe@redhat.com>
- <CAHk-=wih0rLHsPXodpXJw_0F3bJqu=Pb_YNmPCSsYU_huoMwZA@mail.gmail.com>
- <20210128205207.awdbh4bmx56pxxjl@treble>
- <CAHk-=wgh4DaZvTcFfBcDMKc1QXkKjwny_Z0H5JfzdwMTNTBkSw@mail.gmail.com>
- <CAHk-=wh+3PWi2NuoQ0hbSyLpOHjaBWKcgX6N7+PfPkXzNAfMwA@mail.gmail.com>
- <20210128213409.qxnclchjyq6v23up@treble>
- <CAHk-=wgjwhDy-y4mQh34L+2aF=n6BjzHdqAW2=8wri5x7O04pA@mail.gmail.com>
- <20210128220803.fixcmuv4ceq5m7dy@treble>
- <CAK7LNARE3KO-kqdsXAbt9d9+3EqqutYd6iNki_rU2-Q9GkakbA@mail.gmail.com>
+        Marc Zyngier <maz@kernel.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Kever Yang <kever.yang@rock-chips.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+References: <20210122193600.1415639-1-saravanak@google.com>
+ <544ad0e4-0954-274c-8e77-866aaa5661a8@gmail.com>
+ <CAGETcx_CYKczo+geD7yDo+T2+_-tgGYwtjR-2sMPQYHuz-wAgw@mail.gmail.com>
+ <09502076-02e9-39ee-e432-24260696a927@gmail.com>
+ <CAGETcx9fqnCZTC=afDUHnS6gES8WW4SwFNmH5sWaGVRYiysOMQ@mail.gmail.com>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <c21d1a6b-5464-b59d-3967-c75c5a16136c@gmail.com>
+Date:   Tue, 2 Feb 2021 00:15:42 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
+In-Reply-To: <CAGETcx9fqnCZTC=afDUHnS6gES8WW4SwFNmH5sWaGVRYiysOMQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAK7LNARE3KO-kqdsXAbt9d9+3EqqutYd6iNki_rU2-Q9GkakbA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 08:17:51AM +0900, Masahiro Yamada wrote:
-> [3]
-> Peterz already pointed out asm-goto as an example of ABI mismatch.
+01.02.2021 23:15, Saravana Kannan пишет:
+> On Mon, Feb 1, 2021 at 8:49 AM Dmitry Osipenko <digetx@gmail.com> wrote:
+>>
+>> 01.02.2021 00:28, Saravana Kannan пишет:
+>>>> This patch causes these new errors on NVIDIA Tegra30 Nexus 7 using recent linux-next:
+>>>>
+>>>>  gpio-1022 (cpu-pwr-req-hog): hogged as input
+>>>>  max77620-pinctrl max77620-pinctrl: pin gpio4 already requested by max77620-pinctrl; cannot claim for gpiochip1
+>>>>  max77620-pinctrl max77620-pinctrl: pin-4 (gpiochip1) status -22
+>>>>  max77620-pinctrl max77620-pinctrl: could not request pin 4 (gpio4) from group gpio4  on device max77620-pinctrl
+>>>>  gpio_stub_drv gpiochip1: Error applying setting, reverse things back
+>>>>  gpio_stub_drv: probe of gpiochip1 failed with error -22
+>>>>
+>>>> Please fix, thanks in advance.
+>>> I have a partial guess on why this is happening. So can you try this patch?
+>>>
+>>> Thanks,
+>>> Saravana
+>>>
+>>> --- a/drivers/gpio/gpiolib.c
+>>> +++ b/drivers/gpio/gpiolib.c
+>>> @@ -4213,6 +4213,8 @@ static int gpio_stub_drv_probe(struct device *dev)
+>>>          * gpio_device of the GPIO chip with the firmware node and then simply
+>>>          * bind it to this stub driver.
+>>>          */
+>>> +       if (dev->fwnode && dev->fwnode->dev != dev)
+>>> +               return -EBUSY;
+>>>         return 0;
+>>>  }
+>>
+>> This change doesn't help, exactly the same errors are still there.
 > 
-> I remember a trouble reported in the past due
-> to the mismatch of -mstack-protector-guard-offset.
+> Sorry, I see what's happening. Try this instead. If it works, I'll
+> send out a proper patch.
 > 
-> https://bugzilla.kernel.org/show_bug.cgi?id=201891
+> Thanks,
+> Saravana
 > 
-> This has already been fixed,
-> and it will no longer happen though.
-
-This is kind of concerning though.  It would be nice to somehow store
-KCLAGS in the config and warn if it changes unexpectedly.
-
-This can be a problem not only for OOT modules, but for regular kernel
-builds which have a .config copied from somewhere.
-
-Because of the toolchain-dependent kconfig options, features can
-silently disappear if the toolchain doesn't support them, due to a
-different compiler version, or even a missing library.
-
-> [2]
+> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+> index 8e0564c50840..f3d0ffe8a930 100644
+> --- a/drivers/gpio/gpiolib.c
+> +++ b/drivers/gpio/gpiolib.c
+> @@ -56,8 +56,10 @@
+>  static DEFINE_IDA(gpio_ida);
+>  static dev_t gpio_devt;
+>  #define GPIO_DEV_MAX 256 /* 256 GPIO chip devices supported */
+> +static int gpio_bus_match(struct device *dev, struct device_driver *drv);
+>  static struct bus_type gpio_bus_type = {
+>         .name = "gpio",
+> +       .match = gpio_bus_match,
+>  };
 > 
-> As for this patch, it is wrong to do this check in the Makefile
-> parse stage.
+>  /*
+> @@ -4199,6 +4201,14 @@ void gpiod_put_array(struct gpio_descs *descs)
+>  }
+>  EXPORT_SYMBOL_GPL(gpiod_put_array);
 > 
-> "make M=...  clean"
-> "make M=...  help"
+> +
+> +static int gpio_bus_match(struct device *dev, struct device_driver *drv)
+> +{
+> +       if (dev->fwnode && dev->fwnode->dev != dev)
+> +               return 0;
+> +       return 1;
+> +}
+> +
+>  static int gpio_stub_drv_probe(struct device *dev)
+>  {
+>         /*
 > 
-> etc. will fail.
-> Such targets do not require the compiler in the first place.
-> 
-> This check must be done before starting building something,
->
-> Also, this patch is not applicable.
-> gcc-version.sh and clang-version.sh do not exist.
-> See linux-next.
 
-Something like so?
+This works, thank you!
 
-diff --git a/Makefile b/Makefile
-index 95ab9856f357..10ca621369fb 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1721,12 +1721,25 @@ KBUILD_MODULES := 1
- 
- build-dirs := $(KBUILD_EXTMOD)
- PHONY += modules
--modules: $(MODORDER)
-+modules: ext_compiler_check $(MODORDER)
- 	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modpost
- 
- $(MODORDER): descend
- 	@:
- 
-+orig_name   := $(if $(CONFIG_CC_IS_GCC),GCC,CLANG)
-+orig_minor  := $(shell expr $(if $(CONFIG_CC_IS_GCC),$(CONFIG_GCC_VERSION),$(CONFIG_CLANG_VERSION)) / 100)
-+cur_namever := $(shell $(srctree)/scripts/cc-version.sh $(CC))
-+cur_name    := $(word 1,$(cur_namever))
-+cur_minor   := $(shell expr $(word 2,$(cur_namever)) / 100)
-+PHONY += ext_compiler_check
-+ext_compiler_check:
-+	@if [ $(orig_name) != $(cur_name) ] || [ $(orig_minor) != $(cur_minor) ]; then \
-+		echo >&2 "warning: The compiler differs from the version which was used to build the kernel."; \
-+		echo >&2 "warning: Some kernel features are compiler-dependent."; \
-+		echo >&2 "warning: It's recommended that you change your compiler to match the version in the .config file."; \
-+	fi
-+
- PHONY += modules_install
- modules_install: _emodinst_ _emodinst_post
- 
-
+Tested-by: Dmitry Osipenko <digetx@gmail.com>
