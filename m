@@ -2,81 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F31D730B1C8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 21:59:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E4930B1D3
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:02:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231902AbhBAU6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 15:58:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47430 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229567AbhBAU6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 15:58:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80C2564ECB;
-        Mon,  1 Feb 2021 20:58:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612213083;
-        bh=r/E49oyGnfm/yoB373RLEccYiXcRJsRAzM4O/KWNyro=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MLNeG0uT1Jizxo/VSvEhaAFbENEPr3J3pVkEdTCXFnvp45+WXkRwuNYXZHiAbEQGL
-         6r1vEHo72+yRV52MMdhEHETflCkFaA0zrY6YOtIl04a6LZyRIqgT+M6gFXjQhlqT0+
-         iwxX1RGiP8hYyW8VCRNPNNSsxjw3AukWLTiVCLhELHR8drIrbmn0W4IznkIxMTD1Qv
-         rVRNQqXpzLZJpU/B2IleHHNXcuUdZkteH6tzkEOMz21XK+6r1oGilNaArkXU7QYvFd
-         8nX95YK7aByx+7b9Ch/nQO6Z17wJiZo6/g+UhrvQeL1WWPQQKtc362kVfMuZwVDoa2
-         JqITgx85QiJfA==
-Date:   Mon, 1 Feb 2021 12:57:59 -0800
-From:   Keith Busch <kbusch@kernel.org>
-To:     Jianxiong Gao <jxgao@google.com>
-Cc:     erdemaktas@google.com, marcorr@google.com, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        gregkh@linuxfoundation.org, saravanak@google.com,
-        heikki.krogerus@linux.intel.com, rafael.j.wysocki@intel.com,
-        andriy.shevchenko@linux.intel.com, dan.j.williams@intel.com,
-        bgolaszewski@baylibre.com, jroedel@suse.de,
-        iommu@lists.linux-foundation.org, konrad.wilk@oracle.com,
-        axboe@fb.com, sagi@grimberg.me, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 3/3] Adding
- device_dma_parameters->offset_preserve_mask to NVMe driver.
-Message-ID: <20210201205759.GA2128135@dhcp-10-100-145-180.wdc.com>
-References: <20210201183017.3339130-1-jxgao@google.com>
- <20210201183017.3339130-4-jxgao@google.com>
+        id S232165AbhBAVAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 16:00:35 -0500
+Received: from conssluserg-01.nifty.com ([210.131.2.80]:40249 "EHLO
+        conssluserg-01.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229879AbhBAVAb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 16:00:31 -0500
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173]) (authenticated)
+        by conssluserg-01.nifty.com with ESMTP id 111KxSLi012988;
+        Tue, 2 Feb 2021 05:59:29 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-01.nifty.com 111KxSLi012988
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1612213169;
+        bh=kAlAHi/OGtvLm+bYrSQ8UHY37fzkJJ3uPPuK5hDluAs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CDJyrsnKeA09Ip8ukvWIBazReG5HhM+cxCQAk7Y7cQ5O+wvJ3ckgvQ5yY1ZCE4Eet
+         ZThkVTyAQ7WK9ScoSsfyTeEkGrBMmMUC2uxGgMNerbBpA+kXkiFS4unCZpny9FN9Ew
+         44wZJYCZETIpQVJMhYyb2AItBIXS8/M6FBnU4K2qUHKf8QjbOH5ZEiQdQCX4LfxUdE
+         mqyuzUdC869wc/cksy+LIqVWh3tUqcmox+xspVxxRFE71N0eyLnh7SuqieMH9RLCG5
+         iLu9noLS+9Ixf/HIjR+VR+1hcQ/AFLwldFCkQ2jS3EAW2AGT8kcJA4s9GtrdWG7/3o
+         SxDABvdSrhuug==
+X-Nifty-SrcIP: [209.85.215.173]
+Received: by mail-pg1-f173.google.com with SMTP id n10so12910564pgl.10;
+        Mon, 01 Feb 2021 12:59:28 -0800 (PST)
+X-Gm-Message-State: AOAM531u0zgqseuZtvQtobrWxgvTDr1NOhw6GadkXEkRce4ASHsG36gX
+        TCpUF7EZEB10GTsf/z3OYmGxDdt1M99W1pwPCxc=
+X-Google-Smtp-Source: ABdhPJys0q96JhGd9rQK509mjBP+Td2+PvZmoi8hhx8MEYI4qlX/UXEaMXaykRrQo4Yg7kC2dDa6Gqg1a9cK56zqQfA=
+X-Received: by 2002:a63:ff09:: with SMTP id k9mr19001783pgi.175.1612213168125;
+ Mon, 01 Feb 2021 12:59:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201183017.3339130-4-jxgao@google.com>
+References: <20210201010024.654526-1-masahiroy@kernel.org> <87r1lzvj3q.fsf@meer.lwn.net>
+In-Reply-To: <87r1lzvj3q.fsf@meer.lwn.net>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 2 Feb 2021 05:58:51 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQQ=kqhx6REix7j+ZndABjuCBEwp=yiQp71Z0fBrQZxog@mail.gmail.com>
+Message-ID: <CAK7LNAQQ=kqhx6REix7j+ZndABjuCBEwp=yiQp71Z0fBrQZxog@mail.gmail.com>
+Subject: Re: [PATCH] kbuild: remove PYTHON variable
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Tony Luck <tony.luck@intel.com>, linux-ia64@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 10:30:17AM -0800, Jianxiong Gao wrote:
-> @@ -868,12 +871,24 @@ static blk_status_t nvme_map_data(struct nvme_dev *dev, struct request *req,
->  	if (!iod->nents)
->  		goto out_free_sg;
->  
-> +	offset_ret = dma_set_min_align_mask(dev->dev, NVME_CTRL_PAGE_SIZE - 1);
-> +	if (offset_ret) {
-> +		dev_warn(dev->dev, "dma_set_min_align_mask failed to set offset\n");
-> +		goto out_free_sg;
-> +	}
-> +
->  	if (is_pci_p2pdma_page(sg_page(iod->sg)))
->  		nr_mapped = pci_p2pdma_map_sg_attrs(dev->dev, iod->sg,
->  				iod->nents, rq_dma_dir(req), DMA_ATTR_NO_WARN);
->  	else
->  		nr_mapped = dma_map_sg_attrs(dev->dev, iod->sg, iod->nents,
->  					     rq_dma_dir(req), DMA_ATTR_NO_WARN);
-> +
-> +	offset_ret = dma_set_min_align_mask(dev->dev, 0);
-> +	if (offset_ret) {
-> +		dev_warn(dev->dev, "dma_set_min_align_mask failed to reset offset\n");
-> +		goto out_free_sg;
-> +	}
->  	if (!nr_mapped)
->  		goto out_free_sg;
+On Tue, Feb 2, 2021 at 1:38 AM Jonathan Corbet <corbet@lwn.net> wrote:
+>
+> Masahiro Yamada <masahiroy@kernel.org> writes:
+>
+> > Python retired in 2020, and some distributions do not provide the
+> > 'python' command any more.
+> >
+> > As in commit 51839e29cb59 ("scripts: switch explicitly to Python 3"),
+> > we need to use more specific 'python3' to invoke scripts even if they
+> > are written in a way compatible with both Python 2 and 3.
+> >
+> > This commit removes the variable 'PYTHON', and switches the existing
+> > users to 'PYTHON3'.
+> >
+> > BTW, PEP 394 (https://www.python.org/dev/peps/pep-0394/) is a helpful
+> > material.
+> >
+> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+>
+> So this will have the effect of making the docs build impossible for
+> folks who only have Python 2.
 
-Why is this setting being done and undone on each IO? Wouldn't it be
-more efficient to set it once during device initialization?
 
-And more importantly, this isn't thread safe: one CPU may be setting the
-device's dma alignment mask to 0 while another CPU is expecting it to be
-NVME_CTRL_PAGE_SIZE - 1.
+Is this a problem?  Python 2 is EOL.
+
+Everybody who wants to use Python
+must install Python 3.
+
+
+Rather, people are screaming
+that the 'python' command does not exist.
+
+
+
+
+>  As I said before, this is a step that we
+> knew was coming, we just hadn't decided on the exact timing - I guess
+> this decides for us :)
+>
+> That said, I'll copy linux-doc to see if anybody screams.  I assume this
+> is a 5.12 change?
+
+
+No, I am planning to do this for 5.11
+(a pull request this week if there is no objection).
+
+
+
+
+
+
+
+
+> Thanks,
+>
+> jon
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
