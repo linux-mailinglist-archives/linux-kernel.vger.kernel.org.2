@@ -2,106 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CEF30A8DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:36:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5131330A8E2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:38:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbhBANgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:36:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231821AbhBANf7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:35:59 -0500
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B47EC061797
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 05:34:49 -0800 (PST)
-Received: by mail-pf1-x449.google.com with SMTP id x206so10774805pfc.16
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 05:34:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=3bTiiY2TYZdB8z5fIVv2Vg5Pj/B6JPLinnl3a7b42P4=;
-        b=EH7llqD9kCs9ZfKZzpbgp1kT2eYf2LgF1qrGg6iINPHbIOis3kVT+7Q1J3XoTqxCbY
-         wsTtMwAVHYCKxIB795hp7HCr3+as7SjEtdKO3ZVBcc12Jj7Maun5SEhorqhkPmT51Zxw
-         2qycqUKI4MtTP8zzBqJdVFWFeX9D4WpuqVpxsThewocx1CO37LCM3zQgqNDHWyBlSgRn
-         3QW5VRrCmlzkr+IW0K+/ih2aB8oWWbGPAHHn0teIPp39lksqzhDajSENa/f1hFpC+pKC
-         I+i+ljcNOVRsMtqjUt6NYGil1WcX3KKRsIv8kG/SCK29mV3UgW6BUBpTQFwYqxKbbgvE
-         CyRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=3bTiiY2TYZdB8z5fIVv2Vg5Pj/B6JPLinnl3a7b42P4=;
-        b=s6ZWEFbHByCk++pHiSqhUt3UhYxdm2vQSAzEqzSnWvDts4t1I+0EWfco3irzh4PXa3
-         ik5JRnIpns7QG7phlFGDGHU4q5S5mxSOTADhfWi1r5MGZvl9lzIGuEcljM+fE2yhKEjM
-         IAhwBJqMQLuUBUmzSaCfOHQVg7rCodCObdYqF/CncNisr3bxt16lH1uEpOjmai4+hzMG
-         nmUKP9VMx2DZFEuhBpSELA1SlFQgUMLl5/dJJq/ZyOFSNMLSpdkzmLG57wKj0nDTJsnO
-         vdRsvdSdw+Yqx+8BCwcucwme19ZZYUyVwBsLlOSVgTxA6LeXF3uAD6vgZ/eGui88DgPw
-         FkoA==
-X-Gm-Message-State: AOAM533QCbaFrNFTqohJWRNKkmOn90HUOra5gxP/cDKFMilsIjA0mqhQ
-        hjau5jhk8mDzP8YD/rk/SObaTRpo4Yts
-X-Google-Smtp-Source: ABdhPJxXYRGY/304EOVH7+1bl8Yd22VbcjVS5vuMbgmRKYV5vF0CNSrN4xIVWaf4YFdCq+Pj5WCRvRPvt37f
-Sender: "kyletso via sendgmr" <kyletso@kyletso.ntc.corp.google.com>
-X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:dd94:c753:a81d:c855])
- (user=kyletso job=sendgmr) by 2002:a17:90a:8d83:: with SMTP id
- d3mr1361366pjo.0.1612186488456; Mon, 01 Feb 2021 05:34:48 -0800 (PST)
-Date:   Mon,  1 Feb 2021 21:34:21 +0800
-In-Reply-To: <20210201133421.408508-1-kyletso@google.com>
-Message-Id: <20210201133421.408508-4-kyletso@google.com>
-Mime-Version: 1.0
-References: <20210201133421.408508-1-kyletso@google.com>
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v3 3/3] usb: typec: tcpm: Get Sink VDO from fwnode
-From:   Kyle Tso <kyletso@google.com>
-To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org, hdegoede@redhat.com, robh+dt@kernel.org
-Cc:     badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Kyle Tso <kyletso@google.com>
+        id S232107AbhBANhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:37:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45848 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231405AbhBANhs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 08:37:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B026A64EA3;
+        Mon,  1 Feb 2021 13:37:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612186627;
+        bh=Ca6sILXG4fwyLv608fCB+3JeQwCE0JDKDmcvJPplyMU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kr3EddrrKwSTCkaYxO9jNkuvl767WrHxraPzTgsh4dCinF9nC9h87lejDgnzya/Ur
+         4pYiK/WYT3DZcpGcUEaxv16ICA8WV8K/zFA8ClVI+n1eGnkAah+rFP+77cYjpjG8hc
+         dS0I46/hqxrB6Lcq+If/Flrv0P6GQHEh2sls7pR/61KY5h0fY8QJzcfzXrNz6XuiwC
+         Dd4pQBy5IX78RJWVC+3aWfUqm4eYd3XvtftJ4rKGlDGcmXGJUihWXC/8xOm676x+Gz
+         t21RHf9rTVE+ADr+WAL42yx3ANpCerxEj2DOF5rfF9ZvzpEOHuEosMIR0VTVmT9vat
+         Roj3n/x8TXrDw==
+Received: by mail-wr1-f48.google.com with SMTP id c4so13887695wru.9;
+        Mon, 01 Feb 2021 05:37:06 -0800 (PST)
+X-Gm-Message-State: AOAM530XIFIykRBKZY+aH3HUKEVj1KTbJD8w9ix7bLiqtnCcfuHHn80H
+        P8VPqLG3KA1SXpP9VZERiAwPvp5UoT6d19OUFw==
+X-Google-Smtp-Source: ABdhPJwGbLbPXA9ztMTVXLGo0SWhr8NHgerLg6mdo4pyBi7dlYyviEPBb6aW4ApZKN9NnopTRVp50+8iSm8fx35JTCw=
+X-Received: by 2002:a5d:524a:: with SMTP id k10mr18325193wrc.394.1612186625106;
+ Mon, 01 Feb 2021 05:37:05 -0800 (PST)
+MIME-Version: 1.0
+References: <20210131051058.3407985-1-hsinyi@chromium.org> <CAAOTY_9kOnYDs=_22qBV7kOM74zcfKaobN0wBZaXzx31KsrG5Q@mail.gmail.com>
+In-Reply-To: <CAAOTY_9kOnYDs=_22qBV7kOM74zcfKaobN0wBZaXzx31KsrG5Q@mail.gmail.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Mon, 1 Feb 2021 21:36:51 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__VKeP0Z-Up5gpaB9SwcCbwQdB5cHXfssQB77s_G1U63w@mail.gmail.com>
+Message-ID: <CAAOTY__VKeP0Z-Up5gpaB9SwcCbwQdB5cHXfssQB77s_G1U63w@mail.gmail.com>
+Subject: Re: [PATCH] drm/mediatek: enable dither function
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     Hsin-Yi Wang <hsinyi@chromium.org>, CK Hu <ck.hu@mediatek.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        DTML <devicetree@vger.kernel.org>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>,
+        David Airlie <airlied@linux.ie>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit a079973f462a ("usb: typec: tcpm: Remove tcpc_config
-configuration mechanism") removed the tcpc_config which includes the
-Sink VDO and it is not yet added back with fwnode. Add it now.
+Hi, Hsin-Yi:
 
-Signed-off-by: Kyle Tso <kyletso@google.com>
----
-Changes since v2:
-- use fwnode_property_count_u32 instead to get the count
-- revise the error handling
+Chun-Kuang Hu <chunkuang.hu@kernel.org> =E6=96=BC 2021=E5=B9=B42=E6=9C=881=
+=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8A=E5=8D=8812:20=E5=AF=AB=E9=81=93=EF=
+=BC=9A
+>
+> Hi, Hsin-Yi:
+>
+> Hsin-Yi Wang <hsinyi@chromium.org> =E6=96=BC 2021=E5=B9=B41=E6=9C=8831=E6=
+=97=A5 =E9=80=B1=E6=97=A5 =E4=B8=8B=E5=8D=881:11=E5=AF=AB=E9=81=93=EF=BC=9A
+> >
+> > From: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> >
+> > Enable dither function to improve the display quality.
+>
+> Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+>
 
- drivers/usb/typec/tcpm/tcpm.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+Applied to mediatek-drm-next [1], thanks.
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 979b7ee6473c..9b13e19118f0 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -5677,6 +5677,20 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
- 			port->new_source_frs_current = frs_current;
- 	}
- 
-+	/* sink-vdos is optional */
-+	ret = fwnode_property_count_u32(fwnode, "sink-vdos");
-+	if (ret < 0)
-+		ret = 0;
-+
-+	port->nr_snk_vdo = min(ret, VDO_MAX_OBJECTS);
-+	if (port->nr_snk_vdo) {
-+		ret = fwnode_property_read_u32_array(fwnode, "sink-vdos",
-+						     port->snk_vdo,
-+						     port->nr_snk_vdo);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
- 	return 0;
- }
- 
--- 
-2.30.0.365.g02bc693789-goog
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
+log/?h=3Dmediatek-drm-next
 
+> >
+> > Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> > ---
+> > Previous version:
+> > https://patchwork.kernel.org/project/linux-mediatek/patch/2021012909220=
+9.2584718-7-hsinyi@chromium.org/
+> > ---
+> >  drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 9 +++++++--
+> >  1 file changed, 7 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/=
+drm/mediatek/mtk_drm_ddp_comp.c
+> > index c730029ac8fc7..0444b429daf00 100644
+> > --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> > +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> > @@ -53,6 +53,7 @@
+> >  #define DITHER_EN                              BIT(0)
+> >  #define DISP_DITHER_CFG                                0x0020
+> >  #define DITHER_RELAY_MODE                      BIT(0)
+> > +#define DITHER_ENGINE_EN                       BIT(1)
+> >  #define DISP_DITHER_SIZE                       0x0030
+> >
+> >  #define LUT_10BIT_MASK                         0x03ff
+> > @@ -315,8 +316,12 @@ static void mtk_dither_config(struct device *dev, =
+unsigned int w,
+> >  {
+> >         struct mtk_ddp_comp_dev *priv =3D dev_get_drvdata(dev);
+> >
+> > -       mtk_ddp_write(cmdq_pkt, h << 16 | w, &priv->cmdq_reg, priv->reg=
+s, DISP_DITHER_SIZE);
+> > -       mtk_ddp_write(cmdq_pkt, DITHER_RELAY_MODE, &priv->cmdq_reg, pri=
+v->regs, DISP_DITHER_CFG);
+> > +       mtk_ddp_write(cmdq_pkt, h << 16 | w, &priv->cmdq_reg, priv->reg=
+s,
+> > +                     DISP_DITHER_SIZE);
+> > +       mtk_ddp_write(cmdq_pkt, DITHER_RELAY_MODE, &priv->cmdq_reg, pri=
+v->regs,
+> > +                     DISP_DITHER_CFG);
+> > +       mtk_dither_set_common(priv->regs, &priv->cmdq_reg, bpc, DISP_DI=
+THER_CFG,
+> > +                             DITHER_ENGINE_EN, cmdq_pkt);
+> >  }
+> >
+> >  static void mtk_dither_start(struct device *dev)
+> > --
+> > 2.30.0.365.g02bc693789-goog
+> >
+> >
+> > _______________________________________________
+> > Linux-mediatek mailing list
+> > Linux-mediatek@lists.infradead.org
+> > http://lists.infradead.org/mailman/listinfo/linux-mediatek
