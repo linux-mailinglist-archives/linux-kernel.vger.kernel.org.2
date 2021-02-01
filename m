@@ -2,151 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3209030A37B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:43:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B676B30A380
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:45:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232602AbhBAImK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 1 Feb 2021 03:42:10 -0500
-Received: from mga01.intel.com ([192.55.52.88]:61525 "EHLO mga01.intel.com"
+        id S232413AbhBAIor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 03:44:47 -0500
+Received: from mga18.intel.com ([134.134.136.126]:60925 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229736AbhBAImJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 03:42:09 -0500
-IronPort-SDR: DFMCP1IVjXeJZxszkwuTab0loXnD0hI/hyiN14BRMPKC9jvWBxwDkPgEgU87sxZUzD+RrP5f/R
- //U9z+wx43MQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="199544195"
+        id S229558AbhBAIop (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 03:44:45 -0500
+IronPort-SDR: MjZpA7Mm8v4RkzjnqTSnDrX2KNGwJnmgHrexlBzFmaSUuy57KZCEjpUHbAcLaOWEAOb0O4Uoq/
+ HMa45b069TlA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="168335246"
 X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
-   d="scan'208";a="199544195"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 00:41:27 -0800
-IronPort-SDR: D3F9IwH0PrxoCa/YmhD9O1i17haxEnaYFO7foNRaM3WtDszJ5pUmn4ZUnwn9oQdLU2cxuC14kX
- Hlve2jY67RoQ==
+   d="scan'208";a="168335246"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 00:44:04 -0800
+IronPort-SDR: vbviZhVOw4HX8Yv2mHRTxHfIDdYc8cZQgkshTmWaUMp2YqVXZXf0cmD81SuNCkZgaV4vMkJRiF
+ on6Nb0qvfRoA==
 X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
-   d="scan'208";a="369331898"
-Received: from wehmschu-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.52.115])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 00:41:24 -0800
-From:   Jani Nikula <jani.nikula@linux.intel.com>
-To:     Joe Perches <joe@perches.com>, Jiri Kosina <trivial@kernel.org>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/29] drm/i915: Avoid comma separated statements
-In-Reply-To: <719e0f14852d132a6649dbd5791fca17f251cb8e.camel@perches.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <cover.1598331148.git.joe@perches.com> <d687691df8f9978c7b2362c18d77a16b49be76b0.1598331148.git.joe@perches.com> <719e0f14852d132a6649dbd5791fca17f251cb8e.camel@perches.com>
-Date:   Mon, 01 Feb 2021 10:41:21 +0200
-Message-ID: <875z3ci3im.fsf@intel.com>
+   d="scan'208";a="390810543"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 00:44:02 -0800
+Subject: Re: [PATCH v3 00/17] KVM: x86/pmu: Add support to enable Guest PEBS
+ via DS
+To:     "Liuxiangdong (Aven, Cloud Infrastructure Service Product Dept.)" 
+        <liuxiangdong5@huawei.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Xiexiangyou <xiexiangyou@huawei.com>,
+        Wei Wang <wei.w.wang@intel.com>, kvm <kvm@vger.kernel.org>,
+        Like Xu <like.xu@linux.intel.com>,
+        "Fangyi (Eric)" <eric.fangyi@huawei.com>
+References: <EEC2A80E7137D84ABF791B01D40FA9A601EC200E@DGGEMM506-MBX.china.huawei.com>
+ <584b4e9a-37e7-1f2a-0a67-42034329a9dc@linux.intel.com>
+ <600ED9F7.1060503@huawei.com>
+ <f4dcb068-2ddf-428f-50ad-39f65cad3710@intel.com>
+ <6013787F.2080405@huawei.com>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <062d042b-624f-c761-fe3d-7a7395ca8812@intel.com>
+Date:   Mon, 1 Feb 2021 16:43:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <6013787F.2080405@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 30 Jan 2021, Joe Perches <joe@perches.com> wrote:
-> On Mon, 2020-08-24 at 21:56 -0700, Joe Perches wrote:
->> Use semicolons and braces.
->
-> Ping?
-
-Seems to have fallen between the cracks.
-
-The first two hunks have been fixed, the last two are still there. Care
-to respin and rebase against drm-tip (or linux-next) please?
-
-BR,
-Jani.
-
->
->> Signed-off-by: Joe Perches <joe@perches.com>
->> ---
->>  drivers/gpu/drm/i915/gt/gen8_ppgtt.c           | 8 +++++---
->>  drivers/gpu/drm/i915/gt/intel_gt_requests.c    | 6 ++++--
->>  drivers/gpu/drm/i915/gt/selftest_workarounds.c | 6 ++++--
->>  drivers/gpu/drm/i915/intel_runtime_pm.c        | 6 ++++--
->>  4 files changed, 17 insertions(+), 9 deletions(-)
->> 
->> diff --git a/drivers/gpu/drm/i915/gt/gen8_ppgtt.c b/drivers/gpu/drm/i915/gt/gen8_ppgtt.c
->> index 699125928272..114c13285ff1 100644
->> --- a/drivers/gpu/drm/i915/gt/gen8_ppgtt.c
->> +++ b/drivers/gpu/drm/i915/gt/gen8_ppgtt.c
->> @@ -323,10 +323,12 @@ static int __gen8_ppgtt_alloc(struct i915_address_space * const vm,
->>  			}
->>  
->> 
->>  			spin_lock(&pd->lock);
->> -			if (likely(!pd->entry[idx]))
->> +			if (likely(!pd->entry[idx])) {
->>  				set_pd_entry(pd, idx, pt);
->> -			else
->> -				alloc = pt, pt = pd->entry[idx];
->> +			} else {
->> +				alloc = pt;
->> +				pt = pd->entry[idx];
->> +			}
->>  		}
->>  
->> 
->>  		if (lvl) {
->> diff --git a/drivers/gpu/drm/i915/gt/intel_gt_requests.c b/drivers/gpu/drm/i915/gt/intel_gt_requests.c
->> index 66fcbf9d0fdd..54408d0b5e6e 100644
->> --- a/drivers/gpu/drm/i915/gt/intel_gt_requests.c
->> +++ b/drivers/gpu/drm/i915/gt/intel_gt_requests.c
->> @@ -139,8 +139,10 @@ long intel_gt_retire_requests_timeout(struct intel_gt *gt, long timeout)
->>  	LIST_HEAD(free);
->>  
->> 
->>  	interruptible = true;
->> -	if (unlikely(timeout < 0))
->> -		timeout = -timeout, interruptible = false;
->> +	if (unlikely(timeout < 0)) {
->> +		timeout = -timeout;
->> +		interruptible = false;
->> +	}
->>  
->> 
->>  	flush_submission(gt, timeout); /* kick the ksoftirqd tasklets */
->>  	spin_lock(&timelines->lock);
->> diff --git a/drivers/gpu/drm/i915/gt/selftest_workarounds.c b/drivers/gpu/drm/i915/gt/selftest_workarounds.c
->> index febc9e6692ba..3e4cbeed20bd 100644
->> --- a/drivers/gpu/drm/i915/gt/selftest_workarounds.c
->> +++ b/drivers/gpu/drm/i915/gt/selftest_workarounds.c
->> @@ -521,8 +521,10 @@ static int check_dirty_whitelist(struct intel_context *ce)
->>  
->> 
->>  		srm = MI_STORE_REGISTER_MEM;
->>  		lrm = MI_LOAD_REGISTER_MEM;
->> -		if (INTEL_GEN(engine->i915) >= 8)
->> -			lrm++, srm++;
->> +		if (INTEL_GEN(engine->i915) >= 8) {
->> +			lrm++;
->> +			srm++;
->> +		}
->>  
->> 
->>  		pr_debug("%s: Writing garbage to %x\n",
->>  			 engine->name, reg);
->> diff --git a/drivers/gpu/drm/i915/intel_runtime_pm.c b/drivers/gpu/drm/i915/intel_runtime_pm.c
->> index 153ca9e65382..f498f1c80755 100644
->> --- a/drivers/gpu/drm/i915/intel_runtime_pm.c
->> +++ b/drivers/gpu/drm/i915/intel_runtime_pm.c
->> @@ -201,8 +201,10 @@ __print_intel_runtime_pm_wakeref(struct drm_printer *p,
->>  		unsigned long rep;
->>  
->> 
->>  		rep = 1;
->> -		while (i + 1 < dbg->count && dbg->owners[i + 1] == stack)
->> -			rep++, i++;
->> +		while (i + 1 < dbg->count && dbg->owners[i + 1] == stack) {
->> +			rep++;
->> +			i++;
->> +		}
->>  		__print_depot_stack(stack, buf, PAGE_SIZE, 2);
->>  		drm_printf(p, "Wakeref x%lu taken at:\n%s", rep, buf);
->>  	}
+On 2021/1/29 10:52, Liuxiangdong (Aven, Cloud Infrastructure Service 
+Product Dept.) wrote:
 >
 >
+> On 2021/1/26 15:08, Xu, Like wrote:
+>> On 2021/1/25 22:47, Liuxiangdong (Aven, Cloud Infrastructure Service
+>> Product Dept.) wrote:
+>>> Thanks for replying,
+>>>
+>>> On 2021/1/25 10:41, Like Xu wrote:
+>>>> + kvm@vger.kernel.org
+>>>>
+>>>> Hi Liuxiangdong,
+>>>>
+>>>> On 2021/1/22 18:02, Liuxiangdong (Aven, Cloud Infrastructure Service
+>>>> Product Dept.) wrote:
+>>>>> Hi Like,
+>>>>>
+>>>>> Some questions about
+>>>>> https://lore.kernel.org/kvm/20210104131542.495413-1-like.xu@linux.intel.com/ 
+>>>>>
+>>>>> <https://lore.kernel.org/kvm/20210104131542.495413-1-like.xu@linux.intel.com/> 
+>>>>>
+>>>>>
+>>>> Thanks for trying the PEBS feature in the guest,
+>>>> and I assume you have correctly applied the QEMU patches for guest PEBS.
+>>>>
+>>> Is there any other patch that needs to be apply? I use qemu 5.2.0.
+>>> (download from github on January 14th)
+>> Two qemu patches are attached against qemu tree
+>> (commit 31ee895047bdcf7387e3570cbd2a473c6f744b08)
+>> and then run the guest with "-cpu,pebs=true".
+>>
+>> Note, this two patch are just for test and not finalized for qemu upstream.
+> Yes, we can use pebs in IceLake when qemu patches applied.
+> Thanks very much!
 
--- 
-Jani Nikula, Intel Open Source Graphics Center
+Thanks for your verification on this earlier version.
+
+>>>>> 1)Test in IceLake
+>>>> In the [PATCH v3 10/17] KVM: x86/pmu: Expose CPUIDs feature bits PDCM,
+>>>> DS, DTES64, we only support Ice Lake with the following x86_model(s):
+>>>>
+>>>> #define INTEL_FAM6_ICELAKE_X        0x6A
+>>>> #define INTEL_FAM6_ICELAKE_D        0x6C
+>>>>
+>>>> you can check the eax output of "cpuid -l 1 -1 -r",
+>>>> for example "0x000606a4" meets this requirement.
+>>> It's INTEL_FAM6_ICELAKE_X
+>> Yes, it's the target hardware.
+>>
+>>> cpuid -l 1 -1 -r
+>>>
+>>> CPU:
+>>>     0x00000001 0x00: eax=0x000606a6 ebx=0xb4800800 ecx=0x7ffefbf7
+>>> edx=0xbfebfbff
+>>>
+>>>>> HOST:
+>>>>>
+>>>>> CPU family:                      6
+>>>>>
+>>>>> Model:                           106
+>>>>>
+>>>>> Model name:                      Intel(R) Xeon(R) Platinum 8378A CPU 
+>>>>> $@ $@
+>>>>>
+>>>>> microcode: sig=0x606a6, pf=0x1, revision=0xd000122
+>>>> As long as you get the latest BIOS from the provider,
+>>>> you may check 'cat /proc/cpuinfo | grep code | uniq' with the latest one.
+>>> OK. I'll do it later.
+>>>>> Guest:  linux kernel 5.11.0-rc2
+>>>> I assume it's the "upstream tag v5.11-rc2" which is fine.
+>>> Yes.
+>>>>> We can find pebs/intel_pt flag in guest cpuinfo, but there still exists
+>>>>> error when we use perf
+>>>> Just a note, intel_pt and pebs are two features and we can write
+>>>> pebs records to intel_pt buffer with extra hardware support.
+>>>> (by default, pebs records are written to the pebs buffer)
+>>>>
+>>>> You may check the output of "dmesg | grep PEBS" in the guest
+>>>> to see if the guest PEBS cpuinfo is exposed and use "perf record
+>>>> –e cycles:pp" to see if PEBS feature actually  works in the guest.
+>>> I apply only pebs patch set to linux kernel 5.11.0-rc2, test perf in
+>>> guest and dump stack when return -EOPNOTSUPP
+>> Yes, you may apply the qemu patches and try it again.
+>>
+>>> (1)
+>>> # perf record -e instructions:pp
+>>> Error:
+>>> instructions:pp: PMU Hardware doesn't support
+>>> sampling/overflow-interrupts. Try 'perf stat'
+>>>
+>>> [  117.793266] Call Trace:
+>>> [  117.793270]  dump_stack+0x57/0x6a
+>>> [  117.793275]  intel_pmu_setup_lbr_filter+0x137/0x190
+>>> [  117.793280]  intel_pmu_hw_config+0x18b/0x320
+>>> [  117.793288]  hsw_hw_config+0xe/0xa0
+>>> [  117.793290]  x86_pmu_event_init+0x8e/0x210
+>>> [  117.793293]  perf_try_init_event+0x40/0x130
+>>> [  117.793297]  perf_event_alloc.part.22+0x611/0xde0
+>>> [  117.793299]  ? alloc_fd+0xba/0x180
+>>> [  117.793302]  __do_sys_perf_event_open+0x1bd/0xd90
+>>> [  117.793305]  do_syscall_64+0x33/0x40
+>>> [  117.793308]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>>
+>>> Do we need lbr when we use pebs?
+>> No, lbr ane pebs are two features and we enable it separately.
+>>
+>>> I tried to apply lbr patch
+>>> set(https://lore.kernel.org/kvm/911adb63-ba05-ea93-c038-1c09cff15eda@intel.com/) 
+>>>
+>>> to kernel and qemu, but there is still other problem.
+>>> Error:
+>>> The sys_perf_event_open() syscall returned with 22 (Invalid argument) for
+>>> event
+>>> ...
+>> We don't need that patch for PEBS feature.
+>>
+>>> (2)
+>>> # perf record -e instructions:ppp
+>>> Error:
+>>> instructions:ppp: PMU Hardware doesn't support
+>>> sampling/overflow-interrupts. Try 'perf stat'
+>>>
+>>> [  115.188498] Call Trace:
+>>> [  115.188503]  dump_stack+0x57/0x6a
+>>> [  115.188509]  x86_pmu_hw_config+0x1eb/0x220
+>>> [  115.188515]  intel_pmu_hw_config+0x13/0x320
+>>> [  115.188519]  hsw_hw_config+0xe/0xa0
+>>> [  115.188521]  x86_pmu_event_init+0x8e/0x210
+>>> [  115.188524]  perf_try_init_event+0x40/0x130
+>>> [  115.188528]  perf_event_alloc.part.22+0x611/0xde0
+>>> [  115.188530]  ? alloc_fd+0xba/0x180
+>>> [  115.188534]  __do_sys_perf_event_open+0x1bd/0xd90
+>>> [  115.188538]  do_syscall_64+0x33/0x40
+>>> [  115.188541]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>>
+>>> This is beacuse x86_pmu.intel_cap.pebs_format is always 0 in
+>>> x86_pmu_max_precise().
+>>>
+>>> We rdmsr MSR_IA32_PERF_CAPABILITIES(0x00000345)  from HOST, it's f4c5.
+>>>  From guest, it's 2000
+>>>
+>>>>> # perf record –e cycles:pp
+>>>>>
+>>>>> Error:
+>>>>>
+>>>>> cycles:pp: PMU Hardware doesn’t support sampling/overflow-interrupts.
+>>>>> Try ‘perf stat’
+>>>>>
+>>>>> Could you give some advice?
+>>>> If you have more specific comments or any concerns, just let me know.
+>>>>
+>>>>> 2)Test in Skylake
+>>>>>
+>>>>> HOST:
+>>>>>
+>>>>> CPU family:                      6
+>>>>>
+>>>>> Model:                           85
+>>>>>
+>>>>> Model name:                      Intel(R) Xeon(R) Gold 6146 CPU @
+>>>>>
+>>>>>                                     3.20GHz
+>>>>>
+>>>>> microcode        : 0x2000064
+>>>>>
+>>>>> Guest: linux 4.18
+>>>>>
+>>>>> we cannot find intel_pt flag in guest cpuinfo because
+>>>>> cpu_has_vmx_intel_pt() return false.
+>>>> You may check vmx_pebs_supported().
+>>> It's true.
+>>>>> SECONDARY_EXEC_PT_USE_GPA/VM_EXIT_CLEAR_IA32_RTIT_CTL/VM_ENTRY_LOAD_IA32_RTIT_CTL 
+>>>>>
+>>>>> are both disable.
+>>>>>
+>>>>> Is it because microcode is not supported?
+>>>>>
+>>>>> And, isthere a new macrocode which can support these bits? How can we
+>>>>> get this?
+>>>> Currently, this patch set doesn't support guest PEBS on the Skylake
+>>>> platforms, and if we choose to support it, we will let you know.
+>>>>
+>>> And now, we want to use pebs in skylake. If we develop based on pebs
+>>> patch set, do you have any suggestions?
+>> - At least you need to pin guest memory such as "-overcommit mem-lock=true"
+>> for qemu
+>> - You may rewrite the patches 13 - 17 for Skylake specific because the
+>> records format is different with Ice Lake.
+> OK. So, is there anything else we need to pay attention to except record 
+> format when used for Skylake?
+
+You may need:
+- remove x86_match_cpu check in the vmx_pebs_supported()
+- add intel_pmu_handle_guest_pebs() to the intel_pmu_drain_pebs_nhm()
+
+I suggest that you may pick up the one-one mapping patch from the v1
+so that you can get avoid of patches 13 - 17.
+
+>>> I think microcode requirements need to be satisfied.  Can we use
+>>> https://github.com/intel/Intel-Linux-Processor-Microcode-Data-Files ?
+>> You may try it at your risk and again,
+>> this patch set doesn't support guest PEBS on the Skylake platforms 
+>> currently.
+>>
+>>>> ---
+>>>> thx,likexu
+>>>>
+>>>>> Thanks,
+>>>>>
+>>>>> Liuxiangdong
+>>>>>
+>>> Thanks. Liuxiangdong
+>>>
+>
+
