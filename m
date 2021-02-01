@@ -2,224 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7140430AA61
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:04:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE27630AA6B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 16:06:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231393AbhBAPCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 10:02:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35274 "EHLO
+        id S229689AbhBAPDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 10:03:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231253AbhBAPB3 (ORCPT
+        with ESMTP id S231290AbhBAPB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Feb 2021 10:01:29 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF08C06174A;
-        Mon,  1 Feb 2021 06:59:41 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id k8so16516816otr.8;
-        Mon, 01 Feb 2021 06:59:41 -0800 (PST)
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 502ADC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 07:00:35 -0800 (PST)
+Received: by mail-wr1-x44a.google.com with SMTP id p16so10157225wrx.10
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 07:00:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iivnHI7jVD3pMUiylEz5rdmL/vMZC1gYa5lHcQpzHfU=;
-        b=emBsOEoo65k8VpuYrZ9+hU6ZQ+/lolQRXrF6vQXo2ti8aZWNQosfQEwILeJyf6zRWz
-         NQzwew24rX5OUXaDe2655FXNfsa4xgYrkvEya0qaLGuROZcR22DHVzaJJQESBSpv3lpH
-         rWK23EZIXO6qLVlO+g3jjrUeAAXbFfJWHX6fiY17aadmLY2SlbcliqLQpuyjgH0mg7fk
-         7jSKr/+al1YpjvlrTxD2aodLeYlMneudu5AKzRUUj44wlTO2GWK/G8wfhxl4nYkm22ZY
-         2YZUihNnk7fgNRPaqk5h/40mxxU5pvDay9JrjSQcMacNOtMe+TjeayNBJipQU6RjXzUq
-         U30A==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=OnUlgQXic23J1KvXsr/ViVLBUAJAIV22sf87uiL75+w=;
+        b=USBu4V2zW1xZPkBuLbe4LugxWWhi5ilT0p1DK5LgmTbQ0ldhGTd6ssuFYCWPZIghg8
+         9kCOe+STqSWw51H6krjnrvuP0ZGZ4IZmAxDywAjEAXlUHKXA5ZE1JI5oTXqLQsboDG/T
+         z0EGLSKNakNxazByddOfEaM3+EqDZKskBVjlqRzkNkaDLEp0M4tBS6b+75QZ5W7Fbx1U
+         pwqFZYW8NzFcoIeYxVhSxUn4yF6IwXQXHbrRxKxMP9y9aamzyjy+Y8geV5iL7taQ9vLw
+         QAUahrfj3u+vOhfM9ik5RhPHnSlRVbjY2zmpzdwt0t9wKdYVLPB6j0a2fMOGHRpoLWe6
+         2CPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=iivnHI7jVD3pMUiylEz5rdmL/vMZC1gYa5lHcQpzHfU=;
-        b=itY8wZqfhSQIX/mb+sO77Te6gS0hIRoq5wBERLmGHsKbjuoOPY6HoCC6EZK7OknfUz
-         MwSeL5yqf7TbuuHcKGW3piRGM37rWiOX7QNb79B4CyVF28L0UBv/RvDXcYQWsUd3pSsf
-         71PSX18MiAethGaNLOF8GsEZdREZr6cuISzrt2DwtAJcP1yHRFo3OuYonIShupSGMnea
-         j85FfZNQVjqO3vejKpu9/lWwUJ3vOaf0yxIiv9MJiMhoWax9YD6MV5aVCV3QgE3F/xPE
-         6K5Gi3bKNs+0GHtQz78Apr91U+qAK0lMODNCKtZR1MAHwf3VmmzVqTrLiJ0puK+xyJhm
-         Q90w==
-X-Gm-Message-State: AOAM533yethiGqOka4nQeQkGQcLZjfjreJJTM7RDefTy12ABdR+3Iqdn
-        fsUeW2q0ZPlC+qthLCMRtSzzZMfclFk=
-X-Google-Smtp-Source: ABdhPJxwDqwDzH9B8FkCA3WExgb4S8fv8XUtNELvU7SXTsP1ITHuIzYSENxxh0Bk0IdgzgKhDqOifQ==
-X-Received: by 2002:a9d:6a07:: with SMTP id g7mr11662636otn.285.1612191579779;
-        Mon, 01 Feb 2021 06:59:39 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l11sm3947040otf.59.2021.02.01.06.59.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 06:59:38 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v1 1/3] usb: typec: tcpm: Add Callback to Usb
- Communication capable partner
-To:     Badhri Jagan Sridharan <badhri@google.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kyle Tso <kyletso@google.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210201095309.39486-1-badhri@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <ce97202a-5e94-6abe-d7f2-0e8c50b18eef@roeck-us.net>
-Date:   Mon, 1 Feb 2021 06:59:37 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210201095309.39486-1-badhri@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=OnUlgQXic23J1KvXsr/ViVLBUAJAIV22sf87uiL75+w=;
+        b=aDu44kyTzyohuQxQu0TNanVnS9u+yycaGh0SCgvS8bS+vKA5vbx2Bug0o2r29PcBh2
+         AHE1ibljAVc2kckTpnHFm/3XbpUz/88+vkfUfkgpTch5il9jgGwatxioKUVnJ4MCR6eS
+         PHULdJK699NiOUU4zhCjOCV1HkxqlcHjP3Eoqi6tBurDXtRoe4mZ97B0O407oMryn8Z3
+         +LxwU5Z2EbCbI63H62ZHUKN9qauYvVmZ5AGonh9M/HINacaoTa20QwwUjX0bIfr8q6+d
+         laCAk1waNzrduUD9nAoyc4msp94nxkJ5tK4LPAh3Fxnn/dbiJSLWBA3sXU2A1aermqHB
+         XDGQ==
+X-Gm-Message-State: AOAM530WBDHpOpmKk4ZJShEoVoQRZi1/mHtK0PDSjNyT+8JuVJFpIkzS
+        rWgmICIrdBEfunoiYyACuFtlMoDIxVspMQ==
+X-Google-Smtp-Source: ABdhPJxnEpIwlj8pyrCLCDkUtKrT6vWsNtt8NC7VPoPzFgqZiFGSDXa7SBdgltrBCTMPnpdmP4EtYZtzqAO/dA==
+Sender: "jackmanb via sendgmr" <jackmanb@beeg.c.googlers.com>
+X-Received: from beeg.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:11db])
+ (user=jackmanb job=sendgmr) by 2002:a1c:678a:: with SMTP id
+ b132mr3318499wmc.35.1612191633878; Mon, 01 Feb 2021 07:00:33 -0800 (PST)
+Date:   Mon,  1 Feb 2021 15:00:28 +0000
+Message-Id: <20210201150028.2279522-1-jackmanb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+Subject: [PATCH bpf-next v2] bpf: Propagate memory bounds to registers in
+ atomics w/ BPF_FETCH
+From:   Brendan Jackman <jackmanb@google.com>
+To:     bpf@vger.kernel.org
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        KP Singh <kpsingh@chromium.org>,
+        Florent Revest <revest@chromium.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        linux-kernel@vger.kernel.org, Brendan Jackman <jackmanb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/1/21 1:53 AM, Badhri Jagan Sridharan wrote:
-> The USB Communications Capable bit indicates if port
-> partner is capable of communication over the USB data lines
-> (e.g. D+/- or SS Tx/Rx). Notify the status of the bit to low
-> level drivers to perform chip specific operation.
-> For instance, low level driver enables USB switches on D+/D-
-> lines to set up data path when the bit is set.
-> 
-> Refactored from patch initially authored by
-> Kyle Tso <kyletso@google.com>
-> 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> ---
->  drivers/usb/typec/tcpm/tcpm.c | 16 ++++++++++++++++
->  include/linux/usb/tcpm.h      |  5 +++++
->  2 files changed, 21 insertions(+)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 0afd8ef692e8..96190b4d46a7 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -298,6 +298,7 @@ struct tcpm_port {
->  	struct usb_pd_identity partner_ident;
->  	struct typec_partner_desc partner_desc;
->  	struct typec_partner *partner;
-> +	bool partner_usb_comm_capable;
->  
->  	enum typec_cc_status cc_req;
->  
-> @@ -3429,6 +3430,16 @@ static void tcpm_unregister_altmodes(struct tcpm_port *port)
->  	memset(modep, 0, sizeof(*modep));
->  }
->  
-> +static void tcpm_set_partner_usb_comm_capable(struct tcpm_port *port, bool capable)
-> +{
-> +	tcpm_log(port, "Setting usb_comm capable %s", capable ? "true" : "false");
-> +
-> +	if (port->tcpc->set_partner_usb_comm_capable)
-> +		port->tcpc->set_partner_usb_comm_capable(port->tcpc, capable);
-> +
-> +	port->partner_usb_comm_capable = capable;
-> +}
-> +
->  static void tcpm_reset_port(struct tcpm_port *port)
->  {
->  	int ret;
-> @@ -3445,6 +3456,7 @@ static void tcpm_reset_port(struct tcpm_port *port)
->  	port->attached = false;
->  	port->pd_capable = false;
->  	port->pps_data.supported = false;
-> +	tcpm_set_partner_usb_comm_capable(port, false);
->  
->  	/*
->  	 * First Rx ID should be 0; set this to a sentinel of -1 so that
-> @@ -3785,6 +3797,8 @@ static void run_state_machine(struct tcpm_port *port)
->  			}
->  		} else {
->  			tcpm_pd_send_control(port, PD_CTRL_ACCEPT);
-> +			port->partner_usb_comm_capable = port->sink_request & RDO_USB_COMM;
+When BPF_FETCH is set, atomic instructions load a value from memory
+into a register. The current verifier code first checks via
+check_mem_access whether we can access the memory, and then checks
+via check_reg_arg whether we can write into the register.
 
-That seems to be redundant since tcpm_set_partner_usb_comm_capable() is setting it again.
+For loads, check_reg_arg has the side-effect of marking the
+register's value as unkonwn, and check_mem_access has the side effect
+of propagating bounds from memory to the register.
 
-> +			tcpm_set_partner_usb_comm_capable(port, port->partner_usb_comm_capable);
->  			tcpm_set_state(port, SRC_TRANSITION_SUPPLY,
->  				       PD_T_SRC_TRANSITION);
->  		}
-> @@ -4004,6 +4018,8 @@ static void run_state_machine(struct tcpm_port *port)
->  		break;
->  	case SNK_NEGOTIATE_CAPABILITIES:
->  		port->pd_capable = true;
-> +		port->partner_usb_comm_capable = port->sink_request & RDO_USB_COMM;
+Therefore with the current order, bounds information is thrown away,
+but by simply reversing the order of check_reg_arg
+vs. check_mem_access, we can instead propagate bounds smartly.
 
-Same here. But then I don't really see where this variable is actually used.
-Am I missing something ?
+A simple test is added with an infinite loop that can only be proved
+unreachable if this propagation is present. This is implemented both
+with C and directly in test_verifier using assembly.
 
-Thanks,
-Guenter
+Suggested-by: John Fastabend <john.fastabend@gmail.com>
+Signed-off-by: Brendan Jackman <jackmanb@google.com>
 
-> +		tcpm_set_partner_usb_comm_capable(port, port->partner_usb_comm_capable);
->  		port->hard_reset_count = 0;
->  		ret = tcpm_pd_send_request(port);
->  		if (ret < 0) {
-> diff --git a/include/linux/usb/tcpm.h b/include/linux/usb/tcpm.h
-> index 3af99f85e8b9..42fcfbe10590 100644
-> --- a/include/linux/usb/tcpm.h
-> +++ b/include/linux/usb/tcpm.h
-> @@ -108,6 +108,10 @@ enum tcpm_transmit_type {
->   *		is supported by TCPC, set this callback for TCPM to query
->   *		whether vbus is at VSAFE0V when needed.
->   *		Returns true when vbus is at VSAFE0V, false otherwise.
-> + * @set_partner_usb_comm_capable:
-> + *              Optional; The USB Communications Capable bit indicates if port
-> + *              partner is capable of communication over the USB data lines
-> + *              (e.g. D+/- or SS Tx/Rx). Called to notify the status of the bit.
->   */
->  struct tcpc_dev {
->  	struct fwnode_handle *fwnode;
-> @@ -139,6 +143,7 @@ struct tcpc_dev {
->  	int (*set_auto_vbus_discharge_threshold)(struct tcpc_dev *dev, enum typec_pwr_opmode mode,
->  						 bool pps_active, u32 requested_vbus_voltage);
->  	bool (*is_vbus_vsafe0v)(struct tcpc_dev *dev);
-> +	void (*set_partner_usb_comm_capable)(struct tcpc_dev *dev, bool enable);
->  };
->  
->  struct tcpm_port;
-> 
+---
+
+Difference from v1->v2:
+
+ * Reworked commit message to clarify this only affects stack memory
+ * Added the Suggested-by
+ * Added a C-based test.
+
+ kernel/bpf/verifier.c                         | 32 +++++++++++--------
+ .../selftests/bpf/prog_tests/atomic_bounds.c  | 15 +++++++++
+ .../selftests/bpf/progs/atomic_bounds.c       | 15 +++++++++
+ .../selftests/bpf/verifier/atomic_bounds.c    | 27 ++++++++++++++++
+ 4 files changed, 75 insertions(+), 14 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
+ create mode 100644 tools/testing/selftests/bpf/progs/atomic_bounds.c
+ create mode 100644 tools/testing/selftests/bpf/verifier/atomic_bounds.c
+
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index 972fc38eb62d..5e09632efddb 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -3665,9 +3665,26 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
+ 		return -EACCES;
+ 	}
+
++	if (insn->imm & BPF_FETCH) {
++		if (insn->imm == BPF_CMPXCHG)
++			load_reg = BPF_REG_0;
++		else
++			load_reg = insn->src_reg;
++
++		/* check and record load of old value */
++		err = check_reg_arg(env, load_reg, DST_OP);
++		if (err)
++			return err;
++	} else {
++		/* This instruction accesses a memory location but doesn't
++		 * actually load it into a register.
++		 */
++		load_reg = -1;
++	}
++
+ 	/* check whether we can read the memory */
+ 	err = check_mem_access(env, insn_idx, insn->dst_reg, insn->off,
+-			       BPF_SIZE(insn->code), BPF_READ, -1, true);
++			       BPF_SIZE(insn->code), BPF_READ, load_reg, true);
+ 	if (err)
+ 		return err;
+
+@@ -3677,19 +3694,6 @@ static int check_atomic(struct bpf_verifier_env *env, int insn_idx, struct bpf_i
+ 	if (err)
+ 		return err;
+
+-	if (!(insn->imm & BPF_FETCH))
+-		return 0;
+-
+-	if (insn->imm == BPF_CMPXCHG)
+-		load_reg = BPF_REG_0;
+-	else
+-		load_reg = insn->src_reg;
+-
+-	/* check and record load of old value */
+-	err = check_reg_arg(env, load_reg, DST_OP);
+-	if (err)
+-		return err;
+-
+ 	return 0;
+ }
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c b/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
+new file mode 100644
+index 000000000000..addf127068e4
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/atomic_bounds.c
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <test_progs.h>
++
++#include "atomic_bounds.skel.h"
++
++void test_atomic_bounds(void)
++{
++	struct atomic_bounds *skel;
++	__u32 duration = 0;
++
++	skel = atomic_bounds__open_and_load();
++	if (CHECK(!skel, "skel_load", "couldn't load program\n"))
++		return;
++}
+diff --git a/tools/testing/selftests/bpf/progs/atomic_bounds.c b/tools/testing/selftests/bpf/progs/atomic_bounds.c
+new file mode 100644
+index 000000000000..ea2e982c7f3f
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/atomic_bounds.c
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: GPL-2.0
++#include <linux/bpf.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++SEC("fentry/bpf_fentry_test1")
++int BPF_PROG(sub, int x)
++{
++	int a = 0;
++	int b = __sync_fetch_and_add(&a, 1);
++	/* b is certainly 0 here. Can the verifier tell? */
++	while (b)
++		continue;
++	return 0;
++}
+diff --git a/tools/testing/selftests/bpf/verifier/atomic_bounds.c b/tools/testing/selftests/bpf/verifier/atomic_bounds.c
+new file mode 100644
+index 000000000000..e82183e4914f
+--- /dev/null
++++ b/tools/testing/selftests/bpf/verifier/atomic_bounds.c
+@@ -0,0 +1,27 @@
++{
++	"BPF_ATOMIC bounds propagation, mem->reg",
++	.insns = {
++		/* a = 0; */
++		/*
++		 * Note this is implemented with two separate instructions,
++		 * where you might think one would suffice:
++		 *
++		 * BPF_ST_MEM(BPF_DW, BPF_REG_10, -8, 0),
++		 *
++		 * This is because BPF_ST_MEM doesn't seem to set the stack slot
++		 * type to 0 when storing an immediate.
++		 */
++		BPF_MOV64_IMM(BPF_REG_0, 0),
++		BPF_STX_MEM(BPF_DW, BPF_REG_10, BPF_REG_0, -8),
++		/* b = atomic_fetch_add(&a, 1); */
++		BPF_MOV64_IMM(BPF_REG_1, 1),
++		BPF_ATOMIC_OP(BPF_DW, BPF_ADD | BPF_FETCH, BPF_REG_10, BPF_REG_1, -8),
++		/* Verifier should be able to tell that this infinite loop isn't reachable. */
++		/* if (b) while (true) continue; */
++		BPF_JMP_IMM(BPF_JNE, BPF_REG_1, 0, -1),
++		BPF_EXIT_INSN(),
++	},
++	.result = ACCEPT,
++	.result_unpriv = REJECT,
++	.errstr_unpriv = "back-edge",
++},
+
+base-commit: 61ca36c8c4eb3bae35a285b1ae18c514cde65439
+--
+2.30.0.365.g02bc693789-goog
 
