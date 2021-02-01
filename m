@@ -2,159 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF2630A8B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:29:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58BF230A8C0
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:31:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232174AbhBAN25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:28:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231511AbhBAN2Z (ORCPT
+        id S232349AbhBANa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:30:28 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:11655 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232284AbhBAN3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:28:25 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E07C061756
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 05:27:44 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1l6ZEx-0008V4-Vr; Mon, 01 Feb 2021 14:27:39 +0100
-Received: from mfe by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <mfe@pengutronix.de>)
-        id 1l6ZEu-00077M-Bs; Mon, 01 Feb 2021 14:27:36 +0100
-Date:   Mon, 1 Feb 2021 14:27:36 +0100
-From:   Marco Felsch <m.felsch@pengutronix.de>
-To:     Oliver Graute <oliver.graute@gmail.com>
-Cc:     thierry.reding@gmail.com, Fabio Estevam <festevam@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] drm/panel: simple: add SGD GKTW70SDAD1SD
-Message-ID: <20210201132736.dbqnyzn7dbu7dsmq@pengutronix.de>
-References: <1611947364-30688-1-git-send-email-oliver.graute@gmail.com>
+        Mon, 1 Feb 2021 08:29:53 -0500
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DTpfL15PVz162lZ;
+        Mon,  1 Feb 2021 21:27:54 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.176.220) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Mon, 1 Feb 2021 21:29:01 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        iommu <iommu@lists.linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
+Subject: [PATCH v5 0/1] perf/smmuv3: Don't reserve the PMCG register spaces
+Date:   Mon, 1 Feb 2021 21:27:49 +0800
+Message-ID: <20210201132750.1709-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1611947364-30688-1-git-send-email-oliver.graute@gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 14:11:55 up 61 days,  3:18, 32 users,  load average: 0.28, 0.17,
- 0.09
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.176.220]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oliver,
+v4 --> v5:
+1. Give up doing the mapping for the entire SMMU register space.
+2. Fix some compile warnings. Sorry. So sorry.
 
-thanks for the patch :)
+v3 --> v4:
+1. Delete the unnecessary encapsulation function smmu_pmu_get_and_ioremap_resource().
+2. Discard adding MODULE_SOFTDEP.
 
-On 21-01-29 20:09, Oliver Graute wrote:
-> Add support for the Solomon Goldentek Display Model: GKTW70SDAD1SD
-> to panel-simple.
-> 
-> The panel spec from Variscite can be found at:
-> https://www.variscite.com/wp-content/uploads/2017/12/VLCD-CAP-GLD-RGB.pdf
-> 
-> Signed-off-by: Oliver Graute <oliver.graute@gmail.com>
-> Cc: Marco Felsch <m.felsch@pengutronix.de>
-> Cc: Fabio Estevam <festevam@gmail.com>
-> ---
-> 
-> v2:
-> 
-> - changed bpc to 6
-> - set max value of pixelclock
-> - increased hfront_porch and hback_porch
-> - dropped connector-type
-> 
-> adding of bus_format = MEDIA_BUS_FMT_RGB666_1X18 results in wrong colors.
-> omitting bus_format and using some default is good (Tux Pinguin is colored
-> fine)
-> 
->  drivers/gpu/drm/panel/panel-simple.c | 26 ++++++++++++++++++++++++++
->  1 file changed, 26 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/panel/panel-simple.c b/drivers/gpu/drm/panel/panel-simple.c
-> index 2be358f..c129a8c 100644
-> --- a/drivers/gpu/drm/panel/panel-simple.c
-> +++ b/drivers/gpu/drm/panel/panel-simple.c
-> @@ -3336,6 +3336,28 @@ static const struct panel_desc satoz_sat050at40h12r2 = {
->  	.connector_type = DRM_MODE_CONNECTOR_LVDS,
->  };
->  
-> +static const struct display_timing sgd_gktw70sdad1sd_timing = {
-> +	.pixelclock = {30000000, 30000000, 40000000},
-> +	.hactive = { 800, 800, 800},
-> +	.hfront_porch = {40, 40, 40},
-> +	.hback_porch = {40, 40, 40},
-> +	.hsync_len = {48, 48, 48},
-> +	.vactive = {480, 480, 480},
-> +	.vfront_porch = {13, 13, 13},
-> +	.vback_porch = {29, 29, 29},
-> +	.vsync_len = {3, 3, 3},
+v2 --> v3:
+Patch 3 is updated because https://lkml.org/lkml/2021/1/22/532 has been queued in advance.
 
-Please add also:
+v1 --> v2:
+According to Robin Murphy's suggestion: https://lkml.org/lkml/2021/1/20/470
+Don't reserve the PMCG register spaces, and reserve the entire SMMU register space.
 
-	.flags = DISPLAY_FLAGS_HSYNC_LOW | DISPLAY_FLAGS_VSYNC_LOW |
-		 DISPLAY_FLAGS_DE_HIGH | DISPLAY_FLAGS_PIXDATA_NEGEDGE,
+v1:
+Since the PMCG may implement its resigters space(4KB Page0 and 4KB Page1)
+within the SMMUv3 64KB Page0. In this case, when the SMMUv3 driver reserves the
+64KB Page0 resource in advance, the PMCG driver try to reserve its Page0 and
+Page1 resources, a resource conflict occurs.
 
-> +};
-> +
-> +static const struct panel_desc sgd_gktw70sdad1sd = {
-> +	.timings = &sgd_gktw70sdad1sd_timing,
-> +	.num_timings = 1,
-> +	.bpc = 6,
-> +	.size = {
-> +		.width = 153,
-> +		.height = 86,
-> +	},
+commit 52f3fab0067d6fa ("iommu/arm-smmu-v3: Don't reserve implementation
+defined register space") reduce the resource reservation range of the SMMUv3
+driver, it only reserves the first 0xe00 bytes in the 64KB Page0, to avoid
+the above-mentioned resource conflicts.
 
-and:
+But the SMMUv3.3 add support for ECMDQ, its registers space is also implemented
+in the SMMUv3 64KB Page0. This means we need to build two separate mappings.
+New features may be added in the future, and more independent mappings may be
+required. The simple problem is complicated because the user expects to map the
+entire SMMUv3 64KB Page0.
 
-	.delay = {
-		.prepare = 20 + 20 + 10 + 10, /* T0 + T2 + T3 + T4 */
-		.enable = 50, /* T5 */
-		.disable = 50, /* T5 */
-		.unprepare =  10 + 10 + 20 + 20, /* T4 + T3 + T2 + T0 */
-	};
+Therefore, the proper solution is: If the PMCG register resources are located in
+the 64KB Page0 of the SMMU, the PMCG driver does not reserve the conflict resources
+when the SMMUv3 driver has reserved the conflict resources before. Instead, the PMCG
+driver only performs devm_ioremap() to ensure that it can work properly.
 
-Regards,
-  Marco
+Zhen Lei (1):
+  perf/smmuv3: Don't reserve the PMCG register spaces
 
-
-> +};
-
-> +
->  static const struct drm_display_mode sharp_ld_d5116z01b_mode = {
->  	.clock = 168480,
->  	.hdisplay = 1920,
-> @@ -4222,6 +4244,9 @@ static const struct of_device_id platform_of_match[] = {
->  		.compatible = "satoz,sat050at40h12r2",
->  		.data = &satoz_sat050at40h12r2,
->  	}, {
-> +		.compatible = "sgd,gktw70sdad1sd",
-> +		.data = &sgd_gktw70sdad1sd,
-> +	}, {
->  		.compatible = "sharp,ld-d5116z01b",
->  		.data = &sharp_ld_d5116z01b,
->  	}, {
-> -- 
-> 2.7.4
-> 
-> 
+ drivers/perf/arm_smmuv3_pmu.c | 25 +++++++++++++++++++------
+ 1 file changed, 19 insertions(+), 6 deletions(-)
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.26.0.106.g9fadedd
+
+
