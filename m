@@ -2,109 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B113930AF89
+	by mail.lfdr.de (Postfix) with ESMTP id 419F230AF88
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:38:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233142AbhBAShs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:37:48 -0500
-Received: from mga12.intel.com ([192.55.52.136]:30823 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232747AbhBASfk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:35:40 -0500
-IronPort-SDR: eb5ne3CQoN6MJZEmWUYCu0+ivqgwXhPk3P+3t5zjksACCsFYrbz7DQf/vSuJQoRyLCIpWLKcgX
- Wqic+wUlPvBg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="159899885"
-X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="159899885"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 10:34:58 -0800
-IronPort-SDR: 2nH8t8/c+4stZ/sLd9CRvDKJQVvEtoDO5fWXWNPS17Xeu0Z+5yQgq5tPL/lE+iYxcH8yEzg95U
- mZhVmj6F73ng==
-X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="371650563"
-Received: from jambrizm-mobl1.amr.corp.intel.com (HELO intel.com) ([10.252.133.15])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 10:34:57 -0800
-Date:   Mon, 1 Feb 2021 10:34:55 -0800
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        daniel.lll@alibaba-inc.com,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH 08/14] taint: add taint for direct hardware access
-Message-ID: <20210201183455.3dndfwyswwvs2dlm@intel.com>
-References: <20210130002438.1872527-1-ben.widawsky@intel.com>
- <20210130002438.1872527-9-ben.widawsky@intel.com>
- <20210201181845.GJ197521@fedora>
+        id S233145AbhBAShg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:37:36 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2471 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233115AbhBAShJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 13:37:09 -0500
+Received: from fraeml708-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DTxQM3Vlnz67js6;
+        Tue,  2 Feb 2021 02:32:59 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 1 Feb 2021 19:36:27 +0100
+Received: from [10.47.11.37] (10.47.11.37) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Mon, 1 Feb 2021
+ 18:36:26 +0000
+CC:     Zhou Wang <wangzhou1@hisilicon.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   John Garry <john.garry@huawei.com>
+Subject: PCI MSI issue with reinserting a driver
+To:     Marc Zyngier <maz@kernel.org>, Thomas Gleixner <tglx@linutronix.de>
+Message-ID: <cc224272-15db-968b-46a0-95951e11b23f@huawei.com>
+Date:   Mon, 1 Feb 2021 18:34:59 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201181845.GJ197521@fedora>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.11.37]
+X-ClientProxiedBy: lhreml754-chm.china.huawei.com (10.201.108.204) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-02-01 13:18:45, Konrad Rzeszutek Wilk wrote:
-> On Fri, Jan 29, 2021 at 04:24:32PM -0800, Ben Widawsky wrote:
-> > For drivers that moderate access to the underlying hardware it is
-> > sometimes desirable to allow userspace to bypass restrictions. Once
-> > userspace has done this, the driver can no longer guarantee the sanctity
-> > of either the OS or the hardware. When in this state, it is helpful for
-> > kernel developers to be made aware (via this taint flag) of this fact
-> > for subsequent bug reports.
-> > 
-> > Example usage:
-> > - Hardware xyzzy accepts 2 commands, waldo and fred.
-> > - The xyzzy driver provides an interface for using waldo, but not fred.
-> > - quux is convinced they really need the fred command.
-> > - xyzzy driver allows quux to frob hardware to initiate fred.
-> 
-> Would it not be easier to _not_ frob the hardware for fred-operation?
-> Aka not implement it or just disallow in the first place?
+Just a heads-up, by chance I noticed that I can't re-insert a specific 
+driver on v5.11-rc6:
 
-Yeah. So the idea is you either are in a transient phase of the command and some
-future kernel will have real support for fred - or a vendor is being short
-sighted and not adding support for fred.
+[   64.356023] hisi_dma 0000:7b:00.0: Adding to iommu group 31
+[   64.368627] hisi_dma 0000:7b:00.0: enabling device (0000 -> 0002)
+[   64.384156] hisi_dma 0000:7b:00.0: Failed to allocate MSI vectors!
+[   64.397180] hisi_dma: probe of 0000:7b:00.0 failed with error -28
 
-> 
-> 
-> >   - kernel gets tainted.
-> > - turns out fred command is borked, and scribbles over memory.
-> > - developers laugh while closing quux's subsequent bug report.
-> 
-> Yeah good luck with that theory in-the-field. The customer won't
-> care about this and will demand a solution for doing fred-operation.
-> 
-> Just easier to not do fred-operation in the first place,no?
+That's with CONFIG_DEBUG_TEST_DRIVER_REMOVE=y
 
-The short answer is, in an ideal world you are correct. See nvdimm as an example
-of the real world.
+Bisect tells me that this is the first bad commit:
+4615fbc3788d genirq/irqdomain: Don't try to free an interrupt that has 
+no mapping
 
-The longer answer. Unless we want to wait until we have all the hardware we're
-ever going to see, it's impossible to have a fully baked, and validated
-interface. The RAW interface is my admission that I make no guarantees about
-being able to provide the perfect interface and giving the power back to the
-hardware vendors and their driver writers.
+The relevant driver code is 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/dma/hisi_dma.c#n547
 
-As an example, suppose a vendor shipped a device with their special vendor
-opcode. They can enable their customers to use that opcode on any driver
-version. That seems pretty powerful and worthwhile to me.
+That driver only allocates 30 MSI, so maybe there's a problem with not 
+allocating (and freeing) all 32 MSI.
 
-Or a more realistic example, we ship a driver that adds a command which is
-totally broken. Customers can utilize the RAW interface until it gets fixed in a
-subsequent release which might be quite a ways out.
+I'll have a bit more of a look tomorrow.
 
-I'll say the RAW interface isn't an encouraged usage, but it's one that I expect
-to be needed, and if it's not we can always try to kill it later. If nobody is
-actually using it, nobody will complain, right :D
+Cheers,
+john
+
+Bisect log:
+
+git bisect start
+# good: [2c85ebc57b3e1817b6ce1a6b703928e113a90442] Linux 5.10
+git bisect good 2c85ebc57b3e1817b6ce1a6b703928e113a90442
+# bad: [1048ba83fb1c00cd24172e23e8263972f6b5d9ac] Linux 5.11-rc6
+git bisect bad 1048ba83fb1c00cd24172e23e8263972f6b5d9ac
+# bad: [ee249d30fadec7677364063648f5547e243bf93f] Merge branch 
+'for-linus' of git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input
+git bisect bad ee249d30fadec7677364063648f5547e243bf93f
+# good: [15b447361794271f4d03c04d82276a841fe06328] mm/lru: revise the 
+comments of lru_lock
+git bisect good 15b447361794271f4d03c04d82276a841fe06328
+# good: [15b447361794271f4d03c04d82276a841fe06328] mm/lru: revise the 
+comments of lru_lock
+git bisect good 15b447361794271f4d03c04d82276a841fe06328
+# good: [2aa899ebd5c3aef707460f58951cc8a1d1f466c1] MAINTAINERS: add 
+mvpp2 driver entry
+git bisect good 2aa899ebd5c3aef707460f58951cc8a1d1f466c1
+# good: [2911ed9f47b47cb5ab87d03314b3b9fe008e607f] Merge tag 
+'char-misc-5.11-rc1' of 
+git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc 
+
+git bisect good 2911ed9f47b47cb5ab87d03314b3b9fe008e607f
+# bad: [a45f1d43311d3a4f6534e48a3655ba3247a59d48] Merge tag 
+'regmap-v5.11' of 
+git://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap
+git bisect bad a45f1d43311d3a4f6534e48a3655ba3247a59d48
+# good: [749c1e1481e1d242ded9dd1bf210ddb7c0d22a4f] Merge tag 
+'iio-for-5.11a' of 
+https://git.kernel.org/pub/scm/linux/kernel/git/jic23/iio into 
+staging-next
+git bisect good 749c1e1481e1d242ded9dd1bf210ddb7c0d22a4f
+# good: [98b32c71a455ff289442779fee02ad60a6217006] staging: rtl8723bs: 
+replace HT_CAP_AMPDU_FACTOR
+git bisect good 98b32c71a455ff289442779fee02ad60a6217006
+# bad: [3c41e57a1e168d879e923c5583adeae47eec9f64] Merge tag 
+'irqchip-5.11' of 
+git://git.kernel.org/pub/scm/linux/kernel/git/maz/arm-platforms into 
+irq/core
+git bisect bad 3c41e57a1e168d879e923c5583adeae47eec9f64
+# good: [e15f2fa959f2cce8a05e8e3a596e75d068cd42c5] driver core: 
+platform: Add devm_platform_get_irqs_affinity()
+git bisect good e15f2fa959f2cce8a05e8e3a596e75d068cd42c5
+# good: [2cb0837e56e1b04b773ed05df72297de4e010063] arm64: irqstat: Get 
+rid of duplicated declaration
+git bisect good 2cb0837e56e1b04b773ed05df72297de4e010063
+# bad: [4615fbc3788ddc8e7c6d697714ad35a53729aa2c] genirq/irqdomain: 
+Don't try to free an interrupt that has no mapping
+git bisect bad 4615fbc3788ddc8e7c6d697714ad35a53729aa2c
+# good: [e091bc90cd2d65f48e4688faead2911558d177d7] irqstat: Move 
+declaration into asm-generic/hardirq.h
+git bisect good e091bc90cd2d65f48e4688faead2911558d177d7
+# good: [ae9ef58996a4447dd44aa638759f913c883ba816] softirq: Move related 
+code into one section
+git bisect good ae9ef58996a4447dd44aa638759f913c883ba816
+# good: [15b8d9372f27c47e17c91f6f16d359314cf11404] sh/irq: Add missing 
+closing parentheses in arch_show_interrupts()
+git bisect good 15b8d9372f27c47e17c91f6f16d359314cf11404
+# first bad commit: [4615fbc3788ddc8e7c6d697714ad35a53729aa2c] 
+genirq/irqdomain: Don't try to free an interrupt that has no mapping
