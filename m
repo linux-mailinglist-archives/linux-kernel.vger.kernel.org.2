@@ -2,119 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C7530B31A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:06:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F113E30B322
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:11:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229629AbhBAXGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 18:06:03 -0500
-Received: from mga01.intel.com ([192.55.52.88]:9419 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229524AbhBAXGB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 18:06:01 -0500
-IronPort-SDR: 4U/UvTiftl/J9gw1mwGjVgINF54jk4j9WJeYjCGaaI0WQzfCSvReE6b2efevk3RhO/U/y1GCM1
- OP4qlWEKiKFw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="199673313"
-X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="199673313"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 15:05:20 -0800
-IronPort-SDR: Sk7ncts+73AGCaMMi91HA/0PjCNQTioKvWsv3VXI82btE/75sAijj26QN65AICsr5CwY/e+CNw
- iUGkiuQO9LZw==
-X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="358781936"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.212.112.229]) ([10.212.112.229])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 15:05:17 -0800
-Subject: Re: [PATCH v18 05/25] x86/fpu/xstate: Introduce CET MSR and XSAVES
- supervisor states
-To:     Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>
-References: <20210127212524.10188-1-yu-cheng.yu@intel.com>
- <20210127212524.10188-6-yu-cheng.yu@intel.com>
- <7793b36e-6386-3f2e-36ca-b7ca988a88c9@intel.com>
- <43f264df-2f3a-ea4c-c737-85cdc6714bd8@intel.com>
- <0a5a80c0-afc7-5f91-9e28-a300e30f1ab3@intel.com>
- <465836bd-9c80-fed9-d9af-89275ff810eb@intel.com>
- <cd8f4889-fbe4-fc0e-0686-9c9ecc4a125b@intel.com>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <a6550292-cd99-a5e2-df7b-d43f6cc8fed0@intel.com>
-Date:   Mon, 1 Feb 2021 15:05:16 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S229992AbhBAXKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 18:10:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229593AbhBAXKI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 18:10:08 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD601C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 15:09:28 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id my11so685248pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 15:09:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GEACQRgbmcNz8U0z7UDtnpZG1N/k6q1juxg0BiyuRck=;
+        b=jcCexse5x5viIjyqRk/y5mlMoRBb37kn+h2DynfRh9CPkpCUZvw57riM5Gi3chT72o
+         CbjVM0TyHXwMcYIJF7XQk7oSx3tqL0DJoW+6ZTL7awz2PCOAzWALcKtKIkscqgdAS+Gc
+         77zQL6+T9j9Y50TtmJl9WyyTglQbUcODNt/KvAwo9Ankwfj2hcsMdDLtVxBimPo7YNch
+         4OBb+qFKWQsAS4jSny4JBlmxDnDQsDOJT8zE6iLkurDsvmCMW0kb8R/BDefizWxpO0KE
+         owCJjEWFWzDtQJs+egmj+wBYbKprb/ZVKDFql/vVQCyVTjKpytpTsrvltZRB1Qf0pIV+
+         kSOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GEACQRgbmcNz8U0z7UDtnpZG1N/k6q1juxg0BiyuRck=;
+        b=iAbqDR15wHNqhaBx7WuPcV+k6AU7jSrz26NMVn9ka9KhDCYUo0SuC9ZNjHiw3lEU/3
+         1CW0iFQMOzve5I4JT7ht1aiWwMJ6zUSoep6U7J8VNJeMoyo482jkNEJ3F+XeHdFwhMvG
+         01n6SmQSGYXisGTq6OCsXrZ8ISmLiS8TXv3kbjKqwxyR3Z14moK2tRnwkwEcuKYsUdcN
+         DSQn/RPsjQvHDakyIcszS41ugZ+slD+pYpQOxPuv8cXjCmCIVAMgKjHQ/9Sco+fwxPd0
+         MJJXab/hPbPon7Tuh0cktevAWKKqxWoR9XfrkCtrBK1rf0/8+NsMWkEWnyqL1iMnOol6
+         bmCA==
+X-Gm-Message-State: AOAM530h/gO0UsRBbho/y+sij+qgBHHwPzI9rnALi7R7FWeLCralNisa
+        X8jiEMdvcbO5eBaI6OQ1sHdkoXioCwlF/UKoiqWnnw==
+X-Google-Smtp-Source: ABdhPJyUeJz/A2+S7M/6sGFuaKli4u2WLQhwpVweNnvF5ZutgJsE2TgbxoIasIyhDAnP65Mb9LCHT0k8gzhoZqWGsvk=
+X-Received: by 2002:a17:902:728f:b029:e1:70dd:ac67 with SMTP id
+ d15-20020a170902728fb02900e170ddac67mr4444213pll.29.1612220967989; Mon, 01
+ Feb 2021 15:09:27 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <cd8f4889-fbe4-fc0e-0686-9c9ecc4a125b@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210201003125.90257-1-viniciustinti@gmail.com>
+ <20210201124924.GA3284018@infradead.org> <CALD9WKxc0kMPCHSoikko+qYk2+ZLUy73+ryKGW9qMSpyzAobLA@mail.gmail.com>
+ <YBg20AuSC3/9w2zz@mit.edu> <CALD9WKzO53AXQW-qQ82VZ41H5=cGdLTUiEoz3X6BmPkb6XaTag@mail.gmail.com>
+ <YBhuHJgZ3QPqHheV@mit.edu> <CAKwvOd=ny2TeYV8SGZMD+aj8Yb6OSYGKAzSb-45r-HKk6WTUCQ@mail.gmail.com>
+ <YBh0ywVzkUIR3fXg@mit.edu> <CAKwvOdkZRdBzzW19sVAs+pX-7wWwN6AWrxUkkZwP8L4OT7SLfQ@mail.gmail.com>
+ <CALD9WKx6HREQeTRXuv81v-=DTVuznXG_56YFm2dM1GOG3s4BRQ@mail.gmail.com> <YBiFVgatiz+owBs9@mit.edu>
+In-Reply-To: <YBiFVgatiz+owBs9@mit.edu>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 1 Feb 2021 15:09:16 -0800
+Message-ID: <CAKwvOdk_OdMB5+YMKdWmK08Px=qYFy1X+imK+LqJbyptesEEQw@mail.gmail.com>
+Subject: Re: [PATCH v2] ext4: Enable code path when DX_DEBUG is set
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Vinicius Tinti <viniciustinti@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/1/2021 2:59 PM, Dave Hansen wrote:
-> On 2/1/21 2:43 PM, Yu, Yu-cheng wrote:
->> On 1/29/2021 2:53 PM, Dave Hansen wrote:
->>> On 1/29/21 2:35 PM, Yu, Yu-cheng wrote:
->>>>> Andy Cooper just mentioned on IRC about this nugget in the spec:
->>>>>
->>>>>       XRSTORS on CET state will do reserved bit and canonicality
->>>>>       checks on the state in similar manner as done by the WRMSR to
->>>>>       these state elements.
->>>>>
->>>>> We're using copy_kernel_to_xregs_err(), so the #GP *should* be OK.
->>>>> Could we prove this out in practice, please?
->>>>>>
->>>> Do we want to verify that setting reserved bits in CET XSAVES states
->>>> triggers GP?  Then, yes, I just verified it again.  Thanks for
->>>> reminding.  Do we have any particular case relating to this?
->>>
->>> I want to confirm that it triggers #GP and kills userspace without the
->>> kernel WARN'ing or otherwise being visibly unhappy.
->>
->> For sigreturn, shadow stack pointer is checked against its restore token
->> and must be smaller than TASK_SIZE_MAX.  Sigreturn cannot set any
->> MSR_IA32_U_CET reserved bits.
-> 
-> That would be nice to at least allude to in the changelog or comments.
-> 
+On Mon, Feb 1, 2021 at 2:48 PM Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> On Mon, Feb 01, 2021 at 07:05:11PM -0300, Vinicius Tinti wrote:
+> >
+> > The goal is to try to detect real bugs. In this instance specifically I
+> > suggested to remove the "if (0) {...}" because it sounded like an
+> > unused code.
+> >
+> > If it is useful it is fine to keep.
+>
+> The trick was that it was unused code, but it was pretty obviously
+> deliberate, which should have implied that at some point, it was
+> considered useful.   :-)
+>
+> It was the fact that you were so determined to find a way to suppress
+> the warning, suggesting multiple tactics, which made me wonder.... why
+> were you going through so much effort to silence the warning if the
+> goal was *not* to turn it on unconditionally everywhere?
 
-Ok.
+Because a maintainer might say "oh, I meant to turn that back on years
+ago" or "that should not have been committed!"  Hasn't happened yet,
+doesn't mean it's impossible.  Vinicius asked how he can help. I said
+"go see if any instances of this warning are that case."
 
->>> What about the return-to-userspace path after a ptracer writes content
->>> to the CET fields?   I don't see the same tolerance for errors in
->>> __fpregs_load_activate(), for instance.
->>>
->>
->> Good thought.  I have not sent out my revised PTRACE patch, but values
->> from user will be checked for valid address and reserved bits.
-> 
-> Wait a sec...  What about *THIS* series?  Will *THIS* series give us
-> oopses when userspace blasts a new XSAVE buffer in with NT_X86_XSTATE?
-> 
+>
+> I suspect the much more useful thing to consider is how can we suggest
+> hueristics to the Clang folks to make the warning more helpful.  For
+> example, Coverity will warn about the following:
+>
+> void test_func(unsigned int arg)
+> {
+>         if (arg < 0) {
+>                 printf("Hello, world\n")
+>         }
+> }
 
-Fortunately, CET states are supervisor states.  NT_x86_XSTATE has only 
-user states.
+Put that code in in godbolt.org (https://godbolt.org/z/E7KK9T) and
+you'll see that both compilers already warn here on -Wextra (via
+-Wtautological-unsigned-zero-compare in clang or -Wtype-limits in
+GCC).
+clang:
+
+warning: result of comparison of unsigned expression < 0 is always
+false [-Wtautological-unsigned-zero-compare]
+        if (arg < 0) {
+            ~~~ ^ ~
+
+gcc:
+
+warning: comparison of unsigned expression in '< 0' is always false
+[-Wtype-limits]
+    3 |         if (arg < 0) {
+      |                 ^
+
+
+>
+> P.S.  If anyone wants to file a feature request bug with the Clang
+> developers, feel free.  :-)
+
+
+
+-- 
+Thanks,
+~Nick Desaulniers
