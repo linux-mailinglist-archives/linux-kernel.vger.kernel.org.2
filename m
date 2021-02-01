@@ -2,124 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23E33309FCA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 01:56:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3CDA309FCD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 01:59:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230220AbhBAAzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 19:55:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51738 "EHLO
+        id S230358AbhBAA6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 19:58:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbhBAAz3 (ORCPT
+        with ESMTP id S229535AbhBAA6h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 19:55:29 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99259C061573;
-        Sun, 31 Jan 2021 16:54:48 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id bl23so21670067ejb.5;
-        Sun, 31 Jan 2021 16:54:48 -0800 (PST)
+        Sun, 31 Jan 2021 19:58:37 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A7E4C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 16:57:57 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id t25so10913206pga.2
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 16:57:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0Qt7K1be/pWyGz8lypO3Yl2lEzCHcC4qocBdLobCd90=;
-        b=ZRQgkyU3N+LexQXjkMXM0Jxmn7UUZPpKgrDquJvlJt6SasBHcMeuyAMhzvyyJJryno
-         LxF9z9xY0UJ7Zn9TRrOa5pdrxS4pGHRsVO+n/FdevGbpCbXixK99+6C28djr2XVkJQNH
-         sdQ8L0YCfiee2qqIoN/OzJhynOSIRYHtSpTLntmNFw66IqvhcRngzITbbx+vGuca+HiG
-         pUKAta8tC/jRNdBZ+m6naxXZQJVj0eu1jR2HwLAWFn7H2W3cYQvshNCBJvki5z5GYAm6
-         vLesQTIRMA1i1LLHAkgPZhbHNVGSs5ZiIgXdsBw8RD0oywwbrGTOQDniLwZzrm49fhi2
-         obYA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/0gRcVEeV6nGqliN47YBX62tljuHs3/rhZ5XnTs5IdQ=;
+        b=vPtgppTigwEDjlMnvlfXOBT+rhGArs6+qUQ1QklRcYLpqr+chl/rod3Fgbx6LBmOiF
+         kTyNnXkOHSPPt4aLOww4SNI9Rff59x8Jy9Cba0rqBvstfl2kIoqg70RjmHVLRSol7dMY
+         hjIOGQ8noN02/j7L6HtWvdDArrKvVFWpzkDsHD9CqpAwF/fdVxrqXA0UIEdBTRHPrJOJ
+         0xR145ZXXfgcQLS5gFLJK7Go6D/bnxx0vwXyXF/7+aKusuigOcvW8N1Xtep7oCz2ooIS
+         HpHmlDJEQBzU02azajmbeWsG4+O2XFkra8t2tjKDLT3b5TOsYzfiCVBsR2qzAy94yNRr
+         PVVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0Qt7K1be/pWyGz8lypO3Yl2lEzCHcC4qocBdLobCd90=;
-        b=YAlcoB4Ikk6gZHbw2QEUZta7b0gzmvOmLzSDxDlML5FonumxC6eam48adrC/lF4W41
-         acigx+Fa4eaJwqlQ1f7+WAql1dpcG5roUznK6PI++PIv2EYz3OJcgcD0RiDPPYel8ZDr
-         UisYojg6QWXT6bTIWue4VnVHjM1pSyeK+5cGUKGvbLJo5xz+zHqYB7+IbYssziI11PR5
-         S1iRAzD89t8F+V6p8WOLFA+MkLa6h241RVxIFHG39Ds9H8tt7hGnzwu9JUpkWME0aTeq
-         6kxukvD67Qp5Wk68Hvvt0kDqQn5AIXzfRLDZ2ys5fhl5HTNWx3BJ6SbToM6yvuXjDCWo
-         Eu4A==
-X-Gm-Message-State: AOAM531HE6iCXp1i9EZjXChaRTb2S4K2o4Q9dpbMzQ5WAlViqPlO7ALl
-        DdhoaiUjn+9yBeGG0X/jRb52dJytc0Mj6gT0ua4=
-X-Google-Smtp-Source: ABdhPJzMOS6/1VfR3usroosWSePXe3lz9DIn6alRKa8GoK8lrW+ZN8gUcgy3gaNxUGQE6BkX7HzYa4nqQGJ2FMV8kC4=
-X-Received: by 2002:a17:906:494c:: with SMTP id f12mr15444364ejt.56.1612140887144;
- Sun, 31 Jan 2021 16:54:47 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/0gRcVEeV6nGqliN47YBX62tljuHs3/rhZ5XnTs5IdQ=;
+        b=NIocsPkEHgX4EOB5QqG4ybQQ/SWOKMo16zJHwmbo1u5R2iNoOeIiEhxI4gHlWfL4JS
+         ZYPOMss9NQbJFoU+hqfivGBtlmKOHo38GvafwnAKCCeOcKeAy9YeKMd1D6xJ68cSrBD+
+         yRE7bvzmY5red54u/aV6suFyRBrBHWftSjjTHdTE6zT7li5POEHi80MZdZQZQvFA0cI8
+         rJYvGJf/xsPeYligO9oKdAdvTLhAwk3it0voNNT54JyP87fnXkv+yVPVTGiq20mao9ZJ
+         nUHOOvI8lZck7UqR73si36xefiRrARxaVMM6S3gleC9cxc6mQ2NzxFf4/qQOv5DsMAc6
+         PkBw==
+X-Gm-Message-State: AOAM532O6+OkzSfEMp33OqdsES84nWGn4/6AYL8DP/cYZbQHAXqkcvBP
+        /0U6c47s+p3JSfwbMva0hfI0nKY9Li4=
+X-Google-Smtp-Source: ABdhPJw1vc98IBtozranx8UMm4Jlgj9NVX2pMJ6l6aKMDQ+grZlBV1Y5kdLyrLAlNrRKw2Pce2ITwQ==
+X-Received: by 2002:a65:6547:: with SMTP id a7mr14384815pgw.50.1612141076531;
+        Sun, 31 Jan 2021 16:57:56 -0800 (PST)
+Received: from daehojeong1.seo.corp.google.com ([2401:fa00:d:11:3d90:5212:5281:e85d])
+        by smtp.gmail.com with ESMTPSA id 24sm12719797pgs.90.2021.01.31.16.57.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 31 Jan 2021 16:57:55 -0800 (PST)
+From:   Daeho Jeong <daeho43@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH] f2fs: prevent setting ioprio of thread not in merge mode
+Date:   Mon,  1 Feb 2021 09:57:49 +0900
+Message-Id: <20210201005749.2980575-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
 MIME-Version: 1.0
-References: <1612098665-187767-1-git-send-email-hkelam@marvell.com>
-In-Reply-To: <1612098665-187767-1-git-send-email-hkelam@marvell.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Sun, 31 Jan 2021 19:54:10 -0500
-Message-ID: <CAF=yD-Jd1=6Jbp6DfYOSMddhCscy56w+2wsJYJ=X8cr+cJ_wDQ@mail.gmail.com>
-Subject: Re: [Patch v3 net-next 0/7] ethtool support for fec and link configuration
-To:     Hariprasad Kelam <hkelam@marvell.com>
-Cc:     Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Sunil Kovvuri Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geethasowjanya Akula <gakula@marvell.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        Subbaraya Sundeep Bhatta <sbhatta@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 8:11 AM Hariprasad Kelam <hkelam@marvell.com> wrote:
->
-> This series of patches add support for forward error correction(fec) and
-> physical link configuration. Patches 1&2 adds necessary mbox handlers for fec
-> mode configuration request and to fetch stats. Patch 3 registers driver
-> callbacks for fec mode configuration and display. Patch 4&5 adds support of mbox
-> handlers for configuring link parameters like speed/duplex and autoneg etc.
-> Patche 6&7 registers driver callbacks for physical link configuration.
->
-> Change-log:
-> v2:
->         - Fixed review comments
->         - Corrected indentation issues
->         - Return -ENOMEM incase of mbox allocation failure
->         - added validation for input fecparams bitmask values
->         - added more comments
->
-> V3:
->         - Removed inline functions
->         - Make use of ethtool helpers APIs to display supported
->           advertised modes
->         - corrected indentation issues
->         - code changes such that return early in case of failure
->           to aid branch prediction
+From: Daeho Jeong <daehojeong@google.com>
 
-This addresses my comments to the previous patch series, thanks.
+It causes a crash to change the ioprio of checkpoint thread not in
+checkpoint=merge. I fixed that to prevent setting the ioprio of the
+thread when checkpoint=merge is not enabled.
 
-It seems that patchwork only picked up only patch 6/7 unfortunately:
-https://patchwork.kernel.org/project/netdevbpf/list/?series=424969
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
+---
+ fs/f2fs/sysfs.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
->
-> Christina Jacob (6):
->   octeontx2-af: forward error correction configuration
->   octeontx2-pf: ethtool fec mode support
->   octeontx2-af: Physical link configuration support
->   octeontx2-af: advertised link modes support on cgx
->   octeontx2-pf: ethtool physical link status
->   octeontx2-pf: ethtool physical link configuration
->
-> Felix Manlunas (1):
->   octeontx2-af: Add new CGX_CMD to get PHY FEC statistics
->
->  drivers/net/ethernet/marvell/octeontx2/af/cgx.c    | 258 ++++++++++++-
->  drivers/net/ethernet/marvell/octeontx2/af/cgx.h    |  10 +
->  .../net/ethernet/marvell/octeontx2/af/cgx_fw_if.h  |  70 +++-
->  drivers/net/ethernet/marvell/octeontx2/af/mbox.h   |  87 ++++-
->  drivers/net/ethernet/marvell/octeontx2/af/rvu.h    |   4 +
->  .../net/ethernet/marvell/octeontx2/af/rvu_cgx.c    |  80 +++++
->  .../ethernet/marvell/octeontx2/nic/otx2_common.c   |  20 ++
->  .../ethernet/marvell/octeontx2/nic/otx2_common.h   |   6 +
->  .../ethernet/marvell/octeontx2/nic/otx2_ethtool.c  | 399 ++++++++++++++++++++-
->  .../net/ethernet/marvell/octeontx2/nic/otx2_pf.c   |   3 +
->  10 files changed, 930 insertions(+), 7 deletions(-)
->
-> --
-> 2.7.4
+diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+index 100608bcd517..e38a7f6921dd 100644
+--- a/fs/f2fs/sysfs.c
++++ b/fs/f2fs/sysfs.c
+@@ -357,8 +357,12 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+ 			return -EINVAL;
+ 
+ 		cprc->ckpt_thread_ioprio = IOPRIO_PRIO_VALUE(class, data);
+-		ret = set_task_ioprio(cprc->f2fs_issue_ckpt,
+-				cprc->ckpt_thread_ioprio);
++		if (test_opt(sbi, MERGE_CHECKPOINT)) {
++			ret = set_task_ioprio(cprc->f2fs_issue_ckpt,
++					cprc->ckpt_thread_ioprio);
++			if (ret)
++				return ret;
++		}
+ 
+ 		return count;
+ 	}
+-- 
+2.30.0.365.g02bc693789-goog
+
