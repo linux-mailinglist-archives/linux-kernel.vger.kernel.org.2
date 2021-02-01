@@ -2,61 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 655ED30A62C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:07:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA64C30A629
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:07:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233256AbhBALGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 06:06:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38112 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233433AbhBALGk (ORCPT
+        id S233507AbhBALGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 06:06:14 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:43768 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233461AbhBALFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 06:06:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612177513;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+e7K9zmH1YQLSHSNSQ8EPzaF2MyiJvBlQom3QHfUjF8=;
-        b=fnE9zABfaHApkpckP2sddg1mUmPh7DgkuRb80na173c/KJR2golM3Gd+ejRedR0iiFvbbk
-        Che79bsbADeRD3xT9RcG8tKPCdkeyuqohfvyqNwczC8PAv4nVmqXccFWdg7eswAxOGB/I9
-        kJzUqnpnVXamC5lIapoETgppgAqo5CE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-603-kxIzar6QMFqRw1mHEy0ggQ-1; Mon, 01 Feb 2021 06:05:10 -0500
-X-MC-Unique: kxIzar6QMFqRw1mHEy0ggQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9BEA819251A0;
-        Mon,  1 Feb 2021 11:05:08 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 31C3F7216C;
-        Mon,  1 Feb 2021 11:05:05 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <0000000000007b460105ba41c908@google.com>
-References: <0000000000007b460105ba41c908@google.com>
-To:     syzbot <syzbot+174de899852504e4a74a@syzkaller.appspotmail.com>
-Cc:     dhowells@redhat.com, Hillf Danton <hdanton@sina.com>,
+        Mon, 1 Feb 2021 06:05:53 -0500
+Received: by mail-il1-f197.google.com with SMTP id b4so13271575ilj.10
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 03:05:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to:cc;
+        bh=hJQOQRKY0dVzOCXS/HKD2cAkQX1ygeAUzi8IeN/ekfU=;
+        b=Bw+zgQUMhRoY1Jlm8p2H5Kia/LRrV0wWwRpLQMUaEw43srSt/an7hq703RYt7Otw6Q
+         lgG09xMVZg+bWkRt5BYegZykrOff7mShlgy7kkJDmaZtF8TYeisUm4A7DyFJzjlRaNfY
+         nmYJd3NE9nkjOHvDfqhbOCiRxqYpHYKi7+8A4zZtSA6X+qimAcEDS3rCAstWS0sw1Ptg
+         SzxhnDEWHcGYos96kXFKwo2uiTYkiwDaOFRpEtwo4sZZTMGxMMVasniQGyZGWGCucs65
+         u75hPNdHYAXtOTuOizaJJaNQdHOqmuilgxjDxoz5UaMcIiyELZ6P8uWuec7dMtq1aaWD
+         dKkQ==
+X-Gm-Message-State: AOAM531n8TLMXQXjuvVdRstmS8CBXy3EInwyDnZowjX4YHuaibfo9dHm
+        DxqjJGx0MHQHGX7k1biI6gVsgNEqjw1jOVFeSv6tpbLImIwh
+X-Google-Smtp-Source: ABdhPJwI+EmkHMf0DTBwZMv5lgn2W6hnUt+rnGz3MNckYJhYDzOi15MKNkcfu1h/ZfOviGJPwwoWL3CW+LUd3q6ZMDe78S2nwatp
+MIME-Version: 1.0
+X-Received: by 2002:a6b:b7d3:: with SMTP id h202mr5653934iof.97.1612177512858;
+ Mon, 01 Feb 2021 03:05:12 -0800 (PST)
+Date:   Mon, 01 Feb 2021 03:05:12 -0800
+In-Reply-To: <4151792.1612177504@warthog.procyon.org.uk>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f80b3205ba445357@google.com>
+Subject: Re: Re: KASAN: use-after-free Read in rxrpc_send_data_packet
+From:   syzbot <syzbot+174de899852504e4a74a@syzkaller.appspotmail.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     dhowells@redhat.com, hdanton@sina.com,
         linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
         netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: KASAN: use-after-free Read in rxrpc_send_data_packet
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4151791.1612177504.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Mon, 01 Feb 2021 11:05:04 +0000
-Message-ID: <4151792.1612177504@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs=
-.git 7ef09ba11b33e371c9a8510c1f56e40aa0862c65
+> #syz test: git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git 7ef09ba11b33e371c9a8510c1f56e40aa0862c65
 
+This crash does not have a reproducer. I cannot test it.
+
+>
