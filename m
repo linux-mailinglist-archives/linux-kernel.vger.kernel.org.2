@@ -2,100 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F51930A6E8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:55:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 192D830A6ED
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:56:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230316AbhBALyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 06:54:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbhBALyq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 06:54:46 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62CBCC0613D6
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 03:54:06 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id z6so16196909wrq.10
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 03:54:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XjOJa7QlABs/occ5tZpsqKRne/eoSWruqT/Ed+n9su0=;
-        b=n8PaiSzGu2DeLewHVdD3N5UTF2mZcDgBcIuFWGB6OD8oOXVsLxmx2n5AGgBgP2W3h2
-         BbxCO77dDysoWLSsdfqAHnsEjaRveFs5ez+SPGU8Y3pFUz/sElF76VVmsKfPcTpFis39
-         CkbFtxCcOU9HXyoHukyU/0NFvyFyxtKkWYfac=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XjOJa7QlABs/occ5tZpsqKRne/eoSWruqT/Ed+n9su0=;
-        b=suxX5KGmP6CH3p1uCq1dr/SAcXwssUc3d9Ko9tWAM9xTtK1bGCu4maepFylUP5LAyu
-         DSIBO15vdO7bO7hGlAgPnjMXhocA/WlXlzqhQ6sJ6XYjT+jyVMaQGef3ZfDwFEGLLINm
-         A93kiXFX11X4frfdB3dtqFVkbMsOZIsFCCIic3FVpKHXoTQueqbWhrvMR7M99LaOjm0z
-         T3s278+zMBSWBCaeYxxU7+IZSwveizg1UjmB+X5Mtwmijwicch5ayD6+wSldA59/tQ8a
-         Yipa1cLl2H/9Zd16td92+UhCFmXQ38mCN25Dc8ETZVJpD477DfbQCNs/kjPtZEM0x7n4
-         oKjQ==
-X-Gm-Message-State: AOAM533dJeaSFqNMUUkxoec5QcosHZ07HnenHkJ9CRKJ9lsFt6G/buUa
-        U1CMaqYctRDR0niX9AmoVHL7CjGiAR9uTXbJxOw5sw==
-X-Google-Smtp-Source: ABdhPJz5ftVYH+BAeT1wbNi+TIqy/F8+dN/r1U+PPd7RakebXcOpaXNF8InVz1DFIv8HE/3hOiUEMJvNLw2Sf3eRUgo=
-X-Received: by 2002:a5d:654f:: with SMTP id z15mr17808025wrv.46.1612180444701;
- Mon, 01 Feb 2021 03:54:04 -0800 (PST)
+        id S229926AbhBAL4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 06:56:24 -0500
+Received: from foss.arm.com ([217.140.110.172]:57552 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229707AbhBAL4W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 06:56:22 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BC30CED1;
+        Mon,  1 Feb 2021 03:55:36 -0800 (PST)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9EE813F718;
+        Mon,  1 Feb 2021 03:55:35 -0800 (PST)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
+        morten.rasmussen@arm.com, mgorman@suse.de,
+        song.bao.hua@hisilicon.com
+Subject: Re: [PATCH 1/1] sched/topology: Make sched_init_numa() use a set for the deduplicating sort
+In-Reply-To: <6000e39e-7d28-c360-9cd6-8798fd22a9bf@arm.com>
+References: <20210122123943.1217-1-valentin.schneider@arm.com> <20210122123943.1217-2-valentin.schneider@arm.com> <6000e39e-7d28-c360-9cd6-8798fd22a9bf@arm.com>
+User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
+Date:   Mon, 01 Feb 2021 11:55:30 +0000
+Message-ID: <jhj1re00zpp.mognet@arm.com>
 MIME-Version: 1.0
-References: <20210130082128.3778939-1-michael@amarulasolutions.com> <CAOMZO5DyKDj_RjHM-qwcU9gcuROL6OYzDj3a_fdRRqCwOxWcdw@mail.gmail.com>
-In-Reply-To: <CAOMZO5DyKDj_RjHM-qwcU9gcuROL6OYzDj3a_fdRRqCwOxWcdw@mail.gmail.com>
-From:   Michael Nazzareno Trimarchi <michael@amarulasolutions.com>
-Date:   Mon, 1 Feb 2021 12:53:53 +0100
-Message-ID: <CAOf5uwmSR1MjGdFd2ShHWchrdL6Kxo1HJOys9JoVP1vCDX57Lw@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: Support pin that does not support configuration option
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Angelo Compagnucci <angelo@amarulasolutions.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Fabio
-
-On Mon, Feb 1, 2021 at 12:47 PM Fabio Estevam <festevam@gmail.com> wrote:
+On 01/02/21 10:53, Dietmar Eggemann wrote:
+> On 22/01/2021 13:39, Valentin Schneider wrote:
 >
-> Hi Michael,
+> [...]
 >
-> On Sat, Jan 30, 2021 at 5:21 AM Michael Trimarchi
-> <michael@amarulasolutions.com> wrote:
-> >
-> > Some of the iMX25 pins have not an associated configuration register so
-> > when they are configured the standard way through the device tree the
-> > kernel complains with:
-> >
-> > imx25-pinctrl 43fac000.iomuxc: Pin(MX25_PAD_EXT_ARMCLK) does not support
-> > config function
+>> @@ -1705,7 +1702,7 @@ void sched_init_numa(void)
+>>      /* Compute default topology size */
+>>      for (i = 0; sched_domain_topology[i].mask; i++);
+>>
+>> -	tl = kzalloc((i + level + 1) *
+>> +	tl = kzalloc((i + nr_levels) *
+>>                      sizeof(struct sched_domain_topology_level), GFP_KERNEL);
+>>      if (!tl)
+>>              return;
 >
-> Could you please share your device tree that causes this warning?
+> This hunk creates issues during startup on my Arm64 juno board on tip/sched/core.
 >
-> Shouldn't you pass 0x80000000 in the devicetree for this pad then?
+> ---8<---
 >
-> 0x80000000 means that the kernel should not touch the PAD_CTL register
-> and use the default configuration from the bootloader/POR.
+> From: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Date: Mon, 1 Feb 2021 09:58:04 +0100
+> Subject: [PATCH] sched/topology: Fix sched_domain_topology_level alloc in
+>  sched_init_numa
+>
+> Commit "sched/topology: Make sched_init_numa() use a set for the
+> deduplicating sort" allocates 'i + nr_levels (level)' instead of
+> 'i + nr_levels + 1' sched_domain_topology_level.
+>
+> This led to an Oops (on Arm64 juno with CONFIG_SCHED_DEBUG):
+>
+> sched_init_domains
+>   build_sched_domains()
+>     __free_domain_allocs()
+>       __sdt_free() {
+>       ...
+>         for_each_sd_topology(tl)
+>         ...
+>           sd = *per_cpu_ptr(sdd->sd, j); <--
+>         ...
+>       }
+>
+> Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 
-arch/arm/boot/dts/imx25-lisa.dts:
-MX25_PAD_EXT_ARMCLK__GPIO_3_15  0x80000000
+Damn, I forgot the topology level stuff must terminate in a NULL'd
+sentinel! Vincent fixed the same thing a few years ago...
 
-The problem that exists pad that can be muxed but not configured
+  c515db8cd311 ("sched/numa: Fix initialization of sched_domain_topology for NUMA")
 
-Michael
-
-
--- 
-Michael Nazzareno Trimarchi
-Amarula Solutions BV
-COO Co-Founder
-Cruquiuskade 47 Amsterdam 1018 AM NL
-T. +31(0)851119172
-M. +39(0)3479132170
-[`as] https://www.amarulasolutions.com
+Thanks for fixing up my mistake, I ought to have tested !NUMA setups.
