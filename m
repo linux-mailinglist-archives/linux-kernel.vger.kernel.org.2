@@ -2,135 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 491E0309FFA
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 02:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9755309FFC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 02:29:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231158AbhBABZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 31 Jan 2021 20:25:00 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:38225 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229769AbhBABYu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 31 Jan 2021 20:24:50 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DTVb70JMzz9t0l;
-        Mon,  1 Feb 2021 12:24:02 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1612142646;
-        bh=HbIjopcRWZABJVCXfOmM9n/j7wZ9ZlwMD6E6rJz/GAI=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=MAwG8RI0m7hkGtS7aYwp0jtzAu2nyutyZpfSeTvhwn+/98Tum48hBD8wVqQXXeVRC
-         UCEzf2Q+FKT2Ih/kAzGnlREAWut8voKrr3SB3tGD7i1YoLxdkaUAecLzTGuVkh67Cp
-         YiZH9gUVi1yQoe1x0lLYWz57sFUVLOtXQEFesQBox681EgliNclHoHr2nLMpLoeQYh
-         aGP4Vi+PMYgb47LjbDA5DG6zFylCJK2ylbTbZ/KS5KMTSS9WmJovkv+ZE9D+oUOGtz
-         6GPjnbG1Z4sL4zwlQMqyYMIEsEayd+OxidkMWgNodefCr2O/kjL8cIWRUli8wrVPzH
-         fyLWc9gcnJxBg==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Randy Dunlap <rdunlap@infradead.org>,
-        Yury Norov <yury.norov@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Subject: Re: [PATCH] powerpc: fix AKEBONO build failures
-In-Reply-To: <4572579a-7208-628d-cbe2-b70a74a84ae7@infradead.org>
-References: <CAAH8bW8-6Dp29fe6rrnA4eL1vo+mu0HuAVJ-5yjbwxDSvaHdeQ@mail.gmail.com>
- <6c442012-3bef-321b-bbc3-09c54608661f@infradead.org>
- <875z3prcwg.fsf@mpe.ellerman.id.au>
- <4572579a-7208-628d-cbe2-b70a74a84ae7@infradead.org>
-Date:   Mon, 01 Feb 2021 12:24:01 +1100
-Message-ID: <87eei0d1hq.fsf@mpe.ellerman.id.au>
+        id S231135AbhBAB13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 31 Jan 2021 20:27:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229813AbhBAB1Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 31 Jan 2021 20:27:25 -0500
+Received: from mail-ua1-x929.google.com (mail-ua1-x929.google.com [IPv6:2607:f8b0:4864:20::929])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 359BFC061573
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 17:26:45 -0800 (PST)
+Received: by mail-ua1-x929.google.com with SMTP id 43so5358219uag.12
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 17:26:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B5c2tURYavXYb2cHWVqhvkd3VGt9RfM76mrzI5iA7YY=;
+        b=jQrle0h17kSq8qRcsj70o6mRcY9EIJWuruFlHiCB2rvsdCPZ2oNhbmUWBGP0I9R6Qs
+         EJqlq3LglsZXzKwjO92FZ4UGAGJ4HoTFiuotk0XZVTOU2okugZ7JqEMep2RPBU/G8I7L
+         Qtw85zjwSQklNVFNvjMa3AVYL4792PWUdwRJtm+AJqZC7KVtUY9SUB0ltn3AUUH3by9D
+         wLqYq3z3SIM+TDaRfvfDUbz3D70/koA89mO9r3kRv/90ins8HW32q6Qhj1A1FZJq+syh
+         X4HQQL9bVdCNTB4Wk0wapZlx8rACijt1njlRf+/TSvq4MLJMUxo4SZCMaRtQt7k70TlL
+         g06A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B5c2tURYavXYb2cHWVqhvkd3VGt9RfM76mrzI5iA7YY=;
+        b=Pr1SFkahi/R4pmCQnwSj9QTqQ6hBf3B6/mTR+Kcats2umkUke6suynGBfnFYHMiybs
+         UU5RzYN1RfMRqZe1FUX8empqxwfjKTP5Wpld/i/U84gIYHEVkVJ9WE6+EP0YGI4LtlCy
+         P5tfdKpuk/2bZoSri1zNc93Sw2Mih2glmS7rh4DNGcOF1RbpXnVZRYi8a8WM8SplHOfB
+         2A5Yrj9Dno9NCa2mrkeaX1kZeJhhZtU52FhYespNpcU9Hyve99KtBQLr70NWsbDOH2IW
+         fwfq1sgCaYZy/4TXK7e6BbgjyP3vuofwm1OQIb25goDH5937+r5+O2X7oJk4a2aF+PyN
+         9sTQ==
+X-Gm-Message-State: AOAM5310DOQovjUhvUtJTolMn4jhZraU9RpsJh7i3rf+R1ztrbwT/pDz
+        NVhs67ALwHdVt9gGvhzaWCQHlRj2CYW1QhR+sVY=
+X-Google-Smtp-Source: ABdhPJxjYd0W813Ldzx5zfamsAbHV5huHv2FJQ4XrABVFbh8am3NUiXBIp4QMO1f38p5QjyIO3sTw3A4h/f/1FLXlME=
+X-Received: by 2002:ab0:61c2:: with SMTP id m2mr8314070uan.45.1612142804294;
+ Sun, 31 Jan 2021 17:26:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210131205654.3379661-1-saravanak@google.com>
+In-Reply-To: <20210131205654.3379661-1-saravanak@google.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Sun, 31 Jan 2021 22:26:33 -0300
+Message-ID: <CAOMZO5AZgk0N8sN9=bGcWTcnju75TPVxQX3FbLpF=n-=JA-7-w@mail.gmail.com>
+Subject: Re: [PATCH v1] ARM: imx: avic: Convert to using IRQCHIP_DECLARE
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Martin Kaiser <martin@kaiser.cx>, kernel-team@android.com,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Randy Dunlap <rdunlap@infradead.org> writes:
-> On 1/21/21 5:14 PM, Michael Ellerman wrote:
->> Randy Dunlap <rdunlap@infradead.org> writes:
->>> On 1/20/21 1:29 PM, Yury Norov wrote:
->>>> Hi all,
->>>>
->>>> I found the power pc build broken on today's
->>>> linux-next (647060f3b592).
->>>
->>> Darn, I was building linux-5.11-rc4.
->>>
->>> I'll try linux-next after I send this.
->>>
->>> ---
->>> From: Randy Dunlap <rdunlap@infradead.org>
->>>
->>> Fulfill AKEBONO Kconfig requirements.
->>>
->>> Fixes these Kconfig warnings (and more) and fixes the subsequent
->>> build errors:
->>>
->>> WARNING: unmet direct dependencies detected for NETDEVICES
->>>    Depends on [n]: NET [=n]
->>>    Selected by [y]:
->>>    - AKEBONO [=y] && PPC_47x [=y]
->>>
->>> WARNING: unmet direct dependencies detected for MMC_SDHCI
->>>    Depends on [n]: MMC [=n] && HAS_DMA [=y]
->>>    Selected by [y]:
->>>    - AKEBONO [=y] && PPC_47x [=y]
->>>
->>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->>> Cc: Michael Ellerman <mpe@ellerman.id.au>
->>> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
->>> Cc: Paul Mackerras <paulus@samba.org>
->>> Cc: linuxppc-dev@lists.ozlabs.org
->>> Cc: Yury Norov <yury.norov@gmail.com>
->>> ---
->>>   arch/powerpc/platforms/44x/Kconfig |    2 ++
->>>   1 file changed, 2 insertions(+)
->>>
->>> --- lnx-511-rc4.orig/arch/powerpc/platforms/44x/Kconfig
->>> +++ lnx-511-rc4/arch/powerpc/platforms/44x/Kconfig
->>> @@ -206,6 +206,7 @@ config AKEBONO
->>>   	select PPC4xx_HSTA_MSI
->>>   	select I2C
->>>   	select I2C_IBM_IIC
->>> +	select NET
->>>   	select NETDEVICES
->>>   	select ETHERNET
->>>   	select NET_VENDOR_IBM
->> 
->> I think the problem here is too much use of select, for things that
->> should instead be in the defconfig.
->> 
->> The patch below results in the same result for make
->> 44x/akebono_defconfig. Does it fix the original issue?
->
-> Hi Michael,
-> Sorry for the delay.
->
-> Changing the akebono_defconfig doesn't cause the missing symbols
-> to be set -- the defconfig is not being used here.
+Hi Saravana,
 
-Yep, but that's OK. None of those selected symbols are hard dependencies
-of AKEBONO, they're just things you probably want in your kernel to
-actually boot on an akebono board.
+On Sun, Jan 31, 2021 at 5:56 PM Saravana Kannan <saravanak@google.com> wrote:
 
-> I guess that if you have users who set CONFIG_AKEBONO and expect
-> it to build cleanly, you will need something like my patch or the
-> patch that Florian just posted.
+> +static int __init imx_avic_init(struct device_node *node,
+> +                              struct device_node *parent)
+> +{
+> +       void __iomem *avic_base;
+> +
+> +       avic_base = of_iomap(node, 0);
+> +       BUG_ON(!avic_base);
+> +       mxc_init_irq(avic_base);
+> +       return 0;
+> +}
+> +
+> +IRQCHIP_DECLARE(imx_avic, "fsl,imx31-avic", imx_avic_init);
 
-It will build cleanly, it just won't necessarily boot on a real board.
-Users who enable AKEBONO manually need to know what they're doing, or
-they should just use the defconfig.
-
-> Changing the akebono_defconfig also would not help 'make randconfig'
-> builds to build cleanly if they had happened to enable AKEBONO.
-
-Changing the defconfig doesn't help randconfig, but dropping the selects
-does.
-
-Anyway I'll send a proper version of my patch, which I'm pretty
-confident will fix all the issues.
-
-cheers
+Shouldn't the compatible be "fsl,avic" instead?
