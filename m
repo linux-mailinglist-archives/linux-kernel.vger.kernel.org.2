@@ -2,187 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C7B930AF8A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:38:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD40F30AF7E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:37:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232972AbhBAShx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:37:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:32862 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233022AbhBASdw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:33:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89DBD64EAA
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 18:33:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612204391;
-        bh=Jx6t/GRsyZk7hc+abZ81Y+IBo7n6qmPXTJ/+S/JYeoI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=SvG3M8pan/mbU6ZJH46rij6l6R0YJ7t8dTeCykiP/qezOWOul0KlUEHMma+PP0j2A
-         yVqHzN1UX1rjAAOMEFBtwczZmNpfp5ZXcVGAplvAH758FPOlgoXg54TjB1JFYeUW/y
-         s4/lQbizrN6C0kkZfmNRoOIuT1BaQ+wO1M/AAR0QYQe0Wj5jyHjevGeB6eGPLfI1iH
-         3e7RdWrzziAERqCUL/zUz6nkUsQWRblO12PUTm7uLblSZ5Q4Q+h4PtFF20X/R8Ik4D
-         eGGMHKE3nR2+ojm45l6glxivUzu6HDoOC+RdCPXTDv9avuySZR3l44yO3JA0bNb5NO
-         e20Uy243jMo3g==
-Received: by mail-ed1-f42.google.com with SMTP id s3so6338935edi.7
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 10:33:11 -0800 (PST)
-X-Gm-Message-State: AOAM531QnwnJOVLFbaOMgNkb+751cObOZWrfeAkI1lJ3NUSUhcBhMpyC
-        UAFfJZc0PTtFumrncmQC4cU161uNe0Jkfif/Wao+JQ==
-X-Google-Smtp-Source: ABdhPJzfbHXPHu67/9GcwBJRfWGTCjFCXUoO/2B8osZeIPlgPs/eRzohq1hlQ9Je0f+ijNkPibazb34ZTcLh51Lh3R4=
-X-Received: by 2002:aa7:c60a:: with SMTP id h10mr20215346edq.263.1612204389945;
- Mon, 01 Feb 2021 10:33:09 -0800 (PST)
+        id S232564AbhBASgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:36:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233068AbhBASe7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 13:34:59 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 369C2C061788
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 10:34:18 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id a8so24180548lfi.8
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 10:34:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3lghFjiZp/Ym1q60E++/PW2PX5JvxZZBRzGE7dUGvN4=;
+        b=BpICdDei2DqVrI1L3DA6ltgu2kp6skGDXoJqfZ94Te79HTfmNH0+egGH9AeOjbwmNb
+         ZH7Eh6Vinm/mYub71xb6lPkY2XHJhKiS1oz9XwVJGKQjEfCSmnUyxBKSURF1BH3DPG48
+         TlEE9tdLDm3TKGN6r8n0VY/K3IQd5XwFnwfX4fvFRlpN0hL3/L3lzueYv66Bj4E7ISFA
+         Rxo6B/di8oEJ9Bu1aRMgnKk/oGvjdYBbxtfpWruWzENn8oNaiCwGl21gijOmkeQSC3CY
+         2KH8igjw7mPsoyZPpb6CJC4a1MKVFdAwYT7rax4/lmALM+aWC2RejTTN8x0q0iwSHXhp
+         E7Ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3lghFjiZp/Ym1q60E++/PW2PX5JvxZZBRzGE7dUGvN4=;
+        b=Q0quf4uemVRvtiVkH5rm1rMVdET24Glqy0at70tj0N6g4uR1iRTixmCYTuUiOKr7Y+
+         bqbwNcuhoOF+m2bmT6PerJ+utT3QlOm+CrvzV2EoPIG3DQ7AM+7gbsP1mIsMymL1tVlS
+         uNDENYuUV8PL2Fb7Hoiq9qrqwXFJiTr98qlcekEv8WaDRI2OzKR0kJ+lmj2ApEMeb4j/
+         GIwNlv/rV7fld6+5U1OM/B/Gy7F0Kq1/+n0ixWf2v38HegjUSppoPqJ3JYeHmDQ1+WE+
+         eYWa+UqOwPjJKRhBxPQRfYgGnXymDvXrp//KCqcZwIH1avjBnVQpGAr5Bpr8fn+WR6OM
+         4tEw==
+X-Gm-Message-State: AOAM5331EDktUMr4gtQzEw2kj/Q/2eAiRB3XcoTtNsU2jglKt/OL22Ah
+        R9obGz/n9CzMtTdCWwxlcyeRO3iBOkLbs2OR0/mq0A==
+X-Google-Smtp-Source: ABdhPJyDspnKhgjYTR9BOI6/8Tbqj9/e/wMYLvQDve3iFj+F4ocaDzGOX1Oj3F+JaEeOV7YIuY7Mi94Hf4d93uGB0/k=
+X-Received: by 2002:ac2:4561:: with SMTP id k1mr8873000lfm.70.1612204456343;
+ Mon, 01 Feb 2021 10:34:16 -0800 (PST)
 MIME-Version: 1.0
-References: <20210201174555.GA17819@redhat.com> <20210201174709.GA17895@redhat.com>
-In-Reply-To: <20210201174709.GA17895@redhat.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 1 Feb 2021 10:32:58 -0800
-X-Gmail-Original-Message-ID: <CALCETrWrPyd1HLXfKLc17CF85r2336YoEpe6bo6dNGdG_2A2bQ@mail.gmail.com>
-Message-ID: <CALCETrWrPyd1HLXfKLc17CF85r2336YoEpe6bo6dNGdG_2A2bQ@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] x86: introduce TS_COMPAT_RESTART to fix
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Jan Kratochvil <jan.kratochvil@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Pedro Alves <palves@redhat.com>, Peter Anvin <hpa@zytor.com>,
-        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>
+References: <20210121213641.3477522-1-willmcvicker@google.com>
+In-Reply-To: <20210121213641.3477522-1-willmcvicker@google.com>
+From:   Will McVicker <willmcvicker@google.com>
+Date:   Mon, 1 Feb 2021 10:33:59 -0800
+Message-ID: <CABYd82Yk91u287iZvkUik+UYg2mHMpHimZzsg72cXOK6k8WpRg@mail.gmail.com>
+Subject: Re: [PATCH v6] modules: introduce the MODULE_SCMVERSION config
+To:     Jessica Yu <jeyu@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        "Cc: Android Kernel" <kernel-team@android.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 9:47 AM Oleg Nesterov <oleg@redhat.com> wrote:
->
-> The comment in get_nr_restart_syscall() says:
->
->          * The problem is that we can get here when ptrace pokes
->          * syscall-like values into regs even if we're not in a syscall
->          * at all.
->
-> Yes. but if we are not in syscall then the
->
->         status & (TS_COMPAT|TS_I386_REGS_POKED)
->
-> check below can't really help:
->
->         - TS_COMPAT can't be set
->
->         - TS_I386_REGS_POKED is only set if regs->orig_ax was changed by
->           32bit debugger; and even in this case get_nr_restart_syscall()
->           is only correct if the tracee is 32bit too.
->
-> Suppose that 64bit debugger plays with 32bit tracee and
+Hi Jessica and Masahiro,
 
-At the risk of asking an obnoxious question here:
+Could I get a final look at the latest patchset please? All the issues
+have been addressed thus far.
 
->
->         * Tracee calls sleep(2) // TS_COMPAT is set
->         * User interrupts the tracee by CTRL-C after 1 sec and does
->           "(gdb) call func()"
->         * gdb saves the regs by PTRACE_GETREGS
+Thanks,
+Will
 
-It seems to me that a better solution may be for gdb to see the
-post-restart-setup state.  In other words, shouldn't the GETREGS
-return with the ax pointing to the restart syscall already?
-
-Now maybe this ship has sailed a long long time ago and we can't do
-this, but is it at all worth considering?
-
->         * does PTRACE_SETREGS to set %rip='func' and %orig_rax=-1
->         * PTRACE_CONT           // TS_COMPAT is cleared
->         * func() hits int3.
->         * Debugger catches SIGTRAP.
->         * Restore original regs by PTRACE_SETREGS.
->         * PTRACE_CONT
+On Thu, Jan 21, 2021 at 1:36 PM Will McVicker <willmcvicker@google.com> wrote:
 >
-> get_nr_restart_syscall() wrongly returns __NR_restart_syscall==219, the
-> tracee calls ia32_sys_call_table[219] == sys_madvise.
+> Config MODULE_SCMVERSION introduces a new module attribute --
+> `scmversion` -- which can be used to identify a given module's SCM
+> version.  This is very useful for developers that update their kernel
+> independently from their kernel modules or vice-versa since the SCM
+> version provided by UTS_RELEASE (`uname -r`) will now differ from the
+> module's vermagic attribute.
 >
-> This patch adds the sticky TS_COMPAT_RESTART flag which survives after
-> return to user mode, hopefully it allows us to kill TS_I386_REGS_POKED
-> but this needs another patch.
+> For example, we have a CI setup that tests new kernel changes on the
+> hikey960 and db845c devices without updating their kernel modules. When
+> these tests fail, we need to be able to identify the exact device
+> configuration the test was using. By including MODULE_SCMVERSION, we can
+> identify the exact kernel and modules' SCM versions for debugging the
+> failures.
 >
-> Test-case:
+> Additionally, by exposing the SCM version via the sysfs node
+> /sys/module/MODULENAME/scmversion, one can also verify the SCM versions
+> of the modules loaded from the initramfs. Currently, modinfo can only
+> retrieve module attributes from the module's ko on disk and not from the
+> actual module that is loaded in RAM.
 >
->   $ cvs -d :pserver:anoncvs:anoncvs@sourceware.org:/cvs/systemtap co ptrace-tests
->   $ gcc -o erestartsys-trap-debuggee ptrace-tests/tests/erestartsys-trap-debuggee.c --m32
->   $ gcc -o erestartsys-trap-debugger ptrace-tests/tests/erestartsys-trap-debugger.c -lutil
->   $ ./erestartsys-trap-debugger
->   Unexpected: retval 1, errno 22
->   erestartsys-trap-debugger: ptrace-tests/tests/erestartsys-trap-debugger.c:421
+> You can retrieve the SCM version in two ways,
 >
-> Reported-by: Jan Kratochvil <jan.kratochvil@redhat.com>
-> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+> 1) By using modinfo:
+>     > modinfo -F scmversion MODULENAME
+> 2) By module sysfs node:
+>     > cat /sys/module/MODULENAME/scmversion
+>
+> Signed-off-by: Will McVicker <willmcvicker@google.com>
 > ---
->  arch/x86/include/asm/thread_info.h | 14 +++++++++++++-
->  arch/x86/kernel/signal.c           | 24 +-----------------------
->  2 files changed, 14 insertions(+), 24 deletions(-)
+> Changelog since v5:
+> - Simplified scripts/Makefile.modpost to not check for a relative M= path
+> - Added space between -v and $(module_scmversion)
+> - Updated modpost.c to not check for a missing argument to -v
 >
-> diff --git a/arch/x86/include/asm/thread_info.h b/arch/x86/include/asm/thread_info.h
-> index c2dc29e215ea..30d1d187019f 100644
-> --- a/arch/x86/include/asm/thread_info.h
-> +++ b/arch/x86/include/asm/thread_info.h
-> @@ -214,10 +214,22 @@ static inline int arch_within_stack_frames(const void * const stack,
->   */
->  #define TS_COMPAT              0x0002  /* 32bit syscall active (64BIT)*/
+>  Documentation/ABI/stable/sysfs-module | 18 ++++++++++++++++++
+>  include/linux/module.h                |  1 +
+>  init/Kconfig                          | 14 ++++++++++++++
+>  kernel/module.c                       |  2 ++
+>  scripts/Makefile.modpost              | 14 ++++++++++++++
+>  scripts/mod/modpost.c                 | 22 +++++++++++++++++++++-
+>  6 files changed, 70 insertions(+), 1 deletion(-)
 >
-> +#ifndef __ASSEMBLY__
->  #ifdef CONFIG_COMPAT
->  #define TS_I386_REGS_POKED     0x0004  /* regs poked by 32-bit ptracer */
-> +#define TS_COMPAT_RESTART      0x0008
+> diff --git a/Documentation/ABI/stable/sysfs-module b/Documentation/ABI/stable/sysfs-module
+> index 6272ae5fb366..a75d137e79f4 100644
+> --- a/Documentation/ABI/stable/sysfs-module
+> +++ b/Documentation/ABI/stable/sysfs-module
+> @@ -32,3 +32,21 @@ Description:
+>                 Note: If the module is built into the kernel, or if the
+>                 CONFIG_MODULE_UNLOAD kernel configuration value is not enabled,
+>                 this file will not be present.
 > +
-> +#define arch_set_restart_data  arch_set_restart_data
+> +What:          /sys/module/MODULENAME/scmversion
+> +Date:          November 2020
+> +KernelVersion: 5.12
+> +Contact:       Will McVicker <willmcvicker@google.com>
+> +Description:   This read-only file will appear if modpost was supplied with an
+> +               SCM version for the module. It can be enabled with the config
+> +               MODULE_SCMVERSION. The SCM version is retrieved by
+> +               scripts/setlocalversion, which means that the presence of this
+> +               file depends on CONFIG_LOCALVERSION_AUTO=y. When read, the SCM
+> +               version that the module was compiled with is returned. The SCM
+> +               version is returned in the following format::
 > +
-> +static inline void arch_set_restart_data(struct restart_block *restart)
+> +               ===
+> +               Git:            g[a-f0-9]\+(-dirty)\?
+> +               Mercurial:      hg[a-f0-9]\+(-dirty)\?
+> +               Subversion:     svn[0-9]\+
+> +               ===
+> diff --git a/include/linux/module.h b/include/linux/module.h
+> index 7a0bcb5b1ffc..3b1612193cf9 100644
+> --- a/include/linux/module.h
+> +++ b/include/linux/module.h
+> @@ -372,6 +372,7 @@ struct module {
+>         struct module_attribute *modinfo_attrs;
+>         const char *version;
+>         const char *srcversion;
+> +       const char *scmversion;
+>         struct kobject *holders_dir;
+>
+>         /* Exported symbols */
+> diff --git a/init/Kconfig b/init/Kconfig
+> index b77c60f8b963..3d9dac3c4e8f 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -2131,6 +2131,20 @@ config MODULE_SRCVERSION_ALL
+>           the version).  With this option, such a "srcversion" field
+>           will be created for all modules.  If unsure, say N.
+>
+> +config MODULE_SCMVERSION
+> +       bool "SCM version for modules"
+> +       depends on LOCALVERSION_AUTO
+> +       help
+> +         This enables the module attribute "scmversion" which can be used
+> +         by developers to identify the SCM version of a given module, e.g.
+> +         git sha1 or hg sha1. The SCM version can be queried by modinfo or
+> +         via the sysfs node: /sys/modules/MODULENAME/scmversion. This is
+> +         useful when the kernel or kernel modules are updated separately
+> +         since that causes the vermagic of the kernel and the module to
+> +         differ.
+> +
+> +         If unsure, say N.
+> +
+>  config MODULE_SIG
+>         bool "Module signature verification"
+>         select MODULE_SIG_FORMAT
+> diff --git a/kernel/module.c b/kernel/module.c
+> index 4bf30e4b3eaa..d0b359c7e9c9 100644
+> --- a/kernel/module.c
+> +++ b/kernel/module.c
+> @@ -837,6 +837,7 @@ static struct module_attribute modinfo_##field = {                    \
+>
+>  MODINFO_ATTR(version);
+>  MODINFO_ATTR(srcversion);
+> +MODINFO_ATTR(scmversion);
+>
+>  static char last_unloaded_module[MODULE_NAME_LEN+1];
+>
+> @@ -1298,6 +1299,7 @@ static struct module_attribute *modinfo_attrs[] = {
+>         &module_uevent,
+>         &modinfo_version,
+>         &modinfo_srcversion,
+> +       &modinfo_scmversion,
+>         &modinfo_initstate,
+>         &modinfo_coresize,
+>         &modinfo_initsize,
+> diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
+> index f54b6ac37ac2..13ec3e96650c 100644
+> --- a/scripts/Makefile.modpost
+> +++ b/scripts/Makefile.modpost
+> @@ -66,6 +66,7 @@ ifeq ($(KBUILD_EXTMOD),)
+>
+>  input-symdump := vmlinux.symvers
+>  output-symdump := Module.symvers
+> +module_srcpath := $(srctree)
+>
+>  else
+>
+> @@ -82,9 +83,22 @@ MODPOST += -e
+>
+>  input-symdump := Module.symvers $(KBUILD_EXTRA_SYMBOLS)
+>  output-symdump := $(KBUILD_EXTMOD)/Module.symvers
+> +module_srcpath := $(KBUILD_EXTMOD)
+>
+>  endif
+>
+> +ifeq ($(CONFIG_MODULE_SCMVERSION),y)
+> +# Get the SCM version of the module. Sed verifies setlocalversion returns
+> +# a proper revision based on the SCM type, e.g. git, mercurial, or svn.
+> +# Note: relative M= paths are not supported when building the kernel out of the
+> +# srctree since setlocalversion won't be able to find the module srctree.
+> +module_scmversion := $(shell $(srctree)/scripts/setlocalversion $(module_srcpath) | \
+> +       sed -n 's/.*-\(\(g\|hg\)[a-fA-F0-9]\+\(-dirty\)\?\|svn[0-9]\+\).*/\1/p')
+> +ifneq ($(module_scmversion),)
+> +MODPOST += -v $(module_scmversion)
+> +endif
+> +endif
+> +
+>  # modpost options for modules (both in-kernel and external)
+>  MODPOST += \
+>         $(addprefix -i ,$(wildcard $(input-symdump))) \
+> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+> index d6c81657d695..92c4bd88f875 100644
+> --- a/scripts/mod/modpost.c
+> +++ b/scripts/mod/modpost.c
+> @@ -30,6 +30,8 @@ static int have_vmlinux = 0;
+>  static int all_versions = 0;
+>  /* If we are modposting external module set to 1 */
+>  static int external_module = 0;
+> +#define MODULE_SCMVERSION_SIZE 64
+> +static char module_scmversion[MODULE_SCMVERSION_SIZE];
+>  /* Only warn about unresolved symbols */
+>  static int warn_unresolved = 0;
+>  /* How a symbol is exported */
+> @@ -2264,6 +2266,20 @@ static void add_intree_flag(struct buffer *b, int is_intree)
+>                 buf_printf(b, "\nMODULE_INFO(intree, \"Y\");\n");
+>  }
+>
+> +/**
+> + * add_scmversion() - Adds the MODULE_INFO macro for the scmversion.
+> + * @b: Buffer to append to.
+> + *
+> + * This function fills in the module attribute `scmversion` for the kernel
+> + * module. This is useful for determining a given module's SCM version on
+> + * device via /sys/modules/<module>/scmversion and/or using the modinfo tool.
+> + */
+> +static void add_scmversion(struct buffer *b)
 > +{
-> +       struct thread_info *ti = current_thread_info();
-> +       if (ti->status & TS_COMPAT)
-> +               ti->status |= TS_COMPAT_RESTART;
-> +       else
-> +               ti->status &= ~TS_COMPAT_RESTART;
+> +       if (module_scmversion[0] != '\0')
+> +               buf_printf(b, "\nMODULE_INFO(scmversion, \"%s\");\n", module_scmversion);
 > +}
->  #endif
-> -#ifndef __ASSEMBLY__
->
->  #ifdef CONFIG_X86_32
->  #define in_ia32_syscall() true
-> diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-> index ea794a083c44..6c26d2c3a2e4 100644
-> --- a/arch/x86/kernel/signal.c
-> +++ b/arch/x86/kernel/signal.c
-> @@ -766,30 +766,8 @@ handle_signal(struct ksignal *ksig, struct pt_regs *regs)
->
->  static inline unsigned long get_nr_restart_syscall(const struct pt_regs *regs)
+> +
+>  /* Cannot check for assembler */
+>  static void add_retpoline(struct buffer *b)
 >  {
-> -       /*
-> -        * This function is fundamentally broken as currently
-> -        * implemented.
-> -        *
-> -        * The idea is that we want to trigger a call to the
-> -        * restart_block() syscall and that we want in_ia32_syscall(),
-> -        * in_x32_syscall(), etc. to match whatever they were in the
-> -        * syscall being restarted.  We assume that the syscall
-> -        * instruction at (regs->ip - 2) matches whatever syscall
-> -        * instruction we used to enter in the first place.
-> -        *
-> -        * The problem is that we can get here when ptrace pokes
-> -        * syscall-like values into regs even if we're not in a syscall
-> -        * at all.
-> -        *
-> -        * For now, we maintain historical behavior and guess based on
-> -        * stored state.  We could do better by saving the actual
-> -        * syscall arch in restart_block or (with caveats on x32) by
-> -        * checking if regs->ip points to 'int $0x80'.  The current
-> -        * behavior is incorrect if a tracer has a different bitness
-> -        * than the tracee.
-> -        */
->  #ifdef CONFIG_IA32_EMULATION
-> -       if (current_thread_info()->status & (TS_COMPAT|TS_I386_REGS_POKED))
-> +       if (current_thread_info()->status & TS_COMPAT_RESTART)
->                 return __NR_ia32_restart_syscall;
->  #endif
->  #ifdef CONFIG_X86_X32_ABI
+> @@ -2546,7 +2562,7 @@ int main(int argc, char **argv)
+>         struct dump_list *dump_read_start = NULL;
+>         struct dump_list **dump_read_iter = &dump_read_start;
+>
+> -       while ((opt = getopt(argc, argv, "ei:mnT:o:awENd:")) != -1) {
+> +       while ((opt = getopt(argc, argv, "ei:mnT:o:awENd:v:")) != -1) {
+>                 switch (opt) {
+>                 case 'e':
+>                         external_module = 1;
+> @@ -2584,6 +2600,9 @@ int main(int argc, char **argv)
+>                 case 'd':
+>                         missing_namespace_deps = optarg;
+>                         break;
+> +               case 'v':
+> +                       strncpy(module_scmversion, optarg, sizeof(module_scmversion) - 1);
+> +                       break;
+>                 default:
+>                         exit(1);
+>                 }
+> @@ -2630,6 +2649,7 @@ int main(int argc, char **argv)
+>                 add_depends(&buf, mod);
+>                 add_moddevtable(&buf, mod);
+>                 add_srcversion(&buf, mod);
+> +               add_scmversion(&buf);
+>
+>                 sprintf(fname, "%s.mod.c", mod->name);
+>                 write_if_changed(&buf, fname);
 > --
-> 2.25.1.362.g51ebf55
+> 2.30.0.280.ga3ce27912f-goog
 >
