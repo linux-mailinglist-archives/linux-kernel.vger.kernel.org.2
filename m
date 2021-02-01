@@ -2,167 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D4530B16A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 21:10:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9FEC30B168
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 21:10:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233156AbhBAUJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 15:09:51 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31161 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232601AbhBAUJC (ORCPT
+        id S232707AbhBAUJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 15:09:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233119AbhBAUIW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 15:09:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612210050;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZfxwGnD+dy8umn1NYGcjVPYpHw77B9r85fxRnvKqVIE=;
-        b=iT0Yzbdokxw5VsERCRliWZwcA+FL6gOMAAWFPbU6saYgnAl/OoN9hqrZ/iVmE+tB4HWu4s
-        9qlSaCyhUHxp+S1XeI++nQ6IlbMQmu+EHiAEd7yPB8IE7LELtlrda1HreW41USN1izvroM
-        NAipySek8tVUz3n6mJUm0DKqUYJUKXU=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-160-ytXvpzX9NPaN_x5EQ4aXHQ-1; Mon, 01 Feb 2021 15:06:58 -0500
-X-MC-Unique: ytXvpzX9NPaN_x5EQ4aXHQ-1
-Received: by mail-qk1-f198.google.com with SMTP id v130so14166250qkb.14
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 12:06:58 -0800 (PST)
+        Mon, 1 Feb 2021 15:08:22 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A649C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 12:07:42 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id g10so2087142eds.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 12:07:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=xT/3mkH8sZ5OMfp1FrmkjDWgvg0SwuKeYxgJNZyLoDo=;
+        b=cRDm4sqbq+CB028UtpL9i+6peUdZrtOaLzh6zqA7cNyFKJe/OmDQqS0Jtlx4Cm4NQd
+         VqZi0wWcshldrmTo7yT2BYRHczjl8Nb8tjP06gcKRIyfpSntr97OLBU1Q6y3MQM2cFT4
+         zyrQBVbErTTFINDtfJXJsS3jfoAqcmB2tzEJs6z0QZ/Fq60b4nPRNVioQePXajIegxKb
+         Uj31QNlhF7HFi1dNGhOPekCCOR7LJxWpcJpNyP90Wdol1ZyRwNXKtRWzWQOpa+K54d/l
+         CW+29X0YJ9v/yyJPmT1S9mBTz2hFC4Rs6qI9W1SiMPFfSk9d7osvMi60cgkpMYbSLInF
+         Htrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZfxwGnD+dy8umn1NYGcjVPYpHw77B9r85fxRnvKqVIE=;
-        b=jRoZHNK30GCMgbWVRiGnDW2YQx/l1x4/SFqNARMdingpFHO1PNJEzbPNFvk+y/s7qN
-         hluw1Wn7KOGsI8OJJgMNpNhUMM1Kf+N2NQVezMPc0lv6DL+uiiltr6bLeVGk0SA1d65x
-         l89C0T5f9TWMPvcQMYvAG3T5FXQJ8HxVYeEpMSd57JhwLEya3Rt6QIwOw5Uh8pAU0aA/
-         sMglDWSKTGbFZekRkf6/sHK3Xr9Wae2f+OpoAi736Cl/iH4E5qQSOyJmToHutSwK54l8
-         END4zZoVPi4iXddv7sW3yL4zolUAIpyaCuLabE+rTVh4CkMBN8MdSRrWNCvouDTOdjcS
-         GKaA==
-X-Gm-Message-State: AOAM531WTdGLWMl6qdkE7V/YDxZQHKqqsQxhFH5EA+IYx+YKI4Y7jV9+
-        dw7a983NXqQG8VE9P1zzY3UaFAB+9PMQnu0SaCeGr7WtpggIEr9x31iManPjCxlpVTccSHCDKzh
-        4RJK4ZScdKgvWM6bjhqm5HcjI
-X-Received: by 2002:ad4:48c8:: with SMTP id v8mr16720959qvx.38.1612210018039;
-        Mon, 01 Feb 2021 12:06:58 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwHHxydcBEc3CJJbewLgzu9DZ1H4bSs28KW+16tXmuMDdFdnbUkwBL/eKC15pCMhCXHwbCWyw==
-X-Received: by 2002:ad4:48c8:: with SMTP id v8mr16720926qvx.38.1612210017772;
-        Mon, 01 Feb 2021 12:06:57 -0800 (PST)
-Received: from xz-x1 ([142.126.83.202])
-        by smtp.gmail.com with ESMTPSA id z8sm14666242qtu.10.2021.02.01.12.06.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 12:06:57 -0800 (PST)
-Date:   Mon, 1 Feb 2021 15:06:54 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Steven Price <steven.price@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Adam Ruprecht <ruprecht@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v3 8/9] userfaultfd: update documentation to describe
- minor fault handling
-Message-ID: <20210201200654.GI260413@xz-x1>
-References: <20210128224819.2651899-1-axelrasmussen@google.com>
- <20210128224819.2651899-9-axelrasmussen@google.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=xT/3mkH8sZ5OMfp1FrmkjDWgvg0SwuKeYxgJNZyLoDo=;
+        b=dLCe1uHPKDGAg1NwyEsAX4Mf1S/EMSMyK/pqjazaXrPLqspyM6AEso+yfzj+ZeQNHr
+         R5BBcVR4CNnjcX0Ew3h1LWA5F9MLz1hiIo61MGAvZtTso/9ClZZsXzOhY+KgdsQ+av2P
+         KdVo8QfsJYvKD9Ujl9yT7dlWE7/hchZB2+mo08w+OA26glXBn0zzgc+P4kzfBN2+RqoE
+         SEWhq0zL9f3ixoQ3GQnCclLBMOQXlWGqvku7J1CWl3u4eGwsZrTYkpI4lqM8vS5D4m+5
+         PXROtjcpKGhhUnrbfn6km7fOnDyEaxpr8dAwRv0oCvbsjLmCVODTUdnmWL8sllqQLn/S
+         ULSg==
+X-Gm-Message-State: AOAM533fJ9aJ42NF9hiFE/4lVXlW9GZe3xnLGTjJywQm4qBecoQcHuxt
+        OifjdcTKLWak4BnS4XsrQco=
+X-Google-Smtp-Source: ABdhPJxObczU54wNLvoKrAVCnifyU+i0VODlb6DbXR9M+yfM/5RAfMXmS8PR+HB8TWLOiz0X1vXxbg==
+X-Received: by 2002:aa7:d4c8:: with SMTP id t8mr21496147edr.199.1612210061322;
+        Mon, 01 Feb 2021 12:07:41 -0800 (PST)
+Received: from p4 (net-93-70-85-165.cust.vodafonedsl.it. [93.70.85.165])
+        by smtp.gmail.com with ESMTPSA id di28sm9128182edb.71.2021.02.01.12.07.39
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 Feb 2021 12:07:40 -0800 (PST)
+Date:   Mon, 1 Feb 2021 20:07:37 +0000
+From:   Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org,
+        penberg@kernel.org, geert@linux-m68k.org,
+        linux-arm-kernel@lists.infradead.org, akpm@linux-foundation.org,
+        rppt@kernel.org, giancarlo.ferrari@nokia.com
+Subject: Re: [PATCH] ARM: kexec: Fix panic after TLB are invalidated
+Message-ID: <20210201200734.GC15399@p4>
+References: <1612140296-12546-1-git-send-email-giancarlo.ferrari89@gmail.com>
+ <20210201124720.GA66060@C02TD0UTHF1T.local>
+ <20210201130344.GF1463@shell.armlinux.org.uk>
+ <20210201135714.GB66060@C02TD0UTHF1T.local>
+ <20210201160838.GH1463@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210128224819.2651899-9-axelrasmussen@google.com>
+In-Reply-To: <20210201160838.GH1463@shell.armlinux.org.uk>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 02:48:18PM -0800, Axel Rasmussen wrote:
-> Reword / reorganize things a little bit into "lists", so new features /
-> modes / ioctls can sort of just be appended.
+Hi,
+
+On Mon, Feb 01, 2021 at 04:08:38PM +0000, Russell King - ARM Linux admin wrote:
+> On Mon, Feb 01, 2021 at 01:57:14PM +0000, Mark Rutland wrote:
+> > We could simplify this slightly if we moved the kexec_& variables into a
+> > struct (using asm-offset KEXEC_VAR_* offsets and a KEXEC_VAR_SIZE region
+> > reserved in the asm), then here we could do something like:
+> > 
+> > static struct kexec_vars *kexec_buffer_vars(void *buffer)
+> > {
+> > 	unsigned long code = ((unisigned long)relocate_new_kernel) & ~1;
+> > 	unsigned long vars - (unsigned long)relocate_vars;
+> > 	unsigned long offset = vars - code;
+> > 
+> > 	return buffer + offset;
+> > }
+> > 
+> > ... and in machine_kexec() do:
+> > 
+> > 	struct kexec_vars *kv = kexec_buffer_vars(reboot_code_buffer);
+> > 
+> > 	kv->start_address = image->start;
+> > 	kv->indirection_page = page_list;
+> > 	kv->mach_type = machine-arch_type;
+> > 	kv->boot_atags = arch.kernel_r2;
+> > 
+> > ... if that looks any better to you?
 > 
-> Describe how UFFDIO_REGISTER_MODE_MINOR and UFFDIO_CONTINUE can be used
-> to intercept and resolve minor faults. Make it clear that COPY and
-> ZEROPAGE are used for MISSING faults, whereas CONTINUE is used for MINOR
-> faults.
-
-Bare with me since I'm not native speaker.. but I'm pointing out things that
-reads odd to me.  Feel free to argue. :)
-
-[...]
-
-> +Resolving Userfaults
-> +--------------------
+> Something like this?
+> 
+> diff --git a/arch/arm/include/asm/kexec-internal.h b/arch/arm/include/asm/kexec-internal.h
+> new file mode 100644
+> index 000000000000..ecc2322db7aa
+> --- /dev/null
+> +++ b/arch/arm/include/asm/kexec-internal.h
+> @@ -0,0 +1,12 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ARM_KEXEC_INTERNAL_H
+> +#define _ARM_KEXEC_INTERNAL_H
 > +
-> +There are three basic ways to resolve userfaults:
+> +struct kexec_relocate_data {
+> +	unsigned long kexec_start_address;
+> +	unsigned long kexec_indirection_page;
+> +	unsigned long kexec_mach_type;
+> +	unsigned long kexec_r2;
+> +};
 > +
-> +- ``UFFDIO_COPY`` atomically copies some existing page contents from
-> +  userspace.
+> +#endif
+> diff --git a/arch/arm/kernel/asm-offsets.c b/arch/arm/kernel/asm-offsets.c
+> index a1570c8bab25..be8050b0c3df 100644
+> --- a/arch/arm/kernel/asm-offsets.c
+> +++ b/arch/arm/kernel/asm-offsets.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/mm.h>
+>  #include <linux/dma-mapping.h>
+>  #include <asm/cacheflush.h>
+> +#include <asm/kexec-internal.h>
+>  #include <asm/glue-df.h>
+>  #include <asm/glue-pf.h>
+>  #include <asm/mach/arch.h>
+> @@ -170,5 +171,9 @@ int main(void)
+>    DEFINE(MPU_RGN_PRBAR,	offsetof(struct mpu_rgn, prbar));
+>    DEFINE(MPU_RGN_PRLAR,	offsetof(struct mpu_rgn, prlar));
+>  #endif
+> +  DEFINE(KEXEC_START_ADDR,	offsetof(struct kexec_relocate_data, kexec_start_address));
+> +  DEFINE(KEXEC_INDIR_PAGE,	offsetof(struct kexec_relocate_data, kexec_indirection_page));
+> +  DEFINE(KEXEC_MACH_TYPE,	offsetof(struct kexec_relocate_data, kexec_mach_type));
+> +  DEFINE(KEXEC_R2,		offsetof(struct kexec_relocate_data, kexec_r2));
+>    return 0; 
+>  }
+> diff --git a/arch/arm/kernel/machine_kexec.c b/arch/arm/kernel/machine_kexec.c
+> index 5d84ad333f05..2b09dad7935e 100644
+> --- a/arch/arm/kernel/machine_kexec.c
+> +++ b/arch/arm/kernel/machine_kexec.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/of_fdt.h>
+>  #include <asm/mmu_context.h>
+>  #include <asm/cacheflush.h>
+> +#include <asm/kexec-internal.h>
+>  #include <asm/fncpy.h>
+>  #include <asm/mach-types.h>
+>  #include <asm/smp_plat.h>
+> @@ -22,11 +23,6 @@
+>  extern void relocate_new_kernel(void);
+>  extern const unsigned int relocate_new_kernel_size;
+>  
+> -extern unsigned long kexec_start_address;
+> -extern unsigned long kexec_indirection_page;
+> -extern unsigned long kexec_mach_type;
+> -extern unsigned long kexec_boot_atags;
+> -
+>  static atomic_t waiting_for_crash_ipi;
+>  
+>  /*
+> @@ -159,6 +155,7 @@ void (*kexec_reinit)(void);
+>  void machine_kexec(struct kimage *image)
+>  {
+>  	unsigned long page_list, reboot_entry_phys;
+> +	struct kexec_relocate_data *data;
+>  	void (*reboot_entry)(void);
+>  	void *reboot_code_buffer;
+>  
+> @@ -174,18 +171,17 @@ void machine_kexec(struct kimage *image)
+>  
+>  	reboot_code_buffer = page_address(image->control_code_page);
+>  
+> -	/* Prepare parameters for reboot_code_buffer*/
+> -	set_kernel_text_rw();
+> -	kexec_start_address = image->start;
+> -	kexec_indirection_page = page_list;
+> -	kexec_mach_type = machine_arch_type;
+> -	kexec_boot_atags = image->arch.kernel_r2;
+> -
+>  	/* copy our kernel relocation code to the control code page */
+>  	reboot_entry = fncpy(reboot_code_buffer,
+>  			     &relocate_new_kernel,
+>  			     relocate_new_kernel_size);
+>  
+> +	data = reboot_code_buffer + relocate_new_kernel_size;
+> +	data->kexec_start_address = image->start;
+> +	data->kexec_indirection_page = page_list;
+> +	data->kexec_mach_type = machine_arch_type;
+> +	data->kexec_r2 = image->arch.kernel_r2;
 > +
-> +- ``UFFDIO_ZEROPAGE`` atomically zeros the new page.
-> +
-> +- ``UFFDIO_CONTINUE`` maps an existing, previously-populated page.
-> +
-> +These operations are atomic in the sense that they guarantee nothing can
-> +see a half-populated page, since readers will keep userfaulting until the
-> +operation has finished.
-> +
-> +By default, these wake up userfaults blocked on the range in question.
-> +They support a ``UFFDIO_*_MODE_DONTWAKE`` ``mode`` flag, which indicates
-> +that waking will be done separately at some later time.
-> +
-> +Which of these are used depends on the kind of fault:
+>  	/* get the identity mapping physical address for the reboot code */
+>  	reboot_entry_phys = virt_to_idmap(reboot_entry);
+>  
+> diff --git a/arch/arm/kernel/relocate_kernel.S b/arch/arm/kernel/relocate_kernel.S
+> index 72a08786e16e..218d524360fc 100644
+> --- a/arch/arm/kernel/relocate_kernel.S
+> +++ b/arch/arm/kernel/relocate_kernel.S
+> @@ -5,14 +5,16 @@
+>  
+>  #include <linux/linkage.h>
+>  #include <asm/assembler.h>
+> +#include <asm/asm-offsets.h>
+>  #include <asm/kexec.h>
+>  
+>  	.align	3	/* not needed for this code, but keeps fncpy() happy */
+>  
+>  ENTRY(relocate_new_kernel)
+>  
+> -	ldr	r0,kexec_indirection_page
+> -	ldr	r1,kexec_start_address
+> +	adr	r7, relocate_new_kernel_end
+> +	ldr	r0, [r7, #KEXEC_INDIR_PAGE]
+> +	ldr	r1, [r7, #KEXEC_START_ADDR]
+>  
+>  	/*
+>  	 * If there is no indirection page (we are doing crashdumps)
+> @@ -57,34 +59,16 @@ ENTRY(relocate_new_kernel)
+>  
+>  2:
+>  	/* Jump to relocated kernel */
+> -	mov lr,r1
+> -	mov r0,#0
+> -	ldr r1,kexec_mach_type
+> -	ldr r2,kexec_boot_atags
+> - ARM(	ret lr	)
+> - THUMB(	bx lr		)
+> -
+> -	.align
+> -
+> -	.globl kexec_start_address
+> -kexec_start_address:
+> -	.long	0x0
+> -
+> -	.globl kexec_indirection_page
+> -kexec_indirection_page:
+> -	.long	0x0
+> -
+> -	.globl kexec_mach_type
+> -kexec_mach_type:
+> -	.long	0x0
+> -
+> -	/* phy addr of the atags for the new kernel */
+> -	.globl kexec_boot_atags
+> -kexec_boot_atags:
+> -	.long	0x0
+> +	mov	lr, r1
+> +	mov	r0, #0
+> +	ldr	r1, [r7, #KEXEC_MACH_TYPE]
+> +	ldr	r2, [r7, #KEXEC_R2]
+> + ARM(	ret	lr	)
+> + THUMB(	bx	lr	)
+>  
+>  ENDPROC(relocate_new_kernel)
+>  
+> +	.align	3
 
-Maybe:
+Nice.
 
-"We should choose the ioctl depending on the kind of the page fault, and what
- we'd like to do with it:"
+Why we should align 3 ? For the fncpy I suppose.
 
-?
+>  relocate_new_kernel_end:
+>  
+>  	.globl relocate_new_kernel_size
+> 
+> -- 
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
 
-> +
-> +- For ``UFFDIO_REGISTER_MODE_MISSING`` faults, a new page has to be
-> +  provided. This can be done with either ``UFFDIO_COPY`` or
+I don't know now how to proceed now, as you (Mark and you) do completely
+the patch.
 
-UFFDIO_ZEROPAGE does not need a new page.
+You see is my first kernel patch submission :) .
 
-> +  ``UFFDIO_ZEROPAGE``. The default (non-userfaultfd) behavior would be to
-> +  provide a zero page, but in userfaultfd this is left up to userspace.
+Thanks,
 
-"By default, kernel will provide a zero page for a missing fault.  With
- userfaultfd, the userspace could decide which content to provide before the
- faulted thread continues." ?
 
-> +
-> +- For ``UFFDIO_REGISTER_MODE_MINOR`` faults, an existing page already
-
-"page cache existed"?
-
-> +  exists. Userspace needs to ensure its contents are correct (if it needs
-> +  to be modified, by writing directly to the non-userfaultfd-registered
-> +  side of shared memory), and then issue ``UFFDIO_CONTINUE`` to resolve
-> +  the fault.
-
-"... Userspace can modify the page content before asking the faulted thread to
- continue the fault with UFFDIO_CONTINUE ioctl." ?
-
--- 
-Peter Xu
-
+GF
