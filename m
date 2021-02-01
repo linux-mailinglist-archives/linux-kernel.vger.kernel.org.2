@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18FA930B039
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 318BC30B035
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:20:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232109AbhBATR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 14:17:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34236 "EHLO
+        id S231896AbhBATRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 14:17:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231134AbhBATRK (ORCPT
+        with ESMTP id S231360AbhBATRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Feb 2021 14:17:10 -0500
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E15C061756;
-        Mon,  1 Feb 2021 11:16:29 -0800 (PST)
-Received: by mail-ej1-x633.google.com with SMTP id i8so9678579ejc.7;
-        Mon, 01 Feb 2021 11:16:29 -0800 (PST)
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 828FFC0613D6;
+        Mon,  1 Feb 2021 11:16:30 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id s3so6481987edi.7;
+        Mon, 01 Feb 2021 11:16:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=DUZ2th2akMgZXbhWAwF/Rtcar/hbaUZaN5WHosC7d0E=;
-        b=RtXwwowHX3yfKgD+ZnKVEKPYu6VxOSHT2i06dKyO5Qe/QPuh82VhWaZuFzbG65NGxV
-         Fj9khMkJ7JpVdW02Zhr+a7tTxDgoWgCeW4cSzU8FxwE4eO5tQdou6Osn0pMgLBmu57Vo
-         dST/W9TzxJEpZ/ugfTAx9S6Z80iutmAEHSDiMDLK5YtozOYCTnPdsesNEA35uY+Nqh6Y
-         HObgLwk3lsXHqc8f2zVMtknj9OJT6ubtfLRdC6LnG9IGrupkWRMlH2UGAjFG2cVLngsD
-         0mARA+eNCct1De7Jn3PGnbQVOr0cqRnbelKY9zgn8JukDLlKc1FWhe5RwQWzBmXw+VLg
-         q2hQ==
+        bh=X2oJ/oS9W6B6NjUjWeyWWEJnoptgHKF+k6enHUja9os=;
+        b=e2ZSe5L4DqRkHowO7yuhyPs3CMkfnLue4kyX/ln/Ia7m3ahZG//k55NGvjuHnUkxel
+         iwTd8xIyzHn9aMLxJvRbjy9zk+Nyha3uq6Uw99qr0+nr5r+hTj4iDhmS825oSh5ix0Ys
+         iLqa4kUp5I+PNPLCmtXO8XTu33h2XuIdJvr7FEiC51d5kQE6jx88JUGu3hF+cWiY5kHV
+         sLqTnerAh2sU/LJXuAp4ysnFOD7k2si575b/RZ6ezCHjVj2PNk03qMOJ9ZoBYNMv2d2j
+         Fw5P9Aj4iL2SC99cjaRxbs3UfGoSZa/RVXNsOUyUW6Wey50aIfFR5u+az3FS5ydrN1WO
+         Yicw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=DUZ2th2akMgZXbhWAwF/Rtcar/hbaUZaN5WHosC7d0E=;
-        b=JxPQcnJdbB7dqC4A0yBj7nwlvv9/sm/I6+uc4GNH0KCUb3+vZC05vE4DDNiqOOGoqw
-         5lr7grwOzXDKza7zdrYn7Hv+16LVDRRIUd+1PvhoCtSEqUGDzqVN2Tk1GE9nsnb7GE6p
-         SErHQRZ0+k1ZiYjAWTuZqL7MWkA7mod2T5DSWKgaVa9gaKEEi0vK/vu7yIeY3n5LjV6Z
-         XADufnWcftisX/gn6LHvzvkZKPY5U6jzf6eMjAHiSpNiDstTTDpwY20NrnOMjuQz/y1I
-         oasnxARFNfyRz05m5oqvPuXcrOzlp+ruyS11gIEHFkg+Z/TaO78Dcb2aGeDmLkqjlbK3
-         a5ag==
-X-Gm-Message-State: AOAM531Nxli2nL/RDZ8X3bFznjELAFwQd0Sp+Bh/RD9Ze2Vh5Cf12ccp
-        Zq52kEHTiXI5g53pwbz28wE=
-X-Google-Smtp-Source: ABdhPJyhN8CrusHD92pZSzVbBjMiSaukdEjDjPVVJCL0Yfd0yknHk18anfLy69xGsyIR8F82Rx28Pg==
-X-Received: by 2002:a17:906:7687:: with SMTP id o7mr19434775ejm.209.1612206988433;
-        Mon, 01 Feb 2021 11:16:28 -0800 (PST)
+        bh=X2oJ/oS9W6B6NjUjWeyWWEJnoptgHKF+k6enHUja9os=;
+        b=WA1HRS3icn0EaWCasr/ARGIxsh0WvF0k6ZnWa6tmKiOhdYkLDk5KtGaTNcuyxqocW3
+         IZc/vm0HmC4zqszeFYWafS+rbU/OeusUy+x0FSWk3YLgdIiBfOxsq902CtWc/RR01M52
+         7pgXa2soavwKvtECQy3G6CnPh5Gwu3yul3MBvyfI+bt3KHltJ6PH72CPqLgIzjuAOHE6
+         tGQINWN1Ysk/H7itG6151xuNw68Gl0AGpUIrU+SGOe+emYgfLoftNK9hmhLZirdOxDzh
+         X3VO92zsxsV2Mk71ZV5hoZeuE/Ykfo2HHiTNwrX8bJ0pKkT2sAJZXcZ/E70gYM4DxQG3
+         ahpg==
+X-Gm-Message-State: AOAM53062jULvCWeiRuMR3BYrk/hE2z4XCUzMbXe5G9CzSEXOZch6RhG
+        aOGaxorsrOo6wg0Fz+9rOQZWkaOxuVY=
+X-Google-Smtp-Source: ABdhPJxhYrtE/Fe8Ro1UgIM2UBNTJv8wyaDn1S4w3Rujmub+U6t7MbTvxNQS9bY+5gv4bSHBFtXm9w==
+X-Received: by 2002:aa7:dace:: with SMTP id x14mr20615282eds.300.1612206989336;
+        Mon, 01 Feb 2021 11:16:29 -0800 (PST)
 Received: from debian.home (81-204-249-205.fixed.kpn.net. [81.204.249.205])
-        by smtp.gmail.com with ESMTPSA id a11sm8243630ejc.64.2021.02.01.11.16.27
+        by smtp.gmail.com with ESMTPSA id a11sm8243630ejc.64.2021.02.01.11.16.28
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Feb 2021 11:16:28 -0800 (PST)
+        Mon, 01 Feb 2021 11:16:29 -0800 (PST)
 From:   Johan Jonker <jbx6244@gmail.com>
 To:     heiko@sntech.de
 Cc:     robh+dt@kernel.org, gregkh@linuxfoundation.org, balbi@kernel.org,
         linux-usb@vger.kernel.org, linux-rockchip@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 3/5] usb: dwc3: of-simple: add compatible for rk3328
-Date:   Mon,  1 Feb 2021 20:16:17 +0100
-Message-Id: <20210201191619.32353-3-jbx6244@gmail.com>
+Subject: [PATCH v1 4/5] arm64: dts: rockchip: add rk3328 dwc3 usb controller node
+Date:   Mon,  1 Feb 2021 20:16:18 +0100
+Message-Id: <20210201191619.32353-4-jbx6244@gmail.com>
 X-Mailer: git-send-email 2.11.0
 In-Reply-To: <20210201191619.32353-1-jbx6244@gmail.com>
 References: <20210201191619.32353-1-jbx6244@gmail.com>
@@ -64,30 +64,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Cameron Nemo <cnemo@tutanota.com>
 
-Add a compatible to be hooked into by the Rockchip rk3328 device tree.
+RK3328 SoCs have one USB 3.0 OTG controller which uses DWC_USB3
+core's general architecture. It can act as static xHCI host
+controller, static device controller, USB 3.0/2.0 OTG basing
+on ID of USB3.0 PHY.
 
-The rk3399 compatible cannot be reused because the rk3328 SoCs may
-require a specialized driver in the future and old device trees must
-remain compatible with newer kernels.
-
+Signed-off-by: William Wu <william.wu@rock-chips.com>
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
 Signed-off-by: Cameron Nemo <cnemo@tutanota.com>
 Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 ---
- drivers/usb/dwc3/dwc3-of-simple.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-diff --git a/drivers/usb/dwc3/dwc3-of-simple.c b/drivers/usb/dwc3/dwc3-of-simple.c
-index e62ecd22b..93bc34328 100644
---- a/drivers/usb/dwc3/dwc3-of-simple.c
-+++ b/drivers/usb/dwc3/dwc3-of-simple.c
-@@ -171,6 +171,7 @@ static const struct dev_pm_ops dwc3_of_simple_dev_pm_ops = {
- };
+diff --git a/arch/arm64/boot/dts/rockchip/rk3328.dtsi b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+index 17709faf6..2bb666d35 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3328.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3328.dtsi
+@@ -987,6 +987,33 @@
+ 		status = "disabled";
+ 	};
  
- static const struct of_device_id of_dwc3_simple_match[] = {
-+	{ .compatible = "rockchip,rk3328-dwc3" },
- 	{ .compatible = "rockchip,rk3399-dwc3" },
- 	{ .compatible = "xlnx,zynqmp-dwc3" },
- 	{ .compatible = "cavium,octeon-7130-usb-uctl" },
++	usbdrd3: usb@ff600000 {
++		compatible = "rockchip,rk3328-dwc3";
++		clocks = <&cru SCLK_USB3OTG_REF>, <&cru SCLK_USB3OTG_SUSPEND>,
++			 <&cru ACLK_USB3OTG>;
++		clock-names = "ref_clk", "suspend_clk",
++			      "bus_clk";
++		#address-cells = <2>;
++		#size-cells = <2>;
++		ranges;
++		status = "disabled";
++
++		usbdrd_dwc3: usb@ff600000 {
++			compatible = "snps,dwc3";
++			reg = <0x0 0xff600000 0x0 0x100000>;
++			interrupts = <GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>;
++			dr_mode = "otg";
++			phy_type = "utmi_wide";
++			snps,dis_enblslpm_quirk;
++			snps,dis-u2-freeclk-exists-quirk;
++			snps,dis_u2_susphy_quirk;
++			snps,dis_u3_susphy_quirk;
++			snps,dis-del-phy-power-chg-quirk;
++			snps,dis-tx-ipgap-linecheck-quirk;
++			status = "disabled";
++		};
++	};
++
+ 	gic: interrupt-controller@ff811000 {
+ 		compatible = "arm,gic-400";
+ 		#interrupt-cells = <3>;
 -- 
 2.11.0
 
