@@ -2,730 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECE530A4F8
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:09:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D8930A4F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:09:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233112AbhBAKHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 05:07:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60362 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233086AbhBAKG5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 05:06:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 78C2160295;
-        Mon,  1 Feb 2021 10:06:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612173975;
-        bh=t9DakzkwsbpXFu1GoSXgcUwejWe6O6oWwCg7qTxMxdA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uGohTz9+q7ZaZbbqW5+HMlU8Fdf+n1vFKDueDR0kPV1qUNMA0M00q55vkXvZvDGi5
-         GW3pT8KFYzJWKjfUIOWtOwxY9+HKZs7ZLaDr0ImPDMey0i94ABSMArnkDW2EQm17lg
-         euZfOKDs8kdK4U4dm7IDDo4PtxuGVQQ9R/vCGaZNoqmU2v6GwZcoazizrZvsbZ1kJB
-         T85i0KexeYxj3D35/2H/XfBHEBl0Dm5+ZdS9WewyZ283iDYyyt6Y1JvqBop9ZVcRqS
-         B59JhmXZ+XDwyJv9iFpGkYEGrEPzkvPotWlvuCNPYWmHtCkh7DLJLdZMGPtn5a7jNn
-         d+eRTvaI8exdw==
-Date:   Mon, 1 Feb 2021 15:36:10 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Guanhua Gao <guanhua.gao@nxp.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] dmaengine: fsl-dpaa2-qdma: Update DPDMAI interfaces
-Message-ID: <20210201100610.GR2771@vkoul-mobl>
-References: <20201217092350.12427-1-guanhua.gao@nxp.com>
+        id S233097AbhBAKHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 05:07:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233056AbhBAKGo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 05:06:44 -0500
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0184BC061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 02:06:28 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id t63so15642212qkc.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 02:06:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Sjt/JjpcscfEvtBP7EMVUaDK8j1N22A9/cE7A8z1fNQ=;
+        b=RWGlo0LF/xf0B6XMXJt4uEKHEI1PMWjoAzhk2jM1knlpTyoxZlXjsTGiphTN2+gWRQ
+         CfcfBynFycq6HShZmXTMtsL32rhWghYM7wEOPYcBCLQqoX5/zLN0JVOmCedt7+b4ylhV
+         aYFI0MlGniLS4Po7+bLxc0k6dfeNVZnjJPY6VSHXW4a7QEzI3yLS2JAx1S8qUgnCeySe
+         JTUGK5hONej427H1zqtvZoVMKjdHLNMYwJ/I/43/3VsWsjpQS09AuRuBojFy4GWeDPCu
+         EzNru2aRUgwTxsodEFirvxS0kN93jAd+IeehH1fEA8oXWAG0Z5bJIz9k6KsOAB4c/ayt
+         +QGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Sjt/JjpcscfEvtBP7EMVUaDK8j1N22A9/cE7A8z1fNQ=;
+        b=M0AmGxMR8pQR7EczRA/uOezuVPJ5wsKuGYx3VnghpgDfH8xIAEd2XcNnyFQj6O8NQu
+         Py3iDO2wcPW6FLNJ4TuPijRw9QRK6WtVEOqA7PgQ44eXdKc/udQNoZwpI68kFnNqYkMi
+         952zayv2UlenF/rSIujTU7xWmcqUwjlkyCQ422OQG9/rwaAbk/GIAtciDqZjgqCryFaH
+         qwsYZcLODnYE/+QdHMmkz9NjHhxw+Ana286lpRVAY6Qm1skiWYgCLH2/XAOgFVEKBXOQ
+         V/iNQ0fe0W0FJocIw5HHf2t7S5qWgjkiWAb400WRs5TESypKt/lOfNUMyB7FuVAyntwN
+         FWhg==
+X-Gm-Message-State: AOAM531I69a6uSAvt7t7JPZaYoYM8fpNFnI+irWqtJz46EUSKUT/e6nB
+        A/kDfxvZlPQkQDgk9mLx6VJb1XyC9KfDyUk/kjo6rw==
+X-Google-Smtp-Source: ABdhPJz1neDI6y2opCjejp39+RFPmdlUHPXrFefxOn9wklgPLmQPMf8ui0W8o2qIpXB9V8ohhvWgsAt8x04qGTAFxyU=
+X-Received: by 2002:a05:620a:918:: with SMTP id v24mr15329179qkv.350.1612173987508;
+ Mon, 01 Feb 2021 02:06:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201217092350.12427-1-guanhua.gao@nxp.com>
+References: <CACT4Y+YJp0t0HA3+wDsAVxgTK4J+Pvht-J4-ENkOtS=C=Fhtzg@mail.gmail.com>
+ <YBfPAvBa8bbSU2nZ@hirez.programming.kicks-ass.net>
+In-Reply-To: <YBfPAvBa8bbSU2nZ@hirez.programming.kicks-ass.net>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 1 Feb 2021 11:06:16 +0100
+Message-ID: <CACT4Y+YGY+fanogUFYXxpGZsCp53gjUi7Xua4Bmvs6gAvSfLoA@mail.gmail.com>
+Subject: Re: corrupted pvqspinlock in htab_map_update_elem
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17-12-20, 17:23, Guanhua Gao wrote:
-> This patch dupdates the DPDMAI interfaces to support MC firmware to
-> 10.1x.x.
+On Mon, Feb 1, 2021 at 10:51 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Sun, Jan 31, 2021 at 09:42:53AM +0100, Dmitry Vyukov wrote:
+> > Hi,
+> >
+> > I am testing the following the program:
+> > https://gist.github.com/dvyukov/e5c0a8ef220ef856363c1080b0936a9e
+> > on the latest upstream 6642d600b541b81931fb1ab0c041b0d68f77be7e and
+> > getting the following crash. Config is:
+> > https://gist.github.com/dvyukov/16d9905e5ef35e44285451f1d330ddbc
+> >
+> > The program updates a bpf map from a program called on hw breakpoint
+> > hit. Not sure if it's a bpf issue or a perf issue. This time it is not
+> > a fuzzer workload, I am trying to do something useful :)
+>
+> Something useful and BPF don't go together as far as I'm concerned.
+>
+> > ------------[ cut here ]------------
+> > pvqspinlock: lock 0xffffffff8f371d80 has corrupted value 0x0!
+> > WARNING: CPU: 3 PID: 8771 at kernel/locking/qspinlock_paravirt.h:498
+> > __pv_queued_spin_unlock_slowpath+0x22e/0x2b0
+> > kernel/locking/qspinlock_paravirt.h:498
+> > Modules linked in:
+> > CPU: 3 PID: 8771 Comm: a.out Not tainted 5.11.0-rc5+ #71
+> > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+> > rel-1.13.0-44-g88ab0c15525c-prebuilt.qemu.org 04/01/2014
+> > RIP: 0010:__pv_queued_spin_unlock_slowpath+0x22e/0x2b0
+> > kernel/locking/qspinlock_paravirt.h:498
+> > Code: ea 03 0f b6 14 02 4c 89 e8 83 e0 07 83 c0 03 38 d0 7c 04 84 d2
+> > 75 62 41 8b 55 00 4c 89 ee 48 c7 c7 20 6b 4c 89 e8 72 d3 5f 07 <0f> 0b
+> > e9 6cc
+> > RSP: 0018:fffffe00000c17b0 EFLAGS: 00010086
+> > RAX: 0000000000000000 RBX: ffffffff8f3b5660 RCX: 0000000000000000
+> > RDX: ffff8880150222c0 RSI: ffffffff815b624d RDI: fffffbc0000182e8
+> > RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
+> > R10: ffffffff817de94f R11: 0000000000000000 R12: ffff8880150222c0
+> > R13: ffffffff8f371d80 R14: ffff8880181fead8 R15: 0000000000000000
+> > FS:  00007fa5b51f0700(0000) GS:ffff88802cf80000(0000) knlGS:0000000000000000
+> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > CR2: 0000000002286908 CR3: 0000000015b24000 CR4: 0000000000750ee0
+> > DR0: 00000000004cb3d4 DR1: 0000000000000000 DR2: 0000000000000000
+> > DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+> > PKRU: 55555554
+> > Call Trace:
+> >  <#DB>
+> >  __raw_callee_save___pv_queued_spin_unlock_slowpath+0x11/0x20
+> >  .slowpath+0x9/0xe
+> >  pv_queued_spin_unlock arch/x86/include/asm/paravirt.h:559 [inline]
+> >  queued_spin_unlock arch/x86/include/asm/qspinlock.h:56 [inline]
+> >  lockdep_unlock+0x10e/0x290 kernel/locking/lockdep.c:124
+> >  debug_locks_off_graph_unlock kernel/locking/lockdep.c:165 [inline]
+> >  print_usage_bug kernel/locking/lockdep.c:3710 [inline]
+>
+> Ha, I think you hit a bug in lockdep. But it was about to tell you you
+> can't go take locks from NMI context that are also used outside of it.
 
-Threading is broken in this series, they do not appear together for me..
+Mkay. Perf calls a BPF program from NMI context. Should that program
+type be significantly restricted? But even if maps can't be used, is
+there anything useful a program invoked from such context can do at
+all?
 
-Can you explain what it means to support 10.1x.x...?
-
-> 
-> Signed-off-by: Guanhua Gao <guanhua.gao@nxp.com>
-> ---
->  drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c |  37 ++-----
->  drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h |   5 +-
->  drivers/dma/fsl-dpaa2-qdma/dpdmai.c     | 174 ++++++++++++++++++--------------
->  drivers/dma/fsl-dpaa2-qdma/dpdmai.h     | 164 ++++++++++++++++++++++--------
->  4 files changed, 232 insertions(+), 148 deletions(-)
-> 
-> diff --git a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
-> index bc5baa6..73c694e 100644
-> --- a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
-> +++ b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.c
-> @@ -308,7 +308,6 @@ static int __cold dpaa2_qdma_setup(struct fsl_mc_device *ls_dev)
->  	struct dpaa2_qdma_priv_per_prio *ppriv;
->  	struct device *dev = &ls_dev->dev;
->  	struct dpaa2_qdma_priv *priv;
-> -	u8 prio_def = DPDMAI_PRIO_NUM;
->  	int err = -EINVAL;
->  	int i;
->  
-> @@ -333,25 +332,7 @@ static int __cold dpaa2_qdma_setup(struct fsl_mc_device *ls_dev)
->  		goto exit;
->  	}
->  
-> -	if (priv->dpdmai_attr.version.major > DPDMAI_VER_MAJOR) {
-> -		dev_err(dev, "DPDMAI major version mismatch\n"
-> -			     "Found %u.%u, supported version is %u.%u\n",
-> -				priv->dpdmai_attr.version.major,
-> -				priv->dpdmai_attr.version.minor,
-> -				DPDMAI_VER_MAJOR, DPDMAI_VER_MINOR);
-> -		goto exit;
-> -	}
-> -
-> -	if (priv->dpdmai_attr.version.minor > DPDMAI_VER_MINOR) {
-> -		dev_err(dev, "DPDMAI minor version mismatch\n"
-> -			     "Found %u.%u, supported version is %u.%u\n",
-> -				priv->dpdmai_attr.version.major,
-> -				priv->dpdmai_attr.version.minor,
-> -				DPDMAI_VER_MAJOR, DPDMAI_VER_MINOR);
-> -		goto exit;
-> -	}
-> -
-> -	priv->num_pairs = min(priv->dpdmai_attr.num_of_priorities, prio_def);
-> +	priv->num_pairs = priv->dpdmai_attr.num_of_queues;
->  	ppriv = kcalloc(priv->num_pairs, sizeof(*ppriv), GFP_KERNEL);
->  	if (!ppriv) {
->  		err = -ENOMEM;
-> @@ -361,7 +342,7 @@ static int __cold dpaa2_qdma_setup(struct fsl_mc_device *ls_dev)
->  
->  	for (i = 0; i < priv->num_pairs; i++) {
->  		err = dpdmai_get_rx_queue(priv->mc_io, 0, ls_dev->mc_handle,
-> -					  i, &priv->rx_queue_attr[i]);
-> +					  i, 0, &priv->rx_queue_attr[i]);
->  		if (err) {
->  			dev_err(dev, "dpdmai_get_rx_queue() failed\n");
->  			goto exit;
-> @@ -369,13 +350,13 @@ static int __cold dpaa2_qdma_setup(struct fsl_mc_device *ls_dev)
->  		ppriv->rsp_fqid = priv->rx_queue_attr[i].fqid;
->  
->  		err = dpdmai_get_tx_queue(priv->mc_io, 0, ls_dev->mc_handle,
-> -					  i, &priv->tx_fqid[i]);
-> +					  i, 0, &priv->tx_queue_attr[i]);
->  		if (err) {
->  			dev_err(dev, "dpdmai_get_tx_queue() failed\n");
->  			goto exit;
->  		}
-> -		ppriv->req_fqid = priv->tx_fqid[i];
-> -		ppriv->prio = i;
-> +		ppriv->req_fqid = priv->tx_queue_attr[i].fqid;
-> +		ppriv->prio = DPAA2_QDMA_DEFAULT_PRIORITY;
->  		ppriv->priv = priv;
->  		ppriv++;
->  	}
-> @@ -540,8 +521,7 @@ static int __cold dpaa2_dpdmai_bind(struct dpaa2_qdma_priv *priv)
->  		rx_queue_cfg.dest_cfg.dest_id = ppriv->nctx.dpio_id;
->  		rx_queue_cfg.dest_cfg.priority = ppriv->prio;
->  		err = dpdmai_set_rx_queue(priv->mc_io, 0, ls_dev->mc_handle,
-> -					  rx_queue_cfg.dest_cfg.priority,
-> -					  &rx_queue_cfg);
-> +					  i, 0, &rx_queue_cfg);
->  		if (err) {
->  			dev_err(dev, "dpdmai_set_rx_queue() failed\n");
->  			return err;
-> @@ -634,14 +614,13 @@ static int dpaa2_dpdmai_init_channels(struct dpaa2_qdma_engine *dpaa2_qdma)
->  {
->  	struct dpaa2_qdma_priv *priv = dpaa2_qdma->priv;
->  	struct dpaa2_qdma_chan *dpaa2_chan;
-> -	int num = priv->num_pairs;
->  	int i;
->  
->  	INIT_LIST_HEAD(&dpaa2_qdma->dma_dev.channels);
->  	for (i = 0; i < dpaa2_qdma->n_chans; i++) {
->  		dpaa2_chan = &dpaa2_qdma->chans[i];
->  		dpaa2_chan->qdma = dpaa2_qdma;
-> -		dpaa2_chan->fqid = priv->tx_fqid[i % num];
-> +		dpaa2_chan->fqid = priv->tx_queue_attr[i].fqid;
->  		dpaa2_chan->vchan.desc_free = dpaa2_qdma_free_desc;
->  		vchan_init(&dpaa2_chan->vchan, &dpaa2_qdma->dma_dev);
->  		spin_lock_init(&dpaa2_chan->queue_lock);
-> @@ -803,7 +782,7 @@ static void dpaa2_qdma_shutdown(struct fsl_mc_device *ls_dev)
->  	dpdmai_disable(priv->mc_io, 0, ls_dev->mc_handle);
->  	dpaa2_dpdmai_dpio_unbind(priv);
->  	dpdmai_close(priv->mc_io, 0, ls_dev->mc_handle);
-> -	dpdmai_destroy(priv->mc_io, 0, ls_dev->mc_handle);
-> +	dpdmai_destroy(priv->mc_io, 0, priv->dpqdma_id, ls_dev->mc_handle);
->  }
->  
->  static const struct fsl_mc_device_id dpaa2_qdma_id_table[] = {
-> diff --git a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h
-> index 7d57184..c04a3db 100644
-> --- a/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h
-> +++ b/drivers/dma/fsl-dpaa2-qdma/dpaa2-qdma.h
-> @@ -6,6 +6,7 @@
->  
->  #define DPAA2_QDMA_STORE_SIZE 16
->  #define NUM_CH 8
-> +#define DPAA2_QDMA_DEFAULT_PRIORITY 0
->  
->  struct dpaa2_qdma_sd_d {
->  	u32 rsv:32;
-> @@ -122,8 +123,8 @@ struct dpaa2_qdma_priv {
->  	struct dpaa2_qdma_engine	*dpaa2_qdma;
->  	struct dpaa2_qdma_priv_per_prio	*ppriv;
->  
-> -	struct dpdmai_rx_queue_attr rx_queue_attr[DPDMAI_PRIO_NUM];
-> -	u32 tx_fqid[DPDMAI_PRIO_NUM];
-> +	struct dpdmai_rx_queue_attr rx_queue_attr[DPDMAI_MAX_QUEUE_NUM];
-> +	struct dpdmai_tx_queue_attr tx_queue_attr[DPDMAI_MAX_QUEUE_NUM];
->  };
->  
->  struct dpaa2_qdma_priv_per_prio {
-> diff --git a/drivers/dma/fsl-dpaa2-qdma/dpdmai.c b/drivers/dma/fsl-dpaa2-qdma/dpdmai.c
-> index 878662a..e9bb47b 100644
-> --- a/drivers/dma/fsl-dpaa2-qdma/dpdmai.c
-> +++ b/drivers/dma/fsl-dpaa2-qdma/dpdmai.c
-> @@ -7,47 +7,6 @@
->  #include <linux/fsl/mc.h>
->  #include "dpdmai.h"
->  
-> -struct dpdmai_rsp_get_attributes {
-> -	__le32 id;
-> -	u8 num_of_priorities;
-> -	u8 pad0[3];
-> -	__le16 major;
-> -	__le16 minor;
-> -};
-> -
-> -struct dpdmai_cmd_queue {
-> -	__le32 dest_id;
-> -	u8 priority;
-> -	u8 queue;
-> -	u8 dest_type;
-> -	u8 pad;
-> -	__le64 user_ctx;
-> -	union {
-> -		__le32 options;
-> -		__le32 fqid;
-> -	};
-> -};
-> -
-> -struct dpdmai_rsp_get_tx_queue {
-> -	__le64 pad;
-> -	__le32 fqid;
-> -};
-> -
-> -#define MC_CMD_OP(_cmd, _param, _offset, _width, _type, _arg) \
-> -	((_cmd).params[_param] |= mc_enc((_offset), (_width), _arg))
-> -
-> -/* cmd, param, offset, width, type, arg_name */
-> -#define DPDMAI_CMD_CREATE(cmd, cfg) \
-> -do { \
-> -	MC_CMD_OP(cmd, 0, 8,  8,  u8,  (cfg)->priorities[0]);\
-> -	MC_CMD_OP(cmd, 0, 16, 8,  u8,  (cfg)->priorities[1]);\
-> -} while (0)
-> -
-> -static inline u64 mc_enc(int lsoffset, int width, u64 val)
-> -{
-> -	return (val & MAKE_UMASK64(width)) << lsoffset;
-> -}
-> -
->  /**
->   * dpdmai_open() - Open a control session for the specified object
->   * @mc_io:	Pointer to MC portal's I/O object
-> @@ -68,16 +27,16 @@ static inline u64 mc_enc(int lsoffset, int width, u64 val)
->  int dpdmai_open(struct fsl_mc_io *mc_io, u32 cmd_flags,
->  		int dpdmai_id, u16 *token)
->  {
-> +	struct dpdmai_cmd_open *cmd_params;
->  	struct fsl_mc_command cmd = { 0 };
-> -	__le64 *cmd_dpdmai_id;
->  	int err;
->  
->  	/* prepare command */
->  	cmd.header = mc_encode_cmd_header(DPDMAI_CMDID_OPEN,
->  					  cmd_flags, 0);
->  
-> -	cmd_dpdmai_id = cmd.params;
-> -	*cmd_dpdmai_id = cpu_to_le32(dpdmai_id);
-> +	cmd_params = (struct dpdmai_cmd_open *)cmd.params;
-> +	cmd_params->dpdmai_id = cpu_to_le32(dpdmai_id);
->  
->  	/* send command to mc*/
->  	err = mc_send_command(mc_io, &cmd);
-> @@ -138,15 +97,20 @@ EXPORT_SYMBOL_GPL(dpdmai_close);
->   * Return:	'0' on Success; Error code otherwise.
->   */
->  int dpdmai_create(struct fsl_mc_io *mc_io, u32 cmd_flags,
-> -		  const struct dpdmai_cfg *cfg, u16 *token)
-> +		  const struct dpdmai_cfg *cfg, u16 token,
-> +		  u32 *dpdmai_id)
->  {
-> +	struct dpdmai_cmd_create *cmd_params;
->  	struct fsl_mc_command cmd = { 0 };
->  	int err;
->  
->  	/* prepare command */
->  	cmd.header = mc_encode_cmd_header(DPDMAI_CMDID_CREATE,
-> -					  cmd_flags, 0);
-> -	DPDMAI_CMD_CREATE(cmd, cfg);
-> +					  cmd_flags, token);
-> +	cmd_params = (struct dpdmai_cmd_create *)cmd.params;
-> +	cmd_params->num_queues = cfg->num_queues;
-> +	cmd_params->priorities[0] = cfg->priorities[0];
-> +	cmd_params->priorities[1] = cfg->priorities[1];
->  
->  	/* send command to mc*/
->  	err = mc_send_command(mc_io, &cmd);
-> @@ -154,26 +118,38 @@ int dpdmai_create(struct fsl_mc_io *mc_io, u32 cmd_flags,
->  		return err;
->  
->  	/* retrieve response parameters */
-> -	*token = mc_cmd_hdr_read_token(&cmd);
-> +	*dpdmai_id = mc_cmd_read_object_id(&cmd);
->  
->  	return 0;
->  }
-> +EXPORT_SYMBOL_GPL(dpdmai_create);
->  
->  /**
->   * dpdmai_destroy() - Destroy the DPDMAI object and release all its resources.
-> - * @mc_io:      Pointer to MC portal's I/O object
-> - * @cmd_flags:  Command flags; one or more of 'MC_CMD_FLAG_'
-> - * @token:      Token of DPDMAI object
-> + * @mc_io:	Pointer to MC portal's I/O object
-> + * @token:	Parent container token; '0' for default container
-> + * @cmd_flags:	Command flags; one or more of 'MC_CMD_FLAG_'
-> + * @object_id:	The object id; it must be a valid id within the container that
-> + *		created this object;
->   *
-> - * Return:      '0' on Success; error code otherwise.
-> + * The function accepts the authentication token of the parent container that
-> + * created the object (not the one that currently owns the object). The object
-> + * is searched within parent using the provided 'object_id'.
-> + * All tokens to the object must be closed before calling destroy.
-> + *
-> + * Return:	'0' on Success; error code otherwise.
->   */
-> -int dpdmai_destroy(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token)
-> +int dpdmai_destroy(struct fsl_mc_io *mc_io, u32 cmd_flags,
-> +		   u32 dpdmai_id, u16 token)
->  {
-> +	struct dpdmai_cmd_destroy *cmd_params;
->  	struct fsl_mc_command cmd = { 0 };
->  
->  	/* prepare command */
->  	cmd.header = mc_encode_cmd_header(DPDMAI_CMDID_DESTROY,
->  					  cmd_flags, token);
-> +	cmd_params = (struct dpdmai_cmd_destroy *)cmd.params;
-> +	cmd_params->dpdmai_id = cpu_to_le32(dpdmai_id);
->  
->  	/* send command to mc*/
->  	return mc_send_command(mc_io, &cmd);
-> @@ -223,6 +199,40 @@ int dpdmai_disable(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token)
->  EXPORT_SYMBOL_GPL(dpdmai_disable);
->  
->  /**
-> + * dpdmai_is_enabled() - Check if the DPDMAI is enabled.
-> + * @mc_io:	Pointer to MC portal's I/O object
-> + * @cmd_flags:	Command flags; one or more of 'MC_CMD_FLAG_'
-> + * @token:	Token of DPDMAI object
-> + * @en:		Returns '1' if object is enabled; '0' otherwise
-> + *
-> + * Return:	'0' on Success; Error code otherwise.
-> + */
-> +int dpdmai_is_enabled(struct fsl_mc_io *mc_io, u32 cmd_flags,
-> +		      u16 token, int *en)
-> +{
-> +	struct dpdmai_rsp_is_enabled *rsp_params;
-> +	struct fsl_mc_command cmd = { 0 };
-> +	int err;
-> +
-> +	/* prepare command */
-> +	cmd.header = mc_encode_cmd_header(DPDMAI_CMDID_IS_ENABLED,
-> +					  cmd_flags,
-> +					  token);
-> +
-> +	/* send command to mc*/
-> +	err = mc_send_command(mc_io, &cmd);
-> +	if (err)
-> +		return err;
-> +
-> +	/* retrieve response parameters */
-> +	rsp_params = (struct dpdmai_rsp_is_enabled *)cmd.params;
-> +	*en = dpdmai_get_field(rsp_params->en, ENABLE);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(dpdmai_is_enabled);
-> +
-> +/**
->   * dpdmai_reset() - Reset the DPDMAI, returns the object to initial state.
->   * @mc_io:	Pointer to MC portal's I/O object
->   * @cmd_flags:	Command flags; one or more of 'MC_CMD_FLAG_'
-> @@ -271,9 +281,8 @@ int dpdmai_get_attributes(struct fsl_mc_io *mc_io, u32 cmd_flags,
->  	/* retrieve response parameters */
->  	rsp_params = (struct dpdmai_rsp_get_attributes *)cmd.params;
->  	attr->id = le32_to_cpu(rsp_params->id);
-> -	attr->version.major = le16_to_cpu(rsp_params->major);
-> -	attr->version.minor = le16_to_cpu(rsp_params->minor);
->  	attr->num_of_priorities = rsp_params->num_of_priorities;
-> +	attr->num_of_queues = rsp_params->num_of_queues;
->  
->  	return 0;
->  }
-> @@ -290,23 +299,27 @@ EXPORT_SYMBOL_GPL(dpdmai_get_attributes);
->   *
->   * Return:	'0' on Success; Error code otherwise.
->   */
-> -int dpdmai_set_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token,
-> -			u8 priority, const struct dpdmai_rx_queue_cfg *cfg)
-> +int dpdmai_set_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags,
-> +			u16 token, u8 queue_idx, u8 priority,
-> +			const struct dpdmai_rx_queue_cfg *cfg)
->  {
-> -	struct dpdmai_cmd_queue *cmd_params;
-> +	struct dpdmai_cmd_set_rx_queue *cmd_params;
->  	struct fsl_mc_command cmd = { 0 };
->  
->  	/* prepare command */
->  	cmd.header = mc_encode_cmd_header(DPDMAI_CMDID_SET_RX_QUEUE,
->  					  cmd_flags, token);
->  
-> -	cmd_params = (struct dpdmai_cmd_queue *)cmd.params;
-> +	cmd_params = (struct dpdmai_cmd_set_rx_queue *)cmd.params;
->  	cmd_params->dest_id = cpu_to_le32(cfg->dest_cfg.dest_id);
-> -	cmd_params->priority = cfg->dest_cfg.priority;
-> -	cmd_params->queue = priority;
-> -	cmd_params->dest_type = cfg->dest_cfg.dest_type;
-> +	cmd_params->dest_priority = cfg->dest_cfg.priority;
-> +	cmd_params->priority = priority;
-> +	cmd_params->queue_idx = queue_idx;
->  	cmd_params->user_ctx = cpu_to_le64(cfg->user_ctx);
->  	cmd_params->options = cpu_to_le32(cfg->options);
-> +	dpdmai_set_field(cmd_params->dest_type,
-> +			 DEST_TYPE,
-> +			 cfg->dest_cfg.dest_type);
->  
->  	/* send command to mc*/
->  	return mc_send_command(mc_io, &cmd);
-> @@ -324,10 +337,12 @@ EXPORT_SYMBOL_GPL(dpdmai_set_rx_queue);
->   *
->   * Return:	'0' on Success; Error code otherwise.
->   */
-> -int dpdmai_get_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token,
-> -			u8 priority, struct dpdmai_rx_queue_attr *attr)
-> +int dpdmai_get_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags,
-> +			u16 token, u8 queue_idx, u8 priority,
-> +			struct dpdmai_rx_queue_attr *attr)
->  {
-> -	struct dpdmai_cmd_queue *cmd_params;
-> +	struct dpdmai_cmd_get_queue *cmd_params;
-> +	struct dpdmai_rsp_get_rx_queue *rsp_params;
->  	struct fsl_mc_command cmd = { 0 };
->  	int err;
->  
-> @@ -335,8 +350,9 @@ int dpdmai_get_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token,
->  	cmd.header = mc_encode_cmd_header(DPDMAI_CMDID_GET_RX_QUEUE,
->  					  cmd_flags, token);
->  
-> -	cmd_params = (struct dpdmai_cmd_queue *)cmd.params;
-> -	cmd_params->queue = priority;
-> +	cmd_params = (struct dpdmai_cmd_get_queue *)cmd.params;
-> +	cmd_params->priority = priority;
-> +	cmd_params->queue_idx = queue_idx;
->  
->  	/* send command to mc*/
->  	err = mc_send_command(mc_io, &cmd);
-> @@ -344,11 +360,13 @@ int dpdmai_get_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token,
->  		return err;
->  
->  	/* retrieve response parameters */
-> -	attr->dest_cfg.dest_id = le32_to_cpu(cmd_params->dest_id);
-> -	attr->dest_cfg.priority = cmd_params->priority;
-> -	attr->dest_cfg.dest_type = cmd_params->dest_type;
-> -	attr->user_ctx = le64_to_cpu(cmd_params->user_ctx);
-> -	attr->fqid = le32_to_cpu(cmd_params->fqid);
-> +	rsp_params = (struct dpdmai_rsp_get_rx_queue *)cmd.params;
-> +	attr->user_ctx = le64_to_cpu(rsp_params->user_ctx);
-> +	attr->fqid = le32_to_cpu(rsp_params->fqid);
-> +	attr->dest_cfg.dest_id = le32_to_cpu(rsp_params->dest_id);
-> +	attr->dest_cfg.priority = le32_to_cpu(rsp_params->dest_priority);
-> +	attr->dest_cfg.dest_type = dpdmai_get_field(rsp_params->dest_type,
-> +						    DEST_TYPE);
->  
->  	return 0;
->  }
-> @@ -366,10 +384,11 @@ EXPORT_SYMBOL_GPL(dpdmai_get_rx_queue);
->   * Return:	'0' on Success; Error code otherwise.
->   */
->  int dpdmai_get_tx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags,
-> -			u16 token, u8 priority, u32 *fqid)
-> +			u16 token, u8 queue_idx, u8 priority,
-> +			struct dpdmai_tx_queue_attr *attr)
->  {
-> +	struct dpdmai_cmd_get_queue *cmd_params;
->  	struct dpdmai_rsp_get_tx_queue *rsp_params;
-> -	struct dpdmai_cmd_queue *cmd_params;
->  	struct fsl_mc_command cmd = { 0 };
->  	int err;
->  
-> @@ -377,8 +396,9 @@ int dpdmai_get_tx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags,
->  	cmd.header = mc_encode_cmd_header(DPDMAI_CMDID_GET_TX_QUEUE,
->  					  cmd_flags, token);
->  
-> -	cmd_params = (struct dpdmai_cmd_queue *)cmd.params;
-> -	cmd_params->queue = priority;
-> +	cmd_params = (struct dpdmai_cmd_get_queue *)cmd.params;
-> +	cmd_params->priority = priority;
-> +	cmd_params->queue_idx = queue_idx;
->  
->  	/* send command to mc*/
->  	err = mc_send_command(mc_io, &cmd);
-> @@ -388,7 +408,7 @@ int dpdmai_get_tx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags,
->  	/* retrieve response parameters */
->  
->  	rsp_params = (struct dpdmai_rsp_get_tx_queue *)cmd.params;
-> -	*fqid = le32_to_cpu(rsp_params->fqid);
-> +	attr->fqid = le32_to_cpu(rsp_params->fqid);
->  
->  	return 0;
->  }
-> diff --git a/drivers/dma/fsl-dpaa2-qdma/dpdmai.h b/drivers/dma/fsl-dpaa2-qdma/dpdmai.h
-> index b13b9bf..bfa3aa9 100644
-> --- a/drivers/dma/fsl-dpaa2-qdma/dpdmai.h
-> +++ b/drivers/dma/fsl-dpaa2-qdma/dpdmai.h
-> @@ -5,39 +5,41 @@
->  #define __FSL_DPDMAI_H
->  
->  /* DPDMAI Version */
-> -#define DPDMAI_VER_MAJOR	2
-> -#define DPDMAI_VER_MINOR	2
-> +#define DPDMAI_VER_MAJOR	3
-> +#define DPDMAI_VER_MINOR	3
->  
-> -#define DPDMAI_CMD_BASE_VERSION	0
-> +#define DPDMAI_CMD_BASE_VERSION	1
-> +#define DPDMAI_CMD_VERSION_2	2
->  #define DPDMAI_CMD_ID_OFFSET	4
->  
-> -#define DPDMAI_CMDID_FORMAT(x)	(((x) << DPDMAI_CMD_ID_OFFSET) | \
-> -				DPDMAI_CMD_BASE_VERSION)
-> +#define DPDMAI_CMD(id)		((id << DPDMAI_CMD_ID_OFFSET) | DPDMAI_CMD_BASE_VERSION)
-> +#define DPDMAI_CMD_V2(id)	((id << DPDMAI_CMD_ID_OFFSET) | DPDMAI_CMD_VERSION_2)
->  
->  /* Command IDs */
-> -#define DPDMAI_CMDID_CLOSE		DPDMAI_CMDID_FORMAT(0x800)
-> -#define DPDMAI_CMDID_OPEN               DPDMAI_CMDID_FORMAT(0x80E)
-> -#define DPDMAI_CMDID_CREATE             DPDMAI_CMDID_FORMAT(0x90E)
-> -#define DPDMAI_CMDID_DESTROY            DPDMAI_CMDID_FORMAT(0x900)
-> -
-> -#define DPDMAI_CMDID_ENABLE             DPDMAI_CMDID_FORMAT(0x002)
-> -#define DPDMAI_CMDID_DISABLE            DPDMAI_CMDID_FORMAT(0x003)
-> -#define DPDMAI_CMDID_GET_ATTR           DPDMAI_CMDID_FORMAT(0x004)
-> -#define DPDMAI_CMDID_RESET              DPDMAI_CMDID_FORMAT(0x005)
-> -#define DPDMAI_CMDID_IS_ENABLED         DPDMAI_CMDID_FORMAT(0x006)
-> -
-> -#define DPDMAI_CMDID_SET_IRQ            DPDMAI_CMDID_FORMAT(0x010)
-> -#define DPDMAI_CMDID_GET_IRQ            DPDMAI_CMDID_FORMAT(0x011)
-> -#define DPDMAI_CMDID_SET_IRQ_ENABLE     DPDMAI_CMDID_FORMAT(0x012)
-> -#define DPDMAI_CMDID_GET_IRQ_ENABLE     DPDMAI_CMDID_FORMAT(0x013)
-> -#define DPDMAI_CMDID_SET_IRQ_MASK       DPDMAI_CMDID_FORMAT(0x014)
-> -#define DPDMAI_CMDID_GET_IRQ_MASK       DPDMAI_CMDID_FORMAT(0x015)
-> -#define DPDMAI_CMDID_GET_IRQ_STATUS     DPDMAI_CMDID_FORMAT(0x016)
-> -#define DPDMAI_CMDID_CLEAR_IRQ_STATUS	DPDMAI_CMDID_FORMAT(0x017)
-> -
-> -#define DPDMAI_CMDID_SET_RX_QUEUE	DPDMAI_CMDID_FORMAT(0x1A0)
-> -#define DPDMAI_CMDID_GET_RX_QUEUE       DPDMAI_CMDID_FORMAT(0x1A1)
-> -#define DPDMAI_CMDID_GET_TX_QUEUE       DPDMAI_CMDID_FORMAT(0x1A2)
-> +#define DPDMAI_CMDID_CLOSE		DPDMAI_CMD(0x800)
-> +#define DPDMAI_CMDID_OPEN               DPDMAI_CMD(0x80E)
-> +#define DPDMAI_CMDID_CREATE             DPDMAI_CMD_V2(0x90E)
-> +#define DPDMAI_CMDID_DESTROY            DPDMAI_CMD(0x98E)
-> +#define DPDMAI_CMDID_GET_API_VERSION	DPDMAI_CMD(0xa0E)
-> +
-> +#define DPDMAI_CMDID_ENABLE             DPDMAI_CMD(0x002)
-> +#define DPDMAI_CMDID_DISABLE            DPDMAI_CMD(0x003)
-> +#define DPDMAI_CMDID_GET_ATTR           DPDMAI_CMD_V2(0x004)
-> +#define DPDMAI_CMDID_RESET              DPDMAI_CMD(0x005)
-> +#define DPDMAI_CMDID_IS_ENABLED		DPDMAI_CMD(0x006)
-> +
-> +#define DPDMAI_CMDID_SET_RX_QUEUE	DPDMAI_CMD_V2(0x1A0)
-> +#define DPDMAI_CMDID_GET_RX_QUEUE       DPDMAI_CMD_V2(0x1A1)
-> +#define DPDMAI_CMDID_GET_TX_QUEUE       DPDMAI_CMD_V2(0x1A2)
-> +
-> +/* Macros for accessing command fields smaller than 1byte */
-> +#define DPDMAI_MASK(field)	\
-> +	GENMASK(DPDMAI_##field##_SHIFT + DPDMAI_##field##_SIZE - 1,	\
-> +		DPDMAI_##field##_SHIFT)
-> +#define dpdmai_set_field(var, field, val)	\
-> +	((var) |= (((val) << DPDMAI_##field##_SHIFT) & DPDMAI_MASK(field)))
-> +#define dpdmai_get_field(var, field)	\
-> +	(((var) & DPDMAI_MASK(field)) >> DPDMAI_##field##_SHIFT)
->  
->  #define MC_CMD_HDR_TOKEN_O 32  /* Token field offset */
->  #define MC_CMD_HDR_TOKEN_S 16  /* Token field size */
-> @@ -49,11 +51,21 @@
->   * Contains initialization APIs and runtime control APIs for DPDMAI
->   */
->  
-> +/*
-> + * Maximum number of Tx/Rx queues per DPDMAI object
-> + */
-> +#define DPDMAI_MAX_QUEUE_NUM	8
-> +
->  /**
->   * Maximum number of Tx/Rx priorities per DPDMAI object
->   */
->  #define DPDMAI_PRIO_NUM		2
->  
-> +/**
-> + * All queues considered; see dpdmai_set_rx_queue()
-> + */
-> +#define DPDMAI_ALL_QUEUES	((uint8_t)(-1))
-> +
->  /* DPDMAI queue modification options */
->  
->  /**
-> @@ -66,6 +78,69 @@
->   */
->  #define DPDMAI_QUEUE_OPT_DEST		0x2
->  
-> +struct dpdmai_cmd_open {
-> +	u32	dpdmai_id;
-> +};
-> +
-> +struct dpdmai_cmd_create {
-> +	u8	num_queues;
-> +	u8	priorities[2];
-> +};
-> +
-> +struct dpdmai_cmd_destroy {
-> +	u32	dpdmai_id;
-> +};
-> +
-> +#define DPDMAI_ENABLE_SHIFT	0
-> +#define DPDMAI_ENABLE_SIZE	1
-> +
-> +struct dpdmai_rsp_is_enabled {
-> +	/* only the LSB bit */
-> +	u8 en;
-> +};
-> +
-> +struct dpdmai_rsp_get_attributes {
-> +	u32 id;
-> +	u8 num_of_priorities;
-> +	u8 num_of_queues;
-> +};
-> +
-> +#define DPDMAI_DEST_TYPE_SHIFT	0
-> +#define DPDMAI_DEST_TYPE_SIZE	4
-> +
-> +struct dpdmai_cmd_set_rx_queue {
-> +	u32 dest_id;
-> +	u8 dest_priority;
-> +	u8 priority;
-> +	/* from LSB: dest_type:4 */
-> +	u8 dest_type;
-> +	u8 queue_idx;
-> +	u64 user_ctx;
-> +	u32 options;
-> +};
-> +
-> +struct dpdmai_cmd_get_queue {
-> +	u8 pad[5];
-> +	u8 priority;
-> +	u8 queue_idx;
-> +};
-> +
-> +struct dpdmai_rsp_get_rx_queue {
-> +	u32 dest_id;
-> +	u8 dest_priority;
-> +	u8 pad1;
-> +	/* from LSB: dest_type:4 */
-> +	u8 dest_type;
-> +	u8 pad2;
-> +	u64 user_ctx;
-> +	u32 fqid;
-> +};
-> +
-> +struct dpdmai_rsp_get_tx_queue {
-> +	u64 pad;
-> +	u32 fqid;
-> +};
-> +
->  /**
->   * struct dpdmai_cfg - Structure representing DPDMAI configuration
->   * @priorities: Priorities for the DMA hardware processing; valid priorities are
-> @@ -73,6 +148,7 @@
->   *	should be configured with 0
->   */
->  struct dpdmai_cfg {
-> +	u8 num_queues;
->  	u8 priorities[DPDMAI_PRIO_NUM];
->  };
->  
-> @@ -83,17 +159,14 @@ struct dpdmai_cfg {
->   * @num_of_priorities: number of priorities
->   */
->  struct dpdmai_attr {
-> -	int	id;
-> +	int id;
->  	/**
->  	 * struct version - DPDMAI version
->  	 * @major: DPDMAI major version
->  	 * @minor: DPDMAI minor version
->  	 */
-> -	struct {
-> -		u16 major;
-> -		u16 minor;
-> -	} version;
->  	u8 num_of_priorities;
-> +	u8 num_of_queues;
->  };
->  
->  /**
-> @@ -158,22 +231,33 @@ struct dpdmai_rx_queue_attr {
->  	u32 fqid;
->  };
->  
-> +struct dpdmai_tx_queue_attr {
-> +	u32 fqid;
-> +};
-> +
->  int dpdmai_open(struct fsl_mc_io *mc_io, u32 cmd_flags,
->  		int dpdmai_id, u16 *token);
->  int dpdmai_close(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token);
-> -int dpdmai_destroy(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token);
->  int dpdmai_create(struct fsl_mc_io *mc_io, u32 cmd_flags,
-> -		  const struct dpdmai_cfg *cfg, u16 *token);
-> +		  const struct dpdmai_cfg *cfg, u16 token,
-> +		  u32 *dpdmai_id);
-> +int dpdmai_destroy(struct fsl_mc_io *mc_io, u32 cmd_flags,
-> +		   u32 dpdmai_id, u16 token);
->  int dpdmai_enable(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token);
->  int dpdmai_disable(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token);
-> +int dpdmai_is_enabled(struct fsl_mc_io *mc_io, u32 cmd_flags,
-> +		      u16 token, int *en);
->  int dpdmai_reset(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token);
->  int dpdmai_get_attributes(struct fsl_mc_io *mc_io, u32 cmd_flags,
->  			  u16 token, struct dpdmai_attr	*attr);
-> -int dpdmai_set_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token,
-> -			u8 priority, const struct dpdmai_rx_queue_cfg *cfg);
-> -int dpdmai_get_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags, u16 token,
-> -			u8 priority, struct dpdmai_rx_queue_attr *attr);
-> +int dpdmai_set_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags,
-> +			u16 token, u8 queue_idx, u8 priority,
-> +			const struct dpdmai_rx_queue_cfg *cfg);
-> +int dpdmai_get_rx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags,
-> +			u16 token, u8 queue_idx, u8 priority,
-> +			struct dpdmai_rx_queue_attr *attr);
->  int dpdmai_get_tx_queue(struct fsl_mc_io *mc_io, u32 cmd_flags,
-> -			u16 token, u8 priority, u32 *fqid);
-> +			u16 token, u8 queue_idx, u8 priority,
-> +			struct dpdmai_tx_queue_attr *attr);
->  
->  #endif /* __FSL_DPDMAI_H */
-> -- 
-> 2.7.4
-
--- 
-~Vinod
+> >  verify_lock_unused kernel/locking/lockdep.c:5374 [inline]
+> >  lock_acquire kernel/locking/lockdep.c:5433 [inline]
+> >  lock_acquire+0x471/0x720 kernel/locking/lockdep.c:5407
+> >  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+> >  _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
+> >  htab_lock_bucket kernel/bpf/hashtab.c:175 [inline]
+> >  htab_map_update_elem+0x1f0/0x790 kernel/bpf/hashtab.c:1023
+> >  bpf_prog_60236c52b8017ad1+0x8e/0xab4
+> >  bpf_dispatcher_nop_func include/linux/bpf.h:651 [inline]
+> >  bpf_overflow_handler+0x192/0x5b0 kernel/events/core.c:9755
+> >  __perf_event_overflow+0x13c/0x370 kernel/events/core.c:8979
+> >  perf_swevent_overflow kernel/events/core.c:9055 [inline]
+> >  perf_swevent_event+0x347/0x550 kernel/events/core.c:9083
+> >  perf_bp_event+0x1a2/0x1c0 kernel/events/core.c:9932
+> >  hw_breakpoint_handler arch/x86/kernel/hw_breakpoint.c:535 [inline]
+> >  hw_breakpoint_exceptions_notify+0x18a/0x3b0 arch/x86/kernel/hw_breakpoint.c:567
+> >  notifier_call_chain+0xb5/0x200 kernel/notifier.c:83
+> >  atomic_notifier_call_chain+0x8d/0x170 kernel/notifier.c:217
+> >  notify_die+0xda/0x170 kernel/notifier.c:548
+> >  notify_debug+0x20/0x30 arch/x86/kernel/traps.c:842
+> >  exc_debug_kernel arch/x86/kernel/traps.c:902 [inline]
+> >  exc_debug+0x103/0x140 arch/x86/kernel/traps.c:998
+> >  asm_exc_debug+0x19/0x30 arch/x86/include/asm/idtentry.h:598
