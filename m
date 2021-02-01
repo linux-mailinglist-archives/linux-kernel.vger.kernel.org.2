@@ -2,268 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC3F30A9A2
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:25:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40BFF30A982
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230470AbhBAOXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 09:23:36 -0500
-Received: from raptor.unsafe.ru ([5.9.43.93]:50090 "EHLO raptor.unsafe.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232227AbhBAOWg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 09:22:36 -0500
-Received: from comp-core-i7-2640m-0182e6.redhat.com (ip-94-112-41-137.net.upcbroadband.cz [94.112.41.137])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by raptor.unsafe.ru (Postfix) with ESMTPSA id 480B220A22;
-        Mon,  1 Feb 2021 14:21:03 +0000 (UTC)
-From:   Alexey Gladkov <gladkov.alexey@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>, io-uring@vger.kernel.org,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        linux-mm@kvack.org
-Cc:     Alexey Gladkov <legion@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>
-Subject: [PATCH v5 7/7] kselftests: Add test to check for rlimit changes in different user namespaces
-Date:   Mon,  1 Feb 2021 15:18:35 +0100
-Message-Id: <b6c26cea0d74e321fdded286905708a3dba741c0.1612188590.git.gladkov.alexey@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1612188590.git.gladkov.alexey@gmail.com>
-References: <cover.1612188590.git.gladkov.alexey@gmail.com>
+        id S232611AbhBAOT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 09:19:57 -0500
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:45632 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231657AbhBAOTy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 09:19:54 -0500
+Received: by mail-oi1-f181.google.com with SMTP id g69so18883433oib.12;
+        Mon, 01 Feb 2021 06:19:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Nl0r7E4pmPDbzLNU5N8bDECPX3AdG/sX/U/vlhC1xFk=;
+        b=hf4+ue6GgKRubzn8XHs5QlRnkkMCnu+kJ8KpOJ2+bmOoElvND+Wq5/IDzCWm1d42fl
+         /jFXMHlLDVyrgMgivYH5ni9JsWuu+GkbaLhi4p6qjrjlqIOs42SQu3k2n8lnPJOi+dpU
+         e0FAmP1XsUVRA2PsrDeREKRdb6jHL17Jtjr9l0jUv0ZQD9hzCnmSwz7puZYA7wHYq1nf
+         IlK6+VJl7nmzcrlOxxXKD9/fE3jF78E6BpwHhawj4zkPADSD/Jhhy7nF268SbX/kGo/T
+         wfzMPC/x8XJEJJHfVdk6pt/ugEjHFMvx/1e9y/A+ymjxANf3BS13ulXisIanrkli4Xmg
+         hPew==
+X-Gm-Message-State: AOAM532IROtiOam3dv6BMp7n9fH7ru/PtT5HBd1VdQYjD9edQLzJsyNp
+        OHUgcvKy6uULpvxMV4pmFgkJkwSTSlMU/PHRsaY=
+X-Google-Smtp-Source: ABdhPJz00OGkDdFmt7vYjfTz/1PnWPAq//PkpSMGscieC47E85iAXencF6eG0+UOGIujvJ5b8D/NWkPfFRm89XBiu/M=
+X-Received: by 2002:aca:308a:: with SMTP id w132mr10398744oiw.69.1612189153445;
+ Mon, 01 Feb 2021 06:19:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Mon, 01 Feb 2021 14:21:03 +0000 (UTC)
+References: <20210126104001.20361-1-lukasz.luba@arm.com>
+In-Reply-To: <20210126104001.20361-1-lukasz.luba@arm.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 1 Feb 2021 15:19:02 +0100
+Message-ID: <CAJZ5v0gm7TU59Cr1SUZ8Xk_PwBbwv+J5kA75fNqK7OsGM8F6RA@mail.gmail.com>
+Subject: Re: [RFC][PATCH 0/3] New thermal interface allowing IPA to get max power
+To:     Lukasz Luba <lukasz.luba@arm.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Viresh Kumar <vireshk@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Dietmar Eggemann <Dietmar.Eggemann@arm.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        "Zhang, Rui" <rui.zhang@intel.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Myungjoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The testcase runs few instances of the program with RLIMIT_NPROC=1 from
-user uid=60000, in different user namespaces.
+On Tue, Jan 26, 2021 at 11:40 AM Lukasz Luba <lukasz.luba@arm.com> wrote:
+>
+> Hi all,
+>
+> This patch set tries to add the missing feature in the Intelligent Power
+> Allocation (IPA) governor which is: frequency limit set by user space.
+> User can set max allowed frequency for a given device which has impact on
+> max allowed power.
 
-Signed-off-by: Alexey Gladkov <gladkov.alexey@gmail.com>
----
- tools/testing/selftests/Makefile              |   1 +
- tools/testing/selftests/rlimits/.gitignore    |   2 +
- tools/testing/selftests/rlimits/Makefile      |   6 +
- tools/testing/selftests/rlimits/config        |   1 +
- .../selftests/rlimits/rlimits-per-userns.c    | 161 ++++++++++++++++++
- 5 files changed, 171 insertions(+)
- create mode 100644 tools/testing/selftests/rlimits/.gitignore
- create mode 100644 tools/testing/selftests/rlimits/Makefile
- create mode 100644 tools/testing/selftests/rlimits/config
- create mode 100644 tools/testing/selftests/rlimits/rlimits-per-userns.c
+If there is more than one frequency that can be limited for the given
+device, are you going to add a limit knob for each of them?
 
-diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index afbab4aeef3c..4dbeb5686f7b 100644
---- a/tools/testing/selftests/Makefile
-+++ b/tools/testing/selftests/Makefile
-@@ -46,6 +46,7 @@ TARGETS += proc
- TARGETS += pstore
- TARGETS += ptrace
- TARGETS += openat2
-+TARGETS += rlimits
- TARGETS += rseq
- TARGETS += rtc
- TARGETS += seccomp
-diff --git a/tools/testing/selftests/rlimits/.gitignore b/tools/testing/selftests/rlimits/.gitignore
-new file mode 100644
-index 000000000000..091021f255b3
---- /dev/null
-+++ b/tools/testing/selftests/rlimits/.gitignore
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+rlimits-per-userns
-diff --git a/tools/testing/selftests/rlimits/Makefile b/tools/testing/selftests/rlimits/Makefile
-new file mode 100644
-index 000000000000..03aadb406212
---- /dev/null
-+++ b/tools/testing/selftests/rlimits/Makefile
-@@ -0,0 +1,6 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+
-+CFLAGS += -Wall -O2 -g
-+TEST_GEN_PROGS := rlimits-per-userns
-+
-+include ../lib.mk
-diff --git a/tools/testing/selftests/rlimits/config b/tools/testing/selftests/rlimits/config
-new file mode 100644
-index 000000000000..416bd53ce982
---- /dev/null
-+++ b/tools/testing/selftests/rlimits/config
-@@ -0,0 +1 @@
-+CONFIG_USER_NS=y
-diff --git a/tools/testing/selftests/rlimits/rlimits-per-userns.c b/tools/testing/selftests/rlimits/rlimits-per-userns.c
-new file mode 100644
-index 000000000000..26dc949e93ea
---- /dev/null
-+++ b/tools/testing/selftests/rlimits/rlimits-per-userns.c
-@@ -0,0 +1,161 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Author: Alexey Gladkov <gladkov.alexey@gmail.com>
-+ */
-+#define _GNU_SOURCE
-+#include <sys/types.h>
-+#include <sys/wait.h>
-+#include <sys/time.h>
-+#include <sys/resource.h>
-+#include <sys/prctl.h>
-+#include <sys/stat.h>
-+
-+#include <unistd.h>
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <sched.h>
-+#include <signal.h>
-+#include <limits.h>
-+#include <fcntl.h>
-+#include <errno.h>
-+#include <err.h>
-+
-+#define NR_CHILDS 2
-+
-+static char *service_prog;
-+static uid_t user   = 60000;
-+static uid_t group  = 60000;
-+
-+static void setrlimit_nproc(rlim_t n)
-+{
-+	pid_t pid = getpid();
-+	struct rlimit limit = {
-+		.rlim_cur = n,
-+		.rlim_max = n
-+	};
-+
-+	warnx("(pid=%d): Setting RLIMIT_NPROC=%ld", pid, n);
-+
-+	if (setrlimit(RLIMIT_NPROC, &limit) < 0)
-+		err(EXIT_FAILURE, "(pid=%d): setrlimit(RLIMIT_NPROC)", pid);
-+}
-+
-+static pid_t fork_child(void)
-+{
-+	pid_t pid = fork();
-+
-+	if (pid < 0)
-+		err(EXIT_FAILURE, "fork");
-+
-+	if (pid > 0)
-+		return pid;
-+
-+	pid = getpid();
-+
-+	warnx("(pid=%d): New process starting ...", pid);
-+
-+	if (prctl(PR_SET_PDEATHSIG, SIGKILL) < 0)
-+		err(EXIT_FAILURE, "(pid=%d): prctl(PR_SET_PDEATHSIG)", pid);
-+
-+	signal(SIGUSR1, SIG_DFL);
-+
-+	warnx("(pid=%d): Changing to uid=%d, gid=%d", pid, user, group);
-+
-+	if (setgid(group) < 0)
-+		err(EXIT_FAILURE, "(pid=%d): setgid(%d)", pid, group);
-+	if (setuid(user) < 0)
-+		err(EXIT_FAILURE, "(pid=%d): setuid(%d)", pid, user);
-+
-+	warnx("(pid=%d): Service running ...", pid);
-+
-+	warnx("(pid=%d): Unshare user namespace", pid);
-+	if (unshare(CLONE_NEWUSER) < 0)
-+		err(EXIT_FAILURE, "unshare(CLONE_NEWUSER)");
-+
-+	char *const argv[] = { "service", NULL };
-+	char *const envp[] = { "I_AM_SERVICE=1", NULL };
-+
-+	warnx("(pid=%d): Executing real service ...", pid);
-+
-+	execve(service_prog, argv, envp);
-+	err(EXIT_FAILURE, "(pid=%d): execve", pid);
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	size_t i;
-+	pid_t child[NR_CHILDS];
-+	int wstatus[NR_CHILDS];
-+	int childs = NR_CHILDS;
-+	pid_t pid;
-+
-+	if (getenv("I_AM_SERVICE")) {
-+		pause();
-+		exit(EXIT_SUCCESS);
-+	}
-+
-+	service_prog = argv[0];
-+	pid = getpid();
-+
-+	warnx("(pid=%d) Starting testcase", pid);
-+
-+	/*
-+	 * This rlimit is not a problem for root because it can be exceeded.
-+	 */
-+	setrlimit_nproc(1);
-+
-+	for (i = 0; i < NR_CHILDS; i++) {
-+		child[i] = fork_child();
-+		wstatus[i] = 0;
-+		usleep(250000);
-+	}
-+
-+	while (1) {
-+		for (i = 0; i < NR_CHILDS; i++) {
-+			if (child[i] <= 0)
-+				continue;
-+
-+			errno = 0;
-+			pid_t ret = waitpid(child[i], &wstatus[i], WNOHANG);
-+
-+			if (!ret || (!WIFEXITED(wstatus[i]) && !WIFSIGNALED(wstatus[i])))
-+				continue;
-+
-+			if (ret < 0 && errno != ECHILD)
-+				warn("(pid=%d): waitpid(%d)", pid, child[i]);
-+
-+			child[i] *= -1;
-+			childs -= 1;
-+		}
-+
-+		if (!childs)
-+			break;
-+
-+		usleep(250000);
-+
-+		for (i = 0; i < NR_CHILDS; i++) {
-+			if (child[i] <= 0)
-+				continue;
-+			kill(child[i], SIGUSR1);
-+		}
-+	}
-+
-+	for (i = 0; i < NR_CHILDS; i++) {
-+		if (WIFEXITED(wstatus[i]))
-+			warnx("(pid=%d): pid %d exited, status=%d",
-+				pid, -child[i], WEXITSTATUS(wstatus[i]));
-+		else if (WIFSIGNALED(wstatus[i]))
-+			warnx("(pid=%d): pid %d killed by signal %d",
-+				pid, -child[i], WTERMSIG(wstatus[i]));
-+
-+		if (WIFSIGNALED(wstatus[i]) && WTERMSIG(wstatus[i]) == SIGUSR1)
-+			continue;
-+
-+		warnx("(pid=%d): Test failed", pid);
-+		exit(EXIT_FAILURE);
-+	}
-+
-+	warnx("(pid=%d): Test passed", pid);
-+	exit(EXIT_SUCCESS);
-+}
--- 
-2.29.2
+> In current design there is no mechanism to figure this
+> out. IPA must know the maximum allowed power for every device. It is then
+> used for proper power split and divvy-up. When the user limit for max
+> frequency is not know, IPA assumes it is the highest possible frequency.
+> It causes wrong power split across the devices.
 
+Do I think correctly that this depends on the Energy Model?
+
+> This new mechanism provides the max allowed frequency to the thermal
+> framework and then max allowed power to the IPA.
+> The implementation is done in this way because currently there is no way
+> to retrieve the limits from the PM QoS, without uncapping the local
+> thermal limit and reading the next value.
+
+The above is unclear.  What PM QoS limit are you referring to in the
+first place?
+
+> It would be a heavy way of
+> doing these things, since it should be done every polling time (e.g. 50ms).
+> Also, the value stored in PM QoS can be different than the real OPP 'rate'
+> so still would need conversion into proper OPP for comparison with EM.
+> Furthermore, uncapping the device in thermal just to check the user freq
+> limit is not the safest way.
+> Thus, this simple implementation moves the calculation of the proper
+> frequency to the sysfs write code, since it's called less often. The value
+> is then used as-is in the thermal framework without any hassle.
+>
+> As it's a RFC, it still misses the cpufreq sysfs implementation,
+
+What exactly do you mean by this?
+
+> but would be addressed if all agree.
+
+Depending on the answers above.
+
+But my general comment would be that it might turn out to be
+unrealistic to expect user space to know what frequency limit to use
+to get the desired result in terms of constraining power.
