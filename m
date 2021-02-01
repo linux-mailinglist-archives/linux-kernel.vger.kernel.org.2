@@ -2,119 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A7CC30B2A9
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:17:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C8A30B2AC
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:18:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbhBAWRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 17:17:02 -0500
-Received: from mx2.suse.de ([195.135.220.15]:54124 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229527AbhBAWQ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 17:16:58 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 41FD8AD19;
-        Mon,  1 Feb 2021 22:16:16 +0000 (UTC)
-From:   NeilBrown <neilb@suse.de>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Christian =?utf-8?Q?K=C3=B6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>
-Date:   Tue, 02 Feb 2021 09:16:10 +1100
-Cc:     mojha@codeaurora.org, jkosina@suse.cz, cezary.rojewski@intel.com,
-        neilb@suse.com, b00073877@aus.edu, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] list: add more extensive double add check
-In-Reply-To: <YBgnY8FXpHJdoDos@smile.fi.intel.com>
-References: <20210201135251.1884-1-christian.koenig@amd.com>
- <YBgnY8FXpHJdoDos@smile.fi.intel.com>
-Message-ID: <8735yffn85.fsf@notabene.neil.brown.name>
+        id S229823AbhBAWS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 17:18:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36073 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229543AbhBAWS0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 17:18:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612217819;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xmN+agXqiROkkYz5Om/OjbH0Pxuwyb0SEcLP3k/Y+SI=;
+        b=VsqAu0sSesPxo2FxXRQMunX7YJeMcbKX4Ozqk1gGog6dbYXqYZvg6K+oLFWh7RwL2UCkQl
+        fxCR9zt7nZqi28ADR9Orawz2z7ScziRtKyE5RhrqDxUI4vXOmZfjvrsuzdkChCuxIbsqj4
+        Iw69Nmqc/rC9sFi9uwKBkbsqnkERUBk=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-82-iTLUGkTdPEq5vU64fG3rmw-1; Mon, 01 Feb 2021 17:16:58 -0500
+X-MC-Unique: iTLUGkTdPEq5vU64fG3rmw-1
+Received: by mail-qv1-f71.google.com with SMTP id h13so12325237qvo.18
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 14:16:58 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xmN+agXqiROkkYz5Om/OjbH0Pxuwyb0SEcLP3k/Y+SI=;
+        b=DAfF83hb8pUW7LEMvlvI0vKjVBrElQxJhbX32Dn9uHp8vp5Mk4lqwmURTJ/wfAeGy+
+         tRQnitbPMdKa03tthPxWC4EZPZ9sVbUW06uudewISSZfKWuM3ZPd9m5Ucz7LArvduD3w
+         XHyNoZ8Y1pH7zKjih94TPgie5riNK7Y1TS5WWrGFk1ruQ/phofFuvEyU8HP8eogDvGPl
+         0QTSrTGiZOBNMPA+0gdo44MY1r8QfCxGEMQQs33gm44j6bK0opnWvmbiSjXXePzKRVs/
+         s2DaSO3Xmh5j4AArHH9waeEE/DmAi2qElT8Sg87pKR9Kob2INucce0nQAqDJIOWKqa6o
+         nt4Q==
+X-Gm-Message-State: AOAM5303jwspPelSYRQ3wqw/gSuRg9Xhe2S5XZZdxKItCHWxNirJWEAF
+        a6FtTeYX7DC18dd+pUFy8gTHCx15GkzlIMjE+v74hpOrmsIG7wXNiRy4lxPNFoDUSYcwSW1Escz
+        cfyg9Oe3eSod4IzH8GftuIT5F
+X-Received: by 2002:a37:8fc3:: with SMTP id r186mr18916805qkd.253.1612217817874;
+        Mon, 01 Feb 2021 14:16:57 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJycp08TqePZIDEQY1l41O7S1IZiWlSToWvexBdN5xDvx00e6QmbaZ+OIJcb0uui1HUWN1gXZA==
+X-Received: by 2002:a37:8fc3:: with SMTP id r186mr18916780qkd.253.1612217817592;
+        Mon, 01 Feb 2021 14:16:57 -0800 (PST)
+Received: from xz-x1 ([142.126.83.202])
+        by smtp.gmail.com with ESMTPSA id m202sm2009463qke.24.2021.02.01.14.16.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 14:16:56 -0800 (PST)
+Date:   Mon, 1 Feb 2021 17:16:54 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Axel Rasmussen <axelrasmussen@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steven Price <steven.price@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        Adam Ruprecht <ruprecht@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH v4 1/9] hugetlb: Pass vma into huge_pte_alloc()
+Message-ID: <20210201221654.GJ260413@xz-x1>
+References: <20210128224819.2651899-2-axelrasmussen@google.com>
+ <20210128234242.2677079-1-axelrasmussen@google.com>
+ <67fc15f3-3182-206b-451b-1622f6657092@oracle.com>
+ <f1afa616-c4f5-daaa-6865-8bbc3c93b71a@oracle.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f1afa616-c4f5-daaa-6865-8bbc3c93b71a@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On Mon, Feb 01, 2021 at 01:53:14PM -0800, Mike Kravetz wrote:
+> On 2/1/21 1:38 PM, Mike Kravetz wrote:
+> > On 1/28/21 3:42 PM, Axel Rasmussen wrote:
+> >> From: Peter Xu <peterx@redhat.com>
+> >>
+> >> It is a preparation work to be able to behave differently in the per
+> >> architecture huge_pte_alloc() according to different VMA attributes.
+> >>
+> >> Signed-off-by: Peter Xu <peterx@redhat.com>
+> >> [axelrasmussen@google.com: fixed typo in arch/mips/mm/hugetlbpage.c]
+> >> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+> >> ---
+> >>  arch/arm64/mm/hugetlbpage.c   | 2 +-
+> >>  arch/ia64/mm/hugetlbpage.c    | 3 ++-
+> >>  arch/mips/mm/hugetlbpage.c    | 4 ++--
+> >>  arch/parisc/mm/hugetlbpage.c  | 2 +-
+> >>  arch/powerpc/mm/hugetlbpage.c | 3 ++-
+> >>  arch/s390/mm/hugetlbpage.c    | 2 +-
+> >>  arch/sh/mm/hugetlbpage.c      | 2 +-
+> >>  arch/sparc/mm/hugetlbpage.c   | 2 +-
+> >>  include/linux/hugetlb.h       | 2 +-
+> >>  mm/hugetlb.c                  | 6 +++---
+> >>  mm/userfaultfd.c              | 2 +-
+> >>  11 files changed, 16 insertions(+), 14 deletions(-)
+> > 
+> > Sorry for the delay in reviewing.
+> > 
+> > huge_pmd_share() will do a find_vma() to get the vma.  So, it would be
+> > 'possible' to not add an extra argument to huge_pmd_alloc() and simply
+> > do the uffd_disable_huge_pmd_share() check inside vma_shareable.  This
+> > would reduce the amount of modified code, but would not be as efficient.
+> > I prefer passing the vma argument as is done here.
+> > 
+> > Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+> 
+> 
+> Another thought.
+> 
+> We should pass the vma to huge_pmd_share to avoid the find_vma.
 
-On Mon, Feb 01 2021, Andy Shevchenko wrote:
+Agreed.  Seems not relevant to this series, but should be a very nice add-on
+after this patch can land.  Thanks,
 
-> On Mon, Feb 01, 2021 at 02:52:51PM +0100, Christian K=C3=B6nig wrote:
->> Adding the same element to a linked list multiple times
->> seems to be a rather common programming mistake. To debug
->> those I've more than once written some code to check a
->> linked list for duplicates.
->>=20
->> Since re-inventing the wheel over and over again is a bad
->> idea this patch tries to add some common code which allows
->> to check linked lists for duplicates while adding new
->> elements.
->>=20
->> When list debugging is enabled we currently already check
->> the previous and next element if they are identical to the
->> new one. This patch now adds a configuration option to
->> check N elements before and after the desired position.
->>=20
->> By default we still only test one item since testing more
->> means quite a large CPU overhead. This can be overwritten
->> on a per C file bases by defining DEBUG_LIST_DOUBLE_ADD
->> before including list.h.
->
-> I'm not sure it is a good idea. Currently the implementation is *generic*.
-> You are customizing it w/o letting caller know.
->
-> Create a derivative implementation and name it exlist (exclusive list) an=
-d use
-> whenever it makes sense.
->
-> And I think if you are still pushing to modify generic one the default mu=
-st be
-> 0 in order not altering current behaviour.
+-- 
+Peter Xu
 
-I don't understand your complaint.
-The extra checks are also completely *generic*.  It can never make sense
-to add sometime to a list if it is already on the list.  All lists are
-exclusive lists.
-The code ALREADY tests if the inserted object is already present either
-side of the insert side of the insertion point.  This patch just extends
-it somewhat.
-
-I myself have never had, or heard of, a bug due to double insertion so
-I'm no strongly in favour of this patch for that reason.
-But I *am* in favour of making the platform more resilient in general,
-and if others have experienced this sort of bug, then I'm in favour of
-make that easier to detect in future.
-
-NeilBrown
-
-
->
->> A new kunit test is also added to the existing list tests
->> which intentionally triggers the debug functionality.
->
-> --=20
-> With Best Regards,
-> Andy Shevchenko
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJCBAEBCAAsFiEEG8Yp69OQ2HB7X0l6Oeye3VZigbkFAmAYfaoOHG5laWxiQHN1
-c2UuZGUACgkQOeye3VZigblvpg/+IE41qHY0foFi44tqQ0fhmO7OSXRc+HhmgCeK
-4omT7d7cBXOe5bcjQIBrIJbBZmbxOr6LF2KUVXIjRT2BqMsqhqSUvgH9NrGZpvE9
-yhnm0U1ud+XHVJ4YZf2+iac/x04nUMeA15B78Zao177HFIqvktExisWFCcAZtsU9
-iQAplC422rKJtfPSdzcsDC7cNr698hROORnV9v/tkZiNFg99R1oVn2hXbgyJxL3z
-zpJZ04wllSdcQ27mjfQUuoZPMEbpFso5HI32K/R+WCJ29ZdlvdRGzHcMVAtGHIlD
-d+kkiDTb1Xz97Zyxzk9W1r10jM8x0lvijH3/lwCwoqxWLpPolhO3x8SvivNs6AGs
-7b5y4/VTjWhbGo26ydF1lUl3nDcNJZpH5ulGpfki61CfnkwbirGy0kPDuL9tkLIk
-K6bSETco4zbtQlf7LVLQ0gXMTVjiewJcGgKuKFO5Gqeq3cjelIcoD0MaXIkUQbWo
-PBYlj+lv4aKDPx+f0NlnnT2XPB98oYOx1MmJOTDiWoRy7xMgWb4aE18hCtspdqAK
-+DFjN+w8Ggm+WCU1+JShh4Bmf/IHZgilW6Kj77ibz+SZ5/xfPbdQKFVr/Maagkpb
-H3g7MxvjAb4Crzxghb93Iz1f5kyS9HcV2yEkOj/dsqJzDdRakRMg5JwdWyAGOMXy
-1kVz0As=
-=zjlQ
------END PGP SIGNATURE-----
---=-=-=--
