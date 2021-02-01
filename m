@@ -2,243 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9592630A226
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:44:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8AF30A11D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 06:15:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232097AbhBAGn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 01:43:59 -0500
-Received: from mga17.intel.com ([192.55.52.151]:9259 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231526AbhBAFZ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 00:25:57 -0500
-IronPort-SDR: DzZefccKcWrXFFmC66ErTBhmiJWeWVU88/bos6bNwcGzyr/fBjqgjYIkdU0QmlSOyeI7AH/qSe
- nC7+/tisKDGA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="160401859"
-X-IronPort-AV: E=Sophos;i="5.79,391,1602572400"; 
-   d="scan'208";a="160401859"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Jan 2021 21:17:42 -0800
-IronPort-SDR: NhN3vMlcPqT31j2OhPbsgj5o64KW5zgmlOvSh4w2SNNGWQ4NTvJNjOCuzSvx32+ICBVYHdJ+Xf
- Vt1V4YXTaB5g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,391,1602572400"; 
-   d="scan'208";a="390694343"
-Received: from clx-ap-likexu.sh.intel.com ([10.239.48.108])
-  by orsmga008.jf.intel.com with ESMTP; 31 Jan 2021 21:17:39 -0800
-From:   Like Xu <like.xu@linux.intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, ak@linux.intel.com,
-        wei.w.wang@intel.com, kan.liang@intel.com,
-        alex.shi@linux.alibaba.com, kvm@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v14 11/11] selftests: kvm/x86: add test for pmu msr MSR_IA32_PERF_CAPABILITIES
-Date:   Mon,  1 Feb 2021 13:10:39 +0800
-Message-Id: <20210201051039.255478-12-like.xu@linux.intel.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210201051039.255478-1-like.xu@linux.intel.com>
-References: <20210201051039.255478-1-like.xu@linux.intel.com>
+        id S229909AbhBAFOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 00:14:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229914AbhBAFM2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 00:12:28 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD59C06174A
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 21:11:48 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id a19so15171815qka.2
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 21:11:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=trNRKF7QOgSxeQPu6x/O8gmSAPcKdJAY3w7IjTKMviQ=;
+        b=VT+Fn+M5fDaUa7hzPwDAxBtqAIdSsPOx6PmsKw/YbQvIDJMZEqmYhV5oZb0sTNk8z7
+         OvqsQ7SlOl4H/GPWPnMOy1jCY/KmJc0mDTNpGJMMHeP/KHDTILPmE2nMd7YvWsqQNcBJ
+         elc9nFo33yT2NLSQ/j/JRwPiWbFcav6NkejzfOOcexbNiWnc87KebStbTa/3j2NnhN5V
+         wlxgfnmow5rR0323TKC/wxydmX6mVtcnWPssa4OffMzezA8nosVClKkBJgvAjrdyoP+f
+         zWMQ9JinY72VqfG/TC77HS3RUwrXsC+Q3xM7pn6aWwH1cpmJFH0AdxUzozKaNsoREPvK
+         HmHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=trNRKF7QOgSxeQPu6x/O8gmSAPcKdJAY3w7IjTKMviQ=;
+        b=mm/7bwm3cDbjKSkz7kgfgKBsyioj3EFglfMEICIxjHX1CAcwSIAZ7UGjmw6XyLKnJG
+         FN55EMAvyeEyQ5PF68fRH7J04THeTBnmuTg+VwoCB3ojfFtYbVn/63LX8l1PjvkDMbDT
+         UvMYoORZlntDxRucdZefFuiz4AFrNAk96kjTMK59fQz0FWaloNFKpKhf8VgIacwgMkH/
+         Yhyu0uJudxwBhiGz9a/YdrjKwBtjddo7YeQOFTctyFjyoAnGpH5YC5SCltmv3U9HCxKY
+         hnN1e4oOrbjZxErscbKDxgWBs/NeA+ej5q9kunFKjt/in/sqr/5tI1cFs7qx/EZM/6Km
+         46CA==
+X-Gm-Message-State: AOAM531yyJCnChUbN1m5tjXVeJX4J8EiT/xgTs0+ypAint8vWfy0HCGU
+        rDu4NCq3ed0u1ZmihtlGCus51WOHYYf6DxjPjNMYIw==
+X-Google-Smtp-Source: ABdhPJyswQ45iMOxwGnVC6PENPRcTaQ2sPFXnY1EMzdXGYKyxgIrmOkMZX8sknnF8kHc4a4njCE43xLCgSjPCMYJF/4=
+X-Received: by 2002:a37:b346:: with SMTP id c67mr84406qkf.212.1612156306853;
+ Sun, 31 Jan 2021 21:11:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210131151832.215931-1-kyletso@google.com> <20210131151832.215931-4-kyletso@google.com>
+ <950a9361-4cc8-5c01-8c3d-80d812fd663d@roeck-us.net>
+In-Reply-To: <950a9361-4cc8-5c01-8c3d-80d812fd663d@roeck-us.net>
+From:   Kyle Tso <kyletso@google.com>
+Date:   Mon, 1 Feb 2021 13:11:30 +0800
+Message-ID: <CAGZ6i=3uUnPNDd1SbcNWG85Rv+jZqJEdFQ6uW2=_WRrhrJaP6A@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] usb: typec: tcpm: Get Sink VDO from fwnode
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Hans de Goede <hdegoede@redhat.com>, robh+dt@kernel.org,
+        Badhri Jagan Sridharan <badhri@google.com>,
+        USB <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This test will check the effect of various CPUID settings on the
-MSR_IA32_PERF_CAPABILITIES MSR, check that whatever user space writes
-with KVM_SET_MSR is _not_ modified from the guest and can be retrieved
-with KVM_GET_MSR, and check that invalid LBR formats are rejected.
+On Mon, Feb 1, 2021 at 12:02 AM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On 1/31/21 7:18 AM, Kyle Tso wrote:
+> > Commit a079973f462a ("usb: typec: tcpm: Remove tcpc_config
+> > configuration mechanism") removed the tcpc_config which includes the
+> > Sink VDO and it is not yet added back with fwnode. Add it now.
+> >
+> > Signed-off-by: Kyle Tso <kyletso@google.com>
+> > ---
+> > Changes since v1:
+> > - updated the commit message
+> >
+> >  drivers/usb/typec/tcpm/tcpm.c | 12 ++++++++++++
+> >  1 file changed, 12 insertions(+)
+> >
+> > diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> > index 403a483645dd..84c8a52f8af1 100644
+> > --- a/drivers/usb/typec/tcpm/tcpm.c
+> > +++ b/drivers/usb/typec/tcpm/tcpm.c
+> > @@ -5677,6 +5677,18 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
+> >                       port->new_source_frs_current = frs_current;
+> >       }
+> >
+> > +     ret = fwnode_property_read_u32_array(fwnode, "sink-vdos", NULL, 0);
+>
+> fwnode_property_count_u32(), maybe ?
+>
+That's the same and looks like fwnode_property_count_u32 is better to read.
+I will revise it in the next version.
 
-Signed-off-by: Like Xu <like.xu@linux.intel.com>
----
- tools/testing/selftests/kvm/.gitignore        |   1 +
- tools/testing/selftests/kvm/Makefile          |   1 +
- .../selftests/kvm/x86_64/vmx_pmu_msrs_test.c  | 149 ++++++++++++++++++
- 3 files changed, 151 insertions(+)
- create mode 100644 tools/testing/selftests/kvm/x86_64/vmx_pmu_msrs_test.c
+> > +     if (ret <= 0 && ret != -EINVAL) {
+> > +             return -EINVAL;
+>
+> Why return any error except -EINVAL (including return values of 0) as -EINVAL,
+> and -EINVAL as no error ?
+>
+sink-vdos is not a mandatory property which means -EINVAL is acceptable.
 
-diff --git a/tools/testing/selftests/kvm/.gitignore b/tools/testing/selftests/kvm/.gitignore
-index ce8f4ad39684..28b71efe52a0 100644
---- a/tools/testing/selftests/kvm/.gitignore
-+++ b/tools/testing/selftests/kvm/.gitignore
-@@ -25,6 +25,7 @@
- /x86_64/vmx_set_nested_state_test
- /x86_64/vmx_tsc_adjust_test
- /x86_64/xss_msr_test
-+/x86_64/vmx_pmu_msrs_test
- /demand_paging_test
- /dirty_log_test
- /dirty_log_perf_test
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index fe41c6a0fa67..cf8737828dd4 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -59,6 +59,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/vmx_tsc_adjust_test
- TEST_GEN_PROGS_x86_64 += x86_64/xss_msr_test
- TEST_GEN_PROGS_x86_64 += x86_64/debug_regs
- TEST_GEN_PROGS_x86_64 += x86_64/tsc_msrs_test
-+TEST_GEN_PROGS_x86_64 += x86_64/vmx_pmu_msrs_test
- TEST_GEN_PROGS_x86_64 += demand_paging_test
- TEST_GEN_PROGS_x86_64 += dirty_log_test
- TEST_GEN_PROGS_x86_64 += dirty_log_perf_test
-diff --git a/tools/testing/selftests/kvm/x86_64/vmx_pmu_msrs_test.c b/tools/testing/selftests/kvm/x86_64/vmx_pmu_msrs_test.c
-new file mode 100644
-index 000000000000..b3ad63e6ff12
---- /dev/null
-+++ b/tools/testing/selftests/kvm/x86_64/vmx_pmu_msrs_test.c
-@@ -0,0 +1,149 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * VMX-pmu related msrs test
-+ *
-+ * Copyright (C) 2021 Intel Corporation
-+ *
-+ * Test to check the effect of various CPUID settings
-+ * on the MSR_IA32_PERF_CAPABILITIES MSR, and check that
-+ * whatever we write with KVM_SET_MSR is _not_ modified
-+ * in the guest and test it can be retrieved with KVM_GET_MSR.
-+ *
-+ * Test to check that invalid LBR formats are rejected.
-+ */
-+
-+#define _GNU_SOURCE /* for program_invocation_short_name */
-+#include <sys/ioctl.h>
-+
-+#include "kvm_util.h"
-+#include "vmx.h"
-+
-+#define VCPU_ID	      0
-+
-+#define X86_FEATURE_PDCM	(1<<15)
-+#define PMU_CAP_FW_WRITES	(1ULL << 13)
-+#define PMU_CAP_LBR_FMT		0x3f
-+
-+union cpuid10_eax {
-+	struct {
-+		unsigned int version_id:8;
-+		unsigned int num_counters:8;
-+		unsigned int bit_width:8;
-+		unsigned int mask_length:8;
-+	} split;
-+	unsigned int full;
-+};
-+
-+union perf_capabilities {
-+	struct {
-+		u64	lbr_format:6;
-+		u64	pebs_trap:1;
-+		u64	pebs_arch_reg:1;
-+		u64	pebs_format:4;
-+		u64	smm_freeze:1;
-+		u64	full_width_write:1;
-+		u64 pebs_baseline:1;
-+		u64	perf_metrics:1;
-+		u64	pebs_output_pt_available:1;
-+		u64	anythread_deprecated:1;
-+	};
-+	u64	capabilities;
-+};
-+
-+uint64_t rdmsr_on_cpu(uint32_t reg)
-+{
-+	uint64_t data;
-+	int fd;
-+	char msr_file[64];
-+
-+	sprintf(msr_file, "/dev/cpu/%d/msr", 0);
-+	fd = open(msr_file, O_RDONLY);
-+	if (fd < 0)
-+		exit(KSFT_SKIP);
-+
-+	if (pread(fd, &data, sizeof(data), reg) != sizeof(data))
-+		exit(KSFT_SKIP);
-+
-+	close(fd);
-+	return data;
-+}
-+
-+static void guest_code(void)
-+{
-+	wrmsr(MSR_IA32_PERF_CAPABILITIES, PMU_CAP_LBR_FMT);
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	struct kvm_cpuid2 *cpuid;
-+	struct kvm_cpuid_entry2 *entry_1_0;
-+	struct kvm_cpuid_entry2 *entry_a_0;
-+	bool pdcm_supported = false;
-+	struct kvm_vm *vm;
-+	int ret;
-+	union cpuid10_eax eax;
-+	union perf_capabilities host_cap;
-+
-+	host_cap.capabilities = rdmsr_on_cpu(MSR_IA32_PERF_CAPABILITIES);
-+	host_cap.capabilities &= (PMU_CAP_FW_WRITES | PMU_CAP_LBR_FMT);
-+
-+	/* Create VM */
-+	vm = vm_create_default(VCPU_ID, 0, guest_code);
-+	cpuid = kvm_get_supported_cpuid();
-+
-+	if (kvm_get_cpuid_max_basic() >= 0xa) {
-+		entry_1_0 = kvm_get_supported_cpuid_index(1, 0);
-+		entry_a_0 = kvm_get_supported_cpuid_index(0xa, 0);
-+		pdcm_supported = entry_1_0 && !!(entry_1_0->ecx & X86_FEATURE_PDCM);
-+		eax.full = entry_a_0->eax;
-+	}
-+	if (!pdcm_supported) {
-+		print_skip("MSR_IA32_PERF_CAPABILITIES is not supported by the vCPU");
-+		exit(KSFT_SKIP);
-+	}
-+	if (!eax.split.version_id) {
-+		print_skip("PMU is not supported by the vCPU");
-+		exit(KSFT_SKIP);
-+	}
-+
-+	/* testcase 1, set capabilities when we have PDCM bit */
-+	vcpu_set_cpuid(vm, VCPU_ID, cpuid);
-+	vcpu_set_msr(vm, 0, MSR_IA32_PERF_CAPABILITIES, PMU_CAP_FW_WRITES);
-+
-+	/* check capabilities can be retrieved with KVM_GET_MSR */
-+	ASSERT_EQ(vcpu_get_msr(vm, VCPU_ID, MSR_IA32_PERF_CAPABILITIES), PMU_CAP_FW_WRITES);
-+
-+	/* check whatever we write with KVM_SET_MSR is _not_ modified */
-+	vcpu_run(vm, VCPU_ID);
-+	ASSERT_EQ(vcpu_get_msr(vm, VCPU_ID, MSR_IA32_PERF_CAPABILITIES), PMU_CAP_FW_WRITES);
-+
-+	/* testcase 2, check valid LBR formats are accepted */
-+	vcpu_set_msr(vm, 0, MSR_IA32_PERF_CAPABILITIES, 0);
-+	ASSERT_EQ(vcpu_get_msr(vm, VCPU_ID, MSR_IA32_PERF_CAPABILITIES), 0);
-+
-+	vcpu_set_msr(vm, 0, MSR_IA32_PERF_CAPABILITIES, host_cap.lbr_format);
-+	ASSERT_EQ(vcpu_get_msr(vm, VCPU_ID, MSR_IA32_PERF_CAPABILITIES), (u64)host_cap.lbr_format);
-+
-+	/* testcase 3, check invalid LBR format is rejected */
-+	ret = _vcpu_set_msr(vm, 0, MSR_IA32_PERF_CAPABILITIES, PMU_CAP_LBR_FMT);
-+	TEST_ASSERT(ret == 0, "Bad PERF_CAPABILITIES didn't fail.");
-+
-+	/* testcase 4, set capabilities when we don't have PDCM bit */
-+	entry_1_0->ecx &= ~X86_FEATURE_PDCM;
-+	vcpu_set_cpuid(vm, VCPU_ID, cpuid);
-+	ret = _vcpu_set_msr(vm, 0, MSR_IA32_PERF_CAPABILITIES, host_cap.capabilities);
-+	TEST_ASSERT(ret == 0, "Bad PERF_CAPABILITIES didn't fail.");
-+
-+	/* testcase 5, set capabilities when we don't have PMU version bits */
-+	entry_1_0->ecx |= X86_FEATURE_PDCM;
-+	eax.split.version_id = 0;
-+	entry_1_0->ecx = eax.full;
-+	vcpu_set_cpuid(vm, VCPU_ID, cpuid);
-+	ret = _vcpu_set_msr(vm, 0, MSR_IA32_PERF_CAPABILITIES, PMU_CAP_FW_WRITES);
-+	TEST_ASSERT(ret == 0, "Bad PERF_CAPABILITIES didn't fail.");
-+
-+	vcpu_set_msr(vm, 0, MSR_IA32_PERF_CAPABILITIES, 0);
-+	ASSERT_EQ(vcpu_get_msr(vm, VCPU_ID, MSR_IA32_PERF_CAPABILITIES), 0);
-+
-+	kvm_vm_free(vm);
-+}
--- 
-2.29.2
+If the return < 0 and the value is not -EINVAL, it means that the
+error is other than "not present" in the device tree.
+If the return == 0, it means that the sink-vdos is present in the
+device tree but no value inside it.
+Both of the above situations are not acceptable.
 
+> > +     } else if (ret > 0) {
+> > +             port->nr_snk_vdo = min(ret, VDO_MAX_OBJECTS);
+> > +             ret = fwnode_property_read_u32_array(fwnode, "sink-vdos",
+> > +                                                  port->snk_vdo,
+> > +                                                  port->nr_snk_vdo);
+> > +             if (ret < 0)
+> > +                     return -EINVAL;
+>
+> static analyzer code used to complain about overriding error codes.
+> Not sure if that is still true. Either case, why not return the
+> original error ?
+>
+Returning the original error codes is good. I just followed the return
+value of other error handling in this function.
+will revise it in the next version.
+
+Thanks,
+Kyle
+
+
+
+> Thanks,
+> Guenter
+>
+> > +     }
+> > +
+> >       return 0;
+> >  }
+> >
+> >
+>
