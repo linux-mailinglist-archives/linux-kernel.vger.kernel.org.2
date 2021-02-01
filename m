@@ -2,283 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9FEC30B168
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 21:10:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 761F530B170
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 21:11:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232707AbhBAUJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 15:09:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233119AbhBAUIW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 15:08:22 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A649C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 12:07:42 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id g10so2087142eds.2
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 12:07:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xT/3mkH8sZ5OMfp1FrmkjDWgvg0SwuKeYxgJNZyLoDo=;
-        b=cRDm4sqbq+CB028UtpL9i+6peUdZrtOaLzh6zqA7cNyFKJe/OmDQqS0Jtlx4Cm4NQd
-         VqZi0wWcshldrmTo7yT2BYRHczjl8Nb8tjP06gcKRIyfpSntr97OLBU1Q6y3MQM2cFT4
-         zyrQBVbErTTFINDtfJXJsS3jfoAqcmB2tzEJs6z0QZ/Fq60b4nPRNVioQePXajIegxKb
-         Uj31QNlhF7HFi1dNGhOPekCCOR7LJxWpcJpNyP90Wdol1ZyRwNXKtRWzWQOpa+K54d/l
-         CW+29X0YJ9v/yyJPmT1S9mBTz2hFC4Rs6qI9W1SiMPFfSk9d7osvMi60cgkpMYbSLInF
-         Htrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xT/3mkH8sZ5OMfp1FrmkjDWgvg0SwuKeYxgJNZyLoDo=;
-        b=dLCe1uHPKDGAg1NwyEsAX4Mf1S/EMSMyK/pqjazaXrPLqspyM6AEso+yfzj+ZeQNHr
-         R5BBcVR4CNnjcX0Ew3h1LWA5F9MLz1hiIo61MGAvZtTso/9ClZZsXzOhY+KgdsQ+av2P
-         KdVo8QfsJYvKD9Ujl9yT7dlWE7/hchZB2+mo08w+OA26glXBn0zzgc+P4kzfBN2+RqoE
-         SEWhq0zL9f3ixoQ3GQnCclLBMOQXlWGqvku7J1CWl3u4eGwsZrTYkpI4lqM8vS5D4m+5
-         PXROtjcpKGhhUnrbfn6km7fOnDyEaxpr8dAwRv0oCvbsjLmCVODTUdnmWL8sllqQLn/S
-         ULSg==
-X-Gm-Message-State: AOAM533fJ9aJ42NF9hiFE/4lVXlW9GZe3xnLGTjJywQm4qBecoQcHuxt
-        OifjdcTKLWak4BnS4XsrQco=
-X-Google-Smtp-Source: ABdhPJxObczU54wNLvoKrAVCnifyU+i0VODlb6DbXR9M+yfM/5RAfMXmS8PR+HB8TWLOiz0X1vXxbg==
-X-Received: by 2002:aa7:d4c8:: with SMTP id t8mr21496147edr.199.1612210061322;
-        Mon, 01 Feb 2021 12:07:41 -0800 (PST)
-Received: from p4 (net-93-70-85-165.cust.vodafonedsl.it. [93.70.85.165])
-        by smtp.gmail.com with ESMTPSA id di28sm9128182edb.71.2021.02.01.12.07.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Feb 2021 12:07:40 -0800 (PST)
-Date:   Mon, 1 Feb 2021 20:07:37 +0000
-From:   Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org,
-        penberg@kernel.org, geert@linux-m68k.org,
-        linux-arm-kernel@lists.infradead.org, akpm@linux-foundation.org,
-        rppt@kernel.org, giancarlo.ferrari@nokia.com
-Subject: Re: [PATCH] ARM: kexec: Fix panic after TLB are invalidated
-Message-ID: <20210201200734.GC15399@p4>
-References: <1612140296-12546-1-git-send-email-giancarlo.ferrari89@gmail.com>
- <20210201124720.GA66060@C02TD0UTHF1T.local>
- <20210201130344.GF1463@shell.armlinux.org.uk>
- <20210201135714.GB66060@C02TD0UTHF1T.local>
- <20210201160838.GH1463@shell.armlinux.org.uk>
+        id S232988AbhBAUKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 15:10:30 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:36740 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232704AbhBAUKO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 15:10:14 -0500
+Received: from zn.tnic (p200300ec2f06fe00e55f3102cc5eb27e.dip0.t-ipconnect.de [IPv6:2003:ec:2f06:fe00:e55f:3102:cc5e:b27e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 71B651EC0323;
+        Mon,  1 Feb 2021 21:09:31 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1612210171;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=O13Y80dsRADNdOgEp6MuJ+UNlOPBi29Lc1Rx4caynmQ=;
+        b=mNfTRgrxKcOyWKsLoi+gmOn3CN46Myo9QNdMbrfHEm3pBElbXx4MdzC3pir8oqD3GIGnoQ
+        GbWgSXK6O6Z+Bo39vt096jJfZLOZKqFR5xUsomEpenFy0TTF6m7M7GzelW+ZXTN6q30eEe
+        m9x017vfhC3rvB/yN+ClaxTf/47ngRE=
+Date:   Mon, 1 Feb 2021 21:09:25 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Serge Belyshev <belyshev@depni.sinp.msu.ru>,
+        Dirk Gouders <dirk@gouders.net>,
+        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Miroslav Lichvar <mlichvar@redhat.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Prarit Bhargava <prarit@redhat.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH V2] rtc: mc146818: Dont test for bit 0-5 in Register D
+Message-ID: <20210201200925.GA20521@zn.tnic>
+References: <20201206220541.594826678@linutronix.de>
+ <19a7753c-c492-42e4-241a-8a052b32bb63@digikod.net>
+ <871re7hlsg.fsf@nanos.tec.linutronix.de>
+ <98cb59e8-ecb4-e29d-0b8f-73683ef2bee7@digikod.net>
+ <87y2gfg18p.fsf@nanos.tec.linutronix.de>
+ <87tur3fx7w.fsf@nanos.tec.linutronix.de>
+ <ghft2hwevu.fsf@gouders.net>
+ <877dnrc2sv.fsf@depni.sinp.msu.ru>
+ <8735yfd2q4.fsf@nanos.tec.linutronix.de>
+ <87zh0nbnha.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210201160838.GH1463@shell.armlinux.org.uk>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <87zh0nbnha.fsf@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Mon, Feb 01, 2021 at 04:08:38PM +0000, Russell King - ARM Linux admin wrote:
-> On Mon, Feb 01, 2021 at 01:57:14PM +0000, Mark Rutland wrote:
-> > We could simplify this slightly if we moved the kexec_& variables into a
-> > struct (using asm-offset KEXEC_VAR_* offsets and a KEXEC_VAR_SIZE region
-> > reserved in the asm), then here we could do something like:
-> > 
-> > static struct kexec_vars *kexec_buffer_vars(void *buffer)
-> > {
-> > 	unsigned long code = ((unisigned long)relocate_new_kernel) & ~1;
-> > 	unsigned long vars - (unsigned long)relocate_vars;
-> > 	unsigned long offset = vars - code;
-> > 
-> > 	return buffer + offset;
-> > }
-> > 
-> > ... and in machine_kexec() do:
-> > 
-> > 	struct kexec_vars *kv = kexec_buffer_vars(reboot_code_buffer);
-> > 
-> > 	kv->start_address = image->start;
-> > 	kv->indirection_page = page_list;
-> > 	kv->mach_type = machine-arch_type;
-> > 	kv->boot_atags = arch.kernel_r2;
-> > 
-> > ... if that looks any better to you?
+On Mon, Feb 01, 2021 at 08:24:17PM +0100, Thomas Gleixner wrote:
+> The recent change to validate the RTC turned out to be overly tight.
 > 
-> Something like this?
+> While it cures the problem on the reporters machine it breaks machines
+> with Intel chipsets which use bit 0-5 of the D register. So check only
+> for bit 6 being 0 which is the case on these Intel machines as well.
 > 
-> diff --git a/arch/arm/include/asm/kexec-internal.h b/arch/arm/include/asm/kexec-internal.h
-> new file mode 100644
-> index 000000000000..ecc2322db7aa
-> --- /dev/null
-> +++ b/arch/arm/include/asm/kexec-internal.h
-> @@ -0,0 +1,12 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef _ARM_KEXEC_INTERNAL_H
-> +#define _ARM_KEXEC_INTERNAL_H
-> +
-> +struct kexec_relocate_data {
-> +	unsigned long kexec_start_address;
-> +	unsigned long kexec_indirection_page;
-> +	unsigned long kexec_mach_type;
-> +	unsigned long kexec_r2;
-> +};
-> +
-> +#endif
-> diff --git a/arch/arm/kernel/asm-offsets.c b/arch/arm/kernel/asm-offsets.c
-> index a1570c8bab25..be8050b0c3df 100644
-> --- a/arch/arm/kernel/asm-offsets.c
-> +++ b/arch/arm/kernel/asm-offsets.c
-> @@ -12,6 +12,7 @@
->  #include <linux/mm.h>
->  #include <linux/dma-mapping.h>
->  #include <asm/cacheflush.h>
-> +#include <asm/kexec-internal.h>
->  #include <asm/glue-df.h>
->  #include <asm/glue-pf.h>
->  #include <asm/mach/arch.h>
-> @@ -170,5 +171,9 @@ int main(void)
->    DEFINE(MPU_RGN_PRBAR,	offsetof(struct mpu_rgn, prbar));
->    DEFINE(MPU_RGN_PRLAR,	offsetof(struct mpu_rgn, prlar));
->  #endif
-> +  DEFINE(KEXEC_START_ADDR,	offsetof(struct kexec_relocate_data, kexec_start_address));
-> +  DEFINE(KEXEC_INDIR_PAGE,	offsetof(struct kexec_relocate_data, kexec_indirection_page));
-> +  DEFINE(KEXEC_MACH_TYPE,	offsetof(struct kexec_relocate_data, kexec_mach_type));
-> +  DEFINE(KEXEC_R2,		offsetof(struct kexec_relocate_data, kexec_r2));
->    return 0; 
->  }
-> diff --git a/arch/arm/kernel/machine_kexec.c b/arch/arm/kernel/machine_kexec.c
-> index 5d84ad333f05..2b09dad7935e 100644
-> --- a/arch/arm/kernel/machine_kexec.c
-> +++ b/arch/arm/kernel/machine_kexec.c
-> @@ -13,6 +13,7 @@
->  #include <linux/of_fdt.h>
->  #include <asm/mmu_context.h>
->  #include <asm/cacheflush.h>
-> +#include <asm/kexec-internal.h>
->  #include <asm/fncpy.h>
->  #include <asm/mach-types.h>
->  #include <asm/smp_plat.h>
-> @@ -22,11 +23,6 @@
->  extern void relocate_new_kernel(void);
->  extern const unsigned int relocate_new_kernel_size;
->  
-> -extern unsigned long kexec_start_address;
-> -extern unsigned long kexec_indirection_page;
-> -extern unsigned long kexec_mach_type;
-> -extern unsigned long kexec_boot_atags;
-> -
->  static atomic_t waiting_for_crash_ipi;
->  
->  /*
-> @@ -159,6 +155,7 @@ void (*kexec_reinit)(void);
->  void machine_kexec(struct kimage *image)
->  {
->  	unsigned long page_list, reboot_entry_phys;
-> +	struct kexec_relocate_data *data;
->  	void (*reboot_entry)(void);
->  	void *reboot_code_buffer;
->  
-> @@ -174,18 +171,17 @@ void machine_kexec(struct kimage *image)
->  
->  	reboot_code_buffer = page_address(image->control_code_page);
->  
-> -	/* Prepare parameters for reboot_code_buffer*/
-> -	set_kernel_text_rw();
-> -	kexec_start_address = image->start;
-> -	kexec_indirection_page = page_list;
-> -	kexec_mach_type = machine_arch_type;
-> -	kexec_boot_atags = image->arch.kernel_r2;
-> -
->  	/* copy our kernel relocation code to the control code page */
->  	reboot_entry = fncpy(reboot_code_buffer,
->  			     &relocate_new_kernel,
->  			     relocate_new_kernel_size);
->  
-> +	data = reboot_code_buffer + relocate_new_kernel_size;
-> +	data->kexec_start_address = image->start;
-> +	data->kexec_indirection_page = page_list;
-> +	data->kexec_mach_type = machine_arch_type;
-> +	data->kexec_r2 = image->arch.kernel_r2;
-> +
->  	/* get the identity mapping physical address for the reboot code */
->  	reboot_entry_phys = virt_to_idmap(reboot_entry);
->  
-> diff --git a/arch/arm/kernel/relocate_kernel.S b/arch/arm/kernel/relocate_kernel.S
-> index 72a08786e16e..218d524360fc 100644
-> --- a/arch/arm/kernel/relocate_kernel.S
-> +++ b/arch/arm/kernel/relocate_kernel.S
-> @@ -5,14 +5,16 @@
->  
->  #include <linux/linkage.h>
->  #include <asm/assembler.h>
-> +#include <asm/asm-offsets.h>
->  #include <asm/kexec.h>
->  
->  	.align	3	/* not needed for this code, but keeps fncpy() happy */
->  
->  ENTRY(relocate_new_kernel)
->  
-> -	ldr	r0,kexec_indirection_page
-> -	ldr	r1,kexec_start_address
-> +	adr	r7, relocate_new_kernel_end
-> +	ldr	r0, [r7, #KEXEC_INDIR_PAGE]
-> +	ldr	r1, [r7, #KEXEC_START_ADDR]
->  
->  	/*
->  	 * If there is no indirection page (we are doing crashdumps)
-> @@ -57,34 +59,16 @@ ENTRY(relocate_new_kernel)
->  
->  2:
->  	/* Jump to relocated kernel */
-> -	mov lr,r1
-> -	mov r0,#0
-> -	ldr r1,kexec_mach_type
-> -	ldr r2,kexec_boot_atags
-> - ARM(	ret lr	)
-> - THUMB(	bx lr		)
-> -
-> -	.align
-> -
-> -	.globl kexec_start_address
-> -kexec_start_address:
-> -	.long	0x0
-> -
-> -	.globl kexec_indirection_page
-> -kexec_indirection_page:
-> -	.long	0x0
-> -
-> -	.globl kexec_mach_type
-> -kexec_mach_type:
-> -	.long	0x0
-> -
-> -	/* phy addr of the atags for the new kernel */
-> -	.globl kexec_boot_atags
-> -kexec_boot_atags:
-> -	.long	0x0
-> +	mov	lr, r1
-> +	mov	r0, #0
-> +	ldr	r1, [r7, #KEXEC_MACH_TYPE]
-> +	ldr	r2, [r7, #KEXEC_R2]
-> + ARM(	ret	lr	)
-> + THUMB(	bx	lr	)
->  
->  ENDPROC(relocate_new_kernel)
->  
-> +	.align	3
+> Fixes: 211e5db19d15 ("rtc: mc146818: Detect and handle broken RTCs")
+> Reported-by: Serge Belyshev <belyshev@depni.sinp.msu.ru>
+> Reported-by: Dirk Gouders <dirk@gouders.net>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> ---
+> V2: Provide the actual delta patch. Should have stayed away from
+>     computers today....
+> ---
+>  drivers/rtc/rtc-cmos.c         |    4 ++--
+>  drivers/rtc/rtc-mc146818-lib.c |    4 ++--
+>  2 files changed, 4 insertions(+), 4 deletions(-)
 
-Nice.
+FWIW:
 
-Why we should align 3 ? For the fncpy I suppose.
+Reported-by: Borislav Petkov <bp@suse.de>
+Tested-by: Borislav Petkov <bp@suse.de>
 
->  relocate_new_kernel_end:
->  
->  	.globl relocate_new_kernel_size
-> 
-> -- 
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Thx.
 
-I don't know now how to proceed now, as you (Mark and you) do completely
-the patch.
+-- 
+Regards/Gruss,
+    Boris.
 
-You see is my first kernel patch submission :) .
-
-Thanks,
-
-
-GF
+https://people.kernel.org/tglx/notes-about-netiquette
