@@ -2,79 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 631A830A5D0
+	by mail.lfdr.de (Postfix) with ESMTP id DEF1F30A5D1
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:53:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233285AbhBAKwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 05:52:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38536 "EHLO
+        id S233305AbhBAKxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 05:53:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233039AbhBAKwx (ORCPT
+        with ESMTP id S232981AbhBAKxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 05:52:53 -0500
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88851C061573;
-        Mon,  1 Feb 2021 02:52:13 -0800 (PST)
-Received: from pd956d63d.dip0.t-ipconnect.de ([217.86.214.61] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <postmaster@kaiser.cx>)
-        id 1l6WoQ-0000R3-N5; Mon, 01 Feb 2021 11:52:06 +0100
-Received: from martin by martin-debian-2.paytec.ch with local (Exim 4.92)
-        (envelope-from <martin@martin-debian-2.paytec.ch>)
-        id 1l6WoO-0002Q0-Nu; Mon, 01 Feb 2021 11:52:04 +0100
-Date:   Mon, 1 Feb 2021 11:52:04 +0100
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-tegra <linux-tegra@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Android Kernel Team <kernel-team@android.com>
-Subject: Re: [PATCH v2 0/2] of: property: Add fw_devlink support for more
- props
-Message-ID: <20210201105204.GA1467@martin-debian-1.paytec.ch>
-References: <20210121225712.1118239-1-saravanak@google.com>
- <20210131163823.c4zb47pl4tukcl7c@viti.kaiser.cx>
- <CAGETcx8A_+Y0sCLPdyeeT+rHOsAPsmg4LVn_ahF0NaD6hfRiZw@mail.gmail.com>
+        Mon, 1 Feb 2021 05:53:04 -0500
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810D9C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 02:52:24 -0800 (PST)
+Received: by mail-qv1-xf2d.google.com with SMTP id ew18so7880253qvb.4
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 02:52:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=xAxHW8t26AK/BvxfyN2E75faUDCs1xxbN801V4CktZ8=;
+        b=P1PU5TK3qnEy+bMxLHifbYddEVyElIPLkRtJFJt3ccBRzui30i2+Dzf2S4n9Adn3jR
+         3szoVBZxxiWlg/5fyuuIzFAgL/mqai/EJsoKj64gncsKfCa41TtrQVH26U7nr3MLfV2U
+         NqWurjB8xrrrBZUMqv/k+1v+6fUzI6DoHnMV3JisI47BqDLxGYrnMpFn3OaA9/0AVP0A
+         z/+nGhA/GQ/RYbfheFD4eizQffW+NQFtcNREnwDqF9K0xaQjL3lNQXp7Cprcalx6+64f
+         ySlNZMlM2avjFWRFdr9pPngSPMUSjzPRtlYbSQg+vehHM6SC3ivZPu4iArXJ3YwfNW2Q
+         H48g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=xAxHW8t26AK/BvxfyN2E75faUDCs1xxbN801V4CktZ8=;
+        b=rvaOezebSkO9ETwLPln2l/o5pMhP919Ppp0zAKPjLTTeUi+hCE3a51CUNJqsQflpGI
+         ziyqrUb76Iaa1jMVqb2hb2djyyacnPR6FpCh/zytyAXNscY7PygEtgCotThaRbkIjPa3
+         MUKa+qS+G20GOzke+G6JORCwZEndI+zI83+BaRfbFrRgu+7T38f9sysjmStY1zLiqRWG
+         HUyTEWaRfFBpkzRnoeMZVcSN2YpdM1bWnwlhu8ov0012D5cKFeD/3uxjbHhLvpOjPfC5
+         3Np9PQKaNFj243F4fK6L3D5+SbfBMmnMa8fQhnYWCPb1EAxH8VN09JXK9HX+L2HHK5qs
+         EQpg==
+X-Gm-Message-State: AOAM532v69Bz0UiuEBD7dQxPziXcg+qqGVH+osf/zfWZqgx7Gd3ZNQJs
+        1v7o4gd7Abwumx0XnrkGpFJyF9EivdywOR1HmWPTG5+xbtd1Mg==
+X-Google-Smtp-Source: ABdhPJx9ypusrvA6kDk9XNyTyN4tVOJSUte8hnpU0hyHCVdaQkt1fUKJatwlTXWldnkM/XU3rrvKYkFemUVn073uRTM=
+X-Received: by 2002:a0c:fd8e:: with SMTP id p14mr14829886qvr.37.1612176743345;
+ Mon, 01 Feb 2021 02:52:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGETcx8A_+Y0sCLPdyeeT+rHOsAPsmg4LVn_ahF0NaD6hfRiZw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: "Martin Kaiser,,," <martin@martin-debian-2.paytec.ch>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Mon, 1 Feb 2021 11:52:12 +0100
+Message-ID: <CACT4Y+YytChe9Tv5etacBL4snEDu+A2fNzF4zKiKtfmH0C0roQ@mail.gmail.com>
+Subject: syzbot reporting less duplicates
+To:     LKML <linux-kernel@vger.kernel.org>,
+        syzkaller <syzkaller@googlegroups.com>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
+Hi,
 
-Thus wrote Saravana Kannan (saravanak@google.com):
+FYI syzbot should report less duplicates now.
+A significant number of reported duplicates was one of common
+complaints. syzbot will now merge some slightly differently looking
+crashes together, for example, these 2 recently reported bugs will be
+merged into a single bug and reported once in future:
 
-> This series [1] has a high chance of fixing it for you if
-> CONFIG_MODULES is disabled in your set up. Can you give it a shot?
+KASAN: use-after-free Read in skb_segment
+KASAN: slab-out-of-bounds Read in skb_segment
 
-sure. This fixes things for me if CONFIG_MODULES is disabled. Booting is
-still stuck if modules are enabled.
+You can see an example here:
+https://syzkaller.appspot.com/bug?id=9936b32dd3a4a278f06a2cb07eb13df9e113ca84
+which contains crashes for both "BUG: unable to handle kernel paging
+request in cdev_del" and "general protection fault in cdev_del".
 
-> The real problem is that arch/arm/mach-imx/avic.c doesn't set the
-> OF_POPULATED flag for the "fsl,avic" node. fw_devlink uses this
-> information to know that this device node will never have a struct
-> device created for it. The proper way to do this for root IRQCHIP
-> nodes is to use IRQCHIP_DECLARE(). I Cc'ed you on a clean up patch for
-> IMX [2], can you please give [2] a shot *without* [1] and with
-> CONFIG_MODULES enabled? Things should boot properly with this
-> combination too.
+Hope you will find this useful.
 
-This works as well.
+If you are interested in heuristics details, grep for "alt:" here:
+https://github.com/google/syzkaller/blob/master/pkg/report/linux.go
+Crashes with the same alt title are merged together. In short,
+currently there is one cluster for "bad access in function foo" (GPF,
+fault, KASAN, KMSAN, corrupted list, etc); another cluster for passive
+hangs (task hung, task can't die); and another cluster for active
+stalls (rcu stall, cpu hang). These rules are based on analysis of all
+previously reported bugs and duplicates among them.
 
-Thanks,
-Martin
+Thanks
