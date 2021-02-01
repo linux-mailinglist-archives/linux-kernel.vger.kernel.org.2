@@ -2,158 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D023530A9EE
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:37:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBB3B30A9FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:40:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231253AbhBAOgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 09:36:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhBAOgD (ORCPT
+        id S231248AbhBAOi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 09:38:28 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2467 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230157AbhBAOhw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 09:36:03 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D291FC061786;
-        Mon,  1 Feb 2021 06:35:22 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id hs11so24719935ejc.1;
-        Mon, 01 Feb 2021 06:35:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=p0y1B4xpVR87SDn57GPRXm1SVNsp6DiLP4/759/Wuh8=;
-        b=K+gFxd8za+oG8OKw/uRdYOGMCOw2HY9GwIFkNWZ7xcPkEIZRMtze+PEmUIzexvr+6m
-         /lKxD9Mo8DvphlsBGkZfh0oGgg0Q5Cg/60ueM/shhQk4DYMhzwgxNvNFfUUlQReqjHf+
-         2xja190TvVsxgSJzxjyHZ7t8/HKxr48ucWiTO0PZw77E/l8lbirulVTLItKVcDy9RrXW
-         lf5MNpMo6cR04iBo+AlqwP14StlmS8dW3k5lMY1o+X8VC4TU86YZ2AZc1MwffEY9LsUQ
-         30jCI9H4J9TsUBfpO1zZZLOIeitQ7xEvFEKDUKM+NjzBhqVYa1uqPgDlbTQKNq9ldYAS
-         fLBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=p0y1B4xpVR87SDn57GPRXm1SVNsp6DiLP4/759/Wuh8=;
-        b=KFDo76rwd13kQ8ZHnQ5SrppE445s1CU947hlWd7QBMmZ0T86s073+ewTpLYtQYCTTc
-         lejJVd/QRpXQic4GXsSyaE6nchWJ8LnFFAvVwnlpWRvVLM4/QZWHKh0oAE49gELhztRm
-         PvTI9B54zjBaczTpWaEikdQINdBuNEVJM270GzkCtGWfqazzA9UBmJ7AUS/JPRmfeED4
-         rwK2YXXOuq3i+TQ358ptwiCPwVAfeNAYeLVpSgXp/xFNzJ99fp44Gv7aprLwPzJbJWll
-         /fomcckvF3uHfDgqytl5AEpugTDH1Z9fITVfD7HUh9xsNw+rQnCpOAmCRhM++2MOienI
-         JBmg==
-X-Gm-Message-State: AOAM532D9VV678Xy59u6xPZr3ibr3W9HHFV1knjm/hSF+D0xB86aXhKc
-        ZMIHBLL6f8bswsQfs7uap0YDuIJ0AJju4EHWXfc=
-X-Google-Smtp-Source: ABdhPJz0GTo2K7lAckez4yf/9SVspRZvlzqmrFBGfIp8PVdkBK8K6gn43IXHJGLCsvCKCe6raQcylQ==
-X-Received: by 2002:a17:906:2e85:: with SMTP id o5mr6995806eji.238.1612190121269;
-        Mon, 01 Feb 2021 06:35:21 -0800 (PST)
-Received: from [10.8.0.2] (terefe.re. [5.255.96.200])
-        by smtp.gmail.com with ESMTPSA id du6sm6377449ejc.78.2021.02.01.06.35.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 06:35:20 -0800 (PST)
-Subject: Re: [PATCH mvebu v2 00/10] Armada 37xx: Fix cpufreq changing base CPU
- speed to 800 MHz from 1000 MHz
-To:     =?UTF-8?Q?Pali_Roh=c3=a1r?= <pali@kernel.org>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org
-Cc:     =?UTF-8?Q?Marek_Beh=c3=ban?= <kabel@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Andre Heider <a.heider@gmail.com>,
-        Vladimir Vid <vladimir.vid@sartura.hr>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        =?UTF-8?Q?G=c3=a9rald_Kerma?= <gerald@gk2.net>,
-        Konstantin Porotchkin <kostap@marvell.com>
-References: <20210114124032.12765-1-pali@kernel.org>
-From:   Tomasz Maciej Nowak <tmn505@gmail.com>
-Message-ID: <0d5518be-9b22-a714-f5f0-72aadc2eebf5@gmail.com>
-Date:   Mon, 1 Feb 2021 15:35:18 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        Mon, 1 Feb 2021 09:37:52 -0500
+Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DTr6H1fwSz67jty;
+        Mon,  1 Feb 2021 22:33:43 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Mon, 1 Feb 2021 15:37:10 +0100
+Received: from localhost (10.47.76.76) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2106.2; Mon, 1 Feb 2021
+ 14:37:09 +0000
+Date:   Mon, 1 Feb 2021 14:36:25 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Cristian Marussi <cristian.marussi@arm.com>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Jyoti Bhayana <jbhayana@google.com>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        "Peter Meerwald-Stadler" <pmeerw@pmeerw.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        "Rob Herring" <robh@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <sudeep.holla@arm.com>, <egranata@google.com>,
+        <mikhail.golubev@opensynergy.com>, <Igor.Skalkin@opensynergy.com>,
+        <Peter.hilber@opensynergy.com>, <ankitarora@google.com>
+Subject: Re: [RFC PATCH v4 1/1] iio/scmi: Adding support for IIO SCMI Based
+ Sensors
+Message-ID: <20210201143625.00005ba1@Huawei.com>
+In-Reply-To: <20210131204220.GB8355@e120937-lin>
+References: <20210129221818.3540620-1-jbhayana@google.com>
+        <20210129221818.3540620-2-jbhayana@google.com>
+        <20210131131141.468f1cc2@archlinux>
+        <20210131204220.GB8355@e120937-lin>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <20210114124032.12765-1-pali@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.76.76]
+X-ClientProxiedBy: lhreml703-chm.china.huawei.com (10.201.108.52) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-W dniu 14.01.2021 o 13:40, Pali Rohár pisze:
-> Hello!
-> 
-> The armada-37xx-cpufreq driver changes base CPU speed from 1000 MHz to
-> 800 MHz on EspressoBIN and Turris MOX. The commit message in patch 2/10
-> explains why and how can this be discovered.
-> 
-> That patch 2/10 led us to discover another bug, in the SOC itself,
-> that causes the CPU to behave weirdly when frequency changes to 1 GHz.
-> A similar erratum is documented by Marvell but only for systems where
-> base frequency is 1.2 GHz.
-> 
-> We've discovered that to make cpufreq scaling stable on Armada 3720
-> systems with base frequency 1 GHz, we also have to set voltage levels
-> for L0 and L1 loads to at least 1108 mV. We were led to this by patch we
-> found in Marvell kernel fork. Fix is in the patch 4/10.
-> 
-> https://github.com/MarvellEmbeddedProcessors/linux-marvell/commit/dc33b62c90696afb6adc7dbcc4ebbd48bedec269
-> 
-> During fixing this voltage issue for 1 GHz we discovered another bug in
-> armada-37xx-cpufreq driver that causes CPU instability. Erratum for VDD
-> stabilization was improperly implemented, details are in patch 6/10.
-> 
-> This patch series is also available in my git tree in branch a3720-cpufreq-issues:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/pali/linux.git/log/?h=a3720-cpufreq-issues
-> 
-> We have tested this patch series on Espressobin v5 and Turris MOX
-> boards. If you have other Armada 3720 boards (Espressobin v5/v7, uDPU,
-> Devel Board, ...) then it will be nice to do an additional tests and
-> check if instability issues are finally fixed.
-> 
-> There is a discussion on armbian forum that Espressobin v7 is unstable
-> when running at 1 GHz and in this thread was also mentioned above
-> voltage patch from Marvell kernel fork:
-> 
-> https://forum.armbian.com/topic/10429-how-to-make-espressobin-v7-stable/
-> 
-> Marek & Pali
-> 
-> 
-> Marek Behún (3):
->   arm64: dts: marvell: armada-37xx: add syscon compatible to NB clk node
->   cpufreq: armada-37xx: Fix setting TBG parent for load levels
->   clk: mvebu: armada-37xx-periph: remove .set_parent method for CPU PM
->     clock
-> 
-> Pali Rohár (7):
->   cpufreq: armada-37xx: Fix the AVS value for loads L0 and L1
->   clk: mvebu: armada-37xx-periph: Fix switching CPU freq from 250 Mhz to
->     1 GHz
->   clk: mvebu: armada-37xx-periph: Fix workaround for switching from L1
->     to L0
->   cpufreq: armada-37xx: Fix driver cleanup when registration failed
->   cpufreq: armada-37xx: Fix determining base CPU frequency
->   cpufreq: armada-37xx: Remove cur_frequency variable
->   cpufreq: armada-37xx: Fix module unloading
+On Sun, 31 Jan 2021 20:42:20 +0000
+Cristian Marussi <cristian.marussi@arm.com> wrote:
 
-Hi.
-After running this series for three days, the system is stable and the 
-issue with switching frequency doesn't seem to be there anymore. So:
+> Hi
+> 
+> a clarification down below regarding something I pointed out in the
+> other thread (just to be sure I have not pointed out something
+> plain wrong :D)
+> 
+> Thanks
+> 
+> Cristian
+> 
+> On Sun, Jan 31, 2021 at 01:11:41PM +0000, Jonathan Cameron wrote:
+> > On Fri, 29 Jan 2021 22:18:18 +0000
+> > Jyoti Bhayana <jbhayana@google.com> wrote:
+> >   
+> > > This change provides ARM SCMI Protocol based IIO device.
+> > > This driver provides support for Accelerometer and Gyroscope using
+> > > SCMI Sensor Protocol extensions added in the SCMIv3.0 ARM specification
+> > > 
+> > > Signed-off-by: Jyoti Bhayana <jbhayana@google.com>  
+> > 
+> > A few minor things noticed on a fresh read through, but mostly I think
+> > we are down to figuring out how to deal with the range (as discussed
+> > in the thread continuing on v3).
+> > 
+> > On another note, probably time to drop the RFC or give a bit more detail
+> > on why you think this isn't ready to be applied.
+> > 
+> > Thanks,
+> > 
+> > Jonathan
+> >   
+> [snip]
+> 
+> > > +
+> > > +static int scmi_iio_dev_probe(struct scmi_device *sdev)
+> > > +{
+> > > +	const struct scmi_sensor_info *sensor_info;
+> > > +	struct scmi_handle *handle = sdev->handle;
+> > > +	struct device *dev = &sdev->dev;
+> > > +	struct iio_dev *scmi_iio_dev;
+> > > +	u16 nr_sensors;
+> > > +	int err, i;
+> > > +
+> > > +	if (!handle || !handle->sensor_ops) {
+> > > +		dev_err(dev, "SCMI device has no sensor interface\n");  
+> > I'm going to guess we can't actually get here because the registration
+> > would't have happened if either of those are true?
+> > If so perhaps drop the error message.
+> >   
+> > > +		return -EINVAL;
+> > > +	}
+> > > +
+> > > +	nr_sensors = handle->sensor_ops->count_get(handle);
+> > > +	if (!nr_sensors) {
+> > > +		dev_dbg(dev, "0 sensors found via SCMI bus\n");  
+> > -ENODEV maybe?  
+> > > +		return -EINVAL;
+> > > +	}
+> > > +
+> > > +	dev_dbg(dev, "%d sensors found via SCMI bus\n", nr_sensors);  
+> > 
+> > Clear out any debug prints out that don't provide info that can't be obtained
+> > farily easily from elsewhere.  In this case they will either be registered
+> > or not and we'll get error messages.
+> > These sort of prints bitrot over time so we want to limit them to the truely
+> > useful.
+> >   
+> > > +
+> > > +	for (i = 0; i < nr_sensors; i++) {
+> > > +		sensor_info = handle->sensor_ops->info_get(handle, i);
+> > > +		if (!sensor_info) {
+> > > +			dev_err(dev, "SCMI sensor %d has missing info\n", i);
+> > > +			return -EINVAL;
+> > > +		}
+> > > +
+> > > +		/* Skipping scalar sensor,as this driver only supports accel and gyro */
+> > > +		if (sensor_info->num_axis == 0)
+> > > +			continue;  
+> > 
+> > So there is a situation where this driver never creates anything?  In that path I'd
+> > like to see an -ENODEV error return.
+> >   
+> You mean -ENODEV only if this driver does not find at least one
+> good/supported GYRO/ACCEL sensor right ?
 
-Tested-by: Tomasz Maciej Nowak <tmn505@gmail.com>
-
-Thanks.
+Exactly.
 
 > 
->  arch/arm64/boot/dts/marvell/armada-37xx.dtsi |   3 +-
->  drivers/clk/mvebu/armada-37xx-periph.c       |  83 ++++++++-------
->  drivers/cpufreq/armada-37xx-cpufreq.c        | 100 ++++++++++++++-----
->  3 files changed, 124 insertions(+), 62 deletions(-)
+> I would expect a system to possibly expose a bunch of other SCMI sensors
+> maybe unsupported by this IIO driver but currently handled by other
+> drivers, as an example on JUNO a number of temps/volts/currents sensors
+> are exposed and handled by the SCMI hwmon driver.
 > 
+> 
+> > > +
+> > > +		err = scmi_alloc_iiodev(dev, handle, sensor_info,
+> > > +					&scmi_iio_dev);
+> > > +		if (err < 0) {
+> > > +			dev_err(dev,
+> > > +				"failed to allocate IIO device for sensor %s: %d\n",
+> > > +				sensor_info->name, err);
+> > > +			return err;
+> > > +		}
+> > > +
+> > > +		err = scmi_iio_buffers_setup(scmi_iio_dev);
+> > > +		if (err < 0) {
+> > > +			dev_err(dev,
+> > > +				"IIO buffer setup error at sensor %s: %d\n",
+> > > +				sensor_info->name, err);
+> > > +			return err;
+> > > +		}
+> > > +
+> > > +		err = devm_iio_device_register(dev, scmi_iio_dev);
+> > > +		if (err) {
+> > > +			dev_err(dev,
+> > > +				"IIO device registration failed at sensor %s: %d\n",
+> > > +				sensor_info->name, err);
+> > > +			return err;
+> > > +		}
+> > > +	}
+> > > +	return err;
+> > > +}
+> > > +
+> > > +static const struct scmi_device_id scmi_id_table[] = {
+> > > +	{ SCMI_PROTOCOL_SENSOR, "iiodev" },  
+> > 
+> > I'm curious on this.  What actually causes a match on that
+> > iiodev?  From digging around the scmi core am I right in thinking
+> > that this iiodev id needs to be explicitly listed?
+> > 
+> > It would be good to include any changes needed there in this
+> > series.
+> >   
+> > > +	{},
+> > > +};
+> > > +
+> > > +MODULE_DEVICE_TABLE(scmi, scmi_id_table);
+> > > +
+> > > +static struct scmi_driver scmi_iiodev_driver = {
+> > > +	.name = "scmi-sensor-iiodev",
+> > > +	.probe = scmi_iio_dev_probe,
+> > > +	.id_table = scmi_id_table,
+> > > +};
+> > > +
+> > > +module_scmi_driver(scmi_iiodev_driver);
+> > > +
+> > > +MODULE_AUTHOR("Jyoti Bhayana <jbhayana@google.com>");
+> > > +MODULE_DESCRIPTION("SCMI IIO Driver");
+> > > +MODULE_LICENSE("GPL v2");  
+> >   
 
-
--- 
-TMN
