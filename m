@@ -2,141 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5A230B266
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:57:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCA6D30B25E
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:55:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbhBAV5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 16:57:12 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:35158 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229739AbhBAV5H (ORCPT
+        id S229683AbhBAVzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 16:55:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44655 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229483AbhBAVzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 16:57:07 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 111Lhe1d010539;
-        Mon, 1 Feb 2021 21:55:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=nrB0BDQrm9Y7qegX3IoXuQO4TNIMzndqSgItjadNh+c=;
- b=LcH1DSJtRqbrjo4Y2Y0I/htfoTE6yTk17JFWwpFmNgC9EvLS5Ai4ugNKEgr8KdR9Jmzc
- BwgeY6qAJlOP8SBzQqU0ustwoC4k5tX8MuwWL2+/d3WpIT4qBef/+UCSyDP4LZ4eJBkE
- 2r1J8J1Tf1vuziwGkHvH9rLiUirCJ712DO6SGBLjfCu1NkyK+8a0yL9Hd97Q1uoaPOre
- REyPbe5t3ecsswYoNvnUYp3UTQoQ2cZ+8fhR73r1zh7TLhZRW/L/fnKJus9g2KBGt1+0
- PR6MymW9wCx+EDXAIZtaURoWlZfMZhvW1KeMYmDlcMdXeCffdcPLIJI5F1XWVkzfLd+Y PQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 36cvyar077-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 01 Feb 2021 21:55:28 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 111LitZs036311;
-        Mon, 1 Feb 2021 21:53:27 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 36dhbx8ya9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 01 Feb 2021 21:53:27 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 111LrH19001686;
-        Mon, 1 Feb 2021 21:53:17 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 01 Feb 2021 13:53:17 -0800
-Subject: Re: [PATCH v4 1/9] hugetlb: Pass vma into huge_pte_alloc()
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Steven Price <steven.price@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, Adam Ruprecht <ruprecht@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Oliver Upton <oupton@google.com>
-References: <20210128224819.2651899-2-axelrasmussen@google.com>
- <20210128234242.2677079-1-axelrasmussen@google.com>
- <67fc15f3-3182-206b-451b-1622f6657092@oracle.com>
-Message-ID: <f1afa616-c4f5-daaa-6865-8bbc3c93b71a@oracle.com>
-Date:   Mon, 1 Feb 2021 13:53:14 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        Mon, 1 Feb 2021 16:55:43 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612216456;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=k1y8GmyBWVCl6Pbg+0+AjclhMsvzhPPIsTiKTMZg/W8=;
+        b=TlCl3jwLi0cHEMhszOqJjXaPIaW3BA2VtJTEz5zMCOfcJZybB+GfkIRmv+pVTvs5uWX9ue
+        tIGS5LG1nfifbQA7iGXwUZd+003znXWAvVLj8BxgT6FPc2CwO4K5rIf1enDSgaY8DWGg/+
+        bXxndcv1JRq5wWrZJSPUB4Azkl3DCsw=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-115-Dr5Rgz2hO-iCrKXlAUNOPw-1; Mon, 01 Feb 2021 16:54:12 -0500
+X-MC-Unique: Dr5Rgz2hO-iCrKXlAUNOPw-1
+Received: by mail-qt1-f198.google.com with SMTP id r18so11653089qta.19
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 13:54:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
+         :in-reply-to:references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=k1y8GmyBWVCl6Pbg+0+AjclhMsvzhPPIsTiKTMZg/W8=;
+        b=B3CfTvHZp9Lb87V2p6EMQMHhf1XGPt9oZxOUR9k8k92aXvnX3USAuWiIaynTrRtkOd
+         yNo+hbuEd14M1LZ8Ch8S8zFEDKa8l14cN/xxLjXXMbb73vWpDI+efz9kO/ndoUdH6tZg
+         vR4olSJ8oBYewDbMLoGHzMwtuYDx90W8L9fj/zdVUCJM4QC0tSu4k36cAEBHMriG/IXe
+         8Tlgswcfb0JjdjZrmJvSpmQEWEFl8rwaRxcw4wI/qjVduXR51U6kV/dyCYsaH8woCbrT
+         DGHVGKeAtktx9mRXgyVonBc92ah/s4MaQlew+CQmG8QOtsMHx3Cdz17R0u4MckffuhoJ
+         k4Fw==
+X-Gm-Message-State: AOAM531fXf2gazlAho2JzCvBu6vByX2qTWOXqbUDATYVn5y5+uJvaUiX
+        IeKrIzrl0/l95vvWeZyj9PM/2tdCp4BlZCnBelThHiONzUQ2NE77uecAgI4t91UIC0Ok043ZexL
+        Oh1s6eK4PFFKkvshiTmFcUfdN
+X-Received: by 2002:ac8:7c82:: with SMTP id y2mr17011501qtv.67.1612216452074;
+        Mon, 01 Feb 2021 13:54:12 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw5ooeTglnEBcbFwXF8LDaJXBhwXBklXKKqPeeM2J3NXPjrz+y63QFGy+CKyScLNX3h+7tlpQ==
+X-Received: by 2002:ac8:7c82:: with SMTP id y2mr17011488qtv.67.1612216451917;
+        Mon, 01 Feb 2021 13:54:11 -0800 (PST)
+Received: from Whitewolf.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id b13sm12085730qtj.97.2021.02.01.13.54.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 13:54:11 -0800 (PST)
+Message-ID: <4266568da0437ea605bfb2810ead2b05475bfbb8.camel@redhat.com>
+Subject: Re: [PATCH 08/29] dma-buf: Avoid comma separated statements
+From:   Lyude Paul <lyude@redhat.com>
+Reply-To: lyude@redhat.com
+To:     Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Joe Perches <joe@perches.com>,
+        Jiri Kosina <trivial@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org
+Date:   Mon, 01 Feb 2021 16:54:10 -0500
+In-Reply-To: <4d5891b7-ea87-974e-d260-f78c3af326bc@amd.com>
+References: <cover.1598331148.git.joe@perches.com>
+         <990bf6f33ccaf73ad56eb4bea8bd2c0db5e90a31.1598331148.git.joe@perches.com>
+         <a87b95d11c22d997ebc423bba71cabef15ca0bac.camel@perches.com>
+         <4d5891b7-ea87-974e-d260-f78c3af326bc@amd.com>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <67fc15f3-3182-206b-451b-1622f6657092@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9882 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0 suspectscore=0
- spamscore=0 mlxscore=0 malwarescore=0 mlxlogscore=999 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102010118
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9882 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 impostorscore=0
- mlxscore=0 spamscore=0 bulkscore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102010118
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/1/21 1:38 PM, Mike Kravetz wrote:
-> On 1/28/21 3:42 PM, Axel Rasmussen wrote:
->> From: Peter Xu <peterx@redhat.com>
->>
->> It is a preparation work to be able to behave differently in the per
->> architecture huge_pte_alloc() according to different VMA attributes.
->>
->> Signed-off-by: Peter Xu <peterx@redhat.com>
->> [axelrasmussen@google.com: fixed typo in arch/mips/mm/hugetlbpage.c]
->> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
->> ---
->>  arch/arm64/mm/hugetlbpage.c   | 2 +-
->>  arch/ia64/mm/hugetlbpage.c    | 3 ++-
->>  arch/mips/mm/hugetlbpage.c    | 4 ++--
->>  arch/parisc/mm/hugetlbpage.c  | 2 +-
->>  arch/powerpc/mm/hugetlbpage.c | 3 ++-
->>  arch/s390/mm/hugetlbpage.c    | 2 +-
->>  arch/sh/mm/hugetlbpage.c      | 2 +-
->>  arch/sparc/mm/hugetlbpage.c   | 2 +-
->>  include/linux/hugetlb.h       | 2 +-
->>  mm/hugetlb.c                  | 6 +++---
->>  mm/userfaultfd.c              | 2 +-
->>  11 files changed, 16 insertions(+), 14 deletions(-)
-> 
-> Sorry for the delay in reviewing.
-> 
-> huge_pmd_share() will do a find_vma() to get the vma.  So, it would be
-> 'possible' to not add an extra argument to huge_pmd_alloc() and simply
-> do the uffd_disable_huge_pmd_share() check inside vma_shareable.  This
-> would reduce the amount of modified code, but would not be as efficient.
-> I prefer passing the vma argument as is done here.
-> 
-> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+This is entirely unrelated to this thread, but I noticed when going through dri-
+devel that this email is somehow dated two days in the future from now.
 
-
-Another thought.
-
-We should pass the vma to huge_pmd_share to avoid the find_vma.
+On Wed, 2021-02-03 at 14:26 +0100, Christian König wrote:
+> Am 30.01.21 um 19:47 schrieb Joe Perches:
+> > On Mon, 2020-08-24 at 21:56 -0700, Joe Perches wrote:
+> > > Use semicolons and braces.
+> > Ping?
+> >   
+> > > Signed-off-by: Joe Perches <joe@perches.com>
+> 
+> Reviewed-by: Christian König <christian.koenig@amd.com>
+> 
+> Do you have commit rights to drm-misc-next?
+> 
+> > > ---
+> > >   drivers/dma-buf/st-dma-fence.c | 7 +++++--
+> > >   1 file changed, 5 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/dma-buf/st-dma-fence.c b/drivers/dma-buf/st-dma-
+> > > fence.c
+> > > index e593064341c8..c8a12d7ad71a 100644
+> > > --- a/drivers/dma-buf/st-dma-fence.c
+> > > +++ b/drivers/dma-buf/st-dma-fence.c
+> > > @@ -471,8 +471,11 @@ static int thread_signal_callback(void *arg)
+> > >                         dma_fence_signal(f1);
+> > >   
+> > > 
+> > >                 smp_store_mb(cb.seen, false);
+> > > -               if (!f2 || dma_fence_add_callback(f2, &cb.cb,
+> > > simple_callback))
+> > > -                       miss++, cb.seen = true;
+> > > +               if (!f2 ||
+> > > +                   dma_fence_add_callback(f2, &cb.cb, simple_callback)) {
+> > > +                       miss++;
+> > > +                       cb.seen = true;
+> > > +               }
+> > >   
+> > > 
+> > >                 if (!t->before)
+> > >                         dma_fence_signal(f1);
+> > 
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
 -- 
-Mike Kravetz
+Sincerely,
+   Lyude Paul (she/her)
+   Software Engineer at Red Hat
+   
+Note: I deal with a lot of emails and have a lot of bugs on my plate. If you've
+asked me a question, are waiting for a review/merge on a patch, etc. and I
+haven't responded in a while, please feel free to send me another email to check
+on my status. I don't bite!
+
