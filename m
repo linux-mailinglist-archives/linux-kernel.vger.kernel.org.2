@@ -2,116 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67E6F30A1BD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:00:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7FB630A1DD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:13:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231854AbhBAF7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 00:59:09 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:24054 "EHLO so15.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231758AbhBAFza (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 00:55:30 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612158862; h=Message-ID: Subject: Cc: To: From: Date:
- Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
- bh=Jh17zm3LJ/fkvFZiP2D/oYzmhX3zrbE4xBRWshtxx68=; b=WV2miaCUy7lwuu33Z3UqYwYk0o6BxalwjfCDivZacSAU6zO+qWi/r64cn8XQLzwLzy8HCYgo
- ZPv24hCECxKBsXaxkfirnt4TEISv6smk1AkeUJvJ7dtEHYvOEH+H2gc4KIwmixO9nh7kHvQy
- Dpv4dW6vZ8layPdL7XKhZDzobIc=
-X-Mailgun-Sending-Ip: 198.61.254.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 6017976aab96aecb9f17f3fe (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 01 Feb 2021 05:53:46
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 75039C43462; Mon,  1 Feb 2021 05:53:46 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A7E24C433CA;
-        Mon,  1 Feb 2021 05:53:45 +0000 (UTC)
+        id S231609AbhBAGFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 01:05:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231742AbhBAFzr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 00:55:47 -0500
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C963C061573
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 21:54:37 -0800 (PST)
+Received: by mail-io1-xd29.google.com with SMTP id q7so2217843iob.0
+        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 21:54:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yE9K9haDCJkujJfpiYMh3J0DehWAaLemXdkg4MY47Ac=;
+        b=mPaxIlsIbgZnY/tVj3f9/oTEEP56Gg4rY5MpP3Nuq2v8tvJlXTifMfX3FrWevEXmWy
+         wqBLPtJyjmz3CmKhJsDGUyfM2xfV4/GrizPfdgw3jkMshlzcok2brthQOxUJViWf9VgQ
+         /eQUf4uJrB1lJbQxL27/9qTIfcbPCKRucodfI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yE9K9haDCJkujJfpiYMh3J0DehWAaLemXdkg4MY47Ac=;
+        b=U60HABuxphfKH+eS6UkwGFRekMurGt5Leg7TQiJbI/JtNktyiYY/2Z7K7Rrz6+SdwO
+         aR7pP2X8zDIvZWjdDzeqXpLDtu8MY+LLnh++XXKO6q7gV5Ei3x+Hodk+CckcnGazfHcC
+         oav3Eti2urYIkcZg008BmOWFS4Fhp4UTfczGFdld+9Azioi2XmgtEdkfGJP9w4J5nozt
+         oAu4MkrVyd4JeBAKBYwyjjTZ6U+t56UHY8OF88QU5eCaoT6Tpl+Lj2gO2iRjPYFI/0o4
+         cGGbFhNWh0MI6IDRxQpm0v9JGB3p2Cvin3gLGBNeOo/aqaLoEy6pjYOxQw8cNeDDI42+
+         34jA==
+X-Gm-Message-State: AOAM530ppfFjZaBGcJQN84cdm48FVNTBAWstpZtgUL15P1W0qT9cgf/h
+        ugbW5MtSVOd+sHFi/2s1kedt1KzTrjJOsxrmgp59kA==
+X-Google-Smtp-Source: ABdhPJwbilNZuRAaOmpbOQ8lESG2o9x3QeCxZJsZsuAW3kkhwmlLpUANeswwfrRMQJmsNTF8X1lbaUiq8aHnTwORyJk=
+X-Received: by 2002:a05:6638:619:: with SMTP id g25mr12990902jar.43.1612158876472;
+ Sun, 31 Jan 2021 21:54:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 01 Feb 2021 11:23:45 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     "Jorge Ramirez-Ortiz, Foundries" <jorge@foundries.io>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org,
-        Jorge Ramirez-Ortiz <jorge.ramirez-ortiz@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] watchdog: qcom: Remove incorrect usage of
- QCOM_WDT_ENABLE_IRQ
-Message-ID: <7e30acdb750c44d30d5903e0d2afa641@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210201054542.1470695-1-Bilal.Wasim@imgtec.com> <20210201054542.1470695-2-Bilal.Wasim@imgtec.com>
+In-Reply-To: <20210201054542.1470695-2-Bilal.Wasim@imgtec.com>
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+Date:   Mon, 1 Feb 2021 13:54:10 +0800
+Message-ID: <CAJMQK-hYsM=a747UvW91Pbb0XPsqov-O5dUqawrGozYk1Q7Wrw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] soc: mediatek: pm-domains: Use correct mask for bus_prot_clr
+To:     Bilal Wasim <bilalwasim676@gmail.com>
+Cc:     "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Weiyi Lu <weiyi.lu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-31 22:33, Jorge Ramirez-Ortiz, Foundries wrote:
-> On 28/01/21, Sai Prakash Ranjan wrote:
->> On 2021-01-28 13:49, Jorge Ramirez-Ortiz, Foundries wrote:
->> > On 26/01/21, Sai Prakash Ranjan wrote:
->> > > As per register documentation, QCOM_WDT_ENABLE_IRQ which is BIT(1)
->> > > of watchdog control register is wakeup interrupt enable bit and
->> > > not related to bark interrupt at all, BIT(0) is used for that.
->> > > So remove incorrect usage of this bit when supporting bark irq for
->> > > pre-timeout notification. Currently with this bit set and bark
->> > > interrupt specified, pre-timeout notification and/or watchdog
->> > > reset/bite does not occur.
->> > >
->> > > Fixes: 36375491a439 ("watchdog: qcom: support pre-timeout when the
->> > > bark irq is available")
->> > > Cc: stable@vger.kernel.org
->> > > Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->> > > ---
->> > >
->> > > Reading the conversations from when qcom pre-timeout support was
->> > > added [1], Bjorn already had mentioned it was not right to touch this
->> > > bit, not sure which SoC the pre-timeout was tested on at that time,
->> > > but I have tested this on SDM845, SM8150, SC7180 and watchdog bark
->> > > and bite does not occur with enabling this bit with the bark irq
->> > > specified in DT.
->> >
->> > this was tested on QCS404. have you validated there? unfortunately I
->> > no longer have access to that hardware or the documentation
->> >
->> 
->> I didn't validate on qcs404 yet since I didn't have access to it.
->> But now that you mention it, let me arrange for a setup and test it
->> there as well. Note: I did not see bark irq entry in upstream qcs404
->> dtsi, so you must have had some local change when you tested?
-> 
-> TBH I dont quite remember. I suppose that if those with access to the
-> documents and hardware are OK with this change then it shouldnt cause
-> regressions (I just cant check from my end)
-> 
+On Mon, Feb 1, 2021 at 1:45 PM Bilal Wasim <bilalwasim676@gmail.com> wrote:
+>
+> When "bus_prot_reg_update" is false, the driver should use
+> INFRA_TOPAXI_PROTECTEN for both setting and clearing the bus
+> protection. However, the driver does not use this mask for
+> clearing bus protection which causes failure when booting
+> the imgtec gpu.
+>
+> Corrected and tested with mt8173 chromebook.
+>
+> Signed-off-by: Bilal Wasim <Bilal.Wasim@imgtec.com>
 
-No worries, I got the documentation access now and it is the same as
-other SoCs which I have tested above, meaning the BIT(1) is not related
-to bark irq. I am arranging a setup as well now, it took some time as
-I don't work on QCS* chipsets but I can confirm by this week.
+Reviewed-by: Hsin-Yi Wang <hsinyi@chromium.org>
 
-Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+> ---
+>  drivers/soc/mediatek/mtk-pm-domains.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/soc/mediatek/mtk-pm-domains.h b/drivers/soc/mediatek/mtk-pm-domains.h
+> index 141dc76054e6..7454c0b4f768 100644
+> --- a/drivers/soc/mediatek/mtk-pm-domains.h
+> +++ b/drivers/soc/mediatek/mtk-pm-domains.h
+> @@ -60,7 +60,7 @@
+>  #define BUS_PROT_UPDATE_TOPAXI(_mask)                          \
+>                 BUS_PROT_UPDATE(_mask,                          \
+>                                 INFRA_TOPAXI_PROTECTEN,         \
+> -                               INFRA_TOPAXI_PROTECTEN_CLR,     \
+> +                               INFRA_TOPAXI_PROTECTEN,         \
+>                                 INFRA_TOPAXI_PROTECTSTA1)
+>
+>  struct scpsys_bus_prot_data {
+> --
+> 2.25.1
+>
