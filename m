@@ -2,249 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B48130AE3D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:44:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FAFB30AE43
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231594AbhBARny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:43:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232273AbhBARm1 (ORCPT
+        id S232184AbhBARoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:44:38 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:44042 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232468AbhBARne (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:42:27 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED8ACC06178B
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 09:41:46 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id 185so13837491qkl.6
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 09:41:46 -0800 (PST)
+        Mon, 1 Feb 2021 12:43:34 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 111Hcpaw150316;
+        Mon, 1 Feb 2021 17:41:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2020-01-29;
+ bh=nTzfnpjcpEC8jvnyUaRXJVP36TdG6TKgOwzjqSQv3+c=;
+ b=ZO2dEsemSFiDEkqUav+sUz3CK7YfxJzV//RE+ihGgjV5wZfsWM+xPDWzn8BjJ9ZXXjWj
+ qtbMnXcI5YG1HRDpR32vtUbUSGWvQ/ZqP+mGkl/4Ir3TBPUDnDmiuklcw4gOycp0ReB4
+ ua4JSeY8pHoDeiEZEIp9psSLeE4nC+XW4KhxRjwUD0X2dXnb+Y4tQKydJ5IYTU0npYqZ
+ W/DCySR87iDrX1WT3eOV24tLciioCtUj6p5v0ISg9YTAkK+OryJDEBDeBsn3+X4G0Wmr
+ tLvSHV7q7RNTnstTjoGC+Lhy25I+EiPet1kZiBEIXgHKdtU037cEwnHkKpH1UjDBvNpr 9Q== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 36cydkphy7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 01 Feb 2021 17:41:44 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 111He8Yp122430;
+        Mon, 1 Feb 2021 17:41:44 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2176.outbound.protection.outlook.com [104.47.57.176])
+        by userp3020.oracle.com with ESMTP id 36dh7q2pam-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 01 Feb 2021 17:41:43 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mWYnynhwaa7dJLwL0t/I4LkuE7xISfGWTP5xLXjE9HQ0lODaWSmJXWyU+ClYllrx3PXmmW17XuElLtZMlyViutIIa95Zf9M4P4l+nVjkIQEDqgq8ZCRz8mfJcrCzumIHARNGOyNPhXzEfSjPimLZ9geqdYU/SxhdE/mMQ84pF8iGKpCfEuZ+VG3MDWMQFwJEnAkbB7PVspVGFUDoQahfUnpyL1TiyTiZtG9w+NOKIf9bu9OKFYM8aaQjqY/9LgjCHTu1gyhRC1JbtTKLt+DRX1p4QBOMiP6RO4D5RK0cbEUepNsUKIyJZaeBcDp07rKTzSjxRTBz81ks9zQRlqL05g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nTzfnpjcpEC8jvnyUaRXJVP36TdG6TKgOwzjqSQv3+c=;
+ b=gUo67vTU5NyhfCPO95xhcQPnXk1Oi26UfFqP68LpHJsmSV9az7/PRN7+VdwR61342AE3Htfl4UOHKLv+PXg6S50shwLNzcaNaFsHwvDrErQlZs4oVJE/J8jn7sT3BqiqP5g1FS/m9Jubwti6OgEUqsAvk6DHihD46Yd64QTHfMkRI6qRYzySAmtj0omUNaThtzK+Un/SgizaJcU2got6XYwhsqTvjLMHZoSEpCS2NBO9j/oo33WT0sH3VsJUTSvPo+Dt+7zWnYEZVcXXgYlbo2Eu2Vs+t4F8Eyqm/YvyuHd/EBeCJl5IfW4qVnHtDs/1Byu4TklxPM0kJRJ3Db4wJg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=cXK7SOSHSWz/+0eLFQjIQxVg658ZjSoqITQtma3KYAw=;
-        b=Xk5Z3fAM6BVGuq3NzPLCoOYudS4i4Tw3xcOXUAauGIFhFe+ggsWb3IE96fDzlMNMPd
-         Yx2tP4+WvbChpyFoKaf+AhD6zdNdnm96v+a3+T5cARdPdB+eA0DkkdNJlTzRb7QicMUL
-         HewpAN6EjXCSa1SNo12sApaP3Zb8jEL4EiL5wQXQn7p7zFkOIKq/aqMAfxld4yF4BLeo
-         iuLFkL7N8X+qvR1ffPZbfGiLl2Rc9hKeDaY3yobQHFNvaQnCnDnzCQeHCtaeddZuuEb5
-         gY6wwpjsoG4NrXHhaO/5u0MGZaSnH2OvMVoN442jSQbJ7QuoXnbbegITaYl0wkps1giW
-         ZNHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=cXK7SOSHSWz/+0eLFQjIQxVg658ZjSoqITQtma3KYAw=;
-        b=j2knZumMCrTmns1wCFwZCo07ryPhXZqgxR/dSKhMu+9Vs6btM05atWRjUv2OpG3POY
-         X2SBLGWCRl+pr9RjpJ6uvfI/Uw1P3NWSe/TEH84LLtDhYwjLi+ectfJao2Nq2mk1wdaW
-         Siox2I5/gxAUofNoDV66xKT3RBtzpQvEFEdFBsl/BMoEVzJinEJCiPaKSM74WglZesJ+
-         gBhisQqDcLt+x4xqdr3YTJPQh9ymriWztcgxnvXmK2/DNoHTmHnjXvrUNQuNduKZ7RxR
-         tZtv5dYUQPQV7Mmowi4tffEfjs/rQEnFNeyOuw4qtc/N5fEo/VPgc4v9NNF0vwQvuUw6
-         c7tw==
-X-Gm-Message-State: AOAM533ffRt6pbpGynWzvnHcK8CVtCeJOt/IHJCPbu3MBbHSv4ihYuXa
-        XUmGw+3zThIfkBAHeKLRyQovJS+iZxEy
-X-Google-Smtp-Source: ABdhPJyP4BTE4JJHvXxXqv+Db2JyQ/6VoEFBe5E3xA70hybh6G07w/PAtq7KJracpdCNkIo2wGQOQem8Bv4Q
-Sender: "brianvv via sendgmr" <brianvv@brianvv.c.googlers.com>
-X-Received: from brianvv.c.googlers.com ([fda3:e722:ac3:10:7f:e700:c0a8:348])
- (user=brianvv job=sendgmr) by 2002:ad4:4d10:: with SMTP id
- l16mr16164255qvl.45.1612201306082; Mon, 01 Feb 2021 09:41:46 -0800 (PST)
-Date:   Mon,  1 Feb 2021 17:41:32 +0000
-In-Reply-To: <20210201174132.3534118-1-brianvv@google.com>
-Message-Id: <20210201174132.3534118-5-brianvv@google.com>
-Mime-Version: 1.0
-References: <20210201174132.3534118-1-brianvv@google.com>
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH net-next v3 4/4] net: indirect call helpers for ipv4/ipv6
- dst_check functions
-From:   Brian Vazquez <brianvv@google.com>
-To:     Brian Vazquez <brianvv.kernel@gmail.com>,
-        Brian Vazquez <brianvv@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Luigi Rizzo <lrizzo@google.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nTzfnpjcpEC8jvnyUaRXJVP36TdG6TKgOwzjqSQv3+c=;
+ b=vjCsG0D1woPNa/bA83B/MQaNj6e59JRmQCzVK6EqasUSK8HdUrBQhlMigaQDyRxEk8Vq7AQ9tsHIZCGbq9mcAQQzMtdfYi3toBoUp6ccyKLCa6V6OY/mfuDaLQDplg31BA0RMRHk/9ORl+pokrkBIyKDP/FBo/CYBJ8mZUoDtow=
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=oracle.com;
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
+ by BY5PR10MB3970.namprd10.prod.outlook.com (2603:10b6:a03:1ff::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16; Mon, 1 Feb
+ 2021 17:41:41 +0000
+Received: from BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::e180:1ba2:d87:456]) by BYAPR10MB2999.namprd10.prod.outlook.com
+ ([fe80::e180:1ba2:d87:456%4]) with mapi id 15.20.3784.019; Mon, 1 Feb 2021
+ 17:41:41 +0000
+Date:   Mon, 1 Feb 2021 12:41:36 -0500
+From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH 03/14] cxl/mem: Find device capabilities
+Message-ID: <20210201174136.GF197521@fedora>
+References: <20210130002438.1872527-1-ben.widawsky@intel.com>
+ <20210130002438.1872527-4-ben.widawsky@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210130002438.1872527-4-ben.widawsky@intel.com>
+X-Originating-IP: [209.6.208.110]
+X-ClientProxiedBy: BL1PR13CA0384.namprd13.prod.outlook.com
+ (2603:10b6:208:2c0::29) To BYAPR10MB2999.namprd10.prod.outlook.com
+ (2603:10b6:a03:85::27)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from fedora (209.6.208.110) by BL1PR13CA0384.namprd13.prod.outlook.com (2603:10b6:208:2c0::29) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.16 via Frontend Transport; Mon, 1 Feb 2021 17:41:39 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 53a4d189-bb3e-439f-b687-08d8c6d8a27b
+X-MS-TrafficTypeDiagnostic: BY5PR10MB3970:
+X-Microsoft-Antispam-PRVS: <BY5PR10MB39700E1DEFE3A453B3201A3F89B69@BY5PR10MB3970.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:873;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: R/Z42tb5JaLSsY4CSdff4Fd015kgtcAgoG34AfaUdLum5jbJD1GGjUnt59RjCRvCOiBbUWFRWAhFFwFIzccG7MZEDp49iGQyqDfpDp7JbkW7do3TyfawGyk/fxB6nBzzieBvQkBhOgEE883Cgq9/V1Kg1G+e5RRIKGu+nurbQgf91KUD6X78cOXgOjXBKjbtA3NMLAuKTieg/+ixV50htvizWV8mU0n9P9BF8St+T/ysoJgeBKVTsbrJopY+0v+7PgfWuUE8JzKDT3gT9UIYCf10MQ38sst2TgKMnzxS253jDCrALgvEfLZxD2c5ZVElCMudPBl8hF9waA1yjQpM7EmddTjcmormCtYUeMzJuTo/KZDNgkjP8sM7zqr+lIq8T46ObQQda4dYoIbreFt4VbgPNXJ0CEqmmnrgXJyZ673WztqOWh9EQO0naV11CKnn4jDpiEp/1WHwGrYKOLCAM/uJEkkb2uL9Z9PliMJ8tiaCbQUeA8f7sIj8YmcKGGesk/OAYCwzkVyhMDx1RX25aQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(366004)(136003)(396003)(376002)(39860400002)(54906003)(1076003)(316002)(5660300002)(2906002)(83380400001)(55016002)(9686003)(9576002)(33656002)(478600001)(8936002)(6916009)(16526019)(8676002)(4326008)(6666004)(7416002)(6496006)(52116002)(26005)(186003)(33716001)(86362001)(66556008)(956004)(66476007)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?21S+bKm4nQzgZ2+rhszmxYC8DaGuaQ3ULPPQIL3Ryzn2xr6mIj3Sz5MO0m0R?=
+ =?us-ascii?Q?gpNHXFhWptMGTLWOR3gDPUR+KJFOmUR2gn62SUKJJiRscXspjy0oiYZrGWYZ?=
+ =?us-ascii?Q?JW0qzMrkBzn3I/AQMIK3Gc3GGRV9a0Jd5kq9rirUvqDAcY0oAEMS5fg78pzu?=
+ =?us-ascii?Q?RiQD/vwBI52uqtQylvfGhIw5q5b9ByAHZU/JK2COBE3b5vKAc6Ul9J+jTu50?=
+ =?us-ascii?Q?VnvP/kuatBi8zmYtg2DAmcrmm/96SSEaTnq4Q4Bik5XxDITnbGxaLShHkx+g?=
+ =?us-ascii?Q?MoWenY/xlStbDBIIqJs9BU6wbpe6HuhjCSrgQxGpHzuxtVBYRFTTuzKtolou?=
+ =?us-ascii?Q?URjltDhsWD4xaUBypgbwWOzLHQBzf6V6ntWniJwi6TWV0si1zdlCKOQogoxO?=
+ =?us-ascii?Q?gERfnjHJuCHtEYaRPTsJAe1JDXV6CHjGizQRbtnYi1eQkn13lMC3d7A29/aN?=
+ =?us-ascii?Q?ordq53VawIhPqMrbY/Ct24zjJ/tpIGr5jA2/lJ/VCoXYwvMwAGtoDAEv+yvt?=
+ =?us-ascii?Q?IHWTdnwFgqs9MRbE4zutrtn9M9EbQx9Wf9XrSy2BoiNeqojKLHonpPck9f8f?=
+ =?us-ascii?Q?PuHTbmUSzAFPQQGHN/9nRTgKO4Ix2zViw6Z+NKXKcpBF4F6+88e6cR9rqt05?=
+ =?us-ascii?Q?1rpm6MP3SE1MGG9i16uDD7+pRhqNeTSHHuYkPLpxByicxBQRpXE78RVrUbbY?=
+ =?us-ascii?Q?UOr3cbaf8B5PsLiIPVBtKBPoprrWhB+vjT9/FLEUOpMBILbftAXPwSIC0qk1?=
+ =?us-ascii?Q?jerzpFiuGlsCqcxLffEITQpSK2V72baVet1O2l1GsfTmD38XpXYD+Zy2ZwA6?=
+ =?us-ascii?Q?Yxd2wrHlSkq9vqXu7m+99JTIVPXyogiFFz83XiG9LbcBwJYYoMfDvGdp6TcP?=
+ =?us-ascii?Q?JehS+Z3JdCMOM7Y920LEgL9j3sMLn4fliK8WktH4eWNhTnMJwsNK72Ma+FaX?=
+ =?us-ascii?Q?EzMLM6oArbhvnp+F+yno4gT6fzdw6y1+1y2rnA6rUqRCPMY11bzSLEcSvfMu?=
+ =?us-ascii?Q?E0iuPHngH/ivKknPFiOgqkuh8Z6B8Q1KWha10+8te5/NmFPJj46hD19igKUz?=
+ =?us-ascii?Q?zviKexDW?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 53a4d189-bb3e-439f-b687-08d8c6d8a27b
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2021 17:41:41.6106
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IazPV+J2lMMJwaK7E53S4fnlOdvsqPVnCPvazqkrL3eCygIduk1fP2jCLK/23kmhKnhgkgoxWVMPnh+NaVq0Kg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR10MB3970
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9882 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
+ suspectscore=0 spamscore=0 mlxlogscore=999 phishscore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102010090
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9882 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
+ priorityscore=1501 impostorscore=0 malwarescore=0 clxscore=1015
+ spamscore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102010090
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch avoids the indirect call for the common case:
-ip6_dst_check and ipv4_dst_check
+> +static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
+> +{
+> +	struct device *dev = &cxlm->pdev->dev;
+> +	int cap, cap_count;
+> +	u64 cap_array;
+> +
+> +	cap_array = readq(cxlm->regs + CXLDEV_CAP_ARRAY_OFFSET);
+> +	if (CXL_GET_FIELD(cap_array, CXLDEV_CAP_ARRAY_ID) != CXLDEV_CAP_ARRAY_CAP_ID)
+> +		return -ENODEV;
+> +
+> +	cap_count = CXL_GET_FIELD(cap_array, CXLDEV_CAP_ARRAY_COUNT);
+> +
+> +	for (cap = 1; cap <= cap_count; cap++) {
+> +		void __iomem *register_block;
+> +		u32 offset;
+> +		u16 cap_id;
+> +
+> +		cap_id = readl(cxlm->regs + cap * 0x10) & 0xffff;
+> +		offset = readl(cxlm->regs + cap * 0x10 + 0x4);
+> +		register_block = cxlm->regs + offset;
+> +
+> +		switch (cap_id) {
+> +		case CXLDEV_CAP_CAP_ID_DEVICE_STATUS:
+> +			dev_dbg(dev, "found Status capability (0x%x)\n",
+> +				offset);
 
-Signed-off-by: Brian Vazquez <brianvv@google.com>
----
- include/net/dst.h   |  7 ++++++-
- net/core/sock.c     | 12 ++++++++++--
- net/ipv4/route.c    |  7 +++++--
- net/ipv4/tcp_ipv4.c |  5 ++++-
- net/ipv6/route.c    |  7 +++++--
- net/ipv6/tcp_ipv6.c |  5 ++++-
- 6 files changed, 34 insertions(+), 9 deletions(-)
+That 80 character limit is no longer a requirement. Can you just make
+this one line? And perhaps change 'found' to 'Found' ?
 
-diff --git a/include/net/dst.h b/include/net/dst.h
-index 9f474a79ed7d..26f134ad3a25 100644
---- a/include/net/dst.h
-+++ b/include/net/dst.h
-@@ -459,10 +459,15 @@ static inline int dst_input(struct sk_buff *skb)
- 				  ip6_input, ip_local_deliver, skb);
- }
- 
-+INDIRECT_CALLABLE_DECLARE(struct dst_entry *ip6_dst_check(struct dst_entry *,
-+							  u32));
-+INDIRECT_CALLABLE_DECLARE(struct dst_entry *ipv4_dst_check(struct dst_entry *,
-+							   u32));
- static inline struct dst_entry *dst_check(struct dst_entry *dst, u32 cookie)
- {
- 	if (dst->obsolete)
--		dst = dst->ops->check(dst, cookie);
-+		dst = INDIRECT_CALL_INET(dst->ops->check, ip6_dst_check,
-+					 ipv4_dst_check, dst, cookie);
- 	return dst;
- }
- 
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 648a5cb46209..0ed98f20448a 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -526,11 +526,17 @@ int __sk_receive_skb(struct sock *sk, struct sk_buff *skb,
- }
- EXPORT_SYMBOL(__sk_receive_skb);
- 
-+INDIRECT_CALLABLE_DECLARE(struct dst_entry *ip6_dst_check(struct dst_entry *,
-+							  u32));
-+INDIRECT_CALLABLE_DECLARE(struct dst_entry *ipv4_dst_check(struct dst_entry *,
-+							   u32));
- struct dst_entry *__sk_dst_check(struct sock *sk, u32 cookie)
- {
- 	struct dst_entry *dst = __sk_dst_get(sk);
- 
--	if (dst && dst->obsolete && dst->ops->check(dst, cookie) == NULL) {
-+	if (dst && dst->obsolete &&
-+	    INDIRECT_CALL_INET(dst->ops->check, ip6_dst_check, ipv4_dst_check,
-+			       dst, cookie) == NULL) {
- 		sk_tx_queue_clear(sk);
- 		sk->sk_dst_pending_confirm = 0;
- 		RCU_INIT_POINTER(sk->sk_dst_cache, NULL);
-@@ -546,7 +552,9 @@ struct dst_entry *sk_dst_check(struct sock *sk, u32 cookie)
- {
- 	struct dst_entry *dst = sk_dst_get(sk);
- 
--	if (dst && dst->obsolete && dst->ops->check(dst, cookie) == NULL) {
-+	if (dst && dst->obsolete &&
-+	    INDIRECT_CALL_INET(dst->ops->check, ip6_dst_check, ipv4_dst_check,
-+			       dst, cookie) == NULL) {
- 		sk_dst_reset(sk);
- 		dst_release(dst);
- 		return NULL;
-diff --git a/net/ipv4/route.c b/net/ipv4/route.c
-index 4fac91f8bd6c..9e6537709794 100644
---- a/net/ipv4/route.c
-+++ b/net/ipv4/route.c
-@@ -133,7 +133,8 @@ static int ip_rt_gc_timeout __read_mostly	= RT_GC_TIMEOUT;
-  *	Interface to generic destination cache.
-  */
- 
--static struct dst_entry *ipv4_dst_check(struct dst_entry *dst, u32 cookie);
-+INDIRECT_CALLABLE_SCOPE
-+struct dst_entry	*ipv4_dst_check(struct dst_entry *dst, u32 cookie);
- static unsigned int	 ipv4_default_advmss(const struct dst_entry *dst);
- INDIRECT_CALLABLE_SCOPE
- unsigned int		ipv4_mtu(const struct dst_entry *dst);
-@@ -1188,7 +1189,8 @@ void ipv4_sk_redirect(struct sk_buff *skb, struct sock *sk)
- }
- EXPORT_SYMBOL_GPL(ipv4_sk_redirect);
- 
--static struct dst_entry *ipv4_dst_check(struct dst_entry *dst, u32 cookie)
-+INDIRECT_CALLABLE_SCOPE struct dst_entry *ipv4_dst_check(struct dst_entry *dst,
-+							 u32 cookie)
- {
- 	struct rtable *rt = (struct rtable *) dst;
- 
-@@ -1204,6 +1206,7 @@ static struct dst_entry *ipv4_dst_check(struct dst_entry *dst, u32 cookie)
- 		return NULL;
- 	return dst;
- }
-+EXPORT_SYMBOL(ipv4_dst_check);
- 
- static void ipv4_send_dest_unreach(struct sk_buff *skb)
- {
-diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
-index 777306b5bc22..611039207d30 100644
---- a/net/ipv4/tcp_ipv4.c
-+++ b/net/ipv4/tcp_ipv4.c
-@@ -1649,6 +1649,8 @@ u16 tcp_v4_get_syncookie(struct sock *sk, struct iphdr *iph,
- 	return mss;
- }
- 
-+INDIRECT_CALLABLE_DECLARE(struct dst_entry *ipv4_dst_check(struct dst_entry *,
-+							   u32));
- /* The socket must have it's spinlock held when we get
-  * here, unless it is a TCP_LISTEN socket.
-  *
-@@ -1668,7 +1670,8 @@ int tcp_v4_do_rcv(struct sock *sk, struct sk_buff *skb)
- 		sk_mark_napi_id(sk, skb);
- 		if (dst) {
- 			if (inet_sk(sk)->rx_dst_ifindex != skb->skb_iif ||
--			    !dst->ops->check(dst, 0)) {
-+			    !INDIRECT_CALL_1(dst->ops->check, ipv4_dst_check,
-+					     dst, 0)) {
- 				dst_release(dst);
- 				sk->sk_rx_dst = NULL;
- 			}
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index 4d83700d5602..f447f82e6819 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -81,7 +81,8 @@ enum rt6_nud_state {
- 	RT6_NUD_SUCCEED = 1
- };
- 
--static struct dst_entry	*ip6_dst_check(struct dst_entry *dst, u32 cookie);
-+INDIRECT_CALLABLE_SCOPE
-+struct dst_entry	*ip6_dst_check(struct dst_entry *dst, u32 cookie);
- static unsigned int	 ip6_default_advmss(const struct dst_entry *dst);
- INDIRECT_CALLABLE_SCOPE
- unsigned int		ip6_mtu(const struct dst_entry *dst);
-@@ -2612,7 +2613,8 @@ static struct dst_entry *rt6_dst_from_check(struct rt6_info *rt,
- 		return NULL;
- }
- 
--static struct dst_entry *ip6_dst_check(struct dst_entry *dst, u32 cookie)
-+INDIRECT_CALLABLE_SCOPE struct dst_entry *ip6_dst_check(struct dst_entry *dst,
-+							u32 cookie)
- {
- 	struct dst_entry *dst_ret;
- 	struct fib6_info *from;
-@@ -2642,6 +2644,7 @@ static struct dst_entry *ip6_dst_check(struct dst_entry *dst, u32 cookie)
- 
- 	return dst_ret;
- }
-+EXPORT_SYMBOL(ip6_dst_check);
- 
- static struct dst_entry *ip6_negative_advice(struct dst_entry *dst)
- {
-diff --git a/net/ipv6/tcp_ipv6.c b/net/ipv6/tcp_ipv6.c
-index 0e1509b02cb3..d093ef3ef060 100644
---- a/net/ipv6/tcp_ipv6.c
-+++ b/net/ipv6/tcp_ipv6.c
-@@ -1420,6 +1420,8 @@ static struct sock *tcp_v6_syn_recv_sock(const struct sock *sk, struct sk_buff *
- 	return NULL;
- }
- 
-+INDIRECT_CALLABLE_DECLARE(struct dst_entry *ipv4_dst_check(struct dst_entry *,
-+							   u32));
- /* The socket must have it's spinlock held when we get
-  * here, unless it is a TCP_LISTEN socket.
-  *
-@@ -1473,7 +1475,8 @@ static int tcp_v6_do_rcv(struct sock *sk, struct sk_buff *skb)
- 		sk_mark_napi_id(sk, skb);
- 		if (dst) {
- 			if (inet_sk(sk)->rx_dst_ifindex != skb->skb_iif ||
--			    dst->ops->check(dst, np->rx_dst_cookie) == NULL) {
-+			    INDIRECT_CALL_1(dst->ops->check, ip6_dst_check,
-+					    dst, np->rx_dst_cookie) == NULL) {
- 				dst_release(dst);
- 				sk->sk_rx_dst = NULL;
- 			}
--- 
-2.30.0.365.g02bc693789-goog
+> +			cxlm->status.regs = register_block;
+> +			break;
+> +		case CXLDEV_CAP_CAP_ID_PRIMARY_MAILBOX:
+> +			dev_dbg(dev, "found Mailbox capability (0x%x)\n",
+> +				offset);
+> +			cxlm->mbox.regs = register_block;
+> +			break;
+> +		case CXLDEV_CAP_CAP_ID_SECONDARY_MAILBOX:
+> +			dev_dbg(dev,
+> +				"found Secondary Mailbox capability (0x%x)\n",
+> +				offset);
+> +			break;
+> +		case CXLDEV_CAP_CAP_ID_MEMDEV:
+> +			dev_dbg(dev, "found Memory Device capability (0x%x)\n",
+> +				offset);
+> +			cxlm->mem.regs = register_block;
+> +			break;
+> +		default:
+> +			dev_warn(dev, "Unknown cap ID: %d (0x%x)\n", cap_id,
+> +				 offset);
+> +			break;
+> +		}
+> +	}
+> +
+> +	if (!cxlm->status.regs || !cxlm->mbox.regs || !cxlm->mem.regs) {
+> +		dev_err(dev, "registers not found: %s%s%s\n",
+> +			!cxlm->status.regs ? "status " : "",
+> +			!cxlm->mbox.regs ? "mbox " : "",
+> +			!cxlm->mem.regs ? "mem" : "");
+> +		return -ENXIO;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int cxl_mem_setup_mailbox(struct cxl_mem *cxlm)
+> +{
+> +	const int cap = cxl_read_mbox_reg32(cxlm, CXLDEV_MB_CAPS_OFFSET);
+> +
+> +	cxlm->mbox.payload_size =
+> +		1 << CXL_GET_FIELD(cap, CXLDEV_MB_CAP_PAYLOAD_SIZE);
+> +
 
+I think the static analyzers are not going to be happy that you are not
+checking the value of `cap` before using it.
+
+Perhaps you should check that first before doing the manipulations?
+
+> +	/* 8.2.8.4.3 */
+> +	if (cxlm->mbox.payload_size < 256) {
+
+#define for 256?
