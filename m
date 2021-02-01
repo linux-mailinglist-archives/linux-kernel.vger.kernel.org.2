@@ -2,171 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D62630A9DC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:34:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E437F30A9D7
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230346AbhBAOeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 09:34:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27447 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229819AbhBAOeO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 09:34:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612189967;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ljqvXX+/v7ItzDm31rzeq5jT4gYfoSDTG2W9G3iEdcM=;
-        b=fNw4BFiXY2uydwvs6QuxtIslOaWqwZnzWNm4GtHIzSKEzBqKa0ZVDZ9KBR5IC99psuYwef
-        FSMbLV/75ozqS4nf4B2Y9CrZrZE7HxNi0uo/+4YAJIJDhWHQUNHuGKVTzwrnxdN/teM0xk
-        l6hqxuaUAgzHa03PXXA6tVKsbKAFmeQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-114-AiwFcXaZNkiW5xntkpbzVw-1; Mon, 01 Feb 2021 09:32:43 -0500
-X-MC-Unique: AiwFcXaZNkiW5xntkpbzVw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A481F8049CD;
-        Mon,  1 Feb 2021 14:32:40 +0000 (UTC)
-Received: from [10.36.115.24] (ovpn-115-24.ams2.redhat.com [10.36.115.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C5438614FC;
-        Mon,  1 Feb 2021 14:32:34 +0000 (UTC)
-Subject: Re: [PATCH v4 1/2] x86/setup: always add the beginning of RAM as
- memblock.memory
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?UTF-8?Q?=c5=81ukasz_Majczak?= <lma@semihalf.com>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>, Qian Cai <cai@lca.pw>,
-        "Sarvela, Tomi P" <tomi.p.sarvela@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, stable@vger.kernel.org, x86@kernel.org
-References: <20210130221035.4169-1-rppt@kernel.org>
- <20210130221035.4169-2-rppt@kernel.org>
- <56e2c568-b121-8860-a6b0-274ace46d835@redhat.com>
- <20210201143014.GI242749@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <759698b8-ac81-de31-4916-023d8dfa9fe5@redhat.com>
-Date:   Mon, 1 Feb 2021 15:32:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S230179AbhBAOdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 09:33:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58990 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229835AbhBAOdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 09:33:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E80B260C41;
+        Mon,  1 Feb 2021 14:32:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612189970;
+        bh=x4+3l0UdNcDzr1PlE1GkVrmAHixB98fndyTsyj43jWQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oEv8LsIzcY7H7ZW51MhbO9OxtTa8b/62cg4S+ZeB4JiMAUQOBEc1xEqFcyTxfgtYy
+         ihnuI4YzMClv4IsNoc7nmdLYxxnxmff6AXYgRPU2HXZ8lED6MPrU6LT4W/Yzq1nbsX
+         OPTCyMIjbaPGd7Cq3X9KtWLBWVN5cWjas/WVDe04=
+Date:   Mon, 1 Feb 2021 15:32:47 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Benson Leung <bleung@chromium.org>
+Cc:     heikki.krogerus@linux.intel.com, enric.balletbo@collabora.com,
+        pmalani@chromium.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, groeck@chromium.org,
+        bleung@google.com
+Subject: Re: [PATCH 0/6] usb: typec: and platform/chrome: Add PD revision
+ numbers
+Message-ID: <YBgRDwszRs3ULl5J@kroah.com>
+References: <20210129061406.2680146-1-bleung@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <20210201143014.GI242749@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210129061406.2680146-1-bleung@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.02.21 15:30, Mike Rapoport wrote:
-> On Mon, Feb 01, 2021 at 10:32:44AM +0100, David Hildenbrand wrote:
->> On 30.01.21 23:10, Mike Rapoport wrote:
->>> From: Mike Rapoport <rppt@linux.ibm.com>
->>>
->>> The physical memory on an x86 system starts at address 0, but this is not
->>> always reflected in e820 map. For example, the BIOS can have e820 entries
->>> like
->>>
->>> [    0.000000] BIOS-provided physical RAM map:
->>> [    0.000000] BIOS-e820: [mem 0x0000000000001000-0x000000000009ffff] usable
->>>
->>> or
->>>
->>> [    0.000000] BIOS-provided physical RAM map:
->>> [    0.000000] BIOS-e820: [mem 0x0000000000000000-0x0000000000000fff] reserved
->>> [    0.000000] BIOS-e820: [mem 0x0000000000001000-0x0000000000057fff] usable
->>>
->>> In either case, e820__memblock_setup() won't add the range 0x0000 - 0x1000
->>> to memblock.memory and later during memory map initialization this range is
->>> left outside any zone.
->>>
->>> With SPARSEMEM=y there is always a struct page for pfn 0 and this struct
->>> page will have it's zone link wrong no matter what value will be set there.
->>>
->>> To avoid this inconsistency, add the beginning of RAM to memblock.memory.
->>> Limit the added chunk size to match the reserved memory to avoid
->>> registering memory that may be used by the firmware but never reserved at
->>> e820__memblock_setup() time.
->>>
->>> Fixes: bde9cfa3afe4 ("x86/setup: don't remove E820_TYPE_RAM for pfn 0")
->>> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
->>> Cc: stable@vger.kernel.org
->>> ---
->>>    arch/x86/kernel/setup.c | 8 ++++++++
->>>    1 file changed, 8 insertions(+)
->>>
->>> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
->>> index 3412c4595efd..67c77ed6eef8 100644
->>> --- a/arch/x86/kernel/setup.c
->>> +++ b/arch/x86/kernel/setup.c
->>> @@ -727,6 +727,14 @@ static void __init trim_low_memory_range(void)
->>>    	 * Kconfig help text for X86_RESERVE_LOW.
->>>    	 */
->>>    	memblock_reserve(0, ALIGN(reserve_low, PAGE_SIZE));
->>> +
->>> +	/*
->>> +	 * Even if the firmware does not report the memory at address 0 as
->>> +	 * usable, inform the generic memory management about its existence
->>> +	 * to ensure it is a part of ZONE_DMA and the memory map for it is
->>> +	 * properly initialized.
->>> +	 */
->>> +	memblock_add(0, ALIGN(reserve_low, PAGE_SIZE));
->>>    }
->>>    	
->>>    /*
->>>
->>
->> I think, to make that code more robust, and to not rely on archs to do the
->> right thing, we should do something like
->>
->> 1) Make sure in free_area_init() that each PFN with a memmap (i.e., falls
->> into a partial present section) is spanned by a zone; that would include PFN
->> 0 in this case.
->>
->> 2) In init_zone_unavailable_mem(), similar to round_up(max_pfn,
->> PAGES_PER_SECTION) handling, consider range
->> 	[round_down(min_pfn, PAGES_PER_SECTION), min_pfn - 1]
->> which would handle in the x86-64 case [0..0] and, therefore, initialize PFN
->> 0.
->>
->> Also, I think the special-case of PFN 0 is analogous to the
->> round_up(max_pfn, PAGES_PER_SECTION) handling in
->> init_zone_unavailable_mem(): who guarantees that these PFN above the highest
->> present PFN are actually spanned by a zone?
->>
->> I'd suggest going through all zone ranges in free_area_init() first, dealing
->> with zones that have "not section aligned start/end", clamping them up/down
->> if required such that no holes within a section are left uncovered by a
->> zone.
+On Thu, Jan 28, 2021 at 10:14:00PM -0800, Benson Leung wrote:
+> USB Power Delivery has a 3 entity handshake (port, cable, partner), and as
+> of USB PD R3.0, each entity may independently support either Revision 2 or
+> Revision 3 signaling and protocol. In order for userspace and the kernel
+> to properly process the data objects received from a particular SOP*, we
+> must know to which revision of the spec each conforms.
 > 
-> I thought about changing the way zone extents are calculated so that zone
-> start/end will be always on a section boundary, but zone->zone_start_pfn
-> depends on node->node_start_pfn which is defined by hardware and expanding
-> a node to make its start pfn aligned at the section boundary might violate
-> the HW addressing scheme.
+> This series adds individual version numbers for the partner and the cable,
+> and exposes them in the appropriate sysfs in /sys/class/typec.
 > 
-> Maybe this could never happen, or maybe it's not really important as the
-> pages there will be reserved anyway, but I'm not sure I can estimate all
-> the implications.
-> 
+> I provide as a first implementation of this, platform/chrome's cros_ec_typec
+> driver, whose underlying status messages convey the SOP and SOP' revisions
+> already.
 
-I'm suggesting to let zone (+node?) ranges cover memory holes with a 
-valid memmap. Not to move actual memory between nodes/zones.
+I've taken the first 3 patches in my tree now, but the last 3 (for the
+chrome_ec_typec.c driver), they do not apply at all.
 
--- 
-Thanks,
+thanks,
 
-David / dhildenb
-
+greg k-h
