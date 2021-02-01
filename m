@@ -2,111 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2861530A46F
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:35:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E5A30A476
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:38:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232866AbhBAJe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 04:34:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbhBAJe5 (ORCPT
+        id S232735AbhBAJgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 04:36:55 -0500
+Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:34068 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232573AbhBAJgw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 04:34:57 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8885BC061574;
-        Mon,  1 Feb 2021 01:34:16 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id a9so4890486ejr.2;
-        Mon, 01 Feb 2021 01:34:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2JOA8AslWAgQu8HB4vwPy5Cg6rMlCtjVYzJN65+0PgE=;
-        b=rsm6IQFHIQGKmVra2pvBfSkAYm1yOL0zeWeik3rVdFh1BNn/PQmSuuFwjjs/NoI/7P
-         MejnkXy2tmHHj6McXgQoq6jSngWt98XDVe+CxGpmxyNqjKVGw7BlZc1vAXh4lgcysdoI
-         +Qtz2/qFMdqeV12+DN56vutVI9RcFT1yY+Txufr1HUn7kTcfR3Lw4paCW4YE7LW6xQju
-         3ptgPAyKOPJHVeh4QVhRJ2mOjGwEWEVH0vbj2U7+vxRum/Pi/9d7fGp4twA90Rxbil6e
-         RnDUzFirg1U4QF3vZqKitnlqYgyDUMn63WiOdvgO+zuBVn4sl6gZuOqhO+0xAEebIYiw
-         eRbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2JOA8AslWAgQu8HB4vwPy5Cg6rMlCtjVYzJN65+0PgE=;
-        b=swkLzfupjaJQpeZpKO6yxdRA8MPOoDV/0fmfY8wo1vWMRAzVXvSW52Ziwx6JjD8+sb
-         6ck9ptXjTFUN5uurcqokgcLMR0pidkez17bL0yQ+d52xy37IuBLS6hAlqEcrOJaYJ8h7
-         +6GWzz8FpupFfWpJp/UgS5LoeVRug7q63gSZIuAsYXxwcs7a/bs8Q2gZeCOzHi86KGPE
-         C4JYoL7vuTikx3Foi02L5LwlBd8F3abCWqI3s4KIM+d/wqteBLYJ231jx8nyr6VhkVI+
-         1xXTKfI7v6up/2qdgOP+Ca+S3P3bO+X7BN6Do/Ve96RvNWb6wMsOP/jHpVY5JmOPTKXV
-         gkHw==
-X-Gm-Message-State: AOAM533/dN7tW+R5QvLJZHM/ihY2F52n1ZU61SC23Pu6vhvhYmfURNmE
-        vA+oyBMzkCYc9HOOJq2BsMo=
-X-Google-Smtp-Source: ABdhPJwj7iCW8hbeLzsJL+g6iX+VKZt2w1fLfzIcESYFDANyvnCj5HA0eG6DM1Wu2wQj004GtLwc3g==
-X-Received: by 2002:a17:906:805:: with SMTP id e5mr3936460ejd.104.1612172055177;
-        Mon, 01 Feb 2021 01:34:15 -0800 (PST)
-Received: from localhost.localdomain (dynamic-2a01-0c22-bc7f-2f00-63cb-2442-68a6-e817.c22.pool.telefonica.de. [2a01:c22:bc7f:2f00:63cb:2442:68a6:e817])
-        by smtp.gmail.com with ESMTPSA id v1sm3290931ejd.3.2021.02.01.01.34.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 01:34:14 -0800 (PST)
-From:   Jonathan Schwender <schwenderjonathan@gmail.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org
-Cc:     dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
-        linux-rt-users@vger.kernel.org
-Subject: [RFC] sched/rt: Fix RT (group) throttling with nohz_full
-Date:   Mon,  1 Feb 2021 10:34:12 +0100
-Message-Id: <20210201093412.4900-1-schwenderjonathan@gmail.com>
-X-Mailer: git-send-email 2.29.2
+        Mon, 1 Feb 2021 04:36:52 -0500
+Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
+        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1119UgHd027655;
+        Mon, 1 Feb 2021 01:35:50 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=pfpt0220;
+ bh=LxnivVJL/AEhOWt0BG5ZwWtBGuWRf2DakQvWD2rbrwQ=;
+ b=UEXlRPNbmv5brIWuIGqarCyENVyOlYa33Cdi3TshCPe/GWHTr5mpPBNvvhc+lNiFNHbt
+ pAXuOkDUEDBMKlu/SM010ZEscMAu4zlgPBkBR1QpNN8pBtwDXUCRPqJHPNTI/2NutUQl
+ bajoXcxCpSjVIz2Dmhav5CJ9ZYjhm8fQ6qlzyrsiMigOx4JeHhJribnxBR7jnrKQzVfz
+ juDKZm9NU8nKSLc7ZWUbFzo9lBqhaCKAT2iMmHjB7k1KIautPQMAa0I2vBHH71bSKo6I
+ E8MVfvCCBZYxTfNVC2YM9YNsLivE6xaSqqPFSOjhWA521zd6lAc6EgVKPPO0xucMBIS6 DQ== 
+Received: from dc5-exch01.marvell.com ([199.233.59.181])
+        by mx0a-0016f401.pphosted.com with ESMTP id 36d5psudvg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 01:35:50 -0800
+Received: from SC-EXCH04.marvell.com (10.93.176.84) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 1 Feb
+ 2021 01:35:49 -0800
+Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 1 Feb
+ 2021 01:35:48 -0800
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
+ (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 1 Feb 2021 01:35:48 -0800
+Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
+        by maili.marvell.com (Postfix) with ESMTP id CAE5E3F703F;
+        Mon,  1 Feb 2021 01:35:45 -0800 (PST)
+From:   <stefanc@marvell.com>
+To:     <netdev@vger.kernel.org>
+CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
+        <nadavh@marvell.com>, <ymarkman@marvell.com>,
+        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
+        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
+        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
+        <atenart@kernel.org>
+Subject: [PATCH net] net: mvpp2: TCAM entry enable should be written after SRAM data
+Date:   Mon, 1 Feb 2021 11:35:39 +0200
+Message-ID: <1612172139-28343-1-git-send-email-stefanc@marvell.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-01_04:2021-01-29,2021-02-01 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If nohz_full is enabled (more precisely HK_FLAG_TIMER is set), then
-do_sched_rt_period_timer may be called on a housekeeping CPU,
-which would not service the isolated CPU for a non-root cgroup
-(requires a kernel with RT_GROUP_SCHEDULING).
-This causes RT tasks in a non-root cgroup to get throttled 
-indefinitely (unless throttling is disabled) once the timer has 
-been moved to a housekeeping CPU.
-To fix this, housekeeping CPUs now service all online CPUs 
-if HK_FLAG_TIMER (nohz_full) is set.
+From: Stefan Chulski <stefanc@marvell.com>
 
-I'm not really sure how this relates to  Mike Galbraith previous
-commit e221d028bb08 ("sched,rt: fix isolated CPUs leaving root_task_group
-indefinitely throttled"), (which is dated before the housekeeping changes,)
-so I'm posting this as an RFC.
+Last TCAM data contains TCAM enable bit.
+It should be written after SRAM data before entry enabled.
 
-
-Signed-off-by: Jonathan Schwender <schwenderjonathan@gmail.com>
+Fixes: 3f518509dedc ("ethernet: Add new driver for Marvell Armada 375 network unit")
+Signed-off-by: Stefan Chulski <stefanc@marvell.com>
 ---
- kernel/sched/rt.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 49ec096a8aa1..3185e00b828a 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -865,9 +865,16 @@ static int do_sched_rt_period_timer(struct rt_bandwidth *rt_b, int overrun)
- 	 * isolation is really required, the user will turn the throttle
- 	 * off to kill the perturbations it causes anyway.  Meanwhile,
- 	 * this maintains functionality for boot and/or troubleshooting.
-+	 * If nohz_full is active and the timer was offloaded to a
-+	 * housekeeping CPU, sched_rt_period_mask() will not contain
-+	 * the isolated CPU. To prevent indefinite throttling of tasks
-+	 * on isolated CPUs, housekeeping CPUs service all online CPUs.
- 	 */
--	if (rt_b == &root_task_group.rt_bandwidth)
-+	if (rt_b == &root_task_group.rt_bandwidth
-+		|| (housekeeping_enabled(HK_FLAG_TIMER)
-+			&& housekeeping_cpu(this_rq()->cpu, HK_FLAG_TIMER))) {
- 		span = cpu_online_mask;
-+	}
- #endif
- 	for_each_cpu(i, span) {
- 		int enqueue = 0;
+diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c
+index 0b2ff08..f4a905f 100644
+--- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c
++++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c
+@@ -29,16 +29,16 @@ static int mvpp2_prs_hw_write(struct mvpp2 *priv, struct mvpp2_prs_entry *pe)
+ 	/* Clear entry invalidation bit */
+ 	pe->tcam[MVPP2_PRS_TCAM_INV_WORD] &= ~MVPP2_PRS_TCAM_INV_MASK;
+ 
+-	/* Write tcam index - indirect access */
+-	mvpp2_write(priv, MVPP2_PRS_TCAM_IDX_REG, pe->index);
+-	for (i = 0; i < MVPP2_PRS_TCAM_WORDS; i++)
+-		mvpp2_write(priv, MVPP2_PRS_TCAM_DATA_REG(i), pe->tcam[i]);
+-
+ 	/* Write sram index - indirect access */
+ 	mvpp2_write(priv, MVPP2_PRS_SRAM_IDX_REG, pe->index);
+ 	for (i = 0; i < MVPP2_PRS_SRAM_WORDS; i++)
+ 		mvpp2_write(priv, MVPP2_PRS_SRAM_DATA_REG(i), pe->sram[i]);
+ 
++	/* Write tcam index - indirect access */
++	mvpp2_write(priv, MVPP2_PRS_TCAM_IDX_REG, pe->index);
++	for (i = 0; i < MVPP2_PRS_TCAM_WORDS; i++)
++		mvpp2_write(priv, MVPP2_PRS_TCAM_DATA_REG(i), pe->tcam[i]);
++
+ 	return 0;
+ }
+ 
 -- 
-2.29.2
+1.9.1
 
