@@ -2,90 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C2E330A415
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:11:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E58F930A414
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:11:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231915AbhBAJLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 04:11:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44026 "EHLO
+        id S232798AbhBAJKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 04:10:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232483AbhBAJKG (ORCPT
+        with ESMTP id S232646AbhBAJKG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Feb 2021 04:10:06 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D68C061573;
-        Mon,  1 Feb 2021 01:08:25 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id e15so12462373wme.0;
-        Mon, 01 Feb 2021 01:08:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=o5JnS33laQU6G5fECPGW2s6WllKBqXM6zsLrlBz79zQ=;
-        b=gP2BmoVu0zeE4TgEq7ynuU4qsij3UO1rKLSY/4sPfg4SaNdsZWRRFEQf/ecgTbq7vE
-         vd5+yCKwvg+n/vP/5G7MmroT+0c6BBOhWchc77GUeP5JZ0Bkc8uaRp109NArtlpMCCFu
-         Zo1uqks0EXzBwKDdC++LyNsyLuxhaNxC/lznk5/LZmrmXfBaAZWuaeObVG97oB/EHOid
-         mvxJWpsKg7gdNYf+GA5KK6bUQN4v4o2UXXpUqBPjpcUjBQ6017kNwop6w11kEC4NJcBe
-         ++pmYz5IwHtF4QZyXR/i9OIO9mX//hDtXJdZw1sgcqeCbrrorQnJuAibDeaoi6yHMBhM
-         dPbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:from:to:cc:references:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=o5JnS33laQU6G5fECPGW2s6WllKBqXM6zsLrlBz79zQ=;
-        b=lxnNKLQLJ+qETA6acns/ThElOMBu5CH887E8GhzrIXCXsq6hH0fOR/TwMA2UFbyvzX
-         7NZGWgo4wmjYXR4jONlwV0L3B7+iP+YVtHg16PGcUCjlFEtXvLPWYFv3Co5n0WRKBoYi
-         L1voJMjnoH9UHqGJRhXxuNGsa6glAy6anV0JCkQktxaRNbZsV3sk+LMhdO5LBZj6iz+h
-         xUN0KbqnW2Iy5sPiw1EHG8+XSyGYqEoZ+NBznvjDnhl27Uvxp7s58hzIEpY6IlMIXn07
-         EgAwvbWV+WTJ9GOnGzfUhmZWXlCeWtfUFViIDkg79pACw/W5eQvnvFbYEJ82UQoGqPMe
-         BLPg==
-X-Gm-Message-State: AOAM5300GmFDRXSdSgev1SrNiNecQO8aEuNYD4iFkbbdaAf8BHP19Rla
-        OEj2yYB7rKTnATGkqq7nW7AtjDTmfMaK4Q==
-X-Google-Smtp-Source: ABdhPJy6/cmSRLPwon2z/9R2p2zZzCuxZPmybKgd4sNw0z52O7qFXNgW0Uzy9QX4MfBGuQ0FhPAM+A==
-X-Received: by 2002:a1c:4d05:: with SMTP id o5mr4126589wmh.51.1612170503875;
-        Mon, 01 Feb 2021 01:08:23 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.googlemail.com with ESMTPSA id q24sm772398wmq.24.2021.02.01.01.08.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 01:08:23 -0800 (PST)
-Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
-Subject: Re: [PATCH v2] KVM: x86: Allow guests to see MSR_IA32_TSX_CTRL even
- if tsx=off
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        jmattson@google.com, stable@vger.kernel.org
-References: <20210129101912.1857809-1-pbonzini@redhat.com>
- <YBQ+peAEdX2h3tro@google.com>
- <37be5fb8-056f-8fba-3016-464634e069af@redhat.com>
-Message-ID: <618c5513-5092-f7cd-b47b-933936001180@redhat.com>
-Date:   Mon, 1 Feb 2021 10:08:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5202C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 01:08:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=9yzCjegvphyHKQtcc4XtyEBwvus4qWtbMG0GSfGCid4=; b=OBDi9LMmWpf2HU4rvIDFnwdRC4
+        2hcv6AM9DaWiZ0AedpjNIdtgchaF3xV8K7W8WfqiABRTmss08+mG8s/midjGnrmKRdYvKAvHEnlcx
+        6r0DvF8aDdt1/C7qeVD80oU2i1mghRDmzn7jAg6decZygDFWPRQ8refs7VPFPge1MCHZ3cDOCzhSD
+        FDO+CXWDtLRw15D1G0barDHI0T9mYX6aUfNkL+SjNtzTyMiTpzJRkwsF2R+GwZ6AMmHlIEiFhb+CD
+        /IdEgiR3HXkF7T2l3Nq1SAiNAj4sFbmARwkXNdJxdNhEIB53shsM2Dtwv1kkIUbqZ+iddf5K89WbN
+        pVTClI/g==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l6VCK-00DZh1-7m; Mon, 01 Feb 2021 09:08:40 +0000
+Date:   Mon, 1 Feb 2021 09:08:40 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Yonghong Song <yhs@fb.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH 06/11] x86/fault: Improve kernel-executing-user-memory
+ handling
+Message-ID: <20210201090840.GB3229269@infradead.org>
+References: <cover.1612113550.git.luto@kernel.org>
+ <05e787a0d0661d0bfb40e44db39bf5ead5f7e4ef.1612113550.git.luto@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <37be5fb8-056f-8fba-3016-464634e069af@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <05e787a0d0661d0bfb40e44db39bf5ead5f7e4ef.1612113550.git.luto@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/02/21 09:46, Paolo Bonzini wrote:
->>
->> This comment be updated to call out the new TSX_CTRL behavior.
->>
->>     /*
->>      * On TAA affected systems:
->>      *      - nothing to do if TSX is disabled on the host.
->>      *      - we emulate TSX_CTRL if present on the host.
->>      *      This lets the guest use VERW to clear CPU buffers.
->>      */
-> 
-> Ok.
+On Sun, Jan 31, 2021 at 09:24:37AM -0800, Andy Lutomirski wrote:
+>  #if defined(CONFIG_X86_64) && defined(CONFIG_CPU_SUP_AMD)
+> +	if (likely(boot_cpu_data.x86_vendor != X86_VENDOR_AMD
+> +		   || boot_cpu_data.x86 != 0xf))
 
-Hmm, but the comment is even more accurate now than before, isn't it? 
-It said nothing about hiding TSX_CTRL, so now it matches the code below.
-
-Paolo
+Same nitpick as for the other patch.  Maybe we wan a little inline
+helper for the specific erratum that includes the vendor and family
+checks in adddition to using IS_ENABLED for the config options?
