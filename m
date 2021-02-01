@@ -2,329 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68AB530A9CD
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:32:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FC3C30A9D1
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:33:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229634AbhBAOcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 09:32:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58530 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230157AbhBAOcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 09:32:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1F2CF60C41;
-        Mon,  1 Feb 2021 14:31:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612189881;
-        bh=bCCyXIJyYjfQMd4EVZhPIo9+AaMpMaQCa5ve/mIIouM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VXwycjkVhuvvrLIQXC0QBYGpVy3zzLuevYiKNuUFXsvFBiamx5N2nl/b7qB8SaF/P
-         MwnB/7NnRm1dZPN0cB7tw/MdjuJwfKwNIFo7B5ftONmvjYDvq+gBuXXD5vx6nh2VEg
-         kuofRZa1PTu4oxzAo0u1MO//wh6FQb8lmIT9urbPn4Ns++rvs00/mqcM4YDbQpimu9
-         sByq4yGjIZfdb2rLZSAHCpzbHt+rjq3bUU/ADva2OJ3iJFrEVuvsSvYPIA68XUaG0f
-         EDvoCokyidFoJ1IHx2sarz5b8QX4cUDB2wyRduPe7JjylX78AfelukwXnja4QqsIvb
-         BX5J1eMTTfb6g==
-Date:   Mon, 1 Feb 2021 20:01:16 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     yung-chuan.liao@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH 6/6] soundwire: qcom: add support to new interrupts
-Message-ID: <20210201143116.GE2771@vkoul-mobl>
-References: <20210129173248.5941-1-srinivas.kandagatla@linaro.org>
- <20210129173248.5941-7-srinivas.kandagatla@linaro.org>
+        id S230055AbhBAOc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 09:32:58 -0500
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:23368 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229881AbhBAOcu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 09:32:50 -0500
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id BF9C1760C5;
+        Mon,  1 Feb 2021 17:32:02 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail; t=1612189922;
+        bh=ugc5xGkN6Ga6tFK1Cr2vXNbneVrKtfCttb53gq73+fY=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=cEKyYgjf/P5gx3h83QRNduXvjG4olPpIu6Ilk0N0/bySP4FgyNtqOtpbbBCddMLrV
+         /ructk0WFa1N4PH2zs+u0yWrsiE987RjJpqxYfw9Bqp5NyEBfD2h0mDGuURgF3W6Nw
+         oyT7Pdv2PbX2CKtYFqGjPZWV1FSqcG8bM6vo3x5o=
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id EC063760A6;
+        Mon,  1 Feb 2021 17:32:01 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.64.121) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Mon, 1 Feb
+ 2021 17:32:01 +0300
+Subject: Re: [RFC PATCH v3 00/13] virtio/vsock: introduce SOCK_SEQPACKET
+ support
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Jeff Vander Stoep <jeffv@google.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stsp2@yandex.ru" <stsp2@yandex.ru>,
+        "oxffffaa@gmail.com" <oxffffaa@gmail.com>
+References: <20210125110903.597155-1-arseny.krasnov@kaspersky.com>
+ <20210128171923.esyna5ccv5s27jyu@steredhat>
+ <63459bb3-da22-b2a4-71ee-e67660fd2e12@kaspersky.com>
+ <20210129092604.mgaw3ipiyv6xra3b@steredhat>
+ <cb6d5a9c-fd49-a9dd-33b3-52027ae2f71c@kaspersky.com>
+ <20210201110258.7ze7a7izl7gesv4w@steredhat>
+ <1b80eb27-4818-50d7-7454-ff6cc398422e@kaspersky.com>
+ <20210201142333.7zcgoqq432y7kktb@steredhat>
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Message-ID: <a8ff5600-c166-ee75-1e62-06ae127e2352@kaspersky.com>
+Date:   Mon, 1 Feb 2021 17:32:00 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210129173248.5941-7-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20210201142333.7zcgoqq432y7kktb@steredhat>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.64.64.121]
+X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.16, Database issued on: 02/01/2021 14:16:04
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 161566 [Feb 01 2021]
+X-KSE-AntiSpam-Info: LuaCore: 421 421 33a18ad4049b4a5e5420c907b38d332fafd06b09
+X-KSE-AntiSpam-Info: Version: 5.9.16.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: {Tracking_content_type, plain}
+X-KSE-AntiSpam-Info: {Tracking_date, moscow}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: kaspersky.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 02/01/2021 14:19:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 2/1/2021 12:14:00 PM
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/02/01 10:58:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/02/01 10:06:00 #16068838
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29-01-21, 17:32, Srinivas Kandagatla wrote:
-> Add support to new interrupts and update irq routine in a way
-> to deal with multiple pending interrupts with in a single interrupt!
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  drivers/soundwire/qcom.c | 191 ++++++++++++++++++++++++++++++---------
->  1 file changed, 146 insertions(+), 45 deletions(-)
-> 
-> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-> index d61b204dc284..c699bd51d29a 100644
-> --- a/drivers/soundwire/qcom.c
-> +++ b/drivers/soundwire/qcom.c
-> @@ -28,10 +28,21 @@
->  #define SWRM_COMP_PARAMS_DIN_PORTS_MASK				GENMASK(9, 5)
->  #define SWRM_INTERRUPT_STATUS					0x200
->  #define SWRM_INTERRUPT_STATUS_RMSK				GENMASK(16, 0)
-> +#define SWRM_INTERRUPT_STATUS_SLAVE_PEND_IRQ			BIT(0)
->  #define SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED		BIT(1)
->  #define SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS		BIT(2)
-> +#define SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET			BIT(3)
-> +#define SWRM_INTERRUPT_STATUS_RD_FIFO_OVERFLOW			BIT(4)
-> +#define SWRM_INTERRUPT_STATUS_RD_FIFO_UNDERFLOW			BIT(5)
-> +#define SWRM_INTERRUPT_STATUS_WR_CMD_FIFO_OVERFLOW		BIT(6)
->  #define SWRM_INTERRUPT_STATUS_CMD_ERROR				BIT(7)
-> +#define SWRM_INTERRUPT_STATUS_DOUT_PORT_COLLISION		BIT(8)
-> +#define SWRM_INTERRUPT_STATUS_READ_EN_RD_VALID_MISMATCH		BIT(9)
->  #define SWRM_INTERRUPT_STATUS_SPECIAL_CMD_ID_FINISHED		BIT(10)
-> +#define SWRM_INTERRUPT_STATUS_BUS_RESET_FINISHED_V2             BIT(13)
-> +#define SWRM_INTERRUPT_STATUS_CLK_STOP_FINISHED_V2              BIT(14)
-> +#define SWRM_INTERRUPT_STATUS_EXT_CLK_STOP_WAKEUP               BIT(16)
-> +#define SWRM_INTERRUPT_MAX					17
->  #define SWRM_INTERRUPT_MASK_ADDR				0x204
->  #define SWRM_INTERRUPT_CLEAR					0x208
->  #define SWRM_INTERRUPT_CPU_EN					0x210
-> @@ -105,11 +116,8 @@ struct qcom_swrm_ctrl {
->  	struct device *dev;
->  	struct regmap *regmap;
->  	void __iomem *mmio;
-> -	struct completion *comp;
->  	struct completion broadcast;
->  	struct work_struct slave_work;
-> -	/* read/write lock */
-> -	spinlock_t comp_lock;
->  	/* Port alloc/free lock */
->  	struct mutex port_lock;
->  	struct mutex io_lock;
-> @@ -126,6 +134,7 @@ struct qcom_swrm_ctrl {
->  	int rows_index;
->  	unsigned long dout_port_mask;
->  	unsigned long din_port_mask;
-> +	u32 intr_mask;
->  	u8 rcmd_id;
->  	u8 wcmd_id;
->  	struct qcom_swrm_port_config pconfig[QCOM_SDW_MAX_PORTS];
-> @@ -315,6 +324,27 @@ static int qcom_swrm_cmd_fifo_rd_cmd(struct qcom_swrm_ctrl *swrm,
->  	return ret;
->  }
->  
-> +static int qcom_swrm_get_alert_slave(struct qcom_swrm_ctrl *ctrl)
-> +{
-> +	u32 val;
-> +	int i;
-> +
-> +	ctrl->reg_read(ctrl, SWRM_MCP_SLV_STATUS, &val);
-> +
-> +	for (i = 0; i < SDW_MAX_DEVICES; i++) {
-> +		u32 s;
 
-define at top of the function pls, also maybe better name status?
+On 01.02.2021 17:23, Stefano Garzarella wrote:
+> On Mon, Feb 01, 2021 at 04:57:18PM +0300, Arseny Krasnov wrote:
+>> On 01.02.2021 14:02, Stefano Garzarella wrote:
+>>> On Fri, Jan 29, 2021 at 06:52:23PM +0300, Arseny Krasnov wrote:
+>>>> On 29.01.2021 12:26, Stefano Garzarella wrote:
+>>>>> On Fri, Jan 29, 2021 at 09:41:50AM +0300, Arseny Krasnov wrote:
+>>>>>> On 28.01.2021 20:19, Stefano Garzarella wrote:
+>>>>>>> Hi Arseny,
+>>>>>>> I reviewed a part, tomorrow I hope to finish the other patches.
+>>>>>>>
+>>>>>>> Just a couple of comments in the TODOs below.
+>>>>>>>
+>>>>>>> On Mon, Jan 25, 2021 at 02:09:00PM +0300, Arseny Krasnov wrote:
+>>>>>>>> 	This patchset impelements support of SOCK_SEQPACKET for virtio
+>>>>>>>> transport.
+>>>>>>>> 	As SOCK_SEQPACKET guarantees to save record boundaries, so to
+>>>>>>>> do it, new packet operation was added: it marks start of record (with
+>>>>>>>> record length in header), such packet doesn't carry any data.  To send
+>>>>>>>> record, packet with start marker is sent first, then all data is sent
+>>>>>>>> as usual 'RW' packets. On receiver's side, length of record is known
+>>>>>>> >from packet with start record marker. Now as  packets of one socket
+>>>>>>>> are not reordered neither on vsock nor on vhost transport layers, such
+>>>>>>>> marker allows to restore original record on receiver's side. If user's
+>>>>>>>> buffer is smaller that record length, when all out of size data is
+>>>>>>>> dropped.
+>>>>>>>> 	Maximum length of datagram is not limited as in stream socket,
+>>>>>>>> because same credit logic is used. Difference with stream socket is
+>>>>>>>> that user is not woken up until whole record is received or error
+>>>>>>>> occurred. Implementation also supports 'MSG_EOR' and 'MSG_TRUNC' flags.
+>>>>>>>> 	Tests also implemented.
+>>>>>>>>
+>>>>>>>> Arseny Krasnov (13):
+>>>>>>>>  af_vsock: prepare for SOCK_SEQPACKET support
+>>>>>>>>  af_vsock: prepare 'vsock_connectible_recvmsg()'
+>>>>>>>>  af_vsock: implement SEQPACKET rx loop
+>>>>>>>>  af_vsock: implement send logic for SOCK_SEQPACKET
+>>>>>>>>  af_vsock: rest of SEQPACKET support
+>>>>>>>>  af_vsock: update comments for stream sockets
+>>>>>>>>  virtio/vsock: dequeue callback for SOCK_SEQPACKET
+>>>>>>>>  virtio/vsock: fetch length for SEQPACKET record
+>>>>>>>>  virtio/vsock: add SEQPACKET receive logic
+>>>>>>>>  virtio/vsock: rest of SOCK_SEQPACKET support
+>>>>>>>>  virtio/vsock: setup SEQPACKET ops for transport
+>>>>>>>>  vhost/vsock: setup SEQPACKET ops for transport
+>>>>>>>>  vsock_test: add SOCK_SEQPACKET tests
+>>>>>>>>
+>>>>>>>> drivers/vhost/vsock.c                   |   7 +-
+>>>>>>>> include/linux/virtio_vsock.h            |  12 +
+>>>>>>>> include/net/af_vsock.h                  |   6 +
+>>>>>>>> include/uapi/linux/virtio_vsock.h       |   9 +
+>>>>>>>> net/vmw_vsock/af_vsock.c                | 543 ++++++++++++++++------
+>>>>>>>> net/vmw_vsock/virtio_transport.c        |   4 +
+>>>>>>>> net/vmw_vsock/virtio_transport_common.c | 295 ++++++++++--
+>>>>>>>> tools/testing/vsock/util.c              |  32 +-
+>>>>>>>> tools/testing/vsock/util.h              |   3 +
+>>>>>>>> tools/testing/vsock/vsock_test.c        | 126 +++++
+>>>>>>>> 10 files changed, 862 insertions(+), 175 deletions(-)
+>>>>>>>>
+>>>>>>>> TODO:
+>>>>>>>> - Support for record integrity control. As transport could drop some
+>>>>>>>>   packets, something like "record-id" and record end marker need to
+>>>>>>>>   be implemented. Idea is that SEQ_BEGIN packet carries both record
+>>>>>>>>   length and record id, end marker(let it be SEQ_END) carries only
+>>>>>>>>   record id. To be sure that no one packet was lost, receiver checks
+>>>>>>>>   length of data between SEQ_BEGIN and SEQ_END(it must be same with
+>>>>>>>>   value in SEQ_BEGIN) and record ids of SEQ_BEGIN and SEQ_END(this
+>>>>>>>>   means that both markers were not dropped. I think that easiest way
+>>>>>>>>   to implement record id for SEQ_BEGIN is to reuse another field of
+>>>>>>>>   packet header(SEQ_BEGIN already uses 'flags' as record length).For
+>>>>>>>>   SEQ_END record id could be stored in 'flags'.
+>>>>>>> I don't really like the idea of reusing the 'flags' field for this
+>>>>>>> purpose.
+>>>>>>>
+>>>>>>>>     Another way to implement it, is to move metadata of both SEQ_END
+>>>>>>>>   and SEQ_BEGIN to payload. But this approach has problem, because
+>>>>>>>>   if we move something to payload, such payload is accounted by
+>>>>>>>>   credit logic, which fragments payload, while payload with record
+>>>>>>>>   length and id couldn't be fragmented. One way to overcome it is to
+>>>>>>>>   ignore credit update for SEQ_BEGIN/SEQ_END packet.Another solution
+>>>>>>>>   is to update 'stream_has_space()' function: current implementation
+>>>>>>>>   return non-zero when at least 1 byte is allowed to use,but updated
+>>>>>>>>   version will have extra argument, which is needed length. For 'RW'
+>>>>>>>>   packet this argument is 1, for SEQ_BEGIN it is sizeof(record len +
+>>>>>>>>   record id) and for SEQ_END it is sizeof(record id).
+>>>>>>> Is the payload accounted by credit logic also if hdr.op is not
+>>>>>>> VIRTIO_VSOCK_OP_RW?
+>>>>>> Yes, on send any packet with payload could be fragmented if
+>>>>>>
+>>>>>> there is not enough space at receiver. On receive 'fwd_cnt' and
+>>>>>>
+>>>>>> 'buf_alloc' are updated with header of every packet. Of course,
+>>>>>>
+>>>>>> to every such case i've described i can add check for 'RW'
+>>>>>>
+>>>>>> packet, to exclude payload from credit accounting, but this is
+>>>>>>
+>>>>>> bunch of dumb checks.
+>>>>>>
+>>>>>>> I think that we can define a specific header to put after the
+>>>>>>> virtio_vsock_hdr when hdr.op is SEQ_BEGIN or SEQ_END, and in this header
+>>>>>>> we can store the id and the length of the message.
+>>>>>> I think it is better than use payload and touch credit logic
+>>>>>>
+>>>>> Cool, so let's try this option, hoping there aren't a lot of issues.
+>>>> If i understand, current implementation has 'struct 
+>>>> virtio_vsock_hdr',
+>>>>
+>>>> then i'll add 'struct virtio_vsock_hdr_seq' with message length and id.
+>>>>
+>>>> After that, in 'struct virtio_vsock_pkt' which describes packet, field for
+>>>>
+>>>> header(which is 'struct virtio_vsock_hdr') must be replaced with new
+>>>>
+>>>> structure which  contains both 'struct virtio_vsock_hdr' and 'struct
+>>>>
+>>>> virtio_vsock_hdr_seq', because header field of 'struct virtio_vsock_pkt'
+>>>>
+>>>> is buffer for virtio layer. After it all accesses to header(for example to
+>>>>
+>>>> 'buf_alloc' field will go accross new  structure with both headers:
+>>>>
+>>>> pkt->hdr.buf_alloc   ->   pkt->extended_hdr.classic_hdr.buf_alloc
+>>>>
+>>>> May be to avoid this, packet's header could be allocated dynamically
+>>>>
+>>>> in the same manner as packet's buffer? Size of allocation is always
+>>>>
+>>>> sizeof(classic header) + sizeof(seq header). In 'struct virtio_vsock_pkt'
+>>>>
+>>>> such header will be implemented as union of two pointers: class header
+>>>>
+>>>> and extended header containing classic and seq header. Which pointer
+>>>>
+>>>> to use is depends on packet's op.
+>>> I think that the 'classic header' can stay as is, and the extended
+>>> header can be dynamically allocated, as we do for the payload.
+>>>
+>>> But we have to be careful what happens if the other peer doesn't support
+>>> SEQPACKET and if it counts this extra header as a payload for the credit
+>>> mechanism.
+>> You mean put extra header to payload(buffer of second virtio desc),
+>>
+>> in this way on send/receive auxiliary 'if's are needed to avoid credit
+>>
+>> logic(or set length field in header of such packets to 0). But what
+>>
+>> about placing extra header after classic header in buffer of first virtio
+>>
+>> desc? In this case extra header is not payload and credit works as is.
+>>
+>> Or it is critical, that size of first buffer will be not same as size of
+>>
+>> classic header?
+> We need to think about compatibility with old drivers.
+Yes, compatibility seems to be a trouble.
+>
+> What would happen in this case?
+>
+> I think it's easier to use the second buffer, usually used for the 
+> payload, to carry the extra header. Also, we can leave hdr.len = 0, so 
+> we are sure that it is not counted in credit mechanism.
 
-> +
-> +		s = (val >> (i * 2));
+Ok, that one of possible solutions. I just wanted to inform you,
 
-why * 2 ? Maybe add a comment for this logic
+that way i'll use in v4
 
-> +
-> +		if ((s & SWRM_MCP_SLV_STATUS_MASK) == SDW_SLAVE_ALERT) {
-> +			ctrl->status[i] = s;
-> +			return i;
-> +		}
-> +	}
-> +
-> +	return -EINVAL;
-> +}
-> +
->  static void qcom_swrm_get_device_status(struct qcom_swrm_ctrl *ctrl)
->  {
->  	u32 val;
-> @@ -333,40 +363,122 @@ static void qcom_swrm_get_device_status(struct qcom_swrm_ctrl *ctrl)
->  
->  static irqreturn_t qcom_swrm_irq_handler(int irq, void *dev_id)
->  {
-> -	struct qcom_swrm_ctrl *ctrl = dev_id;
-> -	u32 sts, value;
-> -	unsigned long flags;
-> -
-> -	ctrl->reg_read(ctrl, SWRM_INTERRUPT_STATUS, &sts);
-> -
-> -	if (sts & SWRM_INTERRUPT_STATUS_CMD_ERROR) {
-> -		ctrl->reg_read(ctrl, SWRM_CMD_FIFO_STATUS, &value);
-> -		dev_err_ratelimited(ctrl->dev,
-> -				    "CMD error, fifo status 0x%x\n",
-> -				     value);
-> -		ctrl->reg_write(ctrl, SWRM_CMD_FIFO_CMD, 0x1);
-> -	}
-> +	struct qcom_swrm_ctrl *swrm = dev_id;
-> +	u32 value, intr_sts, intr_sts_masked;
-> +	u32 i;
-> +	u8 devnum = 0;
-> +	int ret = IRQ_HANDLED;
-> +
-> +
-> +	swrm->reg_read(swrm, SWRM_INTERRUPT_STATUS, &intr_sts);
-> +	intr_sts_masked = intr_sts & swrm->intr_mask;
-> +
-> +handle_irq:
+> If the driver supports SEQPACKET, it knows it must fetch extra header 
+> when it must handle SEQ_BEGIN/SEQ_END.
+>
+> If it is not clear, I'll try to provide a simple PoC of a patch.
 
-maybe move this into a fn and avoid a goto for non err path?
+No, it is clear for me, i'll implement it in v4 also take care of
 
-> +	for (i = 0; i < SWRM_INTERRUPT_MAX; i++) {
-> +		value = intr_sts_masked & (1 << i);
-> +		if (!value)
-> +			continue;
-> +
-> +		switch (value) {
-> +		case SWRM_INTERRUPT_STATUS_SLAVE_PEND_IRQ:
-> +			devnum = qcom_swrm_get_alert_slave(swrm);
-> +			if (devnum < 0) {
-> +				dev_err_ratelimited(swrm->dev,
-> +				    "no slave alert found.spurious interrupt\n");
-> +			} else {
-> +				sdw_handle_slave_status(&swrm->bus, swrm->status);
-> +			}
->  
-> -	if ((sts & SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED) ||
-> -	    sts & SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS)
-> -		schedule_work(&ctrl->slave_work);
-> -
-> -	/**
-> -	 * clear the interrupt before complete() is called, as complete can
-> -	 * schedule new read/writes which require interrupts, clearing the
-> -	 * interrupt would avoid missing interrupts in such cases.
-> -	 */
-> -	ctrl->reg_write(ctrl, SWRM_INTERRUPT_CLEAR, sts);
-> -
-> -	if (sts & SWRM_INTERRUPT_STATUS_SPECIAL_CMD_ID_FINISHED) {
-> -		spin_lock_irqsave(&ctrl->comp_lock, flags);
-> -		if (ctrl->comp)
-> -			complete(ctrl->comp);
-> -		spin_unlock_irqrestore(&ctrl->comp_lock, flags);
-> +			break;
-> +		case SWRM_INTERRUPT_STATUS_NEW_SLAVE_ATTACHED:
-> +		case SWRM_INTERRUPT_STATUS_CHANGE_ENUM_SLAVE_STATUS:
-> +			dev_err_ratelimited(swrm->dev, "%s: SWR new slave attached\n",
-> +				__func__);
-> +			qcom_swrm_get_device_status(swrm);
-> +			sdw_handle_slave_status(&swrm->bus, swrm->status);
-> +			break;
-> +		case SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET:
-> +			dev_err_ratelimited(swrm->dev,
-> +					"%s: SWR bus clsh detected\n",
-> +					__func__);
-> +			swrm->intr_mask &=
-> +				~SWRM_INTERRUPT_STATUS_MASTER_CLASH_DET;
-> +			swrm->reg_write(swrm,
-> +				SWRM_INTERRUPT_CPU_EN,
-> +				swrm->intr_mask);
-> +			break;
-> +		case SWRM_INTERRUPT_STATUS_RD_FIFO_OVERFLOW:
-> +			swrm->reg_read(swrm, SWRM_CMD_FIFO_STATUS, &value);
-> +			dev_err_ratelimited(swrm->dev,
-> +				"%s: SWR read FIFO overflow fifo status 0x%x\n",
-> +				__func__, value);
-> +			break;
-> +		case SWRM_INTERRUPT_STATUS_RD_FIFO_UNDERFLOW:
-> +			swrm->reg_read(swrm, SWRM_CMD_FIFO_STATUS, &value);
-> +			dev_err_ratelimited(swrm->dev,
-> +				"%s: SWR read FIFO underflow fifo status 0x%x\n",
-> +				__func__, value);
-> +			break;
-> +		case SWRM_INTERRUPT_STATUS_WR_CMD_FIFO_OVERFLOW:
-> +			swrm->reg_read(swrm, SWRM_CMD_FIFO_STATUS, &value);
-> +			dev_err(swrm->dev,
-> +				"%s: SWR write FIFO overflow fifo status %x\n",
-> +				__func__, value);
-> +			swrm->reg_write(swrm, SWRM_CMD_FIFO_CMD, 0x1);
-> +			break;
-> +		case SWRM_INTERRUPT_STATUS_CMD_ERROR:
-> +			swrm->reg_read(swrm, SWRM_CMD_FIFO_STATUS, &value);
-> +			dev_err_ratelimited(swrm->dev,
-> +			"%s: SWR CMD error, fifo status 0x%x, flushing fifo\n",
-> +					__func__, value);
-> +			swrm->reg_write(swrm, SWRM_CMD_FIFO_CMD, 0x1);
-> +			break;
-> +		case SWRM_INTERRUPT_STATUS_DOUT_PORT_COLLISION:
-> +			dev_err_ratelimited(swrm->dev,
-> +					"%s: SWR Port collision detected\n",
-> +					__func__);
-> +			swrm->intr_mask &= ~SWRM_INTERRUPT_STATUS_DOUT_PORT_COLLISION;
-> +			swrm->reg_write(swrm,
-> +				SWRM_INTERRUPT_CPU_EN, swrm->intr_mask);
-> +			break;
-> +		case SWRM_INTERRUPT_STATUS_READ_EN_RD_VALID_MISMATCH:
-> +			dev_err_ratelimited(swrm->dev,
-> +				"%s: SWR read enable valid mismatch\n",
-> +				__func__);
-> +			swrm->intr_mask &=
-> +				~SWRM_INTERRUPT_STATUS_READ_EN_RD_VALID_MISMATCH;
-> +			swrm->reg_write(swrm,
-> +				SWRM_INTERRUPT_CPU_EN, swrm->intr_mask);
-> +			break;
-> +		case SWRM_INTERRUPT_STATUS_SPECIAL_CMD_ID_FINISHED:
-> +			complete(&swrm->broadcast);
-> +			break;
-> +		case SWRM_INTERRUPT_STATUS_BUS_RESET_FINISHED_V2:
-> +			break;
-> +		case SWRM_INTERRUPT_STATUS_CLK_STOP_FINISHED_V2:
-> +			break;
-> +		case SWRM_INTERRUPT_STATUS_EXT_CLK_STOP_WAKEUP:
-> +			break;
-> +		default:
-> +			dev_err_ratelimited(swrm->dev,
-> +					"%s: SWR unknown interrupt value: %d\n",
-> +					__func__, value);
-> +			ret = IRQ_NONE;
-> +			break;
-> +		}
->  	}
-> +	swrm->reg_write(swrm, SWRM_INTERRUPT_CLEAR, intr_sts);
-> +	swrm->reg_write(swrm, SWRM_INTERRUPT_CLEAR, 0x0);
-> +
-> +	swrm->reg_read(swrm, SWRM_INTERRUPT_STATUS, &intr_sts);
-> +	intr_sts_masked = intr_sts & swrm->intr_mask;
-> +
-> +	if (intr_sts_masked)
-> +		goto handle_irq;
->  
-> -	return IRQ_HANDLED;
-> +	return ret;
->  }
-> +
->  static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
->  {
->  	u32 val;
-> @@ -380,6 +492,7 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
->  	/* Disable Auto enumeration */
->  	ctrl->reg_write(ctrl, SWRM_ENUMERATOR_CFG_ADDR, 0);
->  
-> +	ctrl->intr_mask = SWRM_INTERRUPT_STATUS_RMSK;
->  	/* Mask soundwire interrupts */
->  	ctrl->reg_write(ctrl, SWRM_INTERRUPT_MASK_ADDR,
->  			SWRM_INTERRUPT_STATUS_RMSK);
-> @@ -615,16 +728,6 @@ static u32 qcom_swrm_freq_tbl[MAX_FREQ_NUM] = {
->  	DEFAULT_CLK_FREQ,
->  };
->  
-> -static void qcom_swrm_slave_wq(struct work_struct *work)
-> -{
-> -	struct qcom_swrm_ctrl *ctrl =
-> -			container_of(work, struct qcom_swrm_ctrl, slave_work);
-> -
-> -	qcom_swrm_get_device_status(ctrl);
-> -	sdw_handle_slave_status(&ctrl->bus, ctrl->status);
-> -}
-> -
-> -
->  static void qcom_swrm_stream_free_ports(struct qcom_swrm_ctrl *ctrl,
->  					struct sdw_stream_runtime *stream)
->  {
-> @@ -989,11 +1092,9 @@ static int qcom_swrm_probe(struct platform_device *pdev)
->  
->  	ctrl->dev = dev;
->  	dev_set_drvdata(&pdev->dev, ctrl);
-> -	spin_lock_init(&ctrl->comp_lock);
->  	mutex_init(&ctrl->port_lock);
->  	mutex_init(&ctrl->io_lock);
->  	init_completion(&ctrl->broadcast);
-> -	INIT_WORK(&ctrl->slave_work, qcom_swrm_slave_wq);
->  
->  	ctrl->bus.ops = &qcom_swrm_ops;
->  	ctrl->bus.port_ops = &qcom_swrm_port_ops;
-> -- 
-> 2.21.0
+review comments.
 
--- 
-~Vinod
+Thank You
+
+>
+> Thanks,
+> Stefano
+>
+>
