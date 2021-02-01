@@ -2,102 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A50B30AFE5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:59:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3755630AFF5
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:02:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232411AbhBAS6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:58:16 -0500
-Received: from foss.arm.com ([217.140.110.172]:36580 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229996AbhBAS6L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:58:11 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CE453147A;
-        Mon,  1 Feb 2021 10:57:25 -0800 (PST)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D6FF3F71A;
-        Mon,  1 Feb 2021 10:57:24 -0800 (PST)
-Date:   Mon, 1 Feb 2021 18:57:19 +0000
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Shradha Todi <shradha.t@samsung.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
-        robh@kernel.org, bhelgaas@google.com, pankaj.dubey@samsung.com,
-        sriram.dash@samsung.com, niyas.ahmed@samsung.com,
-        p.rajanbabu@samsung.com, l.mehra@samsung.com, hari.tv@samsung.com
-Subject: Re: [PATCH v2] PCI: dwc: Add upper limit address for outbound iATU
-Message-ID: <20210201185719.GA5767@e121166-lin.cambridge.arm.com>
-References: <CGME20210106105019epcas5p377bdbff5cd9e14e5107ccbf2b87b5754@epcas5p3.samsung.com>
- <1609930210-19227-1-git-send-email-shradha.t@samsung.com>
+        id S231775AbhBATCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 14:02:25 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:62014 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230110AbhBATCC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 14:02:02 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 111IovYk150700;
+        Mon, 1 Feb 2021 13:58:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=8DE4OP4mhALUjkAEcT0iR3ZPkE1qJ/LakdUJ1QBmFuU=;
+ b=GO9yg/nz+H7ud1OYtbKwLI1X436wQpgKt/gsH6JHR2LhGCgCJvrn41Pf1NsNGQ239dYr
+ MvYNQHCC2M6pQp0Oqkt57GtY8tf6jmq+4pHEY11rWxC7S0gY8zwn05JCjIpOz65BaVlk
+ lrRZhtE/ypgi8aS5yVbMJz/ut/AcGK1Q0dDD3h9fra9BDXba/EoTzRe8I03GSVXdrWzP
+ vNi1/rzHh541p+whRA+ujFssDLpvvRtNS/s8suiivkh5VclJW1FxROpGoaguHt6E8NW6
+ smrUd+oMIMgv+5SkwcNRCUy2w25C0HhF+zN1qG8clh4aJ59sNNrcQsDkaTFOUEYp0f1L Sg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36epwtrq68-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 13:58:21 -0500
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 111IowWw150724;
+        Mon, 1 Feb 2021 13:58:18 -0500
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 36epwtrq53-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 13:58:17 -0500
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 111Iq3dD001957;
+        Mon, 1 Feb 2021 18:58:16 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma04dal.us.ibm.com with ESMTP id 36cy39cww1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 01 Feb 2021 18:58:16 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 111IwFg036635016
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 1 Feb 2021 18:58:15 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 23482C6055;
+        Mon,  1 Feb 2021 18:58:15 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 176A9C6059;
+        Mon,  1 Feb 2021 18:58:07 +0000 (GMT)
+Received: from manicouagan.localdomain (unknown [9.80.217.20])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTPS;
+        Mon,  1 Feb 2021 18:58:07 +0000 (GMT)
+References: <20210115173017.30617-1-nramas@linux.microsoft.com>
+ <20210115173017.30617-10-nramas@linux.microsoft.com>
+ <20210127165208.GA358@willie-the-truck>
+ <d3330793-6054-6e59-b727-44bf8e5653cd@linux.microsoft.com>
+ <20210127184319.GA676@willie-the-truck>
+ <871re5soof.fsf@manicouagan.localdomain>
+ <d6ddcab2f9db25f49e89f37e1cb4f59ad42651e6.camel@perches.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        zohar@linux.ibm.com, robh@kernel.org, takahiro.akashi@linaro.org,
+        gregkh@linuxfoundation.org, catalin.marinas@arm.com,
+        mpe@ellerman.id.au, james.morse@arm.com, sashal@kernel.org,
+        benh@kernel.crashing.org, paulus@samba.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        masahiroy@kernel.org, bhsharma@redhat.com, mbrugger@suse.com,
+        hsinyi@chromium.org, tao.li@vivo.com, christophe.leroy@c-s.fr,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v15 09/10] arm64: Call kmalloc() to allocate DTB buffer
+In-reply-to: <d6ddcab2f9db25f49e89f37e1cb4f59ad42651e6.camel@perches.com>
+Date:   Mon, 01 Feb 2021 15:58:06 -0300
+Message-ID: <87czxjpqdd.fsf@manicouagan.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1609930210-19227-1-git-send-email-shradha.t@samsung.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
+ definitions=2021-02-01_06:2021-01-29,2021-02-01 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=706
+ bulkscore=0 mlxscore=0 priorityscore=1501 lowpriorityscore=0 spamscore=0
+ clxscore=1011 impostorscore=0 malwarescore=0 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102010093
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 04:20:10PM +0530, Shradha Todi wrote:
-> The size parameter is unsigned long type which can accept size > 4GB. In
-> that case, the upper limit address must be programmed. Add support to
-> program the upper limit address and set INCREASE_REGION_SIZE in case size >
-> 4GB.
-> 
-> Signed-off-by: Shradha Todi <shradha.t@samsung.com>
-> ---
-> v1: https://lkml.org/lkml/2020/12/20/187
-> v2:
->    Addressed Rob's review comment and added PCI version check condition to
->    avoid writing to reserved registers.
-> 
->  drivers/pci/controller/dwc/pcie-designware.c | 9 +++++++--
->  drivers/pci/controller/dwc/pcie-designware.h | 1 +
->  2 files changed, 8 insertions(+), 2 deletions(-)
 
-Does not apply to my pci/dwc branch, please rebase it on top of it
-and resend it while keeping review tags.
+Joe Perches <joe@perches.com> writes:
 
-Thanks,
-Lorenzo
+> On Thu, 2021-01-28 at 00:52 -0300, Thiago Jung Bauermann wrote:
+>> The problem is that this patch implements only part of the suggestion,
+>> which isn't useful in itself. So the patch series should either drop
+>> this patch or consolidate the FDT allocation between the arches.
+>> 
+>> I just tested on powernv and pseries platforms and powerpc can use
+>> vmalloc for the FDT buffer.
+>
+> Perhaps more sensible to use kvmalloc/kvfree.
 
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-> index 74590c7..1d62ca9 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> @@ -290,12 +290,17 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
->  			   upper_32_bits(cpu_addr));
->  	dw_pcie_writel_dbi(pci, PCIE_ATU_LIMIT,
->  			   lower_32_bits(cpu_addr + size - 1));
-> +	if (pci->version >= 0x460A)
-> +		dw_pcie_writel_dbi(pci, PCIE_ATU_UPPER_LIMIT,
-> +				   upper_32_bits(cpu_addr + size - 1));
->  	dw_pcie_writel_dbi(pci, PCIE_ATU_LOWER_TARGET,
->  			   lower_32_bits(pci_addr));
->  	dw_pcie_writel_dbi(pci, PCIE_ATU_UPPER_TARGET,
->  			   upper_32_bits(pci_addr));
-> -	dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, type |
-> -			   PCIE_ATU_FUNC_NUM(func_no));
-> +	val = type | PCIE_ATU_FUNC_NUM(func_no);
-> +	val = ((upper_32_bits(size - 1)) && (pci->version >= 0x460A)) ?
-> +		val | PCIE_ATU_INCREASE_REGION_SIZE : val;
-> +	dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, val);
->  	dw_pcie_writel_dbi(pci, PCIE_ATU_CR2, PCIE_ATU_ENABLE);
->  
->  	/*
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> index 8b905a2..7da79eb 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.h
-> +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> @@ -102,6 +102,7 @@
->  #define PCIE_ATU_DEV(x)			FIELD_PREP(GENMASK(23, 19), x)
->  #define PCIE_ATU_FUNC(x)		FIELD_PREP(GENMASK(18, 16), x)
->  #define PCIE_ATU_UPPER_TARGET		0x91C
-> +#define PCIE_ATU_UPPER_LIMIT		0x924
->  
->  #define PCIE_MISC_CONTROL_1_OFF		0x8BC
->  #define PCIE_DBI_RO_WR_EN		BIT(0)
-> -- 
-> 2.7.4
-> 
+That's true. Converting both arm64 to powerpc to kvmalloc/kvfree is a
+good option. I don't think it's that much better though, because
+kexec_file_load() is called infrequently and doesn't need to be fast so
+the vmalloc() overhead isn't important in practice.
+
+-- 
+Thiago Jung Bauermann
+IBM Linux Technology Center
