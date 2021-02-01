@@ -2,155 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42D8F30B1F7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:18:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D17730B1F9
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:18:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232260AbhBAVQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 16:16:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59838 "EHLO
+        id S232345AbhBAVRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 16:17:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbhBAVQZ (ORCPT
+        with ESMTP id S232310AbhBAVRL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 16:16:25 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C59CC061756;
-        Mon,  1 Feb 2021 13:15:45 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id e15so4661621lft.13;
-        Mon, 01 Feb 2021 13:15:45 -0800 (PST)
+        Mon, 1 Feb 2021 16:17:11 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 383B7C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 13:16:31 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id w14so12492007pfi.2
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 13:16:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=irOj1nASK0NREc3BcDFDuw6eRYD59HzaD0YvEhbe2rA=;
-        b=r6u2S91UMDxQwNdFTsw6DnqRBYyHcKo6KI5z0VToO/XYoEQDiQSd1LiKk82mPbMBuu
-         tDuND+PJGJzf0S3OW0DJ2FnLDRrsvjRa766Iby5rjjIFf7B+8jpTAxaPk+8qY9muwp0o
-         EzUkwQuUEVMQN1WV4njw4EvOlpbY6W8bjwlVb9BVzivY2fwVv8u0YC588ma3YgNqIzMR
-         FLHSJyJ8oioo1j0D8N85ZjUegpJNVIoHQ54qOkOGabg604XOPas8rD2Sjj8uDj3WgnXE
-         P42zY6QD2t+cZjXGY7k/h0OeXjrUqWix4u5r0MzEdzE5wrMjX1rlns5sAnglDWroy2wA
-         FxxQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tPbcRaX1SgEZLu4YCv7l4zPyyMW8dttxgAN/QGCyppw=;
+        b=iHWQb81/ia8DQq3d2ds1zRxrP+jhpqwVi5k5vWZw1g59/lyadKYb1YUzaaxSsDPXEK
+         04eZQ7xLhCIp8ehR+UurOS8YJ+g02SYl0PUJBfSKBRXL4hzxhtw43xqxR7YIjfbOptxC
+         kS8draunkHMry4+vR1OxwbkqsZ1EV1Tdn8yH6XUha6PV3J5X4fP67ANYAKld4hNwSX5z
+         gXMjUCd3XTF2y+GS16jHO/meJWahBHbqXHM4ApYjMln3b5aXUn6FoiswtunMAHU7KZmT
+         J/XhQAxDahP71tMYE6YiJkUbtRe4d70GHKqNlJqT3+7T2y4tL6taaXE30zlBiG7/UdrH
+         vFZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=irOj1nASK0NREc3BcDFDuw6eRYD59HzaD0YvEhbe2rA=;
-        b=gZHG0PhAznycy1SESzPmUIuCOvjrUUNJTLlHvHGEwxbm8Gp2lhaWPdxDrXkeIgAR7m
-         vAmqBNpgz+M0f9HB7BgryItZ8EDu7EGnvIdGqzaP/OOIfQQaKIjtyz2jaPUJOiUj1BxD
-         iQT8dFilwjutXqdoaDYvVdC13hhKuN6iqJgIcwlNQHgkuu7+ElVwU7Cx66cKwiRkwzMa
-         buj3fm3eznX2i7h5YjBf3g0meuWKLnETTh+CUgMmirU2Y6SoDqUzlfEcmUNyURlnJ9vS
-         BhFFYihaMqygAPGzTw6WQecMnZQ1HaV4y9P23hWbCrQZkvbRQNLCbF1kmzJIsJAI53EQ
-         LXqQ==
-X-Gm-Message-State: AOAM533dz83QoOxS2rJ1r4N7MqzP837JRRdvY7sciBIM/L694up+O/TP
-        hCi3aue8fukmC/eerymDTotTIWl8UXY=
-X-Google-Smtp-Source: ABdhPJwrYdmYDCxfBTGx/h8g8QUyHPBH1jncl9qWiKnu6iHbto/awpIkRJw2dkXN4Urr8MOt3kHYyg==
-X-Received: by 2002:ac2:4ad0:: with SMTP id m16mr3317361lfp.53.1612214143755;
-        Mon, 01 Feb 2021 13:15:43 -0800 (PST)
-Received: from ?IPv6:2a00:1370:814d:ea25:a10:76ff:fe69:21b6? ([2a00:1370:814d:ea25:a10:76ff:fe69:21b6])
-        by smtp.googlemail.com with ESMTPSA id o16sm988956lft.44.2021.02.01.13.15.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 13:15:43 -0800 (PST)
-Subject: Re: [PATCH v5] gpiolib: Bind gpio_device to a driver to enable
- fw_devlink=on by default
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Kever Yang <kever.yang@rock-chips.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-References: <20210122193600.1415639-1-saravanak@google.com>
- <544ad0e4-0954-274c-8e77-866aaa5661a8@gmail.com>
- <CAGETcx_CYKczo+geD7yDo+T2+_-tgGYwtjR-2sMPQYHuz-wAgw@mail.gmail.com>
- <09502076-02e9-39ee-e432-24260696a927@gmail.com>
- <CAGETcx9fqnCZTC=afDUHnS6gES8WW4SwFNmH5sWaGVRYiysOMQ@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <c21d1a6b-5464-b59d-3967-c75c5a16136c@gmail.com>
-Date:   Tue, 2 Feb 2021 00:15:42 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tPbcRaX1SgEZLu4YCv7l4zPyyMW8dttxgAN/QGCyppw=;
+        b=XCSaYoAye0oIaBwN/nRxlbCdTDYOE1ziS+jrvx6g+54Z/msc/ceJdKbGSZ5Ogg3TYX
+         np0Xk9NPT+EXO2bo9txtTC25J3fNJNYxy/qahlpyaHTqrRpj/l7OewuuJAxUyQiMN36U
+         iG21Ics3MssjBDm54mR7WT1G4cdvVtjWtcTr1qn2fo/jkZdMBup/A3TNkj9Gbg//iUY6
+         fckLGCDXPrZRtEU8JXRhJm8v/enIfmRElZ06/E8QYNb6duCXqHa/TtSTcBgFi3nLkVUW
+         md7CMi3eUnz04tctvtCi/Zqmxj9z7O5OrWaW3rHN1TUAcD6Fgq7x/VS9WDrk23HvF249
+         /CFw==
+X-Gm-Message-State: AOAM530e8Ow5X6Dgr2wGhLySnFNjJR4m5LPusEF9QG6rLj10NW3f90Eo
+        dWFdPNnvRLFirhqCe/gFKj9AWmOdrA+Ysc7vW4Wdig==
+X-Google-Smtp-Source: ABdhPJx8iYzAdimcqwPEaBhxqxj8JDqf8XEN6LS6P4YdyPCo7YTyNl84jtQ18EM6tRCGWp4QTm/i5l7txXsk4Qii9DM=
+X-Received: by 2002:a62:7896:0:b029:1b6:7319:52a7 with SMTP id
+ t144-20020a6278960000b02901b6731952a7mr18577965pfc.30.1612214190673; Mon, 01
+ Feb 2021 13:16:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAGETcx9fqnCZTC=afDUHnS6gES8WW4SwFNmH5sWaGVRYiysOMQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <AAB32610-D238-4137-96DE-33655AAAB545@dilger.ca>
+ <20210201003125.90257-1-viniciustinti@gmail.com> <20210201124924.GA3284018@infradead.org>
+ <CALD9WKxc0kMPCHSoikko+qYk2+ZLUy73+ryKGW9qMSpyzAobLA@mail.gmail.com>
+ <YBg20AuSC3/9w2zz@mit.edu> <CALD9WKzO53AXQW-qQ82VZ41H5=cGdLTUiEoz3X6BmPkb6XaTag@mail.gmail.com>
+ <YBhuHJgZ3QPqHheV@mit.edu>
+In-Reply-To: <YBhuHJgZ3QPqHheV@mit.edu>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 1 Feb 2021 13:16:19 -0800
+Message-ID: <CAKwvOd=ny2TeYV8SGZMD+aj8Yb6OSYGKAzSb-45r-HKk6WTUCQ@mail.gmail.com>
+Subject: Re: [PATCH v2] ext4: Enable code path when DX_DEBUG is set
+To:     Vinicius Tinti <viniciustinti@gmail.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        "Theodore Ts'o" <tytso@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-01.02.2021 23:15, Saravana Kannan пишет:
-> On Mon, Feb 1, 2021 at 8:49 AM Dmitry Osipenko <digetx@gmail.com> wrote:
->>
->> 01.02.2021 00:28, Saravana Kannan пишет:
->>>> This patch causes these new errors on NVIDIA Tegra30 Nexus 7 using recent linux-next:
->>>>
->>>>  gpio-1022 (cpu-pwr-req-hog): hogged as input
->>>>  max77620-pinctrl max77620-pinctrl: pin gpio4 already requested by max77620-pinctrl; cannot claim for gpiochip1
->>>>  max77620-pinctrl max77620-pinctrl: pin-4 (gpiochip1) status -22
->>>>  max77620-pinctrl max77620-pinctrl: could not request pin 4 (gpio4) from group gpio4  on device max77620-pinctrl
->>>>  gpio_stub_drv gpiochip1: Error applying setting, reverse things back
->>>>  gpio_stub_drv: probe of gpiochip1 failed with error -22
->>>>
->>>> Please fix, thanks in advance.
->>> I have a partial guess on why this is happening. So can you try this patch?
->>>
->>> Thanks,
->>> Saravana
->>>
->>> --- a/drivers/gpio/gpiolib.c
->>> +++ b/drivers/gpio/gpiolib.c
->>> @@ -4213,6 +4213,8 @@ static int gpio_stub_drv_probe(struct device *dev)
->>>          * gpio_device of the GPIO chip with the firmware node and then simply
->>>          * bind it to this stub driver.
->>>          */
->>> +       if (dev->fwnode && dev->fwnode->dev != dev)
->>> +               return -EBUSY;
->>>         return 0;
->>>  }
->>
->> This change doesn't help, exactly the same errors are still there.
-> 
-> Sorry, I see what's happening. Try this instead. If it works, I'll
-> send out a proper patch.
-> 
-> Thanks,
-> Saravana
-> 
-> diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-> index 8e0564c50840..f3d0ffe8a930 100644
-> --- a/drivers/gpio/gpiolib.c
-> +++ b/drivers/gpio/gpiolib.c
-> @@ -56,8 +56,10 @@
->  static DEFINE_IDA(gpio_ida);
->  static dev_t gpio_devt;
->  #define GPIO_DEV_MAX 256 /* 256 GPIO chip devices supported */
-> +static int gpio_bus_match(struct device *dev, struct device_driver *drv);
->  static struct bus_type gpio_bus_type = {
->         .name = "gpio",
-> +       .match = gpio_bus_match,
->  };
-> 
->  /*
-> @@ -4199,6 +4201,14 @@ void gpiod_put_array(struct gpio_descs *descs)
->  }
->  EXPORT_SYMBOL_GPL(gpiod_put_array);
-> 
-> +
-> +static int gpio_bus_match(struct device *dev, struct device_driver *drv)
-> +{
-> +       if (dev->fwnode && dev->fwnode->dev != dev)
-> +               return 0;
-> +       return 1;
-> +}
-> +
->  static int gpio_stub_drv_probe(struct device *dev)
->  {
->         /*
-> 
+On Mon, Feb 1, 2021 at 1:09 PM Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> On Mon, Feb 01, 2021 at 03:41:50PM -0300, Vinicius Tinti wrote:
+> >
+> > My goal is to avoid having a dead code. Three options come to mind.
+> >
+> > The first would be to add another #ifdef SOMETHING (suggest a name).
+> > But this doesn't remove the code and someone could enable it by accident.
+>
+> I *really* don't see the point of having the compiler whine about
+> "dead code", so I'm not terribly fond of
+> -Wunreachable-code-aggressive.
 
-This works, thank you!
+I agree; Vinicius, my recommendation for -Wunreachable-* with Clang
+was to see whether dead code identified by this more aggressive
+diagnostic (than -Wunused-function) was to ask maintainers whether
+code identified by it was intentionally dead and if they would
+consider removing it.  If they say "no," that's fine, and doesn't need
+to be pushed.  It's not clear to maintainers that:
+1. this warning is not on by default
+2. we're not looking to pursue turning this on by default
 
-Tested-by: Dmitry Osipenko <digetx@gmail.com>
+If maintainers want to keep the dead code, that's fine, let them and
+move on to the next instance to see if that's interesting (or not).
+-- 
+Thanks,
+~Nick Desaulniers
