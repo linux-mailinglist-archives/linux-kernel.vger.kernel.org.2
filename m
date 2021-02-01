@@ -2,78 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9705C30A393
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:52:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81CE530A398
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:54:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232625AbhBAIva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 03:51:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232032AbhBAIv0 (ORCPT
+        id S232644AbhBAIxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 03:53:13 -0500
+Received: from mail-wr1-f49.google.com ([209.85.221.49]:38710 "EHLO
+        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232520AbhBAIxL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 03:51:26 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB15C061574;
-        Mon,  1 Feb 2021 00:50:46 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id o10so11010097wmc.1;
-        Mon, 01 Feb 2021 00:50:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rIiV2l/8Qf1juG7z36n1KVoCTNYEzigbbx8ySlcRFIU=;
-        b=qpwS4+w0No/kjqi9pPJi0b1UkW42lwpu9GiFvxw5B5qU8wh1TT4PzZOFNDpV9x0aMB
-         559Kf9cmqogMtj/58X+kijNdaqWOrLanYVn7vOKPJR+6NMGAp+UDs5yjnIOxA8ZbHom8
-         K+S4th4Ji8cxYidORiMybefEIwPFmaW1sWNSBBOeOkbRQOJGBdbAMYnIr1fHpb8SojfV
-         oDCBSmWrgxZ3USTPdliDl16vLjnQCKaBnLZDW4aQMkTfabhI8rTbZgk5pHszFLVnFoEx
-         b2RivGZucjjOGAl3nYOd6XdNBnRpZoyt8Z2+neh1jBYCDvbcACDgJwUrOh1J4GoQkfM8
-         eKIw==
+        Mon, 1 Feb 2021 03:53:11 -0500
+Received: by mail-wr1-f49.google.com with SMTP id s7so12645987wru.5;
+        Mon, 01 Feb 2021 00:52:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rIiV2l/8Qf1juG7z36n1KVoCTNYEzigbbx8ySlcRFIU=;
-        b=UKBnB/9HXMf1T16MN1mBiSku3zURAYjieKgKi08RGsmCxA+FHZQPB25ROcFdnr0rTp
-         Wz4iiKo9ydTlGoKRxLwVPsbom2If/FfTn1vjKO11Op/X1i4pKQT+BydV2aA6q5nsPlUN
-         5Sja0h/MaSS+KKkoRFcqv+K7ZBxL2o86s+IYs7/+Rh+gX0EwV+03WJkWTlFLp+2GbXKA
-         2bZzTieictof2EKy+S/QApyRu/0CoaN1SJSdw33YJ34RZBJxkAClwv6xhhZ5UkQN3B89
-         BxX1o+cl8m4/IOrd9A4EOObaShe1BovVx9ETFk6vGsroiZnAtYfqVenGL8lG++7hgw2O
-         7vQQ==
-X-Gm-Message-State: AOAM533UIatAyaeR38NT57m0HOPB5llG5RKm8yLbvDMaDC9QGanP89Uf
-        kn6jU3MSIqve3TO6L1mJ9qA=
-X-Google-Smtp-Source: ABdhPJwMG9i1Sej5MLrrFago+IjOeLAh/IFRWk11NBhciLuq+1qoY42wMuzwOISDhylXSmgSrk7Few==
-X-Received: by 2002:a1c:408a:: with SMTP id n132mr5037245wma.86.1612169445107;
-        Mon, 01 Feb 2021 00:50:45 -0800 (PST)
-Received: from ziggy.stardust ([213.195.126.134])
-        by smtp.gmail.com with ESMTPSA id i7sm15842882wmq.2.2021.02.01.00.50.43
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=jMiLttWqqTJ5WmFvPS0D+kagf6eWZd/IjbHZVvAPBKI=;
+        b=KpelRSqooBDjlr3OWCFeFlDtffbT8MEpTPeruoGT7bT2hH5tHm7+kQxeX4m+t5UVfD
+         VmYs13kNcXNOMtlt8wbkcduXM3A4ebUnZRokcyOIcoVpnTrNjhNZkliPmGKyyzXGgX8g
+         7UKm2oWlhgfxQuIJWp51l7nnVUToaRZuidIL4I3DsD++mAR7wiBDxkupCsqmsHBF76It
+         MREqV0wC7XAk1fkjbWKBJtUif1syutKlNSG5v+5Nc5H7rdsrHMzBpU/urrHyPeqOtpL6
+         FU7CjjNDRthLSo+qAdUaTgYT5nj5tR5xm4+mjT8UR0UiT2sHrPxUP7fpRKLhnIy2Swxv
+         OlPg==
+X-Gm-Message-State: AOAM531NsxdFGuywjCGaU2ycF2UBPEyFj/l5WRPlMvMVZP3uEczO6EQO
+        nhJ4JaTsfbavrLDMMhAQqRV273gMarQ=
+X-Google-Smtp-Source: ABdhPJxzaUkV93oMuplL5J+vCmnhIQMtSBTXtfs3GMQ0dFHejr123BlLM+fOjw9mePVE+oHBM9g5OA==
+X-Received: by 2002:a5d:4386:: with SMTP id i6mr16415370wrq.411.1612169549189;
+        Mon, 01 Feb 2021 00:52:29 -0800 (PST)
+Received: from [10.9.0.22] ([46.166.128.205])
+        by smtp.gmail.com with ESMTPSA id p17sm20479142wmg.46.2021.02.01.00.52.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 00:50:44 -0800 (PST)
-Subject: Re: [PATCH v1 2/2] arm64: configs: Support DEVAPC on MediaTek
- platforms
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Neal Liu <neal.liu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, SoC Team <soc@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        Hanks Chen <Hanks.Chen@mediatek.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC..." 
-        <linux-mediatek@lists.infradead.org>,
-        Jackson-kt Chang <Jackson-kt.Chang@mediatek.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-References: <1608713092-26952-1-git-send-email-neal.liu@mediatek.com>
- <1608713092-26952-3-git-send-email-neal.liu@mediatek.com>
- <68442164-d649-aee0-cfe8-c9ebb868612d@gmail.com>
- <CAK8P3a1DLX6y5GM3O7+T0gMH_JLRp6nUkHFZc4Shjn_bTKWWSw@mail.gmail.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Message-ID: <7001eef4-42bd-0c17-50a3-4d619d0fc80a@gmail.com>
-Date:   Mon, 1 Feb 2021 09:50:43 +0100
+        Mon, 01 Feb 2021 00:52:28 -0800 (PST)
+Reply-To: alex.popov@linux.com
+Subject: Re: [PATCH 1/1] vsock: fix the race conditions in multi-transport
+ support
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Stefan Schmidt <stefan@datenfreihafen.org>,
+        Jeff Vander Stoep <jeffv@google.com>,
+        Greg KH <greg@kroah.com>,
+        Linus Torvalds <torvalds@linuxfoundation.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210131105914.2217229-1-alex.popov@linux.com>
+ <20210201082643.zh3d7x7qzyf4hmfa@steredhat>
+From:   Alexander Popov <alex.popov@linux.com>
+Message-ID: <81c0e04f-cf50-8101-b024-16cd8526bec4@linux.com>
+Date:   Mon, 1 Feb 2021 11:52:26 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <CAK8P3a1DLX6y5GM3O7+T0gMH_JLRp6nUkHFZc4Shjn_bTKWWSw@mail.gmail.com>
+In-Reply-To: <20210201082643.zh3d7x7qzyf4hmfa@steredhat>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -81,47 +63,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 31/01/2021 23:23, Arnd Bergmann wrote:
-> On Sun, Jan 31, 2021 at 3:07 PM Matthias Brugger <matthias.bgg@gmail.com> wrote:
->> On 23/12/2020 09:44, Neal Liu wrote:
->>> Support DEVAPC on MediaTek platforms by enabling CONFIG_MTK_DEVAPC.
->>>
->>> Signed-off-by: Neal Liu <neal.liu@mediatek.com>
->>> ---
->>>  arch/arm64/configs/defconfig |    1 +
->>>  1 file changed, 1 insertion(+)
->>>
->>> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
->>> index 17a2df6..a373776 100644
->>> --- a/arch/arm64/configs/defconfig
->>> +++ b/arch/arm64/configs/defconfig
->>> @@ -257,6 +257,7 @@ CONFIG_MTD_NAND_MARVELL=y
->>>  CONFIG_MTD_NAND_FSL_IFC=y
->>>  CONFIG_MTD_NAND_QCOM=y
->>>  CONFIG_MTD_SPI_NOR=y
->>> +CONFIG_MTK_DEVAPC=m
->>>  CONFIG_SPI_CADENCE_QUADSPI=y
->>>  CONFIG_BLK_DEV_LOOP=y
->>>  CONFIG_BLK_DEV_NBD=m
->>>
+On 01.02.2021 11:26, Stefano Garzarella wrote:
+> On Sun, Jan 31, 2021 at 01:59:14PM +0300, Alexander Popov wrote:
+>> There are multiple similar bugs implicitly introduced by the
+>> commit c0cfa2d8a788fcf4 ("vsock: add multi-transports support") and
+>> commit 6a2c0962105ae8ce ("vsock: prevent transport modules unloading").
 >>
->> From my understanding, defconfig is for a minimal config that allows to boot a
->> machine. As MTK_DEVAPC is a rather exotic driver to detect bus access
->> violations, I think it's not a good candidate for inclusion in defconfig.
+>> The bug pattern:
+>> [1] vsock_sock.transport pointer is copied to a local variable,
+>> [2] lock_sock() is called,
+>> [3] the local variable is used.
+>> VSOCK multi-transport support introduced the race condition:
+>> vsock_sock.transport value may change between [1] and [2].
 >>
->> In any case, I added the SoC maintainer, so that they can correct me, if I'm
->> wrong :)
+>> Let's copy vsock_sock.transport pointer to local variables after
+>> the lock_sock() call.
 > 
-> I generally don't mind adding platform specific drivers as loadable modules
-> even if they are somewhat obscure. For built-in drivers, this is
-> different though,
-> as those have a noticeable impact on other platforms.
+> We can add:
 > 
-> I haven't kept track of what this particular driver does, but from the Kconfig
-> description, I'd say it should get enabled in defconfig.
+> Fixes: c0cfa2d8a788 ("vsock: add multi-transports support")
 > 
+>>
+>> Signed-off-by: Alexander Popov <alex.popov@linux.com>
+>> ---
+>> net/vmw_vsock/af_vsock.c | 17 ++++++++++++-----
+>> 1 file changed, 12 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+>> index d10916ab4526..28edac1f9aa6 100644
+>> --- a/net/vmw_vsock/af_vsock.c
+>> +++ b/net/vmw_vsock/af_vsock.c
+>> @@ -997,9 +997,12 @@ static __poll_t vsock_poll(struct file *file, struct socket *sock,
+>> 			mask |= EPOLLOUT | EPOLLWRNORM | EPOLLWRBAND;
+>>
+>> 	} else if (sock->type == SOCK_STREAM) {
+>> -		const struct vsock_transport *transport = vsk->transport;
+>> +		const struct vsock_transport *transport = NULL;
+> 
+> I think we can avoid initializing to NULL since we assign it shortly 
+> after.
+> 
+>> +
+>> 		lock_sock(sk);
+>>
+>> +		transport = vsk->transport;
+>> +
+>> 		/* Listening sockets that have connections in their accept
+>> 		 * queue can be read.
+>> 		 */
+>> @@ -1082,10 +1085,11 @@ static int vsock_dgram_sendmsg(struct socket *sock, struct msghdr *msg,
+>> 	err = 0;
+>> 	sk = sock->sk;
+>> 	vsk = vsock_sk(sk);
+>> -	transport = vsk->transport;
+>>
+>> 	lock_sock(sk);
+>>
+>> +	transport = vsk->transport;
+>> +
+>> 	err = vsock_auto_bind(vsk);
+>> 	if (err)
+>> 		goto out;
+>> @@ -1544,10 +1548,11 @@ static int vsock_stream_setsockopt(struct 
+>> socket *sock,
+>> 	err = 0;
+>> 	sk = sock->sk;
+>> 	vsk = vsock_sk(sk);
+>> -	transport = vsk->transport;
+>>
+>> 	lock_sock(sk);
+>>
+>> +	transport = vsk->transport;
+>> +
+>> 	switch (optname) {
+>> 	case SO_VM_SOCKETS_BUFFER_SIZE:
+>> 		COPY_IN(val);
+>> @@ -1680,7 +1685,6 @@ static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
+>>
+>> 	sk = sock->sk;
+>> 	vsk = vsock_sk(sk);
+>> -	transport = vsk->transport;
+>> 	total_written = 0;
+>> 	err = 0;
+>>
+>> @@ -1689,6 +1693,8 @@ static int vsock_stream_sendmsg(struct socket *sock, struct msghdr *msg,
+>>
+>> 	lock_sock(sk);
+>>
+>> +	transport = vsk->transport;
+>> +
+>> 	/* Callers should not provide a destination with stream sockets. */
+>> 	if (msg->msg_namelen) {
+>> 		err = sk->sk_state == TCP_ESTABLISHED ? -EISCONN : -EOPNOTSUPP;
+>> @@ -1823,11 +1829,12 @@ vsock_stream_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
+>>
+>> 	sk = sock->sk;
+>> 	vsk = vsock_sk(sk);
+>> -	transport = vsk->transport;
+>> 	err = 0;
+>>
+>> 	lock_sock(sk);
+>>
+>> +	transport = vsk->transport;
+>> +
+>> 	if (!transport || sk->sk_state != TCP_ESTABLISHED) {
+>> 		/* Recvmsg is supposed to return 0 if a peer performs an
+>> 		 * orderly shutdown. Differentiate between that case and when a
+>> -- 
+>> 2.26.2
+>>
+> 
+> Thanks for fixing this issues. With the small changes applied:
+> 
+> Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
-Thanks for the feedback Arnd.
-Applied now to v5.11-next/defconfig
+Hello Stefano,
+
+Thanks for the review.
+
+I've just sent the v2.
+
+Best regards,
+Alexander
