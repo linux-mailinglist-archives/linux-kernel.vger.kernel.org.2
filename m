@@ -2,113 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AE2D30A45B
+	by mail.lfdr.de (Postfix) with ESMTP id 8BCC230A45C
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:28:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232667AbhBAJ1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 04:27:34 -0500
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:34738 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231748AbhBAJ1d (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 04:27:33 -0500
-Date:   Mon, 01 Feb 2021 09:26:42 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1612171608;
-        bh=l4VqyLGfHDzFtVncVKqnkbusTB+SkuizzKV916LTdLQ=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=Eq3LlrxFIyggLVlgKjM+6pmPSOvgf/6JoqN06oTF/IGXtrdNx5lTX6OYWtQuZ8tG7
-         +R+8c9N29FdjRtcYY0eSEE9gekGgGp0grq0craZybbcDWcS2BemwZbRhOyeEb2no0/
-         w3dPs5/APhL5JDK6tvvDFi7q9t5/9k/Mnon9Gdxo=
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-From:   Timon Baetz <timon.baetz@protonmail.com>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org
-Reply-To: Timon Baetz <timon.baetz@protonmail.com>
-Subject: Re: [PATCH 3/3] power: supply: max8997_charger: Switch to new binding
-Message-ID: <20210201083128.18499ffd.timon.baetz@protonmail.com>
-In-Reply-To: <20210131172840.fxaadhhsafa4aeex@kozik-lap>
-References: <20210130172747.2022977-1-timon.baetz@protonmail.com> <20210130172747.2022977-4-timon.baetz@protonmail.com> <20210131172840.fxaadhhsafa4aeex@kozik-lap>
+        id S232704AbhBAJ1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 04:27:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52800 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231748AbhBAJ1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 04:27:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35AA464EA3;
+        Mon,  1 Feb 2021 09:27:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612171630;
+        bh=GDOdGwLBUdhE8w9rNn6b3HIerVpuSs4Cl3TDcqidl3E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rkZqEMSlVqaFJjuTPNL7XJDwlW9k4XUpiTXryVXW9sYWskM9a7RyLQsOo3/8xTKI6
+         4RZJQ5O+8Agj58X2tTpQP/ymjqDBWESOwjp+8LuIO6YY8iqzQU32RpxrTaDF87zqf3
+         ihIVB2zGpwYksRW4g/Z9P8RQ3iR9WWIKUWGEwJSXWfg7Vx01fws/f3AYDcbUV6s78M
+         5lmkrcdArUpy8Ll9gzG4oaqpFJlqACnu+uje7PZwHRJxyW7v4oIr58o6BFEZLPbvBM
+         DNoIgzgqBQh2b7/ZpZ2PckFGNGAtBLYScG/yzpmlWNLWyrMtP7reH/osD8sqdZkR0+
+         c7ZKKz8FygUqA==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1l6VUP-00059u-8v; Mon, 01 Feb 2021 10:27:22 +0100
+Date:   Mon, 1 Feb 2021 10:27:21 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joe Perches <joe@perches.com>, Miguel Ojeda <ojeda@kernel.org>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>
+Subject: Re: [PATCH] init: clean up early_param_on_off() macro
+Message-ID: <YBfJeQC1jUeD2fdp@hovoldconsulting.com>
+References: <20210201041532.4025025-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210201041532.4025025-1-masahiroy@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 31 Jan 2021 18:28:40 +0100, Krzysztof Kozlowski wrote:
-> On Sat, Jan 30, 2021 at 05:30:14PM +0000, Timon Baetz wrote:
-> > Get regulator from parent device's node and extcon by name.
-> >
-> > Signed-off-by: Timon Baetz <timon.baetz@protonmail.com>
-> > ---
-> >  drivers/power/supply/max8997_charger.c | 12 ++++++++----
-> >  1 file changed, 8 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/power/supply/max8997_charger.c b/drivers/power/sup=
-ply/max8997_charger.c
-> > index 321bd6b8ee41..625d8cc4312a 100644
-> > --- a/drivers/power/supply/max8997_charger.c
-> > +++ b/drivers/power/supply/max8997_charger.c
-> > @@ -168,6 +168,7 @@ static int max8997_battery_probe(struct platform_de=
-vice *pdev)
-> >  =09int ret =3D 0;
-> >  =09struct charger_data *charger;
-> >  =09struct max8997_dev *iodev =3D dev_get_drvdata(pdev->dev.parent);
-> > +=09struct device_node *np =3D pdev->dev.of_node;
-> >  =09struct i2c_client *i2c =3D iodev->i2c;
-> >  =09struct max8997_platform_data *pdata =3D iodev->pdata;
-> >  =09struct power_supply_config psy_cfg =3D {};
-> > @@ -237,20 +238,23 @@ static int max8997_battery_probe(struct platform_=
-device *pdev)
-> >  =09=09return PTR_ERR(charger->battery);
-> >  =09}
-> >
-> > +=09// grab regulator from parent device's node
-> > +=09pdev->dev.of_node =3D iodev->dev->of_node;
-> >  =09charger->reg =3D devm_regulator_get_optional(&pdev->dev, "charger")=
-;
-> > +=09pdev->dev.of_node =3D np; =20
->=20
-> I think the device does not have its own node anymore. Or did I miss
-> something?
+On Mon, Feb 01, 2021 at 01:15:32PM +0900, Masahiro Yamada wrote:
+> Use early_param() to define early_param_on_off().
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>  include/linux/init.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/init.h b/include/linux/init.h
+> index e668832ef66a..ae2c2aace0d0 100644
+> --- a/include/linux/init.h
+> +++ b/include/linux/init.h
+> @@ -277,14 +277,14 @@ struct obs_kernel_param {
+>  		var = 1;						\
+>  		return 0;						\
+>  	}								\
+> -	__setup_param(str_on, parse_##var##_on, parse_##var##_on, 1);	\
+> +	early_param(str_on, parse_##var##_on);				\
+>  									\
+>  	static int __init parse_##var##_off(char *arg)			\
+>  	{								\
+>  		var = 0;						\
+>  		return 0;						\
+>  	}								\
+> -	__setup_param(str_off, parse_##var##_off, parse_##var##_off, 1)
+> +	early_param(str_off, parse_##var##_off)
+>  
+>  /* Relies on boot_command_line being set */
+>  void __init parse_early_param(void);
 
-The idea is to reset of_node to whatever it was before (NULL) and basically=
-=20
-leave the device unchanged. Probe might run again because of deferral.
+Looks good:
 
-> >  =09if (IS_ERR(charger->reg)) {
-> >  =09=09if (PTR_ERR(charger->reg) =3D=3D -EPROBE_DEFER)
-> >  =09=09=09return -EPROBE_DEFER;
-> >  =09=09dev_info(&pdev->dev, "couldn't get charger regulator\n");
-> >  =09}
-> > -=09charger->edev =3D extcon_get_edev_by_phandle(&pdev->dev, 0);
-> > -=09if (IS_ERR(charger->edev)) {
-> > -=09=09if (PTR_ERR(charger->edev) =3D=3D -EPROBE_DEFER)
-> > +=09charger->edev =3D extcon_get_extcon_dev("max8997-muic");
-> > +=09if (IS_ERR_OR_NULL(charger->edev)) {
-> > +=09=09if (!charger->edev) =20
->=20
-> Isn't NULL returned when there is simply no extcon? It's different than
-> deferred probe. Returning here EPROBE_DEFER might lead to infinite probe
-> tries (on every new device probe) instead of just failing it.
+Reviewed-by: Johan Hovold <johan@kernel.org>
 
-extcon_get_extcon_dev() just loops through all registered extcon devices
-and compared names. It will return NULL when "max8997-muic" isn't
-registered yet. extcon_get_extcon_dev() never returns EPROBE_DEFER so
-checking for NULL seems to be the only way. Other drivers using that
-function also do NULL check and return EPROBE_DEFER.
-
-Thanks for reviewing,
-Timon
-
+Johan
