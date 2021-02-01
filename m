@@ -2,166 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C99C30A284
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 08:09:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7081430A28A
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 08:17:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232184AbhBAHJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 02:09:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232388AbhBAHHw (ORCPT
+        id S231801AbhBAHON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 02:14:13 -0500
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:24438 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231497AbhBAHOE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 02:07:52 -0500
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813F3C061573
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 23:07:12 -0800 (PST)
-Received: by mail-pf1-x433.google.com with SMTP id e19so10952033pfh.6
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 23:07:12 -0800 (PST)
+        Mon, 1 Feb 2021 02:14:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1612163643; x=1643699643;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=bNBm3P+BUxtEAcIDJyPUvwOn0lxsstCYX2dwfDClLm8=;
+  b=eBjGiNf6XT/iL+JIYMMpGZRo3sCNh+3ZPIhPV6zxTB7IlIwpk37beQvN
+   2xlPEwSUkaivDCcRF/E47kGKI1NMUveb4znjqIjvGmXFdVULSHiPjihYA
+   1RwqHl4bZY1z7rmnkNL1a32v8pc0N3c8rW6BaXD2ZMvxWBLs0AUt1+b3P
+   zTJoh++h2qtqrznVUWGpR78K4St7vSrw8IzGwAiAbUBFavxCVH1xm5ybQ
+   BvD5VKwsBjXFgzwDBgASzYCZqRInao4cFEi6QwowEgaeqJpr2BhSmDFiO
+   8elJVeHgGXrhrUJMNQCYAowmX4/9xqB51dU7nCdxWVc93HMVt/Rkf99BF
+   Q==;
+IronPort-SDR: TJkG17rg7IB+6nc3LXsrW8XelWkNac/fqsUEWhlP5gJB78oqPNg74/t96RvknHGepIe2DSAi61
+ w/8Ofea/QeyOOoqlA/8+HZqXBWrTw1s2IdHAtkTuJ4SgwNJPNE/N0uY5UnKXlU7CXvvV0vBxPu
+ baUXQN3uOtWRy05dS3iHVF51EAD7oaA59vQ5OlOPehxfTVSsetUBjbwiI/oVdRA4BD53bEVJke
+ wqjJKLU87+TLXuPbKPwiICeW0/CWDE7Sn9hITbVxIg1bINmG9uYHkg/tpFHSq1uCZInsanIzXH
+ jfc=
+X-IronPort-AV: E=Sophos;i="5.79,391,1602518400"; 
+   d="scan'208";a="163236784"
+Received: from mail-bl2nam02lp2055.outbound.protection.outlook.com (HELO NAM02-BL2-obe.outbound.protection.outlook.com) ([104.47.38.55])
+  by ob1.hgst.iphmx.com with ESMTP; 01 Feb 2021 15:12:54 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UPSeDRf+xrW56nMI9H+l3OE9oIERZDh6bGpQYECgGUz9OXamWFvYh40B6z/gTOrbNXk2AkjKifhxs/s3WxO81rn2feb7VAWSCBscsoHkCA+RpC6sv6x/DisdbMSanMiOeXwYSJ7ohisyRKe1mwrzi24AjD0/urxVYfQ70ZKHO/papgIs1IKevfi4eIXfyZGU3dh0Y08iWOjCTlg4kVOcggipitGdvO6HJ4o2qWy/i5XQfC8t/LlUyj4TrC7H5djswqQ+ELtJ9G20/09Pz2csHZgX01LeXvmXaDYV3KBPzK14YsXjPJOjCInuBrkPrOAFesggHkbuhiJcQCllevapFg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bNBm3P+BUxtEAcIDJyPUvwOn0lxsstCYX2dwfDClLm8=;
+ b=U5yFKtPeX546eVdLq1nDmeL7y5V7uBG7sbiHBRrB25Ryx/lWjECeZsAYah+a0KIqQpk63eKdF7tMmR1D1BpcPfI0CO/VzEXyrCsTQULjPqe9OqazijcsR9JIMRBzRMkiAS2JmCSKLGbE3ZMt092Ssk0fDadNa5Chyr+aMV834O6SjSk/nAS9uiGL6YqgHYGT0Y/Hz0dN+yODSww1gRMvpOIY4mUxZcgChpnpEtp2pj2ToTOlKvDdB6Guc83sUhYRQeJR9yGi/t27qvWxfreQz6mhrsJ0CboH2J/0AnrebTLgHl3w+4qTMPh/GsV1+wAn7LevGzlO1T3f+NeLdmGBCw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p6LP5nmwHHk1JmxzrW73ev9rGdTjCqtJxdKFxpPxFYA=;
-        b=olK/t6SSd+kAv5Y+C6uyu0Lm96rWnEpmUzkuqYFQtEZyoUDxWRihC7dQ7pz4CYkLH9
-         6cl0UktzKMyafofY9sfqG/OWnBuD3bBqNcLz0IKSp4tVtGvIwTkoLkqKLREktjGz5zYN
-         7MZMcLlqQUE6X5OJcXnKK4O7wl97/L6jh0AwyGlotQLD/QUxOdIodvp+McB2CvRqL5CE
-         NYhTB+2RUAK+X2Yg7rBfCfVqZ0b+xZ1+8HL9FSta1oDmrjV61QiHcXA5PUUNOp0HZYQY
-         GYkmSjz5E7K0cAiPSVXfS31z8iM/vdKqQD/Qx0viyE1iw754tr7l+6wIx2DBnkBOSFWC
-         tGkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p6LP5nmwHHk1JmxzrW73ev9rGdTjCqtJxdKFxpPxFYA=;
-        b=LwgHnFC6qguCVkSqvG0+MaSA+iQPvuIVZLrlHj/noAUszpF+JJ8SdbOBbQdyrUnNKb
-         EZZ6Apzy1lkrfCGmm5Sb9GYfgBPYI1R8X3UWO7VuwbgrXvnX6ZwsdnmNXPPd6fC+Yn+t
-         5nBQC0pQa3hYO4njjhbiw8n72bWUqAmTRm9IdtZW7kAB9m5pTpEKwQlJoSwXF0VqqO96
-         YPc8KgvGRt6W6UOpAT1wYazZDlwuPejE6vxN9fuU83gfODZF/Nut4YoL1f62ASOnO8GJ
-         kDhPGuHJGrsMnEmgFkZdweW1tk23bVlgbjQciLZxxBV3He8y/zqz9IgVFykbqlD50CkZ
-         hahA==
-X-Gm-Message-State: AOAM533GbTWUGN2rGlYIxC1IrvhsKLUcfPmIW8q3HHxYTZsERsw60/Yq
-        xUF1JaIzyg2mkRM4Avy8YSsJANNIejLqRKqI26g=
-X-Google-Smtp-Source: ABdhPJxDr2oNERZ32QLkofyye8h/80wTHgcO5d5N7oC+fiUo/cSdU1rSv/9ZCYaLbbgb3vA0x6X/sskeIMQXY4p4XPg=
-X-Received: by 2002:aa7:83c2:0:b029:1a5:daa9:f22f with SMTP id
- j2-20020aa783c20000b02901a5daa9f22fmr14773958pfn.48.1612163232063; Sun, 31
- Jan 2021 23:07:12 -0800 (PST)
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=bNBm3P+BUxtEAcIDJyPUvwOn0lxsstCYX2dwfDClLm8=;
+ b=pIDrp4pPBPWYUc0WUNVjhxsiSKsRrDrYN+HkTGTwv33QQm8tQm43SGDC1IFa/JsZc+h2a4AKADl/5ZlG4UthakqyQCVX0fzL0cAQ6FFF+r0Yj91fuk/oDJbkl/O3SmjH2ihH69HVzy/dOT1qHQZpXHfxw3kj9eQKh2j2QAAxtd0=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM5PR0401MB3656.namprd04.prod.outlook.com (2603:10b6:4:7a::30) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3805.17; Mon, 1 Feb 2021 07:12:53 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::e824:f31b:38cf:ef66]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::e824:f31b:38cf:ef66%3]) with mapi id 15.20.3805.027; Mon, 1 Feb 2021
+ 07:12:53 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     "daejun7.park@samsung.com" <daejun7.park@samsung.com>,
+        "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <Avi.Shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
+Subject: RE: [PATCH 3/8] scsi: ufshpb: Add region's reads counter
+Thread-Topic: [PATCH 3/8] scsi: ufshpb: Add region's reads counter
+Thread-Index: AQHW9L7x4iaxfLLWbU2VlJGMVSiCUapCsZUAgAA24sA=
+Date:   Mon, 1 Feb 2021 07:12:53 +0000
+Message-ID: <DM6PR04MB657521540E2769C5F1BA2BBFFCB69@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20210127151217.24760-4-avri.altman@wdc.com>
+        <20210127151217.24760-1-avri.altman@wdc.com>
+        <CGME20210127151311epcas2p1696c2b73f3b4777ac0e7f603790b552f@epcms2p2>
+ <1891546521.01612153501819.JavaMail.epsvc@epcpadp3>
+In-Reply-To: <1891546521.01612153501819.JavaMail.epsvc@epcpadp3>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: samsung.com; dkim=none (message not signed)
+ header.d=none;samsung.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [212.25.79.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: c700cc2f-e762-409f-318c-08d8c680caba
+x-ms-traffictypediagnostic: DM5PR0401MB3656:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR0401MB3656AFF73825A0CECF847754FCB69@DM5PR0401MB3656.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:3826;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: y56ywNvuUczSxv/lDK7cQA7syi4pB+ODvgFYXX44yrOPpOTuMVOvGzXa9f2KwgJoAIruPcK1qn042XX9Exyidsylfeyfmw7BbiEOmdy4Sq06x0toOQd9c65shgKSq2gCyA1BdQP1nvD+ok77CKaiOzGt6zr49S0rfTTWguCzXjoRkB0rrESRMLz38iGSIwOHMK8ncvsNOapRqNl6cE0jN3d87Lm2pZPzoztWD9pJohWiKr5XWlJc+4+egJ8p4muGbbYDoo1nz6C2XSXDzy2eYzpBEfEoEUAU8lS7h6XOrqRomWH7Ori0v0tLvtx85h7546Z5RPRWE/1sX7pE/M9ICMyeILyx6mUePxBpb9mU0Id5WG9+GRzU4vrgAMmQkTUOxbRuhRzsGCU8lbO4qLWmnS1Kg56XcvtQh9bZHR33rT5ICMV7R9FswcOz6dum9x+aELb3v/SFnIFQMKqOnYbnSse5upzgOPormNMwfJgebGWPbn/Vldst/A6UsKASZSMkO11QGIx0B/41y5zpngHIxg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(366004)(396003)(136003)(71200400001)(8676002)(8936002)(7696005)(66446008)(478600001)(66556008)(66476007)(83380400001)(55016002)(64756008)(186003)(26005)(33656002)(66946007)(6506007)(86362001)(9686003)(4326008)(316002)(52536014)(110136005)(54906003)(76116006)(7416002)(5660300002)(2906002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?bHFvZnZJSmlVcFlVMllyNlEzdHdVYUJDdGpRZVhMN2VPT09ieDRqUm01N053?=
+ =?utf-8?B?TXBEdFJPeFFLOEh2MWo4OVpEVmZjWms1eXMvN1JKQU11VUJYQ2I5SjNTQTZz?=
+ =?utf-8?B?UEo1T1RYRWFmUlZURjMyaXphUnY5VFpuL3YrVGxIOG16MUFPZWdySW00UWwr?=
+ =?utf-8?B?MzNWejdkVDNESFJXcUpLNHpmYVBKOWM0b0lJZmJQMWdsd2pscTFkbFM5L3JX?=
+ =?utf-8?B?RDB1ckdKZVdRbWRxKzNPWGF4Y1FzZWpabnJHdnU0UFVXSWlxTWdBUEtnQzRh?=
+ =?utf-8?B?YUxFRXZoTXpWT0RDODdxRHZlY1dqS1ovbS9DSDhDQXVjTXVleld6ZktFeXc3?=
+ =?utf-8?B?NTZ0OXpLMzhYZ3V1Njg3bFFLYUdIYU9NRCtBWTNsd3NFaGJyUlE1Z3dlbzl5?=
+ =?utf-8?B?eW1tem5aZnc5Vms5RXA3UlIwOVFCZENaYURFZDZPS0kvYVV5VG1tSVRvZ0xH?=
+ =?utf-8?B?Wjl3bC85bnRJYVBrQlA1aGhpOXUxdHlWcWpFMnRkYmNQd3Fibks2cEdwTFNp?=
+ =?utf-8?B?QUEzU3F1dkpTRzRJckM3MVpvS21LWFYySW5GTXM5OUxGSUhTcDkzUDhjSEtQ?=
+ =?utf-8?B?c3RyMjJnR3RFUS9QTEh5OThwVys2cTk3ZnFBNTRjQStsKzRqNHl5S1BrRk9h?=
+ =?utf-8?B?UzEzWTY5QW9FYW5iNWxTZDBTV3kvYTA1VVJHZW9KTE55NHB2UzNHS3RieUxz?=
+ =?utf-8?B?N2dCdXJ4THR5ZUVzN3JtMHUrbXhnWExxN3NCWHdXY0dYbHF6VkpRWExyeXhO?=
+ =?utf-8?B?dm4wTUdESUlkUEdSMm5VS0xWTGQ4Q1pDZ2tNWVhrSitqdmVIZnJPTUo0eTcw?=
+ =?utf-8?B?M0t5TnRvSnJidzB6RDd5My9JNEVTZ3Nvcyt1WDZtZHJLSWhPUkZzVzR0OVFT?=
+ =?utf-8?B?R2h3UG5LVGFoalM4T1BYNThva0tTR2FQTGFIcy8yUC8vUU9NZjJsYUxwbGQy?=
+ =?utf-8?B?ZUJJVG1DSlhVYXFWeW9HRWoyb2hmdFViQUI1VnJUeThBMzk1WXpXSGVGMkly?=
+ =?utf-8?B?U2VGSjFyTnJWZkNaVlA3ZzdhbWRuYkNpT1h2Q3hrL2Q0ekF2VXJHL2p6OHR4?=
+ =?utf-8?B?MkY1UkxqK3hZbE1mbE85S0lmWnBKSGtNUTJuVVJib2NRdTlUaXBET3JwaVh5?=
+ =?utf-8?B?TUViSGVWRnE4V0JVckxRWEtxMEsyKzRXdmpTQUNSemxkTTdYbllnSXgxakhQ?=
+ =?utf-8?B?aFBKVzBBWHNQOVhJQkltaklXazVNS2ViUWQvbTkreWp6cXFkdEJqYVVMWW84?=
+ =?utf-8?B?bDU2bWZ0VFFYN256d3NOekNWdGR4UTNvYlNrUGg4YXZUZEhmdDhjeU1YWUtt?=
+ =?utf-8?B?U1hyZXMwL1ZraUFFMnY0ZTNLQW5jZFFYNlJYOHlBbEJNczRqYlJiWXRlY2xU?=
+ =?utf-8?B?WXk3R2l6djRtbmQ5OUw0aTZXOVdSV3hjZXZoT2JZaWVySml2bzhzOFNKbVpN?=
+ =?utf-8?Q?JzRHw9fd?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20210130022124.65083-1-mgross@linux.intel.com> <20210130022124.65083-4-mgross@linux.intel.com>
-In-Reply-To: <20210130022124.65083-4-mgross@linux.intel.com>
-From:   Jassi Brar <jassisinghbrar@gmail.com>
-Date:   Mon, 1 Feb 2021 01:07:01 -0600
-Message-ID: <CABb+yY0cE=qkU7pLx6W-3gJzGOnHbkt-ThPm67fQKGo+79fvDQ@mail.gmail.com>
-Subject: Re: [PATCH v3 03/34] mailbox: vpu-ipc-mailbox: Add support for Intel
- VPU IPC mailbox
-To:     mgross@linux.intel.com
-Cc:     markgross@kernel.org, "arnd@arndb.de" <arnd@arndb.de>, bp@suse.de,
-        damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>, palmerdabbelt@google.com,
-        paul.walmsley@sifive.com, Peng Fan <peng.fan@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniele Alessandrelli <daniele.alessandrelli@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c700cc2f-e762-409f-318c-08d8c680caba
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Feb 2021 07:12:53.0964
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ztclkDQArxQvJx0cNAqXsqiFwHJZ8MVZUJt1FhBLffPOwsg/X7EUUtTsfcpnPSzhcid7Nz22onEH8p46zwjgKQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR0401MB3656
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 8:21 PM <mgross@linux.intel.com> wrote:
->
-> From: Daniele Alessandrelli <daniele.alessandrelli@intel.com>
->
-> Add mailbox controller enabling inter-processor communication (IPC)
-> between the CPU (aka, the Application Processor - AP) and the VPU on
-> Intel Movidius SoCs like Keem Bay.
->
-> The controller uses HW FIFOs to enable such communication. Specifically,
-> there are two FIFOs, one for the CPU and one for VPU. Each FIFO can hold
-> 128 entries (messages) of 32-bit each (but only 26 bits are actually
-> usable, since the 6 least-significant bits are reserved).
->
-> When the Linux kernel on the AP needs to send messages to the VPU
-> firmware, it writes them to the VPU FIFO; similarly, when the VPU
-> firmware needs to send messages to the AP, it writes them to the CPU
-> FIFO.
->
-> The AP is notified of pending messages in the CPU FIFO by means of the
-> 'FIFO-not-empty' interrupt, which is generated by the CPU FIFO while not
-> empty. This interrupt is cleared automatically once all messages have
-> been read from the FIFO (i.e., the FIFO has been emptied).
->
-> The hardware doesn't provide an TX done IRQ (i.e., an IRQ that allows
-> the VPU firmware to notify the AP that the message put into the VPU FIFO
-> has been received); however the AP can ensure that the message has been
-> successfully put into the VPU FIFO (and therefore transmitted) by
-> checking the VPU FIFO status register to ensure that writing the message
-> didn't cause the FIFO to overflow.
->
-> Therefore, the mailbox controller is configured as capable of tx_done
-> IRQs and a tasklet is used to simulate the tx_done IRQ. The tasklet is
-> activated by send_data() right after the message has been put into the
-> VPU FIFO and the VPU FIFO status registers has been checked. If an
-> overflow is reported by the status register, the tasklet passes -EBUSY
-> to mbox_chan_txdone(), to notify the mailbox client of the failed TX.
->
-> The client should therefore register a tx_done() callback to properly
-> handle failed transmissions.
->
-> Note: the 'txdone_poll' mechanism cannot be used because it doesn't
-> provide a way to report a failed transmission.
->
-txdone means the last submitted transfer has been done with --
-successfully or not.
-So I think we can do without the tasklet as explained below....
-
-....
-
-> +static int vpu_ipc_mailbox_send_data(struct mbox_chan *chan, void *data)
-> +{
-> +       struct vpu_ipc_mbox *vpu_ipc_mbox = chan->con_priv;
-> +       u32 entry, overflow;
-> +
-> +       entry = *((u32 *)data);
-> +
-Are all messages max 32bits wide?
-Usually the controller specifies a packet format (more than just a
-word but of course that's not mandatory) that a client submits the
-data to be transmitted in. Esp when it has deep FIFOs.
-
-> +       /* Ensure last 6-bits of entry are not used. */
-> +       if (unlikely(entry & IPC_FIFO_ENTRY_RSVD_MASK)) {
-> +               vpu_ipc_mbox->txdone_result = -EINVAL;
-> +               goto exit;
-> +       }
-> +
-> +       /* Add processor ID to entry. */
-> +       entry |= IPC_FIFO_ID_CPU & IPC_FIFO_ENTRY_RSVD_MASK;
-> +
-> +       /* Write entry to VPU FIFO. */
-> +       iowrite32(entry, vpu_ipc_mbox->vpu_fifo_base + IPC_FIFO);
-> +
-> +       /* Check if we overflew the VPU FIFO. */
-> +       overflow = ioread32(vpu_ipc_mbox->vpu_fifo_base + IPC_FIFO_OF_FLAG0) &
-> +                  BIT(IPC_FIFO_ID_CPU);
-> +       if (unlikely(overflow)) {
-> +               /* Reset overflow register. */
-> +               iowrite32(BIT(IPC_FIFO_ID_CPU),
-> +                         vpu_ipc_mbox->vpu_fifo_base + IPC_FIFO_OF_FLAG0);
-> +               vpu_ipc_mbox->txdone_result = -EBUSY;
-> +               goto exit;
-> +       }
-> +       vpu_ipc_mbox->txdone_result = 0;
-> +
-> +exit:
-> +       /* Schedule tasklet to call mbox_chan_txdone(). */
-> +       tasklet_schedule(&vpu_ipc_mbox->txdone_tasklet);
-> +
-> +       return 0;
-> +}
-> +
-Maybe set txdone_poll and implement last_tx_done()  where you can wait
-for FIFO to have enough space for another message, so that the next
-submitted request will never return -EBUSY.
-
-thanks
+PiA+ICsjZGVmaW5lIFdPUktfUEVORElORyAwDQo+ID4gKyNkZWZpbmUgQUNUSVZBVElPTl9USFJT
+SExEIDQgLyogNCBJT3MgKi8NCj4gUmF0aGVyIHRoYW4gZml4aW5nIGl0IHdpdGggbWFjcm8sIGhv
+dyBhYm91dCB1c2luZyBzeXNmcyBhbmQgbWFrZSBpdA0KPiBjb25maWd1cmFibGU/DQpZZXMuDQpJ
+IHdpbGwgYWRkIGEgcGF0Y2ggbWFraW5nIGFsbCB0aGUgbG9naWMgY29uZmlndXJhYmxlLg0KQXMg
+YWxsIHRob3NlIGFyZSBocGItcmVsYXRlZCBwYXJhbWV0ZXJzLCBJIHRoaW5rIG1vZHVsZSBwYXJh
+bWV0ZXJzIGFyZSBtb3JlIGFkZXF1YXRlLg0KDQoNCj4gDQo+ID4gQEAgLTMwNiwxMiArMzI1LDM5
+IEBAIHZvaWQgdWZzaHBiX3ByZXAoc3RydWN0IHVmc19oYmEgKmhiYSwgc3RydWN0DQo+IHVmc2hj
+ZF9scmIgKmxyYnApDQo+ID4gICAgICAgICAgICAgICB1ZnNocGJfc2V0X3Bwbl9kaXJ0eShocGIs
+IHJnbl9pZHgsIHNyZ25faWR4LCBzcmduX29mZnNldCwNCj4gPiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgdHJhbnNmZXJfbGVuKTsNCj4gPiAgICAgICAgICAgICAgIHNwaW5fdW5sb2Nr
+X2lycXJlc3RvcmUoJmhwYi0+cmduX3N0YXRlX2xvY2ssIGZsYWdzKTsNCj4gPiArDQo+ID4gKyAg
+ICAgICAgICAgICBpZiAodWZzaHBiX21vZGUgPT0gSFBCX0hPU1RfQ09OVFJPTCkNCj4gPiArICAg
+ICAgICAgICAgICAgICAgICAgYXRvbWljNjRfc2V0KCZyZ24tPnJlYWRzLCAwKTsNCj4gPiArDQo+
+ID4gICAgICAgICAgICAgICByZXR1cm47DQo+ID4gICAgICAgfQ0KPiA+DQo+ID4gKyAgICAgaWYg
+KHVmc2hwYl9tb2RlID09IEhQQl9IT1NUX0NPTlRST0wpDQo+ID4gKyAgICAgICAgICAgICByZWFk
+cyA9IGF0b21pYzY0X2luY19yZXR1cm4oJnJnbi0+cmVhZHMpOw0KPiA+ICsNCj4gPiAgICAgICBp
+ZiAoIXVmc2hwYl9pc19zdXBwb3J0X2NodW5rKHRyYW5zZmVyX2xlbikpDQo+ID4gICAgICAgICAg
+ICAgICByZXR1cm47IDwtICp0aGlzKg0KPiA+DQo+ID4gKyAgICAgaWYgKHVmc2hwYl9tb2RlID09
+IEhQQl9IT1NUX0NPTlRST0wpIHsNCj4gPiArICAgICAgICAgICAgIC8qDQo+ID4gKyAgICAgICAg
+ICAgICAgKiBpbiBob3N0IGNvbnRyb2wgbW9kZSwgcmVhZHMgYXJlIHRoZSBtYWluIHNvdXJjZSBm
+b3INCj4gPiArICAgICAgICAgICAgICAqIGFjdGl2YXRpb24gdHJpYWxzLg0KPiA+ICsgICAgICAg
+ICAgICAgICovDQo+ID4gKyAgICAgICAgICAgICBpZiAocmVhZHMgPT0gQUNUSVZBVElPTl9USFJT
+SExEKSB7DQo+IElmIHRoZSBjaHVuayBzaXplIGlzIG5vdCBzdXBwb3J0ZWQsIHdlIGNhbiBub3Qg
+YWN0aXZlIHRoaXMgcmVnaW9uDQo+IHBlcm1hbmVudGx5LiBJdCBtYXkgYmUgcmV0dXJuZWQgYmVm
+b3JlIGdldCB0aGlzIHN0YXRlbWVudC4NClllcy4NCkkgYWxyZWFkeSBub3RpY2VkIHRoYXQgcmVw
+bHlpbmcgdG8gR3JlZy4NCkZpeGVkIHRoYXQgd2hlbiBJIGRyb3BwZWQgdGhlIHVzZSBvZiBhdG9t
+aWMgdmFyaWFibGVzLg0KIA0KPiANCj4gPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zY3NpL3Vmcy91
+ZnNocGIuaCBiL2RyaXZlcnMvc2NzaS91ZnMvdWZzaHBiLmgNCj4gPiBpbmRleCA4YTM0YjBmNDI3
+NTQuLmIwZTc4NzI4YWYzOCAxMDA2NDQNCj4gPiAtLS0gYS9kcml2ZXJzL3Njc2kvdWZzL3Vmc2hw
+Yi5oDQo+ID4gKysrIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNocGIuaA0KPiA+IEBAIC0xMTUsNiAr
+MTE1LDkgQEAgc3RydWN0IHVmc2hwYl9yZWdpb24gew0KPiA+ICAgICAgIC8qIGJlbG93IGluZm9y
+bWF0aW9uIGlzIHVzZWQgYnkgbHJ1ICovDQo+ID4gICAgICAgc3RydWN0IGxpc3RfaGVhZCBsaXN0
+X2xydV9yZ247DQo+ID4gICAgICAgdW5zaWduZWQgbG9uZyByZ25fZmxhZ3M7DQo+ID4gKw0KPiA+
+ICsgICAgIC8qIHJlZ2lvbiByZWFkcyAtIGZvciBob3N0IG1vZGUgKi8NCj4gPiArICAgICBhdG9t
+aWM2NF90IHJlYWRzOw0KPiBJIHRoaW5rIDMyIGJpdHMgYXJlIHN1aXRhYmxlLCBiZWNhdXNlIGl0
+IGlzIG5vcm1hbGl6ZWQgYnkgd29ya2VyIG9uIGV2ZXJ5DQo+IHNwZWNpZmljIHRpbWUuDQpEb25l
+Lg0K
