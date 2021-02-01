@@ -2,71 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4139D30A8A7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:28:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C073C30A8BD
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:30:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231530AbhBAN0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:26:55 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12061 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229524AbhBAN0x (ORCPT
+        id S232206AbhBAN3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:29:54 -0500
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:36763 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231145AbhBAN27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:26:53 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DTpZT24CpzMTCD;
-        Mon,  1 Feb 2021 21:24:33 +0800 (CST)
-Received: from [10.174.184.42] (10.174.184.42) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Mon, 1 Feb 2021 21:26:00 +0800
-Subject: Re: [RFC PATCH 0/7] kvm: arm64: Implement SW/HW combined dirty log
-To:     Marc Zyngier <maz@kernel.org>
-References: <20210126124444.27136-1-zhukeqian1@huawei.com>
- <f68d12f2-fa98-ebdd-3075-bfdcd690ee51@huawei.com>
- <9a64d4acd8e8b0b8c86143752b8c856d@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>, Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        "Cornelia Huck" <cohuck@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
-        <xiexiangyou@huawei.com>, <zhengchuan@huawei.com>,
-        <yubihong@huawei.com>
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-Message-ID: <3493e144-805a-033d-f90b-556a6d0d4bff@huawei.com>
-Date:   Mon, 1 Feb 2021 21:25:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        Mon, 1 Feb 2021 08:28:59 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R921e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0UNbR3Fq_1612186013;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0UNbR3Fq_1612186013)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 01 Feb 2021 21:26:53 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     Jarkko Sakkinen <jarkko@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Shuah Khan <shuah@kernel.org>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: [PATCH v4 0/5] Some optimizations related to sgx
+Date:   Mon,  1 Feb 2021 21:26:48 +0800
+Message-Id: <20210201132653.35690-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.19.1.3.ge56e4f7
 MIME-Version: 1.0
-In-Reply-To: <9a64d4acd8e8b0b8c86143752b8c856d@kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an optimization of a set of sgx-related codes, each of which
+is independent of the patch. Because the second and third patches have
+conflicting dependencies, these patches are put together.
 
+---
+v4 changes:
+  * Improvements suggested by review
 
-On 2021/2/1 21:17, Marc Zyngier wrote:
-> On 2021-02-01 13:12, Keqian Zhu wrote:
->> Hi Marc,
->>
->> Do you have time to have a look at this? Thanks ;-)
-> 
-> Not immediately. I'm busy with stuff that is planned to go
-> in 5.12, which isn't the case for this series. I'll get to
-> it eventually.
-> 
-> Thanks,
-> 
->         M.
-Sure, I am not eager. Please concentrate on your urgent work firstly. ;-) Thanks.
+v3 changes:
+  * split free_cnt count and spin lock optimization into two patches
 
-Keqian.
+v2 changes:
+  * review suggested changes
+
+Tianjia Zhang (5):
+  selftests/x86: Use getauxval() to simplify the code in sgx
+  x86/sgx: Reduce the locking range in sgx_sanitize_section()
+  x86/sgx: Optimize the free_cnt count in sgx_epc_section
+  x86/sgx: Allows ioctl PROVISION to execute before CREATE
+  x86/sgx: Remove redundant if conditions in sgx_encl_create
+
+ arch/x86/kernel/cpu/sgx/driver.c   |  1 +
+ arch/x86/kernel/cpu/sgx/ioctl.c    |  8 ++++----
+ arch/x86/kernel/cpu/sgx/main.c     | 13 +++++--------
+ tools/testing/selftests/sgx/main.c | 24 ++++--------------------
+ 4 files changed, 14 insertions(+), 32 deletions(-)
+
+-- 
+2.19.1.3.ge56e4f7
+
