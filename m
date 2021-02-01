@@ -2,125 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E36730A34E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:32:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2ED30A353
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 09:33:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232382AbhBAIbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 03:31:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:50794 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231748AbhBAIbb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 03:31:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612168204;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9abuyB1cdyK0EkjXW3R63neo8lvwSJKL9r9wYH7jDK8=;
-        b=XD0KJrvYdfH25geq1Jpy+AQL2G4WkbqThbv4ICIoasXN3zztxVGXJC2J7G4CsMCVQ1fBc5
-        bp/BZQBXdvmC69luTKpS593UMmdyS+NC8Igt43JGK0SLdiWNL2ggurer4A/cvuFzs56anF
-        5KQNy+8D0RXCrSymLdoXGKOcvvaSiNo=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-120-zSAqnJcRM_y8R34WmERvpw-1; Mon, 01 Feb 2021 03:30:02 -0500
-X-MC-Unique: zSAqnJcRM_y8R34WmERvpw-1
-Received: by mail-wm1-f72.google.com with SMTP id s10so4248485wme.8
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 00:30:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9abuyB1cdyK0EkjXW3R63neo8lvwSJKL9r9wYH7jDK8=;
-        b=BaMvkyRllCjACGOCctasR4s9JPJzjHwm63y70dAeXpS/MPG9PZ1VlqNLAo9MUe2Mnb
-         7d1eeth0Og38n9QTi5vujPSQBouBsBKBkUNg2MnUXuhbVdgFXnB75RQ3gU85LxYdbl7R
-         4V9zefX8AZw/B2gBD2PaOzuDgdE+lpPtephhgO4Y1/9+2F7SHq5sUiSWHnjQE+13faJT
-         OMHlKx6VE+EGbNQuGOwaLltqbEG5I4u7Z3afRCyzmgnQqgH7Xuf49zpyVkHmANcsm+7f
-         odcuHDcSlRChYSKC7+DjnMispWcFl96BMdXJrlvcFw3cKh24exAw3YCzzg7Q3SeEvMAL
-         9oGg==
-X-Gm-Message-State: AOAM53032zy5u+hXs25wmH9RRLZjiFQxrj9tC9S3SXc28eOGp0kB+CJj
-        oDDGUIb/6Hud5ooUPfekp+NCXfl29BCEu6v+HyL5PAyL7/u48NCyGCg5EDu/7nqvT1j0vNvCMn9
-        DspQ4auUvKQp7lcFiafgpqsCi
-X-Received: by 2002:a05:6000:1045:: with SMTP id c5mr17350737wrx.250.1612168201727;
-        Mon, 01 Feb 2021 00:30:01 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz6UZr189pCeRP1YezATVaXeQQHRGHCvETS8Jr7AzP2dFOuy5pRO24CAZQYIXQgraHCwm17sg==
-X-Received: by 2002:a05:6000:1045:: with SMTP id c5mr17350715wrx.250.1612168201566;
-        Mon, 01 Feb 2021 00:30:01 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id w14sm25577889wro.86.2021.02.01.00.30.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 00:30:00 -0800 (PST)
-Date:   Mon, 1 Feb 2021 09:29:58 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        Xie Yongji <xieyongji@bytedance.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Laurent Vivier <lvivier@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        linux-kernel@vger.kernel.org, Jason Wang <jasowang@redhat.com>,
-        kvm@vger.kernel.org
-Subject: Re: [PATCH RFC v2 08/10] vdpa: add vdpa simulator for block device
-Message-ID: <20210201082958.646etcwgssvi22cq@steredhat>
-References: <20210128144127.113245-1-sgarzare@redhat.com>
- <20210128144127.113245-9-sgarzare@redhat.com>
- <e8f97ea2-d179-de37-a0ea-b2858510f3ce@nvidia.com>
+        id S232498AbhBAIc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 03:32:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45360 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232285AbhBAIcX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 03:32:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 614CB64E34;
+        Mon,  1 Feb 2021 08:31:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612168302;
+        bh=J1P1joLDR0nqRCk/zFl2Cn6sO+3Nciht4h/kZRq/Wys=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=E/YY4r9v2WgviDwUNuAXIgg+TT+BcJ9BDjWOyw7aDgiF3W4uNjzgFv55WcfGM1km1
+         lMG/xTDB50GuvvCVL98jmcdAO4eAGLIHm8l1AymLDK9tNinm1ELTtlY4LQtPjLphjV
+         yY2jK7VCLMIZmr6J+K3fRcGNzVm/4ggOPTCJloZpiYc1Bc4Iq2Vw9CxyxxaMl80hJ2
+         /MuSyUr165gf99tPInWAnvQtQ06gk1tkuo+jGs6d57+bisYL2PbnMOv5mdN10w4iuF
+         hbYkiT+MFWBT7ls9rALWHkKFtmihawPkHTnyK5W91UtK1F1C7J1FFRSbdydI6kceHm
+         pLJCDTZ6/KK9A==
+Received: by mail-ot1-f46.google.com with SMTP id f6so15446702ots.9;
+        Mon, 01 Feb 2021 00:31:42 -0800 (PST)
+X-Gm-Message-State: AOAM533DxbqNPeWBOL7ku3Ru2Bn54E/TY7eziBILaW0zoiHAbN8g+tV8
+        mIpvyY1MY2Csdct+9eccFAfBxQ4GWDBj0yC5mHs=
+X-Google-Smtp-Source: ABdhPJz50h3GDHMu07uDYuvXiTFDDTml8zpx3oYtdZFPj3MP5bRTMMhCZRCDQlO05lqBYoDZe2WyGcDvWxa0qMukpPk=
+X-Received: by 2002:a9d:3bb7:: with SMTP id k52mr11523053otc.251.1612168301459;
+ Mon, 01 Feb 2021 00:31:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <e8f97ea2-d179-de37-a0ea-b2858510f3ce@nvidia.com>
+References: <20210201033601.1642-1-thunder.leizhen@huawei.com> <20210201033601.1642-5-thunder.leizhen@huawei.com>
+In-Reply-To: <20210201033601.1642-5-thunder.leizhen@huawei.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 1 Feb 2021 09:31:25 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0=Aj0Ss3xbgh1ELyB+4d94ybugbza_xUqW_=yVsMwEqg@mail.gmail.com>
+Message-ID: <CAK8P3a0=Aj0Ss3xbgh1ELyB+4d94ybugbza_xUqW_=yVsMwEqg@mail.gmail.com>
+Subject: Re: [PATCH v6 4/4] ARM: Add support for Hisilicon Kunpeng L3 cache controller
+To:     Zhen Lei <thunder.leizhen@huawei.com>
+Cc:     Russell King <rmk+kernel@arm.linux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 31, 2021 at 05:31:43PM +0200, Max Gurtovoy wrote:
+On Mon, Feb 1, 2021 at 4:36 AM Zhen Lei <thunder.leizhen@huawei.com> wrote:
 >
->On 1/28/2021 4:41 PM, Stefano Garzarella wrote:
->>From: Max Gurtovoy <mgurtovoy@nvidia.com>
->>
->>This will allow running vDPA for virtio block protocol.
->>
->>Signed-off-by: Max Gurtovoy <mgurtovoy@nvidia.com>
->>[sgarzare: various cleanups/fixes]
->>Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
->>---
->>v2:
->>- rebased on top of other changes (dev_attr, get_config(), notify(), etc.)
->>- memset to 0 the config structure in vdpasim_blk_get_config()
->>- used vdpasim pointer in vdpasim_blk_get_config()
->>
->>v1:
->>- Removed unused headers
->>- Used cpu_to_vdpasim*() to store config fields
->>- Replaced 'select VDPA_SIM' with 'depends on VDPA_SIM' since selected
->>   option can not depend on other [Jason]
->>- Start with a single queue for now [Jason]
->>- Add comments to memory barriers
->>---
->>  drivers/vdpa/vdpa_sim/vdpa_sim_blk.c | 145 +++++++++++++++++++++++++++
->>  drivers/vdpa/Kconfig                 |   7 ++
->>  drivers/vdpa/vdpa_sim/Makefile       |   1 +
->>  3 files changed, 153 insertions(+)
->>  create mode 100644 drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
->>
->>diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
->>new file mode 100644
->>index 000000000000..999f9ca0b628
->>--- /dev/null
->>+++ b/drivers/vdpa/vdpa_sim/vdpa_sim_blk.c
->>@@ -0,0 +1,145 @@
->>+// SPDX-License-Identifier: GPL-2.0-only
->>+/*
->>+ * VDPA simulator for block device.
->>+ *
->>+ * Copyright (c) 2020, Mellanox Technologies. All rights reserved.
+> Add support for the Hisilicon Kunpeng L3 cache controller as used with
+> Kunpeng506 and Kunpeng509 SoCs.
 >
->I guess we can change the copyright from Mellanox to:
+> These Hisilicon SoCs support LPAE, so the physical addresses is wider than
+> 32-bits, but the actual bit width does not exceed 36 bits. When the cache
+> operation is performed based on the address range, the upper 30 bits of
+> the physical address are recorded in registers L3_MAINT_START and
+> L3_MAINT_END, and ignore the lower 6 bits cacheline offset.
 >
->Copyright (c) 2020, NVIDIA CORPORATION. All rights reserved.
+> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
 
-I'll update in the next version.
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 
-Thanks,
-Stefano
+If you add one more thing:
 
+> +static void l3cache_maint_common(u32 range, u32 op_type)
+> +{
+> +       u32 reg;
+> +
+> +       reg = readl_relaxed(l3_ctrl_base + L3_MAINT_CTRL);
+> +       reg &= ~(L3_MAINT_RANGE_MASK | L3_MAINT_TYPE_MASK);
+> +       reg |= range | op_type;
+> +       reg |= L3_MAINT_STATUS_START;
+> +       writel(reg, l3_ctrl_base + L3_MAINT_CTRL);
+> +
+> +       /* Wait until the hardware maintenance operation is complete. */
+> +       do {
+> +               cpu_relax();
+> +               reg = readl(l3_ctrl_base + L3_MAINT_CTRL);
+> +       } while ((reg & L3_MAINT_STATUS_MASK) != L3_MAINT_STATUS_END);
+> +}
+> +
+> +static void l3cache_maint_range(phys_addr_t start, phys_addr_t end, u32 op_type)
+> +{
+> +       start = start >> L3_CACHE_LINE_SHITF;
+> +       end = ((end - 1) >> L3_CACHE_LINE_SHITF) + 1;
+> +
+> +       writel_relaxed(start, l3_ctrl_base + L3_MAINT_START);
+> +       writel_relaxed(end, l3_ctrl_base + L3_MAINT_END);
+> +
+> +       l3cache_maint_common(L3_MAINT_RANGE_ADDR, op_type);
+> +}
+
+As mentioned, I'd like to see a code comment that explains the use
+the of relaxed() vs non-relaxed MMIO accessors, as it will be impossible
+for a reader to later understand why you picked a mix of the two,
+and it also ensures that you have considered which one is the best
+option to use here and that your explanation matches what you do.
+
+Based on Russell's comments, I had expected that you would use
+only relaxed accessors, plus explicit barriers if you change it, matching
+what l2x0 does (l2x0 has to do it because of __l2c210_cache_sync(),
+while you don't have a sync callback and don't need to).
+
+      Arnd
