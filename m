@@ -2,93 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B10230B3BA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:55:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9773730B3BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:59:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230088AbhBAXzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 18:55:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37558 "EHLO
+        id S230380AbhBAX6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 18:58:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229527AbhBAXzI (ORCPT
+        with ESMTP id S230054AbhBAX6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 18:55:08 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 922ABC061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 15:54:28 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id d1so18125573otl.13
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 15:54:28 -0800 (PST)
+        Mon, 1 Feb 2021 18:58:52 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271BBC0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 15:58:12 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id z21so13504447pgj.4
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 15:58:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3aDojUkHo90pEvXpZkv6t3T7DNgGSpgLl4Ya1KVsoDg=;
-        b=SfPPo5qo4TCbx8PCc9ZAnK4vquw07MtaBluOtSn9+pBr7hKOO71zebkb3RW6fx/IeT
-         Y6Hq9g1voseYoRkM4LcKZmrUSzv4UOoi99X4mPdw78ccW0i4g29tBt0zNsn1vMLdL6wj
-         1KzJZgmHRJFHrQaIqyn5pnD6NaNn4Oh6EZN/BU/8Ac+sjZDVsow1+gNQY54dEKSmZhAf
-         QBONNo+qg0r+pC+wSDgvpYet+6RKa8uzd5AaZ5GkzoOkPK6Ul/PLHNhIeVx+8KiMZlXO
-         kfcYhfVko/xwTPeaSSG82Eztsry2ESa3icu0OboHvKHlkRCpiuNsOC/KQkHmvONE4SdB
-         DaKQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=rTKu+xdzo+veIn6KkxdUI/A6PY5YQCPeNp5pTPUY3WQ=;
+        b=VAHjN9JG4k8S/0sgPfPZHZIecEBvqimHWvOeTv0p4etlF/RojXQvnnCs/vX/pzsRi+
+         JPqNGtAokQTisR9hN5EWazgXLVQsteZk19JWjvOj6SdOYPYubYFzsHPhGH32anzd6Id4
+         GY1vNrTWQzIbLJhlWF8hr2bFzaiVj8n555uFHRRa5aB154AwlO1xOFiWwLuAdjmKZSry
+         9qaZvMsCEWpJgZ89LTxQ10Wk9kujeXp8KaWHer4ZPnyoQk+eCODtNru6s2rViglqrz+x
+         HWT8qkCRQf7zzO3hyItdZBMempeoMn+HJdCUXRgLGnKMruuxjDXTBBYvdoCmfqX8GhfV
+         Ts/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3aDojUkHo90pEvXpZkv6t3T7DNgGSpgLl4Ya1KVsoDg=;
-        b=ipEOTVgd4goV4vYP2rzJjxOi8cUmDhdNes1ksXCqAtMHwASigqLrNOtuX6xr0zkCs2
-         sERAJTCnQHBrtSdk761499kuRx46DZS/fuio0jDPK0/h1iOKA9ByoOfeWYZqABQmcva4
-         8E0ei7yANKUZXNHF/64TxvChHXQgmJ3QdD1IcDme9jc4uL3dILy1DiIbjOXZPAXKbS0o
-         2a/uHwA6aj+iwhpbZ9cH51gnALYtt0emeHVrvuW/EguriEReW8a7hPeF1gnBWDfW2E6R
-         ZU5kH5QuZCHQ1P/4c2EHJew3ykuHnY4187gObEom6m1xYwI0+zv8SQtUpcQIjISop/xt
-         lqsw==
-X-Gm-Message-State: AOAM532Mm/OK0N4Zc6H6XhJts6Dl3lSn9tQldWkpkb2gUddapHLPdwnR
-        yDgFLCb0sKRfRQQIS3r0T+zg8pF08sXY0wGF6tQ=
-X-Google-Smtp-Source: ABdhPJwQYlfkagOgAez/IT1Hbig0YufGodBOSs2aQZQSR8SNzoXURKsbDPAmOs6KWJBgQa/EvaxKVa2clF7JDJ/XAWE=
-X-Received: by 2002:a05:6830:15c5:: with SMTP id j5mr13495926otr.185.1612223667775;
- Mon, 01 Feb 2021 15:54:27 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=rTKu+xdzo+veIn6KkxdUI/A6PY5YQCPeNp5pTPUY3WQ=;
+        b=nMZ3dHdqQEEuenjjeOsf3ZOrIocrVlmykBNOlsI6y8QbxkCoAgxhU2lLqC8ejwbTfF
+         x5oyUgQ8pm3ql/b5V61CY4sFd+8jHtQ5ye0DRY16VgMP4XEXtkggM/4qLDxQeJJtH7yU
+         SOANMehJczZAJiqqOoCyMtr0K72CmxBTeO/7vsROOTMH8pi3kbEyeDOLTbo3CK3UWuWh
+         mfsoxYuDDYy5HuCkHeL9/ojLSYZjb7LuCK/0m8hfZ+BN1tH7trVzNb1s6svM4erRbEKQ
+         8mKdv+ZV7fzZKZ9bazOeOE0jbpWc8C4RsrWD7514njjBvfmDqN1DAdJqzUsXRRIXUkMI
+         zCgQ==
+X-Gm-Message-State: AOAM5310x4Q8NGEoqYzGZ56vm4yHuA7LalMY0nHyBlmjKsL9n+xrE4sk
+        140CoOkp8JjQ5n0/gz168jLRmA==
+X-Google-Smtp-Source: ABdhPJzXLITZFTLkuFtUNx2iXI7vVJGwTvh/frUwCyN9/C862kHXzQvcB66CzSuU6g9cBx9FOvRY0w==
+X-Received: by 2002:a65:47c7:: with SMTP id f7mr19057541pgs.305.1612223891284;
+        Mon, 01 Feb 2021 15:58:11 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id h15sm3044539pfr.62.2021.02.01.15.58.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 15:58:10 -0800 (PST)
+Date:   Mon, 1 Feb 2021 15:58:09 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH 03/14] cxl/mem: Find device capabilities
+In-Reply-To: <20210201231718.2hwaqgn2f7kc7usw@intel.com>
+Message-ID: <a789317e-2ac2-10a1-dedd-1851972e3d6b@google.com>
+References: <234711bf-c03f-9aca-e0b5-ca677add3ea@google.com> <20210201165352.wi7tzpnd4ymxlms4@intel.com> <32f33dd-97a-8b1c-d488-e5198a3d7748@google.com> <20210201215857.ud5cpg7hbxj2j5bx@intel.com> <b46ed01-3f1-6643-d371-7764c3bde4f8@google.com>
+ <20210201222859.lzw3gvxuqebukvr6@intel.com> <20210201223314.qh24uxd7ajdppgfl@intel.com> <f86149f8-3aea-9d8c-caa9-62771bf22cb5@google.com> <20210201225052.vrrvuxrsgmddjzbb@intel.com> <79b98f60-151b-6c80-65c3-91a37699d121@google.com>
+ <20210201231718.2hwaqgn2f7kc7usw@intel.com>
 MIME-Version: 1.0
-References: <20210201233254.91809-1-rikard.falkeborn@gmail.com>
-In-Reply-To: <20210201233254.91809-1-rikard.falkeborn@gmail.com>
-From:   Amy Parker <enbyamy@gmail.com>
-Date:   Mon, 1 Feb 2021 15:54:15 -0800
-Message-ID: <CAE1WUT4DJJyHM7zJLFxThJvfmrGRpCamuUn0V19JqjYVddF=LA@mail.gmail.com>
-Subject: Re: [PATCH] mm/swap_state: Constify static struct attribute_group
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>, linux-kernel@vger.kernel.org,
-        Huang Ying <ying.huang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 3:37 PM Rikard Falkeborn
-<rikard.falkeborn@gmail.com> wrote:
->
-> The only usage of swap_attr_group is to pass its address to
-> sysfs_create_group() which takes a pointer to const attribute_group.
-> Make it const to allow the compiler to put it in read-only memory.
->
-> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-> ---
->  mm/swap_state.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index d0d417efeecc..3cdee7b11da9 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -901,7 +901,7 @@ static struct attribute *swap_attrs[] = {
->         NULL,
->  };
->
-> -static struct attribute_group swap_attr_group = {
-> +static const struct attribute_group swap_attr_group = {
->         .attrs = swap_attrs,
->  };
->
-> --
-> 2.30.0
->
+On Mon, 1 Feb 2021, Ben Widawsky wrote:
 
-Looks all good to me - there aren't any dependencies on it anywhere else.
+> > I haven't seen the update to 8.2.8.4.5 to know yet :)
+> > 
+> > You make a good point of at least being able to interact with the driver.  
+> > I think you could argue that if the driver binds, then the payload size is 
+> > accepted, in which case it would be strange to get an EINVAL when using 
+> > the ioctl with anything >1MB.
+> > 
+> > Concern was that if we mask off the reserved bits from the command 
+> > register that we could be masking part of the payload size that is being 
+> > passed if the accepted max is >1MB.  Idea was to avoid any possibility of 
+> > this inconsistency.  If this is being checked for ioctl, seems like it's 
+> > checking reserved bits.
+> > 
+> > But maybe I should just wait for the spec update.
+> 
+> Well, I wouldn't hold your breath (it would be an errata in this case anyway).
+> My preference would be to just allow allow mailbox payload size to be 2^31 and
+> not deal with this.
+> 
+> My question was how strongly do you feel it's an error that should prevent
+> binding.
+> 
 
-Reviewed-by: Amy Parker <enbyamy@gmail.com>
+I don't have an objection to binding, but doesn't this require that the 
+check in cxl_validate_cmd_from_user() guarantees send_cmd->size_in cannot 
+be greater than 1MB?
