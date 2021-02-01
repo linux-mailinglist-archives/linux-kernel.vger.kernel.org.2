@@ -2,334 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7CC30B35D
+	by mail.lfdr.de (Postfix) with ESMTP id AABD030B35E
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 00:21:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbhBAXTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 18:19:54 -0500
-Received: from mx1.opensynergy.com ([217.66.60.4]:43500 "EHLO
-        mx1.opensynergy.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231183AbhBAXTo (ORCPT
+        id S231236AbhBAXU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 18:20:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230029AbhBAXUV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 18:19:44 -0500
-Received: from SR-MAILGATE-02.opensynergy.com (localhost.localdomain [127.0.0.1])
-        by mx1.opensynergy.com (Proxmox) with ESMTP id 33F0EA1572;
-        Tue,  2 Feb 2021 00:19:00 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=opensynergy.com;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:from:from:in-reply-to:message-id:mime-version:references
-        :reply-to:subject:subject:to:to; s=srmailgate02; bh=3eKKNhOJEF9l
-        OOLKO3Ak9sBWvWnl92eP7oY9x7qFmWU=; b=h0Hawfh2dhk8PvkuVo/Sw+LPhGVz
-        dqjsD10z7Qbi1qAApcLhB+LVBb7oZ7rBkK3ZLWuVv/q63CmsXndzv1+cr38MUIng
-        +XR61zxw/EKMiwZji5tFdWV+/mD5V5eILIB/kn7FtgCHhypwNsobpOFR+j10QD2A
-        Av4+rpTehW81WYHD3miqNXiJ6dg3VNFZ0Xy3o1OC4PjT3S1+46wmpWjpV69owxnc
-        KM0rdfOYQpBuN09CbSX20pDhTUAA1IXMsOnAqx7HY1mwv3tDuMaNFmjRZgZoY+Xb
-        BFyyWG3u/ThpC1qYOsD2dK6MRdB8EhS4xIuQA/EXjK0Md3oWOG9m7hhQuw==
-Subject: Re: [virtio-dev] Re: [PATCH v2 3/9] ALSA: virtio: handling control
- messages
-To:     Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-CC:     <virtualization@lists.linux-foundation.org>,
-        <alsa-devel@alsa-project.org>, <virtio-dev@lists.oasis-open.org>,
-        <linux-kernel@vger.kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>
-References: <20210124165408.1122868-1-anton.yakovlev@opensynergy.com>
- <20210124165408.1122868-4-anton.yakovlev@opensynergy.com>
- <7436cb6-111c-4ac5-88ee-8e103ded954b@intel.com>
-From:   Anton Yakovlev <anton.yakovlev@opensynergy.com>
-Message-ID: <1418aae0-0970-6ff1-db5b-fd248557c5be@opensynergy.com>
-Date:   Tue, 2 Feb 2021 00:18:58 +0100
+        Mon, 1 Feb 2021 18:20:21 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F4C4C06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 15:19:41 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id d2so20895763edz.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 15:19:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yEGz+dLPiI3e/jslfpMf9TOttSm5sVcrBxCPC90Kx7M=;
+        b=MZN+I2UZ85k4O9bkOQ+ITr8FDAC79nO7UygEAdCz8z21VIPTEUWijheuNedhuaEq//
+         U0lspKWMTYEyOqzLTh7y0dph80lY3mvfrvBxSZjhAtzoE0mCqNA1MA/4IfqLkhKLra71
+         00zpbAzkzwjddfrjL38YMX/OO2mDfIBbUyprulTaDTBubemXOC1lNmtK4LbjzFUHurc6
+         TPiI9ZkW8IGmQ/GXLLrHZ/+9HskyuHXEGYfINQBJM7iWaPoN+ron/s/iKUQcDDohf+dM
+         3DFTnfiaFeNQiGN1oMIc69tB+N16+0Dt52gzAUJfHaRCa9uHDsljZAkjBEsSxnAwpD7R
+         Y72Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yEGz+dLPiI3e/jslfpMf9TOttSm5sVcrBxCPC90Kx7M=;
+        b=XSaESXmh1xEXbJrArgDFwCDrXJlKl6Nog/a27Kbw6LjFqYXOO9iUVuMqZObL6D/61v
+         qZKTjlGpRPtmgWJmBzSLO3LjJw7DnC5c8xUOtk/Puk2c8CVDtjn8ekHS5BAOMs6r/ecB
+         tli1Nfmhm9mQtvcN8kh9SqNRkwJu0mB/ze5CIjKkcFk1RUjVuoQS4SKfEEm8J37ur7b9
+         HoNYqGo8eF6bwykIWWloWBAQ8dzvpoQR3vmyrr/cRwgG9qNNoQimAPE3cAeW+kw7PahE
+         kHbM2rDznIwpAUCBh4MHfbhdcJjBl1C0YyRAwMD4eMsR3uWWyLDP7sano2OOJsEJ4E+m
+         eotA==
+X-Gm-Message-State: AOAM533VJgiR3aKx6MC9IGvt6WQaoJqDiYnJ8TfK6sTdTJ4UIMCaOM0n
+        F5aIB5/t8EZPznBKcNMDSIdkMUOq/Y9pl5zzrG2TYw==
+X-Google-Smtp-Source: ABdhPJwoXp33gfzuIBwe2JXmvKCytBg+xKcBWV6c56gwpEwjaF9fYaIdATFU4OOlSxGwozZCpPiy8HRA2T7eVRgj2Kk=
+X-Received: by 2002:a50:f19a:: with SMTP id x26mr12051589edl.354.1612221580105;
+ Mon, 01 Feb 2021 15:19:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <7436cb6-111c-4ac5-88ee-8e103ded954b@intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SR-MAIL-02.open-synergy.com (10.26.10.22) To
- SR-MAIL-01.open-synergy.com (10.26.10.21)
+References: <20200615074723.12163-1-rpalethorpe@suse.com>
+In-Reply-To: <20200615074723.12163-1-rpalethorpe@suse.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Mon, 1 Feb 2021 15:19:37 -0800
+Message-ID: <CAPcyv4jzfnnOTJTK5WKYpt_qOm1UWv-PZ7ZH3GiXf7x_oz6jQw@mail.gmail.com>
+Subject: Re: [PATCH v2] nvdimm: Avoid race between probe and reading device attributes
+To:     Richard Palethorpe <rpalethorpe@suse.com>
+Cc:     linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Coly Li <colyli@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Yikes, sorry this languished so long, comments below:
 
-On 25.01.2021 16:22, Guennadi Liakhovetski wrote:
- > I think the use of (devm_)kmalloc() and friends needs some refinement in
- > several patches in the series.
+On Mon, Jun 15, 2020 at 12:48 AM Richard Palethorpe
+<rpalethorpe@suse.com> wrote:
+>
+> It is possible to cause a division error and use-after-free by querying the
+> nmem device before the driver data is fully initialised in nvdimm_probe. E.g
+> by doing
+>
+> (while true; do
+>      cat /sys/bus/nd/devices/nmem*/available_slots 2>&1 > /dev/null
+>  done) &
+>
+> while true; do
+>      for i in $(seq 0 4); do
+>          echo nmem$i > /sys/bus/nd/drivers/nvdimm/bind
+>      done
+>      for i in $(seq 0 4); do
+>          echo nmem$i > /sys/bus/nd/drivers/nvdimm/unbind
+>      done
+>  done
+>
+> On 5.7-rc3 this causes:
+>
+> [   12.711578] divide error: 0000 [#1] SMP KASAN PTI
+> [   12.714857] RIP: 0010:nd_label_nfree+0x134/0x1a0 [libnvdimm]
+[..]
+> [   12.725308] CR2: 00007fd16f1ec000 CR3: 0000000064322006 CR4: 0000000000160ef0
+> [   12.726268] Call Trace:
+> [   12.726633]  available_slots_show+0x4e/0x120 [libnvdimm]
+> [   12.727380]  dev_attr_show+0x42/0x80
+> [   12.727891]  ? memset+0x20/0x40
+> [   12.728341]  sysfs_kf_seq_show+0x218/0x410
+> [   12.728923]  seq_read+0x389/0xe10
+> [   12.729415]  vfs_read+0x101/0x2d0
+> [   12.729891]  ksys_read+0xf9/0x1d0
+> [   12.730361]  ? kernel_write+0x120/0x120
+> [   12.730915]  do_syscall_64+0x95/0x4a0
+> [   12.731435]  entry_SYSCALL_64_after_hwframe+0x49/0xb3
+[..]
+> Fixes: 4d88a97aa9e8 ("libnvdimm, nvdimm: dimm driver and base libnvdimm device-driver infrastructure")
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Vishal Verma <vishal.l.verma@intel.com>
+> Cc: Dave Jiang <dave.jiang@intel.com>
+> Cc: Ira Weiny <ira.weiny@intel.com>
+> Cc: linux-nvdimm@lists.01.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: Coly Li <colyli@suse.com>
+> Signed-off-by: Richard Palethorpe <rpalethorpe@suse.com>
+> ---
+>
+> V2:
+> + Reviewed by Coly and removed unecessary lock
+>
+>  drivers/nvdimm/dimm.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/nvdimm/dimm.c b/drivers/nvdimm/dimm.c
+> index 7d4ddc4d9322..3d3988e1d9a0 100644
+> --- a/drivers/nvdimm/dimm.c
+> +++ b/drivers/nvdimm/dimm.c
+> @@ -43,7 +43,6 @@ static int nvdimm_probe(struct device *dev)
+>         if (!ndd)
+>                 return -ENOMEM;
+>
+> -       dev_set_drvdata(dev, ndd);
+>         ndd->dpa.name = dev_name(dev);
+>         ndd->ns_current = -1;
+>         ndd->ns_next = -1;
+> @@ -106,6 +105,8 @@ static int nvdimm_probe(struct device *dev)
+>         if (rc)
+>                 goto err;
+>
+> +       dev_set_drvdata(dev, ndd);
+> +
 
-Maybe yes, but using non-managed resources will slightly complicate the
-device removing path.
+I see why this works, but I think the bug is in
+available_slots_show(). It is a bug for a sysfs attribute to reference
+driver-data without synchronizing against bind. So it should be
+possible for probe set that pointer whenever it wants. In other words
+this fix (forgive the whitespace damage from pasting).
 
+diff --git a/drivers/nvdimm/dimm_devs.c b/drivers/nvdimm/dimm_devs.c
+index b59032e0859b..e68b17bc7aab 100644
+--- a/drivers/nvdimm/dimm_devs.c
++++ b/drivers/nvdimm/dimm_devs.c
+@@ -335,10 +335,8 @@ static ssize_t state_show(struct device *dev,
+struct device_attribute *attr,
+ }
+ static DEVICE_ATTR_RO(state);
 
-...[snip]...
+-static ssize_t available_slots_show(struct device *dev,
+-               struct device_attribute *attr, char *buf)
++static ssize_t __available_slots_show(struct nvdimm_drvdata *ndd, char *buf)
+ {
+-       struct nvdimm_drvdata *ndd = dev_get_drvdata(dev);
+        ssize_t rc;
+        u32 nfree;
 
+@@ -356,6 +354,18 @@ static ssize_t available_slots_show(struct device *dev,
+        nvdimm_bus_unlock(dev);
+        return rc;
+ }
++
++static ssize_t available_slots_show(struct device *dev,
++                                   struct device_attribute *attr, char *buf)
++{
++       ssize_t rc;
++
++       nd_device_lock(dev);
++       rc = __available_slots_show(dev_get_drvdata(dev), buf);
++       nd_device_unlock(dev);
++
++       return rc;
++}
+ static DEVICE_ATTR_RO(available_slots);
 
- >> +/**
- >> + * virtsnd_ctl_msg_alloc_ext() - Allocate and initialize a control
- >> message.
- >> + * @vdev: VirtIO parent device.
- >> + * @request_size: Size of request header (pointed to by sg_request
- >> field).
- >> + * @response_size: Size of response header (pointed to by sg_response
- >> field).
- >> + * @sgs: Additional data to attach to the message (may be NULL).
- >> + * @out_sgs: Number of scattergather elements to attach to the
- >> request header.
- >> + * @in_sgs: Number of scattergather elements to attach to the
- >> response header.
- >> + * @gfp: Kernel flags for memory allocation.
- >> + *
- >> + * The message will be automatically freed when the ref_count value
- >> is 0.
- >> + *
- >> + * Context: Any context. May sleep if @gfp flags permit.
- >> + * Return: Allocated message on success, ERR_PTR(-errno) on failure.
- >> + */
- >> +struct virtio_snd_msg *virtsnd_ctl_msg_alloc_ext(struct virtio_device
- >> *vdev,
- >> +                                              size_t request_size,
- >> +                                              size_t response_size,
- >> +                                              struct scatterlist *sgs,
- >> +                                              unsigned int out_sgs,
- >> +                                              unsigned int in_sgs,
- >> gfp_t gfp)
- >> +{
- >> +     struct virtio_snd_msg *msg;
- >> +     size_t msg_size =
- >> +             sizeof(*msg) + (1 + out_sgs + 1 + in_sgs) *
- >> sizeof(*msg->sgs);
- >> +     unsigned int i;
- >> +
- >> +     msg = devm_kzalloc(&vdev->dev, msg_size + request_size +
- >> response_size,
- >> +                        gfp);
- >
- > Messages are short-lived, right? So, I think their allocation and freeing
- > has to be explicit, no need for devm_.
-
-If explicit allocating and freeing is more appropriate here, then let it
-be. Moreover, when deleting the control virtqueue, all pending messages
-must be explicitly canceled. It should not be that hard to add explicit
-freeing there.
-
-
-...[snip]...
-
-
- >> +
- >> +/**
- >> + * virtsnd_ctl_msg_send() - Send an (asynchronous) control message.
- >> + * @snd: VirtIO sound device.
- >> + * @msg: Control message.
- >> + *
- >> + * If a message is failed to be enqueued, it will be deleted. If
- >> message content
- >> + * is still needed, the caller must additionally to
- >> virtsnd_ctl_msg_ref/unref()
- >> + * it.
- >> + *
- >> + * Context: Any context. Takes and releases the control queue spinlock.
- >> + * Return: 0 on success, -errno on failure.
- >> + */
- >> +int virtsnd_ctl_msg_send(struct virtio_snd *snd, struct
- >> virtio_snd_msg *msg)
- >> +{
- >> +     struct virtio_device *vdev = snd->vdev;
- >> +     struct virtio_snd_queue *queue = virtsnd_control_queue(snd);
- >> +     struct virtio_snd_hdr *response = sg_virt(&msg->sg_response);
- >> +     bool notify = false;
- >> +     unsigned long flags;
- >> +     int rc = -EIO;
- >> +
- >> +     /* Set the default status in case the message was not sent or was
- >> +      * canceled.
- >> +      */
- >> +     response->code = cpu_to_virtio32(vdev, VIRTIO_SND_S_IO_ERR);
- >> +
- >> +     spin_lock_irqsave(&queue->lock, flags);
- >> +     if (queue->vqueue) {
- >
- > Is it allowed for queue->vqueue to be NULL?
-
-In general it is possible. The device may request a reset when actively
-used. In this case, we don't want to allow further use of the virtqueues.
-
-
- >> +             rc = virtqueue_add_sgs(queue->vqueue, msg->sgs,
- >> msg->out_sgs,
- >> +                                    msg->in_sgs, msg, GFP_ATOMIC);
- >> +             if (!rc) {
- >> +                     notify = virtqueue_kick_prepare(queue->vqueue);
- >> +                     list_add_tail(&msg->list, &snd->ctl_msgs);
- >> +             }
- >> +     }
- >> +     spin_unlock_irqrestore(&queue->lock, flags);
- >> +
- >> +     if (!rc) {
- >> +             if (!notify || virtqueue_notify(queue->vqueue))
- >> +                     return 0;
- >> +
- >> +             spin_lock_irqsave(&queue->lock, flags);
- >> +             list_del(&msg->list);
- >> +             spin_unlock_irqrestore(&queue->lock, flags);
- >> +     }
- >> +
- >> +     virtsnd_ctl_msg_unref(snd->vdev, msg);
- >> +
- >> +     return -EIO;
- >
- > wouldn't "return rc" be better here?
-
-Yes, that would probably be better as there is no harm in propagating
-the error returned by virtqueue_add_sgs.
-
-
- >> +}
- >> +
- >> +/**
- >> + * virtsnd_ctl_msg_send_sync() - Send a (synchronous) control message.
- >> + * @snd: VirtIO sound device.
- >> + * @msg: Control message.
- >> + *
- >> + * After returning from this function, the message will be deleted.
- >> If message
- >> + * content is still needed, the caller must additionally to
- >> + * virtsnd_ctl_msg_ref/unref() it.
- >> + *
- >> + * The msg_timeout_ms module parameter defines the message completion
- >> timeout.
- >> + * If the message is not completed within this time, the function
- >> will return an
- >> + * error.
- >> + *
- >> + * Context: Any context. Takes and releases the control queue spinlock.
- >> + * Return: 0 on success, -errno on failure.
- >> + *
- >> + * The return value is a message status code (VIRTIO_SND_S_XXX)
- >> converted to an
- >> + * appropriate -errno value.
- >> + */
- >> +int virtsnd_ctl_msg_send_sync(struct virtio_snd *snd,
- >> +                           struct virtio_snd_msg *msg)
- >> +{
- >> +     struct virtio_device *vdev = snd->vdev;
- >> +     unsigned int js = msecs_to_jiffies(msg_timeout_ms);
- >> +     struct virtio_snd_hdr *response;
- >> +     int rc;
- >> +
- >> +     virtsnd_ctl_msg_ref(vdev, msg);
- >> +
- >> +     rc = virtsnd_ctl_msg_send(snd, msg);
- >> +     if (rc)
- >> +             goto on_failure;
- >> +
- >> +     rc = wait_for_completion_interruptible_timeout(&msg->notify, js);
- >> +     if (rc <= 0) {
- >> +             if (!rc) {
- >> +                     struct virtio_snd_hdr *request =
- >> +                             sg_virt(&msg->sg_request);
- >> +
- >> +                     dev_err(&vdev->dev,
- >> +                             "control message (0x%08x) timeout\n",
- >> +                             le32_to_cpu(request->code));
- >> +                     rc = -EIO;
- >
- > Wouldn't -ETIMEDOUT be better here?
-
-Yes, it would be.
-
-
- >> +             }
- >> +
- >> +             goto on_failure;
- >> +     }
- >> +
- >> +     response = sg_virt(&msg->sg_response);
- >> +
- >> +     switch (le32_to_cpu(response->code)) {
- >> +     case VIRTIO_SND_S_OK:
- >> +             rc = 0;
- >> +             break;
- >> +     case VIRTIO_SND_S_BAD_MSG:
- >> +             rc = -EINVAL;
- >> +             break;
- >> +     case VIRTIO_SND_S_NOT_SUPP:
- >> +             rc = -EOPNOTSUPP;
- >> +             break;
- >> +     case VIRTIO_SND_S_IO_ERR:
- >> +             rc = -EIO;
- >> +             break;
- >> +     default:
- >> +             rc = -EPERM;
- >
- > any special reason for EPERM as a default error code? I think often 
-EINVAL
- > is used in similar cases.
-
-No, there is no particular reason, I just wasn't sure what to choose for
-the default value.
-
-
- >> +             break;
- >> +     }
- >> +
- >> +on_failure:
- >
- > cosmetic: this path is also taken on success, so maybe better just call
- > the lable "exit" or similar.
-
-Ok! Then I probably need to check for other goto cases as well.
-
-
-...[snip]...
-
-
- >> +
- >> +/**
- >> + * virtsnd_ctl_msg_unref() - Decrement reference counter for the
- >> message.
- >> + * @vdev: VirtIO parent device.
- >> + * @msg: Control message.
- >> + *
- >> + * The message will be freed when the ref_count value is 0.
- >> + *
- >> + * Context: Any context.
- >> + */
- >> +static inline void virtsnd_ctl_msg_unref(struct virtio_device *vdev,
- >> +                                      struct virtio_snd_msg *msg)
- >> +{
- >> +     if (!atomic_dec_return(&msg->ref_count))
- >
- > Since you use atomic operations, this function can probably be called 
-with
- > no additional locking right? But if so, couldn't it be preempted here
- > between the check and the call to kfree()? As was mentioned in a previous
- > review, the use of atomic operations in this series has to be very
- > carefully examined...
-
-The control message workflow is implemented in such a way that all
-necessary increments occur before the first possible call to this
-function. So even if preemption does occur, it shouldn't be a problem.
-
-
- >> +             devm_kfree(&vdev->dev, msg);
- >> +}
- >> +
-
-
-...[snip]...
-
-
- >
- > ---------------------------------------------------------------------
- > To unsubscribe, e-mail: virtio-dev-unsubscribe@lists.oasis-open.org
- > For additional commands, e-mail: virtio-dev-help@lists.oasis-open.org
- >
- >
--- 
-Anton Yakovlev
-Senior Software Engineer
-
-OpenSynergy GmbH
-Rotherstr. 20, 10245 Berlin
-
-www.opensynergy.com
-
+ __weak ssize_t security_show(struct device *dev,
