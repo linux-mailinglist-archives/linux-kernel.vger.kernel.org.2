@@ -2,96 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57BDE30AA2E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:47:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D77C530AA3D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 15:52:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231350AbhBAOrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 09:47:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60460 "EHLO
+        id S229748AbhBAOtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 09:49:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231494AbhBAOp5 (ORCPT
+        with ESMTP id S231150AbhBAOsV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 09:45:57 -0500
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F88EC0613ED
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 06:45:17 -0800 (PST)
-Received: by mail-il1-x133.google.com with SMTP id q5so15753092ilc.10
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 06:45:17 -0800 (PST)
+        Mon, 1 Feb 2021 09:48:21 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B4EC061573;
+        Mon,  1 Feb 2021 06:47:41 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id l9so24799139ejx.3;
+        Mon, 01 Feb 2021 06:47:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=I4D16KIn4mdPhfH6zQNKK7p0fTmhOo1v0cmsmsfFxGA=;
-        b=ug+16pnxrHl306VQCEZxGDt73DrCGl7Zi3egCSW52HPzvQ/Edp9CyOFir9ng16GLUm
-         Yyhrt3Z13jo1fBi6m+vJiQ9GJ6h4bbFEvTw+RdSCZEPgXBTIeTki/oJ7DbbJSqEOI3SM
-         Za5k4fAaBsVrzR3jmWK5zflFA3IF7LZ9ijBB++Wp+AcvobpOId8znN9+/3Xjz9qG0xZU
-         aPAM+USuXjkHZAl2peQIwb6cpUGApEebiM6kCBobWsBBXhwcWHYYdZbveDX8KlDSA7RM
-         DPqGBt+MZMwFBGGbjeMn4mbaSkm61rMebEK/VRw2aHWEZDILkLzr8XJpjhAMCZnae98E
-         WoAQ==
+        bh=SWJ27oH+ywvoDHwR7zZy8Kz0h+8K+IT2Z5aTmsXDaM4=;
+        b=N904BHLYYBJmo6z2B0YLjG+azfIZrlXuEpAz6sv3VBStKD3MXwHuuj7DxnFJMYgfHV
+         o9RCX7AbrbXhoRfEx9Jz/Nui5u2qWr6LdO8HxU/j0hTMluFYDVxaZD0qJwwnIkSIgEkW
+         kio6M2WR0BykTsR+epi4g2pURFie5bAB6sRWLWDTFT85cwIO/Egy+8/KGw6FPRjrcL8D
+         WyU0dDSPBf3jhsG+j7lks4uEzZPVjCkk1l7uP9L/bCSbKDll6wL0lkG/OAnkdsnttq4J
+         n58/COVWIy+2d0/x1jlQORQZ0twqxUi5uLqMwq8as0Rg9U6BvK5OXnpJ4hsJIsB5Bkak
+         fa1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=I4D16KIn4mdPhfH6zQNKK7p0fTmhOo1v0cmsmsfFxGA=;
-        b=bMk42kLEyYNLjf3+KYFpOyx7DazBowp3M70R97X6C8RtjB5folc4HMYGWTbenGwN43
-         XVUQpdFa1RBKw0EKi70hkuAdEi5mjV2kVWOI9xDOwFWhD7BI7NVPzBDFVWI5gvAzsTvC
-         /4Xh885ZhZs7Ns/UM+WJ4FKnS38oei05vzqpAw/aNd8fEdfPigtRjb4w6IJ1ux87XK1d
-         l8a6xUYcAEryiBbZkmaHp2gVmuozgoL5XwqObOtQEVrUH/B3Wi9MNapCEwnBvl9VYmq3
-         vuLdYsGzG+sEhCiUOeJASAj4/M4PebC3AX9v78g7M9rPt4X5wakJ4gBIPd2jwFC8udZH
-         zJ4w==
-X-Gm-Message-State: AOAM532afK3vlEPpHsrm3RQKESOV1DNDRDgohYECSUdGSOtx18JjWwZs
-        8CE0XNEPxbSt8WcJhnXQ5H96JxHAkoyAjxr7G/w=
-X-Google-Smtp-Source: ABdhPJzi7UA8le4Q9njnbQvMd8GQ/IaIjSSCpNOKHw4aAjJVWKUJXO5L9Xg7MA54CfrfIjTfnOyWrHZ9jkJpXGKc4do=
-X-Received: by 2002:a92:d3c7:: with SMTP id c7mr12632482ilh.137.1612190716727;
- Mon, 01 Feb 2021 06:45:16 -0800 (PST)
+        bh=SWJ27oH+ywvoDHwR7zZy8Kz0h+8K+IT2Z5aTmsXDaM4=;
+        b=CfTHFG0E5pVwV1oNuTRXP5PktKNYic2M2unPiu5sdSdQyovrAXVCoXvEgRAD1rEy5m
+         9bEgyRZIO8Wln7f/nQowp/62E3tMUBElEaYjtydBIn+j3xHJSn46kqzLjxdRRFD+ItuT
+         qhnB7yYTuahizTe8va4W4fd38pv6kI9dTOeHZiqpEXlbVngwLraygcSAMgo0kzczyMEs
+         8+OdjC/h1ApcS/xmR0NcttBpKbDA+9OY2k7E70ebAGJ/m36vUCdoBixFsDDUkUO3Za3T
+         9xDoaRhAjrAMu/ZmM5CryiBOYYZQ1sCvtFg+FJ66Mz3xtHhfFmOHPLmwfpFZ5YEWYJZS
+         GBkQ==
+X-Gm-Message-State: AOAM532AKrEjD4Vwctt8a+WYFzLpHIXIsI5JyhY5D3XzOCnHp6iLgvqF
+        bN5NAWqrbHQBIsB9z/6tccwifBVsMW4NMGgMsSrnVuBO+wQ=
+X-Google-Smtp-Source: ABdhPJzCpt8R76QmbBOR+RJdI8d9qEneCEJ7n2M7uKg7B4J9KhGoGp3p5sP6SwhPn/qAJrbgU6XGHaHceSlVZb3FXUk=
+X-Received: by 2002:a17:907:35d1:: with SMTP id ap17mr10233931ejc.79.1612190859979;
+ Mon, 01 Feb 2021 06:47:39 -0800 (PST)
 MIME-Version: 1.0
-References: <20210201115610.87808-1-laoar.shao@gmail.com> <20210201115610.87808-4-laoar.shao@gmail.com>
- <20210201141505.GR308988@casper.infradead.org>
-In-Reply-To: <20210201141505.GR308988@casper.infradead.org>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Mon, 1 Feb 2021 22:44:41 +0800
-Message-ID: <CALOAHbBzRLYF2Z--OTuO41UEwvcJsYMzuGVdrrqbnCD9U-Ja0A@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] vsprintf: dump full information of page flags in pGp
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Christoph Lameter <cl@linux.com>, penberg@kernel.org,
-        David Rientjes <rientjes@google.com>, iamjoonsoo.kim@lge.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joe Perches <joe@perches.com>
+References: <20210129202019.2099259-1-elder@linaro.org> <20210129202019.2099259-10-elder@linaro.org>
+ <CAF=yD-L1SKzu+gsma7KN4VjGnma-_w+amXx=Y_0e78rQiUCu7Q@mail.gmail.com>
+ <e27f5c10-7b77-1f12-fe36-e9261f01bca1@linaro.org> <CAF=yD-+4xNjgkWQw8tMz0uvK45ysL6vnx86ZgEud+kCW9zw9_A@mail.gmail.com>
+ <67f4aa5a-4a60-41e6-a049-0ff93fb87b66@linaro.org> <CAF=yD-+ABnhRmcHq=1T7PVz8VUVjqC073bjTa89GUt1rA3KVUw@mail.gmail.com>
+ <a1b12c17-5d65-ce29-3d4f-e09de4fdcf3f@linaro.org>
+In-Reply-To: <a1b12c17-5d65-ce29-3d4f-e09de4fdcf3f@linaro.org>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Mon, 1 Feb 2021 09:47:03 -0500
+Message-ID: <CAF=yD-JSpz5OAp3DtW+1K_w1NZsLLxbrviZRQ5j7=qyJFpZAQg@mail.gmail.com>
+Subject: Re: [PATCH net-next 9/9] net: ipa: don't disable NAPI in suspend
+To:     Alex Elder <elder@linaro.org>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, elder@kernel.org,
+        evgreen@chromium.org, bjorn.andersson@linaro.org,
+        cpratapa@codeaurora.org,
+        Subash Abhinov Kasiviswanathan <subashab@codeaurora.org>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 10:15 PM Matthew Wilcox <willy@infradead.org> wrote:
+On Mon, Feb 1, 2021 at 9:35 AM Alex Elder <elder@linaro.org> wrote:
 >
-> On Mon, Feb 01, 2021 at 07:56:10PM +0800, Yafang Shao wrote:
-> > - Before the patch,
-> > [ 6343.396602] Slab 0x000000004382e02b objects=33 used=3 fp=0x000000009ae06ffc flags=0x17ffffc0010200(slab|head)
+> On 1/31/21 7:36 PM, Willem de Bruijn wrote:
+> > On Sun, Jan 31, 2021 at 10:32 AM Alex Elder <elder@linaro.org> wrote:
+> >>
+> >> On 1/31/21 8:52 AM, Willem de Bruijn wrote:
+> >>> On Sat, Jan 30, 2021 at 11:29 PM Alex Elder <elder@linaro.org> wrote:
+> >>>>
+> >>>> On 1/30/21 9:25 AM, Willem de Bruijn wrote:
+> >>>>> On Fri, Jan 29, 2021 at 3:29 PM Alex Elder <elder@linaro.org> wrote:
+> >>>>>>
+> >>>>>> The channel stop and suspend paths both call __gsi_channel_stop(),
+> >>>>>> which quiesces channel activity, disables NAPI, and (on other than
+> >>>>>> SDM845) stops the channel.  Similarly, the start and resume paths
+> >>>>>> share __gsi_channel_start(), which starts the channel and re-enables
+> >>>>>> NAPI again.
+> >>>>>>
+> >>>>>> Disabling NAPI should be done when stopping a channel, but this
+> >>>>>> should *not* be done when suspending.  It's not necessary in the
+> >>>>>> suspend path anyway, because the stopped channel (or suspended
+> >>>>>> endpoint on SDM845) will not cause interrupts to schedule NAPI,
+> >>>>>> and gsi_channel_trans_quiesce() won't return until there are no
+> >>>>>> more transactions to process in the NAPI polling loop.
+> >>>>>
+> >>>>> But why is it incorrect to do so?
+> >>>>
+> >>>> Maybe it's not; I also thought it was fine before, but...
+>
+> . . .
+>
+> >> The "hang" occurs on an RX endpoint, and in particular it
+> >> occurs on an endpoint that we *know* will be receiving a
+> >> packet as part of the suspend process (when clearing the
+> >> hardware pipeline).  I can go into that further but won't'
+> >> unless asked.
+> >>
+> >>>> A stopped channel won't interrupt,
+> >>>> so we don't bother disabling the completion interrupt,
+> >>>> with no interrupts, NAPI won't be scheduled, so there's
+> >>>> no need to disable NAPI either.
+> >>>
+> >>> That sounds plausible. But it doesn't explain why napi_disable "should
+> >>> *not* be done when suspending" as the commit states.
+> >>>
+> >>> Arguably, leaving that won't have much effect either way, and is in
+> >>> line with other drivers.
+> >>
+> >> Understood and agreed.  In fact, if the hang occurrs in
+> >> napi_disable() when waiting for NAPI_STATE_SCHED to clear,
+> >> it would occur in napi_synchronize() as well.
 > >
-> > - After the patch,
-> > [ 6871.296131] Slab 0x00000000c0e19a37 objects=33 used=3 fp=0x00000000c4902159 flags=0x17ffffc0010200(Node 0,Zone 2,Lastcpupid 0x1fffff,slab|head)
+> > Agreed.
+> >
+> > So you have an environment to test a patch in, it might be worthwhile
+> > to test essentially the same logic reordering as in this patch set,
+> > but while still disabling napi.
 >
-> I would suggest it will be easier to parse as:
+> What is the purpose of this test?  Just to guarantee
+> that the NAPI hang goes away?  Because you agree that
+> the napi_schedule() call would *also* hang if that
+> problem exists, right?
 >
-> flags=0x17ffffc0010200(slab|head|node=0|zone=2|lastcpupid=0x1fffff)
+> Anyway, what you're suggesting is to simply test with
+> this last patch removed.  I can do that but I really
+> don't expect it to change anything.  I will start that
+> test later today when I'm turning my attention to
+> something else for a while.
 >
-> That should alleviate the concerns about debugfs format change -- we've
-> never guaranteed that flag names won't change, and they now look enough
-> like flags that parsers shouldn't fall over them.
+> > The disappearing race may be due to another change rather than
+> > napi_disable vs napi_synchronize. A smaller, more targeted patch could
+> > also be a net (instead of net-next) candidate.
+>
+> I am certain it is.
+>
+> I can tell you that we have seen a hang (after I think 2500+
+> suspend/resume cycles) with the IPA code that is currently
+> upstream.
+>
+> But with this latest series of 9, there is no hang after
+> 10,000+ cycles.  That gives me a bisect window, but I really
+> don't want to go through a full bisect of even those 9,
+> because it's 4 tests, each of which takes days to complete.
+>
+> Looking at the 9 patches, I think this one is the most
+> likely culprit:
+>    net: ipa: disable IEOB interrupt after channel stop
+>
+> I think the race involves the I/O completion handler
+> interacting with NAPI in an unwanted way, but I have
+> not come up with the exact sequence that would lead
+> to getting stuck in napi_disable().
+>
+> Here are some possible events that could occur on an
+> RX channel in *some* order, prior to that patch.  And
+> in the order I show there's at least a problem of a
+> receive not being processed immediately.
+>
+>                 . . . (suspend initiated)
+>
+>         replenish_stop()
+>         quiesce()
+>                         IRQ fires (receive ready)
+>         napi_disable()
+>                         napi_schedule() (ignored)
+>         irq_disable()
+>                         IRQ condition; pending
+>         channel_stop()
+>
+>                 . . . (resume triggered)
+>
+>         channel_start()
+>         irq_enable()
+>                         pending IRQ fires
+>                         napi_schedule() (ignored)
+>         napi_enable()
+>
+>                 . . . (suspend initiated)
+>
+> >> At this point
+> >> it's more about the whole set of rework here, and keeping
+> >> NAPI enabled during suspend seems a little cleaner.
+> >
+> > I'm not sure. I haven't looked if there is a common behavior across
+> > devices. That might be informative. igb, for one, releases all
+> > resources.
+>
+> I tried to do a survey of that too and did not see a
+> consistent pattern.  I didn't look *that* hard because
+> doing so would be more involved than I wanted to get.
 
-Good suggestion!
-I will do it as you suggested in the next version.
+Okay. If there is no consistent pattern, either approach works.
 
--- 
-Thanks
-Yafang
+I'm fine with this patchset as is.
+
+> So in summary:
+> - I'm putting together version 2 of this series now
+> - Testing this past week seems to show that this series
+>    makes the hang in napi_disable() (or synchronize)
+>    go away.
+> - I think the most likely patch in this series that
+>    fixes the problem is the IRQ ordering one I mention
+>    above, but right now I can't cite a specific sequence
+>    of events that would prove it.
+> - I will begin some long testing later today without
+>    this last patch applied
+>      --> But I think testing without the IRQ ordering
+>         patch would be more promising, and I'd like
+>         to hear your opinion on that
+
+Either test depends on whether you find it worthwhile to more
+specifically identify the root cause. If not, no need to run the tests
+on my behalf. I understand that these are time consuming.
+
+>
+> Thanks again for your input and help on this.
+>
+>                                         -Alex
+>
+> . . .
