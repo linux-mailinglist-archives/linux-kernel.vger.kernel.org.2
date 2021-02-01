@@ -2,54 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7148E30A57E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:39:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1556830A588
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233235AbhBAKhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 05:37:31 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42942 "EHLO mx2.suse.de"
+        id S233052AbhBAKjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 05:39:12 -0500
+Received: from mga18.intel.com ([134.134.136.126]:43133 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233056AbhBAKhY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 05:37:24 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612175797; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=RX+3aoWedwiUmiW9UVKhbO6sRRKkujrhxKbe5LLEQKc=;
-        b=OgFkL5eN1e6PzDK9LGrMe2x2udxLXrCk3bBFzGKHpmMH9VuXHb9r21NJ/WekOlsFZpPMze
-        0eMBddcC74+A42Wv2Xi9nztubgli4lUq5JuCv94n7OzR9z2Vw3GfDKJC5PsJ7t0RPl/dxH
-        uKz0jNWW08ivhiwiEDlIFvBLJt18iPg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1550FAE53;
-        Mon,  1 Feb 2021 10:36:37 +0000 (UTC)
-Message-ID: <c4cf54806f8dccce8cf030f91ba47b11164b0c7f.camel@suse.com>
-Subject: Re: [PATCH 2/2] net: usbnet: use new tasklet API
-From:   Oliver Neukum <oneukum@suse.com>
-To:     Emil Renner Berthing <esmil@mailme.dk>, linux-usb@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     Emil Renner Berthing <kernel@esmil.dk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org
-Date:   Mon, 01 Feb 2021 11:36:29 +0100
-In-Reply-To: <20210123173221.5855-3-esmil@mailme.dk>
-References: <20210123173221.5855-1-esmil@mailme.dk>
-         <20210123173221.5855-3-esmil@mailme.dk>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S233242AbhBAKiz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 05:38:55 -0500
+IronPort-SDR: VVLDmcItlylhs0g86KWxxbqTk7OEhbFYVtIMTU/pUjNMhlV5SOHw0ZaHnpQ0FSmbD647ed3Teb
+ d+27pFInF+ZA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9881"; a="168347518"
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="168347518"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 02:37:06 -0800
+IronPort-SDR: /876IjFDJlCOzFypiDcR0u3iF/YEGarL35O7Qbs88t/+KrLDk2yTTpDwITx9iyL7HZ/0qW5pwi
+ QOO440FYWdmw==
+X-IronPort-AV: E=Sophos;i="5.79,392,1602572400"; 
+   d="scan'208";a="432284886"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 02:37:04 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1l6WZp-0016NI-Sy; Mon, 01 Feb 2021 12:37:01 +0200
+Date:   Mon, 1 Feb 2021 12:37:01 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     mail@richard-neumann.de
+Cc:     syniurge@gmail.com, nehal-bakulchandra.shah@amd.com,
+        shyam-sundar.s-k@amd.com, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] i2c: i2c-amd-mp2: Remove NIH logging functions
+Message-ID: <YBfZzUHx4UpRwhM9@smile.fi.intel.com>
+References: <20210129192553.55906-1-mail@richard-neumann.de>
+ <20210129192553.55906-2-mail@richard-neumann.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210129192553.55906-2-mail@richard-neumann.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Samstag, den 23.01.2021, 18:32 +0100 schrieb Emil Renner Berthing:
-> From: Emil Renner Berthing <kernel@esmil.dk>
-> 
-> This converts the driver to use the new tasklet API introduced in
-> commit 12cc923f1ccc ("tasklet: Introduce new initialization API")
-> 
-> Signed-off-by: Emil Renner Berthing <kernel@esmil.dk>
-Acked-by: Oliver Neukum <oneukum@suse.com>
+On Fri, Jan 29, 2021 at 08:25:52PM +0100, mail@richard-neumann.de wrote:
+> From: Richard Neumann <mail@richard-neumann.de>
+
+Thanks for an update, my comments below.
+
+> Use pci_{info,warn,err,dbg} functions of the kernel's PCI API.
+> Remove unnecessary ndev_pdev, ndev_name and ndev_dev macros.
+
+"ndev_pdev(), ndev_name() and ndev_dev()"
+
+> Remove useless __func__ from logging.
+
+
+"While at it, remove..."
+
+...
+
+> -		dev_err(ndev_dev(privdata),
+> +		pci_err(pdev,
+>  			"length %d in event doesn't match buffer length %d!\n",
+
+Can be one line, but it's up to you (checkpatch won't scream on this).
+Same comment for other similar cases.
+
+>  			len, i2c_common->msg->len);
+
+...
+
+>  	struct pci_dev *pci_dev = to_pci_dev(dev);
+>  	struct amd_mp2_dev *privdata = pci_get_drvdata(pci_dev);
+> +	struct pci_dev *pdev = privdata->pci_dev;
+
+I guess it's a bit overkill. You already have pci_dev above. Isn't it enough?
+
+...
+
+> +		pci_err(pdev, "pci_save_state failed = %d\n", ret);
+
+And here pci_dev will be still okay and fit 80 limit.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
