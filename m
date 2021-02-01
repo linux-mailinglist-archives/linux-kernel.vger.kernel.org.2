@@ -2,163 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C00F30AE02
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1924330ADFE
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:37:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231905AbhBARgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:36:31 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:49724 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229717AbhBARgZ (ORCPT
+        id S231868AbhBARgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:36:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56859 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229549AbhBARgG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:36:25 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 111HUBe9047767;
-        Mon, 1 Feb 2021 17:34:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=jjhTUc1QY7sbZCJuQzUSYGQ8PrbdueXgDm36VNoOVm8=;
- b=E+F8i43jil2B/L1JunRRDcBt2qUCWqUMfbaq/I8jO8b1bhoRvgtXm3eCCU/EpDcAFJ3L
- E4lf0fpzZ2TyRlbuSfGGc2kpTGWcMX24FOj8tY4VieMUtl/pOEmso04Dvol3IFdWInUt
- TMClES3PhW2AsGeUMuJxHv7KFhg+ZQ1Q1bce2Ef+ofdyhfE2tTI8gstx+VKtQR8PYnXi
- XiTeQ7PYdVoT/4hGyGRpo6geVgdbVyVJLid6i3WCt0DW+7Jskh9dIAkfkHFItKVpCaqb
- 0qhSBWv4QcmVEomOjrY1sOYgfe4BDPay8WjQoRByPogme5cpbrUD/1Yuxphnh2FyuzT6 xQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 36cxvqxjv7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 01 Feb 2021 17:34:19 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 111HUAxB087510;
-        Mon, 1 Feb 2021 17:34:19 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
-        by userp3020.oracle.com with ESMTP id 36dh7q2b37-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 01 Feb 2021 17:34:18 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wn2+gW0HXjUbiiE/fLRa3KrSVX2F+2j9wQ5sCfus0mLsU/L4dIR2TqKVy/t0tXO00mf+Hcnoz436Fk5jrX/P6/PSs2qbp5gqSRIw3xvNPQl6VQ0sB3HakHuzkwtd1ZJSNS9lPNOGs/ud8YTHVGOB7tKcTi7Qf2LIIdMdkG3NF+Xotd8N9PNRIfepkt/pVccdR9lZdmD8BW9DmvX9Zoyzjz2scyeXrlR7iNLOXzHLIkSpSe98cVO85BKe1Zm+3jBE6tK8WsoSrwKkxDsSdxCfHVuTK2sW6cUBohw1UiRp9bYG1h7hNZGlOyBhAR+bSmCY5l0EW+yl0FZJfa24n765ow==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jjhTUc1QY7sbZCJuQzUSYGQ8PrbdueXgDm36VNoOVm8=;
- b=CEBdI127RXsFs/QCJzXIoo1dPqabeiVZzVXoi93dngUdkpJ5V+plR3fV60IRv3hbL0V9V98nkCTRSvc3U9y6tOmN8R/SXAfgzJ5KIicjtKFDqwaPPIsjrHuhdUdLdaNRBqNZz0hD1TlrKCKsbyWrGJTQf/GUJVnVTcbGI0bviLUzEeIc36atWaENYfF9CwnKu1yM5fuIJORpEwaCwCeLi0SjnspDNvKtqL1JgasKSLXsi2tYlebWs2ZCJi6ChZ7PInnRuVjI4y8mlGrgql+Eqrc+ohBl1Yqqxk0nkCw7q4HCTXz9WzMLD8KC53lQxDcFuk6mDXInEIdXapfxMNjpqg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jjhTUc1QY7sbZCJuQzUSYGQ8PrbdueXgDm36VNoOVm8=;
- b=Q2x/ys/qtgplmNwXEXJy6SlEXfQfxV4aX3TH7oOXwl/nlQjCHtywFRVDes0G2qmVdtaODCCitW/8HMFvSZdFmqhUEcYb8CgumhZs2o4gUTfl9UQeLfdJs5y67kaPEKWUu81d07/ScxERCBV8XeyIZkqvAR8KBiVMbWhBQoal8SQ=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
- by BYAPR10MB2598.namprd10.prod.outlook.com (2603:10b6:a02:b1::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.23; Mon, 1 Feb
- 2021 17:34:16 +0000
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::e180:1ba2:d87:456]) by BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::e180:1ba2:d87:456%4]) with mapi id 15.20.3784.019; Mon, 1 Feb 2021
- 17:34:16 +0000
-Date:   Mon, 1 Feb 2021 12:34:11 -0500
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     linux-cxl@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        daniel.lll@alibaba-inc.com,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH 01/14] cxl/mem: Introduce a driver for CXL-2.0-Type-3
- endpoints
-Message-ID: <20210201173411.GD197521@fedora>
-References: <20210130002438.1872527-1-ben.widawsky@intel.com>
- <20210130002438.1872527-2-ben.widawsky@intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210130002438.1872527-2-ben.widawsky@intel.com>
-X-Originating-IP: [209.6.208.110]
-X-ClientProxiedBy: MN2PR10CA0012.namprd10.prod.outlook.com
- (2603:10b6:208:120::25) To BYAPR10MB2999.namprd10.prod.outlook.com
- (2603:10b6:a03:85::27)
+        Mon, 1 Feb 2021 12:36:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612200879;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=2NZKbeXzcfHbSANzM+icsyeTW8NUFJCX0ZTecBjzbRc=;
+        b=iYKpd1F5pfGJUOTVQjajL3t2ZS0k4ClXhWgFxf+jjbWXGi5wtBziCL6DxpFu8VeGYFEy38
+        TgDUfrgOLGlnLtt6HT1kXkGllApsrQQg917QMZu6SkCmqN055MZiwJx7XBIFLhlK+ZQFfI
+        +zBmH2LmSWE1t4DM6fFj2bo4u52j9JQ=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-201-o4NCbdl5M-2xm0xizrM_ZA-1; Mon, 01 Feb 2021 12:34:37 -0500
+X-MC-Unique: o4NCbdl5M-2xm0xizrM_ZA-1
+Received: by mail-ej1-f69.google.com with SMTP id ia14so892137ejc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 09:34:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2NZKbeXzcfHbSANzM+icsyeTW8NUFJCX0ZTecBjzbRc=;
+        b=qTdQDXj/MfncVAbztWYczNs/JpT9zAvFNC97CC2YL7tQ13dq6gaeYQ5WBlggblBdwz
+         PpO5HLmI3AO8h9zGym6nVUzZlJVTDVMRIIMO/Wa4Ri039zRCGkFN9QQG2FDVtGE45l9/
+         ISnDfXrkjvkUe4giAs7tTjLfRoWTs5dcUzeBt0N7k6eoLmIN6sbbw1fjWs5OUgTNqrPw
+         Z7af+IyuBKLAc7TC8+mnkkGAEn/d1i7TFQ6FB3d7Mmyo0qDh5BKyr7RS4js60QOhn7Y1
+         UqaA/jXOcErkUP9o6oSA9N0GIfvHN3xBKHha8IlpSVX5U5h7yrlxJhJFDX/N8Uov4vLD
+         6wxg==
+X-Gm-Message-State: AOAM530PM1ceOa292sq3PfyJMvxkO8+94qkm7fELG2Pnje0ZeXL+XyIV
+        JUF3YGtuldq+0lz28JCyTs4H1LkaEHEUyCiW5mwVHHWWcbYnDNsKlhJswgfBc0tBq0UM10UpY+d
+        Pm5wg/4KHVdegZxBlfX+mvg++
+X-Received: by 2002:a17:906:8a59:: with SMTP id gx25mr11149277ejc.310.1612200876327;
+        Mon, 01 Feb 2021 09:34:36 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyuco1n7Z+thK68eUv56Qg6mm+AGU0xTXiBvHNpIbM28BF8ssdwHrUJs/MqCOkkBonnQiUaJA==
+X-Received: by 2002:a17:906:8a59:: with SMTP id gx25mr11149263ejc.310.1612200876180;
+        Mon, 01 Feb 2021 09:34:36 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id j27sm8302466ejb.102.2021.02.01.09.34.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Feb 2021 09:34:35 -0800 (PST)
+Subject: Re: [PATCH v2] KVM: x86: Allow guests to see MSR_IA32_TSX_CTRL even
+ if tsx=off
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        jmattson@google.com, stable@vger.kernel.org
+References: <20210129101912.1857809-1-pbonzini@redhat.com>
+ <YBQ+peAEdX2h3tro@google.com>
+ <37be5fb8-056f-8fba-3016-464634e069af@redhat.com>
+ <618c5513-5092-f7cd-b47b-933936001180@redhat.com>
+ <YBgugM03fsEiOxz1@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <cac389ad-96b0-293e-f977-4e9c6d719dea@redhat.com>
+Date:   Mon, 1 Feb 2021 18:34:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from fedora (209.6.208.110) by MN2PR10CA0012.namprd10.prod.outlook.com (2603:10b6:208:120::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Mon, 1 Feb 2021 17:34:14 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 56a96f0f-690c-4b51-f86d-08d8c6d7993e
-X-MS-TrafficTypeDiagnostic: BYAPR10MB2598:
-X-Microsoft-Antispam-PRVS: <BYAPR10MB2598076CA35405A4D402BF8B89B69@BYAPR10MB2598.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4125;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: slIYEtAfHKKtXLpHrqraHjkSBz3vwN7GsIsxrZEGKX/zt6UP8+W3qrXiVei3bVqlp2M3b26I4+1L8/0CBX0qtdTSZF1fWGHpJ8/IaEC+i4w+q/DoP78cOD2RqMd8AxZ5dGAWTy8DIujv65rSsop0E6lMV8MR2C++eF1KFZhCZH/nqKnpAZ0HGw2UT+6mrWEKFzd7Tl1W3qN0iuDW7MFGHXsZM/zfh5YAT3Pw+mMJArpum8OSsNtg/uoqpQ5gra0c8RZta+MtYMeHsrT3zvNFjCUC30tOfHwzeSDDVg6/xnZMepwl1FurIMK7jx32G+oPhZzqtkPuDqPaRPMS3eoh6yUBOUbnTev80L1RtA7xiIdGVbwC9ohzfXXXutVUoSorBGtKpoPRm00vZ7TkYFvWHIVrL3DierRlszBG7R/RPnSakYP8e9RkaGA94T+XxOthpwGwfM9HLUARY/kzJqpP+lJfn9tPzQNbUe02asmT4YlrQ4JLQ4BDdQj3DPSHh45mpadnaw9j77lnA5JBYmmgcQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(396003)(366004)(39860400002)(136003)(16526019)(66556008)(33656002)(4744005)(5660300002)(66946007)(1076003)(6666004)(316002)(26005)(6496006)(186003)(52116002)(66476007)(54906003)(86362001)(956004)(9576002)(8936002)(6916009)(9686003)(4326008)(7416002)(8676002)(33716001)(478600001)(55016002)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?noTrfY5Xd5t8n3G6pM4AZCiHwoyKTvEnjaDbr5TVXME8Wc2NSJQQeYOJA0+V?=
- =?us-ascii?Q?nQk+PiMoA9EsdCj+U/WGCZsu2e8myqFOZj8IqrZpYVS7SbxrKMAzcQ44W1Dn?=
- =?us-ascii?Q?GUskVtRKvtOK8gusdp0reSYgSWamvwSwcFZbGQwA8gs1Q+ntQslaxTyWCTSB?=
- =?us-ascii?Q?Bi697keq9XFcNLVlgc0E2DbGLq+ZnainlqUIM9QzoA8Q7onMlxHWc08KVgEa?=
- =?us-ascii?Q?OZUll8xVznjLXoLbtLxKwmQj4XZ3fHaDs7yrDvpWODZh6VVbawYxhXpx7PDy?=
- =?us-ascii?Q?d3I6c0Ixc3xZW1PBsz/EJK3JZMQ7AF47RgEKny08vklF4hcomPJ5eV00pxMI?=
- =?us-ascii?Q?zWi3ZB+ofDjHrmTz+Bbrzg4r2lSyw+w2ZHwpgwhD+yRvVVR5iu/eDsop628q?=
- =?us-ascii?Q?bE/Kl39AwsG6IwHLcMV9SSXreMYZtcPhMj7bhrxX1khHx0PIHQQoU1Wg/NJf?=
- =?us-ascii?Q?QY1AtpoF1D8sieNENSmFM540U1PVyoXZoQX7EQ/8vd8VqFaW1JfTGVF6l/OC?=
- =?us-ascii?Q?und6konl9o8VuQA0yw9mG4XGTVPdNVVAzb/iH3JOnT0GHyNmdDDw/LWI0BJ1?=
- =?us-ascii?Q?jMI34hnNF1TRqKeJ5AMdJnQkSXnIMJuY528VXKgB4Q+F/YRgGWUqomgflJMR?=
- =?us-ascii?Q?0OxQXAy6YAsqjR6cTyzoP+q6mKDClTh6TCJquDSA1Lk8Pyp75MBeR+zv9/PR?=
- =?us-ascii?Q?x+NDTRGU3HpvlQ2q5ShKgUs9Sxljj5rGiY2Ikv1WW8+NA8Xdo8mMnwuvF1i9?=
- =?us-ascii?Q?x0+yUGV20DF18oCTPA5akqQmjcT0OdpgGq+/VAG6sMBFz59gIS6s5RwbbsTl?=
- =?us-ascii?Q?gkhOwwSOPjHF3H906pqB/X2DSJ+IxXRlTpUfKIrGnB7oQXGpkfWrWrosDAzA?=
- =?us-ascii?Q?Sk5VvR23Pxwg3k+7jT8hAEbfFng7m62Num1vO78WgldaG1o1BPWg4/2rp7WT?=
- =?us-ascii?Q?fnLluF7wHyn+6IEAuKUgDHsCAjyA8qZN+1YkOdG/B3qAei/FWIcDwsLplwCU?=
- =?us-ascii?Q?LcOTOYDffo5b6caOmolzYUxPLLNN1NpXrFoqbK4R91ChT1Mw9DOSopdUAlRD?=
- =?us-ascii?Q?X00akjjA?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 56a96f0f-690c-4b51-f86d-08d8c6d7993e
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Feb 2021 17:34:16.6313
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2VNz447Ijffr3wcbdLOiTiJem9bhOQctld6AtYK4hNfzCwoxKimWoasNqFP+9pQNuwadI+yJ59rPqYrpJvyWCg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB2598
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9882 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
- suspectscore=0 spamscore=0 mlxlogscore=999 phishscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102010089
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9882 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
- mlxscore=0 priorityscore=1501 spamscore=0 impostorscore=0 clxscore=1011
- suspectscore=0 lowpriorityscore=0 phishscore=0 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102010089
+In-Reply-To: <YBgugM03fsEiOxz1@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +cxl_mem-y := mem.o
-> diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> new file mode 100644
-> index 000000000000..f4ee9a507ac9
-> --- /dev/null
-> +++ b/drivers/cxl/mem.c
-> @@ -0,0 +1,61 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/* Copyright(c) 2020 Intel Corporation. All rights reserved. */
+On 01/02/21 17:38, Sean Christopherson wrote:
+>>>>      /*
+>>>>       * On TAA affected systems:
+>>>>       *      - nothing to do if TSX is disabled on the host.
+>>>>       *      - we emulate TSX_CTRL if present on the host.
+>>>>       *      This lets the guest use VERW to clear CPU buffers.
+>>>>       */
+> 
+> it says "nothing to do..." and then clears a
+> flag.  The other interpretation of "nothing to do... at runtime" is also wrong
+> as KVM emulates the MSR as a nop.
+> 
+> I guess I just find the whole comment more confusing than the code itself.
 
-Can those two comments have the same type? As in either
-stay with // or do /*.
+What about:
 
-Also the year is incorrect.
+
+         if (!boot_cpu_has(X86_FEATURE_RTM)) {
+                 /*
+                  * If RTM=0 because the kernel has disabled TSX, the 
+host might
+                  * have TAA_NO or TSX_CTRL.  Clear TAA_NO (the guest 
+sees RTM=0
+                  * and therefore knows that there cannot be TAA) but keep
+                  * TSX_CTRL: some buggy userspaces leave it set on 
+tsx=on hosts,
+                  * and we want to allow migrating those guests to 
+tsx=off hosts.
+                  */
+                 data &= ~ARCH_CAP_TAA_NO;
+         } else if (!boot_cpu_has_bug(X86_BUG_TAA)) {
+                 data |= ARCH_CAP_TAA_NO;
+         } else {
+                 /*
+                  * Nothing to do here; we emulate TSX_CTRL if present 
+on the
+                  * host so the guest can choose between disabling TSX or
+                  * using VERW to clear CPU buffers.
+                  */
+         }
+
+Paolo
+
