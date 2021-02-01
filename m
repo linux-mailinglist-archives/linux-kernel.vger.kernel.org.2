@@ -2,133 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A44B30A63B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:10:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4185A30A63D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:12:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233495AbhBALKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 06:10:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44956 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233221AbhBALKI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 06:10:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1699664E2B;
-        Mon,  1 Feb 2021 11:09:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612177766;
-        bh=+uv3hQSOboXmjIsSolO71gnocEb65dPd0/BtQNeuvtM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=r0CNjgcNC/blrdUb1tgCI0u86g9VYoks28Q4IQ9Uw43iFCBr/LybOFjr6oz1wp5nW
-         py2rh6lbmJcTHr6EF1K6qHTETARheA1nTBxiJJ8GLbH8FROyq3sjS6oAgedLBkWhfn
-         lA3N1/pG6ImlOnIp3lSmpW1f/Mt7vi61uc5SzQxYOtUdg2Jw909w6huvTD2c3zyL6y
-         EF6+a5zLffG/x70bxZqeCzDPojIO+yy6Fcf0kg/oj8LsRWSbtg7IiCQfimmOlxbDCi
-         vlns1u48Aeo+0r7+VhnvT2wMpBmIgwZ9St4kLL3QeEYV/4qEiXF7qFnelmU1PJuTG2
-         DTprUuKieO78Q==
-Date:   Mon, 1 Feb 2021 16:39:21 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        bard.liao@intel.com
-Subject: Re: [PATCH 3/3] soundwire: bus: clear parity interrupt before the
- mask is enabled
-Message-ID: <20210201110921.GZ2771@vkoul-mobl>
-References: <20210126083746.3238-1-yung-chuan.liao@linux.intel.com>
- <20210126083746.3238-4-yung-chuan.liao@linux.intel.com>
+        id S233467AbhBALLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 06:11:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46117 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233257AbhBALLN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 06:11:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612177786;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0Etg0NTTFIEyqb4anncIHu5/36agc5JrkvEYqPeFC1M=;
+        b=RUq0031lU/ugB0j2whLc9/mYZHSjHcUrPcaC6rLnkiut+s013z4LWQ0TgoUCgz3VeougjH
+        gM79T1kOXQyXPGuZraNQZzTnhTjzWZTVoUxQvtj/MoxA8XJ58GUCGmWvjnKRAP+Q3MBd/w
+        dD1eBlxYsVI30Yf7biwcgUHZ6yZm7Vg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-267-ZEAc3c7SNEW8gA7P-nLi1Q-1; Mon, 01 Feb 2021 06:09:44 -0500
+X-MC-Unique: ZEAc3c7SNEW8gA7P-nLi1Q-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 92EA663C8E;
+        Mon,  1 Feb 2021 11:09:43 +0000 (UTC)
+Received: from [10.36.115.24] (ovpn-115-24.ams2.redhat.com [10.36.115.24])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8F4792C169;
+        Mon,  1 Feb 2021 11:09:42 +0000 (UTC)
+Subject: Re: [PATCH] mm/mempolicy: use helper range_in_vma() in
+ queue_pages_test_walk()
+To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210130091352.20220-1-linmiaohe@huawei.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <33c3c6cb-c13d-0bb3-1c65-c16d6ffe0cac@redhat.com>
+Date:   Mon, 1 Feb 2021 12:09:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126083746.3238-4-yung-chuan.liao@linux.intel.com>
+In-Reply-To: <20210130091352.20220-1-linmiaohe@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26-01-21, 16:37, Bard Liao wrote:
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On 30.01.21 10:13, Miaohe Lin wrote:
+> The helper range_in_vma() is introduced via commit 017b1660df89 ("mm:
+> migration: fix migration of huge PMD shared pages"). But we forgot to
+> use it in queue_pages_test_walk().
 > 
-> We recently added the ability to discard bus clash interrupts reported
-> on startup. These bus clash interrupts can happen randomly on some
-> platforms and don't seem to be valid. A master-level quirk helped
-> squelch those spurious errors.
-> 
-> Additional tests on a new platform with the Maxim 98373 amplifier
-> showed a rare case where the parity interrupt is also thrown on
-> startup, at the same time as bus clashes. This issue only seems to
-> happen infrequently and was only observed during suspend-resume stress
-> tests while audio is streaming. We could make the problem go away by
-> adding a Slave-level quirk, but there is no evidence that the issue is
-> actually a Slave problem: the parity is provided by the Master, which
-> could also set an invalid parity in corner cases.
-> 
-> This patch suggests an additional bus-level quirk for parity, which is
-> only applied when the codec device is not known to have an issue with
-> parity. The initial parity error will be ignored, but a trace will be
-> logged to help identify potential root causes (likely a combination of
-> issues on both master and slave sides influenced by board-specific
-> electrical parameters).
-> 
-> BugLink: https://github.com/thesofproject/linux/issues/2533
-> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Reviewed-by: Rander Wang <rander.wang@intel.com>
-> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 > ---
->  drivers/soundwire/bus.c       | 9 +++++++++
->  drivers/soundwire/intel.c     | 3 ++-
->  include/linux/soundwire/sdw.h | 1 +
->  3 files changed, 12 insertions(+), 1 deletion(-)
+>   mm/mempolicy.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-> index d394905936e4..57581fdb2ea9 100644
-> --- a/drivers/soundwire/bus.c
-> +++ b/drivers/soundwire/bus.c
-> @@ -1256,6 +1256,15 @@ static int sdw_initialize_slave(struct sdw_slave *slave)
->  			sdw_write_no_pm(slave, SDW_SCP_INT1, SDW_SCP_INT1_BUS_CLASH);
->  		}
->  	}
-> +	if ((slave->bus->prop.quirks & SDW_MASTER_QUIRKS_CLEAR_INITIAL_PARITY) &&
-> +	    !(slave->prop.quirks & SDW_SLAVE_QUIRKS_INVALID_INITIAL_PARITY)) {
-> +		/* Clear parity interrupt before enabling interrupt mask */
-> +		status = sdw_read_no_pm(slave, SDW_SCP_INT1);
-> +		if (status & SDW_SCP_INT1_PARITY) {
-> +			dev_warn(&slave->dev, "PARITY error detected before INT mask is enabled\n");
-> +			sdw_write_no_pm(slave, SDW_SCP_INT1, SDW_SCP_INT1_PARITY);
-> +		}
-> +	}
->  
->  	/*
->  	 * Set SCP_INT1_MASK register, typically bus clash and
-> diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-> index f7ba1a77a1df..c1fdc85d0a74 100644
-> --- a/drivers/soundwire/intel.c
-> +++ b/drivers/soundwire/intel.c
-> @@ -1286,7 +1286,8 @@ static int sdw_master_read_intel_prop(struct sdw_bus *bus)
->  	if (quirk_mask & SDW_INTEL_QUIRK_MASK_BUS_DISABLE)
->  		prop->hw_disabled = true;
->  
-> -	prop->quirks = SDW_MASTER_QUIRKS_CLEAR_INITIAL_CLASH;
-> +	prop->quirks = SDW_MASTER_QUIRKS_CLEAR_INITIAL_CLASH |
-> +		SDW_MASTER_QUIRKS_CLEAR_INITIAL_PARITY;
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index 6961238c7ef5..ab51132547b8 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -677,7 +677,7 @@ static int queue_pages_test_walk(unsigned long start, unsigned long end,
+>   	unsigned long flags = qp->flags;
+>   
+>   	/* range check first */
+> -	VM_BUG_ON_VMA((vma->vm_start > start) || (vma->vm_end < end), vma);
+> +	VM_BUG_ON_VMA(!range_in_vma(vma, start, end), vma);
+>   
+>   	if (!qp->first) {
+>   		qp->first = vma;
+> 
 
-move this to intel patch please..
-
->  
->  	return 0;
->  }
-> diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-> index a2766c3b603d..30415354d419 100644
-> --- a/include/linux/soundwire/sdw.h
-> +++ b/include/linux/soundwire/sdw.h
-> @@ -426,6 +426,7 @@ struct sdw_master_prop {
->  };
->  
->  #define SDW_MASTER_QUIRKS_CLEAR_INITIAL_CLASH	BIT(0)
-> +#define SDW_MASTER_QUIRKS_CLEAR_INITIAL_PARITY	BIT(1)
-
-Why not add this quirk in patch 1..?
-
-Also add comments about each quirk, hopefully it wont be a big table
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
-~Vinod
+Thanks,
+
+David / dhildenb
+
