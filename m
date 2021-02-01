@@ -2,142 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C8A30B2AC
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:18:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C876630B2AF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:20:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbhBAWS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 17:18:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36073 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229543AbhBAWS0 (ORCPT
+        id S229884AbhBAWTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 17:19:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229481AbhBAWTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 17:18:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612217819;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xmN+agXqiROkkYz5Om/OjbH0Pxuwyb0SEcLP3k/Y+SI=;
-        b=VsqAu0sSesPxo2FxXRQMunX7YJeMcbKX4Ozqk1gGog6dbYXqYZvg6K+oLFWh7RwL2UCkQl
-        fxCR9zt7nZqi28ADR9Orawz2z7ScziRtKyE5RhrqDxUI4vXOmZfjvrsuzdkChCuxIbsqj4
-        Iw69Nmqc/rC9sFi9uwKBkbsqnkERUBk=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-82-iTLUGkTdPEq5vU64fG3rmw-1; Mon, 01 Feb 2021 17:16:58 -0500
-X-MC-Unique: iTLUGkTdPEq5vU64fG3rmw-1
-Received: by mail-qv1-f71.google.com with SMTP id h13so12325237qvo.18
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 14:16:58 -0800 (PST)
+        Mon, 1 Feb 2021 17:19:11 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0C33C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 14:18:30 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id y8so5589152ede.6
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 14:18:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ObygprHSjf/mIe84ziGq1dLJAyK92YoMohD2S+3eR34=;
+        b=KmhoERdkRrIhw8VIgPTNi1wxuN2QvfeFJkT89hQLTk063kH6JKSTkov/x6PhqAfAHs
+         kKmDuDTurcFq7c9KTqI2qv36oHP5jmYRCwwQTuOdOcvKKwqQnMDZLoyPHwfwkOAEf0lH
+         0SuArRJydaifldIgpxYQJB9yf9h06H+mY4AkD02kunkBawh6OJozD+/LWq5qiiN3x29v
+         5INCW09cNAVOX07SYp6gDFYG9jFCS/3cT4hXuY5Ed5/9tufFYY9PQ0G5pigzOO052PuX
+         grVwCEfzpX1XESxcRMGPMVn07rA0lcVc3QBw/DOZPjtSx34fw2xBPXFw9OnYquTH3oKK
+         91rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xmN+agXqiROkkYz5Om/OjbH0Pxuwyb0SEcLP3k/Y+SI=;
-        b=DAfF83hb8pUW7LEMvlvI0vKjVBrElQxJhbX32Dn9uHp8vp5Mk4lqwmURTJ/wfAeGy+
-         tRQnitbPMdKa03tthPxWC4EZPZ9sVbUW06uudewISSZfKWuM3ZPd9m5Ucz7LArvduD3w
-         XHyNoZ8Y1pH7zKjih94TPgie5riNK7Y1TS5WWrGFk1ruQ/phofFuvEyU8HP8eogDvGPl
-         0QTSrTGiZOBNMPA+0gdo44MY1r8QfCxGEMQQs33gm44j6bK0opnWvmbiSjXXePzKRVs/
-         s2DaSO3Xmh5j4AArHH9waeEE/DmAi2qElT8Sg87pKR9Kob2INucce0nQAqDJIOWKqa6o
-         nt4Q==
-X-Gm-Message-State: AOAM5303jwspPelSYRQ3wqw/gSuRg9Xhe2S5XZZdxKItCHWxNirJWEAF
-        a6FtTeYX7DC18dd+pUFy8gTHCx15GkzlIMjE+v74hpOrmsIG7wXNiRy4lxPNFoDUSYcwSW1Escz
-        cfyg9Oe3eSod4IzH8GftuIT5F
-X-Received: by 2002:a37:8fc3:: with SMTP id r186mr18916805qkd.253.1612217817874;
-        Mon, 01 Feb 2021 14:16:57 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJycp08TqePZIDEQY1l41O7S1IZiWlSToWvexBdN5xDvx00e6QmbaZ+OIJcb0uui1HUWN1gXZA==
-X-Received: by 2002:a37:8fc3:: with SMTP id r186mr18916780qkd.253.1612217817592;
-        Mon, 01 Feb 2021 14:16:57 -0800 (PST)
-Received: from xz-x1 ([142.126.83.202])
-        by smtp.gmail.com with ESMTPSA id m202sm2009463qke.24.2021.02.01.14.16.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 14:16:56 -0800 (PST)
-Date:   Mon, 1 Feb 2021 17:16:54 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Steven Price <steven.price@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Adam Ruprecht <ruprecht@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v4 1/9] hugetlb: Pass vma into huge_pte_alloc()
-Message-ID: <20210201221654.GJ260413@xz-x1>
-References: <20210128224819.2651899-2-axelrasmussen@google.com>
- <20210128234242.2677079-1-axelrasmussen@google.com>
- <67fc15f3-3182-206b-451b-1622f6657092@oracle.com>
- <f1afa616-c4f5-daaa-6865-8bbc3c93b71a@oracle.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ObygprHSjf/mIe84ziGq1dLJAyK92YoMohD2S+3eR34=;
+        b=WmkF9S97O9ICL4hkU9VnPRDQFRa375egehbaPWtW19EoBUt91mS0LnJMbNbXwBR1Zk
+         aztRSciwU1ZKWtRcjZsmW9032t1msb2heaP2JuWhDQWpGnKbicV53mXcAygrGIIbenRk
+         2zf2jQMUK89oTVZGPhaMEua+9D+aSzNiUqJR4nDuWW0aVU8hQbCXHHFbEri7B1zxm571
+         5w7oqAlqAoj7fVh/1D7aoaOAVHmoBRe2RN/5xcu5V2V1s43Qe5PI4UOa75L8JbpYDaTI
+         r86yVb4mIcqYfErmJTT6qiRCpV3Q3htU72brrVFQ7FAxM4/7Q6HyCL4TGsLRUW3o2Jpr
+         Mh4A==
+X-Gm-Message-State: AOAM533DRjgJXvPhxwFOqWI0CDY3emVO9gngUYlqHxVB1yZkU8IfyBww
+        5bHIGhIt5riGfy3S3vaaUaIoEpp/XZc=
+X-Google-Smtp-Source: ABdhPJy+5xW4wxQia6EkqUJgNHiZ5LDVelO5J0rP1HSdolWpInTt3ufU/RP/2hppv62cI3SAENN1tg==
+X-Received: by 2002:a05:6402:2683:: with SMTP id w3mr20808726edd.378.1612217909472;
+        Mon, 01 Feb 2021 14:18:29 -0800 (PST)
+Received: from p4 (net-93-70-85-165.cust.vodafonedsl.it. [93.70.85.165])
+        by smtp.gmail.com with ESMTPSA id i90sm1400549edi.52.2021.02.01.14.18.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 Feb 2021 14:18:29 -0800 (PST)
+Date:   Mon, 1 Feb 2021 22:18:26 +0000
+From:   Giancarlo Ferrari <giancarlo.ferrari89@gmail.com>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org,
+        penberg@kernel.org, geert@linux-m68k.org,
+        linux-arm-kernel@lists.infradead.org, akpm@linux-foundation.org,
+        rppt@kernel.org, giancarlo.ferrari@nokia.com
+Subject: Re: [PATCH] ARM: kexec: Fix panic after TLB are invalidated
+Message-ID: <20210201202742.GA17243@p4>
+References: <1612140296-12546-1-git-send-email-giancarlo.ferrari89@gmail.com>
+ <20210201124720.GA66060@C02TD0UTHF1T.local>
+ <20210201130344.GF1463@shell.armlinux.org.uk>
+ <20210201135714.GB66060@C02TD0UTHF1T.local>
+ <20210201160838.GH1463@shell.armlinux.org.uk>
+ <20210201200734.GC15399@p4>
+ <20210201201633.GJ1463@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f1afa616-c4f5-daaa-6865-8bbc3c93b71a@oracle.com>
+In-Reply-To: <20210201201633.GJ1463@shell.armlinux.org.uk>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 01:53:14PM -0800, Mike Kravetz wrote:
-> On 2/1/21 1:38 PM, Mike Kravetz wrote:
-> > On 1/28/21 3:42 PM, Axel Rasmussen wrote:
-> >> From: Peter Xu <peterx@redhat.com>
-> >>
-> >> It is a preparation work to be able to behave differently in the per
-> >> architecture huge_pte_alloc() according to different VMA attributes.
-> >>
-> >> Signed-off-by: Peter Xu <peterx@redhat.com>
-> >> [axelrasmussen@google.com: fixed typo in arch/mips/mm/hugetlbpage.c]
-> >> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> >> ---
-> >>  arch/arm64/mm/hugetlbpage.c   | 2 +-
-> >>  arch/ia64/mm/hugetlbpage.c    | 3 ++-
-> >>  arch/mips/mm/hugetlbpage.c    | 4 ++--
-> >>  arch/parisc/mm/hugetlbpage.c  | 2 +-
-> >>  arch/powerpc/mm/hugetlbpage.c | 3 ++-
-> >>  arch/s390/mm/hugetlbpage.c    | 2 +-
-> >>  arch/sh/mm/hugetlbpage.c      | 2 +-
-> >>  arch/sparc/mm/hugetlbpage.c   | 2 +-
-> >>  include/linux/hugetlb.h       | 2 +-
-> >>  mm/hugetlb.c                  | 6 +++---
-> >>  mm/userfaultfd.c              | 2 +-
-> >>  11 files changed, 16 insertions(+), 14 deletions(-)
-> > 
-> > Sorry for the delay in reviewing.
-> > 
-> > huge_pmd_share() will do a find_vma() to get the vma.  So, it would be
-> > 'possible' to not add an extra argument to huge_pmd_alloc() and simply
-> > do the uffd_disable_huge_pmd_share() check inside vma_shareable.  This
-> > would reduce the amount of modified code, but would not be as efficient.
-> > I prefer passing the vma argument as is done here.
-> > 
-> > Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
-> 
-> 
-> Another thought.
-> 
-> We should pass the vma to huge_pmd_share to avoid the find_vma.
+Russell,
 
-Agreed.  Seems not relevant to this series, but should be a very nice add-on
-after this patch can land.  Thanks,
+On Mon, Feb 01, 2021 at 08:16:33PM +0000, Russell King - ARM Linux admin wrote:
+> On Mon, Feb 01, 2021 at 08:07:37PM +0000, Giancarlo Ferrari wrote:
+> > Hi,
+> 
+> Hi,
+> 
+> > Why we should align 3 ? For the fncpy I suppose.
+> 
+> Slightly arbitary really - it gives a nice 8-byte alignment to the data.
+> .align 2 would also be sufficient.
+> 
+> > I don't know now how to proceed now, as you (Mark and you) do completely
+> > the patch.
+> 
+> Please can you test my patch and let us know if it solves your problem
+> (or even if it works! I haven't tested it beyond build-testing.)
+>
 
--- 
-Peter Xu
+sure, unfortunately due to restriction, I hope to test it by the end of the
+week. I hope there will be no rush. Otherwise, please let me know.
 
+> > You see is my first kernel patch submission :) .
+> 
+> Yay. Sorry for giving you a different patch - Mark is quite right that
+> there's a better solution to this problem, which is eliminating the
+> set_kernel_text_rw() call. The only reason I cooked up the patch was
+> doing that would be more in-depth (as you can see from the increased
+> size of the patch.)
+> 
+
+I definitely agree with you.
+
+> -- 
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+
+Thanks again,
+
+
+GF
