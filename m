@@ -2,92 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97E4630B2B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1714730B2BA
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 23:25:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbhBAWXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 17:23:34 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:60408 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhBAWXc (ORCPT
+        id S229646AbhBAWYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 17:24:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46430 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229527AbhBAWYa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 17:23:32 -0500
-Date:   Mon, 01 Feb 2021 22:22:48 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612218169;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TwDkxqOqYq0cWGMA5VvEabZAGB6FOjJmi7JTzobQgTI=;
-        b=Vu3/q3ZNCe2NDuk7Vo8aptUrOsNOwY6njYQ7R1v4w5+9MVy8GOFLYUzROmqIGXfcNcqm8R
-        u0FI/s7L4d97US8adS80fK9/cpfYdD7U4d4QqepmVg6HsfPJvxEf0jS0x4xt4pH+ogZZFO
-        6lHUM1XF2PDDhbEFfEs+WGG0mmSZnownDpq7i1uC4dlJ280mvS8f1WY89b13bWpCN00Sme
-        shUzyyFoPPKSZCaiJ0JHRMFepHC9SlOhAoliIZLfr+S1pbUFtLbxV9Udn3TXJ2Sf3lNogO
-        /JPqW3qLJnFEV44lcY31lc/aPnAq11NKLzQhMg6p1zOgZTvLk769T+jdni1Jnw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612218169;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TwDkxqOqYq0cWGMA5VvEabZAGB6FOjJmi7JTzobQgTI=;
-        b=cRNqYs06xukCASdZ+fUEuY+TH7LhDvbZxYNtzVwXLM5J24KHgU8FnR0bx3OvQqCLspvzv0
-        DQyMdBW/7vjlMqCg==
-From:   "tip-bot2 for Fenghua Yu" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/split_lock: Enable the split lock feature on
- another Alder Lake CPU
-Cc:     Fenghua Yu <fenghua.yu@intel.com>, Borislav Petkov <bp@suse.de>,
-        Tony Luck <tony.luck@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210201190007.4031869-1-fenghua.yu@intel.com>
-References: <20210201190007.4031869-1-fenghua.yu@intel.com>
+        Mon, 1 Feb 2021 17:24:30 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFC5C0613D6
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 14:23:49 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id gx20so549286pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 14:23:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=bFIvq1iUBnF2uNTg/XXudUmq/LzMkpvkSS7sgQp5FVU=;
+        b=DGUMvsvgtCsyOu5/4Ulasc7oslinB5t/JcszBUeqsrg01SmgO7CuSlAkMTB+IVPDpp
+         +IMl/nxtXmJKqcIhqAuXke2BJIs0HW5Yg58xHGDP76qtLt4qwzAY1MRtIQHLT1+Aq5NR
+         CV3XEEpjX5pMeXelmer6a1LbnGUxAaQdbTRN0p4wkVDvcm62X3B3VBkeA9U/4fwuiMI4
+         VXaJfjxQ0BUKSnQtejvqxOoV9J4EW5uG68o0W83kyDWnPe+dkNwgDX3kT9keZzcbAhPE
+         TCIa13u2rHfK9e7QIsiEcep21m4J6m3rmoOHu1cjS9eRcMsh2adEd+ryF6V+ydIlwEGA
+         UV9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=bFIvq1iUBnF2uNTg/XXudUmq/LzMkpvkSS7sgQp5FVU=;
+        b=TY81nLLTF7IS3m4zry1mOqBmOIvh6sOpjGLrxV6uUzxLEuB8eRURHqGSG6d/7Eu51W
+         gLJvDfGbSW2GIf8VnNVkMHl0KNr4tO4mjZuc31yw/PSQvEysXJocOPVEx3tQM2gxWNdR
+         AO1xoYleMQzYmHVY0FxZIhsbN2CoYcIMT6AR5yg01mNPe2dTPZaYQT+SNZhjBCN4firx
+         TW1aO9WBYrFgmoZyP3SW1hg9aZ5yq9/cY2RYkyiEb/0m1W3ABLmDPswIS4kLeR7riczG
+         sxIQBHNtzD9fbqu5Q7/etjW6pDC1Jkc77eBFBV8iV9jZzBNX16oVFc2Ssm7GtNFEwaNP
+         KoYA==
+X-Gm-Message-State: AOAM532U/WAwWkBu3OXR3BIvmskVIYCla5iwWJ5IRgetc3pZs3PzNqv6
+        S2GJ1xUx/+UnzLsK7HWgKISdMw==
+X-Google-Smtp-Source: ABdhPJwMLSpGX0o+h2MFNvOFlmVc1GTAxnAxHJh9h3T5rMGwIj0rIL8nzRGWRD9t80SVGsT5UUpL2w==
+X-Received: by 2002:a17:902:bf44:b029:df:f0eb:cb33 with SMTP id u4-20020a170902bf44b02900dff0ebcb33mr19537849pls.13.1612218229062;
+        Mon, 01 Feb 2021 14:23:49 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id 123sm19531753pfd.91.2021.02.01.14.23.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 14:23:48 -0800 (PST)
+Date:   Mon, 1 Feb 2021 14:23:47 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Ben Widawsky <ben.widawsky@intel.com>
+cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH 03/14] cxl/mem: Find device capabilities
+In-Reply-To: <20210201215857.ud5cpg7hbxj2j5bx@intel.com>
+Message-ID: <b46ed01-3f1-6643-d371-7764c3bde4f8@google.com>
+References: <20210130002438.1872527-1-ben.widawsky@intel.com> <20210130002438.1872527-4-ben.widawsky@intel.com> <234711bf-c03f-9aca-e0b5-ca677add3ea@google.com> <20210201165352.wi7tzpnd4ymxlms4@intel.com> <32f33dd-97a-8b1c-d488-e5198a3d7748@google.com>
+ <20210201215857.ud5cpg7hbxj2j5bx@intel.com>
 MIME-Version: 1.0
-Message-ID: <161221816840.23325.8312246225432884053.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Mon, 1 Feb 2021, Ben Widawsky wrote:
 
-Commit-ID:     8acf417805a5f5c69e9ff66f14cab022c2755161
-Gitweb:        https://git.kernel.org/tip/8acf417805a5f5c69e9ff66f14cab022c2755161
-Author:        Fenghua Yu <fenghua.yu@intel.com>
-AuthorDate:    Mon, 01 Feb 2021 19:00:07 
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Mon, 01 Feb 2021 21:34:51 +01:00
+> > > > > +static int cxl_mem_setup_mailbox(struct cxl_mem *cxlm)
+> > > > > +{
+> > > > > +	const int cap = cxl_read_mbox_reg32(cxlm, CXLDEV_MB_CAPS_OFFSET);
+> > > > > +
+> > > > > +	cxlm->mbox.payload_size =
+> > > > > +		1 << CXL_GET_FIELD(cap, CXLDEV_MB_CAP_PAYLOAD_SIZE);
+> > > > > +
+> > > > > +	/* 8.2.8.4.3 */
+> > > > > +	if (cxlm->mbox.payload_size < 256) {
+> > > > > +		dev_err(&cxlm->pdev->dev, "Mailbox is too small (%zub)",
+> > > > > +			cxlm->mbox.payload_size);
+> > > > > +		return -ENXIO;
+> > > > > +	}
+> > > > 
+> > > > Any reason not to check cxlm->mbox.payload_size > (1 << 20) as well and 
+> > > > return ENXIO if true?
+> > > 
+> > > If some crazy vendor wanted to ship a mailbox larger than 1M, why should the
+> > > driver not allow it?
+> > > 
+> > 
+> > Because the spec disallows it :)
+> 
+> I don't see it being the driver's responsibility to enforce spec correctness
+> though. In certain cases, I need to use the spec, like I have to pick /some/
+> mailbox timeout. For other cases... 
+> 
+> I'm not too familiar with what other similar drivers may or may not do in
+> situations like this. The current 256 limit is mostly a reflection of that being
+> too small to even support advertised mandatory commands. So things can't work in
+> that scenario, but things can work if they have a larger register size (so long
+> as the BAR advertises enough space).
+> 
 
-x86/split_lock: Enable the split lock feature on another Alder Lake CPU
+I don't think things can work above 1MB, either, though.  Section 
+8.2.8.4.5 specifies 20 bits to define the payload length, if this is 
+larger than cxlm->mbox.payload_size it would venture into the reserved 
+bits of the command register.
 
-Add Alder Lake mobile processor to CPU list to enumerate and enable the
-split lock feature.
-
-Signed-off-by: Fenghua Yu <fenghua.yu@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Link: https://lkml.kernel.org/r/20210201190007.4031869-1-fenghua.yu@intel.com
----
- arch/x86/kernel/cpu/intel.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
-index 59a1e3c..816fdbe 100644
---- a/arch/x86/kernel/cpu/intel.c
-+++ b/arch/x86/kernel/cpu/intel.c
-@@ -1159,6 +1159,7 @@ static const struct x86_cpu_id split_lock_cpu_ids[] __initconst = {
- 	X86_MATCH_INTEL_FAM6_MODEL(TIGERLAKE,		1),
- 	X86_MATCH_INTEL_FAM6_MODEL(SAPPHIRERAPIDS_X,	1),
- 	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE,		1),
-+	X86_MATCH_INTEL_FAM6_MODEL(ALDERLAKE_L,		1),
- 	{}
- };
- 
+So is the idea to allow cxl_mem_setup_mailbox() to succeed with a payload 
+size > 1MB and then only check 20 bits for the command register?
