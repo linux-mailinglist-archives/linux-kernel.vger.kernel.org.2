@@ -2,93 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5784630AD5B
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:07:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0228C30AD60
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:07:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231742AbhBARE3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:04:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230479AbhBARDz (ORCPT
+        id S231776AbhBARF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:05:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58613 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230298AbhBARF5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:03:55 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C7FAC0613ED
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 09:03:15 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id 8so5009990plc.10
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 09:03:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AbLcBMadzfPNUKPpChxU3zdp0WkPHuBpL7HFiG9WOA8=;
-        b=iPO/jFlJkD0ioLqPa854SWjC1n4YOUXfH2OQ2aPZAWRcRmbZucOfXp178t7DmONYTM
-         494MAbZ0Eajq1M0wT3gv74Ig1q0clmDanfXx28Kdr/xBSzcC2F61M4rsAQAGi/3hcZy+
-         cDxmSNA0L+2LkQxy89Q+P0sQgqcHzidLVLe0ekEO7DyUMBk+ywbqOe4qIhlvFCs0gTZn
-         MecXJ/nb4Gsb/Uyp+dbghIjdHjcLJqwMtIiEsreIghPKqCWO17NeFMMG78rnrFCywPts
-         yE6FcOx4/5/MhwsQKSB8Yyc3gPgXkKpr4jnH0yCIdaiQAjiooJvyk/beMZyFDZo/Wdku
-         VlHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AbLcBMadzfPNUKPpChxU3zdp0WkPHuBpL7HFiG9WOA8=;
-        b=pQwZCtORz90hhPQloF36DdevRN3zUIBbjJ6AuoyZXp2crIGxJkL1ReIZMVdjuqNNST
-         f+k4FW3pQ0Ah53Uui79eo01hfhnHF3bgGPyPShAYgfQFXwNgeVEOi5DstSKqke/efnGo
-         LaOkvucSiHJWN3WicfQTPjpNa4A+Q6BHOsMNji60dRPO03Exvp9QJE4YQ6aCZELwoCRa
-         xHQPHT38sgaiSzK1NF1sKJMU7osZYQJtX9+JV99Vr5OnQ05ZC//7Oo5L4+vR/UCVVR16
-         ThJ4elS+A/ypUQLh+vNyzaA4SFY9B9ARZrCn6YVn6ZQkJIkMIYSgJOxGDXJg/BuREhB0
-         FxDA==
-X-Gm-Message-State: AOAM531tKdzxbX4liIL36NxCdqux8TJcob/u3aUCscwD4CamhFzLjzBZ
-        JBeEwtkeOKh8x71VCdcCbsJ17Q==
-X-Google-Smtp-Source: ABdhPJwhNigfENOgksJTjP0i72PpJc/SwaWNspkOhsfnSt2m32E0FV/18a4q0HPVj3AsIYD3+j4d/Q==
-X-Received: by 2002:a17:902:be0d:b029:e1:4ab:8fd2 with SMTP id r13-20020a170902be0db02900e104ab8fd2mr18582360pls.6.1612198994977;
-        Mon, 01 Feb 2021 09:03:14 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:829:fccd:80d7:796f])
-        by smtp.gmail.com with ESMTPSA id b14sm17152725pfi.74.2021.02.01.09.03.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 09:03:14 -0800 (PST)
-Date:   Mon, 1 Feb 2021 09:03:07 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        jmattson@google.com, stable@vger.kernel.org
-Subject: Re: [PATCH v2] KVM: x86: Allow guests to see MSR_IA32_TSX_CTRL even
- if tsx=off
-Message-ID: <YBg0Sy3MlD0Rn3mF@google.com>
-References: <20210129101912.1857809-1-pbonzini@redhat.com>
- <YBQ+peAEdX2h3tro@google.com>
- <37be5fb8-056f-8fba-3016-464634e069af@redhat.com>
+        Mon, 1 Feb 2021 12:05:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612199071;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rH9wytnzyB+U91tV+Pg1sRMVmzeBVEAmUAO/MwEXhFQ=;
+        b=CHyT4KcuzqbrTEwR4o10jD3OUznvFUpBH7o9O+CgxMxScDo9xXkf6bdrB9cQxZBohIMKmg
+        VGOg+qUGCfsAXw4Gnkst2TkrRGMzJAM744sdcMjkwUwDXBxOG8Tv+pjmXbK4SPZ7Ezh/oj
+        w4qnCGv0BDiWSDMDKGhTAZT3/Vo5W3Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-277-g-a_wvW3N6WhlKwRHXdFGg-1; Mon, 01 Feb 2021 12:04:27 -0500
+X-MC-Unique: g-a_wvW3N6WhlKwRHXdFGg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2CCAF10054FF;
+        Mon,  1 Feb 2021 17:04:25 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4E0855C1A1;
+        Mon,  1 Feb 2021 17:04:23 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <6b362abd95b116e26c65809a3a1525c7951ed0bd.camel@pengutronix.de>
+References: <6b362abd95b116e26c65809a3a1525c7951ed0bd.camel@pengutronix.de> <8b9477e150d7c939dc0def3ebb4443efcc83cd85.camel@pengutronix.de> <74830d4f-5a76-8ba8-aad0-0d79f7c01af9@pengutronix.de> <6dc99fd9ffbc5f405c5f64d0802d1399fc6428e4.camel@kernel.org> <d1bed49f89495ceb529355cb41655a208fdb2197.camel@linux.ibm.com> <4153718.1612179361@warthog.procyon.org.uk>
+To:     Jan =?us-ascii?Q?=3D=3FISO-8859-1=3FQ=3FL=3DFCbbe=3F=3D?= 
+        <jlu@pengutronix.de>
+Cc:     dhowells@redhat.com, Mimi Zohar <zohar@linux.ibm.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Ahmad Fatoum <a.fatoum@pengutronix.de>,
+        James Bottomley <jejb@linux.ibm.com>, keyrings@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: Migration to trusted keys: sealing user-provided key?
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <37be5fb8-056f-8fba-3016-464634e069af@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date:   Mon, 01 Feb 2021 17:04:22 +0000
+Message-ID: <35960.1612199062@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021, Paolo Bonzini wrote:
-> On 29/01/21 17:58, Sean Christopherson wrote:
-> > On Fri, Jan 29, 2021, Paolo Bonzini wrote:
-> > >   	 */
-> > >   	if (!boot_cpu_has(X86_FEATURE_RTM))
-> > > -		data &= ~(ARCH_CAP_TAA_NO | ARCH_CAP_TSX_CTRL_MSR);
-> > > +		data &= ~ARCH_CAP_TAA_NO;
-> > 
-> > Hmm, simply clearing TSX_CTRL will only preserve the host value.  Since
-> > ARCH_CAPABILITIES is unconditionally emulated by KVM, wouldn't it make sense to
-> > unconditionally expose TSX_CTRL as well, as opposed to exposing it only if it's
-> > supported in the host?  I.e. allow migrating a TSX-disabled guest to a host
-> > without TSX.  Or am I misunderstanding how TSX_CTRL is checked/used?
-> 
-> I'm a bit wary of having a combination (MDS_NO=0, TSX_CTRL=1) that does not
-> exist on bare metal.  There are other cases where such combinations can
-> happen, especially with the Spectre and SSBD mitigations (for example due to
-> AMD CPUID bits for Intel processors), but at least those are just
-> redundancies in the CPUID bits and it's more likely that the guest does
-> something sensible with them.
+Jan L=C3=BCbbe <jlu@pengutronix.de> wrote:
 
-Gotcha.  The vulnerability combos and all the double and triple negatives make
-my head spin.
+> > > ... But at this point, you can still do 'keyctl read' on that key, ex=
+posing
+> > > the key material to user space.
+> >=20
+> > I wonder if it would help to provide a keyctl function to mark a key as=
+ being
+> > permanently unreadable - so that it overrides the READ permission bit.
+> >=20
+> > Alternatively, you can disable READ and SETATTR permission - but that t=
+hen
+> > prevents you from removing other perms if you want to :-/
+>=20
+> That would mean using user type keys, right? Then we'd still have the core
+> problem how a master key can be protected against simply reading it from
+> flash/disk, as it would be unencrypted in this scenario.
 
-Thanks!
+It would apply to any type of key or keyring on which it was set.  It would
+cause keyctl_read() on a flagged key to return EPERM.
+
+David
+
