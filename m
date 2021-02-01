@@ -2,81 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BCC230A45C
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:28:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 430A230A462
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 10:31:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232704AbhBAJ1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 04:27:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231748AbhBAJ1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 04:27:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35AA464EA3;
-        Mon,  1 Feb 2021 09:27:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612171630;
-        bh=GDOdGwLBUdhE8w9rNn6b3HIerVpuSs4Cl3TDcqidl3E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rkZqEMSlVqaFJjuTPNL7XJDwlW9k4XUpiTXryVXW9sYWskM9a7RyLQsOo3/8xTKI6
-         4RZJQ5O+8Agj58X2tTpQP/ymjqDBWESOwjp+8LuIO6YY8iqzQU32RpxrTaDF87zqf3
-         ihIVB2zGpwYksRW4g/Z9P8RQ3iR9WWIKUWGEwJSXWfg7Vx01fws/f3AYDcbUV6s78M
-         5lmkrcdArUpy8Ll9gzG4oaqpFJlqACnu+uje7PZwHRJxyW7v4oIr58o6BFEZLPbvBM
-         DNoIgzgqBQh2b7/ZpZ2PckFGNGAtBLYScG/yzpmlWNLWyrMtP7reH/osD8sqdZkR0+
-         c7ZKKz8FygUqA==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1l6VUP-00059u-8v; Mon, 01 Feb 2021 10:27:22 +0100
-Date:   Mon, 1 Feb 2021 10:27:21 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joe Perches <joe@perches.com>, Miguel Ojeda <ojeda@kernel.org>,
-        Nick Desaulniers <ndesaulniers@gooogle.com>
-Subject: Re: [PATCH] init: clean up early_param_on_off() macro
-Message-ID: <YBfJeQC1jUeD2fdp@hovoldconsulting.com>
-References: <20210201041532.4025025-1-masahiroy@kernel.org>
+        id S232480AbhBAJbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 04:31:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231598AbhBAJbf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 04:31:35 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99786C061574
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 01:30:55 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id d2so4552214pjs.4
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 01:30:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SZcY/cTYAV9gOjki0HAFY3HZKWSO9Da4wkrASt2n+fg=;
+        b=aec/wnh2CcGmv5nxwMrpLOQBmerb5Fu3IzWR/PpXxLjrGgRryiPQ/qlWm5/DCprmfu
+         7C/Ll7kJF2q2g4UaNgqNJZzHZF0RFj+UvN8AJKgh+K+OVxE97o75UAAAtCeekWQWglYH
+         4kc8SSSFUN0g42mVhohVV9JXga//uR8CqY+6Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SZcY/cTYAV9gOjki0HAFY3HZKWSO9Da4wkrASt2n+fg=;
+        b=ccWYv3lMJq+yVkGbyoGZ1PzHrhrL+vvwEO4nbErdQ2LGM7neOzoG5NFtj7htUGVQra
+         hxQgrI5INU73YJGSHslhNR8shYrU0qQ0xZFg5ojctv3znHShogi6r+QahNlh4wfCWAZk
+         7ED6IkwtfHpEZboCM7shajDVl6wbksOrWUJQ2Hwl0WpyeuiEBhSkLmPuZUEaVL+ZSWw+
+         9suzvysWPDbcHdfklHSDJU952/qjD5pAQwm/uhbFBeWTxzY7Qiol97zSxMIfCbLwkhiy
+         NH96IGLWxLYWHbbOco+/2I9jbVCxnU92nVTehWIvp8OWWeRR6esPueKL4siOAbfW+phu
+         oGPQ==
+X-Gm-Message-State: AOAM530szxaWlaQ5+/Y0JKPxic68P/dEESmhaiAtMf4zmzVFwB88goQn
+        vJy8pufpTc0HjzvNSK7a3oSYKw==
+X-Google-Smtp-Source: ABdhPJxlY5GAiR+f+jEr0JLHTYBTgvbf08NYkoVhdvX4Ghl+NlkGXIzxnkudGQXWytfw9ulrOzgvKw==
+X-Received: by 2002:a17:90a:5410:: with SMTP id z16mr16139042pjh.110.1612171855027;
+        Mon, 01 Feb 2021 01:30:55 -0800 (PST)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:a0cd:1b84:6d56:68e1])
+        by smtp.gmail.com with ESMTPSA id md7sm14890795pjb.52.2021.02.01.01.30.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 01:30:54 -0800 (PST)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: mediatek: mt8183: evb: Add domain supply for mfg
+Date:   Mon,  1 Feb 2021 17:30:49 +0800
+Message-Id: <20210201093049.87285-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201041532.4025025-1-masahiroy@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 01:15:32PM +0900, Masahiro Yamada wrote:
-> Use early_param() to define early_param_on_off().
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
->  include/linux/init.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/init.h b/include/linux/init.h
-> index e668832ef66a..ae2c2aace0d0 100644
-> --- a/include/linux/init.h
-> +++ b/include/linux/init.h
-> @@ -277,14 +277,14 @@ struct obs_kernel_param {
->  		var = 1;						\
->  		return 0;						\
->  	}								\
-> -	__setup_param(str_on, parse_##var##_on, parse_##var##_on, 1);	\
-> +	early_param(str_on, parse_##var##_on);				\
->  									\
->  	static int __init parse_##var##_off(char *arg)			\
->  	{								\
->  		var = 0;						\
->  		return 0;						\
->  	}								\
-> -	__setup_param(str_off, parse_##var##_off, parse_##var##_off, 1)
-> +	early_param(str_off, parse_##var##_off)
->  
->  /* Relies on boot_command_line being set */
->  void __init parse_early_param(void);
+Add domain supply node for mt8183-evb
 
-Looks good:
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+---
+ arch/arm64/boot/dts/mediatek/mt8183-evb.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Reviewed-by: Johan Hovold <johan@kernel.org>
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-evb.dts b/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+index 3249c959f76fc..edff1e03e6fee 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
++++ b/arch/arm64/boot/dts/mediatek/mt8183-evb.dts
+@@ -352,6 +352,10 @@ pins_pwm {
+ 	};
+ };
+ 
++&mfg {
++	domain-supply = <&mt6358_vgpu_reg>;
++};
++
+ &spi0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&spi_pins_0>;
+-- 
+2.30.0.365.g02bc693789-goog
 
-Johan
