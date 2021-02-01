@@ -2,140 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8AF30A11D
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 06:15:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D19AF30A21D
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 07:43:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229909AbhBAFOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 00:14:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229914AbhBAFM2 (ORCPT
+        id S232191AbhBAGnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 01:43:08 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:60076 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230370AbhBAFWU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 00:12:28 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AD59C06174A
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 21:11:48 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id a19so15171815qka.2
-        for <linux-kernel@vger.kernel.org>; Sun, 31 Jan 2021 21:11:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=trNRKF7QOgSxeQPu6x/O8gmSAPcKdJAY3w7IjTKMviQ=;
-        b=VT+Fn+M5fDaUa7hzPwDAxBtqAIdSsPOx6PmsKw/YbQvIDJMZEqmYhV5oZb0sTNk8z7
-         OvqsQ7SlOl4H/GPWPnMOy1jCY/KmJc0mDTNpGJMMHeP/KHDTILPmE2nMd7YvWsqQNcBJ
-         elc9nFo33yT2NLSQ/j/JRwPiWbFcav6NkejzfOOcexbNiWnc87KebStbTa/3j2NnhN5V
-         wlxgfnmow5rR0323TKC/wxydmX6mVtcnWPssa4OffMzezA8nosVClKkBJgvAjrdyoP+f
-         zWMQ9JinY72VqfG/TC77HS3RUwrXsC+Q3xM7pn6aWwH1cpmJFH0AdxUzozKaNsoREPvK
-         HmHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=trNRKF7QOgSxeQPu6x/O8gmSAPcKdJAY3w7IjTKMviQ=;
-        b=mm/7bwm3cDbjKSkz7kgfgKBsyioj3EFglfMEICIxjHX1CAcwSIAZ7UGjmw6XyLKnJG
-         FN55EMAvyeEyQ5PF68fRH7J04THeTBnmuTg+VwoCB3ojfFtYbVn/63LX8l1PjvkDMbDT
-         UvMYoORZlntDxRucdZefFuiz4AFrNAk96kjTMK59fQz0FWaloNFKpKhf8VgIacwgMkH/
-         Yhyu0uJudxwBhiGz9a/YdrjKwBtjddo7YeQOFTctyFjyoAnGpH5YC5SCltmv3U9HCxKY
-         hnN1e4oOrbjZxErscbKDxgWBs/NeA+ej5q9kunFKjt/in/sqr/5tI1cFs7qx/EZM/6Km
-         46CA==
-X-Gm-Message-State: AOAM531yyJCnChUbN1m5tjXVeJX4J8EiT/xgTs0+ypAint8vWfy0HCGU
-        rDu4NCq3ed0u1ZmihtlGCus51WOHYYf6DxjPjNMYIw==
-X-Google-Smtp-Source: ABdhPJyswQ45iMOxwGnVC6PENPRcTaQ2sPFXnY1EMzdXGYKyxgIrmOkMZX8sknnF8kHc4a4njCE43xLCgSjPCMYJF/4=
-X-Received: by 2002:a37:b346:: with SMTP id c67mr84406qkf.212.1612156306853;
- Sun, 31 Jan 2021 21:11:46 -0800 (PST)
-MIME-Version: 1.0
-References: <20210131151832.215931-1-kyletso@google.com> <20210131151832.215931-4-kyletso@google.com>
- <950a9361-4cc8-5c01-8c3d-80d812fd663d@roeck-us.net>
-In-Reply-To: <950a9361-4cc8-5c01-8c3d-80d812fd663d@roeck-us.net>
-From:   Kyle Tso <kyletso@google.com>
-Date:   Mon, 1 Feb 2021 13:11:30 +0800
-Message-ID: <CAGZ6i=3uUnPNDd1SbcNWG85Rv+jZqJEdFQ6uW2=_WRrhrJaP6A@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] usb: typec: tcpm: Get Sink VDO from fwnode
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Hans de Goede <hdegoede@redhat.com>, robh+dt@kernel.org,
-        Badhri Jagan Sridharan <badhri@google.com>,
-        USB <linux-usb@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 1 Feb 2021 00:22:20 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1115DZ0W179837;
+        Mon, 1 Feb 2021 05:21:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=NGNMP8cFJbPPBvx3gcdqk3xsHqfUkWSZAztQLufqfb0=;
+ b=F3OdNfR4u0UdmokB+ZUNPeVf8xyoTdVp+HhEQmo9ZnF/kuU2mx7W/LLcPQZA2wNexjKX
+ PqrsijZtEJE3qOQ8QdyZ0UW9La7cxWGalgxZiHocLIxkOSqibjLvsCSGr8g8ld7X4FpU
+ 551cdWLtcgidRXsCaMNyIHjvDhlPYwu/zJBiJP3xW/mpMYhojbuFFztBgvZ7sBSXaKsI
+ CPOGqUe9exVrVymX+ajfsiwW1vwogZjfBKWojwtl5KyQEblUV0VR4rVzxPNcprwB5pQt
+ fKfyF1rVxPbt+fOVeQxamyzWUBpYJ5zicjoA8xA/uC4EUQjPtn6uzIUTeCCe0wVec4B+ HA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 36cvyakmf5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 01 Feb 2021 05:21:12 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1115G4R8179597;
+        Mon, 1 Feb 2021 05:21:10 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 36dh7p6x4k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 01 Feb 2021 05:21:10 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1115KxLL015567;
+        Mon, 1 Feb 2021 05:20:59 GMT
+Received: from localhost.localdomain (/10.159.236.203)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 31 Jan 2021 21:20:59 -0800
+From:   Santosh Shilimkar <santosh.shilimkar@oracle.com>
+To:     arnd@arndb.de, olof@lixom.net, soc@kernel.org
+Cc:     arm@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, santosh.shilimkar@oracle.com
+Subject: [GIT PULL 1/2] drivers: soc: Keystone update for v5.12
+Date:   Sun, 31 Jan 2021 21:20:54 -0800
+Message-Id: <1612156854-10929-1-git-send-email-santosh.shilimkar@oracle.com>
+X-Mailer: git-send-email 1.9.1
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9881 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
+ suspectscore=0 spamscore=0 mlxlogscore=999 phishscore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102010025
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9881 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 impostorscore=0
+ mlxscore=0 spamscore=0 bulkscore=0 priorityscore=1501 adultscore=0
+ lowpriorityscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102010025
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 12:02 AM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 1/31/21 7:18 AM, Kyle Tso wrote:
-> > Commit a079973f462a ("usb: typec: tcpm: Remove tcpc_config
-> > configuration mechanism") removed the tcpc_config which includes the
-> > Sink VDO and it is not yet added back with fwnode. Add it now.
-> >
-> > Signed-off-by: Kyle Tso <kyletso@google.com>
-> > ---
-> > Changes since v1:
-> > - updated the commit message
-> >
-> >  drivers/usb/typec/tcpm/tcpm.c | 12 ++++++++++++
-> >  1 file changed, 12 insertions(+)
-> >
-> > diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> > index 403a483645dd..84c8a52f8af1 100644
-> > --- a/drivers/usb/typec/tcpm/tcpm.c
-> > +++ b/drivers/usb/typec/tcpm/tcpm.c
-> > @@ -5677,6 +5677,18 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
-> >                       port->new_source_frs_current = frs_current;
-> >       }
-> >
-> > +     ret = fwnode_property_read_u32_array(fwnode, "sink-vdos", NULL, 0);
->
-> fwnode_property_count_u32(), maybe ?
->
-That's the same and looks like fwnode_property_count_u32 is better to read.
-I will revise it in the next version.
+The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
 
-> > +     if (ret <= 0 && ret != -EINVAL) {
-> > +             return -EINVAL;
->
-> Why return any error except -EINVAL (including return values of 0) as -EINVAL,
-> and -EINVAL as no error ?
->
-sink-vdos is not a mandatory property which means -EINVAL is acceptable.
+  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
 
-If the return < 0 and the value is not -EINVAL, it means that the
-error is other than "not present" in the device tree.
-If the return == 0, it means that the sink-vdos is present in the
-device tree but no value inside it.
-Both of the above situations are not acceptable.
+are available in the git repository at:
 
-> > +     } else if (ret > 0) {
-> > +             port->nr_snk_vdo = min(ret, VDO_MAX_OBJECTS);
-> > +             ret = fwnode_property_read_u32_array(fwnode, "sink-vdos",
-> > +                                                  port->snk_vdo,
-> > +                                                  port->nr_snk_vdo);
-> > +             if (ret < 0)
-> > +                     return -EINVAL;
->
-> static analyzer code used to complain about overriding error codes.
-> Not sure if that is still true. Either case, why not return the
-> original error ?
->
-Returning the original error codes is good. I just followed the return
-value of other error handling in this function.
-will revise it in the next version.
+  git://git.kernel.org/pub/scm/linux/kernel/git/ssantosh/linux-keystone.git tags/drivers_soc_for_5.12
 
-Thanks,
-Kyle
+for you to fetch changes up to a8fc8e5b8e42c4401d009143a5fd822ef3d0c9df:
 
+  soc: ti: k3-ringacc: Use of_device_get_match_data() (2021-01-31 20:58:49 -0800)
 
+----------------------------------------------------------------
+drivers: soc: Keystone update for v5.12
 
-> Thanks,
-> Guenter
->
-> > +     }
-> > +
-> >       return 0;
-> >  }
-> >
-> >
->
+Updates include:
+	- Navigator refcount correction
+	- probe fix in pm driver
+	- fix clock init for PRUSS
+	- PRUSS binding doc update
+	- of_device_get_match_data() use in ringacc
+
+----------------------------------------------------------------
+Christophe JAILLET (1):
+      soc: ti: pm33xx: Fix some resource leak in the error handling paths of the probe function
+
+Grzegorz Jaszczyk (1):
+      dt-bindings: soc: ti: Update TI PRUSS bindings about schemas to include
+
+Suman Anna (3):
+      soc: ti: pruss: Correct the pruss_clk_init error trace text
+      soc: ti: pruss: Refactor the CFG sub-module init
+      soc: ti: k3-ringacc: Use of_device_get_match_data()
+
+Vasyl Gomonovych (1):
+      soc: ti: knav_qmss: Put refcount for dev node in failure case
+
+ .../devicetree/bindings/soc/ti/ti,pruss.yaml       | 76 ++++++++++++++++++
+ drivers/soc/ti/k3-ringacc.c                        |  7 +-
+ drivers/soc/ti/knav_dma.c                          |  1 +
+ drivers/soc/ti/knav_qmss_queue.c                   |  3 +
+ drivers/soc/ti/pm33xx.c                            |  5 +-
+ drivers/soc/ti/pruss.c                             | 91 ++++++++++++----------
+ 6 files changed, 137 insertions(+), 46 deletions(-)
