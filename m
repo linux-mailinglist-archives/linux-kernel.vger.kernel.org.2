@@ -2,143 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92A8B30B015
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:10:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65B3830B01B
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:10:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231785AbhBATJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 14:09:49 -0500
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:34843 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231243AbhBATJq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231451AbhBATJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 1 Feb 2021 14:09:46 -0500
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 41E6A5C01B5;
-        Mon,  1 Feb 2021 14:09:00 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Mon, 01 Feb 2021 14:09:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=xKnx/a
-        Po6GjLtPcvtC/0YV330Fe9kERZySQmW8OrSxc=; b=fpILj+fAKtq8qUJQG2pi67
-        sdSaY0ENbNhq7XJfaYQbOwwJb39LHNR0844bLKcxyX5qb3maLoTtGItQ1AKOki63
-        fOchrBxyb2PmgVoA5MfApRtsjtBhXYT4A0cT8HQG5+9IQ8iS2u/3IwCJ4xlvjr+X
-        EDtX58Zyx5IAtvLjokRQN24NQzT1RumlMYyUZJ9yYDDlkSqwNKZ6SoKL+c5D1RJg
-        EeVmA1fG4piy7RVrKmcEAIapLfsWKqWV4x9vzeW/iquEDm3I0mzIpqFWbQW3JYO0
-        f1GujpfTPuV6nxP3NfHoW1EsfFWGP61Iztfh9fXwrHL0Tde7/1PpTMvoZYNYpspw
-        ==
-X-ME-Sender: <xms:y1EYYJHcaJYw3jpKHP5QBI70U48cqMrQYvaIMG3gfe3o1zq6DTNEKQ>
-    <xme:y1EYYGyKP51S4Od09eISfdgUnnccrcC9V3mk7wMpuj927uxTXc9fvqBguPNpfkwAz
-    GoLRNyIJHudbNc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeekgdduvdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefkughoucfu
-    tghhihhmmhgvlhcuoehiughoshgthhesihguohhstghhrdhorhhgqeenucggtffrrghtth
-    gvrhhnpedtffekkeefudffveegueejffejhfetgfeuuefgvedtieehudeuueekhfduheel
-    teenucfkphepkeegrddvvdelrdduheefrdeggeenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehiughoshgthhesihguohhstghhrdhorhhg
-X-ME-Proxy: <xmx:y1EYYLln6DGcyiX1tfUUR6oY8W56TuBNJKZlwjg7udiuDdt5Eugb4A>
-    <xmx:y1EYYPkuJoBh47lsosdjvYSsHtGdgnWO9MDxuZrANafkh0cQ6BiDjQ>
-    <xmx:y1EYYNzUManIPo50qjuQmo4It64AnfnuQGIZqv1YymFpyLjceGLaNQ>
-    <xmx:zFEYYOspK3RfgVCeTzuHJeOZAiJDXaeHSLmy4jFY7a6G3lx9n7avnA>
-Received: from localhost (igld-84-229-153-44.inter.net.il [84.229.153.44])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 83CF824005C;
-        Mon,  1 Feb 2021 14:08:59 -0500 (EST)
-Date:   Mon, 1 Feb 2021 21:08:56 +0200
-From:   Ido Schimmel <idosch@idosch.org>
-To:     Oleksandr Mazur <oleksandr.mazur@plvision.eu>
-Cc:     netdev@vger.kernel.org, jiri@nvidia.com, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, kuba@kernel.org
-Subject: Re: [RFC v3 net-next] net: core: devlink: add 'dropped' stats field
- for DROP trap action
-Message-ID: <20210201190856.GA3458001@shredder.lan>
-References: <20210125123856.1746-1-oleksandr.mazur@plvision.eu>
+Received: from mail.kernel.org ([198.145.29.99]:39344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230298AbhBATJo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 14:09:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D383164E24;
+        Mon,  1 Feb 2021 19:09:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612206544;
+        bh=VG9mPOtHquxNPBKnhHB+LOqEx1qe2BWhHRznBKT4Igc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bxFD/N7/oWqJ06XkQFYjmyxnf5kLAG/QYwQpe8vMqbKTH1GzCQZEq3eDVxrG/GiJO
+         ZrhGplskzsMM/+KhMHPE3b7do07fEsgAdhGcUMMhid15jvkXcK2Uds9kHdHO5xqbcZ
+         ehUSnrXTUxhamq+QGyUApQsz4VS3PJzUS7XweTfPD2F+enp0UojThlVfZ7OkqLKvZG
+         FjDuyMpKPRy/qDVqrjdjtt8sPdPwyKyBBjYvt8OT04fSORPIRlMfJYlilwgljfbEq+
+         8UFIaxwBX/TnbORHe6NwVMy6RPk6WMxn7I4xTywTBKWz7qmAXMIsXT6Xfu34Y/rquV
+         B8FgsEnpjZ2Vg==
+Received: by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1l6eZJ-000M4m-9a; Mon, 01 Feb 2021 20:09:01 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] media: uvc: limit max bandwidth for HDMI capture
+Date:   Mon,  1 Feb 2021 20:08:59 +0100
+Message-Id: <b791d5874c83663505cbd4f74907ac38d00bb727.1612206534.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210125123856.1746-1-oleksandr.mazur@plvision.eu>
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I missed this patch. Please Cc me on future versions given I commented
-on previous versions.
+This device:
+        534d:2109 MacroSilicon
 
-On Mon, Jan 25, 2021 at 02:38:56PM +0200, Oleksandr Mazur wrote:
-> Whenever query statistics is issued for trap with DROP action,
-> devlink subsystem would also fill-in statistics 'dropped' field.
-> In case if device driver did't register callback for hard drop
-> statistics querying, 'dropped' field will be omitted and not filled.
-> Add trap_drop_counter_get callback implementation to the netdevsim.
-> Add new test cases for netdevsim, to test both the callback
-> functionality, as well as drop statistics alteration check.
-> 
-> Signed-off-by: Oleksandr Mazur <oleksandr.mazur@plvision.eu>
+Announces that it supports several frame intervals for
+their resolutions for MJPEG compression:
 
-[...]
+        VideoStreaming Interface Descriptor:
+        bLength                            46
+        bDescriptorType                    36
+        bDescriptorSubtype                  7 (FRAME_MJPEG)
+        bFrameIndex                         1
+        bmCapabilities                   0x00
+          Still image unsupported
+        wWidth                           1920
+        wHeight                          1080
+        dwMinBitRate                   768000
+        dwMaxBitRate                196608000
+        dwMaxVideoFrameBufferSize     4147200
+        dwDefaultFrameInterval         166666
+        bFrameIntervalType                  5
+        dwFrameInterval( 0)            166666
+        dwFrameInterval( 1)            333333
+        dwFrameInterval( 2)            400000
+        dwFrameInterval( 3)            500000
+        dwFrameInterval( 4)           1000000
 
-> +static int devlink_trap_stats_put(struct sk_buff *msg, struct devlink *devlink,
-> +				  const struct devlink_trap_item *trap_item)
-> +{
-> +	struct devlink_stats stats;
-> +	struct nlattr *attr;
-> +	u64 drops = 0;
-> +	int err;
-> +
-> +	if (trap_item->action == DEVLINK_TRAP_ACTION_DROP &&
-> +	    devlink->ops->trap_drop_counter_get) {
-> +		err = devlink->ops->trap_drop_counter_get(devlink,
-> +							  trap_item->trap,
-> +							  &drops);
-> +		if (err)
-> +			return err;
-> +	}
-> +
-> +	devlink_trap_stats_read(trap_item->stats, &stats);
-> +
-> +	attr = nla_nest_start(msg, DEVLINK_ATTR_STATS);
-> +	if (!attr)
-> +		return -EMSGSIZE;
-> +
-> +	if (nla_put_u64_64bit(msg, DEVLINK_ATTR_STATS_RX_DROPPED, drops,
-> +			      DEVLINK_ATTR_PAD))
+However, the highest frame interval (166666), which means 60 fps
+is not supported. For such resolution, the maximum interval
+is, instead 333333 (30 fps).
 
-Commit message says: "In case if device driver did't register callback
-for hard drop statistics querying, 'dropped' field will be omitted and
-not filled."
+The last format that supports such frame interval is 1280x720.
 
-But looks like this attribute is always reported to user space.
+Add a quirk to estimate a raw bandwidth, by doing:
+        width * height * framerate
+E. g.:
+        1920 * 1080 * 30 = 62208000
 
-> +		goto nla_put_failure;
-> +
-> +	if (trap_item->action == DEVLINK_TRAP_ACTION_DROP &&
-> +	    devlink->ops->trap_drop_counter_get &&
-> +	    nla_put_u64_64bit(msg, DEVLINK_ATTR_STATS_RX_PACKETS,
-> +			      stats.rx_packets, DEVLINK_ATTR_PAD))
+if the bandwidth is greater than such threshold, get
+the next value from the dwFrameInterval.
 
-This is needed for DEVLINK_ATTR_STATS_RX_DROPPED, not for
-DEVLINK_ATTR_STATS_RX_PACKETS.
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+---
+ drivers/media/usb/uvc/uvc_driver.c | 15 +++++++++++++++
+ drivers/media/usb/uvc/uvc_video.c  | 26 +++++++++++++++++++++++---
+ drivers/media/usb/uvc/uvcvideo.h   |  2 ++
+ 3 files changed, 40 insertions(+), 3 deletions(-)
 
-I don't think it makes sense for a counter to come and go based on the
-action. It should always be reported (if device supports it), regardless
-of current action. Note that the first check will result in this counter
-being reported as zero when the action is not drop, but as non-zero
-otherwise. That's not good because the basic property of a counter is
-that it is monotonically increasing.
+diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+index 1abc122a0977..c83a329f6527 100644
+--- a/drivers/media/usb/uvc/uvc_driver.c
++++ b/drivers/media/usb/uvc/uvc_driver.c
+@@ -2339,6 +2339,7 @@ static int uvc_probe(struct usb_interface *intf,
+ 	dev->info = info ? info : &uvc_quirk_none;
+ 	dev->quirks = uvc_quirks_param == -1
+ 		    ? dev->info->quirks : uvc_quirks_param;
++	dev->max_bandwidth = dev->info->max_bandwidth;
+ 
+ 	if (id->idVendor && id->idProduct)
+ 		uvc_dbg(dev, PROBE, "Probing known UVC device %s (%04x:%04x)\n",
+@@ -2615,6 +2616,11 @@ static const struct uvc_device_info uvc_quirk_fix_bandwidth = {
+ 	.quirks = UVC_QUIRK_FIX_BANDWIDTH,
+ };
+ 
++static const struct uvc_device_info uvc_quirk_fix_bw_622 = {
++	.quirks = UVC_QUIRK_FIX_BANDWIDTH,
++	.max_bandwidth = 62208000,
++};
++
+ static const struct uvc_device_info uvc_quirk_probe_def = {
+ 	.quirks = UVC_QUIRK_PROBE_DEF,
+ };
+@@ -2830,6 +2836,15 @@ static const struct usb_device_id uvc_ids[] = {
+ 	  .bInterfaceSubClass	= 1,
+ 	  .bInterfaceProtocol	= 0,
+ 	  .driver_info		= (kernel_ulong_t)&uvc_quirk_fix_bandwidth },
++	/* MacroSilicon HDMI capture */
++	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
++				| USB_DEVICE_ID_MATCH_INT_INFO,
++	  .idVendor		= 0x534d,
++	  .idProduct		= 0x2109,
++	  .bInterfaceClass	= USB_CLASS_VIDEO,
++	  .bInterfaceSubClass	= 1,
++	  .bInterfaceProtocol	= 0,
++	  .driver_info		= (kernel_ulong_t)&uvc_quirk_fix_bw_622 },
+ 	/* Genesys Logic USB 2.0 PC Camera */
+ 	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
+ 				| USB_DEVICE_ID_MATCH_INT_INFO,
+diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+index f2f565281e63..4afc1fbe0801 100644
+--- a/drivers/media/usb/uvc/uvc_video.c
++++ b/drivers/media/usb/uvc/uvc_video.c
+@@ -162,9 +162,29 @@ static void uvc_fixup_video_ctrl(struct uvc_streaming *stream,
+ 	if ((ctrl->dwMaxPayloadTransferSize & 0xffff0000) == 0xffff0000)
+ 		ctrl->dwMaxPayloadTransferSize &= ~0xffff0000;
+ 
+-	if (!(format->flags & UVC_FMT_FLAG_COMPRESSED) &&
+-	    stream->dev->quirks & UVC_QUIRK_FIX_BANDWIDTH &&
+-	    stream->intf->num_altsetting > 1) {
++
++	if (!(stream->dev->quirks & UVC_QUIRK_FIX_BANDWIDTH))
++		return;
++
++	/* Handle UVC_QUIRK_FIX_BANDWIDTH */
++
++	if (format->flags & UVC_FMT_FLAG_COMPRESSED &&
++	    stream->dev->max_bandwidth && frame->bFrameIntervalType) {
++		u32 bandwidth;
++
++		for (i = 0; i < frame->bFrameIntervalType - 1; ++i) {
++			bandwidth = frame->wWidth * frame->wHeight;
++			bandwidth *= 10000000 / frame->dwFrameInterval[i];
++
++			if (bandwidth <= stream->dev->max_bandwidth)
++				break;
++		}
++
++		ctrl->dwFrameInterval = frame->dwFrameInterval[i];
++		return;
++	}
++
++	if (stream->intf->num_altsetting > 1) {
+ 		u32 interval;
+ 		u32 bandwidth;
+ 
+diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
+index 97df5ecd66c9..b44e0cd4c826 100644
+--- a/drivers/media/usb/uvc/uvcvideo.h
++++ b/drivers/media/usb/uvc/uvcvideo.h
+@@ -658,6 +658,7 @@ static inline u32 uvc_urb_index(const struct uvc_urb *uvc_urb)
+ 
+ struct uvc_device_info {
+ 	u32	quirks;
++	u32	max_bandwidth;
+ 	u32	meta_format;
+ 	u16	uvc_version;
+ };
+@@ -667,6 +668,7 @@ struct uvc_device {
+ 	struct usb_interface *intf;
+ 	unsigned long warnings;
+ 	u32 quirks;
++	u32 max_bandwidth;
+ 	int intfnum;
+ 	char name[32];
+ 
+-- 
+2.29.2
 
-> +			goto nla_put_failure;
-> +
-> +	if (nla_put_u64_64bit(msg, DEVLINK_ATTR_STATS_RX_BYTES,
-> +			      stats.rx_bytes, DEVLINK_ATTR_PAD))
-> +		goto nla_put_failure;
-> +
-> +	nla_nest_end(msg, attr);
-> +
-> +	return 0;
-> +
-> +nla_put_failure:
-> +	nla_nest_cancel(msg, attr);
-> +	return -EMSGSIZE;
-> +}
