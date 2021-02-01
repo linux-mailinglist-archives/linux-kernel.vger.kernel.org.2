@@ -2,111 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09F9630A4FF
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:09:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EBE930A4FB
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 11:09:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233132AbhBAKIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 05:08:15 -0500
-Received: from mxout70.expurgate.net ([91.198.224.70]:13925 "EHLO
-        mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233026AbhBAKHN (ORCPT
+        id S233119AbhBAKHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 05:07:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30064 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233083AbhBAKGz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 05:07:13 -0500
-Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1l6W5A-000FbA-30; Mon, 01 Feb 2021 11:05:20 +0100
-Received: from [195.243.126.94] (helo=securemail.tdt.de)
-        by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ms@dev.tdt.de>)
-        id 1l6W59-000MEB-9l; Mon, 01 Feb 2021 11:05:19 +0100
-Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id B9319240041;
-        Mon,  1 Feb 2021 11:05:18 +0100 (CET)
-Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 410C1240040;
-        Mon,  1 Feb 2021 11:05:18 +0100 (CET)
-Received: from mail.dev.tdt.de (localhost [IPv6:::1])
-        by mail.dev.tdt.de (Postfix) with ESMTP id 894E8202DE;
-        Mon,  1 Feb 2021 11:05:16 +0100 (CET)
+        Mon, 1 Feb 2021 05:06:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612173928;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hnrqm+5Orx/lAieV+sFAve7SQJvuYv/3WsI5oCSpaDs=;
+        b=i3PHw8NXNtY1k6bM13rQtbgYMY+ebeYbmo5AM8s9KJY4/Ur3Fnw4ybHiScYL9B3yezgovu
+        xzuawSxT4Uzt0L5fPI3uN+7AO7o7Tb/casE47oB6C0swMVrXQXZDLeGnXBYUXdVlgEPgRM
+        mCPadSFe/LEqVnKYdFSJKOcp1P1x1TU=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-160-RO_MAhQ7NXOvtJX3m46gcw-1; Mon, 01 Feb 2021 05:05:27 -0500
+X-MC-Unique: RO_MAhQ7NXOvtJX3m46gcw-1
+Received: by mail-wr1-f72.google.com with SMTP id x7so10071962wrp.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 02:05:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=hnrqm+5Orx/lAieV+sFAve7SQJvuYv/3WsI5oCSpaDs=;
+        b=P8DHAXBxd2yCozsS8Gs0hJ1a+oGHQCckLhSH/OY3OwPdgMXBV43lod0uCuPsfK62hM
+         KbAU4+GxMSFmGpIyRnp7M9SZ6ZVX+HHgnxN7BIWaeOhUVRK25XlvYsgtAR7RfDsAslR7
+         JJaqCqvHdw/UolhpYOuJS1v+x2+R/L4NQlR/3L5gcbTRT2kgOeLApsktLnSVst+CebhL
+         AJd9GK5hD63udbJdMOFsx9G6fSRDvHHVXRJagKu0fgd9XN/1TTR10+vOY6wIdeCWqdSv
+         nt7Jg+tYafq8y5gPffTSxl0igDKKzBoGG5EvDeoMdkxzPHBdAJ8hRAsNMelQ3+AZ1fhJ
+         SRRw==
+X-Gm-Message-State: AOAM531+P6P/MdaMpd0KUqAASAGfOEjv9452d6yREzaVfuDUIZvqXwzl
+        6KWPn0nvtvaHA/eLHN/C914qNUhMsx5P/2FpjrdoUXpzCeEonlaioVQKQaVXPCJa0bBoMmLkm4Q
+        /beYDHPViNN1SgYo4wq/TVw3EA9m4RNKjR0suifetEUqaUZkstm5Crw54xM7ikICjcU7tECXeeY
+        eh
+X-Received: by 2002:a5d:4b8e:: with SMTP id b14mr16835041wrt.130.1612173925783;
+        Mon, 01 Feb 2021 02:05:25 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyHqEKDZMztc6oYFmsWJE7+DzZDMGYfZt6wGifS7Lt1RNnM9xp9h2TviiF5fV0KuUXfhhESXw==
+X-Received: by 2002:a5d:4b8e:: with SMTP id b14mr16835008wrt.130.1612173925582;
+        Mon, 01 Feb 2021 02:05:25 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id d5sm26108824wrs.21.2021.02.01.02.05.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 01 Feb 2021 02:05:24 -0800 (PST)
+Subject: Re: [RFC 2/7] KVM: VMX: Expose IA32_PKRS MSR
+To:     Chenyi Qiang <chenyi.qiang@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200807084841.7112-1-chenyi.qiang@intel.com>
+ <20200807084841.7112-3-chenyi.qiang@intel.com>
+ <62f5f5ba-cbe9-231d-365a-80a656208e37@redhat.com>
+ <a311a49b-ea77-99bf-0d0b-b613aed621a4@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <192cfa2c-e54a-c7c1-30dd-7077e07e4af1@redhat.com>
+Date:   Mon, 1 Feb 2021 11:05:23 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 01 Feb 2021 11:05:16 +0100
-From:   Martin Schiller <ms@dev.tdt.de>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: lapb: Copy the skb before sending a packet
-Organization: TDT AG
-In-Reply-To: <20210201055706.415842-1-xie.he.0141@gmail.com>
-References: <20210201055706.415842-1-xie.he.0141@gmail.com>
-Message-ID: <204c18e95caf2ae84fb567dd4be0c3ac@dev.tdt.de>
-X-Sender: ms@dev.tdt.de
-User-Agent: Roundcube Webmail/1.3.16
-X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-X-purgate-type: clean
-X-purgate-ID: 151534::1612173919-00007CCF-2A7DB75F/0/0
-X-purgate: clean
+In-Reply-To: <a311a49b-ea77-99bf-0d0b-b613aed621a4@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-01 06:57, Xie He wrote:
-> When sending a packet, we will prepend it with an LAPB header.
-> This modifies the shared parts of a cloned skb, so we should copy the
-> skb rather than just clone it, before we prepend the header.
+On 01/02/21 10:53, Chenyi Qiang wrote:
+>>>
+>>
+>> Is the guest expected to do a lot of reads/writes to the MSR (e.g. at 
+>> every context switch)?
+>>
+>> Even if this is the case, the MSR intercepts and the entry/exit 
+>> controls should only be done if CR4.PKS=1.  If the guest does not use 
+>> PKS, KVM should behave as if these patches did not exist.
+>>
 > 
-> In "Documentation/networking/driver.rst" (the 2nd point), it states
-> that drivers shouldn't modify the shared parts of a cloned skb when
-> transmitting.
+> Hi Paolo,
 > 
-> The "dev_queue_xmit_nit" function in "net/core/dev.c", which is called
-> when an skb is being sent, clones the skb and sents the clone to
-> AF_PACKET sockets. Because the LAPB drivers first remove a 1-byte
-> pseudo-header before handing over the skb to us, if we don't copy the
-> skb before prepending the LAPB header, the first byte of the packets
-> received on AF_PACKET sockets can be corrupted.
+> Per the MSR intercepts and entry/exit controls, IA32_PKRS access is 
+> independent of the CR4.PKS bit, it just depends on CPUID enumeration. If 
+> the guest doesn't set CR4.PKS but still has the CPUID capability, 
+> modifying on PKRS should be supported but has no effect. IIUC, we can 
+> not ignore these controls if CR4.PKS=0.
 
-What kind of packages do you mean are corrupted?
-ETH_P_X25 or ETH_P_HDLC?
+Understood, I wanted to avoid paying the price (if any) of loading PKRS 
+on vmentry and vmexit not just if CPUID.PKS=0, but also if CR4.PKS=0. 
+If CR4.PKS=0 it would be nicer to enable the MSR intercept and disable 
+the vmentry/vmexit controls; just run the guest with the host value of 
+IA32_PKRS.
 
-I have also sent a patch here in the past that addressed corrupted
-ETH_P_X25 frames on an AF_PACKET socket:
+Paolo
 
-https://lkml.org/lkml/2020/1/13/388
-
-Unfortunately I could not track and describe exactly where the problem
-was.
-
-I just wonder when/where is the logically correct place to copy the skb.
-Shouldn't it be copied before removing the pseudo header (as I did in my
-patch)?
-
-> 
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Cc: Martin Schiller <ms@dev.tdt.de>
-> Signed-off-by: Xie He <xie.he.0141@gmail.com>
-> ---
->  net/lapb/lapb_out.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/lapb/lapb_out.c b/net/lapb/lapb_out.c
-> index 7a4d0715d1c3..a966d29c772d 100644
-> --- a/net/lapb/lapb_out.c
-> +++ b/net/lapb/lapb_out.c
-> @@ -82,7 +82,8 @@ void lapb_kick(struct lapb_cb *lapb)
->  		skb = skb_dequeue(&lapb->write_queue);
-> 
->  		do {
-> -			if ((skbn = skb_clone(skb, GFP_ATOMIC)) == NULL) {
-> +			skbn = skb_copy(skb, GFP_ATOMIC);
-> +			if (!skbn) {
->  				skb_queue_head(&lapb->write_queue, skb);
->  				break;
->  			}
