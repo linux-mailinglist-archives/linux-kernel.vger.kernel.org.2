@@ -2,89 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 277AC30A66F
+	by mail.lfdr.de (Postfix) with ESMTP id A327730A670
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 12:24:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233588AbhBALYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 06:24:25 -0500
-Received: from foss.arm.com ([217.140.110.172]:56696 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233560AbhBALYY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 06:24:24 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 929031042;
-        Mon,  1 Feb 2021 03:23:38 -0800 (PST)
-Received: from [10.57.8.191] (unknown [10.57.8.191])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7568A3F718;
-        Mon,  1 Feb 2021 03:23:36 -0800 (PST)
-Subject: Re: [RFC][PATCH 0/3] New thermal interface allowing IPA to get max
- power
-To:     daniel.lezcano@linaro.org, cw00.choi@samsung.com
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        vireshk@kernel.org, rafael@kernel.org, Dietmar.Eggemann@arm.com,
-        amitk@kernel.org, rui.zhang@intel.com, myungjoo.ham@samsung.com,
-        kyungmin.park@samsung.com
-References: <20210126104001.20361-1-lukasz.luba@arm.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <5751adfa-6e25-3f3c-4a60-9b3c739fec1f@arm.com>
-Date:   Mon, 1 Feb 2021 11:23:34 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S233597AbhBALYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 06:24:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233542AbhBALYc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 06:24:32 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25B92C061573;
+        Mon,  1 Feb 2021 03:23:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BjxzCjyvE86hv4IVx4QuIbHwWzdS3+eGyttOKbxAB1s=; b=1UZSHSE/zTgS5jW4wzsPVCDL60
+        8VH/s7SxOrxeCDJunG8y0vlAez0DHYRzD2dS1/WLjLRfOxUBT+6DYQ0dRSsPEdvQX5g4BMTuHbyPG
+        Ztj21/eGMwfD91RRyEEfwiZBhgDfD+V4jcwLLcKAZTKRFetfuV/qE0xrAqNAyhmZPou9ShTe/8dbh
+        2T1go5K2FcC/Jyf+xWf1cMriDQQLhsBg0vBqLc37igYiglgkfe+o3ZH7NFAknT1O9QErYdUgWFYMz
+        f1gT+GxD/VoY6ijmbVkYWzbQuYmsfpqk9CBYFT0BZWDPupcMYYWw0bvqUoVwVrlGhf09t+KdBqj5i
+        BCK5OPag==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l6XIz-0000G3-Ni; Mon, 01 Feb 2021 11:23:41 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5AF083011FE;
+        Mon,  1 Feb 2021 12:23:39 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 4884221A2F1EA; Mon,  1 Feb 2021 12:23:39 +0100 (CET)
+Date:   Mon, 1 Feb 2021 12:23:39 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
+        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>
+Subject: Re: corrupted pvqspinlock in htab_map_update_elem
+Message-ID: <YBfkuyIfB1+VRxXP@hirez.programming.kicks-ass.net>
+References: <CACT4Y+YJp0t0HA3+wDsAVxgTK4J+Pvht-J4-ENkOtS=C=Fhtzg@mail.gmail.com>
+ <YBfPAvBa8bbSU2nZ@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20210126104001.20361-1-lukasz.luba@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YBfPAvBa8bbSU2nZ@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daniel, Chanwoo
+On Mon, Feb 01, 2021 at 10:50:58AM +0100, Peter Zijlstra wrote:
 
-Gentle ping. Have you have a chance to check these patches?
+> >  queued_spin_unlock arch/x86/include/asm/qspinlock.h:56 [inline]
+> >  lockdep_unlock+0x10e/0x290 kernel/locking/lockdep.c:124
+> >  debug_locks_off_graph_unlock kernel/locking/lockdep.c:165 [inline]
+> >  print_usage_bug kernel/locking/lockdep.c:3710 [inline]
+> 
+> Ha, I think you hit a bug in lockdep.
 
-On 1/26/21 10:39 AM, Lukasz Luba wrote:
-> Hi all,
-> 
-> This patch set tries to add the missing feature in the Intelligent Power
-> Allocation (IPA) governor which is: frequency limit set by user space.
-> User can set max allowed frequency for a given device which has impact on
-> max allowed power. In current design there is no mechanism to figure this
-> out. IPA must know the maximum allowed power for every device. It is then
-> used for proper power split and divvy-up. When the user limit for max
-> frequency is not know, IPA assumes it is the highest possible frequency.
-> It causes wrong power split across the devices.
-> 
-> This new mechanism provides the max allowed frequency to the thermal
-> framework and then max allowed power to the IPA.
-> The implementation is done in this way because currently there is no way
-> to retrieve the limits from the PM QoS, without uncapping the local
-> thermal limit and reading the next value. It would be a heavy way of
-> doing these things, since it should be done every polling time (e.g. 50ms).
-> Also, the value stored in PM QoS can be different than the real OPP 'rate'
-> so still would need conversion into proper OPP for comparison with EM.
-> Furthermore, uncapping the device in thermal just to check the user freq
-> limit is not the safest way.
-> Thus, this simple implementation moves the calculation of the proper
-> frequency to the sysfs write code, since it's called less often. The value
-> is then used as-is in the thermal framework without any hassle.
-> 
-> As it's a RFC, it still misses the cpufreq sysfs implementation, but would
-> be addressed if all agree.
-> 
-> Regards,
-> Lukasz Luba
-> 
-> Lukasz Luba (3):
->    PM /devfreq: add user frequency limits into devfreq struct
->    thermal: devfreq_cooling: add new callback to get user limit for min
->      state
->    thermal: power_allocator: get proper max power limited by user
-> 
->   drivers/devfreq/devfreq.c             | 41 ++++++++++++++++++++++++---
->   drivers/thermal/devfreq_cooling.c     | 33 +++++++++++++++++++++
->   drivers/thermal/gov_power_allocator.c | 17 +++++++++--
->   include/linux/devfreq.h               |  4 +++
->   include/linux/thermal.h               |  1 +
->   5 files changed, 90 insertions(+), 6 deletions(-)
-> 
+Something like so I suppose.
+
+---
+Subject: locking/lockdep: Avoid unmatched unlock
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Mon Feb 1 11:55:38 CET 2021
+
+Commit f6f48e180404 ("lockdep: Teach lockdep about "USED" <- "IN-NMI"
+inversions") overlooked that print_usage_bug() releases the graph_lock
+and called it without the graph lock held.
+
+Fixes: f6f48e180404 ("lockdep: Teach lockdep about "USED" <- "IN-NMI" inversions")
+Reported-by: Dmitry Vyukov <dvyukov@google.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ kernel/locking/lockdep.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -3773,7 +3773,7 @@ static void
+ print_usage_bug(struct task_struct *curr, struct held_lock *this,
+ 		enum lock_usage_bit prev_bit, enum lock_usage_bit new_bit)
+ {
+-	if (!debug_locks_off_graph_unlock() || debug_locks_silent)
++	if (!debug_locks_off() || debug_locks_silent)
+ 		return;
+ 
+ 	pr_warn("\n");
+@@ -3814,6 +3814,7 @@ valid_state(struct task_struct *curr, st
+ 	    enum lock_usage_bit new_bit, enum lock_usage_bit bad_bit)
+ {
+ 	if (unlikely(hlock_class(this)->usage_mask & (1 << bad_bit))) {
++		graph_unlock()
+ 		print_usage_bug(curr, this, bad_bit, new_bit);
+ 		return 0;
+ 	}
