@@ -2,125 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED3130AF15
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:24:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B29B230AF03
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 19:21:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232827AbhBASWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 13:22:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24792 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232322AbhBASQP (ORCPT
+        id S232367AbhBASUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 13:20:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232336AbhBASPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 13:16:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612203288;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ya219FEouxc4ey9Bi9QzBAa/NZQvOAmPCVPDKerIZso=;
-        b=iIZtqWz/qJNacYfIb3nU6UIphsbxeQiZTrNTghI4W2s4CsnEUh4KQmZmrl7dX8Ue2Gb6Fl
-        MNAlp9yD3peuWklY0Fa/d2O/KDRGOFc3Wy8qdCSt/jyBomi+qJaxqcOUouvVHOQpzfNxF2
-        NkyHTfFyI6O+x9OKV4gvjKP1lrJSXZo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-587-SpHaUQK0P_mfjJSgm04W6g-1; Mon, 01 Feb 2021 13:14:46 -0500
-X-MC-Unique: SpHaUQK0P_mfjJSgm04W6g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 26B3259;
-        Mon,  1 Feb 2021 18:14:44 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-118-89.rdu2.redhat.com [10.10.118.89])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7B82860C05;
-        Mon,  1 Feb 2021 18:14:42 +0000 (UTC)
-Subject: Re: corrupted pvqspinlock in htab_map_update_elem
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, andrii@kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>, kpsingh@kernel.org,
-        netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>
-References: <CACT4Y+YJp0t0HA3+wDsAVxgTK4J+Pvht-J4-ENkOtS=C=Fhtzg@mail.gmail.com>
- <YBfPAvBa8bbSU2nZ@hirez.programming.kicks-ass.net>
- <YBfkuyIfB1+VRxXP@hirez.programming.kicks-ass.net>
- <5936f4a4-f150-e56e-f07d-1efee06eba16@redhat.com>
- <CACT4Y+ZEPG0keEM5BzeqxnqOETyjPsa+7_cvGk=VDH+ErhyF-Q@mail.gmail.com>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <19ca1c9f-090b-e97f-d9c7-827fa2f9fee5@redhat.com>
-Date:   Mon, 1 Feb 2021 13:14:41 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        Mon, 1 Feb 2021 13:15:41 -0500
+Received: from mail-qv1-xf34.google.com (mail-qv1-xf34.google.com [IPv6:2607:f8b0:4864:20::f34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C4FAC061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 10:15:22 -0800 (PST)
+Received: by mail-qv1-xf34.google.com with SMTP id u16so8589889qvo.9
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 10:15:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XixCKUy2/OqgDPmJAwVjEUqW79YeMw3WEZYQtp4ikuo=;
+        b=QDdu2QmB9mSkqHqWc0ogevcy7vOT7VQEIsx3WeNYhg04V9/wTz8YXY4ySJkCaN5eef
+         i0vFlgRoT4Duz45k2ZxVW5TgqBBup6BmTrvvVpMiaEcmz3AEtNjpdtu7H4s6x+MBb4WO
+         pyEka/KSJh0hKkLoU3dsDHe0MM3Th7eG5qJJI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XixCKUy2/OqgDPmJAwVjEUqW79YeMw3WEZYQtp4ikuo=;
+        b=HVbjHkJ5NXbu0nu1P48t099A42lf6eOy6GCieE312wJnUBZKbpPZoGWb6Q0WnEb8qU
+         Qa+tn2hcyKAUAzNDerkEXf2j2lRp0bDf4cfZSGNGqcMT80ReabxY2347A0Ky6mdHm/kJ
+         QCd+6PH2pxoWkZfPvbkibRI8W8ij9RSmaqS9PtrjMOlnwLJNtvfHWcvkoDLzB4uJJVIQ
+         d3L17YsBx62AU48qvAKx0dYRBo1qzLcCt/o6NpAKBCc3eV6DL/xUGASbjTRdo6iAHPUl
+         Uc7V7gh1RynpOnR5QanAwiO5Rka23NGXSUWrvhQEsgZsNwF4eaUaTHQC4jiNrbqAbZqP
+         o0kg==
+X-Gm-Message-State: AOAM533bfiEbTH/xXARBWmLXvtCC3/2NaNOHKlZekPSb3ojeArpY/F+c
+        LV9zdt6JiCTVQHl2RlZb8qDj1fYGtU2VjfXUx14OHxun/04=
+X-Google-Smtp-Source: ABdhPJzLhEfS1GYVvI6cLBDmPu6FraWHRaZvsqA3B+FtMRKilRJjYFORE0jNZcsWN5VgnpCYzvhIVlebJctVAbEk2Mc=
+X-Received: by 2002:ad4:4e8a:: with SMTP id dy10mr16589132qvb.36.1612203321657;
+ Mon, 01 Feb 2021 10:15:21 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CACT4Y+ZEPG0keEM5BzeqxnqOETyjPsa+7_cvGk=VDH+ErhyF-Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20210129061406.2680146-1-bleung@chromium.org> <20210129061406.2680146-7-bleung@chromium.org>
+In-Reply-To: <20210129061406.2680146-7-bleung@chromium.org>
+From:   Prashant Malani <pmalani@chromium.org>
+Date:   Mon, 1 Feb 2021 10:15:09 -0800
+Message-ID: <CACeCKaejodDjoD_DeGvg+bMYhN3GqTQq0qYfgw0=sP2h3JQBWQ@mail.gmail.com>
+Subject: Re: [PATCH 6/6] platform/chrome: cros_ec_typec: Set opmode to PD on
+ SOP connected
+To:     Benson Leung <bleung@chromium.org>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Guenter Roeck <groeck@chromium.org>,
+        Benson Leung <bleung@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/1/21 1:09 PM, Dmitry Vyukov wrote:
-> On Mon, Feb 1, 2021 at 6:54 PM Waiman Long <longman@redhat.com> wrote:
->> On 2/1/21 6:23 AM, Peter Zijlstra wrote:
->>> On Mon, Feb 01, 2021 at 10:50:58AM +0100, Peter Zijlstra wrote:
->>>
->>>>>    queued_spin_unlock arch/x86/include/asm/qspinlock.h:56 [inline]
->>>>>    lockdep_unlock+0x10e/0x290 kernel/locking/lockdep.c:124
->>>>>    debug_locks_off_graph_unlock kernel/locking/lockdep.c:165 [inline]
->>>>>    print_usage_bug kernel/locking/lockdep.c:3710 [inline]
->>>> Ha, I think you hit a bug in lockdep.
->>> Something like so I suppose.
->>>
->>> ---
->>> Subject: locking/lockdep: Avoid unmatched unlock
->>> From: Peter Zijlstra <peterz@infradead.org>
->>> Date: Mon Feb 1 11:55:38 CET 2021
->>>
->>> Commit f6f48e180404 ("lockdep: Teach lockdep about "USED" <- "IN-NMI"
->>> inversions") overlooked that print_usage_bug() releases the graph_lock
->>> and called it without the graph lock held.
->>>
->>> Fixes: f6f48e180404 ("lockdep: Teach lockdep about "USED" <- "IN-NMI" inversions")
->>> Reported-by: Dmitry Vyukov <dvyukov@google.com>
->>> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
->>> ---
->>>    kernel/locking/lockdep.c |    3 ++-
->>>    1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> --- a/kernel/locking/lockdep.c
->>> +++ b/kernel/locking/lockdep.c
->>> @@ -3773,7 +3773,7 @@ static void
->>>    print_usage_bug(struct task_struct *curr, struct held_lock *this,
->>>                enum lock_usage_bit prev_bit, enum lock_usage_bit new_bit)
->>>    {
->>> -     if (!debug_locks_off_graph_unlock() || debug_locks_silent)
->>> +     if (!debug_locks_off() || debug_locks_silent)
->>>                return;
->>>
->>>        pr_warn("\n");
->>> @@ -3814,6 +3814,7 @@ valid_state(struct task_struct *curr, st
->>>            enum lock_usage_bit new_bit, enum lock_usage_bit bad_bit)
->>>    {
->>>        if (unlikely(hlock_class(this)->usage_mask & (1 << bad_bit))) {
->>> +             graph_unlock()
->>>                print_usage_bug(curr, this, bad_bit, new_bit);
->>>                return 0;
->>>        }
->> I have also suspected doing unlock without a corresponding lock. This
->> patch looks good to me.
->>
->> Acked-by: Waiman Long <longman@redhat.com>
-> Just so that it's not lost: there is still a bug related to bpf map lock, right?
+On Thu, Jan 28, 2021 at 10:14 PM Benson Leung <bleung@chromium.org> wrote:
 >
-That is right. This patch just fixes the bug in lockdep.
+> When SOP Discovery is done, set the opmode to PD if status indicates
+> SOP is connected.
+>
+> SOP connected indicates a PD contract is in place, and is a solid
+> indication we have transitioned to PD power negotiation, either as
+> source or sink.
+>
+> Signed-off-by: Benson Leung <bleung@chromium.org>
+Reviewed-by: Prashant Malani <pmalani@chromium.org>
 
-Cheers,
-Longman
-
+> ---
+>  drivers/platform/chrome/cros_ec_typec.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+> index 6bc6fafd54a4..a7778258d0a0 100644
+> --- a/drivers/platform/chrome/cros_ec_typec.c
+> +++ b/drivers/platform/chrome/cros_ec_typec.c
+> @@ -900,6 +900,9 @@ static void cros_typec_handle_status(struct cros_typec_data *typec, int port_num
+>                         dev_err(typec->dev, "Couldn't parse SOP Disc data, port: %d\n", port_num);
+>                 else
+>                         typec->ports[port_num]->sop_disc_done = true;
+> +
+> +               if (resp.sop_connected)
+> +                       typec_set_pwr_opmode(typec->ports[port_num]->port, TYPEC_PWR_MODE_PD);
+>         }
+>
+>         if (resp.events & PD_STATUS_EVENT_SOP_PRIME_DISC_DONE &&
+> --
+> 2.30.0.365.g02bc693789-goog
+>
