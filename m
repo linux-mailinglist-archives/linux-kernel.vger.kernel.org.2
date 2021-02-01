@@ -2,230 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F3A30B1C4
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 21:57:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7B830B1CF
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 22:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231226AbhBAU4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 15:56:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55494 "EHLO
+        id S230273AbhBAU7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 15:59:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbhBAU4E (ORCPT
+        with ESMTP id S231760AbhBAU6o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 15:56:04 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9A47C061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 12:55:24 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id s7so21170179ybj.0
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 12:55:24 -0800 (PST)
+        Mon, 1 Feb 2021 15:58:44 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64301C06174A;
+        Mon,  1 Feb 2021 12:58:04 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id e9so387568pjj.0;
+        Mon, 01 Feb 2021 12:58:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=mxhCYz3pmXJ0cyDtRYw4nEnyQnGosIqZqquj4Bg/3vE=;
-        b=hZ6xJOOQ2MmrrgxbULGyECvWLErthF4ctryyH8aDZNne7gZGSpqOucYbQdZYhc3U46
-         zbdcJkm67ikOodul/wB82w+LO/xNYIkeaSKLwOmw/T9fz+L4BahbfneBDfuYoZVk8HNa
-         /0YYQJ3Xkf7aULPXdsorf4IfyE1t0bjTd3rJPg3tLe4HzqRCa75e/jjlHF9RdodGGAUk
-         EuT/QrcwTKOvbGiaAm8d0qZ8e9dYzpFE5gdPYtP/BZyiM2zsG3u3/UYMPOn1dUWvNZhu
-         iAfc3SzjLwlTQ0M1VL1sm5pyR4bZ1pRbRCb90//RcOF6kmBPPvK06aNMLBSClB4sForD
-         aByg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jl2x4idr/8LE23SOnRpzWHW31Y2nI1o4N+NnWkaHBcY=;
+        b=b4yI+5S4Am64ZFz7Sevb7dCOrsIDn+PCflvhjh09vulVBv5Yxn0Xt3Jhsn3aBqgp94
+         mEbybBEgkgqior1b2gTEFhi1eB0qBUON2w6KWeg7fDzP7zNslPVzxmQCUkniYA/UHgvc
+         jcbP6fj/noZSGcy37Orpnp84wxWycnsEVv6HhTquM/LijBacy212VHUFdFpmz9ej5Eam
+         v183TH7nS5Uuro5WlMLU53eUd2spmJBmn6BRSame22HSDxIYWQdKEWX6Xgi2+Z7NpxmE
+         PdfHcKupSCXPat0RmiMGjKamRarqUhnNcjBb/khZNJdnsE7BYhCSGD7oafW3AQuO7f30
+         XiCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=mxhCYz3pmXJ0cyDtRYw4nEnyQnGosIqZqquj4Bg/3vE=;
-        b=rqyjDB7VPwWUzkVE9aLjbm5YBKLACFLLKiysPksD5w1LCCErHIDxI2lNVeUCkOvOTB
-         BvcRoj9EY/h37KKJlksq2HoLR1FWzhC+DTMBHTqgVnSJhhMGZbyBpVbLHBRsLvp7Nqma
-         S+wyVCmj+9aq8YYY7g0fhOGlOfJUAEU7efm4eqk7+bqFw3NUVwDp8oNXElMxuUypo/3x
-         hhmCCVDBUrH5cAyhw8pnJKWhS0zwGZgNNPj1Mvrr6DyDFpk7gB7NrFQ/hxmI90NajpyK
-         MtklW4+tKz7QYptPbztQhXzeD5U+C7LyNvKcYeGbXZcWHAXS2hWi8Y6l5rDYnTrZn3qz
-         MEFA==
-X-Gm-Message-State: AOAM532QlfSG0qWKF/5zrCxhIgv8ozH+9c6tb72IMPeecNqQFRxbpsC2
-        /1JcMCoZskoV/IWM1a2+lQkb1E+ryg33bA==
-X-Google-Smtp-Source: ABdhPJzRT97jxN0qRXhxSydxV7x0QUiIGHkthpEOo92P6NJmrGZOsLkdq+kKG26c4Fbrky8dwukwN8jCIcN6GQ==
-Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee3:28c6])
- (user=dlatypov job=sendgmr) by 2002:a25:af91:: with SMTP id
- g17mr6705005ybh.321.1612212923680; Mon, 01 Feb 2021 12:55:23 -0800 (PST)
-Date:   Mon,  1 Feb 2021 12:55:14 -0800
-Message-Id: <20210201205514.3943096-1-dlatypov@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v2] kunit: make kunit_tool accept optional path to
- .kunitconfig fragment
-From:   Daniel Latypov <dlatypov@google.com>
-To:     brendanhiggins@google.com, davidgow@google.com
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org, Daniel Latypov <dlatypov@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jl2x4idr/8LE23SOnRpzWHW31Y2nI1o4N+NnWkaHBcY=;
+        b=VqiiEakCh3Se7SexGezfIlTBI7qZfvA5yCtER558BCdYZnPGQCifG3PgLjGnujmTwo
+         XOu0wkyxmq9t0gjZmf8TEGNp9RFhW9vyDdTk1caDdvZyknvzFckU5qc1pIxS6qT/c1rb
+         pX/PiXNrTT6H6C+fEvKgLAcscMSyZFs19S7JsZAlgCPQsBeC5J1D0nRGzRWMg0VjVsUZ
+         KSAtvWu3yvM3lN8VuxW+XlafGM0M/Y88CGriE0Vh6786sOgl3YrKgV6AFVVg6DD2EiGd
+         9kJflo4rqOTr7ROSeMGCrBf62Tjx8RymfxYnauiepWJYGW33Qyjvls/bjOfY20c1Yar2
+         gCxw==
+X-Gm-Message-State: AOAM5339DBLQ1/74H+h/6+Gz1NLeqAbxNF0BpaWfeHJdw9LcpxXL74M2
+        3vgWHI01XiyAeD30kuSEaWXh4bY+B7KAd2jqWpE=
+X-Google-Smtp-Source: ABdhPJwNka49ycU5pdtTxMjP+hfQVh3l423R6IOSwz8+T+O1QIRf6d/l+l4MYMncVpe8lOe012lk2ekq8VOyfy88OHc=
+X-Received: by 2002:a17:90a:c84:: with SMTP id v4mr732625pja.228.1612213083824;
+ Mon, 01 Feb 2021 12:58:03 -0800 (PST)
+MIME-Version: 1.0
+References: <20210125193948.56760-1-andriy.shevchenko@linux.intel.com>
+ <20210126082101.GD4903@dell> <YA/xfxcwCabETug6@smile.fi.intel.com>
+ <YBhLuNZ7xmHdhurU@smile.fi.intel.com> <CAJZ5v0jQLZ7hEn7nDN8AADy7djnrQRrC4jtXKY-YqZiO609_2A@mail.gmail.com>
+In-Reply-To: <CAJZ5v0jQLZ7hEn7nDN8AADy7djnrQRrC4jtXKY-YqZiO609_2A@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 1 Feb 2021 22:57:47 +0200
+Message-ID: <CAHp75VeYdATpv=PTWqq0--JLqJrGaiMhZEucjY7Fc5GPP+AqMA@mail.gmail.com>
+Subject: Re: [PATCH v1 00/10] mfd, x86: remove msic driver and leftovers
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently running tests via KUnit tool means tweaking a .kunitconfig
-file, which you'd keep around locally and never commit.
-This changes makes it so users can pass in a path to a kunitconfig.
+On Mon, Feb 1, 2021 at 8:52 PM Rafael J. Wysocki <rafael@kernel.org> wrote:
+> On Mon, Feb 1, 2021 at 7:45 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
 
-One of the imagined use cases is having kunitconfig fragments in-tree
-to formalize interesting sets of tests for features/subsystems, e.g.
-  $ ./tools/testing/kunit/kunit.py run --kunticonfig=fs/ext4/kunitconfig
+...
 
-For now, this hypothetical fs/ext4/kunitconfig would contain
-  CONFIG_KUNIT=y
-  CONFIG_EXT4_FS=y
-  CONFIG_EXT4_KUNIT_TESTS=y
+> Speaking of which, the patches here are requisite for SFI support
+> removal, so I'd like to route them through the ACPI tree if that's
+> fine by all of the interested parties.
 
-At the moment, it's not hard to manually whip up this file, but as more
-and more tests get added, this will get tedious.
+Fine with me!
 
-It also opens the door to documenting how to run all the tests relevant
-to a specific subsystem or feature as a simple one-liner.
-
-This can be seen as an analogue to tools/testing/selftests/*/config
-But in the case of KUnit, the tests live in the same directory as the
-code-under-test, so it feels more natural to allow the kunitconfig
-fragments to live anywhere. (Though, people could create a separate
-directory if wanted; this patch imposes no restrictions on the path).
-
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
----
-
-Changes since v1: change from a positional arg to a flag --kunitconfig.
-Ensure that it gets added for `kunit.py config` and all other commands.
-
----
- tools/testing/kunit/kunit.py           |  9 +++++---
- tools/testing/kunit/kunit_kernel.py    | 12 ++++++----
- tools/testing/kunit/kunit_tool_test.py | 32 ++++++++++++++++++++++++++
- 3 files changed, 46 insertions(+), 7 deletions(-)
-
-diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-index e808a47c839b..02871a363f76 100755
---- a/tools/testing/kunit/kunit.py
-+++ b/tools/testing/kunit/kunit.py
-@@ -182,6 +182,9 @@ def add_common_opts(parser) -> None:
- 	parser.add_argument('--alltests',
- 			    help='Run all KUnit tests through allyesconfig',
- 			    action='store_true')
-+	parser.add_argument('--kunitconfig',
-+			     help='Path to Kconfig fragment that enables KUnit tests',
-+			     metavar='kunitconfig')
- 
- def add_build_opts(parser) -> None:
- 	parser.add_argument('--jobs',
-@@ -256,7 +259,7 @@ def main(argv, linux=None):
- 			os.mkdir(cli_args.build_dir)
- 
- 		if not linux:
--			linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir)
-+			linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir, kunitconfig_path=cli_args.kunitconfig)
- 
- 		request = KunitRequest(cli_args.raw_output,
- 				       cli_args.timeout,
-@@ -274,7 +277,7 @@ def main(argv, linux=None):
- 			os.mkdir(cli_args.build_dir)
- 
- 		if not linux:
--			linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir)
-+			linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir, kunitconfig_path=cli_args.kunitconfig)
- 
- 		request = KunitConfigRequest(cli_args.build_dir,
- 					     cli_args.make_options)
-@@ -286,7 +289,7 @@ def main(argv, linux=None):
- 			sys.exit(1)
- 	elif cli_args.subcommand == 'build':
- 		if not linux:
--			linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir)
-+			linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir, kunitconfig_path=cli_args.kunitconfig)
- 
- 		request = KunitBuildRequest(cli_args.jobs,
- 					    cli_args.build_dir,
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-index 2076a5a2d060..0b461663e7d9 100644
---- a/tools/testing/kunit/kunit_kernel.py
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -123,7 +123,7 @@ def get_outfile_path(build_dir) -> str:
- class LinuxSourceTree(object):
- 	"""Represents a Linux kernel source tree with KUnit tests."""
- 
--	def __init__(self, build_dir: str, load_config=True, defconfig=DEFAULT_KUNITCONFIG_PATH) -> None:
-+	def __init__(self, build_dir: str, load_config=True, kunitconfig_path='') -> None:
- 		signal.signal(signal.SIGINT, self.signal_handler)
- 
- 		self._ops = LinuxSourceTreeOperations()
-@@ -131,9 +131,13 @@ class LinuxSourceTree(object):
- 		if not load_config:
- 			return
- 
--		kunitconfig_path = get_kunitconfig_path(build_dir)
--		if not os.path.exists(kunitconfig_path):
--			shutil.copyfile(defconfig, kunitconfig_path)
-+		if kunitconfig_path:
-+			if not os.path.exists(kunitconfig_path):
-+				raise ConfigError(f'Specified kunitconfig ({kunitconfig_path}) does not exist')
-+		else:
-+			kunitconfig_path = get_kunitconfig_path(build_dir)
-+			if not os.path.exists(kunitconfig_path):
-+				shutil.copyfile(DEFAULT_KUNITCONFIG_PATH, kunitconfig_path)
- 
- 		self._kconfig = kunit_config.Kconfig()
- 		self._kconfig.read_from_file(kunitconfig_path)
-diff --git a/tools/testing/kunit/kunit_tool_test.py b/tools/testing/kunit/kunit_tool_test.py
-index b593f4448e83..22f50b931138 100755
---- a/tools/testing/kunit/kunit_tool_test.py
-+++ b/tools/testing/kunit/kunit_tool_test.py
-@@ -12,6 +12,7 @@ from unittest import mock
- import tempfile, shutil # Handling test_tmpdir
- 
- import json
-+import signal
- import os
- 
- import kunit_config
-@@ -250,6 +251,23 @@ class KUnitParserTest(unittest.TestCase):
- 				result.status)
- 			self.assertEqual('kunit-resource-test', result.suites[0].name)
- 
-+class LinuxSourceTreeTest(unittest.TestCase):
-+
-+	def setUp(self):
-+		mock.patch.object(signal, 'signal').start()
-+		self.addCleanup(mock.patch.stopall)
-+
-+	def test_invalid_kunitconfig(self):
-+		with self.assertRaisesRegex(kunit_kernel.ConfigError, 'nonexistent.* does not exist'):
-+			kunit_kernel.LinuxSourceTree('', kunitconfig_path='/nonexistent_file')
-+
-+	def test_valid_kunitconfig(self):
-+		with tempfile.NamedTemporaryFile('wt') as kunitconfig:
-+			tree = kunit_kernel.LinuxSourceTree('', kunitconfig_path=kunitconfig.name)
-+
-+	# TODO: add more test cases.
-+
-+
- class KUnitJsonTest(unittest.TestCase):
- 
- 	def _json_for(self, log_file):
-@@ -399,5 +417,19 @@ class KUnitMainTest(unittest.TestCase):
- 		self.linux_source_mock.run_kernel.assert_called_once_with(build_dir=build_dir, timeout=300)
- 		self.print_mock.assert_any_call(StrContains('Testing complete.'))
- 
-+	@mock.patch.object(kunit_kernel, 'LinuxSourceTree')
-+	def test_run_kunitconfig(self, mock_linux_init):
-+		mock_linux_init.return_value = self.linux_source_mock
-+		kunit.main(['run', '--kunitconfig=mykunitconfig'])
-+		# Just verify that we parsed and initialized it correctly here.
-+		mock_linux_init.assert_called_once_with('.kunit', kunitconfig_path='mykunitconfig')
-+
-+	@mock.patch.object(kunit_kernel, 'LinuxSourceTree')
-+	def test_config_kunitconfig(self, mock_linux_init):
-+		mock_linux_init.return_value = self.linux_source_mock
-+		kunit.main(['config', '--kunitconfig=mykunitconfig'])
-+		# Just verify that we parsed and initialized it correctly here.
-+		mock_linux_init.assert_called_once_with('.kunit', kunitconfig_path='mykunitconfig')
-+
- if __name__ == '__main__':
- 	unittest.main()
-
-base-commit: 88bb507a74ea7d75fa49edd421eaa710a7d80598
 -- 
-2.30.0.365.g02bc693789-goog
-
+With Best Regards,
+Andy Shevchenko
