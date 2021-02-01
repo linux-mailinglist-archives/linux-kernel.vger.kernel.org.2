@@ -2,71 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71E1E30A84A
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:07:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 084C230A856
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:09:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231853AbhBANHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:07:20 -0500
-Received: from outbound-smtp15.blacknight.com ([46.22.139.232]:50133 "EHLO
-        outbound-smtp15.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231873AbhBANHD (ORCPT
+        id S232019AbhBANJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:09:08 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21330 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231962AbhBANJB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:07:03 -0500
-Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp15.blacknight.com (Postfix) with ESMTPS id 0F44A1C4C90
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 13:06:05 +0000 (GMT)
-Received: (qmail 23314 invoked from network); 1 Feb 2021 13:06:04 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 1 Feb 2021 13:06:04 -0000
-Date:   Mon, 1 Feb 2021 13:06:03 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     "Li, Aubrey" <aubrey.li@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Qais Yousef <qais.yousef@arm.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 0/4] Scan for an idle sibling in a single pass
-Message-ID: <20210201130603.GI3592@techsingularity.net>
-References: <20210127135203.19633-1-mgorman@techsingularity.net>
- <cec31f9f-0eda-706e-235d-5bd2bfad6c2c@linux.intel.com>
+        Mon, 1 Feb 2021 08:09:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612184855;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y5Rwaf81e9ocy2MYWY0wjpx5EyFdy6040KY/DyZOVp8=;
+        b=TgRWG6jZZTFO0IhShwWiBJc3WmnXMQ7DNiy4zG+8awL2DklwzY+zIOSV4dAEDa499f+coH
+        GaHcT3Ye+nP+6XhKeAuoGJERaTTzVv1wt9KY4gCnIl42uDXw/OjruTKv1MzRmxt8rlz0Lo
+        iqtOqmRBZyRB40t+KGGrSS7HvFtoyPM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-543-pfmfFTAqO3euUrWsdsfwvQ-1; Mon, 01 Feb 2021 08:07:31 -0500
+X-MC-Unique: pfmfFTAqO3euUrWsdsfwvQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E0B9D9CC02;
+        Mon,  1 Feb 2021 13:07:28 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 99176E141;
+        Mon,  1 Feb 2021 13:07:25 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210128191705.3568820-1-mic@digikod.net>
+References: <20210128191705.3568820-1-mic@digikod.net>
+To:     =?us-ascii?Q?=3D=3FUTF-8=3Fq=3FMicka=3DC3=3DABl=3D20Sala=3DC3=3DBCn=3F?=
+         =?us-ascii?Q?=3D?= <mic@digikod.net>
+Cc:     dhowells@redhat.com, David Woodhouse <dwmw2@infradead.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        James Morris <jmorris@namei.org>,
+        =?us-ascii?Q?=3D=3FUTF-8=3Fq=3FMicka=3DC3=3DABl?=
+         =?us-ascii?Q?=3D20Sala=3DC3=3DBCn=3F=3D?= 
+        <mic@linux.microsoft.com>, Mimi Zohar <zohar@linux.ibm.com>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Tyler Hicks <tyhicks@linux.microsoft.com>,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v5 0/5] Enable root to update the blacklist keyring
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <cec31f9f-0eda-706e-235d-5bd2bfad6c2c@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date:   Mon, 01 Feb 2021 13:07:24 +0000
+Message-ID: <4160652.1612184844@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 09:13:16AM +0800, Li, Aubrey wrote:
-> > Peter's series tried to solve three problems at once, this subset addresses
-> > one problem.
-> > 
-> >  kernel/sched/fair.c     | 151 +++++++++++++++++++---------------------
-> >  kernel/sched/features.h |   1 -
-> >  2 files changed, 70 insertions(+), 82 deletions(-)
-> > 
-> 
-> 4 benchmarks measured on a x86 4s system with 24 cores per socket and
-> 2 HTs per core, total 192 CPUs. 
-> 
-> The load level is [25%, 50%, 75%, 100%].
-> 
-> - hackbench almost has a universal win.
-> - netperf high load has notable changes, as well as tbench 50% load.
-> 
 
-Ok, both netperf and tbench are somewhat expected as at those loads are
-rapidly idling. Previously I observed that rapidly idling loads can
-allow the has_idle_cores test pass for short durations and the double
-scanning means there is a greater chance of finding an idle CPU over the
-two passes. I think overall it's better to avoid double scanning even if
-there are counter examples as it's possible we'll get that back through
-better depth selection in the future.
+Hi Micka=C3=ABl,
 
-Thanks.
+Do you have a public branch somewhere I can pull from?
 
--- 
-Mel Gorman
-SUSE Labs
+David
+
