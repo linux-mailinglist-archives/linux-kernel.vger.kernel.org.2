@@ -2,129 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78AD130A85E
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:12:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC09030A861
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 14:12:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231407AbhBANLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 08:11:21 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:11668 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231475AbhBANLN (ORCPT
+        id S231493AbhBANMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 08:12:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229707AbhBANMM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 08:11:13 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DTpDN2p5dzlF09;
-        Mon,  1 Feb 2021 21:08:52 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.220) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Mon, 1 Feb 2021
- 21:10:21 +0800
-Subject: Re: [PATCH v4 1/2] perf/smmuv3: Don't reserve the PMCG register
- spaces
-To:     Will Deacon <will@kernel.org>
-CC:     Robin Murphy <robin.murphy@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-References: <20210130071414.1575-1-thunder.leizhen@huawei.com>
- <20210130071414.1575-2-thunder.leizhen@huawei.com>
- <20210201125412.GA14772@willie-the-truck>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <c69665cc-2804-7984-ef2d-b8602965a605@huawei.com>
-Date:   Mon, 1 Feb 2021 21:10:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Mon, 1 Feb 2021 08:12:12 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D03C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 05:11:31 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id f2so19474372ljp.11
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 05:11:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ZBg5DGHXau4A2AR5uVxrHKMoYL9lpKJv6v+HASZfsoI=;
+        b=dgVqUWYOmnLGptFmKmn3LgQnDrYUa2N/HlrTFBWCjoXAljYn3K9EeixcbTOFGc+6oj
+         XuGGE/YFDzOpyW0q3ooJIRlQPz8MMumDSOjwvNCC4FuZRUudyQUJiiaYBarz1o/Lcs7y
+         3x+StsdVrKB36dgoR4BKqr2THokj8Sj2/HSZ4d5rhtr83clGPj3puoe7E5zhIR1I9TuW
+         eSa0VtMB9DAf3WOQnvJAe7pTdfeuW/FZxM3w/0IvuRFSRiYntxFdThcsCr1JT0Wt/zWF
+         118LeJGhUtlBDYqeyyYoXLV/QkfhJopEXpBd9hQ1D8AqiLnkbd5fp4XkXqxPFa8aWxBV
+         qT9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZBg5DGHXau4A2AR5uVxrHKMoYL9lpKJv6v+HASZfsoI=;
+        b=LL/miPh+s8FbH6gnOSMLEbNkxU+LILAwCVU6Dx5MF4my2XW+J1whLjun0m5bULNIHS
+         W7gnk7ceqV03S9QZZAtdSd8bxGOmvV1YfAyYP05Ziry6eD+BQcrVOZ/jziJ2mA9JItbt
+         BGOI2zq7js3KBQAwno2etykcSzpOKlf8croW5j1d/DvPz19WS8s+d+iVi2vYvXdtZIUw
+         N2zhdSy+X5NOcRTkGs9aEzeaALi/oqSp7qJvb5nQoRqkBZrga6Vnt5qGBrLHVqtvjydJ
+         PoFi65UywnceqKy4UbL97xH8EgKa5XizwzQaS0+EEYns5pMqqv48prXvQXsE1MJUwU+w
+         HInw==
+X-Gm-Message-State: AOAM530mJrdNT0RxTRRxcxMa82F8BhGXVthcvZADNo/AYKlzhIeWC5c3
+        PsuReW3uMcI5CBK/qEl3qS9q/VPIcXusKGGkBvs=
+X-Google-Smtp-Source: ABdhPJz6gAYFrEmDqDihjtfxmFigHRqoAecV4tJ0gMa4onzo4iLumtU/Yt6+A9HfVbvrv9fSJlWpwhgLgvhunptG3+c=
+X-Received: by 2002:a2e:a366:: with SMTP id i6mr10208319ljn.21.1612185090071;
+ Mon, 01 Feb 2021 05:11:30 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210201125412.GA14772@willie-the-truck>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.176.220]
-X-CFilter-Loop: Reflected
+References: <20210201000606.2206740-1-daeho43@gmail.com> <7e2f440e-6500-04c8-1115-880754a18efa@kernel.org>
+In-Reply-To: <7e2f440e-6500-04c8-1115-880754a18efa@kernel.org>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Mon, 1 Feb 2021 22:11:18 +0900
+Message-ID: <CACOAw_zW+xnN7pBmTknuJ1=CGiAvVq0sQhe7D6X8sOjgjF_qeg@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH] f2fs: fix checkpoint mount option wrong combination
+To:     Chao Yu <chao@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Actually, I think we need to select one among them, disable, enable
+and merge. I realized my previous understanding about that was wrong.
+In that case of "checkpoint=3Dmerge,checkpoint=3Denable", the last option
+will override the ones before that.
+This is how the other mount options like fsync_mode, whint_mode and etc.
+So, the answer will be "checkpoint=3Denable". What do you think?
 
 
-On 2021/2/1 20:54, Will Deacon wrote:
-> On Sat, Jan 30, 2021 at 03:14:13PM +0800, Zhen Lei wrote:
->> According to the SMMUv3 specification:
->> Each PMCG counter group is represented by one 4KB page (Page 0) with one
->> optional additional 4KB page (Page 1), both of which are at IMPLEMENTATION
->> DEFINED base addresses.
->>
->> This means that the PMCG register spaces may be within the 64KB pages of
->> the SMMUv3 register space. When both the SMMU and PMCG drivers reserve
->> their own resources, a resource conflict occurs.
->>
->> To avoid this conflict, don't reserve the PMCG regions.
->>
->> Suggested-by: Robin Murphy <robin.murphy@arm.com>
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->> ---
->>  drivers/perf/arm_smmuv3_pmu.c | 25 +++++++++++++++++++------
->>  1 file changed, 19 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/perf/arm_smmuv3_pmu.c b/drivers/perf/arm_smmuv3_pmu.c
->> index 74474bb322c3f26..5e894f957c7b935 100644
->> --- a/drivers/perf/arm_smmuv3_pmu.c
->> +++ b/drivers/perf/arm_smmuv3_pmu.c
->> @@ -793,17 +793,30 @@ static int smmu_pmu_probe(struct platform_device *pdev)
->>  		.capabilities	= PERF_PMU_CAP_NO_EXCLUDE,
->>  	};
->>  
->> -	smmu_pmu->reg_base = devm_platform_get_and_ioremap_resource(pdev, 0, &res_0);
->> -	if (IS_ERR(smmu_pmu->reg_base))
->> -		return PTR_ERR(smmu_pmu->reg_base);
->> +	/*
->> +	 * The register spaces of the PMCG may be in the register space of
->> +	 * other devices. For example, SMMU. Therefore, the PMCG resources are
->> +	 * not reserved to avoid resource conflicts with other drivers.
->> +	 */
->> +	res_0 = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->> +	if (!res_0)
->> +		return ERR_PTR(-EINVAL);
-> 
-> I tried to apply this, but you've got your return type in a muddle:
 
-I'm dizzy. I don't know how this bug patch came out. I just pinched my leg, like I'm still in the real world.
-
-The "ERR_PTR()" of the four ERR_PTR(xxx) should be removed. Can you help me? Or I send a new one.
-
-> 
-> @@ @@
-> +drivers/perf/arm_smmuv3_pmu.c: In function ‘smmu_pmu_probe’:
-> +drivers/perf/arm_smmuv3_pmu.c:803:10: warning: returning ‘void *’ from a function with return type ‘int’ makes integer from pointer without a cast [-Wint-conversion]
-> +  803 |   return ERR_PTR(-EINVAL);
-> +      |          ^~~~~~~~~~~~~~~~
-> +drivers/perf/arm_smmuv3_pmu.c:803:31: warning: incorrect type in return expression (different base types) [sparse]
-> +drivers/perf/arm_smmuv3_pmu.c:803:31:    expected int [sparse]
-> +drivers/perf/arm_smmuv3_pmu.c:803:31:    got void * [sparse]
-> +drivers/perf/arm_smmuv3_pmu.c:806:10: warning: returning ‘void *’ from a function with return type ‘int’ makes integer from pointer without a cast [-Wint-conversion]
-> +  806 |   return ERR_PTR(-ENOMEM);
-> +      |          ^~~~~~~~~~~~~~~~
-> +drivers/perf/arm_smmuv3_pmu.c:806:31: warning: incorrect type in return expression (different base types) [sparse]
-> +drivers/perf/arm_smmuv3_pmu.c:806:31:    expected int [sparse]
-> +drivers/perf/arm_smmuv3_pmu.c:806:31:    got void * [sparse]
-> +drivers/perf/arm_smmuv3_pmu.c:816:11: warning: returning ‘void *’ from a function with return type ‘int’ makes integer from pointer without a cast [-Wint-conversion]
-> +  816 |    return ERR_PTR(-EINVAL);
-> +      |           ^~~~~~~~~~~~~~~~
-> +drivers/perf/arm_smmuv3_pmu.c:816:39: warning: incorrect type in return expression (different base types) [sparse]
-> +drivers/perf/arm_smmuv3_pmu.c:816:39:    expected int [sparse]
-> +drivers/perf/arm_smmuv3_pmu.c:816:39:    got void * [sparse]
-> +drivers/perf/arm_smmuv3_pmu.c:819:11: warning: returning ‘void *’ from a function with return type ‘int’ makes integer from pointer without a cast [-Wint-conversion]
-> +  819 |    return ERR_PTR(-ENOMEM);
-> +      |           ^~~~~~~~~~~~~~~~
-> +drivers/perf/arm_smmuv3_pmu.c:819:39: warning: incorrect type in return expression (different base types) [sparse]
-> +drivers/perf/arm_smmuv3_pmu.c:819:39:    expected int [sparse]
-> +drivers/perf/arm_smmuv3_pmu.c:819:39:    got void * [sparse]
-> 
-> Will
-> 
-> .
-> 
-
+2021=EB=85=84 2=EC=9B=94 1=EC=9D=BC (=EC=9B=94) =EC=98=A4=ED=9B=84 9:40, Ch=
+ao Yu <chao@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On 2021/2/1 8:06, Daeho Jeong wrote:
+> > From: Daeho Jeong <daehojeong@google.com>
+> >
+> > As checkpoint=3Dmerge comes in, mount option setting related to
+> > checkpoint had been mixed up. Fixed it.
+> >
+> > Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> > ---
+> >   fs/f2fs/super.c | 11 +++++------
+> >   1 file changed, 5 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+> > index 56696f6cfa86..8231c888c772 100644
+> > --- a/fs/f2fs/super.c
+> > +++ b/fs/f2fs/super.c
+> > @@ -930,20 +930,25 @@ static int parse_options(struct super_block *sb, =
+char *options, bool is_remount)
+> >                               return -EINVAL;
+> >                       F2FS_OPTION(sbi).unusable_cap_perc =3D arg;
+> >                       set_opt(sbi, DISABLE_CHECKPOINT);
+> > +                     clear_opt(sbi, MERGE_CHECKPOINT);
+> >                       break;
+> >               case Opt_checkpoint_disable_cap:
+> >                       if (args->from && match_int(args, &arg))
+> >                               return -EINVAL;
+> >                       F2FS_OPTION(sbi).unusable_cap =3D arg;
+> >                       set_opt(sbi, DISABLE_CHECKPOINT);
+> > +                     clear_opt(sbi, MERGE_CHECKPOINT);
+> >                       break;
+> >               case Opt_checkpoint_disable:
+> >                       set_opt(sbi, DISABLE_CHECKPOINT);
+> > +                     clear_opt(sbi, MERGE_CHECKPOINT);
+> >                       break;
+> >               case Opt_checkpoint_enable:
+> >                       clear_opt(sbi, DISABLE_CHECKPOINT);
+> > +                     clear_opt(sbi, MERGE_CHECKPOINT);
+>
+> What if: -o checkpoint=3Dmerge,checkpoint=3Denable
+>
+> Can you please explain the rule of merge/disable/enable combination and t=
+heir
+> result? e.g.
+> checkpoint=3Dmerge,checkpoint=3Denable
+> checkpoint=3Denable,checkpoint=3Dmerge
+> checkpoint=3Dmerge,checkpoint=3Ddisable
+> checkpoint=3Ddisable,checkpoint=3Dmerge
+>
+> If the rule/result is clear, it should be documented.
+>
+> Thanks,
+>
+>
+> >                       break;
+> >               case Opt_checkpoint_merge:
+> > +                     clear_opt(sbi, DISABLE_CHECKPOINT);
+> >                       set_opt(sbi, MERGE_CHECKPOINT);
+> >                       break;
+> >   #ifdef CONFIG_F2FS_FS_COMPRESSION
+> > @@ -1142,12 +1147,6 @@ static int parse_options(struct super_block *sb,=
+ char *options, bool is_remount)
+> >               return -EINVAL;
+> >       }
+> >
+> > -     if (test_opt(sbi, DISABLE_CHECKPOINT) &&
+> > -                     test_opt(sbi, MERGE_CHECKPOINT)) {
+> > -             f2fs_err(sbi, "checkpoint=3Dmerge cannot be used with che=
+ckpoint=3Ddisable\n");
+> > -             return -EINVAL;
+> > -     }
+> > -
+> >       /* Not pass down write hints if the number of active logs is less=
+er
+> >        * than NR_CURSEG_PERSIST_TYPE.
+> >        */
+> >
