@@ -2,230 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E45430AE2A
+	by mail.lfdr.de (Postfix) with ESMTP id 9EBC830AE2B
 	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 18:42:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232208AbhBARlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 12:41:46 -0500
-Received: from foss.arm.com ([217.140.110.172]:35218 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232197AbhBARlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 12:41:40 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5A321150C;
-        Mon,  1 Feb 2021 09:40:52 -0800 (PST)
-Received: from [10.57.39.177] (unknown [10.57.39.177])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 83A663F718;
-        Mon,  1 Feb 2021 09:40:48 -0800 (PST)
-Subject: Re: [PATCH 8/8] perf arm-spe: Set thread TID
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        id S232227AbhBARl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 12:41:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41912 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231873AbhBARll (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 12:41:41 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24826C061756
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 09:41:01 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id g10so17554702wrx.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 09:41:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NecD4Lj2Pit6+zWdziXlW+Wn9lKyelFLyjZNsi277Ko=;
+        b=saZ8e5FdXuzKn/wEQOBBdHmpMeHPCpDbAv/xRAxSPOf23fsZYMdk8Yk22lsNT8n+FL
+         svRxqoOqTKJjnuSSRyZ+qRx+Efu4w8zHaWLl+bSl/ojmyvBk5bvUIkcHW+jPkaRxjPKN
+         AuYSYNzxd18rPUOdsf6Txex3i+Vh3AtUKjJGo1Ow2zHCOx3wA+tdweA4Y3kmSV52XQ2a
+         F1I0mbphY6MnUwjZH6PqH8XWbY3tOU4tPce17NCIV/4I7dwNeuNs39OD0g/CRKmBMrJI
+         gGZ/tUgRP+6B/DdP59LjGHj87qRLEduw7FMO7hwxvY088FTQz9Qdt46slGB/Tx6BSOG9
+         YIDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NecD4Lj2Pit6+zWdziXlW+Wn9lKyelFLyjZNsi277Ko=;
+        b=CWftTJmb0C764rv7p6OXpLod4KjMYyIL6nc2L+O89Q/7hItLFSjmqeZTat2IY/gVi9
+         lvHAbJ1snDkoX3pPVARD3EgJ61HjEW5kSxZwGFKkgM/5CsocRHcbIWGy0r0JLykgVU67
+         UKxjU2UAkyeS4OBymiXBrSQHi2lEYxctoP0q+PgMAl7RA9+XY/N51Meo33ecu3WiX9Cg
+         LHEXq55T6hvkWGwdDMs9rPGU2Qe4INaqneZr9M0KaDMTvXe4phZNlwqklkn+kMLCwtH6
+         n/klc2rTn/Ia/NzUILGd60VKrfs7xhNakmYMuDbulNM7dasUXs0ffDbYnohOnHGZ+gl4
+         +8Kw==
+X-Gm-Message-State: AOAM531VomOuWiXKPIhW0k0Ye1OzGo+Y37fl1BVVkW7wt/3/xVX6ck5F
+        FeICLzKP5IGRYjDf7DPOqzIjZQ==
+X-Google-Smtp-Source: ABdhPJyVjTMobOwpzGXZWG3t6ZHVDL2R31hio+NCbOHokYHgLSzOJpH3gDsceNyauEudNIluLfZ9+g==
+X-Received: by 2002:a5d:458a:: with SMTP id p10mr19485759wrq.168.1612201259731;
+        Mon, 01 Feb 2021 09:40:59 -0800 (PST)
+Received: from google.com (230.69.233.35.bc.googleusercontent.com. [35.233.69.230])
+        by smtp.gmail.com with ESMTPSA id r25sm29850479wrr.64.2021.02.01.09.40.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 09:40:59 -0800 (PST)
+Date:   Mon, 1 Feb 2021 17:40:56 +0000
+From:   Quentin Perret <qperret@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org, android-kvm@google.com,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        Fuad Tabba <tabba@google.com>,
         Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Al Grant <al.grant@arm.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Wei Li <liwei391@huawei.com>,
-        Tan Xiaojun <tanxiaojun@huawei.com>,
-        Adrian Hunter <adrian.hunter@intel.com>
-References: <20210119144658.793-1-james.clark@arm.com>
- <20210119144658.793-8-james.clark@arm.com>
- <20210131120156.GB230721@leoy-ThinkPad-X240s>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <cb7c6deb-e4a1-95fa-b0d2-e4405f644e63@arm.com>
-Date:   Mon, 1 Feb 2021 19:40:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        David Brazdil <dbrazdil@google.com>
+Subject: Re: [RFC PATCH v2 03/26] arm64: kvm: Add standalone ticket spinlock
+ implementation for use at hyp
+Message-ID: <YBg9KPnKfJzraTBO@google.com>
+References: <20210108121524.656872-1-qperret@google.com>
+ <20210108121524.656872-4-qperret@google.com>
+ <20210201172833.GA15632@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <20210131120156.GB230721@leoy-ThinkPad-X240s>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210201172833.GA15632@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Monday 01 Feb 2021 at 17:28:34 (+0000), Will Deacon wrote:
+> On Fri, Jan 08, 2021 at 12:15:01PM +0000, Quentin Perret wrote:
+> > From: Will Deacon <will@kernel.org>
+> > 
+> > We will soon need to synchronise multiple CPUs in the hyp text at EL2.
+> > The qspinlock-based locking used by the host is overkill for this purpose
+> > and relies on the kernel's "percpu" implementation for the MCS nodes.
+> > 
+> > Implement a simple ticket locking scheme based heavily on the code removed
+> > by commit c11090474d70 ("arm64: locking: Replace ticket lock implementation
+> > with qspinlock").
+> > 
+> > Signed-off-by: Will Deacon <will@kernel.org>
+> > Signed-off-by: Quentin Perret <qperret@google.com>
+> > ---
+> >  arch/arm64/kvm/hyp/include/nvhe/spinlock.h | 92 ++++++++++++++++++++++
+> >  1 file changed, 92 insertions(+)
+> >  create mode 100644 arch/arm64/kvm/hyp/include/nvhe/spinlock.h
+> > 
+> > diff --git a/arch/arm64/kvm/hyp/include/nvhe/spinlock.h b/arch/arm64/kvm/hyp/include/nvhe/spinlock.h
+> > new file mode 100644
+> > index 000000000000..7584c397bbac
+> > --- /dev/null
+> > +++ b/arch/arm64/kvm/hyp/include/nvhe/spinlock.h
+> > @@ -0,0 +1,92 @@
+> > +/* SPDX-License-Identifier: GPL-2.0-only */
+> > +/*
+> > + * A stand-alone ticket spinlock implementation for use by the non-VHE
+> > + * KVM hypervisor code running at EL2.
+> > + *
+> > + * Copyright (C) 2020 Google LLC
+> > + * Author: Will Deacon <will@kernel.org>
+> > + *
+> > + * Heavily based on the implementation removed by c11090474d70 which was:
+> > + * Copyright (C) 2012 ARM Ltd.
+> > + */
+> > +
+> > +#ifndef __ARM64_KVM_NVHE_SPINLOCK_H__
+> > +#define __ARM64_KVM_NVHE_SPINLOCK_H__
+> > +
+> > +#include <asm/alternative.h>
+> > +#include <asm/lse.h>
+> > +
+> > +typedef union hyp_spinlock {
+> > +	u32	__val;
+> > +	struct {
+> > +#ifdef __AARCH64EB__
+> > +		u16 next, owner;
+> > +#else
+> > +		u16 owner, next;
+> > +	};
+> > +#endif
+> 
+> Looks like I put this #endif in the wrong place; probably needs to be a line
+> higher.
 
+Uh oh, missed that too. Fix now merged locally, thanks.
 
-On 31/01/2021 14:01, Leo Yan wrote:
-> Option 1: by merging patches 07/08 and 08/08, we can firstly support PID
-> tracing for root namespace, and later we can extend to support PID
-> tracing in container (and in VMs).
-> 
-> Option 2: we can use the software method to establish PID for SPE
-> trace, which can base on kernel's events PERF_RECORD_SWITCH /
-> PERF_RECORD_SWITCH_CPU_WIDE and check context switch ip.
-> 
-> To be honest, I am a bit concern for option 1 for later might
-> introduce regression when later support PID for containers (and VMs).
-> If you have a plan for option 1, I think it's good to record current
-> limitation and the plan for next step in the commit log, so we can merge
-> this patch at this time and later extend for containers.
-> 
-> Otherwise, we need to consider how to implement the PID tracing with
-> option 2.  If it is the case, we should firstly only merge patches
-> 01 ~ 06 for data source enabling.  How about you think for this?
-
-In my opinion we should do option 1 and use what is there at the moment. That
-gets users 90% of the functionality right now.
-
-I plan to look at option 2 at some point, and it can always be added on top of
-option 1 or replace what is there. But I don't know when I would get to it or
-how long it will take.
-
-James
-
-> 
->> Signed-off-by: Leo Yan <leo.yan@linaro.org>
->> Signed-off-by: James Clark <james.clark@arm.com>
-> 
-> Besides for techinical question, you could add your "Co-developed-by"
-> tags for patches 06, 07, 08/08, which you have took time to refin them.
-> 
-> Thanks you for kindly efforts.
-> 
-> [1] https://lore.kernel.org/patchwork/patch/1353286/
-> 
->> Cc: Peter Zijlstra <peterz@infradead.org>
->> Cc: Ingo Molnar <mingo@redhat.com>
->> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
->> Cc: Jiri Olsa <jolsa@redhat.com>
->> Cc: Namhyung Kim <namhyung@kernel.org>
->> Cc: John Garry <john.garry@huawei.com>
->> Cc: Will Deacon <will@kernel.org>
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Al Grant <al.grant@arm.com>
->> Cc: Andre Przywara <andre.przywara@arm.com>
->> Cc: Wei Li <liwei391@huawei.com>
->> Cc: Tan Xiaojun <tanxiaojun@huawei.com>
->> Cc: Adrian Hunter <adrian.hunter@intel.com>
->> ---
->>  tools/perf/util/arm-spe.c | 75 ++++++++++++++++++++++++++-------------
->>  1 file changed, 50 insertions(+), 25 deletions(-)
->>
->> diff --git a/tools/perf/util/arm-spe.c b/tools/perf/util/arm-spe.c
->> index 27a0b9dfe22d..9828fad7e516 100644
->> --- a/tools/perf/util/arm-spe.c
->> +++ b/tools/perf/util/arm-spe.c
->> @@ -223,6 +223,46 @@ static inline u8 arm_spe_cpumode(struct arm_spe *spe, u64 ip)
->>  		PERF_RECORD_MISC_USER;
->>  }
->>  
->> +static void arm_spe_set_pid_tid_cpu(struct arm_spe *spe,
->> +				    struct auxtrace_queue *queue)
->> +{
->> +	struct arm_spe_queue *speq = queue->priv;
->> +	pid_t tid;
->> +
->> +	tid = machine__get_current_tid(spe->machine, speq->cpu);
->> +	if (tid != -1) {
->> +		speq->tid = tid;
->> +		thread__zput(speq->thread);
->> +	} else
->> +		speq->tid = queue->tid;
->> +
->> +	if ((!speq->thread) && (speq->tid != -1)) {
->> +		speq->thread = machine__find_thread(spe->machine, -1,
->> +						    speq->tid);
->> +	}
->> +
->> +	if (speq->thread) {
->> +		speq->pid = speq->thread->pid_;
->> +		if (queue->cpu == -1)
->> +			speq->cpu = speq->thread->cpu;
->> +	}
->> +}
->> +
->> +static int arm_spe_set_tid(struct arm_spe_queue *speq, pid_t tid)
->> +{
->> +	int err;
->> +	struct arm_spe *spe = speq->spe;
->> +	struct auxtrace_queue *queue;
->> +
->> +	err = machine__set_current_tid(spe->machine, speq->cpu, tid, tid);
->> +	if (err)
->> +		return err;
->> +
->> +	queue = &speq->spe->queues.queue_array[speq->queue_nr];
->> +	arm_spe_set_pid_tid_cpu(speq->spe, queue);
->> +	return 0;
->> +}
->> +
->>  static void arm_spe_prep_sample(struct arm_spe *spe,
->>  				struct arm_spe_queue *speq,
->>  				union perf_event *event,
->> @@ -431,6 +471,7 @@ static int arm_spe_sample(struct arm_spe_queue *speq)
->>  static int arm_spe_run_decoder(struct arm_spe_queue *speq, u64 *timestamp)
->>  {
->>  	struct arm_spe *spe = speq->spe;
->> +	const struct arm_spe_record *record;
->>  	int ret;
->>  
->>  	if (!spe->kernel_start)
->> @@ -450,6 +491,11 @@ static int arm_spe_run_decoder(struct arm_spe_queue *speq, u64 *timestamp)
->>  		if (ret < 0)
->>  			continue;
->>  
->> +		record = &speq->decoder->record;
->> +		ret = arm_spe_set_tid(speq, record->context_id);
->> +		if (ret)
->> +			return ret;
->> +
->>  		ret = arm_spe_sample(speq);
->>  		if (ret)
->>  			return ret;
->> @@ -500,6 +546,10 @@ static int arm_spe__setup_queue(struct arm_spe *spe,
->>  
->>  		record = &speq->decoder->record;
->>  
->> +		ret = arm_spe_set_tid(speq, record->context_id);
->> +		if (ret)
->> +			return ret;
->> +
->>  		speq->timestamp = record->timestamp;
->>  		ret = auxtrace_heap__add(&spe->heap, queue_nr, speq->timestamp);
->>  		if (ret)
->> @@ -552,31 +602,6 @@ static bool arm_spe__is_timeless_decoding(struct arm_spe *spe)
->>  	return timeless_decoding;
->>  }
->>  
->> -static void arm_spe_set_pid_tid_cpu(struct arm_spe *spe,
->> -				    struct auxtrace_queue *queue)
->> -{
->> -	struct arm_spe_queue *speq = queue->priv;
->> -	pid_t tid;
->> -
->> -	tid = machine__get_current_tid(spe->machine, speq->cpu);
->> -	if (tid != -1) {
->> -		speq->tid = tid;
->> -		thread__zput(speq->thread);
->> -	} else
->> -		speq->tid = queue->tid;
->> -
->> -	if ((!speq->thread) && (speq->tid != -1)) {
->> -		speq->thread = machine__find_thread(spe->machine, -1,
->> -						    speq->tid);
->> -	}
->> -
->> -	if (speq->thread) {
->> -		speq->pid = speq->thread->pid_;
->> -		if (queue->cpu == -1)
->> -			speq->cpu = speq->thread->cpu;
->> -	}
->> -}
->> -
->>  static int arm_spe_process_queues(struct arm_spe *spe, u64 timestamp)
->>  {
->>  	unsigned int queue_nr;
->> -- 
->> 2.28.0
->>
+Quentin
