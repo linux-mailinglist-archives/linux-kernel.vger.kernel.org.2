@@ -2,186 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4107C30B0C5
-	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:50:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1348030B0D2
+	for <lists+linux-kernel@lfdr.de>; Mon,  1 Feb 2021 20:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232695AbhBATuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 14:50:07 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:31684 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232556AbhBATrk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 14:47:40 -0500
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 111JZIjB058875;
-        Mon, 1 Feb 2021 14:46:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=sKJjfjUqLOlqXtjaN1d9Tjfi7+1WFA92zYmJdaUoOpU=;
- b=IubyAw4X+wxXGlqQI+Bq/cuJHB0zSvWqeiODDOcujpXguo7Zw61CMFG843pdr7ed95TG
- 9DZnkUhtyB/RttjgDc2HiEIH8hZ6glAPgKr+alfveuNcFB+SiezqHAlduoJInberf7hw
- nYjky9Wh21iEKrN2CcaoFsGQlUu4fPjV4lOucBMde0Y+CY2l6m1LT/kHCRTWCGtmTsmG
- 6z7dZfelKbio4D4wGdydV2fcIeF+eJF7nSijQmA4HfEszyis5YAO9NDNGDouzx0ayAAu
- 62/GCBH3afDGwSBLpbGpYStXxDmCiH4EjqAb+Mkzm57l8HOVM+iUrgz6qCteuvt8EJ+4 Ag== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36eqnurk28-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 14:46:53 -0500
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 111JdSKD072829;
-        Mon, 1 Feb 2021 14:46:52 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 36eqnurk1g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 14:46:52 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 111JhJqF010291;
-        Mon, 1 Feb 2021 19:46:50 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03fra.de.ibm.com with ESMTP id 36cy3894cp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 01 Feb 2021 19:46:50 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 111JkmoV42992000
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 1 Feb 2021 19:46:48 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 548F942047;
-        Mon,  1 Feb 2021 19:46:48 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4C2BB4203F;
-        Mon,  1 Feb 2021 19:46:46 +0000 (GMT)
-Received: from sig-9-65-218-191.ibm.com (unknown [9.65.218.191])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Mon,  1 Feb 2021 19:46:46 +0000 (GMT)
-Message-ID: <e9e7814c35d9ce5a6351a960081bf3c6b90bdca7.camel@linux.ibm.com>
-Subject: Re: Migration to trusted keys: sealing user-provided key?
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Jan =?ISO-8859-1?Q?L=FCbbe?= <jlu@pengutronix.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        James Bottomley <jejb@linux.ibm.com>,
-        David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
-        Sumit Garg <sumit.garg@linaro.org>
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, kernel@pengutronix.de
-Date:   Mon, 01 Feb 2021 14:46:45 -0500
-In-Reply-To: <0be34899c9686b95cd22aa016f466523579cbeed.camel@pengutronix.de>
-References: <74830d4f-5a76-8ba8-aad0-0d79f7c01af9@pengutronix.de>
-         <6dc99fd9ffbc5f405c5f64d0802d1399fc6428e4.camel@kernel.org>
-         <d1bed49f89495ceb529355cb41655a208fdb2197.camel@linux.ibm.com>
-         <8b9477e150d7c939dc0def3ebb4443efcc83cd85.camel@pengutronix.de>
-         <d4eeefa0c13395e91850630e22d0d9e3690f43ac.camel@linux.ibm.com>
-         <64472434a367060ddce6e03425156b8312a5ad6c.camel@pengutronix.de>
-         <bd3246ebb4eae526c84efe2d27c6fadff662b0c8.camel@linux.ibm.com>
-         <0be34899c9686b95cd22aa016f466523579cbeed.camel@pengutronix.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-01_06:2021-01-29,2021-02-01 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
- mlxscore=0 adultscore=0 mlxlogscore=999 impostorscore=0 malwarescore=0
- lowpriorityscore=0 phishscore=0 suspectscore=0 clxscore=1015
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102010098
+        id S232849AbhBATwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 14:52:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54510 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232531AbhBATtB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 14:49:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C75B464EC2;
+        Mon,  1 Feb 2021 19:48:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612208900;
+        bh=gH3gZnJcbhFMZv3fvfCEI1xXHxSEVQJc23/KMH3PdSU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=AssQlhzdBHfJayIwrF0GdoMbaiecqhsgGXUH5426dLTn6xFR+tSNJA+Zg6JcEVIxL
+         Ntqh20Gsz5Rbo8+yn/Ynwr0MG0cLB1ZLsfnF+0AUCaDf87d6xdjmLME4UWEALzXUJX
+         ur5rJ5kIXqE3+1cIEw1YtmUmHPpMrdE2L7d+mTcsQnCr8XgnxTeLZCVa4DwtLIC4Qz
+         W44IajweorW2Xh66jk33AdGLtG9g4Oe6BXXMMrSWwav1vE3FH5D5IAiZ6nAUtJLSoY
+         QQmqMJ7oydGLh7QC0/Q4LPrF7mX9eZC0EVYj6a1FLGNXXizW3KitBBJ37/IcLIgDjA
+         idsihaYNBqoLQ==
+From:   Tom Zanussi <zanussi@kernel.org>
+To:     rostedt@goodmis.org, axelrasmussen@google.com
+Cc:     mhiramat@kernel.org, dan.carpenter@oracle.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v7 0/6] tracing: More synthetic event error fixes
+Date:   Mon,  1 Feb 2021 13:48:10 -0600
+Message-Id: <cover.1612208610.git.zanussi@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-02-01 at 17:38 +0100, Jan Lübbe wrote:
-> On Mon, 2021-02-01 at 11:11 -0500, Mimi Zohar wrote:
-> > On Mon, 2021-02-01 at 16:31 +0100, Jan Lübbe wrote:
-> > > On Sun, 2021-01-31 at 09:29 -0500, Mimi Zohar wrote:
-> <snip>
-> > > > Usage::
-> > > > 
-> > > >     keyctl add encrypted name "new [format] key-type:master-key-name keylen"
-> > > >         ring
-> > > >     keyctl add encrypted name "load hex_blob" ring
-> > > 
-> > > 'load' (as I understand the code) only accepts an encrypted blob.
-> > > 
-> > > So the only way I see to have an encrypted key with a non-random key data would
-> > > be:
-> > > - create a random temporary master key and load a copy as a user key
-> > > - encrypt the chosen key data with the temporary master key (using a new
-> > > userspace reimplementation of the kernel encrypted key blob format)
-> > > - use keyctl add encrypted dmcrypt "load <encrypted blob>" <keyring>
-> > > - create new trusted master key (OP-TEE or CAAM in our case) as 
-> > > - use keyctl update to switch to the new trusted master key
-> > > - use keyctl pipe on the trusted and encrypted keys and store both for loading
-> > > on later boots
-> > > 
-> > > If we'd support importing a pre-existing key into a trusted or encrypted key,
-> > > we'd do instead:
-> > > - use keyctl add trusted dmcrypt "import <unencrypted key data>"
-> > > - use keyctl pipe on the trusted key and store it for loading on later boots
-> > > 
-> > > This way, users wouldn't need to care which backend is used by trusted keys
-> > > (TPM/OP-TEE/CAAM/...). That would make use-cases where a random key is not
-> > > suitable as straight-forward as the those where a random key is OK.
-> > 
-> > As I said above, the "encrypted" key update doesn't change the key data
-> > used for encrypting/decrypting storage in the dm-crypt case, it just
-> > updates the key under which it is encrypted/signed.
-> 
-> Yes, that's clear. I only used it to demonstrate how a workaround for importing
-> key material into an encrypted key could look like.
-> 
-> > Yes, the reason for using an encrypted "trusted" key, as opposed to an
-> > encrypted "user" key, is that the "trusted" key is encrypted/decrypted
-> > by the TPM and never exposed to userspace in the clear.
-> 
-> Yes, and that's the main reason I'd like to use trusted keys with dm-crypt: a
-> much lower chance of exposing this key somewhere it could be extracted.
-> 
-> > It doesn't sound like you're wanting to update the storage key in the
-> > field, just the key used to encrypt/decrypt that key.  So I'm still not
-> > clear as to why you would want an initial non-random encrypted key. 
-> > Providing that key on the command line certaining isn't a good idea.
-> 
-> Some of our customers have systems in the field which use non-mainline patches
-> for access to the CAAM [1], which also have the downside of exposing the
-> decrypted key material directly to userspace. In that thread you suggested to
-> use trusted keys instead. With Sumit's work that rework is finally within reach.
-> :)
-> 
-> 
-> In those systems, we have data that's encrypted with a pre-existing dm-crypt or
-> ecryptfs key. As we update those systems in the field to newer kernels, we want
-> to get rid of those custom patches, but can't reencrypt everything.
-> 
-> So the approach would be to perform a one-time migration when updating a device:
-> - use our old interface to decrypt the key and 'import' it into a trusted key
-> - use keyctl pipe and save the re-encrypted key to disk
-> - destroy the old encrypted key
-> After this migration, the key material is no longer available to userspace (only
-> to dm-crypt).
-> 
-> 
-> Another use-case for supporting key import that we want to support is  analysis
-> of broken devices returned from the field:
-> - generate an encryption key per device in the factory
-> - encrypt it to a private key in escrow and archive it for later use
-> - import it into a trusted key on the device
-> - keyctl pipe it to a file on the device for use on boot
-> 
-> Later, when you need to do an analysis, you can get the key from escrow even if
-> the device cannot boot any longer.
+Hi,
 
-The first use case doesn't sound like a valid reason for upstreaming
-such support.  It's a one time update to migrate everyone to a newer
-kernel.  That you can carry independently of upstream.  In terms of the
-second use case, do you really want the ability and the resulting
-responsibility of being able to decrypt user's data?   Please think
-this through carefully, before you decide you really want/need this
-feature.
+This is v7 of the synthetic event error fix patchset.  This version
+addresses the comments from v6:
 
-thanks,
+  - moved check_command() from '[PATCH v6 3/6] tracing: Update synth
+    command errors' to '[PATCH v6 2/6] tracing: Rework synthetic event
+    command parsing'.
 
-Mimi
+  - in __create_synth_event(), moved mutex_lock(&event_mutex) after
+    is_good_name() check and changed related error handling.
+
+  - simplified check_command() a bit by calling argv_free() sooner as
+    suggested by Steve.
+
+  - added Steve's comment about check_field_version() into that
+    function and added additional comments to the caller.
+
+Tom
+
+
+v6 text:
+
+Hi,
+
+This is v6 of the synthetic event error fix patchset.  This version
+removes the semicolon-adding pass and instead adds an inner loop as
+suggested by Masami.  A different mechanism adding per-version field
+checks was also added in place of the previous whole-string audit.
+
+Also, moved the parse_synth_field() error message back into patch 2/6
+(tracing: Rework synthetic event command parsing) and fixed the
+problem with the !name problem as also noted by Masami, and added a
+new patch (selftests/ftrace: Add '!event' synthetic event syntax
+check) to check for that and prevent future changes from breaking it
+again.
+
+Tom
+
+
+v5 text:
+
+Hi,
+
+This is v5 of the sythetic event error fix patchset.  This version is
+the same as v4 but with a few variable-initialization fixes flagged by
+Dan Carpenter and the kernel test robot.
+
+Tom
+
+v4 text:
+
+Hi,
+
+This is v4 of the sythetic event error fix patchset.  As suggested by
+Steve, I added a new pass that adds semicolons to 'old' commands that
+may be missing them, in order to maintain backward compatibility.  All
+commands are handled by the new and improved parsing code, but
+commands missing the semicolons have them added before processing and
+are therefore still valid.  At some point in the future, as new
+features are added and we can require any command containing them to
+require semicolons, this pass can be completely skipped by detecting
+those features in the currently empty audit_old_buffer() hook.
+
+Also, as a result, the patch adding semicolons to the selftests is no
+longer necessary (selftests/ftrace: Add synthetic event field
+separators) and has been dropped in this series.
+
+Tom
+
+
+v3 text:
+
+Hi,
+
+This is v3 of the sythetic event error fix patchset.  As suggested by
+Masami, I split the 'tracing/dynevent: Delegate parsing to create
+function' into two - one containing just the interface changes and the
+second with the synthetic event parsing changes the first enabled.
+
+I also replaced a couple argv_split() with strpbrk() as suggested by
+Masami, along with removing the no-longer-used consume lines and
+another line that tested ECANCELED that was no longer needed.
+
+Also, removed a test case that was no longer needed since the commands
+are now stripped of whitespace first.
+
+Thanks, Masami, for the suggestions.
+
+Tom
+
+v2 text:
+
+This is v2 of the previous sythetic event error fix patchset.
+
+This version drops the original ([PATCH 1/4] tracing: Make
+trace_*_run_command() more flexible) and (tracing: Use new
+trace_run_command() options) patches and replaces them with Masami's
+patch (tracing/dynevent: Delegate parsing to create function) [1].
+The new version adds in all the synthetic event changes needed to
+compile and use the new interface.
+
+A new patch was also added (selftests/ftrace: Add synthetic event
+field separators) that fixes more invalid synthetic event syntax I
+found while testing.
+
+I also added some more new checks to the synthetic event sytax error
+testcase.
+
+As before, I didn't see any problems running the entire ftrace
+testsuite or the test modules that also use the things that were
+touched here.
+
+[1] https://lore.kernel.org/lkml/20201019001504.70dc3ec608277ed22060d2f7@kernel.org/
+
+Thanks,
+
+Tom
+
+
+v1 text:
+
+Hi,
+
+This patchset addresses the synthetic event error anomalies reported
+by Masami in the last patchset [1].
+
+It turns out that most of the problems boil down to clunky separator
+parsing; adding a couple new abilities to trace_run_command() and then
+adapting the existing users seemed to me the best way to fix these
+things, and also gets rid of some code.
+
+Also, to make things easier for error display, I changed these to
+preserve the original command string and pass it through the callback
+instead of rebuilding it for error display.
+
+I added some new error strings and removed unused ones as well, and
+added a bunch of new test cases to the synthetic parser error test
+case.
+
+I didn't see any problems running the entire ftrace testsuite or the
+test modules that also use the things that were touched here.
+
+Thanks,
+
+Tom
+
+[1] https://lore.kernel.org/lkml/20201014110636.139df7be275d40a23b523b84@kernel.org/
+
+The following changes since commit f6a694665f132cbf6e2222dd2f173dc35330a8aa:
+
+  tracing: Offload eval map updates to a work queue (2020-12-15 09:29:14 -0500)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/zanussi/linux-trace.git ftrace/synth-fixes-v7
+
+Masami Hiramatsu (1):
+  tracing/dynevent: Delegate parsing to create function
+
+Tom Zanussi (5):
+  tracing: Rework synthetic event command parsing
+  tracing: Update synth command errors
+  tracing: Add a backward-compatibility check for synthetic event
+    creation
+  selftests/ftrace: Update synthetic event syntax errors
+  selftests/ftrace: Add '!event' synthetic event syntax check
+
+ kernel/trace/trace.c                          |  23 +-
+ kernel/trace/trace.h                          |   3 +-
+ kernel/trace/trace_dynevent.c                 |  35 +-
+ kernel/trace/trace_dynevent.h                 |   4 +-
+ kernel/trace/trace_events_synth.c             | 320 +++++++++++++-----
+ kernel/trace/trace_kprobe.c                   |  33 +-
+ kernel/trace/trace_probe.c                    |  17 +
+ kernel/trace/trace_probe.h                    |   1 +
+ kernel/trace/trace_uprobe.c                   |  17 +-
+ .../trigger-synthetic-event-syntax.tc         |   4 +
+ .../trigger-synthetic_event_syntax_errors.tc  |  35 +-
+ 11 files changed, 333 insertions(+), 159 deletions(-)
+
+-- 
+2.17.1
 
