@@ -2,125 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73D830BEB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:51:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5438730BEBA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:51:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232031AbhBBMuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 07:50:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50752 "EHLO mail.kernel.org"
+        id S231927AbhBBMvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 07:51:15 -0500
+Received: from so15.mailgun.net ([198.61.254.15]:31413 "EHLO so15.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231945AbhBBMuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 07:50:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EEB964F45;
-        Tue,  2 Feb 2021 12:49:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612270167;
-        bh=l1mxEt58DDcLUIYn/PeqqKhgepc/YzCCfJbWYo9gF+0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=m6OTQfqwmfzsDSuhaE02irM8RXZ+6I61yxWerp81AbIHaAEqJgnUU1Tago6YYG+PZ
-         lr/J7OliC0mrwyFm+Yl+JHzEuSXK/3VdkUmPzprvLqNXJeT7c7s/R/J9ZCl2+IeFtF
-         rRdT17MK63P20HXBjgkEetlpW86oX2ThKpxrHLgmDgGybcXOIhr5G1LeWie80VfNKg
-         QlMcZq+bz+M1S4kZa3QSlb+JQ6x7L2zxJR92gCQJ28nKgn5G8407CWFGfDfkqlEtqc
-         0FuByC2cyuzV9p6QWIQuYAV6UBnFm4EyXxopzOj5OqjOkGbbBSYsX5rFiF13qam/3d
-         9vHDje5GpJPpg==
-Date:   Tue, 2 Feb 2021 14:48:57 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     James Bottomley <jejb@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v16 07/11] secretmem: use PMD-size pages to amortize
- direct map fragmentation
-Message-ID: <20210202124857.GN242749@kernel.org>
-References: <20210121122723.3446-8-rppt@kernel.org>
- <20210126114657.GL827@dhcp22.suse.cz>
- <303f348d-e494-e386-d1f5-14505b5da254@redhat.com>
- <20210126120823.GM827@dhcp22.suse.cz>
- <20210128092259.GB242749@kernel.org>
- <YBK1kqL7JA7NePBQ@dhcp22.suse.cz>
- <73738cda43236b5ac2714e228af362b67a712f5d.camel@linux.ibm.com>
- <YBPF8ETGBHUzxaZR@dhcp22.suse.cz>
- <6de6b9f9c2d28eecc494e7db6ffbedc262317e11.camel@linux.ibm.com>
- <YBkcyQsky2scjEcP@dhcp22.suse.cz>
+        id S231397AbhBBMup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 07:50:45 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612270224; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=J/NXG1LRk/BPgg6FDhPDMsreIASGs/2C+VqHxELMnyo=; b=lnSBuMzUJjklyVjnT41roBlyKRAFSyxb6xtjs1S6qdPIrje9aGPCgJnnrD/uTSBaaR9rUIrC
+ gZzOduFcdNtaorbkuSBF6lSLmUy2y4Pio9S/mvAlN/vDAzAGa8jklnan12qYCq48EVFsn1lW
+ TPw6PQzNCpz/i0Y9hQ2nF4p1Hhk=
+X-Mailgun-Sending-Ip: 198.61.254.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 60194a71bfd95207230a6257 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Feb 2021 12:49:53
+ GMT
+Sender: charante=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 95909C43466; Tue,  2 Feb 2021 12:49:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.29.110] (unknown [49.37.149.94])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: charante)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 652EBC433CA;
+        Tue,  2 Feb 2021 12:49:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 652EBC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=charante@codeaurora.org
+Subject: Re: [PATCH] mm: page_alloc: update the COMPACT[STALL|FAIL] events
+ properly
+To:     David Rientjes <rientjes@google.com>
+Cc:     akpm@linux-foundation.org, vbabka@suse.cz, mhocko@suse.com,
+        vinmenon@codeaurora.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <1612187338-19100-1-git-send-email-charante@codeaurora.org>
+ <d9d1dd7b-1fe7-67b6-6ba4-fb1a6faa8fae@google.com>
+From:   Charan Teja Kalla <charante@codeaurora.org>
+Message-ID: <160ba3b5-2cd4-5ff0-1348-fb477cefd33d@codeaurora.org>
+Date:   Tue, 2 Feb 2021 18:19:46 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBkcyQsky2scjEcP@dhcp22.suse.cz>
+In-Reply-To: <d9d1dd7b-1fe7-67b6-6ba4-fb1a6faa8fae@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 10:35:05AM +0100, Michal Hocko wrote:
-> On Mon 01-02-21 08:56:19, James Bottomley wrote:
+Thanks David for the review!!
+
+On 2/2/2021 2:54 AM, David Rientjes wrote:
+> On Mon, 1 Feb 2021, Charan Teja Reddy wrote:
 > 
-> I have also proposed potential ways out of this. Either the pool is not
-> fixed sized and you make it a regular unevictable memory (if direct map
-> fragmentation is not considered a major problem)
+>> By defination, COMPACT[STALL|FAIL] events needs to be counted when there
+> 
+> s/defination/definition/\
 
-I think that the direct map fragmentation is not a major problem, and the
-data we have confirms it, so I'd be more than happy to entirely drop the
-pool, allocate memory page by page and remove each page from the direct
-map. 
+Done.
 
-Still, we cannot prove negative and it could happen that there is a
-workload that would suffer a lot from the direct map fragmentation, so
-having a pool of large pages upfront is better than trying to fix it
-afterwards. As we get more confidence that the direct map fragmentation is
-not an issue as it is common to believe we may remove the pool altogether.
+> 
+>> is 'At least in one zone compaction wasn't deferred or skipped from the
+>> direct compaction'. And when compaction is skipped or deferred,
+>> COMPACT_SKIPPED will be returned but it will still go and update these
+>> compaction events which is wrong in the sense that COMPACT[STALL|FAIL]
+>> is counted without even trying the compaction.
+>>
+>> Correct this by skipping the counting of these events when
+>> COMPACT_SKIPPED is returned for compaction. This indirectly also avoid
+>> the unnecessary try into the get_page_from_freelist() when compaction is
+>> not even tried.
+>>
+>> Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+>> ---
+>>  mm/page_alloc.c | 2 ++
+>>  1 file changed, 2 insertions(+)
+>>
+>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>> index 519a60d..531f244 100644
+>> --- a/mm/page_alloc.c
+>> +++ b/mm/page_alloc.c
+>> @@ -4152,6 +4152,8 @@ __alloc_pages_direct_compact(gfp_t gfp_mask, unsigned int order,
+>>  	memalloc_noreclaim_restore(noreclaim_flag);
+>>  	psi_memstall_leave(&pflags);
+>>  
+>> +	if (*compact_result == COMPACT_SKIPPED)
+>> +		return NULL;
+>>  	/*
+>>  	 * At least in one zone compaction wasn't deferred or skipped, so let's
+>>  	 * count a compaction stall
+> 
+> This makes sense, I wonder if it would also be useful to check that 
+> page == NULL, either in try_to_compact_pages() or here for 
+> COMPACT_SKIPPED?
 
-I think that using PMD_ORDER allocations for the pool with a fallback to
-order 0 will do the job, but unfortunately I doubt we'll reach a consensus
-about this because dogmatic beliefs are hard to shake...
+In the code, when COMPACT_SKIPPED is being returned, the page will
+always be NULL. So, I'm not sure how much useful it is for the page ==
+NULL check here. Or I failed to understand your point here?
 
-A more restrictive possibility is to still use plain PMD_ORDER allocations
-to fill the pool, without relying on CMA. In this case there will be no
-global secretmem specific pool to exhaust, but then it's possible to drain
-high order free blocks in a system, so CMA has an advantage of limiting
-secretmem pools to certain amount of memory with somewhat higher
-probability for high order allocation to succeed. 
-
-> or you need a careful access control 
-
-Do you mind elaborating what do you mean by "careful access control"?
-
-> or you need SIGBUS on the mmap failure (to allow at least some fallback
-> mode to caller).
-
-As I've already said, I agree that SIGBUS is way better than OOM at #PF
-time.
-And we can add some means to fail at mmap() time if the pools are running
-low.
+As, till now, COMPACTFAIL also presents page allocation failures because
+of the direct compaction is skipped, creating a separate COMPACTSKIPFAIL
+event which indicates that 'failed to get the free page as direct
+compaction is skipped' is useful?
+> 
 
 -- 
-Sincerely yours,
-Mike.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora
+Forum, a Linux Foundation Collaborative Project
