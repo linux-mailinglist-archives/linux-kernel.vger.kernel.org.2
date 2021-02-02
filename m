@@ -2,180 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD2A30B721
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 06:35:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50AE630B726
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 06:35:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231687AbhBBFeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 00:34:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41056 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230221AbhBBFeg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 00:34:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2826864ED9;
-        Tue,  2 Feb 2021 05:33:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612244034;
-        bh=22yQx72jEhx+zDhE8nGIasOHVbmdEQ2q4aXtGLy/VdU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AOAJRMXI1g4YJeZHC191tCSeoup/2SCffjPUvk3Nds1JZ6xus7GUVWS8GaN/j+bsu
-         gaNmBd+4U3nXbJbZQ8XD48Ak92bzzxT8c8eCMNzhMoUVuxhMb+MpklKBxcKn9gCEiR
-         zlGKqt30Zrs5AUP54OjN+ZEPNr9Q5ZwL30rrrMMg4vRh665GgvWe6BySEl5WZAGbmm
-         aNnRn5uCyfSVd4vH9Q5AVsVbiCbeQoJXA0oKFjwIQgN0wSa722CA3MnLAVsT41LqWQ
-         amMvUBR+oW+I3LqjVqc8AEOgceuq23uoEan/aBZDngOiRz4CiMD7JfOjTt4aSHxI0r
-         F8KXrJNy5ec9Q==
-Date:   Mon, 1 Feb 2021 21:33:52 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Daeho Jeong <daeho43@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: rename checkpoint=merge mount option
- to checkpoint_merge
-Message-ID: <YBjkQBdqwoAXDTDa@google.com>
-References: <20210202051829.2127214-1-daeho43@gmail.com>
+        id S231723AbhBBFfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 00:35:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231538AbhBBFfH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 00:35:07 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75C13C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 21:34:25 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id j11so412990wmi.3
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 21:34:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lD+9VdFDDbbGKdh4Zlx/S6kSI7nJIlJMTXOt77nYf50=;
+        b=c6ADmGsDwHXz5pqsJbysFZOPf2sccXandZLMCxhV2SBY5AeEWS9MvAu3A1L3a1CjhL
+         NPCrbMA6t0stZ0Eq6KILOn6lTLJd6/Wparn+DKG1OEOl7DvoDnjdCBw3yGA2b/DkOxFj
+         bDCLUPdLOGT6qFlvKp4N/U8LR5N9kYRS8GlSn6HOoZsKSUBhyH3zg3zWYV6D2hSPkANy
+         sGFrnNBfW/cxZ9vseIaZXp2D8HnVZrLnqj9nGpSdeiw60EG1qr/XVwEcZgcoBSScv83v
+         r+F1d0el8pKgYroBTfOLfgDhOG7Hcutr8ToP92EmfFiSVg75RMkO4dr7oUpoGRoS3wRX
+         HTdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lD+9VdFDDbbGKdh4Zlx/S6kSI7nJIlJMTXOt77nYf50=;
+        b=Du+S3DuoGKEwRAryl34EjfVrNHhDpsXe/FkmNI9E/1UoupAJ57bBSb5W9KfkAYmBJD
+         /XL1wKRnrX3FBvrzC3BllTMtREC+rY9BtbTVKp2G6ph/Q6AInZQnei6Qc1sLtS+3YQdk
+         XrfJFxgcVErT24qN/sz4TVN7oQZZ9SynU1pN4LHofgZazkY5WeDotFDaOxit1trIR6QY
+         qS6R+xGQWZrdfniBBhWpiouI2rpGfCbweluoUKu4Nu2NpaP15Z1pp26eCq8yTWwYPudG
+         Sl+ZJbSUUqOa+yso8/+EhT02HyUAZAkgcw5doZt5g0IYyn3qy3S0z/V0wE6knYnEOmoK
+         X7Jw==
+X-Gm-Message-State: AOAM53232lNFyItFBxAjNh3zFQRVNmfNlIWtFRivrswg2hWU1bxbRZls
+        R/nu71x7wfRUxJkFeY5pXn/scQsmn2feS6PL+iAPpQ==
+X-Google-Smtp-Source: ABdhPJz6ttAxWJJKNXWH8Zat2eIPwUyJ+Sf7ECY2vlX2Nz9RgCcMqIkMT272RDNbBCLgqaqpUVLQC9YR8N97KTCll7k=
+X-Received: by 2002:a1c:acc9:: with SMTP id v192mr1888469wme.22.1612244064008;
+ Mon, 01 Feb 2021 21:34:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210202051829.2127214-1-daeho43@gmail.com>
+References: <20210111170622.2613577-1-surenb@google.com> <20210112074629.GG22493@dhcp22.suse.cz>
+ <20210112174507.GA23780@redhat.com> <CAJuCfpFQz=x-LvONO3c4iqjKP4NKJMgUuiYc8HACKHAv1Omu0w@mail.gmail.com>
+ <20210113142202.GC22493@dhcp22.suse.cz> <CAG48ez0=QSzuj96+5oVQ2qWqfjedv3oKtfEFzw--C8bzfvj7EQ@mail.gmail.com>
+ <20210126135254.GP827@dhcp22.suse.cz> <CAJuCfpEnMyo9XAnoF+q1j9EkC0okZfUxxdAFhzhPJi+adJYqjw@mail.gmail.com>
+ <CAJuCfpF861zhp8yR_pYx8gb+WMrORAZ0tbzcKtKxaj7L=jzw+Q@mail.gmail.com>
+In-Reply-To: <CAJuCfpF861zhp8yR_pYx8gb+WMrORAZ0tbzcKtKxaj7L=jzw+Q@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Mon, 1 Feb 2021 21:34:12 -0800
+Message-ID: <CAJuCfpFzxiBXp1rdY=H=bX+eOAVGOe72_FxwC-NTWF4fhUO26g@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] mm/madvise: replace ptrace attach requirement for process_madvise
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Jann Horn <jannh@google.com>, Oleg Nesterov <oleg@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        David Rientjes <rientjes@google.com>,
+        =?UTF-8?Q?Edgar_Arriaga_Garc=C3=ADa?= <edgararriaga@google.com>,
+        Tim Murray <timmurray@google.com>,
+        linux-mm <linux-mm@kvack.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@android.com>,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/02, Daeho Jeong wrote:
-> From: Daeho Jeong <daehojeong@google.com>
-> 
-> As checkpoint=merge comes in, mount option setting related to checkpoint
-> had been mixed up and it became hard to understand. So, I separated
-> this option from "checkpoint=" and made another mount option
-> "checkpoint_merge" for this.
+On Thu, Jan 28, 2021 at 11:08 PM Suren Baghdasaryan <surenb@google.com> wrote:
+>
+> On Thu, Jan 28, 2021 at 11:51 AM Suren Baghdasaryan <surenb@google.com> wrote:
+> >
+> > On Tue, Jan 26, 2021 at 5:52 AM 'Michal Hocko' via kernel-team
+> > <kernel-team@android.com> wrote:
+> > >
+> > > On Wed 20-01-21 14:17:39, Jann Horn wrote:
+> > > > On Wed, Jan 13, 2021 at 3:22 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > > > On Tue 12-01-21 09:51:24, Suren Baghdasaryan wrote:
+> > > > > > On Tue, Jan 12, 2021 at 9:45 AM Oleg Nesterov <oleg@redhat.com> wrote:
+> > > > > > >
+> > > > > > > On 01/12, Michal Hocko wrote:
+> > > > > > > >
+> > > > > > > > On Mon 11-01-21 09:06:22, Suren Baghdasaryan wrote:
+> > > > > > > >
+> > > > > > > > > What we want is the ability for one process to influence another process
+> > > > > > > > > in order to optimize performance across the entire system while leaving
+> > > > > > > > > the security boundary intact.
+> > > > > > > > > Replace PTRACE_MODE_ATTACH with a combination of PTRACE_MODE_READ
+> > > > > > > > > and CAP_SYS_NICE. PTRACE_MODE_READ to prevent leaking ASLR metadata
+> > > > > > > > > and CAP_SYS_NICE for influencing process performance.
+> > > > > > > >
+> > > > > > > > I have to say that ptrace modes are rather obscure to me. So I cannot
+> > > > > > > > really judge whether MODE_READ is sufficient. My understanding has
+> > > > > > > > always been that this is requred to RO access to the address space. But
+> > > > > > > > this operation clearly has a visible side effect. Do we have any actual
+> > > > > > > > documentation for the existing modes?
+> > > > > > > >
+> > > > > > > > I would be really curious to hear from Jann and Oleg (now Cced).
+> > > > > > >
+> > > > > > > Can't comment, sorry. I never understood these security checks and never tried.
+> > > > > > > IIUC only selinux/etc can treat ATTACH/READ differently and I have no idea what
+> > > > > > > is the difference.
+> > > >
+> > > > Yama in particular only does its checks on ATTACH and ignores READ,
+> > > > that's the difference you're probably most likely to encounter on a
+> > > > normal desktop system, since some distros turn Yama on by default.
+> > > > Basically the idea there is that running "gdb -p $pid" or "strace -p
+> > > > $pid" as a normal user will usually fail, but reading /proc/$pid/maps
+> > > > still works; so you can see things like detailed memory usage
+> > > > information and such, but you're not supposed to be able to directly
+> > > > peek into a running SSH client and inject data into the existing SSH
+> > > > connection, or steal the cryptographic keys for the current
+> > > > connection, or something like that.
+> > > >
+> > > > > > I haven't seen a written explanation on ptrace modes but when I
+> > > > > > consulted Jann his explanation was:
+> > > > > >
+> > > > > > PTRACE_MODE_READ means you can inspect metadata about processes with
+> > > > > > the specified domain, across UID boundaries.
+> > > > > > PTRACE_MODE_ATTACH means you can fully impersonate processes with the
+> > > > > > specified domain, across UID boundaries.
+> > > > >
+> > > > > Maybe this would be a good start to document expectations. Some more
+> > > > > practical examples where the difference is visible would be great as
+> > > > > well.
+> > > >
+> > > > Before documenting the behavior, it would be a good idea to figure out
+> > > > what to do with perf_event_open(). That one's weird in that it only
+> > > > requires PTRACE_MODE_READ, but actually allows you to sample stuff
+> > > > like userspace stack and register contents (if perf_event_paranoid is
+> > > > 1 or 2). Maybe for SELinux things (and maybe also for Yama), there
+> > > > should be a level in between that allows fully inspecting the process
+> > > > (for purposes like profiling) but without the ability to corrupt its
+> > > > memory or registers or things like that. Or maybe perf_event_open()
+> > > > should just use the ATTACH mode.
+> > >
+> > > Thanks for the clarification. I still cannot say I would have a good
+> > > mental picture. Having something in Documentation/core-api/ sounds
+> > > really needed. Wrt to perf_event_open it sounds really odd it can do
+> > > more than other places restrict indeed. Something for the respective
+> > > maintainer but I strongly suspect people simply copy the pattern from
+> > > other places because the expected semantic is not really clear.
+> > >
+> >
+> > Sorry, back to the matters of this patch. Are there any actionable
+> > items for me to take care of before it can be accepted? The only
+> > request from Andrew to write a man page is being worked on at
+> > https://lore.kernel.org/linux-mm/20210120202337.1481402-1-surenb@google.com/
+> > and I'll follow up with the next version. I also CC'ed stable@ for
+> > this to be included into 5.10 per Andrew's request. That CC was lost
+> > at some point, so CC'ing again.
+> >
+> > I do not see anything else on this patch to fix. Please chime in if
+> > there are any more concerns, otherwise I would ask Andrew to take it
+> > into mm-tree and stable@ to apply it to 5.10.
+> > Thanks!
+>
+> process_madvise man page V2 is posted at:
+> https://lore.kernel.org/linux-mm/20210129070340.566340-1-surenb@google.com/
 
-Thanks, merged to the original patch.
+process_madvise man page V3 is posted at:
+https://lore.kernel.org/linux-mm/20210202053046.1653012-1-surenb@google.com/
 
-> 
-> Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> ---
-> v2: renamed "checkpoint=merge" to "checkpoint_merge"
-> ---
->  Documentation/filesystems/f2fs.rst |  6 +++---
->  fs/f2fs/super.c                    | 26 ++++++++++++++------------
->  2 files changed, 17 insertions(+), 15 deletions(-)
-> 
-> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-> index d0ead45dc706..475994ed8b15 100644
-> --- a/Documentation/filesystems/f2fs.rst
-> +++ b/Documentation/filesystems/f2fs.rst
-> @@ -247,9 +247,9 @@ checkpoint=%s[:%u[%]]	 Set to "disable" to turn off checkpointing. Set to "enabl
->  			 hide up to all remaining free space. The actual space that
->  			 would be unusable can be viewed at /sys/fs/f2fs/<disk>/unusable
->  			 This space is reclaimed once checkpoint=enable.
-> -			 Here is another option "merge", which creates a kernel daemon
-> -			 and makes it to merge concurrent checkpoint requests as much
-> -			 as possible to eliminate redundant checkpoint issues. Plus,
-> +checkpoint_merge	 When checkpoint is enabled, this can be used to create a kernel
-> +			 daemon and make it to merge concurrent checkpoint requests as
-> +			 much as possible to eliminate redundant checkpoint issues. Plus,
->  			 we can eliminate the sluggish issue caused by slow checkpoint
->  			 operation when the checkpoint is done in a process context in
->  			 a cgroup having low i/o budget and cpu shares. To make this
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index 56696f6cfa86..d8603e6c4916 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -145,6 +145,7 @@ enum {
->  	Opt_checkpoint_disable_cap_perc,
->  	Opt_checkpoint_enable,
->  	Opt_checkpoint_merge,
-> +	Opt_nocheckpoint_merge,
->  	Opt_compress_algorithm,
->  	Opt_compress_log_size,
->  	Opt_compress_extension,
-> @@ -215,7 +216,8 @@ static match_table_t f2fs_tokens = {
->  	{Opt_checkpoint_disable_cap, "checkpoint=disable:%u"},
->  	{Opt_checkpoint_disable_cap_perc, "checkpoint=disable:%u%%"},
->  	{Opt_checkpoint_enable, "checkpoint=enable"},
-> -	{Opt_checkpoint_merge, "checkpoint=merge"},
-> +	{Opt_checkpoint_merge, "checkpoint_merge"},
-> +	{Opt_nocheckpoint_merge, "nocheckpoint_merge"},
->  	{Opt_compress_algorithm, "compress_algorithm=%s"},
->  	{Opt_compress_log_size, "compress_log_size=%u"},
->  	{Opt_compress_extension, "compress_extension=%s"},
-> @@ -946,6 +948,9 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->  		case Opt_checkpoint_merge:
->  			set_opt(sbi, MERGE_CHECKPOINT);
->  			break;
-> +		case Opt_nocheckpoint_merge:
-> +			clear_opt(sbi, MERGE_CHECKPOINT);
-> +			break;
->  #ifdef CONFIG_F2FS_FS_COMPRESSION
->  		case Opt_compress_algorithm:
->  			if (!f2fs_sb_has_compression(sbi)) {
-> @@ -1142,12 +1147,6 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->  		return -EINVAL;
->  	}
->  
-> -	if (test_opt(sbi, DISABLE_CHECKPOINT) &&
-> -			test_opt(sbi, MERGE_CHECKPOINT)) {
-> -		f2fs_err(sbi, "checkpoint=merge cannot be used with checkpoint=disable\n");
-> -		return -EINVAL;
-> -	}
-> -
->  	/* Not pass down write hints if the number of active logs is lesser
->  	 * than NR_CURSEG_PERSIST_TYPE.
->  	 */
-> @@ -1782,7 +1781,7 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
->  		seq_printf(seq, ",checkpoint=disable:%u",
->  				F2FS_OPTION(sbi).unusable_cap);
->  	if (test_opt(sbi, MERGE_CHECKPOINT))
-> -		seq_puts(seq, ",checkpoint=merge");
-> +		seq_puts(seq, ",checkpoint_merge");
->  	if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_POSIX)
->  		seq_printf(seq, ",fsync_mode=%s", "posix");
->  	else if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_STRICT)
-> @@ -1827,6 +1826,7 @@ static void default_options(struct f2fs_sb_info *sbi)
->  	sbi->sb->s_flags |= SB_LAZYTIME;
->  	set_opt(sbi, FLUSH_MERGE);
->  	set_opt(sbi, DISCARD);
-> +	clear_opt(sbi, MERGE_CHECKPOINT);
->  	if (f2fs_sb_has_blkzoned(sbi))
->  		F2FS_OPTION(sbi).fs_mode = FS_MODE_LFS;
->  	else
-> @@ -2066,9 +2066,8 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->  		}
->  	}
->  
-> -	if (!test_opt(sbi, MERGE_CHECKPOINT)) {
-> -		f2fs_stop_ckpt_thread(sbi);
-> -	} else {
-> +	if (!test_opt(sbi, DISABLE_CHECKPOINT) &&
-> +			test_opt(sbi, MERGE_CHECKPOINT)) {
->  		err = f2fs_start_ckpt_thread(sbi);
->  		if (err) {
->  			f2fs_err(sbi,
-> @@ -2076,6 +2075,8 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->  			    err);
->  			goto restore_gc;
->  		}
-> +	} else {
-> +		f2fs_stop_ckpt_thread(sbi);
->  	}
->  
->  	/*
-> @@ -3831,7 +3832,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
->  
->  	/* setup checkpoint request control and start checkpoint issue thread */
->  	f2fs_init_ckpt_req_control(sbi);
-> -	if (test_opt(sbi, MERGE_CHECKPOINT)) {
-> +	if (!test_opt(sbi, DISABLE_CHECKPOINT) &&
-> +			test_opt(sbi, MERGE_CHECKPOINT)) {
->  		err = f2fs_start_ckpt_thread(sbi);
->  		if (err) {
->  			f2fs_err(sbi,
-> -- 
-> 2.30.0.365.g02bc693789-goog
-> 
-> 
-> 
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+>
+> >
+> >
+> > > --
+> > > Michal Hocko
+> > > SUSE Labs
+> > >
+> > > --
+> > > To unsubscribe from this group and stop receiving emails from it, send an email to kernel-team+unsubscribe@android.com.
+> > >
