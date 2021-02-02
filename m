@@ -2,125 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3806F30CE4D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 22:57:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8392830CE56
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:00:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234253AbhBBV5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 16:57:16 -0500
-Received: from www381.your-server.de ([78.46.137.84]:54146 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234159AbhBBV5I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 16:57:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=LnQwN2vEqk8UbAPHy4QObNw8+1L9AEfi2v9UkN3eiYM=; b=QcZ7t6B73TJjLZgr7L7AmWmlun
-        goGMrOJDi+SEOzKnf/foGdSqnARXIfhbN3Ur45vAUh8hNH6IVEoHpo986Bi7ZsFmDjOVmKlnbzr8l
-        QCgFihZbzj77Jy4SA55AuSKT4sShq9d0+N7uUZe7sLisOsMUEzrkUy3L5rfqOhVMGdIcKyjZf56XF
-        s1eKkADP2KTegqRIWuWB2Wa5x/Lh0aYEgJ0WPdvCFG104m7fBCMdC/LYd8CAM4HneUClTVEtBp0ws
-        ntenPHaztSY0GdBgw0sdQ1mEQSQk4rfNtpq7heOHpstV1SR/OwafjGGqWsvKIFMaom9eUK/sRoJQH
-        1Onmkscg==;
-Received: from sslproxy01.your-server.de ([78.46.139.224])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1l73eo-0008Ek-5d; Tue, 02 Feb 2021 22:56:22 +0100
-Received: from [62.216.202.92] (helo=[192.168.178.20])
-        by sslproxy01.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1l73eo-000NBx-0A; Tue, 02 Feb 2021 22:56:22 +0100
-Subject: Re: [PATCH v2] dt-bindings: iio: dac: Fix AD5686 references
-To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michael Auchter <michael.auchter@ni.com>,
-        linux-iio@vger.kernel.org
-References: <20210202215503.114113-1-robh@kernel.org>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <755532c1-2c28-3796-367a-baec09f2dada@metafoo.de>
-Date:   Tue, 2 Feb 2021 22:56:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S234286AbhBBV56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 16:57:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57834 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233881AbhBBV54 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 16:57:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 07E0464F9C;
+        Tue,  2 Feb 2021 21:57:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612303035;
+        bh=aS7gJ5FXwVdLp47lueJyjeLHCdr7uQO+jexT6jY0RkM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IW+8UN9J5T4F/W9W2vYEL5Fw2H3gCHmzArnfIk5p8xjxJjfS7sGP11shmnj6mtG/L
+         rlFzsWNN4zvJ2+HSalQeHwubK7GbcLB3+TzwRSeSLcnRfAO+qZPJwox+xw3zWpywqZ
+         alTKe1nMC62CJA2OxA/XaeqkLiBmT+xGptEyX2Qul77FQ1fzWjQIUbB5PGS4f8+Va/
+         H9/ZCPeV36KOieJynnw7JJXAhufRkg7YcXCNP58gjW/1KPUS+FnCf6CgC6LFHS9GL6
+         pg+LB6egoL8QEAvQzqR3txPAchZirQ2YB9Z+oV6B/g6wiwTbmZJEOJBxz7GZFS9Qus
+         tVzYwDTdy3DOw==
+Date:   Tue, 2 Feb 2021 23:57:08 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Shuah Khan <shuah@kernel.org>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+Subject: Re: [PATCH v4 4/5] x86/sgx: Allows ioctl PROVISION to execute before
+ CREATE
+Message-ID: <YBnKtF5irw3vImmh@kernel.org>
+References: <20210201132653.35690-1-tianjia.zhang@linux.alibaba.com>
+ <20210201132653.35690-5-tianjia.zhang@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <20210202215503.114113-1-robh@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26068/Tue Feb  2 13:21:02 2021)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210201132653.35690-5-tianjia.zhang@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/2/21 10:55 PM, Rob Herring wrote:
-> The example and filename use 'adi,ad5686', but the schema doesn't
-> document it. The AD5686 is also a SPI interface variant while all the
-> documented variants have an I2C interface. So let's update all the
-> references to AD5686 to AD5696.
->
-> Cc: Lars-Peter Clausen <lars@metafoo.de>
-> Cc: Michael Hennerich <Michael.Hennerich@analog.com>
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-> Cc: Michael Auchter <michael.auchter@ni.com>
-> Cc: linux-iio@vger.kernel.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
+On Mon, Feb 01, 2021 at 09:26:52PM +0800, Tianjia Zhang wrote:
+> In the function sgx_create_enclave(), the direct assignment
+> operation of attributes_mask determines that the ioctl PROVISION
+> operation must be executed after the ioctl CREATE operation,
+> which will limit the flexibility of sgx developers.
 
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+Please write acronyms correctly. It's not 'sgx'. It's 'SGX'.
 
-Thanks Rob.
+Who are the "sgx developers" and how do they benefit from this?
 
-> ---
-> v2:
-> - Rename instead of adding AD5686
->
->   .../iio/dac/{adi,ad5686.yaml => adi,ad5696.yaml}       | 10 +++++-----
->   1 file changed, 5 insertions(+), 5 deletions(-)
->   rename Documentation/devicetree/bindings/iio/dac/{adi,ad5686.yaml => adi,ad5696.yaml} (77%)
->
-> diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad5696.yaml
-> similarity index 77%
-> rename from Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
-> rename to Documentation/devicetree/bindings/iio/dac/adi,ad5696.yaml
-> index 8065228e5df8..56b0cda0f30a 100644
-> --- a/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
-> +++ b/Documentation/devicetree/bindings/iio/dac/adi,ad5696.yaml
-> @@ -1,16 +1,16 @@
->   # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->   %YAML 1.2
->   ---
-> -$id: http://devicetree.org/schemas/iio/dac/adi,ad5686.yaml#
-> +$id: http://devicetree.org/schemas/iio/dac/adi,ad5696.yaml#
->   $schema: http://devicetree.org/meta-schemas/core.yaml#
->   
-> -title: Analog Devices AD5686 and similar multi-channel DACs
-> +title: Analog Devices AD5696 and similar multi-channel DACs
->   
->   maintainers:
->     - Michael Auchter <michael.auchter@ni.com>
->   
->   description: |
-> -  Binding for Analog Devices AD5686 and similar multi-channel DACs
-> +  Binding for Analog Devices AD5696 and similar multi-channel DACs
->   
->   properties:
->     compatible:
-> @@ -48,8 +48,8 @@ examples:
->         #address-cells = <1>;
->         #size-cells = <0>;
->   
-> -      ad5686: dac@0 {
-> -        compatible = "adi,ad5686";
-> +      ad5696: dac@0 {
-> +        compatible = "adi,ad5696";
->           reg = <0>;
->           vcc-supply = <&dac_vref>;
->         };
-
-
+/Jarkko
