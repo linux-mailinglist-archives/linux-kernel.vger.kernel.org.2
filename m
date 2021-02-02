@@ -2,156 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3987A30B98A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:22:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4184D30B99C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:25:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232507AbhBBIWl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 03:22:41 -0500
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:24782 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231324AbhBBITs (ORCPT
+        id S232629AbhBBIZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 03:25:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232401AbhBBISf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 03:19:48 -0500
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1128ASUG016484;
-        Tue, 2 Feb 2021 00:19:00 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=j22/ZAu4GK9SN9CeTElYsiNAq9wT2DsGj8hayZpNdaI=;
- b=Cf4ArMK2l0/dxa+/b/jal1J8keOf80XE/f6mN0vs75D1YbTc5counzwiW45oiMIeVL6+
- 50Ge36a2lSJOyNSPmpoTe0FOA1WuteeX3JOq8Jb3rdMQPdzfaVNCeASrbinFOP7S5nPy
- jwmvxHxQaIgnCmm+B0KkFRo/jXfxrcGeVEWnUOeFVkBALDjJQo+An45rLU61ve8c0czd
- zfn7KfBgyDpFm4JpRpTaXbEcCGKZvK7uOvUrNWN29ucz91uoMD79hL4KdsO4HAzqwQVW
- QErdzn75VY7QeXMGlwLsofCebRB093Igzp7ZISA1TRrgQ8O8FyH1E1zQv0JurREmSC8C aQ== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com with ESMTP id 36d5psxp54-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 02 Feb 2021 00:19:00 -0800
-Received: from SC-EXCH02.marvell.com (10.93.176.82) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 2 Feb
- 2021 00:18:59 -0800
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH02.marvell.com
- (10.93.176.82) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 2 Feb
- 2021 00:18:59 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 2 Feb 2021 00:18:58 -0800
-Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id D9C3A3F7040;
-        Tue,  2 Feb 2021 00:18:55 -0800 (PST)
-From:   <stefanc@marvell.com>
-To:     <netdev@vger.kernel.org>
-CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
-        <nadavh@marvell.com>, <ymarkman@marvell.com>,
-        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
-        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
-        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
-        <atenart@kernel.org>
-Subject: [PATCH v7 net-next 15/15] net: mvpp2: add TX FC firmware check
-Date:   Tue, 2 Feb 2021 10:17:01 +0200
-Message-ID: <1612253821-1148-16-git-send-email-stefanc@marvell.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1612253821-1148-1-git-send-email-stefanc@marvell.com>
-References: <1612253821-1148-1-git-send-email-stefanc@marvell.com>
+        Tue, 2 Feb 2021 03:18:35 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B15C3C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 00:17:54 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id f16so1499118wmq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 00:17:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=ACGAKZnb6JF4l8ikEp5I5AXDxCVsSoURups5lEzImcE=;
+        b=faVgTeBCLeqPvkrmO4za/Et/AIZPpbyYeOSQwvHRa9gdZ2t4QAgk5uHJv5ELGJyfWx
+         NkW06AKTrif2dFxuIWk9dry3jBm80jDcKSAwR+3ic2S+E2AAtxF4udrC71YF65Y0tO3u
+         7DeAp0qh96TSD3KmOfO+E1qFOaGHSmzNHJTP1Nb2G0+QA14xARDqk8MP+ptlN3uFwcKI
+         7vzCnPl/s0q93U1hzL1wUoiRTPZ8QqYlU8TMztPh09dh5E/z9izsSuQGckGZD+JXdAGe
+         tvLAIdwmpIJdI2YMcngrqC3yFgBxmKtzzy4z98byi4krI9324BskEq4vkdLQx9jKpy/8
+         N90w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=ACGAKZnb6JF4l8ikEp5I5AXDxCVsSoURups5lEzImcE=;
+        b=ZDckH3F+LgzNpcarX2eBe83MDOZp9dAhBoohgnyqO+iRqUj84yKAZhE4MPIWBx2v9g
+         WNv26f+NAlAHF7GDnuEMAUw2FifE9/YqMBc4Lm4uzeTqbee4MgvtBlsmXzDsroKlmV+S
+         BjQZ3XWyC89Haim8xxJMyLGJCoxtNuSu+ww4uJMrx0ozCoRUHaIDnWxqBM0RSci3uiRi
+         jipbiay95JdiZFC4quJfq83jcheL33YlIn3jhw+yHovCnaWVOEVyUCxSrmFoZkpZ1vrs
+         X8Dx4E1uuP1jT0DslOIA9Jy+N4JdRO1iuQlUu7ecNDQDmSe2Ew/y/GpqA1ZoFuc4h/qB
+         dV2w==
+X-Gm-Message-State: AOAM532i6dSGfWRb0vutqnBOBbuHzTTTCYV/t6BApbuDr1p5BHN0b/ce
+        L+LZ3z8fP2fei4KvLqqJb7AJ4A==
+X-Google-Smtp-Source: ABdhPJxxw8SaCGfa18oKKwhPP66vF4sF3f2ps9se2LMWTc4wfpbd+MEzuOcdQstMg0aiFEYB2sBnxw==
+X-Received: by 2002:a1c:e905:: with SMTP id q5mr2443624wmc.84.1612253873405;
+        Tue, 02 Feb 2021 00:17:53 -0800 (PST)
+Received: from dell ([91.110.221.188])
+        by smtp.gmail.com with ESMTPSA id d10sm5269530wrn.88.2021.02.02.00.17.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 00:17:52 -0800 (PST)
+Date:   Tue, 2 Feb 2021 08:17:51 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Satish Kharat <satishkh@cisco.com>,
+        Lee Duncan <lduncan@suse.com>, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: pmcraid: fix 'ioarcb' alignment warning
+Message-ID: <20210202081751.GZ4774@dell>
+References: <20210201170013.727112-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-02_04:2021-01-29,2021-02-02 signatures=0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210201170013.727112-1-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+On Mon, 01 Feb 2021, Arnd Bergmann wrote:
 
-Patch check that TX FC firmware is running in CM3.
-If not, global TX FC would be disabled.
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Building with 'make W=1' enables -Wpacked-not-aligned, and this
+> warns about pmcraid because of incompatible alignment constraints for
+> pmcraid_passthrough_ioctl_buffer:
+> 
+> drivers/scsi/pmcraid.h:1044:1: warning: alignment 1 of 'struct pmcraid_passthrough_ioctl_buffer' is less than 32 [-Wpacked-not-aligned]
+>  1044 | } __attribute__ ((packed));
+>       | ^
+> drivers/scsi/pmcraid.h:1041:24: warning: 'ioarcb' offset 16 in 'struct pmcraid_passthrough_ioctl_buffer' isn't aligned to 32 [-Wpacked-not-aligned]
+>  1041 |  struct pmcraid_ioarcb ioarcb;
+> 
+> The inner structure is documented as having 32 byte alignment here,
+> but is starts at a 16 byte offset in the outer structure, so it's never
+> actually aligned, as the outer structure is also marked 'packed'.
+> 
+> Lee Jones point this out as one of the last files that need to be changed
+> before the warning can be enabled by default.
+> 
+> Change the annotations in a way that avoids the warning but leaves the
+> layout unchanged, by removing the packing on the inner structure and
+> adding it to the outer one. The one-byte request_buffer[] array should
+> have been a flexible array member here, which is how I change it to
+> avoid extra padding from the alignment attribute.
 
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
----
- drivers/net/ethernet/marvell/mvpp2/mvpp2.h      |  1 +
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 42 ++++++++++++++++----
- 2 files changed, 36 insertions(+), 7 deletions(-)
+Looks good to me.
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-index 9947385..25013a4 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-@@ -829,6 +829,7 @@
- 
- #define MSS_THRESHOLD_STOP	768
- #define MSS_THRESHOLD_START	1024
-+#define MSS_FC_MAX_TIMEOUT	5000
- 
- /* RX buffer constants */
- #define MVPP2_SKB_SHINFO_SIZE \
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index 98849b0..0273134 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -932,6 +932,34 @@ static void mvpp2_bm_pool_update_fc(struct mvpp2_port *port,
- 	spin_unlock_irqrestore(&port->priv->mss_spinlock, flags);
- }
- 
-+static int mvpp2_enable_global_fc(struct mvpp2 *priv)
-+{
-+	int val, timeout = 0;
-+
-+	/* Enable global flow control. In this stage global
-+	 * flow control enabled, but still disabled per port.
-+	 */
-+	val = mvpp2_cm3_read(priv, MSS_FC_COM_REG);
-+	val |= FLOW_CONTROL_ENABLE_BIT;
-+	mvpp2_cm3_write(priv, MSS_FC_COM_REG, val);
-+
-+	/* Check if Firmware running and disable FC if not*/
-+	val |= FLOW_CONTROL_UPDATE_COMMAND_BIT;
-+	mvpp2_cm3_write(priv, MSS_FC_COM_REG, val);
-+
-+	while (timeout < MSS_FC_MAX_TIMEOUT) {
-+		val = mvpp2_cm3_read(priv, MSS_FC_COM_REG);
-+
-+		if (!(val & FLOW_CONTROL_UPDATE_COMMAND_BIT))
-+			return 0;
-+		usleep_range(10, 20);
-+		timeout++;
-+	}
-+
-+	priv->global_tx_fc = false;
-+	return -EOPNOTSUPP;
-+}
-+
- /* Release buffer to BM */
- static inline void mvpp2_bm_pool_put(struct mvpp2_port *port, int pool,
- 				     dma_addr_t buf_dma_addr,
-@@ -7281,7 +7309,7 @@ static int mvpp2_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	void __iomem *base;
- 	int i, shared;
--	int err, val;
-+	int err;
- 
- 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -7509,13 +7537,13 @@ static int mvpp2_probe(struct platform_device *pdev)
- 		goto err_port_probe;
- 	}
- 
--	/* Enable global flow control. In this stage global
--	 * flow control enabled, but still disabled per port.
--	 */
- 	if (priv->global_tx_fc && priv->hw_version != MVPP21) {
--		val = mvpp2_cm3_read(priv, MSS_FC_COM_REG);
--		val |= FLOW_CONTROL_ENABLE_BIT;
--		mvpp2_cm3_write(priv, MSS_FC_COM_REG, val);
-+		err = mvpp2_enable_global_fc(priv);
-+		if (err) {
-+			dev_warn(&pdev->dev, "CM3 firmware not running, version should be higher than 18.09 ");
-+			dev_warn(&pdev->dev, "and chip revision B0\n");
-+			dev_warn(&pdev->dev, "Flow control not supported\n");
-+		}
- 	}
- 
- 	mvpp2_dbgfs_init(priv, pdev->name);
+Reviewed-by: Lee Jones <lee.jones@linaro.org>
+
 -- 
-1.9.1
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
