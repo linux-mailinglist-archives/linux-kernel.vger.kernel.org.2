@@ -2,82 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EE0730BD79
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 12:54:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6FE830BD7B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 12:55:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231403AbhBBLxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 06:53:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41198 "EHLO mail.kernel.org"
+        id S229838AbhBBLyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 06:54:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231199AbhBBLxr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 06:53:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 949E264EDA;
-        Tue,  2 Feb 2021 11:53:06 +0000 (UTC)
+        id S229441AbhBBLyS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 06:54:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B443D64ED7;
+        Tue,  2 Feb 2021 11:53:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612266787;
-        bh=BRH68+6vOxOQ4LInf/FRWhZDyh3A94ESv/43pW43Yt8=;
+        s=korg; t=1612266817;
+        bh=yUKKgAc95dVxUp/h48LLTDDmisyVTlZHaXblkD8Tt8M=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OJ8N1X8f4o+yVH+a6dN3B/AyPw/cXpDy9CSfhpaCFB9Pa2HmmOTPmoaihArZTNnal
-         TmR/WYbIOe25gnkHYcuWdIdweGqctOyJgUioqJreKa2g9TO4uxZrNsAJa2EbDxh24A
-         xiEodTo2bHyB5/pstyzXoaX6qrNTA/sMppxDmtLo=
-Date:   Tue, 2 Feb 2021 12:53:02 +0100
+        b=Z1LeUBJ2Rkv8PEH/Y4eVKpxfVPrA6cTA7N2Q5kA4U9fJ5XPuaiDJVhd/F5TpQCNqF
+         KOv/8qZahVIyPbCGOnkAYBuaJQ002ivyvWwyIablm57uAIFWXtRu17uN4zuJNB5vwn
+         uTkhCj8fzt5DMiRqvlARnqeO8yhyWY8+vCBkxlV8=
+Date:   Tue, 2 Feb 2021 12:53:32 +0100
 From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jianxiong Gao <jxgao@google.com>
-Cc:     erdemaktas@google.com, marcorr@google.com, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        saravanak@google.com, heikki.krogerus@linux.intel.com,
-        rafael.j.wysocki@intel.com, andriy.shevchenko@linux.intel.com,
-        dan.j.williams@intel.com, bgolaszewski@baylibre.com,
-        jroedel@suse.de, iommu@lists.linux-foundation.org,
-        konrad.wilk@oracle.com, kbusch@kernel.org, axboe@fb.com,
-        sagi@grimberg.me, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 0/3] SWIOTLB: Preserve swiotlb map offset when needed.
-Message-ID: <YBk9HsrdvcUb50Kz@kroah.com>
-References: <20210201183017.3339130-1-jxgao@google.com>
+To:     wanghongzhe <wanghongzhe@huawei.com>
+Cc:     luto@amacapital.net, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net,
+        john.fastabend@gmail.com, kafai@fb.com, keescook@chromium.org,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, songliubraving@fb.com, wad@chromium.org,
+        yhs@fb.com
+Subject: Re: [PATCH v1 1/1] Firstly, as Andy mentioned, this should be
+ smp_rmb() instead of rmb(). considering that TSYNC is a cross-thread
+ situation, and rmb() is a mandatory barrier which should not be used to
+ control SMP effects, since mandatory barriers impose unnecessary overhead on
+ both SMP and UP systems, as kernel Documentation said.
+Message-ID: <YBk9PLpjGybg9W03@kroah.com>
+References: <B1DC6A42-15AF-4804-B20E-FC6E2BDD1C8E@amacapital.net>
+ <1612260787-28015-1-git-send-email-wanghongzhe@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210201183017.3339130-1-jxgao@google.com>
+In-Reply-To: <1612260787-28015-1-git-send-email-wanghongzhe@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 10:30:14AM -0800, Jianxiong Gao wrote:
-> NVMe driver and other applications may depend on the data offset
-> to operate correctly. Currently when unaligned data is mapped via
-> SWIOTLB, the data is mapped as slab aligned with the SWIOTLB. This
-> patch adds an option to make sure the mapped data preserves its
-> offset of the orginal addrss.
-> 
-> Without the patch when creating xfs formatted disk on NVMe backends,
-> with swiotlb=force in kernel boot option, creates the following error:
-> meta-data=/dev/nvme2n1   isize=512    agcount=4, agsize=131072 blks
->          =               sectsz=512   attr=2, projid32bit=1
->          =               crc=1        finobt=1, sparse=0, rmapbt=0, refl
-> ink=0
-> data     =               bsize=4096   blocks=524288, imaxpct=25
->          =               sunit=0      swidth=0 blks
-> naming   =version 2      bsize=4096   ascii-ci=0 ftype=1
-> log      =internal log   bsize=4096   blocks=2560, version=2
->          =               sectsz=512   sunit=0 blks, lazy-count=1
-> realtime =none           extsz=4096   blocks=0, rtextents=0
-> mkfs.xfs: pwrite failed: Input/output error
-> 
-> Jianxiong Gao (3):
->   Adding page_offset_mask to device_dma_parameters
->   Add swiotlb offset preserving mapping when
->     dma_dma_parameters->page_offset_mask is non zero.
->   Adding device_dma_parameters->offset_preserve_mask to NVMe driver.
-> 
->  drivers/nvme/host/pci.c     |  4 ++++
->  include/linux/device.h      |  1 +
->  include/linux/dma-mapping.h | 17 +++++++++++++++++
->  kernel/dma/swiotlb.c        | 16 +++++++++++++++-
->  4 files changed, 37 insertions(+), 1 deletion(-)
-> 
-> -- 
-> 2.27.0
-> 
+On Tue, Feb 02, 2021 at 06:13:07PM +0800, wanghongzhe wrote:
+> Secondly, the smp_rmb() should be put between reading SYSCALL_WORK_SECCOMP and reading
 
-You forgot to mention somewhere, what changed from v1 to v2 :(
+<snip>
+
+Your subject line of the patch is a bit odd :)
+
