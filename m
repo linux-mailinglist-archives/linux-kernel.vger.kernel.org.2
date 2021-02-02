@@ -2,114 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 580E030BE67
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:42:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D33A330BE75
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:44:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231741AbhBBMlO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 07:41:14 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42842 "EHLO
+        id S231866AbhBBMmV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 07:42:21 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27724 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231635AbhBBMlG (ORCPT
+        by vger.kernel.org with ESMTP id S230439AbhBBMlm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 07:41:06 -0500
+        Tue, 2 Feb 2021 07:41:42 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612269579;
+        s=mimecast20190719; t=1612269614;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=yEJntsm3uVvBSP7hH3XGK/+l1RDqeVkehzYxYBodVjU=;
-        b=D6U8n/7+GRR6qyEa2+rH0wKRf8506ybKyeOXzo5GwlOVvclq59XyUi8y79RQlHutldD4z6
-        F4Re1twwk1HlO8YysekIxhg1YSwMsaoZ/iv1IUDZolArQXTzVHZYQnOV6j4FtZminZSizW
-        4GDZJEjvE97TYT9ymU06bOKldGxpdJ4=
+        bh=tcfgWIrQUgzhoGrS2VFoy8N33q+DK/NFBMN5hKNRz5I=;
+        b=g5oILDGqS+FrMau6GnTCrsmjEr+i6h23MLn3AyRS5rVMNXf5WzLG2aQ029V9UvRTI8w/GQ
+        m35t5rNsIX15o/9/30P9GK63JbO0Bbc0YO9nJlIP9aOM4HKml5nr6+m2yCdt8wd+Chkxbj
+        yDHW2hVnzTa3mU3C0dOI0Xh8fiFMqdQ=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-125-obfjDlZcPCeTXibfYRwj9Q-1; Tue, 02 Feb 2021 07:39:36 -0500
-X-MC-Unique: obfjDlZcPCeTXibfYRwj9Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+ us-mta-18-ggBi5ohKPiOI0JIJf8INKQ-1; Tue, 02 Feb 2021 07:40:12 -0500
+X-MC-Unique: ggBi5ohKPiOI0JIJf8INKQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 89D3A107ACE3;
-        Tue,  2 Feb 2021 12:39:33 +0000 (UTC)
-Received: from [10.36.114.148] (ovpn-114-148.ams2.redhat.com [10.36.114.148])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E33495C230;
-        Tue,  2 Feb 2021 12:39:30 +0000 (UTC)
-Subject: Re: [PATCH V2 1/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based
- memory
-To:     Will Deacon <will@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 684971005501;
+        Tue,  2 Feb 2021 12:40:10 +0000 (UTC)
+Received: from krava (unknown [10.40.193.189])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 5ABAF5D9C6;
+        Tue,  2 Feb 2021 12:40:08 +0000 (UTC)
+Date:   Tue, 2 Feb 2021 13:40:07 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Mike Rapoport <rppt@linux.ibm.com>
-References: <1612239114-28428-1-git-send-email-anshuman.khandual@arm.com>
- <1612239114-28428-2-git-send-email-anshuman.khandual@arm.com>
- <20210202123215.GA16868@willie-the-truck>
- <20210202123524.GB16868@willie-the-truck>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <f32e7caa-3414-9dd7-eb8c-220da1d925a1@redhat.com>
-Date:   Tue, 2 Feb 2021 13:39:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: Re: [PATCHSET v3 0/3] perf tools: Minor improvements in event
+ synthesis
+Message-ID: <YBlIJzIZ1nEesWS9@krava>
+References: <20210202090118.2008551-1-namhyung@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210202123524.GB16868@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210202090118.2008551-1-namhyung@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.02.21 13:35, Will Deacon wrote:
-> On Tue, Feb 02, 2021 at 12:32:15PM +0000, Will Deacon wrote:
->> On Tue, Feb 02, 2021 at 09:41:53AM +0530, Anshuman Khandual wrote:
->>> pfn_valid() validates a pfn but basically it checks for a valid struct page
->>> backing for that pfn. It should always return positive for memory ranges
->>> backed with struct page mapping. But currently pfn_valid() fails for all
->>> ZONE_DEVICE based memory types even though they have struct page mapping.
->>>
->>> pfn_valid() asserts that there is a memblock entry for a given pfn without
->>> MEMBLOCK_NOMAP flag being set. The problem with ZONE_DEVICE based memory is
->>> that they do not have memblock entries. Hence memblock_is_map_memory() will
->>> invariably fail via memblock_search() for a ZONE_DEVICE based address. This
->>> eventually fails pfn_valid() which is wrong. memblock_is_map_memory() needs
->>> to be skipped for such memory ranges. As ZONE_DEVICE memory gets hotplugged
->>> into the system via memremap_pages() called from a driver, their respective
->>> memory sections will not have SECTION_IS_EARLY set.
->>>
->>> Normal hotplug memory will never have MEMBLOCK_NOMAP set in their memblock
->>> regions. Because the flag MEMBLOCK_NOMAP was specifically designed and set
->>> for firmware reserved memory regions. memblock_is_map_memory() can just be
->>> skipped as its always going to be positive and that will be an optimization
->>> for the normal hotplug memory. Like ZONE_DEVICE based memory, all normal
->>> hotplugged memory too will not have SECTION_IS_EARLY set for their sections
->>>
->>> Skipping memblock_is_map_memory() for all non early memory sections would
->>> fix pfn_valid() problem for ZONE_DEVICE based memory and also improve its
->>> performance for normal hotplug memory as well.
->>
->> Hmm. Although I follow your logic, this does seem to rely on an awful lot of
->> assumptions to continue to hold true as the kernel evolves. In particular,
->> how do we ensure that early sections are always fully backed with
+On Tue, Feb 02, 2021 at 06:01:15PM +0900, Namhyung Kim wrote:
+> Hello,
 > 
-> Sorry, typo here:       ^^^ should be *non-early* sections.
+> This is to optimize the event synthesis during perf record.
+> 
+> Changes in v3:
+>  * remove unnecessary pid check
+>  * update change log in patch #2
 
-It might be a good idea to have a look at generic 
-include/linux/mmzone.h:pfn_valid()
+Acked-by: Jiri Olsa <jolsa@redhat.com>
 
-As I expressed already, long term we should really get rid of the arm64 
-variant and rather special-case the generic one. Then we won't go out of 
-sync - just as it happened with ZONE_DEVICE handling here.
+thanks,
+jirka
 
--- 
-Thanks,
-
-David / dhildenb
+> 
+> The first patch is to reduce memory usage when many threads are used.
+> The second is to avoid unncessary syscalls for kernel threads.  And
+> the last one is to reduce the number of threads to iterate when new
+> threads are being created at the same time.
+> 
+> Unfortunately there's no dramatic improvement here but I can see ~5%
+> gain in the 'perf bench internals synthesize' on a big machine.
+> (The numbers are not stable though)
+> 
+> 
+> Before:
+>   # perf bench internals synthesize --mt -M1 -I 100
+>   # Running 'internals/synthesize' benchmark:
+>   Computing performance of multi threaded perf event synthesis by
+>   synthesizing events on CPU 0:
+>     Number of synthesis threads: 1
+>       Average synthesis took: 68831.480 usec (+- 101.450 usec)
+>       Average num. events: 9982.000 (+- 0.000)
+>       Average time per event 6.896 usec
+> 
+> 
+> After:
+>   # perf bench internals synthesize --mt -M1 -I 100
+>   # Running 'internals/synthesize' benchmark:
+>   Computing performance of multi threaded perf event synthesis by
+>   synthesizing events on CPU 0:
+>     Number of synthesis threads: 1
+>       Average synthesis took: 65036.370 usec (+- 158.121 usec)
+>       Average num. events: 9982.000 (+- 0.000)
+>       Average time per event 6.515 usec
+> 
+> 
+> Thanks,
+> Namhyung
+> 
+> 
+> Namhyung Kim (3):
+>   perf tools: Use /proc/<PID>/task/<TID>/status for synthesis
+>   perf tools: Skip MMAP record synthesis for kernel threads
+>   perf tools: Use scandir() to iterate threads
+> 
+>  tools/perf/util/synthetic-events.c | 83 +++++++++++++++++++-----------
+>  1 file changed, 53 insertions(+), 30 deletions(-)
+> 
+> -- 
+> 2.30.0.365.g02bc693789-goog
+> 
 
