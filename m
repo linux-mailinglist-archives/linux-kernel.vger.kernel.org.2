@@ -2,97 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE14030B53E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 03:28:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 227C330B53B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 03:26:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231400AbhBBC1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 21:27:08 -0500
-Received: from mga14.intel.com ([192.55.52.115]:40273 "EHLO mga14.intel.com"
+        id S231359AbhBBCZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 21:25:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229612AbhBBC1B (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 21:27:01 -0500
-IronPort-SDR: P9iaLMxu/mifkhPVLXnkeEFS1kgPQX5L9X3H5TAJu0Ra4uDa1vq5SUK3yydG8+M/90G7cD3+zd
- DBScRaGXC5hQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="180009046"
-X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="180009046"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 18:25:16 -0800
-IronPort-SDR: BwjMNl1gpT2wbFsYBKn4zpeRWFwksJQFNqnWVgFz7ohL2fSBapHZw4AXT4Bb8IxR848GM2K2ZR
- Mvo8wk8iQj5A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
-   d="scan'208";a="479385046"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga001.fm.intel.com with ESMTP; 01 Feb 2021 18:25:13 -0800
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com, john.garry@huawei.com,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH] perf metricgroup: Fix segmentation fault for metrics with no pmu event
-Date:   Tue,  2 Feb 2021 10:24:24 +0800
-Message-Id: <20210202022424.10787-1-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S229527AbhBBCZm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 21:25:42 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB04D64ECB;
+        Tue,  2 Feb 2021 02:25:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612232701;
+        bh=NTjUJbFdSth745Tu2pBJPfgH9+wOG7j4zxvy46kk270=;
+        h=From:To:Cc:Subject:Date:From;
+        b=oaHaPq6xfM71iwrpGLCQcUWclOXFO72r9YuCJ8CA2hrNwMeInijbsJMJqDv2gxEMz
+         2TookcJENXyphcuzgymF2sxguNCHefba+6cnzRWxSU/GXNjdUx3mWjSjH7lESiFsgT
+         V3AEk4CXf27hKJxbkKbZQh+NxFcQ2/N+pNuoBPATpXjD8hyPeFS3uaustRf/iaOiDi
+         ZSWnVTMmgZ43N2PsD5eNu123pFsPEEAo+eFLbcF0JJBFB2/NQ6hTyUPRaNUwiVpCcG
+         8pzLo2q/UWBMBxTKNSIYQ+iXjDwdA0T++Wp9TkJbui+rrmmQOcw4I4yaKu27s6zyDJ
+         CQIVr3UmfCkYQ==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] arm64: Make CPU_BIG_ENDIAN depend on !LD_IS_LLD
+Date:   Mon,  1 Feb 2021 19:24:42 -0700
+Message-Id: <20210202022441.1451389-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.30.0
+MIME-Version: 1.0
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hit a segmentation fault for DRAM_BW_Use on SKL/KBL.
+Similar to commit 28187dc8ebd9 ("ARM: 9025/1: Kconfig: CPU_BIG_ENDIAN
+depends on !LD_IS_LLD"), ld.lld does not support aarch64 big endian,
+leading to the following build error when CONFIG_CPU_BIG_ENDIAN is
+selected:
 
-  # perf stat -M DRAM_BW_Use -a -- sleep 1
+ld.lld: error: unknown emulation: aarch64linuxb
 
-  Segmentation fault (core dumped)
+There are not currently plans to implement big endian support for
+aarch64 in ld.lld but if it should be supported in the future, this
+symbol can depend on the version that first supports it. In the
+meantime, prevent this symbol from being selected to avoid these type
+of build errors.
 
-  (gdb) backtrace
-  #0  __strcmp_sse2_unaligned () at ../sysdeps/x86_64/multiarch/strcmp-sse2-unaligned.S:31
-  #1  0x0000555c9facd9ce in find_evsel_group (evlist_used=0x555ca16d09c0, metric_events=0x555ca16e9160, has_constraint=false, metric_no_merge=false,
-      pctx=0x555ca16c8ff0, perf_evlist=0x555ca16c5340) at util/metricgroup.c:281
-  #2  metricgroup__setup_events (metric_events_list=0x555ca0044378 <stat_config+280>, perf_evlist=0x555ca16c5340, metric_no_merge=<optimized out>,
-      groups=0x7ffc599193f0) at util/metricgroup.c:323
-  #3  parse_groups (perf_evlist=perf_evlist@entry=0x555ca16c5340, str=str@entry=0x7ffc599205f8 "DRAM_BW_Use", metric_no_group=metric_no_group@entry=false,
-      metric_no_merge=metric_no_merge@entry=false, fake_pmu=fake_pmu@entry=0x0, metric_events=metric_events@entry=0x555ca0044378 <stat_config+280>,
-      map=0x555ca004e780 <pmu_events_map+768>) at util/metricgroup.c:1235
-  #4  0x0000555c9face096 in metricgroup__parse_groups (opt=<optimized out>, str=0x7ffc599205f8 "DRAM_BW_Use", metric_no_group=<optimized out>,
-      metric_no_merge=<optimized out>, metric_events=0x555ca0044378 <stat_config+280>) at util/metricgroup.c:1253
-  #5  0x0000555c9fbd084e in get_value (p=p@entry=0x7ffc599196b0, opt=0x555ca0043f60 <stat_options+4032>, flags=flags@entry=1) at parse-options.c:251
-  #6  0x0000555c9fbd1aa2 in parse_short_opt (options=<optimized out>, p=<optimized out>) at parse-options.c:351
-  #7  parse_options_step (usagestr=0x7ffc59919830, options=0x555ca0042fa0 <stat_options>, ctx=0x7ffc599196b0) at parse-options.c:539
-  #8  parse_options_subcommand (argc=argc@entry=7, argv=argv@entry=0x7ffc5991e6c0, options=options@entry=0x555ca0042fa0 <stat_options>,
-      subcommands=subcommands@entry=0x7ffc59919840, usagestr=usagestr@entry=0x7ffc59919830, flags=flags@entry=2) at parse-options.c:654
-  #9  0x0000555c9fa15154 in cmd_stat (argc=7, argv=0x7ffc5991e6c0) at builtin-stat.c:2136
-  #10 0x0000555c9fa8bafd in run_builtin (p=0x555ca004df20 <commands+288>, argc=7, argv=0x7ffc5991e6c0) at perf.c:312
-  #11 0x0000555c9f9f413a in handle_internal_command (argv=0x7ffc5991e6c0, argc=7) at perf.c:364
-  #12 run_argv (argcp=<synthetic pointer>, argv=<synthetic pointer>) at perf.c:408
-  #13 main (argc=7, argv=0x7ffc5991e6c0) at perf.c:538
+While we are here, the indentation of this symbol used spaces since its
+introduction in commit a872013d6d03 ("arm64: kconfig: allow
+CPU_BIG_ENDIAN to be selected"). Change it to tabs to be consistent with
+kernel coding style.
 
-DRAM_BW_Use uses an event 'duration_time' but it doesn't have pmu, so
-ev->leader->pmu_name is NULL for this case. See following code piece:
-
-!strcmp(ev->leader->pmu_name,
-	metric_events[i]->leader->pmu_name)
-
-It causes the segmentation fault. Now check the pmu_name before strcmp.
-
-Fixes: c2337d67199a("perf metricgroup: Fix metrics using aliases covering multiple PMUs")
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/380
+Link: https://github.com/ClangBuiltLinux/linux/issues/1288
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 ---
- tools/perf/util/metricgroup.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/Kconfig | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
-index ee94d3e8dd65..a36a1305c506 100644
---- a/tools/perf/util/metricgroup.c
-+++ b/tools/perf/util/metricgroup.c
-@@ -280,6 +280,7 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
- 			 */
- 			if (!has_constraint &&
- 			    ev->leader != metric_events[i]->leader &&
-+			    ev->leader->pmu_name &&
- 			    !strcmp(ev->leader->pmu_name,
- 				    metric_events[i]->leader->pmu_name))
- 				break;
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index f39568b28ec1..5ddf9fe7b4ee 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -952,8 +952,9 @@ choice
+ 	  that is selected here.
+ 
+ config CPU_BIG_ENDIAN
+-       bool "Build big-endian kernel"
+-       help
++	bool "Build big-endian kernel"
++	depends on !LD_IS_LLD
++	help
+ 	  Say Y if you plan on running a kernel with a big-endian userspace.
+ 
+ config CPU_LITTLE_ENDIAN
+
+base-commit: 88bb507a74ea7d75fa49edd421eaa710a7d80598
 -- 
-2.17.1
+2.30.0
 
