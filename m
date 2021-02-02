@@ -2,119 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB2430B672
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 05:25:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D7130B67A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 05:29:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231462AbhBBEXw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 23:23:52 -0500
-Received: from mail-ed1-f52.google.com ([209.85.208.52]:36591 "EHLO
-        mail-ed1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231301AbhBBEXo (ORCPT
+        id S231462AbhBBE2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 23:28:42 -0500
+Received: from mail-pg1-f172.google.com ([209.85.215.172]:44575 "EHLO
+        mail-pg1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231491AbhBBE2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 23:23:44 -0500
-Received: by mail-ed1-f52.google.com with SMTP id d2so21425704edz.3;
-        Mon, 01 Feb 2021 20:23:27 -0800 (PST)
+        Mon, 1 Feb 2021 23:28:36 -0500
+Received: by mail-pg1-f172.google.com with SMTP id s23so12797055pgh.11;
+        Mon, 01 Feb 2021 20:28:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TiS9Bb48tzkbdlH/rNiDagt6bFiH7mad+u4GBGYV4aE=;
-        b=br6ns9iW0owoKF6avcvPSYjqDY9Qfq3lhhVVz/UpIJNRBLXxmGG2oT/EoMjCO5+YKq
-         vuKA9bqXwHuIw0wAhQCvLQKnwzbMvWM9aWQ0wSu93djhPt05WXWmy8krWCMTidSkdOWA
-         ito9UD4iio30cppCAkMkKJ9suH45UWnNNfbfbXeyFQY+KZyzLhObYzX3NbUuENfYuPv0
-         xCS6gcy5MghSEC/VyT++Mv6qHKP7tUTblz8YyBFfHMKH7JRb+8gKcBVc41w69xlpViBI
-         st1kS6g898t2I9sGmm3f+cdave74JhGG3Lja/ERGKyWS0CZWUHOHRjVUzgtK6LkN2m/+
-         +BNA==
-X-Gm-Message-State: AOAM532HRJ0C1dt6wsCaMOJmO1qVp/8rUgHO5vxvF5UzckitQaYISVt/
-        5EdIjvCGpP5u7uR2UUybqiVn67cF/YNQCjraBFQRc2Wp
-X-Google-Smtp-Source: ABdhPJw3T7W4aL2oifIILWsa7+b6BttYz8h88vRDEB+JbjPxw5FRx5LcCFuSSmtfr1rrRXiXuyBraC9ZazEiXbFtD+E=
-X-Received: by 2002:a05:6402:3494:: with SMTP id v20mr14015815edc.146.1612239781967;
- Mon, 01 Feb 2021 20:23:01 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ePP320up4ONpD3QZFNd5p6W7Ka4tQ6LNbZ7Mki65Nr4=;
+        b=J1FRh86PcC8KV/FLjUecZ4EBYoFDOyGka7i8ddOhAfYnSaNlfRe1wgf79dHyvAUvxU
+         9xzl8DryODZWnxk5dTt+o4l69O0ZG9yMXHgOl4RXsxFNSsLzBe/HspbYLA39705xFhSJ
+         8H3G/WKknRV2SdfDgJpevWl+BPznWimSHADrN6VgOh2WaF4HOEjt+mioZJqOQhTFhNhb
+         7dmHZQqyP6+wA+tLZ4W5ibA8Q5F0xDZH/Zcm4TxAGtvCNz6F+gHtuBFOdeI7FXY6i6z/
+         IAjk47kecCXahYqio658hhipMPRAppUdEPXqvc6VTDEN47D4uLRpb0FBcQ9SAzTYj/qU
+         DVYg==
+X-Gm-Message-State: AOAM531c3Aw+osKabzue3h8hcLA9H1lqgIeCHzN0OyB4klgIiOVT0FnI
+        41SagRm2YrEXqywASaS/8Uw=
+X-Google-Smtp-Source: ABdhPJyxW5YTtzSo0NgAoTywysInHQXePxvks+ErZjHAJTJPyHI9jlLU9IsrlVFs/7BV0puicAAG9g==
+X-Received: by 2002:a62:8749:0:b029:1c4:d1de:3b56 with SMTP id i70-20020a6287490000b02901c4d1de3b56mr19065091pfe.71.1612240075227;
+        Mon, 01 Feb 2021 20:27:55 -0800 (PST)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id f13sm1475347pjj.1.2021.02.01.20.27.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 20:27:54 -0800 (PST)
+Date:   Mon, 1 Feb 2021 20:27:53 -0800
+From:   Moritz Fischer <mdf@kernel.org>
+To:     richard.gong@linux.intel.com
+Cc:     mdf@kernel.org, trix@redhat.com, gregkh@linuxfoundation.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Richard Gong <richard.gong@intel.com>
+Subject: Re: [PATCHv4 5/6] dt-bindings: fpga: add authenticate-fpga-config
+ property
+Message-ID: <YBjUyc2ea51S4Wzp@epycbox.lan>
+References: <1612192919-4069-1-git-send-email-richard.gong@linux.intel.com>
+ <1612192919-4069-6-git-send-email-richard.gong@linux.intel.com>
 MIME-Version: 1.0
-References: <20201206214613.444124194@linutronix.de> <20201206220541.594826678@linutronix.de>
- <19a7753c-c492-42e4-241a-8a052b32bb63@digikod.net> <871re7hlsg.fsf@nanos.tec.linutronix.de>
- <98cb59e8-ecb4-e29d-0b8f-73683ef2bee7@digikod.net> <87y2gfg18p.fsf@nanos.tec.linutronix.de>
- <87tur3fx7w.fsf@nanos.tec.linutronix.de> <ghft2hwevu.fsf@gouders.net>
- <877dnrc2sv.fsf@depni.sinp.msu.ru> <8735yfd2q4.fsf@nanos.tec.linutronix.de> <87zh0nbnha.fsf@nanos.tec.linutronix.de>
-In-Reply-To: <87zh0nbnha.fsf@nanos.tec.linutronix.de>
-From:   Len Brown <lenb@kernel.org>
-Date:   Mon, 1 Feb 2021 23:22:50 -0500
-Message-ID: <CAJvTdK=S+FTMUWyFgHMcZ2xKJKDrjE_9a-cb5hHcBT4MvoyJxg@mail.gmail.com>
-Subject: Re: [PATCH V2] rtc: mc146818: Dont test for bit 0-5 in Register D
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Serge Belyshev <belyshev@depni.sinp.msu.ru>,
-        Dirk Gouders <dirk@gouders.net>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Miroslav Lichvar <mlichvar@redhat.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Prarit Bhargava <prarit@redhat.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1612192919-4069-6-git-send-email-richard.gong@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the update, Thomas.
-
-V1 prevented rc6 automated suspend/resume testing on all 13 of my
-local machines.
-V2 applied, and they are back in business.
-
-tested-by: Len Brown <len.brown@intel.com>
-
-On Mon, Feb 1, 2021 at 2:25 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> The recent change to validate the RTC turned out to be overly tight.
->
-> While it cures the problem on the reporters machine it breaks machines
-> with Intel chipsets which use bit 0-5 of the D register. So check only
-> for bit 6 being 0 which is the case on these Intel machines as well.
->
-> Fixes: 211e5db19d15 ("rtc: mc146818: Detect and handle broken RTCs")
-> Reported-by: Serge Belyshev <belyshev@depni.sinp.msu.ru>
-> Reported-by: Dirk Gouders <dirk@gouders.net>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+On Mon, Feb 01, 2021 at 09:21:58AM -0600, richard.gong@linux.intel.com wrote:
+> From: Richard Gong <richard.gong@intel.com>
+> 
+> Add authenticate-fpga-config property for FPGA bitstream authentication,
+> which makes sure a signed bitstream has valid signatures.
+> 
+> Signed-off-by: Richard Gong <richard.gong@intel.com>
 > ---
-> V2: Provide the actual delta patch. Should have stayed away from
->     computers today....
+> v4: explain authenticate-fpga-config flag further
+> v3: no change
+> v2: put authenticate-fpga-config above partial-fpga-config
+>     update commit messages
 > ---
->  drivers/rtc/rtc-cmos.c         |    4 ++--
->  drivers/rtc/rtc-mc146818-lib.c |    4 ++--
->  2 files changed, 4 insertions(+), 4 deletions(-)
->
-> --- a/drivers/rtc/rtc-cmos.c
-> +++ b/drivers/rtc/rtc-cmos.c
-> @@ -805,8 +805,8 @@ cmos_do_probe(struct device *dev, struct
->
->         spin_lock_irq(&rtc_lock);
->
-> -       /* Ensure that the RTC is accessible. Bit 0-6 must be 0! */
-> -       if ((CMOS_READ(RTC_VALID) & 0x7f) != 0) {
-> +       /* Ensure that the RTC is accessible. Bit 6 must be 0! */
-> +       if ((CMOS_READ(RTC_VALID) & 0x40) != 0) {
->                 spin_unlock_irq(&rtc_lock);
->                 dev_warn(dev, "not accessible\n");
->                 retval = -ENXIO;
-> --- a/drivers/rtc/rtc-mc146818-lib.c
-> +++ b/drivers/rtc/rtc-mc146818-lib.c
-> @@ -21,8 +21,8 @@ unsigned int mc146818_get_time(struct rt
->
->  again:
->         spin_lock_irqsave(&rtc_lock, flags);
-> -       /* Ensure that the RTC is accessible. Bit 0-6 must be 0! */
-> -       if (WARN_ON_ONCE((CMOS_READ(RTC_VALID) & 0x7f) != 0)) {
-> +       /* Ensure that the RTC is accessible. Bit 6 must be 0! */
-> +       if (WARN_ON_ONCE((CMOS_READ(RTC_VALID) & 0x40) != 0)) {
->                 spin_unlock_irqrestore(&rtc_lock, flags);
->                 memset(time, 0xff, sizeof(*time));
->                 return 0;
+>  Documentation/devicetree/bindings/fpga/fpga-region.txt | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/fpga/fpga-region.txt b/Documentation/devicetree/bindings/fpga/fpga-region.txt
+> index e811cf8..e2740b6 100644
+> --- a/Documentation/devicetree/bindings/fpga/fpga-region.txt
+> +++ b/Documentation/devicetree/bindings/fpga/fpga-region.txt
+> @@ -182,6 +182,10 @@ Optional properties:
+>  	This property is optional if the FPGA Manager handles the bridges.
+>          If the fpga-region is  the child of a fpga-bridge, the list should not
+>          contain the parent bridge.
+> +- authenticate-fpga-config : boolean, set if do bitstream authentication only.
+> +	flag authenticate-fpga-config is used to first check the integrity of
+> +	the bitstream. If the authentication is passed, the user can perform
+> +	other operations.
+From the other commits it looks like it *also* writes to QSPI? If so
+please document that.
 
+If not, feel free to ignore :)
 
-
--- 
-Len Brown, Intel Open Source Technology Center
+Maybe I would highlight two things:
+a) If you add 'authenticate-fpga-config' you are not allowed to add new
+   nodes
+b) If you add 'authenticate-fpga-config' you are not alllowed to add
+   other operations
+>  - partial-fpga-config : boolean, set if partial reconfiguration is to be done,
+>  	otherwise full reconfiguration is done.
+>  - external-fpga-config : boolean, set if the FPGA has already been configured
+> -- 
+> 2.7.4
+> 
+Thanks,
+Moritz
