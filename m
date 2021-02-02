@@ -2,143 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B742730CCB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:07:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A9530CCCA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:07:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240339AbhBBUF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 15:05:57 -0500
-Received: from mga17.intel.com ([192.55.52.151]:33451 "EHLO mga17.intel.com"
+        id S240458AbhBBUHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 15:07:51 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:34049 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240384AbhBBUEm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 15:04:42 -0500
-IronPort-SDR: ttMbiJKim7JuOL+RoTvlqmMulO+vydZ6G8afqPze1jekOsVplvYVv10wwf53qA3Nf2qcHg4V2G
- r+4OKYPVrRAg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="160686273"
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="160686273"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 12:03:55 -0800
-IronPort-SDR: OES+swhzPW5eDUXfFVrTy/GfBdNHhwCuJFn5pI4BGKD12qdilj6y8GlinjmHZ2q3++g86RmQPr
- nNzvPUq4CSIA==
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="391677087"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 12:03:55 -0800
-Date:   Tue, 2 Feb 2021 12:03:54 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Prathu Baronia <prathubaronia2011@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, chintan.pandya@oneplus.com,
-        Prathu Baronia <prathu.baronia@oneplus.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: Re: [PATCH v2 1/1] mm: Optimizing hugepage zeroing in arm64
-Message-ID: <20210202200354.GB3200985@iweiny-DESK2.sc.intel.com>
-References: <20210202074225.7244-1-prathu.baronia@oneplus.com>
- <20210202074225.7244-2-prathu.baronia@oneplus.com>
+        id S232371AbhBBUFl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 15:05:41 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DVbQ04YHdz9sWR;
+        Wed,  3 Feb 2021 07:04:56 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1612296296;
+        bh=OzwFR6tuq5lQcXviHPDRxVXF5FtRufNo8GuUpvWwVgI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=rVVarzKIQI/d0PKYA9oVZRNuruS44jhnPEuhoC59vlnSgrIwWUFXGiuOXKF4PJ676
+         k4pzaBsDZoPX2YQXXnY1uZ/EmQBD9VKq4pQzrizBv084PBl3oQqpf+cYpbwKliQYH1
+         sF4LBLrvjKgATKzkMv++VMZZLMSdU8NPtRo715D14/r0ezdxuE+LP9eAuOFIS7tRDg
+         DRvMswhrFb4kX8CQgJowVZbu8bmFp6q0gZdI8ERuFqi1FEuwu3395Stro0hM4U+2Ld
+         Q61EBRffAiCBGaolRLSs7MymNstEHo7qT5T392uUmHWiED1pfcOgb0UIkeaIW2tUK0
+         emEGygHF/tHkQ==
+Date:   Wed, 3 Feb 2021 07:04:55 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        ARM <linux-arm-kernel@lists.infradead.org>
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the arm-soc
+ tree
+Message-ID: <20210203070455.6e9a9a52@canb.auug.org.au>
+In-Reply-To: <20210203065754.6b351c79@canb.auug.org.au>
+References: <20210203065754.6b351c79@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210202074225.7244-2-prathu.baronia@oneplus.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+Content-Type: multipart/signed; boundary="Sig_/Ts05nBiZxIIHsTTacUS_zkU";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 01:12:24PM +0530, Prathu Baronia wrote:
-> In !HIGHMEM cases, specially in 64-bit architectures, we don't need temp
-> mapping of pages. Hence, k(map|unmap)_atomic() acts as nothing more than
-> multiple barrier() calls, for example for a 2MB hugepage in
-> clear_huge_page() these are called 512 times i.e. to map and unmap each
-> subpage that means in total 2048 barrier calls. This called for
-> optimization. Simply getting VADDR from page in the form of kmap_local_*
-> APIs does the job for us.  We profiled clear_huge_page() using ftrace
-> and observed an improvement of 62%.
+--Sig_/Ts05nBiZxIIHsTTacUS_zkU
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Nice!
+Hi all,
 
-> 
-> Setup:-
-> Below data has been collected on Qualcomm's SM7250 SoC THP enabled
-> (kernel
-> v4.19.113) with only CPU-0(Cortex-A55) and CPU-7(Cortex-A76) switched on
-> and set to max frequency, also DDR set to perf governor.
-> 
-> FTRACE Data:-
-> 
-> Base data:-
-> Number of iterations: 48
-> Mean of allocation time: 349.5 us
-> std deviation: 74.5 us
-> 
-> v1 data:-
-> Number of iterations: 48
-> Mean of allocation time: 131 us
-> std deviation: 32.7 us
-> 
-> The following simple userspace experiment to allocate
-> 100MB(BUF_SZ) of pages and writing to it gave us a good insight,
-> we observed an improvement of 42% in allocation and writing timings.
-> -------------------------------------------------------------
-> Test code snippet
-> -------------------------------------------------------------
->       clock_start();
->       buf = malloc(BUF_SZ); /* Allocate 100 MB of memory */
-> 
->         for(i=0; i < BUF_SZ_PAGES; i++)
->         {
->                 *((int *)(buf + (i*PAGE_SIZE))) = 1;
->         }
->       clock_end();
-> -------------------------------------------------------------
-> 
-> Malloc test timings for 100MB anon allocation:-
-> 
-> Base data:-
-> Number of iterations: 100
-> Mean of allocation time: 31831 us
-> std deviation: 4286 us
-> 
-> v1 data:-
-> Number of iterations: 100
-> Mean of allocation time: 18193 us
-> std deviation: 4915 us
-> 
-> Reported-by: Chintan Pandya <chintan.pandya@oneplus.com>
-> Signed-off-by: Prathu Baronia <prathu.baronia@oneplus.com>
+On Wed, 3 Feb 2021 06:57:54 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> Hi all,
+>=20
+> Commit
+>=20
+>   4e238bfd83f3 ("ARM: dts: sun7i: a20: bananapro: Fix ethernet phy-mode")
+>=20
+> is missing a Signed-off-by from its committer.
 
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+This is actually in the arm-soc-fixes tree, sorry.
 
-FWIW, I have the same change in a patch in my kmap() changes branch.  However,
-my patch also changes clear_highpage(), zero_user_segments(),
-copy_user_highpage(), and copy_highpage().
+--=20
+Cheers,
+Stephen Rothwell
 
-Would changing those help you as well?
+--Sig_/Ts05nBiZxIIHsTTacUS_zkU
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Ira
+-----BEGIN PGP SIGNATURE-----
 
-> ---
->  include/linux/highmem.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/highmem.h b/include/linux/highmem.h
-> index d2c70d3772a3..444df139b489 100644
-> --- a/include/linux/highmem.h
-> +++ b/include/linux/highmem.h
-> @@ -146,9 +146,9 @@ static inline void invalidate_kernel_vmap_range(void *vaddr, int size)
->  #ifndef clear_user_highpage
->  static inline void clear_user_highpage(struct page *page, unsigned long vaddr)
->  {
-> -	void *addr = kmap_atomic(page);
-> +	void *addr = kmap_local_page(page);
->  	clear_user_page(addr, vaddr, page);
-> -	kunmap_atomic(addr);
-> +	kunmap_local(addr);
->  }
->  #endif
->  
-> -- 
-> 2.17.1
-> 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAZsGcACgkQAVBC80lX
+0Gwf0wf/cLto+C+Z1B6HsS7bx+0PrdVH6+ugIDOKcEdkuL2M+MxLrlQs2lC7JQZO
+aPG4wVatt6kf+oP5Vr361DdgHX3/jqGCD7gSIDm7OZ5eTcDZshEj8Lf/kBXGFosQ
+AOWZz7EKh2NpoqZA9WukHfBIIzFJsKXKtPsvBhZu4sWuuj8s3TRyknvvO+NudaJv
++ExQ32WifoaOe8VdhP/gOjndN3i7Ewq1LS8hPOsBzbNE/+7SeqjZ1fuhM+EYwyGf
+NHOOh5TWKJZkdWxrVcnx45FTB/V1xCG8N5MI2qg7CTRxlemLJbfVOvEBXXeh0zD5
+JBpLUC4YeByAiuPuUf3NKACL/a40MQ==
+=042E
+-----END PGP SIGNATURE-----
+
+--Sig_/Ts05nBiZxIIHsTTacUS_zkU--
