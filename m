@@ -2,325 +2,481 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6557630B74B
+	by mail.lfdr.de (Postfix) with ESMTP id D71EB30B74C
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 06:46:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231743AbhBBFpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 00:45:19 -0500
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:9827 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231469AbhBBFpR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 00:45:17 -0500
-X-UUID: 6a00aef4f2cf4d0ba6c3dc2837633599-20210202
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=a/XbKNWHZrzGHmkllglJ5U3wFGb3n7mDtJTAzF3Eq3w=;
-        b=jxSFo4t/bREHFSuvYZmzUNojtjhMNHhpUtpzMw9fu/B/tjd/pkfWau7nRzL2ORbrmSp75LlkdKP0icBzFMgdyCjf/OKo9L55i3DpaXzc+uaBjJAajH5ZfbncHo2zonWz2e5GJxgl/WBvoLcQd3aWiLmih4jjhKm0p1v/yNTZazE=;
-X-UUID: 6a00aef4f2cf4d0ba6c3dc2837633599-20210202
-Received: from mtkcas34.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <ck.hu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1763200846; Tue, 02 Feb 2021 13:44:24 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 2 Feb 2021 13:44:18 +0800
-Received: from [172.21.77.4] (172.21.77.4) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 2 Feb 2021 13:44:18 +0800
-Message-ID: <1612244658.5495.2.camel@mtksdaap41>
-Subject: Re: [PATCH v5 4/8] drm/mediatek: separate ccorr module
-From:   CK Hu <ck.hu@mediatek.com>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-CC:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>
-Date:   Tue, 2 Feb 2021 13:44:18 +0800
-In-Reply-To: <20210201103727.376721-5-hsinyi@chromium.org>
-References: <20210201103727.376721-1-hsinyi@chromium.org>
-         <20210201103727.376721-5-hsinyi@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
-MIME-Version: 1.0
-X-TM-SNTS-SMTP: 3B4EDF650D9376DA38E614DC23D5CDAC244606E571EB1A9E0DF85DFCA0AA314D2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        id S231818AbhBBFpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 00:45:43 -0500
+Received: from [1.6.215.26] ([1.6.215.26]:9201 "EHLO hyd1soter2"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231469AbhBBFpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 00:45:40 -0500
+Received: from hyd1soter2.caveonetworks.com (localhost [127.0.0.1])
+        by hyd1soter2 (8.15.2/8.15.2/Debian-3) with ESMTP id 1125iPiL026496;
+        Tue, 2 Feb 2021 11:14:25 +0530
+Received: (from geetha@localhost)
+        by hyd1soter2.caveonetworks.com (8.15.2/8.15.2/Submit) id 1125iPOl026495;
+        Tue, 2 Feb 2021 11:14:25 +0530
+From:   Geetha sowjanya <gakula@marvell.com>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     sgoutham@marvell.com, davem@davemloft.net, kuba@kernel.org,
+        sbhatta@marvell.com, hkelam@marvell.com, jerinj@marvell.com,
+        lcherian@marvell.com, Geetha sowjanya <gakula@marvell.com>
+Subject: [net-next v2 01/14] octeontx2-af: cn10k: Add mbox support for CN10K platform
+Date:   Tue,  2 Feb 2021 11:14:20 +0530
+Message-Id: <1612244660-26455-1-git-send-email-gakula@marvell.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEhzaW4tWWk6DQoNCk9uIE1vbiwgMjAyMS0wMi0wMSBhdCAxODozNyArMDgwMCwgSHNpbi1Z
-aSBXYW5nIHdyb3RlOg0KPiBGcm9tOiBZb25ncWlhbmcgTml1IDx5b25ncWlhbmcubml1QG1lZGlh
-dGVrLmNvbT4NCj4gDQo+IGNjb3JyIGN0bSBtYXRyaXggYml0cyB3aWxsIGJlIGRpZmZlcmVudCBp
-biBtdDgxOTINCg0KUmV2aWV3ZWQtYnk6IENLIEh1IDxjay5odUBtZWRpYXRlay5jb20+DQoNCj4g
-DQo+IFNpZ25lZC1vZmYtYnk6IFlvbmdxaWFuZyBOaXUgPHlvbmdxaWFuZy5uaXVAbWVkaWF0ZWsu
-Y29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBIc2luLVlpIFdhbmcgPGhzaW55aUBjaHJvbWl1bS5vcmc+
-DQo+IC0tLQ0KPiAgZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL01ha2VmaWxlICAgICAgICAgICB8
-ICAgMyArLQ0KPiAgZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX2Njb3JyLmMgICB8
-IDIxNiArKysrKysrKysrKysrKysrKysrKw0KPiAgZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210
-a19kaXNwX2Rydi5oICAgICB8ICAgOSArDQo+ICBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRr
-X2RybV9kZHBfY29tcC5jIHwgIDk1ICstLS0tLS0tLQ0KPiAgZHJpdmVycy9ncHUvZHJtL21lZGlh
-dGVrL210a19kcm1fZHJ2LmMgICAgICB8ICAgOCArLQ0KPiAgZHJpdmVycy9ncHUvZHJtL21lZGlh
-dGVrL210a19kcm1fZHJ2LmggICAgICB8ICAgMSArDQo+ICA2IGZpbGVzIGNoYW5nZWQsIDIzNiBp
-bnNlcnRpb25zKCspLCA5NiBkZWxldGlvbnMoLSkNCj4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2
-ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3BfY2NvcnIuYw0KPiANCj4gZGlmZiAtLWdpdCBh
-L2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9NYWtlZmlsZSBiL2RyaXZlcnMvZ3B1L2RybS9tZWRp
-YXRlay9NYWtlZmlsZQ0KPiBpbmRleCAxM2EwZWFmYWJmOWMwLi5mMTE5YmVmNmQ2ZTY2IDEwMDY0
-NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvTWFrZWZpbGUNCj4gKysrIGIvZHJp
-dmVycy9ncHUvZHJtL21lZGlhdGVrL01ha2VmaWxlDQo+IEBAIC0xLDYgKzEsNyBAQA0KPiAgIyBT
-UERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMA0KPiAgDQo+IC1tZWRpYXRlay1kcm0teSA6
-PSBtdGtfZGlzcF9jb2xvci5vIFwNCj4gK21lZGlhdGVrLWRybS15IDo9IG10a19kaXNwX2Njb3Jy
-Lm8gXA0KPiArCQkgIG10a19kaXNwX2NvbG9yLm8gXA0KPiAgCQkgIG10a19kaXNwX2dhbW1hLm8g
-XA0KPiAgCQkgIG10a19kaXNwX292bC5vIFwNCj4gIAkJICBtdGtfZGlzcF9wb3N0bWFzay5vIFwN
-Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9jY29yci5j
-IGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX2Njb3JyLmMNCj4gbmV3IGZpbGUg
-bW9kZSAxMDA2NDQNCj4gaW5kZXggMDAwMDAwMDAwMDAwMC4uNmVlMjQzMWU2Yjg0Mw0KPiAtLS0g
-L2Rldi9udWxsDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9jY29y
-ci5jDQo+IEBAIC0wLDAgKzEsMjE2IEBADQo+ICsvLyBTUERYLUxpY2Vuc2UtSWRlbnRpZmllcjog
-R1BMLTIuMC1vbmx5DQo+ICsvKg0KPiArICogQ29weXJpZ2h0IChjKSAyMDIxIE1lZGlhVGVrIElu
-Yy4NCj4gKyAqLw0KPiArDQo+ICsjaW5jbHVkZSA8bGludXgvY2xrLmg+DQo+ICsjaW5jbHVkZSA8
-bGludXgvY29tcG9uZW50Lmg+DQo+ICsjaW5jbHVkZSA8bGludXgvbW9kdWxlLmg+DQo+ICsjaW5j
-bHVkZSA8bGludXgvb2ZfZGV2aWNlLmg+DQo+ICsjaW5jbHVkZSA8bGludXgvb2ZfaXJxLmg+DQo+
-ICsjaW5jbHVkZSA8bGludXgvcGxhdGZvcm1fZGV2aWNlLmg+DQo+ICsjaW5jbHVkZSA8bGludXgv
-c29jL21lZGlhdGVrL210ay1jbWRxLmg+DQo+ICsNCj4gKyNpbmNsdWRlICJtdGtfZGlzcF9kcnYu
-aCINCj4gKyNpbmNsdWRlICJtdGtfZHJtX2NydGMuaCINCj4gKyNpbmNsdWRlICJtdGtfZHJtX2Rk
-cF9jb21wLmgiDQo+ICsNCj4gKyNkZWZpbmUgRElTUF9DQ09SUl9FTgkJCQkweDAwMDANCj4gKyNk
-ZWZpbmUgQ0NPUlJfRU4JCQkJCUJJVCgwKQ0KPiArI2RlZmluZSBESVNQX0NDT1JSX0NGRwkJCQkw
-eDAwMjANCj4gKyNkZWZpbmUgQ0NPUlJfUkVMQVlfTU9ERQkJCQlCSVQoMCkNCj4gKyNkZWZpbmUg
-Q0NPUlJfRU5HSU5FX0VOCQkJCQlCSVQoMSkNCj4gKyNkZWZpbmUgQ0NPUlJfR0FNTUFfT0ZGCQkJ
-CQlCSVQoMikNCj4gKyNkZWZpbmUgQ0NPUlJfV0dBTVVUX1NSQ19DTElQCQkJCUJJVCgzKQ0KPiAr
-I2RlZmluZSBESVNQX0NDT1JSX1NJWkUJCQkJMHgwMDMwDQo+ICsjZGVmaW5lIERJU1BfQ0NPUlJf
-Q09FRl8wCQkJMHgwMDgwDQo+ICsjZGVmaW5lIERJU1BfQ0NPUlJfQ09FRl8xCQkJMHgwMDg0DQo+
-ICsjZGVmaW5lIERJU1BfQ0NPUlJfQ09FRl8yCQkJMHgwMDg4DQo+ICsjZGVmaW5lIERJU1BfQ0NP
-UlJfQ09FRl8zCQkJMHgwMDhDDQo+ICsjZGVmaW5lIERJU1BfQ0NPUlJfQ09FRl80CQkJMHgwMDkw
-DQo+ICsNCj4gK3N0cnVjdCBtdGtfZGlzcF9jY29ycl9kYXRhIHsNCj4gKwl1MzIgcmVzZXJ2ZWQ7
-DQo+ICt9Ow0KPiArDQo+ICsvKioNCj4gKyAqIHN0cnVjdCBtdGtfZGlzcF9jY29yciAtIERJU1Bf
-Q0NPUlIgZHJpdmVyIHN0cnVjdHVyZQ0KPiArICogQGRkcF9jb21wIC0gc3RydWN0dXJlIGNvbnRh
-aW5pbmcgdHlwZSBlbnVtIGFuZCBoYXJkd2FyZSByZXNvdXJjZXMNCj4gKyAqIEBjcnRjIC0gYXNz
-b2NpYXRlZCBjcnRjIHRvIHJlcG9ydCBpcnEgZXZlbnRzIHRvDQo+ICsgKi8NCj4gK3N0cnVjdCBt
-dGtfZGlzcF9jY29yciB7DQo+ICsJc3RydWN0IGNsayAqY2xrOw0KPiArCXZvaWQgX19pb21lbSAq
-cmVnczsNCj4gKwlzdHJ1Y3QgY21kcV9jbGllbnRfcmVnIGNtZHFfcmVnOw0KPiArCWNvbnN0IHN0
-cnVjdCBtdGtfZGlzcF9jY29ycl9kYXRhCSpkYXRhOw0KPiArfTsNCj4gKw0KPiAraW50IG10a19j
-Y29ycl9jbGtfZW5hYmxlKHN0cnVjdCBkZXZpY2UgKmRldikNCj4gK3sNCj4gKwlzdHJ1Y3QgbXRr
-X2Rpc3BfY2NvcnIgKmNjb3JyID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+ICsNCj4gKwlyZXR1
-cm4gY2xrX3ByZXBhcmVfZW5hYmxlKGNjb3JyLT5jbGspOw0KPiArfQ0KPiArDQo+ICt2b2lkIG10
-a19jY29ycl9jbGtfZGlzYWJsZShzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ICt7DQo+ICsJc3RydWN0
-IG10a19kaXNwX2Njb3JyICpjY29yciA9IGRldl9nZXRfZHJ2ZGF0YShkZXYpOw0KPiArDQo+ICsJ
-Y2xrX2Rpc2FibGVfdW5wcmVwYXJlKGNjb3JyLT5jbGspOw0KPiArfQ0KPiArDQo+ICt2b2lkIG10
-a19jY29ycl9jb25maWcoc3RydWN0IGRldmljZSAqZGV2LCB1bnNpZ25lZCBpbnQgdywNCj4gKwkJ
-CSAgICAgdW5zaWduZWQgaW50IGgsIHVuc2lnbmVkIGludCB2cmVmcmVzaCwNCj4gKwkJCSAgICAg
-dW5zaWduZWQgaW50IGJwYywgc3RydWN0IGNtZHFfcGt0ICpjbWRxX3BrdCkNCj4gK3sNCj4gKwlz
-dHJ1Y3QgbXRrX2Rpc3BfY2NvcnIgKmNjb3JyID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+ICsN
-Cj4gKwltdGtfZGRwX3dyaXRlKGNtZHFfcGt0LCBoIDw8IDE2IHwgdywgJmNjb3JyLT5jbWRxX3Jl
-ZywgY2NvcnItPnJlZ3MsDQo+ICsJCSAgICAgIERJU1BfQ0NPUlJfU0laRSk7DQo+ICsJbXRrX2Rk
-cF93cml0ZShjbWRxX3BrdCwgQ0NPUlJfRU5HSU5FX0VOLCAmY2NvcnItPmNtZHFfcmVnLCBjY29y
-ci0+cmVncywNCj4gKwkJICAgICAgRElTUF9DQ09SUl9DRkcpOw0KPiArfQ0KPiArDQo+ICt2b2lk
-IG10a19jY29ycl9zdGFydChzdHJ1Y3QgZGV2aWNlICpkZXYpDQo+ICt7DQo+ICsJc3RydWN0IG10
-a19kaXNwX2Njb3JyICpjY29yciA9IGRldl9nZXRfZHJ2ZGF0YShkZXYpOw0KPiArDQo+ICsJd3Jp
-dGVsKENDT1JSX0VOLCBjY29yci0+cmVncyArIERJU1BfQ0NPUlJfRU4pOw0KPiArfQ0KPiArDQo+
-ICt2b2lkIG10a19jY29ycl9zdG9wKHN0cnVjdCBkZXZpY2UgKmRldikNCj4gK3sNCj4gKwlzdHJ1
-Y3QgbXRrX2Rpc3BfY2NvcnIgKmNjb3JyID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+ICsNCj4g
-Kwl3cml0ZWxfcmVsYXhlZCgweDAsIGNjb3JyLT5yZWdzICsgRElTUF9DQ09SUl9FTik7DQo+ICt9
-DQo+ICsNCj4gKy8qIENvbnZlcnRzIGEgRFJNIFMzMS4zMiB2YWx1ZSB0byB0aGUgSFcgUzEuMTAg
-Zm9ybWF0LiAqLw0KPiArc3RhdGljIHUxNiBtdGtfY3RtX3MzMV8zMl90b19zMV8xMCh1NjQgaW4p
-DQo+ICt7DQo+ICsJdTE2IHI7DQo+ICsNCj4gKwkvKiBTaWduIGJpdC4gKi8NCj4gKwlyID0gaW4g
-JiBCSVRfVUxMKDYzKSA/IEJJVCgxMSkgOiAwOw0KPiArDQo+ICsJaWYgKChpbiAmIEdFTk1BU0tf
-VUxMKDYyLCAzMykpID4gMCkgew0KPiArCQkvKiBpZGVudGl0eSB2YWx1ZSAweDEwMDAwMDAwMCAt
-PiAweDQwMCwgKi8NCj4gKwkJLyogaWYgYmlnZ2VyIHRoaXMsIHNldCBpdCB0byBtYXggMHg3ZmYu
-ICovDQo+ICsJCXIgfD0gR0VOTUFTSygxMCwgMCk7DQo+ICsJfSBlbHNlIHsNCj4gKwkJLyogdGFr
-ZSB0aGUgMTEgbW9zdCBpbXBvcnRhbnQgYml0cy4gKi8NCj4gKwkJciB8PSAoaW4gPj4gMjIpICYg
-R0VOTUFTSygxMCwgMCk7DQo+ICsJfQ0KPiArDQo+ICsJcmV0dXJuIHI7DQo+ICt9DQo+ICsNCj4g
-K3ZvaWQgbXRrX2Njb3JyX2N0bV9zZXQoc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QgZHJtX2Ny
-dGNfc3RhdGUgKnN0YXRlKQ0KPiArew0KPiArCXN0cnVjdCBtdGtfZGlzcF9jY29yciAqY2NvcnIg
-PSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsNCj4gKwlzdHJ1Y3QgZHJtX3Byb3BlcnR5X2Jsb2IgKmJs
-b2IgPSBzdGF0ZS0+Y3RtOw0KPiArCXN0cnVjdCBkcm1fY29sb3JfY3RtICpjdG07DQo+ICsJY29u
-c3QgdTY0ICppbnB1dDsNCj4gKwl1aW50MTZfdCBjb2VmZnNbOV0gPSB7IDAgfTsNCj4gKwlpbnQg
-aTsNCj4gKwlzdHJ1Y3QgY21kcV9wa3QgKmNtZHFfcGt0ID0gTlVMTDsNCj4gKw0KPiArCWlmICgh
-YmxvYikNCj4gKwkJcmV0dXJuOw0KPiArDQo+ICsJY3RtID0gKHN0cnVjdCBkcm1fY29sb3JfY3Rt
-ICopYmxvYi0+ZGF0YTsNCj4gKwlpbnB1dCA9IGN0bS0+bWF0cml4Ow0KPiArDQo+ICsJZm9yIChp
-ID0gMDsgaSA8IEFSUkFZX1NJWkUoY29lZmZzKTsgaSsrKQ0KPiArCQljb2VmZnNbaV0gPSBtdGtf
-Y3RtX3MzMV8zMl90b19zMV8xMChpbnB1dFtpXSk7DQo+ICsNCj4gKwltdGtfZGRwX3dyaXRlKGNt
-ZHFfcGt0LCBjb2VmZnNbMF0gPDwgMTYgfCBjb2VmZnNbMV0sDQo+ICsJCSAgICAgICZjY29yci0+
-Y21kcV9yZWcsIGNjb3JyLT5yZWdzLCBESVNQX0NDT1JSX0NPRUZfMCk7DQo+ICsJbXRrX2RkcF93
-cml0ZShjbWRxX3BrdCwgY29lZmZzWzJdIDw8IDE2IHwgY29lZmZzWzNdLA0KPiArCQkgICAgICAm
-Y2NvcnItPmNtZHFfcmVnLCBjY29yci0+cmVncywgRElTUF9DQ09SUl9DT0VGXzEpOw0KPiArCW10
-a19kZHBfd3JpdGUoY21kcV9wa3QsIGNvZWZmc1s0XSA8PCAxNiB8IGNvZWZmc1s1XSwNCj4gKwkJ
-ICAgICAgJmNjb3JyLT5jbWRxX3JlZywgY2NvcnItPnJlZ3MsIERJU1BfQ0NPUlJfQ09FRl8yKTsN
-Cj4gKwltdGtfZGRwX3dyaXRlKGNtZHFfcGt0LCBjb2VmZnNbNl0gPDwgMTYgfCBjb2VmZnNbN10s
-DQo+ICsJCSAgICAgICZjY29yci0+Y21kcV9yZWcsIGNjb3JyLT5yZWdzLCBESVNQX0NDT1JSX0NP
-RUZfMyk7DQo+ICsJbXRrX2RkcF93cml0ZShjbWRxX3BrdCwgY29lZmZzWzhdIDw8IDE2LA0KPiAr
-CQkgICAgICAmY2NvcnItPmNtZHFfcmVnLCBjY29yci0+cmVncywgRElTUF9DQ09SUl9DT0VGXzQp
-Ow0KPiArfQ0KPiArDQo+ICtzdGF0aWMgaW50IG10a19kaXNwX2Njb3JyX2JpbmQoc3RydWN0IGRl
-dmljZSAqZGV2LCBzdHJ1Y3QgZGV2aWNlICptYXN0ZXIsDQo+ICsJCQkgICAgICAgdm9pZCAqZGF0
-YSkNCj4gK3sNCj4gKwlyZXR1cm4gMDsNCj4gK30NCj4gKw0KPiArc3RhdGljIHZvaWQgbXRrX2Rp
-c3BfY2NvcnJfdW5iaW5kKHN0cnVjdCBkZXZpY2UgKmRldiwgc3RydWN0IGRldmljZSAqbWFzdGVy
-LA0KPiArCQkJCSAgdm9pZCAqZGF0YSkNCj4gK3sNCj4gK30NCj4gKw0KPiArc3RhdGljIGNvbnN0
-IHN0cnVjdCBjb21wb25lbnRfb3BzIG10a19kaXNwX2Njb3JyX2NvbXBvbmVudF9vcHMgPSB7DQo+
-ICsJLmJpbmQJPSBtdGtfZGlzcF9jY29ycl9iaW5kLA0KPiArCS51bmJpbmQJPSBtdGtfZGlzcF9j
-Y29ycl91bmJpbmQsDQo+ICt9Ow0KPiArDQo+ICtzdGF0aWMgaW50IG10a19kaXNwX2Njb3JyX3By
-b2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpDQo+ICt7DQo+ICsJc3RydWN0IGRldmlj
-ZSAqZGV2ID0gJnBkZXYtPmRldjsNCj4gKwlzdHJ1Y3QgbXRrX2Rpc3BfY2NvcnIgKnByaXY7DQo+
-ICsJc3RydWN0IHJlc291cmNlICpyZXM7DQo+ICsJaW50IHJldDsNCj4gKw0KPiArCXByaXYgPSBk
-ZXZtX2t6YWxsb2MoZGV2LCBzaXplb2YoKnByaXYpLCBHRlBfS0VSTkVMKTsNCj4gKwlpZiAoIXBy
-aXYpDQo+ICsJCXJldHVybiAtRU5PTUVNOw0KPiArDQo+ICsJcHJpdi0+Y2xrID0gZGV2bV9jbGtf
-Z2V0KGRldiwgTlVMTCk7DQo+ICsJaWYgKElTX0VSUihwcml2LT5jbGspKSB7DQo+ICsJCWRldl9l
-cnIoZGV2LCAiZmFpbGVkIHRvIGdldCBjY29yciBjbGtcbiIpOw0KPiArCQlyZXR1cm4gUFRSX0VS
-Uihwcml2LT5jbGspOw0KPiArCX0NCj4gKw0KPiArCXJlcyA9IHBsYXRmb3JtX2dldF9yZXNvdXJj
-ZShwZGV2LCBJT1JFU09VUkNFX01FTSwgMCk7DQo+ICsJcHJpdi0+cmVncyA9IGRldm1faW9yZW1h
-cF9yZXNvdXJjZShkZXYsIHJlcyk7DQo+ICsJaWYgKElTX0VSUihwcml2LT5yZWdzKSkgew0KPiAr
-CQlkZXZfZXJyKGRldiwgImZhaWxlZCB0byBpb3JlbWFwIGNjb3JyXG4iKTsNCj4gKwkJcmV0dXJu
-IFBUUl9FUlIocHJpdi0+cmVncyk7DQo+ICsJfQ0KPiArDQo+ICsjaWYgSVNfUkVBQ0hBQkxFKENP
-TkZJR19NVEtfQ01EUSkNCj4gKwlyZXQgPSBjbWRxX2Rldl9nZXRfY2xpZW50X3JlZyhkZXYsICZw
-cml2LT5jbWRxX3JlZywgMCk7DQo+ICsJaWYgKHJldCkNCj4gKwkJZGV2X2RiZyhkZXYsICJnZXQg
-bWVkaWF0ZWssZ2NlLWNsaWVudC1yZWcgZmFpbCFcbiIpOw0KPiArI2VuZGlmDQo+ICsNCj4gKwlw
-cml2LT5kYXRhID0gb2ZfZGV2aWNlX2dldF9tYXRjaF9kYXRhKGRldik7DQo+ICsJcGxhdGZvcm1f
-c2V0X2RydmRhdGEocGRldiwgcHJpdik7DQo+ICsNCj4gKwlyZXQgPSBjb21wb25lbnRfYWRkKGRl
-diwgJm10a19kaXNwX2Njb3JyX2NvbXBvbmVudF9vcHMpOw0KPiArCWlmIChyZXQpDQo+ICsJCWRl
-dl9lcnIoZGV2LCAiRmFpbGVkIHRvIGFkZCBjb21wb25lbnQ6ICVkXG4iLCByZXQpOw0KPiArDQo+
-ICsJcmV0dXJuIHJldDsNCj4gK30NCj4gKw0KPiArc3RhdGljIGludCBtdGtfZGlzcF9jY29ycl9y
-ZW1vdmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikNCj4gK3sNCj4gKwljb21wb25lbnRf
-ZGVsKCZwZGV2LT5kZXYsICZtdGtfZGlzcF9jY29ycl9jb21wb25lbnRfb3BzKTsNCj4gKw0KPiAr
-CXJldHVybiAwOw0KPiArfQ0KPiArDQo+ICtzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2RldmljZV9p
-ZCBtdGtfZGlzcF9jY29ycl9kcml2ZXJfZHRfbWF0Y2hbXSA9IHsNCj4gKwl7IC5jb21wYXRpYmxl
-ID0gIm1lZGlhdGVrLG10ODE4My1kaXNwLWNjb3JyIn0sDQo+ICsJe30sDQo+ICt9Ow0KPiArTU9E
-VUxFX0RFVklDRV9UQUJMRShvZiwgbXRrX2Rpc3BfY2NvcnJfZHJpdmVyX2R0X21hdGNoKTsNCj4g
-Kw0KPiArc3RydWN0IHBsYXRmb3JtX2RyaXZlciBtdGtfZGlzcF9jY29ycl9kcml2ZXIgPSB7DQo+
-ICsJLnByb2JlCQk9IG10a19kaXNwX2Njb3JyX3Byb2JlLA0KPiArCS5yZW1vdmUJCT0gbXRrX2Rp
-c3BfY2NvcnJfcmVtb3ZlLA0KPiArCS5kcml2ZXIJCT0gew0KPiArCQkubmFtZQk9ICJtZWRpYXRl
-ay1kaXNwLWNjb3JyIiwNCj4gKwkJLm93bmVyCT0gVEhJU19NT0RVTEUsDQo+ICsJCS5vZl9tYXRj
-aF90YWJsZSA9IG10a19kaXNwX2Njb3JyX2RyaXZlcl9kdF9tYXRjaCwNCj4gKwl9LA0KPiArfTsN
-Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9kcnYuaCBi
-L2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9kcnYuaA0KPiBpbmRleCAwNmQ0ZDRl
-MWMwZDA1Li40NjlkNGUxMmIyMDAzIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vbWVk
-aWF0ZWsvbXRrX2Rpc3BfZHJ2LmgNCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210
-a19kaXNwX2Rydi5oDQo+IEBAIC05LDYgKzksMTUgQEANCj4gICNpbmNsdWRlIDxsaW51eC9zb2Mv
-bWVkaWF0ZWsvbXRrLWNtZHEuaD4NCj4gICNpbmNsdWRlICJtdGtfZHJtX3BsYW5lLmgiDQo+ICAN
-Cj4gK3ZvaWQgbXRrX2Njb3JyX2N0bV9zZXQoc3RydWN0IGRldmljZSAqZGV2LCBzdHJ1Y3QgZHJt
-X2NydGNfc3RhdGUgKnN0YXRlKTsNCj4gK2ludCBtdGtfY2NvcnJfY2xrX2VuYWJsZShzdHJ1Y3Qg
-ZGV2aWNlICpkZXYpOw0KPiArdm9pZCBtdGtfY2NvcnJfY2xrX2Rpc2FibGUoc3RydWN0IGRldmlj
-ZSAqZGV2KTsNCj4gK3ZvaWQgbXRrX2Njb3JyX2NvbmZpZyhzdHJ1Y3QgZGV2aWNlICpkZXYsIHVu
-c2lnbmVkIGludCB3LA0KPiArCQkgICAgICB1bnNpZ25lZCBpbnQgaCwgdW5zaWduZWQgaW50IHZy
-ZWZyZXNoLA0KPiArCQkgICAgICB1bnNpZ25lZCBpbnQgYnBjLCBzdHJ1Y3QgY21kcV9wa3QgKmNt
-ZHFfcGt0KTsNCj4gK3ZvaWQgbXRrX2Njb3JyX3N0YXJ0KHN0cnVjdCBkZXZpY2UgKmRldik7DQo+
-ICt2b2lkIG10a19jY29ycl9zdG9wKHN0cnVjdCBkZXZpY2UgKmRldik7DQo+ICsNCj4gIHZvaWQg
-bXRrX2NvbG9yX2J5cGFzc19zaGFkb3coc3RydWN0IGRldmljZSAqZGV2KTsNCj4gIGludCBtdGtf
-Y29sb3JfY2xrX2VuYWJsZShzdHJ1Y3QgZGV2aWNlICpkZXYpOw0KPiAgdm9pZCBtdGtfY29sb3Jf
-Y2xrX2Rpc2FibGUoc3RydWN0IGRldmljZSAqZGV2KTsNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
-Z3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2RkcF9jb21wLmMgYi9kcml2ZXJzL2dwdS9kcm0vbWVk
-aWF0ZWsvbXRrX2RybV9kZHBfY29tcC5jDQo+IGluZGV4IGQ4ODQ4MDc4MDk2MzUuLjRhODAxNWQy
-NDdlYzcgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2Rk
-cF9jb21wLmMNCj4gKysrIGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kcm1fZGRwX2Nv
-bXAuYw0KPiBAQCAtMzUsMjAgKzM1LDYgQEANCj4gICNkZWZpbmUgRElTUF9BQUxfRU4JCQkJMHgw
-MDAwDQo+ICAjZGVmaW5lIERJU1BfQUFMX1NJWkUJCQkJMHgwMDMwDQo+ICANCj4gLSNkZWZpbmUg
-RElTUF9DQ09SUl9FTgkJCQkweDAwMDANCj4gLSNkZWZpbmUgQ0NPUlJfRU4JCQkJQklUKDApDQo+
-IC0jZGVmaW5lIERJU1BfQ0NPUlJfQ0ZHCQkJCTB4MDAyMA0KPiAtI2RlZmluZSBDQ09SUl9SRUxB
-WV9NT0RFCQkJQklUKDApDQo+IC0jZGVmaW5lIENDT1JSX0VOR0lORV9FTgkJCQlCSVQoMSkNCj4g
-LSNkZWZpbmUgQ0NPUlJfR0FNTUFfT0ZGCQkJCUJJVCgyKQ0KPiAtI2RlZmluZSBDQ09SUl9XR0FN
-VVRfU1JDX0NMSVAJCQlCSVQoMykNCj4gLSNkZWZpbmUgRElTUF9DQ09SUl9TSVpFCQkJCTB4MDAz
-MA0KPiAtI2RlZmluZSBESVNQX0NDT1JSX0NPRUZfMAkJCTB4MDA4MA0KPiAtI2RlZmluZSBESVNQ
-X0NDT1JSX0NPRUZfMQkJCTB4MDA4NA0KPiAtI2RlZmluZSBESVNQX0NDT1JSX0NPRUZfMgkJCTB4
-MDA4OA0KPiAtI2RlZmluZSBESVNQX0NDT1JSX0NPRUZfMwkJCTB4MDA4Qw0KPiAtI2RlZmluZSBE
-SVNQX0NDT1JSX0NPRUZfNAkJCTB4MDA5MA0KPiAtDQo+ICAjZGVmaW5lIERJU1BfRElUSEVSX0VO
-CQkJCTB4MDAwMA0KPiAgI2RlZmluZSBESVRIRVJfRU4JCQkJQklUKDApDQo+ICAjZGVmaW5lIERJ
-U1BfRElUSEVSX0NGRwkJCQkweDAwMjANCj4gQEAgLTIzNCw4MiArMjIwLDYgQEAgc3RhdGljIHZv
-aWQgbXRrX2FhbF9zdG9wKHN0cnVjdCBkZXZpY2UgKmRldikNCj4gIAl3cml0ZWxfcmVsYXhlZCgw
-eDAsIHByaXYtPnJlZ3MgKyBESVNQX0FBTF9FTik7DQo+ICB9DQo+ICANCj4gLXN0YXRpYyB2b2lk
-IG10a19jY29ycl9jb25maWcoc3RydWN0IGRldmljZSAqZGV2LCB1bnNpZ25lZCBpbnQgdywNCj4g
-LQkJCSAgICAgdW5zaWduZWQgaW50IGgsIHVuc2lnbmVkIGludCB2cmVmcmVzaCwNCj4gLQkJCSAg
-ICAgdW5zaWduZWQgaW50IGJwYywgc3RydWN0IGNtZHFfcGt0ICpjbWRxX3BrdCkNCj4gLXsNCj4g
-LQlzdHJ1Y3QgbXRrX2RkcF9jb21wX2RldiAqcHJpdiA9IGRldl9nZXRfZHJ2ZGF0YShkZXYpOw0K
-PiAtDQo+IC0JbXRrX2RkcF93cml0ZShjbWRxX3BrdCwgaCA8PCAxNiB8IHcsICZwcml2LT5jbWRx
-X3JlZywgcHJpdi0+cmVncywgRElTUF9DQ09SUl9TSVpFKTsNCj4gLQltdGtfZGRwX3dyaXRlKGNt
-ZHFfcGt0LCBDQ09SUl9FTkdJTkVfRU4sICZwcml2LT5jbWRxX3JlZywgcHJpdi0+cmVncywgRElT
-UF9DQ09SUl9DRkcpOw0KPiAtfQ0KPiAtDQo+IC1zdGF0aWMgdm9pZCBtdGtfY2NvcnJfc3RhcnQo
-c3RydWN0IGRldmljZSAqZGV2KQ0KPiAtew0KPiAtCXN0cnVjdCBtdGtfZGRwX2NvbXBfZGV2ICpw
-cml2ID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+IC0NCj4gLQl3cml0ZWwoQ0NPUlJfRU4sIHBy
-aXYtPnJlZ3MgKyBESVNQX0NDT1JSX0VOKTsNCj4gLX0NCj4gLQ0KPiAtc3RhdGljIHZvaWQgbXRr
-X2Njb3JyX3N0b3Aoc3RydWN0IGRldmljZSAqZGV2KQ0KPiAtew0KPiAtCXN0cnVjdCBtdGtfZGRw
-X2NvbXBfZGV2ICpwcml2ID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+IC0NCj4gLQl3cml0ZWxf
-cmVsYXhlZCgweDAsIHByaXYtPnJlZ3MgKyBESVNQX0NDT1JSX0VOKTsNCj4gLX0NCj4gLQ0KPiAt
-LyogQ29udmVydHMgYSBEUk0gUzMxLjMyIHZhbHVlIHRvIHRoZSBIVyBTMS4xMCBmb3JtYXQuICov
-DQo+IC1zdGF0aWMgdTE2IG10a19jdG1fczMxXzMyX3RvX3MxXzEwKHU2NCBpbikNCj4gLXsNCj4g
-LQl1MTYgcjsNCj4gLQ0KPiAtCS8qIFNpZ24gYml0LiAqLw0KPiAtCXIgPSBpbiAmIEJJVF9VTEwo
-NjMpID8gQklUKDExKSA6IDA7DQo+IC0NCj4gLQlpZiAoKGluICYgR0VOTUFTS19VTEwoNjIsIDMz
-KSkgPiAwKSB7DQo+IC0JCS8qIGlkZW50aXR5IHZhbHVlIDB4MTAwMDAwMDAwIC0+IDB4NDAwLCAq
-Lw0KPiAtCQkvKiBpZiBiaWdnZXIgdGhpcywgc2V0IGl0IHRvIG1heCAweDdmZi4gKi8NCj4gLQkJ
-ciB8PSBHRU5NQVNLKDEwLCAwKTsNCj4gLQl9IGVsc2Ugew0KPiAtCQkvKiB0YWtlIHRoZSAxMSBt
-b3N0IGltcG9ydGFudCBiaXRzLiAqLw0KPiAtCQlyIHw9IChpbiA+PiAyMikgJiBHRU5NQVNLKDEw
-LCAwKTsNCj4gLQl9DQo+IC0NCj4gLQlyZXR1cm4gcjsNCj4gLX0NCj4gLQ0KPiAtc3RhdGljIHZv
-aWQgbXRrX2Njb3JyX2N0bV9zZXQoc3RydWN0IGRldmljZSAqZGV2LA0KPiAtCQkJICAgICAgc3Ry
-dWN0IGRybV9jcnRjX3N0YXRlICpzdGF0ZSkNCj4gLXsNCj4gLQlzdHJ1Y3QgbXRrX2RkcF9jb21w
-X2RldiAqcHJpdiA9IGRldl9nZXRfZHJ2ZGF0YShkZXYpOw0KPiAtCXN0cnVjdCBkcm1fcHJvcGVy
-dHlfYmxvYiAqYmxvYiA9IHN0YXRlLT5jdG07DQo+IC0Jc3RydWN0IGRybV9jb2xvcl9jdG0gKmN0
-bTsNCj4gLQljb25zdCB1NjQgKmlucHV0Ow0KPiAtCXVpbnQxNl90IGNvZWZmc1s5XSA9IHsgMCB9
-Ow0KPiAtCWludCBpOw0KPiAtCXN0cnVjdCBjbWRxX3BrdCAqY21kcV9wa3QgPSBOVUxMOw0KPiAt
-DQo+IC0JaWYgKCFibG9iKQ0KPiAtCQlyZXR1cm47DQo+IC0NCj4gLQljdG0gPSAoc3RydWN0IGRy
-bV9jb2xvcl9jdG0gKilibG9iLT5kYXRhOw0KPiAtCWlucHV0ID0gY3RtLT5tYXRyaXg7DQo+IC0N
-Cj4gLQlmb3IgKGkgPSAwOyBpIDwgQVJSQVlfU0laRShjb2VmZnMpOyBpKyspDQo+IC0JCWNvZWZm
-c1tpXSA9IG10a19jdG1fczMxXzMyX3RvX3MxXzEwKGlucHV0W2ldKTsNCj4gLQ0KPiAtCW10a19k
-ZHBfd3JpdGUoY21kcV9wa3QsIGNvZWZmc1swXSA8PCAxNiB8IGNvZWZmc1sxXSwNCj4gLQkJICAg
-ICAgJnByaXYtPmNtZHFfcmVnLCBwcml2LT5yZWdzLCBESVNQX0NDT1JSX0NPRUZfMCk7DQo+IC0J
-bXRrX2RkcF93cml0ZShjbWRxX3BrdCwgY29lZmZzWzJdIDw8IDE2IHwgY29lZmZzWzNdLA0KPiAt
-CQkgICAgICAmcHJpdi0+Y21kcV9yZWcsIHByaXYtPnJlZ3MsIERJU1BfQ0NPUlJfQ09FRl8xKTsN
-Cj4gLQltdGtfZGRwX3dyaXRlKGNtZHFfcGt0LCBjb2VmZnNbNF0gPDwgMTYgfCBjb2VmZnNbNV0s
-DQo+IC0JCSAgICAgICZwcml2LT5jbWRxX3JlZywgcHJpdi0+cmVncywgRElTUF9DQ09SUl9DT0VG
-XzIpOw0KPiAtCW10a19kZHBfd3JpdGUoY21kcV9wa3QsIGNvZWZmc1s2XSA8PCAxNiB8IGNvZWZm
-c1s3XSwNCj4gLQkJICAgICAgJnByaXYtPmNtZHFfcmVnLCBwcml2LT5yZWdzLCBESVNQX0NDT1JS
-X0NPRUZfMyk7DQo+IC0JbXRrX2RkcF93cml0ZShjbWRxX3BrdCwgY29lZmZzWzhdIDw8IDE2LA0K
-PiAtCQkgICAgICAmcHJpdi0+Y21kcV9yZWcsIHByaXYtPnJlZ3MsIERJU1BfQ0NPUlJfQ09FRl80
-KTsNCj4gLX0NCj4gLQ0KPiAgc3RhdGljIHZvaWQgbXRrX2RpdGhlcl9jb25maWcoc3RydWN0IGRl
-dmljZSAqZGV2LCB1bnNpZ25lZCBpbnQgdywNCj4gIAkJCSAgICAgIHVuc2lnbmVkIGludCBoLCB1
-bnNpZ25lZCBpbnQgdnJlZnJlc2gsDQo+ICAJCQkgICAgICB1bnNpZ25lZCBpbnQgYnBjLCBzdHJ1
-Y3QgY21kcV9wa3QgKmNtZHFfcGt0KQ0KPiBAQCAtMzQ4LDggKzI1OCw4IEBAIHN0YXRpYyBjb25z
-dCBzdHJ1Y3QgbXRrX2RkcF9jb21wX2Z1bmNzIGRkcF9hYWwgPSB7DQo+ICB9Ow0KPiAgDQo+ICBz
-dGF0aWMgY29uc3Qgc3RydWN0IG10a19kZHBfY29tcF9mdW5jcyBkZHBfY2NvcnIgPSB7DQo+IC0J
-LmNsa19lbmFibGUgPSBtdGtfZGRwX2Nsa19lbmFibGUsDQo+IC0JLmNsa19kaXNhYmxlID0gbXRr
-X2RkcF9jbGtfZGlzYWJsZSwNCj4gKwkuY2xrX2VuYWJsZSA9IG10a19jY29ycl9jbGtfZW5hYmxl
-LA0KPiArCS5jbGtfZGlzYWJsZSA9IG10a19jY29ycl9jbGtfZGlzYWJsZSwNCj4gIAkuY29uZmln
-ID0gbXRrX2Njb3JyX2NvbmZpZywNCj4gIAkuc3RhcnQgPSBtdGtfY2NvcnJfc3RhcnQsDQo+ICAJ
-LnN0b3AgPSBtdGtfY2NvcnJfc3RvcCwNCj4gQEAgLTYxMCw2ICs1MjAsNyBAQCBpbnQgbXRrX2Rk
-cF9jb21wX2luaXQoc3RydWN0IGRldmljZV9ub2RlICpub2RlLCBzdHJ1Y3QgbXRrX2RkcF9jb21w
-ICpjb21wLA0KPiAgCX0NCj4gIA0KPiAgCWlmICh0eXBlID09IE1US19ESVNQX0JMUyB8fA0KPiAr
-CSAgICB0eXBlID09IE1US19ESVNQX0NDT1JSIHx8DQo+ICAJICAgIHR5cGUgPT0gTVRLX0RJU1Bf
-Q09MT1IgfHwNCj4gIAkgICAgdHlwZSA9PSBNVEtfRElTUF9HQU1NQSB8fA0KPiAgCSAgICB0eXBl
-ID09IE1US19ESVNQX1BPU1RNQVNLIHx8DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0v
-bWVkaWF0ZWsvbXRrX2RybV9kcnYuYyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJt
-X2Rydi5jDQo+IGluZGV4IGQ5OWFmYzg1Mjg2ODQuLjNkYTg5OTY0MzhkYmMgMTAwNjQ0DQo+IC0t
-LSBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2Rydi5jDQo+ICsrKyBiL2RyaXZl
-cnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2Rydi5jDQo+IEBAIC01MzEsMTEgKzUzMSwxMiBA
-QCBzdGF0aWMgaW50IG10a19kcm1fcHJvYmUoc3RydWN0IHBsYXRmb3JtX2RldmljZSAqcGRldikN
-Cj4gIAkJcHJpdmF0ZS0+Y29tcF9ub2RlW2NvbXBfaWRdID0gb2Zfbm9kZV9nZXQobm9kZSk7DQo+
-ICANCj4gIAkJLyoNCj4gLQkJICogQ3VycmVudGx5IG9ubHkgdGhlIENPTE9SLCBHQU1NQSwgT1ZM
-LCBQT1NUTUFTSywgUkRNQSwgRFNJLCBhbmQgRFBJIGJsb2NrcyBoYXZlDQo+IC0JCSAqIHNlcGFy
-YXRlIGNvbXBvbmVudCBwbGF0Zm9ybSBkcml2ZXJzIGFuZCBpbml0aWFsaXplIHRoZWlyIG93bg0K
-PiArCQkgKiBDdXJyZW50bHkgb25seSB0aGUgQ0NPUlIsIENPTE9SLCBHQU1NQSwgT1ZMLCBQT1NU
-TUFTSywgUkRNQSwgRFNJLCBhbmQgRFBJDQo+ICsJCSAqIGJsb2NrcyBoYXZlIHNlcGFyYXRlIGNv
-bXBvbmVudCBwbGF0Zm9ybSBkcml2ZXJzIGFuZCBpbml0aWFsaXplIHRoZWlyIG93bg0KPiAgCQkg
-KiBERFAgY29tcG9uZW50IHN0cnVjdHVyZS4gVGhlIG90aGVycyBhcmUgaW5pdGlhbGl6ZWQgaGVy
-ZS4NCj4gIAkJICovDQo+IC0JCWlmIChjb21wX3R5cGUgPT0gTVRLX0RJU1BfQ09MT1IgfHwNCj4g
-KwkJaWYgKGNvbXBfdHlwZSA9PSBNVEtfRElTUF9DQ09SUiB8fA0KPiArCQkgICAgY29tcF90eXBl
-ID09IE1US19ESVNQX0NPTE9SIHx8DQo+ICAJCSAgICBjb21wX3R5cGUgPT0gTVRLX0RJU1BfR0FN
-TUEgfHwNCj4gIAkJICAgIGNvbXBfdHlwZSA9PSBNVEtfRElTUF9PVkwgfHwNCj4gIAkJICAgIGNv
-bXBfdHlwZSA9PSBNVEtfRElTUF9PVkxfMkwgfHwNCj4gQEAgLTYzNSw2ICs2MzYsNyBAQCBzdGF0
-aWMgc3RydWN0IHBsYXRmb3JtX2RyaXZlciBtdGtfZHJtX3BsYXRmb3JtX2RyaXZlciA9IHsNCj4g
-IH07DQo+ICANCj4gIHN0YXRpYyBzdHJ1Y3QgcGxhdGZvcm1fZHJpdmVyICogY29uc3QgbXRrX2Ry
-bV9kcml2ZXJzW10gPSB7DQo+ICsJJm10a19kaXNwX2Njb3JyX2RyaXZlciwNCj4gIAkmbXRrX2Rp
-c3BfY29sb3JfZHJpdmVyLA0KPiAgCSZtdGtfZGlzcF9nYW1tYV9kcml2ZXIsDQo+ICAJJm10a19k
-aXNwX292bF9kcml2ZXIsDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsv
-bXRrX2RybV9kcnYuaCBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2Rydi5oDQo+
-IGluZGV4IDdlN2IyOGUzMmFhMmYuLmI0OTA2MjM2NGMzZDIgMTAwNjQ0DQo+IC0tLSBhL2RyaXZl
-cnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZHJtX2Rydi5oDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2Ry
-bS9tZWRpYXRlay9tdGtfZHJtX2Rydi5oDQo+IEBAIC00Niw2ICs0Niw3IEBAIHN0cnVjdCBtdGtf
-ZHJtX3ByaXZhdGUgew0KPiAgCXN0cnVjdCBkcm1fYXRvbWljX3N0YXRlICpzdXNwZW5kX3N0YXRl
-Ow0KPiAgfTsNCj4gIA0KPiArZXh0ZXJuIHN0cnVjdCBwbGF0Zm9ybV9kcml2ZXIgbXRrX2Rpc3Bf
-Y2NvcnJfZHJpdmVyOw0KPiAgZXh0ZXJuIHN0cnVjdCBwbGF0Zm9ybV9kcml2ZXIgbXRrX2Rpc3Bf
-Y29sb3JfZHJpdmVyOw0KPiAgZXh0ZXJuIHN0cnVjdCBwbGF0Zm9ybV9kcml2ZXIgbXRrX2Rpc3Bf
-Z2FtbWFfZHJpdmVyOw0KPiAgZXh0ZXJuIHN0cnVjdCBwbGF0Zm9ybV9kcml2ZXIgbXRrX2Rpc3Bf
-b3ZsX2RyaXZlcjsNCg0K
+Firmware allocates memory regions for PFs and VFs in DRAM.
+The PFs memory region is used for AF-PF and PF-VF mailbox.
+This mbox facilitates communication between AF-PF and PF-VF.
+
+On CN10K platform:
+The DRAM region allocated to PF is enumerated as PF BAR4 memory.
+PF BAR4 contains AF-PF mbox region followed by its VFs mbox region.
+AF-PF mbox region base address is configured at RVU_AF_PFX_BAR4_ADDR
+PF-VF mailbox base address is configured at
+RVU_PF(x)_VF_MBOX_ADDR = RVU_AF_PF()_BAR4_ADDR+64KB. PF access its
+mbox region via BAR4, whereas VF accesses PF-VF DRAM mailboxes via
+BAR2 indirect access.
+
+On CN9XX platform:
+Mailbox region in DRAM is divided into two parts AF-PF mbox region and
+PF-VF mbox region i.e all PFs mbox region is contiguous similarly all
+VFs.
+The base address of the AF-PF mbox region is configured at
+RVU_AF_PF_BAR4_ADDR.
+AF-PF1 mbox address can be calculated as RVU_AF_PF_BAR4_ADDR * mbox
+size.
+The base address of PF-VF mbox region for each PF is configure at
+RVU_AF_PF(0..15)_VF_BAR4_ADDR.PF access its mbox region via BAR4 and its
+VF mbox regions from RVU_PF_VF_BAR4_ADDR register, whereas VF access its
+mbox region via BAR4.
+
+This patch changes mbox initialization to support both CN9XX and CN10K
+platform.
+
+Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
+Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
+---
+ drivers/net/ethernet/marvell/octeontx2/af/mbox.c   |  59 ++++++++--
+ drivers/net/ethernet/marvell/octeontx2/af/mbox.h   |   4 +
+ drivers/net/ethernet/marvell/octeontx2/af/rvu.c    | 122 ++++++++++++++++-----
+ drivers/net/ethernet/marvell/octeontx2/af/rvu.h    |  23 ++++
+ .../net/ethernet/marvell/octeontx2/af/rvu_reg.h    |   7 ++
+ 5 files changed, 179 insertions(+), 36 deletions(-)
+
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.c b/drivers/net/ethernet/marvell/octeontx2/af/mbox.c
+index bbabb8e6..0a37ca9 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.c
+@@ -20,9 +20,9 @@ static const u16 msgs_offset = ALIGN(sizeof(struct mbox_hdr), MBOX_MSG_ALIGN);
+ 
+ void __otx2_mbox_reset(struct otx2_mbox *mbox, int devid)
+ {
+-	void *hw_mbase = mbox->hwbase + (devid * MBOX_SIZE);
+ 	struct otx2_mbox_dev *mdev = &mbox->dev[devid];
+ 	struct mbox_hdr *tx_hdr, *rx_hdr;
++	void *hw_mbase = mdev->hwbase;
+ 
+ 	tx_hdr = hw_mbase + mbox->tx_start;
+ 	rx_hdr = hw_mbase + mbox->rx_start;
+@@ -56,12 +56,9 @@ void otx2_mbox_destroy(struct otx2_mbox *mbox)
+ }
+ EXPORT_SYMBOL(otx2_mbox_destroy);
+ 
+-int otx2_mbox_init(struct otx2_mbox *mbox, void *hwbase, struct pci_dev *pdev,
+-		   void *reg_base, int direction, int ndevs)
++static int otx2_mbox_setup(struct otx2_mbox *mbox, struct pci_dev *pdev,
++			   void *reg_base, int direction, int ndevs)
+ {
+-	struct otx2_mbox_dev *mdev;
+-	int devid;
+-
+ 	switch (direction) {
+ 	case MBOX_DIR_AFPF:
+ 	case MBOX_DIR_PFVF:
+@@ -121,7 +118,6 @@ int otx2_mbox_init(struct otx2_mbox *mbox, void *hwbase, struct pci_dev *pdev,
+ 	}
+ 
+ 	mbox->reg_base = reg_base;
+-	mbox->hwbase = hwbase;
+ 	mbox->pdev = pdev;
+ 
+ 	mbox->dev = kcalloc(ndevs, sizeof(struct otx2_mbox_dev), GFP_KERNEL);
+@@ -129,11 +125,27 @@ int otx2_mbox_init(struct otx2_mbox *mbox, void *hwbase, struct pci_dev *pdev,
+ 		otx2_mbox_destroy(mbox);
+ 		return -ENOMEM;
+ 	}
+-
+ 	mbox->ndevs = ndevs;
++
++	return 0;
++}
++
++int otx2_mbox_init(struct otx2_mbox *mbox, void *hwbase, struct pci_dev *pdev,
++		   void *reg_base, int direction, int ndevs)
++{
++	struct otx2_mbox_dev *mdev;
++	int devid, err;
++
++	err = otx2_mbox_setup(mbox, pdev, reg_base, direction, ndevs);
++	if (err)
++		return err;
++
++	mbox->hwbase = hwbase;
++
+ 	for (devid = 0; devid < ndevs; devid++) {
+ 		mdev = &mbox->dev[devid];
+ 		mdev->mbase = mbox->hwbase + (devid * MBOX_SIZE);
++		mdev->hwbase = mdev->mbase;
+ 		spin_lock_init(&mdev->mbox_lock);
+ 		/* Init header to reset value */
+ 		otx2_mbox_reset(mbox, devid);
+@@ -143,6 +155,35 @@ int otx2_mbox_init(struct otx2_mbox *mbox, void *hwbase, struct pci_dev *pdev,
+ }
+ EXPORT_SYMBOL(otx2_mbox_init);
+ 
++/* Initialize mailbox with the set of mailbox region addresses
++ * in the array hwbase.
++ */
++int otx2_mbox_regions_init(struct otx2_mbox *mbox, void **hwbase,
++			   struct pci_dev *pdev, void *reg_base,
++			   int direction, int ndevs)
++{
++	struct otx2_mbox_dev *mdev;
++	int devid, err;
++
++	err = otx2_mbox_setup(mbox, pdev, reg_base, direction, ndevs);
++	if (err)
++		return err;
++
++	mbox->hwbase = hwbase[0];
++
++	for (devid = 0; devid < ndevs; devid++) {
++		mdev = &mbox->dev[devid];
++		mdev->mbase = hwbase[devid];
++		mdev->hwbase = hwbase[devid];
++		spin_lock_init(&mdev->mbox_lock);
++		/* Init header to reset value */
++		otx2_mbox_reset(mbox, devid);
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL(otx2_mbox_regions_init);
++
+ int otx2_mbox_wait_for_rsp(struct otx2_mbox *mbox, int devid)
+ {
+ 	unsigned long timeout = jiffies + msecs_to_jiffies(MBOX_RSP_TIMEOUT);
+@@ -175,9 +216,9 @@ EXPORT_SYMBOL(otx2_mbox_busy_poll_for_rsp);
+ 
+ void otx2_mbox_msg_send(struct otx2_mbox *mbox, int devid)
+ {
+-	void *hw_mbase = mbox->hwbase + (devid * MBOX_SIZE);
+ 	struct otx2_mbox_dev *mdev = &mbox->dev[devid];
+ 	struct mbox_hdr *tx_hdr, *rx_hdr;
++	void *hw_mbase = mdev->hwbase;
+ 
+ 	tx_hdr = hw_mbase + mbox->tx_start;
+ 	rx_hdr = hw_mbase + mbox->rx_start;
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+index 89e93eb..20779a1 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/mbox.h
+@@ -52,6 +52,7 @@
+ 
+ struct otx2_mbox_dev {
+ 	void	    *mbase;   /* This dev's mbox region */
++	void	    *hwbase;
+ 	spinlock_t  mbox_lock;
+ 	u16         msg_size; /* Total msg size to be sent */
+ 	u16         rsp_size; /* Total rsp size to be sure the reply is ok */
+@@ -98,6 +99,9 @@ void otx2_mbox_destroy(struct otx2_mbox *mbox);
+ int otx2_mbox_init(struct otx2_mbox *mbox, void __force *hwbase,
+ 		   struct pci_dev *pdev, void __force *reg_base,
+ 		   int direction, int ndevs);
++int otx2_mbox_regions_init(struct otx2_mbox *mbox, void __force **hwbase,
++			   struct pci_dev *pdev, void __force *reg_base,
++			   int direction, int ndevs);
+ void otx2_mbox_msg_send(struct otx2_mbox *mbox, int devid);
+ int otx2_mbox_wait_for_rsp(struct otx2_mbox *mbox, int devid);
+ int otx2_mbox_busy_poll_for_rsp(struct otx2_mbox *mbox, int devid);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
+index 0b6bf9f..587caa1 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
+@@ -78,6 +78,9 @@ static void rvu_setup_hw_capabilities(struct rvu *rvu)
+ 		if (is_rvu_96xx_A0(rvu))
+ 			hw->cap.nix_rx_multicast = false;
+ 	}
++
++	if (!is_rvu_otx2(rvu))
++		hw->cap.per_pf_mbox_regs = true;
+ }
+ 
+ /* Poll a RVU block's register 'offset', for a 'zero'
+@@ -1936,41 +1939,105 @@ static inline void rvu_afvf_mbox_up_handler(struct work_struct *work)
+ 	__rvu_mbox_up_handler(mwork, TYPE_AFVF);
+ }
+ 
++static int rvu_get_mbox_regions(struct rvu *rvu, void **mbox_addr,
++				int num, int type)
++{
++	struct rvu_hwinfo *hw = rvu->hw;
++	int region;
++	u64 bar4;
++
++	/* For cn10k platform VF mailbox regions of a PF follows after the
++	 * PF <-> AF mailbox region. Whereas for Octeontx2 it is read from
++	 * RVU_PF_VF_BAR4_ADDR register.
++	 */
++	if (type == TYPE_AFVF) {
++		for (region = 0; region < num; region++) {
++			if (hw->cap.per_pf_mbox_regs) {
++				bar4 = rvu_read64(rvu, BLKADDR_RVUM,
++						  RVU_AF_PFX_BAR4_ADDR(0)) +
++						  MBOX_SIZE;
++				bar4 += region * MBOX_SIZE;
++			} else {
++				bar4 = rvupf_read64(rvu, RVU_PF_VF_BAR4_ADDR);
++				bar4 += region * MBOX_SIZE;
++			}
++			mbox_addr[region] = ioremap_wc(bar4, MBOX_SIZE);
++			if (!mbox_addr[region])
++				goto error;
++		}
++		return 0;
++	}
++
++	/* For cn10k platform AF <-> PF mailbox region of a PF is read from per
++	 * PF registers. Whereas for Octeontx2 it is read from
++	 * RVU_AF_PF_BAR4_ADDR register.
++	 */
++	for (region = 0; region < num; region++) {
++		if (hw->cap.per_pf_mbox_regs) {
++			bar4 = rvu_read64(rvu, BLKADDR_RVUM,
++					  RVU_AF_PFX_BAR4_ADDR(region));
++		} else {
++			bar4 = rvu_read64(rvu, BLKADDR_RVUM,
++					  RVU_AF_PF_BAR4_ADDR);
++			bar4 += region * MBOX_SIZE;
++		}
++		mbox_addr[region] = ioremap_wc(bar4, MBOX_SIZE);
++		if (!mbox_addr[region])
++			goto error;
++	}
++	return 0;
++
++error:
++	while (region--)
++		iounmap(mbox_addr[region]);
++	return -ENOMEM;
++}
++
+ static int rvu_mbox_init(struct rvu *rvu, struct mbox_wq_info *mw,
+ 			 int type, int num,
+ 			 void (mbox_handler)(struct work_struct *),
+ 			 void (mbox_up_handler)(struct work_struct *))
+ {
+-	void __iomem *hwbase = NULL, *reg_base;
+-	int err, i, dir, dir_up;
++	int err = -EINVAL, i, dir, dir_up;
++	void __iomem *reg_base;
+ 	struct rvu_work *mwork;
++	void **mbox_regions;
+ 	const char *name;
+-	u64 bar4_addr;
++
++	mbox_regions = kcalloc(num, sizeof(void *), GFP_KERNEL);
++	if (!mbox_regions)
++		return -ENOMEM;
+ 
+ 	switch (type) {
+ 	case TYPE_AFPF:
+ 		name = "rvu_afpf_mailbox";
+-		bar4_addr = rvu_read64(rvu, BLKADDR_RVUM, RVU_AF_PF_BAR4_ADDR);
+ 		dir = MBOX_DIR_AFPF;
+ 		dir_up = MBOX_DIR_AFPF_UP;
+ 		reg_base = rvu->afreg_base;
++		err = rvu_get_mbox_regions(rvu, mbox_regions, num, TYPE_AFPF);
++		if (err)
++			goto free_regions;
+ 		break;
+ 	case TYPE_AFVF:
+ 		name = "rvu_afvf_mailbox";
+-		bar4_addr = rvupf_read64(rvu, RVU_PF_VF_BAR4_ADDR);
+ 		dir = MBOX_DIR_PFVF;
+ 		dir_up = MBOX_DIR_PFVF_UP;
+ 		reg_base = rvu->pfreg_base;
++		err = rvu_get_mbox_regions(rvu, mbox_regions, num, TYPE_AFVF);
++		if (err)
++			goto free_regions;
+ 		break;
+ 	default:
+-		return -EINVAL;
++		return err;
+ 	}
+ 
+ 	mw->mbox_wq = alloc_workqueue(name,
+ 				      WQ_UNBOUND | WQ_HIGHPRI | WQ_MEM_RECLAIM,
+ 				      num);
+-	if (!mw->mbox_wq)
+-		return -ENOMEM;
++	if (!mw->mbox_wq) {
++		err = -ENOMEM;
++		goto unmap_regions;
++	}
+ 
+ 	mw->mbox_wrk = devm_kcalloc(rvu->dev, num,
+ 				    sizeof(struct rvu_work), GFP_KERNEL);
+@@ -1986,23 +2053,13 @@ static int rvu_mbox_init(struct rvu *rvu, struct mbox_wq_info *mw,
+ 		goto exit;
+ 	}
+ 
+-	/* Mailbox is a reserved memory (in RAM) region shared between
+-	 * RVU devices, shouldn't be mapped as device memory to allow
+-	 * unaligned accesses.
+-	 */
+-	hwbase = ioremap_wc(bar4_addr, MBOX_SIZE * num);
+-	if (!hwbase) {
+-		dev_err(rvu->dev, "Unable to map mailbox region\n");
+-		err = -ENOMEM;
+-		goto exit;
+-	}
+-
+-	err = otx2_mbox_init(&mw->mbox, hwbase, rvu->pdev, reg_base, dir, num);
++	err = otx2_mbox_regions_init(&mw->mbox, mbox_regions, rvu->pdev,
++				     reg_base, dir, num);
+ 	if (err)
+ 		goto exit;
+ 
+-	err = otx2_mbox_init(&mw->mbox_up, hwbase, rvu->pdev,
+-			     reg_base, dir_up, num);
++	err = otx2_mbox_regions_init(&mw->mbox_up, mbox_regions, rvu->pdev,
++				     reg_base, dir_up, num);
+ 	if (err)
+ 		goto exit;
+ 
+@@ -2015,25 +2072,36 @@ static int rvu_mbox_init(struct rvu *rvu, struct mbox_wq_info *mw,
+ 		mwork->rvu = rvu;
+ 		INIT_WORK(&mwork->work, mbox_up_handler);
+ 	}
+-
++	kfree(mbox_regions);
+ 	return 0;
++
+ exit:
+-	if (hwbase)
+-		iounmap((void __iomem *)hwbase);
+ 	destroy_workqueue(mw->mbox_wq);
++unmap_regions:
++	while (num--)
++		iounmap(mbox_regions[num]);
++free_regions:
++	kfree(mbox_regions);
+ 	return err;
+ }
+ 
+ static void rvu_mbox_destroy(struct mbox_wq_info *mw)
+ {
++	struct otx2_mbox *mbox = &mw->mbox;
++	struct otx2_mbox_dev *mdev;
++	int devid;
++
+ 	if (mw->mbox_wq) {
+ 		flush_workqueue(mw->mbox_wq);
+ 		destroy_workqueue(mw->mbox_wq);
+ 		mw->mbox_wq = NULL;
+ 	}
+ 
+-	if (mw->mbox.hwbase)
+-		iounmap((void __iomem *)mw->mbox.hwbase);
++	for (devid = 0; devid < mbox->ndevs; devid++) {
++		mdev = &mbox->dev[devid];
++		if (mdev->hwbase)
++			iounmap((void __iomem *)mdev->hwbase);
++	}
+ 
+ 	otx2_mbox_destroy(&mw->mbox);
+ 	otx2_mbox_destroy(&mw->mbox_up);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu.h b/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
+index b1a6ecf..e553d8f 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu.h
+@@ -25,6 +25,7 @@
+ 
+ /* Subsystem Device ID */
+ #define PCI_SUBSYS_DEVID_96XX                  0xB200
++#define PCI_SUBSYS_DEVID_CN10K_A	       0xB900
+ 
+ /* PCI BAR nos */
+ #define	PCI_AF_REG_BAR_NUM			0
+@@ -296,6 +297,7 @@ struct hw_cap {
+ 	bool	nix_shaping;		 /* Is shaping and coloring supported */
+ 	bool	nix_tx_link_bp;		 /* Can link backpressure TL queues ? */
+ 	bool	nix_rx_multicast;	 /* Rx packet replication support */
++	bool	per_pf_mbox_regs; /* PF mbox specified in per PF registers ? */
+ };
+ 
+ struct rvu_hwinfo {
+@@ -465,6 +467,27 @@ static inline bool is_rvu_96xx_B0(struct rvu *rvu)
+ 		(pdev->subsystem_device == PCI_SUBSYS_DEVID_96XX);
+ }
+ 
++/* REVID for PCIe devices.
++ * Bits 0..1: minor pass, bit 3..2: major pass
++ * bits 7..4: midr id
++ */
++#define PCI_REVISION_ID_96XX		0x00
++#define PCI_REVISION_ID_95XX		0x10
++#define PCI_REVISION_ID_LOKI		0x20
++#define PCI_REVISION_ID_98XX		0x30
++#define PCI_REVISION_ID_95XXMM		0x40
++
++static inline bool is_rvu_otx2(struct rvu *rvu)
++{
++	struct pci_dev *pdev = rvu->pdev;
++
++	u8 midr = pdev->revision & 0xF0;
++
++	return (midr == PCI_REVISION_ID_96XX || midr == PCI_REVISION_ID_95XX ||
++		midr == PCI_REVISION_ID_LOKI || midr == PCI_REVISION_ID_98XX ||
++		midr == PCI_REVISION_ID_95XXMM);
++}
++
+ /* Function Prototypes
+  * RVU
+  */
+diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h b/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h
+index 0fb2aa9..a07d12a 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h
++++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_reg.h
+@@ -44,6 +44,11 @@
+ #define RVU_AF_PFME_INT_W1S                 (0x28c8)
+ #define RVU_AF_PFME_INT_ENA_W1S             (0x28d0)
+ #define RVU_AF_PFME_INT_ENA_W1C             (0x28d8)
++#define RVU_AF_PFX_BAR4_ADDR(a)             (0x5000 | (a) << 4)
++#define RVU_AF_PFX_BAR4_CFG                 (0x5200 | (a) << 4)
++#define RVU_AF_PFX_VF_BAR4_ADDR             (0x5400 | (a) << 4)
++#define RVU_AF_PFX_VF_BAR4_CFG              (0x5600 | (a) << 4)
++#define RVU_AF_PFX_LMTLINE_ADDR             (0x5800 | (a) << 4)
+ 
+ /* Admin function's privileged PF/VF registers */
+ #define RVU_PRIV_CONST                      (0x8000000)
+@@ -100,6 +105,8 @@
+ #define RVU_PF_MSIX_VECX_ADDR(a)            (0x000 | (a) << 4)
+ #define RVU_PF_MSIX_VECX_CTL(a)             (0x008 | (a) << 4)
+ #define RVU_PF_MSIX_PBAX(a)                 (0xF0000 | (a) << 3)
++#define RVU_PF_VF_MBOX_ADDR                 (0xC40)
++#define RVU_PF_LMTLINE_ADDR                 (0xC48)
+ 
+ /* RVU VF registers */
+ #define	RVU_VF_VFPF_MBOX0		    (0x00000)
+-- 
+2.7.4
 
