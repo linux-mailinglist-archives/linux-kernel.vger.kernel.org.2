@@ -2,43 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9945F30C0D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C00D30CBC2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:36:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233928AbhBBOIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:08:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46434 "EHLO mail.kernel.org"
+        id S233375AbhBBTed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 14:34:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233629AbhBBOCA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:02:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D596165001;
-        Tue,  2 Feb 2021 13:47:24 +0000 (UTC)
+        id S233373AbhBBN4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 08:56:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BFF9964F69;
+        Tue,  2 Feb 2021 13:45:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273645;
-        bh=00QpJ8V590J1O437SS51qUxxE3E3mZ/6rGZoRnGAv1A=;
+        s=korg; t=1612273516;
+        bh=7ASq83ZX7i1Zyd3PI0RCUDI3bn2LF60PGiU8lALbhKU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UC05BQQgpfpq2gFFr/8CHlhU//57LEZz98LKDVdGYcoRKjyxEUhqyIKkKzepzIjOH
-         aywB2lJyxxy1of5wLvSv2IzCRLE+OjvbSZiJEvi9/e1ucTb8DQiudRiXVZuQuxDxPL
-         KavHBrJVEekp9XqqubuN+iJa7EpFXS+QuyNCGgx0=
+        b=A/Uy4cGaWr3gfmEI+qsTdHw9ep71rMYnW6qLBZ8atdveMkMb97Na9O8JCxVGT7H8W
+         SYV+D+RRHwsZSR2st3NzX/ZY71T9tHOReLFSvvdLp8SlzkwP9sw/CeuvEOoyqr87Ro
+         BG5sx5ip79v+Idi+ahCs1ee//GyVatYR/tjHO/nk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 39/61] firmware: imx: select SOC_BUS to fix firmware build
-Date:   Tue,  2 Feb 2021 14:38:17 +0100
-Message-Id: <20210202132948.121521908@linuxfoundation.org>
+        stable@vger.kernel.org, Tzung-Bi Shih <tzungbi@google.com>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 5.10 135/142] ASoC: mediatek: mt8183-da7219: ignore TDM DAI link by default
+Date:   Tue,  2 Feb 2021 14:38:18 +0100
+Message-Id: <20210202133003.261667568@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132946.480479453@linuxfoundation.org>
-References: <20210202132946.480479453@linuxfoundation.org>
+In-Reply-To: <20210202132957.692094111@linuxfoundation.org>
+References: <20210202132957.692094111@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,44 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Tzung-Bi Shih <tzungbi@google.com>
 
-[ Upstream commit 82c082784e03a9a9c043345f9bc04bc8254cf6da ]
+commit 4d36ed8eb0f749c9e781e0d3b041a7adeedcdaa9 upstream.
 
-Fix build error in firmware/imx/ selecting SOC_BUS.
+hdmi-codec is an optional property.  Ignore to bind TDM DAI link
+if the property isn't specified.
 
-riscv32-linux-ld: drivers/firmware/imx/imx-scu-soc.o: in function `.L9':
-imx-scu-soc.c:(.text+0x1b0): undefined reference to `soc_device_register'
+Fixes: 5bdbe9771177 ("ASoC: mediatek: mt8183-da7219: use hdmi-codec")
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+Link: https://lore.kernel.org/r/20210120092237.1553938-3-tzungbi@google.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: edbee095fafb ("firmware: imx: add SCU firmware driver support")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Atish Patra <atish.patra@wdc.com>
-Cc: Palmer Dabbelt <palmerdabbelt@google.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Anson Huang <Anson.Huang@nxp.com>
-Cc: Daniel Baluta <daniel.baluta@nxp.com>
-Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
-Signed-off-by: Shawn Guo <shawnguo@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/imx/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/firmware/imx/Kconfig b/drivers/firmware/imx/Kconfig
-index 0dbee32da4c6d..5d995fe64b5ca 100644
---- a/drivers/firmware/imx/Kconfig
-+++ b/drivers/firmware/imx/Kconfig
-@@ -13,6 +13,7 @@ config IMX_DSP
- config IMX_SCU
- 	bool "IMX SCU Protocol driver"
- 	depends on IMX_MBOX
-+	select SOC_BUS
- 	help
- 	  The System Controller Firmware (SCFW) is a low-level system function
- 	  which runs on a dedicated Cortex-M core to provide power, clock, and
--- 
-2.27.0
-
+--- a/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
++++ b/sound/soc/mediatek/mt8183/mt8183-da7219-max98357.c
+@@ -532,6 +532,7 @@ static struct snd_soc_dai_link mt8183_da
+ 		.dpcm_playback = 1,
+ 		.ignore_suspend = 1,
+ 		.be_hw_params_fixup = mt8183_i2s_hw_params_fixup,
++		.ignore = 1,
+ 		.init = mt8183_da7219_max98357_hdmi_init,
+ 		SND_SOC_DAILINK_REG(tdm),
+ 	},
+@@ -754,8 +755,10 @@ static int mt8183_da7219_max98357_dev_pr
+ 			}
+ 		}
+ 
+-		if (hdmi_codec && strcmp(dai_link->name, "TDM") == 0)
++		if (hdmi_codec && strcmp(dai_link->name, "TDM") == 0) {
+ 			dai_link->codecs->of_node = hdmi_codec;
++			dai_link->ignore = 0;
++		}
+ 
+ 		if (!dai_link->platforms->name)
+ 			dai_link->platforms->of_node = platform_node;
 
 
