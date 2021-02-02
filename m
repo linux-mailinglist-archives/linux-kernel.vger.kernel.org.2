@@ -2,95 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EDEE30B869
+	by mail.lfdr.de (Postfix) with ESMTP id F0DCC30B86B
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232546AbhBBHI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 02:08:56 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:56193 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232018AbhBBHIO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 02:08:14 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UNexAtl_1612249647;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UNexAtl_1612249647)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 02 Feb 2021 15:07:28 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     anitha.chrisanthus@intel.com
-Cc:     edmund.j.dea@intel.com, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] drm/kmb: remove unneeded semicolon
-Date:   Tue,  2 Feb 2021 15:07:26 +0800
-Message-Id: <1612249646-68040-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S232079AbhBBHKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 02:10:37 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58388 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231158AbhBBHK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 02:10:28 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612249781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=1tpaqvOitmoTdUOKCltTkXQMrQMduhfR/V/K0TJ91jk=;
+        b=pbaIptIDBcZvfobat6HNoXje6mR3kf8+MuWpibPjXaHBmoQvt3LBZ1S4k+WfN+6v3yXqqG
+        CnLh7G8uXWy5d/2yQhTslehE4QmbeheYR1UmRM7pfxMgd1ZiuvafUH6s9i4k7bnpbVZHHm
+        wGiaWxu3itzFTHNe0z01xg0UqKte3eQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 46D2EACB7;
+        Tue,  2 Feb 2021 07:09:41 +0000 (UTC)
+From:   Juergen Gross <jgross@suse.com>
+To:     xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Juergen Gross <jgross@suse.com>, Wei Liu <wei.liu@kernel.org>,
+        Paul Durrant <paul@xen.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Igor Druzhinin <igor.druzhinin@citrix.com>,
+        stable@vger.kernel.org
+Subject: [PATCH] xen/netback: avoid race in xenvif_rx_ring_slots_available()
+Date:   Tue,  2 Feb 2021 08:09:38 +0100
+Message-Id: <20210202070938.7863-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eliminate the following coccicheck warning:
-./drivers/gpu/drm/kmb/kmb_dsi.c:281:3-4: Unneeded semicolon
-./drivers/gpu/drm/kmb/kmb_dsi.c:301:3-4: Unneeded semicolon
-./drivers/gpu/drm/kmb/kmb_dsi.c:318:3-4: Unneeded semicolon
-./drivers/gpu/drm/kmb/kmb_dsi.c:337:3-4: Unneeded semicolon
-./drivers/gpu/drm/kmb/kmb_dsi.c:361:2-3: Unneeded semicolon
+Since commit 23025393dbeb3b8b3 ("xen/netback: use lateeoi irq binding")
+xenvif_rx_ring_slots_available() is no longer called only from the rx
+queue kernel thread, so it needs to access the rx queue with the
+associated queue held.
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+Reported-by: Igor Druzhinin <igor.druzhinin@citrix.com>
+Fixes: 23025393dbeb3b8b3 ("xen/netback: use lateeoi irq binding")
+Cc: stable@vger.kernel.org
+Signed-off-by: Juergen Gross <jgross@suse.com>
 ---
- drivers/gpu/drm/kmb/kmb_dsi.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/net/xen-netback/rx.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/kmb/kmb_dsi.c b/drivers/gpu/drm/kmb/kmb_dsi.c
-index 4b5d82a..231041b 100644
---- a/drivers/gpu/drm/kmb/kmb_dsi.c
-+++ b/drivers/gpu/drm/kmb/kmb_dsi.c
-@@ -281,7 +281,7 @@ static u32 mipi_get_datatype_params(u32 data_type, u32 data_mode,
- 		default:
- 			DRM_ERROR("DSI: Invalid data_mode %d\n", data_mode);
- 			return -EINVAL;
--		};
-+		}
- 		break;
- 	case DSI_LP_DT_PPS_YCBCR422_16B:
- 		data_type_param.size_constraint_pixels = 2;
-@@ -301,7 +301,7 @@ static u32 mipi_get_datatype_params(u32 data_type, u32 data_mode,
- 		default:
- 			DRM_ERROR("DSI: Invalid data_mode %d\n", data_mode);
- 			return -EINVAL;
--		};
-+		}
- 		break;
- 	case DSI_LP_DT_LPPS_YCBCR422_20B:
- 	case DSI_LP_DT_PPS_YCBCR422_24B:
-@@ -318,7 +318,7 @@ static u32 mipi_get_datatype_params(u32 data_type, u32 data_mode,
- 		default:
- 			DRM_ERROR("DSI: Invalid data_mode %d\n", data_mode);
- 			return -EINVAL;
--		};
-+		}
- 		break;
- 	case DSI_LP_DT_PPS_RGB565_16B:
- 		data_type_param.size_constraint_pixels = 1;
-@@ -337,7 +337,7 @@ static u32 mipi_get_datatype_params(u32 data_type, u32 data_mode,
- 		default:
- 			DRM_ERROR("DSI: Invalid data_mode %d\n", data_mode);
- 			return -EINVAL;
--		};
-+		}
- 		break;
- 	case DSI_LP_DT_PPS_RGB666_18B:
- 		data_type_param.size_constraint_pixels = 4;
-@@ -361,7 +361,7 @@ static u32 mipi_get_datatype_params(u32 data_type, u32 data_mode,
- 	default:
- 		DRM_ERROR("DSI: Invalid data_type %d\n", data_type);
- 		return -EINVAL;
--	};
+diff --git a/drivers/net/xen-netback/rx.c b/drivers/net/xen-netback/rx.c
+index b8febe1d1bfd..accc991d153f 100644
+--- a/drivers/net/xen-netback/rx.c
++++ b/drivers/net/xen-netback/rx.c
+@@ -38,10 +38,15 @@ static bool xenvif_rx_ring_slots_available(struct xenvif_queue *queue)
+ 	RING_IDX prod, cons;
+ 	struct sk_buff *skb;
+ 	int needed;
++	unsigned long flags;
++
++	spin_lock_irqsave(&queue->rx_queue.lock, flags);
+ 
+ 	skb = skb_peek(&queue->rx_queue);
+-	if (!skb)
++	if (!skb) {
++		spin_unlock_irqrestore(&queue->rx_queue.lock, flags);
+ 		return false;
 +	}
  
- 	*params = data_type_param;
- 	return 0;
+ 	needed = DIV_ROUND_UP(skb->len, XEN_PAGE_SIZE);
+ 	if (skb_is_gso(skb))
+@@ -49,6 +54,8 @@ static bool xenvif_rx_ring_slots_available(struct xenvif_queue *queue)
+ 	if (skb->sw_hash)
+ 		needed++;
+ 
++	spin_unlock_irqrestore(&queue->rx_queue.lock, flags);
++
+ 	do {
+ 		prod = queue->rx.sring->req_prod;
+ 		cons = queue->rx.req_cons;
 -- 
-1.8.3.1
+2.26.2
 
