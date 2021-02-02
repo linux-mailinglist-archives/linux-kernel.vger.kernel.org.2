@@ -2,161 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72ED630BBF9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:22:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1448730BBFA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:22:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229902AbhBBKU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 05:20:29 -0500
-Received: from mail-bn7nam10on2072.outbound.protection.outlook.com ([40.107.92.72]:39009
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229483AbhBBKUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 05:20:18 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MT1lA/E7ea2pwsPQ4xTMtCErmjxFTgLcMPlWmjmaxHpuUStwxGdUpr+eLwMNh9foenbSOnF4Vu1JhWOE3t3FYTaiI3yrTmYU8CNScmiJ4gaxgAhWA7PKpXq4j4Yw4Pdb2e3jsMlD7RhVDp0oB6FiLsvIm0iMv9G0M5MNn2cGKHZ8MWFEmANF3wGcdgKtyb7LVQr3dq4NM4ZCAq82t3JQgZUHyn7P77Q02nOIb29adN2jb4VwlshvxjiGhGtMhTlmBwE7he+pu4couQRbX69IQZUfSfVuireOUsicB2rTCpRbHsI2jy8/anMQh7DqeEfndYmX/J15dcM900FZI1kDlw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XCvMleNImUDJWXJIc4u7VW0j456qoa/LJq5r0ZDoRXU=;
- b=OsImyvLwcXYdHTp0CXZ0SbsqbRz9+T3bc5lUwQWbZRVmYQyND+NNxhoLHuVCBfXlMCbB4l5mH+5JNuBiVd4z04bmXcd/ofXkfyQMHkMJESaMWEb1zsz9vVU/lgaPwYwUR43F4tLAPwmLeHvR864u6HpZxmPfTOJ9eqeWnjEuJcsOe6AWc3CnLgO77qXBcPPnWPYYCzuFewW8vZI+bqZIh1kf2zQ24XjF3y/Mnw/Dl0ZdTfJp7eBUkIOGCyKrdKkN9cRyGz3kg8w3ptnGewhRzEjm1tmX04YXtdncDxRr0YAqIzC1+/z2DIQE35LjifMsRA1XdViA75NYShax3mt2Rw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S230517AbhBBKUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 05:20:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229483AbhBBKUa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 05:20:30 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3FD9C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 02:19:49 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id l12so785970wmq.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 02:19:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XCvMleNImUDJWXJIc4u7VW0j456qoa/LJq5r0ZDoRXU=;
- b=Vn14DjBFDta4SRUYwIxMPS/RzB1qhwboWpX3eawHvKZXwuP2a/1GSr1kAD5JKgZnSxTSUuh7cEQpe67vyHqL0V+EWMF4Thg5i9X75pl6U215jD/A95gy40AmpqsSGk1S3QOzrFWNxw4k1QuFw7FI+8D3Oiw4Uv1dNAMaMubOugY=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com (2603:10b6:a03:1ca::13)
- by BYAPR11MB3350.namprd11.prod.outlook.com (2603:10b6:a03:1a::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.24; Tue, 2 Feb
- 2021 10:19:29 +0000
-Received: from BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::95a3:653e:2078:fb4]) by BY5PR11MB4241.namprd11.prod.outlook.com
- ([fe80::95a3:653e:2078:fb4%6]) with mapi id 15.20.3805.028; Tue, 2 Feb 2021
- 10:19:29 +0000
-Subject: Re: [PATCH] mm/hugetlb: remove a meaningless if statement in gigantic
- page initialization
-To:     David Hildenbrand <david@redhat.com>, mike.kravetz@oracle.com,
-        akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210202101209.72795-1-yanfei.xu@windriver.com>
- <18d3db7b-da3c-db14-ab99-b2c966c70024@redhat.com>
-From:   "Xu, Yanfei" <yanfei.xu@windriver.com>
-Message-ID: <0837b5cc-2eb0-4316-8595-34f92a43035c@windriver.com>
-Date:   Tue, 2 Feb 2021 18:19:21 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <18d3db7b-da3c-db14-ab99-b2c966c70024@redhat.com>
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4TQrH08/UJxeSx7AxArBpXQ8JwuPZp/xsO/RczEeCRE=;
+        b=n4o2SdsTccQ0UfkE8WKWBF5rX+gbqGIWlvhdAIPiRVbm6dSAK4V0kEmehB3aW85elU
+         fzDLLevgmyYIvUehwcb5Lt4HvkO4S+ySa4TLciQH+JdeVOVoTJnJCAfoaLSZ9pPwWn4e
+         pwYaZAETKDC3gmiqrrnm3xLZPoO/TjAayU42nxC4jFjSGy+jQfLv1JkA7i3prMVwmRtL
+         JIk3yRlz46jZRF7b15v71FsMw4TPfEAxP5tIDNCLyJ84Df5GzX//ere3obTQlxVmFB1T
+         jy+LSiP99/L+OTqY5aGBT0c/mqbHlr+9YafIGTkkJ4fEubFXkqRWSmQAtAHXGmj/DLYD
+         ZE/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4TQrH08/UJxeSx7AxArBpXQ8JwuPZp/xsO/RczEeCRE=;
+        b=qUL6It4js7a+8UGigRZT4QndZd8fNkrepw56caFOr/waFMmTVa9L2/UeYrbWGv/01X
+         scpBIiWCYTQJI+M3IErSkXck6evafqGI7xL3fDAEIM4JOCoXTGQeQYspnvpYToCUAFHb
+         C/rCs5hqPoT7ZID5tSbm1Xcrxoog7OBSIh00l5A0llXRJQrEOpnaJAXFNFfK7eTQCmc+
+         f6gmLlAfRPzb2H4qsjQw91AcQntmXEVaT0wV3VT9vGDiT9yp/cflt8s6Nhm4z9ca1VfI
+         I3L2ys9/WO4tZJbj+rciHzfovGytdrIew5qqThCRcMND3Ft+5l2G/IBDgi21UqPlGDFC
+         oGRA==
+X-Gm-Message-State: AOAM533Hv3/0Ouw3/ajGA3eD4w1zfs8NvLJScChtT9U+/eAKOxE8oGe9
+        Er4ptpjoeNY0fj+iUBL6zNrvcQ==
+X-Google-Smtp-Source: ABdhPJwyXFkSxEsGTLVNCkjDES3J4BtRb+cT9X4fkRDyERvmjJlmSNWrgyEMn3QRnpE6zbX3+6/GtA==
+X-Received: by 2002:a7b:c0d8:: with SMTP id s24mr2951091wmh.4.1612261188570;
+        Tue, 02 Feb 2021 02:19:48 -0800 (PST)
+Received: from [192.168.86.34] (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.googlemail.com with ESMTPSA id v13sm1847921wrd.51.2021.02.02.02.19.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 02 Feb 2021 02:19:47 -0800 (PST)
+Subject: Re: [PATCH 5/6] soundwire: qcom: update register read/write routine
+To:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        vkoul@kernel.org
+Cc:     yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+References: <20210129173248.5941-1-srinivas.kandagatla@linaro.org>
+ <20210129173248.5941-6-srinivas.kandagatla@linaro.org>
+ <5c69ed09-60be-2f3d-ed25-f6dbfcb9d62f@linux.intel.com>
+ <3a2b5c2d-21aa-2bf5-62df-ef85c7c9293c@linaro.org>
+ <b87758d0-5862-3b4e-5a90-7b27d0c78d0d@linux.intel.com>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <4e3ebb99-5647-f71c-1256-a2c55bd9995f@linaro.org>
+Date:   Tue, 2 Feb 2021 10:19:46 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <b87758d0-5862-3b4e-5a90-7b27d0c78d0d@linux.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: HK2PR0401CA0010.apcprd04.prod.outlook.com
- (2603:1096:202:2::20) To BY5PR11MB4241.namprd11.prod.outlook.com
- (2603:10b6:a03:1ca::13)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.160] (60.247.85.82) by HK2PR0401CA0010.apcprd04.prod.outlook.com (2603:1096:202:2::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Tue, 2 Feb 2021 10:19:27 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ef356047-2e74-49eb-a1bf-08d8c764066c
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3350:
-X-Microsoft-Antispam-PRVS: <BYAPR11MB33501A747284BB4F1C408A2CE4B59@BYAPR11MB3350.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:293;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nm4KX25ri7A1O6NOTVd78zsTIM0sSa3Vx/Wa3xEdh+uFC19BgPSHYMj3GCr0j1D24SqUMn+AgQojx8+AZG80ubXmmtd2qIdvkhT+pgCwUgfEMF9RHwtH1Tb29KQ5tJ5Oemur2t66KN3Y+PO/BZcS1nKeAK1eA4yCU7EMGQoPRf1ZFVlVVa0G+0GyAosL8B/VA6I92MBxfUfbHGhElZ/nwIEPSxGfHXARQr0sbNk2OiPPOnWU2MNlqxsHdOTzmxBSZAPozBjgT9HndNGT3TjuE8KrbDfymko7OUIWe+t0dFxSQUuWiesHZCO4vDX2o+NmgcPC95ONc4a0PkFC9atP1p6/L43lpDl0WE2+YmKY2jqfTo0troU6vQPiBrI6lrdR3qJB9ZGy5v8uNDq7u2hEcvC4USeWmCS8WrdBSwktJSCkpP5qWYWczmy5JpeZz41ZNy4xYNHYL3zDQPPgu7JBxfzeHEcGFfubKf8dbCnX2YwqkvBt+lR/m1Jaryl69o1MjXEioAmeSka2zE3ZKZc2JBDnSpIFBy786aT8uGXM6dkUXxjhR6qq+O09LSICKsVCl+kBbvhBOIAjy6JCLv0ZN1xQUp6EMNyIAZz7k0D8vNpR3n4m6oyjcWkYcNANCYl2
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4241.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(376002)(346002)(396003)(39850400004)(6706004)(36756003)(66556008)(31696002)(186003)(16526019)(26005)(83380400001)(6666004)(86362001)(8676002)(52116002)(956004)(5660300002)(2616005)(478600001)(66946007)(2906002)(316002)(16576012)(53546011)(31686004)(4326008)(66476007)(8936002)(6486002)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?Z1h1bnNuUTd4Y0orZUpVaUVRWGQxZEpHWlhhYkZPUlpKYWdnSHZ0NWRPeEdi?=
- =?utf-8?B?UmVCbE5rS09zM0pxU29GVTlkY0VLRkpHL0xUbEtUQkE1eXlTQ2J5UGc2Tmdh?=
- =?utf-8?B?bXNJejBZRmlOMnQ5eEJVbzFDbERWaW5yQy9DT201RXhsdXpJTFRmY0ZrOGRq?=
- =?utf-8?B?c0FMZEtmaGRZaEpBQ1QxcnVIVmdWbWlzaExhYlpqbytNMTcxbXlUc0ZtT0tu?=
- =?utf-8?B?SnVpSHArbG5PTCtNNDlhRFBiTnNDV0p6dmRzMnFxWEErLzNYZHlHUWhLUWNi?=
- =?utf-8?B?L21LbWd2OUNWcHIwZjExM3hYeFR2NlJGQ1dDZDJTcGl3a1E5ZGh6MkViZnNu?=
- =?utf-8?B?VkozVHE5dnNzc1FaOUZnSjBENU81bFYxNmgzb0VnTXVwSWRhSCtaT2JIQUV0?=
- =?utf-8?B?WXJpSjdYQlRJV3UxUHpaVlJVSktpZmpGZFY0MUpETUYwQTdLNDlOWWVhNnhU?=
- =?utf-8?B?dzRSN29aMVhPWTB6RzhGQ05ycnJEQm9Pc2xiSHB3b2JZZXgrZ2w4RmIrc2ow?=
- =?utf-8?B?VnFtNi9uYkVxMEZ3enFQbSt2eUJqaVZ0WmtyR214dlpuVThPbURmMk9zRHZv?=
- =?utf-8?B?UW1GZkVpSHpWbWxlcmI0akRuN2UycEZnZjVMcjVxZlZRRDduVGNKcnZyelQ0?=
- =?utf-8?B?M1g5NG5XSG1RTG5JQ1FYRFpvYTNCd1ZHNGZHclZ5M3U2ckRNd01QVUNEd1d4?=
- =?utf-8?B?bGNKTW5hbDlIbStDbDNleEV2RlpCZHNUQ3FDdTlxbjc5V2FwWUlvbjZ1eFFh?=
- =?utf-8?B?NFB0SmpvcHlUbzVOQVZqOGFOekNSV3NQMG53VXo3RXcvaitkS3JhVXBEb0RE?=
- =?utf-8?B?Zm8vT2kzYUVyQmlCYTVUVFRsemk4RXpMSFFpdDYzMlE0VHNrTzZuMURMRHZz?=
- =?utf-8?B?WGZ4RGRiVzUyNUhHMWNibGRTZWdmdWNkMms4N3labTJwVDZXVGxhc2VwM3RI?=
- =?utf-8?B?ZG1CcjFRZzFBNEZpRnA2N1I2U05ERFRXZVNjd29YT1U2eHVhcFNvekIyR0lw?=
- =?utf-8?B?NWZjUjRPN0l1YlA3NFlmcmxhR0NjOHpNb1N2cGVSL0ZYa2JzSUZ4RS9Ddm4w?=
- =?utf-8?B?VjdtblN6ZCthVzZUMzBSVFl5MjVvRi8yUXgrMEpVaHlCWVQ5bm5kRTFIV3Nw?=
- =?utf-8?B?a2xzTldGSzdIekhuUTdkYisyeW9qTHRrR3FZdzE2TFIrTThyVjdnQkhzeVNp?=
- =?utf-8?B?QlROUCt0SmtZdzR6NUtxWEJUNUprQ3hSUlF0NXBleUk5dXlVTDViOVJSQ05I?=
- =?utf-8?B?TDAzL3lQT04wR2QzSm81amhXZU1jZDBySy9RVUtmN0NEZm1vYzg2VFUvUERZ?=
- =?utf-8?B?aFlLaHc5YnJuOFcrUnUxZXJoTXV6c2JCVFk0TlVVVTZSeDIvMEdlVHJObG9u?=
- =?utf-8?B?U3ZRL1R2Y3VqUFBVelJmdnBMZVE4SHFncTNxS0VQUHpRVzAxeDcydGNnZWlR?=
- =?utf-8?Q?mU9wmeyt?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ef356047-2e74-49eb-a1bf-08d8c764066c
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4241.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2021 10:19:29.2574
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ccwzjRI2yhBQF8IXOXTwrxM6TJ+5iUzE9k5aMThYmFIhJ7Wz9hGkxuXm9ww72guzXjEXulBUZVltjwsECMlyKw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3350
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 2/2/21 6:06 PM, David Hildenbrand wrote:
-> [Please note: This e-mail is from an EXTERNAL e-mail address]
+On 01/02/2021 16:42, Pierre-Louis Bossart wrote:
 > 
-> On 02.02.21 11:12, yanfei.xu@windriver.com wrote:
->> From: Yanfei Xu <yanfei.xu@windriver.com>
->>
->> Gigantic page is a compound page and its order is more than 1.
->> Thus it must be available for hpage_pincount. Let's remove this
->> meaningless if statement.
->>
->> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
->> ---
->>   mm/hugetlb.c | 4 +---
->>   1 file changed, 1 insertion(+), 3 deletions(-)
->>
->> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->> index a3e4fa2c5e94..73d602f8c7e2 100644
->> --- a/mm/hugetlb.c
->> +++ b/mm/hugetlb.c
->> @@ -1501,9 +1501,7 @@ static void prep_compound_gigantic_page(struct 
->> page *page, unsigned int order)
->>               set_compound_head(p, page);
->>       }
->>       atomic_set(compound_mapcount_ptr(page), -1);
->> -
->> -     if (hpage_pincount_available(page))
->> -             atomic_set(compound_pincount_ptr(page), 0);
->> +     atomic_set(compound_pincount_ptr(page), 0);
->>   }
->>
->>   /*
->>
 > 
-> I can spot similar handling in destroy_compound_gigantic_page(). If this
-> is correct (which I think it is), we should tackle both occurrences at 
-> once.
+> On 2/1/21 9:50 AM, Srinivas Kandagatla wrote:
+>>
+>>
+>> On 29/01/2021 19:33, Pierre-Louis Bossart wrote:
+>>>
+>>>
+>>> On 1/29/21 11:32 AM, Srinivas Kandagatla wrote:
+>>>> In the existing code every soundwire register read and register write
+>>>> are kinda blocked. Each of these are using a special command id that
+>>>
+>>> what does 'kinda blocked' mean?
+>>
+>> I meant read/writes are waiting for completion interrupt!
+>>
+>>>
+>>>> generates interrupt after it successfully finishes. This is really
+>>>> overhead, limiting and not really necessary unless we are doing
+>>>> something special.
+>>>>
+>>>> We can simply read/write the fifo that should also give exactly
+>>>> what we need! This will also allow to read/write registers in
+>>>> interrupt context, which was not possible with the special
+>>>> command approach.
+>>>
+>>> This is really unclear, sorry.
+>>
+>> If read/writes are waiting for an interrupt, it becomes difficult to 
+>> read or write to any registers from same interrupt handler!
 > 
-Agree. Will do it in v2.
+> Well, yes, you need to handle the complete() at a lower level than the 
+> code that initiates the transactions otherwise you self-deadlock.
+> 
+> IIRC in the Intel initial code, the complete was in the handler and the 
+> register IOs in the thread.
+> 
+Yes, we did the same in previous version of the code, however with this 
+patch reading/writing fifo directly without need of completion should 
+remove that need of another thread!
+>>
+>>
+>>>
+>>>> +    if (id != SWR_BROADCAST_CMD_ID) {
+>>>> +        if (id < 14)
+>>>> +            id += 1;
+>>>> +        else
+>>>> +            id = 0;
+>>>
+>>> that is really odd. if id=13 (group2) then id becomes 14 (master 
+>>> address). A comment is really needed here.
+>>
+>> This is magic value for each fifo read or write, so that we can verify 
+>> that them by comparing with this magic value!
+>>
+>> This has nothing to do with device number!
+> 
+> You should probably add a comment here then, or use a #define instead of 
+> the 14 which threw me off.
 
-Thanks,
-Yanfei
-> -- 
-> Thanks,
+I agree!
 > 
-> David / dhildenb
+>>
+>>>
+>>>> +    if (cmd_id == SWR_BROADCAST_CMD_ID) {
+>>>> +        /*
+>>>> +         * sleep for 10ms for MSM soundwire variant to allow broadcast
+>>>> +         * command to complete.
+>>>
+>>> that's also super-odd. There is nothing in SoundWire that makes any 
+>>> difference between a regular and a broadcast command. they all 
+>>> complete in the same time (a frame).
+>>>> +         */
+>>>> +        ret = wait_for_completion_timeout(&swrm->broadcast, (2 * 
+>>>> HZ/10));
+>>>
+>>> is this 10ms really or dependent on CONFIG_HZ?
 > 
+> comment missed?
+Not intentionally :-)
+
+
+I should probably to use msecs_to_jiffies here to keep it inline with 
+the comment!
+
+--srini
+> 
+>>>
+>>>> +        if (!ret)
+>>>> +            ret = SDW_CMD_IGNORED;
+>>>> +        else
+>>>> +            ret = SDW_CMD_OK;
+>>>
+>>> no CMD_FAILED support?
+>>
+>> Qcom controllers does not provide that information if the command is 
+>> ignored or failed by any means!
+>>
+>> That was the behavior from the starting of this driver.
+> 
+> ah yes, now I remember this.
