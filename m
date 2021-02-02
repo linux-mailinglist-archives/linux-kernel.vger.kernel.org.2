@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFC330CA40
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:43:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD90030CA59
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238875AbhBBSmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:42:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47086 "EHLO mail.kernel.org"
+        id S238945AbhBBSps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:45:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233721AbhBBOC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:02:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42C3A65008;
-        Tue,  2 Feb 2021 13:47:57 +0000 (UTC)
+        id S233701AbhBBOCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:02:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6BDD65009;
+        Tue,  2 Feb 2021 13:47:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273677;
-        bh=MrkmZidfHW18GhxPnXkeJyjmFyg34lvx+jCqcxPJU2o=;
+        s=korg; t=1612273680;
+        bh=9jlpwl0vd1nEsyhkgt2MrOrRk54Wj74gwVYnyNkU3jE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dpjOMb0aKflvM+0/EqW+K1+TUnJFKyGhnCMZ4EKJrWS1HLBP5T2wHwKyZnLNjjs+7
-         80GT1X9+mI9nCzl9JQa8/opuDeDUE6dC6VzkuSR7dQfMPUJ5Ep1XMfjicNh2vfAmcE
-         N3LdoaJp+BWl90E1EmVH5LW4F6tH87uD7zlTwpYE=
+        b=sTdt9SmhR35kONyf99DHefsqKWmGrmSucq3UXxV0kUm3t0bT6elrPO/L4aETob56Z
+         Q+e6OBgj4ITb+1FcpgA1bsVrVWjBBDGJnzmcax9Ujxhw7jEN+h19Aqp3Ip9UhF1/zX
+         u2dBXFVkiHGyGWIYxx+0eo1QPbY9ffcBMLmCcklw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
+        stable@vger.kernel.org, Jay Zhou <jianjay.zhou@huawei.com>,
+        Shengen Zhuang <zhuangshengen@huawei.com>,
         Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 5.4 19/61] KVM: nVMX: Sync unsyncd vmcs02 state to vmcs12 on migration
-Date:   Tue,  2 Feb 2021 14:37:57 +0100
-Message-Id: <20210202132947.266938812@linuxfoundation.org>
+Subject: [PATCH 5.4 20/61] KVM: x86: get smi pending status correctly
+Date:   Tue,  2 Feb 2021 14:37:58 +0100
+Message-Id: <20210202132947.306956316@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210202132946.480479453@linuxfoundation.org>
 References: <20210202132946.480479453@linuxfoundation.org>
@@ -40,53 +40,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Levitsky <mlevitsk@redhat.com>
+From: Jay Zhou <jianjay.zhou@huawei.com>
 
-commit d51e1d3f6b4236e0352407d8a63f5c5f71ce193d upstream.
+commit 1f7becf1b7e21794fc9d460765fe09679bc9b9e0 upstream.
 
-Even when we are outside the nested guest, some vmcs02 fields
-may not be in sync vs vmcs12.  This is intentional, even across
-nested VM-exit, because the sync can be delayed until the nested
-hypervisor performs a VMCLEAR or a VMREAD/VMWRITE that affects those
-rarely accessed fields.
+The injection process of smi has two steps:
 
-However, during KVM_GET_NESTED_STATE, the vmcs12 has to be up to date to
-be able to restore it.  To fix that, call copy_vmcs02_to_vmcs12_rare()
-before the vmcs12 contents are copied to userspace.
+    Qemu                        KVM
+Step1:
+    cpu->interrupt_request &= \
+        ~CPU_INTERRUPT_SMI;
+    kvm_vcpu_ioctl(cpu, KVM_SMI)
 
-Fixes: 7952d769c29ca ("KVM: nVMX: Sync rarely accessed guest fields only when needed")
-Reviewed-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-Message-Id: <20210114205449.8715-2-mlevitsk@redhat.com>
+                                call kvm_vcpu_ioctl_smi() and
+                                kvm_make_request(KVM_REQ_SMI, vcpu);
+
+Step2:
+    kvm_vcpu_ioctl(cpu, KVM_RUN, 0)
+
+                                call process_smi() if
+                                kvm_check_request(KVM_REQ_SMI, vcpu) is
+                                true, mark vcpu->arch.smi_pending = true;
+
+The vcpu->arch.smi_pending will be set true in step2, unfortunately if
+vcpu paused between step1 and step2, the kvm_run->immediate_exit will be
+set and vcpu has to exit to Qemu immediately during step2 before mark
+vcpu->arch.smi_pending true.
+During VM migration, Qemu will get the smi pending status from KVM using
+KVM_GET_VCPU_EVENTS ioctl at the downtime, then the smi pending status
+will be lost.
+
+Signed-off-by: Jay Zhou <jianjay.zhou@huawei.com>
+Signed-off-by: Shengen Zhuang <zhuangshengen@huawei.com>
+Message-Id: <20210118084720.1585-1-jianjay.zhou@huawei.com>
 Cc: stable@vger.kernel.org
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kvm/vmx/nested.c |   13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ arch/x86/kvm/x86.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -5579,11 +5579,14 @@ static int vmx_get_nested_state(struct k
- 	if (is_guest_mode(vcpu)) {
- 		sync_vmcs02_to_vmcs12(vcpu, vmcs12);
- 		sync_vmcs02_to_vmcs12_rare(vcpu, vmcs12);
--	} else if (!vmx->nested.need_vmcs12_to_shadow_sync) {
--		if (vmx->nested.hv_evmcs)
--			copy_enlightened_to_vmcs12(vmx);
--		else if (enable_shadow_vmcs)
--			copy_shadow_to_vmcs12(vmx);
-+	} else  {
-+		copy_vmcs02_to_vmcs12_rare(vcpu, get_vmcs12(vcpu));
-+		if (!vmx->nested.need_vmcs12_to_shadow_sync) {
-+			if (vmx->nested.hv_evmcs)
-+				copy_enlightened_to_vmcs12(vmx);
-+			else if (enable_shadow_vmcs)
-+				copy_shadow_to_vmcs12(vmx);
-+		}
- 	}
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -102,6 +102,7 @@ static u64 __read_mostly cr4_reserved_bi
  
- 	BUILD_BUG_ON(sizeof(user_vmx_nested_state->vmcs12) < VMCS12_SIZE);
+ static void update_cr8_intercept(struct kvm_vcpu *vcpu);
+ static void process_nmi(struct kvm_vcpu *vcpu);
++static void process_smi(struct kvm_vcpu *vcpu);
+ static void enter_smm(struct kvm_vcpu *vcpu);
+ static void __kvm_set_rflags(struct kvm_vcpu *vcpu, unsigned long rflags);
+ static void store_regs(struct kvm_vcpu *vcpu);
+@@ -3772,6 +3773,10 @@ static void kvm_vcpu_ioctl_x86_get_vcpu_
+ {
+ 	process_nmi(vcpu);
+ 
++
++	if (kvm_check_request(KVM_REQ_SMI, vcpu))
++		process_smi(vcpu);
++
+ 	/*
+ 	 * The API doesn't provide the instruction length for software
+ 	 * exceptions, so don't report them. As long as the guest RIP
 
 
