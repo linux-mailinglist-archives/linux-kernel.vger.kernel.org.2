@@ -2,134 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F51430B5B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 04:16:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E83430B5BC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 04:18:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbhBBDOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 22:14:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47774 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230430AbhBBDOe (ORCPT
+        id S231230AbhBBDRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 22:17:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229612AbhBBDRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 22:14:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612235584;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kUWFN4ekNdpi4WxcUqZD8X9JUjgbpEhAfA6K+mxCnDM=;
-        b=RLyef//RASzBIdUap2YcepjW5QNuNC+p7cB0W47Y69as0hrnS4yU8lCeo5Q8lKKI0EMxo5
-        22ib9AB5V+Ezdebz1ljnAQ8DzpGgHV0DblXKmqroOY9Vfj3p7L9YbUQkoZGbtYNhRmTfoe
-        n4dbVVZj6qWK2hSbC5VkFJLM5i1bb5g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-328-Xm7YpHbfPKGCCPIAwAzINg-1; Mon, 01 Feb 2021 22:13:01 -0500
-X-MC-Unique: Xm7YpHbfPKGCCPIAwAzINg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Mon, 1 Feb 2021 22:17:05 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B49CDC061573;
+        Mon,  1 Feb 2021 19:16:24 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C5B4C800D53;
-        Tue,  2 Feb 2021 03:12:59 +0000 (UTC)
-Received: from [10.72.13.250] (ovpn-13-250.pek2.redhat.com [10.72.13.250])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 80C2360BE5;
-        Tue,  2 Feb 2021 03:12:54 +0000 (UTC)
-Subject: Re: [PATCH 1/2] vdpa/mlx5: Avoid unnecessary query virtqueue
-To:     Si-Wei Liu <siwliu.kernel@gmail.com>, Eli Cohen <elic@nvidia.com>
-Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lulu@redhat.com, Si-Wei Liu <si-wei.liu@oracle.com>
-References: <20210128134130.3051-1-elic@nvidia.com>
- <20210128134130.3051-2-elic@nvidia.com>
- <CAPWQSg0XtEQ1U5N3a767Ak_naoyPdVF1CeE4r3hmN11a-aoBxg@mail.gmail.com>
- <CAPWQSg3U9DCSK_01Kzuea5B1X+Ef9JB23wBY82A3ss-UXGek_Q@mail.gmail.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <9d6058d6-5ce1-0442-8fd9-5a6fe6a0bc6b@redhat.com>
-Date:   Tue, 2 Feb 2021 11:12:51 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DV92C5wFMz9tkB;
+        Tue,  2 Feb 2021 14:16:19 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1612235781;
+        bh=l4RrMfoAysP2CJv3Uqtn4njr4JIiAXCp+xF92OzvXqU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GYLuFAkjk3DzgLqPkf+07TaxBCb6ShKOuGxTGu47OVi+9wzqW/4plulOnS+u4Yq/L
+         UtYw4S3i5HOM7rNkRWyI3k2kQA6/2zsFBJ8OtcElC0khq8f1pEz7V2DH7cG2uySYMC
+         oWh4syDrHY5iiA5tTpg2xt4gDlE9AijXkq8E3NsCiaxeYKsrjkFQUFcVUQ9Z7At59V
+         67qcN8Ix4W/geSNEDjiwR3m5cFGdy6zs9oQu4ftLKpvNGUhCve+aJA4DwhRmiuxD8+
+         WRZ+sxyJ9b6C+qKcEs55mNkytp5LD69KjyBD5KGpm9xjuYhtA6cNE57IsYjWC27mw/
+         XmLoSOYlflH2Q==
+Date:   Tue, 2 Feb 2021 14:16:18 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>, David Sterba <dsterba@suse.cz>
+Cc:     Christoph Hellwig <hch@lst.de>, David Sterba <dsterba@suse.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>
+Subject: Re: linux-next: build failure after merge of the block tree
+Message-ID: <20210202141618.4a3a9470@canb.auug.org.au>
+In-Reply-To: <20210202135714.6470f476@canb.auug.org.au>
+References: <20210202135714.6470f476@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <CAPWQSg3U9DCSK_01Kzuea5B1X+Ef9JB23wBY82A3ss-UXGek_Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: multipart/signed; boundary="Sig_/on58PgwYTw5=sPogN.H4R1=";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+--Sig_/on58PgwYTw5=sPogN.H4R1=
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 2021/2/2 上午3:17, Si-Wei Liu wrote:
-> On Mon, Feb 1, 2021 at 10:51 AM Si-Wei Liu <siwliu.kernel@gmail.com> wrote:
->> On Thu, Jan 28, 2021 at 5:46 AM Eli Cohen <elic@nvidia.com> wrote:
->>> suspend_vq should only suspend the VQ on not save the current available
->>> index. This is done when a change of map occurs when the driver calls
->>> save_channel_info().
->> Hmmm, suspend_vq() is also called by teardown_vq(), the latter of
->> which doesn't save the available index as save_channel_info() doesn't
->> get called in that path at all. How does it handle the case that
->> aget_vq_state() is called from userspace (e.g. QEMU) while the
->> hardware VQ object was torn down, but userspace still wants to access
->> the queue index?
->>
->> Refer to https://lore.kernel.org/netdev/1601583511-15138-1-git-send-email-si-wei.liu@oracle.com/
->>
->> vhost VQ 0 ring restore failed: -1: Resource temporarily unavailable (11)
->> vhost VQ 1 ring restore failed: -1: Resource temporarily unavailable (11)
->>
->> QEMU will complain with the above warning while VM is being rebooted
->> or shut down.
->>
->> Looks to me either the kernel driver should cover this requirement, or
->> the userspace has to bear the burden in saving the index and not call
->> into kernel if VQ is destroyed.
-> Actually, the userspace doesn't have the insights whether virt queue
-> will be destroyed if just changing the device status via set_status().
-> Looking at other vdpa driver in tree i.e. ifcvf it doesn't behave like
-> so. Hence this still looks to me to be Mellanox specifics and
-> mlx5_vdpa implementation detail that shouldn't expose to userspace.
+Hi all,
 
+On Tue, 2 Feb 2021 13:57:14 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> After merging the block tree, today's linux-next build (powerpc
+> ppc64_defconfig) failed like this:
+>=20
+> block/bio.c: In function 'bio_add_zone_append_page':
+> block/bio.c:860:31: error: 'struct bio' has no member named 'bi_disk'
+>   860 |  struct request_queue *q =3D bio->bi_disk->queue;
+>       |                               ^~
+>=20
+> Caused by commit
+>=20
+>   309dca309fc3 ("block: store a block_device pointer in struct bio")
+>=20
+> interacting with commit
+>=20
+>   9f678097f3de ("block: add bio_add_zone_append_page")
+>=20
+> from the btrfs tree.
+>=20
+> I applied the following merge fix up for today.
+>=20
+> From: Stephen Rothwell <sfr@canb.auug.org.au>
+> Date: Tue, 2 Feb 2021 13:54:29 +1100
+> Subject: [PATCH] block: bio: fix up for bi_disk removal
+>=20
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+> ---
+>  block/bio.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/block/bio.c b/block/bio.c
+> index bf3ab1b5c844..e3b9d3e0a196 100644
+> --- a/block/bio.c
+> +++ b/block/bio.c
+> @@ -857,7 +857,7 @@ EXPORT_SYMBOL(bio_add_pc_page);
+>  int bio_add_zone_append_page(struct bio *bio, struct page *page,
+>  			     unsigned int len, unsigned int offset)
+>  {
+> -	struct request_queue *q =3D bio->bi_disk->queue;
+> +	struct request_queue *q =3D bio->bi_bdev->bd_disk->queue;
+>  	bool same_page =3D false;
+> =20
+>  	if (WARN_ON_ONCE(bio_op(bio) !=3D REQ_OP_ZONE_APPEND))
+> --=20
+> 2.29.2
 
-So I think we can simply drop this patch?
+This then lead to the following in my x86_64 allmodconfig build:
 
-Thanks
+fs/btrfs/zoned.c: In function 'btrfs_record_physical_zoned':
+fs/btrfs/zoned.c:1286:21: error: 'struct bio' has no member named 'bi_disk'
+ 1286 |  ordered->disk =3D bio->bi_disk;
+      |                     ^~
+fs/btrfs/zoned.c:1287:23: error: 'struct bio' has no member named 'bi_partn=
+o'
+ 1287 |  ordered->partno =3D bio->bi_partno;
+      |                       ^~
 
+Do to the above block tree commit interacting with commit
 
->> -Siwei
->>
->>
->>> Signed-off-by: Eli Cohen <elic@nvidia.com>
->>> ---
->>>   drivers/vdpa/mlx5/net/mlx5_vnet.c | 8 --------
->>>   1 file changed, 8 deletions(-)
->>>
->>> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>> index 88dde3455bfd..549ded074ff3 100644
->>> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
->>> @@ -1148,8 +1148,6 @@ static int setup_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq)
->>>
->>>   static void suspend_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq)
->>>   {
->>> -       struct mlx5_virtq_attr attr;
->>> -
->>>          if (!mvq->initialized)
->>>                  return;
->>>
->>> @@ -1158,12 +1156,6 @@ static void suspend_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *m
->>>
->>>          if (modify_virtqueue(ndev, mvq, MLX5_VIRTIO_NET_Q_OBJECT_STATE_SUSPEND))
->>>                  mlx5_vdpa_warn(&ndev->mvdev, "modify to suspend failed\n");
->>> -
->>> -       if (query_virtqueue(ndev, mvq, &attr)) {
->>> -               mlx5_vdpa_warn(&ndev->mvdev, "failed to query virtqueue\n");
->>> -               return;
->>> -       }
->>> -       mvq->avail_idx = attr.available_index;
->>>   }
->>>
->>>   static void suspend_vqs(struct mlx5_vdpa_net *ndev)
->>> --
->>> 2.29.2
->>>
+  bccc13e5fe0c ("btrfs: use ZONE_APPEND write for ZONED btrfs")
 
+from the btrfs tree.
+
+For which I applied the following merge fix patch:
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Tue, 2 Feb 2021 14:08:44 +1100
+Subject: [PATCH] block: btrfs: another fix up for bi_disk removal
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+---
+ fs/btrfs/zoned.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+index 334a54be587d..4829ffc5275b 100644
+--- a/fs/btrfs/zoned.c
++++ b/fs/btrfs/zoned.c
+@@ -1283,8 +1283,8 @@ void btrfs_record_physical_zoned(struct inode *inode,=
+ u64 file_offset,
+ 		return;
+=20
+ 	ordered->physical =3D physical;
+-	ordered->disk =3D bio->bi_disk;
+-	ordered->partno =3D bio->bi_partno;
++	ordered->disk =3D bio->bi_bdev->bd_disk;
++	ordered->partno =3D bio->bi_bdev->bd_partno;
+=20
+ 	btrfs_put_ordered_extent(ordered);
+ }
+--=20
+2.29.2
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/on58PgwYTw5=sPogN.H4R1=
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAYxAIACgkQAVBC80lX
+0Gxuvgf+PMYsZd3gUrbJXToN6ov+U947+Orgk+9q1S4d4jl1zoDXs1B4ojQ0x1Cg
+43XGdMGy6H1xUMS7CdzYnBpUNDeEF5AP0aW/byvGINZnnVY4bsVgBj4hGbaq+RvF
+HqWkBOBT3qDEB6MdCcCefeqA3sW4BJtPNyNOTDUjYDanRp36lgPypN46sMWNQbko
+vp2i1hyqzkjWl51Jv2YYdTUOtP1vmc4hXYoaaI1pzCOcHFYeoEiU8nYzOh80BaPk
+oQ4bWrxOGpyIvCX28yDIJ3KtQ7lY0Z9bQ8X05AdzNXlxb+wqIYGVJhvJnGkQ1b0h
+g8XO7QtTuEK9YHSKicsR2Uk71hEHYw==
+=wAOW
+-----END PGP SIGNATURE-----
+
+--Sig_/on58PgwYTw5=sPogN.H4R1=--
