@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F7B30C970
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:19:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F44630C88D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:57:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238350AbhBBSS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:18:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46998 "EHLO mail.kernel.org"
+        id S237586AbhBBRyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:54:39 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49178 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233669AbhBBOGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:06:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FA0864F94;
-        Tue,  2 Feb 2021 13:49:27 +0000 (UTC)
+        id S233973AbhBBOJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:09:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 25D0F6502F;
+        Tue,  2 Feb 2021 13:50:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273768;
-        bh=fev1EVMzBxG4ufi85k7jTzo7x01EkX27Ibas1SKPfbo=;
+        s=korg; t=1612273836;
+        bh=JpdlOipREusccAO2Fc5zQZ3djvUBfXcAP7LVC+6cwXY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xO9sV8NtSKgYsO0OBLjAEiYyspH6awlcU3PhNmqAg4Y73Ge7SfPZactqP+GN3iwOm
-         rxGF50kb5768FkvDtmi2tBqcuERkVHSZjtAdJ2eOcR2uZbaq9Bd2mnE5hiH18uQALL
-         tSFtXLDa+jTuvAM5Ci3Jj1pUK4H59kqrjW/u3D0w=
+        b=xDJDwtphRh3Rn6sXiF1vU6kYTEj5t6CXz21zdANE/oTS5txgVmzv+PctvEjkYVmhA
+         IIB0NVNvhrDzgwTadlxX7so12AYM8UG+XL4O/9G23RMY1+L+aIzVJyz4gNojgb2Qbl
+         LiU2MAT9ZfjSFnCTyPsewKmHOhX83CBc1p7+hbJE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kamal Heib <kamalheib1@gmail.com>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 22/28] RDMA/cxgb4: Fix the reported max_recv_sge value
+        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Jakub Kicinski <kubakici@wp.pl>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 4.9 19/32] mt7601u: fix kernel crash unplugging the device
 Date:   Tue,  2 Feb 2021 14:38:42 +0100
-Message-Id: <20210202132942.070018157@linuxfoundation.org>
+Message-Id: <20210202132942.788675345@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132941.180062901@linuxfoundation.org>
-References: <20210202132941.180062901@linuxfoundation.org>
+In-Reply-To: <20210202132942.035179752@linuxfoundation.org>
+References: <20210202132942.035179752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +40,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kamal Heib <kamalheib1@gmail.com>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-[ Upstream commit a372173bf314d374da4dd1155549d8ca7fc44709 ]
+commit 0acb20a5438c36e0cf2b8bf255f314b59fcca6ef upstream.
 
-The max_recv_sge value is wrongly reported when calling query_qp, This is
-happening due to a typo when assigning the max_recv_sge value, the value
-of sq_max_sges was assigned instead of rq_max_sges.
+The following crash log can occur unplugging the usb dongle since,
+after the urb poison in mt7601u_free_tx_queue(), usb_submit_urb() will
+always fail resulting in a skb kfree while the skb has been already
+queued.
 
-Fixes: 3e5c02c9ef9a ("iw_cxgb4: Support query_qp() verb")
-Link: https://lore.kernel.org/r/20210114191423.423529-1-kamalheib1@gmail.com
-Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
-Reviewed-by: Potnuri Bharat Teja <bharat@chelsio.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix the issue enqueuing the skb only if usb_submit_urb() succeed.
+
+Hardware name: Hewlett-Packard 500-539ng/2B2C, BIOS 80.06 04/01/2015
+Workqueue: usb_hub_wq hub_event
+RIP: 0010:skb_trim+0x2c/0x30
+RSP: 0000:ffffb4c88005bba8 EFLAGS: 00010206
+RAX: 000000004ad483ee RBX: ffff9a236625dee0 RCX: 000000000000662f
+RDX: 000000000000000c RSI: 0000000000000000 RDI: ffff9a2343179300
+RBP: ffff9a2343179300 R08: 0000000000000001 R09: 0000000000000000
+R10: ffff9a23748f7840 R11: 0000000000000001 R12: ffff9a236625e4d4
+R13: ffff9a236625dee0 R14: 0000000000001080 R15: 0000000000000008
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fd410a34ef8 CR3: 00000001416ee001 CR4: 00000000001706f0
+Call Trace:
+ mt7601u_tx_status+0x3e/0xa0 [mt7601u]
+ mt7601u_dma_cleanup+0xca/0x110 [mt7601u]
+ mt7601u_cleanup+0x22/0x30 [mt7601u]
+ mt7601u_disconnect+0x22/0x60 [mt7601u]
+ usb_unbind_interface+0x8a/0x270
+ ? kernfs_find_ns+0x35/0xd0
+ __device_release_driver+0x17a/0x230
+ device_release_driver+0x24/0x30
+ bus_remove_device+0xdb/0x140
+ device_del+0x18b/0x430
+ ? kobject_put+0x98/0x1d0
+ usb_disable_device+0xc6/0x1f0
+ usb_disconnect.cold+0x7e/0x20a
+ hub_event+0xbf3/0x1870
+ process_one_work+0x1b6/0x350
+ worker_thread+0x53/0x3e0
+ ? process_one_work+0x350/0x350
+ kthread+0x11b/0x140
+ ? __kthread_bind_mask+0x60/0x60
+ ret_from_fork+0x22/0x30
+
+Fixes: 23377c200b2eb ("mt7601u: fix possible memory leak when the device is disconnected")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Acked-by: Jakub Kicinski <kubakici@wp.pl>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/3b85219f669a63a8ced1f43686de05915a580489.1610919247.git.lorenzo@kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/infiniband/hw/cxgb4/qp.c | 2 +-
+ drivers/net/wireless/mediatek/mt7601u/dma.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/cxgb4/qp.c b/drivers/infiniband/hw/cxgb4/qp.c
-index 04206c600098f..07579e31168c5 100644
---- a/drivers/infiniband/hw/cxgb4/qp.c
-+++ b/drivers/infiniband/hw/cxgb4/qp.c
-@@ -1898,7 +1898,7 @@ int c4iw_ib_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
- 	init_attr->cap.max_send_wr = qhp->attr.sq_num_entries;
- 	init_attr->cap.max_recv_wr = qhp->attr.rq_num_entries;
- 	init_attr->cap.max_send_sge = qhp->attr.sq_max_sges;
--	init_attr->cap.max_recv_sge = qhp->attr.sq_max_sges;
-+	init_attr->cap.max_recv_sge = qhp->attr.rq_max_sges;
- 	init_attr->cap.max_inline_data = T4_MAX_SEND_INLINE;
- 	init_attr->sq_sig_type = qhp->sq_sig_all ? IB_SIGNAL_ALL_WR : 0;
- 	return 0;
--- 
-2.27.0
-
+--- a/drivers/net/wireless/mediatek/mt7601u/dma.c
++++ b/drivers/net/wireless/mediatek/mt7601u/dma.c
+@@ -318,7 +318,6 @@ static int mt7601u_dma_submit_tx(struct
+ 	}
+ 
+ 	e = &q->e[q->end];
+-	e->skb = skb;
+ 	usb_fill_bulk_urb(e->urb, usb_dev, snd_pipe, skb->data, skb->len,
+ 			  mt7601u_complete_tx, q);
+ 	ret = usb_submit_urb(e->urb, GFP_ATOMIC);
+@@ -336,6 +335,7 @@ static int mt7601u_dma_submit_tx(struct
+ 
+ 	q->end = (q->end + 1) % q->entries;
+ 	q->used++;
++	e->skb = skb;
+ 
+ 	if (q->used >= q->entries)
+ 		ieee80211_stop_queue(dev->hw, skb_get_queue_mapping(skb));
 
 
