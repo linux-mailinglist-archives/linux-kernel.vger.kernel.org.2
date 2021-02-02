@@ -2,136 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B80C030C1C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:35:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 96ACB30C1D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:35:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234432AbhBBObr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:31:47 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:19769 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233662AbhBBOaC (ORCPT
+        id S234595AbhBBOfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:35:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56312 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234541AbhBBOcu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:30:02 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601961c00000>; Tue, 02 Feb 2021 06:29:20 -0800
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
- (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 2 Feb
- 2021 14:29:19 +0000
-Received: from vdi.nvidia.com (172.20.145.6) by mail.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Tue, 2 Feb 2021 14:29:18 +0000
-From:   Eli Cohen <elic@nvidia.com>
-To:     <mst@redhat.com>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lulu@redhat.com>
-CC:     <elic@nvidia.com>
-Subject: [PATCH] vdpa/mlx5: Restore the hardware used index after change map
-Date:   Tue, 2 Feb 2021 16:29:01 +0200
-Message-ID: <20210202142901.7131-1-elic@nvidia.com>
-X-Mailer: git-send-email 2.28.0
+        Tue, 2 Feb 2021 09:32:50 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B134DC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 06:32:06 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id sa23so13991452ejb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 06:32:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=zYMXbASdXhTFMbn1FUFGa1TMGbfhRribZMrBUXn1vP8=;
+        b=UbMofkpyJMli+Y7dti9+hwGj5m/ynMdTnXyBEXKb0p6oPfy0dXUk+QPMFO3ESAmARH
+         6acVsJ4jIch7VgphPK4NZpBEbb5WzCxIYShO22xmD6fZRG07Tivy6aRPS07eN3Fga9yM
+         oIxXnsN1trzbgoi+8UnHPAe4+B3D74NenOUPCbaCMU9oO/k/g9lK5RgOP0Ztxdf7TyEU
+         FDxkhy9av+LAS6qc6WPPjDxVbPz0hWdXpGTxc899m/RiHNPLZ0965vBWG3v6Ygn3xxS4
+         TN3yOyiucLu1RERGaPLnd0MVXOpW2h+XenzmqlUFQWwaznPjXzKgeIa0j9wzFH6j+eGE
+         brOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=zYMXbASdXhTFMbn1FUFGa1TMGbfhRribZMrBUXn1vP8=;
+        b=a5Bm7uncogD0hWuweehuGkDshXqTfJgizipz046Jv++y8CuF0O/tdXwO0ICjTQlcbK
+         KJmLkJt80bai3JNbMt2jzbNQmQ/IRViPTlJyNpsjge6Jy7C6/EMX9EBen74kO38HnaCz
+         MhkBq3wGBsuAwCDqg68ztNwyPgl5eqEu7l/OohjIIl1jP+VGlDA6kycB0es8b8+9AWh8
+         /Lnax6jYUV+FkeTwP9FzOJtgFhD3RM+1zLTnT/Smw+knRhOR9XTdtJaRzwMV2kr5U83Z
+         I1eZmVashG9yUF9mZoulV5UvLa+envokX14Ykm9lwl54ngoW5gCMOJWLbrVlVIzYkVoF
+         ME8g==
+X-Gm-Message-State: AOAM532cndoCzlUJwMQLPiYoimwfdnMtxZHUty15geMFniQQiz+ZMeLt
+        iKkkieAWyJ2KZ23ULPUF2+asyeLmsxzMXs+pk8i9DS1EvABurXae
+X-Google-Smtp-Source: ABdhPJyLkXSiOMJgV4AJB+EIG7vg3T26xAK9AgUl2p5UuTsmrcahhKKNZo5DZx0wzvYE4dk2Eeig2MWlDBuvAjMxu0w=
+X-Received: by 2002:a17:906:6407:: with SMTP id d7mr22210137ejm.133.1612276325127;
+ Tue, 02 Feb 2021 06:32:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612276160; bh=M0ljA581mxX3hbIGoVqf9HUH1rEYBlErQUTAsqopT/E=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-         Content-Transfer-Encoding:Content-Type;
-        b=mYboifhZrZ0LQY0pp1LyzAgx4DJm3SiP+l+84OOus/KeIqkF8Rx2C4czIU+DIwQCO
-         Rye5ih4sOu5UqogUTCQkSo4uJbm6mZuHtcUCcLsGQqhiIh0cm0nXhBdBpEkB5qZc9P
-         x3iWyKpPI7B6eLetWtEn1jSOgUPbHs8fYSOvePD6z1PTCpE0wlzXRf7nYYTUsdAvTH
-         5gNnWv3nH/h9zyl5mQhl8pVph92aEV0BKv9PYXxbx7+sas+pdqSRBzEsqDfQzqHUVJ
-         L2ouqQMn1JYOR973mRGEOrsjgzGpzu6xG0lq1w0G3o/v1JhMyV+cWf8AAK/YvQPz4E
-         DIfkMYAJ9xfJA==
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 2 Feb 2021 20:01:54 +0530
+Message-ID: <CA+G9fYszbxo4giipD0_sV3XHKaq2zVq97rXoyjWf18k5oYEX4Q@mail.gmail.com>
+Subject: [next] mm/gup.c:96:10: error: implicit declaration of function
+ 'is_zero_pfn' [-Werror,-Wimplicit-function-declaration]
+To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org
+Cc:     pasha.tatashin@soleen.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>, david@redhat.com,
+        osalvador@suse.de, Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        James Morris <jmorris@namei.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a change of memory map occurs, the hardware resources are destroyed
-and then re-created again with the new memory map. In such case, we need
-to restore the hardware available and used indices. The driver failed to
-restore the used index which is added here.
+Linux next tag 20210202 arm, riscv and sh builds with allnoconfig and
+tinyconfig failed due to build errors.
 
-Fixes 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices"=
-)
-Signed-off-by: Eli Cohen <elic@nvidia.com>
----
-This patch is being sent again a single patch the fixes hot memory
-addtion to a qemy process.
 
- drivers/vdpa/mlx5/net/mlx5_vnet.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+make --silent --keep-going --jobs=8
+O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=arm
+CROSS_COMPILE=arm-linux-gnueabihf- 'HOSTCC=sccache clang' 'CC=sccache
+clang' zImage
+ mm/gup.c:96:10: error: implicit declaration of function 'is_zero_pfn'
+[-Werror,-Wimplicit-function-declaration]
+                             !is_pinnable_page(page)))
+                              ^
+ include/linux/mm.h:1133:3: note: expanded from macro 'is_pinnable_page'
+                is_zero_pfn(page_to_pfn(page)))
+                ^
+ mm/gup.c:96:10: note: did you mean 'is_zero_ino'?
+ include/linux/mm.h:1133:3: note: expanded from macro 'is_pinnable_page'
+                is_zero_pfn(page_to_pfn(page)))
+                ^
+ include/linux/fs.h:3045:20: note: 'is_zero_ino' declared here
+static inline bool is_zero_ino(ino_t ino)
+                   ^
+1 error generated.
 
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5=
-_vnet.c
-index 88dde3455bfd..839f57c64a6f 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -87,6 +87,7 @@ struct mlx5_vq_restore_info {
- 	u64 device_addr;
- 	u64 driver_addr;
- 	u16 avail_index;
-+	u16 used_index;
- 	bool ready;
- 	struct vdpa_callback cb;
- 	bool restore;
-@@ -121,6 +122,7 @@ struct mlx5_vdpa_virtqueue {
- 	u32 virtq_id;
- 	struct mlx5_vdpa_net *ndev;
- 	u16 avail_idx;
-+	u16 used_idx;
- 	int fw_state;
-=20
- 	/* keep last in the struct */
-@@ -804,6 +806,7 @@ static int create_virtqueue(struct mlx5_vdpa_net *ndev,=
- struct mlx5_vdpa_virtque
-=20
- 	obj_context =3D MLX5_ADDR_OF(create_virtio_net_q_in, in, obj_context);
- 	MLX5_SET(virtio_net_q_object, obj_context, hw_available_index, mvq->avail=
-_idx);
-+	MLX5_SET(virtio_net_q_object, obj_context, hw_used_index, mvq->used_idx);
- 	MLX5_SET(virtio_net_q_object, obj_context, queue_feature_bit_mask_12_3,
- 		 get_features_12_3(ndev->mvdev.actual_features));
- 	vq_ctx =3D MLX5_ADDR_OF(virtio_net_q_object, obj_context, virtio_q_contex=
-t);
-@@ -1022,6 +1025,7 @@ static int connect_qps(struct mlx5_vdpa_net *ndev, st=
-ruct mlx5_vdpa_virtqueue *m
- struct mlx5_virtq_attr {
- 	u8 state;
- 	u16 available_index;
-+	u16 used_index;
- };
-=20
- static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_vi=
-rtqueue *mvq,
-@@ -1052,6 +1056,7 @@ static int query_virtqueue(struct mlx5_vdpa_net *ndev=
-, struct mlx5_vdpa_virtqueu
- 	memset(attr, 0, sizeof(*attr));
- 	attr->state =3D MLX5_GET(virtio_net_q_object, obj_context, state);
- 	attr->available_index =3D MLX5_GET(virtio_net_q_object, obj_context, hw_a=
-vailable_index);
-+	attr->used_index =3D MLX5_GET(virtio_net_q_object, obj_context, hw_used_i=
-ndex);
- 	kfree(out);
- 	return 0;
-=20
-@@ -1610,6 +1615,7 @@ static int save_channel_info(struct mlx5_vdpa_net *nd=
-ev, struct mlx5_vdpa_virtqu
- 		return err;
-=20
- 	ri->avail_index =3D attr.available_index;
-+	ri->used_index =3D attr.used_index;
- 	ri->ready =3D mvq->ready;
- 	ri->num_ent =3D mvq->num_ent;
- 	ri->desc_addr =3D mvq->desc_addr;
-@@ -1654,6 +1660,7 @@ static void restore_channels_info(struct mlx5_vdpa_ne=
-t *ndev)
- 			continue;
-=20
- 		mvq->avail_idx =3D ri->avail_index;
-+		mvq->used_idx =3D ri->used_index;
- 		mvq->ready =3D ri->ready;
- 		mvq->num_ent =3D ri->num_ent;
- 		mvq->desc_addr =3D ri->desc_addr;
---=20
-2.29.2
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
+steps to reproduce:
+--------------------------
+# TuxMake is a command line tool and Python library that provides
+# portable and repeatable Linux kernel builds across a variety of
+# architectures, toolchains, kernel configurations, and make targets.
+#
+# TuxMake supports the concept of runtimes.
+# See https://docs.tuxmake.org/runtimes/, for that to work it requires
+# that you install podman or docker on your system.
+#
+# To install tuxmake on your system globally:
+# sudo pip3 install -U tuxmake
+#
+# See https://docs.tuxmake.org/ for complete documentation.
+
+tuxmake --runtime podman --target-arch arm --toolchain clang-11
+--kconfig allnoconfig
+
+build details:
+https://builds.tuxbuild.com/1nv9wkY1T8wug0sEw2kwuFKLxhK/
+
+Regressions found on sh:
+
+   - build/gcc-10-allnoconfig
+   - build/gcc-9-tinyconfig
+   - build/gcc-8-allnoconfig
+   - build/gcc-10-tinyconfig
+   - build/gcc-9-allnoconfig
+   - build/gcc-8-tinyconfig
+
+Regressions found on riscv:
+
+   - build/gcc-10-allnoconfig
+   - build/clang-11-tinyconfig
+   - build/clang-10-allnoconfig
+   - build/clang-11-allnoconfig
+   - build/gcc-9-tinyconfig
+   - build/gcc-8-allnoconfig
+   - build/gcc-10-tinyconfig
+   - build/clang-10-tinyconfig
+   - build/gcc-9-allnoconfig
+   - build/gcc-8-tinyconfig
+
+Regressions found on arm:
+
+   - build/gcc-10-allnoconfig
+   - build/clang-11-tinyconfig
+   - build/clang-10-allnoconfig
+   - build/clang-11-allnoconfig
+   - build/gcc-9-tinyconfig
+   - build/gcc-8-allnoconfig
+   - build/gcc-10-tinyconfig
+   - build/clang-10-tinyconfig
+   - build/gcc-9-allnoconfig
+   - build/gcc-8-tinyconfig
+
+
+- Naresh
