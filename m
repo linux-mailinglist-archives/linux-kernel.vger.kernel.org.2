@@ -2,65 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A0730C973
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:19:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76EF130C97A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:19:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238478AbhBBSS6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:18:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48042 "EHLO
+        id S233694AbhBBST1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:19:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238184AbhBBSPv (ORCPT
+        with ESMTP id S238353AbhBBSQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 13:15:51 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DBC3C0613ED;
-        Tue,  2 Feb 2021 10:15:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0+8razvFOQF0lS6CiOBgQgUcWVFkIsoX+gdB9DN1ClU=; b=pNl3Xj1mdOaJGg6BrCAQmSG7Yh
-        xz2YE7gjLnfL+2/GiMGVjBPbhl+yAOvvb9WyejQVrN8ASA+sApTEgdMZq6SPqZhELIactT8GnHZBZ
-        uIWRAL7abBYC1cEV/DH66sGw4D2Lopy0ffjVfSU2sL589ol0WjYdso9YEnZbAJgshi96MRmYIcN4T
-        M7T5cXgp059iRV3fT/LBqwIz+iHcW+zMZezLX9zlniZYb6laU4PicbHSn8m5Ny2ZF0RvzrAL9dkie
-        o4kQrizef23/6Gs5w98dW4KM1QAVnkE69Pi5hqMpkQpCWGf1lxQRjpzbA6D4cy+tAiHzgQAZHMNRj
-        9bKuHTPQ==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l70Cf-00FZxS-Kf; Tue, 02 Feb 2021 18:15:06 +0000
-Date:   Tue, 2 Feb 2021 18:15:05 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     linux-cxl@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-pci@vger.kernel.org,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        daniel.lll@alibaba-inc.com,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH 06/14] cxl/mem: Add basic IOCTL interface
-Message-ID: <20210202181505.GF3708021@infradead.org>
-References: <20210130002438.1872527-1-ben.widawsky@intel.com>
- <20210130002438.1872527-7-ben.widawsky@intel.com>
+        Tue, 2 Feb 2021 13:16:22 -0500
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 164F6C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 10:15:42 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id m22so17649529ljj.4
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 10:15:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/MWbkPLCL9CFKof8bZd6gd8Z2vCJySSsKevLs2Kls/s=;
+        b=hI2p3QaIWuox11WRTsIOwV8N4BHLb0KlgJGZJnfI7iTeuKwXHj8kagcgHXMpwqdN4G
+         XtdoSMRiCDHb904N32WDbLL3UdrsUgNT3DggPmqp9pce9pMLYfAMPYNY9TANUZSKS8Tv
+         enOgBNM8CfJsRualblnjidKdyWXTqZ6cQe1h4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/MWbkPLCL9CFKof8bZd6gd8Z2vCJySSsKevLs2Kls/s=;
+        b=Y2mHPkU2OrPuetxP6D1FgE3h4sTyo5lvdihbYqUxJMohGmac/T3LYlRYQNKAZca90o
+         tIlurS5Frd0JsW8v8CyG3j1qA3NdRLXhvUfLINgvL1XbVAoD5Ra3pG8J9BsSZah1Jj5G
+         oDf7gPoFmVtGDD888QvvuGe2dBADl/g+23bfKG0VN8BiGy3e/sENj9fXalMFmaHgjmuF
+         djd2GJ0pqHaC/u6PGibyGQWMcbGTA/3cl0kPQWChzEvZ9DGKx6yeR38dWgc5dNaqWGnQ
+         cnIDGhuBVPNoe0Tw7QijURh6f5qyJEKydy7p6TRYeyVc7PaTop+EtPZ45rBg3sm4Neyr
+         axWQ==
+X-Gm-Message-State: AOAM5323ZG4Q5Ok4loIorb5n8zNeunNgiU1aOAjJzaGZ7RSdKmqw97JT
+        huECVjtLAbR6ApsU9bUBGj6phc6HHEYvmA==
+X-Google-Smtp-Source: ABdhPJwP8Hi/OdjmzNW20HVhrayJwfBlk0YEX54RfUkRGc/YJnTLaOHrUP8BzxNSMW3fz2i0S9Pung==
+X-Received: by 2002:a2e:8986:: with SMTP id c6mr13540541lji.315.1612289739686;
+        Tue, 02 Feb 2021 10:15:39 -0800 (PST)
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
+        by smtp.gmail.com with ESMTPSA id z1sm3410234lfc.303.2021.02.02.10.15.38
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Feb 2021 10:15:38 -0800 (PST)
+Received: by mail-lj1-f178.google.com with SMTP id s18so25083336ljg.7
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 10:15:38 -0800 (PST)
+X-Received: by 2002:a2e:b1c8:: with SMTP id e8mr6748318lja.251.1612289737770;
+ Tue, 02 Feb 2021 10:15:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210130002438.1872527-7-ben.widawsky@intel.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20210201174555.GA17819@redhat.com> <CAHk-=wjKeFHBn60eJJjvJOW2+bdtwbeSb12R+=PBQJSSHe+FbA@mail.gmail.com>
+ <CAHk-=wjJerA3xGtK8HdEcdAnmaaTz-iVvc_xqokzNTBivKomVQ@mail.gmail.com> <20210202155548.GB20059@redhat.com>
+In-Reply-To: <20210202155548.GB20059@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Tue, 2 Feb 2021 10:15:21 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wit0wigE-D=r08=HyB4qSK-=+So8y9boeoc_o6Yavb_qg@mail.gmail.com>
+Message-ID: <CAHk-=wit0wigE-D=r08=HyB4qSK-=+So8y9boeoc_o6Yavb_qg@mail.gmail.com>
+Subject: Re: [PATCH RESEND v4 0/4] x86: fix get_nr_restart_syscall()
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Jan Kratochvil <jan.kratochvil@redhat.com>,
+        Pedro Alves <palves@redhat.com>, Peter Anvin <hpa@zytor.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +#if defined(__cplusplus)
-> +extern "C" {
-> +#endif
+On Tue, Feb 2, 2021 at 7:56 AM Oleg Nesterov <oleg@redhat.com> wrote:
+>
+> There is the "erestartsys-trap-debugger" test in ptrace-tests suite.
+> Do you mean you want another test in tools/testing/selftests/ptrace ?
 
-This has no business in a kernel header.
+No, I guess it's fine if it's caught by the ptrace test suite - we'll
+hopefully get fairly timely "guys, you broke it" reports.
+
+Is that ptrace erestartsys-trap-debugger.c test new, or has it just
+always failed? Or is the problem that it is so expected to fail that
+we wouldn't get reports of it anyway (this clearly fell off your radar
+for a long time)?
+
+IOW, my only worry is that this is somewhat subtle (understatement of
+the year), has been around forever, and if we care about this debugger
+case, we should have _some_ way to make sure that if it gets broken
+again we at least get notified some way in a reasonably timely
+manner...
+
+               Linus
