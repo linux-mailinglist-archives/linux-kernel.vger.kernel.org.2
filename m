@@ -2,147 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E42630B7AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 07:11:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0F5630B7B3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 07:15:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231965AbhBBGLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 01:11:16 -0500
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:54889 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231621AbhBBGLO (ORCPT
+        id S231633AbhBBGMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 01:12:36 -0500
+Received: from mail29.static.mailgun.info ([104.130.122.29]:17356 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232027AbhBBGMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 01:11:14 -0500
-X-Greylist: delayed 104440 seconds by postgrey-1.27 at vger.kernel.org; Tue, 02 Feb 2021 01:11:13 EST
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 1126AFmT030335;
-        Tue, 2 Feb 2021 15:10:16 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 1126AFmT030335
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1612246216;
-        bh=2faiPUU1kCn9CAla/zsNtBG+tChwSI/0/LPuqDKvFFo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=xeb4ljx2coq4CTT4KH1ixIBqET/OVNoJqOAgpVpvmJ103knAnHtg60AJuqDrpSiqJ
-         Q3Dh/vA6bHO/WaBQq2oJHZRUnGZJsSg6J49C7mbxE2JGMx/mO3JASVvH3HuHmFCzp/
-         rhSCM7FTPX7xQ+y6KaSsni4vdUd8701HF/wnPU4oBU3a04ZpPQ4cI2wb4OnUPIraKV
-         D1/9PERUB6usDkNqSUMBCiASeM6BMOSFbrNlIk7sLklXAIVubMvRVzoM8ZoxabaWhG
-         Pl2QEY8rVbeK8y4m5EuMfk3DXn5UylBAQcdMz9ok5t8LwrbC3eJXTQHIWLL7yJUwH+
-         pmpd//aSFqRgA==
-X-Nifty-SrcIP: [209.85.216.46]
-Received: by mail-pj1-f46.google.com with SMTP id nm1so1606434pjb.3;
-        Mon, 01 Feb 2021 22:10:16 -0800 (PST)
-X-Gm-Message-State: AOAM530/q++j0gfcP5DELgw3oeOfNcu6r8k9V//SXHBxyFICkoAVL4T0
-        ILpYj8taoBM7y2jhboYPHfTnEFcqWEkTwvHoezs=
-X-Google-Smtp-Source: ABdhPJy7XtWW44+kUNWZz3iSggbI/ZB+xZxQGW6Cm9nmgZ7xrISemk/yF6L0G4Eu04oKtOWs4LsXiCS8a53x3ygpfo0=
-X-Received: by 2002:a17:90a:184:: with SMTP id 4mr2633282pjc.87.1612246215253;
- Mon, 01 Feb 2021 22:10:15 -0800 (PST)
+        Tue, 2 Feb 2021 01:12:34 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612246324; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=ld1KwqNhIaj2UeohZAxwpLhgN9XG65KEVMvbh4zSBBU=;
+ b=DDBvQ836/o5DtLnNw7ihfreVlT1kAh27amOvoHuHBLxtLDv/CPBjMNhQhOMtDe2yfXEHpl+A
+ XBuctwI8+1C7iuUQcddYWWOZD+OCvcCaePPBjYtzCAUt5BWjQOZX6fQ4eDuABF09i+saytj/
+ wYs3xrY2Ej4b1eQcbbGaIPD2m5g=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 6018ed1af71e8b9934d3b534 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Feb 2021 06:11:38
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B8FF9C43466; Tue,  2 Feb 2021 06:11:38 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CD4FDC433CA;
+        Tue,  2 Feb 2021 06:11:37 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210201010819.655597-1-masahiroy@kernel.org> <CAKwvOdnECGDFe=n6ms0Aj7FB0sN7ktZyk4dyVvV0UTgPvpuWpA@mail.gmail.com>
-In-Reply-To: <CAKwvOdnECGDFe=n6ms0Aj7FB0sN7ktZyk4dyVvV0UTgPvpuWpA@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Tue, 2 Feb 2021 15:09:38 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATSna9f8cd5Lm=zx2vfJzk=WUnAUkA8V593O304zTx=vQ@mail.gmail.com>
-Message-ID: <CAK7LNATSna9f8cd5Lm=zx2vfJzk=WUnAUkA8V593O304zTx=vQ@mail.gmail.com>
-Subject: Re: [PATCH] scripts: switch some more scripts explicitly to Python 3
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-spdx@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 02 Feb 2021 11:41:37 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Leo Yan <leo.yan@linaro.org>, coresight@lists.linaro.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        Denis Nikitin <denik@chromium.org>,
+        Mattias Nissler <mnissler@chromium.org>,
+        Al Grant <al.grant@arm.com>, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        jannh@google.com
+Subject: Re: [PATCH 1/4] perf/core: Add support to exclude kernel mode
+ instruction tracing
+In-Reply-To: <YBgFDXgX57y5XzOn@hirez.programming.kicks-ass.net>
+References: <cover.1611909025.git.saiprakash.ranjan@codeaurora.org>
+ <89c7ff59d887a0360434e607bd625393ec3190e5.1611909025.git.saiprakash.ranjan@codeaurora.org>
+ <20210129193040.GJ8912@worktop.programming.kicks-ass.net>
+ <3c96026b544c2244e57b46119427b8a0@codeaurora.org>
+ <YBgFDXgX57y5XzOn@hirez.programming.kicks-ass.net>
+Message-ID: <6903bc0588a5c8e41892503a204015ee@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 3:28 AM Nick Desaulniers <ndesaulniers@google.com> wrote:
->
-> On Sun, Jan 31, 2021 at 5:08 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
-> >
-> > For the same reason as commit 51839e29cb59 ("scripts: switch explicitly
-> > to Python 3"), switch some more scripts, which I tested and confirmed
-> > working on Python 3.
-> >
-> > Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->
-> Thanks for the patch. It's time to move on from Python 2.
->
-> It looks like there's already a patch in -next for scripts/spdxcheck.py.
-> ("spdxcheck.py: Use Python 3") by Bert Vermeulen.
-> https://lore.kernel.org/r/20210121085412.265400-1-bert@biot.com
+Hi Peter,
 
-OK, I dropped the spdxcheck.py change in v2.
+On 2021-02-01 19:11, Peter Zijlstra wrote:
+> On Mon, Feb 01, 2021 at 01:11:04PM +0530, Sai Prakash Ranjan wrote:
+> 
+>> Ok I suppose you mean CONFIG_SECURITY_LOCKDOWN_LSM? But I don't see
+>> how this new config has to depend on that? This can work independently
+>> whether complete lockdown is enforced or not since it applies to only
+>> hardware instruction tracing. Ideally this depends on several hardware
+>> tracing configs such as ETMs and others but we don't need them because
+>> we are already exposing PERF_PMU_CAP_ITRACE check in the events core.
+> 
+> If you don't have lockdown, root pretty much owns the kernel, or am I
+> missing something?
+> 
 
+You are right in saying that without lockdown root would own kernel but
+this config(EXCLUDE_KERNEL) will independently make sure that kernel
+level pmu tracing is not allowed(we return -EACCES) even if LOCKDOWN
+config is disabled. So I'm saying that we don't need to depend on
+LOCKDOWN config, its good to have LOCKDOWN config enabled but perf
+subsystem doesn't have to care about that.
 
+>> be used for some speculative execution based attacks. Which other
+>> kernel level PMUs can be used to get a full branch trace that is not
+>> locked down? If there is one, then this should probably be applied to
+>> it as well.
+> 
+> Just the regular counters. The information isn't as accurate, but given
+> enough goes you can infer plenty.
+> 
+> Just like all the SMT size-channel attacks.
+> 
+> Sure, PT and friends make it even easier, but I don't see a fundamental
+> distinction.
 
-> What about:
-> scripts/tracing/draw_functrace.py
-> scripts/show_delta
-> scripts/jobserver-exec
->
-> Or do those need additional source level changes?
+Right, we should then exclude all kernel level pmu tracing, is it fine?
 
+if (IS_ENABLED(CONFIG_EXCLUDE_KERNEL_HW_ITRACE) && 
+!attr.exclude_kernel))
+     return -EACCES;
 
-I touched jobserver-exec in this patch:
-
-https://patchwork.kernel.org/project/linux-kbuild/patch/20210201010024.654526-1-masahiroy@kernel.org/
-
-
-I have not tested draw_functrac.py or show_delta.
-
-
-
-
-
-> > ---
-> >
-> >  scripts/clang-tools/gen_compile_commands.py | 2 +-
-> >  scripts/clang-tools/run-clang-tools.py      | 2 +-
-> >  scripts/spdxcheck.py                        | 2 +-
-> >  3 files changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/scripts/clang-tools/gen_compile_commands.py b/scripts/clang-tools/gen_compile_commands.py
-> > index 19963708bcf8..8ddb5d099029 100755
-> > --- a/scripts/clang-tools/gen_compile_commands.py
-> > +++ b/scripts/clang-tools/gen_compile_commands.py
-> > @@ -1,4 +1,4 @@
-> > -#!/usr/bin/env python
-> > +#!/usr/bin/env python3
-> >  # SPDX-License-Identifier: GPL-2.0
-> >  #
-> >  # Copyright (C) Google LLC, 2018
-> > diff --git a/scripts/clang-tools/run-clang-tools.py b/scripts/clang-tools/run-clang-tools.py
-> > index fa7655c7cec0..f754415af398 100755
-> > --- a/scripts/clang-tools/run-clang-tools.py
-> > +++ b/scripts/clang-tools/run-clang-tools.py
-> > @@ -1,4 +1,4 @@
-> > -#!/usr/bin/env python
-> > +#!/usr/bin/env python3
-> >  # SPDX-License-Identifier: GPL-2.0
-> >  #
-> >  # Copyright (C) Google LLC, 2020
-> > diff --git a/scripts/spdxcheck.py b/scripts/spdxcheck.py
-> > index bc87200f9c7c..cbdb5c83c08f 100755
-> > --- a/scripts/spdxcheck.py
-> > +++ b/scripts/spdxcheck.py
-> > @@ -1,4 +1,4 @@
-> > -#!/usr/bin/env python
-> > +#!/usr/bin/env python3
-> >  # SPDX-License-Identifier: GPL-2.0
-> >  # Copyright Thomas Gleixner <tglx@linutronix.de>
-> >
-> > --
-> > 2.27.0
-> >
->
->
-> --
-> Thanks,
-> ~Nick Desaulniers
-
-
+Thanks,
+Sai
 
 -- 
-Best Regards
-Masahiro Yamada
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
