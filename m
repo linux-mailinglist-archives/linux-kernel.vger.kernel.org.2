@@ -2,129 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B6A30CC44
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:51:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B893A30CC46
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:51:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240059AbhBBTtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 14:49:49 -0500
-Received: from mga12.intel.com ([192.55.52.136]:59530 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240105AbhBBTsG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 14:48:06 -0500
-IronPort-SDR: tlPE7OtDk3GARKC32FM4shschAq86pOK45D/KS/Qfh7cvKJhHMnhCb/DG7DpZmLLMHixdmjYGq
- i2q9bFIdosIQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="160085954"
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="160085954"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 11:47:23 -0800
-IronPort-SDR: ntK1Mk+MSO00uLgQKnlwECoJCqiWLz/B+9uBhYJGtNCKgvpRm6lC4jSzEjLexLOqVfoPdKevxA
- o6RjS635jy7g==
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="372088150"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 11:47:22 -0800
-From:   ira.weiny@intel.com
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     Ira Weiny <ira.weiny@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Jethro Beekman <jethro@fortanix.com>,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
-Subject: [PATCH V3] x86: Remove unnecessary kmap() from sgx_ioc_enclave_init()
-Date:   Tue,  2 Feb 2021 11:47:19 -0800
-Message-Id: <20210202194719.3525076-1-ira.weiny@intel.com>
-X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
+        id S240067AbhBBTuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 14:50:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240125AbhBBTs7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 14:48:59 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85064C06178A
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 11:47:54 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id a20so2952045pjs.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 11:47:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=19MA6VmZ1TXGx8xgl9B9Clwb3xJWJIXQ38902RwSETk=;
+        b=EL9fLzJ5P3xbNoPG8Vlm3VM/gRsuPNy/rlkgBwqU+bfbZUtgTS8ZiUYTrOCFk6Tpdt
+         /2Ivlcgw/W5ksz7SjXnpr+qapDNeWulA/kGj/NkvEiLhh9o8p37NXDSt3Ip71keOqeDf
+         z/4COF+i+KNTUQ8Dw+uakxac8ZS7upbcIPJic=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=19MA6VmZ1TXGx8xgl9B9Clwb3xJWJIXQ38902RwSETk=;
+        b=SQS43US8lvEguJfoo6dI5LyzuGHHgEdQlVAYp8/toqu9gCEfCcBx1xU3/GCzoP2AvF
+         hOviBQOEpclULsOAaBe+LJGASPb5l9+gBxF5VPhCfefHmReUolM9vz9vd1W9ooaEPMcv
+         eWH0qF54PvgNGgJ7dsIGL/peajFCQigqIKlUh8vySODjMtIEBBAoF8hb/2uN0O7IxTFf
+         7DZ+3YQZ44fangH9PzmT/v1PdmavGFmuWD7SrtRaHkmcOvk/v7KqbrxiQgnb3Q+lleUw
+         l7DhhthX1yfuZ+cmHm9fviZN6Jv3A+FUuuiK992PpABpwUDatDx0y+jSzx7aNC9LrQRo
+         /cOw==
+X-Gm-Message-State: AOAM533pYnzpWut/bREstJNranyY3SQc2kcbHCIjSSA1XrX3GWQR7fK3
+        T8DrTV5SiiwUme8EAbxbMkJlmA==
+X-Google-Smtp-Source: ABdhPJwSL9tHYTjbifQL+Zy89Yj6xktCPVIn0O5ReEMsqIDmMMYCKbhDZN7ISmPAgxVTvhZ/nTKhog==
+X-Received: by 2002:a17:90a:5318:: with SMTP id x24mr6051241pjh.226.1612295274185;
+        Tue, 02 Feb 2021 11:47:54 -0800 (PST)
+Received: from smtp.gmail.com ([2620:15c:202:201:3571:bd6e:ee19:b59f])
+        by smtp.gmail.com with ESMTPSA id j4sm17021751pfa.131.2021.02.02.11.47.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 11:47:53 -0800 (PST)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        Dikshita Agarwal <dikshita@codeaurora.org>
+Subject: [PATCH -next] media: venus: Include io.h for memremap()
+Date:   Tue,  2 Feb 2021 11:47:52 -0800
+Message-Id: <20210202194752.247301-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ira Weiny <ira.weiny@intel.com>
+This file uses memremap() now, so we should include io.h instead of
+relying on any sort of implicit include elsewhere.
 
-kmap is inefficient and we are trying to reduce the usage in the kernel.
-There is no readily apparent reason why initp_page needs to be allocated
-and kmap'ed() but sigstruct needs to be page aligned and token
-512 byte aligned.
-
-kmalloc() can give us this alignment but we need to allocate PAGE_SIZE
-bytes to do so.  Rather than change this kmap() to kmap_local_page() use
-kmalloc() instead.
-
-Remove the alloc_page()/kmap() and replace with kmalloc() to get a
-kernel address to use.
-
-In addition add a comment to document the alignment requirements so that
-others like myself don't attempt to 'fix' this again.  Finally, add 2
-BUILD_BUG_ON's to ensure future changes to sigstruct and token do not go
-unnoticed and cause a bug.
-
-Cc: Dave Hansen <dave.hansen@intel.com>
-Cc: Sean Christopherson <seanjc@google.com>
-Cc: Jethro Beekman <jethro@fortanix.com>
-Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-
+Cc: Dikshita Agarwal <dikshita@codeaurora.org>
+Fixes: 0ca0ca980505 ("media: venus: core: add support to dump FW region")
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
 ---
-Changes from v2[1]:
-	When allocating a power of 2 size kmalloc() now guarantees the
-	alignment of the respective size.  So go back to using kmalloc() but
-	with a PAGE_SIZE allocation to get the alignment.  This also follows
-	the pattern in sgx_ioc_enclave_create()
+ drivers/media/platform/qcom/venus/core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Changes from v1[1]:
-	Use page_address() instead of kcmalloc() to ensure sigstruct is
-	page aligned
-	Use BUILD_BUG_ON to ensure token and sigstruct don't collide.
+diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+index 1471c7f9c89d..915b3ed8ed64 100644
+--- a/drivers/media/platform/qcom/venus/core.c
++++ b/drivers/media/platform/qcom/venus/core.c
+@@ -5,6 +5,7 @@
+  */
+ #include <linux/init.h>
+ #include <linux/interconnect.h>
++#include <linux/io.h>
+ #include <linux/ioctl.h>
+ #include <linux/delay.h>
+ #include <linux/devcoredump.h>
 
-[1] https://lore.kernel.org/lkml/20210129001459.1538805-1-ira.weiny@intel.com/
-[2] https://lore.kernel.org/lkml/20210202013725.3514671-1-ira.weiny@intel.com/
----
- arch/x86/kernel/cpu/sgx/ioctl.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/sgx/ioctl.c b/arch/x86/kernel/cpu/sgx/ioctl.c
-index 90a5caf76939..e0c3301ccd67 100644
---- a/arch/x86/kernel/cpu/sgx/ioctl.c
-+++ b/arch/x86/kernel/cpu/sgx/ioctl.c
-@@ -604,7 +604,6 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
- {
- 	struct sgx_sigstruct *sigstruct;
- 	struct sgx_enclave_init init_arg;
--	struct page *initp_page;
- 	void *token;
- 	int ret;
- 
-@@ -615,11 +614,16 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
- 	if (copy_from_user(&init_arg, arg, sizeof(init_arg)))
- 		return -EFAULT;
- 
--	initp_page = alloc_page(GFP_KERNEL);
--	if (!initp_page)
-+	/*
-+	 * sigstruct must be on a page boundry and token on a 512 byte boundry
-+	 * kmalloc() gives us this alignment when allocating PAGE_SIZE bytes
-+	 */
-+	sigstruct = kmalloc(PAGE_SIZE, GFP_KERNEL);
-+	if (!sigstruct)
- 		return -ENOMEM;
- 
--	sigstruct = kmap(initp_page);
-+	BUILD_BUG_ON(sizeof(*sigstruct) > (PAGE_SIZE/2));
-+	BUILD_BUG_ON(SGX_LAUNCH_TOKEN_SIZE > (PAGE_SIZE/2));
- 	token = (void *)((unsigned long)sigstruct + PAGE_SIZE / 2);
- 	memset(token, 0, SGX_LAUNCH_TOKEN_SIZE);
- 
-@@ -645,8 +649,7 @@ static long sgx_ioc_enclave_init(struct sgx_encl *encl, void __user *arg)
- 	ret = sgx_encl_init(encl, sigstruct, token);
- 
- out:
--	kunmap(initp_page);
--	__free_page(initp_page);
-+	kfree(sigstruct);
- 	return ret;
- }
- 
+base-commit: 0ca0ca9805055bb0efc16890f9d6433c65bd07cc
 -- 
-2.28.0.rc0.12.gb6a658bd00c9
+https://chromeos.dev
 
