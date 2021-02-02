@@ -2,125 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 992CD30B3DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 01:10:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9F030B3E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 01:10:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbhBBAH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 19:07:28 -0500
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:44713 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230517AbhBBAHY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 19:07:24 -0500
-X-Originating-IP: 86.202.109.140
-Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 0D3E21BF206;
-        Tue,  2 Feb 2021 00:06:36 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-rtc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] dt-bindings: rtc: pcf2127: update bindings
-Date:   Tue,  2 Feb 2021 01:06:34 +0100
-Message-Id: <20210202000634.3438575-1-alexandre.belloni@bootlin.com>
-X-Mailer: git-send-email 2.29.2
+        id S231363AbhBBAI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 19:08:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43636 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229556AbhBBAIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 19:08:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6AF264ED7;
+        Tue,  2 Feb 2021 00:08:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612224495;
+        bh=0+LJhSALxF0SzaWgfhQcangQC/O2y6q2Wc1eGwpSUf0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=F5hAyAcVeiaADqsHhfM57TmpaOe6h6leCSebn8YfMF/Y6pgbwXlLg6KB9ZlbiccoM
+         euQUnDSr8Lxc2MyS1yoYOT7Esj5gZbi92gK/j3T1R+yKHBVteE1qXXgLsEuSQ+ciXX
+         K5ANSIHQJTtT1hn9et8MCfebSrA0cehxiYt3HfOCY5YATOonGdhspLVmH5fjEIOoRS
+         8To62+WnlmqN9P0isCv9sw3KH+bx+ypraXHmgpoO4SPGQGdzqyyn9pd9A1iRkiFihI
+         2UUvM1XKSZRIOYKbTShWFC767RM1Z7ngKZ8guOY/Wr9nCp12+pGIWb003XtpU9hGG6
+         7IUH/GnnNj5kw==
+Date:   Mon, 1 Feb 2021 18:08:12 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH][next] scsi: mpt3sas: Replace one-element array with
+ flexible-array in struct _MPI2_CONFIG_PAGE_IO_UNIT_3
+Message-ID: <20210202000812.GA191357@embeddedor>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The NXP pcf2127 supports reset-source.
+There is a regular need in the kernel to provide a way to declare having
+a dynamically sized set of trailing elements in a structure. Kernel code
+should always use “flexible array members”[1] for these cases. The older
+style of one-element or zero-length arrays should no longer be used[2].
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Refactor the code according to the use of a flexible-array member in
+struct _MPI2_CONFIG_PAGE_IO_UNIT_3, instead of a one-element array,
+and use the struct_size() helper to calculate the size for the
+allocation.
+
+Also, this helps with the ongoing efforts to enable -Warray-bounds and
+fix the following warning:
+
+drivers/scsi/mpt3sas/mpt3sas_ctl.c:3193:63: warning: array subscript 24
+is above array bounds of ‘U16[1]’ {aka ‘short unsigned int[1]’}
+[-Warray-bounds]
+
+[1] https://en.wikipedia.org/wiki/Flexible_array_member
+[2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
+
+Link: https://github.com/KSPP/linux/issues/79
+Link: https://github.com/KSPP/linux/issues/109
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 ---
+ drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h | 11 +----------
+ drivers/scsi/mpt3sas/mpt3sas_ctl.c   |  6 +++---
+ 2 files changed, 4 insertions(+), 13 deletions(-)
 
-Changes in v2:
- - remove pcf219 and pca2129
-
- .../devicetree/bindings/rtc/nxp,pcf2127.yaml  | 51 +++++++++++++++++++
- .../devicetree/bindings/rtc/trivial-rtc.yaml  |  6 +--
- 2 files changed, 52 insertions(+), 5 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/rtc/nxp,pcf2127.yaml
-
-diff --git a/Documentation/devicetree/bindings/rtc/nxp,pcf2127.yaml b/Documentation/devicetree/bindings/rtc/nxp,pcf2127.yaml
-new file mode 100644
-index 000000000000..cde7b1675ead
---- /dev/null
-+++ b/Documentation/devicetree/bindings/rtc/nxp,pcf2127.yaml
-@@ -0,0 +1,51 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/rtc/nxp,pcf2127.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: NXP PCF2127 Real Time Clock
-+
-+allOf:
-+  - $ref: "rtc.yaml#"
-+
-+maintainers:
-+  - Alexandre Belloni <alexandre.belloni@bootlin.com>
-+
-+properties:
-+  compatible:
-+    const: nxp,pcf2127
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  start-year: true
-+
-+  reset-source: true
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        rtc@51 {
-+            compatible = "nxp,pcf2127";
-+            reg = <0x51>;
-+            pinctrl-0 = <&rtc_nint_pins>;
-+            interrupts-extended = <&gpio1 16 IRQ_TYPE_LEVEL_HIGH>;
-+            reset-source;
-+        };
-+    };
-+
-+...
-diff --git a/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml b/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml
-index c7d14de214c4..7548d8714871 100644
---- a/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml
-+++ b/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml
-@@ -48,12 +48,8 @@ properties:
-       - microcrystal,rv3029
-       # Real Time Clock
-       - microcrystal,rv8523
--      # Real-time clock
--      - nxp,pcf2127
--      # Real-time clock
--      - nxp,pcf2129
--      # Real-time clock
-       - nxp,pca2129
-+      - nxp,pcf2129
-       # Real-time Clock Module
-       - pericom,pt7c4338
-       # I2C bus SERIAL INTERFACE REAL-TIME CLOCK IC
+diff --git a/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h b/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h
+index 43a3bf8ff428..908b0ca63204 100644
+--- a/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h
++++ b/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h
+@@ -987,21 +987,12 @@ typedef struct _MPI2_CONFIG_PAGE_IO_UNIT_1 {
+ 
+ /*IO Unit Page 3 */
+ 
+-/*
+- *Host code (drivers, BIOS, utilities, etc.) should leave this define set to
+- *one and check the value returned for GPIOCount at runtime.
+- */
+-#ifndef MPI2_IO_UNIT_PAGE_3_GPIO_VAL_MAX
+-#define MPI2_IO_UNIT_PAGE_3_GPIO_VAL_MAX    (1)
+-#endif
+-
+ typedef struct _MPI2_CONFIG_PAGE_IO_UNIT_3 {
+ 	MPI2_CONFIG_PAGE_HEADER Header;			 /*0x00 */
+ 	U8                      GPIOCount;		 /*0x04 */
+ 	U8                      Reserved1;		 /*0x05 */
+ 	U16                     Reserved2;		 /*0x06 */
+-	U16
+-		GPIOVal[MPI2_IO_UNIT_PAGE_3_GPIO_VAL_MAX];/*0x08 */
++	U16			GPIOVal[];		 /*0x08 */
+ } MPI2_CONFIG_PAGE_IO_UNIT_3,
+ 	*PTR_MPI2_CONFIG_PAGE_IO_UNIT_3,
+ 	Mpi2IOUnitPage3_t, *pMpi2IOUnitPage3_t;
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_ctl.c b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
+index c8a0ce18f2c5..82374a97c91d 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_ctl.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
+@@ -3143,7 +3143,7 @@ BRM_status_show(struct device *cdev, struct device_attribute *attr,
+ 	Mpi2ConfigReply_t mpi_reply;
+ 	u16 backup_rail_monitor_status = 0;
+ 	u16 ioc_status;
+-	int sz;
++	size_t sz;
+ 	ssize_t rc = 0;
+ 
+ 	if (!ioc->is_warpdrive) {
+@@ -3157,11 +3157,11 @@ BRM_status_show(struct device *cdev, struct device_attribute *attr,
+ 		goto out;
+ 
+ 	/* allocate upto GPIOVal 36 entries */
+-	sz = offsetof(Mpi2IOUnitPage3_t, GPIOVal) + (sizeof(u16) * 36);
++	sz = struct_size(io_unit_pg3, GPIOVal, 36);
+ 	io_unit_pg3 = kzalloc(sz, GFP_KERNEL);
+ 	if (!io_unit_pg3) {
+ 		rc = -ENOMEM;
+-		ioc_err(ioc, "%s: failed allocating memory for iounit_pg3: (%d) bytes\n",
++		ioc_err(ioc, "%s: failed allocating memory for iounit_pg3: (%ld) bytes\n",
+ 			__func__, sz);
+ 		goto out;
+ 	}
 -- 
-2.29.2
+2.27.0
 
