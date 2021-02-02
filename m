@@ -2,122 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B307F30CA0A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:38:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EEE130CA0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:38:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238760AbhBBSgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:36:45 -0500
-Received: from mga05.intel.com ([192.55.52.43]:15722 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238700AbhBBSfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238797AbhBBShM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:37:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52212 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238779AbhBBSfO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Feb 2021 13:35:14 -0500
-IronPort-SDR: Z0/Az92fka7nl4wToAyKH2kTjRmTmD32PrIen6nsUcnSIL3aTpXgQ3Au8dQGZixf+VYNUuzDbo
- MXf0+2dtttVw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="265739511"
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="265739511"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 10:34:28 -0800
-IronPort-SDR: 1spa9xZEgBhXxvk5CqkrbA9GiyKXPQ7W8LELM9/GcLfRRumoiu/ydikwh6BscP1JP4kTn551HE
- 0jtm82MgYZCA==
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="406265511"
-Received: from capeter1-mobl.amr.corp.intel.com (HELO [10.212.5.169]) ([10.212.5.169])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 10:34:28 -0800
-Subject: Re: [RFC][PATCH 08/13] mm/migrate: demote pages during reclaim
-To:     Yang Shi <shy828301@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Rientjes <rientjes@google.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Oscar Salvador <osalvador@suse.de>
-References: <20210126003411.2AC51464@viggo.jf.intel.com>
- <20210126003427.73DFDD34@viggo.jf.intel.com>
- <CAHbLzkrU0MFSHruHw4Noho39DJrB2pDhzd8aJrBnDsVjyDmLGg@mail.gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <538eb58a-86d3-c90a-69af-7caa335e8e9f@intel.com>
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A02BC0613ED
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 10:34:34 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id j11so10372054plt.11
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 10:34:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SRQsPU+8cINOtXYJC77LcCM6FVLCXTrqA6tOxDVoZko=;
+        b=IHk8vWUEEUgdoQEqoP/XXTqMnSFwMtXjG73bdIJmszSyk4i14Oqe6dbgKgkq9mGO3i
+         wKJUxbzL6hONGQTVPUCLPSmilqYwJnAhGZ6q7/SN1Jw/IhxsgOCnGMF1yMwZJbxswxsd
+         0VRS5c35HuFh82OksksSJD8goP6feADzHnlYpSt3Fx4Rf1JtO1RzZPjxRwAPLdvm8S9z
+         RhfyViw8heopA2eN/jDkzOitCCGKk6MUmzNaK6kN0384YKDlKptkpukqYQ2E+gnN2zDT
+         /HQpUYUba3eSs6k2IS3rs05HP+kjTBgH/zdet4v9iT0/5Wgt8GURDQ9fKjX5ZIygZCxs
+         7U2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SRQsPU+8cINOtXYJC77LcCM6FVLCXTrqA6tOxDVoZko=;
+        b=J79UsL8D55Hn5EzTqnmB/Sp7ywlEbgrR4KKeT+UbUfS2VvsI0Ny3oc4fDeSqjziXb5
+         LKoZQAzzz2k2h2XUiLU4+Vpkyl4DSXNlLY9GqVco8HqjSxgqfND5i7bbar+cnPNfaBrW
+         +Y4B728AYdoXMjxEm3CqJ6SpQJWCYmf/h4Jop7bO1ZBPI/ZaFcJrWYSP+GoeUxAoK/xG
+         HV5ZV9rH6Qvh93VrTMqTVyaQ58GX4EPGXQt+zJxxvs6Mnp7egA1/5ThoTEUPb/wzTeU7
+         zEyxhJBBy0BwR8Sml0AXRNMItfgxPB2q5gBlUdZwCnftkcZLZjTy3Gdd4g1Euq+nb1db
+         TbqQ==
+X-Gm-Message-State: AOAM532gjnVz9bKB7g8RXlyq5HuerLMsfWGKeYxeWLn79xmTEwUgFKCg
+        IvoHIkzGDcEzStyCH2+7eqbNmA==
+X-Google-Smtp-Source: ABdhPJzBjXGyAEW3TNQ+QcdbZViBQoQQxzzhFQMUEU1TNQKTkGQcMeedqdqygFVf0+S43eL0onCuGQ==
+X-Received: by 2002:a17:90a:c404:: with SMTP id i4mr5801933pjt.57.1612290873583;
+        Tue, 02 Feb 2021 10:34:33 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:e1bc:da69:2e4b:ce97])
+        by smtp.gmail.com with ESMTPSA id cq2sm3250564pjb.55.2021.02.02.10.34.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 10:34:32 -0800 (PST)
 Date:   Tue, 2 Feb 2021 10:34:27 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86: cleanup CR3 reserved bits checks
+Message-ID: <YBmbM8PToDWr9ti/@google.com>
+References: <20210202170244.89334-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHbLzkrU0MFSHruHw4Noho39DJrB2pDhzd8aJrBnDsVjyDmLGg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210202170244.89334-1-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/2/21 10:22 AM, Yang Shi wrote:
->> +static struct page *alloc_demote_page(struct page *page, unsigned long node)
->> +{
->> +        struct migration_target_control mtc = {
->> +               /*
->> +                * Fail quickly and quietly.  Page will likely
->> +                * just be discarded instead of migrated.
->> +                */
->> +               .gfp_mask = GFP_HIGHUSER | __GFP_NORETRY | __GFP_NOWARN,
->> +               .nid = node
->> +       };
->> +
->> +        return alloc_migration_target(page, (unsigned long)&mtc);
-> Other than the gfp flag question raised by Oscar, I'm wondering how we
-> guarantee the demotion allocation happens on the designated node. In
-> the previous version __GFP_THISNODE is set to guarantee this. In this
-> version you switched to use alloc_migration_target() API but without
-> having nodemask or __GFP_THISNODE. If nodemask is NULL the allocation
-> may fall back to an unexpected node.
+On Tue, Feb 02, 2021, Paolo Bonzini wrote:
+> If not in long mode, the low bits of CR3 are reserved but not enforced to
+> be zero, so remove those checks.  If in long mode, however, the MBZ bits
+> extend down to the highest physical address bit of the guest, excluding
+> the encryption bit.
 > 
-> And GFP_HIGHUSER does respect cpuset, so if the demotion target node
-> is excluded by the cpuset which the task belongs to, the migration
-> would fail. This might be a way to respect cpuset, but it should just
-> work for direct reclaimer. So, is this change really expected?
+> Make the checks consistent with the above, and match them between
+> nested_vmcb_checks and KVM_SET_SREGS.
+> 
 
-No, that wasn't intended.  I'll restore __GFP_THISNODE.  Thanks for
-noting this.
+Fixes + Cc:stable@?
+
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+
+Reviewed-by: Sean Christopherson <seanjc@google.com> 
+
+> ---
+>  arch/x86/kvm/svm/nested.c | 12 ++----------
+>  arch/x86/kvm/svm/svm.h    |  3 ---
+>  arch/x86/kvm/x86.c        |  2 ++
+>  3 files changed, 4 insertions(+), 13 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> index eecb548bdda6..9ee542ea3f56 100644
+> --- a/arch/x86/kvm/svm/nested.c
+> +++ b/arch/x86/kvm/svm/nested.c
+> @@ -244,18 +244,10 @@ static bool nested_vmcb_checks(struct vcpu_svm *svm, struct vmcb *vmcb12)
+>  
+>  	vmcb12_lma = (vmcb12->save.efer & EFER_LME) && (vmcb12->save.cr0 & X86_CR0_PG);
+>  
+> -	if (!vmcb12_lma) {
+> -		if (vmcb12->save.cr4 & X86_CR4_PAE) {
+> -			if (vmcb12->save.cr3 & MSR_CR3_LEGACY_PAE_RESERVED_MASK)
+> -				return false;
+> -		} else {
+> -			if (vmcb12->save.cr3 & MSR_CR3_LEGACY_RESERVED_MASK)
+> -				return false;
+> -		}
+> -	} else {
+> +	if (vmcb12_lma) {
+>  		if (!(vmcb12->save.cr4 & X86_CR4_PAE) ||
+>  		    !(vmcb12->save.cr0 & X86_CR0_PE) ||
+> -		    (vmcb12->save.cr3 & MSR_CR3_LONG_MBZ_MASK))
+> +		    (vmcb12->save.cr3 & svm->vcpu.arch.cr3_lm_rsvd_bits))
+
+Gah, I was too slow as usual.  I have a series to clean up GPA validity checks,
+this one included.  I'll base that series on this patch, if I get it sent before
+this hits kvm/queue...
+
+>  			return false;
+>  	}
+>  	if (!kvm_is_valid_cr4(&svm->vcpu, vmcb12->save.cr4))
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index 0fe874ae5498..6e7d070f8b86 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -403,9 +403,6 @@ static inline bool gif_set(struct vcpu_svm *svm)
+>  }
+>  
+>  /* svm.c */
+> -#define MSR_CR3_LEGACY_RESERVED_MASK		0xfe7U
+> -#define MSR_CR3_LEGACY_PAE_RESERVED_MASK	0x7U
+> -#define MSR_CR3_LONG_MBZ_MASK			0xfff0000000000000U
+>  #define MSR_INVALID				0xffffffffU
+>  
+>  extern int sev;
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index b748bf0d6d33..97674204bf44 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -9660,6 +9660,8 @@ static bool kvm_is_valid_sregs(struct kvm_vcpu *vcpu, struct kvm_sregs *sregs)
+>  		 */
+>  		if (!(sregs->cr4 & X86_CR4_PAE) || !(sregs->efer & EFER_LMA))
+>  			return false;
+> +		if (sregs->cr3 & vcpu->arch.cr3_lm_rsvd_bits)
+> +			return false;
+>  	} else {
+>  		/*
+>  		 * Not in 64-bit mode: EFER.LMA is clear and the code
+> -- 
+> 2.26.2
+> 
