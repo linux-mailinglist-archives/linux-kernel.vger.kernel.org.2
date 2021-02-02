@@ -2,95 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC0CE30C4E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:08:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F7430C4F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236037AbhBBQFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 11:05:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51186 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233312AbhBBQDq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 11:03:46 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50E4F64E9C;
-        Tue,  2 Feb 2021 16:03:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612281785;
-        bh=7iQVk30xqGz7oh/+t2UzNMka+0TYG4P9cu4Sz5uw44U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MGVczdi5TLvWclKzomnm6cyIJ3HcZ+w7vfYsz1MHUEUiQatmYgA2zNeQvlXYuBfuy
-         kTTdgHUOfaDhTbmcXXDBNA7IwFv21TKX7KYvcHjZdJyRUf1agJdHjVdmibIHR5tXgT
-         MysVD/n4KdIZzTm1sOYZh7s4c2wjqTTs5dlLCjXSsQNlmK/0XAFRXOLPSdfavbXZFf
-         hiD1vngA5T4+2Lj2s5ss+WWIpLloYnzdtI9jePtK01Zrxtf3TXUUg/PramnSVy74m5
-         Hs6QTRWpzm8z7KVPlJ4R7EMjv8ZLM+CNlBTAV9Hkd31SZaGwe84yaZwD0ezxo/VQWT
-         l+m/BczKA2F9g==
-Date:   Tue, 2 Feb 2021 16:02:17 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 09/13] pci: dwc: pcie-kirin: allow to optionally require
- a regulator
-Message-ID: <20210202160217.GC5154@sirena.org.uk>
-References: <cover.1612271903.git.mchehab+huawei@kernel.org>
- <7f4abd1ba9f4b33fe6f66213f56aa4269db74317.1612271903.git.mchehab+huawei@kernel.org>
- <20210202134101.GB5154@sirena.org.uk>
- <20210202155028.28b0cf94@coco.lan>
+        id S232873AbhBBQH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:07:58 -0500
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:43147 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235180AbhBBQFF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 11:05:05 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 1E9779EB;
+        Tue,  2 Feb 2021 11:03:53 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 02 Feb 2021 11:03:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=+29NRQnq0r2ASZudoLupX6fjqkC
+        EV51ImWFqltBWllU=; b=cyz2KDoUZadyYws2P9t+4d911FKVX4yySu5UbZhBjtv
+        3xym2FZ3YHeqShQE+uuYWQb8GYjYnSINlwSm9QcdpYLdade8LphzA0WYsS4sx5av
+        ItZrgroGCERskJHNTSpp0G+lKwN3jkvNccDAhZI9M4RpvGmsLchNxkrZ6945WxJg
+        wONXPhiU5UN+f4Lf3yvrMWn5j6XwtzjnBgvsvtALp4KrdApP0pIl39fV7kDHBAuO
+        BW79CvJOYIfCD8OpnD6XXaEk8gJ0qQYHYMiV1pRbroUYpVxCoaEuI5y6pIYGi6g5
+        rIYnF5MXYFdjucZwMG2vYlkw5kEUAk9HxZEx6ZLeQhw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=+29NRQ
+        nq0r2ASZudoLupX6fjqkCEV51ImWFqltBWllU=; b=Nc8J1duTh9H+UU5d/ZxTTI
+        /TBdeCVP5FkpIsE9TCkBkglB312Dli4Yqij9CoSBjI0i4aClBcDDgy5yTb1cEhBA
+        nlA4+fmtCMwGpf3REDyEMFM9GqSPx1T2gTwyatgQbwZjnhq7MYx20P73RN1bXEsd
+        yx+bbGyHQ0t94fjoHK6jzMzzd5sn/nZvVeLj/TntpQXPa0xzCRHxhVn8V9i5ehmi
+        v+x5KNuQk5U+ivpHhI5cPRPBJ5/ywdAqdFGOv408nKtUp+9wT043ms6TbKEboEXJ
+        cKZVZXubdBsFL/cztW5XDj6XFmVVczy7r9naaguPTP6eaXT2IKzXaWvK8KAlfNjw
+        ==
+X-ME-Sender: <xms:53cZYNQLf2P-vngoXb6EGG4qiDxOU_--TH84zGu_fHD0ZTkre8hCyA>
+    <xme:53cZYAY0vRxL0h-vk1O3UcC1YiF3bE2ZCWcWTeLbOxO5ls1IH-y9HNEzoshU0RTHq
+    6LAdv7ojrQ6Z_ETF4M>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrgedtgdekfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:53cZYC2CphQGHxE7CWfQwxn4jciwqf0TEgXWJKAeom428OZ2Z9DCyw>
+    <xmx:53cZYIXj05-85BGEyhrE3rC9_3b_dqvFqUH-w22i4YzCyhnJ48VidA>
+    <xmx:53cZYEXhB2lLgZGrRJejz73K-nmIKI-JzOWH5nQOYwvfHiptZP483w>
+    <xmx:6HcZYNtNJSFkJddHbdNzcJaj7INUu3IF8yWN9vGBeLov-7Bw14hQvQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id E40B51080069;
+        Tue,  2 Feb 2021 11:03:50 -0500 (EST)
+Date:   Tue, 2 Feb 2021 17:03:48 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Bernard Zhao <bernard@vivo.com>
+Cc:     Eric Anholt <eric@anholt.net>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        opensource.kernel@vivo.com
+Subject: Re: [PATCH] drm/vc4: remove unneeded variable: "ret"
+Message-ID: <20210202160348.f5o4u3rjxmdthcaw@gilmour>
+References: <20210202122338.15351-1-bernard@vivo.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4jXrM3lyYWu4nBt5"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="tfvfkvldb3whuaz7"
 Content-Disposition: inline
-In-Reply-To: <20210202155028.28b0cf94@coco.lan>
-X-Cookie: Only God can make random selections.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210202122338.15351-1-bernard@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---4jXrM3lyYWu4nBt5
+--tfvfkvldb3whuaz7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Feb 02, 2021 at 03:50:28PM +0100, Mauro Carvalho Chehab wrote:
-> Mark Brown <broonie@kernel.org> escreveu:
-> > On Tue, Feb 02, 2021 at 02:29:54PM +0100, Mauro Carvalho Chehab wrote:
+On Tue, Feb 02, 2021 at 04:23:38AM -0800, Bernard Zhao wrote:
+> remove unneeded variable: "ret".
+>=20
+> Signed-off-by: Bernard Zhao <bernard@vivo.com>
 
-> > > As this is device-dependent, such regulator line should be
-> > > optional. =20
+Applied, thanks
 
-> > Supplies should only be optional if they may be physically absent from
-> > the system,=20
+maxime
 
-> That's the case. On Hikey 960, the PCIe hardware supported by this
-> driver doesn't require any regulator.
-
-> On Hikey 970, the PCIe hardware is more complex. Some components
-> are outside the SoC, and those require a regulator to be powered
-> up.
-
-That's not an optional supply, that's a required supply for a different
-device.  The driver should select which supplies it is requesting based
-on the hardware it's controlling.
-
---4jXrM3lyYWu4nBt5
+--tfvfkvldb3whuaz7
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAZd4kACgkQJNaLcl1U
-h9COtwf/dNvTdqU99ibQk82bdFJxdWofc46BUTLIq+yKgtyLLWwcERh5WQHggaoD
-9E1nXpB2MkifqUkKyQ7KGOooDTiQsilpPrR7Doxn/svILexLmCO/zNtqomromkt3
-B5PS19a5NEVbi+tZDGYLVMnhiJw7OOrNWUVihsLCJ+Xdz5EfO7TerB8AhGngog0h
-TrYYofWJYKjMTSKoxottsGdrt/fuhdYEevtEHFdfDhnE4EcfixFB5GN/eP/2fyga
-XDzjVbzJ+Psxkf1SjbljSD3FsGBB8Lfek6tlQuHYi3CGT4hYgW64Q+0vYepCxQKv
-E5Cq7YqSSba0fdXYPOKMmIIO5Y4xlw==
-=AM6x
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYBl35AAKCRDj7w1vZxhR
+xXGVAP4uItJCaat7ORpOhaBwYMwOVXzdywv2rIZ33uXDN62cRgD/dHGp+LeHC1+B
+vCVfk4z/nG0vCN9M9n5/RtLxoZpSYwU=
+=AYjU
 -----END PGP SIGNATURE-----
 
---4jXrM3lyYWu4nBt5--
+--tfvfkvldb3whuaz7--
