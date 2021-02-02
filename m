@@ -2,77 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C67F30BDC4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:10:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E8730BDC6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:10:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbhBBMJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 07:09:42 -0500
-Received: from foss.arm.com ([217.140.110.172]:48600 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230419AbhBBMIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 07:08:44 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED3261396;
-        Tue,  2 Feb 2021 04:07:57 -0800 (PST)
-Received: from [10.57.35.163] (unknown [10.57.35.163])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 13D6C3F718;
-        Tue,  2 Feb 2021 04:07:54 -0800 (PST)
-Subject: Re: [PATCH V2 3/3] Adding device_dma_parameters->offset_preserve_mask
- to NVMe driver.
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jianxiong Gao <jxgao@google.com>
-Cc:     Keith Busch <kbusch@kernel.org>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Marc Orr <marcorr@google.com>, Christoph Hellwig <hch@lst.de>,
-        m.szyprowski@samsung.com, gregkh@linuxfoundation.org,
-        Saravana Kannan <saravanak@google.com>,
-        heikki.krogerus@linux.intel.com, rafael.j.wysocki@intel.com,
-        dan.j.williams@intel.com, bgolaszewski@baylibre.com,
-        jroedel@suse.de, iommu@lists.linux-foundation.org,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, axboe@fb.com,
-        sagi@grimberg.me, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20210201183017.3339130-1-jxgao@google.com>
- <20210201183017.3339130-4-jxgao@google.com>
- <20210201205759.GA2128135@dhcp-10-100-145-180.wdc.com>
- <CAMGD6P2Gz9nWELMdsAhwQvXx3PXv2aXet=Tn9Rca61obZawfgw@mail.gmail.com>
- <CAMGD6P1_cs1W8jMt7Sz6broDdnFNPrxbiZW-JZ+GAtg5aoTdOQ@mail.gmail.com>
- <CAMGD6P0uwVxKuG503ahGTbPcwb+y2wRXSiE_gvzfdUrMfZ5YbA@mail.gmail.com>
- <YBk1pUbQ/JZQ7WZe@smile.fi.intel.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <a34328d1-3918-1eca-b632-57be6a40baee@arm.com>
-Date:   Tue, 2 Feb 2021 12:07:52 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S231345AbhBBMJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 07:09:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231281AbhBBMIx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 07:08:53 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCF94C061573;
+        Tue,  2 Feb 2021 04:08:12 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id v24so27565862lfr.7;
+        Tue, 02 Feb 2021 04:08:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zZCZ+wr8JRQsDltWKVRvfaIgSPnse+tD2ObDmx6z1mo=;
+        b=WE6eDV958XPFL2lx62O08hHtA4AbTQKkx99h3LgDSiB8kL4k18sPL29upJlhwy79pW
+         dRE9GxYeTwkpywtjjLXy1FsDikUdVM0GoydTIbdG4O1iTCTjymUN4hrll8XWJVlyY+yl
+         6a/1394h+4586CA4idzuKMeYwn6tKQp8JKgcj3wlWTE4yVLfMHRk/BmusiN+RsTg3Nij
+         B0/Q6Sj5V0zAQ4EdSvUmr1/aDVfFt4lm+dSoacZ6PVGkVKg5MXiyFKlS1eMAayfJyJ7H
+         gGkRlmWMhZMevMiRAbw+CQkJ9O+UoeQ8qfuDXyRn2lncIdR/sKwLykcPjGmcOE78RnlA
+         is6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zZCZ+wr8JRQsDltWKVRvfaIgSPnse+tD2ObDmx6z1mo=;
+        b=iW8JPFTuwAgDcc1KA+8l6JWsSc8c45pz2I+zNHfOcDag7j/BsL/MWHuarHcbGkwT1o
+         QkXh7z5swnLHG1BIxkV7hmfQaYa3YJUhgsHQ1yXRC3TYNGioDeKhoEzh3dfxHzAiesZA
+         m6nxxXUNDCXYvJUfBAiggOEEiEqagwJGUVXQyueh8jajpdU/OdfhnasJaetQZtImO3ZG
+         SAnZkP/iBtbeIDYBsiMvKg7x5RRguwggw6HPOGJBrn3jUGIHI2tYi196HnWG7kPRvJeY
+         o2rK3bn8WCsoeGxGF5/bH+XmU+010rTbZRc2+kO1hTEFxug6KMYSs5gdHTxuuRPrZbCZ
+         wITA==
+X-Gm-Message-State: AOAM531jGMcbaTIum70KM7rsOLO814D988AuFRq8bXJo6yDXU3A1Q53Q
+        nKKK/Yot0rXe5SEL51Mhyrg=
+X-Google-Smtp-Source: ABdhPJzlgkqPiX4UUZ8aMlEwbhk6EdlzN9uDmhnCePDFFjoZGK+1yh+5uZEfT9h5TWq+18bIEG0J/A==
+X-Received: by 2002:a05:6512:39c3:: with SMTP id k3mr5404293lfu.501.1612267691278;
+        Tue, 02 Feb 2021 04:08:11 -0800 (PST)
+Received: from localhost.localdomain ([146.158.65.228])
+        by smtp.googlemail.com with ESMTPSA id i5sm3918806ljj.42.2021.02.02.04.08.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 04:08:10 -0800 (PST)
+From:   Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+To:     rydberg@bitmath.org, dmitry.torokhov@gmail.com
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzbot+0122fa359a69694395d5@syzkaller.appspotmail.com
+Subject: [PATCH] drivers/mt: restrict length of kzalloc in input_mt_init_slots()
+Date:   Tue,  2 Feb 2021 18:08:07 +0600
+Message-Id: <20210202120807.1394788-1-snovitoll@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YBk1pUbQ/JZQ7WZe@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-02 11:21, Andy Shevchenko wrote:
-> On Mon, Feb 01, 2021 at 04:25:55PM -0800, Jianxiong Gao wrote:
-> 
->> +       if (dma_set_min_align_mask(dev->dev, NVME_CTRL_PAGE_SIZE - 1))
-> 
-> Side note: we have DMA_BIT_MASK(), please use it.
+syzbot found WARNING in input_mt_init_slots [1] when
+struct_size(mt, slots, num_slots)=0x40006 where num_slots=0x10001,
+which exceeds KMALLOC_MAX_SIZE (0x40000) and causes
+order >= MAX_ORDER condition.
 
-FWIW I'd actually disagree on that point. Conceptually, this is a very 
-different thing from dev->{coherent_}dma_mask. It does not need to 
-handle everything up to 2^64-1 correctly without overflow issues, and 
-data alignments typically *are* defined in terms of sizes rather than 
-numbers of bits.
+[1]
+Call Trace:
+ alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2267
+ alloc_pages include/linux/gfp.h:547 [inline]
+ kmalloc_order+0x2e/0xb0 mm/slab_common.c:837
+ kmalloc_order_trace+0x14/0x120 mm/slab_common.c:853
+ kmalloc include/linux/slab.h:557 [inline]
+ kzalloc include/linux/slab.h:682 [inline]
+ input_mt_init_slots drivers/input/input-mt.c:49 [inline]
 
-In fact, it might be neat to just have callers pass a size directly to a 
-dma_set_min_align() interface which asserts that it is a power of two 
-and stores it as a mask internally.
+Reported-by: syzbot+0122fa359a69694395d5@syzkaller.appspotmail.com
+Signed-off-by: Sabyrzhan Tasbolatov <snovitoll@gmail.com>
+---
+ drivers/input/input-mt.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-Robin.
+diff --git a/drivers/input/input-mt.c b/drivers/input/input-mt.c
+index 44fe6f2f063c..e542f45a45ab 100644
+--- a/drivers/input/input-mt.c
++++ b/drivers/input/input-mt.c
+@@ -40,13 +40,18 @@ int input_mt_init_slots(struct input_dev *dev, unsigned int num_slots,
+ {
+ 	struct input_mt *mt = dev->mt;
+ 	int i;
++	size_t mt_size = 0;
+ 
+ 	if (!num_slots)
+ 		return 0;
+ 	if (mt)
+ 		return mt->num_slots != num_slots ? -EINVAL : 0;
+ 
+-	mt = kzalloc(struct_size(mt, slots, num_slots), GFP_KERNEL);
++	mt_size = struct_size(mt, slots, num_slots);
++	if (mt_size > KMALLOC_MAX_SIZE)
++		return -ENOMEM;
++
++	mt = kzalloc(mt_size, GFP_KERNEL);
+ 	if (!mt)
+ 		goto err_mem;
+ 
+-- 
+2.25.1
 
-> 
->> +               dev_warn(dev->dev, "dma_set_min_align_mask failed to
->> set offset\n");
-> 
