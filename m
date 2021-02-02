@@ -2,123 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA29130B481
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 02:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53B9E30B485
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 02:17:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229884AbhBBBNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 20:13:19 -0500
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3001 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhBBBNS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 20:13:18 -0500
-Received: from DGGEMM403-HUB.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4DV6G62tJzzR969;
-        Tue,  2 Feb 2021 09:11:26 +0800 (CST)
-Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
- DGGEMM403-HUB.china.huawei.com (10.3.20.211) with Microsoft SMTP Server (TLS)
- id 14.3.498.0; Tue, 2 Feb 2021 09:12:31 +0800
-Received: from [10.169.42.93] (10.169.42.93) by dggema772-chm.china.huawei.com
- (10.1.198.214) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2106.2; Tue, 2 Feb
- 2021 09:12:30 +0800
-Subject: Re: [PATCH v2] nvme-multipath: Early exit if no path is available
-To:     Hannes Reinecke <hare@suse.de>, Sagi Grimberg <sagi@grimberg.me>,
-        "Daniel Wagner" <dwagner@suse.de>
-CC:     <linux-nvme@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        "Jens Axboe" <axboe@fb.com>, Keith Busch <kbusch@kernel.org>,
-        Christoph Hellwig <hch@lst.de>
-References: <20210127103033.15318-1-dwagner@suse.de>
- <db9baae0-547c-7ff4-8b2c-0b95f14be67c@huawei.com>
- <20210128075837.u5u56t23fq5gu6ou@beryllium.lan>
- <69575290-200e-b4a1-4269-c71e4c2cc37b@huawei.com>
- <20210128094004.erwnszjqcxlsi2kd@beryllium.lan>
- <ebb1d098-3ded-e592-4419-e905aabe824f@huawei.com>
- <675d3cf7-1ae8-adc5-b6d0-359fe10f6b23@grimberg.me>
- <59cd053e-46cb-0235-141f-4ce919c93f48@huawei.com>
- <65392653-6b03-9195-f686-5fe4b3290bd2@suse.de>
- <81b22bbf-4dd3-6161-e63a-9699690a4e4f@huawei.com>
- <715dd943-0587-be08-2840-e0948cf0bc62@suse.de>
- <eb131d8f-f009-42e7-105d-58b84060f0dd@huawei.com>
- <ac019690-7f02-d28c-ed58-bfc8c1d48879@suse.de>
- <6ceff3cb-c9e9-7e74-92f0-dd745987c943@huawei.com>
- <114751ac-1f7d-ce5e-12c5-7d6303bdb999@suse.de>
- <aebc6c2d-4711-95ba-daf2-1cd17fc6f0e7@huawei.com>
- <47a1b796-9d91-5947-4bac-dd8f397041a3@suse.de>
- <bd37abd5-759d-efe2-fdcd-8b004a41c75a@huawei.com>
- <2752ed93-6bd5-1a13-0e05-b91e2dcc24e1@suse.de>
-From:   Chao Leng <lengchao@huawei.com>
-Message-ID: <6ef6df55-318b-887d-b14f-62cae6419b4a@huawei.com>
-Date:   Tue, 2 Feb 2021 09:12:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S230033AbhBBBQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 20:16:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229543AbhBBBQo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 20:16:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53F6964DD4;
+        Tue,  2 Feb 2021 01:16:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612228563;
+        bh=UxGB7lo+5k3HKb1WzXYlltzIMtjAVlrWtyZUH24czOQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pwqVp9Te5mz03MCLNLM3Ot6LEtCEAj/U1Dwgg3s/QzBaJuWlwGl6EcCoTuTQEaBFY
+         zGw+YhFwJ5w6oQgzsAZRsidTTl+njpqp7V4W5a0h+e0O5JvCOhsxcx16Loclo3/lzt
+         xMlP3nVJNwhSLclqQgHCFc/u7iM/R9+yD6x42UbRXjZO2Y1Ba7n4aTFzkfzoJIgTch
+         LxKtgFLveIp8uzYOFNVy/8c5RZAxwrr1bGI1H6CUpcBNl000VbbFoXQUi+oCaojUX4
+         XzD/d9vnyNyyBOdCWIcvBDkEMLr20t5AKqOcJDD4IP+fxyo/i4fRBpxroYTnjEAfHJ
+         JtfIEGhA2rmgg==
+Date:   Mon, 1 Feb 2021 17:16:02 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     <stefanc@marvell.com>
+Cc:     <netdev@vger.kernel.org>, <thomas.petazzoni@bootlin.com>,
+        <davem@davemloft.net>, <nadavh@marvell.com>,
+        <ymarkman@marvell.com>, <linux-kernel@vger.kernel.org>,
+        <linux@armlinux.org.uk>, <mw@semihalf.com>, <andrew@lunn.ch>,
+        <rmk+kernel@armlinux.org.uk>, <atenart@kernel.org>
+Subject: Re: [PATCH v7 net-next 00/15] net: mvpp2: Add TX Flow Control
+ support
+Message-ID: <20210201171602.5a7583ab@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1612103638-16108-1-git-send-email-stefanc@marvell.com>
+References: <1612103638-16108-1-git-send-email-stefanc@marvell.com>
 MIME-Version: 1.0
-In-Reply-To: <2752ed93-6bd5-1a13-0e05-b91e2dcc24e1@suse.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.169.42.93]
-X-ClientProxiedBy: dggeme702-chm.china.huawei.com (10.1.199.98) To
- dggema772-chm.china.huawei.com (10.1.198.214)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, 31 Jan 2021 16:33:43 +0200 stefanc@marvell.com wrote:
+> v6 --> v7
+> - Reduce patch set from 18 to 15 patches
+>  - Documentation change combined into a single patch
+>  - RXQ and BM size change combined into a single patch
+>  - Ring size change check moved into "add RXQ flow control configurations" commit
 
+It still did not get into patchwork :S
 
-On 2021/2/1 18:45, Hannes Reinecke wrote:
-> On 2/1/21 10:40 AM, Chao Leng wrote:
->>
->>
->> On 2021/2/1 16:57, Hannes Reinecke wrote:
->>> On 2/1/21 9:47 AM, Chao Leng wrote:
->>>>
->>>>
->>>> On 2021/2/1 15:29, Hannes Reinecke wrote:[ .. ]
->>>>> Urgh. Please, no. That is well impossible to debug.
->>>>> Can you please open-code it to demonstrate where the difference to the current (and my fixed) versions is?
->>>>> I'm still not clear where the problem is once we applied both patches.
->>>> For example assume the list has three path, and all path is not NVME_ANA_OPTIMIZED:
->>>> head->next = ns1;
->>>> ns1->next = ns2;
->>>> ns2->next = head;
->>>> old->next = ns2;
->>>>
->>> And this is where I have issues with.
->>> Where does 'old' come from?
->>> Clearly it was part of the list at one point; so what happened to it?
->> I explained this earlier.
->> In nvme_ns_remove, there is a hole between list_del_rcu and
->> nvme_mpath_clear_current_path. If head->current_path is the "old", and
->> the "old" is removing. The "old" is already removed from the list by
->> list_del_rcu, but head->current_path is not clear to NULL by
->> nvme_mpath_clear_current_path.
->> Find path is race with nvme_ns_remove, use the "old" pass to
->> nvme_round_robin_path to find path.
-> 
-> Ah. So this should be better:
-> 
-> @@ -202,10 +202,12 @@ static struct nvme_ns *__nvme_find_path(struct nvme_ns_head *head, int node)
->   static struct nvme_ns *nvme_next_ns(struct nvme_ns_head *head,
->                  struct nvme_ns *ns)
->   {
-> -       ns = list_next_or_null_rcu(&head->list, &ns->siblings, struct nvme_ns,
-> -                       siblings);
-> -       if (ns)
-> -               return ns;
-> +       if (ns && !test_bit(NVME_NS_REMOVING, &ns->flags)) {
-> +               ns = list_next_or_null_rcu(&head->list, &ns->siblings,
-> +                                          struct nvme_ns, siblings);
-> +               if (ns)
-> +                       return ns;
-> +       }
->          return list_first_or_null_rcu(&head->list, struct nvme_ns, siblings);
->   }
-> 
-> The 'NVME_NS_REMOVING' bit is set before list_del_rcu() is called, so it should guard against the issue you mentioned.
-Looks useless, it is still infinite loop. You can check the workflow for the scenario I mentioned.
-> 
-> Cheers,
-> 
-> Hannes
