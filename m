@@ -2,115 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01F5230C984
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:22:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 509F730C9B5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:27:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238282AbhBBSUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:20:18 -0500
-Received: from mail-wr1-f54.google.com ([209.85.221.54]:38015 "EHLO
-        mail-wr1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238366AbhBBSQp (ORCPT
+        id S238594AbhBBS0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:26:23 -0500
+Received: from cloudserver094114.home.pl ([79.96.170.134]:42712 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238416AbhBBSVV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 13:16:45 -0500
-Received: by mail-wr1-f54.google.com with SMTP id b3so3365596wrj.5;
-        Tue, 02 Feb 2021 10:16:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FCp+C+rgPYZTZ229hkCWEYMMpy6/7MzmueKWQdI985s=;
-        b=AV298+j1AiOz73Ta9LuHBF/a4+s40toGw8rx4Ge35ATNTNQ1Bs8Jwv8HEHs5A6nNUW
-         0enZabyNCwuiSvjW6XPVLZuGg8JOdpHOmx2bP3x3Lkzzu70gp7tziRM83sQohottoK3v
-         AkY6uR1J5BzFKMLMcev9oratFZoJp6egTS/gZADHzFeRr+7oF8eWIs3PaIQIBp1yY3HU
-         nwsoBXnvyCImhNV5P9EJTBEMES+kVFKgcYuAAIEoVUR0NgcgNYpJDPGNANy1SMfbOU4U
-         2LUO+M/r0GCG7tvucm1KYbb1nb0WqSM85iWpqhFc0D4fQrgUhRaRUgvakp7WTkqKW9oc
-         jVoA==
-X-Gm-Message-State: AOAM53377A6xRl0XZnRSlxNRAOc5h1IcZj51G9cWNJlgI7V3eQQQA/j7
-        FXH92/o7NEDl3s9FwrVFjv4=
-X-Google-Smtp-Source: ABdhPJzm1+hIiMOhMVNoFIodRo9Vswj4u0lg6rRTh7uPnqz7H7LD3Ip2YXrB+ZXKnVMQ9OPhiXifIA==
-X-Received: by 2002:adf:902a:: with SMTP id h39mr24929214wrh.147.1612289761909;
-        Tue, 02 Feb 2021 10:16:01 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id r11sm4433342wmh.9.2021.02.02.10.16.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 10:16:01 -0800 (PST)
-Date:   Tue, 2 Feb 2021 18:16:00 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v5 15/16] x86/hyperv: implement an MSI domain for root
- partition
-Message-ID: <20210202181600.4lk4zber7dogsd6e@liuwe-devbox-debian-v2>
-References: <20210120120058.29138-1-wei.liu@kernel.org>
- <20210120120058.29138-16-wei.liu@kernel.org>
- <MWHPR21MB1593FFC6005966A3D9BEA3EFD7BB9@MWHPR21MB1593.namprd21.prod.outlook.com>
- <20210202173153.jkbvwck2vsjlbjbz@liuwe-devbox-debian-v2>
- <MWHPR21MB1593248BE6E343117897FE82D7B59@MWHPR21MB1593.namprd21.prod.outlook.com>
+        Tue, 2 Feb 2021 13:21:21 -0500
+Received: from 89-64-80-193.dynamic.chello.pl (89.64.80.193) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.537)
+ id fab37a9a5eea78eb; Tue, 2 Feb 2021 19:19:54 +0100
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux ACPI <linux-acpi@vger.kernel.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Joe Perches <joe@perches.com>
+Subject: [PATCH v2 3/5] ACPI: button: Clean up printing messages
+Date:   Tue, 02 Feb 2021 19:17:01 +0100
+Message-ID: <1735040.lGk2htMl04@kreacher>
+In-Reply-To: <1991501.dpTHplkurC@kreacher>
+References: <2367702.B5bJTmGzJm@kreacher> <1991501.dpTHplkurC@kreacher>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR21MB1593248BE6E343117897FE82D7B59@MWHPR21MB1593.namprd21.prod.outlook.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 06:15:23PM +0000, Michael Kelley wrote:
-> From: Wei Liu <wei.liu@kernel.org> Sent: Tuesday, February 2, 2021 9:32 AM
-> > 
-> > On Wed, Jan 27, 2021 at 05:47:04AM +0000, Michael Kelley wrote:
-> > > From: Wei Liu <wei.liu@kernel.org> Sent: Wednesday, January 20, 2021 4:01 AM
-> > > >
-> > > > When Linux runs as the root partition on Microsoft Hypervisor, its
-> > > > interrupts are remapped.  Linux will need to explicitly map and unmap
-> > > > interrupts for hardware.
-> > > >
-> > > > Implement an MSI domain to issue the correct hypercalls. And initialize
-> > > > this irqdomain as the default MSI irq domain.
-> > > >
-> > > > Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> > > > Co-Developed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> > > > Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> > > > ---
-> > > > v4: Fix compilation issue when CONFIG_PCI_MSI is not set.
-> > > > v3: build irqdomain.o for 32bit as well.
-> > >
-> > > I'm not clear on the intent for 32-bit builds.  Given that hv_proc.c is built
-> > > only for 64-bit, I'm assuming running Linux in the root partition
-> > > is only functional for 64-bit builds.  So is the goal simply that 32-bit
-> > > builds will compile correctly?  Seems like maybe there should be
-> > > a CONFIG option for running Linux in the root partition, and that
-> > > option would force 64-bit.
-> > 
-> > To ensure 32 bit kernel builds and 32 bit guests still work.
-> > 
-> > The config option ROOT_API is to be introduced by Nuno's /dev/mshv
-> > series. We can use that option to gate some objects when that's
-> > available.
-> > 
-> 
-> But just so I'm 100% clear, is there intent to run 32-bit Linux in the root
-> partition?  I'm assuming not.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-That's correct. There is no intent to run 32-bit Linux as the root
-partition.
+Replace the ACPI_DEBUG_PRINT() instance in button.c with an
+acpi_handle_debug() call, drop the _COMPONENT and ACPI_MODULE_NAME()
+definitions that are not used any more, drop the no longer needed
+ACPI_BUTTON_COMPONENT definition from the headers and update the
+documentation accordingly.
 
-Wei.
+While at it, replace the direct printk() invocations with pr_info()
+(that changes the excessive log level for some of them too) and drop
+the unneeded PREFIX sybmbol definition from battery.c.
 
-> 
-> Michael
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+
+v1 -> v2: No changes
+
+---
+ Documentation/firmware-guide/acpi/debug.rst |    1 -
+ drivers/acpi/button.c                       |   15 +++++----------
+ drivers/acpi/sysfs.c                        |    1 -
+ include/acpi/acpi_drivers.h                 |    1 -
+ 4 files changed, 5 insertions(+), 13 deletions(-)
+
+Index: linux-pm/drivers/acpi/button.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/button.c
++++ linux-pm/drivers/acpi/button.c
+@@ -21,8 +21,6 @@
+ #include <linux/dmi.h>
+ #include <acpi/button.h>
+ 
+-#define PREFIX "ACPI: "
+-
+ #define ACPI_BUTTON_CLASS		"button"
+ #define ACPI_BUTTON_FILE_STATE		"state"
+ #define ACPI_BUTTON_TYPE_UNKNOWN	0x00
+@@ -54,9 +52,6 @@ static const char * const lid_init_state
+ 	[ACPI_BUTTON_LID_INIT_DISABLED]		= "disabled",
+ };
+ 
+-#define _COMPONENT		ACPI_BUTTON_COMPONENT
+-ACPI_MODULE_NAME("button");
+-
+ MODULE_AUTHOR("Paul Diefenbaugh");
+ MODULE_DESCRIPTION("ACPI Button Driver");
+ MODULE_LICENSE("GPL");
+@@ -285,7 +280,7 @@ static int acpi_button_add_fs(struct acp
+ 		return 0;
+ 
+ 	if (acpi_button_dir || acpi_lid_dir) {
+-		printk(KERN_ERR PREFIX "More than one Lid device found!\n");
++		pr_info("More than one Lid device found!\n");
+ 		return -EEXIST;
+ 	}
+ 
+@@ -434,8 +429,8 @@ static void acpi_button_notify(struct ac
+ 		}
+ 		break;
+ 	default:
+-		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
+-				  "Unsupported event [0x%x]\n", event));
++		acpi_handle_debug(device->handle, "Unsupported event [0x%x]\n",
++				  event);
+ 		break;
+ 	}
+ }
+@@ -523,7 +518,7 @@ static int acpi_button_add(struct acpi_d
+ 			ACPI_BUTTON_CLASS, ACPI_BUTTON_SUBCLASS_LID);
+ 		input->open = acpi_lid_input_open;
+ 	} else {
+-		printk(KERN_ERR PREFIX "Unsupported hid [%s]\n", hid);
++		pr_info("Unsupported hid [%s]\n", hid);
+ 		error = -ENODEV;
+ 		goto err_free_input;
+ 	}
+@@ -567,7 +562,7 @@ static int acpi_button_add(struct acpi_d
+ 	}
+ 
+ 	device_init_wakeup(&device->dev, true);
+-	printk(KERN_INFO PREFIX "%s [%s]\n", name, acpi_device_bid(device));
++	pr_info("%s [%s]\n", name, acpi_device_bid(device));
+ 	return 0;
+ 
+  err_remove_fs:
+Index: linux-pm/Documentation/firmware-guide/acpi/debug.rst
+===================================================================
+--- linux-pm.orig/Documentation/firmware-guide/acpi/debug.rst
++++ linux-pm/Documentation/firmware-guide/acpi/debug.rst
+@@ -52,7 +52,6 @@ shows the supported mask values, current
+     ACPI_CA_DISASSEMBLER            0x00000800
+     ACPI_COMPILER                   0x00001000
+     ACPI_TOOLS                      0x00002000
+-    ACPI_BUTTON_COMPONENT           0x00080000
+     ACPI_SBS_COMPONENT              0x00100000
+     ACPI_FAN_COMPONENT              0x00200000
+     ACPI_PCI_COMPONENT              0x00400000
+Index: linux-pm/drivers/acpi/sysfs.c
+===================================================================
+--- linux-pm.orig/drivers/acpi/sysfs.c
++++ linux-pm/drivers/acpi/sysfs.c
+@@ -52,7 +52,6 @@ static const struct acpi_dlayer acpi_deb
+ 	ACPI_DEBUG_INIT(ACPI_COMPILER),
+ 	ACPI_DEBUG_INIT(ACPI_TOOLS),
+ 
+-	ACPI_DEBUG_INIT(ACPI_BUTTON_COMPONENT),
+ 	ACPI_DEBUG_INIT(ACPI_SBS_COMPONENT),
+ 	ACPI_DEBUG_INIT(ACPI_FAN_COMPONENT),
+ 	ACPI_DEBUG_INIT(ACPI_PCI_COMPONENT),
+Index: linux-pm/include/acpi/acpi_drivers.h
+===================================================================
+--- linux-pm.orig/include/acpi/acpi_drivers.h
++++ linux-pm/include/acpi/acpi_drivers.h
+@@ -15,7 +15,6 @@
+  * Please update drivers/acpi/debug.c and Documentation/firmware-guide/acpi/debug.rst
+  * if you add to this list.
+  */
+-#define ACPI_BUTTON_COMPONENT		0x00080000
+ #define ACPI_SBS_COMPONENT		0x00100000
+ #define ACPI_FAN_COMPONENT		0x00200000
+ #define ACPI_PCI_COMPONENT		0x00400000
+
+
+
