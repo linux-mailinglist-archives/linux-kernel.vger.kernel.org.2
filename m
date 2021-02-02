@@ -2,114 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C259530CE44
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 22:57:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C49DF30CE4A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 22:57:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233806AbhBBVzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 16:55:50 -0500
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:38386 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232865AbhBBVzr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 16:55:47 -0500
-Received: by mail-ot1-f53.google.com with SMTP id t25so11301000otc.5;
-        Tue, 02 Feb 2021 13:55:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=4HUucybA4QgzC5/hQDmSLfk+25J4e0ac8M/zN4EUHzk=;
-        b=hL7e1bX4UAcD6CpfQNBeSNJa5Hjs8MdEnKhzCivKoSd6diufDcePpDe4D9wd6DzFnY
-         N6c2wSWtBmfcvMqXl4btKJsusOEPl49IKi6THFfzmTnHUP/9oUQDmbcIqj43/w3ZpN22
-         4dOXVjVXdq4TLhbl16qRLPnXNTGNzuPt9ANn8/HijGielvuZhPjXmbD0aIHmI79eYajh
-         0LesQeJLKhPJgWXUVn+qd7Ax4qYgBW13hSOT8a5PfisneDTfEmpcIM8mJKvQaKVa8+m+
-         8wnOdIjyBwlGkqxaFxVZXahMSaUN1KlR6Q2AkWkdcGPt0bLW2jnLKSjYYJNcgSy6wDw7
-         V3AQ==
-X-Gm-Message-State: AOAM532/eGcvbcoA+yiT6qL4hgWRxPt+zqat0nrpjxvRQEoe3CRsPTO3
-        pOCssh4CUy48nvbxH2xu3Jlzm+BINw==
-X-Google-Smtp-Source: ABdhPJxeNHgTDt4Xzc3tlv8hFa6zMHkBlTbBBvjyFGbC9FmxtJ3JsBwEuzWcZxEux+aDJfmcRl5r8Q==
-X-Received: by 2002:a05:6830:18c4:: with SMTP id v4mr16462695ote.358.1612302905513;
-        Tue, 02 Feb 2021 13:55:05 -0800 (PST)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id s33sm17621ooi.39.2021.02.02.13.55.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 13:55:04 -0800 (PST)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Michael Auchter <michael.auchter@ni.com>,
-        linux-iio@vger.kernel.org
-Subject: [PATCH v2] dt-bindings: iio: dac: Fix AD5686 references
-Date:   Tue,  2 Feb 2021 15:55:03 -0600
-Message-Id: <20210202215503.114113-1-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S233989AbhBBV4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 16:56:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56500 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232865AbhBBV4O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 16:56:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F34B660295;
+        Tue,  2 Feb 2021 21:55:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612302933;
+        bh=b2g6aK56icJbbaoYzrVicAD1k5eiCUfcw7T7FlJlGEs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=q0Uwy77AqXBwy9C/hru+aYHDsFvylsB3yrfAQQwsW0BtZkCu5wRU5ePZ3QxiC4AaE
+         JUSG1VHzCUVine/ot8zy9MKjg5Q+xPRtx4nRRjOmQzhx68oZuliOaYcLvYKkc23VZ/
+         QvcOhFAcjdOy1I7iWjout02+koYFj87CDgsrW4uQ0yRhOcentejhbmzxa+awhrjbRF
+         rJMPbxD23+hwRcW8ANaXWiQkShulcqbLB08i+E2i05rnwkgsuGq3b8VJwAvZ5jCGRC
+         tmzZU70IaXn1U0UOrhp8uyU2IKgrEht6jpku6k8SOo57l9gZIn9a+e/jHsWu+BODoy
+         YFigy9+bxqBmw==
+Date:   Tue, 2 Feb 2021 13:55:31 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        coreteam@netfilter.org, Eric Dumazet <edumazet@google.com>,
+        Florian Westphal <fw@strlen.de>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Julian Anastasov <ja@ssi.bg>, linux-kernel@vger.kernel.org,
+        lvs-devel@vger.kernel.org, Matteo Croce <mcroce@redhat.com>,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH net 1/4] ipv6: silence compilation warning for non-IPV6
+ builds
+Message-ID: <20210202135531.043ed176@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210202185528.GE3264866@unreal>
+References: <20210202135544.3262383-1-leon@kernel.org>
+        <20210202135544.3262383-2-leon@kernel.org>
+        <20210202082909.7d8f479f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20210202185528.GE3264866@unreal>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The example and filename use 'adi,ad5686', but the schema doesn't
-document it. The AD5686 is also a SPI interface variant while all the
-documented variants have an I2C interface. So let's update all the
-references to AD5686 to AD5696.
+On Tue, 2 Feb 2021 20:55:28 +0200 Leon Romanovsky wrote:
+> On Tue, Feb 02, 2021 at 08:29:09AM -0800, Jakub Kicinski wrote:
+> > On Tue,  2 Feb 2021 15:55:41 +0200 Leon Romanovsky wrote:  
+> > > From: Leon Romanovsky <leonro@nvidia.com>
+> > >
+> > > The W=1 compilation of allmodconfig generates the following warning:
+> > >
+> > > net/ipv6/icmp.c:448:6: warning: no previous prototype for 'icmp6_send' [-Wmissing-prototypes]
+> > >   448 | void icmp6_send(struct sk_buff *skb, u8 type, u8 code, __u32 info,
+> > >       |      ^~~~~~~~~~
+> > >
+> > > In such configuration, the icmp6_send() is not used outside of icmp.c, so close
+> > > its EXPORT_SYMBOL and add "static" word to limit the scope.
+> > >
+> > > Fixes: cc7a21b6fbd9 ("ipv6: icmp6: avoid indirect call for icmpv6_send()")
+> > > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>  
+> >
+> > That's a little much ifdefinery, why not move the declaration from
+> > under the ifdef in the header instead?  
+> 
+> We will find ourselves with exported but not used function, it will
+> increase symbol file, not big deal but not nice, either.
 
-Cc: Lars-Peter Clausen <lars@metafoo.de>
-Cc: Michael Hennerich <Michael.Hennerich@analog.com>
-Cc: Jonathan Cameron <jic23@kernel.org>
-Cc: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-Cc: Michael Auchter <michael.auchter@ni.com>
-Cc: linux-iio@vger.kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
-v2:
-- Rename instead of adding AD5686
+For those all so common builds where IPv6 is a module :)
+But I don't feel strongly, up to you.
 
- .../iio/dac/{adi,ad5686.yaml => adi,ad5696.yaml}       | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
- rename Documentation/devicetree/bindings/iio/dac/{adi,ad5686.yaml => adi,ad5696.yaml} (77%)
+> > If you repost please target net-next, admittedly these fixes are pretty
+> > "obviously correct" but they are not urgent either.  
+> 
+> I'll do.
 
-diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad5696.yaml
-similarity index 77%
-rename from Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
-rename to Documentation/devicetree/bindings/iio/dac/adi,ad5696.yaml
-index 8065228e5df8..56b0cda0f30a 100644
---- a/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
-+++ b/Documentation/devicetree/bindings/iio/dac/adi,ad5696.yaml
-@@ -1,16 +1,16 @@
- # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
- %YAML 1.2
- ---
--$id: http://devicetree.org/schemas/iio/dac/adi,ad5686.yaml#
-+$id: http://devicetree.org/schemas/iio/dac/adi,ad5696.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Analog Devices AD5686 and similar multi-channel DACs
-+title: Analog Devices AD5696 and similar multi-channel DACs
- 
- maintainers:
-   - Michael Auchter <michael.auchter@ni.com>
- 
- description: |
--  Binding for Analog Devices AD5686 and similar multi-channel DACs
-+  Binding for Analog Devices AD5696 and similar multi-channel DACs
- 
- properties:
-   compatible:
-@@ -48,8 +48,8 @@ examples:
-       #address-cells = <1>;
-       #size-cells = <0>;
- 
--      ad5686: dac@0 {
--        compatible = "adi,ad5686";
-+      ad5696: dac@0 {
-+        compatible = "adi,ad5696";
-         reg = <0>;
-         vcc-supply = <&dac_vref>;
-       };
--- 
-2.27.0
-
+Thanks!
