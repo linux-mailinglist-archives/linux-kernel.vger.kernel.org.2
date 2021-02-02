@@ -2,80 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B54FE30C6E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:06:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB18430C6F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:06:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237148AbhBBRDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:03:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38286 "EHLO mail.kernel.org"
+        id S232556AbhBBRFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:05:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237057AbhBBRAv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 12:00:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 425B664E9A;
-        Tue,  2 Feb 2021 17:00:08 +0000 (UTC)
+        id S237143AbhBBRCR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 12:02:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 920B464E08;
+        Tue,  2 Feb 2021 17:01:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612285208;
-        bh=a4SpeF1zNUPFma/TE5v/+Qm8Q3g8jfxU8nzdmkBK4RU=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=tklw4NcWQ3PD2jwsw+9u0o0PRminp8pbYmkN7eYaOhxAPZ36TSKlg1XxpCn64zbSf
-         gclu0ghPO5U5KNiM0ZhDiwnLXvwwSp26qvx8gjUXbi2jLG8yQi5JJo9H7jH9aT6Paq
-         g50fjktMn4PnIoP3ObwBYC6bSEABAtTNJv68IExFHWASzPN8jSZxIgZkAj7980IbB7
-         MeXFin8EMLt5bUfgLaZDcoWxTpbow3mC+1ZW219ltRV+szJ8V+aNlpbjQWBl76ZMwf
-         tC8HX+EfhIusoNSfHToItthhnI2dLzbALdnys4rweLoRwJ0mIvlrfXb6wYIfrEC2Ul
-         ZnEVibwNA/vYA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3295A609E1;
-        Tue,  2 Feb 2021 17:00:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        s=k20201202; t=1612285297;
+        bh=2fSQyZ1WwQMOhHMDn+OXb0hQdFVNjom2QI2jlsjZH+c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hBnSneqPCbcn4MDYUjXnlwCTeaC/3qf7ky/i9cIkSa2sLWIm9llZQeOlDCOjtvew1
+         uz+qMMCmkOpFnamO0juf94Lm4quU+vhWHoOJ4r6CN3z0A9RrRFcovtAzWXWLjOPqh0
+         /s7VHQmP61+1iinWR+nN07sVuP4nyxEq3daoUQ7POdgIfTUx4CSspCN2l5Y6NGBK2V
+         UrCOLGGlKA/HXW4Uetqk4wuZ1jB/jDisIp4trWiXLXzK+RjF4SLQt2SZ+9kIW11J6C
+         GV1moa9zw0lW5M1oI0yfkzkQTJjPNP+yQbkt8H/OcdFjZt0Mg1eChqehOsqmnvetYf
+         n4bVXEPOsApRg==
+Date:   Tue, 2 Feb 2021 17:00:49 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Ion Agorria <AG0RRIA@yahoo.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Stephen Warren <swarren@nvidia.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Rob Herring <robh+dt@kernel.org>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Ion Agorria <ion@agorria.com>, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/2] ASoC: tegra: Add RT5631 machine driver
+Message-ID: <20210202170049.GE5154@sirena.org.uk>
+References: <20210131184101.651486-1-AG0RRIA@yahoo.com>
+ <20210131184101.651486-3-AG0RRIA@yahoo.com>
+ <7f4eb8f7-215e-ab3d-fcef-9243037cf246@nvidia.com>
+ <8d0bc6f3-45ce-565d-d80f-b50fb75e7c55@gmail.com>
+ <51571ec9-780b-ba71-c81d-dd01ebcefbb8@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net 0/4] net: ipa: a few bug fixes
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161228520820.27951.3321264627733368250.git-patchwork-notify@kernel.org>
-Date:   Tue, 02 Feb 2021 17:00:08 +0000
-References: <20210201232609.3524451-1-elder@linaro.org>
-In-Reply-To: <20210201232609.3524451-1-elder@linaro.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, elder@kernel.org,
-        evgreen@chromium.org, bjorn.andersson@linaro.org,
-        cpratapa@codeaurora.org, subashab@codeaurora.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="GxcwvYAGnODwn7V8"
+Content-Disposition: inline
+In-Reply-To: <51571ec9-780b-ba71-c81d-dd01ebcefbb8@nvidia.com>
+X-Cookie: Only God can make random selections.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
 
-This series was applied to netdev/net.git (refs/heads/master):
+--GxcwvYAGnODwn7V8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Mon,  1 Feb 2021 17:26:05 -0600 you wrote:
-> This series fixes four minor bugs.  The first two are things that
-> sparse points out.  All four are very simple and each patch should
-> explain itself pretty well.
-> 
-> 					-Alex
-> 
-> Alex Elder (4):
->   net: ipa: add a missing __iomem attribute
->   net: ipa: be explicit about endianness
->   net: ipa: use the right accessor in ipa_endpoint_status_skip()
->   net: ipa: fix two format specifier errors
-> 
-> [...]
+On Tue, Feb 02, 2021 at 04:24:31PM +0000, Jon Hunter wrote:
+> On 02/02/2021 15:25, Dmitry Osipenko wrote:
 
-Here is the summary with links:
-  - [net,1/4] net: ipa: add a missing __iomem attribute
-    https://git.kernel.org/netdev/net/c/e6cdd6d80bae
-  - [net,2/4] net: ipa: be explicit about endianness
-    https://git.kernel.org/netdev/net/c/088f8a2396d8
-  - [net,3/4] net: ipa: use the right accessor in ipa_endpoint_status_skip()
-    https://git.kernel.org/netdev/net/c/c13899f18728
-  - [net,4/4] net: ipa: fix two format specifier errors
-    https://git.kernel.org/netdev/net/c/113b6ea09ccd
+> > These codecs require individual configurations and those
+> > "../codecs/rt5631.h" and  "../codecs/rt5677.h" aren't compatible at a
+> > quick glance.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+> Right but not all of that is needed. What is actually needed from the
+> header files?
 
+Right, and if it's just a case of having a different hw_params() or
+something then the majority of the driver could be shared with just a
+few bits being handled differently.
 
+> > The tegra_rt5677 also uses outdated GPIO API and etc. Hence the new
+> > driver should be a better base anyways.
+
+> Sounds like a good time to update it :-)
+
+Yeah.
+
+> > Overall it shouldn't worth time and effort trying to squeeze these
+> > drivers into a single one, IMO.
+
+> Not sure I agree when these drivers appear to be 90% the same.
+
+It's certainly worth considering - given that it's the same silicon
+vendor working with the same SoC vendor's reference designs it seems
+likely that things will look pretty similar at the system integration
+level.  It's possible that it's more trouble than it's worth but it'd be
+good to have a more concrete understanding of why.
+
+--GxcwvYAGnODwn7V8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAZhUAACgkQJNaLcl1U
+h9Br/AgAhxDJhXD92Ou/rbXrbVCd+giU1RLOL08mfRERugF5Ne5z4JmWhbHxgh17
+iNAtHsuofQ+vFiHBD+gyGdKDpcJPI1PBoVFmU480078igsYqvZnPaZ6zwdhoRKOf
+D9Sp1czdSfnNiIR+Ug8y5yjnsTUt/c4qCfjZWa/vvGuw8VQ6hALooYvAnkrZoFZi
+VEKHvYgNgUOqRnIOqdPg5NVqX0dEndIpIQcN+3kV5Yu0xwdi9EFv2dSXp29kye8w
+PPdeIP3YTwr9g/AuTKRuSABzvWjVIacsMBfN1osWjX4PflCz96f0lBtqvhJi4qEV
+4OE3cy3Aen4lJJXG13rcFEESBokpzA==
+=6RSX
+-----END PGP SIGNATURE-----
+
+--GxcwvYAGnODwn7V8--
