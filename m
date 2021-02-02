@@ -2,112 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B590130C20B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:42:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EDC830C0C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:08:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234644AbhBBOiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:38:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231499AbhBBORr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:17:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0966264FCD;
-        Tue,  2 Feb 2021 13:55:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612274159;
-        bh=uqEQxgxP/Gh6jkafzcZMwsNruCxCCpY2QrRHAchjz/o=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AJZKCAkxo4iNw6GvoaohZFZ6alAc19sFBqoWDRu0qkz7f0ZiSqji/3BwP2DQizckW
-         fRCRjI2NTiTh4HFtW09AF6rjvmTdGcbbCFqEdIZ0kAJYrmdiCtMrPEuD4IN5B0NoHN
-         WQ7J+ebZG6SJdlu1w8kHoaIB0H2kINRmq+k14SML6PRIIMoJCf/mwHEc8g6Sn6uuPB
-         9ztrCNZy9RseBE9g48WJ1yyI4PSypSHvbw6W7/XfdLfgT+1RiaEuTyEzr1DmCXFzvR
-         +67DFBd9dAd0Yd7JEfyZgxSstDlupg0aeJVm+Fad5uyt/lyxFU43SDI3UNHASfsRej
-         9xDdTDpTFlGOA==
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Leon Romanovsky <leonro@nvidia.com>, coreteam@netfilter.org,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Westphal <fw@strlen.de>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Julian Anastasov <ja@ssi.bg>, linux-kernel@vger.kernel.org,
-        lvs-devel@vger.kernel.org, Matteo Croce <mcroce@redhat.com>,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        Simon Horman <horms@verge.net.au>
-Subject: [PATCH net 4/4] netfilter: move handlers to net/ip_vs.h
-Date:   Tue,  2 Feb 2021 15:55:44 +0200
-Message-Id: <20210202135544.3262383-5-leon@kernel.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210202135544.3262383-1-leon@kernel.org>
-References: <20210202135544.3262383-1-leon@kernel.org>
+        id S233650AbhBBOGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:06:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233501AbhBBN60 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 08:58:26 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1658C061786
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 05:57:43 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id b20so16202434ljo.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 05:57:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NL/I/BuRrrACgurhUs3cVKRwX323hl2f+ZOCamuPdHc=;
+        b=Q4MrU9ZAwKq4E1DSZLMnCoc4OEZF8kZhBb2pF0FJiU3Pi5Qclgben0NCZKzz5YtTJB
+         9a4T0NrurxbKFRVHL6nRf6cayFXco1vtMTAguuMELuH9WCvLtWBfUr4o74pyHto/FpQ7
+         SkCuriyomu1Wkgd7fCSuzlV8RxSFtLhU1Z9Fq4n5J0g5fBIJTV0FJ1FB9uBjVC43z07k
+         iELYQJGHgpO1v5aWng7dMxzibJvi7M5nng5stkf/znfHZNjSLIThrhjx7F8V3iowvbhj
+         yyGTbdZNBUCbVz/fJi4R9U4EL1R9nfq16BAxk7QsmXSvwDk22WaWUMFxetzRVfVAzlgV
+         yG2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NL/I/BuRrrACgurhUs3cVKRwX323hl2f+ZOCamuPdHc=;
+        b=Kv+JAiZwQp/fgxVhm7yGyRaTj8Izki2IMJrBYgyMh+t++6eI55DLHDamgYIhWpjkrB
+         4yAldVCOTweOOraiKOW6sP7c9m+jQ4PqR9T4Y8wc6GqTSOuzQyxRffxAuEx/7wFsNwBC
+         5jM5bhJCUspNhveG4NYIBbSh7rfzQlPaR5/EyEul/cd379BfMAHQJg1n1XKCNfKCxqi7
+         6cPKHqWzSoS7vmSw6AqRvNrT1v9PeraYR0xIsy4dLNMIXn7dlEaU2hYn6uPZFI44Z1pH
+         BAum4kk4CwsfjD2j30ETIW2fZPYq2+kvNuJy3bKiqfwKBmMnh3dYoa576sUWhyOugFuP
+         Yt7w==
+X-Gm-Message-State: AOAM53386QcwTmKOhbnypK378haR7X4aMYbZtahOi/xpjbgZGkI476/Y
+        NO2Ck5tx+9P6bFubgHx1Ar8JPhuSJnDmNKJlxT9t9w==
+X-Google-Smtp-Source: ABdhPJxazmAVdgS3EL8u7mgAM/H3dEDSjolBtS+6TpYMpVKMBwB8RnDWvB3K64ZQY7Fj+MjVXFsQEzBUzuP72v9jK0I=
+X-Received: by 2002:a2e:8ec3:: with SMTP id e3mr12733519ljl.467.1612274262224;
+ Tue, 02 Feb 2021 05:57:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210128153601.153126-1-alban.bedel@aerq.com>
+In-Reply-To: <20210128153601.153126-1-alban.bedel@aerq.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 2 Feb 2021 14:57:31 +0100
+Message-ID: <CACRpkdaP8-mnXuBZRKad53tvGrS0BdfTRKNezr0mhRVf8qkYig@mail.gmail.com>
+Subject: Re: [PATCH] gpio: pca953x: add support for open drain pins on PCAL6524
+To:     Alban Bedel <alban.bedel@aerq.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+On Thu, Jan 28, 2021 at 4:36 PM Alban Bedel <alban.bedel@aerq.com> wrote:
 
-Fix the following compilation warnings:
-net/netfilter/ipvs/ip_vs_proto_tcp.c:147:1: warning: no previous prototype for 'tcp_snat_handler' [-Wmissing-prototypes]
-  147 | tcp_snat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
-      | ^~~~~~~~~~~~~~~~
-net/netfilter/ipvs/ip_vs_proto_udp.c:136:1: warning: no previous prototype for 'udp_snat_handler' [-Wmissing-prototypes]
-  136 | udp_snat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
-      | ^~~~~~~~~~~~~~~~
+> From a quick glance at various datasheet the PCAL6524 seems to be the
+> only chip in this familly that support setting the drive mode of
+> single pins. Other chips either don't support it at all, or can only
+> set the drive mode of whole banks, which doesn't map to the GPIO API.
+>
+> Add a new flag, PCAL6524, to mark chips that have the extra registers
+> needed for this feature. Then mark the needed register banks as
+> readable and writable, here we don't set OUT_CONF as writable,
+> although it is, as we only need to read it. Finally add a function
+> that configure the OUT_INDCONF register when the GPIO API set the
+> drive mode of the pins.
+>
+> Signed-off-by: Alban Bedel <alban.bedel@aerq.com>
 
-Fixes: 6ecd754883da ("ipvs: use indirect call wrappers")
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
----
- include/net/ip_vs.h             | 11 +++++++++++
- net/netfilter/ipvs/ip_vs_core.c | 12 ------------
- 2 files changed, 11 insertions(+), 12 deletions(-)
+Thats's nice!
 
-diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
-index d609e957a3ec..7cb5a1aace40 100644
---- a/include/net/ip_vs.h
-+++ b/include/net/ip_vs.h
-@@ -1712,4 +1712,15 @@ ip_vs_dest_conn_overhead(struct ip_vs_dest *dest)
- 		atomic_read(&dest->inactconns);
- }
+> + *     Output port configuration       0x40 + 7 * bank_size    R
+> + *
+> + *   - PCAL6524 with individual pin configuration
+> + *     Individual pin output config    0x40 + 12 * bank_size   RW
 
-+#ifdef CONFIG_IP_VS_PROTO_TCP
-+INDIRECT_CALLABLE_DECLARE(int
-+	tcp_snat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
-+			 struct ip_vs_conn *cp, struct ip_vs_iphdr *iph));
-+#endif
-+
-+#ifdef CONFIG_IP_VS_PROTO_UDP
-+INDIRECT_CALLABLE_DECLARE(int
-+	udp_snat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
-+			 struct ip_vs_conn *cp, struct ip_vs_iphdr *iph));
-+#endif
- #endif	/* _NET_IP_VS_H */
-diff --git a/net/netfilter/ipvs/ip_vs_core.c b/net/netfilter/ipvs/ip_vs_core.c
-index 54e086c65721..0c132ff9b446 100644
---- a/net/netfilter/ipvs/ip_vs_core.c
-+++ b/net/netfilter/ipvs/ip_vs_core.c
-@@ -68,18 +68,6 @@ EXPORT_SYMBOL(ip_vs_get_debug_level);
- #endif
- EXPORT_SYMBOL(ip_vs_new_conn_out);
+So this will become 0x70? It's a bit hard for me this weird
+register layout...
 
--#ifdef CONFIG_IP_VS_PROTO_TCP
--INDIRECT_CALLABLE_DECLARE(int
--	tcp_snat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
--			 struct ip_vs_conn *cp, struct ip_vs_iphdr *iph));
--#endif
--
--#ifdef CONFIG_IP_VS_PROTO_UDP
--INDIRECT_CALLABLE_DECLARE(int
--	udp_snat_handler(struct sk_buff *skb, struct ip_vs_protocol *pp,
--			 struct ip_vs_conn *cp, struct ip_vs_iphdr *iph));
--#endif
--
- #if defined(CONFIG_IP_VS_PROTO_TCP) && defined(CONFIG_IP_VS_PROTO_UDP)
- #define SNAT_CALL(f, ...) \
- 	INDIRECT_CALL_2(f, tcp_snat_handler, udp_snat_handler, __VA_ARGS__)
---
-2.29.2
+> +static int pcal6524_gpio_set_drive_mode(struct pca953x_chip *chip,
+> +                                       unsigned int offset,
+> +                                       unsigned long config)
+> +{
+> +       u8 out_conf_reg = pca953x_recalc_addr(
+> +               chip, PCAL953X_OUT_CONF, 0);
+> +       u8 out_indconf_reg = pca953x_recalc_addr(
+> +               chip, PCAL6524_OUT_INDCONF, offset);
+> +       u8 mask = BIT(offset % BANK_SZ), val;
 
+Split to two variable declarations please, this is hard to read.
+
+> +       unsigned int out_conf;
+> +       int ret;
+
+So we set mask to the bit index for the line we want to affect.
+
+> +       if (config == PIN_CONFIG_DRIVE_OPEN_DRAIN)
+> +               val = mask;
+> +       else if (config == PIN_CONFIG_DRIVE_PUSH_PULL)
+> +               val = 0;
+> +       else
+> +               return -EINVAL;
+
+And this makes sense, we set it to 1 to enable open drain.
+
+> +       /* Invert the value if ODENn is set */
+> +       ret = regmap_read(chip->regmap, out_conf_reg, &out_conf);
+> +       if (ret)
+> +               goto exit;
+> +       if (out_conf & BIT(offset / BANK_SZ))
+
+I suppose this could be written if (out_conf & mask)?
+
+> +               val ^= mask;
+
+Invert? Why?
+
+The datasheet says:
+
+  "If the ODENx bit is set at logic 0 (push-pull), any bit set to logic 1
+  in the IOCRx register will reverse the output state of that pin only
+  to open-drain. When ODENx bit is set at logic 1 (open-drain), a
+  logic 1 in IOCRx will set that pin to push-pull."
+
+So your logic is accounting for the fact that someone go and set
+one of the bits in ODENx to 1, but aren't they all by default set
+to zero (or should be programmed by the driver to zero)
+so that you can control open drain individually here by simply
+setting the corresponding bit to 1 for open drain and 0 for
+push-pull?
+
+> +       /* Configure the drive mode */
+> +       ret = regmap_write_bits(chip->regmap, out_indconf_reg, mask, val);
+
+Yours,
+Linus Walleij
