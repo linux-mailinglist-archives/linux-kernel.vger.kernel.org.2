@@ -2,149 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02CB630B93B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:09:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1339630B94D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:14:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232290AbhBBIHE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 03:07:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58080 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231511AbhBBIGv (ORCPT
+        id S231464AbhBBIN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 03:13:27 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:40704 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229462AbhBBINU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 03:06:51 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C26C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 00:06:10 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id w18so13796193pfu.9
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 00:06:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=xdsSCNqRT6pmI8PDRatFSJJyOi2y+t4BEGL1p6JdYS8=;
-        b=a2gcKjdkHx8c5T+5arN64AbLg0NvYBu4Sfj9M0yHD+WYIg/Bby4oyC5Q68bCkO5I+b
-         lXKAgMFgqWc0FbcSzErQN8kWk6a2OLzO6BNHhv7AqpzsuFfsYduFtA+5TqKlKRVqZk3r
-         0kpmhWxMVNkSuLRJ9koWskTQMPJozqu+01TKbsHrZj/DoIKAQsJrH0rgcYashy+sqXZ+
-         lmq8BBDo8veAWmf9ZMtNxTsRTOQSovTXrJqVxf1gL6GUTqLV/UEFROSzaFvx5abwem8v
-         7lTgAghagOzruYDqaKpfGcXilVYGXOXRgrQ7zDT1P8FaWwWXzMOKp1JN5unnnIpAq7PH
-         EDng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=xdsSCNqRT6pmI8PDRatFSJJyOi2y+t4BEGL1p6JdYS8=;
-        b=B40TBk6RdmwkJ1e08DJXWK+HElYiXD+pjuVRw/xJElXLIG1OV3jEe0xdKVOXxPPOkx
-         FeCLYXl1a4yz3v6gZjn5Ld9UbIOkZEkCgEcUuqrQuKW4cvzAxGdZUKNa0UgjW0LKn7s2
-         3abOiJXliOFk5P/7Vwn5m6m0YymiC7Se+ZlpfVur2t4tBG/g71nk/tEYJX/VT43gMfrS
-         1wBz8TJw4tFRWvrWfJOyMCclDBVh6g5QhmpPz5WPT5nsIorimzuslNrY90tsx9I/CLQ+
-         dHPwmjEERLLvsOtuN/s06FIZlwZfVEKTr7iTBqlkQOagsCAIQ0WfMbPnskVq+/aretwn
-         E2XQ==
-X-Gm-Message-State: AOAM531GcgKw2wNLPqRLC2zbHuobhNOeVFeCpL95Y3JTOeV4C/RvJxOc
-        4ro7LShbe536aa/sxWtx0wjBAw==
-X-Google-Smtp-Source: ABdhPJyUdQEWpf4FFRm6WDwnXFFSFPzK6zZFwUWld1lUJv6xNRPgEZvQKCPEep5fxzL1x6uYyvEylg==
-X-Received: by 2002:a62:18d6:0:b029:1bf:1c5f:bfa4 with SMTP id 205-20020a6218d60000b02901bf1c5fbfa4mr20095420pfy.24.1612253169862;
-        Tue, 02 Feb 2021 00:06:09 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:f693:9fff:fef4:fc72])
-        by smtp.gmail.com with ESMTPSA id gb12sm1876180pjb.51.2021.02.02.00.06.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 00:06:08 -0800 (PST)
-Date:   Tue, 2 Feb 2021 00:06:03 -0800
-From:   Benson Leung <bleung@google.com>
-To:     gregkh@linuxfoundation.org
-Cc:     enric.balletbo@collabora.com, bleung@chromium.org,
-        bleung@google.com, bleung@kernel.org, linux-usb@vger.kernel.org,
-        pmalani@chromium.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Immutable Branch between platform/chrome and USB for
- v5.12 merge window
-Message-ID: <YBkH6wO07sxRDBDo@google.com>
+        Tue, 2 Feb 2021 03:13:20 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1128551F176778;
+        Tue, 2 Feb 2021 08:12:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=EkFId3LnqSUIZCRZEfLsq8g/NEaDT5HxkdBh5mNoFA0=;
+ b=KvIReKLgixr1tRSxPZfvw4ofwH9EhJFRerXsWKHh7AMhB7MnvWUg16j9CWvDT8+f9BbM
+ kwYjXX6ne+nFCl76OCh9DKNdq+APyJH4hJkAsygyQMgABiix1vd439Vna6MEQGT6q8Nh
+ 3/I/64MXROgC6SZQFah9pfIpnIbDoGEgp7SWSGRm8Pz5kF3qfW0dFhyXXRd9fVoh2B9x
+ 86AhJBaCTmmRRr72sSF0x7iFFatPugm7VsjtMC14Csfxla9d4puti9eDxzeoJbPRiMAV
+ fTPpdA6Izn7EyNkrQs7ZsplxrjmTfvJr5HgIJjIt4SNkAFKoRWMinUltLGdOMOCN41hJ 2A== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 36cydkscf5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Feb 2021 08:12:26 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 11285Shx032944;
+        Tue, 2 Feb 2021 08:10:23 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 36dh1nmd2w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Feb 2021 08:10:23 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1128AJjs006525;
+        Tue, 2 Feb 2021 08:10:19 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 02 Feb 2021 00:10:18 -0800
+Date:   Tue, 2 Feb 2021 11:10:10 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Hillf Danton <hdanton@sina.com>, Sasha Levin <sashal@kernel.org>,
+        Archie Pusaka <apusaka@chromium.org>
+Cc:     syzbot <syzbot+3ed6361bf59830ca9138@syzkaller.appspotmail.com>,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Miao-chen Chou <mcchou@chromium.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@intel.com>,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: KASAN: slab-out-of-bounds Read in add_adv_patterns_monitor
+Message-ID: <20210202081010.GZ20820@kadam>
+References: <00000000000076ecf305b9f8efb1@google.com>
+ <20210131100154.14452-1-hdanton@sina.com>
+ <20210202075110.GR2696@kadam>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="C9BBXJRw27joBAeF"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210202075110.GR2696@kadam>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-IMR: 1
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9882 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
+ suspectscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102020055
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9882 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
+ priorityscore=1501 impostorscore=0 malwarescore=0 clxscore=1015
+ spamscore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2102020055
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Commit 36211f7fc1e7 ("Bluetooth: Pause service discovery for suspend")
+seems like a bugfix as well but there is no Fixes tag there either.  The
+commit message should be more clear what the effect of the bug looks
+like to the user.  I like to write something like this:
 
---C9BBXJRw27joBAeF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[PATCH] Bluetooth: Pause service discovery for suspend
 
-Hi Greg,
+Just like MGMT_OP_START_DISCOVERY, we should reject
+MGMT_OP_START_SERVICE_DISCOVERY with MGMT_STATUS_BUSY when we are paused
+for suspend.  This bug was discovered by auditing the software and no
+one has complained about it, but presumably it leads to a hanged process
+because the cmd cannot complete.
 
-The following changes since commit 29b01295a829fba7399ee84afff4e64660e49f04:
+Sometimes it's hard to know what the affect of a bug is, but since
+you're working in the subsystem then you probably have a better guess
+than the rest of us so even a guess is useful.
 
-  usb: typec: Add typec_partner_set_pd_revision (2021-02-01 15:31:34 +0100)
+regards,
+dan carpenter
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform/linux.git t=
-ags/tag-ib-usb-typec-chrome-platform-cros-ec-typec-changes-for-5.12
-
-for you to fetch changes up to 0371616d8bef6926e9aa05757f35b901268d3724:
-
-  platform/chrome: cros_ec_typec: Set opmode to PD on SOP connected (2021-0=
-2-01 23:49:54 -0800)
-
-----------------------------------------------------------------
-cros-ec-typec changes for usb for v5.12
-
-Chrome OS EC Type-C driver features implemented this round:
-* Registration of cable plug information
-* Support for SOP' plug registration and altmodes
-* Support for reporting number of altmodes supported by partners and plugs
-* Send mux configuration ack to EC via a new host command
-* Reporting SOP' and Partner PD revisions
-
-----------------------------------------------------------------
-Benson Leung (4):
-      Merge remote-tracking branch 'origin/cros-ec-typec-for-5.12' into ib-=
-usb-typec-chrome-platform-cros-ec-typec-changes-for-5.12
-      platform/chrome: cros_ec_typec: Report SOP' PD revision from status
-      platform/chrome: cros_ec_typec: Set Partner PD revision from status
-      platform/chrome: cros_ec_typec: Set opmode to PD on SOP connected
-
-Prashant Malani (8):
-      platform/chrome: cros_ec_typec: Make disc_done flag partner-only
-      platform/chrome: cros_ec_typec: Factor out PD identity parsing
-      platform/chrome: cros_ec_typec: Rename discovery struct
-      platform/chrome: cros_ec_typec: Register cable
-      platform/chrome: cros_ec_typec: Store cable plug type
-      platform/chrome: cros_ec_typec: Set partner num_altmodes
-      platform/chrome: cros_ec_typec: Register SOP' cable plug
-      platform/chrome: cros_ec_typec: Register plug altmodes
-
-Utkarsh Patel (2):
-      platform/chrome: cros_ec_typec: Parameterize cros_typec_cmds_supporte=
-d()
-      platform/chrome: cros_ec_typec: Send mux configuration acknowledgment=
- to EC
-
- drivers/platform/chrome/cros_ec_typec.c        | 269 +++++++++++++++++++++=
-----
- include/linux/platform_data/cros_ec_commands.h |  17 ++
- 2 files changed, 243 insertions(+), 43 deletions(-)
-
-Thanks so much!
-Benson
---=20
-Benson Leung
-Staff Software Engineer
-Chrome OS Kernel
-Google Inc.
-bleung@google.com
-Chromium OS Project
-bleung@chromium.org
-
---C9BBXJRw27joBAeF
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCYBkH6wAKCRBzbaomhzOw
-wj1lAQDnRgRncRPJhHWmERmpxnQFxE3azjZ9cWS8RO4t/WM3FwD/QCydiGm66QIw
-jykhYBCWv3N9Qea6EuReeRWHOlrS0g8=
-=s5kQ
------END PGP SIGNATURE-----
-
---C9BBXJRw27joBAeF--
