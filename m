@@ -2,106 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D65F630B9E7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:30:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B420730B9EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:32:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232538AbhBBI30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 03:29:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232602AbhBBI3R (ORCPT
+        id S231132AbhBBIbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 03:31:40 -0500
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:42108 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232553AbhBBIba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 03:29:17 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F74C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 00:28:36 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id l12so469597wmq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 00:28:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=bFiTMfrDGaWBCg0p94Ve9DO2sWATZ48G3jOzHUgim7g=;
-        b=FBJWMelLQhMEkkiGfS95RqrQWLdNPopNfuEOE3bVIxGKfpwQzmatH39kKmkCK+R/mE
-         ZvUxBJXkz7bdlKErQVVoxi1XU4wYu8x5Y5C3HVICYvbeLJE7qDi5AzKix0j6Dyl0fPlA
-         RaqGwGzrSDDdtAKpu5J7b8iyrYt+1P7FTQ2MsyQ8xulPyL7sWSBxaI4PlOxlnrtv2XDT
-         whS+HWuU5CMrHrjCxXKmxWxTfvVBHyexLGTDyIITFCvjri9PwPCPhlntXiDOoxBlbZ9l
-         6cXKT9y1z1e8VoX6qC/Vdf0Z+2Yrh9jJFyi6dEdzDff+dIdrCFcj16HaYFLwju7GauDu
-         ktzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=bFiTMfrDGaWBCg0p94Ve9DO2sWATZ48G3jOzHUgim7g=;
-        b=ZVQ+4StY/Px0XUlbY5LzHc3RSg7GyDam5lf2vhsHAXc6Z3MYytDQHICJaHeR7Em7mZ
-         HxJR5PzHlnNfIcrh5glbaQmGJNcAf01QxBkTzfpjedSnlU6DhFJAWUrjT047iOZiZXBn
-         SH04+79vrVY6jx+sqabuPvGBiLg82s2ZVvj2u7dTrorqjF03GaPW/O0LGNK2EBWOle9v
-         Wwv6Y4U7V8hQRl5eWkHD/ePVMPUtVEf8KXK3kfgBoYC2MPR7U9tRx8s76QGyh5AqW17y
-         OnZxcC+wa7OhTJ5/Kuen4nOzOzpV8UMoGJ6j7DDjFTNUzBo5vqQlSKi39UnpowrzfZCb
-         nzqw==
-X-Gm-Message-State: AOAM532qZ4SJRWJ/5NeY6vqJ0J6lKPTB7M5+wOSx8y3oFFdgc7ghDFDx
-        Ca1dM1u9Nm4AgQPqeRT0Miat7g==
-X-Google-Smtp-Source: ABdhPJxlkgBIS/VbsDJv1LdNt0bSAI4XsoXwQotmWBDepPddTczE/Ide+Q97wd0zG6r/nHPHYmU+3A==
-X-Received: by 2002:a1c:9692:: with SMTP id y140mr2471242wmd.128.1612254514666;
-        Tue, 02 Feb 2021 00:28:34 -0800 (PST)
-Received: from dell ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id l1sm29630262wrp.40.2021.02.02.00.28.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 00:28:34 -0800 (PST)
-Date:   Tue, 2 Feb 2021 08:28:32 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Wenjia Zhao <driverfuzzing@gmail.com>
-Cc:     Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] backlight: pcf50633: pdata may be a null pointer, null
- pointer dereference cause crash
-Message-ID: <20210202082832.GA4774@dell>
-References: <1612190499-73818-1-git-send-email-driverfuzzing@gmail.com>
+        Tue, 2 Feb 2021 03:31:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1612254690; x=1643790690;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=OCdpwgqTjdpm1vlos+hHl6mfuQuYzHnv5sqBXpqxmSo=;
+  b=j6x7OTz/+E/YU5L412MBW7v97bH/oxZOBsub/uycRJExXa4Cyqt9CLG+
+   SLwl94Tl9J+46wAfXO+XXXc0FVmpWn78wdL4BqHiZ6pP1fq3jTH6/IcA5
+   qaH9M800KJw1CBsxP1mSGcbadFXgGJAAGfkGUiCVFLvVvvlQLqXJjzwsB
+   p2EcVTfA8ag9Cq0k+XXVKD824sPJXHji8Ld6qDw9KEkbEnVgOIY5j24ve
+   3tvjeHSnkxPLvfT20qm7yZMFjpkYP0H1R126wtAl3wyeeisGBmPDhm/0f
+   2gHauFU07shiuPoQOE+PvyXsNFndHnR8RZ6TEVITx6eHtPlyJhhhnkE4F
+   w==;
+IronPort-SDR: wqKg/QFIzArnUEoKi8p0fRYhJpnAVRZvACxjMmW9DdOCClARZdmkV1Mu8zQpBx7eAQxsuiGgMW
+ 8Kr4I/R/f+YliWlA2psDf1AMruKySzlYLInbtRInbJc8txOvlKwJn6ibTdEDFn9tii6PcHZ2Ao
+ H1mUbEmj+IVIQ7YYw80pGZrUaotGTKwVLa90j9sNLVq6ZZijGFI6gHSb+b0GIKzby/cet5IuEp
+ yYQRHMqBg76vagH156LCL+cA/rKHIUu/RpJ7HmiGc6P3Wlo/lWAWlCoNasRwkL4Dj3HfVFEAER
+ D+Y=
+X-IronPort-AV: E=Sophos;i="5.79,394,1602518400"; 
+   d="scan'208";a="160083458"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 02 Feb 2021 16:30:20 +0800
+IronPort-SDR: KfGVjQcUVVcYlFXGsuizdapaM6AMtG7iEQ2F2F5CjTmWqw/5Jp2tTD10mpUv/uQfJR2vmxRUMC
+ yJ3sD0WKN4PXp1sO4mWlnn5zIehAJEkias02c/5qDHzTgjpEr3LbNbesJR28TifFXo2inVsWRN
+ x/mUOTAAJzbnQB02TKv9G3NZGzoPqk+CAfX30w2nenRrW96/dnO+btXzgyUDQ88GfbR9Q2Bthi
+ P7NDyQ5AJpr8bFdf84+zqXLrm7+WY/BWeL83FtupKDOhJACOZ7mbfvl4RJyDvZdwk281xe2otF
+ hSA3ZP24xVpFNuzlkDAi2lSI
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 00:14:29 -0800
+IronPort-SDR: gu3FR2BzrMtWzyiw24YhkIMG7b3CBCFYLfyNTfo7AT4m1Xp4slKrm5SC+nOSGH8FH5KF5WG9Jk
+ myjb+32azyYXUzklhENsGHjwYX5U/DBzUpQ0otwFXUNaPh1LFsjRZUYpE3GnBYzIGyDpuzCnuy
+ gogexgC//WM49sP6/8GN1UA1bKplPhewk6WjXyPA5FssxdY5e5g2QJnCCRFqdIGtISx5quGJuA
+ P8pourcFBdeVS4mwlDxwgLhIllGkZ20pMcFu0UO+bP6f+3lQQwgbIvyxQUqmdJRJR31oh1iAZU
+ guY=
+WDCIronportException: Internal
+Received: from bxygm33.sdcorp.global.sandisk.com ([10.0.231.247])
+  by uls-op-cesaip01.wdc.com with ESMTP; 02 Feb 2021 00:30:17 -0800
+From:   Avri Altman <avri.altman@wdc.com>
+To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
+        Zang Leigang <zangleigang@hisilicon.com>,
+        Avi Shchislowski <avi.shchislowski@wdc.com>,
+        Bean Huo <beanhuo@micron.com>, cang@codeaurora.org,
+        stanley.chu@mediatek.com, Avri Altman <avri.altman@wdc.com>
+Subject: [PATCH v2 0/9] Add Host control mode to HPB
+Date:   Tue,  2 Feb 2021 10:29:58 +0200
+Message-Id: <20210202083007.104050-1-avri.altman@wdc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1612190499-73818-1-git-send-email-driverfuzzing@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 01 Feb 2021, Wenjia Zhao wrote:
+v1 -> v2:
+ - attend Greg's and Daejun's comments
+ - add patch 9 making host mode parameters configurable
+ - rebase on Daejun's v19
 
-Please provide a suitable commit messages.
 
-Describe the problem.
-Describe the issue was found.
-Describe the solution.  
+The HPB spec defines 2 control modes - device control mode and host
+control mode. In oppose to device control mode, in which the host obey
+to whatever recommendation received from the device - In host control
+mode, the host uses its own algorithms to decide which regions should
+be activated or inactivated.
 
-> Signed-off-by: Wenjia Zhao <driverfuzzing@gmail.com>
-> ---
->  drivers/video/backlight/pcf50633-backlight.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/video/backlight/pcf50633-backlight.c b/drivers/video/backlight/pcf50633-backlight.c
-> index 540dd338..43267af 100644
-> --- a/drivers/video/backlight/pcf50633-backlight.c
-> +++ b/drivers/video/backlight/pcf50633-backlight.c
-> @@ -127,7 +127,8 @@ static int pcf50633_bl_probe(struct platform_device *pdev)
->  
->  	platform_set_drvdata(pdev, pcf_bl);
->  
-> -	pcf50633_reg_write(pcf_bl->pcf, PCF50633_REG_LEDDIM, pdata->ramp_time);
-> +  if (pdata)
-> +    pcf50633_reg_write(pcf_bl->pcf, PCF50633_REG_LEDDIM, pdata->ramp_time);
+We kept the host managed heuristic simple and concise.
 
-A tab should be 8 chars in Linux.
+Aside from adding a by-spec functionality, host control mode entails
+some further potential benefits: makes the hpb logic transparent and
+readable, while allow tuning / scaling its various parameters, and
+utilize system-wide info to optimize HPB potential.
 
->  	/*
->  	 * Should be different from bl_props.brightness, so we do not exit
+This series is based on Samsung's V19 device-control HPB1.0 driver, see
+msg-id: 20210129052848epcms2p6e5797efd94e6282b76ad9ae6c99e3ab5@epcms2p6
+in lore.kernel.org. The patches are also available in wdc ufs repo:
+https://github.com/westerndigitalcorporation/WDC-UFS-REPO/tree/hpb-v19
+
+This version was tested on Galaxy S20, and Xiaomi Mi10 pro.
+Your meticulous review and testing is mostly welcome and appreciated.
+
+Thanks,
+Avri
+
+Avri Altman (9):
+  scsi: ufshpb: Cache HPB Control mode on init
+  scsi: ufshpb: Add host control mode support to rsp_upiu
+  scsi: ufshpb: Add region's reads counter
+  scsi: ufshpb: Make eviction depends on region's reads
+  scsi: ufshpb: Region inactivation in host mode
+  scsi: ufshpb: Add hpb dev reset response
+  scsi: ufshpb: Add "Cold" regions timer
+  scsi: ufshpb: Add support for host control mode
+  scsi: ufshpb: Make host mode parameters configurable
+
+ drivers/scsi/ufs/ufshcd.c |   1 +
+ drivers/scsi/ufs/ufshcd.h |   2 +
+ drivers/scsi/ufs/ufshpb.c | 697 +++++++++++++++++++++++++++++++++++---
+ drivers/scsi/ufs/ufshpb.h |  47 +++
+ 4 files changed, 697 insertions(+), 50 deletions(-)
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.25.1
+
