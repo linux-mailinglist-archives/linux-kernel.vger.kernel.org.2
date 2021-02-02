@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D87130CA47
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:46:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 154A030C8B9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:59:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238888AbhBBSnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:43:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47078 "EHLO mail.kernel.org"
+        id S237998AbhBBR6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:58:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233719AbhBBOCw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:02:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D3BC65005;
-        Tue,  2 Feb 2021 13:47:48 +0000 (UTC)
+        id S233943AbhBBOIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:08:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3381665026;
+        Tue,  2 Feb 2021 13:50:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273669;
-        bh=49KEq+XK91zn5GeDqebny9nBa6zJLja0rZ6kfm5symM=;
+        s=korg; t=1612273811;
+        bh=YmmVrfADKQPkGiEzioXk3a5THk9oy8tVCgLEMIEcB9w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kAdRBWJXOHBib4lBHFfb6vDGVik3AgODs1CdCOsG2qlzUXiXmK/W2cI2pB+bEGrc7
-         ShSCmyzEEA2bNIzW5How7NKPcpyYNk0UQBsoSgWGM5cXWXVPZm+GSLdTcpgNO870oL
-         EqE3TMQ9IA35lEYRDv7nRBG/FZRYIlaQQg+u6g60=
+        b=MPWX3/wS5sMk1iGtgp7y0XP0KHg4AnRmLonvF99p/b8axwV4hD19xoSuBtELPZLQ0
+         FXa8wfyF1rFEGDBfYSSNt34pKS8OjXIUbyKB74JptilLadaxAhqstxoM1oavp71p+O
+         r0/SGPcWAthPyNkhFVgMJ89+8CPX7SWy1omi633w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Corinna Vinschen <vinschen@redhat.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 47/61] igc: fix link speed advertising
+        stable@vger.kernel.org,
+        syzbot+444248c79e117bc99f46@syzkaller.appspotmail.com,
+        syzbot+8b2a88a09653d4084179@syzkaller.appspotmail.com,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.9 02/32] wext: fix NULL-ptr-dereference with cfg80211s lack of commit()
 Date:   Tue,  2 Feb 2021 14:38:25 +0100
-Message-Id: <20210202132948.464139778@linuxfoundation.org>
+Message-Id: <20210202132942.133781388@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132946.480479453@linuxfoundation.org>
-References: <20210202132946.480479453@linuxfoundation.org>
+In-Reply-To: <20210202132942.035179752@linuxfoundation.org>
+References: <20210202132942.035179752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,81 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Corinna Vinschen <vinschen@redhat.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 329a3678ec69962aa67c91397efbd46d36635f91 ]
+commit 5122565188bae59d507d90a9a9fd2fd6107f4439 upstream.
 
-Link speed advertising in igc has two problems:
+Since cfg80211 doesn't implement commit, we never really cared about
+that code there (and it's configured out w/o CONFIG_WIRELESS_EXT).
+After all, since it has no commit, it shouldn't return -EIWCOMMIT to
+indicate commit is needed.
 
-- When setting the advertisement via ethtool, the link speed is converted
-  to the legacy 32 bit representation for the intel PHY code.
-  This inadvertently drops ETHTOOL_LINK_MODE_2500baseT_Full_BIT (being
-  beyond bit 31).  As a result, any call to `ethtool -s ...' drops the
-  2500Mbit/s link speed from the PHY settings.  Only reloading the driver
-  alleviates that problem.
+However, EIWCOMMIT is actually an alias for EINPROGRESS, which _can_
+happen if e.g. we try to change the frequency but we're already in
+the process of connecting to some network, and drivers could return
+that value (or even cfg80211 itself might).
 
-  Fix this by converting the ETHTOOL_LINK_MODE_2500baseT_Full_BIT to the
-  Intel PHY ADVERTISE_2500_FULL bit explicitly.
+This then causes us to crash because dev->wireless_handlers is NULL
+but we try to check dev->wireless_handlers->standard[0].
 
-- Rather than checking the actual PHY setting, the .get_link_ksettings
-  function always fills link_modes.advertising with all link speeds
-  the device is capable of.
+Fix this by also checking dev->wireless_handlers. Also simplify the
+code a little bit.
 
-  Fix this by checking the PHY autoneg_advertised settings and report
-  only the actually advertised speeds up to ethtool.
+Cc: stable@vger.kernel.org
+Reported-by: syzbot+444248c79e117bc99f46@syzkaller.appspotmail.com
+Reported-by: syzbot+8b2a88a09653d4084179@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/r/20210121171621.2076e4a37d5a.I5d9c72220fe7bb133fb718751da0180a57ecba4e@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: 8c5ad0dae93c ("igc: Add ethtool support")
-Signed-off-by: Corinna Vinschen <vinschen@redhat.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/igc/igc_ethtool.c | 24 +++++++++++++++-----
- 1 file changed, 18 insertions(+), 6 deletions(-)
+ net/wireless/wext-core.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/intel/igc/igc_ethtool.c b/drivers/net/ethernet/intel/igc/igc_ethtool.c
-index ac98f1d968921..0303eeb760505 100644
---- a/drivers/net/ethernet/intel/igc/igc_ethtool.c
-+++ b/drivers/net/ethernet/intel/igc/igc_ethtool.c
-@@ -1670,12 +1670,18 @@ static int igc_get_link_ksettings(struct net_device *netdev,
- 	cmd->base.phy_address = hw->phy.addr;
- 
- 	/* advertising link modes */
--	ethtool_link_ksettings_add_link_mode(cmd, advertising, 10baseT_Half);
--	ethtool_link_ksettings_add_link_mode(cmd, advertising, 10baseT_Full);
--	ethtool_link_ksettings_add_link_mode(cmd, advertising, 100baseT_Half);
--	ethtool_link_ksettings_add_link_mode(cmd, advertising, 100baseT_Full);
--	ethtool_link_ksettings_add_link_mode(cmd, advertising, 1000baseT_Full);
--	ethtool_link_ksettings_add_link_mode(cmd, advertising, 2500baseT_Full);
-+	if (hw->phy.autoneg_advertised & ADVERTISE_10_HALF)
-+		ethtool_link_ksettings_add_link_mode(cmd, advertising, 10baseT_Half);
-+	if (hw->phy.autoneg_advertised & ADVERTISE_10_FULL)
-+		ethtool_link_ksettings_add_link_mode(cmd, advertising, 10baseT_Full);
-+	if (hw->phy.autoneg_advertised & ADVERTISE_100_HALF)
-+		ethtool_link_ksettings_add_link_mode(cmd, advertising, 100baseT_Half);
-+	if (hw->phy.autoneg_advertised & ADVERTISE_100_FULL)
-+		ethtool_link_ksettings_add_link_mode(cmd, advertising, 100baseT_Full);
-+	if (hw->phy.autoneg_advertised & ADVERTISE_1000_FULL)
-+		ethtool_link_ksettings_add_link_mode(cmd, advertising, 1000baseT_Full);
-+	if (hw->phy.autoneg_advertised & ADVERTISE_2500_FULL)
-+		ethtool_link_ksettings_add_link_mode(cmd, advertising, 2500baseT_Full);
- 
- 	/* set autoneg settings */
- 	if (hw->mac.autoneg == 1) {
-@@ -1786,6 +1792,12 @@ static int igc_set_link_ksettings(struct net_device *netdev,
- 
- 	ethtool_convert_link_mode_to_legacy_u32(&advertising,
- 						cmd->link_modes.advertising);
-+	/* Converting to legacy u32 drops ETHTOOL_LINK_MODE_2500baseT_Full_BIT.
-+	 * We have to check this and convert it to ADVERTISE_2500_FULL
-+	 * (aka ETHTOOL_LINK_MODE_2500baseX_Full_BIT) explicitly.
-+	 */
-+	if (ethtool_link_ksettings_test_link_mode(cmd, advertising, 2500baseT_Full))
-+		advertising |= ADVERTISE_2500_FULL;
- 
- 	if (cmd->base.autoneg == AUTONEG_ENABLE) {
- 		hw->mac.autoneg = 1;
--- 
-2.27.0
-
+--- a/net/wireless/wext-core.c
++++ b/net/wireless/wext-core.c
+@@ -898,8 +898,9 @@ out:
+ int call_commit_handler(struct net_device *dev)
+ {
+ #ifdef CONFIG_WIRELESS_EXT
+-	if ((netif_running(dev)) &&
+-	   (dev->wireless_handlers->standard[0] != NULL))
++	if (netif_running(dev) &&
++	    dev->wireless_handlers &&
++	    dev->wireless_handlers->standard[0])
+ 		/* Call the commit handler on the driver */
+ 		return dev->wireless_handlers->standard[0](dev, NULL,
+ 							   NULL, NULL);
 
 
