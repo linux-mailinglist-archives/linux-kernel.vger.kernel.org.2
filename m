@@ -2,97 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E8530C9DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90DC530C9E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:34:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238667AbhBBSa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:30:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50708 "EHLO
+        id S238494AbhBBSbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:31:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238662AbhBBS2d (ORCPT
+        with ESMTP id S238696AbhBBS33 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 13:28:33 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B5AC06178B
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 10:27:34 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id n10so15421066pgl.10
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 10:27:34 -0800 (PST)
+        Tue, 2 Feb 2021 13:29:29 -0500
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC06AC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 10:28:48 -0800 (PST)
+Received: by mail-yb1-xb31.google.com with SMTP id s61so18115849ybi.4
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 10:28:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SC3rKuGVWGUhGIOfG1ib7Xm/x7d+KrijGRV0dEv5seE=;
-        b=jhojw4GTwHhDsFg3m7iA8QIEZgvPBDxG0go35LBsSKrcZvgGJOrwLlkEwuFf1WBGeE
-         H5nMd72cFUBRhwFktDi4uAhRobOFDMNbs7u/Xm7n3NwiOMKPDEph4rwYMibzP9vztbPt
-         ydRFureZbxp6F2B7Cl0zKpfWEOHQ3Ckzo+MPm2wvHXKmnWoWnWE0mawj9WZuWkw6PPZU
-         dHBomOfRAxbi3dk148ukbtmI7kf/Aqbe3kQxI4EL3QN4jqL4JBW8QvrTM6KVw/yW0yqo
-         Bc6BuaaSckaAsws31mGM58ztCN4Ik0gwBOQv1rXOEJScfbgj+yaQfmsx8hUTlM7/Ui6S
-         16Tg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lNJbMXdW5NhHjyCId8HTqd13CNsq/Z1nn+1X4OrWEfw=;
+        b=G4bS+HtEVOYuA7OOzdnpQ/V32sCFCZ18daV1mH17GoydeQwgUsittgg63qpXUrVy6R
+         UjBz9ydicELIrB/h49LrQyds0I3p3jK6779AjQrjh55dbRDCBxI+XUhlCVgloKrHxTq3
+         t2Ihd6qUZPG4w2Z5bjscgkKILXQBfwRRfXToiliDvOrAzZdBIPeALDn765Ui8i9Aomrh
+         gmGyjY9aNLQJ3XrPqYGLaa1LXgSuFULtt/udI3V8dbSP9g5tvQSQIiZmFZ/9BG3oIulj
+         PTWEZQkNqaB/Kz3joOqRb+7NVGjMbl1oGXGvalX8sxCNiCP484H72xGwxVOcDsXYRklI
+         2jjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SC3rKuGVWGUhGIOfG1ib7Xm/x7d+KrijGRV0dEv5seE=;
-        b=WgjThxC4Xg1HmX40+FP8uY0dWml95RUMTLZSGPDQYZLGxMzObZGNIHC5mcTYyF4yf7
-         NOuFx80ZjXIVQAy0g3D1PY3RcVjmENubiFTblacIBmXM7mLZu6VFQzWUYcGiHkeMBpQg
-         QLjjLOnaTCAOPM5SkIbvf7wwxzjh4xklO7s3nt1MW6wDqXQZUI9D9HFZOPOotoCCFf0k
-         WczsOWMPalKLYa3TDOJrnEFPkbwSe8/QZEUdg31LgtY4G4ihbgjrGUxXCTaUrWEp6A0D
-         hivseA67iwoxXyYTLXkWhkC42WCWExzD/gVeoTv7Ztbd20uGkrH+8q71DAKcggi7Tx9V
-         mTJQ==
-X-Gm-Message-State: AOAM530R4tLYiA/jAJGDD7s4WQbH8irmZf6sD0Bg1y7YuLvKXRFzRkKD
-        uyk4aVNSBymFL0bZZ+cMcbKQHA==
-X-Google-Smtp-Source: ABdhPJzOjK4GFjSpShw4k9iAWSxnQGb31YkPiR67M3ngvzaER0BWAtZq0Mv4wdUu4ZwnIYB2XCBxMQ==
-X-Received: by 2002:a65:4101:: with SMTP id w1mr11491494pgp.323.1612290453602;
-        Tue, 02 Feb 2021 10:27:33 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:e1bc:da69:2e4b:ce97])
-        by smtp.gmail.com with ESMTPSA id y67sm21976222pfb.211.2021.02.02.10.27.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 10:27:33 -0800 (PST)
-Date:   Tue, 2 Feb 2021 10:27:27 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH] KVM: cleanup DR6/DR7 reserved bits checks
-Message-ID: <YBmZj0uukimn3G7E@google.com>
-References: <20210202170246.89436-1-pbonzini@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lNJbMXdW5NhHjyCId8HTqd13CNsq/Z1nn+1X4OrWEfw=;
+        b=InNj90bbtrltveoTeQcQUWFUtGZ7PRLnY7McoMmxes8gXcs6qgFhqABVZpY5ZXVHLP
+         TJn0cYcDhJKyKtaTj1wCZKlqoQ/w0AqvBC5/l+sfStNkXiprLwwKHAZ4nSSJ8XVUBayF
+         smgwoJ4a+HnYDvuWEohBPwR35hG5nDymDQyBH+MLGPs+7zzpOTokKW7Bs9KzScVxe8vK
+         Eon/wyuyjJhfVc2o69Xp3xL6VhyhrtpFABv14nSrYYbqvXdL19Lh0/x92jaiZXxJ+67+
+         DyZZS5z4N/Zpnq+Rtdxi+0cTPaFFHZZyJSNuWXN1gFn0G8lSVWJIV9QTFjj392EgK9pA
+         QCMQ==
+X-Gm-Message-State: AOAM530R246Sr0KuVeo2GRUMtikqP7m2W0lssQCjEeNo+Sim8wJJiHO+
+        EE8QRtDaCx8mgoWwAkhrRWIt8bW+eLRqeYziRGrsOQ==
+X-Google-Smtp-Source: ABdhPJzw4AXagK88h3IvA01AciBUdKDaE3KyCS8Lz/IMvU52NU66GWMWXgJ7wvKfGw+PVx8X1AL4krqmBRohWpAIHck=
+X-Received: by 2002:a25:c683:: with SMTP id k125mr36522770ybf.32.1612290528066;
+ Tue, 02 Feb 2021 10:28:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210202170246.89436-1-pbonzini@redhat.com>
+References: <20210202043345.3778765-1-saravanak@google.com>
+ <cb6edbd0-346b-0674-5b5c-7ce3a437736d@microchip.com> <CAL_JsqKa5tHsKpOzkTjoiyQSJ+Q7_JOhkZ1m5tnOHK8dDGP7uA@mail.gmail.com>
+In-Reply-To: <CAL_JsqKa5tHsKpOzkTjoiyQSJ+Q7_JOhkZ1m5tnOHK8dDGP7uA@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Tue, 2 Feb 2021 10:28:11 -0800
+Message-ID: <CAGETcx9w5mnPzB=+xgApNiDkAup4+4Axi3P+H51t82RK2oAbhw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] Make fw_devlink=on more forgiving
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Tudor Ambarus <Tudor.Ambarus@microchip.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Martin Kaiser <martin@kaiser.cx>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Len Brown <lenb@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "open list:ACPI FOR ARM64 (ACPI/arm64)" <linux-acpi@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021, Paolo Bonzini wrote:
-> kvm_dr6_valid and kvm_dr7_valid check that bits 63:32 are zero.  Using
-> them makes it easier to review the code for inconsistencies.
-> 
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  arch/x86/kvm/x86.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 97674204bf44..e52e38f8c74d 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -4414,9 +4414,9 @@ static int kvm_vcpu_ioctl_x86_set_debugregs(struct kvm_vcpu *vcpu,
->  	if (dbgregs->flags)
->  		return -EINVAL;
->  
-> -	if (dbgregs->dr6 & ~0xffffffffull)
+On Tue, Feb 2, 2021 at 9:41 AM Rob Herring <robh+dt@kernel.org> wrote:
+>
+> On Tue, Feb 2, 2021 at 10:52 AM <Tudor.Ambarus@microchip.com> wrote:
+> >
+> > Hi, Saravana,
+> >
+> > On 2/2/21 6:33 AM, Saravana Kannan wrote:
+> > > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > >
+> > > This patch series solves two general issues with fw_devlink=on
+> > >
+> > > Patch 1/3 and 3/3 addresses the issue of firmware nodes that look like
+> > > they'll have struct devices created for them, but will never actually
+> > > have struct devices added for them. For example, DT nodes with a
+> > > compatible property that don't have devices added for them.
+> > >
+> > > Patch 2/2 address (for static kernels) the issue of optional suppliers
+> > > that'll never have a driver registered for them. So, if the device could
+> > > have probed with fw_devlink=permissive with a static kernel, this patch
+> > > should allow those devices to probe with a fw_devlink=on. This doesn't
+> > > solve it for the case where modules are enabled because there's no way
+> > > to tell if a driver will never be registered or it's just about to be
+> > > registered. I have some other ideas for that, but it'll have to come
+> > > later thinking about it a bit.
+> > >
+> > > Marek, Geert,
+> > >
+> > > I don't expect v2 to do any better for your cases.
+> > >
+> > > This series not making any difference for Marek is still a mystery to
+> > > me. I guess one of the consumers doesn't take too well to its probe (and
+> > > it's consumers' probe) being delayed till late_initcall(). I'll continue
+> > > looking into it.
+> > >
+> > > Marc,
+> > >
+> > > This v2 should do better than v1 with gpiolib stub driver reverted. I
+> > > forgot to take care of the case where more suppliers could link after I
+> > > went and deleted some of the links. v2 handles that now.
+> > >
+> > > Tudor,
+> > >
+> > > You should still make the clock driver fix (because it's a bug), but I
+> > > think this series will fix your issue too (even without the clock driver
+> > > fix). Can you please give this a shot?
+> > >
+> >
+> > Did the following tests (using sama5_defconfig and at91-sama5d2_xplained.dts):
+> > 1/ modular kernel with your v2 on top of next-20210202, and without the clock
+> > driver fix: the problem persists.
+> >
+> > 2/ static kernel with your v2 on top of next-20210202, and without the clock
+> > driver fix: the problem persists. Comparing to the previous test, I see that
+> > the links to pmc are dropped. I can see the following only with early printk
+> > enabled:
+> > platform fc008000.serial: Dropping the link to f0014000.pmc
+> > But later on, the serial still gets deferred waiting for the dma controller
+> > this time:
+> > platform f8020000.serial: probe deferral - supplier f0010000.dma-controller not ready
+> > I'll check what happens in the dma-controller.
+>
+> Not sure if it's the case here, but some serial drivers use DMA only
+> when available and decide that on open() rather than probe. How is
+> devlinks going to deal with that?
 
-Oof, you weren't kidding.
+That's kinda what I'm trying to work out here :) but in a more generic fashion.
 
-Reviewed-by: Sean Christopherson <seanjc@google.com> 
-
-> +	if (!kvm_dr6_valid(dbgregs->dr6))
->  		return -EINVAL;
-> -	if (dbgregs->dr7 & ~0xffffffffull)
-> +	if (!kvm_dr7_valid(dbgregs->dr7))
->  		return -EINVAL;
->  
->  	memcpy(vcpu->arch.db, dbgregs->db, sizeof(vcpu->arch.db));
-> -- 
-> 2.26.2
-> 
+-Saravana
