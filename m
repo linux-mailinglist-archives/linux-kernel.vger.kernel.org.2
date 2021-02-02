@@ -2,91 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C45530CD3D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:45:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3962E30CD44
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:47:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233320AbhBBUoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 15:44:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38886 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231285AbhBBUo2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 15:44:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24C8C64F63
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 20:43:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612298628;
-        bh=C758amp0xx3sY5RjoNv3le/Ko06xDS7qmJebQl2RiNk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=W300S55LNj+RJLZgoqx0RWXZxCutGak1+C99RR18/6hvCgLO5GOm6Zzi4/JbWQgT/
-         nEurxnvwOMppfL9Lpyj/wHis2LhZOWBDR7al64BpkVY0GXUKDfEPcUxXw8mZz6RaF3
-         MyKBNazE25KODOvvLyup/yOojHwg7nvJMmzUg7tRuo+ip0hnT9xyTIP9YVfwS+S4Ck
-         VN92PsNLontujd7tdWVl8zJLTUjtshKRaUna88U6RhlSzpwvGBfnQVpf3VSwK/2oLg
-         qmq5AY2rY6RBgRvaY45SODACMGMu7BRN0fs0G5SiWlz7L7rRQgLRmI5+bx3mQYykS9
-         Lj7pAr2DiOitQ==
-Received: by mail-oi1-f181.google.com with SMTP id h192so24291086oib.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 12:43:48 -0800 (PST)
-X-Gm-Message-State: AOAM5308YBW/HntK4ey3oUGif15+18lylQTuyIWhWOIKMYID0l6eEGAT
-        sUknD3smbf0K8G8Bjf4chaXUw5pV5Tk5UgyJ+Pc=
-X-Google-Smtp-Source: ABdhPJxfwhc6Pjqrs1N5mvKP75S8F56Z+dEzlWMrb+8Vl4HNeMN4b5XWdYrfo4ESObRr6ztE3iCcUWuFdiBVnZypyVs=
-X-Received: by 2002:aca:e103:: with SMTP id y3mr3960496oig.11.1612298627404;
- Tue, 02 Feb 2021 12:43:47 -0800 (PST)
+        id S233858AbhBBUqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 15:46:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43207 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233437AbhBBUpb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 15:45:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612298644;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qB7eJjJEwuVBawwhdiSf0pwWEiHuFAZ232JKX4Aaoj8=;
+        b=fLj4Eynyfn9rc3H1DSxSAzvBDa8FFPxKAhcbsiBBA1D6K1v1ZbBMH3x4B6IE8Nlj/oj2F8
+        eoY5AfSnAg+ZXu38NdtGkdmjkY0crOKYL1K2uRUIaiDsFIBF8UhMZ5p8S20Rzug9qm5gsS
+        XEbAEFLcanWDK0td1ZgiCOk7HnGuSqg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-86-qEGmr014PPq0sHvfu2od8A-1; Tue, 02 Feb 2021 15:44:03 -0500
+X-MC-Unique: qEGmr014PPq0sHvfu2od8A-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F151810066EF;
+        Tue,  2 Feb 2021 20:44:01 +0000 (UTC)
+Received: from redhat (ovpn-117-133.rdu2.redhat.com [10.10.117.133])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 52B5360C66;
+        Tue,  2 Feb 2021 20:43:58 +0000 (UTC)
+Date:   Tue, 2 Feb 2021 15:43:55 -0500
+From:   David Jeffery <djeffery@redhat.com>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-kernel@vger.kernel.org,
+        Laurence Oberman <loberman@redhat.com>
+Subject: Re: [PATCH] block: recalculate segment count for multi-segment
+ discard requests correctly
+Message-ID: <20210202204355.GA31803@redhat>
+References: <20210201164850.391332-1-djeffery@redhat.com>
+ <20210202033343.GA165584@T590>
 MIME-Version: 1.0
-References: <20210202022441.1451389-1-nathan@kernel.org> <CAK8P3a2864oSVkhaYynoadyYMcYDh0LvDDFSJ2D8OTHSszuSQA@mail.gmail.com>
- <20210202195133.GA1481999@localhost>
-In-Reply-To: <20210202195133.GA1481999@localhost>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 2 Feb 2021 21:43:31 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a19W2ejs8mtHrf6Nd6BVG8u5fM4BZB+neVEWdOmGCbLbw@mail.gmail.com>
-Message-ID: <CAK8P3a19W2ejs8mtHrf6Nd6BVG8u5fM4BZB+neVEWdOmGCbLbw@mail.gmail.com>
-Subject: Re: [PATCH] arm64: Make CPU_BIG_ENDIAN depend on !LD_IS_LLD
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Peter Smith <Peter.Smith@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210202033343.GA165584@T590>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 8:51 PM Nathan Chancellor <nathan@kernel.org> wrote:
-> On Tue, Feb 02, 2021 at 09:04:34AM +0100, Arnd Bergmann wrote:
-> > On Tue, Feb 2, 2021 at 3:25 AM Nathan Chancellor <nathan@kernel.org> wrote:
-> > >
-> > > Similar to commit 28187dc8ebd9 ("ARM: 9025/1: Kconfig: CPU_BIG_ENDIAN
-> > > depends on !LD_IS_LLD"), ld.lld does not support aarch64 big endian,
-> > > leading to the following build error when CONFIG_CPU_BIG_ENDIAN is
-> > > selected:
-> > >
-> > > ld.lld: error: unknown emulation: aarch64linuxb
-> >
-> > While this is the original error message I reported, I think it would be
-> > better to explain that lld actually does support linking big-endian
-> > kernels but they don't boot, for unknown reasons.
+On Tue, Feb 02, 2021 at 11:33:43AM +0800, Ming Lei wrote:
+> 
+> On Mon, Feb 01, 2021 at 11:48:50AM -0500, David Jeffery wrote:
+> > When a stacked block device inserts a request into another block device
+> > using blk_insert_cloned_request, the request's nr_phys_segments field gets
+> > recalculated by a call to blk_recalc_rq_segments in
+> > blk_cloned_rq_check_limits. But blk_recalc_rq_segments does not know how to
+> > handle multi-segment discards. For disk types which can handle
+> > multi-segment discards like nvme, this results in discard requests which
+> > claim a single segment when it should report several, triggering a warning
+> > in nvme and causing nvme to fail the discard from the invalid state.
+> > 
+> >  WARNING: CPU: 5 PID: 191 at drivers/nvme/host/core.c:700 nvme_setup_discard+0x170/0x1e0 [nvme_core]
+> >  ...
+> >  nvme_setup_cmd+0x217/0x270 [nvme_core]
+> >  nvme_loop_queue_rq+0x51/0x1b0 [nvme_loop]
+> >  __blk_mq_try_issue_directly+0xe7/0x1b0
+> >  blk_mq_request_issue_directly+0x41/0x70
+> >  ? blk_account_io_start+0x40/0x50
+> >  dm_mq_queue_rq+0x200/0x3e0
+> >  blk_mq_dispatch_rq_list+0x10a/0x7d0
+> >  ? __sbitmap_queue_get+0x25/0x90
+> >  ? elv_rb_del+0x1f/0x30
+> >  ? deadline_remove_request+0x55/0xb0
+> >  ? dd_dispatch_request+0x181/0x210
+> >  __blk_mq_do_dispatch_sched+0x144/0x290
+> >  ? bio_attempt_discard_merge+0x134/0x1f0
+> >  __blk_mq_sched_dispatch_requests+0x129/0x180
+> >  blk_mq_sched_dispatch_requests+0x30/0x60
+> >  __blk_mq_run_hw_queue+0x47/0xe0
+> >  __blk_mq_delay_run_hw_queue+0x15b/0x170
+> >  blk_mq_sched_insert_requests+0x68/0xe0
+> >  blk_mq_flush_plug_list+0xf0/0x170
+> >  blk_finish_plug+0x36/0x50
+> >  xlog_cil_committed+0x19f/0x290 [xfs]
+> >  xlog_cil_process_committed+0x57/0x80 [xfs]
+> >  xlog_state_do_callback+0x1e0/0x2a0 [xfs]
+> >  xlog_ioend_work+0x2f/0x80 [xfs]
+> >  process_one_work+0x1b6/0x350
+> >  worker_thread+0x53/0x3e0
+> >  ? process_one_work+0x350/0x350
+> >  kthread+0x11b/0x140
+> >  ? __kthread_bind_mask+0x60/0x60
+> >  ret_from_fork+0x22/0x30
+> > 
+> > This patch fixes blk_recalc_rq_segments to be aware of devices which can
+> > have multi-segment discards. It calculates the correct discard segment
+> > count by counting the number of bio as each discard bio is considered its
+> > own segment.
+> > 
+> > Signed-off-by: David Jeffery <djeffery@redhat.com>
+> > Tested-by: Laurence Oberman <loberman@redhat.com>
+> > ---
+> >  block/blk-merge.c | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> > 
+> > diff --git a/block/blk-merge.c b/block/blk-merge.c
+> > index 808768f6b174..fe7358bd5d09 100644
+> > --- a/block/blk-merge.c
+> > +++ b/block/blk-merge.c
+> > @@ -382,6 +382,13 @@ unsigned int blk_recalc_rq_segments(struct request *rq)
+> >  
+> >  	switch (bio_op(rq->bio)) {
+> >  	case REQ_OP_DISCARD:
+> > +		if (queue_max_discard_segments(rq->q) > 1) {
+> > +			struct bio *bio = rq->bio;
+> > +			for_each_bio(bio)
+> > +				nr_phys_segs++;
+> > +			return nr_phys_segs;
+> > +		}
+> > +		/* fall through */
+> >  	case REQ_OP_SECURE_ERASE:
+> 
+> REQ_OP_SECURE_ERASE needs to be covered since block layer treats
+> the two in very similar way from discard viewpoint.
+> 
+> Also single range discard should be fixed too, since block layer
+> thinks single-range discard req segment is 1. Otherwise, the warning in
+> virtblk_setup_discard_write_zeroes() still may be triggered, at least.
+> 
+> 
+> -- 
+> Ming
 >
-> That statement seems to contradict what Peter Smith says:
->
-> https://github.com/ClangBuiltLinux/linux/issues/1288#issuecomment-770693582
->
-> https://reviews.llvm.org/D58655#1410282
 
-Right, adding Peter to Cc for clarification. Peter, what I can tell from
-experiments is that lld behaves just you describe it should, and (aside from
-the command like flag handling) like ld.bfd, so I'm not sure if there are
-any known deficiencies or just minor bugs when dealing with the kernel.
+The return 0 does seem to be an old relic that does not make sense anymore.
+Moving REQ_OP_SECURE_ERASE to be with discard and removing the old return 0,
+is this what you had in mind?
 
-FWIW, I have now built a big-endian musl C library and a helloworld
-binary, which I linked with ld.lld and successfully tested using
-qemu-aarch64_be-static
+ 
+diff --git a/block/blk-merge.c b/block/blk-merge.c
+index 808768f6b174..68458aa01b05 100644
+--- a/block/blk-merge.c
++++ b/block/blk-merge.c
+@@ -383,8 +383,14 @@ unsigned int blk_recalc_rq_segments(struct request *rq)
+ 	switch (bio_op(rq->bio)) {
+ 	case REQ_OP_DISCARD:
+ 	case REQ_OP_SECURE_ERASE:
++		if (queue_max_discard_segments(rq->q) > 1) {
++			struct bio *bio = rq->bio;
++			for_each_bio(bio)
++				nr_phys_segs++;
++			return nr_phys_segs;
++		}
++		/* fall through */
+ 	case REQ_OP_WRITE_ZEROES:
+-		return 0;
+ 	case REQ_OP_WRITE_SAME:
+ 		return 1;
+ 	}
 
-      Arnd
+--
+David Jeffery
 
-> > I can send a patch to address the build error and mark big-endian
-> > as "depends on !LD_IS_LLD || COMPILE_TEST" to reflect that
-> > and help with randconfig testing.
->
-> I have no strong opinion on handling this though.
