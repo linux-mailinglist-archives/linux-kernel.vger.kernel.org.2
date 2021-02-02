@@ -2,78 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 736FB30C7EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:36:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E21430C6D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:03:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237270AbhBBRf3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:35:29 -0500
-Received: from mga06.intel.com ([134.134.136.31]:7379 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237533AbhBBRcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 12:32:55 -0500
-IronPort-SDR: E9DMBEbBzOtqcUFGlPwnbaD47/cipNW6MEodDrmCtaQz8QNcx4L92zOqqlC0hwcz744D7LpSEM
- WrNtgo2WETxw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="242408124"
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="242408124"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 09:27:49 -0800
-IronPort-SDR: HfFg+VQ4ZEeKVhk/vhJsVfeAKKZst4btROqlGQgAxTN89jRrSMDa05gehdk5qY7c3sM6Pdt7KB
- cpNrvBd+eG1A==
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="370798503"
-Received: from ncruzgar-mobl.amr.corp.intel.com (HELO [10.212.75.122]) ([10.212.75.122])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 09:27:48 -0800
-Subject: Re: [PATCH 5/6] soundwire: qcom: update register read/write routine
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        vkoul@kernel.org
-Cc:     yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
-References: <20210129173248.5941-1-srinivas.kandagatla@linaro.org>
- <20210129173248.5941-6-srinivas.kandagatla@linaro.org>
- <5c69ed09-60be-2f3d-ed25-f6dbfcb9d62f@linux.intel.com>
- <3a2b5c2d-21aa-2bf5-62df-ef85c7c9293c@linaro.org>
- <b87758d0-5862-3b4e-5a90-7b27d0c78d0d@linux.intel.com>
- <4e3ebb99-5647-f71c-1256-a2c55bd9995f@linaro.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <25ca91d5-4492-34f8-46df-4cb53c3a0b1b@linux.intel.com>
-Date:   Tue, 2 Feb 2021 10:58:05 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S237010AbhBBRB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:01:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59030 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237061AbhBBQ6p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 11:58:45 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D61C061573;
+        Tue,  2 Feb 2021 08:58:30 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id bl23so31047918ejb.5;
+        Tue, 02 Feb 2021 08:58:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QoFBWNVeW362Fh0rp8McJnSuJrL1LHsgZ+i7Ga7Dn18=;
+        b=O2iZQSgfIE/lc2zb6VH0ZT0VPhAKwYt6lwQVacOkZJ6lTtoM/9vEmiHEVnEuVijguG
+         XGxnv9BvDp4K7FG/w2uMgKwehCttagfv9Nl8f+2zw6YAqNUq62qg1G5L41+cP24P9QE9
+         k+8+YcEEpFTltAa0jhaB1TbXqMaxtGgv4WbesVDk6PEXMvLcpsq0kSqLdP07+6u3LX+k
+         xbp1SV5D/6Ah2//LmgZ7xtjW/9eBoAD+xlaSE/AKQ55TGH3G5uhyxjYT7+d+PNQvYtEi
+         3bteKA1aLZaYtV/c2/gL2guGj/5j53QWsQj5WiX5h3fhYjAi8PzBx8y4eJ3JI/5hqUI3
+         UE7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QoFBWNVeW362Fh0rp8McJnSuJrL1LHsgZ+i7Ga7Dn18=;
+        b=X8LGx3hUQ31hVj1yYSAfveABS+3z5sJYysGjl5XV08eDVUImLgIe8z9t8XiyM4IxX2
+         OjBWRbkMubfj8kNFnR5DS6NlDZeHdvpxTQGwQOJf7zMxcUX0jCtQcwTb54vu/VFyCm9Z
+         XvEPt9FBl044UX3sVycxMbmz8DsMafqk6U++vPcPesR2xMw7CRkeS9tAPI35/feqI4t/
+         9FjcgDFdAuW/efNZoPaxL934ISjLmsFHAGzC1sjMGgMml6L7sbAeF0d8wDDdgGO2tMbc
+         Mg4S4/CTIFppo7rKs355dt9UBSe2nrUcUKgKEv6TiE0k4I1XZ40qkDXHVArnQI/5LeMs
+         wbOA==
+X-Gm-Message-State: AOAM530Xaq+yXLqWsW6z7SxoeRmcXjCwhiWyMSxHcBqyyqEiIhLTPFdX
+        +tes8Q8aJ6+iBBA1fVntSVVZjxSZaxRP8ruzvEVFolW2IPM=
+X-Google-Smtp-Source: ABdhPJw1rKGDjesa27/kXYB2k0HXKRAXTuvm+6p7sOpvoQ9Bnr2LhDm7o/CQT6AxL7Uzs1eG5OIR8Pg4pFoMjr8nfsQ=
+X-Received: by 2002:a17:906:b0c2:: with SMTP id bk2mr23572150ejb.223.1612285109601;
+ Tue, 02 Feb 2021 08:58:29 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <4e3ebb99-5647-f71c-1256-a2c55bd9995f@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210201160420.2826895-1-elver@google.com> <CALMXkpYaEEv6u1oY3cFSznWsGCeiFRxRJRDS0j+gZxAc8VESZg@mail.gmail.com>
+ <CANpmjNNbK=99yjoWFOmPGHM8BH7U44v9qAyo6ZbC+Vap58iPPQ@mail.gmail.com> <CANn89iJbAQU7U61RD2pyZfcXah0P5huqK3W92OEP513pqGT_wA@mail.gmail.com>
+In-Reply-To: <CANn89iJbAQU7U61RD2pyZfcXah0P5huqK3W92OEP513pqGT_wA@mail.gmail.com>
+From:   Christoph Paasch <christoph.paasch@gmail.com>
+Date:   Tue, 2 Feb 2021 08:58:18 -0800
+Message-ID: <CALMXkpbpB7AWNvtH4dbgP_uFi0hV8Zg0JfPkkdOLFwLRvxGMPg@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: fix up truesize of cloned skb in skb_prepare_for_shift()
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Marco Elver <elver@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        linmiaohe <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        Dongseok Yi <dseok.yi@samsung.com>,
+        Yadu Kishore <kyk.segfault@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        netdev <netdev@vger.kernel.org>,
+        Alexander Potapenko <glider@google.com>,
+        syzbot <syzbot+7b99aafdcc2eedea6178@syzkaller.appspotmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Feb 1, 2021 at 9:58 AM Eric Dumazet <edumazet@google.com> wrote:
+>
+> On Mon, Feb 1, 2021 at 6:34 PM Marco Elver <elver@google.com> wrote:
+> >
+> > On Mon, 1 Feb 2021 at 17:50, Christoph Paasch
+>
+> > > just a few days ago we found out that this also fixes a syzkaller
+> > > issue on MPTCP (https://github.com/multipath-tcp/mptcp_net-next/issues/136).
+> > > I confirmed that this patch fixes the issue for us as well:
+> > >
+> > > Tested-by: Christoph Paasch <christoph.paasch@gmail.com>
+> >
+> > That's interesting, because according to your config you did not have
+> > KFENCE enabled. Although it's hard to say what exactly caused the
+> > truesize mismatch in your case, because it clearly can't be KFENCE
+> > that caused ksize(kmalloc(S))!=ksize(kmalloc(S)) for you.
+>
+> Indeed, this seems strange. This might be a different issue.
+>
+> Maybe S != S ;)
 
->>>>> generates interrupt after it successfully finishes. This is really
->>>>> overhead, limiting and not really necessary unless we are doing
->>>>> something special.
->>>>>
->>>>> We can simply read/write the fifo that should also give exactly
->>>>> what we need! This will also allow to read/write registers in
->>>>> interrupt context, which was not possible with the special
->>>>> command approach.
->>>>
->>>> This is really unclear, sorry.
->>>
->>> If read/writes are waiting for an interrupt, it becomes difficult to 
->>> read or write to any registers from same interrupt handler!
->>
->> Well, yes, you need to handle the complete() at a lower level than the 
->> code that initiates the transactions otherwise you self-deadlock.
->>
->> IIRC in the Intel initial code, the complete was in the handler and 
->> the register IOs in the thread.
->>
-> Yes, we did the same in previous version of the code, however with this 
-> patch reading/writing fifo directly without need of completion should 
-> remove that need of another thread!
+Seems like letting syzkaller run for a few more days made it
+eventually find the WARN again. As if Marco's change makes it harder
+for us to trigger the issue.
 
-Right, but you'll also write-off some command/control efficiency by 
-either sleeping too much before checking the status, or sleeping too 
-little and reading status from a transaction that's not finished.
+Anyways, you can remove my "Tested-by" ;-)
+
+
+Christoph
