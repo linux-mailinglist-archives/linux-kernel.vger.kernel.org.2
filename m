@@ -2,223 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B2930BB32
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:39:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F4AA30BB3A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233084AbhBBJj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 04:39:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48972 "EHLO
+        id S231245AbhBBJkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 04:40:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232972AbhBBJhG (ORCPT
+        with ESMTP id S231290AbhBBJij (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 04:37:06 -0500
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70514C06174A;
-        Tue,  2 Feb 2021 01:36:50 -0800 (PST)
-Received: by mail-wr1-x42f.google.com with SMTP id d16so19634227wro.11;
-        Tue, 02 Feb 2021 01:36:50 -0800 (PST)
+        Tue, 2 Feb 2021 04:38:39 -0500
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9106C061797
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 01:38:23 -0800 (PST)
+Received: by mail-qk1-x734.google.com with SMTP id 19so19187246qkh.3
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 01:38:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:reply-to:to:cc:references:in-reply-to:subject:date:message-id
-         :mime-version:content-transfer-encoding:thread-index
-         :content-language;
-        bh=Zz8FFykTcux2eAHU4qruCPE/CaDgws9rPlVFrgLBmDE=;
-        b=n0na40lt2YrJjOE1hvFtNiO/wlcvGHgllxcJfOb+wkGhd8mAeV4zcdMNFuVWvf5bxm
-         blPJ61MgpDxWvC8snrZbeUJTpzZhBCBI7ILLW+J/fEcA+xEEKDeGtq7MBMZEivS4Hr6E
-         /sv427EwM7KRx7YOKAWVOKpatV3A5cxBS77ubD0H5jiPQWp7fJWwjmwtA2IlSV/2SEXb
-         mHuve3Y0Vp9+WrzkydbX35K1NEBzrDN8GcICCqavgLmVPucYDQ5qUzZlfq96HmrrHIu+
-         fupr60uAveOSPbzlF7fGoY3gggQCDNXsU2+nG2dAMw9TiRzBwg9M5E+g2HwP9BiVlA5y
-         XwIg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Yg8qLn6EBRblBdGN89hb4qppVjdAkF53EYMnS584DQ8=;
+        b=H21XDKE7kj6eviodyCfNiCshUr6Jl60NQwPGMYhq3Avfd4XS+uk55A2YxdbbFgzxui
+         sL8c36XDslXNHh7ezBTjvKUKd/rdbrP+XeDnJg6BSONj3kFyiCP1BqqYjWZAKovb0L8Y
+         VVt1+afdyxEhdTLjPf8UGL4I9rbDHEOd3EZ7QGqenX6ehu++KcdY5csfm9S7lrnOb58a
+         dpBsBnPgWchQ74AWLHFheE2/fIvkkTxgiw7oZC13UwRhs4brUZAiP9M5nql3/PFP+2lb
+         wuCfUTiV13Qxcd4YZ24kag/2/Qsm8J2h8kO7GpPaLrUelbs1buIpIbq0Wa/szKLNdIxd
+         qenA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:reply-to:to:cc:references:in-reply-to
-         :subject:date:message-id:mime-version:content-transfer-encoding
-         :thread-index:content-language;
-        bh=Zz8FFykTcux2eAHU4qruCPE/CaDgws9rPlVFrgLBmDE=;
-        b=BtjrSCUHEBeYkuMpQOGSAYO1sRMyju30n4+mE3Ooo6hKJj6YAsTHCryXn5C/Y8+hBG
-         eKBGpy7uLNJ4FEk4pZHaeTsZa9NWo+7+24fdJII/fc/i/43NP7LbTR87mpMkal2AQEi1
-         HmmU8lU7rHSyMNxlXDF+2ASAdLi0VNP8YO/wGe8410tGqsdZKhXoct7SRVnoTeq2DhMF
-         rmPaxkpskV40vdLRB5i5m5emQ2mzE8VI8xAKegnG45n+f/pv8r0Zm6LJBBeMASJACDMs
-         9jsnmCdya+IfDkk/efcSD9Y0PggUrss1svr6ThVrHgfidDjNXViyjjUsLFXVhtliUliN
-         9tGA==
-X-Gm-Message-State: AOAM5319hP5fi6Y2X7dhoQE20FDd1RtTi5TNsra1lWEUSae11fYESPsK
-        i4lDwkbUdEvGpUXVaWJ1bGlnjabUO2g=
-X-Google-Smtp-Source: ABdhPJz4fEifub8TGwz6LNU29pnusFYU5k+lNNiZwnGQJkpMxAQLzpZDkwPWXtgHYaCpE0U2sOL2/A==
-X-Received: by 2002:a5d:47af:: with SMTP id 15mr22541568wrb.205.1612258609190;
-        Tue, 02 Feb 2021 01:36:49 -0800 (PST)
-Received: from CBGR90WXYV0 (host86-190-149-163.range86-190.btcentralplus.com. [86.190.149.163])
-        by smtp.gmail.com with ESMTPSA id d16sm30262030wrr.59.2021.02.02.01.36.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 02 Feb 2021 01:36:48 -0800 (PST)
-From:   Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: "Paul Durrant" <paul@xen.org>
-Reply-To: <paul@xen.org>
-To:     "'Dongli Zhang'" <dongli.zhang@oracle.com>,
-        =?utf-8?Q?'J=C3=BCrgen_Gro=C3=9F'?= <jgross@suse.com>,
-        =?utf-8?Q?'Roger_Pau_Monn=C3=A9'?= <roger.pau@citrix.com>
-Cc:     "'Paul Durrant'" <pdurrant@amazon.com>,
-        "'Konrad Rzeszutek Wilk'" <konrad.wilk@oracle.com>,
-        "'Jens Axboe'" <axboe@kernel.dk>, <linux-block@vger.kernel.org>,
-        <xen-devel@lists.xenproject.org>, <linux-kernel@vger.kernel.org>
-References: <20210128130441.11744-1-paul@xen.org> <c3a476c5-c671-4429-73d5-0bf7ced1a06b@oracle.com> <7fb64e2f-141a-c848-0f8a-2313d2e821b6@suse.com> <02d901d6f616$b0004750$1000d5f0$@xen.org> <c10b539b-0f86-ac60-d289-4e3b7ded25fb@oracle.com>
-In-Reply-To: <c10b539b-0f86-ac60-d289-4e3b7ded25fb@oracle.com>
-Subject: RE: [PATCH v2] xen-blkback: fix compatibility bug with single page rings
-Date:   Tue, 2 Feb 2021 09:36:47 -0000
-Message-ID: <035701d6f946$edb90180$c92b0480$@xen.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Yg8qLn6EBRblBdGN89hb4qppVjdAkF53EYMnS584DQ8=;
+        b=XMeGDUlLl3vw0ScwHtBID59tzOOb7N67HGTnbDZDyQJqtVzsSDgfhoFR4SLtxMBLEh
+         +DJb85ZUAkRCIz9CgCGfpz8hmtOfu4lgK8aVTPovkokkTjMr8ASOmpRWXgnTA5YQyylD
+         66qINot8pMbykrTtlG+gLuEHh+kio57tBHQFiEv549bT2enR/b7bkG86kFnIUlI5elYY
+         7nw9tLrytLbaFSc4ZQUMfqeTOe2A4Wj81kX92x8il72/FQMdbfy0vU3p1bNBUl1h1WtF
+         Xt1dJeshFRUmto4O45b2mFsLLs8K5PyZIlJhr9vOUe7CT7NkFSAIiqZveODBklLkBbej
+         BnOw==
+X-Gm-Message-State: AOAM533niutBtwt/VWNAfbkwDzXq8tGcDJW9fSbvWIamJSqxcgqA6HBU
+        dsXNxmIyFpPOPvrxlTqaBMQ=
+X-Google-Smtp-Source: ABdhPJxq86fkMmfu4iLXPxDRIKQK7ZUhUum7zoVW/6IbluNr5HO7IxuObUF0GYjcobviYxjSr/GGlQ==
+X-Received: by 2002:a05:620a:132a:: with SMTP id p10mr20466699qkj.124.1612258703039;
+        Tue, 02 Feb 2021 01:38:23 -0800 (PST)
+Received: from localhost.localdomain ([156.146.58.43])
+        by smtp.gmail.com with ESMTPSA id z5sm16608357qkc.61.2021.02.02.01.38.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 01:38:22 -0800 (PST)
+From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
+To:     mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        akpm@linux-foundation.org, rppt@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: [PATCH] arch: powerpc: kernel: Fix the spelling mismach to mismatch in head.44x.S
+Date:   Tue,  2 Feb 2021 15:07:46 +0530
+Message-Id: <20210202093746.5198-1-unixbhaskar@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQESWKuFsxkk/iz7Hd1VT64wNwq0EAGAqAtPAflt50QCuTnTiQKN7zH0q4fRvEA=
-Content-Language: en-gb
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Xen-devel <xen-devel-bounces@lists.xenproject.org> On Behalf Of =
-Dongli Zhang
-> Sent: 30 January 2021 05:09
-> To: paul@xen.org; 'J=C3=BCrgen Gro=C3=9F' <jgross@suse.com>; =
-xen-devel@lists.xenproject.org; linux-
-> block@vger.kernel.org; linux-kernel@vger.kernel.org
-> Cc: 'Paul Durrant' <pdurrant@amazon.com>; 'Konrad Rzeszutek Wilk' =
-<konrad.wilk@oracle.com>; 'Roger Pau
-> Monn=C3=A9' <roger.pau@citrix.com>; 'Jens Axboe' <axboe@kernel.dk>
-> Subject: Re: [PATCH v2] xen-blkback: fix compatibility bug with single =
-page rings
->=20
->=20
->=20
-> On 1/29/21 12:13 AM, Paul Durrant wrote:
-> >> -----Original Message-----
-> >> From: J=C3=BCrgen Gro=C3=9F <jgross@suse.com>
-> >> Sent: 29 January 2021 07:35
-> >> To: Dongli Zhang <dongli.zhang@oracle.com>; Paul Durrant =
-<paul@xen.org>; xen-
-> >> devel@lists.xenproject.org; linux-block@vger.kernel.org; =
-linux-kernel@vger.kernel.org
-> >> Cc: Paul Durrant <pdurrant@amazon.com>; Konrad Rzeszutek Wilk =
-<konrad.wilk@oracle.com>; Roger Pau
-> >> Monn=C3=A9 <roger.pau@citrix.com>; Jens Axboe <axboe@kernel.dk>
-> >> Subject: Re: [PATCH v2] xen-blkback: fix compatibility bug with =
-single page rings
-> >>
-> >> On 29.01.21 07:20, Dongli Zhang wrote:
-> >>>
-> >>>
-> >>> On 1/28/21 5:04 AM, Paul Durrant wrote:
-> >>>> From: Paul Durrant <pdurrant@amazon.com>
-> >>>>
-> >>>> Prior to commit 4a8c31a1c6f5 ("xen/blkback: rework connect_ring() =
-to avoid
-> >>>> inconsistent xenstore 'ring-page-order' set by malicious =
-blkfront"), the
-> >>>> behaviour of xen-blkback when connecting to a frontend was:
-> >>>>
-> >>>> - read 'ring-page-order'
-> >>>> - if not present then expect a single page ring specified by =
-'ring-ref'
-> >>>> - else expect a ring specified by 'ring-refX' where X is between =
-0 and
-> >>>>    1 << ring-page-order
-> >>>>
-> >>>> This was correct behaviour, but was broken by the afforementioned =
-commit to
-> >>>> become:
-> >>>>
-> >>>> - read 'ring-page-order'
-> >>>> - if not present then expect a single page ring (i.e. =
-ring-page-order =3D 0)
-> >>>> - expect a ring specified by 'ring-refX' where X is between 0 and
-> >>>>    1 << ring-page-order
-> >>>> - if that didn't work then see if there's a single page ring =
-specified by
-> >>>>    'ring-ref'
-> >>>>
-> >>>> This incorrect behaviour works most of the time but fails when a =
-frontend
-> >>>> that sets 'ring-page-order' is unloaded and replaced by one that =
-does not
-> >>>> because, instead of reading 'ring-ref', xen-blkback will read the =
-stale
-> >>>> 'ring-ref0' left around by the previous frontend will try to map =
-the wrong
-> >>>> grant reference.
-> >>>>
-> >>>> This patch restores the original behaviour.
-> >>>>
-> >>>> Fixes: 4a8c31a1c6f5 ("xen/blkback: rework connect_ring() to avoid =
-inconsistent xenstore 'ring-
-> page-
-> >> order' set by malicious blkfront")
-> >>>> Signed-off-by: Paul Durrant <pdurrant@amazon.com>
-> >>>> ---
-> >>>> Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-> >>>> Cc: "Roger Pau Monn=C3=A9" <roger.pau@citrix.com>
-> >>>> Cc: Jens Axboe <axboe@kernel.dk>
-> >>>> Cc: Dongli Zhang <dongli.zhang@oracle.com>
-> >>>>
-> >>>> v2:
-> >>>>   - Remove now-spurious error path special-case when nr_grefs =
-=3D=3D 1
-> >>>> ---
-> >>>>   drivers/block/xen-blkback/common.h |  1 +
-> >>>>   drivers/block/xen-blkback/xenbus.c | 38 =
-+++++++++++++-----------------
-> >>>>   2 files changed, 17 insertions(+), 22 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/block/xen-blkback/common.h =
-b/drivers/block/xen-blkback/common.h
-> >>>> index b0c71d3a81a0..524a79f10de6 100644
-> >>>> --- a/drivers/block/xen-blkback/common.h
-> >>>> +++ b/drivers/block/xen-blkback/common.h
-> >>>> @@ -313,6 +313,7 @@ struct xen_blkif {
-> >>>>
-> >>>>   	struct work_struct	free_work;
-> >>>>   	unsigned int 		nr_ring_pages;
-> >>>> +	bool                    multi_ref;
-> >>>
-> >>> Is it really necessary to introduce 'multi_ref' here or we may =
-just re-use
-> >>> 'nr_ring_pages'?
-> >>>
-> >>> According to blkfront code, 'ring-page-order' is set only when it =
-is not zero,
-> >>> that is, only when (info->nr_ring_pages > 1).
-> >>
-> >
-> > That's how it is *supposed* to be. Windows certainly behaves that =
-way too.
-> >
-> >> Did you look into all other OS's (Windows, OpenBSD, FreebSD, =
-NetBSD,
-> >> Solaris, Netware, other proprietary systems) implementations to =
-verify
-> >> that claim?
-> >>
-> >> I don't think so. So better safe than sorry.
-> >>
-> >
-> > Indeed. It was unfortunate that the commit to blkif.h documenting =
-multi-page (829f2a9c6dfae) was not
-> crystal clear and (possibly as a consequence) blkback was implemented =
-to read ring-ref0 rather than
-> ring-ref if ring-page-order was present and 0. Hence the only safe =
-thing to do is to restore that
-> behaviour.
-> >
->=20
-> Thank you very much for the explanation!
->=20
-> Reviewed-by: Dongli Zhang <dongli.zhang@oracle.com>
->=20
 
-Thanks.
+s/mismach/mismatch/
 
-Roger, Konrad, can I get a maintainer ack or otherwise, please?
+Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+---
+ arch/powerpc/kernel/head_44x.S | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-  Paul
+diff --git a/arch/powerpc/kernel/head_44x.S b/arch/powerpc/kernel/head_44x.S
+index 8e36718f3167..813fa305c33b 100644
+--- a/arch/powerpc/kernel/head_44x.S
++++ b/arch/powerpc/kernel/head_44x.S
+@@ -376,7 +376,7 @@ interrupt_base:
+ 	/* Load the next available TLB index */
+ 	lwz	r13,tlb_44x_index@l(r10)
 
+-	bne	2f			/* Bail if permission mismach */
++	bne	2f			/* Bail if permission mismatch */
+
+ 	/* Increment, rollover, and store TLB index */
+ 	addi	r13,r13,1
+@@ -471,7 +471,7 @@ interrupt_base:
+ 	/* Load the next available TLB index */
+ 	lwz	r13,tlb_44x_index@l(r10)
+
+-	bne	2f			/* Bail if permission mismach */
++	bne	2f			/* Bail if permission mismatch */
+
+ 	/* Increment, rollover, and store TLB index */
+ 	addi	r13,r13,1
+--
+2.26.2
 
