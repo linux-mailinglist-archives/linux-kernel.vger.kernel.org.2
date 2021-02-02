@@ -2,168 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7712630C2F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 16:08:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEAF130C306
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 16:08:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235025AbhBBPFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 10:05:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34786 "EHLO
+        id S234866AbhBBPHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 10:07:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235062AbhBBPDo (ORCPT
+        with ESMTP id S234905AbhBBPFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 10:03:44 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E17C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 07:03:04 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id s23so13794330pgh.11
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 07:03:04 -0800 (PST)
+        Tue, 2 Feb 2021 10:05:06 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DCDCC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 07:04:25 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id z22so23259695edb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 07:04:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gHcmmOyo9J/1y5Rdo4Ts6qg7/7o0qlrb6EBUxbtMg4s=;
-        b=SIa3p/CcI+VKbTyKJqBwFjxcWNpyON9h18FvN+zyXY0sqSMue4TgRBfUYnAoAwqvg7
-         n48y7MMsKup7sWY/GgbCBDS6N2dYPFlOe8lbf5QcDjiuChhxQg9lH+Gx5Sg0du+2OSCI
-         xF+uWk/Lc1C7AMxJxsT9mnRk686+g7L8+3BW3i0zPHw5qEZ1MYmnFsLzIm0vHSTSqN2C
-         hTkl0eBsxcBmFWYuBXI3HSqVPGDyldF2J9D75amttV3eWqlqNt9xPW1b/V9XkGSrqcR1
-         CM5s6Ydlw9yXQSEgZbAgHbogsNf31UM55CCOQJivxDdnXGiq86fWIsMTawhzNWwwIDnF
-         HXig==
+        d=soleen.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0G3Z8f+PDK069JkWrQ8kpFFGFM045F0JWs+0+AnPXR8=;
+        b=BbcsXz69QrbR+7X4zcNLMBl639TOh1mrAX8h7yA9cLPvWthWoZbFZRzJ+4k4KYN1zy
+         2VU1GLeZ5EPmLV5pmOi7cP24okeT99xiipb0qQzDF+MvoiVfIYpTTVOnmUDhBnGp4ENo
+         Mjn8flWfsqN5ed6t1/ofxatM7dVOGkvzwRiwaPwTU1b0lPbjbsbFT3vQOHWHymjKeTKP
+         Ek/VkZaYrCF7wNbvO4GrA5TFE+fdxdvRRVZJuUSWfkIEcC81jRil0GTQTm+D6hbnAPw4
+         DJiBqeqUopWiI5mv0e+5PH3R3/XNhJETOGIvWhGnOV9/VhL6bCK7QpxC2ERyBbyt+lPt
+         ExJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gHcmmOyo9J/1y5Rdo4Ts6qg7/7o0qlrb6EBUxbtMg4s=;
-        b=YMdV36zDzXh6uluaGx587w2Kva2r+RtLDWthy4gZry8ygWjfAe7Qm7CJTwH90CotJ9
-         CBPbZ4StA8J2FxK+dLJXFQLda8Y4sBHW1+8mma3FbIPWrqKTPQO8xQVZ++A9Yene4Zxi
-         4A7InQ0fhKkjMFsBwMvYZ7FDhQTtSvIPU4wbWYlxLaYgWgghWGn4zezTQyBDrhlhnDX6
-         NKdgMot2Dj8waUbCG7Gwd9U7/v9F7RgkE9kEV/kgvyJ2w23gEPhyzk5qXeZvT/sXrcEN
-         PgtMqmWr784s59c6d/TLcWtre6StKMqbPZmOmbHvwJR8fkMwi4wWRyu002E4xQRVWRyp
-         GE4Q==
-X-Gm-Message-State: AOAM531wtQQjIbyOz1pf2TClO8oUDuFwt/7H/vvlf0p5Wnbnn6hWHoSV
-        NcxRAU98S8QwJKVh24cyBofrhA==
-X-Google-Smtp-Source: ABdhPJwb7zYd/I7zvBZDR5xhMXDkmNss8xNch40Jjsbc7ss9mKVfWOQQ6g3zMd/eNZJEijsUFDCMUA==
-X-Received: by 2002:aa7:946c:0:b029:1ce:3f04:3f67 with SMTP id t12-20020aa7946c0000b02901ce3f043f67mr7740185pfq.6.1612278183601;
-        Tue, 02 Feb 2021 07:03:03 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:f693:9fff:fef4:fc72])
-        by smtp.gmail.com with ESMTPSA id a141sm22569495pfa.189.2021.02.02.07.02.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 07:03:02 -0800 (PST)
-Date:   Tue, 2 Feb 2021 07:02:52 -0800
-From:   Benson Leung <bleung@google.com>
-To:     Kyle Tso <kyletso@google.com>
-Cc:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
-        bleung@chromium.org, badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: Return void in typec_partner_set_pd_revision
-Message-ID: <YBlpnMKzGBcP5Ybi@google.com>
-References: <20210202095512.761214-1-kyletso@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0G3Z8f+PDK069JkWrQ8kpFFGFM045F0JWs+0+AnPXR8=;
+        b=XgjWfyvB30ujUuSssufuM0c2BO/LuMlOnjqCeGs0lxFEh4u1foNizx9RLEgOm1DKD3
+         4pDmMmWuQfoOTP2mtN9McnpEPtjNWe9+eQWJpt9hnPnTkXWz3+G7usg3HT4bRj2urNev
+         VrRp/brBYtfSIUBEiMb8/AY3f1/fMk4h1lbWs41G+pCn+6n9IYQNfACYq7dMDc6nJ6gQ
+         WLgna6j7NTY+ip5GvYqpeBcgflagwy50VzUhjF5lQrQe3Nb+C2HfdbsgBTkoiuTJO8ta
+         YpiDkf5JTDY3VJMD75hH93zQn1GDIsMxikMs64aM7vSUAMAjLReaGvHP9Qm9mWp3S+C7
+         DUHg==
+X-Gm-Message-State: AOAM530cG13IOMHo28qaXw8mQ9PAWoJZyh8wAyxcAEYR9a172ssK235U
+        V1BEB2p9G4OFOHZx/Ed/V8W7WCI2UyLIs7Yu2ZT8IA==
+X-Google-Smtp-Source: ABdhPJx1kGQ1PUPJ1cIK+Pu4xrL9+gyYI9eGigtL4qczlfVOb3skGbXEVdPy+WQvhzGiAEm4wu1QxLfK6bqZKO5nQvs=
+X-Received: by 2002:a05:6402:402:: with SMTP id q2mr24348883edv.116.1612278264270;
+ Tue, 02 Feb 2021 07:04:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7r6jZMwHZonCx4Zv"
-Content-Disposition: inline
-In-Reply-To: <20210202095512.761214-1-kyletso@google.com>
+References: <CA+G9fYszbxo4giipD0_sV3XHKaq2zVq97rXoyjWf18k5oYEX4Q@mail.gmail.com>
+In-Reply-To: <CA+G9fYszbxo4giipD0_sV3XHKaq2zVq97rXoyjWf18k5oYEX4Q@mail.gmail.com>
+From:   Pavel Tatashin <pasha.tatashin@soleen.com>
+Date:   Tue, 2 Feb 2021 10:03:47 -0500
+Message-ID: <CA+CK2bD1TMKXgiHZJju8HDMfcr27aXLi_eFSFYOuxkGiRDHKYQ@mail.gmail.com>
+Subject: Re: [next] mm/gup.c:96:10: error: implicit declaration of function
+ 'is_zero_pfn' [-Werror,-Wimplicit-function-declaration]
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Rientjes <rientjes@google.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        James Morris <jmorris@namei.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The same problem as fixed here:
+https://lore.kernel.org/linux-mm/CA+CK2bBjC8=cRsL5VhWkcevPsqSXWhsANVjsFNMERLT8vWtiQw@mail.gmail.com/
 
---7r6jZMwHZonCx4Zv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thank you,
+Pasha
 
-Hi Kyle,
-
-On Tue, Feb 02, 2021 at 05:55:12PM +0800, Kyle Tso wrote:
-> typec_partner_set_pd_revision doesn't need any return value.
->=20
-> Fixes: 29b01295a829 ("usb: typec: Add typec_partner_set_pd_revision")
-> Signed-off-by: Kyle Tso <kyletso@google.com>
-
-Review tags for <bleung@chromium.org>
-Thanks for the quick fix!
-
-Thanks,
-Benson
-
-> ---
->  drivers/usb/typec/class.c | 10 ++--------
->  include/linux/usb/typec.h |  2 +-
->  2 files changed, 3 insertions(+), 9 deletions(-)
->=20
-> diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-> index b6ceab3dc16b..a7d1bc83c2d4 100644
-> --- a/drivers/usb/typec/class.c
-> +++ b/drivers/usb/typec/class.c
-> @@ -755,15 +755,11 @@ EXPORT_SYMBOL_GPL(typec_partner_set_identity);
->   *
->   * This routine is used to report that the PD revision of the port partn=
-er has
->   * become available.
-> - *
-> - * Returns 0 on success or negative error number on failure.
->   */
-> -int typec_partner_set_pd_revision(struct typec_partner *partner, u16 pd_=
-revision)
-> +void typec_partner_set_pd_revision(struct typec_partner *partner, u16 pd=
-_revision)
->  {
-> -	int ret;
-> -
->  	if (partner->pd_revision =3D=3D pd_revision)
-> -		return 0;
-> +		return;
-> =20
->  	partner->pd_revision =3D pd_revision;
->  	sysfs_notify(&partner->dev.kobj, NULL, "usb_power_delivery_revision");
-> @@ -773,8 +769,6 @@ int typec_partner_set_pd_revision(struct typec_partne=
-r *partner, u16 pd_revision
->  			     "supports_usb_power_delivery");
->  	}
->  	kobject_uevent(&partner->dev.kobj, KOBJ_CHANGE);
-> -
-> -	return 0;
->  }
->  EXPORT_SYMBOL_GPL(typec_partner_set_pd_revision);
-> =20
-> diff --git a/include/linux/usb/typec.h b/include/linux/usb/typec.h
-> index 4946eca742d5..a94df82ab62f 100644
-> --- a/include/linux/usb/typec.h
-> +++ b/include/linux/usb/typec.h
-> @@ -126,7 +126,7 @@ struct typec_altmode_desc {
->  	enum typec_port_data	roles;
->  };
-> =20
-> -int typec_partner_set_pd_revision(struct typec_partner *partner, u16 pd_=
-revision);
-> +void typec_partner_set_pd_revision(struct typec_partner *partner, u16 pd=
-_revision);
->  int typec_partner_set_num_altmodes(struct typec_partner *partner, int nu=
-m_altmodes);
->  struct typec_altmode
->  *typec_partner_register_altmode(struct typec_partner *partner,
-> --=20
-> 2.30.0.365.g02bc693789-goog
->=20
-
---=20
-Benson Leung
-Staff Software Engineer
-Chrome OS Kernel
-Google Inc.
-bleung@google.com
-Chromium OS Project
-bleung@chromium.org
-
---7r6jZMwHZonCx4Zv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCYBlpnAAKCRBzbaomhzOw
-wlUhAQD3g3YhqSUtdbQu/l5TFNuGxAPFbI0sVVIGDuMJSS7kFAD/U6d/2sW52+KO
-XmMbGeusvrFrfv9rdDguO7mLET+72w0=
-=ZyUg
------END PGP SIGNATURE-----
-
---7r6jZMwHZonCx4Zv--
+On Tue, Feb 2, 2021 at 9:32 AM Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>
+> Linux next tag 20210202 arm, riscv and sh builds with allnoconfig and
+> tinyconfig failed due to build errors.
+>
+>
+> make --silent --keep-going --jobs=8
+> O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=arm
+> CROSS_COMPILE=arm-linux-gnueabihf- 'HOSTCC=sccache clang' 'CC=sccache
+> clang' zImage
+>  mm/gup.c:96:10: error: implicit declaration of function 'is_zero_pfn'
+> [-Werror,-Wimplicit-function-declaration]
+>                              !is_pinnable_page(page)))
+>                               ^
+>  include/linux/mm.h:1133:3: note: expanded from macro 'is_pinnable_page'
+>                 is_zero_pfn(page_to_pfn(page)))
+>                 ^
+>  mm/gup.c:96:10: note: did you mean 'is_zero_ino'?
+>  include/linux/mm.h:1133:3: note: expanded from macro 'is_pinnable_page'
+>                 is_zero_pfn(page_to_pfn(page)))
+>                 ^
+>  include/linux/fs.h:3045:20: note: 'is_zero_ino' declared here
+> static inline bool is_zero_ino(ino_t ino)
+>                    ^
+> 1 error generated.
+>
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+>
+> steps to reproduce:
+> --------------------------
+> # TuxMake is a command line tool and Python library that provides
+> # portable and repeatable Linux kernel builds across a variety of
+> # architectures, toolchains, kernel configurations, and make targets.
+> #
+> # TuxMake supports the concept of runtimes.
+> # See https://docs.tuxmake.org/runtimes/, for that to work it requires
+> # that you install podman or docker on your system.
+> #
+> # To install tuxmake on your system globally:
+> # sudo pip3 install -U tuxmake
+> #
+> # See https://docs.tuxmake.org/ for complete documentation.
+>
+> tuxmake --runtime podman --target-arch arm --toolchain clang-11
+> --kconfig allnoconfig
+>
+> build details:
+> https://builds.tuxbuild.com/1nv9wkY1T8wug0sEw2kwuFKLxhK/
+>
+> Regressions found on sh:
+>
+>    - build/gcc-10-allnoconfig
+>    - build/gcc-9-tinyconfig
+>    - build/gcc-8-allnoconfig
+>    - build/gcc-10-tinyconfig
+>    - build/gcc-9-allnoconfig
+>    - build/gcc-8-tinyconfig
+>
+> Regressions found on riscv:
+>
+>    - build/gcc-10-allnoconfig
+>    - build/clang-11-tinyconfig
+>    - build/clang-10-allnoconfig
+>    - build/clang-11-allnoconfig
+>    - build/gcc-9-tinyconfig
+>    - build/gcc-8-allnoconfig
+>    - build/gcc-10-tinyconfig
+>    - build/clang-10-tinyconfig
+>    - build/gcc-9-allnoconfig
+>    - build/gcc-8-tinyconfig
+>
+> Regressions found on arm:
+>
+>    - build/gcc-10-allnoconfig
+>    - build/clang-11-tinyconfig
+>    - build/clang-10-allnoconfig
+>    - build/clang-11-allnoconfig
+>    - build/gcc-9-tinyconfig
+>    - build/gcc-8-allnoconfig
+>    - build/gcc-10-tinyconfig
+>    - build/clang-10-tinyconfig
+>    - build/gcc-9-allnoconfig
+>    - build/gcc-8-tinyconfig
+>
+>
+> - Naresh
