@@ -2,303 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAED430BAC2
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:18:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95BBA30BAC6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:18:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232957AbhBBJRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 04:17:20 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41076 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231621AbhBBJQZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 04:16:25 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612257337; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9Po2Q/2zwzavvhoOnN15a5ryoMFy4vJPIEnIH7L7Khw=;
-        b=pvmwFpqMDy/t9KwnRCKmGfTHuoUl/YZkOLzJYrOLwNqihOqeEJw6t7324hrZsBYih1IMbE
-        BqsmGBJcDeQRuWfpZ3Qkt85OJJDbEGFpm1YNWblj/mBCK0uFub9RGoiYumid+wMSZDsHeM
-        MD32s7rp/NLbaLrg+BtPtbK/pCeKyJs=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 847EEB049;
-        Tue,  2 Feb 2021 09:15:37 +0000 (UTC)
-Date:   Tue, 2 Feb 2021 10:15:36 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH printk-rework 11/12] printk: remove logbuf_lock
-Message-ID: <YBkYOKL22kADKTeG@alley>
-References: <20210126211551.26536-1-john.ogness@linutronix.de>
- <20210126211551.26536-12-john.ogness@linutronix.de>
+        id S232969AbhBBJSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 04:18:00 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:52970 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232339AbhBBJQ6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 04:16:58 -0500
+Received: by mail-il1-f200.google.com with SMTP id e16so3134245ile.19
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 01:16:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=bZ0yFA7nEfPK6NHzUikcevfhZbnqWxsxbvcAiDCsbi0=;
+        b=XdV9KaihrGhZ0dg8V+s8V9XHWCSF//R+/A45D2FB7l09K6JlbZ7WGPar3CB2lAm1CO
+         xMbdhWWpLzHBc62wjE+W/IFJ+7ABPgx3S7QTY4n6J1oGG9F4dLhIo6/QCnMFdBvyb8/F
+         9ymniu0QX1J+cof7Z+xEDYmHom1J7z6ORY15OZLr/opDQfoCMsGB+m/DTAs78wMnp+BC
+         JSDslGZykyKuSdvuYpxPL7aSL2ONuQvToehex/VZOp14v2wfFnXA9JEEOVHVq5pECVW2
+         0M2Q6WyGUYVaP75I53FJl6lZUtvxGtbHFERIuFBq3/D4kp4M1h341f15U4PEuY6ywh4Q
+         pfjQ==
+X-Gm-Message-State: AOAM530jN9NoO6ErmpISwzOq4YakBeJDvO0ZWoAtCTv+d2jvq1/9uP1w
+        Y3XIE+ZpYNovfc8jV1RQFposnXAivbEybQS8Evr4jldJ+oZH
+X-Google-Smtp-Source: ABdhPJzlD2KJ07MPrKtmsN3QsxO0afv6dZVBaa0wYffb0aRCP1FGxkBupk3vERW6FAFNs6iurugpZsbwSDBNJdW9q+J435Ahcy8T
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210126211551.26536-12-john.ogness@linutronix.de>
+X-Received: by 2002:a05:6602:1541:: with SMTP id h1mr6736936iow.171.1612257376667;
+ Tue, 02 Feb 2021 01:16:16 -0800 (PST)
+Date:   Tue, 02 Feb 2021 01:16:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000390af005ba56ec0f@google.com>
+Subject: general protection fault in put_device
+From:   syzbot <syzbot+3512de0f935d494a45a6@syzkaller.appspotmail.com>
+To:     bgolaszewski@baylibre.com, gregkh@linuxfoundation.org,
+        linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, saravanak@google.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2021-01-26 22:21:50, John Ogness wrote:
-> Since the ringbuffer is lockless, there is no need for it to be
-> protected by @logbuf_lock. Remove @logbuf_lock.
-> 
-> This means that printk_nmi_direct and printk_safe_flush_on_panic()
-> no longer need to acquire any lock to run.
-> 
-> @console_seq, @exclusive_console_stop_seq, @console_dropped are
-> protected by @console_lock.
-> 
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index d14a4afc5b72..b57dba7f077d 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -401,6 +366,7 @@ static u64 syslog_seq;
->  static size_t syslog_partial;
->  static bool syslog_time;
->  
-> +/* All 3 protected by @console_sem. */
->  /* the next printk record to write to the console */
->  static u64 console_seq;
->  static u64 exclusive_console_stop_seq;
-> @@ -762,27 +728,27 @@ static ssize_t devkmsg_read(struct file *file, char __user *buf,
->  	if (ret)
->  		return ret;
->  
-> -	logbuf_lock_irq();
-> +	printk_safe_enter_irq();
+Hello,
 
-What is the exact reason to keep this, please?
+syzbot found the following issue on:
 
-1. The primary function of the printk_safe context is to avoid deadlock
-   caused by logbuf_lock. It might have happened with recursive or nested
-   printk(). But logbuf_lock is gone now.
+HEAD commit:    b01f250d Add linux-next specific files for 20210129
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=144cd11cd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=725bc96dc234fda7
+dashboard link: https://syzkaller.appspot.com/bug?extid=3512de0f935d494a45a6
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1093e16f500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13756b44d00000
 
-2. There are still some hidded locks that were guarded by this as
-   well. For example, console_owner_lock, or spinlock inside
-   console_sem, or scheduler locks taken when console_sem()
-   wakes another waiting process. It might still make sense
-   to somehow guard these.
+The issue was bisected to:
 
-3. It kind of prevented infinite printk() recursion by using another
-   code path. The other path was limited by the size of the per-cpu
-   buffer. Well, recursion inside printk_safe code would likely
-   hit end of the stack first.
+commit 4731210c09f5977300f439b6c56ba220c65b2348
+Author: Saravana Kannan <saravanak@google.com>
+Date:   Fri Jan 22 19:35:59 2021 +0000
 
+    gpiolib: Bind gpio_device to a driver to enable fw_devlink=on by default
 
-IMHO, we do not need printk safe context here in devkmsg_read().
-It does not belong into any categoty that is described above.
-logbug_lock() is gone. devkmsg_read() is never called directly
-from printk().
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12a1c51cd00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=11a1c51cd00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=16a1c51cd00000
 
-The same is true for almost entire patch. There are only two
-or so exceptions, see below.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3512de0f935d494a45a6@syzkaller.appspotmail.com
+Fixes: 4731210c09f5 ("gpiolib: Bind gpio_device to a driver to enable fw_devlink=on by default")
 
-
->  	if (!prb_read_valid(prb, atomic64_read(&user->seq), r)) {
->  		if (file->f_flags & O_NONBLOCK) {
->  			ret = -EAGAIN;
-> -			logbuf_unlock_irq();
-> +			printk_safe_exit_irq();
->  			goto out;
->  		}
->  
-> -		logbuf_unlock_irq();
-> +		printk_safe_exit_irq();
->  		ret = wait_event_interruptible(log_wait,
->  				prb_read_valid(prb, atomic64_read(&user->seq), r));
->  		if (ret)
->  			goto out;
-> -		logbuf_lock_irq();
-> +		printk_safe_enter_irq();
->  	}
->  
->  	if (atomic64_read(&user->seq) < prb_first_valid_seq(prb)) {
->  		/* our last seen message is gone, return error and reset */
->  		atomic64_set(&user->seq, prb_first_valid_seq(prb));
->  		ret = -EPIPE;
-> -		logbuf_unlock_irq();
-> +		printk_safe_exit_irq();
->  		goto out;
->  	}
->  
-
-
-> @@ -2593,7 +2559,6 @@ void console_unlock(void)
->  		size_t len;
->  
->  		printk_safe_enter_irqsave(flags);
-> -		raw_spin_lock(&logbuf_lock);
->  skip:
->  		if (!prb_read_valid(prb, console_seq, &r))
->  			break;
-
-I agree that printk_safe context makes sense in console_unlock().
-It prevents eventual deadlocks caused, for example by
-console_lock_owner.
-
-It also somehow prevents an infinite loop when a console driver would
-add a new message that would need to get flushed out as well which
-would trigger another messages ...
-
-
-> @@ -2973,9 +2933,7 @@ void register_console(struct console *newcon)
->  		/*
->  		 * console_unlock(); will print out the buffered messages
->  		 * for us.
-> -		 */
-> -		logbuf_lock_irqsave(flags);
-
-I am just curious what was the motivation to remove printk_safe
-context here? It is a bit inconsistent with the other locations
-where you kept it.
-
-IMHO, it can be removed. It does not fit into any category
-where it would help as described above.
-
-Anyway, we have to be consistent and explain it in the commit message.
+viperboard 1-1:0.143: version 0.00 found at bus 001 address 002
+viperboard-i2c viperboard-i2c.2.auto: failure setting i2c_bus_freq to 100
+viperboard-i2c: probe of viperboard-i2c.2.auto failed with error -5
+usb 1-1: USB disconnect, device number 2
+general protection fault, probably for non-canonical address 0xdffffc00000000b3: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000598-0x000000000000059f]
+CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.11.0-rc5-next-20210129-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+RIP: 0010:__list_del_entry_valid+0x1d/0xf0 lib/list_debug.c:42
+Code: 48 8b 34 24 eb b4 0f 1f 80 00 00 00 00 48 b8 00 00 00 00 00 fc ff df 41 55 41 54 55 48 89 fd 48 83 c7 08 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 a0 00 00 00 48 89 ea 4c 8b 65 08 48 b8 00 00 00
+RSP: 0018:ffffc90000ca7308 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffff88814149e008 RCX: 0000000000000000
+RDX: 00000000000000b3 RSI: ffffffff83e19360 RDI: 0000000000000598
+RBP: 0000000000000590 R08: 0000000000000001 R09: ffffffff8ef7388f
+R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000590
+R13: 0000000000000598 R14: ffff88814782ff20 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055e1f4df6008 CR3: 0000000016785000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __list_del_entry include/linux/list.h:132 [inline]
+ list_del include/linux/list.h:146 [inline]
+ gpiodevice_release+0x49/0x250 drivers/gpio/gpiolib.c:477
+ device_release+0x9f/0x240 drivers/base/core.c:2055
+ kobject_cleanup lib/kobject.c:705 [inline]
+ kobject_release lib/kobject.c:736 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x1c8/0x540 lib/kobject.c:753
+ put_device+0x1b/0x30 drivers/base/core.c:3283
+ release_nodes+0x49b/0x8f0 drivers/base/devres.c:523
+ devres_release_all+0x74/0xd0 drivers/base/devres.c:545
+ __device_release_driver+0x3d2/0x6f0 drivers/base/dd.c:1160
+ device_release_driver_internal drivers/base/dd.c:1187 [inline]
+ device_release_driver+0x26/0x40 drivers/base/dd.c:1210
+ bus_remove_device+0x2eb/0x5a0 drivers/base/bus.c:533
+ device_del+0x502/0xd40 drivers/base/core.c:3363
+ platform_device_del.part.0+0x1f/0x220 drivers/base/platform.c:783
+ platform_device_del include/linux/err.h:41 [inline]
+ platform_device_unregister+0x38/0x80 drivers/base/platform.c:821
+ mfd_remove_devices_fn drivers/mfd/mfd-core.c:375 [inline]
+ mfd_remove_devices_fn+0x166/0x1b0 drivers/mfd/mfd-core.c:357
+ device_for_each_child_reverse+0x110/0x180 drivers/base/core.c:3526
+ mfd_remove_devices+0x75/0xa0 drivers/mfd/mfd-core.c:391
+ vprbrd_disconnect+0x43/0xf0 drivers/mfd/viperboard.c:111
+ usb_unbind_interface+0x1d8/0x8d0 drivers/usb/core/driver.c:458
+ __device_release_driver+0x3bd/0x6f0 drivers/base/dd.c:1156
+ device_release_driver_internal drivers/base/dd.c:1187 [inline]
+ device_release_driver+0x26/0x40 drivers/base/dd.c:1210
+ bus_remove_device+0x2eb/0x5a0 drivers/base/bus.c:533
+ device_del+0x502/0xd40 drivers/base/core.c:3363
+ usb_disable_device+0x35b/0x7b0 drivers/usb/core/message.c:1413
+ usb_disconnect.cold+0x27d/0x780 drivers/usb/core/hub.c:2218
+ hub_port_connect drivers/usb/core/hub.c:5074 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
+ port_event drivers/usb/core/hub.c:5509 [inline]
+ hub_event+0x1c8a/0x42d0 drivers/usb/core/hub.c:5591
+ process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+ process_scheduled_works kernel/workqueue.c:2337 [inline]
+ worker_thread+0x82b/0x1120 kernel/workqueue.c:2423
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+Modules linked in:
+---[ end trace c9367f77087536d6 ]---
+RIP: 0010:__list_del_entry_valid+0x1d/0xf0 lib/list_debug.c:42
+Code: 48 8b 34 24 eb b4 0f 1f 80 00 00 00 00 48 b8 00 00 00 00 00 fc ff df 41 55 41 54 55 48 89 fd 48 83 c7 08 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 a0 00 00 00 48 89 ea 4c 8b 65 08 48 b8 00 00 00
+RSP: 0018:ffffc90000ca7308 EFLAGS: 00010202
+RAX: dffffc0000000000 RBX: ffff88814149e008 RCX: 0000000000000000
+RDX: 00000000000000b3 RSI: ffffffff83e19360 RDI: 0000000000000598
+RBP: 0000000000000590 R08: 0000000000000001 R09: ffffffff8ef7388f
+R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000590
+R13: 0000000000000598 R14: ffff88814782ff20 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ff7b003f068 CR3: 000000001b33c000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-> -		/*
-> +		 *
->  		 * We're about to replay the log buffer.  Only do this to the
->  		 * just-registered console to avoid excessive message spam to
->  		 * the already-registered consoles.
-> @@ -2988,11 +2946,9 @@ void register_console(struct console *newcon)
->  		exclusive_console_stop_seq = console_seq;
->  
->  		/* Get a consistent copy of @syslog_seq. */
-> -		raw_spin_lock(&syslog_lock);
-> +		raw_spin_lock_irqsave(&syslog_lock, flags);
-
-I guess that you have added _irqsafe() variant here to preserve the
-original behavior.
-
-I just wonder if it makes sense. We take the sleeping console_lock()
-in this function. This should not be allowed in a context
-with disabled interrupts.
-
-IMHO, we do not need the irqsafe variant here. But it probably should
-be removed in a separate patch. We should not hide it in this huge patch.
-
-
->  		console_seq = syslog_seq;
-> -		raw_spin_unlock(&syslog_lock);
-> -
-> -		logbuf_unlock_irqrestore(flags);
-> +		raw_spin_unlock_irqrestore(&syslog_lock, flags);
->  	}
->  	console_unlock();
->  	console_sysfs_notify();
-> @@ -3414,9 +3366,11 @@ bool kmsg_dump_get_line_nolock(struct kmsg_dumper_iter *iter, bool syslog,
->  	struct printk_info info;
->  	unsigned int line_count;
->  	struct printk_record r;
-> +	unsigned long flags;
->  	size_t l = 0;
->  	bool ret = false;
->  
-> +	printk_safe_enter_irqsave(flags);
-
-This change is neither obvious nor documented.
-
-I guess that this is preparation step for unfying
-kmsg_dump_get_line_nolock() and kmsg_dump_get_line().
-
-Please, do it in the next patch and keep this one strightforward.
-
-That said, IMHO, the printk_safe() context is not needed here at all.
-This code is not called from printk() directly. The recursion is
-prevented by iter->next_seq or the buffer size.
-
-
->  	prb_rec_init_rd(&r, &info, line, size);
->  
->  	if (!iter->active)
-
-
-> @@ -3569,8 +3517,12 @@ EXPORT_SYMBOL_GPL(kmsg_dump_get_buffer);
->   */
->  void kmsg_dump_rewind_nolock(struct kmsg_dumper_iter *iter)
->  {
-> +	unsigned long flags;
-> +
-> +	printk_safe_enter_irqsave(flags);
-
-This is the same as in kmsg_dump_get_line_nolock().
-
-Please, keep this huge patch strightforward. Either replace
-logbuf_lock*() with the corresponding printk_safe*() calls.
-Or do not add printk_safe*() where it is not needed.
-
->  	iter->cur_seq = latched_seq_read_nolock(&clear_seq);
->  	iter->next_seq = prb_next_seq(prb);
-> +	printk_safe_exit_irqrestore(flags);
->  }
->  
->  /**
-
-> diff --git a/kernel/printk/printk_safe.c b/kernel/printk/printk_safe.c
-> index a0e6f746de6c..a9a3137bd972 100644
-> --- a/kernel/printk/printk_safe.c
-> +++ b/kernel/printk/printk_safe.c
-> @@ -368,20 +354,21 @@ __printf(1, 0) int vprintk_func(const char *fmt, va_list args)
->  #endif
->  
->  	/*
-> -	 * Try to use the main logbuf even in NMI. But avoid calling console
-> +	 * Use the main logbuf even in NMI. But avoid calling console
->  	 * drivers that might have their own locks.
->  	 */
-> -	if ((this_cpu_read(printk_context) & PRINTK_NMI_DIRECT_CONTEXT_MASK) &&
-> -	    raw_spin_trylock(&logbuf_lock)) {
-> +	if ((this_cpu_read(printk_context) & PRINTK_NMI_DIRECT_CONTEXT_MASK)) {
-> +		unsigned long flags;
->  		int len;
->  
-> +		printk_safe_enter_irqsave(flags);
-
-The printk_safe context does not make much sense here. The per-context
-redirection is done in vprintk_func(). It will always use this path
-because PRINTK_NMI_DIRECT_CONTEXT_MASK is handled before
-PRINTK_SAFE_CONTEXT_MASK.
-
->  		len = vprintk_store(0, LOGLEVEL_DEFAULT, NULL, fmt, args);
-> -		raw_spin_unlock(&logbuf_lock);
-> +		printk_safe_exit_irqrestore(flags);
->  		defer_console_output();
->  		return len;
->  	}
->  
-> -	/* Use extra buffer in NMI when logbuf_lock is taken or in safe mode. */
-> +	/* Use extra buffer in NMI. */
->  	if (this_cpu_read(printk_context) & PRINTK_NMI_CONTEXT_MASK)
->  		return vprintk_nmi(fmt, args);
-
-I agree that it makes sense to keep vprintk_nmi() for now. It prevents
-an infinite recursion. I still hope that we will agree on a better
-solution later.
-
-
-Summary:
-
-I do not have a strong opinion whether to remove printk_safe
-enter/exit calls in this patch or in a separate one. I would
-be fine with both solutions.
-
-Anyway, please keep the patch as straightforward as possible.
-Please, do not move printk_safe context into another locations.
-
-Also provide more reasoning in the commit message. Why printk_safe
-enter/exit calls are preserved or why they can be removed.
-
-Feel free to mention that printk_safe context still makes sense on
-some locations, explain why, and say that it will be removed later.
-
-Best Regards,
-Petr
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
