@@ -2,296 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAEF730C07E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:00:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E07630BFFF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 14:48:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233545AbhBBN7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 08:59:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43044 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233248AbhBBNwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 08:52:51 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5F05B64FC8;
-        Tue,  2 Feb 2021 13:43:50 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l6vy8-00BVL3-Fe; Tue, 02 Feb 2021 13:43:48 +0000
+        id S232963AbhBBNrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 08:47:25 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:55096 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232802AbhBBNol (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 08:44:41 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 922351C0B7A; Tue,  2 Feb 2021 14:43:59 +0100 (CET)
+Date:   Tue, 2 Feb 2021 14:43:59 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Doug Anderson <dianders@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Benson Leung <bleung@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: Re: [PATCH] Input: cros_ec_keyb: Add support for a front proximity
+ switch
+Message-ID: <20210202134359.GA25474@duo.ucw.cz>
+References: <20201205004709.3126266-1-swboyd@chromium.org>
+ <CAD=FV=XjzBLTPMqOf1NK0pjXiZWrLT227nksxhMqaFG6GxAqjQ@mail.gmail.com>
+ <X/ZwRqJFJ9BY4Z3z@google.com>
+ <CAD=FV=VmNQDSZFT3vaJ64DYyGqoE39uig581ZmaX0s-Y1U_CTw@mail.gmail.com>
+ <X/dlKKeAHU/Ab+VD@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 02 Feb 2021 13:43:48 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Jianyong Wu <jianyong.wu@arm.com>
-Cc:     netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org,
-        tglx@linutronix.de, pbonzini@redhat.com, richardcochran@gmail.com,
-        Mark.Rutland@arm.com, will@kernel.org, suzuki.poulose@arm.com,
-        Andre.Przywara@arm.com, steven.price@arm.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
-        Steve.Capper@arm.com, justin.he@arm.com, nd@arm.com
-Subject: Re: [PATCH v16 8/9] doc: add ptp_kvm introduction for arm64 support
-In-Reply-To: <20201209060932.212364-9-jianyong.wu@arm.com>
-References: <20201209060932.212364-1-jianyong.wu@arm.com>
- <20201209060932.212364-9-jianyong.wu@arm.com>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <abe1ea58ddd13e43e62c25103e05fcf0@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: jianyong.wu@arm.com, netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org, tglx@linutronix.de, pbonzini@redhat.com, richardcochran@gmail.com, Mark.Rutland@arm.com, will@kernel.org, suzuki.poulose@arm.com, Andre.Przywara@arm.com, steven.price@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, Steve.Capper@arm.com, justin.he@arm.com, nd@arm.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="7AUc2qLy4jB3hD7Z"
+Content-Disposition: inline
+In-Reply-To: <X/dlKKeAHU/Ab+VD@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-09 06:09, Jianyong Wu wrote:
-> PTP_KVM implementation depends on hypercall using SMCCC. So we
-> introduce a new SMCCC service ID. This doc explains how does the
-> ID define and how does PTP_KVM works on arm/arm64.
-> 
-> Signed-off-by: Jianyong Wu <jianyong.wu@arm.com>
-> ---
->  Documentation/virt/kvm/api.rst         |  9 +++++++
->  Documentation/virt/kvm/arm/index.rst   |  1 +
->  Documentation/virt/kvm/arm/ptp_kvm.rst | 31 +++++++++++++++++++++++
->  Documentation/virt/kvm/timekeeping.rst | 35 ++++++++++++++++++++++++++
->  4 files changed, 76 insertions(+)
->  create mode 100644 Documentation/virt/kvm/arm/ptp_kvm.rst
-> 
-> diff --git a/Documentation/virt/kvm/api.rst 
-> b/Documentation/virt/kvm/api.rst
-> index e00a66d72372..3769cc2f7d9c 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -6390,3 +6390,12 @@ When enabled, KVM will disable paravirtual
-> features provided to the
->  guest according to the bits in the KVM_CPUID_FEATURES CPUID leaf
->  (0x40000001). Otherwise, a guest may use the paravirtual features
->  regardless of what has actually been exposed through the CPUID leaf.
-> +
-> +8.27 KVM_CAP_PTP_KVM
-> +--------------------
-> +
-> +:Architectures: arm64
-> +
-> +This capability indicates that KVM virtual PTP service is supported in 
-> host.
-> +It must company with the implementation of KVM virtual PTP service in 
-> host
-> +so VMM can probe if there is the service in host by checking this 
-> capability.
 
-This reads a bit odd. I came up with the following:
+--7AUc2qLy4jB3hD7Z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-+This capability indicates that the KVM virtual PTP service is
-+supported in the host. A VMM can check whether the service is
-+available to the guest on migration.
+Hi!
 
+> > > > Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> > > >
+> > > > Given that it touches a header file owned by the Chrome OS maintain=
+ers
+> > > > and a driver owned by input, how should it land?  One maintainer Ac=
+ks
+> > > > and the other lands?
+> > >
+> > > Sorry about missing this one, however the "front proximity" switch has
+> > > been introduced for the benefit of phone devices, to be emitted when a
+> > > device is raised to user's ear, and I do not think we should be using
+> > > this here.
+> > >
+> > > We have just recently had similar discussion with regard to palm- and
+> > > lap-mode sensors and whether they should be reported over input or IIO
+> > > as true proximity sensors:
+> > >
+> > > https://lore.kernel.org/linux-iio/9f9b0ff6-3bf1-63c4-eb36-901cecd7c4d=
+9@redhat.com/
+> > >
+> > > Based on what we are doing for other Chrome OS devices that expose
+> > > proximity sensors (for example trogdor) we have decided that we all
+> > > should be using IIO as it will allow not only on/off, but true proxim=
+ity
+> > > reporting with potential of implementing smarter policies by userspac=
+e.
+> > >
+> > > Because of that we should do the same here and export this as IIO
+> > > proximity sensor as well.
+> >=20
+> > For devices with a true proximity sensor that's exactly what we're
+> > doing.  I've only been involved in the periphery of the discussion,
+> > but as I understand it there are some models of laptop for which we
+> > don't have a true proximity sensor.  On these devices, the EC is in
+> > charge of deciding about proximity based on a number of factors.
+>=20
+> Yes, I understand that on some devices the proximity sensors are not
+> true sensors but rather on/off signals, potentially derived from a
+> multitude of sources. However there is still a benefit in exposing them
+> as IIO proximity devices with limited reporting representing
+> [near, infinity] range/values. This will mean that userspace needs to
+> monitor only one set of devices (IIO) instead of both IIO and input, and
+> will not require constantly expanding EV_SW set to account for
+> ever-growing number of proximity sensors (lap, palm, general presence,
+> etc).
 
-> diff --git a/Documentation/virt/kvm/arm/index.rst
-> b/Documentation/virt/kvm/arm/index.rst
-> index 3e2b2aba90fc..78a9b670aafe 100644
-> --- a/Documentation/virt/kvm/arm/index.rst
-> +++ b/Documentation/virt/kvm/arm/index.rst
-> @@ -10,3 +10,4 @@ ARM
->     hyp-abi
->     psci
->     pvtime
-> +   ptp_kvm
-> diff --git a/Documentation/virt/kvm/arm/ptp_kvm.rst
-> b/Documentation/virt/kvm/arm/ptp_kvm.rst
-> new file mode 100644
-> index 000000000000..d729c1388a5c
-> --- /dev/null
-> +++ b/Documentation/virt/kvm/arm/ptp_kvm.rst
-> @@ -0,0 +1,31 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +PTP_KVM support for arm/arm64
-> +=============================
-> +
-> +PTP_KVM is used for time sync between guest and host in a high 
-> precision.
-> +It needs to get the wall time and counter value from the host and
-> transfer these
-> +to guest via hypercall service. So one more hypercall service has been 
-> added.
-> +
-> +This new SMCCC hypercall is defined as:
+While I believe one set of devices is good goal, I don't think IIO is
+good solution here. It is being used for user input after
+all... Routing on/off values to IIO is strange.
 
-It won't be new anymore the minute this is merged.
+Best regards,
+									Pavel
 
-> +
-> +* ARM_SMCCC_HYP_KVM_PTP_FUNC_ID: 0x86000001
-> +
-> +As both 32 and 64-bits ptp_kvm client should be supported, we choose
-> SMC32/HVC32
-> +calling convention.
-> +
-> +ARM_SMCCC_HYP_KVM_PTP_FUNC_ID:
-> +
-> +    =============    ==========    ==========
-> +    Function ID:     (uint32)      0x86000001
-> +    Arguments:       (uint32)      ARM_PTP_PHY_COUNTER(1) or
-> ARM_PTP_VIRT_COUNTER(0)
-> +                                   which indicate acquiring physical 
-> counter or
-> +                                   virtual counter respectively.
-> +    Return Value:    val0(uint32)  NOT_SUPPORTED(-1) or upper 32 bits
-> of wall clock time(64-bits).
-> +                     val1(uint32)  Lower 32 bits of wall clock time.
-> +                     val2(uint32)  Upper 32 bits of counter 
-> cycle(64-bits).
-> +                     val3(uint32)  Lower 32 bits of counter cycle.
-> +    Endianness:                    No Restrictions.
-> +    =============    ==========    ==========
-> +
-> +More info see section 5 in Documentation/virt/kvm/timekeeping.rst.
+--=20
+http://www.livejournal.com/~pavelmachek
 
-I've tidied this up like this:
+--7AUc2qLy4jB3hD7Z
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/Documentation/virt/kvm/arm/ptp_kvm.rst 
-b/Documentation/virt/kvm/arm/ptp_kvm.rst
-index d729c1388a5c..68cffb50d8bf 100644
---- a/Documentation/virt/kvm/arm/ptp_kvm.rst
-+++ b/Documentation/virt/kvm/arm/ptp_kvm.rst
-@@ -3,29 +3,23 @@
-  PTP_KVM support for arm/arm64
-  =============================
+-----BEGIN PGP SIGNATURE-----
 
--PTP_KVM is used for time sync between guest and host in a high 
-precision.
--It needs to get the wall time and counter value from the host and 
-transfer these
--to guest via hypercall service. So one more hypercall service has been 
-added.
--
--This new SMCCC hypercall is defined as:
-+PTP_KVM is used for high precision time sync between host and guests.
-+It relies on transferring the wall clock and counter value from the
-+host to the guest using a KVM-specific hypercall.
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYBlXHwAKCRAw5/Bqldv6
+8iQyAKDEsYNRzqr/jIGnzNuxddtPB41y4ACfTPpkTTE4bkMVKGj5xxJf3/IwM88=
+=+KpI
+-----END PGP SIGNATURE-----
 
-  * ARM_SMCCC_HYP_KVM_PTP_FUNC_ID: 0x86000001
-
--As both 32 and 64-bits ptp_kvm client should be supported, we choose 
-SMC32/HVC32
--calling convention.
--
--ARM_SMCCC_HYP_KVM_PTP_FUNC_ID:
-+This hypercall uses the SMC32/HVC32 calling convention:
-
-+ARM_SMCCC_HYP_KVM_PTP_FUNC_ID
-      =============    ==========    ==========
-      Function ID:     (uint32)      0x86000001
--    Arguments:       (uint32)      ARM_PTP_PHY_COUNTER(1) or 
-ARM_PTP_VIRT_COUNTER(0)
--                                   which indicate acquiring physical 
-counter or
--                                   virtual counter respectively.
--    Return Value:    val0(uint32)  NOT_SUPPORTED(-1) or upper 32 bits 
-of wall clock time(64-bits).
--                     val1(uint32)  Lower 32 bits of wall clock time.
--                     val2(uint32)  Upper 32 bits of counter 
-cycle(64-bits).
--                     val3(uint32)  Lower 32 bits of counter cycle.
-+    Arguments:       (uint32)      KVM_PTP_VIRT_COUNTER(0)
-+                                   KVM_PTP_PHYS_COUNTER(1)
-+    Return Values:   (int32)       NOT_SUPPORTED(-1) on error, or
-+                     (uint32)      Upper 32 bits of wall clock time 
-(r0)
-+                     (uint32)      Lower 32 bits of wall clock time 
-(r1)
-+                     (uint32)      Upper 32 bits of counter (r2)
-+                     (uint32)      Lower 32 bits of counter (r3)
-      Endianness:                    No Restrictions.
-      =============    ==========    ==========
--
--More info see section 5 in Documentation/virt/kvm/timekeeping.rst.
-
-> diff --git a/Documentation/virt/kvm/timekeeping.rst
-> b/Documentation/virt/kvm/timekeeping.rst
-> index 21ae7efa29ba..c81383e38372 100644
-> --- a/Documentation/virt/kvm/timekeeping.rst
-> +++ b/Documentation/virt/kvm/timekeeping.rst
-> @@ -13,6 +13,7 @@ Timekeeping Virtualization for X86-Based 
-> Architectures
->     2) Timing Devices
->     3) TSC Hardware
->     4) Virtualization Problems
-> +   5) KVM virtual PTP clock
-> 
->  1. Overview
->  ===========
-> @@ -643,3 +644,37 @@ by using CPU utilization itself as a signalling
-> channel.  Preventing such
->  problems would require completely isolated virtual time which may not 
-> track
->  real time any longer.  This may be useful in certain security or QA 
-> contexts,
->  but in general isn't recommended for real-world deployment scenarios.
-> +
-> +5. KVM virtual PTP clock
-> +========================
-> +
-> +NTP (Network Time Protocol) is often used to sync time in a VM. 
-> Unfortunately,
-> +the precision of NTP is limited due to unknown delays in the network.
-> +
-> +KVM virtual PTP clock (PTP_KVM) offers another way to sync time in VM; 
-> use the
-> +host's clock rather than one from a remote machine. Having a 
-> synchronization
-> +mechanism for the virtualization environment allows us to keep all the 
-> guests
-> +running on the same host in sync.
-> +In general, the delay of communication between host and guest is quite
-> +small, so ptp_kvm can offer time sync precision up to in order of 
-> nanoseconds.
-> +Please keep in mind that ptp_kvm just limits itself to be a channel 
-> which
-> +transmits the remote clock from host to guest. An application, eg. 
-> chrony, is
-> +needed in usersapce of VM in order to set the guest time.
-> +
-> +After ptp_kvm is initialized, there will be a new device node under 
-> /dev called
-> +ptp%d. A guest userspace service, like chrony, can use this device to 
-> get host
-> +walltime, sometimes also counter cycle, which depends on the service 
-> it calls.
-> +Then this guest userspace service can use those data to do the time 
-> sync for
-> +the guest.
-> +The following is the work flow of ptp_kvm:
-> +
-> +a) time sync service in guest userspace call ioctl on ptp device 
-> /dev/ptp%d.
-> +b) ptp_kvm module in guest receives this request then invokes 
-> hypercall to
-> +   route into host kernel to request host's walltime/counter cycle.
-> +c) ptp_kvm hypercall service on the host responds to the request and 
-> sends data
-> +   back.
-> +d) ptp in guest copies the data to userspace.
-> +
-> +ptp_kvm consists of components running on the guest and host. Step 2
-> consists of
-> +a guest driver making a hypercall whilst step 3 involves the
-> hypervisor responding
-> +with information.
-
-I don't think we need any of this here, as the whole file
-focuses on x86-specific issues for timekeeping. If we want
-to document KVM PTP, this should probably be a separate document.
-
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+--7AUc2qLy4jB3hD7Z--
