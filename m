@@ -2,116 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7315730B609
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 04:47:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8763530B603
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 04:45:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231469AbhBBDqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 22:46:25 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:59421 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231225AbhBBDqY (ORCPT
+        id S231514AbhBBDo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 22:44:27 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:53557 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229819AbhBBDoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 22:46:24 -0500
-Received: from mail-pj1-f69.google.com ([209.85.216.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <matthew.ruffell@canonical.com>)
-        id 1l6maE-0003HO-81
-        for linux-kernel@vger.kernel.org; Tue, 02 Feb 2021 03:42:30 +0000
-Received: by mail-pj1-f69.google.com with SMTP id x5so908437pjk.7
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 19:42:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2QyTMXw4YiHlxPz2TDd2N4/mAS03FpHnAiVRaHpKfIA=;
-        b=Pwmndgt2jrjaH/ZZAERgv/HUICLVvOPPvbTPPKXUr6Bq9SPsxEVW8/rdHf81hyMlcf
-         HgMOWp8SlW4jKr8d7DtYzZaO+l02XRilTqMguL9yZW3o7HD4Vr0cAxmn4ZihL4qkzo+o
-         yQDUdwSEJIbwgvUohMDQHKWUFuQtPyVbph+RAhsKpY80tTvT+hnabWVhc3g1Syicg8Jb
-         Kr1CTuJY2z61JZy1UbL1OGEXF76A7Ynn48GTMQrfclkG3ktiq1hAR5L6a1nv2TQYlwsA
-         g4/Fb3g4a88xNjRBkrmvT5a10a6MLdogTyKxFUKn52zSU58dAb3IMLFarNeAlIN3n9Pf
-         SJSg==
-X-Gm-Message-State: AOAM531UTTOXnSVyQX19DakqdWOz0GlxOQ6Qx4s98ND9ZPsjNIBqHGaW
-        lUns+E+e6n0+tkXmjYj0qFwNr5Thzf7QZuEnnhM3N8j8IUdmRE8kTfzE+TZ09BCotiG2qcFg/Yw
-        /afrR+AWdFl2oMAks3SMX5hLcCcGy0/nfOYBDBXDdmg==
-X-Received: by 2002:a17:90a:404c:: with SMTP id k12mr2138853pjg.4.1612237348963;
-        Mon, 01 Feb 2021 19:42:28 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJx834fiNaEy+R1eVZYa/eRSW+Yvfpm6YMyU3WX/PvjMIX6VuCJWuo0XxR24SAFwXqKnIM75ig==
-X-Received: by 2002:a17:90a:404c:: with SMTP id k12mr2138827pjg.4.1612237348614;
-        Mon, 01 Feb 2021 19:42:28 -0800 (PST)
-Received: from [192.168.1.107] (222-152-178-139-fibre.sparkbb.co.nz. [222.152.178.139])
-        by smtp.gmail.com with ESMTPSA id ck10sm965775pjb.3.2021.02.01.19.42.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Feb 2021 19:42:27 -0800 (PST)
-Subject: Re: PROBLEM: Recent raid10 block discard patchset causes filesystem
- corruption on fstrim
-To:     Xiao Ni <xni@redhat.com>, Song Liu <songliubraving@fb.com>
-Cc:     linux-raid <linux-raid@vger.kernel.org>,
-        Song Liu <song@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, Coly Li <colyli@suse.de>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        "khalid.elmously@canonical.com" <khalid.elmously@canonical.com>,
-        Jay Vosburgh <jay.vosburgh@canonical.com>
-References: <dbd2761e-cd7d-d60a-f769-ecc8c6335814@canonical.com>
- <EA47EF7A-06D8-4B37-BED7-F04753D70DF5@fb.com>
- <a85943ed-60d4-05ad-9f6d-d76324fa5538@redhat.com>
-From:   Matthew Ruffell <matthew.ruffell@canonical.com>
-Message-ID: <71b9c9df-93a8-165a-d254-746a874f2238@canonical.com>
-Date:   Tue, 2 Feb 2021 16:42:20 +1300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <a85943ed-60d4-05ad-9f6d-d76324fa5538@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Mon, 1 Feb 2021 22:44:25 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R911e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UNeCW-d_1612237412;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UNeCW-d_1612237412)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 02 Feb 2021 11:43:40 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     khilman@kernel.org
+Cc:     tony@atomide.com, linux@armlinux.org.uk,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] arm: omap2: Replace DEFINE_SIMPLE_ATTRIBUTE with DEFINE_DEBUGFS_ATTRIBUTE
+Date:   Tue,  2 Feb 2021 11:43:31 +0800
+Message-Id: <1612237411-115179-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xiao,
+Fix the following coccicheck warning:
 
-On 24/12/20 11:18 pm, Xiao Ni wrote:> The root cause is found. Now we use a similar way with raid0 to handle discard request
-> for raid10. Because the discard region is very big, we can calculate the start/end address
-> for each disk. Then we can submit the discard request to each disk. But for raid10, it has
-> copies. For near layout, if the discard request doesn't align with chunk size, we calculate
-> a start_disk_offset. Now we only use start_disk_offset for the first disk, but it should be
-> used for the near copies disks too.
+./arch/arm/mach-omap2/pm-debug.c:171:0-23: WARNING: pwrdm_suspend_fops
+should be defined with DEFINE_DEBUGFS_ATTRIBUTE.
 
-Thanks for finding the root cause and making a patch that corrects the offset
-addresses for multiple disks!
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ arch/arm/mach-omap2/pm-debug.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> 
-> [  789.709501] discard bio start : 70968, size : 191176
-> [  789.709507] first stripe index 69, start disk index 0, start disk offset 70968
-> [  789.709509] last stripe index 256, end disk index 0, end disk offset 262144
-> [  789.709511] disk 0, dev start : 70968, dev end : 262144
-> [  789.709515] disk 1, dev start : 70656, dev end : 262144
-> 
-> For example, in this test case, it has 2 near copies. The start_disk_offset for the first disk is 70968.
-> It should use the same offset address for second disk. But it uses the start address of this chunk.
-> It discard more region. The patch in the attachment can fix this problem. It split the region that
-> doesn't align with chunk size.
+diff --git a/arch/arm/mach-omap2/pm-debug.c b/arch/arm/mach-omap2/pm-debug.c
+index 919d35d..b43eab9 100644
+--- a/arch/arm/mach-omap2/pm-debug.c
++++ b/arch/arm/mach-omap2/pm-debug.c
+@@ -168,8 +168,8 @@ static int pwrdm_suspend_set(void *data, u64 val)
+ 	return -EINVAL;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(pwrdm_suspend_fops, pwrdm_suspend_get,
+-			pwrdm_suspend_set, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(pwrdm_suspend_fops, pwrdm_suspend_get,
++			  pwrdm_suspend_set, "%llu\n");
+ 
+ static int __init pwrdms_setup(struct powerdomain *pwrdm, void *dir)
+ {
+-- 
+1.8.3.1
 
-Just wondering, what is the current status of the patchset? Is there anything
-that I can do to help? 
-
-> 
-> There is another problem. The stripe size should be calculated differently for near layout and far layout.
-> 
-
-I can help review the patch and help test the patches anytime. Do you need help
-with making a patch to calculate the stripe size for near and far layouts?
-
-Let me know how you are going with this patchset, and if there is anything I
-can do for you.
-
-Thanks,
-Matthew
-
-> @Song, do you want me to use a separate patch for this fix, or fix this in the original patch?
-> 
-> Merry Christmas
-> Xiao
-> 
