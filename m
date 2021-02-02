@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCFD930C8DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:03:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B852830C14A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:21:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238092AbhBBSCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:02:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47582 "EHLO mail.kernel.org"
+        id S232031AbhBBOTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:19:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233931AbhBBOIK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:08:10 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30B4E6502C;
-        Tue,  2 Feb 2021 13:50:18 +0000 (UTC)
+        id S234040AbhBBOLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:11:54 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 655EB64E2B;
+        Tue,  2 Feb 2021 13:51:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273819;
-        bh=0bZso9ozzYebTs7H/oXmtDZHr5CG1Y8XYZU4iIaFh6Y=;
+        s=korg; t=1612273896;
+        bh=Aptxk1tkYIY1snw2mi4RXtcEM96oqFIRYLK91zJatqM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=thQPeU6BALCdZSZhGLhoDeT+CUxhkxfmZRRM+qzVFbMKN947woRmhveTmw6OBsgoV
-         U1epZGyXhJNo820WkY7i4Y6yS1IzTpJcRCNObdRS6Gm/+Uv/39g4Pka0FCkRQM67ZL
-         hlZ7LJITYxXVm5YGwGrDEO9IMbaVF8TF5zfKop/I=
+        b=QPtL6GgpoAAWqqd6r2Ql1O5sYyoQ1yIvzeVYyCE5p/JQnYsm2ZXAi25/iQkpt+lEo
+         S/c0bZiLypDUGJwqdf2R3IWzdp6OcUf2fv+UAMY9/DdMS7FA/yrrxbLgsRVOhkwwiT
+         OYXdLhE8c2YeTEoQchcLJ+RC2zkcVVnd2ggepInY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -27,9 +27,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Ingo Molnar <mingo@kernel.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4.9 05/32] futex: Move futex exit handling into futex code
-Date:   Tue,  2 Feb 2021 14:38:28 +0100
-Message-Id: <20210202132942.249450957@linuxfoundation.org>
+Subject: [PATCH 4.9 06/32] futex: Replace PF_EXITPIDONE with a state
+Date:   Tue,  2 Feb 2021 14:38:29 +0100
+Message-Id: <20210202132942.291252804@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210202132942.035179752@linuxfoundation.org>
 References: <20210202132942.035179752@linuxfoundation.org>
@@ -43,183 +43,170 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-commit ba31c1a48538992316cc71ce94fa9cd3e7b427c0 upstream.
+commit 3d4775df0a89240f671861c6ab6e8d59af8e9e41 upstream.
 
-The futex exit handling is #ifdeffed into mm_release() which is not pretty
-to begin with. But upcoming changes to address futex exit races need to add
-more functionality to this exit code.
+The futex exit handling relies on PF_ flags. That's suboptimal as it
+requires a smp_mb() and an ugly lock/unlock of the exiting tasks pi_lock in
+the middle of do_exit() to enforce the observability of PF_EXITING in the
+futex code.
 
-Split it out into a function, move it into futex code and make the various
-futex exit functions static.
+Add a futex_state member to task_struct and convert the PF_EXITPIDONE logic
+over to the new state. The PF_EXITING dependency will be cleaned up in a
+later step.
 
-Preparatory only and no functional change.
-
-Folded build fix from Borislav.
+This prepares for handling various futex exit issues later.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Reviewed-by: Ingo Molnar <mingo@kernel.org>
 Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20191106224556.049705556@linutronix.de
+Link: https://lkml.kernel.org/r/20191106224556.149449274@linutronix.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/compat.h |    2 --
- include/linux/futex.h  |   24 +++++++++++++++++-------
- kernel/fork.c          |   25 +++----------------------
- kernel/futex.c         |   28 ++++++++++++++++++++++++++--
- 4 files changed, 46 insertions(+), 33 deletions(-)
+ include/linux/futex.h |   34 ++++++++++++++++++++++++++++++++++
+ include/linux/sched.h |    2 +-
+ kernel/exit.c         |   18 ++----------------
+ kernel/futex.c        |   17 ++++++++---------
+ 4 files changed, 45 insertions(+), 26 deletions(-)
 
---- a/include/linux/compat.h
-+++ b/include/linux/compat.h
-@@ -311,8 +311,6 @@ struct compat_kexec_segment;
- struct compat_mq_attr;
- struct compat_msgbuf;
- 
--extern void compat_exit_robust_list(struct task_struct *curr);
--
- asmlinkage long
- compat_sys_set_robust_list(struct compat_robust_list_head __user *head,
- 			   compat_size_t len);
 --- a/include/linux/futex.h
 +++ b/include/linux/futex.h
-@@ -1,6 +1,8 @@
- #ifndef _LINUX_FUTEX_H
- #define _LINUX_FUTEX_H
- 
-+#include <linux/sched.h>
-+
- #include <uapi/linux/futex.h>
- 
- struct inode;
-@@ -53,14 +55,22 @@ union futex_key {
+@@ -55,6 +55,11 @@ union futex_key {
  #define FUTEX_KEY_INIT (union futex_key) { .both = { .ptr = 0ULL } }
  
  #ifdef CONFIG_FUTEX
--extern void exit_robust_list(struct task_struct *curr);
--extern void exit_pi_state_list(struct task_struct *curr);
--#else
--static inline void exit_robust_list(struct task_struct *curr)
--{
--}
--static inline void exit_pi_state_list(struct task_struct *curr)
-+static inline void futex_init_task(struct task_struct *tsk)
++enum {
++	FUTEX_STATE_OK,
++	FUTEX_STATE_DEAD,
++};
++
+ static inline void futex_init_task(struct task_struct *tsk)
  {
-+	tsk->robust_list = NULL;
-+#ifdef CONFIG_COMPAT
-+	tsk->compat_robust_list = NULL;
-+#endif
-+	INIT_LIST_HEAD(&tsk->pi_state_list);
-+	tsk->pi_state_cache = NULL;
- }
-+
-+void futex_mm_release(struct task_struct *tsk);
-+
-+long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
-+	      u32 __user *uaddr2, u32 val2, u32 val3);
-+#else
-+static inline void futex_init_task(struct task_struct *tsk) { }
-+static inline void futex_mm_release(struct task_struct *tsk) { }
+ 	tsk->robust_list = NULL;
+@@ -63,6 +68,34 @@ static inline void futex_init_task(struc
  #endif
- #endif
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -1085,20 +1085,7 @@ static int wait_for_vfork_done(struct ta
- void mm_release(struct task_struct *tsk, struct mm_struct *mm)
- {
- 	/* Get rid of any futexes when releasing the mm */
--#ifdef CONFIG_FUTEX
--	if (unlikely(tsk->robust_list)) {
--		exit_robust_list(tsk);
--		tsk->robust_list = NULL;
--	}
--#ifdef CONFIG_COMPAT
--	if (unlikely(tsk->compat_robust_list)) {
--		compat_exit_robust_list(tsk);
--		tsk->compat_robust_list = NULL;
--	}
--#endif
--	if (unlikely(!list_empty(&tsk->pi_state_list)))
--		exit_pi_state_list(tsk);
--#endif
-+	futex_mm_release(tsk);
- 
- 	uprobe_free_utask(tsk);
- 
-@@ -1706,14 +1693,8 @@ static __latent_entropy struct task_stru
- #ifdef CONFIG_BLOCK
- 	p->plug = NULL;
- #endif
--#ifdef CONFIG_FUTEX
--	p->robust_list = NULL;
--#ifdef CONFIG_COMPAT
--	p->compat_robust_list = NULL;
--#endif
--	INIT_LIST_HEAD(&p->pi_state_list);
--	p->pi_state_cache = NULL;
--#endif
-+	futex_init_task(p);
-+
- 	/*
- 	 * sigaltstack should be cleared when sharing the same VM
- 	 */
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -339,6 +339,12 @@ static inline bool should_fail_futex(boo
- }
- #endif /* CONFIG_FAIL_FUTEX */
- 
-+#ifdef CONFIG_COMPAT
-+static void compat_exit_robust_list(struct task_struct *curr);
-+#else
-+static inline void compat_exit_robust_list(struct task_struct *curr) { }
-+#endif
-+
- static inline void futex_get_mm(union futex_key *key)
- {
- 	atomic_inc(&key->private.mm->mm_count);
-@@ -894,7 +900,7 @@ static struct task_struct * futex_find_g
-  * Kernel cleans up PI-state, but userspace is likely hosed.
-  * (Robust-futex cleanup is separate and might save the day for userspace.)
-  */
--void exit_pi_state_list(struct task_struct *curr)
-+static void exit_pi_state_list(struct task_struct *curr)
- {
- 	struct list_head *next, *head = &curr->pi_state_list;
- 	struct futex_pi_state *pi_state;
-@@ -3201,7 +3207,7 @@ static inline int fetch_robust_entry(str
-  *
-  * We silently return on any sign of list-walking problem.
-  */
--void exit_robust_list(struct task_struct *curr)
-+static void exit_robust_list(struct task_struct *curr)
- {
- 	struct robust_list_head __user *head = curr->robust_list;
- 	struct robust_list __user *entry, *next_entry, *pending;
-@@ -3264,6 +3270,24 @@ void exit_robust_list(struct task_struct
- 				   curr, pip);
- }
- 
-+void futex_mm_release(struct task_struct *tsk)
-+{
-+	if (unlikely(tsk->robust_list)) {
-+		exit_robust_list(tsk);
-+		tsk->robust_list = NULL;
-+	}
-+
-+#ifdef CONFIG_COMPAT
-+	if (unlikely(tsk->compat_robust_list)) {
-+		compat_exit_robust_list(tsk);
-+		tsk->compat_robust_list = NULL;
-+	}
-+#endif
-+
-+	if (unlikely(!list_empty(&tsk->pi_state_list)))
-+		exit_pi_state_list(tsk);
+ 	INIT_LIST_HEAD(&tsk->pi_state_list);
+ 	tsk->pi_state_cache = NULL;
++	tsk->futex_state = FUTEX_STATE_OK;
 +}
 +
- long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
- 		u32 __user *uaddr2, u32 val2, u32 val3)
- {
++/**
++ * futex_exit_done - Sets the tasks futex state to FUTEX_STATE_DEAD
++ * @tsk:	task to set the state on
++ *
++ * Set the futex exit state of the task lockless. The futex waiter code
++ * observes that state when a task is exiting and loops until the task has
++ * actually finished the futex cleanup. The worst case for this is that the
++ * waiter runs through the wait loop until the state becomes visible.
++ *
++ * This has two callers:
++ *
++ * - futex_mm_release() after the futex exit cleanup has been done
++ *
++ * - do_exit() from the recursive fault handling path.
++ *
++ * In case of a recursive fault this is best effort. Either the futex exit
++ * code has run already or not. If the OWNER_DIED bit has been set on the
++ * futex then the waiter can take it over. If not, the problem is pushed
++ * back to user space. If the futex exit code did not run yet, then an
++ * already queued waiter might block forever, but there is nothing which
++ * can be done about that.
++ */
++static inline void futex_exit_done(struct task_struct *tsk)
++{
++	tsk->futex_state = FUTEX_STATE_DEAD;
+ }
+ 
+ void futex_mm_release(struct task_struct *tsk);
+@@ -72,5 +105,6 @@ long do_futex(u32 __user *uaddr, int op,
+ #else
+ static inline void futex_init_task(struct task_struct *tsk) { }
+ static inline void futex_mm_release(struct task_struct *tsk) { }
++static inline void futex_exit_done(struct task_struct *tsk) { }
+ #endif
+ #endif
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -1815,6 +1815,7 @@ struct task_struct {
+ #endif
+ 	struct list_head pi_state_list;
+ 	struct futex_pi_state *pi_state_cache;
++	unsigned int futex_state;
+ #endif
+ #ifdef CONFIG_PERF_EVENTS
+ 	struct perf_event_context *perf_event_ctxp[perf_nr_task_contexts];
+@@ -2276,7 +2277,6 @@ extern void thread_group_cputime_adjuste
+  * Per process flags
+  */
+ #define PF_EXITING	0x00000004	/* getting shut down */
+-#define PF_EXITPIDONE	0x00000008	/* pi exit done on shut down */
+ #define PF_VCPU		0x00000010	/* I'm a virtual CPU */
+ #define PF_WQ_WORKER	0x00000020	/* I'm a workqueue worker */
+ #define PF_FORKNOEXEC	0x00000040	/* forked but didn't exec */
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -785,16 +785,7 @@ void __noreturn do_exit(long code)
+ 	 */
+ 	if (unlikely(tsk->flags & PF_EXITING)) {
+ 		pr_alert("Fixing recursive fault but reboot is needed!\n");
+-		/*
+-		 * We can do this unlocked here. The futex code uses
+-		 * this flag just to verify whether the pi state
+-		 * cleanup has been done or not. In the worst case it
+-		 * loops once more. We pretend that the cleanup was
+-		 * done as there is no way to return. Either the
+-		 * OWNER_DIED bit is set by now or we push the blocked
+-		 * task into the wait for ever nirwana as well.
+-		 */
+-		tsk->flags |= PF_EXITPIDONE;
++		futex_exit_done(tsk);
+ 		set_current_state(TASK_UNINTERRUPTIBLE);
+ 		schedule();
+ 	}
+@@ -876,12 +867,7 @@ void __noreturn do_exit(long code)
+ 	 * Make sure we are holding no locks:
+ 	 */
+ 	debug_check_no_locks_held();
+-	/*
+-	 * We can do this unlocked here. The futex code uses this flag
+-	 * just to verify whether the pi state cleanup has been done
+-	 * or not. In the worst case it loops once more.
+-	 */
+-	tsk->flags |= PF_EXITPIDONE;
++	futex_exit_done(tsk);
+ 
+ 	if (tsk->io_context)
+ 		exit_io_context(tsk);
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -1099,19 +1099,18 @@ static int attach_to_pi_owner(u32 uval,
+ 	}
+ 
+ 	/*
+-	 * We need to look at the task state flags to figure out,
+-	 * whether the task is exiting. To protect against the do_exit
+-	 * change of the task flags, we do this protected by
+-	 * p->pi_lock:
++	 * We need to look at the task state to figure out, whether the
++	 * task is exiting. To protect against the change of the task state
++	 * in futex_exit_release(), we do this protected by p->pi_lock:
+ 	 */
+ 	raw_spin_lock_irq(&p->pi_lock);
+-	if (unlikely(p->flags & PF_EXITING)) {
++	if (unlikely(p->futex_state != FUTEX_STATE_OK)) {
+ 		/*
+-		 * The task is on the way out. When PF_EXITPIDONE is
+-		 * set, we know that the task has finished the
+-		 * cleanup:
++		 * The task is on the way out. When the futex state is
++		 * FUTEX_STATE_DEAD, we know that the task has finished
++		 * the cleanup:
+ 		 */
+-		int ret = (p->flags & PF_EXITPIDONE) ? -ESRCH : -EAGAIN;
++		int ret = (p->futex_state = FUTEX_STATE_DEAD) ? -ESRCH : -EAGAIN;
+ 
+ 		raw_spin_unlock_irq(&p->pi_lock);
+ 		put_task_struct(p);
 
 
