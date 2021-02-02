@@ -2,140 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 386BC30BEE3
+	by mail.lfdr.de (Postfix) with ESMTP id AAE6430BEE4
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:59:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232023AbhBBM5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 07:57:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53325 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231433AbhBBM5u (ORCPT
+        id S232248AbhBBM6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 07:58:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231433AbhBBM6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 07:57:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612270583;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d68rpmNK8P9THEE+WZsflh6uEq5A5m7Cya/2Fvyn7KU=;
-        b=ZVvgga3u1N+YAijOqIOBJDQzKTiObzuFayrWXgNkdR+q23Cyfx8iDRKxQrCl260HVTWm7i
-        AaAZziUp+kqFqj4bYgwuKc0LZ3+YWGKhyyCFYGCiavJ4tL1ypcY7lYceky/ws0iAGH5N97
-        sKrtzwewT9DH8Na2sCXZRe4tVj0nt2c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-342-TbIzxk4-OKmY48wWmNZHAQ-1; Tue, 02 Feb 2021 07:56:19 -0500
-X-MC-Unique: TbIzxk4-OKmY48wWmNZHAQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7805C801B13;
-        Tue,  2 Feb 2021 12:56:17 +0000 (UTC)
-Received: from [10.36.114.148] (ovpn-114-148.ams2.redhat.com [10.36.114.148])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EA6405D9DC;
-        Tue,  2 Feb 2021 12:56:11 +0000 (UTC)
-Subject: Re: [PATCH V2 1/2] arm64/mm: Fix pfn_valid() for ZONE_DEVICE based
- memory
-To:     Will Deacon <will@kernel.org>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, Catalin Marinas <catalin.marinas@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Mike Rapoport <rppt@linux.ibm.com>
-References: <1612239114-28428-1-git-send-email-anshuman.khandual@arm.com>
- <1612239114-28428-2-git-send-email-anshuman.khandual@arm.com>
- <20210202123215.GA16868@willie-the-truck>
- <20210202123524.GB16868@willie-the-truck>
- <f32e7caa-3414-9dd7-eb8c-220da1d925a1@redhat.com>
- <20210202125152.GC16868@willie-the-truck>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <4d8f5156-8628-5531-1485-322ad92aa15c@redhat.com>
-Date:   Tue, 2 Feb 2021 13:56:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 2 Feb 2021 07:58:04 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7638C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 04:57:23 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id cl8so936851pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 04:57:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v45bS+5J5I6ABfY+sXqAeT4Q3Py85OIA8x3/cYZh11w=;
+        b=MfpKIB39gMkmkjjQTDyTj96EnTGkhMOd5LnzvK6Yb3z8kma5g2OtDnvIuWvn4fgadV
+         aMrBBCYyopD1l/BSOGsqCTiYHjODSXF5VZWoVFDMJI+FxrC9FzmQL+bj1UlERXH0O6bF
+         p+UM7ax6cj5+8F6QgIWR5rcCsylaKbBx2vQjyxJ0rr3FvW6fOGndlhu7wsQYq1i6Nhiz
+         k9auQJmILe6Ez8faGgN9FbNHZj8MK7jayAcoXtZT/Fz+ktQJaWp2qmh5vQTss/43/Mrf
+         JJnZf863aSB3vHVYVNU+oQbg62VfiN/sQtsy3WgqIW86K8HrwC7DrXwnHqcD2RRbTcFW
+         1cWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v45bS+5J5I6ABfY+sXqAeT4Q3Py85OIA8x3/cYZh11w=;
+        b=eSDjeSwe4DbaacGsesz0kLn/w5opj1/HLCz5S96N0KOm4mnhOKQGnW4um53rqcChcN
+         i0TtVVg+iwtck/xFCjj3sxKvB2TFycUujaHmJVoFWigcwZVkjp17EzcEhAaiXQBt4Qql
+         QuB2bsegZC1oWc0gxScpOReywCHPaQgVzut/W3xHv6sKKCDlEN+imiOtxqMooDA4OHKE
+         lPuSxUE+Dnxv0LBSWGOld68WoL7tWmO1XGb24AAVIan/LHzjpZHcvG9qwtZAXgKpfJEO
+         t0uZNOuPGjnuApd4ZhqFGpMd08YL2pQToVwLPStmL6YbqGdbjizNssYxNsdWCd5n6dBv
+         rcbA==
+X-Gm-Message-State: AOAM530LKGg54UTn7Ffw+Vrx/hiSeR9myvU5SXuofr5rPCJbHVf3OtfS
+        RjNQX7RKVG0QeG+1494fqZBPfwhl1UA=
+X-Google-Smtp-Source: ABdhPJz2bzwtNxsjEuMl6QTIzUC8LVFzlrnqGAz2MD8Unfi8w/Dmf3RfdWL2r0zAP8du3bB4HZXTIQ==
+X-Received: by 2002:a17:90b:118e:: with SMTP id gk14mr2609909pjb.34.1612270642888;
+        Tue, 02 Feb 2021 04:57:22 -0800 (PST)
+Received: from daehojeong1.seo.corp.google.com ([2401:fa00:d:11:4f5:ae3a:569d:491a])
+        by smtp.gmail.com with ESMTPSA id q132sm4219037pfq.171.2021.02.02.04.57.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 04:57:22 -0800 (PST)
+From:   Daeho Jeong <daeho43@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH v4] f2fs: rename checkpoint=merge mount option to checkpoint_merge
+Date:   Tue,  2 Feb 2021 21:57:16 +0900
+Message-Id: <20210202125716.2635406-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
 MIME-Version: 1.0
-In-Reply-To: <20210202125152.GC16868@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02.02.21 13:51, Will Deacon wrote:
-> On Tue, Feb 02, 2021 at 01:39:29PM +0100, David Hildenbrand wrote:
->> On 02.02.21 13:35, Will Deacon wrote:
->>> On Tue, Feb 02, 2021 at 12:32:15PM +0000, Will Deacon wrote:
->>>> On Tue, Feb 02, 2021 at 09:41:53AM +0530, Anshuman Khandual wrote:
->>>>> pfn_valid() validates a pfn but basically it checks for a valid struct page
->>>>> backing for that pfn. It should always return positive for memory ranges
->>>>> backed with struct page mapping. But currently pfn_valid() fails for all
->>>>> ZONE_DEVICE based memory types even though they have struct page mapping.
->>>>>
->>>>> pfn_valid() asserts that there is a memblock entry for a given pfn without
->>>>> MEMBLOCK_NOMAP flag being set. The problem with ZONE_DEVICE based memory is
->>>>> that they do not have memblock entries. Hence memblock_is_map_memory() will
->>>>> invariably fail via memblock_search() for a ZONE_DEVICE based address. This
->>>>> eventually fails pfn_valid() which is wrong. memblock_is_map_memory() needs
->>>>> to be skipped for such memory ranges. As ZONE_DEVICE memory gets hotplugged
->>>>> into the system via memremap_pages() called from a driver, their respective
->>>>> memory sections will not have SECTION_IS_EARLY set.
->>>>>
->>>>> Normal hotplug memory will never have MEMBLOCK_NOMAP set in their memblock
->>>>> regions. Because the flag MEMBLOCK_NOMAP was specifically designed and set
->>>>> for firmware reserved memory regions. memblock_is_map_memory() can just be
->>>>> skipped as its always going to be positive and that will be an optimization
->>>>> for the normal hotplug memory. Like ZONE_DEVICE based memory, all normal
->>>>> hotplugged memory too will not have SECTION_IS_EARLY set for their sections
->>>>>
->>>>> Skipping memblock_is_map_memory() for all non early memory sections would
->>>>> fix pfn_valid() problem for ZONE_DEVICE based memory and also improve its
->>>>> performance for normal hotplug memory as well.
->>>>
->>>> Hmm. Although I follow your logic, this does seem to rely on an awful lot of
->>>> assumptions to continue to hold true as the kernel evolves. In particular,
->>>> how do we ensure that early sections are always fully backed with
->>>
->>> Sorry, typo here:       ^^^ should be *non-early* sections.
->>
->> It might be a good idea to have a look at generic
->> include/linux/mmzone.h:pfn_valid()
-> 
-> The generic implementation already makes assumptions that aren't true on
-> arm64, so that's why we've ended up with our own implementation. But the
-> patches here put us in a position where I worry that pfn_valid() may return
-> 'true' in future for cases where the underlying struct page is either
-> non-existent or bogus, and debugging those failures really sucks. We had a
-> raft of those back when NOMAP was introduced and I don't want to re-live
-> that experience.
+From: Daeho Jeong <daehojeong@google.com>
 
-Yeah, and I agree when it comes to boot mem. However, the way generic 
-memory hotplug/memremap infrastructure (->!early sections) works does 
-not allow for such special cases you mention and would break quite some 
-other code if messed up. So I wouldn't worry about that part too much 
-for now.
+As checkpoint=merge comes in, mount option setting related to checkpoint
+had been mixed up and it became hard to understand. So, I separated
+this option from "checkpoint=" and made another mount option
+"checkpoint_merge" for this.
 
-> 
->> As I expressed already, long term we should really get rid of the arm64
->> variant and rather special-case the generic one. Then we won't go out of
->> sync - just as it happened with ZONE_DEVICE handling here.
-> 
-> Why does this have to be long term? This ZONE_DEVICE stuff could be the
-> carrot on the stick :)
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
+---
+v2: renamed "checkpoint=merge" to "checkpoint_merge"
+v3: removed "nocheckpoint_merge" option
+v4: re-added "nocheckpoint_merge" option to make it possible to disable
+    just only "checkpoint_merge" when remount
+---
+ Documentation/filesystems/f2fs.rst |  6 +++---
+ fs/f2fs/super.c                    | 25 +++++++++++++------------
+ 2 files changed, 16 insertions(+), 15 deletions(-)
 
-Yes, I suggested to do it now, but Anshuman convinced me that doing a 
-simple fix upfront might be cleaner --- for example when it comes to 
-backporting :)
-
+diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+index d0ead45dc706..475994ed8b15 100644
+--- a/Documentation/filesystems/f2fs.rst
++++ b/Documentation/filesystems/f2fs.rst
+@@ -247,9 +247,9 @@ checkpoint=%s[:%u[%]]	 Set to "disable" to turn off checkpointing. Set to "enabl
+ 			 hide up to all remaining free space. The actual space that
+ 			 would be unusable can be viewed at /sys/fs/f2fs/<disk>/unusable
+ 			 This space is reclaimed once checkpoint=enable.
+-			 Here is another option "merge", which creates a kernel daemon
+-			 and makes it to merge concurrent checkpoint requests as much
+-			 as possible to eliminate redundant checkpoint issues. Plus,
++checkpoint_merge	 When checkpoint is enabled, this can be used to create a kernel
++			 daemon and make it to merge concurrent checkpoint requests as
++			 much as possible to eliminate redundant checkpoint issues. Plus,
+ 			 we can eliminate the sluggish issue caused by slow checkpoint
+ 			 operation when the checkpoint is done in a process context in
+ 			 a cgroup having low i/o budget and cpu shares. To make this
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 56696f6cfa86..f1791b9c1eac 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -145,6 +145,7 @@ enum {
+ 	Opt_checkpoint_disable_cap_perc,
+ 	Opt_checkpoint_enable,
+ 	Opt_checkpoint_merge,
++	Opt_nocheckpoint_merge,
+ 	Opt_compress_algorithm,
+ 	Opt_compress_log_size,
+ 	Opt_compress_extension,
+@@ -215,7 +216,8 @@ static match_table_t f2fs_tokens = {
+ 	{Opt_checkpoint_disable_cap, "checkpoint=disable:%u"},
+ 	{Opt_checkpoint_disable_cap_perc, "checkpoint=disable:%u%%"},
+ 	{Opt_checkpoint_enable, "checkpoint=enable"},
+-	{Opt_checkpoint_merge, "checkpoint=merge"},
++	{Opt_checkpoint_merge, "checkpoint_merge"},
++	{Opt_nocheckpoint_merge, "nocheckpoint_merge"},
+ 	{Opt_compress_algorithm, "compress_algorithm=%s"},
+ 	{Opt_compress_log_size, "compress_log_size=%u"},
+ 	{Opt_compress_extension, "compress_extension=%s"},
+@@ -946,6 +948,9 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ 		case Opt_checkpoint_merge:
+ 			set_opt(sbi, MERGE_CHECKPOINT);
+ 			break;
++		case Opt_nocheckpoint_merge:
++			clear_opt(sbi, MERGE_CHECKPOINT);
++			break;
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+ 		case Opt_compress_algorithm:
+ 			if (!f2fs_sb_has_compression(sbi)) {
+@@ -1142,12 +1147,6 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ 		return -EINVAL;
+ 	}
+ 
+-	if (test_opt(sbi, DISABLE_CHECKPOINT) &&
+-			test_opt(sbi, MERGE_CHECKPOINT)) {
+-		f2fs_err(sbi, "checkpoint=merge cannot be used with checkpoint=disable\n");
+-		return -EINVAL;
+-	}
+-
+ 	/* Not pass down write hints if the number of active logs is lesser
+ 	 * than NR_CURSEG_PERSIST_TYPE.
+ 	 */
+@@ -1782,7 +1781,7 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+ 		seq_printf(seq, ",checkpoint=disable:%u",
+ 				F2FS_OPTION(sbi).unusable_cap);
+ 	if (test_opt(sbi, MERGE_CHECKPOINT))
+-		seq_puts(seq, ",checkpoint=merge");
++		seq_puts(seq, ",checkpoint_merge");
+ 	if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_POSIX)
+ 		seq_printf(seq, ",fsync_mode=%s", "posix");
+ 	else if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_STRICT)
+@@ -2066,9 +2065,8 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 		}
+ 	}
+ 
+-	if (!test_opt(sbi, MERGE_CHECKPOINT)) {
+-		f2fs_stop_ckpt_thread(sbi);
+-	} else {
++	if (!test_opt(sbi, DISABLE_CHECKPOINT) &&
++			test_opt(sbi, MERGE_CHECKPOINT)) {
+ 		err = f2fs_start_ckpt_thread(sbi);
+ 		if (err) {
+ 			f2fs_err(sbi,
+@@ -2076,6 +2074,8 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 			    err);
+ 			goto restore_gc;
+ 		}
++	} else {
++		f2fs_stop_ckpt_thread(sbi);
+ 	}
+ 
+ 	/*
+@@ -3831,7 +3831,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+ 
+ 	/* setup checkpoint request control and start checkpoint issue thread */
+ 	f2fs_init_ckpt_req_control(sbi);
+-	if (test_opt(sbi, MERGE_CHECKPOINT)) {
++	if (!test_opt(sbi, DISABLE_CHECKPOINT) &&
++			test_opt(sbi, MERGE_CHECKPOINT)) {
+ 		err = f2fs_start_ckpt_thread(sbi);
+ 		if (err) {
+ 			f2fs_err(sbi,
 -- 
-Thanks,
-
-David / dhildenb
+2.30.0.365.g02bc693789-goog
 
