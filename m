@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E49130C558
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:22:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B4F330C562
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236217AbhBBQUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 11:20:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51118 "EHLO mail.kernel.org"
+        id S230224AbhBBQV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:21:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234272AbhBBOP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234271AbhBBOP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Feb 2021 09:15:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DE3D64FC1;
-        Tue,  2 Feb 2021 13:53:42 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B42AE65058;
+        Tue,  2 Feb 2021 13:53:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612274023;
-        bh=gfDTtOfT/gCMq7MdutW1sqOEbyeingwaQFYqa9cyXvk=;
+        s=korg; t=1612274026;
+        bh=GoJ1HDyCi3HdVKG2i6AtZ5s6keR6oLhU5iBhV8Zripg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k4DH7MlZxPg4fWaKnpGrAWIxPIdUi8bjSQ+z5SoV6QcwqSHzU2IIgZ6ruIIu8NZHX
-         2iwR/l8bGyow2nF9o/5luMmoZKGnTqwKNTnw0CRByEs2Xv4NmLUlnsZQxJIiGORXRd
-         TfsND7L+E/8vxd+OjJLcWFo6rEH5ds1wNmBBE+f8=
+        b=uKXTHFI+wNC0Gt9sDrJp+Glw2veijdvc+Nx1f+phfUu/ZFuQoYTONw89N0hqI8Acw
+         OIWuwaBAdMnWCVqHuBegUA4NkYci4YJ2Yj1YNrmAbQYKF+UjeSn/BFNe9zMMo+QML2
+         2hpqTX6LWVbZ/v6XoGnrGMfYsRSTNWbtoD/JQj+4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eyal Birger <eyal.birger@gmail.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
+        stable@vger.kernel.org, Kamal Heib <kamalheib1@gmail.com>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 23/37] xfrm: fix disable_xfrm sysctl when used on xfrm interfaces
-Date:   Tue,  2 Feb 2021 14:39:06 +0100
-Message-Id: <20210202132943.880518350@linuxfoundation.org>
+Subject: [PATCH 4.19 24/37] RDMA/cxgb4: Fix the reported max_recv_sge value
+Date:   Tue,  2 Feb 2021 14:39:07 +0100
+Message-Id: <20210202132943.926953502@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210202132942.915040339@linuxfoundation.org>
 References: <20210202132942.915040339@linuxfoundation.org>
@@ -40,51 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eyal Birger <eyal.birger@gmail.com>
+From: Kamal Heib <kamalheib1@gmail.com>
 
-[ Upstream commit 9f8550e4bd9d78a8436c2061ad2530215f875376 ]
+[ Upstream commit a372173bf314d374da4dd1155549d8ca7fc44709 ]
 
-The disable_xfrm flag signals that xfrm should not be performed during
-routing towards a device before reaching device xmit.
+The max_recv_sge value is wrongly reported when calling query_qp, This is
+happening due to a typo when assigning the max_recv_sge value, the value
+of sq_max_sges was assigned instead of rq_max_sges.
 
-For xfrm interfaces this is usually desired as they perform the outbound
-policy lookup as part of their xmit using their if_id.
-
-Before this change enabling this flag on xfrm interfaces prevented them
-from xmitting as xfrm_lookup_with_ifid() would not perform a policy lookup
-in case the original dst had the DST_NOXFRM flag.
-
-This optimization is incorrect when the lookup is done by the xfrm
-interface xmit logic.
-
-Fix by performing policy lookup when invoked by xfrmi as if_id != 0.
-
-Similarly it's unlikely for the 'no policy exists on net' check to yield
-any performance benefits when invoked from xfrmi.
-
-Fixes: f203b76d7809 ("xfrm: Add virtual xfrm interfaces")
-Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
-Signed-off-by: Steffen Klassert <steffen.klassert@secunet.com>
+Fixes: 3e5c02c9ef9a ("iw_cxgb4: Support query_qp() verb")
+Link: https://lore.kernel.org/r/20210114191423.423529-1-kamalheib1@gmail.com
+Signed-off-by: Kamal Heib <kamalheib1@gmail.com>
+Reviewed-by: Potnuri Bharat Teja <bharat@chelsio.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/xfrm/xfrm_policy.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/infiniband/hw/cxgb4/qp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/xfrm/xfrm_policy.c b/net/xfrm/xfrm_policy.c
-index 939f3adf075aa..e9aea82f370de 100644
---- a/net/xfrm/xfrm_policy.c
-+++ b/net/xfrm/xfrm_policy.c
-@@ -2101,8 +2101,8 @@ struct dst_entry *xfrm_lookup_with_ifid(struct net *net,
- 		xflo.flags = flags;
- 
- 		/* To accelerate a bit...  */
--		if ((dst_orig->flags & DST_NOXFRM) ||
--		    !net->xfrm.policy_count[XFRM_POLICY_OUT])
-+		if (!if_id && ((dst_orig->flags & DST_NOXFRM) ||
-+			       !net->xfrm.policy_count[XFRM_POLICY_OUT]))
- 			goto nopol;
- 
- 		xdst = xfrm_bundle_lookup(net, fl, family, dir, &xflo, if_id);
+diff --git a/drivers/infiniband/hw/cxgb4/qp.c b/drivers/infiniband/hw/cxgb4/qp.c
+index a9e3a11bea54a..caa6a502c37e2 100644
+--- a/drivers/infiniband/hw/cxgb4/qp.c
++++ b/drivers/infiniband/hw/cxgb4/qp.c
+@@ -2485,7 +2485,7 @@ int c4iw_ib_query_qp(struct ib_qp *ibqp, struct ib_qp_attr *attr,
+ 	init_attr->cap.max_send_wr = qhp->attr.sq_num_entries;
+ 	init_attr->cap.max_recv_wr = qhp->attr.rq_num_entries;
+ 	init_attr->cap.max_send_sge = qhp->attr.sq_max_sges;
+-	init_attr->cap.max_recv_sge = qhp->attr.sq_max_sges;
++	init_attr->cap.max_recv_sge = qhp->attr.rq_max_sges;
+ 	init_attr->cap.max_inline_data = T4_MAX_SEND_INLINE;
+ 	init_attr->sq_sig_type = qhp->sq_sig_all ? IB_SIGNAL_ALL_WR : 0;
+ 	return 0;
 -- 
 2.27.0
 
