@@ -2,239 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04C3130C86B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:53:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A42330C872
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:53:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237924AbhBBRtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:49:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50092 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234124AbhBBRqG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 12:46:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CF9464F6D;
-        Tue,  2 Feb 2021 17:45:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612287925;
-        bh=C2ydb8roGKdATXFQSLSkhYZe3wUyfvywdGjJMwOCeiY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ALI6arN9t3erqAlZC85HlaNE6Ox5yXyegeKyEsY6gCyRqGixLC1LbcuS1CGg01OkN
-         vXAYGUEUdl/2OnJHWWSeVY6aZ2puChLQx+IwAkJQ4WTaqyznT8tTwV0M2jiyKNakkK
-         b/h+ayZCg4FN2HbtheN9+PCAqP/OYbc2ug+Bt5BMhQQmotB6nJ9w+Setp/Yiz5wloT
-         oiGXqOfsyaqIqX8NwpJ4NkQxqQRIaOk8ZwrvV9EHy3lYVMYbbBFlprq/0YyBAgLPZq
-         bhhmnIfJWuRu7LUFVTvdhxKr9x2rpDroYGDU92HUs5v3Lv1wYvv18XeVhft2EF3kS3
-         xf2FN7YpKzhEA==
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Networking for 5.11-rc7
-Date:   Tue,  2 Feb 2021 09:45:24 -0800
-Message-Id: <20210202174524.179983-1-kuba@kernel.org>
-X-Mailer: git-send-email 2.26.2
+        id S237838AbhBBRuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:50:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237749AbhBBRrJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 12:47:09 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 431BCC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 09:46:27 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id f14so7030003ejc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 09:46:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wUurNA9VhndOPP6gfhXBN1JbTKtpFDXXD0/WIc6R26Q=;
+        b=Q+gyF53uYybQ7VU8537+gYM+aGyprhjPmxAfLGnXP6OwT0GUtgTrUly1i2fwhFGjtq
+         p8whi96zlLUuqYC2XLni6OtAlLqCFkUCNoE29gm7ZNiukEuBRSs16ly47hZcjG6mcf6W
+         YYvDPxx/KBKbT4jC9DYrUXZosFGn5i6Xf3mWMFX+1Qr7C65VszwwhvahhMB2NecwsZzI
+         e3RqPl7eS6e+HVxxdVcQDLle6L5RSDpa1rJm+u/OFMeLblLfAyT40bK/SRA5AhfI1W1U
+         CrxE+ACZJOsvAUYzBKsXKBmEsSRk8P5lses045BxA80LjvV+151v8gAD+DbIAjYVFUu2
+         jitQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wUurNA9VhndOPP6gfhXBN1JbTKtpFDXXD0/WIc6R26Q=;
+        b=s1dU5vB+FscoGyVOnuhscTg7Pzc+bsVw/m/XugUnWxj7Sro4y5SzlnyrWuqx2uCZdG
+         U/VB1HzR5iBCmviM71xqogfjNscUO5vxZUZijQi0wiZBaZSvv/30NrGUKWJNpXKGpwIZ
+         wD3zZP8N9LzaI+kquu+l62xmC9WK0Xv0AWdANw76QkR3/AokeypIEEsk10U/kzXxCVlZ
+         Pqt5RHMs6I/T0lpaXW0GTaYDiS3ITEGH+42KkpUCCAeG9o9IH90VLU5F3QsrOr0QkVKE
+         cY1mdnX9q7yhMAIGY08chbfgvlg2mQSmh5cmK6H/MkHg8YHF0VYow5m6BLo6Nxg2kxiH
+         P8zg==
+X-Gm-Message-State: AOAM533VKcNgqKYrVdpsUnvyMCLfRCC+U6JEp8KAwnMGsdEe92FFP5b3
+        2O8CC/6Cj0FH0NGpdVfdbiGTKa5ewf3LRlpj8Bmu8A==
+X-Google-Smtp-Source: ABdhPJxJMQPeK8rJWCApObIytFXRIQO5rlc1bINukN6cy207HKpFiuo3Yrd9r7/axKlxQdWCDqWdakZUfI9gkorugGA=
+X-Received: by 2002:a17:906:8252:: with SMTP id f18mr2377108ejx.418.1612287985906;
+ Tue, 02 Feb 2021 09:46:25 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210130002438.1872527-1-ben.widawsky@intel.com>
+ <20210130002438.1872527-9-ben.widawsky@intel.com> <20210201181845.GJ197521@fedora>
+ <20210201183455.3dndfwyswwvs2dlm@intel.com> <CAPcyv4iBbA+PCnTg-hFALuDJNqcJrwwXN_gMEe6z9LZvSfC5hw@mail.gmail.com>
+ <YBi9nkiu3DvMZhrs@Konrads-MacBook-Pro.local>
+In-Reply-To: <YBi9nkiu3DvMZhrs@Konrads-MacBook-Pro.local>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 2 Feb 2021 09:46:23 -0800
+Message-ID: <CAPcyv4j7xHcz+0+e35k3ed0O3muynMu3HzhXCNFpHreP1jAyHA@mail.gmail.com>
+Subject: Re: [PATCH 08/14] taint: add taint for direct hardware access
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 909b447dcc45db2f9bd5f495f1d16c419812e6df:
+On Mon, Feb 1, 2021 at 6:50 PM Konrad Rzeszutek Wilk
+<konrad.wilk@oracle.com> wrote:
+>
+> On Mon, Feb 01, 2021 at 11:01:11AM -0800, Dan Williams wrote:
+> > On Mon, Feb 1, 2021 at 10:35 AM Ben Widawsky <ben.widawsky@intel.com> wrote:
+> > >
+> > > On 21-02-01 13:18:45, Konrad Rzeszutek Wilk wrote:
+> > > > On Fri, Jan 29, 2021 at 04:24:32PM -0800, Ben Widawsky wrote:
+> > > > > For drivers that moderate access to the underlying hardware it is
+> > > > > sometimes desirable to allow userspace to bypass restrictions. Once
+> > > > > userspace has done this, the driver can no longer guarantee the sanctity
+> > > > > of either the OS or the hardware. When in this state, it is helpful for
+> > > > > kernel developers to be made aware (via this taint flag) of this fact
+> > > > > for subsequent bug reports.
+> > > > >
+> > > > > Example usage:
+> > > > > - Hardware xyzzy accepts 2 commands, waldo and fred.
+> > > > > - The xyzzy driver provides an interface for using waldo, but not fred.
+> > > > > - quux is convinced they really need the fred command.
+> > > > > - xyzzy driver allows quux to frob hardware to initiate fred.
+> > > >
+> > > > Would it not be easier to _not_ frob the hardware for fred-operation?
+> > > > Aka not implement it or just disallow in the first place?
+> > >
+> > > Yeah. So the idea is you either are in a transient phase of the command and some
+> > > future kernel will have real support for fred - or a vendor is being short
+> > > sighted and not adding support for fred.
+> > >
+> > > >
+> > > >
+> > > > >   - kernel gets tainted.
+> > > > > - turns out fred command is borked, and scribbles over memory.
+> > > > > - developers laugh while closing quux's subsequent bug report.
+> > > >
+> > > > Yeah good luck with that theory in-the-field. The customer won't
+> > > > care about this and will demand a solution for doing fred-operation.
+> > > >
+> > > > Just easier to not do fred-operation in the first place,no?
+> > >
+> > > The short answer is, in an ideal world you are correct. See nvdimm as an example
+> > > of the real world.
+> > >
+> > > The longer answer. Unless we want to wait until we have all the hardware we're
+> > > ever going to see, it's impossible to have a fully baked, and validated
+> > > interface. The RAW interface is my admission that I make no guarantees about
+> > > being able to provide the perfect interface and giving the power back to the
+> > > hardware vendors and their driver writers.
+> > >
+> > > As an example, suppose a vendor shipped a device with their special vendor
+> > > opcode. They can enable their customers to use that opcode on any driver
+> > > version. That seems pretty powerful and worthwhile to me.
+> > >
+> >
+> > Powerful, frightening, and questionably worthwhile when there are
+> > already examples of commands that need extra coordination for whatever
+> > reason. However, I still think the decision tilts towards allowing
+> > this given ongoing spec work.
+> >
+> > NVDIMM ended up allowing unfettered vendor passthrough given the lack
+> > of an organizing body to unify vendors. CXL on the other hand appears
+> > to have more gravity to keep vendors honest. A WARN splat with a
+> > taint, and a debugfs knob for the truly problematic commands seems
+> > sufficient protection of system integrity while still following the
+> > Linux ethos of giving system owners enough rope to make their own
+> > decisions.
+> >
+> > > Or a more realistic example, we ship a driver that adds a command which is
+> > > totally broken. Customers can utilize the RAW interface until it gets fixed in a
+> > > subsequent release which might be quite a ways out.
+> > >
+> > > I'll say the RAW interface isn't an encouraged usage, but it's one that I expect
+> > > to be needed, and if it's not we can always try to kill it later. If nobody is
+> > > actually using it, nobody will complain, right :D
+> >
+> > It might be worthwhile to make RAW support a compile time decision so
+> > that Linux distros can only ship support for the commands the CXL
+> > driver-dev community has blessed, but I'll leave it to a distro
+> > developer to second that approach.
+>
+> Couple of thoughts here:
 
-  Merge tag 'net-5.11-rc6' of git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2021-01-28 15:24:43 -0800)
+I am compelled to challenge these assertions because this set is
+*more* conservative than the current libnvdimm situation which is
+silent by default about the vendor pasthrough. How can this be worse
+when the same scope of possible damage is now loudly reported rather
+than silent?
 
-are available in the Git repository at:
+>
+>  - As distro developer (well, actually middle manager of distro
+>    developers) this approach of raw interface is a headache.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-5.11-rc7
+You've convinced me that this needs a compile time disable, is that
+not sufficient?
 
-for you to fetch changes up to 6c9f18f294c4a1a6d8b1097e39c325481664ee1c:
+>
+>    Customers will pick it
 
-  net: hsr: align sup_multicast_addr in struct hsr_priv to u16 boundary (2021-02-02 08:57:18 -0800)
+Why will they pick it when the kernel screams bloody murder at them
+when it gets used?
 
-----------------------------------------------------------------
-Networking fixes for 5.11-rc7, including fixes from bpf and mac80211
-trees.
+> and use it since it is there and the poor
+>    support folks will have to go through layers of different devices
 
-Current release - regressions:
+What layers willl support folks need to dig through when the WARN
+splat is clearly present in the log and the taint flag is visible in
+any future crash?
 
- - ip_tunnel: fix mtu calculation
+>    say (for example) to finally find out that some OEM firmware opcode
+>    X is a debug facility for inserting corrupted data, while for another vendor
+>    the same X opcode makes it go super-fast.
 
- - mlx5: fix function calculation for page trees
+None of these commands are in the fast path.
 
-Previous releases - regressions:
+>
+>    Not that anybody would do that, right? Ha!
 
- - vsock: fix the race conditions in multi-transport support
+We can look to libnvdimm + ndctl to see the trend. I have not
+encountered new competing manageability tool efforts, and the existing
+collisions between ndctl and ipmctl are resolving to defeature ipmctl
+where ndctl and the standard / native command path can do the job.
 
- - neighbour: prevent a dead entry from updating gc_list
+>
+>  - I will imagine that some of the more vocal folks in the community
+>    will make it difficult to integrate these patches with these two
+>    (especially this taint one). This will make the acceptance of these
+>    patches more difficult than it should be. If you really want them,
+>    perhaps make them part of another patchset, or a follow up ones.
 
- - dsa: mv88e6xxx: override existent unicast portvec in port_fdb_add
+The patches are out now and no such pushback from others has arisen. I
+believe your proposal for compile-time disable is reasonable and would
+satisfy those concerns.
 
-Previous releases - always broken:
+>
+>  - I still don't get why as a brand new community hacks are coming up
+>    (even when the hardware is not yet there) instead of pushing back at
+>    the vendors to have a clean up interface. I get in say two or three
+>    years these things .. but from the start? I get your point about
+>    flexibility, but it seems to me that the right way is not give open
+>    RAW interface (big barndoor) but rather maintain the driver and grow
+>    it (properly constructed doors) as more functionality comes about
+>    and then adding it in the driver.
+>
 
- - bpf, cgroup: two copy_{from,to}_user() warn_on_once splats for BPF
-                cgroup getsockopt infra when user space is trying
-		to race against optlen, from Loris Reiff.
-
- - bpf: add missing fput() in BPF inode storage map update helper
-
- - udp: ipv4: manipulate network header of NATed UDP GRO fraglist
-
- - mac80211: fix station rate table updates on assoc
-
- - r8169: work around RTL8125 UDP HW bug
-
- - igc: report speed and duplex as unknown when device is runtime
-        suspended
-
- - rxrpc: fix deadlock around release of dst cached on udp tunnel
-
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-
-----------------------------------------------------------------
-Ahmed S. Darwish (1):
-      net: arcnet: Fix RESET flag handling
-
-Aleksandr Loktionov (1):
-      i40e: Revert "i40e: don't report link up for a VF who hasn't enabled queues"
-
-Alex Elder (4):
-      net: ipa: add a missing __iomem attribute
-      net: ipa: be explicit about endianness
-      net: ipa: use the right accessor in ipa_endpoint_status_skip()
-      net: ipa: fix two format specifier errors
-
-Alexander Ovechkin (1):
-      net: sched: replaced invalid qdisc tree flush helper in qdisc_replace
-
-Alexander Popov (1):
-      vsock: fix the race conditions in multi-transport support
-
-Andreas Oetken (1):
-      net: hsr: align sup_multicast_addr in struct hsr_priv to u16 boundary
-
-Chinmay Agarwal (1):
-      neighbour: Prevent a dead entry from updating gc_list
-
-DENG Qingfang (1):
-      net: dsa: mv88e6xxx: override existent unicast portvec in port_fdb_add
-
-Dan Carpenter (1):
-      net: ipa: pass correct dma_handle to dma_free_coherent()
-
-Daniel Jurgens (1):
-      net/mlx5: Fix function calculation for page trees
-
-David Howells (1):
-      rxrpc: Fix deadlock around release of dst cached on udp tunnel
-
-Dongseok Yi (1):
-      udp: ipv4: manipulate network header of NATed UDP GRO fraglist
-
-Felix Fietkau (1):
-      mac80211: fix station rate table updates on assoc
-
-Hans de Goede (1):
-      staging: rtl8723bs: Move wiphy setup to after reading the regulatory settings from the chip
-
-Heiner Kallweit (2):
-      r8169: work around RTL8125 UDP hw bug
-      r8169: fix WoL on shutdown if CONFIG_DEBUG_SHIRQ is set
-
-Jakub Kicinski (5):
-      Merge https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf
-      Merge branch '1GbE' of git://git.kernel.org/pub/scm/linux/kernel/git/tnguy/net-queue
-      Merge tag 'mac80211-for-net-2021-02-02' of git://git.kernel.org/pub/scm/linux/kernel/git/jberg/mac80211
-      Merge branch 'net-ipa-a-few-bug-fixes'
-      Merge tag 'mlx5-fixes-2021-02-01' of git://git.kernel.org/pub/scm/linux/kernel/git/saeed/linux
-
-Kai-Heng Feng (1):
-      igc: Report speed and duplex as unknown when device is runtime suspended
-
-Kevin Lo (2):
-      igc: set the default return value to -IGC_ERR_NVM in igc_write_nvm_srwr
-      igc: check return value of ret_val in igc_config_fc_after_link_up
-
-Lijun Pan (1):
-      ibmvnic: device remove has higher precedence over reset
-
-Loris Reiff (2):
-      bpf, cgroup: Fix optlen WARN_ON_ONCE toctou
-      bpf, cgroup: Fix problematic bounds check
-
-Maor Dickman (1):
-      net/mlx5e: Release skb in case of failure in tc update skb
-
-Maor Gottlieb (1):
-      net/mlx5: Fix leak upon failure of rule creation
-
-Maxim Mikityanskiy (1):
-      net/mlx5e: Update max_opened_tc also when channels are closed
-
-Mikko Ylinen (1):
-      bpf: Drop disabled LSM hooks from the sleepable set
-
-Pan Bian (1):
-      bpf, inode_storage: Put file handler if no storage was found
-
-Quentin Monnet (1):
-      bpf, preload: Fix build when $(O) points to a relative path
-
-Sabyrzhan Tasbolatov (1):
-      net/rds: restrict iovecs length for RDS_CMSG_RDMA_ARGS
-
-Stefan Chulski (1):
-      net: mvpp2: TCAM entry enable should be written after SRAM data
-
-Vadim Fedorenko (1):
-      net: ip_tunnel: fix mtu calculation
-
-Vincent Bernat (1):
-      docs: networking: swap words in icmp_errors_use_inbound_ifaddr doc
-
-Xie He (1):
-      net: lapb: Copy the skb before sending a packet
-
- Documentation/networking/ip-sysctl.rst             |  2 +-
- drivers/net/arcnet/arc-rimi.c                      |  4 +-
- drivers/net/arcnet/arcdevice.h                     |  6 ++
- drivers/net/arcnet/arcnet.c                        | 66 +++++++++++++++++--
- drivers/net/arcnet/com20020-isa.c                  |  4 +-
- drivers/net/arcnet/com20020-pci.c                  |  2 +-
- drivers/net/arcnet/com20020_cs.c                   |  2 +-
- drivers/net/arcnet/com90io.c                       |  4 +-
- drivers/net/arcnet/com90xx.c                       |  4 +-
- drivers/net/dsa/mv88e6xxx/chip.c                   |  6 +-
- drivers/net/ethernet/ibm/ibmvnic.c                 |  5 --
- drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.c | 13 +---
- drivers/net/ethernet/intel/i40e/i40e_virtchnl_pf.h |  1 -
- drivers/net/ethernet/intel/igc/igc_ethtool.c       |  3 +-
- drivers/net/ethernet/intel/igc/igc_i225.c          |  3 +-
- drivers/net/ethernet/intel/igc/igc_mac.c           |  2 +-
- drivers/net/ethernet/marvell/mvpp2/mvpp2_prs.c     | 10 +--
- drivers/net/ethernet/mellanox/mlx5/core/en_main.c  |  6 +-
- drivers/net/ethernet/mellanox/mlx5/core/en_rx.c    | 16 +++--
- drivers/net/ethernet/mellanox/mlx5/core/fs_core.c  |  5 ++
- .../net/ethernet/mellanox/mlx5/core/pagealloc.c    |  2 +-
- drivers/net/ethernet/realtek/r8169_main.c          | 75 +++++++++++++++++++---
- drivers/net/ipa/gsi.c                              |  4 +-
- drivers/net/ipa/ipa_endpoint.c                     |  6 +-
- drivers/net/ipa/ipa_mem.c                          |  4 +-
- drivers/staging/rtl8723bs/os_dep/sdio_intf.c       |  4 +-
- fs/afs/main.c                                      |  6 +-
- include/net/sch_generic.h                          |  2 +-
- include/net/udp.h                                  |  2 +-
- kernel/bpf/bpf_inode_storage.c                     |  6 +-
- kernel/bpf/bpf_lsm.c                               | 12 ++++
- kernel/bpf/cgroup.c                                |  7 +-
- kernel/bpf/preload/Makefile                        |  5 +-
- net/core/neighbour.c                               |  7 +-
- net/hsr/hsr_main.h                                 |  5 +-
- net/ipv4/ip_tunnel.c                               | 16 ++---
- net/ipv4/udp_offload.c                             | 69 ++++++++++++++++++--
- net/ipv6/udp_offload.c                             |  2 +-
- net/lapb/lapb_out.c                                |  3 +-
- net/mac80211/driver-ops.c                          |  5 +-
- net/mac80211/rate.c                                |  3 +-
- net/rds/rdma.c                                     |  3 +
- net/rxrpc/af_rxrpc.c                               |  6 +-
- net/vmw_vsock/af_vsock.c                           | 17 +++--
- 44 files changed, 328 insertions(+), 107 deletions(-)
+Again, WARN_TAINT and now the threat of vendor tools not being
+generally distributable across distro kernels that turn this off, is a
+more strict stance than libnvdimm where the worst fears have yet to
+come to fruition. In the meantime this enabling is useful for a
+validation test bench kernel for new hardware bringup while the
+upstream api formalization work continues.
