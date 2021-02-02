@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1754630C7DD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:33:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99B3A30C8B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:59:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234151AbhBBRdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:33:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49906 "EHLO mail.kernel.org"
+        id S238059AbhBBR53 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:57:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233766AbhBBOMn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:12:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BAE6864FAB;
-        Tue,  2 Feb 2021 13:52:00 +0000 (UTC)
+        id S233961AbhBBOJS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:09:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A469765032;
+        Tue,  2 Feb 2021 13:50:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273921;
-        bh=VT9864amgPm6B+652CMMjWffrGev7GaloBDzsAtCWsk=;
+        s=korg; t=1612273842;
+        bh=ecQa8LHiurxs3y103kI0B0ZtaKy0+Ngq7af/JCuEj4E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X1o8ZzWn47V4vjQfiLdjJwl3aKykxfIzjEyOJGgL3icTRmvp/Bo2erPrk1X/xvV24
-         nm04J0eTdBwdFAFOPRrBPEJSYHDAGz/IucjLbzuOyh3JbIcMeogk5lS2gxj+KoByYG
-         959r/+K9ozXCRa8M2dsbsRMOGZbaI1/xeZScvcN4=
+        b=njjnQPRdx5UwQmkEH87JN0X0m0dA8ivZx0KlUNrKcfkIurKObRd2gaStbQvXwJih8
+         CXazboaze0d4iexApFezAsG7SAe5788Rr45TfnzwdjDWFCHs1RDo2fdk055TFpZiyr
+         HYBQr9/dlAHF00/qwmoU1vrBMUGPdy2ld3j7hDCE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tim Harvey <tharvey@gateworks.com>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
+        stable@vger.kernel.org,
+        Max Krummenacher <max.krummenacher@toradex.com>,
+        Oleksandr Suvorov <oleksandr.suvorov@toradex.com>,
         Shawn Guo <shawnguo@kernel.org>
-Subject: [PATCH 4.14 03/30] ARM: dts: imx6qdl-gw52xx: fix duplicate regulator naming
+Subject: [PATCH 4.9 21/32] ARM: imx: build suspend-imx6.S with arm instruction set
 Date:   Tue,  2 Feb 2021 14:38:44 +0100
-Message-Id: <20210202132942.279351032@linuxfoundation.org>
+Message-Id: <20210202132942.865304949@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132942.138623851@linuxfoundation.org>
-References: <20210202132942.138623851@linuxfoundation.org>
+In-Reply-To: <20210202132942.035179752@linuxfoundation.org>
+References: <20210202132942.035179752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,38 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Koen Vandeputte <koen.vandeputte@citymesh.com>
+From: Max Krummenacher <max.oss.09@gmail.com>
 
-commit 5a22747b76ca2384057d8e783265404439d31d7f upstream.
+commit a88afa46b86ff461c89cc33fc3a45267fff053e8 upstream.
 
-2 regulator descriptions carry identical naming.
+When the kernel is configured to use the Thumb-2 instruction set
+"suspend-to-memory" fails to resume. Observed on a Colibri iMX6ULL
+(i.MX 6ULL) and Apalis iMX6 (i.MX 6Q).
 
-This leads to following boot warning:
-[    0.173138] debugfs: Directory 'vdd1p8' with parent 'regulator' already present!
+It looks like the CPU resumes unconditionally in ARM instruction mode
+and then chokes on the presented Thumb-2 code it should execute.
 
-Fix this by renaming the one used for audio.
+Fix this by using the arm instruction set for all code in
+suspend-imx6.S.
 
-Fixes: 5051bff33102 ("ARM: dts: imx: ventana: add LTC3676 PMIC support")
-Signed-off-by: Tim Harvey <tharvey@gateworks.com>
-Signed-off-by: Koen Vandeputte <koen.vandeputte@ncentric.com>
-Cc: stable@vger.kernel.org # v4.11
+Signed-off-by: Max Krummenacher <max.krummenacher@toradex.com>
+Fixes: df595746fa69 ("ARM: imx: add suspend in ocram support for i.mx6q")
+Acked-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
 Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/arm/boot/dts/imx6qdl-gw52xx.dtsi |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/mach-imx/suspend-imx6.S |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/arm/boot/dts/imx6qdl-gw52xx.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-gw52xx.dtsi
-@@ -278,7 +278,7 @@
+--- a/arch/arm/mach-imx/suspend-imx6.S
++++ b/arch/arm/mach-imx/suspend-imx6.S
+@@ -73,6 +73,7 @@
+ #define MX6Q_CCM_CCR	0x0
  
- 			/* VDD_AUD_1P8: Audio codec */
- 			reg_aud_1p8v: ldo3 {
--				regulator-name = "vdd1p8";
-+				regulator-name = "vdd1p8a";
- 				regulator-min-microvolt = <1800000>;
- 				regulator-max-microvolt = <1800000>;
- 				regulator-boot-on;
+ 	.align 3
++	.arm
+ 
+ 	.macro  sync_l2_cache
+ 
 
 
