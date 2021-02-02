@@ -2,113 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9693230BBB5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:05:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA7B30BBB9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:05:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231199AbhBBKEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 05:04:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55174 "EHLO
+        id S231289AbhBBKEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 05:04:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230029AbhBBKEY (ORCPT
+        with ESMTP id S231236AbhBBKEf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 05:04:24 -0500
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE993C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 02:03:38 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by xavier.telenet-ops.be with bizsmtp
-        id QA3b240094C55Sk01A3bCq; Tue, 02 Feb 2021 11:03:35 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l6sX0-002fzy-Ga; Tue, 02 Feb 2021 11:03:34 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1l6sX0-003TgU-3y; Tue, 02 Feb 2021 11:03:34 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Bjorn Helgaas <bhelgaas@google.com>,
-        John Garry <john.garry@huawei.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     linux-pci@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] PCI: Fix memory leak in pci_register_io_range()
-Date:   Tue,  2 Feb 2021 11:03:32 +0100
-Message-Id: <20210202100332.829047-1-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        Tue, 2 Feb 2021 05:04:35 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5921C061573;
+        Tue,  2 Feb 2021 02:03:54 -0800 (PST)
+Date:   Tue, 02 Feb 2021 10:03:51 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1612260232;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PE2cfmMlV5aawwN90xn1cTPXLaoUHu1IVXLU1QpHFvw=;
+        b=XbcgkNFpleJbgBMs1slny4ZP9KF0/KWAJH7lthMdpoW7gGBGU649/ZqYfrcsE3JYhR0Sfw
+        QWvNlgzle52tIngwaTkjGn8xGca55DpuRpa27YQIXcFQSVPsX9EFsq7plal2lKipcy3iEK
+        FCxCZpdt9K4s7uo0tFESpb5VKviYwh8XuzBysgj8b/u9eKPbMeJQ9WJRxZlGC+Gn5kOtEB
+        1MbLftxVCMPYRmNC6g8NPwLYkMRdYp6mJ3zhEjR9r7pUrXoJ1T8fddwqU9JMkZyf0/bXvW
+        dk1BIfFG+yljgPvDyWDezX9Z2nRHSw+W514ylwGntMS+EkZvKj0JkZhgzb49Qg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1612260232;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=PE2cfmMlV5aawwN90xn1cTPXLaoUHu1IVXLU1QpHFvw=;
+        b=uzWvMvj96WvJkCDPO9P54kvBNXFKrxNrGefTKdsAfyziD++IuvRg8eadNY1zqs1BLGage4
+        j//ebf3U+1MEhDBA==
+From:   "tip-bot2 for Dietmar Eggemann" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: sched/core] sched/core: Update task_prio() function header
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210128131040.296856-4-dietmar.eggemann@arm.com>
+References: <20210128131040.296856-4-dietmar.eggemann@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <161226023181.23325.926021119673352308.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kmemleak reports:
+The following commit has been merged into the sched/core branch of tip:
 
-    unreferenced object 0xc328de40 (size 64):
-      comm "kworker/1:1", pid 21, jiffies 4294938212 (age 1484.670s)
-      hex dump (first 32 bytes):
-        00 00 00 00 00 00 00 00 e0 d8 fc eb 00 00 00 00  ................
-        00 00 10 fe 00 00 00 00 00 00 00 00 00 00 00 00  ................
+Commit-ID:     075a28439d0c8eb6d3c799e1eed24bb9bc7750cd
+Gitweb:        https://git.kernel.org/tip/075a28439d0c8eb6d3c799e1eed24bb9bc7750cd
+Author:        Dietmar Eggemann <dietmar.eggemann@arm.com>
+AuthorDate:    Thu, 28 Jan 2021 14:10:40 +01:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Mon, 01 Feb 2021 15:31:39 +01:00
 
-    backtrace:
-      [<ad758d10>] pci_register_io_range+0x3c/0x80
-      [<2c7f139e>] of_pci_range_to_resource+0x48/0xc0
-      [<f079ecc8>] devm_of_pci_get_host_bridge_resources.constprop.0+0x2ac/0x3ac
-      [<e999753b>] devm_of_pci_bridge_init+0x60/0x1b8
-      [<a895b229>] devm_pci_alloc_host_bridge+0x54/0x64
-      [<e451ddb0>] rcar_pcie_probe+0x2c/0x644
+sched/core: Update task_prio() function header
 
-In case a PCI host driver's probe is deferred, the same I/O range may be
-allocated again, and be ignored, causing a memory leak.
+The description of the RT offset and the values for 'normal' tasks needs
+update. Moreover there are DL tasks now.
+task_prio() has to stay like it is to guarantee compatibility with the
+/proc/<pid>/stat priority field:
 
-Fix this by (a) letting logic_pio_register_range() return -EEXIST if the
-passed range already exists, so pci_register_io_range() will free it,
-and by (b) making pci_register_io_range() not consider -EEXIST an error
-condition.
+  # cat /proc/<pid>/stat | awk '{ print $18; }'
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210128131040.296856-4-dietmar.eggemann@arm.com
 ---
- drivers/pci/pci.c | 4 ++++
- lib/logic_pio.c   | 3 +++
- 2 files changed, 7 insertions(+)
+ kernel/sched/core.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 09b03cfba8894955..c651003e304a2b71 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -4037,6 +4037,10 @@ int pci_register_io_range(struct fwnode_handle *fwnode, phys_addr_t addr,
- 	ret = logic_pio_register_range(range);
- 	if (ret)
- 		kfree(range);
-+
-+	/* Ignore duplicates due to deferred probing */
-+	if (ret == -EEXIST)
-+		ret = 0;
- #endif
- 
- 	return ret;
-diff --git a/lib/logic_pio.c b/lib/logic_pio.c
-index f32fe481b4922bc1..07b4b9a1f54b6bf5 100644
---- a/lib/logic_pio.c
-+++ b/lib/logic_pio.c
-@@ -28,6 +28,8 @@ static DEFINE_MUTEX(io_range_mutex);
-  * @new_range: pointer to the IO range to be registered.
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 625ec1e..be3a956 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -5602,8 +5602,12 @@ SYSCALL_DEFINE1(nice, int, increment)
+  * @p: the task in question.
   *
-  * Returns 0 on success, the error code in case of failure.
-+ * If the range already exists, -EEXIST will be returned, which should be
-+ * considered a success.
-  *
-  * Register a new IO range node in the IO range list.
+  * Return: The priority value as seen by users in /proc.
+- * RT tasks are offset by -200. Normal tasks are centered
+- * around 0, value goes from -16 to +15.
++ *
++ * sched policy         return value   kernel prio    user prio/nice
++ *
++ * normal, batch, idle     [0 ... 39]  [100 ... 139]          0/[-20 ... 19]
++ * fifo, rr             [-2 ... -100]     [98 ... 0]  [1 ... 99]
++ * deadline                     -101             -1           0
   */
-@@ -51,6 +53,7 @@ int logic_pio_register_range(struct logic_pio_hwaddr *new_range)
- 	list_for_each_entry(range, &io_range_list, list) {
- 		if (range->fwnode == new_range->fwnode) {
- 			/* range already there */
-+			ret = -EEXIST;
- 			goto end_register;
- 		}
- 		if (range->flags == LOGIC_PIO_CPU_MMIO &&
--- 
-2.25.1
-
+ int task_prio(const struct task_struct *p)
+ {
