@@ -2,188 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0377030C7E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:36:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9B630C7F0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:36:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234184AbhBBRfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:35:14 -0500
-Received: from mail-wm1-f51.google.com ([209.85.128.51]:52535 "EHLO
-        mail-wm1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236422AbhBBRcg (ORCPT
+        id S237634AbhBBRgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:36:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32541 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237576AbhBBReE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 12:32:36 -0500
-Received: by mail-wm1-f51.google.com with SMTP id l12so2164360wmq.2;
-        Tue, 02 Feb 2021 09:32:20 -0800 (PST)
+        Tue, 2 Feb 2021 12:34:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612287159;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5xDLoqFXJnyWYsI4MjhMkfY1XcxzM75c7CRhYvFGAKo=;
+        b=bUAZeU36oXGuo66PXFza/qo1avxlcLsqqkO4fIqFwBDDcjxWgkvYLiq54qMpMNGV44prpb
+        dJPFpuxNz3qFXX4HyW4B9LMMLR6ICU7wyxEs/qdFkRQBIK9Bhim6lpEJtoxk5Trfal/rrl
+        zP7gC+OaiZJ1ixD/MWROV2q9cu1Sn8E=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-287-o5ZfxP6SNAmg3wmrrA0RQg-1; Tue, 02 Feb 2021 12:32:37 -0500
+X-MC-Unique: o5ZfxP6SNAmg3wmrrA0RQg-1
+Received: by mail-ed1-f71.google.com with SMTP id w23so710099edr.15
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 09:32:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=AxHa8gVy5I8JiheSXEMxWWe4GAPhI1nPaKd06/laDjc=;
-        b=XG4rjlGEVQwBFRztp83ZOkNVJI60AQYsPXRLAk23PWfQG9c67AuMMK/qq6hLsQR04u
-         LBCen1n3Wq9H51hQbLmUDBGmWfEp9ey/y41hIxfxhvDqCZgvZJBR9IMChz9p2OEsnrz5
-         PkU8ySiO0RooO+EhMf8H6A3LZtvvkMt7PTatn8F0RmYfK7fK9cl2hzQF3E1OeUGAQwpW
-         L6HbpEnLzu4aZYQAUfWVcXzj9QDizwZyNnKNXhYNWM+gH2zbduBgiXiY1O6pzTlApc0t
-         rPACRfL/tK87CUv7OCjlyzSg07gz9TUP7gynXBBy3iWBJY5a/UMxO31QZ5vONWP1Mpys
-         GFNA==
-X-Gm-Message-State: AOAM533F2qAZ0EPW/b4hbPZWKPrn2KwY+fxfNAsQX94mdcY5RgyJKTUL
-        P3g3NAy5QfDyRke5zgo1x7Y=
-X-Google-Smtp-Source: ABdhPJzudy9fk3s3hULrbLTuN8gEKplHol+8bC7aGvTzi86KznKqg49/MlQHqXZRMrG2RstBZmQcFQ==
-X-Received: by 2002:a1c:25c2:: with SMTP id l185mr4649522wml.62.1612287115021;
-        Tue, 02 Feb 2021 09:31:55 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id r124sm4166233wmr.16.2021.02.02.09.31.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 09:31:54 -0800 (PST)
-Date:   Tue, 2 Feb 2021 17:31:53 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        "pasha.tatashin@soleen.com" <pasha.tatashin@soleen.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5xDLoqFXJnyWYsI4MjhMkfY1XcxzM75c7CRhYvFGAKo=;
+        b=kdz+zOUX1b8mmkRc8Ky8HDghxytZDsVKtdPgPfpvx0seB3CMqPkz/5YIqCT3ZVTAfE
+         naOsCwQzDTnrGBf4Pu3KOFe/4q5zjimJX4549Vc9El3Jqr8VhhqmLRf5p1/t4Ao4HgLV
+         cgWELc7o7nAE0gVVIAFCBFphskMxVakjPdbHulb2zQmPhuzb5JyPzsnCjdYu+cr+GCnZ
+         7GAfpai9EzASLBiW22NLlXobBz4E20mkjqwnr80hAbvP6MQs0KgEiXjL+GPATeA5IuJS
+         nZTil7ctBRq7aNkssFQR4xHzKpci+wu4kMxACWxHahivIggNYCCRgdtbWnNNzceYxx3p
+         OyUw==
+X-Gm-Message-State: AOAM530yXV9wrFhOTZ+ZUhDMryvPEi96YplDJKgN65ZdMYnh0fACvuew
+        3SxLshQnVOHXVK+bDDWSbeOXd30PUr75xhpmA4HsLCbKr0lk3soGFkMBjZ+zlhYsSnlNxARELDg
+        oPnmq1FzdKn25nWD/vo+fPo7G
+X-Received: by 2002:a17:906:8a59:: with SMTP id gx25mr15904107ejc.310.1612287156706;
+        Tue, 02 Feb 2021 09:32:36 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzyxdr9tXVjSGSY8Z18kK8M0fX2Y4E1fTIs2+vtrLnxj2RqkiIr7nT+YUWnd2gPVlnNcZErnQ==
+X-Received: by 2002:a17:906:8a59:: with SMTP id gx25mr15904076ejc.310.1612287156547;
+        Tue, 02 Feb 2021 09:32:36 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id hr31sm9559435ejc.125.2021.02.02.09.32.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Feb 2021 09:32:35 -0800 (PST)
+Subject: Re: [PATCH v3 1/3] KVM: SVM: use vmsave/vmload for saving/restoring
+ additional host state
+To:     Sean Christopherson <seanjc@google.com>,
+        Michael Roth <michael.roth@amd.com>
+Cc:     kvm@vger.kernel.org, Andy Lutomirski <luto@amacapital.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v5 15/16] x86/hyperv: implement an MSI domain for root
- partition
-Message-ID: <20210202173153.jkbvwck2vsjlbjbz@liuwe-devbox-debian-v2>
-References: <20210120120058.29138-1-wei.liu@kernel.org>
- <20210120120058.29138-16-wei.liu@kernel.org>
- <MWHPR21MB1593FFC6005966A3D9BEA3EFD7BB9@MWHPR21MB1593.namprd21.prod.outlook.com>
+        x86@kernel.org, "H . Peter Anvin" <hpa@zytor.com>,
+        linux-kernel@vger.kernel.org,
+        Tom Lendacky <thomas.lendacky@amd.com>
+References: <20210105143749.557054-1-michael.roth@amd.com>
+ <20210105143749.557054-2-michael.roth@amd.com> <X/Sfw15OWarseivB@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <e3faa02d-e7b2-5ab7-22a8-fc625245ad00@redhat.com>
+Date:   Tue, 2 Feb 2021 18:32:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR21MB1593FFC6005966A3D9BEA3EFD7BB9@MWHPR21MB1593.namprd21.prod.outlook.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <X/Sfw15OWarseivB@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 27, 2021 at 05:47:04AM +0000, Michael Kelley wrote:
-> From: Wei Liu <wei.liu@kernel.org> Sent: Wednesday, January 20, 2021 4:01 AM
-> > 
-> > When Linux runs as the root partition on Microsoft Hypervisor, its
-> > interrupts are remapped.  Linux will need to explicitly map and unmap
-> > interrupts for hardware.
-> > 
-> > Implement an MSI domain to issue the correct hypercalls. And initialize
-> > this irqdomain as the default MSI irq domain.
-> > 
-> > Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> > Co-Developed-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> > Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> > ---
-> > v4: Fix compilation issue when CONFIG_PCI_MSI is not set.
-> > v3: build irqdomain.o for 32bit as well.
+On 05/01/21 18:20, Sean Christopherson wrote:
+> This VMLOAD needs the "handle fault on reboot" goo.  Seeing the code, I think
+> I'd prefer to handle this in C code, especially if Paolo takes the svm_ops.h
+> patch[*].  Actually, I think with that patch it'd make sense to move the
+> existing VMSAVE+VMLOAD for the guest into svm.c, too.  And completely unrelated,
+> the fault handling in svm/vmenter.S can be cleaned up a smidge to eliminate the
+> JMPs.
 > 
-> I'm not clear on the intent for 32-bit builds.  Given that hv_proc.c is built
-> only for 64-bit, I'm assuming running Linux in the root partition
-> is only functional for 64-bit builds.  So is the goal simply that 32-bit
-> builds will compile correctly?  Seems like maybe there should be
-> a CONFIG option for running Linux in the root partition, and that
-> option would force 64-bit.
+> Paolo, what do you think about me folding these patches into my series to do the
+> above cleanups?  And maybe sending a pull request for the end result?  (I'd also
+> like to add on a patch to use the user return MSR mechanism for MSR_TSC_AUX).
 
-To ensure 32 bit kernel builds and 32 bit guests still work.
+I have queued that part already, so Mike can rebase on top of kvm/queue.
 
-The config option ROOT_API is to be introduced by Nuno's /dev/mshv
-series. We can use that option to gate some objects when that's
-available.
+Paolo
 
-> 
-[...]
-> > diff --git a/arch/x86/hyperv/irqdomain.c b/arch/x86/hyperv/irqdomain.c
-> > new file mode 100644
-> > index 000000000000..19637cd60231
-> > --- /dev/null
-> > +++ b/arch/x86/hyperv/irqdomain.c
-> > @@ -0,0 +1,332 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +//
-> > +// Irqdomain for Linux to run as the root partition on Microsoft Hypervisor.
-> > +//
-> > +// Authors:
-> > +//   Sunil Muthuswamy <sunilmut@microsoft.com>
-> > +//   Wei Liu <wei.liu@kernel.org>
-> 
-> I think the // comment style should only be used for the SPDX line.
-
-Fixed.
-
-> 
-> > +
-> > +#include <linux/pci.h>
-> > +#include <linux/irq.h>
-> > +#include <asm/mshyperv.h>
-> > +
-[...]
-> > +static int hv_map_msi_interrupt(struct pci_dev *dev, int vcpu, int vector,
-> > +				struct hv_interrupt_entry *entry)
-> > +{
-> > +	struct hv_input_map_device_interrupt *input;
-> > +	struct hv_output_map_device_interrupt *output;
-> > +	struct hv_device_interrupt_descriptor *intr_desc;
-> > +	unsigned long flags;
-> > +	u16 status;
-> > +
-> > +	local_irq_save(flags);
-> > +
-> > +	input = *this_cpu_ptr(hyperv_pcpu_input_arg);
-> > +	output = *this_cpu_ptr(hyperv_pcpu_output_arg);
-> > +
-> > +	intr_desc = &input->interrupt_descriptor;
-> > +	memset(input, 0, sizeof(*input));
-> > +	input->partition_id = hv_current_partition_id;
-> > +	input->device_id = hv_build_pci_dev_id(dev).as_uint64;
-> > +	intr_desc->interrupt_type = HV_X64_INTERRUPT_TYPE_FIXED;
-> > +	intr_desc->trigger_mode = HV_INTERRUPT_TRIGGER_MODE_EDGE;
-> > +	intr_desc->vector_count = 1;
-> > +	intr_desc->target.vector = vector;
-> > +	__set_bit(vcpu, (unsigned long*)&intr_desc->target.vp_mask);
-> 
-> This is using the CPU bitmap format that supports up to 64 vCPUs.  Any reason not
-> to use the format that supports a larger number of CPUs?   In either case, perhaps
-> a check for the value of vcpu against the max of 64 (or the larger number if you
-> change the bitmap format) would be appropriate.
+> [*]https://lkml.kernel.org/r/20201231002702.2223707-8-seanjc@google.com
 > 
 
-This is mostly due to we didn't have a suitably large machine during
-development.
-
-I will see if this can use vpset instead.
-
-> > +
-> > +	status = hv_do_rep_hypercall(HVCALL_MAP_DEVICE_INTERRUPT, 0, 0, input, output) &
-> > +			 HV_HYPERCALL_RESULT_MASK;
-> > +	*entry = output->interrupt_entry;
-> > +
-> > +	local_irq_restore(flags);
-> > +
-> > +	if (status != HV_STATUS_SUCCESS)
-> > +		pr_err("%s: hypercall failed, status %d\n", __func__, status);
-> > +
-> > +	return status;
-> > +}
-> > +
-[...]
-> > +static int hv_unmap_msi_interrupt(struct pci_dev *dev, struct hv_interrupt_entry
-> > *old_entry)
-> > +{
-> > +	return hv_unmap_interrupt(hv_build_pci_dev_id(dev).as_uint64, old_entry)
-> > +		& HV_HYPERCALL_RESULT_MASK;
-> 
-> The masking with HV_HYPERCALL_RESULT_MASK is already done in
-> hv_unmap_interrupt().
-> 
-
-Fixed.
-
-Wei.
