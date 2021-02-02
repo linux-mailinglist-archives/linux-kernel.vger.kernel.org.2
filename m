@@ -2,64 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ECB430B842
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:06:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F328130B855
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:06:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232467AbhBBHD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 02:03:27 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:54741 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232210AbhBBHCv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 02:02:51 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UNfEquR_1612249209;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UNfEquR_1612249209)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 02 Feb 2021 15:00:09 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     tony@atomide.com
-Cc:     p.zabel@pengutronix.de, linux-omap@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] bus: ti-sysc: remove unneeded semicolon
-Date:   Tue,  2 Feb 2021 15:00:05 +0800
-Message-Id: <1612249205-58955-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S232296AbhBBHGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 02:06:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232222AbhBBHCs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 02:02:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46E8264EDF;
+        Tue,  2 Feb 2021 07:00:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1612249256;
+        bh=Sx91zXS5CZ2NCFm3joeQvkrfBaSq7Dz4/hhWtEtu4R4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PcVPk7bd6st8hJE1dMfrGQttc63UAXOr22gtcYkwt3I59ZNfBh1Br43xIUol7TVYX
+         aqRGj85hYZKxuPp6cc5EMXLVOHCnn2JR7+fIfx6lhKzs0oN890SINZpTXlMK++Xna8
+         FMi7Nsqp7GFyTYkbDj9LL01UTUibTBYoalIZprgM=
+Date:   Tue, 2 Feb 2021 08:00:53 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Ikjoon Jang <ikjn@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Zhanyong Wang <zhanyong.wang@mediatek.com>,
+        Tianping Fang <tianping.fang@mediatek.com>,
+        stable <stable@vger.kernel.org>
+Subject: Re: [next v2 PATCH] usb: xhci-mtk: skip dropping bandwidth of
+ unchecked endpoints
+Message-ID: <YBj4pfN7iq+U4zW2@kroah.com>
+References: <1612247298-4654-1-git-send-email-chunfeng.yun@mediatek.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1612247298-4654-1-git-send-email-chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eliminate the following coccicheck warning:
-./drivers/bus/ti-sysc.c:1595:2-3: Unneeded semicolon
-./drivers/bus/ti-sysc.c:2833:3-4: Unneeded semicolon
+On Tue, Feb 02, 2021 at 02:28:18PM +0800, Chunfeng Yun wrote:
+> For those unchecked endpoints, we don't allocate bandwidth for
+> them, so no need free the bandwidth, otherwise will decrease
+> the allocated bandwidth.
+> Meanwhile use xhci_dbg() instead of dev_dbg() to print logs and
+> rename bw_ep_list_new as bw_ep_chk_list.
+> 
+> Fixes: 1d69f9d901ef ("usb: xhci-mtk: fix unreleased bandwidth data")
+> Cc: stable <stable@vger.kernel.org>
+> Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+> Tested-by: Ikjoon Jang <ikjn@chromium.org>
+> Reviewed-by: Ikjoon Jang <ikjn@chromium.org>
+> ---
+> v2: add 'break' when find the ep that will be dropped suggested by Ikjoon
+>     add Tested-by and Reviewed-by Ikjoon
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/bus/ti-sysc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+As v1 is already in my public tree, please send a follow-on patch that
+fixes it instead.
 
-diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
-index a27d751..8b8aa9c 100644
---- a/drivers/bus/ti-sysc.c
-+++ b/drivers/bus/ti-sysc.c
-@@ -1592,7 +1592,7 @@ static u32 sysc_quirk_dispc(struct sysc *ddata, int dispc_offset,
- 	case SOC_UNKNOWN:
- 	default:
- 		return 0;
--	};
-+	}
- 
- 	/* Remap the whole module range to be able to reset dispc outputs */
- 	devm_iounmap(ddata->dev, ddata->module_va);
-@@ -2830,7 +2830,7 @@ static int sysc_init_soc(struct sysc *ddata)
- 			break;
- 		default:
- 			break;
--		};
-+		}
- 	}
- 
- 	match = soc_device_match(sysc_soc_feat_match);
--- 
-1.8.3.1
+thanks,
 
+greg k-h
