@@ -2,88 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 092C030B4C2
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF2930B4C3
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 02:37:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231204AbhBBBf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 20:35:56 -0500
-Received: from relay11.mail.gandi.net ([217.70.178.231]:36965 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229677AbhBBBfy (ORCPT
+        id S231231AbhBBBgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 20:36:36 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12000 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229677AbhBBBgd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 20:35:54 -0500
-Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 62B2A100003;
-        Tue,  2 Feb 2021 01:35:07 +0000 (UTC)
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     John Stultz <john.stultz@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] alarmtimer: update kerneldoc
-Date:   Tue,  2 Feb 2021 02:34:57 +0100
-Message-Id: <20210202013457.3482388-1-alexandre.belloni@bootlin.com>
-X-Mailer: git-send-email 2.29.2
+        Mon, 1 Feb 2021 20:36:33 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DV6mn14TQzjH0Y;
+        Tue,  2 Feb 2021 09:34:33 +0800 (CST)
+Received: from [10.174.179.241] (10.174.179.241) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 2 Feb 2021 09:35:44 +0800
+Subject: Re: [PATCH] mm/swap_state: Constify static struct attribute_group
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20210201233254.91809-1-rikard.falkeborn@gmail.com>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <8c500328-fda5-7a13-64d4-5d0bd292fcfa@huawei.com>
+Date:   Tue, 2 Feb 2021 09:35:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210201233254.91809-1-rikard.falkeborn@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.241]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update kerneldoc comments to reflect the actual arguments and return values
-of the documented functions.
+Hi:
+On 2021/2/2 7:32, Rikard Falkeborn wrote:
+> The only usage of swap_attr_group is to pass its address to
+> sysfs_create_group() which takes a pointer to const attribute_group.
+> Make it const to allow the compiler to put it in read-only memory.
+> 
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
----
- kernel/time/alarmtimer.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+Looks good to me. Thanks.
+Reviewed-by: Miaohe Lin <linmiaohe@huawei.com>
 
-diff --git a/kernel/time/alarmtimer.c b/kernel/time/alarmtimer.c
-index f4ace1bf8382..98d7a15e8cf6 100644
---- a/kernel/time/alarmtimer.c
-+++ b/kernel/time/alarmtimer.c
-@@ -527,8 +527,11 @@ static enum alarmtimer_type clock2alarm(clockid_t clockid)
- /**
-  * alarm_handle_timer - Callback for posix timers
-  * @alarm: alarm that fired
-+ * @now: time at the timer expiration
-  *
-  * Posix timer callback for expired alarm timers.
-+ *
-+ * Return: whether the timer is to be restarted
-  */
- static enum alarmtimer_restart alarm_handle_timer(struct alarm *alarm,
- 							ktime_t now)
-@@ -715,8 +718,11 @@ static int alarm_timer_create(struct k_itimer *new_timer)
- /**
-  * alarmtimer_nsleep_wakeup - Wakeup function for alarm_timer_nsleep
-  * @alarm: ptr to alarm that fired
-+ * @now: time at the timer expiration
-  *
-  * Wakes up the task that set the alarmtimer
-+ *
-+ * Return: ALARMTIMER_NORESTART
-  */
- static enum alarmtimer_restart alarmtimer_nsleep_wakeup(struct alarm *alarm,
- 								ktime_t now)
-@@ -733,6 +739,7 @@ static enum alarmtimer_restart alarmtimer_nsleep_wakeup(struct alarm *alarm,
-  * alarmtimer_do_nsleep - Internal alarmtimer nsleep implementation
-  * @alarm: ptr to alarmtimer
-  * @absexp: absolute expiration time
-+ * @type: alarm type (BOOTTIME/REALTIME).
-  *
-  * Sets the alarm timer and sleeps until it is fired or interrupted.
-  */
-@@ -806,7 +813,6 @@ static long __sched alarm_timer_nsleep_restart(struct restart_block *restart)
-  * @which_clock: clockid
-  * @flags: determins abstime or relative
-  * @tsreq: requested sleep time (abs or rel)
-- * @rmtp: remaining sleep time saved
-  *
-  * Handles clock_nanosleep calls against _ALARM clockids
-  */
--- 
-2.29.2
+> ---
+>  mm/swap_state.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/swap_state.c b/mm/swap_state.c
+> index d0d417efeecc..3cdee7b11da9 100644
+> --- a/mm/swap_state.c
+> +++ b/mm/swap_state.c
+> @@ -901,7 +901,7 @@ static struct attribute *swap_attrs[] = {
+>  	NULL,
+>  };
+>  
+> -static struct attribute_group swap_attr_group = {
+> +static const struct attribute_group swap_attr_group = {
+>  	.attrs = swap_attrs,
+>  };
+>  
+> 
 
