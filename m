@@ -2,202 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE77330B8DC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:44:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A77B30B8DD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:44:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232285AbhBBHn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 02:43:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53152 "EHLO
+        id S231765AbhBBHoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 02:44:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231538AbhBBHno (ORCPT
+        with ESMTP id S232250AbhBBHnu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 02:43:44 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E267AC061786
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 23:41:59 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id s24so1733944pjp.5
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 23:41:59 -0800 (PST)
+        Tue, 2 Feb 2021 02:43:50 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C11AC061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 23:43:10 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id 8so6653475plc.10
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 23:43:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=yF9oYLwsZ1KojzzdMIJNFHTIF6r0NLzbmizzA10msek=;
-        b=i2KWwMMWbuGF2eiQySUtHobe5uTz4nG5XRV4S2XJ/mHh1GbIX54qDVTDwHLfIR7D2/
-         qsr7I6lilB8DfLaglk+KKmLYDFcLfD8yf9sj2W2EGPfEvPUZ7cfa9eDsaXiP3KM4vDx+
-         SeLls8iGFsCugRt525lMp5RI4ICOmGqH04gE2ZE2wyMS0jbFSpBel6/rRX4bXGsw/vCo
-         TPivIwY7fxlczAzpjZCgP1t11aqp+XaYonFc9iv5hvqaG8vsMPQ9cmU+Xm/ArO6Dd0YQ
-         kQEWFQmgKg65gixRyMtqqbzE0BUmJvCNNaoQfdsfgB4YXn19AWuw5/hw/iHwmvrSHBzh
-         4JOA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=8TJ/V0kcQ+z/4bMWVnXKWVlm9XfrPmR0Im/BODOFC7A=;
+        b=S2Y3br0AWNzYbz/+rkbKrtWVi6fj+jDiLDHdT8vR+ll+ayySVnrcR3FgtdfuhF4MP9
+         k9HSPDrAsW8G97X6MAsY0GnHcpPKPorILtoUblhJ+fC1oyVKR+uOPNenpC7Z5FG27L5M
+         RBbCM0AYPT2G0H2rZ/itq6/BWJM//esWZfD0yXMq4aZ4SmA7x8mbY6uza0rgetHMW89x
+         r0FGoKpC+Ob+ZAEBi/SCKyD9Ai0IkVy7+lpHdi3jtxQQ5ALvVqPunD06II8ffr1d802u
+         EpaJFpGo2wYgpO4UJO0yDLxEAiUbtMdIdscvN1CS1ZfeH74Tn25OGUA75uiB4vgY7TRf
+         iXpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yF9oYLwsZ1KojzzdMIJNFHTIF6r0NLzbmizzA10msek=;
-        b=BzySqDnlOTMymVxr4UCSTNl8s8umhJMpUGkQ5pyNtamrxKP5R8+hTJNgfVt+Citwel
-         GlGeXnVO9lOr2lGa+o+ers5Y5QfcNMR2Hc0ePYhhYLDqluQIi+EuW8pA3o7K3OBT3yFy
-         Hjwbsw00BULYGfzha8fnIfVbJPBlLOiN+fx7tWTvwiTJcO+7QmOrjzI+SDLlIt4rYDKg
-         GQXUyrdv6n+3IlYHIgHJsYMTXuEVvlyOnSiEj/RK3yL5X+28xgzXBJg0O0SzUa+80MHW
-         xgKCqFqX8cRqpvWiiT6dVGKEWIlRAkXOjx/Np788Hej9onJB2zE3xvYuwpWzYa1wAdNj
-         YvFw==
-X-Gm-Message-State: AOAM531sVVeeSULI+T4JHEPWTCKthVImN55JiQYFTXX/Z1aSPUz/vnMs
-        L1eKSUyk4Vpt4BTteNRbrvcl3cPbk5RI9A==
-X-Google-Smtp-Source: ABdhPJxje564VpHOPV+rh4rYf4PQrgkJXTdm+hnKe+ctEVPFgfpIqQ9fOc4EUqeGuKE61UOFwfC2qA==
-X-Received: by 2002:a17:90a:6549:: with SMTP id f9mr3026149pjs.17.1612251719077;
-        Mon, 01 Feb 2021 23:41:59 -0800 (PST)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id k9sm9410666pgh.94.2021.02.01.23.41.57
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=8TJ/V0kcQ+z/4bMWVnXKWVlm9XfrPmR0Im/BODOFC7A=;
+        b=IhSZr15Y48DmhBHjR3CHNgaQF+DyDGuSzG2lyp+/Q+LXRf7n2ar6FoqqAbpEFm6ZLq
+         uXDRs+WVJ9o0DeGNP5O6T3a6d1dIqvkKOWiwxHUhluK+gYaUIEP9FsjBBxFvGs1AJNnS
+         gDqaZjzp56CWG0Ic5vTHoDRMp92YZXR6QBUsSm+jRsb5r9NOFUPiLS1dyS2jQ5QqjJKI
+         7GqEU79EHJMIgD82GBwsXokyRv1O+ByQ8u6gWVrK+5DvxJYTJSKAx/qHCXqn/0QmJU0H
+         kMFMkgPmRgCbnafuBa/KAUCx2zzuWw4PokpbQ+EhElsTwMEz+rw3+iWL8RnYkJhODNAc
+         iEmg==
+X-Gm-Message-State: AOAM532wYHFORIkr+zDW0IaBuxBnW1wpaJKfZyy2wzsieZJvRcKSd+QA
+        3d/qzdCnum1bWKWyCe09ezNeZR0wn6EeFxTo
+X-Google-Smtp-Source: ABdhPJwZl59BOzNM10urTFGDtO97YcsTFY98hKxF6bSpD0KrfYHRrvWBGzUsInTo1Y24r7tWgCVKGg==
+X-Received: by 2002:a17:902:8ec7:b029:e0:a02:3d26 with SMTP id x7-20020a1709028ec7b02900e00a023d26mr21404019plo.24.1612251789971;
+        Mon, 01 Feb 2021 23:43:09 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:5c0b:3035:c597:b9c3:41be:d23e])
+        by smtp.gmail.com with ESMTPSA id z13sm20507118pgf.89.2021.02.01.23.43.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 23:41:58 -0800 (PST)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        Laura Abbott <labbott@kernel.org>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Daniel Mentz <danielmentz@google.com>,
-        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Simon Ser <contact@emersion.fr>,
-        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v4 3/3] dma-buf: system_heap: Add deferred freeing to the system heap
-Date:   Tue,  2 Feb 2021 07:41:51 +0000
-Message-Id: <20210202074151.3146795-3-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210202074151.3146795-1-john.stultz@linaro.org>
-References: <20210202074151.3146795-1-john.stultz@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Mon, 01 Feb 2021 23:43:09 -0800 (PST)
+From:   Prathu Baronia <prathubaronia2011@gmail.com>
+X-Google-Original-From: Prathu Baronia <prathu.baronia@oneplus.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     chintan.pandya@oneplus.com,
+        Prathu Baronia <prathu.baronia@oneplus.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [PATCH v2 0/1] mm: Optimizing hugepage zeroing in arm64
+Date:   Tue,  2 Feb 2021 13:12:23 +0530
+Message-Id: <20210202074225.7244-1-prathu.baronia@oneplus.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Utilize the deferred free helper library in the system heap.
+As discussed on the v1 thread I have used the recently introduced kmap_local_*
+APIs to avoid unnecessary preemption and pagefault disabling.
+I did not get further response on the previous thread so sending this
+again.
 
-This provides a nice performance bump and puts the
-system heap performance on par with ION.
+Prathu Baronia (1):
+  mm: Optimizing hugepage zeroing in arm64
 
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Liam Mark <lmark@codeaurora.org>
-Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
-Cc: Laura Abbott <labbott@kernel.org>
-Cc: Brian Starkey <Brian.Starkey@arm.com>
-Cc: Hridya Valsaraju <hridya@google.com>
-Cc: Suren Baghdasaryan <surenb@google.com>
-Cc: Sandeep Patil <sspatil@google.com>
-Cc: Daniel Mentz <danielmentz@google.com>
-Cc: Ørjan Eide <orjan.eide@arm.com>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Ezequiel Garcia <ezequiel@collabora.com>
-Cc: Simon Ser <contact@emersion.fr>
-Cc: James Jones <jajones@nvidia.com>
-Cc: linux-media@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
-v2:
-* Rework deferred-free api to use reason enum as suggested by
-  Suren Baghdasaryan
----
- drivers/dma-buf/heaps/Kconfig       |  1 +
- drivers/dma-buf/heaps/system_heap.c | 32 ++++++++++++++++++++++-------
- 2 files changed, 26 insertions(+), 7 deletions(-)
+ include/linux/highmem.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/dma-buf/heaps/Kconfig b/drivers/dma-buf/heaps/Kconfig
-index 45c7d277448b..2276420ae905 100644
---- a/drivers/dma-buf/heaps/Kconfig
-+++ b/drivers/dma-buf/heaps/Kconfig
-@@ -6,6 +6,7 @@ config DMABUF_HEAPS_SYSTEM
- 	depends on DMABUF_HEAPS
- 	select NET
- 	select PAGE_POOL
-+	select DMABUF_HEAPS_DEFERRED_FREE
- 	help
- 	  Choose this option to enable the system dmabuf heap. The system heap
- 	  is backed by pages from the buddy allocator. If in doubt, say Y.
-diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-index 2addb6d832e0..fe122b5eff10 100644
---- a/drivers/dma-buf/heaps/system_heap.c
-+++ b/drivers/dma-buf/heaps/system_heap.c
-@@ -22,6 +22,8 @@
- #include <linux/vmalloc.h>
- #include <net/page_pool.h>
- 
-+#include "deferred-free-helper.h"
-+
- static struct dma_heap *sys_heap;
- 
- struct system_heap_buffer {
-@@ -32,6 +34,7 @@ struct system_heap_buffer {
- 	struct sg_table sg_table;
- 	int vmap_cnt;
- 	void *vaddr;
-+	struct deferred_freelist_item deferred_free;
- };
- 
- struct dma_heap_attachment {
-@@ -301,30 +304,45 @@ static int system_heap_zero_buffer(struct system_heap_buffer *buffer)
- 	return ret;
- }
- 
--static void system_heap_dma_buf_release(struct dma_buf *dmabuf)
-+static void system_heap_buf_free(struct deferred_freelist_item *item,
-+				 enum df_reason reason)
- {
--	struct system_heap_buffer *buffer = dmabuf->priv;
-+	struct system_heap_buffer *buffer;
- 	struct sg_table *table;
- 	struct scatterlist *sg;
- 	int i, j;
- 
-+	buffer = container_of(item, struct system_heap_buffer, deferred_free);
- 	/* Zero the buffer pages before adding back to the pool */
--	system_heap_zero_buffer(buffer);
-+	if (reason == DF_NORMAL)
-+		if (system_heap_zero_buffer(buffer))
-+			reason = DF_UNDER_PRESSURE; // On failure, just free
- 
- 	table = &buffer->sg_table;
- 	for_each_sg(table->sgl, sg, table->nents, i) {
- 		struct page *page = sg_page(sg);
- 
--		for (j = 0; j < NUM_ORDERS; j++) {
--			if (compound_order(page) == orders[j])
--				break;
-+		if (reason == DF_UNDER_PRESSURE) {
-+			__free_pages(page, compound_order(page));
-+		} else {
-+			for (j = 0; j < NUM_ORDERS; j++) {
-+				if (compound_order(page) == orders[j])
-+					break;
-+			}
-+			page_pool_put_full_page(pools[j], page, false);
- 		}
--		page_pool_put_full_page(pools[j], page, false);
- 	}
- 	sg_free_table(table);
- 	kfree(buffer);
- }
- 
-+static void system_heap_dma_buf_release(struct dma_buf *dmabuf)
-+{
-+	struct system_heap_buffer *buffer = dmabuf->priv;
-+
-+	deferred_free(&buffer->deferred_free, system_heap_buf_free, buffer->len);
-+}
-+
- static const struct dma_buf_ops system_heap_buf_ops = {
- 	.attach = system_heap_attach,
- 	.detach = system_heap_detach,
 -- 
-2.25.1
+2.17.1
 
