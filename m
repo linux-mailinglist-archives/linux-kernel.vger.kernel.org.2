@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E0030C159
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:21:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ECEF30C567
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:22:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234261AbhBBOUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:20:14 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49196 "EHLO mail.kernel.org"
+        id S236200AbhBBQVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:21:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234141AbhBBOMf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:12:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6970765040;
-        Tue,  2 Feb 2021 13:52:28 +0000 (UTC)
+        id S234264AbhBBOPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:15:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C04364FBA;
+        Tue,  2 Feb 2021 13:53:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273949;
-        bh=VO72xo3Ln8pM8nOw4InhlEiC5MpY0EvtYKsSSrbihHE=;
+        s=korg; t=1612274029;
+        bh=/VSBTtvKp3Wlh5wo50bwzjsOFjIlsBsJ9rKh7bds5eE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OgvM2rN8Q/LbX4wGBCalpop0h4PdjiM4FUfN0dlT1ib/cGZzzdHLL6HD+JInfIhmt
-         8NZE3OcuP1bN/WM70YsGPW0nLIkD7JAWt2rJmNa37h4qlC8SfPZ6GzMlqbe7tZ9AU1
-         gJLMDIaUdaj68JaTZhob7G7NRumM36dY3GtQgtZ0=
+        b=sZiKWnVaOXK6wNwfEShzyfPc783XzBCIzhk78oVG+ufI2ZrPuRJM8EszLokXQEYdJ
+         NFDS7W0vcWRhj6jn40AdcJQCcYdKm42uRjf4T/jjbsfeAyu8o/zoOLRLAafkEozREw
+         EyH+rJwzrhKA8I9WVKyvDxbS/z9eKjmwi/HJNEYs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.14 27/30] NFC: fix resource leak when target index is invalid
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 25/37] pNFS/NFSv4: Fix a layout segment leak in pnfs_layout_process()
 Date:   Tue,  2 Feb 2021 14:39:08 +0100
-Message-Id: <20210202132943.244973502@linuxfoundation.org>
+Message-Id: <20210202132943.970175405@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132942.138623851@linuxfoundation.org>
-References: <20210202132942.138623851@linuxfoundation.org>
+In-Reply-To: <20210202132942.915040339@linuxfoundation.org>
+References: <20210202132942.915040339@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,33 +40,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pan Bian <bianpan2016@163.com>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-commit 3a30537cee233fb7da302491b28c832247d89bbe upstream.
+[ Upstream commit 814b84971388cd5fb182f2e914265b3827758455 ]
 
-Goto to the label put_dev instead of the label error to fix potential
-resource leak on path that the target index is invalid.
+If the server returns a new stateid that does not match the one in our
+cache, then pnfs_layout_process() will leak the layout segments returned
+by pnfs_mark_layout_stateid_invalid().
 
-Fixes: c4fbb6515a4d ("NFC: The core part should generate the target index")
-Signed-off-by: Pan Bian <bianpan2016@163.com>
-Link: https://lore.kernel.org/r/20210121152748.98409-1-bianpan2016@163.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 9888d837f3cf ("pNFS: Force a retry of LAYOUTGET if the stateid doesn't match our cache")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/nfc/rawsock.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/nfs/pnfs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/net/nfc/rawsock.c
-+++ b/net/nfc/rawsock.c
-@@ -117,7 +117,7 @@ static int rawsock_connect(struct socket
- 	if (addr->target_idx > dev->target_next_idx - 1 ||
- 	    addr->target_idx < dev->target_next_idx - dev->n_targets) {
- 		rc = -EINVAL;
--		goto error;
-+		goto put_dev;
- 	}
+diff --git a/fs/nfs/pnfs.c b/fs/nfs/pnfs.c
+index 46ca5592b8b0d..4b165aa5a2561 100644
+--- a/fs/nfs/pnfs.c
++++ b/fs/nfs/pnfs.c
+@@ -2320,6 +2320,7 @@ out_forget:
+ 	spin_unlock(&ino->i_lock);
+ 	lseg->pls_layout = lo;
+ 	NFS_SERVER(ino)->pnfs_curr_ld->free_lseg(lseg);
++	pnfs_free_lseg_list(&free_me);
+ 	return ERR_PTR(-EAGAIN);
+ }
  
- 	rc = nfc_activate_target(dev, addr->target_idx, addr->nfc_protocol);
+-- 
+2.27.0
+
 
 
