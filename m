@@ -2,80 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 082EA30B8A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:33:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C2130B8A7
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:33:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbhBBHcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 02:32:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55574 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229462AbhBBHcu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 02:32:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F33C464DDD;
-        Tue,  2 Feb 2021 07:32:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612251129;
-        bh=PEpcMlXbAvVlCef+LCydHc4SZgper6ya9C4OFl1mH14=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lQmHJzckD21+NYrm50hqqA0a5+ataMF5Qq5KGqL3JUZmSUOwVV/5TEc9vjyOt7heg
-         Fb61fQvgJ7QCh8dBcza7Y1VZXc88ilgn+Rp72VzMs8zOlgAvozNA+f71lwwSXUf7yD
-         JjkQRU5U7sxAPWSNPMeAiJxjSdBz7tl6RasVOG88=
-Date:   Tue, 2 Feb 2021 08:32:06 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Benson Leung <bleung@google.com>
-Cc:     Benson Leung <bleung@chromium.org>,
-        heikki.krogerus@linux.intel.com, enric.balletbo@collabora.com,
-        pmalani@chromium.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, groeck@chromium.org
-Subject: Re: [PATCH 0/6] usb: typec: and platform/chrome: Add PD revision
- numbers
-Message-ID: <YBj/9tP7b4CgeZ8r@kroah.com>
-References: <20210129061406.2680146-1-bleung@chromium.org>
- <YBgRDwszRs3ULl5J@kroah.com>
- <YBj5b7O60c6fh/nX@google.com>
+        id S231591AbhBBHdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 02:33:04 -0500
+Received: from mail-il1-f197.google.com ([209.85.166.197]:39646 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231509AbhBBHdA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 02:33:00 -0500
+Received: by mail-il1-f197.google.com with SMTP id e11so16027969ils.6
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 23:32:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=yEspMoGKMDuEEGSpdgz0FaL0GKC/NspiboJRr5zloY4=;
+        b=fN+5bEekqW1cMY1XchM7tH1YtNECsfBxtrB1MXKjGbPN30RtAjcGwMpGQDi9YyhAbg
+         T6FJrRSCtTngULYWqlRL2wMEo6eQSb/LdFRqH+FuG3ENQsT3R0wvSEsztjTX22Ww/Me+
+         gYiGJPS+G6zIFcSpOK2h7tmIauH+uMYsPc43pfk97KVBFgBO3nhNjBVmlUOnQE7gO6pF
+         vU/42y6AYbzPbYJ+g7llJqJYnuIHgq2jawXucGI1LhHIJjDXsGva5vl0KUtAB3xf3wf6
+         S396XxUeUrZplQdTc3gQdNzeInpZEFvqABosWg+yBQlVDXUUi1OObd0oVp1a73xs5huP
+         /nBQ==
+X-Gm-Message-State: AOAM530sPlmRs8+l6e9AwCnCtW0iYrp7OZzBuD009wkdr8NQuDpK7g9N
+        ctmWwwvxOTDMPNy8UlB7x1qKVzhniyAErDM7ZF/o1yxJ39jD
+X-Google-Smtp-Source: ABdhPJw0ABknIZcjmWqfmFc8vxwHhusveS85e+Bq0Y/H0YQpQqNAseSgn9pii8y8Cj8Sj6uh56kPbgCZ9TcNWB2S/NkkfYwke/v+
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YBj5b7O60c6fh/nX@google.com>
+X-Received: by 2002:a5d:8887:: with SMTP id d7mr15283961ioo.151.1612251139885;
+ Mon, 01 Feb 2021 23:32:19 -0800 (PST)
+Date:   Mon, 01 Feb 2021 23:32:19 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007b503905ba5578a6@google.com>
+Subject: general protection fault in invalidate_bdev
+From:   syzbot <syzbot+d65b0638dd3d123794f2@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 11:04:15PM -0800, Benson Leung wrote:
-> Hi Greg,
-> 
-> On Mon, Feb 01, 2021 at 03:32:47PM +0100, Greg KH wrote:
-> > On Thu, Jan 28, 2021 at 10:14:00PM -0800, Benson Leung wrote:
-> > > USB Power Delivery has a 3 entity handshake (port, cable, partner), and as
-> > > of USB PD R3.0, each entity may independently support either Revision 2 or
-> > > Revision 3 signaling and protocol. In order for userspace and the kernel
-> > > to properly process the data objects received from a particular SOP*, we
-> > > must know to which revision of the spec each conforms.
-> > > 
-> > > This series adds individual version numbers for the partner and the cable,
-> > > and exposes them in the appropriate sysfs in /sys/class/typec.
-> > > 
-> > > I provide as a first implementation of this, platform/chrome's cros_ec_typec
-> > > driver, whose underlying status messages convey the SOP and SOP' revisions
-> > > already.
-> > 
-> > I've taken the first 3 patches in my tree now, but the last 3 (for the
-> > chrome_ec_typec.c driver), they do not apply at all.
-> > 
-> 
-> Ah, that's because we have some other changes for the cros_ec_typec.c driver
-> already in platform/chrome for our 5.12 branch.
-> 
-> For 5.12, the changes for cros_ec_typec driver is pretty well contained,
-> although there is some dependence on typec subsystem changes now.
-> 
-> If I send you a pull request containing all of the changes for this driver we
-> have already merged, plus these last three that depend on both of our trees
-> would you merge it through usb for 5.12?
+Hello,
 
-If the subsystem maintainer says it is ok, yes, I will be glad to take a
-stable git tag to pull from into my usb-next branch.
+syzbot found the following issue on:
 
-thanks,
+HEAD commit:    d03154e8 Add linux-next specific files for 20210128
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1088091cd00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6953ffb584722a1
+dashboard link: https://syzkaller.appspot.com/bug?extid=d65b0638dd3d123794f2
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-greg k-h
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d65b0638dd3d123794f2@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xdffffc0000000005: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000028-0x000000000000002f]
+CPU: 0 PID: 30787 Comm: syz-executor.3 Not tainted 5.11.0-rc5-next-20210128-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:invalidate_bdev+0x1f/0xd0 fs/block_dev.c:92
+Code: ff 66 2e 0f 1f 84 00 00 00 00 00 55 53 48 89 fb e8 16 29 a0 ff 48 8d 7b 28 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 93 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b
+RSP: 0018:ffffc90017c07848 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc9000f244000
+RDX: 0000000000000005 RSI: ffffffff81d2ec3a RDI: 0000000000000028
+RBP: ffff888073ecc000 R08: 0000000000000000 R09: ffffffff8b2146c3
+R10: fffffbfff16428d8 R11: 0000000000000000 R12: ffff888076c38cc0
+R13: 0000000000000001 R14: 0000000000000001 R15: ffff888028720000
+FS:  00007fe9ef641700(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fb745112db8 CR3: 000000008b834000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ open_ctree+0xab3/0x4060 fs/btrfs/disk-io.c:3086
+ btrfs_fill_super fs/btrfs/super.c:1356 [inline]
+ btrfs_mount_root.cold+0x14/0x165 fs/btrfs/super.c:1723
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1497
+ fc_mount fs/namespace.c:993 [inline]
+ vfs_kern_mount.part.0+0xd3/0x170 fs/namespace.c:1023
+ vfs_kern_mount+0x3c/0x60 fs/namespace.c:1010
+ btrfs_mount+0x234/0xa20 fs/btrfs/super.c:1783
+ legacy_get_tree+0x105/0x220 fs/fs_context.c:592
+ vfs_get_tree+0x89/0x2f0 fs/super.c:1497
+ do_new_mount fs/namespace.c:2903 [inline]
+ path_mount+0x132a/0x1f90 fs/namespace.c:3233
+ do_mount fs/namespace.c:3246 [inline]
+ __do_sys_mount fs/namespace.c:3454 [inline]
+ __se_sys_mount fs/namespace.c:3431 [inline]
+ __x64_sys_mount+0x27f/0x300 fs/namespace.c:3431
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x460c6a
+Code: b8 a6 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 ad 89 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 8a 89 fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007fe9ef640a78 EFLAGS: 00000202 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fe9ef640b10 RCX: 0000000000460c6a
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 00007fe9ef640ad0
+RBP: 00007fe9ef640ad0 R08: 00007fe9ef640b10 R09: 0000000020000000
+R10: 0000000000000000 R11: 0000000000000202 R12: 0000000020000000
+R13: 0000000020000100 R14: 0000000020000200 R15: 0000000020003d00
+Modules linked in:
+---[ end trace 44edaf4ec7942bd8 ]---
+RIP: 0010:invalidate_bdev+0x1f/0xd0 fs/block_dev.c:92
+Code: ff 66 2e 0f 1f 84 00 00 00 00 00 55 53 48 89 fb e8 16 29 a0 ff 48 8d 7b 28 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 93 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 8b
+RSP: 0018:ffffc90017c07848 EFLAGS: 00010206
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffc9000f244000
+RDX: 0000000000000005 RSI: ffffffff81d2ec3a RDI: 0000000000000028
+RBP: ffff888073ecc000 R08: 0000000000000000 R09: ffffffff8b2146c3
+R10: fffffbfff16428d8 R11: 0000000000000000 R12: ffff888076c38cc0
+R13: 0000000000000001 R14: 0000000000000001 R15: ffff888028720000
+FS:  00007fe9ef641700(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffdfaea9138 CR3: 000000008b834000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
