@@ -2,185 +2,249 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F2530BBA5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE8530BBA0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:00:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbhBBKAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 05:00:19 -0500
-Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:43091 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230129AbhBBJ7f (ORCPT
+        id S231183AbhBBJ7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 04:59:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231139AbhBBJ7B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 04:59:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1612259906;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=hK8uf99asdr/NvFpyOabOBY7USx3GtWHkI2i3eHv5Y4=;
-        b=Ss6kOwz+hSJkYDdZs8JXRy7g2A3w/izfvm/GWJCsmgdMwcht5OZ1p6DqOi6pJGK8iDA4bG
-        jVu9jPlId6PNnH6XEVv3U5NJ9Y81de3rxcZx1q50xmsOOv8ul4Rqv4EHxzWTASXs9ADzW7
-        NyV3kvSNlLUn/BLXDux55LQ2na1OcsQ=
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com
- (mail-vi1eur04lp2059.outbound.protection.outlook.com [104.47.14.59]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-22-fa78D1ETPkemocAAankmZQ-1; Tue, 02 Feb 2021 10:57:52 +0100
-X-MC-Unique: fa78D1ETPkemocAAankmZQ-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=flsOVfa6AeIaX9Czs1FaVfM3fnXv7Sy8l2qTN/WuG7qp/ZVMyCQRe7B8rY+pbPjGG+XCv3NnCx/07IF1WVEU+1YbodNkvSi1Rf88P43MQy26/ajvj8hA2DMLt/Oh+IAY5SUO5PoLHr3zhxw0MfPLcAhX4Tw/EQPaqt+G+GYEYjTNZcX+pmzOozo7OvVJzVVS4wwPuWG34+K/PPfueWnUKJYI6137BLnkHVopnhDyN+FdduNWgPQLHrG/KYl5iQINTdJtqOou0p4k3099LTvEBWFd3lHwSDPggv7HH3OT/IJ66ditcfyl4JALSqBC3IjJiNTaI5poRpSzCtYf24Q3RA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hK8uf99asdr/NvFpyOabOBY7USx3GtWHkI2i3eHv5Y4=;
- b=oIhLPulx21/kU4gfXRNJ+kdZ4qOt4hGrPeOXgIyLpgzAoiSIMUNN/HrU7EyW05x0ah3NOpyGOBnNx1ICam95xgqFrF9X3XpgXB0joCtTR/5KJexaQ66oOBnjUpa1UBLz3caaHuv5D4cLjPQLSNk1OkQSm05ZZHzKHTrzjgNFcqv/xVVJnsD9W0j91cLdPn42QChp9j6DnNwqg5bFNRpg60W2+f/LS5YwehGTsIGhmm5KGuRc+/o4U8ki0h94qh4eWdlrx3KyTaiG0ZJJra2TDApdwgKzqWWtajPgsp196qA3cxYOWzPFVJVOYy+UZBsoFFpzNRWJAGp1ZgyiEIiRIQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: vmware.com; dkim=none (message not signed)
- header.d=none;vmware.com; dmarc=none action=none header.from=suse.com;
-Received: from AM9PR04MB7571.eurprd04.prod.outlook.com (2603:10a6:20b:2dd::18)
- by AM0PR0402MB3571.eurprd04.prod.outlook.com (2603:10a6:208:18::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.24; Tue, 2 Feb
- 2021 09:57:50 +0000
-Received: from AM9PR04MB7571.eurprd04.prod.outlook.com
- ([fe80::42f:77ab:ab6a:e1dd]) by AM9PR04MB7571.eurprd04.prod.outlook.com
- ([fe80::42f:77ab:ab6a:e1dd%7]) with mapi id 15.20.3805.025; Tue, 2 Feb 2021
- 09:57:50 +0000
-Date:   Tue, 2 Feb 2021 17:57:37 +0800
-From:   Firo Yang <firo.yang@suse.com>
-To:     Jorgen Hansen <jhansen@vmware.com>
-Cc:     linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, pv-drivers@vmware.com,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH v2 1/3] VMCI: Stop log spew when qp allocation isn't
- possible
-Message-ID: <20210202095737.shlt4sjsdriq2qc3@suse.com>
-References: <1611160340-30158-1-git-send-email-jhansen@vmware.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1611160340-30158-1-git-send-email-jhansen@vmware.com>
-X-Originating-IP: [175.170.255.99]
-X-ClientProxiedBy: HK2PR02CA0150.apcprd02.prod.outlook.com
- (2603:1096:202:16::34) To AM9PR04MB7571.eurprd04.prod.outlook.com
- (2603:10a6:20b:2dd::18)
+        Tue, 2 Feb 2021 04:59:01 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24DA2C061573;
+        Tue,  2 Feb 2021 01:58:20 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id e15so1711501wme.0;
+        Tue, 02 Feb 2021 01:58:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=aRWlB17fgJ7FBH80ZaL2irHbFGq9l/cSPpFGGk65Sp0=;
+        b=jr8Y7EVTubO4xkazVVobZAPzZmg2jsav0Qka/39DaINvgiuxy4NV2/s/+++Qf9qdRg
+         a/whI2ECcaMWwxnNQybb2z7q6X/qeI4wVdaTJtkZKYEihuu4h+NP567Ok/H2+JD/5dhS
+         EuZAQwvZxMIMyO4tZ5TiXJpqVBXAS8Y9qw+SIAIZZTnvvIUyfqHNT/O6IgB4URn6fmeL
+         DMo5PDBVAI+hf5gb+kIdrMeNgDvfCkDSCdIzpu4ZaJWUXb84Nleks/nFL7gEffMqYr7b
+         kLp51qp05OOClLpQR9NvyRaosH6kyPktIroXbKpr+/cJxRfN671HjNTbm9PoNdy6xm38
+         QFSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aRWlB17fgJ7FBH80ZaL2irHbFGq9l/cSPpFGGk65Sp0=;
+        b=E3dhDC3G/NueOX1NJSK2qhx+Chqb9UZgPeSwj6R3nSCWnPToLWC8aTb1bwI/hz1TxO
+         lPV90Wkn2kvCwuxhuhDvjDqvjG+puPK/djgfUAqpjLWjhyDIMo+qgUJT+FdR+RdB9KMS
+         K8MtxQSDmqwgJ3m5hihBOx53C/0oUyCC8xvmxDfCBGPoQZHZI1uva03h/KC03bqmkS+i
+         94MGF6XB6NAZohv0u6qLpqTd7nQ8o7G/8rWpx9lDtGCJHsWw52kOHZDRTnQCBkyrJttr
+         i1rIfZPdhIT/FIxswPBuZEr8EzS9TvVaJmOkOeSTd+AQq+M/DidFKvrOm5zEzyueODec
+         tRAg==
+X-Gm-Message-State: AOAM532DyRuw3pWmbRAr5HJ8Qr4Coc+xjORdlFQyRu4xoDGIRcI+nbtC
+        dn4AoTCszDu4eP/cc6+EdiA=
+X-Google-Smtp-Source: ABdhPJzExWAL1lD8x9TqPU/EeGYBZQ9l6JLXhM07AU/7P3U6pjBm3uQII891MxzVZ/yfRYSAsOmKQA==
+X-Received: by 2002:a1c:c356:: with SMTP id t83mr1417532wmf.99.1612259898784;
+        Tue, 02 Feb 2021 01:58:18 -0800 (PST)
+Received: from [192.168.1.211] ([2.31.224.123])
+        by smtp.gmail.com with ESMTPSA id e16sm30913024wrp.24.2021.02.02.01.58.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Feb 2021 01:58:18 -0800 (PST)
+Subject: Re: [PATCH v2 2/7] acpi: utils: Add function to fetch dependent
+ acpi_devices
+From:   Daniel Scally <djrscally@gmail.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        linux-gpio@vger.kernel.org, linux-i2c <linux-i2c@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, andy@kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>
+References: <20210118003428.568892-1-djrscally@gmail.com>
+ <20210118003428.568892-3-djrscally@gmail.com>
+ <CAJZ5v0gVQsZ4rxXW8uMidW9zfY_S50zpfrL-Gq0J3Z4-qqBiww@mail.gmail.com>
+ <b381b48e-1bf2-f3e7-10a6-e51cd261f43c@gmail.com>
+ <CAJZ5v0iU2m4Hs6APuauQ645DwbjYaB8nJFjYH0+7yQnR-FPZBQ@mail.gmail.com>
+ <e2d7e5e9-920f-7227-76a6-b166e30e11e5@gmail.com>
+ <CAJZ5v0gg5oXG3yOO9iDvPKSsadYrFojW6JcKfZcQbFFpO78zAQ@mail.gmail.com>
+ <85ccf00d-7c04-b1da-a4bc-82c805df69c9@gmail.com>
+ <CAJZ5v0jO9O1zhBMNRNB5kRt1o86BTjr1kRuFUe=nNVTDwBQhEg@mail.gmail.com>
+ <0fac24d2-e8fc-7dc8-0f2f-44c7aadb1daf@gmail.com>
+ <CAJZ5v0jVxMMGh6k-vXeBRsCtD0L14poNUrg4kZOpCfOz2sZGZQ@mail.gmail.com>
+ <ee8f6b58-55c8-e0a0-c161-bdef361f9e0a@gmail.com>
+Message-ID: <d9ec0439-4323-51a2-70e7-c258fe63cd86@gmail.com>
+Date:   Tue, 2 Feb 2021 09:58:17 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from suse.com (175.170.255.99) by HK2PR02CA0150.apcprd02.prod.outlook.com (2603:1096:202:16::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Tue, 2 Feb 2021 09:57:48 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 773e79f7-1375-4599-53f4-08d8c761004d
-X-MS-TrafficTypeDiagnostic: AM0PR0402MB3571:
-X-Microsoft-Antispam-PRVS: <AM0PR0402MB3571D6E076CF63FC212BA09788B59@AM0PR0402MB3571.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?bXhrT2FvT3h6ZTk0dDhuVW9lNUxqU1Vka0hPZVZRa0hKYzBxMnc4NTROcHpW?=
- =?utf-8?B?Mmk5N0JPemhxYXY3NlMwZFN6Ni85QVBLTDFiREhCVHhtYVNkSm1Ja3ovdWF3?=
- =?utf-8?B?MGU2SGNvUTVadk5tWEFMTitneC9JSk1kZzk2SzByWWxNTkN1VC9tbUJDVDNu?=
- =?utf-8?B?Unoxa01KUjR3OXlsWFlQZVdnbENvRWVXNmowbkhIR3plcGM4RFd3eDQvTm1z?=
- =?utf-8?B?dUxOZWkvLzBPMFZ6UktibDdxNWdMNy8wZzZmNWFQMjI1MUxPTlh1K3BGQVVw?=
- =?utf-8?B?SXppTjZNTHpJZUhqKzk4RzBlbk1seDU4bG8zRUhTWHpPaXJJREVCVlFubXRp?=
- =?utf-8?B?UGJXdHFGOWlvZDB0Z2U2b1ZTdHRCeHlLNnhLWlBMTFpsRVZrdk1DV3ZHNmtP?=
- =?utf-8?B?ODE0Qko0eXQ0N3Q2RVlnMEc5enJCYTc2UDNPWXNmdUVJODZtT0pLN1VKNmZJ?=
- =?utf-8?B?azJnN3JXNTl4bGEwMmlHN1BEZm1TTWMrb2hEM2pFRmI1UkM2S08waG5OanpS?=
- =?utf-8?B?L2NGNXh1L3RCR3BPVkc1SUxiMXBraVYyRU8zT21hNEFIKzRKdXA3OHUvVlhF?=
- =?utf-8?B?aGVnbk5aaHdoY1lDRitBZkVOZksyQjhKR3daQ0dCWGpyRGdhcWtKbUh5KzNi?=
- =?utf-8?B?QnFTZFNlWEFlQm1XdkNyWG9oYVlLcTNPV3A5eVpqVlRpWk9Gb0xDRERYbTFa?=
- =?utf-8?B?dTFIYm02MUtINEFubEpKZEdGNFVWbzdZY013UmgrVE1yVW1xZmJmdVF0eEhS?=
- =?utf-8?B?YUpXQ3RwT1RwQmNBY3kzRm1mSzFBSGJwQml5Z0FVNi9LdWJkZCtaL1QyazVr?=
- =?utf-8?B?WmkvUVNERFBPRGpIWEVrUzVVbU9mWWFVbFJKbmZ2ejV1N1J0NDVUNDZjWDJa?=
- =?utf-8?B?TVlFa2tsVW1oL1FRY0VZUThDb25jOTA1TnUwQ2lXLzliMWFGYkFwWWFMckNw?=
- =?utf-8?B?elFBdzA4TURHSHRpZG9jWUEyeDEveUl0ZzZSZld1eHlOeU5iNzFEWGhhUHFE?=
- =?utf-8?B?MzBwY25QRW1jWmFNc1k0UzNCcWdCZ1FSTEZVcklGTDloQWZtYi9TUEY2c3dD?=
- =?utf-8?B?bUZ1WmVNSGFNL0hFcG9BYmV1cExxSnFGUm0xdy9pOGJXbTdMcWNwdnhHcWFJ?=
- =?utf-8?B?bjcxaWh0SHIwYUNyUzcwOGVxNmYvNklkNWtncVpjbldUSlU4elJnYTQ2Mm5q?=
- =?utf-8?B?eThoa05oMkpHeGJhRVNmQ1JIYnk1NFJ3R1JURUtPaHhqL0VPNGJrZk5hanli?=
- =?utf-8?B?QUhyd28vY1QraW93TVVYSU5LZ1V1T0Z2d0VJZW9ob1NWcEdyQT09?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:5;SRV:;IPV:NLI;SFV:SPM;H:AM9PR04MB7571.eurprd04.prod.outlook.com;PTR:;CAT:OSPM;SFS:(376002)(136003)(346002)(396003)(39860400002)(366004)(2616005)(55016002)(66476007)(8886007)(316002)(66946007)(86362001)(66556008)(4326008)(6666004)(83380400001)(8676002)(8936002)(36756003)(6916009)(5660300002)(186003)(7696005)(478600001)(966005)(44832011)(16526019)(52116002)(956004)(1076003)(26005)(2906002)(1490200006);DIR:OUT;SFP:1501;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?V3hwWjdQc0pTTzFRZnFaM0lrYWM1MXNPSkZoaHlmNi9FTm1tc1FSemVhNnBk?=
- =?utf-8?B?cmVRUy9jQk16ZjF5amdzK3R2U3VVaDBJelh5TktqTmRYOUFLdWlMTkpSYnUy?=
- =?utf-8?B?eEdxMlNySmowTmVHV3RCNXo1NmhHTWZHQWRTeUdJQk5WRUI3WS9ENkl3eUdL?=
- =?utf-8?B?WWlXUTBmTFVnaEZnVXBJd1BmdExiTlE0Y09TM1YrbWxteWp3Rm8xV0g0SUh0?=
- =?utf-8?B?a2R5ZXFRaW9LWWFpVmdLOXZxUmVFeGpIVUVBclRwdzZROWkxdVhTNzFmbWVl?=
- =?utf-8?B?WFpmOWNsT25CcnJPN3ZYak1uUDdmcjY2ZzVOYkdKRWxnVDh4d2ZCaDhFYk81?=
- =?utf-8?B?R2w5MTBjVmxnRjdaOUFYMnNYUlNGbnZxN1VOMkdnTk5NbTlqVU4xankzNzdQ?=
- =?utf-8?B?RnlFc3E1UGRRNndIUXRtbGJPNlMwSzgvcnlUdmRjWkRpU1VjbGlMUkRTdGZu?=
- =?utf-8?B?WXVVT1QwRXp4MUpHNThycjQwblZPYThxaVB4aU1vSUNVVkFTMDVuOFhMMkRh?=
- =?utf-8?B?dm8vSWU2L09CeEV1MkpkU3dDR2JCZDhZTG93ZmlYbG5NWTFCakJVWElyWnVD?=
- =?utf-8?B?eldmMW5Fc0NxRFdaY2V4ejJyY1lhcjhKUm9rT011aVA1eWRRZlZ3cEJhZXVI?=
- =?utf-8?B?NWdpYVlCTDJvMzdyMEphdmYvMWNmSWg1aURHQjNWZGtMUTJRYzhPVkwvQmZ3?=
- =?utf-8?B?UkV3S01PMnhreFlGTTdaK2kyNlhZa0wyM2tzbGVLM2VMRG96RjVRUWFKVnN3?=
- =?utf-8?B?RUoxWmNmZ3A5ejZRZFVDdmxRb2kzbkNvZmgxR0g0ZTJNMTk2YWhFbzZWWktI?=
- =?utf-8?B?b3pqMjRHd3QrU2ZmcTBZc3p6Zk5wTGxGK0FKVWxWTzZCdXBRRGlEai9pK21v?=
- =?utf-8?B?bGJvd0N5QjU1dEFGZGcreEFpT0ZJRzVBZ0xqV1VkbUNKK3k5cWxYSEtGVVFJ?=
- =?utf-8?B?c0U4cnluNCsvNzV1dENUTDA5SnBLcGVxV3EwUWNrTUZRY0lHUTJRNGVJYjJ5?=
- =?utf-8?B?VnR2TlF0ajMwN0JNaE1sQzZEZmoxQ2t4dkt0dWJLWmRmb0p2M240eFFZRTVY?=
- =?utf-8?B?ZWxXZUlpTkg2Tjl0VjZOWnhYdjNreStMOXI2K1NzL1ZlZFFNMTYveTRPc0lp?=
- =?utf-8?B?cEV4bVRtRjlNallaQkFKQnByN1Zma202TjFPVVpvSFhLMExKTWJ2c3pxTzlm?=
- =?utf-8?B?SkpDU1VSMlVNcXFTWUIyY0xCWXFxS0ZZR1AwY2l6NXBLeGVRaDBnTnNreTJO?=
- =?utf-8?B?RlQ0c1R0Y3ZRUXRWQXpxQzY3dWZRUzdTQloxT2ZJckttQVRsS1BOamNzazR3?=
- =?utf-8?B?bWdYankzSGxVdTh0cDFFL1BQc1NXMXVkaEw1MmlnQmpaSHZRVGtuQ0JuRldl?=
- =?utf-8?B?ZW5nM2d3czRYS1FTcE1CVlNrOUo3cTFsWHdhdHNjNURHVzA3WVJhSUg0UnUy?=
- =?utf-8?Q?EsGIHSL2?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 773e79f7-1375-4599-53f4-08d8c761004d
-X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB7571.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2021 09:57:50.5699
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: mz7NqG+GODiChCcf9QVlQcY1KireEaZE+e4dSD5nh5EKGwqjAKnukz4DhxL05ndkpBTU5G5EaF1FL7nvSec6Wg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR0402MB3571
+In-Reply-To: <ee8f6b58-55c8-e0a0-c161-bdef361f9e0a@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 01/20/2021 08:32, Jorgen Hansen wrote:
-> VMCI queue pair allocation is disabled, if a VM is in FT mode. In
-> these cases, VMware Tools may still once in a while attempt to
-> create a vSocket stream connection, resulting in multiple
-> warnings in the kernel logs. Therefore downgrade the error log to
-> a debug log.
+Hi Rafael
+
+On 21/01/2021 21:06, Daniel Scally wrote:
 > 
-> Reviewed-by: Vishnu Dasa <vdasa@vmware.com>
-> Signed-off-by: Jorgen Hansen <jhansen@vmware.com>
-> ---
->  drivers/misc/vmw_vmci/vmci_queue_pair.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> On 21/01/2021 18:08, Rafael J. Wysocki wrote:
+>> On Thu, Jan 21, 2021 at 5:34 PM Daniel Scally <djrscally@gmail.com> wrote:
+>>>
+>>> On 21/01/2021 14:39, Rafael J. Wysocki wrote:
+>>>> On Thu, Jan 21, 2021 at 1:04 PM Daniel Scally <djrscally@gmail.com> wrote:
+>>>>> On 21/01/2021 11:58, Rafael J. Wysocki wrote:
+>>>>>> On Thu, Jan 21, 2021 at 10:47 AM Daniel Scally <djrscally@gmail.com> wrote:
+>>>>>>> Hi Rafael
+>>>>>>>
+>>>>>>> On 19/01/2021 13:15, Rafael J. Wysocki wrote:
+>>>>>>>> On Mon, Jan 18, 2021 at 9:51 PM Daniel Scally <djrscally@gmail.com> wrote:
+>>>>>>>>> On 18/01/2021 16:14, Rafael J. Wysocki wrote:
+>>>>>>>>>> On Mon, Jan 18, 2021 at 1:37 AM Daniel Scally <djrscally@gmail.com> wrote:
+>>>>>>>>>>> In some ACPI tables we encounter, devices use the _DEP method to assert
+>>>>>>>>>>> a dependence on other ACPI devices as opposed to the OpRegions that the
+>>>>>>>>>>> specification intends. We need to be able to find those devices "from"
+>>>>>>>>>>> the dependee, so add a function to parse all ACPI Devices and check if
+>>>>>>>>>>> the include the handle of the dependee device in their _DEP buffer.
+>>>>>>>>>> What exactly do you need this for?
+>>>>>>>>> So, in our DSDT we have devices with _HID INT3472, plus sensors which
+>>>>>>>>> refer to those INT3472's in their _DEP method. The driver binds to the
+>>>>>>>>> INT3472 device, we need to find the sensors dependent on them.
+>>>>>>>>>
+>>>>>>>> Well, this is an interesting concept. :-)
+>>>>>>>>
+>>>>>>>> Why does _DEP need to be used for that?  Isn't there any other way to
+>>>>>>>> look up the dependent sensors?
+>>>>>>>>
+>>>>>>>>>> Would it be practical to look up the suppliers in acpi_dep_list instead?
+>>>>>>>>>>
+>>>>>>>>>> Note that supplier drivers may remove entries from there, but does
+>>>>>>>>>> that matter for your use case?
+>>>>>>>>> Ah - that may work, yes. Thank you, let me test that.
+>>>>>>>> Even if that doesn't work right away, but it can be made work, I would
+>>>>>>>> very much prefer that to the driver parsing _DEP for every device in
+>>>>>>>> the namespace by itself.
+>>>>>>> This does work; do you prefer it in scan.c, or in utils.c (in which case
+>>>>>>> with acpi_dep_list declared as external var in internal.h)?
+>>>>>> Let's put it in scan.c for now, because there is the lock protecting
+>>>>>> the list in there too.
+>>>>>>
+>>>>>> How do you want to implement this?  Something like "walk the list and
+>>>>>> run a callback for the matching entries" or do you have something else
+>>>>>> in mind?
+>>>>> Something like this (though with a mutex_lock()). It could be simplified
+>>>>> by dropping the prev stuff, but we have seen INT3472 devices with
+>>>>> multiple sensors declaring themselves dependent on the same device
+>>>>>
+>>>>>
+>>>>> struct acpi_device *
+>>>>> acpi_dev_get_next_dependent_dev(struct acpi_device *supplier,
+>>>>>                 struct acpi_device *prev)
+>>>>> {
+>>>>>     struct acpi_dep_data *dep;
+>>>>>     struct acpi_device *adev;
+>>>>>     int ret;
+>>>>>
+>>>>>     if (!supplier)
+>>>>>         return ERR_PTR(-EINVAL);
+>>>>>
+>>>>>     if (prev) {
+>>>>>         /*
+>>>>>          * We need to find the previous device in the list, so we know
+>>>>>          * where to start iterating from.
+>>>>>          */
+>>>>>         list_for_each_entry(dep, &acpi_dep_list, node)
+>>>>>             if (dep->consumer == prev->handle &&
+>>>>>                 dep->supplier == supplier->handle)
+>>>>>                 break;
+>>>>>
+>>>>>         dep = list_next_entry(dep, node);
+>>>>>     } else {
+>>>>>         dep = list_first_entry(&acpi_dep_list, struct acpi_dep_data,
+>>>>>                        node);
+>>>>>     }
+>>>>>
+>>>>>
+>>>>>     list_for_each_entry_from(dep, &acpi_dep_list, node) {
+>>>>>         if (dep->supplier == supplier->handle) {
+>>>>>             ret = acpi_bus_get_device(dep->consumer, &adev);
+>>>>>             if (ret)
+>>>>>                 return ERR_PTR(ret);
+>>>>>
+>>>>>             return adev;
+>>>>>         }
+>>>>>     }
+>>>>>
+>>>>>     return NULL;
+>>>>> }
+>>>> That would work I think, but would it be practical to modify
+>>>> acpi_walk_dep_device_list() so that it runs a callback for every
+>>>> consumer found instead of or in addition to the "delete from the list
+>>>> and free the entry" operation?
+>>>
+>>> I think that this would work fine, if that's the way you want to go.
+>>> We'd just need to move everything inside the if (dep->supplier ==
+>>> handle) block to a new callback, and for my purposes I think also add a
+>>> way to stop parsing the list from the callback (so like have the
+>>> callbacks return int and stop parsing on a non-zero return). Do you want
+>>> to expose that ability to pass a callback outside of ACPI?
+>> Yes.
+>>
+>>> Or just export helpers to call each of the callbacks (one to fetch the next
+>>> dependent device, one to decrement the unmet dependencies counter)
+>> If you can run a callback for every matching entry, you don't really
+>> need to have a callback to return the next matching entry.  You can do
+>> stuff for all of them in one go
 > 
-> diff --git a/drivers/misc/vmw_vmci/vmci_queue_pair.c b/drivers/misc/vmw_vmci/vmci_queue_pair.c
-> index c490658..a3691c1 100644
-> --- a/drivers/misc/vmw_vmci/vmci_queue_pair.c
-> +++ b/drivers/misc/vmw_vmci/vmci_queue_pair.c
-> @@ -1207,7 +1207,7 @@ static int qp_alloc_guest_work(struct vmci_handle *handle,
->  	} else {
->  		result = qp_alloc_hypercall(queue_pair_entry);
->  		if (result < VMCI_SUCCESS) {
-> -			pr_warn("qp_alloc_hypercall result = %d\n", result);
-> +			pr_devel("qp_alloc_hypercall result = %d\n", result);
-
-Hi Jorgen, recently, our customer reported that their dmesg was also
-swamped by the following message along with the message above. 
-
-  "Could not attach to queue pair with -20"
-
-This message was printed by vmci_transport_queue_pair_alloc(). Could
-we also eliminate it?
-
-Thanks,
-Firo
-
-
->  			goto error;
->  		}
->  	}
-> -- 
-> 2.6.2
+> Well it my case it's more to return a pointer to the dep->consumer's
+> acpi_device for a matching entry, so my idea was where there's multiple
+> dependents you could use this as an iterator...but it could just be
+> extended to that if needed later; I don't actually need to do it right now.
 > 
-> _______________________________________________
-> Virtualization mailing list
-> Virtualization@lists.linux-foundation.org
-> https://lists.linuxfoundation.org/mailman/listinfo/virtualization
+> 
+>> note that it probably is not a good
+>> idea to run the callback under the lock, so the for loop currently in
+>> there is not really suitable for that
+> 
+> No problem;  I'll tweak that then
 
+Slightly walking back my "No problem" here; as I understand this there's
+kinda two options:
+
+1. Walk over the (locked) list, when a match is found unlock, run the
+callback and re-lock.
+
+The problem with that idea is unless I'm mistaken there's no guarantee
+that the .next pointer is still valid then (even using the *_safe()
+methods) because either the next or the next + 1 entry could have been
+removed whilst the list was unlocked and the callback was being ran, so
+this seems a little unsafe.
+
+2. Walk over the (locked) list twice, the first time counting matching
+entries and using that to allocate a temporary buffer, then walk again
+to store the matching entries into the buffer. Finally, run the callback
+for everything in the buffer, free it and return.
+
+Obviously that's a lot less efficient than the current function, which
+isn't particularly palatable.
+
+Apologies if I've missed a better option that would work fine; but
+failing that do you still want me to go ahead and change
+acpi_walk_dep_device_list() to do this (I'd choose #2 of the above), or
+fallback to using acpi_dev_get_next_dependent_dev() described above? If
+the latter, does acpi_walk_dep_device_list() maybe need re-naming to
+make clear it's not a generalised function?
