@@ -2,162 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F00130C7C7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:33:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CBCF30C7B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:29:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237557AbhBBR37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:29:59 -0500
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:43098 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234194AbhBBONE (ORCPT
+        id S237463AbhBBR2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:28:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28717 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234046AbhBBOOG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:13:04 -0500
-Received: by mail-ot1-f45.google.com with SMTP id v1so19912449ott.10;
-        Tue, 02 Feb 2021 06:12:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0479R2u394Ltk2QvfnHnoJX7XQcEO7QEsauy0fsS0KY=;
-        b=MtcVvpFbX7qn4xs8UTWvrK4d5SCvFTvXVC4ikoi9sWdkTi26cuo2TK1wN/Azyg65Ry
-         nPgmflDX2otwDVkJIJB72LqlxzjuebH+/tuxboZsZfoLAHqQAEOHBCNz18nVEeja+lh9
-         jhH/jYj0DlNiRI4pfXW7jHXAMvhiATXgcF2QLEQzoOEeQ3h1+YpYMS6El0bjALVkwRPr
-         /PnTm4dQlWEMAFHuP+8/5y2OC2OS+kYvcuzNL/H1Fxq2D4Qnw+l6Wshf7gzEcAVWOeex
-         oW+V1fz+alEUlbEylpB+/+sp63NBos2jPwf/CmN8s6tzJqHyQwrvpYMDy8PL5kCr+LcO
-         NwJA==
-X-Gm-Message-State: AOAM533onbyZUpXT/NeAoxFj0qd+vMcWIykeSlE9aFal+/vDz29m8AoW
-        h0bsWfl3cF+LDgXqSUMKDjA71l69CcXOgsScZ20=
-X-Google-Smtp-Source: ABdhPJwL06BDRqOucvxZ1+dBx100NysJMJcZ3W8XTNWfFoiQ7YRg8VM3SFhq562hsYjKmftEg6NOcrGtcD/x5pK6Y74=
-X-Received: by 2002:a9d:6acf:: with SMTP id m15mr15332415otq.260.1612275141868;
- Tue, 02 Feb 2021 06:12:21 -0800 (PST)
+        Tue, 2 Feb 2021 09:14:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612275160;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mAXEVjxGkaVgIUFhfXA1HRN3FgtOlJcIpAQw2h/beVM=;
+        b=eKDUxb1+pqSJGwixp0bJb9IpFbLQ2YWSNtr9y6B5b9tHnfKB8XWwqMi4lg2wcz689fqN+7
+        ixbEtjubRl8BQ3SthB9ROO4tXppvD18dReUGmXO7MA7mXPXT1SkBZZqlAPN5rjZaPaek3k
+        ft4gaH36hp6hgsL1Zdqrv2sUA+94Msc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-460-DO7GaD-qPMSuJ9daYkp31A-1; Tue, 02 Feb 2021 09:12:35 -0500
+X-MC-Unique: DO7GaD-qPMSuJ9daYkp31A-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B117B100A8E8;
+        Tue,  2 Feb 2021 14:12:30 +0000 (UTC)
+Received: from [10.36.114.148] (ovpn-114-148.ams2.redhat.com [10.36.114.148])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6CE915B4A7;
+        Tue,  2 Feb 2021 14:12:22 +0000 (UTC)
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        James Bottomley <jejb@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+References: <303f348d-e494-e386-d1f5-14505b5da254@redhat.com>
+ <20210126120823.GM827@dhcp22.suse.cz> <20210128092259.GB242749@kernel.org>
+ <YBK1kqL7JA7NePBQ@dhcp22.suse.cz>
+ <73738cda43236b5ac2714e228af362b67a712f5d.camel@linux.ibm.com>
+ <YBPF8ETGBHUzxaZR@dhcp22.suse.cz>
+ <6de6b9f9c2d28eecc494e7db6ffbedc262317e11.camel@linux.ibm.com>
+ <YBkcyQsky2scjEcP@dhcp22.suse.cz> <20210202124857.GN242749@kernel.org>
+ <6653288a-dd02-f9de-ef6a-e8d567d71d53@redhat.com>
+ <YBlUXdwV93xMIff6@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Subject: Re: [PATCH v16 07/11] secretmem: use PMD-size pages to amortize
+ direct map fragmentation
+Message-ID: <211f0214-1868-a5be-9428-7acfc3b73993@redhat.com>
+Date:   Tue, 2 Feb 2021 15:12:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <20210202043345.3778765-1-saravanak@google.com> <20210202043345.3778765-2-saravanak@google.com>
-In-Reply-To: <20210202043345.3778765-2-saravanak@google.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 2 Feb 2021 15:12:10 +0100
-Message-ID: <CAJZ5v0j=ib_0tziOrEtafuezhgihNxh-Tv4-jT57z0b34uUHPw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] driver core: fw_devlink: Detect supplier devices
- that will never be added
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Len Brown <lenb@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YBlUXdwV93xMIff6@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 5:33 AM Saravana Kannan <saravanak@google.com> wrote:
->
-> During the initial parsing of firmware by fw_devlink, fw_devlink might
-> infer that some supplier firmware nodes would get populated as devices.
-> But the inference is not always correct. This patch tries to logically
-> detect and fix such mistakes as boot progresses or more devices probe.
->
-> fw_devlink makes a fundamental assumption that once a device binds to a
-> driver, it will populate (i.e: add as struct devices) all the child
-> firmware nodes that could be populated as devices (if they aren't
-> populated already).
->
-> So, whenever a device probes, we check all its child firmware nodes. If
-> a child firmware node has a corresponding device populated, we don't
-> modify the child node or its descendants. However, if a child firmware
-> node has not been populated as a device, we delete all the fwnode links
-> where the child node or its descendants are suppliers. This ensures that
-> no other device is blocked on a firmware node that will never be
-> populated as a device. We also mark such fwnodes as NOT_DEVICE, so that
-> no new fwnode links are created with these nodes as suppliers.
->
-> Fixes: e590474768f1 ("driver core: Set fw_devlink=on by default")
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
+On 02.02.21 14:32, Michal Hocko wrote:
+> On Tue 02-02-21 14:14:09, David Hildenbrand wrote:
+> [...]
+>> As already expressed, I dislike allowing user space to consume an unlimited
+>> number unmovable/unmigratable allocations. We already have that in some
+>> cases with huge pages (when the arch does not support migration) - but there
+>> we can at least manage the consumption using the whole max/reserved/free/...
+>> infrastructure. In addition, adding arch support for migration shouldn't be
+>> too complicated.
+> 
+> Well, mlock is not too different here as well. Hugepages are arguably an
+> easier model because it requires an explicit pre-configuration by an
+> admin. Mlock doesn't have anything like that. Please also note that
+> while mlock pages are migrateable by default, this is not the case in
+> general because they can be configured to disalow migration to prevent
+> from minor page faults as some workloads require that (e.g. RT).
 
-Still ACKed.
+Yeah, however that is a very special case. In most cases mlock() simply 
+prevents swapping, you still have movable pages you can place anywhere 
+you like (including on ZONE_MOVABLE).
 
-> ---
->  drivers/base/core.c    | 31 ++++++++++++++++++++++++++++---
->  include/linux/fwnode.h |  2 ++
->  2 files changed, 30 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index 484a942884ba..c95b1daabac7 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -148,6 +148,21 @@ void fwnode_links_purge(struct fwnode_handle *fwnode)
->         fwnode_links_purge_consumers(fwnode);
->  }
->
-> +static void fw_devlink_purge_absent_suppliers(struct fwnode_handle *fwnode)
-> +{
-> +       struct fwnode_handle *child;
-> +
-> +       /* Don't purge consumer links of an added child */
-> +       if (fwnode->dev)
-> +               return;
-> +
-> +       fwnode->flags |= FWNODE_FLAG_NOT_DEVICE;
-> +       fwnode_links_purge_consumers(fwnode);
-> +
-> +       fwnode_for_each_available_child_node(fwnode, child)
-> +               fw_devlink_purge_absent_suppliers(child);
-> +}
-> +
->  #ifdef CONFIG_SRCU
->  static DEFINE_MUTEX(device_links_lock);
->  DEFINE_STATIC_SRCU(device_links_srcu);
-> @@ -1154,12 +1169,22 @@ void device_links_driver_bound(struct device *dev)
->         LIST_HEAD(sync_list);
->
->         /*
-> -        * If a device probes successfully, it's expected to have created all
-> +        * If a device binds successfully, it's expected to have created all
->          * the device links it needs to or make new device links as it needs
-> -        * them. So, it no longer needs to wait on any suppliers.
-> +        * them. So, fw_devlink no longer needs to create device links to any
-> +        * of the device's suppliers.
-> +        *
-> +        * Also, if a child firmware node of this bound device is not added as
-> +        * a device by now, assume it is never going to be added and make sure
-> +        * other devices don't defer probe indefinitely by waiting for such a
-> +        * child device.
->          */
-> -       if (dev->fwnode && dev->fwnode->dev == dev)
-> +       if (dev->fwnode && dev->fwnode->dev == dev) {
-> +               struct fwnode_handle *child;
->                 fwnode_links_purge_suppliers(dev->fwnode);
-> +               fwnode_for_each_available_child_node(dev->fwnode, child)
-> +                       fw_devlink_purge_absent_suppliers(child);
-> +       }
->         device_remove_file(dev, &dev_attr_waiting_for_supplier);
->
->         device_links_write_lock();
-> diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
-> index fde4ad97564c..21082f11473f 100644
-> --- a/include/linux/fwnode.h
-> +++ b/include/linux/fwnode.h
-> @@ -19,8 +19,10 @@ struct device;
->   * fwnode link flags
->   *
->   * LINKS_ADDED: The fwnode has already be parsed to add fwnode links.
-> + * NOT_DEVICE: The fwnode will never be populated as a struct device.
->   */
->  #define FWNODE_FLAG_LINKS_ADDED                BIT(0)
-> +#define FWNODE_FLAG_NOT_DEVICE         BIT(1)
->
->  struct fwnode_handle {
->         struct fwnode_handle *secondary;
-> --
-> 2.30.0.365.g02bc693789-goog
->
+> Another example is ramdisk or even tmpfs (with swap storage depleted or
+> not configured). Both are PITA from the OOM POV but they are manageable
+> if people are careful.
+
+Right, but again, special cases - e.g., tmpfs explicitly has to be resized.
+
+> If secretmem behaves along those existing models
+> then we know what to expect at least.
+
+I think secretmem behaves much more like longterm GUP right now 
+("unmigratable", "lifetime controlled by user space", "cannot go on 
+CMA/ZONE_MOVABLE"). I'd either want to reasonably well control/limit it 
+or make it behave more like mlocked pages.
+
+-- 
+Thanks,
+
+David / dhildenb
+
