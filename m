@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B09AC30C9F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:35:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E497730C143
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:18:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238657AbhBBSep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:34:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47850 "EHLO mail.kernel.org"
+        id S231868AbhBBOSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:18:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49664 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233824AbhBBOFS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:05:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64F8665015;
-        Tue,  2 Feb 2021 13:48:44 +0000 (UTC)
+        id S234032AbhBBOLj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:11:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 503AC64F51;
+        Tue,  2 Feb 2021 13:51:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273724;
-        bh=bV8YYXADTsceoly8QPx4Rnq+kNh8tzOB1Gxdkc2XfZM=;
+        s=korg; t=1612273891;
+        bh=nj40X3oc1G/FiWH8ruxoXEkmhYb4f2qFzBnxrS93xZw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YdhalFlEYyNi6wRNdq4wnjdqjSajuav3zdGSYdv8nHOxJQR5ZZYMjHU/+U8DjvKvg
-         RQumK/ue/r3fz/lB51eLK5lHpvmkveUE+/M0zs1UMHVjVJyquoUefXeoG4Vky8RQbB
-         jrO6iLEay8pYfVI+kh+82qLE0dQdciYuloO96Oy8=
+        b=rRkX9X5eqApntcLAF+rmUCaf4wl46DRj4V/HsVpWI41gjPkrDhMIaSPq3vUcsapTQ
+         +YUcmi1ubNGXlVY038eg9mpXLUFz46MB416e3OctyQqrrhGU6zsEhMWUmJ+PaBc+ph
+         pFoLYYC6hIk3yOAHNSg+POLMbyk0maAbeQeUwRuI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 58/61] NFC: fix possible resource leak
-Date:   Tue,  2 Feb 2021 14:38:36 +0100
-Message-Id: <20210202132948.927087439@linuxfoundation.org>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 4.9 14/32] futex: Provide distinct return value when owner is exiting
+Date:   Tue,  2 Feb 2021 14:38:37 +0100
+Message-Id: <20210202132942.589673030@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132946.480479453@linuxfoundation.org>
-References: <20210202132946.480479453@linuxfoundation.org>
+In-Reply-To: <20210202132942.035179752@linuxfoundation.org>
+References: <20210202132942.035179752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,32 +41,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pan Bian <bianpan2016@163.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-commit d8f923c3ab96dbbb4e3c22d1afc1dc1d3b195cd8 upstream.
+commit ac31c7ff8624409ba3c4901df9237a616c187a5d upstream.
 
-Put the device to avoid resource leak on path that the polling flag is
-invalid.
+attach_to_pi_owner() returns -EAGAIN for various cases:
 
-Fixes: a831b9132065 ("NFC: Do not return EBUSY when stopping a poll that's already stopped")
-Signed-off-by: Pan Bian <bianpan2016@163.com>
-Link: https://lore.kernel.org/r/20210121153745.122184-1-bianpan2016@163.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+ - Owner task is exiting
+ - Futex value has changed
+
+The caller drops the held locks (hash bucket, mmap_sem) and retries the
+operation. In case of the owner task exiting this can result in a live
+lock.
+
+As a preparatory step for seperating those cases, provide a distinct return
+value (EBUSY) for the owner exiting case.
+
+No functional change.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20191106224556.935606117@linutronix.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/nfc/netlink.c |    1 +
- 1 file changed, 1 insertion(+)
+ kernel/futex.c |   10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
---- a/net/nfc/netlink.c
-+++ b/net/nfc/netlink.c
-@@ -860,6 +860,7 @@ static int nfc_genl_stop_poll(struct sk_
- 
- 	if (!dev->polling) {
- 		device_unlock(&dev->dev);
-+		nfc_put_device(dev);
- 		return -EINVAL;
- 	}
- 
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -1918,12 +1918,13 @@ retry_private:
+ 			if (!ret)
+ 				goto retry;
+ 			goto out;
++		case -EBUSY:
+ 		case -EAGAIN:
+ 			/*
+ 			 * Two reasons for this:
+-			 * - Owner is exiting and we just wait for the
++			 * - EBUSY: Owner is exiting and we just wait for the
+ 			 *   exit to complete.
+-			 * - The user space value changed.
++			 * - EAGAIN: The user space value changed.
+ 			 */
+ 			double_unlock_hb(hb1, hb2);
+ 			hb_waiters_dec(hb2);
+@@ -2615,12 +2616,13 @@ retry_private:
+ 			goto out_unlock_put_key;
+ 		case -EFAULT:
+ 			goto uaddr_faulted;
++		case -EBUSY:
+ 		case -EAGAIN:
+ 			/*
+ 			 * Two reasons for this:
+-			 * - Task is exiting and we just wait for the
++			 * - EBUSY: Task is exiting and we just wait for the
+ 			 *   exit to complete.
+-			 * - The user space value changed.
++			 * - EAGAIN: The user space value changed.
+ 			 */
+ 			queue_unlock(hb);
+ 			put_futex_key(&q.key);
 
 
