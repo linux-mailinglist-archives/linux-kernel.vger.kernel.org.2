@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A610630C930
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:13:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D34E330C881
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:54:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238103AbhBBSMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:12:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47076 "EHLO mail.kernel.org"
+        id S237945AbhBBRwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:52:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49196 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233906AbhBBOHN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:07:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 415296501E;
-        Tue,  2 Feb 2021 13:49:36 +0000 (UTC)
+        id S233981AbhBBOJp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:09:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E02165031;
+        Tue,  2 Feb 2021 13:50:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273776;
-        bh=9k8PyRlU8mCeuiThMNH+yc+A+Hm/WLiovHkAqVZJzKM=;
+        s=korg; t=1612273844;
+        bh=Y5BFwjLVG8kcJgA01NSeCoCKb9oeogaK/Z9HJ4DEvuA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kJo1JFIPVTHYVMsS8oT3lgp5WrOxrbmbC0bbroR7emfCWa0FpOZlkUQy07Afc+TkL
-         9g86S72wldtgD8RZ+CU2uU2T3Ag49TluxfnyZ0sES7y9we9t4A6qfQ5P2+lyE3F2/v
-         cJ3RhVgnVZXiKjrJhhNgs9iqmJjJESVm46JojPFk=
+        b=baxt3etJFiv6esRBX05sWeNGAkWQrryzPl/zsbvKZOgbuCvzCd4HYLM1bicr0bnzJ
+         L9p5IvCU1uu/BgwqqLSLm9leyyZNCccYGDaF+p1HujuQrb1JZrOl7kyoT5/JfWYcOS
+         xkEKYISNrahp3MMhkBE1+I8JAMniI3+SAuog3NYs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Woodhouse <dwmw@amazon.co.uk>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <jroedel@suse.de>,
-        Filippo Sironi <sironi@amazon.de>
-Subject: [PATCH 4.4 25/28] iommu/vt-d: Gracefully handle DMAR units with no supported address widths
+        stable@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [PATCH 4.9 22/32] netfilter: nft_dynset: add timeout extension to template
 Date:   Tue,  2 Feb 2021 14:38:45 +0100
-Message-Id: <20210202132942.198454131@linuxfoundation.org>
+Message-Id: <20210202132942.903858869@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132941.180062901@linuxfoundation.org>
-References: <20210202132941.180062901@linuxfoundation.org>
+In-Reply-To: <20210202132942.035179752@linuxfoundation.org>
+References: <20210202132942.035179752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,107 +38,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-commit c40aaaac1018ff1382f2d35df5129a6bcea3df6b upstream.
+commit 0c5b7a501e7400869ee905b4f7af3d6717802bcb upstream.
 
-Instead of bailing out completely, such a unit can still be used for
-interrupt remapping.
+Otherwise, the newly create element shows no timeout when listing the
+ruleset. If the set definition does not specify a default timeout, then
+the set element only shows the expiration time, but not the timeout.
+This is a problem when restoring a stateful ruleset listing since it
+skips the timeout policy entirely.
 
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
-Link: https://lore.kernel.org/linux-iommu/549928db2de6532117f36c9c810373c14cf76f51.camel@infradead.org/
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-[ - context change due to moving drivers/iommu/dmar.c to
-    drivers/iommu/intel/dmar.c
-  - remove the unused err_unmap label
-  - use iommu->iommu_dev instead of iommu->iommu.ops to decide whether
-    when freeing ]
-Signed-off-by: Filippo Sironi <sironi@amazon.de>
+Fixes: 22fe54d5fefc ("netfilter: nf_tables: add support for dynamic set updates")
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/iommu/dmar.c |   44 +++++++++++++++++++++++++++-----------------
- 1 file changed, 27 insertions(+), 17 deletions(-)
 
---- a/drivers/iommu/dmar.c
-+++ b/drivers/iommu/dmar.c
-@@ -1012,8 +1012,8 @@ static int alloc_iommu(struct dmar_drhd_
- {
- 	struct intel_iommu *iommu;
- 	u32 ver, sts;
--	int agaw = 0;
--	int msagaw = 0;
-+	int agaw = -1;
-+	int msagaw = -1;
- 	int err;
- 
- 	if (!drhd->reg_base_addr) {
-@@ -1038,17 +1038,28 @@ static int alloc_iommu(struct dmar_drhd_
- 	}
- 
- 	err = -EINVAL;
--	agaw = iommu_calculate_agaw(iommu);
--	if (agaw < 0) {
--		pr_err("Cannot get a valid agaw for iommu (seq_id = %d)\n",
--			iommu->seq_id);
--		goto err_unmap;
--	}
--	msagaw = iommu_calculate_max_sagaw(iommu);
--	if (msagaw < 0) {
--		pr_err("Cannot get a valid max agaw for iommu (seq_id = %d)\n",
--			iommu->seq_id);
--		goto err_unmap;
-+	if (cap_sagaw(iommu->cap) == 0) {
-+		pr_info("%s: No supported address widths. Not attempting DMA translation.\n",
-+			iommu->name);
-+		drhd->ignored = 1;
-+	}
-+
-+	if (!drhd->ignored) {
-+		agaw = iommu_calculate_agaw(iommu);
-+		if (agaw < 0) {
-+			pr_err("Cannot get a valid agaw for iommu (seq_id = %d)\n",
-+			       iommu->seq_id);
-+			drhd->ignored = 1;
-+		}
-+	}
-+	if (!drhd->ignored) {
-+		msagaw = iommu_calculate_max_sagaw(iommu);
-+		if (msagaw < 0) {
-+			pr_err("Cannot get a valid max agaw for iommu (seq_id = %d)\n",
-+			       iommu->seq_id);
-+			drhd->ignored = 1;
-+			agaw = -1;
+---
+ net/netfilter/nft_dynset.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+--- a/net/netfilter/nft_dynset.c
++++ b/net/netfilter/nft_dynset.c
+@@ -210,8 +210,10 @@ static int nft_dynset_init(const struct
+ 		nft_set_ext_add_length(&priv->tmpl, NFT_SET_EXT_EXPR,
+ 				       priv->expr->ops->size);
+ 	if (set->flags & NFT_SET_TIMEOUT) {
+-		if (timeout || set->timeout)
++		if (timeout || set->timeout) {
++			nft_set_ext_add(&priv->tmpl, NFT_SET_EXT_TIMEOUT);
+ 			nft_set_ext_add(&priv->tmpl, NFT_SET_EXT_EXPIRATION);
 +		}
  	}
- 	iommu->agaw = agaw;
- 	iommu->msagaw = msagaw;
-@@ -1077,15 +1088,13 @@ static int alloc_iommu(struct dmar_drhd_
  
- 	drhd->iommu = iommu;
- 
--	if (intel_iommu_enabled)
-+	if (intel_iommu_enabled && !drhd->ignored)
- 		iommu->iommu_dev = iommu_device_create(NULL, iommu,
- 						       intel_iommu_groups,
- 						       "%s", iommu->name);
- 
- 	return 0;
- 
--err_unmap:
--	unmap_iommu(iommu);
- error_free_seq_id:
- 	dmar_free_seq_id(iommu);
- error:
-@@ -1095,7 +1104,8 @@ error:
- 
- static void free_iommu(struct intel_iommu *iommu)
- {
--	iommu_device_destroy(iommu->iommu_dev);
-+	if (intel_iommu_enabled && iommu->iommu_dev)
-+		iommu_device_destroy(iommu->iommu_dev);
- 
- 	if (iommu->irq) {
- 		if (iommu->pr_irq) {
+ 	priv->timeout = timeout;
 
 
