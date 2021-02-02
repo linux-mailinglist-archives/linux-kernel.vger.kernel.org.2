@@ -2,125 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EED830C22E
+	by mail.lfdr.de (Postfix) with ESMTP id 2F1E030C22D
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:45:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234770AbhBBOml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:42:41 -0500
-Received: from foss.arm.com ([217.140.110.172]:51166 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234479AbhBBOhG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:37:06 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1B98811B3;
-        Tue,  2 Feb 2021 06:36:20 -0800 (PST)
-Received: from [10.57.35.108] (unknown [10.57.35.108])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 687433F718;
-        Tue,  2 Feb 2021 06:36:18 -0800 (PST)
-Subject: Re: [PATCH V3 02/14] coresight: Do not scan for graph if none is
- present
-To:     Mike Leach <mike.leach@linaro.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Linu Cherian <lcherian@marvell.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
- <1611737738-1493-3-git-send-email-anshuman.khandual@arm.com>
- <CAJ9a7VjB8-h_0DBuMHvv4A+mHpz1GUczbGB6Tx1cBocRghm7mQ@mail.gmail.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <81648285-a321-173f-a0da-6ba0bc077abf@arm.com>
-Date:   Tue, 2 Feb 2021 14:36:05 +0000
+        id S234472AbhBBOme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:42:34 -0500
+Received: from relay05.th.seeweb.it ([5.144.164.166]:50485 "EHLO
+        relay05.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234450AbhBBOhD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:37:03 -0500
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id B9EFE3EEC7;
+        Tue,  2 Feb 2021 15:36:17 +0100 (CET)
+Subject: Re: [PATCH 2/2] regulator: qcom-labibb: Use disable_irq_nosync from
+ isr
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        mazziesaccount@gmail.com
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <0400d7471571144bfeba27e3a80a24eb17d81f4d.1612249657.git.matti.vaittinen@fi.rohmeurope.com>
+ <f2c4c88d90bf7473e1b84b8a99b7b33d7a081764.1612249657.git.matti.vaittinen@fi.rohmeurope.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <1d37a36c-f82b-726a-6edb-866b087aeef8@somainline.org>
+Date:   Tue, 2 Feb 2021 15:36:17 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <CAJ9a7VjB8-h_0DBuMHvv4A+mHpz1GUczbGB6Tx1cBocRghm7mQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <f2c4c88d90bf7473e1b84b8a99b7b33d7a081764.1612249657.git.matti.vaittinen@fi.rohmeurope.com>
+Content-Type: text/plain; charset=iso-8859-15; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike
-
-On 2/2/21 11:10 AM, Mike Leach wrote:
-> Hi Ansuman,
+Il 02/02/21 08:37, Matti Vaittinen ha scritto:
+> Calling the disable_irq() from irq handler might be a bad idea as
+> disable_irq() should wait for handlers to run. I don't see why
+> this wouldn't deadlock in wait_event waiting for the threaded
+> handler to complete.
 > 
-> On Wed, 27 Jan 2021 at 08:55, Anshuman Khandual
-> <anshuman.khandual@arm.com> wrote:
->>
->> From: Suzuki K Poulose <suzuki.poulose@arm.com>
->>
->> If a graph node is not found for a given node, of_get_next_endpoint()
->> will emit the following error message :
->>
->>   OF: graph: no port node found in /<node_name>
->>
->> If the given component doesn't have any explicit connections (e.g,
->> ETE) we could simply ignore the graph parsing.
->>
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->> ---
->>   drivers/hwtracing/coresight/coresight-platform.c | 6 ++++++
->>   1 file changed, 6 insertions(+)
->>
->> diff --git a/drivers/hwtracing/coresight/coresight-platform.c b/drivers/hwtracing/coresight/coresight-platform.c
->> index 3629b78..c594f45 100644
->> --- a/drivers/hwtracing/coresight/coresight-platform.c
->> +++ b/drivers/hwtracing/coresight/coresight-platform.c
->> @@ -90,6 +90,12 @@ static void of_coresight_get_ports_legacy(const struct device_node *node,
->>          struct of_endpoint endpoint;
->>          int in = 0, out = 0;
->>
->> +       /*
->> +        * Avoid warnings in of_graph_get_next_endpoint()
->> +        * if the device doesn't have any graph connections
->> +        */
->> +       if (!of_graph_is_present(node))
->> +         return;
+> Use disable_irq_nosync() instead.
 > 
-> The problem here is that you are masking genuine errors.
 
-If the graph is not described for a component, where it is
-mandatory, it won't be usable by the driver and as such using
-the devices will fail.
+It didn't deadlock, but looking at it again -- oh my, I agree with you.
 
-e.g, if an ETM misses the bindings, tracing will fail. (in either
-mode).
+Reviewed-by: AngeloGioacchino Del Regno 
+<angelogioacchino.delregno@somainline.org>
 
-> The solution is to either call this only if the device type is one
-> that ports are not required - i.e. ETE, or upgrade the .dts bindings
-
-The proposed change is too invasive and is not worth the benefit
-that it brings.
-
-The side effect of this patch is, if someone makes a mistake in the
-bindings they don't see the "warning" in the dmesg. But will definitely
-hit the issue when trying to use the system.
-
-i.e, Functionally there is no change.
-
-On the other hand issuing a warning message for ETE is confusing for
-a well behaved user.
-
-> for the rest of the ETM devices to yaml so that the ports requirement
-> is checked and validated there.
-
-This is a step that we must take, but in a separate series. And I
-don't think this will solve handling non-compliant DTs *immediately*,
-as there could be :
-  a) DTS that are not upstream (Quite common for CoreSight)
-  b) People are getting used to the schema and running schema checks.
-
-So, personally I vote for :
-
-1) Merge this patch in as is
-2) Convert the bindings to Yaml in a separate series.
-
-Suzuki
+> Fixes: 390af53e04114 ("regulator: qcom-labibb: Implement short-circuit and over-current IRQs")
+> 
+> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> ---
+> This fix is done purely based on code reading. No testing is done.
+> 
+> I don't have the HW (and even if I did I might have hard time producing
+> these errors) I have not tested this and I am unsure if my code-reading
+> is correct => I would _really_ appreciate second opinion and/or testing
+> 
+>   drivers/regulator/qcom-labibb-regulator.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/regulator/qcom-labibb-regulator.c b/drivers/regulator/qcom-labibb-regulator.c
+> index 5ac4566f9b7f..40e92670e307 100644
+> --- a/drivers/regulator/qcom-labibb-regulator.c
+> +++ b/drivers/regulator/qcom-labibb-regulator.c
+> @@ -283,7 +283,7 @@ static irqreturn_t qcom_labibb_ocp_isr(int irq, void *chip)
+>   	 * Disable the interrupt temporarily, or it will fire continuously;
+>   	 * we will re-enable it in the recovery worker function.
+>   	 */
+> -	disable_irq(irq);
+> +	disable_irq_nosync(irq);
+>   
+>   	/* Warn the user for overcurrent */
+>   	dev_warn(vreg->dev, "Over-Current interrupt fired!\n");
+> @@ -536,7 +536,7 @@ static irqreturn_t qcom_labibb_sc_isr(int irq, void *chip)
+>   	 * Disable the interrupt temporarily, or it will fire continuously;
+>   	 * we will re-enable it in the recovery worker function.
+>   	 */
+> -	disable_irq(irq);
+> +	disable_irq_nosync(irq);
+>   
+>   	/* Signal out of regulation event to drivers */
+>   	regulator_notifier_call_chain(vreg->rdev,
+> 
 
