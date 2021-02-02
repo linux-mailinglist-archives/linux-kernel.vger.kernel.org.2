@@ -2,166 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95BBA30BAC6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:18:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC3330BACC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:21:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232969AbhBBJSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 04:18:00 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:52970 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232339AbhBBJQ6 (ORCPT
+        id S232784AbhBBJT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 04:19:58 -0500
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:3310 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232339AbhBBJSv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 04:16:58 -0500
-Received: by mail-il1-f200.google.com with SMTP id e16so3134245ile.19
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 01:16:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=bZ0yFA7nEfPK6NHzUikcevfhZbnqWxsxbvcAiDCsbi0=;
-        b=XdV9KaihrGhZ0dg8V+s8V9XHWCSF//R+/A45D2FB7l09K6JlbZ7WGPar3CB2lAm1CO
-         xMbdhWWpLzHBc62wjE+W/IFJ+7ABPgx3S7QTY4n6J1oGG9F4dLhIo6/QCnMFdBvyb8/F
-         9ymniu0QX1J+cof7Z+xEDYmHom1J7z6ORY15OZLr/opDQfoCMsGB+m/DTAs78wMnp+BC
-         JSDslGZykyKuSdvuYpxPL7aSL2ONuQvToehex/VZOp14v2wfFnXA9JEEOVHVq5pECVW2
-         0M2Q6WyGUYVaP75I53FJl6lZUtvxGtbHFERIuFBq3/D4kp4M1h341f15U4PEuY6ywh4Q
-         pfjQ==
-X-Gm-Message-State: AOAM530jN9NoO6ErmpISwzOq4YakBeJDvO0ZWoAtCTv+d2jvq1/9uP1w
-        Y3XIE+ZpYNovfc8jV1RQFposnXAivbEybQS8Evr4jldJ+oZH
-X-Google-Smtp-Source: ABdhPJzlD2KJ07MPrKtmsN3QsxO0afv6dZVBaa0wYffb0aRCP1FGxkBupk3vERW6FAFNs6iurugpZsbwSDBNJdW9q+J435Ahcy8T
+        Tue, 2 Feb 2021 04:18:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1612257529; x=1643793529;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=URXkxdXhgVTqMxYcWrdsreq+L2psQdcrvcPs2OISeNM=;
+  b=DvWw8kkC/OB24XAg5Eu2ZqZ/IoP0j8+6NxULrdx4RPZFvag/4X0nd28P
+   sRnlFcRSnpxLaK7mutJXiqfKfhSQrAgEuODVNxcCJYj/Jckdu0Uv0Ea0I
+   WlhlOXqWP6XKNEPG+2nGrwRBBXg+nCP+n1J/l7YfpmuACMu/7MF+QUsaz
+   c=;
+X-IronPort-AV: E=Sophos;i="5.79,394,1602547200"; 
+   d="scan'208";a="79232381"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-af6a10df.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 02 Feb 2021 09:17:50 +0000
+Received: from EX13D31EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1a-af6a10df.us-east-1.amazon.com (Postfix) with ESMTPS id D9C89A2256;
+        Tue,  2 Feb 2021 09:17:38 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.146) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 2 Feb 2021 09:17:21 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     Shakeel Butt <shakeelb@google.com>
+CC:     SeongJae Park <sjpark@amazon.com>,
+        SeongJae Park <sjpark@amazon.de>,
+        <Jonathan.Cameron@huawei.com>,
+        Andrea Arcangeli <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Qian Cai <cai@lca.pw>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "David Hildenbrand" <david@redhat.com>, <dwmw@amazon.com>,
+        Marco Elver <elver@google.com>, "Du, Fan" <fan.du@intel.com>,
+        <foersleo@amazon.de>, "Greg Thelen" <gthelen@google.com>,
+        Ian Rogers <irogers@google.com>, <jolsa@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mel Gorman <mgorman@suse.de>, Minchan Kim <minchan@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, <namhyung@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        David Rientjes <rientjes@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mike Rapoport <rppt@kernel.org>, <sblbir@amazon.com>,
+        Shuah Khan <shuah@kernel.org>, <sj38.park@gmail.com>,
+        <snu@amazon.de>, Vlastimil Babka <vbabka@suse.cz>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Huang Ying <ying.huang@intel.com>, <zgf574564920@gmail.com>,
+        <linux-damon@amazon.com>, Linux MM <linux-mm@kvack.org>,
+        <linux-doc@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v23 02/15] mm/damon/core: Implement region-based sampling
+Date:   Tue, 2 Feb 2021 10:17:05 +0100
+Message-ID: <20210202091705.812-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <CALvZod72UxP4tmrZSrDgUJrDpWM67v=MyB8CEWhy0Osgm6O+Ww@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:1541:: with SMTP id h1mr6736936iow.171.1612257376667;
- Tue, 02 Feb 2021 01:16:16 -0800 (PST)
-Date:   Tue, 02 Feb 2021 01:16:16 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000390af005ba56ec0f@google.com>
-Subject: general protection fault in put_device
-From:   syzbot <syzbot+3512de0f935d494a45a6@syzkaller.appspotmail.com>
-To:     bgolaszewski@baylibre.com, gregkh@linuxfoundation.org,
-        linus.walleij@linaro.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, saravanak@google.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.146]
+X-ClientProxiedBy: EX13D10UWA004.ant.amazon.com (10.43.160.64) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, 1 Feb 2021 09:37:29 -0800 Shakeel Butt <shakeelb@google.com> wrote:
 
-syzbot found the following issue on:
+> On Tue, Dec 15, 2020 at 3:56 AM SeongJae Park <sjpark@amazon.com> wrote:
+> >
+> > From: SeongJae Park <sjpark@amazon.de>
+> >
+> > To avoid the unbounded increase of the overhead, DAMON groups adjacent
+> > pages that assumed to have the same access frequencies into a region.
+> 
+> 'that are assumed'
 
-HEAD commit:    b01f250d Add linux-next specific files for 20210129
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=144cd11cd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=725bc96dc234fda7
-dashboard link: https://syzkaller.appspot.com/bug?extid=3512de0f935d494a45a6
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1093e16f500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13756b44d00000
+Good eye!
 
-The issue was bisected to:
+> 
+> > As long as the assumption (pages in a region have the same access
+> > frequencies) is kept, only one page in the region is required to be
+> > checked.  Thus, for each ``sampling interval``,
+> >
+> >  1. the 'prepare_access_checks' primitive picks one page in each region,
+> >  2. waits for one ``sampling interval``,
+> >  3. checks whether the page is accessed meanwhile, and
+> >  4. increases the access frequency of the region if so.
+> 
+> I think you meant increasing the access 'count' or something.
+> Increasing the access frequency somewhat conveys that the sampling
+> interval is being decreased.
 
-commit 4731210c09f5977300f439b6c56ba220c65b2348
-Author: Saravana Kannan <saravanak@google.com>
-Date:   Fri Jan 22 19:35:59 2021 +0000
+You're right, I will reword this in the next version.
 
-    gpiolib: Bind gpio_device to a driver to enable fw_devlink=on by default
+> 
+> >
+> > Therefore, the monitoring overhead is controllable by adjusting the
+> > number of regions.  DAMON allows both the underlying primitives and user
+> > callbacks adjust regions for the trade-off.  In other words, this commit
+> 
+> 'callbacks to adjust'
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12a1c51cd00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11a1c51cd00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16a1c51cd00000
+Nice catch!
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3512de0f935d494a45a6@syzkaller.appspotmail.com
-Fixes: 4731210c09f5 ("gpiolib: Bind gpio_device to a driver to enable fw_devlink=on by default")
+> 
+> 
+> > makes DAMON to use not only time-based sampling but also space-based
+> > sampling.
+> >
+> > This scheme, however, cannot preserve the quality of the output if the
+> > assumption is not guaranteed.  Next commit will address this problem.
+> >
+> > Another problem of this region abstraction is additional memory space
+> > overhead for the regions metadata.  For example, suppose page
+> > granularity monitoring that doesn't want to know fine-grained access
+> > frequency but only if each page accessed or not.
+> 
+> You mean when the sampling interval is equal to the aggregation interval, right?
 
-viperboard 1-1:0.143: version 0.00 found at bus 001 address 002
-viperboard-i2c viperboard-i2c.2.auto: failure setting i2c_bus_freq to 100
-viperboard-i2c: probe of viperboard-i2c.2.auto failed with error -5
-usb 1-1: USB disconnect, device number 2
-general protection fault, probably for non-canonical address 0xdffffc00000000b3: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000598-0x000000000000059f]
-CPU: 0 PID: 5 Comm: kworker/0:0 Not tainted 5.11.0-rc5-next-20210129-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-RIP: 0010:__list_del_entry_valid+0x1d/0xf0 lib/list_debug.c:42
-Code: 48 8b 34 24 eb b4 0f 1f 80 00 00 00 00 48 b8 00 00 00 00 00 fc ff df 41 55 41 54 55 48 89 fd 48 83 c7 08 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 a0 00 00 00 48 89 ea 4c 8b 65 08 48 b8 00 00 00
-RSP: 0018:ffffc90000ca7308 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff88814149e008 RCX: 0000000000000000
-RDX: 00000000000000b3 RSI: ffffffff83e19360 RDI: 0000000000000598
-RBP: 0000000000000590 R08: 0000000000000001 R09: ffffffff8ef7388f
-R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000590
-R13: 0000000000000598 R14: ffff88814782ff20 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055e1f4df6008 CR3: 0000000016785000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __list_del_entry include/linux/list.h:132 [inline]
- list_del include/linux/list.h:146 [inline]
- gpiodevice_release+0x49/0x250 drivers/gpio/gpiolib.c:477
- device_release+0x9f/0x240 drivers/base/core.c:2055
- kobject_cleanup lib/kobject.c:705 [inline]
- kobject_release lib/kobject.c:736 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x1c8/0x540 lib/kobject.c:753
- put_device+0x1b/0x30 drivers/base/core.c:3283
- release_nodes+0x49b/0x8f0 drivers/base/devres.c:523
- devres_release_all+0x74/0xd0 drivers/base/devres.c:545
- __device_release_driver+0x3d2/0x6f0 drivers/base/dd.c:1160
- device_release_driver_internal drivers/base/dd.c:1187 [inline]
- device_release_driver+0x26/0x40 drivers/base/dd.c:1210
- bus_remove_device+0x2eb/0x5a0 drivers/base/bus.c:533
- device_del+0x502/0xd40 drivers/base/core.c:3363
- platform_device_del.part.0+0x1f/0x220 drivers/base/platform.c:783
- platform_device_del include/linux/err.h:41 [inline]
- platform_device_unregister+0x38/0x80 drivers/base/platform.c:821
- mfd_remove_devices_fn drivers/mfd/mfd-core.c:375 [inline]
- mfd_remove_devices_fn+0x166/0x1b0 drivers/mfd/mfd-core.c:357
- device_for_each_child_reverse+0x110/0x180 drivers/base/core.c:3526
- mfd_remove_devices+0x75/0xa0 drivers/mfd/mfd-core.c:391
- vprbrd_disconnect+0x43/0xf0 drivers/mfd/viperboard.c:111
- usb_unbind_interface+0x1d8/0x8d0 drivers/usb/core/driver.c:458
- __device_release_driver+0x3bd/0x6f0 drivers/base/dd.c:1156
- device_release_driver_internal drivers/base/dd.c:1187 [inline]
- device_release_driver+0x26/0x40 drivers/base/dd.c:1210
- bus_remove_device+0x2eb/0x5a0 drivers/base/bus.c:533
- device_del+0x502/0xd40 drivers/base/core.c:3363
- usb_disable_device+0x35b/0x7b0 drivers/usb/core/message.c:1413
- usb_disconnect.cold+0x27d/0x780 drivers/usb/core/hub.c:2218
- hub_port_connect drivers/usb/core/hub.c:5074 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5363 [inline]
- port_event drivers/usb/core/hub.c:5509 [inline]
- hub_event+0x1c8a/0x42d0 drivers/usb/core/hub.c:5591
- process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
- process_scheduled_works kernel/workqueue.c:2337 [inline]
- worker_thread+0x82b/0x1120 kernel/workqueue.c:2423
- kthread+0x3b1/0x4a0 kernel/kthread.c:292
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-Modules linked in:
----[ end trace c9367f77087536d6 ]---
-RIP: 0010:__list_del_entry_valid+0x1d/0xf0 lib/list_debug.c:42
-Code: 48 8b 34 24 eb b4 0f 1f 80 00 00 00 00 48 b8 00 00 00 00 00 fc ff df 41 55 41 54 55 48 89 fd 48 83 c7 08 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 a0 00 00 00 48 89 ea 4c 8b 65 08 48 b8 00 00 00
-RSP: 0018:ffffc90000ca7308 EFLAGS: 00010202
-RAX: dffffc0000000000 RBX: ffff88814149e008 RCX: 0000000000000000
-RDX: 00000000000000b3 RSI: ffffffff83e19360 RDI: 0000000000000598
-RBP: 0000000000000590 R08: 0000000000000001 R09: ffffffff8ef7388f
-R10: 0000000000000001 R11: 0000000000000000 R12: 0000000000000590
-R13: 0000000000000598 R14: ffff88814782ff20 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ff7b003f068 CR3: 000000001b33c000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Right, that would be a straightforward way to get the information with region
+abstraction.
 
+> 
+> > Then, we can do that
+> > by directly resetting and reading the PG_Idle flags and/or the PTE
+> > Accessed bits.  The metadata for the region abstraction is only burden
+> > in the case.  For the reason, this commit makes DAMON to support the
+> > user-defined arbitrary target, which could be stored in a void pointer
+> > of the monitoring context with specific target type.
+> 
+> Sorry I didn't follow. How does sampling interval equal to aggregation
+> interval require user-defined arbitrary targets?
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+So, setting sampling interval equal to aggregation interval is a
+straightforward way to get the if-accessed-only information with the
+region-based sampling.  However, this will waste memory with region metadata
+(observed accesses counter).  The wastage becomes much worse if we do
+page-granularity monitoring, because the region metadata for start address and
+end address of the regions would not necessary.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Someone can implement and use monitoring primitives making no such waste by
+using thir own abstraction rather than the regions abstraction (and therefore
+no regions metadata).  To allow that, we make the regions abstraction to be
+used only when the context is configured for special target type
+(DAMON_REGION_SAMPLING_TARGET) and allow users to use their own arbitrary
+abstraction with the arbitrary target type.
+
+An RFC patchset for an example implementation of the arbitrary target type is
+available:
+https://lore.kernel.org/linux-mm/20201216094221.11898-1-sjpark@amazon.com/
+
+> 
+> >
+> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> > Reviewed-by: Leonard Foerster <foersleo@amazon.de>
+> > ---
+> >  include/linux/damon.h | 109 ++++++++++++++++++++++++++++++--
+> >  mm/damon/core.c       | 142 +++++++++++++++++++++++++++++++++++++++++-
+> >  2 files changed, 243 insertions(+), 8 deletions(-)
+> >
+> > diff --git a/include/linux/damon.h b/include/linux/damon.h
+> > index 387fa4399fc8..7d4685adc8a9 100644
+> > --- a/include/linux/damon.h
+> > +++ b/include/linux/damon.h
+> > @@ -12,6 +12,48 @@
+> >  #include <linux/time64.h>
+> >  #include <linux/types.h>
+> >
+> > +/**
+> > + * struct damon_addr_range - Represents an address region of [@start, @end).
+> > + * @start:     Start address of the region (inclusive).
+> > + * @end:       End address of the region (exclusive).
+> > + */
+> > +struct damon_addr_range {
+> > +       unsigned long start;
+> > +       unsigned long end;
+> > +};
+> > +
+> > +/**
+> > + * struct damon_region - Represents a monitoring target region.
+> > + * @ar:                        The address range of the region.
+> > + * @sampling_addr:     Address of the sample for the next access check.
+> > + * @nr_accesses:       Access frequency of this region.
+> > + * @list:              List head for siblings.
+> > + */
+> > +struct damon_region {
+> > +       struct damon_addr_range ar;
+> > +       unsigned long sampling_addr;
+> > +       unsigned int nr_accesses;
+> > +       struct list_head list;
+> > +};
+> > +
+> > +/**
+> > + * struct damon_target - Represents a monitoring target.
+> > + * @id:                        Unique identifier for this target.
+> > + * @regions_list:      Head of the monitoring target regions of this target.
+> > + * @list:              List head for siblings.
+> > + *
+> > + * Each monitoring context could have multiple targets.  For example, a context
+> > + * for virtual memory address spaces could have multiple target processes.  The
+> > + * @id of each target should be unique among the targets of the context.  For
+> > + * example, in the virtual address monitoring context, it could be a pidfd or
+> > + * an address of an mm_struct.
+> > + */
+> > +struct damon_target {
+> > +       unsigned long id;
+> > +       struct list_head regions_list;
+> > +       struct list_head list;
+> > +};
+> > +
+> >  struct damon_ctx;
+> >
+> >  /**
+> > @@ -36,7 +78,8 @@ struct damon_ctx;
+> >   *
+> >   * @init_target_regions should construct proper monitoring target regions and
+> >   * link those to the DAMON context struct.  The regions should be defined by
+> > - * user and saved in @damon_ctx.target.
+> > + * user and saved in @damon_ctx.arbitrary_target if @damon_ctx.target_type is
+> > + * &DAMON_ARBITRARY_TARGET.  Otherwise, &struct damon_region should be used.
+> >   * @update_target_regions should update the monitoring target regions for
+> >   * current status.
+> >   * @prepare_access_checks should manipulate the monitoring regions to be
+> > @@ -46,7 +89,8 @@ struct damon_ctx;
+> >   * @reset_aggregated should reset the access monitoring results that aggregated
+> >   * by @check_accesses.
+> >   * @target_valid should check whether the target is still valid for the
+> > - * monitoring.
+> > + * monitoring.  It receives &damon_ctx.arbitrary_target or &struct damon_target
+> > + * pointer depends on &damon_ctx.target_type.
+> >   * @cleanup is called from @kdamond just before its termination.  After this
+> >   * call, only @kdamond_lock and @kdamond will be touched.
+> >   */
+> > @@ -91,6 +135,17 @@ struct damon_callback {
+> >         int (*before_terminate)(struct damon_ctx *context);
+> >  };
+> >
+> > +/**
+> > + * enum damon_target_type - Represents the type of the monitoring target.
+> > + *
+> > + * @DAMON_REGION_SAMPLING_TARGET:      Region based sampling target.
+> > + * @DAMON_ARBITRARY_TARGET:            User-defined arbitrary type target.
+> > + */
+> > +enum damon_target_type {
+> > +       DAMON_REGION_SAMPLING_TARGET,
+> > +       DAMON_ARBITRARY_TARGET,
+> 
+> I would suggest removing the arbitrary target in this pathset. This
+> patchset is only adding the region sampling target, so no need to add
+> the arbitrary target here.
+
+I think arbitrary targt type is necessary for above mentioned case.  Also, this
+makes backward compatible for the previous patch.  However, as this patchset
+doesn't introduce the real use of the arbitrary target type, I think it's also
+ok to introduce this later.  So I will drop this as you suggested in the next
+version.
+
+[...]
+> > +
+> > +/*
+> > + * Add a region between two other regions
+> > + */
+> > +inline void damon_insert_region(struct damon_region *r,
+> > +               struct damon_region *prev, struct damon_region *next)
+> > +{
+> > +       __list_add(&r->list, &prev->list, &next->list);
+> > +}
+> > +
+> > +void damon_add_region(struct damon_region *r, struct damon_target *t)
+> > +{
+> > +       list_add_tail(&r->list, &t->regions_list);
+> > +}
+> > +
+> 
+> I don't see the benefit of these one line functions at least the following two.
+
+We might want to use different data structures such as rbtree for regions
+later.  So I want to make the programming interface independent of the data
+structure.  This wrappers would help that.
+
+[...]
+
+Thanks,
+SeongJae Park
