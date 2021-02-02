@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D336730C0F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:13:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 790F330C88E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:57:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233917AbhBBOK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:10:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46494 "EHLO mail.kernel.org"
+        id S237781AbhBBRyp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:54:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233088AbhBBOD7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:03:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BFFC464E31;
-        Tue,  2 Feb 2021 13:48:27 +0000 (UTC)
+        id S233971AbhBBOJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:09:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19E0A65033;
+        Tue,  2 Feb 2021 13:50:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273708;
-        bh=x9E1Xcrqh6yd/DuAAZBhpOlxyykUufBgGTmYzkQAv4s=;
+        s=korg; t=1612273855;
+        bh=g5YkIKE9GXp/Fqzo85g17YkvQ8gmmPaEnZ2nlAf+Blg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g272xS5QZgJl8HpdiaUUlhxPZbrix4G4eVHmg2plFi4/az8yTEvtQktZcp+xXPq23
-         ijQZA8cO8bor0CtblDBEDK1HIW3tfO6rEzFUp5To2XDTAdeenKHLS/CuMDoGR+JLM/
-         DN1+KP4z5dIunZnJiyDp+PbLveY/zxiaUEipEkPY=
+        b=RJ4rWxUkF4vGTqKJD8ZcEUJNa+VAz2E7n8x1PH8YEBB6P0D59l6lpeL2sYqFqN6Hz
+         7ZjhH8QNezHybBOQmYt59Gk18zmd8xolxzh7ZwVLDVjJ3ynpZhHX7SIbkvvb03Fc29
+         +H/NXIQp8fWh2OsKA4sko3ocXV/6vLDtcBWhijLg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Wagner <dwagner@suse.de>,
-        Hannes Reinecke <hare@suse.de>, Christoph Hellwig <hch@lst.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 52/61] nvme-multipath: Early exit if no path is available
-Date:   Tue,  2 Feb 2021 14:38:30 +0100
-Message-Id: <20210202132948.682070468@linuxfoundation.org>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 4.9 08/32] futex: Split futex_mm_release() for exit/exec
+Date:   Tue,  2 Feb 2021 14:38:31 +0100
+Message-Id: <20210202132942.364447571@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132946.480479453@linuxfoundation.org>
-References: <20210202132946.480479453@linuxfoundation.org>
+In-Reply-To: <20210202132942.035179752@linuxfoundation.org>
+References: <20210202132942.035179752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,37 +41,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Wagner <dwagner@suse.de>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit d1bcf006a9d3d63c1bcb65a993cb13756954cd9c ]
+commit 150d71584b12809144b8145b817e83b81158ae5f upstream.
 
-nvme_round_robin_path() should test if the return ns pointer is valid.
-nvme_next_ns() will return a NULL pointer if there is no path left.
+To allow separate handling of the futex exit state in the futex exit code
+for exit and exec, split futex_mm_release() into two functions and invoke
+them from the corresponding exit/exec_mm_release() callsites.
 
-Fixes: 75c10e732724 ("nvme-multipath: round-robin I/O policy")
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Preparatory only, no functional change.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20191106224556.332094221@linutronix.de
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/host/multipath.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/futex.h |    6 ++++--
+ kernel/fork.c         |    5 ++---
+ kernel/futex.c        |    7 ++++++-
+ 3 files changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/nvme/host/multipath.c b/drivers/nvme/host/multipath.c
-index 3968f89f7855a..0ac0bd4c65c4c 100644
---- a/drivers/nvme/host/multipath.c
-+++ b/drivers/nvme/host/multipath.c
-@@ -233,7 +233,7 @@ static struct nvme_ns *nvme_round_robin_path(struct nvme_ns_head *head,
- 	}
+--- a/include/linux/futex.h
++++ b/include/linux/futex.h
+@@ -98,13 +98,15 @@ static inline void futex_exit_done(struc
+ 	tsk->futex_state = FUTEX_STATE_DEAD;
+ }
  
- 	for (ns = nvme_next_ns(head, old);
--	     ns != old;
-+	     ns && ns != old;
- 	     ns = nvme_next_ns(head, ns)) {
- 		if (nvme_path_is_disabled(ns))
- 			continue;
--- 
-2.27.0
-
+-void futex_mm_release(struct task_struct *tsk);
++void futex_exit_release(struct task_struct *tsk);
++void futex_exec_release(struct task_struct *tsk);
+ 
+ long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
+ 	      u32 __user *uaddr2, u32 val2, u32 val3);
+ #else
+ static inline void futex_init_task(struct task_struct *tsk) { }
+-static inline void futex_mm_release(struct task_struct *tsk) { }
+ static inline void futex_exit_done(struct task_struct *tsk) { }
++static inline void futex_exit_release(struct task_struct *tsk) { }
++static inline void futex_exec_release(struct task_struct *tsk) { }
+ #endif
+ #endif
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -1084,9 +1084,6 @@ static int wait_for_vfork_done(struct ta
+  */
+ static void mm_release(struct task_struct *tsk, struct mm_struct *mm)
+ {
+-	/* Get rid of any futexes when releasing the mm */
+-	futex_mm_release(tsk);
+-
+ 	uprobe_free_utask(tsk);
+ 
+ 	/* Get rid of any cached register state */
+@@ -1121,11 +1118,13 @@ static void mm_release(struct task_struc
+ 
+ void exit_mm_release(struct task_struct *tsk, struct mm_struct *mm)
+ {
++	futex_exit_release(tsk);
+ 	mm_release(tsk, mm);
+ }
+ 
+ void exec_mm_release(struct task_struct *tsk, struct mm_struct *mm)
+ {
++	futex_exec_release(tsk);
+ 	mm_release(tsk, mm);
+ }
+ 
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -3269,7 +3269,7 @@ static void exit_robust_list(struct task
+ 				   curr, pip);
+ }
+ 
+-void futex_mm_release(struct task_struct *tsk)
++void futex_exec_release(struct task_struct *tsk)
+ {
+ 	if (unlikely(tsk->robust_list)) {
+ 		exit_robust_list(tsk);
+@@ -3287,6 +3287,11 @@ void futex_mm_release(struct task_struct
+ 		exit_pi_state_list(tsk);
+ }
+ 
++void futex_exit_release(struct task_struct *tsk)
++{
++	futex_exec_release(tsk);
++}
++
+ long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
+ 		u32 __user *uaddr2, u32 val2, u32 val3)
+ {
 
 
