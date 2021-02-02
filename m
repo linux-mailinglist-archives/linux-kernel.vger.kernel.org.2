@@ -2,242 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC0D30CD75
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:57:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF2330CD79
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:57:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234117AbhBBU4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 15:56:48 -0500
-Received: from mail-oi1-f174.google.com ([209.85.167.174]:43504 "EHLO
-        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233892AbhBBU4f (ORCPT
+        id S234175AbhBBU5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 15:57:09 -0500
+Received: from www381.your-server.de ([78.46.137.84]:42700 "EHLO
+        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232785AbhBBU4p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 15:56:35 -0500
-Received: by mail-oi1-f174.google.com with SMTP id d20so8522257oiw.10;
-        Tue, 02 Feb 2021 12:56:18 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=6WKE/3EQ/xJ6AJH5xmJE9YBaYDJN1xjVTBGt+kvQ65Y=;
-        b=TirDo8SCmisn1W/UErBbzPEcNL9EIsBI0Hpki5C3reAXYhoSyMvLH9cxTottf6sVxK
-         xf/Jtyc9BJmX5T656HZ6pbppu0F7+Cl682xD1LEhWhOyi9yZ0DUoRwJ96KHcw8CCG2tC
-         z2IoZZZvvU8DC/4XUKBbC5SA/yxyTbLTpApTQE2AlkFPI4DM6b+dEkZBT+RTzYZRsPCR
-         UZk4i5iInD9oE06ZG8JyG8t++oZ/fr4ar46h3ZtGsortA3UNrRcdaL8unGU2FDBqKEG/
-         gn95tEvaLm8gG8JiayyY5UYcHIqWZM/VwtPZVOdSpSxVXxXuCuRkoK0pPPsmO+78Mb0N
-         /vGg==
-X-Gm-Message-State: AOAM531v5X1td8BoFObr3WdUUyVxfBZJ8i14wlmi8ivhfbfEVjD8sS2l
-        DD/Nk7DiI16rGCbsdeeq8vxsvi6uBg==
-X-Google-Smtp-Source: ABdhPJypjDN+Ts39JWA5K5FwFDZxnlgjEBltLJwzpuZeV8Gkh6PNkOJl8PkeKNKnT1CjwRFOWOyTZg==
-X-Received: by 2002:aca:dc07:: with SMTP id t7mr4037098oig.15.1612299353146;
-        Tue, 02 Feb 2021 12:55:53 -0800 (PST)
-Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.googlemail.com with ESMTPSA id k15sm4206otp.10.2021.02.02.12.55.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 12:55:52 -0800 (PST)
-From:   Rob Herring <robh@kernel.org>
-To:     devicetree@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Daniel Palmer <daniel@thingy.jp>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Joel Stanley <joel@jms.id.au>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Vincent Cheng <vincent.cheng.xh@renesas.com>,
-        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-watchdog@vger.kernel.org,
-        Eric Anholt <eric@anholt.net>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        dri-devel@lists.freedesktop.org, linux-leds@vger.kernel.org,
-        linux-mmc@vger.kernel.org
-Subject: [PATCH 3/3] dt-bindings: Fix errors in 'if' schemas
-Date:   Tue,  2 Feb 2021 14:55:44 -0600
-Message-Id: <20210202205544.24812-3-robh@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210202205544.24812-1-robh@kernel.org>
-References: <20210202205544.24812-1-robh@kernel.org>
+        Tue, 2 Feb 2021 15:56:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
+         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=PqrDYmSRZ2jD1Y+JGfHbNOAlNj1MP00eiAyBOLDtoQU=; b=fmMatPxJz5ZgY20zUyd/ODST3z
+        nC7pWu0OK0vfR7PngMA6phQvDPOky4PyV+YvHsSV6JAzDoP5fo4zM8JyQueOw3b668/HlB0kTTAHc
+        j+hQIoTGkymnbT3rFeOZ4pQ5weC31SPMe1Hh6RW4zIDDCHsSuNxkJyBgjW3Pm3dyyUVFG+xIvS0zC
+        gNDxcLGMreVXYLFDu0TUTGn4wWu/CnLmB6hb0rYrHrbr4P5KClJRrcwC4WpHAp2FOpA5mQ9UrL7ID
+        Lpz5J4mAV3Q0u6dvYlbJ6BAJq3GELpoOSE1L7Y4C05vMY5Qxh9c0Z3fviDQ1127oqLhXSvXidtbrC
+        rmPjp1RQ==;
+Received: from sslproxy03.your-server.de ([88.198.220.132])
+        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <lars@metafoo.de>)
+        id 1l72iL-0008rA-50; Tue, 02 Feb 2021 21:55:57 +0100
+Received: from [62.216.202.92] (helo=[192.168.178.20])
+        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <lars@metafoo.de>)
+        id 1l72iK-000SPT-Vd; Tue, 02 Feb 2021 21:55:56 +0100
+Subject: Re: [PATCH] dt-bindings: iio: dac: Add missing ad5686 compatible
+ strings
+To:     Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Michael Auchter <michael.auchter@ni.com>,
+        linux-iio@vger.kernel.org
+References: <20210202181427.3934218-1-robh@kernel.org>
+From:   Lars-Peter Clausen <lars@metafoo.de>
+Message-ID: <efbfbb94-bf61-5503-9833-df23709f56a2@metafoo.de>
+Date:   Tue, 2 Feb 2021 21:55:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210202181427.3934218-1-robh@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Authenticated-Sender: lars@metafoo.de
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26068/Tue Feb  2 13:21:02 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Properties in if/then schemas weren't getting checked by the meta-schemas.
-Enabling meta-schema checks finds several errors.
+On 2/2/21 7:14 PM, Rob Herring wrote:
+> The example uses 'adi,ad5686', but the schema fails to document it. Given
+> the filename and there is a similar part AD5686, let's just add the
+> compatible strings including the 'r' variant.
 
-The use of an 'items' schema (as opposed to the list form) is wrong in
-some cases as it applies to all entries. 'contains' is the correct schema
-to use in the case of multiple entries.
+There are two variants of this chip. One with a SPI interface and one 
+with a I2C interface. This binding document only describes the I2C 
+variants. But the ad5686 is a SPI variant.
 
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Chen-Yu Tsai <wens@csie.org>
-Cc: Eric Anholt <eric@anholt.net>
-Cc: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Cc: Ray Jui <rjui@broadcom.com>
-Cc: Scott Branden <sbranden@broadcom.com>
-Cc: Pavel Machek <pavel@ucw.cz>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: Kishon Vijay Abraham I <kishon@ti.com>
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: linux-crypto@vger.kernel.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux-leds@vger.kernel.org
-Cc: linux-mmc@vger.kernel.org
-Cc: linux-gpio@vger.kernel.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- .../devicetree/bindings/crypto/allwinner,sun8i-ce.yaml   | 3 +--
- .../devicetree/bindings/display/brcm,bcm2835-hvs.yaml    | 2 +-
- Documentation/devicetree/bindings/leds/ti,tca6507.yaml   | 1 +
- Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml  | 2 +-
- Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml | 3 +--
- .../devicetree/bindings/phy/renesas,usb2-phy.yaml        | 5 ++---
- .../devicetree/bindings/pinctrl/renesas,pfc.yaml         | 9 ++++-----
- .../bindings/timer/allwinner,sun5i-a13-hstimer.yaml      | 3 +--
- 8 files changed, 12 insertions(+), 16 deletions(-)
+I think this is a typo and we should replace ad5686 with ad5696, 
+including the document name.
 
-diff --git a/Documentation/devicetree/bindings/crypto/allwinner,sun8i-ce.yaml b/Documentation/devicetree/bindings/crypto/allwinner,sun8i-ce.yaml
-index 7a60d84289cc..6ab07eba7778 100644
---- a/Documentation/devicetree/bindings/crypto/allwinner,sun8i-ce.yaml
-+++ b/Documentation/devicetree/bindings/crypto/allwinner,sun8i-ce.yaml
-@@ -46,8 +46,7 @@ properties:
- if:
-   properties:
-     compatible:
--      items:
--        const: allwinner,sun50i-h6-crypto
-+      const: allwinner,sun50i-h6-crypto
- then:
-   properties:
-     clocks:
-diff --git a/Documentation/devicetree/bindings/display/brcm,bcm2835-hvs.yaml b/Documentation/devicetree/bindings/display/brcm,bcm2835-hvs.yaml
-index e826ab0adb75..2e8566f47e63 100644
---- a/Documentation/devicetree/bindings/display/brcm,bcm2835-hvs.yaml
-+++ b/Documentation/devicetree/bindings/display/brcm,bcm2835-hvs.yaml
-@@ -36,7 +36,7 @@ if:
-   properties:
-     compatible:
-       contains:
--        const: brcm,bcm2711-hvs"
-+        const: brcm,bcm2711-hvs
- 
- then:
-   required:
-diff --git a/Documentation/devicetree/bindings/leds/ti,tca6507.yaml b/Documentation/devicetree/bindings/leds/ti,tca6507.yaml
-index 94c307c98762..32c600387895 100644
---- a/Documentation/devicetree/bindings/leds/ti,tca6507.yaml
-+++ b/Documentation/devicetree/bindings/leds/ti,tca6507.yaml
-@@ -69,6 +69,7 @@ patternProperties:
- if:
-   patternProperties:
-     "^gpio@[0-6]$":
-+      type: object
-       properties:
-         compatible:
-           contains:
-diff --git a/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml b/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml
-index 6bbf29b5c239..6c13703b31db 100644
---- a/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml
-+++ b/Documentation/devicetree/bindings/mmc/renesas,sdhi.yaml
-@@ -123,7 +123,7 @@ required:
- if:
-   properties:
-     compatible:
--      items:
-+      contains:
-         enum:
-           - renesas,sdhi-r7s72100
-           - renesas,sdhi-r7s9210
-diff --git a/Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml b/Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml
-index 58c3ef8004ad..04edda504ab6 100644
---- a/Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml
-+++ b/Documentation/devicetree/bindings/phy/brcm,sata-phy.yaml
-@@ -99,8 +99,7 @@ patternProperties:
- if:
-   properties:
-     compatible:
--      items:
--        const: brcm,iproc-ns2-sata-phy
-+      const: brcm,iproc-ns2-sata-phy
- then:
-   properties:
-     reg:
-diff --git a/Documentation/devicetree/bindings/phy/renesas,usb2-phy.yaml b/Documentation/devicetree/bindings/phy/renesas,usb2-phy.yaml
-index 829e8c7e467a..0f358d5b84ef 100644
---- a/Documentation/devicetree/bindings/phy/renesas,usb2-phy.yaml
-+++ b/Documentation/devicetree/bindings/phy/renesas,usb2-phy.yaml
-@@ -81,9 +81,8 @@ properties:
- if:
-   properties:
-     compatible:
--      items:
--        enum:
--          - renesas,usb2-phy-r7s9210
-+      contains:
-+        const: renesas,usb2-phy-r7s9210
- then:
-   required:
-     - clock-names
-diff --git a/Documentation/devicetree/bindings/pinctrl/renesas,pfc.yaml b/Documentation/devicetree/bindings/pinctrl/renesas,pfc.yaml
-index 5b5b1b9d2ec7..5d3947902f2d 100644
---- a/Documentation/devicetree/bindings/pinctrl/renesas,pfc.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/renesas,pfc.yaml
-@@ -76,11 +76,10 @@ required:
- if:
-   properties:
-     compatible:
--      items:
--        enum:
--          - renesas,pfc-r8a73a4
--          - renesas,pfc-r8a7740
--          - renesas,pfc-sh73a0
-+      enum:
-+        - renesas,pfc-r8a73a4
-+        - renesas,pfc-r8a7740
-+        - renesas,pfc-sh73a0
- then:
-   required:
-     - interrupts-extended
-diff --git a/Documentation/devicetree/bindings/timer/allwinner,sun5i-a13-hstimer.yaml b/Documentation/devicetree/bindings/timer/allwinner,sun5i-a13-hstimer.yaml
-index 40fc4bcb3145..b6a6d03a08b2 100644
---- a/Documentation/devicetree/bindings/timer/allwinner,sun5i-a13-hstimer.yaml
-+++ b/Documentation/devicetree/bindings/timer/allwinner,sun5i-a13-hstimer.yaml
-@@ -46,8 +46,7 @@ required:
- if:
-   properties:
-     compatible:
--      items:
--        const: allwinner,sun5i-a13-hstimer
-+      const: allwinner,sun5i-a13-hstimer
- 
- then:
-   properties:
--- 
-2.27.0
+>
+> Cc: Lars-Peter Clausen <lars@metafoo.de>
+> Cc: Michael Hennerich <Michael.Hennerich@analog.com>
+> Cc: Jonathan Cameron <jic23@kernel.org>
+> Cc: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+> Cc: Michael Auchter <michael.auchter@ni.com>
+> Cc: linux-iio@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>   Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml | 2 ++
+>   1 file changed, 2 insertions(+)
+>
+> diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
+> index 8065228e5df8..190919291828 100644
+> --- a/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
+> +++ b/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
+> @@ -19,6 +19,8 @@ properties:
+>         - adi,ad5338r
+>         - adi,ad5671r
+>         - adi,ad5675r
+> +      - adi,ad5686
+> +      - adi,ad5686r
+>         - adi,ad5691r
+>         - adi,ad5692r
+>         - adi,ad5693
+
 
