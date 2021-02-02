@@ -2,155 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2AC30CFAD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 00:09:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9359230CFB0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 00:10:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236286AbhBBXI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 18:08:56 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:55254 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236266AbhBBXIw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 18:08:52 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 112N2gU1015608;
-        Tue, 2 Feb 2021 15:08:00 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=TrlPo0eFafeFIQd4fPweXXFigvYNrR/l1TowLCAzMco=;
- b=DCJffGsgDmJguBrses2VkFJP1x3+0ff7pDl3GvpLHXHRh4ESGWIFWoezd3RTJKU+gCrJ
- VQyA4aBF4jaXZo3gZWr7EQ4/tCZLtyLFcpLtPXmGu0bj8s2HQ9StpqqTq5EOy60s2Myr
- TN69Br7pimgxM9K30SLxqmAX3CxpjbwwP/4= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 36drdbx9xt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 02 Feb 2021 15:08:00 -0800
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 2 Feb 2021 15:07:58 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MS56heoHwRyVPrbKr/iUaCKv0iHZ5Mc+ZXj3OkHL97V/9a41Zy5LOgfNUiiPA2vIb3oDaZyIumMJwMTekMnUNzjASfFHSHU+mXa2/I1HJCdReptPrg4qx9OzHAhZh7mMgfgqjhDajjjU2DPo3ee97Jp5Xyj1+gav1xEaphLl3gbzjwf3kjpC5v72RnBeKINUoiKTTSUwhEB+xFQ+CrJpsQ4IJskTsSRmlv10HRAJeVVA9sIi8gHc10ov5Usx8BPSe8ib9UI15d2YUE8eVOBknFRQ8BQytNy0PjucreAmH+jj15A0syGvKN+ss2EFbn5dQC4WNpvyNS62ExeR84G9Iw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TrlPo0eFafeFIQd4fPweXXFigvYNrR/l1TowLCAzMco=;
- b=P/KGT+oEuk3J2xvOhmcSUahR0mjirbNnAMvMzxZlmYvnXE1fPXqYnrWVOcFhwbJgRBM/Jox6yL3Pit5NKDJ0VvroemaDHKggrsVTrFRuDk+M/Jq4OvN2ixqJ9OOcixqlwA+y2JaY0UZCz1PllWt52obmziySqvmRzBBZJrgtM1un3VzrLlZxDYrAUjiuxdvPc03QcibALi6vZy4mtTVejuBMz0gPW2v9vqkOtbty7l5VBzK+WNsCnNT6GwDSDvp+dLeXosQR5vmssUncV8VmVjIqkqkAFiSrBIrA/tFg8iX/dGqO6Hx+JU5lQsDCiUZ8j2NBUlPjJtkuHJclYOMdHA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TrlPo0eFafeFIQd4fPweXXFigvYNrR/l1TowLCAzMco=;
- b=kfvVAkpqqWcXbgwcr5uWlOcq1BZbqKTfKLuqWcZv0irSCmXiqqXDpkDOpNVtAhpiCnb40eBAGW00lS6nE/HtXGrrU6G24mE5Eclh8PAiCiCfe/qgh46z1psOWFJXvlcduPXzoZDahtmnb8YHttHVt44upFUxRyMtcz3/DNkuDK0=
-Authentication-Results: cmpxchg.org; dkim=none (message not signed)
- header.d=none;cmpxchg.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2216.namprd15.prod.outlook.com (2603:10b6:a02:8b::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.24; Tue, 2 Feb
- 2021 23:07:52 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::53a:b2c3:8b03:12d1]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::53a:b2c3:8b03:12d1%7]) with mapi id 15.20.3805.028; Tue, 2 Feb 2021
- 23:07:52 +0000
-Date:   Tue, 2 Feb 2021 15:07:47 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        <linux-mm@kvack.org>, <cgroups@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>
-Subject: Re: [PATCH 1/7] mm: memcontrol: fix cpuhotplug statistics flushing
-Message-ID: <20210202230747.GA1812008@carbon.dhcp.thefacebook.com>
-References: <20210202184746.119084-1-hannes@cmpxchg.org>
- <20210202184746.119084-2-hannes@cmpxchg.org>
+        id S236302AbhBBXJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 18:09:30 -0500
+Received: from mga04.intel.com ([192.55.52.120]:15680 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236289AbhBBXJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 18:09:17 -0500
+IronPort-SDR: YSXWVtQ8t/oOfO8uqMp6VPr2erN29afTqwzsJlPmF1b9/LcCOfxb5tmQMT4dEk1C0Y+EJhFgii
+ ptr2P+R2nPGQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="178387793"
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="scan'208";a="178387793"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 15:08:32 -0800
+IronPort-SDR: uvrOannQqhqlOwrNnhCC1hvrm+4Xaz4XoWFfXifM9FKmsSIw6EhYpJCdn/HNAfJ/c8FF94qDis
+ TMF+mDTxUshg==
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="scan'208";a="391916200"
+Received: from aisallax-mobl2.amr.corp.intel.com (HELO intel.com) ([10.252.131.184])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 15:08:31 -0800
+Date:   Tue, 2 Feb 2021 15:08:29 -0800
+From:   Ben Widawsky <ben.widawsky@intel.com>
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH 07/14] cxl/mem: Add send command
+Message-ID: <20210202230829.sondt7xrpixpv7vz@intel.com>
+References: <20210130002438.1872527-1-ben.widawsky@intel.com>
+ <20210130002438.1872527-8-ben.widawsky@intel.com>
+ <20210201181535.GI197521@fedora>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210202184746.119084-2-hannes@cmpxchg.org>
-X-Originating-IP: [2620:10d:c090:400::5:7ae2]
-X-ClientProxiedBy: CO1PR15CA0108.namprd15.prod.outlook.com
- (2603:10b6:101:21::28) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:7ae2) by CO1PR15CA0108.namprd15.prod.outlook.com (2603:10b6:101:21::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17 via Frontend Transport; Tue, 2 Feb 2021 23:07:51 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 13ca1b00-c001-403e-18d3-08d8c7cf5ddc
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2216:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2216B802C17B76CD154CC66EBEB59@BYAPR15MB2216.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SkF+4qgJTd4TyMPotYHDo3RT2tVmSLQykIccmo+wk69nj/+eFpXsFWN5i0GizLQbGE1jfocP9WjwrqKNHQTEzNQQQRUR+SiHufIg9SJk+bXWmHAiOv7u9ElhipqSC+Fv4hUGEgLfqcrsIM/fwjw9yoxtqStTspS3Pux6BOH/qwz38C7MZO4OP9jVT70AD6+UKk8ZUWzy2sOA5g2/Nx5Ort6zIrjh8U7GiB4h3JcSUIQ1aTUWrbHtUIj6rCEra2xMm8WGq9UDR+l+SaRZ7ud2+Pij/VPbpm+QWbhDSo8gr+cy3AL8V+TAno5piVvzHQMV4Gtq63h1agYj1Qf6B8wS0AmNOVbXC0n3hgdhU75DGbW934pbRxtSAkWLqAImJiyWyuWgO81t/GBReSAaRSumU8DVsZB9ERGK7zzF+NlAkDWpePlfzwmsiUfapKo+Jw8qvrpE5Olk569bohxEkYkulj+g72M/Hg8mQPUMq509Qg+FeWoUYpEcAt1OmmxiFidwrDGrV7WfHD74sr/7ygXtsw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(346002)(376002)(366004)(39860400002)(7696005)(6506007)(52116002)(5660300002)(66556008)(66476007)(4744005)(478600001)(16526019)(33656002)(1076003)(316002)(66946007)(8936002)(4326008)(9686003)(6666004)(8676002)(186003)(86362001)(55016002)(6916009)(54906003)(2906002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?xgufFMk7g4pf3IoVYYduq+dXX0MmWYT+PaVhbM3rGjSJZkG6Ubru/4es0pJm?=
- =?us-ascii?Q?q1jRLN2dMHu9UMSZBMk+3LfS+f1ZhCy6FStSX3DNqiQkNBrPXGEBruq7B41V?=
- =?us-ascii?Q?BYgM5DBdRBEP/V0dlvoFZn+S5/R2WiJkHNhHpoRsoMrmkW9V2+/Y0Zb5lsfc?=
- =?us-ascii?Q?EnBh9gJk3GmHUhEc3AlkBQYhu1nEkHB9+hNEJ24c+Yy1sDc1A8ryJWuEZiD6?=
- =?us-ascii?Q?K5B0Ol49p0u55BOuJpnBADrdsyWcMN7LL+r81/QHu7oB2hYqdQEGDYkOCBhW?=
- =?us-ascii?Q?aWy99K1eO+XdjYNTPoBci3+a7LYg63p6quxnFcxzxUzBm/kTCdqlvgPnTCBj?=
- =?us-ascii?Q?HjbLEj4seuGMJpa7g4X7kJ8OcnoCEj7Rm0mC4fzrx3oBGWcJAdhfbE0ajvwz?=
- =?us-ascii?Q?2/jaQIh1pOHP6wJR9RtpIchNXqJzOKOGzM3gWblSUqZfdJwvRYVDAnWaVW2P?=
- =?us-ascii?Q?N+qFBQ7CKEbxZ6u843Tj/1NR5/WgWO7UzDl8xkistiI74koKuCQcOa4e19be?=
- =?us-ascii?Q?Mfhp8+tXmG06xEEP0zkKsg5hQuvLs/+Y9iH7aDM8RFdlAb0DrB5Bp1/rF0L6?=
- =?us-ascii?Q?Hmh1hxQMkFy/4bdwsgKiPL/DQ6zH+KD03mqqdzbOiPxQzwLmVlJ4UD8yT0f5?=
- =?us-ascii?Q?QSxqBzA3HSys4YBWRALu7TTrn+P5urznRU5e588mgcppBEAGEfjm81rgbz9h?=
- =?us-ascii?Q?bNK9UBGoQqEgDXjYS1gkBeQaPvxpfRKzCJsGPxFsKBSUuHCcyw3kyJY0R70L?=
- =?us-ascii?Q?d/AAfznaBHrsb9of6md2k4gpL8actPI4q4Z4QzFCqPUUzx8SV51hFgqVpFs6?=
- =?us-ascii?Q?AezWeqExe91sy6QtPY6uNIPWpZ7aKqVJoZSBn3Bg4M+yckfR0wj0dcM7ekSQ?=
- =?us-ascii?Q?4BL9+kdem8vs8ggvl4X2twGl84oG7NOptbIyK+GeyTS8P2hhBJCzbEq2TtzE?=
- =?us-ascii?Q?xf8BnVlcMpL1eu25ZDgBTz0fG5fHjJF0WcVa5/a+nLkh1BHH8ZbWBJM6iHSd?=
- =?us-ascii?Q?wCrtunxZu7nt7jFYwDXb3V6TAvmsp49VSRWk72ZC0IsEoaNrHioYgt0lC47w?=
- =?us-ascii?Q?IyVYCNoC6NuWPKJDiSu7Cy0buHPiNMhE3SRAsIGMBfY6uZwUW8c=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 13ca1b00-c001-403e-18d3-08d8c7cf5ddc
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2021 23:07:52.2746
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8wtjIM1QcP5cL3ZvVDyXsgtig8FxgkZM+xbJGZqgKGByTNhlg53zqj6jBjGquvgF
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2216
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-02_13:2021-02-02,2021-02-02 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- adultscore=0 impostorscore=0 mlxscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 bulkscore=0 phishscore=0 malwarescore=0
- priorityscore=1501 mlxlogscore=889 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2102020146
-X-FB-Internal: deliver
+In-Reply-To: <20210201181535.GI197521@fedora>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 01:47:40PM -0500, Johannes Weiner wrote:
-> The memcg hotunplug callback erroneously flushes counts on the local
-> CPU, not the counts of the CPU going away; those counts will be lost.
+On 21-02-01 13:15:35, Konrad Rzeszutek Wilk wrote:
+> > +/**
+> > + * struct cxl_send_command - Send a command to a memory device.
+> > + * @id: The command to send to the memory device. This must be one of the
+> > + *	commands returned by the query command.
+> > + * @flags: Flags for the command (input).
+> > + * @rsvd: Must be zero.
+> > + * @retval: Return value from the memory device (output).
+> > + * @size_in: Size of the payload to provide to the device (input).
+> > + * @size_out: Size of the payload received from the device (input/output). This
+> > + *	      field is filled in by userspace to let the driver know how much
+> > + *	      space was allocated for output. It is populated by the driver to
+> > + *	      let userspace know how large the output payload actually was.
+> > + * @in_payload: Pointer to memory for payload input (little endian order).
+> > + * @out_payload: Pointer to memory for payload output (little endian order).
+> > + *
+> > + * Mechanism for userspace to send a command to the hardware for processing. The
+> > + * driver will do basic validation on the command sizes. In some cases even the
+> > + * payload may be introspected. Userspace is required to allocate large
+> > + * enough buffers for size_out which can be variable length in certain
+> > + * situations.
+> > + */
+> I think (and this would help if you ran `pahole` on this structure) has
+> some gaps in it:
 > 
-> Flush the CPU that is actually going away.
+> > +struct cxl_send_command {
+> > +	__u32 id;
+> > +	__u32 flags;
+> > +	__u32 rsvd;
+> > +	__u32 retval;
+> > +
+> > +	struct {
+> > +		__s32 size_in;
 > 
-> Also simplify the code a bit by using mod_memcg_state() and
-> count_memcg_events() instead of open-coding the upward flush - this is
-> comparable to how vmstat.c handles hotunplug flushing.
-
-To the whole series: it's really nice to have an accurate stats at
-non-leaf levels. Just as an illustration: if there are 32 CPUs and
-1000 sub-cgroups (which is an absolutely realistic number, because
-often there are many dying generations of each cgroup), the error
-margin is 3.9GB. It makes all numbers pretty much random and all
-possible tests extremely flaky.
-
+> Here..Maybe just add:
 > 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> __u32 rsv_2;
+> > +		__u64 in_payload;
+> > +	};
+> > +
+> > +	struct {
+> > +		__s32 size_out;
+> 
+> And here. Maybe just add:
+> __u32 rsv_2;
+> > +		__u64 out_payload;
+> > +	};
+> > +};
+> 
+> Perhaps to prepare for the future where this may need to be expanded, you
+> could add a size at the start of the structure, and
+> maybe what version of structure it is?
+> 
+> Maybe for all the new structs you are adding?
 
-To this patch:
+Thanks for catching the holes. It broke somewhere in the earlier RFC changes.
 
-Reviewed-by: Roman Gushchin <guro@fb.com>
+I don't think we need to size or version. Reserved fields are good enough near
+term future proofing and if we get to a point where the command is woefully
+incompetent, I think it'd be time to just make cxl_send_command2.
 
-Thanks!
+Generally, I think cxl_send_command is fairly future proof because it's so
+simple. As you get more complex, you might need better mechanisms, like deferred
+command completion for example. It's unclear to me whether we'll get to that
+point though, and if we do, I think a new command is warranted.
