@@ -2,146 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B58C130B574
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 03:47:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F62630B576
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 03:47:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231406AbhBBCqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 21:46:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45852 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231389AbhBBCp7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 21:45:59 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F09C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 18:45:19 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id d194so14892837qke.3
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 18:45:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=uITZIRq2V6q5qSCUOLhj43gM7pGs59qTkMOHdBiHBX8=;
-        b=gY1tDyWFRuA+U5J8SpkhoZAtl/n+BQZ0jU2IUH2scTEb4ip7k5UGLfgxJPpv955Yu3
-         y+1YAECTkbOnp8JEoqqhASRyBzzArynhp12Ha0mMBwTAulG7q0SiqsKNpwNOOD1gddaR
-         +3NFolkMuHoMwiU2oOe77Kbrf4ORhdry8Tmb87qBN8VFI25Z+ztQOnDjnwsDVyO2XZIa
-         PdIu5rPupfsBdnOPTPIxXP4zgFFY4kxAJBU2Ce2cAald0Zko38i4vfzSermB9qxVK4QD
-         I7b22E3s2HubXZwNk1x8oq+Mn5mOXth/A352X4mEm6lJfO8xOv7hSA/hBI+c3BsTEsU2
-         4NHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=uITZIRq2V6q5qSCUOLhj43gM7pGs59qTkMOHdBiHBX8=;
-        b=U7YbEKcOTkBauHeBJfp451olcY4g+S4X23pkoeUE3JauXDnJjRbtiHAkvapKOyDTGP
-         LAYxML3nEtqPX21cYGmwF+BEgK4r4A03LCczO94I9k7AHE33dCQzrwcpaSZCBiKzEFJy
-         26aGifaiTI5wDZ/EKtg5sNjfXa39U6FRuWF1GHrmvQNz/oekGbgCf6f6LWOm3acdtuCC
-         Fyr/3PHJdDqBDkWzRyJ3FqaZ8yt0VZ16hcVSeSxVdkvrrx+AXIBbBiwPvUeiTT0Lg+iv
-         SpD5+sp1r3qdlHvmCqK5XHVzzXK2pm0p5XYMQqH+4SHOiXTos/1TmdOjRUCxNcSAQfNG
-         4DOw==
-X-Gm-Message-State: AOAM533QvEtDXU87u9AEfpprkAEmjgEucnqxtOJIHOIV+KhEp+hhuI0H
-        2yaedQpgtMKOhjM8ca2KdT38MHVjwS6t
-X-Google-Smtp-Source: ABdhPJydLxnjH3haxCI9g+KQinhtQamnimB5PgiU1eLyouVWd1b/ZdMwmDL8bJ4OYtbFmYyMYlgLc/uVW6WI
-Sender: "amistry via sendgmr" <amistry@nandos.syd.corp.google.com>
-X-Received: from nandos.syd.corp.google.com ([2401:fa00:9:14:243a:8f72:7104:7a64])
- (user=amistry job=sendgmr) by 2002:a0c:b912:: with SMTP id
- u18mr7724925qvf.2.1612233918714; Mon, 01 Feb 2021 18:45:18 -0800 (PST)
-Date:   Tue,  2 Feb 2021 13:45:09 +1100
-Message-Id: <20210202134451.1.I0d2e83c42755671b7143504b62787fd06cd914ed@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH] ath10k: Fix suspicious RCU usage warning in ath10k_wmi_tlv_parse_peer_stats_info()
-From:   Anand K Mistry <amistry@google.com>
-To:     ath10k@lists.infradead.org
-Cc:     Anand K Mistry <amistry@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Wen Gong <wgong@codeaurora.org>, linux-kernel@vger.kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S231494AbhBBCqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 21:46:51 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:41921 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231389AbhBBCqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 21:46:47 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DV8MH6K7Vz9t5G;
+        Tue,  2 Feb 2021 13:46:03 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1612233965;
+        bh=HzKerq39gTK1H0Uw/utsxgEZ3XEdHGcO7RhRXVMnzyQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Ol5J6L8bjz3DMr8kVnZ1EkoHUWvitPjvSEkgp+V8cGgSV8JIQ97/FCGRXwS0NA9Uc
+         M66YPijjSe6E05fbk9m0qc4HtU45i+Y4BRgYdD3wBfwLatNbCdqFqERs5XPqKRx+TD
+         qiGzGadUFLHY2ay66Kd7YMF536afXMgt6esokK46ry+j0qkwxZ1uRiEu9FQhwOc9Zh
+         w+zgjOxXCHbHrOp5MaooMi7qvAWL0bGLCFDhZ9VyXnhuvrZQj0TyAOB7M1CwfKvrcJ
+         Ae/z4aj8cxaF3F9t8SXWbjTGd2OEQu59q0dpTqM8KLcxqod6bsG9ILA3Fg4rokkLVg
+         AarZR7wh5I6hQ==
+Date:   Tue, 2 Feb 2021 13:45:59 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jens Axboe <axboe@kernel.dk>, David Sterba <dsterba@suse.cz>
+Cc:     David Sterba <dsterba@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Pavel Begunkov <asml.silence@gmail.com>
+Subject: linux-next: manual merge of the block tree with the btrfs tree
+Message-ID: <20210202134559.175ae62f@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/U/7pu9QxejG/iBRYLTsv+1s";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ieee80211_find_sta_by_ifaddr call in
-ath10k_wmi_tlv_parse_peer_stats_info must be called while holding the
-RCU read lock. Otherwise, the following warning will be seen when RCU
-usage checking is enabled:
+--Sig_/U/7pu9QxejG/iBRYLTsv+1s
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-=============================
-WARNING: suspicious RCU usage
-5.10.3 #8 Tainted: G        W
------------------------------
-include/linux/rhashtable.h:594 suspicious rcu_dereference_check() usage!
+Hi all,
 
-other info that might help us debug this:
+Today's linux-next merge of the block tree got a conflict in:
 
-rcu_scheduler_active = 2, debug_locks = 1
-no locks held by ksoftirqd/1/16.
+  fs/iomap/direct-io.c
 
-stack backtrace:
-CPU: 1 PID: 16 Comm: ksoftirqd/1 Tainted: G        W         5.10.3 #8
-Hardware name: HP Grunt/Grunt, BIOS Google_Grunt.11031.104.0 09/05/2019
-Call Trace:
- dump_stack+0xab/0x115
- sta_info_hash_lookup+0x71/0x1e9 [mac80211]
- ? lock_is_held_type+0xe6/0x12f
- ? __kasan_kmalloc+0xfb/0x112
- ieee80211_find_sta_by_ifaddr+0x12/0x61 [mac80211]
- ath10k_wmi_tlv_parse_peer_stats_info+0xbd/0x10b [ath10k_core]
- ath10k_wmi_tlv_iter+0x8b/0x1a1 [ath10k_core]
- ? ath10k_wmi_tlv_iter+0x1a1/0x1a1 [ath10k_core]
- ath10k_wmi_tlv_event_peer_stats_info+0x103/0x13b [ath10k_core]
- ath10k_wmi_tlv_op_rx+0x722/0x80d [ath10k_core]
- ath10k_htc_rx_completion_handler+0x16e/0x1d7 [ath10k_core]
- ath10k_pci_process_rx_cb+0x116/0x22c [ath10k_pci]
- ? ath10k_htc_process_trailer+0x332/0x332 [ath10k_core]
- ? _raw_spin_unlock_irqrestore+0x34/0x61
- ? lockdep_hardirqs_on+0x8e/0x12e
- ath10k_ce_per_engine_service+0x55/0x74 [ath10k_core]
- ath10k_ce_per_engine_service_any+0x76/0x84 [ath10k_core]
- ath10k_pci_napi_poll+0x49/0x141 [ath10k_pci]
- net_rx_action+0x11a/0x347
- __do_softirq+0x2d3/0x539
- run_ksoftirqd+0x4b/0x86
- smpboot_thread_fn+0x1d0/0x2ab
- ? cpu_report_death+0x7f/0x7f
- kthread+0x189/0x191
- ? cpu_report_death+0x7f/0x7f
- ? kthread_blkcg+0x31/0x31
- ret_from_fork+0x22/0x30
+between commit:
 
-Fixes: 0f7cb26830a6e ("ath10k: add rx bitrate report for SDIO")
+  dffd1df2d29a ("iomap: support REQ_OP_ZONE_APPEND")
 
-Signed-off-by: Anand K Mistry <amistry@google.com>
----
+from the btrfs tree and commit:
 
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 3 +++
- 1 file changed, 3 insertions(+)
+  3e1a88ec9625 ("bio: add a helper calculating nr segments to alloc")
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 7b5834157fe5..e6135795719a 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -240,8 +240,10 @@ static int ath10k_wmi_tlv_parse_peer_stats_info(struct ath10k *ar, u16 tag, u16
- 		   __le32_to_cpu(stat->last_tx_rate_code),
- 		   __le32_to_cpu(stat->last_tx_bitrate_kbps));
- 
-+	rcu_read_lock();
- 	sta = ieee80211_find_sta_by_ifaddr(ar->hw, stat->peer_macaddr.addr, NULL);
- 	if (!sta) {
-+		rcu_read_unlock();
- 		ath10k_warn(ar, "not found station for peer stats\n");
- 		return -EINVAL;
- 	}
-@@ -251,6 +253,7 @@ static int ath10k_wmi_tlv_parse_peer_stats_info(struct ath10k *ar, u16 tag, u16
- 	arsta->rx_bitrate_kbps = __le32_to_cpu(stat->last_rx_bitrate_kbps);
- 	arsta->tx_rate_code = __le32_to_cpu(stat->last_tx_rate_code);
- 	arsta->tx_bitrate_kbps = __le32_to_cpu(stat->last_tx_bitrate_kbps);
-+	rcu_read_unlock();
- 
- 	return 0;
- }
--- 
-2.30.0.365.g02bc693789-goog
+from the block tree.
 
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc fs/iomap/direct-io.c
+index e4c258a2cefc,ea1e8f696076..000000000000
+--- a/fs/iomap/direct-io.c
++++ b/fs/iomap/direct-io.c
+@@@ -292,13 -260,7 +289,14 @@@ iomap_dio_bio_actor(struct inode *inode
+  			iomap_dio_zero(dio, iomap, pos - pad, pad);
+  	}
+ =20
+ +	/*
+ +	 * Set the operation flags early so that bio_iov_iter_get_pages
+ +	 * can set up the page vector appropriately for a ZONE_APPEND
+ +	 * operation.
+ +	 */
+ +	bio_opf =3D iomap_dio_bio_opflags(dio, iomap, use_fua);
+ +
++ 	nr_pages =3D bio_iov_vecs_to_alloc(dio->submit.iter, BIO_MAX_PAGES);
+  	do {
+  		size_t n;
+  		if (dio->error) {
+
+--Sig_/U/7pu9QxejG/iBRYLTsv+1s
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAYvOcACgkQAVBC80lX
+0GzdOQf/fY8IvhnRPrbsaDb83v7enQ6QuNqfg/RQ2iEnMaMHAxZPfbvAGuNIaGIx
+qffEPvbjF678KT6QDhk8Z2OC8onbFRZlWKff+1opCX97K7nh5LXfuB8cbqTIulPB
+b0YMtnNoe5ZOOd7XCXvChWZ3pzOFbCl6Rr59KaqoGCodcAded/N8aVqq9jPq+uEv
+McOJR3tH55ma+4KJaU1m8NzKWkGqQJFybV8oVkyry2/iIYArk94IIhx0RglD0lNx
+EiCvo7ejImVyRuMA6NwxsgivWuNa1P8siRvof2/KxGClWKwN+mroI8BinmCNwLQR
+N4dCrdzh7DqPZqOZZNP1+zhkFZ5SYg==
+=wXQv
+-----END PGP SIGNATURE-----
+
+--Sig_/U/7pu9QxejG/iBRYLTsv+1s--
