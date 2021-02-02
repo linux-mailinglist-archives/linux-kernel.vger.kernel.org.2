@@ -2,119 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AFFC30BA7D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:01:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E52F830BA82
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:04:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232684AbhBBJBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 04:01:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41528 "EHLO
+        id S232831AbhBBJCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 04:02:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231860AbhBBJBK (ORCPT
+        with ESMTP id S232744AbhBBJCG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 04:01:10 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1710C061573;
-        Tue,  2 Feb 2021 01:00:29 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id y18so4679962edw.13;
-        Tue, 02 Feb 2021 01:00:29 -0800 (PST)
+        Tue, 2 Feb 2021 04:02:06 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AAE4C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 01:01:26 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id e9so1956228pjj.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 01:01:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=APTYZdEMfCPIjJKgi20Wk5z1jzO4/VjOT2U7HmUAz9w=;
-        b=DJyyZI+x/JH38NMDCHkwUCg2hEIRe/NMwGzdI0I+Rr9q4/xMU2dL10Y85NeAWeWrFG
-         HQtP+JhtTVKfdQZ4dvC2UgKAQUGOvcvfygQvV0sEM4jpeZaKFNUIuWxoJhZlcJPurVy5
-         QY5tlCiXko1C06t7HvSci0pX1kWS5Oyp+35N9nFvxgdIkxA09ARKBz99ZhnMA7WESub8
-         yBAAsiNMbeHO93t1IKqpJg2TXLA9ZlwRQmba/9Xs9Tb3gcOgpax/0+Cw9a84RN0zqThI
-         9tojyLT7J5ZsDxNHm3RKDkqIZFgwKDq0bvLr3ZEORJRT2M05D9cZE6qOZRv7xwJyGsoQ
-         tkpA==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DOo9RBcYZJl5bCt+dCh4EPsWtE/5iMv+m7SXtUsiZOA=;
+        b=s9Jkh56FJWrMfuSCi2G7edXi8/eNVo5DXWWfjVlFHTCbP3f7MSfTjdHT3G3DuTrOWa
+         k7kBce+EJwsiJJYXBR+xErHg+9DRZsYqDgy0HX93VLBK30xx9cnUIoDFkdN8tPenYpZk
+         gZ4BX1h3MgMBRmM43qPL6rQDoBt21Ah30f5c5T0Hu6BOq2JGVC5XudRrn20ekO0KTzKK
+         ThCbkaGRtTNhyMMHIDQdo1ApbYO1vzFfdhjpj8cethHzKzLg5BVEnOp/9oBxvmjYzLYj
+         J+5EQaXY8NRQwjpXbkYLmNJAWEHiLvkVB1bsDQpks3xa2OHOcTFgvD2TDvaf6qQy729q
+         mmpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=APTYZdEMfCPIjJKgi20Wk5z1jzO4/VjOT2U7HmUAz9w=;
-        b=dFyRSJNlwvcvfX+x87c6ZjuBKu0Pv49rFh0efDqErWH6DP22yt6lYrran6xKlTX3Ol
-         sPF4jVn7cl60HNhF6c1q36rGVssQNatKfTuGIGi8NNcBFlHyyc3x3BD9Gy1i2x8EkuMn
-         uILZ0SPFvcXF3rxGxw22POqbSiLFsD5hTCutZujCKhmSBWiyrRJZCC1jcEWoCRTaJQtt
-         G/ft25hLBIOkPFkGoLBtSRFjH0mecc253mOcqj3JR1ps6v1QzXRG4Gd1pBBp4lToeHdm
-         cQBQaFIF7YC2HWlIBrab27i3mS9RxZXBEn133rKE2lOg5FFocfVBMpaHK9K1KLWN1omN
-         rgzQ==
-X-Gm-Message-State: AOAM530GjZssTdl8Ob0c1QIcG8eukdbBqT1fLvNXbmH5761JcRiW9Yqw
-        MjiCCF10eHja75kvRh7wayI=
-X-Google-Smtp-Source: ABdhPJws/ph5GYtyOV5EjzhlRgcc1T15p6XRDzKtL/O3yFMt7HU9f6KDyZNIJncakH2VS/yvuZ/D1Q==
-X-Received: by 2002:a05:6402:c16:: with SMTP id co22mr23706354edb.175.1612256428433;
-        Tue, 02 Feb 2021 01:00:28 -0800 (PST)
-Received: from localhost.localdomain (dynamic-2a01-0c22-c05c-fc00-7bce-aab1-905d-1976.c22.pool.telefonica.de. [2a01:c22:c05c:fc00:7bce:aab1:905d:1976])
-        by smtp.gmail.com with ESMTPSA id bo12sm9046871ejb.93.2021.02.02.01.00.26
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=DOo9RBcYZJl5bCt+dCh4EPsWtE/5iMv+m7SXtUsiZOA=;
+        b=n9JLk9UbjuGVhFd/YIrwaBBnbOqZXhLOCZrnUE9x6kFKh3hQOptqSsoqX0q0BJCR2C
+         pQ+7VFXUG35fxlE+bMucwRcRq1aDbZbOosSNZslzcOqxWxfnlEgQIyjeegAy4gItyvbW
+         9nvm+jcNKJ8Gaze4aNPo/20unOtHeiNfW7CzgO3spNFz7Z/3q843EnkyA8fBoBrmyb13
+         io4T/Fy+LLRZ2mZsPiiQnCtWguZ5HEcFvX9CqwEvQ9mG99eesi39NYj8fHAf7eL8hHlV
+         t88LrmnsO638ZHqKKbpsObCLoq53wiEIJNWZCuixC7rDuZjhgPJHOUx86rmQGNaTGzi1
+         HhjQ==
+X-Gm-Message-State: AOAM533UXPQ4atDRbKMcgT/lyVtReNuZqcfbLw4iPrlENEcZY7HUaPy6
+        EeL+fqnl0RBtP5sxx2wTq60=
+X-Google-Smtp-Source: ABdhPJwQjxARgVajRtLehB6Isyr3/gngxn+o4I9TjhL7qF1g+7khxclAYWrgO4+c73FXC8Cma3nSFQ==
+X-Received: by 2002:a17:90a:b28a:: with SMTP id c10mr2369726pjr.39.1612256485703;
+        Tue, 02 Feb 2021 01:01:25 -0800 (PST)
+Received: from balhae.roam.corp.google.com ([101.235.31.111])
+        by smtp.gmail.com with ESMTPSA id t6sm21246909pfe.177.2021.02.02.01.01.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 01:00:27 -0800 (PST)
-From:   Jonathan Schwender <schwenderjonathan@gmail.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org
-Cc:     dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, linux-kernel@vger.kernel.org,
-        linux-rt-users@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: [RFC v2] sched/rt: Fix RT (group) throttling with nohz_full
-Date:   Tue,  2 Feb 2021 10:00:10 +0100
-Message-Id: <20210202090010.5350-1-schwenderjonathan@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210201093412.4900-1-schwenderjonathan@gmail.com>
-References: <20210201093412.4900-1-schwenderjonathan@gmail.com>
+        Tue, 02 Feb 2021 01:01:24 -0800 (PST)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: [PATCHSET v3 0/3] perf tools: Minor improvements in event synthesis
+Date:   Tue,  2 Feb 2021 18:01:15 +0900
+Message-Id: <20210202090118.2008551-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-RFC v2 changes: Fix compile error if CONFIG_SMP is not set, which was
-Reported-by: kernel test robot <lkp@intel.com>
-I'm now using smp_processor_id() to get the ID of the CPU the timer 
-is running on.
+This is to optimize the event synthesis during perf record.
+
+Changes in v3:
+ * remove unnecessary pid check
+ * update change log in patch #2
+
+The first patch is to reduce memory usage when many threads are used.
+The second is to avoid unncessary syscalls for kernel threads.  And
+the last one is to reduce the number of threads to iterate when new
+threads are being created at the same time.
+
+Unfortunately there's no dramatic improvement here but I can see ~5%
+gain in the 'perf bench internals synthesize' on a big machine.
+(The numbers are not stable though)
 
 
-If nohz_full is enabled (more precisely HK_FLAG_TIMER is set), then
-do_sched_rt_period_timer may be called on a housekeeping CPU,
-which would not service the isolated CPU for a non-root cgroup
-(requires a kernel with RT_GROUP_SCHEDULING).
-This causes RT tasks in a non-root cgroup to get throttled
-indefinitely (unless throttling is disabled) once the timer has
-been moved to a housekeeping CPU.
-To fix this, housekeeping CPUs now service all online CPUs
-if HK_FLAG_TIMER (nohz_full) is set.
+Before:
+  # perf bench internals synthesize --mt -M1 -I 100
+  # Running 'internals/synthesize' benchmark:
+  Computing performance of multi threaded perf event synthesis by
+  synthesizing events on CPU 0:
+    Number of synthesis threads: 1
+      Average synthesis took: 68831.480 usec (+- 101.450 usec)
+      Average num. events: 9982.000 (+- 0.000)
+      Average time per event 6.896 usec
 
-I'm not really sure how this relates to  Mike Galbraith previous
-commit e221d028bb08 ("sched,rt: fix isolated CPUs leaving root_task_group
-indefinitely throttled"), (which is dated before the housekeeping changes,)
-so I'm posting this as an RFC.
 
-Signed-off-by: Jonathan Schwender <schwenderjonathan@gmail.com>
----
- kernel/sched/rt.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+After:
+  # perf bench internals synthesize --mt -M1 -I 100
+  # Running 'internals/synthesize' benchmark:
+  Computing performance of multi threaded perf event synthesis by
+  synthesizing events on CPU 0:
+    Number of synthesis threads: 1
+      Average synthesis took: 65036.370 usec (+- 158.121 usec)
+      Average num. events: 9982.000 (+- 0.000)
+      Average time per event 6.515 usec
 
-diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-index 8f720b71d13d..879abb5de023 100644
---- a/kernel/sched/rt.c
-+++ b/kernel/sched/rt.c
-@@ -866,9 +866,16 @@ static int do_sched_rt_period_timer(struct rt_bandwidth *rt_b, int overrun)
- 	 * isolation is really required, the user will turn the throttle
- 	 * off to kill the perturbations it causes anyway.  Meanwhile,
- 	 * this maintains functionality for boot and/or troubleshooting.
-+	 * If nohz_full is active and the timer was offloaded to a
-+	 * housekeeping CPU, sched_rt_period_mask() will not contain
-+	 * the isolated CPU. To prevent indefinite throttling of tasks
-+	 * on isolated CPUs, housekeeping CPUs service all online CPUs.
- 	 */
--	if (rt_b == &root_task_group.rt_bandwidth)
-+	if (rt_b == &root_task_group.rt_bandwidth
-+		|| (housekeeping_enabled(HK_FLAG_TIMER)
-+			&& housekeeping_cpu(smp_processor_id(), HK_FLAG_TIMER))) {
- 		span = cpu_online_mask;
-+	}
- #endif
- 	for_each_cpu(i, span) {
- 		int enqueue = 0;
+
+Thanks,
+Namhyung
+
+
+Namhyung Kim (3):
+  perf tools: Use /proc/<PID>/task/<TID>/status for synthesis
+  perf tools: Skip MMAP record synthesis for kernel threads
+  perf tools: Use scandir() to iterate threads
+
+ tools/perf/util/synthetic-events.c | 83 +++++++++++++++++++-----------
+ 1 file changed, 53 insertions(+), 30 deletions(-)
+
 -- 
-2.29.2
+2.30.0.365.g02bc693789-goog
 
