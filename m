@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 634F530C880
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:54:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CABB30C774
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:25:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237802AbhBBRwB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:52:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48062 "EHLO mail.kernel.org"
+        id S237319AbhBBRVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:21:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233754AbhBBOJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:09:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3444164F99;
-        Tue,  2 Feb 2021 13:50:58 +0000 (UTC)
+        id S234246AbhBBOOt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:14:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4CD165056;
+        Tue,  2 Feb 2021 13:53:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273858;
-        bh=2ZQdflJ0IRcFyn4Mg7yQRUPkfdekW4o3Inms5uQK7QY=;
+        s=korg; t=1612274007;
+        bh=IXqvt+B48gssb3f8jBwHjc71B7gfjnJEyFUhe+3ndk8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DFdCzzslt4x6fdcXeL1S30qzRGRGPjwBVGSAS0+ol7H/DZ7pOB34Mq8R2K7v5apSn
-         xV/vOcmvFJpUSXBcko91drEQd4/07Hkx0/CrtwZy7m0g9kT6xO3F4k3GHEwRbqx8aR
-         xEE9S5uKLLBq6tYlkqO9CMQNv0WPMH3F0V2LzwpY=
+        b=AxAqaQIPr0C0/vrI+F19pueJU7G+JpS+9NLdPLk5CEAxfC58gHRfeCqHydh7E/47V
+         omdLIOp5HrNDzugICY1vqAnacgsd6u+/IPu4Ngf5d07umJXn2QNB3iXoQIAKAqVe6i
+         F6/DCnbCrF1F9QyHbP2q5M1NLctxm+P50dnzbAIk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Luca Coelho <luciano.coelho@intel.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 26/32] iwlwifi: pcie: reschedule in long-running memory reads
+        stable@vger.kernel.org, Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 4.19 06/37] media: rc: ensure that uevent can be read directly after rc device register
 Date:   Tue,  2 Feb 2021 14:38:49 +0100
-Message-Id: <20210202132943.060104477@linuxfoundation.org>
+Message-Id: <20210202132943.163106090@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132942.035179752@linuxfoundation.org>
-References: <20210202132942.035179752@linuxfoundation.org>
+In-Reply-To: <20210202132942.915040339@linuxfoundation.org>
+References: <20210202132942.915040339@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,70 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Sean Young <sean@mess.org>
 
-[ Upstream commit 3d372c4edfd4dffb7dea71c6b096fb414782b776 ]
+commit 896111dc4bcf887b835b3ef54f48b450d4692a1d upstream.
 
-If we spin for a long time in memory reads that (for some reason in
-hardware) take a long time, then we'll eventually get messages such
-as
+There is a race condition where if the /sys/class/rc0/uevent file is read
+before rc_dev->registered is set to true, -ENODEV will be returned.
 
-  watchdog: BUG: soft lockup - CPU#2 stuck for 24s! [kworker/2:2:272]
+Link: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1901089
 
-This is because the reading really does take a very long time, and
-we don't schedule, so we're hogging the CPU with this task, at least
-if CONFIG_PREEMPT is not set, e.g. with CONFIG_PREEMPT_VOLUNTARY=y.
+Cc: stable@vger.kernel.org
+Fixes: a2e2d73fa281 ("media: rc: do not access device via sysfs after rc_unregister_device()")
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Previously I misinterpreted the situation and thought that this was
-only going to happen if we had interrupts disabled, and then fixed
-this (which is good anyway, however), but that didn't always help;
-looking at it again now I realized that the spin unlock will only
-reschedule if CONFIG_PREEMPT is used.
-
-In order to avoid this issue, change the code to cond_resched() if
-we've been spinning for too long here.
-
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Fixes: 04516706bb99 ("iwlwifi: pcie: limit memory read spin time")
-Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/iwlwifi.20210115130253.217a9d6a6a12.If964cb582ab0aaa94e81c4ff3b279eaafda0fd3f@changeid
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/pcie/trans.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/media/rc/rc-main.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-index ed90f46626e7d..71edbf7a42ed4 100644
---- a/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/trans.c
-@@ -1910,6 +1910,7 @@ static int iwl_trans_pcie_read_mem(struct iwl_trans *trans, u32 addr,
- 	while (offs < dwords) {
- 		/* limit the time we spin here under lock to 1/2s */
- 		unsigned long end = jiffies + HZ / 2;
-+		bool resched = false;
+--- a/drivers/media/rc/rc-main.c
++++ b/drivers/media/rc/rc-main.c
+@@ -1875,6 +1875,8 @@ int rc_register_device(struct rc_dev *de
+ 			goto out_raw;
+ 	}
  
- 		if (iwl_trans_grab_nic_access(trans, &flags)) {
- 			iwl_write32(trans, HBUS_TARG_MEM_RADDR,
-@@ -1920,10 +1921,15 @@ static int iwl_trans_pcie_read_mem(struct iwl_trans *trans, u32 addr,
- 							HBUS_TARG_MEM_RDAT);
- 				offs++;
- 
--				if (time_after(jiffies, end))
-+				if (time_after(jiffies, end)) {
-+					resched = true;
- 					break;
-+				}
- 			}
- 			iwl_trans_release_nic_access(trans, &flags);
++	dev->registered = true;
 +
-+			if (resched)
-+				cond_resched();
- 		} else {
- 			return -EBUSY;
- 		}
--- 
-2.27.0
-
+ 	rc = device_add(&dev->dev);
+ 	if (rc)
+ 		goto out_rx_free;
+@@ -1884,8 +1886,6 @@ int rc_register_device(struct rc_dev *de
+ 		 dev->device_name ?: "Unspecified device", path ?: "N/A");
+ 	kfree(path);
+ 
+-	dev->registered = true;
+-
+ 	/*
+ 	 * once the the input device is registered in rc_setup_rx_device,
+ 	 * userspace can open the input device and rc_open() will be called
 
 
