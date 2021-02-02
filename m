@@ -2,107 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091E230B42D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 01:32:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA2ED30B439
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 01:42:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231431AbhBBAcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 19:32:03 -0500
-Received: from mail.micronovasrl.com ([212.103.203.10]:47292 "EHLO
-        mail.micronovasrl.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231341AbhBBAcB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 19:32:01 -0500
-Received: from mail.micronovasrl.com (mail.micronovasrl.com [127.0.0.1])
-        by mail.micronovasrl.com (Postfix) with ESMTP id 5D1AAB04845
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 01:31:19 +0100 (CET)
-Authentication-Results: mail.micronovasrl.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=micronovasrl.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=micronovasrl.com;
-         h=content-transfer-encoding:content-language:content-type
-        :content-type:in-reply-to:mime-version:user-agent:date:date
-        :message-id:from:from:references:to:subject:subject; s=dkim; t=
-        1612225878; x=1613089879; bh=rhiVnujukiPvzaErM/MEb08eoHPbwq0Lwyc
-        mjO9W3QI=; b=T1pv4HOLQMwtDZvVh0nVixyYcI4oW/FvBZX8GtGyvElzmFjOVvj
-        WlDfxn/osTT7W9kAHX1lGiNg5w6Jwex+TI/tmR9LapCBm0Utvv+65NQ3cSBetxwr
-        qCxh4Z10bu63AvbwdYXe/L+UTtTv/CRca+Z01zJ3v51QMP1Uwpii2WUg=
-X-Virus-Scanned: Debian amavisd-new at mail.micronovasrl.com
-X-Spam-Flag: NO
-X-Spam-Score: -1.753
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.753 tagged_above=-10 required=4.5
-        tests=[ALL_TRUSTED=-1, BAYES_00=-1.9, LOTS_OF_MONEY=0.001,
-        MONEY_NOHTML=1.147, NICE_REPLY_A=-0.001]
-        autolearn=no autolearn_force=no
-Received: from mail.micronovasrl.com ([127.0.0.1])
-        by mail.micronovasrl.com (mail.micronovasrl.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id ljEC8mFXe5PK for <linux-kernel@vger.kernel.org>;
-        Tue,  2 Feb 2021 01:31:18 +0100 (CET)
-Received: from [192.168.50.85] (146-241-184-239.dyn.eolo.it [146.241.184.239])
-        by mail.micronovasrl.com (Postfix) with ESMTPSA id F2C64B047FF;
-        Tue,  2 Feb 2021 01:31:17 +0100 (CET)
-Subject: Re: [PATCH v3 5/5] serial: 8250_dw: add em485 support
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Heiko Stuebner <heiko@sntech.de>
-Cc:     gregkh@linuxfoundation.org, jslaby@suse.com,
-        matwey.kornilov@gmail.com, lukas@wunner.de,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        christoph.muellner@theobroma-systems.com,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-References: <20200517215610.2131618-1-heiko@sntech.de>
- <20200517215610.2131618-6-heiko@sntech.de>
- <20200518152103.GI1634618@smile.fi.intel.com>
-From:   Giulio Benetti <giulio.benetti@micronovasrl.com>
-Message-ID: <1f7881b5-f900-dbbe-3f8d-f990d2bdf5a7@micronovasrl.com>
-Date:   Tue, 2 Feb 2021 01:31:17 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S230258AbhBBAkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 19:40:09 -0500
+Received: from mga07.intel.com ([134.134.136.100]:1286 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230000AbhBBAkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 19:40:09 -0500
+IronPort-SDR: jTW3CDdWq0Eye8yu191Nttzm9TvsfZxxmU8Xam/IVx+SXW9ghKXlzymKnQJEDemLzAsoBAjo0p
+ sChuqrHfJxBw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="244857716"
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="244857716"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 16:39:27 -0800
+IronPort-SDR: hF1RcR0g2YqnQc/kXdTtwjvLHy0Os+sVlwhWN82ZXYiR6/myuIBvKIqOPJ1qm1udb372V/Nk2e
+ blUtrx4hsXXw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="370174219"
+Received: from yhuang-dev.sh.intel.com (HELO yhuang-dev) ([10.239.159.28])
+  by fmsmga008.fm.intel.com with ESMTP; 01 Feb 2021 16:39:26 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/swap_state: Constify static struct attribute_group
+References: <20210201233254.91809-1-rikard.falkeborn@gmail.com>
+Date:   Tue, 02 Feb 2021 08:39:25 +0800
+In-Reply-To: <20210201233254.91809-1-rikard.falkeborn@gmail.com> (Rikard
+        Falkeborn's message of "Tue, 2 Feb 2021 00:32:54 +0100")
+Message-ID: <8735yfl2v6.fsf@yhuang-dev.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20200518152103.GI1634618@smile.fi.intel.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: it
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+Rikard Falkeborn <rikard.falkeborn@gmail.com> writes:
 
-Il 18/05/2020 17:21, Andy Shevchenko ha scritto:
-> On Sun, May 17, 2020 at 11:56:10PM +0200, Heiko Stuebner wrote:
->> From: Giulio Benetti <giulio.benetti@micronovasrl.com>
->>
->> Need to use rs485 transceiver so let's use existing em485 485 emulation
->> layer on top of 8250.
->>
->> Add rs485_config callback to port and uses the standard em485 start and
->> stop helpers.
-> 
-> Would it prevent to use native RS485 support?
+> The only usage of swap_attr_group is to pass its address to
+> sysfs_create_group() which takes a pointer to const attribute_group.
+> Make it const to allow the compiler to put it in read-only memory.
+>
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 
-8250_dw doesn't have a native RS485 support, do you mean using hardware
-RTS assertion? Anyway at the moment it's not present. This would be the
-first rs485 support added to 8250_dw.
+Looks good to me.
 
-Best regards
--- 
-Giulio Benetti
-CTO
+Acked-by: "Huang, Ying" <ying.huang@intel.com>
 
-MICRONOVA SRL
-Sede: Via A. Niedda 3 - 35010 Vigonza (PD)
-Tel. 049/8931563 - Fax 049/8931346
-Cod.Fiscale - P.IVA 02663420285
-Capitale Sociale ¤ 26.000 i.v.
-Iscritta al Reg. Imprese di Padova N. 02663420285
-Numero R.E.A. 258642
-
-> ...
-> 
->>   	p->serial_out	= dw8250_serial_out;
->>   	p->set_ldisc	= dw8250_set_ldisc;
->>   	p->set_termios	= dw8250_set_termios;
->> +	p->rs485_config = serial8250_em485_config;
->> +	up->rs485_start_tx = serial8250_em485_start_tx;
->> +	up->rs485_stop_tx = serial8250_em485_stop_tx;
-> 
-
+> ---
+>  mm/swap_state.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/mm/swap_state.c b/mm/swap_state.c
+> index d0d417efeecc..3cdee7b11da9 100644
+> --- a/mm/swap_state.c
+> +++ b/mm/swap_state.c
+> @@ -901,7 +901,7 @@ static struct attribute *swap_attrs[] = {
+>  	NULL,
+>  };
+>  
+> -static struct attribute_group swap_attr_group = {
+> +static const struct attribute_group swap_attr_group = {
+>  	.attrs = swap_attrs,
+>  };
