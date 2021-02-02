@@ -2,129 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F5630B7B3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 07:15:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDB8630B7BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 07:19:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231633AbhBBGMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 01:12:36 -0500
-Received: from mail29.static.mailgun.info ([104.130.122.29]:17356 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232027AbhBBGMe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 01:12:34 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612246324; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=ld1KwqNhIaj2UeohZAxwpLhgN9XG65KEVMvbh4zSBBU=;
- b=DDBvQ836/o5DtLnNw7ihfreVlT1kAh27amOvoHuHBLxtLDv/CPBjMNhQhOMtDe2yfXEHpl+A
- XBuctwI8+1C7iuUQcddYWWOZD+OCvcCaePPBjYtzCAUt5BWjQOZX6fQ4eDuABF09i+saytj/
- wYs3xrY2Ej4b1eQcbbGaIPD2m5g=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 6018ed1af71e8b9934d3b534 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Feb 2021 06:11:38
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B8FF9C43466; Tue,  2 Feb 2021 06:11:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CD4FDC433CA;
-        Tue,  2 Feb 2021 06:11:37 +0000 (UTC)
+        id S231706AbhBBGQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 01:16:14 -0500
+Received: from pegase1.c-s.fr ([93.17.236.30]:49937 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230369AbhBBGQN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 01:16:13 -0500
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4DVF0s1sVlz9v0wq;
+        Tue,  2 Feb 2021 07:15:25 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id mYst6peVqSxD; Tue,  2 Feb 2021 07:15:25 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4DVF0s0sgCz9v0wp;
+        Tue,  2 Feb 2021 07:15:25 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E3A5A8B7AC;
+        Tue,  2 Feb 2021 07:15:25 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id OgbS6D32jxqj; Tue,  2 Feb 2021 07:15:25 +0100 (CET)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6F5A58B75B;
+        Tue,  2 Feb 2021 07:15:25 +0100 (CET)
+Subject: Re: [PATCH v4 11/23] powerpc/syscall: Rename syscall_64.c into
+ syscall.c
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "msuchanek@suse.de" <msuchanek@suse.de>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+References: <cover.1611585031.git.christophe.leroy@csgroup.eu>
+ <ff9dd4accdc897013594768833d54444e4823bf9.1611585031.git.christophe.leroy@csgroup.eu>
+ <1611656343.yaxha7r2q4.astroid@bobo.none>
+ <d9993f034db848d1afeffa322373b811@AcuMS.aculab.com>
+ <1611791083.sqnnh21vv0.astroid@bobo.none>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <0cf90825-da89-6464-98d4-dc7490bff557@csgroup.eu>
+Date:   Tue, 2 Feb 2021 07:15:24 +0100
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 02 Feb 2021 11:41:37 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Leo Yan <leo.yan@linaro.org>, coresight@lists.linaro.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        Denis Nikitin <denik@chromium.org>,
-        Mattias Nissler <mnissler@chromium.org>,
-        Al Grant <al.grant@arm.com>, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        jannh@google.com
-Subject: Re: [PATCH 1/4] perf/core: Add support to exclude kernel mode
- instruction tracing
-In-Reply-To: <YBgFDXgX57y5XzOn@hirez.programming.kicks-ass.net>
-References: <cover.1611909025.git.saiprakash.ranjan@codeaurora.org>
- <89c7ff59d887a0360434e607bd625393ec3190e5.1611909025.git.saiprakash.ranjan@codeaurora.org>
- <20210129193040.GJ8912@worktop.programming.kicks-ass.net>
- <3c96026b544c2244e57b46119427b8a0@codeaurora.org>
- <YBgFDXgX57y5XzOn@hirez.programming.kicks-ass.net>
-Message-ID: <6903bc0588a5c8e41892503a204015ee@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+In-Reply-To: <1611791083.sqnnh21vv0.astroid@bobo.none>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
 
-On 2021-02-01 19:11, Peter Zijlstra wrote:
-> On Mon, Feb 01, 2021 at 01:11:04PM +0530, Sai Prakash Ranjan wrote:
+
+Le 28/01/2021 à 00:50, Nicholas Piggin a écrit :
+> Excerpts from David Laight's message of January 26, 2021 8:28 pm:
+>> From: Nicholas Piggin
+>>> Sent: 26 January 2021 10:21
+>>>
+>>> Excerpts from Christophe Leroy's message of January 26, 2021 12:48 am:
+>>>> syscall_64.c will be reused almost as is for PPC32.
+>>>>
+>>>> Rename it syscall.c
+>>>
+>>> Could you rename it to interrupt.c instead? A system call is an
+>>> interrupt, and the file now also has code to return from other
+>>> interrupts as well, and it matches the new asm/interrupt.h from
+>>> the interrupts series.
+>>
+>> Hmmm....
+>>
+>> That might make it harder for someone looking for the system call
+>> entry code to find it.
 > 
->> Ok I suppose you mean CONFIG_SECURITY_LOCKDOWN_LSM? But I don't see
->> how this new config has to depend on that? This can work independently
->> whether complete lockdown is enforced or not since it applies to only
->> hardware instruction tracing. Ideally this depends on several hardware
->> tracing configs such as ETMs and others but we don't need them because
->> we are already exposing PERF_PMU_CAP_ITRACE check in the events core.
+> It's very grep'able.
 > 
-> If you don't have lockdown, root pretty much owns the kernel, or am I
-> missing something?
+>> In some sense interrupts are the simpler case.
+>>
+>> Especially when comparing with other architectures which have
+>> special instructions for syscall entry.
 > 
-
-You are right in saying that without lockdown root would own kernel but
-this config(EXCLUDE_KERNEL) will independently make sure that kernel
-level pmu tracing is not allowed(we return -EACCES) even if LOCKDOWN
-config is disabled. So I'm saying that we don't need to depend on
-LOCKDOWN config, its good to have LOCKDOWN config enabled but perf
-subsystem doesn't have to care about that.
-
->> be used for some speculative execution based attacks. Which other
->> kernel level PMUs can be used to get a full branch trace that is not
->> locked down? If there is one, then this should probably be applied to
->> it as well.
+> powerpc does have a special instruction for syscall, and it causes a
+> system call interrupt.
 > 
-> Just the regular counters. The information isn't as accurate, but given
-> enough goes you can infer plenty.
-> 
-> Just like all the SMT size-channel attacks.
-> 
-> Sure, PT and friends make it even easier, but I don't see a fundamental
-> distinction.
+> I'm not sure about other architectures, but for powerpc its more
+> sensible to call it interrupt.c than syscall.c.
 
-Right, we should then exclude all kernel level pmu tracing, is it fine?
+Many other architectures have a syscall.c but for a different purpose: it contains arch specific 
+system calls. We have that in powerpc as well, it is called syscalls.c
 
-if (IS_ENABLED(CONFIG_EXCLUDE_KERNEL_HW_ITRACE) && 
-!attr.exclude_kernel))
-     return -EACCES;
+So to avoid confusion, I'll rename it. But I think "interrupt" is maybe not the right name. An 
+interrupt most of the time refers to IRQ. For me system call is not an interrupt in the way it 
+doesn't unexpectedly interrupt a program flow. In powerpc manuals it is generally called exceptions, 
+no I'm more inclined to call it exception.c
 
-Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Christophe
