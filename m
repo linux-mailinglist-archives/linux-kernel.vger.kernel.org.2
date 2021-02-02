@@ -2,66 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B0FD30B50D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 03:07:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1141E30B50F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 03:11:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231264AbhBBCHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 21:07:19 -0500
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:40368 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230197AbhBBCHR (ORCPT
+        id S229704AbhBBCKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 21:10:42 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12002 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhBBCKm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 21:07:17 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R401e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UNdnP7L_1612231576;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UNdnP7L_1612231576)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 02 Feb 2021 10:06:24 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     horia.geanta@nxp.com
-Cc:     aymen.sghaier@nxp.com, herbert@gondor.apana.org.au,
-        davem@davemloft.net, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH v2] crypto: caam - Replace DEFINE_SIMPLE_ATTRIBUTE with DEFINE_DEBUGFS_ATTRIBUTE
-Date:   Tue,  2 Feb 2021 10:06:15 +0800
-Message-Id: <1612231575-15646-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Mon, 1 Feb 2021 21:10:42 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DV7XC4Dh3zjHJp;
+        Tue,  2 Feb 2021 10:08:43 +0800 (CST)
+Received: from [10.174.179.241] (10.174.179.241) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 2 Feb 2021 10:09:59 +0800
+Subject: Re: [PATCH] mm: simplify the VM_BUG_ON condition in
+ pmdp_huge_clear_flush()
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+References: <20210201114319.34720-1-linmiaohe@huawei.com>
+ <20210201153354.e640247cb5ab306e909322d0@linux-foundation.org>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <2e2c1d42-9492-4e30-9646-bfa06b2d14d7@huawei.com>
+Date:   Tue, 2 Feb 2021 10:09:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
+MIME-Version: 1.0
+In-Reply-To: <20210201153354.e640247cb5ab306e909322d0@linux-foundation.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.241]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following coccicheck warning:
+Hi:
+On 2021/2/2 7:33, Andrew Morton wrote:
+> On Mon, 1 Feb 2021 06:43:19 -0500 Miaohe Lin <linmiaohe@huawei.com> wrote:
+> 
+>> The condition (A && !C && !D) || !A is equivalent to !A || (A && !C && !D)
+>> and can be further simplified to !A || (!C && !D).
+>>
+>> ..
+>>
+>> --- a/mm/pgtable-generic.c
+>> +++ b/mm/pgtable-generic.c
+>> @@ -135,8 +135,8 @@ pmd_t pmdp_huge_clear_flush(struct vm_area_struct *vma, unsigned long address,
+>>  {
+>>  	pmd_t pmd;
+>>  	VM_BUG_ON(address & ~HPAGE_PMD_MASK);
+>> -	VM_BUG_ON((pmd_present(*pmdp) && !pmd_trans_huge(*pmdp) &&
+>> -			   !pmd_devmap(*pmdp)) || !pmd_present(*pmdp));
+>> +	VM_BUG_ON(!pmd_present(*pmdp) || (!pmd_trans_huge(*pmdp) &&
+>> +					  !pmd_devmap(*pmdp)));
+>>  	pmd = pmdp_huge_get_and_clear(vma->vm_mm, address, pmdp);
+>>  	flush_pmd_tlb_range(vma, address, address + HPAGE_PMD_SIZE);
+>>  	return pmd;
+> 
+> True, and the resulting code is still readable enough.
+> 
+> But a problem with such a complex expression is that the developer will
+> have trouble figuring out why the BUG actually triggered.
+> 
 
-./drivers/crypto/caam/debugfs.c:23:0-23: WARNING: caam_fops_u64_ro
-should be defined with DEFINE_DEBUGFS_ATTRIBUTE.
+Agree! We can determine which condition is failing through the line number __but__
+we can't figure out exactly which one triggered BUG for a complex expression.
 
-./drivers/crypto/caam/debugfs.c:22:0-23: WARNING: caam_fops_u32_ro
-should be defined with DEFINE_DEBUGFS_ATTRIBUTE.
+> If we had a VM_BUG_ON_PMD() then we could print the pmd's value and
+> permit diagnosis from that.  But we don't have such a thing.
+> 
+> So I suggest that it would be better to have
+> 
+> 	VM_BUG_ON((pmd_present(*pmdp) && !pmd_trans_huge(*pmdp) &&
+> 			   !pmd_devmap(*pmdp)));
+> 	VM_BUG_ON(!pmd_present(*pmdp));
+> 
+> This way, the BUG()'s file-n-line output will tell us more about why the
+> kernel went splat.
+> 
+> 
+> I suppose maybe this could be optimized the same way, as
+> 
+> 	VM_BUG_ON(!pmd_present(*pmdp));
+> 	/* Below assumes pmd_present() is true */
+> 	VM_BUG_ON(!pmd_trans_huge(*pmdp) && !pmd_devmap(*pmdp));
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
-Changes in v2:
-  -Modified subject.
+This one looks good and provide more information than before. I can send another patch to do this (and feel free to merge into
+this one), should I ?
 
- drivers/crypto/caam/debugfs.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Many thanks.
 
-diff --git a/drivers/crypto/caam/debugfs.c b/drivers/crypto/caam/debugfs.c
-index 8ebf183..806bb20 100644
---- a/drivers/crypto/caam/debugfs.c
-+++ b/drivers/crypto/caam/debugfs.c
-@@ -19,8 +19,8 @@ static int caam_debugfs_u32_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(caam_fops_u32_ro, caam_debugfs_u32_get, NULL, "%llu\n");
--DEFINE_SIMPLE_ATTRIBUTE(caam_fops_u64_ro, caam_debugfs_u64_get, NULL, "%llu\n");
-+DEFINE_DEBUGFS_ATTRIBUTE(caam_fops_u32_ro, caam_debugfs_u32_get, NULL, "%llu\n");
-+DEFINE_DEBUGFS_ATTRIBUTE(caam_fops_u64_ro, caam_debugfs_u64_get, NULL, "%llu\n");
- 
- #ifdef CONFIG_CAAM_QI
- /*
--- 
-1.8.3.1
-
+> 
+> Which works because VM_BUG_ON is, depending up Kconfig, either a no-op
+> or a noreturn-if-it-triggered.  I'm not sure if I like this trick much though.
+> 
+> .
+> 
