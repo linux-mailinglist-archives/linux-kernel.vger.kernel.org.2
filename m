@@ -2,222 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9733430BAE1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:27:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A87B30BAE2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:27:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232907AbhBBJYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 04:24:39 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:14958 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232518AbhBBJXl (ORCPT
+        id S231621AbhBBJYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 04:24:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46516 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229975AbhBBJYU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 04:23:41 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601919f40000>; Tue, 02 Feb 2021 01:23:00 -0800
-Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3; Tue, 2 Feb 2021 09:22:57 +0000
-Date:   Tue, 2 Feb 2021 11:22:53 +0200
-From:   Eli Cohen <elic@nvidia.com>
-To:     Si-Wei Liu <siwliu.kernel@gmail.com>
-CC:     Jason Wang <jasowang@redhat.com>, <mst@redhat.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lulu@redhat.com>, Si-Wei Liu <si-wei.liu@oracle.com>
-Subject: Re: [PATCH 1/2] vdpa/mlx5: Avoid unnecessary query virtqueue
-Message-ID: <20210202092253.GA236663@mtl-vdi-166.wap.labs.mlnx>
-References: <20210128134130.3051-1-elic@nvidia.com>
- <20210128134130.3051-2-elic@nvidia.com>
- <CAPWQSg0XtEQ1U5N3a767Ak_naoyPdVF1CeE4r3hmN11a-aoBxg@mail.gmail.com>
- <CAPWQSg3U9DCSK_01Kzuea5B1X+Ef9JB23wBY82A3ss-UXGek_Q@mail.gmail.com>
- <9d6058d6-5ce1-0442-8fd9-5a6fe6a0bc6b@redhat.com>
- <CAPWQSg3KOAypcrs9krW8cGE7EDLTehCUCYFZMUYYNaYPH1oBZQ@mail.gmail.com>
- <c65808bf-b336-8718-f7ea-b39fcc658dfb@redhat.com>
- <20210202070631.GA233234@mtl-vdi-166.wap.labs.mlnx>
- <CAPWQSg058RGaxSS7s5s=kpxdGryiy2padRFztUZtXN+ttiDd1A@mail.gmail.com>
+        Tue, 2 Feb 2021 04:24:20 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F3A0C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 01:23:40 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id d2so1972160pjs.4
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 01:23:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=02o59vXLINonMWY3lvfSKv5YhEgXWDRF+6oMw1Rtfck=;
+        b=dvbZHCCC2wCsFsn3ZB9On5c6cv6BpRNVs3k61OPBo37tW3+zqLhBwdcJcIJdN4Q2tO
+         9vV8uFB59sKgFfT5fgwOsBSYs9++tJ5vw4g1a7fIjkhuK5HcTn9ZrZqh9cd6bH4ot/2J
+         pMMHqLqRBNz9OmzXk+Tw6XB1LBgKleptIn4jcKjRpOSfSAldAj1awOBr9+3fEwNhQI3/
+         qbRZlpJUsEyYFJyG6SYJkTUPAnnHvyvRC6oj9Q8zkQTrbR8Y5fk2o29CSkpsbu2Zip12
+         Zj5rHaXq/dqYeuxOLcfi3TNUpGm5M7WcpvVxs4CsGhFiqsgeDCDGMgcd7ePOxrPy5Mhn
+         vJpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=02o59vXLINonMWY3lvfSKv5YhEgXWDRF+6oMw1Rtfck=;
+        b=neTR4kjRDkcvjAzxRq1dLPkeGJY8chodVUr9Ui5AOxwmfrgUumOxAWDAylCQn8kYw0
+         Ux9hbIjSiatzhDxKZtPlMvRV2Q389QNXvyNSilg7XW0B8frxg0fA74AYIcbHHx2vUtDN
+         ilHcOaQc34/aHrGokCbi/2/q9sKV4+Rc0x11gbX1cJqAAUz8+2NqWL97jE5+MoYFDXGj
+         pKtrZEZPvjCisR+9ujw4HMv6z4pLXqXWlWUg5YD5nzn+7M5//Eys4AaGcNlbfqW/WT/m
+         zp5sOLWmToupJj8FE6JoBeLeuwWIlaG0jeQqm19LX03Agc6wxBaUqARGr9BD3UZ/OJjQ
+         BuiA==
+X-Gm-Message-State: AOAM530hrhOJeRnSIN3QXUKoIrbGfflIoReGOGmwIGewqKXX+/tarsfG
+        bzds7LfXDCCXMElGMmnEp8sKr0R1i7k=
+X-Google-Smtp-Source: ABdhPJyrpSlsbXTUEFQmm5lItZjG9ycKquBR69ihP6zuhUjP2PimNHtffhLU1BiQP3++7bDakdDwxA==
+X-Received: by 2002:a17:90a:de8a:: with SMTP id n10mr1494113pjv.227.1612257819588;
+        Tue, 02 Feb 2021 01:23:39 -0800 (PST)
+Received: from daehojeong1.seo.corp.google.com ([2401:fa00:d:11:4f5:ae3a:569d:491a])
+        by smtp.gmail.com with ESMTPSA id c5sm21724500pgt.73.2021.02.02.01.23.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 01:23:38 -0800 (PST)
+From:   Daeho Jeong <daeho43@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH v3] f2fs: rename checkpoint=merge mount option to checkpoint_merge
+Date:   Tue,  2 Feb 2021 18:23:32 +0900
+Message-Id: <20210202092332.2562006-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAPWQSg058RGaxSS7s5s=kpxdGryiy2padRFztUZtXN+ttiDd1A@mail.gmail.com>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612257780; bh=HnB0z4VEKwRS3WGY8d836MJgxu5Eln/jbFZlNXVxc08=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:Content-Transfer-Encoding:
-         In-Reply-To:User-Agent:X-Originating-IP:X-ClientProxiedBy;
-        b=Mn8PWJhizQXbUWwa527Olk5ZocuhHh3M93ypx6RzrP1LzbZSvYeNO6HgPpHxmnjdM
-         RvDsuAc0yyQhwi1tKA9VAOjJVeUbWlX1EZYBovr3QZw3hTuFY4ZJgY2roOsXyB1d8i
-         q8vV7kSfXx+vPzSRrv4TxwZqS+7+QHcfkUDsggXsFf8Hyi5e2SvP8oxkKGVPFy8vkt
-         MdpJ4OjOi0b1zreL+IlTtMSzaJPPXMIExuBGKBFnFTwvIUiqu8vMlRfnGpYXNtAu5y
-         rdCf46Ml9jK9a2TvkuSqZQVbc9PNJHORNJ9ZV9Yu7BD8KDDIC6By4TsAyqqOORARWY
-         mKrtIe2TH3XGg==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 12:38:51AM -0800, Si-Wei Liu wrote:
-> Thanks Eli and Jason for clarifications. See inline.
->=20
-> On Mon, Feb 1, 2021 at 11:06 PM Eli Cohen <elic@nvidia.com> wrote:
-> >
-> > On Tue, Feb 02, 2021 at 02:02:25PM +0800, Jason Wang wrote:
-> > >
-> > > On 2021/2/2 =E4=B8=8B=E5=8D=8812:15, Si-Wei Liu wrote:
-> > > > On Mon, Feb 1, 2021 at 7:13 PM Jason Wang <jasowang@redhat.com> wro=
-te:
-> > > > >
-> > > > > On 2021/2/2 =E4=B8=8A=E5=8D=883:17, Si-Wei Liu wrote:
-> > > > > > On Mon, Feb 1, 2021 at 10:51 AM Si-Wei Liu <siwliu.kernel@gmail=
-.com> wrote:
-> > > > > > > On Thu, Jan 28, 2021 at 5:46 AM Eli Cohen <elic@nvidia.com> w=
-rote:
-> > > > > > > > suspend_vq should only suspend the VQ on not save the curre=
-nt available
-> > > > > > > > index. This is done when a change of map occurs when the dr=
-iver calls
-> > > > > > > > save_channel_info().
-> > > > > > > Hmmm, suspend_vq() is also called by teardown_vq(), the latte=
-r of
-> > > > > > > which doesn't save the available index as save_channel_info()=
- doesn't
-> > > > > > > get called in that path at all. How does it handle the case t=
-hat
-> > > > > > > aget_vq_state() is called from userspace (e.g. QEMU) while th=
-e
-> > > > > > > hardware VQ object was torn down, but userspace still wants t=
-o access
-> > > > > > > the queue index?
-> > > > > > >
-> > > > > > > Refer to https://lore.kernel.org/netdev/1601583511-15138-1-gi=
-t-send-email-si-wei.liu@oracle.com/
-> > > > > > >
-> > > > > > > vhost VQ 0 ring restore failed: -1: Resource temporarily unav=
-ailable (11)
-> > > > > > > vhost VQ 1 ring restore failed: -1: Resource temporarily unav=
-ailable (11)
-> > > > > > >
-> > > > > > > QEMU will complain with the above warning while VM is being r=
-ebooted
-> > > > > > > or shut down.
-> > > > > > >
-> > > > > > > Looks to me either the kernel driver should cover this requir=
-ement, or
-> > > > > > > the userspace has to bear the burden in saving the index and =
-not call
-> > > > > > > into kernel if VQ is destroyed.
-> > > > > > Actually, the userspace doesn't have the insights whether virt =
-queue
-> > > > > > will be destroyed if just changing the device status via set_st=
-atus().
-> > > > > > Looking at other vdpa driver in tree i.e. ifcvf it doesn't beha=
-ve like
-> > > > > > so. Hence this still looks to me to be Mellanox specifics and
-> > > > > > mlx5_vdpa implementation detail that shouldn't expose to usersp=
-ace.
-> > > > >
-> > > > > So I think we can simply drop this patch?
-> > > > Yep, I think so. To be honest I don't know why it has anything to d=
-o
-> > > > with the memory hotplug issue.
-> > >
-> > >
-> > > Eli may know more, my understanding is that, during memory hotplut, q=
-emu
-> > > need to propagate new memory mappings via set_map(). For mellanox, it=
- means
-> > > it needs to rebuild memory keys, so the virtqueue needs to be suspend=
-ed.
-> > >
-> >
-> > I think Siwei was asking why the first patch was related to the hotplug
-> > issue.
->=20
-> I was thinking how consistency is assured when saving/restoring this
-> h/w avail_index against the one in the virtq memory, particularly in
-> the region_add/.region_del() context (e.g. the hotplug case). Problem
-> is I don't see explicit memory barrier when guest thread updates the
-> avail_index, how does the device make sure the h/w avail_index is
-> uptodate while guest may race with updating the virtq's avail_index in
-> the mean while? Maybe I completely miss something obvious?
+From: Daeho Jeong <daehojeong@google.com>
 
-If you're asking about syncronization upon hot plug of memory, the
-hardware always goes to read the available index from memory when a new
-hardware object is associted with a virtqueue. You can argue then that
-you don't need to restore the available index and you may be right but
-this is the currect inteface to the firmware.
+As checkpoint=merge comes in, mount option setting related to checkpoint
+had been mixed up and it became hard to understand. So, I separated
+this option from "checkpoint=" and made another mount option
+"checkpoint_merge" for this.
 
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
+---
+v2: renamed "checkpoint=merge" to "checkpoint_merge"
+v3: removed "nocheckpoint_merge" option
+---
+ Documentation/filesystems/f2fs.rst |  6 +++---
+ fs/f2fs/super.c                    | 21 +++++++++------------
+ 2 files changed, 12 insertions(+), 15 deletions(-)
 
-If you're asking on generally how sync is assured when the guest updates
-the available index, can you please send a pointer to the code where you
-see the update without a memory barrier?
+diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+index d0ead45dc706..475994ed8b15 100644
+--- a/Documentation/filesystems/f2fs.rst
++++ b/Documentation/filesystems/f2fs.rst
+@@ -247,9 +247,9 @@ checkpoint=%s[:%u[%]]	 Set to "disable" to turn off checkpointing. Set to "enabl
+ 			 hide up to all remaining free space. The actual space that
+ 			 would be unusable can be viewed at /sys/fs/f2fs/<disk>/unusable
+ 			 This space is reclaimed once checkpoint=enable.
+-			 Here is another option "merge", which creates a kernel daemon
+-			 and makes it to merge concurrent checkpoint requests as much
+-			 as possible to eliminate redundant checkpoint issues. Plus,
++checkpoint_merge	 When checkpoint is enabled, this can be used to create a kernel
++			 daemon and make it to merge concurrent checkpoint requests as
++			 much as possible to eliminate redundant checkpoint issues. Plus,
+ 			 we can eliminate the sluggish issue caused by slow checkpoint
+ 			 operation when the checkpoint is done in a process context in
+ 			 a cgroup having low i/o budget and cpu shares. To make this
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 56696f6cfa86..b60dcef7f9d0 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -215,7 +215,7 @@ static match_table_t f2fs_tokens = {
+ 	{Opt_checkpoint_disable_cap, "checkpoint=disable:%u"},
+ 	{Opt_checkpoint_disable_cap_perc, "checkpoint=disable:%u%%"},
+ 	{Opt_checkpoint_enable, "checkpoint=enable"},
+-	{Opt_checkpoint_merge, "checkpoint=merge"},
++	{Opt_checkpoint_merge, "checkpoint_merge"},
+ 	{Opt_compress_algorithm, "compress_algorithm=%s"},
+ 	{Opt_compress_log_size, "compress_log_size=%u"},
+ 	{Opt_compress_extension, "compress_extension=%s"},
+@@ -1142,12 +1142,6 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ 		return -EINVAL;
+ 	}
+ 
+-	if (test_opt(sbi, DISABLE_CHECKPOINT) &&
+-			test_opt(sbi, MERGE_CHECKPOINT)) {
+-		f2fs_err(sbi, "checkpoint=merge cannot be used with checkpoint=disable\n");
+-		return -EINVAL;
+-	}
+-
+ 	/* Not pass down write hints if the number of active logs is lesser
+ 	 * than NR_CURSEG_PERSIST_TYPE.
+ 	 */
+@@ -1782,7 +1776,7 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+ 		seq_printf(seq, ",checkpoint=disable:%u",
+ 				F2FS_OPTION(sbi).unusable_cap);
+ 	if (test_opt(sbi, MERGE_CHECKPOINT))
+-		seq_puts(seq, ",checkpoint=merge");
++		seq_puts(seq, ",checkpoint_merge");
+ 	if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_POSIX)
+ 		seq_printf(seq, ",fsync_mode=%s", "posix");
+ 	else if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_STRICT)
+@@ -1827,6 +1821,7 @@ static void default_options(struct f2fs_sb_info *sbi)
+ 	sbi->sb->s_flags |= SB_LAZYTIME;
+ 	set_opt(sbi, FLUSH_MERGE);
+ 	set_opt(sbi, DISCARD);
++	clear_opt(sbi, MERGE_CHECKPOINT);
+ 	if (f2fs_sb_has_blkzoned(sbi))
+ 		F2FS_OPTION(sbi).fs_mode = FS_MODE_LFS;
+ 	else
+@@ -2066,9 +2061,8 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 		}
+ 	}
+ 
+-	if (!test_opt(sbi, MERGE_CHECKPOINT)) {
+-		f2fs_stop_ckpt_thread(sbi);
+-	} else {
++	if (!test_opt(sbi, DISABLE_CHECKPOINT) &&
++			test_opt(sbi, MERGE_CHECKPOINT)) {
+ 		err = f2fs_start_ckpt_thread(sbi);
+ 		if (err) {
+ 			f2fs_err(sbi,
+@@ -2076,6 +2070,8 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 			    err);
+ 			goto restore_gc;
+ 		}
++	} else {
++		f2fs_stop_ckpt_thread(sbi);
+ 	}
+ 
+ 	/*
+@@ -3831,7 +3827,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+ 
+ 	/* setup checkpoint request control and start checkpoint issue thread */
+ 	f2fs_init_ckpt_req_control(sbi);
+-	if (test_opt(sbi, MERGE_CHECKPOINT)) {
++	if (!test_opt(sbi, DISABLE_CHECKPOINT) &&
++			test_opt(sbi, MERGE_CHECKPOINT)) {
+ 		err = f2fs_start_ckpt_thread(sbi);
+ 		if (err) {
+ 			f2fs_err(sbi,
+-- 
+2.30.0.365.g02bc693789-goog
 
->=20
-> Thanks,
-> -Siwei
->=20
-> >
-> > But you're correct. When memory is added, I get a new memory map. This
-> > requires me to build a new memory key object which covers the new memor=
-y
-> > map. Since the virtqueue objects are referencing this memory key, I nee=
-d
-> > to destroy them and build new ones referncing the new memory key.
-> >
-> > > Thanks
-> > >
-> > >
-> > > >
-> > > > -Siwei
-> > > >
-> > > > > Thanks
-> > > > >
-> > > > >
-> > > > > > > -Siwei
-> > > > > > >
-> > > > > > >
-> > > > > > > > Signed-off-by: Eli Cohen <elic@nvidia.com>
-> > > > > > > > ---
-> > > > > > > >    drivers/vdpa/mlx5/net/mlx5_vnet.c | 8 --------
-> > > > > > > >    1 file changed, 8 deletions(-)
-> > > > > > > >
-> > > > > > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vd=
-pa/mlx5/net/mlx5_vnet.c
-> > > > > > > > index 88dde3455bfd..549ded074ff3 100644
-> > > > > > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > > > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> > > > > > > > @@ -1148,8 +1148,6 @@ static int setup_vq(struct mlx5_vdpa_=
-net *ndev, struct mlx5_vdpa_virtqueue *mvq)
-> > > > > > > >
-> > > > > > > >    static void suspend_vq(struct mlx5_vdpa_net *ndev, struc=
-t mlx5_vdpa_virtqueue *mvq)
-> > > > > > > >    {
-> > > > > > > > -       struct mlx5_virtq_attr attr;
-> > > > > > > > -
-> > > > > > > >           if (!mvq->initialized)
-> > > > > > > >                   return;
-> > > > > > > >
-> > > > > > > > @@ -1158,12 +1156,6 @@ static void suspend_vq(struct mlx5_v=
-dpa_net *ndev, struct mlx5_vdpa_virtqueue *m
-> > > > > > > >
-> > > > > > > >           if (modify_virtqueue(ndev, mvq, MLX5_VIRTIO_NET_Q=
-_OBJECT_STATE_SUSPEND))
-> > > > > > > >                   mlx5_vdpa_warn(&ndev->mvdev, "modify to s=
-uspend failed\n");
-> > > > > > > > -
-> > > > > > > > -       if (query_virtqueue(ndev, mvq, &attr)) {
-> > > > > > > > -               mlx5_vdpa_warn(&ndev->mvdev, "failed to que=
-ry virtqueue\n");
-> > > > > > > > -               return;
-> > > > > > > > -       }
-> > > > > > > > -       mvq->avail_idx =3D attr.available_index;
-> > > > > > > >    }
-> > > > > > > >
-> > > > > > > >    static void suspend_vqs(struct mlx5_vdpa_net *ndev)
-> > > > > > > > --
-> > > > > > > > 2.29.2
-> > > > > > > >
-> > >
