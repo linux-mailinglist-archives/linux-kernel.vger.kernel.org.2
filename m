@@ -2,109 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB08230BA15
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC97C30BA1A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:41:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232494AbhBBIjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 03:39:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231538AbhBBIjG (ORCPT
+        id S232579AbhBBIjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 03:39:42 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:48355 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231538AbhBBIjh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 03:39:06 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9595C061573;
-        Tue,  2 Feb 2021 00:38:25 -0800 (PST)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612255104;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XSvnQS472UFc97/OveAYELQREPOxJl2PjuSTa4E+Q7A=;
-        b=fOwUz6oMsJL1OT+8YKgVu8YLiGerlC6aoRGuk2gj3WQtUgU8QXSFpJ09U58JpJZXEehe+m
-        Qvm+Z3XThUOMXKRyBZB7+bDjUhB+oW1k9PjhHBvhXxRvpDI/pEj0dFjalO7cXIZ6/LmAmw
-        AkIet2SuXwlUKmVKo6LYhbu3DnbqfcXWFnkeq13yZS8SZs/yNjBFd+tbOJ43wrJQMUIO4V
-        V5ZdDZeEV1oaO/ZC+FkkcD5CvM9I9f9RZUMxvlOWWq7jLpmML8ghyP0xcXUniwX4RVQVj4
-        j9+Q4MQbZrSxNHrqAt2SHlSB53aNx+8ux1oL3D+TPkMNegsaWy31lKKV3ki2GA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612255104;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XSvnQS472UFc97/OveAYELQREPOxJl2PjuSTa4E+Q7A=;
-        b=OPu2XNNKWOUcpfxtFJWAMYFL7d6qcjsZokIJEMUiNGj0vWq2dCutTDGvIHWGet1UOF9hx3
-        9T+b4TtHpCZ3cXDw==
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Darren Hart <dvhart@infradead.org>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Tue, 2 Feb 2021 03:39:37 -0500
+X-UUID: 8f11d486a71149cca7d168ee12aef293-20210202
+X-UUID: 8f11d486a71149cca7d168ee12aef293-20210202
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 435550767; Tue, 02 Feb 2021 16:38:43 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ MTKMBS31N2.mediatek.inc (172.27.4.87) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 2 Feb 2021 16:38:40 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 2 Feb 2021 16:38:40 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Mathias Nyman <mathias.nyman@intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Mike Travis <mike.travis@hpe.com>,
-        Peter Jones <pjones@redhat.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Steve Wahl <steve.wahl@hpe.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        dri-devel@lists.freedesktop.org, linux-efi@vger.kernel.org,
-        linux-fbdev@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH 1/3] printk: use CONFIG_CONSOLE_LOGLEVEL_* directly
-In-Reply-To: <20210202070218.856847-1-masahiroy@kernel.org>
-References: <20210202070218.856847-1-masahiroy@kernel.org>
-Date:   Tue, 02 Feb 2021 09:44:22 +0106
-Message-ID: <87eehy27b5.fsf@jogness.linutronix.de>
+        Ikjoon Jang <ikjn@chromium.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Zhanyong Wang <zhanyong.wang@mediatek.com>,
+        Tianping Fang <tianping.fang@mediatek.com>,
+        stable <stable@vger.kernel.org>
+Subject: [PATCH next] usb: xhci-mtk: break loop when find the endpoint to drop
+Date:   Tue, 2 Feb 2021 16:38:24 +0800
+Message-ID: <1612255104-5363-1-git-send-email-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
 Content-Type: text/plain
+X-TM-SNTS-SMTP: E273454B680D21EEE534227D442FE4AE8A972EA8CF78BED64B96D2EEA019C50F2000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-02, Masahiro Yamada <masahiroy@kernel.org> wrote:
-> CONSOLE_LOGLEVEL_DEFAULT is nothing more than a shorthand of
-> CONFIG_CONSOLE_LOGLEVEL_DEFAULT.
->
-> When you change CONFIG_CONSOLE_LOGLEVEL_DEFAULT from Kconfig, almost
-> all objects are rebuilt because CONFIG_CONSOLE_LOGLEVEL_DEFAULT is
-> used in <linux/printk.h>, which is included from most of source files.
->
-> In fact, there are only 4 users of CONSOLE_LOGLEVEL_DEFAULT:
->
->   arch/x86/platform/uv/uv_nmi.c
->   drivers/firmware/efi/libstub/efi-stub-helper.c
->   drivers/tty/sysrq.c
->   kernel/printk/printk.c
->
-> So, when you change CONFIG_CONSOLE_LOGLEVEL_DEFAULT and rebuild the
-> kernel, it is enough to recompile those 4 files.
->
-> Remove the CONSOLE_LOGLEVEL_DEFAULT definition from <linux/printk.h>,
-> and use CONFIG_CONSOLE_LOGLEVEL_DEFAULT directly.
+No need to check the following endpoints after finding the endpoint
+wanted to drop.
 
-With commit a8fe19ebfbfd ("kernel/printk: use symbolic defines for
-console loglevels") it can be seen that various drivers used to
-hard-code their own values. The introduction of the macros in an
-intuitive location (include/linux/printk.h) made it easier for authors
-to find/use the various available printk settings and thresholds.
+Fixes: 54f6a8af3722 ("usb: xhci-mtk: skip dropping bandwidth of unchecked endpoints")
+Cc: stable <stable@vger.kernel.org>
+Reported-by: Ikjoon Jang <ikjn@chromium.org>
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+---
+ drivers/usb/host/xhci-mtk-sch.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Technically there is no problem using Kconfig macros directly. But will
-authors bother to hunt down available Kconfig settings? Or will they
-only look in printk.h to see what is available?
+diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-mtk-sch.c
+index dee8a329076d..b45e5bf08997 100644
+--- a/drivers/usb/host/xhci-mtk-sch.c
++++ b/drivers/usb/host/xhci-mtk-sch.c
+@@ -689,8 +689,10 @@ void xhci_mtk_drop_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
+ 	sch_bw = &sch_array[bw_index];
+ 
+ 	list_for_each_entry_safe(sch_ep, tmp, &sch_bw->bw_ep_list, endpoint) {
+-		if (sch_ep->ep == ep)
++		if (sch_ep->ep == ep) {
+ 			destroy_sch_ep(udev, sch_bw, sch_ep);
++			break;
++		}
+ 	}
+ }
+ EXPORT_SYMBOL_GPL(xhci_mtk_drop_ep_quirk);
+-- 
+2.18.0
 
-IMHO if code wants to use settings from a foreign subsystem, it should
-be taking those from headers of that subsystem, rather than using some
-Kconfig settings from that subsystem. Headers exist to make information
-available to external code. Kconfig (particularly for a subsystem) exist
-to configure that subsystem.
-
-But my feeling on this may be misguided. Is it generally accepted in the
-kernel that any code can use Kconfig settings of any other code?
-
-John Ogness
