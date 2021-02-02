@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D35530C100
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04ABE30C95F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:19:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234056AbhBBOMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:12:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47580 "EHLO mail.kernel.org"
+        id S238238AbhBBSQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:16:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233296AbhBBOE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:04:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BC0864EDA;
-        Tue,  2 Feb 2021 13:48:21 +0000 (UTC)
+        id S233688AbhBBOGk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:06:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7646F6501D;
+        Tue,  2 Feb 2021 13:49:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273702;
-        bh=Hka2UfPbrsSg8f6z5EIYcr6xpZ+5yDXhWmgguH+/OhI=;
+        s=korg; t=1612273758;
+        bh=ecQa8LHiurxs3y103kI0B0ZtaKy0+Ngq7af/JCuEj4E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oeVEjj8ECeKN9Bl2yE5qmFglMt1/Y0YwXTWhtgXpxEUsvf/G9OpNXtKTWEf+Km6Ek
-         kQXvRe66XCEUBb4UoRb7gkpVlIsMpb8ZT9VEdN3T/4O0lPsiBPhOjT2zc3Hxy3ovlV
-         tm21Jwwol4Q8t48hhw0i7GFgMEbtfzaipRsT7QP0=
+        b=gLaTUhdUBpIHnK5P7XDqEnMhV+EGoVFJ5pKhm2g1I4EEANQmkTKFnDeuaAVXVWf3C
+         a2Kl4N0cc+yg09lzShQ8vrQop2ThEkuWzWBBUEmmuAhA6oNdRO7xtLb/xWf5RcMIOr
+         8suRbMpeXgaFGeQKx25AvGTXXzXKwWIzFbyVOS+0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pengcheng Yang <yangpc@wangsu.com>,
-        Neal Cardwell <ncardwell@google.com>,
-        Yuchung Cheng <ycheng@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.4 61/61] tcp: fix TLP timer not set when CA_STATE changes from DISORDER to OPEN
+        stable@vger.kernel.org,
+        Max Krummenacher <max.krummenacher@toradex.com>,
+        Oleksandr Suvorov <oleksandr.suvorov@toradex.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: [PATCH 4.4 19/28] ARM: imx: build suspend-imx6.S with arm instruction set
 Date:   Tue,  2 Feb 2021 14:38:39 +0100
-Message-Id: <20210202132949.061578062@linuxfoundation.org>
+Message-Id: <20210202132941.954448448@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132946.480479453@linuxfoundation.org>
-References: <20210202132946.480479453@linuxfoundation.org>
+In-Reply-To: <20210202132941.180062901@linuxfoundation.org>
+References: <20210202132941.180062901@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,111 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pengcheng Yang <yangpc@wangsu.com>
+From: Max Krummenacher <max.oss.09@gmail.com>
 
-commit 62d9f1a6945ba69c125e548e72a36d203b30596e upstream.
+commit a88afa46b86ff461c89cc33fc3a45267fff053e8 upstream.
 
-Upon receiving a cumulative ACK that changes the congestion state from
-Disorder to Open, the TLP timer is not set. If the sender is app-limited,
-it can only wait for the RTO timer to expire and retransmit.
+When the kernel is configured to use the Thumb-2 instruction set
+"suspend-to-memory" fails to resume. Observed on a Colibri iMX6ULL
+(i.MX 6ULL) and Apalis iMX6 (i.MX 6Q).
 
-The reason for this is that the TLP timer is set before the congestion
-state changes in tcp_ack(), so we delay the time point of calling
-tcp_set_xmit_timer() until after tcp_fastretrans_alert() returns and
-remove the FLAG_SET_XMIT_TIMER from ack_flag when the RACK reorder timer
-is set.
+It looks like the CPU resumes unconditionally in ARM instruction mode
+and then chokes on the presented Thumb-2 code it should execute.
 
-This commit has two additional benefits:
-1) Make sure to reset RTO according to RFC6298 when receiving ACK, to
-avoid spurious RTO caused by RTO timer early expires.
-2) Reduce the xmit timer reschedule once per ACK when the RACK reorder
-timer is set.
+Fix this by using the arm instruction set for all code in
+suspend-imx6.S.
 
-Fixes: df92c8394e6e ("tcp: fix xmit timer to only be reset if data ACKed/SACKed")
-Link: https://lore.kernel.org/netdev/1611311242-6675-1-git-send-email-yangpc@wangsu.com
-Signed-off-by: Pengcheng Yang <yangpc@wangsu.com>
-Acked-by: Neal Cardwell <ncardwell@google.com>
-Acked-by: Yuchung Cheng <ycheng@google.com>
-Cc: Eric Dumazet <edumazet@google.com>
-Link: https://lore.kernel.org/r/1611464834-23030-1-git-send-email-yangpc@wangsu.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Max Krummenacher <max.krummenacher@toradex.com>
+Fixes: df595746fa69 ("ARM: imx: add suspend in ocram support for i.mx6q")
+Acked-by: Oleksandr Suvorov <oleksandr.suvorov@toradex.com>
+Signed-off-by: Shawn Guo <shawnguo@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/net/tcp.h       |    2 +-
- net/ipv4/tcp_input.c    |   10 ++++++----
- net/ipv4/tcp_recovery.c |    5 +++--
- 3 files changed, 10 insertions(+), 7 deletions(-)
+ arch/arm/mach-imx/suspend-imx6.S |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -2030,7 +2030,7 @@ void tcp_mark_skb_lost(struct sock *sk,
- void tcp_newreno_mark_lost(struct sock *sk, bool snd_una_advanced);
- extern s32 tcp_rack_skb_timeout(struct tcp_sock *tp, struct sk_buff *skb,
- 				u32 reo_wnd);
--extern void tcp_rack_mark_lost(struct sock *sk);
-+extern bool tcp_rack_mark_lost(struct sock *sk);
- extern void tcp_rack_advance(struct tcp_sock *tp, u8 sacked, u32 end_seq,
- 			     u64 xmit_time);
- extern void tcp_rack_reo_timeout(struct sock *sk);
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -2764,7 +2764,8 @@ static void tcp_identify_packet_loss(str
- 	} else if (tcp_is_rack(sk)) {
- 		u32 prior_retrans = tp->retrans_out;
+--- a/arch/arm/mach-imx/suspend-imx6.S
++++ b/arch/arm/mach-imx/suspend-imx6.S
+@@ -73,6 +73,7 @@
+ #define MX6Q_CCM_CCR	0x0
  
--		tcp_rack_mark_lost(sk);
-+		if (tcp_rack_mark_lost(sk))
-+			*ack_flag &= ~FLAG_SET_XMIT_TIMER;
- 		if (prior_retrans > tp->retrans_out)
- 			*ack_flag |= FLAG_LOST_RETRANS;
- 	}
-@@ -3713,9 +3714,6 @@ static int tcp_ack(struct sock *sk, cons
+ 	.align 3
++	.arm
  
- 	if (tp->tlp_high_seq)
- 		tcp_process_tlp_ack(sk, ack, flag);
--	/* If needed, reset TLP/RTO timer; RACK may later override this. */
--	if (flag & FLAG_SET_XMIT_TIMER)
--		tcp_set_xmit_timer(sk);
+ 	.macro  sync_l2_cache
  
- 	if (tcp_ack_is_dubious(sk, flag)) {
- 		if (!(flag & (FLAG_SND_UNA_ADVANCED | FLAG_NOT_DUP))) {
-@@ -3728,6 +3726,10 @@ static int tcp_ack(struct sock *sk, cons
- 				      &rexmit);
- 	}
- 
-+	/* If needed, reset TLP/RTO timer when RACK doesn't set. */
-+	if (flag & FLAG_SET_XMIT_TIMER)
-+		tcp_set_xmit_timer(sk);
-+
- 	if ((flag & FLAG_FORWARD_PROGRESS) || !(flag & FLAG_NOT_DUP))
- 		sk_dst_confirm(sk);
- 
---- a/net/ipv4/tcp_recovery.c
-+++ b/net/ipv4/tcp_recovery.c
-@@ -110,13 +110,13 @@ static void tcp_rack_detect_loss(struct
- 	}
- }
- 
--void tcp_rack_mark_lost(struct sock *sk)
-+bool tcp_rack_mark_lost(struct sock *sk)
- {
- 	struct tcp_sock *tp = tcp_sk(sk);
- 	u32 timeout;
- 
- 	if (!tp->rack.advanced)
--		return;
-+		return false;
- 
- 	/* Reset the advanced flag to avoid unnecessary queue scanning */
- 	tp->rack.advanced = 0;
-@@ -126,6 +126,7 @@ void tcp_rack_mark_lost(struct sock *sk)
- 		inet_csk_reset_xmit_timer(sk, ICSK_TIME_REO_TIMEOUT,
- 					  timeout, inet_csk(sk)->icsk_rto);
- 	}
-+	return !!timeout;
- }
- 
- /* Record the most recently (re)sent time among the (s)acked packets
 
 
