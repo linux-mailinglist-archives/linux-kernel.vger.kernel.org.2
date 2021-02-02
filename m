@@ -2,199 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FE2530BAB8
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC0830BABD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:18:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231406AbhBBJPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 04:15:43 -0500
-Received: from Mailgw01.mediatek.com ([1.203.163.78]:6616 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232939AbhBBJNp (ORCPT
+        id S232895AbhBBJQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 04:16:27 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:12064 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232807AbhBBJOe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 04:13:45 -0500
-X-UUID: b7c13609295b487189aa6c17456b9c0b-20210202
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=jCOnxeZG3GpW2X1ImEEkRJN+ncbxOPNLGX8aovBzoJA=;
-        b=HHDCAdX5Tr0Gc9JKCRVAmbzxfhop+LiR0CdIqJnwhdpSCtt+CBOzIBVlWKSLiMknclwPOLA3uSMbSAsVTTPXCUWID0wTB4RI+79uOAuoolsyqVeUIi6rrWcL+ULPnaoTOK7gpuxltwR2hFdfA+AgGEGy9dM/it5njBjGk43pMBM=;
-X-UUID: b7c13609295b487189aa6c17456b9c0b-20210202
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
-        (envelope-from <ck.hu@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1535380999; Tue, 02 Feb 2021 17:12:52 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 2 Feb 2021 17:12:49 +0800
-Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 2 Feb 2021 17:12:49 +0800
-Message-ID: <1612257169.30872.2.camel@mtksdaap41>
-Subject: Re: [PATCH v6 8/8] drm/mediatek: add support for mediatek SOC MT8192
-From:   CK Hu <ck.hu@mediatek.com>
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-CC:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mark Rutland <mark.rutland@arm.com>,
-        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        Yongqiang Niu <yongqiang.niu@mediatek.com>
-Date:   Tue, 2 Feb 2021 17:12:49 +0800
-In-Reply-To: <20210202081237.774442-9-hsinyi@chromium.org>
-References: <20210202081237.774442-1-hsinyi@chromium.org>
-         <20210202081237.774442-9-hsinyi@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Tue, 2 Feb 2021 04:14:34 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DVJwq4NrkzMT10;
+        Tue,  2 Feb 2021 17:12:11 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 2 Feb 2021
+ 17:13:45 +0800
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: rename checkpoint=merge mount option
+ to checkpoint_merge
+To:     Daeho Jeong <daeho43@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <kernel-team@android.com>, Daeho Jeong <daehojeong@google.com>
+References: <20210202051829.2127214-1-daeho43@gmail.com>
+ <ef27f0cc-87b6-cea1-31a6-f2837d6a673c@huawei.com>
+ <CACOAw_wGY1CNXZ9QoLB1t0800Wyjv1_P9iuqk4SOKjT-oUQamw@mail.gmail.com>
+ <6f1e4639-3715-d855-951d-7c0a67fa9913@huawei.com>
+ <CACOAw_zmPXzTrtp7VVyBoYLRe_TRzTB6CqjQkmLq=NU=Bky9WQ@mail.gmail.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <ec3685a4-1871-fd69-68ae-1c22066aa06d@huawei.com>
+Date:   Tue, 2 Feb 2021 17:13:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: A363715C433DB74E8E57BFD8443DE9B7FDDC4DE180E54AEF2684BDDC0E54DA912000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <CACOAw_zmPXzTrtp7VVyBoYLRe_TRzTB6CqjQkmLq=NU=Bky9WQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIEhzaW4tWWk6DQoNCk9uIFR1ZSwgMjAyMS0wMi0wMiBhdCAxNjoxMiArMDgwMCwgSHNpbi1Z
-aSBXYW5nIHdyb3RlOg0KPiBGcm9tOiBZb25ncWlhbmcgTml1IDx5b25ncWlhbmcubml1QG1lZGlh
-dGVrLmNvbT4NCj4gDQo+IGFkZCBzdXBwb3J0IGZvciBtZWRpYXRlayBTT0MgTVQ4MTkyDQoNClJl
-dmlld2VkLWJ5OiBDSyBIdSA8Y2suaHVAbWVkaWF0ZWsuY29tPg0KDQo+IA0KPiBTaWduZWQtb2Zm
-LWJ5OiBZb25ncWlhbmcgTml1IDx5b25ncWlhbmcubml1QG1lZGlhdGVrLmNvbT4NCj4gU2lnbmVk
-LW9mZi1ieTogSHNpbi1ZaSBXYW5nIDxoc2lueWlAY2hyb21pdW0ub3JnPg0KPiAtLS0NCj4gIGRy
-aXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9jY29yci5jIHwgIDYgKysrKw0KPiAgZHJp
-dmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX292bC5jICAgfCAyMCArKysrKysrKysrKw0K
-PiAgZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX3JkbWEuYyAgfCAgNiArKysrDQo+
-ICBkcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kcnYuYyAgICB8IDQyICsrKysrKysr
-KysrKysrKysrKysrKysrDQo+ICA0IGZpbGVzIGNoYW5nZWQsIDc0IGluc2VydGlvbnMoKykNCj4g
-DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3BfY2NvcnIu
-YyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9jY29yci5jDQo+IGluZGV4IDE0
-MWNiMzZiOWMwN2IuLjNhNTNlYmM0ZTE3MjQgMTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2Ry
-bS9tZWRpYXRlay9tdGtfZGlzcF9jY29yci5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9tZWRp
-YXRlay9tdGtfZGlzcF9jY29yci5jDQo+IEBAIC0yMDUsOSArMjA1LDE1IEBAIHN0YXRpYyBjb25z
-dCBzdHJ1Y3QgbXRrX2Rpc3BfY2NvcnJfZGF0YSBtdDgxODNfY2NvcnJfZHJpdmVyX2RhdGEgPSB7
-DQo+ICAJLm1hdHJpeF9iaXRzID0gMTAsDQo+ICB9Ow0KPiAgDQo+ICtzdGF0aWMgY29uc3Qgc3Ry
-dWN0IG10a19kaXNwX2Njb3JyX2RhdGEgbXQ4MTkyX2Njb3JyX2RyaXZlcl9kYXRhID0gew0KPiAr
-CS5tYXRyaXhfYml0cyA9IDExLA0KPiArfTsNCj4gKw0KPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBv
-Zl9kZXZpY2VfaWQgbXRrX2Rpc3BfY2NvcnJfZHJpdmVyX2R0X21hdGNoW10gPSB7DQo+ICAJeyAu
-Y29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxODMtZGlzcC1jY29yciIsDQo+ICAJICAuZGF0YSA9
-ICZtdDgxODNfY2NvcnJfZHJpdmVyX2RhdGF9LA0KPiArCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0
-ZWssbXQ4MTkyLWRpc3AtY2NvcnIiLA0KPiArCSAgLmRhdGEgPSAmbXQ4MTkyX2Njb3JyX2RyaXZl
-cl9kYXRhfSwNCj4gIAl7fSwNCj4gIH07DQo+ICBNT0RVTEVfREVWSUNFX1RBQkxFKG9mLCBtdGtf
-ZGlzcF9jY29ycl9kcml2ZXJfZHRfbWF0Y2gpOw0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUv
-ZHJtL21lZGlhdGVrL210a19kaXNwX292bC5jIGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210
-a19kaXNwX292bC5jDQo+IGluZGV4IDk2MWY4N2Y4ZDRkMTUuLmUyNjZiYWFlNTg2YzQgMTAwNjQ0
-DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9tZWRpYXRlay9tdGtfZGlzcF9vdmwuYw0KPiArKysg
-Yi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3Bfb3ZsLmMNCj4gQEAgLTQ1NSw2ICs0
-NTUsMjIgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfZGlzcF9vdmxfZGF0YSBtdDgxODNfb3Zs
-XzJsX2RyaXZlcl9kYXRhID0gew0KPiAgCS5mbXRfcmdiNTY1X2lzXzAgPSB0cnVlLA0KPiAgfTsN
-Cj4gIA0KPiArc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfZGlzcF9vdmxfZGF0YSBtdDgxOTJfb3Zs
-X2RyaXZlcl9kYXRhID0gew0KPiArCS5hZGRyID0gRElTUF9SRUdfT1ZMX0FERFJfTVQ4MTczLA0K
-PiArCS5nbWNfYml0cyA9IDEwLA0KPiArCS5sYXllcl9uciA9IDQsDQo+ICsJLmZtdF9yZ2I1NjVf
-aXNfMCA9IHRydWUsDQo+ICsJLnNtaV9pZF9lbiA9IHRydWUsDQo+ICt9Ow0KPiArDQo+ICtzdGF0
-aWMgY29uc3Qgc3RydWN0IG10a19kaXNwX292bF9kYXRhIG10ODE5Ml9vdmxfMmxfZHJpdmVyX2Rh
-dGEgPSB7DQo+ICsJLmFkZHIgPSBESVNQX1JFR19PVkxfQUREUl9NVDgxNzMsDQo+ICsJLmdtY19i
-aXRzID0gMTAsDQo+ICsJLmxheWVyX25yID0gMiwNCj4gKwkuZm10X3JnYjU2NV9pc18wID0gdHJ1
-ZSwNCj4gKwkuc21pX2lkX2VuID0gdHJ1ZSwNCj4gK307DQo+ICsNCj4gIHN0YXRpYyBjb25zdCBz
-dHJ1Y3Qgb2ZfZGV2aWNlX2lkIG10a19kaXNwX292bF9kcml2ZXJfZHRfbWF0Y2hbXSA9IHsNCj4g
-IAl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10MjcwMS1kaXNwLW92bCIsDQo+ICAJICAuZGF0
-YSA9ICZtdDI3MDFfb3ZsX2RyaXZlcl9kYXRhfSwNCj4gQEAgLTQ2NCw2ICs0ODAsMTAgQEAgc3Rh
-dGljIGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgbXRrX2Rpc3Bfb3ZsX2RyaXZlcl9kdF9tYXRj
-aFtdID0gew0KPiAgCSAgLmRhdGEgPSAmbXQ4MTgzX292bF9kcml2ZXJfZGF0YX0sDQo+ICAJeyAu
-Y29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxODMtZGlzcC1vdmwtMmwiLA0KPiAgCSAgLmRhdGEg
-PSAmbXQ4MTgzX292bF8ybF9kcml2ZXJfZGF0YX0sDQo+ICsJeyAuY29tcGF0aWJsZSA9ICJtZWRp
-YXRlayxtdDgxOTItZGlzcC1vdmwiLA0KPiArCSAgLmRhdGEgPSAmbXQ4MTkyX292bF9kcml2ZXJf
-ZGF0YX0sDQo+ICsJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxOTItZGlzcC1vdmwtMmwi
-LA0KPiArCSAgLmRhdGEgPSAmbXQ4MTkyX292bF8ybF9kcml2ZXJfZGF0YX0sDQo+ICAJe30sDQo+
-ICB9Ow0KPiAgTU9EVUxFX0RFVklDRV9UQUJMRShvZiwgbXRrX2Rpc3Bfb3ZsX2RyaXZlcl9kdF9t
-YXRjaCk7DQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3Bf
-cmRtYS5jIGIvZHJpdmVycy9ncHUvZHJtL21lZGlhdGVrL210a19kaXNwX3JkbWEuYw0KPiBpbmRl
-eCA3MjhhYWFkZmVhOGNmLi5mMTIzZmMwMGEzOTM1IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dw
-dS9kcm0vbWVkaWF0ZWsvbXRrX2Rpc3BfcmRtYS5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9t
-ZWRpYXRlay9tdGtfZGlzcF9yZG1hLmMNCj4gQEAgLTM1NSw2ICszNTUsMTAgQEAgc3RhdGljIGNv
-bnN0IHN0cnVjdCBtdGtfZGlzcF9yZG1hX2RhdGEgbXQ4MTgzX3JkbWFfZHJpdmVyX2RhdGEgPSB7
-DQo+ICAJLmZpZm9fc2l6ZSA9IDUgKiBTWl8xSywNCj4gIH07DQo+ICANCj4gK3N0YXRpYyBjb25z
-dCBzdHJ1Y3QgbXRrX2Rpc3BfcmRtYV9kYXRhIG10ODE5Ml9yZG1hX2RyaXZlcl9kYXRhID0gew0K
-PiArCS5maWZvX3NpemUgPSA1ICogU1pfMUssDQo+ICt9Ow0KPiArDQo+ICBzdGF0aWMgY29uc3Qg
-c3RydWN0IG9mX2RldmljZV9pZCBtdGtfZGlzcF9yZG1hX2RyaXZlcl9kdF9tYXRjaFtdID0gew0K
-PiAgCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQyNzAxLWRpc3AtcmRtYSIsDQo+ICAJICAu
-ZGF0YSA9ICZtdDI3MDFfcmRtYV9kcml2ZXJfZGF0YX0sDQo+IEBAIC0zNjIsNiArMzY2LDggQEAg
-c3RhdGljIGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgbXRrX2Rpc3BfcmRtYV9kcml2ZXJfZHRf
-bWF0Y2hbXSA9IHsNCj4gIAkgIC5kYXRhID0gJm10ODE3M19yZG1hX2RyaXZlcl9kYXRhfSwNCj4g
-IAl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE4My1kaXNwLXJkbWEiLA0KPiAgCSAgLmRh
-dGEgPSAmbXQ4MTgzX3JkbWFfZHJpdmVyX2RhdGF9LA0KPiArCXsgLmNvbXBhdGlibGUgPSAibWVk
-aWF0ZWssbXQ4MTkyLWRpc3AtcmRtYSIsDQo+ICsJICAuZGF0YSA9ICZtdDgxOTJfcmRtYV9kcml2
-ZXJfZGF0YX0sDQo+ICAJe30sDQo+ICB9Ow0KPiAgTU9EVUxFX0RFVklDRV9UQUJMRShvZiwgbXRr
-X2Rpc3BfcmRtYV9kcml2ZXJfZHRfbWF0Y2gpOw0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUv
-ZHJtL21lZGlhdGVrL210a19kcm1fZHJ2LmMgYi9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRr
-X2RybV9kcnYuYw0KPiBpbmRleCBiMDEzZDU2ZDI3NzczLi42ZGY1NTEwNTU2MzBjIDEwMDY0NA0K
-PiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kcnYuYw0KPiArKysgYi9k
-cml2ZXJzL2dwdS9kcm0vbWVkaWF0ZWsvbXRrX2RybV9kcnYuYw0KPiBAQCAtMTQ3LDYgKzE0Nywy
-NSBAQCBzdGF0aWMgY29uc3QgZW51bSBtdGtfZGRwX2NvbXBfaWQgbXQ4MTgzX210a19kZHBfZXh0
-W10gPSB7DQo+ICAJRERQX0NPTVBPTkVOVF9EUEkwLA0KPiAgfTsNCj4gIA0KPiArc3RhdGljIGNv
-bnN0IGVudW0gbXRrX2RkcF9jb21wX2lkIG10ODE5Ml9tdGtfZGRwX21haW5bXSA9IHsNCj4gKwlE
-RFBfQ09NUE9ORU5UX09WTDAsDQo+ICsJRERQX0NPTVBPTkVOVF9PVkxfMkwwLA0KPiArCUREUF9D
-T01QT05FTlRfUkRNQTAsDQo+ICsJRERQX0NPTVBPTkVOVF9DT0xPUjAsDQo+ICsJRERQX0NPTVBP
-TkVOVF9DQ09SUiwNCj4gKwlERFBfQ09NUE9ORU5UX0FBTDAsDQo+ICsJRERQX0NPTVBPTkVOVF9H
-QU1NQSwNCj4gKwlERFBfQ09NUE9ORU5UX1BPU1RNQVNLMCwNCj4gKwlERFBfQ09NUE9ORU5UX0RJ
-VEhFUiwNCj4gKwlERFBfQ09NUE9ORU5UX0RTSTAsDQo+ICt9Ow0KPiArDQo+ICtzdGF0aWMgY29u
-c3QgZW51bSBtdGtfZGRwX2NvbXBfaWQgbXQ4MTkyX210a19kZHBfZXh0W10gPSB7DQo+ICsJRERQ
-X0NPTVBPTkVOVF9PVkxfMkwyLA0KPiArCUREUF9DT01QT05FTlRfUkRNQTQsDQo+ICsJRERQX0NP
-TVBPTkVOVF9EUEkwLA0KPiArfTsNCj4gKw0KPiAgc3RhdGljIGNvbnN0IHN0cnVjdCBtdGtfbW1z
-eXNfZHJpdmVyX2RhdGEgbXQyNzAxX21tc3lzX2RyaXZlcl9kYXRhID0gew0KPiAgCS5tYWluX3Bh
-dGggPSBtdDI3MDFfbXRrX2RkcF9tYWluLA0KPiAgCS5tYWluX2xlbiA9IEFSUkFZX1NJWkUobXQy
-NzAxX210a19kZHBfbWFpbiksDQo+IEBAIC0xODYsNiArMjA1LDEzIEBAIHN0YXRpYyBjb25zdCBz
-dHJ1Y3QgbXRrX21tc3lzX2RyaXZlcl9kYXRhIG10ODE4M19tbXN5c19kcml2ZXJfZGF0YSA9IHsN
-Cj4gIAkuZXh0X2xlbiA9IEFSUkFZX1NJWkUobXQ4MTgzX210a19kZHBfZXh0KSwNCj4gIH07DQo+
-ICANCj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3QgbXRrX21tc3lzX2RyaXZlcl9kYXRhIG10ODE5Ml9t
-bXN5c19kcml2ZXJfZGF0YSA9IHsNCj4gKwkubWFpbl9wYXRoID0gbXQ4MTkyX210a19kZHBfbWFp
-biwNCj4gKwkubWFpbl9sZW4gPSBBUlJBWV9TSVpFKG10ODE5Ml9tdGtfZGRwX21haW4pLA0KPiAr
-CS5leHRfcGF0aCA9IG10ODE5Ml9tdGtfZGRwX2V4dCwNCj4gKwkuZXh0X2xlbiA9IEFSUkFZX1NJ
-WkUobXQ4MTkyX210a19kZHBfZXh0KSwNCj4gK307DQo+ICsNCj4gIHN0YXRpYyBpbnQgbXRrX2Ry
-bV9rbXNfaW5pdChzdHJ1Y3QgZHJtX2RldmljZSAqZHJtKQ0KPiAgew0KPiAgCXN0cnVjdCBtdGtf
-ZHJtX3ByaXZhdGUgKnByaXZhdGUgPSBkcm0tPmRldl9wcml2YXRlOw0KPiBAQCAtNDA0LDIyICs0
-MzAsMzIgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgbXRrX2RkcF9jb21wX2R0
-X2lkc1tdID0gew0KPiAgCSAgLmRhdGEgPSAodm9pZCAqKU1US19ESVNQX09WTCB9LA0KPiAgCXsg
-LmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTgzLWRpc3Atb3ZsLTJsIiwNCj4gIAkgIC5kYXRh
-ID0gKHZvaWQgKilNVEtfRElTUF9PVkxfMkwgfSwNCj4gKwl7IC5jb21wYXRpYmxlID0gIm1lZGlh
-dGVrLG10ODE5Mi1kaXNwLW92bCIsDQo+ICsJICAuZGF0YSA9ICh2b2lkICopTVRLX0RJU1BfT1ZM
-IH0sDQo+ICsJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxOTItZGlzcC1vdmwtMmwiLA0K
-PiArCSAgLmRhdGEgPSAodm9pZCAqKU1US19ESVNQX09WTF8yTCB9LA0KPiAgCXsgLmNvbXBhdGli
-bGUgPSAibWVkaWF0ZWssbXQyNzAxLWRpc3AtcmRtYSIsDQo+ICAJICAuZGF0YSA9ICh2b2lkICop
-TVRLX0RJU1BfUkRNQSB9LA0KPiAgCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTczLWRp
-c3AtcmRtYSIsDQo+ICAJICAuZGF0YSA9ICh2b2lkICopTVRLX0RJU1BfUkRNQSB9LA0KPiAgCXsg
-LmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTgzLWRpc3AtcmRtYSIsDQo+ICAJICAuZGF0YSA9
-ICh2b2lkICopTVRLX0RJU1BfUkRNQSB9LA0KPiArCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWss
-bXQ4MTkyLWRpc3AtcmRtYSIsDQo+ICsJICAuZGF0YSA9ICh2b2lkICopTVRLX0RJU1BfUkRNQSB9
-LA0KPiAgCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTczLWRpc3Atd2RtYSIsDQo+ICAJ
-ICAuZGF0YSA9ICh2b2lkICopTVRLX0RJU1BfV0RNQSB9LA0KPiAgCXsgLmNvbXBhdGlibGUgPSAi
-bWVkaWF0ZWssbXQ4MTgzLWRpc3AtY2NvcnIiLA0KPiAgCSAgLmRhdGEgPSAodm9pZCAqKU1US19E
-SVNQX0NDT1JSIH0sDQo+ICsJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxOTItZGlzcC1j
-Y29yciIsDQo+ICsJICAuZGF0YSA9ICh2b2lkICopTVRLX0RJU1BfQ0NPUlIgfSwNCj4gIAl7IC5j
-b21wYXRpYmxlID0gIm1lZGlhdGVrLG10MjcwMS1kaXNwLWNvbG9yIiwNCj4gIAkgIC5kYXRhID0g
-KHZvaWQgKilNVEtfRElTUF9DT0xPUiB9LA0KPiAgCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWss
-bXQ4MTczLWRpc3AtY29sb3IiLA0KPiAgCSAgLmRhdGEgPSAodm9pZCAqKU1US19ESVNQX0NPTE9S
-IH0sDQo+ICAJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxNzMtZGlzcC1hYWwiLA0KPiAg
-CSAgLmRhdGEgPSAodm9pZCAqKU1US19ESVNQX0FBTH0sDQo+ICsJeyAuY29tcGF0aWJsZSA9ICJt
-ZWRpYXRlayxtdDgxOTItZGlzcC1hYWwiLA0KPiArCSAgLmRhdGEgPSAodm9pZCAqKU1US19ESVNQ
-X0FBTH0sDQo+ICAJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxNzMtZGlzcC1nYW1tYSIs
-DQo+ICAJICAuZGF0YSA9ICh2b2lkICopTVRLX0RJU1BfR0FNTUEsIH0sDQo+ICAJeyAuY29tcGF0
-aWJsZSA9ICJtZWRpYXRlayxtdDgxODMtZGlzcC1nYW1tYSIsDQo+IEBAIC00NDgsMTIgKzQ4NCwx
-NiBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IG9mX2RldmljZV9pZCBtdGtfZGRwX2NvbXBfZHRfaWRz
-W10gPSB7DQo+ICAJICAuZGF0YSA9ICh2b2lkICopTVRLX0RJU1BfTVVURVggfSwNCj4gIAl7IC5j
-b21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE4My1kaXNwLW11dGV4IiwNCj4gIAkgIC5kYXRhID0g
-KHZvaWQgKilNVEtfRElTUF9NVVRFWCB9LA0KPiArCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWss
-bXQ4MTkyLWRpc3AtbXV0ZXgiLA0KPiArCSAgLmRhdGEgPSAodm9pZCAqKU1US19ESVNQX01VVEVY
-IH0sDQo+ICAJeyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDI3MDEtZGlzcC1wd20iLA0KPiAg
-CSAgLmRhdGEgPSAodm9pZCAqKU1US19ESVNQX0JMUyB9LA0KPiAgCXsgLmNvbXBhdGlibGUgPSAi
-bWVkaWF0ZWssbXQ4MTczLWRpc3AtcHdtIiwNCj4gIAkgIC5kYXRhID0gKHZvaWQgKilNVEtfRElT
-UF9QV00gfSwNCj4gIAl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE3My1kaXNwLW9kIiwN
-Cj4gIAkgIC5kYXRhID0gKHZvaWQgKilNVEtfRElTUF9PRCB9LA0KPiArCXsgLmNvbXBhdGlibGUg
-PSAibWVkaWF0ZWssbXQ4MTkyLWRpc3AtcG9zdG1hc2siLA0KPiArCSAgLmRhdGEgPSAodm9pZCAq
-KU1US19ESVNQX1BPU1RNQVNLIH0sDQo+ICAJeyB9DQo+ICB9Ow0KPiAgDQo+IEBAIC00NjgsNiAr
-NTA4LDggQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgbXRrX2RybV9vZl9pZHNb
-XSA9IHsNCj4gIAkgIC5kYXRhID0gJm10ODE3M19tbXN5c19kcml2ZXJfZGF0YX0sDQo+ICAJeyAu
-Y29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDgxODMtbW1zeXMiLA0KPiAgCSAgLmRhdGEgPSAmbXQ4
-MTgzX21tc3lzX2RyaXZlcl9kYXRhfSwNCj4gKwl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10
-ODE5Mi1tbXN5cyIsDQo+ICsJIC5kYXRhID0gJm10ODE5Ml9tbXN5c19kcml2ZXJfZGF0YX0sDQo+
-ICAJeyB9DQo+ICB9Ow0KPiAgDQoNCg==
+On 2021/2/2 17:07, Daeho Jeong wrote:
+> If I understand it correctly, the only thing I have to do now is
+> remove "nocheckpoint_merge" now.
+> Am I correct? :)
 
+For this patch, Yup. :)
+
+Thanks,
+
+> 
+> 2021년 2월 2일 (화) 오후 5:30, Chao Yu <yuchao0@huawei.com>님이 작성:
+>>
+>> On 2021/2/2 16:02, Daeho Jeong wrote:
+>>> I chose the same step with "flush_merge", because it doesn't have
+>>> "noflush_merge".
+>>
+>> Oh, "noxxx" option was added only when we set the option by default in
+>> default_options(), when user want to disable the default option, it
+>> needs to use "noxxx" option, and then we will show this "noxxx" option
+>> string to user via show_options() to indicate that "noxxx" option is
+>> working now.
+>>
+>> Anyway I think we should fix to show "noflush_merge" option because we
+>> have set flush_merge by default.
+>>
+>>> Do you think we need that for both, "noflush_merge" and "nocheckpoint_merge"?
+>>
+>> For "nocheckpoint_merge", we can introduce this option only when we want
+>> to set "checkpoint_merge" by default.
+>>
+>> Here is the example from noinline_data:
+>>
+>> Commit 75342797988 ("f2fs: enable inline data by default")
+>>
+>> Thanks,
+>>
+>>>
+>>> I thought we needed to give some time to make this be turned on by
+>>> default. It might be a little radical. :)
+>>>
+>>> What do you think?
+>>>
+>>> 2021년 2월 2일 (화) 오후 4:40, Chao Yu <yuchao0@huawei.com>님이 작성:
+>>>>
+>>>> On 2021/2/2 13:18, Daeho Jeong wrote:
+>>>>> From: Daeho Jeong <daehojeong@google.com>
+>>>>>
+>>>>> As checkpoint=merge comes in, mount option setting related to checkpoint
+>>>>> had been mixed up and it became hard to understand. So, I separated
+>>>>> this option from "checkpoint=" and made another mount option
+>>>>> "checkpoint_merge" for this.
+>>>>>
+>>>>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+>>>>> ---
+>>>>> v2: renamed "checkpoint=merge" to "checkpoint_merge"
+>>>>> ---
+>>>>>     Documentation/filesystems/f2fs.rst |  6 +++---
+>>>>>     fs/f2fs/super.c                    | 26 ++++++++++++++------------
+>>>>>     2 files changed, 17 insertions(+), 15 deletions(-)
+>>>>>
+>>>>> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+>>>>> index d0ead45dc706..475994ed8b15 100644
+>>>>> --- a/Documentation/filesystems/f2fs.rst
+>>>>> +++ b/Documentation/filesystems/f2fs.rst
+>>>>> @@ -247,9 +247,9 @@ checkpoint=%s[:%u[%]]      Set to "disable" to turn off checkpointing. Set to "enabl
+>>>>>                          hide up to all remaining free space. The actual space that
+>>>>>                          would be unusable can be viewed at /sys/fs/f2fs/<disk>/unusable
+>>>>>                          This space is reclaimed once checkpoint=enable.
+>>>>> -                      Here is another option "merge", which creates a kernel daemon
+>>>>> -                      and makes it to merge concurrent checkpoint requests as much
+>>>>> -                      as possible to eliminate redundant checkpoint issues. Plus,
+>>>>> +checkpoint_merge      When checkpoint is enabled, this can be used to create a kernel
+>>>>> +                      daemon and make it to merge concurrent checkpoint requests as
+>>>>> +                      much as possible to eliminate redundant checkpoint issues. Plus,
+>>>>>                          we can eliminate the sluggish issue caused by slow checkpoint
+>>>>>                          operation when the checkpoint is done in a process context in
+>>>>>                          a cgroup having low i/o budget and cpu shares. To make this
+>>>>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+>>>>> index 56696f6cfa86..d8603e6c4916 100644
+>>>>> --- a/fs/f2fs/super.c
+>>>>> +++ b/fs/f2fs/super.c
+>>>>> @@ -145,6 +145,7 @@ enum {
+>>>>>         Opt_checkpoint_disable_cap_perc,
+>>>>>         Opt_checkpoint_enable,
+>>>>>         Opt_checkpoint_merge,
+>>>>> +     Opt_nocheckpoint_merge,
+>>>>>         Opt_compress_algorithm,
+>>>>>         Opt_compress_log_size,
+>>>>>         Opt_compress_extension,
+>>>>> @@ -215,7 +216,8 @@ static match_table_t f2fs_tokens = {
+>>>>>         {Opt_checkpoint_disable_cap, "checkpoint=disable:%u"},
+>>>>>         {Opt_checkpoint_disable_cap_perc, "checkpoint=disable:%u%%"},
+>>>>>         {Opt_checkpoint_enable, "checkpoint=enable"},
+>>>>> -     {Opt_checkpoint_merge, "checkpoint=merge"},
+>>>>> +     {Opt_checkpoint_merge, "checkpoint_merge"},
+>>>>> +     {Opt_nocheckpoint_merge, "nocheckpoint_merge"},
+>>>>>         {Opt_compress_algorithm, "compress_algorithm=%s"},
+>>>>>         {Opt_compress_log_size, "compress_log_size=%u"},
+>>>>>         {Opt_compress_extension, "compress_extension=%s"},
+>>>>> @@ -946,6 +948,9 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>>>>>                 case Opt_checkpoint_merge:
+>>>>>                         set_opt(sbi, MERGE_CHECKPOINT);
+>>>>>                         break;
+>>>>> +             case Opt_nocheckpoint_merge:
+>>>>> +                     clear_opt(sbi, MERGE_CHECKPOINT);
+>>>>> +                     break;
+>>>>>     #ifdef CONFIG_F2FS_FS_COMPRESSION
+>>>>>                 case Opt_compress_algorithm:
+>>>>>                         if (!f2fs_sb_has_compression(sbi)) {
+>>>>> @@ -1142,12 +1147,6 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>>>>>                 return -EINVAL;
+>>>>>         }
+>>>>>
+>>>>> -     if (test_opt(sbi, DISABLE_CHECKPOINT) &&
+>>>>> -                     test_opt(sbi, MERGE_CHECKPOINT)) {
+>>>>> -             f2fs_err(sbi, "checkpoint=merge cannot be used with checkpoint=disable\n");
+>>>>> -             return -EINVAL;
+>>>>> -     }
+>>>>> -
+>>>>>         /* Not pass down write hints if the number of active logs is lesser
+>>>>>          * than NR_CURSEG_PERSIST_TYPE.
+>>>>>          */
+>>>>> @@ -1782,7 +1781,7 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+>>>>>                 seq_printf(seq, ",checkpoint=disable:%u",
+>>>>>                                 F2FS_OPTION(sbi).unusable_cap);
+>>>>>         if (test_opt(sbi, MERGE_CHECKPOINT))
+>>>>> -             seq_puts(seq, ",checkpoint=merge");
+>>>>> +             seq_puts(seq, ",checkpoint_merge");
+>>>>
+>>>> Other noxxx options will be shown in show_options(), how about following them?
+>>>>
+>>>>>         if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_POSIX)
+>>>>>                 seq_printf(seq, ",fsync_mode=%s", "posix");
+>>>>>         else if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_STRICT)
+>>>>> @@ -1827,6 +1826,7 @@ static void default_options(struct f2fs_sb_info *sbi)
+>>>>>         sbi->sb->s_flags |= SB_LAZYTIME;
+>>>>>         set_opt(sbi, FLUSH_MERGE);
+>>>>>         set_opt(sbi, DISCARD);
+>>>>> +     clear_opt(sbi, MERGE_CHECKPOINT);
+>>>>
+>>>> Why should we clear checkpoint_merge option in default_options()?
+>>>>
+>>>> Thanks,
+>>>>
+>>>>>         if (f2fs_sb_has_blkzoned(sbi))
+>>>>>                 F2FS_OPTION(sbi).fs_mode = FS_MODE_LFS;
+>>>>>         else
+>>>>> @@ -2066,9 +2066,8 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+>>>>>                 }
+>>>>>         }
+>>>>>
+>>>>> -     if (!test_opt(sbi, MERGE_CHECKPOINT)) {
+>>>>> -             f2fs_stop_ckpt_thread(sbi);
+>>>>> -     } else {
+>>>>> +     if (!test_opt(sbi, DISABLE_CHECKPOINT) &&
+>>>>> +                     test_opt(sbi, MERGE_CHECKPOINT)) {
+>>>>>                 err = f2fs_start_ckpt_thread(sbi);
+>>>>>                 if (err) {
+>>>>>                         f2fs_err(sbi,
+>>>>> @@ -2076,6 +2075,8 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+>>>>>                             err);
+>>>>>                         goto restore_gc;
+>>>>>                 }
+>>>>> +     } else {
+>>>>> +             f2fs_stop_ckpt_thread(sbi);
+>>>>>         }
+>>>>>
+>>>>>         /*
+>>>>> @@ -3831,7 +3832,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+>>>>>
+>>>>>         /* setup checkpoint request control and start checkpoint issue thread */
+>>>>>         f2fs_init_ckpt_req_control(sbi);
+>>>>> -     if (test_opt(sbi, MERGE_CHECKPOINT)) {
+>>>>> +     if (!test_opt(sbi, DISABLE_CHECKPOINT) &&
+>>>>> +                     test_opt(sbi, MERGE_CHECKPOINT)) {
+>>>>>                 err = f2fs_start_ckpt_thread(sbi);
+>>>>>                 if (err) {
+>>>>>                         f2fs_err(sbi,
+>>>>>
+>>> .
+>>>
+> .
+> 
