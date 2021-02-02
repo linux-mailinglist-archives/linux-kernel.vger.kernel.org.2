@@ -2,110 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B479830B967
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:18:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A221730B969
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:18:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232447AbhBBIQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 03:16:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232339AbhBBIPR (ORCPT
+        id S232425AbhBBIQu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 2 Feb 2021 03:16:50 -0500
+Received: from relay10.mail.gandi.net ([217.70.178.230]:38401 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232366AbhBBIPq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 03:15:17 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CD32C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 00:14:36 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id m2so1512978wmm.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 00:14:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=V9OYiORsRMdWxR7osHjENqg1fnGThuRA0XqX/4BX+1c=;
-        b=hEjTSeELyWKPp0CnG3NhEUXGWqHKYf4FGwe42X4txoQqMYdN/l4GEsSWhpryg4cdr2
-         mLsbhB3My1be7fS3MUpSzG86Cu25HOLVj4xBtJwoJxvToTcO80tPG9WprKlOFXmaYj2V
-         DxgK0KjdyjKXHoASZ1QOLIHkyyRXhuX5iJeGoPV+mIf6XDHXOfkIeb0+QlXC7S35rj9Z
-         As/d/yiCIxOt7ghX7xJK2eTO0hQeWt0mIuQB641+PEgDtDz4qwLyvty+BQx/fO4DR9v0
-         LrIl8FFsdMFqrIO0l5JW53vwNphVfmVzAdhsBSbcy52Au6eT+JO097BcO+k2yS64KV3P
-         AZAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=V9OYiORsRMdWxR7osHjENqg1fnGThuRA0XqX/4BX+1c=;
-        b=P6c1nG6NYFuPbHO1IevlpiBZUMopxvzSqJagztWWiZ7gWOlaBnPxi0DYz5YLOcLMx5
-         ORz0djv6vXOsZP8rRCn1DvYPvS0B6sknAQcUglaTurVX3VCpfD/NoYIuAvYDsiko5Mbx
-         mG0c/ntNqs30btQl938/SlhKryhFIHsMfthlHx/OjJRXfXrGjCt1YzVMqpVS003c9zNs
-         B1NRrP1KPo9n2pfeW7FyL6/TZlljfVOs7tV6qOyFVs0BZB9o8cLkyGiF2fnuUq1i+n8x
-         GvyjUWzwpI+CX8AjhnfwTzn2LzUUvV50AYqIlzpp/MPhW5/r7WHO+oP35dyTYx+7cmIG
-         P7hg==
-X-Gm-Message-State: AOAM532qSZOmC5VGdBNVbXeomCTR19AsJuua/Uy6gUJ3TMXLCjFCMe2i
-        +I6dAhc2eFVTEfOlp6R9FH8DsQ==
-X-Google-Smtp-Source: ABdhPJz7x1HW6afm8E3SZwUYCuRD8nwdukBQBuMeDo46SISBs/cF7jfaDGXCswTgBC8EtkPPNPrOJg==
-X-Received: by 2002:a1c:5644:: with SMTP id k65mr2376244wmb.62.1612253675132;
-        Tue, 02 Feb 2021 00:14:35 -0800 (PST)
-Received: from dell ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id z8sm31399154wrh.83.2021.02.02.00.14.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 00:14:34 -0800 (PST)
-Date:   Tue, 2 Feb 2021 08:14:32 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v1 10/10] mfd: intel_msic: Remove driver for deprecated
- platform
-Message-ID: <20210202081432.GX4774@dell>
-References: <20210125193948.56760-1-andriy.shevchenko@linux.intel.com>
- <20210125193948.56760-11-andriy.shevchenko@linux.intel.com>
+        Tue, 2 Feb 2021 03:15:46 -0500
+Received: from xps13 (lfbn-tou-1-972-150.w86-210.abo.wanadoo.fr [86.210.203.150])
+        (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 77FF924000E;
+        Tue,  2 Feb 2021 08:15:00 +0000 (UTC)
+Date:   Tue, 2 Feb 2021 09:14:59 +0100
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     richard@nod.at, vigneshr@ti.com, boris.brezillon@collabora.com,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, bjorn.andersson@linaro.org
+Subject: Re: [PATCH] mtd: rawnand: Do not check for bad block if bbt is
+ unavailable
+Message-ID: <20210202091459.0c41a769@xps13>
+In-Reply-To: <20210202041614.GA840@work>
+References: <20210130035412.6456-1-manivannan.sadhasivam@linaro.org>
+        <20210201151824.5a9dca4a@xps13>
+        <20210202041614.GA840@work>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210125193948.56760-11-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 25 Jan 2021, Andy Shevchenko wrote:
+Hi Manivannan,
 
-> Intel Moorestown and Medfield are quite old Intel Atom based
-> 32-bit platforms, which were in limited use in some Android phones,
-> tablets and consumer electronics more than eight years ago.
-> 
-> There are no bugs or problems ever reported outside from Intel
-> for breaking any of that platforms for years. It seems no real
-> users exists who run more or less fresh kernel on it. The commit
-> 05f4434bc130 ("ASoC: Intel: remove mfld_machine") also in align
-> with this theory.
-> 
-> Due to above and to reduce a burden of supporting outdated drivers
-> we remove the support of outdated platforms completely.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> Acked-by: Mika Westerberg <mika.westerberg@linux.intel.com>
-> Acked-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
->  MAINTAINERS                                 |   2 -
->  arch/x86/include/asm/intel_scu_ipc_legacy.h |  12 -
->  drivers/mfd/Kconfig                         |   9 -
->  drivers/mfd/Makefile                        |   1 -
->  drivers/mfd/intel_msic.c                    | 425 ------------------
->  include/linux/mfd/intel_msic.h              | 453 --------------------
->  6 files changed, 902 deletions(-)
->  delete mode 100644 drivers/mfd/intel_msic.c
->  delete mode 100644 include/linux/mfd/intel_msic.h
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on Tue,
+2 Feb 2021 09:46:14 +0530:
 
-Acked-by: Lee Jones <lee.jones@linaro.org>
+> Hi,
+> 
+> On Mon, Feb 01, 2021 at 03:18:24PM +0100, Miquel Raynal wrote:
+> > Hi Manivannan,
+> > 
+> > Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org> wrote on Sat,
+> > 30 Jan 2021 09:24:12 +0530:
+> >   
+> > > The bbt pointer will be unavailable when NAND_SKIP_BBTSCAN option is
+> > > set for a NAND chip. The intention is to skip scanning for the bad
+> > > blocks during boot time.  
+> > 
+> > I don't have the same understanding: this flag skips the bad block
+> > table scan, not the bad block scan. We do want to scan all the devices
+> > in order to construct a RAM based table.
+> >   
+> > > However, the MTD core will call
+> > > _block_isreserved() and _block_isbad() callbacks unconditionally for
+> > > the rawnand devices due to the callbacks always present while collecting
+> > > the ecc stats.
+> > > 
+> > > The _block_isreserved() callback for rawnand will bail out if bbt
+> > > pointer is not available. But _block_isbad() will continue without
+> > > checking for it. So this contradicts with the NAND_SKIP_BBTSCAN option
+> > > since the bad block check will happen anyways (ie., not much difference
+> > > between scanning for bad blocks and checking each block for bad ones).
+> > > 
+> > > Hence, do not check for the bad block if bbt pointer is unavailable.  
+> > 
+> > Not checking for bad blocks at all feels insane. I don't really get the
+> > scope and goal of such change?
+> >   
+> 
+> The issue I encountered is, on the Telit FN980 device one of the
+> partition seems to be protected. So trying to read the bad blocks in
+> that partition makes the device to reboot during boot.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+o_O
+
+Reading a protected block makes the device to reboot?
+
+What is the exact device? Can you share the datasheet? Is this behavior
+expected? Because it seems really broken to me, a read should not
+trigger *anything* that bad.
+
+> There seems to be no flag passed by the parser for this partition. So
+> the only way I could let the device to boot is to completely skip the
+> bad block check.
+
+We do have a "lock" property which informs the host to first unlock the
+device, would this help? Is this locking reversible?
+
+> AFAIK, MTD core only supports checking for the reserved blocks to be
+> used for BBM and there is no way to check for a reserved partition like
+> this.
+
+It sounds like a chip specificity/bug, would it make sense to add a
+specific vendor implementation for that?
+
+> I agree that skipping bad block check is not a sane way but I don't know
+> any other way to handle this problem.
+> 
+> Thanks,
+> Mani
+> 
+
+Thanks,
+Miquèl
