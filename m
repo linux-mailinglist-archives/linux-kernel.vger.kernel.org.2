@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB95030CA22
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DACF830C83D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:48:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238828AbhBBSja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:39:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47000 "EHLO mail.kernel.org"
+        id S237853AbhBBRp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:45:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233780AbhBBOER (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:04:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 46B2865010;
-        Tue,  2 Feb 2021 13:48:36 +0000 (UTC)
+        id S233873AbhBBOKn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:10:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2BC4464DDA;
+        Tue,  2 Feb 2021 13:51:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273716;
-        bh=JfAZl8KhloGd83x+TRCK0G2qlw7GGGdjntHNfTITRcg=;
+        s=korg; t=1612273880;
+        bh=9Lqk464xukr2bfLf3AFeqYXBXdNsIicfG2zMq5D0vSQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W3ThEuh+10w/DXJ5GF0TslpBTt240Hiy2ZXnJQ3cU6TP/W/pM9CDMYmqhC6hClpo9
-         KWv7d9WL6VqbUsSpfF99umLJ3/+FXXHkDA8XS9htDoz0f5SYLJr37W5MOYUR57KOZ5
-         xQx3Dr3YoB4uXKrpbMNFxetzNBkUzRa9UWy42Uco=
+        b=XZreQQhNuSXHv6YcpPh6gTcZBelCApc7vBXUPQjMdNefVSDM06LbNCzOMiUaNaR57
+         QbjakMiwXD5DpdA8TaShpm292OqWH+Ca2B5efh5zC6+5EgpFnuWVh5Wc3fcyoDrJQS
+         B0m6id8NqkrksLVeevjVVat9WspC8cqWUSqFw3lo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Joerg Roedel <jroedel@suse.de>,
-        Filippo Sironi <sironi@amazon.de>
-Subject: [PATCH 5.4 55/61] iommu/vt-d: Dont dereference iommu_device if IOMMU_API is not built
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 4.9 10/32] futex: Mark the begin of futex exit explicitly
 Date:   Tue,  2 Feb 2021 14:38:33 +0100
-Message-Id: <20210202132948.811636459@linuxfoundation.org>
+Message-Id: <20210202132942.431762308@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132946.480479453@linuxfoundation.org>
-References: <20210202132946.480479453@linuxfoundation.org>
+In-Reply-To: <20210202132942.035179752@linuxfoundation.org>
+References: <20210202132942.035179752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,69 +41,160 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-commit 9def3b1a07c41e21c68a0eb353e3e569fdd1d2b1 upstream.
+commit 18f694385c4fd77a09851fd301236746ca83f3cb upstream.
 
-Since commit c40aaaac1018 ("iommu/vt-d: Gracefully handle DMAR units
-with no supported address widths") dmar.c needs struct iommu_device to
-be selected. We can drop this dependency by not dereferencing struct
-iommu_device if IOMMU_API is not selected and by reusing the information
-stored in iommu->drhd->ignored instead.
+Instead of relying on PF_EXITING use an explicit state for the futex exit
+and set it in the futex exit function. This moves the smp barrier and the
+lock/unlock serialization into the futex code.
 
-This fixes the following build error when IOMMU_API is not selected:
+As with the DEAD state this is restricted to the exit path as exec
+continues to use the same task struct.
 
-drivers/iommu/dmar.c: In function ‘free_iommu’:
-drivers/iommu/dmar.c:1139:41: error: ‘struct iommu_device’ has no member named ‘ops’
- 1139 |  if (intel_iommu_enabled && iommu->iommu.ops) {
-                                                ^
+This allows to simplify that logic in a next step.
 
-Fixes: c40aaaac1018 ("iommu/vt-d: Gracefully handle DMAR units with no supported address widths")
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
-Acked-by: David Woodhouse <dwmw@amazon.co.uk>
-Link: https://lore.kernel.org/r/20201013073055.11262-1-brgl@bgdev.pl
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-[ - context change due to moving drivers/iommu/dmar.c to
-    drivers/iommu/intel/dmar.c
-  - set the drhr in the iommu like in upstream commit b1012ca8dc4f
-    ("iommu/vt-d: Skip TE disabling on quirky gfx dedicated iommu") ]
-Signed-off-by: Filippo Sironi <sironi@amazon.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20191106224556.539409004@linutronix.de
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/iommu/dmar.c        |    3 ++-
- include/linux/intel-iommu.h |    2 ++
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ include/linux/futex.h |   31 +++----------------------------
+ kernel/exit.c         |   12 +-----------
+ kernel/futex.c        |   37 ++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 40 insertions(+), 40 deletions(-)
 
---- a/drivers/iommu/dmar.c
-+++ b/drivers/iommu/dmar.c
-@@ -1114,6 +1114,7 @@ static int alloc_iommu(struct dmar_drhd_
- 	}
- 
- 	drhd->iommu = iommu;
-+	iommu->drhd = drhd;
- 
- 	return 0;
- 
-@@ -1128,7 +1129,7 @@ error:
- 
- static void free_iommu(struct intel_iommu *iommu)
- {
--	if (intel_iommu_enabled && iommu->iommu.ops) {
-+	if (intel_iommu_enabled && !iommu->drhd->ignored) {
- 		iommu_device_unregister(&iommu->iommu);
- 		iommu_device_sysfs_remove(&iommu->iommu);
- 	}
---- a/include/linux/intel-iommu.h
-+++ b/include/linux/intel-iommu.h
-@@ -556,6 +556,8 @@ struct intel_iommu {
- 	struct iommu_device iommu;  /* IOMMU core code handle */
- 	int		node;
- 	u32		flags;      /* Software defined flags */
-+
-+	struct dmar_drhd_unit *drhd;
+--- a/include/linux/futex.h
++++ b/include/linux/futex.h
+@@ -57,6 +57,7 @@ union futex_key {
+ #ifdef CONFIG_FUTEX
+ enum {
+ 	FUTEX_STATE_OK,
++	FUTEX_STATE_EXITING,
+ 	FUTEX_STATE_DEAD,
  };
  
- /* PCI domain-device relationship */
+@@ -71,33 +72,7 @@ static inline void futex_init_task(struc
+ 	tsk->futex_state = FUTEX_STATE_OK;
+ }
+ 
+-/**
+- * futex_exit_done - Sets the tasks futex state to FUTEX_STATE_DEAD
+- * @tsk:	task to set the state on
+- *
+- * Set the futex exit state of the task lockless. The futex waiter code
+- * observes that state when a task is exiting and loops until the task has
+- * actually finished the futex cleanup. The worst case for this is that the
+- * waiter runs through the wait loop until the state becomes visible.
+- *
+- * This has two callers:
+- *
+- * - futex_mm_release() after the futex exit cleanup has been done
+- *
+- * - do_exit() from the recursive fault handling path.
+- *
+- * In case of a recursive fault this is best effort. Either the futex exit
+- * code has run already or not. If the OWNER_DIED bit has been set on the
+- * futex then the waiter can take it over. If not, the problem is pushed
+- * back to user space. If the futex exit code did not run yet, then an
+- * already queued waiter might block forever, but there is nothing which
+- * can be done about that.
+- */
+-static inline void futex_exit_done(struct task_struct *tsk)
+-{
+-	tsk->futex_state = FUTEX_STATE_DEAD;
+-}
+-
++void futex_exit_recursive(struct task_struct *tsk);
+ void futex_exit_release(struct task_struct *tsk);
+ void futex_exec_release(struct task_struct *tsk);
+ 
+@@ -105,7 +80,7 @@ long do_futex(u32 __user *uaddr, int op,
+ 	      u32 __user *uaddr2, u32 val2, u32 val3);
+ #else
+ static inline void futex_init_task(struct task_struct *tsk) { }
+-static inline void futex_exit_done(struct task_struct *tsk) { }
++static inline void futex_exit_recursive(struct task_struct *tsk) { }
+ static inline void futex_exit_release(struct task_struct *tsk) { }
+ static inline void futex_exec_release(struct task_struct *tsk) { }
+ #endif
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -785,22 +785,12 @@ void __noreturn do_exit(long code)
+ 	 */
+ 	if (unlikely(tsk->flags & PF_EXITING)) {
+ 		pr_alert("Fixing recursive fault but reboot is needed!\n");
+-		futex_exit_done(tsk);
++		futex_exit_recursive(tsk);
+ 		set_current_state(TASK_UNINTERRUPTIBLE);
+ 		schedule();
+ 	}
+ 
+ 	exit_signals(tsk);  /* sets PF_EXITING */
+-	/*
+-	 * Ensure that all new tsk->pi_lock acquisitions must observe
+-	 * PF_EXITING. Serializes against futex.c:attach_to_pi_owner().
+-	 */
+-	smp_mb();
+-	/*
+-	 * Ensure that we must observe the pi_state in exit_mm() ->
+-	 * mm_release() -> exit_pi_state_list().
+-	 */
+-	raw_spin_unlock_wait(&tsk->pi_lock);
+ 
+ 	/* sync mm's RSS info before statistics gathering */
+ 	if (tsk->mm)
+--- a/kernel/futex.c
++++ b/kernel/futex.c
+@@ -3287,10 +3287,45 @@ void futex_exec_release(struct task_stru
+ 		exit_pi_state_list(tsk);
+ }
+ 
++/**
++ * futex_exit_recursive - Set the tasks futex state to FUTEX_STATE_DEAD
++ * @tsk:	task to set the state on
++ *
++ * Set the futex exit state of the task lockless. The futex waiter code
++ * observes that state when a task is exiting and loops until the task has
++ * actually finished the futex cleanup. The worst case for this is that the
++ * waiter runs through the wait loop until the state becomes visible.
++ *
++ * This is called from the recursive fault handling path in do_exit().
++ *
++ * This is best effort. Either the futex exit code has run already or
++ * not. If the OWNER_DIED bit has been set on the futex then the waiter can
++ * take it over. If not, the problem is pushed back to user space. If the
++ * futex exit code did not run yet, then an already queued waiter might
++ * block forever, but there is nothing which can be done about that.
++ */
++void futex_exit_recursive(struct task_struct *tsk)
++{
++	tsk->futex_state = FUTEX_STATE_DEAD;
++}
++
+ void futex_exit_release(struct task_struct *tsk)
+ {
++	tsk->futex_state = FUTEX_STATE_EXITING;
++	/*
++	 * Ensure that all new tsk->pi_lock acquisitions must observe
++	 * FUTEX_STATE_EXITING. Serializes against attach_to_pi_owner().
++	 */
++	smp_mb();
++	/*
++	 * Ensure that we must observe the pi_state in exit_pi_state_list().
++	 */
++	raw_spin_lock_irq(&tsk->pi_lock);
++	raw_spin_unlock_irq(&tsk->pi_lock);
++
+ 	futex_exec_release(tsk);
+-	futex_exit_done(tsk);
++
++	tsk->futex_state = FUTEX_STATE_DEAD;
+ }
+ 
+ long do_futex(u32 __user *uaddr, int op, u32 val, ktime_t *timeout,
 
 
