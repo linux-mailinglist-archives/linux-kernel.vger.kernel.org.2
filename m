@@ -2,184 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE2530C65A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:46:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FFCD30C66D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236813AbhBBQps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 11:45:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236779AbhBBQnG (ORCPT
+        id S236766AbhBBQsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:48:02 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2484 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236278AbhBBQpW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 11:43:06 -0500
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75C2C06174A;
-        Tue,  2 Feb 2021 08:42:25 -0800 (PST)
-Received: by mail-wr1-x42b.google.com with SMTP id c4so18465842wru.9;
-        Tue, 02 Feb 2021 08:42:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:reply-to:to:cc:references:in-reply-to:subject:date:message-id
-         :mime-version:content-transfer-encoding:thread-index
-         :content-language;
-        bh=STneyShm0vCPYM4l3wpr4D69jWlxGiJ4g4tzZ7/33lE=;
-        b=Z8h1xH9LrCIPbnUzDhB6+8OgUVkaq3lMCCgyLN0ZPUv8uKh1CGeCtexXpijdWGeEdR
-         GmuMpknz9Xi/KKlCXJNdmCykqb7XMrDbl1hQeONsplw0h5K7DxwcmeBHPTqhf/n1FwSl
-         twSkencRK6PL1ThnkyhuV9IKTwtSLwmBLvCqYEzPgYOevXeJRrABOjSSgyK7nG+nfMv7
-         LDAUDusE6mxPyKTsXFh2FcyPBev6/DzxmoHcZbXvChChWJxHY74FbieBOcnEIessfNAs
-         mk6DBnsjmySGjFkdSOqoy39WYd6OgG1pU+/6SX5SG2SNErZj1nSPVoQdbah0wjMck+ji
-         b7YQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:reply-to:to:cc:references:in-reply-to
-         :subject:date:message-id:mime-version:content-transfer-encoding
-         :thread-index:content-language;
-        bh=STneyShm0vCPYM4l3wpr4D69jWlxGiJ4g4tzZ7/33lE=;
-        b=ea4RIgs9/CPZYOL3964+zwAwpNuhFte+3N9T+ddw7/Nf2RF6A2yRMZTKQGV6R5qSJg
-         BwRs9ZPCyDO/mFQyfOWLvBqMnEeeXyyFzZstozZuEWMdeUTmdSbq0CzKc2xpqTodmlCc
-         e3W1qPtME3x9e5BulWMSBs3S8r4CIXfRDjP2CVeHvE7hFP7K2bqJCvH2IsKUjLrue+fW
-         KERc2NdSUH+ypSo3+80SXNFiriwy8+aj9KF41xCGY10FovatjAVfaLsMywnMal4u6z5k
-         ULj8h1OKarJtY7CSG+rPgNU7P/7ABcIlCYWUTnuQKb0sBiSM4hPnpwhmS+rgVhkeR4CM
-         FVTQ==
-X-Gm-Message-State: AOAM533Ly+uqkTq8azEysvc/Gn4PSA2UsWCXKZUElso4YPYufDhWLX7V
-        78TomkAI3DFuYWc5qLuJuTk=
-X-Google-Smtp-Source: ABdhPJy2nnGmtTJ3TUqoRthgCxgYu0/DthvxcvL9h7iYFq5Z3OEkSPZ7bmrdl5r8eH8nbB7nJSHkNg==
-X-Received: by 2002:adf:f891:: with SMTP id u17mr24929982wrp.253.1612284144489;
-        Tue, 02 Feb 2021 08:42:24 -0800 (PST)
-Received: from CBGR90WXYV0 (host86-190-149-163.range86-190.btcentralplus.com. [86.190.149.163])
-        by smtp.gmail.com with ESMTPSA id b4sm32480479wrn.12.2021.02.02.08.42.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 02 Feb 2021 08:42:23 -0800 (PST)
-From:   Paul Durrant <xadimgnik@gmail.com>
-X-Google-Original-From: "Paul Durrant" <paul@xen.org>
-Reply-To: <paul@xen.org>
-To:     =?utf-8?Q?'Roger_Pau_Monn=C3=A9'?= <roger.pau@citrix.com>
-Cc:     <xen-devel@lists.xenproject.org>, <linux-block@vger.kernel.org>,
+        Tue, 2 Feb 2021 11:45:22 -0500
+Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DVVtq3MRRz67kL5;
+        Wed,  3 Feb 2021 00:41:07 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 2 Feb 2021 17:44:36 +0100
+Received: from [10.47.3.41] (10.47.3.41) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 2 Feb 2021
+ 16:44:35 +0000
+Subject: Re: [PATCH v5 0/4] perf vendor events: Support PMU events for A64FX
+To:     Shunsuke Nakamura <nakamura.shun@jp.fujitsu.com>,
+        <will@kernel.org>, <mathieu.poirier@linaro.org>,
+        <leo.yan@linaro.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <acme@kernel.org>, <mark.rutland@arm.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@redhat.com>,
+        <namhyung@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
-        "'Paul Durrant'" <pdurrant@amazon.com>,
-        "'Konrad Rzeszutek Wilk'" <konrad.wilk@oracle.com>,
-        "'Jens Axboe'" <axboe@kernel.dk>,
-        "'Dongli Zhang'" <dongli.zhang@oracle.com>
-References: <20210128130441.11744-1-paul@xen.org> <YBl9ycif3bG/Y+eR@Air-de-Roger>
-In-Reply-To: <YBl9ycif3bG/Y+eR@Air-de-Roger>
-Subject: RE: [PATCH v2] xen-blkback: fix compatibility bug with single page rings
-Date:   Tue, 2 Feb 2021 16:42:22 -0000
-Message-ID: <037601d6f982$61e34f80$25a9ee80$@xen.org>
+        Shunsuke Nakamura <nakamura.shun@fujitsu.com>
+References: <20210202125140.1785583-1-nakamura.shun@jp.fujitsu.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <57c6b89d-e0b2-3df4-8dcf-2cc71f772cb4@huawei.com>
+Date:   Tue, 2 Feb 2021 16:43:06 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQESWKuFsxkk/iz7Hd1VT64wNwq0EAFvpAqOq8LV10A=
-Content-Language: en-gb
+In-Reply-To: <20210202125140.1785583-1-nakamura.shun@jp.fujitsu.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.3.41]
+X-ClientProxiedBy: lhreml733-chm.china.huawei.com (10.201.108.84) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Roger Pau Monn=C3=A9 <roger.pau@citrix.com>
-> Sent: 02 February 2021 16:29
-> To: Paul Durrant <paul@xen.org>
-> Cc: xen-devel@lists.xenproject.org; linux-block@vger.kernel.org; =
-linux-kernel@vger.kernel.org; Paul
-> Durrant <pdurrant@amazon.com>; Konrad Rzeszutek Wilk =
-<konrad.wilk@oracle.com>; Jens Axboe
-> <axboe@kernel.dk>; Dongli Zhang <dongli.zhang@oracle.com>
-> Subject: Re: [PATCH v2] xen-blkback: fix compatibility bug with single =
-page rings
->=20
-> On Thu, Jan 28, 2021 at 01:04:41PM +0000, Paul Durrant wrote:
-> > From: Paul Durrant <pdurrant@amazon.com>
-> >
-> > Prior to commit 4a8c31a1c6f5 ("xen/blkback: rework connect_ring() to =
-avoid
-> > inconsistent xenstore 'ring-page-order' set by malicious blkfront"), =
-the
-> > behaviour of xen-blkback when connecting to a frontend was:
-> >
-> > - read 'ring-page-order'
-> > - if not present then expect a single page ring specified by =
-'ring-ref'
-> > - else expect a ring specified by 'ring-refX' where X is between 0 =
-and
-> >   1 << ring-page-order
-> >
-> > This was correct behaviour, but was broken by the afforementioned =
-commit to
-> > become:
-> >
-> > - read 'ring-page-order'
-> > - if not present then expect a single page ring (i.e. =
-ring-page-order =3D 0)
-> > - expect a ring specified by 'ring-refX' where X is between 0 and
-> >   1 << ring-page-order
-> > - if that didn't work then see if there's a single page ring =
-specified by
-> >   'ring-ref'
-> >
-> > This incorrect behaviour works most of the time but fails when a =
-frontend
-> > that sets 'ring-page-order' is unloaded and replaced by one that =
-does not
-> > because, instead of reading 'ring-ref', xen-blkback will read the =
-stale
-> > 'ring-ref0' left around by the previous frontend will try to map the =
-wrong
-> > grant reference.
-> >
-> > This patch restores the original behaviour.
-> >
-> > Fixes: 4a8c31a1c6f5 ("xen/blkback: rework connect_ring() to avoid =
-inconsistent xenstore 'ring-page-
-> order' set by malicious blkfront")
-> > Signed-off-by: Paul Durrant <pdurrant@amazon.com>
-> > ---
-> > Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-> > Cc: "Roger Pau Monn=C3=A9" <roger.pau@citrix.com>
-> > Cc: Jens Axboe <axboe@kernel.dk>
-> > Cc: Dongli Zhang <dongli.zhang@oracle.com>
-> >
-> > v2:
-> >  - Remove now-spurious error path special-case when nr_grefs =3D=3D =
-1
-> > ---
-> >  drivers/block/xen-blkback/common.h |  1 +
-> >  drivers/block/xen-blkback/xenbus.c | 38 =
-+++++++++++++-----------------
-> >  2 files changed, 17 insertions(+), 22 deletions(-)
-> >
-> > diff --git a/drivers/block/xen-blkback/common.h =
-b/drivers/block/xen-blkback/common.h
-> > index b0c71d3a81a0..524a79f10de6 100644
-> > --- a/drivers/block/xen-blkback/common.h
-> > +++ b/drivers/block/xen-blkback/common.h
-> > @@ -313,6 +313,7 @@ struct xen_blkif {
-> >
-> >  	struct work_struct	free_work;
-> >  	unsigned int 		nr_ring_pages;
-> > +	bool                    multi_ref;
->=20
-> You seem to have used spaces between the type and the variable name
-> here, while neighbors also use hard tabs.
->=20
+On 02/02/2021 12:51, Shunsuke Nakamura wrote:
+> From: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
+> 
+> This patch series supports A64FX PMU event v1.2.
+> 
+> The first patch adds a common and microarchitecture event, which can be
+> referenced from CPU JSONs.
+> This patch uses part of John's patch.[1]
+> 
+> The second patch add more common and microarchitecture events.
+> 
+> The third patch fixes the lexical definition of event name so that
+> perf can recognize event name that start with a number.
+> 
+> The fourth patch adds PMU events for A64FX.
 
-Oops. Xen vs. Linux coding style :-( I'll send a v3 with the whitespace =
-fixed.
+Just some things to note:
+- please pick up and apply reviewed-by tags granted from previous 
+reviews if explicitly granted, subject to making any trivial changes 
+requested
+If any significant changes are made, then don't pick up theses tags or 
+drop them (if they were picked up earlier)
+- I'd say that it's best not to send my patch in 1/4, but better to 
+mention the series which this is based on in your cover letter
+Sending my patch is only going to make the maintainers (Arnaldo) life 
+more difficult to track these things.
 
-> The rest LGTM:
->=20
-> Reviewed-by: Roger Pau Monn=C3=A9 <roger.pau@citrix.com>
->=20
-> We should have forbidden the usage of ring-page-order =3D 0 and we =
-could
-> have avoided having to add the multi_ref variable, but that's too late
-> now.
+Apart from that, I think that we're a bit uncertain about patch 3/4
 
-Thanks. Yes, that cat is out of the bag and has been for a while =
-unfortunately.
+Thanks,
+john
 
-  Paul
 
->=20
-> Thanks, Roger.
+> 
+> 
+> Changes in v4:
+>   - Add arm64 to the subjects of the second and fourth patches.
+>   - Add reference URLs to the body of the second patch.
+> 
+> Changes in v3:
+>   - Add linux-arm-kernel mailing list to cc.
+> 
+> Changes in v2:
+>   - Added armv8-common-and-microarch based on John's patch.[1]
+>   - Fixed A64FX Json to refer to standard events in armv8-common-and-microarch.
+> 
+> 
+> [1] https://lore.kernel.org/lkml/1611835236-34696-3-git-send-email-john.garry@huawei.com/
+> 
+> 
+> John Garry (1):
+>    perf vendor events arm64: Add common and uarch event JSON
+> 
+> Shunsuke Nakamura (3):
+>    perf vendor events arm64: Add common and uarch event JSON
+>    perf vendor events arm64: Add more common and uarch events
+>    perf tools: Fix lexical definition of event name
+>    perf vendor events arm64: Add Fujitsu A64FX pmu event
+> 
+>   .../arch/arm64/armv8-common-and-microarch.json     | 476 +++++++++++++++++++++
+>   .../arch/arm64/fujitsu/a64fx/branch.json           |   8 +
+>   .../pmu-events/arch/arm64/fujitsu/a64fx/bus.json   |  62 +++
+>   .../pmu-events/arch/arm64/fujitsu/a64fx/cache.json | 128 ++++++
+>   .../pmu-events/arch/arm64/fujitsu/a64fx/cycle.json |   5 +
+>   .../arch/arm64/fujitsu/a64fx/exception.json        |  29 ++
+>   .../arch/arm64/fujitsu/a64fx/instruction.json      | 131 ++++++
+>   .../arch/arm64/fujitsu/a64fx/memory.json           |   8 +
+>   .../pmu-events/arch/arm64/fujitsu/a64fx/other.json | 188 ++++++++
+>   .../arch/arm64/fujitsu/a64fx/pipeline.json         | 194 +++++++++
+>   .../pmu-events/arch/arm64/fujitsu/a64fx/sve.json   | 110 +++++
+>   tools/perf/pmu-events/arch/arm64/mapfile.csv       |   1 +
+>   tools/perf/util/parse-events.l                     |   2 +-
+>   13 files changed, 1341 insertions(+), 1 deletion(-)
+>   create mode 100644 tools/perf/pmu-events/arch/arm64/armv8-common-and-microarch.json
+>   create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/branch.json
+>   create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/bus.json
+>   create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cache.json
+>   create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/cycle.json
+>   create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/exception.json
+>   create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/instruction.json
+>   create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/memory.json
+>   create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/other.json
+>   create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/pipeline.json
+>   create mode 100644 tools/perf/pmu-events/arch/arm64/fujitsu/a64fx/sve.json
+> 
 
