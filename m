@@ -2,313 +2,423 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD6530CF3B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:45:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82F8930CF3E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:45:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235597AbhBBWnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 17:43:23 -0500
-Received: from vps-vb.mhejs.net ([37.28.154.113]:59894 "EHLO vps-vb.mhejs.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235113AbhBBWnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 17:43:01 -0500
-Received: from MUA
-        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.93.0.4)
-        (envelope-from <mail@maciej.szmigiero.name>)
-        id 1l74N7-00031Q-Ud; Tue, 02 Feb 2021 23:42:09 +0100
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <ceb96527b6f7bb662eec813f05b897a551ebd0b2.1612140117.git.maciej.szmigiero@oracle.com>
- <4d748e0fd50bac68ece6952129aed319502b6853.1612140117.git.maciej.szmigiero@oracle.com>
- <YBisBkSYPoaOM42F@google.com>
-From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [PATCH 2/2] KVM: Scalable memslots implementation
-Message-ID: <9e6ca093-35c3-7cca-443b-9f635df4891d@maciej.szmigiero.name>
-Date:   Tue, 2 Feb 2021 23:42:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S235668AbhBBWnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 17:43:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49348 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233120AbhBBWnR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 17:43:17 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BF2AC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 14:42:32 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id v19so15885348pgj.12
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 14:42:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vm+8K78/vDISuVFEQprDbnRBNIJoznUwb75pujPY7SE=;
+        b=fwusQ5MgE08tPrIz9IXoaRwx79BMgS2fy5tjm/VODYmSbcG1ZgjQgvB4oI+6T/UJnd
+         CL6qpNWk+cK1dpKRZ2AROGiggZTw/gE5xd1mUuqa1eVRBA4fpAlR6aPpKttMvSGmEv2P
+         uVeCP0D7YlcQ5z0SPsVlmuGIKGvsSNuQURufJp/VdC2L/nZdoG5OosSGamqmYpzbByv3
+         2gQKTZOkmlY+ggwkAK8NgP1ABlFJr0YQBydFRZM3wsTJkvr69L6nU4V0uStTM150kch8
+         qSTnPfOCm9z3uSlSSsfldUypkicWjPeZM4ivZ9uE1MrdIN96bABNIsE09/ynImNtxtYW
+         a9Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vm+8K78/vDISuVFEQprDbnRBNIJoznUwb75pujPY7SE=;
+        b=Dw4oC9/OQXApghSqlJf9KZWI4WTrSRbkVYL0GkoxzlisvqRoMhBkdRaJ/Cxfq2Uwpf
+         Qqh+IoFV4RT6MSGZg0j76K6dGCaXm0KofluezPz690id1C2s6BvD5cWN2A7FoduvJzrt
+         /53Em6CGWXKZGo5Jc571bc0ojY7c7jAVrq0xKFoftzHqPAT4QXgwKmNBwStBxcytF6gV
+         6+qfKDHmRZDdB+yO0Ebe/Yc4G3mHSKVyp/CbZ6qgp+IKt+eJxFohd9E+GD7Fqc62vGC/
+         26MOOc0IJgUXLPIUYgjoWxjOlKOg7ULrH+COeRvKKcnbh5sWxr2JqPzEWad8aaH2Fukt
+         dqTQ==
+X-Gm-Message-State: AOAM530vR5RMWlCP0JGGJVPRiwZ4dBKVrptTdRrrS3/OIwFOceUCXAlm
+        Nj3TVkNoHMCKS8DN9fB3uw4+4WkEiVbhAA==
+X-Google-Smtp-Source: ABdhPJwU4CQdbaCmrPnR1+S9jzQCYG+PW9zZykgA9jrS3TwvdmqOQYb35rNn/UX+U7oys6m6t8oRVQ==
+X-Received: by 2002:a63:c207:: with SMTP id b7mr338232pgd.184.1612305751722;
+        Tue, 02 Feb 2021 14:42:31 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id q141sm48250pfc.24.2021.02.02.14.42.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 14:42:31 -0800 (PST)
+Date:   Tue, 2 Feb 2021 15:42:29 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Cc:     Arnaud POULIQUEN <arnaud.pouliquen@st.com>,
+        "ohad@wizery.com" <ohad@wizery.com>,
+        "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 00/17] remoteproc: Add support for detaching a rproc
+Message-ID: <20210202224229.GA1541378@xps15>
+References: <20201218173228.2277032-1-mathieu.poirier@linaro.org>
+ <64b559dc-9e89-c351-ddee-f9cebd155ed7@st.com>
+ <20210202004956.GD1319650@xps15>
+ <200a464a-f6dd-480c-d7cd-d8165828fabc@foss.st.com>
 MIME-Version: 1.0
-In-Reply-To: <YBisBkSYPoaOM42F@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <200a464a-f6dd-480c-d7cd-d8165828fabc@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sean,
-
-Thanks for your quick look at the series.
-
-On 02.02.2021 02:33, Sean Christopherson wrote:
-> The patch numbering and/or threading is messed up.  This should either be a
-> standalone patch, or fully incorporated into the same series as the selftests
-> changes.  But, that's somewhat of a moot point...
-
-While the new benchmark was used to measure the performance of these
-changes, it is otherwise independent of them, that's why it was submitted
-as a separate series.
-
-> On Mon, Feb 01, 2021, Maciej S. Szmigiero wrote:
->> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
->>
->> The current memslot code uses a (reverse) gfn-ordered memslot array for
->> keeping track of them.
->> This only allows quick binary search by gfn, quick lookup by hva is not
->> possible (the implementation has to do a linear scan of the whole memslot
->> array).
->>
->> Because the memslot array that is currently in use cannot be modified
->> every memslot management operation (create, delete, move, change flags)
->> has to make a copy of the whole array so it has a scratch copy to work
->> on.
->>
->> Strictly speaking, however, it is only necessary to make copy of the
->> memslot that is being modified, copying all the memslots currently
->> present is just a limitation of the array-based memslot implementation.
->>
->> Two memslot sets, however, are still needed so the VM continues to
->> run on the currently active set while the requested operation is being
->> performed on the second, currently inactive one.
->>
->> In order to have two memslot sets, but only one copy of the actual
->> memslots it is necessary to split out the memslot data from the
->> memslot sets.
->>
->> The memslots themselves should be also kept independent of each other
->> so they can be individually added or deleted.
->>
->> These two memslot sets should normally point to the same set of
->> memslots. They can, however, be desynchronized when performing a
->> memslot management operation by replacing the memslot to be modified
->> by its copy.
->> After the operation is complete, both memslot sets once again
->> point to the same, common set of memslot data.
->>
->> This commit implements the aforementioned idea.
+On Tue, Feb 02, 2021 at 09:54:13AM +0100, Arnaud POULIQUEN wrote:
 > 
-> This needs split into at least 5+ patches, and probably more like 10+ to have
-> a realistic chance of getting it thoroughly reviewed.
 > 
-> E.g. changes that can easily be split out:
+> On 2/2/21 1:49 AM, Mathieu Poirier wrote:
+> > On Wed, Jan 27, 2021 at 10:21:24AM +0100, Arnaud POULIQUEN wrote:
+> >> Hi Mathieu
+> >>
+> >> On 12/18/20 6:32 PM, Mathieu Poirier wrote:
+> >>> Following the work done here [1], this set provides support for the
+> >>> remoteproc core to release resources associated with a remote processor
+> >>> without having to switch it off. That way a platform driver can be removed
+> >>> or the application processor power cycled while the remote processor is
+> >>> still operating.
+> >>>
+> >>> Of special interest in this series are patches 5 and 6 where getting the
+> >>> address of the resource table installed by an eternal entity if moved to
+> >>> the core.  This is to support scenarios where a remote process has been
+> >>> booted by the core but is being detached.  To re-attach the remote
+> >>> processor, the address of the resource table needs to be known at a later
+> >>> time than the platform driver's probe() function.
+> >>>
+> >>> Applies cleanly on v5.10
+> >>>
+> >>> Thanks,
+> >>> Mathieu
+> >>>
+> >>> [1]. https://lkml.org/lkml/2020/7/14/1600
+> >>>
+> >>> ----
+> >>> New for v4:
+> >>> - Made binding description OS agnostic (Rob)
+> >>> - Added functionality to set the external resource table in the core
+> >>> - Fixed a crash when detaching (Arnaud)
+> >>> - Fixed error code propagation in rproc_cdev_relase() and rproc_del() (Arnaud)
+> >>> - Added RB tags
+> >>
+> >>
+> >> I tested you series, attach and  detach is working well.
+> >>
+> >> Then I faced issue when tried to re-attach after a detach.
+> >>
+> > 
+> > Right, in this case don't expect the re-attach to work properly because function
+> > stm32_rproc_detach() does not exist.  As such the M4 doesn't put itself back
+> > in "wait-for-attach" mode as it does when booted by the boot loader.  If I
+> > remember correctly we talked about that during an earlier conversation and we
+> > agreed FW support would be needed to properly test the re-attach.
 > 
->    - Move s390's "approximate" logic into search_memslots.
-
-Will do.
-
->    - Introduce n_memslots_pages
-
-Will do.
-
->    - Using a hash for id_to_index
-
-Will do.
-
->    - Changing KVM_USER_MEM_SLOTS to SHRT_MAX
-
-Will do.
-
->    - kvm_zap_gfn_range() changes/optimizations
-
-I guess you mean using a gfn rbtree instead of an ordered array here,
-since that's the reason for the change here - will do.
-
+> Yes you are right the remote firmware needs to be inform about the detach, and
+> this is the purpose of the detach ops.
+> But also some actions are missing on local side as some resources have also to
+> be reinitialized as described in my previous mail.
+> For instance the resource table is handled by the remoteproc framework. The
+> remote firmware should only have a read access to this table.
 > 
-> AFAICT, tracking both the active and inactive memslot in memslots_all could also
-> be done in a separate patch, though I can't tell if that would actually gain
-> anything.
+> >  
+> >> But I don't know if this feature has to be supported in this step.
+> >>
+> >> The 2 issues I found are:
+> >>
+> >> 1) memory carveouts are released on detach so need to be reinitialized.
+> >> The use of prepare/unprepare for the attach and detach would solve the issue but
+> >> probably need to add parameter to differentiate a start/stop from a attach/detach.
 
-Two sets of memslots are always needed since we need a second, inactive
-set to perform operation on while the VM continues to run on the first
-one.
+I am in agreement with you assesment and the patch you have proposed to fix it.
+Right now carveouts are properly handled between start and stop operations
+because their parsing and allocation is done as part for ops:parse_fw(), which
+is called for each iteration.  Moving the parsing and allocation to
+rproc_prepare_device() ends up doing the same thing.
 
-It is only that the current code makes a copy of the whole array,
-including all the memslot data, for this second set, but the new code
-only copies the data of the actually modified memslot.
+I am not sure we absolutely need an extra parameter to differentiate between
+start/stop and attach/detach.  Typically the rproc_prepare_device() is used to
+do some kind of setup like providing power to a memory bank.  I suppose that if
+a memory bank is already powered by the boot loader, asking to power it up again
+won't do anything.
 
-For this reason, the patch that changes the array implementation to the
-"memslots_all" implementation has to also change the whole algorithm in
-kvm_set_memslot().
+As such I suggest we keep the parameters as they are now.  We can revisit if a
+use case comes up at a later time. 
 
+> >>
+> >> 2) The vrings in the loaded resource table (so no cached) has to be properly
+> >> reinitialized. In rproc_free_vring  the vring da is set to 0 that is then
+> >> considered as a fixed address.
+> >>
+> >> Here is a fix which works on the stm32 platform
+> >>
+> >> @@ -425,7 +425,7 @@ void rproc_free_vring(struct rproc_vring *rvring)
+> >>  	 */
+> >>  	if (rproc->table_ptr) {
+> >>  		rsc = (void *)rproc->table_ptr + rvring->rvdev->rsc_offset;
+> >> -		rsc->vring[idx].da = 0;
+> >> +		rsc->vring[idx].da = FW_RSC_ADDR_ANY;
+> >>  		rsc->vring[idx].notifyid = -1;
+> >>  	}
+> >>  }
 
->> The new implementation uses two trees to perform quick lookups:
->> For tracking of gfn an ordinary rbtree is used since memslots cannot
->> overlap in the guest address space and so this data structure is
->> sufficient for ensuring that lookups are done quickly.
+I see why this could be needed.  I initially assumed the remote processor would
+install a new resource table in memory upon receiving notification the core is
+going away.  But upon reflection the remote processor may not even have access
+to the image it is running.
+
+Let me think about this further - I want to make sure we don't introduce a
+regression for current implementations.
+
+> > 
+> > In light of the above let me know if these two issues are still relevant.  If
+> > so I'll investigate further.
 > 
-> Switching to a rbtree for the gfn lookups also appears to be a separate change,
-
-All right.
-
-> though that's little more than a guess based on a quick read of the changes.
+> To highlight the issue just test attach/detach/attch  with a firmware that
+> implements a RPMsg communication. On the second attach the virtio framework is
+> not properly restarted.
 > 
->> For tracking of hva, however, an interval tree is needed since they
->> can overlap between memslots.
+> Then please find at the end of the mail 3 patches for test I added on top of
+> your series,that allow me to reattach. Of course the RPMsg channels are not
+> re-created as i don't implement the remote FW part, but the Linux virtio and
+> RPmsg frameworks are restarted.
 > 
-> ...
+> - [PATCH 1/3] remoteproc: stm32: add capability to detach from the remoteproc
+>   => Add a dummy function in stm32_rproc for test.
+> - [PATCH 2/3] remoteproc: Add prepare/unprepare for attach detach
+>   => Add prepare/unprepare on attach/detach + implement attach in stm32mp1 to
+>      reinitialize the memory region that as been cleaned on detach.
+> - [PATCH 3/3] remoteproc: virtio: set to vring address to FW_RSC_ADDR_ANY on free
+>   => Reinitialize the vring addresses on detach. For this one a better
+>      implementation would be to use a cached resource table to fully
+>      reinitialize it on re-attach.
 > 
->> Making lookup and memslot management operations O(log(n)) brings
->> some performance benefits (tested on a Xeon 8167M machine):
->> 509 slots in use:
->> Test          Before         After		Improvement
->> Map           0,0246s     0,0240s		 2%
->> Unmap         0,0833s     0,0318s		62%
->> Unmap 2M      0,00177s	0,000917s	48%
->> Move active   0,0000959s	0,0000816s	15%
->> Move inactive 0,0000960s	0,0000799s	17%
+> Thanks,
+> Arnaud
 > 
-> I assume "move" refers to the gfn?  If so, I believe this can be ignored for the
-> most part as it's not a common operation, and already has a lot of leading zeros :-)
-
-Even if it is not a common operation (today) making it better is
-still a good thing.
-
-The move test result has a lot of leading zeros since it is moving just
-a single memslot and that does not take a lot of time in the absolute
-sense.
-
->> Slot setup	0,0107s		0,00825s	23%
+> > 
+> > Thanks,
+> > Mathieu
+> > 
+> >>
+> >> Here, perhaps a better alternative would be to make a cached copy on attach
+> >> before updating it. On the next attach, the cached copy would be copied as it is
+> >> done in rproc_start.
+> >>
+> >> Thanks,
+> >> Arnaud
+> >>
+> >>
+> >>>
+> >>> Mathieu Poirier (17):
+> >>>   dt-bindings: remoteproc: Add bindind to support autonomous processors
+> >>>   remoteproc: Re-check state in rproc_shutdown()
+> >>>   remoteproc: Remove useless check in rproc_del()
+> >>>   remoteproc: Rename function rproc_actuate()
+> >>>   remoteproc: Add new get_loaded_rsc_table() remoteproc operation
+> >>>   remoteproc: stm32: Move resource table setup to rproc_ops
+> >>>   remoteproc: Add new RPROC_ATTACHED state
+> >>>   remoteproc: Properly represent the attached state
+> >>>   remoteproc: Properly deal with a kernel panic when attached
+> >>>   remoteproc: Add new detach() remoteproc operation
+> >>>   remoteproc: Introduce function __rproc_detach()
+> >>>   remoteproc: Introduce function rproc_detach()
+> >>>   remoteproc: Add return value to function rproc_shutdown()
+> >>>   remoteproc: Properly deal with a stop request when attached
+> >>>   remoteproc: Properly deal with a start request when attached
+> >>>   remoteproc: Properly deal with detach request
+> >>>   remoteproc: Refactor rproc delete and cdev release path
+> >>>
+> >>>  .../bindings/remoteproc/remoteproc-core.yaml  |  27 +++
+> >>>  drivers/remoteproc/remoteproc_cdev.c          |  32 ++-
+> >>>  drivers/remoteproc/remoteproc_core.c          | 211 +++++++++++++++---
+> >>>  drivers/remoteproc/remoteproc_internal.h      |   8 +
+> >>>  drivers/remoteproc/remoteproc_sysfs.c         |  20 +-
+> >>>  drivers/remoteproc/stm32_rproc.c              | 147 ++++++------
+> >>>  include/linux/remoteproc.h                    |  24 +-
+> >>>  7 files changed, 344 insertions(+), 125 deletions(-)
+> >>>  create mode 100644 Documentation/devicetree/bindings/remoteproc/remoteproc-core.yaml
+> >>>
 > 
-> What does "slot setup" measure?  I assume it's one-time pain?  If so, then we
-> can probably ignore this as use cases that care about millisecond improvements
-> in boot time are unlikely to have 50 memslots, let alone 500+ memslots.
-
-This value shows how long it took the test to add all these memslots.
-
-Strictly speaking, it also includes the time spent allocating
-the backing memory and time spent in the (userspace) selftest framework
-vm_userspace_mem_region_add() function, but since these operations are
-exactly the same for both in-kernel memslots implementations the
-difference in results is all due to the new kernel code (that is, this
-patch).
-
-The result also shows how the performance of the create memslot operation
-scales with various count of memslots in use (the measurement is always
-done with the same guest memory size).
-
-Hyper-V SynIC may require up to two additional slots per vCPU.
-A large guest with with 128 vCPUs will then use 256 memslots for this
-alone.
-Also, performance improvements add up.
-
-At (guest) runtime live migration uses the memslot set flags operation
-to turn on and off dirty pages logging.
-Hot{un,}plug of memory and some other devices (like GPUs) create and
-delete memslots, too.
-
-> I'm not nitpicking the benchmarks to discredit your measurements, rather to
-> point out that I suspect the only thing that's "broken" and that anyone truly
-> cares about is unmapping, i.e. hva->memslot lookups.  If that is indeed the
-> case, would it be sufficient to focus on speeding up _just_ the hva lookups?>
-> Specifically, I think we can avoid copying the "active vs. inactive" scheme that
-> is used for the main gfn-based array by having the hva tree resolve to an _id_,
-> not to the memslot itself. I.e. bounce through id_to_index, which is coupled> with the main array, so that lookups are always done on the "active" memslots,
-> without also having to implement an "inactive" hva tree.
-
-I guess you mean to still turn id_to_index into a hash table, since
-otherwise a VMM which uses just two memslots but numbered 0 and 508
-will have a 509-entry id_to_index array allocated.
-
-> For deletion, seeing the defunct/invalid memslot is not a functional problem;
-> it's technically a performance "problem", but one that we already have.  For
-> creation, id_to_index will be -1, and so the memslot lookup will return NULL
-> until the new memslot is visible.
-
-This sounds like you would keep the id_to_index array / hash table
-separate from the main array as it is in the old code (I read "coupled
-with the main array" above as a suggestion to move it to the part that
-gets resized when memslots are created or deleted in the current code,
-that is struct kvm_memslots).
-
-Then if you create or delete a memslot the memslots located further in
-the memslot array (with lower gfn that the processed slot) will have
-their indices shifted - you can't atomically update all of them.
-
-But overall, this solution (and the one with id_to_index moved into the
-main array, too) is still O(n) per memslot operation as you still need to
-copy the array to either make space for the new memslot or to remove the
-hole from the removed memslot.
-
-Due to that scaling issue it's rather hard to use 32k memslots with the
-old code, the improvement was like 20+ times there on an early version
-of this code.
-
-And if we start adding special cases for things like flags change or
-gfn moves to workaround their scaling issues the code will quickly grow
-even more complicated.
-
+> Subject: [PATCH 1/3] remoteproc: stm32: add capability to detach from the
+>  remoteproc
 > 
-> All hva lookups would obviously need to be changed, but the touchpoint for the
-> write would be quite small, e.g.
+> Add a dummy function to allow to detach. No specific action is needed
 > 
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 8367d88ce39b..c03beb4833b2 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -1220,6 +1220,20 @@ static int kvm_set_memslot(struct kvm *kvm,
->          if (r)
->                  goto out_slots;
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss-st.com>
+> ---
+>  drivers/remoteproc/stm32_rproc.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
 > 
-> +       /*
-> +        * Update the hva=>id tree if a memslot is being deleted or created.
-> +        * No update is required for moving a memslot or changing its flags,
-> +        * as those don't affect its _id_.  For deletion, the memslot has been
-> +        * zapped and flushed, fast hva lookups are guaranteed to be nops.  For
-> +        * creation, the new memslot isn't visible until the final installation
-> +        * is complete.  Fast hva lookups may prematurely see the entry, but
-> +        * id_to_memslot() will return NULL upon seeing id_to_index[id] == -1.
-> +        */
-> +       if (change == KVM_MR_DELETE)
-> +               kvm_hva_tree_remove(...);
-> +       else if (change == KVM_MR_CREATE)
-> +               kvm_hva_tree_insert(...);
+> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+> index 2c949725b91e..b325d28f627c 100644
+> --- a/drivers/remoteproc/stm32_rproc.c
+> +++ b/drivers/remoteproc/stm32_rproc.c
+> @@ -590,6 +590,12 @@ static int stm32_rproc_attach(struct rproc *rproc)
+>  	return reset_control_assert(ddata->hold_boot);
+>  }
+> 
+> +static int stm32_rproc_detach(struct rproc *rproc)
+> +{
+> +	/* Nothing to do but ops mandatory to support the detach feature */
+> +	return 0;
+> +}
 > +
->          update_memslots(slots, new, change);
->          slots = install_new_memslots(kvm, as_id, slots);
+>  static int stm32_rproc_stop(struct rproc *rproc)
+>  {
+>  	struct stm32_rproc *ddata = rproc->priv;
+> @@ -712,6 +718,7 @@ static struct rproc_ops st_rproc_ops = {
+>  	.start		= stm32_rproc_start,
+>  	.stop		= stm32_rproc_stop,
+>  	.attach		= stm32_rproc_attach,
+> +	.detach		= stm32_rproc_detach,
+>  	.kick		= stm32_rproc_kick,
+>  	.load		= rproc_elf_load_segments,
+>  	.parse_fw	= stm32_rproc_parse_fw,
+> -- 
+> 2.17.1
 > 
->
-> I'm not opposed to using more sophisticated storage for the gfn lookups, but
-> only if there's a good reason for doing so.  IMO, the rbtree isn't simpler, just
-> different.  Memslot modifications are unlikely to be a hot path (and if it is,
-> x86's "zap everything" implementation is a far bigger problem), and it's hard to
-> beat the memory footprint of a raw array.  That doesn't leave much motivation
-> for such a big change to some of KVM's scariest (for me) code.
 > 
-
-Improvements can be done step-by-step,
-kvm_mmu_invalidate_zap_pages_in_memslot() can be rewritten, too in the
-future, if necessary.
-After all, complains are that this change alone is too big.
-
-I think that if you look not at the patch itself but at the resulting
-code the new implementation looks rather straightforward, there are
-comments at every step in kvm_set_memslot() to explain exactly what is
-being done.
-Not only it already scales well, but it is also flexible to accommodate
-further improvements or even new operations.
-
-The new implementation also uses standard kernel {rb,interval}-tree and
-hash table implementation as its basic data structures, so it
-automatically benefits from any generic improvements to these.
-
-All for the low price of just 174 net lines of code added.
-
-Maciej
+> ------------------------------------------------------------------------
+> 
+> 
+> Subject: [PATCH 2/3] remoteproc: Add prepare/unprepare for attach detach
+> 
+> Some actions such as memory resources reallocation are needed when try
+> to reattach. Use the prepare ops for these actions.
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> ---
+>  drivers/remoteproc/remoteproc_core.c | 14 ++++++++++++++
+>  drivers/remoteproc/stm32_rproc.c     | 14 +++++++-------
+>  2 files changed, 21 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c
+> b/drivers/remoteproc/remoteproc_core.c
+> index f1f51ad1a1d6..f177561b8863 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -1557,6 +1557,13 @@ static int rproc_attach(struct rproc *rproc)
+>  		return ret;
+>  	}
+> 
+> +	/* Prepare rproc for firmware loading if needed */
+> +	ret = rproc_prepare_device(rproc);
+> +	if (ret) {
+> +		dev_err(dev, "can't prepare rproc %s: %d\n", rproc->name, ret);
+> +		goto disable_iommu;
+> +	}
+> +
+>  	ret = rproc_get_loaded_rsc_table(rproc);
+>  	if (ret) {
+>  		dev_err(dev, "can't load resource table: %d\n", ret);
+> @@ -1990,6 +1997,13 @@ int rproc_detach(struct rproc *rproc)
+>  	/* clean up all acquired resources */
+>  	rproc_resource_cleanup(rproc);
+> 
+> +	/* Release HW resources if needed */
+> +	ret = rproc_unprepare_device(rproc);
+> +	if (ret) {
+> +		atomic_inc(&rproc->power);
+> +		goto out;
+> +	}
+> +
+>  	rproc_disable_iommu(rproc);
+> 
+>  	/*
+> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+> index b325d28f627c..bf50d79b1f09 100644
+> --- a/drivers/remoteproc/stm32_rproc.c
+> +++ b/drivers/remoteproc/stm32_rproc.c
+> @@ -413,9 +413,6 @@ static int stm32_rproc_parse_fw(struct rproc *rproc, const
+> struct firmware *fw)
+>  	struct stm32_rproc *ddata = rproc->priv;
+>  	int ret;
+> 
+> -	ret  = stm32_rproc_parse_memory_regions(rproc);
+> -	if (ret)
+> -		return ret;
+> 
+>  	if (ddata->trproc)
+>  		ret = rproc_tee_get_rsc_table(ddata->trproc);
+> @@ -580,6 +577,12 @@ static int stm32_rproc_start(struct rproc *rproc)
+> 
+>  	return reset_control_assert(ddata->hold_boot);
+>  }
+> +static int stm32_rproc_prepare(struct rproc *rproc)
+> +{
+> +	dev_err(&rproc->dev, "%s: %d\n", __func__, __LINE__);
+> +
+> +	return stm32_rproc_parse_memory_regions(rproc);
+> +}
+> 
+>  static int stm32_rproc_attach(struct rproc *rproc)
+>  {
+> @@ -717,6 +720,7 @@ static int stm32_rproc_get_loaded_rsc_table(struct rproc *rproc)
+>  static struct rproc_ops st_rproc_ops = {
+>  	.start		= stm32_rproc_start,
+>  	.stop		= stm32_rproc_stop,
+> +	.prepare	= stm32_rproc_prepare,
+>  	.attach		= stm32_rproc_attach,
+>  	.detach		= stm32_rproc_detach,
+>  	.kick		= stm32_rproc_kick,
+> @@ -921,10 +925,6 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+> 
+>  	if (state == M4_STATE_CRUN) {
+>  		rproc->state = RPROC_DETACHED;
+> -
+> -		ret = stm32_rproc_parse_memory_regions(rproc);
+> -		if (ret)
+> -			goto free_resources;
+>  	}
+> 
+>  	rproc->has_iommu = false;
+> -- 
+> 2.17.1
+> 
+> 
+> ------------------------------------------------------------------------
+> 
+> Subject: [PATCH 3/3] remoteproc: virtio: set to vring address to
+>  FW_RSC_ADDR_ANY on free
+> 
+> The resource table vring structure is cleaned on free. But value is set
+> to 0. This value is considered as a valid address. Set the value
+> to  FW_RSC_ADDR_ANY instead.
+> This is needed to allow to reattach to an autonomous firmware.
+> An alternative would be to save the resource table before updating it.
+> On free the value would be reset to initial value.
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> ---
+>  drivers/remoteproc/remoteproc_core.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c
+> b/drivers/remoteproc/remoteproc_core.c
+> index f177561b8863..5b5de4db3981 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -425,7 +425,7 @@ void rproc_free_vring(struct rproc_vring *rvring)
+>  	 */
+>  	if (rproc->table_ptr) {
+>  		rsc = (void *)rproc->table_ptr + rvring->rvdev->rsc_offset;
+> -		rsc->vring[idx].da = 0;
+> +		rsc->vring[idx].da = FW_RSC_ADDR_ANY;
+>  		rsc->vring[idx].notifyid = -1;
+>  	}
+>  }
+> -- 
+> 2.17.1
+> 
+> 
+> 
+> 
+> 
+> 
