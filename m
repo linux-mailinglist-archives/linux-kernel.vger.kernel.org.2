@@ -2,211 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C23330C8EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:06:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 548F330BFC9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 14:43:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238107AbhBBSDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:03:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48736 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233641AbhBBOH6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:07:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFD4C65025;
-        Tue,  2 Feb 2021 13:50:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273803;
-        bh=LSITaNwtgM1abihFbKPkWeRvoj1UCKhI1qsjTKRTNu0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EOXiku6DFqnvdoIQVaw5wt0z82FECMTGX1UZ4uoswOrV1b5bs0cXIPoPlYbAcMujr
-         ZYHGyWe9A04aX8jWpZuwV4ZawG6WBMUyBKCZC+ek55t+800wMAxziivrgPMK1W0jaU
-         T1pIsmguA6BSemixWg18y2LjuVwHRmWLds7VrXsk=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4.4 09/28] futex: Replace PF_EXITPIDONE with a state
-Date:   Tue,  2 Feb 2021 14:38:29 +0100
-Message-Id: <20210202132941.567795524@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132941.180062901@linuxfoundation.org>
-References: <20210202132941.180062901@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S232518AbhBBNl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 08:41:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232367AbhBBNjR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 08:39:17 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F019BC0613D6
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 05:38:36 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id g15so2390557pjd.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 05:38:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C69QpALUz/Vmi9PK2ISxOpgUe2yzE/S6S1X6OGff0v8=;
+        b=lE5QgpRQANr285lptntXBKpZ0mfRKgwqNpjOT4+XiB148qmXATeLVDvu1BnjzBs2Z2
+         UtIZd7vv8CGDG28WO9VtH0WpLxZwP1uMzhkWOEsEBsGMi3dNtDd6aRYsijDmnHDjVf+3
+         t4dS8TUA1pb9fx1bpa0fgGwdM/OzUuA1PcK5a0/TaDWTr+9VzA/cfYuYUmp4d3SFIhHw
+         u3K4EoxvXxm80jN/Xoajzw+HvvlYV7+DRJT9ODIdZhzHkP6CoI3yo/zPEBYTzJaKKNLR
+         RpoUlBQ/2H1uEA73njCQbaSLtfChGVyHMkVqYAinMhNVxf+4b/hoUq09iNvivlI4iV2c
+         gAwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C69QpALUz/Vmi9PK2ISxOpgUe2yzE/S6S1X6OGff0v8=;
+        b=Tzr7a2CKDBTQ60WYSgvYXvG49SyKhdv3hdRGw66jHWU94gTQQr48hC7k3YEnq7sABA
+         OcwcspAGYHkQ3fLCwuGizy7dkqeXjAfWjguNMd9GboXOQ14dA0dOCiM20gtLMUso6jvO
+         7AbTuRqLoT7r1PLD1MLHCtVkLMZ5QxKbaTnLpYKgD+HrhhXiTzT6ZQ6y8qpuaUB3rZBC
+         8+293pKNgf69c0xHdLYt61ddl50mA3ENF2eM6uydR6Xa6pFTa+XiM3M+Tlss6rSnqIgF
+         GEjCL5T5uNdZnmr1AU/Xk+SHMKoZbcAtY8dUDCiea1NG70mRpSEaC/TS5kcLg+I0cKXc
+         9C3w==
+X-Gm-Message-State: AOAM532rhr3uqbB6Ss6Mixm4Z+dRpgH3em/RLtOCOH+xxmOQM1O21PnE
+        9qRc6jUFk1Pw4I112Y4tJz+eXbt4gGM=
+X-Google-Smtp-Source: ABdhPJxZTcDSxyk50PeK+2qJYkaWv2iltg+9IXpptRym6j1r1bYGeqBheNDqoMYhaRfz4bta/h0G5w==
+X-Received: by 2002:a17:90a:dc01:: with SMTP id i1mr4309237pjv.134.1612273115992;
+        Tue, 02 Feb 2021 05:38:35 -0800 (PST)
+Received: from daehojeong1.seo.corp.google.com ([2401:fa00:d:11:4f5:ae3a:569d:491a])
+        by smtp.gmail.com with ESMTPSA id a30sm21367022pfh.66.2021.02.02.05.38.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 05:38:35 -0800 (PST)
+From:   Daeho Jeong <daeho43@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH v5] f2fs: rename checkpoint=merge mount option to checkpoint_merge
+Date:   Tue,  2 Feb 2021 22:38:29 +0900
+Message-Id: <20210202133829.2671108-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Daeho Jeong <daehojeong@google.com>
 
-commit 3d4775df0a89240f671861c6ab6e8d59af8e9e41 upstream.
+As checkpoint=merge comes in, mount option setting related to checkpoint
+had been mixed up and it became hard to understand. So, I separated
+this option from "checkpoint=" and made another mount option
+"checkpoint_merge" for this.
 
-The futex exit handling relies on PF_ flags. That's suboptimal as it
-requires a smp_mb() and an ugly lock/unlock of the exiting tasks pi_lock in
-the middle of do_exit() to enforce the observability of PF_EXITING in the
-futex code.
-
-Add a futex_state member to task_struct and convert the PF_EXITPIDONE logic
-over to the new state. The PF_EXITING dependency will be cleaned up in a
-later step.
-
-This prepares for handling various futex exit issues later.
-
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20191106224556.149449274@linutronix.de
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
 ---
- include/linux/futex.h |   34 ++++++++++++++++++++++++++++++++++
- include/linux/sched.h |    2 +-
- kernel/exit.c         |   18 ++----------------
- kernel/futex.c        |   17 ++++++++---------
- 4 files changed, 45 insertions(+), 26 deletions(-)
+v2: renamed "checkpoint=merge" to "checkpoint_merge"
+v3: removed "nocheckpoint_merge" option
+v4: re-added "nocheckpoint_merge" option to make it possible to disable
+    just only "checkpoint_merge" when remount
+v5: added the description about "nocheckpoint_merge" in rst and added it
+    in show_options
+---
+ Documentation/filesystems/f2fs.rst |  7 ++++---
+ fs/f2fs/super.c                    | 27 +++++++++++++++------------
+ 2 files changed, 19 insertions(+), 15 deletions(-)
 
---- a/include/linux/futex.h
-+++ b/include/linux/futex.h
-@@ -55,6 +55,11 @@ union futex_key {
- #define FUTEX_KEY_INIT (union futex_key) { .both = { .ptr = 0ULL } }
- 
- #ifdef CONFIG_FUTEX
-+enum {
-+	FUTEX_STATE_OK,
-+	FUTEX_STATE_DEAD,
-+};
-+
- static inline void futex_init_task(struct task_struct *tsk)
- {
- 	tsk->robust_list = NULL;
-@@ -63,6 +68,34 @@ static inline void futex_init_task(struc
- #endif
- 	INIT_LIST_HEAD(&tsk->pi_state_list);
- 	tsk->pi_state_cache = NULL;
-+	tsk->futex_state = FUTEX_STATE_OK;
-+}
-+
-+/**
-+ * futex_exit_done - Sets the tasks futex state to FUTEX_STATE_DEAD
-+ * @tsk:	task to set the state on
-+ *
-+ * Set the futex exit state of the task lockless. The futex waiter code
-+ * observes that state when a task is exiting and loops until the task has
-+ * actually finished the futex cleanup. The worst case for this is that the
-+ * waiter runs through the wait loop until the state becomes visible.
-+ *
-+ * This has two callers:
-+ *
-+ * - futex_mm_release() after the futex exit cleanup has been done
-+ *
-+ * - do_exit() from the recursive fault handling path.
-+ *
-+ * In case of a recursive fault this is best effort. Either the futex exit
-+ * code has run already or not. If the OWNER_DIED bit has been set on the
-+ * futex then the waiter can take it over. If not, the problem is pushed
-+ * back to user space. If the futex exit code did not run yet, then an
-+ * already queued waiter might block forever, but there is nothing which
-+ * can be done about that.
-+ */
-+static inline void futex_exit_done(struct task_struct *tsk)
-+{
-+	tsk->futex_state = FUTEX_STATE_DEAD;
- }
- 
- void futex_mm_release(struct task_struct *tsk);
-@@ -72,5 +105,6 @@ long do_futex(u32 __user *uaddr, int op,
- #else
- static inline void futex_init_task(struct task_struct *tsk) { }
- static inline void futex_mm_release(struct task_struct *tsk) { }
-+static inline void futex_exit_done(struct task_struct *tsk) { }
- #endif
- #endif
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1704,6 +1704,7 @@ struct task_struct {
- #endif
- 	struct list_head pi_state_list;
- 	struct futex_pi_state *pi_state_cache;
-+	unsigned int futex_state;
- #endif
- #ifdef CONFIG_PERF_EVENTS
- 	struct perf_event_context *perf_event_ctxp[perf_nr_task_contexts];
-@@ -2099,7 +2100,6 @@ extern void thread_group_cputime_adjuste
-  * Per process flags
-  */
- #define PF_EXITING	0x00000004	/* getting shut down */
--#define PF_EXITPIDONE	0x00000008	/* pi exit done on shut down */
- #define PF_VCPU		0x00000010	/* I'm a virtual CPU */
- #define PF_WQ_WORKER	0x00000020	/* I'm a workqueue worker */
- #define PF_FORKNOEXEC	0x00000040	/* forked but didn't exec */
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -695,16 +695,7 @@ void do_exit(long code)
- 	 */
- 	if (unlikely(tsk->flags & PF_EXITING)) {
- 		pr_alert("Fixing recursive fault but reboot is needed!\n");
--		/*
--		 * We can do this unlocked here. The futex code uses
--		 * this flag just to verify whether the pi state
--		 * cleanup has been done or not. In the worst case it
--		 * loops once more. We pretend that the cleanup was
--		 * done as there is no way to return. Either the
--		 * OWNER_DIED bit is set by now or we push the blocked
--		 * task into the wait for ever nirwana as well.
--		 */
--		tsk->flags |= PF_EXITPIDONE;
-+		futex_exit_done(tsk);
- 		set_current_state(TASK_UNINTERRUPTIBLE);
- 		schedule();
+diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+index d0ead45dc706..f75ec244762f 100644
+--- a/Documentation/filesystems/f2fs.rst
++++ b/Documentation/filesystems/f2fs.rst
+@@ -247,9 +247,9 @@ checkpoint=%s[:%u[%]]	 Set to "disable" to turn off checkpointing. Set to "enabl
+ 			 hide up to all remaining free space. The actual space that
+ 			 would be unusable can be viewed at /sys/fs/f2fs/<disk>/unusable
+ 			 This space is reclaimed once checkpoint=enable.
+-			 Here is another option "merge", which creates a kernel daemon
+-			 and makes it to merge concurrent checkpoint requests as much
+-			 as possible to eliminate redundant checkpoint issues. Plus,
++checkpoint_merge	 When checkpoint is enabled, this can be used to create a kernel
++			 daemon and make it to merge concurrent checkpoint requests as
++			 much as possible to eliminate redundant checkpoint issues. Plus,
+ 			 we can eliminate the sluggish issue caused by slow checkpoint
+ 			 operation when the checkpoint is done in a process context in
+ 			 a cgroup having low i/o budget and cpu shares. To make this
+@@ -257,6 +257,7 @@ checkpoint=%s[:%u[%]]	 Set to "disable" to turn off checkpointing. Set to "enabl
+ 			 to "3", to give one higher priority than other kernel threads.
+ 			 This is the same way to give a I/O priority to the jbd2
+ 			 journaling thread of ext4 filesystem.
++nocheckpoint_merge	 Disable checkpoint merge feature.
+ compress_algorithm=%s	 Control compress algorithm, currently f2fs supports "lzo",
+ 			 "lz4", "zstd" and "lzo-rle" algorithm.
+ compress_algorithm=%s:%d Control compress algorithm and its compress level, now, only
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 56696f6cfa86..1000d21120ca 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -145,6 +145,7 @@ enum {
+ 	Opt_checkpoint_disable_cap_perc,
+ 	Opt_checkpoint_enable,
+ 	Opt_checkpoint_merge,
++	Opt_nocheckpoint_merge,
+ 	Opt_compress_algorithm,
+ 	Opt_compress_log_size,
+ 	Opt_compress_extension,
+@@ -215,7 +216,8 @@ static match_table_t f2fs_tokens = {
+ 	{Opt_checkpoint_disable_cap, "checkpoint=disable:%u"},
+ 	{Opt_checkpoint_disable_cap_perc, "checkpoint=disable:%u%%"},
+ 	{Opt_checkpoint_enable, "checkpoint=enable"},
+-	{Opt_checkpoint_merge, "checkpoint=merge"},
++	{Opt_checkpoint_merge, "checkpoint_merge"},
++	{Opt_nocheckpoint_merge, "nocheckpoint_merge"},
+ 	{Opt_compress_algorithm, "compress_algorithm=%s"},
+ 	{Opt_compress_log_size, "compress_log_size=%u"},
+ 	{Opt_compress_extension, "compress_extension=%s"},
+@@ -946,6 +948,9 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ 		case Opt_checkpoint_merge:
+ 			set_opt(sbi, MERGE_CHECKPOINT);
+ 			break;
++		case Opt_nocheckpoint_merge:
++			clear_opt(sbi, MERGE_CHECKPOINT);
++			break;
+ #ifdef CONFIG_F2FS_FS_COMPRESSION
+ 		case Opt_compress_algorithm:
+ 			if (!f2fs_sb_has_compression(sbi)) {
+@@ -1142,12 +1147,6 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+ 		return -EINVAL;
  	}
-@@ -793,12 +784,7 @@ void do_exit(long code)
- 	 * Make sure we are holding no locks:
- 	 */
- 	debug_check_no_locks_held();
--	/*
--	 * We can do this unlocked here. The futex code uses this flag
--	 * just to verify whether the pi state cleanup has been done
--	 * or not. In the worst case it loops once more.
--	 */
--	tsk->flags |= PF_EXITPIDONE;
-+	futex_exit_done(tsk);
  
- 	if (tsk->io_context)
- 		exit_io_context(tsk);
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -1094,19 +1094,18 @@ static int attach_to_pi_owner(u32 uval,
+-	if (test_opt(sbi, DISABLE_CHECKPOINT) &&
+-			test_opt(sbi, MERGE_CHECKPOINT)) {
+-		f2fs_err(sbi, "checkpoint=merge cannot be used with checkpoint=disable\n");
+-		return -EINVAL;
+-	}
+-
+ 	/* Not pass down write hints if the number of active logs is lesser
+ 	 * than NR_CURSEG_PERSIST_TYPE.
+ 	 */
+@@ -1782,7 +1781,9 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+ 		seq_printf(seq, ",checkpoint=disable:%u",
+ 				F2FS_OPTION(sbi).unusable_cap);
+ 	if (test_opt(sbi, MERGE_CHECKPOINT))
+-		seq_puts(seq, ",checkpoint=merge");
++		seq_puts(seq, ",checkpoint_merge");
++	else
++		seq_puts(seq, ",nocheckpoint_merge");
+ 	if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_POSIX)
+ 		seq_printf(seq, ",fsync_mode=%s", "posix");
+ 	else if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_STRICT)
+@@ -2066,9 +2067,8 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 		}
+ 	}
+ 
+-	if (!test_opt(sbi, MERGE_CHECKPOINT)) {
+-		f2fs_stop_ckpt_thread(sbi);
+-	} else {
++	if (!test_opt(sbi, DISABLE_CHECKPOINT) &&
++			test_opt(sbi, MERGE_CHECKPOINT)) {
+ 		err = f2fs_start_ckpt_thread(sbi);
+ 		if (err) {
+ 			f2fs_err(sbi,
+@@ -2076,6 +2076,8 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 			    err);
+ 			goto restore_gc;
+ 		}
++	} else {
++		f2fs_stop_ckpt_thread(sbi);
  	}
  
  	/*
--	 * We need to look at the task state flags to figure out,
--	 * whether the task is exiting. To protect against the do_exit
--	 * change of the task flags, we do this protected by
--	 * p->pi_lock:
-+	 * We need to look at the task state to figure out, whether the
-+	 * task is exiting. To protect against the change of the task state
-+	 * in futex_exit_release(), we do this protected by p->pi_lock:
- 	 */
- 	raw_spin_lock_irq(&p->pi_lock);
--	if (unlikely(p->flags & PF_EXITING)) {
-+	if (unlikely(p->futex_state != FUTEX_STATE_OK)) {
- 		/*
--		 * The task is on the way out. When PF_EXITPIDONE is
--		 * set, we know that the task has finished the
--		 * cleanup:
-+		 * The task is on the way out. When the futex state is
-+		 * FUTEX_STATE_DEAD, we know that the task has finished
-+		 * the cleanup:
- 		 */
--		int ret = (p->flags & PF_EXITPIDONE) ? -ESRCH : -EAGAIN;
-+		int ret = (p->futex_state = FUTEX_STATE_DEAD) ? -ESRCH : -EAGAIN;
+@@ -3831,7 +3833,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
  
- 		raw_spin_unlock_irq(&p->pi_lock);
- 		put_task_struct(p);
-
+ 	/* setup checkpoint request control and start checkpoint issue thread */
+ 	f2fs_init_ckpt_req_control(sbi);
+-	if (test_opt(sbi, MERGE_CHECKPOINT)) {
++	if (!test_opt(sbi, DISABLE_CHECKPOINT) &&
++			test_opt(sbi, MERGE_CHECKPOINT)) {
+ 		err = f2fs_start_ckpt_thread(sbi);
+ 		if (err) {
+ 			f2fs_err(sbi,
+-- 
+2.30.0.365.g02bc693789-goog
 
