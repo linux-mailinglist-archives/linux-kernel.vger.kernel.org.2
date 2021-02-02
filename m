@@ -2,130 +2,408 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8F330C5A4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:29:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8DE30C5A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:29:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236430AbhBBQ2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 11:28:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52476 "EHLO
+        id S236186AbhBBQ3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:29:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236265AbhBBQ0P (ORCPT
+        with ESMTP id S235274AbhBBQ0h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 11:26:15 -0500
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8BD1C061788;
-        Tue,  2 Feb 2021 08:25:34 -0800 (PST)
-Received: by mail-oi1-x22d.google.com with SMTP id x71so23307964oia.9;
-        Tue, 02 Feb 2021 08:25:34 -0800 (PST)
+        Tue, 2 Feb 2021 11:26:37 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478C8C06178A
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 08:25:55 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id v15so21151268wrx.4
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 08:25:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=CT/F6WABXrxDgwV5W6Oavn37EbmFXivRPDSuygeRcYo=;
-        b=Jqr3TyehlYeYFOH638c81n13OpL/1Z4W04SInHnw0pBrZZSOUsme+UqsLkoqBHQf4O
-         jMVSkQ3DePWozCD24BNp/HNtuB5fw7h1EhCZJ8FMXhK7arEtwOJFKWNKOMkRar5MEecw
-         VGYeqzgXxkGgQu4k9sHmoBKViMCg7EPdkiUAng3ONNlaQFiZ3Hl7LWyNPjZX9TqzvE5I
-         KuocjQ4um1efOU/naDd03+Sb5nH5A1O9ZxjU8Q112k+6mwj98Vld5wGtR82NcedMUX5j
-         vUyGSPxpo4hAChMUy9SuP3uFZSuCyl+u7aEPHKea92u4v07yhF8W5aIthaMBq6PguikF
-         paVQ==
+        bh=+Tllhc+5c0Pfht0qAuJDHzixy31AJS/JnPan2WRpzvQ=;
+        b=RqAcaM9YecY2waqMIfSfA+rVg83x1vQ1KtzrriKCrCQ5wyv+51jCevVxWgtZQDjmsS
+         62o9oQWsFv0nl4bk9Bg+3vvuuZ3Nk1gyWDfYZ07ycVX0mV3NzjeQOlSOFVgR94B1kJMS
+         tPfQKesW7i1nQCCint25upyt3g/DuRoZGyQQ0EJFfSRFsBGJj+QbVv0MzIFdRlIECb9R
+         B8hga8aSpYduc7ifoC87FFb+zSBHxyTF17elbV4jaiKMcwnibdRkoIVC4YsOw8haIApO
+         yieuQkbVuSHpT2KusaKiXdqE6aB8fi1KooddGYblRVRAiQLKQchB0NGhfbocbuU0TqfF
+         ulEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CT/F6WABXrxDgwV5W6Oavn37EbmFXivRPDSuygeRcYo=;
-        b=fpCwAsL8U/JE3yboaKEoQ0LNcWebqlzJppSxAZi6lfWbG5qcX5kaYViZNRZAXYUn3U
-         nzoClFWtHx/tIc+v5RwmyI6u3OCRWO4pjPgH9Epn4h5yhloQmA4EAp7jCF39ReEQJWDH
-         QAQiXcXTgtS3iDpzTq7OZ8F5fmXqpclOGWen3hr/P6JH69QwzEwVhlysUKX3zGInhHYx
-         PDvRkl9QSZg8Dl7eB0l4bhI5/69ZnUNYxagsyrFneDr/YgfFM9H3d15wwBlLNz9Mt4yJ
-         5l6o2RT2QA3VGrsosF2q8NOsVIN7y7Jt+yZ7SQ2vgYt5Nau34iILmSnyAbHZAz7fxX4m
-         G54A==
-X-Gm-Message-State: AOAM533FuIseEa3a7D+Jk8yb5umZG7fGORbEAF/kSPX93Nubrl2dlNDB
-        LwK2POvpEMW9qnzuL3G8kwA=
-X-Google-Smtp-Source: ABdhPJyTm78cy3YvRJOVyuMiDcQWmv0tSjq27cB4Cf9ajdEfwieJqkLVgIZ/nriPBI59K00YhtvOxQ==
-X-Received: by 2002:aca:4a15:: with SMTP id x21mr3280962oia.116.1612283134386;
-        Tue, 02 Feb 2021 08:25:34 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p22sm4629012oth.38.2021.02.02.08.25.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 02 Feb 2021 08:25:33 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 2 Feb 2021 08:25:32 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kyle Tso <kyletso@google.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] usb: typec: tcpci_maxim: Enable data path when
- partner is USB Comm capable
-Message-ID: <20210202162532.GC159455@roeck-us.net>
-References: <20210202003101.221145-1-badhri@google.com>
- <20210202003101.221145-3-badhri@google.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=+Tllhc+5c0Pfht0qAuJDHzixy31AJS/JnPan2WRpzvQ=;
+        b=tyOf2er9Mt25jPSS2P1k7RGQkgpMkGDVW/QtPU1zt5+PMGYCDs43FBNb4NMS1kBW3Y
+         sLQ4OILRy7AhEz1A+sEx2Q8OOyjCjxSdllRhvdqdMXQAf/wpPoqNQeuFLgyUFM10NsTf
+         HiqqhCa830WAQ/lOWB2p4gHdjbPbEyO732e1rwGPZl31qnHbTvp4dAsh/oSNWtnkk8lS
+         fzjNR1TneiY7PsDI8DLMLVepXfEvXYoU7vZcjWRHmk9M5SOzQFjkuXF2BzaTDWZosTT6
+         O9QSwb4fbJOuM1VjtZf8uIfV4uhfnU9iTHe6zr1f0aFqsalJTWqAI3SEOUs1J/K2kvCZ
+         8Rig==
+X-Gm-Message-State: AOAM531pZd577Z+4+oY82dTdKlmDvpsIBJZsXVt5lR8mu8c0p7H4kyCC
+        HTJIIrbNXKmADREQ3MByXeJALQ==
+X-Google-Smtp-Source: ABdhPJzsQNwd1wsYhyDrsGvsGsruJZE1/fS2G+m3FeIFgjgiLm0coLZXm4QRGJkliuWJV4js1w1qWg==
+X-Received: by 2002:a5d:6a45:: with SMTP id t5mr24294755wrw.252.1612283153748;
+        Tue, 02 Feb 2021 08:25:53 -0800 (PST)
+Received: from elver.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
+        by smtp.gmail.com with ESMTPSA id c20sm3790013wmb.38.2021.02.02.08.25.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 08:25:52 -0800 (PST)
+Date:   Tue, 2 Feb 2021 17:25:47 +0100
+From:   Marco Elver <elver@google.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/12] kasan, mm: optimize kmalloc poisoning
+Message-ID: <YBl9C+q84BqiFd4F@elver.google.com>
+References: <cover.1612208222.git.andreyknvl@google.com>
+ <b3a02f4f7cda00c87af170c1bf555996a9c6788c.1612208222.git.andreyknvl@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210202003101.221145-3-badhri@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <b3a02f4f7cda00c87af170c1bf555996a9c6788c.1612208222.git.andreyknvl@google.com>
+User-Agent: Mutt/2.0.2 (2020-11-20)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 04:31:01PM -0800, Badhri Jagan Sridharan wrote:
-> Configure USB switches when partner is USB Communication capable.
-> The is enabled USB data communication over D+/D- pins.
+On Mon, Feb 01, 2021 at 08:43PM +0100, Andrey Konovalov wrote:
+> For allocations from kmalloc caches, kasan_kmalloc() always follows
+> kasan_slab_alloc(). Currenly, both of them unpoison the whole object,
+> which is unnecessary.
 > 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-
+> This patch provides separate implementations for both annotations:
+> kasan_slab_alloc() unpoisons the whole object, and kasan_kmalloc()
+> only poisons the redzone.
+> 
+> For generic KASAN, the redzone start might not be aligned to
+> KASAN_GRANULE_SIZE. Therefore, the poisoning is split in two parts:
+> kasan_poison_last_granule() poisons the unaligned part, and then
+> kasan_poison() poisons the rest.
+> 
+> This patch also clarifies alignment guarantees of each of the poisoning
+> functions and drops the unnecessary round_up() call for redzone_end.
+> 
+> With this change, the early SLUB cache annotation needs to be changed to
+> kasan_slab_alloc(), as kasan_kmalloc() doesn't unpoison objects now.
+> The number of poisoned bytes for objects in this cache stays the same, as
+> kmem_cache_node->object_size is equal to sizeof(struct kmem_cache_node).
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 > ---
->  drivers/usb/typec/tcpm/tcpci_maxim.c | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
+>  mm/kasan/common.c | 93 +++++++++++++++++++++++++++++++----------------
+>  mm/kasan/kasan.h  | 43 +++++++++++++++++++++-
+>  mm/kasan/shadow.c | 28 +++++++-------
+>  mm/slub.c         |  3 +-
+>  4 files changed, 119 insertions(+), 48 deletions(-)
 > 
-> diff --git a/drivers/usb/typec/tcpm/tcpci_maxim.c b/drivers/usb/typec/tcpm/tcpci_maxim.c
-> index f1674a611033..041a1c393594 100644
-> --- a/drivers/usb/typec/tcpm/tcpci_maxim.c
-> +++ b/drivers/usb/typec/tcpm/tcpci_maxim.c
-> @@ -19,6 +19,9 @@
->  #define PD_ACTIVITY_TIMEOUT_MS				10000
+> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+> index 374049564ea3..128cb330ca73 100644
+> --- a/mm/kasan/common.c
+> +++ b/mm/kasan/common.c
+> @@ -278,21 +278,11 @@ void __kasan_poison_object_data(struct kmem_cache *cache, void *object)
+>   *    based on objects indexes, so that objects that are next to each other
+>   *    get different tags.
+>   */
+> -static u8 assign_tag(struct kmem_cache *cache, const void *object,
+> -			bool init, bool keep_tag)
+> +static u8 assign_tag(struct kmem_cache *cache, const void *object, bool init)
+>  {
+>  	if (IS_ENABLED(CONFIG_KASAN_GENERIC))
+>  		return 0xff;
 >  
->  #define TCPC_VENDOR_ALERT				0x80
-> +#define TCPC_VENDOR_USBSW_CTRL				0x93
-> +#define TCPC_VENDOR_USBSW_CTRL_ENABLE_USB_DATA		0x9
-> +#define TCPC_VENDOR_USBSW_CTRL_DISABLE_USB_DATA		0
+> -	/*
+> -	 * 1. When an object is kmalloc()'ed, two hooks are called:
+> -	 *    kasan_slab_alloc() and kasan_kmalloc(). We assign the
+> -	 *    tag only in the first one.
+> -	 * 2. We reuse the same tag for krealloc'ed objects.
+> -	 */
+> -	if (keep_tag)
+> -		return get_tag(object);
+> -
+>  	/*
+>  	 * If the cache neither has a constructor nor has SLAB_TYPESAFE_BY_RCU
+>  	 * set, assign a tag when the object is being allocated (init == false).
+> @@ -325,7 +315,7 @@ void * __must_check __kasan_init_slab_obj(struct kmem_cache *cache,
+>  	}
 >  
->  #define TCPC_RECEIVE_BUFFER_COUNT_OFFSET		0
->  #define TCPC_RECEIVE_BUFFER_FRAME_TYPE_OFFSET		1
-> @@ -274,6 +277,21 @@ static void process_tx(struct max_tcpci_chip *chip, u16 status)
->  		max_tcpci_init_regs(chip);
+>  	/* Tag is ignored in set_tag() without CONFIG_KASAN_SW/HW_TAGS */
+> -	object = set_tag(object, assign_tag(cache, object, true, false));
+> +	object = set_tag(object, assign_tag(cache, object, true));
+>  
+>  	return (void *)object;
+>  }
+> @@ -413,12 +403,46 @@ static void set_alloc_info(struct kmem_cache *cache, void *object,
+>  		kasan_set_track(&alloc_meta->alloc_track, flags);
 >  }
 >  
-> +/* Enable USB switches when partner is USB communications capable */
-> +static void max_tcpci_set_partner_usb_comm_capable(struct tcpci *tcpci, struct tcpci_data *data,
-> +						   bool capable)
+> +void * __must_check __kasan_slab_alloc(struct kmem_cache *cache,
+> +					void *object, gfp_t flags)
 > +{
-> +	struct max_tcpci_chip *chip = tdata_to_max_tcpci(data);
-> +	int ret;
+> +	u8 tag;
+> +	void *tagged_object;
 > +
-> +	ret = max_tcpci_write8(chip, TCPC_VENDOR_USBSW_CTRL, capable ?
-> +			       TCPC_VENDOR_USBSW_CTRL_ENABLE_USB_DATA :
-> +			       TCPC_VENDOR_USBSW_CTRL_DISABLE_USB_DATA);
+> +	if (gfpflags_allow_blocking(flags))
+> +		kasan_quarantine_reduce();
 > +
-> +	if (ret < 0)
-> +		dev_err(chip->dev, "Failed to enable USB switches");
+> +	if (unlikely(object == NULL))
+> +		return NULL;
+> +
+> +	if (is_kfence_address(object))
+> +		return (void *)object;
+> +
+> +	/*
+> +	 * Generate and assign random tag for tag-based modes.
+> +	 * Tag is ignored in set_tag() for the generic mode.
+> +	 */
+> +	tag = assign_tag(cache, object, false);
+> +	tagged_object = set_tag(object, tag);
+> +
+> +	/*
+> +	 * Unpoison the whole object.
+> +	 * For kmalloc() allocations, kasan_kmalloc() will do precise poisoning.
+> +	 */
+> +	kasan_unpoison(tagged_object, cache->object_size);
+> +
+> +	/* Save alloc info (if possible) for non-kmalloc() allocations. */
+> +	if (kasan_stack_collection_enabled())
+> +		set_alloc_info(cache, (void *)object, flags, false);
+> +
+> +	return tagged_object;
 > +}
 > +
->  static irqreturn_t _max_tcpci_irq(struct max_tcpci_chip *chip, u16 status)
+>  static void *____kasan_kmalloc(struct kmem_cache *cache, const void *object,
+> -				size_t size, gfp_t flags, bool kmalloc)
+> +					size_t size, gfp_t flags)
 >  {
->  	u16 mask;
-> @@ -453,6 +471,7 @@ static int max_tcpci_probe(struct i2c_client *client, const struct i2c_device_id
->  	chip->data.frs_sourcing_vbus = max_tcpci_frs_sourcing_vbus;
->  	chip->data.auto_discharge_disconnect = true;
->  	chip->data.vbus_vsafe0v = true;
-> +	chip->data.set_partner_usb_comm_capable = max_tcpci_set_partner_usb_comm_capable;
+>  	unsigned long redzone_start;
+>  	unsigned long redzone_end;
+> -	u8 tag;
 >  
->  	max_tcpci_init_regs(chip);
->  	chip->tcpci = tcpci_register_port(chip->dev, &chip->data);
+>  	if (gfpflags_allow_blocking(flags))
+>  		kasan_quarantine_reduce();
+> @@ -429,33 +453,41 @@ static void *____kasan_kmalloc(struct kmem_cache *cache, const void *object,
+>  	if (is_kfence_address(kasan_reset_tag(object)))
+>  		return (void *)object;
+>  
+> +	/*
+> +	 * The object has already been unpoisoned by kasan_slab_alloc() for
+> +	 * kmalloc() or by ksize() for krealloc().
+> +	 */
+> +
+> +	/*
+> +	 * The redzone has byte-level precision for the generic mode.
+> +	 * Partially poison the last object granule to cover the unaligned
+> +	 * part of the redzone.
+> +	 */
+> +	if (IS_ENABLED(CONFIG_KASAN_GENERIC))
+> +		kasan_poison_last_granule((void *)object, size);
+> +
+> +	/* Poison the aligned part of the redzone. */
+>  	redzone_start = round_up((unsigned long)(object + size),
+>  				KASAN_GRANULE_SIZE);
+> -	redzone_end = round_up((unsigned long)object + cache->object_size,
+> -				KASAN_GRANULE_SIZE);
+> -	tag = assign_tag(cache, object, false, kmalloc);
+> -
+> -	/* Tag is ignored in set_tag without CONFIG_KASAN_SW/HW_TAGS */
+> -	kasan_unpoison(set_tag(object, tag), size);
+> +	redzone_end = (unsigned long)object + cache->object_size;
+>  	kasan_poison((void *)redzone_start, redzone_end - redzone_start,
+>  			   KASAN_KMALLOC_REDZONE);
+>  
+> +	/*
+> +	 * Save alloc info (if possible) for kmalloc() allocations.
+> +	 * This also rewrites the alloc info when called from kasan_krealloc().
+> +	 */
+>  	if (kasan_stack_collection_enabled())
+> -		set_alloc_info(cache, (void *)object, flags, kmalloc);
+> +		set_alloc_info(cache, (void *)object, flags, true);
+>  
+> -	return set_tag(object, tag);
+> -}
+> -
+> -void * __must_check __kasan_slab_alloc(struct kmem_cache *cache,
+> -					void *object, gfp_t flags)
+> -{
+> -	return ____kasan_kmalloc(cache, object, cache->object_size, flags, false);
+> +	/* Keep the tag that was set by kasan_slab_alloc(). */
+> +	return (void *)object;
+>  }
+>  
+>  void * __must_check __kasan_kmalloc(struct kmem_cache *cache, const void *object,
+>  					size_t size, gfp_t flags)
+>  {
+> -	return ____kasan_kmalloc(cache, object, size, flags, true);
+> +	return ____kasan_kmalloc(cache, object, size, flags);
+>  }
+>  EXPORT_SYMBOL(__kasan_kmalloc);
+>  
+> @@ -496,8 +528,7 @@ void * __must_check __kasan_krealloc(const void *object, size_t size, gfp_t flag
+>  	if (unlikely(!PageSlab(page)))
+>  		return __kasan_kmalloc_large(object, size, flags);
+>  	else
+> -		return ____kasan_kmalloc(page->slab_cache, object, size,
+> -						flags, true);
+> +		return ____kasan_kmalloc(page->slab_cache, object, size, flags);
+>  }
+>  
+>  void __kasan_kfree_large(void *ptr, unsigned long ip)
+> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+> index dd14e8870023..6a2882997f23 100644
+> --- a/mm/kasan/kasan.h
+> +++ b/mm/kasan/kasan.h
+> @@ -358,12 +358,51 @@ static inline bool kasan_byte_accessible(const void *addr)
+>  
+>  #else /* CONFIG_KASAN_HW_TAGS */
+>  
+> -void kasan_poison(const void *address, size_t size, u8 value);
+> -void kasan_unpoison(const void *address, size_t size);
+> +/**
+> + * kasan_poison - mark the memory range as unaccessible
+> + * @addr - range start address, must be aligned to KASAN_GRANULE_SIZE
+> + * @size - range size
+> + * @value - value that's written to metadata for the range
+> + *
+> + * The size gets aligned to KASAN_GRANULE_SIZE before marking the range.
+> + */
+> +void kasan_poison(const void *addr, size_t size, u8 value);
+> +
+> +/**
+> + * kasan_unpoison - mark the memory range as accessible
+> + * @addr - range start address, must be aligned to KASAN_GRANULE_SIZE
+> + * @size - range size
+> + *
+> + * For the tag-based modes, the @size gets aligned to KASAN_GRANULE_SIZE before
+> + * marking the range.
+> + * For the generic mode, the last granule of the memory range gets partially
+> + * unpoisoned based on the @size.
+> + */
+> +void kasan_unpoison(const void *addr, size_t size);
+> +
+>  bool kasan_byte_accessible(const void *addr);
+>  
+>  #endif /* CONFIG_KASAN_HW_TAGS */
+>  
+> +#ifdef CONFIG_KASAN_GENERIC
+> +
+> +/**
+> + * kasan_poison_last_granule - mark the last granule of the memory range as
+> + * unaccessible
+> + * @addr - range start address, must be aligned to KASAN_GRANULE_SIZE
+> + * @size - range size
+> + *
+> + * This function is only available for the generic mode, as it's the only mode
+> + * that has partially poisoned memory granules.
+> + */
+> +void kasan_poison_last_granule(const void *address, size_t size);
+> +
+> +#else /* CONFIG_KASAN_GENERIC */
+> +
+> +static inline void kasan_poison_last_granule(const void *address, size_t size) { }
+> +
+> +#endif /* CONFIG_KASAN_GENERIC */
+> +
+>  /*
+>   * Exported functions for interfaces called from assembly or from generated
+>   * code. Declarations here to avoid warning about missing declarations.
+> diff --git a/mm/kasan/shadow.c b/mm/kasan/shadow.c
+> index 1372a2fc0ca9..1ed7817e4ee6 100644
+> --- a/mm/kasan/shadow.c
+> +++ b/mm/kasan/shadow.c
+> @@ -69,10 +69,6 @@ void *memcpy(void *dest, const void *src, size_t len)
+>  	return __memcpy(dest, src, len);
+>  }
+>  
+> -/*
+> - * Poisons the shadow memory for 'size' bytes starting from 'addr'.
+> - * Memory addresses should be aligned to KASAN_GRANULE_SIZE.
+> - */
+>  void kasan_poison(const void *address, size_t size, u8 value)
+>  {
+>  	void *shadow_start, *shadow_end;
+> @@ -83,12 +79,12 @@ void kasan_poison(const void *address, size_t size, u8 value)
+>  	 * addresses to this function.
+>  	 */
+>  	address = kasan_reset_tag(address);
+> -	size = round_up(size, KASAN_GRANULE_SIZE);
+>  
+>  	/* Skip KFENCE memory if called explicitly outside of sl*b. */
+>  	if (is_kfence_address(address))
+>  		return;
+>  
+> +	size = round_up(size, KASAN_GRANULE_SIZE);
+>  	shadow_start = kasan_mem_to_shadow(address);
+>  	shadow_end = kasan_mem_to_shadow(address + size);
+>  
+> @@ -96,6 +92,16 @@ void kasan_poison(const void *address, size_t size, u8 value)
+>  }
+>  EXPORT_SYMBOL(kasan_poison);
+>  
+> +#ifdef CONFIG_KASAN_GENERIC
+> +void kasan_poison_last_granule(const void *address, size_t size)
+> +{
+> +	if (size & KASAN_GRANULE_MASK) {
+> +		u8 *shadow = (u8 *)kasan_mem_to_shadow(address + size);
+> +		*shadow = size & KASAN_GRANULE_MASK;
+> +	}
+> +}
+> +#endif
+
+The function declaration still needs to exist in the dead branch if
+!IS_ENABLED(CONFIG_KASAN_GENERIC). It appears in that case it's declared
+(in kasan.h), but not defined.  We shouldn't get linker errors because
+the optimizer should remove the dead branch. Nevertheless, is this code
+generally acceptable?
+
+>  void kasan_unpoison(const void *address, size_t size)
+>  {
+>  	u8 tag = get_tag(address);
+> @@ -115,16 +121,12 @@ void kasan_unpoison(const void *address, size_t size)
+>  	if (is_kfence_address(address))
+>  		return;
+>  
+> +	/* Unpoison round_up(size, KASAN_GRANULE_SIZE) bytes. */
+>  	kasan_poison(address, size, tag);
+>  
+> -	if (size & KASAN_GRANULE_MASK) {
+> -		u8 *shadow = (u8 *)kasan_mem_to_shadow(address + size);
+> -
+> -		if (IS_ENABLED(CONFIG_KASAN_SW_TAGS))
+> -			*shadow = tag;
+> -		else /* CONFIG_KASAN_GENERIC */
+> -			*shadow = size & KASAN_GRANULE_MASK;
+> -	}
+> +	/* Partially poison the last granule for the generic mode. */
+> +	if (IS_ENABLED(CONFIG_KASAN_GENERIC))
+> +		kasan_poison_last_granule(address, size);
+>  }
+>  
+>  #ifdef CONFIG_MEMORY_HOTPLUG
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 176b1cb0d006..e564008c2329 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -3565,8 +3565,7 @@ static void early_kmem_cache_node_alloc(int node)
+>  	init_object(kmem_cache_node, n, SLUB_RED_ACTIVE);
+>  	init_tracking(kmem_cache_node, n);
+>  #endif
+> -	n = kasan_kmalloc(kmem_cache_node, n, sizeof(struct kmem_cache_node),
+> -		      GFP_KERNEL);
+> +	n = kasan_slab_alloc(kmem_cache_node, n, GFP_KERNEL);
+>  	page->freelist = get_freepointer(kmem_cache_node, n);
+>  	page->inuse = 1;
+>  	page->frozen = 0;
 > -- 
 > 2.30.0.365.g02bc693789-goog
 > 
