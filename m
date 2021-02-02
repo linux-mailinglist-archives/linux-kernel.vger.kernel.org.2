@@ -2,101 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A5130C1D5
+	by mail.lfdr.de (Postfix) with ESMTP id A7F0830C1D6
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:35:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234617AbhBBOeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:34:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45390 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234568AbhBBOdF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:33:05 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612276338; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZY7R/A8eLGtcqtBTwPz4dc8E6975FZbZj6rab/rk/co=;
-        b=j08LbR+/N4gscwMe9/vv1y6TbSr6g+uI8Fvmd6aUiZN3eXaYwuKCYZD1LwoDENfRkxwGU0
-        412GY/gqoJEVKSXG9cJ4ADonbDGXxcU99oWydp5Rm3Y/nVMao0u9sPUOYRoKgo3QRhPEJy
-        MTJSdg+5u8XcNBah4K1e9Bay/Y5Jdaw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7D39BAD78;
-        Tue,  2 Feb 2021 14:32:18 +0000 (UTC)
-Date:   Tue, 2 Feb 2021 15:32:16 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Mike Rapoport <rppt@kernel.org>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: Re: [PATCH v16 07/11] secretmem: use PMD-size pages to amortize
- direct map fragmentation
-Message-ID: <YBlicIupOyPF9f3D@dhcp22.suse.cz>
-References: <73738cda43236b5ac2714e228af362b67a712f5d.camel@linux.ibm.com>
- <YBPF8ETGBHUzxaZR@dhcp22.suse.cz>
- <6de6b9f9c2d28eecc494e7db6ffbedc262317e11.camel@linux.ibm.com>
- <YBkcyQsky2scjEcP@dhcp22.suse.cz>
- <20210202124857.GN242749@kernel.org>
- <6653288a-dd02-f9de-ef6a-e8d567d71d53@redhat.com>
- <YBlUXdwV93xMIff6@dhcp22.suse.cz>
- <211f0214-1868-a5be-9428-7acfc3b73993@redhat.com>
- <YBlgCl8MQuuII22w@dhcp22.suse.cz>
- <d4fe580a-ef0e-e13f-9ee4-16fb8b6d65dd@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d4fe580a-ef0e-e13f-9ee4-16fb8b6d65dd@redhat.com>
+        id S234596AbhBBOe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:34:27 -0500
+Received: from jax4mhob17.registeredsite.com ([64.69.218.105]:39900 "EHLO
+        jax4mhob17.registeredsite.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234590AbhBBOdm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:33:42 -0500
+Received: from mailpod.hostingplatform.com ([10.30.71.204])
+        by jax4mhob17.registeredsite.com (8.14.4/8.14.4) with ESMTP id 112EWkgK119015
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
+        for <linux-kernel@vger.kernel.org>; Tue, 2 Feb 2021 09:32:46 -0500
+Received: (qmail 12776 invoked by uid 0); 2 Feb 2021 14:32:45 -0000
+X-TCPREMOTEIP: 83.128.90.119
+X-Authenticated-UID: mike@milosoftware.com
+Received: from unknown (HELO phenom.domain?not?set.invalid) (mike@milosoftware.com@83.128.90.119)
+  by 0 with ESMTPA; 2 Feb 2021 14:32:45 -0000
+From:   Mike Looijmans <mike.looijmans@topic.nl>
+To:     netdev@vger.kernel.org
+Cc:     Mike Looijmans <mike.looijmans@topic.nl>,
+        Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] net: mdiobus: Prevent spike on MDIO bus reset signal
+Date:   Tue,  2 Feb 2021 15:32:39 +0100
+Message-Id: <20210202143239.10714-1-mike.looijmans@topic.nl>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 02-02-21 15:26:20, David Hildenbrand wrote:
-> On 02.02.21 15:22, Michal Hocko wrote:
-> > On Tue 02-02-21 15:12:21, David Hildenbrand wrote:
-> > [...]
-> > > I think secretmem behaves much more like longterm GUP right now
-> > > ("unmigratable", "lifetime controlled by user space", "cannot go on
-> > > CMA/ZONE_MOVABLE"). I'd either want to reasonably well control/limit it or
-> > > make it behave more like mlocked pages.
-> > 
-> > I thought I have already asked but I must have forgotten. Is there any
-> > actual reason why the memory is not movable? Timing attacks?
-> 
-> I think the reason is simple: no direct map, no copying of memory.
+The mdio_bus reset code first de-asserted the reset by allocating with
+GPIOD_OUT_LOW, then asserted and de-asserted again. In other words, if
+the reset signal defaulted to asserted, there'd be a short "spike"
+before the reset.
 
-This is an implementation detail though and not something terribly hard
-to add on top later on. I was more worried there would be really
-fundamental reason why this is not possible. E.g. security implications.
+Here is what happens depending on the pre-existing state of the reset
+signal:
+Reset (previously asserted):   ~~~|_|~~~~|_______
+Reset (previously deasserted): _____|~~~~|_______
+                                  ^ ^    ^
+                                  A B    C
+
+At point A, the low going transition is because the reset line is
+requested using GPIOD_OUT_LOW. If the line is successfully requested,
+the first thing we do is set it high _without_ any delay. This is
+point B. So, a glitch occurs between A and B.
+
+We then fsleep() and finally set the GPIO low at point C.
+
+Requesting the line using GPIOD_OUT_HIGH eliminates the A and B
+transitions. Instead we get:
+
+Reset (previously asserted)  : ~~~~~~~~~~|______
+Reset (previously deasserted): ____|~~~~~|______
+                                   ^     ^
+                                   A     C
+
+Where A and C are the points described above in the code. Point B
+has been eliminated.
+
+The issue was found when we pulled down the reset signal for the
+Marvell 88E1512P PHY (because it requires at least 50ms after POR with
+an active clock). Looking at the reset signal with a scope revealed a
+short spike, point B in the artwork above.
+
+Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+---
+
+Changes in v2:
+Put more explanation into the commit text, and the artwork from Russell King
+
+ drivers/net/phy/mdio_bus.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+index 2b42e46066b4..34e98ae75110 100644
+--- a/drivers/net/phy/mdio_bus.c
++++ b/drivers/net/phy/mdio_bus.c
+@@ -543,8 +543,8 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
+ 	mutex_init(&bus->mdio_lock);
+ 	mutex_init(&bus->shared_lock);
+ 
+-	/* de-assert bus level PHY GPIO reset */
+-	gpiod = devm_gpiod_get_optional(&bus->dev, "reset", GPIOD_OUT_LOW);
++	/* assert bus level PHY GPIO reset */
++	gpiod = devm_gpiod_get_optional(&bus->dev, "reset", GPIOD_OUT_HIGH);
+ 	if (IS_ERR(gpiod)) {
+ 		err = dev_err_probe(&bus->dev, PTR_ERR(gpiod),
+ 				    "mii_bus %s couldn't get reset GPIO\n",
+@@ -553,8 +553,6 @@ int __mdiobus_register(struct mii_bus *bus, struct module *owner)
+ 		return err;
+ 	} else	if (gpiod) {
+ 		bus->reset_gpiod = gpiod;
+-
+-		gpiod_set_value_cansleep(gpiod, 1);
+ 		fsleep(bus->reset_delay_us);
+ 		gpiod_set_value_cansleep(gpiod, 0);
+ 		if (bus->reset_post_delay_us > 0)
 -- 
-Michal Hocko
-SUSE Labs
+2.17.1
+
