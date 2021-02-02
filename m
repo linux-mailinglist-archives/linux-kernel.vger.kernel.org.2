@@ -2,81 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF9C30CC96
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:01:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A12230CC8E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:01:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240177AbhBBUBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 15:01:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240259AbhBBT6n (ORCPT
+        id S238651AbhBBUAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 15:00:03 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:47698 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240263AbhBBT6z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 14:58:43 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C00C061573;
-        Tue,  2 Feb 2021 11:58:01 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DVbFw1Crfz9tlT;
-        Wed,  3 Feb 2021 06:57:55 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1612295877;
-        bh=J+JvAQeb0ZSXaaN5XWDRAULBG+BGfSXBbOOLWMf1Tcs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=fAowNYrwDsauDwK11D/2iB+SjBsfGM/+hBS5SnsFILqdnm4DGzH6iqDwsWLTBd0mB
-         asxR+AjqQ0T9/QlEwMDHhvIslicy0jaHVuMXxr18xfSJcbBlKcrDMm9zLNJ8MYfGmS
-         aNWPim4gOop1MkcRWeO84GERBOcVbQBUsoGKo0ZIx2bo/fHiT34E1P/AZNgv6IaiS3
-         bCV0Brro/b+WqGjOMF0i7kU6m3T8uxoJu1aV+ZQq4WUREEGRv2lr+YPpNBsfQLV+pg
-         OQpRPQlTmTTWWltkNMsoBvR/NwiX6QVuwOSUCJ9n3wicYT4scLOfKb4l2uf6d+a1vu
-         /lEa3p0FUgz4Q==
-Date:   Wed, 3 Feb 2021 06:57:54 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     Maxime Ripard <maxime@cerno.tech>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Signed-off-by missing for commit in the arm-soc tree
-Message-ID: <20210203065754.6b351c79@canb.auug.org.au>
+        Tue, 2 Feb 2021 14:58:55 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id D62F81C0B7A; Tue,  2 Feb 2021 20:58:09 +0100 (CET)
+Date:   Tue, 2 Feb 2021 20:58:09 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: Re: [PATCH 4.4 24/28] can: dev: prevent potential information leak
+ in can_fill_info()
+Message-ID: <20210202195809.GA12425@duo.ucw.cz>
+References: <20210202132941.180062901@linuxfoundation.org>
+ <20210202132942.158736432@linuxfoundation.org>
+ <20210202185317.GB6964@duo.ucw.cz>
+ <20210202190539.GE20820@kadam>
+ <20210202195101.GF20820@kadam>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/T68msDAvX5wZ2qAMw_aeyuL";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="dDRMvlgZJXvWKvBx"
+Content-Disposition: inline
+In-Reply-To: <20210202195101.GF20820@kadam>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/T68msDAvX5wZ2qAMw_aeyuL
-Content-Type: text/plain; charset=US-ASCII
+
+--dDRMvlgZJXvWKvBx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Tue 2021-02-02 22:51:01, Dan Carpenter wrote:
+> On Tue, Feb 02, 2021 at 10:05:39PM +0300, Dan Carpenter wrote:
+> > On Tue, Feb 02, 2021 at 07:53:17PM +0100, Pavel Machek wrote:
+> > > Hi!
+> > >=20
+> > > > From: Dan Carpenter <dan.carpenter@oracle.com>
+> > > >=20
+> > > > [ Upstream commit b552766c872f5b0d90323b24e4c9e8fa67486dd5 ]
+> > > >=20
+> > > > The "bec" struct isn't necessarily always initialized. For example,=
+ the
+> > > > mcp251xfd_get_berr_counter() function doesn't initialize anything i=
+f the
+> > > > interface is down.
+> > >=20
+> > > Well, yes... and =3D {} does not neccessarily initialize all of the
+> > > structure... for example padding.
+> > >=20
+> > > It is really simple
+> > >=20
+> > > struct can_berr_counter {
+> > > 	__u16 txerr;
+> > > 	__u16 rxerr;
+> > > };
+> > >=20
+> > > but maybe something like alpha uses padding in such case, and memset
+> > > would be better?
+> >=20
+> > I'm pretty sure nothing uses padding in this situation.  If it does then
+> > we need to re-work a bunch of code.
+>=20
+> Not necessarily related but in theory a "=3D {};" assignment is a GCC
+> extension and it is supposed to zero out struct holes.  If the code
+> does "=3D {0};" then that's standard C, and will not necessarily fill
+> struct holes but I think GCC tries to.  The other complication is that
+> some GCC versions have bugs related to this?  We had a long thread about
+> this last August.
+>=20
+> https://lore.kernel.org/lkml/20200801144030.GM24045@ziepe.ca/
+>=20
+> Anyway, this code has no holes so it's not affected.
 
-Commit
+Thanks for pointers. I remembered "just do memset", but there are
+clearly more nuances to this.
 
-  4e238bfd83f3 ("ARM: dts: sun7i: a20: bananapro: Fix ethernet phy-mode")
-
-is missing a Signed-off-by from its committer.
-
+Best regards,
+								Pavel
 --=20
-Cheers,
-Stephen Rothwell
+http://www.livejournal.com/~pavelmachek
 
---Sig_/T68msDAvX5wZ2qAMw_aeyuL
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--dDRMvlgZJXvWKvBx
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAZrsIACgkQAVBC80lX
-0GwskQf8DQSjYffS9KmZdTTzLEpSxUlwgittd2kw6GZ0tfU8GVfzVQ8esoHnJU+y
-J6Kz5e7+CCMTo71XSDuoLThvU5PBnwrhuwy8SucP5FKS11YQJkU81vD4q0mTNUzm
-Mchn64R4/D8a74D+S2a3OnxIV7LARNF5Pcoz2rvvGAngpAdRfU2i05TsNegE5zTp
-9vzR3+9fCsaMqn7T0W39kYTQQFGU3iRPHs+oWYDw4zyRPpEfClc54ftbiFghMETx
-1L4qUcPHxctJr0ojxuvuACTmKSuoAQNnqBlEUjcPUwlA/bjg0G+2xgD/JnSDW1+e
-16SESPNEpwOCcIVMav+mjfhhOFjnBg==
-=WlKF
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCYBmu0QAKCRAw5/Bqldv6
+8tjbAJsFqcPhX1ud4HN18qxbXB1znHVQjwCfYozVCtxPDN5YuADfU9fTHcapQcs=
+=hRdw
 -----END PGP SIGNATURE-----
 
---Sig_/T68msDAvX5wZ2qAMw_aeyuL--
+--dDRMvlgZJXvWKvBx--
