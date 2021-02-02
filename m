@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C8A630CCF1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:23:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DD0630CCF3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:23:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233222AbhBBUUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 15:20:42 -0500
-Received: from mga14.intel.com ([192.55.52.115]:59905 "EHLO mga14.intel.com"
+        id S233391AbhBBUV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 15:21:58 -0500
+Received: from mga14.intel.com ([192.55.52.115]:60236 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232783AbhBBUS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 15:18:29 -0500
-IronPort-SDR: RGcEp1UdFQakkzjF+ihAXpUc24gVNHWgkc7e4kQe5jHd7BLrcZCgIa7c0MUgf4Tr/hYrjpvZj2
- CqSTXmdI7Zbw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="180148797"
+        id S229984AbhBBUTr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 15:19:47 -0500
+IronPort-SDR: C21n/RXDRv5MLZiGVSyfEzJC6LYoLPr7Mn66hwEsIwrykb4n9MUaKScI7hlMhP15LzArF/lkJW
+ wBnTBnSdMPuQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="180148808"
 X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="180148797"
+   d="scan'208";a="180148808"
 Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 12:14:12 -0800
-IronPort-SDR: cUWzp3oSc2CMRdvOKJUqmlRjSjHLxqnPVnxHw3tq0TzDCBZQESa9hC5GIK6zNO7kGuXAJFrsm+
- 5uYxovT1vORQ==
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 12:14:13 -0800
+IronPort-SDR: GNs8LKjwc1CXrNzj6sJ/VrVemawv7MglSFjByfMWh87D/vAclNSL07Dk4S/w8Gc93d7u0FRncp
+ jAsEa9Ljskkw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="356442511"
+   d="scan'208";a="356442512"
 Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
-  by orsmga003.jf.intel.com with ESMTP; 02 Feb 2021 12:14:11 -0800
+  by orsmga003.jf.intel.com with ESMTP; 02 Feb 2021 12:14:12 -0800
 From:   kan.liang@linux.intel.com
 To:     acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org
 Cc:     peterz@infradead.org, eranian@google.com, namhyung@kernel.org,
         jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
         maddy@linux.vnet.ibm.com, Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH 5/9] perf tools: Support PERF_SAMPLE_WEIGHT_STRUCT
-Date:   Tue,  2 Feb 2021 12:09:09 -0800
-Message-Id: <1612296553-21962-6-git-send-email-kan.liang@linux.intel.com>
+Subject: [PATCH 6/9] perf report: Support instruction latency
+Date:   Tue,  2 Feb 2021 12:09:10 -0800
+Message-Id: <1612296553-21962-7-git-send-email-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1612296553-21962-1-git-send-email-kan.liang@linux.intel.com>
 References: <1612296553-21962-1-git-send-email-kan.liang@linux.intel.com>
@@ -42,238 +42,313 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-The new sample type, PERF_SAMPLE_WEIGHT_STRUCT, is an alternative of the
-PERF_SAMPLE_WEIGHT sample type. Users can apply either the
-PERF_SAMPLE_WEIGHT sample type or the PERF_SAMPLE_WEIGHT_STRUCT sample
-type to retrieve the sample weight, but they cannot apply both sample
-types simultaneously. The new sample type shares the same space as the
-PERF_SAMPLE_WEIGHT sample type. The lower 32 bits are exactly the same
-for both sample type. The higher 32 bits may be different for different
-architecture.
+The instruction latency information can be recorded on some platforms,
+e.g., the Intel Sapphire Rapids server. With both memory latency
+(weight) and the new instruction latency information, users can easily
+locate the expensive load instructions, and also understand the time
+spent in different stages. The users can optimize their applications
+in different pipeline stages.
 
-Add arch specific arch_evsel__set_sample_weight() to set the new sample
-type for X86. Only store the lower 32 bits for the sample->weight if the
-new sample type is applied. In practice, no memory access could last
-than 4G cycles. No data will be lost.
+The 'weight' field is shared among different architectures. Reusing the
+'weight' field may impacts other architectures. Add a new field to store
+the instruction latency.
 
-If the kernel doesn't support the new sample type. Fall back to the
-PERF_SAMPLE_WEIGHT sample type.
+Like the 'weight' support, introduce a 'ins_lat' for the global
+instruction latency, and a 'local_ins_lat' for the local instruction
+latency version.
 
-There is no impact for other architectures.
+Add new sort functions, INSTR Latency and Local INSTR Latency,
+accordingly.
+
+Add local_ins_lat to the default_mem_sort_order[].
 
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- tools/perf/arch/x86/util/Build            |  1 +
- tools/perf/arch/x86/util/evsel.c          |  8 ++++++++
- tools/perf/util/evsel.c                   | 28 ++++++++++++++++++++++++----
- tools/perf/util/evsel.h                   |  3 +++
- tools/perf/util/intel-pt.c                | 22 +++++++++++++++++++---
- tools/perf/util/perf_event_attr_fprintf.c |  2 +-
- tools/perf/util/session.c                 |  2 +-
- tools/perf/util/synthetic-events.c        |  6 ++++--
- 8 files changed, 61 insertions(+), 11 deletions(-)
- create mode 100644 tools/perf/arch/x86/util/evsel.c
+ tools/perf/Documentation/perf-report.txt |  6 +++-
+ tools/perf/util/event.h                  |  1 +
+ tools/perf/util/evsel.c                  |  4 ++-
+ tools/perf/util/hist.c                   | 12 ++++++--
+ tools/perf/util/hist.h                   |  2 ++
+ tools/perf/util/intel-pt.c               |  5 ++--
+ tools/perf/util/session.c                |  8 ++++--
+ tools/perf/util/sort.c                   | 47 +++++++++++++++++++++++++++++++-
+ tools/perf/util/sort.h                   |  3 ++
+ tools/perf/util/synthetic-events.c       |  4 ++-
+ 10 files changed, 81 insertions(+), 11 deletions(-)
 
-diff --git a/tools/perf/arch/x86/util/Build b/tools/perf/arch/x86/util/Build
-index d73f548..18848b3 100644
---- a/tools/perf/arch/x86/util/Build
-+++ b/tools/perf/arch/x86/util/Build
-@@ -7,6 +7,7 @@ perf-y += topdown.o
- perf-y += machine.o
- perf-y += event.o
- perf-y += mem-events.o
-+perf-y += evsel.o
+diff --git a/tools/perf/Documentation/perf-report.txt b/tools/perf/Documentation/perf-report.txt
+index 826b5a9..0565b7c 100644
+--- a/tools/perf/Documentation/perf-report.txt
++++ b/tools/perf/Documentation/perf-report.txt
+@@ -108,6 +108,9 @@ OPTIONS
+ 	- period: Raw number of event count of sample
+ 	- time: Separate the samples by time stamp with the resolution specified by
+ 	--time-quantum (default 100ms). Specify with overhead and before it.
++	- ins_lat: Instruction latency in core cycles. This is the global
++	instruction latency
++	- local_ins_lat: Local instruction latency version
  
- perf-$(CONFIG_DWARF) += dwarf-regs.o
- perf-$(CONFIG_BPF_PROLOGUE) += dwarf-regs.o
-diff --git a/tools/perf/arch/x86/util/evsel.c b/tools/perf/arch/x86/util/evsel.c
-new file mode 100644
-index 0000000..2f733cd
---- /dev/null
-+++ b/tools/perf/arch/x86/util/evsel.c
-@@ -0,0 +1,8 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#include <stdio.h>
-+#include "util/evsel.h"
-+
-+void arch_evsel__set_sample_weight(struct evsel *evsel)
-+{
-+	evsel__set_sample_bit(evsel, WEIGHT_STRUCT);
-+}
+ 	By default, comm, dso and symbol keys are used.
+ 	(i.e. --sort comm,dso,symbol)
+@@ -154,7 +157,8 @@ OPTIONS
+ 	- blocked: reason of blocked load access for the data at the time of the sample
+ 
+ 	And the default sort keys are changed to local_weight, mem, sym, dso,
+-	symbol_daddr, dso_daddr, snoop, tlb, locked, blocked, see '--mem-mode'.
++	symbol_daddr, dso_daddr, snoop, tlb, locked, blocked, local_ins_lat,
++	see '--mem-mode'.
+ 
+ 	If the data file has tracepoint event(s), following (dynamic) sort keys
+ 	are also available:
+diff --git a/tools/perf/util/event.h b/tools/perf/util/event.h
+index ff403ea..5d50a49 100644
+--- a/tools/perf/util/event.h
++++ b/tools/perf/util/event.h
+@@ -141,6 +141,7 @@ struct perf_sample {
+ 	u16 insn_len;
+ 	u8  cpumode;
+ 	u16 misc;
++	u16 ins_lat;
+ 	bool no_hw_idx;		/* No hw_idx collected in branch_stack */
+ 	char insn[MAX_INSN];
+ 	void *raw_data;
 diff --git a/tools/perf/util/evsel.c b/tools/perf/util/evsel.c
-index c48f6de..0a2a307 100644
+index 0a2a307..24c0b59 100644
 --- a/tools/perf/util/evsel.c
 +++ b/tools/perf/util/evsel.c
-@@ -1012,6 +1012,11 @@ struct evsel_config_term *__evsel__get_config_term(struct evsel *evsel, enum evs
- 	return found_term;
- }
- 
-+void __weak arch_evsel__set_sample_weight(struct evsel *evsel)
-+{
-+	evsel__set_sample_bit(evsel, WEIGHT);
-+}
-+
- /*
-  * The enable_on_exec/disabled value strategy:
-  *
-@@ -1166,7 +1171,7 @@ void evsel__config(struct evsel *evsel, struct record_opts *opts,
- 	}
- 
- 	if (opts->sample_weight)
--		evsel__set_sample_bit(evsel, WEIGHT);
-+		arch_evsel__set_sample_weight(evsel);
- 
- 	attr->task  = track;
- 	attr->mmap  = track;
-@@ -1735,6 +1740,10 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
- 	}
- 
- fallback_missing_features:
-+	if (perf_missing_features.weight_struct) {
-+		evsel__set_sample_bit(evsel, WEIGHT);
-+		evsel__reset_sample_bit(evsel, WEIGHT_STRUCT);
-+	}
- 	if (perf_missing_features.clockid_wrong)
- 		evsel->core.attr.clockid = CLOCK_MONOTONIC; /* should always work */
- 	if (perf_missing_features.clockid) {
-@@ -1873,7 +1882,12 @@ static int evsel__open_cpu(struct evsel *evsel, struct perf_cpu_map *cpus,
- 	 * Must probe features in the order they were added to the
- 	 * perf_event_attr interface.
- 	 */
--        if (!perf_missing_features.data_page_size &&
-+	if (!perf_missing_features.weight_struct &&
-+	    (evsel->core.attr.sample_type & PERF_SAMPLE_WEIGHT_STRUCT)) {
-+		perf_missing_features.weight_struct = true;
-+		pr_debug2("switching off weight struct support\n");
-+		goto fallback_missing_features;
-+	} else if (!perf_missing_features.data_page_size &&
- 	    (evsel->core.attr.sample_type & PERF_SAMPLE_DATA_PAGE_SIZE)) {
- 		perf_missing_features.data_page_size = true;
- 		pr_debug2_peo("Kernel has no PERF_SAMPLE_DATA_PAGE_SIZE support, bailing out\n");
-@@ -2316,9 +2330,15 @@ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
- 		}
- 	}
- 
--	if (type & PERF_SAMPLE_WEIGHT) {
-+	if (type & PERF_SAMPLE_WEIGHT_TYPE) {
-+		union perf_sample_weight weight;
-+
- 		OVERFLOW_CHECK_u64(array);
--		data->weight = *array;
-+		weight.full = *array;
-+		if (type & PERF_SAMPLE_WEIGHT)
-+			data->weight = weight.full;
-+		else
-+			data->weight = weight.var1_dw;
+@@ -2337,8 +2337,10 @@ int evsel__parse_sample(struct evsel *evsel, union perf_event *event,
+ 		weight.full = *array;
+ 		if (type & PERF_SAMPLE_WEIGHT)
+ 			data->weight = weight.full;
+-		else
++		else {
+ 			data->weight = weight.var1_dw;
++			data->ins_lat = weight.var2_w;
++		}
  		array++;
  	}
  
-diff --git a/tools/perf/util/evsel.h b/tools/perf/util/evsel.h
-index cd1d8dd..5c161a2 100644
---- a/tools/perf/util/evsel.h
-+++ b/tools/perf/util/evsel.h
-@@ -145,6 +145,7 @@ struct perf_missing_features {
- 	bool branch_hw_idx;
- 	bool cgroup;
- 	bool data_page_size;
-+	bool weight_struct;
+diff --git a/tools/perf/util/hist.c b/tools/perf/util/hist.c
+index 6866ab0..8a432f8 100644
+--- a/tools/perf/util/hist.c
++++ b/tools/perf/util/hist.c
+@@ -209,6 +209,8 @@ void hists__calc_col_len(struct hists *hists, struct hist_entry *h)
+ 	hists__new_col_len(hists, HISTC_LOCAL_WEIGHT, 12);
+ 	hists__new_col_len(hists, HISTC_GLOBAL_WEIGHT, 12);
+ 	hists__new_col_len(hists, HISTC_MEM_BLOCKED, 10);
++	hists__new_col_len(hists, HISTC_LOCAL_INS_LAT, 13);
++	hists__new_col_len(hists, HISTC_GLOBAL_INS_LAT, 13);
+ 	if (symbol_conf.nanosecs)
+ 		hists__new_col_len(hists, HISTC_TIME, 16);
+ 	else
+@@ -286,12 +288,13 @@ static long hist_time(unsigned long htime)
+ }
+ 
+ static void he_stat__add_period(struct he_stat *he_stat, u64 period,
+-				u64 weight)
++				u64 weight, u64 ins_lat)
+ {
+ 
+ 	he_stat->period		+= period;
+ 	he_stat->weight		+= weight;
+ 	he_stat->nr_events	+= 1;
++	he_stat->ins_lat	+= ins_lat;
+ }
+ 
+ static void he_stat__add_stat(struct he_stat *dest, struct he_stat *src)
+@@ -303,6 +306,7 @@ static void he_stat__add_stat(struct he_stat *dest, struct he_stat *src)
+ 	dest->period_guest_us	+= src->period_guest_us;
+ 	dest->nr_events		+= src->nr_events;
+ 	dest->weight		+= src->weight;
++	dest->ins_lat		+= src->ins_lat;
+ }
+ 
+ static void he_stat__decay(struct he_stat *he_stat)
+@@ -591,6 +595,7 @@ static struct hist_entry *hists__findnew_entry(struct hists *hists,
+ 	int64_t cmp;
+ 	u64 period = entry->stat.period;
+ 	u64 weight = entry->stat.weight;
++	u64 ins_lat = entry->stat.ins_lat;
+ 	bool leftmost = true;
+ 
+ 	p = &hists->entries_in->rb_root.rb_node;
+@@ -609,11 +614,11 @@ static struct hist_entry *hists__findnew_entry(struct hists *hists,
+ 
+ 		if (!cmp) {
+ 			if (sample_self) {
+-				he_stat__add_period(&he->stat, period, weight);
++				he_stat__add_period(&he->stat, period, weight, ins_lat);
+ 				hist_entry__add_callchain_period(he, period);
+ 			}
+ 			if (symbol_conf.cumulate_callchain)
+-				he_stat__add_period(he->stat_acc, period, weight);
++				he_stat__add_period(he->stat_acc, period, weight, ins_lat);
+ 
+ 			/*
+ 			 * This mem info was allocated from sample__resolve_mem
+@@ -723,6 +728,7 @@ __hists__add_entry(struct hists *hists,
+ 			.nr_events = 1,
+ 			.period	= sample->period,
+ 			.weight = sample->weight,
++			.ins_lat = sample->ins_lat,
+ 		},
+ 		.parent = sym_parent,
+ 		.filtered = symbol__parent_filter(sym_parent) | al->filtered,
+diff --git a/tools/perf/util/hist.h b/tools/perf/util/hist.h
+index 522486b..36bca33 100644
+--- a/tools/perf/util/hist.h
++++ b/tools/perf/util/hist.h
+@@ -72,6 +72,8 @@ enum hist_column {
+ 	HISTC_DSO_SIZE,
+ 	HISTC_SYMBOL_IPC,
+ 	HISTC_MEM_BLOCKED,
++	HISTC_LOCAL_INS_LAT,
++	HISTC_GLOBAL_INS_LAT,
+ 	HISTC_NR_COLS, /* Last entry */
  };
  
- extern struct perf_missing_features perf_missing_features;
-@@ -239,6 +240,8 @@ void __evsel__reset_sample_bit(struct evsel *evsel, enum perf_event_sample_forma
- 
- void evsel__set_sample_id(struct evsel *evsel, bool use_sample_identifier);
- 
-+void arch_evsel__set_sample_weight(struct evsel *evsel);
-+
- int evsel__set_filter(struct evsel *evsel, const char *filter);
- int evsel__append_tp_filter(struct evsel *evsel, const char *filter);
- int evsel__append_addr_filter(struct evsel *evsel, const char *filter);
 diff --git a/tools/perf/util/intel-pt.c b/tools/perf/util/intel-pt.c
-index 60214de..a929f6d 100644
+index a929f6d..c9477d0 100644
 --- a/tools/perf/util/intel-pt.c
 +++ b/tools/perf/util/intel-pt.c
-@@ -1853,13 +1853,29 @@ static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
- 	if (sample_type & PERF_SAMPLE_ADDR && items->has_mem_access_address)
- 		sample.addr = items->mem_access_address;
- 
--	if (sample_type & PERF_SAMPLE_WEIGHT) {
-+	if (sample_type & PERF_SAMPLE_WEIGHT_TYPE) {
- 		/*
- 		 * Refer kernel's setup_pebs_adaptive_sample_data() and
- 		 * intel_hsw_weight().
- 		 */
--		if (items->has_mem_access_latency)
--			sample.weight = items->mem_access_latency;
-+		if (items->has_mem_access_latency) {
-+			u64 weight = items->mem_access_latency >> 32;
-+
-+			/*
-+			 * Starts from SPR, the mem access latency field
-+			 * contains both cache latency [47:32] and instruction
-+			 * latency [15:0]. The cache latency is the same as the
-+			 * mem access latency on previous platforms.
-+			 *
-+			 * In practice, no memory access could last than 4G
-+			 * cycles. Use latency >> 32 to distinguish the
-+			 * different format of the mem access latency field.
-+			 */
-+			if (weight > 0)
-+				sample.weight = weight & 0xffff;
-+			else
-+				sample.weight = items->mem_access_latency;
-+		}
+@@ -1871,9 +1871,10 @@ static int intel_pt_synth_pebs_sample(struct intel_pt_queue *ptq)
+ 			 * cycles. Use latency >> 32 to distinguish the
+ 			 * different format of the mem access latency field.
+ 			 */
+-			if (weight > 0)
++			if (weight > 0) {
+ 				sample.weight = weight & 0xffff;
+-			else
++				sample.ins_lat = items->mem_access_latency & 0xffff;
++			} else
+ 				sample.weight = items->mem_access_latency;
+ 		}
  		if (!sample.weight && items->has_tsx_aux_info) {
- 			/* Cycles last block */
- 			sample.weight = (u32)items->tsx_aux_info;
-diff --git a/tools/perf/util/perf_event_attr_fprintf.c b/tools/perf/util/perf_event_attr_fprintf.c
-index fb0bb66..e972e63 100644
---- a/tools/perf/util/perf_event_attr_fprintf.c
-+++ b/tools/perf/util/perf_event_attr_fprintf.c
-@@ -35,7 +35,7 @@ static void __p_sample_type(char *buf, size_t size, u64 value)
- 		bit_name(BRANCH_STACK), bit_name(REGS_USER), bit_name(STACK_USER),
- 		bit_name(IDENTIFIER), bit_name(REGS_INTR), bit_name(DATA_SRC),
- 		bit_name(WEIGHT), bit_name(PHYS_ADDR), bit_name(AUX),
--		bit_name(CGROUP), bit_name(DATA_PAGE_SIZE),
-+		bit_name(CGROUP), bit_name(DATA_PAGE_SIZE), bit_name(WEIGHT_STRUCT),
- 		{ .name = NULL, }
- 	};
- #undef bit_name
 diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index 25adbcc..a35d8c2 100644
+index a35d8c2..330e591 100644
 --- a/tools/perf/util/session.c
 +++ b/tools/perf/util/session.c
-@@ -1297,7 +1297,7 @@ static void dump_sample(struct evsel *evsel, union perf_event *event,
+@@ -1297,8 +1297,12 @@ static void dump_sample(struct evsel *evsel, union perf_event *event,
  	if (sample_type & PERF_SAMPLE_STACK_USER)
  		stack_user__printf(&sample->user_stack);
  
--	if (sample_type & PERF_SAMPLE_WEIGHT)
-+	if (sample_type & PERF_SAMPLE_WEIGHT_TYPE)
- 		printf("... weight: %" PRIu64 "\n", sample->weight);
+-	if (sample_type & PERF_SAMPLE_WEIGHT_TYPE)
+-		printf("... weight: %" PRIu64 "\n", sample->weight);
++	if (sample_type & PERF_SAMPLE_WEIGHT_TYPE) {
++		printf("... weight: %" PRIu64 "", sample->weight);
++			if (sample_type & PERF_SAMPLE_WEIGHT_STRUCT)
++				printf(",0x%"PRIx16"", sample->ins_lat);
++		printf("\n");
++	}
  
  	if (sample_type & PERF_SAMPLE_DATA_SRC)
+ 		printf(" . data_src: 0x%"PRIx64"\n", sample->data_src);
+diff --git a/tools/perf/util/sort.c b/tools/perf/util/sort.c
+index 249a03c..e0529f2 100644
+--- a/tools/perf/util/sort.c
++++ b/tools/perf/util/sort.c
+@@ -36,7 +36,7 @@ const char	default_parent_pattern[] = "^sys_|^do_page_fault";
+ const char	*parent_pattern = default_parent_pattern;
+ const char	*default_sort_order = "comm,dso,symbol";
+ const char	default_branch_sort_order[] = "comm,dso_from,symbol_from,symbol_to,cycles";
+-const char	default_mem_sort_order[] = "local_weight,mem,sym,dso,symbol_daddr,dso_daddr,snoop,tlb,locked,blocked";
++const char	default_mem_sort_order[] = "local_weight,mem,sym,dso,symbol_daddr,dso_daddr,snoop,tlb,locked,blocked,local_ins_lat";
+ const char	default_top_sort_order[] = "dso,symbol";
+ const char	default_diff_sort_order[] = "dso,symbol";
+ const char	default_tracepoint_sort_order[] = "trace";
+@@ -1365,6 +1365,49 @@ struct sort_entry sort_global_weight = {
+ 	.se_width_idx	= HISTC_GLOBAL_WEIGHT,
+ };
+ 
++static u64 he_ins_lat(struct hist_entry *he)
++{
++		return he->stat.nr_events ? he->stat.ins_lat / he->stat.nr_events : 0;
++}
++
++static int64_t
++sort__local_ins_lat_cmp(struct hist_entry *left, struct hist_entry *right)
++{
++		return he_ins_lat(left) - he_ins_lat(right);
++}
++
++static int hist_entry__local_ins_lat_snprintf(struct hist_entry *he, char *bf,
++					      size_t size, unsigned int width)
++{
++		return repsep_snprintf(bf, size, "%-*u", width, he_ins_lat(he));
++}
++
++struct sort_entry sort_local_ins_lat = {
++	.se_header	= "Local INSTR Latency",
++	.se_cmp		= sort__local_ins_lat_cmp,
++	.se_snprintf	= hist_entry__local_ins_lat_snprintf,
++	.se_width_idx	= HISTC_LOCAL_INS_LAT,
++};
++
++static int64_t
++sort__global_ins_lat_cmp(struct hist_entry *left, struct hist_entry *right)
++{
++		return left->stat.ins_lat - right->stat.ins_lat;
++}
++
++static int hist_entry__global_ins_lat_snprintf(struct hist_entry *he, char *bf,
++					       size_t size, unsigned int width)
++{
++		return repsep_snprintf(bf, size, "%-*u", width, he->stat.ins_lat);
++}
++
++struct sort_entry sort_global_ins_lat = {
++	.se_header	= "INSTR Latency",
++	.se_cmp		= sort__global_ins_lat_cmp,
++	.se_snprintf	= hist_entry__global_ins_lat_snprintf,
++	.se_width_idx	= HISTC_GLOBAL_INS_LAT,
++};
++
+ struct sort_entry sort_mem_daddr_sym = {
+ 	.se_header	= "Data Symbol",
+ 	.se_cmp		= sort__daddr_cmp,
+@@ -1770,6 +1813,8 @@ static struct sort_dimension common_sort_dimensions[] = {
+ 	DIM(SORT_CGROUP_ID, "cgroup_id", sort_cgroup_id),
+ 	DIM(SORT_SYM_IPC_NULL, "ipc_null", sort_sym_ipc_null),
+ 	DIM(SORT_TIME, "time", sort_time),
++	DIM(SORT_LOCAL_INS_LAT, "local_ins_lat", sort_local_ins_lat),
++	DIM(SORT_GLOBAL_INS_LAT, "ins_lat", sort_global_ins_lat),
+ };
+ 
+ #undef DIM
+diff --git a/tools/perf/util/sort.h b/tools/perf/util/sort.h
+index 2b2645b..c92ca15 100644
+--- a/tools/perf/util/sort.h
++++ b/tools/perf/util/sort.h
+@@ -50,6 +50,7 @@ struct he_stat {
+ 	u64			period_guest_sys;
+ 	u64			period_guest_us;
+ 	u64			weight;
++	u64			ins_lat;
+ 	u32			nr_events;
+ };
+ 
+@@ -229,6 +230,8 @@ enum sort_type {
+ 	SORT_CGROUP_ID,
+ 	SORT_SYM_IPC_NULL,
+ 	SORT_TIME,
++	SORT_LOCAL_INS_LAT,
++	SORT_GLOBAL_INS_LAT,
+ 
+ 	/* branch stack specific sort keys */
+ 	__SORT_BRANCH_STACK,
 diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-index 2947e3f..bc16268 100644
+index bc16268..95401c9 100644
 --- a/tools/perf/util/synthetic-events.c
 +++ b/tools/perf/util/synthetic-events.c
-@@ -1384,7 +1384,7 @@ size_t perf_event__sample_event_size(const struct perf_sample *sample, u64 type,
- 		}
- 	}
+@@ -1557,8 +1557,10 @@ int perf_event__synthesize_sample(union perf_event *event, u64 type, u64 read_fo
  
--	if (type & PERF_SAMPLE_WEIGHT)
-+	if (type & PERF_SAMPLE_WEIGHT_TYPE)
- 		result += sizeof(u64);
- 
- 	if (type & PERF_SAMPLE_DATA_SRC)
-@@ -1555,8 +1555,10 @@ int perf_event__synthesize_sample(union perf_event *event, u64 type, u64 read_fo
- 		}
- 	}
- 
--	if (type & PERF_SAMPLE_WEIGHT) {
-+	if (type & PERF_SAMPLE_WEIGHT_TYPE) {
+ 	if (type & PERF_SAMPLE_WEIGHT_TYPE) {
  		*array = sample->weight;
-+		if (type & PERF_SAMPLE_WEIGHT_STRUCT)
-+			*array &= 0xffffffff;
+-		if (type & PERF_SAMPLE_WEIGHT_STRUCT)
++		if (type & PERF_SAMPLE_WEIGHT_STRUCT) {
+ 			*array &= 0xffffffff;
++			*array |= ((u64)sample->ins_lat << 32);
++		}
  		array++;
  	}
  
