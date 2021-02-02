@@ -2,100 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6526D30CF62
+	by mail.lfdr.de (Postfix) with ESMTP id D75D130CF63
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:52:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235353AbhBBWuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 17:50:46 -0500
-Received: from mga12.intel.com ([192.55.52.136]:9189 "EHLO mga12.intel.com"
+        id S235809AbhBBWvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 17:51:15 -0500
+Received: from foss.arm.com ([217.140.110.172]:59428 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233342AbhBBWup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 17:50:45 -0500
-IronPort-SDR: ZpBs0GNs6lLulBoEEVLxsFEHMQLUq1yCgermTx9vkklQCL08uRacQ3qEFHpdksqknuAksVjkjk
- 3z+JbVEqigdA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="160112463"
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="160112463"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 14:50:04 -0800
-IronPort-SDR: EtegBuP+CZTsw6EElKMgS1btKjGjw5XViFBdsBaf35t1H+QRu8YiUxA5MWiNlkXSKxdt+SiD/P
- 22BjzP3Qndjw==
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="370992203"
-Received: from aisallax-mobl2.amr.corp.intel.com (HELO intel.com) ([10.252.131.184])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 14:50:02 -0800
-Date:   Tue, 2 Feb 2021 14:50:01 -0800
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     David Rientjes <rientjes@google.com>
-Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        daniel.lll@alibaba-inc.com,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH 04/14] cxl/mem: Implement polled mode mailbox
-Message-ID: <20210202225001.qgzwz53b2uhkseto@intel.com>
-References: <20210130002438.1872527-1-ben.widawsky@intel.com>
- <20210130002438.1872527-5-ben.widawsky@intel.com>
- <5986abe5-1248-30b2-5f53-fa7013baafad@google.com>
+        id S233342AbhBBWvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 17:51:14 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ECABCD6E;
+        Tue,  2 Feb 2021 14:50:27 -0800 (PST)
+Received: from [10.57.35.108] (unknown [10.57.35.108])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4A2EF3F694;
+        Tue,  2 Feb 2021 14:50:26 -0800 (PST)
+Subject: Re: [PATCH V3 05/14] coresight: ete: Add support for ETE tracing
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
+        mike.leach@linaro.org, lcherian@marvell.com,
+        linux-kernel@vger.kernel.org
+References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
+ <1611737738-1493-6-git-send-email-anshuman.khandual@arm.com>
+ <20210202185639.GE1536093@xps15>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <f4e8471a-872b-7733-eaa4-387530564e0e@arm.com>
+Date:   Tue, 2 Feb 2021 22:50:13 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5986abe5-1248-30b2-5f53-fa7013baafad@google.com>
+In-Reply-To: <20210202185639.GE1536093@xps15>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-01-30 15:51:57, David Rientjes wrote:
-> On Fri, 29 Jan 2021, Ben Widawsky wrote:
+On 2/2/21 6:56 PM, Mathieu Poirier wrote:
+> On Wed, Jan 27, 2021 at 02:25:29PM +0530, Anshuman Khandual wrote:
+>> From: Suzuki K Poulose <suzuki.poulose@arm.com>
+>>
+>> Add ETE as one of the supported device types we support
+>> with ETM4x driver. The devices are named following the
+>> existing convention as ete<N>.
+>>
+>> ETE mandates that the trace resource status register is programmed
+>> before the tracing is turned on. For the moment simply write to
+>> it indicating TraceActive.
+>>
+>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+>> Cc: Mike Leach <mike.leach@linaro.org>
+>> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+>> ---
+
+...
+
+>> @@ -1834,10 +1854,6 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
+>>   	if (drvdata->cpu < 0)
+>>   		return drvdata->cpu;
+>>   
+>> -	desc.name = devm_kasprintf(dev, GFP_KERNEL, "etm%d", drvdata->cpu);
+>> -	if (!desc.name)
+>> -		return -ENOMEM;
+>> -
+>>   	init_arg.drvdata = drvdata;
+>>   	init_arg.csa = &desc.access;
+>>   	init_arg.pid = etm_pid;
+>> @@ -1853,6 +1869,20 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
+>>   	if (!desc.access.io_mem ||
+>>   	    fwnode_property_present(dev_fwnode(dev), "qcom,skip-power-up"))
+>>   		drvdata->skip_power_up = true;
+> 
+> Add a space here...
+> 
+>> +	major = ETM_ARCH_MAJOR_VERSION(drvdata->arch);
+>> +	minor = ETM_ARCH_MINOR_VERSION(drvdata->arch);
+> 
+> And here too.  Othersiwe it makes a big blob in the middle of the function.
+> 
+>> +	if (etm4x_is_ete(drvdata)) {
+>> +		type_name = "ete";
+>> +		/* ETE v1 has major version == 5. Adjust this for logging.*/
+>> +		major -= 4;
+> 
+> I don't have the documentation for the ETE but I would not adjust @major.  I
+> would simply leave it to what the HW gives us since regardless of the name, the
+> major revision of the IP block is 5.
 > 
 
-[snip]
+At the moment only register definitions are public and can be found here :
 
-> > +/**
-> > + * cxl_mem_mbox_send_cmd() - Send a mailbox command to a memory device.
-> > + * @cxlm: The CXL memory device to communicate with.
-> > + * @mbox_cmd: Command to send to the memory device.
-> > + *
-> > + * Context: Any context. Expects mbox_lock to be held.
-> > + * Return: -ETIMEDOUT if timeout occurred waiting for completion. 0 on success.
-> > + *         Caller should check the return code in @mbox_cmd to make sure it
-> > + *         succeeded.
-> > + *
-> > + * This is a generic form of the CXL mailbox send command, thus the only I/O
-> > + * operations used are cxl_read_mbox_reg(). Memory devices, and perhaps other
-> > + * types of CXL devices may have further information available upon error
-> > + * conditions.
-> > + *
-> > + * The CXL spec allows for up to two mailboxes. The intention is for the primary
-> > + * mailbox to be OS controlled and the secondary mailbox to be used by system
-> > + * firmware. This allows the OS and firmware to communicate with the device and
-> > + * not need to coordinate with each other. The driver only uses the primary
-> > + * mailbox.
-> > + */
-> > +static int cxl_mem_mbox_send_cmd(struct cxl_mem *cxlm,
-> > +				 struct mbox_cmd *mbox_cmd)
-> > +{
-> > +	void __iomem *payload = cxlm->mbox.regs + CXLDEV_MB_PAYLOAD_OFFSET;
+https://developer.arm.com/docs/ddi0601/g/aarch64-system-registers/trcdevarch
+
+The ETE is natural extension of the ETM architecture to support future
+architecture changes and is designed in a way that the same software
+can driver both ETM and ETE without much changes.
+
+>> diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
+>> index ca24ac5..8b90de5 100644
+>> --- a/drivers/hwtracing/coresight/coresight-etm4x.h
+>> +++ b/drivers/hwtracing/coresight/coresight-etm4x.h
+>> @@ -128,6 +128,8 @@
+>>   #define TRCCIDR2			0xFF8
+>>   #define TRCCIDR3			0xFFC
+>>   
+>> +#define TRCRSR_TA			BIT(12)
+>> +
+>>   /*
+>>    * System instructions to access ETM registers.
+>>    * See ETMv4.4 spec ARM IHI0064F section 4.3.6 System instructions
+>> @@ -390,6 +392,9 @@
+>>   #define ETM_COMMON_SYSREG_LIST_CASES		\
+>>   	ETM_COMMON_SYSREG_LIST(NOP, __unused)
+>>   
+>> +#define ETM4x_ONLY_SYSREG_LIST_CASES		\
+>> +	ETM4x_ONLY_SYSREG_LIST(NOP, __unused)
+>> +
+>>   #define ETM4x_SYSREG_LIST_CASES			\
+>>   	ETM_COMMON_SYSREG_LIST_CASES		\
+>>   	ETM4x_ONLY_SYSREG_LIST(NOP, __unused)
+>> @@ -406,7 +411,6 @@
+>>   	ETE_ONLY_SYSREG_LIST(WRITE, (val))
+>>   
+>>   #define ETE_ONLY_SYSREG_LIST_CASES		\
+>> -	ETM_COMMON_SYSREG_LIST_CASES		\
 > 
-> Do you need to verify the payload is non-empty per 8.2.8.4?
+> This goes in patch 04.
 > 
 
-What do you mean exactly? Emptiness or lack thereof is what determines the size
-parameter of the mailbox interface (if we want to input data, we need to write
-size, if we got output data, we have to read size bytes out of the payload
-registers).
+Sure, will move it.
 
-Perhaps I miss the point though, could you elaborate?
+> With the above:
+> 
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-[snip]
+Thanks for the review
 
+Suzuki
