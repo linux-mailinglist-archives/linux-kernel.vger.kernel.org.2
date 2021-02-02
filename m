@@ -2,88 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0DCC30B86B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:10:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24EA230B872
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:13:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232079AbhBBHKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 02:10:37 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58388 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231158AbhBBHK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 02:10:28 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612249781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=1tpaqvOitmoTdUOKCltTkXQMrQMduhfR/V/K0TJ91jk=;
-        b=pbaIptIDBcZvfobat6HNoXje6mR3kf8+MuWpibPjXaHBmoQvt3LBZ1S4k+WfN+6v3yXqqG
-        CnLh7G8uXWy5d/2yQhTslehE4QmbeheYR1UmRM7pfxMgd1ZiuvafUH6s9i4k7bnpbVZHHm
-        wGiaWxu3itzFTHNe0z01xg0UqKte3eQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 46D2EACB7;
-        Tue,  2 Feb 2021 07:09:41 +0000 (UTC)
-From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Juergen Gross <jgross@suse.com>, Wei Liu <wei.liu@kernel.org>,
-        Paul Durrant <paul@xen.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Igor Druzhinin <igor.druzhinin@citrix.com>,
-        stable@vger.kernel.org
-Subject: [PATCH] xen/netback: avoid race in xenvif_rx_ring_slots_available()
-Date:   Tue,  2 Feb 2021 08:09:38 +0100
-Message-Id: <20210202070938.7863-1-jgross@suse.com>
-X-Mailer: git-send-email 2.26.2
+        id S232194AbhBBHLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 02:11:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46154 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231194AbhBBHKy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 02:10:54 -0500
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B30C06174A;
+        Mon,  1 Feb 2021 23:10:14 -0800 (PST)
+Received: by mail-il1-x12a.google.com with SMTP id q5so18117980ilc.10;
+        Mon, 01 Feb 2021 23:10:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zmSuw7wDu6a3wNmrLo/hehSg5Yx/sWDPdhwepqYWewQ=;
+        b=jmGBdch1E0RYAJSsIuQKYd/7GqQSCYar8lmsR3O4nlZjMjz/mS+iLV8WB3TN+m+4//
+         E/QWSg2+PpaAjC7/92+P85CLbqpTmNWw7vcoGWP70xKSCL4R8UzbL/2lNs826ubbqhd3
+         zdSP2Omj+LHhgyGSRJvuynEKJojEKr30uKIk0zMLIyhEhRgCeEn7Yjs6Rx4l1ym0J8Vs
+         Cg/JrdNsSE2xqxodw4sverEW1vhLEcirvkwiMGhA8f9IjOXmA0vy3/+ZC2V6R61NNszf
+         +zFE/NC7/bjaBxYYdneLUDjzPIcrKjBXXwDNA8t3hGFIosjTh+M92UxiXnf92b/kej8L
+         B3jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zmSuw7wDu6a3wNmrLo/hehSg5Yx/sWDPdhwepqYWewQ=;
+        b=g8u1LeUsiuOLHLCIXc/BlXmkFLyNLLhsNFciRzWtHQFFxCTuKSt2xZkKRqlnQVkxdL
+         TidIPU0XhL9hjWpoiw9eQTMsKccVtU+WqguemGLPD0oLsiVkORh8Sd5OtztVKIkw4ngM
+         cEGed8/Q+ywNR3Xoh8p3zUYAiitrKLijjw6i6BnlBXl8uOCR6/62eeaiL99RMNMuNbUu
+         HPg+B0vY/5VwdlHn7pp9Oxx3EXaNpQ4ixjwkNYndbxtc5sN5wIBYQ7V1QxziRRBrY79i
+         Ks9L61UzVDrs4V7gn/XGCC9hqXhTwCUXBxxngZcI8Nf+HMKcuwKMccJgj5J1zczv7VHx
+         Un2g==
+X-Gm-Message-State: AOAM533cepLw0kKpmpzzBeRmI92gpVBd9KgKxJtoClo4X3kSfSYYTybP
+        3o8rhrJ2nf6cO2EVdJiJl05CuUxX89ens9hodZHNtpVI/ltFuQ==
+X-Google-Smtp-Source: ABdhPJz2VpiyzoIfttXg9MvJMNS9zPgO0x9UhiGqOhJ/5rolRWPoNgq4omjMpEyBcebchyReWcuBEdIM+H1hVrBgozA=
+X-Received: by 2002:a05:6e02:cb:: with SMTP id r11mr17996768ilq.116.1612249813762;
+ Mon, 01 Feb 2021 23:10:13 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210130191719.7085-1-yury.norov@gmail.com> <20210130191719.7085-6-yury.norov@gmail.com>
+ <YBgF3RYQ5F6xmpj8@smile.fi.intel.com>
+In-Reply-To: <YBgF3RYQ5F6xmpj8@smile.fi.intel.com>
+From:   Yury Norov <yury.norov@gmail.com>
+Date:   Mon, 1 Feb 2021 23:10:02 -0800
+Message-ID: <CAAH8bW8VP+gjY7+nu6aAXOOTtZqrb1ForPJUBNMYW-_JFdX9-w@mail.gmail.com>
+Subject: Re: [PATCH 5/8] bitsperlong.h: introduce SMALL_CONST() macro
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-SH <linux-sh@vger.kernel.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, Arnd Bergmann <arnd@arndb.de>,
+        Dennis Zhou <dennis@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        David Sterba <dsterba@suse.com>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        "Ma, Jianpeng" <jianpeng.ma@intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Joe Perches <joe@perches.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 23025393dbeb3b8b3 ("xen/netback: use lateeoi irq binding")
-xenvif_rx_ring_slots_available() is no longer called only from the rx
-queue kernel thread, so it needs to access the rx queue with the
-associated queue held.
+On Mon, Feb 1, 2021 at 5:45 AM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Sat, Jan 30, 2021 at 11:17:16AM -0800, Yury Norov wrote:
+> > Many algorithms become simpler if they are passed with relatively small
+> > input values. One example is bitmap operations when the whole bitmap fits
+> > into one word. To implement such simplifications, linux/bitmap.h declares
+> > small_const_nbits() macro.
+> >
+> > Other subsystems may also benefit from optimizations of this sort, like
+> > find_bit API in the following patches. So it looks helpful to generalize
+> > the macro and extend it's visibility.
+>
+> Hmm... Are we really good to allow 0 as a parameter to it? I remember we had
+> a thread at some point where Rasmus explained why 0 is excluded.
 
-Reported-by: Igor Druzhinin <igor.druzhinin@citrix.com>
-Fixes: 23025393dbeb3b8b3 ("xen/netback: use lateeoi irq binding")
-Cc: stable@vger.kernel.org
-Signed-off-by: Juergen Gross <jgross@suse.com>
----
- drivers/net/xen-netback/rx.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+Now we pass (nbits - 1) instead of nbits, which is ULONG_MAX in case
+of nbits == 0
 
-diff --git a/drivers/net/xen-netback/rx.c b/drivers/net/xen-netback/rx.c
-index b8febe1d1bfd..accc991d153f 100644
---- a/drivers/net/xen-netback/rx.c
-+++ b/drivers/net/xen-netback/rx.c
-@@ -38,10 +38,15 @@ static bool xenvif_rx_ring_slots_available(struct xenvif_queue *queue)
- 	RING_IDX prod, cons;
- 	struct sk_buff *skb;
- 	int needed;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&queue->rx_queue.lock, flags);
- 
- 	skb = skb_peek(&queue->rx_queue);
--	if (!skb)
-+	if (!skb) {
-+		spin_unlock_irqrestore(&queue->rx_queue.lock, flags);
- 		return false;
-+	}
- 
- 	needed = DIV_ROUND_UP(skb->len, XEN_PAGE_SIZE);
- 	if (skb_is_gso(skb))
-@@ -49,6 +54,8 @@ static bool xenvif_rx_ring_slots_available(struct xenvif_queue *queue)
- 	if (skb->sw_hash)
- 		needed++;
- 
-+	spin_unlock_irqrestore(&queue->rx_queue.lock, flags);
-+
- 	do {
- 		prod = queue->rx.sring->req_prod;
- 		cons = queue->rx.req_cons;
--- 
-2.26.2
-
+> > --- a/tools/include/asm-generic/bitsperlong.h
+> > +++ b/tools/include/asm-generic/bitsperlong.h
+>
+> Tools part in a separate patch?
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
