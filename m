@@ -2,146 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF4430C8CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:03:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 545CC30C8D3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:03:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238142AbhBBSAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:00:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49983 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237791AbhBBR4a (ORCPT
+        id S237974AbhBBSBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:01:39 -0500
+Received: from mail.xenproject.org ([104.130.215.37]:42680 "EHLO
+        mail.xenproject.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238084AbhBBR6Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 12:56:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612288504;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gFJ77sSEB+f8Sj3B0GeEC2N3cMa86PYsToA2l7/Kaqo=;
-        b=LRw1Gyr8w4sbHjh41M2OlYzMQJDVfDewWIfpB6tB6FYTNdnLEe34xjKup2V8gdRwSedc5U
-        VtmPWLkU6nNFezXeCaXBKArj5VwgDQ+tTPcZ/aLB1aQazLdyLWjfFJl/1O9sgKQ5amrq6s
-        JTSFH2a2qR6wE5GakSsK54QYuPGY14w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-340-7p1PFqffPMSlCCwUTHedbQ-1; Tue, 02 Feb 2021 12:55:00 -0500
-X-MC-Unique: 7p1PFqffPMSlCCwUTHedbQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D55F5107ACE4;
-        Tue,  2 Feb 2021 17:54:57 +0000 (UTC)
-Received: from omen.home.shazbot.org (ovpn-112-255.phx2.redhat.com [10.3.112.255])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AAD7110016FD;
-        Tue,  2 Feb 2021 17:54:56 +0000 (UTC)
-Date:   Tue, 2 Feb 2021 10:54:55 -0700
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Max Gurtovoy <mgurtovoy@nvidia.com>
-Cc:     Cornelia Huck <cohuck@redhat.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>, <jgg@nvidia.com>,
-        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <liranl@nvidia.com>, <oren@nvidia.com>, <tzahio@nvidia.com>,
-        <leonro@nvidia.com>, <yarong@nvidia.com>, <aviadye@nvidia.com>,
-        <shahafs@nvidia.com>, <artemp@nvidia.com>, <kwankhede@nvidia.com>,
-        <ACurrid@nvidia.com>, <gmataev@nvidia.com>, <cjia@nvidia.com>,
-        <yishaih@nvidia.com>, <aik@ozlabs.ru>
-Subject: Re: [PATCH 8/9] vfio/pci: use x86 naming instead of igd
-Message-ID: <20210202105455.5a358980@omen.home.shazbot.org>
-In-Reply-To: <a413334c-3319-c6a3-3d8a-0bb68a10b9c1@nvidia.com>
-References: <20210201162828.5938-1-mgurtovoy@nvidia.com>
-        <20210201162828.5938-9-mgurtovoy@nvidia.com>
-        <20210201181454.22112b57.cohuck@redhat.com>
-        <599c6452-8ba6-a00a-65e7-0167f21eac35@linux.ibm.com>
-        <20210201114230.37c18abd@omen.home.shazbot.org>
-        <20210202170659.1c62a9e8.cohuck@redhat.com>
-        <a413334c-3319-c6a3-3d8a-0bb68a10b9c1@nvidia.com>
+        Tue, 2 Feb 2021 12:58:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=xen.org;
+        s=20200302mail; h=Content-Transfer-Encoding:Content-Type:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From;
+        bh=U9LFyj567L8ODDmpt5H9dtpTYleJRBeis5xuYap+UEk=; b=IUMNPYDqTYI1m8BX1jWz/P2whH
+        oNjab1nTmbSWf0fqWGhwZLs6Uc9oaLgtwwALS9GMpNWg813Ba3WGqoY7+YjCijfTBCWYjCI1WyMsn
+        cso0MzQS3/uM9+n28VjVJBo9A0oF72aK2lv2qOP7xALJK5tiE97jvyjlF+mJbRox/L1U=;
+Received: from xenbits.xenproject.org ([104.239.192.120])
+        by mail.xenproject.org with esmtp (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1l6zvU-0002dh-MJ; Tue, 02 Feb 2021 17:57:20 +0000
+Received: from host86-190-149-163.range86-190.btcentralplus.com ([86.190.149.163] helo=ubuntu.home)
+        by xenbits.xenproject.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <paul@xen.org>)
+        id 1l6zvU-0006HU-Ac; Tue, 02 Feb 2021 17:57:20 +0000
+From:   Paul Durrant <paul@xen.org>
+To:     xen-devel@lists.xenproject.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Paul Durrant <pdurrant@amazon.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH v3] xen-blkback: fix compatibility bug with single page rings
+Date:   Tue,  2 Feb 2021 17:56:59 +0000
+Message-Id: <20210202175659.18452-1-paul@xen.org>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2 Feb 2021 19:41:16 +0200
-Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
+From: Paul Durrant <pdurrant@amazon.com>
 
-> On 2/2/2021 6:06 PM, Cornelia Huck wrote:
-> > On Mon, 1 Feb 2021 11:42:30 -0700
-> > Alex Williamson <alex.williamson@redhat.com> wrote:
-> >  
-> >> On Mon, 1 Feb 2021 12:49:12 -0500
-> >> Matthew Rosato <mjrosato@linux.ibm.com> wrote:
-> >>  
-> >>> On 2/1/21 12:14 PM, Cornelia Huck wrote:  
-> >>>> On Mon, 1 Feb 2021 16:28:27 +0000
-> >>>> Max Gurtovoy <mgurtovoy@nvidia.com> wrote:
-> >>>>        
-> >>>>> This patch doesn't change any logic but only align to the concept of
-> >>>>> vfio_pci_core extensions. Extensions that are related to a platform
-> >>>>> and not to a specific vendor of PCI devices should be part of the core
-> >>>>> driver. Extensions that are specific for PCI device vendor should go
-> >>>>> to a dedicated vendor vfio-pci driver.  
-> >>>> My understanding is that igd means support for Intel graphics, i.e. a
-> >>>> strict subset of x86. If there are other future extensions that e.g.
-> >>>> only make sense for some devices found only on AMD systems, I don't
-> >>>> think they should all be included under the same x86 umbrella.
-> >>>>
-> >>>> Similar reasoning for nvlink, that only seems to cover support for some
-> >>>> GPUs under Power, and is not a general platform-specific extension IIUC.
-> >>>>
-> >>>> We can arguably do the zdev -> s390 rename (as zpci appears only on
-> >>>> s390, and all PCI devices will be zpci on that platform), although I'm
-> >>>> not sure about the benefit.  
-> >>> As far as I can tell, there isn't any benefit for s390 it's just
-> >>> "re-branding" to match the platform name rather than the zdev moniker,
-> >>> which admittedly perhaps makes it more clear to someone outside of s390
-> >>> that any PCI device on s390 is a zdev/zpci type, and thus will use this
-> >>> extension to vfio_pci(_core).  This would still be true even if we added
-> >>> something later that builds atop it (e.g. a platform-specific device
-> >>> like ism-vfio-pci).  Or for that matter, mlx5 via vfio-pci on s390x uses
-> >>> these zdev extensions today and would need to continue using them in a
-> >>> world where mlx5-vfio-pci.ko exists.
-> >>>
-> >>> I guess all that to say: if such a rename matches the 'grand scheme' of
-> >>> this design where we treat arch-level extensions to vfio_pci(_core) as
-> >>> "vfio_pci_(arch)" then I'm not particularly opposed to the rename.  But
-> >>> by itself it's not very exciting :)  
-> >> This all seems like the wrong direction to me.  The goal here is to
-> >> modularize vfio-pci into a core library and derived vendor modules that
-> >> make use of that core library.  If existing device specific extensions
-> >> within vfio-pci cannot be turned into vendor modules through this
-> >> support and are instead redefined as platform specific features of the
-> >> new core library, that feels like we're already admitting failure of
-> >> this core library to support known devices, let alone future devices.
-> >>
-> >> IGD is a specific set of devices.  They happen to rely on some platform
-> >> specific support, whose availability should be determined via the
-> >> vendor module probe callback.  Packing that support into an "x86"
-> >> component as part of the core feels not only short sighted, but also
-> >> avoids addressing the issues around how userspace determines an optimal
-> >> module to use for a device.  
-> > Hm, it seems that not all current extensions to the vfio-pci code are
-> > created equal.
-> >
-> > IIUC, we have igd and nvlink, which are sets of devices that only show
-> > up on x86 or ppc, respectively, and may rely on some special features
-> > of those architectures/platforms. The important point is that you have
-> > a device identifier that you can match a driver against.  
-> 
-> maybe you can supply the ids ?
-> 
-> Alexey K, I saw you've been working on the NVLINK2 for P9. can you 
-> supply the exact ids for that should be bounded to this driver ?
-> 
-> I'll add it to V3.
+Prior to commit 4a8c31a1c6f5 ("xen/blkback: rework connect_ring() to avoid
+inconsistent xenstore 'ring-page-order' set by malicious blkfront"), the
+behaviour of xen-blkback when connecting to a frontend was:
 
-As noted previously, if we start adding ids for vfio drivers then we
-create conflicts with the native host driver.  We cannot register a
-vfio PCI driver that automatically claims devices.  At best, this
-NVLink driver and an IGD driver could reject devices that they don't
-support, ie. NVIDIA GPUs where there's not the correct platform
-provided support or Intel GPUs without an OpRegion.  Thanks,
+- read 'ring-page-order'
+- if not present then expect a single page ring specified by 'ring-ref'
+- else expect a ring specified by 'ring-refX' where X is between 0 and
+  1 << ring-page-order
 
-Alex
+This was correct behaviour, but was broken by the afforementioned commit to
+become:
+
+- read 'ring-page-order'
+- if not present then expect a single page ring (i.e. ring-page-order = 0)
+- expect a ring specified by 'ring-refX' where X is between 0 and
+  1 << ring-page-order
+- if that didn't work then see if there's a single page ring specified by
+  'ring-ref'
+
+This incorrect behaviour works most of the time but fails when a frontend
+that sets 'ring-page-order' is unloaded and replaced by one that does not
+because, instead of reading 'ring-ref', xen-blkback will read the stale
+'ring-ref0' left around by the previous frontend will try to map the wrong
+grant reference.
+
+This patch restores the original behaviour.
+
+Fixes: 4a8c31a1c6f5 ("xen/blkback: rework connect_ring() to avoid inconsistent xenstore 'ring-page-order' set by malicious blkfront")
+Signed-off-by: Paul Durrant <pdurrant@amazon.com>
+Reviewed-by: Dongli Zhang <dongli.zhang@oracle.com>
+Reviewed-by: "Roger Pau Monné" <roger.pau@citrix.com>
+---
+Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc: Jens Axboe <axboe@kernel.dk>
+
+v3:
+ - Whitespace fix
+
+v2:
+ - Remove now-spurious error path special-case when nr_grefs == 1
+---
+ drivers/block/xen-blkback/common.h |  1 +
+ drivers/block/xen-blkback/xenbus.c | 38 +++++++++++++-----------------
+ 2 files changed, 17 insertions(+), 22 deletions(-)
+
+diff --git a/drivers/block/xen-blkback/common.h b/drivers/block/xen-blkback/common.h
+index b0c71d3a81a0..bda5c815e441 100644
+--- a/drivers/block/xen-blkback/common.h
++++ b/drivers/block/xen-blkback/common.h
+@@ -313,6 +313,7 @@ struct xen_blkif {
+ 
+ 	struct work_struct	free_work;
+ 	unsigned int 		nr_ring_pages;
++	bool			multi_ref;
+ 	/* All rings for this device. */
+ 	struct xen_blkif_ring	*rings;
+ 	unsigned int		nr_rings;
+diff --git a/drivers/block/xen-blkback/xenbus.c b/drivers/block/xen-blkback/xenbus.c
+index 9860d4842f36..6c5e9373e91c 100644
+--- a/drivers/block/xen-blkback/xenbus.c
++++ b/drivers/block/xen-blkback/xenbus.c
+@@ -998,14 +998,17 @@ static int read_per_ring_refs(struct xen_blkif_ring *ring, const char *dir)
+ 	for (i = 0; i < nr_grefs; i++) {
+ 		char ring_ref_name[RINGREF_NAME_LEN];
+ 
+-		snprintf(ring_ref_name, RINGREF_NAME_LEN, "ring-ref%u", i);
++		if (blkif->multi_ref)
++			snprintf(ring_ref_name, RINGREF_NAME_LEN, "ring-ref%u", i);
++		else {
++			WARN_ON(i != 0);
++			snprintf(ring_ref_name, RINGREF_NAME_LEN, "ring-ref");
++		}
++
+ 		err = xenbus_scanf(XBT_NIL, dir, ring_ref_name,
+ 				   "%u", &ring_ref[i]);
+ 
+ 		if (err != 1) {
+-			if (nr_grefs == 1)
+-				break;
+-
+ 			err = -EINVAL;
+ 			xenbus_dev_fatal(dev, err, "reading %s/%s",
+ 					 dir, ring_ref_name);
+@@ -1013,18 +1016,6 @@ static int read_per_ring_refs(struct xen_blkif_ring *ring, const char *dir)
+ 		}
+ 	}
+ 
+-	if (err != 1) {
+-		WARN_ON(nr_grefs != 1);
+-
+-		err = xenbus_scanf(XBT_NIL, dir, "ring-ref", "%u",
+-				   &ring_ref[0]);
+-		if (err != 1) {
+-			err = -EINVAL;
+-			xenbus_dev_fatal(dev, err, "reading %s/ring-ref", dir);
+-			return err;
+-		}
+-	}
+-
+ 	err = -ENOMEM;
+ 	for (i = 0; i < nr_grefs * XEN_BLKIF_REQS_PER_PAGE; i++) {
+ 		req = kzalloc(sizeof(*req), GFP_KERNEL);
+@@ -1129,10 +1120,15 @@ static int connect_ring(struct backend_info *be)
+ 		 blkif->nr_rings, blkif->blk_protocol, protocol,
+ 		 blkif->vbd.feature_gnt_persistent ? "persistent grants" : "");
+ 
+-	ring_page_order = xenbus_read_unsigned(dev->otherend,
+-					       "ring-page-order", 0);
+-
+-	if (ring_page_order > xen_blkif_max_ring_order) {
++	err = xenbus_scanf(XBT_NIL, dev->otherend, "ring-page-order", "%u",
++			   &ring_page_order);
++	if (err != 1) {
++		blkif->nr_ring_pages = 1;
++		blkif->multi_ref = false;
++	} else if (ring_page_order <= xen_blkif_max_ring_order) {
++		blkif->nr_ring_pages = 1 << ring_page_order;
++		blkif->multi_ref = true;
++	} else {
+ 		err = -EINVAL;
+ 		xenbus_dev_fatal(dev, err,
+ 				 "requested ring page order %d exceed max:%d",
+@@ -1141,8 +1137,6 @@ static int connect_ring(struct backend_info *be)
+ 		return err;
+ 	}
+ 
+-	blkif->nr_ring_pages = 1 << ring_page_order;
+-
+ 	if (blkif->nr_rings == 1)
+ 		return read_per_ring_refs(&blkif->rings[0], dev->otherend);
+ 	else {
+-- 
+2.17.1
 
