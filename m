@@ -2,63 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6B230C25F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:49:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8FE030C245
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234815AbhBBOs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:48:28 -0500
-Received: from foss.arm.com ([217.140.110.172]:51098 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234652AbhBBOf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:35:26 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 90519ED1;
-        Tue,  2 Feb 2021 06:34:37 -0800 (PST)
-Received: from [10.57.35.163] (unknown [10.57.35.163])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E69C83F718;
-        Tue,  2 Feb 2021 06:34:35 -0800 (PST)
-Subject: Re: [PATCH 2/2] iommu: add Unisoc iommu basic driver
-To:     Joerg Roedel <joro@8bytes.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Sheng Xu <sheng.xu@unisoc.com>,
-        iommu@lists.linux-foundation.org, Rob Herring <robh+dt@kernel.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Orson Zhai <orsonzhai@gmail.com>
-References: <20210202073258.559443-3-zhang.lyra@gmail.com>
- <20210202104257.736836-1-zhang.lyra@gmail.com>
- <20210202140101.GA32671@8bytes.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <992fad43-c457-d809-3bd7-7fd5b6e8fa22@arm.com>
-Date:   Tue, 2 Feb 2021 14:34:34 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
+        id S234825AbhBBOpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:45:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234253AbhBBOgd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:36:33 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03FD0C06178A
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 06:34:50 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id z18so18972413ile.9
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 06:34:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bxl73venaa9cWERoVp0VscHZS3/IH5lSgUJLT8Av3Oc=;
+        b=d5yDUwK8kbyroVDcNrW9Bed9kahFje2ZIU0BDehuW5DzhPmTw6AKATlvIgrv3J4sup
+         aIo/FiNf8JoT4Hc5Hak+mLJocFm+sU/u992MZHifR/Vk1Vy162sQeLOaHALCaNiJbGRo
+         OML/GI0PIO+UdFLcZ8smRhAhPEB81uhDI1ArrGScpj4MY6sy6aHAFWoy7FYSsBM4zZ8y
+         BasAXhEgwWcGYwtGMAoiGGjfmc51b8AlNJGIgeBrkF+i00WuUU55rrkEzAbaCoaooN1y
+         L9wDlcTrJVC2mJ9uCebXrUMygqRdWMyoY4OOn+vTf+7KKYGSCcbjpUs1+bjIJQtN65xg
+         Nfyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bxl73venaa9cWERoVp0VscHZS3/IH5lSgUJLT8Av3Oc=;
+        b=YcgTsRIqttFhGN43hhKpeF5vS20XCKU97qfVMqiZ38NxDD3fyjlUkWgs6PkQRe+FJ5
+         rA8Sbn4WBoZxlRN4lEjj92g6fMBlb3KHjnh2FH9xIaJ1szVpL5gVz519eOg13twl4yYx
+         UVuiRQ8yFHmQzI8sAe+HVaIr/jWUWiegA+vj+tlxZ7nf5K+1BFMVaXoPAkZ+NJokzgrg
+         ObGe6ByEcAqQMX+Im5SAC9vnkZFKyP0kQTZC7HGXTuO6BOvc9zh3xRSJL7kwJMEBcNEA
+         p7FOzrQq0tOCALrSIMcA7iz3C6nRfLTOikKXNwnqbQXX2oPaR1gei17cgDSaFFiNsUzi
+         eI0g==
+X-Gm-Message-State: AOAM532DzgKRNk8p32+I402WjeDtueAA8u/ABjY2iueUMOfSM/mvwtVe
+        fexnyWfu+qssMELNW1Kt6iw/mn4TyNIMlVSi1EFCpA==
+X-Google-Smtp-Source: ABdhPJwdCq6fIqid1NDIwXhIUsFuZbRVI0mELuQ6Hg5XtSZnefbtVLLxDzRUbY6f1swYl+qnJ9omvJfA21H0KTmRU6M=
+X-Received: by 2002:a05:6e02:1251:: with SMTP id j17mr3978433ilq.216.1612276489189;
+ Tue, 02 Feb 2021 06:34:49 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210202140101.GA32671@8bytes.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210202135544.3262383-1-leon@kernel.org>
+In-Reply-To: <20210202135544.3262383-1-leon@kernel.org>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Tue, 2 Feb 2021 15:34:37 +0100
+Message-ID: <CANn89iL4jGbr_6rr11nsHxmdh7uz=kqXuMhRb0nakWO3rBZwsQ@mail.gmail.com>
+Subject: Re: [PATCH net 0/4] Fix W=1 compilation warnings in net/* folder
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Leon Romanovsky <leonro@nvidia.com>, coreteam@netfilter.org,
+        Florian Westphal <fw@strlen.de>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Julian Anastasov <ja@ssi.bg>,
+        LKML <linux-kernel@vger.kernel.org>, lvs-devel@vger.kernel.org,
+        Matteo Croce <mcroce@redhat.com>,
+        netdev <netdev@vger.kernel.org>, netfilter-devel@vger.kernel.org,
+        Simon Horman <horms@verge.net.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-02 14:01, Joerg Roedel wrote:
-> On Tue, Feb 02, 2021 at 06:42:57PM +0800, Chunyan Zhang wrote:
->> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
->>
->> This iommu module can be used by Unisoc's multimedia devices, such as
->> display, Image codec(jpeg) and a few signal processors, including
->> VSP(video), GSP(graphic), ISP(image), and CPP(camera pixel processor), etc.
->>
->> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
->> ---
->>   drivers/iommu/Kconfig      |  12 +
->>   drivers/iommu/Makefile     |   1 +
->>   drivers/iommu/sprd-iommu.c | 598 +++++++++++++++++++++++++++++++++++++
-> 
-> This looks like it actually belongs under drivers/iommu/arm/, no?
+On Tue, Feb 2, 2021 at 2:55 PM Leon Romanovsky <leon@kernel.org> wrote:
+>
+> From: Leon Romanovsky <leonro@nvidia.com>
+>
+> Hi,
+>
+> This short series fixes W=1 compilation warnings which I experienced
+> when tried to compile net/* folder.
+>
 
-Nope, I believe if Arm Ltd. had any involvement in this I'd know about it :)
-
-Robin.
+Ok, but we never had a strong requirement about W=1, so adding Fixes:
+tag is adding
+unnecessary burden to stable teams all around the world.
