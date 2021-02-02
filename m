@@ -2,138 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C74A30CA3D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0F2530CA2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:43:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233816AbhBBSm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:42:27 -0500
-Received: from foss.arm.com ([217.140.110.172]:50486 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233726AbhBBODA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:03:00 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E7533ED1;
-        Tue,  2 Feb 2021 06:02:14 -0800 (PST)
-Received: from [10.57.14.222] (unknown [10.57.14.222])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 430A43F718;
-        Tue,  2 Feb 2021 06:02:13 -0800 (PST)
-Subject: Re: [PATCH] drm/lima: Use delayed timer as default in devfreq profile
-To:     Qiang Yu <yuq825@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, lima@lists.freedesktop.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Christian Hewitt <christianshewitt@gmail.com>
-References: <20210127105121.20345-1-lukasz.luba@arm.com>
- <CAKGbVbsn=xVEa0=c3rywRShVZD18LkmLZ1qDUuDsrT5KnTjr6g@mail.gmail.com>
- <3d1b4696-0172-f88a-f41f-c66ac3baa429@arm.com>
- <CAKGbVbsuqsGYRqUyWRiC+h9o7kNMvB16-Y6378KG_rv0SG4VDQ@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <aab9c140-155e-894f-5b7d-749396a388fc@arm.com>
-Date:   Tue, 2 Feb 2021 14:02:11 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S238798AbhBBSkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:40:51 -0500
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:41151 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233747AbhBBODd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:03:33 -0500
+Received: by mail-oi1-f176.google.com with SMTP id m13so22769499oig.8;
+        Tue, 02 Feb 2021 06:03:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XDOyyPXnhfDnLT42xUgfRv/pv03j1De9PVl4XkKNTZA=;
+        b=OpQ6Mhcxvv+v3UUayQFxm/KdKjtiERcapfcohwYPXvegjVaVWaWon4/oZSJEq4pNoU
+         5CC3B9xeqUkTHylxHE+/h5DIaDB85GfLegUH3NFBbZZEnBvzeiIGsdLRWxvw/tPTSz8E
+         PIwnu6OtXaCe0HZpid6TYUCxghiMUaNSR+iqSCYs81YSISZsZkfnnd247gXvj1MrtkGE
+         CC09EQhyK+3pwje+j62op8ogIfuIr7osnefbuPDK3yfQ8kRbjtk4EAy0Fy7qkT4g7Meq
+         td8P0GiyPX8BWMXPbZTE8zcl/vAOhn/1UAApNKiHXEa5jGZdfunJLczZKt+NRhnv1hC/
+         xBjQ==
+X-Gm-Message-State: AOAM532rqGgzrboTv8adwP4pcRkRkXuwt5GFBiMifKPpN1Zxe8lwZ/v4
+        34m0czMB48fIKZ6no++/MJeZtIviK/qUl8n+X1k=
+X-Google-Smtp-Source: ABdhPJy0oGC9SrhvIPc6y3juU8i2CP65UYGiYv7W/WBqh/2pB9aSRhWKzEhtJZ6OKnjn/r/lWBX1jT4binoRV/rlprg=
+X-Received: by 2002:aca:308a:: with SMTP id w132mr2611030oiw.69.1612274571030;
+ Tue, 02 Feb 2021 06:02:51 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAKGbVbsuqsGYRqUyWRiC+h9o7kNMvB16-Y6378KG_rv0SG4VDQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210118003428.568892-1-djrscally@gmail.com> <20210118003428.568892-3-djrscally@gmail.com>
+ <CAJZ5v0gVQsZ4rxXW8uMidW9zfY_S50zpfrL-Gq0J3Z4-qqBiww@mail.gmail.com>
+ <b381b48e-1bf2-f3e7-10a6-e51cd261f43c@gmail.com> <CAJZ5v0iU2m4Hs6APuauQ645DwbjYaB8nJFjYH0+7yQnR-FPZBQ@mail.gmail.com>
+ <e2d7e5e9-920f-7227-76a6-b166e30e11e5@gmail.com> <CAJZ5v0gg5oXG3yOO9iDvPKSsadYrFojW6JcKfZcQbFFpO78zAQ@mail.gmail.com>
+ <85ccf00d-7c04-b1da-a4bc-82c805df69c9@gmail.com> <CAJZ5v0jO9O1zhBMNRNB5kRt1o86BTjr1kRuFUe=nNVTDwBQhEg@mail.gmail.com>
+ <0fac24d2-e8fc-7dc8-0f2f-44c7aadb1daf@gmail.com> <CAJZ5v0jVxMMGh6k-vXeBRsCtD0L14poNUrg4kZOpCfOz2sZGZQ@mail.gmail.com>
+ <ee8f6b58-55c8-e0a0-c161-bdef361f9e0a@gmail.com> <d9ec0439-4323-51a2-70e7-c258fe63cd86@gmail.com>
+In-Reply-To: <d9ec0439-4323-51a2-70e7-c258fe63cd86@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 2 Feb 2021 15:02:39 +0100
+Message-ID: <CAJZ5v0j7U=e+GHLqpivqfvOKCyCZWm4VK3___4tTfcxD==vcHA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/7] acpi: utils: Add function to fetch dependent acpi_devices
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, andy@kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Feb 2, 2021 at 10:58 AM Daniel Scally <djrscally@gmail.com> wrote:
+>
+> Hi Rafael
+>
+> On 21/01/2021 21:06, Daniel Scally wrote:
+> >
+> > On 21/01/2021 18:08, Rafael J. Wysocki wrote:
+> >> On Thu, Jan 21, 2021 at 5:34 PM Daniel Scally <djrscally@gmail.com> wrote:
+> >>>
+> >>> On 21/01/2021 14:39, Rafael J. Wysocki wrote:
+> >>>> On Thu, Jan 21, 2021 at 1:04 PM Daniel Scally <djrscally@gmail.com> wrote:
+> >>>>> On 21/01/2021 11:58, Rafael J. Wysocki wrote:
+> >>>>>> On Thu, Jan 21, 2021 at 10:47 AM Daniel Scally <djrscally@gmail.com> wrote:
+> >>>>>>> Hi Rafael
+> >>>>>>>
+> >>>>>>> On 19/01/2021 13:15, Rafael J. Wysocki wrote:
+> >>>>>>>> On Mon, Jan 18, 2021 at 9:51 PM Daniel Scally <djrscally@gmail.com> wrote:
+> >>>>>>>>> On 18/01/2021 16:14, Rafael J. Wysocki wrote:
+> >>>>>>>>>> On Mon, Jan 18, 2021 at 1:37 AM Daniel Scally <djrscally@gmail.com> wrote:
+> >>>>>>>>>>> In some ACPI tables we encounter, devices use the _DEP method to assert
+> >>>>>>>>>>> a dependence on other ACPI devices as opposed to the OpRegions that the
+> >>>>>>>>>>> specification intends. We need to be able to find those devices "from"
+> >>>>>>>>>>> the dependee, so add a function to parse all ACPI Devices and check if
+> >>>>>>>>>>> the include the handle of the dependee device in their _DEP buffer.
+> >>>>>>>>>> What exactly do you need this for?
+> >>>>>>>>> So, in our DSDT we have devices with _HID INT3472, plus sensors which
+> >>>>>>>>> refer to those INT3472's in their _DEP method. The driver binds to the
+> >>>>>>>>> INT3472 device, we need to find the sensors dependent on them.
+> >>>>>>>>>
+> >>>>>>>> Well, this is an interesting concept. :-)
+> >>>>>>>>
+> >>>>>>>> Why does _DEP need to be used for that?  Isn't there any other way to
+> >>>>>>>> look up the dependent sensors?
+> >>>>>>>>
+> >>>>>>>>>> Would it be practical to look up the suppliers in acpi_dep_list instead?
+> >>>>>>>>>>
+> >>>>>>>>>> Note that supplier drivers may remove entries from there, but does
+> >>>>>>>>>> that matter for your use case?
+> >>>>>>>>> Ah - that may work, yes. Thank you, let me test that.
+> >>>>>>>> Even if that doesn't work right away, but it can be made work, I would
+> >>>>>>>> very much prefer that to the driver parsing _DEP for every device in
+> >>>>>>>> the namespace by itself.
+> >>>>>>> This does work; do you prefer it in scan.c, or in utils.c (in which case
+> >>>>>>> with acpi_dep_list declared as external var in internal.h)?
+> >>>>>> Let's put it in scan.c for now, because there is the lock protecting
+> >>>>>> the list in there too.
+> >>>>>>
+> >>>>>> How do you want to implement this?  Something like "walk the list and
+> >>>>>> run a callback for the matching entries" or do you have something else
+> >>>>>> in mind?
+> >>>>> Something like this (though with a mutex_lock()). It could be simplified
+> >>>>> by dropping the prev stuff, but we have seen INT3472 devices with
+> >>>>> multiple sensors declaring themselves dependent on the same device
+> >>>>>
+> >>>>>
+> >>>>> struct acpi_device *
+> >>>>> acpi_dev_get_next_dependent_dev(struct acpi_device *supplier,
+> >>>>>                 struct acpi_device *prev)
+> >>>>> {
+> >>>>>     struct acpi_dep_data *dep;
+> >>>>>     struct acpi_device *adev;
+> >>>>>     int ret;
+> >>>>>
+> >>>>>     if (!supplier)
+> >>>>>         return ERR_PTR(-EINVAL);
+> >>>>>
+> >>>>>     if (prev) {
+> >>>>>         /*
+> >>>>>          * We need to find the previous device in the list, so we know
+> >>>>>          * where to start iterating from.
+> >>>>>          */
+> >>>>>         list_for_each_entry(dep, &acpi_dep_list, node)
+> >>>>>             if (dep->consumer == prev->handle &&
+> >>>>>                 dep->supplier == supplier->handle)
+> >>>>>                 break;
+> >>>>>
+> >>>>>         dep = list_next_entry(dep, node);
+> >>>>>     } else {
+> >>>>>         dep = list_first_entry(&acpi_dep_list, struct acpi_dep_data,
+> >>>>>                        node);
+> >>>>>     }
+> >>>>>
+> >>>>>
+> >>>>>     list_for_each_entry_from(dep, &acpi_dep_list, node) {
+> >>>>>         if (dep->supplier == supplier->handle) {
+> >>>>>             ret = acpi_bus_get_device(dep->consumer, &adev);
+> >>>>>             if (ret)
+> >>>>>                 return ERR_PTR(ret);
+> >>>>>
+> >>>>>             return adev;
+> >>>>>         }
+> >>>>>     }
+> >>>>>
+> >>>>>     return NULL;
+> >>>>> }
+> >>>> That would work I think, but would it be practical to modify
+> >>>> acpi_walk_dep_device_list() so that it runs a callback for every
+> >>>> consumer found instead of or in addition to the "delete from the list
+> >>>> and free the entry" operation?
+> >>>
+> >>> I think that this would work fine, if that's the way you want to go.
+> >>> We'd just need to move everything inside the if (dep->supplier ==
+> >>> handle) block to a new callback, and for my purposes I think also add a
+> >>> way to stop parsing the list from the callback (so like have the
+> >>> callbacks return int and stop parsing on a non-zero return). Do you want
+> >>> to expose that ability to pass a callback outside of ACPI?
+> >> Yes.
+> >>
+> >>> Or just export helpers to call each of the callbacks (one to fetch the next
+> >>> dependent device, one to decrement the unmet dependencies counter)
+> >> If you can run a callback for every matching entry, you don't really
+> >> need to have a callback to return the next matching entry.  You can do
+> >> stuff for all of them in one go
+> >
+> > Well it my case it's more to return a pointer to the dep->consumer's
+> > acpi_device for a matching entry, so my idea was where there's multiple
+> > dependents you could use this as an iterator...but it could just be
+> > extended to that if needed later; I don't actually need to do it right now.
+> >
+> >
+> >> note that it probably is not a good
+> >> idea to run the callback under the lock, so the for loop currently in
+> >> there is not really suitable for that
+> >
+> > No problem;  I'll tweak that then
+>
+> Slightly walking back my "No problem" here; as I understand this there's
+> kinda two options:
+>
+> 1. Walk over the (locked) list, when a match is found unlock, run the
+> callback and re-lock.
 
+That's what I was thinking about.
 
-On 2/2/21 1:01 AM, Qiang Yu wrote:
-> Hi Lukasz,
-> 
-> Thanks for the explanation. So the deferred timer option makes a mistake that
-> when GPU goes from idle to busy for only one poll periodic, in this
-> case 50ms, right?
+> The problem with that idea is unless I'm mistaken there's no guarantee
+> that the .next pointer is still valid then (even using the *_safe()
+> methods) because either the next or the next + 1 entry could have been
+> removed whilst the list was unlocked and the callback was being ran, so
+> this seems a little unsafe.
 
-Not exactly. Driver sets the polling interval to 50ms (in this case)
-because it needs ~3-frame average load (in 60fps). I have discovered the
-issue quite recently that on systems with 2 CPUs or more, the devfreq
-core is not monitoring the devices even for seconds. Therefore, we might
-end up with quite big amount of work that GPU is doing, but we don't
-know about it. Devfreq core didn't check <- timer didn't fired. Then
-suddenly that CPU, which had the deferred timer registered last time,
-is waking up and timer triggers to check our device. We get the stats,
-but they might be showing load from 1sec not 50ms. We feed them into
-governor. Governor sees the new load, but was tested and configured for
-50ms, so it might try to rise the frequency to max. The GPU work might
-be already lower and there is no need for such freq. Then the CPU goes
-idle again, so no devfreq core check for next e.g. 1sec, but the
-frequency stays at max OPP and we burn power.
+This can be addressed by rotating the list while walking it, but that
+becomes problematic if there are concurrent walkers.
 
-So, it's completely unreliable. We might stuck at min frequency and
-suffer the frame drops, or sometimes stuck to max freq and burn more
-power when there is no such need.
-
-Similar for thermal governor, which is confused by this old stats and
-long period stats, longer than 50ms.
-
-Stats from last e.g. ~1sec tells you nothing about real recent GPU
-workload.
-
-> But delayed timer will wakeup CPU every 50ms even when system is idle, will this
-> cause more power consumption for the case like phone suspend?
-
-No, in case of phone suspend it won't increase the power consumption.
-The device won't be woken up, it will stay in suspend.
-
-Regards,
-Lukasz
-
-
-> 
-> Regards,
-> Qiang
-> 
-> 
-> On Mon, Feb 1, 2021 at 5:53 PM Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->> Hi Qiang,
->>
->> On 1/30/21 1:51 PM, Qiang Yu wrote:
->>> Thanks for the patch. But I can't observe any difference on glmark2
->>> with or without this patch.
->>> Maybe you can provide other test which can benefit from it.
->>
->> This is a design problem and has impact on the whole system.
->> There is a few issues. When the device is not checked and there are
->> long delays between last check and current, the history is broken.
->> It confuses the devfreq governor and thermal governor (Intelligent Power
->> Allocation (IPA)). Thermal governor works on stale stats data and makes
->> stupid decisions, because there is no new stats (device not checked).
->> Similar applies to devfreq simple_ondemand governor, where it 'tires' to
->> work on a loooong period even 3sec and make prediction for the next
->> frequency based on it (which is broken).
->>
->> How it should be done: constant reliable check is needed, then:
->> - period is guaranteed and has fixed size, e.g 50ms or 100ms.
->> - device status is quite recent so thermal devfreq cooling provides
->>     'fresh' data into thermal governor
->>
->> This would prevent odd behavior and solve the broken cases.
->>
->>>
->>> Considering it will wake up CPU more frequently, and user may choose
->>> to change this by sysfs,
->>> I'd like to not apply it.
->>
->> The deferred timer for GPU is wrong option, for UFS or eMMC makes more
->> sense. It's also not recommended for NoC busses. I've discovered that
->> some time ago and proposed to have option to switch into delayed timer.
->> Trust me, it wasn't obvious to find out that this missing check has
->> those impacts. So the other engineers or users might not know that some
->> problems they faces (especially when the device load is changing) is due
->> to this delayed vs deffered timer and they will change it in the sysfs.
->>
->> Regards,
->> Lukasz
->>
->>>
->>> Regards,
->>> Qiang
->>>
+OK, I guess running the callback under the lock is not really a big
+deal (and for the deletion case this is actually necessary), so let's
+do that.
