@@ -2,161 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 509F730C9B5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:27:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFE4B30C988
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:22:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238594AbhBBS0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:26:23 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:42712 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238416AbhBBSVV (ORCPT
+        id S238471AbhBBSVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:21:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238338AbhBBSSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 13:21:21 -0500
-Received: from 89-64-80-193.dynamic.chello.pl (89.64.80.193) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.537)
- id fab37a9a5eea78eb; Tue, 2 Feb 2021 19:19:54 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Linux ACPI <linux-acpi@vger.kernel.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Joe Perches <joe@perches.com>
-Subject: [PATCH v2 3/5] ACPI: button: Clean up printing messages
-Date:   Tue, 02 Feb 2021 19:17:01 +0100
-Message-ID: <1735040.lGk2htMl04@kreacher>
-In-Reply-To: <1991501.dpTHplkurC@kreacher>
-References: <2367702.B5bJTmGzJm@kreacher> <1991501.dpTHplkurC@kreacher>
+        Tue, 2 Feb 2021 13:18:03 -0500
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86836C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 10:17:23 -0800 (PST)
+Received: by mail-pg1-x530.google.com with SMTP id r38so15398944pgk.13
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 10:17:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=idF1iI/0Aj6wyNwjBCbePkMdBUwU00zdgCO6uffYaO4=;
+        b=a5bo5poAdvk/+hy4E1MEtzCP2VsQFhJx4aO5sNGIaN1zZ7h9Y+6/uIZQwaVBATuj2r
+         MADoYFRSufk2F29yng4H3CKlbm3nyCfasWUYEOOC7gLtlIp0H/avboXk21UkBqdn6TIR
+         wq0cLyA/gzq4+i/S//xCYsxeBW1bpVe2+9j8s3ftT12l57B4HAmpq/2g1gvqYST8rtEw
+         zkwFgthSmYiVAXKjw3/PkwiyPa+CmvXYcaMb+kdyGLh9d8V6wAk1p5lqtws/WRM5v9Qa
+         Nw37HBym28ZOgyMfJxoaasRY/4Xv27aPQE+k1ki46T9Z+k2/kIVko7CX+7GbqcwkyQ1O
+         VmMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=idF1iI/0Aj6wyNwjBCbePkMdBUwU00zdgCO6uffYaO4=;
+        b=qSAXCUxPjcxaBJEWnd1cQQIN+pqZl8sKBMXGlZXWfjIQYY94yfGKhUVyVs2JgnD+Ha
+         JZa2b/VaBA7Z/8flpkGQ0vQZrJcY4I49SoLhLY/4z7PHvXJZ5nIj9lSvvQVpp1iNkpDz
+         cEK/xyA/djB3BMamEfKPp0rm7pbbcvb4H6mTm86aG3pLmHdCdmNDZIIjLa9o4r8Q1rgg
+         NV/xPZJ2D9hgJYZm0TnJFU1PIQZvZXuKryYx6NTgSCXP1cbv4M0p6yOyWnIJEmOPQfQ1
+         kzWk4sTlUB3YdZ3sEgiTs6J1SdaCQk1StVB46g9Cm4p9pJcn57tcmJf66oLmBjVXhNvJ
+         ZpbQ==
+X-Gm-Message-State: AOAM530junlIdWsYtpShAkdFjoDndDPLCs5MeLR+yA5NoFTBywHilDuA
+        JX5M3ps30GW9fnfboYk8ACWnWQ==
+X-Google-Smtp-Source: ABdhPJxtPn0HqiRfKB7bL+xLhoQuwpiERYdfJ/zhJK+lCWA9rL8WbHAJbZVYHye3ehl/3C1o2BR/eA==
+X-Received: by 2002:aa7:92c6:0:b029:1cb:1c6f:c605 with SMTP id k6-20020aa792c60000b02901cb1c6fc605mr17478278pfa.4.1612289842810;
+        Tue, 02 Feb 2021 10:17:22 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:e1bc:da69:2e4b:ce97])
+        by smtp.gmail.com with ESMTPSA id e17sm3548821pjh.39.2021.02.02.10.17.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 10:17:22 -0800 (PST)
+Date:   Tue, 2 Feb 2021 10:17:16 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH 3/3] KVM: x86: move kvm_inject_gp up from kvm_set_dr to
+ callers
+Message-ID: <YBmXLJPPTS7yzClF@google.com>
+References: <20210202165141.88275-1-pbonzini@redhat.com>
+ <20210202165141.88275-4-pbonzini@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210202165141.88275-4-pbonzini@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Tue, Feb 02, 2021, Paolo Bonzini wrote:
+> Push the injection of #GP up to the callers, so that they can just use
+> kvm_complete_insn_gp. __kvm_set_dr is pretty much what the callers can use
+> together with kvm_complete_insn_gp, so rename it to kvm_set_dr and drop
+> the old kvm_set_dr wrapper.
+> 
+> This allows nested VMX code, which really wanted to use __kvm_set_dr, to
+> use the right function.
+> 
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/x86/kvm/svm/svm.c | 14 +++++++-------
+>  arch/x86/kvm/vmx/vmx.c | 19 ++++++++++---------
+>  arch/x86/kvm/x86.c     | 19 +++++--------------
+>  3 files changed, 22 insertions(+), 30 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index c0d41a6920f0..818cf3babef2 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -2599,6 +2599,7 @@ static int dr_interception(struct vcpu_svm *svm)
+>  {
+>  	int reg, dr;
+>  	unsigned long val;
+> +	int err;
+>  
+>  	if (svm->vcpu.guest_debug == 0) {
+>  		/*
+> @@ -2617,19 +2618,18 @@ static int dr_interception(struct vcpu_svm *svm)
+>  	reg = svm->vmcb->control.exit_info_1 & SVM_EXITINFO_REG_MASK;
+>  	dr = svm->vmcb->control.exit_code - SVM_EXIT_READ_DR0;
+>  
+> +	if (!kvm_require_dr(&svm->vcpu, dr & 15))
 
-Replace the ACPI_DEBUG_PRINT() instance in button.c with an
-acpi_handle_debug() call, drop the _COMPONENT and ACPI_MODULE_NAME()
-definitions that are not used any more, drop the no longer needed
-ACPI_BUTTON_COMPONENT definition from the headers and update the
-documentation accordingly.
+Purely because I suck at reading base-10 bitwise operations, can we do "dr & 0xf"?
+This also creates separate logic for writes (AND versus SUB), can you also
+convert the other 'dr - 16'?
 
-While at it, replace the direct printk() invocations with pr_info()
-(that changes the excessive log level for some of them too) and drop
-the unneeded PREFIX sybmbol definition from battery.c.
+Alternatively, grab the "mov to DR" flag early on, but that feels less
+readable, e.g.
 
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
+	mov_to_dr = dr & 0x10;
+	dr &= 0xf;
 
-v1 -> v2: No changes
+> +		return 1;
+> +
+>  	if (dr >= 16) { /* mov to DRn */
+> -		if (!kvm_require_dr(&svm->vcpu, dr - 16))
+> -			return 1;
+>  		val = kvm_register_read(&svm->vcpu, reg);
+> -		kvm_set_dr(&svm->vcpu, dr - 16, val);
+> +		err = kvm_set_dr(&svm->vcpu, dr - 16, val);
+>  	} else {
+> -		if (!kvm_require_dr(&svm->vcpu, dr))
+> -			return 1;
+> -		kvm_get_dr(&svm->vcpu, dr, &val);
+> +		err = kvm_get_dr(&svm->vcpu, dr, &val);
 
----
- Documentation/firmware-guide/acpi/debug.rst |    1 -
- drivers/acpi/button.c                       |   15 +++++----------
- drivers/acpi/sysfs.c                        |    1 -
- include/acpi/acpi_drivers.h                 |    1 -
- 4 files changed, 5 insertions(+), 13 deletions(-)
+Technically, 'err' needs to be checked, else 'reg' will theoretically be
+clobbered with garbage.  I say "theoretically", because kvm_get_dr() always
+returns '0'; the CR4.DE=1 behavior is handled by kvm_require_dr(), presumably
+due to it being a #UD instead of #GP.  AFAICT, you can simply add a prep patch
+to change the return type to void.
 
-Index: linux-pm/drivers/acpi/button.c
-===================================================================
---- linux-pm.orig/drivers/acpi/button.c
-+++ linux-pm/drivers/acpi/button.c
-@@ -21,8 +21,6 @@
- #include <linux/dmi.h>
- #include <acpi/button.h>
- 
--#define PREFIX "ACPI: "
--
- #define ACPI_BUTTON_CLASS		"button"
- #define ACPI_BUTTON_FILE_STATE		"state"
- #define ACPI_BUTTON_TYPE_UNKNOWN	0x00
-@@ -54,9 +52,6 @@ static const char * const lid_init_state
- 	[ACPI_BUTTON_LID_INIT_DISABLED]		= "disabled",
- };
- 
--#define _COMPONENT		ACPI_BUTTON_COMPONENT
--ACPI_MODULE_NAME("button");
--
- MODULE_AUTHOR("Paul Diefenbaugh");
- MODULE_DESCRIPTION("ACPI Button Driver");
- MODULE_LICENSE("GPL");
-@@ -285,7 +280,7 @@ static int acpi_button_add_fs(struct acp
- 		return 0;
- 
- 	if (acpi_button_dir || acpi_lid_dir) {
--		printk(KERN_ERR PREFIX "More than one Lid device found!\n");
-+		pr_info("More than one Lid device found!\n");
- 		return -EEXIST;
- 	}
- 
-@@ -434,8 +429,8 @@ static void acpi_button_notify(struct ac
- 		}
- 		break;
- 	default:
--		ACPI_DEBUG_PRINT((ACPI_DB_INFO,
--				  "Unsupported event [0x%x]\n", event));
-+		acpi_handle_debug(device->handle, "Unsupported event [0x%x]\n",
-+				  event);
- 		break;
- 	}
- }
-@@ -523,7 +518,7 @@ static int acpi_button_add(struct acpi_d
- 			ACPI_BUTTON_CLASS, ACPI_BUTTON_SUBCLASS_LID);
- 		input->open = acpi_lid_input_open;
- 	} else {
--		printk(KERN_ERR PREFIX "Unsupported hid [%s]\n", hid);
-+		pr_info("Unsupported hid [%s]\n", hid);
- 		error = -ENODEV;
- 		goto err_free_input;
- 	}
-@@ -567,7 +562,7 @@ static int acpi_button_add(struct acpi_d
- 	}
- 
- 	device_init_wakeup(&device->dev, true);
--	printk(KERN_INFO PREFIX "%s [%s]\n", name, acpi_device_bid(device));
-+	pr_info("%s [%s]\n", name, acpi_device_bid(device));
- 	return 0;
- 
-  err_remove_fs:
-Index: linux-pm/Documentation/firmware-guide/acpi/debug.rst
-===================================================================
---- linux-pm.orig/Documentation/firmware-guide/acpi/debug.rst
-+++ linux-pm/Documentation/firmware-guide/acpi/debug.rst
-@@ -52,7 +52,6 @@ shows the supported mask values, current
-     ACPI_CA_DISASSEMBLER            0x00000800
-     ACPI_COMPILER                   0x00001000
-     ACPI_TOOLS                      0x00002000
--    ACPI_BUTTON_COMPONENT           0x00080000
-     ACPI_SBS_COMPONENT              0x00100000
-     ACPI_FAN_COMPONENT              0x00200000
-     ACPI_PCI_COMPONENT              0x00400000
-Index: linux-pm/drivers/acpi/sysfs.c
-===================================================================
---- linux-pm.orig/drivers/acpi/sysfs.c
-+++ linux-pm/drivers/acpi/sysfs.c
-@@ -52,7 +52,6 @@ static const struct acpi_dlayer acpi_deb
- 	ACPI_DEBUG_INIT(ACPI_COMPILER),
- 	ACPI_DEBUG_INIT(ACPI_TOOLS),
- 
--	ACPI_DEBUG_INIT(ACPI_BUTTON_COMPONENT),
- 	ACPI_DEBUG_INIT(ACPI_SBS_COMPONENT),
- 	ACPI_DEBUG_INIT(ACPI_FAN_COMPONENT),
- 	ACPI_DEBUG_INIT(ACPI_PCI_COMPONENT),
-Index: linux-pm/include/acpi/acpi_drivers.h
-===================================================================
---- linux-pm.orig/include/acpi/acpi_drivers.h
-+++ linux-pm/include/acpi/acpi_drivers.h
-@@ -15,7 +15,6 @@
-  * Please update drivers/acpi/debug.c and Documentation/firmware-guide/acpi/debug.rst
-  * if you add to this list.
-  */
--#define ACPI_BUTTON_COMPONENT		0x00080000
- #define ACPI_SBS_COMPONENT		0x00100000
- #define ACPI_FAN_COMPONENT		0x00200000
- #define ACPI_PCI_COMPONENT		0x00400000
+Side topic, is the kvm_require_dr() check needed on SVM interception?  The APM
+states:
 
+  All normal exception checks take precedence over the by implicit DR6/DR7 writes.)
 
+I can't find anything that would suggest the CR4.DE=1 #UD isn't a "normal"
+exception.
 
+>  		kvm_register_write(&svm->vcpu, reg, val);
+>  	}
+>  
+> -	return kvm_skip_emulated_instruction(&svm->vcpu);
+> +	return kvm_complete_insn_gp(&svm->vcpu, err);
+>  }
+>  
+>  static int cr8_write_interception(struct vcpu_svm *svm)
