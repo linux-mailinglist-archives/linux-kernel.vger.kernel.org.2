@@ -2,125 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E1430B96C
+	by mail.lfdr.de (Postfix) with ESMTP id 9A83B30B96D
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:18:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbhBBIRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 03:17:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232359AbhBBIPi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 03:15:38 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D5B9C061756
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 00:15:23 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id 6so19422615wri.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 00:15:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=Hqt3Tq2IV5R4WiXTtDJbZrsLXSk61GOL768nUQ/gTfU=;
-        b=qbqVkwRfMQkqjroRuCKsLSvylT0HvI1J5iLNFX3b0SI7TMhz1r6LjCMlDaGcm7/Nqy
-         aLq84pCPljkmmMBPN6uKITMawTGDyiW7i54Ruf6Zd5ACkgdujS+IqIBr8vJa54vyn5oz
-         wxW/tE4GIzcP9rH8BYtXacM7cDoCQajIToBvnoXGje8OhuwKMJkhMxuKoswlxGuzx5Rq
-         V08fikWi0Oqu6A+j1YsTjm0X23qW9jbQttsYrVCHS8UAGrJWs77U32zdLiEtFTf8wv3N
-         Spmr8R8l3VMs4PQrok8Qdz6I31bWtvhkPl7/Yu4Jvtrl6y/S0UGJQ0QByZmkCgf/NSg0
-         3k2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=Hqt3Tq2IV5R4WiXTtDJbZrsLXSk61GOL768nUQ/gTfU=;
-        b=AlNHfLRfcCDlI51omTYncsNW9e3lNdg1QuQqMt69RnjTU5FhWVWZJcVsWWugTSrDwV
-         iyqu4c5edjhKoys5poRieTDhnVc5n2vsTWkATkmZ2Vr6Fuz24l8jI2XZn3LxZInZYbb6
-         GEtRuRw0TdWidktXvBzxD3f4mBswzaqf8jgexJgVafIGP7lJNG7C6N++4RhezUbjm2X0
-         KMZf5Gb8DHoYpxiErjNbqQBoGURR5cBHdXk1uGL74A8pJ5OOd6utI/95P/ByGDLe3f/b
-         1Jk3W0fcVCUVEUYjBeoVfWTg3o+mqOa28uKncU7aXHqE1keMDOvrxt3BSsi+AfKGub4l
-         6hmw==
-X-Gm-Message-State: AOAM533kcLdwFPf+Sml0a3nNzKAG4ytG1f9DzJHfvp4Cj9WSNBe+fisl
-        RCT12/htGpJzPSrBZxTmR15bDw==
-X-Google-Smtp-Source: ABdhPJxE4ohxXWISsDLkRM6l6XN06/LSVRAdMmpWvGBcb6TD6kkqRKCojZH/xeofJCe4nYk7W1n/Xw==
-X-Received: by 2002:adf:80c8:: with SMTP id 66mr7510655wrl.344.1612253722232;
-        Tue, 02 Feb 2021 00:15:22 -0800 (PST)
-Received: from dell ([91.110.221.188])
-        by smtp.gmail.com with ESMTPSA id p12sm1798673wmq.1.2021.02.02.00.15.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 00:15:21 -0800 (PST)
-Date:   Tue, 2 Feb 2021 08:15:19 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Subject: Re: [PATCH v1 00/10] mfd, x86: remove msic driver and leftovers
-Message-ID: <20210202081519.GY4774@dell>
-References: <20210125193948.56760-1-andriy.shevchenko@linux.intel.com>
- <20210126082101.GD4903@dell>
- <YA/xfxcwCabETug6@smile.fi.intel.com>
- <YBhLuNZ7xmHdhurU@smile.fi.intel.com>
- <CAJZ5v0jQLZ7hEn7nDN8AADy7djnrQRrC4jtXKY-YqZiO609_2A@mail.gmail.com>
+        id S230073AbhBBIRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 03:17:46 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2472 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231519AbhBBIRf (ORCPT
+        <rfc822;Linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 03:17:35 -0500
+Received: from fraeml736-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DVHYs67QCz67jG5;
+        Tue,  2 Feb 2021 16:10:41 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml736-chm.china.huawei.com (10.206.15.217) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Tue, 2 Feb 2021 09:16:51 +0100
+Received: from [10.47.5.6] (10.47.5.6) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Tue, 2 Feb 2021
+ 08:16:50 +0000
+Subject: Re: [PATCH] perf metricgroup: Fix segmentation fault for metrics with
+ no pmu event
+To:     Jin Yao <yao.jin@linux.intel.com>, <acme@kernel.org>,
+        <jolsa@kernel.org>, <peterz@infradead.org>, <mingo@redhat.com>,
+        <alexander.shishkin@linux.intel.com>
+CC:     <Linux-kernel@vger.kernel.org>, <ak@linux.intel.com>,
+        <kan.liang@intel.com>, <yao.jin@intel.com>
+References: <20210202022424.10787-1-yao.jin@linux.intel.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <77af7dc5-eac4-4591-cba7-8937c94a058f@huawei.com>
+Date:   Tue, 2 Feb 2021 08:15:23 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0jQLZ7hEn7nDN8AADy7djnrQRrC4jtXKY-YqZiO609_2A@mail.gmail.com>
+In-Reply-To: <20210202022424.10787-1-yao.jin@linux.intel.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.5.6]
+X-ClientProxiedBy: lhreml736-chm.china.huawei.com (10.201.108.87) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 01 Feb 2021, Rafael J. Wysocki wrote:
-
-> On Mon, Feb 1, 2021 at 7:45 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > On Tue, Jan 26, 2021 at 12:39:59PM +0200, Andy Shevchenko wrote:
-> > > On Tue, Jan 26, 2021 at 08:21:01AM +0000, Lee Jones wrote:
-> > > > On Mon, 25 Jan 2021, Andy Shevchenko wrote:
-> > > >
-> > > > > This is a second part of the Intel MID outdated platforms removal.
-> > > > > First part is available as immutable branch [1]. The series has functional
-> > > > > and build dependencies, so the mentioned branch should be used as a base
-> > > > > for these changes.
-> > > > >
-> > > > > Note, that some of the drivers, that arch/x86 covers, seems never appeared
-> > > > > in the upstream (like msic_ocd).
-> > > >
-> > > > What platforms stop working after this removal?
-> > >
-> > > Intel Moorstown, Medfield, Clovertrail.
-> > >
-> > > > Are you sure no-one is using them?
-> > >
-> > > Definitely.
-> > >
-> > > > I wouldn't be keen on breaking Janet's PC that she's been using daily
-> > > > and keeping up-to-date since the 90's.
-> > >
-> > > They never were in PCs.
-> > >
-> > > All of them were supported by Android and Janet won't update her phone or even
-> > > Android tablet for sure they never ever run any kind of Linux than Android.
-> >
-> > So, I hope you are satisfied and we may proceed with removal.
+On 02/02/2021 02:24, Jin Yao wrote:
+> Hit a segmentation fault for DRAM_BW_Use on SKL/KBL.
 > 
-> Speaking of which, the patches here are requisite for SFI support
-> removal, so I'd like to route them through the ACPI tree if that's
-> fine by all of the interested parties.
+>    # perf stat -M DRAM_BW_Use -a -- sleep 1
+> 
+>    Segmentation fault (core dumped)
+> 
+>    (gdb) backtrace
+>    #0  __strcmp_sse2_unaligned () at ../sysdeps/x86_64/multiarch/strcmp-sse2-unaligned.S:31
+>    #1  0x0000555c9facd9ce in find_evsel_group (evlist_used=0x555ca16d09c0, metric_events=0x555ca16e9160, has_constraint=false, metric_no_merge=false,
+>        pctx=0x555ca16c8ff0, perf_evlist=0x555ca16c5340) at util/metricgroup.c:281
+>    #2  metricgroup__setup_events (metric_events_list=0x555ca0044378 <stat_config+280>, perf_evlist=0x555ca16c5340, metric_no_merge=<optimized out>,
+>        groups=0x7ffc599193f0) at util/metricgroup.c:323
+>    #3  parse_groups (perf_evlist=perf_evlist@entry=0x555ca16c5340, str=str@entry=0x7ffc599205f8 "DRAM_BW_Use", metric_no_group=metric_no_group@entry=false,
+>        metric_no_merge=metric_no_merge@entry=false, fake_pmu=fake_pmu@entry=0x0, metric_events=metric_events@entry=0x555ca0044378 <stat_config+280>,
+>        map=0x555ca004e780 <pmu_events_map+768>) at util/metricgroup.c:1235
+>    #4  0x0000555c9face096 in metricgroup__parse_groups (opt=<optimized out>, str=0x7ffc599205f8 "DRAM_BW_Use", metric_no_group=<optimized out>,
+>        metric_no_merge=<optimized out>, metric_events=0x555ca0044378 <stat_config+280>) at util/metricgroup.c:1253
+>    #5  0x0000555c9fbd084e in get_value (p=p@entry=0x7ffc599196b0, opt=0x555ca0043f60 <stat_options+4032>, flags=flags@entry=1) at parse-options.c:251
+>    #6  0x0000555c9fbd1aa2 in parse_short_opt (options=<optimized out>, p=<optimized out>) at parse-options.c:351
+>    #7  parse_options_step (usagestr=0x7ffc59919830, options=0x555ca0042fa0 <stat_options>, ctx=0x7ffc599196b0) at parse-options.c:539
+>    #8  parse_options_subcommand (argc=argc@entry=7, argv=argv@entry=0x7ffc5991e6c0, options=options@entry=0x555ca0042fa0 <stat_options>,
+>        subcommands=subcommands@entry=0x7ffc59919840, usagestr=usagestr@entry=0x7ffc59919830, flags=flags@entry=2) at parse-options.c:654
+>    #9  0x0000555c9fa15154 in cmd_stat (argc=7, argv=0x7ffc5991e6c0) at builtin-stat.c:2136
+>    #10 0x0000555c9fa8bafd in run_builtin (p=0x555ca004df20 <commands+288>, argc=7, argv=0x7ffc5991e6c0) at perf.c:312
+>    #11 0x0000555c9f9f413a in handle_internal_command (argv=0x7ffc5991e6c0, argc=7) at perf.c:364
+>    #12 run_argv (argcp=<synthetic pointer>, argv=<synthetic pointer>) at perf.c:408
+>    #13 main (argc=7, argv=0x7ffc5991e6c0) at perf.c:538
+> 
+> DRAM_BW_Use uses an event 'duration_time' but it doesn't have pmu, so
+> ev->leader->pmu_name is NULL for this case. See following code piece:
+> 
+> !strcmp(ev->leader->pmu_name,
+> 	metric_events[i]->leader->pmu_name)
+> 
+> It causes the segmentation fault. Now check the pmu_name before strcmp.
+> 
+> Fixes: c2337d67199a("perf metricgroup: Fix metrics using aliases covering multiple PMUs")
+> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 
-Shouldn't cause too much disruption.
+This should be fixed in v5.11-rc6 - please check it.
 
-Ack provided.
+9c880c24cb0d perf metricgroup: Fix for metrics containing duration_time
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks,
+John
+
+
+> ---
+>   tools/perf/util/metricgroup.c | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> index ee94d3e8dd65..a36a1305c506 100644
+> --- a/tools/perf/util/metricgroup.c
+> +++ b/tools/perf/util/metricgroup.c
+> @@ -280,6 +280,7 @@ static struct evsel *find_evsel_group(struct evlist *perf_evlist,
+>   			 */
+>   			if (!has_constraint &&
+>   			    ev->leader != metric_events[i]->leader &&
+> +			    ev->leader->pmu_name &&
+>   			    !strcmp(ev->leader->pmu_name,
+>   				    metric_events[i]->leader->pmu_name))
+>   				break;
+> 
+
