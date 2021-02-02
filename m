@@ -2,222 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C31AA30B82E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2630330B834
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:03:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232392AbhBBG6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 01:58:03 -0500
-Received: from mail29.static.mailgun.info ([104.130.122.29]:39074 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232240AbhBBG4w (ORCPT
+        id S232418AbhBBG64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 01:58:56 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13215 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232348AbhBBG5w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 01:56:52 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612248987; h=References: In-Reply-To: References:
- In-Reply-To: Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=0GJGgAjAx2/rdTTd5QE4pvrmTTzFGOM9WmXIW06Tfs4=; b=ceCCugG9+tKCo2/OYajxfYO5e8DZ/wbetRdTvT/BVhUmWg1TARogmkEB6a3+JW+eLikg4Qpc
- kShvgPCsCCjglE5QZQ2H0cH9z6ui7v3OqaDEGEpJmsiYtS8Waa7oAWWxzX0cdgzhFKYNuafj
- 3vDLynnMs+oZ9YwYU171c8eOX5E=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6018f77e6776573488581599 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Feb 2021 06:55:58
- GMT
-Sender: cgoldswo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D1A24C43465; Tue,  2 Feb 2021 06:55:58 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from cgoldswo-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: cgoldswo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 00D56C433C6;
-        Tue,  2 Feb 2021 06:55:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 00D56C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=cgoldswo@codeaurora.org
-From:   Chris Goldsworthy <cgoldswo@codeaurora.org>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     Minchan Kim <minchan@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>
-Subject: [PATCH] [RFC] mm: fs: Invalidate BH LRU during page migration
-Date:   Mon,  1 Feb 2021 22:55:47 -0800
-Message-Id: <695193a165bf538f35de84334b4da2cc3544abe0.1612248395.git.cgoldswo@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1612248395.git.cgoldswo@codeaurora.org>
-References: <cover.1612248395.git.cgoldswo@codeaurora.org>
-In-Reply-To: <cover.1612248395.git.cgoldswo@codeaurora.org>
-References: <cover.1612248395.git.cgoldswo@codeaurora.org>
+        Tue, 2 Feb 2021 01:57:52 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6018f7c70000>; Mon, 01 Feb 2021 22:57:11 -0800
+Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3; Tue, 2 Feb 2021 06:57:09 +0000
+Date:   Tue, 2 Feb 2021 08:57:05 +0200
+From:   Eli Cohen <elic@nvidia.com>
+To:     Jason Wang <jasowang@redhat.com>
+CC:     Si-Wei Liu <siwliu.kernel@gmail.com>, <mst@redhat.com>,
+        <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lulu@redhat.com>, Si-Wei Liu <si-wei.liu@oracle.com>
+Subject: Re: [PATCH 1/2] vdpa/mlx5: Avoid unnecessary query virtqueue
+Message-ID: <20210202065705.GA232587@mtl-vdi-166.wap.labs.mlnx>
+References: <20210128134130.3051-1-elic@nvidia.com>
+ <20210128134130.3051-2-elic@nvidia.com>
+ <CAPWQSg0XtEQ1U5N3a767Ak_naoyPdVF1CeE4r3hmN11a-aoBxg@mail.gmail.com>
+ <CAPWQSg3U9DCSK_01Kzuea5B1X+Ef9JB23wBY82A3ss-UXGek_Q@mail.gmail.com>
+ <9d6058d6-5ce1-0442-8fd9-5a6fe6a0bc6b@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <9d6058d6-5ce1-0442-8fd9-5a6fe6a0bc6b@redhat.com>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612249031; bh=QLhWKEGKgMKk+GS5l4zd0izvmgX0aProgpn8vewZ8JM=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:Content-Transfer-Encoding:
+         In-Reply-To:User-Agent:X-Originating-IP:X-ClientProxiedBy;
+        b=fln5zs7B6b0/K0bvd4exy8x5us8EDErORDsV23diUpkamWLpzVbMM6z6P7j+lit1o
+         kwxpkq3KKvRrd+zG/Y9m4pxxbz4IvnJTVA1Mj/s6mXE61wyF6iD7I9yi90nydP1R8R
+         hM/AKs955cqnY9kWG+FYAGSjgfnyZNNQKK6rOYO+H5FiSwGr1lvtDcFXXQyaLzw2EL
+         5VGghtTKmrj1k7B2Ln+f4YV8qFFog5F+z1cjFMO+1NirJM4L3Ix2vwT4YeJlQJAP/D
+         419D9B+EGy/GnaPumI2yFfE9NKr1DNzBhdO85qaPBDnGzKtZ9DcbZVn7pWFZXtyr9Y
+         p21/EidrmR8mQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pages containing buffer_heads that are in the buffer_head LRU cache
-will be pinned and thus cannot be migrated.  Correspondingly,
-invalidate the BH LRU before a migration starts and stop any
-buffer_head from being cached in the LRU, until migration has
-finished.
+On Tue, Feb 02, 2021 at 11:12:51AM +0800, Jason Wang wrote:
+>=20
+> On 2021/2/2 =E4=B8=8A=E5=8D=883:17, Si-Wei Liu wrote:
+> > On Mon, Feb 1, 2021 at 10:51 AM Si-Wei Liu <siwliu.kernel@gmail.com> wr=
+ote:
+> > > On Thu, Jan 28, 2021 at 5:46 AM Eli Cohen <elic@nvidia.com> wrote:
+> > > > suspend_vq should only suspend the VQ on not save the current avail=
+able
+> > > > index. This is done when a change of map occurs when the driver cal=
+ls
+> > > > save_channel_info().
+> > > Hmmm, suspend_vq() is also called by teardown_vq(), the latter of
+> > > which doesn't save the available index as save_channel_info() doesn't
+> > > get called in that path at all. How does it handle the case that
+> > > aget_vq_state() is called from userspace (e.g. QEMU) while the
+> > > hardware VQ object was torn down, but userspace still wants to access
+> > > the queue index?
+> > >=20
+> > > Refer to https://lore.kernel.org/netdev/1601583511-15138-1-git-send-e=
+mail-si-wei.liu@oracle.com/
+> > >=20
+> > > vhost VQ 0 ring restore failed: -1: Resource temporarily unavailable =
+(11)
+> > > vhost VQ 1 ring restore failed: -1: Resource temporarily unavailable =
+(11)
+> > >=20
+> > > QEMU will complain with the above warning while VM is being rebooted
+> > > or shut down.
+> > >=20
+> > > Looks to me either the kernel driver should cover this requirement, o=
+r
+> > > the userspace has to bear the burden in saving the index and not call
+> > > into kernel if VQ is destroyed.
+> > Actually, the userspace doesn't have the insights whether virt queue
+> > will be destroyed if just changing the device status via set_status().
+> > Looking at other vdpa driver in tree i.e. ifcvf it doesn't behave like
+> > so. Hence this still looks to me to be Mellanox specifics and
+> > mlx5_vdpa implementation detail that shouldn't expose to userspace.
+>=20
+>=20
+> So I think we can simply drop this patch?
+>=20
 
-Signed-off-by: Chris Goldsworthy <cgoldswo@codeaurora.org>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Matthew Wilcox <willy@infradead.org>
----
- fs/buffer.c                 |  6 ++++++
- include/linux/buffer_head.h |  3 +++
- include/linux/migrate.h     |  2 ++
- mm/migrate.c                | 18 ++++++++++++++++++
- mm/page_alloc.c             |  3 +++
- mm/swap.c                   |  3 +++
- 6 files changed, 35 insertions(+)
+Yes, I agree. Let's just avoid it.
 
-diff --git a/fs/buffer.c b/fs/buffer.c
-index 96c7604..39ec4ec 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -1289,6 +1289,8 @@ static inline void check_irqs_on(void)
- #endif
- }
- 
-+bool bh_migration_done = true;
-+
- /*
-  * Install a buffer_head into this cpu's LRU.  If not already in the LRU, it is
-  * inserted at the front, and the buffer_head at the back if any is evicted.
-@@ -1303,6 +1305,9 @@ static void bh_lru_install(struct buffer_head *bh)
- 	check_irqs_on();
- 	bh_lru_lock();
- 
-+	if (!bh_migration_done)
-+		goto out;
-+
- 	b = this_cpu_ptr(&bh_lrus);
- 	for (i = 0; i < BH_LRU_SIZE; i++) {
- 		swap(evictee, b->bhs[i]);
-@@ -1313,6 +1318,7 @@ static void bh_lru_install(struct buffer_head *bh)
- 	}
- 
- 	get_bh(bh);
-+out:
- 	bh_lru_unlock();
- 	brelse(evictee);
- }
-diff --git a/include/linux/buffer_head.h b/include/linux/buffer_head.h
-index 6b47f94..ae4eb6d 100644
---- a/include/linux/buffer_head.h
-+++ b/include/linux/buffer_head.h
-@@ -193,6 +193,9 @@ void __breadahead_gfp(struct block_device *, sector_t block, unsigned int size,
- 		  gfp_t gfp);
- struct buffer_head *__bread_gfp(struct block_device *,
- 				sector_t block, unsigned size, gfp_t gfp);
-+
-+extern bool bh_migration_done;
-+
- void invalidate_bh_lrus(void);
- struct buffer_head *alloc_buffer_head(gfp_t gfp_flags);
- void free_buffer_head(struct buffer_head * bh);
-diff --git a/include/linux/migrate.h b/include/linux/migrate.h
-index 3a38963..9e4a2dc 100644
---- a/include/linux/migrate.h
-+++ b/include/linux/migrate.h
-@@ -46,6 +46,7 @@ extern int isolate_movable_page(struct page *page, isolate_mode_t mode);
- extern void putback_movable_page(struct page *page);
- 
- extern void migrate_prep(void);
-+extern void migrate_finish(void);
- extern void migrate_prep_local(void);
- extern void migrate_page_states(struct page *newpage, struct page *page);
- extern void migrate_page_copy(struct page *newpage, struct page *page);
-@@ -67,6 +68,7 @@ static inline int isolate_movable_page(struct page *page, isolate_mode_t mode)
- 	{ return -EBUSY; }
- 
- static inline int migrate_prep(void) { return -ENOSYS; }
-+static inline int migrate_finish(void) { return -ENOSYS; }
- static inline int migrate_prep_local(void) { return -ENOSYS; }
- 
- static inline void migrate_page_states(struct page *newpage, struct page *page)
-diff --git a/mm/migrate.c b/mm/migrate.c
-index a69da8a..08c981d 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -64,6 +64,19 @@
-  */
- void migrate_prep(void)
- {
-+	bh_migration_done = false;
-+
-+	/*
-+	 * This barrier ensures that callers of bh_lru_install() between
-+	 * the barrier and the call to invalidate_bh_lrus() read
-+	 *  bh_migration_done() as false.
-+	 */
-+	/*
-+	 * TODO: Remove me? lru_add_drain_all() already has an smp_mb(),
-+	 * but it would be good to ensure that the barrier isn't forgotten.
-+	 */
-+	smp_mb();
-+
- 	/*
- 	 * Clear the LRU lists so pages can be isolated.
- 	 * Note that pages may be moved off the LRU after we have
-@@ -73,6 +86,11 @@ void migrate_prep(void)
- 	lru_add_drain_all();
- }
- 
-+void migrate_finish(void)
-+{
-+	bh_migration_done = true;
-+}
-+
- /* Do the necessary work of migrate_prep but not if it involves other CPUs */
- void migrate_prep_local(void)
- {
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 6446778..e4cb959 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -8493,6 +8493,9 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
- 		ret = migrate_pages(&cc->migratepages, alloc_migration_target,
- 				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
- 	}
-+
-+	migrate_finish();
-+
- 	if (ret < 0) {
- 		putback_movable_pages(&cc->migratepages);
- 		return ret;
-diff --git a/mm/swap.c b/mm/swap.c
-index 31b844d..97efc49 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -36,6 +36,7 @@
- #include <linux/hugetlb.h>
- #include <linux/page_idle.h>
- #include <linux/local_lock.h>
-+#include <linux/buffer_head.h>
- 
- #include "internal.h"
- 
-@@ -759,6 +760,8 @@ void lru_add_drain_all(void)
- 	if (WARN_ON(!mm_percpu_wq))
- 		return;
- 
-+	invalidate_bh_lrus();
-+
- 	/*
- 	 * Guarantee pagevec counter stores visible by this CPU are visible to
- 	 * other CPUs before loading the current drain generation.
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+> Thanks
+>=20
+>=20
+> > > -Siwei
+> > >=20
+> > >=20
+> > > > Signed-off-by: Eli Cohen <elic@nvidia.com>
+> > > > ---
+> > > >   drivers/vdpa/mlx5/net/mlx5_vnet.c | 8 --------
+> > > >   1 file changed, 8 deletions(-)
+> > > >=20
+> > > > diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/=
+net/mlx5_vnet.c
+> > > > index 88dde3455bfd..549ded074ff3 100644
+> > > > --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
+> > > > @@ -1148,8 +1148,6 @@ static int setup_vq(struct mlx5_vdpa_net *nde=
+v, struct mlx5_vdpa_virtqueue *mvq)
+> > > >=20
+> > > >   static void suspend_vq(struct mlx5_vdpa_net *ndev, struct mlx5_vd=
+pa_virtqueue *mvq)
+> > > >   {
+> > > > -       struct mlx5_virtq_attr attr;
+> > > > -
+> > > >          if (!mvq->initialized)
+> > > >                  return;
+> > > >=20
+> > > > @@ -1158,12 +1156,6 @@ static void suspend_vq(struct mlx5_vdpa_net =
+*ndev, struct mlx5_vdpa_virtqueue *m
+> > > >=20
+> > > >          if (modify_virtqueue(ndev, mvq, MLX5_VIRTIO_NET_Q_OBJECT_S=
+TATE_SUSPEND))
+> > > >                  mlx5_vdpa_warn(&ndev->mvdev, "modify to suspend fa=
+iled\n");
+> > > > -
+> > > > -       if (query_virtqueue(ndev, mvq, &attr)) {
+> > > > -               mlx5_vdpa_warn(&ndev->mvdev, "failed to query virtq=
+ueue\n");
+> > > > -               return;
+> > > > -       }
+> > > > -       mvq->avail_idx =3D attr.available_index;
+> > > >   }
+> > > >=20
+> > > >   static void suspend_vqs(struct mlx5_vdpa_net *ndev)
+> > > > --
+> > > > 2.29.2
+> > > >=20
+>=20
