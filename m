@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2154D30C13D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:18:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A47530C844
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:48:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234285AbhBBORe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:17:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49196 "EHLO mail.kernel.org"
+        id S237882AbhBBRqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:46:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234028AbhBBOLf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:11:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06C8564FA6;
-        Tue,  2 Feb 2021 13:51:49 +0000 (UTC)
+        id S233682AbhBBOKj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:10:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6B526503D;
+        Tue,  2 Feb 2021 13:51:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273910;
-        bh=225t3kwK2KZ7ukZYn/wuewzNvB32JjKVX+vIqFk4m5Y=;
+        s=korg; t=1612273875;
+        bh=Co5qTz3j+kM+L+4KifKZPZo7aVOMuumGsmbfabtcpuY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xbzaUN/f7zfb6U4cy20iKbz4mCWlMP/5rh8/ruzj3KldlY21Zd2ffHDCcSEZWCt2X
-         Nrc9vjlWaMq4tlN0cNslzSaUhdjHYAc1IuwfE6YetWuh5HkYzIHBpOjTL1nk9N4gLn
-         DN6XCqiSFqeVVwA35++0KI8KSm169aeeMOGhvBYE=
+        b=dKBevhJOZ4I6rHvTcbokNHx1wD5H9FdhnJdTlfwvVgiQGQarytAIxuk9v1UDxB+Wr
+         Nx0Ye+hqLpUk44MdZsYgDgu1dE56Ecl5FaWzwo4OTdGowzuc15FAlLNgDhz8xt2Tn9
+         gZPDAx5/Hpinirl+Ocbzq7LnU3AvWkwHzjGlKXqU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Jakub Kicinski <kubakici@wp.pl>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 4.14 13/30] mt7601u: fix rx buffer refcounting
-Date:   Tue,  2 Feb 2021 14:38:54 +0100
-Message-Id: <20210202132942.687792071@linuxfoundation.org>
+        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.9 32/32] NFC: fix possible resource leak
+Date:   Tue,  2 Feb 2021 14:38:55 +0100
+Message-Id: <20210202132943.304393716@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132942.138623851@linuxfoundation.org>
-References: <20210202132942.138623851@linuxfoundation.org>
+In-Reply-To: <20210202132942.035179752@linuxfoundation.org>
+References: <20210202132942.035179752@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,74 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
+From: Pan Bian <bianpan2016@163.com>
 
-commit d24c790577ef01bfa01da2b131313a38c843a634 upstream.
+commit d8f923c3ab96dbbb4e3c22d1afc1dc1d3b195cd8 upstream.
 
-Fix the following crash due to erroneous page refcounting:
+Put the device to avoid resource leak on path that the polling flag is
+invalid.
 
-[   32.445919] BUG: Bad page state in process swapper/1  pfn:11f65a
-[   32.447409] page:00000000938f0632 refcount:0 mapcount:-128 mapping:0000000000000000 index:0x0 pfn:0x11f65a
-[   32.449605] flags: 0x8000000000000000()
-[   32.450421] raw: 8000000000000000 ffffffff825b0148 ffffea00045ae988 0000000000000000
-[   32.451795] raw: 0000000000000000 0000000000000001 00000000ffffff7f 0000000000000000
-[   32.452999] page dumped because: nonzero mapcount
-[   32.453888] Modules linked in:
-[   32.454492] CPU: 1 PID: 0 Comm: swapper/1 Not tainted 5.11.0-rc2+ #1976
-[   32.455695] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.14.0-1.fc33 04/01/2014
-[   32.457157] Call Trace:
-[   32.457636]  <IRQ>
-[   32.457993]  dump_stack+0x77/0x97
-[   32.458576]  bad_page.cold+0x65/0x96
-[   32.459198]  get_page_from_freelist+0x46a/0x11f0
-[   32.460008]  __alloc_pages_nodemask+0x10a/0x2b0
-[   32.460794]  mt7601u_rx_tasklet+0x651/0x720
-[   32.461505]  tasklet_action_common.constprop.0+0x6b/0xd0
-[   32.462343]  __do_softirq+0x152/0x46c
-[   32.462928]  asm_call_irq_on_stack+0x12/0x20
-[   32.463610]  </IRQ>
-[   32.463953]  do_softirq_own_stack+0x5b/0x70
-[   32.464582]  irq_exit_rcu+0x9f/0xe0
-[   32.465028]  common_interrupt+0xae/0x1a0
-[   32.465536]  asm_common_interrupt+0x1e/0x40
-[   32.466071] RIP: 0010:default_idle+0x18/0x20
-[   32.468981] RSP: 0018:ffffc90000077f00 EFLAGS: 00000246
-[   32.469648] RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000000
-[   32.470550] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffffff81aac3dd
-[   32.471463] RBP: ffff88810022ab00 R08: 0000000000000001 R09: 0000000000000001
-[   32.472335] R10: 0000000000000046 R11: 0000000000005aa0 R12: 0000000000000000
-[   32.473235] R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-[   32.474139]  ? default_idle_call+0x4d/0x200
-[   32.474681]  default_idle_call+0x74/0x200
-[   32.475192]  do_idle+0x1d5/0x250
-[   32.475612]  cpu_startup_entry+0x19/0x20
-[   32.476114]  secondary_startup_64_no_verify+0xb0/0xbb
-[   32.476765] Disabling lock debugging due to kernel taint
-
-Fixes: c869f77d6abb ("add mt7601u driver")
-Co-developed-by: Felix Fietkau <nbd@nbd.name>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Acked-by: Jakub Kicinski <kubakici@wp.pl>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/62b2380c8c2091834cfad05e1059b55f945bd114.1610643952.git.lorenzo@kernel.org
+Fixes: a831b9132065 ("NFC: Do not return EBUSY when stopping a poll that's already stopped")
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+Link: https://lore.kernel.org/r/20210121153745.122184-1-bianpan2016@163.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/wireless/mediatek/mt7601u/dma.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ net/nfc/netlink.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/wireless/mediatek/mt7601u/dma.c
-+++ b/drivers/net/wireless/mediatek/mt7601u/dma.c
-@@ -160,8 +160,7 @@ mt7601u_rx_process_entry(struct mt7601u_
+--- a/net/nfc/netlink.c
++++ b/net/nfc/netlink.c
+@@ -887,6 +887,7 @@ static int nfc_genl_stop_poll(struct sk_
  
- 	if (new_p) {
- 		/* we have one extra ref from the allocator */
--		__free_pages(e->p, MT_RX_ORDER);
--
-+		put_page(e->p);
- 		e->p = new_p;
+ 	if (!dev->polling) {
+ 		device_unlock(&dev->dev);
++		nfc_put_device(dev);
+ 		return -EINVAL;
  	}
- }
+ 
 
 
