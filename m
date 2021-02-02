@@ -2,216 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB3130CE98
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:15:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B38C30CEA0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:19:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233202AbhBBWOI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 17:14:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42940 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231180AbhBBWNj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 17:13:39 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5584BC061573
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 14:12:58 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id q7so22051097wre.13
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 14:12:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xqP0a66Os6f9sXyF+kMsv13PEbv0LhzI8V6aeWIM0Ok=;
-        b=TPz3NwZfJQX2n8XN2IcK3GG1+YdjmSwEfCGkkfB/R3l9sej3bWUpfbAM6RCQCZ7zSg
-         wtMWuG93czJxsPaqc/vxVW5m5aofw7Xucq73fsummtWKzVU1OcRLPV1d4bpHrkbnQvc4
-         IGVMEw8sSzmZ9C62tJnk3nveiCu7uLVYsZYtvwViU06V6jZ65gHNw7E+q3Wxw3dk6eXe
-         z5op6gObDb+ORYEdWZ3w4BYU3o2SvM5AHHBAGBxccLb/WJ/Qhq7WY8qKqMIPltmMJ5MP
-         z66weUVMT+YCRplS4JltaxL/GEcdZbNO5Nz0syi3n8gD39XWVSSc8FUArjYvPDInNAiR
-         z2yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xqP0a66Os6f9sXyF+kMsv13PEbv0LhzI8V6aeWIM0Ok=;
-        b=B9fXH4C5o3I9ZtlkBHtsNccAvfwInPyGGqhQlS+SEblz63gpYO5YmRvWCCGgIXksvv
-         joQLGHBNnI/NHDv6dBkKWO58HIn+IDtnmePOTcKHOdsHzkK0KCC5YCymacizYSB0i3pz
-         9mg4TD9M0UkkIfW9KwzazY+z1IzdB8ZzQ2QRYd9VJXw/DwHMzw+7nSDbWpRz0hxdt9BN
-         69WJ6dOYIxZe8ToxAtCwcKBbT0yX8A2bX20lrKartvj+34+7nZuTxWxfY5byOax4lS1L
-         cA5CPdN+vUzZtO3fan8p8YfCcsE07hkM3PehoxzI51UsW9LSSxuC59dz7wZlyX039hKS
-         LYyw==
-X-Gm-Message-State: AOAM530jD4hMhxqdQDUxAEtxzzTVIEBCisAuB4m6wOfDLo9p4l0M6ca6
-        XoX7087H4Gz6rABYkYysChTuRngiQYBXuJOJW/Q5Lw==
-X-Google-Smtp-Source: ABdhPJzXdtevgSVe8n6EmjpNVas/jAjd+jbkaq+OR2OyjZFVqFMgbuoQU4zl5BsooeiKMks3pFo2re/Jz6z7ZkZVsLc=
-X-Received: by 2002:a5d:6884:: with SMTP id h4mr218812wru.106.1612303976784;
- Tue, 02 Feb 2021 14:12:56 -0800 (PST)
-MIME-Version: 1.0
-References: <20210202053046.1653012-1-surenb@google.com> <079db245-a08c-0dbd-01d4-8065f533652e@gmail.com>
-In-Reply-To: <079db245-a08c-0dbd-01d4-8065f533652e@gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 2 Feb 2021 14:12:45 -0800
-Message-ID: <CAJuCfpGotx_04Stn5Nw6Au+TVG9LuAJ=CB_s7uxjMLOLerw-GA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] process_madvise.2: Add process_madvise man page
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     linux-man <linux-man@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        David Rientjes <rientjes@google.com>,
-        =?UTF-8?Q?Edgar_Arriaga_Garc=C3=ADa?= <edgararriaga@google.com>,
-        Tim Murray <timmurray@google.com>,
-        linux-mm <linux-mm@kvack.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S234651AbhBBWRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 17:17:24 -0500
+Received: from foss.arm.com ([217.140.110.172]:58186 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232800AbhBBWRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 17:17:19 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B4BCC13D5;
+        Tue,  2 Feb 2021 14:16:31 -0800 (PST)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A87E93F694;
+        Tue,  2 Feb 2021 14:16:29 -0800 (PST)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        f.fainelli@gmail.com, etienne.carriere@linaro.org,
+        thara.gopinath@linaro.org, vincent.guittot@linaro.org,
+        souvik.chakravarty@arm.com, cristian.marussi@arm.com
+Subject: [PATCH v6 0/37] SCMI vendor protocols and modularization
+Date:   Tue,  2 Feb 2021 22:15:18 +0000
+Message-Id: <20210202221555.41167-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+Hi all,
 
-On Tue, Feb 2, 2021 at 2:45 AM Michael Kerrisk (man-pages)
-<mtk.manpages@gmail.com> wrote:
->
-> Hello Suren (and Minchan and Michal)
->
-> Thank you for the revisions!
->
-> I've applied this patch, and done a few light edits.
+The current SCMI implementation does not provide an interface to easily
+develop and include a custom vendor protocol implementation as prescribed
+by the SCMI standard, also because, there is not currently any custom
+protocol in the upstream to justify the development of a custom interface
+and its maintenance.
 
-Thanks!
+Moreover the current interface exposes protocol operations to the SCMI
+driver users attaching per-protocol operations directly to the handle
+structure, which, in this way, tends to grow indefinitely for each new
+protocol addition.
 
->
-> However, I have a questions about undocumented pieces in *madvise(2)*,
-> as well as one other question. See below.
->
-> On 2/2/21 6:30 AM, Suren Baghdasaryan wrote:
-> > Initial version of process_madvise(2) manual page. Initial text was
-> > extracted from [1], amended after fix [2] and more details added using
-> > man pages of madvise(2) and process_vm_read(2) as examples. It also
-> > includes the changes to required permission proposed in [3].
-> >
-> > [1] https://lore.kernel.org/patchwork/patch/1297933/
-> > [2] https://lkml.org/lkml/2020/12/8/1282
-> > [3] https://patchwork.kernel.org/project/selinux/patch/20210111170622.2613577-1-surenb@google.com/#23888311
-> >
-> > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > Reviewed-by: Michal Hocko <mhocko@suse.com>
-> > ---
-> > changes in v2:
-> > - Changed description of MADV_COLD per Michal Hocko's suggestion
-> > - Applied fixes suggested by Michael Kerrisk
-> > changes in v3:
-> > - Added Michal's Reviewed-by
-> > - Applied additional fixes suggested by Michael Kerrisk
-> >
-> > NAME
-> >     process_madvise - give advice about use of memory to a process
-> >
-> > SYNOPSIS
-> >     #include <sys/uio.h>
-> >
-> >     ssize_t process_madvise(int pidfd,
-> >                            const struct iovec *iovec,
-> >                            unsigned long vlen,
-> >                            int advice,
-> >                            unsigned int flags);
-> >
-> > DESCRIPTION
-> >     The process_madvise() system call is used to give advice or directions
-> >     to the kernel about the address ranges of another process or the calling
-> >     process. It provides the advice to the address ranges described by iovec
-> >     and vlen. The goal of such advice is to improve system or application
-> >     performance.
-> >
-> >     The pidfd argument is a PID file descriptor (see pidfd_open(2)) that
-> >     specifies the process to which the advice is to be applied.
-> >
-> >     The pointer iovec points to an array of iovec structures, defined in
-> >     <sys/uio.h> as:
-> >
-> >     struct iovec {
-> >         void  *iov_base;    /* Starting address */
-> >         size_t iov_len;     /* Number of bytes to transfer */
-> >     };
-> >
-> >     The iovec structure describes address ranges beginning at iov_base address
-> >     and with the size of iov_len bytes.
-> >
-> >     The vlen represents the number of elements in the iovec structure.
-> >
-> >     The advice argument is one of the values listed below.
-> >
-> >   Linux-specific advice values
-> >     The following Linux-specific advice values have no counterparts in the
-> >     POSIX-specified posix_madvise(3), and may or may not have counterparts
-> >     in the madvise(2) interface available on other implementations.
-> >
-> >     MADV_COLD (since Linux 5.4.1)
->
-> I just noticed these version numbers now, and thought: they can't be
-> right (because the system call appeared only in v5.11). So I removed
-> them. But, of course in another sense the version numbers are (nearly)
-> right, since these advice values were added for madvise(2) in Linux 5.4.
-> However, they are not documented in the madvise(2) manual page. Is it
-> correct to assume that MADV_COLD and MADV_PAGEOUT have exactly the same
-> meaning in madvise(2) (but just for the calling process, of course)?
+Beside this, protocols private data are also exposed via handle *_priv
+pointers, making such private data accessible also to the SCMI drivers
+even if neither really needed nor advisable.
 
-Correct. They should be added in the madvise(2) man page as well IMHO.
+This series wants to address this by simplifying the SCMI protocols
+interface and reducing it, roughly, to these common generic operations:
 
->
-> >         Deactive a given range of pages which will make them a more probable
->
-> I changed: s/Deactive/Deactivate/
+	- handle->devm_get_protocol()
+	- handle->devm_put_protocol()
+	- handle->notify_ops->*
 
-thanks!
+All protocols' private data pointers are removed from handle too and made
+accessible only to the protocols code through dedicated internal helpers.
 
->
-> >         reclaim target should there be a memory pressure. This is a
-> >         nondestructive operation. The advice might be ignored for some pages
-> >         in the range when it is not applicable.
-> >
-> >     MADV_PAGEOUT (since Linux 5.4.1)
-> >         Reclaim a given range of pages. This is done to free up memory occupied
-> >         by these pages. If a page is anonymous it will be swapped out. If a
-> >         page is file-backed and dirty it will be written back to the backing
-> >         storage. The advice might be ignored for some pages in the range when
-> >         it is not applicable.
->
-> [...]
->
-> >     The hint might be applied to a part of iovec if one of its elements points
-> >     to an invalid memory region in the remote process. No further elements will
-> >     be processed beyond that point.
->
-> Is the above scenario the one that leads to the partial advice case described in
-> RETURN VALUE? If yes, perhaps I should add some words to make that clearer.
+The concept of protocol handle is also introduced in the SCMI protocol code
+to represent a protocol instance initialized against a specific SCMI
+instance (handle), so that all the new protocol code uses such protocol
+handles wherever previously SCMI handle was used: this enable tighter
+control of what is exposed to the protocol code vs the SCMI drivers.
 
-Correct. This describes the case when partial advice happens.
+Moreover protocol initialization is moved away from device probe and now
+happens on demand when the first user shows up (first .get_protocol), while
+de-initialization is performed once the last user of the protocol, even in
+terms of registered notifications callback, is gone, with the SCMI core
+taking care to perform all the needed underlying resource accounting.
 
->
-> You can see the light edits that I made in
-> https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/commit/?id=e3ce016472a1b3ec5dffdeb23c98b9fef618a97b
-> and following that I restructured DESCRIPTION a little in
-> https://git.kernel.org/pub/scm/docs/man-pages/man-pages.git/commit/?id=3aac0708a9acee5283e091461de6a8410bc921a6
+This way any new future standard or custom protocol implementation will
+expose a common unified interface which does not need to be extended
+endlessly: no need to maintain a custom interface only for vendor protos.
+SCMI drivers written on top of standard or custom protocols will use this
+same common interface to access any protocol operations.
 
-The edits LGTM.
+All existent upstream SCMI drivers are converted to this new interface.
+
+In order to make this migration painless and to avoid the need of a big
+un-mergeable jumbo patch touching all over the protocols and drivers (like
+it was in v2), since v3 the migration process has been heavily split with a
+bit of transient code added along the way (to preserve bisectability) and
+finally removed towards the ends of the series.
+Protocols and SCMI drivers migration to the new interface happens along
+patches 11->30.
+
+Leveraging this new centralized and common initialization flow we took
+care also to refactor and simplify protocol-events registration and remove
+*notify_priv from the handle interface making it accessible only to the
+notification core.
+
+Patch 36 builds on top of this new interface and introduces a mechanism to
+define an SCMI protocol as a full blown module (possibly loadable) while
+leaving the core dealing with proper resource accounting.
+Standard protocols are still kept as builtins in this series, though.
+
+Finally, patch 37 introduces dynamic SCMI devices creation to avoid having
+to update the static module device table in the core each time a new driver
+is added.
+
+The whole SCMI stack can still be built alternatively as a module, with all
+the standard protocols included in scmi-module.ko in such a case.
+
+On top of this series an example SCMI Custom protocol 0x99 and related
+SCMI Custom Dummy driver has been built and it is available at [1] as a
+series of DEBUG patches on top this same series.
+
+The series is currently based on for-next/scmi [2] on top of:
+
+commit f620d93957ca ("firmware: arm_scmi: Fix call site of
+		      scmi_notification_exit")
+
+Any feedback welcome.
+
 Thanks,
-Suren.
 
->
-> Thanks,
->
-> Michael
->
->
-> --
-> Michael Kerrisk
-> Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-> Linux/UNIX System Programming Training: http://man7.org/training/
+Cristian
+
+---
+v5 --> v6
+- rebased on top of for-next/scmi
+- added devm_acquire_protocol() helper
+- added Cc:
+
+v4 --> v5
+- using standard kernel list instead of ad-hoc lists in 36/36
+- renamed devm_get/put_ops to devm_get/put_protocol
+- dropped RFC patch on non devres get/put_ops
+
+v3 --> v4
+- rebased on sudeep/for-next/scmi v5.11-rc1
+- added a few comments more
+
+v2 --> v3
+- added dynamic SCMI devices creation (getting rid of static device table)
+- heavy split of protocols and drivers migrations to the new interface
+- rebased on top of next-20201201 so migrating also:
+  + SCMIv3.0 Voltage Domain protocol & SCMI Regulator
+  + SCMIv3.0 Sensor Extensions
+
+v1 --> v2
+- rebased on for-next/scmi v5.10-rc1
+- introduced protocol handles
+- added devres managed devm_ variant for protocols operations
+- made all scmi_protocol refs const
+- introduced IDR to handle protocols instead of static array
+- refactored code around fast path
+
+[1]:https://gitlab.arm.com/linux-arm/linux-cm/-/commits/scmi_modules_ext_V6/
+[2]:https://git.kernel.org/pub/scm/linux/kernel/git/sudeep.holla/linux.git/log/?h=for-next/scmi
+
+
+Cristian Marussi (37):
+  firmware: arm_scmi: review protocol registration interface
+  firmware: arm_scmi: introduce protocol handle definitions
+  firmware: arm_scmi: introduce devres get/put protocols operations
+  firmware: arm_scmi: add devm_acquire_protocol helper
+  firmware: arm_scmi: make notifications aware of protocols users
+  firmware: arm_scmi: introduce new devres notification ops
+  firmware: arm_scmi: refactor events registration
+  firmware: arm_scmi: convert events registration to protocol handles
+  firmware: arm_scmi: add new protocol handle core xfer ops
+  firmware: arm_scmi: add helper to access revision area memory
+  firmware: arm_scmi: port Base protocol to new interface
+  firmware: arm_scmi: port Perf protocol to new protocols interface
+  cpufreq: scmi: port driver to the new scmi_perf_proto_ops interface
+  firmware: arm_scmi: remove legacy scmi_perf_ops protocol interface
+  firmware: arm_scmi: port Power protocol to new protocols interface
+  firmware: arm_scmi: port GenPD driver to the new scmi_power_proto_ops
+    interface
+  firmware: arm_scmi: remove legacy scmi_power_ops protocol interface
+  firmware: arm_scmi: port Clock protocol to new protocols interface
+  clk: scmi: port driver to the new scmi_clk_proto_ops interface
+  firmware: arm_scmi: remove legacy scmi_clk_ops protocol interface
+  firmware: arm_scmi: port Reset protocol to new protocols interface
+  reset: reset-scmi: port driver to the new scmi_reset_proto_ops
+    interface
+  firmware: arm_scmi: remove legacy scmi_reset_ops protocol interface
+  firmware: arm_scmi: port Sensor protocol to new protocols interface
+  hwmon: (scmi) port driver to the new scmi_sensor_proto_ops interface
+  firmware: arm_scmi: remove legacy scmi_sensor_ops protocol interface
+  firmware: arm_scmi: port SystemPower protocol to new protocols
+    interface
+  firmware: arm_scmi: port Voltage protocol to new protocols interface
+  regulator: scmi: port driver to the new scmi_voltage_proto_ops
+    interface
+  firmware: arm_scmi: remove legacy scmi_voltage_ops protocol interface
+  firmware: arm_scmi: make references to handle const
+  firmware: arm_scmi: cleanup legacy protocol init code
+  firmware: arm_scmi: cleanup unused core xfer wrappers
+  firmware: arm_scmi: cleanup events registration transient code
+  firmware: arm_scmi: make notify_priv really private
+  firmware: arm_scmi: add protocol modularization support
+  firmware: arm_scmi: add dynamic scmi devices creation
+
+ drivers/clk/clk-scmi.c                     |  27 +-
+ drivers/cpufreq/scmi-cpufreq.c             |  37 +-
+ drivers/firmware/arm_scmi/base.c           | 140 ++--
+ drivers/firmware/arm_scmi/bus.c            | 100 ++-
+ drivers/firmware/arm_scmi/clock.c          | 129 ++--
+ drivers/firmware/arm_scmi/common.h         | 117 ++-
+ drivers/firmware/arm_scmi/driver.c         | 799 +++++++++++++++++++--
+ drivers/firmware/arm_scmi/notify.c         | 297 ++++++--
+ drivers/firmware/arm_scmi/notify.h         |  38 +-
+ drivers/firmware/arm_scmi/perf.c           | 262 +++----
+ drivers/firmware/arm_scmi/power.c          | 134 ++--
+ drivers/firmware/arm_scmi/reset.c          | 146 ++--
+ drivers/firmware/arm_scmi/scmi_pm_domain.c |  26 +-
+ drivers/firmware/arm_scmi/sensors.c        | 230 +++---
+ drivers/firmware/arm_scmi/system.c         |  61 +-
+ drivers/firmware/arm_scmi/voltage.c        | 122 ++--
+ drivers/hwmon/scmi-hwmon.c                 |  24 +-
+ drivers/regulator/scmi-regulator.c         |  40 +-
+ drivers/reset/reset-scmi.c                 |  33 +-
+ include/linux/scmi_protocol.h              | 191 ++---
+ 20 files changed, 2044 insertions(+), 909 deletions(-)
+
+-- 
+2.17.1
+
