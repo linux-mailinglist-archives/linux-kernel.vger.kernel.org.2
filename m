@@ -2,59 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE4130B623
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 05:00:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2523130B626
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 05:01:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231388AbhBBEAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 23:00:16 -0500
-Received: from helcar.hmeau.com ([216.24.177.18]:43614 "EHLO fornost.hmeau.com"
+        id S231469AbhBBEAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 23:00:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230168AbhBBEAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 23:00:12 -0500
-Received: from gwarestrin.arnor.me.apana.org.au ([192.168.103.7])
-        by fornost.hmeau.com with smtp (Exim 4.92 #5 (Debian))
-        id 1l6mqU-0000MM-FM; Tue, 02 Feb 2021 14:59:19 +1100
-Received: by gwarestrin.arnor.me.apana.org.au (sSMTP sendmail emulation); Tue, 02 Feb 2021 14:59:18 +1100
-Date:   Tue, 2 Feb 2021 14:59:18 +1100
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     David Howells <dhowells@redhat.com>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, davem@davemloft.net,
-        zohar@linux.ibm.com, linux-kernel@vger.kernel.org,
-        patrick@puiterwijk.org, linux-integrity@vger.kernel.org
-Subject: Re: [PATCH v7 0/4] Add support for x509 certs with NIST p256 and
- p192 keys
-Message-ID: <20210202035918.GB26997@gondor.apana.org.au>
-References: <7836898a-0a42-5c9b-3a42-7ff4c7a03ea4@linux.ibm.com>
- <20210201151910.1465705-1-stefanb@linux.ibm.com>
- <32177.1612196003@warthog.procyon.org.uk>
- <33903.1612197412@warthog.procyon.org.uk>
- <ab3f4f96-6aec-4586-21fa-318fcee997a5@linux.ibm.com>
+        id S230168AbhBBEAs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 23:00:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 82A1D64ED3;
+        Tue,  2 Feb 2021 04:00:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612238407;
+        bh=zuhCPkf5QFbIWBkMc2pWKRatlh1UIvV/sLTyAQn4Qxg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=QaTEPFkJE6fV/hW5FLb6QDbgJt5SFQz0BeGQvq1YHqlgz9htL2tDII4WnbNkmpAvl
+         zoMxD7JjGZTBiM96sftCvjDskOl4jsHOgzQFVc4es8X1Oce3rBs2r29la4vOwlJfHW
+         iGkhVH7SBAV4xROUvc93MUyjfaP9fXShihKEMks3mrLUEY10P1cBTJyhP41v6ifr03
+         qXvs4V3Xef1f4XTd1Lmboz8mD/XmaPexy6XJipM159DTK0ACtMD/Y/wuGxMiQ0isvT
+         zJjpH+se9XN+uhme5QBT1TCkAaYbiXtbXK7AtKmfuVLUuMKyz0obXLb5bv/fbr5RFS
+         XwdrejZakLsHw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 6D197609D7;
+        Tue,  2 Feb 2021 04:00:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ab3f4f96-6aec-4586-21fa-318fcee997a5@linux.ibm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 1/1] vsock: fix the race conditions in multi-transport
+ support
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161223840744.29348.6975246146992657399.git-patchwork-notify@kernel.org>
+Date:   Tue, 02 Feb 2021 04:00:07 +0000
+References: <20210201084719.2257066-1-alex.popov@linux.com>
+In-Reply-To: <20210201084719.2257066-1-alex.popov@linux.com>
+To:     Alexander Popov <alex.popov@linux.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, sgarzare@redhat.com,
+        jhansen@vmware.com, stefan@datenfreihafen.org, jeffv@google.com,
+        greg@kroah.com, torvalds@linuxfoundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 11:45:16AM -0500, Stefan Berger wrote:
->
-> With the crypto module missing in the kernel you will get an error trying to
-> load an x509 certificate that needs the algorithm to verify the self-signed
-> signature.
+Hello:
+
+This patch was applied to netdev/net.git (refs/heads/master):
+
+On Mon,  1 Feb 2021 11:47:19 +0300 you wrote:
+> There are multiple similar bugs implicitly introduced by the
+> commit c0cfa2d8a788fcf4 ("vsock: add multi-transports support") and
+> commit 6a2c0962105ae8ce ("vsock: prevent transport modules unloading").
 > 
-> Before I post yet another series I hope that Herbert can say whether option
-> 1) would work for him.
+> The bug pattern:
+>  [1] vsock_sock.transport pointer is copied to a local variable,
+>  [2] lock_sock() is called,
+>  [3] the local variable is used.
+> VSOCK multi-transport support introduced the race condition:
+> vsock_sock.transport value may change between [1] and [2].
+> 
+> [...]
 
-Please be patient.  We need to make sure that whatever scheme you
-use for your algorithm also works for the driver authors who are
-working in the same area.  Because if we end up having to change
-the scheme then that'll just create more churn for you and David.
+Here is the summary with links:
+  - [v2,1/1] vsock: fix the race conditions in multi-transport support
+    https://git.kernel.org/netdev/net/c/c518adafa39f
 
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
