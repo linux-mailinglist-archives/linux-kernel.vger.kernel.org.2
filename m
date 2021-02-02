@@ -2,100 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B9CF30C28F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:56:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 251CE30C28E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:56:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234299AbhBBOxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:53:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25220 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234829AbhBBOvk (ORCPT
+        id S234536AbhBBOxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:53:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234803AbhBBOut (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:51:40 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612277403;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9RQsTX71NL19IDLfCoq3ZLQUlhLj824QwkOpBMNAD80=;
-        b=GZFWjvk0C/SY0FwSDgqh1ofN8wnf0K84mBnj7RhQGPD2BcH1P5ab0UdQF4fyBEzz6+WCJS
-        AObgPzLxPXvJYhQaJF7+DDr5AtOlrRQ0yPVDi2Eyrm30BcqjFKdEGUFM2cyEVpZg3CO3yI
-        FsL6PTFoiT0fwViZ9jUdkbhIogVXMh0=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-102-BuPNs7xuMaiJEaJSPVNcYA-1; Tue, 02 Feb 2021 09:50:01 -0500
-X-MC-Unique: BuPNs7xuMaiJEaJSPVNcYA-1
-Received: by mail-ed1-f69.google.com with SMTP id o8so9730812edh.12
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 06:50:01 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+        Tue, 2 Feb 2021 09:50:49 -0500
+Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57655C0613D6;
+        Tue,  2 Feb 2021 06:50:09 -0800 (PST)
+Received: by mail-oo1-xc2d.google.com with SMTP id g46so5172777ooi.9;
+        Tue, 02 Feb 2021 06:50:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=9RQsTX71NL19IDLfCoq3ZLQUlhLj824QwkOpBMNAD80=;
-        b=W9XH8FwXlo+O+jwRzgEfLwIHFN1W/LqKkqBG6PCvqgBYbG+J2wDDYeIx8Xzj9dKKMm
-         AVWLzWrdInea3FugfRVFn7I52z3d4O4yTLJ7CwgoOyja3OgQJLR3qW66ZytB6Oh06lsM
-         jyaNaK7Fu7doJXQG8VmcfhYIa3WX3WmR9QNFY+H/W8vx4dUFYGCtBOiTsYALWaPtZrNr
-         02lFeTaNlQE3rcDqg/JlcNY43M23U8Q+PZDMzeYqzLS7Kai8UtgkN0OfDg84qPdZ9IH2
-         ijUAdbHSmLZfHXoseEgn8+6kknMSJ+ao616xYccXHOfyqgwv+rFWBO5NPsKOT840JsCo
-         rulQ==
-X-Gm-Message-State: AOAM533vCzMhNnhRahmHe4vvcfVzEKi9OIuS67sfO3igJ2/dvh4jr9Hu
-        ms03QDsdzjVdgurJr/XWGB6Ind+zBn2XpbGmZfhoLzBcngPAjYW3b87wZ5F7/Y4dlb/T4kyhf1U
-        EpBPyhSIf/3vEGLj1xlSxwjbpDFU3I/5JAMIBI3S6Z4IFA4GSSOY4YltEuB3akUKPY+UicQHyWe
-        KF
-X-Received: by 2002:a05:6402:3494:: with SMTP id v20mr16071043edc.146.1612277399392;
-        Tue, 02 Feb 2021 06:49:59 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwXyL+UoR1XVxrp6tYLe4iwa2Xkd4MHKYs+ajSZvDy+STf2K3TUHQvditVmgXlOTLse3lOHuQ==
-X-Received: by 2002:a05:6402:3494:: with SMTP id v20mr16070993edc.146.1612277398764;
-        Tue, 02 Feb 2021 06:49:58 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id j23sm10153810edv.45.2021.02.02.06.49.57
+        bh=m6qp960vzUTWdzQ4vLdRfVd4KbTMA4C69fW5HKutWjI=;
+        b=Tps7dfMaJq5GOCyTnOa3wfGG3Cmt2QKIdHwkm4tvhOMtNcmMcgcvP9KLqeRtjZIAEB
+         KjocEAXdj+J3k6qbJ0DrIWMQ13TM2nIIay5aT/3aIEWBHSoa2YZLyRXa8leJHAF7kX7F
+         hMKvEWhj+y1okSv97VYAg4aYN5KZt4EJfPMBcAFJPcFtwF4kBe2JRI2AU7QL1SmFZh0q
+         GR07u8MEqYyZeyyKo5tNATCjlBEva7w+b4FgXQcA6nqC+fexIhuvcWGclhEV6NX43IcG
+         jTchwhp7B35gHpuKE66d1qBjtz7zoTSYEceYmw9svGjmn9SZu7v+zq6CL66RHi8X0MIs
+         7Qyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=m6qp960vzUTWdzQ4vLdRfVd4KbTMA4C69fW5HKutWjI=;
+        b=bKtothzUg+kOI83quMZU5ZthggfV44XT///FDS/oQ/c4seVZ4FkNL4TL56mh02oG2l
+         at4xlEBvkX45NAu527DPwup+QrHU0mZOsmix1lBm1e6oLE1SA3uhIO1UMS4+l3KBrKyL
+         KynnGqw6OVT41Rs8JJXCbj1R8DLchyonrau9KGhJnAa2itojueRcHpAZhGs9qanA7/wb
+         mX8UDtHCds76EcLgxciLyZp1AgEwIYM603ZOiIH2dxvEF0C4O6kp8166mdv+0k4ZUTHy
+         PGrXJDIKYSoLxKsrNiykHxQXqrI4Vb/n17DhtLlNoKEZObLYR6mzHPLepS14KaC211Jn
+         awlg==
+X-Gm-Message-State: AOAM530V8kMGvtl1kF3OCYUUSgR3CNQqv8a7Lu9E0dWUxS9HQ8Nt0nS5
+        D4qEwPxaTHQ0naZVsoF6hqfZohnrmWg=
+X-Google-Smtp-Source: ABdhPJxEdBjNzP2IOwOE5iDAjCu9fKYl1n22vEWpJsNOCGTIi2ctNYv8cyOT3YCzQgpDxDZLIcU/Hw==
+X-Received: by 2002:a4a:52d1:: with SMTP id d200mr15907651oob.64.1612277408252;
+        Tue, 02 Feb 2021 06:50:08 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id k198sm5161089oih.33.2021.02.02.06.50.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Feb 2021 06:49:57 -0800 (PST)
-To:     Chenyi Qiang <chenyi.qiang@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210202090433.13441-1-chenyi.qiang@intel.com>
- <20210202090433.13441-2-chenyi.qiang@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v2 1/3] KVM: X86: Rename DR6_INIT to DR6_ACTIVE_LOW
-Message-ID: <3db069ba-b4e0-1288-ec79-66ac44938682@redhat.com>
-Date:   Tue, 2 Feb 2021 15:49:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Tue, 02 Feb 2021 06:50:07 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v4 3/8] usb: pd: Make SVDM Version configurable in VDM
+ header
+To:     Kyle Tso <kyletso@google.com>, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org, hdegoede@redhat.com, robh+dt@kernel.org
+Cc:     badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20210202093342.738691-1-kyletso@google.com>
+ <20210202093342.738691-4-kyletso@google.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <029f8d48-8932-8a2c-4edf-df73d66b21b5@roeck-us.net>
+Date:   Tue, 2 Feb 2021 06:50:04 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210202090433.13441-2-chenyi.qiang@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210202093342.738691-4-kyletso@google.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/02/21 10:04, Chenyi Qiang wrote:
+On 2/2/21 1:33 AM, Kyle Tso wrote:
+> PD Rev 3.0 introduces SVDM Version 2.0. This patch makes the field
+> configuable in the header in order to be able to be compatible with
+> older SVDM version.
 > 
->  #define DR6_FIXED_1	0xfffe0ff0
-> -#define DR6_INIT	0xffff0ff0
-> +/*
-> + * DR6_ACTIVE_LOW is actual the result of DR6_FIXED_1 | ACTIVE_LOW_BITS.
-> + * We can regard all the current FIXED_1 bits as active_low bits even
-> + * though in no case they will be turned into 0. But if they are defined
-> + * in the future, it will require no code change.
-> + * At the same time, it can be served as the init/reset value for DR6.
-> + */
-> +#define DR6_ACTIVE_LOW	0xffff0ff0
->  #define DR6_VOLATILE	0x0001e00f
+> Signed-off-by: Kyle Tso <kyletso@google.com>
+> ---
+>  include/linux/usb/pd_vdo.h | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/usb/pd_vdo.h b/include/linux/usb/pd_vdo.h
+> index e9b6822c54c2..69ed6929ce6e 100644
+> --- a/include/linux/usb/pd_vdo.h
+> +++ b/include/linux/usb/pd_vdo.h
+> @@ -21,22 +21,24 @@
+>   * ----------
+>   * <31:16>  :: SVID
+>   * <15>     :: VDM type ( 1b == structured, 0b == unstructured )
+> - * <14:13>  :: Structured VDM version (can only be 00 == 1.0 currently)
+> + * <14:13>  :: Structured VDM version
+>   * <12:11>  :: reserved
+>   * <10:8>   :: object position (1-7 valid ... used for enter/exit mode only)
+>   * <7:6>    :: command type (SVDM only?)
+>   * <5>      :: reserved (SVDM), command type (UVDM)
+>   * <4:0>    :: command
+>   */
+> -#define VDO(vid, type, custom)				\
+> +#define VDO(vid, type, ver, custom)			\
+>  	(((vid) << 16) |				\
+>  	 ((type) << 15) |				\
+> +	 ((ver) << 13) |				\
+>  	 ((custom) & 0x7FFF))
 >  
 
-Committed with some changes in the wording of the comment.
+Yu have to fix all users of VDO() as well, or the code will
+no longer compile after this patch.
 
-Also, DR6_FIXED_1 is (DR6_ACTIVE_LOW & ~DR6_VOLATILE).
+Guenter
 
-Paolo
+>  #define VDO_SVDM_TYPE		(1 << 15)
+>  #define VDO_SVDM_VERS(x)	((x) << 13)
+>  #define VDO_OPOS(x)		((x) << 8)
+>  #define VDO_CMDT(x)		((x) << 6)
+> +#define VDO_SVDM_VERS_MASK	VDO_SVDM_VERS(0x3)
+>  #define VDO_OPOS_MASK		VDO_OPOS(0x7)
+>  #define VDO_CMDT_MASK		VDO_CMDT(0x3)
+>  
+> @@ -74,6 +76,7 @@
+>  
+>  #define PD_VDO_VID(vdo)		((vdo) >> 16)
+>  #define PD_VDO_SVDM(vdo)	(((vdo) >> 15) & 1)
+> +#define PD_VDO_SVDM_VER(vdo)	(((vdo) >> 13) & 0x3)
+>  #define PD_VDO_OPOS(vdo)	(((vdo) >> 8) & 0x7)
+>  #define PD_VDO_CMD(vdo)		((vdo) & 0x1f)
+>  #define PD_VDO_CMDT(vdo)	(((vdo) >> 6) & 0x3)
+> 
 
