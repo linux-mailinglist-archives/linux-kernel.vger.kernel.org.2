@@ -2,122 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8494C30C947
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:16:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AB75230C946
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:16:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238405AbhBBSOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:14:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47004 "EHLO
+        id S238388AbhBBSO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:14:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238174AbhBBSLC (ORCPT
+        with ESMTP id S238245AbhBBSLN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 13:11:02 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E95B9C06178C;
-        Tue,  2 Feb 2021 10:10:21 -0800 (PST)
+        Tue, 2 Feb 2021 13:11:13 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5496C061793
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 10:10:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=AVVe2K/NEHRP81u+T9FBKHD+3y3Q3gc7pWp75m9zru0=; b=OI0GI4y9LgXK1Ujzm42hs9roVB
-        96C9b2nQjVweVjdyYGWGMCv8eLoeT5/Ec/lG7zFc709TJV29GNpd8FdDuQO8XOlDSkH8IzLqCgoys
-        QgcVvN7gDxNP2Xo9J0DAcAwNufDoWPtamooMnP4JMUUlNFHa/R8e0fhtjJDhbOOohKm0FLGyhdOsg
-        V8CU3Xs10D8+YjfQh1E1Y3OWn4nH4KU7/isg3r2zDdsaJ2vrEXg85M+pdDTORRf5RPxTGY4oDyISE
-        xFC7v0ckzMQ/+ddiF4d4ErqtBh0p9csQmsSoOkZlh9MpKMJWaroKNeJRjm9ah2JB7uQGKyJ32Itlj
-        0VFvDMOA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1l7080-00FZdy-GK; Tue, 02 Feb 2021 18:10:16 +0000
-Date:   Tue, 2 Feb 2021 18:10:16 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Ben Widawsky <ben.widawsky@intel.com>
-Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        daniel.lll@alibaba-inc.com,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH 03/14] cxl/mem: Find device capabilities
-Message-ID: <20210202181016.GD3708021@infradead.org>
-References: <20210130002438.1872527-1-ben.widawsky@intel.com>
- <20210130002438.1872527-4-ben.widawsky@intel.com>
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=7DYkva/bTpl9W1P3QcVm3lnW/O6szR6PkUt261/VRgI=; b=bxDYixQiBL37HFgc53gq0M0d6V
+        qw1vKdclZ4Qe8hgOtjLJj+tXeK7XAmzXEFi5V3chX8pWGT8oWuRij6t65UD+L3Enp2Uxo80LFbRmj
+        tHRrPlvPgBpb38sSGYi55GJ4+Cs9C6bsbD4Bx5kSiuvT/PMF+WsPTcyv1hn3y9leGPi6sL6PVNKkQ
+        RShAdgFoGdE5tdjNm8FGmMHUXmWKdSQnIIm9DRXRV4pxvX3UTclNObFs5Gdg92MNiE3B78DueFueB
+        L7qhSj9hQMHVoexplLmrPz2a0cZDcPbA9uaWlovmZ503mR0TThneQNgJqJXOgxB3YhZRfbvBaDL0d
+        5NBHHb+g==;
+Received: from [2601:1c0:6280:3f0::2a53]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l708D-0003Mi-Ge; Tue, 02 Feb 2021 18:10:29 +0000
+Subject: Re: [PATCH] arch: powerpc: kernel: Fix the spelling mismach to
+ mismatch in head.44x.S
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        akpm@linux-foundation.org, rppt@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <20210202093746.5198-1-unixbhaskar@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <e50d1c19-9d38-b15e-6b58-905315af7d4c@infradead.org>
+Date:   Tue, 2 Feb 2021 10:10:24 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210130002438.1872527-4-ben.widawsky@intel.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20210202093746.5198-1-unixbhaskar@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 29, 2021 at 04:24:27PM -0800, Ben Widawsky wrote:
->  #ifndef __CXL_H__
->  #define __CXL_H__
->  
-> +#include <linux/bitfield.h>
-> +#include <linux/bitops.h>
-> +#include <linux/io.h>
-> +
-> +#define CXL_SET_FIELD(value, field)                                            \
-> +	({                                                                     \
-> +		WARN_ON(!FIELD_FIT(field##_MASK, value));                      \
-> +		FIELD_PREP(field##_MASK, value);                               \
-> +	})
-> +
-> +#define CXL_GET_FIELD(word, field) FIELD_GET(field##_MASK, word)
+On 2/2/21 1:37 AM, Bhaskar Chowdhury wrote:
+> 
+> s/mismach/mismatch/
+> 
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  arch/powerpc/kernel/head_44x.S | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-This looks like some massive obsfucation.  What is the intent
-here?
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-> +	/* Cap 0001h - CXL_CAP_CAP_ID_DEVICE_STATUS */
-> +	struct {
-> +		void __iomem *regs;
-> +	} status;
-> +
-> +	/* Cap 0002h - CXL_CAP_CAP_ID_PRIMARY_MAILBOX */
-> +	struct {
-> +		void __iomem *regs;
-> +		size_t payload_size;
-> +	} mbox;
-> +
-> +	/* Cap 4000h - CXL_CAP_CAP_ID_MEMDEV */
-> +	struct {
-> +		void __iomem *regs;
-> +	} mem;
+thanks.
 
-This style looks massively obsfucated.  For one the comments look like
-absolute gibberish, but also what is the point of all these anonymous
-structures?
-
-> +#define cxl_reg(type)                                                          \
-> +	static inline void cxl_write_##type##_reg32(struct cxl_mem *cxlm,      \
-> +						    u32 reg, u32 value)        \
-> +	{                                                                      \
-> +		void __iomem *reg_addr = cxlm->type.regs;                      \
-> +		writel(value, reg_addr + reg);                                 \
-> +	}                                                                      \
-> +	static inline void cxl_write_##type##_reg64(struct cxl_mem *cxlm,      \
-> +						    u32 reg, u64 value)        \
-> +	{                                                                      \
-> +		void __iomem *reg_addr = cxlm->type.regs;                      \
-> +		writeq(value, reg_addr + reg);                                 \
-> +	}                                                                      \
-
-What is the value add of all this obsfucation over the trivial
-calls to the write*/read* functions, possible with a locally
-declarate "void __iomem *" variable in the callers like in all
-normall drivers?  Except for making the life of the poor soul trying
-to debug this code some time in the future really hard, of course.
-
-> +	/* 8.2.8.4.3 */
-
-????
+-- 
+~Randy
 
