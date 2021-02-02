@@ -2,213 +2,447 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 963F430C6B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:58:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51D3430C6C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:58:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236960AbhBBQzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 11:55:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236834AbhBBQwT (ORCPT
+        id S237054AbhBBQ6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:58:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41948 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236842AbhBBQxH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 11:52:19 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A23C0613ED;
-        Tue,  2 Feb 2021 08:51:38 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id c4so18498279wru.9;
-        Tue, 02 Feb 2021 08:51:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=FUh1SHaxwz6wV+mTfz+rM+DZyASDNdQ7LTt59VBtzYg=;
-        b=ChcSq8GkgKAcEUIOk7tKm/Zt74+qghTD48ZWWJioFxLy2afAWUbevTGdif63pv7ico
-         7nqK/mlscOq8Gw/qGx5zoIC0ni2PxRNXT2B5nG89vOk0uViU2oLc75FpD9kYowwlSEkK
-         /uNtqZ1iJk+SeG6R+Y/KKLx/GQkOY/fXv6B6+PSfvWFx95EZHcl97ozv5zldfIZH0Vfz
-         ER9JHbZQVPPYnOTWZCHdkz+iD97uvcRlwlaWd4oQCCLCUefSJ3ZAHbqJwDSMhZStaWhP
-         QCGFZF+qQWrB13RxsEKvGzZg3vkUY7hgXktarNJETui6dgt5/BKJoNNxBvZcI04zKtjV
-         d7pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=FUh1SHaxwz6wV+mTfz+rM+DZyASDNdQ7LTt59VBtzYg=;
-        b=DAoDoXpR+dWBlQ4CTxX3IZ9z+EmN7ZRninhA2O1yYT3LAE0YmNfFEFERKLwN5EN3lR
-         Pm6cuFxx5L9PnGhyDlddVXp2248xRXJZOtBwKUoa+WgvYkANLj55FoxZnuaufonar9DH
-         OkM1GMN7zGkxD7WJxG2ORtAUkJnodTKdAaQaPlr/i6vQj0B2eVaYeIM3s67GtcyDUzDq
-         kioWy9xBXgXJ9nWN9VClfWn060VUoLGiT0dJ90Dm42iNn4OLHop+d/afK1+XfxiR+d0z
-         1oOfhd/jEY4xA9j3B5vlk8cq65TNAqGqMlG6+vNhD9nDbmXetKYZVvfAf9x3nJQINq7i
-         JYhQ==
-X-Gm-Message-State: AOAM531Lg6/SPWaMX8K4ukkQ6Rp5iE7jb02igAWlgg0sgRZCiXwJEmCr
-        ckXO5S6cDVNYRzmfGBeAXLoxtwDjZlNUx+9afmY=
-X-Google-Smtp-Source: ABdhPJwjq0yg6OkisWlalK57f8Jzt4bEGlVfIHE/UI1fajIpSNpmvP6Tpm0vCZ/lbhGk6giCXv5n0KCsXe1Qtx7yHFY=
-X-Received: by 2002:adf:902a:: with SMTP id h39mr24574987wrh.147.1612284696898;
- Tue, 02 Feb 2021 08:51:36 -0800 (PST)
+        Tue, 2 Feb 2021 11:53:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612284700;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=GnMIwa5VC9GXcb1HBbO5QLKdJCCfE3TtizlV41saPPo=;
+        b=NZC2X0xOIBvXLWQjwvy9ESPBjxDurVe1OXL3gbbsHtgg9t/JtyWCWtPL7LQkMHJjQhDx9x
+        eDTX/QfwUeCrFutTinEfu4Q2qLRPK4gmX1bd9jGgbdZQcIJefIZFVoPNMMsQp/jJoL5K/6
+        DSCj0yV7pOGof+q3PKCtceQNAMvb96Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-159-AlDW1WwtN22QywYQNTlebw-1; Tue, 02 Feb 2021 11:51:38 -0500
+X-MC-Unique: AlDW1WwtN22QywYQNTlebw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 49C2185B660;
+        Tue,  2 Feb 2021 16:51:37 +0000 (UTC)
+Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C240B5D9C6;
+        Tue,  2 Feb 2021 16:51:36 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     seanjc@google.com
+Subject: [PATCH 0/3] use kvm_complete_insn_gp more
+Date:   Tue,  2 Feb 2021 11:51:35 -0500
+Message-Id: <20210202165135.88186-1-pbonzini@redhat.com>
 MIME-Version: 1.0
-References: <20210125234901.2730699-1-swboyd@chromium.org> <YBlz8Go2DseRWuOa@phenom.ffwll.local>
-In-Reply-To: <YBlz8Go2DseRWuOa@phenom.ffwll.local>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Tue, 2 Feb 2021 08:51:25 -0800
-Message-ID: <CAF6AEGuWhGuzxsBquj-WLSwa83r+zO7jAQ9ten2m+2KtoGpYSw@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/kms: Make a lock_class_key for each crtc mutex
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 7:46 AM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> On Mon, Jan 25, 2021 at 03:49:01PM -0800, Stephen Boyd wrote:
-> > Lockdep complains about an AA deadlock when rebooting the device.
-> >
-> > ============================================
-> > WARNING: possible recursive locking detected
-> > 5.4.91 #1 Not tainted
-> > --------------------------------------------
-> > reboot/5213 is trying to acquire lock:
-> > ffffff80d13391b0 (&kms->commit_lock[i]){+.+.}, at: lock_crtcs+0x60/0xa4
-> >
-> > but task is already holding lock:
-> > ffffff80d1339110 (&kms->commit_lock[i]){+.+.}, at: lock_crtcs+0x60/0xa4
-> >
-> > other info that might help us debug this:
-> > Possible unsafe locking scenario:
-> >
-> > CPU0
-> > ----
-> > lock(&kms->commit_lock[i]);
-> > lock(&kms->commit_lock[i]);
-> >
-> > *** DEADLOCK ***
-> >
-> > May be due to missing lock nesting notation
-> >
-> > 6 locks held by reboot/5213:
-> > __arm64_sys_reboot+0x148/0x2a0
-> > device_shutdown+0x10c/0x2c4
-> > drm_atomic_helper_shutdown+0x48/0xfc
-> > modeset_lock+0x120/0x24c
-> > lock_crtcs+0x60/0xa4
-> >
-> > stack backtrace:
-> > CPU: 4 PID: 5213 Comm: reboot Not tainted 5.4.91 #1
-> > Hardware name: Google Pompom (rev1) with LTE (DT)
-> > Call trace:
-> > dump_backtrace+0x0/0x1dc
-> > show_stack+0x24/0x30
-> > dump_stack+0xfc/0x1a8
-> > __lock_acquire+0xcd0/0x22b8
-> > lock_acquire+0x1ec/0x240
-> > __mutex_lock_common+0xe0/0xc84
-> > mutex_lock_nested+0x48/0x58
-> > lock_crtcs+0x60/0xa4
-> > msm_atomic_commit_tail+0x348/0x570
-> > commit_tail+0xdc/0x178
-> > drm_atomic_helper_commit+0x160/0x168
-> > drm_atomic_commit+0x68/0x80
-> >
-> > This is because lockdep thinks all the locks taken in lock_crtcs() are
-> > the same lock, when they actually aren't. That's because we call
-> > mutex_init() in msm_kms_init() and that assigns on static key for every
-> > lock initialized in this loop. Let's allocate a dynamic number of
-> > lock_class_keys and assign them to each lock so that lockdep can figure
-> > out an AA deadlock isn't possible here.
-> >
-> > Fixes: b3d91800d9ac ("drm/msm: Fix race condition in msm driver with async layer updates")
-> > Cc: Krishna Manikandan <mkrishn@codeaurora.org>
-> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
->
-> This smells like throwing more bad after initial bad code ...
->
-> First a rant: https://blog.ffwll.ch/2020/08/lockdep-false-positives.html
->
-> Yes I know the locking you're doing here is correct, but that goes to the
-> second issue: Why is this needed? atomic_async_update helpers are supposed
-> to take care of ordering fun like this, if they're not, we need to address
-> things there. The problem that
+kvm_complete_insn_gp is a nice little function that dates back to more
+than 10 years ago but was almost never used.
 
-Maybe a better solution would be helper awareness of hw that has
-double-buffered state and flush bits.. ie. something that looks a bit
-more like the internal kms fxn ptrs. Currently the locking is
-protecting something that the atomic helpers are not aware of, ie.
-we've already written previous cursor updates to hw and are just
-waiting until close to vblank to write the flush bits
+This simple series continues what was done for RDMSR/WRMSR in preparation
+for SEV-ES support, using it in XSETBV, INVPCID and MOV to DR intercepts.
 
-But, we've been over this before. I'd tried various approaches.. the
-current scheme replaces seanpaul's earlier attempts to do it the
-"helper" way.  The current implementation does the best job of
-avoiding fps drops when the legacy cursor uapi is in play.  (And yes,
-legacy cursor + atomic ioctls is maybe not the greatest, but it is
-what it is.)
+Paolo
 
-BR,
--R
+Paolo Bonzini (3):
+  KVM: x86: move kvm_inject_gp up from kvm_set_xcr to callers
+  KVM: x86: move kvm_inject_gp up from kvm_handle_invpcid to callers
+  KVM: x86: move kvm_inject_gp up from kvm_set_dr to callers
 
->
-> commit b3d91800d9ac35014e0349292273a6fa7938d402
-> Author: Krishna Manikandan <mkrishn@codeaurora.org>
-> Date:   Fri Oct 16 19:40:43 2020 +0530
->
->     drm/msm: Fix race condition in msm driver with async layer updates
->
-> is _the_ reason we have drm_crtc_commit to track stuff, and Maxime has
-> recently rolled out a pile of changes to vc4 to use these things
-> correctly. Hacking some glorious hand-rolled locking for synchronization
-> of updates really should be the exception for kms drivers, not the rule.
-> And this one here doesn't look like an exception by far (the one legit I
-> know of is the locking issues amdgpu has between atomic_commit_tail and
-> gpu reset, and that one is really nasty, so not going to get fixed in
-> helpers, ever).
->
-> Cheers, Daniel
->
-> > ---
-> >  drivers/gpu/drm/msm/msm_kms.h | 8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/msm/msm_kms.h b/drivers/gpu/drm/msm/msm_kms.h
-> > index d8151a89e163..4735251a394d 100644
-> > --- a/drivers/gpu/drm/msm/msm_kms.h
-> > +++ b/drivers/gpu/drm/msm/msm_kms.h
-> > @@ -157,6 +157,7 @@ struct msm_kms {
-> >        * from the crtc's pending_timer close to end of the frame:
-> >        */
-> >       struct mutex commit_lock[MAX_CRTCS];
-> > +     struct lock_class_key commit_lock_keys[MAX_CRTCS];
-> >       unsigned pending_crtc_mask;
-> >       struct msm_pending_timer pending_timers[MAX_CRTCS];
-> >  };
-> > @@ -166,8 +167,11 @@ static inline int msm_kms_init(struct msm_kms *kms,
-> >  {
-> >       unsigned i, ret;
-> >
-> > -     for (i = 0; i < ARRAY_SIZE(kms->commit_lock); i++)
-> > -             mutex_init(&kms->commit_lock[i]);
-> > +     for (i = 0; i < ARRAY_SIZE(kms->commit_lock); i++) {
-> > +             lockdep_register_key(&kms->commit_lock_keys[i]);
-> > +             __mutex_init(&kms->commit_lock[i], "&kms->commit_lock[i]",
-> > +                          &kms->commit_lock_keys[i]);
-> > +     }
-> >
-> >       kms->funcs = funcs;
-> >
-> >
-> > base-commit: 19c329f6808995b142b3966301f217c831e7cf31
-> > --
-> > https://chromeos.dev
-> >
-> > _______________________________________________
-> > dri-devel mailing list
-> > dri-devel@lists.freedesktop.org
-> > https://lists.freedesktop.org/mailman/listinfo/dri-devel
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+ arch/x86/kvm/svm/svm.c | 32 +++++++++++++++-----------------
+ arch/x86/kvm/vmx/vmx.c | 35 ++++++++++++++++++-----------------
+ arch/x86/kvm/x86.c     | 38 ++++++++++++--------------------------
+ 3 files changed, 45 insertions(+), 60 deletions(-)
+
+-- 
+2.26.2
+
+From 54473e9148b13418d827019dcc70fa379e5458fb Mon Sep 17 00:00:00 2001
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Mon, 14 Dec 2020 07:49:54 -0500
+Subject: [PATCH 1/3] KVM: x86: move kvm_inject_gp up from kvm_set_xcr to
+ callers
+
+Push the injection of #GP up to the callers, so that they can just use
+kvm_complete_insn_gp.
+
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kvm/svm/svm.c |  7 ++-----
+ arch/x86/kvm/vmx/vmx.c |  5 ++---
+ arch/x86/kvm/x86.c     | 10 ++++------
+ 3 files changed, 8 insertions(+), 14 deletions(-)
+
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 687876211ebe..65d70b9691b4 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -2337,11 +2337,8 @@ static int xsetbv_interception(struct vcpu_svm *svm)
+ 	u64 new_bv = kvm_read_edx_eax(&svm->vcpu);
+ 	u32 index = kvm_rcx_read(&svm->vcpu);
+ 
+-	if (kvm_set_xcr(&svm->vcpu, index, new_bv) == 0) {
+-		return kvm_skip_emulated_instruction(&svm->vcpu);
+-	}
+-
+-	return 1;
++	int err = kvm_set_xcr(&svm->vcpu, index, new_bv);
++	return kvm_complete_insn_gp(&svm->vcpu, err);
+ }
+ 
+ static int rdpru_interception(struct vcpu_svm *svm)
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 9986a59f71a4..28daceb4f70d 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -5227,9 +5227,8 @@ static int handle_xsetbv(struct kvm_vcpu *vcpu)
+ 	u64 new_bv = kvm_read_edx_eax(vcpu);
+ 	u32 index = kvm_rcx_read(vcpu);
+ 
+-	if (kvm_set_xcr(vcpu, index, new_bv) == 0)
+-		return kvm_skip_emulated_instruction(vcpu);
+-	return 1;
++	int err = kvm_set_xcr(vcpu, index, new_bv);
++	return kvm_complete_insn_gp(vcpu, err);
+ }
+ 
+ static int handle_apic_access(struct kvm_vcpu *vcpu)
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index d14230dd38d8..08568c47337c 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -986,12 +986,10 @@ static int __kvm_set_xcr(struct kvm_vcpu *vcpu, u32 index, u64 xcr)
+ 
+ int kvm_set_xcr(struct kvm_vcpu *vcpu, u32 index, u64 xcr)
+ {
+-	if (static_call(kvm_x86_get_cpl)(vcpu) != 0 ||
+-	    __kvm_set_xcr(vcpu, index, xcr)) {
+-		kvm_inject_gp(vcpu, 0);
+-		return 1;
+-	}
+-	return 0;
++	if (static_call(kvm_x86_get_cpl)(vcpu) == 0)
++		return __kvm_set_xcr(vcpu, index, xcr);
++
++	return 1;
+ }
+ EXPORT_SYMBOL_GPL(kvm_set_xcr);
+ 
+-- 
+2.26.2
+
+
+From 3433aae8a0ecf04478e9bf2a6df5f66b4aefe254 Mon Sep 17 00:00:00 2001
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Mon, 14 Dec 2020 07:49:54 -0500
+Subject: [PATCH 2/3] KVM: x86: move kvm_inject_gp up from kvm_handle_invpcid
+ to callers
+
+Push the injection of #GP up to the callers, so that they can just use
+kvm_complete_insn_gp.
+
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kvm/svm/svm.c | 11 ++++++-----
+ arch/x86/kvm/vmx/vmx.c | 11 ++++++-----
+ arch/x86/kvm/x86.c     |  9 +++------
+ 3 files changed, 15 insertions(+), 16 deletions(-)
+
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 65d70b9691b4..c0d41a6920f0 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -3057,6 +3057,7 @@ static int invpcid_interception(struct vcpu_svm *svm)
+ 	struct kvm_vcpu *vcpu = &svm->vcpu;
+ 	unsigned long type;
+ 	gva_t gva;
++	int err;
+ 
+ 	if (!guest_cpuid_has(vcpu, X86_FEATURE_INVPCID)) {
+ 		kvm_queue_exception(vcpu, UD_VECTOR);
+@@ -3071,12 +3072,12 @@ static int invpcid_interception(struct vcpu_svm *svm)
+ 	type = svm->vmcb->control.exit_info_2;
+ 	gva = svm->vmcb->control.exit_info_1;
+ 
+-	if (type > 3) {
+-		kvm_inject_gp(vcpu, 0);
+-		return 1;
+-	}
++	if (type > 3)
++		err = 1;
++	else
++		err = kvm_handle_invpcid(vcpu, type, gva);
+ 
+-	return kvm_handle_invpcid(vcpu, type, gva);
++	return kvm_complete_insn_gp(&svm->vcpu, err);
+ }
+ 
+ static int (*const svm_exit_handlers[])(struct vcpu_svm *svm) = {
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 28daceb4f70d..a07fce6d0bbb 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -5559,6 +5559,7 @@ static int handle_invpcid(struct kvm_vcpu *vcpu)
+ 		u64 pcid;
+ 		u64 gla;
+ 	} operand;
++	int err = 1;
+ 
+ 	if (!guest_cpuid_has(vcpu, X86_FEATURE_INVPCID)) {
+ 		kvm_queue_exception(vcpu, UD_VECTOR);
+@@ -5568,10 +5569,8 @@ static int handle_invpcid(struct kvm_vcpu *vcpu)
+ 	vmx_instruction_info = vmcs_read32(VMX_INSTRUCTION_INFO);
+ 	type = kvm_register_readl(vcpu, (vmx_instruction_info >> 28) & 0xf);
+ 
+-	if (type > 3) {
+-		kvm_inject_gp(vcpu, 0);
+-		return 1;
+-	}
++	if (type > 3)
++		goto out;
+ 
+ 	/* According to the Intel instruction reference, the memory operand
+ 	 * is read even if it isn't needed (e.g., for type==all)
+@@ -5581,7 +5580,9 @@ static int handle_invpcid(struct kvm_vcpu *vcpu)
+ 				sizeof(operand), &gva))
+ 		return 1;
+ 
+-	return kvm_handle_invpcid(vcpu, type, gva);
++	err = kvm_handle_invpcid(vcpu, type, gva);
++out:
++	return kvm_complete_insn_gp(vcpu, err);
+ }
+ 
+ static int handle_pml_full(struct kvm_vcpu *vcpu)
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 08568c47337c..edbeb162012b 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -11375,7 +11375,6 @@ int kvm_handle_invpcid(struct kvm_vcpu *vcpu, unsigned long type, gva_t gva)
+ 		return kvm_handle_memory_failure(vcpu, r, &e);
+ 
+ 	if (operand.pcid >> 12 != 0) {
+-		kvm_inject_gp(vcpu, 0);
+ 		return 1;
+ 	}
+ 
+@@ -11385,15 +11384,13 @@ int kvm_handle_invpcid(struct kvm_vcpu *vcpu, unsigned long type, gva_t gva)
+ 	case INVPCID_TYPE_INDIV_ADDR:
+ 		if ((!pcid_enabled && (operand.pcid != 0)) ||
+ 		    is_noncanonical_address(operand.gla, vcpu)) {
+-			kvm_inject_gp(vcpu, 0);
+ 			return 1;
+ 		}
+ 		kvm_mmu_invpcid_gva(vcpu, operand.gla, operand.pcid);
+-		return kvm_skip_emulated_instruction(vcpu);
++		return 0;
+ 
+ 	case INVPCID_TYPE_SINGLE_CTXT:
+ 		if (!pcid_enabled && (operand.pcid != 0)) {
+-			kvm_inject_gp(vcpu, 0);
+ 			return 1;
+ 		}
+ 
+@@ -11414,7 +11411,7 @@ int kvm_handle_invpcid(struct kvm_vcpu *vcpu, unsigned long type, gva_t gva)
+ 		 * resync will happen anyway before switching to any other CR3.
+ 		 */
+ 
+-		return kvm_skip_emulated_instruction(vcpu);
++		return 0;
+ 
+ 	case INVPCID_TYPE_ALL_NON_GLOBAL:
+ 		/*
+@@ -11427,7 +11424,7 @@ int kvm_handle_invpcid(struct kvm_vcpu *vcpu, unsigned long type, gva_t gva)
+ 		fallthrough;
+ 	case INVPCID_TYPE_ALL_INCL_GLOBAL:
+ 		kvm_mmu_unload(vcpu);
+-		return kvm_skip_emulated_instruction(vcpu);
++		return 0;
+ 
+ 	default:
+ 		BUG(); /* We have already checked above that type <= 3 */
+-- 
+2.26.2
+
+
+From 010ddc679488a7f65d16f5b6674f2ad20d65adf7 Mon Sep 17 00:00:00 2001
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Mon, 14 Dec 2020 07:49:54 -0500
+Subject: [PATCH 3/3] KVM: x86: move kvm_inject_gp up from kvm_set_dr to
+ callers
+
+Push the injection of #GP up to the callers, so that they can just use
+kvm_complete_insn_gp. __kvm_set_dr is pretty much what the callers can use
+together with kvm_complete_insn_gp, so rename it to kvm_set_dr and drop
+the old kvm_set_dr wrapper.
+
+This allows nested VMX code, which really wanted to use __kvm_set_dr, to
+use the right function.
+
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kvm/svm/svm.c | 14 +++++++-------
+ arch/x86/kvm/vmx/vmx.c | 19 ++++++++++---------
+ arch/x86/kvm/x86.c     | 19 +++++--------------
+ 3 files changed, 22 insertions(+), 30 deletions(-)
+
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index c0d41a6920f0..818cf3babef2 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -2599,6 +2599,7 @@ static int dr_interception(struct vcpu_svm *svm)
+ {
+ 	int reg, dr;
+ 	unsigned long val;
++	int err;
+ 
+ 	if (svm->vcpu.guest_debug == 0) {
+ 		/*
+@@ -2617,19 +2618,18 @@ static int dr_interception(struct vcpu_svm *svm)
+ 	reg = svm->vmcb->control.exit_info_1 & SVM_EXITINFO_REG_MASK;
+ 	dr = svm->vmcb->control.exit_code - SVM_EXIT_READ_DR0;
+ 
++	if (!kvm_require_dr(&svm->vcpu, dr & 15))
++		return 1;
++
+ 	if (dr >= 16) { /* mov to DRn */
+-		if (!kvm_require_dr(&svm->vcpu, dr - 16))
+-			return 1;
+ 		val = kvm_register_read(&svm->vcpu, reg);
+-		kvm_set_dr(&svm->vcpu, dr - 16, val);
++		err = kvm_set_dr(&svm->vcpu, dr - 16, val);
+ 	} else {
+-		if (!kvm_require_dr(&svm->vcpu, dr))
+-			return 1;
+-		kvm_get_dr(&svm->vcpu, dr, &val);
++		err = kvm_get_dr(&svm->vcpu, dr, &val);
+ 		kvm_register_write(&svm->vcpu, reg, val);
+ 	}
+ 
+-	return kvm_skip_emulated_instruction(&svm->vcpu);
++	return kvm_complete_insn_gp(&svm->vcpu, err);
+ }
+ 
+ static int cr8_write_interception(struct vcpu_svm *svm)
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index a07fce6d0bbb..41a26d98fb95 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -5099,6 +5099,7 @@ static int handle_dr(struct kvm_vcpu *vcpu)
+ {
+ 	unsigned long exit_qualification;
+ 	int dr, dr7, reg;
++	int err = 1;
+ 
+ 	exit_qualification = vmx_get_exit_qual(vcpu);
+ 	dr = exit_qualification & DEBUG_REG_ACCESS_NUM;
+@@ -5107,9 +5108,9 @@ static int handle_dr(struct kvm_vcpu *vcpu)
+ 	if (!kvm_require_dr(vcpu, dr))
+ 		return 1;
+ 
+-	/* Do not handle if the CPL > 0, will trigger GP on re-entry */
+-	if (!kvm_require_cpl(vcpu, 0))
+-		return 1;
++	if (kvm_x86_ops.get_cpl(vcpu) > 0)
++		goto out;
++
+ 	dr7 = vmcs_readl(GUEST_DR7);
+ 	if (dr7 & DR7_GD) {
+ 		/*
+@@ -5146,14 +5147,14 @@ static int handle_dr(struct kvm_vcpu *vcpu)
+ 	if (exit_qualification & TYPE_MOV_FROM_DR) {
+ 		unsigned long val;
+ 
+-		if (kvm_get_dr(vcpu, dr, &val))
+-			return 1;
++		err = kvm_get_dr(vcpu, dr, &val);
+ 		kvm_register_write(vcpu, reg, val);
+-	} else
+-		if (kvm_set_dr(vcpu, dr, kvm_register_readl(vcpu, reg)))
+-			return 1;
++	} else {
++		err = kvm_set_dr(vcpu, dr, kvm_register_readl(vcpu, reg));
++	}
+ 
+-	return kvm_skip_emulated_instruction(vcpu);
++out:
++	return kvm_complete_insn_gp(vcpu, err);
+ }
+ 
+ static void vmx_sync_dirty_debug_regs(struct kvm_vcpu *vcpu)
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index edbeb162012b..b748bf0d6d33 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -1147,7 +1147,7 @@ static u64 kvm_dr6_fixed(struct kvm_vcpu *vcpu)
+ 	return fixed;
+ }
+ 
+-static int __kvm_set_dr(struct kvm_vcpu *vcpu, int dr, unsigned long val)
++int kvm_set_dr(struct kvm_vcpu *vcpu, int dr, unsigned long val)
+ {
+ 	size_t size = ARRAY_SIZE(vcpu->arch.db);
+ 
+@@ -1160,13 +1160,13 @@ static int __kvm_set_dr(struct kvm_vcpu *vcpu, int dr, unsigned long val)
+ 	case 4:
+ 	case 6:
+ 		if (!kvm_dr6_valid(val))
+-			return -1; /* #GP */
++			return 1; /* #GP */
+ 		vcpu->arch.dr6 = (val & DR6_VOLATILE) | kvm_dr6_fixed(vcpu);
+ 		break;
+ 	case 5:
+ 	default: /* 7 */
+ 		if (!kvm_dr7_valid(val))
+-			return -1; /* #GP */
++			return 1; /* #GP */
+ 		vcpu->arch.dr7 = (val & DR7_VOLATILE) | DR7_FIXED_1;
+ 		kvm_update_dr7(vcpu);
+ 		break;
+@@ -1174,15 +1174,6 @@ static int __kvm_set_dr(struct kvm_vcpu *vcpu, int dr, unsigned long val)
+ 
+ 	return 0;
+ }
+-
+-int kvm_set_dr(struct kvm_vcpu *vcpu, int dr, unsigned long val)
+-{
+-	if (__kvm_set_dr(vcpu, dr, val)) {
+-		kvm_inject_gp(vcpu, 0);
+-		return 1;
+-	}
+-	return 0;
+-}
+ EXPORT_SYMBOL_GPL(kvm_set_dr);
+ 
+ int kvm_get_dr(struct kvm_vcpu *vcpu, int dr, unsigned long *val)
+@@ -6595,7 +6586,7 @@ static int emulator_set_dr(struct x86_emulate_ctxt *ctxt, int dr,
+ 			   unsigned long value)
+ {
+ 
+-	return __kvm_set_dr(emul_to_vcpu(ctxt), dr, value);
++	return kvm_set_dr(emul_to_vcpu(ctxt), dr, value);
+ }
+ 
+ static u64 mk_cr_64(u64 curr_cr, u32 new_val)
+@@ -8636,7 +8627,7 @@ static void enter_smm(struct kvm_vcpu *vcpu)
+ 	dt.address = dt.size = 0;
+ 	static_call(kvm_x86_set_idt)(vcpu, &dt);
+ 
+-	__kvm_set_dr(vcpu, 7, DR7_FIXED_1);
++	kvm_set_dr(vcpu, 7, DR7_FIXED_1);
+ 
+ 	cs.selector = (vcpu->arch.smbase >> 4) & 0xffff;
+ 	cs.base = vcpu->arch.smbase;
+-- 
+2.26.2
+
