@@ -2,131 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91AD530CCC5
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:07:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60F4630CCCD
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:11:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233066AbhBBUHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 15:07:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59680 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237195AbhBBUGy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 15:06:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE32E64DDC;
-        Tue,  2 Feb 2021 20:06:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1612296373;
-        bh=UUCbeiKruohgPLn70yuv5yyi43xYXqhUx5aEilibtwQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=mMPFuutry6yvrlRsX/cFk7nH6IhMcJEMn6CHKOk1bu/3K+vi8oRsOD2Un9VPFWZsO
-         QqyfnUPoy0t+3JNCALRZJXK/mMzOJd5LtkWbN/RaA3xgbMgbxGkch1znJquQiCK9VK
-         +YvgSnZtX8t9t9jG4aCkMCjWS/C0/OkE48M6pIak=
-Date:   Tue, 2 Feb 2021 12:06:12 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Chris Goldsworthy <cgoldswo@codeaurora.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Minchan Kim <minchan@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [RFC] mm: fs: Invalidate BH LRU during page migration
-Message-Id: <20210202120612.2678f10bbc48734225c690bb@linux-foundation.org>
-In-Reply-To: <695193a165bf538f35de84334b4da2cc3544abe0.1612248395.git.cgoldswo@codeaurora.org>
-References: <cover.1612248395.git.cgoldswo@codeaurora.org>
-        <695193a165bf538f35de84334b4da2cc3544abe0.1612248395.git.cgoldswo@codeaurora.org>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S240455AbhBBUIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 15:08:15 -0500
+Received: from mail-oi1-f169.google.com ([209.85.167.169]:41772 "EHLO
+        mail-oi1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240415AbhBBUHH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 15:07:07 -0500
+Received: by mail-oi1-f169.google.com with SMTP id m13so24101150oig.8;
+        Tue, 02 Feb 2021 12:06:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kGSgR7HX5MpWtk9Gx4pMHLjGwCDbovTLjejcIrh3eUA=;
+        b=FddIxRwR+FLLLbKKMOWZZ/bramvab63BxkWRLjinemRj7CnzNpDcWiupO83LhVPN7k
+         H2WRP12T484W7ZLx/4V7DyUvBBMjB78xFnLIqOguVo9w77S+cFuosu0NXKUkOnCkDy5V
+         fzDXCCi7m1EwIIh82IgxiwwLK1CH79I0bknrnVgAJXR137UlN4fmB974s2sm/7e91Rid
+         OxomzXh6Zjjqfp8X+BNMhpg+kRFbV+qbJT3vEq6us3uFOcat12s/52cmO2Ahpcc6tE9H
+         Kfm3dlskl56mq7LfQvbx6IeKmcNR6PKJGZ4frVQGXBntkBAqX5An/7ey/KrRZF/MxOYZ
+         zUMg==
+X-Gm-Message-State: AOAM531T3iqkSoB2UY8ZvW0DVXSD2awO/qVJ3RFuEPY1s8ZVfEwqaeJ1
+        zWxk5o7NnDTWUPqbjPgfjckDNlnAoJAJ8X0aptc=
+X-Google-Smtp-Source: ABdhPJwuTZ8MY7pmmtLJaXmDINL+fqP4hRrBNjxv/PFnAoHLtDWRWcS9L6f7quZ/44lBXHdLnmVMs35SMq6Yfe1Xr+g=
+X-Received: by 2002:a54:4e88:: with SMTP id c8mr3877007oiy.148.1612296386531;
+ Tue, 02 Feb 2021 12:06:26 -0800 (PST)
+MIME-Version: 1.0
+References: <20210202192016.49028-1-swboyd@chromium.org>
+In-Reply-To: <20210202192016.49028-1-swboyd@chromium.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 2 Feb 2021 21:06:15 +0100
+Message-ID: <CAMuHMdWKr5q1OrwJ5DEnFvqYYXJqXhH_isKQnJozf5tu=ZVViA@mail.gmail.com>
+Subject: Re: [PATCH v2] ASoC: da7218: Drop CONFIG_OF ifdef
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, kernel test robot <lkp@intel.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  1 Feb 2021 22:55:47 -0800 Chris Goldsworthy <cgoldswo@codeaurora.org> wrote:
+Hi Stephen,
 
-> Pages containing buffer_heads that are in the buffer_head LRU cache
-> will be pinned and thus cannot be migrated.  Correspondingly,
-> invalidate the BH LRU before a migration starts and stop any
-> buffer_head from being cached in the LRU, until migration has
-> finished.
-
-It's 16 pages max, system-wide.  That isn't much.
-
-Please include here a full description of why this is a problem and how
-serious it is and of the user-visible impact.
-
-> --- a/fs/buffer.c
-> +++ b/fs/buffer.c
-> @@ -1289,6 +1289,8 @@ static inline void check_irqs_on(void)
->  #endif
->  }
->  
-> +bool bh_migration_done = true;
-> +
->  /*
->   * Install a buffer_head into this cpu's LRU.  If not already in the LRU, it is
->   * inserted at the front, and the buffer_head at the back if any is evicted.
-> @@ -1303,6 +1305,9 @@ static void bh_lru_install(struct buffer_head *bh)
->  	check_irqs_on();
->  	bh_lru_lock();
->  
-> +	if (!bh_migration_done)
-> +		goto out;
-> +
->  	b = this_cpu_ptr(&bh_lrus);
->  	for (i = 0; i < BH_LRU_SIZE; i++) {
->  		swap(evictee, b->bhs[i]);
-
-Seems a bit hacky, but I guess it'll work.
-
-I expect the code won't compile with CONFIG_BLOCK=n &&
-CONFIG_MIGRATION=y.  Due to bh_migration_done being unimplemented.
-
-I suggest you add an interface function (buffer_block_lrus()?) and
-arrange for an empty inlined stub version when CONFIG_BLOCK=n.
-
+On Tue, Feb 2, 2021 at 8:20 PM Stephen Boyd <swboyd@chromium.org> wrote:
+> This reverts commit a06cd8cf97a3 ("ASoC: da7218: skip of_device_id table
+> when !CONFIG_OF") because we want to make of_match_device() stop using
+> of_match_ptr() internally, confusing compilers and causing ifdef
+> pollution.
 >
-> ..
+> Reported-by: kernel test robot <lkp@intel.com>
+> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+> Acked-by: Arnd Bergmann <arnd@arndb.de>
+> Cc: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+
+Thanks for your patch!
+
+> ---
 >
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -64,6 +64,19 @@
+> Changes from v1:
+>  * Dropped of_match_ptr() in driver too
+>
+>  sound/soc/codecs/da7218.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/sound/soc/codecs/da7218.c b/sound/soc/codecs/da7218.c
+> index 2bfafbe9e3dc..83cace9d0139 100644
+> --- a/sound/soc/codecs/da7218.c
+> +++ b/sound/soc/codecs/da7218.c
+> @@ -2278,14 +2278,12 @@ static irqreturn_t da7218_irq_thread(int irq, void *data)
+>   * DT
 >   */
->  void migrate_prep(void)
+>
+> -#ifdef CONFIG_OF
+>  static const struct of_device_id da7218_of_match[] = {
+>         { .compatible = "dlg,da7217", .data = (void *) DA7217_DEV_ID },
+>         { .compatible = "dlg,da7218", .data = (void *) DA7218_DEV_ID },
+>         { }
+>  };
+>  MODULE_DEVICE_TABLE(of, da7218_of_match);
+> -#endif
+>
+>  static inline int da7218_of_get_id(struct device *dev)
 >  {
-> +	bh_migration_done = false;
-> +
-> +	/*
-> +	 * This barrier ensures that callers of bh_lru_install() between
-> +	 * the barrier and the call to invalidate_bh_lrus() read
-> +	 *  bh_migration_done() as false.
-> +	 */
-> +	/*
-> +	 * TODO: Remove me? lru_add_drain_all() already has an smp_mb(),
-> +	 * but it would be good to ensure that the barrier isn't forgotten.
-> +	 */
-> +	smp_mb();
+> @@ -3311,7 +3309,7 @@ MODULE_DEVICE_TABLE(i2c, da7218_i2c_id);
+>  static struct i2c_driver da7218_i2c_driver = {
+>         .driver = {
+>                 .name = "da7218",
+> -               .of_match_table = of_match_ptr(da7218_of_match),
+> +               .of_match_table = da7218_of_match,
 
-This stuff can be taken care of over in buffer_block_lrus() in
-fs/buffer.c.
+This does mean the compiler can no longer optimize the table away
+in the CONFIG_OF=n case. Is that intentional?
 
-> --- a/mm/swap.c
-> +++ b/mm/swap.c
-> @@ -36,6 +36,7 @@
->  #include <linux/hugetlb.h>
->  #include <linux/page_idle.h>
->  #include <linux/local_lock.h>
-> +#include <linux/buffer_head.h>
->  
->  #include "internal.h"
->  
-> @@ -759,6 +760,8 @@ void lru_add_drain_all(void)
->  	if (WARN_ON(!mm_percpu_wq))
->  		return;
->  
-> +	invalidate_bh_lrus();
-> +
+>         },
+>         .probe          = da7218_i2c_probe,
+>         .id_table       = da7218_i2c_id,
+>
 
-Add a comment explaining why we're doing this?  Mention that bn_lru
-buffers can pin pages, preventing migration.
+Gr{oetje,eeting}s,
 
+                        Geert
 
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
