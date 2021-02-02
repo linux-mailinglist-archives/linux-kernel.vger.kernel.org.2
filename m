@@ -2,1566 +2,803 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BDFA30B77C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 06:56:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D593E30B788
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 06:59:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231545AbhBBF4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 00:56:02 -0500
-Received: from foss.arm.com ([217.140.110.172]:43996 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231509AbhBBFz6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 00:55:58 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CEA9F14F6;
-        Mon,  1 Feb 2021 21:55:09 -0800 (PST)
-Received: from [192.168.0.130] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EE6233F718;
-        Mon,  1 Feb 2021 21:55:06 -0800 (PST)
-Subject: Re: [PATCH V3 11/14] coresight: sink: Add TRBE driver
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-Cc:     mathieu.poirier@linaro.org, mike.leach@linaro.org,
-        lcherian@marvell.com, linux-kernel@vger.kernel.org
-References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
- <1611737738-1493-12-git-send-email-anshuman.khandual@arm.com>
- <12cdc8ca-0a69-bfba-bbcd-fb392d6ca051@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <fbbff9d6-0fb9-3008-7149-e5be487bec4b@arm.com>
-Date:   Tue, 2 Feb 2021 11:25:34 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <12cdc8ca-0a69-bfba-bbcd-fb392d6ca051@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S231992AbhBBF6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 00:58:50 -0500
+Received: from [1.6.215.26] ([1.6.215.26]:52603 "EHLO hyd1soter2"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231420AbhBBF6j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 00:58:39 -0500
+Received: from hyd1soter2.caveonetworks.com (localhost [127.0.0.1])
+        by hyd1soter2 (8.15.2/8.15.2/Debian-3) with ESMTP id 1125vePg027071;
+        Tue, 2 Feb 2021 11:27:40 +0530
+Received: (from geetha@localhost)
+        by hyd1soter2.caveonetworks.com (8.15.2/8.15.2/Submit) id 1125vYE7027070;
+        Tue, 2 Feb 2021 11:27:34 +0530
+From:   Geetha sowjanya <gakula@marvell.com>
+To:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org
+Cc:     sgoutham@marvell.com, davem@davemloft.net, kuba@kernel.org,
+        sbhatta@marvell.com, hkelam@marvell.com, bbrezillon@kernel.org,
+        arno@natisbad.org, schalla@marvell.com,
+        Geetha sowjanya <gakula@marvell.com>
+Subject: [net-next v2 07/14] octeontx2-pf: cn10k: Use LMTST lines for NPA/NIX operations
+Date:   Tue,  2 Feb 2021 11:27:08 +0530
+Message-Id: <1612245428-27030-1-git-send-email-gakula@marvell.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch adds support to use new LMTST lines for NPA batch free
+and burst SQE flush. Adds new dev_hw_ops structure to hold platform
+specific functions and create new files cn10k.c and cn10k.h.
 
-On 1/29/21 3:53 PM, Suzuki K Poulose wrote:
-> Hi Anshuman
-> 
-> On 1/27/21 8:55 AM, Anshuman Khandual wrote:
->> Trace Buffer Extension (TRBE) implements a trace buffer per CPU which is
->> accessible via the system registers. The TRBE supports different addressing
->> modes including CPU virtual address and buffer modes including the circular
->> buffer mode. The TRBE buffer is addressed by a base pointer (TRBBASER_EL1),
->> an write pointer (TRBPTR_EL1) and a limit pointer (TRBLIMITR_EL1). But the
->> access to the trace buffer could be prohibited by a higher exception level
->> (EL3 or EL2), indicated by TRBIDR_EL1.P. The TRBE can also generate a CPU
->> private interrupt (PPI) on address translation errors and when the buffer
->> is full. Overall implementation here is inspired from the Arm SPE driver.
->>
->> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->> Cc: Mike Leach <mike.leach@linaro.org>
->> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> 
-> This version looks functionally correct to me. There are some minor
-> issues with the devm_ allocated memory and some driver hardening comments.
-> I ran this on a model and have tested this with various scenarios.
+Signed-off-by: Geetha sowjanya <gakula@marvell.com>
+Signed-off-by: Sunil Goutham <sgoutham@marvell.com>
+---
+ .../net/ethernet/marvell/octeontx2/nic/Makefile    |   2 +-
+ drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c | 182 +++++++++++++++++++++
+ drivers/net/ethernet/marvell/octeontx2/nic/cn10k.h |  17 ++
+ .../ethernet/marvell/octeontx2/nic/otx2_common.c   |  81 ++++-----
+ .../ethernet/marvell/octeontx2/nic/otx2_common.h   |  61 ++++++-
+ .../net/ethernet/marvell/octeontx2/nic/otx2_pf.c   |  36 +---
+ .../net/ethernet/marvell/octeontx2/nic/otx2_reg.h  |   1 +
+ .../net/ethernet/marvell/octeontx2/nic/otx2_txrx.c |  38 ++---
+ .../net/ethernet/marvell/octeontx2/nic/otx2_txrx.h |   7 +
+ .../net/ethernet/marvell/octeontx2/nic/otx2_vf.c   |  28 +---
+ include/linux/soc/marvell/octeontx2/asm.h          |   8 +
+ 11 files changed, 330 insertions(+), 131 deletions(-)
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c
+ create mode 100644 drivers/net/ethernet/marvell/octeontx2/nic/cn10k.h
 
-Okay.
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/Makefile b/drivers/net/ethernet/marvell/octeontx2/nic/Makefile
+index 29c82b9..745aa8a 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/Makefile
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/Makefile
+@@ -7,7 +7,7 @@ obj-$(CONFIG_OCTEONTX2_PF) += rvu_nicpf.o
+ obj-$(CONFIG_OCTEONTX2_VF) += rvu_nicvf.o
+ 
+ rvu_nicpf-y := otx2_pf.o otx2_common.o otx2_txrx.o otx2_ethtool.o \
+-		     otx2_ptp.o otx2_flows.o
++		     otx2_ptp.o otx2_flows.o cn10k.o
+ rvu_nicvf-y := otx2_vf.o
+ 
+ ccflags-y += -I$(srctree)/drivers/net/ethernet/marvell/octeontx2/af
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c b/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c
+new file mode 100644
+index 0000000..1c7d478
+--- /dev/null
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c
+@@ -0,0 +1,182 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Marvell OcteonTx2 RVU Physcial Function ethernet driver
++ *
++ * Copyright (C) 2020 Marvell.
++ */
++
++#include "cn10k.h"
++#include "otx2_reg.h"
++#include "otx2_struct.h"
++
++static struct dev_hw_ops	otx2_hw_ops = {
++	.sq_aq_init = otx2_sq_aq_init,
++	.sqe_flush = otx2_sqe_flush,
++	.aura_freeptr = otx2_aura_freeptr,
++	.refill_pool_ptrs = otx2_refill_pool_ptrs,
++};
++
++static struct dev_hw_ops cn10k_hw_ops = {
++	.sq_aq_init = cn10k_sq_aq_init,
++	.sqe_flush = cn10k_sqe_flush,
++	.aura_freeptr = cn10k_aura_freeptr,
++	.refill_pool_ptrs = cn10k_refill_pool_ptrs,
++};
++
++int cn10k_pf_lmtst_init(struct otx2_nic *pf)
++{
++	int size, num_lines;
++	u64 base;
++
++	if (!test_bit(CN10K_LMTST, &pf->hw.cap_flag)) {
++		pf->hw_ops = &otx2_hw_ops;
++		return 0;
++	}
++
++	pf->hw_ops = &cn10k_hw_ops;
++	base = pci_resource_start(pf->pdev, PCI_MBOX_BAR_NUM) +
++		       (MBOX_SIZE * (pf->total_vfs + 1));
++
++	size = pci_resource_len(pf->pdev, PCI_MBOX_BAR_NUM) -
++	       (MBOX_SIZE * (pf->total_vfs + 1));
++
++	pf->hw.lmt_base = ioremap(base, size);
++
++	if (!pf->hw.lmt_base) {
++		dev_err(pf->dev, "Unable to map PF LMTST region\n");
++		return -ENOMEM;
++	}
++
++	/* FIXME: Get the num of LMTST lines from LMT table */
++	pf->tot_lmt_lines = size / LMT_LINE_SIZE;
++	num_lines = (pf->tot_lmt_lines - NIX_LMTID_BASE) /
++			    pf->hw.tx_queues;
++	/* Number of LMT lines per SQ queues */
++	pf->nix_lmt_lines = num_lines > 32 ? 32 : num_lines;
++
++	pf->nix_lmt_size = pf->nix_lmt_lines * LMT_LINE_SIZE;
++	return 0;
++}
++
++int cn10k_vf_lmtst_init(struct otx2_nic *vf)
++{
++	int size, num_lines;
++
++	if (!test_bit(CN10K_LMTST, &vf->hw.cap_flag)) {
++		vf->hw_ops = &otx2_hw_ops;
++		return 0;
++	}
++
++	vf->hw_ops = &cn10k_hw_ops;
++	size = pci_resource_len(vf->pdev, PCI_MBOX_BAR_NUM);
++	vf->hw.lmt_base = ioremap_wc(pci_resource_start(vf->pdev,
++							PCI_MBOX_BAR_NUM),
++				     size);
++	if (!vf->hw.lmt_base) {
++		dev_err(vf->dev, "Unable to map VF LMTST region\n");
++		return -ENOMEM;
++	}
++
++	vf->tot_lmt_lines = size / LMT_LINE_SIZE;
++	/* LMTST lines per SQ */
++	num_lines = (vf->tot_lmt_lines - NIX_LMTID_BASE) /
++			    vf->hw.tx_queues;
++	vf->nix_lmt_lines = num_lines > 32 ? 32 : num_lines;
++	vf->nix_lmt_size = vf->nix_lmt_lines * LMT_LINE_SIZE;
++	return 0;
++}
++EXPORT_SYMBOL(cn10k_vf_lmtst_init);
++
++int cn10k_sq_aq_init(void *dev, u16 qidx, u16 sqb_aura)
++{
++	struct nix_cn10k_aq_enq_req *aq;
++	struct otx2_nic *pfvf = dev;
++	struct otx2_snd_queue *sq;
++
++	sq = &pfvf->qset.sq[qidx];
++	sq->lmt_addr = (__force u64 *)((u64)pfvf->hw.nix_lmt_base +
++			       (qidx * pfvf->nix_lmt_size));
++
++	/* Get memory to put this msg */
++	aq = otx2_mbox_alloc_msg_nix_cn10k_aq_enq(&pfvf->mbox);
++	if (!aq)
++		return -ENOMEM;
++
++	aq->sq.cq = pfvf->hw.rx_queues + qidx;
++	aq->sq.max_sqe_size = NIX_MAXSQESZ_W16; /* 128 byte */
++	aq->sq.cq_ena = 1;
++	aq->sq.ena = 1;
++	/* Only one SMQ is allocated, map all SQ's to that SMQ  */
++	aq->sq.smq = pfvf->hw.txschq_list[NIX_TXSCH_LVL_SMQ][0];
++	/* FIXME: set based on NIX_AF_DWRR_RPM_MTU*/
++	aq->sq.smq_rr_weight = OTX2_MAX_MTU;
++	aq->sq.default_chan = pfvf->hw.tx_chan_base;
++	aq->sq.sqe_stype = NIX_STYPE_STF; /* Cache SQB */
++	aq->sq.sqb_aura = sqb_aura;
++	aq->sq.sq_int_ena = NIX_SQINT_BITS;
++	aq->sq.qint_idx = 0;
++	/* Due pipelining impact minimum 2000 unused SQ CQE's
++	 * need to maintain to avoid CQ overflow.
++	 */
++	aq->sq.cq_limit = ((SEND_CQ_SKID * 256) / (pfvf->qset.sqe_cnt));
++
++	/* Fill AQ info */
++	aq->qidx = qidx;
++	aq->ctype = NIX_AQ_CTYPE_SQ;
++	aq->op = NIX_AQ_INSTOP_INIT;
++
++	return otx2_sync_mbox_msg(&pfvf->mbox);
++}
++
++#define NPA_MAX_BURST 16
++void cn10k_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq)
++{
++	struct otx2_nic *pfvf = dev;
++	u64 ptrs[NPA_MAX_BURST];
++	int num_ptrs = 1;
++	s64 bufptr;
++
++	/* Refill pool with new buffers */
++	while (cq->pool_ptrs) {
++		bufptr = otx2_alloc_buffer(pfvf, cq);
++		if (unlikely(bufptr <= 0)) {
++			if (num_ptrs--)
++				__cn10k_aura_freeptr(pfvf, cq->cq_idx, ptrs,
++						     num_ptrs,
++						     cq->rbpool->lmt_addr);
++			break;
++		}
++		cq->pool_ptrs--;
++		ptrs[num_ptrs] = (u64)bufptr + OTX2_HEAD_ROOM;
++		num_ptrs++;
++		if (num_ptrs == NPA_MAX_BURST || cq->pool_ptrs == 0) {
++			__cn10k_aura_freeptr(pfvf, cq->cq_idx, ptrs,
++					     num_ptrs,
++					     cq->rbpool->lmt_addr);
++			num_ptrs = 1;
++		}
++	}
++}
++
++void cn10k_sqe_flush(void *dev, struct otx2_snd_queue *sq, int size, int qidx)
++{
++	struct otx2_nic *pfvf = dev;
++	int lmt_id = NIX_LMTID_BASE + (qidx * pfvf->nix_lmt_lines);
++	u64 val = 0, tar_addr = 0;
++
++	/* FIXME: val[0:10] LMT_ID.
++	 * [12:15] no of LMTST - 1 in the burst.
++	 * [19:63] data size of each LMTST in the burst except first.
++	 */
++	val = (lmt_id & 0x7FF);
++	/* Target address for LMTST flush tells HW how many 128bit
++	 * words are present.
++	 * tar_addr[6:4] size of first LMTST - 1 in units of 128b.
++	 */
++	tar_addr |= sq->io_addr | (((size / 16) - 1) & 0x7) << 4;
++	dma_wmb();
++	memcpy(sq->lmt_addr, sq->sqe_base, size);
++	cn10k_lmt_flush(val, tar_addr);
++
++	sq->head++;
++	sq->head &= (sq->sqe_cnt - 1);
++}
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.h b/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.h
+new file mode 100644
+index 0000000..e0bc595
+--- /dev/null
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.h
+@@ -0,0 +1,17 @@
++/* SPDX-License-Identifier: GPL-2.0
++ * Marvell OcteonTx2 RVU Ethernet driver
++ *
++ * Copyright (C) 2020 Marvell.
++ */
++
++#ifndef CN10K_H
++#define CN10K_H
++
++#include "otx2_common.h"
++
++void cn10k_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq);
++void cn10k_sqe_flush(void *dev, struct otx2_snd_queue *sq, int size, int qidx);
++int cn10k_sq_aq_init(void *dev, u16 qidx, u16 sqb_aura);
++int cn10k_pf_lmtst_init(struct otx2_nic *pf);
++int cn10k_vf_lmtst_init(struct otx2_nic *vf);
++#endif /* CN10K_H */
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+index 4ad259c..2accdc7 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
+@@ -15,6 +15,7 @@
+ #include "otx2_reg.h"
+ #include "otx2_common.h"
+ #include "otx2_struct.h"
++#include "cn10k.h"
+ 
+ static void otx2_nix_rq_op_stats(struct queue_stats *stats,
+ 				 struct otx2_nic *pfvf, int qidx)
+@@ -512,6 +513,25 @@ static dma_addr_t otx2_alloc_rbuf(struct otx2_nic *pfvf, struct otx2_pool *pool)
+ 	return addr;
+ }
+ 
++s64 otx2_alloc_buffer(struct otx2_nic *pfvf, struct otx2_cq_queue *cq)
++{
++	s64 bufptr;
++
++	bufptr = __otx2_alloc_rbuf(pfvf, cq->rbpool);
++	if (unlikely(bufptr <= 0)) {
++		struct refill_work *work;
++		struct delayed_work *dwork;
++
++		work = &pfvf->refill_wrk[cq->cq_idx];
++		dwork = &work->pool_refill_work;
++		/* Schedule a task if no other task is running */
++		if (!cq->refill_task_sched) {
++			cq->refill_task_sched = true;
++			schedule_delayed_work(dwork, msecs_to_jiffies(100));
++		}
++	}
++	return bufptr;
++}
+ void otx2_tx_timeout(struct net_device *netdev, unsigned int txq)
+ {
+ 	struct otx2_nic *pfvf = netdev_priv(netdev);
+@@ -714,9 +734,6 @@ void otx2_sqb_flush(struct otx2_nic *pfvf)
+ #define RQ_PASS_LVL_AURA (255 - ((95 * 256) / 100)) /* RED when 95% is full */
+ #define RQ_DROP_LVL_AURA (255 - ((99 * 256) / 100)) /* Drop when 99% is full */
+ 
+-/* Send skid of 2000 packets required for CQ size of 4K CQEs. */
+-#define SEND_CQ_SKID	2000
+-
+ static int otx2_rq_init(struct otx2_nic *pfvf, u16 qidx, u16 lpb_aura)
+ {
+ 	struct otx2_qset *qset = &pfvf->qset;
+@@ -750,45 +767,14 @@ static int otx2_rq_init(struct otx2_nic *pfvf, u16 qidx, u16 lpb_aura)
+ 	return otx2_sync_mbox_msg(&pfvf->mbox);
+ }
+ 
+-static int cn10k_sq_aq_init(struct otx2_nic *pfvf, u16 qidx, u16 sqb_aura)
+-{
+-	struct nix_cn10k_aq_enq_req *aq;
+-
+-	/* Get memory to put this msg */
+-	aq = otx2_mbox_alloc_msg_nix_cn10k_aq_enq(&pfvf->mbox);
+-	if (!aq)
+-		return -ENOMEM;
+-
+-	aq->sq.cq = pfvf->hw.rx_queues + qidx;
+-	aq->sq.max_sqe_size = NIX_MAXSQESZ_W16; /* 128 byte */
+-	aq->sq.cq_ena = 1;
+-	aq->sq.ena = 1;
+-	/* Only one SMQ is allocated, map all SQ's to that SMQ  */
+-	aq->sq.smq = pfvf->hw.txschq_list[NIX_TXSCH_LVL_SMQ][0];
+-	/* FIXME: set based on NIX_AF_DWRR_RPM_MTU*/
+-	aq->sq.smq_rr_weight = OTX2_MAX_MTU;
+-	aq->sq.default_chan = pfvf->hw.tx_chan_base;
+-	aq->sq.sqe_stype = NIX_STYPE_STF; /* Cache SQB */
+-	aq->sq.sqb_aura = sqb_aura;
+-	aq->sq.sq_int_ena = NIX_SQINT_BITS;
+-	aq->sq.qint_idx = 0;
+-	/* Due pipelining impact minimum 2000 unused SQ CQE's
+-	 * need to maintain to avoid CQ overflow.
+-	 */
+-	aq->sq.cq_limit = ((SEND_CQ_SKID * 256) / (pfvf->qset.sqe_cnt));
+-
+-	/* Fill AQ info */
+-	aq->qidx = qidx;
+-	aq->ctype = NIX_AQ_CTYPE_SQ;
+-	aq->op = NIX_AQ_INSTOP_INIT;
+-
+-	return otx2_sync_mbox_msg(&pfvf->mbox);
+-}
+-
+-static int otx2_sq_aq_init(struct otx2_nic *pfvf, u16 qidx, u16 sqb_aura)
++int otx2_sq_aq_init(void *dev, u16 qidx, u16 sqb_aura)
+ {
++	struct otx2_nic *pfvf = dev;
++	struct otx2_snd_queue *sq;
+ 	struct nix_aq_enq_req *aq;
+ 
++	sq = &pfvf->qset.sq[qidx];
++	sq->lmt_addr = (__force u64 *)(pfvf->reg_base + LMT_LF_LMTLINEX(qidx));
+ 	/* Get memory to put this msg */
+ 	aq = otx2_mbox_alloc_msg_nix_aq_enq(&pfvf->mbox);
+ 	if (!aq)
+@@ -859,16 +845,12 @@ static int otx2_sq_init(struct otx2_nic *pfvf, u16 qidx, u16 sqb_aura)
+ 	sq->sqe_thresh = ((sq->num_sqbs * sq->sqe_per_sqb) * 10) / 100;
+ 	sq->aura_id = sqb_aura;
+ 	sq->aura_fc_addr = pool->fc_addr->base;
+-	sq->lmt_addr = (__force u64 *)(pfvf->reg_base + LMT_LF_LMTLINEX(qidx));
+ 	sq->io_addr = (__force u64)otx2_get_regaddr(pfvf, NIX_LF_OP_SENDX(0));
+ 
+ 	sq->stats.bytes = 0;
+ 	sq->stats.pkts = 0;
+ 
+-	if (is_dev_otx2(pfvf->pdev))
+-		return otx2_sq_aq_init(pfvf, qidx, sqb_aura);
+-	else
+-		return cn10k_sq_aq_init(pfvf, qidx, sqb_aura);
++	return pfvf->hw_ops->sq_aq_init(pfvf, qidx, sqb_aura);
+ 
+ }
+ 
+@@ -1218,6 +1200,11 @@ static int otx2_pool_init(struct otx2_nic *pfvf, u16 pool_id,
+ 
+ 	pool->rbsize = buf_size;
+ 
++	/* Set LMTST addr for NPA batch free */
++	if (test_bit(CN10K_LMTST, &pfvf->hw.cap_flag))
++		pool->lmt_addr = (__force u64 *)((u64)pfvf->hw.npa_lmt_base +
++						 (pool_id * LMT_LINE_SIZE));
++
+ 	/* Initialize this pool's context via AF */
+ 	aq = otx2_mbox_alloc_msg_npa_aq_enq(&pfvf->mbox);
+ 	if (!aq) {
+@@ -1307,7 +1294,7 @@ int otx2_sq_aura_pool_init(struct otx2_nic *pfvf)
+ 			bufptr = otx2_alloc_rbuf(pfvf, pool);
+ 			if (bufptr <= 0)
+ 				return bufptr;
+-			otx2_aura_freeptr(pfvf, pool_id, bufptr);
++			pfvf->hw_ops->aura_freeptr(pfvf, pool_id, bufptr);
+ 			sq->sqb_ptrs[sq->sqb_count++] = (u64)bufptr;
+ 		}
+ 	}
+@@ -1358,8 +1345,8 @@ int otx2_rq_aura_pool_init(struct otx2_nic *pfvf)
+ 			bufptr = otx2_alloc_rbuf(pfvf, pool);
+ 			if (bufptr <= 0)
+ 				return bufptr;
+-			otx2_aura_freeptr(pfvf, pool_id,
+-					  bufptr + OTX2_HEAD_ROOM);
++			pfvf->hw_ops->aura_freeptr(pfvf, pool_id,
++						   bufptr + OTX2_HEAD_ROOM);
+ 		}
+ 	}
+ 
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+index 80f892f..b6bdc6f 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
+@@ -50,6 +50,9 @@ enum arua_mapped_qtypes {
+ #define NIX_LF_ERR_VEC				0x81
+ #define NIX_LF_POISON_VEC			0x82
+ 
++/* Send skid of 2000 packets required for CQ size of 4K CQEs. */
++#define SEND_CQ_SKID	2000
++
+ /* RSS configuration */
+ struct otx2_rss_ctx {
+ 	u8  ind_tbl[MAX_RSS_INDIR_TBL_SIZE];
+@@ -273,9 +276,18 @@ struct otx2_flow_config {
+ 	struct list_head	flow_list;
+ };
+ 
++struct dev_hw_ops {
++	int	(*sq_aq_init)(void *dev, u16 qidx, u16 sqb_aura);
++	void	(*sqe_flush)(void *dev, struct otx2_snd_queue *sq,
++			     int size, int qidx);
++	void	(*refill_pool_ptrs)(void *dev, struct otx2_cq_queue *cq);
++	void	(*aura_freeptr)(void *dev, int aura, s64 buf);
++};
++
+ struct otx2_nic {
+ 	void __iomem		*reg_base;
+ 	struct net_device	*netdev;
++	struct dev_hw_ops	*hw_ops;
+ 	void			*iommu_domain;
+ 	u16			max_frs;
+ 	u16			rbsize; /* Receive buffer size */
+@@ -509,6 +521,47 @@ static inline u64 otx2_atomic64_add(u64 incr, u64 *ptr)
+ #define otx2_atomic64_add(incr, ptr)		({ *ptr += incr; })
+ #endif
+ 
++static inline void __cn10k_aura_freeptr(struct otx2_nic *pfvf, u64 aura,
++					u64 *ptrs, u64 num_ptrs,
++					u64 *lmt_addr)
++{
++	u64 size = 0, count_eot = 0;
++	u64 tar_addr, val = 0;
++
++	tar_addr = (__force u64)otx2_get_regaddr(pfvf, NPA_LF_AURA_BATCH_FREE0);
++	/* LMTID is same as AURA Id */
++	val = (aura & 0x7FF) | BIT_ULL(63);
++	/* Set if [127:64] of last 128bit word has a valid pointer */
++	count_eot = (num_ptrs % 2) ? 0ULL : 1ULL;
++	/* Set AURA ID to free pointer */
++	ptrs[0] = (count_eot << 32) | (aura & 0xFFFFF);
++	/* Target address for LMTST flush tells HW how many 128bit
++	 * words are valid from NPA_LF_AURA_BATCH_FREE0.
++	 *
++	 * tar_addr[6:4] is LMTST size-1 in units of 128b.
++	 */
++	if (num_ptrs > 2) {
++		size = (sizeof(u64) * num_ptrs) / 16;
++		if (!count_eot)
++			size++;
++		tar_addr |=  ((size - 1) & 0x7) << 4;
++	}
++	memcpy(lmt_addr, ptrs, sizeof(u64) * num_ptrs);
++	/* Perform LMTST flush */
++	cn10k_lmt_flush(val, tar_addr);
++}
++
++static inline void cn10k_aura_freeptr(void *dev, int aura, s64 buf)
++{
++	struct otx2_nic *pfvf = dev;
++	struct otx2_pool *pool;
++	u64 ptrs[2];
++
++	pool = &pfvf->qset.pool[aura];
++	ptrs[1] = (u64)buf;
++	__cn10k_aura_freeptr(pfvf, aura, ptrs, 2, pool->lmt_addr);
++}
++
+ /* Alloc pointer from pool/aura */
+ static inline u64 otx2_aura_allocptr(struct otx2_nic *pfvf, int aura)
+ {
+@@ -520,9 +573,10 @@ static inline u64 otx2_aura_allocptr(struct otx2_nic *pfvf, int aura)
+ }
+ 
+ /* Free pointer to a pool/aura */
+-static inline void otx2_aura_freeptr(struct otx2_nic *pfvf,
+-				     int aura, s64 buf)
++static inline void otx2_aura_freeptr(void *dev, int aura, s64 buf)
+ {
++	struct otx2_nic *pfvf = dev;
++
+ 	otx2_write128((u64)buf, (u64)aura | BIT_ULL(63),
+ 		      otx2_get_regaddr(pfvf, NPA_LF_AURA_OP_FREE0));
+ }
+@@ -678,6 +732,9 @@ void otx2_ctx_disable(struct mbox *mbox, int type, bool npa);
+ int otx2_nix_config_bp(struct otx2_nic *pfvf, bool enable);
+ void otx2_cleanup_rx_cqes(struct otx2_nic *pfvf, struct otx2_cq_queue *cq);
+ void otx2_cleanup_tx_cqes(struct otx2_nic *pfvf, struct otx2_cq_queue *cq);
++int otx2_sq_aq_init(void *dev, u16 qidx, u16 sqb_aura);
++int cn10k_sq_aq_init(void *dev, u16 qidx, u16 sqb_aura);
++s64 otx2_alloc_buffer(struct otx2_nic *pfvf, struct otx2_cq_queue *cq);
+ 
+ /* RSS configuration APIs*/
+ int otx2_rss_init(struct otx2_nic *pfvf);
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+index ee703a1..7cb24df 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+@@ -22,6 +22,7 @@
+ #include "otx2_txrx.h"
+ #include "otx2_struct.h"
+ #include "otx2_ptp.h"
++#include "cn10k.h"
+ #include <rvu_trace.h>
+ 
+ #define DRV_NAME	"rvu_nicpf"
+@@ -46,39 +47,6 @@ enum {
+ static int otx2_config_hw_tx_tstamp(struct otx2_nic *pfvf, bool enable);
+ static int otx2_config_hw_rx_tstamp(struct otx2_nic *pfvf, bool enable);
+ 
+-static int cn10k_lmtst_init(struct otx2_nic *pf)
+-{
+-	int size, num_lines;
+-	u64 base;
+-
+-	if (!test_bit(CN10K_LMTST, &pf->hw.cap_flag))
+-		return 0;
+-
+-	base = pci_resource_start(pf->pdev, PCI_MBOX_BAR_NUM) +
+-		       (MBOX_SIZE * (pf->total_vfs + 1));
+-
+-	size = pci_resource_len(pf->pdev, PCI_MBOX_BAR_NUM) -
+-	       (MBOX_SIZE * (pf->total_vfs + 1));
+-
+-	pf->hw.lmt_base = ioremap(base, size);
+-
+-	if (!pf->hw.lmt_base) {
+-		dev_err(pf->dev, "Unable to map PF LMTST region\n");
+-		return -ENOMEM;
+-	}
+-
+-	/* FIXME: Get the num of LMTST lines from LMT table */
+-	pf->tot_lmt_lines = size / LMT_LINE_SIZE;
+-	num_lines = (pf->tot_lmt_lines - NIX_LMTID_BASE) /
+-			    pf->hw.tx_queues;
+-	/* Number of LMT lines per SQ queues */
+-	pf->nix_lmt_lines = num_lines > 32 ? 32 : num_lines;
+-
+-	pf->nix_lmt_size = pf->nix_lmt_lines * LMT_LINE_SIZE;
+-
+-	return 0;
+-}
+-
+ static int otx2_change_mtu(struct net_device *netdev, int new_mtu)
+ {
+ 	bool if_up = netif_running(netdev);
+@@ -2401,7 +2369,7 @@ static int otx2_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	if (err)
+ 		goto err_detach_rsrc;
+ 
+-	err = cn10k_lmtst_init(pf);
++	err = cn10k_pf_lmtst_init(pf);
+ 	if (err)
+ 		goto err_detach_rsrc;
+ 
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_reg.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_reg.h
+index 1e052d7..21b811c 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_reg.h
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_reg.h
+@@ -94,6 +94,7 @@
+ #define NPA_LF_QINTX_INT_W1S(a)         (NPA_LFBASE | 0x318 | (a) << 12)
+ #define NPA_LF_QINTX_ENA_W1S(a)         (NPA_LFBASE | 0x320 | (a) << 12)
+ #define NPA_LF_QINTX_ENA_W1C(a)         (NPA_LFBASE | 0x330 | (a) << 12)
++#define NPA_LF_AURA_BATCH_FREE0         (NPA_LFBASE | 0x400)
+ 
+ /* NIX LF registers */
+ #define	NIX_LFBASE			(BLKTYPE_NIX << RVU_FUNC_BLKADDR_SHIFT)
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+index a7eb5ea..cdae83c 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
+@@ -17,6 +17,7 @@
+ #include "otx2_struct.h"
+ #include "otx2_txrx.h"
+ #include "otx2_ptp.h"
++#include "cn10k.h"
+ 
+ #define CQE_ADDR(CQ, idx) ((CQ)->cqe_base + ((CQ)->cqe_size * (idx)))
+ 
+@@ -199,7 +200,7 @@ static void otx2_free_rcv_seg(struct otx2_nic *pfvf, struct nix_cqe_rx_s *cqe,
+ 		sg = (struct nix_rx_sg_s *)start;
+ 		seg_addr = &sg->seg_addr;
+ 		for (seg = 0; seg < sg->segs; seg++, seg_addr++)
+-			otx2_aura_freeptr(pfvf, qidx, *seg_addr & ~0x07ULL);
++			pfvf->hw_ops->aura_freeptr(pfvf, qidx, *seg_addr & ~0x07ULL);
+ 		start += sizeof(*sg);
+ 	}
+ }
+@@ -304,7 +305,6 @@ static int otx2_rx_napi_handler(struct otx2_nic *pfvf,
+ {
+ 	struct nix_cqe_rx_s *cqe;
+ 	int processed_cqe = 0;
+-	s64 bufptr;
+ 
+ 	while (likely(processed_cqe < budget)) {
+ 		cqe = (struct nix_cqe_rx_s *)CQE_ADDR(cq, cq->cq_head);
+@@ -330,29 +330,24 @@ static int otx2_rx_napi_handler(struct otx2_nic *pfvf,
+ 
+ 	if (unlikely(!cq->pool_ptrs))
+ 		return 0;
++	pfvf->hw_ops->refill_pool_ptrs(pfvf, cq);
++
++	return processed_cqe;
++}
++
++void otx2_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq)
++{
++	struct otx2_nic *pfvf = dev;
++	s64 bufptr;
+ 
+ 	/* Refill pool with new buffers */
+ 	while (cq->pool_ptrs) {
+-		bufptr = __otx2_alloc_rbuf(pfvf, cq->rbpool);
+-		if (unlikely(bufptr <= 0)) {
+-			struct refill_work *work;
+-			struct delayed_work *dwork;
+-
+-			work = &pfvf->refill_wrk[cq->cq_idx];
+-			dwork = &work->pool_refill_work;
+-			/* Schedule a task if no other task is running */
+-			if (!cq->refill_task_sched) {
+-				cq->refill_task_sched = true;
+-				schedule_delayed_work(dwork,
+-						      msecs_to_jiffies(100));
+-			}
++		bufptr = otx2_alloc_buffer(pfvf, cq);
++		if (unlikely(bufptr <= 0))
+ 			break;
+-		}
+ 		otx2_aura_freeptr(pfvf, cq->cq_idx, bufptr + OTX2_HEAD_ROOM);
+ 		cq->pool_ptrs--;
+ 	}
+-
+-	return processed_cqe;
+ }
+ 
+ static int otx2_tx_napi_handler(struct otx2_nic *pfvf,
+@@ -439,7 +434,8 @@ int otx2_napi_handler(struct napi_struct *napi, int budget)
+ 	return workdone;
+ }
+ 
+-static void otx2_sqe_flush(struct otx2_snd_queue *sq, int size)
++void otx2_sqe_flush(void *dev, struct otx2_snd_queue *sq,
++		    int size, int qidx)
+ {
+ 	u64 status;
+ 
+@@ -797,7 +793,7 @@ static void otx2_sq_append_tso(struct otx2_nic *pfvf, struct otx2_snd_queue *sq,
+ 		sqe_hdr->sizem1 = (offset / 16) - 1;
+ 
+ 		/* Flush SQE to HW */
+-		otx2_sqe_flush(sq, offset);
++		pfvf->hw_ops->sqe_flush(pfvf, sq, offset, qidx);
+ 	}
+ }
+ 
+@@ -916,7 +912,7 @@ bool otx2_sq_append_skb(struct net_device *netdev, struct otx2_snd_queue *sq,
+ 	netdev_tx_sent_queue(txq, skb->len);
+ 
+ 	/* Flush SQE to HW */
+-	otx2_sqe_flush(sq, offset);
++	pfvf->hw_ops->sqe_flush(pfvf, sq, offset, qidx);
+ 
+ 	return true;
+ }
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
+index 73af156..d2b26b3 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
+@@ -114,6 +114,7 @@ struct otx2_cq_poll {
+ struct otx2_pool {
+ 	struct qmem		*stack;
+ 	struct qmem		*fc_addr;
++	u64			*lmt_addr;
+ 	u16			rbsize;
+ };
+ 
+@@ -156,4 +157,10 @@ static inline u64 otx2_iova_to_phys(void *iommu_domain, dma_addr_t dma_addr)
+ int otx2_napi_handler(struct napi_struct *napi, int budget);
+ bool otx2_sq_append_skb(struct net_device *netdev, struct otx2_snd_queue *sq,
+ 			struct sk_buff *skb, u16 qidx);
++void cn10k_sqe_flush(void *dev, struct otx2_snd_queue *sq,
++		     int size, int qidx);
++void otx2_sqe_flush(void *dev, struct otx2_snd_queue *sq,
++		    int size, int qidx);
++void otx2_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq);
++void cn10k_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq);
+ #endif /* OTX2_TXRX_H */
+diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c
+index 9ed850b..31e0325 100644
+--- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c
++++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_vf.c
+@@ -7,6 +7,7 @@
+ 
+ #include "otx2_common.h"
+ #include "otx2_reg.h"
++#include "cn10k.h"
+ 
+ #define DRV_NAME	"rvu_nicvf"
+ #define DRV_STRING	"Marvell RVU NIC Virtual Function Driver"
+@@ -27,31 +28,6 @@ enum {
+ 	RVU_VF_INT_VEC_MBOX = 0x0,
+ };
+ 
+-static int cn10k_lmtst_init(struct otx2_nic *vf)
+-{
+-	int size, num_lines;
+-
+-	if (!test_bit(CN10K_LMTST, &vf->hw.cap_flag))
+-		return 0;
+-
+-	size = pci_resource_len(vf->pdev, PCI_MBOX_BAR_NUM);
+-	vf->hw.lmt_base = ioremap_wc(pci_resource_start(vf->pdev,
+-							PCI_MBOX_BAR_NUM),
+-				     size);
+-	if (!vf->hw.lmt_base) {
+-		dev_err(vf->dev, "Unable to map VF LMTST region\n");
+-		return -ENOMEM;
+-	}
+-
+-	vf->tot_lmt_lines = size / LMT_LINE_SIZE;
+-	/* LMTST lines per SQ */
+-	num_lines = (vf->tot_lmt_lines - NIX_LMTID_BASE) /
+-			    vf->hw.tx_queues;
+-	vf->nix_lmt_lines = num_lines > 32 ? 32 : num_lines;
+-	vf->nix_lmt_size = vf->nix_lmt_lines * LMT_LINE_SIZE;
+-	return 0;
+-}
+-
+ static void otx2vf_process_vfaf_mbox_msg(struct otx2_nic *vf,
+ 					 struct mbox_msghdr *msg)
+ {
+@@ -585,7 +561,7 @@ static int otx2vf_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	if (err)
+ 		goto err_detach_rsrc;
+ 
+-	err = cn10k_lmtst_init(vf);
++	err = cn10k_vf_lmtst_init(vf);
+ 	if (err)
+ 		goto err_detach_rsrc;
+ 
+diff --git a/include/linux/soc/marvell/octeontx2/asm.h b/include/linux/soc/marvell/octeontx2/asm.h
+index ae2279f..56ebd16 100644
+--- a/include/linux/soc/marvell/octeontx2/asm.h
++++ b/include/linux/soc/marvell/octeontx2/asm.h
+@@ -22,8 +22,16 @@
+ 			 : [rs]"r" (ioaddr));           \
+ 	(result);                                       \
+ })
++#define cn10k_lmt_flush(val, addr)			\
++({							\
++	__asm__ volatile(".cpu  generic+lse\n"		\
++			 "steor %x[rf],[%[rs]]"		\
++			 : [rf]"+r"(val)		\
++			 : [rs]"r"(addr));		\
++})
+ #else
+ #define otx2_lmt_flush(ioaddr)          ({ 0; })
++#define cn10k_lmt_flush(val, addr)	({ 0; })
+ #endif
+ 
+ #endif /* __SOC_OTX2_ASM_H */
+-- 
+2.7.4
 
-> 
->> ---
->> Changes in V3:
->>
->> - Added new DT bindings document TRBE.yaml
->> - Changed TRBLIMITR_TRIG_MODE_SHIFT from 2 to 3
->> - Dropped isb() from trbe_reset_local()
->> - Dropped gap between (void *) and buf->trbe_base
->> - Changed 'int' to 'unsigned int' in is_trbe_available()
->> - Dropped unused function set_trbe_running(), set_trbe_virtual_mode(),
->>    set_trbe_enabled() and set_trbe_limit_pointer()
->> - Changed get_trbe_flag_update(), is_trbe_programmable() and
->>    get_trbe_address_align() to accept TRBIDR value
->> - Changed is_trbe_running(), is_trbe_abort(), is_trbe_wrap(), is_trbe_trg(),
->>    is_trbe_irq(), get_trbe_bsc() and get_trbe_ec() to accept TRBSR value
->> - Dropped snapshot mode condition in arm_trbe_alloc_buffer()
->> - Exit arm_trbe_init() when arm64_kernel_unmapped_at_el0() is enabled
->> - Compute trbe_limit before trbe_write to get the updated handle
->> - Added trbe_stop_and_truncate_event()
->> - Dropped trbe_handle_fatal()
->>
->>   Documentation/trace/coresight/coresight-trbe.rst |   39 +
->>   arch/arm64/include/asm/sysreg.h                  |    1 +
->>   drivers/hwtracing/coresight/Kconfig              |   11 +
->>   drivers/hwtracing/coresight/Makefile             |    1 +
->>   drivers/hwtracing/coresight/coresight-trbe.c     | 1023 ++++++++++++++++++++++
->>   drivers/hwtracing/coresight/coresight-trbe.h     |  160 ++++
->>   6 files changed, 1235 insertions(+)
->>   create mode 100644 Documentation/trace/coresight/coresight-trbe.rst
->>   create mode 100644 drivers/hwtracing/coresight/coresight-trbe.c
->>   create mode 100644 drivers/hwtracing/coresight/coresight-trbe.h
->>
->> diff --git a/Documentation/trace/coresight/coresight-trbe.rst b/Documentation/trace/coresight/coresight-trbe.rst
->> new file mode 100644
->> index 0000000..1cbb819
->> --- /dev/null
->> +++ b/Documentation/trace/coresight/coresight-trbe.rst
->> @@ -0,0 +1,39 @@
->> +.. SPDX-License-Identifier: GPL-2.0
->> +
->> +==============================
->> +Trace Buffer Extension (TRBE).
->> +==============================
->> +
->> +    :Author:   Anshuman Khandual <anshuman.khandual@arm.com>
->> +    :Date:     November 2020
->> +
->> +Hardware Description
->> +--------------------
->> +
->> +Trace Buffer Extension (TRBE) is a percpu hardware which captures in system
->> +memory, CPU traces generated from a corresponding percpu tracing unit. This
->> +gets plugged in as a coresight sink device because the corresponding trace
->> +genarators (ETE), are plugged in as source device.
->> +
->> +The TRBE is not compliant to CoreSight architecture specifications, but is
->> +driven via the CoreSight driver framework to support the ETE (which is
->> +CoreSight compliant) integration.
->> +
->> +Sysfs files and directories
->> +---------------------------
->> +
->> +The TRBE devices appear on the existing coresight bus alongside the other
->> +coresight devices::
->> +
->> +    >$ ls /sys/bus/coresight/devices
->> +    trbe0  trbe1  trbe2 trbe3
->> +
->> +The ``trbe<N>`` named TRBEs are associated with a CPU.::
->> +
->> +    >$ ls /sys/bus/coresight/devices/trbe0/
->> +        align dbm
->> +
->> +*Key file items are:-*
->> +   * ``align``: TRBE write pointer alignment
->> +   * ``dbm``: TRBE updates memory with access and dirty flags
->> +
->> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
->> index 85ae4db..9e2e9b7 100644
->> --- a/arch/arm64/include/asm/sysreg.h
->> +++ b/arch/arm64/include/asm/sysreg.h
->> @@ -97,6 +97,7 @@
->>   #define SET_PSTATE_UAO(x)        __emit_inst(0xd500401f | PSTATE_UAO | ((!!x) << PSTATE_Imm_shift))
->>   #define SET_PSTATE_SSBS(x)        __emit_inst(0xd500401f | PSTATE_SSBS | ((!!x) << PSTATE_Imm_shift))
->>   #define SET_PSTATE_TCO(x)        __emit_inst(0xd500401f | PSTATE_TCO | ((!!x) << PSTATE_Imm_shift))
->> +#define TSB_CSYNC            __emit_inst(0xd503225f)
->>     #define set_pstate_pan(x)        asm volatile(SET_PSTATE_PAN(x))
->>   #define set_pstate_uao(x)        asm volatile(SET_PSTATE_UAO(x))
->> diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
->> index f154ae7..aa657ab 100644
->> --- a/drivers/hwtracing/coresight/Kconfig
->> +++ b/drivers/hwtracing/coresight/Kconfig
->> @@ -164,6 +164,17 @@ config CORESIGHT_CTI
->>         To compile this driver as a module, choose M here: the
->>         module will be called coresight-cti.
->>   +config CORESIGHT_TRBE
->> +    bool "Trace Buffer Extension (TRBE) driver"
->> +    depends on ARM64
->> +    help
->> +      This driver provides support for percpu Trace Buffer Extension (TRBE).
->> +      TRBE always needs to be used along with it's corresponding percpu ETE
->> +      component. ETE generates trace data which is then captured with TRBE.
->> +      Unlike traditional sink devices, TRBE is a CPU feature accessible via
->> +      system registers. But it's explicit dependency with trace unit (ETE)
->> +      requires it to be plugged in as a coresight sink device.
->> +
->>   config CORESIGHT_CTI_INTEGRATION_REGS
->>       bool "Access CTI CoreSight Integration Registers"
->>       depends on CORESIGHT_CTI
->> diff --git a/drivers/hwtracing/coresight/Makefile b/drivers/hwtracing/coresight/Makefile
->> index f20e357..d608165 100644
->> --- a/drivers/hwtracing/coresight/Makefile
->> +++ b/drivers/hwtracing/coresight/Makefile
->> @@ -21,5 +21,6 @@ obj-$(CONFIG_CORESIGHT_STM) += coresight-stm.o
->>   obj-$(CONFIG_CORESIGHT_CPU_DEBUG) += coresight-cpu-debug.o
->>   obj-$(CONFIG_CORESIGHT_CATU) += coresight-catu.o
->>   obj-$(CONFIG_CORESIGHT_CTI) += coresight-cti.o
->> +obj-$(CONFIG_CORESIGHT_TRBE) += coresight-trbe.o
->>   coresight-cti-y := coresight-cti-core.o    coresight-cti-platform.o \
->>              coresight-cti-sysfs.o
->> diff --git a/drivers/hwtracing/coresight/coresight-trbe.c b/drivers/hwtracing/coresight/coresight-trbe.c
->> new file mode 100644
->> index 0000000..1464d8b
->> --- /dev/null
->> +++ b/drivers/hwtracing/coresight/coresight-trbe.c
->> @@ -0,0 +1,1023 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * This driver enables Trace Buffer Extension (TRBE) as a per-cpu coresight
->> + * sink device could then pair with an appropriate per-cpu coresight source
->> + * device (ETE) thus generating required trace data. Trace can be enabled
->> + * via the perf framework.
->> + *
->> + * Copyright (C) 2020 ARM Ltd.
->> + *
->> + * Author: Anshuman Khandual <anshuman.khandual@arm.com>
->> + */
->> +#define DRVNAME "arm_trbe"
->> +
->> +#define pr_fmt(fmt) DRVNAME ": " fmt
->> +
->> +#include "coresight-trbe.h"
->> +
->> +#define PERF_IDX2OFF(idx, buf) ((idx) % ((buf)->nr_pages << PAGE_SHIFT))
->> +
->> +/*
->> + * A padding packet that will help the user space tools
->> + * in skipping relevant sections in the captured trace
->> + * data which could not be decoded. TRBE doesn't support
->> + * formatting the trace data, unlike the legacy CoreSight
->> + * sinks and thus we use ETE trace packets to pad the
->> + * sections of the buffer.
->> + */
->> +#define ETE_IGNORE_PACKET         0x70
->> +
->> +/*
->> + * Minimum amount of meaningful trace will contain:
->> + * A-Sync, Trace Info, Trace On, Address, Atom.
->> + * This is about 44bytes of ETE trace. To be on
->> + * the safer side, we assume 64bytes is the minimum
->> + * space required for a meaningful session, before
->> + * we hit a "WRAP" event.
->> + */
->> +#define TRBE_TRACE_MIN_BUF_SIZE        64
->> +
->> +enum trbe_fault_action {
->> +    TRBE_FAULT_ACT_WRAP,
->> +    TRBE_FAULT_ACT_SPURIOUS,
->> +    TRBE_FAULT_ACT_FATAL,
->> +};
->> +
->> +struct trbe_buf {
->> +    unsigned long trbe_base;
->> +    unsigned long trbe_limit;
->> +    unsigned long trbe_write;
->> +    int nr_pages;
->> +    void **pages;
->> +    bool snapshot;
->> +    struct trbe_cpudata *cpudata;
->> +};
->> +
->> +struct trbe_cpudata {
->> +    bool trbe_dbm;
->> +    u64 trbe_align;
->> +    int cpu;
->> +    enum cs_mode mode;
->> +    struct trbe_buf *buf;
->> +    struct trbe_drvdata *drvdata;
->> +};
->> +
->> +struct trbe_drvdata {
->> +    struct trbe_cpudata __percpu *cpudata;
->> +    struct perf_output_handle __percpu **handle;
->> +    struct hlist_node hotplug_node;
->> +    int irq;
->> +    cpumask_t supported_cpus;
->> +    enum cpuhp_state trbe_online;
->> +    struct platform_device *pdev;
->> +};
->> +
->> +static int trbe_alloc_node(struct perf_event *event)
->> +{
->> +    if (event->cpu == -1)
->> +        return NUMA_NO_NODE;
->> +    return cpu_to_node(event->cpu);
->> +}
->> +
->> +static void trbe_drain_buffer(void)
->> +{
->> +    asm(TSB_CSYNC);
->> +    dsb(nsh);
->> +}
->> +
->> +static void trbe_drain_and_disable_local(void)
->> +{
->> +    trbe_drain_buffer();
->> +    write_sysreg_s(0, SYS_TRBLIMITR_EL1);
->> +    isb();
->> +}
->> +
->> +static void trbe_reset_local(void)
->> +{
->> +    trbe_drain_and_disable_local();
->> +    write_sysreg_s(0, SYS_TRBPTR_EL1);
->> +    write_sysreg_s(0, SYS_TRBBASER_EL1);
->> +    write_sysreg_s(0, SYS_TRBSR_EL1);
->> +}
->> +
->> +static void trbe_stop_and_truncate_event(struct perf_output_handle *handle)
->> +{
->> +    struct trbe_buf *buf = etm_perf_sink_config(handle);
->> +
->> +    /*
->> +     * We cannot proceed with the buffer collection and we
->> +     * do not have any data for the current session. The
->> +     * etm_perf driver expects to close out the aux_buffer
->> +     * at event_stop(). So disable the TRBE here and leave
->> +     * the update_buffer() to return a 0 size.
->> +     */
->> +    trbe_drain_and_disable_local();
->> +    perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED);
->> +    *this_cpu_ptr(buf->cpudata->drvdata->handle) = NULL;
->> +}
->> +
->> +/*
->> + * TRBE Buffer Management
->> + *
->> + * The TRBE buffer spans from the base pointer till the limit pointer. When enabled,
->> + * it starts writing trace data from the write pointer onward till the limit pointer.
->> + * When the write pointer reaches the address just before the limit pointer, it gets
->> + * wrapped around again to the base pointer. This is called a TRBE wrap event, which
->> + * generates a maintenance interrupt when operated in WRAP or FILL mode. This driver
->> + * uses FILL mode, where the TRBE stops the trace collection at wrap event. The IRQ
->> + * handler updates the AUX buffer and re-enables the TRBE with updated WRITE and
->> + * LIMIT pointers.
->> + *
->> + *    Wrap around with an IRQ
->> + *    ------ < ------ < ------- < ----- < -----
->> + *    |                    |
->> + *    ------ > ------ > ------- > ----- > -----
->> + *
->> + *    +---------------+-----------------------+
->> + *    |        |            |
->> + *    +---------------+-----------------------+
->> + *    Base Pointer    Write Pointer        Limit Pointer
->> + *
->> + * The base and limit pointers always needs to be PAGE_SIZE aligned. But the write
->> + * pointer can be aligned to the implementation defined TRBE trace buffer alignment
->> + * as captured in trbe_cpudata->trbe_align.
->> + *
->> + *
->> + *        head        tail        wakeup
->> + *    +---------------------------------------+----- ~ ~ ------
->> + *    |$$$$$$$|################|$$$$$$$$$$$$$$|        |
->> + *    +---------------------------------------+----- ~ ~ ------
->> + *    Base Pointer    Write Pointer        Limit Pointer
->> + *
->> + * The perf_output_handle indices (head, tail, wakeup) are monotonically increasing
->> + * values which tracks all the driver writes and user reads from the perf auxiliary
->> + * buffer. Generally [head..tail] is the area where the driver can write into unless
->> + * the wakeup is behind the tail. Enabled TRBE buffer span needs to be adjusted and
->> + * configured depending on the perf_output_handle indices, so that the driver does
->> + * not override into areas in the perf auxiliary buffer which is being or yet to be
->> + * consumed from the user space. The enabled TRBE buffer area is a moving subset of
->> + * the allocated perf auxiliary buffer.
->> + */
->> +static void trbe_pad_buf(struct perf_output_handle *handle, int len)
->> +{
->> +    struct trbe_buf *buf = etm_perf_sink_config(handle);
->> +    u64 head = PERF_IDX2OFF(handle->head, buf);
->> +
->> +    memset((void *)buf->trbe_base + head, ETE_IGNORE_PACKET, len);
->> +    if (!buf->snapshot)
->> +        perf_aux_output_skip(handle, len);
->> +}
->> +
->> +static unsigned long trbe_snapshot_offset(struct perf_output_handle *handle)
->> +{
->> +    struct trbe_buf *buf = etm_perf_sink_config(handle);
->> +
->> +    /*
->> +     * The ETE trace has alignment synchronization packets allowing
->> +     * the decoder to reset in case of an overflow or corruption.
->> +     * So we can use the entire buffer for the snapshot mode.
->> +     */
->> +    return buf->nr_pages * PAGE_SIZE;
->> +}
->> +
->> +/*
->> + * TRBE Limit Calculation
->> + *
->> + * The following markers are used to illustrate various TRBE buffer situations.
->> + *
->> + * $$$$ - Data area, unconsumed captured trace data, not to be overridden
->> + * #### - Free area, enabled, trace will be written
->> + * %%%% - Free area, disabled, trace will not be written
->> + * ==== - Free area, padded with ETE_IGNORE_PACKET, trace will be skipped
->> + */
->> +static unsigned long __trbe_normal_offset(struct perf_output_handle *handle)
->> +{
->> +    struct trbe_buf *buf = etm_perf_sink_config(handle);
->> +    struct trbe_cpudata *cpudata = buf->cpudata;
->> +    const u64 bufsize = buf->nr_pages * PAGE_SIZE;
->> +    u64 limit = bufsize;
->> +    u64 head, tail, wakeup;
->> +
->> +    head = PERF_IDX2OFF(handle->head, buf);
->> +
->> +    /*
->> +     *        head
->> +     *    ------->|
->> +     *    |
->> +     *    head    TRBE align    tail
->> +     * +----|-------|---------------|-------+
->> +     * |$$$$|=======|###############|$$$$$$$|
->> +     * +----|-------|---------------|-------+
->> +     * trbe_base                trbe_base + nr_pages
->> +     *
->> +     * Perf aux buffer output head position can be misaligned depending on
->> +     * various factors including user space reads. In case misaligned, head
->> +     * needs to be aligned before TRBE can be configured. Pad the alignment
->> +     * gap with ETE_IGNORE_PACKET bytes that will be ignored by user tools
->> +     * and skip this section thus advancing the head.
->> +     */
->> +    if (!IS_ALIGNED(head, cpudata->trbe_align)) {
->> +        unsigned long delta = roundup(head, cpudata->trbe_align) - head;
->> +
->> +        delta = min(delta, handle->size);
->> +        trbe_pad_buf(handle, delta);
->> +        head = PERF_IDX2OFF(handle->head, buf);
->> +    }
->> +
->> +    /*
->> +     *    head = tail (size = 0)
->> +     * +----|-------------------------------+
->> +     * |$$$$|$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$    |
->> +     * +----|-------------------------------+
->> +     * trbe_base                trbe_base + nr_pages
->> +     *
->> +     * Perf aux buffer does not have any space for the driver to write into.
->> +     * Just communicate trace truncation event to the user space by marking
->> +     * it with PERF_AUX_FLAG_TRUNCATED.
->> +     */
->> +    if (!handle->size) {
->> +        perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED);
->> +        return 0;
->> +    }
->> +
->> +    /* Compute the tail and wakeup indices now that we've aligned head */
->> +    tail = PERF_IDX2OFF(handle->head + handle->size, buf);
->> +    wakeup = PERF_IDX2OFF(handle->wakeup, buf);
->> +
->> +    /*
->> +     * Lets calculate the buffer area which TRBE could write into. There
->> +     * are three possible scenarios here. Limit needs to be aligned with
->> +     * PAGE_SIZE per the TRBE requirement. Always avoid clobbering the
->> +     * unconsumed data.
->> +     *
->> +     * 1) head < tail
->> +     *
->> +     *    head            tail
->> +     * +----|-----------------------|-------+
->> +     * |$$$$|#######################|$$$$$$$|
->> +     * +----|-----------------------|-------+
->> +     * trbe_base            limit    trbe_base + nr_pages
->> +     *
->> +     * TRBE could write into [head..tail] area. Unless the tail is right at
->> +     * the end of the buffer, neither an wrap around nor an IRQ is expected
->> +     * while being enabled.
->> +     *
->> +     * 2) head == tail
->> +     *
->> +     *    head = tail (size > 0)
->> +     * +----|-------------------------------+
->> +     * |%%%%|###############################|
->> +     * +----|-------------------------------+
->> +     * trbe_base                limit = trbe_base + nr_pages
->> +     *
->> +     * TRBE should just write into [head..base + nr_pages] area even though
->> +     * the entire buffer is empty. Reason being, when the trace reaches the
->> +     * end of the buffer, it will just wrap around with an IRQ giving an
->> +     * opportunity to reconfigure the buffer.
->> +     *
->> +     * 3) tail < head
->> +     *
->> +     *    tail            head
->> +     * +----|-----------------------|-------+
->> +     * |%%%%|$$$$$$$$$$$$$$$$$$$$$$$|#######|
->> +     * +----|-----------------------|-------+
->> +     * trbe_base                limit = trbe_base + nr_pages
->> +     *
->> +     * TRBE should just write into [head..base + nr_pages] area even though
->> +     * the [trbe_base..tail] is also empty. Reason being, when the trace
->> +     * reaches the end of the buffer, it will just wrap around with an IRQ
->> +     * giving an opportunity to reconfigure the buffer.
->> +     */
->> +    if (head < tail)
->> +        limit = round_down(tail, PAGE_SIZE);
->> +
->> +    /*
->> +     * Wakeup may be arbitrarily far into the future. If it's not in the
->> +     * current generation, either we'll wrap before hitting it, or it's
->> +     * in the past and has been handled already.
->> +     *
->> +     * If there's a wakeup before we wrap, arrange to be woken up by the
->> +     * page boundary following it. Keep the tail boundary if that's lower.
->> +     *
->> +     *    head        wakeup    tail
->> +     * +----|---------------|-------|-------+
->> +     * |$$$$|###############|%%%%%%%|$$$$$$$|
->> +     * +----|---------------|-------|-------+
->> +     * trbe_base        limit        trbe_base + nr_pages
->> +     */
->> +    if (handle->wakeup < (handle->head + handle->size) && head <= wakeup)
->> +        limit = min(limit, round_up(wakeup, PAGE_SIZE));
->> +
->> +    /*
->> +     * There are two situation when this can happen i.e limit is before
->> +     * the head and hence TRBE cannot be configured.
->> +     *
->> +     * 1) head < tail (aligned down with PAGE_SIZE) and also they are both
->> +     * within the same PAGE size range.
->> +     *
->> +     *            PAGE_SIZE
->> +     *        |----------------------|
->> +     *
->> +     *        limit    head    tail
->> +     * +------------|------|--------|-------+
->> +     * |$$$$$$$$$$$$$$$$$$$|========|$$$$$$$|
->> +     * +------------|------|--------|-------+
->> +     * trbe_base                trbe_base + nr_pages
->> +     *
->> +     * 2) head < wakeup (aligned up with PAGE_SIZE) < tail and also both
->> +     * head and wakeup are within same PAGE size range.
->> +     *
->> +     *        PAGE_SIZE
->> +     *    |----------------------|
->> +     *
->> +     *    limit    head    wakeup  tail
->> +     * +----|------|-------|--------|-------+
->> +     * |$$$$$$$$$$$|=======|========|$$$$$$$|
->> +     * +----|------|-------|--------|-------+
->> +     * trbe_base                trbe_base + nr_pages
->> +     */
->> +    if (limit > head)
->> +        return limit;
->> +
->> +    trbe_pad_buf(handle, handle->size);
->> +    perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED);
->> +    return 0;
->> +}
->> +
->> +static unsigned long trbe_normal_offset(struct perf_output_handle *handle)
->> +{
->> +    struct trbe_buf *buf = perf_get_aux(handle);
->> +    u64 limit = __trbe_normal_offset(handle);
->> +    u64 head = PERF_IDX2OFF(handle->head, buf);
->> +
->> +    /*
->> +     * If the head is too close to the limit and we don't
->> +     * have space for a meaningful run, we rather pad it
->> +     * and start fresh.
->> +     */
->> +    if (limit && (limit - head < TRBE_TRACE_MIN_BUF_SIZE)) {
->> +        trbe_pad_buf(handle, limit - head);
->> +        limit = __trbe_normal_offset(handle);
->> +    }
->> +    return limit;
->> +}
->> +
->> +static unsigned long compute_trbe_buffer_limit(struct perf_output_handle *handle)
->> +{
->> +    struct trbe_buf *buf = etm_perf_sink_config(handle);
->> +    unsigned long offset;
->> +
->> +    if (buf->snapshot)
->> +        offset = trbe_snapshot_offset(handle);
->> +    else
->> +        offset = trbe_normal_offset(handle);
->> +    return buf->trbe_base + offset;
->> +}
->> +
->> +static void clr_trbe_status(void)
->> +{
->> +    u64 trbsr = read_sysreg_s(SYS_TRBSR_EL1);
->> +
->> +    WARN_ON(is_trbe_enabled());
->> +    trbsr &= ~TRBSR_IRQ;
->> +    trbsr &= ~TRBSR_TRG;
->> +    trbsr &= ~TRBSR_WRAP;
->> +    trbsr &= ~(TRBSR_EC_MASK << TRBSR_EC_SHIFT);
->> +    trbsr &= ~(TRBSR_BSC_MASK << TRBSR_BSC_SHIFT);
->> +    trbsr &= ~TRBSR_STOP;
->> +    write_sysreg_s(trbsr, SYS_TRBSR_EL1);
->> +}
->> +
->> +static void set_trbe_limit_pointer_enabled(unsigned long addr)
->> +{
->> +    u64 trblimitr = read_sysreg_s(SYS_TRBLIMITR_EL1);
->> +
->> +    WARN_ON(!IS_ALIGNED(addr, (1UL << TRBLIMITR_LIMIT_SHIFT)));
->> +    WARN_ON(!IS_ALIGNED(addr, PAGE_SIZE));
->> +
->> +    trblimitr &= ~TRBLIMITR_NVM;
->> +    trblimitr &= ~(TRBLIMITR_FILL_MODE_MASK << TRBLIMITR_FILL_MODE_SHIFT);
->> +    trblimitr &= ~(TRBLIMITR_TRIG_MODE_MASK << TRBLIMITR_TRIG_MODE_SHIFT);
->> +    trblimitr &= ~(TRBLIMITR_LIMIT_MASK << TRBLIMITR_LIMIT_SHIFT);
->> +
->> +    /*
->> +     * Fill trace buffer mode is used here while configuring the
->> +     * TRBE for trace capture. In this particular mode, the trace
->> +     * collection is stopped and a maintenance interrupt is raised
->> +     * when the current write pointer wraps. This pause in trace
->> +     * collection gives the software an opportunity to capture the
->> +     * trace data in the interrupt handler, before reconfiguring
->> +     * the TRBE.
->> +     */
->> +    trblimitr |= (TRBE_FILL_MODE_FILL & TRBLIMITR_FILL_MODE_MASK) << TRBLIMITR_FILL_MODE_SHIFT;
->> +
->> +    /*
->> +     * Trigger mode is not used here while configuring the TRBE for
->> +     * the trace capture. Hence just keep this in the ignore mode.
->> +     */
->> +    trblimitr |= (TRBE_TRIG_MODE_IGNORE & TRBLIMITR_TRIG_MODE_MASK) << TRBLIMITR_TRIG_MODE_SHIFT;
->> +    trblimitr |= (addr & PAGE_MASK);
->> +
->> +    trblimitr |= TRBLIMITR_ENABLE;
->> +    write_sysreg_s(trblimitr, SYS_TRBLIMITR_EL1);
-
-> Personally, I prefer the isb() here rather than at the caller site, to make sure
-> it is all contained here and more importantly we don't execute any other instruction
-> before the "isb()" as the tracing may be enabled for the kernel.
-
-Sure, will move the isb() here along with its comment.
-
-> 
->> +}
->> +
->> +static void trbe_enable_hw(struct trbe_buf *buf)
->> +{
->> +    WARN_ON(buf->trbe_write < buf->trbe_base); > +    WARN_ON(buf->trbe_write >= buf->trbe_limit);
->> +    set_trbe_disabled();
->> +    isb();
->> +    clr_trbe_status();
->> +    set_trbe_base_pointer(buf->trbe_base);
->> +    set_trbe_write_pointer(buf->trbe_write);
->> +
->> +    /*
->> +     * Synchronize all the register updates
->> +     * till now before enabling the TRBE.
->> +     */
->> +    isb();
->> +    set_trbe_limit_pointer_enabled(buf->trbe_limit);
->> +
->> +    /* Synchronize the TRBE enable event */
->> +    isb();
->> +}
->> +
->> +static void *arm_trbe_alloc_buffer(struct coresight_device *csdev,
->> +                   struct perf_event *event, void **pages,
->> +                   int nr_pages, bool snapshot)
->> +{
->> +    struct trbe_buf *buf;
->> +    struct page **pglist;
->> +    int i;
->> +
->> +    /*
->> +     * TRBE LIMIT and TRBE WRITE pointers must be page aligned. But with
->> +     * just a single page, there is not much room left while writing into
->> +     * a partially filled TRBE buffer. Hence restrict the minimum buffer
->> +     * size as two pages.
->> +     */
->> +    if (nr_pages < 2)
->> +        return NULL;
->> +
->> +    buf = kzalloc_node(sizeof(*buf), GFP_KERNEL, trbe_alloc_node(event));
->> +    if (IS_ERR(buf))
->> +        return ERR_PTR(-ENOMEM);
->> +
->> +    pglist = kcalloc(nr_pages, sizeof(*pglist), GFP_KERNEL);
->> +    if (IS_ERR(pglist)) {
->> +        kfree(buf);
->> +        return ERR_PTR(-ENOMEM);
->> +    }
->> +
->> +    for (i = 0; i < nr_pages; i++)
->> +        pglist[i] = virt_to_page(pages[i]);
->> +
->> +    buf->trbe_base = (unsigned long) vmap(pglist, nr_pages, VM_MAP, PAGE_KERNEL);
-> 
-> minor nit: space after casting.
-
-Will drop the space.
-
-> 
->> +    if (IS_ERR((void *)buf->trbe_base)) {
->> +        kfree(pglist);
->> +        kfree(buf);
->> +        return ERR_PTR(buf->trbe_base);
->> +    }
->> +    buf->trbe_limit = buf->trbe_base + nr_pages * PAGE_SIZE;
->> +    buf->trbe_write = buf->trbe_base;
->> +    buf->snapshot = snapshot;
->> +    buf->nr_pages = nr_pages;
->> +    buf->pages = pages;
->> +    kfree(pglist);
->> +    return buf;
->> +}
->> +
->> +void arm_trbe_free_buffer(void *config)
->> +{
->> +    struct trbe_buf *buf = config;
->> +
->> +    vunmap((void *)buf->trbe_base);
->> +    kfree(buf);
->> +}
->> +
->> +static unsigned long arm_trbe_update_buffer(struct coresight_device *csdev,
->> +                        struct perf_output_handle *handle,
->> +                        void *config)
->> +{
->> +    struct trbe_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
->> +    struct trbe_cpudata *cpudata = dev_get_drvdata(&csdev->dev);
->> +    struct trbe_buf *buf = config;
->> +    unsigned long size, offset;
->> +
->> +    WARN_ON(buf->cpudata != cpudata);
->> +    WARN_ON(cpudata->cpu != smp_processor_id());
->> +    WARN_ON(cpudata->drvdata != drvdata);
->> +    if (cpudata->mode != CS_MODE_PERF)
->> +        return -EINVAL;
-> 
-> Please return 0 here. As we are expected to pass an "unsigned" size.
-
-Sure, will do.
-
-> 
->> +
->> +    /*
->> +     * If the TRBE was disabled due to lack of space in the AUX buffer or a
->> +     * spurious fault, the driver leaves it disabled, truncating the buffer.
->> +     * Since the etm_perf driver expects to close out the AUX buffer, the
->> +     * driver skips it. Thus, just pass in 0 size here to indicate that the
->> +     * buffer was truncated.
->> +     */
->> +    if (!is_trbe_enabled())
->> +        return 0;
->> +    /*
->> +     * perf handle structure needs to be shared with the TRBE IRQ handler for
->> +     * capturing trace data and restarting the handle. There is a probability
->> +     * of an undefined reference based crash when etm event is being stopped
->> +     * while a TRBE IRQ also getting processed. This happens due the release
->> +     * of perf handle via perf_aux_output_end() in etm_event_stop(). Stopping
->> +     * the TRBE here will ensure that no IRQ could be generated when the perf
->> +     * handle gets freed in etm_event_stop().
->> +     */
->> +    trbe_drain_and_disable_local();
->> +    offset = get_trbe_write_pointer() - get_trbe_base_pointer();
->> +    size = offset - PERF_IDX2OFF(handle->head, buf);
-> 
-> It may be a good idea to verify that the size computation here doesn't overflow.
-> e.g broken interrupt could potentially leave us with "write == base". I understand
-> this is a hardware issue, but the software can be resilient to not send bogus
-> results.
-
-Okay, will do the necessary.
-
-> 
->> +    if (buf->snapshot)
->> +        handle->head += size;
->> +    return size;
->> +}
->> +
->> +static int arm_trbe_enable(struct coresight_device *csdev, u32 mode, void *data)
->> +{
->> +    struct trbe_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
->> +    struct trbe_cpudata *cpudata = dev_get_drvdata(&csdev->dev);
->> +    struct perf_output_handle *handle = data;
->> +    struct trbe_buf *buf = etm_perf_sink_config(handle);
->> +
->> +    WARN_ON(cpudata->cpu != smp_processor_id());
->> +    WARN_ON(cpudata->drvdata != drvdata);
->> +    if (mode != CS_MODE_PERF)
->> +        return -EINVAL;
->> +
->> +    *this_cpu_ptr(drvdata->handle) = handle;
->> +    cpudata->buf = buf;
->> +    cpudata->mode = mode;
->> +    buf->cpudata = cpudata;
->> +    buf->trbe_limit = compute_trbe_buffer_limit(handle);
->> +    buf->trbe_write = buf->trbe_base + PERF_IDX2OFF(handle->head, buf);
->> +    if (buf->trbe_limit == buf->trbe_base) {
->> +        trbe_stop_and_truncate_event(handle);
->> +        return 0;
->> +    }
->> +    trbe_enable_hw(buf);
->> +    return 0;
->> +}
->> +
->> +static int arm_trbe_disable(struct coresight_device *csdev)
->> +{
->> +    struct trbe_drvdata *drvdata = dev_get_drvdata(csdev->dev.parent);
->> +    struct trbe_cpudata *cpudata = dev_get_drvdata(&csdev->dev);
->> +    struct trbe_buf *buf = cpudata->buf;
->> +
->> +    WARN_ON(buf->cpudata != cpudata);
->> +    WARN_ON(cpudata->cpu != smp_processor_id());
->> +    WARN_ON(cpudata->drvdata != drvdata);
->> +    if (cpudata->mode != CS_MODE_PERF)
->> +        return -EINVAL;
->> +
->> +    trbe_drain_and_disable_local();
->> +    buf->cpudata = NULL;
->> +    cpudata->buf = NULL;
->> +    cpudata->mode = CS_MODE_DISABLED;
->> +    return 0;
->> +}
->> +
->> +static void trbe_handle_spurious(struct perf_output_handle *handle)
->> +{
->> +    struct trbe_buf *buf = etm_perf_sink_config(handle);
->> +
->> +    buf->trbe_limit = compute_trbe_buffer_limit(handle);
->> +    buf->trbe_write = buf->trbe_base + PERF_IDX2OFF(handle->head, buf);
->> +    if (buf->trbe_limit == buf->trbe_base) {
->> +        trbe_drain_and_disable_local();
->> +        return;
->> +    }
->> +    trbe_enable_hw(buf);
->> +}
->> +
->> +static void trbe_handle_overflow(struct perf_output_handle *handle)
->> +{
->> +    struct perf_event *event = handle->event;
->> +    struct trbe_buf *buf = etm_perf_sink_config(handle);
->> +    unsigned long offset, size;
->> +    struct etm_event_data *event_data;
->> +
->> +    offset = get_trbe_limit_pointer() - get_trbe_base_pointer();
->> +    size = offset - PERF_IDX2OFF(handle->head, buf);
->> +    if (buf->snapshot)
->> +        handle->head = offset;
->> +    perf_aux_output_end(handle, size);
->> +
->> +    event_data = perf_aux_output_begin(handle, event);
->> +    if (!event_data) {
-> 
-> We may add a comment here to explain how this would be handled ? e.g,
-> 
->         /*
->          * We are unable to restart the trace collection,
->          * thus leave the TRBE disabled. The etm-perf driver
->          * is able to detect this with a disconnnected handle
->          * (handle->event = NULL).
->          */
-
-Sure, will add the above.
-
-> 
->> +        trbe_drain_and_disable_local();
->> +        *this_cpu_ptr(buf->cpudata->drvdata->handle) = NULL;
->> +        return;
->> +    }
->> +    buf->trbe_limit = compute_trbe_buffer_limit(handle);
->> +    buf->trbe_write = buf->trbe_base + PERF_IDX2OFF(handle->head, buf);
->> +    if (buf->trbe_limit == buf->trbe_base) {
->> +        trbe_stop_and_truncate_event(handle);
->> +        return;
->> +    }
->> +    *this_cpu_ptr(buf->cpudata->drvdata->handle) = handle;
->> +    trbe_enable_hw(buf);
->> +}
->> +
->> +static bool is_perf_trbe(struct perf_output_handle *handle)
->> +{
->> +    struct trbe_buf *buf = etm_perf_sink_config(handle);
->> +    struct trbe_cpudata *cpudata = buf->cpudata;
->> +    struct trbe_drvdata *drvdata = cpudata->drvdata;
->> +    int cpu = smp_processor_id();
->> +
->> +    WARN_ON(buf->trbe_base != get_trbe_base_pointer());
->> +    WARN_ON(buf->trbe_limit != get_trbe_limit_pointer());
->> +
->> +    if (cpudata->mode != CS_MODE_PERF)
->> +        return false;
->> +
->> +    if (cpudata->cpu != cpu)
->> +        return false;
->> +
->> +    if (!cpumask_test_cpu(cpu, &drvdata->supported_cpus))
->> +        return false;
->> +
->> +    return true;
->> +}
->> +
->> +static enum trbe_fault_action trbe_get_fault_act(struct perf_output_handle *handle)
->> +{
->> +    u64 trbsr = read_sysreg_s(SYS_TRBSR_EL1);
->> +    int ec = get_trbe_ec(trbsr);
->> +    int bsc = get_trbe_bsc(trbsr);
->> +
->> +    WARN_ON(is_trbe_running(trbsr));
->> +    if (is_trbe_trg(trbsr) || is_trbe_abort(trbsr))
->> +        return TRBE_FAULT_ACT_FATAL;
->> +
->> +    if ((ec == TRBE_EC_STAGE1_ABORT) || (ec == TRBE_EC_STAGE2_ABORT))
->> +        return TRBE_FAULT_ACT_FATAL;
->> +
->> +    if (is_trbe_wrap(trbsr) && (ec == TRBE_EC_OTHERS) && (bsc == TRBE_BSC_FILLED)) {
->> +        if (get_trbe_write_pointer() == get_trbe_base_pointer())
->> +            return TRBE_FAULT_ACT_WRAP;
->> +    }
->> +    return TRBE_FAULT_ACT_SPURIOUS;
->> +}
->> +
->> +static irqreturn_t arm_trbe_irq_handler(int irq, void *dev)
->> +{
->> +    struct perf_output_handle **handle_ptr = dev;
->> +    struct perf_output_handle *handle = *handle_ptr;
->> +    enum trbe_fault_action act;
->> +
->> +    WARN_ON(!is_trbe_irq(read_sysreg_s(SYS_TRBSR_EL1)));
->> +    clr_trbe_irq();
->> +
->> +    /*
->> +     * Ensure the trace is visible to the CPUs and
->> +     * any external aborts have been resolved.
->> +     */
->> +    trbe_drain_buffer();
->> +    isb();
->> +
->> +    if (!perf_get_aux(handle))
-> 
-> We may want to ensure that handle is not NULL, which can only happen if the
-> hardware is not following the software.
-> 
->     if (WARN_ON_ONCE(!handle) || !perf_get_aux(handle))
-
-Okay, will do the change.
-
-> 
->> +        return IRQ_NONE;
->> +
->> +    if (!is_perf_trbe(handle))
->> +        return IRQ_NONE;
->> +
->> +    irq_work_run();
->> +
->> +    act = trbe_get_fault_act(handle);
->> +    switch (act) {
->> +    case TRBE_FAULT_ACT_WRAP:
->> +        trbe_handle_overflow(handle);
->> +        break;
->> +    case TRBE_FAULT_ACT_SPURIOUS:
->> +        trbe_handle_spurious(handle);
->> +        break;
->> +    case TRBE_FAULT_ACT_FATAL:
->> +        trbe_stop_and_truncate_event(handle);
->> +        break;
->> +    }
->> +    return IRQ_HANDLED;
->> +}
->> +
->> +static const struct coresight_ops_sink arm_trbe_sink_ops = {
->> +    .enable        = arm_trbe_enable,
->> +    .disable    = arm_trbe_disable,
->> +    .alloc_buffer    = arm_trbe_alloc_buffer,
->> +    .free_buffer    = arm_trbe_free_buffer,
->> +    .update_buffer    = arm_trbe_update_buffer,
->> +};
->> +
->> +static const struct coresight_ops arm_trbe_cs_ops = {
->> +    .sink_ops    = &arm_trbe_sink_ops,
->> +};
->> +
->> +static ssize_t align_show(struct device *dev, struct device_attribute *attr, char *buf)
->> +{
->> +    struct trbe_cpudata *cpudata = dev_get_drvdata(dev);
->> +
->> +    return sprintf(buf, "%llx\n", cpudata->trbe_align);
->> +}
->> +static DEVICE_ATTR_RO(align);
->> +
->> +static ssize_t dbm_show(struct device *dev, struct device_attribute *attr, char *buf)
->> +{
->> +    struct trbe_cpudata *cpudata = dev_get_drvdata(dev);
->> +
->> +    return sprintf(buf, "%d\n", cpudata->trbe_dbm);
->> +}
->> +static DEVICE_ATTR_RO(dbm);
->> +
->> +static struct attribute *arm_trbe_attrs[] = {
->> +    &dev_attr_align.attr,
->> +    &dev_attr_dbm.attr,
->> +    NULL,
->> +};
->> +
->> +static const struct attribute_group arm_trbe_group = {
->> +    .attrs = arm_trbe_attrs,
->> +};
->> +
->> +static const struct attribute_group *arm_trbe_groups[] = {
->> +    &arm_trbe_group,
->> +    NULL,
->> +};
->> +
->> +static void arm_trbe_probe_coresight_cpu(void *info)
->> +{
->> +    struct trbe_drvdata *drvdata = info;
->> +    struct coresight_desc desc = { 0 };
->> +    int cpu = smp_processor_id();
->> +    struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
->> +    struct coresight_device *trbe_csdev = per_cpu(csdev_sink, cpu);
->> +    u64 trbidr = read_sysreg_s(SYS_TRBIDR_EL1);
-> 
-> This must be done only after the "is_trbe_available()". Otherwise
-> we get an UNDEFINED instruction abort.
-
-Okay, will move read_sysreg_s() after is_trbe_programmable() instead.
-
-> 
->> +    struct device *dev;
->> +
->> +    if (WARN_ON(!cpudata))
->> +        goto cpu_clear;
->> +
->> +    if (trbe_csdev)
->> +        return;
->> +
->> +    cpudata->cpu = smp_processor_id();
->> +    cpudata->drvdata = drvdata;
->> +    dev = &cpudata->drvdata->pdev->dev;
->> +
->> +    if (!is_trbe_available()) {
->> +        pr_err("TRBE is not implemented on cpu %d\n", cpudata->cpu);
->> +        goto cpu_clear;
->> +    }
->> +
->> +    if (!is_trbe_programmable(trbidr)) {
->> +        pr_err("TRBE is owned in higher exception level on cpu %d\n", cpudata->cpu);
->> +        goto cpu_clear;
->> +    }
->> +    desc.name = devm_kasprintf(dev, GFP_KERNEL, "%s%d", DRVNAME, smp_processor_id());
->> +    if (IS_ERR(desc.name))
->> +        goto cpu_clear;
->> +
->> +    desc.type = CORESIGHT_DEV_TYPE_SINK;
->> +    desc.subtype.sink_subtype = CORESIGHT_DEV_SUBTYPE_SINK_PERCPU_SYSMEM;
->> +    desc.ops = &arm_trbe_cs_ops;
->> +    desc.pdata = dev_get_platdata(dev);
->> +    desc.groups = arm_trbe_groups;
->> +    desc.dev = dev;
->> +    trbe_csdev = coresight_register(&desc);
->> +    if (IS_ERR(trbe_csdev))
->> +        goto cpu_clear;
->> +
->> +    dev_set_drvdata(&trbe_csdev->dev, cpudata);
->> +    cpudata->trbe_dbm = get_trbe_flag_update(trbidr);
->> +    cpudata->trbe_align = 1ULL << get_trbe_address_align(trbidr);
->> +    if (cpudata->trbe_align > SZ_2K) {
->> +        pr_err("Unsupported alignment on cpu %d\n", cpudata->cpu);
->> +        goto cpu_clear;
-> 
-> Should we unregister the coresight device in this case ?  There is no point
-> in having the device around if it is not supported.
-
-Okay, will call coresight_unregister() in that case.
-
-> 
->> +    }
->> +    per_cpu(csdev_sink, cpu) = trbe_csdev;
->> +    trbe_reset_local();
->> +    enable_percpu_irq(drvdata->irq, IRQ_TYPE_NONE);
->> +    return;
->> +cpu_clear:
->> +    cpumask_clear_cpu(cpudata->cpu, &cpudata->drvdata->supported_cpus);
->> +}
->> +
->> +static void arm_trbe_remove_coresight_cpu(void *info)
->> +{
->> +    int cpu = smp_processor_id();
->> +    struct trbe_drvdata *drvdata = info;
->> +    struct trbe_cpudata *cpudata = per_cpu_ptr(drvdata->cpudata, cpu);
->> +    struct coresight_device *trbe_csdev = per_cpu(csdev_sink, cpu);
->> +
-> 
-> nit: Is it better to use this_cpu_ptr() every where above/below to make it explicit ?
-
-csdev_sink is already a percpu pointer.
-
-> 
->> +    if (trbe_csdev) {
->> +        coresight_unregister(trbe_csdev);
->> +        cpudata->drvdata = NULL;
->> +        per_cpu(csdev_sink, cpu) = NULL;
->> +    }
->> +    disable_percpu_irq(drvdata->irq);
->> +    trbe_reset_local();
->> +}
->> +
->> +static int arm_trbe_probe_coresight(struct trbe_drvdata *drvdata)
->> +{
->> +    drvdata->cpudata = alloc_percpu(typeof(*drvdata->cpudata));
->> +    if (IS_ERR(drvdata->cpudata))
->> +        return PTR_ERR(drvdata->cpudata);
->> +
->> +    arm_trbe_probe_coresight_cpu(drvdata);
->> +    smp_call_function_many(&drvdata->supported_cpus, arm_trbe_probe_coresight_cpu, drvdata, 1);
->> +    return 0;
->> +}
->> +
->> +static int arm_trbe_remove_coresight(struct trbe_drvdata *drvdata)
->> +{
->> +    arm_trbe_remove_coresight_cpu(drvdata);
->> +    smp_call_function_many(&drvdata->supported_cpus, arm_trbe_remove_coresight_cpu, drvdata, 1);
->> +    free_percpu(drvdata->cpudata);
->> +    return 0;
->> +}
->> +
->> +static int arm_trbe_cpu_startup(unsigned int cpu, struct hlist_node *node)
->> +{
->> +    struct trbe_drvdata *drvdata = hlist_entry_safe(node, struct trbe_drvdata, hotplug_node);
->> +
->> +    if (cpumask_test_cpu(cpu, &drvdata->supported_cpus)) {
-> 
-> nit: Add a comment ?
-> 
->         /*
->          * If this CPU was not probed for TRBE, initialize
->          * it now.
->          */
-
-Sure, will add the above.
-
-> 
->> +        if (!per_cpu(csdev_sink, cpu)) {
->> +            arm_trbe_probe_coresight_cpu(drvdata);
->> +        } else {
->> +            trbe_reset_local();
->> +            enable_percpu_irq(drvdata->irq, IRQ_TYPE_NONE);
->> +        }
->> +    }
->> +    return 0;
->> +}
->> +
->> +static int arm_trbe_cpu_teardown(unsigned int cpu, struct hlist_node *node)
->> +{
->> +    struct trbe_drvdata *drvdata = hlist_entry_safe(node, struct trbe_drvdata, hotplug_node);
->> +
->> +    if (cpumask_test_cpu(cpu, &drvdata->supported_cpus)) {
->> +        disable_percpu_irq(drvdata->irq);
->> +        trbe_reset_local();
->> +    }
->> +    return 0;
->> +}
->> +
->> +static int arm_trbe_probe_cpuhp(struct trbe_drvdata *drvdata)
->> +{
->> +    enum cpuhp_state trbe_online;
->> +
->> +    trbe_online = cpuhp_setup_state_multi(CPUHP_AP_ONLINE_DYN, DRVNAME,
->> +                    arm_trbe_cpu_startup, arm_trbe_cpu_teardown);
->> +    if (trbe_online < 0)
->> +        return -EINVAL;
->> +
->> +    if (cpuhp_state_add_instance(trbe_online, &drvdata->hotplug_node))
->> +        return -EINVAL;
->> +
->> +    drvdata->trbe_online = trbe_online;
->> +    return 0;
->> +}
->> +
->> +static void arm_trbe_remove_cpuhp(struct trbe_drvdata *drvdata)
->> +{
->> +    cpuhp_remove_multi_state(drvdata->trbe_online);
->> +}
->> +
->> +static int arm_trbe_probe_irq(struct platform_device *pdev,
->> +                  struct trbe_drvdata *drvdata)
->> +{
->> +    drvdata->irq = platform_get_irq(pdev, 0);
->> +    if (!drvdata->irq) {
->> +        pr_err("IRQ not found for the platform device\n");
->> +        return -ENXIO;
->> +    }
->> +
->> +    if (!irq_is_percpu(drvdata->irq)) {
->> +        pr_err("IRQ is not a PPI\n");
->> +        return -EINVAL;
->> +    }
->> +
->> +    if (irq_get_percpu_devid_partition(drvdata->irq, &drvdata->supported_cpus))
->> +        return -EINVAL;
->> +
->> +    drvdata->handle = alloc_percpu(typeof(*drvdata->handle));
->> +    if (!drvdata->handle)
->> +        return -ENOMEM;
->> +
->> +    if (request_percpu_irq(drvdata->irq, arm_trbe_irq_handler, DRVNAME, drvdata->handle)) {
->> +        free_percpu(drvdata->handle);
->> +        return -EINVAL;
->> +    }
->> +    return 0;
->> +}
->> +
->> +static void arm_trbe_remove_irq(struct trbe_drvdata *drvdata)
->> +{
->> +    free_percpu_irq(drvdata->irq, drvdata->handle);
->> +    free_percpu(drvdata->handle);
->> +}
->> +
->> +static int arm_trbe_device_probe(struct platform_device *pdev)
->> +{
->> +    struct coresight_platform_data *pdata;
->> +    struct trbe_drvdata *drvdata;
->> +    struct device *dev = &pdev->dev;
->> +    int ret;
->> +
->> +    drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
->> +    if (IS_ERR(drvdata))
->> +        return -ENOMEM;
->> +
->> +    pdata = coresight_get_platform_data(dev);
-> 
-> Not sure if this is necessary. We don't have any CoreSight specific
-> data in the bindings.
-
-Without desc.pdata which is dev_get_platdata(dev), coresight_register()
-just fails. Do you see any other alternative for desc.pdata instead ?
-
-[    1.465221] pc : coresight_register+0x1f0/0x338
-[    1.465383] lr : coresight_register+0x144/0x338
-[    1.465483] sp : ffff80001003ba80
-[    1.465583] x29: ffff80001003ba80 x28: ffff000800286c10 
-[    1.465712] x27: 0000000000000002 x26: ffff00087f7d6e88 
-[    1.465883] x25: 0000000000000020 x24: ffff000802168b80 
-[    1.465983] x23: ffff800011bd99c0 x22: ffff800011e6f000 
-[    1.466183] x21: 0000000000000000 x20: ffff80001003bb28 
-[    1.466286] x19: ffff00080217b400 x18: ffffffffffffffff 
-[    1.466483] x17: 00000000000000c0 x16: fffffc0020085e40 
-[    1.466613] x15: ffff800011bd9948 x14: ffff000802131a1c 
-[    1.466783] x13: ffff00080213127d x12: 0000000000000000 
-[    1.466883] x11: 0101010101010101 x10: 7f7f7f7f7f7f7f7f 
-[    1.467083] x9 : 686260717376672e x8 : 7f7f7f7f7f7f7f7f 
-[    1.467206] x7 : 72716475687162ff x6 : 8000000000000000 
-[    1.467383] x5 : ffff000800090000 x4 : ffff000800090000 
-[    1.467514] x3 : 0000000000000000 x2 : 0000000000000000 
-[    1.467596] x1 : 0000000000000001 x0 : 0000000000000000 
-[    1.467783] Call trace:
-[    1.467883]  coresight_register+0x1f0/0x338
-[    1.468006]  arm_trbe_probe_coresight_cpu+0x144/0x238
-[    1.468088]  arm_trbe_device_probe+0xd0/0x200
-[    1.468283]  platform_probe+0x68/0xe0
-[    1.468383]  really_probe+0x118/0x3e0
-[    1.468508]  driver_probe_device+0x5c/0xc0
-[    1.468583]  device_driver_attach+0x74/0x80
-[    1.468683]  __driver_attach+0x8c/0xd8
-[    1.468825]  bus_for_each_dev+0x7c/0xd8
-[    1.468907]  driver_attach+0x24/0x30
-[    1.469071]  bus_add_driver+0x154/0x200
-[    1.469183]  driver_register+0x64/0x120
-[    1.469290]  __platform_driver_register+0x28/0x38
-[    1.469399]  arm_trbe_init+0x58/0x88
-[    1.469562]  do_one_initcall+0x60/0x1d8
-[    1.469644]  kernel_init_freeable+0x1f4/0x24c
-[    1.469783]  kernel_init+0x14/0x118
-[    1.469890]  ret_from_fork+0x10/0x30
-[    1.469983] Code: 17ffff98 92800173 17ffffef f9400262 (b9400440) 
-[    1.470183] ---[ end trace 20f096c5ea194114 ]---
-[    1.470300] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00
-
-> 
->> +    if (IS_ERR(pdata)) {
->> +        kfree(drvdata);
-> 
-> This is not required. The cleanup should automatically free this up.
-> In fact this will be problematic and will cause double free.
-
-Okay.
-
-> 
->> +        return -ENOMEM;
->> +    }
->> +
->> +    dev_set_drvdata(dev, drvdata);
->> +    dev->platform_data = pdata;
->> +    drvdata->pdev = pdev;
->> +    ret = arm_trbe_probe_irq(pdev, drvdata);
->> +    if (ret)
->> +        goto irq_failed;
->> +
->> +    ret = arm_trbe_probe_coresight(drvdata);
->> +    if (ret)
->> +        goto probe_failed;
->> +
->> +    ret = arm_trbe_probe_cpuhp(drvdata);
->> +    if (ret)
->> +        goto cpuhp_failed;
->> +
->> +    return 0;
->> +cpuhp_failed:
->> +    arm_trbe_remove_coresight(drvdata);
->> +probe_failed:
->> +    arm_trbe_remove_irq(drvdata);
->> +irq_failed:
->> +    kfree(pdata);
->> +    kfree(drvdata);
-> 
-> None of these "kfree" is needed. It will be automatically freed
-> when the probe fails.
-
-Will drop these kfree().
-
-> 
->> +    return ret;
->> +}
->> +
->> +static int arm_trbe_device_remove(struct platform_device *pdev)
->> +{
->> +    struct coresight_platform_data *pdata = dev_get_platdata(&pdev->dev);
->> +    struct trbe_drvdata *drvdata = platform_get_drvdata(pdev);
->> +
->> +    arm_trbe_remove_coresight(drvdata);
->> +    arm_trbe_remove_cpuhp(drvdata);
->> +    arm_trbe_remove_irq(drvdata);
-> 
->> +    kfree(pdata);
->> +    kfree(drvdata);
-> 
-> Same as above.
-
-Will drop these kfree().
-
-> 
->> +    return 0;
->> +}
->> +
->> +static const struct of_device_id arm_trbe_of_match[] = {
->> +    { .compatible = "arm,trace-buffer-extension"},
->> +    {},
->> +};
->> +MODULE_DEVICE_TABLE(of, arm_trbe_of_match);
->> +
->> +static struct platform_driver arm_trbe_driver = {
->> +    .driver    = {
->> +        .name = DRVNAME,
->> +        .of_match_table = of_match_ptr(arm_trbe_of_match),
->> +        .suppress_bind_attrs = true,
->> +    },
->> +    .probe    = arm_trbe_device_probe,
->> +    .remove    = arm_trbe_device_remove,
->> +};
->> +
->> +static int __init arm_trbe_init(void)
->> +{
->> +    int ret;
->> +
->> +    if (arm64_kernel_unmapped_at_el0()) {
->> +        pr_err("TRBE wouldn't work if kernel gets unmapped at EL0\n");
->> +        return -EOPNOTSUPP;
->> +    }
->> +
->> +    ret = platform_driver_register(&arm_trbe_driver);
->> +    if (!ret)
->> +        return 0;
->> +
->> +    pr_err("Error registering %s platform driver\n", DRVNAME);
->> +    return ret;
->> +}
->> +
->> +static void __exit arm_trbe_exit(void)
->> +{
->> +    platform_driver_unregister(&arm_trbe_driver);
->> +}
->> +module_init(arm_trbe_init);
->> +module_exit(arm_trbe_exit);
->> +
->> +MODULE_AUTHOR("Anshuman Khandual <anshuman.khandual@arm.com>");
->> +MODULE_DESCRIPTION("Arm Trace Buffer Extension (TRBE) driver");
->> +MODULE_LICENSE("GPL v2");
->> diff --git a/drivers/hwtracing/coresight/coresight-trbe.h b/drivers/hwtracing/coresight/coresight-trbe.h
->> new file mode 100644
->> index 0000000..43308bc
->> --- /dev/null
->> +++ b/drivers/hwtracing/coresight/coresight-trbe.h
->> @@ -0,0 +1,160 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/*
->> + * This contains all required hardware related helper functions for
->> + * Trace Buffer Extension (TRBE) driver in the coresight framework.
->> + *
->> + * Copyright (C) 2020 ARM Ltd.
->> + *
->> + * Author: Anshuman Khandual <anshuman.khandual@arm.com>
->> + */
->> +#include <linux/coresight.h>
->> +#include <linux/device.h>
->> +#include <linux/irq.h>
->> +#include <linux/kernel.h>
->> +#include <linux/of.h>
->> +#include <linux/platform_device.h>
->> +#include <linux/smp.h>
->> +
->> +#include "coresight-etm-perf.h"
->> +
->> +DECLARE_PER_CPU(struct coresight_device *, csdev_sink);
-> 
-> This belongs to coresight-priv.h.
-
-Okay, will move.
-
-> 
->> +
->> +static inline bool is_trbe_available(void)
->> +{
->> +    u64 aa64dfr0 = read_sysreg_s(SYS_ID_AA64DFR0_EL1);
->> +    unsigned int trbe = cpuid_feature_extract_unsigned_field(aa64dfr0, ID_AA64DFR0_TRBE_SHIFT);
->> +
->> +    return trbe >= 0b0001;
->> +}
->> +
->> +static inline bool is_trbe_enabled(void)
->> +{
->> +    u64 trblimitr = read_sysreg_s(SYS_TRBLIMITR_EL1);
->> +
->> +    return trblimitr & TRBLIMITR_ENABLE;
->> +}
->> +
->> +#define TRBE_EC_OTHERS        0
->> +#define TRBE_EC_STAGE1_ABORT    36
->> +#define TRBE_EC_STAGE2_ABORT    37
->> +
->> +static inline int get_trbe_ec(u64 trbsr)
->> +{
->> +    return (trbsr >> TRBSR_EC_SHIFT) & TRBSR_EC_MASK;
->> +}
->> +
->> +#define TRBE_BSC_NOT_STOPPED    0
->> +#define    TRBE_BSC_FILLED        1
-> 
-> nit: Use space instead of TAB here.
-
-Sure, will change.
-
-> 
->> +#define TRBE_BSC_TRIGGERED    2
->> +
->> +static inline int get_trbe_bsc(u64 trbsr)
->> +{
->> +    return (trbsr >> TRBSR_BSC_SHIFT) & TRBSR_BSC_MASK;
->> +}
->> +
->> +static inline void clr_trbe_irq(void)
->> +{
->> +    u64 trbsr = read_sysreg_s(SYS_TRBSR_EL1);
->> +
->> +    trbsr &= ~TRBSR_IRQ;
->> +    write_sysreg_s(trbsr, SYS_TRBSR_EL1);
->> +}
->> +
->> +static inline bool is_trbe_irq(u64 trbsr)
->> +{
->> +    return trbsr & TRBSR_IRQ;
->> +}
->> +
->> +static inline bool is_trbe_trg(u64 trbsr)
->> +{
->> +    return trbsr & TRBSR_TRG;
->> +}
->> +
->> +static inline bool is_trbe_wrap(u64 trbsr)
->> +{
->> +    return trbsr & TRBSR_WRAP;
->> +}
->> +
->> +static inline bool is_trbe_abort(u64 trbsr)
->> +{
->> +    return trbsr & TRBSR_ABORT;
->> +}
->> +
->> +static inline bool is_trbe_running(u64 trbsr)
->> +{
->> +    return !(trbsr & TRBSR_STOP);
->> +}
->> +
->> +#define TRBE_TRIG_MODE_STOP        0
->> +#define TRBE_TRIG_MODE_IRQ        1
->> +#define TRBE_TRIG_MODE_IGNORE        3
->> +
->> +#define TRBE_FILL_MODE_FILL        0
->> +#define TRBE_FILL_MODE_WRAP        1
->> +#define TRBE_FILL_MODE_CIRCULAR_BUFFER    3
->> +
->> +static inline void set_trbe_disabled(void)
->> +{
->> +    u64 trblimitr = read_sysreg_s(SYS_TRBLIMITR_EL1);
->> +
->> +    trblimitr &= ~TRBLIMITR_ENABLE;
->> +    write_sysreg_s(trblimitr, SYS_TRBLIMITR_EL1);
->> +}
->> +
->> +static inline bool get_trbe_flag_update(u64 trbidr)
->> +{
->> +    return trbidr & TRBIDR_FLAG;
->> +}
->> +
->> +static inline bool is_trbe_programmable(u64 trbidr)
->> +{
->> +    return !(trbidr & TRBIDR_PROG);
->> +}
->> +
->> +static inline int get_trbe_address_align(u64 trbidr)
->> +{
->> +    return (trbidr >> TRBIDR_ALIGN_SHIFT) & TRBIDR_ALIGN_MASK;
->> +}
->> +
->> +static inline unsigned long get_trbe_write_pointer(void)
->> +{
->> +    u64 trbptr = read_sysreg_s(SYS_TRBPTR_EL1);
->> +    unsigned long addr = (trbptr >> TRBPTR_PTR_SHIFT) & TRBPTR_PTR_MASK;
-> 
-> You don't need this shifting and masking. trbptr_el1 is a whole 64bit register
-
-Okay, will also drop TRBPTR_PTR_SHIFT and TRBPTR_PTR_MASK from here.
-
-> 
->> +
->> +    return addr;
->> +}
->> +
->> +static inline void set_trbe_write_pointer(unsigned long addr)
->> +{
->> +    WARN_ON(is_trbe_enabled());
->> +    addr = (addr >> TRBPTR_PTR_SHIFT) & TRBPTR_PTR_MASK;
-> 
-> Same as above.
-> 
->> +    write_sysreg_s(addr, SYS_TRBPTR_EL1);
->> +}
->> +
->> +static inline unsigned long get_trbe_limit_pointer(void)
->> +{
->> +    u64 trblimitr = read_sysreg_s(SYS_TRBLIMITR_EL1);
->> +    unsigned long limit = (trblimitr >> TRBLIMITR_LIMIT_SHIFT) & TRBLIMITR_LIMIT_MASK;
->> +    unsigned long addr = limit << TRBLIMITR_LIMIT_SHIFT;
->> +
->> +    WARN_ON(!IS_ALIGNED(addr, PAGE_SIZE));
->> +    return addr;
->> +}
->> +
->> +static inline unsigned long get_trbe_base_pointer(void)
->> +{
->> +    u64 trbbaser = read_sysreg_s(SYS_TRBBASER_EL1);
-> 
-> 
->> +    unsigned long addr = (trbbaser >> TRBBASER_BASE_SHIFT) & TRBBASER_BASE_MASK;
->> +
->> +    addr = addr << TRBBASER_BASE_SHIFT;
-> 
-> nit: Could we instead do :
-> 
->     addr = trbbaser & (TRBBASER_BASE_MASK << TRBBASER_BASE_SHIFT); ?
-
-Okay, will change.
-
-> 
->> +    WARN_ON(!IS_ALIGNED(addr, PAGE_SIZE));
->> +    return addr;
->> +}
->> +
->> +static inline void set_trbe_base_pointer(unsigned long addr)
->> +{
->> +    WARN_ON(is_trbe_enabled());
->> +    WARN_ON(!IS_ALIGNED(addr, (1UL << TRBLIMITR_LIMIT_SHIFT)));
-> 
-> TRBBASER_BASE_SHIFT ?
-
-Right, will replace.
-
-- Anshuman
