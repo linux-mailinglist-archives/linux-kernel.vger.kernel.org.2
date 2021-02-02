@@ -2,60 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1836230CACD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:03:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B8F930CACA
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:03:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239303AbhBBTAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 14:00:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57278 "EHLO
+        id S239219AbhBBTAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 14:00:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239213AbhBBS6V (ORCPT
+        with ESMTP id S239216AbhBBS6X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 13:58:21 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51961C06178A
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 10:57:41 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id c18so12601090pls.8
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 10:57:41 -0800 (PST)
+        Tue, 2 Feb 2021 13:58:23 -0500
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2EECC06178C
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 10:57:42 -0800 (PST)
+Received: by mail-pf1-x44a.google.com with SMTP id f6so7649620pfn.6
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 10:57:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=JmOMIXWttp6i62xS7cuIM/ozODaFpac3D3d4bnLpAU8=;
-        b=euAu6Opvq1y1VpidLQ8Oq09e/TrLgb/rbhNuIy2MmJdEzB5ZqUlxB1H8xT8zfEB6Vj
-         3/BJsYUUVr/lDP04W+4nMyvJpPCOq38UjhDo51soy8LwSenYDFUqqpXnCT7SpBTbwtjY
-         cbCcJh8qRfoDvwUktyeGxopGlmq167RyyhBBmzRG6lINudxDvwgHgItf/N1LJFQFjct/
-         eibxVR8YJ95nhps7dxooxnJCCQlGca8uynQ1L9GlG9zvottVYQRO8M3aWUqgl6K84I6A
-         OkPyluEoHxW6iVYkDeYqPK34PiUT4fA07x9XVkUuWgbmQu7E/m8Cj7PTnbNdgLKB8L7j
-         tkpA==
+        bh=gBakp41ktk4jgkeZgHcExRdbU8Ig7SZgvQMSmr/VLBU=;
+        b=UP9UzJfzEe9/Ly/yxN5Gjfj7iCf04Nj5PvrnWKJvXZSvijmzu3M/fLZnQDrbW/Wtx6
+         R7DZZ5/gcOxTtdPj3Y1x8Mk/x4GBKvI1qdaNlihuUHMQtkgpJhlJmGHPXSYETV0yUcgX
+         1Uoem/JJthQoPjSd6iWa/PgbA1tKRBNAwtmUyRpZlyg38kE7m6Vdvk6G60EQMZkU8eVF
+         ln5XTvOQHOFrKytwn2RQoDNDqTGo4sXMrj4sGLL8T7/V/uJ8VyQ1LAAB/zR+A13ZAMVr
+         Ash90jAsH7cqQAIrK5v7MQvB7aKZmUAqfcpHhbiXyk8dNo+CS8uGxEIrpIs24/JkuVv6
+         MehQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=JmOMIXWttp6i62xS7cuIM/ozODaFpac3D3d4bnLpAU8=;
-        b=l2BN2bBNNf0lTszqgR7KhTsFubZRM9P0ZJSgSvXveAnvLoWzoQKPI8fJVZJbdVqUf8
-         JiK0ck9cSl5+sOgX2lG22Rr8BRDLx6ukKUQb+rpfvplT2q90MNSaoxC/PF6UBHT8lcgY
-         ESmazMpvJAcUD19dLy8aumh/KwkdjKQYI5Nhpo5dD3gAfacECu+/3pjCKqcAJzLOZgcS
-         UyCfED4nVfxeUtgCUvTl3dzNOCPcIHGfLzNH6xuGTLljMIboMpXnCCFrXrw8m0kAWCSG
-         iN+qaKu2ag2lvkjMw58x2ssWF9z/t7bSFIntU4cKBKrDzOaiC+u99LKtfoJ2LwOEvugz
-         04rw==
-X-Gm-Message-State: AOAM530mGb0O8X6PvCIdKTqju3ABoBZUAGZKHRi0VUQsanFonHKKgc7V
-        eeOxEOsrmXgBGxXVwl5xBkHC6lwD8AV/V7xO3iIC9uQ8aIc56nuyp1u4FGxbRcTCZEsWMUKt7lr
-        VaZfUI+Aaq4a/J7sAS43q228MNnxZ5TKXAenhy+tObm/sp1fajNa3o2HBK4m1dEiQ1YT8MXit
-X-Google-Smtp-Source: ABdhPJyALatEZ01ixKvjEw/9drTlyjjz5b4Lp2A/W9XIayTqqPdwvUTu2WeQErsecDzxzztrUEokK56l18Hf
+        bh=gBakp41ktk4jgkeZgHcExRdbU8Ig7SZgvQMSmr/VLBU=;
+        b=BtquoCgdaxqNf0nNRAJaCLEyHE8WoywSywIubrbvhhiFxwPlAI7jGoQZM42LaZjlI6
+         iZtZTXAe8tpehjV0tXEXJXFL+DMt1ZQ/ULiZ7dV99dPu75lVHINMuC/15GNA2PK4moU6
+         BMdt6vuE6Ai1R4Loo0c0Fie0FHTEHSxeunb84oz7WAIt5dNwJ3sgnUEH9485RpuZyZYe
+         TLjF8/qXwzwNRTeGfHLqFXZ5xgaDfVJe0DnvxX4AL4kAZJkAFoxYx8fKVhX463/LikHf
+         faxJo3IKKYq2YT1TTBJN9AtojKsRYQd94d0PoWKkJYl5+ToNV09Lj54RGUYSVvWfLMr+
+         2W/Q==
+X-Gm-Message-State: AOAM531B7OAFMoYvMP2MH/07DvmvGR4U0OovsEFtKjIEy0r2PpXjItDC
+        Ahbj9GOqyrwL07XGVln1Jo6J1KMHK97uqRfSlCjgOyeif2sBFJv/Uv8XW9c/XZFf6q7YNtEhAQ4
+        G6mY/RduqItlZANkBz56A0qSbI2XCnUPzJ9Az0d4IHNo9g+BB0+hvXqsugqLURPV+ERmhQDsX
+X-Google-Smtp-Source: ABdhPJzeRZOFIX9a/bG5Hmq6Upkz91nse9rF4JC93D5n4GvGY/qHC0TkdleD1Uz3WAjRhhnaXuHiUszMatv4
 Sender: "bgardon via sendgmr" <bgardon@bgardon.sea.corp.google.com>
 X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:9090:561:5a98:6d47])
- (user=bgardon job=sendgmr) by 2002:a05:6a00:2b8:b029:1b8:a114:f81f with SMTP
- id q24-20020a056a0002b8b02901b8a114f81fmr22719715pfs.19.1612292260621; Tue,
- 02 Feb 2021 10:57:40 -0800 (PST)
-Date:   Tue,  2 Feb 2021 10:57:07 -0800
+ (user=bgardon job=sendgmr) by 2002:aa7:85cc:0:b029:1be:181e:32af with SMTP id
+ z12-20020aa785cc0000b02901be181e32afmr23215062pfn.50.1612292262260; Tue, 02
+ Feb 2021 10:57:42 -0800 (PST)
+Date:   Tue,  2 Feb 2021 10:57:08 -0800
 In-Reply-To: <20210202185734.1680553-1-bgardon@google.com>
-Message-Id: <20210202185734.1680553-2-bgardon@google.com>
+Message-Id: <20210202185734.1680553-3-bgardon@google.com>
 Mime-Version: 1.0
 References: <20210202185734.1680553-1-bgardon@google.com>
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v2 01/28] KVM: x86/mmu: change TDP MMU yield function returns
- to match cond_resched
+Subject: [PATCH v2 02/28] KVM: x86/mmu: Add comment on __tdp_mmu_set_spte
 From:   Ben Gardon <bgardon@google.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
@@ -74,103 +73,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the TDP MMU yield / cond_resched functions either return
-nothing or return true if the TLBs were not flushed. These are confusing
-semantics, especially when making control flow decisions in calling
-functions.
+__tdp_mmu_set_spte is a very important function in the TDP MMU which
+already accepts several arguments and will take more in future commits.
+To offset this complexity, add a comment to the function describing each
+of the arguemnts.
 
-To clean things up, change both functions to have the same
-return value semantics as cond_resched: true if the thread yielded,
-false if it did not. If the function yielded in the _flush_ version,
-then the TLBs will have been flushed.
+No functional change intended.
 
 Reviewed-by: Peter Feiner <pfeiner@google.com>
 Acked-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Ben Gardon <bgardon@google.com>
 ---
- arch/x86/kvm/mmu/tdp_mmu.c | 39 ++++++++++++++++++++++++++++----------
- 1 file changed, 29 insertions(+), 10 deletions(-)
+ arch/x86/kvm/mmu/tdp_mmu.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
 diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 2ef8615f9dba..e9f9ff81a38e 100644
+index e9f9ff81a38e..3d8cca238eba 100644
 --- a/arch/x86/kvm/mmu/tdp_mmu.c
 +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -413,8 +413,15 @@ static inline void tdp_mmu_set_spte_no_dirty_log(struct kvm *kvm,
- 			 _mmu->shadow_root_level, _start, _end)
- 
- /*
-- * Flush the TLB if the process should drop kvm->mmu_lock.
-- * Return whether the caller still needs to flush the tlb.
-+ * Flush the TLB and yield if the MMU lock is contended or this thread needs to
-+ * return control to the scheduler.
-+ *
-+ * If this function yields, it will also reset the tdp_iter's walk over the
-+ * paging structure and the calling function should allow the iterator to
-+ * continue its traversal from the paging structure root.
-+ *
-+ * Return true if this function yielded, the TLBs were flushed, and the
-+ * iterator's traversal was reset. Return false if a yield was not needed.
-  */
- static bool tdp_mmu_iter_flush_cond_resched(struct kvm *kvm, struct tdp_iter *iter)
- {
-@@ -422,18 +429,32 @@ static bool tdp_mmu_iter_flush_cond_resched(struct kvm *kvm, struct tdp_iter *it
- 		kvm_flush_remote_tlbs(kvm);
- 		cond_resched_lock(&kvm->mmu_lock);
- 		tdp_iter_refresh_walk(iter);
--		return false;
--	} else {
- 		return true;
- 	}
-+
-+	return false;
+@@ -357,6 +357,22 @@ static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+ 				      new_spte, level);
  }
  
--static void tdp_mmu_iter_cond_resched(struct kvm *kvm, struct tdp_iter *iter)
 +/*
-+ * Yield if the MMU lock is contended or this thread needs to return control
-+ * to the scheduler.
-+ *
-+ * If this function yields, it will also reset the tdp_iter's walk over the
-+ * paging structure and the calling function should allow the iterator to
-+ * continue its traversal from the paging structure root.
-+ *
-+ * Return true if this function yielded and the iterator's traversal was reset.
-+ * Return false if a yield was not needed.
++ * __tdp_mmu_set_spte - Set a TDP MMU SPTE and handle the associated bookkeeping
++ * @kvm: kvm instance
++ * @iter: a tdp_iter instance currently on the SPTE that should be set
++ * @new_spte: The value the SPTE should be set to
++ * @record_acc_track: Notify the MM subsystem of changes to the accessed state
++ *		      of the page. Should be set unless handling an MMU
++ *		      notifier for access tracking. Leaving record_acc_track
++ *		      unset in that case prevents page accesses from being
++ *		      double counted.
++ * @record_dirty_log: Record the page as dirty in the dirty bitmap if
++ *		      appropriate for the change being made. Should be set
++ *		      unless performing certain dirty logging operations.
++ *		      Leaving record_dirty_log unset in that case prevents page
++ *		      writes from being double counted.
 + */
-+static bool tdp_mmu_iter_cond_resched(struct kvm *kvm, struct tdp_iter *iter)
- {
- 	if (need_resched() || spin_needbreak(&kvm->mmu_lock)) {
- 		cond_resched_lock(&kvm->mmu_lock);
- 		tdp_iter_refresh_walk(iter);
-+		return true;
- 	}
-+
-+	return false;
- }
- 
- /*
-@@ -469,10 +490,8 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
- 
- 		tdp_mmu_set_spte(kvm, &iter, 0);
- 
--		if (can_yield)
--			flush_needed = tdp_mmu_iter_flush_cond_resched(kvm, &iter);
--		else
--			flush_needed = true;
-+		flush_needed = !can_yield ||
-+			       !tdp_mmu_iter_flush_cond_resched(kvm, &iter);
- 	}
- 	return flush_needed;
- }
-@@ -1072,7 +1091,7 @@ static void zap_collapsible_spte_range(struct kvm *kvm,
- 
- 		tdp_mmu_set_spte(kvm, &iter, 0);
- 
--		spte_set = tdp_mmu_iter_flush_cond_resched(kvm, &iter);
-+		spte_set = !tdp_mmu_iter_flush_cond_resched(kvm, &iter);
- 	}
- 
- 	if (spte_set)
+ static inline void __tdp_mmu_set_spte(struct kvm *kvm, struct tdp_iter *iter,
+ 				      u64 new_spte, bool record_acc_track,
+ 				      bool record_dirty_log)
 -- 
 2.30.0.365.g02bc693789-goog
 
