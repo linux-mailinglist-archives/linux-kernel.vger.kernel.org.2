@@ -2,118 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C078D30C39A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 16:25:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2166830C52A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:15:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235416AbhBBPXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 10:23:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39396 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235361AbhBBPQz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 10:16:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 73BED64FA9;
-        Tue,  2 Feb 2021 15:07:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612278477;
-        bh=7HAX9sU+l6BNdNYSlFXNawad2Tcj2aC8xHHqNBYP1s8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XKvx3yKCr3Aet+YOW3UkW7IkbzSa74OLdT8mMUHQNwg6a9eXn3X4XRVquyJ601nlO
-         frR1KPWYwsQzVaX+PA0SGq4yHP3diH9dXNc8h55udX2VkaITK8mWJvAzsFPKKtTViq
-         HIn6mOKkh2xsqGeVFdx/loynQiJZHBGXWPBF6UNief//5VSQvo9UwUBEtJgBfLmTfk
-         MFqfsj6R2xOoecDMYaRp8MsaE7UvX/uMXRu7SGVZ/0HjCZL4V9K72j5s12qjmbEyD4
-         25b9KJNwDKfwEullOzRoVGxGudaStqbdgjTohcNjr+gsaE70sQkokjW2LYBYxb7+zs
-         tCKyoYTseOVqw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dave Wysochanski <dwysocha@redhat.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Sasha Levin <sashal@kernel.org>, linux-nfs@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 5/5] SUNRPC: Handle 0 length opaque XDR object data properly
-Date:   Tue,  2 Feb 2021 10:07:50 -0500
-Message-Id: <20210202150750.1864953-5-sashal@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210202150750.1864953-1-sashal@kernel.org>
-References: <20210202150750.1864953-1-sashal@kernel.org>
+        id S235139AbhBBQO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:14:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235146AbhBBPJf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 10:09:35 -0500
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C6FC0613ED;
+        Tue,  2 Feb 2021 07:08:54 -0800 (PST)
+Received: by mail-oo1-xc2a.google.com with SMTP id r199so5214536oor.2;
+        Tue, 02 Feb 2021 07:08:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VtpqTHTuBtb1sl+n26PPqf2wgY0mJA2DecZH4MubtCQ=;
+        b=s3+kfg0CbOizeKy0DHyW5sV2YEFvy9Cbw7DjXXJ++dKTS/Fpd5v84sbzRwFUA9V05D
+         t4LrgtCV41SwKixp0Ei7hrmlUjHUPUQMJVAyZu0T/FLfCQm+EEaLBJNr2IYQXBaOmdtk
+         re+HM+4esvea0naIq6AJOi/K5Hq39Kk7uDtgPD86EgJ1s+1Ix32BeQ94aoeqxCMXHhHG
+         6p6VaHNdaI5nFFXaxpa9k7nrmilosxfK1jifcMf8vcPenPqIxbmeb7ab0u3PoDTPDnUV
+         CpyZTER9Im7Oa67WgZ0dB8LpMghSsNQ8IkE9oM3hockc+w+DTB+Utsb372ZjhriWRi0Q
+         F7RA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=VtpqTHTuBtb1sl+n26PPqf2wgY0mJA2DecZH4MubtCQ=;
+        b=nnHBIQqgyw9Mb47KozgC36CfRrmISfbPCPFIQ3nivq52kQeCMmk3lYwiRVGtFPpQMD
+         VCYu3bsBRs32497118q0Uge7F0RkO8MZfDrE/3kTiLFq2m8cO/y7SZGv76F7pOi1L5td
+         p6WqqvunReb442GTsBecCfbu3MHc4lEUAYwPTm5IkROsfUt7sioQ0sqwl3JW/7VV67iq
+         zHutJloyTgwv9YLNE8inuJwASqwOliI+YfUP7oAne2FjuYJivmysd1/r7Mje08todO84
+         2tVGXEg8MVMPtcsm38R6LP6Vp4/7hg3L4KcHjFqe5nFNA9DVVOfmSWO8QLfYDGay3IXv
+         CHYw==
+X-Gm-Message-State: AOAM533+VOPqFvjXLVhdPR4jtfG6K0awMKG/LzCHETczipItGSBOBV7C
+        v/s0l/Eyt13iHDPgVDTJZug=
+X-Google-Smtp-Source: ABdhPJw/Lh2dTHaA/poXj92gvoH81isOs6bt/3k+ZF0Gtym/y8buNC4dyNRx3oVfBU5yVIQJ5+MV5g==
+X-Received: by 2002:a4a:364a:: with SMTP id p10mr15795984ooe.48.1612278534128;
+        Tue, 02 Feb 2021 07:08:54 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 3sm1307144otn.18.2021.02.02.07.08.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Feb 2021 07:08:53 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v2] hwmon: lm75: Handle broken device nodes gracefully
+To:     "Matwey V. Kornilov" <matwey@sai.msu.ru>,
+        Jean Delvare <jdelvare@suse.com>,
+        Javier Martinez Canillas <javier@osg.samsung.com>,
+        "open list:HARDWARE MONITORING" <linux-hwmon@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     matwey.kornilov@gmail.com
+References: <20210130101038.26331-1-matwey@sai.msu.ru>
+ <20210202142113.5456-1-matwey@sai.msu.ru>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+Message-ID: <4c850941-c4b7-deb9-48cb-dd41ca32bdb2@roeck-us.net>
+Date:   Tue, 2 Feb 2021 07:08:51 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210202142113.5456-1-matwey@sai.msu.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Wysochanski <dwysocha@redhat.com>
+On 2/2/21 6:21 AM, Matwey V. Kornilov wrote:
+> There is a logical flaw in lm75_probe() function introduced in
+> 
+>     commit e97a45f1b460 ("hwmon: (lm75) Add OF device ID table")
+> 
+> Note, that of_device_get_match_data() returns NULL when no match
+> found. This is the case when OF node exists but has unknown
 
-[ Upstream commit e4a7d1f7707eb44fd953a31dd59eff82009d879c ]
+is found.
 
-When handling an auth_gss downcall, it's possible to get 0-length
-opaque object for the acceptor.  In the case of a 0-length XDR
-object, make sure simple_get_netobj() fills in dest->data = NULL,
-and does not continue to kmemdup() which will set
-dest->data = ZERO_SIZE_PTR for the acceptor.
+> compatible line, while the module is still loaded via i2c
+> detection.
+> 
+> arch/powerpc/boot/dts/fsl/p2041rdb.dts:
+> 
+>     lm75b@48 {
+>     	compatible = "nxp,lm75a";
+>     	reg = <0x48>;
+>     };
+> 
+> In this case, the sensor is mistakenly considered as ADT75 variant.
+> 
+> Fixes: e97a45f1b460 ("hwmon: (lm75) Add OF device ID table")
+> Signed-off-by: Matwey V. Kornilov <matwey@sai.msu.ru>
+> ---
+>  drivers/hwmon/lm75.c | 12 +++++++++---
+>  1 file changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/hwmon/lm75.c b/drivers/hwmon/lm75.c
+> index e447febd121a..130ad5042107 100644
+> --- a/drivers/hwmon/lm75.c
+> +++ b/drivers/hwmon/lm75.c
+> @@ -561,9 +561,15 @@ static int lm75_probe(struct i2c_client *client)
+>  	int status, err;
+>  	enum lm75_type kind;
+>  
+> -	if (client->dev.of_node)
+> -		kind = (enum lm75_type)of_device_get_match_data(&client->dev);
+> -	else
+> +	if (dev->of_node) {
+> +		const struct of_device_id *match =
+> +			of_match_device(dev->driver->of_match_table, dev);
+> +
+> +		if (!match)
+> +			return -ENODEV;
+> +
+> +		kind = (enum lm75_type)(match->data);
+> +	} else
+>  		kind = i2c_match_id(lm75_ids, client)->driver_data;
+>  
 
-The trace event code can handle NULL but not ZERO_SIZE_PTR for a
-string, and so without this patch the rpcgss_context trace event
-will crash the kernel as follows:
+else needs to be in { } to match if.
 
-[  162.887992] BUG: kernel NULL pointer dereference, address: 0000000000000010
-[  162.898693] #PF: supervisor read access in kernel mode
-[  162.900830] #PF: error_code(0x0000) - not-present page
-[  162.902940] PGD 0 P4D 0
-[  162.904027] Oops: 0000 [#1] SMP PTI
-[  162.905493] CPU: 4 PID: 4321 Comm: rpc.gssd Kdump: loaded Not tainted 5.10.0 #133
-[  162.908548] Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
-[  162.910978] RIP: 0010:strlen+0x0/0x20
-[  162.912505] Code: 48 89 f9 74 09 48 83 c1 01 80 39 00 75 f7 31 d2 44 0f b6 04 16 44 88 04 11 48 83 c2 01 45 84 c0 75 ee c3 0f 1f 80 00 00 00 00 <80> 3f 00 74 10 48 89 f8 48 83 c0 01 80 38 00 75 f7 48 29 f8 c3 31
-[  162.920101] RSP: 0018:ffffaec900c77d90 EFLAGS: 00010202
-[  162.922263] RAX: 0000000000000000 RBX: 0000000000000000 RCX: 00000000fffde697
-[  162.925158] RDX: 000000000000002f RSI: 0000000000000080 RDI: 0000000000000010
-[  162.928073] RBP: 0000000000000010 R08: 0000000000000e10 R09: 0000000000000000
-[  162.930976] R10: ffff8e698a590cb8 R11: 0000000000000001 R12: 0000000000000e10
-[  162.933883] R13: 00000000fffde697 R14: 000000010034d517 R15: 0000000000070028
-[  162.936777] FS:  00007f1e1eb93700(0000) GS:ffff8e6ab7d00000(0000) knlGS:0000000000000000
-[  162.940067] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  162.942417] CR2: 0000000000000010 CR3: 0000000104eba000 CR4: 00000000000406e0
-[  162.945300] Call Trace:
-[  162.946428]  trace_event_raw_event_rpcgss_context+0x84/0x140 [auth_rpcgss]
-[  162.949308]  ? __kmalloc_track_caller+0x35/0x5a0
-[  162.951224]  ? gss_pipe_downcall+0x3a3/0x6a0 [auth_rpcgss]
-[  162.953484]  gss_pipe_downcall+0x585/0x6a0 [auth_rpcgss]
-[  162.955953]  rpc_pipe_write+0x58/0x70 [sunrpc]
-[  162.957849]  vfs_write+0xcb/0x2c0
-[  162.959264]  ksys_write+0x68/0xe0
-[  162.960706]  do_syscall_64+0x33/0x40
-[  162.962238]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  162.964346] RIP: 0033:0x7f1e1f1e57df
+Guenter
 
-Signed-off-by: Dave Wysochanski <dwysocha@redhat.com>
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- net/sunrpc/auth_gss/auth_gss_internal.h | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/net/sunrpc/auth_gss/auth_gss_internal.h b/net/sunrpc/auth_gss/auth_gss_internal.h
-index c5603242b54bf..f6d9631bd9d00 100644
---- a/net/sunrpc/auth_gss/auth_gss_internal.h
-+++ b/net/sunrpc/auth_gss/auth_gss_internal.h
-@@ -34,9 +34,12 @@ simple_get_netobj(const void *p, const void *end, struct xdr_netobj *dest)
- 	q = (const void *)((const char *)p + len);
- 	if (unlikely(q > end || q < p))
- 		return ERR_PTR(-EFAULT);
--	dest->data = kmemdup(p, len, GFP_NOFS);
--	if (unlikely(dest->data == NULL))
--		return ERR_PTR(-ENOMEM);
-+	if (len) {
-+		dest->data = kmemdup(p, len, GFP_NOFS);
-+		if (unlikely(dest->data == NULL))
-+			return ERR_PTR(-ENOMEM);
-+	} else
-+		dest->data = NULL;
- 	dest->len = len;
- 	return q;
- }
--- 
-2.27.0
+>  	if (!i2c_check_functionality(client->adapter,
+> 
 
