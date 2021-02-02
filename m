@@ -2,158 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 585A930BD8A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 12:59:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5735A30BD9E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:05:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbhBBL6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 06:58:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230091AbhBBL5q (ORCPT
+        id S229870AbhBBMCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 07:02:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21724 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229525AbhBBMCV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 06:57:46 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 686FAC0613D6;
-        Tue,  2 Feb 2021 03:57:06 -0800 (PST)
-Date:   Tue, 02 Feb 2021 11:57:04 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612267024;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
+        Tue, 2 Feb 2021 07:02:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612267254;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=pyYbw7qwO504szOI1StzKcIxOn6HL+YVYSKnlsB/ohQ=;
-        b=wVAcbUrFJWyqq9Pu8Ax56/AXhdqtWZDxv5mvwxZ8lyXcAlydAjN+Z/2xnxeV1GcqNkAgEH
-        KXuCaoiG2A5uyFF3VCckF+ttwy7MRo0zfB7zgikruVsautk9eCITv2WJKxy2PaaxgUXU77
-        Zf7KpwK5G27fAzHT83QKgIztUgptlf5tDspGCTcMqJKAQGZRd+n/PmUSeiUcDTasdor/90
-        yQSuzPGR6+Ge4KDbOVEEfeD60Mi7Ch2gcnjok5Hh1EANpACQW620VbPoWrSepU/j0FfGHy
-        mK0Q8pPZfU18DWQ4GWmb6zMy+ijT6Zi1uT82ecqWY3ieacf9JXtowjVeZX+Ipg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612267024;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pyYbw7qwO504szOI1StzKcIxOn6HL+YVYSKnlsB/ohQ=;
-        b=EcqgT8wfKRw+IRIqqlMYrXSTx3FovtIezSUsglqFqcRhbp06a0O7MIXmXEfgKl+IPsCT+T
-        egIQWetvMJcaSsCg==
-From:   "tip-bot2 for Kan Liang" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/x86/intel: Factor out intel_update_topdown_event()
-Cc:     Kan Liang <kan.liang@linux.intel.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
+        bh=aHGKh34huCoeQ10zAXIKIqStyqxcdVd3EczNNrrMJKo=;
+        b=A9mxHpJmTJTTG0NJXB+6FtDGR09y3GZYk1tBK9c5jqr1I8aQZkZ7ZMklLJUeR3H77IaLvL
+        ncsAMYwsX3vkydVm3uf4C2SCTQGpJtioPi8353L1ud44H5rmKcA/unyzf72g67dvF3cLzG
+        ogw38A+j4RTrPNvP62+O5xhRVwtJAFA=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-255-ydA_z31ZOF-4PIWQDfsKXw-1; Tue, 02 Feb 2021 07:00:49 -0500
+X-MC-Unique: ydA_z31ZOF-4PIWQDfsKXw-1
+Received: by mail-ed1-f71.google.com with SMTP id y6so9442162edc.17
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 04:00:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aHGKh34huCoeQ10zAXIKIqStyqxcdVd3EczNNrrMJKo=;
+        b=oinXH2egeFZSnYEk405vj0puoHdKpGAdEfU6ZNp3FH9HXEMLI4Gq8LHRJzFPM16KUS
+         nX5OTNCprNNkrWWqRMrY4iZ07pAcNBluv6WyqxIVRE46ubm3s/gsaL2uBP0CTOgISIwU
+         I3KWxm4/r8urWNgHn1VUct+1H3sHbL517yQGy4NjvT62xgPvYzF9gN58K1NdTjSLl2Qh
+         igULtPrryGW8lUciRv60KgCyFCQ8utPfCOGDO9gFn6VXvRMqrr5/ylhwhB1MiTyewJVu
+         wdrTdr2TBJViL8ixdIl3RJnZAXi6VkvhptZF0NHbEK3Nkx+41ZLC25bubkKrMFkfe/mu
+         skOA==
+X-Gm-Message-State: AOAM5301JZIhfQ9XodJQDUIjRevkbN+OEXgNvqkWVdjVbGk3RuzdLGy7
+        A+f6YULlQ/m65+ggpaJCMD8MPvC8lxPMuyaTaS6YslJODC0hrLQbP3Pty8chedqqLNPJlIGXb8H
+        nUk2ueQS+thCm1IIT259my3ObatRazy5YMy0MqqxaC+E1JkiwIw8y22oXTk80kd3wQrIQ2DL0ju
+        xa
+X-Received: by 2002:aa7:db13:: with SMTP id t19mr6287746eds.74.1612267247655;
+        Tue, 02 Feb 2021 04:00:47 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwAoDNQ+n37lIfK2cZm2KBd+D3ZU/PVDvl7vRG2S41PzSISFuqSXCIAJs/okgJWX3zfEz4F6w==
+X-Received: by 2002:aa7:db13:: with SMTP id t19mr6287709eds.74.1612267247385;
+        Tue, 02 Feb 2021 04:00:47 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id z20sm9910231edx.15.2021.02.02.04.00.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Feb 2021 04:00:46 -0800 (PST)
+Subject: Re: [PATCH v14 03/11] KVM: vmx/pmu: Add PMU_CAP_LBR_FMT check when
+ guest LBR is enabled
+To:     Like Xu <like.xu@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, ak@linux.intel.com,
+        wei.w.wang@intel.com, kan.liang@intel.com,
+        alex.shi@linux.alibaba.com, kvm@vger.kernel.org, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <1611873611-156687-3-git-send-email-kan.liang@linux.intel.com>
-References: <1611873611-156687-3-git-send-email-kan.liang@linux.intel.com>
+References: <20210201051039.255478-1-like.xu@linux.intel.com>
+ <20210201051039.255478-4-like.xu@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <a0ffee96-366c-205a-1507-7db1d8b44de5@redhat.com>
+Date:   Tue, 2 Feb 2021 13:00:45 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Message-ID: <161226702426.23325.16073275084016150300.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210201051039.255478-4-like.xu@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+On 01/02/21 06:10, Like Xu wrote:
+> Usespace could set the bits [0, 5] of the IA32_PERF_CAPABILITIES
+> MSR which tells about the record format stored in the LBR records.
+> 
+> The LBR will be enabled on the guest if host perf supports LBR
+> (checked via x86_perf_get_lbr()) and the vcpu model is compatible
+> with the host one.
+> 
+> Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> ---
+>   arch/x86/kvm/vmx/capabilities.h |  1 +
+>   arch/x86/kvm/vmx/pmu_intel.c    | 17 +++++++++++++++++
+>   arch/x86/kvm/vmx/vmx.c          |  7 +++++++
+>   arch/x86/kvm/vmx/vmx.h          | 11 +++++++++++
+>   4 files changed, 36 insertions(+)
+> 
+> diff --git a/arch/x86/kvm/vmx/capabilities.h b/arch/x86/kvm/vmx/capabilities.h
+> index a58cf3655351..db1178a66d93 100644
+> --- a/arch/x86/kvm/vmx/capabilities.h
+> +++ b/arch/x86/kvm/vmx/capabilities.h
+> @@ -19,6 +19,7 @@ extern int __read_mostly pt_mode;
+>   #define PT_MODE_HOST_GUEST	1
+>   
+>   #define PMU_CAP_FW_WRITES	(1ULL << 13)
+> +#define PMU_CAP_LBR_FMT		0x3f
+>   
+>   struct nested_vmx_msrs {
+>   	/*
+> diff --git a/arch/x86/kvm/vmx/pmu_intel.c b/arch/x86/kvm/vmx/pmu_intel.c
+> index f632039173ff..01b2cd8eca47 100644
+> --- a/arch/x86/kvm/vmx/pmu_intel.c
+> +++ b/arch/x86/kvm/vmx/pmu_intel.c
+> @@ -168,6 +168,21 @@ static inline struct kvm_pmc *get_fw_gp_pmc(struct kvm_pmu *pmu, u32 msr)
+>   	return get_gp_pmc(pmu, msr, MSR_IA32_PMC0);
+>   }
+>   
+> +bool intel_pmu_lbr_is_compatible(struct kvm_vcpu *vcpu)
+> +{
+> +	struct x86_pmu_lbr *lbr = vcpu_to_lbr_records(vcpu);
+> +
+> +	/*
+> +	 * As a first step, a guest could only enable LBR feature if its
+> +	 * cpu model is the same as the host because the LBR registers
+> +	 * would be pass-through to the guest and they're model specific.
+> +	 */
+> +	if (boot_cpu_data.x86_model != guest_cpuid_model(vcpu))
+> +		return false;
+> +
+> +	return !x86_perf_get_lbr(lbr);
 
-Commit-ID:     628d923a3c464db98c1c98bb1e0cd50804caf681
-Gitweb:        https://git.kernel.org/tip/628d923a3c464db98c1c98bb1e0cd50804caf681
-Author:        Kan Liang <kan.liang@linux.intel.com>
-AuthorDate:    Thu, 28 Jan 2021 14:40:08 -08:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Mon, 01 Feb 2021 15:31:36 +01:00
+This seems the wrong place to me.  What about adding
 
-perf/x86/intel: Factor out intel_update_topdown_event()
++	if (intel_pmu_lbr_is_compatible(vcpu))
++		x86_perf_get_lbr(lbr_desc);
++	else
++		lbr_desc->records.nr = 0;
+  }
 
-Similar to Ice Lake, Intel Sapphire Rapids server also supports the
-topdown performance metrics feature. The difference is that Intel
-Sapphire Rapids server extends the PERF_METRICS MSR to feature TMA
-method level two metrics, which will introduce 8 metrics events. Current
-icl_update_topdown_event() only check 4 level one metrics events.
+at the end of intel_pmu_refresh instead?
 
-Factor out intel_update_topdown_event() to facilitate the code sharing
-between Ice Lake and Sapphire Rapids.
+Paolo
 
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/1611873611-156687-3-git-send-email-kan.liang@linux.intel.com
----
- arch/x86/events/intel/core.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
-
-diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index fe94008..d07408d 100644
---- a/arch/x86/events/intel/core.c
-+++ b/arch/x86/events/intel/core.c
-@@ -2325,8 +2325,8 @@ static void __icl_update_topdown_event(struct perf_event *event,
- 	}
- }
- 
--static void update_saved_topdown_regs(struct perf_event *event,
--				      u64 slots, u64 metrics)
-+static void update_saved_topdown_regs(struct perf_event *event, u64 slots,
-+				      u64 metrics, int metric_end)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
- 	struct perf_event *other;
-@@ -2335,7 +2335,7 @@ static void update_saved_topdown_regs(struct perf_event *event,
- 	event->hw.saved_slots = slots;
- 	event->hw.saved_metric = metrics;
- 
--	for_each_set_bit(idx, cpuc->active_mask, INTEL_PMC_IDX_TD_BE_BOUND + 1) {
-+	for_each_set_bit(idx, cpuc->active_mask, metric_end + 1) {
- 		if (!is_topdown_idx(idx))
- 			continue;
- 		other = cpuc->events[idx];
-@@ -2350,7 +2350,8 @@ static void update_saved_topdown_regs(struct perf_event *event,
-  * The PERF_METRICS and Fixed counter 3 are read separately. The values may be
-  * modify by a NMI. PMU has to be disabled before calling this function.
-  */
--static u64 icl_update_topdown_event(struct perf_event *event)
-+
-+static u64 intel_update_topdown_event(struct perf_event *event, int metric_end)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
- 	struct perf_event *other;
-@@ -2366,7 +2367,7 @@ static u64 icl_update_topdown_event(struct perf_event *event)
- 	/* read PERF_METRICS */
- 	rdpmcl(INTEL_PMC_FIXED_RDPMC_METRICS, metrics);
- 
--	for_each_set_bit(idx, cpuc->active_mask, INTEL_PMC_IDX_TD_BE_BOUND + 1) {
-+	for_each_set_bit(idx, cpuc->active_mask, metric_end + 1) {
- 		if (!is_topdown_idx(idx))
- 			continue;
- 		other = cpuc->events[idx];
-@@ -2392,7 +2393,7 @@ static u64 icl_update_topdown_event(struct perf_event *event)
- 		 * Don't need to reset the PERF_METRICS and Fixed counter 3.
- 		 * Because the values will be restored in next schedule in.
- 		 */
--		update_saved_topdown_regs(event, slots, metrics);
-+		update_saved_topdown_regs(event, slots, metrics, metric_end);
- 		reset = false;
- 	}
- 
-@@ -2401,12 +2402,17 @@ static u64 icl_update_topdown_event(struct perf_event *event)
- 		wrmsrl(MSR_CORE_PERF_FIXED_CTR3, 0);
- 		wrmsrl(MSR_PERF_METRICS, 0);
- 		if (event)
--			update_saved_topdown_regs(event, 0, 0);
-+			update_saved_topdown_regs(event, 0, 0, metric_end);
- 	}
- 
- 	return slots;
- }
- 
-+static u64 icl_update_topdown_event(struct perf_event *event)
-+{
-+	return intel_update_topdown_event(event, INTEL_PMC_IDX_TD_BE_BOUND);
-+}
-+
- static void intel_pmu_read_topdown_event(struct perf_event *event)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
