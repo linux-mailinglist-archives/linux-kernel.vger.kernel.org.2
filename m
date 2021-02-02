@@ -2,138 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C045F30CC2C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:50:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3A830CC3E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:50:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240039AbhBBTqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 14:46:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39136 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239998AbhBBTov (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 14:44:51 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE66C061786
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 11:44:10 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id e12so3875459pls.4
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 11:44:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=be7aBeIY/8GVSevF3q1F/dqUWCcQlFIIlaYYOVflylo=;
-        b=sdNBl36acOZEVoIf9GpSfHHlHwntB72XtuUKJhldfLmaYNcslLPkajfu93vSPFEa02
-         nL6lt8tMT27Fa9S8KDIVWVenltIyVKMZcCh8N79IjNDz1rvM8ZoJLVRAOn/jvHMibObh
-         J5XsmUTm2FpHJczthvW3mwhO2DH72u32qnCr7SPWnYSS/a9Erlb5D2wrXbOrPpVMy135
-         i+lqTR24UiEODyseZYNe+zIyL/Qz4fxMx/j7sMQs1/GqNuzryXJsRVCQPZrNZ9/1M2nG
-         x4GU7Q8f8kw7C3VhYweFsf2ktxHD9erANuA2g/Cuj8sm+KLdl7/RmA5vKnIu+Bm6qT11
-         BE8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=be7aBeIY/8GVSevF3q1F/dqUWCcQlFIIlaYYOVflylo=;
-        b=TBB8fK8HevkZFMsPISSgXOVpeux7y4ZH2wD9vEmxus5KcCmCkSZLPXIPQ5lMow+vi9
-         hOyHlYVazE6+gsd7eIqUOYlgtKUJ15cdY9EaK/2NyvENZ4fLTPLFLTGAuu6UX8cXDT3o
-         w4gT84w3PORJtfDrFGgXBtcvCm1sik2DAQeXehPKkSbEciSmTNhYjd7FxaVZdz0EK6lR
-         BtBWgNpTflHVNZZ48REhwd/mA6pNSZuZR0f+kA053kMY460C1AmTQL0Y+N2yOOZgaesv
-         RZRT1P1QD4L02vCZzeyk+elNdCtRXzNYw326dT2+6H3oDsiSHiCASxZgXJN3lAznrKOM
-         4Q+w==
-X-Gm-Message-State: AOAM531RLG0kVCRc4usfbbDKUZ2iKOk8aEStAreDk1V90zkQopuSK9iC
-        M8cVlt48tzzHiFBbRYPbo/YEwQ==
-X-Google-Smtp-Source: ABdhPJx1/aUcWTdTWq0Qh9m8KnI3edPhARgNztAGZ/DGRuijGaT4Qj6RIGSY7bSAYZiJB6f1Y+erFg==
-X-Received: by 2002:a17:90a:4611:: with SMTP id w17mr6042809pjg.18.1612295049928;
-        Tue, 02 Feb 2021 11:44:09 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:f693:9fff:fef4:fc72])
-        by smtp.gmail.com with ESMTPSA id r22sm23075435pgu.68.2021.02.02.11.44.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 11:44:08 -0800 (PST)
-Date:   Tue, 2 Feb 2021 11:44:03 -0800
-From:   Benson Leung <bleung@google.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Benson Leung <bleung@chromium.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        "open list:USB SUBSYSTEM" <linux-usb@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Kyle Tso <kyletso@google.com>
-Subject: Re: [PATCH v2] platform/chrome: cros_ec_typec: Fix call to
- typec_partner_set_pd_revision
-Message-ID: <YBmrg+hxqNQkUUPg@google.com>
-References: <20210202164531.3982778-1-bleung@chromium.org>
- <YBmFo5L1eeUwCJ9B@kroah.com>
- <CANLzEkuFgLK9saqHhHdrKhOjsiG001d1N9EYXsnohoMPHsAPGg@mail.gmail.com>
- <YBmaLi5hhEj1zy8J@kroah.com>
+        id S240117AbhBBTsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 14:48:33 -0500
+Received: from mga02.intel.com ([134.134.136.20]:30334 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240046AbhBBTqj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 14:46:39 -0500
+IronPort-SDR: DR5pnz9VWmbT/25ya/8gNYcWiSCA9Q3p2UPiw3Nlt0ZL2R23iCmO2SKNgK7TTprWAavVftCfk7
+ nzkyHB/ldqBA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="168026647"
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="scan'208";a="168026647"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 11:45:53 -0800
+IronPort-SDR: h64eDiPIfkkv7OpD8OQKQZpYmVajOC/dG56z7nCYbFdh1SCCd1nA7Es8LgOGHqeKXpFzHjSqUW
+ y3hAHWLu3JVQ==
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="scan'208";a="372087794"
+Received: from crojewsk-mobl1.ger.corp.intel.com (HELO [10.213.24.26]) ([10.213.24.26])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 11:45:50 -0800
+Subject: Re: [PATCH] ASoC: Intel: catpt: remove unneeded semicolon
+From:   Cezary Rojewski <cezary.rojewski@intel.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>, perex@perex.cz
+Cc:     tiwai@suse.com, broonie@kernel.org, yang.jie@linux.intel.com,
+        liam.r.girdwood@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+References: <1612166481-121376-1-git-send-email-yang.lee@linux.alibaba.com>
+ <fb3dd21b-dde6-d9f7-e497-a443f60e7493@intel.com>
+Message-ID: <adc3a883-a268-c3a9-b53b-c2ac96ca03db@intel.com>
+Date:   Tue, 2 Feb 2021 20:45:46 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="2wqZXJn6hDALmgK+"
-Content-Disposition: inline
-In-Reply-To: <YBmaLi5hhEj1zy8J@kroah.com>
+In-Reply-To: <fb3dd21b-dde6-d9f7-e497-a443f60e7493@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-02-01 10:03 PM, Cezary Rojewski wrote:
+> On 2021-02-01 9:01 AM, Yang Li wrote:
+>> Eliminate the following coccicheck warning:
+>> ./sound/soc/intel/catpt/pcm.c:355:2-3: Unneeded semicolon
+>>
+>> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+>> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+>> ---
+>>   sound/soc/intel/catpt/pcm.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/sound/soc/intel/catpt/pcm.c b/sound/soc/intel/catpt/pcm.c
+>> index e5d54bb..88a0879 100644
+>> --- a/sound/soc/intel/catpt/pcm.c
+>> +++ b/sound/soc/intel/catpt/pcm.c
+>> @@ -352,7 +352,7 @@ static int catpt_dai_apply_usettings(struct 
+>> snd_soc_dai *dai,
+>>           break;
+>>       default:
+>>           return 0;
+>> -    };
+>> +    }
+>>       list_for_each_entry(pos, &component->card->snd_card->controls, 
+>> list) {
+>>           if (pos->private_data == component &&
+>>
+> 
+> Hello Yang,
+> 
+> Your patch is much appreciated.
+> 
+> I noticed that more mistakes such as this have been made in the code. 
+> Could you please also update switch-statements in other parts of catpt 
+> (from what I've found, pcm.c has 2 occurrences while loader.c has 1)?
+> 
 
---2wqZXJn6hDALmgK+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I see now. Patch [1] provided the fixes already but optimization of mine 
+[2] done later, overridden part of it. In that case, there's nothing 
+else to be done.
 
-On Tue, Feb 02, 2021 at 07:30:06PM +0100, Greg KH wrote:
-> On Tue, Feb 02, 2021 at 09:52:13AM -0800, Benson Leung wrote:
-> > Hi Greg,
-> >=20
-> > On Tue, Feb 2, 2021 at 9:02 AM Greg KH <gregkh@linuxfoundation.org> wro=
-te:
-> > >
-> > > On Tue, Feb 02, 2021 at 08:45:31AM -0800, Benson Leung wrote:
-> > > > typec_partner_set_pd_revision returns void now.
-> > > >
-> > > > Fixes: cefc011f8daf ("platform/chrome: cros_ec_typec: Set Partner P=
-D revision from status")
-> > > > Signed-off-by: Benson Leung <bleung@chromium.org>
-> > > > ---
-> > > >  drivers/platform/chrome/cros_ec_typec.c | 6 +-----
-> > > >  1 file changed, 1 insertion(+), 5 deletions(-)
-> > >
-> > > What changed from "v1"?
-> > >
-> >=20
-> > Just the "Fixes" line in the commit message.
->=20
-> That should always go below the --- line, remember, some of us deal with
-> hundreds of patches a day :)
->=20
-> I'll go take this...
+Acked-by: Cezary Rojewski <cezary.rojewski@intel.com>
 
-Thanks so much, Greg!
+Regards,
+Czarek
 
-Benson
 
->=20
-> thanks,
->=20
-> greg k-h
-
---=20
-Benson Leung
-Staff Software Engineer
-Chrome OS Kernel
-Google Inc.
-bleung@google.com
-Chromium OS Project
-bleung@chromium.org
-
---2wqZXJn6hDALmgK+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCYBmrgwAKCRBzbaomhzOw
-wrbtAP0cTRnK7uxA4/uovfcaIbD41XJv7FBIOjtwyY7s75QBlAEA0Zb3xNXFZNp2
-fFkEELg2P2sRLhCj2T69DXlKTPm9IwM=
-=geEL
------END PGP SIGNATURE-----
-
---2wqZXJn6hDALmgK+--
+[1]: https://lore.kernel.org/r/20201101171943.2305030-1-trix@redhat.com
+[2]: 
+https://lore.kernel.org/r/20201116133332.8530-4-cezary.rojewski@intel.com
