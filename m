@@ -2,194 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9214F30B7D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 07:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3AF630B7DF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 07:31:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232046AbhBBG3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 01:29:43 -0500
-Received: from mail29.static.mailgun.info ([104.130.122.29]:17433 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231509AbhBBG3h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 01:29:37 -0500
+        id S232123AbhBBGas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 01:30:48 -0500
+Received: from so15.mailgun.net ([198.61.254.15]:25673 "EHLO so15.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231888AbhBBGan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 01:30:43 -0500
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612247357; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=z7Jt7mLpbCjEtcnUQ9bOehTzH3Sk9XSsW7oxWAsa7AE=;
- b=M22AriNk/bwVWhhI9PZmwkY+IcGM0ZMp8rZg08OqPP6AgRCUO28lg3G7AUzp7fGTfCmdY8l0
- FGuyxaDb3Tw8GlZyiCSdaZhBtaEaVQ/e3EUMxIGiAhUD+KqvTVuzqb9oeUTXFeAdGVPAkk9e
- iUElFWR2Y4BCSSKGdIRq6X0HzoY=
-X-Mailgun-Sending-Ip: 104.130.122.29
+ s=smtp; t=1612247420; h=Content-Type: MIME-Version: Message-ID:
+ In-Reply-To: Date: References: Subject: Cc: To: From: Sender;
+ bh=4KlQGFrN5Le7PICSqsAOoAQBLupf944xN1JaRxy8alw=; b=XLMzoFahTpIdSsBUkalcN84ZNh0VUTYLPaSewG4ToiXLQmmIqQbMxCaRWH3khO1IsQrU1FyN
+ keMyNXKsJ+/0/jDBDrFlvHfwIMe8ZOaeeI5AFEeBapfQMdG/HMOg0QA+UwhRbt+/tfxe9U4O
+ f/nCoH8ibIO1t4Rn6c+WoeVNg+c=
+X-Mailgun-Sending-Ip: 198.61.254.15
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 6018f11e6dd11a02214cda9e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Feb 2021 06:28:46
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6018f159ab96aecb9fcdb017 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Feb 2021 06:29:45
  GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Sender: kvalo=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 22E8BC43468; Tue,  2 Feb 2021 06:28:46 +0000 (UTC)
+        id 8A1BBC433C6; Tue,  2 Feb 2021 06:29:45 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from potku.adurom.net (88-114-240-156.elisa-laajakaista.fi [88.114.240.156])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9DB9DC433C6;
-        Tue,  2 Feb 2021 06:28:44 +0000 (UTC)
+        (Authenticated sender: kvalo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 984D5C433ED;
+        Tue,  2 Feb 2021 06:29:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 984D5C433ED
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=kvalo@codeaurora.org
+From:   Kalle Valo <kvalo@codeaurora.org>
+To:     Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc:     Tony Chuang <yhchuang@realtek.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list\:REALTEK WIRELESS DRIVER \(rtw88\)" 
+        <linux-wireless@vger.kernel.org>,
+        "open list\:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Andy Huang <tehuang@realtek.com>
+Subject: Re: [PATCH] rtw88: 8821c: Add RFE 2 support
+References: <20200805084559.30092-1-kai.heng.feng@canonical.com>
+        <c0c336d806584361992d4b52665fbb82@realtek.com>
+        <9330BBA5-158B-49F1-8B7C-C2733F358AC1@canonical.com>
+        <CAAd53p6SA5gG8V27eD1Kh1ik932Kt8KzmYjLy33pOkw=QPKgpA@mail.gmail.com>
+Date:   Tue, 02 Feb 2021 08:29:40 +0200
+In-Reply-To: <CAAd53p6SA5gG8V27eD1Kh1ik932Kt8KzmYjLy33pOkw=QPKgpA@mail.gmail.com>
+        (Kai-Heng Feng's message of "Thu, 7 Jan 2021 14:38:42 +0800")
+Message-ID: <871rdz7zjf.fsf@codeaurora.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/24.5 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 02 Feb 2021 11:58:44 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Rob Clark <robdclark@gmail.com>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Will Deacon <will@kernel.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        "Isaac J. Manjarres" <isaacm@codeaurora.org>,
-        "list@263.net:IOMMU DRIVERS , Joerg Roedel <joro@8bytes.org>," 
-        <iommu@lists.linux-foundation.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Kristian H Kristensen <hoegsberg@google.com>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Subject: Re: [PATCH 2/3] iommu/io-pgtable-arm: Add IOMMU_LLC page protection
- flag
-In-Reply-To: <20210201182016.GA21629@jcrouse1-lnx.qualcomm.com>
-References: <cover.1610372717.git.saiprakash.ranjan@codeaurora.org>
- <3f589e7de3f9fa93e84c83420c5270c546a0c368.1610372717.git.saiprakash.ranjan@codeaurora.org>
- <20210129090516.GB3998@willie-the-truck>
- <5d23fce629323bcda71594010824aad0@codeaurora.org>
- <20210201111556.GA7172@willie-the-truck>
- <CAF6AEGsARmkAFsjaQLfa2miMgeijo183MWDKGtW_ti-UCpzBqA@mail.gmail.com>
- <20210201182016.GA21629@jcrouse1-lnx.qualcomm.com>
-Message-ID: <dc95c4d32691a588a7f660e3b20dd33e@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-02-01 23:50, Jordan Crouse wrote:
-> On Mon, Feb 01, 2021 at 08:20:44AM -0800, Rob Clark wrote:
->> On Mon, Feb 1, 2021 at 3:16 AM Will Deacon <will@kernel.org> wrote:
+Kai-Heng Feng <kai.heng.feng@canonical.com> writes:
+
+> On Wed, Aug 5, 2020 at 7:24 PM Kai-Heng Feng
+> <kai.heng.feng@canonical.com> wrote:
+>>
+>> Hi Tony,
+>>
+>> > On Aug 5, 2020, at 19:18, Tony Chuang <yhchuang@realtek.com> wrote:
 >> >
->> > On Fri, Jan 29, 2021 at 03:12:59PM +0530, Sai Prakash Ranjan wrote:
->> > > On 2021-01-29 14:35, Will Deacon wrote:
->> > > > On Mon, Jan 11, 2021 at 07:45:04PM +0530, Sai Prakash Ranjan wrote:
->> > > > > Add a new page protection flag IOMMU_LLC which can be used
->> > > > > by non-coherent masters to set cacheable memory attributes
->> > > > > for an outer level of cache called as last-level cache or
->> > > > > system cache. Initial user of this page protection flag is
->> > > > > the adreno gpu and then can later be used by other clients
->> > > > > such as video where this can be used for per-buffer based
->> > > > > mapping.
->> > > > >
->> > > > > Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->> > > > > ---
->> > > > >  drivers/iommu/io-pgtable-arm.c | 3 +++
->> > > > >  include/linux/iommu.h          | 6 ++++++
->> > > > >  2 files changed, 9 insertions(+)
->> > > > >
->> > > > > diff --git a/drivers/iommu/io-pgtable-arm.c
->> > > > > b/drivers/iommu/io-pgtable-arm.c
->> > > > > index 7439ee7fdcdb..ebe653ef601b 100644
->> > > > > --- a/drivers/iommu/io-pgtable-arm.c
->> > > > > +++ b/drivers/iommu/io-pgtable-arm.c
->> > > > > @@ -415,6 +415,9 @@ static arm_lpae_iopte
->> > > > > arm_lpae_prot_to_pte(struct arm_lpae_io_pgtable *data,
->> > > > >           else if (prot & IOMMU_CACHE)
->> > > > >                   pte |= (ARM_LPAE_MAIR_ATTR_IDX_CACHE
->> > > > >                           << ARM_LPAE_PTE_ATTRINDX_SHIFT);
->> > > > > +         else if (prot & IOMMU_LLC)
->> > > > > +                 pte |= (ARM_LPAE_MAIR_ATTR_IDX_INC_OCACHE
->> > > > > +                         << ARM_LPAE_PTE_ATTRINDX_SHIFT);
->> > > > >   }
->> > > > >
->> > > > >   if (prot & IOMMU_CACHE)
->> > > > > diff --git a/include/linux/iommu.h b/include/linux/iommu.h
->> > > > > index ffaa389ea128..1f82057df531 100644
->> > > > > --- a/include/linux/iommu.h
->> > > > > +++ b/include/linux/iommu.h
->> > > > > @@ -31,6 +31,12 @@
->> > > > >   * if the IOMMU page table format is equivalent.
->> > > > >   */
->> > > > >  #define IOMMU_PRIV       (1 << 5)
->> > > > > +/*
->> > > > > + * Non-coherent masters can use this page protection flag to set
->> > > > > cacheable
->> > > > > + * memory attributes for only a transparent outer level of cache,
->> > > > > also known as
->> > > > > + * the last-level or system cache.
->> > > > > + */
->> > > > > +#define IOMMU_LLC        (1 << 6)
->> > > >
->> > > > On reflection, I'm a bit worried about exposing this because I think it
->> > > > will
->> > > > introduce a mismatched virtual alias with the CPU (we don't even have a
->> > > > MAIR
->> > > > set up for this memory type). Now, we also have that issue for the PTW,
->> > > > but
->> > > > since we always use cache maintenance (i.e. the streaming API) for
->> > > > publishing the page-tables to a non-coheren walker, it works out.
->> > > > However,
->> > > > if somebody expects IOMMU_LLC to be coherent with a DMA API coherent
->> > > > allocation, then they're potentially in for a nasty surprise due to the
->> > > > mismatched outer-cacheability attributes.
->> > > >
->> > >
->> > > Can't we add the syscached memory type similar to what is done on android?
+>> >> 8821CE with RFE 2 isn't supported:
+>> >> [   12.404834] rtw_8821ce 0000:02:00.0: rfe 2 isn't supported
+>> >> [   12.404937] rtw_8821ce 0000:02:00.0: failed to setup chip efuse info
+>> >> [   12.404939] rtw_8821ce 0000:02:00.0: failed to setup chip information
+>> >>
 >> >
->> > Maybe. How does the GPU driver map these things on the CPU side?
->> 
->> Currently we use writecombine mappings for everything, although there
->> are some cases that we'd like to use cached (but have not merged
->> patches that would give userspace a way to flush/invalidate)
->> 
->> BR,
->> -R
-> 
-> LLC/system cache doesn't have a relationship with the CPU cache.  Its 
-> just a
-> little accelerator that sits on the connection from the GPU to DDR and 
-> caches
-> accesses. The hint that Sai is suggesting is used to mark the buffers 
-> as
-> 'no-write-allocate' to prevent GPU write operations from being cached 
-> in the LLC
-> which a) isn't interesting and b) takes up cache space for read 
-> operations.
-> 
-> Its easiest to think of the LLC as a bonus accelerator that has no cost 
-> for
-> us to use outside of the unfortunate per buffer hint.
-> 
-> We do have to worry about the CPU cache w.r.t I/O coherency (which is a
-> different hint) and in that case we have all of concerns that Will 
-> identified.
-> 
+>> > NACK
+>> >
+>> > The RFE type 2 should be working with some additional fixes.
+>> > Did you tested connecting to AP with BT paired?
+>>
+>> No, I only tested WiFi.
+>>
+>> > The antenna configuration is different with RFE type 0.
+>> > I will ask someone else to fix them.
+>> > Then the RFE type 2 modules can be supported.
+>>
+>> Good to know that, I'll be patient and wait for a real fix.
+>
+> It's been quite some time, is support for RFE type 2 ready now?
 
-For mismatched outer cacheability attributes which Will mentioned, I was
-referring to [1] in android kernel.
+It looks like this patch should add it:
 
-[1] https://android-review.googlesource.com/c/kernel/common/+/1549097/3
-
-Thanks,
-Sai
+https://patchwork.kernel.org/project/linux-wireless/patch/20210202055012.8296-4-pkshih@realtek.com/
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
