@@ -2,36 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C014930BB5F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:50:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BFAA30BB70
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:54:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229825AbhBBJub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 04:50:31 -0500
-Received: from verein.lst.de ([213.95.11.211]:45208 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229466AbhBBJu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 04:50:28 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id ADE7A68C4E; Tue,  2 Feb 2021 10:49:46 +0100 (CET)
-Date:   Tue, 2 Feb 2021 10:49:45 +0100
+        id S230388AbhBBJwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 04:52:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229466AbhBBJwK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 04:52:10 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D1EC061573;
+        Tue,  2 Feb 2021 01:51:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=QTGwZsHUykjIplzXOpellqEP0wlz0ReWLq9Jccm8VmE=; b=bEaPt84LngP64M0S0FFor0M6mU
+        k2kConm0zblT0nwONmZm0KLMNpUz6aR5G4+gxRdbwpI7kjqsNiQL45IRMHIwEy1yoY1wQEjkYmgBH
+        NAO9hOgpFGFepC2hcCYmA6F+7xmltXrBFrKe2S+gtu05T8Xa8Rm7sLCyVbeDD5vZLYgb2bzzNTlO/
+        StrExNLDIGuo9gtGO1NQa03DsAxK/8m12hwmTS0AM9J7GlEtzUTqwUmkIbkcRQRtsdDZXdxTkzblY
+        1kHfg7WZCwVNnLbrhfvHoI7LNQvQOBTZIdTdvk0P9QSD1m3JCFVJ8qcUZJzXa/SAZFEBnwZoOMM5Y
+        M6aH9/Dg==;
+Received: from [2001:4bb8:198:6bf4:7f38:755e:a6e0:73e9] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l6sL1-00F0vV-Nz; Tue, 02 Feb 2021 09:51:13 +0000
 From:   Christoph Hellwig <hch@lst.de>
-To:     Claus Stovgaard <claus.stovgaard@gmail.com>
-Cc:     linux-nvme@lists.infradead.org, Keith Busch <kbusch@kernel.org>,
-        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nvme-pci: Mark Phison E16 (Corsair MP600) as
- IGNORE_DEV_SUBNQN
-Message-ID: <20210202094945.GC18895@lst.de>
-References: <20210201210822.6501-1-claus.stovgaard@gmail.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Ricardo Ribalda <ribalda@chromium.org>,
+        Sergey Senozhatsky <senozhatsky@google.com>,
+        iommu@lists.linux-foundation.org
+Cc:     Robin Murphy <robin.murphy@arm.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: add a new dma_alloc_noncontiguous API v2
+Date:   Tue,  2 Feb 2021 10:51:03 +0100
+Message-Id: <20210202095110.1215346-1-hch@lst.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201210822.6501-1-claus.stovgaard@gmail.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks,
+Hi all,
 
-applied to nvme-5.11.
+this series adds the new noncontiguous DMA allocation API requested by
+various media driver maintainers.
+
+Changes since v1:
+ - document that flush_kernel_vmap_range and invalidate_kernel_vmap_range
+   must be called once an allocation is mapped into KVA
+ - add dma-debug support
+ - remove the separate dma_handle argument, and instead create fully formed
+   DMA mapped scatterlists
+ - use a directional allocation in uvcvideo
+ - call invalidate_kernel_vmap_range from uvcvideo
