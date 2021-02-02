@@ -2,74 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E730C30CC5B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:55:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 991C730CC62
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:55:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240138AbhBBTxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 14:53:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56578 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232808AbhBBTwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 14:52:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C0DD264DC4;
-        Tue,  2 Feb 2021 19:51:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612295496;
-        bh=kFRho8LthVAJM6ke+5o7WVG/qGQoHqd05ziE2IHu2R4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XvUU5HXVRDbcdBkyH7xGWnYT1gEebYzQUMrnNZ6noFkANZZ3lClzZ605TXBsK6lba
-         k3LWv0NZAkjoviMxfpd7VeZHylmBHbB5QdAjarbAnpoQChV8yAIRllT39siPgb5lcA
-         g+WYeA/9Zs7JraHW3WbWVN7JikcJgfYkpn1ZOrhOFG2cyaf8t1uPRk8qkmIAJVcF0I
-         V0kvrpeZcmAV8k3p8T5rQLjvIrdblB2ResTZ4aYnITKSls1g5JhRm5wCC2xIv3I6Bo
-         Ls49/svh39FXlSh4Rt3GJTCsYE1iq5xgcuKI0jbJJQGRz7yZOosC8lRIuM3AKcKZXR
-         TTRX8n9P/4vcA==
-Date:   Tue, 2 Feb 2021 12:51:33 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] arm64: Make CPU_BIG_ENDIAN depend on !LD_IS_LLD
-Message-ID: <20210202195133.GA1481999@localhost>
-References: <20210202022441.1451389-1-nathan@kernel.org>
- <CAK8P3a2864oSVkhaYynoadyYMcYDh0LvDDFSJ2D8OTHSszuSQA@mail.gmail.com>
+        id S240090AbhBBTyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 14:54:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23363 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240092AbhBBTxc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 14:53:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612295524;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NxQodtgYcmc4QZjZKTAF3TCMHN4Ic1oSfzkOYjvIdZc=;
+        b=b9tJ+SPpBPyF4CJVTCfvhfSZPAXWKZ0UHhLmYkVLJSvVqDYyni7O8fxsn5OWWlL/OrHTmW
+        41NjJQjFixQlO1qY5n/73VbwlHAXNRa/WsxBdMPbZ+KeIIy316LdRGEAq1PS7GTpgMGMu/
+        Nisv2MD6Blkc6lojrUl707zB+NUxSw8=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-26-JVh8RZXzMlupFhg4JTeOeA-1; Tue, 02 Feb 2021 14:52:02 -0500
+X-MC-Unique: JVh8RZXzMlupFhg4JTeOeA-1
+Received: by mail-ed1-f71.google.com with SMTP id g6so2305961edy.9
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 11:52:02 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NxQodtgYcmc4QZjZKTAF3TCMHN4Ic1oSfzkOYjvIdZc=;
+        b=aTXRe1Sx7bctiVKW5UjfLgBDHx1OdoBx7nJMLc9pO5a9FD4FHAKgrKqo4SBPM5S3fO
+         swAqoSGqSSLKgc9mFHDmgd1WzMmMXxsswy5xmrbGOgbfaTdZ2kOAdEsegobXq2rJ7g7r
+         dJVio8QPtO21tbMF6ZAMZ+DPUz+DTSM1O4BnLNqFpu3QuuU/QRJUvmEkjqgsDHJlNo2j
+         g7qUMxJIiNGigR+vYwmXhpJ5v+tJsEcknJZagz+EjgfTX7sqXTImVG6c8RuOpm+w83HS
+         I6BEFBri2fUofexhdUAPCKeT6zs+Qv4cfJaBG27MOkuS0BzQnLe27EXPHop1lz2DrPvr
+         Ct0g==
+X-Gm-Message-State: AOAM532U+qs8GOWIX5Is8s6dmktSi4ila8LQ0rrWh+Qzm+V2cY8Y6oud
+        y4gkwQRW0GpDVMqnULF0Qp+5U04truhtsAzqmsXFPbrCq4F+xz2MDxeJ7Ndl5hQj/eK4NE2LyL5
+        WfqBkcDDj7FNXf2TLldUKdQj/RRD65BrTzIa59Dwx3UNFBiVC3Ru3FNhN8YjLfuK2BmraSKKA9o
+        Gk
+X-Received: by 2002:aa7:d755:: with SMTP id a21mr493007eds.301.1612295521054;
+        Tue, 02 Feb 2021 11:52:01 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyYfKVSviHVWCzOxE3Kc3e6aX+wFXb2mRq00duIqLVwYSo0WiW7GeLafvB3sL4pPLUfy/AWFw==
+X-Received: by 2002:aa7:d755:: with SMTP id a21mr492993eds.301.1612295520859;
+        Tue, 02 Feb 2021 11:52:00 -0800 (PST)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
+        by smtp.gmail.com with ESMTPSA id g2sm9800386ejk.108.2021.02.02.11.52.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Feb 2021 11:52:00 -0800 (PST)
+Subject: Re: [PATCH 0/3] Platform: OLPC: A couple of fixes
+To:     Lubomir Rintel <lkundrak@v3.sk>
+Cc:     Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210126073740.10232-1-lkundrak@v3.sk>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <9132ebf9-8665-4add-74a8-5e4d73ca7246@redhat.com>
+Date:   Tue, 2 Feb 2021 20:51:59 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a2864oSVkhaYynoadyYMcYDh0LvDDFSJ2D8OTHSszuSQA@mail.gmail.com>
+In-Reply-To: <20210126073740.10232-1-lkundrak@v3.sk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 09:04:34AM +0100, Arnd Bergmann wrote:
-> On Tue, Feb 2, 2021 at 3:25 AM Nathan Chancellor <nathan@kernel.org> wrote:
-> >
-> > Similar to commit 28187dc8ebd9 ("ARM: 9025/1: Kconfig: CPU_BIG_ENDIAN
-> > depends on !LD_IS_LLD"), ld.lld does not support aarch64 big endian,
-> > leading to the following build error when CONFIG_CPU_BIG_ENDIAN is
-> > selected:
-> >
-> > ld.lld: error: unknown emulation: aarch64linuxb
+hi,
+
+On 1/26/21 8:37 AM, Lubomir Rintel wrote:
+> Hi,
 > 
-> While this is the original error message I reported, I think it would be
-> better to explain that lld actually does support linking big-endian
-> kernels but they don't boot, for unknown reasons.
+> chained to this message is a couple of fixes related to OLPC EC platform
+> code. Please take a look and consider applying to platform-drivers-x86.
 
-That statement seems to contradict what Peter Smith says:
+Thank you for your patch-series, I've applied the series to my
+review-hans branch:
+https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans
 
-https://github.com/ClangBuiltLinux/linux/issues/1288#issuecomment-770693582
+Note it will show up in my review-hans branch once I've pushed my
+local branch there, which might take a while.
 
-https://reviews.llvm.org/D58655#1410282
+Once I've run some tests on this branch the patches there will be
+added to the platform-drivers-x86/for-next branch and eventually
+will be included in the pdx86 pull-request to Linus for the next
+merge-window.
 
-> I can send a patch to address the build error and mark big-endian
-> as "depends on !LD_IS_LLD || COMPILE_TEST" to reflect that
-> and help with randconfig testing.
+Regards,
 
-I have no strong opinion on handling this though.
+Hans
 
-Cheers,
-Nathan
