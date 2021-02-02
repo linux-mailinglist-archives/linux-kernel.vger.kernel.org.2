@@ -2,227 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A42330C872
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:53:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB6EC30C86E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:53:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237838AbhBBRuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:50:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41810 "EHLO
+        id S237881AbhBBRtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:49:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237749AbhBBRrJ (ORCPT
+        with ESMTP id S237785AbhBBRrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 12:47:09 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 431BCC06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 09:46:27 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id f14so7030003ejc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 09:46:27 -0800 (PST)
+        Tue, 2 Feb 2021 12:47:32 -0500
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74EF4C0617A7
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 09:46:52 -0800 (PST)
+Received: by mail-ej1-x633.google.com with SMTP id a9so12917898ejr.2
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 09:46:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=wUurNA9VhndOPP6gfhXBN1JbTKtpFDXXD0/WIc6R26Q=;
-        b=Q+gyF53uYybQ7VU8537+gYM+aGyprhjPmxAfLGnXP6OwT0GUtgTrUly1i2fwhFGjtq
-         p8whi96zlLUuqYC2XLni6OtAlLqCFkUCNoE29gm7ZNiukEuBRSs16ly47hZcjG6mcf6W
-         YYvDPxx/KBKbT4jC9DYrUXZosFGn5i6Xf3mWMFX+1Qr7C65VszwwhvahhMB2NecwsZzI
-         e3RqPl7eS6e+HVxxdVcQDLle6L5RSDpa1rJm+u/OFMeLblLfAyT40bK/SRA5AhfI1W1U
-         CrxE+ACZJOsvAUYzBKsXKBmEsSRk8P5lses045BxA80LjvV+151v8gAD+DbIAjYVFUu2
-         jitQ==
+        bh=ZGI/zcEe0Yt+bxNAd+ZCrR6roUoFCN6DKRYdKgfHGTo=;
+        b=dn0kQpEE8uzdEC3sYSZKK96Y1R4SyTF8SQ++wUCnfT8U7YdqxyodVjFScTsZDUlz2n
+         KXg1Dw+ctFq/Dk2HuQqOumasQ3G3q02khzesSRbG5uN4Ex1jxRPwfgQq7SyPS8eexJcj
+         0/GfCZpmy+aF81ygQgdOI5YT/qoJNbogDX68XaZy+mqpSgoH8aeK6qAc82a4vH+GPZdR
+         lZ7l6G74LFud0yjEfSEjbtn6W5GDktU+8rXMXfsGDWXCRBcjbriVGr79SHijhun74lqQ
+         LArbTXnvlK5ey46TqSx5UZmskyWGW67xW0k4frniCllwf2pIqDldTzka/QONLnkOz3bp
+         1F6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=wUurNA9VhndOPP6gfhXBN1JbTKtpFDXXD0/WIc6R26Q=;
-        b=s1dU5vB+FscoGyVOnuhscTg7Pzc+bsVw/m/XugUnWxj7Sro4y5SzlnyrWuqx2uCZdG
-         U/VB1HzR5iBCmviM71xqogfjNscUO5vxZUZijQi0wiZBaZSvv/30NrGUKWJNpXKGpwIZ
-         wD3zZP8N9LzaI+kquu+l62xmC9WK0Xv0AWdANw76QkR3/AokeypIEEsk10U/kzXxCVlZ
-         Pqt5RHMs6I/T0lpaXW0GTaYDiS3ITEGH+42KkpUCCAeG9o9IH90VLU5F3QsrOr0QkVKE
-         cY1mdnX9q7yhMAIGY08chbfgvlg2mQSmh5cmK6H/MkHg8YHF0VYow5m6BLo6Nxg2kxiH
-         P8zg==
-X-Gm-Message-State: AOAM533VKcNgqKYrVdpsUnvyMCLfRCC+U6JEp8KAwnMGsdEe92FFP5b3
-        2O8CC/6Cj0FH0NGpdVfdbiGTKa5ewf3LRlpj8Bmu8A==
-X-Google-Smtp-Source: ABdhPJxJMQPeK8rJWCApObIytFXRIQO5rlc1bINukN6cy207HKpFiuo3Yrd9r7/axKlxQdWCDqWdakZUfI9gkorugGA=
-X-Received: by 2002:a17:906:8252:: with SMTP id f18mr2377108ejx.418.1612287985906;
- Tue, 02 Feb 2021 09:46:25 -0800 (PST)
+        bh=ZGI/zcEe0Yt+bxNAd+ZCrR6roUoFCN6DKRYdKgfHGTo=;
+        b=cYk3hUWkwqqIlkJ73mo76ElGchHXKM4nOHDdqjT03JIQd8l7tURyfip72Tz6nujh7p
+         GLumFZyou5sJ1b1l23cdjSDj5ROkPN9DhpkZaKSOz39jbT4ooeReNBdm6rHwCtiG7n4H
+         boC+MYtbWPTVi+b+okJbRKLlOzcgXeBEF8ebhV0M6txysTs3PqQ8n5ujeT9vsStisdBe
+         UG1lzE5Pn1aTf8Zga3KE1rfKUypId058j+8sac10eSNPxQ5QSEf5iqwLh1wZ/dg1tpVL
+         YxTxR9vsQyfObNTh4773nVkfMgFc2ydxFcrWvBiyavRmSDLpmmZcwaGDh2hdGQif5aOk
+         /Vmw==
+X-Gm-Message-State: AOAM530onnyiz87j5mGYYk39SyWvYogIyAYU+9YL+QZDHwZzWydN0cRm
+        bJEmyxuz01C6yBuaZmS/8FfLnpJ1xmyD1L2cDHdywlKW
+X-Google-Smtp-Source: ABdhPJwswex2voGStCOUsnNL01gx3JAAwJ4/V3+iqItDVUhsO/oc14DWZpKkTcMicL+pke/SiErAG604f5qaxUrOYUw=
+X-Received: by 2002:a17:906:eddd:: with SMTP id sb29mr14357090ejb.383.1612288011231;
+ Tue, 02 Feb 2021 09:46:51 -0800 (PST)
 MIME-Version: 1.0
-References: <20210130002438.1872527-1-ben.widawsky@intel.com>
- <20210130002438.1872527-9-ben.widawsky@intel.com> <20210201181845.GJ197521@fedora>
- <20210201183455.3dndfwyswwvs2dlm@intel.com> <CAPcyv4iBbA+PCnTg-hFALuDJNqcJrwwXN_gMEe6z9LZvSfC5hw@mail.gmail.com>
- <YBi9nkiu3DvMZhrs@Konrads-MacBook-Pro.local>
-In-Reply-To: <YBi9nkiu3DvMZhrs@Konrads-MacBook-Pro.local>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 2 Feb 2021 09:46:23 -0800
-Message-ID: <CAPcyv4j7xHcz+0+e35k3ed0O3muynMu3HzhXCNFpHreP1jAyHA@mail.gmail.com>
-Subject: Re: [PATCH 08/14] taint: add taint for direct hardware access
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
+References: <20210126003411.2AC51464@viggo.jf.intel.com> <20210126003421.45897BF4@viggo.jf.intel.com>
+ <CAHbLzkoB98YY0amBWTGcDPStcy1c35CC8D5MPMbVxzRKqVA0Cg@mail.gmail.com> <317d4c23-76a7-b653-87a4-bab642fa1717@intel.com>
+In-Reply-To: <317d4c23-76a7-b653-87a4-bab642fa1717@intel.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 2 Feb 2021 09:46:39 -0800
+Message-ID: <CAHbLzkqrPvY4Zb17AGJi1Zi7OV9WDUTEpj5DpfWY9c2WHzPBYw@mail.gmail.com>
+Subject: Re: [RFC][PATCH 05/13] mm/numa: automatically generate node migration order
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        daniel.lll@alibaba-inc.com,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
+        Linux MM <linux-mm@kvack.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Rientjes <rientjes@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 6:50 PM Konrad Rzeszutek Wilk
-<konrad.wilk@oracle.com> wrote:
+On Mon, Feb 1, 2021 at 11:13 AM Dave Hansen <dave.hansen@intel.com> wrote:
 >
-> On Mon, Feb 01, 2021 at 11:01:11AM -0800, Dan Williams wrote:
-> > On Mon, Feb 1, 2021 at 10:35 AM Ben Widawsky <ben.widawsky@intel.com> wrote:
-> > >
-> > > On 21-02-01 13:18:45, Konrad Rzeszutek Wilk wrote:
-> > > > On Fri, Jan 29, 2021 at 04:24:32PM -0800, Ben Widawsky wrote:
-> > > > > For drivers that moderate access to the underlying hardware it is
-> > > > > sometimes desirable to allow userspace to bypass restrictions. Once
-> > > > > userspace has done this, the driver can no longer guarantee the sanctity
-> > > > > of either the OS or the hardware. When in this state, it is helpful for
-> > > > > kernel developers to be made aware (via this taint flag) of this fact
-> > > > > for subsequent bug reports.
-> > > > >
-> > > > > Example usage:
-> > > > > - Hardware xyzzy accepts 2 commands, waldo and fred.
-> > > > > - The xyzzy driver provides an interface for using waldo, but not fred.
-> > > > > - quux is convinced they really need the fred command.
-> > > > > - xyzzy driver allows quux to frob hardware to initiate fred.
-> > > >
-> > > > Would it not be easier to _not_ frob the hardware for fred-operation?
-> > > > Aka not implement it or just disallow in the first place?
-> > >
-> > > Yeah. So the idea is you either are in a transient phase of the command and some
-> > > future kernel will have real support for fred - or a vendor is being short
-> > > sighted and not adding support for fred.
-> > >
-> > > >
-> > > >
-> > > > >   - kernel gets tainted.
-> > > > > - turns out fred command is borked, and scribbles over memory.
-> > > > > - developers laugh while closing quux's subsequent bug report.
-> > > >
-> > > > Yeah good luck with that theory in-the-field. The customer won't
-> > > > care about this and will demand a solution for doing fred-operation.
-> > > >
-> > > > Just easier to not do fred-operation in the first place,no?
-> > >
-> > > The short answer is, in an ideal world you are correct. See nvdimm as an example
-> > > of the real world.
-> > >
-> > > The longer answer. Unless we want to wait until we have all the hardware we're
-> > > ever going to see, it's impossible to have a fully baked, and validated
-> > > interface. The RAW interface is my admission that I make no guarantees about
-> > > being able to provide the perfect interface and giving the power back to the
-> > > hardware vendors and their driver writers.
-> > >
-> > > As an example, suppose a vendor shipped a device with their special vendor
-> > > opcode. They can enable their customers to use that opcode on any driver
-> > > version. That seems pretty powerful and worthwhile to me.
-> > >
+> On 1/29/21 12:46 PM, Yang Shi wrote:
+> ...
+> >>  int next_demotion_node(int node)
+> >>  {
+> >> -       return node_demotion[node];
+> >> +       /*
+> >> +        * node_demotion[] is updated without excluding
+> >> +        * this function from running.  READ_ONCE() avoids
+> >> +        * reading multiple, inconsistent 'node' values
+> >> +        * during an update.
+> >> +        */
 > >
-> > Powerful, frightening, and questionably worthwhile when there are
-> > already examples of commands that need extra coordination for whatever
-> > reason. However, I still think the decision tilts towards allowing
-> > this given ongoing spec work.
+> > Don't we need a smp_rmb() here? The single write barrier might be not
+> > enough in migration target set. Typically a write barrier should be
+> > used in pairs with a read barrier.
+>
+> I don't think we need one, practically.
+>
+> Since there is no locking against node_demotion[] updates, although a
+> smp_rmb() would ensure that this read is up-to-date, it could change
+> freely after the smp_rmb().
+
+Yes, but this should be able to guarantee we see "disable + after"
+state. Isn't it more preferred?
+
+>
+> In other words, smp_rmb() would shrink the window where a "stale" read
+> could occur but would not eliminate it.
+>
+> >> +       return READ_ONCE(node_demotion[node]);
 > >
-> > NVDIMM ended up allowing unfettered vendor passthrough given the lack
-> > of an organizing body to unify vendors. CXL on the other hand appears
-> > to have more gravity to keep vendors honest. A WARN splat with a
-> > taint, and a debugfs knob for the truly problematic commands seems
-> > sufficient protection of system integrity while still following the
-> > Linux ethos of giving system owners enough rope to make their own
-> > decisions.
+> > Why not consolidate the patch #4 in this patch? The patch #4 just add
+> > the definition of node_demotion and the function, then the function is
+> > changed in this patch, and the function is not used by anyone between
+> > the adding and changing.
+>
+> I really wanted to highlight that the locking scheme and the READ_ONCE()
+> (or lack thereof) was specifically due to how node_demotion[] was being
+> updated.
+>
+> The READ_ONCE() is not, for instance, inherent to the data structure.
+>
+> ...
+> >> +/*
+> >> + * When memory fills up on a node, memory contents can be
+> >> + * automatically migrated to another node instead of
+> >> + * discarded at reclaim.
+> >> + *
+> >> + * Establish a "migration path" which will start at nodes
+> >> + * with CPUs and will follow the priorities used to build the
+> >> + * page allocator zonelists.
+> >> + *
+> >> + * The difference here is that cycles must be avoided.  If
+> >> + * node0 migrates to node1, then neither node1, nor anything
+> >> + * node1 migrates to can migrate to node0.
+> >> + *
+> >> + * This function can run simultaneously with readers of
+> >> + * node_demotion[].  However, it can not run simultaneously
+> >> + * with itself.  Exclusion is provided by memory hotplug events
+> >> + * being single-threaded.
 > >
-> > > Or a more realistic example, we ship a driver that adds a command which is
-> > > totally broken. Customers can utilize the RAW interface until it gets fixed in a
-> > > subsequent release which might be quite a ways out.
-> > >
-> > > I'll say the RAW interface isn't an encouraged usage, but it's one that I expect
-> > > to be needed, and if it's not we can always try to kill it later. If nobody is
-> > > actually using it, nobody will complain, right :D
+> > Maybe an example diagram for the physical topology and how the
+> > migration target is generated in the comment seems helpful to
+> > understand the code.
+>
+> Sure.  Were you thinking of a code comment, or enhanced changelog?
+
+I'd prefer a code comment.
+
+>
+> Let's say there's a system with two sockets each with the same three
+> classes of memory: fast, medium and slow.  Each memory class is placed
+> in its own NUMA node and the CPUs are attached to the fast memory.  That
+> leaves 6 NUMA nodes (0-5):
+>
+>         Socket A: 0, 1, 2
+>         Socket B: 3, 4, 5
+>
+> The migration path for this configuration path would start on the nodes
+> with the processors and fast memory, progress through medium and end
+> with the slow memory:
+>
+>         0 -> 1 -> 2 -> stop
+>         3 -> 4 -> 5 -> stop
+>
+> This is represented in the node_demotion[] like this:
+>
+>         {  1, // Node 0 migrates to 1
+>            2, // Node 1 migrates to 2
+>           -1, // Node 2 does not migrate
+>            4, // Node 3 migrates to 1
+>            5, // Node 4 migrates to 2
+>           -1} // Node 5 does not migrate
+>
+> Is that what you were thinking of?
+
+Perfect.
+
+>
+> ...
+> >> +again:
+> >> +       this_pass = next_pass;
+> >> +       next_pass = NODE_MASK_NONE;
+> >> +       /*
+> >> +        * To avoid cycles in the migration "graph", ensure
+> >> +        * that migration sources are not future targets by
+> >> +        * setting them in 'used_targets'.  Do this only
+> >> +        * once per pass so that multiple source nodes can
+> >> +        * share a target node.
+> >> +        *
+> >> +        * 'used_targets' will become unavailable in future
+> >> +        * passes.  This limits some opportunities for
+> >> +        * multiple source nodes to share a desintation.
 > >
-> > It might be worthwhile to make RAW support a compile time decision so
-> > that Linux distros can only ship support for the commands the CXL
-> > driver-dev community has blessed, but I'll leave it to a distro
-> > developer to second that approach.
+> > s/desination/destination
 >
-> Couple of thoughts here:
-
-I am compelled to challenge these assertions because this set is
-*more* conservative than the current libnvdimm situation which is
-silent by default about the vendor pasthrough. How can this be worse
-when the same scope of possible damage is now loudly reported rather
-than silent?
-
+> Fixed, thanks.
 >
->  - As distro developer (well, actually middle manager of distro
->    developers) this approach of raw interface is a headache.
-
-You've convinced me that this needs a compile time disable, is that
-not sufficient?
-
+> >> +        */
+> >> +       nodes_or(used_targets, used_targets, this_pass);
+> >> +       for_each_node_mask(node, this_pass) {
+> >> +               int target_node = establish_migrate_target(node, &used_targets);
+> >> +
+> >> +               if (target_node == NUMA_NO_NODE)
+> >> +                       continue;
+> >> +
+> >> +               /* Visit targets from this pass in the next pass: */
+> >> +               node_set(target_node, next_pass);
+> >> +       }
+> >> +       /* Is another pass necessary? */
+> >> +       if (!nodes_empty(next_pass))
+> >> +               goto again;
+> >> +}
+> >> +
+> >> +void set_migration_target_nodes(void)
+> >
+> > It seems this function is not called outside migrate.c, so it should be static.
 >
->    Customers will pick it
-
-Why will they pick it when the kernel screams bloody murder at them
-when it gets used?
-
-> and use it since it is there and the poor
->    support folks will have to go through layers of different devices
-
-What layers willl support folks need to dig through when the WARN
-splat is clearly present in the log and the taint flag is visible in
-any future crash?
-
->    say (for example) to finally find out that some OEM firmware opcode
->    X is a debug facility for inserting corrupted data, while for another vendor
->    the same X opcode makes it go super-fast.
-
-None of these commands are in the fast path.
-
->
->    Not that anybody would do that, right? Ha!
-
-We can look to libnvdimm + ndctl to see the trend. I have not
-encountered new competing manageability tool efforts, and the existing
-collisions between ndctl and ipmctl are resolving to defeature ipmctl
-where ndctl and the standard / native command path can do the job.
-
->
->  - I will imagine that some of the more vocal folks in the community
->    will make it difficult to integrate these patches with these two
->    (especially this taint one). This will make the acceptance of these
->    patches more difficult than it should be. If you really want them,
->    perhaps make them part of another patchset, or a follow up ones.
-
-The patches are out now and no such pushback from others has arisen. I
-believe your proposal for compile-time disable is reasonable and would
-satisfy those concerns.
-
->
->  - I still don't get why as a brand new community hacks are coming up
->    (even when the hardware is not yet there) instead of pushing back at
->    the vendors to have a clean up interface. I get in say two or three
->    years these things .. but from the start? I get your point about
->    flexibility, but it seems to me that the right way is not give open
->    RAW interface (big barndoor) but rather maintain the driver and grow
->    it (properly constructed doors) as more functionality comes about
->    and then adding it in the driver.
->
-
-Again, WARN_TAINT and now the threat of vendor tools not being
-generally distributable across distro kernels that turn this off, is a
-more strict stance than libnvdimm where the worst fears have yet to
-come to fruition. In the meantime this enabling is useful for a
-validation test bench kernel for new hardware bringup while the
-upstream api formalization work continues.
+> Fixed, thanks.
