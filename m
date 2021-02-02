@@ -2,180 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F9D30CB13
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:14:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BBAC30CCF0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:23:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239475AbhBBTMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 14:12:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239509AbhBBTGX (ORCPT
+        id S232917AbhBBUUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 15:20:15 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:56704 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232529AbhBBUSH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 14:06:23 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A550FC0617A9
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 11:03:00 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id a20so2876847pjs.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 11:03:00 -0800 (PST)
+        Tue, 2 Feb 2021 15:18:07 -0500
+X-Greylist: delayed 4443 seconds by postgrey-1.27 at vger.kernel.org; Tue, 02 Feb 2021 15:18:06 EST
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 112J1Qjm058176;
+        Tue, 2 Feb 2021 19:03:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=vq56Hf3QBqBi19p2TLa7ItRxm40nWDqQ8FJpKkWJF7s=;
+ b=bv9Jno9h6KjG/vEbvp7R1Bmvpk34JXynlu0W4ypxQUulGJ75ucNkHlEG0Ed/I0ATS93n
+ 1YIoRXXonE+xZ2Fh+CW56iVGiXYHStn5VrWDEA9QjhGpLCfB1cvm7WqkcFZ31fvT25xk
+ U+Ohi9OlZLrKulMUZrNIYaoZwXzHxBbcE+xxMQciGNdp5/JWT17Exol/1YoCbJcaqRIq
+ 7jnFXt9vAoRiehDmztKH7DaG2XRpLfQK8EWD4iPUp8+nCi7HgDJ3tU3YuFDbcfzZhdsE
+ K1dLttIsLq4RiiVKYg7oah1GmQFW127OD2YOpPplqnK6FnepFJrM7xYxwGQ9GsQFOPVo ig== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 36dn4wj9yj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Feb 2021 19:03:16 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 112IFUK0066617;
+        Tue, 2 Feb 2021 19:03:15 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2172.outbound.protection.outlook.com [104.47.59.172])
+        by aserp3030.oracle.com with ESMTP id 36dh1phd0x-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 02 Feb 2021 19:03:15 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=h8yzh27CtHXLz9nF6Q4CYANdWx7e708BTA3/vH+MtDoJdnWN1JMC9mcRzPZ4Uwuwv8se98LhCEHSMA1cpKahJK+Y6tOULPqTgAcyjhTmOXcARNRUqLwz0i2gzOE66zcAzndM57ih+Ih1ZkSNikMJfw7AP1RMrYwOCSV1kAdtsAlR/hUB9P4h35+mXhjer3DyhII2GYfYPI4CZgjCj0B7awvJ9u22lqZsb6cEp2P4SU9FQonL4D1BJYYB8X4tiYTWVPNW3u3z+FgSHmT32GqB8C8yHyUf9aorQylWy3qF0P6ChciECcntvQ5V49WHYw/EewsNQLXFKlWd+q25P/35gA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vq56Hf3QBqBi19p2TLa7ItRxm40nWDqQ8FJpKkWJF7s=;
+ b=iOXydvGFs+ocUtDptEiUqL+YIqobMsojQrJSeT83J4OMqpa8v6gfqgSB7Og/1tN5LRS7tOcgzhIfDkunqNO18+qLdqeyCx5lQzvJW9+PZEXSNW1e10aVhDQIEtlyinCqBHdMKia8iiPemsdRQNZjDyU3Vr7BgMKYnensBcVU9VFRiyjjLzPOVGFw+e2QkcCvXzpqGdg3VFdIvpgGEjKlp47oQV96Z5RQIutCEQZ4nt/m5XgnkjZOXSznfxcLns29bCUC5J8Rx/MJKGWJrVgk4QbKaWsV1BZiWnDL46wy/vQbAi9KJXrav8FgEU4LOiAvUi6nxvgcUVgT8FbjMjozmA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NUfGs35qGoHpDrRDAnP7qHs518RtK2f1VxTBTJHOdq8=;
-        b=Lu0lr25MFrLnP/clSRYOXtWC7Q8dAP91qw6JExkrMq6K/N5IUH1M+yneUaTO/87SKo
-         0oDtFVZMjMRPiN/AgKAbVmQ1DdXRHDc7/GBmXh3tDVUyES0KftfDTW/X+31xMqK0XyJb
-         yCgnZ2dvF4RQR7PjTbBURRJzxatmGxcOOjXyI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NUfGs35qGoHpDrRDAnP7qHs518RtK2f1VxTBTJHOdq8=;
-        b=VG8rbtm75XDRpGD+jgCbBDXneFJb37R3Ar0HwITo646uia69u1rl4+6wSN2QLl170U
-         GUwDqpCpH7sNU3+O7+hlWhFo4YnfEv054QgABJEFFyteF5Ds9+z1pBJx3i9yGMlBv5cr
-         wsWNyPIESIlCwU12Y2PkjWCy4hlRklT3Epw288DgHBqBGLWUbBXeFM+pJFBJS8YOOAig
-         Ei0YuquT50k8FmOnIA0wWPAoTQgQmptOnXIT2cdNrMu3a6CQy7pHQeFbPKUDow2PIr4c
-         eTKioJQO4b3vOEkQt3rAJ0YjKHxteM86R0KbuIr6GjIdTZ+pEGDC3s/xTxrkCYLiQfAM
-         CF1Q==
-X-Gm-Message-State: AOAM531XWgkudkyWjdEQG+rF4YJlqEIiBYHqqHqwT+qmnnaKOHx0x4dI
-        N6bPHpWCD0A4CaIkrnoi90P9/A==
-X-Google-Smtp-Source: ABdhPJwxV+dAKCoa7ZePhj8UecxcgkmmpYe2KqbJ7EyJNZC2OGvKclsFqpV5//1We6WqJR0rXo0hEw==
-X-Received: by 2002:a17:90a:5317:: with SMTP id x23mr5762106pjh.154.1612292580130;
-        Tue, 02 Feb 2021 11:03:00 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id x3sm23534698pfp.98.2021.02.02.11.02.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 11:02:59 -0800 (PST)
-Date:   Tue, 2 Feb 2021 11:02:58 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     wanghongzhe <wanghongzhe@huawei.com>
-Cc:     luto@amacapital.net, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        songliubraving@fb.com, wad@chromium.org, yhs@fb.com
-Subject: Re: [PATCH v1 1/1] Firstly, as Andy mentioned, this should be
- smp_rmb() instead of rmb(). considering that TSYNC is a cross-thread
- situation, and rmb() is a mandatory barrier which should not be used to
- control SMP effects, since mandatory barriers impose unnecessary overhead on
- both SMP and UP systems, as kernel Documentation said.
-Message-ID: <202102021100.DB383A44@keescook>
-References: <B1DC6A42-15AF-4804-B20E-FC6E2BDD1C8E@amacapital.net>
- <1612260787-28015-1-git-send-email-wanghongzhe@huawei.com>
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vq56Hf3QBqBi19p2TLa7ItRxm40nWDqQ8FJpKkWJF7s=;
+ b=hpahLIzXdj4Mk4dwe8kFkkNm0s/YPmHos3n6spsH2WvW0YSwGPNl1HaEfI0VdC/zeGg1rP3hN1aEbTMxstCCxH1XllSeGyvBP3WyM84o5pLqqqzJQFzKuaOqf4VeQ8kWv4qh4HL2lzgOjV6hOxBY3Ag5R7iGgVySY6LbJcItIG4=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=oracle.com;
+Received: from MWHPR10MB1389.namprd10.prod.outlook.com (2603:10b6:300:21::22)
+ by MWHPR10MB1278.namprd10.prod.outlook.com (2603:10b6:301:a::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.24; Tue, 2 Feb
+ 2021 19:03:14 +0000
+Received: from MWHPR10MB1389.namprd10.prod.outlook.com
+ ([fe80::897d:a360:92db:3074]) by MWHPR10MB1389.namprd10.prod.outlook.com
+ ([fe80::897d:a360:92db:3074%5]) with mapi id 15.20.3805.026; Tue, 2 Feb 2021
+ 19:03:13 +0000
+Subject: Re: [PATCH v2] mm/hugetlb: remove redundant check in preparing and
+ destroying gigantic page
+To:     "Xu, Yanfei" <yanfei.xu@windriver.com>, akpm@linux-foundation.org,
+        David Hildenbrand <david@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210202112002.73170-1-yanfei.xu@windriver.com>
+ <1d700a57-24dd-7448-1d25-11c3e355f5fe@windriver.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <7ce64226-6069-ebdc-6b0b-3673f0fa5254@oracle.com>
+Date:   Tue, 2 Feb 2021 11:03:12 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
+In-Reply-To: <1d700a57-24dd-7448-1d25-11c3e355f5fe@windriver.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [50.38.35.18]
+X-ClientProxiedBy: MWHPR14CA0050.namprd14.prod.outlook.com
+ (2603:10b6:300:81::12) To MWHPR10MB1389.namprd10.prod.outlook.com
+ (2603:10b6:300:21::22)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1612260787-28015-1-git-send-email-wanghongzhe@huawei.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.112] (50.38.35.18) by MWHPR14CA0050.namprd14.prod.outlook.com (2603:10b6:300:81::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.17 via Frontend Transport; Tue, 2 Feb 2021 19:03:13 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 39804377-f29d-4e81-5b30-08d8c7ad30d8
+X-MS-TrafficTypeDiagnostic: MWHPR10MB1278:
+X-Microsoft-Antispam-PRVS: <MWHPR10MB12781401CE9911B3B14C7F75E2B59@MWHPR10MB1278.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:415;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JpTD2DxzS9ZDuVI6N+EVsB9S+zqOiy3pFmm2hSlPUVuEivtIemTkeibu6/2eIwFo7ZuWbDk4bRXNdHZgZvDA2a5yRghgVmZ8kR/qkmotth0/kusApg75XmaMXOEWl5TpCw6NM3iExltpspnPwA006o6A2XWZAjchiqlzyETnIzFQuw3wdZU2pdPvGBzz+is5JknYUHiogac4qtjw6UpSlCucIxzvNqMz564tBphvASSh/a+J/u0mjPQYDMC/D6nPXhrjYtkGcrJyp+T1yhSppmDci85G9UWR53BfdKhD/pvSy0yiSRYxCQZ5xP2gfGohuLAB4zGaJU7aNhJf/hwKIgAsDAVU+Irevr1+u2piBIroHveBpbLmrb08Si5V74U0vkH+g6opHVR6bHxPDcBpVGDQoi5j3EuClyn/7hjwKakyoirHrxneuFoa/yVqMAzkqcmXZu4PEEW2DTxeb19su5N3iCuKw1RiZKfYgk0jZEsPOP6j8h7jn0GV6ZF3rBDNDJ8JdWLAKARHQp0VOZXniF2Y+w15evwdBgDCZByYUoPfylUQoqzuFFYWdVtTSHFjWzZ+OTjivC2Z/YGCChUzPCaRBoqdVAMu0X1p5BY7Lfc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR10MB1389.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(346002)(376002)(366004)(39860400002)(396003)(26005)(31686004)(44832011)(16526019)(16576012)(956004)(110136005)(5660300002)(31696002)(478600001)(316002)(83380400001)(186003)(66556008)(66476007)(8676002)(66946007)(86362001)(52116002)(6486002)(53546011)(8936002)(2906002)(36756003)(4326008)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?S2x0c0xSbWM5ckN1WkhWVnNnZmRzeXBqc0lJaWNSWm9WZ2pMR0JsV1UycFV6?=
+ =?utf-8?B?Q04vZUsydGxWbFZCL2crSkhKYWh2b0tNZTZtekgrNEtDejE2WFk3RjdKQ28w?=
+ =?utf-8?B?cW95UDB6V0Iwdkhrb29ETDNnMGFUellsRlE1NXd6SytlcjNmZTljN2JaUmoz?=
+ =?utf-8?B?NUdyeWdaNnBoeHZRT2lRa216NGJPRjNBSXVsTTVzeldFVURaamhMcnZlY2Nj?=
+ =?utf-8?B?UzAyM2dwRnBaSkhUVXJUdk53TmEyWG95Mlh6NEJkY0lOUVVFMXU5NDE4NnI5?=
+ =?utf-8?B?VDBBbDVBQ0RoUzE0ZkMvZDRUL1VyOVZKMzZuMzFmam5mSkFTUXFBVzg4MXFR?=
+ =?utf-8?B?cmVxSXFBZ3BVb0xiczdaRFIrVERwamtJd21nREJqT09IYWxQdDkxc3pRcHhV?=
+ =?utf-8?B?THFWUTF6bDZKbDdoeFJlZUhEOXE5N1BTM2lsVy9CUDVxU0p0UXVhSXFZbkho?=
+ =?utf-8?B?SVdYNVdPQ1Q3V3pDQk1GK0JONWdmOU9MbTJPTmQ1Smtra2JFYmVKbTN3alRS?=
+ =?utf-8?B?NjhkNU9yNjZERjNnUyt5TkdsNXBENHBvMGNRYndRb09FSlFLRUV0Yi8wdjJR?=
+ =?utf-8?B?S0l6OU9HeTZhREZ1Y0srbytqOXNEcjkwTmVRcm50OVFjWjRSZWF0Y0dNZ21l?=
+ =?utf-8?B?UEp3WUFMTnNsMmJDcnJCZTVicEVBS0hpb1BSSDNKeUpWdXY5S1FKc21vYWZh?=
+ =?utf-8?B?OXAyVnl6SFpQRzBjQWdJM2JqNVlNb0lsTWQrc3loRjRCVGN3N1JlY3JiRzM0?=
+ =?utf-8?B?WEVueFE4RkE2YUw1cEdxQXB1bldjTTNMSkV4ZFBmN3E2RFFZdHl4SkU4RzFW?=
+ =?utf-8?B?VndzQ2NCRm1oU1dFZktZSWhPZ0daMXoxWm9qcDlUQzU2UWFkdHFnc0svR1BI?=
+ =?utf-8?B?bVJSQUR1amh1dDA2eHc4MDJtSkFoZkhsSXdSZmljSC9VVmJuWkgxS1JkR0xy?=
+ =?utf-8?B?UFhsQWpNTXYzZVh1cTJGUERMTGlZUk1TSFU2eGZzTHQ5cXpPdW01UG9JUHF5?=
+ =?utf-8?B?MXVabFBvNkJPekxINnhvUWxHY1dwNXYzelJFWkIrOVVnQ0VnMXk4aDFraTA4?=
+ =?utf-8?B?aGl0ZmprM3FhK0pRK2phbURzUUhRcGZONWxYNU0xTndGOHpsU21zSXpGbGhL?=
+ =?utf-8?B?NG9rbWZvaFFUR1ZlcWYySm1yNitWanVpMGZqM0ZDR05xQ3NOQ0N0VUF2NEZX?=
+ =?utf-8?B?dXNsTVlzWGF2dVNFLzVUeWxtdVJJUmIzcXp1aGFDQkljMVlBUmJ1V0pUMjU4?=
+ =?utf-8?B?MGtsZ2ViZ3dVTDQvc0JJZ2xLbGU4ZGtjQStpNUZVa05HU0ZQY2Qyd0tsOTdw?=
+ =?utf-8?B?bXV1RWwvMktPOEVYYmcraFJJSUZqcGRuNWdMRkpaekhmY1pzTFJHTWs5RVRS?=
+ =?utf-8?B?SGhLSHYrb285ZmFrSThVNUk1VVRPSjlnc0V1NWlxM3VVaThyVWttd0FSSm43?=
+ =?utf-8?B?UzU2dFJMaW9FeWQ0elBYTDFpYUdqMVhweTZobVAzMUpjK0s4ZU5ZOUw4Rkdv?=
+ =?utf-8?B?dk44TmN5UUxrelZraC90Q1hsVTRiYXh5SEtHc2JUdkFQblRid3VSb3BVRnE4?=
+ =?utf-8?B?Z2xlZDFuZ2dJRDdwZ2Vuc0tsOEJLY2o2NVRhVURtdnhlZnIrUUtXQkNBbFNx?=
+ =?utf-8?B?MUhCcHZSbFNMYmQxRkdPbHhzMnQ5THp5anFrK2kybmd4b1JLc2xjSE43bUZh?=
+ =?utf-8?B?M0xTdHc1SVl6V2JNRkJ1Z1hBL0RkT1FSUm9JczBBYm9tYzhnSUJIbWNXMlAw?=
+ =?utf-8?Q?RXrEt9jJBQ64utFPVMP3ydIepkcA1jvAxUVatqO?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 39804377-f29d-4e81-5b30-08d8c7ad30d8
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR10MB1389.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2021 19:03:13.8429
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5U+5CqLtJO5kNTDOTbWmB9EikanUpDe6+0J+Ad0nx2LAaG71DRVM58N21BOP1wJwxhRRS09koNKbNfgNmb260A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR10MB1278
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9883 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
+ suspectscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102020120
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9883 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 lowpriorityscore=0
+ spamscore=0 priorityscore=1501 suspectscore=0 phishscore=0 mlxlogscore=999
+ malwarescore=0 clxscore=1011 bulkscore=0 adultscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2102020120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 06:13:07PM +0800, wanghongzhe wrote:
-> Secondly, the smp_rmb() should be put between reading SYSCALL_WORK_SECCOMP and reading
-> seccomp.mode, not between reading seccomp.mode and seccomp->filter, to make
-> sure that any changes to mode from another thread have been seen after
-> SYSCALL_WORK_SECCOMP was seen, as the original comment shown. This issue seems to be
-> misintroduced at 13aa72f0fd0a9f98a41cefb662487269e2f1ad65 which aims to
-> refactor the filter callback and the API. So the intuitive solution is to put
-> it back like:
+On 2/2/21 4:19 AM, Xu, Yanfei wrote:
+> I'm sorry for forgetting to add David.
+> Now add David ：）
 > 
-> Thirdly, however, we can go further to improve the performace of checking
-> syscall, considering that smp_rmb is always executed on the syscall-check
-> path at each time for both FILTER and STRICT check while the TSYNC case
-> which may lead to race condition is just a rare situation, and that in
-> some arch like Arm64 smp_rmb is dsb(ishld) not a cheap barrier() in x86-64.
+> Thanks，
+> Yanfei
 > 
-> As a result, smp_rmb() should only be executed when necessary, e.g, it is
-> only necessary when current thread's mode is SECCOMP_MODE_DISABLED at the
-> first TYSNCed time, because after that the current thread's mode will always
-> be SECCOMP_MODE_FILTER (and SYSCALL_WORK_SECCOMP will always be set) and can not be
-> changed anymore by anyone. In other words, after that, any thread can not
-> change the mode (and SYSCALL_WORK_SECCOMP), so the race condition disappeared, and
-> no more smb_rmb() needed ever.
-> 
-> So the solution is to read mode again behind smp_rmb() after the mode is seen
-> as SECCOMP_MODE_DISABLED by current thread at the first TSYNCed time, and if
-> the new mode don't equals to SECCOMP_MODE_FILTER, do BUG(), go to FILTER path
-> otherwise.
-> 
-> RFC -> v1:
->  - replace rmb() with smp_rmb()
->  - move the smp_rmb() logic to the middle between SYSCALL_WORK_SECCOMP and mode
-> 
-> Signed-off-by: wanghongzhe <wanghongzhe@huawei.com>
-> Reviewed-by: Andy Lutomirski <luto@amacapital.net>
-> ---
->  kernel/seccomp.c | 25 +++++++++++++++++--------
->  1 file changed, 17 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> index 952dc1c90229..a621fb913ec6 100644
-> --- a/kernel/seccomp.c
-> +++ b/kernel/seccomp.c
-> @@ -1160,12 +1160,6 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
->  	int data;
->  	struct seccomp_data sd_local;
->  
-> -	/*
-> -	 * Make sure that any changes to mode from another thread have
-> -	 * been seen after SYSCALL_WORK_SECCOMP was seen.
-> -	 */
-> -	rmb();
-> -
->  	if (!sd) {
->  		populate_seccomp_data(&sd_local);
->  		sd = &sd_local;
-> @@ -1289,7 +1283,6 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
->  
->  int __secure_computing(const struct seccomp_data *sd)
->  {
-> -	int mode = current->seccomp.mode;
->  	int this_syscall;
->  
->  	if (IS_ENABLED(CONFIG_CHECKPOINT_RESTORE) &&
-> @@ -1299,10 +1292,26 @@ int __secure_computing(const struct seccomp_data *sd)
->  	this_syscall = sd ? sd->nr :
->  		syscall_get_nr(current, current_pt_regs());
->  
-> -	switch (mode) {
-> +	/*
-> +	 * Make sure that any changes to mode from another thread have
-> +	 * been seen after SYSCALL_WORK_SECCOMP was seen.
-> +	 */
-> +	smp_rmb();
+> On 2/2/21 7:20 PM, yanfei.xu@windriver.com wrote:
+>> From: Yanfei Xu <yanfei.xu@windriver.com>
+>>
+>> Gigantic page is a compound page and its order is more than 1.
+>> Thus it must be available for hpage_pincount. Let's remove the
+>> redundant check for gigantic page.
+>>
+>> Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
+>> ---
+>>   mm/hugetlb.c | 7 ++-----
+>>   1 file changed, 2 insertions(+), 5 deletions(-)
 
-Let's start with a patch that just replaces rmb() with smp_rmb() and
-then work on optimizing. Can you provide performance numbers that show
-rmb() (and soon smp_rmb()) is causing actual problems here?
+I can not imagine a 'hugetlb gigantic page' being <= 1 order, so this change
+makes sense.  Thanks,
 
-> +
-> +	switch (current->seccomp.mode) {
->  	case SECCOMP_MODE_STRICT:
->  		__secure_computing_strict(this_syscall);  /* may call do_exit */
->  		return 0;
-> +	/*
-> +	 * Make sure that change to mode (from SECCOMP_MODE_DISABLED to
-> +	 * SECCOMP_MODE_FILTER) from another thread using TSYNC ability
-> +	 * have been seen after SYSCALL_WORK_SECCOMP was seen. Read mode again behind
-> +	 * smp_rmb(), if it equals SECCOMP_MODE_FILTER, go to the right path.
-> +	 */
-> +	case SECCOMP_MODE_DISABLED:
-> +		smp_rmb();
-> +		if (unlikely(current->seccomp.mode != SECCOMP_MODE_FILTER))
-> +			BUG();
-
-BUG() should never be used[1]. This is a recoverable situation, I think, and
-should be handled as such.
-
--Kees
-
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#bug-and-bug-on
-
->  	case SECCOMP_MODE_FILTER:
->  		return __seccomp_filter(this_syscall, sd, false);
->  	default:
-> -- 
-> 2.19.1
-> 
-
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 -- 
-Kees Cook
+Mike Kravetz
+
+>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+>> index a3e4fa2c5e94..dac5db569ccb 100644
+>> --- a/mm/hugetlb.c
+>> +++ b/mm/hugetlb.c
+>> @@ -1219,8 +1219,7 @@ static void destroy_compound_gigantic_page(struct page *page,
+>>       struct page *p = page + 1;
+>>         atomic_set(compound_mapcount_ptr(page), 0);
+>> -    if (hpage_pincount_available(page))
+>> -        atomic_set(compound_pincount_ptr(page), 0);
+>> +    atomic_set(compound_pincount_ptr(page), 0);
+>>         for (i = 1; i < nr_pages; i++, p = mem_map_next(p, page, i)) {
+>>           clear_compound_head(p);
+>> @@ -1501,9 +1500,7 @@ static void prep_compound_gigantic_page(struct page *page, unsigned int order)
+>>           set_compound_head(p, page);
+>>       }
+>>       atomic_set(compound_mapcount_ptr(page), -1);
+>> -
+>> -    if (hpage_pincount_available(page))
+>> -        atomic_set(compound_pincount_ptr(page), 0);
+>> +    atomic_set(compound_pincount_ptr(page), 0);
+>>   }
+>>     /*
+>>
+> 
