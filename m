@@ -2,77 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D5030CCF4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:23:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D77B130CD12
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:30:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233017AbhBBUWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 15:22:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46744 "EHLO
+        id S232496AbhBBU2J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 15:28:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232532AbhBBUUJ (ORCPT
+        with ESMTP id S233369AbhBBU0d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 15:20:09 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22A56C061788;
-        Tue,  2 Feb 2021 12:19:29 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0e1f00063087fcaf821809.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:1f00:630:87fc:af82:1809])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E5A101EC04D6;
-        Tue,  2 Feb 2021 21:19:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1612297165;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Ee3tYDfp3QeWVA1ZBYRXshE4otzH4zb09kl47xr1pHE=;
-        b=SDRCfxlXmSk5o5zrc2gZpWTT4s8Dc+LpNzMhgAzU+Qw8wLmLMcElN1KwJwFQ364IIFRdFw
-        rl8olf75MSZYAIBVJ4JLoHuaGI4xz62anXU1RRuW31+nQ8Skw2Den0ZgHajsIOGIvxFWBJ
-        sFgKhRoJmI2Al0F1rYGRLvs/qD651a8=
-Date:   Tue, 2 Feb 2021 21:19:20 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Amy Parker <enbyamy@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-gcc@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, Willy Tarreau <w@1wt.eu>
-Subject: Re: Alternative compilers to GCC/Clang
-Message-ID: <20210202201920.GA18106@zn.tnic>
-References: <CAE1WUT6mp80yFDgAirZcKvc31O23ynpLGcsdPaa8qd1dsXiXhg@mail.gmail.com>
- <20210202053307.GB28542@1wt.eu>
- <CAE1WUT4r1oNmu_7y6AMMSNyNmt8LYo6DXa2DPR=wOGb27XErZA@mail.gmail.com>
- <CAE1WUT7zprk-3naBGwZk=bsVR8Od=PT0kqNO6EVBQUOG+F1h3w@mail.gmail.com>
+        Tue, 2 Feb 2021 15:26:33 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BAF9C061788;
+        Tue,  2 Feb 2021 12:25:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=4PFyUqlONvTFczA/ru8USrCCxtLyJRVmXtgqRn7jk0Q=; b=cA2l8yWFP7TqGbGYHST/vX4jJ4
+        oU/wOCIbjwkQGnFDnNccnYiLD2ycDgnh2uHbNGnb2vX6eedToXdzbjBeQWyVYuubytSu/jleYmrBP
+        LeXVIZnAIVn18r9JviHYmiGrSH141NbC1BhGdyQbc/fu6GtLirjoDAwWjaKrJ2P/MtrUndjTaWp/x
+        DH0+Etj6LuEbB2CvQjYdS0WqOheaBw80sYJL7XnAvShkCy5brdsjrRQ82MF7onQgGKdBa+r/j+Kkg
+        uDkR4af74ZyqvpKJ6rwPBgRxrnY4MjK1hAWIVp3CYVjy/bBuOBX8JgmlvytYxFmsEjvcjeMKdvdUe
+        FIT1kAlg==;
+Received: from [2601:1c0:6280:3f0::2a53]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1l72EN-0007eY-2V; Tue, 02 Feb 2021 20:24:59 +0000
+Subject: Re: [PATCH 1/1] ipu3-cio2: Build bridge only if ACPI is enabled
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        Dan Scally <djrscally@gmail.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Yong Zhi <yong.zhi@intel.com>
+References: <20210202201440.10613-1-sakari.ailus@linux.intel.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <070d3585-e21c-0bef-3740-d38fcd106f25@infradead.org>
+Date:   Tue, 2 Feb 2021 12:24:54 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
+In-Reply-To: <20210202201440.10613-1-sakari.ailus@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAE1WUT7zprk-3naBGwZk=bsVR8Od=PT0kqNO6EVBQUOG+F1h3w@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 11:11:32AM -0800, Amy Parker wrote:
-> On Tue, Feb 2, 2021 at 8:26 AM Amy Parker <enbyamy@gmail.com> wrote:
-> > > It compiles extremely fast, implements some subsets of gcc (a few
-> > > attributes for example), but is far from being able to compile a kernel
-> >
-> > Well, we'll see what I can do with that. :)
+On 2/2/21 12:14 PM, Sakari Ailus wrote:
+> ipu3-cio2-bridge uses several features of the ACPI framework that have no
+> meaningful replacement when ACPI is disabled. Instead of adding #ifdefs to
+> the affected places, only build the bridge code if CONFIG_ACPI is enabled.
 > 
-> Well, just installed it and tried building the kernel. Fails every file. :)
+> Fixes: 803abec64ef9 ("media: ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver")
+> Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
+
+Thanks.
+
+> ---
+> Hi Randy,
 > 
-> It's definitely something to work towards - but I don't know if kernel
-> advancements requiring newer GCC versions will go slow enough to allow
-> TCC improvements to arise. This isn't just something like with Clang
-> where a few tweaks to files and to Clang itself did the trick.
+> Thanks for reporting this.
+> 
+> This patch should address the problem.
+> 
+>  drivers/media/pci/intel/ipu3/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/pci/intel/ipu3/Kconfig b/drivers/media/pci/intel/ipu3/Kconfig
+> index 24f4e79fe0cb..dce8274c81e6 100644
+> --- a/drivers/media/pci/intel/ipu3/Kconfig
+> +++ b/drivers/media/pci/intel/ipu3/Kconfig
+> @@ -20,7 +20,7 @@ config VIDEO_IPU3_CIO2
+>  
+>  config CIO2_BRIDGE
+>  	bool "IPU3 CIO2 Sensors Bridge"
+> -	depends on VIDEO_IPU3_CIO2
+> +	depends on VIDEO_IPU3_CIO2 && ACPI
+>  	help
+>  	  This extension provides an API for the ipu3-cio2 driver to create
+>  	  connections to cameras that are hidden in the SSDB buffer in ACPI.
+> 
 
-Maybe this'll help you find something to do:
-
-https://www.youtube.com/watch?v=iU0Z0vBKrtQ
-
-Yes, it would be lovely to be able to compile the kernel with tcc but it
-is not going to be trivial.
-
-Good luck.
 
 -- 
-Regards/Gruss,
-    Boris.
+~Randy
 
-https://people.kernel.org/tglx/notes-about-netiquette
