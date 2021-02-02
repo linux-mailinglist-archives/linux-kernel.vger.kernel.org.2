@@ -2,93 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E5830CB8D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:32:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED23C30CB95
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:32:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239570AbhBBT2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 14:28:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33020 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233025AbhBBTZR (ORCPT
+        id S239803AbhBBT3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 14:29:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233390AbhBBTZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 14:25:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612293831;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=bdRo3+F70po29fse+ZS87tnszTwmf70tXILypMqRVvI=;
-        b=hB8HcjjpHKU66Ab4ruF69VuJvTodB75imtgkvj9gX1rFpycjoUG3n0qbGOliR3JjQVBTIU
-        EOdyMqcO8DEhIMwWO9NC4Sof6TF4reGmId2M0cq1+Zhe6RxeS6h+yFXljrZSm/6+2TNeUr
-        Iw/ldQ5y+nw4h3STXoMs1tNQgdln+0g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-107-mEJcPiv4MzCV85IS6QOqFA-1; Tue, 02 Feb 2021 14:23:48 -0500
-X-MC-Unique: mEJcPiv4MzCV85IS6QOqFA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9735583758;
-        Tue,  2 Feb 2021 19:23:38 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.128])
-        by smtp.corp.redhat.com (Postfix) with SMTP id A113E60C5F;
-        Tue,  2 Feb 2021 19:23:35 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Tue,  2 Feb 2021 20:23:38 +0100 (CET)
-Date:   Tue, 2 Feb 2021 20:23:34 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Jan Kratochvil <jan.kratochvil@redhat.com>,
-        Pedro Alves <palves@redhat.com>, Peter Anvin <hpa@zytor.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: [PATCH RESEND v4 0/4] x86: fix get_nr_restart_syscall()
-Message-ID: <20210202192333.GC20059@redhat.com>
-References: <20210201174555.GA17819@redhat.com>
- <CAHk-=wjKeFHBn60eJJjvJOW2+bdtwbeSb12R+=PBQJSSHe+FbA@mail.gmail.com>
- <CAHk-=wjJerA3xGtK8HdEcdAnmaaTz-iVvc_xqokzNTBivKomVQ@mail.gmail.com>
- <20210202155548.GB20059@redhat.com>
- <CAHk-=wit0wigE-D=r08=HyB4qSK-=+So8y9boeoc_o6Yavb_qg@mail.gmail.com>
+        Tue, 2 Feb 2021 14:25:24 -0500
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4581AC061786
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 11:24:44 -0800 (PST)
+Received: by mail-lj1-x229.google.com with SMTP id a25so25334679ljn.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 11:24:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p9owLXMczWEb4Ztg0zvw8dotQtfhOiQnS8DYe98Uq1Q=;
+        b=C1d/u70iNVqF0YU3/uMpTxQ0i1/b49rZKO9wZhcDe9fq/gMk1BRfTBbDSx7VzP1DlN
+         +q2AIdzhBfJ4dzhyz+FQB5W08mXgvo3JpNybGr36rDPgCfkPhKUZLK0hJ4MQCsA6sX7W
+         XNPheltPipapQI6sztWLU5CYXj+imwMPzmn7bcjBkrNnqhGr9wyTk4cNmvJqWzGlyKMI
+         RDLHwSicaXXtVz+Wj7JE34/UjHEtq73pudJueXEPVgtuzOd55DtZJNfd9JrcbYmY17YT
+         izu1uLg+L8YZF8GyWk9H2W3UVJjbKLyUS73Uc5HDOE0v4BdL/Ufmy5k//VUsn0ZDKPnL
+         31dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p9owLXMczWEb4Ztg0zvw8dotQtfhOiQnS8DYe98Uq1Q=;
+        b=eRoFIg8v4VbMGAcTlJ1uNGlB7FYNUfF0ghXlSDre03CBXbvlPS7+7S7gHBLhyCXHES
+         p2qprFEyrs13C01TbEcwqO7Ue67CHvSMjjjDKurOx0Akv2sNBPWuOoIXxjWUXZ6xi20V
+         f7X9RSokrEXhiM/Uc79qNM+N1yizeqt0A/cXzR33viAIIxA+dtXyaafIKar6UvImx9tX
+         UrU/YWJ37wLZ01XU6KEs1Es8lPEsiPoICGX0lK1I5/qlmQxyAJFMvh+u9kpNUO/Hq1lf
+         6ML58sti7TCK1jYgRGJaee+P+ufOZxEJy9c0Vsl8/3rW7wLtD0pWz+L9XTJfZsjRIN3z
+         b1tA==
+X-Gm-Message-State: AOAM5311jP04vMPwPJ9wiM02dQVZLO1lAa6icvvlGZPzmTQPAsuJXseF
+        riZhnYcYJNSGA4sIQyKtcy/khLUsS7U7NSlpmm90mw==
+X-Google-Smtp-Source: ABdhPJw19V4spv4EJbAssYDHp9VPhqKgCm9OtOemkVez3j2HW/g7+RN/7eYzkiLVuxBKet770V59kl8cU/7dEYxYL6U=
+X-Received: by 2002:a2e:8ec3:: with SMTP id e3mr13398675ljl.467.1612293882781;
+ Tue, 02 Feb 2021 11:24:42 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wit0wigE-D=r08=HyB4qSK-=+So8y9boeoc_o6Yavb_qg@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20210128122123.25341-1-nikita.shubin@maquefel.me>
+In-Reply-To: <20210128122123.25341-1-nikita.shubin@maquefel.me>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 2 Feb 2021 20:24:31 +0100
+Message-ID: <CACRpkdZs6Z1r9Fa0p2vu+234rXrJ3tvS=0OeJsKJE0hnkvJ5+g@mail.gmail.com>
+Subject: Re: [PATCH v3 0/7] gpio: ep93xx: fixes series patch
+To:     Nikita Shubin <nikita.shubin@maquefel.me>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Alexander Sverdlin <alexander.sverdlin@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/02, Linus Torvalds wrote:
->
-> On Tue, Feb 2, 2021 at 7:56 AM Oleg Nesterov <oleg@redhat.com> wrote:
-> >
-> > There is the "erestartsys-trap-debugger" test in ptrace-tests suite.
-> > Do you mean you want another test in tools/testing/selftests/ptrace ?
->
-> No, I guess it's fine if it's caught by the ptrace test suite - we'll
-> hopefully get fairly timely "guys, you broke it" reports.
->
-> Is that ptrace erestartsys-trap-debugger.c test new, or has it just
-> always failed? Or is the problem that it is so expected to fail that
-> we wouldn't get reports of it anyway (this clearly fell off your radar
-> for a long time)?
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-No, this test-case is very old. It used to work when this
-get_nr_restart_syscall() logic was based on the test_thread_flag(TIF_IA32)
-check.
+For the entire series.
 
-Then it started to fail somewhere 2-3 years ago, and to be honest I didn't
-even try to find which exactly patch broke this test. Because this logic
-was always wrong anyway, even if this test-case used to work.
-
-I sent v1 soon after this bug was reported, but every time I was too lazy,
-that is why this (minor) problem is still not fixed. So, in short, this is
-my fault in any case.
-
-Oleg.
-
+Yours,
+Linus Walleij
