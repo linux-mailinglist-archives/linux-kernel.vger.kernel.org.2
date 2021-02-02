@@ -2,155 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C0C30C520
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:15:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F04730C522
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:15:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235880AbhBBQMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 11:12:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37157 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235452AbhBBQLp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 11:11:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612282218;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=sYZzkVHR2ls3xvESHEyOkdDA3MfonApqwRfCSseBrz8=;
-        b=R1R8onCymvZKVkxdqMhDochFZMf8knvhzbJqJ36keeAA/mXOeKR8BcP4S5RianMYSJdFf8
-        bQMMIdi9M9AYZVSSiB3rAtpgtAz7QzPJnSpjnI9n+dR49Fp7TnVSHUhkIb1oJtBp4qpXeZ
-        /pICIL/0s3+z4QwV73uqZQbPms46+R4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-397-Zc6Hv7T2NGaAwYtEqRBMcA-1; Tue, 02 Feb 2021 11:10:16 -0500
-X-MC-Unique: Zc6Hv7T2NGaAwYtEqRBMcA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A9DF581621;
-        Tue,  2 Feb 2021 16:10:15 +0000 (UTC)
-Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4F4B25C22B;
-        Tue,  2 Feb 2021 16:10:15 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     jbaron@akamai.com
-Subject: [PATCH] KVM: move EXIT_FASTPATH_REENTER_GUEST to common code
-Date:   Tue,  2 Feb 2021 11:10:14 -0500
-Message-Id: <20210202161014.67093-1-pbonzini@redhat.com>
+        id S235988AbhBBQNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:13:17 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44442 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235153AbhBBQLw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 11:11:52 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612282262; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=i+hG/BeAD///eAJAicuOGh33+TvlaAZhxESXYIg+J8c=;
+        b=mOO0UgX9pJ4sMiS6lBuANV7T88ocGyDyTzhOJAgUySqSrSF5Mo+dR6O0Q+M1PJu3wyjxLA
+        XqO49ok7sH04Wii5LbF34LQOsJe8Q3tUODZ2LW5k3w4grlWmscZkJcnbQxzqXSMm72PPd6
+        Y4PCG7pDV4hJ7JYH9zHuplyzpzBCsS0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8B90CB13F;
+        Tue,  2 Feb 2021 16:11:02 +0000 (UTC)
+Date:   Tue, 2 Feb 2021 17:11:01 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH printk-rework 11/12] printk: remove logbuf_lock
+Message-ID: <YBl5lSpFt/OblQVC@alley>
+References: <20210126211551.26536-1-john.ogness@linutronix.de>
+ <20210126211551.26536-12-john.ogness@linutronix.de>
+ <YBkYOKL22kADKTeG@alley>
+ <87czxivgrj.fsf@jogness.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87czxivgrj.fsf@jogness.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that KVM is using static calls, calling vmx_vcpu_run and
-vmx_sync_pir_to_irr does not incur anymore the cost of a
-retpoline.
+On Tue 2021-02-02 12:47:20, John Ogness wrote:
+> On 2021-02-02, Petr Mladek <pmladek@suse.com> wrote:
+> > On Tue 2021-01-26 22:21:50, John Ogness wrote:
+> >> Since the ringbuffer is lockless, there is no need for it to be
+> >> protected by @logbuf_lock. Remove @logbuf_lock.
+> >> 
+> >> This means that printk_nmi_direct and printk_safe_flush_on_panic()
+> >> no longer need to acquire any lock to run.
+> >> 
+> >> @console_seq, @exclusive_console_stop_seq, @console_dropped are
+> >> protected by @console_lock.
+> >> 
+> >> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> >> index d14a4afc5b72..b57dba7f077d 100644
+> >> --- a/kernel/printk/printk.c
+> >> +++ b/kernel/printk/printk.c
+> >> @@ -401,6 +366,7 @@ static u64 syslog_seq;
+> >>  static size_t syslog_partial;
+> >>  static bool syslog_time;
+> >>  
+> >> +/* All 3 protected by @console_sem. */
+> >>  /* the next printk record to write to the console */
+> >>  static u64 console_seq;
+> >>  static u64 exclusive_console_stop_seq;
+> >> @@ -762,27 +728,27 @@ static ssize_t devkmsg_read(struct file *file, char __user *buf,
+> >>  	if (ret)
+> >>  		return ret;
+> >>  
+> >> -	logbuf_lock_irq();
+> >> +	printk_safe_enter_irq();
+> >
+> > What is the exact reason to keep this, please?
+> 
+> As Sergey pointed out [0], logbuf_lock_irq() does 2 things: logbuf_lock
+> and safe buffers. This series is not trying to remove the safe buffers
+> (a later series will). The series is only removing logbuf_lock. So all
+> logbuf_lock_*() calls will turn into printk_safe_*() calls. There are a
+> few exceptions, which you noticed and I will respond to.
+> 
+> [0] https://lkml.kernel.org/r/20201208203539.GB1667627@google.com
+> 
+> > 1. The primary function of the printk_safe context is to avoid deadlock
+> >    caused by logbuf_lock. It might have happened with recursive or nested
+> >    printk(). But logbuf_lock is gone now.
+> 
+> Agreed. Deadlock is not a concern anymore.
+> 
+> > 2. There are still some hidded locks that were guarded by this as
+> >    well. For example, console_owner_lock, or spinlock inside
+> >    console_sem, or scheduler locks taken when console_sem()
+> >    wakes another waiting process. It might still make sense
+> >    to somehow guard these.
+> 
+> This was not my motivation and I do not think it is an issue. I am not
+> aware of any technical need for the safe buffers to protect such
+> synchronization.
 
-Therefore there is no need anymore to handle EXIT_FASTPATH_REENTER_GUEST
-in vendor code.
+Just to make it clear. These locks are explicitely protected, see
+printk_safe_enter_irqsave()/printk_safe_exit_irqrestore() in
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/vmx/vmx.c | 19 +------------------
- arch/x86/kvm/x86.c     | 17 ++++++++++++++---
- arch/x86/kvm/x86.h     |  1 -
- 3 files changed, 15 insertions(+), 22 deletions(-)
+	+ console_lock_spinning_enable()
+	+ console_lock_spinning_disable_and_check()
+	+ console_trylock_spinning()
+	+ __up_console_sem()
+	+  __down_trylock_console_sem()
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index cf0c397dc3eb..2e304ba06d16 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6711,11 +6711,9 @@ static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
- 
- static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
- {
--	fastpath_t exit_fastpath;
- 	struct vcpu_vmx *vmx = to_vmx(vcpu);
- 	unsigned long cr3, cr4;
- 
--reenter_guest:
- 	/* Record the guest's net vcpu time for enforced NMI injections. */
- 	if (unlikely(!enable_vnmi &&
- 		     vmx->loaded_vmcs->soft_vnmi_blocked))
-@@ -6865,22 +6863,7 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
- 	if (is_guest_mode(vcpu))
- 		return EXIT_FASTPATH_NONE;
- 
--	exit_fastpath = vmx_exit_handlers_fastpath(vcpu);
--	if (exit_fastpath == EXIT_FASTPATH_REENTER_GUEST) {
--		if (!kvm_vcpu_exit_request(vcpu)) {
--			/*
--			 * FIXME: this goto should be a loop in vcpu_enter_guest,
--			 * but it would incur the cost of a retpoline for now.
--			 * Revisit once static calls are available.
--			 */
--			if (vcpu->arch.apicv_active)
--				vmx_sync_pir_to_irr(vcpu);
--			goto reenter_guest;
--		}
--		exit_fastpath = EXIT_FASTPATH_EXIT_HANDLED;
--	}
--
--	return exit_fastpath;
-+	return vmx_exit_handlers_fastpath(vcpu);
- }
- 
- static void vmx_free_vcpu(struct kvm_vcpu *vcpu)
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 14fb8a138ec3..b5f2d290ef3c 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -1796,12 +1796,11 @@ int kvm_emulate_wrmsr(struct kvm_vcpu *vcpu)
- }
- EXPORT_SYMBOL_GPL(kvm_emulate_wrmsr);
- 
--bool kvm_vcpu_exit_request(struct kvm_vcpu *vcpu)
-+static inline bool kvm_vcpu_exit_request(struct kvm_vcpu *vcpu)
- {
- 	return vcpu->mode == EXITING_GUEST_MODE || kvm_request_pending(vcpu) ||
- 		xfer_to_guest_mode_work_pending();
- }
--EXPORT_SYMBOL_GPL(kvm_vcpu_exit_request);
- 
- /*
-  * The fast path for frequent and performance sensitive wrmsr emulation,
-@@ -9044,7 +9043,19 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 		vcpu->arch.switch_db_regs &= ~KVM_DEBUGREG_RELOAD;
- 	}
- 
--	exit_fastpath = static_call(kvm_x86_run)(vcpu);
-+	for (;;) {
-+		exit_fastpath = static_call(kvm_x86_run)(vcpu);
-+		if (likely(exit_fastpath != EXIT_FASTPATH_REENTER_GUEST))
-+			break;
-+
-+                if (unlikely(kvm_vcpu_exit_request(vcpu))) {
-+			exit_fastpath = EXIT_FASTPATH_EXIT_HANDLED;
-+			break;
-+		}
-+
-+		if (vcpu->arch.apicv_active)
-+			static_call(kvm_x86_sync_pir_to_irr)(vcpu);
-+        }
- 
- 	/*
- 	 * Do this here before restoring debug registers on the host.  And
-diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-index 5f7c224f4bf2..cc652a348acc 100644
---- a/arch/x86/kvm/x86.h
-+++ b/arch/x86/kvm/x86.h
-@@ -395,7 +395,6 @@ void kvm_load_guest_xsave_state(struct kvm_vcpu *vcpu);
- void kvm_load_host_xsave_state(struct kvm_vcpu *vcpu);
- int kvm_spec_ctrl_test_value(u64 value);
- bool kvm_is_valid_cr4(struct kvm_vcpu *vcpu, unsigned long cr4);
--bool kvm_vcpu_exit_request(struct kvm_vcpu *vcpu);
- int kvm_handle_memory_failure(struct kvm_vcpu *vcpu, int r,
- 			      struct x86_exception *e);
- int kvm_handle_invpcid(struct kvm_vcpu *vcpu, unsigned long type, gva_t gva);
--- 
-2.26.2
+Re-entering the code guarded by console_sem.lock or console_owner_lock
+would cause a deadlock.
 
+For example, spin_acquire(&console_owner_dep_map, 0, 0, _THIS_IP_)
+in console_trylock_spinning() might cause recursive printk().
+
+These code paths are not touched by this patch because they
+do not use logbuf_lock. I mentioned this primary for completnes.
+
+We could not remove printk_safe code before we prevent these
+deadlocks another way. Well, it is possible that all this
+code will get removed after offloading consoles into kthreads.
+
+Alternatively, we might simply prevent calling console in any recursive
+printk.
+
+Anyway, prink_safe is too big hammer. We do not longer have problems
+to write recursive messages into the lockless ringbuffer. We only
+need to somehow limit the recursion.
+
+Anyway, this is for another patchset.
+
+> 
+> > 3. It kind of prevented infinite printk() recursion by using another
+> >    code path. The other path was limited by the size of the per-cpu
+> >    buffer. Well, recursion inside printk_safe code would likely
+> >    hit end of the stack first.
+> 
+> Yes, this was my main motivation. The safe buffers carry this
+> responsibility in mainline. So until a replacement for recursion
+> protection is in place, the safe buffers should remain.
+>
+> And even if we decide we do not need/want recursion protection, I still
+> do not think this series should be the one to remove it. I only wanted
+> to remove logbuf_lock for now.
+
+Fair enough.
+
+> If we later have regressions, it will be helpful to bisect if the safe
+> buffers (with their local_irq_disable()) or the logbuf_lock were
+> involved.
+
+Makes perfect sense.
+
+> > IMHO, we do not need printk safe context here in devkmsg_read().
+> > It does not belong into any categoty that is described above.
+> > logbug_lock() is gone. devkmsg_read() is never called directly
+> > from printk().
+> 
+> No. But it is calling printk_ringbuffer functions that can trigger
+> WARN_ONs that can trigger printk's.
+
+But printk() does not call devkmsg_read(). At least not directly.
+So this does not cause any infinite recursion.
+
+Anyway, I agree that we should just remove logbuf_lock in this patch
+and keep printk_safe context where it was.
+
+
+> >> @@ -2973,9 +2933,7 @@ void register_console(struct console *newcon)
+> >>  		/*
+> >>  		 * console_unlock(); will print out the buffered messages
+> >>  		 * for us.
+> >> -		 */
+> >> -		logbuf_lock_irqsave(flags);
+> >
+> > I am just curious what was the motivation to remove printk_safe
+> > context here? It is a bit inconsistent with the other locations
+> > where you kept it.
+> 
+> This never should have been logbuf_lock_irqsave(flags) in the first
+> place. It would have been enough to just grab @logbuf_lock. The safe
+> buffers only make sense if printk or printk_ringbuffer functions are
+> called. Here we are just copying some variables (which are already
+> protected by console_sem and syslog_lock).
+
+I think that we replaced all spin_lock_irqsave() with
+logbuf_lock_irqsave(flags) at some point to be on the safe side.
+
+> > IMHO, it can be removed. It does not fit into any category
+> > where it would help as described above.
+> >
+> > Anyway, we have to be consistent and explain it in the commit message.
+> 
+> I could add an earlier patch that changes logbuf_lock_irqsave() here to
+> spin_lock_irqsave() and explain. Then for this patch it would be clear
+> that it is just dropped.
+
+My main concern was that you _moved_ the _location_ where the lock/printk
+safe context was taken. Such a change should not be hidden in this
+patch.
+
+I suggest to simply replace logbuf_lock_irqsave(flags) with
+printk_safe_enter_irqsave(flags) and keep the location. I mean to do
+exactly the same thing that you did on all other locations in this
+patch.
+
+As you said. Let's keep this patch(set) for removing logbuf_lock.
+And let's remove printk_safe context in another patchset later.
+
+> 
+> >> -		/*
+> >> +		 *
+> >>  		 * We're about to replay the log buffer.  Only do this to the
+> >>  		 * just-registered console to avoid excessive message spam to
+> >>  		 * the already-registered consoles.
+
+
+> >> @@ -3414,9 +3366,11 @@ bool kmsg_dump_get_line_nolock(struct kmsg_dumper_iter *iter, bool syslog,
+> >>  	struct printk_info info;
+> >>  	unsigned int line_count;
+> >>  	struct printk_record r;
+> >> +	unsigned long flags;
+> >>  	size_t l = 0;
+> >>  	bool ret = false;
+> >>  
+> >> +	printk_safe_enter_irqsave(flags);
+> >
+> > This change is neither obvious nor documented.
+> 
+> I noticed that this function was calling ringbuffer functions without
+> marking the region for safe buffers. I should have included a separate
+> patch before this one adding the safe buffers so that it would be
+> clear. Sorry.
+> 
+> > I guess that this is preparation step for unfying
+> > kmsg_dump_get_line_nolock() and kmsg_dump_get_line().
+> >
+> > Please, do it in the next patch and keep this one strightforward.
+> 
+> Or I will just do it in the following unification patch.
+> 
+> > That said, IMHO, the printk_safe() context is not needed here at all.
+> > This code is not called from printk() directly. The recursion is
+> > prevented by iter->next_seq or the buffer size.
+> 
+> My logic was: "If it is calling prb_*(), it should be protected by safe
+> buffers."
+
+IMHO, it is not necessary if there is no risk of recursion.
+
+Let's just remove logbuf_lock in this patch. Let's keep printk_safe
+enter/exit calls on the same locations where they were before.
+We should neither add, remove, or move them.
+
+> >>  	prb_rec_init_rd(&r, &info, line, size);
+> >>  
+> >>  	if (!iter->active)
+> >
+> >
+> >> diff --git a/kernel/printk/printk_safe.c b/kernel/printk/printk_safe.c
+> >> index a0e6f746de6c..a9a3137bd972 100644
+> >> --- a/kernel/printk/printk_safe.c
+> >> +++ b/kernel/printk/printk_safe.c
+> >> @@ -368,20 +354,21 @@ __printf(1, 0) int vprintk_func(const char *fmt, va_list args)
+> >>  #endif
+> >>  
+> >>  	/*
+> >> -	 * Try to use the main logbuf even in NMI. But avoid calling console
+> >> +	 * Use the main logbuf even in NMI. But avoid calling console
+> >>  	 * drivers that might have their own locks.
+> >>  	 */
+> >> -	if ((this_cpu_read(printk_context) & PRINTK_NMI_DIRECT_CONTEXT_MASK) &&
+> >> -	    raw_spin_trylock(&logbuf_lock)) {
+> >> +	if ((this_cpu_read(printk_context) & PRINTK_NMI_DIRECT_CONTEXT_MASK)) {
+> >> +		unsigned long flags;
+> >>  		int len;
+> >>  
+> >> +		printk_safe_enter_irqsave(flags);
+> >
+> > The printk_safe context does not make much sense here. The per-context
+> > redirection is done in vprintk_func(). It will always use this path
+> > because PRINTK_NMI_DIRECT_CONTEXT_MASK is handled before
+> > PRINTK_SAFE_CONTEXT_MASK.
+> 
+> If the following vprintk_store() calls printk(), those printk's should
+> land in safe buffers. If @printk_context is not incremented, they land
+> here again.
+> 
+> vprintk_store() relies on its caller to update @printk_context.
+
+Nevermind. Use printk_safe_enter_irqsave(flags) here as you did. It is
+a straightforward replacement of the above raw_spin_trylock(&logbuf_lock)).
+
+> >>  		len = vprintk_store(0, LOGLEVEL_DEFAULT, NULL, fmt, args);
+> >> -		raw_spin_unlock(&logbuf_lock);
+> >> +		printk_safe_exit_irqrestore(flags);
+> >>  		defer_console_output();
+> >>  		return len;
+> >>  	}
+> >>  
+> >> -	/* Use extra buffer in NMI when logbuf_lock is taken or in safe mode. */
+> >> +	/* Use extra buffer in NMI. */
+> >>  	if (this_cpu_read(printk_context) & PRINTK_NMI_CONTEXT_MASK)
+> >>  		return vprintk_nmi(fmt, args);
+> >
+> OK. Thank you for the excellent response. I will go over this again.
+
+Thanks a lot for patience. I know that reshufling non-trivial
+patchsets is a pain. But I think that we are getting close.
+I really like that we do it in small steps.
+
+Best Regards,
+Petr
