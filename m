@@ -2,114 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A151D30B5EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 04:40:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71BF930B5F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 04:44:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231336AbhBBDjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 22:39:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57378 "EHLO
+        id S231417AbhBBDls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 22:41:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230055AbhBBDjo (ORCPT
+        with ESMTP id S231418AbhBBDln (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 22:39:44 -0500
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D416C06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 19:39:04 -0800 (PST)
-Received: by mail-qv1-xf4a.google.com with SMTP id d8so12787392qvs.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 19:39:04 -0800 (PST)
+        Mon, 1 Feb 2021 22:41:43 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BC19C061573
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 19:41:03 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id l10so22519705ybt.6
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 19:41:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=8YVuxrTBaW2u/EvVshmB1lhIJOhjS6aKrPCo07emghg=;
-        b=Sz7AEELQcZbOmHR4c3XoJoG0B0b9UXp6kt1AxKunbluqicRtEdb0MPrxNytbawaU8j
-         1w1PRgFtMu8NDu7PUo6GquGnAC7AGef4uOwUstOSVOBfvpQa6SYYhqH2J+dvaVCEhspv
-         xyMd/R83xqZmVDHtmLgBuhI+MFTcydHy9h1W78n6eO1iCUI0V5ahSN/E3HNtnRT7ZylP
-         yTpxh+KvuZIwgKUU0nXpV0gbX5IdOlPr8qn0uTuzhvddI6SmJf0LOayy4Z2a9efMnUtx
-         sWnkG2+e9X/mougZZOZkS6hnGc2F8QsooTewfAjFNOAdgehOb0ZB8D9scKoUdsPHYVFa
-         bwcg==
+        h=sender:date:message-id:mime-version:subject:from:to:cc
+         :content-transfer-encoding;
+        bh=D+oCaSH/egr+du/U15EDzXJujV6XfQaQ8BeRYeS+FOw=;
+        b=Z2iGEcqXRzha0hs4uB18on6WXhNOiwH5oIuNWxO7+i9pFgG4yO5+PNFxSpdi2OX1we
+         mejdIp3pPbvVGoWEQF+PhFNM6gKtNqSKTclDzgyIr0M4r25ZhZWlrk1+AwDAFFbmK7gd
+         5Sr3tHstKgYdbZnTngG8XYBvXNTeToAFoq9H7+dF47qS6NC/pKY5lCR9kYqVNPx2eCKR
+         6GMTSRnyu661BY4iIzYCW2+gUWl3J9KBu8REjzX7/kGgVjbwsjGvDQSbpbZ6icivZsMx
+         SUT9OD6R9PyTP8VRC3MeM6jLrBUPgeA4KhypXyhaZO51v5/6gh8icG6yyz8pPbBmMGUm
+         98fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=8YVuxrTBaW2u/EvVshmB1lhIJOhjS6aKrPCo07emghg=;
-        b=Sz4hbWu5sjY2VkthL7Ka0HUZ0loPhpIV5kNLGP/R1ZsQi2Da+/zpsYCbl7w3gNI29+
-         OpRGYrOAsLbqePSaVkMV0p9KYjExSS2YIhezvsrF84CBz31qV9QjH8g5JGTSGiyV8EwL
-         Vuzc4i8DxVI34ORVWTyf8WCc2+tgalU3xsLxwgXp6QiDs8/OBHJNvPxo203GkFKzsx58
-         LaTPb/Ka8aqMnwry6/CtGdXHWYsFoYa5D/NvthwB2wQZqsst3FtQgM3T1+nFwU7XNYuW
-         hGXzxomiO3qmxY2q+QuqX21eV1mE6gkyipmlMfPsgOEAwQg5P1rkHhPK0kmL0Lqauha8
-         NS2w==
-X-Gm-Message-State: AOAM533EgxkzTQDHAD2eUjHJbg1pBqz5WJ1/GBn0ZwV93nxiASGmOybx
-        DRJj3A+NBGW3N8SU8ycS7pOsCxRNOlM=
-X-Google-Smtp-Source: ABdhPJx1ybll3gmI/7R+/k9eDmwSM7WJRbyNfJh0JGSdH1WuIM8avnPLBbaoAJayK2oDD6oDsJnPAdbaRms=
-Sender: "badhri via sendgmr" <badhri@badhri.mtv.corp.google.com>
-X-Received: from badhri.mtv.corp.google.com ([2620:15c:211:201:d56c:119f:44fb:5da4])
- (user=badhri job=sendgmr) by 2002:ad4:4c84:: with SMTP id bs4mr18662349qvb.0.1612237143459;
- Mon, 01 Feb 2021 19:39:03 -0800 (PST)
-Date:   Mon,  1 Feb 2021 19:38:59 -0800
-Message-Id: <20210202033859.258491-1-badhri@google.com>
+         :to:cc:content-transfer-encoding;
+        bh=D+oCaSH/egr+du/U15EDzXJujV6XfQaQ8BeRYeS+FOw=;
+        b=mQXhfPpGv1qZ/6hPFF7QJcYyKZFlH0ocNu+ohVfsyTLvrNAruHwXAXqmEJb+xTRx3y
+         ccoanvNAVCDl+AmgYyMN8TphzhEiry9EJHoiRoHT3R+XiSbmNFWBz6s4a9sVN6O+5M7C
+         G3i3rVxH7MUDDVyG1J9cAaQjhe9O25c2Cd+ZXH4zr144UJjTrz4pNmnLwGZFIoyCbhVF
+         rDfq/+F7431PsJxYodRHvnBs/A216eCiIgC9jLDSt2tQvqgU8pmncONGsJFMbBEoq06l
+         mKE0amSD/NdDHsjZ3MJzO8d2jQNNDWJ3AWORLcj4LEl4FxE0MTtDuy2VTcETdcjO1pW9
+         5skQ==
+X-Gm-Message-State: AOAM530IKG2NgyZtkXfVORB7r4ePvEb1kKM1kWgWOWu5CsU5JAqusMer
+        5/8t5T5RNBV7xJvv4lEFandV0JZa0o8f
+X-Google-Smtp-Source: ABdhPJw2ETAX1hsONKJlzEjpJMMlOH2itMPuxoZlT4BvLRw3NBtE9/epg4w/92S2E6Cx0SVNqFt2xCUeCq7k
+Sender: "amistry via sendgmr" <amistry@nandos.syd.corp.google.com>
+X-Received: from nandos.syd.corp.google.com ([2401:fa00:9:14:243a:8f72:7104:7a64])
+ (user=amistry job=sendgmr) by 2002:a25:2d43:: with SMTP id
+ s3mr14022034ybe.33.1612237262751; Mon, 01 Feb 2021 19:41:02 -0800 (PST)
+Date:   Tue,  2 Feb 2021 14:40:55 +1100
+Message-Id: <20210202144033.1.I9e556f9fb1110d58c31d04a8a1293995fb8bb678@changeid>
 Mime-Version: 1.0
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v1] usb: typec: tcpm: Set in_ams flag when Source caps have
- been received
-From:   Badhri Jagan Sridharan <badhri@google.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kyle Tso <kyletso@google.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Badhri Jagan Sridharan <badhri@google.com>
+Subject: [PATCH] ath10k: Fix lockdep assertion warning in ath10k_sta_statistics
+From:   Anand K Mistry <amistry@google.com>
+To:     ath10k@lists.infradead.org
+Cc:     Anand K Mistry <amistry@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Wen Gong <wgong@codeaurora.org>, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Receiving the first packet in an AMS sequence signals the
-beginning of AMS. Set in_ams flag to true when SRC_CAPS are
-received during POWER_NEGOTIATION AMS.
-This fixes the failure flagged while running TD.PD.SNK.E9
-compliance test.
+ath10k_debug_fw_stats_request just be called with conf_mutex held,
+otherwise the following warning is seen when lock debugging is enabled:
 
-From Deterministic PD compliance MOI spec:
-TD.PD.SNK.E9. GetSinkCap in Place of Accept
-Description:
-As Provider, the Tester intentionally sends a GetSinkCap message in place
-of Accept message and verifies the UUT will send a SoftReset and recover
-from the error.
-Steps:
-a) Run PROC.PD.E1 Bring-up according to the UUT role.
-b) The Tester cycles VBus.
-c) The Tester sends a Source Capabilities message to the UUT.
-d) Upon receipt of a Request message from the UUT, the Tester replies with
-   a GoodCRC message.
-e) The Tester sends a GetSinkCap message to the UUT.
-f) If a SoftReset is not received within 15 ms after the GetSinkCap EOP was
-   sent, the test fails.
-g) If a SoftReset is received timely, the Tester replies with an Accept
-   message.
-h) The Tester sends Source Capabilities message to the UUT repeatedly until
-   nCapsCount reached or a GoodCRC is received. If nCapsCount reached, the
-   test fails.
-i) If a Request is not received timely within 30 ms after the GoodCRC EOP
-   corresponding to Source Capabilities message was received, the test
-   fails.
+WARNING: CPU: 0 PID: 793 at drivers/net/wireless/ath/ath10k/debug.c:357 ath=
+10k_debug_fw_stats_request+0x12c/0x133 [ath10k_core]
+Modules linked in: snd_hda_codec_hdmi designware_i2s snd_hda_intel snd_inte=
+l_dspcfg snd_hda_codec i2c_piix4 snd_hwdep snd_hda_core acpi_als kfifo_buf =
+industrialio snd_soc_max98357a snd_soc_adau7002 snd_soc_acp_da7219mx98357_m=
+ach snd_soc_da7219 acp_audio_dma ccm xt_MASQUERADE fuse ath10k_pci ath10k_c=
+ore lzo_rle ath lzo_compress mac80211 zram cfg80211 r8152 mii joydev
+CPU: 0 PID: 793 Comm: wpa_supplicant Tainted: G        W         5.10.9 #5
+Hardware name: HP Grunt/Grunt, BIOS Google_Grunt.11031.104.0 09/05/2019
+RIP: 0010:ath10k_debug_fw_stats_request+0x12c/0x133 [ath10k_core]
+Code: 1e bb a1 ff ff ff 4c 89 ef 48 c7 c6 d3 31 2e c0 89 da 31 c0 e8 bd f8 =
+ff ff 89 d8 eb 02 31 c0 5b 41 5c 41 5d 41 5e 41 5f 5d c3 <0f> 0b e9 04 ff f=
+f ff 0f 1f 44 00 00 55 48 89 e5 41 56 53 48 89 fb
+RSP: 0018:ffffb2478099f7d0 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: ffff9e432700cce0 RCX: 11c85cfd6b8e3b00
+RDX: ffff9e432700cce0 RSI: ffff9e43127c5668 RDI: ffff9e4318deddf0
+RBP: ffffb2478099f7f8 R08: 0000000000000002 R09: 00000003fd7068cc
+R10: ffffffffc01b2749 R11: ffffffffc029efaf R12: ffff9e432700c000
+R13: ffff9e43127c33e0 R14: ffffb2478099f918 R15: ffff9e43127c33e0
+FS:  00007f7ea48e2740(0000) GS:ffff9e432aa00000(0000) knlGS:000000000000000=
+0
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000059aa799ddf38 CR3: 0000000118de2000 CR4: 00000000001506f0
+Call Trace:
+ ath10k_sta_statistics+0x4d/0x270 [ath10k_core]
+ sta_set_sinfo+0x1be/0xaec [mac80211]
+ ieee80211_get_station+0x58/0x76 [mac80211]
+ rdev_get_station+0xf1/0x11e [cfg80211]
+ nl80211_get_station+0x7f/0x146 [cfg80211]
+ genl_rcv_msg+0x32e/0x35e
+ ? nl80211_stop_ap+0x19/0x19 [cfg80211]
+ ? nl80211_get_station+0x146/0x146 [cfg80211]
+ ? genl_rcv+0x19/0x36
+ ? genl_rcv+0x36/0x36
+ netlink_rcv_skb+0x89/0xfb
+ genl_rcv+0x28/0x36
+ netlink_unicast+0x169/0x23b
+ netlink_sendmsg+0x38a/0x402
+ sock_sendmsg+0x72/0x76
+ ____sys_sendmsg+0x153/0x1cc
+ ? copy_msghdr_from_user+0x5d/0x85
+ ___sys_sendmsg+0x7c/0xb5
+ ? lock_acquire+0x181/0x23d
+ ? syscall_trace_enter+0x15e/0x160
+ ? find_held_lock+0x3d/0xb2
+ ? syscall_trace_enter+0x15e/0x160
+ ? sched_clock_cpu+0x15/0xc6
+ __sys_sendmsg+0x62/0x9a
+ do_syscall_64+0x43/0x55
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
+Fixes: 4913e675630e ("ath10k: enable rx duration report default for wmi tlv=
+")
+
+Signed-off-by: Anand K Mistry <amistry@google.com>
 ---
- drivers/usb/typec/tcpm/tcpm.c | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 0afd8ef692e8..b3e07d9b7597 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -2243,6 +2243,7 @@ static void tcpm_pd_data_request(struct tcpm_port *port,
- 		 * handled.
- 		 */
- 			port->ams = POWER_NEGOTIATION;
-+			port->in_ams = true;
- 			tcpm_set_state(port, SNK_NEGOTIATE_CAPABILITIES, 0);
- 		} else {
- 			if (port->ams == GET_SOURCE_CAPABILITIES)
--- 
+ drivers/net/wireless/ath/ath10k/mac.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/a=
+th/ath10k/mac.c
+index 7d98250380ec..e815aab412d7 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -9117,7 +9117,9 @@ static void ath10k_sta_statistics(struct ieee80211_hw=
+ *hw,
+ 	if (!ath10k_peer_stats_enabled(ar))
+ 		return;
+=20
++	mutex_lock(&ar->conf_mutex);
+ 	ath10k_debug_fw_stats_request(ar);
++	mutex_unlock(&ar->conf_mutex);
+=20
+ 	sinfo->rx_duration =3D arsta->rx_duration;
+ 	sinfo->filled |=3D BIT_ULL(NL80211_STA_INFO_RX_DURATION);
+--=20
 2.30.0.365.g02bc693789-goog
 
