@@ -2,77 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D908930BDD4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:13:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C423130BDDC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:15:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbhBBMME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 07:12:04 -0500
-Received: from mail-m17640.qiye.163.com ([59.111.176.40]:48152 "EHLO
-        mail-m17640.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231429AbhBBMLf (ORCPT
+        id S231285AbhBBMOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 07:14:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230518AbhBBMOl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 07:11:35 -0500
-Received: from ubuntu.localdomain (unknown [157.0.31.124])
-        by mail-m17640.qiye.163.com (Hmail) with ESMTPA id B83F75402D9;
-        Tue,  2 Feb 2021 20:10:45 +0800 (CST)
-From:   Bernard Zhao <bernard@vivo.com>
-To:     Xinliang Liu <xinliang.liu@linaro.org>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Chen Feng <puck.chen@hisilicon.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Bernard Zhao <bernard@vivo.com>,
+        Tue, 2 Feb 2021 07:14:41 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97303C061786;
+        Tue,  2 Feb 2021 04:14:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=x0ild1pWjAVS3WJxvq5XS64FoqpcDSC4Uujd61u50FE=; b=srM/EzIfbz/5riWYH6qumnb+zn
+        j+mvi5gYrNB+AOYu3bH2i/2M1fx63vsCsf2YIiEVvlyENL+ojTgqwGXMJUGdqwp4OEMWQ4aObiZ3H
+        B+0koplMVj7VdqGLo6QxINw2K1pPISxF+kTMN0mNirghPTmZYC8RLKeCQ/OCR8Ff7Rqv5Be4TQVuK
+        M5qKT5l3HuJyH04i8EHBxJh98XWMNEPc+qGqhCjgDNrLd36g6Ug04LWZyNF/qW+Hj7Vqx9COZL6rr
+        jFQnwP7EDOpAKJHGVY2nr8FtSMZvZlG3rLoxmOxEMmdSrfWNwf6Xks/iXNj+HglObnNEjoXvCOzCs
+        PaXZle4w==;
+Received: from [2001:4bb8:198:6bf4:7f38:755e:a6e0:73e9] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1l6uYq-00FAKY-Ez; Tue, 02 Feb 2021 12:13:37 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Frederic Barrat <fbarrat@linux.ibm.com>,
+        Andrew Donnellan <ajd@linux.ibm.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
         Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     opensource.kernel@vivo.com
-Subject: [PATCH] drm/hisilicon: remove redundant when devm_kzalloc failed
-Date:   Tue,  2 Feb 2021 04:10:37 -0800
-Message-Id: <20210202121039.14945-1-bernard@vivo.com>
-X-Mailer: git-send-email 2.29.0
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Jessica Yu <jeyu@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>,
+        Joe Lawrence <joe.lawrence@redhat.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        dri-devel@lists.freedesktop.org, live-patching@vger.kernel.org,
+        linux-kbuild@vger.kernel.org
+Subject: module loader dead code removal and cleanups v3
+Date:   Tue,  2 Feb 2021 13:13:21 +0100
+Message-Id: <20210202121334.1361503-1-hch@lst.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZS0wYGk9CTRpPSkxOVkpNSklJTUxDT01LQkNVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
-        FZT0tIVUpKS0hNSlVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OhQ6Sxw*TD8INTYsFD9KEQMp
-        PklPCwxVSlVKTUpJSU1MQ09NT0xPVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
-        S1VISlVKSU9ZV1kIAVlBSU5NTDcG
-X-HM-Tid: 0a7762a6f996d995kuwsb83f75402d9
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Line 852 DRM_ERROR is redundant because memory alloc already
-prints an error when failed.
+Hi all,
 
-Signed-off-by: Bernard Zhao <bernard@vivo.com>
----
- drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+this series removes support for long term unused export types and
+cleans up various loose ends in the module loader.
 
-diff --git a/drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c b/drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c
-index 00e87c290796..8491d8267f07 100644
---- a/drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c
-+++ b/drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c
-@@ -852,10 +852,9 @@ static int dsi_probe(struct platform_device *pdev)
- 	int ret;
- 
- 	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
--	if (!data) {
--		DRM_ERROR("failed to allocate dsi data.\n");
-+	if (!data)
- 		return -ENOMEM;
--	}
-+
- 	dsi = &data->dsi;
- 	ctx = &data->ctx;
- 	dsi->ctx = ctx;
--- 
-2.29.0
+Changes since v2:
+ - clean up klp_find_object_symbol a bit
+ - remove the now unused module_assert_mutex helper 
 
+Changes since v1:
+ - move struct symsearch to module.c
+ - rework drm to not call find_module at all
+ - allow RCU-sched locking for find_module
+ - keep find_module as a public API instead of module_loaded
+ - update a few comments and commit logs
+
+Diffstat:
