@@ -2,17 +2,20 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD2630BD8F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 12:59:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E18E730BD87
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 12:59:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbhBBL6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 06:58:51 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:36156 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229483AbhBBL5s (ORCPT
+        id S230184AbhBBL5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 06:57:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51298 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230063AbhBBL5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 06:57:48 -0500
-Date:   Tue, 02 Feb 2021 11:57:03 -0000
+        Tue, 2 Feb 2021 06:57:46 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C7D8C06174A;
+        Tue,  2 Feb 2021 03:57:06 -0800 (PST)
+Date:   Tue, 02 Feb 2021 11:57:04 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1612267024;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -20,12 +23,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Qc1WtAnlI3l3O4xD8GBnlXUvp6PPz23xwRmCyLVWMuE=;
-        b=gDi7tSoEJsytt+pSpr2KMaw4ZMY4yTksyeSxCAA3HZh9MTA7f7jlxiPzywdIrgYLLJXaYq
-        0+BSj4UUgWcCguvLa2k15kxVJ9tXqB7od0EAPMPGGxD6g6Pw7vi1triCtHmFYJp+zHNRxo
-        3XBqY3h8X+CgDL3Zm3QtCKuAtoxIoWC3G6U1XgSDfIMYjLLPnO45A78/0wgTJV6KNjXq9N
-        Mvps5LSflUKPLrwg046EUjAAaiTmDJa1V2+HaOi8LSc8bY2Q/vvGKA4uTaymZ7AYa3nKdg
-        zDnFttj5MhAawnh/yfMYxpUANYQ3QTrEHoBOiBz8lhjDLkosqpsmLIIn8oVCiQ==
+        bh=m6q+4p5JkKPBP4kESQCecc9+ZnG9KZQnmraRQ6y4+zQ=;
+        b=f5y7XaJOn6//LZ7madaawL2byMYl7lNgLa8Ey8b0hb4ZebgZDDpBfhYTvn9qMr0w8sPhwY
+        wbnS/LhlQdq5gkGL3ealxAAPsbILH9CPj8HNaJYWTd5spWmezhLEo2MoCaSLekSyQrHJyo
+        /fDyFDydS14iG6sjasGEe04QJLQsX+uUGSF6EsQ8xU7Q9H+YlPLYv/uV8WOqbefcGSGaCz
+        NQsQibt6+jE6xLHfUf2dykpHW2Q2er1IOLAtr7tSHidXZ36cZQkwYbf8utCa2/LzXN8t0/
+        MsmBCqZceTtnGWcciJ4bs1ugN09P1w+DbyZfU1NGUCMK4lJeqEGmCcV/lZ3E4A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1612267024;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
@@ -33,23 +36,21 @@ DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Qc1WtAnlI3l3O4xD8GBnlXUvp6PPz23xwRmCyLVWMuE=;
-        b=E9CPyWb6T9tO29XS4WAo4uuMgtzlpcJyYrXkdKBXPtjgWBp7F1laXMcInHdf68RMmWElUE
-        //ntxgfEz+iKZSCA==
+        bh=m6q+4p5JkKPBP4kESQCecc9+ZnG9KZQnmraRQ6y4+zQ=;
+        b=yoZ8swunJ6ot8Rrf/5PwPVxcJPwzGyEC877i9U3Du2ebEP/7mUwkijVUKuhJAGpCcLyvSF
+        fPEk7akwAFqpZgCg==
 From:   "tip-bot2 for Kan Liang" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/x86/intel: Support CPUID 10.ECX to disable
- fixed counters
+Subject: [tip: perf/core] perf/x86/intel: Filter unsupported Topdown metrics event
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Andi Kleen <ak@linux.intel.com>,
         Kan Liang <kan.liang@linux.intel.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <1611873611-156687-6-git-send-email-kan.liang@linux.intel.com>
-References: <1611873611-156687-6-git-send-email-kan.liang@linux.intel.com>
+In-Reply-To: <1611873611-156687-4-git-send-email-kan.liang@linux.intel.com>
+References: <1611873611-156687-4-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Message-ID: <161226702346.23325.5387584964216583611.tip-bot2@tip-bot2>
+Message-ID: <161226702403.23325.6250286930000785135.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -60,170 +61,123 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the perf/core branch of tip:
 
-Commit-ID:     32451614da2a9cf4296f90d3606ac77814fb519d
-Gitweb:        https://git.kernel.org/tip/32451614da2a9cf4296f90d3606ac77814fb519d
+Commit-ID:     1ab5f235c176e93adc4f75000aae6c50fea9db00
+Gitweb:        https://git.kernel.org/tip/1ab5f235c176e93adc4f75000aae6c50fea9db00
 Author:        Kan Liang <kan.liang@linux.intel.com>
-AuthorDate:    Thu, 28 Jan 2021 14:40:11 -08:00
+AuthorDate:    Thu, 28 Jan 2021 14:40:09 -08:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Mon, 01 Feb 2021 15:31:37 +01:00
+CommitterDate: Mon, 01 Feb 2021 15:31:36 +01:00
 
-perf/x86/intel: Support CPUID 10.ECX to disable fixed counters
+perf/x86/intel: Filter unsupported Topdown metrics event
 
-With Architectural Performance Monitoring Version 5, CPUID 10.ECX cpu
-leaf indicates the fixed counter enumeration. This extends the previous
-count to a bitmap which allows disabling even lower fixed counters.
-It could be used by a Hypervisor.
+Intel Sapphire Rapids server will introduce 8 metrics events. Intel
+Ice Lake only supports 4 metrics events. A perf tool user may mistakenly
+use the unsupported events via RAW format on Ice Lake. The user can
+still get a value from the unsupported Topdown metrics event once the
+following Sapphire Rapids enabling patch is applied.
 
-The existing intel_ctrl variable is used to remember the bitmask of the
-counters. All code that reads all counters is fixed to check this extra
-bitmask.
+To enable the 8 metrics events on Intel Sapphire Rapids, the
+INTEL_TD_METRIC_MAX has to be updated, which impacts the
+is_metric_event(). The is_metric_event() is a generic function.
+On Ice Lake, the newly added SPR metrics events will be mistakenly
+accepted as metric events on creation. At runtime, the unsupported
+Topdown metrics events will be updated.
+
+Add a variable num_topdown_events in x86_pmu to indicate the available
+number of the Topdown metrics event on the platform. Apply the number
+into is_metric_event(). Only the supported Topdown metrics events
+should be created as metrics events.
+
+Apply the num_topdown_events in icl_update_topdown_event() as well. The
+function can be reused by the following patch.
 
 Suggested-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Originally-by: Andi Kleen <ak@linux.intel.com>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/1611873611-156687-6-git-send-email-kan.liang@linux.intel.com
+Link: https://lkml.kernel.org/r/1611873611-156687-4-git-send-email-kan.liang@linux.intel.com
 ---
- arch/x86/events/core.c       |  8 +++++++-
- arch/x86/events/intel/core.c | 34 ++++++++++++++++++++++++----------
- arch/x86/events/perf_event.h |  5 +++++
- 3 files changed, 36 insertions(+), 11 deletions(-)
+ arch/x86/events/intel/core.c      | 15 +++++++++++++--
+ arch/x86/events/perf_event.h      |  1 +
+ arch/x86/include/asm/perf_event.h | 10 ++++++++--
+ 3 files changed, 22 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index cf0a52c..6ddeed3 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -255,6 +255,8 @@ static bool check_hw_exists(void)
- 		if (ret)
- 			goto msr_fail;
- 		for (i = 0; i < x86_pmu.num_counters_fixed; i++) {
-+			if (fixed_counter_disabled(i))
-+				continue;
- 			if (val & (0x03 << i*4)) {
- 				bios_fail = 1;
- 				val_fail = val;
-@@ -1531,6 +1533,8 @@ void perf_event_print_debug(void)
- 			cpu, idx, prev_left);
- 	}
- 	for (idx = 0; idx < x86_pmu.num_counters_fixed; idx++) {
-+		if (fixed_counter_disabled(idx))
-+			continue;
- 		rdmsrl(MSR_ARCH_PERFMON_FIXED_CTR0 + idx, pmc_count);
- 
- 		pr_info("CPU#%d: fixed-PMC%d count: %016llx\n",
-@@ -2012,7 +2016,9 @@ static int __init init_hw_perf_events(void)
- 	pr_info("... generic registers:      %d\n",     x86_pmu.num_counters);
- 	pr_info("... value mask:             %016Lx\n", x86_pmu.cntval_mask);
- 	pr_info("... max period:             %016Lx\n", x86_pmu.max_period);
--	pr_info("... fixed-purpose events:   %d\n",     x86_pmu.num_counters_fixed);
-+	pr_info("... fixed-purpose events:   %lu\n",
-+			hweight64((((1ULL << x86_pmu.num_counters_fixed) - 1)
-+					<< INTEL_PMC_IDX_FIXED) & x86_pmu.intel_ctrl));
- 	pr_info("... event mask:             %016Lx\n", x86_pmu.intel_ctrl);
- 
- 	if (!x86_pmu.read)
 diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 58cd64e..67a7246 100644
+index d07408d..37830ac 100644
 --- a/arch/x86/events/intel/core.c
 +++ b/arch/x86/events/intel/core.c
-@@ -2723,8 +2723,11 @@ static void intel_pmu_reset(void)
- 		wrmsrl_safe(x86_pmu_config_addr(idx), 0ull);
- 		wrmsrl_safe(x86_pmu_event_addr(idx),  0ull);
- 	}
--	for (idx = 0; idx < x86_pmu.num_counters_fixed; idx++)
-+	for (idx = 0; idx < x86_pmu.num_counters_fixed; idx++) {
-+		if (fixed_counter_disabled(idx))
-+			continue;
- 		wrmsrl_safe(MSR_ARCH_PERFMON_FIXED_CTR0 + idx, 0ull);
-+	}
+@@ -2410,7 +2410,8 @@ static u64 intel_update_topdown_event(struct perf_event *event, int metric_end)
  
- 	if (ds)
- 		ds->bts_index = ds->bts_buffer_base;
-@@ -5042,7 +5045,7 @@ __init int intel_pmu_init(void)
- 	union cpuid10_eax eax;
- 	union cpuid10_ebx ebx;
- 	struct event_constraint *c;
--	unsigned int unused;
-+	unsigned int fixed_mask;
- 	struct extra_reg *er;
- 	bool pmem = false;
- 	int version, i;
-@@ -5064,7 +5067,7 @@ __init int intel_pmu_init(void)
- 	 * Check whether the Architectural PerfMon supports
- 	 * Branch Misses Retired hw_event or not.
- 	 */
--	cpuid(10, &eax.full, &ebx.full, &unused, &edx.full);
-+	cpuid(10, &eax.full, &ebx.full, &fixed_mask, &edx.full);
- 	if (eax.split.mask_length < ARCH_PERFMON_EVENTS_COUNT)
- 		return -ENODEV;
+ static u64 icl_update_topdown_event(struct perf_event *event)
+ {
+-	return intel_update_topdown_event(event, INTEL_PMC_IDX_TD_BE_BOUND);
++	return intel_update_topdown_event(event, INTEL_PMC_IDX_METRIC_BASE +
++						 x86_pmu.num_topdown_events - 1);
+ }
  
-@@ -5088,12 +5091,15 @@ __init int intel_pmu_init(void)
- 	 * Quirk: v2 perfmon does not report fixed-purpose events, so
- 	 * assume at least 3 events, when not running in a hypervisor:
- 	 */
--	if (version > 1) {
-+	if (version > 1 && version < 5) {
- 		int assume = 3 * !boot_cpu_has(X86_FEATURE_HYPERVISOR);
+ static void intel_pmu_read_topdown_event(struct perf_event *event)
+@@ -3468,6 +3469,15 @@ static int core_pmu_hw_config(struct perf_event *event)
+ 	return intel_pmu_bts_config(event);
+ }
  
- 		x86_pmu.num_counters_fixed =
- 			max((int)edx.split.num_counters_fixed, assume);
--	}
++#define INTEL_TD_METRIC_AVAILABLE_MAX	(INTEL_TD_METRIC_RETIRING + \
++					 ((x86_pmu.num_topdown_events - 1) << 8))
 +
-+		fixed_mask = (1L << x86_pmu.num_counters_fixed) - 1;
-+	} else if (version >= 5)
-+		x86_pmu.num_counters_fixed = fls(fixed_mask);
- 
- 	if (boot_cpu_has(X86_FEATURE_PDCM)) {
- 		u64 capabilities;
-@@ -5680,8 +5686,7 @@ __init int intel_pmu_init(void)
- 		x86_pmu.num_counters_fixed = INTEL_PMC_MAX_FIXED;
- 	}
- 
--	x86_pmu.intel_ctrl |=
--		((1LL << x86_pmu.num_counters_fixed)-1) << INTEL_PMC_IDX_FIXED;
-+	x86_pmu.intel_ctrl |= (u64)fixed_mask << INTEL_PMC_IDX_FIXED;
- 
- 	/* AnyThread may be deprecated on arch perfmon v5 or later */
- 	if (x86_pmu.intel_cap.anythread_deprecated)
-@@ -5698,13 +5703,22 @@ __init int intel_pmu_init(void)
- 			 * events to the generic counters.
- 			 */
- 			if (c->idxmsk64 & INTEL_PMC_MSK_TOPDOWN) {
-+				/*
-+				 * Disable topdown slots and metrics events,
-+				 * if slots event is not in CPUID.
-+				 */
-+				if (!(INTEL_PMC_MSK_FIXED_SLOTS & x86_pmu.intel_ctrl))
-+					c->idxmsk64 = 0;
- 				c->weight = hweight64(c->idxmsk64);
- 				continue;
- 			}
- 
--			if (c->cmask == FIXED_EVENT_FLAGS
--			    && c->idxmsk64 != INTEL_PMC_MSK_FIXED_REF_CYCLES) {
--				c->idxmsk64 |= (1ULL << x86_pmu.num_counters) - 1;
-+			if (c->cmask == FIXED_EVENT_FLAGS) {
-+				/* Disabled fixed counters which are not in CPUID */
-+				c->idxmsk64 &= x86_pmu.intel_ctrl;
-+
-+				if (c->idxmsk64 != INTEL_PMC_MSK_FIXED_REF_CYCLES)
-+					c->idxmsk64 |= (1ULL << x86_pmu.num_counters) - 1;
- 			}
- 			c->idxmsk64 &=
- 				~(~0ULL << (INTEL_PMC_IDX_FIXED + x86_pmu.num_counters_fixed));
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index b8bf2ce..53b2b5f 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -1068,6 +1068,11 @@ ssize_t events_sysfs_show(struct device *dev, struct device_attribute *attr,
- ssize_t events_ht_sysfs_show(struct device *dev, struct device_attribute *attr,
- 			  char *page);
- 
-+static inline bool fixed_counter_disabled(int i)
++static bool is_available_metric_event(struct perf_event *event)
 +{
-+	return !(x86_pmu.intel_ctrl >> (i + INTEL_PMC_IDX_FIXED));
++	return is_metric_event(event) &&
++		event->attr.config <= INTEL_TD_METRIC_AVAILABLE_MAX;
 +}
 +
- #ifdef CONFIG_CPU_SUP_AMD
+ static int intel_pmu_hw_config(struct perf_event *event)
+ {
+ 	int ret = x86_pmu_hw_config(event);
+@@ -3541,7 +3551,7 @@ static int intel_pmu_hw_config(struct perf_event *event)
+ 		if (event->attr.config & X86_ALL_EVENT_FLAGS)
+ 			return -EINVAL;
  
- int amd_pmu_init(void);
+-		if (is_metric_event(event)) {
++		if (is_available_metric_event(event)) {
+ 			struct perf_event *leader = event->group_leader;
+ 
+ 			/* The metric events don't support sampling. */
+@@ -5324,6 +5334,7 @@ __init int intel_pmu_init(void)
+ 		x86_pmu.rtm_abort_event = X86_CONFIG(.event=0xc9, .umask=0x04);
+ 		x86_pmu.lbr_pt_coexist = true;
+ 		intel_pmu_pebs_data_source_skl(pmem);
++		x86_pmu.num_topdown_events = 4;
+ 		x86_pmu.update_topdown_event = icl_update_topdown_event;
+ 		x86_pmu.set_topdown_event_period = icl_set_topdown_event_period;
+ 		pr_cont("Icelake events, ");
+diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+index 978a16e..15343cc 100644
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -775,6 +775,7 @@ struct x86_pmu {
+ 	/*
+ 	 * Intel perf metrics
+ 	 */
++	int		num_topdown_events;
+ 	u64		(*update_topdown_event)(struct perf_event *event);
+ 	int		(*set_topdown_event_period)(struct perf_event *event);
+ 
+diff --git a/arch/x86/include/asm/perf_event.h b/arch/x86/include/asm/perf_event.h
+index e2a4c78..7c2c302 100644
+--- a/arch/x86/include/asm/perf_event.h
++++ b/arch/x86/include/asm/perf_event.h
+@@ -280,8 +280,14 @@ struct x86_pmu_capability {
+ #define INTEL_TD_METRIC_BAD_SPEC		0x8100	/* Bad speculation metric */
+ #define INTEL_TD_METRIC_FE_BOUND		0x8200	/* FE bound metric */
+ #define INTEL_TD_METRIC_BE_BOUND		0x8300	/* BE bound metric */
+-#define INTEL_TD_METRIC_MAX			INTEL_TD_METRIC_BE_BOUND
+-#define INTEL_TD_METRIC_NUM			4
++/* Level 2 metrics */
++#define INTEL_TD_METRIC_HEAVY_OPS		0x8400  /* Heavy Operations metric */
++#define INTEL_TD_METRIC_BR_MISPREDICT		0x8500  /* Branch Mispredict metric */
++#define INTEL_TD_METRIC_FETCH_LAT		0x8600  /* Fetch Latency metric */
++#define INTEL_TD_METRIC_MEM_BOUND		0x8700  /* Memory bound metric */
++
++#define INTEL_TD_METRIC_MAX			INTEL_TD_METRIC_MEM_BOUND
++#define INTEL_TD_METRIC_NUM			8
+ 
+ static inline bool is_metric_idx(int idx)
+ {
