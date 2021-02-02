@@ -2,109 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3CEE30C18F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:28:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A954930C212
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:42:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbhBBO1j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:27:39 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:36760 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234358AbhBBOWZ (ORCPT
+        id S234511AbhBBOjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:39:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56162 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234490AbhBBOcI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:22:25 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 112EJ3hB162338;
-        Tue, 2 Feb 2021 14:20:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=4GVlHHWGh41eOory0P9S0N78v8JiUWK8468ERwtQqo0=;
- b=Yz8orsYYlkvbyNmgIffZtb8m8aOjoKiXxkJJS66VJ73d+w+hFCaHQSgR0FYRJ7CNNlAH
- zYKaKYW2rf9ucmGVu0/krO1lTrFu3D/3s56xE5kbUpFMW+0Lxi1ByvUmvsQhXiB8JIOU
- FtsAodsok8f7+eKHic778jMzK1v7Yrkqb7Qx+RtN3hIsyDtJStWL+Ko5fxSupEPh0AF/
- NkHxQD9n7gDWdzTWCwVkJ8ZQhgmJxITXKmryN6EhLlnbz7ntw8Xx+46m0Np8e6ITQz2V
- c0VvRK8Fdg+vC5aBDnW/SLDIlnkCLZQStwx/ZnpaRohuN+jabg7+3vFx3BS4pagKSi5e rw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 36cydktxfe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 02 Feb 2021 14:20:08 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 112E9UZd018082;
-        Tue, 2 Feb 2021 14:20:06 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 36dh1p3aw6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 02 Feb 2021 14:20:06 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 112EK54x011054;
-        Tue, 2 Feb 2021 14:20:05 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 02 Feb 2021 06:20:04 -0800
-Date:   Tue, 2 Feb 2021 17:19:57 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Jeff Layton <jlayton@kernel.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        Ilya Dryomov <idryomov@gmail.com>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] ceph: Fix an Oops in error handling
-Message-ID: <20210202141957.GC20820@kadam>
-References: <YBjne8A1gn0mvQtT@mwanda>
- <f0477211cafbdc24883e978ab976610333f5fb67.camel@kernel.org>
+        Tue, 2 Feb 2021 09:32:08 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 302ACC0613ED
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 06:20:16 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id q5so19152580ilc.10
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 06:20:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=t1KFZQVY/DxQ9liNlk4p5rHsTe1eztkSWG9pZLclAaM=;
+        b=Roe+D204Ctd0npf37Ni88h2NOvgV6xaroR+sXYPETApFsoi3natQ82RzJtyfetiH1B
+         xKjRZ9xOv73sQOXuTZIv0Cvxk4TvlcmI3HLnxu7j7lEY8zm/CUp7TRiuf5RPwHf0pSFo
+         AC0/fAjcViva9q1JJjys0qAYFvLxqXHvetYiqtHFq/DMtv1fDDN7IGm3CyT3D5lAsTGJ
+         C9zheHWkl4bUZbZ77ZDeeQCNE6BWSabVLKcpe9VLHxhYolYY7rL6r2i3kqldDzkMVWq1
+         zL43j+s4WZZnqIhUKrcXj5ds6pK3Ok6peFO8tTpUI8f8brdDU+yy2OvOvHhd9+Yby0NR
+         YRKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=t1KFZQVY/DxQ9liNlk4p5rHsTe1eztkSWG9pZLclAaM=;
+        b=PJCUSoMRubdwFPCTIW+9Jszv3jCHK25ASCrtnh0mG4TMadTyl4l08pA+bquQTHNpkU
+         jnQR7boSF7m6AJA0wLaVIHzxX2Cl9M0ijUOZ/MtTiY1mSb56v5CFsGwjQtcx+qaRUCol
+         gj2YInuMY7KGVh2Mfm2DyDIWsqTTu71eN+F9it/sp8Di7kmNWhlg6CYXcmklyDLRs1bX
+         jtTnioGA0+UHy7gATbv80i7lcXWB4KiBtS6QnkuluEZB8/871nFB79d5+p8/0exlmKhj
+         h+pHIG8sVxxUm1ZIaIUZ5NnuTawVh3EcUeh9HSmuypeFjZJSD787IUMmfnGbRXTXKVfr
+         RaEQ==
+X-Gm-Message-State: AOAM532P3dkjqjc9HhG4FQb/w95ZI35SauKZWZfNiH8ayVhYaF9/S0kT
+        xlWyUzGQdmdqYrQHb7quz7icNA==
+X-Google-Smtp-Source: ABdhPJxkdEchUAvYW/rkyrEcHpNi1VxOF9nH09cLjhcdz49G3SRvbrpf5/5CT4BvCNo00Q78q87qZQ==
+X-Received: by 2002:a05:6e02:b2c:: with SMTP id e12mr17301468ilu.143.1612275615609;
+        Tue, 02 Feb 2021 06:20:15 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id p19sm11005722ilj.37.2021.02.02.06.20.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Feb 2021 06:20:14 -0800 (PST)
+Subject: Re: [PATCH] Revert "bfq: Fix computation of shallow depth"
+To:     Jan Kara <jack@suse.cz>, Lin Feng <linf@wangsu.com>
+Cc:     paolo.valente@linaro.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org
+References: <20210129111808.45796-1-linf@wangsu.com>
+ <20210202122836.GC17147@quack2.suse.cz>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <f92a55b4-0743-a700-8296-e739f4fcf093@kernel.dk>
+Date:   Tue, 2 Feb 2021 07:20:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f0477211cafbdc24883e978ab976610333f5fb67.camel@kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-IMR: 1
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9882 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0 phishscore=0
- suspectscore=0 mlxlogscore=999 bulkscore=0 mlxscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2102020097
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9882 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 adultscore=0
- priorityscore=1501 impostorscore=0 malwarescore=0 clxscore=1015
- spamscore=0 lowpriorityscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102020098
+In-Reply-To: <20210202122836.GC17147@quack2.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 07:37:57AM -0500, Jeff Layton wrote:
-> On Tue, 2021-02-02 at 08:47 +0300, Dan Carpenter wrote:
-> > The "req" pointer is an error pointer and not NULL so this check needs
-> > to be fixed.
-> > 
-> > Fixes: 1cf7fdf52d5a ("ceph: convert readpage to fscache read helper")
-> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > ---
-> >  fs/ceph/addr.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/ceph/addr.c b/fs/ceph/addr.c
-> > index 5eec6f66fe52..fb0238a4d34f 100644
-> > --- a/fs/ceph/addr.c
-> > +++ b/fs/ceph/addr.c
-> > @@ -273,7 +273,7 @@ static void ceph_netfs_issue_op(struct netfs_read_subrequest *subreq)
-> >  	if (err)
-> >  		iput(inode);
-> >  out:
-> > -	if (req)
-> > +	if (!IS_ERR_OR_NULL(req))
-> >  		ceph_osdc_put_request(req);
-> >  	if (err)
-> >  		netfs_subreq_terminated(subreq, err);
+On 2/2/21 5:28 AM, Jan Kara wrote:
+> Hello!
 > 
-> Good catch.
+> On Fri 29-01-21 19:18:08, Lin Feng wrote:
+>> This reverts commit 6d4d273588378c65915acaf7b2ee74e9dd9c130a.
+>>
+>> bfq.limit_depth passes word_depths[] as shallow_depth down to sbitmap core
+>> sbitmap_get_shallow, which uses just the number to limit the scan depth of
+>> each bitmap word, formula:
+>> scan_percentage_for_each_word = shallow_depth / (1 << sbimap->shift) * 100%
 > 
-> David, could you take this into your fscache-next branch?
+> Looking at sbitmap_get_shallow() again more carefully, I agree that I
+> misunderstood how shallow_depth argument gets used and the original code
+> was correct and I broke it. Thanks for spotting this!
 > 
-> Reviewed-by: Jeff Layton <jlayton@kernel.org>
+> What I didn't notice is that shallow_depth indeed gets used for each bitmap
+> word separately and not for bitmap as a whole. I'd say this could use some
+> more documentation but that's unrelated to your revert. So feel free to add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
 
-Jeff sent a different fix for this.  Let's just apply his instead.
+I don't have the original patch (neither directly nor in the archive), so
+I had to hand-apply it. In any case, applied for 5.11, thanks.
 
-regards,
-dan carpenter
+-- 
+Jens Axboe
+
