@@ -2,218 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 417EC30CD42
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:47:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9285E30CD47
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:49:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233707AbhBBUp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 15:45:59 -0500
-Received: from mga17.intel.com ([192.55.52.151]:36744 "EHLO mga17.intel.com"
+        id S233430AbhBBUrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 15:47:24 -0500
+Received: from mail.pr-group.ru ([178.18.215.3]:56905 "EHLO mail.pr-group.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233225AbhBBUpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 15:45:31 -0500
-IronPort-SDR: JAeP8lMf26O6JL3XbpG0AqYJsdGigZ+KzJZJqRYGypxRhHJgt+nms8RcEDkzLicWejOBCLIAp+
- IBxpn9/jGVgw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="160693193"
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="160693193"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 12:44:50 -0800
-IronPort-SDR: zDoitENEs6Y/tdn2EunwMZssChy2S+zungt8lcYgBGANdY6utsij6fQ6aiGmkaOHGvdQLEErxf
- wuN7hI4v63hA==
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="396158499"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO [10.0.2.4]) ([10.209.22.86])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 12:44:50 -0800
-Subject: Re: [PATCH v2 1/1] fpga: dfl: afu: harden port enable logic
-To:     Moritz Fischer <mdf@kernel.org>, Tom Rix <trix@redhat.com>
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lgoncalv@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com
-References: <20200917183219.3603-1-russell.h.weight@intel.com>
- <7f181203-c164-4e6e-c710-1096b0aa13b8@redhat.com>
- <20200917213850.GA30570@archbook>
-From:   Russ Weight <russell.h.weight@intel.com>
-Message-ID: <07189216-3662-4049-2bed-36fdbed9887e@intel.com>
-Date:   Tue, 2 Feb 2021 12:44:47 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S233670AbhBBUqk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 15:46:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+        d=metrotek.ru; s=mail;
+        h=from:subject:date:message-id:to:cc:mime-version:content-type:in-reply-to:
+         references;
+        bh=d6Gf6bpcd2ONz4bqdbBBUk6IulH2fvKA9lG3RuRv53A=;
+        b=AZEEyR1I5gO2y1jVj6jq0UipFYPaeC+3YtvNMmvEi+j63AO6L6PkVLV9ZL0CTOdBaUWki7XzYhoBD
+         CSRiTnH9jnFZYv34TBqEFtM/mgnrNZQMygwIScET76jzt5Z+y6eZNIuA2oQ1v9FVFh/Jct4/V7IXmF
+         Jo07JT3vOA6f2MEj0Bw+0OIuWYvzaHAhLWaHJLT1Sis+JT1EhA4QLz09MKE9bwJogAhFvby8bf6qH8
+         M/RMjs2Eq86Doy1hJgPSSkY2ymbU769yxELPjHan08Vo5P8wxCRKBC3fEViDWjdURdeUOa6djvR3/A
+         4+RlTajWOCuqu2mvkpnEGuEi77Ukdqw==
+X-Spam-Status: No, hits=0.0 required=3.4
+        tests=AWL: 0.000, BAYES_00: -1.665, CUSTOM_RULE_FROM: ALLOW,
+        TOTAL_SCORE: -1.665,autolearn=ham
+X-Spam-Level: 
+X-Footer: bWV0cm90ZWsucnU=
+Received: from dhcp-179.ddg ([85.143.252.66])
+        (authenticated user i.bornyakov@metrotek.ru)
+        by mail.pr-group.ru with ESMTPSA
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256 bits));
+        Tue, 2 Feb 2021 23:45:42 +0300
+Date:   Tue, 2 Feb 2021 23:45:22 +0300
+From:   Ivan Bornyakov <i.bornyakov@metrotek.ru>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     netdev@vger.kernel.org, system@metrotek.ru, andrew@lunn.ch,
+        hkallweit1@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: phy: add Marvell 88X2222 transceiver support
+Message-ID: <20210202204522.4dwyfsshtzxvh2p7@dhcp-179.ddg>
+References: <20210201192250.gclztkomtsihczz6@dhcp-179.ddg>
+ <20210202164801.GN1463@shell.armlinux.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20200917213850.GA30570@archbook>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210202164801.GN1463@shell.armlinux.org.uk>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Feb 02, 2021 at 04:48:01PM +0000, Russell King - ARM Linux admin wrote:
+> On Mon, Feb 01, 2021 at 10:22:51PM +0300, Ivan Bornyakov wrote:
+> > +/* PMD Transmit Disable */
+> > +#define	MV_TX_DISABLE		0x0009
+> > +#define	MV_TX_DISABLE_GLOBAL	BIT(0)
+> 
+> Please use MDIO_PMA_TXDIS and MDIO_PMD_TXDIS_GLOBAL; this is an
+> IEEE802.3 defined register.
+> 
+> > +/* 10GBASE-R PCS Status 1 */
+> > +#define	MV_10GBR_STAT		MDIO_STAT1
+> 
+> Nothing Marvell specific here, please use MDIO_STAT1 directly.
+> 
+> > +/* 1000Base-X/SGMII Control Register */
+> > +#define	MV_1GBX_CTRL		0x2000
+> > +
+> > +/* 1000BASE-X/SGMII Status Register */
+> > +#define	MV_1GBX_STAT		0x2001
+> > +
+> > +/* 1000Base-X Auto-Negotiation Advertisement Register */
+> > +#define	MV_1GBX_ADVERTISE	0x2004
+> 
+> Marvell have had a habbit of placing other PHY instances within the
+> register space. This also looks like Clause 22 layout rather than
+> Clause 45 layout - please use the Clause 22 definitions for the bits
+> rather than Clause 45. (so BMCR_ANENABLE, BMCR_ANRESTART for
+> MV_1GBX_CTRL, etc).
+> 
+> Please define these as:
+> 
+> +#define	MV_1GBX_CTRL		(0x2000 + MII_BMCR)
+> +#define	MV_1GBX_STAT		(0x2000 + MII_BMSR)
+> +#define	MV_1GBX_ADVERTISE	(0x2000 + MII_ADVERTISE)
+> 
+> to make it clear what is going on here.
+> 
+> > +static int sfp_module_insert(void *_priv, const struct sfp_eeprom_id *id)
+> > +{
+> > +	struct phy_device *phydev = _priv;
+> > +	struct device *dev = &phydev->mdio.dev;
+> > +	struct mv2222_data *priv = phydev->priv;
+> > +	phy_interface_t interface;
+> > +
+> > +	__ETHTOOL_DECLARE_LINK_MODE_MASK(supported) = { 0, };
+> > +
+> > +	sfp_parse_support(phydev->sfp_bus, id, supported);
+> > +	interface = sfp_select_interface(phydev->sfp_bus, supported);
+> > +
+> > +	dev_info(dev, "%s SFP module inserted", phy_modes(interface));
+> > +
+> > +	switch (interface) {
+> > +	case PHY_INTERFACE_MODE_10GBASER:
+> > +		phydev->speed = SPEED_10000;
+> > +		phydev->interface = PHY_INTERFACE_MODE_10GBASER;
+> > +		linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseKR_Full_BIT,
+> > +				 phydev->supported);
+> > +
+> > +		phy_write_mmd(phydev, MDIO_MMD_VEND2, MV_PCS_CONFIG,
+> > +			      MV_PCS_HOST_XAUI | MV_PCS_LINE_10GBR);
+> > +		mv2222_soft_reset(phydev);
+> > +		break;
+> > +	case PHY_INTERFACE_MODE_1000BASEX:
+> > +	default:
+> > +		phydev->speed = SPEED_1000;
+> > +		phydev->interface = PHY_INTERFACE_MODE_1000BASEX;
+> > +		linkmode_clear_bit(ETHTOOL_LINK_MODE_10000baseKR_Full_BIT,
+> > +				   phydev->supported);
+> > +
+> > +		phy_write_mmd(phydev, MDIO_MMD_VEND2, MV_PCS_CONFIG,
+> > +			      MV_PCS_HOST_XAUI | MV_PCS_LINE_1GBX_AN);
+> > +		mv2222_soft_reset(phydev);
+> > +	}
+> > +
+> > +	priv->sfp_inserted = true;
+> > +
+> > +	if (priv->net_up)
+> > +		mv2222_tx_enable(phydev);
+> 
+> This is racy. priv->net_up is modified via the suspend/resume
+> callbacks, which are called with phydev->lock held. No other locks
+> are guaranteed to be held.
+> 
+> However, this function is called with the SFP sm_mutex, and rtnl
+> held. Consequently, the use of sfp_inserted and net_up in this
+> function and the suspend/resume callbacks is racy.
+> 
+> Why are you disabling the transmitter anyway? Is this for power
+> saving?
+> 
 
+Actually, the original thought was to down the link on the other side,
+when network interface is down on our side. Power saving is a nice
+side-effect.
 
-On 9/17/20 2:38 PM, Moritz Fischer wrote:
-> On Thu, Sep 17, 2020 at 01:28:22PM -0700, Tom Rix wrote:
->> On 9/17/20 11:32 AM, Russ Weight wrote:
->>> Port enable is not complete until ACK = 0. Change
->>> __afu_port_enable() to guarantee that the enable process
->>> is complete by polling for ACK == 0.
->>>
->>> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
-> General note: Please keep a changelog if you send updated versions of a
-> patch. This can be added here with an extra '---' + Text between Signed-off and
-> diffstat:
->
-> --- 
-> Changes from v1:
-> - FOo
-> - Bar
-Yes - I'll do that on future patch updates. In this case v2 just fixed a typo
-in the commit message, so the patch was essentially the same as v1.
->>> ---
->>>  drivers/fpga/dfl-afu-error.c |  2 +-
->>>  drivers/fpga/dfl-afu-main.c  | 29 +++++++++++++++++++++--------
->>>  drivers/fpga/dfl-afu.h       |  2 +-
->>>  3 files changed, 23 insertions(+), 10 deletions(-)
->>>
->>> diff --git a/drivers/fpga/dfl-afu-error.c b/drivers/fpga/dfl-afu-error.c
->>> index c4691187cca9..0806532a3e9f 100644
->>> --- a/drivers/fpga/dfl-afu-error.c
->>> +++ b/drivers/fpga/dfl-afu-error.c
->>> @@ -103,7 +103,7 @@ static int afu_port_err_clear(struct device *dev, u64 err)
->>>  	__afu_port_err_mask(dev, false);
->>>  
->> There is an earlier bit that sets ret = -EINVAL.
->>
->> This error will be lost or not handled well.
->>
->> Right now it doesn't seem to be handled.
-> Ultimately you'd want to report *at least* one of them, the current code
-> seems to continue and enable the port either case. Is that what it
-> should be doing? 
->
-> Is the timeout more severe than the invalid value? Do you want to print
-> a warning?
->
-> Either way a comment explaining why this is ok would be appreciated :)
-Yes - I'll add a comment explaining how the errors arebeing prioritized.
-I'll give priority to the timeout, asit is likely a HW failure.
+> > +static void mv2222_update_interface(struct phy_device *phydev)
+> > +{
+> > +	if ((phydev->speed == SPEED_1000 ||
+> > +	     phydev->speed == SPEED_100 ||
+> > +	     phydev->speed == SPEED_10) &&
+> > +	    phydev->interface != PHY_INTERFACE_MODE_1000BASEX) {
+> > +		phydev->interface = PHY_INTERFACE_MODE_1000BASEX;
+> > +
+> > +		phy_write_mmd(phydev, MDIO_MMD_VEND2, MV_PCS_CONFIG,
+> > +			      MV_PCS_HOST_XAUI | MV_PCS_LINE_1GBX_AN);
+> > +		mv2222_soft_reset(phydev);
+> > +	} else if (phydev->speed == SPEED_10000 &&
+> > +		   phydev->interface != PHY_INTERFACE_MODE_10GBASER) {
+> > +		phydev->interface = PHY_INTERFACE_MODE_10GBASER;
+> > +
+> > +		phy_write_mmd(phydev, MDIO_MMD_VEND2, MV_PCS_CONFIG,
+> > +			      MV_PCS_HOST_XAUI | MV_PCS_LINE_10GBR);
+> > +		mv2222_soft_reset(phydev);
+> > +	}
+> 
+> This looks wrong. phydev->interface is the _host_ interface, which
+> you are clearly setting to XAUI here. Some network drivers depend
+> on this being correct (for instance, when used with the Marvell
+> 88x3310 PHY which changes its host-side interface dynamically.)
+> 
+> -- 
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
 
->>>  	/* Enable the Port by clear the reset */
->>> -	__afu_port_enable(pdev);
->>> +	ret = __afu_port_enable(pdev);
->>>  
->>>  done:
->>>  	mutex_unlock(&pdata->lock);
->>> diff --git a/drivers/fpga/dfl-afu-main.c b/drivers/fpga/dfl-afu-main.c
->>> index 753cda4b2568..f73b06cdf13c 100644
->>> --- a/drivers/fpga/dfl-afu-main.c
->>> +++ b/drivers/fpga/dfl-afu-main.c
->>> @@ -21,6 +21,9 @@
->>>  
->>>  #include "dfl-afu.h"
->>>  
->>> +#define RST_POLL_INVL 10 /* us */
->>> +#define RST_POLL_TIMEOUT 1000 /* us */
->>> +
->>>  /**
->>>   * __afu_port_enable - enable a port by clear reset
->>>   * @pdev: port platform device.
->>> @@ -32,7 +35,7 @@
->>>   *
->>>   * The caller needs to hold lock for protection.
->>>   */
->>> -void __afu_port_enable(struct platform_device *pdev)
->>> +int __afu_port_enable(struct platform_device *pdev)
->>>  {
->>>  	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
->>>  	void __iomem *base;
->>> @@ -41,7 +44,7 @@ void __afu_port_enable(struct platform_device *pdev)
->>>  	WARN_ON(!pdata->disable_count);
->>>  
->>>  	if (--pdata->disable_count != 0)
->>> -		return;
->>> +		return 0;
->> Is this really a success ? Maybe -EBUSY ?
-> Seems like if it's severe enough for a warning you'd probably want to
-> return an error.
-As mentioned by Hao and Yilun, the disable_count is a reference count.The
-WARN_ON() is checking for a different condition - an invalid reference count.
-We should never call port_enable if the port is not disabled. Do you think a
-comment is needed here?
-
-Thanks,
-- Russ
-
->>>  
->>>  	base = dfl_get_feature_ioaddr_by_id(&pdev->dev, PORT_FEATURE_ID_HEADER);
->>>  
->>> @@ -49,10 +52,20 @@ void __afu_port_enable(struct platform_device *pdev)
->>>  	v = readq(base + PORT_HDR_CTRL);
->>>  	v &= ~PORT_CTRL_SFTRST;
->>>  	writeq(v, base + PORT_HDR_CTRL);
->>> -}
->>>  
->>> -#define RST_POLL_INVL 10 /* us */
->>> -#define RST_POLL_TIMEOUT 1000 /* us */
->>> +	/*
->>> +	 * HW clears the ack bit to indicate that the port is fully out
->>> +	 * of reset.
->>> +	 */
->>> +	if (readq_poll_timeout(base + PORT_HDR_CTRL, v,
->>> +			       !(v & PORT_CTRL_SFTRST_ACK),
->>> +			       RST_POLL_INVL, RST_POLL_TIMEOUT)) {
->>> +		dev_err(&pdev->dev, "timeout, failure to enable device\n");
->>> +		return -ETIMEDOUT;
->>> +	}
->>> +
->>> +	return 0;
->>> +}
->>>  
->>>  /**
->>>   * __afu_port_disable - disable a port by hold reset
->>> @@ -111,7 +124,7 @@ static int __port_reset(struct platform_device *pdev)
->>>  
->>>  	ret = __afu_port_disable(pdev);
->>>  	if (!ret)
->>> -		__afu_port_enable(pdev);
->>> +		ret = __afu_port_enable(pdev);
->>>  
->>>  	return ret;
->>>  }
->>> @@ -872,11 +885,11 @@ static int afu_dev_destroy(struct platform_device *pdev)
->>>  static int port_enable_set(struct platform_device *pdev, bool enable)
->>>  {
->>>  	struct dfl_feature_platform_data *pdata = dev_get_platdata(&pdev->dev);
->>> -	int ret = 0;
->>> +	int ret;
->>>  
->>>  	mutex_lock(&pdata->lock);
->>>  	if (enable)
->>> -		__afu_port_enable(pdev);
->>> +		ret = __afu_port_enable(pdev);
->>>  	else
->>>  		ret = __afu_port_disable(pdev);
->>>  	mutex_unlock(&pdata->lock);
->>> diff --git a/drivers/fpga/dfl-afu.h b/drivers/fpga/dfl-afu.h
->>> index 576e94960086..e5020e2b1f3d 100644
->>> --- a/drivers/fpga/dfl-afu.h
->>> +++ b/drivers/fpga/dfl-afu.h
->>> @@ -80,7 +80,7 @@ struct dfl_afu {
->>>  };
->>>  
->>>  /* hold pdata->lock when call __afu_port_enable/disable */
->>> -void __afu_port_enable(struct platform_device *pdev);
->>> +int __afu_port_enable(struct platform_device *pdev);
->>>  int __afu_port_disable(struct platform_device *pdev);
->> The other functions in this file have afu_*  since the __afu_port_enable/disable
->>
->> are used other places would it make sense to remove the '__' prefix ?
-> The idea on those is to indicate that the caller need to be cautious
-> (often a lock / mutex) is required. I think keeping them as is is fine.
->
->> If you think so, maybe a cleanup patch later.
->>
->> Tom
->>
->>>  
->>>  void afu_mmio_region_init(struct dfl_feature_platform_data *pdata);
-> Thanks,
-> Moritz
+Overall, thank you for in-depth review, Russell.
 
