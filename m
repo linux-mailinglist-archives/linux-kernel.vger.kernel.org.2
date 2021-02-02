@@ -2,164 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD6930BA8B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:04:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D277430BA9E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:12:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232913AbhBBJDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 04:03:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
+        id S232624AbhBBJLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 04:11:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232823AbhBBJCR (ORCPT
+        with ESMTP id S232934AbhBBJEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 04:02:17 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A1A8C0613ED
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 01:01:37 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id d13so12111509plg.0
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 01:01:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gB1wFn+Tv1XzRlFlwroRGPk/S+X85rzvdaZF3gKNuNE=;
-        b=Nq7mOQ6FOaFPQI/AX99KQREnIeMvd6srylLc5IUdAKr99w5TzVhTQAP68pSKwJb7N8
-         VPuTmqYw+miDE/o2F14/g3MFc2dabhc4ZvsnqHoy5Crx/eD+wIj9l6qvQcc2Mw8fjm3G
-         dDhyaTkkCDqukzXruLgLARghEaNdCyegwViqyzzaE+NSieNGvSr2948cV8kRfmGHno9p
-         /uWnKg3VQAutr05b3UKnl8KgQ0pRIQ3NQ9NgOQ8HWtV+QQplc2v9e8zx8po/joT2h+zV
-         Nb9of8GxBme3uTgbseAZXC2kTFHQRiTguAU14KpW1fDJTavFxn/FKdFzlNsDeC6SCIQp
-         nGhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=gB1wFn+Tv1XzRlFlwroRGPk/S+X85rzvdaZF3gKNuNE=;
-        b=i07ODI/hYN+UXv3R2ETwcYhCdA/j0QMknsyM9IHyAHAkL2aOxayKkExvt7Nweoeaa4
-         MGRTR0SX7bO4vQPb3vOD0Dnze9xa7Lme3SfNeI1EcS1H0BOdrt/ZbiRkaZhZbk3pCfuC
-         jamGEMK7Zy4zLfFygc2w54Iljkm1JHLvQdhlqkAt0C+LUd1cgK2foNmxANzeLtg50xkk
-         dMUyT2yFZaQnKI4VkENwXwa2UDDXyokfubhQicVBw45ni4szVnTJpKrG1xedC0LVfLn+
-         1s6b+hmoVW1yK+uhpdZlDq7ojiS5JENqdNOjBrxTAKvAdL/bedYsP7Xj1sE0mrLwr0kM
-         DDuA==
-X-Gm-Message-State: AOAM533u67UTtmtycAj0vsqA87hHRBa+KUCTrQw3gaiKyTjbxU8Hjclf
-        shmICb9ueF/tbuuMTt8pArQ=
-X-Google-Smtp-Source: ABdhPJxpZ0vGDNWn7BVV3mICY2aDatVQIG2mvbTLUJytuKoa4rbQzx0d1UeDR464VKCuFJ3vH8gAuw==
-X-Received: by 2002:a17:902:23:b029:df:54fa:ce43 with SMTP id 32-20020a1709020023b02900df54face43mr21529387pla.49.1612256496953;
-        Tue, 02 Feb 2021 01:01:36 -0800 (PST)
-Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id t6sm21246909pfe.177.2021.02.02.01.01.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 01:01:36 -0800 (PST)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Subject: [PATCH 3/3] perf tools: Use scandir() to iterate threads
-Date:   Tue,  2 Feb 2021 18:01:18 +0900
-Message-Id: <20210202090118.2008551-4-namhyung@kernel.org>
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-In-Reply-To: <20210202090118.2008551-1-namhyung@kernel.org>
-References: <20210202090118.2008551-1-namhyung@kernel.org>
+        Tue, 2 Feb 2021 04:04:14 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1EC1C06174A;
+        Tue,  2 Feb 2021 01:03:31 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DVJkl6QkKz9vDk;
+        Tue,  2 Feb 2021 20:03:27 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1612256608;
+        bh=LkGEdn3G9XkFSWbyhWVujX9kFVcDfghIIw0jyqRFbx4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=OaoSPw87VwEWtXktuwOBvK9HrdMo6qcwT9PIcj3UPkeiIPjOOT26+U9bSR+7Gh+PB
+         ZS0MnyPSk/HFsQ9EjndPU20h5pZdDQZZhQ6BAYtk0BefTR7Njk8RbuVvxXsDmtSpXa
+         OaBiM7rJpRO+CKUtMgzDz6Uz6UelSUdWqi0Z23lujxCJoQUq3Ovw69eI9IvdkJPb5P
+         y9HpxcSjXkz+MWDyoQN+RA3e7eOILeQLhWnSm4kZ7DabXwMDPQUuoEOUBO6S12S5wc
+         S6UpO4gGT7rGnMZzxFq10pEG8LvhKx28b4K0f6RPA/sHYZmqeD+NZm0R+ZrmlSNTKK
+         hnWukIj93A69A==
+Date:   Tue, 2 Feb 2021 20:03:24 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: linux-next: build failure after merge of the akpm-current tree
+Message-ID: <20210202200324.5179db33@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/m/DNo5z74tWRUFVrSWRD13z";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like in __event__synthesize_thread(), I think it's better to use
-scandir() instead of the readdir() loop.  In case some malicious task
-continues to create new threads, the readdir() loop will run over and
-over to collect tids.  The scandir() also has the problem but the
-window is much smaller since it doesn't do much work during the
-iteration.
+--Sig_/m/DNo5z74tWRUFVrSWRD13z
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Also add filter_task() function as we only care the tasks.
+Hi all,
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+After merging the akpm-current tree, today's linux-next build (x86_64
+allnoconfig) failed like this:
+
+In file included from arch/x86/include/asm/page.h:76,
+                 from arch/x86/include/asm/thread_info.h:12,
+                 from include/linux/thread_info.h:56,
+                 from arch/x86/include/asm/preempt.h:7,
+                 from include/linux/preempt.h:78,
+                 from include/linux/spinlock.h:51,
+                 from include/linux/mmzone.h:8,
+                 from include/linux/gfp.h:6,
+                 from include/linux/slab.h:15,
+                 from include/linux/crypto.h:20,
+                 from arch/x86/kernel/asm-offsets.c:9:
+include/linux/mm.h: In function 'is_pinnable_page':
+include/asm-generic/memory_model.h:64:14: error: implicit declaration of fu=
+nction 'page_to_section'; did you mean 'present_section'? [-Werror=3Dimplic=
+it-function-declaration]
+   64 |  int __sec =3D page_to_section(__pg);   \
+      |              ^~~~~~~~~~~~~~~
+include/asm-generic/memory_model.h:81:21: note: in expansion of macro '__pa=
+ge_to_pfn'
+   81 | #define page_to_pfn __page_to_pfn
+      |                     ^~~~~~~~~~~~~
+include/linux/mm.h:1134:15: note: in expansion of macro 'page_to_pfn'
+ 1134 |   is_zero_pfn(page_to_pfn(page));
+      |               ^~~~~~~~~~~
+In file included from include/linux/kallsyms.h:12,
+                 from include/linux/bpf.h:21,
+                 from include/linux/bpf-cgroup.h:5,
+                 from include/linux/cgroup-defs.h:22,
+                 from include/linux/cgroup.h:28,
+                 from include/linux/memcontrol.h:13,
+                 from include/linux/swap.h:9,
+                 from include/linux/suspend.h:5,
+                 from arch/x86/kernel/asm-offsets.c:13:
+include/linux/mm.h: At top level:
+include/linux/mm.h:1505:29: error: conflicting types for 'page_to_section'
+ 1505 | static inline unsigned long page_to_section(const struct page *page)
+      |                             ^~~~~~~~~~~~~~~
+In file included from arch/x86/include/asm/page.h:76,
+                 from arch/x86/include/asm/thread_info.h:12,
+                 from include/linux/thread_info.h:56,
+                 from arch/x86/include/asm/preempt.h:7,
+                 from include/linux/preempt.h:78,
+                 from include/linux/spinlock.h:51,
+                 from include/linux/mmzone.h:8,
+                 from include/linux/gfp.h:6,
+                 from include/linux/slab.h:15,
+                 from include/linux/crypto.h:20,
+                 from arch/x86/kernel/asm-offsets.c:9:
+include/asm-generic/memory_model.h:64:14: note: previous implicit declarati=
+on of 'page_to_section' was here
+   64 |  int __sec =3D page_to_section(__pg);   \
+      |              ^~~~~~~~~~~~~~~
+include/asm-generic/memory_model.h:81:21: note: in expansion of macro '__pa=
+ge_to_pfn'
+   81 | #define page_to_pfn __page_to_pfn
+      |                     ^~~~~~~~~~~~~
+include/linux/mm.h:1134:15: note: in expansion of macro 'page_to_pfn'
+ 1134 |   is_zero_pfn(page_to_pfn(page));
+      |               ^~~~~~~~~~~
+
+This build has CONFIG_SPARSEMEM set and CONFIG_SPARSEMEM_VMEMMAP not set.
+
+Caused by commit
+
+  983cb10d3f90 ("mm/gup: do not migrate zero page")
+
+I have applied the following patch for today:
+
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Tue, 2 Feb 2021 19:49:00 +1100
+Subject: [PATCH] make is_pinnable_page a macro
+
+As it is currently defined before page_to_section() which it needs.
+
+Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 ---
- tools/perf/util/synthetic-events.c | 28 +++++++++++++++++-----------
- 1 file changed, 17 insertions(+), 11 deletions(-)
+ include/linux/mm.h | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/tools/perf/util/synthetic-events.c b/tools/perf/util/synthetic-events.c
-index abea6885f94b..fcec775636ac 100644
---- a/tools/perf/util/synthetic-events.c
-+++ b/tools/perf/util/synthetic-events.c
-@@ -704,6 +704,11 @@ int perf_event__synthesize_modules(struct perf_tool *tool, perf_event__handler_t
- 	return rc;
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 58f250cabea6..a608feb0d42e 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -1128,11 +1128,9 @@ static inline bool is_zone_movable_page(const struct=
+ page *page)
  }
- 
-+static int filter_task(const struct dirent *dirent)
-+{
-+	return isdigit(dirent->d_name[0]);
-+}
-+
- static int __event__synthesize_thread(union perf_event *comm_event,
- 				      union perf_event *mmap_event,
- 				      union perf_event *fork_event,
-@@ -712,10 +717,10 @@ static int __event__synthesize_thread(union perf_event *comm_event,
- 				      struct perf_tool *tool, struct machine *machine, bool mmap_data)
- {
- 	char filename[PATH_MAX];
--	DIR *tasks;
--	struct dirent *dirent;
-+	struct dirent **dirent;
- 	pid_t tgid, ppid;
- 	int rc = 0;
-+	int i, n;
- 
- 	/* special case: only send one comm event using passed in pid */
- 	if (!full) {
-@@ -747,18 +752,16 @@ static int __event__synthesize_thread(union perf_event *comm_event,
- 	snprintf(filename, sizeof(filename), "%s/proc/%d/task",
- 		 machine->root_dir, pid);
- 
--	tasks = opendir(filename);
--	if (tasks == NULL) {
--		pr_debug("couldn't open %s\n", filename);
--		return 0;
--	}
-+	n = scandir(filename, &dirent, filter_task, alphasort);
-+	if (n < 0)
-+		return n;
- 
--	while ((dirent = readdir(tasks)) != NULL) {
-+	for (i = 0; i < n; i++) {
- 		char *end;
- 		pid_t _pid;
- 		bool kernel_thread;
- 
--		_pid = strtol(dirent->d_name, &end, 10);
-+		_pid = strtol(dirent[i]->d_name, &end, 10);
- 		if (*end)
- 			continue;
- 
-@@ -791,7 +794,10 @@ static int __event__synthesize_thread(union perf_event *comm_event,
- 		}
- 	}
- 
--	closedir(tasks);
-+	for (i = 0; i < n; i++)
-+		zfree(&dirent[i]);
-+	free(dirent);
-+
- 	return rc;
- }
- 
-@@ -976,7 +982,7 @@ int perf_event__synthesize_threads(struct perf_tool *tool,
- 		return 0;
- 
- 	snprintf(proc_path, sizeof(proc_path), "%s/proc", machine->root_dir);
--	n = scandir(proc_path, &dirent, 0, alphasort);
-+	n = scandir(proc_path, &dirent, filter_task, alphasort);
- 	if (n < 0)
- 		return err;
- 
--- 
-2.30.0.365.g02bc693789-goog
+=20
+ /* MIGRATE_CMA and ZONE_MOVABLE do not allow pin pages */
+-static inline bool is_pinnable_page(struct page *page)
+-{
+-	return !(is_zone_movable_page(page) || is_migrate_cma_page(page)) ||
+-		is_zero_pfn(page_to_pfn(page));
+-}
++#define is_pinnable_page(page)		\
++	(!(is_zone_movable_page(page) || is_migrate_cma_page(page)) ||	\
++		is_zero_pfn(page_to_pfn(page)))
+=20
+ #ifdef CONFIG_DEV_PAGEMAP_OPS
+ void free_devmap_managed_page(struct page *page);
+--=20
+2.29.2
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/m/DNo5z74tWRUFVrSWRD13z
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmAZFVwACgkQAVBC80lX
+0GynIwf+KEHZSn4OrHDfR4Gsm5WEJxPJN2ZoYwu/9WZCPTyeWBc2XqGC3yxTquqN
+x141EV4htqifUL1o3mMKVaSZW5xYEKlnyNxAKbZ9SSB8kGVSeDFavd94fLlw4gpd
+cAsS3kL/2F8T4BgTy4Y1RzA1PDjIIPHjZ4PQtm1ggrrOnUpvfFFZzlNBySwXMejk
+sgpRIXF6mXDl+wFEJ+Wy+jtUTcrqVbGbuFhbkVHXUjdX9qlmbEB5zQuLvbqEVT5q
+qT8dQbpfIdI5F3V/HBovJ4SjBZeGYbVflQcnvRGzMBxKk71bmaDW/Ts/qd104oR+
+WXo0pAfT+KEHJoOfHEaaHnfUvErz9g==
+=99rG
+-----END PGP SIGNATURE-----
+
+--Sig_/m/DNo5z74tWRUFVrSWRD13z--
