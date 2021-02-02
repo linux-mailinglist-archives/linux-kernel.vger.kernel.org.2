@@ -2,134 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 539E930CC64
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:55:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12B6F30CC5F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:55:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233109AbhBBTy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 14:54:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbhBBTvD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 14:51:03 -0500
-Received: from mail-oo1-xc2d.google.com (mail-oo1-xc2d.google.com [IPv6:2607:f8b0:4864:20::c2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D5A6C061573;
-        Tue,  2 Feb 2021 11:50:23 -0800 (PST)
-Received: by mail-oo1-xc2d.google.com with SMTP id 123so2162924ooi.13;
-        Tue, 02 Feb 2021 11:50:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=l3bsSzSp5VFqJIviHqqruclp18d3rcb4uTg/z6V+Z3A=;
-        b=ODYlHNCeEe/cG3cQxKDYb/NJZwWt6FOZimZ7in65vObeMzVZXaWndyvS3tQ3FBs+VH
-         A5iV6JUTBzSmQ4d7feYAHllXZKEMbcORob89eXXtiPmJmQdm/7Pk83XC9IOPc21j+loF
-         LxCVcSgx7scu2EiyTZQnsi68C/lE0VMgLPVO1vGsJBBr4t61/Dl41N6Kk76AA6AbWtNo
-         3fmT2bbYYgtpugpDO4qnVpIHF+2ct3b1v7KSs7WXMYJro1UzBJhD9v1qRR6XWrpTU3Gu
-         NbZ2URFGClHOWKDlGjt3QMQoljUtZIKBllUMpGhcTi37YEDV0OD5VRYaBGF2x3QAiFFO
-         berQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=l3bsSzSp5VFqJIviHqqruclp18d3rcb4uTg/z6V+Z3A=;
-        b=g1+ExHUCGLi2jiIG4g6WqBbIYhg9Zwg4JjzHWQRiE49nJ8h3Ngig9FrXF/yBfUXFoo
-         6XDVInOqyPFBjskn4iHN7i+VOLFYdXig9bC4NBmGBHy411PvaJ4WBZq53qzrWL1Bs/t7
-         Sbbp2OR4bSPdIC+unIw5L6sM1RyfNmm8AcV6BQWoQY0GNJy9Lp1ihVbwogJtRRdORp3o
-         gURQoBOuFjMRIqvviPfk3Nv3keNSn1PDbLIPHSPpN80ttkfJFiNhyLMJ2vtJ8fvs8mIF
-         FWor8+CnSIM3qAMt+0xKSoxWR2vslUNhbTWnfN97hptGt0hhmU2A97rPhdVN77hJaCBY
-         HvLg==
-X-Gm-Message-State: AOAM533QjLObS6csG/EvLA8YvRC9rw2XO2HZHSQDYe9XHSOPHrNfROHS
-        uIpTZfltEsu2NjfxE76mt6Q=
-X-Google-Smtp-Source: ABdhPJw7CaYcN6bnL3pW4O5g2lV2p6UuzwG2E9UF38Aus8EuuCjrecKbq3jCr+VoE07kdXl/b+tcfQ==
-X-Received: by 2002:a4a:decb:: with SMTP id w11mr16562987oou.32.1612295422834;
-        Tue, 02 Feb 2021 11:50:22 -0800 (PST)
-Received: from nuclearis2-1.gtech (c-98-195-139-126.hsd1.tx.comcast.net. [98.195.139.126])
-        by smtp.gmail.com with ESMTPSA id g13sm4731663otl.60.2021.02.02.11.50.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Feb 2021 11:50:22 -0800 (PST)
-Subject: Re: Issues with "PCI/LINK: Report degraded links via link bandwidth
- notification"
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Sinan Kaya <okaya@kernel.org>, Keith Busch <keith.busch@intel.com>,
-        Jan Vesely <jano.vesely@gmail.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Austin Bolen <austin_bolen@dell.com>,
-        Shyam Iyer <Shyam_Iyer@dell.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Dave Airlie <airlied@gmail.com>,
-        Ben Skeggs <skeggsb@gmail.com>,
-        Alex Deucher <alexdeucher@gmail.com>,
-        Myron Stowe <myron.stowe@redhat.com>,
-        "A. Vladimirov" <vladimirov.atanas@gmail.com>
-References: <20210129215619.GA114790@bjorn-Precision-5520>
-From:   "Alex G." <mr.nuke.me@gmail.com>
-Message-ID: <1d07f39d-1f8c-e545-c5e7-8f21aa0e94f3@gmail.com>
-Date:   Tue, 2 Feb 2021 13:50:20 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S240203AbhBBTx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 14:53:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56318 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240007AbhBBTvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 14:51:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 76CB464E43;
+        Tue,  2 Feb 2021 19:50:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612295433;
+        bh=/jebZP6tgM1BgzsuzazAlaJBzv6xqKN0Lbg6lsAaKDY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Cs7ihMFc3JyRXVrrWtZZ/cVFGe+sXlhMDew6LwyD1Es1XRUwG2s6Syeb3aZ47biL0
+         zbP+0dV1DBD5eOkfQZSSGIUck/5einjE8A2kPnHuWWOchPVy/DZ9G4OckfI7ZcW5N1
+         Ft2st+jNHIo5UDS2zqqOzCihkv3Q3fghbsz0JIAq0sArKl+v4aSEpCiM4AvWw5e3bE
+         7IIJ7YsYpn2NNurd9dT2rgz5rX89l93qyNoauUW0sIRXxPaMUAAJJPipNPWoSAKfUV
+         BarBSVsVQGqXnMwjqNHuvkdW+9ooOivsYPlKGsyMkSKeOOozK0OIOPztvh+aZ24+7R
+         UmjmkFbyELzAw==
+Date:   Tue, 2 Feb 2021 11:50:32 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
+Cc:     andrew@lunn.ch, Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        jiri@resnulli.us, ivecera@redhat.com, davem@davemloft.net,
+        roopa@nvidia.com, nikolay@nvidia.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bridge@lists.linux-foundation.org
+Subject: Re: [PATCH net-next v2 0/4] bridge: mrp: Extend br_mrp_switchdev_*
+Message-ID: <20210202115032.6affffdc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <9143d15f-c41d-f0ab-7be0-32d797820384@prevas.dk>
+References: <20210127205241.2864728-1-horatiu.vultur@microchip.com>
+        <20210129190114.3f5b6b44@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <9143d15f-c41d-f0ab-7be0-32d797820384@prevas.dk>
 MIME-Version: 1.0
-In-Reply-To: <20210129215619.GA114790@bjorn-Precision-5520>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/29/21 3:56 PM, Bjorn Helgaas wrote:
-> On Thu, Jan 28, 2021 at 06:07:36PM -0600, Alex G. wrote:
->> On 1/28/21 5:51 PM, Sinan Kaya wrote:
->>> On 1/28/2021 6:39 PM, Bjorn Helgaas wrote:
->>>> AFAICT, this thread petered out with no resolution.
->>>>
->>>> If the bandwidth change notifications are important to somebody,
->>>> please speak up, preferably with a patch that makes the notifications
->>>> disabled by default and adds a parameter to enable them (or some other
->>>> strategy that makes sense).
->>>>
->>>> I think these are potentially useful, so I don't really want to just
->>>> revert them, but if nobody thinks these are important enough to fix,
->>>> that's a possibility.
->>>
->>> Hide behind debug or expert option by default? or even mark it as BROKEN
->>> until someone fixes it?
->>>
->> Instead of making it a config option, wouldn't it be better as a kernel
->> parameter? People encountering this seem quite competent in passing kernel
->> arguments, so having a "pcie_bw_notification=off" would solve their
->> problems.
+On Tue, 2 Feb 2021 08:40:02 +0100 Rasmus Villemoes wrote:
+> On 30/01/2021 04.01, Jakub Kicinski wrote:
+> > On Wed, 27 Jan 2021 21:52:37 +0100 Horatiu Vultur wrote:  
+> >> This patch series extends MRP switchdev to allow the SW to have a better
+> >> understanding if the HW can implement the MRP functionality or it needs
+> >> to help the HW to run it. There are 3 cases:  
 > 
-> I don't want people to have to discover a parameter to solve issues.
-> If there's a parameter, notification should default to off, and people
-> who want notification should supply a parameter to enable it.  Same
-> thing for the sysfs idea.
+> >> v2:
+> >>  - fix typos in comments and in commit messages
+> >>  - remove some of the comments
+> >>  - move repeated code in helper function
+> >>  - fix issue when deleting a node when sw_backup was true  
+> > 
+> > Folks who were involved in previous MRP conversations - does this look
+> > good to you? Anyone planning to test?
+> 
+> I am planning to test these, but it's unlikely I'll get around to it
+> this week unfortunately.
 
-I can imagine cases where a per-port flag would be useful. For example, 
-a machine with a NIC and a couple of PCIe storage drives. In this 
-example, the PCIe drives donwtrain willie-nillie, so it's useful to turn 
-off their notifications, but the NIC absolutely must not downtrain. It's 
-debatable whether it should be default on or default off.
-
-> I think we really just need to figure out what's going on.  Then it
-> should be clearer how to handle it.  I'm not really in a position to
-> debug the root cause since I don't have the hardware or the time.
-
-I wonder
-(a) if some PCIe devices are downtraining willie-nillie to save power
-(b) if this willie-nillie downtraining somehow violates PCIe spec
-(c) what is the official behavior when downtraining is intentional
-
-My theory is: YES, YES, ASPM. But I don't know how to figure this out 
-without having the problem hardware in hand.
-
-
-> If nobody can figure out what's going on, I think we'll have to make it
-> disabled by default.
-
-I think most distros do "CONFIG_PCIE_BW is not set". Is that not true?
-
-Alex
+Horatiu are you okay with deferring the series until Rasmus validates?
+Given none of this HW is upstream now (AFAIU) this is an awkward set 
+to handle. Having a confirmation from Rasmus would make us a little bit
+more comfortable.
