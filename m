@@ -2,99 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B23F30CE59
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:01:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79E1830CE26
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 22:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233697AbhBBWBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 17:01:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58358 "EHLO mail.kernel.org"
+        id S231962AbhBBVnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 16:43:17 -0500
+Received: from mga09.intel.com ([134.134.136.24]:64619 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229542AbhBBWA4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 17:00:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8CE2F64F60;
-        Tue,  2 Feb 2021 22:00:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612303216;
-        bh=7MwmGaIDa8krR7cbY5vwmlx4VkryftuFPHME4HwUihY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M00WsYIA5mTCeVa5IeOsB9EgOz9HobnLIAaZ3G4SuZvbN8p//zYZMxGZEDvv71rTg
-         ABdK1OdGuPzq/Kkr9DpcnwtK0SR6Re/aJ/cdoxXBfFBVvjZQ4n9xaWznnyN3TgeV/5
-         qWWqsMjoXZNyFilYNlvEBOTAT/DeNdy2CqCHyv4HdRqwA5F8Srkx3S4cq/lifU2BMN
-         7bOYOtdi2HO+8VZRd6DB3XkvVZ/6UGy8orCDehwqIa8/FLeVbkx0Mm9wb/RcuMw0iW
-         +jcOevLAU0mCCdJELbadoAzvKbRAQHf19zyxbOZaMy+irK0CLqwp53cCI+b2oENsaR
-         rKb4bQrW8uuLg==
-Date:   Wed, 3 Feb 2021 00:00:08 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Shuah Khan <shuah@kernel.org>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-Subject: Re: [PATCH v4 2/5] x86/sgx: Reduce the locking range in
- sgx_sanitize_section()
-Message-ID: <YBnLaEz0hi/s9T8X@kernel.org>
-References: <20210201132653.35690-1-tianjia.zhang@linux.alibaba.com>
- <20210201132653.35690-3-tianjia.zhang@linux.alibaba.com>
+        id S234114AbhBBVmq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 16:42:46 -0500
+IronPort-SDR: JcAYSx8dS08FD+BlSjmtlAgeGrVnvrEStZ59bxq/TKikXQG/deoC0XLcaZVY9qp8NlOpxKVQ/V
+ DwDgWz7pk61A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="181081895"
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="scan'208";a="181081895"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 13:40:59 -0800
+IronPort-SDR: asmWp1QY24TIDG7pef9yM7XBm68sR8mtJyGYqbxJfxtwO2nGiDRsrz4Il07yUK/wCjTvZ41CW2
+ VM++/ccXZJ2Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="scan'208";a="370961433"
+Received: from marshy.an.intel.com (HELO [10.122.105.143]) ([10.122.105.143])
+  by fmsmga008.fm.intel.com with ESMTP; 02 Feb 2021 13:40:58 -0800
+Subject: Re: [PATCHv4 5/6] dt-bindings: fpga: add authenticate-fpga-config
+ property
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     trix@redhat.com, gregkh@linuxfoundation.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Richard Gong <richard.gong@intel.com>
+References: <1612192919-4069-1-git-send-email-richard.gong@linux.intel.com>
+ <1612192919-4069-6-git-send-email-richard.gong@linux.intel.com>
+ <YBjUyc2ea51S4Wzp@epycbox.lan>
+From:   Richard Gong <richard.gong@linux.intel.com>
+Message-ID: <9752d0eb-962a-f308-24a3-aedd4fecf25d@linux.intel.com>
+Date:   Tue, 2 Feb 2021 16:01:37 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201132653.35690-3-tianjia.zhang@linux.alibaba.com>
+In-Reply-To: <YBjUyc2ea51S4Wzp@epycbox.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 09:26:50PM +0800, Tianjia Zhang wrote:
-> The spin lock of sgx_epc_section only locks the page_list. The
-> EREMOVE operation and init_laundry_list is not necessary in the
-> protection range of the spin lock. This patch reduces the lock
-> range of the spin lock in the function sgx_sanitize_section()
-> and only protects the operation of the page_list.
-> 
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-I'm not confident that this change has any practical value.
+Hi Moritz,
 
-/Jarkko
+On 2/1/21 10:27 PM, Moritz Fischer wrote:
+> On Mon, Feb 01, 2021 at 09:21:58AM -0600, richard.gong@linux.intel.com wrote:
+>> From: Richard Gong <richard.gong@intel.com>
+>>
+>> Add authenticate-fpga-config property for FPGA bitstream authentication,
+>> which makes sure a signed bitstream has valid signatures.
+>>
+>> Signed-off-by: Richard Gong <richard.gong@intel.com>
+>> ---
+>> v4: explain authenticate-fpga-config flag further
+>> v3: no change
+>> v2: put authenticate-fpga-config above partial-fpga-config
+>>      update commit messages
+>> ---
+>>   Documentation/devicetree/bindings/fpga/fpga-region.txt | 4 ++++
+>>   1 file changed, 4 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/fpga/fpga-region.txt b/Documentation/devicetree/bindings/fpga/fpga-region.txt
+>> index e811cf8..e2740b6 100644
+>> --- a/Documentation/devicetree/bindings/fpga/fpga-region.txt
+>> +++ b/Documentation/devicetree/bindings/fpga/fpga-region.txt
+>> @@ -182,6 +182,10 @@ Optional properties:
+>>   	This property is optional if the FPGA Manager handles the bridges.
+>>           If the fpga-region is  the child of a fpga-bridge, the list should not
+>>           contain the parent bridge.
+>> +- authenticate-fpga-config : boolean, set if do bitstream authentication only.
+>> +	flag authenticate-fpga-config is used to first check the integrity of
+>> +	the bitstream. If the authentication is passed, the user can perform
+>> +	other operations.
+>  From the other commits it looks like it *also* writes to QSPI? If so
+> please document that.
+> 
+> If not, feel free to ignore :)
+> 
+> Maybe I would highlight two things:
+> a) If you add 'authenticate-fpga-config' you are not allowed to add new
+>     nodes
+> b) If you add 'authenticate-fpga-config' you are not alllowed to add
+>     other operations
 
-> ---
->  arch/x86/kernel/cpu/sgx/main.c | 11 ++++-------
->  1 file changed, 4 insertions(+), 7 deletions(-)
+How about the descriptions below?
+
+- authenticate-fpga-config : boolean, set if do bitstream authentication 
+only.
+If 'authenticate-fpga-config' is added then adding a new node or another 
+operation is not allowed.
+Flag authenticate-fpga-config is used to check the integrity of the 
+bitstream.
+Except for the actual configuration of the device, the authentication 
+works in the same way as FPGA configuration. If the authentication 
+passes, other operations such as full or partial reconfiguration can be 
+performed. When the bitstream into QSPI flash memory at device is 
+programmed, it is expected that there will be no issue when starting the 
+device.
+
+>>   - partial-fpga-config : boolean, set if partial reconfiguration is to be done,
+>>   	otherwise full reconfiguration is done.
+>>   - external-fpga-config : boolean, set if the FPGA has already been configured
+>> -- 
+>> 2.7.4
+>>
+> Thanks,
+> Moritz
 > 
-> diff --git a/arch/x86/kernel/cpu/sgx/main.c b/arch/x86/kernel/cpu/sgx/main.c
-> index c519fc5f6948..4465912174fd 100644
-> --- a/arch/x86/kernel/cpu/sgx/main.c
-> +++ b/arch/x86/kernel/cpu/sgx/main.c
-> @@ -41,20 +41,17 @@ static void sgx_sanitize_section(struct sgx_epc_section *section)
->  		if (kthread_should_stop())
->  			return;
->  
-> -		/* needed for access to ->page_list: */
-> -		spin_lock(&section->lock);
-> -
->  		page = list_first_entry(&section->init_laundry_list,
->  					struct sgx_epc_page, list);
->  
->  		ret = __eremove(sgx_get_epc_virt_addr(page));
-> -		if (!ret)
-> +		if (!ret) {
-> +			spin_lock(&section->lock);
->  			list_move(&page->list, &section->page_list);
-> -		else
-> +			spin_unlock(&section->lock);
-> +		} else
->  			list_move_tail(&page->list, &dirty);
->  
-> -		spin_unlock(&section->lock);
-> -
->  		cond_resched();
->  	}
->  
-> -- 
-> 2.19.1.3.ge56e4f7
-> 
-> 
+Regards,
+Richard
