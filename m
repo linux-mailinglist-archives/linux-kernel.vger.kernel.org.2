@@ -2,89 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED85630CCA6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:04:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5242A30BFF0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 14:48:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240346AbhBBUCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 15:02:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232851AbhBBNrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 08:47:20 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C8E7E64F93;
-        Tue,  2 Feb 2021 13:41:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612273309;
-        bh=lrgu37PQY9gKgzLHomntqVwJNVrZZKNWqcd6OBNf6hA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lP7CntQBMbVQJpEaaiYL7FNJfFN62FdN/GcMCAopAu3GeFeVdRngp79sVRpzFuHK5
-         TD5qm7vP35cKE27SqbfUnQslx8BchPj39SM6t3rctdUC8fYtCSE4pQocYrTa0iN/0t
-         d3FXWFCxMFvch8y6MGZ18wvBLBYTgHhaxOiLNKDwuznwWMH/xSyFPOFz3kqVjyuXZ0
-         zRzPBx8du28F2J7+fEf6S8AW6tZIr7+Fk1oGqZHo5IfxHe5n3QmWIbNh9GJ1DWeuGS
-         WNY6QFW1AReemuHlARlf6l+8hftt/ZTfX7rBzAc8J6+5GpSagbMIx44wB9Lpu37BSB
-         l0Kc3Fk6ocsSg==
-Date:   Tue, 2 Feb 2021 13:41:01 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Binghui Wang <wangbinghui@hisilicon.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Xiaowei Song <songxiaowei@hisilicon.com>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH 09/13] pci: dwc: pcie-kirin: allow to optionally require
- a regulator
-Message-ID: <20210202134101.GB5154@sirena.org.uk>
-References: <cover.1612271903.git.mchehab+huawei@kernel.org>
- <7f4abd1ba9f4b33fe6f66213f56aa4269db74317.1612271903.git.mchehab+huawei@kernel.org>
+        id S232292AbhBBNqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 08:46:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232865AbhBBNnk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 08:43:40 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD9B2C0613ED
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 05:42:59 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id m6so14366246pfk.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 05:42:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ULfru5VoR6la+blRMAgVbCUtmZDEDwFPNm2BTtvrXik=;
+        b=wJMp7HySx4KIdAfdpQKRivgJiFrR11aqd2RkFKHhHaSMRpxjRdRAlU+kVIGqEcKgCH
+         X6+x9LPPUtmvAhp06gH47PgpOxyNvB2a90xkoeAggnBu3pitEyajvqBsX9DzvXq1kUzA
+         areD2oWxIV0EztVWVUvcBVVfx94P2045WVEZhegGKlbQl1mLEN5X6JnbItdB939khERd
+         I/NVm21Oo7gMneX/70y0igmjHuLs/we8A+JxiGZDfXLGdbNkQZlw2AkDWhy+I49XXSVR
+         DUnn2QZRkT2coIHw6b5yE/mtR30i0aADKrGsTPJAA9UckxbnLeS2IAAqttEXIhdDDwiU
+         RuIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ULfru5VoR6la+blRMAgVbCUtmZDEDwFPNm2BTtvrXik=;
+        b=Fx2Cl6AqO96R29O6b9ZOYn7SjvlXkA4ZOOWzG4fwSix/obavUJIClK0CWrpnxRr5JT
+         5SaiBf2MTrhuCDZN3OurU+T7yJv3cD6SkGuX2Buxpt8WcFZEpFO1Ych64sVcZ7FPthv8
+         Ny1Hkl8Y5vPxKEAYcoBnn1BShWxB+jl4LKP8Q9cM0NK7Ss8SzW3foK0641ZrY3/3yd2C
+         pas0Rni6QspuudM10rjxvvqyBDQXD+D1p7AcBmt3cSaGQLqYWCE9UMXCkB81G47G0T6q
+         PRidY4C+P2noNSG8L0Cxj7ppKzzW781hCXx1iTDjkQs6CD4uM8NsNzd9PV3kLBQspYDV
+         FuCA==
+X-Gm-Message-State: AOAM530ie/WcRrC/Pyq9P1o96xKBX13NUet87Xl8oGE2ngs8Ht7rTe8+
+        bvkxkMQvg7lvY9r3ApXDU1U8TNnByYITghyV2+8MdA==
+X-Google-Smtp-Source: ABdhPJw9OokT1/NJk7DMk27RSiNrkvpfczhQWVIvDigRIJcuRYPtlyIML4onllZUdx6kuUPeg8ZSauBOz58xE6Q26Jk=
+X-Received: by 2002:a62:18d6:0:b029:1bf:1c5f:bfa4 with SMTP id
+ 205-20020a6218d60000b02901bf1c5fbfa4mr21354404pfy.24.1612273379132; Tue, 02
+ Feb 2021 05:42:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gj572EiMnwbLXET9"
-Content-Disposition: inline
-In-Reply-To: <7f4abd1ba9f4b33fe6f66213f56aa4269db74317.1612271903.git.mchehab+huawei@kernel.org>
-X-Cookie: Only God can make random selections.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <cover.1612208222.git.andreyknvl@google.com> <d128216d3b0aea0b4178e11978f5dd3e8dbeb590.1612208222.git.andreyknvl@google.com>
+ <20210202104618.GA16723@willie-the-truck>
+In-Reply-To: <20210202104618.GA16723@willie-the-truck>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Tue, 2 Feb 2021 14:42:48 +0100
+Message-ID: <CAAeHK+yACsAfZqx2gbgoTMZHym5eMNr8e9XSh2+OL_UuK3CiQQ@mail.gmail.com>
+Subject: Re: [PATCH 12/12] arm64: kasan: export MTE symbols for KASAN tests
+To:     Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Feb 2, 2021 at 11:46 AM Will Deacon <will@kernel.org> wrote:
+>
+> On Mon, Feb 01, 2021 at 08:43:36PM +0100, Andrey Konovalov wrote:
+> > Export mte_enable_kernel() and mte_set_report_once() to fix:
+> >
+> > ERROR: modpost: "mte_enable_kernel" [lib/test_kasan.ko] undefined!
+> > ERROR: modpost: "mte_set_report_once" [lib/test_kasan.ko] undefined!
+> >
+> > Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> > ---
+> >  arch/arm64/kernel/mte.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> > index 8b27b70e1aac..2c91bd288ea4 100644
+> > --- a/arch/arm64/kernel/mte.c
+> > +++ b/arch/arm64/kernel/mte.c
+> > @@ -120,6 +120,7 @@ void mte_enable_kernel_sync(void)
+> >  {
+> >       __mte_enable_kernel("synchronous", SCTLR_ELx_TCF_SYNC);
+> >  }
+> > +EXPORT_SYMBOL(mte_enable_kernel_sync);
+> >
+> >  void mte_enable_kernel_async(void)
+> >  {
+> > @@ -130,6 +131,7 @@ void mte_set_report_once(bool state)
+> >  {
+> >       WRITE_ONCE(report_fault_once, state);
+> >  }
+> > +EXPORT_SYMBOL(mte_set_report_once);
+>
+> EXPORT_SYMBOL_GPL ?
 
---gj572EiMnwbLXET9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, Feb 02, 2021 at 02:29:54PM +0100, Mauro Carvalho Chehab wrote:
-> On Hikey 970, there's a power supply controlled by Hi6421v600
-> regulator that turns on the PCI devices on the board. Without
-> that, no PCI hardware would work.
->=20
-> As this is device-dependent, such regulator line should be
-> optional.
-
-Supplies should only be optional if they may be physically absent from
-the system, if they are just sometimes not described well in firmware
-they should be requested via the normal regulator_get() interface, the
-core will supply a dummy regulator if there is nothing at all in the
-firmware description.
-
-Supplies should also generally be referred to with the naming used in
-the datasheet for the part.
-
---gj572EiMnwbLXET9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAZVm0ACgkQJNaLcl1U
-h9DRtAf+K9FZJNlyTA10opaKROPalDvJYAUzGS29QifY8rP5q40puTuZCei9grQM
-Qxa47bzq4jvwxU8OEg6BID3Orcf7Q+OMe5RV0e58Okl62F4uBXJaVWYp8mnwPpKW
-tPebWtJPWh9PJts0TMok3Noq/AZ8UQxmyiOasj8izrMxk3FEVidRAtXpHbFw+Rwa
-YkTAk/4y4pZhz9pKYGuEXGLj5spn4O7+SiONjxuMB+SZMHLH4foQFiCtmul6upY9
-2UYXjt4NUMCphxNykQ8UeAWDWoQ9txj7vRHFl5YPp0MIbRCNcHFuJEDjZsfQIbFH
-PQQBEahCUOHsorC5pbyEuDrKH60SPw==
-=WkEg
------END PGP SIGNATURE-----
-
---gj572EiMnwbLXET9--
+SGTM, will do in v2, thanks!
