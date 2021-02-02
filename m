@@ -2,132 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C4630C671
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:51:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C93630C674
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:51:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236572AbhBBQsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 11:48:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56982 "EHLO
+        id S236869AbhBBQtO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:49:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236758AbhBBQq5 (ORCPT
+        with ESMTP id S236838AbhBBQrQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 11:46:57 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD7EC0613ED;
-        Tue,  2 Feb 2021 08:46:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9Xq3+Qjdwj+GhQbI6GS2G9oLuGd9Efu1ya5uWYO1ET0=; b=ItiwRUM9onvOiBevrnXhCIUw6Y
-        ti6CvS2rl/jIKRPPZagfLgQQLdBNtQ48A/dFgW33OIuoIqmnAXHDzsdtuQiTO70W1gxGkHkvzHBI7
-        9pFNQFPYYLvyl6z+BlYJGqTFOMhC78GxSwJ52sfYacU9XFfMjC4MhQdDnL1bOrbzFw3cw192viPjp
-        Mxj1BcE9AuHkWc+bCkOUctAu/V8hIGptXkppsM3WdjTt+7ha++svsXNYwARt2vDuSYuXnzeKs5Vz0
-        AH3m33rNIuZD4Qr/1wZnczQgvJ3PYacyRJjeyjhiCGxdlR9MOwjVstu35vnHsKOTPsV0lUSzD+v3E
-        rDL0OqkA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l6yoG-00FTPf-Fp; Tue, 02 Feb 2021 16:45:51 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 404AF3011FE;
-        Tue,  2 Feb 2021 17:45:47 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2AA4C2B7AB29D; Tue,  2 Feb 2021 17:45:47 +0100 (CET)
-Date:   Tue, 2 Feb 2021 17:45:47 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Nikolay Borisov <nborisov@suse.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: kprobes broken since 0d00449c7a28 ("x86: Replace ist_enter()
- with nmi_enter()")
-Message-ID: <YBmBu0c24RjNYFet@hirez.programming.kicks-ass.net>
-References: <20210129105952.74dc8464@gandalf.local.home>
- <20210129162438.GC8912@worktop.programming.kicks-ass.net>
- <CAADnVQLMqHpSsZ1OdZRFmKqNWKiRq3dxRxw+y=kvMdmkN7htUw@mail.gmail.com>
- <20210129175943.GH8912@worktop.programming.kicks-ass.net>
- <20210129140103.3ce971b7@gandalf.local.home>
- <20210129162454.293523c6@gandalf.local.home>
- <YBUYsFlxjsQxuvfB@hirez.programming.kicks-ass.net>
- <20210130074410.6384c2e2@oasis.local.home>
- <YBktVT+z7sV/vEPU@hirez.programming.kicks-ass.net>
- <20210202095249.5abd6780@gandalf.local.home>
+        Tue, 2 Feb 2021 11:47:16 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F8DDC061794
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 08:46:36 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id f63so14689999pfa.13
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 08:46:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HlX9WjLA2fX7KzMv4kzPA/gTRvAYQzupJhgpnjS3bao=;
+        b=QwGoSvhfHpronz4VD6aLhYwnDEVaZwoLVN+6NxpIVeL6XZoU1IY40jt8AZLFitS1j8
+         E+ZHoWdYZ0oImcdxxzVFIdKh5pIqsFBy0WYMKmJJujmhIz2+tbweAUkSh0WucUMk1Yxf
+         dWFJJbws2RmLQbx5M/WSkd9jdfhl/xGAqq8xzy1nmUlCDlxYTfgyeuLJS9UneNMPbSqI
+         b+ZkGZsA0c8AUB5tycE82+8oE95wxR/3v7llsfn6o4DqdedIJEl21UOV7Yqf9qK9u67V
+         dATYtl4jdvbrTrBcSkmQFmwCUfZ8lYs5hlqzHVnw20FE477h9REBmgIUoI4oqDY5jPAj
+         1ZwA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HlX9WjLA2fX7KzMv4kzPA/gTRvAYQzupJhgpnjS3bao=;
+        b=XjRLaS5zN6yhr7NpTrlIPs6IcuCOdjBhxYTAOWEEZ7i7Sn2iBHHnhaouYqeJ1Z/I8H
+         ZpZ5maPmYd6ibOQKsTmwsK97Ju84l4yOvgzBfsIENlq2DxDgARP3/iwlJm0UBrX0FpQk
+         FJ0QIJpdnZYaEI25N0HLAgCT5Vcalq/L7Q5MomDm+oEt/U14zDe6Nv/4KGMkf+w7B2DC
+         segFteEnNdf40+Ys34pMXKndtfDmHlPF0UY9EU36dArTHvFwzGGoIPwVJ+jEHdjNZl28
+         xV0n1u5Nh+0nLYF+oHSW+T29t0GjFr1uc/hgVJHSvGtbj6iIHdF9ngvCDsnmNo6JZh6r
+         tN/Q==
+X-Gm-Message-State: AOAM530BFnlTKXgYLRMSWPj1AaSV2gRnRUY+UVAQ9wFSkLIcjrcdaDY6
+        ST7/rtVysat2SjtZDkHxh5TdHg==
+X-Google-Smtp-Source: ABdhPJwj5JfiHzAo5Q0/hHFe8/EvnRDnc1U9Tq7uvxv5OvYDfLHPnVwj7GITHb4aPUhXAZ8WTFnEBQ==
+X-Received: by 2002:a63:f218:: with SMTP id v24mr22842506pgh.244.1612284395284;
+        Tue, 02 Feb 2021 08:46:35 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:f693:9fff:fef4:fc72])
+        by smtp.gmail.com with ESMTPSA id k31sm23820221pgi.5.2021.02.02.08.46.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 08:46:33 -0800 (PST)
+Date:   Tue, 2 Feb 2021 08:46:29 -0800
+From:   Benson Leung <bleung@google.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Benson Leung <bleung@chromium.org>,
+        heikki.krogerus@linux.intel.com, enric.balletbo@collabora.com,
+        pmalani@chromium.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kyletso@google.com
+Subject: Re: [PATCH] platform/chrome: cros_ec_typec: Fix call to
+ typec_partner_set_pd_revision
+Message-ID: <YBmB5QBciYoNRudT@google.com>
+References: <20210202163248.3981555-1-bleung@chromium.org>
+ <YBl/0C4yc3ST9zLy@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="EcoCSIARD0xJJIhb"
 Content-Disposition: inline
-In-Reply-To: <20210202095249.5abd6780@gandalf.local.home>
+In-Reply-To: <YBl/0C4yc3ST9zLy@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 09:52:49AM -0500, Steven Rostedt wrote:
 
-> But from a handler, you could do:
-> 
-> 	if (in_nmi())
-> 		return;
-> 	local_irq_save(flags);
-> 	/* Now you are safe from being re-entrant. */
+--EcoCSIARD0xJJIhb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-But that's an utter crap thing to do. That's like saying I don't care
-about my events, at which point you might as well not bother at all.
+On Tue, Feb 02, 2021 at 05:37:36PM +0100, Greg KH wrote:
+> On Tue, Feb 02, 2021 at 08:32:48AM -0800, Benson Leung wrote:
+> > typec_partner_set_pd_revision returns void now.
+> >=20
+> > Fixes: cefc011f8daf platform/chrome: cros_ec_typec: Set Partner PD revi=
+sion from status
+>=20
+> Can you please use the documented format for the Fixes: tag (and for the
+> use of any git id in the kernel changelog)?
 
-And you can still do that, you just get less coverage today than you
-used to. You used to throw things under the bus, now you throw more
-under the bus. If you didn't care, I can't seem to find myself caring
-either.
 
-> Where as there's no equivalent in a NMI handler. That's what makes
-> kprobe/ftrace handlers different than NMI handlers.
+D'oh. Thanks. I set up my pretty=3Dfuller now.
 
-I don't see how.
+Benson
+>=20
+> If anyone were to commit this change, you would get a nasty-gram email
+> from linux-next :)
+>=20
+> thanks,
+>=20
+> greg k-h
 
-> > Also, given how everything can nest, it had better all be lockless
-> > anyway. You can get your regular function trace interrupted, which can
-> > hit a #DB, which can function trace, which can #BP which can function
-> > trace again which can get #NMI etc.. Many wonderfun nestings possible.
-> 
-> I would call #DB an #BP handlers very special.
+--=20
+Benson Leung
+Staff Software Engineer
+Chrome OS Kernel
+Google Inc.
+bleung@google.com
+Chromium OS Project
+bleung@chromium.org
 
-They are, just like NMI is special, which is why they're classed
-together.
+--EcoCSIARD0xJJIhb
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> Question: Do #DB and #BP set "in_interrupt()"? Because the function tracer
-> has infrastructure to prevent recursion in the same context.
+-----BEGIN PGP SIGNATURE-----
 
-Sure we _could_ do that, but then we get into the 'fun' problem of
-getting a breakpoint/int3 at random places and calling random code and
-having deadlocks because they take the same lock.
+iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCYBmB5AAKCRBzbaomhzOw
+wnNvAQCmAmkTTaVjN89qczWo4cSjKH3z4NYggo+Gq+nvCdvcWQD9Hp/fFtjtVZtI
+Elx6J5/4HMgux8AhdhdjF1eZYD68kgM=
+=wmoi
+-----END PGP SIGNATURE-----
 
-There was very little that stopped that from happening.
-
-> That is, a
-> ftrace handler calls something that gets traced, the recursion protection
-> will detect that and prevent the handler from being called again. But the
-> recursion protection is interrupt context aware and lets the handler get
-> called again if the recursion happens from a different context:
-
-> If #DB and #BP do not change the in_interrupt() context, then the above
-> still will protect the ftrace handlers from recursion due to them.
-
-But it doesn't help with:
-
-	spin_lock_irq(&foo); // task context
-	#DB
-	  spin_lock_irq(&foo); // interrupt context per your above
-
-All you need to do is put a breakpoint on a piece of code that holds a
-spinlock and a handler that takes the same spinlock.
-
-There was very little from stopping that.
-
-> That would require refactoring all the code that's been around since 2008.
-
-Because I couldn't tell why/if any of that was correct at all. #DB/#BP
-don't play by the normal rules. They're _far_ more NMI-like than they're
-IRQ-like due to ignoring IF.
+--EcoCSIARD0xJJIhb--
