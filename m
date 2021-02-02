@@ -2,231 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0099030BF33
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 14:20:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9712130BF3B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 14:20:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232320AbhBBNSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 08:18:32 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:14216 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232040AbhBBNRx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 08:17:53 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B601950d00000>; Tue, 02 Feb 2021 05:17:04 -0800
-Received: from [10.26.73.224] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 2 Feb
- 2021 13:17:00 +0000
-Subject: Re: [PATCH v1 1/2] ASoC: dt-bindings: tegra: Add binding for RT5631
-To:     Ion Agorria <AG0RRIA@yahoo.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Stephen Warren <swarren@nvidia.com>,
-        "Liam Girdwood" <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Rob Herring <robh+dt@kernel.org>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Ion Agorria <ion@agorria.com>,
-        Dmitry Osipenko <digetx@gmail.com>
-CC:     <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210131184101.651486-1-AG0RRIA@yahoo.com>
- <20210131184101.651486-2-AG0RRIA@yahoo.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <ef45da2b-22b0-80f5-c3e8-f25f9209e1e8@nvidia.com>
-Date:   Tue, 2 Feb 2021 13:16:57 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232349AbhBBNTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 08:19:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56376 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232228AbhBBNTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 08:19:08 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 43D6264ED7;
+        Tue,  2 Feb 2021 13:18:27 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1l6vZZ-00BUwh-61; Tue, 02 Feb 2021 13:18:25 +0000
 MIME-Version: 1.0
-In-Reply-To: <20210131184101.651486-2-AG0RRIA@yahoo.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1612271824; bh=kHwwCFZOBcZt8HEeiinoBimAE/Mk7BxGie3JGOVk6Vg=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=SXcxHqIz/otPP7pSDUkaNNJyzDSKSpq05Z7/lRwcuR529gT9L8F/dhOAPNpyDgn77
-         h4fgNq8ecgTor2hP0/5ASb/OS9lmgWsaBSOAFcrx31D3/4JTaJykC4jjF/+IOraLpB
-         Oog4HjOm1c+p3kf6HSAh1VseNOjtxgERT40zDk+Mp4//N5rWMLbGyPy4VtGvrjLTLL
-         ToDqtmc4vShE+B61DxAqMtfBOP13mmAWAQhsupQcRl0GzfcABkOU5skdkTrKaY4nth
-         x+5nXkRA/fBz/awz33SIppEzLLsO8toMWYOEeDf8Arbpqkjq9hh2Fegl3kAYscbamR
-         fcE0z5/kiP2gA==
+Date:   Tue, 02 Feb 2021 13:18:24 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jianyong Wu <jianyong.wu@arm.com>
+Cc:     netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org,
+        tglx@linutronix.de, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, richardcochran@gmail.com,
+        Mark.Rutland@arm.com, will@kernel.org, suzuki.poulose@arm.com,
+        Andre.Przywara@arm.com, steven.price@arm.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org,
+        Steve.Capper@arm.com, justin.he@arm.com, nd@arm.com
+Subject: Re: [PATCH v16 1/9] arm64: Probe for the presence of KVM hypervisor
+In-Reply-To: <20201209060932.212364-2-jianyong.wu@arm.com>
+References: <20201209060932.212364-1-jianyong.wu@arm.com>
+ <20201209060932.212364-2-jianyong.wu@arm.com>
+User-Agent: Roundcube Webmail/1.4.10
+Message-ID: <0099a326c906f52fa5422d7c1b4fe767@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: jianyong.wu@arm.com, netdev@vger.kernel.org, yangbo.lu@nxp.com, john.stultz@linaro.org, tglx@linutronix.de, pbonzini@redhat.com, sean.j.christopherson@intel.com, richardcochran@gmail.com, Mark.Rutland@arm.com, will@kernel.org, suzuki.poulose@arm.com, Andre.Przywara@arm.com, steven.price@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, kvm@vger.kernel.org, Steve.Capper@arm.com, justin.he@arm.com, nd@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 31/01/2021 18:41, Ion Agorria wrote:
-> From: Svyatoslav Ryhel <clamor95@gmail.com>
+On 2020-12-09 06:09, Jianyong Wu wrote:
+> From: Will Deacon <will@kernel.org>
 > 
-> Add device-tree binding that describes hardware integration of RT5631
-> audio codec chip with NVIDIA Tegra SoCs.
+> Although the SMCCC specification provides some limited functionality 
+> for
+> describing the presence of hypervisor and firmware services, this is
+> generally applicable only to functions designated as "Arm Architecture
+> Service Functions" and no portable discovery mechanism is provided for
+> standard hypervisor services, despite having a designated range of
+> function identifiers reserved by the specification.
 > 
-> Signed-off-by: Svyatoslav Ryhel <clamor95@gmail.com>
-> Signed-off-by: Ion Agorria <ion@agorria.com>
+> In an attempt to avoid the need for additional firmware changes every
+> time a new function is added, introduce a UID to identify the service
+> provider as being compatible with KVM. Once this has been established,
+> additional services can be discovered via a feature bitmap.
+> 
+> Change from Jianyong Wu:
+> mv kvm_arm_hyp_service_available to common place to let both arm/arm64 
+> touch it.
+> add kvm_init_hyp_services also under arm arch to let arm kvm guest use
+> this service.
+> 
+> Cc: Marc Zyngier <maz@kernel.org>
+> Signed-off-by: Will Deacon <will@kernel.org>
+> Signed-off-by: Jianyong Wu <jianyong.wu@arm.com>
 > ---
->  .../sound/nvidia,tegra-audio-rt5631.yaml      | 134 ++++++++++++++++++
->  1 file changed, 134 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5631.yaml
+>  arch/arm/kernel/setup.c        |  5 ++++
+>  arch/arm64/kernel/setup.c      |  1 +
+>  drivers/firmware/smccc/smccc.c | 37 +++++++++++++++++++++++++++++
+>  include/linux/arm-smccc.h      | 43 ++++++++++++++++++++++++++++++++++
+>  4 files changed, 86 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5631.yaml b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5631.yaml
-> new file mode 100644
-> index 000000000000..6ee62c599518
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/nvidia,tegra-audio-rt5631.yaml
-> @@ -0,0 +1,134 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +
-> +$id: http://devicetree.org/schemas/sound/nvidia,tegra-audio-rt5631.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NVIDIA Tegra RT5631 ASoC
-> +
-> +description: |
-> +  This binding describes integration of the Realtek ALC5631/RT5631 sound
-> +  codec with the sound system of NVIDIA Tegra SoCs.
-> +
-> +maintainers:
-> +  - Jon Hunter <jonathanh@nvidia.com>
-> +  - Stephen Warren <swarren@nvidia.com>
-> +  - Thierry Reding <thierry.reding@gmail.com>
-
-
-Thierry and I should be sufficient and so no need to include Stephen in
-the list.
-
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - nvidia,tegra-audio-rt5631
-> +
-> +  clocks:
-> +    minItems: 3
-> +    items:
-> +      - description: PLL A clock
-> +      - description: PLL A OUT0 clock
-> +      - description: The Tegra cdev1/extern1 clock, which feeds the card's mclk
-> +
-> +  clock-names:
-> +    minItems: 3
-> +    items:
-> +      - const: pll_a
-> +      - const: pll_a_out0
-> +      - const: mclk
-> +
-> +  assigned-clocks:
-> +    minItems: 1
-> +    maxItems: 3
-> +
-> +  assigned-clock-parents:
-> +    minItems: 1
-> +    maxItems: 3
-> +
-> +  assigned-clock-rates:
-> +    minItems: 1
-> +    maxItems: 3
-> +
-> +  nvidia,model:
-> +    $ref: /schemas/types.yaml#/definitions/string
-> +    description: User-visible name of this sound complex.
-> +
-> +  nvidia,audio-routing:
-> +    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-> +    description: |
-> +      A list of the connections between audio components.
-> +      Each entry is a pair of strings, the first being the connection's sink,
-> +      the second being the connection's source. Valid names for sources and
-> +      sinks are the RT5631's pins (as documented in its binding), and the jacks
-> +      on the board:
-> +
-> +      * Int Spk
-> +      * Headphone Jack
-> +      * Mic Jack
-> +      * Int Mic
-> +
-> +  nvidia,i2s-controller:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: Phandle of the Tegra I2S controller.
-> +
-> +  nvidia,audio-codec:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description: Phandle of the RT5631 audio codec.
-> +
-> +  nvidia,hp-mute-gpios:
-> +    description: GPIO that mutes the headphones (button event).
-> +    maxItems: 1
-> +
-> +  nvidia,hp-det-gpios:
-> +    description: GPIO that detects headphones plug-in.
-> +    maxItems: 1
-> +
-> +additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - clocks
-> +  - clock-names
-> +  - assigned-clocks
-> +  - assigned-clock-parents
-> +  - nvidia,model
-> +  - nvidia,audio-routing
-> +  - nvidia,i2s-controller
-> +  - nvidia,audio-codec
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/tegra30-car.h>
-> +    #include <dt-bindings/soc/tegra-pmc.h>
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    sound {
-> +        compatible = "nvidia,tegra-audio-rt5631";
-> +        nvidia,model = "NVIDIA Tegra RT5631";
-> +
-> +        nvidia,audio-routing =
-> +            "Headphone Jack", "HPOL",
-> +            "Headphone Jack", "HPOR",
-> +            "Int Spk", "SPOL",
-> +            "Int Spk", "SPOR",
-> +            "MIC1", "MIC Bias1",
-> +            "MIC Bias1", "Mic Jack",
-> +            "DMIC", "Int Mic";
-> +
-> +        nvidia,i2s-controller = <&tegra_i2s1>;
-> +        nvidia,audio-codec = <&rt5631>;
-> +
-> +        nvidia,hp-det-gpios = <&gpio 178 GPIO_ACTIVE_LOW>;
-> +        nvidia,hp-mute-gpios = <&gpio 186 GPIO_ACTIVE_LOW>;
-> +
-> +        clocks = <&tegra_car TEGRA30_CLK_PLL_A>,
-> +                 <&tegra_car TEGRA30_CLK_PLL_A_OUT0>,
-> +                 <&tegra_pmc TEGRA_PMC_CLK_OUT_1>;
-> +        clock-names = "pll_a", "pll_a_out0", "mclk";
-> +
-> +        assigned-clocks = <&tegra_car TEGRA30_CLK_EXTERN1>,
-> +                          <&tegra_pmc TEGRA_PMC_CLK_OUT_1>;
-> +
-> +        assigned-clock-parents = <&tegra_car TEGRA30_CLK_PLL_A_OUT0>,
-> +                                 <&tegra_car TEGRA30_CLK_EXTERN1>;
-> +    };
-> +
-> +...
+> diff --git a/arch/arm/kernel/setup.c b/arch/arm/kernel/setup.c
+> index 1a5edf562e85..adcefa9c8fab 100644
+> --- a/arch/arm/kernel/setup.c
+> +++ b/arch/arm/kernel/setup.c
+> @@ -1156,6 +1156,11 @@ void __init setup_arch(char **cmdline_p)
 > 
+>  	arm_dt_init_cpu_maps();
+>  	psci_dt_init();
+> +
+> +#ifdef CONFIG_HAVE_ARM_SMCCC_DISCOVERY
+> +	kvm_init_hyp_services();
+> +#endif
+> +
+>  #ifdef CONFIG_SMP
+>  	if (is_smp()) {
+>  		if (!mdesc->smp_init || !mdesc->smp_init()) {
+> diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+> index a950d5bc1ba5..97037b15c6ea 100644
+> --- a/arch/arm64/kernel/setup.c
+> +++ b/arch/arm64/kernel/setup.c
+> @@ -353,6 +353,7 @@ void __init __no_sanitize_address setup_arch(char
+> **cmdline_p)
+>  	else
+>  		psci_acpi_init();
+> 
+> +	kvm_init_hyp_services();
 
-Otherwise looks good to me ...
+Given that there is a dependency between the KVM discovery and PSCI,
+it may make more sense to directly call this from the PSCI init,
+and leave the arch-specific code alone.
 
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+>  	init_bootcpu_ops();
+>  	smp_init_cpus();
+>  	smp_build_mpidr_hash();
+> diff --git a/drivers/firmware/smccc/smccc.c 
+> b/drivers/firmware/smccc/smccc.c
+> index 00c88b809c0c..e153c71ece99 100644
+> --- a/drivers/firmware/smccc/smccc.c
+> +++ b/drivers/firmware/smccc/smccc.c
+> @@ -7,10 +7,47 @@
+> 
+>  #include <linux/init.h>
+>  #include <linux/arm-smccc.h>
+> +#include <linux/kernel.h>
+> +#include <linux/string.h>
+> 
+>  static u32 smccc_version = ARM_SMCCC_VERSION_1_0;
+>  static enum arm_smccc_conduit smccc_conduit = SMCCC_CONDUIT_NONE;
+> 
+> +DECLARE_BITMAP(__kvm_arm_hyp_services, ARM_SMCCC_KVM_NUM_FUNCS) = { };
+> +EXPORT_SYMBOL_GPL(__kvm_arm_hyp_services);
+> +
+> +void __init kvm_init_hyp_services(void)
+> +{
+> +	int i;
+> +	struct arm_smccc_res res;
+> +
+> +	if (arm_smccc_get_version() == ARM_SMCCC_VERSION_1_0)
+> +		return;
+> +
+> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_CALL_UID_FUNC_ID, &res);
 
-Cheers
-Jon
+I think we may end-up calling into EL3 when running this on bare
+metal if the systems implement PSCI 1,1. Robust firmware should
+handle it, but there is plenty of broken ones around...
 
+Checking on the SMCCC conduit would be safer.
+
+> +	if (res.a0 != ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_0 ||
+> +	    res.a1 != ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_1 ||
+> +	    res.a2 != ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_2 ||
+> +	    res.a3 != ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_3)
+> +		return;
+> +
+> +	memset(&res, 0, sizeof(res));
+> +	arm_smccc_1_1_invoke(ARM_SMCCC_VENDOR_HYP_KVM_FEATURES_FUNC_ID, 
+> &res);
+> +	for (i = 0; i < 32; ++i) {
+> +		if (res.a0 & (i))
+> +			set_bit(i + (32 * 0), __kvm_arm_hyp_services);
+> +		if (res.a1 & (i))
+> +			set_bit(i + (32 * 1), __kvm_arm_hyp_services);
+> +		if (res.a2 & (i))
+> +			set_bit(i + (32 * 2), __kvm_arm_hyp_services);
+> +		if (res.a3 & (i))
+> +			set_bit(i + (32 * 3), __kvm_arm_hyp_services);
+> +	}
+> +
+> +	pr_info("KVM hypervisor services detected (0x%08lx 0x%08lx 0x%08lx
+> 0x%08lx)\n",
+> +		 res.a3, res.a2, res.a1, res.a0);
+> +}
+> +
+
+Overall, this code should be in its own file, much like we already
+do for the SOC_ID stuff.
+
+>  void __init arm_smccc_version_init(u32 version, enum arm_smccc_conduit 
+> conduit)
+>  {
+>  	smccc_version = version;
+> diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
+> index f860645f6512..d75408141137 100644
+> --- a/include/linux/arm-smccc.h
+> +++ b/include/linux/arm-smccc.h
+> @@ -55,6 +55,8 @@
+>  #define ARM_SMCCC_OWNER_TRUSTED_OS	50
+>  #define ARM_SMCCC_OWNER_TRUSTED_OS_END	63
+> 
+> +#define ARM_SMCCC_FUNC_QUERY_CALL_UID  0xff01
+> +
+>  #define ARM_SMCCC_QUIRK_NONE		0
+>  #define ARM_SMCCC_QUIRK_QCOM_A6		1 /* Save/restore register a6 */
+> 
+> @@ -87,6 +89,29 @@
+>  			   ARM_SMCCC_SMC_32,				\
+>  			   0, 0x7fff)
+> 
+> +#define ARM_SMCCC_VENDOR_HYP_CALL_UID_FUNC_ID				\
+> +	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
+> +			   ARM_SMCCC_SMC_32,				\
+> +			   ARM_SMCCC_OWNER_VENDOR_HYP,			\
+> +			   ARM_SMCCC_FUNC_QUERY_CALL_UID)
+> +
+> +/* KVM UID value: 28b46fb6-2ec5-11e9-a9ca-4b564d003a74 */
+> +#define ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_0	0xb66fb428U
+> +#define ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_1	0xe911c52eU
+> +#define ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_2	0x564bcaa9U
+> +#define ARM_SMCCC_VENDOR_HYP_UID_KVM_REG_3	0x743a004dU
+> +
+> +/* KVM "vendor specific" services */
+> +#define ARM_SMCCC_KVM_FUNC_FEATURES		0
+> +#define ARM_SMCCC_KVM_FUNC_FEATURES_2		127
+> +#define ARM_SMCCC_KVM_NUM_FUNCS			128
+> +
+> +#define ARM_SMCCC_VENDOR_HYP_KVM_FEATURES_FUNC_ID			\
+> +	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,				\
+> +			   ARM_SMCCC_SMC_32,				\
+> +			   ARM_SMCCC_OWNER_VENDOR_HYP,			\
+> +			   ARM_SMCCC_KVM_FUNC_FEATURES)
+> +
+>  #define SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED	1
+> 
+>  /* Paravirtualised time calls (defined by ARM DEN0057A) */
+> @@ -391,5 +416,23 @@ asmlinkage void __arm_smccc_hvc(unsigned long a0,
+> unsigned long a1,
+>  		method;							\
+>  	})
+> 
+> +void __init kvm_init_hyp_services(void);
+> +
+> +/*
+> + * This helper will be called in guest. We put it here then both arm 
+> and arm64
+> + * guest can touch it.
+> + */
+> +#include <linux/kernel.h>
+> +#include <linux/err.h>
+
+I don't see the need for linux/err.h.
+
+> +static inline bool kvm_arm_hyp_service_available(u32 func_id)
+> +{
+> +	extern DECLARE_BITMAP(__kvm_arm_hyp_services, 
+> ARM_SMCCC_KVM_NUM_FUNCS);
+> +
+> +	if (func_id >= ARM_SMCCC_KVM_NUM_FUNCS)
+> +		return -EINVAL;
+> +
+> +	return test_bit(func_id, __kvm_arm_hyp_services);
+> +}
+> +
+>  #endif /*__ASSEMBLY__*/
+>  #endif /*__LINUX_ARM_SMCCC_H*/
+
+If we move this as part of a file holding the whole of the
+KVM discovery, we can make it non-inline and export it
+instead of the bitmap.
+
+Thanks,
+
+         M.
 -- 
-nvpublic
+Jazz is not dead. It just smells funny...
