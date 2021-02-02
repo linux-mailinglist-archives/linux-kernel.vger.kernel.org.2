@@ -2,176 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11BEC30B8D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:44:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9498F30B8D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:44:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231812AbhBBHlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 02:41:37 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:12098 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbhBBHle (ORCPT
+        id S232100AbhBBHnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 02:43:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232281AbhBBHmu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 02:41:34 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DVGsy1s94z162PV;
-        Tue,  2 Feb 2021 15:39:34 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.209) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 2 Feb 2021
- 15:40:46 +0800
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: rename checkpoint=merge mount option
- to checkpoint_merge
-To:     Daeho Jeong <daeho43@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>, <kernel-team@android.com>
-CC:     Daeho Jeong <daehojeong@google.com>
-References: <20210202051829.2127214-1-daeho43@gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <ef27f0cc-87b6-cea1-31a6-f2837d6a673c@huawei.com>
-Date:   Tue, 2 Feb 2021 15:40:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Tue, 2 Feb 2021 02:42:50 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4278BC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 23:41:56 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id m6so13783039pfk.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 23:41:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oQykFoC4igzaAGN1smzA1eOO+ArdBSIk2jifTuAEeJw=;
+        b=tmm5Bw1jGh2jTml0072qcFXEYMfN3AjX6VDSh0KZG4d2CMkzMAfAvs9VJNLN4O88am
+         1gGYne0IOTvMyVOHnsP0HJpX1YdBb3WSC6YZJ6Yard8Yg3yqt3yHt1UXcbQtji/rzEWd
+         oUedGHboNdNxCvIHIJbINhP6tKVNzYI/jTdxkev2bPkmOompHWoj/SxMeP9itIN3iJH+
+         4p9Aa6QCKaEwHSM50gVdMJrFV1JD2Lu5X+aBpWsfrxKyKQACjOKusuQUbhpWhdc0dLQp
+         3v961aMXeV0W0Bv5K+1K4wIS26adYr3Eg/L+ew9T0jZS1HQTf37XyAmM6tb4RgXK4t2S
+         qtlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oQykFoC4igzaAGN1smzA1eOO+ArdBSIk2jifTuAEeJw=;
+        b=A+2spJMxt7NW639XtdaTexo1APAhrNHWWBCK0yPuZxdB8i9MujHkKbYnW3ylmTlA0O
+         praUzZ2KxxSiMIMbaUJ3O7P8I/eQD37nT5AtoZ/nu+idB91fo/OYYoDaUt/Am/z/UFlz
+         QcIBpaElgMMEwZUKUxN6o0Dzq+dVpx2+LvAo12sOqyHVXp5YtdmBXUqyk2l363wwVCc2
+         1e4iDXorSSwSG/M1gIuJ4R+EnW0+enY1pvTUjhVsL/CUwArRVTe9kf7/qvi4pOVawKWj
+         Wt5uGvun+5ofFhvEsVGFCYw0bGGWQwA6GxfBpnrQksRvtsBDVM56GBjMx4JKLwrFZmfh
+         dmDg==
+X-Gm-Message-State: AOAM530PYjzl7b3hUhMJsPgqzFf2h7FI7ZzgRs43VLsF0dAnnj/3V+cR
+        QK+UbQ/zlLLfaJIVYcXl0ZoSA7aquI1C6A==
+X-Google-Smtp-Source: ABdhPJzDgJOLWf+tVIAedqm6oCCLfpNPjJ4lQXYga18A04NkAioq9UoO9JJUUMlo4PR6/2fsiYMHqQ==
+X-Received: by 2002:a63:700f:: with SMTP id l15mr20368287pgc.214.1612251715334;
+        Mon, 01 Feb 2021 23:41:55 -0800 (PST)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+        by smtp.gmail.com with ESMTPSA id k9sm9410666pgh.94.2021.02.01.23.41.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 23:41:54 -0800 (PST)
+From:   John Stultz <john.stultz@linaro.org>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Liam Mark <lmark@codeaurora.org>,
+        Chris Goldsworthy <cgoldswo@codeaurora.org>,
+        Laura Abbott <labbott@kernel.org>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        Hridya Valsaraju <hridya@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Daniel Mentz <danielmentz@google.com>,
+        =?UTF-8?q?=C3=98rjan=20Eide?= <orjan.eide@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Simon Ser <contact@emersion.fr>,
+        James Jones <jajones@nvidia.com>, linux-media@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v4 1/3] dma-buf: heaps: Add deferred-free-helper library code
+Date:   Tue,  2 Feb 2021 07:41:49 +0000
+Message-Id: <20210202074151.3146795-1-john.stultz@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210202051829.2127214-1-daeho43@gmail.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/2 13:18, Daeho Jeong wrote:
-> From: Daeho Jeong <daehojeong@google.com>
-> 
-> As checkpoint=merge comes in, mount option setting related to checkpoint
-> had been mixed up and it became hard to understand. So, I separated
-> this option from "checkpoint=" and made another mount option
-> "checkpoint_merge" for this.
-> 
-> Signed-off-by: Daeho Jeong <daehojeong@google.com>
-> ---
-> v2: renamed "checkpoint=merge" to "checkpoint_merge"
-> ---
->   Documentation/filesystems/f2fs.rst |  6 +++---
->   fs/f2fs/super.c                    | 26 ++++++++++++++------------
->   2 files changed, 17 insertions(+), 15 deletions(-)
-> 
-> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
-> index d0ead45dc706..475994ed8b15 100644
-> --- a/Documentation/filesystems/f2fs.rst
-> +++ b/Documentation/filesystems/f2fs.rst
-> @@ -247,9 +247,9 @@ checkpoint=%s[:%u[%]]	 Set to "disable" to turn off checkpointing. Set to "enabl
->   			 hide up to all remaining free space. The actual space that
->   			 would be unusable can be viewed at /sys/fs/f2fs/<disk>/unusable
->   			 This space is reclaimed once checkpoint=enable.
-> -			 Here is another option "merge", which creates a kernel daemon
-> -			 and makes it to merge concurrent checkpoint requests as much
-> -			 as possible to eliminate redundant checkpoint issues. Plus,
-> +checkpoint_merge	 When checkpoint is enabled, this can be used to create a kernel
-> +			 daemon and make it to merge concurrent checkpoint requests as
-> +			 much as possible to eliminate redundant checkpoint issues. Plus,
->   			 we can eliminate the sluggish issue caused by slow checkpoint
->   			 operation when the checkpoint is done in a process context in
->   			 a cgroup having low i/o budget and cpu shares. To make this
-> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-> index 56696f6cfa86..d8603e6c4916 100644
-> --- a/fs/f2fs/super.c
-> +++ b/fs/f2fs/super.c
-> @@ -145,6 +145,7 @@ enum {
->   	Opt_checkpoint_disable_cap_perc,
->   	Opt_checkpoint_enable,
->   	Opt_checkpoint_merge,
-> +	Opt_nocheckpoint_merge,
->   	Opt_compress_algorithm,
->   	Opt_compress_log_size,
->   	Opt_compress_extension,
-> @@ -215,7 +216,8 @@ static match_table_t f2fs_tokens = {
->   	{Opt_checkpoint_disable_cap, "checkpoint=disable:%u"},
->   	{Opt_checkpoint_disable_cap_perc, "checkpoint=disable:%u%%"},
->   	{Opt_checkpoint_enable, "checkpoint=enable"},
-> -	{Opt_checkpoint_merge, "checkpoint=merge"},
-> +	{Opt_checkpoint_merge, "checkpoint_merge"},
-> +	{Opt_nocheckpoint_merge, "nocheckpoint_merge"},
->   	{Opt_compress_algorithm, "compress_algorithm=%s"},
->   	{Opt_compress_log_size, "compress_log_size=%u"},
->   	{Opt_compress_extension, "compress_extension=%s"},
-> @@ -946,6 +948,9 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->   		case Opt_checkpoint_merge:
->   			set_opt(sbi, MERGE_CHECKPOINT);
->   			break;
-> +		case Opt_nocheckpoint_merge:
-> +			clear_opt(sbi, MERGE_CHECKPOINT);
-> +			break;
->   #ifdef CONFIG_F2FS_FS_COMPRESSION
->   		case Opt_compress_algorithm:
->   			if (!f2fs_sb_has_compression(sbi)) {
-> @@ -1142,12 +1147,6 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->   		return -EINVAL;
->   	}
->   
-> -	if (test_opt(sbi, DISABLE_CHECKPOINT) &&
-> -			test_opt(sbi, MERGE_CHECKPOINT)) {
-> -		f2fs_err(sbi, "checkpoint=merge cannot be used with checkpoint=disable\n");
-> -		return -EINVAL;
-> -	}
-> -
->   	/* Not pass down write hints if the number of active logs is lesser
->   	 * than NR_CURSEG_PERSIST_TYPE.
->   	 */
-> @@ -1782,7 +1781,7 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
->   		seq_printf(seq, ",checkpoint=disable:%u",
->   				F2FS_OPTION(sbi).unusable_cap);
->   	if (test_opt(sbi, MERGE_CHECKPOINT))
-> -		seq_puts(seq, ",checkpoint=merge");
-> +		seq_puts(seq, ",checkpoint_merge");
+This patch provides infrastructure for deferring buffer frees.
 
-Other noxxx options will be shown in show_options(), how about following them?
+This is a feature ION provided which when used with some form
+of a page pool, provides a nice performance boost in an
+allocation microbenchmark. The reason it helps is it allows the
+page-zeroing to be done out of the normal allocation/free path,
+and pushed off to a kthread.
 
->   	if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_POSIX)
->   		seq_printf(seq, ",fsync_mode=%s", "posix");
->   	else if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_STRICT)
-> @@ -1827,6 +1826,7 @@ static void default_options(struct f2fs_sb_info *sbi)
->   	sbi->sb->s_flags |= SB_LAZYTIME;
->   	set_opt(sbi, FLUSH_MERGE);
->   	set_opt(sbi, DISCARD);
-> +	clear_opt(sbi, MERGE_CHECKPOINT);
+As not all heaps will find this useful, its implemented as
+a optional helper library that heaps can utilize.
 
-Why should we clear checkpoint_merge option in default_options()?
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Liam Mark <lmark@codeaurora.org>
+Cc: Chris Goldsworthy <cgoldswo@codeaurora.org>
+Cc: Laura Abbott <labbott@kernel.org>
+Cc: Brian Starkey <Brian.Starkey@arm.com>
+Cc: Hridya Valsaraju <hridya@google.com>
+Cc: Suren Baghdasaryan <surenb@google.com>
+Cc: Sandeep Patil <sspatil@google.com>
+Cc: Daniel Mentz <danielmentz@google.com>
+Cc: Ørjan Eide <orjan.eide@arm.com>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Ezequiel Garcia <ezequiel@collabora.com>
+Cc: Simon Ser <contact@emersion.fr>
+Cc: James Jones <jajones@nvidia.com>
+Cc: linux-media@vger.kernel.org
+Cc: dri-devel@lists.freedesktop.org
+Signed-off-by: John Stultz <john.stultz@linaro.org>
+---
+v2:
+* Fix sleep in atomic issue from using a mutex, by switching
+  to a spinlock as Reported-by: kernel test robot <oliver.sang@intel.com>
+* Cleanup API to use a reason enum for clarity and add some documentation
+  comments as suggested by Suren Baghdasaryan.
 
-Thanks,
+v3:
+* Minor tweaks so it can be built as a module
+* A few small fixups suggested by Daniel Mentz
 
->   	if (f2fs_sb_has_blkzoned(sbi))
->   		F2FS_OPTION(sbi).fs_mode = FS_MODE_LFS;
->   	else
-> @@ -2066,9 +2066,8 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->   		}
->   	}
->   
-> -	if (!test_opt(sbi, MERGE_CHECKPOINT)) {
-> -		f2fs_stop_ckpt_thread(sbi);
-> -	} else {
-> +	if (!test_opt(sbi, DISABLE_CHECKPOINT) &&
-> +			test_opt(sbi, MERGE_CHECKPOINT)) {
->   		err = f2fs_start_ckpt_thread(sbi);
->   		if (err) {
->   			f2fs_err(sbi,
-> @@ -2076,6 +2075,8 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->   			    err);
->   			goto restore_gc;
->   		}
-> +	} else {
-> +		f2fs_stop_ckpt_thread(sbi);
->   	}
->   
->   	/*
-> @@ -3831,7 +3832,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
->   
->   	/* setup checkpoint request control and start checkpoint issue thread */
->   	f2fs_init_ckpt_req_control(sbi);
-> -	if (test_opt(sbi, MERGE_CHECKPOINT)) {
-> +	if (!test_opt(sbi, DISABLE_CHECKPOINT) &&
-> +			test_opt(sbi, MERGE_CHECKPOINT)) {
->   		err = f2fs_start_ckpt_thread(sbi);
->   		if (err) {
->   			f2fs_err(sbi,
-> 
+v4:
+* Tweak from Daniel Mentz to make sure the shrinker
+  count/freed values are tracked in pages not bytes
+---
+ drivers/dma-buf/heaps/Kconfig                |   3 +
+ drivers/dma-buf/heaps/Makefile               |   1 +
+ drivers/dma-buf/heaps/deferred-free-helper.c | 138 +++++++++++++++++++
+ drivers/dma-buf/heaps/deferred-free-helper.h |  55 ++++++++
+ 4 files changed, 197 insertions(+)
+ create mode 100644 drivers/dma-buf/heaps/deferred-free-helper.c
+ create mode 100644 drivers/dma-buf/heaps/deferred-free-helper.h
+
+diff --git a/drivers/dma-buf/heaps/Kconfig b/drivers/dma-buf/heaps/Kconfig
+index a5eef06c4226..f7aef8bc7119 100644
+--- a/drivers/dma-buf/heaps/Kconfig
++++ b/drivers/dma-buf/heaps/Kconfig
+@@ -1,3 +1,6 @@
++config DMABUF_HEAPS_DEFERRED_FREE
++	tristate
++
+ config DMABUF_HEAPS_SYSTEM
+ 	bool "DMA-BUF System Heap"
+ 	depends on DMABUF_HEAPS
+diff --git a/drivers/dma-buf/heaps/Makefile b/drivers/dma-buf/heaps/Makefile
+index 974467791032..4e7839875615 100644
+--- a/drivers/dma-buf/heaps/Makefile
++++ b/drivers/dma-buf/heaps/Makefile
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0
++obj-$(CONFIG_DMABUF_HEAPS_DEFERRED_FREE) += deferred-free-helper.o
+ obj-$(CONFIG_DMABUF_HEAPS_SYSTEM)	+= system_heap.o
+ obj-$(CONFIG_DMABUF_HEAPS_CMA)		+= cma_heap.o
+diff --git a/drivers/dma-buf/heaps/deferred-free-helper.c b/drivers/dma-buf/heaps/deferred-free-helper.c
+new file mode 100644
+index 000000000000..0ba02de9dc1c
+--- /dev/null
++++ b/drivers/dma-buf/heaps/deferred-free-helper.c
+@@ -0,0 +1,138 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Deferred dmabuf freeing helper
++ *
++ * Copyright (C) 2020 Linaro, Ltd.
++ *
++ * Based on the ION page pool code
++ * Copyright (C) 2011 Google, Inc.
++ */
++
++#include <linux/freezer.h>
++#include <linux/list.h>
++#include <linux/slab.h>
++#include <linux/swap.h>
++#include <linux/sched/signal.h>
++
++#include "deferred-free-helper.h"
++
++static LIST_HEAD(free_list);
++static size_t list_size_pages;
++wait_queue_head_t freelist_waitqueue;
++struct task_struct *freelist_task;
++static DEFINE_SPINLOCK(free_list_lock);
++
++void deferred_free(struct deferred_freelist_item *item,
++		   void (*free)(struct deferred_freelist_item*,
++				enum df_reason),
++		   size_t size)
++{
++	unsigned long flags;
++
++	INIT_LIST_HEAD(&item->list);
++	item->size = size;
++	item->free = free;
++
++	spin_lock_irqsave(&free_list_lock, flags);
++	list_add(&item->list, &free_list);
++	list_size_pages += size >> PAGE_SHIFT;
++	spin_unlock_irqrestore(&free_list_lock, flags);
++	wake_up(&freelist_waitqueue);
++}
++EXPORT_SYMBOL_GPL(deferred_free);
++
++static size_t free_one_item(enum df_reason reason)
++{
++	unsigned long flags;
++	size_t size = 0;
++	struct deferred_freelist_item *item;
++
++	spin_lock_irqsave(&free_list_lock, flags);
++	if (list_empty(&free_list)) {
++		spin_unlock_irqrestore(&free_list_lock, flags);
++		return 0;
++	}
++	item = list_first_entry(&free_list, struct deferred_freelist_item, list);
++	list_del(&item->list);
++	size = item->size;
++	list_size_pages -= size >> PAGE_SHIFT;
++	spin_unlock_irqrestore(&free_list_lock, flags);
++
++	item->free(item, reason);
++	return size >> PAGE_SHIFT;
++}
++
++static unsigned long get_freelist_size_pages(void)
++{
++	unsigned long size;
++	unsigned long flags;
++
++	spin_lock_irqsave(&free_list_lock, flags);
++	size = list_size_pages;
++	spin_unlock_irqrestore(&free_list_lock, flags);
++	return size;
++}
++
++static unsigned long freelist_shrink_count(struct shrinker *shrinker,
++					   struct shrink_control *sc)
++{
++	return get_freelist_size_pages();
++}
++
++static unsigned long freelist_shrink_scan(struct shrinker *shrinker,
++					  struct shrink_control *sc)
++{
++	unsigned long total_freed = 0;
++
++	if (sc->nr_to_scan == 0)
++		return 0;
++
++	while (total_freed < sc->nr_to_scan) {
++		size_t pages_freed = free_one_item(DF_UNDER_PRESSURE);
++
++		if (!pages_freed)
++			break;
++
++		total_freed += pages_freed;
++	}
++
++	return total_freed;
++}
++
++static struct shrinker freelist_shrinker = {
++	.count_objects = freelist_shrink_count,
++	.scan_objects = freelist_shrink_scan,
++	.seeks = DEFAULT_SEEKS,
++	.batch = 0,
++};
++
++static int deferred_free_thread(void *data)
++{
++	while (true) {
++		wait_event_freezable(freelist_waitqueue,
++				     get_freelist_size_pages() > 0);
++
++		free_one_item(DF_NORMAL);
++	}
++
++	return 0;
++}
++
++static int deferred_freelist_init(void)
++{
++	list_size_pages = 0;
++
++	init_waitqueue_head(&freelist_waitqueue);
++	freelist_task = kthread_run(deferred_free_thread, NULL,
++				    "%s", "dmabuf-deferred-free-worker");
++	if (IS_ERR(freelist_task)) {
++		pr_err("Creating thread for deferred free failed\n");
++		return -1;
++	}
++	sched_set_normal(freelist_task, 19);
++
++	return register_shrinker(&freelist_shrinker);
++}
++module_init(deferred_freelist_init);
++MODULE_LICENSE("GPL v2");
++
+diff --git a/drivers/dma-buf/heaps/deferred-free-helper.h b/drivers/dma-buf/heaps/deferred-free-helper.h
+new file mode 100644
+index 000000000000..18b44ac86ef6
+--- /dev/null
++++ b/drivers/dma-buf/heaps/deferred-free-helper.h
+@@ -0,0 +1,55 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef DEFERRED_FREE_HELPER_H
++#define DEFERRED_FREE_HELPER_H
++
++/**
++ * df_reason - enum for reason why item was freed
++ *
++ * This provides a reason for why the free function was called
++ * on the item. This is useful when deferred_free is used in
++ * combination with a pagepool, so under pressure the page can
++ * be immediately freed.
++ *
++ * DF_NORMAL:         Normal deferred free
++ *
++ * DF_UNDER_PRESSURE: Free was called because the system
++ *                    is under memory pressure. Usually
++ *                    from a shrinker. Avoid allocating
++ *                    memory in the free call, as it may
++ *                    fail.
++ */
++enum df_reason {
++	DF_NORMAL,
++	DF_UNDER_PRESSURE,
++};
++
++/**
++ * deferred_freelist_item - item structure for deferred freelist
++ *
++ * This is to be added to the structure for whatever you want to
++ * defer freeing on.
++ *
++ * @size: size of the item to be freed
++ * @free: function pointer to be called when freeing the item
++ * @list: list entry for the deferred list
++ */
++struct deferred_freelist_item {
++	size_t size;
++	void (*free)(struct deferred_freelist_item *i,
++		     enum df_reason reason);
++	struct list_head list;
++};
++
++/**
++ * deferred_free - call to add item to the deferred free list
++ *
++ * @item: Pointer to deferred_freelist_item field of a structure
++ * @free: Function pointer to the free call
++ * @size: Size of the item to be freed
++ */
++void deferred_free(struct deferred_freelist_item *item,
++		   void (*free)(struct deferred_freelist_item *i,
++				enum df_reason reason),
++		   size_t size);
++#endif
+-- 
+2.25.1
+
