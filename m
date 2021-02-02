@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ECEF30C567
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:22:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D7F30C15C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:21:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236200AbhBBQVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 11:21:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50236 "EHLO mail.kernel.org"
+        id S231807AbhBBOVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:21:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234264AbhBBOPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:15:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C04364FBA;
-        Tue,  2 Feb 2021 13:53:48 +0000 (UTC)
+        id S233829AbhBBOMf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:12:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47F1F64FB0;
+        Tue,  2 Feb 2021 13:52:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612274029;
-        bh=/VSBTtvKp3Wlh5wo50bwzjsOFjIlsBsJ9rKh7bds5eE=;
+        s=korg; t=1612273951;
+        bh=7zJJntLKaEfHwAfyaVTTHXnrnswbDbeif0bIJQpPAVY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sZiKWnVaOXK6wNwfEShzyfPc783XzBCIzhk78oVG+ufI2ZrPuRJM8EszLokXQEYdJ
-         NFDS7W0vcWRhj6jn40AdcJQCcYdKm42uRjf4T/jjbsfeAyu8o/zoOLRLAafkEozREw
-         EyH+rJwzrhKA8I9WVKyvDxbS/z9eKjmwi/HJNEYs=
+        b=g/mB2aMoITqns6gxxZGvUncupENCR0Z9lA0v3Barl1DGGDZupq7mmwgOfTLl3j04z
+         EjgSAn/K2cOydDzEgCyn5yrmILVT4QPnTp9Ep0MPm9yfkz3O1v1iFSY6g+mhXs+0JA
+         1qIsxbWO26hsV5qicbRaRhalRRMR6NwOHbi6VGTE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 25/37] pNFS/NFSv4: Fix a layout segment leak in pnfs_layout_process()
-Date:   Tue,  2 Feb 2021 14:39:08 +0100
-Message-Id: <20210202132943.970175405@linuxfoundation.org>
+        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 4.14 28/30] NFC: fix possible resource leak
+Date:   Tue,  2 Feb 2021 14:39:09 +0100
+Message-Id: <20210202132943.279721069@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132942.915040339@linuxfoundation.org>
-References: <20210202132942.915040339@linuxfoundation.org>
+In-Reply-To: <20210202132942.138623851@linuxfoundation.org>
+References: <20210202132942.138623851@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,35 +39,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Trond Myklebust <trond.myklebust@hammerspace.com>
+From: Pan Bian <bianpan2016@163.com>
 
-[ Upstream commit 814b84971388cd5fb182f2e914265b3827758455 ]
+commit d8f923c3ab96dbbb4e3c22d1afc1dc1d3b195cd8 upstream.
 
-If the server returns a new stateid that does not match the one in our
-cache, then pnfs_layout_process() will leak the layout segments returned
-by pnfs_mark_layout_stateid_invalid().
+Put the device to avoid resource leak on path that the polling flag is
+invalid.
 
-Fixes: 9888d837f3cf ("pNFS: Force a retry of LAYOUTGET if the stateid doesn't match our cache")
-Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: a831b9132065 ("NFC: Do not return EBUSY when stopping a poll that's already stopped")
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+Link: https://lore.kernel.org/r/20210121153745.122184-1-bianpan2016@163.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/nfs/pnfs.c | 1 +
+ net/nfc/netlink.c |    1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/fs/nfs/pnfs.c b/fs/nfs/pnfs.c
-index 46ca5592b8b0d..4b165aa5a2561 100644
---- a/fs/nfs/pnfs.c
-+++ b/fs/nfs/pnfs.c
-@@ -2320,6 +2320,7 @@ out_forget:
- 	spin_unlock(&ino->i_lock);
- 	lseg->pls_layout = lo;
- 	NFS_SERVER(ino)->pnfs_curr_ld->free_lseg(lseg);
-+	pnfs_free_lseg_list(&free_me);
- 	return ERR_PTR(-EAGAIN);
- }
+--- a/net/nfc/netlink.c
++++ b/net/nfc/netlink.c
+@@ -884,6 +884,7 @@ static int nfc_genl_stop_poll(struct sk_
  
--- 
-2.27.0
-
+ 	if (!dev->polling) {
+ 		device_unlock(&dev->dev);
++		nfc_put_device(dev);
+ 		return -EINVAL;
+ 	}
+ 
 
 
