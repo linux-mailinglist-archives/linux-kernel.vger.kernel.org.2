@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C252130BEF7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 14:03:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E96530BEF8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 14:03:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232190AbhBBNCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 08:02:18 -0500
-Received: from esa9.hc1455-7.c3s2.iphmx.com ([139.138.36.223]:24240 "EHLO
-        esa9.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231320AbhBBNCM (ORCPT
+        id S232213AbhBBNC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 08:02:26 -0500
+Received: from esa8.hc1455-7.c3s2.iphmx.com ([139.138.61.253]:51416 "EHLO
+        esa8.hc1455-7.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232135AbhBBNCQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 08:02:12 -0500
-IronPort-SDR: ITO7mjeFiVfS8gD3+/iX2P6ucQzHf5nN5mmna+Sz8q7+v/HvAThREwaG1JF1/uRk0rxvB77miv
- bw0iNkCdcMYVFr+jFbPBXHqed0taYE5Li0O0lxF8I8a6/AghkqJm44qV2nB6rHijpRGeANZS+u
- 4WukKgykp9g/8br1765FMrB2jkpZLGCZYHCGDbwCYtg4Yha4WGCwWEgdMafyo2ZuRjlEmy8qKa
- 53+2o0dJ+XINb8fqAYieZFDym+29/hMbYjDLkGPJa7PE57mNZQQUUsmIiCVS6P1ik+EJeIM5u6
- Maw=
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="5703230"
+        Tue, 2 Feb 2021 08:02:16 -0500
+IronPort-SDR: U6Ri7Ujp9e3e87yZ+AWUrTQqEjBx9Yi0qQ3Vj2mQM2Rk5FHSvGjfSVyuOrDrXD9ywfCcRJCXE8
+ 2J3AqDG+yORUsdZ5aNSqK6FLdL60ME+29Ne418mcAUKgWueBIZyywkKGNt37B8XVHrQJgDcJfL
+ nbzI4DJ0JMXMx50dsllVZkP2h25SVj9HQaTFIOA5XkL3sHRJOnddZAP2o4H1JQzI0TcQik1Icd
+ 6qyi44F24Jzhv0imhjViukqVzPwuOTQTjXZ4ltHAIwroaN+8RzhH2iyJ2U/z1v3qCwPiLpg31W
+ wLQ=
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="5700947"
 X-IronPort-AV: E=Sophos;i="5.79,395,1602514800"; 
-   d="scan'208";a="5703230"
-Received: from unknown (HELO yto-r1.gw.nic.fujitsu.com) ([218.44.52.217])
-  by esa9.hc1455-7.c3s2.iphmx.com with ESMTP; 02 Feb 2021 21:57:59 +0900
+   d="scan'208";a="5700947"
+Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
+  by esa8.hc1455-7.c3s2.iphmx.com with ESMTP; 02 Feb 2021 21:58:00 +0900
 Received: from yto-m2.gw.nic.fujitsu.com (yto-nat-yto-m2.gw.nic.fujitsu.com [192.168.83.65])
-        by yto-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 239B8EC7E6
+        by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 34435147F8
         for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 21:57:58 +0900 (JST)
 Received: from pumpkin.openstacklocal (pumpkin.fct.css.fujitsu.com [10.130.70.189])
-        by yto-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 5B8729B62A
+        by yto-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 6CE449B632
         for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 21:57:57 +0900 (JST)
 Received: by pumpkin.openstacklocal (Postfix, from userid 1012)
-        id D94599F3; Tue,  2 Feb 2021 21:51:40 +0900 (JST)
+        id F27F61086; Tue,  2 Feb 2021 21:51:40 +0900 (JST)
 From:   Shunsuke Nakamura <nakamura.shun@jp.fujitsu.com>
 To:     john.garry@huawei.com, will@kernel.org, mathieu.poirier@linaro.org,
         leo.yan@linaro.org, peterz@infradead.org, mingo@redhat.com,
@@ -38,9 +38,9 @@ To:     john.garry@huawei.com, will@kernel.org, mathieu.poirier@linaro.org,
         namhyung@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Shunsuke Nakamura <nakamura.shun@jp.fujitsu.com>
-Subject: [PATCH v5 2/4] perf vendor events arm64: Add more common and uarch events
-Date:   Tue,  2 Feb 2021 21:51:38 +0900
-Message-Id: <20210202125140.1785583-3-nakamura.shun@jp.fujitsu.com>
+Subject: [PATCH v5 3/4] perf tools: Fix lexical definition of event name
+Date:   Tue,  2 Feb 2021 21:51:39 +0900
+Message-Id: <20210202125140.1785583-4-nakamura.shun@jp.fujitsu.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210202125140.1785583-1-nakamura.shun@jp.fujitsu.com>
 References: <20210202125140.1785583-1-nakamura.shun@jp.fujitsu.com>
@@ -51,309 +51,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the following events.[1]
+Fix the lexical definition of event name so that the numbers are recognizable.
 
-Common architectural events:
-  - L2I_TLB_REFILL
-  - L2I_TLB
-  - SIMD_INST_RETIRED
-  - SVE_INST_RETIRED
-
-Common microarchitectural events:
-  - UOP_SPEC
-  - SVE_MATH_SPEC
-  - FP_SPEC
-  - FP_FMA_SPEC
-  - FP_RECPE_SPEC
-  - FP_CVT_SPEC
-  - ASE_SVE_INT_SPEC
-  - SVE_PRED_SPEC
-  - SVE_MOVPRFX_SPEC
-  - SVE_MOVPRFX_U_SPEC
-  - ASE_SVE_LD_SPEC
-  - ASE_SVE_ST_SPEC
-  - PRF_SPEC
-  - BASE_LD_REG_SPEC
-  - BASE_ST_REG_SPEC
-  - SVE_LDR_REG_SPEC
-  - SVE_STR_REG_SPEC
-  - SVE_LDR_PREG_SPEC
-  - SVE_STR_PREG_SPEC
-  - SVE_PRF_CONTIG_SPEC
-  - ASE_SVE_LD_MULTI_SPEC
-  - ASE_SVE_ST_MULTI_SPEC
-  - SVE_LD_GATHER_SPEC
-  - SVE_ST_SCATTER_SPEC
-  - SVE_PRF_GATHER_SPEC
-  - SVE_LDFF_SPEC
-  - FP_SCALE_OPS_SPEC
-  - FP_FIXED_OPS_SPEC
-  - FP_HP_SCALE_OPS_SPEC
-  - FP_HP_FIXED_OPS_SPEC
-  - FP_SP_SCALE_OPS_SPEC
-  - FP_SP_FIXED_OPS_SPEC
-  - FP_DP_SCALE_OPS_SPEC
-  - FP_DP_FIXED_OPS_SPEC
-
-Reference document is at the following:
-[1] https://github.com/fujitsu/A64FX/blob/master/doc/A64FX_PMU_Events_v1.2.pdf
+A64FX defines an event name that starts with a number.
+ - 0inst_commit
+ - 1inst_commit
+ - 2inst_commit
+ - 3inst_commit
+ - 4inst_commit
 
 Signed-off-by: Shunsuke Nakamura <nakamura.shun@fujitsu.com>
 ---
- .../arch/arm64/armv8-common-and-microarch.json     | 228 +++++++++++++++++++++
- 1 file changed, 228 insertions(+)
+ tools/perf/util/parse-events.l | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/pmu-events/arch/arm64/armv8-common-and-microarch.json b/tools/perf/pmu-events/arch/arm64/armv8-common-and-microarch.json
-index 75376c7..913fb20 100644
---- a/tools/perf/pmu-events/arch/arm64/armv8-common-and-microarch.json
-+++ b/tools/perf/pmu-events/arch/arm64/armv8-common-and-microarch.json
-@@ -210,12 +210,24 @@
-         "BriefDescription": "Attributable Level 2 data TLB refill"
-     },
-     {
-+        "PublicDescription": "Attributable Level 2 instruction TLB refill.",
-+        "EventCode": "0x2E",
-+        "EventName": "L2I_TLB_REFILL",
-+        "BriefDescription": "Attributable Level 2 instruction TLB refill."
-+    },
-+    {
-         "PublicDescription": "Attributable Level 2 data or unified TLB access",
-         "EventCode": "0x2F",
-         "EventName": "L2D_TLB",
-         "BriefDescription": "Attributable Level 2 data or unified TLB access"
-     },
-     {
-+        "PublicDescription": "Attributable Level 2 instruction TLB access.",
-+        "EventCode": "0x30",
-+        "EventName": "L2I_TLB",
-+        "BriefDescription": "Attributable Level 2 instruction TLB access."
-+    },
-+    {
-         "PublicDescription": "Access to another socket in a multi-socket system",
-         "EventCode": "0x31",
-         "EventName": "REMOTE_ACCESS",
-@@ -244,5 +256,221 @@
-         "EventCode": "0x37",
-         "EventName": "LL_CACHE_MISS_RD",
-         "BriefDescription": "Last level cache miss, read"
-+    },
-+    {
-+        "PublicDescription": "SIMD Instruction architecturally executed.",
-+        "EventCode": "0x8000",
-+        "EventName": "SIMD_INST_RETIRED",
-+        "BriefDescription": "SIMD Instruction architecturally executed."
-+    },
-+    {
-+        "PublicDescription": "Instruction architecturally executed, SVE.",
-+        "EventCode": "0x8002",
-+        "EventName": "SVE_INST_RETIRED",
-+        "BriefDescription": "Instruction architecturally executed, SVE."
-+    },
-+    {
-+        "PublicDescription": "Microarchitectural operation, Operations speculatively executed.",
-+        "EventCode": "0x8008",
-+        "EventName": "UOP_SPEC",
-+        "BriefDescription": "Microarchitectural operation, Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "SVE Math accelerator Operations speculatively executed.",
-+        "EventCode": "0x800E",
-+        "EventName": "SVE_MATH_SPEC",
-+        "BriefDescription": "SVE Math accelerator Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "Floating-point Operations speculatively executed.",
-+        "EventCode": "0x8010",
-+        "EventName": "FP_SPEC",
-+        "BriefDescription": "Floating-point Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "Floating-point FMA Operations speculatively executed.",
-+        "EventCode": "0x8028",
-+        "EventName": "FP_FMA_SPEC",
-+        "BriefDescription": "Floating-point FMA Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "Floating-point reciprocal estimate Operations speculatively executed.",
-+        "EventCode": "0x8034",
-+        "EventName": "FP_RECPE_SPEC",
-+        "BriefDescription": "Floating-point reciprocal estimate Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "floating-point convert Operations speculatively executed.",
-+        "EventCode": "0x8038",
-+        "EventName": "FP_CVT_SPEC",
-+        "BriefDescription": "floating-point convert Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "Advanced SIMD and SVE integer Operations speculatively executed.",
-+        "EventCode": "0x8043",
-+        "EventName": "ASE_SVE_INT_SPEC",
-+        "BriefDescription": "Advanced SIMD and SVE integer Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "SVE predicated Operations speculatively executed.",
-+        "EventCode": "0x8074",
-+        "EventName": "SVE_PRED_SPEC",
-+        "BriefDescription": "SVE predicated Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "SVE MOVPRFX Operations speculatively executed.",
-+        "EventCode": "0x807C",
-+        "EventName": "SVE_MOVPRFX_SPEC",
-+        "BriefDescription": "SVE MOVPRFX Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "SVE MOVPRFX unfused Operations speculatively executed.",
-+        "EventCode": "0x807F",
-+        "EventName": "SVE_MOVPRFX_U_SPEC",
-+        "BriefDescription": "SVE MOVPRFX unfused Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "Advanced SIMD and SVE load Operations speculatively executed.",
-+        "EventCode": "0x8085",
-+        "EventName": "ASE_SVE_LD_SPEC",
-+        "BriefDescription": "Advanced SIMD and SVE load Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "Advanced SIMD and SVE store Operations speculatively executed.",
-+        "EventCode": "0x8086",
-+        "EventName": "ASE_SVE_ST_SPEC",
-+        "BriefDescription": "Advanced SIMD and SVE store Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "Prefetch Operations speculatively executed.",
-+        "EventCode": "0x8087",
-+        "EventName": "PRF_SPEC",
-+        "BriefDescription": "Prefetch Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "General-purpose register load Operations speculatively executed.",
-+        "EventCode": "0x8089",
-+        "EventName": "BASE_LD_REG_SPEC",
-+        "BriefDescription": "General-purpose register load Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "General-purpose register store Operations speculatively executed.",
-+        "EventCode": "0x808A",
-+        "EventName": "BASE_ST_REG_SPEC",
-+        "BriefDescription": "General-purpose register store Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "SVE unpredicated load register Operations speculatively executed.",
-+        "EventCode": "0x8091",
-+        "EventName": "SVE_LDR_REG_SPEC",
-+        "BriefDescription": "SVE unpredicated load register Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "SVE unpredicated store register Operations speculatively executed.",
-+        "EventCode": "0x8092",
-+        "EventName": "SVE_STR_REG_SPEC",
-+        "BriefDescription": "SVE unpredicated store register Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "SVE load predicate register Operations speculatively executed.",
-+        "EventCode": "0x8095",
-+        "EventName": "SVE_LDR_PREG_SPEC",
-+        "BriefDescription": "SVE load predicate register Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "SVE store predicate register Operations speculatively executed.",
-+        "EventCode": "0x8096",
-+        "EventName": "SVE_STR_PREG_SPEC",
-+        "BriefDescription": "SVE store predicate register Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "SVE contiguous prefetch element Operations speculatively executed.",
-+        "EventCode": "0x809F",
-+        "EventName": "SVE_PRF_CONTIG_SPEC",
-+        "BriefDescription": "SVE contiguous prefetch element Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "Advanced SIMD and SVE contiguous load multiple vector Operations speculatively executed.",
-+        "EventCode": "0x80A5",
-+        "EventName": "ASE_SVE_LD_MULTI_SPEC",
-+        "BriefDescription": "Advanced SIMD and SVE contiguous load multiple vector Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "Advanced SIMD and SVE contiguous store multiple vector Operations speculatively executed.",
-+        "EventCode": "0x80A6",
-+        "EventName": "ASE_SVE_ST_MULTI_SPEC",
-+        "BriefDescription": "Advanced SIMD and SVE contiguous store multiple vector Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "SVE gather-load Operations speculatively executed.",
-+        "EventCode": "0x80AD",
-+        "EventName": "SVE_LD_GATHER_SPEC",
-+        "BriefDescription": "SVE gather-load Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "SVE scatter-store Operations speculatively executed.",
-+        "EventCode": "0x80AE",
-+        "EventName": "SVE_ST_SCATTER_SPEC",
-+        "BriefDescription": "SVE scatter-store Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "SVE gather-prefetch Operations speculatively executed.",
-+        "EventCode": "0x80AF",
-+        "EventName": "SVE_PRF_GATHER_SPEC",
-+        "BriefDescription": "SVE gather-prefetch Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "SVE First-fault load Operations speculatively executed.",
-+        "EventCode": "0x80BC",
-+        "EventName": "SVE_LDFF_SPEC",
-+        "BriefDescription": "SVE First-fault load Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "Scalable floating-point element Operations speculatively executed.",
-+        "EventCode": "0x80C0",
-+        "EventName": "FP_SCALE_OPS_SPEC",
-+        "BriefDescription": "Scalable floating-point element Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "Non-scalable floating-point element Operations speculatively executed.",
-+        "EventCode": "0x80C1",
-+        "EventName": "FP_FIXED_OPS_SPEC",
-+        "BriefDescription": "Non-scalable floating-point element Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "Scalable half-precision floating-point element Operations speculatively executed.",
-+        "EventCode": "0x80C2",
-+        "EventName": "FP_HP_SCALE_OPS_SPEC",
-+        "BriefDescription": "Scalable half-precision floating-point element Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "Non-scalable half-precision floating-point element Operations speculatively executed.",
-+        "EventCode": "0x80C3",
-+        "EventName": "FP_HP_FIXED_OPS_SPEC",
-+        "BriefDescription": "Non-scalable half-precision floating-point element Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "Scalable single-precision floating-point element Operations speculatively executed.",
-+        "EventCode": "0x80C4",
-+        "EventName": "FP_SP_SCALE_OPS_SPEC",
-+        "BriefDescription": "Scalable single-precision floating-point element Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "Non-scalable single-precision floating-point element Operations speculatively executed.",
-+        "EventCode": "0x80C5",
-+        "EventName": "FP_SP_FIXED_OPS_SPEC",
-+        "BriefDescription": "Non-scalable single-precision floating-point element Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "Scalable double-precision floating-point element Operations speculatively executed.",
-+        "EventCode": "0x80C6",
-+        "EventName": "FP_DP_SCALE_OPS_SPEC",
-+        "BriefDescription": "Scalable double-precision floating-point element Operations speculatively executed."
-+    },
-+    {
-+        "PublicDescription": "Non-scalable double-precision floating-point element Operations speculatively executed.",
-+        "EventCode": "0x80C7",
-+        "EventName": "FP_DP_FIXED_OPS_SPEC",
-+        "BriefDescription": "Non-scalable double-precision floating-point element Operations speculatively executed."
-     }
- ]
+diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
+index 9db5097..e6bbbd0 100644
+--- a/tools/perf/util/parse-events.l
++++ b/tools/perf/util/parse-events.l
+@@ -205,7 +205,7 @@ bpf_source	[^,{}]+\.c[a-zA-Z0-9._]*
+ num_dec		[0-9]+
+ num_hex		0x[a-fA-F0-9]+
+ num_raw_hex	[a-fA-F0-9]+
+-name		[a-zA-Z_*?\[\]][a-zA-Z0-9_*?.\[\]]*
++name		[a-zA-Z0-9_*?\[\]][a-zA-Z0-9_*?.\[\]]*
+ name_tag	[\'][a-zA-Z_*?\[\]][a-zA-Z0-9_*?\-,\.\[\]:=]*[\']
+ name_minus	[a-zA-Z_*?][a-zA-Z0-9\-_*?.:]*
+ drv_cfg_term	[a-zA-Z0-9_\.]+(=[a-zA-Z0-9_*?\.:]+)?
 -- 
 1.8.3.1
 
