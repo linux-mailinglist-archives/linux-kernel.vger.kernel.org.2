@@ -2,215 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7770930C6B4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:58:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BF630C7CF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:33:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236529AbhBBQz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 11:55:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53579 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236856AbhBBQxO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 11:53:14 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612284707;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+no4pVcxK0Ryw/Cg28AE5hUfIMaqqpwblqhkZUu/y2g=;
-        b=Z1c0UgywEa7c/47U7EI1Agf7hJmbDtKF5bAUtcQ++Xi4arVZfDCXFYKOax1J5HY98ilWm4
-        kQeOiwA4n4paWaA4utAsiDQctZokj7B7TTNLa30u0YDyCMLWCoPwxiX9WkyKatHD03WrOg
-        OoFwlApc5s2TYPCu/GyCMZt43mUVNy8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-152-oTTUywoSPkqb8lGd7mhkYA-1; Tue, 02 Feb 2021 11:51:45 -0500
-X-MC-Unique: oTTUywoSPkqb8lGd7mhkYA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8F11110074C3;
-        Tue,  2 Feb 2021 16:51:43 +0000 (UTC)
-Received: from virtlab511.virt.lab.eng.bos.redhat.com (virtlab511.virt.lab.eng.bos.redhat.com [10.19.152.198])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3C2196EF46;
-        Tue,  2 Feb 2021 16:51:43 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     seanjc@google.com
-Subject: [PATCH 3/3] KVM: x86: move kvm_inject_gp up from kvm_set_dr to callers
-Date:   Tue,  2 Feb 2021 11:51:41 -0500
-Message-Id: <20210202165141.88275-4-pbonzini@redhat.com>
-In-Reply-To: <20210202165141.88275-1-pbonzini@redhat.com>
-References: <20210202165141.88275-1-pbonzini@redhat.com>
+        id S237556AbhBBRcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:32:07 -0500
+Received: from mga06.intel.com ([134.134.136.31]:7374 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237453AbhBBR3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 12:29:34 -0500
+IronPort-SDR: V+7L+e5PB1pSRQE1BANexJzzHPLt3lffkAqFdW2YmJa8vL1baFNrNGpsqrwbbMDfqCvEF5T2rI
+ 0gmpEpGqQS+g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="242408110"
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="scan'208";a="242408110"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 09:27:45 -0800
+IronPort-SDR: mNqUK6PtHH5g6VYtxaLXDQpljJFz5EpdFWbcv3vZhCzSoAVmLGLf/7QFeT1ATKeVCncVZkE/LL
+ BnFYE1DoncAw==
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="scan'208";a="370798466"
+Received: from ncruzgar-mobl.amr.corp.intel.com (HELO [10.212.75.122]) ([10.212.75.122])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 09:27:44 -0800
+Subject: Re: [PATCH 1/3] soundwire: bus: clear bus clash interrupt before the
+ mask is enabled
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Bard Liao <yung-chuan.liao@linux.intel.com>,
+        alsa-devel@alsa-project.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, ranjani.sridharan@linux.intel.com,
+        hui.wang@canonical.com, srinivas.kandagatla@linaro.org,
+        jank@cadence.com, sanyog.r.kale@intel.com,
+        rander.wang@linux.intel.com, bard.liao@intel.com
+References: <20210126083746.3238-1-yung-chuan.liao@linux.intel.com>
+ <20210126083746.3238-2-yung-chuan.liao@linux.intel.com>
+ <20210201102844.GU2771@vkoul-mobl> <20210201103825.GV2771@vkoul-mobl>
+ <7c4e1163-a6b3-2886-1963-7e2847dc2836@linux.intel.com>
+ <20210202043909.GG2771@vkoul-mobl>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <4117cd57-1643-758f-b59c-ac507a6f5ed2@linux.intel.com>
+Date:   Tue, 2 Feb 2021 10:52:02 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20210202043909.GG2771@vkoul-mobl>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Push the injection of #GP up to the callers, so that they can just use
-kvm_complete_insn_gp. __kvm_set_dr is pretty much what the callers can use
-together with kvm_complete_insn_gp, so rename it to kvm_set_dr and drop
-the old kvm_set_dr wrapper.
 
-This allows nested VMX code, which really wanted to use __kvm_set_dr, to
-use the right function.
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/svm/svm.c | 14 +++++++-------
- arch/x86/kvm/vmx/vmx.c | 19 ++++++++++---------
- arch/x86/kvm/x86.c     | 19 +++++--------------
- 3 files changed, 22 insertions(+), 30 deletions(-)
+On 2/1/21 10:39 PM, Vinod Koul wrote:
+> On 01-02-21, 10:18, Pierre-Louis Bossart wrote:
+>> On 2/1/21 4:38 AM, Vinod Koul wrote:
+>>> On 01-02-21, 15:58, Vinod Koul wrote:
+>>>> On 26-01-21, 16:37, Bard Liao wrote:
+>>>
+>>>>>    struct sdw_master_prop {
+>>>>>    	u32 revision;
+>>>>> @@ -421,8 +422,11 @@ struct sdw_master_prop {
+>>>>>    	u32 err_threshold;
+>>>>>    	u32 mclk_freq;
+>>>>>    	bool hw_disabled;
+>>>>> +	u32 quirks;
+>>>>
+>>>> Can we do u64 here please.. I dont know where we would end up.. but
+>>>> would hate if we start running out of space ..
+>> No objection.
+>>
+>>> Also, is the sdw_master_prop right place for a 'quirk' property. I think
+>>> we can use sdw_master_device or sdw_bus as this seems like a bus
+>>> quirk..?
+>>
+>> It's already part of sdw_bus
+> 
+> Right, but the point is that the properties were mostly derived from
+> DiSco, so am bit skeptical about it adding it there..
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index c0d41a6920f0..818cf3babef2 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -2599,6 +2599,7 @@ static int dr_interception(struct vcpu_svm *svm)
- {
- 	int reg, dr;
- 	unsigned long val;
-+	int err;
- 
- 	if (svm->vcpu.guest_debug == 0) {
- 		/*
-@@ -2617,19 +2618,18 @@ static int dr_interception(struct vcpu_svm *svm)
- 	reg = svm->vmcb->control.exit_info_1 & SVM_EXITINFO_REG_MASK;
- 	dr = svm->vmcb->control.exit_code - SVM_EXIT_READ_DR0;
- 
-+	if (!kvm_require_dr(&svm->vcpu, dr & 15))
-+		return 1;
-+
- 	if (dr >= 16) { /* mov to DRn */
--		if (!kvm_require_dr(&svm->vcpu, dr - 16))
--			return 1;
- 		val = kvm_register_read(&svm->vcpu, reg);
--		kvm_set_dr(&svm->vcpu, dr - 16, val);
-+		err = kvm_set_dr(&svm->vcpu, dr - 16, val);
- 	} else {
--		if (!kvm_require_dr(&svm->vcpu, dr))
--			return 1;
--		kvm_get_dr(&svm->vcpu, dr, &val);
-+		err = kvm_get_dr(&svm->vcpu, dr, &val);
- 		kvm_register_write(&svm->vcpu, reg, val);
- 	}
- 
--	return kvm_skip_emulated_instruction(&svm->vcpu);
-+	return kvm_complete_insn_gp(&svm->vcpu, err);
- }
- 
- static int cr8_write_interception(struct vcpu_svm *svm)
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index a07fce6d0bbb..41a26d98fb95 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -5099,6 +5099,7 @@ static int handle_dr(struct kvm_vcpu *vcpu)
- {
- 	unsigned long exit_qualification;
- 	int dr, dr7, reg;
-+	int err = 1;
- 
- 	exit_qualification = vmx_get_exit_qual(vcpu);
- 	dr = exit_qualification & DEBUG_REG_ACCESS_NUM;
-@@ -5107,9 +5108,9 @@ static int handle_dr(struct kvm_vcpu *vcpu)
- 	if (!kvm_require_dr(vcpu, dr))
- 		return 1;
- 
--	/* Do not handle if the CPL > 0, will trigger GP on re-entry */
--	if (!kvm_require_cpl(vcpu, 0))
--		return 1;
-+	if (kvm_x86_ops.get_cpl(vcpu) > 0)
-+		goto out;
-+
- 	dr7 = vmcs_readl(GUEST_DR7);
- 	if (dr7 & DR7_GD) {
- 		/*
-@@ -5146,14 +5147,14 @@ static int handle_dr(struct kvm_vcpu *vcpu)
- 	if (exit_qualification & TYPE_MOV_FROM_DR) {
- 		unsigned long val;
- 
--		if (kvm_get_dr(vcpu, dr, &val))
--			return 1;
-+		err = kvm_get_dr(vcpu, dr, &val);
- 		kvm_register_write(vcpu, reg, val);
--	} else
--		if (kvm_set_dr(vcpu, dr, kvm_register_readl(vcpu, reg)))
--			return 1;
-+	} else {
-+		err = kvm_set_dr(vcpu, dr, kvm_register_readl(vcpu, reg));
-+	}
- 
--	return kvm_skip_emulated_instruction(vcpu);
-+out:
-+	return kvm_complete_insn_gp(vcpu, err);
- }
- 
- static void vmx_sync_dirty_debug_regs(struct kvm_vcpu *vcpu)
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index edbeb162012b..b748bf0d6d33 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -1147,7 +1147,7 @@ static u64 kvm_dr6_fixed(struct kvm_vcpu *vcpu)
- 	return fixed;
- }
- 
--static int __kvm_set_dr(struct kvm_vcpu *vcpu, int dr, unsigned long val)
-+int kvm_set_dr(struct kvm_vcpu *vcpu, int dr, unsigned long val)
- {
- 	size_t size = ARRAY_SIZE(vcpu->arch.db);
- 
-@@ -1160,13 +1160,13 @@ static int __kvm_set_dr(struct kvm_vcpu *vcpu, int dr, unsigned long val)
- 	case 4:
- 	case 6:
- 		if (!kvm_dr6_valid(val))
--			return -1; /* #GP */
-+			return 1; /* #GP */
- 		vcpu->arch.dr6 = (val & DR6_VOLATILE) | kvm_dr6_fixed(vcpu);
- 		break;
- 	case 5:
- 	default: /* 7 */
- 		if (!kvm_dr7_valid(val))
--			return -1; /* #GP */
-+			return 1; /* #GP */
- 		vcpu->arch.dr7 = (val & DR7_VOLATILE) | DR7_FIXED_1;
- 		kvm_update_dr7(vcpu);
- 		break;
-@@ -1174,15 +1174,6 @@ static int __kvm_set_dr(struct kvm_vcpu *vcpu, int dr, unsigned long val)
- 
- 	return 0;
- }
--
--int kvm_set_dr(struct kvm_vcpu *vcpu, int dr, unsigned long val)
--{
--	if (__kvm_set_dr(vcpu, dr, val)) {
--		kvm_inject_gp(vcpu, 0);
--		return 1;
--	}
--	return 0;
--}
- EXPORT_SYMBOL_GPL(kvm_set_dr);
- 
- int kvm_get_dr(struct kvm_vcpu *vcpu, int dr, unsigned long *val)
-@@ -6595,7 +6586,7 @@ static int emulator_set_dr(struct x86_emulate_ctxt *ctxt, int dr,
- 			   unsigned long value)
- {
- 
--	return __kvm_set_dr(emul_to_vcpu(ctxt), dr, value);
-+	return kvm_set_dr(emul_to_vcpu(ctxt), dr, value);
- }
- 
- static u64 mk_cr_64(u64 curr_cr, u32 new_val)
-@@ -8636,7 +8627,7 @@ static void enter_smm(struct kvm_vcpu *vcpu)
- 	dt.address = dt.size = 0;
- 	static_call(kvm_x86_set_idt)(vcpu, &dt);
- 
--	__kvm_set_dr(vcpu, 7, DR7_FIXED_1);
-+	kvm_set_dr(vcpu, 7, DR7_FIXED_1);
- 
- 	cs.selector = (vcpu->arch.smbase >> 4) & 0xffff;
- 	cs.base = vcpu->arch.smbase;
--- 
-2.26.2
+Oh, I am planning to contribute such quirks as MIPI DisCo properties for 
+the next revision of the document (along with a capability to disable a 
+link). This was not intended to remain Linux- or Intel-specific.
 
+>> struct sdw_bus {
+>> 	struct device *dev;
+>> 	struct sdw_master_device *md;
+>> 	unsigned int link_id;
+>> 	int id;
+>> 	struct list_head slaves;
+>> 	DECLARE_BITMAP(assigned, SDW_MAX_DEVICES);
+>> 	struct mutex bus_lock;
+>> 	struct mutex msg_lock;
+>> 	int (*compute_params)(struct sdw_bus *bus);
+>> 	const struct sdw_master_ops *ops;
+>> 	const struct sdw_master_port_ops *port_ops;
+>> 	struct sdw_bus_params params;
+>> 	struct sdw_master_prop prop;
+>>
+>> The quirks could be set by a firmware property, and it seems logical to add
+>> them at the same place where we already have properties defined in firmware,
+>> no? That way all the standard, vendor-specific and quirks are read or added
+>> in the same place.
+> 
+> Or they could be set by driver as well based on device id, compatible
+> and so on.. It maybe fw property as well, so limiting to property may not
+> be best idea IMO.
+
+Not following, sorry. I didn't mean that only firmware can set them.
+
+All of these sdw_master_prop can come from firmware or be hard-coded by 
+a driver for a specific implementation. The point is that they need to 
+be provided to the bus core so that it knows what to do.
+
+If you look at DisCo today, we ignore the settings for the Slave 
+(unfortunately all wrong in BIOS) so the Slave properties are hard-coded 
+in drivers, but do use most of the firmware information for the Master, 
+so it's really firmware and/or driver that can set these properties.
+
+>> the sdw_master_device isn't a good place for quirks IMHO, it's a very
+>> shallow software-only layer without any existing ties to the hardware
+>> definition.
+> 
+> This one I would agree.
+> 
