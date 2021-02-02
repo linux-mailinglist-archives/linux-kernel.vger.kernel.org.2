@@ -2,210 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A218F30CFFF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 00:53:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D5730D001
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 00:53:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbhBBXvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 18:51:51 -0500
-Received: from mga12.intel.com ([192.55.52.136]:13463 "EHLO mga12.intel.com"
+        id S230368AbhBBXwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 18:52:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54222 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhBBXvq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 18:51:46 -0500
-IronPort-SDR: HD/CpD/PJDQ4RpVMHSTmtBV7+95mq1jXeVKNqpKlEmOgqD3ebscL+RVUv6hVfgprbyf3QPaVmw
- z1REU9Rd88Fg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="160119978"
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="160119978"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 15:51:05 -0800
-IronPort-SDR: 5W1kgB6IllyAnatEQfttN6uHVXqp9LN5NRvv0b6Wj/swTMx27pM5IITM30KsGTuRFw2UP+OliM
- B0mw31+NRx8Q==
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="480099030"
-Received: from aisallax-mobl2.amr.corp.intel.com (HELO intel.com) ([10.252.131.184])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 15:51:04 -0800
-Date:   Tue, 2 Feb 2021 15:51:03 -0800
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     linux-cxl@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
-        linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        daniel.lll@alibaba-inc.com,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH 13/14] cxl/mem: Add limited Get Log command (0401h)
-Message-ID: <20210202235103.v36v3znh5tsi4g5x@intel.com>
-References: <20210130002438.1872527-1-ben.widawsky@intel.com>
- <20210130002438.1872527-14-ben.widawsky@intel.com>
- <20210201182848.GL197521@fedora>
+        id S230128AbhBBXwD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 18:52:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A6F5964E38;
+        Tue,  2 Feb 2021 23:51:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612309881;
+        bh=bqlmAkMhKva2byst9LEVKv4NYTOjwULo7/hJYHFBF14=;
+        h=Date:From:To:Cc:Subject:From;
+        b=eJvrM6PiBK2LVNDfT4u3CtMm5eWGtaUNYimeH0yG1PazE22rtGpB8Fn68q+UaUAUh
+         U9nvuCIU0rr3FhWzcpgUVwWPnQ0IYUKb7nNo1OiAfu6X1cmKzDuOAdZ/dpRq5ySm8I
+         hjnmKsb6Alk5wZd7umxAEyu3Ef76h01lC1wTTHDJ8tSn2YoGmOvZF/Ej5CJBeQdbZt
+         8HUOf/v/qafG8O5MsWmHQCgdiehKIH8TsKXTzVOEBNs7EdXj2gcUr/UH4eTDgDpX9k
+         suyhGTtJWAXJl27j5rfmgdAhQBGK6w/OeCqR8cj+j13HHlT3aWaBluImagQgmgkLJb
+         jgIFxErjTVubg==
+Date:   Tue, 2 Feb 2021 17:51:18 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Sathya Prakash <sathya.prakash@broadcom.com>,
+        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
+        Suganath Prabu Subramani 
+        <suganath-prabu.subramani@broadcom.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v2][next] scsi: mpt3sas: Replace one-element array with
+ flexible-array in struct _MPI2_CONFIG_PAGE_IO_UNIT_3
+Message-ID: <20210202235118.GA314410@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210201182848.GL197521@fedora>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-02-01 13:28:48, Konrad Rzeszutek Wilk wrote:
-> On Fri, Jan 29, 2021 at 04:24:37PM -0800, Ben Widawsky wrote:
-> > The Get Log command returns the actual log entries that are advertised
-> > via the Get Supported Logs command (0400h). CXL device logs are selected
-> > by UUID which is part of the CXL spec. Because the driver tries to
-> > sanitize what is sent to hardware, there becomes a need to restrict the
-> > types of logs which can be accessed by userspace. For example, the
-> > vendor specific log might only be consumable by proprietary, or offline
-> > applications, and therefore a good candidate for userspace.
-> > 
-> > The current driver infrastructure does allow basic validation for all
-> > commands, but doesn't inspect any of the payload data. Along with Get
-> > Log support comes new infrastructure to add a hook for payload
-> > validation. This infrastructure is used to filter out the CEL UUID,
-> > which the userspace driver doesn't have business knowing, and taints on
-> > invalid UUIDs being sent to hardware.
-> 
-> Perhaps a better option is to reject invalid UUIDs?
-> 
-> And if you really really want to use invalid UUIDs then:
-> 
-> 1) Make that code wrapped in CONFIG_CXL_DEBUG_THIS_IS_GOING_TO..?
-> 
-> 2) Wrap it with lockdown code so that you can't do this at all
->    when in LOCKDOWN_INTEGRITY or such?
-> 
+There is a regular need in the kernel to provide a way to declare having
+a dynamically sized set of trailing elements in a structure. Kernel code
+should always use “flexible array members”[1] for these cases. The older
+style of one-element or zero-length arrays should no longer be used[2].
 
-The commit message needs update btw as CEL is allowed in the latest rev of the
-patches.
+Refactor the code according to the use of a flexible-array member in
+struct _MPI2_CONFIG_PAGE_IO_UNIT_3, instead of a one-element array,
+and use the struct_size() helper to calculate the size for the
+allocation.
 
-We could potentially combine this with the now added (in a branch) CONFIG_RAW
-config option. Indeed I think that makes sense. Dan, thoughts?
+Also, this helps the ongoing efforts to enable -Warray-bounds and fix the
+following warnings:
 
-> > 
-> > Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
-> > ---
-> >  drivers/cxl/mem.c            | 42 +++++++++++++++++++++++++++++++++++-
-> >  include/uapi/linux/cxl_mem.h |  1 +
-> >  2 files changed, 42 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/cxl/mem.c b/drivers/cxl/mem.c
-> > index b8ca6dff37b5..086268f1dd6c 100644
-> > --- a/drivers/cxl/mem.c
-> > +++ b/drivers/cxl/mem.c
-> > @@ -119,6 +119,8 @@ static const uuid_t log_uuid[] = {
-> >  				 0x07, 0x19, 0x40, 0x3d, 0x86)
-> >  };
-> >  
-> > +static int validate_log_uuid(void __user *payload, size_t size);
-> > +
-> >  /**
-> >   * struct cxl_mem_command - Driver representation of a memory device command
-> >   * @info: Command information as it exists for the UAPI
-> > @@ -132,6 +134,10 @@ static const uuid_t log_uuid[] = {
-> >   *  * %CXL_CMD_INTERNAL_FLAG_PSEUDO: This is a pseudo command which doesn't have
-> >   *    a direct mapping to hardware. They are implicitly always enabled.
-> >   *
-> > + * @validate_payload: A function called after the command is validated but
-> > + * before it's sent to the hardware. The primary purpose is to validate, or
-> > + * fixup the actual payload.
-> > + *
-> >   * The cxl_mem_command is the driver's internal representation of commands that
-> >   * are supported by the driver. Some of these commands may not be supported by
-> >   * the hardware. The driver will use @info to validate the fields passed in by
-> > @@ -147,9 +153,11 @@ struct cxl_mem_command {
-> >  #define CXL_CMD_INTERNAL_FLAG_HIDDEN BIT(0)
-> >  #define CXL_CMD_INTERNAL_FLAG_MANDATORY BIT(1)
-> >  #define CXL_CMD_INTERNAL_FLAG_PSEUDO BIT(2)
-> > +
-> > +	int (*validate_payload)(void __user *payload, size_t size);
-> >  };
-> >  
-> > -#define CXL_CMD(_id, _flags, sin, sout, f)                                     \
-> > +#define CXL_CMD_VALIDATE(_id, _flags, sin, sout, f, v)                         \
-> >  	[CXL_MEM_COMMAND_ID_##_id] = {                                         \
-> >  	.info =	{                                                              \
-> >  			.id = CXL_MEM_COMMAND_ID_##_id,                        \
-> > @@ -159,8 +167,12 @@ struct cxl_mem_command {
-> >  		},                                                             \
-> >  	.flags = CXL_CMD_INTERNAL_FLAG_##f,                                    \
-> >  	.opcode = CXL_MBOX_OP_##_id,                                           \
-> > +	.validate_payload = v,                                                 \
-> >  	}
-> >  
-> > +#define CXL_CMD(_id, _flags, sin, sout, f)                                     \
-> > +	CXL_CMD_VALIDATE(_id, _flags, sin, sout, f, NULL)
-> > +
-> >  /*
-> >   * This table defines the supported mailbox commands for the driver. This table
-> >   * is made up of a UAPI structure. Non-negative values as parameters in the
-> > @@ -176,6 +188,8 @@ static struct cxl_mem_command mem_commands[] = {
-> >  	CXL_CMD(GET_PARTITION_INFO, NONE, 0, 0x20, NONE),
-> >  	CXL_CMD(GET_LSA, NONE, 0x8, ~0, MANDATORY),
-> >  	CXL_CMD(GET_HEALTH_INFO, NONE, 0, 0x12, MANDATORY),
-> > +	CXL_CMD_VALIDATE(GET_LOG, MUTEX, 0x18, ~0, MANDATORY,
-> > +			 validate_log_uuid),
-> >  };
-> >  
-> >  /*
-> > @@ -563,6 +577,13 @@ static int handle_mailbox_cmd_from_user(struct cxl_memdev *cxlmd,
-> >  			kvzalloc(cxlm->mbox.payload_size, GFP_KERNEL);
-> >  
-> >  	if (cmd->info.size_in) {
-> > +		if (cmd->validate_payload) {
-> > +			rc = cmd->validate_payload(u64_to_user_ptr(in_payload),
-> > +						   cmd->info.size_in);
-> > +			if (rc)
-> > +				goto out;
-> > +		}
-> > +
-> >  		mbox_cmd.payload_in = kvzalloc(cmd->info.size_in, GFP_KERNEL);
-> >  		if (!mbox_cmd.payload_in) {
-> >  			rc = -ENOMEM;
-> > @@ -1205,6 +1226,25 @@ struct cxl_mbox_get_log {
-> >  	__le32 length;
-> >  } __packed;
-> >  
-> > +static int validate_log_uuid(void __user *input, size_t size)
-> > +{
-> > +	struct cxl_mbox_get_log __user *get_log = input;
-> > +	uuid_t payload_uuid;
-> > +
-> > +	if (copy_from_user(&payload_uuid, &get_log->uuid, sizeof(uuid_t)))
-> > +		return -EFAULT;
-> > +
-> > +	/* All unspec'd logs shall taint */
-> > +	if (uuid_equal(&payload_uuid, &log_uuid[CEL_UUID]))
-> > +		return 0;
-> > +	if (uuid_equal(&payload_uuid, &log_uuid[DEBUG_UUID]))
-> > +		return 0;
-> > +
-> > +	add_taint(TAINT_RAW_PASSTHROUGH, LOCKDEP_STILL_OK);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  static int cxl_xfer_log(struct cxl_mem *cxlm, uuid_t *uuid, u32 size, u8 *out)
-> >  {
-> >  	u32 remaining = size;
-> > diff --git a/include/uapi/linux/cxl_mem.h b/include/uapi/linux/cxl_mem.h
-> > index 766c231d6150..7cdc7f7ce7ec 100644
-> > --- a/include/uapi/linux/cxl_mem.h
-> > +++ b/include/uapi/linux/cxl_mem.h
-> > @@ -39,6 +39,7 @@ extern "C" {
-> >  	___C(GET_PARTITION_INFO, "Get Partition Information"),            \
-> >  	___C(GET_LSA, "Get Label Storage Area"),                          \
-> >  	___C(GET_HEALTH_INFO, "Get Health Info"),                         \
-> > +	___C(GET_LOG, "Get Log"),                                         \
-> >  	___C(MAX, "Last command")
-> >  
-> >  #define ___C(a, b) CXL_MEM_COMMAND_ID_##a
-> > -- 
-> > 2.30.0
-> > 
+drivers/scsi/mpt3sas/mpt3sas_ctl.c:3193:63: warning: array subscript 24
+is above array bounds of ‘U16[1]’ {aka ‘short unsigned int[1]’}
+[-Warray-bounds]
+
+[1] https://en.wikipedia.org/wiki/Flexible_array_member
+[2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
+
+Link: https://github.com/KSPP/linux/issues/79
+Link: https://github.com/KSPP/linux/issues/109
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+Changes in v2:
+ - Fix format specifier: use %zu for size_t type.
+
+ drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h | 11 +----------
+ drivers/scsi/mpt3sas/mpt3sas_ctl.c   |  6 +++---
+ 2 files changed, 4 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h b/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h
+index 43a3bf8ff428..908b0ca63204 100644
+--- a/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h
++++ b/drivers/scsi/mpt3sas/mpi/mpi2_cnfg.h
+@@ -987,21 +987,12 @@ typedef struct _MPI2_CONFIG_PAGE_IO_UNIT_1 {
+ 
+ /*IO Unit Page 3 */
+ 
+-/*
+- *Host code (drivers, BIOS, utilities, etc.) should leave this define set to
+- *one and check the value returned for GPIOCount at runtime.
+- */
+-#ifndef MPI2_IO_UNIT_PAGE_3_GPIO_VAL_MAX
+-#define MPI2_IO_UNIT_PAGE_3_GPIO_VAL_MAX    (1)
+-#endif
+-
+ typedef struct _MPI2_CONFIG_PAGE_IO_UNIT_3 {
+ 	MPI2_CONFIG_PAGE_HEADER Header;			 /*0x00 */
+ 	U8                      GPIOCount;		 /*0x04 */
+ 	U8                      Reserved1;		 /*0x05 */
+ 	U16                     Reserved2;		 /*0x06 */
+-	U16
+-		GPIOVal[MPI2_IO_UNIT_PAGE_3_GPIO_VAL_MAX];/*0x08 */
++	U16			GPIOVal[];		 /*0x08 */
+ } MPI2_CONFIG_PAGE_IO_UNIT_3,
+ 	*PTR_MPI2_CONFIG_PAGE_IO_UNIT_3,
+ 	Mpi2IOUnitPage3_t, *pMpi2IOUnitPage3_t;
+diff --git a/drivers/scsi/mpt3sas/mpt3sas_ctl.c b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
+index c8a0ce18f2c5..ffb21f873058 100644
+--- a/drivers/scsi/mpt3sas/mpt3sas_ctl.c
++++ b/drivers/scsi/mpt3sas/mpt3sas_ctl.c
+@@ -3143,7 +3143,7 @@ BRM_status_show(struct device *cdev, struct device_attribute *attr,
+ 	Mpi2ConfigReply_t mpi_reply;
+ 	u16 backup_rail_monitor_status = 0;
+ 	u16 ioc_status;
+-	int sz;
++	size_t sz;
+ 	ssize_t rc = 0;
+ 
+ 	if (!ioc->is_warpdrive) {
+@@ -3157,11 +3157,11 @@ BRM_status_show(struct device *cdev, struct device_attribute *attr,
+ 		goto out;
+ 
+ 	/* allocate upto GPIOVal 36 entries */
+-	sz = offsetof(Mpi2IOUnitPage3_t, GPIOVal) + (sizeof(u16) * 36);
++	sz = struct_size(io_unit_pg3, GPIOVal, 36);
+ 	io_unit_pg3 = kzalloc(sz, GFP_KERNEL);
+ 	if (!io_unit_pg3) {
+ 		rc = -ENOMEM;
+-		ioc_err(ioc, "%s: failed allocating memory for iounit_pg3: (%d) bytes\n",
++		ioc_err(ioc, "%s: failed allocating memory for iounit_pg3: (%zu) bytes\n",
+ 			__func__, sz);
+ 		goto out;
+ 	}
+-- 
+2.27.0
+
