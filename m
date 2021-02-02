@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6F530C750
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:17:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AFF130C75B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:20:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237306AbhBBRRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:17:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236857AbhBBRO3 (ORCPT
+        id S237430AbhBBRSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:18:46 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:41332 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237331AbhBBRPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 12:14:29 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8AC9C061788
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 09:13:49 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id nm1so2666938pjb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 09:13:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=R9+VZ08mb33ZsTxVzQHNgGkTJo5Su5clNDxSbYpH3ag=;
-        b=diRSFPRygD49Poc/JZ4AusskfpBz3SaZRrJbDOY2fzcR5LXqQZkKd93tiH5mFnVm+c
-         l1os581Ds05eO63iyR7OnzGQMv2TCaYRXhmgGXRHMgUlySvwd30gJYp/5SmK4zxMQ/r3
-         vIwgooy/K8jXDGjVec6xdrGb/eVPIVdbTEm8A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=R9+VZ08mb33ZsTxVzQHNgGkTJo5Su5clNDxSbYpH3ag=;
-        b=mEo6wl8HQp/+kvJI5ZArUc8OQpnm3K0s56QK/1nO1V90vkB7W2D7FI2Yu4+GJ8no+4
-         KV8nke4A21wweCBIcu9LVm+uV3VRs9766+9lsJc2XGIsOqeYrOMg9WSD3BNsYCcoOuHC
-         hSXYxI7e2dYNoGMcSDOsI4fhMAuKdFpw3SlSyLPBG3acRq/1fn06WWWi7sn3YR+43sim
-         KShlOIWIN6bztIw6WqaExe19e4Vt1/p4PEEUx9aYsAeEcTPk/lUityErslyijj8c0gRV
-         fThypmKTUmqKT92gJjbuMxJa8Z01SF36ImsS4kKEJz+ONVQCTM3ybpaKleLU51XgUAWJ
-         UYRQ==
-X-Gm-Message-State: AOAM5322XjGwuQKCJJ8eotINvEHh6gq/8j5Io0bwR0OYRVSMSq1vocf3
-        wsa5tAQmnCIU/Gjk8MWdudBITQ==
-X-Google-Smtp-Source: ABdhPJxEYEQvyqydvkJ+XYVfnYzEhjQ5pqGLkN0GNmAahlnaTN7GjhaapXRizG0V3QW8Ky6mrCbAVQ==
-X-Received: by 2002:a17:902:d4d0:b029:df:d246:ca81 with SMTP id o16-20020a170902d4d0b02900dfd246ca81mr23826450plg.58.1612286029370;
-        Tue, 02 Feb 2021 09:13:49 -0800 (PST)
-Received: from chromium.org ([2620:15c:202:201:3571:bd6e:ee19:b59f])
-        by smtp.gmail.com with ESMTPSA id c17sm21839493pfi.88.2021.02.02.09.13.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 09:13:48 -0800 (PST)
-Content-Type: text/plain; charset="utf-8"
+        Tue, 2 Feb 2021 12:15:38 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 112HDqOb004710;
+        Tue, 2 Feb 2021 11:13:52 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1612286032;
+        bh=0GZnBlsOkIAfjlHvw1T+IMeqbm+/Fp8bDPjTo2hjuDs=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=Ra8W66MYl0TlPXojJYJRm1TR63LmE1LYpFMwPYm6xPmVYP3hTyuBLH4kw90SkTlrY
+         hbr+pxs2hVaL0BogygW6yDCvwzO2EVM3nwTn/xP/ax6A9ChE4e/v4o6dxQXCgpx7pF
+         2nTxPK/JDg0GjH1Y44XcBrRNIlH/o333VnXMdezg=
+Received: from DLEE106.ent.ti.com (dlee106.ent.ti.com [157.170.170.36])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 112HDqBx120507
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 2 Feb 2021 11:13:52 -0600
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE106.ent.ti.com
+ (157.170.170.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 2 Feb
+ 2021 11:13:51 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Tue, 2 Feb 2021 11:13:51 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 112HDp2N007407;
+        Tue, 2 Feb 2021 11:13:51 -0600
+Date:   Tue, 2 Feb 2021 11:13:51 -0600
+From:   Nishanth Menon <nm@ti.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     <arm@kernel.org>, <soc@kernel.org>,
+        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
+        <linux-kernel@vger.kernel.org>, Tero Kristo <kristo@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [GIT PULL 1/2] MAINTAINERS: Update to TI maintainer for v5.12
+Message-ID: <20210202171351.qhnzxvakptfbyocv@coach>
+References: <20210130131411.afna4wj72r7xscqn@skinny>
+ <161228438414.1848830.8600684869682893491.b4-ty@arndb.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210202062727.22469-1-srivasam@codeaurora.org>
-References: <20210202062727.22469-1-srivasam@codeaurora.org>
-Subject: Re: [PATCH] ASoC: qcom: Fix typo error in HDMI regmap config callbacks
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
-        agross@kernel.org, alsa-devel@alsa-project.org,
-        bgoswami@codeaurora.org, bjorn.andersson@linaro.org,
-        broonie@kernel.org, devicetree@vger.kernel.org,
-        lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, perex@perex.cz, plai@codeaurora.org,
-        robh+dt@kernel.org, rohitkr@codeaurora.org,
-        srinivas.kandagatla@linaro.org, tiwai@suse.com
-Date:   Tue, 02 Feb 2021 09:13:47 -0800
-Message-ID: <161228602729.76967.7642340787963440028@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <161228438414.1848830.8600684869682893491.b4-ty@arndb.de>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Srinivasa Rao Mandadapu (2021-02-01 22:27:27)
-> Had a typo in lpass platform driver that resulted in crash
-> during suspend/resume with an HDMI dongle connected.
->=20
-> The regmap read/write/volatile regesters validation callbacks in lpass-cpu
-> were using MI2S rdma_channels count instead of hdmi_rdma_channels.
->=20
-> This typo error causing to read registers from the regmap beyond the leng=
-th
-> of the mapping created by ioremap().
->=20
-> This fix avoids the need for reducing number hdmi_rdma_channels,
-> which is done in
-> commit 7dfe20ee92f6 ("ASoC: qcom: Fix number of HDMI RDMA channels on sc7=
-180").
-> So reverting the same.
->=20
-> Fixes: 7cb37b7bd0d3c ("ASoC: qcom: Add support for lpass hdmi driver")
->=20
-> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-> ---
+On 17:47-20210202, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> On Sat, 30 Jan 2021 07:14:11 -0600, Nishanth Menon wrote:
+> > Please pull the following MAINTAINERS file update for v5.12 cycle. Made
+> > sense to send via ARM path since the main PR path was for TI platforms.
+> 
+> This seems more appropriate to have in v5.11, I tend to fast-track
+> maintainer address changes as bug-fixes so future emails reach the
+> correct address.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Tested-by: Stephen Boyd <swboyd@chromium.org>
+Ouch, my bad. Thanks for the headsup, will keep this in mind if
+(hopefully not), we need to do this in the future.
+
+> 
+> > The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
+> > 
+> >   Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+> > 
+> > are available in the Git repository at:
+> > 
+> > [...]
+> 
+> Merged into arm/fixes, thanks!
+> 
+> merge commit: 6102f9e700bb3fee2f37756514885e7b14a70ef6
+
+Thanks.
+
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D)/Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
