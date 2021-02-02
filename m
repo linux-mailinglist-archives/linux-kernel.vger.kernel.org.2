@@ -2,199 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9244030CF39
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:45:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCD6530CF3B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:45:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236163AbhBBWm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 17:42:58 -0500
-Received: from foss.arm.com ([217.140.110.172]:59312 "EHLO foss.arm.com"
+        id S235597AbhBBWnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 17:43:23 -0500
+Received: from vps-vb.mhejs.net ([37.28.154.113]:59894 "EHLO vps-vb.mhejs.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235113AbhBBWm5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 17:42:57 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3AA48D6E;
-        Tue,  2 Feb 2021 14:42:11 -0800 (PST)
-Received: from [10.57.35.108] (unknown [10.57.35.108])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0E6123F694;
-        Tue,  2 Feb 2021 14:42:09 -0800 (PST)
-Subject: Re: [PATCH V3 01/14] coresight: etm-perf: Allow an event to use
- different sinks
-To:     Mike Leach <mike.leach@linaro.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Coresight ML <coresight@lists.linaro.org>,
-        Linu Cherian <lcherian@marvell.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <1611737738-1493-1-git-send-email-anshuman.khandual@arm.com>
- <1611737738-1493-2-git-send-email-anshuman.khandual@arm.com>
- <20210201231720.GB1475392@xps15>
- <2438dab1-2d28-74f9-92b5-34d9aa09acda@arm.com>
- <CAJ9a7Vi1LXGL+Fjuv04KTQJ9N232MybTJWq6Yo=1vCk_3WYpRA@mail.gmail.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <d70cc898-6ca0-4313-5eb3-77eb58317362@arm.com>
-Date:   Tue, 2 Feb 2021 22:41:56 +0000
+        id S235113AbhBBWnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 17:43:01 -0500
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps (TLS1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.93.0.4)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1l74N7-00031Q-Ud; Tue, 02 Feb 2021 23:42:09 +0100
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <ceb96527b6f7bb662eec813f05b897a551ebd0b2.1612140117.git.maciej.szmigiero@oracle.com>
+ <4d748e0fd50bac68ece6952129aed319502b6853.1612140117.git.maciej.szmigiero@oracle.com>
+ <YBisBkSYPoaOM42F@google.com>
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH 2/2] KVM: Scalable memslots implementation
+Message-ID: <9e6ca093-35c3-7cca-443b-9f635df4891d@maciej.szmigiero.name>
+Date:   Tue, 2 Feb 2021 23:42:04 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAJ9a7Vi1LXGL+Fjuv04KTQJ9N232MybTJWq6Yo=1vCk_3WYpRA@mail.gmail.com>
+In-Reply-To: <YBisBkSYPoaOM42F@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/2/21 4:33 PM, Mike Leach wrote:
-> Hi,
-> 
-> On Tue, 2 Feb 2021 at 09:42, Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
+Hi Sean,
+
+Thanks for your quick look at the series.
+
+On 02.02.2021 02:33, Sean Christopherson wrote:
+> The patch numbering and/or threading is messed up.  This should either be a
+> standalone patch, or fully incorporated into the same series as the selftests
+> changes.  But, that's somewhat of a moot point...
+
+While the new benchmark was used to measure the performance of these
+changes, it is otherwise independent of them, that's why it was submitted
+as a separate series.
+
+> On Mon, Feb 01, 2021, Maciej S. Szmigiero wrote:
+>> From: "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
 >>
->> On 2/1/21 11:17 PM, Mathieu Poirier wrote:
->>> Hi Anshuman,
->>>
->>> I have started reviewing this set.  As it is quite voluminous comments will
->>> come over serveral days.  I will let you know when I am done.
->>>
->>> On Wed, Jan 27, 2021 at 02:25:25PM +0530, Anshuman Khandual wrote:
->>>> From: Suzuki K Poulose <suzuki.poulose@arm.com>
->>>>
->>>> When there are multiple sinks on the system, in the absence
->>>> of a specified sink, it is quite possible that a default sink
->>>> for an ETM could be different from that of another ETM. However
->>>> we do not support having multiple sinks for an event yet. This
->>>> patch allows the event to use the default sinks on the ETMs
->>>> where they are scheduled as long as the sinks are of the same
->>>> type.
->>>>
->>>> e.g, if we have 1x1 topology with per-CPU ETRs, the event can
->>>> use the per-CPU ETR for the session. However, if the sinks
->>>> are of different type, e.g TMC-ETR on one and a custom sink
->>>> on another, the event will only trace on the first detected
->>>> sink.
->>>>
->>>
->>> I found the above changelog very confusing - I read it several times and still
->>> couldn't get all of it.  In the end this patch prevents sinks of different types
->>> from being used for session, and this is what the text should reflect.
+>> The current memslot code uses a (reverse) gfn-ordered memslot array for
+>> keeping track of them.
+>> This only allows quick binary search by gfn, quick lookup by hva is not
+>> possible (the implementation has to do a linear scan of the whole memslot
+>> array).
 >>
->> Sorry about that. Your inference is correct, but it is only a side effect
->> of the primary motive. How about the following :
+>> Because the memslot array that is currently in use cannot be modified
+>> every memslot management operation (create, delete, move, change flags)
+>> has to make a copy of the whole array so it has a scratch copy to work
+>> on.
 >>
->> "When a sink is not specified by the user, the etm perf driver
->> finds a suitable sink automatically based on the first ETM, where
->> this event could be scheduled. Then we allocate the sink buffer based
->> on the selected sink. This is fine for a CPU bound event as the "sink"
->> is always guaranteed to be reachable from the ETM (as this is the only
->> ETM where the event is going to be scheduled). However, if we have a task
->> bound event, the event could be scheduled on any of the ETMs on the
->> system. In this case, currently we automatically select a sink and exclude
->> any ETMs that are not reachable from the selected sink. This is
->> problematic for 1x1 configurations as we end up in tracing the event
->> only on the "first" ETM, as the default sink is local to the first
->> ETM and unreachable from the rest.
->> However, we could allow the other ETMs to trace if they all have a
->> sink that is compatible with the "selected" sink and can use the
->> sink buffer. This can be easily done by verifying that they are
->> all driven by the same driver and matches the same subtype."
+>> Strictly speaking, however, it is only necessary to make copy of the
+>> memslot that is being modified, copying all the memslots currently
+>> present is just a limitation of the array-based memslot implementation.
 >>
+>> Two memslot sets, however, are still needed so the VM continues to
+>> run on the currently active set while the requested operation is being
+>> performed on the second, currently inactive one.
+>>
+>> In order to have two memslot sets, but only one copy of the actual
+>> memslots it is necessary to split out the memslot data from the
+>> memslot sets.
+>>
+>> The memslots themselves should be also kept independent of each other
+>> so they can be individually added or deleted.
+>>
+>> These two memslot sets should normally point to the same set of
+>> memslots. They can, however, be desynchronized when performing a
+>> memslot management operation by replacing the memslot to be modified
+>> by its copy.
+>> After the operation is complete, both memslot sets once again
+>> point to the same, common set of memslot data.
+>>
+>> This commit implements the aforementioned idea.
 > 
+> This needs split into at least 5+ patches, and probably more like 10+ to have
+> a realistic chance of getting it thoroughly reviewed.
 > 
-> Not sure that the logic here makes total sense - I can't see _why_
-> multiple sinks need to be of the same type.
-
-Because we have a single "sink_config" (read, single sink specific
-buffer) for an event. i.e, we do the sink_ops->alloc_buffer() only once
-and rightly so. This allocates any buffers that is used by a given sink.
-e.g, for ETR it allocates an etr_perf_buffer. Now if we wanted the same
-event to run on an ETM with TRBE, the TRBE doesn't have any buffer set up to
-collect the trace and cant make any sense of etr_perf_buffer.
-However, if there is another ETM with a different ETR, the second
-ETR can make sense of the sink_config (etr_perf_buffer) and trace the event.
-Please remember that this only applies to task bound events where
-the event can be scheduled on different ETMs.
-
+> E.g. changes that can easily be split out:
 > 
-> 1) This patch is designed to allow multiple sinks to be used in a 1:1
-> topology system - but there is no specific restriction here - and N:M
-> should work on the same basis
+>    - Move s390's "approximate" logic into search_memslots.
 
-Yes, this should work in any topology.
+Will do.
 
-> 2) This implies that multiple sinks will work within the coresight
-> infrastucture.
+>    - Introduce n_memslots_pages
 
-I am afraid I don't understand the context here.
+Will do.
 
-> 3)  The sink interface -> struct coresight_ops_sink allows sinks to be
-> abstracted - therefore whichever sink is chosen the coresight
-> infrastructure calls the operations for the given sink.
+>    - Using a hash for id_to_index
 
-Correct. The patch is trying to ensure that a private data
-setup by one driver is not interpreted by another driver as
-its own private data. (the private data being sink_config)
+Will do.
 
-> 4) Each individual sink, will have its own hardware buffer - copied
-> into the perf buffers at some appropriate point.
+>    - Changing KVM_USER_MEM_SLOTS to SHRT_MAX
 
-Correct. Supporting multiple types of sinks for a single event
-is complex and not worth the benefit of the extra complexity.
-Moreover we don't expect sane systems to have such a
-configuration.
+Will do.
+
+>    - kvm_zap_gfn_range() changes/optimizations
+
+I guess you mean using a gfn rbtree instead of an ordered array here,
+since that's the reason for the change here - will do.
 
 > 
-> Thus if the users specifies a selected sink - we need to eliminate any
-> source that cannot reach it.
+> AFAICT, tracking both the active and inactive memslot in memslots_all could also
+> be done in a separate patch, though I can't tell if that would actually gain
+> anything.
 
-Yes, we do that now.
+Two sets of memslots are always needed since we need a second, inactive
+set to perform operation on while the VM continues to run on the first
+one.
 
-> If not we need to find the relevant default sink for the source, which
-> might be a shared ETR, or per CPU TRBE / ETR, and the abstraction
-> logic ought to handle getting the captured data to the correct place.
+It is only that the current code makes a copy of the whole array,
+including all the memslot data, for this second set, but the new code
+only copies the data of the actually modified memslot.
 
-The abstraction logic works fine, but the per-event private data is
-something that makes this complex.
+For this reason, the patch that changes the array implementation to the
+"memslots_all" implementation has to also change the whole algorithm in
+kvm_set_memslot().
 
-> If it doesn't then we are on shaky ground with any multiple sink
-> solution.
+
+>> The new implementation uses two trees to perform quick lookups:
+>> For tracking of gfn an ordinary rbtree is used since memslots cannot
+>> overlap in the guest address space and so this data structure is
+>> sufficient for ensuring that lookups are done quickly.
 > 
-> On the face of it - type is irrelevant. If I am missing something -
-> this patch needs a better explanation.
+> Switching to a rbtree for the gfn lookups also appears to be a separate change,
 
-I hope the explanation above makes it clear. Please let me know
-otherwise.
+All right.
 
->>>> +}
->>>> +
->>>>    static void *etm_setup_aux(struct perf_event *event, void **pages,
->>>>                          int nr_pages, bool overwrite)
->>>>    {
->>>> @@ -212,6 +219,7 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
->>>>       cpumask_t *mask;
->>>>       struct coresight_device *sink = NULL;
->>>
->>>           struct coresight_device *user_sink = NULL;
->>>
->>>>       struct etm_event_data *event_data = NULL;
->>>> +    bool sink_forced = false;
->>>>
->>>>       event_data = alloc_event_data(cpu);
->>>>       if (!event_data)
->>>> @@ -222,6 +230,7 @@ static void *etm_setup_aux(struct perf_event *event, void **pages,
->>>>       if (event->attr.config2) {
->>>>               id = (u32)event->attr.config2;
->>>>               sink = coresight_get_sink_by_id(id);
->>>
->>>                   user_sink = coresight_get_sink_by_id(id);
->>>
->>>> +            sink_forced = true;
+> though that's little more than a guess based on a quick read of the changes.
 > 
-> The comment for this block uses the term "selected sink", and the
-> functions use _default_sink . This may read better if we rename the
-> bool to "selected_sink" rather than "sink_forced"
+>> For tracking of hva, however, an interval tree is needed since they
+>> can overlap between memslots.
+> 
+> ...
+> 
+>> Making lookup and memslot management operations O(log(n)) brings
+>> some performance benefits (tested on a Xeon 8167M machine):
+>> 509 slots in use:
+>> Test          Before         After		Improvement
+>> Map           0,0246s     0,0240s		 2%
+>> Unmap         0,0833s     0,0318s		62%
+>> Unmap 2M      0,00177s	0,000917s	48%
+>> Move active   0,0000959s	0,0000816s	15%
+>> Move inactive 0,0000960s	0,0000799s	17%
+> 
+> I assume "move" refers to the gfn?  If so, I believe this can be ignored for the
+> most part as it's not a common operation, and already has a lot of leading zeros :-)
 
-I have removed the bool and replaced with the user_sink as Mathieu
-suggested.
+Even if it is not a common operation (today) making it better is
+still a good thing.
 
-Thanks for the review
-Suzuki
+The move test result has a lot of leading zeros since it is moving just
+a single memslot and that does not take a lot of time in the absolute
+sense.
+
+>> Slot setup	0,0107s		0,00825s	23%
+> 
+> What does "slot setup" measure?  I assume it's one-time pain?  If so, then we
+> can probably ignore this as use cases that care about millisecond improvements
+> in boot time are unlikely to have 50 memslots, let alone 500+ memslots.
+
+This value shows how long it took the test to add all these memslots.
+
+Strictly speaking, it also includes the time spent allocating
+the backing memory and time spent in the (userspace) selftest framework
+vm_userspace_mem_region_add() function, but since these operations are
+exactly the same for both in-kernel memslots implementations the
+difference in results is all due to the new kernel code (that is, this
+patch).
+
+The result also shows how the performance of the create memslot operation
+scales with various count of memslots in use (the measurement is always
+done with the same guest memory size).
+
+Hyper-V SynIC may require up to two additional slots per vCPU.
+A large guest with with 128 vCPUs will then use 256 memslots for this
+alone.
+Also, performance improvements add up.
+
+At (guest) runtime live migration uses the memslot set flags operation
+to turn on and off dirty pages logging.
+Hot{un,}plug of memory and some other devices (like GPUs) create and
+delete memslots, too.
+
+> I'm not nitpicking the benchmarks to discredit your measurements, rather to
+> point out that I suspect the only thing that's "broken" and that anyone truly
+> cares about is unmapping, i.e. hva->memslot lookups.  If that is indeed the
+> case, would it be sufficient to focus on speeding up _just_ the hva lookups?>
+> Specifically, I think we can avoid copying the "active vs. inactive" scheme that
+> is used for the main gfn-based array by having the hva tree resolve to an _id_,
+> not to the memslot itself. I.e. bounce through id_to_index, which is coupled> with the main array, so that lookups are always done on the "active" memslots,
+> without also having to implement an "inactive" hva tree.
+
+I guess you mean to still turn id_to_index into a hash table, since
+otherwise a VMM which uses just two memslots but numbered 0 and 508
+will have a 509-entry id_to_index array allocated.
+
+> For deletion, seeing the defunct/invalid memslot is not a functional problem;
+> it's technically a performance "problem", but one that we already have.  For
+> creation, id_to_index will be -1, and so the memslot lookup will return NULL
+> until the new memslot is visible.
+
+This sounds like you would keep the id_to_index array / hash table
+separate from the main array as it is in the old code (I read "coupled
+with the main array" above as a suggestion to move it to the part that
+gets resized when memslots are created or deleted in the current code,
+that is struct kvm_memslots).
+
+Then if you create or delete a memslot the memslots located further in
+the memslot array (with lower gfn that the processed slot) will have
+their indices shifted - you can't atomically update all of them.
+
+But overall, this solution (and the one with id_to_index moved into the
+main array, too) is still O(n) per memslot operation as you still need to
+copy the array to either make space for the new memslot or to remove the
+hole from the removed memslot.
+
+Due to that scaling issue it's rather hard to use 32k memslots with the
+old code, the improvement was like 20+ times there on an early version
+of this code.
+
+And if we start adding special cases for things like flags change or
+gfn moves to workaround their scaling issues the code will quickly grow
+even more complicated.
+
+> 
+> All hva lookups would obviously need to be changed, but the touchpoint for the
+> write would be quite small, e.g.
+> 
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 8367d88ce39b..c03beb4833b2 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -1220,6 +1220,20 @@ static int kvm_set_memslot(struct kvm *kvm,
+>          if (r)
+>                  goto out_slots;
+> 
+> +       /*
+> +        * Update the hva=>id tree if a memslot is being deleted or created.
+> +        * No update is required for moving a memslot or changing its flags,
+> +        * as those don't affect its _id_.  For deletion, the memslot has been
+> +        * zapped and flushed, fast hva lookups are guaranteed to be nops.  For
+> +        * creation, the new memslot isn't visible until the final installation
+> +        * is complete.  Fast hva lookups may prematurely see the entry, but
+> +        * id_to_memslot() will return NULL upon seeing id_to_index[id] == -1.
+> +        */
+> +       if (change == KVM_MR_DELETE)
+> +               kvm_hva_tree_remove(...);
+> +       else if (change == KVM_MR_CREATE)
+> +               kvm_hva_tree_insert(...);
+> +
+>          update_memslots(slots, new, change);
+>          slots = install_new_memslots(kvm, as_id, slots);
+> 
+>
+> I'm not opposed to using more sophisticated storage for the gfn lookups, but
+> only if there's a good reason for doing so.  IMO, the rbtree isn't simpler, just
+> different.  Memslot modifications are unlikely to be a hot path (and if it is,
+> x86's "zap everything" implementation is a far bigger problem), and it's hard to
+> beat the memory footprint of a raw array.  That doesn't leave much motivation
+> for such a big change to some of KVM's scariest (for me) code.
+> 
+
+Improvements can be done step-by-step,
+kvm_mmu_invalidate_zap_pages_in_memslot() can be rewritten, too in the
+future, if necessary.
+After all, complains are that this change alone is too big.
+
+I think that if you look not at the patch itself but at the resulting
+code the new implementation looks rather straightforward, there are
+comments at every step in kvm_set_memslot() to explain exactly what is
+being done.
+Not only it already scales well, but it is also flexible to accommodate
+further improvements or even new operations.
+
+The new implementation also uses standard kernel {rb,interval}-tree and
+hash table implementation as its basic data structures, so it
+automatically benefits from any generic improvements to these.
+
+All for the low price of just 174 net lines of code added.
+
+Maciej
