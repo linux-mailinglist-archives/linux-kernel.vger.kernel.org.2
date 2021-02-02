@@ -2,249 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE8530BBA0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:00:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A28B230BBC8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:09:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231183AbhBBJ7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 04:59:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231139AbhBBJ7B (ORCPT
+        id S229823AbhBBKJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 05:09:44 -0500
+Received: from esa1.fujitsucc.c3s2.iphmx.com ([68.232.152.245]:17601 "EHLO
+        esa1.fujitsucc.c3s2.iphmx.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229593AbhBBKJW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 04:59:01 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24DA2C061573;
-        Tue,  2 Feb 2021 01:58:20 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id e15so1711501wme.0;
-        Tue, 02 Feb 2021 01:58:20 -0800 (PST)
+        Tue, 2 Feb 2021 05:09:22 -0500
+X-Greylist: delayed 459 seconds by postgrey-1.27 at vger.kernel.org; Tue, 02 Feb 2021 05:09:21 EST
+IronPort-SDR: mi1pd1VIc+R+OzKUgVe1336DLqchqwfkorKO3Opf5Ziwi9pnEvqwnGXbG51ramm+DlUHv6F3XJ
+ RZK3VCWhghOalFwf19CRX+t59IpikXgJj8zmH9p+YZP0zHhALSpIG5T+jgn5QfEiPQk1f9LDKo
+ ZNxdAI10D/tp0PfIrJDIN0uTxtlDD9wWt96koyIzvGNmwGy1iL2hLrpw8n0IGm1JkWB8xKTTRb
+ dsDZQF9QRqkv5WT5+Kr2BB7aIRJr/31U+IfJY4OOUFWkCGwD+93kirycsaqJdmyVGcRlkwp7rf
+ ShM=
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="33606064"
+X-IronPort-AV: E=Sophos;i="5.79,394,1602514800"; 
+   d="scan'208";a="33606064"
+Received: from mail-os2jpn01lp2057.outbound.protection.outlook.com (HELO JPN01-OS2-obe.outbound.protection.outlook.com) ([104.47.92.57])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 18:59:09 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WUS/6pmXVGIUM/Ee2gntJN82CgrH70Hj0Ewwal/WvWo25Fm0KpYMh+EUNdfHZIX/qi+mSGlxl8k+MqEE8wiivBx6Qa0aRoZaTQaOQDWoEuo1fB6F05bPjn6T+Uanu09+eSb2AxxH3a6cI7x4XhHDoVdB0pxNjl/VqKBzHV7gctNaKxlW67noQD+YhoECl9WeaqJk6KYWm4jWfjuCXFQ6sdHXPx72yC7Ruyv/5LX+vqrngzMv6wMsjVh7nZk1o05bcc4tXXpAWBj5rjAd7PRZPHLJMreXtwPhsZj+j0UqbOuOCsVoip4Za8ZBvOk1olhWreJFJRx0appxMkEr4j/n7A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kHtv/GtOcu7DAjq84QGOvsimCcMnmK85/qn//JBhUPU=;
+ b=d/1mWPHVvqtmDj3DWtow7OpJ0/DEC6JzE8SrIibgUMnlsEZ6XHS1b3TuKFo/zQ/cRVmdEpz/bftR+DLQrXC+fyKybCP7gNmhvtk8dfKCRe/EiNVjMEZh2y2QDi4fI2XdCYLjJMzjTDkSx3M8SRZpaeemrq7KrKRK8PilfS06P0cBdSLcyxCcHPcqXdfy6qoJNLVxO9MPg3yX0Su3hRBAeqGSHreKK8J/MB2BjZLZk6MDXO2qwCgej1gbXAWhfYSHxkaayjuLBbWHiFxF01709PJWInIMj7nAO5lR8x3uIBcK0zdPjEV+c3n2yYW5E1w+Z/Fodwj1zrYzGlLgNPUmbA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aRWlB17fgJ7FBH80ZaL2irHbFGq9l/cSPpFGGk65Sp0=;
-        b=jr8Y7EVTubO4xkazVVobZAPzZmg2jsav0Qka/39DaINvgiuxy4NV2/s/+++Qf9qdRg
-         a/whI2ECcaMWwxnNQybb2z7q6X/qeI4wVdaTJtkZKYEihuu4h+NP567Ok/H2+JD/5dhS
-         EuZAQwvZxMIMyO4tZ5TiXJpqVBXAS8Y9qw+SIAIZZTnvvIUyfqHNT/O6IgB4URn6fmeL
-         DMo5PDBVAI+hf5gb+kIdrMeNgDvfCkDSCdIzpu4ZaJWUXb84Nleks/nFL7gEffMqYr7b
-         kLp51qp05OOClLpQR9NvyRaosH6kyPktIroXbKpr+/cJxRfN671HjNTbm9PoNdy6xm38
-         QFSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=aRWlB17fgJ7FBH80ZaL2irHbFGq9l/cSPpFGGk65Sp0=;
-        b=E3dhDC3G/NueOX1NJSK2qhx+Chqb9UZgPeSwj6R3nSCWnPToLWC8aTb1bwI/hz1TxO
-         lPV90Wkn2kvCwuxhuhDvjDqvjG+puPK/djgfUAqpjLWjhyDIMo+qgUJT+FdR+RdB9KMS
-         K8MtxQSDmqwgJ3m5hihBOx53C/0oUyCC8xvmxDfCBGPoQZHZI1uva03h/KC03bqmkS+i
-         94MGF6XB6NAZohv0u6qLpqTd7nQ8o7G/8rWpx9lDtGCJHsWw52kOHZDRTnQCBkyrJttr
-         i1rIfZPdhIT/FIxswPBuZEr8EzS9TvVaJmOkOeSTd+AQq+M/DidFKvrOm5zEzyueODec
-         tRAg==
-X-Gm-Message-State: AOAM532DyRuw3pWmbRAr5HJ8Qr4Coc+xjORdlFQyRu4xoDGIRcI+nbtC
-        dn4AoTCszDu4eP/cc6+EdiA=
-X-Google-Smtp-Source: ABdhPJzExWAL1lD8x9TqPU/EeGYBZQ9l6JLXhM07AU/7P3U6pjBm3uQII891MxzVZ/yfRYSAsOmKQA==
-X-Received: by 2002:a1c:c356:: with SMTP id t83mr1417532wmf.99.1612259898784;
-        Tue, 02 Feb 2021 01:58:18 -0800 (PST)
-Received: from [192.168.1.211] ([2.31.224.123])
-        by smtp.gmail.com with ESMTPSA id e16sm30913024wrp.24.2021.02.02.01.58.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Feb 2021 01:58:18 -0800 (PST)
-Subject: Re: [PATCH v2 2/7] acpi: utils: Add function to fetch dependent
- acpi_devices
-From:   Daniel Scally <djrscally@gmail.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-gpio@vger.kernel.org, linux-i2c <linux-i2c@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, andy@kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>
-References: <20210118003428.568892-1-djrscally@gmail.com>
- <20210118003428.568892-3-djrscally@gmail.com>
- <CAJZ5v0gVQsZ4rxXW8uMidW9zfY_S50zpfrL-Gq0J3Z4-qqBiww@mail.gmail.com>
- <b381b48e-1bf2-f3e7-10a6-e51cd261f43c@gmail.com>
- <CAJZ5v0iU2m4Hs6APuauQ645DwbjYaB8nJFjYH0+7yQnR-FPZBQ@mail.gmail.com>
- <e2d7e5e9-920f-7227-76a6-b166e30e11e5@gmail.com>
- <CAJZ5v0gg5oXG3yOO9iDvPKSsadYrFojW6JcKfZcQbFFpO78zAQ@mail.gmail.com>
- <85ccf00d-7c04-b1da-a4bc-82c805df69c9@gmail.com>
- <CAJZ5v0jO9O1zhBMNRNB5kRt1o86BTjr1kRuFUe=nNVTDwBQhEg@mail.gmail.com>
- <0fac24d2-e8fc-7dc8-0f2f-44c7aadb1daf@gmail.com>
- <CAJZ5v0jVxMMGh6k-vXeBRsCtD0L14poNUrg4kZOpCfOz2sZGZQ@mail.gmail.com>
- <ee8f6b58-55c8-e0a0-c161-bdef361f9e0a@gmail.com>
-Message-ID: <d9ec0439-4323-51a2-70e7-c258fe63cd86@gmail.com>
-Date:   Tue, 2 Feb 2021 09:58:17 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ d=fujitsu.onmicrosoft.com; s=selector2-fujitsu-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kHtv/GtOcu7DAjq84QGOvsimCcMnmK85/qn//JBhUPU=;
+ b=di7+dKzhuty2Z+f+XpfZQAdc7cWDS6y9e5WBI6IQAIHL5lbLhLPCWAJCmBxN0PlOw/Rtjw1z3J5iRWk8hWP6yJhKIbDLrW4kYLuJpoZYiPhxs5JHOCxFbK234DvjU5MqMMt9a6mpi1Y9NmL/53lLQ9MHmeO0a4Ff1e3pSsxwuiE=
+Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com (2603:1096:604:7e::12)
+ by OSBPR01MB4055.jpnprd01.prod.outlook.com (2603:1096:604:4e::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16; Tue, 2 Feb
+ 2021 09:59:05 +0000
+Received: from OSBPR01MB4600.jpnprd01.prod.outlook.com
+ ([fe80::340a:689c:36e1:fedd]) by OSBPR01MB4600.jpnprd01.prod.outlook.com
+ ([fe80::340a:689c:36e1:fedd%7]) with mapi id 15.20.3805.028; Tue, 2 Feb 2021
+ 09:59:05 +0000
+From:   "nakamura.shun@fujitsu.com" <nakamura.shun@fujitsu.com>
+To:     'John Garry' <john.garry@huawei.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "mathieu.poirier@linaro.org" <mathieu.poirier@linaro.org>,
+        "leo.yan@linaro.org" <leo.yan@linaro.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "acme@kernel.org" <acme@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "alexander.shishkin@linux.intel.com" 
+        <alexander.shishkin@linux.intel.com>,
+        "jolsa@redhat.com" <jolsa@redhat.com>,
+        "namhyung@kernel.org" <namhyung@kernel.org>
+CC:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v4 4/4] perf vendor events: Add Fujitsu A64FX V1.2 pmu
+ event
+Thread-Topic: [PATCH v4 4/4] perf vendor events: Add Fujitsu A64FX V1.2 pmu
+ event
+Thread-Index: AQHW+IwaTDkxjimhBk2agd6bvCyU06pDXBgAgAFGPzA=
+Date:   Tue, 2 Feb 2021 09:59:05 +0000
+Message-ID: <OSBPR01MB4600B423DB2D36E93CFF82E0F7B59@OSBPR01MB4600.jpnprd01.prod.outlook.com>
+References: <20210201111310.3231469-1-nakamura.shun@jp.fujitsu.com>
+ <20210201111310.3231469-5-nakamura.shun@jp.fujitsu.com>
+ <66d5411e-222a-224f-1099-f476e3dcf6df@huawei.com>
+In-Reply-To: <66d5411e-222a-224f-1099-f476e3dcf6df@huawei.com>
+Accept-Language: ja-JP, en-US
+Content-Language: ja-JP
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-shieldmailcheckermailid: ea5bd60d98e945aab47f1277a78522b9
+x-securitypolicycheck: OK by SHieldMailChecker v2.6.3
+authentication-results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=fujitsu.com;
+x-originating-ip: [218.44.52.180]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d101c207-7e14-4ead-7179-08d8c7612d28
+x-ms-traffictypediagnostic: OSBPR01MB4055:
+x-microsoft-antispam-prvs: <OSBPR01MB405550E5B0E4F03D51E3B12DF7B59@OSBPR01MB4055.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: b2ZU2Ij4/KS3gvyTkAwIlwe7ktSmwWFSOfguTSX3oTP8S9nW3ML8NiHpvGRjzEykL3qy4s+KBYF6kZ10Tg1u12udHNoFufVSEfcxzW8ZkBvTaenkn2GR7n8yZuIHT1ZKimAMSxzJ2DUCG8Chfb0a9QbZz0azjwB4SNO200yx/j5r6NmK+ooZ/zfedrkHvNNipG5Hk6pR6r7XfJw/nVv/7JTpXhr6Q1LJuzeXrGy59OkZuzDBmDwcV5z/xa8OB7MyQPU0WYHrojwPnTnFwb1P1Ca6vgT7gEksjctWVF4S6Vj7aArUTWnhQyDoePjZroCAh5EeiWitGxhP8vVseqLLIOzNqN5dFmE4h4XIo8KB8v9NHgDwAsLBk76W2rgDljJsaXIXX70VAIyQPFZ6luYh0U0/HgtAsCGWRMPM2IzrJMz3pfqSw8Gj5caWX4AL3AwhK3qogPO/McHev6ft05PhOzDnkvqRXRUQh1YLe4rXzXjPFBekcO97Je6WOmus7X6Qz4uJQr2JIO5zGlSExL+2eulgI5T1GHDxVeXhyQhv69kvF9y00VDTSJe+oe3tRlHZyH/zTOQaAiyWfvhVPXV5RZ2ktBQfXsvOh9V2IoEGIQbxNoQ0Obe2crZuSd3c4/dlI9L5w1IohxluvU4T5Yh17vZLOaxSgSZZjv6ehFvMuqY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSBPR01MB4600.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(136003)(376002)(366004)(346002)(7696005)(86362001)(4326008)(8936002)(71200400001)(5660300002)(4744005)(966005)(316002)(110136005)(54906003)(9686003)(6506007)(66446008)(64756008)(26005)(55016002)(85182001)(186003)(66946007)(33656002)(478600001)(921005)(66476007)(8676002)(76116006)(52536014)(7416002)(2906002)(66556008)(777600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?WlBveWNSOEgwNFdoL2ZML1cyUWRrZGhvemtOdjBGTFJ6TERsd3ZmOXZ0Z2xr?=
+ =?utf-8?B?UUhiMkVSTHpvdVhIaUtFdUM5UW8xWVZ2clJpSm1LR1Z4cXFRRCtlR29xVW04?=
+ =?utf-8?B?RXlLTjRqUzJYTGxlQUZrREtMN1EveCtDQjZaT1VLWXdCVDZ0aHpUQnZLN29k?=
+ =?utf-8?B?NC9CMmpNWGtQNjNIV1cydFhYbHJFWEdDZXBmdXBGY01ZYkJjTnFPTDU1YzJo?=
+ =?utf-8?B?N09RT2o2NEgwVExNYWtVeVpCNnhHUWRSTzdLN3RVTHRDYnBkVUl2bGpxRWtM?=
+ =?utf-8?B?bFZQbm0zL1grVk1FY3Q2NE5peVFoM3k3ZGl0OUUydHJBczdsbzQxTHRNNlZQ?=
+ =?utf-8?B?UEVSR2VYckFaZnMrc2Y4bEsvYkhIc3VXb0YvNk1uTjBrQXhOeitrc20yUW81?=
+ =?utf-8?B?czduQmUrbERaUnV5SmlNMGNuZXBXMU5UNVIvNWVBTG0zM3FFYzEzd3B5MTRW?=
+ =?utf-8?B?YlpOdFNFc1hyNTY2eVk4V21OdS9RdWZKOE1xQlVrbFNiUFRySGppKzA0SFVp?=
+ =?utf-8?B?aytKOVFYaHRGT0ZqTVFzYkNUcHdjZGlJbjFFKzQ2cXRvWXJvKzc5ODRiTXFQ?=
+ =?utf-8?B?dGNZVlFwY1JKZS9mcGV0dzNXUUQvQTRDU2NXQVZlOHUrdHRpVnE4R01PRVpK?=
+ =?utf-8?B?SnBVNE9QTTltbHpLUm04cHJtaFM0RmdudmhlMXE5eTl3S0gvSEdYdDlwSnB4?=
+ =?utf-8?B?MnZXZ1JsdXpQQmRPdlhiZ0FuMVBZUUh2ckwzNVJ4amNBN0tVSFZibnFGeEli?=
+ =?utf-8?B?MHNKUUF5Z3FtSDkzNXFUci95VytUZFZDbDFEaktoenlITUdWNC9GNzNWbno4?=
+ =?utf-8?B?c285OXQvUEpwUHVPbCtUOFZvZzJUNVRUSVk0MjVhN3ZLWVFDMjZUR1JQb2Js?=
+ =?utf-8?B?SDZRdkxXZVhlMXNUUW5ySmlyeDdOYUc5aHNEV0pIRk1VMFhiYUY2S1hITUth?=
+ =?utf-8?B?NStTek5FbjFHYjBpZnI4Q3ZQRVVnV1BtZjdXQ1YxdGJranJETWJGb0pHc0xq?=
+ =?utf-8?B?cnIyTFY3amdvaWhHUHpzWHFUUVlYclU0WWZuTk5uV0xleHVYZU1iSG1BYVNC?=
+ =?utf-8?B?SUFxYTJReHZIZjhWcVRFTU1XWmNHaWVaU0lWZjlGVjlBUFE1UU9VUHZuSisv?=
+ =?utf-8?B?dmJNdXRFeHptNjRhRCtWV3VxVVhCcS9LSmFoRDFpRkJSUStVZEt5OUlNNnhS?=
+ =?utf-8?B?MWdYNmdZaWtMWUtrdnZLYXJCKzdBaTZXZDZyTFA1dWszcG81c1VBVEFqU0wv?=
+ =?utf-8?B?V2tTOWRTUXJ5Rnp2MGViOGlRUXhlZDdlSVcrekJpa255RW9teXE4aGVVRTNR?=
+ =?utf-8?B?THRJeFhhRFVjc3haeGRKa24xTWF4c29iQ0s3cEhhNkJBaGFjeU9OVWVPL05w?=
+ =?utf-8?B?VnlVQ3NOekkweHlzTWdaa2JXQ2g3bDlsMkpGbit0VkZFZXRINnphM0FvVkYx?=
+ =?utf-8?Q?hw8p623b?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <ee8f6b58-55c8-e0a0-c161-bdef361f9e0a@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OSBPR01MB4600.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d101c207-7e14-4ead-7179-08d8c7612d28
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Feb 2021 09:59:05.5545
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: OO5AfhrFL/8YGnAs6kJ7fIqHXcaQFQqRltpR81Hj7wMgxJB9762Sw+dvP2r3XdLbBoipfjs/Oo4P83WBBxc6DyopjC/0bssMIaio7JSQb8U=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSBPR01MB4055
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael
-
-On 21/01/2021 21:06, Daniel Scally wrote:
-> 
-> On 21/01/2021 18:08, Rafael J. Wysocki wrote:
->> On Thu, Jan 21, 2021 at 5:34 PM Daniel Scally <djrscally@gmail.com> wrote:
->>>
->>> On 21/01/2021 14:39, Rafael J. Wysocki wrote:
->>>> On Thu, Jan 21, 2021 at 1:04 PM Daniel Scally <djrscally@gmail.com> wrote:
->>>>> On 21/01/2021 11:58, Rafael J. Wysocki wrote:
->>>>>> On Thu, Jan 21, 2021 at 10:47 AM Daniel Scally <djrscally@gmail.com> wrote:
->>>>>>> Hi Rafael
->>>>>>>
->>>>>>> On 19/01/2021 13:15, Rafael J. Wysocki wrote:
->>>>>>>> On Mon, Jan 18, 2021 at 9:51 PM Daniel Scally <djrscally@gmail.com> wrote:
->>>>>>>>> On 18/01/2021 16:14, Rafael J. Wysocki wrote:
->>>>>>>>>> On Mon, Jan 18, 2021 at 1:37 AM Daniel Scally <djrscally@gmail.com> wrote:
->>>>>>>>>>> In some ACPI tables we encounter, devices use the _DEP method to assert
->>>>>>>>>>> a dependence on other ACPI devices as opposed to the OpRegions that the
->>>>>>>>>>> specification intends. We need to be able to find those devices "from"
->>>>>>>>>>> the dependee, so add a function to parse all ACPI Devices and check if
->>>>>>>>>>> the include the handle of the dependee device in their _DEP buffer.
->>>>>>>>>> What exactly do you need this for?
->>>>>>>>> So, in our DSDT we have devices with _HID INT3472, plus sensors which
->>>>>>>>> refer to those INT3472's in their _DEP method. The driver binds to the
->>>>>>>>> INT3472 device, we need to find the sensors dependent on them.
->>>>>>>>>
->>>>>>>> Well, this is an interesting concept. :-)
->>>>>>>>
->>>>>>>> Why does _DEP need to be used for that?  Isn't there any other way to
->>>>>>>> look up the dependent sensors?
->>>>>>>>
->>>>>>>>>> Would it be practical to look up the suppliers in acpi_dep_list instead?
->>>>>>>>>>
->>>>>>>>>> Note that supplier drivers may remove entries from there, but does
->>>>>>>>>> that matter for your use case?
->>>>>>>>> Ah - that may work, yes. Thank you, let me test that.
->>>>>>>> Even if that doesn't work right away, but it can be made work, I would
->>>>>>>> very much prefer that to the driver parsing _DEP for every device in
->>>>>>>> the namespace by itself.
->>>>>>> This does work; do you prefer it in scan.c, or in utils.c (in which case
->>>>>>> with acpi_dep_list declared as external var in internal.h)?
->>>>>> Let's put it in scan.c for now, because there is the lock protecting
->>>>>> the list in there too.
->>>>>>
->>>>>> How do you want to implement this?  Something like "walk the list and
->>>>>> run a callback for the matching entries" or do you have something else
->>>>>> in mind?
->>>>> Something like this (though with a mutex_lock()). It could be simplified
->>>>> by dropping the prev stuff, but we have seen INT3472 devices with
->>>>> multiple sensors declaring themselves dependent on the same device
->>>>>
->>>>>
->>>>> struct acpi_device *
->>>>> acpi_dev_get_next_dependent_dev(struct acpi_device *supplier,
->>>>>                 struct acpi_device *prev)
->>>>> {
->>>>>     struct acpi_dep_data *dep;
->>>>>     struct acpi_device *adev;
->>>>>     int ret;
->>>>>
->>>>>     if (!supplier)
->>>>>         return ERR_PTR(-EINVAL);
->>>>>
->>>>>     if (prev) {
->>>>>         /*
->>>>>          * We need to find the previous device in the list, so we know
->>>>>          * where to start iterating from.
->>>>>          */
->>>>>         list_for_each_entry(dep, &acpi_dep_list, node)
->>>>>             if (dep->consumer == prev->handle &&
->>>>>                 dep->supplier == supplier->handle)
->>>>>                 break;
->>>>>
->>>>>         dep = list_next_entry(dep, node);
->>>>>     } else {
->>>>>         dep = list_first_entry(&acpi_dep_list, struct acpi_dep_data,
->>>>>                        node);
->>>>>     }
->>>>>
->>>>>
->>>>>     list_for_each_entry_from(dep, &acpi_dep_list, node) {
->>>>>         if (dep->supplier == supplier->handle) {
->>>>>             ret = acpi_bus_get_device(dep->consumer, &adev);
->>>>>             if (ret)
->>>>>                 return ERR_PTR(ret);
->>>>>
->>>>>             return adev;
->>>>>         }
->>>>>     }
->>>>>
->>>>>     return NULL;
->>>>> }
->>>> That would work I think, but would it be practical to modify
->>>> acpi_walk_dep_device_list() so that it runs a callback for every
->>>> consumer found instead of or in addition to the "delete from the list
->>>> and free the entry" operation?
->>>
->>> I think that this would work fine, if that's the way you want to go.
->>> We'd just need to move everything inside the if (dep->supplier ==
->>> handle) block to a new callback, and for my purposes I think also add a
->>> way to stop parsing the list from the callback (so like have the
->>> callbacks return int and stop parsing on a non-zero return). Do you want
->>> to expose that ability to pass a callback outside of ACPI?
->> Yes.
->>
->>> Or just export helpers to call each of the callbacks (one to fetch the next
->>> dependent device, one to decrement the unmet dependencies counter)
->> If you can run a callback for every matching entry, you don't really
->> need to have a callback to return the next matching entry.  You can do
->> stuff for all of them in one go
-> 
-> Well it my case it's more to return a pointer to the dep->consumer's
-> acpi_device for a matching entry, so my idea was where there's multiple
-> dependents you could use this as an iterator...but it could just be
-> extended to that if needed later; I don't actually need to do it right now.
-> 
-> 
->> note that it probably is not a good
->> idea to run the callback under the lock, so the for loop currently in
->> there is not really suitable for that
-> 
-> No problem;  I'll tweak that then
-
-Slightly walking back my "No problem" here; as I understand this there's
-kinda two options:
-
-1. Walk over the (locked) list, when a match is found unlock, run the
-callback and re-lock.
-
-The problem with that idea is unless I'm mistaken there's no guarantee
-that the .next pointer is still valid then (even using the *_safe()
-methods) because either the next or the next + 1 entry could have been
-removed whilst the list was unlocked and the callback was being ran, so
-this seems a little unsafe.
-
-2. Walk over the (locked) list twice, the first time counting matching
-entries and using that to allocate a temporary buffer, then walk again
-to store the matching entries into the buffer. Finally, run the callback
-for everything in the buffer, free it and return.
-
-Obviously that's a lot less efficient than the current function, which
-isn't particularly palatable.
-
-Apologies if I've missed a better option that would work fine; but
-failing that do you still want me to go ahead and change
-acpi_walk_dep_device_list() to do this (I'd choose #2 of the above), or
-fallback to using acpi_dev_get_next_dependent_dev() described above? If
-the latter, does acpi_walk_dep_device_list() maybe need re-naming to
-make clear it's not a generalised function?
+SGksIEpvaG4NCg0KVjEuMiBpcyB2ZXJzaW9uIG9mIHRoZSBzcGVjaWZpY2F0aW9uIHNoZWV0Lg0K
+SXQgaXMgbm90IHRoZSB2ZXJzaW9uIG9mIEE2NEZYLg0KSSByZW1vdmUgdGhlIHZlcnNpb24gZnJv
+bSB0aGUgc3ViamVjdCBiZWNhdXNlIGl0IHdpbGwgYmUgbWlzdW5kZXJzdG9vZC4NCg0KSSBjaGVj
+a2VkIHRoZSBtYWlsLCB0aGVyZSB3YXMgYSBzcGFjZSBiZWZvcmUgPC4NCmh0dHBzOi8vbG9yZS5r
+ZXJuZWwub3JnL2xpbnV4LWFybS1rZXJuZWwvMjAyMTAyMDExMTEzMTAuMzIzMTQ2OS01LW5ha2Ft
+dXJhLnNodW5AanAuZnVqaXRzdS5jb20vDQoNCkl0IG1pZ2h0IGJlIGhpZGRlbiBieSB5b3VyIG1h
+aWxlciBzZXR0aW5nLg0KDQpCZXN0IFJlZ2FyZHMNClNodW5zdWtlDQoNCg==
