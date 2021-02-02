@@ -2,70 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C12F330B933
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:06:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF7D30B936
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:06:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231924AbhBBIFn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 03:05:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59868 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229797AbhBBIFe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 03:05:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 925E164EEE
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 08:04:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612253091;
-        bh=HA1oDXGCJxu9Glv25heLCkXDw2HKLAWYDLwD3J37ABw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=HUXG68XseUPvE+ml32U2sD1sEQR2GPeDFbFFBv263YJeeEFdtnzKicowpoUTYRbaI
-         NLqrNh+YOw74vXeqBGfJvHJq7BPrmQeh6C3Qnct75aferyDOSf1r7mtvB+emXI4hJr
-         oRYyELEYQyjMaFRNdVWhJfTvCtK9lXUj/quieO4PlKv5jgvVmGu3oUY+ylqA2PQJwY
-         e0rLZV82LPiSrFH3uFVxKRIgMWSySbE+eVIAqHKY4V4n/wqrOUMHOX1g6o2bT5lXt5
-         E0K9s1fCOqMfPLOfa9ZwLat0/VBXybD0Of7bJdlrNBOTHqL1fNl/qMCd9gd3v+hH7F
-         E+ZeILS0tzM/A==
-Received: by mail-ot1-f47.google.com with SMTP id n42so19003996ota.12
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 00:04:51 -0800 (PST)
-X-Gm-Message-State: AOAM531TvCq0QZGj7sOVAHUxq7B2N7epidW8lXKCvxPjyUcpHxjaClM1
-        ICUen/RXiGPkJ41E2LNx0Z0hden4HVn1uMWlr0Q=
-X-Google-Smtp-Source: ABdhPJw39Q3RUD6safr+5ByEW89VpY/DyeiocJ8/R3PNwoQ5ppmdGcWAIyjioRK1qG42ibb3Uk5BktCYXZ73KHjVQoA=
-X-Received: by 2002:a05:6830:139a:: with SMTP id d26mr14502963otq.305.1612253090768;
- Tue, 02 Feb 2021 00:04:50 -0800 (PST)
-MIME-Version: 1.0
-References: <20210202022441.1451389-1-nathan@kernel.org>
-In-Reply-To: <20210202022441.1451389-1-nathan@kernel.org>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Tue, 2 Feb 2021 09:04:34 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2864oSVkhaYynoadyYMcYDh0LvDDFSJ2D8OTHSszuSQA@mail.gmail.com>
-Message-ID: <CAK8P3a2864oSVkhaYynoadyYMcYDh0LvDDFSJ2D8OTHSszuSQA@mail.gmail.com>
-Subject: Re: [PATCH] arm64: Make CPU_BIG_ENDIAN depend on !LD_IS_LLD
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        id S231984AbhBBIGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 03:06:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231688AbhBBIFz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 03:05:55 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD6DC061573;
+        Tue,  2 Feb 2021 00:05:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GXKqg1wRs9RGvWZ1qTCHS+IG1zrHxoDxyev40JGQz0I=; b=FvPEpVXTiLIYOeqFYYGPHgfynw
+        qZSL+6qvKRod0FOYIr48Dq6CWFH57jO2SiQzmAeOgGPYaBReWQ7b9l5/ioC5fjYRq/7JZPFEFr1ff
+        f9qVB+5NtXQGwCORhFaTCqwyqIgWBWEjFVAn1ng8LV0OyVptXLlr6VLjDSAD0GmKXLqjspJRraDOR
+        M/hg4oywu3pbkaN9MmTWUO6NbeHYeDjHu2K74GV1nbyEQIhys+yPQi7HkpvggU8ishRP9vnkyM7Jo
+        HKGXREw7QzRQDRUE/aAem5OqUUfgG7/wCszzhqhpzcBqGUr10QhObKSbsqpsAigK8aYyQKFTzXQrB
+        cL2VrZpQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1l6qgO-00Eto6-7S; Tue, 02 Feb 2021 08:05:08 +0000
+Date:   Tue, 2 Feb 2021 08:05:08 +0000
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Theodore Ts'o <tytso@mit.edu>
+Cc:     Vinicius Tinti <viniciustinti@gmail.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Nathan Chancellor <natechancellor@gmail.com>,
         Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v2] ext4: Enable code path when DX_DEBUG is set
+Message-ID: <20210202080508.GA3550351@infradead.org>
+References: <AAB32610-D238-4137-96DE-33655AAAB545@dilger.ca>
+ <20210201003125.90257-1-viniciustinti@gmail.com>
+ <20210201124924.GA3284018@infradead.org>
+ <CALD9WKxc0kMPCHSoikko+qYk2+ZLUy73+ryKGW9qMSpyzAobLA@mail.gmail.com>
+ <YBg20AuSC3/9w2zz@mit.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YBg20AuSC3/9w2zz@mit.edu>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 3:25 AM Nathan Chancellor <nathan@kernel.org> wrote:
->
-> Similar to commit 28187dc8ebd9 ("ARM: 9025/1: Kconfig: CPU_BIG_ENDIAN
-> depends on !LD_IS_LLD"), ld.lld does not support aarch64 big endian,
-> leading to the following build error when CONFIG_CPU_BIG_ENDIAN is
-> selected:
->
-> ld.lld: error: unknown emulation: aarch64linuxb
+On Mon, Feb 01, 2021 at 12:13:52PM -0500, Theodore Ts'o wrote:
+> However, if there *is* a bug, having an early detection that the
+> representation invariant of the data structure has been violated can
+> be useful in root causing a bug.  This would probably be clearer if
+> the code was pulled out into a separate function with comments
+> explaining that this is a rep invariant check.
+> 
+> The main thing about DX_DEBUG right now is that it is **super**
+> verbose.  Unwary users who enable it.... will be sorry.  If we want to
+> make it to be a first-class feature enabled via CONFIG_EXT4_DEBUG, we
+> should convert all of the dx_trace calls to use pr_debug so they are
+> enabled only if dynamic debug enables those pr_debug() statements.
+> And this should absolutely be a separate patch.
 
-While this is the original error message I reported, I think it would be
-better to explain that lld actually does support linking big-endian
-kernels but they don't boot, for unknown reasons.
-
-I can send a patch to address the build error and mark big-endian
-as "depends on !LD_IS_LLD || COMPILE_TEST" to reflect that
-and help with randconfig testing.
-
-        Arnd
+Yes.  The problem with a non-Kconfig ifdef is that is is almost
+guaranteed to bitrot very fast, so you might as well just remove the
+code.  The "if (0)", while ugly, at least ensures the code still
+actually is seen and checked by the compiler.
