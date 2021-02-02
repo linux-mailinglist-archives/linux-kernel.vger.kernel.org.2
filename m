@@ -2,103 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1141E30B50F
+	by mail.lfdr.de (Postfix) with ESMTP id 8605D30B510
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 03:11:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbhBBCKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 21:10:42 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:12002 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhBBCKm (ORCPT
+        id S229977AbhBBCLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 21:11:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhBBCLH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 21:10:42 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DV7XC4Dh3zjHJp;
-        Tue,  2 Feb 2021 10:08:43 +0800 (CST)
-Received: from [10.174.179.241] (10.174.179.241) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Tue, 2 Feb 2021 10:09:59 +0800
-Subject: Re: [PATCH] mm: simplify the VM_BUG_ON condition in
- pmdp_huge_clear_flush()
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-References: <20210201114319.34720-1-linmiaohe@huawei.com>
- <20210201153354.e640247cb5ab306e909322d0@linux-foundation.org>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <2e2c1d42-9492-4e30-9646-bfa06b2d14d7@huawei.com>
-Date:   Tue, 2 Feb 2021 10:09:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <20210201153354.e640247cb5ab306e909322d0@linux-foundation.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.241]
-X-CFilter-Loop: Reflected
+        Mon, 1 Feb 2021 21:11:07 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07AB7C061573;
+        Mon,  1 Feb 2021 18:10:27 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id f16so975372wmq.5;
+        Mon, 01 Feb 2021 18:10:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=f6cfnJUj3ixleZugMsurt3GK+ClAIDiuD3TFRsp/gNU=;
+        b=Q9OC1V7F6GU8kJh9uHNzuxKQqYMM1FZeo+XTauphZ+SKM7lhrU7J9Bd4oY7DUbK2hV
+         qpt9ok+hSk+WQANPFlZ4p4NERncSIT3IxqHTc45Eb6eFNMI1qKhuaOrD9c0AbeDG1xWo
+         LX93WAeEKBH4NPQhyl93p9dS6GPqXQJjVMvOLL4YSGUCvuR6WwXOqlbhJPQfwshLAV5I
+         ZYBbaR9rPmrlYqNHjhLaYkhUrVzRugJBOzqkz1RTYg9zBG4isZYT9+VL4LZYO4IX8zK5
+         Dvy2lsH1yXg9DiXKrxRE2/vMwHLGHHd06Yzcs1r8bRdmUihDy421KB+/BxmXSKZXpl9+
+         qtGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=f6cfnJUj3ixleZugMsurt3GK+ClAIDiuD3TFRsp/gNU=;
+        b=XCfbcUQr9rc/TTcsZ29E03tgyb+VGjowB/Zi5d3PobwX7eJ8ET1mrQI2GMl5bOXb94
+         G88pcED0dhIkmrg1oIeActXg5ns+PvsCFaBU7qrRkWVWrIn4p+5WGdoarISzig2GqGSw
+         6HbB4/u1eFGXRgbzneZukYBjiD2JHott0iYVUB3O5BLdE8VaT9baTrZ+6NAZXWv1AG6v
+         YNZBoSsJscypxSGAanyK2ew+Po7TUSIJlc0td9nvkFuXtgaI/nOgSSmWWikQYV2dBCrZ
+         5RpeoXDlKKcZpT4/ALMcVVopDVOlqneIo9dKzcky1TO/leDOE+trjNawlBzV1v5sS+IC
+         y/6Q==
+X-Gm-Message-State: AOAM5315Etwnu+kDnlNx+E3jR6jHxbw3BYOQYkQjLgD4nGNXrkAGuATF
+        bAK4r4ANqq5/dFRHL2QZ7No=
+X-Google-Smtp-Source: ABdhPJz4VUGoRhko+s6ShlvQwvw4Gmm/ELgj+i1+EG9swV576yp4d79mLLd+eAuI2kulUScKk9uwUQ==
+X-Received: by 2002:a1c:678a:: with SMTP id b132mr1350553wmc.35.1612231825785;
+        Mon, 01 Feb 2021 18:10:25 -0800 (PST)
+Received: from localhost.localdomain ([87.200.95.144])
+        by smtp.gmail.com with ESMTPSA id u14sm990570wmq.45.2021.02.01.18.10.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 18:10:25 -0800 (PST)
+From:   Christian Hewitt <christianshewitt@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Christian Hewitt <christianshewitt@gmail.com>,
+        Dongjin Kim <tobetter@gmail.com>
+Subject: [PATCH v3 0/5] arm64: dts: meson: add support for ODROID-HC4
+Date:   Tue,  2 Feb 2021 02:10:16 +0000
+Message-Id: <20210202021021.11068-1-christianshewitt@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi:
-On 2021/2/2 7:33, Andrew Morton wrote:
-> On Mon, 1 Feb 2021 06:43:19 -0500 Miaohe Lin <linmiaohe@huawei.com> wrote:
-> 
->> The condition (A && !C && !D) || !A is equivalent to !A || (A && !C && !D)
->> and can be further simplified to !A || (!C && !D).
->>
->> ..
->>
->> --- a/mm/pgtable-generic.c
->> +++ b/mm/pgtable-generic.c
->> @@ -135,8 +135,8 @@ pmd_t pmdp_huge_clear_flush(struct vm_area_struct *vma, unsigned long address,
->>  {
->>  	pmd_t pmd;
->>  	VM_BUG_ON(address & ~HPAGE_PMD_MASK);
->> -	VM_BUG_ON((pmd_present(*pmdp) && !pmd_trans_huge(*pmdp) &&
->> -			   !pmd_devmap(*pmdp)) || !pmd_present(*pmdp));
->> +	VM_BUG_ON(!pmd_present(*pmdp) || (!pmd_trans_huge(*pmdp) &&
->> +					  !pmd_devmap(*pmdp)));
->>  	pmd = pmdp_huge_get_and_clear(vma->vm_mm, address, pmdp);
->>  	flush_pmd_tlb_range(vma, address, address + HPAGE_PMD_SIZE);
->>  	return pmd;
-> 
-> True, and the resulting code is still readable enough.
-> 
-> But a problem with such a complex expression is that the developer will
-> have trouble figuring out why the BUG actually triggered.
-> 
+This series fixes minor sort-order issues in the Amlogic bindings yaml and
+dtb Makefile, then converts the existing ODROID-C4 dts into dtsi so we can
+support its new sister product the ODROID-HC4.
 
-Agree! We can determine which condition is failing through the line number __but__
-we can't figure out exactly which one triggered BUG for a complex expression.
+I've also given the devices different audio card names. This is partly
+cosmetic, but also because HC4 is HDMI-only while C4 can be used with
+other i2c audio devices via an expansion connector so users may want to
+use different alsa configs.
 
-> If we had a VM_BUG_ON_PMD() then we could print the pmd's value and
-> permit diagnosis from that.  But we don't have such a thing.
-> 
-> So I suggest that it would be better to have
-> 
-> 	VM_BUG_ON((pmd_present(*pmdp) && !pmd_trans_huge(*pmdp) &&
-> 			   !pmd_devmap(*pmdp)));
-> 	VM_BUG_ON(!pmd_present(*pmdp));
-> 
-> This way, the BUG()'s file-n-line output will tell us more about why the
-> kernel went splat.
-> 
-> 
-> I suppose maybe this could be optimized the same way, as
-> 
-> 	VM_BUG_ON(!pmd_present(*pmdp));
-> 	/* Below assumes pmd_present() is true */
-> 	VM_BUG_ON(!pmd_trans_huge(*pmdp) && !pmd_devmap(*pmdp));
+Patches to support the spifc chip are still being upstreamed [0] so this
+will be addressed in a follow up. A WIP patch for the dts change can be
+found in my amlogic-5.11.y dev branch [1].
 
-This one looks good and provide more information than before. I can send another patch to do this (and feel free to merge into
-this one), should I ?
+For reference, here's dmesg from LibreELEC on 5.11-rc5 [2].
 
-Many thanks.
+Changes since v2:
+- rebase on khilman v5.12/dt64 branch
 
-> 
-> Which works because VM_BUG_ON is, depending up Kconfig, either a no-op
-> or a noreturn-if-it-triggered.  I'm not sure if I like this trick much though.
-> 
-> .
-> 
+Changes since v1:
+- fix ODRIOD typo in patch 3
+- fix SPI-NOT size in patch 5
+- add Neil's Acks/Reviews
+
+[0] https://patchwork.ozlabs.org/project/linux-mtd/patch/20201220224314.2659-1-andreas@rammhold.de/
+[1] https://github.com/chewitt/linux/commits/amlogic-5.11.y
+[2] http://ix.io/2NCi
+
+Christian Hewitt (5):
+  dt-bindings: arm: amlogic: sort SM1 bindings
+  arm64: dts: meson: sort Amlogic dtb Makefile
+  arm64: dts: meson: convert meson-sm1-odroid-c4 to dtsi
+  dt-bindings: arm: amlogic: add ODROID-HC4 bindings
+  arm64: dts: meson: add initial device-tree for ODROID-HC4
+
+ .../devicetree/bindings/arm/amlogic.yaml      |   5 +-
+ arch/arm64/boot/dts/amlogic/Makefile          |   3 +-
+ .../boot/dts/amlogic/meson-sm1-odroid-c4.dts  | 427 +----------------
+ .../boot/dts/amlogic/meson-sm1-odroid-hc4.dts |  96 ++++
+ .../boot/dts/amlogic/meson-sm1-odroid.dtsi    | 442 ++++++++++++++++++
+ 5 files changed, 544 insertions(+), 429 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/amlogic/meson-sm1-odroid-hc4.dts
+ create mode 100644 arch/arm64/boot/dts/amlogic/meson-sm1-odroid.dtsi
+
+-- 
+2.17.1
+
