@@ -2,224 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 743D330CF8D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 00:02:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F25730CF94
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Feb 2021 00:04:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236168AbhBBXCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 18:02:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53474 "EHLO
+        id S236008AbhBBXDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 18:03:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236097AbhBBXCO (ORCPT
+        with ESMTP id S236121AbhBBXCw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 18:02:14 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00745C0613D6
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 15:01:33 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id q72so1843697pjq.2
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 15:01:33 -0800 (PST)
+        Tue, 2 Feb 2021 18:02:52 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5BAC061788
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 15:02:11 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id d5so6140959otc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 15:02:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1B8aZfGV5m393mwd0q0yYkdjrdi3QZ7GO2sMeSzwIIY=;
-        b=VcnAFaQTekLWePwy0mWPSng4vT5t9aL1yEGNC/21FIOv2UMkvNlD3vKB9Xt4lJ04KM
-         IShGaCl5yZ47YgQD0nuS9z6p/56sQ7970gqLsIGe+ALuduGFvfMvOv+hscFOuKin4Zfc
-         Hk1knf3jcVJnZm9PvLZCgEuCra/qHu7JLiYdNJlscdKceAq67MqeaizMTS2K0C/WIhm7
-         Ot26cTpEPbHTGDPeoFiL3PhXIpCh5VvMvribVhV0J4a06H4204Jwt+qxxjbn/uGrOEJx
-         3uOs108IsSFkglbo4fbzX07P3MG3GKbGVn8vWA8fjvYSHuuRoGxRzVwee8dKC6dp+kDF
-         5ONQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XGGgE9xbLQzvIfmDO0cdQ0AC2QlXscqj6q7EJ+IMmFM=;
+        b=DT4ONh4pI/pF5jcB4d5SDi6QIrzKbnFB+yX6kaR5IVP+21bDSRorBa8DbuUSfq6u1U
+         20+RNjU+DSb2WWP7hR+HFRaK2q8Pr3EwfvF0lN7U7hxLF/arEIL/+TvlX0PNX5KZnHYo
+         LXgiAEc5XclfLALiJl/zP1f04hk8GYc6gnjgv1kqvgWOZR6nWkkyNggiPYrWuxVQra8f
+         b2C/D7dtgXFyLjhRLeGV7f92a4Oa9y34gSedLOwZz8vjrhfrMGJNMdsAIgdMm2KjI48q
+         iSFNBEsELlPpDfQK5lMRKH/UjxUq8JToeTV9Dwz0MvXWB0tW6JgzpUUu1hoEjfpCO0vS
+         hoNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1B8aZfGV5m393mwd0q0yYkdjrdi3QZ7GO2sMeSzwIIY=;
-        b=hMtEOHGWu5aIBku++qy4VR8sUyRQaupNmlnNZkEKFLxcMmWhIiiff1Zlzno2cV22b4
-         4s4Y/KQ1qsR2Zi4FL6WVllsP8mQoqFqLC4aBBvp87Zp7W+/Ud21Fs2L/WSUFrFTJzgn1
-         9Bi0PQl5Iy8nkVnTXDx5UonjlmNCtWVER8y05zxfLaB+rwXtHTiTAxPnyaWsP7ZjETq5
-         nJ9Dqm8Yx3f7NZoOe4iBtW0/CC3EG2/XehlFivcOZl/+QTvG5K/je9qOvkYgMtjsHI5e
-         6KmIv7YO90IfVE2QXEyspUj4eCjS3xqj2xh4fmKuhrc+JLuv1LeEUx5vq7dBtcMzjrix
-         JLpQ==
-X-Gm-Message-State: AOAM530EvTUwhpV2bMFd5nODTVv2XkqsDLpqOV6l+2dMOLe0Xz5Cb5s1
-        J6BOiYTgB/Ec3lPylyzmAp7JRaoNacJOvKtKdWFn3A==
-X-Google-Smtp-Source: ABdhPJzrcpH8eQPP5ECG7Rn/utCWyAkzeK6qw1rLuh95B7EjilL0QJGAA8pky6qVityb9F8rsEGSOpnYp6pTrWk3npc=
-X-Received: by 2002:a17:90a:bf10:: with SMTP id c16mr86751pjs.101.1612306893152;
- Tue, 02 Feb 2021 15:01:33 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XGGgE9xbLQzvIfmDO0cdQ0AC2QlXscqj6q7EJ+IMmFM=;
+        b=c5irI61dATxJw70UhN+AYRbz8YXwvXpBk9nzkAgV+e79E94uzQBQeZSIdJEmGpuzaa
+         K2pfs5UJ6K2SI8+lqkizwIRZH2YeeG6NmU1C6rBRSDqmmTGgy2xfslF6UirEqvaXbbB4
+         mGcpYyaxcarTITyd+gFE7C2xozN/uXn0PLRt73t8ofLC9TktbxvFnm/DEJ4iMRy9gM3A
+         YZhtMu9y8l3J9r7Pfu7PQr8teokl3U107nE7jdcaxl5NWid68Y7O0JzkH2Ff/74is4B5
+         Jm8SelMbFnF1XW41uR/VoXHSybeubKAzvdnhsKMJgvURpm7PBNIC5z+8FS20g9KhTdya
+         dL5g==
+X-Gm-Message-State: AOAM530dXpQubf9y1JFDmfEJ3H0JmlASkVTlTHXYXDKG4O/MnaEsY++g
+        6Q9eGnEJNVAz+LiQEsKqYGEJHQ==
+X-Google-Smtp-Source: ABdhPJzCG++xaEY5rOt60SAJJi86UczJMGRaSnKu5WBUd5ezFl1KTI4M6w++OEHELGtK4wRZYzR3Zg==
+X-Received: by 2002:a05:6830:12c7:: with SMTP id a7mr22184otq.103.1612306931321;
+        Tue, 02 Feb 2021 15:02:11 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id u25sm67993otg.40.2021.02.02.15.02.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 15:02:10 -0800 (PST)
+Date:   Tue, 2 Feb 2021 17:02:08 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 09/10] usb: dwc3: qcom: Detect DWC3 DT-nodes with
+ "usb"-prefixed names
+Message-ID: <YBnZ8O+zI/dzrjDQ@builder.lan>
+References: <20201205155621.3045-1-Sergey.Semin@baikalelectronics.ru>
+ <20201205155621.3045-10-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-References: <20210120173800.1660730-13-jthierry@redhat.com>
- <20210127221557.1119744-1-ndesaulniers@google.com> <20210127232651.rj3mo7c2oqh4ytsr@treble>
- <CAKwvOdkOeENcM5X7X926sv2Xmtko=_nOPeKZ2+51s13CW1QAjw@mail.gmail.com>
- <20210201214423.dhsma73k7ccscovm@treble> <CAKwvOdmgNPSpY2oPHFr8EKGXYJbm7K9gySKFgyn4FERa9nTXmw@mail.gmail.com>
- <671f1aa9-975e-1bda-6768-259adbdc24c8@redhat.com>
-In-Reply-To: <671f1aa9-975e-1bda-6768-259adbdc24c8@redhat.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 2 Feb 2021 15:01:22 -0800
-Message-ID: <CAKwvOdkqWyDbAvMJAd6gkc2QAEL7DiZg6_uRJ6NUE4tCip4Jvw@mail.gmail.com>
-Subject: Re: [RFC PATCH 12/17] gcc-plugins: objtool: Add plugin to detect
- switch table on arm64
-To:     Julien Thierry <jthierry@redhat.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        linux-hardening@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Peter Zijlstra <peterz@infradead.org>, raphael.gault@arm.com,
-        Will Deacon <will@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Bill Wendling <morbo@google.com>, swine@google.com,
-        yonghyun@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201205155621.3045-10-Sergey.Semin@baikalelectronics.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 12:57 AM Julien Thierry <jthierry@redhat.com> wrote:
->
->
->
-> On 2/2/21 12:17 AM, Nick Desaulniers wrote:
-> > On Mon, Feb 1, 2021 at 1:44 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> >>
-> >> On Fri, Jan 29, 2021 at 10:10:01AM -0800, Nick Desaulniers wrote:
-> >>> On Wed, Jan 27, 2021 at 3:27 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> >>>>
-> >>>> On Wed, Jan 27, 2021 at 02:15:57PM -0800, Nick Desaulniers wrote:
-> >>>>>> From: Raphael Gault <raphael.gault@arm.com>
-> >>>>>>
-> >>>>>> This plugins comes into play before the final 2 RTL passes of GCC and
-> >>>>>> detects switch-tables that are to be outputed in the ELF and writes
-> >>>>>> information in an ".discard.switch_table_info" section which will be
-> >>>>>> used by objtool.
-> >>>>>>
-> >>>>>> Signed-off-by: Raphael Gault <raphael.gault@arm.com>
-> >>>>>> [J.T.: Change section name to store switch table information,
-> >>>>>>         Make plugin Kconfig be selected rather than opt-in by user,
-> >>>>>>         Add a relocation in the switch_table_info that points to
-> >>>>>>         the jump operation itself]
-> >>>>>> Signed-off-by: Julien Thierry <jthierry@redhat.com>
-> >>>>>
-> >>>>> Rather than tightly couple this feature to a particular toolchain via
-> >>>>> plugin, it might be nice to consider what features could be spec'ed out
-> >>>>> for toolchains to implement (perhaps via a -f flag).
-> >>>>
-> >>>> The problem is being able to detect switch statement jump table vectors.
-> >>>>
-> >>>> For a given indirect branch (due to a switch statement), what are all
-> >>>> the corresponding jump targets?
-> >>>>
-> >>>> We would need the compiler to annotate that information somehow.
-> >>>
-> >>> Makes sense, the compiler should have this information.  How is this
-> >>> problem solved on x86?
-> >>
-> >> Thus far we've been able to successfully reverse engineer it on x86,
-> >> though it hasn't been easy.
-> >>
-> >> There were some particulars for arm64 which made doing so impossible.
-> >> (I don't remember the details.)
->
-> The main issue is that the tables for arm64 have more indirection than x86.
+On Sat 05 Dec 09:56 CST 2020, Serge Semin wrote:
 
-I wonder if PAC or BTI also make this slightly more complex?  PAC at
-least has implications for unwinders, IIUC.
+> In accordance with the USB HCD/DRD schema all the USB controllers are
+> supposed to have DT-nodes named with prefix "^usb(@.*)?".  Since the
+> existing DT-nodes will be renamed in a subsequent patch let's first make
+> sure the DWC3 Qualcomm driver supports them and second falls back to the
+> deprecated naming so not to fail on the legacy DTS-files passed to the
+> newer kernels.
+> 
 
->
-> On x86, the dispatching jump instruction fetches the target address from
-> a contiguous array of addresses based on a given offset. So the list of
-> potential targets of the jump is neatly organized in a table (and sure,
-> before link time these are just relocation, but still processable).
->
-> On arm64 (with GCC at least), what is stored in a table is an array of
-> candidate offsets from the jump instruction. And because arm64 is
-> limited to 32bit instructions, the encoding often requires multiple
-> instructions to compute the target address:
->
-> ldr<*>  x_offset, [x_offsets_table, x_index, ...]  // load offset
-> adr     x_dest_base, <addr>          // load target branch for offset 0
-> add     x_dest, x_target_base, x_offset, ...  // compute final address
-> br      x_dest        // jump
->
-> Where this gets trickier is that (with GCC) the offsets stored in the
-> table might or might not be signed constants (and this can be seen in
-> GCC intermediate representations, but I do not believe this information
-> is output in the final object file). And on top of that, GCC might
-> decide to use offsets that are seen as unsigned during intermediate
-> representation as signed offset by sign extending them in the add
-> instruction.
->
-> So, to handle this we'd have to track the different operation done with
-> the offset, from the load to the final jump, decoding the instructions
-> and deducing the potential target instructions from the table of offsets.
->
-> But that is error prone as we don't really know how many instructions
-> can be between the ones doing the address computation, and I remember
-> some messy case of a jump table inside a jump table where tracking the
-> instruction touching one or the other offset would need a lot of corner
-> case handling.
->
-> And this of course is just for GCC, I haven't looked at what it all
-> looks like on Clang's end.
+Felipe, will you merge this, so that I can merge the dts patch depending
+on this into the Qualcomm DT tree?
 
-Sure, but this is what production unwinders do, and they don't require
-compiler plugins, right?  I don't doubt unwinders can be made simpler
-with changes to toolchain output; please work with your compiler
-vendor on making such changes rather than relying on compiler plugins
-to do so.
+Regards,
+Bjorn
 
-> > I think the details are pertinent to finding a portable solution.  The
-> > commit message of this commit in particular doesn't document such
-> > details, such as why such an approach is necessary or how the data is
-> > laid out for objtool to consume it.
-> >
->
-> Sorry, I will need to make that clearer. The next patch explains it a
-> bit [1]
->
-> Basically, for simplicity, the plugin creates a new section containing
-
-Right, this takes a focus on simplicity, at the cost of alienating a toolchain.
-
-Ard's point about 3193c0836f20 relating to -fgcse is that when
-presented with tricky cases to unwind, the simplest approach is taken.
-There it was disabling a compiler specific compiler optimization, here
-it's either a compiler specific compiler plugin (or disabling another
-compiler optimization).  The pattern seems to be "Objtool isn't smart
-enough" ... "compiler optimization disabled" or "compiler plugin
-dependency."
-
-> tables (one per jump table) of references to the jump targets, similar
-> to what x86 has, except that in this case this table isn't actually used
-> by runtime code and is discarded at link time. I only chose this to
-> minimize what needed to be changed in objtool and because the format
-> seemed simple enough.
->
-> But I'm open on some alternative, whether it's a -fjump-table-info
-
-Yes, I think we could spec out something like that.  But I would
-appreciate revisiting open questions around stack validation (frame
-pointers), preventing the generation of jump tables to begin with
-(-fno-jump-tables) in place of making objtool more robust, or
-generally the need to depend on compiler plugins.
-
-> option added to compilers with a different format to do the links. The
-> important requirement is to be able to know all the candidate targets
-> for a "br <reg>" instruction.
->
-> [1] https://lkml.org/lkml/2021/1/20/910
->
-> Thanks,
->
-> --
-> Julien Thierry
->
-
-
--- 
-Thanks,
-~Nick Desaulniers
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>  drivers/usb/dwc3/dwc3-qcom.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+> index c703d552bbcf..49ad8d507d37 100644
+> --- a/drivers/usb/dwc3/dwc3-qcom.c
+> +++ b/drivers/usb/dwc3/dwc3-qcom.c
+> @@ -630,7 +630,8 @@ static int dwc3_qcom_of_register_core(struct platform_device *pdev)
+>  	struct device		*dev = &pdev->dev;
+>  	int			ret;
+>  
+> -	dwc3_np = of_get_child_by_name(np, "dwc3");
+> +	dwc3_np = of_get_child_by_name(np, "usb") ?:
+> +		  of_get_child_by_name(np, "dwc3");
+>  	if (!dwc3_np) {
+>  		dev_err(dev, "failed to find dwc3 core child\n");
+>  		return -ENODEV;
+> -- 
+> 2.29.2
+> 
