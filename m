@@ -2,99 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6A130C444
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 16:47:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6C3530C447
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 16:47:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235788AbhBBPpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 10:45:52 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:37278 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235265AbhBBPoS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 10:44:18 -0500
-Date:   Tue, 02 Feb 2021 15:43:22 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612280612;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zgu7rYUFJeaN3tHI99Z6D+O5yD4JWfCgVt9q75Jw8jo=;
-        b=ycubcBsV2Ivr/N1Yu5Kc5CFe5gwOdmqboUCuy2zFStK7AaOuHRLxEZcpgo8SCstek39MZh
-        KIUydyS+9n68ofX+DFKGbbhUwcHP7t1zjfalEkQ6YzalgQqckZIvbp05mdfEswsqYFgNh+
-        zEmYQz+97Y6SbFdrtgr7gTkbT4ZbsBsWghzLI3JVto6uj0PMDJCIPVB5CaV8cUVMJuGyZZ
-        FRH/PutNB1UrMqTZE5/uHQHZGor9GgDRrIWuXO31mABQn+GNOhMoLMUZ8GCbmgf1cM9t4z
-        /P6/MJWpbRv2aQwIYlSrweeIvk6UeWlhjBpR0oThKBpmNtIf8AhJXd/TdEz92w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612280612;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zgu7rYUFJeaN3tHI99Z6D+O5yD4JWfCgVt9q75Jw8jo=;
-        b=McWaUP/NaQcZLtZs/3HxmVn9El+t+1WPV0KwMDDw92ZKqeac+FbEQRwa2zud8PPqWrBr68
-        xPBog44THRotNHCA==
-From:   "tip-bot2 for Tom Lendacky" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/seves] x86/sev-es: Do not unroll string I/O for SEV-ES guests
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: =?utf-8?q?=3C3de04b5b638546ac75d42ba52307fe1a922173d3=2E16122?=
- =?utf-8?q?03987=2Egit=2Ethomas=2Elendacky=40amd=2Ecom=3E?=
-References: =?utf-8?q?=3C3de04b5b638546ac75d42ba52307fe1a922173d3=2E161220?=
- =?utf-8?q?3987=2Egit=2Ethomas=2Elendacky=40amd=2Ecom=3E?=
+        id S235770AbhBBPqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 10:46:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235269AbhBBPoO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 10:44:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 149EB64F65;
+        Tue,  2 Feb 2021 15:43:29 +0000 (UTC)
+Date:   Tue, 2 Feb 2021 15:43:27 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 12/12] arm64: kasan: export MTE symbols for KASAN tests
+Message-ID: <20210202154327.GD26895@gaia>
+References: <cover.1612208222.git.andreyknvl@google.com>
+ <d128216d3b0aea0b4178e11978f5dd3e8dbeb590.1612208222.git.andreyknvl@google.com>
 MIME-Version: 1.0
-Message-ID: <161228060225.23325.15092901811831050332.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d128216d3b0aea0b4178e11978f5dd3e8dbeb590.1612208222.git.andreyknvl@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/seves branch of tip:
+On Mon, Feb 01, 2021 at 08:43:36PM +0100, Andrey Konovalov wrote:
+> Export mte_enable_kernel() and mte_set_report_once() to fix:
+> 
+> ERROR: modpost: "mte_enable_kernel" [lib/test_kasan.ko] undefined!
+> ERROR: modpost: "mte_set_report_once" [lib/test_kasan.ko] undefined!
+> 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+> ---
+>  arch/arm64/kernel/mte.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> index 8b27b70e1aac..2c91bd288ea4 100644
+> --- a/arch/arm64/kernel/mte.c
+> +++ b/arch/arm64/kernel/mte.c
+> @@ -120,6 +120,7 @@ void mte_enable_kernel_sync(void)
+>  {
+>  	__mte_enable_kernel("synchronous", SCTLR_ELx_TCF_SYNC);
+>  }
+> +EXPORT_SYMBOL(mte_enable_kernel_sync);
+>  
+>  void mte_enable_kernel_async(void)
+>  {
+> @@ -130,6 +131,7 @@ void mte_set_report_once(bool state)
+>  {
+>  	WRITE_ONCE(report_fault_once, state);
+>  }
+> +EXPORT_SYMBOL(mte_set_report_once);
 
-Commit-ID:     62a08a7193dc9107904aaa51a04ba3ba2959f745
-Gitweb:        https://git.kernel.org/tip/62a08a7193dc9107904aaa51a04ba3ba2959f745
-Author:        Tom Lendacky <thomas.lendacky@amd.com>
-AuthorDate:    Mon, 01 Feb 2021 12:26:27 -06:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 02 Feb 2021 16:25:05 +01:00
+With EXPORT_SYMBOL_GPL:
 
-x86/sev-es: Do not unroll string I/O for SEV-ES guests
-
-Under the GHCB specification, SEV-ES guests can support string I/O.
-The current #VC handler contains this support, so remove the need to
-unroll kernel string I/O operations. This will reduce the number of #VC
-exceptions generated as well as the number VM exits for the guest.
-
-Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/3de04b5b638546ac75d42ba52307fe1a922173d3.1612203987.git.thomas.lendacky@amd.com
----
- arch/x86/mm/mem_encrypt.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-index c79e573..d55ea77 100644
---- a/arch/x86/mm/mem_encrypt.c
-+++ b/arch/x86/mm/mem_encrypt.c
-@@ -474,9 +474,10 @@ void __init mem_encrypt_init(void)
- 	swiotlb_update_mem_attributes();
- 
- 	/*
--	 * With SEV, we need to unroll the rep string I/O instructions.
-+	 * With SEV, we need to unroll the rep string I/O instructions,
-+	 * but SEV-ES supports them through the #VC handler.
- 	 */
--	if (sev_active())
-+	if (sev_active() && !sev_es_active())
- 		static_branch_enable(&sev_enable_key);
- 
- 	print_mem_encrypt_feature_info();
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
