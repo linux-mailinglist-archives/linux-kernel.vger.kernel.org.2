@@ -2,197 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE9130C75E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:20:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 918D830C75D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:20:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237441AbhBBRTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:19:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26844 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236860AbhBBRQs (ORCPT
+        id S231630AbhBBRTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:19:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237275AbhBBRQv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 12:16:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612286120;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lEa8TASFowTmr9kKp6sPUUyPmHU/46QcAZCj48yANfk=;
-        b=egSHzr5DtruvlX8eepGt/qpkEQ1BCwwQBtSxmjPOSN4/bs5DaN6vWxviX2+CKAzH/a3VN/
-        EFHk0aDG72/XTmgOMBeyIXA/deaX5ep0JDkRs++02Ihgz2M2YoxLX10VpU3ixTdRfsnXSp
-        DrRwcQHTw2gNKN6AHa0vjuN+/+ZgUAI=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-16-kMjwPd2jO4O7qWu7NqaETw-1; Tue, 02 Feb 2021 12:15:19 -0500
-X-MC-Unique: kMjwPd2jO4O7qWu7NqaETw-1
-Received: by mail-qk1-f197.google.com with SMTP id r190so17898777qkf.19
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 09:15:19 -0800 (PST)
+        Tue, 2 Feb 2021 12:16:51 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A621CC0613ED
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 09:16:10 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id r38so15289621pgk.13
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 09:16:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Qn4pclhdqmAAoIxBnEwAj7m8g+jtHb7YgGNlKFxvSYU=;
+        b=bBR97nkEWcOKpSJZMu6azK2HcycFbY+43YuoIEN0TCDWakvbkPPZc+87f+aKzg8a6a
+         wuUB8X0TBKLzHASWw0W4o22j6m+RUh1rw0Welx/Nx5KTGEOHfpBe4olU+UalhWN1VOZG
+         1Dn4nGTxh1XtrvfGquD+RDfOfggjonfKM0rPTeFigeVo1icxTAUx09SXONo+mIS+9nUm
+         xT8D1EfgM0QMVXpsW5+Jc7UPFkqyK5dkooEujiEZSaaTuLMMAtLBFDlAgrxRYgP7sZJu
+         JCxpYQi0d2wzgNG6p0R+jOmDIbfQYbQv1xXN1yg/sCxNeeHmc2QCKEDZFvEvVEBo6MMh
+         hOsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lEa8TASFowTmr9kKp6sPUUyPmHU/46QcAZCj48yANfk=;
-        b=YsUxp12HTNe83fDmCtVw+VNbN2GSiY+ty1pq5EeN3vKEdoYl99hvdOrfIweyvL8Fvs
-         lEVtpJs9SasdEcGqaF5mtHKV8RK3XFmy2BSGnyPiDD9pUTm++z0K/oiZoXLbsgczab2k
-         h9zQrtpD0TzMQ7zw1vpKfN4kpJbbHIT7s3H/gPIWN2vDoJpiQRzfsyEw7NSLA7xV8DYU
-         bhhWMp5lEp1OU5i/J08uPCeBmGTrzPvbCJRyV2NgOCpbvD8FmzbpiD9Iu33xTJkejsXc
-         RmMcnycCgKSIInQdxSsTKoQLEbRIo8c+GKc6VIK2YertlJve0Z0p4Hj6R9HFmNg1MTjx
-         R+Hg==
-X-Gm-Message-State: AOAM531XMdD3UNt8mYdYJSYBaVwLJ50WfmU8EMSUX8SNwI2j45+KeUej
-        hFff8T99mo6LHKOSwWRDM5neyeYmBNFHBrNi/EboYz0rmoI5lCFIjqhCemWAWwFGrC0Ur0JO/I9
-        FqwWFedyLBroXP05QxrCiOfnW
-X-Received: by 2002:a37:8b81:: with SMTP id n123mr22342728qkd.242.1612286118802;
-        Tue, 02 Feb 2021 09:15:18 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzcppnC7lKM0JkQf/E3mgt/JhPqhdB0jg+3iHEp7UqjdhDN2d+ysu+mJtwxQ/4NGaXhYRD90Q==
-X-Received: by 2002:a37:8b81:: with SMTP id n123mr22342688qkd.242.1612286118538;
-        Tue, 02 Feb 2021 09:15:18 -0800 (PST)
-Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
-        by smtp.gmail.com with ESMTPSA id p11sm17044941qtb.62.2021.02.02.09.15.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 09:15:17 -0800 (PST)
-Date:   Tue, 2 Feb 2021 12:15:15 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Huang Ying <ying.huang@intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-        Michel Lespinasse <walken@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
-        Shawn Anastasio <shawn@anastas.io>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Steven Price <steven.price@arm.com>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        Adam Ruprecht <ruprecht@google.com>,
-        Cannon Matthews <cannonmatthews@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v3 5/9] userfaultfd: add minor fault registration mode
-Message-ID: <20210202171515.GF6468@xz-x1>
-References: <20210128224819.2651899-1-axelrasmussen@google.com>
- <20210128224819.2651899-6-axelrasmussen@google.com>
- <20210201183159.GF260413@xz-x1>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Qn4pclhdqmAAoIxBnEwAj7m8g+jtHb7YgGNlKFxvSYU=;
+        b=KhWXn69hiNrh5bipacvhWhknDq5yFBNm5SkUI0pQkfHZF+JMLGARZ0prxsCX/+lR2j
+         hCiBgZZP1nPe2CIqK+ZqyiflsqFE3EgFQCM3QscuT6YiiMrJHxBv++KVyopaWOluI9Jv
+         A7JLGS+a5whIga3wGHz38aFtLlT76WpvQHou0KZ5ieFiA/MBJs1YKctVNthI15qoDTSB
+         LGuMdLgWVaIKDyzRyQvBg7xc2CI9xciS2udWqVqdQaPhqLFrXIpsXYPRQYf5I5pd+Zhc
+         UdqAZ8eY1ZO7HznFpwPHM2psjvXAucp3WCcxK7lkyPUh2tS9gv46w9erdkuqf9eKUxcr
+         SwFA==
+X-Gm-Message-State: AOAM530DdOXq5f7FiIWZN5giBCIkSgxnjBDpPTUB/RDK0bCTGj3ea7q7
+        kg2ORxN2Zw/gygVI3T4kwTOUm68XwhiUMXleKWfmgg==
+X-Google-Smtp-Source: ABdhPJy5EFUucX2b1IEAUHL6jONH+L7UUF/oPUeqOi4fy/MxFChGP/yerbfYF+s+IdZgnU99OMALUbkArViRFHUSmcY=
+X-Received: by 2002:a62:18d6:0:b029:1bf:1c5f:bfa4 with SMTP id
+ 205-20020a6218d60000b02901bf1c5fbfa4mr22215803pfy.24.1612286170018; Tue, 02
+ Feb 2021 09:16:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210201183159.GF260413@xz-x1>
+References: <cover.1612208222.git.andreyknvl@google.com> <b3a02f4f7cda00c87af170c1bf555996a9c6788c.1612208222.git.andreyknvl@google.com>
+ <YBl9C+q84BqiFd4F@elver.google.com>
+In-Reply-To: <YBl9C+q84BqiFd4F@elver.google.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Tue, 2 Feb 2021 18:15:58 +0100
+Message-ID: <CAAeHK+xzBpdzO7BmdVZe3_g5Di+-AGyYAO5zBVvOpEUtXD8koA@mail.gmail.com>
+Subject: Re: [PATCH 02/12] kasan, mm: optimize kmalloc poisoning
+To:     Marco Elver <elver@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 01:31:59PM -0500, Peter Xu wrote:
-> On Thu, Jan 28, 2021 at 02:48:15PM -0800, Axel Rasmussen wrote:
-> > This feature allows userspace to intercept "minor" faults. By "minor"
-> > faults, I mean the following situation:
-> > 
-> > Let there exist two mappings (i.e., VMAs) to the same page(s) (shared
-> > memory). One of the mappings is registered with userfaultfd (in minor
-> > mode), and the other is not. Via the non-UFFD mapping, the underlying
-> > pages have already been allocated & filled with some contents. The UFFD
-> > mapping has not yet been faulted in; when it is touched for the first
-> > time, this results in what I'm calling a "minor" fault. As a concrete
-> > example, when working with hugetlbfs, we have huge_pte_none(), but
-> > find_lock_page() finds an existing page.
-> > 
-> > This commit adds the new registration mode, and sets the relevant flag
-> > on the VMAs being registered. In the hugetlb fault path, if we find
-> > that we have huge_pte_none(), but find_lock_page() does indeed find an
-> > existing page, then we have a "minor" fault, and if the VMA has the
-> > userfaultfd registration flag, we call into userfaultfd to handle it.
-> 
-> When re-read, now I'm thinking whether we should restrict the minor fault
-> scenario with shared mappings always, assuming there's one mapping with uffd
-> and the other one without, while the non-uffd can modify the data before an
-> UFFDIO_CONTINUE kicking the uffd process.
-> 
-> To me, it's really more about page cache and that's all..
-> 
-> So I'm wondering whether below would be simpler and actually clearer on
-> defining minor faults, comparing to the above whole two paragraphs.  For
-> example, the scemantics do not actually need two mappings:
-> 
->     For shared memory, userfaultfd missing fault used to only report the event
->     if the page cache does not exist for the current fault process.  Here we
->     define userfaultfd minor fault as the case where the missing page fault
->     does have a backing page cache (so only the pgtable entry is missing).
-> 
-> It should not affect most of your code, but only one below [1].
-
-OK it could be slightly more than that...
-
-E.g. we'd need to make UFFDIO_COPY to not install the write bit if it's
-UFFDIO_CONTINUE and if it's private mappings. In hugetlb_mcopy_atomic_pte() now
-we apply the write bit unconditionally:
-
-	_dst_pte = make_huge_pte(dst_vma, page, dst_vma->vm_flags & VM_WRITE);
-
-That'll need a touch-up otherwise.
-
-It's just the change seems still very small so I'd slightly prefer to support
-it all.  However I don't want to make your series complicated and blocking it,
-so please feel free to still make it shared memory if that's your preference.
-The worst case is if someone would like to enable this (if with a valid user
-scenario) we'd export a new uffd feature flag.
-
-> 
-> [...]
-> 
-> > @@ -1302,9 +1301,26 @@ static inline bool vma_can_userfault(struct vm_area_struct *vma,
-> >  				     unsigned long vm_flags)
-> >  {
-> >  	/* FIXME: add WP support to hugetlbfs and shmem */
-> > -	return vma_is_anonymous(vma) ||
-> > -		((is_vm_hugetlb_page(vma) || vma_is_shmem(vma)) &&
-> > -		 !(vm_flags & VM_UFFD_WP));
-> > +	if (vm_flags & VM_UFFD_WP) {
-> > +		if (is_vm_hugetlb_page(vma) || vma_is_shmem(vma))
-> > +			return false;
-> > +	}
+On Tue, Feb 2, 2021 at 5:25 PM Marco Elver <elver@google.com> wrote:
+>
+> > +#ifdef CONFIG_KASAN_GENERIC
 > > +
-> > +	if (vm_flags & VM_UFFD_MINOR) {
-> > +		/*
-> > +		 * The use case for minor registration (intercepting minor
-> > +		 * faults) is to handle the case where a page is present, but
-> > +		 * needs to be modified before it can be used. This requires
-> > +		 * two mappings: one with UFFD registration, and one without.
-> > +		 * So, it only makes sense to do this with shared memory.
-> > +		 */
-> > +		/* FIXME: Add minor fault interception for shmem. */
-> > +		if (!(is_vm_hugetlb_page(vma) && (vma->vm_flags & VM_SHARED)))
-> > +			return false;
-> 
-> [1]
-> 
-> So here we also restrict the mapping be shared.  My above comment on the commit
-> message is also another way to ask whether we could also allow it to happen
-> with non-shared mappings as long as there's a page cache.  If so, we could drop
-> the VM_SHARED check here.  It won't affect your existing use case for sure, it
-> just gives more possibility that maybe it could also be used on non-shared
-> mappings due to some reason in the future.
-> 
-> What do you think?
-> 
-> The rest looks good to me.
-> 
-> Thanks,
-> 
-> -- 
-> Peter Xu
+> > +/**
+> > + * kasan_poison_last_granule - mark the last granule of the memory range as
+> > + * unaccessible
+> > + * @addr - range start address, must be aligned to KASAN_GRANULE_SIZE
+> > + * @size - range size
+> > + *
+> > + * This function is only available for the generic mode, as it's the only mode
+> > + * that has partially poisoned memory granules.
+> > + */
+> > +void kasan_poison_last_granule(const void *address, size_t size);
+> > +
+> > +#else /* CONFIG_KASAN_GENERIC */
+> > +
+> > +static inline void kasan_poison_last_granule(const void *address, size_t size) { }
 
--- 
-Peter Xu
+^
 
+> > +
+> > +#endif /* CONFIG_KASAN_GENERIC */
+> > +
+> >  /*
+> >   * Exported functions for interfaces called from assembly or from generated
+> >   * code. Declarations here to avoid warning about missing declarations.
+
+> > @@ -96,6 +92,16 @@ void kasan_poison(const void *address, size_t size, u8 value)
+> >  }
+> >  EXPORT_SYMBOL(kasan_poison);
+> >
+> > +#ifdef CONFIG_KASAN_GENERIC
+> > +void kasan_poison_last_granule(const void *address, size_t size)
+> > +{
+> > +     if (size & KASAN_GRANULE_MASK) {
+> > +             u8 *shadow = (u8 *)kasan_mem_to_shadow(address + size);
+> > +             *shadow = size & KASAN_GRANULE_MASK;
+> > +     }
+> > +}
+> > +#endif
+>
+> The function declaration still needs to exist in the dead branch if
+> !IS_ENABLED(CONFIG_KASAN_GENERIC). It appears in that case it's declared
+> (in kasan.h), but not defined.  We shouldn't get linker errors because
+> the optimizer should remove the dead branch. Nevertheless, is this code
+> generally acceptable?
+
+The function is defined as empty when !CONFIG_KASAN_GENERIC, see above.
