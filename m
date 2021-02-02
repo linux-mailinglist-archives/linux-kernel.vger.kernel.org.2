@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD6FE30C83A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 291A730C9ED
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:35:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236616AbhBBRpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:45:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48892 "EHLO mail.kernel.org"
+        id S238699AbhBBSdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:33:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233879AbhBBOKo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:10:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A7CE64E27;
-        Tue,  2 Feb 2021 13:51:22 +0000 (UTC)
+        id S233823AbhBBOFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:05:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 965EE65012;
+        Tue,  2 Feb 2021 13:48:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273883;
-        bh=lR5tlSgT3+DAQJaRZP2PFsOH+BWTnlkqEhCNd8uIH/M=;
+        s=korg; t=1612273722;
+        bh=9jI4xKYfiKIsaXaY4fKZ3vns/czDlGUzbtr3/Jyq51k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FHGk+/eNMkfBX0kbgPYOOt+Zcims0FdC/Zdouuah8EsLlLR7AoKB9K77WJEsDbaOe
-         C/8tTxHbPPzBSSTURd6JxNsC5HxNxg2lKbZUnb6MM7t4PPzpFACukSujHPFhRGojq9
-         s/AlOBRSgpcS2v+/ZPxAZ0rDdO7m22IM8y8AFvaE=
+        b=uBh3BRoQTYRojMzSKf5k4bvzIdWSzzdomeIgViK7JY2t+m1lVQb9kj2Gya1r7VLLj
+         I8BPcds2tYEby4YwJUz1RezSCqEzITXWq6yCR5WPkriu9Yg/GkOeDRylnLtLjQ6Fmm
+         qJeZFBy9gWmZfwBVjpKFGnEoE+eiOWOLz3l7/4SU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 4.9 11/32] futex: Sanitize exit state handling
-Date:   Tue,  2 Feb 2021 14:38:34 +0100
-Message-Id: <20210202132942.465820022@linuxfoundation.org>
+        stable@vger.kernel.org, Pan Bian <bianpan2016@163.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH 5.4 57/61] NFC: fix resource leak when target index is invalid
+Date:   Tue,  2 Feb 2021 14:38:35 +0100
+Message-Id: <20210202132948.885722907@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132942.035179752@linuxfoundation.org>
-References: <20210202132942.035179752@linuxfoundation.org>
+In-Reply-To: <20210202132946.480479453@linuxfoundation.org>
+References: <20210202132946.480479453@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,52 +39,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Gleixner <tglx@linutronix.de>
+From: Pan Bian <bianpan2016@163.com>
 
-commit 4a8e991b91aca9e20705d434677ac013974e0e30 upstream.
+commit 3a30537cee233fb7da302491b28c832247d89bbe upstream.
 
-Instead of having a smp_mb() and an empty lock/unlock of task::pi_lock move
-the state setting into to the lock section.
+Goto to the label put_dev instead of the label error to fix potential
+resource leak on path that the target index is invalid.
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20191106224556.645603214@linutronix.de
+Fixes: c4fbb6515a4d ("NFC: The core part should generate the target index")
+Signed-off-by: Pan Bian <bianpan2016@163.com>
+Link: https://lore.kernel.org/r/20210121152748.98409-1-bianpan2016@163.com
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- kernel/futex.c |   17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+ net/nfc/rawsock.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -3311,16 +3311,19 @@ void futex_exit_recursive(struct task_st
+--- a/net/nfc/rawsock.c
++++ b/net/nfc/rawsock.c
+@@ -105,7 +105,7 @@ static int rawsock_connect(struct socket
+ 	if (addr->target_idx > dev->target_next_idx - 1 ||
+ 	    addr->target_idx < dev->target_next_idx - dev->n_targets) {
+ 		rc = -EINVAL;
+-		goto error;
++		goto put_dev;
+ 	}
  
- void futex_exit_release(struct task_struct *tsk)
- {
--	tsk->futex_state = FUTEX_STATE_EXITING;
--	/*
--	 * Ensure that all new tsk->pi_lock acquisitions must observe
--	 * FUTEX_STATE_EXITING. Serializes against attach_to_pi_owner().
--	 */
--	smp_mb();
- 	/*
--	 * Ensure that we must observe the pi_state in exit_pi_state_list().
-+	 * Switch the state to FUTEX_STATE_EXITING under tsk->pi_lock.
-+	 *
-+	 * This ensures that all subsequent checks of tsk->futex_state in
-+	 * attach_to_pi_owner() must observe FUTEX_STATE_EXITING with
-+	 * tsk->pi_lock held.
-+	 *
-+	 * It guarantees also that a pi_state which was queued right before
-+	 * the state change under tsk->pi_lock by a concurrent waiter must
-+	 * be observed in exit_pi_state_list().
- 	 */
- 	raw_spin_lock_irq(&tsk->pi_lock);
-+	tsk->futex_state = FUTEX_STATE_EXITING;
- 	raw_spin_unlock_irq(&tsk->pi_lock);
- 
- 	futex_exec_release(tsk);
+ 	rc = nfc_activate_target(dev, addr->target_idx, addr->nfc_protocol);
 
 
