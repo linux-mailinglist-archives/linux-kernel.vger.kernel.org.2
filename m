@@ -2,55 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7058730B525
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 03:19:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7564F30B52B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 03:20:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231194AbhBBCQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 21:16:27 -0500
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:38178 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230122AbhBBCQV (ORCPT
+        id S230214AbhBBCTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 21:19:30 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:43078 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229527AbhBBCTZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 21:16:21 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R851e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UNdRSz6_1612232136;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UNdRSz6_1612232136)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 02 Feb 2021 10:15:36 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     chenhuacai@kernel.org
-Cc:     aleksandar.qemu.devel@gmail.com, tsbogend@alpha.franken.de,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] KVM: MIPS: remove unneeded semicolon
-Date:   Tue,  2 Feb 2021 10:15:35 +0800
-Message-Id: <1612232135-26683-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Mon, 1 Feb 2021 21:19:25 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1122Hm5M048967;
+        Mon, 1 Feb 2021 20:17:48 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1612232268;
+        bh=HpAcjjyMX+aBZiXEvhn3ye8U6EEBAbEnKPxzDdE0GFc=;
+        h=From:To:CC:Subject:Date;
+        b=PZYHjC/q0U/MGjL9e1iv+ZbnEKqBbcieTghMvAWupLufuO5oLzwmEkFNLBZKgBNE6
+         apjc7cskdP6ActFqZesODrYKJbvfyU7yzh7Xjfua6pTCmLjbHrda0NWtAnZ/zs5QIk
+         hBruaoOFxTZGgyJEySz8lriqg6MFeFYRPN+XqsOc=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1122HmAU086782
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 1 Feb 2021 20:17:48 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 1 Feb
+ 2021 20:17:48 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 1 Feb 2021 20:17:48 -0600
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1122HlgW043895;
+        Mon, 1 Feb 2021 20:17:48 -0600
+From:   Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+To:     <sre@kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <dmurphy@ti.com>, Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+Subject: [PATCH v5 0/2] Introduce the BQ25790 charger driver
+Date:   Mon, 1 Feb 2021 20:17:45 -0600
+Message-ID: <20210202021747.717-1-r-rivera-matos@ti.com>
+X-Mailer: git-send-email 2.30.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eliminate the following coccicheck warning:
-./arch/mips/kvm/mips.c:151:2-3: Unneeded semicolon
+Hello,
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- arch/mips/kvm/mips.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This patchset introduces the BQ25790 integrated buck-boost charging IC.
 
-diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
-index 3d6a7f5..58a8812 100644
---- a/arch/mips/kvm/mips.c
-+++ b/arch/mips/kvm/mips.c
-@@ -148,7 +148,7 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
- 	default:
- 		/* Unsupported KVM type */
- 		return -EINVAL;
--	};
-+	}
- 
- 	/* Allocate page table to map GPA -> RPA */
- 	kvm->arch.gpa_mm.pgd = kvm_pgd_alloc();
+Dan Murphy (2):
+  dt-bindings: power: Add the bq25790 dt bindings
+  power: supply: bq25790: Introduce the BQ25790 charger driver
+
+ .../bindings/power/supply/bq25790.yaml        |   95 ++
+ drivers/power/supply/Kconfig                  |    8 +
+ drivers/power/supply/Makefile                 |    1 +
+ drivers/power/supply/bq25790_charger.c        | 1100 +++++++++++++++++
+ drivers/power/supply/bq25790_charger.h        |  148 +++
+ 5 files changed, 1352 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/power/supply/bq25790.yaml
+ create mode 100644 drivers/power/supply/bq25790_charger.c
+ create mode 100644 drivers/power/supply/bq25790_charger.h
+
 -- 
-1.8.3.1
+2.30.0
 
