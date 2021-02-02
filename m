@@ -2,192 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F175630BB8A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:57:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B265730BB8F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:57:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229973AbhBBJ4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 04:56:24 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:12381 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229850AbhBBJzn (ORCPT
+        id S231375AbhBBJ5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 04:57:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229850AbhBBJ4Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 04:55:43 -0500
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DVKrk0ncgz7dgL;
-        Tue,  2 Feb 2021 17:53:42 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.210) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 2 Feb 2021
- 17:54:55 +0800
-Subject: Re: [f2fs-dev] [PATCH v3] f2fs: rename checkpoint=merge mount option
- to checkpoint_merge
-To:     Daeho Jeong <daeho43@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <kernel-team@android.com>, Daeho Jeong <daehojeong@google.com>
-References: <20210202092332.2562006-1-daeho43@gmail.com>
- <a7adaf99-0df1-cf4a-a60a-d47a104f51aa@huawei.com>
- <CACOAw_wmodtCvDRa_1hh2=u9AP3Qg6VBGG4K1by9QJNGweApVA@mail.gmail.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <938ce080-d211-0834-64b4-fd4836a26d5a@huawei.com>
-Date:   Tue, 2 Feb 2021 17:54:55 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
-MIME-Version: 1.0
-In-Reply-To: <CACOAw_wmodtCvDRa_1hh2=u9AP3Qg6VBGG4K1by9QJNGweApVA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+        Tue, 2 Feb 2021 04:56:25 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C54CAC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 01:55:45 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id o8so3597201pls.7
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 01:55:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=/woBNkPyfXPtz4J97ZLqnvUhpU4+65VNdf461PNMr+Y=;
+        b=iuHnPKYRQFO4Ev9Hl4nSpqskb+hHDTNFd0RvDgvajNk3jf02FPwo8bdymkTGF43KJt
+         NV1sN/9ASB+NipnHeGMZ1rvtwjDDsiplQYYuifOThJX7wr4RHhWSI7gKmAGvecNO6mHg
+         z6mps+0aX0yeEDkIqXl/VZhLV2O1KF1D6g2q8XsEdTViK86l7LuqeJvj2MiCbpHCfQG6
+         Ugn5hyGCWS8h1g7Hbk+TdbkAHq+224UX6YMqzT7hbphG9pA96Or8wV9ggIGpKpTHMnhj
+         MuN7kbFb2IoSbODTaUg7yQyIw6neUm/oLw480v7uJfH82XnxTeJ3fB0B5mwqtvbdebnz
+         msrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=/woBNkPyfXPtz4J97ZLqnvUhpU4+65VNdf461PNMr+Y=;
+        b=pkN+9L/WqzZoemdRLnd77O+SUd0Y+nDl4thVQfkGdrNpDXWgWBem2awSa+wKniymqB
+         FVpSYxHARgZMhZ2gqEuCzB3aDpb/waThG4M08isBSKXBXPSUfFmpTj16odfdWURM+qOW
+         gU47+fG5q9Q0QIf8XaVqEtPuOAj8P17InYuOlclcKGimEdiE3isSxOx0z8A1fRjOHjyZ
+         6y6/qe8A/jwtk0AWzkTDuFF9TaZtcgyafCdztySLoktRykMc+aNsyP9v0m8tcnYVYI6N
+         8ITxTGG3SsqcjTPCAxpP3sevPaSiLYUDUJ2NQIW77Sv+iME4ZUSOKKHVVN0wEjonGKRb
+         V2+A==
+X-Gm-Message-State: AOAM5306RFhV00ImML/kcrIPu8fJ2y//hyMygAg9xV6OUmLUw6jYqFxu
+        5Yb7V9JfmJd55meQ38KCByydGi0QpLug
+X-Google-Smtp-Source: ABdhPJxJCicdafW+g5T8+94AHXI8qFLeRK6IMc+oMSzUtqK3EHOHPsRX1DgvxCCXLrveM11matXnWO85XsJ2
+Sender: "kyletso via sendgmr" <kyletso@kyletso.ntc.corp.google.com>
+X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:dd94:c753:a81d:c855])
+ (user=kyletso job=sendgmr) by 2002:a17:902:bd97:b029:de:abc4:fec7 with SMTP
+ id q23-20020a170902bd97b02900deabc4fec7mr21506129pls.7.1612259745282; Tue, 02
+ Feb 2021 01:55:45 -0800 (PST)
+Date:   Tue,  2 Feb 2021 17:55:12 +0800
+Message-Id: <20210202095512.761214-1-kyletso@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
+Subject: [PATCH] usb: typec: Return void in typec_partner_set_pd_revision
+From:   Kyle Tso <kyletso@google.com>
+To:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org
+Cc:     bleung@chromium.org, badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kyle Tso <kyletso@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/2/2 17:44, Daeho Jeong wrote:
-> When we remount it without the "checkpoint_merge" option, shouldn't we
-> need to clear "MERGE_CHECKPOINT" again?
-> This is actually what I intended, but I was wrong. Actually, I found this.
-> 
-> When we remount the filesystem, the previous mount option is passed
-> through the "data" argument in the below.
-> f2fs_remount(struct super_block *sb, int *flags, char *data)
-> 
-> If we don't provide the "nocheckpoint_merge" option, how can we turn
-> off the "checkpoint_merge" option which is turned on in the previous
-> mount?
+typec_partner_set_pd_revision doesn't need any return value.
 
-We can use "mount -o remount /dev/xxx /mnt" to disable checkpoint_merge,
-since that command won't pass old mount options to remount?
+Fixes: 29b01295a829 ("usb: typec: Add typec_partner_set_pd_revision")
+Signed-off-by: Kyle Tso <kyletso@google.com>
+---
+ drivers/usb/typec/class.c | 10 ++--------
+ include/linux/usb/typec.h |  2 +-
+ 2 files changed, 3 insertions(+), 9 deletions(-)
 
-Quoted from man mount:
+diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+index b6ceab3dc16b..a7d1bc83c2d4 100644
+--- a/drivers/usb/typec/class.c
++++ b/drivers/usb/typec/class.c
+@@ -755,15 +755,11 @@ EXPORT_SYMBOL_GPL(typec_partner_set_identity);
+  *
+  * This routine is used to report that the PD revision of the port partner has
+  * become available.
+- *
+- * Returns 0 on success or negative error number on failure.
+  */
+-int typec_partner_set_pd_revision(struct typec_partner *partner, u16 pd_revision)
++void typec_partner_set_pd_revision(struct typec_partner *partner, u16 pd_revision)
+ {
+-	int ret;
+-
+ 	if (partner->pd_revision == pd_revision)
+-		return 0;
++		return;
+ 
+ 	partner->pd_revision = pd_revision;
+ 	sysfs_notify(&partner->dev.kobj, NULL, "usb_power_delivery_revision");
+@@ -773,8 +769,6 @@ int typec_partner_set_pd_revision(struct typec_partner *partner, u16 pd_revision
+ 			     "supports_usb_power_delivery");
+ 	}
+ 	kobject_uevent(&partner->dev.kobj, KOBJ_CHANGE);
+-
+-	return 0;
+ }
+ EXPORT_SYMBOL_GPL(typec_partner_set_pd_revision);
+ 
+diff --git a/include/linux/usb/typec.h b/include/linux/usb/typec.h
+index 4946eca742d5..a94df82ab62f 100644
+--- a/include/linux/usb/typec.h
++++ b/include/linux/usb/typec.h
+@@ -126,7 +126,7 @@ struct typec_altmode_desc {
+ 	enum typec_port_data	roles;
+ };
+ 
+-int typec_partner_set_pd_revision(struct typec_partner *partner, u16 pd_revision);
++void typec_partner_set_pd_revision(struct typec_partner *partner, u16 pd_revision);
+ int typec_partner_set_num_altmodes(struct typec_partner *partner, int num_altmodes);
+ struct typec_altmode
+ *typec_partner_register_altmode(struct typec_partner *partner,
+-- 
+2.30.0.365.g02bc693789-goog
 
-               mount -o remount,rw /dev/foo /dir
-
-               After  this  call  all  old  mount options are replaced and arbitrary stuff from fstab (or mtab) is ignored, except the loop= option which is internally generated and maintained by the
-               mount command.
-
-               mount -o remount,rw  /dir
-
-               After this call mount reads fstab and merges these options with the options from the command line (-o). If no mountpoint found in fstab than remount with unspecified source is allowed.
-
-Thanks,
-
-> 
-> 2021년 2월 2일 (화) 오후 6:28, Chao Yu <yuchao0@huawei.com>님이 작성:
->>
->> On 2021/2/2 17:23, Daeho Jeong wrote:
->>> From: Daeho Jeong <daehojeong@google.com>
->>>
->>> As checkpoint=merge comes in, mount option setting related to checkpoint
->>> had been mixed up and it became hard to understand. So, I separated
->>> this option from "checkpoint=" and made another mount option
->>> "checkpoint_merge" for this.
->>>
->>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
->>> ---
->>> v2: renamed "checkpoint=merge" to "checkpoint_merge"
->>> v3: removed "nocheckpoint_merge" option
->>> ---
->>>    Documentation/filesystems/f2fs.rst |  6 +++---
->>>    fs/f2fs/super.c                    | 21 +++++++++------------
->>>    2 files changed, 12 insertions(+), 15 deletions(-)
->>>
->>> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
->>> index d0ead45dc706..475994ed8b15 100644
->>> --- a/Documentation/filesystems/f2fs.rst
->>> +++ b/Documentation/filesystems/f2fs.rst
->>> @@ -247,9 +247,9 @@ checkpoint=%s[:%u[%]]      Set to "disable" to turn off checkpointing. Set to "enabl
->>>                         hide up to all remaining free space. The actual space that
->>>                         would be unusable can be viewed at /sys/fs/f2fs/<disk>/unusable
->>>                         This space is reclaimed once checkpoint=enable.
->>> -                      Here is another option "merge", which creates a kernel daemon
->>> -                      and makes it to merge concurrent checkpoint requests as much
->>> -                      as possible to eliminate redundant checkpoint issues. Plus,
->>> +checkpoint_merge      When checkpoint is enabled, this can be used to create a kernel
->>> +                      daemon and make it to merge concurrent checkpoint requests as
->>> +                      much as possible to eliminate redundant checkpoint issues. Plus,
->>>                         we can eliminate the sluggish issue caused by slow checkpoint
->>>                         operation when the checkpoint is done in a process context in
->>>                         a cgroup having low i/o budget and cpu shares. To make this
->>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
->>> index 56696f6cfa86..b60dcef7f9d0 100644
->>> --- a/fs/f2fs/super.c
->>> +++ b/fs/f2fs/super.c
->>> @@ -215,7 +215,7 @@ static match_table_t f2fs_tokens = {
->>>        {Opt_checkpoint_disable_cap, "checkpoint=disable:%u"},
->>>        {Opt_checkpoint_disable_cap_perc, "checkpoint=disable:%u%%"},
->>>        {Opt_checkpoint_enable, "checkpoint=enable"},
->>> -     {Opt_checkpoint_merge, "checkpoint=merge"},
->>> +     {Opt_checkpoint_merge, "checkpoint_merge"},
->>>        {Opt_compress_algorithm, "compress_algorithm=%s"},
->>>        {Opt_compress_log_size, "compress_log_size=%u"},
->>>        {Opt_compress_extension, "compress_extension=%s"},
->>> @@ -1142,12 +1142,6 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->>>                return -EINVAL;
->>>        }
->>>
->>> -     if (test_opt(sbi, DISABLE_CHECKPOINT) &&
->>> -                     test_opt(sbi, MERGE_CHECKPOINT)) {
->>> -             f2fs_err(sbi, "checkpoint=merge cannot be used with checkpoint=disable\n");
->>> -             return -EINVAL;
->>> -     }
->>> -
->>>        /* Not pass down write hints if the number of active logs is lesser
->>>         * than NR_CURSEG_PERSIST_TYPE.
->>>         */
->>> @@ -1782,7 +1776,7 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
->>>                seq_printf(seq, ",checkpoint=disable:%u",
->>>                                F2FS_OPTION(sbi).unusable_cap);
->>>        if (test_opt(sbi, MERGE_CHECKPOINT))
->>> -             seq_puts(seq, ",checkpoint=merge");
->>> +             seq_puts(seq, ",checkpoint_merge");
->>>        if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_POSIX)
->>>                seq_printf(seq, ",fsync_mode=%s", "posix");
->>>        else if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_STRICT)
->>> @@ -1827,6 +1821,7 @@ static void default_options(struct f2fs_sb_info *sbi)
->>>        sbi->sb->s_flags |= SB_LAZYTIME;
->>>        set_opt(sbi, FLUSH_MERGE);
->>>        set_opt(sbi, DISCARD);
->>> +     clear_opt(sbi, MERGE_CHECKPOINT);
->>
->> It's not needed here?
->>
->> Thanks,
->>
->>>        if (f2fs_sb_has_blkzoned(sbi))
->>>                F2FS_OPTION(sbi).fs_mode = FS_MODE_LFS;
->>>        else
->>> @@ -2066,9 +2061,8 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->>>                }
->>>        }
->>>
->>> -     if (!test_opt(sbi, MERGE_CHECKPOINT)) {
->>> -             f2fs_stop_ckpt_thread(sbi);
->>> -     } else {
->>> +     if (!test_opt(sbi, DISABLE_CHECKPOINT) &&
->>> +                     test_opt(sbi, MERGE_CHECKPOINT)) {
->>>                err = f2fs_start_ckpt_thread(sbi);
->>>                if (err) {
->>>                        f2fs_err(sbi,
->>> @@ -2076,6 +2070,8 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
->>>                            err);
->>>                        goto restore_gc;
->>>                }
->>> +     } else {
->>> +             f2fs_stop_ckpt_thread(sbi);
->>>        }
->>>
->>>        /*
->>> @@ -3831,7 +3827,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
->>>
->>>        /* setup checkpoint request control and start checkpoint issue thread */
->>>        f2fs_init_ckpt_req_control(sbi);
->>> -     if (test_opt(sbi, MERGE_CHECKPOINT)) {
->>> +     if (!test_opt(sbi, DISABLE_CHECKPOINT) &&
->>> +                     test_opt(sbi, MERGE_CHECKPOINT)) {
->>>                err = f2fs_start_ckpt_thread(sbi);
->>>                if (err) {
->>>                        f2fs_err(sbi,
->>>
-> .
-> 
