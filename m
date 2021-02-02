@@ -2,258 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ECE430B57A
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 03:51:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A92130B57C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 03:53:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbhBBCva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 21:51:30 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:39476 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbhBBCv1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 21:51:27 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1122hcYt174064;
-        Tue, 2 Feb 2021 02:49:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2020-01-29;
- bh=yd3mYrRFNOCGtysxD/WTTDlFEyjgkWwzlPpu1kV4ves=;
- b=BUi629LH6QEBrSdiChrBL+4YCu4Zg4VwufndAGuOZ49R20JTIa3B54MPc0tu8+Xg/arT
- 2r8Zn9/8bKhPQgU+CGZ+3KWvpHdBKLtwquhEeLQ+yvT/hVRvJXsQl5Hsu5BDv6GgC6fb
- sRWIzoJwNer2Se/pOsPOpYxsOvgpxfllpillLz2pQkFZMWrtJsFDKnhom33IA7YuG/YZ
- cyLUTnONE3qWVuPYqNMxLLHzGh3QvYlZd267DeXIfbAGRne/0veqY1a6c2TlWmqCflps
- dDhuBmDhO0A8pGTkvYmED7iu3K4eBGO7xICkoseAeET58XWwTiHnyclzK12w/w9GAn38 gQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 36cvyarp0w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 02 Feb 2021 02:49:15 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1122kAf1167714;
-        Tue, 2 Feb 2021 02:49:15 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2109.outbound.protection.outlook.com [104.47.55.109])
-        by userp3020.oracle.com with ESMTP id 36dh7qqpr0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 02 Feb 2021 02:49:14 +0000
+        id S230009AbhBBCw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 21:52:27 -0500
+Received: from mga14.intel.com ([192.55.52.115]:41978 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229537AbhBBCwY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 1 Feb 2021 21:52:24 -0500
+IronPort-SDR: WKsPyLTlyLtZSGODYiXzPIrl2X7vaPkvYxUfYKfqTWQk7TageUWbesAqFuN7sm/pO+NqAea9H5
+ 21WtS7ADaHGA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="180011260"
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="180011260"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 18:51:33 -0800
+IronPort-SDR: khm3BZdAsfu74Occ8OnHG2vO8hswtJRPiLnEMluv9KggU5DPIkzBkemravpHGsZxvwKn/sND8L
+ Vd1vaz2dla2Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="354713343"
+Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
+  by fmsmga007.fm.intel.com with ESMTP; 01 Feb 2021 18:51:33 -0800
+Received: from orsmsx606.amr.corp.intel.com (10.22.229.19) by
+ ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Mon, 1 Feb 2021 18:51:32 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx606.amr.corp.intel.com (10.22.229.19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
+ via Frontend Transport; Mon, 1 Feb 2021 18:51:32 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.106)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Mon, 1 Feb 2021 18:51:31 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=InmEED6mZjNb86JD/YrKdD3Wu0n7R+tv5rM/eGUCdNNkvWe4wIc3E1yLzL1isMa3tQZgKlbWWhCBO3HOCrhbSko8V3EKKMEBuRiqIG3LAc8/vs7dFZTQZDqPZDJVQTTZj9is+j+hy3qxBedleSbb3yF3CPBlUt5mLYYKmritPKuYh1YQOp6u5vEqKGbKlx6agxk1+fVt6ZUvdxZzb8T2eW28ecCRaQOBMMxgjf42xSOZyI42NYkWhcinr73cWlu0emxOiZnKFcdqcL8bb48rPeEOf/hekPNjMKY9hdc+Rk4DjosLPYOKgyE5BbZ8vtyNjD2xqqhBngidbox2w/jpmQ==
+ b=MMLeDUDAcaIwfKwYHT+R4vLE5yh1rF6i/F+VzxIPgkbWoGt7JDxa/4bwMvOdEzabwcamLgT9RTk2FPZi3W5J0w9W/yNHIoyS7klpTQKlalt91jeq7a0q6TTyEJxFKKllgw8Ug6tT7XwdMm5RZgaa15F3Csv8bVeNtHmsnyPXiQEx5abHeZJstbakrPgyhRNhnxf+amrqsasbA5TF1Yh+wII839Go7jV+1OqFzfr0+kRR/Oqw0yM/zQr5JSBkDpG/8YRJPH2kR1qyO2M1j4ZPZ/WFcD9dLfOUDfLwE66DUV9C1koFEPuVoK27BVOLPLAIJ0JpKCO38IOAppRBTVaYsw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yd3mYrRFNOCGtysxD/WTTDlFEyjgkWwzlPpu1kV4ves=;
- b=lK3GWFqq1UzPAzuPAVqnEEqwDlqpbmUJFv4OFSlGbDffbLnmj3MrtFH/gFaj3a2iZQgVRhw8UY8mHb+S8qfOUVNvQaBX5mDp1VZTcKMlCtmuTaQakiSfyPCd9nPfM5ndwz0N4qd0jYZrZ4M/YCiKQoLHPSEusVs/6InfKTE7OFg6yfs/46QyNtVvb1e3jA0OpHYaQf5xShJtk4t/7DXiTiPmBe6VhhR/RE/JU98tuOtH7kexNF7rrMFlW5uDiWloUFX/9RnROWRXK6aZmzwg10zAKwU7JOMNRk8kqCorh2C2xAsWwiXLw1IIRX3r/TsrBeGwmMMbm5CnLc9Ub+2E9Q==
+ bh=8z850udIdmmeGi3rL3eL46GEAkSl0abkPxSbhwNYqwg=;
+ b=m7cejZ26Ifpu3ff2NKRRyntYIr9/WesS5k7kxgek3pnjQ7Ruw4Hyxi2KWI5fygXDDaFln5V2Z546hVs7R+lETyQZpS/H/3HX0mj+ddL639RgB9IY4vCzaO90yrUBMtDyiqJurY4KOcZNqgo+IaxfK55y+AOgACUlWiyOcb8HdlQdfHL9e2Qx4ILkePG4IDxHs/daxS7NTxGTWHot8iQjhPJSJkS1xeDx0ysiFlj9TdPKl6O8oGh8crKm0F8Qlri4inrLs6fpYdUMuaDRkjnq9mCelzegL/s50kENShxFzLn3P8X63t3dKj8YyWzShyRHXXiSLukNd8iTN9162UzsMQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yd3mYrRFNOCGtysxD/WTTDlFEyjgkWwzlPpu1kV4ves=;
- b=hO2U8mwWfxz/ZmZ/OMzgJ7IdqptL/i5GQVVN0PTSqMWX+f7vPmEW4qRQnDO7d6ghWt0xgkkIbhU6y2bhl/mgb8nEtidZbj1VgddR3EIUZmpN7uhOIMYWQrD20ywaD0ZqG4XvAT0HaxY0rLykU9U/2O1bAZIs90vjrArxsz7W9Ic=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=oracle.com;
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com (2603:10b6:a03:85::27)
- by BYAPR10MB3590.namprd10.prod.outlook.com (2603:10b6:a03:11a::15) with
+ bh=8z850udIdmmeGi3rL3eL46GEAkSl0abkPxSbhwNYqwg=;
+ b=UOdrdgjKNf0TljwYnzcwXDW8daZExcAhQeCgUIOJ7yAMHuk0cXFRYjyTpyjJATmBA/stnnXP5FfCBPiv+P/LrGlYSQlgZCfgl6s55pOV4mhOX1/q3PWUM8zDfZTjdNvs3dRrve/0u81SHqIeX4fihaYFToeURNqF1IeVdl3wekA=
+Received: from MWHPR11MB1886.namprd11.prod.outlook.com (2603:10b6:300:110::9)
+ by CO1PR11MB5089.namprd11.prod.outlook.com (2603:10b6:303:9b::16) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.24; Tue, 2 Feb
- 2021 02:49:12 +0000
-Received: from BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::e180:1ba2:d87:456]) by BYAPR10MB2999.namprd10.prod.outlook.com
- ([fe80::e180:1ba2:d87:456%4]) with mapi id 15.20.3784.019; Tue, 2 Feb 2021
- 02:49:12 +0000
-Date:   Mon, 1 Feb 2021 21:49:02 -0500
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
-        Linux ACPI <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Chris Browy <cbrowy@avery-design.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Jon Masters <jcm@jonmasters.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Rafael Wysocki <rafael.j.wysocki@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        daniel.lll@alibaba-inc.com,
-        "John Groves (jgroves)" <jgroves@micron.com>,
-        "Kelley, Sean V" <sean.v.kelley@intel.com>
-Subject: Re: [PATCH 08/14] taint: add taint for direct hardware access
-Message-ID: <YBi9nkiu3DvMZhrs@Konrads-MacBook-Pro.local>
-References: <20210130002438.1872527-1-ben.widawsky@intel.com>
- <20210130002438.1872527-9-ben.widawsky@intel.com>
- <20210201181845.GJ197521@fedora>
- <20210201183455.3dndfwyswwvs2dlm@intel.com>
- <CAPcyv4iBbA+PCnTg-hFALuDJNqcJrwwXN_gMEe6z9LZvSfC5hw@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPcyv4iBbA+PCnTg-hFALuDJNqcJrwwXN_gMEe6z9LZvSfC5hw@mail.gmail.com>
-X-Originating-IP: [138.3.200.7]
-X-ClientProxiedBy: CH2PR10CA0030.namprd10.prod.outlook.com
- (2603:10b6:610:4c::40) To BYAPR10MB2999.namprd10.prod.outlook.com
- (2603:10b6:a03:85::27)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16; Tue, 2 Feb
+ 2021 02:51:30 +0000
+Received: from MWHPR11MB1886.namprd11.prod.outlook.com
+ ([fe80::f1b4:bace:1e44:4a46]) by MWHPR11MB1886.namprd11.prod.outlook.com
+ ([fe80::f1b4:bace:1e44:4a46%6]) with mapi id 15.20.3805.028; Tue, 2 Feb 2021
+ 02:51:30 +0000
+From:   "Tian, Kevin" <kevin.tian@intel.com>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+CC:     "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        "chensihang (A)" <chensihang1@hisilicon.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        "Liguozhu (Kenneth)" <liguozhu@hisilicon.com>,
+        "linux-accelerators@lists.ozlabs.org" 
+        <linux-accelerators@lists.ozlabs.org>
+Subject: RE: [RFC PATCH v2] uacce: Add uacce_ctrl misc device
+Thread-Topic: [RFC PATCH v2] uacce: Add uacce_ctrl misc device
+Thread-Index: AQHW8vXFZzEtyXCrG0WCf1cOBJGRp6o39q+AgADtcaD//5AFgIAAh9tQgAAe3wCAAAPTgIAFRl4wgAWdWwCAAClPsA==
+Date:   Tue, 2 Feb 2021 02:51:30 +0000
+Message-ID: <MWHPR11MB1886464FFEF10DF9AE708C4A8CB59@MWHPR11MB1886.namprd11.prod.outlook.com>
+References: <1611563696-235269-1-git-send-email-wangzhou1@hisilicon.com>
+ <20210125154717.GW4605@ziepe.ca>
+ <96b655ade2534a65974a378bb68383ee@hisilicon.com>
+ <20210125231619.GY4605@ziepe.ca>
+ <5f64a68042c64f37b5cba74028bd2189@hisilicon.com>
+ <20210126011304.GZ4605@ziepe.ca>
+ <d7fce136c3644755a7aea5794bddf453@hisilicon.com>
+ <MWHPR11MB1886DC78C5FBA3636B94F2578CB99@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210201234424.GI4718@ziepe.ca>
+In-Reply-To: <20210201234424.GI4718@ziepe.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-version: 11.5.1.3
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+authentication-results: ziepe.ca; dkim=none (message not signed)
+ header.d=none;ziepe.ca; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.198.147.199]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f02d8458-8832-49a7-444e-08d8c725717a
+x-ms-traffictypediagnostic: CO1PR11MB5089:
+x-microsoft-antispam-prvs: <CO1PR11MB50892723D447204E43B2F3268CB59@CO1PR11MB5089.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: pP31cdReOLnrMD/9D8a0belmBA6tDGHs5WjlfyqPPK/RBU6Zt5T8X2z4H+IyxPfSKbAACr412pMg7mgHqmLIQq6udt4kNOeDhZoCcf4xe/uc6kyNCEDhVTxheaEVZbuiTECl6bRsJN2nifXE6duh7eQDljizWS0bnQkdFsVATjq6XM5WlYVLB8nysv1BpA3Wjo2lveb7myWdL1kEb/34DPgKus0qyo4vTxNPsrUGYeBrT1PEV4Z3bGDMWqw1Kksz+cSF3SXKlmpfDy7Y5Lcu6CSqywqt3SHq+oE6MdRkDklU6Ax6Z3nRvkjKKtSYTnaW5QsTt6i38Jc+163zYzJGmdYlP/k68FZzgPkpdiqDDVdXVqGn/kvKNSlsARTPAlMUSomzq2BUI4gbpdvw6ew181ekPr2QKVBHHp5y/urvI0prPeZ1y5d/+HvDEc3StQvA9xXmD0gzfQFHGx0wY/lW6btRpmR8bIvK5g4DYpOieJ5pOUZlp3zVQR3mGbbXP7ReDYv8aAaEg7KhBtYPwtbrlA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1886.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(39860400002)(346002)(366004)(396003)(478600001)(4326008)(66446008)(33656002)(5660300002)(2906002)(7696005)(66556008)(64756008)(6916009)(8676002)(76116006)(9686003)(7416002)(52536014)(66946007)(8936002)(55016002)(54906003)(66476007)(71200400001)(316002)(6506007)(4744005)(186003)(86362001)(26005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?HWfKwqiZ46ZSGmzbry2oApfqD5jRkgf6kovZqrb6K9GMeT9p3Y5qkycy7+JU?=
+ =?us-ascii?Q?CacA3+LV1kHSKKSkdW5U+FlNcoK8zZf5Cthe/s37CS1V1mEuxfRNR7X5aveR?=
+ =?us-ascii?Q?Ej8AsGUrBs74L8eOxk+axueV5RZJC94KbeWghuqzYsbanpizJZjNQtz73iAp?=
+ =?us-ascii?Q?LpfUnjJcgeBA0rzZoDxe1cPkiXCZHuU9dSdgaIm+SbqFZHGs4IDrQHhNFR9S?=
+ =?us-ascii?Q?hVl6el+lYRTb6LKs7A3j9AyiLwKOO5skYKHLP63DOmJH3KvRG8ru3gZY1vO8?=
+ =?us-ascii?Q?xATfd5DzZg+vM8gMDvOwtqMy/0SszbcVkOX7s/SRy2jpvgE5wwmn+i1nL9Vl?=
+ =?us-ascii?Q?A9iIufmFetsOpr8lKKq/6pFgvXuY3+CYz7P1rv9Ou8D38HmalnzdxWG82QST?=
+ =?us-ascii?Q?nXmDq32yhIStAJzWnKUGX8exfNkhxoUuSmwtRXev6dsqrgDAXXG5yDO7SqHs?=
+ =?us-ascii?Q?BIfmYC73qx12BPgyQ6SLn4PiS/BZ8BoXJD4QwuYRVBym5gWZH9IOWcx7FZq9?=
+ =?us-ascii?Q?vkKnG8cm7sQjO1gfkcc8aj8kXIUELl7w10GrrLyfrJ3CoUnn8dnH8VknI8FL?=
+ =?us-ascii?Q?pbVyLOrI7SYdV1oGGb85ChSGWt3MHEen2Fw/5PtxGVOCBhRMTCe0hsEYuYXH?=
+ =?us-ascii?Q?SAtF0k22h6r8wWF1HdZZJP2uRIghMIepc+zVPDFquq6nJAyo06tpuj3GB78r?=
+ =?us-ascii?Q?gxohy71qi8JGSJCS6vAheDcntFGY6ldQHogkIyGCxZ0qF6su1YnJc55HPxYA?=
+ =?us-ascii?Q?U18sCXaTF8QYjeky8+/kB4MX9D0PwVhhBy+mVZDxi73QzDiAkTkPN9p4FVkU?=
+ =?us-ascii?Q?ewkNhJec4xP8oTwxqf/dNvROUQvyTn5aAMyoomlBp93qGWITSbHfJjVb8N6Y?=
+ =?us-ascii?Q?UB4Fea/jkGUzE1dEP1Ca4qshDlqk8LZhBgmwpyANyrEkuNc07CSMqweZ4TJ+?=
+ =?us-ascii?Q?ICrRMBsbtQIcOO1iBmdM1WxDY9fHHWJFTWK5eOax5Q3FZap5BSe6wndqb1dn?=
+ =?us-ascii?Q?x6rZeji4kIf4XPryOQYeH9xgFGpWv/k6pQDL7blflu4oxo8Yj5M7KQ3ydDKs?=
+ =?us-ascii?Q?n+G9QMKc?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from Konrads-MacBook-Pro.local (138.3.200.7) by CH2PR10CA0030.namprd10.prod.outlook.com (2603:10b6:610:4c::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.16 via Frontend Transport; Tue, 2 Feb 2021 02:49:06 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 33830b42-6c08-4c37-a485-08d8c7251eed
-X-MS-TrafficTypeDiagnostic: BYAPR10MB3590:
-X-Microsoft-Antispam-PRVS: <BYAPR10MB35903CC2DC84B123D66FBBA089B59@BYAPR10MB3590.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1186;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1+of07iCReb3ca20U6qstk99VN92on16oPxpQcnYK9cTFphyqXbsDO1RLWWWYt/o05eXsxpJrB+W4Rf80eBIpSjLXcrVg0iTlGiKjcTWlD9ZnTlso4EI4CKTkPFkihBeHINArh4aS2KX/i5FayLi0fy+OH4peSJH4QQQp2ldnlJ+cviNTwSd1cRVs9KE0oGCPNyn9SaAdkKD6noDLncXIvGsR1Czz/mXU00/ka63hAZg1MPi60OIjvzQUczvpzp1kWn0u3sqtdQxVRvUnQSuRm/bfXLdftZ/H0/JtWUkGE2oqnq0pdmy/LCz2vnlh3AHGEx2eAyzggtSy+xZALqV7VGPZrjz2WbytGqS2kHx8gpTc4qvhoQwzypRh+7PUH7Zqb32K4YYiw6i8JacfeAsGODW7eGZLfW6rL4p+KmGA75Wh16lbas34PnxOfIDa1TVK9eKt/CoG7GysFxnC/vWMsZrVqXQnflAwePKXviRRavR3Lby7I6y4qYC8zSgqPVplwjoimmb+Sjhk1ZiggUUIA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR10MB2999.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(396003)(136003)(366004)(39860400002)(478600001)(6666004)(316002)(6916009)(8676002)(83380400001)(54906003)(7416002)(86362001)(66476007)(53546011)(956004)(66556008)(4326008)(66946007)(16526019)(6506007)(2906002)(5660300002)(55016002)(52116002)(7696005)(9686003)(186003)(26005)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Ub5nvcR+oYpv+m5Z32MgUp3ZVuMeT+c6Wv3hd2AybroJ+MT7JEhbtITWsnAh?=
- =?us-ascii?Q?Tres+1uueVOcTj3/lk1IwG+gbHFrsYbw5pdrH2lasILjjImWhLD8sX6W26sL?=
- =?us-ascii?Q?1SMcgZgGxW6HoiJVUzxa1um+esCupHE0v50veDJ9JlApQi04oDtQjIF6++if?=
- =?us-ascii?Q?OM665zmCreIujNba2d9vW4y1l7iwEhP+xSM42FlOhI+ryqn9LqAu2GJvts7P?=
- =?us-ascii?Q?8XLe7Pi3XWOMheluvp/pq/Boc+4SNo9DM/djNBmKML5aCj5yXcHHaCkHA/Dn?=
- =?us-ascii?Q?eWfGnLo+vNmWcvXegnqz6eVj7GIDcF98fQm5hGB4uPTNP9s/UjRsw9vUnHGX?=
- =?us-ascii?Q?etPqiR2Q/tR8iwu2pZ2SH7qCqPm4j6XmCTK0nChLhbH1BTzcN1rt5FzQu1a1?=
- =?us-ascii?Q?bBw670Bd+wX7tn+OTfRM5sboCQiMfWY/hQjRxDw2lkzzggAtcFkW8azyk3NC?=
- =?us-ascii?Q?0dFBRGmSsubFAn/AhcwUNtffHfpj69WdDiKfHha1uEN3CPIKq7jQHaUmLNkO?=
- =?us-ascii?Q?Ls49F9NWh3/SuS1OCzuS82vMu3j+HWg5BMlSB5lCCLHBOaNUiEiNkp7NWi+J?=
- =?us-ascii?Q?14m84pCyCMNisH2ijJoltwSKqNjC4LVdVRO/iMSDJhXh1TLPxVVPBveGcH4B?=
- =?us-ascii?Q?wKmcsfiQdwUNkso+QZiO/9X6OxvxNNLs+iGGILD4svr/13967fXLxnVcrxOy?=
- =?us-ascii?Q?TkpwRWPSiXnlJkl7DUfQKZIxn8wVc4Jg1PlqjF9MzYUal2dQsW2moraehxUm?=
- =?us-ascii?Q?jfqRgcvEgvbiSVWUQuUu7YCBfJyobQ9Q9L+Zw5/tCzZKZv/A9W/gOsy6N4sU?=
- =?us-ascii?Q?FFNxBZ4LNVNpZYbLz8mkzoeFbPpTMUehLcc27u9ZdveUHmBzTfJIsbhNA40l?=
- =?us-ascii?Q?OlyXTSL2xc0tRVHBe3Ce3xByx141Z4TOZnI+IF/iTSxUm7oqG9F/BMbda+Ne?=
- =?us-ascii?Q?sEEx6/Og0RwNXcwDYJD2wyU3ptzonQOSq88/YBVeDJbfHsFz2SnLv9/s3rm0?=
- =?us-ascii?Q?0eh4xR5d4nW/gC9AnInxefS9HVV0s1x2/eTl4d/E8B1t1C0ChxmKr9zI99O2?=
- =?us-ascii?Q?iqYsgvjn?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 33830b42-6c08-4c37-a485-08d8c7251eed
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR10MB2999.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Feb 2021 02:49:12.1482
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1886.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f02d8458-8832-49a7-444e-08d8c725717a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Feb 2021 02:51:30.3011
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PIAZNqJETkKVx00YJNCIpn3BlUP2ko0AsvzFPzI29/gqXfIn481G0NyKCr0AMQRhxU4uKp0Z9KC6ieXqZ1IvjA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR10MB3590
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9882 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0
- suspectscore=0 spamscore=0 mlxlogscore=999 phishscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102020019
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9882 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 impostorscore=0
- mlxscore=0 spamscore=0 bulkscore=0 priorityscore=1501 adultscore=0
- lowpriorityscore=0 malwarescore=0 phishscore=0 mlxlogscore=999
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102020019
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: E+gsyGP5T36ERejSSkQBNYf3WfastEYgyl0GEL43Xmnjbe/VeQ1GNgCMkFL1WvHIDAl+uPlvf3XLFy5qjSXE5Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5089
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 11:01:11AM -0800, Dan Williams wrote:
-> On Mon, Feb 1, 2021 at 10:35 AM Ben Widawsky <ben.widawsky@intel.com> wrote:
+> From: Jason Gunthorpe <jgg@ziepe.ca>
+> Sent: Tuesday, February 2, 2021 7:44 AM
+>=20
+> On Fri, Jan 29, 2021 at 10:09:03AM +0000, Tian, Kevin wrote:
+> > > SVA is not doom to work with IO page fault only. If we have SVA+pin,
+> > > we would get both sharing address and stable I/O latency.
 > >
-> > On 21-02-01 13:18:45, Konrad Rzeszutek Wilk wrote:
-> > > On Fri, Jan 29, 2021 at 04:24:32PM -0800, Ben Widawsky wrote:
-> > > > For drivers that moderate access to the underlying hardware it is
-> > > > sometimes desirable to allow userspace to bypass restrictions. Once
-> > > > userspace has done this, the driver can no longer guarantee the sanctity
-> > > > of either the OS or the hardware. When in this state, it is helpful for
-> > > > kernel developers to be made aware (via this taint flag) of this fact
-> > > > for subsequent bug reports.
-> > > >
-> > > > Example usage:
-> > > > - Hardware xyzzy accepts 2 commands, waldo and fred.
-> > > > - The xyzzy driver provides an interface for using waldo, but not fred.
-> > > > - quux is convinced they really need the fred command.
-> > > > - xyzzy driver allows quux to frob hardware to initiate fred.
-> > >
-> > > Would it not be easier to _not_ frob the hardware for fred-operation?
-> > > Aka not implement it or just disallow in the first place?
-> >
-> > Yeah. So the idea is you either are in a transient phase of the command and some
-> > future kernel will have real support for fred - or a vendor is being short
-> > sighted and not adding support for fred.
-> >
-> > >
-> > >
-> > > >   - kernel gets tainted.
-> > > > - turns out fred command is borked, and scribbles over memory.
-> > > > - developers laugh while closing quux's subsequent bug report.
-> > >
-> > > Yeah good luck with that theory in-the-field. The customer won't
-> > > care about this and will demand a solution for doing fred-operation.
-> > >
-> > > Just easier to not do fred-operation in the first place,no?
-> >
-> > The short answer is, in an ideal world you are correct. See nvdimm as an example
-> > of the real world.
-> >
-> > The longer answer. Unless we want to wait until we have all the hardware we're
-> > ever going to see, it's impossible to have a fully baked, and validated
-> > interface. The RAW interface is my admission that I make no guarantees about
-> > being able to provide the perfect interface and giving the power back to the
-> > hardware vendors and their driver writers.
-> >
-> > As an example, suppose a vendor shipped a device with their special vendor
-> > opcode. They can enable their customers to use that opcode on any driver
-> > version. That seems pretty powerful and worthwhile to me.
-> >
-> 
-> Powerful, frightening, and questionably worthwhile when there are
-> already examples of commands that need extra coordination for whatever
-> reason. However, I still think the decision tilts towards allowing
-> this given ongoing spec work.
-> 
-> NVDIMM ended up allowing unfettered vendor passthrough given the lack
-> of an organizing body to unify vendors. CXL on the other hand appears
-> to have more gravity to keep vendors honest. A WARN splat with a
-> taint, and a debugfs knob for the truly problematic commands seems
-> sufficient protection of system integrity while still following the
-> Linux ethos of giving system owners enough rope to make their own
-> decisions.
-> 
-> > Or a more realistic example, we ship a driver that adds a command which is
-> > totally broken. Customers can utilize the RAW interface until it gets fixed in a
-> > subsequent release which might be quite a ways out.
-> >
-> > I'll say the RAW interface isn't an encouraged usage, but it's one that I expect
-> > to be needed, and if it's not we can always try to kill it later. If nobody is
-> > actually using it, nobody will complain, right :D
-> 
-> It might be worthwhile to make RAW support a compile time decision so
-> that Linux distros can only ship support for the commands the CXL
-> driver-dev community has blessed, but I'll leave it to a distro
-> developer to second that approach.
+> > Isn't it like a traditional MAP_DMA API (imply pinning) plus specifying
+> > cpu_va of the memory pool as the iova?
+>=20
+> I think their issue is the HW can't do the cpu_va trick without also
+> involving the system IOMMU in a SVA mode
+>=20
 
-Couple of thoughts here:
+This is the part that I didn't understand. Using cpu_va in a MAP_DMA
+interface doesn't require device support. It's just an user-specified
+address to be mapped into the IOMMU page table. On the other hand,
+sharing CPU page table through a SVA interface for an usage where I/O=20
+page faults must be completely avoided seems a misleading attempt.=20
+Even if people do want this model (e.g. mix pinning+fault), it should be
+a mm syscall as Greg pointed out, not specific to sva.
 
- - As distro developer (well, actually middle manager of distro
-   developers) this approach of raw interface is a headache.
-
-   Customers will pick it and use it since it is there and the poor
-   support folks will have to go through layers of different devices to
-   say (for example) to finally find out that some OEM firmware opcode
-   X is a debug facility for inserting corrupted data, while for another vendor
-   the same X opcode makes it go super-fast.
-
-   Not that anybody would do that, right? Ha!
-
- - I will imagine that some of the more vocal folks in the community
-   will make it difficult to integrate these patches with these two
-   (especially this taint one). This will make the acceptance of these
-   patches more difficult than it should be. If you really want them,
-   perhaps make them part of another patchset, or a follow up ones.
-
- - I still don't get why as a brand new community hacks are coming up
-   (even when the hardware is not yet there) instead of pushing back at
-   the vendors to have a clean up interface. I get in say two or three
-   years these things .. but from the start? I get your point about
-   flexibility, but it seems to me that the right way is not give open
-   RAW interface (big barndoor) but rather maintain the driver and grow
-   it (properly constructed doors) as more functionality comes about
-   and then adding it in the driver.
-
-
+Thanks
+Kevin
