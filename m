@@ -2,76 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A0330BAB1
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 690E430BAB2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:15:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232926AbhBBJNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 04:13:13 -0500
-Received: from mail-ed1-f44.google.com ([209.85.208.44]:42171 "EHLO
-        mail-ed1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232987AbhBBJJJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 04:09:09 -0500
-Received: by mail-ed1-f44.google.com with SMTP id z22so22014466edb.9;
-        Tue, 02 Feb 2021 01:08:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aCPu/w+IzPBi1cp2MLabRKXq3jYLkdwyiLqfIg+o07Q=;
-        b=JkbJo7ZDS1rETS5SyLb4cyt3ixz3FL+ThP+LIzex0DJp7Mcqwc3YEgSJRKyJpPEA8y
-         em+EttPCo0viEDkPlKCZGjGOF3SQCIEGbeJO22mTHHKmlDmU/VsQvmTfXIY5QUNWl/jW
-         yZ/dPC8PX5uB8CkXfn9Xh9HFowrBWbPl0eD6HMpCGn0XZELTrG8YaRVkR/oMLobg7ha5
-         8D/BygaE0rM2kn+gVuZa89oDUEpYtuNznTa8jHiM5SoYYZ5WMgLo235BecGIn88hmAAt
-         7IAUnt7qz/rcr5/DRT5JzcLUD8MoyDsQKwjidsGEMlI4GmJ1x9SbIPx0l6q+8DOmIfFO
-         Ne9g==
-X-Gm-Message-State: AOAM533l1mJG/tUtcCwFc4V0nNMoX1Ypnue5HfVPhmaW4s6PzuUC2w7n
-        2Y6t9ULwvyap0CXRFUz3wyxVYiAMhJI=
-X-Google-Smtp-Source: ABdhPJwhzXn8rH0/fR08Us7twWk1IEt6G0/IlugvE6AS5UUdjSTQmfS+KWcjEigTr2tprPKeCSE/Ug==
-X-Received: by 2002:a05:6402:1914:: with SMTP id e20mr22638409edz.89.1612256906112;
-        Tue, 02 Feb 2021 01:08:26 -0800 (PST)
-Received: from kozik-lap (adsl-84-226-167-205.adslplus.ch. [84.226.167.205])
-        by smtp.googlemail.com with ESMTPSA id j27sm9175249ejb.102.2021.02.02.01.08.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 01:08:24 -0800 (PST)
-Date:   Tue, 2 Feb 2021 10:08:23 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     LI Qingwu <Qing-wu.Li@leica-geosystems.com.cn>
-Cc:     sre@kernel.org, robh+dt@kernel.org, dmurphy@ti.com,
-        pali@kernel.org, afd@ti.com, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        grygorii.tertychnyi@leica-geosystems.com,
-        andrey.zhizhikin@leica-geosystems.com
-Subject: Re: [PATCH V2 2/2] dt-bindings: power: bq27xxx: add bq78z10
-Message-ID: <20210202090823.rgah5hxoegsueu54@kozik-lap>
-References: <20210202084858.2944-1-Qing-wu.Li@leica-geosystems.com.cn>
- <20210202084858.2944-3-Qing-wu.Li@leica-geosystems.com.cn>
+        id S232739AbhBBJNo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 04:13:44 -0500
+Received: from smtp2.axis.com ([195.60.68.18]:19391 "EHLO smtp2.axis.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232991AbhBBJJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 04:09:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=axis.com; q=dns/txt; s=axis-central1; t=1612256959;
+  x=1643792959;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BHxuxWQtEX0RO+muKGufvPHHrWWvf6q3kzp2I3KPWpo=;
+  b=ovOIzX4Ov4L3O3ej17s35RxpWFY0Qq9Navvrv8dSR/ShYhzSLUrRvN4U
+   fgtAw/k0GCDG+mGYLfLXFHgzZzrs5Rgla/Ns4AGNumi/4sh4o4RR0E0l2
+   ZyEIQXXp7Rt44jWDc9FpK2oh6JL1r9Hw+K0JNe5pwsisTA05+Ca+DrGuu
+   WXFOFEO3dnloSjU/1g+HI8UWoQXwCTxcgAKh57kEIhcYVLwOGIJ0fml94
+   pwhUN88cYPbaCDDJBI1lBONKQB3BoXzDVWEpqcgCWJSuRuOnVZhlYyZjw
+   yV3kBD7mjDUOzD6Y3YEDZqR9lVXJ9h1ih1SzPNdEbBhE6JunZq+HnOqlq
+   w==;
+Date:   Tue, 2 Feb 2021 10:08:35 +0100
+From:   Jesper Nilsson <Jesper.Nilsson@axis.com>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+CC:     Jesper Nilsson <Jesper.Nilsson@axis.com>,
+        Lars Persson <Lars.Persson@axis.com>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        linux-arm-kernel <linux-arm-kernel@axis.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] arm: remove unneeded semicolon
+Message-ID: <20210202090835.GF30470@axis.com>
+References: <1612231357-11598-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210202084858.2944-3-Qing-wu.Li@leica-geosystems.com.cn>
+In-Reply-To: <1612231357-11598-1-git-send-email-yang.lee@linux.alibaba.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 08:48:58AM +0000, LI Qingwu wrote:
-> Add bindings for TI BQ78Z100. An I2C interface gas gauge.
-> It provides a fully integrated safety protection,
-> and authentication for 1 to 2-series cell Li-Ion and
-
-No comma before "and".
-
-What does it mean authentication?
-
-In the future, please send the bindings as first patch. The checkpatch
-should point this - did you run it?
-
-Best regards,
-Krzysztof
-
-
-> Li-Polymer battery packs.
+On Tue, Feb 02, 2021 at 03:02:37AM +0100, Yang Li wrote:
+> Eliminate the following coccicheck warning:
+> ./arch/arm/mach-artpec/board-artpec6.c:42:2-3: Unneeded semicolon
 > 
-> Signed-off-by: LI Qingwu <Qing-wu.Li@leica-geosystems.com.cn>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+
+Reviewed-by: Jesper Nilsson <jesper.nilsson@axis.com>
+
 > ---
->  Documentation/devicetree/bindings/power/supply/bq27xxx.yaml | 1 +
+>  arch/arm/mach-artpec/board-artpec6.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/mach-artpec/board-artpec6.c b/arch/arm/mach-artpec/board-artpec6.c
+> index d3cf3e8..c27e7bb 100644
+> --- a/arch/arm/mach-artpec/board-artpec6.c
+> +++ b/arch/arm/mach-artpec/board-artpec6.c
+> @@ -39,7 +39,7 @@ static void __init artpec6_init_machine(void)
+>  		 */
+>  		regmap_write(regmap, ARTPEC6_DMACFG_REGNUM,
+>  			     ARTPEC6_DMACFG_UARTS_BURST);
+> -	};
+> +	}
+>  }
+>  
+>  static void artpec6_l2c310_write_sec(unsigned long val, unsigned reg)
+> -- 
+> 1.8.3.1
+> 
+
+/^JN - Jesper Nilsson
+-- 
+               Jesper Nilsson -- jesper.nilsson@axis.com
