@@ -2,120 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF3A130CB05
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:11:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7B830CAE0
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:03:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239649AbhBBTJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 14:09:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239460AbhBBTEW (ORCPT
+        id S239238AbhBBTDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 14:03:15 -0500
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:39212 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239310AbhBBTAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 14:04:22 -0500
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 914C8C061D7F
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 10:58:30 -0800 (PST)
-Received: by mail-pf1-x44a.google.com with SMTP id 16so14136527pfn.12
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 10:58:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=ZvItmnRmq3+3IUtsIrhOy3Q/zP9ao+Af4hI06xbsCBk=;
-        b=T06o6eb7cr8x20ra650Qhv19YCauK4JvfpH2VPNTwvPmtbqZa4F6+bx4i+bkR2FwoN
-         RYZbdt8+Sofz/kn8MhYElw6lAIB2hxwkBE64lxBZ8mCrvd9jg0Sgr1DqjCE/j91pO7xj
-         Bpt0Zb6tTkjnwHHGf4AosXwJUy4CY8arXs/jHQRj41vmpIXxlTxo8iR+2EAXVrPn72Bw
-         LMoVRM0LcjI+aaN4S9Ml3dCja3XCk4LmuvZUTc5DLmAXW67FXKhQttM0oAYWXHOWOhZv
-         0fRdg5Zawh5EQJnP9m4VCDxa1de7ftpF/0P/h5Zwk6RaC8wsCCoxwztH6JgpvcrrwxOI
-         Uz5Q==
+        Tue, 2 Feb 2021 14:00:30 -0500
+Received: by mail-ot1-f50.google.com with SMTP id i30so20906276ota.6;
+        Tue, 02 Feb 2021 11:00:14 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=ZvItmnRmq3+3IUtsIrhOy3Q/zP9ao+Af4hI06xbsCBk=;
-        b=Pi/cvCRpoEp5isOgZO3qa49BxK/d6rV6X1FTFzDUqlRZcM113vpU84vr+54t3ykyBl
-         0CTmfmACCoD+DrpXg96c13I+X3O9wsEvd5gpLee4jw6Bv+1/8RPkHmz+3zL1z7QQpV3m
-         Rds9r0OZVspcHKS9yTrsP+qxl0DBz9K14iJWBqyD7Eoczijs6gPboqNwi/iwcZZPtmJh
-         WJHkYhiu9Xo11f1JhQLewjacrdmqKEHD3jN2ChZPbth9ZiVfQD+gy9R+ardcuONYRylH
-         ROHSpfrloO4St7QjWOrsSQnfFDAf8XW+oVaOVMfIRUHNCTDNnnqY4H7VMNGU9qjgTLNG
-         Izbw==
-X-Gm-Message-State: AOAM533K0e2SMdfK8+FbFWKRWGpnYk7taPvv94gWASZjBBPTlxdXgdU8
-        FG4xFhOXreF/Oi88b6hxJFhHVxJM2055VnyUmamcoXc7KJZ45ft1pDGRmzsUekTtTuE2Mb3AJ1s
-        r0bqZ2UNZCLG/n5Le3foKTW0OwpoSFtzZlBTcssfm/Iq4VpK5aZxoM3DWpHh050D7k7439F+B
-X-Google-Smtp-Source: ABdhPJxMmxSs+7Fj0bLxcfcTv53Dae5POhJVmfwPfvOLN6jt6IT1flYD3vfMkIXyS8vkwr0W/inwMI9kfCd4
-Sender: "bgardon via sendgmr" <bgardon@bgardon.sea.corp.google.com>
-X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:9090:561:5a98:6d47])
- (user=bgardon job=sendgmr) by 2002:a17:90a:7143:: with SMTP id
- g3mr5960230pjs.196.1612292309943; Tue, 02 Feb 2021 10:58:29 -0800 (PST)
-Date:   Tue,  2 Feb 2021 10:57:34 -0800
-In-Reply-To: <20210202185734.1680553-1-bgardon@google.com>
-Message-Id: <20210202185734.1680553-29-bgardon@google.com>
-Mime-Version: 1.0
-References: <20210202185734.1680553-1-bgardon@google.com>
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v2 28/28] KVM: selftests: Disable dirty logging with vCPUs running
-From:   Ben Gardon <bgardon@google.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Ben Gardon <bgardon@google.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Thomas Huth <thuth@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QYQBueHzqrf3c7uzh6S2F+D3jH2y4BvQodyiEtpeFtE=;
+        b=FQCLpgQ/4zSovBSuwL9wnLoSD6BVDYJcsc1lnCXYL9iUjqwtNhSn6VVk/i9J7FmMCK
+         sNv3+LqWWW0Q21OhH34oDe798S8RyAdwHiD1qAkU9ZEVGrO4diK4+c/JY1jJxqo+khfW
+         TD5T1CwfnAtCHxdtKSTMLqdnZALCHQam9bSv2HststFjRWry0xdVtPkG8ZS96usT3/5p
+         IA60Y8IwM8ovtGcC9tuo1qt5JqlAm9lmYxNGS+JEm1/OZfVgFg14Ba1K6i6Ur8E51P9s
+         ep9QZssdEbDXRx2togjfzyiFUinGdHgNHf1Llf6axyICysgBD7Hrfg9jiOrVOYuY+n+0
+         KRYg==
+X-Gm-Message-State: AOAM532eFVi/8jE+Sp0WW6i9c0Ip42G76eilK6iI06Y+AozbX6wsr3TK
+        ginJJ4gYkx6Ta1E16yqfPkBa0DiLyYjV8DuAWQE=
+X-Google-Smtp-Source: ABdhPJxnAlEzzTLxtLv5f159oaTryCL9eH9WE3HBTvIc324uo3XeN7LcQpEHE3Mu0FuyyctyI8MznRszsBb16BZlnec=
+X-Received: by 2002:a9d:7a4a:: with SMTP id z10mr16973295otm.206.1612292388810;
+ Tue, 02 Feb 2021 10:59:48 -0800 (PST)
+MIME-Version: 1.0
+References: <20210122204038.3238-1-ggherdovich@suse.cz> <20210122204038.3238-2-ggherdovich@suse.cz>
+In-Reply-To: <20210122204038.3238-2-ggherdovich@suse.cz>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 2 Feb 2021 19:59:37 +0100
+Message-ID: <CAJZ5v0hQ_r3th5upo-X5fNBG0tUNbLbhQN-cqmDd1FGwhGx4dg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] x86,sched: On AMD EPYC set freq_max = max_boost in
+ schedutil invariant formula
+To:     Giovanni Gherdovich <ggherdovich@suse.cz>
+Cc:     Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Jon Grimm <Jon.Grimm@amd.com>,
+        Nathan Fontenot <Nathan.Fontenot@amd.com>,
+        Yazen Ghannam <Yazen.Ghannam@amd.com>,
+        Thomas Lendacky <Thomas.Lendacky@amd.com>,
+        Suthikulpanit Suravee <Suravee.Suthikulpanit@amd.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pu Wen <puwen@hygon.cn>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Michael Larabel <Michael@phoronix.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Disabling dirty logging is much more intestesting from a testing
-perspective if the vCPUs are still running. This also excercises the
-code-path in which collapsible SPTEs must be faulted back in at a higher
-level after disabling dirty logging.
+On Fri, Jan 22, 2021 at 9:47 PM Giovanni Gherdovich <ggherdovich@suse.cz> wrote:
+>
 
-To: linux-kselftest@vger.kernel.org
-CC: Peter Xu <peterx@redhat.com>
-CC: Andrew Jones <drjones@redhat.com>
-CC: Thomas Huth <thuth@redhat.com>
-Signed-off-by: Ben Gardon <bgardon@google.com>
----
- tools/testing/selftests/kvm/dirty_log_perf_test.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+[cut]
 
-diff --git a/tools/testing/selftests/kvm/dirty_log_perf_test.c b/tools/testing/selftests/kvm/dirty_log_perf_test.c
-index 604ccefd6e76..d44a5b8ef232 100644
---- a/tools/testing/selftests/kvm/dirty_log_perf_test.c
-+++ b/tools/testing/selftests/kvm/dirty_log_perf_test.c
-@@ -205,11 +205,6 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 		}
- 	}
- 
--	/* Tell the vcpu thread to quit */
--	host_quit = true;
--	for (vcpu_id = 0; vcpu_id < nr_vcpus; vcpu_id++)
--		pthread_join(vcpu_threads[vcpu_id], NULL);
--
- 	/* Disable dirty logging */
- 	clock_gettime(CLOCK_MONOTONIC, &start);
- 	vm_mem_region_set_flags(vm, PERF_TEST_MEM_SLOT_INDEX, 0);
-@@ -217,6 +212,11 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 	pr_info("Disabling dirty logging time: %ld.%.9lds\n",
- 		ts_diff.tv_sec, ts_diff.tv_nsec);
- 
-+	/* Tell the vcpu thread to quit */
-+	host_quit = true;
-+	for (vcpu_id = 0; vcpu_id < nr_vcpus; vcpu_id++)
-+		pthread_join(vcpu_threads[vcpu_id], NULL);
-+
- 	avg = timespec_div(get_dirty_log_total, p->iterations);
- 	pr_info("Get dirty log over %lu iterations took %ld.%.9lds. (Avg %ld.%.9lds/iteration)\n",
- 		p->iterations, get_dirty_log_total.tv_sec,
--- 
-2.30.0.365.g02bc693789-goog
+>
+> Fixes: 41ea667227ba ("x86, sched: Calculate frequency invariance for AMD systems")
+> Fixes: 976df7e5730e ("x86, sched: Use midpoint of max_boost and max_P for frequency invariance on AMD EPYC")
+> Reported-by: Michael Larabel <Michael@phoronix.com>
+> Signed-off-by: Giovanni Gherdovich <ggherdovich@suse.cz>
+> ---
+>  drivers/cpufreq/acpi-cpufreq.c   | 64 +++++++++++++++++++++++++++++++-
+>  drivers/cpufreq/cpufreq.c        |  3 ++
+>  include/linux/cpufreq.h          |  5 +++
+>  kernel/sched/cpufreq_schedutil.c |  8 +++-
+>  4 files changed, 76 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
+> index 1e4fbb002a31..2378bc1bf2c4 100644
+> --- a/drivers/cpufreq/acpi-cpufreq.c
+> +++ b/drivers/cpufreq/acpi-cpufreq.c
+> @@ -27,6 +27,10 @@
+>
+>  #include <acpi/processor.h>
+>
+> +#ifdef CONFIG_ACPI_CPPC_LIB
 
+Why is the #ifdef needed here?
+
+> +#include <acpi/cppc_acpi.h>
+> +#endif
+> +
+>  #include <asm/msr.h>
+>  #include <asm/processor.h>
+>  #include <asm/cpufeature.h>
+> @@ -628,11 +632,57 @@ static int acpi_cpufreq_blacklist(struct cpuinfo_x86 *c)
+>  }
+>  #endif
+>
+> +#ifdef CONFIG_ACPI_CPPC_LIB
+> +static bool amd_max_boost(unsigned int max_freq,
+> +                         unsigned int *max_boost)
+> +{
+> +       struct cppc_perf_caps perf_caps;
+> +       u64 highest_perf, nominal_perf, perf_ratio;
+> +       int ret;
+> +
+> +       ret = cppc_get_perf_caps(0, &perf_caps);
+> +       if (ret) {
+> +               pr_debug("Could not retrieve perf counters (%d)\n", ret);
+> +               return false;
+> +       }
+> +
+> +       highest_perf = perf_caps.highest_perf;
+> +       nominal_perf = perf_caps.nominal_perf;
+> +
+> +       if (!highest_perf || !nominal_perf) {
+> +               pr_debug("Could not retrieve highest or nominal performance\n");
+> +               return false;
+> +       }
+> +
+> +       perf_ratio = div_u64(highest_perf * SCHED_CAPACITY_SCALE, nominal_perf);
+> +       if (perf_ratio <= SCHED_CAPACITY_SCALE) {
+> +               pr_debug("Either perf_ratio is 0, or nominal >= highest performance\n");
+> +               return false;
+> +       }
+> +
+> +       *max_boost = max_freq * perf_ratio >> SCHED_CAPACITY_SHIFT;
+> +       if (!*max_boost) {
+> +               pr_debug("max_boost seems to be zero\n");
+> +               return false;
+> +       }
+> +
+> +       return true;
+> +}
+> +#else
+> +static bool amd_max_boost(unsigned int max_freq,
+> +                         unsigned int *max_boost)
+> +{
+> +       return false;
+> +}
+> +#endif
+> +
+>  static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
+>  {
+>         unsigned int i;
+>         unsigned int valid_states = 0;
+>         unsigned int cpu = policy->cpu;
+> +       unsigned int freq, max_freq = 0;
+> +       unsigned int max_boost;
+>         struct acpi_cpufreq_data *data;
+>         unsigned int result = 0;
+>         struct cpuinfo_x86 *c = &cpu_data(policy->cpu);
+> @@ -779,15 +829,25 @@ static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
+>                     freq_table[valid_states-1].frequency / 1000)
+>                         continue;
+>
+> +               freq = perf->states[i].core_frequency * 1000;
+>                 freq_table[valid_states].driver_data = i;
+> -               freq_table[valid_states].frequency =
+> -                   perf->states[i].core_frequency * 1000;
+> +               freq_table[valid_states].frequency = freq;
+> +
+> +               if (freq > max_freq)
+> +                       max_freq = freq;
+> +
+>                 valid_states++;
+>         }
+>         freq_table[valid_states].frequency = CPUFREQ_TABLE_END;
+>         policy->freq_table = freq_table;
+>         perf->state = 0;
+>
+> +       if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD &&
+> +           amd_max_boost(max_freq, &max_boost)) {
+> +               policy->cpuinfo.max_boost = max_boost;
+
+Why not to set max_freq to max_boost instead?
+
+This value is set once at the init time anyway and schedutil would use
+max_boost instead of max_freq anyway.
+
+Also notice that the static branch is global and the max_boost value
+for different CPUs may be different, at least in theory.
+
+> +               static_branch_enable(&cpufreq_amd_max_boost);
+> +       }
+> +
+>         switch (perf->control_register.space_id) {
+>         case ACPI_ADR_SPACE_SYSTEM_IO:
+>                 /*
+> diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> index d0a3525ce27f..b96677f6b57e 100644
+> --- a/drivers/cpufreq/cpufreq.c
+> +++ b/drivers/cpufreq/cpufreq.c
+> @@ -2721,6 +2721,9 @@ int cpufreq_boost_enabled(void)
+>  }
+>  EXPORT_SYMBOL_GPL(cpufreq_boost_enabled);
+>
+> +DEFINE_STATIC_KEY_FALSE(cpufreq_amd_max_boost);
+> +EXPORT_SYMBOL_GPL(cpufreq_amd_max_boost);
+> +
+>  /*********************************************************************
+>   *               REGISTER / UNREGISTER CPUFREQ DRIVER                *
+>   *********************************************************************/
+> diff --git a/include/linux/cpufreq.h b/include/linux/cpufreq.h
+> index 9c8b7437b6cd..341cac76d254 100644
+> --- a/include/linux/cpufreq.h
+> +++ b/include/linux/cpufreq.h
+> @@ -40,9 +40,14 @@ enum cpufreq_table_sorting {
+>         CPUFREQ_TABLE_SORTED_DESCENDING
+>  };
+>
+> +DECLARE_STATIC_KEY_FALSE(cpufreq_amd_max_boost);
+> +
+> +#define cpufreq_driver_has_max_boost() static_branch_unlikely(&cpufreq_amd_max_boost)
+> +
+>  struct cpufreq_cpuinfo {
+>         unsigned int            max_freq;
+>         unsigned int            min_freq;
+> +       unsigned int            max_boost;
+>
+>         /* in 10^(-9) s = nanoseconds */
+>         unsigned int            transition_latency;
+> diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
+> index 6931f0cdeb80..541f3db3f576 100644
+> --- a/kernel/sched/cpufreq_schedutil.c
+> +++ b/kernel/sched/cpufreq_schedutil.c
+> @@ -159,8 +159,12 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
+>                                   unsigned long util, unsigned long max)
+>  {
+>         struct cpufreq_policy *policy = sg_policy->policy;
+> -       unsigned int freq = arch_scale_freq_invariant() ?
+> -                               policy->cpuinfo.max_freq : policy->cur;
+> +       unsigned int freq, max_freq;
+> +
+> +       max_freq = cpufreq_driver_has_max_boost() ?
+> +                       policy->cpuinfo.max_boost : policy->cpuinfo.max_freq;
+> +
+> +       freq = arch_scale_freq_invariant() ? max_freq : policy->cur;
+>
+>         freq = map_util_freq(util, freq, max);
+>
+> --
+> 2.26.2
+>
