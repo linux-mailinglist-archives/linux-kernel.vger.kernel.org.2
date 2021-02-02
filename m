@@ -2,138 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8597930CCDB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:13:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2F230CCE3
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:19:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240425AbhBBULZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 15:11:25 -0500
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:60903 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238623AbhBBUKj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 15:10:39 -0500
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 939075C034D;
-        Tue,  2 Feb 2021 15:09:49 -0500 (EST)
-Received: from imap4 ([10.202.2.54])
-  by compute1.internal (MEProxy); Tue, 02 Feb 2021 15:09:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com.au;
-         h=mime-version:message-id:in-reply-to:references:date:from:to
-        :cc:subject:content-type; s=fm2; bh=sA+AU/n4/I/xsAJBbgiEJO8oMY76
-        mKXx9sM4Uq7UJao=; b=hvj88uq8ZOXU6NVHVxZr6lcTussLMmrD/h2HQ2kQwrBn
-        cCTsjUyyVlc1uy7WdtAlk3xrHZk6wXVbWl7fWU8VUFQuxJ8025494lzcCsA8Hojw
-        KjXaUfQ/QRJx62eCM5jnNC2HQMXhJjQtpc2JE664M07m7t9pxnxhhiP9q/slmx/7
-        DRT8fVRIKsI8SjwkBFUwbi8jIPpcFW0Qyl76svn7wK6Ke3MeZCWwXpLMcLudBvjT
-        vchRWbs5dcr6YaOskTUq/SIgTjvuv//5ljuA/aMb8x13LPyOApYHjt4sIWU/UTEC
-        j1Tl/yH/wSSnfc4ZGKR8bSn+fsppKTCjT+rkp9jQzw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=sA+AU/
-        n4/I/xsAJBbgiEJO8oMY76mKXx9sM4Uq7UJao=; b=iWvsa85Q0cHzrxUmXXaNkx
-        O8aLhxi9X6EphpmeeMq4Yx3WVre5Oh/t/VXt+ml2PqL7YDDYBYqHYfgR0H1QFYXo
-        VnI6WC8AqGKiHuAhBtvEsgWb6+/j3z6egVMUlV1RNsQkEZPrk9T216rOtiJqt4iB
-        OPxZQDQt+iRy/6bVLlnZnZ9jQo/OWc0qsoOdl5ECsA7iFds6p4O2sL3IomFGYLTP
-        rxecZYqpXtJJId5/2ZPpRspns6tn0EeUr+teUn9hU+HpxWGTio9Q/bGAJtUyt7QM
-        pBs+7wt2scVOtrtr8BDeqVia7wJar+dMOe1H/mRLPfxtI4HyxFFYniWKxYcSt8iQ
-        ==
-X-ME-Sender: <xms:jLEZYBktTP4LPOMxIxrRrAv97WWg-_-bL_2O3NbblZvpbCItnlP0rQ>
-    <xme:jLEZYM3F9T-brSm7q_Xzr1BxgYK4bMVsO7sVPlRDYcrS6GLBLdIFyscQgR_FLj_wN
-    YfLVxA1S4DjZV1_nA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrgedtgddufeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdflohhh
-    nhcuvfhhohhmshhonhdfuceoghhithesjhhohhhnthhhohhmshhonhdrfhgrshhtmhgrih
-    hlrdgtohhmrdgruheqnecuggftrfgrthhtvghrnhepveehjedvhfeghefhtdehhfevheef
-    vedugeeiveffkeeuiefgudffffeujedvgffhnecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepghhithesjhhohhhnthhhohhmshhonhdrfhgrshht
-    mhgrihhlrdgtohhmrdgruh
-X-ME-Proxy: <xmx:jLEZYHq-tyGbFULG6zRHb1n1zf2Ee9VJlnordVqfOTN4zGod7TGvkQ>
-    <xmx:jLEZYBkiuRk-Ey9hMB0vYyEU5rFVdOaVsbrRFo9xVTw0S40bKk47dA>
-    <xmx:jLEZYP2-xaG4MNM9tUDWmrTZlOkxOQmRic_uiUfkUPfJztkPzeyAnQ>
-    <xmx:jbEZYAz4_QHCbr2WclkSKVk2-nfqCDQUwe38ez9YU28O_6X7KMToHg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 0AE3016064E; Tue,  2 Feb 2021 15:09:48 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-93-gef6c4048e6-fm-20210128.002-gef6c4048
-Mime-Version: 1.0
-Message-Id: <b21034dc-f511-448f-9c1d-68013c640608@www.fastmail.com>
-In-Reply-To: <20210104122853.18428-1-git@johnthomson.fastmail.com.au>
-References: <20210104122853.18428-1-git@johnthomson.fastmail.com.au>
-Date:   Tue, 02 Feb 2021 20:08:43 +0000
-From:   "John Thomson" <git@johnthomson.fastmail.com.au>
-To:     "Miquel Raynal" <miquel.raynal@bootlin.com>,
-        "Richard Weinberger" <richard@nod.at>,
-        "Vignesh Raghavendra" <vigneshr@ti.com>,
-        "Tudor Ambarus" <tudor.ambarus@microchip.com>
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: =?UTF-8?Q?Re:_[RFC_PATCH]_mtd:_spi-nor:_write_support_for_minor_aligned_?=
- =?UTF-8?Q?partitions?=
-Content-Type: text/plain
+        id S232663AbhBBUQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 15:16:24 -0500
+Received: from mga14.intel.com ([192.55.52.115]:59905 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231915AbhBBUPv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 15:15:51 -0500
+IronPort-SDR: wo2/YTmysBdUf9R/yHvEnBiz3a9oYOTVbC+TYOMTncm4pgwSp+rt4UF3PY/MljZnTldC9xZS+/
+ 8CKfsX8Fdjww==
+X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="180148763"
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="scan'208";a="180148763"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 12:14:05 -0800
+IronPort-SDR: 64czTOs7yHie1gRpUOj1tzg9t6McNlMqMtkfYoLEdDn+zghGB0fp7JIuXWQh5ybdcIOww82rrg
+ zdyAONkl1rEg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="scan'208";a="356442487"
+Received: from otc-lr-04.jf.intel.com ([10.54.39.41])
+  by orsmga003.jf.intel.com with ESMTP; 02 Feb 2021 12:14:03 -0800
+From:   kan.liang@linux.intel.com
+To:     acme@kernel.org, mingo@kernel.org, linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, eranian@google.com, namhyung@kernel.org,
+        jolsa@redhat.com, ak@linux.intel.com, yao.jin@linux.intel.com,
+        maddy@linux.vnet.ibm.com, Kan Liang <kan.liang@linux.intel.com>
+Subject: [PATCH 0/9] perf core PMU support for Sapphire Rapids (User tools)
+Date:   Tue,  2 Feb 2021 12:09:04 -0800
+Message-Id: <1612296553-21962-1-git-send-email-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Jan 2021, at 12:28, John Thomson wrote:
-> --- a/drivers/mtd/mtdpart.c
-> +++ b/drivers/mtd/mtdpart.c
-> @@ -38,10 +38,11 @@ static struct mtd_info *allocate_partition(struct 
-> mtd_info *parent,
->  	struct mtd_info *master = mtd_get_master(parent);
->  	int wr_alignment = (parent->flags & MTD_NO_ERASE) ?
->  			   master->writesize : master->erasesize;
-> +	int wr_alignment_minor;
+From: Kan Liang <kan.liang@linux.intel.com>
 
-int wr_alignment_minor = 0;
+Intel Sapphire Rapids server is the successor of the Intel Ice Lake
+server. There are several user-visible features introduced.
+- Two new data source fields, data block & address block, are added in
+  the PEBS Memory Info Record for the load latency event.
+  Improve the c2c and mem tools to display the reasons of a memory load
+  block.
+- Support the new instruction latency in perf mem.
+  Support the new sample type, PERF_SAMPLE_WEIGHT_STRUCT.
+- Support TMA method level 2 metrics with the perf stat --topdown option.
+  Update the topdown documentation accordingly.
 
-> +	if (!(child->flags & MTD_NO_ERASE)) {
-> 	wr_alignment = child->erasesize;
-> +	if (child->erasesize_minor)
+The full description for the SPR features can be found at Intel
+Architecture Instruction Set Extensions and Future Features Programming
+Reference, 319433-041 (and later).
 
-if (child->erasesize_minor && IS_ENABLED(CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE)) {
-Config test wrap wr_alignment_minor being set,
-so that a partition on a minor boundary is only set writeable if the non-uniform erase path can be used.
+The kernel patches has been merged into the tip:perf/core branch.
 
-> +		wr_alignment_minor = child->erasesize_minor;
-> +	}
+Kan Liang (9):
+  tools headers uapi: Update tools's copy of linux/perf_event.h
+  perf tools: Support the auxiliary event
+  perf tools: Support data block and addr block
+  perf c2c: Support data block and addr block
+  perf tools: Support PERF_SAMPLE_WEIGHT_STRUCT
+  perf report: Support instruction latency
+  perf test: Support PERF_SAMPLE_WEIGHT_STRUCT
+  perf stat: Support L2 Topdown events
+  perf, tools: Update topdown documentation for Sapphire Rapids
 
-> +		if (wr_alignment_minor) {
+ tools/include/uapi/linux/perf_event.h     | 54 ++++++++++++++++--
+ tools/perf/Documentation/perf-report.txt  |  9 ++-
+ tools/perf/Documentation/perf-stat.txt    | 14 ++++-
+ tools/perf/Documentation/topdown.txt      | 78 ++++++++++++++++++++++++--
+ tools/perf/arch/x86/util/Build            |  2 +
+ tools/perf/arch/x86/util/evsel.c          |  8 +++
+ tools/perf/arch/x86/util/mem-events.c     | 44 +++++++++++++++
+ tools/perf/builtin-c2c.c                  |  3 +
+ tools/perf/builtin-mem.c                  |  2 +-
+ tools/perf/builtin-stat.c                 | 34 +++++++++++-
+ tools/perf/tests/sample-parsing.c         | 14 ++++-
+ tools/perf/util/event.h                   |  1 +
+ tools/perf/util/evsel.c                   | 33 +++++++++--
+ tools/perf/util/evsel.h                   |  3 +
+ tools/perf/util/hist.c                    | 13 ++++-
+ tools/perf/util/hist.h                    |  3 +
+ tools/perf/util/intel-pt.c                | 23 +++++++-
+ tools/perf/util/mem-events.c              | 36 ++++++++++++
+ tools/perf/util/mem-events.h              |  5 ++
+ tools/perf/util/parse-events.l            |  1 +
+ tools/perf/util/perf_event_attr_fprintf.c |  2 +-
+ tools/perf/util/record.c                  |  5 +-
+ tools/perf/util/session.c                 |  8 ++-
+ tools/perf/util/sort.c                    | 83 +++++++++++++++++++++++++++-
+ tools/perf/util/sort.h                    |  4 ++
+ tools/perf/util/stat-shadow.c             | 92 +++++++++++++++++++++++++++++++
+ tools/perf/util/stat.c                    |  4 ++
+ tools/perf/util/stat.h                    |  9 +++
+ tools/perf/util/synthetic-events.c        |  8 ++-
+ 29 files changed, 560 insertions(+), 35 deletions(-)
+ create mode 100644 tools/perf/arch/x86/util/evsel.c
+ create mode 100644 tools/perf/arch/x86/util/mem-events.c
 
-smatch picked up a tested uninitialized symbol 'wr_alignment_minor' here,
-initialise as 0.
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-> +		if ((!wr_alignment_minor) || (wr_alignment_minor && remainder_minor != 0)) {
-
-If it is safe to boolean test the ints and u32, I should use this consistently?
-if ((!wr_alignment_minor) || (wr_alignment_minor && remainder_minor)) {
-Or is it clearer to use the math tests?
-if ((wr_alignment_minor == 0) || (wr_alignment_minor > 0 && remainder_minor > 0)) {
-
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -1225,7 +1225,11 @@ static u8 spi_nor_convert_3to4_erase(u8 opcode)
->  
->  static bool spi_nor_has_uniform_erase(const struct spi_nor *nor)
->  {
-> +#ifdef CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE
-
-if (IS_ENABLED(CONFIG_MTD_SPI_NOR_USE_VARIABLE_ERASE)) {
-and the closing brace better than the #ifdef here?
-
-> +	return false;
-> +#else
->  	return !!nor->params->erase_map.uniform_erase_type;
-> +#endif
->  }
->  
->  static void spi_nor_set_4byte_opcodes(struct spi_nor *nor)
-
-
-Otherwise, is this approach valid, or is there a better method I can use?
-
-Cheers,
 -- 
-  John Thomson
+2.7.4
+
