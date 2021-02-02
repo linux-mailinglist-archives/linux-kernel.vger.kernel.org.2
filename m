@@ -2,76 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2DF230C4B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:01:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B69D30C4D5
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:04:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235955AbhBBP7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 10:59:42 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26546 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235956AbhBBP5m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 10:57:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612281373;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rMVq+R+i9hW5bLC6dIIBNMl7jqxvev5dpa5RYgbRR+w=;
-        b=O29VON3JRqfybfKt0ED82zWvmflV0YczKEHZZjz4HMpFyWi8nYl1oPU/wirx526b1dusZN
-        sYgcLF/LiUPnhlUxazPArMddjMMREnwoeq68RUz5Dw9vVuOMMovk7HsR22Kb1x25vI6u2D
-        dEePIyPWo7NtzN9BZzOl5pE5T6+JGcQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-548-4FoYhtNvOM6H-80hKkWf4w-1; Tue, 02 Feb 2021 10:56:09 -0500
-X-MC-Unique: 4FoYhtNvOM6H-80hKkWf4w-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 28A85192D793;
-        Tue,  2 Feb 2021 15:56:08 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.128])
-        by smtp.corp.redhat.com (Postfix) with SMTP id CBD695FC19;
-        Tue,  2 Feb 2021 15:55:49 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Tue,  2 Feb 2021 16:56:07 +0100 (CET)
-Date:   Tue, 2 Feb 2021 16:55:48 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Jan Kratochvil <jan.kratochvil@redhat.com>,
-        Pedro Alves <palves@redhat.com>, Peter Anvin <hpa@zytor.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-Subject: Re: [PATCH RESEND v4 0/4] x86: fix get_nr_restart_syscall()
-Message-ID: <20210202155548.GB20059@redhat.com>
-References: <20210201174555.GA17819@redhat.com>
- <CAHk-=wjKeFHBn60eJJjvJOW2+bdtwbeSb12R+=PBQJSSHe+FbA@mail.gmail.com>
- <CAHk-=wjJerA3xGtK8HdEcdAnmaaTz-iVvc_xqokzNTBivKomVQ@mail.gmail.com>
+        id S236028AbhBBQEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:04:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50254 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235918AbhBBQAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 11:00:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DCBB364E9C;
+        Tue,  2 Feb 2021 15:59:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612281564;
+        bh=xQZUALESxhZKFk3yX/5mSVT37Mz913L8FFWZ44r9JLA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Et0G7MTAzaD8iWTsx2txahikP2xGcS3cKw/H6/iQBv89XCUxto92YKk6IKS7JpxBs
+         AXVcDFFpPkR3xgRRjk122PEaqbSLE/JOCxEUuGNLEjDOf1RxS3rF4trnsdz6ZSnkc8
+         YHFr36eB9OkGuoL7xhsOiWojTa7er74ESxieBTrN12p9uoWN1yyWN0BgqKt6JTTLt3
+         rECOYrcE7F0o84U2V46RCiyRZ6knINthWZGU7F8wCxvzfJrkWUU8Dy7hAgp5JPz945
+         6WXAIvSnCtw5wQFdKs7l49bE5tH4koOQfq5cho13FhX0HzPtmffOIFHTygYKp96c7T
+         GeCaZmquQYRlg==
+Date:   Tue, 2 Feb 2021 17:59:20 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        coreteam@netfilter.org, Florian Westphal <fw@strlen.de>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Julian Anastasov <ja@ssi.bg>,
+        LKML <linux-kernel@vger.kernel.org>, lvs-devel@vger.kernel.org,
+        Matteo Croce <mcroce@redhat.com>,
+        netdev <netdev@vger.kernel.org>, netfilter-devel@vger.kernel.org,
+        Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH net 3/4] net/core: move ipv6 gro function declarations to
+ net/ipv6
+Message-ID: <20210202155920.GC3264866@unreal>
+References: <20210202135544.3262383-1-leon@kernel.org>
+ <20210202135544.3262383-4-leon@kernel.org>
+ <CANn89iLeC8YLt2Spq4P+JA+XBf=GDjF4UT5N68-E08JdS5iPJA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wjJerA3xGtK8HdEcdAnmaaTz-iVvc_xqokzNTBivKomVQ@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANn89iLeC8YLt2Spq4P+JA+XBf=GDjF4UT5N68-E08JdS5iPJA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/01, Linus Torvalds wrote:
->
-> On Mon, Feb 1, 2021 at 10:18 AM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
+On Tue, Feb 02, 2021 at 03:57:07PM +0100, Eric Dumazet wrote:
+> On Tue, Feb 2, 2021 at 2:56 PM Leon Romanovsky <leon@kernel.org> wrote:
 > >
-> > Yeah, looks sane to me.
+> > From: Leon Romanovsky <leonro@nvidia.com>
+> >
+> > Fir the following compilation warnings:
+> >  1031 | INDIRECT_CALLABLE_SCOPE void udp_v6_early_demux(struct sk_buff *skb)
+> >
+> > net/ipv6/ip6_offload.c:182:41: warning: no previous prototype for ‘ipv6_gro_receive’ [-Wmissing-prototypes]
+> >   182 | INDIRECT_CALLABLE_SCOPE struct sk_buff *ipv6_gro_receive(struct list_head *head,
+> >       |                                         ^~~~~~~~~~~~~~~~
+> > net/ipv6/ip6_offload.c:320:29: warning: no previous prototype for ‘ipv6_gro_complete’ [-Wmissing-prototypes]
+> >   320 | INDIRECT_CALLABLE_SCOPE int ipv6_gro_complete(struct sk_buff *skb, int nhoff)
+> >       |                             ^~~~~~~~~~~~~~~~~
+> > net/ipv6/ip6_offload.c:182:41: warning: no previous prototype for ‘ipv6_gro_receive’ [-Wmissing-prototypes]
+> >   182 | INDIRECT_CALLABLE_SCOPE struct sk_buff *ipv6_gro_receive(struct list_head *head,
+> >       |                                         ^~~~~~~~~~~~~~~~
+> > net/ipv6/ip6_offload.c:320:29: warning: no previous prototype for ‘ipv6_gro_complete’ [-Wmissing-prototypes]
+> >   320 | INDIRECT_CALLABLE_SCOPE int ipv6_gro_complete(struct sk_buff *skb, int nhoff)
+> >
+> > Fixes: aaa5d90b395a ("net: use indirect call wrappers at GRO network layer")
+> > Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+> > ---
+> >  include/net/ipv6.h | 3 +++
+> >  net/core/dev.c     | 4 +---
+> >  2 files changed, 4 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/include/net/ipv6.h b/include/net/ipv6.h
+> > index bd1f396cc9c7..68676e6bd4b1 100644
+> > --- a/include/net/ipv6.h
+> > +++ b/include/net/ipv6.h
+> > @@ -1265,4 +1265,7 @@ static inline void ip6_sock_set_recvpktinfo(struct sock *sk)
+> >         release_sock(sk);
+> >  }
+> >
+> > +INDIRECT_CALLABLE_DECLARE(struct sk_buff *ipv6_gro_receive(struct list_head *,
+> > +                                                          struct sk_buff *));
+> > +INDIRECT_CALLABLE_DECLARE(int ipv6_gro_complete(struct sk_buff *, int));
 >
-> Oh, and in a perfect world we'd have a test for this condition too, no?
+>
+> I think we should move this to a new include file.
 
-There is the "erestartsys-trap-debugger" test in ptrace-tests suite.
-Do you mean you want another test in tools/testing/selftests/ptrace ?
+The ipv6_gro_* used in net/core/dev.c and net/ipv6/ip6_offload.c. This
+left me with four options:
+1. Use existing and already shared file - include/net/ipv6.h
+2. Create new header and put it in net/, so include will be something
+like that "../new_file.h".
+3. Put new header in one of the folders or core/ or ipv6/.
+4. Create new file in include/net just for those two lines.
 
-Oleg.
+I preferred option #1, which other option do you want me to redo?
 
+>
+> These declarations were static, and had to be made public only because
+> of DIRECT call stuff,
+> which is an implementation detail.
+>
+> Polluting include/net/ipv6.h seems not appropriate.
+
+Thanks for the review.
