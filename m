@@ -2,84 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA6E30BAA4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:12:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5713A30BAA6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:12:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231968AbhBBJLu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 04:11:50 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:49832 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232728AbhBBJFx (ORCPT
+        id S232858AbhBBJLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 04:11:52 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:37935 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232966AbhBBJHL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 04:05:53 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id B645B1C0B76; Tue,  2 Feb 2021 10:04:52 +0100 (CET)
-Date:   Tue, 2 Feb 2021 10:04:52 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Abel Wu <abel.w@icloud.com>
-Cc:     rjw@rjwysocki.net, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hewenliang4@huawei.com,
-        wuyun.wu@huawei.com
-Subject: Re: [PATCH] PM: hibernate: add sanity check on power_kobj
-Message-ID: <20210202090451.GA27619@amd>
-References: <20210201075041.1201-1-abel.w@icloud.com>
- <20210201105243.GA23135@duo.ucw.cz>
- <F87648CF-E5D6-41C7-9F4E-87A4BA2A4786@icloud.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="pf9I7BMVVzbSWLtt"
-Content-Disposition: inline
-In-Reply-To: <F87648CF-E5D6-41C7-9F4E-87A4BA2A4786@icloud.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+        Tue, 2 Feb 2021 04:07:11 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R261e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UNfe6ce_1612256773;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UNfe6ce_1612256773)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 02 Feb 2021 17:06:24 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     alexander.deucher@amd.com
+Cc:     christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        john.clements@amd.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] drm/amdgpu: convert sysfs sprintf/snprintf family to sysfs_emit
+Date:   Tue,  2 Feb 2021 17:06:12 +0800
+Message-Id: <1612256772-70147-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Fix the following coccicheck warning:
 
---pf9I7BMVVzbSWLtt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+./drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c:220:8-16: WARNING: use
+scnprintf or sprintf.
 
-On Tue 2021-02-02 09:59:11, Abel Wu wrote:
->=20
->=20
-> > On Feb 1, 2021, at 6:52 PM, Pavel Machek <pavel@ucw.cz> wrote:
-> >=20
-> > On Mon 2021-02-01 02:50:41, Abel Wu wrote:
-> >> The @power_kobj is initialized in pm_init() which is the same
-> >> initcall level as pm_disk_init(). Although this dependency is
-> >> guaranteed based on the current initcall serial execution model,
-> >> it would still be better do a cost-less sanity check to avoid
-> >> oops once the dependency is broken.
-> >=20
-> > I don't believe this is good idea. If the dependency is ever broken,
-> > this will make failure more subtle and harder to debug.
->=20
-> Thanks for reviewing. I think the cmdline parameter initcall_debug will
-> help in this case.
-> Actually we are trying to make initcalls being called asynchronously to
-> reduce boot time which is crucial to our cloud-native business. And we
-> resolve this kind of dependencies by retrying failed initcalls.
+./drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c:249:8-16: WARNING: use
+scnprintf or sprintf.
 
-And this patch is okay if that gets mainlined, but not before.
+Reported-by: Abaci Robot<abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Best regards,
-							Pavel
-						=09
---=20
-http://www.livejournal.com/~pavelmachek
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c
+index 541ef6b..2913d57 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_xgmi.c
+@@ -186,7 +186,7 @@ static ssize_t amdgpu_xgmi_show_attrs(struct kobject *kobj,
+ 		kobj, struct amdgpu_hive_info, kobj);
+ 
+ 	if (attr == &amdgpu_xgmi_hive_id)
+-		return snprintf(buf, PAGE_SIZE, "%llu\n", hive->hive_id);
++		return sysfs_emit(buf, "%llu\n", hive->hive_id);
+ 
+ 	return 0;
+ }
+@@ -217,7 +217,7 @@ static ssize_t amdgpu_xgmi_show_device_id(struct device *dev,
+ 	struct drm_device *ddev = dev_get_drvdata(dev);
+ 	struct amdgpu_device *adev = drm_to_adev(ddev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%llu\n", adev->gmc.xgmi.node_id);
++	return sysfs_emit(buf, "%llu\n", adev->gmc.xgmi.node_id);
+ 
+ }
+ 
+@@ -246,7 +246,7 @@ static ssize_t amdgpu_xgmi_show_error(struct device *dev,
+ 
+ 	adev->df.funcs->set_fica(adev, ficaa_pie_status_in, 0, 0);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%u\n", error_count);
++	return sysfs_emit(buf, "%u\n", error_count);
+ }
+ 
+ 
+-- 
+1.8.3.1
 
---pf9I7BMVVzbSWLtt
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAmAZFbMACgkQMOfwapXb+vKMsACfemy1Qj83ceejJNSRQ4aSJqaC
-aO0An2VkofaLO9/WlKkHvZWeT5mGsj//
-=nUX3
------END PGP SIGNATURE-----
-
---pf9I7BMVVzbSWLtt--
