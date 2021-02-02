@@ -2,126 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3751830CC09
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:45:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 448B230CC25
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:46:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239782AbhBBTm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 14:42:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38374 "EHLO
+        id S240027AbhBBTpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 14:45:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239995AbhBBTlW (ORCPT
+        with ESMTP id S239834AbhBBTpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 14:41:22 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FCE8C06174A;
-        Tue,  2 Feb 2021 11:40:42 -0800 (PST)
-Date:   Tue, 02 Feb 2021 19:40:39 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1612294840;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=csSSjQW+iGQ82CPLaJngoVb1dlMcg2+zvB5nGqdhk60=;
-        b=Xfur/CrYimcSPYK3q9jJGGaw5wTdKepryVVcY27JyawFZc4r6DGq1pdQL/6T/LO4Kmwr8a
-        UMdNkUoM5BgPrZXQeC3I4fqc3QDM6TPy7fbKlVyHpUQheBIvHLwYREMCcr7O6EwVGjuyI0
-        NaskpnbYVsx3UDiRjsuukKOZ91f3xkc4y3GpMFgR+/8G+IIS6gDA9waYZVqT/bFN0mRqYC
-        7oV8Y6Jdm+Sn5AdjSerRxk+ascPHeOtxzqfZ+ntA6BB06KOZxW2TIZv0jXo0gFoC/9K0Fx
-        dTHlMaD7C7Z8zXUIOdg6o3Zc8LIp9k0FkQL1IbLEuiW5j07X69xuBccHktP3Nw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1612294840;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=csSSjQW+iGQ82CPLaJngoVb1dlMcg2+zvB5nGqdhk60=;
-        b=rXrw5sO758Up5Op9/ylJGOQ5Oh1aYGS/gG/xxIVLjSOacVtn+mmZSRvLMPln3SFa5EFhPC
-        9z+OU30P1m18TTBQ==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/urgent] rtc: mc146818: Dont test for bit 0-5 in Register D
-Cc:     Serge Belyshev <belyshev@depni.sinp.msu.ru>,
-        Dirk Gouders <dirk@gouders.net>, Borislav Petkov <bp@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Len Brown <len.brown@intel.com>,
+        Tue, 2 Feb 2021 14:45:12 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC00C0617A7
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 11:44:24 -0800 (PST)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1l71a4-0002fO-D0; Tue, 02 Feb 2021 20:43:20 +0100
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1l71Zv-0004SH-BD; Tue, 02 Feb 2021 20:43:11 +0100
+Date:   Tue, 2 Feb 2021 20:43:08 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Russell King <linux+pull@armlinux.org.uk>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Tushar Khandelwal <Tushar.Khandelwal@arm.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>
+Cc:     linux-fbdev@vger.kernel.org, Cornelia Huck <cohuck@redhat.com>,
+        kvm@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
+        Jaroslav Kysela <perex@perex.cz>,
+        Eric Anholt <eric@anholt.net>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig.org@pengutronix.de>, linux-i2c@vger.kernel.org,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        linux-rtc@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Takashi Iwai <tiwai@suse.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <87zh0nbnha.fsf@nanos.tec.linutronix.de>
-References: <87zh0nbnha.fsf@nanos.tec.linutronix.de>
+        linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Mike Leach <mike.leach@linaro.org>,
+        linux-watchdog@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        coresight@lists.linaro.org, Vladimir Zapolskiy <vz@mleia.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Mark Brown <broonie@kernel.org>,
+        Matt Mackall <mpm@selenic.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        linux-crypto@vger.kernel.org, kernel@pengutronix.de,
+        Leo Yan <leo.yan@linaro.org>, dmaengine@vger.kernel.org
+Subject: [PATCH] mailbox: arm_mhuv2: make remove callback return void
+Message-ID: <20210202194308.jm66vblqjwr5wo6v@pengutronix.de>
+References: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
+ <20210202135350.36nj3dmcoq3t7gcf@pengutronix.de>
 MIME-Version: 1.0
-Message-ID: <161229483952.23325.2892695542227927138.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="agbwdn2ioogiuabj"
+Content-Disposition: inline
+In-Reply-To: <20210202135350.36nj3dmcoq3t7gcf@pengutronix.de>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/urgent branch of tip:
 
-Commit-ID:     ebb22a05943666155e6da04407cc6e913974c78c
-Gitweb:        https://git.kernel.org/tip/ebb22a05943666155e6da04407cc6e913974c78c
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Mon, 01 Feb 2021 20:24:17 +01:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Tue, 02 Feb 2021 20:35:02 +01:00
+--agbwdn2ioogiuabj
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-rtc: mc146818: Dont test for bit 0-5 in Register D
+My build tests failed to catch that amba driver that would have needed
+adaption in commit 3fd269e74f2f ("amba: Make the remove callback return
+void"). Change the remove function to make the driver build again.
 
-The recent change to validate the RTC turned out to be overly tight.
-
-While it cures the problem on the reporters machine it breaks machines
-with Intel chipsets which use bit 0-5 of the D register. So check only
-for bit 6 being 0 which is the case on these Intel machines as well.
-
-Fixes: 211e5db19d15 ("rtc: mc146818: Detect and handle broken RTCs")
-Reported-by: Serge Belyshev <belyshev@depni.sinp.msu.ru>
-Reported-by: Dirk Gouders <dirk@gouders.net>
-Reported-by: Borislav Petkov <bp@suse.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Dirk Gouders <dirk@gouders.net>
-Tested-by: Len Brown <len.brown@intel.com>
-Tested-by: Borislav Petkov <bp@suse.de>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Link: https://lore.kernel.org/r/87zh0nbnha.fsf@nanos.tec.linutronix.de
-
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: 3fd269e74f2f ("amba: Make the remove callback return void")
+Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
 ---
- drivers/rtc/rtc-cmos.c         | 4 ++--
- drivers/rtc/rtc-mc146818-lib.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+Hello,
 
-diff --git a/drivers/rtc/rtc-cmos.c b/drivers/rtc/rtc-cmos.c
-index 68a9ac6..a701dae 100644
---- a/drivers/rtc/rtc-cmos.c
-+++ b/drivers/rtc/rtc-cmos.c
-@@ -805,8 +805,8 @@ cmos_do_probe(struct device *dev, struct resource *ports, int rtc_irq)
- 
- 	spin_lock_irq(&rtc_lock);
- 
--	/* Ensure that the RTC is accessible. Bit 0-6 must be 0! */
--	if ((CMOS_READ(RTC_VALID) & 0x7f) != 0) {
-+	/* Ensure that the RTC is accessible. Bit 6 must be 0! */
-+	if ((CMOS_READ(RTC_VALID) & 0x40) != 0) {
- 		spin_unlock_irq(&rtc_lock);
- 		dev_warn(dev, "not accessible\n");
- 		retval = -ENXIO;
-diff --git a/drivers/rtc/rtc-mc146818-lib.c b/drivers/rtc/rtc-mc146818-lib.c
-index f83c138..dcfaf09 100644
---- a/drivers/rtc/rtc-mc146818-lib.c
-+++ b/drivers/rtc/rtc-mc146818-lib.c
-@@ -21,8 +21,8 @@ unsigned int mc146818_get_time(struct rtc_time *time)
- 
- again:
- 	spin_lock_irqsave(&rtc_lock, flags);
--	/* Ensure that the RTC is accessible. Bit 0-6 must be 0! */
--	if (WARN_ON_ONCE((CMOS_READ(RTC_VALID) & 0x7f) != 0)) {
-+	/* Ensure that the RTC is accessible. Bit 6 must be 0! */
-+	if (WARN_ON_ONCE((CMOS_READ(RTC_VALID) & 0x40) != 0)) {
- 		spin_unlock_irqrestore(&rtc_lock, flags);
- 		memset(time, 0xff, sizeof(*time));
- 		return 0;
+I guess I missed that driver during rebase as it was only introduced in
+the last merge window. Sorry for that.
+
+I'm unsure what is the right thing to do now. Should I redo the pull
+request (with this patch squashed into 3fd269e74f2f)? Or do we just
+apply this patch on top?
+
+FTR, the test robot report is at https://lore.kernel.org/r/202102030343.D9j=
+1wukx-lkp@intel.com
+
+Best regards
+Uwe
+
+ drivers/mailbox/arm_mhuv2.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/mailbox/arm_mhuv2.c b/drivers/mailbox/arm_mhuv2.c
+index 67fb10885bb4..6cf1991a5c9c 100644
+--- a/drivers/mailbox/arm_mhuv2.c
++++ b/drivers/mailbox/arm_mhuv2.c
+@@ -1095,14 +1095,12 @@ static int mhuv2_probe(struct amba_device *adev, co=
+nst struct amba_id *id)
+ 	return ret;
+ }
+=20
+-static int mhuv2_remove(struct amba_device *adev)
++static void mhuv2_remove(struct amba_device *adev)
+ {
+ 	struct mhuv2 *mhu =3D amba_get_drvdata(adev);
+=20
+ 	if (mhu->frame =3D=3D SENDER_FRAME)
+ 		writel_relaxed(0x0, &mhu->send->access_request);
+-
+-	return 0;
+ }
+=20
+ static struct amba_id mhuv2_ids[] =3D {
+--=20
+2.29.2
+
+
+--agbwdn2ioogiuabj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAZq0gACgkQwfwUeK3K
+7AnvFwf/Vj/2rwm/LS2yBZgC9lI9lbNS7MDRNAth1Fq2eWp2ByCbKHdpRnFCokp/
+Bk350ppjYY61jBRAG9ts8T+mrfwcHD9fjOamGLqhCRg9sdwC29T72vxVbt7p8j5g
+ZMPgB1Cs1n56eeobyale3SG5V9DncI0cu9gr5q/s09YI0qZfLfd4oVj2M1AJd8x0
+FzlgEPrVQadxZxqVmFogIFepwe6xmpjPmBFLn6XK3RB6tQjamSqXd3XUYYy9DkAj
+Xt57rSlMAYgF69pHmEcEVcPdGOw3YwImELrFdBhM7GfXjxIiYI4VjKH1Z05hG/Bx
+KkEiVe0iL1vI9eSQ6l5bCY9dNdIxEg==
+=S1EL
+-----END PGP SIGNATURE-----
+
+--agbwdn2ioogiuabj--
