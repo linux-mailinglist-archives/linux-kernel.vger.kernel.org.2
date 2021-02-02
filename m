@@ -2,151 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF80230C26D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:53:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED85630CCA6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:04:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234581AbhBBOtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:49:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51736 "EHLO mail.kernel.org"
+        id S240346AbhBBUCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 15:02:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234299AbhBBORg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:17:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 863D565060;
-        Tue,  2 Feb 2021 13:54:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612274065;
-        bh=JGDgF9MMKput11Atgdt1RtpXOn7atWLXnl5KUD7ATkc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w96z3lAzMB2oyPZlkgH90WYaZVlXLCgXhwQrAcHPzuq6qfnR26taqr25Q9MkM3YjJ
-         G/KMT0k2iJZyayyvOrBOgiinD9K0AvSNiNw2OJb7W/2w2UDh0A3WoXK8schAwgXw3m
-         UafmEhKTLs2SX0ZABnwOhyCcFrye+iXF/6vn07Yg=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pengcheng Yang <yangpc@wangsu.com>,
-        Neal Cardwell <ncardwell@google.com>,
-        Yuchung Cheng <ycheng@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 4.19 37/37] tcp: fix TLP timer not set when CA_STATE changes from DISORDER to OPEN
-Date:   Tue,  2 Feb 2021 14:39:20 +0100
-Message-Id: <20210202132944.477906025@linuxfoundation.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132942.915040339@linuxfoundation.org>
-References: <20210202132942.915040339@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S232851AbhBBNrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 08:47:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C8E7E64F93;
+        Tue,  2 Feb 2021 13:41:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612273309;
+        bh=lrgu37PQY9gKgzLHomntqVwJNVrZZKNWqcd6OBNf6hA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lP7CntQBMbVQJpEaaiYL7FNJfFN62FdN/GcMCAopAu3GeFeVdRngp79sVRpzFuHK5
+         TD5qm7vP35cKE27SqbfUnQslx8BchPj39SM6t3rctdUC8fYtCSE4pQocYrTa0iN/0t
+         d3FXWFCxMFvch8y6MGZ18wvBLBYTgHhaxOiLNKDwuznwWMH/xSyFPOFz3kqVjyuXZ0
+         zRzPBx8du28F2J7+fEf6S8AW6tZIr7+Fk1oGqZHo5IfxHe5n3QmWIbNh9GJ1DWeuGS
+         WNY6QFW1AReemuHlARlf6l+8hftt/ZTfX7rBzAc8J6+5GpSagbMIx44wB9Lpu37BSB
+         l0Kc3Fk6ocsSg==
+Date:   Tue, 2 Feb 2021 13:41:01 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Binghui Wang <wangbinghui@hisilicon.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Xiaowei Song <songxiaowei@hisilicon.com>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 09/13] pci: dwc: pcie-kirin: allow to optionally require
+ a regulator
+Message-ID: <20210202134101.GB5154@sirena.org.uk>
+References: <cover.1612271903.git.mchehab+huawei@kernel.org>
+ <7f4abd1ba9f4b33fe6f66213f56aa4269db74317.1612271903.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gj572EiMnwbLXET9"
+Content-Disposition: inline
+In-Reply-To: <7f4abd1ba9f4b33fe6f66213f56aa4269db74317.1612271903.git.mchehab+huawei@kernel.org>
+X-Cookie: Only God can make random selections.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pengcheng Yang <yangpc@wangsu.com>
 
-commit 62d9f1a6945ba69c125e548e72a36d203b30596e upstream.
+--gj572EiMnwbLXET9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Upon receiving a cumulative ACK that changes the congestion state from
-Disorder to Open, the TLP timer is not set. If the sender is app-limited,
-it can only wait for the RTO timer to expire and retransmit.
+On Tue, Feb 02, 2021 at 02:29:54PM +0100, Mauro Carvalho Chehab wrote:
+> On Hikey 970, there's a power supply controlled by Hi6421v600
+> regulator that turns on the PCI devices on the board. Without
+> that, no PCI hardware would work.
+>=20
+> As this is device-dependent, such regulator line should be
+> optional.
 
-The reason for this is that the TLP timer is set before the congestion
-state changes in tcp_ack(), so we delay the time point of calling
-tcp_set_xmit_timer() until after tcp_fastretrans_alert() returns and
-remove the FLAG_SET_XMIT_TIMER from ack_flag when the RACK reorder timer
-is set.
+Supplies should only be optional if they may be physically absent from
+the system, if they are just sometimes not described well in firmware
+they should be requested via the normal regulator_get() interface, the
+core will supply a dummy regulator if there is nothing at all in the
+firmware description.
 
-This commit has two additional benefits:
-1) Make sure to reset RTO according to RFC6298 when receiving ACK, to
-avoid spurious RTO caused by RTO timer early expires.
-2) Reduce the xmit timer reschedule once per ACK when the RACK reorder
-timer is set.
+Supplies should also generally be referred to with the naming used in
+the datasheet for the part.
 
-Fixes: df92c8394e6e ("tcp: fix xmit timer to only be reset if data ACKed/SACKed")
-Link: https://lore.kernel.org/netdev/1611311242-6675-1-git-send-email-yangpc@wangsu.com
-Signed-off-by: Pengcheng Yang <yangpc@wangsu.com>
-Acked-by: Neal Cardwell <ncardwell@google.com>
-Acked-by: Yuchung Cheng <ycheng@google.com>
-Cc: Eric Dumazet <edumazet@google.com>
-Link: https://lore.kernel.org/r/1611464834-23030-1-git-send-email-yangpc@wangsu.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+--gj572EiMnwbLXET9
+Content-Type: application/pgp-signature; name="signature.asc"
 
----
- include/net/tcp.h       |    2 +-
- net/ipv4/tcp_input.c    |   10 ++++++----
- net/ipv4/tcp_recovery.c |    5 +++--
- 3 files changed, 10 insertions(+), 7 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -1961,7 +1961,7 @@ void tcp_mark_skb_lost(struct sock *sk,
- void tcp_newreno_mark_lost(struct sock *sk, bool snd_una_advanced);
- extern s32 tcp_rack_skb_timeout(struct tcp_sock *tp, struct sk_buff *skb,
- 				u32 reo_wnd);
--extern void tcp_rack_mark_lost(struct sock *sk);
-+extern bool tcp_rack_mark_lost(struct sock *sk);
- extern void tcp_rack_advance(struct tcp_sock *tp, u8 sacked, u32 end_seq,
- 			     u64 xmit_time);
- extern void tcp_rack_reo_timeout(struct sock *sk);
---- a/net/ipv4/tcp_input.c
-+++ b/net/ipv4/tcp_input.c
-@@ -2750,7 +2750,8 @@ static void tcp_identify_packet_loss(str
- 	} else if (tcp_is_rack(sk)) {
- 		u32 prior_retrans = tp->retrans_out;
- 
--		tcp_rack_mark_lost(sk);
-+		if (tcp_rack_mark_lost(sk))
-+			*ack_flag &= ~FLAG_SET_XMIT_TIMER;
- 		if (prior_retrans > tp->retrans_out)
- 			*ack_flag |= FLAG_LOST_RETRANS;
- 	}
-@@ -3693,9 +3694,6 @@ static int tcp_ack(struct sock *sk, cons
- 
- 	if (tp->tlp_high_seq)
- 		tcp_process_tlp_ack(sk, ack, flag);
--	/* If needed, reset TLP/RTO timer; RACK may later override this. */
--	if (flag & FLAG_SET_XMIT_TIMER)
--		tcp_set_xmit_timer(sk);
- 
- 	if (tcp_ack_is_dubious(sk, flag)) {
- 		is_dupack = !(flag & (FLAG_SND_UNA_ADVANCED | FLAG_NOT_DUP));
-@@ -3703,6 +3701,10 @@ static int tcp_ack(struct sock *sk, cons
- 				      &rexmit);
- 	}
- 
-+	/* If needed, reset TLP/RTO timer when RACK doesn't set. */
-+	if (flag & FLAG_SET_XMIT_TIMER)
-+		tcp_set_xmit_timer(sk);
-+
- 	if ((flag & FLAG_FORWARD_PROGRESS) || !(flag & FLAG_NOT_DUP))
- 		sk_dst_confirm(sk);
- 
---- a/net/ipv4/tcp_recovery.c
-+++ b/net/ipv4/tcp_recovery.c
-@@ -109,13 +109,13 @@ static void tcp_rack_detect_loss(struct
- 	}
- }
- 
--void tcp_rack_mark_lost(struct sock *sk)
-+bool tcp_rack_mark_lost(struct sock *sk)
- {
- 	struct tcp_sock *tp = tcp_sk(sk);
- 	u32 timeout;
- 
- 	if (!tp->rack.advanced)
--		return;
-+		return false;
- 
- 	/* Reset the advanced flag to avoid unnecessary queue scanning */
- 	tp->rack.advanced = 0;
-@@ -125,6 +125,7 @@ void tcp_rack_mark_lost(struct sock *sk)
- 		inet_csk_reset_xmit_timer(sk, ICSK_TIME_REO_TIMEOUT,
- 					  timeout, inet_csk(sk)->icsk_rto);
- 	}
-+	return !!timeout;
- }
- 
- /* Record the most recently (re)sent time among the (s)acked packets
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmAZVm0ACgkQJNaLcl1U
+h9DRtAf+K9FZJNlyTA10opaKROPalDvJYAUzGS29QifY8rP5q40puTuZCei9grQM
+Qxa47bzq4jvwxU8OEg6BID3Orcf7Q+OMe5RV0e58Okl62F4uBXJaVWYp8mnwPpKW
+tPebWtJPWh9PJts0TMok3Noq/AZ8UQxmyiOasj8izrMxk3FEVidRAtXpHbFw+Rwa
+YkTAk/4y4pZhz9pKYGuEXGLj5spn4O7+SiONjxuMB+SZMHLH4foQFiCtmul6upY9
+2UYXjt4NUMCphxNykQ8UeAWDWoQ9txj7vRHFl5YPp0MIbRCNcHFuJEDjZsfQIbFH
+PQQBEahCUOHsorC5pbyEuDrKH60SPw==
+=WkEg
+-----END PGP SIGNATURE-----
 
-
+--gj572EiMnwbLXET9--
