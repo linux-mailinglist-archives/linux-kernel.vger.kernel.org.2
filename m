@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A3230C096
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:03:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24AC330CB6C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:24:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233635AbhBBOCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:02:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42526 "EHLO mail.kernel.org"
+        id S234120AbhBBTXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 14:23:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232819AbhBBNyb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 08:54:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A434764FD2;
-        Tue,  2 Feb 2021 13:44:36 +0000 (UTC)
+        id S233588AbhBBOAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:00:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AB9864FF9;
+        Tue,  2 Feb 2021 13:46:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273477;
-        bh=tAf/gmNteQOAw2tG1ve7gD0+WpCk6tZkVGywhPNnGa0=;
+        s=korg; t=1612273612;
+        bh=FLazDel+EGWbez2TXlyBvQQCh0fX2MJ10fHvld50euw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=v8vpqVo9vsQfpdPl9GwaSV73HYU8TOWYxU+aUJ8OjXAjDuES5z8wZbUQsShuJY0Bg
-         OLRi5wLa30O7nM9CEi+GL8fO0WDY8Mh5GwLpa7M5z8a6VGSU44drZcWRV+CNq+vEa5
-         iVLBsIWWpV+npveGxfEeDA/+J6z1SPIoKqj9jrv4=
+        b=hbUEy0DhrezvWEhg7+YDySBiV9eER+/77nCDQpxlj4s777Wn3vJZltMZ5GlZbTQCR
+         C51jbD/fYGwVEEqCpv9VlKdSE5BCuysmJAQL5nomRsZDzeQv5oAyPpBh4Tg1BhYsoO
+         S6MGAH6x8PXTHLHqbFIhGtvUxUtZSuTxsDktmkq8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maxim Mikityanskiy <maximmi@mellanox.com>,
-        Tariq Toukan <tariqt@nvidia.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 122/142] net/mlx5e: Revert parameters on errors when changing trust state without reset
-Date:   Tue,  2 Feb 2021 14:38:05 +0100
-Message-Id: <20210202133002.736580288@linuxfoundation.org>
+        stable@vger.kernel.org, Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Umesh Nerlige Ramappa <umesh.nerlige.ramappa@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Jani Nikula <jani.nikula@intel.com>
+Subject: [PATCH 5.4 28/61] drm/i915: Check for all subplatform bits
+Date:   Tue,  2 Feb 2021 14:38:06 +0100
+Message-Id: <20210202132947.660366169@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132957.692094111@linuxfoundation.org>
-References: <20210202132957.692094111@linuxfoundation.org>
+In-Reply-To: <20210202132946.480479453@linuxfoundation.org>
+References: <20210202132946.480479453@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,70 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maxim Mikityanskiy <maximmi@mellanox.com>
+From: Umesh Nerlige Ramappa <umesh.nerlige.ramappa@intel.com>
 
-[ Upstream commit 912c9b5fcca1ab65b806c19dd3b3cb12d73c6fe2 ]
+commit 8f6d08c9af284d74276da6681348e4673f13caea upstream.
 
-Trust state may be changed without recreating the channels. It happens
-when the channels are closed, and when channel parameters (min inline
-mode) stay the same after changing the trust state. Changing the trust
-state is a hardware command that may fail. The current code didn't
-restore the channel parameters to their old values if an error happened
-and the channels were closed. This commit adds handling for this case.
+Current code is checking only 2 bits in the subplatform, but actually 3
+bits are allocated for the field. Check all 3 bits.
 
-Fixes: 6e0504c69811 ("net/mlx5e: Change inline mode correctly when changing trust state")
-Signed-off-by: Maxim Mikityanskiy <maximmi@mellanox.com>
-Reviewed-by: Tariq Toukan <tariqt@nvidia.com>
-Signed-off-by: Saeed Mahameed <saeedm@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 805446c8347c ("drm/i915: Introduce concept of a sub-platform")
+Cc: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Signed-off-by: Umesh Nerlige Ramappa <umesh.nerlige.ramappa@intel.com>
+Reviewed-by: Tvrtko Ursulin <tvrtko.ursulin@intel.com>
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Link: https://patchwork.freedesktop.org/patch/msgid/20210121161936.746591-1-tvrtko.ursulin@linux.intel.com
+(cherry picked from commit 27b695ee1af9bb36605e67055874ec081306ac28)
+Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_dcbnl.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/i915/i915_drv.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_dcbnl.c b/drivers/net/ethernet/mellanox/mlx5/core/en_dcbnl.c
-index d20243d6a0326..f23c67575073a 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_dcbnl.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_dcbnl.c
-@@ -1151,6 +1151,7 @@ static int mlx5e_set_trust_state(struct mlx5e_priv *priv, u8 trust_state)
+--- a/drivers/gpu/drm/i915/i915_drv.h
++++ b/drivers/gpu/drm/i915/i915_drv.h
+@@ -1894,7 +1894,7 @@ intel_subplatform(const struct intel_run
  {
- 	struct mlx5e_channels new_channels = {};
- 	bool reset_channels = true;
-+	bool opened;
- 	int err = 0;
+ 	const unsigned int pi = __platform_mask_index(info, p);
  
- 	mutex_lock(&priv->state_lock);
-@@ -1159,22 +1160,24 @@ static int mlx5e_set_trust_state(struct mlx5e_priv *priv, u8 trust_state)
- 	mlx5e_params_calc_trust_tx_min_inline_mode(priv->mdev, &new_channels.params,
- 						   trust_state);
+-	return info->platform_mask[pi] & INTEL_SUBPLATFORM_BITS;
++	return info->platform_mask[pi] & ((1 << INTEL_SUBPLATFORM_BITS) - 1);
+ }
  
--	if (!test_bit(MLX5E_STATE_OPENED, &priv->state)) {
--		priv->channels.params = new_channels.params;
-+	opened = test_bit(MLX5E_STATE_OPENED, &priv->state);
-+	if (!opened)
- 		reset_channels = false;
--	}
- 
- 	/* Skip if tx_min_inline is the same */
- 	if (new_channels.params.tx_min_inline_mode ==
- 	    priv->channels.params.tx_min_inline_mode)
- 		reset_channels = false;
- 
--	if (reset_channels)
-+	if (reset_channels) {
- 		err = mlx5e_safe_switch_channels(priv, &new_channels,
- 						 mlx5e_update_trust_state_hw,
- 						 &trust_state);
--	else
-+	} else {
- 		err = mlx5e_update_trust_state_hw(priv, &trust_state);
-+		if (!err && !opened)
-+			priv->channels.params = new_channels.params;
-+	}
- 
- 	mutex_unlock(&priv->state_lock);
- 
--- 
-2.27.0
-
+ static __always_inline bool
 
 
