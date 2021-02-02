@@ -2,164 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B287E30B6B7
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 05:53:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3991930B6B8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 05:53:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231888AbhBBEvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 23:51:35 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:34301 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231566AbhBBEtJ (ORCPT
+        id S231902AbhBBEvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 23:51:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231851AbhBBEtJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 1 Feb 2021 23:49:09 -0500
-Received: from 36-229-239-87.dynamic-ip.hinet.net ([36.229.239.87] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1l6nbu-0003Ag-GN; Tue, 02 Feb 2021 04:48:19 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     hkallweit1@gmail.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        nic_swsd@realtek.com (maintainer:8169 10/100/1000 GIGABIT ETHERNET
-        DRIVER), "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev@vger.kernel.org (open list:8169 10/100/1000 GIGABIT ETHERNET
-        DRIVER), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] r8169: Add support for another RTL8168FP
-Date:   Tue,  2 Feb 2021 12:48:12 +0800
-Message-Id: <20210202044813.1304266-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.29.2
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA7DC061756;
+        Mon,  1 Feb 2021 20:48:28 -0800 (PST)
+Received: by mail-lj1-x232.google.com with SMTP id v15so19442760ljk.13;
+        Mon, 01 Feb 2021 20:48:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=5qo3Y6a156Muu9ZuNI0M6zIN06kI/WyI3S1KWgKiOfc=;
+        b=EimTH8opxE4otirrlt/TSvxUhZRa9z9/aUtylCHNFHzGsi4ZAowvODdzP2F2LMdtir
+         jDD70fiSqWj/+614G3Yn5VIG42mEoS7NYpdZ5ArGJrHQTsQFBGJ4n4ntIrcX0J8EHJ8g
+         DAecWboHmOgsxLx7zBYQI1hovNOKCvQ7Z8y4ll1oQyZWP5Jk68BSWRPMQ/RTbarV0Usr
+         ItU5DhNJsY+S4MVkk19Mb0/Q7RkegjrP5VGciyVnaFuGprXCiVgeMF0/Zw2ORet7jglm
+         7mgl0HaJO6JsEqBO5US8WFlm+Q686TgonfLuR11WNWOglV2F1FD9YZ1vhABuGCUXo3xR
+         9HGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=5qo3Y6a156Muu9ZuNI0M6zIN06kI/WyI3S1KWgKiOfc=;
+        b=tyGUgrKZ9ARzqUb4gVlRMOREd/BzpYH46TFFL/B4HjFUGs8XtxuJpplMwMsdDBF/W8
+         0E6zvwwXnKGfHZeVz1w3W5uKtYTxQIHojnf6eAHANHglB/e72dAtd+MVTqPwm0LvtFpA
+         k0Fnv3vikwNQtcWRdDmRD+HlWeNo00/XijwwW44QwCCQmqYQsTdVBXVtFisfhMufakMI
+         1yRVYFheXlu4Glx4XcnH975bgFyYKs5urAkO8Ut+IOwoeyMi2Fqjfd3W5W/RCgu17ENu
+         64CRMSkuVFOKLdeUmOCKn0i8J0Juu/GXQnMTkJ46xiywCiRwq8A5Eu9pHIiOsNLQA3hL
+         qRew==
+X-Gm-Message-State: AOAM531hRnw2m8PLu6DpgANbdvZ8oLYIqOc6X+xYJ1ZEBDVHKwDdv4dr
+        KZxxkzHo+E7Xj/Qh6XOmxlPFefqojp/H76zgmcE=
+X-Google-Smtp-Source: ABdhPJyEI9a1hvqxYDAV9f3YF2bnd3NL5TOuX7qvSr9dcZDJgJ5nrN43iJXiZf9+wcfNLe9C15MWAJCrkCBZS5nIams=
+X-Received: by 2002:a2e:9d8c:: with SMTP id c12mr11881596ljj.6.1612241307146;
+ Mon, 01 Feb 2021 20:48:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210202023654.GA265921@embeddedor>
+In-Reply-To: <20210202023654.GA265921@embeddedor>
+From:   Steve French <smfrench@gmail.com>
+Date:   Mon, 1 Feb 2021 22:48:16 -0600
+Message-ID: <CAH2r5msYsp4JxCcCRR1HY3y-Czh2UKJfV=DoKccG=Fcunc8hNQ@mail.gmail.com>
+Subject: Re: [PATCH] smb3: Fix out-of-bounds bug in SMB2_negotiate()
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Steve French <sfrench@samba.org>,
+        Pavel Shilovsky <pshilov@microsoft.com>,
+        Ronnie Sahlberg <lsahlber@redhat.com>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to the vendor driver, the new chip with XID 0x54b is
-essentially the same as the one with XID 0x54a, but it doesn't need the
-firmware.
+merged into cifs-2.6.git for-next
 
-So add support accordingly.
+On Mon, Feb 1, 2021 at 8:38 PM Gustavo A. R. Silva
+<gustavoars@kernel.org> wrote:
+>
+> While addressing some warnings generated by -Warray-bounds, I found this
+> bug that was introduced back in 2017:
+>
+>   CC [M]  fs/cifs/smb2pdu.o
+> fs/cifs/smb2pdu.c: In function =E2=80=98SMB2_negotiate=E2=80=99:
+> fs/cifs/smb2pdu.c:822:16: warning: array subscript 1 is above array bound=
+s
+> of =E2=80=98__le16[1]=E2=80=99 {aka =E2=80=98short unsigned int[1]=E2=80=
+=99} [-Warray-bounds]
+>   822 |   req->Dialects[1] =3D cpu_to_le16(SMB30_PROT_ID);
+>       |   ~~~~~~~~~~~~~^~~
+> fs/cifs/smb2pdu.c:823:16: warning: array subscript 2 is above array bound=
+s
+> of =E2=80=98__le16[1]=E2=80=99 {aka =E2=80=98short unsigned int[1]=E2=80=
+=99} [-Warray-bounds]
+>   823 |   req->Dialects[2] =3D cpu_to_le16(SMB302_PROT_ID);
+>       |   ~~~~~~~~~~~~~^~~
+> fs/cifs/smb2pdu.c:824:16: warning: array subscript 3 is above array bound=
+s
+> of =E2=80=98__le16[1]=E2=80=99 {aka =E2=80=98short unsigned int[1]=E2=80=
+=99} [-Warray-bounds]
+>   824 |   req->Dialects[3] =3D cpu_to_le16(SMB311_PROT_ID);
+>       |   ~~~~~~~~~~~~~^~~
+> fs/cifs/smb2pdu.c:816:16: warning: array subscript 1 is above array bound=
+s
+> of =E2=80=98__le16[1]=E2=80=99 {aka =E2=80=98short unsigned int[1]=E2=80=
+=99} [-Warray-bounds]
+>   816 |   req->Dialects[1] =3D cpu_to_le16(SMB302_PROT_ID);
+>       |   ~~~~~~~~~~~~~^~~
+>
+> At the time, the size of array _Dialects_ was changed from 1 to 3 in stru=
+ct
+> validate_negotiate_info_req, and then in 2019 it was changed from 3 to 4,
+> but those changes were never made in struct smb2_negotiate_req, which has
+> led to a 3 and a half years old out-of-bounds bug in function
+> SMB2_negotiate() (fs/cifs/smb2pdu.c).
+>
+> Fix this by increasing the size of array _Dialects_ in struct
+> smb2_negotiate_req to 4.
+>
+> Fixes: 9764c02fcbad ("SMB3: Add support for multidialect negotiate (SMB2.=
+1 and later)")
+> Fixes: d5c7076b772a ("smb3: add smb3.1.1 to default dialect list")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  fs/cifs/smb2pdu.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/cifs/smb2pdu.h b/fs/cifs/smb2pdu.h
+> index d85edf5d1429..a5a9e33c0d73 100644
+> --- a/fs/cifs/smb2pdu.h
+> +++ b/fs/cifs/smb2pdu.h
+> @@ -286,7 +286,7 @@ struct smb2_negotiate_req {
+>         __le32 NegotiateContextOffset; /* SMB3.1.1 only. MBZ earlier */
+>         __le16 NegotiateContextCount;  /* SMB3.1.1 only. MBZ earlier */
+>         __le16 Reserved2;
+> -       __le16 Dialects[1]; /* One dialect (vers=3D) at a time for now */
+> +       __le16 Dialects[4]; /* BB expand this if autonegotiate > 4 dialec=
+ts */
+>  } __packed;
+>
+>  /* Dialects */
+> --
+> 2.27.0
+>
 
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
-v2:
- - Add phy support.
- - Rebase on net-next.
 
- drivers/net/ethernet/realtek/r8169.h            |  1 +
- drivers/net/ethernet/realtek/r8169_main.c       | 17 +++++++++++------
- drivers/net/ethernet/realtek/r8169_phy_config.c |  1 +
- 3 files changed, 13 insertions(+), 6 deletions(-)
+--=20
+Thanks,
 
-diff --git a/drivers/net/ethernet/realtek/r8169.h b/drivers/net/ethernet/realtek/r8169.h
-index 7be86ef5a584..2728df46ec41 100644
---- a/drivers/net/ethernet/realtek/r8169.h
-+++ b/drivers/net/ethernet/realtek/r8169.h
-@@ -63,6 +63,7 @@ enum mac_version {
- 	RTL_GIGA_MAC_VER_50,
- 	RTL_GIGA_MAC_VER_51,
- 	RTL_GIGA_MAC_VER_52,
-+	RTL_GIGA_MAC_VER_53,
- 	RTL_GIGA_MAC_VER_60,
- 	RTL_GIGA_MAC_VER_61,
- 	RTL_GIGA_MAC_VER_63,
-diff --git a/drivers/net/ethernet/realtek/r8169_main.c b/drivers/net/ethernet/realtek/r8169_main.c
-index 475e6f01ea10..48697ec36e55 100644
---- a/drivers/net/ethernet/realtek/r8169_main.c
-+++ b/drivers/net/ethernet/realtek/r8169_main.c
-@@ -146,6 +146,7 @@ static const struct {
- 	[RTL_GIGA_MAC_VER_50] = {"RTL8168ep/8111ep"			},
- 	[RTL_GIGA_MAC_VER_51] = {"RTL8168ep/8111ep"			},
- 	[RTL_GIGA_MAC_VER_52] = {"RTL8168fp/RTL8117",  FIRMWARE_8168FP_3},
-+	[RTL_GIGA_MAC_VER_53] = {"RTL8168fp/RTL8117",			},
- 	[RTL_GIGA_MAC_VER_60] = {"RTL8125A"				},
- 	[RTL_GIGA_MAC_VER_61] = {"RTL8125A",		FIRMWARE_8125A_3},
- 	/* reserve 62 for CFG_METHOD_4 in the vendor driver */
-@@ -696,7 +697,7 @@ static bool rtl_is_8168evl_up(struct rtl8169_private *tp)
- {
- 	return tp->mac_version >= RTL_GIGA_MAC_VER_34 &&
- 	       tp->mac_version != RTL_GIGA_MAC_VER_39 &&
--	       tp->mac_version <= RTL_GIGA_MAC_VER_52;
-+	       tp->mac_version <= RTL_GIGA_MAC_VER_53;
- }
- 
- static bool rtl_supports_eee(struct rtl8169_private *tp)
-@@ -763,7 +764,9 @@ static bool name ## _check(struct rtl8169_private *tp)
- static void r8168fp_adjust_ocp_cmd(struct rtl8169_private *tp, u32 *cmd, int type)
- {
- 	/* based on RTL8168FP_OOBMAC_BASE in vendor driver */
--	if (tp->mac_version == RTL_GIGA_MAC_VER_52 && type == ERIAR_OOB)
-+	if (type == ERIAR_OOB &&
-+	    (tp->mac_version == RTL_GIGA_MAC_VER_52 ||
-+	     tp->mac_version == RTL_GIGA_MAC_VER_53))
- 		*cmd |= 0x7f0 << 18;
- }
- 
-@@ -1238,7 +1241,7 @@ static enum rtl_dash_type rtl_check_dash(struct rtl8169_private *tp)
- 	case RTL_GIGA_MAC_VER_28:
- 	case RTL_GIGA_MAC_VER_31:
- 		return r8168dp_check_dash(tp) ? RTL_DASH_DP : RTL_DASH_NONE;
--	case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_52:
-+	case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_53:
- 		return r8168ep_check_dash(tp) ? RTL_DASH_EP : RTL_DASH_NONE;
- 	default:
- 		return RTL_DASH_NONE;
-@@ -1962,6 +1965,7 @@ static enum mac_version rtl8169_get_mac_version(u16 xid, bool gmii)
- 		{ 0x7c8, 0x608,	RTL_GIGA_MAC_VER_61 },
- 
- 		/* RTL8117 */
-+		{ 0x7cf, 0x54b,	RTL_GIGA_MAC_VER_53 },
- 		{ 0x7cf, 0x54a,	RTL_GIGA_MAC_VER_52 },
- 
- 		/* 8168EP family. */
-@@ -2236,7 +2240,7 @@ static void rtl_init_rxcfg(struct rtl8169_private *tp)
- 	case RTL_GIGA_MAC_VER_38:
- 		RTL_W32(tp, RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA_BURST);
- 		break;
--	case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_52:
-+	case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_53:
- 		RTL_W32(tp, RxConfig, RX128_INT_EN | RX_MULTI_EN | RX_DMA_BURST | RX_EARLY_OFF);
- 		break;
- 	case RTL_GIGA_MAC_VER_60 ... RTL_GIGA_MAC_VER_63:
-@@ -2410,7 +2414,7 @@ DECLARE_RTL_COND(rtl_rxtx_empty_cond_2)
- static void rtl_wait_txrx_fifo_empty(struct rtl8169_private *tp)
- {
- 	switch (tp->mac_version) {
--	case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_52:
-+	case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_53:
- 		rtl_loop_wait_high(tp, &rtl_txcfg_empty_cond, 100, 42);
- 		rtl_loop_wait_high(tp, &rtl_rxtx_empty_cond, 100, 42);
- 		break;
-@@ -3669,6 +3673,7 @@ static void rtl_hw_config(struct rtl8169_private *tp)
- 		[RTL_GIGA_MAC_VER_50] = rtl_hw_start_8168ep_2,
- 		[RTL_GIGA_MAC_VER_51] = rtl_hw_start_8168ep_3,
- 		[RTL_GIGA_MAC_VER_52] = rtl_hw_start_8117,
-+		[RTL_GIGA_MAC_VER_53] = rtl_hw_start_8117,
- 		[RTL_GIGA_MAC_VER_60] = rtl_hw_start_8125a_1,
- 		[RTL_GIGA_MAC_VER_61] = rtl_hw_start_8125a_2,
- 		[RTL_GIGA_MAC_VER_63] = rtl_hw_start_8125b,
-@@ -5055,7 +5060,7 @@ static void rtl_hw_init_8125(struct rtl8169_private *tp)
- static void rtl_hw_initialize(struct rtl8169_private *tp)
- {
- 	switch (tp->mac_version) {
--	case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_52:
-+	case RTL_GIGA_MAC_VER_49 ... RTL_GIGA_MAC_VER_53:
- 		rtl8168ep_stop_cmac(tp);
- 		fallthrough;
- 	case RTL_GIGA_MAC_VER_40 ... RTL_GIGA_MAC_VER_48:
-diff --git a/drivers/net/ethernet/realtek/r8169_phy_config.c b/drivers/net/ethernet/realtek/r8169_phy_config.c
-index 913d030d73eb..50f0f621b1aa 100644
---- a/drivers/net/ethernet/realtek/r8169_phy_config.c
-+++ b/drivers/net/ethernet/realtek/r8169_phy_config.c
-@@ -1358,6 +1358,7 @@ void r8169_hw_phy_config(struct rtl8169_private *tp, struct phy_device *phydev,
- 		[RTL_GIGA_MAC_VER_50] = rtl8168ep_2_hw_phy_config,
- 		[RTL_GIGA_MAC_VER_51] = rtl8168ep_2_hw_phy_config,
- 		[RTL_GIGA_MAC_VER_52] = rtl8117_hw_phy_config,
-+		[RTL_GIGA_MAC_VER_53] = rtl8117_hw_phy_config,
- 		[RTL_GIGA_MAC_VER_60] = rtl8125a_1_hw_phy_config,
- 		[RTL_GIGA_MAC_VER_61] = rtl8125a_2_hw_phy_config,
- 		[RTL_GIGA_MAC_VER_63] = rtl8125b_hw_phy_config,
--- 
-2.29.2
-
+Steve
