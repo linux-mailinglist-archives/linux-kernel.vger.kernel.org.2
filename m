@@ -2,150 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C58630C758
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:20:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE9130C75E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:20:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237420AbhBBRSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:18:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34966 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237363AbhBBRPs (ORCPT
+        id S237441AbhBBRTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:19:31 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:26844 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236860AbhBBRQs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 12:15:48 -0500
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41898C061793;
-        Tue,  2 Feb 2021 09:14:17 -0800 (PST)
-Received: by mail-wr1-x444.google.com with SMTP id 6so21286492wri.3;
-        Tue, 02 Feb 2021 09:14:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=k4CVJlb0/AWH3A5Sub6ShZZ3WZC37rBXFHjTDRb3cs8=;
-        b=E7vNGQax2iQ+VzmOWvnQc0Ye+5pEJQ54SIN3BtnUz+f20UyqTUOd96462rNbqQ2w4G
-         AIxPDjuuEAOtxsNdfC1YdwNwbd/CUwcjZHNYsIYwtWTJeglBMsgpzNv9Fr7P7emFipcQ
-         YAfxD6H+9zbWpu1VhQn0hIPGHKhLkS0mnIMclIXFfsm96cmXH6K+zVTPNGq6NTmxY36m
-         5tSTDC2DtjKPTu2C7yngO4aG4zQumjZXhEGQGyi6bM4rpg/jb1KOP0Nu1oyy+YPyZHpD
-         XAyQd9PLaejKLKgMbxhEUiSv/x2L8tkE/Gax3xxRTjAEXCBhoOt+Z/dFQsoL6zjqOaiv
-         rrDA==
+        Tue, 2 Feb 2021 12:16:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612286120;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lEa8TASFowTmr9kKp6sPUUyPmHU/46QcAZCj48yANfk=;
+        b=egSHzr5DtruvlX8eepGt/qpkEQ1BCwwQBtSxmjPOSN4/bs5DaN6vWxviX2+CKAzH/a3VN/
+        EFHk0aDG72/XTmgOMBeyIXA/deaX5ep0JDkRs++02Ihgz2M2YoxLX10VpU3ixTdRfsnXSp
+        DrRwcQHTw2gNKN6AHa0vjuN+/+ZgUAI=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-16-kMjwPd2jO4O7qWu7NqaETw-1; Tue, 02 Feb 2021 12:15:19 -0500
+X-MC-Unique: kMjwPd2jO4O7qWu7NqaETw-1
+Received: by mail-qk1-f197.google.com with SMTP id r190so17898777qkf.19
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 09:15:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=k4CVJlb0/AWH3A5Sub6ShZZ3WZC37rBXFHjTDRb3cs8=;
-        b=duWcyMRN3YAGiPsm9YxTV69mE10eDK6PuNS72OH6lleS/ZHg0PQmF2dVmIQzmgSjNr
-         PHNI8WgojCAGFLm3+GYtH4meQZ9tsQIoXn5EXtopduBEN1j62RQC+1A8/xXfvD9yD5JG
-         DzLuH0I7qa5I+abwVmunM/2F+JkEpfLRVuxOKcve5hlVWiWcjtVJ2nSEUSl8op2k2JzN
-         plxf57Z5V2ygytl+WMUMzB9A4EOc90A06iSSrcKQjZeIzyTqRoWkxY03KHMsXi6EtIqO
-         EEldqnnTpBxEW01/B/Bc9B56FmeuHyb4tmjjmeqEjW0aZozIjXSMOJ7oLyKIV+vp/Qtp
-         cvZg==
-X-Gm-Message-State: AOAM532QPkc76Lx1CMFzw9i/YxBuPiN0k+GY75C+FD/TQJyy4DKD0QVK
-        gaEY6tVO8GQn+Xixy+CKPMgkDzCoXMZVr743aB8=
-X-Google-Smtp-Source: ABdhPJzgh6Vc+DUq9tdwN2uJ46Lh9+eMLS11bhb8F+ysmXG56poEbcOCvD5XP4uvYaOUA09pp7BUGnMtp1hix5FIEKk=
-X-Received: by 2002:adf:e448:: with SMTP id t8mr25353656wrm.288.1612286055917;
- Tue, 02 Feb 2021 09:14:15 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lEa8TASFowTmr9kKp6sPUUyPmHU/46QcAZCj48yANfk=;
+        b=YsUxp12HTNe83fDmCtVw+VNbN2GSiY+ty1pq5EeN3vKEdoYl99hvdOrfIweyvL8Fvs
+         lEVtpJs9SasdEcGqaF5mtHKV8RK3XFmy2BSGnyPiDD9pUTm++z0K/oiZoXLbsgczab2k
+         h9zQrtpD0TzMQ7zw1vpKfN4kpJbbHIT7s3H/gPIWN2vDoJpiQRzfsyEw7NSLA7xV8DYU
+         bhhWMp5lEp1OU5i/J08uPCeBmGTrzPvbCJRyV2NgOCpbvD8FmzbpiD9Iu33xTJkejsXc
+         RmMcnycCgKSIInQdxSsTKoQLEbRIo8c+GKc6VIK2YertlJve0Z0p4Hj6R9HFmNg1MTjx
+         R+Hg==
+X-Gm-Message-State: AOAM531XMdD3UNt8mYdYJSYBaVwLJ50WfmU8EMSUX8SNwI2j45+KeUej
+        hFff8T99mo6LHKOSwWRDM5neyeYmBNFHBrNi/EboYz0rmoI5lCFIjqhCemWAWwFGrC0Ur0JO/I9
+        FqwWFedyLBroXP05QxrCiOfnW
+X-Received: by 2002:a37:8b81:: with SMTP id n123mr22342728qkd.242.1612286118802;
+        Tue, 02 Feb 2021 09:15:18 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzcppnC7lKM0JkQf/E3mgt/JhPqhdB0jg+3iHEp7UqjdhDN2d+ysu+mJtwxQ/4NGaXhYRD90Q==
+X-Received: by 2002:a37:8b81:: with SMTP id n123mr22342688qkd.242.1612286118538;
+        Tue, 02 Feb 2021 09:15:18 -0800 (PST)
+Received: from xz-x1 (bras-vprn-toroon474qw-lp130-20-174-93-89-182.dsl.bell.ca. [174.93.89.182])
+        by smtp.gmail.com with ESMTPSA id p11sm17044941qtb.62.2021.02.02.09.15.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 09:15:17 -0800 (PST)
+Date:   Tue, 2 Feb 2021 12:15:15 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>, Shaohua Li <shli@fb.com>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steven Price <steven.price@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        Adam Ruprecht <ruprecht@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH v3 5/9] userfaultfd: add minor fault registration mode
+Message-ID: <20210202171515.GF6468@xz-x1>
+References: <20210128224819.2651899-1-axelrasmussen@google.com>
+ <20210128224819.2651899-6-axelrasmussen@google.com>
+ <20210201183159.GF260413@xz-x1>
 MIME-Version: 1.0
-References: <20210202142901.7131-1-elic@nvidia.com>
-In-Reply-To: <20210202142901.7131-1-elic@nvidia.com>
-From:   Si-Wei Liu <siwliu.kernel@gmail.com>
-Date:   Tue, 2 Feb 2021 09:14:02 -0800
-Message-ID: <CAPWQSg3Z1aCZc7kX2x_4NLtAzkrZ+eO5ABBF0bAQfaLc=++Y2Q@mail.gmail.com>
-Subject: Re: [PATCH] vdpa/mlx5: Restore the hardware used index after change map
-To:     Eli Cohen <elic@nvidia.com>
-Cc:     mst@redhat.com, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lulu@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210201183159.GF260413@xz-x1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 6:34 AM Eli Cohen <elic@nvidia.com> wrote:
->
-> When a change of memory map occurs, the hardware resources are destroyed
-> and then re-created again with the new memory map. In such case, we need
-> to restore the hardware available and used indices. The driver failed to
-> restore the used index which is added here.
->
-> Fixes 1a86b377aa21 ("vdpa/mlx5: Add VDPA driver for supported mlx5 devices")
-> Signed-off-by: Eli Cohen <elic@nvidia.com>
-> ---
-> This patch is being sent again a single patch the fixes hot memory
-> addtion to a qemy process.
->
->  drivers/vdpa/mlx5/net/mlx5_vnet.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> index 88dde3455bfd..839f57c64a6f 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -87,6 +87,7 @@ struct mlx5_vq_restore_info {
->         u64 device_addr;
->         u64 driver_addr;
->         u16 avail_index;
-> +       u16 used_index;
->         bool ready;
->         struct vdpa_callback cb;
->         bool restore;
-> @@ -121,6 +122,7 @@ struct mlx5_vdpa_virtqueue {
->         u32 virtq_id;
->         struct mlx5_vdpa_net *ndev;
->         u16 avail_idx;
-> +       u16 used_idx;
->         int fw_state;
->
->         /* keep last in the struct */
-> @@ -804,6 +806,7 @@ static int create_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtque
->
->         obj_context = MLX5_ADDR_OF(create_virtio_net_q_in, in, obj_context);
->         MLX5_SET(virtio_net_q_object, obj_context, hw_available_index, mvq->avail_idx);
-> +       MLX5_SET(virtio_net_q_object, obj_context, hw_used_index, mvq->used_idx);
+On Mon, Feb 01, 2021 at 01:31:59PM -0500, Peter Xu wrote:
+> On Thu, Jan 28, 2021 at 02:48:15PM -0800, Axel Rasmussen wrote:
+> > This feature allows userspace to intercept "minor" faults. By "minor"
+> > faults, I mean the following situation:
+> > 
+> > Let there exist two mappings (i.e., VMAs) to the same page(s) (shared
+> > memory). One of the mappings is registered with userfaultfd (in minor
+> > mode), and the other is not. Via the non-UFFD mapping, the underlying
+> > pages have already been allocated & filled with some contents. The UFFD
+> > mapping has not yet been faulted in; when it is touched for the first
+> > time, this results in what I'm calling a "minor" fault. As a concrete
+> > example, when working with hugetlbfs, we have huge_pte_none(), but
+> > find_lock_page() finds an existing page.
+> > 
+> > This commit adds the new registration mode, and sets the relevant flag
+> > on the VMAs being registered. In the hugetlb fault path, if we find
+> > that we have huge_pte_none(), but find_lock_page() does indeed find an
+> > existing page, then we have a "minor" fault, and if the VMA has the
+> > userfaultfd registration flag, we call into userfaultfd to handle it.
+> 
+> When re-read, now I'm thinking whether we should restrict the minor fault
+> scenario with shared mappings always, assuming there's one mapping with uffd
+> and the other one without, while the non-uffd can modify the data before an
+> UFFDIO_CONTINUE kicking the uffd process.
+> 
+> To me, it's really more about page cache and that's all..
+> 
+> So I'm wondering whether below would be simpler and actually clearer on
+> defining minor faults, comparing to the above whole two paragraphs.  For
+> example, the scemantics do not actually need two mappings:
+> 
+>     For shared memory, userfaultfd missing fault used to only report the event
+>     if the page cache does not exist for the current fault process.  Here we
+>     define userfaultfd minor fault as the case where the missing page fault
+>     does have a backing page cache (so only the pgtable entry is missing).
+> 
+> It should not affect most of your code, but only one below [1].
 
-The saved indexes will apply to the new virtqueue object whenever it
-is created. In virtio spec, these indexes will reset back to zero when
-the virtio device is reset. But I don't see how it's done today. IOW,
-I don't see where avail_idx and used_idx get cleared from the mvq for
-device reset via set_status().
+OK it could be slightly more than that...
 
--Siwei
+E.g. we'd need to make UFFDIO_COPY to not install the write bit if it's
+UFFDIO_CONTINUE and if it's private mappings. In hugetlb_mcopy_atomic_pte() now
+we apply the write bit unconditionally:
 
+	_dst_pte = make_huge_pte(dst_vma, page, dst_vma->vm_flags & VM_WRITE);
 
->         MLX5_SET(virtio_net_q_object, obj_context, queue_feature_bit_mask_12_3,
->                  get_features_12_3(ndev->mvdev.actual_features));
->         vq_ctx = MLX5_ADDR_OF(virtio_net_q_object, obj_context, virtio_q_context);
-> @@ -1022,6 +1025,7 @@ static int connect_qps(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *m
->  struct mlx5_virtq_attr {
->         u8 state;
->         u16 available_index;
-> +       u16 used_index;
->  };
->
->  static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue *mvq,
-> @@ -1052,6 +1056,7 @@ static int query_virtqueue(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueu
->         memset(attr, 0, sizeof(*attr));
->         attr->state = MLX5_GET(virtio_net_q_object, obj_context, state);
->         attr->available_index = MLX5_GET(virtio_net_q_object, obj_context, hw_available_index);
-> +       attr->used_index = MLX5_GET(virtio_net_q_object, obj_context, hw_used_index);
->         kfree(out);
->         return 0;
->
-> @@ -1610,6 +1615,7 @@ static int save_channel_info(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqu
->                 return err;
->
->         ri->avail_index = attr.available_index;
-> +       ri->used_index = attr.used_index;
->         ri->ready = mvq->ready;
->         ri->num_ent = mvq->num_ent;
->         ri->desc_addr = mvq->desc_addr;
-> @@ -1654,6 +1660,7 @@ static void restore_channels_info(struct mlx5_vdpa_net *ndev)
->                         continue;
->
->                 mvq->avail_idx = ri->avail_index;
-> +               mvq->used_idx = ri->used_index;
->                 mvq->ready = ri->ready;
->                 mvq->num_ent = ri->num_ent;
->                 mvq->desc_addr = ri->desc_addr;
-> --
-> 2.29.2
->
+That'll need a touch-up otherwise.
+
+It's just the change seems still very small so I'd slightly prefer to support
+it all.  However I don't want to make your series complicated and blocking it,
+so please feel free to still make it shared memory if that's your preference.
+The worst case is if someone would like to enable this (if with a valid user
+scenario) we'd export a new uffd feature flag.
+
+> 
+> [...]
+> 
+> > @@ -1302,9 +1301,26 @@ static inline bool vma_can_userfault(struct vm_area_struct *vma,
+> >  				     unsigned long vm_flags)
+> >  {
+> >  	/* FIXME: add WP support to hugetlbfs and shmem */
+> > -	return vma_is_anonymous(vma) ||
+> > -		((is_vm_hugetlb_page(vma) || vma_is_shmem(vma)) &&
+> > -		 !(vm_flags & VM_UFFD_WP));
+> > +	if (vm_flags & VM_UFFD_WP) {
+> > +		if (is_vm_hugetlb_page(vma) || vma_is_shmem(vma))
+> > +			return false;
+> > +	}
+> > +
+> > +	if (vm_flags & VM_UFFD_MINOR) {
+> > +		/*
+> > +		 * The use case for minor registration (intercepting minor
+> > +		 * faults) is to handle the case where a page is present, but
+> > +		 * needs to be modified before it can be used. This requires
+> > +		 * two mappings: one with UFFD registration, and one without.
+> > +		 * So, it only makes sense to do this with shared memory.
+> > +		 */
+> > +		/* FIXME: Add minor fault interception for shmem. */
+> > +		if (!(is_vm_hugetlb_page(vma) && (vma->vm_flags & VM_SHARED)))
+> > +			return false;
+> 
+> [1]
+> 
+> So here we also restrict the mapping be shared.  My above comment on the commit
+> message is also another way to ask whether we could also allow it to happen
+> with non-shared mappings as long as there's a page cache.  If so, we could drop
+> the VM_SHARED check here.  It won't affect your existing use case for sure, it
+> just gives more possibility that maybe it could also be used on non-shared
+> mappings due to some reason in the future.
+> 
+> What do you think?
+> 
+> The rest looks good to me.
+> 
+> Thanks,
+> 
+> -- 
+> Peter Xu
+
+-- 
+Peter Xu
+
