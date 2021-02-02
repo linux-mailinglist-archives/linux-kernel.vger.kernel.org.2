@@ -2,118 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0603030CF40
+	by mail.lfdr.de (Postfix) with ESMTP id 7E83030CF41
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:45:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235699AbhBBWom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 17:44:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49528 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235524AbhBBWo3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 17:44:29 -0500
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D344FC061786
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 14:44:13 -0800 (PST)
-Received: by mail-yb1-xb2c.google.com with SMTP id s61so18810774ybi.4
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 14:44:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SEYLnC3u7WyEhbD/FKNwftU+z2oHAmMTCcdaokM12wo=;
-        b=Kl5ucGfgQsN2LtKbePCNETb96lKRFopLBGQF/DpYpWRc1FQNPBOCK2ZS8XoXGW3eMG
-         PoRcqg6PSR+bQ6iCMnzll+P2o3Tmq1vQXQZgyQozkJqlDCB6tUvycOoYABEtGqFEK5SC
-         HrqDPwICnSLuiQp4oI1z4KLxG31cR6216VEIostl/TOGCST99UPhylE5HmUbMQF03AGF
-         yiJ5BvkdQacJoCJanX7mLtRmBQ652vEu5jMBbymsb1G4F86Zfdt2Gr7X1bq5cLHQVKbk
-         qloXBwtJs+ezMa7VceE3cJo1Ae6+2PwtNxRF0Xgv85DrYWf3OXNY1uEMwFSAmV/k2iy/
-         1B1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SEYLnC3u7WyEhbD/FKNwftU+z2oHAmMTCcdaokM12wo=;
-        b=VbEt0ANqd1BhkJzpwQj9Dl7SsHyu0qWkdgdyN0JzO9epW9zEc3I4UUF7PUZzdG178/
-         KUpYsgLDL5/d+S7GGnIsyQ4LorPkp4bQyiZkz2eD46jkeRjBElBWUnfxWxdJoz/RfeaD
-         ZTGxaTZ8DLZjG0VC5hwa6dAWfhpl60VSbNSwSziU+iYGWYhVwRv7oM5j1OGD7sP3Bf9+
-         VqJ6Evqp7xX27nbzesptEVRYHgxLuZIMV2smNuTmcOgG/dnJ9f+LfinLpa+dbDOMJl6L
-         lHVMXLVKHr9162LtqCcKQ9Slj/t7IZ4zW2eo4dgdw2fSgqsOC5+818b/21owz+pIKHmu
-         MKIQ==
-X-Gm-Message-State: AOAM532jJIoQQsUo50kDa8VNdBTnkf7dxZF6u4tQyGmMDM5qBThKr7H4
-        tS6hjcKJErOT3RjGRY9zPcueG3enxeTVLEQ3C4AFXw==
-X-Google-Smtp-Source: ABdhPJz8f9CiV9IMsKLsA2iuWlYWcAr9M2cWu28/QsYlV3ZoZT6Fj2KEfPn1+6Zo6tZqIADWuFbhS2Xm5mcrdRgOWAY=
-X-Received: by 2002:a25:c683:: with SMTP id k125mr287913ybf.32.1612305853065;
- Tue, 02 Feb 2021 14:44:13 -0800 (PST)
+        id S235733AbhBBWou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 17:44:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43672 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235648AbhBBWoi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 17:44:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29E0564F4C;
+        Tue,  2 Feb 2021 22:43:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612305837;
+        bh=qyiIFBOuIC3f3nUMesj1fMzai7hKaPmzlzsaCTyXV+M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pu9kSDVSy+xBHVBEA6OYdndUTict2LLHnUGJqpf8cfs4L6XuhaBaRMsc99hTZ7z8C
+         MqZdlcADSirul1fukYmhahdOJ7FPO/lA8FDgufvxaKsw0PS1uEbntxp5ERDWSB3N0I
+         yiUO5kXiibl8Z2ov9lFw3TPxw8faHI2AG4mUp4NcCOpOlDvrsEoV+npTn3a49Z59qF
+         SmrKBSrCyaeNYlUTZzc9BftzEB3g/k1SMQABfytzoRdLs2BdXrAt/V8bv3l6QaR78i
+         Vf4eSZN6A9Q30ZtMgH5czdKOeR5KG/9qZZawsv1K4KCBebzhLy3Q/vyEETFoJiJpnl
+         P568lh/1zKDFw==
+Date:   Wed, 3 Feb 2021 00:43:50 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     ira.weiny@intel.com, Sean Christopherson <seanjc@google.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org
+Subject: Re: [PATCH] x86: Remove unnecessary kmap() from
+ sgx_ioc_enclave_init()
+Message-ID: <YBnVprvgr1GMa3CJ@kernel.org>
+References: <20210202013725.3514671-1-ira.weiny@intel.com>
+ <ba4adad5-754f-65b5-5dae-69dee6803a23@intel.com>
 MIME-Version: 1.0
-References: <20210202043345.3778765-1-saravanak@google.com> <20210202212231.g5tj3f7tv74gagm6@viti.kaiser.cx>
-In-Reply-To: <20210202212231.g5tj3f7tv74gagm6@viti.kaiser.cx>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Tue, 2 Feb 2021 14:43:37 -0800
-Message-ID: <CAGETcx_cS_Y-1Bw3tNhZRckEQO=yB8UDzNRr+Khs_X2ym7tnwA@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] Make fw_devlink=on more forgiving
-To:     Martin Kaiser <martin@kaiser.cx>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Len Brown <lenb@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ba4adad5-754f-65b5-5dae-69dee6803a23@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 2, 2021 at 1:22 PM Martin Kaiser <martin@kaiser.cx> wrote:
->
-> Hi Saravana,
->
-> Thus wrote Saravana Kannan (saravanak@google.com):
->
-> > Martin,
->
-> > If you tested this series, can you please give a Tested-by?
->
-> I tested this v2 series on top of next-20210202 (without the fsl,avic
-> patch).
->
-> If modules are enabled, the kernel doesn't boot on my imx25 board. This
-> is expected, I guess.
->
-> With modules disabled, the kernel boots but probe fails for some
-> (non-mainline) drivers in my tree.
+On Tue, Feb 02, 2021 at 10:55:36AM -0800, Dave Hansen wrote:
+> On 2/1/21 5:37 PM, ira.weiny@intel.com wrote:
+> > kmap is inefficient and we are trying to reduce the usage in the kernel.
+> > There is no readily apparent reason why the initp_page page needs to be
+> > allocated and kmap'ed() but sigstruct needs to be page aligned and token
+> > 512 byte aligned.
+> 
+> Hi Ira,
+> 
+> It's a *relatively* recent guaranteed, but:
+> 
+> https://www.kernel.org/doc/Documentation/core-api/memory-allocation.rst
+> 
+> says:
+> 
+> > The address of a chunk allocated with `kmalloc` is aligned to at least
+> > ARCH_KMALLOC_MINALIGN bytes.  For sizes which are a power of two, the
+> > alignment is also guaranteed to be at least the respective size.
+> 
+> So, if you allocate a page with kmalloc(), you get an aligned page.  Yay!
 
-Thanks Martin!
+And this what we do sgx_ioc_enclave_create() anyway, as I stated in my
+earlier response. Better to use the same pattern everywhere consitently
+when it makes sense.
 
-> All of those drivers have a gpio in
-> their device-tree node, such as
->
-> my_driver {
->    gpio_test1 = <&gpio1 0 0>;
->    ...
-> };
->
-> with gpio1 from arch/arm/boot/dts/imx25.dtsi.
->
-> The probe function calls
->
-> of_get_named_gpio(np, "gpio_test1", 0);
->
-> to get the gpio. This fails with -EINVAL.
-
-And you didn't see this issue with the fsl,avic patch?
-
-The property you are using is not a standard GPIO binding (-gpios,
-gpio, gpios) and I'm not surprised it's not working. The gpio1 is
-probably getting probe deferred and ends up running after "my_driver".
-
--Saravana
+/Jarkko
