@@ -2,75 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD42430CE6B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:07:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0299730CE67
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:05:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232454AbhBBWFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 17:05:03 -0500
-Received: from mga01.intel.com ([192.55.52.88]:8248 "EHLO mga01.intel.com"
+        id S234595AbhBBWEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 17:04:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59022 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231453AbhBBWE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 17:04:29 -0500
-IronPort-SDR: h5YkYpR463GkM+ju3UsaAsMe1I8RvgamRSjJhdWEJnJSA0+3K35KCW4+BXMNCcdvJZyxW9tTdv
- E+ppdoraJJFA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="199877628"
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="199877628"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 14:02:20 -0800
-IronPort-SDR: vBVdwMaEDzrwOrY9kcBjFmDx+t1IMzWhS/MblZQ6nR1VY/Y+++bhsnGUgS4EskNL3CH+91qtPC
- EPzKdjZAx68w==
-X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
-   d="scan'208";a="370969802"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 14:02:18 -0800
-Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
-        id 39A9C205B3; Wed,  3 Feb 2021 00:02:16 +0200 (EET)
-Date:   Wed, 3 Feb 2021 00:02:16 +0200
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Yong Zhi <yong.zhi@intel.com>
-Subject: Re: [PATCH 1/1] ipu3-cio2: Build bridge only if ACPI is enabled
-Message-ID: <20210202220216.GY32460@paasikivi.fi.intel.com>
-References: <20210202201440.10613-1-sakari.ailus@linux.intel.com>
- <070d3585-e21c-0bef-3740-d38fcd106f25@infradead.org>
- <20210202203022.GX32460@paasikivi.fi.intel.com>
- <2102444d-8a2b-cae7-9266-903eb14a7c21@gmail.com>
+        id S234530AbhBBWDh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 17:03:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F26FF64E49;
+        Tue,  2 Feb 2021 22:02:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612303376;
+        bh=ZelVrOXLSNk+EelznVWiuqyQw7JN8k3FuopKGg7esik=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PlwliBRDjLXU/ZsO0dmmScbO3fdXyQnmFXrSwq+nv+QyTO/PYKoX8tN1gD2TSPwaH
+         +QvYAi7UeEeIMZL7/UVXMf6GCSqY4hzdMER5DkvfljNHvTSlqTGS38HzIosy0F7snl
+         jMQs0x81kWZxwejRrnFLGYLtIa49DmFEBbP4BbqD5RsW0RUPnglAkrIZNYz+sCofhk
+         SsGMlSTJr+RxuJM8/V3Tm3i2IvLwDtoYJBDBY1v0yiECauzMa31iyLXTBG/DnKvW74
+         QcqYYvUqmynIeflxi53uuQ1YcUmbzk7xfNqkmiiCI4MnnC2dxWj233SQpmhBGM3e9O
+         IQ2qIcX9x9bsQ==
+Date:   Wed, 3 Feb 2021 00:02:49 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Shuah Khan <shuah@kernel.org>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jia Zhang <zhang.jia@linux.alibaba.com>
+Subject: Re: [PATCH v4 1/5] selftests/x86: Use getauxval() to simplify the
+ code in sgx
+Message-ID: <YBnMCWW8tux490JK@kernel.org>
+References: <20210201132653.35690-1-tianjia.zhang@linux.alibaba.com>
+ <20210201132653.35690-2-tianjia.zhang@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2102444d-8a2b-cae7-9266-903eb14a7c21@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210201132653.35690-2-tianjia.zhang@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 09:37:47PM +0000, Daniel Scally wrote:
-> On 02/02/2021 20:30, Sakari Ailus wrote:
-> > On Tue, Feb 02, 2021 at 12:24:54PM -0800, Randy Dunlap wrote:
-> >> On 2/2/21 12:14 PM, Sakari Ailus wrote:
-> >>> ipu3-cio2-bridge uses several features of the ACPI framework that have no
-> >>> meaningful replacement when ACPI is disabled. Instead of adding #ifdefs to
-> >>> the affected places, only build the bridge code if CONFIG_ACPI is enabled.
-> >>>
-> >>> Fixes: 803abec64ef9 ("media: ipu3-cio2: Add cio2-bridge to ipu3-cio2 driver")
-> >>> Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> >> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> >> Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-> > Thanks! I'll include this in a pull request to Mauro shortly.
-> >
-> Ah - thank you both; sorry to have missed that.
+On Mon, Feb 01, 2021 at 09:26:49PM +0800, Tianjia Zhang wrote:
+> Simplify the sgx code implemntation by using library function
+> getauxval() instead of a custom function to get the base address
+> of vDSO.
+> 
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
 
-No worries; this was missed in review, too. There are just combinations you
-don't always end up testing before merging the patches.
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
--- 
-Regards,
+This needs also ack from Shuah.
 
-Sakari Ailus
+/Jarkko
+
+> ---
+>  tools/testing/selftests/sgx/main.c | 24 ++++--------------------
+>  1 file changed, 4 insertions(+), 20 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/sgx/main.c b/tools/testing/selftests/sgx/main.c
+> index 724cec700926..5167505fbb46 100644
+> --- a/tools/testing/selftests/sgx/main.c
+> +++ b/tools/testing/selftests/sgx/main.c
+> @@ -15,6 +15,7 @@
+>  #include <sys/stat.h>
+>  #include <sys/time.h>
+>  #include <sys/types.h>
+> +#include <sys/auxv.h>
+>  #include "defines.h"
+>  #include "main.h"
+>  #include "../kselftest.h"
+> @@ -28,24 +29,6 @@ struct vdso_symtab {
+>  	Elf64_Word *elf_hashtab;
+>  };
+>  
+> -static void *vdso_get_base_addr(char *envp[])
+> -{
+> -	Elf64_auxv_t *auxv;
+> -	int i;
+> -
+> -	for (i = 0; envp[i]; i++)
+> -		;
+> -
+> -	auxv = (Elf64_auxv_t *)&envp[i + 1];
+> -
+> -	for (i = 0; auxv[i].a_type != AT_NULL; i++) {
+> -		if (auxv[i].a_type == AT_SYSINFO_EHDR)
+> -			return (void *)auxv[i].a_un.a_val;
+> -	}
+> -
+> -	return NULL;
+> -}
+> -
+>  static Elf64_Dyn *vdso_get_dyntab(void *addr)
+>  {
+>  	Elf64_Ehdr *ehdr = addr;
+> @@ -162,7 +145,7 @@ static int user_handler(long rdi, long rsi, long rdx, long ursp, long r8, long r
+>  	return 0;
+>  }
+>  
+> -int main(int argc, char *argv[], char *envp[])
+> +int main(int argc, char *argv[])
+>  {
+>  	struct sgx_enclave_run run;
+>  	struct vdso_symtab symtab;
+> @@ -203,7 +186,8 @@ int main(int argc, char *argv[], char *envp[])
+>  	memset(&run, 0, sizeof(run));
+>  	run.tcs = encl.encl_base;
+>  
+> -	addr = vdso_get_base_addr(envp);
+> +	/* Get vDSO base address */
+> +	addr = (void *)getauxval(AT_SYSINFO_EHDR);
+>  	if (!addr)
+>  		goto err;
+>  
+> -- 
+> 2.19.1.3.ge56e4f7
+> 
+> 
