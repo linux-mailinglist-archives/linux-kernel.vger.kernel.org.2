@@ -2,73 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A86530CE3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 22:55:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C259530CE44
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 22:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234385AbhBBVzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 16:55:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56022 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232865AbhBBVy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 16:54:56 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7804064E46;
-        Tue,  2 Feb 2021 21:54:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612302856;
-        bh=XeZmOfUoVNuBsKDrI2Zf2/XMta6hoxfTXzCxxpBleLk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sUDffvXgVeI752W/eYf5S3VNWY6peEBDPpSGOPqaYuGnG+RaC8f+SeAzl1vkKLes3
-         yhMR7kbVcZOHleUH8Wr9d2zlQFHdvi96vHyqoLx2vsLG2riFmR3Mza5WbUfs8BWPBv
-         28wfujh4nSQTjEQY133INAuvcJy/UkzWgDTQ2jRV26azVgw3ADwfen4WGv7Wcdj5Gh
-         mhHoOGm8xF9IqdoGpFWpotJIScI6bbIE5U8iyDaCv/UeGHTpRhHnHZDV+QmvGCElOz
-         fzdKzSizCpMPAzHog1dvBajxkQOTiKkoEcVPJkJ3R9p3KMkRD2bVy63XeC0o2tVGtU
-         vc2PzVb6eJMPg==
-Date:   Tue, 2 Feb 2021 23:54:08 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Shuah Khan <shuah@kernel.org>, x86@kernel.org,
-        linux-sgx@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jia Zhang <zhang.jia@linux.alibaba.com>
-Subject: Re: [PATCH v4 3/5] x86/sgx: Optimize the free_cnt count in
- sgx_epc_section
-Message-ID: <YBnKAP2fIGs7F5Xm@kernel.org>
-References: <20210201132653.35690-1-tianjia.zhang@linux.alibaba.com>
- <20210201132653.35690-4-tianjia.zhang@linux.alibaba.com>
+        id S233806AbhBBVzu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 16:55:50 -0500
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:38386 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232865AbhBBVzr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 16:55:47 -0500
+Received: by mail-ot1-f53.google.com with SMTP id t25so11301000otc.5;
+        Tue, 02 Feb 2021 13:55:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4HUucybA4QgzC5/hQDmSLfk+25J4e0ac8M/zN4EUHzk=;
+        b=hL7e1bX4UAcD6CpfQNBeSNJa5Hjs8MdEnKhzCivKoSd6diufDcePpDe4D9wd6DzFnY
+         N6c2wSWtBmfcvMqXl4btKJsusOEPl49IKi6THFfzmTnHUP/9oUQDmbcIqj43/w3ZpN22
+         4dOXVjVXdq4TLhbl16qRLPnXNTGNzuPt9ANn8/HijGielvuZhPjXmbD0aIHmI79eYajh
+         0LesQeJLKhPJgWXUVn+qd7Ax4qYgBW13hSOT8a5PfisneDTfEmpcIM8mJKvQaKVa8+m+
+         8wnOdIjyBwlGkqxaFxVZXahMSaUN1KlR6Q2AkWkdcGPt0bLW2jnLKSjYYJNcgSy6wDw7
+         V3AQ==
+X-Gm-Message-State: AOAM532/eGcvbcoA+yiT6qL4hgWRxPt+zqat0nrpjxvRQEoe3CRsPTO3
+        pOCssh4CUy48nvbxH2xu3Jlzm+BINw==
+X-Google-Smtp-Source: ABdhPJxeNHgTDt4Xzc3tlv8hFa6zMHkBlTbBBvjyFGbC9FmxtJ3JsBwEuzWcZxEux+aDJfmcRl5r8Q==
+X-Received: by 2002:a05:6830:18c4:: with SMTP id v4mr16462695ote.358.1612302905513;
+        Tue, 02 Feb 2021 13:55:05 -0800 (PST)
+Received: from xps15.herring.priv (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.googlemail.com with ESMTPSA id s33sm17621ooi.39.2021.02.02.13.55.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 13:55:04 -0800 (PST)
+From:   Rob Herring <robh@kernel.org>
+To:     devicetree@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Michael Auchter <michael.auchter@ni.com>,
+        linux-iio@vger.kernel.org
+Subject: [PATCH v2] dt-bindings: iio: dac: Fix AD5686 references
+Date:   Tue,  2 Feb 2021 15:55:03 -0600
+Message-Id: <20210202215503.114113-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210201132653.35690-4-tianjia.zhang@linux.alibaba.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 09:26:51PM +0800, Tianjia Zhang wrote:
-> 'section->free_cnt' represents the free page in sgx_epc_section,
-> which is assigned once after initialization. In fact, just after the
-> initialization is completed, the pages are in the init_laundry_list
-> list and cannot be allocated. This needs to be recovered by EREMOVE
-> of function sgx_sanitize_section() before it can be used as a page
-> that can be allocated. The sgx_sanitize_section() will be called in
-> the kernel thread ksgxd.
-> 
-> This patch moves the initialization of 'section->free_cnt' from the
-> initialization function sgx_setup_epc_section() to the function
-> sgx_sanitize_section(), and then accumulates the count after the
-> successful execution of EREMOVE. This seems to be more reasonable,
-> free_cnt will also truly reflect the allocatable free pages in EPC.
-> 
-> Sined-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> Reviewed-by: Sean Christopherson <seanjc@google.com>
+The example and filename use 'adi,ad5686', but the schema doesn't
+document it. The AD5686 is also a SPI interface variant while all the
+documented variants have an I2C interface. So let's update all the
+references to AD5686 to AD5696.
 
-I just copy-paste my earlier response to save time sice you  seem
-to save time by ignoring it and spamming with the same obviously
-illegit patch.
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Michael Hennerich <Michael.Hennerich@analog.com>
+Cc: Jonathan Cameron <jic23@kernel.org>
+Cc: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
+Cc: Michael Auchter <michael.auchter@ni.com>
+Cc: linux-iio@vger.kernel.org
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+v2:
+- Rename instead of adding AD5686
 
-https://lore.kernel.org/linux-sgx/YBGlodsOaX4cWAtl@kernel.org/
+ .../iio/dac/{adi,ad5686.yaml => adi,ad5696.yaml}       | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+ rename Documentation/devicetree/bindings/iio/dac/{adi,ad5686.yaml => adi,ad5696.yaml} (77%)
 
-/Jarkko
+diff --git a/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml b/Documentation/devicetree/bindings/iio/dac/adi,ad5696.yaml
+similarity index 77%
+rename from Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
+rename to Documentation/devicetree/bindings/iio/dac/adi,ad5696.yaml
+index 8065228e5df8..56b0cda0f30a 100644
+--- a/Documentation/devicetree/bindings/iio/dac/adi,ad5686.yaml
++++ b/Documentation/devicetree/bindings/iio/dac/adi,ad5696.yaml
+@@ -1,16 +1,16 @@
+ # SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+ %YAML 1.2
+ ---
+-$id: http://devicetree.org/schemas/iio/dac/adi,ad5686.yaml#
++$id: http://devicetree.org/schemas/iio/dac/adi,ad5696.yaml#
+ $schema: http://devicetree.org/meta-schemas/core.yaml#
+ 
+-title: Analog Devices AD5686 and similar multi-channel DACs
++title: Analog Devices AD5696 and similar multi-channel DACs
+ 
+ maintainers:
+   - Michael Auchter <michael.auchter@ni.com>
+ 
+ description: |
+-  Binding for Analog Devices AD5686 and similar multi-channel DACs
++  Binding for Analog Devices AD5696 and similar multi-channel DACs
+ 
+ properties:
+   compatible:
+@@ -48,8 +48,8 @@ examples:
+       #address-cells = <1>;
+       #size-cells = <0>;
+ 
+-      ad5686: dac@0 {
+-        compatible = "adi,ad5686";
++      ad5696: dac@0 {
++        compatible = "adi,ad5696";
+         reg = <0>;
+         vcc-supply = <&dac_vref>;
+       };
+-- 
+2.27.0
+
