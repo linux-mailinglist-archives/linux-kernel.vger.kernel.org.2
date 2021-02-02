@@ -2,106 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A12AF30BD3E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 12:36:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E28E30BD3F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 12:36:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbhBBLff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 06:35:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231299AbhBBLdl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 06:33:41 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A4F0C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 03:33:00 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0e1f00bc090c6ff424f9e7.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:1f00:bc09:c6f:f424:f9e7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 61CC51EC04E2;
-        Tue,  2 Feb 2021 12:32:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1612265578;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=rdYkgh9wRGgkIpySOCNnG7YjbLsqjRNoPSeiXty+P6M=;
-        b=eK4zfsQJRAcv6GNBwXPwg7dMuNVLD85jMZOd8By/vgLOBqjuNy6cKl9uVeNHEUosq5QUgN
-        8zKNQQuSWlv2CyDCdHO6INccKtF/zAMRERkFDtMBCZF1pvT5Tg6PoDQr3geXm+z2uvH4bA
-        e0eAxOkrXvrKR1Xrw3bFwQxJ/pMyruw=
-Date:   Tue, 2 Feb 2021 12:32:56 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/ptrace: Clean up PTRACE_GETREGS/PTRACE_PUTREGS
- regset selection
-Message-ID: <20210202113256.GC18075@zn.tnic>
-References: <9268050ac1fb3db6b4ec20d3ef696cc44fa3e9d0.1611884439.git.luto@kernel.org>
+        id S231447AbhBBLgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 06:36:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59592 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230248AbhBBLfI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 06:35:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC32464E9B;
+        Tue,  2 Feb 2021 11:34:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612265666;
+        bh=iQZjdrytDnYe4+JE2zLjRm1WSmA5jVNSNUrdiPWQqaA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=eA1YvFBH617s0j/ZHp9BrVaGBQse3Roq/akpIFgO8h4YK7KAtGXqfn+8F30qXEGn7
+         P3fVr3ENGAQ4m9QgKtpkUPG4jrbeBxRwk7RTtuxPmir9B4L60SU088ooeP6orMQHDu
+         Spuos6n/rMOJ8jJtTVDIgcik1eTfAqlgK9b0v8LRuK6tRytdQ4aUfUVyJ+18iaAhoh
+         FGJe5MlorJAi0JzgkEjW89Rh17W/sNrttGvuWEjyOLa8x+94QTjk8A/f3kJhKLkBt2
+         R3ftH5ewKRfAoHATLdIPutAS0p0/+FYXfweTB/hYQNJvVly/Qpi0aaRKGr5gaxG5zN
+         PN6NIwhGI3Lbw==
+Date:   Tue, 2 Feb 2021 05:34:23 -0600
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Lars Povlsen <lars.povlsen@microchip.com>,
+        Steen Hegelund <Steen.Hegelund@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: [REPORT][next] pinctrl: pinctrl-microchip-sgpio: out-of-bounds bug
+ in sgpio_clrsetbits()
+Message-ID: <20210202113423.GA277746@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <9268050ac1fb3db6b4ec20d3ef696cc44fa3e9d0.1611884439.git.luto@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 05:41:21PM -0800, Andy Lutomirski wrote:
-> task_user_regset_view() is fundamentally broken, but it's ABI for
-> PTRACE_GETREGSET and PTRACE_SETREGSET.
-> 
-> We shouldn't be using it for PTRACE_GETREGS or PTRACE_SETREGS,
+Hi,
 
-No "We" etc pls.
+While addressing some out-of-bounds warnings, I found the following bug:
 
-> though.  A native 64-bit ptrace() call and an x32 ptrace() call
-> should use the 64-bit regset views, and a 32-bit ptrace() call
-> (native or compat) should use the 32-bit regset.
-> task_user_regset_view() almost does this except that it will
-> malfunction if a ptracer is itself ptraced and the outer ptracer
-> modifies CS on entry to a ptrace() syscall.
+drivers/pinctrl/pinctrl-microchip-sgpio.c:154:57: warning: array subscript 10 is above array bounds of ‘const u8[10]’ {aka ‘const unsigned char[10]’} [-Warray-bounds]
 
-Is that the reason why task_user_regset_view() is fundamentally broken?
-It is somewhat unclear what exactly is broken.
+The bug was introduced by commit be2dc859abd4 ("pinctrl: pinctrl-microchip-sgpio: Add irq support (for sparx5)"):
 
-> Hopefully that has
-> never happened.  (The compat ptrace() code already hardcoded the
-> 32-bit regset, so this patch has no effect on that path.)
-> 
-> Fix it and deobfuscate the code by hardcoding the 64-bit view in the
-> x32 ptrace() and selecting the view based on the kernel config in
-> the native ptrace().
-> 
-> Signed-off-by: Andy Lutomirski <luto@kernel.org>
-> ---
-> 
-> Every time I look at ptrace, it grosses me out.  This makes it slightly
-> more comprehensible.
-> 
->  arch/x86/kernel/ptrace.c | 37 +++++++++++++++++++++++++++++--------
->  1 file changed, 29 insertions(+), 8 deletions(-)
+575         sgpio_clrsetbits(bank->priv, REG_INT_TRIGGER + SGPIO_MAX_BITS, addr.bit,
+576                          BIT(addr.port), (!!(type & 0x2)) << addr.port);
 
-Well, did you run the gdb testsuite on this and a bunch of other tests
-we have?
+REG_INT_TRIGGER + SGPIO_MAX_BITS turns out to be 10, which is outside the boundaries
+of priv->properties->regoff[] at line 154:
 
-I don't want us to break gdb or something else using ptrace() in some
-sublte manner and then waste a bunch of time and energy chasing it, like
-the DR6 thing earlier this week.
+151 static inline void sgpio_clrsetbits(struct sgpio_priv *priv,                                        
+152                                     u32 rno, u32 off, u32 clear, u32 set)                           
+153 {                                                                                                   
+154         u32 __iomem *reg = &priv->regs[priv->properties->regoff[rno] + off];                        
+155         u32 val = readl(reg);                                                                       
+156                                                                                                     
+157         val &= ~clear;                                                                              
+158         val |= set;                                                                                 
+159                                                                                                     
+160         writel(val, reg);                                                                           
+161 }
 
-> +/*
-> + * This is used by PTRACE_GETREGSET and PTRACE_SETREGSET to decide which
-> + * regset format to use based on the register state of the tracee.
-> + * This makes no sense whatsoever, but there appears to be existing user
-> + * code that relies on it.
+because priv->properties->regoff[] is an array of MAXREG elements, with MAXREG
+representing the value of 10 in the following enum:
 
-... because? It should use the native regset with which the kernel is
-built? Please explain yourself Lutomirski!
+ 28 enum {                                                                                              
+ 29         REG_INPUT_DATA,                                                                             
+ 30         REG_PORT_CONFIG,                                                                            
+ 31         REG_PORT_ENABLE,                                                                            
+ 32         REG_SIO_CONFIG,                                                                             
+ 33         REG_SIO_CLOCK,                                                                              
+ 34         REG_INT_POLARITY,                                                                           
+ 35         REG_INT_TRIGGER,                                                                            
+ 36         REG_INT_ACK,                                                                                
+ 37         REG_INT_ENABLE,                                                                             
+ 38         REG_INT_IDENT,                                                                              
+ 39         MAXREG                                                                                      
+ 40 };
 
-:-)))
+ 52 struct sgpio_properties {                                                                           
+ 53         int arch;                                                                                   
+ 54         int flags;                                                                                  
+ 55         u8 regoff[MAXREG];                                                                          
+ 56 };
 
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks
+--
+Gustavo
