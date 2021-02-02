@@ -2,84 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C02730BC53
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:46:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4738D30BC57
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:48:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230039AbhBBKqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 05:46:33 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33980 "EHLO mx2.suse.de"
+        id S230229AbhBBKrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 05:47:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229441AbhBBKqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 05:46:30 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 27FC9AE8D;
-        Tue,  2 Feb 2021 10:45:48 +0000 (UTC)
-Date:   Tue, 2 Feb 2021 11:45:47 +0100 (CET)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Christoph Hellwig <hch@lst.de>
-cc:     Petr Mladek <pmladek@suse.com>,
-        Frederic Barrat <fbarrat@linux.ibm.com>,
-        Andrew Donnellan <ajd@linux.ibm.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Jessica Yu <jeyu@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Joe Lawrence <joe.lawrence@redhat.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        dri-devel@lists.freedesktop.org, live-patching@vger.kernel.org,
-        linux-kbuild@vger.kernel.org
-Subject: Re: [PATCH 05/13] kallsyms: refactor
- {,module_}kallsyms_on_each_symbol
-In-Reply-To: <20210201162842.GB7276@lst.de>
-Message-ID: <alpine.LSU.2.21.2102021145160.570@pobox.suse.cz>
-References: <20210128181421.2279-1-hch@lst.de> <20210128181421.2279-6-hch@lst.de> <YBPYyEvesLMrRtZM@alley> <20210201114749.GB19696@lst.de> <alpine.LSU.2.21.2102011436320.21637@pobox.suse.cz> <20210201162842.GB7276@lst.de>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S229991AbhBBKrF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 05:47:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 086A764D9C;
+        Tue,  2 Feb 2021 10:46:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612262784;
+        bh=gfOQNZ7G78RU5qq+yafqTPPx1P9+C1SAieHv2S8LSFo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=maVk3g8jWAQtT35U+1bb5uuYJNlw1sZebL6JbZSh5THuX8IG0VuSXq60U/4iBuvZl
+         ZJLsY7exmv5UV6pD84cGj/uZfvSd7a68sYoyZlbef82f4jpQ4zoPFmaunyw2QjgwhA
+         BqtILb+MOsS8lBPRpTOhP8TdJc38D+nJbb6JDTiQfCYO/YUnQSiL/fPyrHcDFSSZyN
+         n6qmEHQLwdSGjePXCY7B064FQbq5D2oqAJQPtNqfYLICqls+++BnuY2fvGiJpMD40T
+         bcbcOPGqLt9MlKbCllS4n9r2rnrtEW8vHUSKwfSFYbFBeTyfym/5rGhaBOZAiFN3dU
+         SvC/ywhw2OIMg==
+Date:   Tue, 2 Feb 2021 10:46:18 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Collingbourne <pcc@google.com>,
+        Evgenii Stepanov <eugenis@google.com>
+Subject: Re: [PATCH 12/12] arm64: kasan: export MTE symbols for KASAN tests
+Message-ID: <20210202104618.GA16723@willie-the-truck>
+References: <cover.1612208222.git.andreyknvl@google.com>
+ <d128216d3b0aea0b4178e11978f5dd3e8dbeb590.1612208222.git.andreyknvl@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d128216d3b0aea0b4178e11978f5dd3e8dbeb590.1612208222.git.andreyknvl@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 1 Feb 2021, Christoph Hellwig wrote:
-
-> On Mon, Feb 01, 2021 at 02:37:12PM +0100, Miroslav Benes wrote:
-> > > > This change is not needed. (objname == NULL) means that we are
-> > > > interested only in symbols in "vmlinux".
-> > > > 
-> > > > module_kallsyms_on_each_symbol(klp_find_callback, &args)
-> > > > will always fail when objname == NULL.
-> > > 
-> > > I just tried to keep the old behavior.  I can respin it with your
-> > > recommended change noting the change in behavior, though.
-> > 
-> > Yes, please. It would be cleaner that way.
+On Mon, Feb 01, 2021 at 08:43:36PM +0100, Andrey Konovalov wrote:
+> Export mte_enable_kernel() and mte_set_report_once() to fix:
 > 
-> Let me know if this works for you:
+> ERROR: modpost: "mte_enable_kernel" [lib/test_kasan.ko] undefined!
+> ERROR: modpost: "mte_set_report_once" [lib/test_kasan.ko] undefined!
 > 
+> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
 > ---
-> >From 18af41e88d088cfb8680d1669fcae2bc2ede5328 Mon Sep 17 00:00:00 2001
-> From: Christoph Hellwig <hch@lst.de>
-> Date: Wed, 20 Jan 2021 16:23:16 +0100
-> Subject: kallsyms: refactor {,module_}kallsyms_on_each_symbol
+>  arch/arm64/kernel/mte.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> Require an explicit call to module_kallsyms_on_each_symbol to look
-> for symbols in modules instead of the call from kallsyms_on_each_symbol,
-> and acquire module_mutex inside of module_kallsyms_on_each_symbol instead
-> of leaving that up to the caller.  Note that this slightly changes the
-> behavior for the livepatch code in that the symbols from vmlinux are not
-> iterated anymore if objname is set, but that actually is the desired
-> behavior in this case.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+> index 8b27b70e1aac..2c91bd288ea4 100644
+> --- a/arch/arm64/kernel/mte.c
+> +++ b/arch/arm64/kernel/mte.c
+> @@ -120,6 +120,7 @@ void mte_enable_kernel_sync(void)
+>  {
+>  	__mte_enable_kernel("synchronous", SCTLR_ELx_TCF_SYNC);
+>  }
+> +EXPORT_SYMBOL(mte_enable_kernel_sync);
+>  
+>  void mte_enable_kernel_async(void)
+>  {
+> @@ -130,6 +131,7 @@ void mte_set_report_once(bool state)
+>  {
+>  	WRITE_ONCE(report_fault_once, state);
+>  }
+> +EXPORT_SYMBOL(mte_set_report_once);
 
-Acked-by: Miroslav Benes <mbenes@suse.cz>
+EXPORT_SYMBOL_GPL ?
 
-Thanks Christoph
-
-M
+Will
