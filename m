@@ -2,118 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B29D530BFAD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 14:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 387A030BF99
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 14:36:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232464AbhBBNis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 08:38:48 -0500
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:42137 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232465AbhBBNcf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 08:32:35 -0500
-Date:   Tue, 02 Feb 2021 13:31:46 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1612272712; bh=vZbokY1lR2yxpQh6llA40AYewCXOK6n7Mk2VaFMgqMw=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=RRCmGVskxM06gir97O7queRXOrVsD1PbQYwYmdjmasUHdSgRJtvjy4r1a/w9vJWod
-         ENfzjQZIQra+3Uu+sb2b/AGrWNGfUFCdKdLumzIET/EPyGkKOXRnG/+nn7CxPYrn5X
-         YUfPyaII0uz68enCelJu5xkK0G1fcAadDMvQxEzpCIf3RCNLZflqjaS2dyRtgPrmhE
-         thQG2gWWC/x5zvoR0aK1LdGvEpX/cL0Po5BSl3RW7wUZCAZHIUhmIltAUHz2axkXII
-         VzA6rDXzez0UwdoV4Aisj3GM2rCpsePvKMLF1kq92AOUtI9Vi25l2P7aF1OkM+35mh
-         hn1emmwkIP4mQ==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        David Rientjes <rientjes@google.com>,
-        Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Leon Romanovsky <leon@kernel.org>,
+        id S232594AbhBBNfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 08:35:52 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42098 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232490AbhBBNdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 08:33:01 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612272735; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=qhASYy52HrQdJQILCHxBxIDs1mcnSSfDvbUg8Hv9Huk=;
+        b=O35yhETCIJcmvITBzmA06eT7x4pieJO9swql+e/dEuWJvoBkcPrcGAQe2sM2r3gNYCJ97G
+        cutl0j+I7mXW23xuyyuYKFCdVv7+WC+a62VtrpsBAxAPUoJKjRiqBrbLEGz3xn0w2G09n8
+        8FyL2zHquLohp9unYR6VoEzGZD+347Q=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B66D6AF92;
+        Tue,  2 Feb 2021 13:32:14 +0000 (UTC)
+Date:   Tue, 2 Feb 2021 14:32:13 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        James Bottomley <jejb@linux.ibm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        linux-rdma@vger.kernel.org, linux-mm@kvack.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH RESEND v3 net-next 5/5] net: page_pool: simplify page recycling condition tests
-Message-ID: <20210202133030.5760-6-alobakin@pm.me>
-In-Reply-To: <20210202133030.5760-1-alobakin@pm.me>
-References: <20210202133030.5760-1-alobakin@pm.me>
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, Hagen Paul Pfeifer <hagen@jauu.net>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: Re: [PATCH v16 07/11] secretmem: use PMD-size pages to amortize
+ direct map fragmentation
+Message-ID: <YBlUXdwV93xMIff6@dhcp22.suse.cz>
+References: <303f348d-e494-e386-d1f5-14505b5da254@redhat.com>
+ <20210126120823.GM827@dhcp22.suse.cz>
+ <20210128092259.GB242749@kernel.org>
+ <YBK1kqL7JA7NePBQ@dhcp22.suse.cz>
+ <73738cda43236b5ac2714e228af362b67a712f5d.camel@linux.ibm.com>
+ <YBPF8ETGBHUzxaZR@dhcp22.suse.cz>
+ <6de6b9f9c2d28eecc494e7db6ffbedc262317e11.camel@linux.ibm.com>
+ <YBkcyQsky2scjEcP@dhcp22.suse.cz>
+ <20210202124857.GN242749@kernel.org>
+ <6653288a-dd02-f9de-ef6a-e8d567d71d53@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6653288a-dd02-f9de-ef6a-e8d567d71d53@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pool_page_reusable() is a leftover from pre-NUMA-aware times. For now,
-this function is just a redundant wrapper over page_is_pfmemalloc(),
-so inline it into its sole call site.
+On Tue 02-02-21 14:14:09, David Hildenbrand wrote:
+[...]
+> As already expressed, I dislike allowing user space to consume an unlimited
+> number unmovable/unmigratable allocations. We already have that in some
+> cases with huge pages (when the arch does not support migration) - but there
+> we can at least manage the consumption using the whole max/reserved/free/...
+> infrastructure. In addition, adding arch support for migration shouldn't be
+> too complicated.
 
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Reviewed-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-Reviewed-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-Acked-by: David Rientjes <rientjes@google.com>
----
- net/core/page_pool.c | 14 ++++----------
- 1 file changed, 4 insertions(+), 10 deletions(-)
-
-diff --git a/net/core/page_pool.c b/net/core/page_pool.c
-index f3c690b8c8e3..ad8b0707af04 100644
---- a/net/core/page_pool.c
-+++ b/net/core/page_pool.c
-@@ -350,14 +350,6 @@ static bool page_pool_recycle_in_cache(struct page *pa=
-ge,
- =09return true;
- }
-=20
--/* page is NOT reusable when:
-- * 1) allocated when system is under some pressure. (page_is_pfmemalloc)
-- */
--static bool pool_page_reusable(struct page_pool *pool, struct page *page)
--{
--=09return !page_is_pfmemalloc(page);
--}
--
- /* If the page refcnt =3D=3D 1, this will try to recycle the page.
-  * if PP_FLAG_DMA_SYNC_DEV is set, we'll try to sync the DMA area for
-  * the configured size min(dma_sync_size, pool->max_len).
-@@ -373,9 +365,11 @@ __page_pool_put_page(struct page_pool *pool, struct pa=
-ge *page,
- =09 * regular page allocator APIs.
- =09 *
- =09 * refcnt =3D=3D 1 means page_pool owns page, and can recycle it.
-+=09 *
-+=09 * page is NOT reusable when allocated when system is under
-+=09 * some pressure. (page_is_pfmemalloc)
- =09 */
--=09if (likely(page_ref_count(page) =3D=3D 1 &&
--=09=09   pool_page_reusable(pool, page))) {
-+=09if (likely(page_ref_count(page) =3D=3D 1 && !page_is_pfmemalloc(page)))=
- {
- =09=09/* Read barrier done in page_ref_count / READ_ONCE */
-=20
- =09=09if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
---=20
-2.30.0
-
-
+Well, mlock is not too different here as well. Hugepages are arguably an
+easier model because it requires an explicit pre-configuration by an
+admin. Mlock doesn't have anything like that. Please also note that
+while mlock pages are migrateable by default, this is not the case in
+general because they can be configured to disalow migration to prevent
+from minor page faults as some workloads require that (e.g. RT).
+Another example is ramdisk or even tmpfs (with swap storage depleted or
+not configured). Both are PITA from the OOM POV but they are manageable
+if people are careful. If secretmem behaves along those existing models
+then we know what to expect at least.
+-- 
+Michal Hocko
+SUSE Labs
