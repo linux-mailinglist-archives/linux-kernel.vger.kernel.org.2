@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3FDD30C55D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:22:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4216230C55E
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:22:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236239AbhBBQUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 11:20:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50772 "EHLO
+        id S236249AbhBBQUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:20:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236134AbhBBQSZ (ORCPT
+        with ESMTP id S236137AbhBBQSZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Feb 2021 11:18:25 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF39C06178C
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 08:17:39 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id z2so10582975pln.18
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 08:17:39 -0800 (PST)
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42A21C061794
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 08:17:43 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id c12so24186186ybf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 08:17:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=iwkSPDu8+GCJtZMCgGxCvy6RYjdYTFAwWafltAfL22E=;
-        b=j+OrsPqfI2I28/iLg0WIy4Rb9Ckar70srGuUc4Zfskq71ped2Ij4JaNsEthFBNR4+U
-         1QwMrVSz3FuYPFkp1xfG1qz+P6bm/GYAOTZ01sud30A3wimTYlHjDu5ALg/2tKCH4La3
-         7OtKqdqrkgkSDlZZPhcM76stoIGT5zfRnonQ4bw0TYdYgoiVkNRJbgUTG95Eoi7WSzT/
-         U/bFD25Gvk5twsbvMh/fMOF21dIgOIxmWtCoq3fRsNZTask9OZ1XCZT5LKhFT1fajTNa
-         7OFpXPfvBBXa/BCE7Jzo0mAAH00KfbveVFo+BsolCw1YcIqXtYvdd4j4fWZSfX447tUF
-         sNHg==
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=S4Mhk39bbXlkNrotr3DgqM+vlFOU2lM4Arg9L7yykNE=;
+        b=MdjNFlBpnRQD1U/YV6ESIFIchVkD5rPmhMIofaoOi5+huV/qTsy5E7SXZHOT1rANrW
+         kN+/1HGNuYYvmmqgwMo7olII5+xi+ggpmPP/n/GMmEALaVUNVUXqUoYox1ON834UOv/z
+         nD4nPtspYPAnSYYsjK22ncRg7xipzSudRYWXz53nCCptaW0zvoPayDCZvYqruMSYac2r
+         V3ALeMVv0giNLvTbz2r2Tu5yNCDXpQMnkovM2nQFNO8wf2dXo2m/xsCdEAnyDPvZ6GtO
+         EGx2bHisKApkYvbcMvZ4pi9kc0bDW1x137WhpzSVgBtwdwhjLvpu2op4qYwAR04B6vlo
+         xvWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=iwkSPDu8+GCJtZMCgGxCvy6RYjdYTFAwWafltAfL22E=;
-        b=sSlHrjDMKd97Pju5ING4PaMDVz93KwCPUFpQ3AZV9Yi4GEqo87k4wNkCLSCgcNVDPp
-         jets3ljEfuHhjdiXQTx18CMKdjRKC5T6YxiPeWk1NkkphOd8BnI3tV35FNDbIecDjNoL
-         FbEllwgfMpduwYHlhZMk0SDaEUbVkPfTvNLkFuvefSnWaFkHO0xjZlTl1EjiV0/QRlXl
-         FQX4udk+sPZquSeVorNDeZ6vVT/1bn+w9xnHZUzRbNqCrfICnb6W4G861iEUQkaB0lRr
-         IGXPU2pB1nZl9dvg2hO22YXFQm97aALmIDmXhKE8d9Tz67ILkQYhxpx1NoHC3YhWBtWO
-         7H5A==
-X-Gm-Message-State: AOAM531/iLRcTASitDTO6IomRn/jFAJZf3fgpZI0QiJ02+K2phAcbR8w
-        W/C7NZikyGVeXso1OMtOTRW2rwj7FjLD
-X-Google-Smtp-Source: ABdhPJzyFdCQAvJN3cdQcHtYsB1Ey3cwtyGZMbsMNsjUiAZ4K6I8OxfTNzeaKP5quIUEzuh5JRLH6YYzt5XB
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=S4Mhk39bbXlkNrotr3DgqM+vlFOU2lM4Arg9L7yykNE=;
+        b=AssYB1R0xiaLNrDon3jJnRp5mimFpjxegUyxR4Ey2bvO0gKOPAx79ZgKDqMtj8rEXW
+         S2MfjXDiV/CxImb3uH6yO7jI48gvfLfHAJVJqvCL8bfTcAAAhx8E3sU6jCkyhPZblOwV
+         Y2dsZFub7fU05XTVUql9VJu3XOSPvyAjpyF/6NXzByILDvxSd1x2Kg2EKRz+iMnuSKq1
+         nIdcU9dgRh6qXBz80ve4dpHmi8GjaaKjjDHeRwJIOLXmDHaspygk8vIxAShBB6uSIZ9e
+         wXCQTEBghgg5hA64xXMSDwOR3EXR02Am64jSvOCFnfQjWDWABvPG/+dOLgcI6jSju5TC
+         dmHQ==
+X-Gm-Message-State: AOAM532UUldP15/Ty56IhrCjTzOOxh9hgs6MOubwe5xM1tpp+3bFNryM
+        KSCs1WzvnfrFZg6yqixkiZSIfClRj6BG
+X-Google-Smtp-Source: ABdhPJySUTp/AYpimem/8wlX7Y4EFKZExyC9hGKThuY55CBaukTnTY3EJM9qfrhdaaJYCE68LF9dY/9i598X
 Sender: "kyletso via sendgmr" <kyletso@kyletso.ntc.corp.google.com>
 X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:dd94:c753:a81d:c855])
- (user=kyletso job=sendgmr) by 2002:a62:75c1:0:b029:1b6:b71a:a369 with SMTP id
- q184-20020a6275c10000b02901b6b71aa369mr22323886pfc.27.1612282658846; Tue, 02
- Feb 2021 08:17:38 -0800 (PST)
-Date:   Wed,  3 Feb 2021 00:17:25 +0800
-Message-Id: <20210202161733.932215-1-kyletso@google.com>
+ (user=kyletso job=sendgmr) by 2002:a5b:98a:: with SMTP id c10mr33340953ybq.406.1612282662556;
+ Tue, 02 Feb 2021 08:17:42 -0800 (PST)
+Date:   Wed,  3 Feb 2021 00:17:26 +0800
+In-Reply-To: <20210202161733.932215-1-kyletso@google.com>
+Message-Id: <20210202161733.932215-2-kyletso@google.com>
 Mime-Version: 1.0
+References: <20210202161733.932215-1-kyletso@google.com>
 X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v5 0/8] common SVDM version and VDO from dt
+Subject: [PATCH v5 1/8] usb: typec: Manage SVDM version
 From:   Kyle Tso <kyletso@google.com>
 To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
         gregkh@linuxfoundation.org, hdegoede@redhat.com, robh+dt@kernel.org
@@ -62,35 +64,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v4 is here:
-https://patchwork.kernel.org/project/linux-usb/cover/20210202093342.738691-1-kyletso@google.com/
+PD Spec Revision 3.0 Version 2.0 + ECNs 2020-12-10
+  6.4.4.2.3 Structured VDM Version
+  "The Structured VDM Version field of the Discover Identity Command
+  sent and received during VDM discovery Shall be used to determine the
+  lowest common Structured VDM Version supported by the Port Partners or
+  Cable Plug and Shall continue to operate using this Specification
+  Revision until they are Detached."
 
-Changes since v4:
-=================
-usb: pd: Make SVDM Version configurable in VDM header
-- modified the code who uses VDO(), set the ver field to SVDM_VER_1_0
+Add a variable in typec_capability to specify the highest SVDM version
+supported by the port and another variable in typec_port to cache the
+negotiated SVDM version between the port partners.
 
-Kyle Tso (8):
-  usb: typec: Manage SVDM version
-  usb: pd: Update VDO definitions
-  usb: pd: Make SVDM Version configurable in VDM header
-  usb: typec: tcpm: Detemine common SVDM Version
-  usb: typec: ucsi: Detemine common SVDM Version
-  usb: typec: displayport: Fill the negotiated SVDM Version in the header
-  dt-bindings: connector: Add SVDM VDO properties
-  usb: typec: tcpm: Get Sink VDO from fwnode
+Also add setter/getter functions for the negotiated SVDM version.
 
- .../bindings/connector/usb-connector.yaml     |  11 +
- drivers/usb/typec/altmodes/displayport.c      |   8 +-
- drivers/usb/typec/class.c                     |  21 +-
- drivers/usb/typec/tcpm/tcpm.c                 |  61 +++-
- drivers/usb/typec/ucsi/displayport.c          |  12 +-
- drivers/usb/typec/ucsi/ucsi.c                 |   2 +
- include/dt-bindings/usb/pd.h                  | 311 ++++++++++++++++-
- include/linux/usb/pd_vdo.h                    | 315 ++++++++++++++----
- include/linux/usb/typec.h                     |  10 +
- 9 files changed, 661 insertions(+), 90 deletions(-)
+Signed-off-by: Kyle Tso <kyletso@google.com>
+---
+ drivers/usb/typec/class.c | 13 +++++++++++++
+ include/linux/usb/typec.h | 10 ++++++++++
+ 2 files changed, 23 insertions(+)
 
+diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+index b6ceab3dc16b..42d1be1eece9 100644
+--- a/drivers/usb/typec/class.c
++++ b/drivers/usb/typec/class.c
+@@ -51,6 +51,7 @@ struct typec_port {
+ 	enum typec_role			vconn_role;
+ 	enum typec_pwr_opmode		pwr_opmode;
+ 	enum typec_port_type		port_type;
++	enum usb_pd_svdm_ver		svdm_version;
+ 	struct mutex			port_type_lock;
+ 
+ 	enum typec_orientation		orientation;
+@@ -1841,6 +1842,18 @@ int typec_find_port_data_role(const char *name)
+ }
+ EXPORT_SYMBOL_GPL(typec_find_port_data_role);
+ 
++void typec_set_svdm_version(struct typec_port *port, enum usb_pd_svdm_ver ver)
++{
++	port->svdm_version = ver;
++}
++EXPORT_SYMBOL_GPL(typec_set_svdm_version);
++
++enum usb_pd_svdm_ver typec_get_svdm_version(struct typec_port *port)
++{
++	return port->svdm_version;
++}
++EXPORT_SYMBOL_GPL(typec_get_svdm_version);
++
+ /* ------------------------------------------ */
+ /* API for Multiplexer/DeMultiplexer Switches */
+ 
+diff --git a/include/linux/usb/typec.h b/include/linux/usb/typec.h
+index 4946eca742d5..f692d9ee0f13 100644
+--- a/include/linux/usb/typec.h
++++ b/include/linux/usb/typec.h
+@@ -217,12 +217,19 @@ struct typec_operations {
+ 			     enum typec_port_type type);
+ };
+ 
++enum usb_pd_svdm_ver {
++	SVDM_VER_1_0 = 0,
++	SVDM_VER_2_0 = 1,
++	SVDM_VER_MAX = SVDM_VER_2_0,
++};
++
+ /*
+  * struct typec_capability - USB Type-C Port Capabilities
+  * @type: Supported power role of the port
+  * @data: Supported data role of the port
+  * @revision: USB Type-C Specification release. Binary coded decimal
+  * @pd_revision: USB Power Delivery Specification revision if supported
++ * @svdm_version: USB PD Structured VDM version if supported
+  * @prefer_role: Initial role preference (DRP ports).
+  * @accessory: Supported Accessory Modes
+  * @fwnode: Optional fwnode of the port
+@@ -236,6 +243,7 @@ struct typec_capability {
+ 	enum typec_port_data	data;
+ 	u16			revision; /* 0120H = "1.2" */
+ 	u16			pd_revision; /* 0300H = "3.0" */
++	enum usb_pd_svdm_ver	svdm_version;
+ 	int			prefer_role;
+ 	enum typec_accessory	accessory[TYPEC_MAX_ACCESSORY];
+ 	unsigned int		orientation_aware:1;
+@@ -286,4 +294,6 @@ int typec_find_orientation(const char *name);
+ int typec_find_port_power_role(const char *name);
+ int typec_find_power_role(const char *name);
+ int typec_find_port_data_role(const char *name);
++void typec_set_svdm_version(struct typec_port *port, enum usb_pd_svdm_ver);
++enum usb_pd_svdm_ver typec_get_svdm_version(struct typec_port *port);
+ #endif /* __LINUX_USB_TYPEC_H */
 -- 
 2.30.0.365.g02bc693789-goog
 
