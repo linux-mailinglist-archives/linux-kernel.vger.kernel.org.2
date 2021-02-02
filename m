@@ -2,129 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0EE30CDDF
+	by mail.lfdr.de (Postfix) with ESMTP id B822530CDE0
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 22:23:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbhBBVVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 16:21:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59870 "EHLO
+        id S230340AbhBBVXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 16:23:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhBBVVD (ORCPT
+        with ESMTP id S230013AbhBBVVb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 16:21:03 -0500
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29DE9C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 13:20:23 -0800 (PST)
-Received: by mail-qk1-x74a.google.com with SMTP id s66so18492232qkh.10
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 13:20:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=SP8qMh2H5uKuGn56qQjTuaPHFsmbyYN2PVhXxr1Wb/c=;
-        b=YVgAKVM6kkOctLgE8nCs1fKIlb2yjj7CHd7ZMzDwOLNGOg1gcc+QG4XlrVvzxeuREC
-         HkE9XpZMfHkIW7M4bCKkSL6+T/I6pQxZNTkrJM5DakqOV6JzTqAy4Psv7jKepBs0oe3a
-         gDFm/OJb00IflpNMMsyTFxsLIOCNRY7szyP5S6fYR3BfiGTnNErkeOIOsPzHHA2jrca5
-         JSk8w+37IPlIoCohYf3ch4DQ3Ky47ODPI2Z4XOUVC+hODwpX7HnCjZp6fYslyiVovG4Y
-         SeAFKRo9WIdo2FDDnBsEcQ/uEp4sNO+T9uzu2/vKM/rSrLjNKDxDCTI6lNHjZbAlsyw8
-         GMhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
-         :subject:from:to:cc;
-        bh=SP8qMh2H5uKuGn56qQjTuaPHFsmbyYN2PVhXxr1Wb/c=;
-        b=RSaPKNo1f93FkKZ8MOEhZD/ElvHSIVLIafXuhzwG+J98cW8FDySrPqFNhT0IW6JE6z
-         TUVQ+eSIvcc9+9lIxzt/wkRILGYtGNOQgV2xRohOFazDmh5jJAwT1xdcXFuLbnL6RPoQ
-         wJZcUd+wEtHAXJ+PC9Pn2+FssuXTMliYICe64U9jyPR9r7NdyQzAoV2EUmdsw5TfEryV
-         s71dmxyKqIsVlhwhmUAZ0uFtUEcnOtt5GMQRfHYh6wbooELZaxy23OfsaoqnZqHSaA9/
-         QJotypNdl/GWyNBBQQu4apYpEl/40Rm57RGl6+AwFggpwJmgRJpakop4DY3mflqYt3WG
-         eCJA==
-X-Gm-Message-State: AOAM5331gZ4NqaIOtl05cbC/KOXaCMqj1RQfoGbu1SoUWL6bTXnO0LXW
-        lNDPo1qFd3il9yRHimQygIXnvI2btzA=
-X-Google-Smtp-Source: ABdhPJzUzodN3KIBXul52n7bnjL2mGC4zihxwheFohK7KbF/xI/u+9+F9g5XC3z/JC0BgE/yM8E65dhtlMc=
-Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:e1bc:da69:2e4b:ce97])
- (user=seanjc job=sendgmr) by 2002:a05:6214:403:: with SMTP id
- z3mr74190qvx.42.1612300822251; Tue, 02 Feb 2021 13:20:22 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue,  2 Feb 2021 13:20:17 -0800
-Message-Id: <20210202212017.2486595-1-seanjc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH] KVM: SVM: Treat SVM as unsupported when running as an SEV guest
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 2 Feb 2021 16:21:31 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F9FEC0613ED;
+        Tue,  2 Feb 2021 13:20:51 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0e1f0020339110b9493ea9.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:1f00:2033:9110:b949:3ea9])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2D0861EC051E;
+        Tue,  2 Feb 2021 22:20:50 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1612300850;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=hyUKLsuJa5X7hTRsrEs/Gns9rZBnaxa+bEy+ow3U0dA=;
+        b=auC5xokEYLtGqgDzt531CVvQOzBlZprxPFAuvH+FZHonS/r3EeiDiqjHFPlGUfSZrvShzg
+        ICat4G1ndS1jR4hrP7EuLNg+1P72PE2TZLk8V3oI9scJE2agm+5Pi3zvwFO3ySsRHkdbKC
+        rNh0HRA0GYdRQ8QWpJWlno5nx1Ynpfk=
+Date:   Tue, 2 Feb 2021 22:20:48 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Amy Parker <enbyamy@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-gcc@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Michael Matz <matz@suse.de>
+Subject: Re: Alternative compilers to GCC/Clang
+Message-ID: <20210202212048.GG18075@zn.tnic>
+References: <CAE1WUT6mp80yFDgAirZcKvc31O23ynpLGcsdPaa8qd1dsXiXhg@mail.gmail.com>
+ <20210202053307.GB28542@1wt.eu>
+ <CAE1WUT4r1oNmu_7y6AMMSNyNmt8LYo6DXa2DPR=wOGb27XErZA@mail.gmail.com>
+ <CAE1WUT7zprk-3naBGwZk=bsVR8Od=PT0kqNO6EVBQUOG+F1h3w@mail.gmail.com>
+ <20210202201920.GA18106@zn.tnic>
+ <20210202210039.GB29751@1wt.eu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210202210039.GB29751@1wt.eu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't let KVM load when running as an SEV guest, regardless of what
-CPUID says.  Memory is encrypted with a key that is not accessible to
-the host (L0), thus it's impossible for L0 to emulate SVM, e.g. it'll
-see garbage when reading the VMCB.
++ Micha.
 
-Technically, KVM could decrypt all memory that needs to be accessible to
-the L0 and use shadow paging so that L0 does not need to shadow NPT, but
-exposing such information to L0 largely defeats the purpose of running as
-an SEV guest.  This can always be revisited if someone comes up with a
-use case for running VMs inside SEV guests.
+On Tue, Feb 02, 2021 at 10:00:39PM +0100, Willy Tarreau wrote:
+> On Tue, Feb 02, 2021 at 09:19:20PM +0100, Borislav Petkov wrote:
+> > On Tue, Feb 02, 2021 at 11:11:32AM -0800, Amy Parker wrote:
+> > > On Tue, Feb 2, 2021 at 8:26 AM Amy Parker <enbyamy@gmail.com> wrote:
+> > > > > It compiles extremely fast, implements some subsets of gcc (a few
+> > > > > attributes for example), but is far from being able to compile a kernel
+> > > >
+> > > > Well, we'll see what I can do with that. :)
+> > > 
+> > > Well, just installed it and tried building the kernel. Fails every file. :)
+> > > 
+> > > It's definitely something to work towards - but I don't know if kernel
+> > > advancements requiring newer GCC versions will go slow enough to allow
+> > > TCC improvements to arise. This isn't just something like with Clang
+> > > where a few tweaks to files and to Clang itself did the trick.
+> > 
+> > Maybe this'll help you find something to do:
+> > 
+> > https://www.youtube.com/watch?v=iU0Z0vBKrtQ
+> > 
+> > Yes, it would be lovely to be able to compile the kernel with tcc but it
+> > is not going to be trivial.
+> 
+> In any case there will always be numerous limitations, but at least being
+> able to perform the basic build check with limited options could save quite
+> some time to many developers. Using gcc once the tcc-based "typo check"
+> passes would already be a nice start. Getting the kernel to boot would
+> indeed be a huge step forward! In haproxy we can only build with threading
+> disabled and it works slowly but sufficiently for basic tests and printf-
+> based debugging. It's convenient for bisecting certain bugs.
+> 
+> Thanks for the video Boris, I wasn't aware of it, definitely interesting!
 
-Note, VMLOAD, VMRUN, etc... will also #GP on GPAs with C-bit set, i.e. KVM
-is doomed even if the SEV guest is debuggable and the hypervisor is willing
-to decrypt the VMCB.  This may or may not be fixed on CPUs that have the
-SVME_ADDR_CHK fix.
+Yeah, and there's a repo with that stuff:
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
+https://github.com/susematz/linux
 
-FWIW, I did get nested SVM working on SEV by decrypting all structures
-that are shadowed by L0, albeit with many restrictions.  So even though
-there's unlikely to be a legitimate use case, I don't think KVM (as L0)
-needs to be changed to disallow nSVM for SEV guests, userspace is
-ultimately the one that should hide SVM from L1.
+and also:
 
- arch/x86/kvm/svm/svm.c    | 5 +++++
- arch/x86/mm/mem_encrypt.c | 1 +
- 2 files changed, 6 insertions(+)
+https://github.com/susematz/linux/blob/tcc46/README.tcc
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 687876211ebe..9fb367cb4f15 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -448,6 +448,11 @@ static int has_svm(void)
- 		return 0;
- 	}
- 
-+	if (sev_active()) {
-+		pr_info("KVM is unsupported when running as an SEV guest\n");
-+		return 0;
-+	}
-+
- 	return 1;
- }
- 
-diff --git a/arch/x86/mm/mem_encrypt.c b/arch/x86/mm/mem_encrypt.c
-index c79e5736ab2b..c3d5f0236f35 100644
---- a/arch/x86/mm/mem_encrypt.c
-+++ b/arch/x86/mm/mem_encrypt.c
-@@ -382,6 +382,7 @@ bool sev_active(void)
- {
- 	return sev_status & MSR_AMD64_SEV_ENABLED;
- }
-+EXPORT_SYMBOL_GPL(sev_active);
- 
- /* Needs to be called from non-instrumentable code */
- bool noinstr sev_es_active(void)
+It would be good to start forward-porting and integrating some of the
+fixes and even extend tcc to handle some of the gnuisms we're using in
+the kernel so that we can build the kernel with it too.
+
+I can imagine having CONFIG_TCC - as long as that doesn't get too
+intrusive and get in the way of things - and those who wanna build the
+kernel with it, can enable it. For example...
+
+Thx.
+
 -- 
-2.30.0.365.g02bc693789-goog
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
