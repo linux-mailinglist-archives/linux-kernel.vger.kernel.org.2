@@ -2,87 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5E630B7CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 07:26:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 210B030B7D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 07:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231846AbhBBG0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 01:26:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231605AbhBBG0I (ORCPT
+        id S231927AbhBBG3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 01:29:38 -0500
+Received: from mail29.static.mailgun.info ([104.130.122.29]:41014 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231892AbhBBG1Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 01:26:08 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 692C0C061573;
-        Mon,  1 Feb 2021 22:25:28 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id gx20so1723953pjb.1;
-        Mon, 01 Feb 2021 22:25:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HdzoXk6LXCL/XJZQ9bhaClEN0pBSjRAU89qkEkTJ1ro=;
-        b=WpDctFpAjxQC3G7i/CrGOY5P5vAzYvSQZ1DJ7ug65xvWqMu058k6tQ55kWTe4mNQ1Y
-         aCKj73P49pFh1v29gECJjZSHS/0nlD/d5b83Vg6OorIHAAehpDXphlvkfDj+Fikrd0Tn
-         f42RIHVu9CBa0Vv2XdIWp/ccMU26TFFY1fpqUtTJS1dkxAHYylOdqHaB2ablpM25HRFh
-         d3p4/J451okEOShw7EnNAwSV5RzM5FpXSuI8bI5ZrIEXTc3Y+c/WptQsp60yiPqfg31I
-         6mUS5XeILRFn1pz/ZlZmqpEd0vKPe5VRbKNcyQpsBfLt8udkOLDHFthNwM4uqGs//DaV
-         HYFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HdzoXk6LXCL/XJZQ9bhaClEN0pBSjRAU89qkEkTJ1ro=;
-        b=nfQShAxai5kCTlkqC0rVu5TtWNRtKe1vKkVp6z8Qpz2JaGcFgJM5dMmCj+83eFJNk8
-         sqpV48uIMmv4kb76g0i5nekjcDOnE1qZt/hU+TflaidkTBvERx3vgtITKM7Lcvptj9/l
-         Seg/7sQtgAO4rbqyZaiKD79tqwf1XxuEVtU9mycgdI+wEwNsJ/0OUHsp2b0fIBxT42cg
-         NfFvTZQ++ktvkvPGTF0Ux+sylqH4h+aaFXgs51OZijHoMtRmvP5ITroBJwP4Z71OErl1
-         /qlnBzuRSlNnx5OJOvZyWlTu/llNeN1ua5HMPEBMA/snUEgXZuWMXqAooyiRp43/5JtQ
-         dO5A==
-X-Gm-Message-State: AOAM532zSAZ5XU1omNEFH3bKlIQq6gopcscFzjcUX3RlA3JljVp2Y1Ki
-        e64CKQLbVE9PLwoo5ya1+dOyHWuKUqGXs0MDlO8=
-X-Google-Smtp-Source: ABdhPJySMMqpl4MfKIaCMf+k3Y0990M+ZfGxjdajAfm8/0BmkbaWtxLGEK/y1iQK1dEovRVoQh0LtWWlvPHVFaxDZvg=
-X-Received: by 2002:a17:90a:5403:: with SMTP id z3mr2763602pjh.198.1612247127962;
- Mon, 01 Feb 2021 22:25:27 -0800 (PST)
+        Tue, 2 Feb 2021 01:27:25 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1612247224; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=z7Jt7mLpbCjEtcnUQ9bOehTzH3Sk9XSsW7oxWAsa7AE=;
+ b=U4eOCu7RJdmd5wLQwwaaYne3/Kl21aDGnJDTyDesPEUpbS0JSW681Q2JvKe5BbR5ijM2L/Zk
+ 7Exw0/1fDnZT0q0XKzwJz4cq8XIJn0RmGdfd+ureUar313XvciTeV2kL/tSx0ykSaQ3Q6Ivq
+ WdCCX4ucNw11lyMkSbBOk1T/xow=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 6018f095bfd95207233c72fb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Feb 2021 06:26:29
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2F52EC43469; Tue,  2 Feb 2021 06:26:29 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9D118C433C6;
+        Tue,  2 Feb 2021 06:26:27 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210201055706.415842-1-xie.he.0141@gmail.com>
- <4d1988d9-6439-ae37-697c-d2b970450498@linux.ibm.com> <CAJht_EOw4d9h7LqOsXpucADV5=gAGws-fKj5q7BdH2+h0Yv9Vg@mail.gmail.com>
- <20210201204224.4872ce23@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210201204224.4872ce23@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Xie He <xie.he.0141@gmail.com>
-Date:   Mon, 1 Feb 2021 22:25:17 -0800
-Message-ID: <CAJht_ENcz1A+C8=tJ_wP8kQby4OuyWirJC+c+-ngg5D54dpHNg@mail.gmail.com>
-Subject: Re: [PATCH net] net: lapb: Copy the skb before sending a packet
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Julian Wiedmann <jwi@linux.ibm.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin Schiller <ms@dev.tdt.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 02 Feb 2021 11:56:27 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        "Isaac J. Manjarres" <isaacm@codeaurora.org>,
+        "list@263.net:IOMMU DRIVERS , Joerg Roedel <joro@8bytes.org>," 
+        <iommu@lists.linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Kristian H Kristensen <hoegsberg@google.com>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Subject: Re: [PATCH 2/3] iommu/io-pgtable-arm: Add IOMMU_LLC page protection
+ flag
+In-Reply-To: <20210201182016.GA21629@jcrouse1-lnx.qualcomm.com>
+References: <cover.1610372717.git.saiprakash.ranjan@codeaurora.org>
+ <3f589e7de3f9fa93e84c83420c5270c546a0c368.1610372717.git.saiprakash.ranjan@codeaurora.org>
+ <20210129090516.GB3998@willie-the-truck>
+ <5d23fce629323bcda71594010824aad0@codeaurora.org>
+ <20210201111556.GA7172@willie-the-truck>
+ <CAF6AEGsARmkAFsjaQLfa2miMgeijo183MWDKGtW_ti-UCpzBqA@mail.gmail.com>
+ <20210201182016.GA21629@jcrouse1-lnx.qualcomm.com>
+Message-ID: <7e9aade14d0b7f69285852ade4a5a9f4@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 8:42 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Mon, 1 Feb 2021 08:14:31 -0800 Xie He wrote:
-> > On Mon, Feb 1, 2021 at 6:10 AM Julian Wiedmann <jwi@linux.ibm.com> wrote:
-> > > This sounds a bit like you want skb_cow_head() ... ?
-> >
-> > Calling "skb_cow_head" before we call "skb_clone" would indeed solve
-> > the problem of writes to our clones affecting clones in other parts of
-> > the system. But since we are still writing to the skb after
-> > "skb_clone", it'd still be better to replace "skb_clone" with
-> > "skb_copy" to avoid interference between our own clones.
->
-> Why call skb_cow_head() before skb_clone()? skb_cow_head should be
-> called before the data in skb head is modified. I'm assuming you're only
-> modifying "front" of the frame, right? skb_cow_head() should do nicely
-> in that case.
+On 2021-02-01 23:50, Jordan Crouse wrote:
+> On Mon, Feb 01, 2021 at 08:20:44AM -0800, Rob Clark wrote:
+>> On Mon, Feb 1, 2021 at 3:16 AM Will Deacon <will@kernel.org> wrote:
+>> >
+>> > On Fri, Jan 29, 2021 at 03:12:59PM +0530, Sai Prakash Ranjan wrote:
+>> > > On 2021-01-29 14:35, Will Deacon wrote:
+>> > > > On Mon, Jan 11, 2021 at 07:45:04PM +0530, Sai Prakash Ranjan wrote:
+>> > > > > Add a new page protection flag IOMMU_LLC which can be used
+>> > > > > by non-coherent masters to set cacheable memory attributes
+>> > > > > for an outer level of cache called as last-level cache or
+>> > > > > system cache. Initial user of this page protection flag is
+>> > > > > the adreno gpu and then can later be used by other clients
+>> > > > > such as video where this can be used for per-buffer based
+>> > > > > mapping.
+>> > > > >
+>> > > > > Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+>> > > > > ---
+>> > > > >  drivers/iommu/io-pgtable-arm.c | 3 +++
+>> > > > >  include/linux/iommu.h          | 6 ++++++
+>> > > > >  2 files changed, 9 insertions(+)
+>> > > > >
+>> > > > > diff --git a/drivers/iommu/io-pgtable-arm.c
+>> > > > > b/drivers/iommu/io-pgtable-arm.c
+>> > > > > index 7439ee7fdcdb..ebe653ef601b 100644
+>> > > > > --- a/drivers/iommu/io-pgtable-arm.c
+>> > > > > +++ b/drivers/iommu/io-pgtable-arm.c
+>> > > > > @@ -415,6 +415,9 @@ static arm_lpae_iopte
+>> > > > > arm_lpae_prot_to_pte(struct arm_lpae_io_pgtable *data,
+>> > > > >           else if (prot & IOMMU_CACHE)
+>> > > > >                   pte |= (ARM_LPAE_MAIR_ATTR_IDX_CACHE
+>> > > > >                           << ARM_LPAE_PTE_ATTRINDX_SHIFT);
+>> > > > > +         else if (prot & IOMMU_LLC)
+>> > > > > +                 pte |= (ARM_LPAE_MAIR_ATTR_IDX_INC_OCACHE
+>> > > > > +                         << ARM_LPAE_PTE_ATTRINDX_SHIFT);
+>> > > > >   }
+>> > > > >
+>> > > > >   if (prot & IOMMU_CACHE)
+>> > > > > diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+>> > > > > index ffaa389ea128..1f82057df531 100644
+>> > > > > --- a/include/linux/iommu.h
+>> > > > > +++ b/include/linux/iommu.h
+>> > > > > @@ -31,6 +31,12 @@
+>> > > > >   * if the IOMMU page table format is equivalent.
+>> > > > >   */
+>> > > > >  #define IOMMU_PRIV       (1 << 5)
+>> > > > > +/*
+>> > > > > + * Non-coherent masters can use this page protection flag to set
+>> > > > > cacheable
+>> > > > > + * memory attributes for only a transparent outer level of cache,
+>> > > > > also known as
+>> > > > > + * the last-level or system cache.
+>> > > > > + */
+>> > > > > +#define IOMMU_LLC        (1 << 6)
+>> > > >
+>> > > > On reflection, I'm a bit worried about exposing this because I think it
+>> > > > will
+>> > > > introduce a mismatched virtual alias with the CPU (we don't even have a
+>> > > > MAIR
+>> > > > set up for this memory type). Now, we also have that issue for the PTW,
+>> > > > but
+>> > > > since we always use cache maintenance (i.e. the streaming API) for
+>> > > > publishing the page-tables to a non-coheren walker, it works out.
+>> > > > However,
+>> > > > if somebody expects IOMMU_LLC to be coherent with a DMA API coherent
+>> > > > allocation, then they're potentially in for a nasty surprise due to the
+>> > > > mismatched outer-cacheability attributes.
+>> > > >
+>> > >
+>> > > Can't we add the syscached memory type similar to what is done on android?
+>> >
+>> > Maybe. How does the GPU driver map these things on the CPU side?
+>> 
+>> Currently we use writecombine mappings for everything, although there
+>> are some cases that we'd like to use cached (but have not merged
+>> patches that would give userspace a way to flush/invalidate)
+>> 
+>> BR,
+>> -R
+> 
+> LLC/system cache doesn't have a relationship with the CPU cache.  Its 
+> just a
+> little accelerator that sits on the connection from the GPU to DDR and 
+> caches
+> accesses. The hint that Sai is suggesting is used to mark the buffers 
+> as
+> 'no-write-allocate' to prevent GPU write operations from being cached 
+> in the LLC
+> which a) isn't interesting and b) takes up cache space for read 
+> operations.
+> 
+> Its easiest to think of the LLC as a bonus accelerator that has no cost 
+> for
+> us to use outside of the unfortunate per buffer hint.
+> 
+> We do have to worry about the CPU cache w.r.t I/O coherency (which is a
+> different hint) and in that case we have all of concerns that Will 
+> identified.
+> 
 
-The modification happens after skb_clone. If we call skb_cow_head
-after skb_clone (before the modification), then skb_cow_head would
-always see that the skb is a clone and would always copy it. Therefore
-skb_clone + skb_cow_head is equivalent to skb_copy.
+For mismatched outer cacheability attributes which Will mentioned, I was
+referring to [1] in android kernel.
+
+[1] https://android-review.googlesource.com/c/kernel/common/+/1549097/3
+
+Thanks,
+Sai
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
