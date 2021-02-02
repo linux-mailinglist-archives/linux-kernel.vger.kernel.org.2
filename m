@@ -2,141 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F25E30B7D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 07:31:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D734530B7DB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 07:31:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231941AbhBBG3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 01:29:36 -0500
-Received: from so15.mailgun.net ([198.61.254.15]:15472 "EHLO so15.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231909AbhBBG3E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 01:29:04 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1612247319; h=Content-Transfer-Encoding: MIME-Version:
- Message-Id: Date: Subject: Cc: To: From: Sender;
- bh=t4d4srjb9O8cuvbHKvxP3tMfBWF01KKcSjaLhMt8Gww=; b=NNAmP+7tLBOktSNIzB39UZHEpAcFcoavLAulLysqphEYJT6jYKw3IiCMmgi44L6/vdByCNIt
- RsYm8prgswxJxm2eSdEbTIylX/2/ttWsYu6J1GxHNLuLSZ2C0RAoNtvnhEVZXjMzt/nWb0XI
- AxnExYuXzPNYWPD6cEe0W8z0xKM=
-X-Mailgun-Sending-Ip: 198.61.254.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 6018f0e27a21b36a9d335c97 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 02 Feb 2021 06:27:46
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5B7B8C433CA; Tue,  2 Feb 2021 06:27:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 157F0C433C6;
-        Tue,  2 Feb 2021 06:27:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 157F0C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        swboyd@chromium.org
-Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Subject: [PATCH] ASoC: qcom: Fix typo error in HDMI regmap config callbacks
-Date:   Tue,  2 Feb 2021 11:57:27 +0530
-Message-Id: <20210202062727.22469-1-srivasam@codeaurora.org>
-X-Mailer: git-send-email 2.29.0
+        id S232088AbhBBGaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 01:30:01 -0500
+Received: from mailgw02.mediatek.com ([1.203.163.81]:41989 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231952AbhBBG3w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 01:29:52 -0500
+X-UUID: 6c8a7d8511dd4e28a27000d42d405fc9-20210202
+X-UUID: 6c8a7d8511dd4e28a27000d42d405fc9-20210202
+Received: from mtkcas36.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <chunfeng.yun@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1507493788; Tue, 02 Feb 2021 14:28:36 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Tue, 2 Feb 2021 14:28:28 +0800
+Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 2 Feb 2021 14:28:27 +0800
+From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
+To:     Mathias Nyman <mathias.nyman@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ikjoon Jang <ikjn@chromium.org>
+CC:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Zhanyong Wang <zhanyong.wang@mediatek.com>,
+        Tianping Fang <tianping.fang@mediatek.com>,
+        stable <stable@vger.kernel.org>
+Subject: [next v2 PATCH] usb: xhci-mtk: skip dropping bandwidth of unchecked endpoints
+Date:   Tue, 2 Feb 2021 14:28:18 +0800
+Message-ID: <1612247298-4654-1-git-send-email-chunfeng.yun@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 34469E8ADEB93BE70103A71D898FDDBC2A64BDA9A3D8F3654D9CCF20D038F0372000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Had a typo in lpass platform driver that resulted in crash
-during suspend/resume with an HDMI dongle connected.
+For those unchecked endpoints, we don't allocate bandwidth for
+them, so no need free the bandwidth, otherwise will decrease
+the allocated bandwidth.
+Meanwhile use xhci_dbg() instead of dev_dbg() to print logs and
+rename bw_ep_list_new as bw_ep_chk_list.
 
-The regmap read/write/volatile regesters validation callbacks in lpass-cpu
-were using MI2S rdma_channels count instead of hdmi_rdma_channels.
-
-This typo error causing to read registers from the regmap beyond the length
-of the mapping created by ioremap().
-
-This fix avoids the need for reducing number hdmi_rdma_channels,
-which is done in
-commit 7dfe20ee92f6 ("ASoC: qcom: Fix number of HDMI RDMA channels on sc7180").
-So reverting the same.
-
-Fixes: 7cb37b7bd0d3c ("ASoC: qcom: Add support for lpass hdmi driver")
-
-Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Fixes: 1d69f9d901ef ("usb: xhci-mtk: fix unreleased bandwidth data")
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+Tested-by: Ikjoon Jang <ikjn@chromium.org>
+Reviewed-by: Ikjoon Jang <ikjn@chromium.org>
 ---
- sound/soc/qcom/lpass-cpu.c    | 8 ++++----
- sound/soc/qcom/lpass-sc7180.c | 2 +-
- 2 files changed, 5 insertions(+), 5 deletions(-)
+v2: add 'break' when find the ep that will be dropped suggested by Ikjoon
+    add Tested-by and Reviewed-by Ikjoon
+---
+ drivers/usb/host/xhci-mtk-sch.c | 59 ++++++++++++++++++---------------
+ drivers/usb/host/xhci-mtk.h     |  4 ++-
+ 2 files changed, 36 insertions(+), 27 deletions(-)
 
-diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
-index a669202e0001..c642e5f8f28c 100644
---- a/sound/soc/qcom/lpass-cpu.c
-+++ b/sound/soc/qcom/lpass-cpu.c
-@@ -595,7 +595,7 @@ static bool lpass_hdmi_regmap_writeable(struct device *dev, unsigned int reg)
- 			return true;
+diff --git a/drivers/usb/host/xhci-mtk-sch.c b/drivers/usb/host/xhci-mtk-sch.c
+index a313e75ff1c6..b45e5bf08997 100644
+--- a/drivers/usb/host/xhci-mtk-sch.c
++++ b/drivers/usb/host/xhci-mtk-sch.c
+@@ -200,6 +200,7 @@ static struct mu3h_sch_ep_info *create_sch_ep(struct usb_device *udev,
+ 
+ 	sch_ep->sch_tt = tt;
+ 	sch_ep->ep = ep;
++	INIT_LIST_HEAD(&sch_ep->endpoint);
+ 	INIT_LIST_HEAD(&sch_ep->tt_endpoint);
+ 
+ 	return sch_ep;
+@@ -374,6 +375,7 @@ static void update_bus_bw(struct mu3h_sch_bw_info *sch_bw,
+ 					sch_ep->bw_budget_table[j];
+ 		}
+ 	}
++	sch_ep->allocated = used;
+ }
+ 
+ static int check_sch_tt(struct usb_device *udev,
+@@ -542,6 +544,22 @@ static int check_sch_bw(struct usb_device *udev,
+ 	return 0;
+ }
+ 
++static void destroy_sch_ep(struct usb_device *udev,
++	struct mu3h_sch_bw_info *sch_bw, struct mu3h_sch_ep_info *sch_ep)
++{
++	/* only release ep bw check passed by check_sch_bw() */
++	if (sch_ep->allocated)
++		update_bus_bw(sch_bw, sch_ep, 0);
++
++	list_del(&sch_ep->endpoint);
++
++	if (sch_ep->sch_tt) {
++		list_del(&sch_ep->tt_endpoint);
++		drop_tt(udev);
++	}
++	kfree(sch_ep);
++}
++
+ static bool need_bw_sch(struct usb_host_endpoint *ep,
+ 	enum usb_device_speed speed, int has_tt)
+ {
+@@ -584,7 +602,7 @@ int xhci_mtk_sch_init(struct xhci_hcd_mtk *mtk)
+ 
+ 	mtk->sch_array = sch_array;
+ 
+-	INIT_LIST_HEAD(&mtk->bw_ep_list_new);
++	INIT_LIST_HEAD(&mtk->bw_ep_chk_list);
+ 
+ 	return 0;
+ }
+@@ -636,29 +654,12 @@ int xhci_mtk_add_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
+ 
+ 	setup_sch_info(udev, ep_ctx, sch_ep);
+ 
+-	list_add_tail(&sch_ep->endpoint, &mtk->bw_ep_list_new);
++	list_add_tail(&sch_ep->endpoint, &mtk->bw_ep_chk_list);
+ 
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(xhci_mtk_add_ep_quirk);
+ 
+-static void xhci_mtk_drop_ep(struct xhci_hcd_mtk *mtk, struct usb_device *udev,
+-			     struct mu3h_sch_ep_info *sch_ep)
+-{
+-	struct xhci_hcd *xhci = hcd_to_xhci(mtk->hcd);
+-	int bw_index = get_bw_index(xhci, udev, sch_ep->ep);
+-	struct mu3h_sch_bw_info *sch_bw = &mtk->sch_array[bw_index];
+-
+-	update_bus_bw(sch_bw, sch_ep, 0);
+-	list_del(&sch_ep->endpoint);
+-
+-	if (sch_ep->sch_tt) {
+-		list_del(&sch_ep->tt_endpoint);
+-		drop_tt(udev);
+-	}
+-	kfree(sch_ep);
+-}
+-
+ void xhci_mtk_drop_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
+ 		struct usb_host_endpoint *ep)
+ {
+@@ -689,7 +690,8 @@ void xhci_mtk_drop_ep_quirk(struct usb_hcd *hcd, struct usb_device *udev,
+ 
+ 	list_for_each_entry_safe(sch_ep, tmp, &sch_bw->bw_ep_list, endpoint) {
+ 		if (sch_ep->ep == ep) {
+-			xhci_mtk_drop_ep(mtk, udev, sch_ep);
++			destroy_sch_ep(udev, sch_bw, sch_ep);
++			break;
+ 		}
+ 	}
+ }
+@@ -704,9 +706,9 @@ int xhci_mtk_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
+ 	struct mu3h_sch_ep_info *sch_ep, *tmp;
+ 	int bw_index, ret;
+ 
+-	dev_dbg(&udev->dev, "%s\n", __func__);
++	xhci_dbg(xhci, "%s() udev %s\n", __func__, dev_name(&udev->dev));
+ 
+-	list_for_each_entry(sch_ep, &mtk->bw_ep_list_new, endpoint) {
++	list_for_each_entry(sch_ep, &mtk->bw_ep_chk_list, endpoint) {
+ 		bw_index = get_bw_index(xhci, udev, sch_ep->ep);
+ 		sch_bw = &mtk->sch_array[bw_index];
+ 
+@@ -717,7 +719,7 @@ int xhci_mtk_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
+ 		}
  	}
  
--	for (i = 0; i < v->rdma_channels; ++i) {
-+	for (i = 0; i < v->hdmi_rdma_channels; ++i) {
- 		if (reg == LPAIF_HDMI_RDMACTL_REG(v, i))
- 			return true;
- 		if (reg == LPAIF_HDMI_RDMABASE_REG(v, i))
-@@ -641,7 +641,7 @@ static bool lpass_hdmi_regmap_readable(struct device *dev, unsigned int reg)
- 	if (reg == LPASS_HDMITX_APP_IRQSTAT_REG(v))
- 		return true;
+-	list_for_each_entry_safe(sch_ep, tmp, &mtk->bw_ep_list_new, endpoint) {
++	list_for_each_entry_safe(sch_ep, tmp, &mtk->bw_ep_chk_list, endpoint) {
+ 		struct xhci_ep_ctx *ep_ctx;
+ 		struct usb_host_endpoint *ep = sch_ep->ep;
+ 		unsigned int ep_index = xhci_get_endpoint_index(&ep->desc);
+@@ -746,12 +748,17 @@ EXPORT_SYMBOL_GPL(xhci_mtk_check_bandwidth);
+ void xhci_mtk_reset_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
+ {
+ 	struct xhci_hcd_mtk *mtk = hcd_to_mtk(hcd);
++	struct xhci_hcd *xhci = hcd_to_xhci(hcd);
++	struct mu3h_sch_bw_info *sch_bw;
+ 	struct mu3h_sch_ep_info *sch_ep, *tmp;
++	int bw_index;
  
--	for (i = 0; i < v->rdma_channels; ++i) {
-+	for (i = 0; i < v->hdmi_rdma_channels; ++i) {
- 		if (reg == LPAIF_HDMI_RDMACTL_REG(v, i))
- 			return true;
- 		if (reg == LPAIF_HDMI_RDMABASE_REG(v, i))
-@@ -668,7 +668,7 @@ static bool lpass_hdmi_regmap_volatile(struct device *dev, unsigned int reg)
- 	if (reg == LPASS_HDMI_TX_LEGACY_ADDR(v))
- 		return true;
+-	dev_dbg(&udev->dev, "%s\n", __func__);
++	xhci_dbg(xhci, "%s() udev %s\n", __func__, dev_name(&udev->dev));
  
--	for (i = 0; i < v->rdma_channels; ++i) {
-+	for (i = 0; i < v->hdmi_rdma_channels; ++i) {
- 		if (reg == LPAIF_HDMI_RDMACURR_REG(v, i))
- 			return true;
+-	list_for_each_entry_safe(sch_ep, tmp, &mtk->bw_ep_list_new, endpoint) {
+-		xhci_mtk_drop_ep(mtk, udev, sch_ep);
++	list_for_each_entry_safe(sch_ep, tmp, &mtk->bw_ep_chk_list, endpoint) {
++		bw_index = get_bw_index(xhci, udev, sch_ep->ep);
++		sch_bw = &mtk->sch_array[bw_index];
++		destroy_sch_ep(udev, sch_bw, sch_ep);
  	}
-@@ -812,7 +812,7 @@ int asoc_qcom_lpass_cpu_platform_probe(struct platform_device *pdev)
- 			return PTR_ERR(drvdata->hdmiif);
  
- 		lpass_hdmi_regmap_config.max_register = LPAIF_HDMI_RDMAPER_REG(variant,
--					variant->hdmi_rdma_channels);
-+					variant->hdmi_rdma_channels - 1);
- 		drvdata->hdmiif_map = devm_regmap_init_mmio(dev, drvdata->hdmiif,
- 					&lpass_hdmi_regmap_config);
- 		if (IS_ERR(drvdata->hdmiif_map)) {
-diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
-index 735c9dac28f2..8c168d3c589e 100644
---- a/sound/soc/qcom/lpass-sc7180.c
-+++ b/sound/soc/qcom/lpass-sc7180.c
-@@ -171,7 +171,7 @@ static struct lpass_variant sc7180_data = {
- 	.rdma_channels		= 5,
- 	.hdmi_rdma_reg_base		= 0x64000,
- 	.hdmi_rdma_reg_stride	= 0x1000,
--	.hdmi_rdma_channels		= 3,
-+	.hdmi_rdma_channels		= 4,
- 	.dmactl_audif_start	= 1,
- 	.wrdma_reg_base		= 0x18000,
- 	.wrdma_reg_stride	= 0x1000,
+ 	xhci_reset_bandwidth(hcd, udev);
+diff --git a/drivers/usb/host/xhci-mtk.h b/drivers/usb/host/xhci-mtk.h
+index 577f431c5c93..cbb09dfea62e 100644
+--- a/drivers/usb/host/xhci-mtk.h
++++ b/drivers/usb/host/xhci-mtk.h
+@@ -59,6 +59,7 @@ struct mu3h_sch_bw_info {
+  * @ep_type: endpoint type
+  * @maxpkt: max packet size of endpoint
+  * @ep: address of usb_host_endpoint struct
++ * @allocated: the bandwidth is aready allocated from bus_bw
+  * @offset: which uframe of the interval that transfer should be
+  *		scheduled first time within the interval
+  * @repeat: the time gap between two uframes that transfers are
+@@ -86,6 +87,7 @@ struct mu3h_sch_ep_info {
+ 	u32 ep_type;
+ 	u32 maxpkt;
+ 	void *ep;
++	bool allocated;
+ 	/*
+ 	 * mtk xHCI scheduling information put into reserved DWs
+ 	 * in ep context
+@@ -130,8 +132,8 @@ struct mu3c_ippc_regs {
+ struct xhci_hcd_mtk {
+ 	struct device *dev;
+ 	struct usb_hcd *hcd;
+-	struct list_head bw_ep_list_new;
+ 	struct mu3h_sch_bw_info *sch_array;
++	struct list_head bw_ep_chk_list;
+ 	struct mu3c_ippc_regs __iomem *ippc_regs;
+ 	bool has_ippc;
+ 	int num_u2_ports;
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.18.0
 
