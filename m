@@ -2,57 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3AD330C64D
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:46:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 902B630C657
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:46:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236631AbhBBQoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 11:44:00 -0500
-Received: from mga04.intel.com ([192.55.52.120]:48231 "EHLO mga04.intel.com"
+        id S236810AbhBBQpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:45:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236614AbhBBQlw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 11:41:52 -0500
-IronPort-SDR: 0wocoNJt5zZkb7tf6TGY0rphL87CEjSyGj0jAhLUVXK2VOwf6OeMYqAxGPIVRdpDxNBLYnZSAl
- 9756zWkuh/0g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="178325272"
-X-IronPort-AV: E=Sophos;i="5.79,395,1602572400"; 
-   d="scan'208";a="178325272"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 08:41:04 -0800
-IronPort-SDR: Eg+PeupmJB38Swuetqqo43nQrCypvHKzH7vo8Lzx7eWKLBcq1cAlygGlegUyVr2t2BYtaiY6w2
- EXjdQ83jzDfA==
-X-IronPort-AV: E=Sophos;i="5.79,395,1602572400"; 
-   d="scan'208";a="413654954"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 08:41:04 -0800
-Date:   Tue, 2 Feb 2021 08:41:02 -0800
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     iommu@lists.linux-foundation.org, Yian Chen <yian.chen@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, linux-kernel@vger.kernel.org,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH 2/3] iommu/vt-d: Parse SATC reporting structure
-Message-ID: <20210202164102.GD39643@otc-nc-03>
-References: <20210202044057.615277-1-baolu.lu@linux.intel.com>
- <20210202044057.615277-3-baolu.lu@linux.intel.com>
+        id S236769AbhBBQmG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 11:42:06 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5133364F72;
+        Tue,  2 Feb 2021 16:41:24 +0000 (UTC)
+Date:   Tue, 2 Feb 2021 11:41:22 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Carsten Emde <C.Emde@osadl.org>,
+        John Kacur <jkacur@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Daniel Wagner <wagi@monom.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+Subject: [ANNOUNCE] 5.4.93-rt51
+Message-ID: <20210202114122.5acab395@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210202044057.615277-3-baolu.lu@linux.intel.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 12:40:56PM +0800, Lu Baolu wrote:
-> From: Yian Chen <yian.chen@intel.com>
-> 
-> Software should parse every SATC table and all devices in the tables
-> reported by the BIOS and keep the information in kernel list for further
-> SATC policy deployment.
-> 
-The last part seems bit vague? Are you trying to imply, 
 
-if kernel is booted with noats for instance, a device listed in SATC table
-as "requires ATS" will fail to load?
+Dear RT Folks,
 
-Otherwise its not clear what the policy enforcement means.
+I'm pleased to announce the 5.4.93-rt51 stable release.
+
+
+This release is just an update to the new stable 5.4.93 version
+and no RT specific changes have been made.
+
+
+You can get this release via the git tree at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+
+  branch: v5.4-rt
+  Head SHA1: ad6bd8f7be41805c4488695c6b89e69714791971
+
+
+Or to build 5.4.93-rt51 directly, the following patches should be applied:
+
+  http://www.kernel.org/pub/linux/kernel/v5.x/linux-5.4.tar.xz
+
+  http://www.kernel.org/pub/linux/kernel/v5.x/patch-5.4.93.xz
+
+  http://www.kernel.org/pub/linux/kernel/projects/rt/5.4/patch-5.4.93-rt51.patch.xz
+
+
+
+
+Enjoy,
+
+-- Steve
+
