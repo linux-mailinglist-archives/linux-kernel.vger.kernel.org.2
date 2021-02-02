@@ -2,425 +2,392 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D696330C950
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:16:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D7530C96F
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:19:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238286AbhBBSP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:15:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56830 "EHLO mail.kernel.org"
+        id S238399AbhBBSSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:18:12 -0500
+Received: from mga17.intel.com ([192.55.52.151]:23797 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238099AbhBBSN5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 13:13:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE7CC64F68;
-        Tue,  2 Feb 2021 18:13:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612289594;
-        bh=X+fMApebb90vPZ0Sh79TkziyYlatPLPROh2OUP+kTws=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tBXlUZtpL5/enc5sFJwLtKtSCcWZR0Qa4OFhvibRmeelvROdaQo73wkq6pTD4gnY/
-         wynVbTM94ykUT8XpblDbaK4ccaPtAuqg+KaCeEW2OVSiRBWvEMmylP0uA4WE5ytDQ1
-         rVzENhU3g8W1E4Ue5kgN4m7aa6cXFwrJNIuzG75YCg3mx85Mxj/OvbuEuLtStMV4Li
-         hwYQS5/3wCcx6W2eVBfsPhUR9CXKcv6urogwpcjcScCsr+MatWTenI7iTv2RqpGtpH
-         I3m6m0Ojv+C759Smadr84qhgXNdBCwjkQY3rJia3CkRCSTktozhLhucX1nsXbbeFeh
-         uLYcukG0kSj7w==
-Date:   Tue, 2 Feb 2021 18:13:08 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org, android-kvm@google.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        Fuad Tabba <tabba@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Brazdil <dbrazdil@google.com>
-Subject: Re: [RFC PATCH v2 12/26] KVM: arm64: Introduce a Hyp buddy page
- allocator
-Message-ID: <20210202181307.GA17311@willie-the-truck>
-References: <20210108121524.656872-1-qperret@google.com>
- <20210108121524.656872-13-qperret@google.com>
+        id S238174AbhBBSO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 13:14:59 -0500
+IronPort-SDR: nO3MWi2c5HpepWAFit8WMkE1kKPHrNg9WXTR8kc4kl20vIjInEIQlo6C5+olsK+jaBFhNnenX5
+ 4Gdwu7kYn6cQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="160667871"
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="scan'208";a="160667871"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 10:13:09 -0800
+IronPort-SDR: xfs5Ukx/8WliZhVsiqfCjS9bS9YlsYP7xrXvZDKEgyUVZt/jXQBq8JnhVWs48VxTdxvc60l3uv
+ sWKnZmD28cAg==
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="scan'208";a="433028733"
+Received: from spandruv-mobl.amr.corp.intel.com ([10.212.187.200])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 10:13:08 -0800
+Message-ID: <1c596a66407fc56ef5e079f9b47d58dc80af4bf2.camel@linux.intel.com>
+Subject: Re: [PATCH v3 2/2] thermal: Move therm_throt there from x86/mce
+From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org
+Date:   Tue, 02 Feb 2021 10:13:08 -0800
+In-Reply-To: <20210202121003.GD18075@zn.tnic>
+References: <20210201142704.12495-1-bp@alien8.de>
+         <20210201142704.12495-3-bp@alien8.de>
+         <bcf48ba877acf7ae003672d5b7cf2effe004ca0e.camel@linux.intel.com>
+         <20210202121003.GD18075@zn.tnic>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108121524.656872-13-qperret@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Quentin,
-
-Sorry for the delay, this one took me a while to grok.
-
-On Fri, Jan 08, 2021 at 12:15:10PM +0000, Quentin Perret wrote:
-> When memory protection is enabled, the hyp code will require a basic
-> form of memory management in order to allocate and free memory pages at
-> EL2. This is needed for various use-cases, including the creation of hyp
-> mappings or the allocation of stage 2 page tables.
+On Tue, 2021-02-02 at 13:10 +0100, Borislav Petkov wrote:
+> On Mon, Feb 01, 2021 at 11:10:29AM -0800, Srinivas Pandruvada wrote:
+> > Only user of the above interface is in drivers/thermal/intel.
+> > So why can't we move these to
+> > drivers/thermal/intel/thermal_interrupt.h
+> > or similar?
 > 
-> To address these use-case, introduce a simple memory allocator in the
-> hyp code. The allocator is designed as a conventional 'buddy allocator',
-> working with a page granularity. It allows to allocate and free
-> physically contiguous pages from memory 'pools', with a guaranteed order
-> alignment in the PA space. Each page in a memory pool is associated
-> with a struct hyp_page which holds the page's metadata, including its
-> refcount, as well as its current order, hence mimicking the kernel's
-> buddy system in the GFP infrastructure. The hyp_page metadata are made
-> accessible through a hyp_vmemmap, following the concept of
-> SPARSE_VMEMMAP in the kernel.
+> Sure, see below.
 > 
-> Signed-off-by: Quentin Perret <qperret@google.com>
+Thanks.
+
+Reviewed-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+
 > ---
->  arch/arm64/kvm/hyp/include/nvhe/gfp.h    |  32 ++++
->  arch/arm64/kvm/hyp/include/nvhe/memory.h |  25 +++
->  arch/arm64/kvm/hyp/nvhe/Makefile         |   2 +-
->  arch/arm64/kvm/hyp/nvhe/page_alloc.c     | 185 +++++++++++++++++++++++
->  4 files changed, 243 insertions(+), 1 deletion(-)
->  create mode 100644 arch/arm64/kvm/hyp/include/nvhe/gfp.h
->  create mode 100644 arch/arm64/kvm/hyp/nvhe/page_alloc.c
+> From: Borislav Petkov <bp@suse.de>
+> Date: Thu, 7 Jan 2021 13:29:05 +0100
+> Subject: [PATCH] thermal: Move therm_throt there from x86/mce
 > 
-> diff --git a/arch/arm64/kvm/hyp/include/nvhe/gfp.h b/arch/arm64/kvm/hyp/include/nvhe/gfp.h
+> This functionality has nothing to do with MCE, move it to the thermal
+> framework and untangle it from MCE.
+> 
+> Requested-by: Peter Zijlstra <peterz@infradead.org>
+> Signed-off-by: Borislav Petkov <bp@suse.de>
+> ---
+>  arch/x86/Kconfig                              |  4 ---
+>  arch/x86/include/asm/mce.h                    | 16 ----------
+>  arch/x86/include/asm/thermal.h                | 13 ++++++++
+>  arch/x86/kernel/cpu/intel.c                   |  3 ++
+>  arch/x86/kernel/cpu/mce/Makefile              |  2 --
+>  arch/x86/kernel/cpu/mce/intel.c               |  1 -
+>  arch/x86/kernel/irq.c                         | 21 ++++++++++++
+>  drivers/thermal/intel/Kconfig                 |  4 +++
+>  drivers/thermal/intel/Makefile                |  1 +
+>  .../thermal/intel}/therm_throt.c              | 32 ++++++-----------
+> --
+>  drivers/thermal/intel/thermal_interrupt.h     | 15 +++++++++
+>  drivers/thermal/intel/x86_pkg_temp_thermal.c  |  4 ++-
+>  12 files changed, 69 insertions(+), 47 deletions(-)
+>  create mode 100644 arch/x86/include/asm/thermal.h
+>  rename {arch/x86/kernel/cpu/mce =>
+> drivers/thermal/intel}/therm_throt.c (97%)
+>  create mode 100644 drivers/thermal/intel/thermal_interrupt.h
+> 
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 21f851179ff0..9989db3a9bf5 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -1158,10 +1158,6 @@ config X86_MCE_INJECT
+>  	  If you don't know what a machine check is and you don't do
+> kernel
+>  	  QA it is safe to say n.
+>  
+> -config X86_THERMAL_VECTOR
+> -	def_bool y
+> -	depends on X86_MCE_INTEL
+> -
+>  source "arch/x86/events/Kconfig"
+>  
+>  config X86_LEGACY_VM86
+> diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
+> index def9aa5e1fa4..ddfb3cad8dff 100644
+> --- a/arch/x86/include/asm/mce.h
+> +++ b/arch/x86/include/asm/mce.h
+> @@ -288,22 +288,6 @@ extern void (*mce_threshold_vector)(void);
+>  /* Deferred error interrupt handler */
+>  extern void (*deferred_error_int_vector)(void);
+>  
+> -/*
+> - * Thermal handler
+> - */
+> -
+> -void intel_init_thermal(struct cpuinfo_x86 *c);
+> -
+> -/* Interrupt Handler for core thermal thresholds */
+> -extern int (*platform_thermal_notify)(__u64 msr_val);
+> -
+> -/* Interrupt Handler for package thermal thresholds */
+> -extern int (*platform_thermal_package_notify)(__u64 msr_val);
+> -
+> -/* Callback support of rate control, return true, if
+> - * callback has rate control */
+> -extern bool (*platform_thermal_package_rate_control)(void);
+> -
+>  /*
+>   * Used by APEI to report memory error via /dev/mcelog
+>   */
+> diff --git a/arch/x86/include/asm/thermal.h
+> b/arch/x86/include/asm/thermal.h
 > new file mode 100644
-> index 000000000000..95587faee171
+> index 000000000000..ddbdefd5b94f
 > --- /dev/null
-> +++ b/arch/arm64/kvm/hyp/include/nvhe/gfp.h
-> @@ -0,0 +1,32 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +#ifndef __KVM_HYP_GFP_H
-> +#define __KVM_HYP_GFP_H
+> +++ b/arch/x86/include/asm/thermal.h
+> @@ -0,0 +1,13 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _ASM_X86_THERMAL_H
+> +#define _ASM_X86_THERMAL_H
 > +
-> +#include <linux/list.h>
+> +#ifdef CONFIG_X86_THERMAL_VECTOR
+> +void intel_init_thermal(struct cpuinfo_x86 *c);
+> +bool x86_thermal_enabled(void);
+> +void intel_thermal_interrupt(void);
+> +#else
+> +static inline void intel_init_thermal(struct cpuinfo_x86 *c) { }
+> +#endif
 > +
-> +#include <nvhe/memory.h>
-> +#include <nvhe/spinlock.h>
-> +
-> +#define HYP_MAX_ORDER	11U
-
-Could we just use MAX_ORDER here?
-
-> +#define HYP_NO_ORDER	UINT_MAX
-> +
-> +struct hyp_pool {
-> +	hyp_spinlock_t lock;
-
-A comment about what this lock protects would be handy, especially as the
-'refcount' field of 'struct hyp_page' isn't updated atomically. I think it
-also means that we don't have a safe way to move a page from one pool to
-another; it's fixed forever once the page has been made available for
-allocation.
-
-> +	struct list_head free_area[HYP_MAX_ORDER + 1];
-> +	phys_addr_t range_start;
-> +	phys_addr_t range_end;
-> +};
-> +
-> +/* GFP flags */
-> +#define HYP_GFP_NONE	0
-> +#define HYP_GFP_ZERO	1
-> +
-> +/* Allocation */
-> +void *hyp_alloc_pages(struct hyp_pool *pool, gfp_t mask, unsigned int order);
-> +void hyp_get_page(void *addr);
-> +void hyp_put_page(void *addr);
-> +
-> +/* Used pages cannot be freed */
-> +int hyp_pool_init(struct hyp_pool *pool, phys_addr_t phys,
-> +		  unsigned int nr_pages, unsigned int used_pages);
-
-Maybe "reserved_pages" would be a better name than "used_pages"?
-
-> +#endif /* __KVM_HYP_GFP_H */
-> diff --git a/arch/arm64/kvm/hyp/include/nvhe/memory.h b/arch/arm64/kvm/hyp/include/nvhe/memory.h
-> index 64c44c142c95..ed47674bc988 100644
-> --- a/arch/arm64/kvm/hyp/include/nvhe/memory.h
-> +++ b/arch/arm64/kvm/hyp/include/nvhe/memory.h
-> @@ -6,7 +6,17 @@
+> +#endif /* _ASM_X86_THERMAL_H */
+> diff --git a/arch/x86/kernel/cpu/intel.c
+> b/arch/x86/kernel/cpu/intel.c
+> index 59a1e3ce3f14..71221af87cb1 100644
+> --- a/arch/x86/kernel/cpu/intel.c
+> +++ b/arch/x86/kernel/cpu/intel.c
+> @@ -24,6 +24,7 @@
+>  #include <asm/traps.h>
+>  #include <asm/resctrl.h>
+>  #include <asm/numa.h>
+> +#include <asm/thermal.h>
 >  
->  #include <linux/types.h>
+>  #ifdef CONFIG_X86_64
+>  #include <linux/topology.h>
+> @@ -719,6 +720,8 @@ static void init_intel(struct cpuinfo_x86 *c)
+>  		tsx_disable();
 >  
-> +struct hyp_pool;
-> +struct hyp_page {
-> +	unsigned int refcount;
-> +	unsigned int order;
-> +	struct hyp_pool *pool;
-> +	struct list_head node;
-> +};
+>  	split_lock_init();
 > +
->  extern s64 hyp_physvirt_offset;
-> +extern u64 __hyp_vmemmap;
-> +#define hyp_vmemmap ((struct hyp_page *)__hyp_vmemmap)
->  
->  #define __hyp_pa(virt)	((phys_addr_t)(virt) + hyp_physvirt_offset)
->  #define __hyp_va(virt)	((void *)((phys_addr_t)(virt) - hyp_physvirt_offset))
-> @@ -21,4 +31,19 @@ static inline phys_addr_t hyp_virt_to_phys(void *addr)
->  	return __hyp_pa(addr);
+> +	intel_init_thermal(c);
 >  }
 >  
-> +#define hyp_phys_to_pfn(phys)	((phys) >> PAGE_SHIFT)
-> +#define hyp_phys_to_page(phys)	(&hyp_vmemmap[hyp_phys_to_pfn(phys)])
-> +#define hyp_virt_to_page(virt)	hyp_phys_to_page(__hyp_pa(virt))
-> +
-> +#define hyp_page_to_phys(page)  ((phys_addr_t)((page) - hyp_vmemmap) << PAGE_SHIFT)
-
-Maybe implement this in terms of a new hyp_page_to_pfn() macro?
-
-> +#define hyp_page_to_virt(page)	__hyp_va(hyp_page_to_phys(page))
-> +#define hyp_page_to_pool(page)	(((struct hyp_page *)page)->pool)
-> +
-> +static inline int hyp_page_count(void *addr)
-> +{
-> +	struct hyp_page *p = hyp_virt_to_page(addr);
-> +
-> +	return p->refcount;
-> +}
-> +
->  #endif /* __KVM_HYP_MEMORY_H */
-> diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
-> index 33bd381d8f73..9e5eacfec6ec 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/Makefile
-> +++ b/arch/arm64/kvm/hyp/nvhe/Makefile
-> @@ -10,7 +10,7 @@ lib-objs := clear_page.o copy_page.o memcpy.o memset.o
->  lib-objs := $(addprefix ../../../lib/, $(lib-objs))
+>  #ifdef CONFIG_X86_32
+> diff --git a/arch/x86/kernel/cpu/mce/Makefile
+> b/arch/x86/kernel/cpu/mce/Makefile
+> index 9f020c994154..015856abdbb1 100644
+> --- a/arch/x86/kernel/cpu/mce/Makefile
+> +++ b/arch/x86/kernel/cpu/mce/Makefile
+> @@ -9,8 +9,6 @@ obj-$(CONFIG_X86_MCE_THRESHOLD) += threshold.o
+>  mce-inject-y			:= inject.o
+>  obj-$(CONFIG_X86_MCE_INJECT)	+= mce-inject.o
 >  
->  obj-y := timer-sr.o sysreg-sr.o debug-sr.o switch.o tlb.o hyp-init.o host.o \
-> -	 hyp-main.o hyp-smp.o psci-relay.o early_alloc.o stub.o
-> +	 hyp-main.o hyp-smp.o psci-relay.o early_alloc.o stub.o page_alloc.o
->  obj-y += ../vgic-v3-sr.o ../aarch32.o ../vgic-v2-cpuif-proxy.o ../entry.o \
->  	 ../fpsimd.o ../hyp-entry.o ../exception.o
->  obj-y += $(lib-objs)
-> diff --git a/arch/arm64/kvm/hyp/nvhe/page_alloc.c b/arch/arm64/kvm/hyp/nvhe/page_alloc.c
+> -obj-$(CONFIG_X86_THERMAL_VECTOR) += therm_throt.o
+> -
+>  obj-$(CONFIG_ACPI_APEI)		+= apei.o
+>  
+>  obj-$(CONFIG_X86_MCELOG_LEGACY)	+= dev-mcelog.o
+> diff --git a/arch/x86/kernel/cpu/mce/intel.c
+> b/arch/x86/kernel/cpu/mce/intel.c
+> index c2476fe0682e..e309476743b7 100644
+> --- a/arch/x86/kernel/cpu/mce/intel.c
+> +++ b/arch/x86/kernel/cpu/mce/intel.c
+> @@ -531,7 +531,6 @@ static void intel_imc_init(struct cpuinfo_x86 *c)
+>  
+>  void mce_intel_feature_init(struct cpuinfo_x86 *c)
+>  {
+> -	intel_init_thermal(c);
+>  	intel_init_cmci();
+>  	intel_init_lmce();
+>  	intel_ppin_init(c);
+> diff --git a/arch/x86/kernel/irq.c b/arch/x86/kernel/irq.c
+> index c5dd50369e2f..d4ad344e80bf 100644
+> --- a/arch/x86/kernel/irq.c
+> +++ b/arch/x86/kernel/irq.c
+> @@ -21,6 +21,7 @@
+>  #include <asm/hw_irq.h>
+>  #include <asm/desc.h>
+>  #include <asm/traps.h>
+> +#include <asm/thermal.h>
+>  
+>  #define CREATE_TRACE_POINTS
+>  #include <asm/trace/irq_vectors.h>
+> @@ -374,3 +375,23 @@ void fixup_irqs(void)
+>  	}
+>  }
+>  #endif
+> +
+> +#ifdef CONFIG_X86_THERMAL_VECTOR
+> +static void smp_thermal_vector(void)
+> +{
+> +	if (x86_thermal_enabled())
+> +		intel_thermal_interrupt();
+> +	else
+> +		pr_err("CPU%d: Unexpected LVT thermal interrupt!\n",
+> +		       smp_processor_id());
+> +}
+> +
+> +DEFINE_IDTENTRY_SYSVEC(sysvec_thermal)
+> +{
+> +	trace_thermal_apic_entry(THERMAL_APIC_VECTOR);
+> +	inc_irq_stat(irq_thermal_count);
+> +	smp_thermal_vector();
+> +	trace_thermal_apic_exit(THERMAL_APIC_VECTOR);
+> +	ack_APIC_irq();
+> +}
+> +#endif
+> diff --git a/drivers/thermal/intel/Kconfig
+> b/drivers/thermal/intel/Kconfig
+> index 8025b21f43fa..ce4f59213c7a 100644
+> --- a/drivers/thermal/intel/Kconfig
+> +++ b/drivers/thermal/intel/Kconfig
+> @@ -8,6 +8,10 @@ config INTEL_POWERCLAMP
+>  	  enforce idle time which results in more package C-state
+> residency. The
+>  	  user interface is exposed via generic thermal framework.
+>  
+> +config X86_THERMAL_VECTOR
+> +	def_bool y
+> +	depends on X86 && CPU_SUP_INTEL && X86_LOCAL_APIC
+> +
+>  config X86_PKG_TEMP_THERMAL
+>  	tristate "X86 package temperature thermal driver"
+>  	depends on X86_THERMAL_VECTOR
+> diff --git a/drivers/thermal/intel/Makefile
+> b/drivers/thermal/intel/Makefile
+> index 0d9736ced5d4..ff2ad30ef397 100644
+> --- a/drivers/thermal/intel/Makefile
+> +++ b/drivers/thermal/intel/Makefile
+> @@ -10,3 +10,4 @@ obj-$(CONFIG_INTEL_QUARK_DTS_THERMAL)	+=
+> intel_quark_dts_thermal.o
+>  obj-$(CONFIG_INT340X_THERMAL)  += int340x_thermal/
+>  obj-$(CONFIG_INTEL_BXT_PMIC_THERMAL) += intel_bxt_pmic_thermal.o
+>  obj-$(CONFIG_INTEL_PCH_THERMAL)	+= intel_pch_thermal.o
+> +obj-$(CONFIG_X86_THERMAL_VECTOR) += therm_throt.o
+> diff --git a/arch/x86/kernel/cpu/mce/therm_throt.c
+> b/drivers/thermal/intel/therm_throt.c
+> similarity index 97%
+> rename from arch/x86/kernel/cpu/mce/therm_throt.c
+> rename to drivers/thermal/intel/therm_throt.c
+> index 5b15d7cef1d1..f8e882592ba5 100644
+> --- a/arch/x86/kernel/cpu/mce/therm_throt.c
+> +++ b/drivers/thermal/intel/therm_throt.c
+> @@ -26,13 +26,13 @@
+>  #include <linux/cpu.h>
+>  
+>  #include <asm/processor.h>
+> +#include <asm/thermal.h>
+>  #include <asm/traps.h>
+>  #include <asm/apic.h>
+> -#include <asm/mce.h>
+> +#include <asm/irq.h>
+>  #include <asm/msr.h>
+> -#include <asm/trace/irq_vectors.h>
+>  
+> -#include "internal.h"
+> +#include "thermal_interrupt.h"
+>  
+>  /* How long to wait between reporting thermal events */
+>  #define CHECK_INTERVAL		(300 * HZ)
+> @@ -570,7 +570,7 @@ static void notify_thresholds(__u64 msr_val)
+>  }
+>  
+>  /* Thermal transition interrupt handler */
+> -static void intel_thermal_interrupt(void)
+> +void intel_thermal_interrupt(void)
+>  {
+>  	__u64 msr_val;
+>  
+> @@ -606,23 +606,6 @@ static void intel_thermal_interrupt(void)
+>  	}
+>  }
+>  
+> -static void unexpected_thermal_interrupt(void)
+> -{
+> -	pr_err("CPU%d: Unexpected LVT thermal interrupt!\n",
+> -		smp_processor_id());
+> -}
+> -
+> -static void (*smp_thermal_vector)(void) =
+> unexpected_thermal_interrupt;
+> -
+> -DEFINE_IDTENTRY_SYSVEC(sysvec_thermal)
+> -{
+> -	trace_thermal_apic_entry(THERMAL_APIC_VECTOR);
+> -	inc_irq_stat(irq_thermal_count);
+> -	smp_thermal_vector();
+> -	trace_thermal_apic_exit(THERMAL_APIC_VECTOR);
+> -	ack_APIC_irq();
+> -}
+> -
+>  /* Thermal monitoring depends on APIC, ACPI and clock modulation */
+>  static int intel_thermal_supported(struct cpuinfo_x86 *c)
+>  {
+> @@ -633,6 +616,11 @@ static int intel_thermal_supported(struct
+> cpuinfo_x86 *c)
+>  	return 1;
+>  }
+>  
+> +bool x86_thermal_enabled(void)
+> +{
+> +	return atomic_read(&therm_throt_en);
+> +}
+> +
+>  void intel_init_thermal(struct cpuinfo_x86 *c)
+>  {
+>  	unsigned int cpu = smp_processor_id();
+> @@ -719,8 +707,6 @@ void intel_init_thermal(struct cpuinfo_x86 *c)
+>  				| PACKAGE_THERM_INT_HIGH_ENABLE), h);
+>  	}
+>  
+> -	smp_thermal_vector = intel_thermal_interrupt;
+> -
+>  	rdmsr(MSR_IA32_MISC_ENABLE, l, h);
+>  	wrmsr(MSR_IA32_MISC_ENABLE, l | MSR_IA32_MISC_ENABLE_TM1, h);
+>  
+> diff --git a/drivers/thermal/intel/thermal_interrupt.h
+> b/drivers/thermal/intel/thermal_interrupt.h
 > new file mode 100644
-> index 000000000000..6de6515f0432
+> index 000000000000..53f427bb58dc
 > --- /dev/null
-> +++ b/arch/arm64/kvm/hyp/nvhe/page_alloc.c
-> @@ -0,0 +1,185 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (C) 2020 Google LLC
-> + * Author: Quentin Perret <qperret@google.com>
-> + */
+> +++ b/drivers/thermal/intel/thermal_interrupt.h
+> @@ -0,0 +1,15 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _INTEL_THERMAL_INTERRUPT_H
+> +#define _INTEL_THERMAL_INTERRUPT_H
 > +
-> +#include <asm/kvm_hyp.h>
-> +#include <nvhe/gfp.h>
+> +/* Interrupt Handler for package thermal thresholds */
+> +extern int (*platform_thermal_package_notify)(__u64 msr_val);
 > +
-> +u64 __hyp_vmemmap;
+> +/* Interrupt Handler for core thermal thresholds */
+> +extern int (*platform_thermal_notify)(__u64 msr_val);
 > +
-> +/*
-> + * Example buddy-tree for a 4-pages physically contiguous pool:
-> + *
-> + *                 o : Page 3
-> + *                /
-> + *               o-o : Page 2
-> + *              /
-> + *             /   o : Page 1
-> + *            /   /
-> + *           o---o-o : Page 0
-> + *    Order  2   1 0
-> + *
-> + * Example of requests on this zon:
+> +/* Callback support of rate control, return true, if
+> + * callback has rate control */
+> +extern bool (*platform_thermal_package_rate_control)(void);
+> +
+> +#endif /* _INTEL_THERMAL_INTERRUPT_H */
+> diff --git a/drivers/thermal/intel/x86_pkg_temp_thermal.c
+> b/drivers/thermal/intel/x86_pkg_temp_thermal.c
+> index b81c33202f41..295742e83960 100644
+> --- a/drivers/thermal/intel/x86_pkg_temp_thermal.c
+> +++ b/drivers/thermal/intel/x86_pkg_temp_thermal.c
+> @@ -17,8 +17,10 @@
+>  #include <linux/pm.h>
+>  #include <linux/thermal.h>
+>  #include <linux/debugfs.h>
+> +
+>  #include <asm/cpu_device_id.h>
+> -#include <asm/mce.h>
+> +
+> +#include "thermal_interrupt.h"
+>  
+>  /*
+>  * Rate control delay: Idea is to introduce denounce effect
+> -- 
+> 2.29.2
+> 
 
-typo: zone
-
-> + *   __find_buddy(pool, page 0, order 0) => page 1
-> + *   __find_buddy(pool, page 0, order 1) => page 2
-> + *   __find_buddy(pool, page 1, order 0) => page 0
-> + *   __find_buddy(pool, page 2, order 0) => page 3
-> + */
-> +static struct hyp_page *__find_buddy(struct hyp_pool *pool, struct hyp_page *p,
-> +				     unsigned int order)
-> +{
-> +	phys_addr_t addr = hyp_page_to_phys(p);
-> +
-> +	addr ^= (PAGE_SIZE << order);
-> +	if (addr < pool->range_start || addr >= pool->range_end)
-> +		return NULL;
-
-Are these range checks only needed because the pool isn't required to be
-an exact power-of-2 pages in size? If so, maybe it would be more
-straightforward to limit the max order on a per-pool basis depending upon
-its size?
-
-> +
-> +	return hyp_phys_to_page(addr);
-> +}
-> +
-> +static void __hyp_attach_page(struct hyp_pool *pool,
-> +			      struct hyp_page *p)
-> +{
-> +	unsigned int order = p->order;
-> +	struct hyp_page *buddy;
-> +
-> +	p->order = HYP_NO_ORDER;
-
-Why is this needed?
-
-> +	for (; order < HYP_MAX_ORDER; order++) {
-> +		/* Nothing to do if the buddy isn't in a free-list */
-> +		buddy = __find_buddy(pool, p, order);
-> +		if (!buddy || list_empty(&buddy->node) || buddy->order != order)
-
-Could we move the "buddy->order" check into __find_buddy()?
-
-> +			break;
-> +
-> +		/* Otherwise, coalesce the buddies and go one level up */
-> +		list_del_init(&buddy->node);
-> +		buddy->order = HYP_NO_ORDER;
-> +		p = (p < buddy) ? p : buddy;
-> +	}
-> +
-> +	p->order = order;
-> +	list_add_tail(&p->node, &pool->free_area[order]);
-> +}
-> +
-> +void hyp_put_page(void *addr)
-> +{
-> +	struct hyp_page *p = hyp_virt_to_page(addr);
-> +	struct hyp_pool *pool = hyp_page_to_pool(p);
-> +
-> +	hyp_spin_lock(&pool->lock);
-> +	if (!p->refcount)
-> +		hyp_panic();
-> +	p->refcount--;
-> +	if (!p->refcount)
-> +		__hyp_attach_page(pool, p);
-> +	hyp_spin_unlock(&pool->lock);
-> +}
-> +
-> +void hyp_get_page(void *addr)
-> +{
-> +	struct hyp_page *p = hyp_virt_to_page(addr);
-> +	struct hyp_pool *pool = hyp_page_to_pool(p);
-> +
-> +	hyp_spin_lock(&pool->lock);
-> +	p->refcount++;
-> +	hyp_spin_unlock(&pool->lock);
-
-We should probably have a proper atomic refcount type for this along the
-lines of refcount_t. Even if initially that is implemented with a lock, it
-would be good to hide that behind a refcount API.
-
-> +}
-> +
-> +/* Extract a page from the buddy tree, at a specific order */
-> +static struct hyp_page *__hyp_extract_page(struct hyp_pool *pool,
-> +					   struct hyp_page *p,
-> +					   unsigned int order)
-> +{
-> +	struct hyp_page *buddy;
-> +
-> +	if (p->order == HYP_NO_ORDER || p->order < order)
-> +		return NULL;
-
-Can you drop the explicit HYP_NO_ORDER check here?
-
-> +
-> +	list_del_init(&p->node);
-> +
-> +	/* Split the page in two until reaching the requested order */
-> +	while (p->order > order) {
-> +		p->order--;
-> +		buddy = __find_buddy(pool, p, p->order);
-> +		buddy->order = p->order;
-> +		list_add_tail(&buddy->node, &pool->free_area[buddy->order]);
-> +	}
-> +
-> +	p->refcount = 1;
-> +
-> +	return p;
-> +}
-> +
-> +static void clear_hyp_page(struct hyp_page *p)
-> +{
-> +	unsigned long i;
-> +
-> +	for (i = 0; i < (1 << p->order); i++)
-> +		clear_page(hyp_page_to_virt(p) + (i << PAGE_SHIFT));
-
-I wonder if this is actually any better than a memset(0)? That should use
-DC ZCA as appropriate afaict.
-
-> +static void *__hyp_alloc_pages(struct hyp_pool *pool, gfp_t mask,
-> +			       unsigned int order)
-> +{
-> +	unsigned int i = order;
-> +	struct hyp_page *p;
-> +
-> +	/* Look for a high-enough-order page */
-> +	while (i <= HYP_MAX_ORDER && list_empty(&pool->free_area[i]))
-> +		i++;
-> +	if (i > HYP_MAX_ORDER)
-> +		return NULL;
-> +
-> +	/* Extract it from the tree at the right order */
-> +	p = list_first_entry(&pool->free_area[i], struct hyp_page, node);
-> +	p = __hyp_extract_page(pool, p, order);
-> +
-> +	if (mask & HYP_GFP_ZERO)
-> +		clear_hyp_page(p);
-
-Do we have a use-case where skipping the zeroing is worthwhile? If not,
-it might make some sense to zero on the freeing path instead.
-
-> +
-> +	return p;
-> +}
-> +
-> +void *hyp_alloc_pages(struct hyp_pool *pool, gfp_t mask, unsigned int order)
-> +{
-> +	struct hyp_page *p;
-> +
-> +	hyp_spin_lock(&pool->lock);
-> +	p = __hyp_alloc_pages(pool, mask, order);
-> +	hyp_spin_unlock(&pool->lock);
-> +
-> +	return p ? hyp_page_to_virt(p) : NULL;
-
-It looks weird not having __hyp_alloc_pages return the VA, but I guess later
-patches will use __hyp_alloc_pages() for something else.
-
-> +}
-> +
-> +/* hyp_vmemmap must be backed beforehand */
-> +int hyp_pool_init(struct hyp_pool *pool, phys_addr_t phys,
-> +		  unsigned int nr_pages, unsigned int used_pages)
-> +{
-> +	struct hyp_page *p;
-> +	int i;
-> +
-> +	if (phys % PAGE_SIZE)
-> +		return -EINVAL;
-
-Maybe just take a pfn instead?
-
-> +	hyp_spin_lock_init(&pool->lock);
-> +	for (i = 0; i <= HYP_MAX_ORDER; i++)
-> +		INIT_LIST_HEAD(&pool->free_area[i]);
-> +	pool->range_start = phys;
-> +	pool->range_end = phys + (nr_pages << PAGE_SHIFT);
-> +
-> +	/* Init the vmemmap portion */
-> +	p = hyp_phys_to_page(phys);
-> +	memset(p, 0, sizeof(*p) * nr_pages);
-> +	for (i = 0; i < nr_pages; i++, p++) {
-> +		p->pool = pool;
-> +		INIT_LIST_HEAD(&p->node);
-> +	}
-
-Maybe index p like an array (e.g. p[i]) instead of maintaining two loop
-increments?
-
-> +
-> +	/* Attach the unused pages to the buddy tree */
-> +	p = hyp_phys_to_page(phys + (used_pages << PAGE_SHIFT));
-> +	for (i = used_pages; i < nr_pages; i++, p++)
-> +		__hyp_attach_page(pool, p);
-
-Likewise.
-
-Will
