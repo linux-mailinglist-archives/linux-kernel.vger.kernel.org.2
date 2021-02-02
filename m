@@ -2,71 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F16430B862
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:10:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EDEE30B869
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 08:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232496AbhBBHHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 02:07:52 -0500
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:56979 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232378AbhBBHHg (ORCPT
+        id S232546AbhBBHI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 02:08:56 -0500
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:56193 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232018AbhBBHIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 02:07:36 -0500
-X-Originating-IP: 82.65.183.113
-Received: from [172.16.5.113] (82-65-183-113.subs.proxad.net [82.65.183.113])
-        (Authenticated sender: alex@ghiti.fr)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 773666000A;
-        Tue,  2 Feb 2021 07:06:44 +0000 (UTC)
-Subject: Re: [PATCH] riscv: kasan: remove unneeded semicolon
-To:     Yang Li <yang.lee@linux.alibaba.com>, aryabinin@virtuozzo.com
-Cc:     aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, glider@google.com,
-        linux-riscv@lists.infradead.org, dvyukov@google.com
-References: <1612245119-116845-1-git-send-email-yang.lee@linux.alibaba.com>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <4b3294d7-ff30-8f02-81ff-d2d73a79e465@ghiti.fr>
-Date:   Tue, 2 Feb 2021 02:06:44 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.0
-MIME-Version: 1.0
-In-Reply-To: <1612245119-116845-1-git-send-email-yang.lee@linux.alibaba.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+        Tue, 2 Feb 2021 02:08:14 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UNexAtl_1612249647;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UNexAtl_1612249647)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 02 Feb 2021 15:07:28 +0800
+From:   Yang Li <yang.lee@linux.alibaba.com>
+To:     anitha.chrisanthus@intel.com
+Cc:     edmund.j.dea@intel.com, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Yang Li <yang.lee@linux.alibaba.com>
+Subject: [PATCH] drm/kmb: remove unneeded semicolon
+Date:   Tue,  2 Feb 2021 15:07:26 +0800
+Message-Id: <1612249646-68040-1-git-send-email-yang.lee@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yang,
+Eliminate the following coccicheck warning:
+./drivers/gpu/drm/kmb/kmb_dsi.c:281:3-4: Unneeded semicolon
+./drivers/gpu/drm/kmb/kmb_dsi.c:301:3-4: Unneeded semicolon
+./drivers/gpu/drm/kmb/kmb_dsi.c:318:3-4: Unneeded semicolon
+./drivers/gpu/drm/kmb/kmb_dsi.c:337:3-4: Unneeded semicolon
+./drivers/gpu/drm/kmb/kmb_dsi.c:361:2-3: Unneeded semicolon
 
-Le 2/2/21 à 12:51 AM, Yang Li a écrit :
-> Eliminate the following coccicheck warning:
-> ./arch/riscv/mm/kasan_init.c:103:2-3: Unneeded semicolon
-> 
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
-> ---
->   arch/riscv/mm/kasan_init.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/riscv/mm/kasan_init.c b/arch/riscv/mm/kasan_init.c
-> index a8a2ffd..fac437a 100644
-> --- a/arch/riscv/mm/kasan_init.c
-> +++ b/arch/riscv/mm/kasan_init.c
-> @@ -100,7 +100,7 @@ void __init kasan_init(void)
->   			break;
->   
->   		populate(kasan_mem_to_shadow(start), kasan_mem_to_shadow(end));
-> -	};
-> +	}
->   
->   	for (i = 0; i < PTRS_PER_PTE; i++)
->   		set_pte(&kasan_early_shadow_pte[i],
-> 
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+---
+ drivers/gpu/drm/kmb/kmb_dsi.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Reviewed-by: Alexandre Ghiti <alex@ghiti.fr>
+diff --git a/drivers/gpu/drm/kmb/kmb_dsi.c b/drivers/gpu/drm/kmb/kmb_dsi.c
+index 4b5d82a..231041b 100644
+--- a/drivers/gpu/drm/kmb/kmb_dsi.c
++++ b/drivers/gpu/drm/kmb/kmb_dsi.c
+@@ -281,7 +281,7 @@ static u32 mipi_get_datatype_params(u32 data_type, u32 data_mode,
+ 		default:
+ 			DRM_ERROR("DSI: Invalid data_mode %d\n", data_mode);
+ 			return -EINVAL;
+-		};
++		}
+ 		break;
+ 	case DSI_LP_DT_PPS_YCBCR422_16B:
+ 		data_type_param.size_constraint_pixels = 2;
+@@ -301,7 +301,7 @@ static u32 mipi_get_datatype_params(u32 data_type, u32 data_mode,
+ 		default:
+ 			DRM_ERROR("DSI: Invalid data_mode %d\n", data_mode);
+ 			return -EINVAL;
+-		};
++		}
+ 		break;
+ 	case DSI_LP_DT_LPPS_YCBCR422_20B:
+ 	case DSI_LP_DT_PPS_YCBCR422_24B:
+@@ -318,7 +318,7 @@ static u32 mipi_get_datatype_params(u32 data_type, u32 data_mode,
+ 		default:
+ 			DRM_ERROR("DSI: Invalid data_mode %d\n", data_mode);
+ 			return -EINVAL;
+-		};
++		}
+ 		break;
+ 	case DSI_LP_DT_PPS_RGB565_16B:
+ 		data_type_param.size_constraint_pixels = 1;
+@@ -337,7 +337,7 @@ static u32 mipi_get_datatype_params(u32 data_type, u32 data_mode,
+ 		default:
+ 			DRM_ERROR("DSI: Invalid data_mode %d\n", data_mode);
+ 			return -EINVAL;
+-		};
++		}
+ 		break;
+ 	case DSI_LP_DT_PPS_RGB666_18B:
+ 		data_type_param.size_constraint_pixels = 4;
+@@ -361,7 +361,7 @@ static u32 mipi_get_datatype_params(u32 data_type, u32 data_mode,
+ 	default:
+ 		DRM_ERROR("DSI: Invalid data_type %d\n", data_type);
+ 		return -EINVAL;
+-	};
++	}
+ 
+ 	*params = data_type_param;
+ 	return 0;
+-- 
+1.8.3.1
 
-Thanks,
-
-Alex
