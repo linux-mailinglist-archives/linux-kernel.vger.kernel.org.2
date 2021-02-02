@@ -2,172 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D5E30CE38
+	by mail.lfdr.de (Postfix) with ESMTP id 9884530CE39
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 22:53:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233582AbhBBVvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 16:51:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
+        id S234353AbhBBVxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 16:53:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233477AbhBBVvh (ORCPT
+        with ESMTP id S234009AbhBBVw7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 16:51:37 -0500
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF741C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 13:50:56 -0800 (PST)
-Received: by mail-oo1-xc2c.google.com with SMTP id x23so5515100oop.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 13:50:56 -0800 (PST)
+        Tue, 2 Feb 2021 16:52:59 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 036BBC061573
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 13:52:19 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id z21so15814825pgj.4
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 13:52:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=0kAvPlYbK2MoK6J2M4VB8aAoYja4iRJVl217ecqHS/M=;
-        b=TdhEHCPKXXE10yUfrZQXXXYlAcYAm892Ap8QZ9AzljcQu07SHGtPQNNYh4Q/v8UYYk
-         PiG4j2T7NHoMqPB+c49sk0YENnztQlT9XqeQ2395hb6rY5IEs1hQT8325ZkpwjtnD0LD
-         Vwb8iIlhG8/SLn9tvFCsFcrmRKVpLkn2YwrhXeF78OkNw+se5xSHQHvNU3CsfgKG9FaV
-         YTj35hwZuOWUyAJZ5e+Wy5z+o3F8CMc15IB60Zzzt6x8lLw1w1pKyKKhuu8IZkoQbFq+
-         kbiLZzLsWUDfraAPh5zgKYN28vNYG5WxwNeNf7ab6//sWGlal65rbmmLgoKH++R2kUTK
-         8D2Q==
+        bh=3AmuxU7ywET2oWhQ7TVzCDQ74ODSudJlgeUAo7patck=;
+        b=FNR5fqRzqyhtvwocB+X4kQzgidtUnariiCXEH94qfOFqYFzWJqpEIMD1TPblypPxU/
+         E6tT4HpAeTcwc4M/2+xr5zw2QeD6xIYAkKGypOCrnmqTtKs++mVzLncKGNbyRQP7BQMl
+         kh1bPcPDrgE8rEH5ZUQfirHEOYAbRWl16wP5k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=0kAvPlYbK2MoK6J2M4VB8aAoYja4iRJVl217ecqHS/M=;
-        b=V1IVnIdqVH92Qz3UuY+ZpF7Q+p8yrwDxjcPNQz3rb/h/UV9fEIw3NCPKIwpv4cNVkO
-         gL1aTUHsmHDgUyWKC+pwWG1rIZQWesxHqvJI4hwhcfTP73xzj6rOYm77dJCz4Di67ZVt
-         gQmiGgUMKlvjLm6MGhxSSRnUmLi84ZFSg9gzpO2Jo8Pn+wia7e3FO2Ga4tz4T4c4ySl/
-         TMBzetEH5wjHlqUSCOF33S43tgwsUfLRv/Bjp24XOGJPF2xxow6IB1aJec8kLy/EYrWp
-         Z7Tpk0YzSmUbbn8q7wbyr3AMhAoo9sGd9jRyRn/jXju7id3OYnEEE/S/qGex7zrUMMs6
-         0kqA==
-X-Gm-Message-State: AOAM530n3nz4fBvJbKHbJpVU5Y5lwiC00lXKu2svpZuNQyYr1qcSugrt
-        td1r3rC+zFIWogz+MrQeQgL0AQ==
-X-Google-Smtp-Source: ABdhPJyPMNl9tGCICri+o+7UQ3JI+A7lU6DMaekFZimyL5l1Ie99Gh7PA6f5Luaja14ryJABk3D06g==
-X-Received: by 2002:a4a:970b:: with SMTP id u11mr17039184ooi.79.1612302656147;
-        Tue, 02 Feb 2021 13:50:56 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id c2sm19995ooo.17.2021.02.02.13.50.55
+        bh=3AmuxU7ywET2oWhQ7TVzCDQ74ODSudJlgeUAo7patck=;
+        b=B8/k8BPZbkgPTYZ1wJhtmF43jxzF+pIdzf9ryzyvr7m2DMyzOdmaWLvzU11oP4+hCc
+         w68lX9npldsUeKysniXILpc/+gfq9kvCXxhZ3bjKbF5S9Xn4BhTF069+nTw0Mh58ZusO
+         KoFtfpqz6Tj9s9sMtcr9qTGCz73l0tPueCBvYhQnfIg0zseoDA7/dVJkYQbsSfcM7yYt
+         Clz/JytZ2FGR3heZxbU/NeCo+HhLpUcfSTI7d/8KZicjAVpgsClvIdoaTY5G2aVDWoUy
+         9Iex9WdmXcZW1+fjOWZ1FBNnqTvYozgsMx2gUrHC4eexvLUkDwR6+HLskYXWNENbwHKd
+         vsuw==
+X-Gm-Message-State: AOAM532C7fMpT66JCD+0iwNeTi91CFHQvOst/kgK3GRi0up3DQnPjELm
+        FJP/08iqtO1FS8uYXmQ6nq15zg==
+X-Google-Smtp-Source: ABdhPJzvZOYbm8y5fAyTH74CGl9GPQb22ScyZeyUe5QXZKjQkqKn7bw1QDYEqg0aZjux0FutxpcQ5g==
+X-Received: by 2002:a05:6a00:2ac:b029:1cb:7775:4b1e with SMTP id q12-20020a056a0002acb02901cb77754b1emr16911126pfs.25.1612302738554;
+        Tue, 02 Feb 2021 13:52:18 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id z21sm17952437pgk.15.2021.02.02.13.52.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 13:50:55 -0800 (PST)
-Date:   Tue, 2 Feb 2021 15:50:53 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Andy Gross <agross@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH v2 3/5] pcie-qcom: provide a way to power up qca6390 chip
- on RB5 platform
-Message-ID: <YBnJPWWQyRV4HtLa@builder.lan>
-References: <da0ac373-4edb-0230-b264-49697fa3d86a@linaro.org>
- <20210129215024.GA113900@bjorn-Precision-5520>
- <CAA8EJpoPsv5tfsaiJq4UnBYt3o+gJanWzy8aaZRK=V8yOk3mJQ@mail.gmail.com>
- <YBTYKLi81Cf65yUB@builder.lan>
- <CAA8EJprwBKbGrh-BjrzkQTxoboUi470wYcn-gTBHdNQ1Af7DKA@mail.gmail.com>
- <YBmsjDiKnpQjYeQh@builder.lan>
- <CAL_JsqJoKEVUs0f7rP87M3Wh6yVvB-bYi7vBprti8hoim3-e-A@mail.gmail.com>
+        Tue, 02 Feb 2021 13:52:17 -0800 (PST)
+Date:   Tue, 2 Feb 2021 13:52:16 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Timur Tabi <timur@kernel.org>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        willy@infradead.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, roman.fietze@magna.com,
+        john.ogness@linutronix.de, akinobu.mita@gmail.com
+Subject: Re: [PATCH] lib/vsprintf: make-printk-non-secret printks all
+ addresses as unhashed
+Message-ID: <202102021351.AEDE896AB3@keescook>
+References: <20210202201846.716915-1-timur@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAL_JsqJoKEVUs0f7rP87M3Wh6yVvB-bYi7vBprti8hoim3-e-A@mail.gmail.com>
+In-Reply-To: <20210202201846.716915-1-timur@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 02 Feb 15:37 CST 2021, Rob Herring wrote:
-
-> On Tue, Feb 2, 2021 at 1:48 PM Bjorn Andersson
-> <bjorn.andersson@linaro.org> wrote:
-> >
-> > On Sat 30 Jan 10:14 CST 2021, Dmitry Baryshkov wrote:
-> >
-> > > On Sat, 30 Jan 2021 at 06:53, Bjorn Andersson
-> > > <bjorn.andersson@linaro.org> wrote:
-> > > >
-> > > > On Fri 29 Jan 16:19 CST 2021, Dmitry Baryshkov wrote:
-> > > >
-> > > > > On Sat, 30 Jan 2021 at 00:50, Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > > > > >
-> > > > > > On Fri, Jan 29, 2021 at 06:45:21AM +0300, Dmitry Baryshkov wrote:
-> > > > > > > On 28/01/2021 22:26, Rob Herring wrote:
-> > > > > > > > On Thu, Jan 28, 2021 at 11:52 AM Dmitry Baryshkov
-> > > > > > > > <dmitry.baryshkov@linaro.org> wrote:
-> > > > > > > > >
-> > > > > > > > > Some Qualcomm platforms require to power up an external device before
-> > > > > > > > > probing the PCI bus. E.g. on RB5 platform the QCA6390 WiFi/BT chip needs
-> > > > > > > > > to be powered up before PCIe0 bus is probed. Add a quirk to the
-> > > > > > > > > respective PCIe root bridge to attach to the power domain if one is
-> > > > > > > > > required, so that the QCA chip is started before scanning the PCIe bus.
-> > > > > > > >
-> > > > > > > > This is solving a generic problem in a specific driver. It needs to be
-> > > > > > > > solved for any PCI host and any device.
-> > > > > > >
-> > > > > > > Ack. I see your point here.
-> > > > > > >
-> > > > > > > As this would require porting code from powerpc/spark of-pci code and
-> > > > > > > changing pcie port driver to apply power supply before bus probing happens,
-> > > > > > > I'd also ask for the comments from PCI maintainers. Will that solution be
-> > > > > > > acceptable to you?
-> > > > > >
-> > > > > > I can't say without seeing the code.  I don't know enough about this
-> > > > > > scenario to envision how it might look.
-> > > > > >
-> > > > > > I guess the QCA6390 is a PCIe device?  Why does it need to be powered
-> > > > > > up before probing?  Shouldn't we get a link-up interrupt when it is
-> > > > > > powered up so we could probe it then?
-> > > > >
-> > > > > Not quite. QCA6390 is a multifunction device, with PCIe and serial
-> > > > > parts. It has internal power regulators which once enabled will
-> > > > > powerup the PCIe, serial and radio parts. There is no need to manage
-> > > > > regulators. Once enabled they will automatically handle device
-> > > > > suspend/resume, etc.
-> > > > >
-> > > >
-> > > > So what you're saying is that if either the PCI controller or bluetooth
-> > > > driver probes these regulators will be turned on, indefinitely?
-> > > >
-> > > > If so, why do we need a driver to turn them on, rather than just mark
-> > > > them as always-on?
-> > > >
-> > > > What's the timing requirement wrt regulators vs WL_EN/BT_EN?
-> > >
-> > > According to the documentation I have, they must be enabled right
-> > > after enabling powering the chip and they must stay enabled all the
-> > > time.
-> > >
-> >
-> > So presumably just marking these things always-on and flipping the GPIO
-> > statically won't be good enough due to the lack of control over the
-> > timing.
-> >
-> > This really do look like a simplified case of what we see with the
-> > PCIe attached modems, where similar requirements are provided, but also
-> > the ability to perform a device specific reset sequence in case the
-> > hardware has locked up. I'm slightly worried about the ability of
-> > extending your power-domain model to handle the restart operation
-> > though.
+On Tue, Feb 02, 2021 at 02:18:46PM -0600, Timur Tabi wrote:
+> If the make-printk-non-secret command-line parameter is set, then
+> printk("%p") will print addresses as unhashed.  This is useful for
+> debugging purposes.
 > 
-> I think this is an abuse of 'power-domains'. Just define the
-> regulators in both WiFi and BT nodes and have each driver enable them.
-> They're refcounted. If that's still not enough control over the power
-> sequencing, then create a 3rd entity to do it, but that doesn't need
-> to leak into DT. You already have all the information you need.
+> A large warning message is displayed if this option is enabled,
+> because unhashed addresses, while useful for debugging, exposes
+> kernel addresses which can be a security risk.
+
+Linus has expressly said "no" to things like this in the past:
+https://lore.kernel.org/lkml/CA+55aFwieC1-nAs+NFq9RTwaR8ef9hWa4MjNBWL41F-8wM49eA@mail.gmail.com/
+
+-Kees
+
+> 
+> Signed-off-by: Timur Tabi <timur@kernel.org>
+> ---
+>  lib/vsprintf.c | 34 ++++++++++++++++++++++++++++++++--
+>  1 file changed, 32 insertions(+), 2 deletions(-)
+> 
+> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> index 3b53c73580c5..b9f87084afb0 100644
+> --- a/lib/vsprintf.c
+> +++ b/lib/vsprintf.c
+> @@ -2090,6 +2090,30 @@ char *fwnode_string(char *buf, char *end, struct fwnode_handle *fwnode,
+>  	return widen_string(buf, buf - buf_start, end, spec);
+>  }
+>  
+> +/* Disable pointer hashing if requested */
+> +static bool debug_never_hash_pointers __ro_after_init;
+> +
+> +static int __init debug_never_hash_pointers_enable(char *str)
+> +{
+> +	debug_never_hash_pointers = true;
+> +	pr_warn("**********************************************************\n");
+> +	pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
+> +	pr_warn("**                                                      **\n");
+> +	pr_warn("** All pointers that are printed to the console will    **\n");
+> +	pr_warn("** be printed as unhashed.                              **\n");
+> +	pr_warn("**                                                      **\n");
+> +	pr_warn("** Kernel memory addresses are exposed, which may       **\n");
+> +	pr_warn("** compromise security on your system.                  **\n");
+> +	pr_warn("**                                                      **\n");
+> +	pr_warn("** If you see this message and you are not debugging    **\n");
+> +	pr_warn("** the kernel, report this immediately to your vendor!  **\n");
+> +	pr_warn("**                                                      **\n");
+> +	pr_warn("**   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE   **\n");
+> +	pr_warn("**********************************************************\n");
+> +	return 0;
+> +}
+> +early_param("make-printk-non-secret", debug_never_hash_pointers_enable);
+> +
+>  /*
+>   * Show a '%p' thing.  A kernel extension is that the '%p' is followed
+>   * by an extra set of alphanumeric characters that are extended format
+> @@ -2297,8 +2321,14 @@ char *pointer(const char *fmt, char *buf, char *end, void *ptr,
+>  		}
+>  	}
+>  
+> -	/* default is to _not_ leak addresses, hash before printing */
+> -	return ptr_to_id(buf, end, ptr, spec);
+> +	/*
+> +	 * default is to _not_ leak addresses, so hash before printing, unless
+> +	 * make-printk-non-secret is specified on the command line.
+> +	 */
+> +	if (unlikely(debug_never_hash_pointers))
+> +		return pointer_string(buf, end, ptr, spec);
+> +	else
+> +		return ptr_to_id(buf, end, ptr, spec);
+>  }
+>  
+>  /*
+> -- 
+> 2.25.1
 > 
 
-As Dmitry explained he still need to pull the two GPIOs high after
-enabling the regulators, but before scanning the PCI or serdev buses.
-
-I was thinking something along the lines you suggest, but I've not been
-able to come up with something that will guarantee the ordering of the
-events.
-
-Regards,
-Bjorn
+-- 
+Kees Cook
