@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2372530C7E5
+	by mail.lfdr.de (Postfix) with ESMTP id 9388030C7E6
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:36:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237579AbhBBReZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:34:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49686 "EHLO mail.kernel.org"
+        id S237548AbhBBRef (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:34:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234062AbhBBOMh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234146AbhBBOMh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 2 Feb 2021 09:12:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A576665048;
-        Tue,  2 Feb 2021 13:52:47 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8554365041;
+        Tue,  2 Feb 2021 13:52:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273968;
-        bh=u5+SVb4jKMMRYppbYEVPTy26a85mU/Njb4W2GRVbxYI=;
+        s=korg; t=1612273971;
+        bh=C7Q+w/7Bosbo1+/Sb5KbcLR2RmAE9jzclMPxTgrVMSA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z48vKsfo7kuABmXg+3fH2hZTHxmGr62mb8C5srDDU8Wedmgg6LYWXGBX1S+dcqad2
-         mfq+2tHhhw19qSgHW8DZ5uWAdtKiEkYu6p07yv6CPySX9evj5ZcvrkkYRxMbaf8GAQ
-         mvuX+bFrdIy2wSWuubC46RhWcuSKwExLaDnXMycs=
+        b=T4ug3Y9bGu83iUAQgP/DL/FQIje8pJ6hJmZeGOtgmYrwFmcDCgGl0gfyQBp88+ghx
+         T17y8GzD3KVVu42LIk11fFA9UuNZgcLjKh5Y/WGUju4xNeQIq9dutI+2HTgzsuS8EM
+         4ojPe6JHxVLAPpFQp5xE1kFCH8RO5jQaA3eo2D3g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+d7a3b15976bf7de2238a@syzkaller.appspotmail.com,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 21/30] mac80211: pause TX while changing interface type
-Date:   Tue,  2 Feb 2021 14:39:02 +0100
-Message-Id: <20210202132943.012153860@linuxfoundation.org>
+Subject: [PATCH 4.14 22/30] can: dev: prevent potential information leak in can_fill_info()
+Date:   Tue,  2 Feb 2021 14:39:03 +0100
+Message-Id: <20210202132943.055765710@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210202132942.138623851@linuxfoundation.org>
 References: <20210202132942.138623851@linuxfoundation.org>
@@ -41,64 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 054c9939b4800a91475d8d89905827bf9e1ad97a ]
+[ Upstream commit b552766c872f5b0d90323b24e4c9e8fa67486dd5 ]
 
-syzbot reported a crash that happened when changing the interface
-type around a lot, and while it might have been easy to fix just
-the symptom there, a little deeper investigation found that really
-the reason is that we allowed packets to be transmitted while in
-the middle of changing the interface type.
+The "bec" struct isn't necessarily always initialized. For example, the
+mcp251xfd_get_berr_counter() function doesn't initialize anything if the
+interface is down.
 
-Disallow TX by stopping the queues while changing the type.
-
-Fixes: 34d4bc4d41d2 ("mac80211: support runtime interface type changes")
-Reported-by: syzbot+d7a3b15976bf7de2238a@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/r/20210122171115.b321f98f4d4f.I6997841933c17b093535c31d29355be3c0c39628@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Fixes: 52c793f24054 ("can: netlink support for bus-error reporting and counters")
+Link: https://lore.kernel.org/r/YAkaRdRJncsJO8Ve@mwanda
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/ieee80211_i.h | 1 +
- net/mac80211/iface.c       | 6 ++++++
- 2 files changed, 7 insertions(+)
+ drivers/net/can/dev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/mac80211/ieee80211_i.h b/net/mac80211/ieee80211_i.h
-index 0e209a88d88a7..651705565dfb9 100644
---- a/net/mac80211/ieee80211_i.h
-+++ b/net/mac80211/ieee80211_i.h
-@@ -1047,6 +1047,7 @@ enum queue_stop_reason {
- 	IEEE80211_QUEUE_STOP_REASON_FLUSH,
- 	IEEE80211_QUEUE_STOP_REASON_TDLS_TEARDOWN,
- 	IEEE80211_QUEUE_STOP_REASON_RESERVE_TID,
-+	IEEE80211_QUEUE_STOP_REASON_IFTYPE_CHANGE,
+diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+index 1025cfd463ece..0ebee99a3e857 100644
+--- a/drivers/net/can/dev.c
++++ b/drivers/net/can/dev.c
+@@ -1102,7 +1102,7 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
+ {
+ 	struct can_priv *priv = netdev_priv(dev);
+ 	struct can_ctrlmode cm = {.flags = priv->ctrlmode};
+-	struct can_berr_counter bec;
++	struct can_berr_counter bec = { };
+ 	enum can_state state = priv->state;
  
- 	IEEE80211_QUEUE_STOP_REASONS,
- };
-diff --git a/net/mac80211/iface.c b/net/mac80211/iface.c
-index 6ce13e976b7a2..dc398a1816788 100644
---- a/net/mac80211/iface.c
-+++ b/net/mac80211/iface.c
-@@ -1559,6 +1559,10 @@ static int ieee80211_runtime_change_iftype(struct ieee80211_sub_if_data *sdata,
- 	if (ret)
- 		return ret;
- 
-+	ieee80211_stop_vif_queues(local, sdata,
-+				  IEEE80211_QUEUE_STOP_REASON_IFTYPE_CHANGE);
-+	synchronize_net();
-+
- 	ieee80211_do_stop(sdata, false);
- 
- 	ieee80211_teardown_sdata(sdata);
-@@ -1579,6 +1583,8 @@ static int ieee80211_runtime_change_iftype(struct ieee80211_sub_if_data *sdata,
- 	err = ieee80211_do_open(&sdata->wdev, false);
- 	WARN(err, "type change: do_open returned %d", err);
- 
-+	ieee80211_wake_vif_queues(local, sdata,
-+				  IEEE80211_QUEUE_STOP_REASON_IFTYPE_CHANGE);
- 	return ret;
- }
- 
+ 	if (priv->do_get_state)
 -- 
 2.27.0
 
