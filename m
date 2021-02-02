@@ -2,106 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF82730BDC3
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C67F30BDC4
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 13:10:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbhBBMJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 07:09:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbhBBMIg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 07:08:36 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F2AC0613D6;
+        id S231343AbhBBMJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 07:09:42 -0500
+Received: from foss.arm.com ([217.140.110.172]:48600 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230419AbhBBMIo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 07:08:44 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED3261396;
+        Tue,  2 Feb 2021 04:07:57 -0800 (PST)
+Received: from [10.57.35.163] (unknown [10.57.35.163])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 13D6C3F718;
         Tue,  2 Feb 2021 04:07:54 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id f6so803602ioz.5;
-        Tue, 02 Feb 2021 04:07:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6Z1Bxd51G9PFZlZUPxb0tknKCVZuSRzLJsXGcl6g4MA=;
-        b=QjY2M8irIo15Nbgs2hdMSJbtCu32+5wy1ex9hmxirFo36YWF38CDN4OFHVaIJgapfV
-         OyY0l43yfFMijyB3xfAhFLfJ1i2jRAilptDwW9NpK9LmuMfwX6+jUaLcnWC59RpJEJ+O
-         Bz2zBhSWnwV7qSvCfP47Yshnr4Hv7ofmErgr8wtY4LVznzPf1KLuVUgTvIWHpwfXfmAh
-         Y6WGpyCjr82QCHezrCW2FAp2m1JUAhd6O7U//rf9eikDe7GbcZAMs7b733aSsKQTw3YV
-         TOK6dYemFLNZpYDuoRy69pvn8n9Spjfii8Sp9Sb+y57CzMUqPkIh+U+dJZ33XWxyiBV2
-         PV8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6Z1Bxd51G9PFZlZUPxb0tknKCVZuSRzLJsXGcl6g4MA=;
-        b=L/xM1XVBOvQ1Dd4K1ypEj0DLKqjzTSmYilEBBTSE52zK8NNrD1gDeP2Pbb0cCynIb4
-         NUX7gE6x9oz6O5ds4CBj8r/4fx76dgJDt/UBJvViiLhC0F2OunOBDhTjx5HcUaLM+8WG
-         XvR+hgg9JQPKBACkmFWGasCSx2Wy9PkOc12H+SGgX8DlwJrBMgJsEeqFE7pCYgHD7rp9
-         ZXkz/fPHWus2UkgpEawplqWYS28hKoAUtv28OAwRM+PBeD555F/xqdf2MNZjVkCntun7
-         PvYVBFljKT8OSe8674849+N+6ZV6Nmm52JKsu5HppdUPqmFdNtXUm9kggKoDj1Z9Q/U7
-         Q1pA==
-X-Gm-Message-State: AOAM532eqEWCT/3fs0NJLv6yxwZWy97ok5v3m3tCJCHl3Kl2IrkokGQw
-        ds33EEJoq8ujWuuAaOUivYasEJ42OtHcCaZtkwISNxF+GWs=
-X-Google-Smtp-Source: ABdhPJwX2XUfIpcD1K9CN8862ws3/tQ8uJhe8/2F12UsPTQub6Pbf7HdYqxREoWGrkmeCBUsGpqcRfnBXunVVJqQkwY=
-X-Received: by 2002:a05:6638:d6:: with SMTP id w22mr2851011jao.93.1612267674216;
- Tue, 02 Feb 2021 04:07:54 -0800 (PST)
+Subject: Re: [PATCH V2 3/3] Adding device_dma_parameters->offset_preserve_mask
+ to NVMe driver.
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jianxiong Gao <jxgao@google.com>
+Cc:     Keith Busch <kbusch@kernel.org>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Marc Orr <marcorr@google.com>, Christoph Hellwig <hch@lst.de>,
+        m.szyprowski@samsung.com, gregkh@linuxfoundation.org,
+        Saravana Kannan <saravanak@google.com>,
+        heikki.krogerus@linux.intel.com, rafael.j.wysocki@intel.com,
+        dan.j.williams@intel.com, bgolaszewski@baylibre.com,
+        jroedel@suse.de, iommu@lists.linux-foundation.org,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, axboe@fb.com,
+        sagi@grimberg.me, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20210201183017.3339130-1-jxgao@google.com>
+ <20210201183017.3339130-4-jxgao@google.com>
+ <20210201205759.GA2128135@dhcp-10-100-145-180.wdc.com>
+ <CAMGD6P2Gz9nWELMdsAhwQvXx3PXv2aXet=Tn9Rca61obZawfgw@mail.gmail.com>
+ <CAMGD6P1_cs1W8jMt7Sz6broDdnFNPrxbiZW-JZ+GAtg5aoTdOQ@mail.gmail.com>
+ <CAMGD6P0uwVxKuG503ahGTbPcwb+y2wRXSiE_gvzfdUrMfZ5YbA@mail.gmail.com>
+ <YBk1pUbQ/JZQ7WZe@smile.fi.intel.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <a34328d1-3918-1eca-b632-57be6a40baee@arm.com>
+Date:   Tue, 2 Feb 2021 12:07:52 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-References: <1612165930-110076-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1612165930-110076-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Ilya Dryomov <idryomov@gmail.com>
-Date:   Tue, 2 Feb 2021 13:07:50 +0100
-Message-ID: <CAOi1vP_ifWsyOjXo2NaDQnAT9Gn22442KuUXp1LjDCWfpH5yuQ@mail.gmail.com>
-Subject: Re: [PATCH] ceph: Replace DEFINE_SIMPLE_ATTRIBUTE with DEFINE_DEBUGFS_ATTRIBUTE
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     Jeff Layton <jlayton@kernel.org>,
-        Ceph Development <ceph-devel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YBk1pUbQ/JZQ7WZe@smile.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 1, 2021 at 8:52 AM Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
->
-> Fix the following coccicheck warning:
->
-> ./fs/ceph/debugfs.c:347:0-23: WARNING: congestion_kb_fops should be
-> defined with DEFINE_DEBUGFS_ATTRIBUTE.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  fs/ceph/debugfs.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/ceph/debugfs.c b/fs/ceph/debugfs.c
-> index 66989c8..617327e 100644
-> --- a/fs/ceph/debugfs.c
-> +++ b/fs/ceph/debugfs.c
-> @@ -344,8 +344,8 @@ static int congestion_kb_get(void *data, u64 *val)
->         return 0;
->  }
->
-> -DEFINE_SIMPLE_ATTRIBUTE(congestion_kb_fops, congestion_kb_get,
-> -                       congestion_kb_set, "%llu\n");
-> +DEFINE_DEBUGFS_ATTRIBUTE(congestion_kb_fops, congestion_kb_get,
-> +                         congestion_kb_set, "%llu\n");
->
->
->  void ceph_fs_debugfs_cleanup(struct ceph_fs_client *fsc)
+On 2021-02-02 11:21, Andy Shevchenko wrote:
+> On Mon, Feb 01, 2021 at 04:25:55PM -0800, Jianxiong Gao wrote:
+> 
+>> +       if (dma_set_min_align_mask(dev->dev, NVME_CTRL_PAGE_SIZE - 1))
+> 
+> Side note: we have DMA_BIT_MASK(), please use it.
 
-Hi Jiapeng,
+FWIW I'd actually disagree on that point. Conceptually, this is a very 
+different thing from dev->{coherent_}dma_mask. It does not need to 
+handle everything up to 2^64-1 correctly without overflow issues, and 
+data alignments typically *are* defined in terms of sizes rather than 
+numbers of bits.
 
-What is the benefit of this conversion?
+In fact, it might be neat to just have callers pass a size directly to a 
+dma_set_min_align() interface which asserts that it is a power of two 
+and stores it as a mask internally.
 
-From a quick look, with DEFINE_DEBUGFS_ATTRIBUTE writeback_congestion_kb
-file would no longer be seekable.  It may not matter much, but something
-that should have been mentioned.
+Robin.
 
-Futher, debugfs_create_file() creates a full proxy for fops, protecting
-against removal races.  DEFINE_DEBUGFS_ATTRIBUTE adds its own protection
-but just for ->read() and ->write().  I don't think we need both.
-
-Thanks,
-
-                Ilya
+> 
+>> +               dev_warn(dev->dev, "dma_set_min_align_mask failed to
+>> set offset\n");
+> 
