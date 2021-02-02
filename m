@@ -2,71 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE6530BBE6
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:18:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D42430BBEC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:18:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229831AbhBBKQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 05:16:52 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47050 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229483AbhBBKQs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 05:16:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50D8864E30;
-        Tue,  2 Feb 2021 10:16:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612260966;
-        bh=D1z+7hvfH8BBbQ794heYv3zLWOeb4/j24TKN2iQJP1o=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=NeEtv4qRFlfzwlQVudcA0C/dyXsFwLX7DkQOWBH7i24uwNrQiHH//fljzQoO3ckT/
-         8Zr45ZqIhsu9wB7cr6U+lcIasKbdjoiFUoV+S7EmBnm0iGwC4s14q5WeXb4APNrk+I
-         uY9NYmJQ0f7ISgnuVT1taXoO6u3RSaf9cutx4aJ3V0JpW7alRMKr7j5S90lp7SqMOp
-         ppuzf/ZhDfFh1G2q3r/At67UhVaOIemJ8DN9ZyGib8BO+5IzxPEOpvGiVNqvxPQ5eg
-         b9ZHsYs9ZBppgF6GUOGmsQPJXR5AhV9Kp77FPib5aAx93g6bcJp/Sea5Nd2XanxQhG
-         DRe9t96XlEF3g==
-Date:   Tue, 2 Feb 2021 11:15:55 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Peter Hutterer <peter.hutterer@who-t.net>,
-        seobrien@chromium.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] HID: hid-input: avoid splitting keyboard, system and
- consumer controls
-In-Reply-To: <X//jjawwbm8FxbQU@google.com>
-Message-ID: <nycvar.YFH.7.76.2102021115451.28696@cbobk.fhfr.pm>
-References: <X//jjawwbm8FxbQU@google.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S230179AbhBBKRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 05:17:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42045 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229572AbhBBKRo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 05:17:44 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612260978;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=UWa3LXPXqIVneiRS3QkAQMD91cENY/6/bkRppJ2Ix0w=;
+        b=MsOE8XZzBlmvueRhYV6b0dbN2nd8FCQwzhqV+FkXl6Vh1virEpKNooD/yvxlDYjq1dETks
+        XTlhyab03u61yXlwNwmB4kZdclDAnSCjrB7RsL25pTgw2sq88iS6xzLbnkhEv02DVeSpUg
+        gJLj0QxivpbsIWXhRXKYirnUUzyen4c=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-486-BQlfz_MOONuY-4HtmZ_-eA-1; Tue, 02 Feb 2021 05:16:14 -0500
+X-MC-Unique: BQlfz_MOONuY-4HtmZ_-eA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5AB7A1005E61;
+        Tue,  2 Feb 2021 10:16:13 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A0D5010016FB;
+        Tue,  2 Feb 2021 10:16:11 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210202094241.GB28856@gondor.apana.org.au>
+References: <20210202094241.GB28856@gondor.apana.org.au> <20210202085537.GA28682@gondor.apana.org.au> <20210202035655.GA26997@gondor.apana.org.au> <58935b00f65e389e9ae3da2425d06bd88d280e43.camel@linux.ibm.com> <20210129150355.850093-3-stefanb@linux.vnet.ibm.com> <20210129150355.850093-1-stefanb@linux.vnet.ibm.com> <4162801.1612185801@warthog.procyon.org.uk> <71a77d10-e645-194f-5073-ebf180a8d70e@linux.ibm.com> <4170408.1612192055@warthog.procyon.org.uk> <110279.1612254455@warthog.procyon.org.uk> <114435.1612258403@warthog.procyon.org.uk>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     dhowells@redhat.com, Mimi Zohar <zohar@linux.ibm.com>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
+        linux-integrity@vger.kernel.org,
+        Mimi Zohar <zohar@linux.vnet.ibm.com>
+Subject: Re: [PATCH v5 2/4] x509: Detect sm2 keys by their parameters OID
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <224266.1612260970.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 02 Feb 2021 10:16:10 +0000
+Message-ID: <224267.1612260970@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 13 Jan 2021, Dmitry Torokhov wrote:
+Herbert Xu <herbert@gondor.apana.org.au> wrote:
 
-> A typical USB keyboard usually splits its keys into several reports:
-> 
-> - one for the basic alphanumeric keys, modifier keys, F<n> keys, six pack
->   keys and keypad. This report's application is normally listed as
->   GenericDesktop.Keyboard
-> - a GenericDesktop.SystemControl report for the system control keys, such
->   as power and sleep
-> - Consumer.ConsumerControl report for multimedia (forward, rewind,
->   play/pause, mute, etc) and other extended keys.
-> - additional output, vendor specific, and feature reports
-> 
-> Splitting each report into a separate input device is wasteful and even
-> hurts userspace as it makes it harder to determine the true capabilities
-> (set of available keys) of a keyboard, so let's adjust application
-> matching to merge system control and consumer control reports with
-> keyboard report, if one has already been processed.
-> 
-> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> ---
+> > No idea.  It seems straightforward enough, at least on the keyrings si=
+de, that
+> > I was going to add it.
+> =
 
-Queued in for-5.12/core. Thanks,
+> In that case please wait for the discussion on how we handle curves
+> to be finalised.
 
--- 
-Jiri Kosina
-SUSE Labs
+Sure.  Will do.
+
+David
 
