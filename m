@@ -2,168 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3962E30CD44
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:47:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53BE630CD40
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 21:47:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233858AbhBBUqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 15:46:36 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43207 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233437AbhBBUpb (ORCPT
+        id S233118AbhBBUp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 15:45:26 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:16926 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231508AbhBBUpV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 15:45:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612298644;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=qB7eJjJEwuVBawwhdiSf0pwWEiHuFAZ232JKX4Aaoj8=;
-        b=fLj4Eynyfn9rc3H1DSxSAzvBDa8FFPxKAhcbsiBBA1D6K1v1ZbBMH3x4B6IE8Nlj/oj2F8
-        eoY5AfSnAg+ZXu38NdtGkdmjkY0crOKYL1K2uRUIaiDsFIBF8UhMZ5p8S20Rzug9qm5gsS
-        XEbAEFLcanWDK0td1ZgiCOk7HnGuSqg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-86-qEGmr014PPq0sHvfu2od8A-1; Tue, 02 Feb 2021 15:44:03 -0500
-X-MC-Unique: qEGmr014PPq0sHvfu2od8A-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F151810066EF;
-        Tue,  2 Feb 2021 20:44:01 +0000 (UTC)
-Received: from redhat (ovpn-117-133.rdu2.redhat.com [10.10.117.133])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 52B5360C66;
-        Tue,  2 Feb 2021 20:43:58 +0000 (UTC)
-Date:   Tue, 2 Feb 2021 15:43:55 -0500
-From:   David Jeffery <djeffery@redhat.com>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-kernel@vger.kernel.org,
-        Laurence Oberman <loberman@redhat.com>
-Subject: Re: [PATCH] block: recalculate segment count for multi-segment
- discard requests correctly
-Message-ID: <20210202204355.GA31803@redhat>
-References: <20210201164850.391332-1-djeffery@redhat.com>
- <20210202033343.GA165584@T590>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        Tue, 2 Feb 2021 15:45:21 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B6019b9b90000>; Tue, 02 Feb 2021 12:44:41 -0800
+Received: from HKMAIL101.nvidia.com (10.18.16.10) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 2 Feb
+ 2021 20:44:39 +0000
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL101.nvidia.com
+ (10.18.16.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 2 Feb
+ 2021 20:44:37 +0000
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
+ by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 2 Feb 2021 20:44:36 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SsdecvKRqThP450ljVO7YwhTvBzEg2hy5hYbYGw1Fib5LQSlnFVL1WFzMOBR81TL11RKjp76shx8aDmMx0bmTbD4aK+/FO35W6NliA8L6JxnPVNYUy2zMZeqyKUbDCaShvIgLHyZtP3HxdqicvpC85AY4jK3I2+2kRG7QVDgoPaNnlPOcuAL0e3kVgbEGHFMS52sNcEXKYwriqZJV+ugrhFp/pukFzDDpyvGiQ9WESJGHyoAks57ympwWA/M95GMl/Yc+Q4BccvFUJ1xMzhmCQuilHVwgwkjcrnREQR8D8ySRnSOecjIcGqa4JBKJHfhPQlOs2K4Did11f66KUEcAw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WOQRACzq9RM+7ec/Ovq6IaqY6eedpCrqd5zerWgGhxY=;
+ b=SVFhgEt+k1oEwHgJSmzddPVhvDdQ6nIzA6o2UJ24urMqfLQqf9ApfanHJ1jr/3kf4wSwbn0Nd4ERhWSTiyA1VlL0a+fAsRP/weVWeDVYa7yNLvdGemyFsTZI8waWO2ZOeY/smo4ZREH8B+3Lf/jw6Ppc8Dza4s/9YVfUqD/9srg02gviJWEkdHPA9vFdJQS0daV3Wzf45RGmnmy65b56W/pPA9/kTIu8icNDXm6daO3PPixK+vpbP4w7z0SbrdsEoB3zuj139h50aX6qhK2/popX3k936LiKoBjAk5BgAa715hdGlXioNwU0faOtK/H3y4IvgvtdBG8JQrv+420ciA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR12MB1339.namprd12.prod.outlook.com (2603:10b6:3:70::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.19; Tue, 2 Feb
+ 2021 20:44:34 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::d6b:736:fa28:5e4%7]) with mapi id 15.20.3805.025; Tue, 2 Feb 2021
+ 20:44:34 +0000
+Date:   Tue, 2 Feb 2021 16:44:32 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <liranl@nvidia.com>,
+        <oren@nvidia.com>, <tzahio@nvidia.com>, <leonro@nvidia.com>,
+        <yarong@nvidia.com>, <aviadye@nvidia.com>, <shahafs@nvidia.com>,
+        <artemp@nvidia.com>, <kwankhede@nvidia.com>, <ACurrid@nvidia.com>,
+        <gmataev@nvidia.com>, <cjia@nvidia.com>, <yishaih@nvidia.com>,
+        <aik@ozlabs.ru>
+Subject: Re: [PATCH 8/9] vfio/pci: use x86 naming instead of igd
+Message-ID: <20210202204432.GC4247@nvidia.com>
+References: <20210201162828.5938-1-mgurtovoy@nvidia.com>
+ <20210201162828.5938-9-mgurtovoy@nvidia.com>
+ <20210201181454.22112b57.cohuck@redhat.com>
+ <599c6452-8ba6-a00a-65e7-0167f21eac35@linux.ibm.com>
+ <20210201114230.37c18abd@omen.home.shazbot.org>
+ <20210202170659.1c62a9e8.cohuck@redhat.com>
+ <a413334c-3319-c6a3-3d8a-0bb68a10b9c1@nvidia.com>
+ <20210202105455.5a358980@omen.home.shazbot.org>
+ <20210202185017.GZ4247@nvidia.com>
+ <20210202123723.6cc018b8@omen.home.shazbot.org>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210202033343.GA165584@T590>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <20210202123723.6cc018b8@omen.home.shazbot.org>
+X-ClientProxiedBy: MN2PR19CA0045.namprd19.prod.outlook.com
+ (2603:10b6:208:19b::22) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR19CA0045.namprd19.prod.outlook.com (2603:10b6:208:19b::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3805.17 via Frontend Transport; Tue, 2 Feb 2021 20:44:33 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1l72XI-002jxP-AE; Tue, 02 Feb 2021 16:44:32 -0400
+X-Header: ProcessedBy-CMR-outbound
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1612298681; bh=WOQRACzq9RM+7ec/Ovq6IaqY6eedpCrqd5zerWgGhxY=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType:X-Header;
+        b=ARmreLUE3EUqnxMTEv4NF9uVmziCsFJXtzoAms3by17nODKmXrG0NF3YytJSkU9Xf
+         FHZQnvHzMMk/utfDcyPrpLlSmVKcZJUMhg2Q8ey6RnPnutoBSaZm/5WweP+PU6igtE
+         mJsK1xCqi7eUTdH55wcja4wF6Jd2bl9YvLeKrCPqZbMAV+Jf5lglx0mwGyzSazR3yT
+         ceT7dr+FVKqvCfKwnl1GuuIK6F8/yNtSrc8CLJrVziXAP+XbElmtw8ykKK2nNwzlFM
+         b+ScB3rSS0znQlTDcLqTpaWxWys9jaFbdTBD7jKr5zV/FcVxDplmuGjQ3MhP3W5t5A
+         lF6YlWTjZBf5w==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 11:33:43AM +0800, Ming Lei wrote:
-> 
-> On Mon, Feb 01, 2021 at 11:48:50AM -0500, David Jeffery wrote:
-> > When a stacked block device inserts a request into another block device
-> > using blk_insert_cloned_request, the request's nr_phys_segments field gets
-> > recalculated by a call to blk_recalc_rq_segments in
-> > blk_cloned_rq_check_limits. But blk_recalc_rq_segments does not know how to
-> > handle multi-segment discards. For disk types which can handle
-> > multi-segment discards like nvme, this results in discard requests which
-> > claim a single segment when it should report several, triggering a warning
-> > in nvme and causing nvme to fail the discard from the invalid state.
-> > 
-> >  WARNING: CPU: 5 PID: 191 at drivers/nvme/host/core.c:700 nvme_setup_discard+0x170/0x1e0 [nvme_core]
-> >  ...
-> >  nvme_setup_cmd+0x217/0x270 [nvme_core]
-> >  nvme_loop_queue_rq+0x51/0x1b0 [nvme_loop]
-> >  __blk_mq_try_issue_directly+0xe7/0x1b0
-> >  blk_mq_request_issue_directly+0x41/0x70
-> >  ? blk_account_io_start+0x40/0x50
-> >  dm_mq_queue_rq+0x200/0x3e0
-> >  blk_mq_dispatch_rq_list+0x10a/0x7d0
-> >  ? __sbitmap_queue_get+0x25/0x90
-> >  ? elv_rb_del+0x1f/0x30
-> >  ? deadline_remove_request+0x55/0xb0
-> >  ? dd_dispatch_request+0x181/0x210
-> >  __blk_mq_do_dispatch_sched+0x144/0x290
-> >  ? bio_attempt_discard_merge+0x134/0x1f0
-> >  __blk_mq_sched_dispatch_requests+0x129/0x180
-> >  blk_mq_sched_dispatch_requests+0x30/0x60
-> >  __blk_mq_run_hw_queue+0x47/0xe0
-> >  __blk_mq_delay_run_hw_queue+0x15b/0x170
-> >  blk_mq_sched_insert_requests+0x68/0xe0
-> >  blk_mq_flush_plug_list+0xf0/0x170
-> >  blk_finish_plug+0x36/0x50
-> >  xlog_cil_committed+0x19f/0x290 [xfs]
-> >  xlog_cil_process_committed+0x57/0x80 [xfs]
-> >  xlog_state_do_callback+0x1e0/0x2a0 [xfs]
-> >  xlog_ioend_work+0x2f/0x80 [xfs]
-> >  process_one_work+0x1b6/0x350
-> >  worker_thread+0x53/0x3e0
-> >  ? process_one_work+0x350/0x350
-> >  kthread+0x11b/0x140
-> >  ? __kthread_bind_mask+0x60/0x60
-> >  ret_from_fork+0x22/0x30
-> > 
-> > This patch fixes blk_recalc_rq_segments to be aware of devices which can
-> > have multi-segment discards. It calculates the correct discard segment
-> > count by counting the number of bio as each discard bio is considered its
-> > own segment.
-> > 
-> > Signed-off-by: David Jeffery <djeffery@redhat.com>
-> > Tested-by: Laurence Oberman <loberman@redhat.com>
-> > ---
-> >  block/blk-merge.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> > 
-> > diff --git a/block/blk-merge.c b/block/blk-merge.c
-> > index 808768f6b174..fe7358bd5d09 100644
-> > --- a/block/blk-merge.c
-> > +++ b/block/blk-merge.c
-> > @@ -382,6 +382,13 @@ unsigned int blk_recalc_rq_segments(struct request *rq)
-> >  
-> >  	switch (bio_op(rq->bio)) {
-> >  	case REQ_OP_DISCARD:
-> > +		if (queue_max_discard_segments(rq->q) > 1) {
-> > +			struct bio *bio = rq->bio;
-> > +			for_each_bio(bio)
-> > +				nr_phys_segs++;
-> > +			return nr_phys_segs;
-> > +		}
-> > +		/* fall through */
-> >  	case REQ_OP_SECURE_ERASE:
-> 
-> REQ_OP_SECURE_ERASE needs to be covered since block layer treats
-> the two in very similar way from discard viewpoint.
-> 
-> Also single range discard should be fixed too, since block layer
-> thinks single-range discard req segment is 1. Otherwise, the warning in
-> virtblk_setup_discard_write_zeroes() still may be triggered, at least.
-> 
-> 
-> -- 
-> Ming
->
+On Tue, Feb 02, 2021 at 12:37:23PM -0700, Alex Williamson wrote:
 
-The return 0 does seem to be an old relic that does not make sense anymore.
-Moving REQ_OP_SECURE_ERASE to be with discard and removing the old return 0,
-is this what you had in mind?
+> For the most part, this explicit bind interface is redundant to
+> driver_override, which already avoids the duplicate ID issue.  
 
- 
-diff --git a/block/blk-merge.c b/block/blk-merge.c
-index 808768f6b174..68458aa01b05 100644
---- a/block/blk-merge.c
-+++ b/block/blk-merge.c
-@@ -383,8 +383,14 @@ unsigned int blk_recalc_rq_segments(struct request *rq)
- 	switch (bio_op(rq->bio)) {
- 	case REQ_OP_DISCARD:
- 	case REQ_OP_SECURE_ERASE:
-+		if (queue_max_discard_segments(rq->q) > 1) {
-+			struct bio *bio = rq->bio;
-+			for_each_bio(bio)
-+				nr_phys_segs++;
-+			return nr_phys_segs;
-+		}
-+		/* fall through */
- 	case REQ_OP_WRITE_ZEROES:
--		return 0;
- 	case REQ_OP_WRITE_SAME:
- 		return 1;
- 	}
+No, the point here is to have the ID tables in the PCI drivers because
+they fundamentally only work with their supported IDs. The normal
+driver core ID tables are a replacement for all the hardwired if's in
+vfio_pci.
 
---
-David Jeffery
+driver_override completely disables all the ID checking, it seems only
+useful for vfio_pci which works with everything. It should not be used
+with something like nvlink_vfio_pci.ko that needs ID checking.
 
+Yes, this DRIVER_EXPLICIT_BIND_ONLY idea somewhat replaces
+driver_override because we could set the PCI any match on vfio_pci and
+manage the driver binding explicitly instead.
+
+> A driver id table doesn't really help for binding the device,
+> ultimately even if a device is in the id table it might fail to
+> probe due to the missing platform support that each of these igd and
+> nvlink drivers expose,
+
+What happens depends on what makes sense for the driver, some missing
+optional support could continue without it, or it could fail.
+
+IGD and nvlink can trivially go onwards and work if they don't find
+the platform support.
+
+Or they might want to fail, I think the mlx5 and probably nvlink
+drivers should fail as they are intended to be coupled with userspace
+that expects to use their extended features.
+
+In those cases failing is a feature because it prevents the whole
+system from going into an unexpected state.
+
+Jason
