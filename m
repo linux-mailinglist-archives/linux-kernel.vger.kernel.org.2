@@ -2,104 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3045F30B9DB
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:28:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C04B30B9E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:30:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232695AbhBBI1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 03:27:30 -0500
-Received: from mga17.intel.com ([192.55.52.151]:32311 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232592AbhBBI07 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 03:26:59 -0500
-IronPort-SDR: LXc+73g490csAUslmTaZ8WdeIir4ywLmdZY6Xg7z3XZb00ZIhPSuUk97YMJcO7m745hewhx4zf
- E3BEjP3ZDhcQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="160583550"
-X-IronPort-AV: E=Sophos;i="5.79,394,1602572400"; 
-   d="scan'208";a="160583550"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 00:25:13 -0800
-IronPort-SDR: 9G5TpLdVoAZ64S15wl7c3zTe2XvX6oKeCc4Knq1Nx2aJ3d9E2FnGgtpvTP8nvxzHCktptUvW01
- FqdFW9FLU0ZQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,394,1602572400"; 
-   d="scan'208";a="479482501"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 02 Feb 2021 00:25:10 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Tue, 02 Feb 2021 10:25:09 +0200
-Date:   Tue, 2 Feb 2021 10:25:09 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kyle Tso <kyletso@google.com>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] usb: typec: tcpm: Set in_ams flag when Source caps
- have been received
-Message-ID: <20210202082509.GD1433721@kuha.fi.intel.com>
-References: <20210202033859.258491-1-badhri@google.com>
+        id S232347AbhBBI2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 03:28:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33514 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231406AbhBBI2e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 03:28:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612254426;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7mTg2oMPOn40/ltsulP4d95N1N+NtkIehznJg+VXVl4=;
+        b=cvUh4YZ4zw5wrXq/e5/RRpDJ9+MUKIAGKBBUMrnLK0CU9h8MPcrXhgyZ7BYLVmfaypYZZc
+        223zb8Sy6ryn9m4w8eAywe1CM+TUrz8tpNyy2YAwddjRFFpwOf65qA+T3bPaE7v9xlgi1f
+        9rL3dnV4T+aAgA2IPxehGkUwTQBlkB8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-570-ssxtYByMNaumSNvBCcQfXg-1; Tue, 02 Feb 2021 03:27:03 -0500
+X-MC-Unique: ssxtYByMNaumSNvBCcQfXg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 33081802B4E;
+        Tue,  2 Feb 2021 08:27:01 +0000 (UTC)
+Received: from [10.36.114.148] (ovpn-114-148.ams2.redhat.com [10.36.114.148])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 495A419717;
+        Tue,  2 Feb 2021 08:26:58 +0000 (UTC)
+Subject: Re: [PATCH V2 2/2] arm64/mm: Reorganize pfn_valid()
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        James Morse <james.morse@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Mike Rapoport <rppt@linux.ibm.com>
+References: <1612239114-28428-1-git-send-email-anshuman.khandual@arm.com>
+ <1612239114-28428-3-git-send-email-anshuman.khandual@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <5609cc64-317c-1517-0e90-027868bc9d4b@redhat.com>
+Date:   Tue, 2 Feb 2021 09:26:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210202033859.258491-1-badhri@google.com>
+In-Reply-To: <1612239114-28428-3-git-send-email-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Feb 01, 2021 at 07:38:59PM -0800, Badhri Jagan Sridharan wrote:
-> Receiving the first packet in an AMS sequence signals the
-> beginning of AMS. Set in_ams flag to true when SRC_CAPS are
-> received during POWER_NEGOTIATION AMS.
-> This fixes the failure flagged while running TD.PD.SNK.E9
-> compliance test.
+On 02.02.21 05:11, Anshuman Khandual wrote:
+> There are multiple instances of pfn_to_section_nr() and __pfn_to_section()
+> when CONFIG_SPARSEMEM is enabled. This can be optimized if memory section
+> is fetched earlier. This replaces the open coded PFN and ADDR conversion
+> with PFN_PHYS() and PHYS_PFN() helpers. While there, also add a comment.
+> This does not cause any functional change.
 > 
-> >From Deterministic PD compliance MOI spec:
-> TD.PD.SNK.E9. GetSinkCap in Place of Accept
-> Description:
-> As Provider, the Tester intentionally sends a GetSinkCap message in place
-> of Accept message and verifies the UUT will send a SoftReset and recover
-> from the error.
-> Steps:
-> a) Run PROC.PD.E1 Bring-up according to the UUT role.
-> b) The Tester cycles VBus.
-> c) The Tester sends a Source Capabilities message to the UUT.
-> d) Upon receipt of a Request message from the UUT, the Tester replies with
->    a GoodCRC message.
-> e) The Tester sends a GetSinkCap message to the UUT.
-> f) If a SoftReset is not received within 15 ms after the GetSinkCap EOP was
->    sent, the test fails.
-> g) If a SoftReset is received timely, the Tester replies with an Accept
->    message.
-> h) The Tester sends Source Capabilities message to the UUT repeatedly until
->    nCapsCount reached or a GoodCRC is received. If nCapsCount reached, the
->    test fails.
-> i) If a Request is not received timely within 30 ms after the GoodCRC EOP
->    corresponding to Source Capabilities message was received, the test
->    fails.
-> 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Ard Biesheuvel <ardb@kernel.org>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 > ---
->  drivers/usb/typec/tcpm/tcpm.c | 1 +
->  1 file changed, 1 insertion(+)
+>   arch/arm64/mm/init.c | 20 +++++++++++++++-----
+>   1 file changed, 15 insertions(+), 5 deletions(-)
 > 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 0afd8ef692e8..b3e07d9b7597 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -2243,6 +2243,7 @@ static void tcpm_pd_data_request(struct tcpm_port *port,
->  		 * handled.
->  		 */
->  			port->ams = POWER_NEGOTIATION;
-> +			port->in_ams = true;
->  			tcpm_set_state(port, SNK_NEGOTIATE_CAPABILITIES, 0);
->  		} else {
->  			if (port->ams == GET_SOURCE_CAPABILITIES)
-> -- 
-> 2.30.0.365.g02bc693789-goog
+> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> index 1141075e4d53..5d8fd5360a68 100644
+> --- a/arch/arm64/mm/init.c
+> +++ b/arch/arm64/mm/init.c
+> @@ -219,16 +219,25 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max)
+>   
+>   int pfn_valid(unsigned long pfn)
+>   {
+> -	phys_addr_t addr = pfn << PAGE_SHIFT;
+> +	phys_addr_t addr = PFN_PHYS(pfn);
+>   
+> -	if ((addr >> PAGE_SHIFT) != pfn)
+> +	/*
+> +	 * Ensure the upper PAGE_SHIFT bits are clear in the
+> +	 * pfn. Else it might lead to false positives when
+> +	 * some of the upper bits are set, but the lower bits
+> +	 * match a valid pfn.
+> +	 */
+> +	if (PHYS_PFN(addr) != pfn)
+>   		return 0;
+>   
+>   #ifdef CONFIG_SPARSEMEM
+> +{
+> +	struct mem_section *ms = __pfn_to_section(pfn);
+> +
+>   	if (pfn_to_section_nr(pfn) >= NR_MEM_SECTIONS)
+>   		return 0;
+>   
+> -	if (!valid_section(__pfn_to_section(pfn)))
+> +	if (!valid_section(ms))
+>   		return 0;
+>   
+>   	/*
+> @@ -240,8 +249,9 @@ int pfn_valid(unsigned long pfn)
+>   	 * memory sections covering all of hotplug memory including
+>   	 * both normal and ZONE_DEVICE based.
+>   	 */
+> -	if (!early_section(__pfn_to_section(pfn)))
+> -		return pfn_section_valid(__pfn_to_section(pfn), pfn);
+> +	if (!early_section(ms))
+> +		return pfn_section_valid(ms, pfn);
+> +}
+>   #endif
+>   	return memblock_is_map_memory(addr);
+>   }
+> 
 
-thanks,
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
-heikki
+Thanks,
+
+David / dhildenb
+
