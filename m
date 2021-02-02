@@ -2,158 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B70830CF29
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:42:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D50A30CF2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:42:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235567AbhBBWhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 17:37:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41316 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235114AbhBBWgn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 17:36:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7838864F2C;
-        Tue,  2 Feb 2021 22:36:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612305362;
-        bh=ZNXg90zFEXL6Y/+qnrzc7TP0aevL0o9AMV4Eck4PSWk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jv8nOmdM3ZiikbalSQGxifwLfvxidi5eIVM9pTdMhZ5thx7gFIYcUHV16YDhKXlky
-         b6wYmStaDrbVeOfOqJ9zQuxFCM61LAJyAEfuVHpLRBKxoeTdp5KdX191bN1IJYFzx8
-         LcxKNiK8nDd6hY2nKbgGUmRc5Tug0j/8GGMHLkOxyw0DxewFdxogcYVto/imquAE1H
-         eKRXv7zayij+hEJoleCNFC9T0c06TM4W25tyYxOOu1hn9E4UPXpJBVYLHXFwuhXOn9
-         mjH3z5NEKXiLlvqYsdMhm3jsqSZAUYWyRba5sOqUJJluTnCUC9z5bDk/2ljcidvIRN
-         SAbuNq6uTy3Ug==
-Date:   Wed, 3 Feb 2021 00:35:54 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Lukasz Majczak <lma@semihalf.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Dirk Gouders <dirk@gouders.net>, Tj <ml.linux@elloe.vision>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Radoslaw Biernacki <rad@semihalf.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Alex Levin <levinale@google.com>
-Subject: Re: [PATCH v3] tpm_tis: Add missing tpm_request/relinquish_locality
- calls
-Message-ID: <YBnTyvSk5clhCwtT@kernel.org>
-References: <20210128130753.1283534-1-lma@semihalf.com>
- <20210202155139.521421-1-lma@semihalf.com>
- <20210202162950.GE159455@roeck-us.net>
+        id S235058AbhBBWiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 17:38:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48078 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235196AbhBBWhY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 17:37:24 -0500
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B99C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 14:36:43 -0800 (PST)
+Received: by mail-pl1-x631.google.com with SMTP id 8so7995258plc.10
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 14:36:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oIoSVPmKEl02Ry4qgP49tJ5d1MCtOFHz6Id8es99aQ8=;
+        b=NrGjY7tv1aLp8A57+KA0gWARf4pkOWcwXtWLuuy3XjI1mrlAY6O+U1gqDcuT7LE9Y2
+         PNdq+knh6vPvHwLSc23PsZkro0J41BgAghcIX7NyCga1GYJ7lqHdADbKKaNcurFrFvth
+         iCjYm0lErxUBkiDwJKpj0a8oTtsYwlSqAyfRiKIMFEJ0tWfqBL6N8kVSUrOm/jq5aJkI
+         OkIOQiwxgVOB99mD+AgNuMrSHDfs6JJcb0NXj4l98HyUHryOiTsmaZj9+8jl1ygSjsNV
+         5qVuBXePJAaWJrQo/PEqwK0EW6xj4gNaz+HIXXSbRh+9oc1kYFfj9DSNtK0LvLh308zN
+         xPbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oIoSVPmKEl02Ry4qgP49tJ5d1MCtOFHz6Id8es99aQ8=;
+        b=Pq1f58VL0blmlTijINPte5MeX2VjxZvkAm7E6Q/IioDs+L2Tbmy7DKKp0GcAeIxI2C
+         6BhuTzm7CukvMTPukDs4jx7ezOeL5KqKa8ikO31m5j3CX9gYD9SPpXQuehd0ccdC6uMu
+         89f+7ZpPXtZnQ+LdFwq7d61KUHlRvKOWIwWCc3xFCNfq0bg2N7S0REm4RtSWSz2BhZTQ
+         8TbYhkgGkjbHJqAXm4qf7eZ/xPz/HSj7Z0oHT3agC4WH2XdJdga+hDUd3fYu3ciNiaUY
+         IwKxmrhtE4lFZo21aEk83obc4bAaaOqsVkm2TiNUmvrTi8QimGeVVrM7EFy1GnMjlzBh
+         SYUw==
+X-Gm-Message-State: AOAM530tsdsJzhJAuz/wQ65EmKBHq45relveF6wYwparnZGn0dg9H6MJ
+        4acLhzDXKgf4BJQ2+3Z/Hh3VIg==
+X-Google-Smtp-Source: ABdhPJzb7AOmzJ3vsd9oEZgebXCp7mHor62Iu3XCT60QLwa6RwOTaru7ziqdbYETgXLnMBoYioMHjA==
+X-Received: by 2002:a17:902:eccb:b029:de:8483:505d with SMTP id a11-20020a170902eccbb02900de8483505dmr93607plh.63.1612305402511;
+        Tue, 02 Feb 2021 14:36:42 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:e1bc:da69:2e4b:ce97])
+        by smtp.gmail.com with ESMTPSA id k5sm39512pfi.31.2021.02.02.14.36.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 14:36:41 -0800 (PST)
+Date:   Tue, 2 Feb 2021 14:36:35 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Robert Hu <robert.hu@intel.com>,
+        Farrah Chen <farrah.chen@intel.com>,
+        Danmei Wei <danmei.wei@intel.com>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>
+Subject: Re: [PATCH] KVM: SVM: Use 'unsigned long' for the physical address
+ passed to VMSAVE
+Message-ID: <YBnT82xRKZkxbsN2@google.com>
+References: <20210202223416.2702336-1-seanjc@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210202162950.GE159455@roeck-us.net>
+In-Reply-To: <20210202223416.2702336-1-seanjc@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 08:29:50AM -0800, Guenter Roeck wrote:
-> On Tue, Feb 02, 2021 at 04:51:39PM +0100, Lukasz Majczak wrote:
-> > There are missing calls to tpm_request_locality before the calls to
-> > the tpm_get_timeouts() and tpm_tis_probe_irq_single() - both functions
-> > internally send commands to the tpm. As the current
-> > approach might work for tpm2, it fails for tpm1.x - in that case
-> > call to tpm_get_timeouts() or tpm_tis_probe_irq_single()
-> > without acquired locality fails and in turn causes tpm_tis_core_init()
-> > to fail, it can be observed in the log with the following warning
-> > trace:
-> > 
-> > [    4.324298] TPM returned invalid status
-> > [    4.324806] WARNING: CPU: 2 PID: 1 at drivers/char/tpm/tpm_tis_core.c:275 tpm_tis_status+0x86/0x8f
-> > [    4.325888] Modules linked in:
-> > [    4.326287] CPU: 2 PID: 1 Comm: swapper/0 Tainted: G        W         5.11.0-rc6-next-20210201-00003-g214461adb2e8 #43
-> > [    4.327406] Hardware name: Google Caroline/Caroline, BIOS Google_Caroline.7820.430.0 07/20/2018
-> > [    4.327918] RIP: 0010:tpm_tis_status+0x86/0x8f
-> > [    4.328323] Code: 28 00 00 00 48 3b 45 f0 75 24 89 d8 48 83 c4 10 5b 5d c3 c6 05 58 d9 28 01 01 31 db 48 c7 c7 73 52 98 9c 31 c0 e8 c2 17 b0 ff <0f> 0b eb cd e8 cf 4f 55 00 0f 1f 44 00 00 55 48 89 e56
-> > [    4.330592] RSP: 0000:ffff88810092f7a0 EFLAGS: 00010246
-> > [    4.331223] RAX: 691ee151166db100 RBX: 0000000000000000 RCX: 0000000000000001
-> > [    4.331860] RDX: 0000000000000006 RSI: ffffffff9c96d302 RDI: 00000000ffffffff
-> > [    4.332272] RBP: ffff88810092f7b8 R08: dffffc0000000000 R09: fffffbfff39c96ce
-> > [    4.332683] R10: fffffbfff39c96ce R11: 0000000000000001 R12: ffff8881053e2000
-> > [    4.333109] R13: 0000000065000000 R14: ffff888105d71000 R15: ffff888105cd2628
-> > [    4.333738] FS:  0000000000000000(0000) GS:ffff88842f200000(0000) knlGS:0000000000000000
-> > [    4.334432] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [    4.334783] CR2: 0000000000000000 CR3: 0000000037828001 CR4: 00000000003706e0
-> > [    4.335196] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> > [    4.335886] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > [    4.336793] Call Trace:
-> > [    4.337107]  tpm_tis_send_data+0x3d/0x22f
-> > [    4.337506]  tpm_tis_send_main+0x30/0xf5
-> > [    4.337746]  tpm_transmit+0xbf/0x327
-> > [    4.338042]  ? __alloc_pages_nodemask+0x261/0x36d
-> > [    4.338615]  tpm_transmit_cmd+0x2c/0x93
-> > [    4.339109]  tpm1_getcap+0x232/0x285
-> > [    4.339578]  tpm1_get_timeouts+0x48/0x47d
-> > [    4.339964]  ? lockdep_init_map_type+0x71/0x257
-> > [    4.340256]  ? lockdep_init_map_type+0x71/0x257
-> > [    4.340719]  ? __raw_spin_lock_init+0x40/0x69
-> > [    4.341208]  tpm_tis_core_init+0x402/0x5ee
-> > [    4.341629]  tpm_tis_init+0x11d/0x1a2
-> > [    4.341867]  tpm_tis_pnp_init+0x91/0xb5
-> > [    4.342101]  ? tis_int_handler+0x15f/0x15f
-> > [    4.342466]  pnp_device_probe+0x79/0x9f
-> > [    4.342941]  really_probe+0x149/0x4a8
-> > [    4.343412]  driver_probe_device+0xd6/0x144
-> > [    4.343968]  device_driver_attach+0x42/0x5b
-> > [    4.344382]  __driver_attach+0xca/0x139
-> > [    4.344617]  ? driver_attach+0x1f/0x1f
-> > [    4.344860]  bus_for_each_dev+0x85/0xb7
-> > [    4.345096]  bus_add_driver+0x12b/0x228
-> > [    4.345330]  driver_register+0x64/0xed
-> > [    4.345560]  init_tis+0xa5/0xeb
-> > [    4.345784]  ? lock_is_held_type+0x100/0x141
-> > [    4.346044]  ? tpm_init+0x106/0x106
-> > [    4.346259]  ? rcu_read_lock_sched_held+0x41/0x7e
-> > [    4.346542]  ? tpm_init+0x106/0x106
-> > [    4.346678] battery: ACPI: Battery Slot [BAT0] (battery present)
-> > [    4.346754]  do_one_initcall+0x1b9/0x43d
-> > [    4.346776]  ? asm_sysvec_apic_timer_interrupt+0x12/0x20
-> > [    4.347659]  ? lockdep_hardirqs_on+0x8e/0x12e
-> > [    4.347937]  ? lock_is_held_type+0x100/0x141
-> > [    4.348196]  ? rcu_read_lock_sched_held+0x41/0x7e
-> > [    4.348477]  do_initcall_level+0x99/0xa9
-> > [    4.348717]  ? kernel_init+0xe/0x10a
-> > [    4.348954]  do_initcalls+0x4e/0x79
-> > [    4.349170]  kernel_init_freeable+0x15a/0x1ae
-> > [    4.349434]  ? rest_init+0x1d6/0x1d6
-> > [    4.349655]  kernel_init+0xe/0x10a
-> > [    4.349882]  ret_from_fork+0x22/0x30
-> > [    4.350103] irq event stamp: 700039
-> > [    4.350318] hardirqs last  enabled at (700047): [<ffffffff9b735265>] console_unlock+0x4be/0x538
-> > [    4.350836] hardirqs last disabled at (700056): [<ffffffff9b734e84>] console_unlock+0xdd/0x538
-> > [    4.351331] softirqs last  enabled at (699522): [<ffffffff9c4004ec>] __do_softirq+0x4ec/0x539
-> > [    4.351835] softirqs last disabled at (699517): [<ffffffff9c200f62>] asm_call_irq_on_stack+0x12/0x20
-> > 
-> > Following the trace one can also notice a comment in the tpm_tis_status():
-> > 
-> > 		/*
-> > 		 * If this trips, the chances are the read is
-> > 		 * returning 0xff because the locality hasn't been
-> > 		 * acquired.  Usually because tpm_try_get_ops() hasn't
-> > 		 * been called before doing a TPM operation.
-> > 		 */
-> > In this case we don't have to call tpm_try_get_ops()
-> > as both calls (tpm_get_timeouts() and tpm_tis_probe_irq_single()) are
-> > in the tpm_tis_core_init function and don't require any locking or clock 
-> > enablement. Similar usage is in the probe_itpm() function also called
-> > inside tpm_tis_core_init().
-> > Tested on Samsung Chromebook Pro (Caroline).
-> > 
-> > Signed-off-by: Lukasz Majczak <lma@semihalf.com>
+On Tue, Feb 02, 2021, Sean Christopherson wrote:
+> Take an 'unsigned long' instead of 'hpa_t' in the recently added vmsave()
+> helper, as loading a 64-bit GPR isn't possible in 32-bit mode.  This is
+> properly reflected in the SVM ISA, which explicitly states that VMSAVE,
+> VMLOAD, VMRUN, etc... consume rAX based on the effective address size.
 > 
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> Don't bother with a WARN to detect breakage on 32-bit KVM, the VMCB PA is
+> stored as an 'unsigned long', i.e. the bad address is long since gone.
+> Not to mention that a 32-bit kernel is completely hosed if alloc_page()
+> hands out pages in high memory.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Cc: Robert Hu <robert.hu@intel.com>
+> Cc: Farrah Chen <farrah.chen@intel.com>
+> Cc: Danmei Wei <danmei.wei@intel.com>
+> Cc: Tom Lendacky <Thomas.Lendacky@amd.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-Had to check but I already gave my comments here about the commit message
-issues:
+Forgot got the Fixes tag.  Or just squash this.
 
-https://lore.kernel.org/linux-integrity/YBSRFsTNjadQMndD@kernel.org/
+Fixes: f84a54c04540 ("KVM: SVM: Use asm goto to handle unexpected #UD on SVM instructions")
 
-Also there was so many version of this shot to air that I lost track why
-not just use chip_start()/stop(). The change IMHO has only gone worse from
-the first version... But I haven't checked every possible version of this
-(because three versions came simultaneously, I checked v3, because it was
-first that mutt showed me)>
-
-/Jarkko
+> ---
+>  arch/x86/kvm/svm/svm_ops.h | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/svm/svm_ops.h b/arch/x86/kvm/svm/svm_ops.h
+> index 0c8377aee52c..9f007bc8409a 100644
+> --- a/arch/x86/kvm/svm/svm_ops.h
+> +++ b/arch/x86/kvm/svm/svm_ops.h
+> @@ -51,7 +51,12 @@ static inline void invlpga(unsigned long addr, u32 asid)
+>  	svm_asm2(invlpga, "c"(asid), "a"(addr));
+>  }
+>  
+> -static inline void vmsave(hpa_t pa)
+> +/*
+> + * Despite being a physical address, the portion of rAX that is consumed by
+> + * VMSAVE, VMLOAD, etc... is still controlled by the effective address size,
+> + * hence 'unsigned long' instead of 'hpa_t'.
+> + */
+> +static inline void vmsave(unsigned long pa)
+>  {
+>  	svm_asm1(vmsave, "a" (pa), "memory");
+>  }
+> -- 
+> 2.30.0.365.g02bc693789-goog
+> 
