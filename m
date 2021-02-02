@@ -2,332 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3425630C748
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:17:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9109930C74B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:17:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237284AbhBBRP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 12:15:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41934 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236178AbhBBRNg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 12:13:36 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD5B864F87;
-        Tue,  2 Feb 2021 17:12:55 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1l6zET-00BYvb-E7; Tue, 02 Feb 2021 17:12:53 +0000
+        id S236250AbhBBRQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:16:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235817AbhBBROJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 12:14:09 -0500
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D61C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 09:13:29 -0800 (PST)
+Received: by mail-qv1-xf2a.google.com with SMTP id a1so10205970qvd.13
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 09:13:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=v2kYB3a8N+U6pJPO13PFP2mzAbH5g3SIInxbpBCXrwA=;
+        b=Lwi+XbDCr6TCrZEfpzQKqD6YwszIXqYUbUeJZN60nrjvPZkfnT7iVB6KJ1vo4MF/Ju
+         BZzirkaxpCMJLL1xX+ftJ34uLSaX5K/55x8NaDotG8vl2yecqSXSshokgGwBQuaBJ1yA
+         jovx7euuIa8/vBcU9r1Stobl1uBJHPyPH+4GqBdW1njAEd+BHvopKwNLYeohLA0biKn5
+         jQ9dSYghv+4HZ7Kd44JQxkKD80YfJ5VZn2hfzsFcGzlv+V78TujbN0Ue7NkZmkuLES5M
+         QQR6WZJm+t+LWWVARCxhWDEztR49U47UGHBPRNBZ48YlVTfFv84r6G/EUfsq9F0th5Dr
+         fpxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=v2kYB3a8N+U6pJPO13PFP2mzAbH5g3SIInxbpBCXrwA=;
+        b=rgIBHPeBmYP8gSXKuj3Gn9k9IS5F7y/Yae1IV1+CTP6EkFrPKsAlo35o4DVFSB26RN
+         C8Y/EKm1SDSDCQ5IkNi08LKF17lnJWeLx3LwMTArM6oibU3tfS0/LVB9rCze/ynzCGGm
+         40rupcOKAI6y7shZOscKrrOY03rZ7oEn5MkKpct1GuisCOZNvebou5Kev1VAlK0DupxS
+         PlV2vnxRAaxs85Fv2qpaQ+swPHMq27ibY9HVe/UzMagwjt6mN5KJ5/PAG0IKSy+uweQm
+         7KcuVty5S2g3vEInfwrs+kwfJeThNvJejX1bMJdryi7KKnSJnF7/ubl3mSbkKeU3Dw4q
+         QWvg==
+X-Gm-Message-State: AOAM530sHLcwdPFtF4A60WW6SI78tbLlnJKxVMBtHdDSLSmdhUeDyPag
+        CM/WKJpZqaitkkP+EzVLBUbZ6g==
+X-Google-Smtp-Source: ABdhPJytq6oFwGR7z/VXKwcEPeyLad3Giz139CxUfM41nvnIvBbiNtEKgEhOj/c8qwXZly87/hhlVg==
+X-Received: by 2002:a05:6214:32e:: with SMTP id j14mr21389150qvu.13.1612286009003;
+        Tue, 02 Feb 2021 09:13:29 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id x49sm17798341qth.95.2021.02.02.09.13.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 09:13:28 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1l6zF1-002cUu-Ek; Tue, 02 Feb 2021 13:13:27 -0400
+Date:   Tue, 2 Feb 2021 13:13:27 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     20200918161902.GX8409@ziepe.ca,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "Maya B . Gokhale" <gokhale2@llnl.gov>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Marty Mcfadden <mcfadden8@llnl.gov>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Jan Kara <jack@suse.cz>, Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Zhang, Wei" <wzam@amazon.com>
+Subject: Re: [PATCH 1/4] mm: Trial do_wp_page() simplification
+Message-ID: <20210202171327.GN4718@ziepe.ca>
+References: <27564187-4a08-f187-5a84-3df50009f6ca@amazon.com>
+ <20210202163127.GD6468@xz-x1>
+ <20210202164420.GL4718@ziepe.ca>
+ <20210202170536.GE6468@xz-x1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 02 Feb 2021 17:12:53 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: Re: [PATCH v7 2/3] arm64: kvm: Introduce MTE VCPU feature
-In-Reply-To: <20210115152811.8398-3-steven.price@arm.com>
-References: <20210115152811.8398-1-steven.price@arm.com>
- <20210115152811.8398-3-steven.price@arm.com>
-User-Agent: Roundcube Webmail/1.4.10
-Message-ID: <0c0adbcd250690f703ac4a28faf99263@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: steven.price@arm.com, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, mark.rutland@arm.com, tglx@linutronix.de, qemu-devel@nongnu.org, quintela@redhat.com, dgilbert@redhat.com, richard.henderson@linaro.org, peter.maydell@linaro.org, Haibo.Xu@arm.com, drjones@redhat.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210202170536.GE6468@xz-x1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-15 15:28, Steven Price wrote:
-> Add a new VM feature 'KVM_ARM_CAP_MTE' which enables memory tagging
-> for a VM. This exposes the feature to the guest and automatically tags
-> memory pages touched by the VM as PG_mte_tagged (and clears the tags
-> storage) to ensure that the guest cannot see stale tags, and so that 
-> the
-> tags are correctly saved/restored across swap.
-> 
-> Signed-off-by: Steven Price <steven.price@arm.com>
-> ---
->  arch/arm64/include/asm/kvm_emulate.h |  3 +++
->  arch/arm64/include/asm/kvm_host.h    |  3 +++
->  arch/arm64/include/asm/pgtable.h     |  2 +-
->  arch/arm64/kernel/mte.c              | 36 +++++++++++++++++-----------
->  arch/arm64/kvm/arm.c                 |  9 +++++++
->  arch/arm64/kvm/hyp/exception.c       |  3 ++-
->  arch/arm64/kvm/mmu.c                 | 16 +++++++++++++
->  arch/arm64/kvm/sys_regs.c            |  6 ++++-
->  include/uapi/linux/kvm.h             |  1 +
->  9 files changed, 62 insertions(+), 17 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/kvm_emulate.h
-> b/arch/arm64/include/asm/kvm_emulate.h
-> index f612c090f2e4..6bf776c2399c 100644
-> --- a/arch/arm64/include/asm/kvm_emulate.h
-> +++ b/arch/arm64/include/asm/kvm_emulate.h
-> @@ -84,6 +84,9 @@ static inline void vcpu_reset_hcr(struct kvm_vcpu 
-> *vcpu)
->  	if (cpus_have_const_cap(ARM64_MISMATCHED_CACHE_TYPE) ||
->  	    vcpu_el1_is_32bit(vcpu))
->  		vcpu->arch.hcr_el2 |= HCR_TID2;
-> +
-> +	if (kvm_has_mte(vcpu->kvm))
-> +		vcpu->arch.hcr_el2 |= HCR_ATA;
->  }
-> 
->  static inline unsigned long *vcpu_hcr(struct kvm_vcpu *vcpu)
-> diff --git a/arch/arm64/include/asm/kvm_host.h
-> b/arch/arm64/include/asm/kvm_host.h
-> index 51590a397e4b..1ca5785fb0e9 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -132,6 +132,8 @@ struct kvm_arch {
-> 
->  	u8 pfr0_csv2;
->  	u8 pfr0_csv3;
-> +	/* Memory Tagging Extension enabled for the guest */
-> +	bool mte_enabled;
->  };
-> 
->  struct kvm_vcpu_fault_info {
-> @@ -749,6 +751,7 @@ bool kvm_arm_vcpu_is_finalized(struct kvm_vcpu 
-> *vcpu);
->  #define kvm_arm_vcpu_sve_finalized(vcpu) \
->  	((vcpu)->arch.flags & KVM_ARM64_VCPU_SVE_FINALIZED)
-> 
-> +#define kvm_has_mte(kvm) (system_supports_mte() && 
-> (kvm)->arch.mte_enabled)
->  #define kvm_vcpu_has_pmu(vcpu)					\
->  	(test_bit(KVM_ARM_VCPU_PMU_V3, (vcpu)->arch.features))
-> 
-> diff --git a/arch/arm64/include/asm/pgtable.h 
-> b/arch/arm64/include/asm/pgtable.h
-> index 501562793ce2..27416d52f6a9 100644
-> --- a/arch/arm64/include/asm/pgtable.h
-> +++ b/arch/arm64/include/asm/pgtable.h
-> @@ -312,7 +312,7 @@ static inline void set_pte_at(struct mm_struct
-> *mm, unsigned long addr,
->  		__sync_icache_dcache(pte);
-> 
->  	if (system_supports_mte() &&
-> -	    pte_present(pte) && pte_tagged(pte) && !pte_special(pte))
-> +	    pte_present(pte) && pte_valid_user(pte) && !pte_special(pte))
->  		mte_sync_tags(ptep, pte);
+On Tue, Feb 02, 2021 at 12:05:36PM -0500, Peter Xu wrote:
 
-Care to elaborate on this change?
+> > Gal, you could also MADV_DONTFORK this range if you are explicitly
+> > allocating them via special mmap.
+> 
+> Yeah I wanted to mention this one too but I just forgot when reply: the issue
+> thread previously pasted smells like some people would like to drop
+> MADV_DONTFORK, but if it's able to still be applied I don't know why
+> not..
 
-> 
->  	__check_racy_pte_update(mm, ptep, pte);
-> diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-> index dc9ada64feed..f9e089be1603 100644
-> --- a/arch/arm64/kernel/mte.c
-> +++ b/arch/arm64/kernel/mte.c
-> @@ -25,27 +25,33 @@
-> 
->  u64 gcr_kernel_excl __ro_after_init;
-> 
-> -static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool 
-> check_swap)
-> +static void mte_sync_page_tags(struct page *page, pte_t *ptep, bool 
-> check_swap,
-> +			       bool pte_is_tagged)
->  {
->  	pte_t old_pte = READ_ONCE(*ptep);
-> 
->  	if (check_swap && is_swap_pte(old_pte)) {
->  		swp_entry_t entry = pte_to_swp_entry(old_pte);
-> 
-> -		if (!non_swap_entry(entry) && mte_restore_tags(entry, page))
-> +		if (!non_swap_entry(entry) && mte_restore_tags(entry, page)) {
-> +			set_bit(PG_mte_tagged, &page->flags);
->  			return;
-> +		}
->  	}
-> 
-> -	page_kasan_tag_reset(page);
-> -	/*
-> -	 * We need smp_wmb() in between setting the flags and clearing the
-> -	 * tags because if another thread reads page->flags and builds a
-> -	 * tagged address out of it, there is an actual dependency to the
-> -	 * memory access, but on the current thread we do not guarantee that
-> -	 * the new page->flags are visible before the tags were updated.
-> -	 */
-> -	smp_wmb();
-> -	mte_clear_page_tags(page_address(page));
-> +	if (pte_is_tagged) {
-> +		set_bit(PG_mte_tagged, &page->flags);
-> +		page_kasan_tag_reset(page);
-> +		/*
-> +		 * We need smp_wmb() in between setting the flags and clearing the
-> +		 * tags because if another thread reads page->flags and builds a
-> +		 * tagged address out of it, there is an actual dependency to the
-> +		 * memory access, but on the current thread we do not guarantee that
-> +		 * the new page->flags are visible before the tags were updated.
-> +		 */
-> +		smp_wmb();
-> +		mte_clear_page_tags(page_address(page));
-> +	}
->  }
-> 
->  void mte_sync_tags(pte_t *ptep, pte_t pte)
-> @@ -53,11 +59,13 @@ void mte_sync_tags(pte_t *ptep, pte_t pte)
->  	struct page *page = pte_page(pte);
->  	long i, nr_pages = compound_nr(page);
->  	bool check_swap = nr_pages == 1;
-> +	bool pte_is_tagged = pte_tagged(pte);
-> 
->  	/* if PG_mte_tagged is set, tags have already been initialised */
->  	for (i = 0; i < nr_pages; i++, page++) {
-> -		if (!test_and_set_bit(PG_mte_tagged, &page->flags))
-> -			mte_sync_page_tags(page, ptep, check_swap);
-> +		if (!test_bit(PG_mte_tagged, &page->flags))
-> +			mte_sync_page_tags(page, ptep, check_swap,
-> +					   pte_is_tagged);
->  	}
->  }
+I want to drop the MADV_DONTFORK for dynamic data memory allocated by
+the application layers (eg with malloc) without knowledge of how they
+will be used.
 
-This part really wants to have its own patch and be documented,
-explaining why it is still valid not to atomically test and set
-the PG_mte_tagged bit.
+This case is a buffer internal to the communication system that we
+know at allocation time how it will be used; so an explicit,
+deliberate, MADV_DONTFORK is fine
 
-> 
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index 6e637d2b4cfb..f4c2fd2e7c49 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -97,6 +97,12 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
->  		r = 0;
->  		kvm->arch.return_nisv_io_abort_to_user = true;
->  		break;
-> +	case KVM_CAP_ARM_MTE:
-> +		if (!system_supports_mte() || kvm->created_vcpus)
-> +			return -EINVAL;
-> +		r = 0;
-> +		kvm->arch.mte_enabled = true;
-> +		break;
->  	default:
->  		r = -EINVAL;
->  		break;
-> @@ -238,6 +244,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, 
-> long ext)
->  		 */
->  		r = 1;
->  		break;
-> +	case KVM_CAP_ARM_MTE:
-> +		r = system_supports_mte();
-> +		break;
->  	case KVM_CAP_STEAL_TIME:
->  		r = kvm_arm_pvtime_supported();
->  		break;
-> diff --git a/arch/arm64/kvm/hyp/exception.c 
-> b/arch/arm64/kvm/hyp/exception.c
-> index 73629094f903..56426565600c 100644
-> --- a/arch/arm64/kvm/hyp/exception.c
-> +++ b/arch/arm64/kvm/hyp/exception.c
-> @@ -112,7 +112,8 @@ static void enter_exception64(struct kvm_vcpu
-> *vcpu, unsigned long target_mode,
->  	new |= (old & PSR_C_BIT);
->  	new |= (old & PSR_V_BIT);
-> 
-> -	// TODO: TCO (if/when ARMv8.5-MemTag is exposed to guests)
-> +	if (kvm_has_mte(vcpu->kvm))
-> +		new |= PSR_TCO_BIT;
-> 
->  	new |= (old & PSR_DIT_BIT);
-> 
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index 7d2257cc5438..b9f9fb462de6 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -879,6 +879,22 @@ static int user_mem_abort(struct kvm_vcpu *vcpu,
-> phys_addr_t fault_ipa,
->  	if (vma_pagesize == PAGE_SIZE && !force_pte)
->  		vma_pagesize = transparent_hugepage_adjust(memslot, hva,
->  							   &pfn, &fault_ipa);
-> +
-> +	if (kvm_has_mte(kvm) && pfn_valid(pfn)) {
-> +		/*
-> +		 * VM will be able to see the page's tags, so we must ensure
-> +		 * they have been initialised.
-> +		 */
-> +		struct page *page = pfn_to_page(pfn);
-> +		long i, nr_pages = compound_nr(page);
-
-"unsigned long" to match the return type of compound_nr().
-
-Also, shouldn't you cap nr_pages to vma_pagesize? It could well
-be that what we end-up mapping at S2 has nothing to do with
-the view the kernel has of that page.
-
-> +
-> +		/* if PG_mte_tagged is set, tags have already been initialised */
-> +		for (i = 0; i < nr_pages; i++, page++) {
-> +			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
-> +				mte_clear_page_tags(page_address(page));
-> +		}
-> +	}
-> +
->  	if (writable) {
->  		prot |= KVM_PGTABLE_PROT_W;
->  		kvm_set_pfn_dirty(pfn);
-> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
-> index 88d4f360949e..57e5be14f1cc 100644
-> --- a/arch/arm64/kvm/sys_regs.c
-> +++ b/arch/arm64/kvm/sys_regs.c
-> @@ -1029,7 +1029,8 @@ static u64 read_id_reg(const struct kvm_vcpu 
-> *vcpu,
->  		val &= ~(0xfUL << ID_AA64PFR0_CSV3_SHIFT);
->  		val |= ((u64)vcpu->kvm->arch.pfr0_csv3 << ID_AA64PFR0_CSV3_SHIFT);
->  	} else if (id == SYS_ID_AA64PFR1_EL1) {
-> -		val &= ~(0xfUL << ID_AA64PFR1_MTE_SHIFT);
-> +		if (!kvm_has_mte(vcpu->kvm))
-> +			val &= ~(0xfUL << ID_AA64PFR1_MTE_SHIFT);
->  	} else if (id == SYS_ID_AA64ISAR1_EL1 && !vcpu_has_ptrauth(vcpu)) {
->  		val &= ~((0xfUL << ID_AA64ISAR1_APA_SHIFT) |
->  			 (0xfUL << ID_AA64ISAR1_API_SHIFT) |
-> @@ -1284,6 +1285,9 @@ static bool access_ccsidr(struct kvm_vcpu *vcpu,
-> struct sys_reg_params *p,
->  static unsigned int mte_visibility(const struct kvm_vcpu *vcpu,
->  				   const struct sys_reg_desc *rd)
->  {
-> +	if (kvm_has_mte(vcpu->kvm))
-> +		return 0;
-> +
->  	return REG_HIDDEN;
->  }
-> 
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index 886802b8ffba..de737d5102ca 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -1056,6 +1056,7 @@ struct kvm_ppc_resize_hpt {
->  #define KVM_CAP_ENFORCE_PV_FEATURE_CPUID 190
->  #define KVM_CAP_SYS_HYPERV_CPUID 191
->  #define KVM_CAP_DIRTY_LOG_RING 192
-> +#define KVM_CAP_ARM_MTE 193
-> 
->  #ifdef KVM_CAP_IRQ_ROUTING
-
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+Jason
