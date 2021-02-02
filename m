@@ -2,102 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DBCF30BB2E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 10:39:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B5B30C2E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 16:04:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231366AbhBBJio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 04:38:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232997AbhBBJgP (ORCPT
+        id S234834AbhBBPCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 10:02:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52534 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234656AbhBBPBM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 04:36:15 -0500
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F81FC061225
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 01:34:20 -0800 (PST)
-Received: by mail-qv1-xf4a.google.com with SMTP id i16so176631qvk.23
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 01:34:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=tJ1RjowJP8uP6aGuamfXuNzicvFr4anl7UIOhyimvSM=;
-        b=UYSEEmQqneBOHrV3WY9xVXjDQZiAkWnGO/zcjzjm7pmnTnSl7/j7jfKOpCCNbvo/xW
-         7WUnr2VlXpN/qWDExCjLWxp92YDS6gHzFQLPxj0v/19hJSFF86tq/GDKu5/0nvU3BqsB
-         lPNhwbInkv+J3uAfSQPWn+3jl+27ZtxyOJopep3tiDMecxXmFUGvlDpCv4RdE77nNscg
-         Ljq9vh7ORDTHyggVB+oX59uoQm8D+ldkoYL5zUlD6WxzCOScYmloUPjcfHmBapLtum+o
-         ms+aJ4H6aek8xSB8Kxb5Ey42V/5ilunV72M5WRtfwKDU+aJTDYzRIpYWF9EiwgaJ2KTk
-         /5Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=tJ1RjowJP8uP6aGuamfXuNzicvFr4anl7UIOhyimvSM=;
-        b=fS34SfPGqtoAH4N8N3GLQnTS6BFYRGKCMUFtu5JusT4+vl4aBvGCx/WS0jlKavLCwP
-         3ZzVrEVr4Tl1NWV/g7YgG+54A9j07p00ewTYZ8VvdlMa6dMU37EJZpl0zuvAfz0b2owa
-         N27XJzJIq9CsMRL7hpUHBt2ZNWlaeCvI72T7zxJBUQLDahiGfEIMvMDwZ4u06rxHOd8X
-         i6gVA4rVL5r86YCnhKl22MlD+fx6luEvVjn4FEx7d4ANnS5qF+Qsv3Qc0nDCA8XAmhwZ
-         ftBP8fNuK5KYbdMJUzpc208b6/ql6qtiUDXWoYsu2mQpnQoSdAVaoAMwSDkJmbTCWE44
-         f+LA==
-X-Gm-Message-State: AOAM530z9tmG5o+PSlMrdKKO96F7RrwcN590c0IoEFjCp2AafBuw2ioP
-        KWR6SyCC69FYPi8i/BuaVtPC81KNoQMI
-X-Google-Smtp-Source: ABdhPJx8H87AaA19QLhZP4kWOuj4GBSkhWW6xyVDo/8Cnf9nLIfrpDTfBxe5ahdMMHZY7fjkCBG+r8Ugt+Oy
-Sender: "kyletso via sendgmr" <kyletso@kyletso.ntc.corp.google.com>
-X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:dd94:c753:a81d:c855])
- (user=kyletso job=sendgmr) by 2002:ad4:56ef:: with SMTP id
- cr15mr19275156qvb.45.1612258459484; Tue, 02 Feb 2021 01:34:19 -0800 (PST)
-Date:   Tue,  2 Feb 2021 17:33:42 +0800
-In-Reply-To: <20210202093342.738691-1-kyletso@google.com>
-Message-Id: <20210202093342.738691-9-kyletso@google.com>
-Mime-Version: 1.0
-References: <20210202093342.738691-1-kyletso@google.com>
-X-Mailer: git-send-email 2.30.0.365.g02bc693789-goog
-Subject: [PATCH v4 8/8] usb: typec: tcpm: Get Sink VDO from fwnode
-From:   Kyle Tso <kyletso@google.com>
-To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org, hdegoede@redhat.com, robh+dt@kernel.org
-Cc:     badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Kyle Tso <kyletso@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 2 Feb 2021 10:01:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612277985;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lA/rmyOorAoy/w+AhxxsEsI+Afad/+5GXMgJ3Bkqofw=;
+        b=Mi1C5vRE6z6ij+Om986/MeORS3INRNwZ0S/DBN2nt8K/ybaIu8GVxTCUM+zMaEDLQhaKl+
+        Gi/9tXIKBdxTkgq6ZAGevZD0uLzKrI+Qwq6IuNod2NfkyEScYwhJQG9a3fWeZZ11figcDs
+        e7Gu3jnVjLMYTjHTGmIlYvqtTm6buUM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-121-AHW_jZeEPuiICXhvtzL4ew-1; Tue, 02 Feb 2021 09:59:42 -0500
+X-MC-Unique: AHW_jZeEPuiICXhvtzL4ew-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 74A82800D55;
+        Tue,  2 Feb 2021 14:59:39 +0000 (UTC)
+Received: from localhost (ovpn-115-185.ams2.redhat.com [10.36.115.185])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7644F6EF41;
+        Tue,  2 Feb 2021 14:59:35 +0000 (UTC)
+Date:   Tue, 2 Feb 2021 09:34:12 +0000
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        Xie Yongji <xieyongji@bytedance.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Laurent Vivier <lvivier@redhat.com>,
+        linux-kernel@vger.kernel.org, Max Gurtovoy <mgurtovoy@nvidia.com>,
+        Jason Wang <jasowang@redhat.com>, kvm@vger.kernel.org
+Subject: Re: [PATCH RFC v2 08/10] vdpa: add vdpa simulator for block device
+Message-ID: <20210202093412.GA243557@stefanha-x1.localdomain>
+References: <20210128144127.113245-1-sgarzare@redhat.com>
+ <20210128144127.113245-9-sgarzare@redhat.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="huq684BweRXVnRxX"
+Content-Disposition: inline
+In-Reply-To: <20210128144127.113245-9-sgarzare@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit a079973f462a ("usb: typec: tcpm: Remove tcpc_config
-configuration mechanism") removed the tcpc_config which includes the
-Sink VDO and it is not yet added back with fwnode. Add it now.
 
-Signed-off-by: Kyle Tso <kyletso@google.com>
----
- drivers/usb/typec/tcpm/tcpm.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+--huq684BweRXVnRxX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 979b7ee6473c..9b13e19118f0 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -5677,6 +5677,20 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
- 			port->new_source_frs_current = frs_current;
- 	}
- 
-+	/* sink-vdos is optional */
-+	ret = fwnode_property_count_u32(fwnode, "sink-vdos");
-+	if (ret < 0)
-+		ret = 0;
-+
-+	port->nr_snk_vdo = min(ret, VDO_MAX_OBJECTS);
-+	if (port->nr_snk_vdo) {
-+		ret = fwnode_property_read_u32_array(fwnode, "sink-vdos",
-+						     port->snk_vdo,
-+						     port->nr_snk_vdo);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
- 	return 0;
- }
- 
--- 
-2.30.0.365.g02bc693789-goog
+On Thu, Jan 28, 2021 at 03:41:25PM +0100, Stefano Garzarella wrote:
+> +static void vdpasim_blk_work(struct work_struct *work)
+> +{
+> +	struct vdpasim *vdpasim = container_of(work, struct vdpasim, work);
+> +	u8 status = VIRTIO_BLK_S_OK;
+> +	int i;
+> +
+> +	spin_lock(&vdpasim->lock);
+> +
+> +	if (!(vdpasim->status & VIRTIO_CONFIG_S_DRIVER_OK))
+> +		goto out;
+> +
+> +	for (i = 0; i < VDPASIM_BLK_VQ_NUM; i++) {
+> +		struct vdpasim_virtqueue *vq = &vdpasim->vqs[i];
+> +
+> +		if (!vq->ready)
+> +			continue;
+> +
+> +		while (vringh_getdesc_iotlb(&vq->vring, &vq->out_iov,
+> +					    &vq->in_iov, &vq->head,
+> +					    GFP_ATOMIC) > 0) {
+> +			int write;
+> +
+> +			vq->in_iov.i = vq->in_iov.used - 1;
+> +			write = vringh_iov_push_iotlb(&vq->vring, &vq->in_iov,
+> +						      &status, 1);
+> +			if (write <= 0)
+> +				break;
+
+This code looks fragile:
+
+1. Relying on unsigned underflow and the while loop in
+   vringh_iov_push_iotlb() to handle the case where in_iov.used == 0 is
+   risky and could break.
+
+2. Does this assume that the last in_iov element has size 1? For
+   example, the guest driver may send a single "in" iovec with size 513
+   when reading 512 bytes (with an extra byte for the request status).
+
+Please validate inputs fully, even in test/development code, because
+it's likely to be copied by others when writing production code (or
+deployed in production by unsuspecting users) :).
+
+--huq684BweRXVnRxX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmAZHJQACgkQnKSrs4Gr
+c8iMOQf9Ei+h8ZIngw9GkwH+ynl8uKorG3xB/0jyLQbEMG1hN8mcKrP21stVX6pi
+gioFVSxs+cZ1ZNS3HaBPzjbzA9nUVPuppl2lSmYkzbRJo85gr4mGMql8Z5ZS0zhf
+A+bq8NmikaxZuEDybVc7jhNSpOd+mPSBoQv7fn6q31E8cGMnmzaZuOmRfPvATbXO
+JMXQojrahx/RxvAjj27CKng+eMgLQm8dfmFvJ71cB3Qdgq4y65qCFRY41FTyA9fa
+RGJo1b8gYSYXLoaYcUVumCz03afY3d7JYVtD+sdkn8lCerx+igLlHc4ZUrTgxioI
+h1lxVCzYIYQAthUlKGGaPLSQ/cHRBQ==
+=Sk9g
+-----END PGP SIGNATURE-----
+
+--huq684BweRXVnRxX--
 
