@@ -2,221 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DAF430B949
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABCB130B94A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:14:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbhBBINF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 03:13:05 -0500
-Received: from mailout2.w1.samsung.com ([210.118.77.12]:43110 "EHLO
-        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229462AbhBBINC (ORCPT
+        id S230319AbhBBINS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 03:13:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229462AbhBBINO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 03:13:02 -0500
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20210202081220euoutp028cbc2bf837aeb3fa12defd2d04be32b9~f4A15oSnF1861618616euoutp02c
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 08:12:20 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20210202081220euoutp028cbc2bf837aeb3fa12defd2d04be32b9~f4A15oSnF1861618616euoutp02c
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1612253540;
-        bh=5CbKb7BP0ZcXNMXDhaSeQRwjXPkKpPBkU4CWzRy1xLI=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=V/Uy11c3uip3RExeFZs8KmOLzdYaDxUGHxNQCjHVlL1Hz4Ze+i/KG5Tjx/gTXZvfB
-         nhOAEi40AsR3HbIhGMor3xJKeJMdftRHde6de379h6FpotYf/pSjDpORbe80mOCjtU
-         aZyMLSBeE3r5+s/J/YD8clo92I1nYBP7Xua39+xQ=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210202081219eucas1p2d203459c65530140380eb51e154813f4~f4A1ll5NW1858818588eucas1p2F;
-        Tue,  2 Feb 2021 08:12:19 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-        eusmges1new.samsung.com (EUCPMTA) with SMTP id 27.71.27958.36909106; Tue,  2
-        Feb 2021 08:12:19 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210202081219eucas1p1c8dd3fd50e3a1de35b004fd0a3331188~f4A1E40581867718677eucas1p1F;
-        Tue,  2 Feb 2021 08:12:19 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210202081219eusmtrp2d8ba45ae9c13ca39f535446d199300e3~f4A1EIZBt1855418554eusmtrp2r;
-        Tue,  2 Feb 2021 08:12:19 +0000 (GMT)
-X-AuditID: cbfec7f2-efdff70000006d36-2b-601909630e37
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id 2A.AD.21957.36909106; Tue,  2
-        Feb 2021 08:12:19 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20210202081218eusmtip147424111a3478f9920489199ee182cba~f4A0eH8Wh0264402644eusmtip1t;
-        Tue,  2 Feb 2021 08:12:18 +0000 (GMT)
-Subject: Re: [PATCH v1 0/2] Make fw_devlink=on more forgiving
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Tudor Ambarus <Tudor.Ambarus@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-Message-ID: <71b1ee03-830e-750f-5ed6-ccf5e1cc7810@samsung.com>
-Date:   Tue, 2 Feb 2021 09:12:17 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
-        Gecko/20100101 Thunderbird/78.6.1
+        Tue, 2 Feb 2021 03:13:14 -0500
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95BC0C061573
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 00:12:33 -0800 (PST)
+Received: by mail-wm1-x32e.google.com with SMTP id f16so1484333wmq.5
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 00:12:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=UtGszIkdg9WNOOknjAzF5cpVs9oSS/XOJFgkzx2VHUg=;
+        b=DWN6+ht8i7YxICH5WPY4Cq+8/qwpbhSgZPyufefIPTt+K/e7HDwyILEXei5zzE6utZ
+         J89zy4PAL1yr44hqZv6NRlr67CEhTVlVYQWW1nIY0PR3b5rCVKnv9Z7mA3c/X9R7X9Hm
+         ISaA5oEgnfyy8WU0F5NhUg1wJeHn3T1uPCgk5b9Lb3qkoVF2lIqa7aBomkVS9mtx+eVG
+         LbkeOZkbyHSEK9Ra5XLCwj2j6klrFM8QUd24Rp0vATaS+YgVj3hOLbiXow8d6Gc3uZ0Y
+         XVm8ScrYKlctL2Tv5UhKpL2Cbw8/5owsxjLcUqG7NejUjryL0QjCYxbDqp45SlYrJiIp
+         O+jA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=UtGszIkdg9WNOOknjAzF5cpVs9oSS/XOJFgkzx2VHUg=;
+        b=iw1neGDDS6lG8bERhZ5jKh+ZbBkahenqqRj6/ggeXV67k1NEKY0BYFpyt6r80XCvtE
+         PAVTZQmjBYUbMnTYkWgiTYWNR7Onf1QiVQtzWFGP4RsdmumJvwOr0mnLhBpJjkyVpwbH
+         deKSXUxZy11pkZfpjyQGP032ufq5VDLlOc2AQ48h03yZ7T2QtMD1OvDPC3CHBJFUhjG6
+         FBhEzzOPfBOB4vhEvEvK3vsfsqnz55QWCpyqj7pu/LBvR8U0oMO9xGqXAeSfbwghyiI6
+         CJPRb4kloV557qEBabGfufHI92mJViSE+edlRUqSt3/tWH9EoKaUQLu1gbMJZnXVrxq9
+         GniQ==
+X-Gm-Message-State: AOAM531k8SzVgb2lfF992zPMOfvQvjhaI3/TYAO424lQit2RWvww+3xG
+        WiJCMjJiKcTa8MDIHlmyHtPcDA==
+X-Google-Smtp-Source: ABdhPJycdGMBdOipEvQ0lbsak6nLz9SLAIGAtx0Aw0BMXZG7S1vXOQWcRZbcRBY0aehf8GYKghvX6w==
+X-Received: by 2002:a1c:68d4:: with SMTP id d203mr97951wmc.153.1612253552331;
+        Tue, 02 Feb 2021 00:12:32 -0800 (PST)
+Received: from dell ([91.110.221.188])
+        by smtp.gmail.com with ESMTPSA id y18sm29352427wrt.19.2021.02.02.00.12.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 00:12:31 -0800 (PST)
+Date:   Tue, 2 Feb 2021 08:12:29 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Samuel Holland <samuel@sholland.org>,
+        Icenowy Zheng <icenowy@aosc.io>, Rob Herring <robh@kernel.org>,
+        =?iso-8859-1?Q?Cl=E9ment_P=E9ron?= <peron.clem@gmail.com>,
+        Shuosheng Huang <huangshuosheng@allwinnertech.com>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH v5 06/20] mfd: axp20x: Allow AXP chips without interrupt
+ lines
+Message-ID: <20210202081229.GW4774@dell>
+References: <20210127172500.13356-1-andre.przywara@arm.com>
+ <20210127172500.13356-7-andre.przywara@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <CAGETcx9FokhX+omo07Tgky_+NPH4uYSMiz2OctvK3L3AsGz8rg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrHKsWRmVeSWpSXmKPExsWy7djP87rJnJIJBkuvqFl8mXuKxeLZrb1M
-        Fs2L17NZ7NguYjHlz3Imi8u75rBZ7JxzktVi7pepzBZdh/6yWXxc4uDA5bFt9zZWj/c3Wtk9
-        Fmwq9di0qpPN4861PWwehw53MHrsn7uG3ePOj6WMHp83yQVwRnHZpKTmZJalFunbJXBlXD58
-        l73gqlLF5E1RDYwLZLoYOTkkBEwktj3bxNTFyMUhJLCCUeLQ/UksEM4XRomPa7YwQjifGSV2
-        3F3ICtNy4/YpqKrljBKzji9lh3A+Mkos3X2UGaRKWMBWYvrVBYwgtoiAlsSma4/BOpgFepgl
-        9i3bCjaKTcBQouttFxuIzStgJ3F06l52EJtFQEXi8bMHYINEBZIk7t45zARRIyhxcuYTFhCb
-        UyBQ4uuSz2A2s4C8RPPW2cwQtrjErSfzwT6SEOjmlGjcegdoAQeQ4yLRMU8K4gVhiVfHt7BD
-        2DIS/3fC1DczSjw8t5YdwulhlLjcNIMRospa4s65X2CDmAU0Jdbv0ocIO0o0T33DAjGfT+LG
-        W0GIG/gkJm2bzgwR5pXoaBOCqFYDBtY6uLUHL1xinsCoNAvJZ7OQfDMLyTezEPYuYGRZxSie
-        Wlqcm55abJiXWq5XnJhbXJqXrpecn7uJEZjETv87/mkH49xXH/UOMTJxMB5ilOBgVhLhPTVJ
-        LEGINyWxsiq1KD++qDQntfgQozQHi5I476rZa+KFBNITS1KzU1MLUotgskwcnFINTHIM1XNW
-        96VlfllUeMu1vvP5xnrRILX+BMmWgykigUtquRuTEw43Mc45sztMlc2u9mdB+/zGyIcxGu1S
-        P60aVHb/Zn2Tc6bHYsJkvc0JllKSGoumvG6PT664fyZHgMvoJ9fnm2EznWsbjpWfdN009/Wz
-        t983lHV/WmJhYLq6dLXzZfFZOaFWv04+bipZ1p/3TVtwr3voKY0romaeptZvj54LCzUXtOU6
-        ynk23jin8PYp5icbHOyz7a/+OCEd1Ti3OiejUV88acqvB1b/Zbmy/N6JhK+perpuymv2FL/J
-        E8U/GU9sc/VKeyzc2HB6/+2s4H3r3NvlvCacObrltsbi5487llYy62l8f+pY5bRciaU4I9FQ
-        i7moOBEAr22FVtEDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrIIsWRmVeSWpSXmKPExsVy+t/xu7rJnJIJBv9XsVh8mXuKxeLZrb1M
-        Fs2L17NZ7NguYjHlz3Imi8u75rBZ7JxzktVi7pepzBZdh/6yWXxc4uDA5bFt9zZWj/c3Wtk9
-        Fmwq9di0qpPN4861PWwehw53MHrsn7uG3ePOj6WMHp83yQVwRunZFOWXlqQqZOQXl9gqRRta
-        GOkZWlroGZlY6hkam8daGZkq6dvZpKTmZJalFunbJehlXD58l73gqlLF5E1RDYwLZLoYOTkk
-        BEwkbtw+xdLFyMUhJLCUUeLh3gmsEAkZiZPTGqBsYYk/17rYIIreM0pM2bMOLCEsYCsx/eoC
-        RhBbREBLYtO1x2CTmAUmMEtsPdvMDNFxiUni8ay7zCBVbAKGEl1vQUZxcvAK2EkcnbqXHcRm
-        EVCRePzsAViNqECSxIlZn5ghagQlTs58wgJicwoESnxd8hnMZhYwk5i3+SEzhC0v0bx1NpQt
-        LnHryXymCYxCs5C0z0LSMgtJyywkLQsYWVYxiqSWFuem5xYb6hUn5haX5qXrJefnbmIExu22
-        Yz8372Cc9+qj3iFGJg7GQ4wSHMxKIrynJoklCPGmJFZWpRblxxeV5qQWH2I0BfpnIrOUaHI+
-        MHHklcQbmhmYGpqYWRqYWpoZK4nzbp27Jl5IID2xJDU7NbUgtQimj4mDU6qBqcagVyd+Xl3x
-        Q7W/h37v+xrl9H2de8UM/3zvFXJOJhuOX/BRLSpgMp9kN9PkYdW9rK/z9yzMshSdcvpis4q3
-        n2/cmrv/n6q1zhG/uPB2x9a//Ft1khxnTl11v9rddqrKnc05stlBRtlJrzO7tnx+8/tgZ6P5
-        Ov5jZp/3rNyr7+n8JL/yZIHnB8nV4jHTZZK7ehSvm3OmrFGt6lh+tKNKRHG9zulJ9dXPN0rl
-        hVm9m+JdO/dUx4sQm6stPVKH512s9PP6MDtAM67wdsPEF0J6XmJ/d2vMqrdRTVi0actihdKD
-        d76E92iFXjwlyvVs7+9K0zXWryUyvSIfO1Ue2diZ9LDr0POgxRkPXkVcDvR6pcRSnJFoqMVc
-        VJwIACQ3/EdkAwAA
-X-CMS-MailID: 20210202081219eucas1p1c8dd3fd50e3a1de35b004fd0a3331188
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20210130040932eucas1p21f614520b70e3aecf3bf384a5821e5e8
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20210130040932eucas1p21f614520b70e3aecf3bf384a5821e5e8
-References: <20210130040344.2807439-1-saravanak@google.com>
-        <CGME20210130040932eucas1p21f614520b70e3aecf3bf384a5821e5e8@eucas1p2.samsung.com>
-        <CAGETcx941J7Zhrf=ZjO6PW0fiax5VXcV3gbsLQfM_wU_U0EnYw@mail.gmail.com>
-        <ca582e9f-bc4d-bb94-f700-1cf9dc897b57@samsung.com>
-        <CAGETcx9FokhX+omo07Tgky_+NPH4uYSMiz2OctvK3L3AsGz8rg@mail.gmail.com>
+In-Reply-To: <20210127172500.13356-7-andre.przywara@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
+On Wed, 27 Jan 2021, Andre Przywara wrote:
 
-On 01.02.2021 10:02, Saravana Kannan wrote:
-> On Mon, Feb 1, 2021 at 12:05 AM Marek Szyprowski
-> <m.szyprowski@samsung.com> wrote:
->> On 30.01.2021 05:08, Saravana Kannan wrote:
->>> On Fri, Jan 29, 2021 at 8:03 PM Saravana Kannan <saravanak@google.com> wrote:
->>>> This patch series solves two general issues with fw_devlink=on
->>>>
->>>> Patch 1/2 addresses the issue of firmware nodes that look like they'll
->>>> have struct devices created for them, but will never actually have
->>>> struct devices added for them. For example, DT nodes with a compatible
->>>> property that don't have devices added for them.
->>>>
->>>> Patch 2/2 address (for static kernels) the issue of optional suppliers
->>>> that'll never have a driver registered for them. So, if the device could
->>>> have probed with fw_devlink=permissive with a static kernel, this patch
->>>> should allow those devices to probe with a fw_devlink=on. This doesn't
->>>> solve it for the case where modules are enabled because there's no way
->>>> to tell if a driver will never be registered or it's just about to be
->>>> registered. I have some other ideas for that, but it'll have to come
->>>> later thinking about it a bit.
->>>>
->>>> These two patches might remove the need for several other patches that
->>>> went in as fixes for commit e590474768f1 ("driver core: Set
->>>> fw_devlink=on by default"), but I think all those fixes are good
->>>> changes. So I think we should leave those in.
->>>>
->>>> Marek, Geert,
->>>>
->>>> Can you try this series on a static kernel with your OF_POPULATED
->>>> changes reverted? I just want to make sure these patches can identify
->>>> and fix those cases.
->>>>
->>>> Tudor,
->>>>
->>>> You should still make the clock driver fix (because it's a bug), but I
->>>> think this series will fix your issue too (even without the clock driver
->>>> fix). Can you please give this a shot?
->>> Marek, Geert, Tudor,
->>>
->>> Forgot to say that this will probably fix your issues only in a static
->>> kernel. So please try this with a static kernel. If you can also try
->>> and confirm that this does not fix the issue for a modular kernel,
->>> that'd be good too.
->> I've checked those patches on top of linux next-20210129 with
->> c09a3e6c97f0 ("soc: samsung: pm_domains: Convert to regular platform
->> driver") commit reverted.
-> Hi Marek,
->
-> Thanks for testing!
->
->> Sadly it doesn't help.
-> That sucks. I even partly "tested" it out on my platform (that needs
-> CONFIG_MODULES) by commenting out the CONFIG_MODULES check. And I saw
-> some device links getting dropped.
+> Currently the AXP chip requires to have its IRQ line connected to some
+> interrupt controller, and will fail probing when this is not the case.
+> 
+> On a new Allwinner SoC (H616) there is no NMI pin anymore, and at
+> least one board does not connect the AXP's IRQ pin to anything else,
+> so the interrupt functionality of the AXP chip is simply not available.
+> 
+> Check whether the interrupt line number returned by the platform code is
+> valid, before trying to register the irqchip. If not, we skip this
+> registration, to avoid the driver to bail out completely.
+> 
+> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+> ---
+>  drivers/mfd/axp20x.c | 17 +++++++++++------
+>  1 file changed, 11 insertions(+), 6 deletions(-)
 
-Well, my fault. I've missed the fact that I have to disable 
-CONFIG_MODULES to let it work. This is not really a fix for my case, 
-because the exynos_defconfig has modules enabled (mainly for WiFi and 
-media drivers). However disabling the CONFIG_MODULES indeed helped a 
-bit. Most of the devices got finally probed. There are only 4 left in 
-the deferred_devices list:
+For my own reference (apply this as-is to your sign-off block):
 
-sound
-12e20000.sysmmu
-12d00000.hdmi
-12c10000.mixer
-
-The last two (12c10000.mixer and 12d00000.hdmi) are consumers of the 
-12e20000.sysmmu, which is a consumer of the 10023c20.power-domain. That 
-power domain in turn is a consumer (child) of another power domain 
-(10023c80.power-domain):
-
-# dmesg | grep 10023c20.power-domain
-[    0.354435] platform 10023c20.power-domain: Linked as a consumer to 
-10023c80.power-domain
-[    0.489573] platform 12d00000.hdmi: Linked as a consumer to 
-10023c20.power-domain
-[    0.497143] platform 12c10000.mixer: Linked as a consumer to 
-10023c20.power-domain
-[    0.580874] platform 12e20000.sysmmu: Linked as a consumer to 
-10023c20.power-domain
-[    0.601655] platform 12e20000.sysmmu: probe deferral - supplier 
-10023c20.power-domain not ready
-[    2.744884] platform 12c10000.mixer: probe deferral - supplier 
-10023c20.power-domain not ready
-[    2.766726] platform 12d00000.hdmi: probe deferral - supplier 
-10023c20.power-domain not ready
-
-...
-
-So a dependency chain of 2 power domains is still not resolved properly.
-
-I didn't have time to check what's wrong with the sound node. Simple 
-grepping of the messages for the 'sound' string don't give any results. 
-The above tests has been done on the Odroid U3 board 
-(arch/arm/boot/dts/exynos4412-odroidu3.dts).
-
-Best regards
+  Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
 
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
