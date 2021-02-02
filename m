@@ -2,186 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC0C930B475
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 02:10:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A4AA30B479
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 02:11:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229915AbhBBBJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 1 Feb 2021 20:09:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53334 "EHLO
+        id S230009AbhBBBKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 1 Feb 2021 20:10:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229866AbhBBBIz (ORCPT
+        with ESMTP id S229543AbhBBBJ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 1 Feb 2021 20:08:55 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C4CBC061573
-        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 17:08:15 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id o10so893385wmc.1
-        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 17:08:15 -0800 (PST)
+        Mon, 1 Feb 2021 20:09:59 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF86CC06174A
+        for <linux-kernel@vger.kernel.org>; Mon,  1 Feb 2021 17:09:19 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id gx20so1310267pjb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 01 Feb 2021 17:09:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RndNhAUPEtKb/UpdxEGQ4FR5gEglHekd7o0mVZRrBqQ=;
-        b=otCvhmypBIsU0J/onWHBK+g2qEX0OxWIhiVfNvjAUaHwhT+ibJG+RaYiLpZ4TJyqmi
-         DdZq19Q3SPbdn5aBZf8+AsCdYBGuPkn8epCg2pdmaNFOqakpsJSEbCIbdtZXqIIWkJvw
-         bR7L4z770xZfS8N4HIPZJ7gQaQJfolmpybmdiMYDyEBe8U61fIp0/5Rr3ZFZob9kEXuq
-         X37WyIlu6xyWlRb0+xpJHTgVA9sgfB646kpTpUK6Ty0tMmS+D8JxtjcuGYCc1s5TtpEg
-         8BtJaDPbNBf1QOhhhalJ/yreI5AaQDA5s9vwf+9M5EcazIKaLfT9apknEvGrShR5jCQW
-         hd+g==
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :mime-version;
+        bh=pNCTQ+GJhIhHpTNwwogRL6Yi/0jouh3mFkQQjXxphC8=;
+        b=KnvUvAZHPhu3r6Yh7bIMIXCYLeRudcUaDGZlu1gyzOjzIwWPZXs8tIgfnVHSZYL4R6
+         ZaY41xp4cjstE99q+drLELvzoA1XGHVs4Ci11M7UyrGpT8Nu2TajXHUBW3ajbAm05IVL
+         Uc1sqaK0T8c9Vj7ws6Awhl9unwhQJaY1aj5/TAuTWPLRT5b+rqpXJ+3+H0h7kiXg3dpr
+         7/7EBCmXMa8/T30kzfk8G/z/nlCocltuHltX+HW4agnpVtcRw4MIeEW66iCxkgKOpnDM
+         eXXiMSm/x+Kakf/k1msvZiFbMreUy3rP9qvrpiaqgnTcDX44PtQMQHTIynkX39EYorin
+         sdog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RndNhAUPEtKb/UpdxEGQ4FR5gEglHekd7o0mVZRrBqQ=;
-        b=Kiy44jXCRYoU5H68vb6PJyU89P/p3kFj+SqVNDSvfgOTS9f4YxqnLrQe8mekoWisBS
-         ggrJFz3+U+mewux34X9kDDR1R/k7Gh64amS+I2gd9rBjlgSVEWbTi8Nt/Asqqd0/vad9
-         qyDxr+caW/X9HbAgwG6fQv3sPoFtvbhdQ3Z3UNkkDpMNm1+Vaj1UvHWwrnnf+R1MuP32
-         Zp65SIPpIT/ZmXkigpWKr059ZM2aKU+MO6KKQCpRjzNHL4m48EYmRQjPW1xVq38rH+jl
-         3SIpWu9Bx9P7S94/itAf9aaJl/p44n+4km206uwIKwGB9OIkjbg0Jq/MOHg6lLXuDMHO
-         UDNw==
-X-Gm-Message-State: AOAM531Z74h1zFRsI/6gR2GR+hZN0GYDjPW1KyJ07DNGI8iD7J76jTfB
-        OV87KcY3Pbslo6FE0gxvLTFDax8XStkwlYp/+qjkpQ==
-X-Google-Smtp-Source: ABdhPJxyhZPweyEZdtVS8pbzENesvAgQg7GA6UjMKqYygX8k02wcRUHVoGOMkAll0W7ToHbbz9juQ18x6KIdTBOcux8=
-X-Received: by 2002:a05:600c:4fcb:: with SMTP id o11mr1232051wmq.88.1612228093600;
- Mon, 01 Feb 2021 17:08:13 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:mime-version;
+        bh=pNCTQ+GJhIhHpTNwwogRL6Yi/0jouh3mFkQQjXxphC8=;
+        b=czpAHNCxleJ5ZsU8QKRHaEG2XH8K2X+Of0LE/YHg3FzaRpAjvddE1+4s++EfdlOWOL
+         DU+wHkdps1hueZcttgdVcNYZ2C3DTkoBsueFeX/Fg0g7QGPlr/+jV2OSN7dkdwst4Cid
+         1mpoyN0r6IQz55Z9MxdW8iPuudWvj94Vkbf+kKlcW35IGRgzZc8+yT9F+fxIGYzXIzOx
+         yJtS+eqFPDskDngZgwnNVp1JoSvBk45UoHm3bm+7Zh3zAtVg//Hjobq2y2SgdUO0vhbn
+         Fvw7UHrYjECVGsoptJpZymjFQK+XyZrndb0bjFF5u559JmbzRDWkOZivGth4zXWyeXf/
+         APKA==
+X-Gm-Message-State: AOAM533737dJTPyef/oI5z6OdYRZoYXXXf6aFMVAyCnU+lP7lBNbmelw
+        q5Z0sTo12sqYxcjAYOHE9dHzsw==
+X-Google-Smtp-Source: ABdhPJyMh8u3GTa8m7YFZfJbDC7xX65+VnYP+upZQGZBqpSgFHhwIl7QJrf8YVKXSX+s6Zeew7AAiA==
+X-Received: by 2002:a17:90a:7e94:: with SMTP id j20mr1621007pjl.218.1612228159179;
+        Mon, 01 Feb 2021 17:09:19 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id r21sm20536846pgg.34.2021.02.01.17.09.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 17:09:18 -0800 (PST)
+Date:   Mon, 1 Feb 2021 17:09:17 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+cc:     Ben Widawsky <ben.widawsky@intel.com>, linux-cxl@vger.kernel.org,
+        Linux ACPI <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-nvdimm <linux-nvdimm@lists.01.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Chris Browy <cbrowy@avery-design.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jon Masters <jcm@jonmasters.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Rafael Wysocki <rafael.j.wysocki@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        daniel.lll@alibaba-inc.com,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        "Kelley, Sean V" <sean.v.kelley@intel.com>
+Subject: Re: [PATCH 03/14] cxl/mem: Find device capabilities
+In-Reply-To: <CAPcyv4jRVDdZyqH_eL4jjRvbCOEpO_UMUZdXbtevsY6PpcRq4Q@mail.gmail.com>
+Message-ID: <26a3b4dc-8872-3547-33f7-20cbd6cd981d@google.com>
+References: <32f33dd-97a-8b1c-d488-e5198a3d7748@google.com> <20210201215857.ud5cpg7hbxj2j5bx@intel.com> <b46ed01-3f1-6643-d371-7764c3bde4f8@google.com> <20210201222859.lzw3gvxuqebukvr6@intel.com> <20210201223314.qh24uxd7ajdppgfl@intel.com>
+ <f86149f8-3aea-9d8c-caa9-62771bf22cb5@google.com> <20210201225052.vrrvuxrsgmddjzbb@intel.com> <79b98f60-151b-6c80-65c3-91a37699d121@google.com> <20210201231718.2hwaqgn2f7kc7usw@intel.com> <a789317e-2ac2-10a1-dedd-1851972e3d6b@google.com>
+ <20210202001120.vr6mos7ylnbqytxh@intel.com> <CAPcyv4jRVDdZyqH_eL4jjRvbCOEpO_UMUZdXbtevsY6PpcRq4Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210128083817.314315-1-surenb@google.com> <20210128091348.GA1962975@infradead.org>
- <CAJuCfpFUhJozS98WJpH0KQKBzyGXvqS1fitu-mgSyhaJ1xL8SQ@mail.gmail.com>
- <YBMAGRIwcbPF17cU@google.com> <CAJuCfpF78RYedBoAgkDdgMdfSmNwC2AQk-zZxAqkhCdtBB9gtQ@mail.gmail.com>
-In-Reply-To: <CAJuCfpF78RYedBoAgkDdgMdfSmNwC2AQk-zZxAqkhCdtBB9gtQ@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Mon, 1 Feb 2021 17:08:02 -0800
-Message-ID: <CAJuCfpH5nwvtMR+32G0-xa_hY-b_Hnw=Figqq9xcsTGgJhOiww@mail.gmail.com>
-Subject: Re: [PATCH 1/1] dma-buf: heaps: Map system heap pages as managed by
- linux vm
-To:     Minchan Kim <minchan@kernel.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        "(Exiting) Benjamin Gaignard" <benjamin.gaignard@linaro.org>,
-        Liam Mark <lmark@codeaurora.org>, labbott@redhat.com,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        John Stultz <john.stultz@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Chris Goldsworthy <cgoldswo@codeaurora.org>,
-        =?UTF-8?Q?=C3=98rjan_Eide?= <orjan.eide@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        James Jones <jajones@nvidia.com>,
-        Hridya Valsaraju <hridya@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        linux-media <linux-media@vger.kernel.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 28, 2021 at 11:00 AM Suren Baghdasaryan <surenb@google.com> wrote:
->
-> On Thu, Jan 28, 2021 at 10:19 AM Minchan Kim <minchan@kernel.org> wrote:
-> >
-> > On Thu, Jan 28, 2021 at 09:52:59AM -0800, Suren Baghdasaryan wrote:
-> > > On Thu, Jan 28, 2021 at 1:13 AM Christoph Hellwig <hch@infradead.org> wrote:
-> > > >
-> > > > On Thu, Jan 28, 2021 at 12:38:17AM -0800, Suren Baghdasaryan wrote:
-> > > > > Currently system heap maps its buffers with VM_PFNMAP flag using
-> > > > > remap_pfn_range. This results in such buffers not being accounted
-> > > > > for in PSS calculations because vm treats this memory as having no
-> > > > > page structs. Without page structs there are no counters representing
-> > > > > how many processes are mapping a page and therefore PSS calculation
-> > > > > is impossible.
-> > > > > Historically, ION driver used to map its buffers as VM_PFNMAP areas
-> > > > > due to memory carveouts that did not have page structs [1]. That
-> > > > > is not the case anymore and it seems there was desire to move away
-> > > > > from remap_pfn_range [2].
-> > > > > Dmabuf system heap design inherits this ION behavior and maps its
-> > > > > pages using remap_pfn_range even though allocated pages are backed
-> > > > > by page structs.
-> > > > > Clear VM_IO and VM_PFNMAP flags when mapping memory allocated by the
-> > > > > system heap and replace remap_pfn_range with vm_insert_page, following
-> > > > > Laura's suggestion in [1]. This would allow correct PSS calculation
-> > > > > for dmabufs.
-> > > > >
-> > > > > [1] https://driverdev-devel.linuxdriverproject.narkive.com/v0fJGpaD/using-ion-memory-for-direct-io
-> > > > > [2] http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/2018-October/127519.html
-> > > > > (sorry, could not find lore links for these discussions)
-> > > > >
-> > > > > Suggested-by: Laura Abbott <labbott@kernel.org>
-> > > > > Signed-off-by: Suren Baghdasaryan <surenb@google.com>
-> > > > > ---
-> > > > >  drivers/dma-buf/heaps/system_heap.c | 6 ++++--
-> > > > >  1 file changed, 4 insertions(+), 2 deletions(-)
-> > > > >
-> > > > > diff --git a/drivers/dma-buf/heaps/system_heap.c b/drivers/dma-buf/heaps/system_heap.c
-> > > > > index 17e0e9a68baf..0e92e42b2251 100644
-> > > > > --- a/drivers/dma-buf/heaps/system_heap.c
-> > > > > +++ b/drivers/dma-buf/heaps/system_heap.c
-> > > > > @@ -200,11 +200,13 @@ static int system_heap_mmap(struct dma_buf *dmabuf, struct vm_area_struct *vma)
-> > > > >       struct sg_page_iter piter;
-> > > > >       int ret;
-> > > > >
-> > > > > +     /* All pages are backed by a "struct page" */
-> > > > > +     vma->vm_flags &= ~VM_PFNMAP;
-> > > >
-> > > > Why do we clear this flag?  It shouldn't even be set here as far as I
-> > > > can tell.
-> > >
-> > > Thanks for the question, Christoph.
-> > > I tracked down that flag being set by drm_gem_mmap_obj() which DRM
-> > > drivers use to "Set up the VMA to prepare mapping of the GEM object"
-> > > (according to drm_gem_mmap_obj comments). I also see a pattern in
-> > > several DMR drivers to call drm_gem_mmap_obj()/drm_gem_mmap(), then
-> > > clear VM_PFNMAP and then map the VMA (for example here:
-> > > https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/rockchip/rockchip_drm_gem.c#L246).
-> > > I thought that dmabuf allocator (in this case the system heap) would
-> > > be the right place to set these flags because it controls how memory
-> > > is allocated before mapping. However it's quite possible that I'm
-> >
-> > However, you're not setting but removing a flag under the caller.
-> > It's different with appending more flags(e.g., removing condition
-> > vs adding more conditions). If we should remove the flag, caller
-> > didn't need to set it from the beginning. Hiding it under this API
-> > continue to make wrong usecase in future.
->
-> Which takes us back to the question of why VM_PFNMAP is being set by
-> the caller in the first place.
->
-> >
-> > > missing the real reason for VM_PFNMAP being set in drm_gem_mmap_obj()
-> > > before dma_buf_mmap() is called. I could not find the answer to that,
-> > > so I hope someone here can clarify that.
-> >
-> > Guess DRM had used carved out pure PFN memory long time ago and
-> > changed to use dmabuf since somepoint.
->
-> It would be really good to know the reason for sure to address the
-> issue properly.
->
-> > Whatever there is a history, rather than removing the flag
-> > under them, let's add WARN_ON(vma->vm_flags & VM_PFNMAP) so
-> > we could clean up catching them and start discussion.
->
-> The issue with not clearing the flag here is that vm_insert_page() has
-> a BUG_ON(vma->vm_flags & VM_PFNMAP). If we do not clear this flag I
-> suspect we will get many angry developers :)
-> If your above guess is correct and we can mandate dmabuf heap users
-> not to use VM_PFNMAP then I think the following code might be the best
-> way forward:
->
-> +       bool pfn_requested = !!(vma->vm_flags & VM_PFNMAP);
-> +.      WARN_ON_ONCE(pfn_requested);
->
->         for_each_sgtable_page(table, &piter, vma->vm_pgoff) {
->                 struct page *page = sg_page_iter_page(&piter);
->
-> -               ret = remap_pfn_range(vma, addr, page_to_pfn(page), PAGE_SIZE,
-> -                                     vma->vm_page_prot);
-> +               ret = pfn_requested ?
-> +.                      remap_pfn_range(vma, addr, page_to_pfn(page), PAGE_SIZE,
-> +                                     vma->vm_page_prot) :
-> +                       vm_insert_page(vma, addr, page);
+On Mon, 1 Feb 2021, Dan Williams wrote:
 
-Folks, any objections to the approach above?
+> > > I don't have an objection to binding, but doesn't this require that the
+> > > check in cxl_validate_cmd_from_user() guarantees send_cmd->size_in cannot
+> > > be greater than 1MB?
+> >
+> > You're correct. I'd need to add:
+> > cxlm->mbox.payload_size =
+> >     min_t(size_t, 1 << CXL_GET_FIELD(cap, CXLDEV_MB_CAP_PAYLOAD_SIZE), 1<<20)
+> 
+> nit, use the existing SZ_1M define.
+> 
+
+Sounds good, thanks both!  I'll assume you'll follow-up on this in the 
+next revision for patch 7 ("cxl/mem: Add send command") and we can 
+consider this resolved :)
