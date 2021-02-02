@@ -2,132 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09A9830BC6D
+	by mail.lfdr.de (Postfix) with ESMTP id 7B6CB30BC6E
 	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:54:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229926AbhBBKvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 05:51:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhBBKvj (ORCPT
+        id S229991AbhBBKxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 05:53:55 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:16871 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229483AbhBBKxx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 05:51:39 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DB0C061573;
-        Tue,  2 Feb 2021 02:50:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=QUFoL1M4pevTeMyLwnDogHEMlQrHMZssskb6wG1LFcA=; b=wg2o6QP/gHbhqBuIhn1RZoUGj
-        2iHotGU7ufXkLAWPw4UwYFPNHzUu8ddsLF6ZH7DAZK9ibPxZPao37pY3QUiSj2kNvPg18QoU3RIbp
-        SB9YdTsgzRp09KPTWE899TVtBN6b7+9uCVpM084z3RB+393ttTKlzy9IbXmuACxRaE7AQP1axErmx
-        9bdLyqL5Tzp+2AR1s8H8Ra8HKPn+VaEgvK7MKLCh/WvBYIcLxWRrMqhYn6+wAR7lOhqYiExSBYnla
-        2ZSGKUuSlOCD0mvUg9A5mz9A1bzzWPt0jeQ/XhpyrV3IGp6JHZ9fsbmIMsvJ8Mev9a6w8QLTZD9/a
-        CRpSMItzA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:38176)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1l6tFN-0004FH-LS; Tue, 02 Feb 2021 10:49:25 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1l6tFE-0002yZ-0J; Tue, 02 Feb 2021 10:49:16 +0000
-Date:   Tue, 2 Feb 2021 10:49:15 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Vinod Koul <vkoul@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Eric Anholt <eric@anholt.net>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Eric Auger <eric.auger@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig.org@pengutronix.de>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
-        linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-rtc@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
-        kvm@vger.kernel.org, linux-fbdev@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: Re: [PATCH v3 0/5] amba: minor fix and various cleanups
-Message-ID: <20210202104915.GK1463@shell.armlinux.org.uk>
-References: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+        Tue, 2 Feb 2021 05:53:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1612263061;
+        s=strato-dkim-0002; d=goldelico.com;
+        h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+        From:Subject:Sender;
+        bh=PeVAVapo36NVgNgQvCQ5f98Kwxxzz3njm4fOPjoLqmE=;
+        b=oKLvU7zwZSdbyQUiwxFp6lmK7NLKyoXencqyjn1aAOKJ2G4W+Bucc6maOZRFI3NG+5
+        XlB53vdqMo1HI6kJ6xn0hawqIaL8FEGuOsXJSoCXgFlLedPURgAaIRaZdHt7TPyF1ofD
+        Iqj73iyYIAK9pbI3gQd8ehdbpkUvbuwr7hcM3WgIEkF4hY6WgyQbT1H8Gavg0UsY7LFM
+        izGFNa2H8RkUG6VMrS0Gx9LtLrdaGrte6LiAYxU0CzKtXgnwlriGy3d91aWjfLDdIcTe
+        sesW0ub4yP21vSSYXvUK7VwEAEOXqeItfIGR8fSb7kECmZWyEocWKmcQaOTYxXTL4la5
+        4D0Q==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NMGH/PqwDOsGq4="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+        by smtp.strato.de (RZmta 47.16.0 DYNA|AUTH)
+        with ESMTPSA id R01a2bx12AonLh7
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+        Tue, 2 Feb 2021 11:50:49 +0100 (CET)
+Subject: Re: BOG: commit 89c7cb1608ac3 ("of/device: Update dma_range_map only when dev has valid dma-ranges") seems to break Pinephone display or LCDC
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset=utf-8
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <YBkh6IZfmzaLWYPp@aptenodytes>
+Date:   Tue, 2 Feb 2021 11:50:48 +0100
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Yong Wu <yong.wu@mediatek.com>, Rob Herring <robh@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E45AE13E-6A74-43E6-A7AE-B0D425B10344@goldelico.com>
+References: <81FE44A3-38C8-4B78-BB77-C09B4FC80B0A@goldelico.com> <YBkh6IZfmzaLWYPp@aptenodytes>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+X-Mailer: Apple Mail (2.3124)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 26, 2021 at 05:58:30PM +0100, Uwe Kleine-König wrote:
-> From: Uwe Kleine-König <u.kleine-koenig.org@pengutronix.de
-> 
-> Hello,
-> 
-> Changes since v2 sent with Message-Id:
-> 20201124133139.3072124-1-uwe@kleine-koenig.org:
-> 
->  - Rebase to v5.11-rc1 (which resulted in a few conflicts in
->    drivers/hwtracing).
->  - Add various Acks.
->  - Send to more maintainers directly (which I think is one of the
->    reasons why there are so few Acks).
-> 
-> For my taste patch 4 needs some more acks (drivers/char/hw_random,
-> drivers/dma, drivers/gpu/drm/pl111, drivers/i2c, drivers/mmc,
-> drivers/vfio, drivers/watchdog and sound/arm have no maintainer feedback
-> yet).
-> 
-> My suggestion is to let this series go in via Russell King (who cares
-> for amba). Once enough Acks are there I can also provide a tag for
-> merging into different trees. Just tell me if you prefer this solution.
-> 
-> Would be great if this could make it for v5.12, but I'm aware it's
-> already late in the v5.11 cycle so it might have to wait for v5.13.
+Hi Paul,
 
-I think you need to have a 6th patch which moves the
-probe/remove/shutdown methods into the bus_type - if you're setting
-them for every struct device_driver, then there's no point doing that
-and they may as well be in the bus_type.
+> Am 02.02.2021 um 10:56 schrieb Paul Kocialkowski =
+<paul.kocialkowski@bootlin.com>:
+>=20
+> Hi Nikolaus,
+>=20
+> On Tue 02 Feb 21, 10:18, H. Nikolaus Schaller wrote:
+>> Hi,
+>> since v5.11-rc6 my Pinephone display shows some moir=C3=A9 pattern.
+>>=20
+>> I did a bisect between v5.11-rc5 and v5.11-rc6 and it told me that
+>> the commit mentioned in the subject is the reason.
+>>=20
+>> Reverting it makes the display work again and re-reverting fail =
+again.
+>>=20
+>> IMHO it seems as if the display DMA of the pinephone (allwinner =
+suni-a54)
+>> got influenced and stopped to scan the framebuffer.
+>>=20
+>> The only dma-ranges I could find are defined here:
+>>=20
+>> 	arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+>>=20
+>> 	dma-ranges =3D <0x00000000 0x40000000 0xc0000000>;
+>>=20
+>> but I can't tell if they are "valid" or not.
+>>=20
+>> Any insights are welcome. And please direct to the right =
+people/mailing lists
+>> if they are missing.
+>=20
+> This may not be strictly the same thing, but is this patch in your =
+tree:
+> =
+https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210115175831=
+.1184260-2-paul.kocialkowski@bootlin.com/
+>=20
+> If not, it's worth a try to add it.
 
-Apart from that, it looks good.
+No, it hasn't arrived in v5.11-rc6 (or linux-next) yet.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+But it fixes the issue.
+
+great and many thanks,
+Nikolaus
+
+> If it is, it's worth doing a revert.
+>=20
+> My understanding is like DE2 does not need a particular DMA range and =
+has DRAM
+> starting at 0x40000000 (just like the CPU) but it will map DRAM in a =
+loop
+> before and after this address.
+>=20
+> I suspect the issue shows because the pinephone has 2 GiB RAM while =
+for other
+> boards with < 2 GiB RAM, removing 0x40000000 to the DMA addresses =
+still points
+> to the same location. So IMO the MBUS dma-ranges shouldn't apply to =
+DE2.
+> I think this is already the case in dt, but the mbus driver may add it =
+if you
+> don't have that patch.
+>=20
+> I think I have a few A64 boards around, but probably not with 2 GiB =
+RAM.
+> If adding the patch doesn't help, I'll try to make a few test.
+>=20
+> Cheers!
+>=20
+> Paul
+>=20
+> --=20
+> Paul Kocialkowski, Bootlin
+> Embedded Linux and kernel engineering
+> https://bootlin.com
+
