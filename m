@@ -2,192 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B450030CE18
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 22:41:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E766C30CDFB
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 22:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233238AbhBBVkj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 16:40:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231748AbhBBVkD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 16:40:03 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF4E6C061797
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 13:38:30 -0800 (PST)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1l73KK-0005G0-0Y; Tue, 02 Feb 2021 22:35:12 +0100
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1l73KD-000359-6W; Tue, 02 Feb 2021 22:35:05 +0100
-Date:   Tue, 2 Feb 2021 22:35:02 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Russell King <linux+pull@armlinux.org.uk>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-fbdev@vger.kernel.org, Cornelia Huck <cohuck@redhat.com>,
-        kvm@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
-        Jaroslav Kysela <perex@perex.cz>,
-        Eric Anholt <eric@anholt.net>, linux-i2c@vger.kernel.org,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        linux-rtc@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Takashi Iwai <tiwai@suse.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-serial@vger.kernel.org, linux-input@vger.kernel.org,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Mike Leach <mike.leach@linaro.org>,
-        linux-watchdog@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        coresight@lists.linaro.org, Vladimir Zapolskiy <vz@mleia.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matt Mackall <mpm@selenic.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
+        id S231607AbhBBVgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 16:36:23 -0500
+Received: from mga07.intel.com ([134.134.136.100]:43733 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229502AbhBBVgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 16:36:18 -0500
+IronPort-SDR: 1nLWwC+tEqi/ksREfMMopneNFHR2zSpvxaQ1RHeCTouV7mA2GRUfnN40We3rQE7V0Qb7n2Lu+8
+ u68izaJ4GVdQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="245014615"
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="scan'208";a="245014615"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 13:35:36 -0800
+IronPort-SDR: 2bgTY1tATeBIHm4XrAIPxk8WToiSG4iIjMpO0M1YHp8kO0ycug+8oSqtqfTNscY3CzyRMf2V19
+ n9qHu7cTe0Eg==
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="scan'208";a="433085153"
+Received: from capeter1-mobl.amr.corp.intel.com (HELO [10.212.5.169]) ([10.212.5.169])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 13:35:35 -0800
+Subject: Re: [RFC][PATCH 11/13] mm/vmscan: Consider anonymous pages without
+ swap
+To:     Yang Shi <shy828301@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, kbusch@kernel.org,
+        "Verma, Vishal L" <vishal.l.verma@intel.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Rientjes <rientjes@google.com>,
+        Huang Ying <ying.huang@intel.com>,
         Dan Williams <dan.j.williams@intel.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        linux-crypto@vger.kernel.org, kernel@pengutronix.de,
-        Leo Yan <leo.yan@linaro.org>, dmaengine@vger.kernel.org
-Subject: Re: [GIT PULL] immutable branch for amba changes targeting v5.12-rc1
-Message-ID: <20210202213502.ya4luwvklbte72sz@pengutronix.de>
-References: <20210126165835.687514-1-u.kleine-koenig@pengutronix.de>
- <20210202135350.36nj3dmcoq3t7gcf@pengutronix.de>
+        David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>
+References: <20210126003411.2AC51464@viggo.jf.intel.com>
+ <20210126003432.6E88B570@viggo.jf.intel.com>
+ <CAHbLzkp+PXOUBmKg-4z3-6kUePnwcO65L3W51UvYiT1g8uYh5Q@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
+ oAiUXvGAOxPDsB/P6UEOISPpLl5IuYsSwAeZGkdQ5g6m1xq7AlDJQZddhr/1DC/nMVa/2BoY
+ 2UnKuZuSBu7lgOE193+7Uks3416N2hTkyKUSNkduyoZ9F5twiBhxPJwPtn/wnch6n5RsoXsb
+ ygOEDxLEsSk/7eyFycjE+btUtAWZtx+HseyaGfqkZK0Z9bT1lsaHecmB203xShwCPT49Blxz
+ VOab8668QpaEOdLGhtvrVYVK7x4skyT3nGWcgDCl5/Vp3TWA4K+IofwvXzX2ON/Mj7aQwf5W
+ iC+3nWC7q0uxKwwsddJ0Nu+dpA/UORQWa1NiAftEoSpk5+nUUi0WE+5DRm0H+TXKBWMGNCFn
+ c6+EKg5zQaa8KqymHcOrSXNPmzJuXvDQ8uj2J8XuzCZfK4uy1+YdIr0yyEMI7mdh4KX50LO1
+ pmowEqDh7dLShTOif/7UtQYrzYq9cPnjU2ZW4qd5Qz2joSGTG9eCXLz5PRe5SqHxv6ljk8mb
+ ApNuY7bOXO/A7T2j5RwXIlcmssqIjBcxsRRoIbpCwWWGjkYjzYCjgsNFL6rt4OL11OUF37wL
+ QcTl7fbCGv53KfKPdYD5hcbguLKi/aCccJK18ZwNjFhqr4MliQARAQABzShEYXZpZCBDaHJp
+ c3RvcGhlciBIYW5zZW4gPGRhdmVAc3I3MS5uZXQ+wsF7BBMBAgAlAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAUCTo3k0QIZAQAKCRBoNZUwcMmSsMO2D/421Xg8pimb9mPzM5N7khT0
+ 2MCnaGssU1T59YPE25kYdx2HntwdO0JA27Wn9xx5zYijOe6B21ufrvsyv42auCO85+oFJWfE
+ K2R/IpLle09GDx5tcEmMAHX6KSxpHmGuJmUPibHVbfep2aCh9lKaDqQR07gXXWK5/yU1Dx0r
+ VVFRaHTasp9fZ9AmY4K9/BSA3VkQ8v3OrxNty3OdsrmTTzO91YszpdbjjEFZK53zXy6tUD2d
+ e1i0kBBS6NLAAsqEtneplz88T/v7MpLmpY30N9gQU3QyRC50jJ7LU9RazMjUQY1WohVsR56d
+ ORqFxS8ChhyJs7BI34vQusYHDTp6PnZHUppb9WIzjeWlC7Jc8lSBDlEWodmqQQgp5+6AfhTD
+ kDv1a+W5+ncq+Uo63WHRiCPuyt4di4/0zo28RVcjtzlGBZtmz2EIC3vUfmoZbO/Gn6EKbYAn
+ rzz3iU/JWV8DwQ+sZSGu0HmvYMt6t5SmqWQo/hyHtA7uF5Wxtu1lCgolSQw4t49ZuOyOnQi5
+ f8R3nE7lpVCSF1TT+h8kMvFPv3VG7KunyjHr3sEptYxQs4VRxqeirSuyBv1TyxT+LdTm6j4a
+ mulOWf+YtFRAgIYyyN5YOepDEBv4LUM8Tz98lZiNMlFyRMNrsLV6Pv6SxhrMxbT6TNVS5D+6
+ UorTLotDZKp5+M7BTQRUY85qARAAsgMW71BIXRgxjYNCYQ3Xs8k3TfAvQRbHccky50h99TUY
+ sqdULbsb3KhmY29raw1bgmyM0a4DGS1YKN7qazCDsdQlxIJp9t2YYdBKXVRzPCCsfWe1dK/q
+ 66UVhRPP8EGZ4CmFYuPTxqGY+dGRInxCeap/xzbKdvmPm01Iw3YFjAE4PQ4hTMr/H76KoDbD
+ cq62U50oKC83ca/PRRh2QqEqACvIH4BR7jueAZSPEDnzwxvVgzyeuhwqHY05QRK/wsKuhq7s
+ UuYtmN92Fasbxbw2tbVLZfoidklikvZAmotg0dwcFTjSRGEg0Gr3p/xBzJWNavFZZ95Rj7Et
+ db0lCt0HDSY5q4GMR+SrFbH+jzUY/ZqfGdZCBqo0cdPPp58krVgtIGR+ja2Mkva6ah94/oQN
+ lnCOw3udS+Eb/aRcM6detZr7XOngvxsWolBrhwTQFT9D2NH6ryAuvKd6yyAFt3/e7r+HHtkU
+ kOy27D7IpjngqP+b4EumELI/NxPgIqT69PQmo9IZaI/oRaKorYnDaZrMXViqDrFdD37XELwQ
+ gmLoSm2VfbOYY7fap/AhPOgOYOSqg3/Nxcapv71yoBzRRxOc4FxmZ65mn+q3rEM27yRztBW9
+ AnCKIc66T2i92HqXCw6AgoBJRjBkI3QnEkPgohQkZdAb8o9WGVKpfmZKbYBo4pEAEQEAAcLB
+ XwQYAQIACQUCVGPOagIbDAAKCRBoNZUwcMmSsJeCEACCh7P/aaOLKWQxcnw47p4phIVR6pVL
+ e4IEdR7Jf7ZL00s3vKSNT+nRqdl1ugJx9Ymsp8kXKMk9GSfmZpuMQB9c6io1qZc6nW/3TtvK
+ pNGz7KPPtaDzvKA4S5tfrWPnDr7n15AU5vsIZvgMjU42gkbemkjJwP0B1RkifIK60yQqAAlT
+ YZ14P0dIPdIPIlfEPiAWcg5BtLQU4Wg3cNQdpWrCJ1E3m/RIlXy/2Y3YOVVohfSy+4kvvYU3
+ lXUdPb04UPw4VWwjcVZPg7cgR7Izion61bGHqVqURgSALt2yvHl7cr68NYoFkzbNsGsye9ft
+ M9ozM23JSgMkRylPSXTeh5JIK9pz2+etco3AfLCKtaRVysjvpysukmWMTrx8QnI5Nn5MOlJj
+ 1Ov4/50JY9pXzgIDVSrgy6LYSMc4vKZ3QfCY7ipLRORyalFDF3j5AGCMRENJjHPD6O7bl3Xo
+ 4DzMID+8eucbXxKiNEbs21IqBZbbKdY1GkcEGTE7AnkA3Y6YB7I/j9mQ3hCgm5muJuhM/2Fr
+ OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
+ ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
+ z5cecg==
+Message-ID: <21785ed9-9591-e070-0941-6113999fa69e@intel.com>
+Date:   Tue, 2 Feb 2021 13:35:34 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="iy6nspqtdtxt6xyd"
-Content-Disposition: inline
-In-Reply-To: <20210202135350.36nj3dmcoq3t7gcf@pengutronix.de>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <CAHbLzkp+PXOUBmKg-4z3-6kUePnwcO65L3W51UvYiT1g8uYh5Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2/2/21 10:56 AM, Yang Shi wrote:
+>>
+>>         /* If we have no swap space, do not bother scanning anon pages. */
+>> -       if (!sc->may_swap || mem_cgroup_get_nr_swap_pages(memcg) <= 0) {
+>> +       if (!sc->may_swap || !can_reclaim_anon_pages(memcg, pgdat->node_id)) {
+> Just one minor thing about may_swap. It may be cleared by
+> nr_boost_reclaim. But demotion should be fine for boost_reclaim.
 
---iy6nspqtdtxt6xyd
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In other words, this if() is here is to avoid generating suboptimal I/O
+during boost_reclaim.  But, since demotion doesn't generate any I/O, it
+*should* be fine for boost_reclaim.
 
-Hello,
-
-On Tue, Feb 02, 2021 at 02:53:50PM +0100, Uwe Kleine-K=F6nig wrote:
-> the following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e=
-5e:
->=20
->   Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
->=20
-> are available in the Git repository at:
->=20
->   https://git.pengutronix.de/git/ukl/linux tags/amba-make-remove-return-v=
-oid
->=20
-> for you to fetch changes up to f170b59fedd733b92f58c4d7c8357fbf7601d623:
->=20
->   amba: Make use of bus_type functions (2021-02-02 14:26:02 +0100)
->=20
-> I expect this tag to be merged by Russell King as amba maintainer and by
-> Mathieu Poirier (or Greg Kroah-Hartman?) for coresight as there are some
-> pending conflicting changes. These are not hard to resolve but also
-> non-trivial. Tell me if you need assistance for resolving, also if it's o=
-nly a
-> second pair of eyes to judge your resolution.
-
-Alternatively to my additional patch sent earlier today I prepared a v2
-tag at
-
-  https://git.pengutronix.de/git/ukl/linux tags/amba-make-remove-return-voi=
-d-v2
-
-with the build fix squashed in. Iff you prefer and both Russell and Greg
-agree to pull this one instead of the (implicit) v1 we can maybe prevent
-introducing this build regression in mainline. Please coordinate among
-you two. And sorry again for breaking the build.
-
-Best regards
-Uwe
-
-PS: The range-diff between the original
-tags/amba-make-remove-return-void and
-tags/amba-make-remove-return-void-v2 is:
-
-1:  3fd269e74f2f ! 1:  481963c91284 amba: Make the remove callback return v=
-oid
-    @@ Commit message
-         Acked-by: Vladimir Zapolskiy <vz@mleia.com> # for memory/pl172
-         Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-         Link: https://lore.kernel.org/r/20210126165835.687514-5-u.kleine-k=
-oenig@pengutronix.de
-    +    [ukleinek: squashed in a build fix for drivers/mailbox/arm_mhuv2.c]
-         Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-    =20
-      ## drivers/amba/bus.c ##
-    @@ drivers/input/serio/ambakmi.c: static int amba_kmi_remove(struct amb=
-a_device *de
-     =20
-      static int __maybe_unused amba_kmi_resume(struct device *dev)
-    =20
-    + ## drivers/mailbox/arm_mhuv2.c ##
-    +@@ drivers/mailbox/arm_mhuv2.c: static int mhuv2_probe(struct amba_dev=
-ice *adev, const struct amba_id *id)
-    +   return ret;
-    + }
-    +=20
-    +-static int mhuv2_remove(struct amba_device *adev)
-    ++static void mhuv2_remove(struct amba_device *adev)
-    + {
-    +   struct mhuv2 *mhu =3D amba_get_drvdata(adev);
-    +=20
-    +   if (mhu->frame =3D=3D SENDER_FRAME)
-    +           writel_relaxed(0x0, &mhu->send->access_request);
-    +-
-    +-  return 0;
-    + }
-    +=20
-    + static struct amba_id mhuv2_ids[] =3D {
-    +
-      ## drivers/memory/pl172.c ##
-     @@ drivers/memory/pl172.c: static int pl172_probe(struct amba_device *=
-adev, const struct amba_id *id)
-        return ret;
-2:  f170b59fedd7 =3D 2:  f30d22a7bfab amba: Make use of bus_type functions
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---iy6nspqtdtxt6xyd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmAZxYMACgkQwfwUeK3K
-7AnuCggAjiQbE+eiwx7Lq2dUAxw0U6bgjFY/EXIcLCMbTPjdEffSVExAzMT3cTCy
-zISJDI3QF315/RleMFcnEXrXJl7Ft8SkoEvZfheNfz5JmPu8jPIEUp5giooDmpBi
-TV/LqBdE+wmy+J7byBdoH8Chvg9RR52u6aJFyj8nzwAoqj/+YiSYcB2nsMtr962B
-GLNq7i0h7Lj0cZxGVTsh75QuVSyK7yedx7gS4F5wUURJpSa5LzeeWAboWgARpg+M
-/BIWHX1CAs2JGZQqzJF2hffd/HZhQCWJlgTa1x92sg2Ic62K+ufwdsHlo87Wuo42
-N6jvYIoY/t/LHHL+3zxpfxM1yFao+A==
-=lf3x
------END PGP SIGNATURE-----
-
---iy6nspqtdtxt6xyd--
+I agree with that in theory.  Although, I'm tempted to put it in the
+TODO list as something to look at in the future.  Do you think it's
+something that's immediately necessary?
