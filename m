@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8833430C95E
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:19:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 072C830C16C
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:25:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238359AbhBBSQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:16:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47580 "EHLO mail.kernel.org"
+        id S234370AbhBBOW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 09:22:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49514 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233692AbhBBOGl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:06:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99AB56501F;
-        Tue,  2 Feb 2021 13:49:33 +0000 (UTC)
+        id S234208AbhBBON0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:13:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 020C964FB5;
+        Tue,  2 Feb 2021 13:53:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273774;
-        bh=mUM0mgXCHkJNejNNkl1ETLUcnYyoPBasVulZeXoBvXQ=;
+        s=korg; t=1612273984;
+        bh=w6g19S2WBt4INR8oiK1ZUQ1ESqkWehgIWisRg4kEjOA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yJvD03npeoL6hdmhBGEQBTL1sBgJF+V9g4fw3+ykVgFvRakBysdnAvt+h/QF+SX00
-         8QVD8nqMHUbmrcK9IVgFSG2qSWJSLwfPUqWmUvJrAmz59EIO/w+Y3OlnoFtDfYaTW0
-         qHKijKoMsQp7qSa+zrD90Y9PDw0yAXI6sydNstLM=
+        b=Lpr6ubEzc9AJ7a8BV5luZjIu+3a6K5xOKkr5AuphXNDUjveiU2soDh3n9HfqnFY55
+         kHl+Aalp4z0Ye6XOZDov3nYYaRM6MOFtOEiBRI15oc9NKQsLBYV0R79I2cvKg4YnAt
+         YyQCKvl3cRohALQP0E+uZkhKM3L5fSMDkTBFnk+s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 24/28] can: dev: prevent potential information leak in can_fill_info()
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 4.19 01/37] nbd: freeze the queue while were adding connections
 Date:   Tue,  2 Feb 2021 14:38:44 +0100
-Message-Id: <20210202132942.158736432@linuxfoundation.org>
+Message-Id: <20210202132942.964803997@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132941.180062901@linuxfoundation.org>
-References: <20210202132941.180062901@linuxfoundation.org>
+In-Reply-To: <20210202132942.915040339@linuxfoundation.org>
+References: <20210202132942.915040339@linuxfoundation.org>
 User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -40,38 +41,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit b552766c872f5b0d90323b24e4c9e8fa67486dd5 ]
+commit b98e762e3d71e893b221f871825dc64694cfb258 upstream.
 
-The "bec" struct isn't necessarily always initialized. For example, the
-mcp251xfd_get_berr_counter() function doesn't initialize anything if the
-interface is down.
+When setting up a device, we can krealloc the config->socks array to add
+new sockets to the configuration.  However if we happen to get a IO
+request in at this point even though we aren't setup we could hit a UAF,
+as we deref config->socks without any locking, assuming that the
+configuration was setup already and that ->socks is safe to access it as
+we have a reference on the configuration.
 
-Fixes: 52c793f24054 ("can: netlink support for bus-error reporting and counters")
-Link: https://lore.kernel.org/r/YAkaRdRJncsJO8Ve@mwanda
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+But there's nothing really preventing IO from occurring at this point of
+the device setup, we don't want to incur the overhead of a lock to
+access ->socks when it will never change while the device is running.
+To fix this UAF scenario simply freeze the queue if we are adding
+sockets.  This will protect us from this particular case without adding
+any additional overhead for the normal running case.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/can/dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/block/nbd.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 45f15ac6b1015..1a79118b008b1 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -987,7 +987,7 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
- {
- 	struct can_priv *priv = netdev_priv(dev);
- 	struct can_ctrlmode cm = {.flags = priv->ctrlmode};
--	struct can_berr_counter bec;
-+	struct can_berr_counter bec = { };
- 	enum can_state state = priv->state;
+--- a/drivers/block/nbd.c
++++ b/drivers/block/nbd.c
+@@ -966,6 +966,12 @@ static int nbd_add_socket(struct nbd_dev
+ 	if (!sock)
+ 		return err;
  
- 	if (priv->do_get_state)
--- 
-2.27.0
-
++	/*
++	 * We need to make sure we don't get any errant requests while we're
++	 * reallocating the ->socks array.
++	 */
++	blk_mq_freeze_queue(nbd->disk->queue);
++
+ 	if (!netlink && !nbd->task_setup &&
+ 	    !test_bit(NBD_BOUND, &config->runtime_flags))
+ 		nbd->task_setup = current;
+@@ -1004,10 +1010,12 @@ static int nbd_add_socket(struct nbd_dev
+ 	nsock->cookie = 0;
+ 	socks[config->num_connections++] = nsock;
+ 	atomic_inc(&config->live_connections);
++	blk_mq_unfreeze_queue(nbd->disk->queue);
+ 
+ 	return 0;
+ 
+ put_socket:
++	blk_mq_unfreeze_queue(nbd->disk->queue);
+ 	sockfd_put(sock);
+ 	return err;
+ }
 
 
