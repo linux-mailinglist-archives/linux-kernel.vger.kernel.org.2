@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 072C830C16C
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 15:25:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5CD30C82D
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 18:45:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234370AbhBBOW3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 09:22:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49514 "EHLO mail.kernel.org"
+        id S237810AbhBBRns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 12:43:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234208AbhBBON0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 09:13:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 020C964FB5;
-        Tue,  2 Feb 2021 13:53:03 +0000 (UTC)
+        id S234110AbhBBOMU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 09:12:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C7B764FAE;
+        Tue,  2 Feb 2021 13:52:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1612273984;
-        bh=w6g19S2WBt4INR8oiK1ZUQ1ESqkWehgIWisRg4kEjOA=;
+        s=korg; t=1612273924;
+        bh=YmmVrfADKQPkGiEzioXk3a5THk9oy8tVCgLEMIEcB9w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lpr6ubEzc9AJ7a8BV5luZjIu+3a6K5xOKkr5AuphXNDUjveiU2soDh3n9HfqnFY55
-         kHl+Aalp4z0Ye6XOZDov3nYYaRM6MOFtOEiBRI15oc9NKQsLBYV0R79I2cvKg4YnAt
-         YyQCKvl3cRohALQP0E+uZkhKM3L5fSMDkTBFnk+s=
+        b=V96q+ZN1eA8bp+APjgaa9sZHFhpsYQUWBwC5AkebFaEDJZ+QTTii3RNbPYfibCc4i
+         VLiCxWf2pwkk/QjeXAUjn5QWm6rz0NdqCfS/u7atgVFnhkBh8YpR1Tr9OsHsdKhEtN
+         X7q8pY1k3OGl+FTEzjGzrkx6zSy+IxycSqdGddRY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.19 01/37] nbd: freeze the queue while were adding connections
-Date:   Tue,  2 Feb 2021 14:38:44 +0100
-Message-Id: <20210202132942.964803997@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+444248c79e117bc99f46@syzkaller.appspotmail.com,
+        syzbot+8b2a88a09653d4084179@syzkaller.appspotmail.com,
+        Johannes Berg <johannes.berg@intel.com>
+Subject: [PATCH 4.14 04/30] wext: fix NULL-ptr-dereference with cfg80211s lack of commit()
+Date:   Tue,  2 Feb 2021 14:38:45 +0100
+Message-Id: <20210202132942.317719364@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202132942.915040339@linuxfoundation.org>
-References: <20210202132942.915040339@linuxfoundation.org>
+In-Reply-To: <20210202132942.138623851@linuxfoundation.org>
+References: <20210202132942.138623851@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -41,60 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josef Bacik <josef@toxicpanda.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-commit b98e762e3d71e893b221f871825dc64694cfb258 upstream.
+commit 5122565188bae59d507d90a9a9fd2fd6107f4439 upstream.
 
-When setting up a device, we can krealloc the config->socks array to add
-new sockets to the configuration.  However if we happen to get a IO
-request in at this point even though we aren't setup we could hit a UAF,
-as we deref config->socks without any locking, assuming that the
-configuration was setup already and that ->socks is safe to access it as
-we have a reference on the configuration.
+Since cfg80211 doesn't implement commit, we never really cared about
+that code there (and it's configured out w/o CONFIG_WIRELESS_EXT).
+After all, since it has no commit, it shouldn't return -EIWCOMMIT to
+indicate commit is needed.
 
-But there's nothing really preventing IO from occurring at this point of
-the device setup, we don't want to incur the overhead of a lock to
-access ->socks when it will never change while the device is running.
-To fix this UAF scenario simply freeze the queue if we are adding
-sockets.  This will protect us from this particular case without adding
-any additional overhead for the normal running case.
+However, EIWCOMMIT is actually an alias for EINPROGRESS, which _can_
+happen if e.g. we try to change the frequency but we're already in
+the process of connecting to some network, and drivers could return
+that value (or even cfg80211 itself might).
+
+This then causes us to crash because dev->wireless_handlers is NULL
+but we try to check dev->wireless_handlers->standard[0].
+
+Fix this by also checking dev->wireless_handlers. Also simplify the
+code a little bit.
 
 Cc: stable@vger.kernel.org
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Reported-by: syzbot+444248c79e117bc99f46@syzkaller.appspotmail.com
+Reported-by: syzbot+8b2a88a09653d4084179@syzkaller.appspotmail.com
+Link: https://lore.kernel.org/r/20210121171621.2076e4a37d5a.I5d9c72220fe7bb133fb718751da0180a57ecba4e@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/block/nbd.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ net/wireless/wext-core.c |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -966,6 +966,12 @@ static int nbd_add_socket(struct nbd_dev
- 	if (!sock)
- 		return err;
- 
-+	/*
-+	 * We need to make sure we don't get any errant requests while we're
-+	 * reallocating the ->socks array.
-+	 */
-+	blk_mq_freeze_queue(nbd->disk->queue);
-+
- 	if (!netlink && !nbd->task_setup &&
- 	    !test_bit(NBD_BOUND, &config->runtime_flags))
- 		nbd->task_setup = current;
-@@ -1004,10 +1010,12 @@ static int nbd_add_socket(struct nbd_dev
- 	nsock->cookie = 0;
- 	socks[config->num_connections++] = nsock;
- 	atomic_inc(&config->live_connections);
-+	blk_mq_unfreeze_queue(nbd->disk->queue);
- 
- 	return 0;
- 
- put_socket:
-+	blk_mq_unfreeze_queue(nbd->disk->queue);
- 	sockfd_put(sock);
- 	return err;
- }
+--- a/net/wireless/wext-core.c
++++ b/net/wireless/wext-core.c
+@@ -898,8 +898,9 @@ out:
+ int call_commit_handler(struct net_device *dev)
+ {
+ #ifdef CONFIG_WIRELESS_EXT
+-	if ((netif_running(dev)) &&
+-	   (dev->wireless_handlers->standard[0] != NULL))
++	if (netif_running(dev) &&
++	    dev->wireless_handlers &&
++	    dev->wireless_handlers->standard[0])
+ 		/* Call the commit handler on the driver */
+ 		return dev->wireless_handlers->standard[0](dev, NULL,
+ 							   NULL, NULL);
 
 
