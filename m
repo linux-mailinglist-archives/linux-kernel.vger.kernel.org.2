@@ -2,106 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2A630CC59
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:55:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E730C30CC5B
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 20:55:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240131AbhBBTww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 14:52:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40732 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240138AbhBBTwG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 14:52:06 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3590C061786
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 11:51:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=IUIuM9y+Lczp+ZHa3sPK+xoBhadiC5RTh6EMuVOso0c=; b=aB7KsjrdbERqUDA/X+dt6MdHHH
-        DtAIxo5CLo6LHFqCa6v6Bw5tumjuY1kdeyIzAvh++gK/55OnHv6FT2OjUp09Z5oe7Iqm9OXujmMKI
-        sNCI/sWXT4VZBinmBc2m98zV6M1SNvEWtP4YFSBssH7vKqD9ROV9OsBl0SpALEA6mOFmlDzfqY9Ii
-        3G/le5dWPW2P0AtIGCM4x8YVuwmyR5XEJvqMGyGxfNkS2NAcV2WzIBGyUibCzn2M0XfSP7so5Epz/
-        XJOuXO3gXEzvGisS6jyCNg1tpWULa1uLtGynx12SWq8QOICsPwyxZ0TLhUEtX7vgrTkyHsGg268iA
-        jeQfSfvQ==;
-Received: from [2601:1c0:6280:3f0::2a53]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l71hc-0005Xp-TM; Tue, 02 Feb 2021 19:51:09 +0000
-Subject: Re: [PATCH clocksource 4/5] clocksource: Provide a module parameter
- to fuzz per-CPU clock checking
-To:     paulmck@kernel.org, linux-kernel@vger.kernel.org
-Cc:     kernel-team@fb.com, john.stultz@linaro.org, tglx@linutronix.de,
-        sboyd@kernel.org, corbet@lwn.net, Mark.Rutland@arm.com,
-        maz@kernel.org, ak@linux.intel.com, clm@fb.com
-References: <20210202170437.GA23593@paulmck-ThinkPad-P72>
- <20210202170635.24839-4-paulmck@kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <5badf6e2-4600-4fe9-6b45-d0de94ad718b@infradead.org>
-Date:   Tue, 2 Feb 2021 11:51:02 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S240138AbhBBTxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 14:53:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232808AbhBBTwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 14:52:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C0DD264DC4;
+        Tue,  2 Feb 2021 19:51:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1612295496;
+        bh=kFRho8LthVAJM6ke+5o7WVG/qGQoHqd05ziE2IHu2R4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XvUU5HXVRDbcdBkyH7xGWnYT1gEebYzQUMrnNZ6noFkANZZ3lClzZ605TXBsK6lba
+         k3LWv0NZAkjoviMxfpd7VeZHylmBHbB5QdAjarbAnpoQChV8yAIRllT39siPgb5lcA
+         g+WYeA/9Zs7JraHW3WbWVN7JikcJgfYkpn1ZOrhOFG2cyaf8t1uPRk8qkmIAJVcF0I
+         V0kvrpeZcmAV8k3p8T5rQLjvIrdblB2ResTZ4aYnITKSls1g5JhRm5wCC2xIv3I6Bo
+         Ls49/svh39FXlSh4Rt3GJTCsYE1iq5xgcuKI0jbJJQGRz7yZOosC8lRIuM3AKcKZXR
+         TTRX8n9P/4vcA==
+Date:   Tue, 2 Feb 2021 12:51:33 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] arm64: Make CPU_BIG_ENDIAN depend on !LD_IS_LLD
+Message-ID: <20210202195133.GA1481999@localhost>
+References: <20210202022441.1451389-1-nathan@kernel.org>
+ <CAK8P3a2864oSVkhaYynoadyYMcYDh0LvDDFSJ2D8OTHSszuSQA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210202170635.24839-4-paulmck@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2864oSVkhaYynoadyYMcYDh0LvDDFSJ2D8OTHSszuSQA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2/2/21 9:06 AM, paulmck@kernel.org wrote:
-> From: "Paul E. McKenney" <paulmck@kernel.org>
+On Tue, Feb 02, 2021 at 09:04:34AM +0100, Arnd Bergmann wrote:
+> On Tue, Feb 2, 2021 at 3:25 AM Nathan Chancellor <nathan@kernel.org> wrote:
+> >
+> > Similar to commit 28187dc8ebd9 ("ARM: 9025/1: Kconfig: CPU_BIG_ENDIAN
+> > depends on !LD_IS_LLD"), ld.lld does not support aarch64 big endian,
+> > leading to the following build error when CONFIG_CPU_BIG_ENDIAN is
+> > selected:
+> >
+> > ld.lld: error: unknown emulation: aarch64linuxb
 > 
-> Code that checks for clock desynchronization must itself be tested, so
-> this commit creates a new clocksource.inject_delay_shift_percpu= kernel
-> boot parameter that adds or subtracts a large value from the check read,
-> using the specified bit of the CPU ID to determine whether to add or
-> to subtract.
-> 
-> Cc: John Stultz <john.stultz@linaro.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Jonathan Corbet <corbet@lwn.net>
-> Cc: Mark Rutland <Mark.Rutland@arm.com>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Andi Kleen <ak@linux.intel.com>
-> Reported-by: Chris Mason <clm@fb.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
->  Documentation/admin-guide/kernel-parameters.txt |  9 +++++++++
->  kernel/time/clocksource.c                       | 10 +++++++++-
->  2 files changed, 18 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 9965266..f561e94 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -593,6 +593,15 @@
->  			times the value specified for inject_delay_freq
->  			of consecutive non-delays.
->  
-> +	clocksource.inject_delay_shift_percpu= [KNL]
-> +			Shift count to obtain bit from CPU number to
-> +			determine whether to shift the time of the per-CPU
-> +			clock under test ahead or behind.  For example,
+> While this is the original error message I reported, I think it would be
+> better to explain that lld actually does support linking big-endian
+> kernels but they don't boot, for unknown reasons.
 
-It's a good think that you give an example -- it helps a little bit.
-That sentence above needs to be rewritten...
+That statement seems to contradict what Peter Smith says:
 
-> +			setting this to the value four will result in
-> +			alternating groups of 16 CPUs shifting ahead and
-> +			the rest of the CPUs shifting behind.  The default
-> +			value of -1 disable this type of error injection.
+https://github.com/ClangBuiltLinux/linux/issues/1288#issuecomment-770693582
 
-			            disables
+https://reviews.llvm.org/D58655#1410282
 
-> +
->  	clocksource.max_read_retries= [KNL]
->  			Number of clocksource_watchdog() retries due to
->  			external delays before the clock will be marked
+> I can send a patch to address the build error and mark big-endian
+> as "depends on !LD_IS_LLD || COMPILE_TEST" to reflect that
+> and help with randconfig testing.
 
+I have no strong opinion on handling this though.
 
--- 
-~Randy
-
+Cheers,
+Nathan
