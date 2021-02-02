@@ -2,210 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1BBC30C52F
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:15:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA4F30C538
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 17:18:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233510AbhBBQPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 11:15:15 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45364 "EHLO mx2.suse.de"
+        id S235968AbhBBQPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 11:15:52 -0500
+Received: from mx.socionext.com ([202.248.49.38]:24641 "EHLO mx.socionext.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235964AbhBBQNi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 11:13:38 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612282367; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0ArKDfnqR+KqyNjNG4BqJNXocLWHqj+DCceD9FDV9WY=;
-        b=aD1cAZyOUrpe7Lt6CeVmfLuFfX5EcgIWrZNntPLLSmwStLHUZ5Az7eNbKxPftGfaKIN6iE
-        LhPH+G7MRTMnQRBRxIMAU4C+ysApU7ZLBXRSyJHmfyJQUboa+u+hmwyz6hImnYYVIn45cT
-        pTOxyhuIzYG7o7c3PDtH10GFgteHsvc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B7787AC6E;
-        Tue,  2 Feb 2021 16:12:47 +0000 (UTC)
-Subject: Re: [PATCH] xen/netback: avoid race in
- xenvif_rx_ring_slots_available()
-To:     Igor Druzhinin <igor.druzhinin@citrix.com>,
-        xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Wei Liu <wei.liu@kernel.org>, Paul Durrant <paul@xen.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, stable@vger.kernel.org
-References: <20210202070938.7863-1-jgross@suse.com>
- <c17d4e45-cad1-510d-0e7b-9d95af89ff01@citrix.com>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <b27dc022-7233-03e9-59bf-819338a80308@suse.com>
-Date:   Tue, 2 Feb 2021 17:12:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S236073AbhBBQOA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 11:14:00 -0500
+Received: from unknown (HELO iyokan2-ex.css.socionext.com) ([172.31.9.54])
+  by mx.socionext.com with ESMTP; 03 Feb 2021 01:13:17 +0900
+Received: from mail.mfilter.local (m-filter-2 [10.213.24.62])
+        by iyokan2-ex.css.socionext.com (Postfix) with ESMTP id A61A32059027;
+        Wed,  3 Feb 2021 01:13:17 +0900 (JST)
+Received: from 172.31.9.53 (172.31.9.53) by m-FILTER with ESMTP; Wed, 3 Feb 2021 01:13:17 +0900
+Received: from yuzu.css.socionext.com (yuzu [172.31.8.45])
+        by iyokan2.css.socionext.com (Postfix) with ESMTP id 00C77B1D40;
+        Wed,  3 Feb 2021 01:13:17 +0900 (JST)
+Received: from [10.212.20.246] (unknown [10.212.20.246])
+        by yuzu.css.socionext.com (Postfix) with ESMTP id 511FE120148;
+        Wed,  3 Feb 2021 01:13:16 +0900 (JST)
+Subject: Re: [PATCH v2 3/3] PCI: uniphier-ep: Add EPC restart management
+ support
+To:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        Jassi Brar <jaswinder.singh@linaro.org>
+References: <1611500977-24816-1-git-send-email-hayashi.kunihiko@socionext.com>
+ <1611500977-24816-4-git-send-email-hayashi.kunihiko@socionext.com>
+ <c5e89789-2dd3-3247-ec85-d54652987e2a@ti.com>
+From:   Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+Message-ID: <b2227106-6f95-bfe6-5ee4-28ec21175a8b@socionext.com>
+Date:   Wed, 3 Feb 2021 01:13:15 +0900
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <c17d4e45-cad1-510d-0e7b-9d95af89ff01@citrix.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="escPDdfwUENdW7Uy0xL9kJ81jObPW2Rm9"
+In-Reply-To: <c5e89789-2dd3-3247-ec85-d54652987e2a@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---escPDdfwUENdW7Uy0xL9kJ81jObPW2Rm9
-Content-Type: multipart/mixed; boundary="YVA3BwPtEvOPWnkHy6E8MYSJ7u5r1itUt";
- protected-headers="v1"
-From: =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-To: Igor Druzhinin <igor.druzhinin@citrix.com>,
- xen-devel@lists.xenproject.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Wei Liu <wei.liu@kernel.org>, Paul Durrant <paul@xen.org>,
- "David S. Miller" <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- stable@vger.kernel.org
-Message-ID: <b27dc022-7233-03e9-59bf-819338a80308@suse.com>
-Subject: Re: [PATCH] xen/netback: avoid race in
- xenvif_rx_ring_slots_available()
-References: <20210202070938.7863-1-jgross@suse.com>
- <c17d4e45-cad1-510d-0e7b-9d95af89ff01@citrix.com>
-In-Reply-To: <c17d4e45-cad1-510d-0e7b-9d95af89ff01@citrix.com>
+Hi Kishon,
+Thank you for your comment.
 
---YVA3BwPtEvOPWnkHy6E8MYSJ7u5r1itUt
-Content-Type: multipart/mixed;
- boundary="------------C6EDB9B863674721206F1046"
-Content-Language: en-US
-
-This is a multi-part message in MIME format.
---------------C6EDB9B863674721206F1046
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-
-On 02.02.21 16:26, Igor Druzhinin wrote:
-> On 02/02/2021 07:09, Juergen Gross wrote:
->> Since commit 23025393dbeb3b8b3 ("xen/netback: use lateeoi irq binding"=
-)
->> xenvif_rx_ring_slots_available() is no longer called only from the rx
->> queue kernel thread, so it needs to access the rx queue with the
->> associated queue held.
+On 2021/01/28 23:29, Kishon Vijay Abraham I wrote:
+> Hi Kunihiko,
+> 
+> On 24/01/21 8:39 pm, Kunihiko Hayashi wrote:
+>> Set the polling function and call the init function to enable EPC restart
+>> management. The polling function detects that the bus-reset signal is a
+>> rising edge.
 >>
->> Reported-by: Igor Druzhinin <igor.druzhinin@citrix.com>
->> Fixes: 23025393dbeb3b8b3 ("xen/netback: use lateeoi irq binding")
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Juergen Gross <jgross@suse.com>
->=20
-> Appreciate a quick fix! Is this the only place that sort of race could
-> happen now?
+>> Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+>> ---
+>>   drivers/pci/controller/dwc/Kconfig            |  1 +
+>>   drivers/pci/controller/dwc/pcie-uniphier-ep.c | 44 ++++++++++++++++++++++++++-
+>>   2 files changed, 44 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controller/dwc/Kconfig
+>> index 22c5529..90d400a 100644
+>> --- a/drivers/pci/controller/dwc/Kconfig
+>> +++ b/drivers/pci/controller/dwc/Kconfig
+>> @@ -302,6 +302,7 @@ config PCIE_UNIPHIER_EP
+>>   	depends on OF && HAS_IOMEM
+>>   	depends on PCI_ENDPOINT
+>>   	select PCIE_DW_EP
+>> +	select PCI_ENDPOINT_RESTART
+>>   	help
+>>   	  Say Y here if you want PCIe endpoint controller support on
+>>   	  UniPhier SoCs. This driver supports Pro5 SoC.
+>> diff --git a/drivers/pci/controller/dwc/pcie-uniphier-ep.c b/drivers/pci/controller/dwc/pcie-uniphier-ep.c
+>> index 69810c6..9d83850 100644
+>> --- a/drivers/pci/controller/dwc/pcie-uniphier-ep.c
+>> +++ b/drivers/pci/controller/dwc/pcie-uniphier-ep.c
+>> @@ -26,6 +26,7 @@
+>>   #define PCL_RSTCTRL_PIPE3		BIT(0)
+>>   
+>>   #define PCL_RSTCTRL1			0x0020
+>> +#define PCL_RSTCTRL_PERST_MON		BIT(16)
+>>   #define PCL_RSTCTRL_PERST		BIT(0)
+>>   
+>>   #define PCL_RSTCTRL2			0x0024
+>> @@ -60,6 +61,7 @@ struct uniphier_pcie_ep_priv {
+>>   	struct clk *clk, *clk_gio;
+>>   	struct reset_control *rst, *rst_gio;
+>>   	struct phy *phy;
+>> +	bool bus_reset_status;
+>>   	const struct pci_epc_features *features;
+>>   };
+>>   
+>> @@ -212,6 +214,41 @@ uniphier_pcie_get_features(struct dw_pcie_ep *ep)
+>>   	return priv->features;
+>>   }
+>>   
+>> +static bool uniphier_pcie_ep_poll_reset(void *data)
+>> +{
+>> +	struct uniphier_pcie_ep_priv *priv = data;
+>> +	bool ret, status;
+>> +
+>> +	if (!priv)
+>> +		return false;
+>> +
+>> +	status = !(readl(priv->base + PCL_RSTCTRL1) & PCL_RSTCTRL_PERST_MON);
+>> +
+>> +	/* return true if the rising edge of bus reset is detected */
+>> +	ret = !!(status == false && priv->bus_reset_status == true);
+>> +	priv->bus_reset_status = status;
+> 
+> I'm still not convinced about having a separate library for restart
+> management but shouldn't we reset the function driver on falling edge?
 
-I checked and didn't find any other similar problem.
+I understand your opnion well.
+There might not be enough way to give controller-specific features
+to handle "restart" as a common function.
 
+> After the rising edge the host expects the endpoint to be ready.
 
-Juergen
+I see. I didn't consider that restart was completed just after
+the rising edge.
 
+> Why not use the CORE_INIT (core_init_notifier) infrastructure?
 
---------------C6EDB9B863674721206F1046
-Content-Type: application/pgp-keys;
- name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+I don't follow the CORE_INIT yet, so I'll try to introduce it
+into the driver. However, our current controller doesn't have
+an interrupt that detects PERST like pcie-tegra194.
+I think the driver needs a thread for polling PERST like patch 2/3.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
+Thank you,
 
-xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOBy=
-cWx
-w3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJvedYm8O=
-f8Z
-d621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJNwQpd369y=
-9bf
-IhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvxXP3FAp2pkW0xq=
-G7/
-377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEBAAHNHEp1ZXJnZW4gR=
-3Jv
-c3MgPGpnQHBmdXBmLm5ldD7CwHkEEwECACMFAlOMcBYCGwMHCwkIBwMCAQYVCAIJCgsEFgIDA=
-QIe
-AQIXgAAKCRCw3p3WKL8TL0KdB/93FcIZ3GCNwFU0u3EjNbNjmXBKDY4FUGNQH2lvWAUy+dnyT=
-hpw
-dtF/jQ6j9RwE8VP0+NXcYpGJDWlNb9/JmYqLiX2Q3TyevpB0CA3dbBQp0OW0fgCetToGIQrg0=
-MbD
-1C/sEOv8Mr4NAfbauXjZlvTj30H2jO0u+6WGM6nHwbh2l5O8ZiHkH32iaSTfN7Eu5RnNVUJbv=
-oPH
-Z8SlM4KWm8rG+lIkGurqqu5gu8q8ZMKdsdGC4bBxdQKDKHEFExLJK/nRPFmAuGlId1E3fe10v=
-5QL
-+qHI3EIPtyfE7i9Hz6rVwi7lWKgh7pe0ZvatAudZ+JNIlBKptb64FaiIOAWDCx1SzR9KdWVyZ=
-2Vu
-IEdyb3NzIDxqZ3Jvc3NAc3VzZS5jb20+wsB5BBMBAgAjBQJTjHCvAhsDBwsJCAcDAgEGFQgCC=
-QoL
-BBYCAwECHgECF4AACgkQsN6d1ii/Ey/HmQf/RtI7kv5A2PS4RF7HoZhPVPogNVbC4YA6lW7Dr=
-Wf0
-teC0RR3MzXfy6pJ+7KLgkqMlrAbN/8Dvjoz78X+5vhH/rDLa9BuZQlhFmvcGtCF8eR0T1v0nC=
-/nu
-AFVGy+67q2DH8As3KPu0344TBDpAvr2uYM4tSqxK4DURx5INz4ZZ0WNFHcqsfvlGJALDeE0Lh=
-ITT
-d9jLzdDad1pQSToCnLl6SBJZjDOX9QQcyUigZFtCXFst4dlsvddrxyqT1f17+2cFSdu7+ynLm=
-XBK
-7abQ3rwJY8SbRO2iRulogc5vr/RLMMlscDAiDkaFQWLoqHHOdfO9rURssHNN8WkMnQfvUewRz=
-80h
-SnVlcmdlbiBHcm9zcyA8amdyb3NzQG5vdmVsbC5jb20+wsB5BBMBAgAjBQJTjHDXAhsDBwsJC=
-AcD
-AgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey8PUQf/ehmgCI9jB9hlgexLvgOtf7PJn=
-FOX
-gMLdBQgBlVPO3/D9R8LtF9DBAFPNhlrsfIG/SqICoRCqUcJ96Pn3P7UUinFG/I0ECGF4EvTE1=
-jnD
-kfJZr6jrbjgyoZHiw/4BNwSTL9rWASyLgqlA8u1mf+c2yUwcGhgkRAd1gOwungxcwzwqgljf0=
-N51
-N5JfVRHRtyfwq/ge+YEkDGcTU6Y0sPOuj4Dyfm8fJzdfHNQsWq3PnczLVELStJNdapwPOoE+l=
-otu
-fe3AM2vAEYJ9rTz3Cki4JFUsgLkHFqGZarrPGi1eyQcXeluldO3m91NK/1xMI3/+8jbO0tsn1=
-tqS
-EUGIJi7ox80eSnVlcmdlbiBHcm9zcyA8amdyb3NzQHN1c2UuZGU+wsB5BBMBAgAjBQJTjHDrA=
-hsD
-BwsJCAcDAgEGFQgCCQoLBBYCAwECHgECF4AACgkQsN6d1ii/Ey+LhQf9GL45eU5vOowA2u5N3=
-g3O
-ZUEBmDHVVbqMtzwlmNC4k9Kx39r5s2vcFl4tXqW7g9/ViXYuiDXb0RfUpZiIUW89siKrkzmQ5=
-dM7
-wRqzgJpJwK8Bn2MIxAKArekWpiCKvBOB/Cc+3EXE78XdlxLyOi/NrmSGRIov0karw2RzMNOu5=
-D+j
-LRZQd1Sv27AR+IP3I8U4aqnhLpwhK7MEy9oCILlgZ1QZe49kpcumcZKORmzBTNh30FVKK1Evm=
-V2x
-AKDoaEOgQB4iFQLhJCdP1I5aSgM5IVFdn7v5YgEYuJYx37IoN1EblHI//x/e2AaIHpzK5h88N=
-Eaw
-QsaNRpNSrcfbFmAg987ATQRTjHAWAQgAyzH6AOODMBjgfWE9VeCgsrwH3exNAU32gLq2xvjpW=
-nHI
-s98ndPUDpnoxWQugJ6MpMncr0xSwFmHEgnSEjK/PAjppgmyc57BwKII3sV4on+gDVFJR6Y8ZR=
-wgn
-BC5mVM6JjQ5xDk8WRXljExRfUX9pNhdE5eBOZJrDRoLUmmjDtKzWaDhIg/+1Hzz93X4fCQkNV=
-bVF
-LELU9bMaLPBG/x5q4iYZ2k2ex6d47YE1ZFdMm6YBYMOljGkZKwYde5ldM9mo45mmwe0icXKLk=
-pEd
-IXKTZeKDO+Hdv1aqFuAcccTg9RXDQjmwhC3yEmrmcfl0+rPghO0Iv3OOImwTEe4co3c1mwARA=
-QAB
-wsBfBBgBAgAJBQJTjHAWAhsMAAoJELDendYovxMvQ/gH/1ha96vm4P/L+bQpJwrZ/dneZcmEw=
-Tbe
-8YFsw2V/Buv6Z4Mysln3nQK5ZadD534CF7TDVft7fC4tU4PONxF5D+/tvgkPfDAfF77zy2AH1=
-vJz
-Q1fOU8lYFpZXTXIHb+559UqvIB8AdgR3SAJGHHt4RKA0F7f5ipYBBrC6cyXJyyoprT10EMvU8=
-VGi
-wXvTyJz3fjoYsdFzpWPlJEBRMedCot60g5dmbdrZ5DWClAr0yau47zpWj3enf1tLWaqcsuylW=
-svi
-uGjKGw7KHQd3bxALOknAp4dN3QwBYCKuZ7AddY9yjynVaD5X7nF9nO5BjR/i1DG86lem3iBDX=
-zXs
-ZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
-
---------------C6EDB9B863674721206F1046--
-
---YVA3BwPtEvOPWnkHy6E8MYSJ7u5r1itUt--
-
---escPDdfwUENdW7Uy0xL9kJ81jObPW2Rm9
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmAZef4FAwAAAAAACgkQsN6d1ii/Ey+F
-pwf+NrlAu7xqGQO1OeoDKfMOHpT5OooD9OmTj3Lrw942dLGgauX3feIH/tMUAXTi71gm/ezq2qox
-HVjEsXLFi5s42DnyglyzSbHpT6YID434MDD9zKzSE6D2H3sx7IqY+W61OHQuVwS+ve2RB9ITq8Fa
-PnAArCljEIHje9MhtW4IBFT5D9kkwXX75ujK2t5ZZQtRMm7GTpzf6jzSPVMbCYiuEIilZDeY0i9O
-+4QKW5+dvlnXju3G55kmb87Cb2unDYeybT6AVpsHWi+UcOKJApV191AyhvtbCUzqMie5PKsqrnM4
-h49EPG6rp1QSn55u4oVeERIgmaAOfYxYzKWd/UrmYw==
-=0oW2
------END PGP SIGNATURE-----
-
---escPDdfwUENdW7Uy0xL9kJ81jObPW2Rm9--
+---
+Best Regards
+Kunihiko Hayashi
