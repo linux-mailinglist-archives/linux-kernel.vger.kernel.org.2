@@ -2,62 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 781CE30CE32
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 22:51:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28D5E30CE38
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 22:53:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233375AbhBBVuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 16:50:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55178 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231860AbhBBVui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 16:50:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3499064F84;
-        Tue,  2 Feb 2021 21:49:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612302597;
-        bh=gthtiNOLBtbazSEYCkP7aYkQY117x3/WDHZK8yVZtYE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ab8h2GsuCnh8bjO5sUPlkGseNfLS7qZMFeCq3eXh/NlyP5WWVJB110UW4rAnd26v8
-         5DnVwf/SxpnEcDfp6/Lj1SBuWQRb18tTIsG6lJs2MkLKMJYkLFc6ffgABSVhQ4j/eX
-         WjfcPf28Sut0+C/YkAp5h8ZRGgYXjJ8DNwRSLMcJA4iWm2nUvs2Zz+ht1SwO1r466e
-         Abfmi6uasEhFikKN+LnsYBpdrE144m26k9i8np9G+GnPa2D7qB3LhEY8yoBbpypiSl
-         n6OLUQa5SufDbgMkKWCNqczwRbr+6p+mqd1WWn/0qr+sqVP1n3idkUvkMIpTjn90BB
-         IeDtYsch45YHg==
-Date:   Tue, 2 Feb 2021 23:49:50 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Lukasz Majczak <lma@semihalf.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Dirk Gouders <dirk@gouders.net>, Tj <ml.linux@elloe.vision>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Radoslaw Biernacki <rad@semihalf.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Alex Levin <levinale@google.com>
-Subject: Re: [PATCH v4] tpm_tis: Add missing tpm_request/relinquish_locality
- calls
-Message-ID: <YBnI/huAaaDVpEtO@kernel.org>
-References: <20210202155139.521421-1-lma@semihalf.com>
- <20210202195724.628468-1-lma@semihalf.com>
+        id S233582AbhBBVvo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 16:51:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233477AbhBBVvh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 16:51:37 -0500
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF741C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 13:50:56 -0800 (PST)
+Received: by mail-oo1-xc2c.google.com with SMTP id x23so5515100oop.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 13:50:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0kAvPlYbK2MoK6J2M4VB8aAoYja4iRJVl217ecqHS/M=;
+        b=TdhEHCPKXXE10yUfrZQXXXYlAcYAm892Ap8QZ9AzljcQu07SHGtPQNNYh4Q/v8UYYk
+         PiG4j2T7NHoMqPB+c49sk0YENnztQlT9XqeQ2395hb6rY5IEs1hQT8325ZkpwjtnD0LD
+         Vwb8iIlhG8/SLn9tvFCsFcrmRKVpLkn2YwrhXeF78OkNw+se5xSHQHvNU3CsfgKG9FaV
+         YTj35hwZuOWUyAJZ5e+Wy5z+o3F8CMc15IB60Zzzt6x8lLw1w1pKyKKhuu8IZkoQbFq+
+         kbiLZzLsWUDfraAPh5zgKYN28vNYG5WxwNeNf7ab6//sWGlal65rbmmLgoKH++R2kUTK
+         8D2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0kAvPlYbK2MoK6J2M4VB8aAoYja4iRJVl217ecqHS/M=;
+        b=V1IVnIdqVH92Qz3UuY+ZpF7Q+p8yrwDxjcPNQz3rb/h/UV9fEIw3NCPKIwpv4cNVkO
+         gL1aTUHsmHDgUyWKC+pwWG1rIZQWesxHqvJI4hwhcfTP73xzj6rOYm77dJCz4Di67ZVt
+         gQmiGgUMKlvjLm6MGhxSSRnUmLi84ZFSg9gzpO2Jo8Pn+wia7e3FO2Ga4tz4T4c4ySl/
+         TMBzetEH5wjHlqUSCOF33S43tgwsUfLRv/Bjp24XOGJPF2xxow6IB1aJec8kLy/EYrWp
+         Z7Tpk0YzSmUbbn8q7wbyr3AMhAoo9sGd9jRyRn/jXju7id3OYnEEE/S/qGex7zrUMMs6
+         0kqA==
+X-Gm-Message-State: AOAM530n3nz4fBvJbKHbJpVU5Y5lwiC00lXKu2svpZuNQyYr1qcSugrt
+        td1r3rC+zFIWogz+MrQeQgL0AQ==
+X-Google-Smtp-Source: ABdhPJyPMNl9tGCICri+o+7UQ3JI+A7lU6DMaekFZimyL5l1Ie99Gh7PA6f5Luaja14ryJABk3D06g==
+X-Received: by 2002:a4a:970b:: with SMTP id u11mr17039184ooi.79.1612302656147;
+        Tue, 02 Feb 2021 13:50:56 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id c2sm19995ooo.17.2021.02.02.13.50.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 13:50:55 -0800 (PST)
+Date:   Tue, 2 Feb 2021 15:50:53 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Andy Gross <agross@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stanimir Varbanov <svarbanov@mm-sol.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>
+Subject: Re: [PATCH v2 3/5] pcie-qcom: provide a way to power up qca6390 chip
+ on RB5 platform
+Message-ID: <YBnJPWWQyRV4HtLa@builder.lan>
+References: <da0ac373-4edb-0230-b264-49697fa3d86a@linaro.org>
+ <20210129215024.GA113900@bjorn-Precision-5520>
+ <CAA8EJpoPsv5tfsaiJq4UnBYt3o+gJanWzy8aaZRK=V8yOk3mJQ@mail.gmail.com>
+ <YBTYKLi81Cf65yUB@builder.lan>
+ <CAA8EJprwBKbGrh-BjrzkQTxoboUi470wYcn-gTBHdNQ1Af7DKA@mail.gmail.com>
+ <YBmsjDiKnpQjYeQh@builder.lan>
+ <CAL_JsqJoKEVUs0f7rP87M3Wh6yVvB-bYi7vBprti8hoim3-e-A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210202195724.628468-1-lma@semihalf.com>
+In-Reply-To: <CAL_JsqJoKEVUs0f7rP87M3Wh6yVvB-bYi7vBprti8hoim3-e-A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 08:57:24PM +0100, Lukasz Majczak wrote:
-> There are missing calls to tpm_request_locality before the calls to
-> the tpm_get_timeouts() and tpm_tis_probe_irq_single() - both functions
-> internally send commands to the tpm. As the current
-> approach might work for tpm2, it fails for tpm1.x - in that case
-> call to tpm_get_timeouts() or tpm_tis_probe_irq_single()
-> without acquired locality fails and in turn causes tpm_tis_core_init()
-> to fail, it can be observed in the log with the following warning
-> trace:
+On Tue 02 Feb 15:37 CST 2021, Rob Herring wrote:
 
-Ignoring this version.
+> On Tue, Feb 2, 2021 at 1:48 PM Bjorn Andersson
+> <bjorn.andersson@linaro.org> wrote:
+> >
+> > On Sat 30 Jan 10:14 CST 2021, Dmitry Baryshkov wrote:
+> >
+> > > On Sat, 30 Jan 2021 at 06:53, Bjorn Andersson
+> > > <bjorn.andersson@linaro.org> wrote:
+> > > >
+> > > > On Fri 29 Jan 16:19 CST 2021, Dmitry Baryshkov wrote:
+> > > >
+> > > > > On Sat, 30 Jan 2021 at 00:50, Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > > > > >
+> > > > > > On Fri, Jan 29, 2021 at 06:45:21AM +0300, Dmitry Baryshkov wrote:
+> > > > > > > On 28/01/2021 22:26, Rob Herring wrote:
+> > > > > > > > On Thu, Jan 28, 2021 at 11:52 AM Dmitry Baryshkov
+> > > > > > > > <dmitry.baryshkov@linaro.org> wrote:
+> > > > > > > > >
+> > > > > > > > > Some Qualcomm platforms require to power up an external device before
+> > > > > > > > > probing the PCI bus. E.g. on RB5 platform the QCA6390 WiFi/BT chip needs
+> > > > > > > > > to be powered up before PCIe0 bus is probed. Add a quirk to the
+> > > > > > > > > respective PCIe root bridge to attach to the power domain if one is
+> > > > > > > > > required, so that the QCA chip is started before scanning the PCIe bus.
+> > > > > > > >
+> > > > > > > > This is solving a generic problem in a specific driver. It needs to be
+> > > > > > > > solved for any PCI host and any device.
+> > > > > > >
+> > > > > > > Ack. I see your point here.
+> > > > > > >
+> > > > > > > As this would require porting code from powerpc/spark of-pci code and
+> > > > > > > changing pcie port driver to apply power supply before bus probing happens,
+> > > > > > > I'd also ask for the comments from PCI maintainers. Will that solution be
+> > > > > > > acceptable to you?
+> > > > > >
+> > > > > > I can't say without seeing the code.  I don't know enough about this
+> > > > > > scenario to envision how it might look.
+> > > > > >
+> > > > > > I guess the QCA6390 is a PCIe device?  Why does it need to be powered
+> > > > > > up before probing?  Shouldn't we get a link-up interrupt when it is
+> > > > > > powered up so we could probe it then?
+> > > > >
+> > > > > Not quite. QCA6390 is a multifunction device, with PCIe and serial
+> > > > > parts. It has internal power regulators which once enabled will
+> > > > > powerup the PCIe, serial and radio parts. There is no need to manage
+> > > > > regulators. Once enabled they will automatically handle device
+> > > > > suspend/resume, etc.
+> > > > >
+> > > >
+> > > > So what you're saying is that if either the PCI controller or bluetooth
+> > > > driver probes these regulators will be turned on, indefinitely?
+> > > >
+> > > > If so, why do we need a driver to turn them on, rather than just mark
+> > > > them as always-on?
+> > > >
+> > > > What's the timing requirement wrt regulators vs WL_EN/BT_EN?
+> > >
+> > > According to the documentation I have, they must be enabled right
+> > > after enabling powering the chip and they must stay enabled all the
+> > > time.
+> > >
+> >
+> > So presumably just marking these things always-on and flipping the GPIO
+> > statically won't be good enough due to the lack of control over the
+> > timing.
+> >
+> > This really do look like a simplified case of what we see with the
+> > PCIe attached modems, where similar requirements are provided, but also
+> > the ability to perform a device specific reset sequence in case the
+> > hardware has locked up. I'm slightly worried about the ability of
+> > extending your power-domain model to handle the restart operation
+> > though.
+> 
+> I think this is an abuse of 'power-domains'. Just define the
+> regulators in both WiFi and BT nodes and have each driver enable them.
+> They're refcounted. If that's still not enough control over the power
+> sequencing, then create a 3rd entity to do it, but that doesn't need
+> to leak into DT. You already have all the information you need.
+> 
 
-/Jarkko
+As Dmitry explained he still need to pull the two GPIOs high after
+enabling the regulators, but before scanning the PCI or serdev buses.
+
+I was thinking something along the lines you suggest, but I've not been
+able to come up with something that will guarantee the ordering of the
+events.
+
+Regards,
+Bjorn
