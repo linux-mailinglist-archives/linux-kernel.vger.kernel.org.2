@@ -2,172 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AC9D30CF6B
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:54:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C13C330CF7A
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 23:58:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236182AbhBBWxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 17:53:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51550 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236136AbhBBWxS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 17:53:18 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D796BC061573
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 14:52:37 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id m13so24619529oig.8
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 14:52:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pNHGdQEaVulKLdur3mjFN7uexHDN43kmskAHi1/+zFQ=;
-        b=vx3xy7M7W49bwfASPWL/L07EpcKrPO21vevHAK6m2umHBS0ZyUTODZpSpBmtT0fPTt
-         4Lj/9sxxi+FfzYtjRg12f9Oq6J8cWTFNjgZTY5sYrI6zibG7seKEOmgPrH/9aQqzBFtx
-         aklLmA3rqnMRNAb1wm0IZVIuNpvW+0ZcfyjHXHDUpAAkpNXWTBe7Ozsln2Ks5Spen5ok
-         cWJpa4o0G6c+mwrs/OjssBUvIdQJi1jFp8d7TjLZfUug0eHmoM6SFqXphJ2/mZis5TAy
-         kI4Ys8mEC9MfUFxc/cPKtbyGYePwuvox9ibIT9u6GPHbfq0hqZEefJimipRToC6xdhpb
-         CYMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pNHGdQEaVulKLdur3mjFN7uexHDN43kmskAHi1/+zFQ=;
-        b=inKVBgQjOIN09MbR4UB+/AKv5+yTFG3+653FlB2AR50Kbj8B6vuUPLBum774bhJkJ3
-         psAp7oYeYsW6aK2RiwGkcVn+O/1vkhgMhXVEKmChIBVpqh1JDWdyXBLSDg/XAeBR1ktb
-         SFT95AhTibNI7Cqvu9iWC5AME4dQuNVZ/o4US8kU2hgDlRl7YXaCknAsotVL2yVnmLbD
-         qATZPrqefU3OkYi3h/Gu6Y471+wxGkQf4jvq9FYsUbR6p41WrSFyziIaT/h5avG9nL/L
-         9yYdPUF3s3Hru9cP0gGN2Iq+KjTHhuSRNmz0yVpIcVnf/9soMeTV7rk4q319p9N6zaTq
-         qSTg==
-X-Gm-Message-State: AOAM532LctKolwf++6Xn117rIq3YjaZxYg+gf7LIO7D6AXkv3fH6F7lI
-        ezEEO/Kh6IT3cTwvhkwYYRsJFg==
-X-Google-Smtp-Source: ABdhPJzOuTSR3c8QMeugNJGnaTsE04C3G6eyUc0ji1QK8vTBm3Acse8JcdjUyPcvpuGXlwSnU6Nq5Q==
-X-Received: by 2002:aca:4454:: with SMTP id r81mr57784oia.129.1612306357220;
-        Tue, 02 Feb 2021 14:52:37 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id b7sm75747oib.53.2021.02.02.14.52.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 14:52:36 -0800 (PST)
-Date:   Tue, 2 Feb 2021 16:52:34 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Akhil P Oommen <akhilpo@codeaurora.org>
-Cc:     freedreno@lists.freedesktop.org, dri-devel@freedesktop.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, jcrouse@codeaurora.org,
-        robdclark@gmail.com, mka@chromium.org
-Subject: Re: [PATCH v4 2/2] arm: dts: sc7180: Add support for gpu fuse
-Message-ID: <YBnXshYzJmNpmuEW@builder.lan>
-References: <1610129731-4875-1-git-send-email-akhilpo@codeaurora.org>
- <1610129731-4875-2-git-send-email-akhilpo@codeaurora.org>
+        id S235952AbhBBW5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 17:57:35 -0500
+Received: from mga12.intel.com ([192.55.52.136]:9676 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231904AbhBBW5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 2 Feb 2021 17:57:31 -0500
+IronPort-SDR: aWqSkv25aq6nvmHm5n+SJ6P+kruP6axem33eN+j1K9xUMKhrIIm36G+mwWn1ZZlHbQuOfNVEAr
+ PTfjV7OTwRyA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9883"; a="160113102"
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="scan'208";a="160113102"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 14:56:51 -0800
+IronPort-SDR: eUVBONpjJ3BLGgaOJimCxqbICfxzTT1G17bq/8EThov5LF0hViFILlP2d3gp0N8sHylxwcz49Q
+ C3QgrPToZz+g==
+X-IronPort-AV: E=Sophos;i="5.79,396,1602572400"; 
+   d="scan'208";a="433105724"
+Received: from capeter1-mobl.amr.corp.intel.com (HELO [10.212.5.169]) ([10.212.5.169])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 14:56:50 -0800
+Subject: Re: [RFC][PATCH 08/13] mm/migrate: demote pages during reclaim
+To:     Yang Shi <shy828301@gmail.com>, Oscar Salvador <osalvador@suse.de>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Rientjes <rientjes@google.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+References: <20210126003411.2AC51464@viggo.jf.intel.com>
+ <20210126003427.73DFDD34@viggo.jf.intel.com> <20210202115516.GC12139@linux>
+ <CAHbLzkrSYsoVV1eHHO9kWv2xe96qmAt6dmC_FsBrydsZxGLvew@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <dd781d4b-7ec5-9b94-8b88-38dfc2245ca9@intel.com>
+Date:   Tue, 2 Feb 2021 14:56:49 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1610129731-4875-2-git-send-email-akhilpo@codeaurora.org>
+In-Reply-To: <CAHbLzkrSYsoVV1eHHO9kWv2xe96qmAt6dmC_FsBrydsZxGLvew@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 08 Jan 12:15 CST 2021, Akhil P Oommen wrote:
-
-Please align the $subject prefix with other changes in the same file.
-I fixed it up while picking up the patch this time.
-
-Regards,
-Bjorn
-
-> Add support for gpu fuse to help identify the supported opps.
+On 2/2/21 2:45 PM, Yang Shi wrote:
+>> Should we keep it simple for now and only try to demote those pages that are
+>> free of cpusets and memory policies?
+>> Actually, demoting those pages to a CPU or a NUMA node that does not fall into
+>> their set, would violate those constraints right?
+> Yes, this has been discussed since the very beginning. There is not an
+> easy way to figure out the memory placement policy (cpuset and
+> mempolicy) from "page". I think this also prevents "demote those pages
+> that are free of cpusets and memory policies".
 > 
-> Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/sc7180.dtsi | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> index 6678f1e..8cae3eb 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-> @@ -675,6 +675,11 @@
->  				reg = <0x25b 0x1>;
->  				bits = <1 3>;
->  			};
-> +
-> +			gpu_speed_bin: gpu_speed_bin@1d2 {
-> +				reg = <0x1d2 0x2>;
-> +				bits = <5 8>;
-> +			};
->  		};
->  
->  		sdhc_1: sdhci@7c4000 {
-> @@ -1907,52 +1912,69 @@
->  			operating-points-v2 = <&gpu_opp_table>;
->  			qcom,gmu = <&gmu>;
->  
-> +			nvmem-cells = <&gpu_speed_bin>;
-> +			nvmem-cell-names = "speed_bin";
-> +
->  			interconnects = <&gem_noc MASTER_GFX3D 0 &mc_virt SLAVE_EBI1 0>;
->  			interconnect-names = "gfx-mem";
->  
->  			gpu_opp_table: opp-table {
->  				compatible = "operating-points-v2";
->  
-> +				opp-825000000 {
-> +					opp-hz = /bits/ 64 <825000000>;
-> +					opp-level = <RPMH_REGULATOR_LEVEL_TURBO_L1>;
-> +					opp-peak-kBps = <8532000>;
-> +					opp-supported-hw = <0x04>;
-> +				};
-> +
->  				opp-800000000 {
->  					opp-hz = /bits/ 64 <800000000>;
->  					opp-level = <RPMH_REGULATOR_LEVEL_TURBO>;
->  					opp-peak-kBps = <8532000>;
-> +					opp-supported-hw = <0x07>;
->  				};
->  
->  				opp-650000000 {
->  					opp-hz = /bits/ 64 <650000000>;
->  					opp-level = <RPMH_REGULATOR_LEVEL_NOM_L1>;
->  					opp-peak-kBps = <7216000>;
-> +					opp-supported-hw = <0x07>;
->  				};
->  
->  				opp-565000000 {
->  					opp-hz = /bits/ 64 <565000000>;
->  					opp-level = <RPMH_REGULATOR_LEVEL_NOM>;
->  					opp-peak-kBps = <5412000>;
-> +					opp-supported-hw = <0x07>;
->  				};
->  
->  				opp-430000000 {
->  					opp-hz = /bits/ 64 <430000000>;
->  					opp-level = <RPMH_REGULATOR_LEVEL_SVS_L1>;
->  					opp-peak-kBps = <5412000>;
-> +					opp-supported-hw = <0x07>;
->  				};
->  
->  				opp-355000000 {
->  					opp-hz = /bits/ 64 <355000000>;
->  					opp-level = <RPMH_REGULATOR_LEVEL_SVS>;
->  					opp-peak-kBps = <3072000>;
-> +					opp-supported-hw = <0x07>;
->  				};
->  
->  				opp-267000000 {
->  					opp-hz = /bits/ 64 <267000000>;
->  					opp-level = <RPMH_REGULATOR_LEVEL_LOW_SVS>;
->  					opp-peak-kBps = <3072000>;
-> +					opp-supported-hw = <0x07>;
->  				};
->  
->  				opp-180000000 {
->  					opp-hz = /bits/ 64 <180000000>;
->  					opp-level = <RPMH_REGULATOR_LEVEL_MIN_SVS>;
->  					opp-peak-kBps = <1804000>;
-> +					opp-supported-hw = <0x07>;
->  				};
->  			};
->  		};
-> -- 
-> 2.7.4
-> 
+> The conclusion was the violation should be fine for now. And the
+> demotion feature is opt'ed in by a new node reclaim mode.
+
+This has come up a couple of times.
+
+I'll add a bit of changelog material about it in the last patch since
+that's where the opt-in is introduced.
