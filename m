@@ -2,88 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9476230BBCA
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:11:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA0B430BBCF
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:11:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229866AbhBBKKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 05:10:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56380 "EHLO
+        id S229534AbhBBKKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 05:10:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbhBBKJy (ORCPT
+        with ESMTP id S229883AbhBBKKF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 05:09:54 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82746C061573
-        for <linux-kernel@vger.kernel.org>; Tue,  2 Feb 2021 02:09:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Ab16otijG9bvAhz8VfD19hPIsyJecqtgK3hKzle+tDo=; b=cYlNH1xtktfv50ymA4Pp8pOdSN
-        gtu1upXQtK08hAxSW0sFfy7aaUEVnjs3I2Rn2tfGMRIMaaV/djL7Bwz8IomO133jPuTlic+JSKhzv
-        fvjUOTxYsr7I1ziASa7gu4jySLAJ7XwQVISw05mpzC3QVJ2l6ppoHSEfTxLW79muMKM7aTmDlRZ90
-        dC0ICajuvQlTCyS+Zc/oln4H6LKI/gURQi2mRDKYWJ3vNAu8GJq53zjQiTLQIxpk09+k9EIwtBim6
-        URi5judJ9OJX/8A5HaQn90bfPy3T3IL0FpZOKZXQiBK1NdI8UvOly/FwcZjlkJRfOuAduCe76AD0I
-        icrAJkMQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1l6scC-0006Dk-Rz; Tue, 02 Feb 2021 10:08:57 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 01405301A66;
-        Tue,  2 Feb 2021 11:08:54 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BA3DA299C9F60; Tue,  2 Feb 2021 11:08:54 +0100 (CET)
-Date:   Tue, 2 Feb 2021 11:08:54 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH kernel] tracepoint: Fix race between tracing and removing
- tracepoint
-Message-ID: <YBkkthjSsDXYxHKq@hirez.programming.kicks-ass.net>
-References: <20210202072326.120557-1-aik@ozlabs.ru>
+        Tue, 2 Feb 2021 05:10:05 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA393C0613D6;
+        Tue,  2 Feb 2021 02:09:25 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id b8so12181506plh.12;
+        Tue, 02 Feb 2021 02:09:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FYeJLFgukpjjaiX0ohZ3jkdwwwc8rHopLauzuSIyIdw=;
+        b=tV+v78ppPBh5j1qozvGytXqYRH3YTJdedkA+I8BKPM/+ZtmYvrTzBWbeVfXbArKUSM
+         iN4DyO4rLEKMayZ/QM19bmkFz6e2qX/7WaBp+PIDYEig7nWtknkexxzua6XvFhgpHqne
+         lMEJZfTOQk7alc33ttk1hifGy5+zTtIrFKaHTSf6mg9Tfz5AO0tqYi4erZkvNM02mM7F
+         34qhUEHyyimt6uvazTjZyHv98SSh3Jyu5L4GyjX35aHc1AQuPb7R2MgE/5cvZaUS1c2/
+         oW/pTvabA1T2TAr4fqG1xQ9yyF5eenOs5p6igNbRJQAuRb/uXxQJoOvzreh2AVCzW5ld
+         4Zkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FYeJLFgukpjjaiX0ohZ3jkdwwwc8rHopLauzuSIyIdw=;
+        b=bOIzmPHvRpzgmS1MmP9MuyPEs2lHHMSPd5xHbplR/n2Nkuoow4i8P7LrCQQXSCeBS1
+         QvNEFeKzRbFhC6uC12aL5DJtv1XUUVGpZ3pvo/aD+YB1GW3KheCp70vakvw2UOeHTMI8
+         m8zvpgXyhpfjg2go7ZtNRWUnja84KPvwMWfX/ntL59ar6A4MAFRRmifjg1194UOWYQmZ
+         TO48u5iO/2tHoiwEbDQXds+4SPq4RhWUov2Rj9DXUTOGwebtl3a2Xj91Do65PGYJXQRA
+         LoThXRCR0PF8rrB4Aqhe2LXlpB/duLiDGceGSBlArcWt9GyXEKNwjokHvvnIeobRMGPY
+         mYaA==
+X-Gm-Message-State: AOAM530B6XEA5phDOS5fsxDvc4l8ytxSDmE/WxwxWGcs/xP4Q7NFpd1R
+        RdRQ8vWY/zKTKkDk7GCE5dqcHAMlQE5jlw==
+X-Google-Smtp-Source: ABdhPJzOiwWh5mPPYa1i19XPG4Fp5MvPpEcfOWz0ooMRC2HOki3phGTorM9UmMcRGoRVm4K5OTM51w==
+X-Received: by 2002:a17:90a:d02:: with SMTP id t2mr3397288pja.130.1612260565335;
+        Tue, 02 Feb 2021 02:09:25 -0800 (PST)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id l2sm21403893pga.65.2021.02.02.02.09.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 02:09:24 -0800 (PST)
+Date:   Tue, 2 Feb 2021 19:09:21 +0900
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Andy Shevchenko <andy@infradead.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Darren Hart <dvhart@infradead.org>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Mike Travis <mike.travis@hpe.com>,
+        Peter Jones <pjones@redhat.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Steve Wahl <steve.wahl@hpe.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        dri-devel@lists.freedesktop.org, linux-efi@vger.kernel.org,
+        linux-fbdev@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH 1/3] printk: use CONFIG_CONSOLE_LOGLEVEL_* directly
+Message-ID: <YBkk0cZXdwYdXIcD@jagdpanzerIV.localdomain>
+References: <20210202070218.856847-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210202072326.120557-1-aik@ozlabs.ru>
+In-Reply-To: <20210202070218.856847-1-masahiroy@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 06:23:26PM +1100, Alexey Kardashevskiy wrote:
-> When executing a tracepoint, the tracepoint's func is dereferenced twice -
-> in __DO_TRACE() (where the returned pointer is checked) and later on in
-> __traceiter_##_name where the returned pointer is dereferenced without
-> checking which leads to races against tracepoint_removal_sync() and
-> crashes.
+On (21/02/02 16:02), Masahiro Yamada wrote:
 > 
-> This adds a check before referencing the pointer in tracepoint_ptr_deref.
+> CONSOLE_LOGLEVEL_DEFAULT is nothing more than a shorthand of
+> CONFIG_CONSOLE_LOGLEVEL_DEFAULT.
+> 
+> When you change CONFIG_CONSOLE_LOGLEVEL_DEFAULT from Kconfig, almost
+> all objects are rebuilt because CONFIG_CONSOLE_LOGLEVEL_DEFAULT is
+> used in <linux/printk.h>, which is included from most of source files.
+> 
+> In fact, there are only 4 users of CONSOLE_LOGLEVEL_DEFAULT:
+> 
+>   arch/x86/platform/uv/uv_nmi.c
+>   drivers/firmware/efi/libstub/efi-stub-helper.c
+>   drivers/tty/sysrq.c
+>   kernel/printk/printk.c
+> 
+> So, when you change CONFIG_CONSOLE_LOGLEVEL_DEFAULT and rebuild the
+> kernel, it is enough to recompile those 4 files.
 
-Agreed, a reload got added and it doesn't check the value again.
+Do you change CONFIG_CONSOLE_LOGLEVEL_DEFAULT so often that it becomes a
+problem?
 
-> Fixes: d25e37d89dd2f ("tracepoint: Optimize using static_call()")
-> Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
-
->  		it_func_ptr =						\
->  			rcu_dereference_raw((&__tracepoint_##_name)->funcs); \
-
-> +		if (it_func_ptr) {					\
-> +			do {						\
-> +				it_func = (it_func_ptr)->func;		\
-> +				__data = (it_func_ptr)->data;		\
-> +				((void(*)(void *, proto))(it_func))(__data, args); \
-> +			} while ((++it_func_ptr)->func);		\
-> +		}							\
->  		return 0;						\
-
-
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+	-ss
