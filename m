@@ -2,217 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 181AF30BBFE
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:24:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C83C30BC07
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:30:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230375AbhBBKXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 05:23:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229767AbhBBKXW (ORCPT
+        id S229719AbhBBK3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 05:29:05 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:45171 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229590AbhBBK3B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 05:23:22 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286EEC061573;
-        Tue,  2 Feb 2021 02:22:42 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id e9so2083405pjj.0;
-        Tue, 02 Feb 2021 02:22:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=feNMs9NZIZZBFRuPZuPQAraD1ls2HBTzJnPTDra1dJo=;
-        b=Hsn610B9baMjUo1dtjNGVVl0OMIYTZTIqhnRX3zMn7zT8usqwHFf51r2OfflOoiC0c
-         19XwAcKChgc/bO3PHxkM0Sszy87AP165fkRjy9N9U5+kYTBBFGNrGeeMkAHUGleudAgh
-         54LrQGzm/wtP2C3shypmgkoFHl1Peul+jfBAvSV9vdz+0Ah0FzSZ9hGANzqMRm4IDNhC
-         Y7lLxrRQxpvh1/LVTxLwGEhvGLkM1b/wWBUPLvVlX8QBHq2pAhmDzzDPLIphrrd6Bljg
-         aGFaAJHE9uUfySvC5HASZYUAGc4IyII5YQS6M975rZTgLCb/ciN2JNJi3IlkvM8ZJeVN
-         A/qg==
+        Tue, 2 Feb 2021 05:29:01 -0500
+Received: by mail-io1-f69.google.com with SMTP id x7so14511002ion.12
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 02:28:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=feNMs9NZIZZBFRuPZuPQAraD1ls2HBTzJnPTDra1dJo=;
-        b=QwwS/BmUvbj10aDzr4f9C+P1HsHkSuGgHUK1EhZZhG1IQJZPjtxPm9+NeeCjyrdyUa
-         J6dAuZLlOawcKD6JRcdH1pM96JkQC3HNUA2QBwjbVAbHN4eF/ahOs0TT7cggV4043gn/
-         9oXaR6JIJFQ0MjG0RTeEskVUdTzNhaj43fQ8YqAB89Ndl68EjEzhp5s3yDurcdOBBg+s
-         JPRhkwvnxf0c+oEAGal9/A8BGYy9hJbV5eD70+qmwvneFu2Moo4j25Upf1Mgh2+8ozcZ
-         ONJ3Ilawn3SBXAvxMR4Ah+2183AJ8EjOz8EVsUkr3NzjFlbpMEoATFE1/8wGYe9lA8n3
-         Vh0A==
-X-Gm-Message-State: AOAM533/w+Z91gKsqPI5tOgmySmkpNJfbN63+PZkKdc1ay6BZ3CPaqbr
-        bawXfads9nP4jU8FMRzWSb8=
-X-Google-Smtp-Source: ABdhPJwAydycRDrEu05vCkvnwXNns+f1xdrkCkAXHMftwOd5L2+xxwr6QxnPETGvBPuRovul4hnQfw==
-X-Received: by 2002:a17:90a:aa85:: with SMTP id l5mr3754761pjq.230.1612261361659;
-        Tue, 02 Feb 2021 02:22:41 -0800 (PST)
-Received: from localhost (60-242-11-44.static.tpgi.com.au. [60.242.11.44])
-        by smtp.gmail.com with ESMTPSA id o10sm21105273pfp.87.2021.02.02.02.22.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 02:22:40 -0800 (PST)
-Date:   Tue, 02 Feb 2021 20:22:35 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH v11 01/13] mm/vmalloc: fix HUGE_VMAP regression by
- enabling huge pages in vmalloc_to_page
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Ding Tianhong <dingtianhong@huawei.com>, linux-mm@kvack.org
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>
-References: <20210126044510.2491820-1-npiggin@gmail.com>
-        <20210126044510.2491820-2-npiggin@gmail.com>
-        <2dcbe2c9-c968-4895-fc43-c40dfe9f06d3@huawei.com>
-In-Reply-To: <2dcbe2c9-c968-4895-fc43-c40dfe9f06d3@huawei.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=MlUXTuM6nOcMNaAgBlcrcz9jVk5WWusj8rtcdYwVnH0=;
+        b=ua9aRU5wcTBZdAan1P3bWZ3G54F+7DOPe1SYro38d8HyidY6qSpwN6U2mXYfQJY8yc
+         B3yk1NWsTb3T2KaGo5Dwwh1uoM7UCKcDfPVqMMkrWWpDr00YrgZ6TfhY9HgAXWsbXrcN
+         BxMlDSsIKtOilR1EDn3XSujpJfLMXXZvtcugo5vUdOLVPZYGYQdePbbGGR1WO0tcTE/W
+         Ct4+DHNm6HJaddS397zqLzprt32+k55BYwhbnUnxcEEc3UVAByuh76ymVxBxOG35WHVt
+         G5y5Fy62EFg2VnYOwl1qC3nocvC2BGPJH0tSVD5ggkiqqD1QMO4c2RQNmRk41pMHtxMr
+         pbsA==
+X-Gm-Message-State: AOAM533b2gThcjXOeLvEzxsw1tSpWjDv4CiNIRWzrSDkZPLmAmgQ5TPM
+        2d0uBJFh/1TyFEnayQR0V0z2la/V+ax9tdaZQxNEWp0blOA+
+X-Google-Smtp-Source: ABdhPJwnAECBIuQx27J1xbO7XYer3HeB5Yjm9r18gXGnE5ccgp1BfxHjFaIEJucRIGDX/UirKlMvZBw2fbApYc7qlEFB6ZY8Hrlj
 MIME-Version: 1.0
-Message-Id: <1612261080.2gjaa5ecdf.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+X-Received: by 2002:a92:8e4b:: with SMTP id k11mr16677869ilh.192.1612261700570;
+ Tue, 02 Feb 2021 02:28:20 -0800 (PST)
+Date:   Tue, 02 Feb 2021 02:28:20 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f296a705ba57ed59@google.com>
+Subject: KASAN: use-after-free Read in recv_work
+From:   syzbot <syzbot+f91dbbabacae745d334f@syzkaller.appspotmail.com>
+To:     axboe@kernel.dk, josef@toxicpanda.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nbd@other.debian.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Ding Tianhong's message of January 28, 2021 1:13 pm:
-> On 2021/1/26 12:44, Nicholas Piggin wrote:
->> vmalloc_to_page returns NULL for addresses mapped by larger pages[*].
->> Whether or not a vmap is huge depends on the architecture details,
->> alignments, boot options, etc., which the caller can not be expected
->> to know. Therefore HUGE_VMAP is a regression for vmalloc_to_page.
->>=20
->> This change teaches vmalloc_to_page about larger pages, and returns
->> the struct page that corresponds to the offset within the large page.
->> This makes the API agnostic to mapping implementation details.
->>=20
->> [*] As explained by commit 029c54b095995 ("mm/vmalloc.c: huge-vmap:
->>     fail gracefully on unexpected huge vmap mappings")
->>=20
->> Reviewed-by: Christoph Hellwig <hch@lst.de>
->> Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
->> ---
->>  mm/vmalloc.c | 41 ++++++++++++++++++++++++++---------------
->>  1 file changed, 26 insertions(+), 15 deletions(-)
->>=20
->> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
->> index e6f352bf0498..62372f9e0167 100644
->> --- a/mm/vmalloc.c
->> +++ b/mm/vmalloc.c
->> @@ -34,7 +34,7 @@
->>  #include <linux/bitops.h>
->>  #include <linux/rbtree_augmented.h>
->>  #include <linux/overflow.h>
->> -
->> +#include <linux/pgtable.h>
->>  #include <linux/uaccess.h>
->>  #include <asm/tlbflush.h>
->>  #include <asm/shmparam.h>
->> @@ -343,7 +343,9 @@ int is_vmalloc_or_module_addr(const void *x)
->>  }
->> =20
->>  /*
->> - * Walk a vmap address to the struct page it maps.
->> + * Walk a vmap address to the struct page it maps. Huge vmap mappings w=
-ill
->> + * return the tail page that corresponds to the base page address, whic=
-h
->> + * matches small vmap mappings.
->>   */
->>  struct page *vmalloc_to_page(const void *vmalloc_addr)
->>  {
->> @@ -363,25 +365,33 @@ struct page *vmalloc_to_page(const void *vmalloc_a=
-ddr)
->> =20
->>  	if (pgd_none(*pgd))
->>  		return NULL;
->> +	if (WARN_ON_ONCE(pgd_leaf(*pgd)))
->> +		return NULL; /* XXX: no allowance for huge pgd */
->> +	if (WARN_ON_ONCE(pgd_bad(*pgd)))
->> +		return NULL;
->> +
->>  	p4d =3D p4d_offset(pgd, addr);
->>  	if (p4d_none(*p4d))
->>  		return NULL;
->> -	pud =3D pud_offset(p4d, addr);
->> +	if (p4d_leaf(*p4d))
->> +		return p4d_page(*p4d) + ((addr & ~P4D_MASK) >> PAGE_SHIFT);
->> +	if (WARN_ON_ONCE(p4d_bad(*p4d)))
->> +		return NULL;
->> =20
->> -	/*
->> -	 * Don't dereference bad PUD or PMD (below) entries. This will also
->> -	 * identify huge mappings, which we may encounter on architectures
->> -	 * that define CONFIG_HAVE_ARCH_HUGE_VMAP=3Dy. Such regions will be
->> -	 * identified as vmalloc addresses by is_vmalloc_addr(), but are
->> -	 * not [unambiguously] associated with a struct page, so there is
->> -	 * no correct value to return for them.
->> -	 */
->> -	WARN_ON_ONCE(pud_bad(*pud));
->> -	if (pud_none(*pud) || pud_bad(*pud))
->> +	pud =3D pud_offset(p4d, addr);
->> +	if (pud_none(*pud))
->> +		return NULL;
->> +	if (pud_leaf(*pud))
->> +		return pud_page(*pud) + ((addr & ~PUD_MASK) >> PAGE_SHIFT);
->=20
-> Hi Nicho:
->=20
-> /builds/1mzfdQzleCy69KZFb5qHNSEgabZ/mm/vmalloc.c: In function 'vmalloc_to=
-_page':
-> /builds/1mzfdQzleCy69KZFb5qHNSEgabZ/include/asm-generic/pgtable-nop4d-hac=
-k.h:48:27: error: implicit declaration of function 'pud_page'; did you mean=
- 'put_page'? [-Werror=3Dimplicit-function-declaration]
->    48 | #define pgd_page(pgd)    (pud_page((pud_t){ pgd }))
->       |                           ^~~~~~~~
->=20
-> the pug_page is not defined for aarch32 when enabling 2-level page config=
-, it break the system building.
+Hello,
 
-Hey thanks for finding that, not sure why that didn't trigger any CI.
+syzbot found the following issue on:
 
-Anyway newer kernels don't have the ptable-*-hack.h headers, but even so=20
-it still breaks upstream. arm is using some hand-rolled 2-level folding
-of its own (which is fair enough because most 32-bit archs were 2 level
-at the time I added pgtable-nopud.h header).
+HEAD commit:    b01f250d Add linux-next specific files for 20210129
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=14366378d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=725bc96dc234fda7
+dashboard link: https://syzkaller.appspot.com/bug?extid=f91dbbabacae745d334f
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-This patch seems to at least make it build.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Thanks,
-Nick
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f91dbbabacae745d334f@syzkaller.appspotmail.com
+
+block nbd5: Receive control failed (result -107)
+==================================================================
+BUG: KASAN: use-after-free in recv_work+0x2a2/0x2c0 drivers/block/nbd.c:787
+Read of size 8 at addr ffff88801181ed20 by task kworker/u5:2/8465
+
+CPU: 1 PID: 8465 Comm: kworker/u5:2 Not tainted 5.11.0-rc5-next-20210129-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: knbd5-recv recv_work
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
+ __kasan_report mm/kasan/report.c:399 [inline]
+ kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
+ recv_work+0x2a2/0x2c0 drivers/block/nbd.c:787
+ process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+Allocated by task 17044:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track mm/kasan/common.c:46 [inline]
+ set_alloc_info mm/kasan/common.c:403 [inline]
+ ____kasan_kmalloc mm/kasan/common.c:434 [inline]
+ ____kasan_kmalloc.constprop.0+0xa0/0xd0 mm/kasan/common.c:406
+ kasan_slab_alloc include/linux/kasan.h:208 [inline]
+ slab_post_alloc_hook mm/slab.h:516 [inline]
+ slab_alloc_node mm/slub.c:2907 [inline]
+ slab_alloc mm/slub.c:2915 [inline]
+ __kmalloc_track_caller+0x16c/0x2e0 mm/slub.c:4550
+ __do_krealloc mm/slab_common.c:1149 [inline]
+ krealloc+0x60/0xa0 mm/slab_common.c:1178
+ nbd_add_socket+0x263/0x6a0 drivers/block/nbd.c:1044
+ __nbd_ioctl drivers/block/nbd.c:1369 [inline]
+ nbd_ioctl+0x388/0xa50 drivers/block/nbd.c:1425
+ blkdev_ioctl+0x2a1/0x6d0 block/ioctl.c:576
+ block_ioctl+0xf9/0x140 fs/block_dev.c:1650
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Freed by task 17044:
+ kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+ kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+ kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
+ ____kasan_slab_free.part.0+0xe1/0x110 mm/kasan/common.c:364
+ kasan_slab_free include/linux/kasan.h:191 [inline]
+ slab_free_hook mm/slub.c:1562 [inline]
+ slab_free_freelist_hook+0x82/0x1d0 mm/slub.c:1600
+ slab_free mm/slub.c:3161 [inline]
+ kfree+0xe5/0x7b0 mm/slub.c:4202
+ krealloc+0x45/0xa0 mm/slab_common.c:1180
+ nbd_add_socket+0x263/0x6a0 drivers/block/nbd.c:1044
+ __nbd_ioctl drivers/block/nbd.c:1369 [inline]
+ nbd_ioctl+0x388/0xa50 drivers/block/nbd.c:1425
+ blkdev_ioctl+0x2a1/0x6d0 block/ioctl.c:576
+ block_ioctl+0xf9/0x140 fs/block_dev.c:1650
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+The buggy address belongs to the object at ffff88801181ed20
+ which belongs to the cache kmalloc-8 of size 8
+The buggy address is located 0 bytes inside of
+ 8-byte region [ffff88801181ed20, ffff88801181ed28)
+The buggy address belongs to the page:
+page:00000000e0a0f4b5 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1181e
+flags: 0xfff00000000200(slab)
+raw: 00fff00000000200 ffffea000053d180 0000000500000005 ffff88800fc41280
+raw: ffff88801181ef28 0000000080660062 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88801181ec00: fc 00 fc fc fc fc fa fc fc fc fc 00 fc fc fc fc
+ ffff88801181ec80: fa fc fc fc fc 00 fc fc fc fc 00 fc fc fc fc 00
+>ffff88801181ed00: fc fc fc fc fa fc fc fc fc 00 fc fc fc fc 00 fc
+                               ^
+ ffff88801181ed80: fc fc fc 00 fc fc fc fc 00 fc fc fc fc fa fc fc
+ ffff88801181ee00: fc fc 00 fc fc fc fc fa fc fc fc fc 00 fc fc fc
+==================================================================
+
 
 ---
- arch/arm/include/asm/pgtable-3level.h | 2 --
- arch/arm/include/asm/pgtable.h        | 3 +++
- 2 files changed, 3 insertions(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/arm/include/asm/pgtable-3level.h b/arch/arm/include/asm/p=
-gtable-3level.h
-index 2b85d175e999..d4edab51a77c 100644
---- a/arch/arm/include/asm/pgtable-3level.h
-+++ b/arch/arm/include/asm/pgtable-3level.h
-@@ -186,8 +186,6 @@ static inline pte_t pte_mkspecial(pte_t pte)
-=20
- #define pmd_write(pmd)		(pmd_isclear((pmd), L_PMD_SECT_RDONLY))
- #define pmd_dirty(pmd)		(pmd_isset((pmd), L_PMD_SECT_DIRTY))
--#define pud_page(pud)		pmd_page(__pmd(pud_val(pud)))
--#define pud_write(pud)		pmd_write(__pmd(pud_val(pud)))
-=20
- #define pmd_hugewillfault(pmd)	(!pmd_young(pmd) || !pmd_write(pmd))
- #define pmd_thp_or_huge(pmd)	(pmd_huge(pmd) || pmd_trans_huge(pmd))
-diff --git a/arch/arm/include/asm/pgtable.h b/arch/arm/include/asm/pgtable.=
-h
-index c02f24400369..d63a5bb6bd0c 100644
---- a/arch/arm/include/asm/pgtable.h
-+++ b/arch/arm/include/asm/pgtable.h
-@@ -166,6 +166,9 @@ extern struct page *empty_zero_page;
-=20
- extern pgd_t swapper_pg_dir[PTRS_PER_PGD];
-=20
-+#define pud_page(pud)		pmd_page(__pmd(pud_val(pud)))
-+#define pud_write(pud)		pmd_write(__pmd(pud_val(pud)))
-+
- #define pmd_none(pmd)		(!pmd_val(pmd))
-=20
- static inline pte_t *pmd_page_vaddr(pmd_t pmd)
---=20
-2.23.0
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
