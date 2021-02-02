@@ -2,322 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C1230B9FD
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:34:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F21530B9EC
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 09:32:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232378AbhBBIdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 03:33:02 -0500
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:60969 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232554AbhBBIcM (ORCPT
+        id S232536AbhBBIax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 03:30:53 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:12100 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231283AbhBBIav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 03:32:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1612254732; x=1643790732;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=VNZGpsl81yK5JejafdPkDq2mYtmBJzfgZJS/xX1AuVM=;
-  b=DgdoX6o9mcBZWW+tFj2Tndh2ZYuvNY3iQz5FQ9kykiREo6F3wL99r2lA
-   qFkFsaRq+FeP0jRYRciWyBxmdHFJKD3DrnVZ8flmRcp3MokFJsXW2HzJZ
-   /12cv5zncE0sZqgcdXpnSpheEbumI0+Zdru/QnGw7wn776zOPd0jyIzm8
-   /y0/+/w7DAO4NrL5MCcrGL/dV5KxZXw5FHk0ugLS09x+ho/1j0N0vhARU
-   WMI26IRb/08Ac6zzf+Sr0CZ7p6q7tYjrgkOFZER9Lquzia1620LGhPuqw
-   MN76jfet8T1hzTT0+G8pxrDUXlmuOQJybWE0FWdkcbvTHQfT38+Nq4RIW
-   Q==;
-IronPort-SDR: meeO5bueqXKAcoX8aio9XSEtKXThiwcXPJndNhG9HL6DJ/xldZaCdpDIl/Y/zt0/p37mqjuHMZ
- GxHQqIBpp+NcBq/GNjFo6+GsI8BdkHdzK9IQ1stTweeppp0kLu4UX+s5p7iGHHm1WTAW+WseMt
- tshrgAQhePhIMHk8+UdpkYc6eZ3cSozTpJnKdKDPL5aUBf/0np0VeWVEhICeMg8T4vhmcxPvAq
- d/zcIw8xGTipgUMtoV669U91qHTBKzM2Mi1xYqhfPk+MMsFYrmYymLHH1DjNI/TcTfLnUiEL2x
- FZc=
-X-IronPort-AV: E=Sophos;i="5.79,394,1602518400"; 
-   d="scan'208";a="269317427"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 02 Feb 2021 16:31:06 +0800
-IronPort-SDR: Jx+PhsqtGHOPGR3eDrG/h43e/TxKwGHsU8/ijU4k3e5UH1s5QhWZUlqRQBcpz0ImRxvvJiOtoD
- HtbD+7Ew3y9KAzIndkQPTHIWkZCr2qAkeICJhaGsHZWb6vkg8oGJiP07bxU4G2qMcsveGUfywN
- 7W4FNKyp1AVC3lnr4OTf3Cf+PlHmJ10sMYhEh+Jy20T4sT5zebrdt1ICUzf2Yy9EeJn2J1hxtW
- FrqRO1ZJCVwQaWEP8QscxbHm0KmiuePQzr5GmjqArDMS6xhoDPd6RG7WVvos20S4A1Z5G7iR8N
- QpnWg2HCN+K4klJx/DxvO+aX
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2021 00:13:15 -0800
-IronPort-SDR: hqE97n1X1fIzJdSr7O5fZFFUQmXJseG0LJ0SHhteVWI/TJMbf1ZtoUt7iN2CRSU5njxqFGigrP
- fScPKYZxSXfcyTWou54HEGaA/qKMHb4GmIaeGYsH6ljVaYzUwY7nNVLL6kwTOK+LFAbmPwnj8/
- GOBffdq8a+KykS2lgZDciwaucsuVqfvBvYomre7Gwu4FyRjtf491fVM2VFG5QgzPHTd4r1Jyf8
- WXqw+K+jHp0iJmxfmPj/6eHcIvoQYG6wEiYILz8tvSGko3rwrn08YWSeopHIv7F2QU2H+sRLlY
- cOA=
-WDCIronportException: Internal
-Received: from bxygm33.sdcorp.global.sandisk.com ([10.0.231.247])
-  by uls-op-cesaip01.wdc.com with ESMTP; 02 Feb 2021 00:31:03 -0800
-From:   Avri Altman <avri.altman@wdc.com>
-To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, Bart Van Assche <bvanassche@acm.org>,
-        yongmyung lee <ymhungry.lee@samsung.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        alim.akhtar@samsung.com, asutoshd@codeaurora.org,
-        Zang Leigang <zangleigang@hisilicon.com>,
-        Avi Shchislowski <avi.shchislowski@wdc.com>,
-        Bean Huo <beanhuo@micron.com>, cang@codeaurora.org,
-        stanley.chu@mediatek.com, Avri Altman <avri.altman@wdc.com>
-Subject: [PATCH v2 5/9] scsi: ufshpb: Region inactivation in host mode
-Date:   Tue,  2 Feb 2021 10:30:03 +0200
-Message-Id: <20210202083007.104050-6-avri.altman@wdc.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210202083007.104050-1-avri.altman@wdc.com>
-References: <20210202083007.104050-1-avri.altman@wdc.com>
+        Tue, 2 Feb 2021 03:30:51 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DVHyn4Kycz162v0;
+        Tue,  2 Feb 2021 16:28:49 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server (TLS) id 14.3.498.0; Tue, 2 Feb 2021
+ 16:30:03 +0800
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs: rename checkpoint=merge mount option
+ to checkpoint_merge
+To:     Daeho Jeong <daeho43@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        <kernel-team@android.com>, Daeho Jeong <daehojeong@google.com>
+References: <20210202051829.2127214-1-daeho43@gmail.com>
+ <ef27f0cc-87b6-cea1-31a6-f2837d6a673c@huawei.com>
+ <CACOAw_wGY1CNXZ9QoLB1t0800Wyjv1_P9iuqk4SOKjT-oUQamw@mail.gmail.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <6f1e4639-3715-d855-951d-7c0a67fa9913@huawei.com>
+Date:   Tue, 2 Feb 2021 16:30:03 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
+In-Reply-To: <CACOAw_wGY1CNXZ9QoLB1t0800Wyjv1_P9iuqk4SOKjT-oUQamw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I host mode, the host is expected to send HPB-WRITE-BUFFER with
-buffer-id = 0x1 when it inactivates a region.
+On 2021/2/2 16:02, Daeho Jeong wrote:
+> I chose the same step with "flush_merge", because it doesn't have
+> "noflush_merge".
 
-Use the map-requests pool as there is no point in assigning a
-designated cache for umap-requests.
+Oh, "noxxx" option was added only when we set the option by default in
+default_options(), when user want to disable the default option, it
+needs to use "noxxx" option, and then we will show this "noxxx" option
+string to user via show_options() to indicate that "noxxx" option is
+working now.
 
-Signed-off-by: Avri Altman <avri.altman@wdc.com>
----
- drivers/scsi/ufs/ufshpb.c | 119 +++++++++++++++++++++++++++++++-------
- drivers/scsi/ufs/ufshpb.h |   4 ++
- 2 files changed, 103 insertions(+), 20 deletions(-)
+Anyway I think we should fix to show "noflush_merge" option because we
+have set flush_merge by default.
 
-diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
-index bae7dca105da..49c74de539b7 100644
---- a/drivers/scsi/ufs/ufshpb.c
-+++ b/drivers/scsi/ufs/ufshpb.c
-@@ -391,49 +391,66 @@ void ufshpb_prep(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
- 	hpb->stats.hit_cnt++;
- }
- 
-+static struct ufshpb_req *ufshpb_get_req(struct ufshpb_lu *hpb,
-+					 int rgn_idx, enum req_opf dir)
-+{
-+	struct ufshpb_req *rq;
-+	struct request *req;
-+
-+	rq = kmem_cache_alloc(hpb->map_req_cache, GFP_KERNEL);
-+	if (!rq)
-+		return NULL;
-+
-+	req = blk_get_request(hpb->sdev_ufs_lu->request_queue,
-+			      dir, 0);
-+	if (IS_ERR(req))
-+		goto free_rq;
-+
-+	rq->hpb = hpb;
-+	rq->req = req;
-+	rq->rgn_idx = rgn_idx;
-+
-+	return rq;
-+
-+free_rq:
-+	kmem_cache_free(hpb->map_req_cache, rq);
-+	return NULL;
-+}
-+
-+static void ufshpb_put_req(struct ufshpb_lu *hpb, struct ufshpb_req *rq)
-+{
-+	blk_put_request(rq->req);
-+	kmem_cache_free(hpb->map_req_cache, rq);
-+}
-+
- static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
- 					     struct ufshpb_subregion *srgn)
- {
- 	struct ufshpb_req *map_req;
--	struct request *req;
- 	struct bio *bio;
- 
--	map_req = kmem_cache_alloc(hpb->map_req_cache, GFP_KERNEL);
-+	map_req = ufshpb_get_req(hpb, srgn->rgn_idx, REQ_OP_SCSI_IN);
- 	if (!map_req)
- 		return NULL;
- 
--	req = blk_get_request(hpb->sdev_ufs_lu->request_queue,
--			      REQ_OP_SCSI_IN, 0);
--	if (IS_ERR(req))
--		goto free_map_req;
--
- 	bio = bio_alloc(GFP_KERNEL, hpb->pages_per_srgn);
- 	if (!bio) {
--		blk_put_request(req);
--		goto free_map_req;
-+		ufshpb_put_req(hpb, map_req);
-+		return NULL;
- 	}
- 
--	map_req->hpb = hpb;
--	map_req->req = req;
- 	map_req->bio = bio;
--
--	map_req->rgn_idx = srgn->rgn_idx;
- 	map_req->srgn_idx = srgn->srgn_idx;
- 	map_req->mctx = srgn->mctx;
- 
- 	return map_req;
--
--free_map_req:
--	kmem_cache_free(hpb->map_req_cache, map_req);
--	return NULL;
- }
- 
- static void ufshpb_put_map_req(struct ufshpb_lu *hpb,
--				      struct ufshpb_req *map_req)
-+			       struct ufshpb_req *map_req)
- {
- 	bio_put(map_req->bio);
--	blk_put_request(map_req->req);
--	kmem_cache_free(hpb->map_req_cache, map_req);
-+	ufshpb_put_req(hpb, map_req);
- }
- 
- static int ufshpb_clear_dirty_bitmap(struct ufshpb_lu *hpb,
-@@ -488,6 +505,13 @@ static void ufshpb_activate_subregion(struct ufshpb_lu *hpb,
- 	srgn->srgn_state = HPB_SRGN_VALID;
- }
- 
-+static void ufshpb_umap_req_compl_fn(struct request *req, blk_status_t error)
-+{
-+	struct ufshpb_req *umap_req = (struct ufshpb_req *)req->end_io_data;
-+
-+	ufshpb_put_req(umap_req->hpb, umap_req);
-+}
-+
- static void ufshpb_map_req_compl_fn(struct request *req, blk_status_t error)
- {
- 	struct ufshpb_req *map_req = (struct ufshpb_req *) req->end_io_data;
-@@ -506,6 +530,14 @@ static void ufshpb_map_req_compl_fn(struct request *req, blk_status_t error)
- 	ufshpb_put_map_req(map_req->hpb, map_req);
- }
- 
-+static void ufshpb_set_write_buf_cmd(unsigned char *cdb, int rgn_idx)
-+{
-+	cdb[0] = UFSHPB_WRITE_BUFFER;
-+	cdb[1] = UFSHPB_WRITE_BUFFER_ID;
-+	put_unaligned_be16(rgn_idx, &cdb[2]);
-+	cdb[9] = 0x00;
-+}
-+
- static void ufshpb_set_read_buf_cmd(unsigned char *cdb, int rgn_idx,
- 					   int srgn_idx, int srgn_mem_size)
- {
-@@ -519,6 +551,27 @@ static void ufshpb_set_read_buf_cmd(unsigned char *cdb, int rgn_idx,
- 	cdb[9] = 0x00;
- }
- 
-+static int ufshpb_execute_umap_req(struct ufshpb_lu *hpb,
-+				   struct ufshpb_req *umap_req)
-+{
-+	struct request_queue *q;
-+	struct request *req;
-+	struct scsi_request *rq;
-+
-+	q = hpb->sdev_ufs_lu->request_queue;
-+	req = umap_req->req;
-+	req->timeout = 0;
-+	req->end_io_data = (void *)umap_req;
-+	rq = scsi_req(req);
-+	ufshpb_set_write_buf_cmd(rq->cmd, umap_req->rgn_idx);
-+	rq->cmd_len = HPB_WRITE_BUFFER_CMD_LENGTH;
-+
-+	blk_execute_rq_nowait(q, NULL, req, 1, ufshpb_umap_req_compl_fn);
-+
-+	hpb->stats.umap_req_cnt++;
-+	return 0;
-+}
-+
- static int ufshpb_execute_map_req(struct ufshpb_lu *hpb,
- 				  struct ufshpb_req *map_req)
- {
-@@ -677,6 +730,25 @@ static void ufshpb_purge_active_subregion(struct ufshpb_lu *hpb,
- 	}
- }
- 
-+static int ufshpb_issue_umap_req(struct ufshpb_lu *hpb,
-+				 struct ufshpb_region *rgn)
-+{
-+	struct ufshpb_req *umap_req;
-+
-+	umap_req = ufshpb_get_req(hpb, rgn->rgn_idx, REQ_OP_SCSI_OUT);
-+	if (!umap_req)
-+		return -ENOMEM;
-+
-+	if (ufshpb_execute_umap_req(hpb, umap_req))
-+		goto free_umap_req;
-+
-+	return 0;
-+
-+free_umap_req:
-+	ufshpb_put_req(hpb, umap_req);
-+	return -EAGAIN;
-+}
-+
- static void __ufshpb_evict_region(struct ufshpb_lu *hpb,
- 				  struct ufshpb_region *rgn)
- {
-@@ -684,6 +756,10 @@ static void __ufshpb_evict_region(struct ufshpb_lu *hpb,
- 	struct ufshpb_subregion *srgn;
- 	int srgn_idx;
- 
-+
-+	if (hpb->is_hcm && ufshpb_issue_umap_req(hpb, rgn))
-+		return;
-+
- 	lru_info = &hpb->lru_info;
- 
- 	dev_dbg(&hpb->sdev_ufs_lu->sdev_dev, "evict region %d\n", rgn->rgn_idx);
-@@ -1384,6 +1460,7 @@ ufshpb_sysfs_attr_show_func(rb_noti_cnt);
- ufshpb_sysfs_attr_show_func(rb_active_cnt);
- ufshpb_sysfs_attr_show_func(rb_inactive_cnt);
- ufshpb_sysfs_attr_show_func(map_req_cnt);
-+ufshpb_sysfs_attr_show_func(umap_req_cnt);
- 
- static struct attribute *hpb_dev_attrs[] = {
- 	&dev_attr_hit_cnt.attr,
-@@ -1392,6 +1469,7 @@ static struct attribute *hpb_dev_attrs[] = {
- 	&dev_attr_rb_active_cnt.attr,
- 	&dev_attr_rb_inactive_cnt.attr,
- 	&dev_attr_map_req_cnt.attr,
-+	&dev_attr_umap_req_cnt.attr,
- 	NULL,
- };
- 
-@@ -1408,6 +1486,7 @@ static void ufshpb_stat_init(struct ufshpb_lu *hpb)
- 	hpb->stats.rb_active_cnt = 0;
- 	hpb->stats.rb_inactive_cnt = 0;
- 	hpb->stats.map_req_cnt = 0;
-+	hpb->stats.umap_req_cnt = 0;
- }
- 
- static int ufshpb_lu_hpb_init(struct ufs_hba *hba, struct ufshpb_lu *hpb)
-diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
-index 381b5fed61a5..71b082ee7876 100644
---- a/drivers/scsi/ufs/ufshpb.h
-+++ b/drivers/scsi/ufs/ufshpb.h
-@@ -35,8 +35,11 @@
- /* hpb vender defined opcode */
- #define UFSHPB_READ				0xF8
- #define UFSHPB_READ_BUFFER			0xF9
-+#define UFSHPB_WRITE_BUFFER			0xFA
- #define UFSHPB_READ_BUFFER_ID			0x01
-+#define UFSHPB_WRITE_BUFFER_ID			0x01
- #define HPB_READ_BUFFER_CMD_LENGTH		10
-+#define HPB_WRITE_BUFFER_CMD_LENGTH		10
- #define LU_ENABLED_HPB_FUNC			0x02
- 
- #define HPB_RESET_REQ_RETRIES			10
-@@ -159,6 +162,7 @@ struct ufshpb_stats {
- 	u64 rb_active_cnt;
- 	u64 rb_inactive_cnt;
- 	u64 map_req_cnt;
-+	u64 umap_req_cnt;
- };
- 
- struct ufshpb_lu {
--- 
-2.25.1
+> Do you think we need that for both, "noflush_merge" and "nocheckpoint_merge"?
 
+For "nocheckpoint_merge", we can introduce this option only when we want
+to set "checkpoint_merge" by default.
+
+Here is the example from noinline_data:
+
+Commit 75342797988 ("f2fs: enable inline data by default")
+
+Thanks,
+
+> 
+> I thought we needed to give some time to make this be turned on by
+> default. It might be a little radical. :)
+> 
+> What do you think?
+> 
+> 2021년 2월 2일 (화) 오후 4:40, Chao Yu <yuchao0@huawei.com>님이 작성:
+>>
+>> On 2021/2/2 13:18, Daeho Jeong wrote:
+>>> From: Daeho Jeong <daehojeong@google.com>
+>>>
+>>> As checkpoint=merge comes in, mount option setting related to checkpoint
+>>> had been mixed up and it became hard to understand. So, I separated
+>>> this option from "checkpoint=" and made another mount option
+>>> "checkpoint_merge" for this.
+>>>
+>>> Signed-off-by: Daeho Jeong <daehojeong@google.com>
+>>> ---
+>>> v2: renamed "checkpoint=merge" to "checkpoint_merge"
+>>> ---
+>>>    Documentation/filesystems/f2fs.rst |  6 +++---
+>>>    fs/f2fs/super.c                    | 26 ++++++++++++++------------
+>>>    2 files changed, 17 insertions(+), 15 deletions(-)
+>>>
+>>> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
+>>> index d0ead45dc706..475994ed8b15 100644
+>>> --- a/Documentation/filesystems/f2fs.rst
+>>> +++ b/Documentation/filesystems/f2fs.rst
+>>> @@ -247,9 +247,9 @@ checkpoint=%s[:%u[%]]      Set to "disable" to turn off checkpointing. Set to "enabl
+>>>                         hide up to all remaining free space. The actual space that
+>>>                         would be unusable can be viewed at /sys/fs/f2fs/<disk>/unusable
+>>>                         This space is reclaimed once checkpoint=enable.
+>>> -                      Here is another option "merge", which creates a kernel daemon
+>>> -                      and makes it to merge concurrent checkpoint requests as much
+>>> -                      as possible to eliminate redundant checkpoint issues. Plus,
+>>> +checkpoint_merge      When checkpoint is enabled, this can be used to create a kernel
+>>> +                      daemon and make it to merge concurrent checkpoint requests as
+>>> +                      much as possible to eliminate redundant checkpoint issues. Plus,
+>>>                         we can eliminate the sluggish issue caused by slow checkpoint
+>>>                         operation when the checkpoint is done in a process context in
+>>>                         a cgroup having low i/o budget and cpu shares. To make this
+>>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+>>> index 56696f6cfa86..d8603e6c4916 100644
+>>> --- a/fs/f2fs/super.c
+>>> +++ b/fs/f2fs/super.c
+>>> @@ -145,6 +145,7 @@ enum {
+>>>        Opt_checkpoint_disable_cap_perc,
+>>>        Opt_checkpoint_enable,
+>>>        Opt_checkpoint_merge,
+>>> +     Opt_nocheckpoint_merge,
+>>>        Opt_compress_algorithm,
+>>>        Opt_compress_log_size,
+>>>        Opt_compress_extension,
+>>> @@ -215,7 +216,8 @@ static match_table_t f2fs_tokens = {
+>>>        {Opt_checkpoint_disable_cap, "checkpoint=disable:%u"},
+>>>        {Opt_checkpoint_disable_cap_perc, "checkpoint=disable:%u%%"},
+>>>        {Opt_checkpoint_enable, "checkpoint=enable"},
+>>> -     {Opt_checkpoint_merge, "checkpoint=merge"},
+>>> +     {Opt_checkpoint_merge, "checkpoint_merge"},
+>>> +     {Opt_nocheckpoint_merge, "nocheckpoint_merge"},
+>>>        {Opt_compress_algorithm, "compress_algorithm=%s"},
+>>>        {Opt_compress_log_size, "compress_log_size=%u"},
+>>>        {Opt_compress_extension, "compress_extension=%s"},
+>>> @@ -946,6 +948,9 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>>>                case Opt_checkpoint_merge:
+>>>                        set_opt(sbi, MERGE_CHECKPOINT);
+>>>                        break;
+>>> +             case Opt_nocheckpoint_merge:
+>>> +                     clear_opt(sbi, MERGE_CHECKPOINT);
+>>> +                     break;
+>>>    #ifdef CONFIG_F2FS_FS_COMPRESSION
+>>>                case Opt_compress_algorithm:
+>>>                        if (!f2fs_sb_has_compression(sbi)) {
+>>> @@ -1142,12 +1147,6 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
+>>>                return -EINVAL;
+>>>        }
+>>>
+>>> -     if (test_opt(sbi, DISABLE_CHECKPOINT) &&
+>>> -                     test_opt(sbi, MERGE_CHECKPOINT)) {
+>>> -             f2fs_err(sbi, "checkpoint=merge cannot be used with checkpoint=disable\n");
+>>> -             return -EINVAL;
+>>> -     }
+>>> -
+>>>        /* Not pass down write hints if the number of active logs is lesser
+>>>         * than NR_CURSEG_PERSIST_TYPE.
+>>>         */
+>>> @@ -1782,7 +1781,7 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+>>>                seq_printf(seq, ",checkpoint=disable:%u",
+>>>                                F2FS_OPTION(sbi).unusable_cap);
+>>>        if (test_opt(sbi, MERGE_CHECKPOINT))
+>>> -             seq_puts(seq, ",checkpoint=merge");
+>>> +             seq_puts(seq, ",checkpoint_merge");
+>>
+>> Other noxxx options will be shown in show_options(), how about following them?
+>>
+>>>        if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_POSIX)
+>>>                seq_printf(seq, ",fsync_mode=%s", "posix");
+>>>        else if (F2FS_OPTION(sbi).fsync_mode == FSYNC_MODE_STRICT)
+>>> @@ -1827,6 +1826,7 @@ static void default_options(struct f2fs_sb_info *sbi)
+>>>        sbi->sb->s_flags |= SB_LAZYTIME;
+>>>        set_opt(sbi, FLUSH_MERGE);
+>>>        set_opt(sbi, DISCARD);
+>>> +     clear_opt(sbi, MERGE_CHECKPOINT);
+>>
+>> Why should we clear checkpoint_merge option in default_options()?
+>>
+>> Thanks,
+>>
+>>>        if (f2fs_sb_has_blkzoned(sbi))
+>>>                F2FS_OPTION(sbi).fs_mode = FS_MODE_LFS;
+>>>        else
+>>> @@ -2066,9 +2066,8 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+>>>                }
+>>>        }
+>>>
+>>> -     if (!test_opt(sbi, MERGE_CHECKPOINT)) {
+>>> -             f2fs_stop_ckpt_thread(sbi);
+>>> -     } else {
+>>> +     if (!test_opt(sbi, DISABLE_CHECKPOINT) &&
+>>> +                     test_opt(sbi, MERGE_CHECKPOINT)) {
+>>>                err = f2fs_start_ckpt_thread(sbi);
+>>>                if (err) {
+>>>                        f2fs_err(sbi,
+>>> @@ -2076,6 +2075,8 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+>>>                            err);
+>>>                        goto restore_gc;
+>>>                }
+>>> +     } else {
+>>> +             f2fs_stop_ckpt_thread(sbi);
+>>>        }
+>>>
+>>>        /*
+>>> @@ -3831,7 +3832,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+>>>
+>>>        /* setup checkpoint request control and start checkpoint issue thread */
+>>>        f2fs_init_ckpt_req_control(sbi);
+>>> -     if (test_opt(sbi, MERGE_CHECKPOINT)) {
+>>> +     if (!test_opt(sbi, DISABLE_CHECKPOINT) &&
+>>> +                     test_opt(sbi, MERGE_CHECKPOINT)) {
+>>>                err = f2fs_start_ckpt_thread(sbi);
+>>>                if (err) {
+>>>                        f2fs_err(sbi,
+>>>
+> .
+> 
