@@ -2,140 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F5930C9CF
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:30:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D3B30C9C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 19:30:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238578AbhBBSaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 13:30:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50066 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238573AbhBBSZR (ORCPT
+        id S238691AbhBBS3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 13:29:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59796 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238416AbhBBS0e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 13:25:17 -0500
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FE9C061788;
-        Tue,  2 Feb 2021 10:24:35 -0800 (PST)
-Received: by mail-lj1-x233.google.com with SMTP id f19so25115709ljn.5;
-        Tue, 02 Feb 2021 10:24:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Q0T5IJwaSHOziIxSRhbmo9/NktrkYw4HnAHaQWP4KHQ=;
-        b=btzlH3Vxt+/koq/pSPXEBf4bkrneg6wWxrTbVGxN1JyckKHRZZi9ax6r8i/bl6Ir1s
-         IbmB+P0Zd8ho4CqrpMNkanmVY5FxKnQW6K1SN2D2tDtoT+XN5ihVWeOhdrRIoKSLUos/
-         VWI8LvV5oqS+2GdcBAyxW8i1dSqHHpQCGijGWw3lFWeHmiYW+gR5+/zYzD4T/bzbT7RF
-         TXddshv1tZ3k7C26ZQ2GjagnlW47lhBZ89LWTRkVX0Wko3oCH/j+w3oPkv3buMGeYmAF
-         OeSJisuIoobveQfD6+2xaQmDlKqtiFCm11drAtW4GuFCRIbdZph2ushLX3hx9ws0oCzw
-         ygeA==
+        Tue, 2 Feb 2021 13:26:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1612290306;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AnGr4EooSXaQZ5ZRROa4NLkKWgLW6n+u1Od1EbAD4Lg=;
+        b=biARlsBi1lrpONqG0jvHMLhzaRtq+GxkFyqj+3QnsXljf34B/qdIfO044QuSGHt0St74yK
+        VUFQs8Jf6Dh8hAiUGJlwVvIPqYYUplIXHlpqgXs3AilpG4tNSUTqWoh2UWa+olLjRWps4w
+        qnrekvX39SCzXTcsa2XKPS+H7CDKP/4=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-379-IYUK043KPFKmbigvanqxNg-1; Tue, 02 Feb 2021 13:24:57 -0500
+X-MC-Unique: IYUK043KPFKmbigvanqxNg-1
+Received: by mail-qv1-f71.google.com with SMTP id h13so15607708qvs.13
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Feb 2021 10:24:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:message-id:subject:from:reply-to:to:cc:date
+         :in-reply-to:references:organization:user-agent:mime-version
          :content-transfer-encoding;
-        bh=Q0T5IJwaSHOziIxSRhbmo9/NktrkYw4HnAHaQWP4KHQ=;
-        b=O2w8VXbbsNn6/7SZbG9DTrQFrEgBnu1WAyK60V8cxuES30DGNvySgrRAsJZZd3OjFT
-         tcAh0ptGAZdmkqWBSNA3ZMGgp8TRU6+L7SeSQqkm/gjzv2PRYOkah6XhljxjowiSXlrl
-         mgMOn9c+V96eMTNewy0dKFQor4WCnUVuAHlcny52YR1BmOxh4KXY6dGLCCUoQNiLCpUo
-         bIYkzFtSAhH38yZ+lAtgWKIpX5kWngjKqJFehX5olso/hMmXWGwb1dtYX76e/UZGhMGj
-         6iyayLAvx2fb9Fsp9DXFvuoSwwsI1T6o+IcvUP/YP8RdLmTZ4Car66vc7iUkFNLscntg
-         XrtQ==
-X-Gm-Message-State: AOAM532nVclP/LRJAGLGl2FhHHW5NweH8zrwjhcMKdmcNosSDSG3C1pn
-        2WOamOkeg4dyBmVQfPBgXAQd4qegMGK8uA==
-X-Google-Smtp-Source: ABdhPJxXOkVdvYP3ZgEOCJO6jAENS8rLkK5ge4Pewg6qilVVcGWtdonj61DXmSgCFQE8f1Yhya2/tg==
-X-Received: by 2002:a2e:9a52:: with SMTP id k18mr13748061ljj.249.1612290273551;
-        Tue, 02 Feb 2021 10:24:33 -0800 (PST)
-Received: from [192.168.0.131] ([194.183.54.57])
-        by smtp.gmail.com with ESMTPSA id 19sm4414607ljw.19.2021.02.02.10.24.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 02 Feb 2021 10:24:32 -0800 (PST)
-Subject: Re: [PATCH v1] leds: lp50xx: add setting of default intensity from DT
-To:     Sven Schuchmann <schuchmann@schleissheimer.de>
-Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210119105312.2636-1-schuchmann@schleissheimer.de>
-From:   Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Message-ID: <8029565b-9b45-8c2c-cb6a-c639af5780fb@gmail.com>
-Date:   Tue, 2 Feb 2021 19:24:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        bh=AnGr4EooSXaQZ5ZRROa4NLkKWgLW6n+u1Od1EbAD4Lg=;
+        b=oTqjUKyP2nhuGV+Cykbul+e7DC60dEZADMPt/BlYgKS84ELCqu3o3FY34eLH83jlGX
+         2t05m1N6Cc9Y7F7iqg3NKLcjNKce+JLgnJXNiaZlGDYjiDvJTX+j70CfVfp0h+PvmNSC
+         YTA2pLdFuNsxFE0+7igfcaiNTC2ksFGny1goOEFzAlWxINZElnjiZqNP1A73gh4a1PG6
+         hzl73SXH0aWoWD5qQM238kMECrj+U0rzNcjuiY4ItzmReGJcmmKotX4zNaWTc0vpsRwJ
+         pd3Ak/kNZDA8RAlaMrZmn6YkYVL/pdbiHwVa+tLOlknNyEwHMW73qHhzrdj3KDkeRhfg
+         p+mw==
+X-Gm-Message-State: AOAM531GnmEsqqQIswX0c4f5Kh0CX8R4hKbm1tqDOEZp48o7ldgnHMhh
+        RP9Q6lawbkKeyNofwxQt1McOYuK0sfgb13qvUskZ5z1n5fFv4MhYSHT0eu0eOmSmYMCKSehthWh
+        mhKtHfALM+qcTpUUr5wTTZQ1X
+X-Received: by 2002:a05:6214:324:: with SMTP id j4mr21390769qvu.53.1612290297359;
+        Tue, 02 Feb 2021 10:24:57 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw5CH5N3KAln06tkbRsEidyvbDgmef52F3iN9tUMNV+94ggr3F3Qn9K6XQ4RRxyy8rmKeIvmA==
+X-Received: by 2002:a05:6214:324:: with SMTP id j4mr21390743qvu.53.1612290297144;
+        Tue, 02 Feb 2021 10:24:57 -0800 (PST)
+Received: from Whitewolf.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id j125sm17584722qke.56.2021.02.02.10.24.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 02 Feb 2021 10:24:56 -0800 (PST)
+Message-ID: <a06e4ebe71f6809a772efc43592739e46b022b0e.camel@redhat.com>
+Subject: Re: [Linaro-mm-sig] [PATCH 08/29] dma-buf: Avoid comma separated
+ statements
+From:   Lyude Paul <lyude@redhat.com>
+Reply-To: lyude@redhat.com
+To:     christian.koenig@amd.com, Joe Perches <joe@perches.com>,
+        Jiri Kosina <trivial@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>
+Cc:     linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org
+Date:   Tue, 02 Feb 2021 13:24:55 -0500
+In-Reply-To: <ad79432b-9c83-ce5a-f8ca-ec45bb55fb2c@gmail.com>
+References: <cover.1598331148.git.joe@perches.com>
+         <990bf6f33ccaf73ad56eb4bea8bd2c0db5e90a31.1598331148.git.joe@perches.com>
+         <a87b95d11c22d997ebc423bba71cabef15ca0bac.camel@perches.com>
+         <4d5891b7-ea87-974e-d260-f78c3af326bc@amd.com>
+         <4266568da0437ea605bfb2810ead2b05475bfbb8.camel@redhat.com>
+         <ad79432b-9c83-ce5a-f8ca-ec45bb55fb2c@gmail.com>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.3 (3.38.3-1.fc33) 
 MIME-Version: 1.0
-In-Reply-To: <20210119105312.2636-1-schuchmann@schleissheimer.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sven,
-
-On 1/19/21 11:53 AM, Sven Schuchmann wrote:
-> In order to use a multicolor-led together with a trigger
-> from DT the led needs to have an intensity set to see something.
-> The trigger changes the brightness of the led but if there
-> is no intensity we actually see nothing.
+On Tue, 2021-02-02 at 09:33 +0100, Christian König wrote:
+> Yeah, known issue.
 > 
-> This patch adds the ability to set the default intensity
-> of each led so that it is turned on from DT.
+> An NTP server which I don't have access to has gone bananas and 
+> sometimes spits out invalid time stamps.
 > 
-> Signed-off-by: Sven Schuchmann <schuchmann@schleissheimer.de>
-> ---
->   Documentation/devicetree/bindings/leds/leds-lp50xx.yaml | 8 +++++++-
->   drivers/leds/leds-lp50xx.c                              | 4 ++++
->   2 files changed, 11 insertions(+), 1 deletion(-)
+> Only thing I can do is wait for an admin to take care of this.
+
+haha it's ok! I just thought it was mildly entertaining to see, as my email
+client formatted the message timestamp "Next Wednesday" :)
+
 > 
-> diff --git a/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml b/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
-> index c192b5feadc7..5ad2a0c3c052 100644
-> --- a/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
-> +++ b/Documentation/devicetree/bindings/leds/leds-lp50xx.yaml
-> @@ -69,7 +69,12 @@ patternProperties:
->       patternProperties:
->         "(^led-[0-9a-f]$|led)":
->           type: object
-> -        $ref: common.yaml#
-> +        allOf:
-> +          - $ref: common.yaml#
-> +        properties:
-> +          default-intensity:
-> +            maxItems: 1
-> +            description: The intensity the LED gets initialised with.
->   
->   required:
->     - compatible
-> @@ -102,6 +107,7 @@ examples:
->   
->                  led-0 {
->                      color = <LED_COLOR_ID_RED>;
-> +                   default-intensity = <100>;
->                  };
->   
->                  led-1 {
-
-Please split this into a separate patch, preceding this one in the series.
-
-> diff --git a/drivers/leds/leds-lp50xx.c b/drivers/leds/leds-lp50xx.c
-> index f13117eed976..ba760fa33bdc 100644
-> --- a/drivers/leds/leds-lp50xx.c
-> +++ b/drivers/leds/leds-lp50xx.c
-> @@ -501,6 +501,10 @@ static int lp50xx_probe_dt(struct lp50xx *priv)
->   			}
->   
->   			mc_led_info[num_colors].color_index = color_id;
-> +
-> +			fwnode_property_read_u32(led_node, "default-intensity",
-> +						 &mc_led_info[num_colors].intensity);
-> +
->   			num_colors++;
->   		}
->   
+> Christian.
 > 
-
-For this part:
-
-Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+> Am 01.02.21 um 22:54 schrieb Lyude Paul:
+> > This is entirely unrelated to this thread, but I noticed when going through
+> > dri-
+> > devel that this email is somehow dated two days in the future from now.
+> > 
+> > On Wed, 2021-02-03 at 14:26 +0100, Christian König wrote:
+> > > Am 30.01.21 um 19:47 schrieb Joe Perches:
+> > > > On Mon, 2020-08-24 at 21:56 -0700, Joe Perches wrote:
+> > > > > Use semicolons and braces.
+> > > > Ping?
+> > > >    
+> > > > > Signed-off-by: Joe Perches <joe@perches.com>
+> > > Reviewed-by: Christian König <christian.koenig@amd.com>
+> > > 
+> > > Do you have commit rights to drm-misc-next?
+> > > 
+> > > > > ---
+> > > > >    drivers/dma-buf/st-dma-fence.c | 7 +++++--
+> > > > >    1 file changed, 5 insertions(+), 2 deletions(-)
+> > > > > 
+> > > > > diff --git a/drivers/dma-buf/st-dma-fence.c b/drivers/dma-buf/st-dma-
+> > > > > fence.c
+> > > > > index e593064341c8..c8a12d7ad71a 100644
+> > > > > --- a/drivers/dma-buf/st-dma-fence.c
+> > > > > +++ b/drivers/dma-buf/st-dma-fence.c
+> > > > > @@ -471,8 +471,11 @@ static int thread_signal_callback(void *arg)
+> > > > >                          dma_fence_signal(f1);
+> > > > >    
+> > > > > 
+> > > > >                  smp_store_mb(cb.seen, false);
+> > > > > -               if (!f2 || dma_fence_add_callback(f2, &cb.cb,
+> > > > > simple_callback))
+> > > > > -                       miss++, cb.seen = true;
+> > > > > +               if (!f2 ||
+> > > > > +                   dma_fence_add_callback(f2, &cb.cb,
+> > > > > simple_callback)) {
+> > > > > +                       miss++;
+> > > > > +                       cb.seen = true;
+> > > > > +               }
+> > > > >    
+> > > > > 
+> > > > >                  if (!t->before)
+> > > > >                          dma_fence_signal(f1);
+> > > _______________________________________________
+> > > dri-devel mailing list
+> > > dri-devel@lists.freedesktop.org
+> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> 
 
 -- 
-Best regards,
-Jacek Anaszewski
+Sincerely,
+   Lyude Paul (she/her)
+   Software Engineer at Red Hat
+   
+Note: I deal with a lot of emails and have a lot of bugs on my plate. If you've
+asked me a question, are waiting for a review/merge on a patch, etc. and I
+haven't responded in a while, please feel free to send me another email to check
+on my status. I don't bite!
+
