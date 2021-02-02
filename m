@@ -2,75 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D42430BBEC
-	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:18:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 385B430BBF1
+	for <lists+linux-kernel@lfdr.de>; Tue,  2 Feb 2021 11:20:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230179AbhBBKRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 2 Feb 2021 05:17:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:42045 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229572AbhBBKRo (ORCPT
+        id S230389AbhBBKSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 2 Feb 2021 05:18:46 -0500
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:41281 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229835AbhBBKSo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 2 Feb 2021 05:17:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612260978;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UWa3LXPXqIVneiRS3QkAQMD91cENY/6/bkRppJ2Ix0w=;
-        b=MsOE8XZzBlmvueRhYV6b0dbN2nd8FCQwzhqV+FkXl6Vh1virEpKNooD/yvxlDYjq1dETks
-        XTlhyab03u61yXlwNwmB4kZdclDAnSCjrB7RsL25pTgw2sq88iS6xzLbnkhEv02DVeSpUg
-        gJLj0QxivpbsIWXhRXKYirnUUzyen4c=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-486-BQlfz_MOONuY-4HtmZ_-eA-1; Tue, 02 Feb 2021 05:16:14 -0500
-X-MC-Unique: BQlfz_MOONuY-4HtmZ_-eA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5AB7A1005E61;
-        Tue,  2 Feb 2021 10:16:13 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-115-23.rdu2.redhat.com [10.10.115.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A0D5010016FB;
-        Tue,  2 Feb 2021 10:16:11 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20210202094241.GB28856@gondor.apana.org.au>
-References: <20210202094241.GB28856@gondor.apana.org.au> <20210202085537.GA28682@gondor.apana.org.au> <20210202035655.GA26997@gondor.apana.org.au> <58935b00f65e389e9ae3da2425d06bd88d280e43.camel@linux.ibm.com> <20210129150355.850093-3-stefanb@linux.vnet.ibm.com> <20210129150355.850093-1-stefanb@linux.vnet.ibm.com> <4162801.1612185801@warthog.procyon.org.uk> <71a77d10-e645-194f-5073-ebf180a8d70e@linux.ibm.com> <4170408.1612192055@warthog.procyon.org.uk> <110279.1612254455@warthog.procyon.org.uk> <114435.1612258403@warthog.procyon.org.uk>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     dhowells@redhat.com, Mimi Zohar <zohar@linux.ibm.com>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, patrick@puiterwijk.org,
-        linux-integrity@vger.kernel.org,
-        Mimi Zohar <zohar@linux.vnet.ibm.com>
-Subject: Re: [PATCH v5 2/4] x509: Detect sm2 keys by their parameters OID
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <224266.1612260970.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Tue, 02 Feb 2021 10:16:10 +0000
-Message-ID: <224267.1612260970@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        Tue, 2 Feb 2021 05:18:44 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R821e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0UNfdAcH_1612261072;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UNfdAcH_1612261072)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 02 Feb 2021 18:17:59 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     boris.ostrovsky@oracle.com
+Cc:     jgross@suse.com, sstabellini@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, ast@kernel.org, daniel@iogearbox.net,
+        hawk@kernel.org, john.fastabend@gmail.com, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        kpsingh@kernel.org, xen-devel@lists.xenproject.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] drivers: net: xen-netfront: Simplify the calculation of variables
+Date:   Tue,  2 Feb 2021 18:17:49 +0800
+Message-Id: <1612261069-13315-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Herbert Xu <herbert@gondor.apana.org.au> wrote:
+Fix the following coccicheck warnings:
 
-> > No idea.  It seems straightforward enough, at least on the keyrings si=
-de, that
-> > I was going to add it.
-> =
+./drivers/net/xen-netfront.c:1816:52-54: WARNING !A || A && B is
+equivalent to !A || B.
 
-> In that case please wait for the discussion on how we handle curves
-> to be finalised.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/net/xen-netfront.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Sure.  Will do.
-
-David
+diff --git a/drivers/net/xen-netfront.c b/drivers/net/xen-netfront.c
+index b01848e..5158841 100644
+--- a/drivers/net/xen-netfront.c
++++ b/drivers/net/xen-netfront.c
+@@ -1813,7 +1813,7 @@ static int setup_netfront(struct xenbus_device *dev,
+ 	 *  a) feature-split-event-channels == 0
+ 	 *  b) feature-split-event-channels == 1 but failed to setup
+ 	 */
+-	if (!feature_split_evtchn || (feature_split_evtchn && err))
++	if (!feature_split_evtchn || err)
+ 		err = setup_netfront_single(queue);
+ 
+ 	if (err)
+-- 
+1.8.3.1
 
